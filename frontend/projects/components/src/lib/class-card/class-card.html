@@ -1,0 +1,42 @@
+@let v = view();
+<a class="class-card" [href]="v.href" (click)="onClick($event)">
+  <span class="class-card__cover">
+    @if (v.cover) {
+      <img
+        [src]="v.cover"
+        alt=""
+        width="320"
+        height="180"
+        loading="lazy"
+        (error)="coverFailed.emit(v.id)"
+      />
+    } @else {
+      <span class="class-card__poster"
+        ><wz-icon name="play" size="xl" /><span>{{ v.channel }}</span></span
+      >
+    }
+    <span class="class-card__length">{{ v.length }}</span>
+  </span>
+  <svg
+    class="profile"
+    [attr.viewBox]="'0 0 ' + v.profileTotal + ' 32'"
+    preserveAspectRatio="none"
+    role="img"
+    [attr.aria-label]="v.profileLabel"
+  >
+    @for (bar of v.profile; track $index) {
+      <rect
+        [attr.class]="bar.tone"
+        [attr.x]="bar.x"
+        [attr.width]="bar.width"
+        [attr.y]="bar.y"
+        [attr.height]="bar.height"
+      />
+    }
+  </svg>
+  <h3 class="class-card__title">{{ v.title }}</h3>
+  <p class="class-card__meta">{{ v.meta }}</p>
+  @if (v.noVideo) {
+    <p class="class-card__note"><wz-icon name="link" size="sm" />Video link not set</p>
+  }
+</a>

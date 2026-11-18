@@ -6,6 +6,8 @@ import { SKIP_UNLOCK_REDIRECT } from './api-key.interceptor';
 import type {
   BikeState,
   ChooseMachineRequest,
+  ClassCatalogue,
+  ClassEntry,
   EventToken,
   Machine,
   SetInclineRequest,
@@ -17,6 +19,7 @@ import type {
   WorkoutSnapshot,
 } from './api-types';
 import { type BikeApi, COMMAND_TIMEOUT_MS, type KeyCheck, RequestTimeoutError } from './bike-api';
+import type { ClassApi } from './class-api';
 import type { MachineApi } from './machine-api';
 import type { WorkoutApi } from './workout-api';
 
@@ -122,5 +125,25 @@ export class HttpMachineApi implements MachineApi {
   setIncline(incline: number): Promise<void> {
     const body: SetInclineRequest = { incline };
     return postCommand(this.http, '/api/incline', body);
+  }
+}
+
+@Injectable()
+export class HttpClassApi implements ClassApi {
+  private readonly http = inject(HttpClient);
+
+  list(): Promise<ClassCatalogue> {
+    return firstValueFrom(this.http.get<ClassCatalogue>('/api/classes'));
+  }
+
+  async get(id: string): Promise<ClassEntry | 'not-found'> {
+    try {
+      return await firstValueFrom(
+        this.http.get<ClassEntry>(`/api/classes/${encodeURIComponent(id)}`),
+      );
+    } catch (e) {
+      if (e instanceof HttpErrorResponse && e.status === 404) return 'not-found';
+      throw e;
+    }
   }
 }

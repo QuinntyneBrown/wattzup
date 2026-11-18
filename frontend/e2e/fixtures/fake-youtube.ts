@@ -90,8 +90,17 @@ function fakeIframeApi(): void {
   w.onYouTubeIframeAPIReady?.();
 }
 
+/** A 1 × 1 PNG standing in for every YouTube thumbnail (ADR 0014). */
+const THUMBNAIL = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+  'base64',
+);
+
 export class FakeYouTube {
   readonly offsite: string[] = [];
+  /** Every thumbnail the page asked i.ytimg.com for. */
+  readonly thumbnails: string[] = [];
+  private thumbnailsFail = false;
 
   constructor(private readonly page: Page) {}
 
@@ -109,6 +118,11 @@ export class FakeYouTube {
         contentType: 'text/javascript',
         body: `(${fakeIframeApi.toString()})();`,
       });
+    } else if (url.hostname === 'i.ytimg.com') {
+      this.thumbnails.push(url.href);
+      await (this.thumbnailsFail
+        ? route.fulfill({ status: 404, body: '' })
+        : route.fulfill({ contentType: 'image/png', body: THUMBNAIL }));
     } else if (url.hostname === 'www.youtube-nocookie.com') {
       await route.fulfill({
         contentType: 'text/html',
@@ -118,6 +132,11 @@ export class FakeYouTube {
       this.offsite.push(url.href);
       await route.abort();
     }
+  }
+
+  /** Answers every thumbnail with 404 from now on (L2-079 AC6). */
+  failThumbnails(): void {
+    this.thumbnailsFail = true;
   }
 
   /** The title the fake reports for every video; call it before the page loads. */

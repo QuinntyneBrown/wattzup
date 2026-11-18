@@ -46,3 +46,7 @@ export type SpeedSent = Schemas['SpeedSent'];
 export type SetInclineRequest = Schemas['SetInclineRequest'];
 export type InclineSent = Schemas['InclineSent'];
 export type NearbyMachine = Schemas['NearbyMachine'];
+export type ClassCatalogue = Schemas['ClassCatalogueResponse'];
+export type ClassShelf = Schemas['ClassShelfResponse'];
+export type ClassEntry = Schemas['ClassResponse'];
+export type ShelfRef = Schemas['ShelfRef'];

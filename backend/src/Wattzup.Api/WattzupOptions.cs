@@ -55,3 +55,11 @@ public sealed class TreadmillOptions
     /// <summary>Turns treadmill support on; off by default until the Stride answers over Bluetooth (L2-075, ADR 0011).</summary>
     public bool Enabled { get; set; }
 }
+
+/// <summary>The class catalogue file (L2-077, ADR 0014): <c>Wattzup:Classes:Path</c>, relative to the content root.</summary>
+public sealed class ClassesOptions
+{
+    public const string SectionName = "Wattzup:Classes";
+
+    public string Path { get; set; } = "classes.json";
+}

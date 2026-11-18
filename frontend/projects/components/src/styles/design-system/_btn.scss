@@ -50,6 +50,19 @@
   cursor: not-allowed;
   transform: none;
 }
+.btn--primary {
+  --btn-bg: var(--color-accent);
+  --btn-fg: var(--color-fg-on-accent);
+  --btn-border: var(--color-accent-edge);
+  --btn-bg-hover: var(--color-accent-hover);
+  --btn-bg-active: var(--color-accent-active);
+  font-weight: var(--font-weight-semibold);
+}
+.btn--subtle {
+  --btn-bg: var(--color-bg-subtle);
+  --btn-border: transparent;
+  --btn-bg-hover: var(--color-bg-subtle-hover);
+}
 .btn--danger {
   --btn-bg: var(--color-danger-solid);
   --btn-fg: var(--color-fg-on-danger);

@@ -174,6 +174,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/classes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The class catalogue: every shelf that has a class, with its classes, in file order. */
+        get: operations["ListClasses"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/classes/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One class by id; an unknown id answers 404 class_not_found. */
+        get: operations["GetClass"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/workout": {
         parameters: {
             query?: never;
@@ -347,6 +381,24 @@ export interface components {
         ChooseMachineRequest: {
             machine: components["schemas"]["Machine"];
         };
+        ClassCatalogueResponse: {
+            shelves: components["schemas"]["ClassShelfResponse"][];
+        };
+        ClassResponse: {
+            id: string;
+            title: string;
+            channel: string;
+            focus: string;
+            description: string;
+            shelf: components["schemas"]["ShelfRef"];
+            plan: components["schemas"]["WorkoutPlan"];
+        };
+        ClassShelfResponse: {
+            id: string;
+            title: string;
+            tagline: string;
+            classes: components["schemas"]["ClassResponse"][];
+        };
         CommandEntry: {
             /** Format: double */
             at: number;
@@ -492,6 +544,11 @@ export interface components {
         SetSpeedRequest: {
             /** Format: double */
             speed: number;
+        };
+        ShelfRef: {
+            id: string;
+            title: string;
+            tagline: string;
         };
         SpeedSent: {
             /** Format: double */
@@ -943,6 +1000,57 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RecentPackets"];
+                };
+            };
+        };
+    };
+    ListClasses: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassCatalogueResponse"];
+                };
+            };
+        };
+    };
+    GetClass: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
                 };
             };
         };

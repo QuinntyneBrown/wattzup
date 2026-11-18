@@ -65,7 +65,7 @@ The class page at `/classes/:id` belongs to `classes/ride-a-class`.
 - **`ClassCard`** (`class-card/`, `wz-class-card`, new) — one link (`<a class="class-card">`) to `/classes/<id>`. It contains:
   - `class-card__cover`: a 16:9 box sized before the image loads, holding `<img alt="" loading="lazy">` or the `class-card__poster` with the channel;
   - `class-card__length`;
-  - the `wz-plan-strip` bars;
+  - `class-card__strip`, the plan's profile bars;
   - `class-card__title` (an `h3`);
   - `class-card__meta`;
   - `class-card__note` `Video link not set` when there is no video.
@@ -79,8 +79,7 @@ The class page at `/classes/:id` belongs to `classes/ride-a-class`.
     - `length` from `formatDuration` of the total of `expandPlan(plan)` (`m:ss`, `h:mm:ss` from one hour);
     - `meta` `<channel> · <focus> · Peak L<n>`, with n the highest segment level;
     - `cover` `https://i.ytimg.com/vi/<video_id>/mqdefault.jpg` or `null`;
-    - `strip` from `stripOf` (`core/plan-strip.ts`);
-    - `stripLabel` `Resistance profile: <structure>`.
+    - `profile`, `profileTotal` and `profileLabel` from `previewOf` (`core/ride-preview.ts`), the bars the setup preview draws, so a card and its class page show the same shape.
   - `visibleShelves(catalogue, tab)` returns every shelf for `all`, else the one shelf.
   - `countLabel(n)` returns `1 class` or `<n> classes`.
   - `thumbnailUrl(videoId)` builds the URL only from an 11-character id that matches `[A-Za-z0-9_-]`, else `null`.
@@ -90,7 +89,7 @@ The class page at `/classes/:id` belongs to `classes/ride-a-class`.
   - The heading block reads `Ride a class`, the lead copy and the bike's name, with `Build your own ride` linking to `/setup` (criterion 1).
   - The tab list reuses the `view-switch` pattern of `MainViewTabs`, with `All` and one tab per shelf, a roving `tabindex`, the arrow keys and `aria-selected` (criterion 2). The tabs are disabled while loading.
   - The states are skeletons (criterion 8), `No classes yet` (criterion 9), and `Couldn't load the classes` with `Try again` (criterion 10). The status line of L2-018 shows from the app bar, as on every page (criterion 11).
-  - A route guard `bikeOnly` (`core/machine-guards.ts`, new) redirects to `/setup` while `LiveStateService.state().machine` is `treadmill` (criterion 12).
+  - `bikeOnly()` (`core/machine-guards.ts`, new), called in the page's constructor, is an effect that redirects to `/setup` (replacing the history entry) once `LiveStateService.state().machine` reads `treadmill` (criterion 12). It is an effect, not a route guard, because the machine is known only after the first state message arrives, as on Choose machine.
 - **Grid** — `.shelf__grid` uses one column under 576 px, two from 576 px, three from 992 px and four from 1200 px, with no horizontal scroll. Each card and tab is at least 44 × 44 px with a visible focus ring (criterion 13).
 
 ### Screen states

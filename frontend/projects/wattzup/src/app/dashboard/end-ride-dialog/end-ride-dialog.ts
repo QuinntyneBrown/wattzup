@@ -46,7 +46,8 @@ export class EndRideDialog {
     try {
       await this.workouts.stop();
       this.ref.close();
-      await this.router.navigateByUrl(this.data?.next ?? '/setup');
+      // The bike lands on the class library, the treadmill on setup (L2-051 criterion 2).
+      await this.router.navigateByUrl(this.data?.next ?? (this.run ? '/setup' : '/classes'));
     } catch {
       this.failed.set(true);
     } finally {

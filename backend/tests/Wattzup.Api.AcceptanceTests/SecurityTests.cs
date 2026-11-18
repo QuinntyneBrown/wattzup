@@ -189,7 +189,7 @@ public sealed class SecurityTests
     }
 
     [Fact]
-    public async Task Every_response_allows_only_the_YouTube_player_origins_beyond_self()
+    public async Task Every_response_allows_only_the_YouTube_origins_beyond_self()
     {
         using var factory = new WattzupApiFactory { WithoutBluetooth = true };
         using var client = factory.CreateClient();
@@ -203,7 +203,7 @@ public sealed class SecurityTests
         Assert.Equal("https://www.youtube-nocookie.com", directives["frame-src"]);
         Assert.Equal("'self'", directives["connect-src"]);
         Assert.Equal("'self'", directives["font-src"]);
-        Assert.Equal("'self' data:", directives["img-src"]);
+        Assert.Equal("'self' data: https://i.ytimg.com", directives["img-src"]);
         Assert.Equal("'self'", directives["default-src"]);
         Assert.DoesNotContain("youtube", directives["style-src"], StringComparison.Ordinal);
     }

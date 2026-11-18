@@ -83,6 +83,16 @@ function save(name, response, expectedStatus) {
 
 await waitConnected('bike');
 
+// The class catalogue: the default classes.json (L2-077, L2-078).
+save('classes', await call('GET', '/api/classes'), 200);
+save('class-30-minute-hiit-cardio', await call('GET', '/api/classes/30-minute-hiit-cardio'), 200);
+save(
+  'class-60-min-dolomites-endurance',
+  await call('GET', '/api/classes/60-min-dolomites-endurance'),
+  200,
+);
+save('problem-class-not-found', await call('GET', '/api/classes/no-such-class'), 404);
+
 await call('POST', '/api/workout/stop');
 save('status-free-ride', await call('GET', '/api/status'), 200);
 save('problem-no-active-workout', await call('POST', '/api/workout/pause'), 409);

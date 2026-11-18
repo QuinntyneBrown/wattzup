@@ -1,0 +1,30 @@
+<div class="level-row">
+  <span class="level-row__name"
+    ><span class="swatch" [class]="'swatch--' + swatch()" aria-hidden="true"></span
+    >{{ name() }}</span
+  >
+  <button
+    class="btn btn--subtle btn--icon"
+    type="button"
+    [attr.aria-label]="'Lower ' + lower() + ' resistance'"
+    [disabled]="!canLower()"
+    (click)="step.emit(-1)"
+  >
+    <wz-icon name="minus" size="sm" />
+  </button>
+  <span
+    class="numeral level-row__value"
+    aria-live="polite"
+    [attr.aria-label]="name() + ' level ' + level() + ' of 32'"
+    >{{ level() }}<small> / 32</small></span
+  >
+  <button
+    class="btn btn--subtle btn--icon"
+    type="button"
+    [attr.aria-label]="'Raise ' + lower() + ' resistance'"
+    [disabled]="!canRaise()"
+    (click)="step.emit(1)"
+  >
+    <wz-icon name="plus" size="sm" />
+  </button>
+</div>

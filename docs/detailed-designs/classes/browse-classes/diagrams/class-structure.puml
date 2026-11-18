@@ -95,8 +95,9 @@ package "Frontend: api and app" {
     +length: string
     +title: string
     +meta: string
-    +strip: PlanStripView
-    +stripLabel: string
+    +profile: ProfileBar[]
+    +profileTotal: number
+    +profileLabel: string
   }
   class "class-library-view.ts" as clv <<pure>> {
     +cardView(entry): ClassCardView

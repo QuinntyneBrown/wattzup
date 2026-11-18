@@ -1,0 +1,23 @@
+@use 'design-system/btn';
+@use 'design-system/empty';
+
+:host {
+  display: contents;
+}
+.library:focus {
+  outline: none;
+}
+.library {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+.library__inner {
+  width: 100%;
+  max-width: var(--layout-container-max);
+  margin-inline: auto;
+  padding: var(--space-8) var(--space-5) var(--space-12);
+}
+.empty {
+  margin-top: var(--space-10);
+}

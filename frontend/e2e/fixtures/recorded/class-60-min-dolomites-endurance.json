@@ -1,0 +1,21 @@
+{
+  "id": "60-min-dolomites-endurance",
+  "title": "60 Min Dolomites Endurance",
+  "channel": "Wattzup Scenic",
+  "focus": "Zone 2",
+  "description": "An hour of valley roads at one steady level. Conversational pace — the base everything else sits on.",
+  "shelf": {
+    "id": "60-min-endurance",
+    "title": "60 min endurance",
+    "tagline": "Long aerobic rides. Steady legs, steady heart."
+  },
+  "plan": {
+    "kind": "flat",
+    "level": 12,
+    "minutes": 60,
+    "cadence": 85,
+    "speed": null,
+    "incline": null,
+    "video": null
+  }
+}

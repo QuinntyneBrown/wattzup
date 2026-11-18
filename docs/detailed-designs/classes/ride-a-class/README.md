@@ -31,7 +31,7 @@ None new. `GET /api/classes/{id}` belongs to `classes/browse-classes` (L2-078 cr
 **Pure rules.**
 - **`class-draft.ts`** (`core/`, new, with `class-draft.spec.ts`):
   - `ClassDraft` = `{ plan: WorkoutPlan, url: string, start: number }`. `draftOf(entry)` builds it from the class. The `url` is `https://www.youtube.com/watch?v=<video_id>` when the plan has a video, else empty. The `start` is the class's `start_seconds`, else 0 (L2-080 criteria 2 and 3).
-  - `levelRows(plan)` returns `[{name: 'Work', level}, {name: 'Recover', level}]` for `hiit` and `intervals`, with each level the highest of its kind. For `flat` it returns `[{name: 'Steady', level}]` (criteria 7 and 8).
+  - `levelRows(plan)` returns `[{name: 'Work', level, canLower, canRaise}, {name: 'Recover', …}]` for `hiit` and `intervals`, with each level the highest of its kind and `canLower` / `canRaise` false once the lowest (highest) level of the kind is at 1 (32). For `flat` it returns `[{name: 'Steady', …}]` (criteria 7 and 8).
   - `shiftLevels(plan, row, dir)` moves every effort's level (`work_level` of the plan, or of each set), or every recover's (`rest_level`), or the flat `level`, by `dir`. Each level stays within 1 to 32. It returns the plan unchanged at the limit, so the button is disabled. Warm-up and cool-down levels never move (criterion 7).
   - `isEdited(draft, entry)` is true when the plan, the link or the start point differs from `draftOf(entry)` (criterion 9).
   - `structureLine(plan)` returns:
@@ -53,12 +53,12 @@ None new. `GET /api/classes/{id}` belongs to `classes/browse-classes` (L2-078 cr
   - `level-row__value` `<n> / 32`, with `aria-live="polite"` and `aria-label` `<Work|Recover|Steady> level <n> of 32` (criterion 15).
 
   Inputs: `name`, `level`, `canLower`, `canRaise`. Output: `step` (`-1` or `1`).
-- **`PlanStrip`** (`plan-strip/`, existing) — the plan card's strip, with the legend `Work` / `Recover`.
+- The plan card's strip is the profile `previewOf` draws for setup (`svg.profile`), labelled `Resistance profile: <structure>, peak level <n>`, with the legend `Work` / `Recover`.
 
 **Page.**
 - **`ClassPage`** (`dashboard/class-page/`, new, route `classes/:id`, guarded by `bikeOnly` from `classes/browse-classes`; title `<class title> · Wattzup`):
   - **Loading.** On entry it calls `CLASS_API.get(id)` and shows a skeleton until the class arrives (criterion 13).
-  - **Not found.** `'not-found'` shows the error page block `We can't find that class` / `It isn't in the class library. Pick another, or build your own ride.`, with `All classes` and `Build your own ride` (criterion 13).
+  - **Not found.** `'not-found'` shows `ClassNotFound` (`dashboard/class-not-found/`, new), the error page block `We can't find that class` / `It isn't in the class library. Pick another, or build your own ride.`, with `All classes` and `Build your own ride` (criterion 13).
   - **Header.** `All classes` (link to `/classes`), the bike's name, the chips `<channel>`, `<shelf title>` and `<focus>`, the `h1` title and the description, all rendered as text (criterion 1).
   - **Video.**
     - The `video-frame` preview goes through `YOUTUBE_PLAYER` (`workouts/ride-along-video`), cued at `start`. Its caption is `<channel> · <title>` / `Cued at <m:ss.s>, the ride's 0:00` (criterion 2).
@@ -66,15 +66,15 @@ None new. `GET /api/classes/{id}` belongs to `classes/browse-classes` (L2-078 cr
     - The `YouTube link` field and its error follow L2-029 criteria 18 and 19 through `videoIdOf` (criterion 4).
     - `Ride starts at` uses `stepStart` and `formatStart` (`core/video-link.ts`): − and + are `Half a second earlier` / `Half a second later`, with the hint below. The preview cues to each new point (criterion 5).
   - **The plan card.**
-    - It shows the total time, `wz-plan-strip`, the stretch line, `Structure`, `Cadence` and `Expected avg power` (`~<w> W`). The figures come from `previewOf` (`core/ride-preview.ts`) and the helpers above, and update on every change (criteria 6 and 7).
+    - It shows the total time, the profile strip, the stretch line, `Structure`, `Cadence` and `Expected avg power` (`~<w> W`). The figures come from `previewOf` (`core/ride-preview.ts`) and the helpers above, and update on every change (criteria 6 and 7).
     - `Resistance` shows one `wz-level-row` per `levelRows` entry (criteria 7 and 8).
     - `Reset to class` appears while `isEdited`, and puts back `draftOf(entry)` (criterion 9).
   - **Start ride.**
     - It reads `LiveStateService.state().workout`. With an active workout, it opens the replace-ride dialog (L2-052) first.
     - With none, or once the dialog confirms, it calls `WORKOUT_API.start(toStartRequest(draft))`. The button reads `Starting…` and is disabled while the request runs.
     - Success navigates to `/` (criterion 10).
-    - A failure shows the `alert` `Couldn't start the ride` / `The Wattzup server didn't accept the plan. Your settings are kept — try again.` with `Try again`, and keeps every value (criterion 11).
-  - **Full setup.** `Change intervals in full setup` calls `toSetupDrafts(draft)`. It saves the drafts through `PlanDraftStore`: `save`, `saveIntervals` for an `intervals` class, and `saveVideo`. These replace what was there, and then it navigates to `/setup`. Setup restores its mode from `PlanDraft.mode` as it does on any load, so it opens in the class's mode with the class's plan and video (criterion 12).
+    - A failure shows the `alert` `Couldn't start the ride` / `The Wattzup server didn't accept the plan. Your settings are kept — try again.` above the start button, which then reads `Try again` (`class/error`), and keeps every value (criterion 11).
+  - **Full setup.** `Change intervals in full setup` is a link to `/setup`; a plain click calls `toSetupDrafts(draft)`. It saves the drafts through `PlanDraftStore`: `save`, `saveIntervals` for an `intervals` class, and `saveVideo`. These replace what was there, and then it navigates to `/setup`. Setup restores its mode from `PlanDraft.mode` as it does on any load, so it opens in the class's mode with the class's plan and video (criterion 12).
 - **Layout.** Under 1024 px the preview keeps 16:9 at full width above the plan card. Under 576 px nothing scrolls sideways. Every button has a visible focus ring (criterion 15).
 - **Treadmill.** The `bikeOnly` guard redirects `/classes/<id>` to `/setup` on the treadmill (criterion 14).
 

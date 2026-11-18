@@ -76,7 +76,8 @@ export class MachinePage {
       const state = this.state();
       if (!picked) return;
       if (state?.machine === picked && state.ble === 'connected') {
-        void this.router.navigate(['/setup']);
+        // The bike lands on the class library, the treadmill on setup (L2-073 criterion 6).
+        void this.router.navigate([picked === 'bike' ? '/classes' : '/setup']);
       }
     });
   }

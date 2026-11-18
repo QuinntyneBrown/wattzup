@@ -1,3 +1,4 @@
+import classes from './fixtures/recorded/classes.json';
 import { expect, test } from './fixtures/wz-test';
 import { RidePage } from './pages/ride.page';
 import { DiagnosticsDialog } from './pages/diagnostics.dialog';
@@ -118,7 +119,12 @@ test.describe('End-ride dialog (L2-051)', () => {
     await expect(end.keepRidingButton).toBeFocused();
   });
 
-  test('End ride stops the workout and goes to /setup', async ({ page, api, events }) => {
+  test('End ride stops the workout and goes to the class library', async ({
+    page,
+    api,
+    events,
+  }) => {
+    api.on('GET', '/api/classes', { json: classes });
     let release: () => void = () => undefined;
     const answered = new Promise<void>((r) => (release = r));
     api.on('POST', '/api/workout/stop', async () => {
@@ -134,7 +140,7 @@ test.describe('End-ride dialog (L2-051)', () => {
     await expect(end.keepRidingButton).toBeDisabled();
     release();
     await expect(end.dialog).toHaveCount(0);
-    await expect(page).toHaveURL(/\/setup$/);
+    await expect(page).toHaveURL(/\/classes$/);
   });
 
   test('a failed stop says the ride is still running and offers Try again', async ({
@@ -143,6 +149,7 @@ test.describe('End-ride dialog (L2-051)', () => {
     events,
   }) => {
     let calls = 0;
+    api.on('GET', '/api/classes', { json: classes });
     api.on('POST', '/api/workout/stop', () =>
       ++calls === 1
         ? { status: 500, json: { title: 'error', status: 500 } }
@@ -158,7 +165,7 @@ test.describe('End-ride dialog (L2-051)', () => {
       "The Wattzup server didn't answer. The ride is still running — try again.",
     );
     await end.tryAgainButton.click();
-    await expect(page).toHaveURL(/\/setup$/);
+    await expect(page).toHaveURL(/\/classes$/);
   });
 
   for (const how of ['Keep riding', 'Escape', 'Close'] as const) {

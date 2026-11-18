@@ -6,6 +6,7 @@ import { ReplaceRideDialog } from './pages/replace-ride.dialog';
 import { SetupPage } from './pages/setup.page';
 import { FLAT_PLAN, treadmillIdle, treadmillState, treadmillWorkout } from './fixtures/states';
 import treadmillPaused from './fixtures/recorded/treadmill-workout-paused.json';
+import treadmillStopped from './fixtures/recorded/treadmill-workout-stopped.json';
 import speedSent from './fixtures/recorded/speed-sent.json';
 import inclineSent from './fixtures/recorded/incline-sent.json';
 
@@ -412,6 +413,20 @@ test.describe('Treadmill dashboard: belt and connection (L2-066, L2-071)', () =>
 });
 
 test.describe('Treadmill dashboard: dialogs, phase and log (L2-071)', () => {
+  test('ending the run returns to setup, not the class library (L2-051 AC2)', async ({
+    page,
+    api,
+    events,
+  }) => {
+    api.on('POST', '/api/workout/stop', { json: treadmillStopped });
+    const ride = new RidePage(page, api, events);
+    const end = new EndRideDialog(page, 'treadmill');
+    await ride.open(treadmillState());
+    await ride.stopBeltButton.click();
+    await end.endRideButton.click();
+    await expect(page).toHaveURL(/\/setup$/);
+  });
+
   test('words the end and replace dialogs for the run (AC15)', async ({ page, api, events }) => {
     const ride = new RidePage(page, api, events);
     const end = new EndRideDialog(page, 'treadmill');

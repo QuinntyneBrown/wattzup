@@ -9,7 +9,7 @@ Container_Boundary(web, "Wattzup Web") {
   Component(shelf, "Shelf", "Presentation component", "Shelf heading, tagline and count")
   Component(card, "ClassCard", "Presentation component", "Cover, length, title, meta and strip")
   Component(token, "CLASS_API", "Injection token", "HttpClassApi")
-  Component(guard, "bikeOnly", "Route guard", "Redirects the treadmill to /setup")
+  Component(guard, "bikeOnly", "Effect", "Redirects the treadmill to /setup")
 }
 Container_Boundary(api, "Wattzup API") {
   Component(ep, "ClassEndpoints", "Minimal API", "GET /api/classes and /api/classes/{id}")
@@ -25,7 +25,7 @@ Rel(token, ep, "GET /api/classes", "JSON")
 Rel(page, view, "Maps classes with")
 Rel(page, shelf, "Renders")
 Rel(shelf, card, "Contains")
-Rel(guard, page, "Guards")
+Rel(page, guard, "Calls on creation")
 Rel(ep, store, "Reads Current")
 Rel(svc, file, "Reads and watches")
 Rel(svc, reader, "Read(stream)")

@@ -281,8 +281,9 @@ hr, .divider { border: 0; border-top: var(--border-width-hairline) solid var(--c
 .shelf__blurb { font: var(--text-body-sm); color: var(--color-fg-muted); }
 .shelf__count { margin-left: auto; font: var(--text-body-sm); color: var(--color-fg-subtle); }
 .shelf__grid { margin-top: var(--space-5); display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-8) var(--space-5); list-style: none; padding: 0; }
-@media (min-width: 40rem) { .shelf__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 64rem) { .shelf__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 36rem) { .shelf__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 62rem) { .shelf__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 75rem) { .shelf__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
 /* Class card: a link to the class page. The cover carries the ride length; the strip under it is the plan. */
 .class-card { display: flex; flex-direction: column; color: inherit; text-decoration: none; border-radius: var(--radius-lg); }

@@ -1,0 +1,7 @@
+{
+  "type": "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+  "title": "No class has that id.",
+  "status": 404,
+  "code": "class_not_found",
+  "trace_id": "00-02ff12eec1f98a33ebf9cec81cfcf467-92a1752b1cb4cf4b-00"
+}

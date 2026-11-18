@@ -1,0 +1,262 @@
+{
+  "shelves": [
+    {
+      "id": "20-min",
+      "title": "20 min",
+      "tagline": "Short and sharp — fits a lunch break.",
+      "classes": [
+        {
+          "id": "20-minute-power-intervals",
+          "title": "20 Minute Power Intervals",
+          "channel": "Wattzup Studio",
+          "focus": "VO₂ max",
+          "description": "Six one-minute efforts with equal recovery. Short enough to go properly hard on every one.",
+          "shelf": {
+            "id": "20-min",
+            "title": "20 min",
+            "tagline": "Short and sharp — fits a lunch break."
+          },
+          "plan": {
+            "kind": "intervals",
+            "warmup": {
+              "seconds": 300,
+              "level": 9,
+              "cadence": 80
+            },
+            "sets": [
+              {
+                "rounds": 6,
+                "work_seconds": 60,
+                "work_level": 22,
+                "work_cadence": 100,
+                "rest_seconds": 60,
+                "rest_level": 7,
+                "rest_cadence": 72
+              }
+            ],
+            "cooldown": {
+              "seconds": 180,
+              "level": 7,
+              "cadence": 70
+            },
+            "video": null
+          }
+        },
+        {
+          "id": "20-min-threshold-builder",
+          "title": "20 Min Threshold Builder",
+          "channel": "Wattzup Studio",
+          "focus": "Threshold",
+          "description": "Four two-minute blocks just under your limit, with a minute to reset between them.",
+          "shelf": {
+            "id": "20-min",
+            "title": "20 min",
+            "tagline": "Short and sharp — fits a lunch break."
+          },
+          "plan": {
+            "kind": "intervals",
+            "warmup": {
+              "seconds": 300,
+              "level": 12,
+              "cadence": 82
+            },
+            "sets": [
+              {
+                "rounds": 4,
+                "work_seconds": 120,
+                "work_level": 19,
+                "work_cadence": 92,
+                "rest_seconds": 60,
+                "rest_level": 10,
+                "rest_cadence": 75
+              }
+            ],
+            "cooldown": {
+              "seconds": 180,
+              "level": 10,
+              "cadence": 70
+            },
+            "video": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "30-min",
+      "title": "30 min",
+      "tagline": "Structured intervals with a proper warm-up.",
+      "classes": [
+        {
+          "id": "30-minute-hiit-cardio",
+          "title": "30 Minute HIIT Cardio",
+          "channel": "GCN Training",
+          "focus": "HIIT",
+          "description": "Eight 30-second maximal efforts with a recovery that shrinks each round. The classic.",
+          "shelf": {
+            "id": "30-min",
+            "title": "30 min",
+            "tagline": "Structured intervals with a proper warm-up."
+          },
+          "plan": {
+            "kind": "intervals",
+            "warmup": {
+              "seconds": 300,
+              "level": 8,
+              "cadence": 80
+            },
+            "sets": [
+              {
+                "rounds": 1,
+                "work_seconds": 30,
+                "work_level": 24,
+                "work_cadence": 98,
+                "rest_seconds": 180,
+                "rest_level": 6,
+                "rest_cadence": 72
+              },
+              {
+                "rounds": 2,
+                "work_seconds": 30,
+                "work_level": 24,
+                "work_cadence": 98,
+                "rest_seconds": 150,
+                "rest_level": 6,
+                "rest_cadence": 72
+              },
+              {
+                "rounds": 2,
+                "work_seconds": 30,
+                "work_level": 24,
+                "work_cadence": 98,
+                "rest_seconds": 120,
+                "rest_level": 6,
+                "rest_cadence": 72
+              },
+              {
+                "rounds": 2,
+                "work_seconds": 30,
+                "work_level": 24,
+                "work_cadence": 98,
+                "rest_seconds": 90,
+                "rest_level": 6,
+                "rest_cadence": 72
+              },
+              {
+                "rounds": 1,
+                "work_seconds": 30,
+                "work_level": 24,
+                "work_cadence": 98,
+                "rest_seconds": 0,
+                "rest_level": 6,
+                "rest_cadence": 72
+              }
+            ],
+            "cooldown": {
+              "seconds": 360,
+              "level": 6,
+              "cadence": 70
+            },
+            "video": {
+              "video_id": "QUoToFsMNig",
+              "start_seconds": 12
+            }
+          }
+        },
+        {
+          "id": "30-min-tempo-paceline",
+          "title": "30 Min Tempo Paceline",
+          "channel": "Wattzup Studio",
+          "focus": "Tempo",
+          "description": "Four six-minute turns on the front at tempo, sitting in for two between them.",
+          "shelf": {
+            "id": "30-min",
+            "title": "30 min",
+            "tagline": "Structured intervals with a proper warm-up."
+          },
+          "plan": {
+            "kind": "intervals",
+            "warmup": {
+              "seconds": 240,
+              "level": 13,
+              "cadence": 85
+            },
+            "sets": [
+              {
+                "rounds": 4,
+                "work_seconds": 360,
+                "work_level": 17,
+                "work_cadence": 90,
+                "rest_seconds": 120,
+                "rest_level": 11,
+                "rest_cadence": 80
+              }
+            ],
+            "cooldown": null,
+            "video": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "60-min-endurance",
+      "title": "60 min endurance",
+      "tagline": "Long aerobic rides. Steady legs, steady heart.",
+      "classes": [
+        {
+          "id": "60-min-dolomites-endurance",
+          "title": "60 Min Dolomites Endurance",
+          "channel": "Wattzup Scenic",
+          "focus": "Zone 2",
+          "description": "An hour of valley roads at one steady level. Conversational pace — the base everything else sits on.",
+          "shelf": {
+            "id": "60-min-endurance",
+            "title": "60 min endurance",
+            "tagline": "Long aerobic rides. Steady legs, steady heart."
+          },
+          "plan": {
+            "kind": "flat",
+            "level": 12,
+            "minutes": 60,
+            "cadence": 85,
+            "speed": null,
+            "incline": null,
+            "video": null
+          }
+        },
+        {
+          "id": "60-min-coastal-endurance-surges",
+          "title": "60 Min Coastal Endurance + Surges",
+          "channel": "Wattzup Scenic",
+          "focus": "Endurance",
+          "description": "Steady coastal miles broken by five six-minute surges to keep the legs honest.",
+          "shelf": {
+            "id": "60-min-endurance",
+            "title": "60 min endurance",
+            "tagline": "Long aerobic rides. Steady legs, steady heart."
+          },
+          "plan": {
+            "kind": "intervals",
+            "warmup": {
+              "seconds": 300,
+              "level": 13,
+              "cadence": 85
+            },
+            "sets": [
+              {
+                "rounds": 5,
+                "work_seconds": 360,
+                "work_level": 15,
+                "work_cadence": 90,
+                "rest_seconds": 300,
+                "rest_level": 11,
+                "rest_cadence": 82
+              }
+            ],
+            "cooldown": null,
+            "video": null
+          }
+        }
+      ]
+    }
+  ]
+}

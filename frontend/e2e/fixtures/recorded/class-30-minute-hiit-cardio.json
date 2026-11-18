@@ -1,0 +1,76 @@
+{
+  "id": "30-minute-hiit-cardio",
+  "title": "30 Minute HIIT Cardio",
+  "channel": "GCN Training",
+  "focus": "HIIT",
+  "description": "Eight 30-second maximal efforts with a recovery that shrinks each round. The classic.",
+  "shelf": {
+    "id": "30-min",
+    "title": "30 min",
+    "tagline": "Structured intervals with a proper warm-up."
+  },
+  "plan": {
+    "kind": "intervals",
+    "warmup": {
+      "seconds": 300,
+      "level": 8,
+      "cadence": 80
+    },
+    "sets": [
+      {
+        "rounds": 1,
+        "work_seconds": 30,
+        "work_level": 24,
+        "work_cadence": 98,
+        "rest_seconds": 180,
+        "rest_level": 6,
+        "rest_cadence": 72
+      },
+      {
+        "rounds": 2,
+        "work_seconds": 30,
+        "work_level": 24,
+        "work_cadence": 98,
+        "rest_seconds": 150,
+        "rest_level": 6,
+        "rest_cadence": 72
+      },
+      {
+        "rounds": 2,
+        "work_seconds": 30,
+        "work_level": 24,
+        "work_cadence": 98,
+        "rest_seconds": 120,
+        "rest_level": 6,
+        "rest_cadence": 72
+      },
+      {
+        "rounds": 2,
+        "work_seconds": 30,
+        "work_level": 24,
+        "work_cadence": 98,
+        "rest_seconds": 90,
+        "rest_level": 6,
+        "rest_cadence": 72
+      },
+      {
+        "rounds": 1,
+        "work_seconds": 30,
+        "work_level": 24,
+        "work_cadence": 98,
+        "rest_seconds": 0,
+        "rest_level": 6,
+        "rest_cadence": 72
+      }
+    ],
+    "cooldown": {
+      "seconds": 360,
+      "level": 6,
+      "cadence": 70
+    },
+    "video": {
+      "video_id": "QUoToFsMNig",
+      "start_seconds": 12
+    }
+  }
+}

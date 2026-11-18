@@ -143,7 +143,7 @@ test.describe('Ride dashboard overlays and errors (L2-058)', () => {
     await api.waitForCall('POST', '/api/bike/reconnect');
   });
 
-  test('a bike that shut off ends the ride with Set up a new ride', async ({
+  test('a bike that shut off ends the ride with Ride another class and Build your own ride', async ({
     page,
     api,
     events,
@@ -159,7 +159,8 @@ test.describe('Ride dashboard overlays and errors (L2-058)', () => {
     await expect(ride.overlayText).toHaveText(
       'Echelon EX-5s was off for more than 90 seconds, so Wattzup ended the workout at 9:42. Your numbers are kept below.',
     );
-    await expect(ride.link(ride.overlay, 'Set up a new ride')).toHaveAttribute('href', '/setup');
+    await expect(ride.link(ride.overlay, 'Ride another class')).toHaveAttribute('href', '/classes');
+    await expect(ride.link(ride.overlay, 'Build your own ride')).toHaveAttribute('href', '/setup');
   });
 
   test('a failed GET /api/status reads Couldn’t load your ride and Try again reloads', async ({

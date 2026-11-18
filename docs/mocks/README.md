@@ -70,7 +70,7 @@ Every mock uses this cast.
   - Covers are YouTube thumbnails (ADR 0014): the GCN card shows `i.ytimg.com/vi/QUoToFsMNig/mqdefault.jpg`;
     the five classes without a link show the poster. The frames' generated images stay in
     `assets/classes/` for the design-system examples only. The edited plan raises work to 26 and
-    recover to 8 (~177 W). The ride started from the library is `ride/class-workout`: 11:42,
+    recover to 8 (~169 W, the estimate of ADR 0003). The ride started from the library is `ride/class-workout`: 11:42,
     work round 3 of 8, 409 W against 418 W, 98 rpm aim, at the library's levels.
 - **Network-exposed server:** `192.168.1.20:8787`, with its API key set in
   `Wattzup:Security:ApiKey`.
@@ -195,6 +195,9 @@ specs, the detailed design or the mock.
     - **Invalid link:** Start ride stays enabled and rides without a video, as on setup (L2-029).
     - **The word:** a library entry is a *class*: `Ride a class`, `All classes`, `Reset to class`,
       routes `/classes` and `/classes/:id`. “Video” is only the YouTube video itself.
+
+    Built on 2026-11-18 (`feat/class-library`): the catalogue file and its endpoints, the library at
+    `/classes`, the class page at `/classes/:id`, and the bike landing on the library.
 
 ## Re-checking and re-screenshotting
 

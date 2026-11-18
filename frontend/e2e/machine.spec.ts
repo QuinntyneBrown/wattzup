@@ -1,4 +1,6 @@
 // The machine page at /machine: pick the bike or the Stride, which connects at once (L2-073).
+import classes from './fixtures/recorded/classes.json';
+import machineBike from './fixtures/recorded/machine-bike.json';
 import machineTreadmill from './fixtures/recorded/machine-treadmill.json';
 import workoutActive from './fixtures/recorded/problem-machine-workout-active.json';
 import { expect, test } from './fixtures/wz-test';
@@ -130,7 +132,22 @@ test.describe('Machine page (L2-073)', () => {
     await expect(machine.treadmill.radio).toBeEnabled();
   });
 
-  test('connects on pick, disables both cards, and opens setup once connected', async ({
+  test('picking the connected bike opens the class library (L2-073 AC6, L2-079)', async ({
+    page,
+    api,
+    events,
+  }) => {
+    const machine = new MachinePage(page, api, events);
+    api.on('POST', '/api/machine', { json: machineBike });
+    api.on('GET', '/api/classes', { json: classes });
+    await machine.open();
+    await machine.bike.root.click();
+    const [call] = await api.waitForCall('POST', '/api/machine');
+    expect(call?.body).toEqual({ machine: 'bike' });
+    await expect(page).toHaveURL(/\/classes$/);
+  });
+
+  test('connects on pick, disables both cards, and opens setup once the treadmill is connected', async ({
     page,
     api,
     events,
