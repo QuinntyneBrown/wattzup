@@ -23,24 +23,6 @@
       <canvas class="trace__canvas" #canvas aria-hidden="true"></canvas>
       <span class="trace__max">{{ s.maxLabel }}</span>
     </div>
-    @if (lane(); as l) {
-      <div class="trace__lane">
-        <svg
-          [attr.viewBox]="'0 0 ' + l.total + ' 10'"
-          preserveAspectRatio="none"
-          role="img"
-          aria-label="Incline profile: the plan dashed, the deck's actual incline filled"
-        >
-          <polyline class="incline-plan" [attr.points]="l.plan" />
-          @if (l.line) {
-            <polygon class="incline-area" [attr.points]="l.area" />
-            <polyline class="incline-line" [attr.points]="l.line" />
-          }
-          <line class="playhead" [attr.x1]="l.playhead" [attr.x2]="l.playhead" y1="0" y2="10" />
-        </svg>
-        <span class="trace__lane-max">10%</span>
-      </div>
-    }
     <div class="trace__axis" aria-hidden="true">
       @for (tick of s.ticks; track tick.label) {
         <span [style.inset-inline-start.%]="tick.percent">{{ tick.label }}</span>

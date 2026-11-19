@@ -1,7 +1,7 @@
 import { metricItems } from './metric-items';
 import { testState } from './test-state';
 
-describe('metricItems (L2-022, L2-071 AC7)', () => {
+describe('metricItems (L2-022)', () => {
   it('is null while there is no state', () => {
     expect(metricItems(null)).toBeNull();
   });
@@ -12,16 +12,6 @@ describe('metricItems (L2-022, L2-071 AC7)', () => {
       'Avg power',
       'Speed',
       'Distance',
-      'Energy',
-    ]);
-  });
-
-  it('lists the treadmill metrics in order', () => {
-    expect(metricItems(testState({ machine: 'treadmill' }))?.map((m) => m.term)).toEqual([
-      'Heart rate',
-      'Avg pace',
-      'Distance',
-      'Climbed',
       'Energy',
     ]);
   });

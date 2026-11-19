@@ -13,7 +13,6 @@ import { Location } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { SESSION_API, type ProgressReport, type SessionDetail } from '@wattzup/api';
 import { DipList, Icon, SessionTraces, StatStrip, WeekStrip } from '@wattzup/components';
-import { bikeOnly } from '../../core/machine-guards';
 import {
   calendarOf,
   dateLine,
@@ -72,7 +71,6 @@ export class SessionPage {
   });
 
   constructor() {
-    bikeOnly();
     if (this.justFinished) {
       // The browser keeps history.state across a reload; drop the flag from this entry.
       afterNextRender(() =>

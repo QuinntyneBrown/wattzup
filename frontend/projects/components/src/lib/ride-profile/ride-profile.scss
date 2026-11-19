@@ -52,32 +52,6 @@
   fill: var(--color-series-easy);
   opacity: 0.5;
 }
-.profile-head {
-  margin-top: var(--space-6);
-  display: flex;
-  justify-content: space-between;
-  font: var(--text-caption);
-  color: var(--color-fg-subtle);
-}
-.profile-head + .profile {
-  margin-top: var(--space-1);
-  height: 6rem;
-}
-.profile-head + .profile--incline {
-  height: 3rem;
-  margin-top: var(--space-1);
-  background: var(--color-bg-subtle);
-}
-.profile .incline-area {
-  fill: var(--color-series-actual);
-  opacity: 0.22;
-}
-.profile .incline-line {
-  fill: none;
-  stroke: var(--color-series-actual);
-  stroke-width: 1.5;
-  vector-effect: non-scaling-stroke;
-}
 .profile-axis {
   margin-top: var(--space-2);
   display: flex;

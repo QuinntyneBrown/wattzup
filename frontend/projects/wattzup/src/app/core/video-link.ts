@@ -2,7 +2,7 @@
 // YouTubeLink in Wattzup.Core: the same forms are accepted, every other link is refused, and only the id is used.
 import type { RideVideoLink } from '@wattzup/api';
 
-/** The video draft, one for every mode and both machines, kept with the plan drafts. */
+/** The video draft, one for every mode, kept with the plan drafts. */
 export interface VideoDraft {
   on: boolean;
   url: string;

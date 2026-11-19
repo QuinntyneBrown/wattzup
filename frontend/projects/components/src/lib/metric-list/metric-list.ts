@@ -8,8 +8,7 @@ export interface MetricItem {
   heart: boolean;
 }
 
-/** The secondary ride metrics; skeletons while there is no state yet (L2-022, L2-071
- * criterion 7). */
+/** The secondary ride metrics; skeletons while there is no state yet (L2-022). */
 @Component({
   selector: 'wz-metric-list',
   templateUrl: './metric-list.html',
@@ -19,7 +18,6 @@ export interface MetricItem {
 export class MetricList {
   /** Null while loading. */
   readonly metrics = input<readonly MetricItem[] | null>(null);
-  readonly treadmill = input(false);
   readonly dimmed = input(false);
 
   protected readonly terms = ['Heart rate', 'Avg power', 'Speed', 'Distance', 'Energy'];

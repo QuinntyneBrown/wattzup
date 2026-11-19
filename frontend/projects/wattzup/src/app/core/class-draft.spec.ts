@@ -35,8 +35,6 @@ const FLAT: WorkoutPlan = {
   level: 12,
   minutes: 60,
   cadence: 85,
-  speed: null,
-  incline: null,
   video: null,
 };
 
@@ -49,10 +47,6 @@ const HIIT: WorkoutPlan = {
   rest_level: 6,
   warmup: true,
   cooldown: false,
-  work_speed: null,
-  rest_speed: null,
-  work_incline: null,
-  rest_incline: null,
   video: null,
 };
 

@@ -2,8 +2,6 @@
   class="readout"
   [class.readout--power]="kind() === 'power'"
   [class.readout--cadence]="kind() === 'cadence'"
-  [class.readout--speed]="kind() === 'speed'"
-  [class.readout--incline]="kind() === 'incline'"
   [attr.role]="estimate() ? 'group' : null"
   [attr.aria-label]="estimate() ? label() : null"
   [attr.aria-describedby]="estimate() ? descriptionId : null"

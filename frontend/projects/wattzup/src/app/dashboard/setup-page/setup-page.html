@@ -10,11 +10,6 @@
     </a>
     <span class="app-bar__divider" aria-hidden="true"></span>
     <wz-status-line [status]="status()" [reducedMotion]="reducedMotion()" />
-    @if (canSwitch()) {
-      <a class="btn btn--quiet btn--sm" href="/machine" (click)="switchMachine($event)"
-        ><wz-icon name="switch" size="sm" />{{ switchLabel() }}</a
-      >
-    }
     <a class="btn btn--quiet btn--sm app-bar__close" routerLink="/"
       ><wz-icon name="close" size="sm" />Close</a
     >
@@ -22,8 +17,8 @@
   <div class="setup-layout">
     <main id="main" class="setup-main" tabindex="-1" [attr.aria-busy]="loading() ? 'true' : null">
       <div class="setup-main__inner">
-        <h1>{{ treadmill() ? 'Set up your run' : 'Set up your ride' }}</h1>
-        <p class="lead">{{ lead() }}</p>
+        <h1>Set up your ride</h1>
+        <p class="lead">Wattzup drives the bike's resistance for you. Pick how.</p>
         @if (loading()) {
           <div class="setup-skeleton" aria-hidden="true">
             <span class="skeleton skeleton--rect skeleton--cards"></span>
@@ -38,244 +33,118 @@
           @if (links().length) {
             <wz-form-summary [links]="links()" />
           }
-          @if (treadmill()) {
-            @let t = tdraft();
-            @let terr = terrorFor();
-            <wz-radio-group
-              [mode]="t.mode"
-              machine="treadmill"
-              (modeChange)="setMode($event)"
+          <wz-radio-group [mode]="d.mode" (modeChange)="setMode($event)" [disabled]="busy()" />
+          @if (d.mode === 'hiit') {
+            <wz-presets [items]="bikeChips()" [disabled]="busy()" (choose)="preset($event)" />
+            <div class="field-grid">
+              <wz-number-stepper
+                [fieldId]="ids.rounds"
+                label="Rounds"
+                [value]="d.rounds"
+                [error]="err.rounds ?? null"
+                [readonly]="busy()"
+                (valueChange)="edit({ rounds: $event })"
+                (step)="step('rounds', $event)"
+                (submitted)="focusSummary()"
+              />
+              <wz-number-stepper
+                [fieldId]="ids.work"
+                label="Work"
+                [value]="d.work"
+                [error]="err.work ?? null"
+                [readonly]="busy()"
+                (valueChange)="edit({ work: $event })"
+                (step)="step('work', $event)"
+                (submitted)="focusSummary()"
+              />
+              <wz-number-stepper
+                [fieldId]="ids.rest"
+                label="Recover"
+                [value]="d.rest"
+                [error]="err.rest ?? null"
+                [readonly]="busy()"
+                (valueChange)="edit({ rest: $event })"
+                (step)="step('rest', $event)"
+                (submitted)="focusSummary()"
+              />
+            </div>
+            <wz-slider
+              [fieldId]="ids.workLevel"
+              label="Work resistance"
+              [level]="d.workLevel"
+              (levelChange)="edit({ workLevel: $event })"
               [disabled]="busy()"
             />
-            <wz-presets [items]="treadmillChips()" [disabled]="busy()" (choose)="preset($event)" />
-            @if (t.mode === 'hiit') {
-              <div class="field-grid">
-                <wz-number-stepper
-                  [fieldId]="tids.rounds"
-                  label="Rounds"
-                  [value]="t.rounds"
-                  [error]="terr.rounds ?? null"
-                  [readonly]="busy()"
-                  (valueChange)="tedit({ rounds: $event })"
-                  (step)="tstep('rounds', $event)"
-                  (submitted)="focusSummary()"
-                />
-                <wz-number-stepper
-                  [fieldId]="tids.work"
-                  label="Work"
-                  [value]="t.work"
-                  [error]="terr.work ?? null"
-                  [readonly]="busy()"
-                  (valueChange)="tedit({ work: $event })"
-                  (step)="tstep('work', $event)"
-                  (submitted)="focusSummary()"
-                />
-                <wz-number-stepper
-                  [fieldId]="tids.rest"
-                  label="Recover"
-                  [value]="t.rest"
-                  [error]="terr.rest ?? null"
-                  [readonly]="busy()"
-                  (valueChange)="tedit({ rest: $event })"
-                  (step)="tstep('rest', $event)"
-                  (submitted)="focusSummary()"
-                />
-              </div>
-              <div class="effort-rows">
-                <wz-effort-row
-                  rowId="work"
-                  title="Work"
-                  tone="work"
-                  [speed]="t.workSpeed"
-                  [incline]="t.workIncline"
-                  [view]="effortViews().work"
-                  [error]="terr.workSpeed ?? terr.workIncline ?? null"
-                  [disabled]="busy()"
-                  (speedChange)="tedit({ workSpeed: $event })"
-                  (step)="tstep('workSpeed', $event)"
-                  (inclineChange)="tedit({ workIncline: '' + $event })"
-                  (submitted)="focusSummary()"
-                />
-                <wz-effort-row
-                  rowId="rest"
-                  title="Recover"
-                  tone="rest"
-                  [speed]="t.restSpeed"
-                  [incline]="t.restIncline"
-                  [view]="effortViews().rest"
-                  [error]="terr.restSpeed ?? terr.restIncline ?? null"
-                  [disabled]="busy()"
-                  (speedChange)="tedit({ restSpeed: $event })"
-                  (step)="tstep('restSpeed', $event)"
-                  (inclineChange)="tedit({ restIncline: '' + $event })"
-                  (submitted)="focusSummary()"
-                />
-              </div>
-              <wz-switch
-                machine="treadmill"
-                [warmup]="t.warmup"
-                (warmupChange)="tedit({ warmup: $event })"
-                [cooldown]="t.cooldown"
-                (cooldownChange)="tedit({ cooldown: $event })"
-                [disabled]="busy()"
-              />
-            } @else {
-              <div class="effort-rows">
-                <wz-effort-row
-                  rowId="hold"
-                  title="Hold"
-                  tone="steady"
-                  [large]="true"
-                  [speed]="t.speed"
-                  [incline]="t.incline"
-                  [view]="effortViews().hold"
-                  [error]="terr.speed ?? terr.incline ?? null"
-                  [disabled]="busy()"
-                  (speedChange)="tedit({ speed: $event })"
-                  (step)="tstep('speed', $event)"
-                  (inclineChange)="tedit({ incline: '' + $event })"
-                  (submitted)="focusSummary()"
-                />
-              </div>
-              <div class="setup-narrow">
-                <wz-number-stepper
-                  [fieldId]="tids.minutes"
-                  label="Duration (min)"
-                  [value]="t.minutes"
-                  [error]="terr.minutes ?? null"
-                  [readonly]="busy()"
-                  (valueChange)="tedit({ minutes: $event })"
-                  (step)="tstep('minutes', $event)"
-                  (submitted)="focusSummary()"
-                />
-              </div>
-              <p class="text-muted text-sm setup-hint">
-                You can still change speed and incline mid-run from the dashboard.
-              </p>
-            }
+            <wz-slider
+              [fieldId]="ids.restLevel"
+              label="Recover resistance"
+              tone="rest"
+              [level]="d.restLevel"
+              (levelChange)="edit({ restLevel: $event })"
+              [disabled]="busy()"
+            />
+            <wz-switch
+              [warmup]="d.warmup"
+              (warmupChange)="edit({ warmup: $event })"
+              [cooldown]="d.cooldown"
+              (cooldownChange)="edit({ cooldown: $event })"
+              [disabled]="busy()"
+            />
+          } @else if (d.mode === 'intervals') {
+            <wz-presets [items]="intervalChips()" [disabled]="busy()" (choose)="preset($event)" />
+            <wz-set-list
+              [view]="setList()"
+              [disabled]="busy()"
+              [error]="ierrors()[0]?.message ?? null"
+              (editSet)="editSet($event)"
+              (editStretch)="editStretch($event)"
+              (switchStretch)="toggleStretch($event.kind, $event.on)"
+              (move)="moveSet($event.index, $event.dir)"
+              (remove)="removeSet($event)"
+              (add)="addSet()"
+            />
           } @else {
-            <wz-radio-group [mode]="d.mode" (modeChange)="setMode($event)" [disabled]="busy()" />
-            @if (d.mode === 'hiit') {
-              <wz-presets [items]="bikeChips()" [disabled]="busy()" (choose)="preset($event)" />
-              <div class="field-grid">
-                <wz-number-stepper
-                  [fieldId]="ids.rounds"
-                  label="Rounds"
-                  [value]="d.rounds"
-                  [error]="err.rounds ?? null"
-                  [readonly]="busy()"
-                  (valueChange)="edit({ rounds: $event })"
-                  (step)="step('rounds', $event)"
-                  (submitted)="focusSummary()"
-                />
-                <wz-number-stepper
-                  [fieldId]="ids.work"
-                  label="Work"
-                  [value]="d.work"
-                  [error]="err.work ?? null"
-                  [readonly]="busy()"
-                  (valueChange)="edit({ work: $event })"
-                  (step)="step('work', $event)"
-                  (submitted)="focusSummary()"
-                />
-                <wz-number-stepper
-                  [fieldId]="ids.rest"
-                  label="Recover"
-                  [value]="d.rest"
-                  [error]="err.rest ?? null"
-                  [readonly]="busy()"
-                  (valueChange)="edit({ rest: $event })"
-                  (step)="step('rest', $event)"
-                  (submitted)="focusSummary()"
-                />
-              </div>
+            <div class="setup-flat">
               <wz-slider
-                [fieldId]="ids.workLevel"
-                label="Work resistance"
-                [level]="d.workLevel"
-                (levelChange)="edit({ workLevel: $event })"
+                [fieldId]="ids.flatLevel"
+                label="Resistance level"
+                [large]="true"
+                [level]="d.flatLevel"
+                (levelChange)="edit({ flatLevel: $event })"
                 [disabled]="busy()"
               />
-              <wz-slider
-                [fieldId]="ids.restLevel"
-                label="Recover resistance"
-                tone="rest"
-                [level]="d.restLevel"
-                (levelChange)="edit({ restLevel: $event })"
-                [disabled]="busy()"
+            </div>
+            <div class="field-grid field-grid--2">
+              <wz-number-stepper
+                [fieldId]="ids.minutes"
+                label="Duration"
+                [value]="d.minutes"
+                [error]="err.minutes ?? null"
+                [readonly]="busy()"
+                (valueChange)="edit({ minutes: $event })"
+                (step)="step('minutes', $event)"
+                (submitted)="focusSummary()"
               />
-              <wz-switch
-                [warmup]="d.warmup"
-                (warmupChange)="edit({ warmup: $event })"
-                [cooldown]="d.cooldown"
-                (cooldownChange)="edit({ cooldown: $event })"
-                [disabled]="busy()"
+              <wz-number-stepper
+                [fieldId]="ids.cadence"
+                label="Cadence goal"
+                [value]="d.cadence"
+                [error]="err.cadence ?? null"
+                [readonly]="busy()"
+                (valueChange)="edit({ cadence: $event })"
+                (step)="step('cadence', $event)"
+                (submitted)="focusSummary()"
               />
-            } @else if (d.mode === 'intervals') {
-              <wz-presets [items]="intervalChips()" [disabled]="busy()" (choose)="preset($event)" />
-              <wz-set-list
-                [view]="setList()"
-                [disabled]="busy()"
-                [error]="ierrors()[0]?.message ?? null"
-                (editSet)="editSet($event)"
-                (editStretch)="editStretch($event)"
-                (switchStretch)="toggleStretch($event.kind, $event.on)"
-                (move)="moveSet($event.index, $event.dir)"
-                (remove)="removeSet($event)"
-                (add)="addSet()"
-              />
-            } @else {
-              <div class="setup-flat">
-                <wz-slider
-                  [fieldId]="ids.flatLevel"
-                  label="Resistance level"
-                  [large]="true"
-                  [level]="d.flatLevel"
-                  (levelChange)="edit({ flatLevel: $event })"
-                  [disabled]="busy()"
-                />
-              </div>
-              <div class="field-grid field-grid--2">
-                <wz-number-stepper
-                  [fieldId]="ids.minutes"
-                  label="Duration"
-                  [value]="d.minutes"
-                  [error]="err.minutes ?? null"
-                  [readonly]="busy()"
-                  (valueChange)="edit({ minutes: $event })"
-                  (step)="step('minutes', $event)"
-                  (submitted)="focusSummary()"
-                />
-                <wz-number-stepper
-                  [fieldId]="ids.cadence"
-                  label="Cadence goal"
-                  [value]="d.cadence"
-                  [error]="err.cadence ?? null"
-                  [readonly]="busy()"
-                  (valueChange)="edit({ cadence: $event })"
-                  (step)="step('cadence', $event)"
-                  (submitted)="focusSummary()"
-                />
-              </div>
-              <p class="text-muted text-sm setup-hint">
-                You can still nudge the level mid-ride from the dashboard.
-              </p>
-            }
+            </div>
+            <p class="text-muted text-sm setup-hint">
+              You can still nudge the level mid-ride from the dashboard.
+            </p>
           }
           <wz-video-link [(draft)]="vdraft" [disabled]="busy()" />
         }
       </div>
     </main>
-    <wz-ride-profile
-      [preview]="previewWithVideo()"
-      [valid]="!links().length"
-      [machineNoun]="treadmill() ? 'run' : 'ride'"
-    >
-      @if (treadmill()) {
-        <p class="setup-aside__safety">
-          Clip the safety key to your clothes. The belt starts 3 seconds after you tap Start.
-        </p>
-      }
+    <wz-ride-profile [preview]="previewWithVideo()" [valid]="!links().length">
       @if (startError(); as e) {
         <wz-alert
           class="setup-error"
@@ -306,15 +175,7 @@
         [attr.aria-describedby]="links().length ? 'start-hint' : null"
         (click)="start()"
       >
-        {{
-          busy()
-            ? 'Starting…'
-            : startError()
-              ? 'Try again'
-              : treadmill()
-                ? 'Start run'
-                : 'Start ride'
-        }}
+        {{ busy() ? 'Starting…' : startError() ? 'Try again' : 'Start ride' }}
       </button>
       @if (links().length) {
         <p id="start-hint" class="text-muted text-sm setup-start-hint">

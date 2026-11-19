@@ -17,9 +17,7 @@ import {
   HttpClassApi,
   HttpSessionApi,
   SESSION_API,
-  HttpMachineApi,
   HttpWorkoutApi,
-  MACHINE_API,
   UNAUTHORIZED_HANDLER,
   WORKOUT_API,
 } from '@wattzup/api';
@@ -39,7 +37,6 @@ export const appConfig: ApplicationConfig = {
     { provide: BIKE_API, useClass: HttpBikeApi },
     { provide: WORKOUT_API, useClass: HttpWorkoutApi },
     { provide: YOUTUBE_PLAYER, useClass: IframeYouTubePlayer },
-    { provide: MACHINE_API, useClass: HttpMachineApi },
     { provide: CLASS_API, useClass: HttpClassApi },
     { provide: SESSION_API, useClass: HttpSessionApi },
   ],

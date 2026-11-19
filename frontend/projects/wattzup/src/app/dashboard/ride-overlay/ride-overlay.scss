@@ -30,17 +30,6 @@
 .overlay-panel__icon--ok {
   color: var(--color-fg-accent);
 }
-.overlay-panel__icon--warn {
-  color: var(--color-fg-warn);
-}
-.overlay-panel__count {
-  font-size: var(--font-size-numeral-hero);
-  line-height: var(--line-height-none);
-  color: var(--color-fg-accent);
-}
-.overlay-panel--belt .overlay-panel__card h2 {
-  font: var(--text-h3);
-}
 .overlay-panel__card h2 {
   font: var(--text-h4);
 }

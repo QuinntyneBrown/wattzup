@@ -1,5 +1,5 @@
-// What the level picker's keys and taps choose (L2-020, L2-041, L2-072 AC5): a pure helper for
-// the slider, over the bike's levels 1–32 or the Stride's incline 0–10 %.
+// What the level picker's keys and taps choose (L2-020, L2-041): a pure helper for
+// the slider, over the bike's levels 1–32.
 export const MIN_LEVEL = 1;
 export const MAX_LEVEL = 32;
 
@@ -13,8 +13,6 @@ export interface PickerRange {
 
 /** Raise and Lower start at 12 when nothing is set yet; Page moves by 4. */
 export const LEVEL_RANGE: PickerRange = { min: MIN_LEVEL, max: MAX_LEVEL, page: 4, start: 12 };
-/** The Stride's incline, 0 to 10 % (L2-065). */
-export const INCLINE_RANGE: PickerRange = { min: 0, max: 10, page: 2, start: 0 };
 
 const clamp = (n: number, r: PickerRange): number => Math.min(r.max, Math.max(r.min, n));
 

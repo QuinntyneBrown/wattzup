@@ -1,13 +1,12 @@
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { DialogRef } from '@angular/cdk/dialog';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import type { EndRideData } from '../../core/dialog-launcher';
 import { formatDuration } from '../../core/format-duration';
 import { LiveStateService } from '../../core/live-state.service';
 import { WORKOUT_API } from '@wattzup/api';
 import { Alert, Dialog } from '@wattzup/components';
 
-/** End this ride? (L2-051), or Stop the belt and end this run? (L2-071 criterion 15) */
+/** End this ride? (L2-051) */
 @Component({
   selector: 'wz-end-ride-dialog',
   imports: [Alert, Dialog],
@@ -20,10 +19,7 @@ export class EndRideDialog {
   private readonly live = inject(LiveStateService);
   private readonly workouts = inject(WORKOUT_API);
   private readonly router = inject(Router);
-  private readonly data = inject<EndRideData | null>(DIALOG_DATA, { optional: true });
 
-  /** The run's words on the treadmill (L2-071 criterion 15). */
-  protected readonly run = this.live.state()?.machine === 'treadmill';
   protected readonly busy = signal(false);
   protected readonly failed = signal(false);
 
@@ -33,8 +29,6 @@ export class EndRideDialog {
     const w = s?.workout;
     const elapsed = formatDuration(w?.elapsed_seconds ?? 0);
     const total = formatDuration(w?.total_seconds ?? 0);
-    if (s?.machine === 'treadmill')
-      return `You're ${elapsed} into ${total}. Wattzup stops the belt; your trace and totals stay on the dashboard until you start a new run.`;
     const level = s?.resistance ?? s?.target_resistance ?? '--';
     return `You're ${elapsed} into ${total}. Wattzup stops changing the resistance and leaves the bike at level ${level}.`;
   });
@@ -46,12 +40,7 @@ export class EndRideDialog {
     try {
       const sessionId = await this.workouts.stop();
       this.ref.close();
-      if (this.data?.next) {
-        await this.router.navigateByUrl(this.data.next);
-      } else if (this.run) {
-        // The treadmill lands on setup (L2-051 criterion 2, L2-084 AC4).
-        await this.router.navigateByUrl('/setup');
-      } else if (sessionId) {
+      if (sessionId) {
         // A saved ride opens its summary as just finished (L2-084 AC1).
         await this.router.navigate(['/sessions', sessionId], { state: { justFinished: true } });
       } else {

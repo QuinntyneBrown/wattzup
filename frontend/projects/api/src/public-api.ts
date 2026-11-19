@@ -7,7 +7,6 @@ export * from './lib/api-key.store';
 export * from './lib/bike-api';
 export * from './lib/class-api';
 export * from './lib/http-api';
-export * from './lib/machine-api';
 export * from './lib/safe-storage';
 export * from './lib/session-api';
 export * from './lib/stream-connection';

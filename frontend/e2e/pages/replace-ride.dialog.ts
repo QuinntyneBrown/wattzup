@@ -11,22 +11,12 @@ export class ReplaceRideDialog {
   readonly tryAgainButton: Locator;
   readonly closeButton: Locator;
 
-  constructor(
-    readonly page: Page,
-    machine: 'bike' | 'treadmill' = 'bike',
-  ) {
-    const run = machine === 'treadmill';
-    this.dialog = page.getByRole('dialog', {
-      name: run ? 'Replace the run in progress?' : 'Replace the ride in progress?',
-    });
+  constructor(readonly page: Page) {
+    this.dialog = page.getByRole('dialog', { name: 'Replace the ride in progress?' });
     this.description = this.dialog.locator('.dialog__desc');
     this.error = this.dialog.locator('.alert');
-    this.keepButton = this.dialog.getByRole('button', {
-      name: run ? 'Keep current run' : 'Keep current ride',
-    });
-    this.replaceButton = this.dialog.getByRole('button', {
-      name: run ? 'Replace run' : 'Replace ride',
-    });
+    this.keepButton = this.dialog.getByRole('button', { name: 'Keep current ride' });
+    this.replaceButton = this.dialog.getByRole('button', { name: 'Replace ride' });
     this.startingButton = this.dialog.getByRole('button', { name: 'Starting…' });
     this.tryAgainButton = this.dialog.getByRole('button', { name: 'Try again' });
     this.closeButton = this.dialog.getByRole('button', { name: 'Close' });

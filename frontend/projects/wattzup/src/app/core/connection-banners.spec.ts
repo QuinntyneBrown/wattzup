@@ -67,33 +67,3 @@ describe('isReconnect', () => {
     expect(isReconnect(testState(), testState())).toBe(false);
   });
 });
-
-describe('banners on the treadmill (L2-071 AC10, AC11)', () => {
-  it('reads Lost the Stride without Dismiss when the treadmill is lost mid-ride (AC17)', () => {
-    const [b] = banners({
-      ...base,
-      state: testState({
-        machine: 'treadmill',
-        ble: 'disconnected',
-        workout: testWorkout({ status: 'paused: bike disconnected' }),
-      }),
-    });
-    expect(b).toMatchObject({
-      id: 'treadmill-lost',
-      tone: 'danger',
-      title: 'Lost the Stride',
-      dismissable: false,
-    });
-    expect(b.text).toBe(
-      'Step onto the side rails. If the Stride stays off for 90 seconds, Wattzup ends the run.',
-    );
-  });
-
-  it('words the simulated treadmill', () => {
-    const [b] = banners({ ...base, state: testState({ machine: 'treadmill', simulated: true }) });
-    expect(b.title).toBe('Simulated treadmill');
-    expect(b.text).toBe(
-      'No hardware connected — Wattzup started with --simulate and is generating speed and incline.',
-    );
-  });
-});

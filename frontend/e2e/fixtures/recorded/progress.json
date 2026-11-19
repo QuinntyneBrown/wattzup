@@ -1,11 +1,11 @@
 {
-  "today": "2026-11-18",
+  "today": "2026-11-19",
   "streak": {
     "current": 1,
     "best": 1,
     "rode_today": true
   },
-  "ride_days": ["2026-11-18"],
+  "ride_days": ["2026-11-19"],
   "week": {
     "rides": 1,
     "goal": 4

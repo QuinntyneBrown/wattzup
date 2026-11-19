@@ -11,8 +11,7 @@ import { RouterLink } from '@angular/router';
 import type { RideOverlayText } from '../../core/ride-overlay-text';
 import { Icon } from '@wattzup/components';
 
-/** The veil over the dashboard when the machine can't be used, and the belt overlays (L2-058,
- * L2-071). */
+/** The veil over the dashboard when the bike can't be used (L2-058). */
 @Component({
   selector: 'wz-ride-overlay',
   imports: [Icon, RouterLink],
@@ -25,7 +24,6 @@ export class RideOverlay {
   readonly reconnecting = input(false);
   readonly reconnect = output();
   readonly diagnostics = output();
-  readonly resumeRide = output();
 
   /** The summary opens as just finished: `Done` and `Ride saved` (L2-085 AC2). */
   protected readonly justFinished = { justFinished: true };

@@ -29,8 +29,6 @@ export type IconName =
   | 'key'
   | 'flag'
   | 'bike'
-  | 'treadmill'
-  | 'switch'
   | 'target'
   | 'edit'
   | 'chevron-up'

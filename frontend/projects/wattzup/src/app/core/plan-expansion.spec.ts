@@ -1,10 +1,4 @@
-import {
-  estimateWatts,
-  expandPlan,
-  expectedDistanceKm,
-  planSummary,
-  totalSeconds,
-} from './plan-expansion';
+import { estimateWatts, expandPlan, planSummary, totalSeconds } from './plan-expansion';
 import type { HiitPlan } from '@wattzup/api';
 import { testIntervalsPlan } from './test-state';
 
@@ -19,10 +13,6 @@ const defaultPlan: HiitPlan = {
   rest_level: 6,
   warmup: true,
   cooldown: true,
-  work_speed: null,
-  rest_speed: null,
-  work_incline: null,
-  rest_incline: null,
 };
 
 describe('expandPlan (L2-045)', () => {
@@ -34,8 +24,6 @@ describe('expandPlan (L2-045)', () => {
         level: 12,
         minutes: 30,
         cadence: 85,
-        speed: null,
-        incline: null,
       }),
     ).toEqual([
       {
@@ -45,8 +33,6 @@ describe('expandPlan (L2-045)', () => {
         level: 12,
         cadence: 85,
         round: null,
-        speed: null,
-        incline: null,
       },
     ]);
   });
@@ -59,8 +45,6 @@ describe('expandPlan (L2-045)', () => {
       level: 8,
       cadence: 80,
       round: null,
-      speed: null,
-      incline: null,
     });
   });
 
@@ -74,8 +58,6 @@ describe('expandPlan (L2-045)', () => {
         level: 18,
         cadence: 100,
         round: 1,
-        speed: null,
-        incline: null,
       },
       {
         kind: 'rest',
@@ -84,8 +66,6 @@ describe('expandPlan (L2-045)', () => {
         level: 6,
         cadence: 72,
         round: 1,
-        speed: null,
-        incline: null,
       },
       {
         kind: 'work',
@@ -94,8 +74,6 @@ describe('expandPlan (L2-045)', () => {
         level: 18,
         cadence: 100,
         round: 2,
-        speed: null,
-        incline: null,
       },
       {
         kind: 'rest',
@@ -104,8 +82,6 @@ describe('expandPlan (L2-045)', () => {
         level: 6,
         cadence: 72,
         round: 2,
-        speed: null,
-        incline: null,
       },
     ]);
   });
@@ -120,8 +96,6 @@ describe('expandPlan (L2-045)', () => {
       level: 6,
       cadence: 70,
       round: null,
-      speed: null,
-      incline: null,
     });
   });
 
@@ -168,8 +142,6 @@ describe('planSummary (L2-060)', () => {
         level: 12,
         minutes: 30,
         cadence: 85,
-        speed: null,
-        incline: null,
       }),
     ).toBe('Flat · Level 12 · 30 min');
   });
@@ -187,79 +159,6 @@ describe('estimateWatts (L2-049)', () => {
   });
 });
 
-// The same rows as the backend's treadmill PlanExpanderTests (L2-068).
-describe('expandPlan for the treadmill (L2-068)', () => {
-  const treadmill = {
-    kind: 'hiit',
-    video: null,
-    rounds: 2,
-    work_seconds: 40,
-    rest_seconds: 20,
-    work_level: null,
-    rest_level: null,
-    warmup: true,
-    cooldown: true,
-    work_speed: 9,
-    rest_speed: 7,
-    work_incline: 2,
-    rest_incline: 1,
-  } as const;
-  const seg = (
-    kind: string,
-    start: number,
-    duration: number,
-    speed: number,
-    incline: number,
-    round: number | null,
-  ) => ({
-    kind,
-    start,
-    duration,
-    level: null,
-    cadence: null,
-    round,
-    speed,
-    incline,
-  });
-
-  it('warms up 1 km/h above rest speed at rest incline, cools down at rest speed and 0 % (AC1)', () => {
-    expect(expandPlan(treadmill)).toEqual([
-      seg('warmup', 0, 180, 8, 1, null),
-      seg('work', 180, 40, 9, 2, 1),
-      seg('rest', 220, 20, 7, 1, 1),
-      seg('work', 240, 40, 9, 2, 2),
-      seg('cooldown', 280, 120, 7, 0, null),
-    ]);
-  });
-
-  it('keeps the last rest without a cool-down', () => {
-    const segments = expandPlan({ ...treadmill, warmup: false, cooldown: false, rounds: 1 });
-    expect(segments).toEqual([seg('work', 0, 40, 9, 2, 1), seg('rest', 40, 20, 7, 1, 1)]);
-  });
-
-  it('caps the warm-up at 19.3 km/h (AC1)', () => {
-    expect(expandPlan({ ...treadmill, rest_speed: 18.8 })[0]).toEqual(
-      seg('warmup', 0, 180, 19.3, 1, null),
-    );
-  });
-
-  it('expands a flat plan into one steady segment at speed and incline (AC2)', () => {
-    const flat = {
-      kind: 'flat',
-      video: null,
-      level: null,
-      minutes: 30,
-      cadence: null,
-      speed: 7,
-      incline: 2,
-    } as const;
-    expect(expandPlan(flat)).toEqual([seg('steady', 0, 1800, 7, 2, null)]);
-    expect(planSummary(flat)).toBe('Steady · 7.0 km/h at 2% · 30 min');
-    expect(expectedDistanceKm(expandPlan(flat))).toBe(3.5);
-  });
-});
-
-// The same rows as the intervals cases of PlanExpanderTests and WorkoutSummaryTests (L2-045 AC7-9).
 describe('expandPlan for an intervals plan (L2-045)', () => {
   it('is the warm-up, every effort and recover, and the cool-down (AC7)', () => {
     const segments = expandPlan(testIntervalsPlan());
@@ -272,8 +171,6 @@ describe('expandPlan for an intervals plan (L2-045)', () => {
       level: 14,
       cadence: 80,
       round: null,
-      speed: null,
-      incline: null,
     });
     expect(segments[1]).toMatchObject({
       kind: 'work',

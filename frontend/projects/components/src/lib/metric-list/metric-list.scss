@@ -17,9 +17,6 @@
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
-.metrics--treadmill {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
 .metrics--dimmed {
   opacity: 0.45;
 }

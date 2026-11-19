@@ -4,15 +4,12 @@ import { roundCount } from './segment-labels';
 
 export interface SegmentChange {
   kind: SegmentKind;
-  level: number | null;
-  /** The treadmill segment's speed and incline; null on the bike. */
-  speed: number | null;
-  incline: number | null;
+  level: number;
   duration: number;
   round: number | null;
   rounds: number;
   last: boolean;
-  next: { kind: SegmentKind; level: number | null; speed: number | null } | null;
+  next: { kind: SegmentKind; level: number } | null;
 }
 
 export class SegmentChangeDetector {
@@ -32,13 +29,11 @@ export class SegmentChangeDetector {
     return {
       kind: segment.kind,
       level: segment.level,
-      speed: segment.speed,
-      incline: segment.incline,
       duration: segment.duration,
       round: segment.round,
       rounds: roundCount(workout.segments),
       last: !next,
-      next: next ? { kind: next.kind, level: next.level, speed: next.speed } : null,
+      next: next ? { kind: next.kind, level: next.level } : null,
     };
   }
 }

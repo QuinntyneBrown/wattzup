@@ -35,11 +35,6 @@ export const routes: Routes = [
       import('./dashboard/progress-page/progress-page').then((m) => m.ProgressPage),
   },
   {
-    path: 'machine',
-    title: 'Choose machine · Wattzup',
-    loadComponent: () => import('./dashboard/machine-page/machine-page').then((m) => m.MachinePage),
-  },
-  {
     path: 'unlock',
     title: 'Unlock · Wattzup',
     loadComponent: () => import('./dashboard/unlock-page/unlock-page').then((m) => m.UnlockPage),

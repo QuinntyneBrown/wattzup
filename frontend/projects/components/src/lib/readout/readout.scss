@@ -31,25 +31,20 @@
   font: var(--text-body-sm);
   color: var(--color-fg-muted);
 }
-.readout--power .numeral,
-.readout--speed .numeral {
+.readout--power .numeral {
   font-size: var(--font-size-numeral-hero);
 }
 @media (min-width: 40rem) {
-  .readout--power .numeral,
-  .readout--speed .numeral {
+  .readout--power .numeral {
     font-size: var(--font-size-numeral-hero-lg);
   }
 }
-.readout--power .readout__unit,
-.readout--speed .readout__unit {
+.readout--power .readout__unit {
   font-size: var(--font-size-3xl);
 }
-.readout--cadence .numeral,
-.readout--incline .numeral {
+.readout--cadence .numeral {
   font-size: var(--font-size-numeral-xl);
 }
-.readout--cadence .readout__unit,
-.readout--incline .readout__unit {
+.readout--cadence .readout__unit {
   font-size: var(--font-size-xl);
 }

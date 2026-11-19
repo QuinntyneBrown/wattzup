@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { INCLINE_RANGE, LEVEL_RANGE, levelAtFraction, levelForKey } from './level-picker-input';
+import { LEVEL_RANGE, levelAtFraction, levelForKey } from './level-picker-input';
 
 /** What a level picker shows: the lit bars, the pressed (set) level and the plan's level. */
 export interface ResistanceView {
@@ -10,20 +10,8 @@ export interface ResistanceView {
   planLevel: number | null;
 }
 
-/** What an incline picker lights: every bar up to the value, the value set (L2-072 AC5). */
-export function inclineView(incline: number | null): ResistanceView {
-  return {
-    valueText: '',
-    settingText: null,
-    litUpTo: incline ?? -1,
-    pressedLevel: incline,
-    planLevel: null,
-  };
-}
-
 /**
- * One bar per value as one slider: the bike's 32 levels (L2-019, L2-020) or, with `incline`, the
- * Stride's 11 incline bars from 0 to 10 % (L2-072 AC5). A single Tab stop operated by arrow, Page
+ * One bar per level as one slider: the bike's 32 levels (L2-019, L2-020). A single Tab stop operated by arrow, Page
  * and Home/End keys, and by tapping anywhere on the bars, so the whole track is one target well
  * over 44 × 44 px (L2-041, WCAG 2.2 target size).
  */
@@ -36,8 +24,6 @@ export function inclineView(incline: number | null): ResistanceView {
 export class LevelPicker {
   readonly view = input.required<ResistanceView>();
   readonly disabled = input(false);
-  /** The Stride's incline picker, 0 to 10 %. */
-  readonly incline = input(false);
   readonly fieldId = input<string | null>(null);
   /** The id of the visible label; without it the slider is named `Resistance level`. */
   readonly labelledBy = input<string | null>(null);
@@ -47,7 +33,7 @@ export class LevelPicker {
   readonly valueText = input<string | null>(null);
   readonly pick = output<number>();
 
-  protected readonly range = computed(() => (this.incline() ? INCLINE_RANGE : LEVEL_RANGE));
+  protected readonly range = computed(() => LEVEL_RANGE);
   protected readonly levels = computed(() => {
     const { min, max } = this.range();
     return Array.from({ length: max - min + 1 }, (_, i) => ({ level: min + i }));

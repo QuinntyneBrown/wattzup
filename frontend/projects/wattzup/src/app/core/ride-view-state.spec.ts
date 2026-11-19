@@ -28,7 +28,7 @@ describe('rideViewState (L2-058)', () => {
     expect(rideViewState(s, 'open', false).overlay).toBe('bike-shut-off');
   });
 
-  it('a plan ended and saved on the bike shows ride-complete; unsaved or on the treadmill, nothing (L2-084)', () => {
+  it('a plan ended and saved shows ride-complete; unsaved, nothing (L2-084)', () => {
     const ended = (change: Parameters<typeof testWorkout>[0]) =>
       testWorkout({ status: 'ended', ...change });
     expect(
@@ -36,13 +36,6 @@ describe('rideViewState (L2-058)', () => {
         .overlay,
     ).toBe('ride-complete');
     expect(rideViewState(testState({ workout: ended({}) }), 'open', false).overlay).toBeNull();
-    expect(
-      rideViewState(
-        testState({ machine: 'treadmill', workout: ended({ session_id: 'abc123abc123' }) }),
-        'open',
-        false,
-      ).overlay,
-    ).toBeNull();
   });
 
   it('5. a disconnected ride is bike-lost, dimmed, End enabled', () => {
@@ -98,63 +91,5 @@ describe('rideViewState (L2-058)', () => {
     expect(
       rideViewState(testState({ workout: testWorkout({ status }) }), 'open', false).pauseEnabled,
     ).toBe(enabled);
-  });
-});
-
-describe('rideViewState on the treadmill (L2-071)', () => {
-  const treadmill = (status: Parameters<typeof testWorkout>[0], change = {}) =>
-    testState({ machine: 'treadmill', workout: testWorkout(status), ...change });
-
-  it.each([
-    ['running', {}, true],
-    ['paused', {}, true],
-    ['paused: belt stopped', { belt: 'stopped' }, true],
-    ['starting belt', { belt: 'starting', belt_countdown: 2 }, false],
-    ['starting belt', { belt: 'starting' }, false],
-    ['running', { ble: 'disconnected' }, false],
-    ['running', { ble: 'scanning' }, false],
-  ] as const)('enables Pause under %s with %j: %s (L2-071 AC1)', (status, change, enabled) => {
-    const v = rideViewState(treadmill({ status }, change), 'open', false);
-    expect(v.pauseEnabled).toBe(enabled);
-  });
-
-  it('keeps the bike Pause enabled while the bike is disconnected', () => {
-    const v = rideViewState(
-      testState({
-        ble: 'disconnected',
-        workout: testWorkout({ status: 'paused: bike disconnected' }),
-      }),
-      'open',
-      false,
-    );
-    expect(v.pauseEnabled).toBe(true);
-  });
-
-  it('shows the belt countdown while belt_countdown is set', () => {
-    const v = rideViewState(
-      treadmill({ status: 'starting belt' }, { belt: 'starting', belt_countdown: 2 }),
-      'open',
-      false,
-    );
-    expect(v.overlay).toBe('belt-countdown');
-  });
-
-  it('shows Starting the belt after the countdown', () => {
-    expect(
-      rideViewState(treadmill({ status: 'starting belt' }, { belt: 'starting' }), 'open', false)
-        .overlay,
-    ).toBe('belt-starting');
-  });
-
-  it('shows Belt stopped with Pause and Resume enabled', () => {
-    const v = rideViewState(treadmill({ status: 'paused: belt stopped' }), 'open', false);
-    expect(v).toMatchObject({ overlay: 'belt-stopped', pauseEnabled: true });
-  });
-
-  it('words the controls note for the treadmill', () => {
-    expect(
-      rideViewState(testState({ machine: 'treadmill', ble: 'scanning' }), 'open', false)
-        .controlsNote,
-    ).toBe('Speed and incline controls wake up once the treadmill connects.');
   });
 });

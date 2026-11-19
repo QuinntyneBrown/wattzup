@@ -1,14 +1,6 @@
 import { expect, test } from './fixtures/wz-test';
 import { RidePage } from './pages/ride.page';
-import {
-  RIDE_VIDEO,
-  TREADMILL_PLAN,
-  state,
-  treadmillState,
-  treadmillWorkout,
-  videoWorkout,
-  workout,
-} from './fixtures/states';
+import { RIDE_VIDEO, state, videoWorkout, workout } from './fixtures/states';
 import type { FakeYouTube, PlayerCall } from './fixtures/fake-youtube';
 import { ToastRegion } from './pages/toast-region';
 import workoutPaused from './fixtures/recorded/workout-paused.json';
@@ -42,24 +34,6 @@ test.describe('Ride along to a video on the dashboard (L2-076)', () => {
     await expect(ride.videoPanel).toBeVisible();
     await expect(ride.planStrip).toHaveAttribute('aria-label', 'Ride progress: 7:07 of 12:40');
     await expect(ride.trace).toHaveCount(0);
-  });
-
-  test('rides along on the treadmill too, with the speed trace on the second tab', async ({
-    page,
-    api,
-    events,
-  }) => {
-    const ride = new RidePage(page, api, events);
-    await ride.open(
-      treadmillState({
-        workout: treadmillWorkout({ plan: { ...TREADMILL_PLAN, video: RIDE_VIDEO } }),
-      }),
-    );
-    await expect(ride.videoTab).toHaveAttribute('aria-selected', 'true');
-    await expect(ride.videoPanel).toBeVisible();
-    await ride.chartTab.click();
-    await expect(ride.chartTab).toHaveText('Power vs. plan');
-    await expect(ride.traceTitle).toHaveText('Speed vs. plan · incline below');
   });
 
   test('shows the trace alone when the plan has no video', async ({ page, api, events }) => {

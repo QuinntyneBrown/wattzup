@@ -7,7 +7,7 @@ export interface PresetChip {
   pressed: boolean;
 }
 
-/** The preset chips; a pressed one carries `aria-pressed` (L2-029, L2-072 AC3). */
+/** The preset chips; a pressed one carries `aria-pressed` (L2-029). */
 @Component({
   selector: 'wz-presets',
   templateUrl: './presets.html',

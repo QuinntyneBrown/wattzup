@@ -56,8 +56,6 @@ describe('traceGeometry (L2-026)', () => {
           level: 12,
           minutes: 30,
           cadence: 85,
-          speed: null,
-          incline: null,
         },
       }),
       0,

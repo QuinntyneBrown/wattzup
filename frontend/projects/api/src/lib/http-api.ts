@@ -5,13 +5,9 @@ import { TimeoutError, catchError, firstValueFrom, throwError, timeout } from 'r
 import { SKIP_UNLOCK_REDIRECT } from './api-key.interceptor';
 import type {
   BikeState,
-  ChooseMachineRequest,
   ClassCatalogue,
   ClassEntry,
   EventToken,
-  Machine,
-  SetInclineRequest,
-  SetSpeedRequest,
   RecentPackets,
   PowerTrace,
   ProgressReport,
@@ -24,7 +20,6 @@ import type {
 } from './api-types';
 import { type BikeApi, COMMAND_TIMEOUT_MS, type KeyCheck, RequestTimeoutError } from './bike-api';
 import type { ClassApi } from './class-api';
-import type { MachineApi } from './machine-api';
 import type { SessionApi } from './session-api';
 import type { WorkoutApi } from './workout-api';
 
@@ -111,26 +106,6 @@ export class HttpWorkoutApi implements WorkoutApi {
 
   trace(): Promise<PowerTrace> {
     return firstValueFrom(this.http.get<PowerTrace>('/api/workout/trace'));
-  }
-}
-
-@Injectable()
-export class HttpMachineApi implements MachineApi {
-  private readonly http = inject(HttpClient);
-
-  async choose(machine: Machine): Promise<void> {
-    const body: ChooseMachineRequest = { machine };
-    await firstValueFrom(this.http.post('/api/machine', body));
-  }
-
-  setSpeed(speed: number): Promise<void> {
-    const body: SetSpeedRequest = { speed };
-    return postCommand(this.http, '/api/speed', body);
-  }
-
-  setIncline(incline: number): Promise<void> {
-    const body: SetInclineRequest = { incline };
-    return postCommand(this.http, '/api/incline', body);
   }
 }
 

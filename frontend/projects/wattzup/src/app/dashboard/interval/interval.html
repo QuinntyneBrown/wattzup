@@ -35,11 +35,7 @@
     </div>
     <p class="interval__next">
       @if (s.next; as n) {
-        @if (n.speed !== null) {
-          Next: <b>{{ n.kind }}</b> {{ n.duration }} at {{ n.speed }} km/h, {{ n.incline }}%
-        } @else {
-          Next: <b>{{ n.kind }}</b> {{ n.duration }} at level {{ n.level }}
-        }
+        Next: <b>{{ n.kind }}</b> {{ n.duration }} at level {{ n.level }}
       } @else {
         Last stretch
       }

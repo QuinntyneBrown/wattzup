@@ -50,14 +50,3 @@ describe('connectionStatus (L2-018)', () => {
     });
   });
 });
-
-describe('connectionStatus on the treadmill (L2-071 AC11)', () => {
-  it('names the Echelon treadmill while scanning', () => {
-    const s = connectionStatus(
-      testState({ machine: 'treadmill', ble: 'scanning', device_label: null }),
-      'open',
-      false,
-    );
-    expect(s).toMatchObject({ name: 'Echelon treadmill', label: 'Scanning…' });
-  });
-});

@@ -1,8 +1,8 @@
 {
   "previous": null,
   "bests": [],
-  "id": "d5c44da15cb7",
-  "ended_at": "2026-11-18T19:28:21.758701+00:00",
+  "id": "28d8385bff58",
+  "ended_at": "2026-11-19T16:07:27.6395781+00:00",
   "class_id": "30-minute-hiit-cardio",
   "title": "30 Minute HIIT Cardio",
   "plan": {
@@ -76,9 +76,7 @@
       "duration": 300,
       "level": 18,
       "cadence": 80,
-      "round": null,
-      "speed": null,
-      "incline": null
+      "round": null
     },
     {
       "kind": "work",
@@ -86,9 +84,7 @@
       "duration": 30,
       "level": 24,
       "cadence": 98,
-      "round": 1,
-      "speed": null,
-      "incline": null
+      "round": 1
     },
     {
       "kind": "rest",
@@ -96,9 +92,7 @@
       "duration": 180,
       "level": 10,
       "cadence": 72,
-      "round": 1,
-      "speed": null,
-      "incline": null
+      "round": 1
     },
     {
       "kind": "work",
@@ -106,9 +100,7 @@
       "duration": 30,
       "level": 24,
       "cadence": 98,
-      "round": 2,
-      "speed": null,
-      "incline": null
+      "round": 2
     },
     {
       "kind": "rest",
@@ -116,9 +108,7 @@
       "duration": 150,
       "level": 10,
       "cadence": 72,
-      "round": 2,
-      "speed": null,
-      "incline": null
+      "round": 2
     },
     {
       "kind": "work",
@@ -126,9 +116,7 @@
       "duration": 30,
       "level": 24,
       "cadence": 98,
-      "round": 3,
-      "speed": null,
-      "incline": null
+      "round": 3
     },
     {
       "kind": "rest",
@@ -136,9 +124,7 @@
       "duration": 150,
       "level": 10,
       "cadence": 72,
-      "round": 3,
-      "speed": null,
-      "incline": null
+      "round": 3
     },
     {
       "kind": "work",
@@ -146,9 +132,7 @@
       "duration": 30,
       "level": 24,
       "cadence": 98,
-      "round": 4,
-      "speed": null,
-      "incline": null
+      "round": 4
     },
     {
       "kind": "rest",
@@ -156,9 +140,7 @@
       "duration": 120,
       "level": 10,
       "cadence": 72,
-      "round": 4,
-      "speed": null,
-      "incline": null
+      "round": 4
     },
     {
       "kind": "work",
@@ -166,9 +148,7 @@
       "duration": 30,
       "level": 24,
       "cadence": 98,
-      "round": 5,
-      "speed": null,
-      "incline": null
+      "round": 5
     },
     {
       "kind": "rest",
@@ -176,9 +156,7 @@
       "duration": 120,
       "level": 10,
       "cadence": 72,
-      "round": 5,
-      "speed": null,
-      "incline": null
+      "round": 5
     },
     {
       "kind": "work",
@@ -186,9 +164,7 @@
       "duration": 30,
       "level": 24,
       "cadence": 98,
-      "round": 6,
-      "speed": null,
-      "incline": null
+      "round": 6
     },
     {
       "kind": "rest",
@@ -196,9 +172,7 @@
       "duration": 90,
       "level": 10,
       "cadence": 72,
-      "round": 6,
-      "speed": null,
-      "incline": null
+      "round": 6
     },
     {
       "kind": "work",
@@ -206,9 +180,7 @@
       "duration": 30,
       "level": 24,
       "cadence": 98,
-      "round": 7,
-      "speed": null,
-      "incline": null
+      "round": 7
     },
     {
       "kind": "rest",
@@ -216,9 +188,7 @@
       "duration": 90,
       "level": 10,
       "cadence": 72,
-      "round": 7,
-      "speed": null,
-      "incline": null
+      "round": 7
     },
     {
       "kind": "work",
@@ -226,9 +196,7 @@
       "duration": 30,
       "level": 24,
       "cadence": 98,
-      "round": 8,
-      "speed": null,
-      "incline": null
+      "round": 8
     },
     {
       "kind": "cooldown",
@@ -236,9 +204,7 @@
       "duration": 360,
       "level": 6,
       "cadence": 70,
-      "round": null,
-      "speed": null,
-      "incline": null
+      "round": null
     }
   ],
   "planned_seconds": 1800,

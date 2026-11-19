@@ -19,7 +19,6 @@ export class RidePage {
   readonly pauseButton: Locator;
   readonly resumeButton: Locator;
   readonly endButton: Locator;
-  readonly switchLink: Locator;
   readonly diagnosticsButton: Locator;
   readonly beepsButton: Locator;
   readonly themeButton: Locator;
@@ -54,8 +53,6 @@ export class RidePage {
   readonly overlay: Locator;
   readonly overlayTitle: Locator;
   readonly overlayText: Locator;
-  readonly overlayCount: Locator;
-  readonly overlayResumeButton: Locator;
   readonly overlayReconnectButton: Locator;
   readonly overlayIcon: Locator;
   readonly loadError: Locator;
@@ -79,10 +76,6 @@ export class RidePage {
   readonly traceSummary: Locator;
   readonly traceEmpty: Locator;
   readonly traceTitle: Locator;
-  readonly inclineLane: Locator;
-  readonly inclineLaneMax: Locator;
-  readonly inclineLanePlan: Locator;
-  readonly inclineLaneActual: Locator;
 
   readonly aside: Locator;
   readonly levelValue: Locator;
@@ -99,38 +92,6 @@ export class RidePage {
   readonly commandLog: Locator;
   readonly commandLogConnection: Locator;
   readonly commandEntries: Locator;
-
-  readonly speed: Locator;
-  readonly speedValue: Locator;
-  readonly speedUnit: Locator;
-  readonly speedSub: Locator;
-  readonly speedPace: Locator;
-  readonly speedStatus: Locator;
-  readonly stopBeltButton: Locator;
-  readonly incline: Locator;
-  readonly inclineValue: Locator;
-  readonly inclineUnit: Locator;
-  readonly inclineSub: Locator;
-  readonly treadmillAside: Locator;
-  readonly treadmillAsideTitle: Locator;
-  readonly speedControl: Locator;
-  readonly speedControlValue: Locator;
-  readonly inclineControl: Locator;
-  readonly inclineControlValue: Locator;
-  readonly lowerSpeedButton: Locator;
-  readonly raiseSpeedButton: Locator;
-  readonly lowerInclineButton: Locator;
-  readonly raiseInclineButton: Locator;
-  readonly treadmillPlanNote: Locator;
-  readonly treadmillBackToPlan: Locator;
-  readonly speedControlNote: Locator;
-  readonly inclineControlNote: Locator;
-  readonly quickSpeeds: Locator;
-  readonly inclinePicker: Locator;
-  readonly inclinePickerBars: Locator;
-  readonly treadmillCommandTitle: Locator;
-  readonly treadmillCommandLink: Locator;
-  readonly treadmillCommandEntries: Locator;
 
   constructor(
     readonly page: Page,
@@ -152,10 +113,6 @@ export class RidePage {
     this.pauseButton = bar.getByRole('button', { name: 'Pause', exact: true });
     this.resumeButton = bar.getByRole('button', { name: 'Resume', exact: true });
     this.endButton = bar.getByRole('button', { name: 'End', exact: true });
-    this.stopBeltButton = bar.getByRole('button', { name: 'Stop belt', exact: true });
-    this.switchLink = page
-      .locator('.ride-aside__foot')
-      .getByRole('link', { name: /^End and switch to / });
     this.diagnosticsButton = bar.getByRole('button', { name: 'Diagnostics', exact: true });
     this.beepsButton = bar.getByRole('button', { name: /^Countdown beeps (on|off)$/ });
     this.themeButton = bar.getByRole('button', { name: 'Light theme', exact: true });
@@ -190,8 +147,6 @@ export class RidePage {
     this.overlay = page.locator('.overlay-panel__card');
     this.overlayTitle = this.overlay.locator('h2');
     this.overlayText = this.overlay.locator('p');
-    this.overlayCount = this.overlay.locator('.overlay-panel__count');
-    this.overlayResumeButton = this.overlay.getByRole('button', { name: 'Resume' });
     this.overlayReconnectButton = this.overlay.getByRole('button', { name: 'Reconnect' });
     this.overlayIcon = this.overlay.locator('.overlay-panel__icon [data-icon]');
     this.loadError = this.main.locator('.empty--error');
@@ -215,10 +170,6 @@ export class RidePage {
     this.traceSummary = this.trace.locator('.trace__summary');
     this.traceEmpty = this.trace.locator('.empty');
     this.traceTitle = this.trace.locator('.trace__head > span');
-    this.inclineLane = this.trace.locator('.trace__lane svg');
-    this.inclineLaneMax = this.trace.locator('.trace__lane-max');
-    this.inclineLanePlan = this.inclineLane.locator('.incline-plan');
-    this.inclineLaneActual = this.inclineLane.locator('.incline-line');
 
     this.aside = page.getByRole('complementary', { name: 'Bike control' });
     this.levelValue = this.aside.locator('.level-readout .numeral');
@@ -235,44 +186,8 @@ export class RidePage {
     this.commandLog = this.aside.getByRole('region', { name: 'Sent to bike' });
     this.commandLogConnection = this.commandLog.locator('.cmd-log__head code');
     this.commandEntries = this.commandLog.locator('li');
-
-    this.speed = page.locator('.readout--speed');
-    this.speedValue = this.speed.locator('.numeral');
-    this.speedUnit = this.speed.locator('.readout__unit');
-    this.speedSub = this.speed.locator('.readout__sub span');
-    this.speedPace = this.speed.locator('.readout__pace');
-    this.speedStatus = this.speed.locator('.readout__sub .delta');
-    this.incline = page.locator('.readout--incline');
-    this.inclineValue = this.incline.locator('.numeral');
-    this.inclineUnit = this.incline.locator('.readout__unit');
-    this.inclineSub = this.incline.locator('.readout__sub span');
-    this.treadmillAside = page.getByRole('complementary', { name: 'Treadmill control' });
-    this.treadmillAsideTitle = this.treadmillAside.locator('h2');
-    this.speedControl = this.treadmillAside.getByRole('group', { name: 'Speed', exact: true });
-    this.speedControlValue = this.speedControl.locator('.numeral');
-    this.inclineControl = this.treadmillAside.getByRole('group', { name: 'Incline', exact: true });
-    this.inclineControlValue = this.inclineControl.locator('.numeral');
-    this.lowerSpeedButton = this.treadmillAside.getByRole('button', { name: 'Slower' });
-    this.raiseSpeedButton = this.treadmillAside.getByRole('button', { name: 'Faster' });
-    this.speedControlNote = this.speedControl.locator('small');
-    this.inclineControlNote = this.inclineControl.locator('.incline-control__readout > small');
-    this.quickSpeeds = this.treadmillAside
-      .getByRole('group', { name: 'Jump to a speed' })
-      .getByRole('button');
-    this.inclinePicker = this.treadmillAside.getByRole('slider', { name: 'Pick an incline' });
-    this.inclinePickerBars = this.inclinePicker.locator('.level-picker__bar');
-    this.treadmillCommandTitle = this.treadmillAside.locator('.cmd-log h3');
-    this.treadmillCommandLink = this.treadmillAside.locator('.cmd-log__head code');
-    this.lowerInclineButton = this.treadmillAside.getByRole('button', { name: 'Lower incline' });
-    this.raiseInclineButton = this.treadmillAside.getByRole('button', { name: 'Raise incline' });
-    this.treadmillPlanNote = this.treadmillAside.locator('.plan-note');
-    this.treadmillBackToPlan = this.treadmillPlanNote.getByRole('button', { name: 'Back to plan' });
-    this.treadmillCommandEntries = this.treadmillAside
-      .getByRole('region', { name: 'Sent to treadmill' })
-      .locator('li');
   }
 
-  /** Loads `/` with GET /api/status answering `initial`, then streams it as the first message. */
   /** Hides or shows the tab, as switching browser tabs would (L2-076 AC10). */
   async setVisibility(visibility: 'hidden' | 'visible'): Promise<void> {
     await this.page.evaluate((v) => {
@@ -282,6 +197,7 @@ export class RidePage {
     }, visibility);
   }
 
+  /** Loads `/` with GET /api/status answering `initial`, then streams it as the first message. */
   async open(initial: Json = state(), options: { stream?: boolean } = {}): Promise<void> {
     this.api.on('GET', '/api/status', { json: initial });
     await this.page.goto('/');
@@ -318,13 +234,7 @@ export class RidePage {
   }
 
   /** The value of the totals-strip metric with this term, e.g. `Avg power`. */
-  /** A quick speed chip, `5` to `16` (L2-071 AC8). */
-  quickSpeed(speed: string): Locator {
-    return this.treadmillAside
-      .getByRole('group', { name: 'Jump to a speed' })
-      .getByRole('button', { name: speed, exact: true });
-  }
-
+  /** The value of the totals-strip metric with this term, e.g. `Avg power`. */
   metric(term: string): Locator {
     return this.metrics
       .locator('div', { has: this.page.locator('dt', { hasText: term }) })

@@ -41,10 +41,8 @@ describe('syncAction while running (L2-076 AC3)', () => {
 describe('syncAction for every other status (L2-076 AC4)', () => {
   const others: WorkoutStatus[] = [
     'waiting for bike',
-    'starting belt',
     'paused',
     'paused: bike disconnected',
-    'paused: belt stopped',
     'ended',
     'ended: bike shut off',
     'stopped',
@@ -85,7 +83,6 @@ describe('riderAction (L2-076 AC5)', () => {
     ['paused', 'playing', 'resume-ride'],
     ['paused', 'paused', 'none'],
     ['paused: bike disconnected', 'playing', 'none'],
-    ['paused: belt stopped', 'playing', 'none'],
     ['waiting for bike', 'playing', 'none'],
     ['ended', 'playing', 'none'],
     ['stopped', 'paused', 'none'],

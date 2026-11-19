@@ -1,18 +1,10 @@
-// Which skeleton, overlay or error the ride dashboard shows, and which controls work (L2-058,
-// L2-071 criteria 8 and 9).
+// Which skeleton, overlay or error the ride dashboard shows, and which controls work (L2-058).
 import type { BikeState, StreamConnection } from '@wattzup/api';
 import { isActive } from './workout-status';
 
 export type RideView = 'loading' | 'load-failed' | 'ride';
 export type RideOverlayKind =
-  | 'scanning'
-  | 'adapter-off'
-  | 'bike-lost'
-  | 'bike-shut-off'
-  | 'ride-complete'
-  | 'belt-countdown'
-  | 'belt-starting'
-  | 'belt-stopped';
+  'scanning' | 'adapter-off' | 'bike-lost' | 'bike-shut-off' | 'ride-complete';
 
 export interface RideViewState {
   view: RideView;
@@ -57,12 +49,8 @@ export function rideViewState(
   if (state.adapter === 'off') overlay = 'adapter-off';
   else if (status === 'ended: bike shut off') overlay = 'bike-shut-off';
   // A plan ridden to its end and saved leads to its summary (L2-084 AC3).
-  else if (status === 'ended' && state.machine === 'bike' && state.workout?.session_id)
-    overlay = 'ride-complete';
+  else if (status === 'ended' && state.workout?.session_id) overlay = 'ride-complete';
   else if (status === 'paused: bike disconnected') overlay = 'bike-lost';
-  else if (state.belt_countdown !== null) overlay = 'belt-countdown';
-  else if (status === 'starting belt') overlay = 'belt-starting';
-  else if (status === 'paused: belt stopped') overlay = 'belt-stopped';
   else if (state.ble === 'scanning') overlay = 'scanning';
 
   const connected = state.ble === 'connected';
@@ -72,17 +60,8 @@ export function rideViewState(
     overlay,
     dimmed: overlay === 'bike-lost' || offline,
     commandsEnabled: !offline && connected,
-    // The treadmill can't pause mid-countdown or while it is not connected (L2-071 criterion 1).
-    pauseEnabled:
-      !offline &&
-      active &&
-      (state.machine !== 'treadmill' ||
-        (connected && status !== 'starting belt' && state.belt_countdown === null)),
+    pauseEnabled: !offline && active,
     endEnabled: active,
-    controlsNote: connected
-      ? null
-      : state.machine === 'treadmill'
-        ? 'Speed and incline controls wake up once the treadmill connects.'
-        : 'Resistance controls wake up once the bike connects.',
+    controlsNote: connected ? null : 'Resistance controls wake up once the bike connects.',
   };
 }

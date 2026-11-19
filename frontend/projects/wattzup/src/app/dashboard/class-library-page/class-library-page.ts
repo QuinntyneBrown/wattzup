@@ -18,9 +18,9 @@ import {
   visibleShelves,
 } from '../../core/class-library-view';
 import { liveConnectionStatus } from '../../core/connection-status';
-import { bikeOnly } from '../../core/machine-guards';
 import { MotionPreference } from '../../core/motion-preference';
 import { streakLink, type StreakLink } from '../../core/progress-view';
+import { LiveStateService } from '../../core/live-state.service';
 
 type Phase = 'loading' | 'ready' | 'error';
 
@@ -69,7 +69,8 @@ export class ClassLibraryPage {
   );
 
   constructor() {
-    bikeOnly();
+    // The app bar's status line reads the live state (L2-018).
+    inject(LiveStateService).ensureStarted();
     void this.load();
     void this.loadStreak();
   }

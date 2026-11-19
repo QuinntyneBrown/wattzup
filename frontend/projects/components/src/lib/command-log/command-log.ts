@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-/** One line of the log: when, what, from where, and how the machine answered. */
+/** One line of the log: when, what, from where, and how the bike answered. */
 export interface CommandLogEntry {
   key: string;
   time: string;
@@ -10,8 +10,7 @@ export interface CommandLogEntry {
   text: string;
 }
 
-/** "Sent to bike" or "Sent to treadmill": the last commands and their acknowledgement
- * (L2-048, L2-071 criterion 14). */
+/** "Sent to bike": the last commands and their acknowledgement (L2-048). */
 @Component({
   selector: 'wz-command-log',
   templateUrl: './command-log.html',

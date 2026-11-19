@@ -1,4 +1,4 @@
-<dl class="metrics" [class.metrics--treadmill]="treadmill()" [class.metrics--dimmed]="dimmed()">
+<dl class="metrics" [class.metrics--dimmed]="dimmed()">
   @if (metrics(); as list) {
     @for (m of list; track m.term) {
       <div>

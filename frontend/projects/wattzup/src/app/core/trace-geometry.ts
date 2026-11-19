@@ -8,7 +8,7 @@ export type TracePhase = 'work' | 'rest' | 'easy';
 export interface TraceBlock {
   start: number;
   end: number;
-  /** The target in the scene's unit: watts on the bike, tenths of km/h on the treadmill. */
+  /** The target, in watts. */
   value: number;
   phase: TracePhase;
   past: boolean;
@@ -26,7 +26,7 @@ export interface TraceScene {
   yMax: number;
   /** Grid lines every this many units below `yMax`. */
   gridStep: number;
-  /** The plot's top label, `300 W` or `15 km/h`. */
+  /** The plot's top label, `300 W`. */
   maxLabel: string;
   blocks: TraceBlock[];
   ticks: TraceTick[];

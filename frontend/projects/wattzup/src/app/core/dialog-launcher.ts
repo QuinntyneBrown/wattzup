@@ -25,11 +25,6 @@ export interface ReplaceRideData {
   newSummary: string;
 }
 
-export interface EndRideData {
-  /** Where to go after ending: `/machine` when switching machine; else the machine's own landing. */
-  next: '/machine' | null;
-}
-
 @Injectable({ providedIn: 'root' })
 export class DialogLauncher {
   private readonly dialog = inject(Dialog);
@@ -41,9 +36,9 @@ export class DialogLauncher {
   }
 
   /** `next` is where the rider goes once the ride has ended. */
-  async openEndRide(next: EndRideData['next'] = null): Promise<void> {
+  async openEndRide(): Promise<void> {
     const { EndRideDialog } = await import('../dashboard/end-ride-dialog/end-ride-dialog');
-    this.open(EndRideDialog, 'end-ride', '[data-autofocus]', { next } satisfies EndRideData);
+    this.open(EndRideDialog, 'end-ride', '[data-autofocus]');
   }
 
   /** Resolves true when the new ride started (L2-052). */

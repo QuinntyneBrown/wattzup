@@ -6,5 +6,5 @@
     "sets[0].rest_seconds": ["Recover must be 0 (none) or at least 0:05."]
   },
   "code": "invalid_workout",
-  "trace_id": "00-4da85c34a33539c6da82766dfefe42ef-1f18095a16453b5c-00"
+  "trace_id": "00-1d6cbb4baa14b4ab87b475d143b280c5-9f34350c9d07f9a1-00"
 }

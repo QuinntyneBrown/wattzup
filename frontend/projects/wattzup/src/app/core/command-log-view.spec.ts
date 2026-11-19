@@ -9,8 +9,6 @@ describe('command-log-view (L2-048)', () => {
       source: 'plan',
       status: 'ack',
       ack_ms: 40,
-      command: 'resistance',
-      value: 18,
       ...o,
     }) as const;
   it('shows ride time as m:ss or h:mm:ss', () => {
@@ -28,17 +26,12 @@ describe('command-log-view (L2-048)', () => {
     expect(statusText(at(o))).toBe(text);
   });
 
-  it.each([
-    [{ command: 'resistance', level: 18, value: 18 }, 'RES 18'],
-    [{ command: 'speed', level: null, value: 9 }, 'SPD 9.0'],
-    [{ command: 'speed', level: null, value: 8.5 }, 'SPD 8.5'],
-    [{ command: 'incline', level: null, value: 2 }, 'INC 2%'],
-  ])('labels %j as %s', (o, label) => {
-    expect(commandLabel(at(o))).toBe(label);
+  it('labels a command with its level', () => {
+    expect(commandLabel(at({ level: 22 }))).toBe('RES 22');
   });
 });
 
-describe('commandLogView (L2-048, L2-071 AC12)', () => {
+describe('commandLogView (L2-048)', () => {
   const entry = (i: number) =>
     ({
       at: i,
@@ -47,13 +40,11 @@ describe('commandLogView (L2-048, L2-071 AC12)', () => {
       source: 'plan',
       status: 'ack',
       ack_ms: 40,
-      command: 'resistance',
-      value: 18,
     }) as const;
   const commands = [0, 1, 2, 3, 4, 5].map(entry);
 
-  it('titles the panel for the machine and keeps every bike command', () => {
-    const view = commandLogView(commands, 'bike', () => 'x');
+  it('titles the panel and keeps every command', () => {
+    const view = commandLogView(commands, () => 'x');
     expect(view.title).toBe('Sent to bike');
     expect(view.entries).toHaveLength(6);
     expect(view.entries[0]).toEqual({
@@ -64,11 +55,5 @@ describe('commandLogView (L2-048, L2-071 AC12)', () => {
       status: 'ack',
       text: 'ack 40ms',
     });
-  });
-
-  it('keeps the newest 4 on the treadmill', () => {
-    const view = commandLogView(commands, 'treadmill', () => 'x');
-    expect(view.title).toBe('Sent to treadmill');
-    expect(view.entries).toHaveLength(4);
   });
 });

@@ -1,14 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import {
-  PLAN_DRAFT_KEY,
-  PlanDraftStore,
-  readDraft,
-  readIntervalsDraft,
-  readTreadmillDraft,
-} from './plan-draft.store';
+import { PLAN_DRAFT_KEY, PlanDraftStore, readDraft, readIntervalsDraft } from './plan-draft.store';
 import { DEFAULT_INTERVALS, applyIntervalPreset } from './intervals-form';
-import { DEFAULT_TREADMILL_DRAFT } from './treadmill-plan-form';
 import { DEFAULT_DRAFT, applyPreset } from './plan-form';
 
 describe('readDraft', () => {
@@ -48,30 +41,6 @@ describe('PlanDraftStore', () => {
       throw new Error('blocked');
     });
     expect(TestBed.inject(PlanDraftStore).load()).toEqual(DEFAULT_DRAFT);
-  });
-});
-
-describe('readTreadmillDraft (L2-072 AC10)', () => {
-  it('restores a stored treadmill draft', () => {
-    const stored = { ...DEFAULT_TREADMILL_DRAFT, workSpeed: '9.5' };
-    expect(readTreadmillDraft(JSON.stringify(stored))).toEqual(stored);
-  });
-
-  it('drops the preset an older draft stored', () => {
-    const stored = { ...DEFAULT_TREADMILL_DRAFT, preset: null };
-    expect(readTreadmillDraft(JSON.stringify(stored))).toEqual(DEFAULT_TREADMILL_DRAFT);
-  });
-
-  it.each([
-    null,
-    '',
-    '{',
-    '{"mode":"run"}',
-    JSON.stringify({ ...DEFAULT_TREADMILL_DRAFT, speed: 7 }),
-    JSON.stringify({ ...DEFAULT_TREADMILL_DRAFT, workSpeed: '19.5' }),
-    JSON.stringify({ ...DEFAULT_TREADMILL_DRAFT, restIncline: '12' }),
-  ])('falls back to the defaults for %j', (raw) => {
-    expect(readTreadmillDraft(raw)).toEqual(DEFAULT_TREADMILL_DRAFT);
   });
 });
 

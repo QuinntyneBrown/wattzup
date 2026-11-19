@@ -4,20 +4,12 @@ import { Injectable, inject, signal } from '@angular/core';
 import {
   ApiKeyStore,
   type BikeState,
-  type Machine,
   type StreamMessage,
   BIKE_API,
   type StreamConnection,
 } from '@wattzup/api';
 
 export const RECONNECT_DELAY_MS = 2000;
-
-/** The latest scan error, numbered: the backend clears it as soon as it scans again (L2-063 AC8). */
-export interface ScanError {
-  machine: Machine;
-  error: string;
-  seq: number;
-}
 
 @Injectable({ providedIn: 'root' })
 export class LiveStateService {
@@ -31,7 +23,6 @@ export class LiveStateService {
   private readonly _loadStatus = signal<number | null>(null);
   /** Incremented on every stream (re)open, so dependants can reload history. */
   private readonly _streamEpoch = signal(0);
-  private readonly _scanError = signal<ScanError | null>(null);
 
   readonly state = this._state.asReadonly();
   readonly connection = this._connection.asReadonly();
@@ -40,7 +31,6 @@ export class LiveStateService {
   readonly loadStatus = this._loadStatus.asReadonly();
   readonly streamEpoch = this._streamEpoch.asReadonly();
   /** Kept from every state, so a page sees an error the next message already cleared. */
-  readonly scanError = this._scanError.asReadonly();
 
   private started = false;
   private locked = false;
@@ -135,10 +125,6 @@ export class LiveStateService {
 
   private setState(state: BikeState): void {
     this._state.set(state);
-    if (state.ble === 'scanning' && state.error) {
-      const seq = (this._scanError()?.seq ?? 0) + 1;
-      this._scanError.set({ machine: state.machine, error: state.error, seq });
-    }
   }
 
   private goOffline(): void {

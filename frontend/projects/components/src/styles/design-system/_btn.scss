@@ -85,14 +85,6 @@
 .btn--end:hover {
   --btn-fg: var(--color-fg-heart);
 }
-/* The treadmill's End: danger-tinted, as stopping the belt is (L2-071 criterion 1). */
-.btn--stop-belt {
-  --btn-bg: var(--color-danger-bg);
-  --btn-fg: var(--color-danger-fg);
-  --btn-border: transparent;
-  --btn-bg-hover: var(--color-danger-border);
-  --btn-fg-hover: var(--color-danger-fg);
-}
 .btn--volt {
   --btn-bg: var(--color-volt-fill);
   --btn-fg: var(--color-fg-on-volt);

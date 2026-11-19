@@ -52,8 +52,6 @@ function session(change: Partial<SessionDetail> = {}): SessionDetail {
       level: 10,
       minutes: 10,
       cadence: 80,
-      speed: null,
-      incline: null,
       video: null,
     },
     segments: [

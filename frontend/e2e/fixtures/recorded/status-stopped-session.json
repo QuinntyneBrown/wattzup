@@ -78,9 +78,7 @@
         "duration": 300,
         "level": 18,
         "cadence": 80,
-        "round": null,
-        "speed": null,
-        "incline": null
+        "round": null
       },
       {
         "kind": "work",
@@ -88,9 +86,7 @@
         "duration": 30,
         "level": 24,
         "cadence": 98,
-        "round": 1,
-        "speed": null,
-        "incline": null
+        "round": 1
       },
       {
         "kind": "rest",
@@ -98,9 +94,7 @@
         "duration": 180,
         "level": 10,
         "cadence": 72,
-        "round": 1,
-        "speed": null,
-        "incline": null
+        "round": 1
       },
       {
         "kind": "work",
@@ -108,9 +102,7 @@
         "duration": 30,
         "level": 24,
         "cadence": 98,
-        "round": 2,
-        "speed": null,
-        "incline": null
+        "round": 2
       },
       {
         "kind": "rest",
@@ -118,9 +110,7 @@
         "duration": 150,
         "level": 10,
         "cadence": 72,
-        "round": 2,
-        "speed": null,
-        "incline": null
+        "round": 2
       },
       {
         "kind": "work",
@@ -128,9 +118,7 @@
         "duration": 30,
         "level": 24,
         "cadence": 98,
-        "round": 3,
-        "speed": null,
-        "incline": null
+        "round": 3
       },
       {
         "kind": "rest",
@@ -138,9 +126,7 @@
         "duration": 150,
         "level": 10,
         "cadence": 72,
-        "round": 3,
-        "speed": null,
-        "incline": null
+        "round": 3
       },
       {
         "kind": "work",
@@ -148,9 +134,7 @@
         "duration": 30,
         "level": 24,
         "cadence": 98,
-        "round": 4,
-        "speed": null,
-        "incline": null
+        "round": 4
       },
       {
         "kind": "rest",
@@ -158,9 +142,7 @@
         "duration": 120,
         "level": 10,
         "cadence": 72,
-        "round": 4,
-        "speed": null,
-        "incline": null
+        "round": 4
       },
       {
         "kind": "work",
@@ -168,9 +150,7 @@
         "duration": 30,
         "level": 24,
         "cadence": 98,
-        "round": 5,
-        "speed": null,
-        "incline": null
+        "round": 5
       },
       {
         "kind": "rest",
@@ -178,9 +158,7 @@
         "duration": 120,
         "level": 10,
         "cadence": 72,
-        "round": 5,
-        "speed": null,
-        "incline": null
+        "round": 5
       },
       {
         "kind": "work",
@@ -188,9 +166,7 @@
         "duration": 30,
         "level": 24,
         "cadence": 98,
-        "round": 6,
-        "speed": null,
-        "incline": null
+        "round": 6
       },
       {
         "kind": "rest",
@@ -198,9 +174,7 @@
         "duration": 90,
         "level": 10,
         "cadence": 72,
-        "round": 6,
-        "speed": null,
-        "incline": null
+        "round": 6
       },
       {
         "kind": "work",
@@ -208,9 +182,7 @@
         "duration": 30,
         "level": 24,
         "cadence": 98,
-        "round": 7,
-        "speed": null,
-        "incline": null
+        "round": 7
       },
       {
         "kind": "rest",
@@ -218,9 +190,7 @@
         "duration": 90,
         "level": 10,
         "cadence": 72,
-        "round": 7,
-        "speed": null,
-        "incline": null
+        "round": 7
       },
       {
         "kind": "work",
@@ -228,9 +198,7 @@
         "duration": 30,
         "level": 24,
         "cadence": 98,
-        "round": 8,
-        "speed": null,
-        "incline": null
+        "round": 8
       },
       {
         "kind": "cooldown",
@@ -238,9 +206,7 @@
         "duration": 360,
         "level": 6,
         "cadence": 70,
-        "round": null,
-        "speed": null,
-        "incline": null
+        "round": null
       }
     ],
     "segment": 0,
@@ -251,14 +217,14 @@
     "plan_level": 18,
     "status": "stopped",
     "ended_reason": null,
-    "session_id": "d5c44da15cb7"
+    "session_id": "28d8385bff58"
   },
   "cadence": 85,
   "speed_kmh": 31.9,
   "speed_mph": 19.8,
-  "packets": 73,
-  "first_data_at": 1795030035.103,
-  "last_data_at": 1795030101.099,
+  "packets": 84,
+  "first_data_at": 1795104370.079,
+  "last_data_at": 1795104447.071,
   "ui_clients": 0,
   "displayed_since": null,
   "displayed_seconds": 0,
@@ -266,7 +232,7 @@
   "transport": "Simulated",
   "simulated": true,
   "exposed": false,
-  "bind_address": "127.0.0.1:8788",
+  "bind_address": "127.0.0.1:8787",
   "connection_id": "0bf669f1",
   "power": 284,
   "target_power": null,
@@ -276,72 +242,44 @@
   "heart_rate": null,
   "commands": [
     {
-      "at": 1795030039.75,
+      "at": 1795104385.57,
       "ride_seconds": 0,
       "level": 18,
       "source": "plan",
       "status": "ack",
-      "ack_ms": 0,
-      "command": "resistance",
-      "value": 18
+      "ack_ms": 0
     },
     {
-      "at": 1795030039.717,
+      "at": 1795104385.519,
       "ride_seconds": 0,
       "level": 8,
       "source": "plan",
       "status": "ack",
-      "ack_ms": 0,
-      "command": "resistance",
-      "value": 8
+      "ack_ms": 0
     },
     {
-      "at": 1795030039.716,
+      "at": 1795104385.514,
       "ride_seconds": 0,
       "level": 14,
       "source": "plan",
       "status": "ack",
-      "ack_ms": 0,
-      "command": "resistance",
-      "value": 14
+      "ack_ms": 0
     },
     {
-      "at": 1795030039.712,
+      "at": 1795104385.506,
       "ride_seconds": 3,
       "level": 8,
       "source": "plan",
       "status": "ack",
-      "ack_ms": 0,
-      "command": "resistance",
-      "value": 8
+      "ack_ms": 0
     },
     {
-      "at": 1795030036.198,
+      "at": 1795104381.976,
       "ride_seconds": 0,
       "level": 8,
       "source": "plan",
       "status": "ack",
-      "ack_ms": 0,
-      "command": "resistance",
-      "value": 8
+      "ack_ms": 0
     }
-  ],
-  "machine": "bike",
-  "target_speed": null,
-  "incline": null,
-  "target_incline": null,
-  "belt": null,
-  "belt_countdown": null,
-  "climb_m": null,
-  "nearby": [
-    {
-      "machine": "bike",
-      "name": "ECHSIM-0001",
-      "label": "ECHSIM-0001",
-      "rssi": -68,
-      "signal": 3,
-      "seen_at": 1795030034.099
-    }
-  ],
-  "treadmill_enabled": true
+  ]
 }

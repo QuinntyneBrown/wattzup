@@ -17,7 +17,6 @@ import {
   TrendChart,
 } from '@wattzup/components';
 import { nextTab } from '../../core/class-library-view';
-import { bikeOnly } from '../../core/machine-guards';
 import {
   achievementView,
   comparable,
@@ -87,7 +86,6 @@ export class ProgressPage {
   );
 
   constructor() {
-    bikeOnly();
     void this.load();
   }
 

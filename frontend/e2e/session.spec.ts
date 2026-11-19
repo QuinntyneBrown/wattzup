@@ -5,7 +5,6 @@
 // the cadence and power traces with every dip, the dips as rows that highlight their band, the
 // totals, and the loading, not-found and error states.
 import { expect, test } from './fixtures/wz-test';
-import { treadmillIdle } from './fixtures/states';
 import { progressAfterRide, sessionDetail } from './fixtures/sessions';
 import { SessionSummaryPage } from './pages/session-summary.page';
 
@@ -15,7 +14,7 @@ test.describe('Session Summary (L2-085)', () => {
     api,
     events,
   }) => {
-    const summary = new SessionSummaryPage(page, api, events);
+    const summary = new SessionSummaryPage(page, api);
     await summary.open();
 
     await expect(page).toHaveTitle('Your ride · Wattzup');
@@ -33,7 +32,7 @@ test.describe('Session Summary (L2-085)', () => {
     api,
     events,
   }) => {
-    const summary = new SessionSummaryPage(page, api, events);
+    const summary = new SessionSummaryPage(page, api);
     await summary.open();
 
     await expect(summary.back).toHaveText('All sessions');
@@ -42,7 +41,7 @@ test.describe('Session Summary (L2-085)', () => {
   });
 
   test('writes a fall with its minus sign and no change as 0 W', async ({ page, api, events }) => {
-    const summary = new SessionSummaryPage(page, api, events);
+    const summary = new SessionSummaryPage(page, api);
     await summary.open({ json: sessionDetail({ avg_power: 149 }) });
     await expect(summary.change).toHaveText('−4 W');
 
@@ -59,7 +58,7 @@ test.describe('Session Summary (L2-085)', () => {
     api,
     events,
   }) => {
-    const summary = new SessionSummaryPage(page, api, events);
+    const summary = new SessionSummaryPage(page, api);
     await summary.open({
       json: sessionDetail({
         class_id: null,
@@ -77,7 +76,7 @@ test.describe('Session Summary (L2-085)', () => {
   });
 
   test('says Ended early with the ridden and planned times', async ({ page, api, events }) => {
-    const summary = new SessionSummaryPage(page, api, events);
+    const summary = new SessionSummaryPage(page, api);
     await summary.open({
       json: sessionDetail({ ridden_seconds: 1120, completed: false, dips: [] }),
     });
@@ -86,7 +85,7 @@ test.describe('Session Summary (L2-085)', () => {
   });
 
   test('shows every best the session set, in order', async ({ page, api, events }) => {
-    const summary = new SessionSummaryPage(page, api, events);
+    const summary = new SessionSummaryPage(page, api);
     await summary.open({
       json: sessionDetail({
         dips: [],
@@ -106,7 +105,7 @@ test.describe('Session Summary (L2-085)', () => {
     api,
     events,
   }) => {
-    const summary = new SessionSummaryPage(page, api, events);
+    const summary = new SessionSummaryPage(page, api);
     await summary.open();
 
     await expect(summary.streakCount).toHaveText('4days');
@@ -126,7 +125,7 @@ test.describe('Session Summary (L2-085)', () => {
     api,
     events,
   }) => {
-    const summary = new SessionSummaryPage(page, api, events);
+    const summary = new SessionSummaryPage(page, api);
     await summary.open(
       { json: sessionDetail() },
       {
@@ -142,7 +141,7 @@ test.describe('Session Summary (L2-085)', () => {
   });
 
   test('describes the traces and marks every dip', async ({ page, api, events }) => {
-    const summary = new SessionSummaryPage(page, api, events);
+    const summary = new SessionSummaryPage(page, api);
     await summary.open();
 
     await expect(summary.traces).toHaveAttribute(
@@ -157,7 +156,7 @@ test.describe('Session Summary (L2-085)', () => {
     api,
     events,
   }) => {
-    const summary = new SessionSummaryPage(page, api, events);
+    const summary = new SessionSummaryPage(page, api);
     await summary.open();
 
     await expect(summary.onTarget).toHaveText('96% on target');
@@ -181,7 +180,7 @@ test.describe('Session Summary (L2-085)', () => {
   });
 
   test('says there is nothing to fix when no dip was found', async ({ page, api, events }) => {
-    const summary = new SessionSummaryPage(page, api, events);
+    const summary = new SessionSummaryPage(page, api);
     await summary.open({ json: sessionDetail({ dips: [], on_target_pct: 100 }) });
 
     await expect(summary.onTarget).toHaveText('100% on target');
@@ -192,7 +191,7 @@ test.describe('Session Summary (L2-085)', () => {
   });
 
   test('shows the totals without heart rate', async ({ page, api, events }) => {
-    const summary = new SessionSummaryPage(page, api, events);
+    const summary = new SessionSummaryPage(page, api);
     await summary.open();
 
     await expect(summary.stats.locator('dt')).toHaveText([
@@ -210,7 +209,7 @@ test.describe('Session Summary (L2-085)', () => {
   });
 
   test('shows skeletons while loading', async ({ page, api, events }) => {
-    const summary = new SessionSummaryPage(page, api, events);
+    const summary = new SessionSummaryPage(page, api);
     await summary.open({ hang: true });
 
     await expect(summary.skeletons.first()).toBeVisible();
@@ -218,7 +217,7 @@ test.describe('Session Summary (L2-085)', () => {
   });
 
   test("says it can't find a ride the backend does not have", async ({ page, api, events }) => {
-    const summary = new SessionSummaryPage(page, api, events);
+    const summary = new SessionSummaryPage(page, api);
     await summary.open({ status: 404, json: { code: 'session_not_found' } });
 
     await expect(summary.noticeTitle).toHaveText("We can't find that ride");
@@ -233,7 +232,7 @@ test.describe('Session Summary (L2-085)', () => {
     api,
     events,
   }) => {
-    const summary = new SessionSummaryPage(page, api, events);
+    const summary = new SessionSummaryPage(page, api);
     await summary.open({ abort: true });
 
     await expect(summary.notice).toHaveAttribute('role', 'alert');
@@ -245,12 +244,5 @@ test.describe('Session Summary (L2-085)', () => {
     summary.answer({ json: sessionDetail() }, { json: progressAfterRide() });
     await summary.tryAgain.click();
     await expect(summary.heading).toHaveText('30 Minute HIIT Cardio');
-  });
-
-  test('sends the treadmill to setup', async ({ page, api, events }) => {
-    const summary = new SessionSummaryPage(page, api, events);
-    await summary.open(undefined, undefined, undefined, treadmillIdle());
-
-    await expect(page).toHaveURL(/\/setup$/);
   });
 });

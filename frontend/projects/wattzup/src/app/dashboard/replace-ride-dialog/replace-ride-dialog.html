@@ -1,6 +1,6 @@
 <wz-dialog
   dialogId="replace-ride"
-  [heading]="run ? 'Replace the run in progress?' : 'Replace the ride in progress?'"
+  heading="Replace the ride in progress?"
   [description]="description"
   icon="refresh"
   tone="info"
@@ -17,7 +17,7 @@
   }
   <div dialog-footer class="replace-ride__actions">
     <button class="btn" type="button" data-autofocus [disabled]="busy()" (click)="ref.close(false)">
-      {{ run ? 'Keep current run' : 'Keep current ride' }}
+      Keep current ride
     </button>
     <button
       class="btn btn--volt"
@@ -26,7 +26,7 @@
       [attr.aria-busy]="busy() ? 'true' : null"
       (click)="replace()"
     >
-      {{ busy() ? 'Starting…' : failed() ? 'Try again' : run ? 'Replace run' : 'Replace ride' }}
+      {{ busy() ? 'Starting…' : failed() ? 'Try again' : 'Replace ride' }}
     </button>
   </div>
 </wz-dialog>

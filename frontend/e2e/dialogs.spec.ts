@@ -132,17 +132,20 @@ test.describe('End-ride dialog (L2-051)', () => {
     api.on('POST', '/api/workout/stop', { json: stoppedSession });
     const ride = new RidePage(page, api, events);
     const end = new EndRideDialog(page);
-    const summary = new SessionSummaryPage(page, api, events);
-    summary.answer({ json: recordedSession }, { json: progressAfterRide() }, 'baad5479c6fe');
+    const summary = new SessionSummaryPage(page, api);
+    summary.answer(
+      { json: recordedSession },
+      { json: progressAfterRide() },
+      stoppedSession.session_id,
+    );
     await ride.open(state());
     await ride.endButton.click();
     await end.endRideButton.click();
-    await expect(page).toHaveURL(/\/sessions\/baad5479c6fe$/);
+    await expect(page).toHaveURL(`/sessions/${stoppedSession.session_id}`);
     await expect(summary.back).toHaveText('Done');
     await expect(summary.date).toHaveText(/^Ride saved · /);
 
     await page.reload();
-    await events.push(state());
     await expect(summary.back).toHaveText('All sessions');
     await expect(summary.date).not.toHaveText(/^Ride saved/);
   });

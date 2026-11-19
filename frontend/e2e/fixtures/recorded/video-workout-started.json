@@ -9,10 +9,6 @@
       "rest_level": 6,
       "warmup": true,
       "cooldown": true,
-      "work_speed": null,
-      "rest_speed": null,
-      "work_incline": null,
-      "rest_incline": null,
       "video": {
         "video_id": "QUoToFsMNig",
         "start_seconds": 12
@@ -26,9 +22,7 @@
         "duration": 180,
         "level": 8,
         "cadence": 80,
-        "round": null,
-        "speed": null,
-        "incline": null
+        "round": null
       },
       {
         "kind": "work",
@@ -36,9 +30,7 @@
         "duration": 40,
         "level": 18,
         "cadence": 100,
-        "round": 1,
-        "speed": null,
-        "incline": null
+        "round": 1
       },
       {
         "kind": "rest",
@@ -46,9 +38,7 @@
         "duration": 20,
         "level": 6,
         "cadence": 72,
-        "round": 1,
-        "speed": null,
-        "incline": null
+        "round": 1
       },
       {
         "kind": "work",
@@ -56,9 +46,7 @@
         "duration": 40,
         "level": 18,
         "cadence": 100,
-        "round": 2,
-        "speed": null,
-        "incline": null
+        "round": 2
       },
       {
         "kind": "rest",
@@ -66,9 +54,7 @@
         "duration": 20,
         "level": 6,
         "cadence": 72,
-        "round": 2,
-        "speed": null,
-        "incline": null
+        "round": 2
       },
       {
         "kind": "work",
@@ -76,9 +62,7 @@
         "duration": 40,
         "level": 18,
         "cadence": 100,
-        "round": 3,
-        "speed": null,
-        "incline": null
+        "round": 3
       },
       {
         "kind": "rest",
@@ -86,9 +70,7 @@
         "duration": 20,
         "level": 6,
         "cadence": 72,
-        "round": 3,
-        "speed": null,
-        "incline": null
+        "round": 3
       },
       {
         "kind": "work",
@@ -96,9 +78,7 @@
         "duration": 40,
         "level": 18,
         "cadence": 100,
-        "round": 4,
-        "speed": null,
-        "incline": null
+        "round": 4
       },
       {
         "kind": "rest",
@@ -106,9 +86,7 @@
         "duration": 20,
         "level": 6,
         "cadence": 72,
-        "round": 4,
-        "speed": null,
-        "incline": null
+        "round": 4
       },
       {
         "kind": "work",
@@ -116,9 +94,7 @@
         "duration": 40,
         "level": 18,
         "cadence": 100,
-        "round": 5,
-        "speed": null,
-        "incline": null
+        "round": 5
       },
       {
         "kind": "rest",
@@ -126,9 +102,7 @@
         "duration": 20,
         "level": 6,
         "cadence": 72,
-        "round": 5,
-        "speed": null,
-        "incline": null
+        "round": 5
       },
       {
         "kind": "work",
@@ -136,9 +110,7 @@
         "duration": 40,
         "level": 18,
         "cadence": 100,
-        "round": 6,
-        "speed": null,
-        "incline": null
+        "round": 6
       },
       {
         "kind": "rest",
@@ -146,9 +118,7 @@
         "duration": 20,
         "level": 6,
         "cadence": 72,
-        "round": 6,
-        "speed": null,
-        "incline": null
+        "round": 6
       },
       {
         "kind": "work",
@@ -156,9 +126,7 @@
         "duration": 40,
         "level": 18,
         "cadence": 100,
-        "round": 7,
-        "speed": null,
-        "incline": null
+        "round": 7
       },
       {
         "kind": "rest",
@@ -166,9 +134,7 @@
         "duration": 20,
         "level": 6,
         "cadence": 72,
-        "round": 7,
-        "speed": null,
-        "incline": null
+        "round": 7
       },
       {
         "kind": "work",
@@ -176,9 +142,7 @@
         "duration": 40,
         "level": 18,
         "cadence": 100,
-        "round": 8,
-        "speed": null,
-        "incline": null
+        "round": 8
       },
       {
         "kind": "cooldown",
@@ -186,9 +150,7 @@
         "duration": 120,
         "level": 6,
         "cadence": 70,
-        "round": null,
-        "speed": null,
-        "incline": null
+        "round": null
       }
     ],
     "segment": 0,

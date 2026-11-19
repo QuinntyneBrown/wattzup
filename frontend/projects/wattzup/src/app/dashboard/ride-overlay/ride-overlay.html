@@ -1,22 +1,16 @@
 @let o = overlay();
-@let belt = o.kind === 'belt-countdown' || o.kind === 'belt-starting';
-<div class="overlay-panel" [class.overlay-panel--belt]="belt">
+<div class="overlay-panel">
   <div class="overlay-panel__card" [attr.role]="o.role">
-    @if (o.count !== null) {
-      <span class="overlay-panel__count numeral" aria-hidden="true">{{ o.count }}</span>
-    } @else if (o.icon; as icon) {
+    @if (o.icon; as icon) {
       <span
         class="overlay-panel__icon"
         [class.overlay-panel__icon--ok]="o.kind === 'bike-shut-off' || o.kind === 'ride-complete'"
-        [class.overlay-panel__icon--warn]="o.kind === 'belt-stopped'"
         ><wz-icon [name]="icon" size="xl"
       /></span>
     } @else {
       <span class="spinner spinner--lg" aria-hidden="true"></span>
     }
-    <h2 [attr.aria-live]="belt ? 'polite' : null" [attr.aria-atomic]="belt ? 'true' : null">
-      {{ o.title }}
-    </h2>
+    <h2>{{ o.title }}</h2>
     @for (line of o.lines; track $index) {
       <p>{{ line }}</p>
     }
@@ -36,13 +30,6 @@
             (click)="reconnect.emit()"
           >
             <span class="btn__label">Reconnect</span>
-          </button>
-        </div>
-      }
-      @case ('belt-stopped') {
-        <div class="cluster">
-          <button class="btn btn--volt" type="button" (click)="resumeRide.emit()">
-            <wz-icon name="play" size="sm" /><span class="btn__label">Resume</span>
           </button>
         </div>
       }

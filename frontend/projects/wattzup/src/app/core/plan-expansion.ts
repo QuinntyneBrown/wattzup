@@ -1,6 +1,6 @@
-// The frontend's single implementation of the plan rules (L2-045, L2-060, L2-049, L2-068),
+// The frontend's single implementation of the plan rules (L2-045, L2-060, L2-049),
 // mirroring PlanExpander, WorkoutSummary and PowerEstimator in Wattzup.Core.
-import type { IntervalsPlan, Segment, StartPlan, WorkoutPlan } from '@wattzup/api';
+import type { IntervalsPlan, Segment, WorkoutPlan } from '@wattzup/api';
 import { formatDuration } from './format-duration';
 
 export const WARMUP_SECONDS = 180;
@@ -10,17 +10,6 @@ export const WARMUP_CADENCE = 80;
 export const WORK_CADENCE = 100;
 export const REST_CADENCE = 72;
 export const COOLDOWN_CADENCE = 70;
-/** The Echelon Stride's top speed (L2-065, ADR 0010). */
-export const MAX_TREADMILL_SPEED = 19.3;
-
-/** A treadmill plan carries speeds in place of levels (L2-067). */
-export function isTreadmillPlan(plan: WorkoutPlan | StartPlan): boolean {
-  if (plan.kind === 'intervals') return false;
-  return plan.kind === 'flat'
-    ? plan.speed !== null
-    : plan.work_speed !== null && plan.rest_speed !== null;
-}
-
 /** The number of efforts in an intervals plan: the rounds of every set. */
 export function effortCount(plan: IntervalsPlan): number {
   return plan.sets.reduce((sum, s) => sum + s.rounds, 0);
@@ -30,8 +19,8 @@ export function effortCount(plan: IntervalsPlan): number {
 function expandIntervalsPlan(plan: IntervalsPlan): Segment[] {
   const segments: Segment[] = [];
   let start = 0;
-  const push = (s: Omit<Segment, 'start' | 'speed' | 'incline'>): void => {
-    segments.push({ ...s, start, speed: null, incline: null });
+  const push = (s: Omit<Segment, 'start'>): void => {
+    segments.push({ ...s, start });
     start += s.duration;
   };
   const { warmup, cooldown } = plan;
@@ -78,45 +67,8 @@ function expandIntervalsPlan(plan: IntervalsPlan): Segment[] {
   return segments;
 }
 
-/** Expands a treadmill plan (L2-068 criteria 1 and 2). */
-function expandTreadmillPlan(plan: Exclude<WorkoutPlan, IntervalsPlan>): Segment[] {
-  const segments: Segment[] = [];
-  let start = 0;
-  const push = (
-    kind: Segment['kind'],
-    duration: number,
-    speed: number | null,
-    incline: number | null,
-    round: number | null,
-  ): void => {
-    segments.push({ kind, start, duration, level: null, cadence: null, round, speed, incline });
-    start += duration;
-  };
-  if (plan.kind === 'flat') {
-    push('steady', plan.minutes * 60, plan.speed, plan.incline ?? 0, null);
-    return segments;
-  }
-  // The warm-up is a brisk walk: 1 km/h above the recover speed, at the recover incline (L2-068).
-  if (plan.warmup) {
-    const warmupSpeed = Math.min(
-      Math.round(((plan.rest_speed ?? 0) + 1) * 10) / 10,
-      MAX_TREADMILL_SPEED,
-    );
-    push('warmup', WARMUP_SECONDS, warmupSpeed, plan.rest_incline ?? 0, null);
-  }
-  for (let round = 1; round <= plan.rounds; round++) {
-    push('work', plan.work_seconds, plan.work_speed, plan.work_incline ?? 0, round);
-    if (!(plan.cooldown && round === plan.rounds)) {
-      push('rest', plan.rest_seconds, plan.rest_speed, plan.rest_incline ?? 0, round);
-    }
-  }
-  if (plan.cooldown) push('cooldown', COOLDOWN_SECONDS, plan.rest_speed, 0, null);
-  return segments;
-}
-
 export function expandPlan(plan: WorkoutPlan): Segment[] {
   if (plan.kind === 'intervals') return expandIntervalsPlan(plan);
-  if (isTreadmillPlan(plan)) return expandTreadmillPlan(plan);
   if (plan.kind === 'flat') {
     return [
       {
@@ -126,18 +78,16 @@ export function expandPlan(plan: WorkoutPlan): Segment[] {
         level: plan.level,
         cadence: plan.cadence,
         round: null,
-        speed: null,
-        incline: null,
       },
     ];
   }
   const segments: Segment[] = [];
   let start = 0;
-  const push = (s: Omit<Segment, 'start' | 'speed' | 'incline'>): void => {
-    segments.push({ ...s, start, speed: null, incline: null });
+  const push = (s: Omit<Segment, 'start'>): void => {
+    segments.push({ ...s, start });
     start += s.duration;
   };
-  const restLevel = plan.rest_level ?? 0;
+  const restLevel = plan.rest_level;
   if (plan.warmup) {
     push({
       kind: 'warmup',
@@ -187,8 +137,6 @@ export function planSummary(plan: WorkoutPlan): string {
     return `Intervals · ${n} ${n === 1 ? 'effort' : 'efforts'} · ${formatDuration(totalSeconds(expandPlan(plan)))}`;
   }
   if (plan.kind === 'flat') {
-    if (plan.speed !== null)
-      return `Steady · ${plan.speed.toFixed(1)} km/h at ${plan.incline ?? 0}% · ${plan.minutes} min`;
     return `Flat · Level ${plan.level} · ${plan.minutes} min`;
   }
   if (plan.work_seconds < 60) {
@@ -197,10 +145,8 @@ export function planSummary(plan: WorkoutPlan): string {
   return `HIIT · ${plan.rounds} × ${formatDuration(plan.work_seconds)} / ${formatDuration(plan.rest_seconds)}`;
 }
 
-/** Estimated watts: max(0, round(cadence × (0.55 + level × 0.155))) (ADR 0003); 0 without a
- * level or cadence (a treadmill segment). */
-export function estimateWatts(cadence: number | null, level: number | null): number {
-  if (cadence === null || level === null) return 0;
+/** Estimated watts: max(0, round(cadence × (0.55 + level × 0.155))) (ADR 0003). */
+export function estimateWatts(cadence: number, level: number): number {
   return Math.max(0, Math.round(cadence * (0.55 + level * 0.155)));
 }
 
@@ -210,11 +156,6 @@ export function averageTargetPower(segments: readonly Segment[]): number {
   if (total === 0) return 0;
   const sum = segments.reduce((acc, s) => acc + estimateWatts(s.cadence, s.level) * s.duration, 0);
   return Math.round(sum / total);
-}
-
-/** The sum of each segment's speed × duration ÷ 3600, in km (L2-072 criterion 8). */
-export function expectedDistanceKm(segments: readonly Segment[]): number {
-  return segments.reduce((sum, s) => sum + ((s.speed ?? 0) * s.duration) / 3600, 0);
 }
 
 /** kcal = round(avg power × seconds ÷ 1000 ÷ 0.24 ÷ 4.184) (L2-049). */

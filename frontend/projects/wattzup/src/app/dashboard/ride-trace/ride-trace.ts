@@ -17,12 +17,6 @@ import { PowerTraceStore } from '../../core/power-trace.store';
 import { ThemeService } from '../../core/theme.service';
 import { traceDrawList } from '../../core/trace-draw-list';
 import { traceGeometry } from '../../core/trace-geometry';
-import { TreadmillTraceStore } from '../../core/treadmill-trace.store';
-import {
-  inclineLane,
-  treadmillTraceGeometry,
-  treadmillTraceSummary,
-} from '../../core/treadmill-trace';
 import {
   TRACE_RENDERER_FACTORY,
   type TraceColors,
@@ -32,7 +26,7 @@ import {
 } from '../../core/trace-renderer';
 import { TraceRendererStatus } from '../../core/trace-renderer-status';
 
-/** Power vs. plan (L2-026, L2-028), or on the treadmill speed vs. plan with an incline lane (L2-071 AC6). */
+/** Power vs. plan (L2-026, L2-028). */
 @Component({
   selector: 'wz-ride-trace',
   templateUrl: './ride-trace.html',
@@ -44,7 +38,6 @@ export class RideTrace {
   readonly dimmed = input(false);
 
   private readonly store = inject(PowerTraceStore);
-  private readonly treadmillStore = inject(TreadmillTraceStore);
   private readonly frames = inject(FrameScheduler);
   private readonly theme = inject(ThemeService);
   private readonly status = inject(TraceRendererStatus);
@@ -53,24 +46,14 @@ export class RideTrace {
   private readonly plot = viewChild<ElementRef<HTMLElement>>('plot');
   private readonly canvasRef = viewChild<ElementRef<HTMLCanvasElement>>('canvas');
 
-  private readonly treadmill = computed(() => this.state()?.machine === 'treadmill');
   protected readonly scene = computed(() => {
     const w = this.state()?.workout;
-    if (!w) return null;
-    return this.treadmill()
-      ? treadmillTraceGeometry(w, w.elapsed_seconds)
-      : traceGeometry(w, w.elapsed_seconds);
-  });
-  protected readonly lane = computed(() => {
-    const w = this.state()?.workout;
-    this.treadmillStore.version();
-    return w && this.treadmill() ? inclineLane(w, this.treadmillStore.history) : null;
+    return w ? traceGeometry(w, w.elapsed_seconds) : null;
   });
   protected readonly summary = computed(() => {
     const scene = this.scene();
     const w = this.state()?.workout;
     if (!scene || !w) return '';
-    if (this.treadmill()) return treadmillTraceSummary(w);
     return `Average ${this.state()?.avg_power ?? 0} W against a plan average of ${scene.planAverage} W`;
   });
 
@@ -99,7 +82,6 @@ export class RideTrace {
     effect(() => {
       this.scene();
       this.store.version();
-      this.treadmillStore.version();
       untracked(() => this.frames.requestDraw(this.draw));
     });
     afterNextRender(() => this.frames.requestDraw(this.draw));
@@ -148,13 +130,7 @@ export class RideTrace {
     this.colors ??= readTraceColors(this.host.nativeElement);
     const { width, height, ratio } = this.size;
     this.renderer.draw(
-      traceDrawList(
-        scene,
-        this.treadmill() ? this.treadmillStore.history : this.store.history,
-        width * ratio,
-        height * ratio,
-        ratio,
-      ),
+      traceDrawList(scene, this.store.history, width * ratio, height * ratio, ratio),
       this.colors,
     );
   }

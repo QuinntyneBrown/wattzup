@@ -10,7 +10,7 @@ let nextId = 0;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Readout {
-  readonly kind = input.required<'power' | 'cadence' | 'speed' | 'incline'>();
+  readonly kind = input.required<'power' | 'cadence'>();
   readonly label = input.required<string>();
   readonly value = input.required<string>();
   readonly unit = input.required<string>();

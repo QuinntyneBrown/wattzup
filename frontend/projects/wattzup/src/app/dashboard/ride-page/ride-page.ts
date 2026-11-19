@@ -26,25 +26,9 @@ import { ResistanceCommandService } from '../../core/resistance-command.service'
 import { controlsState, planNote, stepLevel } from '../../core/resistance-controls';
 import { resistanceView } from '../../core/resistance-view';
 import { rideViewState } from '../../core/ride-view-state';
-import { TreadmillCommandService } from '../../core/treadmill-command.service';
 import {
-  baseIncline,
-  baseSpeed,
-  QUICK_SPEEDS,
-  stepIncline,
-  stepSpeed,
-  treadmillControlsState,
-  treadmillPlanNote,
-} from '../../core/treadmill-controls';
-import { inclineView, speedView } from '../../core/treadmill-view';
-import {
-  InclineControl,
-  SpeedControl,
-  Icon,
   PlanNote,
   LevelPicker,
-  inclineView as pickerView,
-  QuickSpeeds,
   LevelControl,
   EmptyState,
   Readout,
@@ -55,7 +39,6 @@ import {
   PhaseBanner,
   PlanStrip,
 } from '@wattzup/components';
-import { formatPace } from '../../core/pace';
 import { AppBar } from '../app-bar/app-bar';
 import { ConnectionBanner } from '../connection-banner/connection-banner';
 import { RideOverlay } from '../ride-overlay/ride-overlay';
@@ -70,12 +53,8 @@ import { RideVideo } from '../ride-video/ride-video';
   imports: [
     AppBar,
     NgTemplateOutlet,
-    QuickSpeeds,
     CommandLog,
     ConnectionBanner,
-    Icon,
-    InclineControl,
-    SpeedControl,
     EmptyState,
     RideOverlay,
     RideTrace,
@@ -96,7 +75,6 @@ import { RideVideo } from '../ride-video/ride-video';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RidePage {
-  protected readonly quickSpeeds = QUICK_SPEEDS;
   protected readonly live = inject(LiveStateService);
   protected readonly state = this.live.state;
   protected readonly workout = computed(() => this.state()?.workout ?? null);
@@ -142,14 +120,6 @@ export class RidePage {
 
   protected readonly commands = inject(ResistanceCommandService);
   protected readonly actions = inject(RideActions);
-  /** Switching machines is offered only with treadmill support on (L2-073 AC11, L2-075). */
-  protected readonly canSwitch = computed(() => this.state()?.treadmill_enabled === true);
-  /** `End and switch to bike` on the treadmill, `… to treadmill` on the bike (L2-071 AC12). */
-  protected readonly switchLabel = computed(() =>
-    this.state()?.machine === 'treadmill'
-      ? 'End and switch to bike'
-      : 'End and switch to treadmill',
-  );
   protected readonly dialogs = inject(DialogLauncher);
   protected readonly overlay = computed(() => {
     const kind = this.view().overlay;
@@ -165,51 +135,15 @@ export class RidePage {
     return note ? { text: note, backToPlan: false } : planNote(this.state());
   });
 
-  protected readonly treadmill = computed(() => this.state()?.machine === 'treadmill');
   protected readonly cues = inject(CueDirector);
   protected readonly metrics = computed(() => metricItems(this.state()));
   protected readonly commandLog = computed(() =>
-    commandLogView(
-      this.state()?.commands ?? [],
-      this.treadmill() ? 'treadmill' : 'bike',
-      epochClock,
-    ),
+    commandLogView(this.state()?.commands ?? [], epochClock),
   );
   protected readonly strip = computed(() => {
     const w = this.workout();
     return w ? stripOf(w.segments, w.elapsed_seconds, w.total_seconds) : null;
   });
-  protected readonly speed = computed(() => speedView(this.state()));
-  protected readonly incline = computed(() => inclineView(this.state()));
-  protected readonly treadmillControls = computed(() =>
-    treadmillControlsState(this.state(), this.view().commandsEnabled),
-  );
-  protected readonly treadmillNote = computed(() => {
-    const note = this.view().controlsNote ?? this.treadmillControls().note;
-    return note ? { text: note, backToPlan: false } : treadmillPlanNote(this.state());
-  });
-  /** The panel's target speed and incline, and the device tail for the log (L2-071 AC8, 9, 12). */
-  protected readonly treadmillTargets = computed(() => {
-    const s = this.state();
-    const speed = baseSpeed(s);
-    const incline = baseIncline(s);
-    return {
-      speedText: speed.toFixed(1),
-      speedNote: `km/h target · ${formatPace(speed)} /km`,
-      inclineText: String(incline),
-      inclinePicker: pickerView(incline),
-      deviceTail: s?.device ? s.device.slice(-6) : null,
-    };
-  });
-  protected readonly treadmillCommands = inject(TreadmillCommandService);
-
-  protected stepSpeed(dir: 1 | -1): void {
-    void this.treadmillCommands.setSpeed(stepSpeed(this.state(), dir));
-  }
-
-  protected stepIncline(dir: 1 | -1): void {
-    void this.treadmillCommands.setIncline(stepIncline(this.state(), dir));
-  }
 
   protected stepResistance(delta: 1 | -1): void {
     void this.commands.set(stepLevel(this.state(), delta));
@@ -218,10 +152,5 @@ export class RidePage {
   constructor() {
     inject(CommandFeedbackService).start();
     this.live.ensureStarted();
-  }
-
-  protected switchMachine(event: Event): void {
-    event.preventDefault();
-    this.actions.switchMachine();
   }
 }

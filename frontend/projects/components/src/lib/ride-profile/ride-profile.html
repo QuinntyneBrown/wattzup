@@ -1,12 +1,9 @@
-<aside class="setup-aside" [attr.aria-label]="noun() === 'run' ? 'Run preview' : 'Ride preview'">
-  <h2>Your {{ noun() }}</h2>
-  <p class="numeral ride-total" [attr.aria-label]="'Total ' + noun() + ' time ' + total()">
+<aside class="setup-aside" aria-label="Ride preview">
+  <h2>Your ride</h2>
+  <p class="numeral ride-total" [attr.aria-label]="'Total ride time ' + total()">
     {{ total() }}
   </p>
   @if (preview(); as p) {
-    @if (p.incline) {
-      <div class="profile-head" aria-hidden="true"><span>Speed</span><span>19.3 km/h</span></div>
-    }
     <svg
       class="profile"
       [attr.viewBox]="'0 0 ' + p.totalSeconds + ' ' + p.profileHeight"
@@ -24,19 +21,6 @@
         />
       }
     </svg>
-    @if (p.incline; as incline) {
-      <div class="profile-head" aria-hidden="true"><span>Incline</span><span>10%</span></div>
-      <svg
-        class="profile profile--incline"
-        [attr.viewBox]="'0 0 ' + p.totalSeconds + ' 10'"
-        preserveAspectRatio="none"
-        role="img"
-        [attr.aria-label]="incline.label"
-      >
-        <polygon class="incline-area" [attr.points]="incline.area" />
-        <polyline class="incline-line" [attr.points]="incline.line" />
-      </svg>
-    }
     <div class="profile-axis" aria-hidden="true">
       <span>0:00</span><span>{{ p.total }}</span>
     </div>

@@ -1,6 +1,5 @@
-import { previewOf, treadmillPreviewOf, withVideoRow } from './ride-preview';
+import { previewOf, withVideoRow } from './ride-preview';
 import { testIntervalsPlan } from './test-state';
-import { DEFAULT_TREADMILL_DRAFT, toTreadmillPlan } from './treadmill-plan-form';
 
 describe('previewOf (L2-059)', () => {
   it('previews the Descending recoveries plan (AC5)', () => {
@@ -33,10 +32,6 @@ describe('previewOf (L2-059)', () => {
       rest_level: 6,
       warmup: true,
       cooldown: true,
-      work_speed: null,
-      rest_speed: null,
-      work_incline: null,
-      rest_incline: null,
     });
     expect(p.total).toBe('12:40');
     expect(p.totalSeconds).toBe(760);
@@ -55,8 +50,6 @@ describe('previewOf (L2-059)', () => {
       level: 12,
       minutes: 30,
       cadence: 85,
-      speed: null,
-      incline: null,
     });
     expect(p.total).toBe('30:00');
     expect(p.structure).toBe('Level 12 throughout');
@@ -78,10 +71,6 @@ describe('previewOf (L2-059)', () => {
       rest_level: 6,
       warmup: true,
       cooldown: true,
-      work_speed: null,
-      rest_speed: null,
-      work_incline: null,
-      rest_incline: null,
     });
     expect(p.profile.length).toBe(17);
     const [warmup, work, rest] = p.profile;
@@ -89,59 +78,6 @@ describe('previewOf (L2-059)', () => {
     expect(work).toEqual({ x: 181.52, width: 36.96, y: 14, height: 18, tone: 'is-work' });
     expect(rest).toEqual({ x: 221.52, width: 16.96, y: 26, height: 6, tone: 'is-rest' });
     expect(p.profile.at(-1)?.tone).toBe('is-easy');
-  });
-});
-
-describe('treadmillPreviewOf (L2-072 AC8)', () => {
-  const minuteOn = toTreadmillPlan(DEFAULT_TREADMILL_DRAFT)!;
-
-  it('previews Minute on with the figures of the requirement', () => {
-    const p = treadmillPreviewOf(minuteOn);
-    expect(p.total).toBe('16:00');
-    expect(p.profileLabel).toBe('Speed profile: 6 × 1:00 / 1:00, top speed 13.0 km/h');
-    expect(p.rows).toEqual([
-      { term: 'Structure', value: '6 × 1:00 / 1:00' },
-      { term: 'Top speed', value: '13.0 km/h · 4:37 /km' },
-      { term: 'Steepest', value: '2%' },
-      { term: 'Expected distance', value: '~2.35 km' },
-      { term: 'Expected climb', value: '~35 m' },
-      { term: 'Expected energy', value: '~184 kcal' },
-    ]);
-  });
-
-  it('draws the speed bars to the 19.3 km/h scale, inset as the mock does', () => {
-    const p = treadmillPreviewOf(minuteOn);
-    expect(p.profileHeight).toBe(193);
-    const [warmup, work, rest] = p.profile;
-    expect(warmup).toEqual({ x: 1.9, width: 176.2, y: 123, height: 70, tone: 'is-easy' });
-    expect(work).toEqual({ x: 181.9, width: 56.2, y: 63, height: 130, tone: 'is-work' });
-    expect(rest).toEqual({ x: 241.9, width: 56.2, y: 133, height: 60, tone: 'is-rest' });
-  });
-
-  it('draws the incline profile from 0 to 10% on the same time axis', () => {
-    const incline = treadmillPreviewOf(minuteOn).incline!;
-    expect(incline.label).toBe('Incline profile, steepest 2%');
-    expect(incline.line.startsWith('0,9 180,9 180,8 240,8 240,9 300,9')).toBe(true);
-    expect(incline.line.endsWith('780,8 840,8 840,10 960,10')).toBe(true);
-    expect(incline.area).toBe(`0,10 ${incline.line} 960,10`);
-  });
-
-  it('previews a Steady run as speed at incline', () => {
-    const p = treadmillPreviewOf({
-      kind: 'flat',
-      video: null,
-      level: null,
-      minutes: 30,
-      cadence: null,
-      speed: 6.5,
-      incline: 8,
-    });
-    expect(p.rows.slice(0, 3)).toEqual([
-      { term: 'Structure', value: '6.5 km/h at 8%' },
-      { term: 'Top speed', value: '6.5 km/h · 9:14 /km' },
-      { term: 'Steepest', value: '8%' },
-    ]);
-    expect(p.legend).toEqual(['steady']);
   });
 });
 
@@ -153,8 +89,6 @@ describe('withVideoRow (L2-059 AC6)', () => {
     level: 12,
     minutes: 30,
     cadence: 85,
-    speed: null,
-    incline: null,
   });
 
   it('adds Video Synced from <m:ss.s> right after Time under load', () => {

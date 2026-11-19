@@ -1,6 +1,6 @@
 import { expect, test } from './fixtures/wz-test';
 import { RidePage } from './pages/ride.page';
-import { NOW, freeRide, state, treadmillState, treadmillWorkout, workout } from './fixtures/states';
+import { NOW, freeRide, state, workout } from './fixtures/states';
 import recordedSession from './fixtures/recorded/session.json';
 import { progressAfterRide } from './fixtures/sessions';
 import { SessionSummaryPage } from './pages/session-summary.page';
@@ -209,7 +209,7 @@ test.describe('Ride dashboard overlays and errors (L2-058)', () => {
     await expect(see).toBeFocused();
     await expect(ride.link(ride.overlay, 'Ride another class')).toHaveAttribute('href', '/classes');
 
-    const summary = new SessionSummaryPage(page, api, events);
+    const summary = new SessionSummaryPage(page, api);
     summary.answer({ json: recordedSession }, { json: progressAfterRide() }, 'baad5479c6fe');
     await see.click();
     await expect(page).toHaveURL(/\/sessions\/baad5479c6fe$/);
@@ -225,16 +225,6 @@ test.describe('Ride dashboard overlays and errors (L2-058)', () => {
     const ride = new RidePage(page, api, events);
     await ride.open(state({ workout: workout({ status: 'ended', elapsed_seconds: 760 }) }));
     await expect(ride.endButton).toBeVisible();
-    await expect(ride.overlay).toHaveCount(0);
-  });
-
-  test('the treadmill shows no Ride complete (L2-084 AC4)', async ({ page, api, events }) => {
-    const ride = new RidePage(page, api, events);
-    await ride.open(
-      treadmillState({
-        workout: treadmillWorkout({ status: 'ended', session_id: 'baad5479c6fe' }),
-      }),
-    );
     await expect(ride.overlay).toHaveCount(0);
   });
 

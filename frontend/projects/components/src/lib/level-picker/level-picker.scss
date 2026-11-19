@@ -43,18 +43,3 @@
   outline: 1px solid color-mix(in srgb, var(--color-fg-default) 60%, transparent);
   outline-offset: 1px;
 }
-/* The Stride's incline: 11 bars rising from 22 % to 100 %, lit in the foreground colour, as in the
-   Run Setup mock (L2-072 AC5). */
-.level-picker--incline {
-  margin-top: var(--space-2);
-  height: var(--control-height-lg);
-}
-@for $i from 1 through 11 {
-  .level-picker--incline .level-picker__bar:nth-child(#{$i}) {
-    height: math.round(22 + ($i - 1) * 7.8) * 1%;
-  }
-}
-.level-picker--incline .level-picker__bar.is-lit,
-.level-picker--incline .level-picker__bar.is-set {
-  background: var(--color-fg-default);
-}

@@ -1,9 +1,6 @@
 <div class="toggles">
   <label class="toggle-row">
-    <span
-      ><b>Warm-up</b
-      ><small>{{ machine() === 'treadmill' ? '3 min, brisk walk' : '3 min, easy' }}</small></span
-    >
+    <span><b>Warm-up</b><small>3 min, easy</small></span>
     <span class="switch"
       ><input
         type="checkbox"
@@ -14,12 +11,7 @@
     /></span>
   </label>
   <label class="toggle-row">
-    <span
-      ><b>Cool-down</b
-      ><small>{{
-        machine() === 'treadmill' ? '2 min, walk, deck back to 0%' : '2 min, easy'
-      }}</small></span
-    >
+    <span><b>Cool-down</b><small>2 min, easy</small></span>
     <span class="switch"
       ><input
         type="checkbox"

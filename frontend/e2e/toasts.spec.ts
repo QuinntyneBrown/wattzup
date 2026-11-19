@@ -10,8 +10,6 @@ const manual = (status: string, ack_ms: number | null = null) => ({
   source: 'manual',
   status,
   ack_ms,
-  command: 'resistance',
-  value: 20,
 });
 
 test.describe('Resistance command toasts (L2-020, L2-048)', () => {
@@ -100,7 +98,7 @@ test.describe('Resistance command toasts (L2-020, L2-048)', () => {
     await ride.push(
       freeRide({
         target_resistance: 22,
-        commands: [{ ...manual('sending'), level: 22, value: 22 }],
+        commands: [{ ...manual('sending'), level: 22 }],
       }),
     );
     await page.clock.runFor(4000);
@@ -115,7 +113,7 @@ test.describe('Resistance command toasts (L2-020, L2-048)', () => {
       freeRide({
         resistance: 22,
         target_resistance: 22,
-        commands: [{ ...manual('ack', 5400), level: 22, value: 22 }],
+        commands: [{ ...manual('ack', 5400), level: 22 }],
       }),
     );
     await expect(toast).toHaveCount(0);

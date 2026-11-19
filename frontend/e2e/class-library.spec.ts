@@ -5,7 +5,7 @@
 // Ride Dashboard's Library link to it, which leaves the workout untouched (AC15).
 import recordedClasses from './fixtures/recorded/classes.json';
 import { expect, test } from './fixtures/wz-test';
-import { freeRide, state, treadmillIdle, treadmillState } from './fixtures/states';
+import { freeRide, state } from './fixtures/states';
 import { ClassLibraryPage } from './pages/class-library.page';
 import { RidePage } from './pages/ride.page';
 import { progressReport } from './fixtures/sessions';
@@ -201,13 +201,6 @@ test.describe('Class library (L2-079)', () => {
     await expect(library.cards).toHaveCount(191);
   });
 
-  test('redirects the treadmill to setup', async ({ page, api, events }) => {
-    const library = new ClassLibraryPage(page, api, events);
-    await library.open(undefined, treadmillIdle());
-
-    await expect(page).toHaveURL(/\/setup$/);
-  });
-
   test('links to Progress with the streak in its name and badge (L2-079 AC13)', async ({
     page,
     api,
@@ -304,12 +297,5 @@ test.describe("The Ride Dashboard's Library link (L2-079 AC15)", () => {
       await expect(library.heading).toHaveText('Ride a class');
       expect(workoutChanges(api.requests)).toEqual([]);
     });
-  });
-
-  test('is not shown on the treadmill', async ({ page, api, events }) => {
-    const ride = new RidePage(page, api, events);
-    await ride.open(treadmillState());
-    await expect(ride.stopBeltButton).toBeVisible();
-    await expect(ride.libraryLink).toHaveCount(0);
   });
 });

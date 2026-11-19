@@ -34,9 +34,7 @@ export class CommandFeedbackService {
 
   private observe(state: BikeState): void {
     this.latest = state;
-    const manual = state.commands.filter(
-      (c) => c.source === 'manual' && c.command === 'resistance',
-    );
+    const manual = state.commands.filter((c) => c.source === 'manual');
     for (const entry of manual) {
       const key = `${entry.at}|${entry.level}`;
       const seen = this.watched.get(key);
@@ -45,7 +43,7 @@ export class CommandFeedbackService {
         this.watched.set(key, w);
         if (!this.primed) continue;
         if (entry.status === 'sending')
-          w.timer = setTimeout(() => this.slow(key, entry.value), SLOW_CONFIRM_MS);
+          w.timer = setTimeout(() => this.slow(key, entry.level), SLOW_CONFIRM_MS);
         else if (entry.status === 'ack') this.confirmed(entry, state);
         continue;
       }
@@ -81,8 +79,8 @@ export class CommandFeedbackService {
     const bike = state.device_label ?? this.latest?.device_label ?? 'The bike';
     this.toasts.show({
       tone: 'success',
-      title: `Resistance set to ${entry.value}`,
-      text: `${bike} confirmed level ${entry.value} in ${entry.ack_ms} ms.`,
+      title: `Resistance set to ${entry.level}`,
+      text: `${bike} confirmed level ${entry.level} in ${entry.ack_ms} ms.`,
     });
   }
 }

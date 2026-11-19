@@ -4,7 +4,6 @@
 // once by measure, the saved sessions, the streak calendar with this week and all time, the
 // achievements, and the empty, loading and error states.
 import { expect, test } from './fixtures/wz-test';
-import { treadmillIdle } from './fixtures/states';
 import { progressReport, sessionDetail, sessionSummary } from './fixtures/sessions';
 import { ProgressPage } from './pages/progress.page';
 
@@ -14,7 +13,7 @@ test.describe('Progress (L2-086)', () => {
     api,
     events,
   }) => {
-    const progress = new ProgressPage(page, api, events);
+    const progress = new ProgressPage(page, api);
     await progress.open();
 
     await expect(page).toHaveTitle('Progress · Wattzup');
@@ -24,7 +23,7 @@ test.describe('Progress (L2-086)', () => {
   });
 
   test('reads Ride again once the rider has ridden today', async ({ page, api, events }) => {
-    const progress = new ProgressPage(page, api, events);
+    const progress = new ProgressPage(page, api);
     await progress.open({
       json: progressReport({ streak: { current: 4, best: 6, rode_today: true } }),
     });
@@ -40,7 +39,7 @@ test.describe('Progress (L2-086)', () => {
     api,
     events,
   }) => {
-    const progress = new ProgressPage(page, api, events);
+    const progress = new ProgressPage(page, api);
     await progress.open();
 
     await expect(progress.heading).toHaveText('Getting stronger');
@@ -74,7 +73,7 @@ test.describe('Progress (L2-086)', () => {
     api,
     events,
   }) => {
-    const progress = new ProgressPage(page, api, events);
+    const progress = new ProgressPage(page, api);
     await progress.open();
 
     await expect(progress.points).toHaveCount(5);
@@ -86,7 +85,7 @@ test.describe('Progress (L2-086)', () => {
   });
 
   test('moves between classes and measures with the arrow keys', async ({ page, api, events }) => {
-    const progress = new ProgressPage(page, api, events);
+    const progress = new ProgressPage(page, api);
     await progress.open();
 
     await progress.classOption('30 Minute HIIT Cardio').focus();
@@ -108,7 +107,7 @@ test.describe('Progress (L2-086)', () => {
   });
 
   test('counts dips down as better', async ({ page, api, events }) => {
-    const progress = new ProgressPage(page, api, events);
+    const progress = new ProgressPage(page, api);
     await progress.open();
 
     await progress.measure('Cadence dips').click();
@@ -128,7 +127,7 @@ test.describe('Progress (L2-086)', () => {
     api,
     events,
   }) => {
-    const progress = new ProgressPage(page, api, events);
+    const progress = new ProgressPage(page, api);
     await progress.open({
       json: progressReport({
         classes: [
@@ -152,7 +151,7 @@ test.describe('Progress (L2-086)', () => {
     api,
     events,
   }) => {
-    const progress = new ProgressPage(page, api, events);
+    const progress = new ProgressPage(page, api);
     await progress.open();
 
     await expect(progress.sessionsCount).toHaveText('11 saved');
@@ -183,7 +182,7 @@ test.describe('Progress (L2-086)', () => {
     api,
     events,
   }) => {
-    const progress = new ProgressPage(page, api, events);
+    const progress = new ProgressPage(page, api);
     await progress.open();
 
     await expect(progress.streakCount).toHaveText('3days');
@@ -207,7 +206,7 @@ test.describe('Progress (L2-086)', () => {
   });
 
   test('says one ride starts a new streak when there is none', async ({ page, api, events }) => {
-    const progress = new ProgressPage(page, api, events);
+    const progress = new ProgressPage(page, api);
     await progress.open({
       json: progressReport({ streak: { current: 0, best: 6, rode_today: false } }),
     });
@@ -222,7 +221,7 @@ test.describe('Progress (L2-086)', () => {
     api,
     events,
   }) => {
-    const progress = new ProgressPage(page, api, events);
+    const progress = new ProgressPage(page, api);
     await progress.open();
 
     await expect(progress.achievementsCount).toHaveText('4 of 6');
@@ -252,7 +251,7 @@ test.describe('Progress (L2-086)', () => {
     api,
     events,
   }) => {
-    const progress = new ProgressPage(page, api, events);
+    const progress = new ProgressPage(page, api);
     await progress.open(
       {
         json: progressReport({
@@ -276,7 +275,7 @@ test.describe('Progress (L2-086)', () => {
   });
 
   test('shows skeletons while loading', async ({ page, api, events }) => {
-    const progress = new ProgressPage(page, api, events);
+    const progress = new ProgressPage(page, api);
     await progress.open({ hang: true });
 
     await expect(progress.skeletons.first()).toBeVisible();
@@ -284,7 +283,7 @@ test.describe('Progress (L2-086)', () => {
   });
 
   test('offers Try again when the server does not answer', async ({ page, api, events }) => {
-    const progress = new ProgressPage(page, api, events);
+    const progress = new ProgressPage(page, api);
     await progress.open({ abort: true });
 
     await expect(progress.notice).toHaveAttribute('role', 'alert');
@@ -296,12 +295,5 @@ test.describe('Progress (L2-086)', () => {
     progress.answer({ json: progressReport() }, { json: { sessions: [] } });
     await progress.tryAgain.click();
     await expect(progress.heading).toHaveText('No rides yet');
-  });
-
-  test('sends the treadmill to setup', async ({ page, api, events }) => {
-    const progress = new ProgressPage(page, api, events);
-    await progress.open(undefined, undefined, treadmillIdle());
-
-    await expect(page).toHaveURL(/\/setup$/);
   });
 });

@@ -1,12 +1,12 @@
 // Acceptance Test
 // Traces to: L2-080
 // Description: The class page at /classes/:id: the class's header, its video preview cued at the
-// start point, the plan card and the resistance rows; a missing class and the treadmill.
+// start point, the plan card and the resistance rows; a missing class.
 import dolomites from './fixtures/recorded/class-60-min-dolomites-endurance.json';
 import videoStarted from './fixtures/recorded/video-workout-started.json';
 import notFound from './fixtures/recorded/problem-class-not-found.json';
 import { expect, test } from './fixtures/wz-test';
-import { state, treadmillIdle, workout } from './fixtures/states';
+import { state, workout } from './fixtures/states';
 import { ReplaceRideDialog } from './pages/replace-ride.dialog';
 import { SetupPage } from './pages/setup.page';
 import { ClassPage } from './pages/class.page';
@@ -107,13 +107,6 @@ test.describe('Class page (L2-080)', () => {
       'href',
       '/setup',
     );
-  });
-
-  test('redirects the treadmill to setup', async ({ page, api, events }) => {
-    const cls = new ClassPage(page, api, events);
-    await cls.open(undefined, undefined, treadmillIdle());
-
-    await expect(page).toHaveURL(/\/setup$/);
   });
 
   test('moves every effort or recover by one, updates the card and resets to the class', async ({

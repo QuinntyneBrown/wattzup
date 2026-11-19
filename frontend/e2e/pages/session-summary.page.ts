@@ -1,6 +1,5 @@
 import type { Locator, Page, Request } from '@playwright/test';
-import type { ApiStub, EventStreamStub, StubResponse } from '../fixtures/wz-test';
-import { freeRide, type Json } from '../fixtures/states';
+import type { ApiStub, StubResponse } from '../fixtures/wz-test';
 import { SESSION_ID, progressAfterRide, sessionDetail } from '../fixtures/sessions';
 
 type Answer = StubResponse | ((request: Request) => StubResponse | Promise<StubResponse>);
@@ -39,7 +38,6 @@ export class SessionSummaryPage {
   constructor(
     readonly page: Page,
     private readonly api: ApiStub,
-    private readonly events: EventStreamStub,
   ) {
     const bar = page.locator('.app-bar');
     this.back = bar.getByRole('link', { name: /^(Done|All sessions)$/ });
@@ -83,12 +81,9 @@ export class SessionSummaryPage {
     session: Answer = { json: sessionDetail() },
     progress: Answer = { json: progressAfterRide() },
     id = SESSION_ID,
-    live: Json = freeRide(),
   ): Promise<void> {
     this.answer(session, progress, id);
-    this.api.on('GET', '/api/status', { json: live });
     await this.page.goto(`/sessions/${id}`);
-    await this.events.push(live);
   }
 
   answer(session: Answer, progress: Answer, id = SESSION_ID): void {

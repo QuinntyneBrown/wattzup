@@ -1,6 +1,6 @@
 import { expect, test } from './fixtures/wz-test';
 import { SetupPage } from './pages/setup.page';
-import { freeRide, treadmillIdle } from './fixtures/states';
+import { freeRide } from './fixtures/states';
 import workoutStarted from './fixtures/recorded/workout-started.json';
 
 const GCN = 'https://www.youtube.com/watch?v=QUoToFsMNig';
@@ -18,9 +18,6 @@ test.describe('Ride along to a video on setup (L2-029 AC17-20)', () => {
     await expect(setup.videoUrl).toHaveCount(0);
     await setup.videoSwitch.check();
     await expect(setup.videoUrl).toHaveAttribute('type', 'url');
-
-    await setup.open(treadmillIdle());
-    await expect(setup.videoSwitch).toBeVisible();
   });
 
   test('prefills the 30 Minute HIIT link, also after the link was cleared', async ({

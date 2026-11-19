@@ -34,11 +34,9 @@ import { ClassNotFound } from '../class-not-found/class-not-found';
 import { DialogLauncher } from '../../core/dialog-launcher';
 import { formatDuration } from '../../core/format-duration';
 import { LiveStateService } from '../../core/live-state.service';
-import { MachineHistoryStore } from '../../core/machine-history.store';
 import { planSummary } from '../../core/plan-expansion';
 import { PlanDraftStore } from '../../core/plan-draft.store';
 import { isActive } from '../../core/workout-status';
-import { bikeOnly } from '../../core/machine-guards';
 import { MotionPreference } from '../../core/motion-preference';
 import { previewOf } from '../../core/ride-preview';
 import { formatStart, linkError, parseStart, stepStart, videoIdOf } from '../../core/video-link';
@@ -64,7 +62,6 @@ export class ClassPage {
   private readonly live = inject(LiveStateService);
   private readonly workouts = inject(WORKOUT_API);
   private readonly dialogs = inject(DialogLauncher);
-  private readonly history = inject(MachineHistoryStore);
   private readonly router = inject(Router);
   private readonly drafts = inject(PlanDraftStore);
 
@@ -116,7 +113,7 @@ export class ClassPage {
   private readonly player = signal<PlayerHandle | null>(null);
 
   constructor() {
-    bikeOnly();
+    this.live.ensureStarted();
     effect(() => {
       const id = this.id();
       untracked(() => void this.load(id));
@@ -212,7 +209,6 @@ export class ClassPage {
         newSummary: planSummary(d.plan),
       });
       if (started) {
-        this.history.recordStart('bike', planSummary(d.plan), new Date());
         await this.router.navigateByUrl('/');
       }
       return;
@@ -220,8 +216,7 @@ export class ClassPage {
     this.busy.set(true);
     this.startFailed.set(false);
     try {
-      const snapshot = await this.workouts.start(plan);
-      this.history.recordStart('bike', snapshot.summary, new Date());
+      await this.workouts.start(plan);
       await this.router.navigateByUrl('/');
     } catch (e) {
       if (e instanceof HttpErrorResponse && e.status === 401) return;

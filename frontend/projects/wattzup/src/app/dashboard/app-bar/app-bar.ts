@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import type { Machine, WorkoutSnapshot } from '@wattzup/api';
+import type { WorkoutSnapshot } from '@wattzup/api';
 import type { RideViewState } from '../../core/ride-view-state';
-import { badgeTone, statusBadge } from '../../core/segment-labels';
+import { statusBadge } from '../../core/segment-labels';
 import { liveConnectionStatus } from '../../core/connection-status';
 import { CountdownService } from '../../core/countdown.service';
 import { CueService } from '../../core/cue.service';
@@ -23,7 +23,6 @@ import { Icon, RideClock, StatusLine } from '@wattzup/components';
 })
 export class AppBar {
   readonly workout = input<WorkoutSnapshot | null>(null);
-  readonly machine = input<Machine>('bike');
   readonly view = input.required<RideViewState>();
   protected readonly actions = inject(RideActions);
   protected readonly dialogs = inject(DialogLauncher);
@@ -39,12 +38,8 @@ export class AppBar {
 
   protected readonly badge = computed(() => {
     const w = this.workout();
-    const text = w ? statusBadge(w.status, this.machine()) : null;
-    return w && text ? { text, tone: badgeTone(w.status, this.machine()) } : null;
+    return w ? statusBadge(w.status) : null;
   });
-  /** Resume shows for a pause the rider can lift: paused, or the belt stopped (L2-071 AC9). */
-  protected readonly paused = computed(() => {
-    const status = this.workout()?.status;
-    return status === 'paused' || status === 'paused: belt stopped';
-  });
+  /** Resume shows while the rider has paused the ride (L2-046). */
+  protected readonly paused = computed(() => this.workout()?.status === 'paused');
 }
