@@ -4,14 +4,13 @@ LAYOUT_WITH_LEGEND()
 title Containers — Draw the class scene
 
 Person(rider, "Rider", "Watches the world")
-System_Boundary(wattzup, "Wattzup") {
-  Container(web, "Wattzup Web", "Angular, WebGL", "World Ride chunk: scene, renderer, route profile")
-  Container(assets, "Scene assets", "Static files", "public/worlds/<id>/: panorama and textures (.webp)")
-  Container(api, "Wattzup API", "ASP.NET Core", "Serves wwwroot and streams the live state")
+System_Ext(host, "Static host", "index.html, the World Ride chunk, worlds/<id>/: panorama and textures (.webp)")
+System_Boundary(browser, "Rider's browser") {
+  Container(web, "Wattzup Web", "Angular, Three.js (WebGPU or WebGL2)", "World Ride chunk: scene, renderer, route profile")
+  Container(lib, "@wattzup/browser", "TypeScript, in the page", "Workout engine and state store: publish the live state")
 }
 
-Rel(rider, web, "Uses", "Browser")
-Rel(web, api, "GET /api/events", "SSE")
-Rel(web, assets, "Loads, same origin", "HTTP")
-Rel(api, assets, "Serves from wwwroot")
+Rel(rider, web, "Uses")
+Rel(lib, web, "Live state: segments, elapsed_seconds, speed_kmh, status", "LIVE_STATE_SOURCE")
+Rel(web, host, "Loads the chunk and scene assets", "HTTPS, same origin")
 @enduml

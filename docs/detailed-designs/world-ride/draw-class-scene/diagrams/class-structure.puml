@@ -74,7 +74,7 @@ class SceneFrame <<interface>> {
   +reducedMotion: boolean
 }
 class WorldRenderer {
-  +start(canvas, world): boolean
+  +start(canvas, world): Promise<boolean>
   +resize(width, height, pixelRatio): void
   +draw(frame: SceneFrame): void
   +dispose(): void

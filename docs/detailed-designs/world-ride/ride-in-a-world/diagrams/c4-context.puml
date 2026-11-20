@@ -4,9 +4,11 @@ LAYOUT_WITH_LEGEND()
 title System Context — Ride in a world
 
 Person(rider, "Rider", "Rides a class in its world")
-System(wattzup, "Wattzup", "Live training display that drives the bike")
+System(wattzup, "Wattzup", "Live training display that drives the bike, in the rider's browser")
+System_Ext(host, "Static host", "Serves the app and classes.json")
 System_Ext(bike, "Echelon bike", "Bluetooth Low Energy")
 
 Rel(rider, wattzup, "Opens World Ride, pauses, sets resistance, ends in")
-Rel(wattzup, bike, "Sets resistance per segment and on request", "BLE")
+Rel(wattzup, host, "Loads the app and classes.json from", "HTTPS")
+Rel(wattzup, bike, "Sets resistance per segment and on request", "Web Bluetooth")
 @enduml

@@ -19,9 +19,9 @@ class Pacer <<interface>> {
   +period: number
   +phase: number
 }
-class PacerRow <<interface>> {
+class WorldRidePacer <<interface>> {
   +name: string
-  +jersey: 1..7
+  +jersey: number
   +timeGap: string | null
   +you: boolean
 }
@@ -29,17 +29,17 @@ class "pacers.ts" as pacersmod <<module>> {
   +PACERS: readonly Pacer[]
   +pacerGap(pacer, t): number
   +formatGap(seconds): string
-  +pacerBoard(t, speedKmh): PacerRow[]
+  +pacerBoard(t, speedKmh): WorldRidePacer[]
 }
 class WorldRidePage <<component>> {
-  -pacers: Signal<PacerRow[]>
+  +view: WorldRideView
 }
 class WorldRide <<component>> {
-  +pacers: input<PacerRow[]>
+  +view: input<WorldRideView> (pacers)
 }
 
 pacersmod "1" *-- "6" Pacer : holds
-pacersmod ..> PacerRow : builds 7 per call
-WorldRidePage ..> pacersmod : pacerBoard
-WorldRidePage --> WorldRide : passes rows
+pacersmod ..> WorldRidePacer : builds 7 per call
+WorldRidePage ..> pacersmod : pacerBoard, through worldRideView
+WorldRidePage --> WorldRide : passes the view with its rows
 @enduml

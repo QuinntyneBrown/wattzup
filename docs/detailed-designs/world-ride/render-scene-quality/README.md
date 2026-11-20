@@ -8,19 +8,19 @@ World Ride (L1-017) draws each class's world behind the HUD (`world-ride/draw-cl
 
 **technique** — one of the fifty rendering techniques of L2-111, numbered as in its table, in its bike-scene form
 
-**backend** — what the renderer draws through: WebGPU when an adapter is granted, else WebGL2
+**backend** — what the renderer draws through, the `Backend` of `render-quality.ts`: WebGPU when an adapter is granted, else WebGL2
 
 **frame budget** — 16.7 ms per frame; a 2-second window over 20 ms (budget plus 20 %) counts as over budget
 
 **fallback form** — what a technique draws when it is not on, or its asset is missing: the form of the next lower tier, or nothing
 
-The tier is a property of the screen and the scene, not of the rider. Nothing about it is stored, sent to the backend or shown in a panel. The rider sees only the world; the HUD works the same at every tier (L2-111 criterion 7).
+The tier is a property of the screen and the scene, not of the rider. Nothing about it is stored, leaves the page or is shown in a panel. The rider sees only the world; the HUD works the same at every tier (L2-111 criterion 7).
 
 ## Description
 
-### Backend
+### Contracts
 
-None.
+None. The tier and the techniques are the renderer's own; no contract call or state field carries them.
 
 ### Frontend (`frontend/projects/wattzup/src/app/core/`)
 
@@ -71,10 +71,10 @@ No new screen state. The scene looks better or plainer; the HUD mocks `pages/wor
 
 ### Acceptance tests
 
-No backend test: this feature has no backend part.
+This feature has no contract part, so it has no contract test.
 
-Playwright (`frontend/e2e/world-ride.spec.ts`):
-- `shows This screen can't draw 3D worlds when WebGL is off, and the HUD still works`, already there (L2-111 AC1). The `FakeWebGl` switch also hides `navigator.gpu`.
+Playwright (`frontend/e2e/world-ride.spec.ts`, Chromium only):
+- `shows This screen can't draw 3D worlds when WebGL is off, and the HUD still works`, already there (L2-111 AC1). The `webgl` fixture (`fake-webgl.ts`) hides `navigator.gpu` and makes `getContext('webgl' | 'webgl2')` return `null`, so neither backend can start.
 
 Unit tests (`render-quality.spec.ts`):
 - `startTier` for each backend (AC3);

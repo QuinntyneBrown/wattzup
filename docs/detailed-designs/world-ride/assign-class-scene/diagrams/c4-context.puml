@@ -5,8 +5,10 @@ title System Context — Assign a class scene
 
 Person(owner, "Owner", "Edits the class catalogue file")
 Person(rider, "Rider", "Rides a class in its scene")
-System(wattzup, "Wattzup", "Live training display that drives the bike")
+System(wattzup, "Wattzup", "Live training display that drives the bike, in the rider's browser")
+System_Ext(host, "Static host", "Serves classes.json beside index.html")
 
-Rel(owner, wattzup, "Gives each class a scene in classes.json")
+Rel(owner, host, "Gives each class a scene in classes.json on")
 Rel(rider, wattzup, "Opens a class and its World Ride in")
+Rel(wattzup, host, "GET classes.json", "HTTPS")
 @enduml

@@ -14,15 +14,15 @@ World Ride (L1-017) puts a class ride inside a 3D world built for that class. Th
 
 **effort arch** — arch over the road ahead, labelled with the scene's effort name before the next `work` segment, or `Finish` before the end
 
-The road follows the class, not the other way round. Efforts are where the road kicks up and recoveries are where it eases off, so the road on screen matches the resistance the workout engine sets. The scene never changes the bike's resistance. It reads the plan's segments, `elapsed_seconds`, `speed_kmh` and `status` from the live state, and draws them.
+The road follows the class, not the other way round. Efforts are where the road kicks up and recoveries are where it eases off, so the road on screen matches the resistance the workout engine sets. The scene never changes the bike's resistance. It reads the plan's segments, `elapsed_seconds`, `speed_kmh` and `status` from the live state that the in-browser workout engine publishes (L2-093), and draws them.
 
-A scene is code and bundled assets, not catalogue data. The catalogue only names which scene a class uses (`world-ride/assign-class-scene`). All scene assets ship with the frontend and load from the same origin (L2-101 criterion 4, L1-009). The 3D renderer and the assets load only when World Ride opens (L2-102 criterion 8).
+A scene is code and bundled assets, not catalogue data. The catalogue only names which scene a class uses (`world-ride/assign-class-scene`). All scene assets ship with the app's static files and load from the same origin (L2-101 criterion 4, L1-009, L2-097). The 3D renderer and the assets load only when World Ride opens (L2-102 criterion 8).
 
 ## Description
 
-### Backend
+### Contracts
 
-None.
+None. The scene reads only the live state `LiveStateService` holds, and makes no contract call.
 
 ### Frontend (`frontend/projects/wattzup/src/app/`, with presentation components in `frontend/projects/components/`)
 
@@ -54,12 +54,12 @@ None.
 
 **Scene component (`dashboard/world-scene/`, new).**
 - **`WorldScene`** (`wz-world-scene`): an app component, because it injects `FrameScheduler` and `MotionPreference`. Its inputs are `world`, `segments`, `elapsed`, `speedKmh` and `running`. Its output is `unavailable`, emitted once when the renderer cannot start. It renders one `<canvas>`, labelled by the text alternative `A cyclist on <route> in <world name>` (L2-110 criterion 3).
-- On first render it imports `core/world-renderer.ts` with a dynamic `import()`, so the renderer and its 3D library stay in the World Ride chunk (L2-102 criterion 8).
+- On first render it calls the `WORLD_RENDERER` loader, `loadWorldRenderer` (`core/world-renderer-loader.ts`), which imports `core/world-renderer.ts` with a dynamic `import()`, so the renderer and its 3D library stay in the World Ride chunk (L2-102 criterion 8).
 - It draws through `FrameScheduler.startLoop()` and `requestDraw()`. `FrameScheduler` is the app's only `requestAnimationFrame` caller, and it requests no frame while the tab is hidden, so the scene stops and starts with the tab (L2-110 criterion 5).
-- On each frame it advances the rider along the route by `speedKmh` ÷ 3.6 × the frame's seconds, only while `running`. Paused, the world holds still (L2-109 criterion 1).
+- On each frame `SceneDriver` (`core/scene-driver.ts`) advances the rider along the route by `speedKmh` ÷ 3.6 × the frame's seconds, only while `running`, with each step capped. The loop runs only while the ride runs, so a paused world holds still (L2-109 criterion 1).
 
-**Renderer (`core/world-renderer.ts`, new; WebGL through a 3D library, see Open questions).**
-- **`WorldRenderer`**: `start(canvas, world): Promise<boolean>`, `resize(width, height, pixelRatio)`, `draw(frame: SceneFrame)` and `dispose()`. `start` resolves `false` when neither WebGPU nor WebGL2 starts (L2-110 criterion 4, L2-111 criterion 1). The `WORLD_RENDERER` token holds the loader; both composition roots, `app.config.ts` and `app.config.browser.ts`, bind it to the same dynamic import, so the browser edition draws the scene too (L2-102 criterion 9).
+**Renderer (`core/world-renderer.ts`, new; Three.js, ADRs 0020 and 0021).**
+- **`WorldRenderer`** (`core/world-renderer-port.ts`): `start(canvas, world): Promise<boolean>`, `resize(width, height, pixelRatio)`, `draw(frame: SceneFrame)` and `dispose()`. `start` resolves `false` when neither WebGPU nor WebGL2 starts (L2-110 criterion 4, L2-111 criterion 1). `ThreeWorldRenderer` implements it. The `WORLD_RENDERER` token holds the loader, and the composition root `app.config.ts` binds it to `loadWorldRenderer`.
 - **`SceneFrame`**: `{ s, crank, segments, elapsed, speedKmh, reducedMotion }`.
 - It lays the road ahead of the rider from the plan. For each 2 m step ahead it finds the segment the rider will be in, from the time that distance takes at the current speed. It then eases the gradient towards `targetGrade` for that segment, so a ramp is in view before its effort starts (L2-110 criterion 1).
 - Terrain, props, the panorama and the sea follow the camera, which sits just behind and above the rider's bike.
@@ -87,15 +87,14 @@ None.
 
 ### Acceptance tests
 
-No backend test: this feature has no backend part.
+This feature has no contract part, so it has no contract test.
 
-Playwright (`frontend/e2e/`, Chromium only), in `e2e/world-ride.spec.ts` with the page object `e2e/pages/world-ride.page.ts`:
-- `draws the scene of the class's world with its text alternative` (L2-101 AC1, L2-110 AC3)
-- `shows the grade, climbed and distance for the ride's moment` (L2-106 AC1)
-- `names the route profile by its elevation range` (L2-106 AC3)
-- `holds the grade and profile still while paused` (L2-106 AC4)
-- `shows This screen can't draw 3D worlds when WebGL is off, and the HUD still works` (L2-110 AC4). The fixture's `FakeWebGl` switch makes `getContext('webgl2')` return `null`.
-- `loads no scene asset from another origin` (L2-101 AC4). The shared fixture fails the test on any request to another origin.
+Playwright (`frontend/e2e/`, Chromium only), in `e2e/world-ride.spec.ts` with the page object `e2e/pages/world-ride.page.ts`. Each test starts the class ride on the fake `navigator.bluetooth` and fast-forwards Playwright's page clock to the moment it checks:
+- `draws the scene of the class's world with its text alternative` (L2-110 AC3), in the `World Ride scene` group, the only tests that draw the scene
+- `shows the grade, climbed and distance, and names the profile by its elevation` (L2-106 AC1, AC3)
+- `holds the grade and distance still while paused` (L2-106 AC4)
+- `shows This screen can't draw 3D worlds when WebGL is off, and the HUD still works` (L2-110 AC4). The `webgl` fixture (`fake-webgl.ts`) hides `navigator.gpu` and makes `getContext('webgl' | 'webgl2')` return `null`.
+- No spec loads a scene asset from another origin (L2-101 AC4, L2-097): the shared fixture fails every spec that makes a request off localhost.
 
 Unit tests:
 - `worlds.spec.ts`: one `targetGrade` case per scene, at *s* 0 and at a point where the rolling term is not 0 (L2-101 AC2).
@@ -106,7 +105,7 @@ That no two scenes look the same (L2-101 AC1) and that the HUD stays readable ov
 
 ### Open questions
 
-- **3D library.** Closed by ADR 0019 (Three.js, pinned, in its own lazy chunk behind `WorldRenderer`), amended by ADR 0020 (its WebGPU renderer, falling back to WebGL2).
+- **3D library.** Closed by ADR 0020 (Three.js, pinned, in its own lazy chunk behind `WorldRenderer`), amended by ADR 0021 (its WebGPU renderer, falling back to WebGL2).
 - **Scene detail.** L2-101 fixes the gradients, names and descriptions. The exact look of each scene (prop spacing, colours, fog) follows `shared/worlds.ts` and the mocks' stills. It has no acceptance criterion beyond L2-101 criterion 1.
 - **Speed for the road ahead.** The renderer lays the road ahead at the current `speed_kmh`. The profile panel uses each segment's expected speed. When the rider rides much faster or slower than expected, the two differ in distance, but not in which segment a ramp belongs to.
 - **Asset size.** The size budget for the World Ride chunk and its assets is <TO SUPPLY>. Only the initial bundle has a budget (300 KB gzipped).
@@ -131,7 +130,7 @@ The rider watches the class's world in Wattzup. The scene uses no outside system
 
 ### Containers
 
-Wattzup Web draws the scene from the live state that the Wattzup API streams. The scene assets come from the same origin as the app.
+Wattzup Web, in the rider's browser, draws the scene from the live state its in-browser engine publishes. The scene assets come from the static host, the same origin as the app.
 
 ![C4 container view for drawing the class scene](diagrams/c4-container.png)
 
@@ -155,6 +154,6 @@ The scene starts its renderer, or reports that it cannot. While the ride runs, e
 
 ### Behaviour — show the route profile
 
-On each state message, the page reads the profile at `elapsed_seconds` and passes the view to the HUD (L2-106).
+On each new state, `worldRideView` computes the profile from the plan, reads it at `elapsed_seconds` and passes the view to the HUD (L2-106).
 
 ![Sequence diagram for showing the route profile](diagrams/sequence-route-profile.png)

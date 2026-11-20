@@ -3,12 +3,15 @@
 LAYOUT_WITH_LEGEND()
 title Components — Draw the class scene
 
-Container(assets, "Scene assets", "Static files", "Panoramas and textures")
+System_Ext(assets, "Scene assets", "worlds/<id>/ on the static host: panoramas and textures")
 Container_Boundary(web, "Wattzup Web") {
   Component(page, "WorldRidePage", "Angular component", "Owns the World Ride screen")
   Component(hud, "WorldRide", "Presentation component", "Draws the route profile panel and the fallback notice")
+  Component(view, "world-ride-view.ts", "Pure helper", "Builds the HUD view, with the profile")
   Component(scene, "WorldScene", "Angular component", "Canvas, frame loop, unavailable output")
-  Component(renderer, "world-renderer.ts", "Lazy module", "WorldRenderer on WebGL")
+  Component(loader, "WORLD_RENDERER", "Injection token", "loadWorldRenderer: import() of the renderer")
+  Component(renderer, "world-renderer.ts", "Lazy module", "ThreeWorldRenderer: WebGPU, else WebGL2")
+  Component(driver, "scene-driver.ts", "Pure helper", "Advances the rider while running")
   Component(worlds, "worlds.ts", "Pure data", "WORLDS, worldById, targetGrade")
   Component(profile, "route-profile.ts", "Pure helper", "routeProfile, profileAt, routeProfileView")
   Component(estimate, "plan-expansion.ts", "Pure helper", "estimateWatts")
@@ -18,15 +21,19 @@ Container_Boundary(web, "Wattzup Web") {
 }
 
 Rel(page, live, "Reads state")
-Rel(page, profile, "Builds the profile view with")
+Rel(page, view, "worldRideView(state, entry, world)")
+Rel(view, profile, "Builds the profile view with")
 Rel(profile, worlds, "targetGrade")
 Rel(profile, estimate, "Expected speed from")
-Rel(page, hud, "profile, sceneUnavailable")
+Rel(page, hud, "view with profile, sceneUnavailable")
 Rel(page, scene, "world, segments, elapsed, speed, running")
-Rel(scene, renderer, "import() then start, draw, dispose")
+Rel(scene, loader, "load()")
+Rel(loader, renderer, "import() then new ThreeWorldRenderer")
+Rel(scene, driver, "frame(now, input)")
+Rel(driver, renderer, "draw(frame)")
 Rel(renderer, worlds, "Reads the look and gradients")
-Rel(renderer, assets, "Loads textures and panorama")
-Rel(scene, frames, "startLoop, requestDraw")
+Rel(renderer, assets, "Loads textures and panorama", "HTTPS, same origin")
+Rel(scene, frames, "startLoop, now")
 Rel(scene, motion, "Reads reduced")
 Rel(scene, page, "unavailable")
 @enduml

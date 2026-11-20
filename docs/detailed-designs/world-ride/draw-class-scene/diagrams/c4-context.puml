@@ -4,9 +4,11 @@ LAYOUT_WITH_LEGEND()
 title System Context — Draw the class scene
 
 Person(rider, "Rider", "Watches the class's world while riding")
-System(wattzup, "Wattzup", "Live training display that drives the bike")
+System(wattzup, "Wattzup", "Live training display that drives the bike, in the rider's browser")
+System_Ext(host, "Static host", "Serves the app and its scene assets")
 System_Ext(bike, "Echelon bike", "Bluetooth Low Energy")
 
 Rel(rider, wattzup, "Rides the class in its world in")
-Rel(wattzup, bike, "Reads cadence and resistance from; sets resistance on", "BLE")
+Rel(wattzup, host, "Loads the World Ride chunk and scene assets from", "HTTPS, same origin")
+Rel(wattzup, bike, "Reads cadence and resistance from; sets resistance on", "Web Bluetooth")
 @enduml

@@ -5,7 +5,7 @@ skinparam shadowing false
 skinparam roundcorner 12
 skinparam defaultFontName Arial
 skinparam ArrowColor #344054
-box "Frontend — Wattzup Web application" #E0F2FE
+box "Frontend — Wattzup Web" #E0F2FE
   participant "WorldRidePage" as page
   participant "WorldScene" as scene
   participant "WorldRenderer" as renderer
@@ -15,9 +15,9 @@ box "Frontend — Wattzup Web application" #E0F2FE
 end box
 
 page -> scene : world, segments, elapsed, speedKmh, running
-scene -> renderer : import('core/world-renderer') [L2-102 AC8]
+scene -> renderer : WORLD_RENDERER loader: import('core/world-renderer') [L2-102 AC8]
 scene -> renderer : start(canvas, world)
-alt WebGL unavailable or fails to start
+alt neither WebGPU nor WebGL2 starts
   renderer --> scene : false
   scene -> page : unavailable
   page -> hud : sceneUnavailable = true

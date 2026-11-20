@@ -5,34 +5,32 @@ skinparam shadowing false
 skinparam roundcorner 12
 skinparam defaultFontName Arial
 skinparam ArrowColor #344054
-box "Frontend — Wattzup Web application" #E0F2FE
-  participant "WORKOUT_API" as client
+box "Frontend — Wattzup Web" #E0F2FE
+  participant "ClassPage" as classpage
   participant "LiveStateService" as live
 end box
-box "Backend — Wattzup API application" #D1FADF
-  participant "WorkoutEndpoints" as ep
-  participant "StateBroadcaster" as broadcaster
-end box
-box "Backend — Wattzup Core" #ECFDF3
-  participant "ClassCatalogueStore" as store
+box "Frontend — @wattzup/browser" #ECFDF3
+  participant "BrowserWorkoutApi" as wapi
+  participant "BrowserClassApi" as classes
   participant "WorkoutEngine" as engine
   participant "WorkoutRun" as run
   participant "BikeStateStore" as state
+  participant "BrowserStateSource" as source
 end box
 
-client -> ep : POST /api/workout {plan, class_id: "30-minute-hiit-cardio"}
-ep -> store : Current.Find(class_id) [L2-081 AC7]
-store --> ep : ClassEntry
-ep -> engine : StartAsync(plan, RideOrigin(id, title))
-engine -> run : new run with Origin
+classpage -> wapi : WORKOUT_API.start({plan, class_id: "30-minute-hiit-cardio"})
+wapi -> classes : find(class_id) [L2-081 AC7]
+classes --> wapi : ClassEntry
+wapi -> engine : startWorkout(plan, {classId, title})
+engine -> run : new WorkoutRun(plan, origin)
 loop each tick and change
-  engine -> run : ToSnapshot()
-  run --> engine : WorkoutSnapshot {ClassId = Origin?.ClassId} [L2-102 AC5]
-  engine -> state : Apply(workout)
-  state -> broadcaster : Publish
-  broadcaster --> live : state message {workout: {…, class_id}} [L2-014]
+  engine -> run : toSnapshot()
+  run --> engine : WorkoutSnapshot {class_id: origin?.classId ?? null} [L2-102 AC5]
+  engine -> state : update(workout)
+  state -> source : new state
+  source --> live : state {workout: {…, class_id}} [L2-014, L2-093]
 end
-ep --> client : 200
+wapi --> classpage : WorkoutSnapshot
 note over run
   A ride from /setup has no origin,
   so class_id is null.

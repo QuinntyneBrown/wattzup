@@ -4,11 +4,11 @@ LAYOUT_WITH_LEGEND()
 title Containers — Show simulated pacers
 
 Person(rider, "Rider", "Watches the board")
-System_Boundary(wattzup, "Wattzup") {
+System_Boundary(browser, "Rider's browser") {
   Container(web, "Wattzup Web", "Angular", "Computes and shows the pacer board")
-  Container(api, "Wattzup API", "ASP.NET Core", "Streams the live state; knows no pacer")
+  Container(lib, "@wattzup/browser", "TypeScript, in the page", "Workout engine and state store; knows no pacer")
 }
 
-Rel(rider, web, "Uses", "Browser")
-Rel(api, web, "elapsed_seconds, speed_kmh", "SSE")
+Rel(rider, web, "Uses")
+Rel(lib, web, "elapsed_seconds, speed_kmh", "LIVE_STATE_SOURCE")
 @enduml

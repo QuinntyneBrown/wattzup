@@ -5,12 +5,14 @@ title Components — Show simulated pacers
 
 Container_Boundary(web, "Wattzup Web") {
   Component(live, "LiveStateService", "Angular service", "elapsed_seconds, speed_kmh")
-  Component(page, "WorldRidePage", "Angular component", "Holds the board rows")
+  Component(page, "WorldRidePage", "Angular component", "Passes the HUD view")
+  Component(view, "world-ride-view.ts", "Pure helper", "Builds WorldRideView, with its pacers")
   Component(pacers, "pacers.ts", "Pure helper", "PACERS, pacerGap, formatGap, pacerBoard")
   Component(hud, "WorldRide", "Presentation component", "world-ride__board: Riders nearby, Simulated pacers")
 }
 
-Rel(live, page, "State messages")
-Rel(page, pacers, "pacerBoard(elapsed, speed)")
-Rel(page, hud, "pacers: PacerRow[]")
+Rel(live, page, "New states")
+Rel(page, view, "worldRideView(state, entry, world)")
+Rel(view, pacers, "pacerBoard(elapsed, speed)")
+Rel(page, hud, "view.pacers: WorldRidePacer[]")
 @enduml

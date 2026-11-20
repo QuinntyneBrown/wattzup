@@ -15,29 +15,23 @@ enum WorldRideAccess {
   show
   class-page
 }
-enum WorldOverlay {
-  paused
-  lost
+class WorldRideOverlay <<interface>> {
+  +kind: paused | lost | ended
+  +title: string
+  +text: string
+  +sessionHref: string | null
 }
 class WorldRideView <<interface>> {
-  +worldName: string
+  +title: string
   +classLine: string
-  +bikeName: string
-  +running: boolean
-  +power: string
-  +target: string
-  +delta: string
-  +cadence: string
-  +heart: string
-  +speed: string
-  +segmentLabel: string
-  +nextLine: string
-  +level: number
-  +levelCaption: string
-  +canLower: boolean
-  +canRaise: boolean
-  +overlay: WorldOverlay | null
-  +overlayText: string | null
+  +bike: string | null
+  +paused: boolean
+  +metrics: WorldRideMetrics
+  +segment: WorldRideSegment | null
+  +resistance: WorldRideResistance
+  +pacers: WorldRidePacer[]
+  +profile: WorldRideProfile | null
+  +overlay: WorldRideOverlay | null
 }
 class "world-ride-access.ts" as access <<module>> {
   +worldRideAccess(routeId, entry, workout): WorldRideAccess
@@ -53,20 +47,24 @@ class World <<interface>> {
 }
 class WorldRide <<component>> {
   +view: input<WorldRideView>
-  +clock: input<string>
-  +segmentLeft: input<string>
-  +segmentProgress: input<number>
-  +profile: input<RouteProfileView>
-  +pacers: input<PacerRow[]>
+  +clock: input<WorldRideClock>
+  +countdown: input<WorldRideCountdown>
+  +classHref: input<string>
+  +homeHref: input<string>
+  +reconnecting: input<boolean>
+  +sceneUnavailable: input<boolean>
   +pauseToggled: output<void>
-  +ended: output<void>
+  +endRequested: output<void>
   +stepped: output<-1 | 1>
+  +navigate: output<string>
+  +sessionOpened: output<string>
   +reconnected: output<void>
 }
 class WorldRidePage <<component>> {
-  -id: string
-  -entry: ClassResponse
-  -onStep(delta): void
+  +id: input<string>
+  -entry: Signal<ClassEntry | null>
+  -shown: Signal<boolean>
+  -step(delta): void
 }
 class RideActions <<service>> {
   +pause(): Promise<void>
@@ -74,16 +72,23 @@ class RideActions <<service>> {
   +end(): void
   +reconnect(): Promise<void>
 }
-class ResistanceCommandService <<service>>
+class ResistanceCommandService <<service>> {
+  +set(level): Promise<void>
+}
+interface WORKOUT_API <<token>>
+interface BIKE_API <<token>>
 
 access --> WorldRideAccess : returns
 viewfn --> WorldRideView : builds
 viewfn ..> World : reads
-WorldRideView --> WorldOverlay
+WorldRideView --> WorldRideOverlay
 WorldRidePage ..> access : decides with
 WorldRidePage ..> viewfn : builds with
 WorldRidePage *-- WorldRide : renders
 WorldRide --> WorldRideView : shows
 WorldRidePage ..> RideActions : commands
 WorldRidePage ..> ResistanceCommandService : sets level
+RideActions ..> WORKOUT_API : pause, resume
+RideActions ..> BIKE_API : reconnect
+ResistanceCommandService ..> BIKE_API : setResistance
 @enduml

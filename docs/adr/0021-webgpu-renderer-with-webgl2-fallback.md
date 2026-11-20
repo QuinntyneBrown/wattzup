@@ -38,7 +38,8 @@ Three Shading Language, and compiled for either backend.
   files, or added under an amendment of this ADR that names the package and pins it.
 - Captured and baked assets (photogrammetry, scans, lightmaps, probes, impostor atlases, splats,
   virtual-texture pages) are made offline, bundled under `frontend/public/worlds/<id>/`, and
-  served from the same origin (ADR 0020). The scene never fetches one from elsewhere.
+  served from the same origin (ADR 0020), as the Content-Security-Policy of ADR 0018, amended by
+  ADR 0019, requires. The scene never fetches one from elsewhere.
 
 ## Consequences
 

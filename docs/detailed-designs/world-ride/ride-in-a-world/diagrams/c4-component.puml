@@ -14,17 +14,18 @@ Container_Boundary(web, "Wattzup Web") {
   Component(live, "LiveStateService", "Angular service", "Live state")
   Component(countdown, "CountdownService", "Angular service", "Interpolated clock and countdown")
   Component(actions, "RideActions", "Angular service", "Pause, resume, end, reconnect")
-  Component(resistance, "ResistanceCommandService", "Angular service", "POST /api/resistance")
-  Component(classapi, "CLASS_API", "Injection token", "HttpClassApi")
+  Component(resistance, "ResistanceCommandService", "Angular service", "set(level)")
 }
-Container_Boundary(api, "Wattzup API") {
-  Component(endpoints, "Class, workout, resistance and bike endpoints", "Minimal APIs", "Existing endpoints")
+Container_Boundary(lib, "@wattzup/browser") {
+  Component(contracts, "BrowserClassApi, BrowserWorkoutApi, BrowserBikeApi", "Contract implementations", "CLASS_API, WORKOUT_API, BIKE_API")
+  Component(source, "BrowserStateSource", "LIVE_STATE_SOURCE implementation", "Forwards each new state")
+  Component(engine, "WorkoutEngine, BikeStateStore, BikeLink", "lib/engine, lib/bluetooth", "Run the ride and drive the bike")
 }
 
 Rel(classpage, page, "Navigates to on success")
-Rel(page, classapi, "get(id)")
-Rel(classapi, endpoints, "GET /api/classes/{id}", "JSON")
+Rel(page, contracts, "CLASS_API.get(id)")
 Rel(page, live, "Reads state")
+Rel(live, source, "Reads")
 Rel(page, access, "Decides with")
 Rel(page, view, "Builds the HUD view with")
 Rel(view, worlds, "Reads the world from")
@@ -33,6 +34,8 @@ Rel(page, hud, "Renders")
 Rel(hud, scene, "Projects in the scene slot")
 Rel(page, actions, "pause, resume, end, reconnect")
 Rel(page, resistance, "set(level)")
-Rel(actions, endpoints, "POST", "JSON")
-Rel(resistance, endpoints, "POST /api/resistance", "JSON")
+Rel(actions, contracts, "WORKOUT_API.pause, resume; BIKE_API.reconnect")
+Rel(resistance, contracts, "BIKE_API.setResistance(level)")
+Rel(contracts, engine, "Commands")
+Rel(source, engine, "Subscribes to the store")
 @enduml

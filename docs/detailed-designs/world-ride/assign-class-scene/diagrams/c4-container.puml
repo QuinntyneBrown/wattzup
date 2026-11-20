@@ -5,14 +5,12 @@ title Containers — Assign a class scene
 
 Person(owner, "Owner", "Edits classes.json")
 Person(rider, "Rider", "Rides a class")
-System_Boundary(wattzup, "Wattzup") {
-  Container(web, "Wattzup Web", "Angular", "Class page and World Ride")
-  Container(api, "Wattzup API", "ASP.NET Core", "Serves classes with their scene, and the live state")
-  ContainerDb(file, "classes.json", "JSON file", "Shelves and classes, each with an optional world")
+System_Ext(host, "Static host", "classes.json: shelves and classes, each with an optional world")
+System_Boundary(browser, "Rider's browser") {
+  Container(app, "Wattzup Web", "Angular + @wattzup/browser", "Reads each class's scene; runs the workout and publishes workout.class_id")
 }
 
-Rel(owner, file, "Edits")
-Rel(api, file, "Reads and watches", "File system")
-Rel(rider, web, "Uses", "Browser")
-Rel(web, api, "GET /api/classes, /api/classes/{id}; GET /api/events", "JSON/HTTP, SSE")
+Rel(owner, host, "Replaces classes.json on")
+Rel(rider, app, "Uses")
+Rel(app, host, "fetch classes.json", "HTTPS, same origin")
 @enduml

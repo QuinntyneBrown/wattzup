@@ -6,37 +6,35 @@ skinparam roundcorner 12
 skinparam defaultFontName Arial
 skinparam ArrowColor #344054
 actor "Rider" as rider
-box "Frontend — Wattzup Web application" #E0F2FE
+box "Frontend — Wattzup Web" #E0F2FE
   participant "ClassPage" as classpage
-  participant "WORKOUT_API" as workouts
   participant "WorldRidePage" as page
-  participant "CLASS_API" as classes
   participant "LiveStateService" as live
   participant "world-ride-access.ts" as access
 end box
-box "Backend — Wattzup API application" #D1FADF
-  participant "Class and workout endpoints" as ep
+box "Frontend — @wattzup/browser" #ECFDF3
+  participant "WORKOUT_API\n(BrowserWorkoutApi)" as workouts
+  participant "WorkoutEngine" as engine
+  participant "CLASS_API\n(BrowserClassApi)" as classes
 end box
 
 rider -> classpage : Ride in Old Town Criterium [L2-102 AC1]
-classpage -> classpage : start('/classes/<id>/world'); replace-ride dialog first if a ride is active [L2-052]
+classpage -> classpage : start(inWorld); replace-ride dialog first if a ride is active [L2-052]
 classpage -> workouts : start(plan + video + class_id)
-workouts -> ep : POST /api/workout
-ep --> workouts : 200
+workouts -> engine : startWorkout(plan, origin)
+engine -> live : publishes the new ride {status, class_id}
+engine --> workouts : WorkoutSnapshot
 workouts --> classpage : started
 classpage -> page : Navigate to /classes/<id>/world [L2-102 AC2]
 page -> classes : get(id)
-classes -> ep : GET /api/classes/{id}
-alt 404
-  ep --> classes : class_not_found
-  classes --> page : not found
+alt not-found
+  classes --> page : 'not-found'
   page --> rider : We can't find that class [L2-102 AC4, L2-080 AC13]
 else class
-  ep --> classes : 200 {…, world}
-  classes --> page : entry
-  page -> live : first state
+  classes --> page : ClassEntry {…, world}
+  page -> live : state held when the page opens
   live --> page : workout {status, class_id}
-  page -> access : worldRideAccess(id, entry, workout)
+  page -> access : worldRideAccess(id, entry, workout), once
   alt show
     access --> page : show
     page --> rider : World Ride in the class's world, titled by its name [L2-102 AC3]

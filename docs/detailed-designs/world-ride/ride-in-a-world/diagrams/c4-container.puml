@@ -4,14 +4,15 @@ LAYOUT_WITH_LEGEND()
 title Containers — Ride in a world
 
 Person(rider, "Rider", "Rides a class")
-System_Boundary(wattzup, "Wattzup") {
-  Container(web, "Wattzup Web", "Angular", "World Ride at /classes/:id/world")
-  Container(api, "Wattzup API", "ASP.NET Core", "Class, live state, ride commands")
+System_Ext(host, "Static host", "index.html, the World Ride chunk, classes.json")
+System_Boundary(browser, "Rider's browser") {
+  Container(app, "Wattzup Web", "Angular", "World Ride at /classes/:id/world")
+  Container(lib, "@wattzup/browser", "TypeScript, in the page", "CLASS_API, WORKOUT_API, BIKE_API, LIVE_STATE_SOURCE: catalogue, workout engine, bike link")
 }
 System_Ext(bike, "Echelon bike", "BLE")
 
-Rel(rider, web, "Uses", "Browser")
-Rel(web, api, "GET /api/classes/{id}; GET /api/events", "JSON/HTTP, SSE")
-Rel(web, api, "POST /api/workout/pause, resume, stop; /api/resistance; /api/bike/reconnect", "JSON/HTTP")
-Rel(api, bike, "Drives", "BLE")
+Rel(rider, app, "Uses")
+Rel(app, lib, "CLASS_API.get(id); WORKOUT_API.pause, resume, stop; BIKE_API.setResistance, reconnect; live state", "Contract calls")
+Rel(lib, host, "fetch classes.json", "HTTPS, same origin")
+Rel(lib, bike, "Drives", "Web Bluetooth")
 @enduml

@@ -7,7 +7,7 @@
 
 World Ride (L1-017, L2-110) draws a 3D road, terrain, sky, roadside props and an effort arch
 behind the HUD, for six scenes. The Magic Patterns design the scenes come from (`shared/components/
-WorldScene.tsx`) draws them with Three.js. The frontend has no 3D library today: its only GPU code
+WorldScene.tsx`) draws them with Three.js. The app has no 3D library today: its only GPU code
 is the power trace, drawn with raw WebGL behind a canvas fallback (ADR 0006).
 
 Drawing six lit, fogged, textured scenes with raw WebGL means writing and keeping a scene graph,
@@ -16,11 +16,13 @@ library is for, and Three.js is the established, maintained choice on the web, w
 WebGL2 renderer and a WebGPU renderer.
 
 The initial bundle has a 300 KB gzipped budget (AGENTS.md), and the scene must load only when
-World Ride opens (L2-102 criterion 8). Every asset must come from the same origin (L1-009, the CSP).
+World Ride opens (L2-102 criterion 8). Every asset must come from the same origin (L1-009, L2-097):
+the Content-Security-Policy of ADR 0018, as amended by ADR 0019, allows the app's own origin
+only, except YouTube.
 
 ## Decision
 
-- **Three.js** (`three`, with `@types/three`) is a runtime dependency of the frontend, pinned to an
+- **Three.js** (`three`, with `@types/three`) is a runtime dependency of the app, pinned to an
   exact version (`0.187.0`) and updated on purpose.
 - It is imported **only** by `projects/wattzup/src/app/core/world-renderer.ts` (and files it
   imports), which `WorldScene` loads with a dynamic `import()`. The route `classes/:id/world` is

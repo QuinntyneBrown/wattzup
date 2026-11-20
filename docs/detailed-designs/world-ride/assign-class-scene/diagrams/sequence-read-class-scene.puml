@@ -6,47 +6,35 @@ skinparam roundcorner 12
 skinparam defaultFontName Arial
 skinparam ArrowColor #344054
 actor "Owner" as owner
-box "Backend — Wattzup API application" #D1FADF
-  participant "ClassCatalogueService" as service
-  participant "ClassEndpoints" as ep
+box "Hosting — Static host" #FFF4E5
+  participant "classes.json" as file
 end box
-box "Backend — Wattzup Core" #ECFDF3
-  participant "ClassCatalogueReader" as reader
-  participant "ClassWorlds" as worlds
-  participant "ClassCatalogueStore" as store
+box "Frontend — Wattzup Web" #E0F2FE
+  participant "Class page" as page
 end box
-box "Backend — Wattzup Infrastructure" #FFF4E5
-  database "classes.json" as file
-end box
-box "Frontend — Wattzup Web application" #E0F2FE
-  participant "CLASS_API" as client
+box "Frontend — @wattzup/browser" #ECFDF3
+  participant "BrowserClassApi" as api
+  participant "readCatalogue" as reader
+  participant "WORLDS" as worlds
 end box
 
-owner -> file : Save "world": "oldtown" on a class
-service -> file : Read (file changed)
-file --> service : JSON
-service -> reader : Read(stream)
+owner -> file : Publish "world": "oldtown" on a class
+page -> api : CLASS_API.get(id)
+api -> file : fetch classes.json (first call of the page)
+file --> api : text
+api -> reader : readCatalogue(text)
 loop each class
   alt "world" missing or null
-    reader -> reader : World = null [L2-100 AC1]
-  else "world" is a string
-    reader -> worlds : IsWorld(value)
-    alt one of the six ids
-      worlds --> reader : true
-      reader -> reader : World = value [L2-100 AC1]
-    else anything else
-      worlds --> reader : false
-      reader -> reader : Leave the class out; problem (id, "world") [L2-100 AC2, L2-077 AC3]
-    end
-  else any other JSON value
-    reader -> reader : Leave the class out; problem (id, "world") [L2-100 AC2]
+    reader -> reader : world = null [L2-100 AC1]
+  else WORLDS includes the value
+    reader -> worlds : includes(value)
+    worlds --> reader : true
+    reader -> reader : world = value [L2-100 AC1]
+  else any other value (unknown id, wrong case, number, object)
+    reader -> reader : Leave the class out; problem (id, "world") [L2-100 AC2, L2-077 AC3]
   end
 end
-reader --> service : CatalogueLoadResult
-service -> service : Log a warning per problem
-service -> store : Replace(catalogue)
-client -> ep : GET /api/classes/{id}
-ep -> store : Current.Find(id)
-store --> ep : ClassEntry
-ep --> client : 200 {…, plan, world} [L2-078, L2-100 AC5]
+reader --> api : CatalogueLoadResult
+api -> api : console.warn per problem [L2-096 AC2]
+api --> page : ClassEntry {…, plan, world} [L2-078, L2-100 AC1]
 @enduml

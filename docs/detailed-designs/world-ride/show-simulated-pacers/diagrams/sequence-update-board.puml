@@ -6,30 +6,33 @@ skinparam roundcorner 12
 skinparam defaultFontName Arial
 skinparam ArrowColor #344054
 actor "Rider" as rider
-box "Frontend — Wattzup Web application" #E0F2FE
+box "Frontend — @wattzup/browser" #ECFDF3
+  participant "WorkoutEngine and BikeStateStore" as engine
+end box
+box "Frontend — Wattzup Web" #E0F2FE
   participant "LiveStateService" as live
   participant "WorldRidePage" as page
+  participant "world-ride-view.ts" as view
   participant "pacers.ts" as pacers
   participant "WorldRide" as hud
 end box
-box "Backend — Wattzup API application" #D1FADF
-  participant "StateBroadcaster" as broadcaster
-end box
 
-broadcaster --> live : state message
+engine --> live : new state [L2-093]
 live --> page : elapsed_seconds 300, speed_kmh 19.2
-page -> pacers : pacerBoard(300, 19.2)
+page -> view : worldRideView(state, entry, world)
+view -> pacers : pacerBoard(300, 19.2)
 loop each of the six pacers
   pacers -> pacers : gap = base + amp × sin(t / period + phase) [L2-107 AC2]
   pacers -> pacers : time = gap / max(speed / 3.6, 3); formatGap
 end
 pacers -> pacers : Add You (gap 0); sort by gap, ahead first [L2-107 AC3]
-pacers --> page : Sophie +0:17, Maya +0:12, Jonas +0:01, You, Ana −0:04, Ravi −0:13, Kenji −0:13
-page -> hud : pacers
+pacers --> view : Sophie +0:17, Maya +0:12, Jonas +0:01, You, Ana −0:04, Ravi −0:13, Kenji −0:13
+view --> page : view with pacers
+page -> hud : view
 hud --> rider : Riders nearby · Old Town Criterium / Simulated pacers [L2-107 AC1]
-note over page, broadcaster
-  Nothing about a pacer is sent to the backend,
-  saved in a session or shown on Progress [L2-107 AC5].
+note over engine, page
+  Nothing about a pacer leaves the page,
+  is saved in a session or shown on Progress [L2-107 AC5].
   While paused, elapsed_seconds holds, so the gaps hold [L2-107 AC4].
 end note
 @enduml
