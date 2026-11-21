@@ -73,6 +73,7 @@ import {
 import { bendAhead, bendPoint, heading, lean, racingLine } from './scene-bend';
 import { EASE_PER_SECOND, MIN_SPEED, nextArch, roadAhead, type RoadPoint } from './scene-road';
 import { RoadBend } from './world-bend';
+import { ToonLook } from './world-toon';
 import { Corners } from './world-corners';
 import { RampSign } from './world-ramps';
 import type { SceneFrame, WorldRenderer } from './world-renderer-port';
@@ -3176,6 +3177,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
   /** The road's bend, laid on every vertex but the sky's and the panorama's (ADR 0023). */
   private readonly bend = new RoadBend();
   private readonly unbent = new Set<Object3D>([this.sky]);
+  /** The drawn look's toon shading at `low` (L2-111 technique 51). */
+  private readonly toon = new ToonLook();
   private bendSamples: Float32Array = new Float32Array(0);
   private drawn = 0;
 
@@ -3314,8 +3317,10 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.sky.sunPosition.value.copy(this.sunDirection()).applyAxisAngle(UP, turn);
     this.bend.update(this.bendSamples, (metres) => heightAt(ahead, metres));
     if (++this.drawn % BEND_SWEEP === 0) {
+      // Whatever joined the scene since takes the tier's look, then the bend.
+      if (this.on.has(51)) this.toon.apply(this.scene, true, new Color(this.look.sky), this.unbent);
       this.bend.apply(this.scene, this.unbent);
-      if (this.probe) this.probe.materials = this.materialVariants();
+      this.report();
     }
     if (this.towers) {
       // The road over an effort is a bridge ramp, laid at the same speed as the road ahead.
@@ -3386,11 +3391,26 @@ export class ThreeWorldRenderer implements WorldRenderer {
 
   dispose(): void {
     for (const d of this.disposables) d.dispose();
+    this.toon.dispose();
     for (const t of this.textures) t.dispose();
     this.archLabel?.texture.dispose();
     this.pipeline?.dispose();
     this.renderer?.dispose();
     this.renderer = null;
+  }
+
+  /** Tells the test-only hook what the scene now draws with (#679, L2-111 AC8, AC11). */
+  private report(): void {
+    if (!this.probe) return;
+    this.probe.materials = this.materialVariants();
+    let unbent = 0;
+    this.scene.traverse((o) => {
+      const mesh = o as Mesh;
+      if (this.unbent.has(o) || !(mesh.isMesh || (o as { isSprite?: boolean }).isSprite)) return;
+      const list = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+      for (const m of list) if (m && !(m as { positionNode?: unknown }).positionNode) unbent++;
+    });
+    this.probe.unbent = unbent;
   }
 
   /** The scene's distinct materials by variant, for the performance sweep (#679). */
@@ -3470,6 +3490,11 @@ export class ThreeWorldRenderer implements WorldRenderer {
 
     this.scene.environment = null;
     if (on.has(6)) this.lightFromSky(renderer);
+
+    // At low, lit surfaces shade in bands; the twins follow the bend at once (technique 51).
+    this.toon.apply(this.scene, on.has(51), new Color(look.sky), this.unbent);
+    this.bend.apply(this.scene, this.unbent);
+    this.report();
 
     this.pipeline?.dispose();
     this.pipeline = this.buildPipeline(renderer, on);

@@ -1,13 +1,20 @@
 import { FrameBudget, startTier, TECHNIQUES, techniquesAt, type Tier } from './render-quality';
 
+/** The techniques from these tiers; a low-only one only when `from` is just `low`. */
 const ids = (from: Tier[]) =>
-  TECHNIQUES.filter((t) => t.from !== null && from.includes(t.from))
+  TECHNIQUES.filter(
+    (t) => t.from !== null && from.includes(t.from) && !(t.lowOnly && from.length > 1),
+  )
     .map((t) => t.id)
     .sort((a, b) => a - b);
 
 describe('the technique table (L2-111)', () => {
-  it('holds the fifty techniques, numbered 1 to 50', () => {
-    expect(TECHNIQUES.map((t) => t.id)).toEqual(Array.from({ length: 50 }, (_, i) => i + 1));
+  it('holds the techniques built so far, numbered from 1', () => {
+    expect(TECHNIQUES.map((t) => t.id)).toEqual(Array.from({ length: 51 }, (_, i) => i + 1));
+  });
+
+  it('marks the drawn look low-only (AC11, ADR 0024)', () => {
+    expect(TECHNIQUES.filter((t) => t.lowOnly).map((t) => t.id)).toEqual([51]);
   });
 
   it('builds no rear-view mirror and no windshield water', () => {
@@ -37,9 +44,17 @@ describe('techniquesAt (L2-111 AC2, AC5)', () => {
     expect(at(tier)).toEqual(ids(from));
   });
 
-  it('draws low as PBR, anisotropic mipmaps and AgX tone mapping', () => {
-    expect(at('low')).toEqual([4, 8, 17]);
+  it('draws low as banded toon shading, anisotropic mipmaps and AgX tone mapping (AC11)', () => {
+    expect(at('low')).toEqual([8, 17, 51]);
   });
+
+  it.each<Tier>(['medium', 'high', 'ultra'])(
+    'draws %s with PBR shading and no toon shading (AC11)',
+    (tier) => {
+      expect(at(tier)).toContain(4);
+      expect(at(tier)).not.toContain(51);
+    },
+  );
 
   it('offers no ultra technique on WebGL2', () => {
     expect(at('ultra', 'webgl2')).toEqual(ids(['low', 'medium', 'high']));

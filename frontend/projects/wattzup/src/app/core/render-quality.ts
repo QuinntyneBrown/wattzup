@@ -12,6 +12,8 @@ export interface Technique {
   readonly from: Tier | null;
   /** With reduced motion: drawn as usual, drawn without moving on its own, or not drawn. */
   readonly reducedMotion: 'kept' | 'still' | 'off';
+  /** Drawn at `low` and no higher: the drawn look (AC11, ADR 0024). */
+  readonly lowOnly?: boolean;
 }
 
 const TIERS: readonly Tier[] = ['low', 'medium', 'high', 'ultra'];
@@ -21,14 +23,15 @@ const t = (
   name: string,
   from: Tier | null,
   reducedMotion: Technique['reducedMotion'] = 'kept',
-): Technique => ({ id, name, from, reducedMotion });
+  lowOnly = false,
+): Technique => ({ id, name, from, reducedMotion, ...(lowOnly ? { lowOnly } : {}) });
 
 /** The table of L2-111, in its order. */
 export const TECHNIQUES: readonly Technique[] = [
   t(1, 'Photogrammetric environment', 'high'),
   t(2, 'Scanned road surface', 'high'),
   t(3, 'Photometric-stereo materials', 'medium'),
-  t(4, 'PBR microfacet shading', 'low'),
+  t(4, 'PBR microfacet shading', 'medium'),
   t(5, 'Baked lightmaps', 'medium'),
   t(6, 'HDR image-based lighting', 'medium'),
   t(7, 'Temporal anti-aliasing', 'high'),
@@ -75,6 +78,8 @@ export const TECHNIQUES: readonly Technique[] = [
   t(48, 'SVGF denoising', 'ultra'),
   t(49, 'Screen-space glare', 'medium'),
   t(50, 'Heat haze', 'high', 'off'),
+  // The drawn look: at `low`, in place of PBR (AC11, ADR 0024).
+  t(51, 'Banded toon shading', 'low', 'kept', true),
 ];
 
 const rank = (tier: Tier) => TIERS.indexOf(tier);
@@ -90,7 +95,10 @@ export function techniquesAt(tier: Tier, backend: Backend, reducedMotion: boolea
   return new Set(
     TECHNIQUES.filter(
       (x) =>
-        x.from !== null && rank(x.from) <= top && !(reducedMotion && x.reducedMotion === 'off'),
+        x.from !== null &&
+        rank(x.from) <= top &&
+        !(x.lowOnly && tier !== 'low') &&
+        !(reducedMotion && x.reducedMotion === 'off'),
     ).map((x) => x.id),
   );
 }
