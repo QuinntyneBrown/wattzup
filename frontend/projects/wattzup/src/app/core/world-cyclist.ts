@@ -67,14 +67,6 @@ export class CyclistKit {
     side: DoubleSide,
   });
 
-  /** A soft dark ellipse on the road under each bike (technique 37). */
-  readonly contact = new MeshBasicMaterial({
-    alphaMap: contactTexture(),
-    transparent: true,
-    depthWrite: false,
-    color: 0x000000,
-    opacity: 0.55,
-  });
   /** Thirty-two steel spokes laced from hub to rim, drawn as an alpha mask. */
   readonly spokeLace = new MeshBasicMaterial({
     color: 0x6f757c,
@@ -85,7 +77,6 @@ export class CyclistKit {
   readonly bottle = new MeshStandardMaterial({ color: 0x2f7bd0, roughness: 0.4 });
   private readonly chainring = new TorusGeometry(0.1, 0.008, 6, 32);
   private readonly bottleShape = new CylinderGeometry(0.034, 0.034, 0.2, 10);
-  private readonly contactPlane = new PlaneGeometry(1, 1);
   private readonly bibPlane = new PlaneGeometry(0.21, 0.16);
 
   /** The jersey's cut, tinted by each rider's colour: dark side panels and a pale hem band. */
@@ -125,10 +116,6 @@ export class CyclistKit {
     return geometry;
   }
 
-  contactGeometry(): PlaneGeometry {
-    return this.contactPlane;
-  }
-
   parts(): {
     tyre: TorusGeometry;
     rim: TorusGeometry;
@@ -158,9 +145,6 @@ export class CyclistKit {
     for (const g of this.limbs.values()) g.dispose();
     this.kitTexture.dispose();
     this.ventTexture.dispose();
-    this.contact.alphaMap?.dispose();
-    this.contact.dispose();
-    this.contactPlane.dispose();
     this.bibPlane.dispose();
     this.chainring.dispose();
     this.bottleShape.dispose();
@@ -186,8 +170,6 @@ export class Cyclist {
   readonly wheelBlur: Mesh[] = [];
   private readonly legs: { thigh: Limb; shin: Limb; foot: Mesh; side: number }[] = [];
   private readonly cranks: Mesh[] = [];
-  /** The contact shadow, shown from the tier that draws contact shadows. */
-  readonly contact: Mesh;
   /** Torso, head and arms: they pivot about the hands when the rider stands on the pedals. */
   private readonly body = new Group();
   private readonly hip = HIP.clone();
@@ -200,12 +182,7 @@ export class Cyclist {
     readonly shell: MeshStandardMaterial,
   ) {
     const parts = kit.parts();
-    this.contact = new Mesh(kit.contactGeometry(), kit.contact);
-    this.contact.rotation.x = -Math.PI / 2;
-    this.contact.scale.set(0.62, 2.3, 1);
-    this.contact.position.set(0.16, 0.012, -0.45);
-    this.contact.renderOrder = 1;
-    this.group.add(this.contact);
+    // No blob under the bike: the shadow map grounds the rider in their own shape (#933, #937).
     for (const z of [-WHEELBASE, WHEELBASE]) {
       const tyre = new Mesh(parts.tyre, kit.rubber);
       const rim = new Mesh(parts.rim, kit.metal);
@@ -484,22 +461,6 @@ function ventTexture(): CanvasTexture {
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
   return texture;
-}
-
-function contactTexture(): CanvasTexture {
-  const canvas = document.createElement('canvas');
-  canvas.width = 64;
-  canvas.height = 64;
-  const ctx = canvas.getContext('2d');
-  if (ctx) {
-    const g = ctx.createRadialGradient(32, 32, 2, 32, 32, 32);
-    g.addColorStop(0, 'rgba(255,255,255,1)');
-    g.addColorStop(0.5, 'rgba(255,255,255,0.55)');
-    g.addColorStop(1, 'rgba(255,255,255,0)');
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, 64, 64);
-  }
-  return new CanvasTexture(canvas);
 }
 
 function jerseyTexture(): CanvasTexture {

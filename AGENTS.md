@@ -180,6 +180,9 @@ production build (`dist/wattzup/browser`) is served by any static host over HTTP
   the session record's shape, so an exported history imports anywhere.
 - **No inline forms.** Button-triggered editing (e.g. the workout editor) opens a CDK Dialog or
   navigates to a screen. Never hand-roll modals.
+- World Ride never draws a generic oval shadow: no round, disc or ellipse blob under a figure,
+  vehicle or prop, in any world at any tier. A shadow takes the shape of what casts it, or comes
+  from the shadow map (#937).
 - The animation loop pauses when the tab is hidden and respects `prefers-reduced-motion`. The
   initial bundle stays within the 300 KB gzipped budget.
 - Every interaction works by touch on a phone and by keyboard on a desktop; touch targets are at
