@@ -141,6 +141,22 @@ export class Ribbons {
   }
 }
 
+/**
+ * The height above the road of a `Ribbons` profile at `x`: straight between its points, and the
+ * end's height past either end. A part placed beside the road stands on it (L2-110 AC12).
+ */
+export function profileHeight(profile: readonly (readonly [number, number])[], x: number): number {
+  const points = [...profile].sort((a, b) => a[0] - b[0]);
+  const first = points[0]!;
+  const last = points[points.length - 1]!;
+  if (x <= first[0]) return first[1];
+  if (x >= last[0]) return last[1];
+  const k = points.findIndex(([px]) => px >= x);
+  const [x0, y0] = points[k - 1]!;
+  const [x1, y1] = points[k]!;
+  return y0 + ((y1 - y0) * (x - x0)) / (x1 - x0);
+}
+
 /** Scales the UVs of one face of a box (0 is +x) so its texture repeats `u` by `v` times. */
 export function scaleFaceUv(box: BoxGeometry, face: number, u: number, v: number): void {
   const uv = box.getAttribute('uv') as BufferAttribute;

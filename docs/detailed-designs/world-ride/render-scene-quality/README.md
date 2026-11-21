@@ -30,7 +30,7 @@ None.
 
 - **`Tier`**: `'low' | 'medium' | 'high' | 'ultra'`. **`Backend`**: `'webgpu' | 'webgl2'`.
 - **`TECHNIQUES`**: the fifty rows of L2-111 as `{ id, name, from: Tier | null, reducedMotion: 'kept' | 'still' | 'off' }`. `from: null` marks a technique that is not built (21, 29).
-- **`startTier(backend)`** returns `ultra` for `webgpu` and `high` for `webgl2` (L2-111 criterion 3).
+- **`startTier()`** returns `low`, on `webgpu` and `webgl2` alike (L2-111 criterion 3, amended 2026-11-21): the scene opens at the lowest tier instead of opening high and dropping in front of the rider, and since a tier is never raised, it stays there. Higher tiers are still drawn when the test-only hook pins one (below).
 - **`techniquesAt(tier, backend, reducedMotion)`** returns the set of technique ids drawn (criteria 2 and 5):
   - a technique is drawn when its `from` is at or below `tier`;
   - `ultra` techniques are dropped on `webgl2`;
@@ -148,7 +148,7 @@ Playwright (`frontend/e2e/world-ride.spec.ts`):
 
 Unit tests (`render-quality.spec.ts`):
 
-- `startTier` for each backend (AC3);
+- `startTier` opens at `low` (AC3);
 - `techniquesAt`: one case per tier on each backend, and with reduced motion. Each checks the techniques drawn against the table, with 21 and 29 never drawn and `ultra` only on WebGPU (AC2, AC5);
 - `FrameBudget`: two windows over budget drop one tier, or straight to `low` at 3 × _P_ or more, in one drop; one window over budget keeps it; nothing drops below `low`; no window ever raises it (AC4). One case per row of 30 Hz at 34, 45 and 100 ms, 60 Hz at 18, 25, 49 and 85 ms, and 144 Hz at 8, 18 and 21 ms (AC4); while paused and across `setPeriod`, no window is judged (AC9).
 - `estimateFramePeriod`: one case per row of 30, 60, 120 and 144 Hz, jittery intervals, a long first interval and gaps over 100 ms left out, and too few intervals falling back to 60 Hz (AC9).

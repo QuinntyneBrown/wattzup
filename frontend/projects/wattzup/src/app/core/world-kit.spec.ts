@@ -1,4 +1,4 @@
-import { bob, loopFade, wrapFade } from './world-kit';
+import { bob, loopFade, profileHeight, wrapFade } from './world-kit';
 
 describe('wrapFade: a part shrinks away before it wraps and grows back after (#897)', () => {
   it.each([
@@ -40,5 +40,30 @@ describe('bob: a step or bounce with no snap at its bottom (#897)', () => {
     const e = 1e-4;
     expect((bob(e) - bob(0)) / e).toBeCloseTo(0, 3);
     expect((bob(Math.PI) - bob(Math.PI - e)) / e).toBeCloseTo(0, 3);
+  });
+});
+
+describe('profileHeight: the height of a ribbon profile above the road at x (L2-110 AC12)', () => {
+  // A verge as Ribbons lays it, from greater x to smaller.
+  const verge: [number, number][] = [
+    [16, 12],
+    [7, 3],
+    [3, 0.6],
+    [0, 0],
+  ];
+  it.each([
+    ['at the road edge', 0, 0],
+    ['between two points', 1.5, 0.3],
+    ['on a point', 3, 0.6],
+    ['up the slope', 5, 1.8],
+    ['at the far point', 16, 12],
+    ['past the far end, held level', 40, 12],
+    ['past the near end, held level', -2, 0],
+  ])('%s: %d m gives %d m', (_, x, height) => {
+    expect(profileHeight(verge, x)).toBeCloseTo(height, 9);
+  });
+
+  it('reads a profile laid from smaller x to greater the same way', () => {
+    expect(profileHeight([...verge].reverse(), 5)).toBeCloseTo(1.8, 9);
   });
 });
