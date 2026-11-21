@@ -10,6 +10,8 @@ A rider looking at the road, or at the floor in a hard effort, still hears the b
 
 **freewheel**: a ratchet click that slows and fades as the flywheel spins down
 
+**ambience**: a quiet generated bed that makes a World Ride world sound like its place: `coast`, `alpine`, `city` or `park` (criterion 12)
+
 **ducking**: dropping ride sound to 30 % of its level while a cue beep plays (L2-027)
 
 The bike reports no speed of its own: `speed_kmh` is `cadence × 0.375` (L2-007). So "cadence 0 while still moving" never happens in the live state. The freewheel therefore starts when the cadence falls to 0 and runs from the last speed above 0, as the flywheel would spin down (L2-129 criterion 5).
@@ -33,8 +35,21 @@ Pure helper in `frontend/projects/wattzup/src/app/core/`, with unit tests:
 | freewheel | while 0 ≤ _t_ < 3 s after it started: `clicksPerSecond` = _from_ × (1 − _t_ ÷ 3), `gain` = 0.5 × volume × (1 − _t_ ÷ 3) | from 33.7 km/h: 33.7 at 0 s, 16.9 at 1.5 s, 0 at 3 s |
 | wind | `cutoffHz` = 300 + 40 × _s_; `gain` = 0.6 × volume × min(_s_ ÷ 50, 1) | 0 km/h → silent, 33.7 km/h → 1,648 Hz |
 | tyre | `centreHz` = 150 + 10 × _s_; `gain` = 0.3 × volume × min(_s_ ÷ 40, 1) | 33.7 km/h → 487 Hz |
+| ambience | by preset: filter, frequency, swell rate and depth, share of the volume (table below); no ambience while `ambience` is `null` | coast: low-pass 500 Hz swelling every 12 s at 20 % |
 | all | every gain × 0.3 while `ducked` | under a countdown beep |
 | all | every gain is 0 while `audible` is false | paused, hidden, bike lost, video playing |
+
+- **Ambience presets** (`AMBIENCE` in `ride-sound.ts`), each a noise bed whose gain is swelled by a slow sine:
+
+| Preset | Filter | Frequency | Swell | Swell depth | Share of the volume |
+|---|---|---|---|---|---|
+| `coast` | low-pass | 500 Hz | 1 ÷ 12 Hz | 0.8 | 20 % |
+| `alpine` | band-pass | 800 Hz | 1 ÷ 20 Hz | 0.5 | 12 % |
+| `city` | low-pass | 250 Hz | 1 ÷ 5 Hz | 0.2 | 15 % |
+| `park` | band-pass | 3,000 Hz | 1 ÷ 3 Hz | 0.4 | 10 % |
+
+  `rideSoundParams` takes `ambience` (a preset or `null`) and returns `ambience` as the preset's row with its `gain`, or `null`.
+- **`ambienceOf(worldId)`** (`core/world-ambience.ts`) reads the table of worlds that declare a preset; any other world declares none.
 
 - **`nextFreewheel(previous, {previousCadence, cadence, lastKmh, now})`** (`ride-sound.ts`) returns the freewheel state:
   - when `cadence` falls from above 0 to 0 with a last speed above 0, `{fromKmh: lastKmh, startedAt: now}`;
@@ -55,6 +70,7 @@ Services and components:
   - `duck(seconds)` sets `ducked` for `seconds` + 0.15 s (criterion 7). An `effect` on `CueService.beeped` calls it.
   - `volume` reads `RideSoundPreference`; `setVolume(percent)` keeps it.
   - `setVideoPlaying(playing)` sets the video flag (criterion 8).
+  - `setAmbience(preset)` sets the world's ambience, or `null`. `WorldRidePage` sets it from `ambienceOf(world.id)` and clears it when the page is destroyed. While sound is on and a preset is set, the service builds the bed: the looped noise through the preset's filter, into a gain swelled by an `OscillatorNode`, into the ambience gain. A new preset replaces the bed (criterion 12).
 - **`CueService`** gains `beeped`, a signal set to `{seconds}` each time `beep` plays a tone. `RideSound` reads it to duck. `CueService` does not depend on ride sound.
 - **`VideoSync`** gains `playing`, a computed that is true while the player reports `playing`. `RidePage`, which provides `VideoSync`, passes it to `RideSound.setVideoPlaying` in an `effect`, and clears it when the page is destroyed.
 - **The `Ride sound` button** sits before the beeps toggle in the ride dashboard's `AppBar`, and before Music in the `WorldRide` bar, where it shows the label `Sound` when there is room.
@@ -85,6 +101,7 @@ Playwright (`frontend/e2e/`), with the fake `navigator.bluetooth` fixture drivin
   - `ducks under a countdown beep` (AC7)
   - `is silent while the ride-along video plays, and says so` (AC8)
   - `fades out when paused, hidden or the bike is lost` (AC9)
+  - `world-ride.spec.ts`: `plays the coast ambience in South Beach Sunrise, and none in Old Town` (AC12)
   - `requests nothing and plays with the simulated bike` (AC10, AC11)
 
 Unit tests: `ride-sound.spec.ts` covers one case per table row, every gate of `audible`, and `nextFreewheel` falling, holding, running out and rising again. `ride-sound-preference.spec.ts` covers the default, a kept value, and a clamp to 0 to 100 in steps of 5. Time-driven rules use the `now` passed in, never a sleep.

@@ -6,6 +6,8 @@ import { CueService } from './cue.service';
 import { LiveStateService } from './live-state.service';
 import { RideSoundPreference } from './ride-sound-preference';
 import {
+  type AmbiencePreset,
+  type AmbienceVoice,
   type FreewheelState,
   nextFreewheel,
   type RideSoundParams,
@@ -52,6 +54,10 @@ export class RideSound {
   /** Wind and tyre: one looped noise bed each, through a filter that follows the speed (AC6). */
   private wind: TickVoice | null = null;
   private tyre: TickVoice | null = null;
+  private noise: AudioBuffer | null = null;
+  /** The world's ambience bed while one plays (AC12). */
+  private bed: { preset: AmbiencePreset; gain: GainNode; stop: () => void } | null = null;
+  private readonly _ambience = signal<AmbiencePreset | null>(null);
   private pump: ReturnType<typeof setInterval> | null = null;
 
   private freewheel: FreewheelState | null = null;
@@ -99,7 +105,7 @@ export class RideSound {
     this.tick = tickBuffer(ctx);
     this.chain = voice(ctx, 'bandpass', 2400);
     this.freewheelVoice = voice(ctx, 'highpass', 3000);
-    const noise = noiseBuffer(ctx);
+    const noise = (this.noise = noiseBuffer(ctx));
     this.wind = voice(ctx, 'lowpass', 300);
     this.tyre = voice(ctx, 'bandpass', 150);
     for (const bed of [this.wind, this.tyre]) {
@@ -116,6 +122,12 @@ export class RideSound {
 
   setVolume(percent: number): void {
     this.preference.setVolume(percent);
+    this.schedule();
+  }
+
+  /** The World Ride world's ambience, or null off World Ride (AC12). */
+  setAmbience(preset: AmbiencePreset | null): void {
+    this._ambience.set(preset);
     this.schedule();
   }
 
@@ -139,6 +151,7 @@ export class RideSound {
     void this.context?.close();
     this.context = null;
     this.chain = this.freewheelVoice = this.wind = this.tyre = null;
+    this.bed = null;
     this._on.set(false);
   }
 
@@ -159,6 +172,7 @@ export class RideSound {
       volume: this.preference.volume() / 100,
       freewheel: this.freewheel,
       ducked: now < this.duckedUntil,
+      ambience: this._ambience(),
       now,
     });
   }
@@ -178,6 +192,19 @@ export class RideSound {
     this.play(this.freewheelVoice, p.freewheel.clicksPerSecond, p.freewheel.gain);
     this.follow(this.wind, p.wind.cutoffHz, p.wind.gain);
     this.follow(this.tyre, p.tyre.centreHz, p.tyre.gain);
+    this.ambience(p.ambience);
+  }
+
+  /** Builds, replaces or removes the ambience bed, and moves its gain (AC12). */
+  private ambience(voice: AmbienceVoice | null): void {
+    const ctx = this.context!;
+    if (this.bed && this.bed.preset !== voice?.preset) {
+      this.bed.stop();
+      this.bed = null;
+    }
+    if (!voice) return;
+    this.bed ??= ambienceBed(ctx, this.noise!, voice);
+    this.bed.gain.gain.setTargetAtTime(voice.gain, ctx.currentTime, SMOOTH_S);
   }
 
   /** Moves a noise bed's filter and gain towards the speed's values (AC6). */
@@ -242,4 +269,38 @@ function noiseBuffer(ctx: AudioContext): AudioBuffer {
     data[i] = (seed / 2147483647) * 2 - 1;
   }
   return buffer;
+}
+
+/**
+ * A world's ambience: the noise through the preset's filter, its level swelled by a slow sine
+ * between 1 − depth and 1, into a gain that rides the volume (AC12).
+ */
+function ambienceBed(ctx: AudioContext, noise: AudioBuffer, voice: AmbienceVoice) {
+  const source = ctx.createBufferSource();
+  source.buffer = noise;
+  source.loop = true;
+  const filter = ctx.createBiquadFilter();
+  filter.type = voice.filter;
+  filter.frequency.value = voice.hz;
+  const swell = ctx.createGain();
+  swell.gain.value = 1 - voice.swellDepth / 2;
+  const lfo = ctx.createOscillator();
+  lfo.frequency.value = voice.swellHz;
+  const depth = ctx.createGain();
+  depth.gain.value = voice.swellDepth / 2;
+  lfo.connect(depth).connect(swell.gain);
+  const gain = ctx.createGain();
+  gain.gain.value = 0;
+  source.connect(filter).connect(swell).connect(gain).connect(ctx.destination);
+  source.start();
+  lfo.start();
+  return {
+    preset: voice.preset,
+    gain,
+    stop: () => {
+      source.stop();
+      lfo.stop();
+      gain.disconnect();
+    },
+  };
 }

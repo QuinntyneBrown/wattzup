@@ -49,6 +49,8 @@ Edge.
 - **Ride sound.** An optional chain, freewheel, wind and tyre sound generated in the browser from
   the live cadence, resistance and speed. It is off on every page load; turn it on, and set its
   volume (kept in this browser, 60 % at first), from the `Ride sound` button in the app bar.
+  In World Ride, worlds by the sea, in the mountains, in a city or in a park add a quiet
+  generated ambience under it.
 - **World Ride music.** Each world plays its own royalty-free Pixabay track while you ride, with a
   `Music` toggle that is remembered ([the list](docs/world-music.md)).
 - **Ride history.** Rides are kept in the browser (IndexedDB), with a summary of each, progress,

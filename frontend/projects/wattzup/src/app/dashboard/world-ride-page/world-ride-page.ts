@@ -27,6 +27,7 @@ import { worldRideAccess } from '../../core/world-ride-access';
 import { musicPlays } from '../../core/world-music';
 import { WorldMusicPlayer } from '../../core/world-music-player';
 import { worldRideView } from '../../core/world-ride-view';
+import { ambienceOf } from '../../core/world-ambience';
 import { worldById } from '../../core/worlds';
 import { ClassNotFound } from '../class-not-found/class-not-found';
 import { WorldScene } from '../world-scene/world-scene';
@@ -150,6 +151,12 @@ export class WorldRidePage {
       this.music.sync(musicPlays(this.live.state()?.workout?.status, this.musicOn()));
     });
     inject(DestroyRef).onDestroy(() => this.music.destroy());
+    // The world's ambience plays under ride sound while this page shows (L2-129 AC12).
+    effect((onCleanup) => {
+      const world = this.world();
+      untracked(() => this.rideSound.setAmbience(world ? ambienceOf(world.id) : null));
+      onCleanup(() => this.rideSound.setAmbience(null));
+    });
     // A ride too short to save leaves for the dashboard when it ends (L2-109 AC5).
     effect(() => {
       const w = this.live.state()?.workout;
