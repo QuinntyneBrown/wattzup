@@ -61,8 +61,8 @@ interface Limb {
 
 /** Geometry and materials shared by every cyclist in the scene. */
 export class CyclistKit {
-  private readonly tube = new CylinderGeometry(1, 1, 1, 8);
-  private readonly helmet = new SphereGeometry(0.13, 18, 10, 0, Math.PI * 2, 0, Math.PI / 1.65);
+  private readonly tube = new CylinderGeometry(1, 1, 1, 6, 1, true);
+  private readonly helmet = new SphereGeometry(0.13, 12, 7, 0, Math.PI * 2, 0, Math.PI / 1.65);
   private readonly limbs = new Map<number, CapsuleGeometry>();
   readonly rubber = new MeshStandardMaterial({ color: 0x18191c, roughness: 0.85 });
   readonly metal = new MeshStandardMaterial({ color: 0xb8bcc2, metalness: 0.8, roughness: 0.3 });
@@ -85,7 +85,7 @@ export class CyclistKit {
     side: DoubleSide,
   });
   readonly bottle = new MeshStandardMaterial({ color: 0x2f7bd0, roughness: 0.4 });
-  private readonly bottleShape = new CylinderGeometry(0.034, 0.034, 0.2, 10);
+  private readonly bottleShape = new CylinderGeometry(0.034, 0.034, 0.2, 8);
   private readonly bibPlane = new PlaneGeometry(0.21, 0.16);
   private readonly frameShape: BufferGeometry;
   private readonly bikeRubberShape: BufferGeometry;
@@ -101,12 +101,12 @@ export class CyclistKit {
   private readonly ventTexture = ventTexture();
 
   constructor(private readonly frame: Material) {
-    const tyre = new TorusGeometry(WHEEL - 0.012, 0.016, 8, 40);
-    const rim = new TorusGeometry(WHEEL - 0.04, 0.012, 6, 40);
-    const disc = new CircleGeometry(WHEEL - 0.04, 32);
-    const chainring = new TorusGeometry(0.1, 0.008, 6, 32);
-    const head = new SphereGeometry(0.1, 20, 16);
-    const torso = new CapsuleGeometry(0.15, 0.3, 6, 12);
+    const tyre = new TorusGeometry(WHEEL - 0.012, 0.016, 6, 24);
+    const rim = new TorusGeometry(WHEEL - 0.04, 0.012, 5, 24);
+    const disc = new CircleGeometry(WHEEL - 0.04, 24);
+    const chainring = new TorusGeometry(0.1, 0.008, 4, 20);
+    const head = new SphereGeometry(0.1, 12, 9);
+    const torso = new CapsuleGeometry(0.15, 0.3, 4, 8);
 
     const front = new Vector3(0, WHEEL, -WHEELBASE);
     const rear = new Vector3(0, WHEEL, WHEELBASE);
@@ -260,7 +260,7 @@ export class CyclistKit {
     const key = Math.round(radius * 1000) * 10000 + Math.round(length * 1000);
     let geometry = this.limbs.get(key);
     if (!geometry) {
-      geometry = new CapsuleGeometry(radius, length, 4, 10);
+      geometry = new CapsuleGeometry(radius, length, 2, 6);
       this.limbs.set(key, geometry);
     }
     return geometry;
@@ -599,7 +599,7 @@ function stickGeometry(
 
 /** Places a capsule limb between `a` and `b` in local body space for static geometry merging. */
 function limbGeometry(radius: number, length: number, a: Vector3, b: Vector3): BufferGeometry {
-  const part = new CapsuleGeometry(radius, length - 2 * radius, 4, 10);
+  const part = new CapsuleGeometry(radius, length - 2 * radius, 2, 6);
   const pos = a.clone().lerp(b, 0.5);
   const d = b.clone().sub(a);
   const quat =

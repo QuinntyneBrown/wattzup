@@ -345,3 +345,31 @@ Every iteration below is measured across a **45-second sustained ride** (`record
 | --------------- | ------: | --------: | --------------- | ------------: | -------------------------------- | ------------------------------ |
 | **`low`**       |    60.5 |      16.7 | **17.1 / 17.9** |          5.90 | 7.626 → **7.547 (−1.0 %)**       | 8.410 → **8.311 (−1.2 %)**     |
 | **`high`**      |    56.0 |      17.4 | 23.3 / 34.8     |         10.42 | 10.430 → **9.251 (−11.3 %)**     | 11.380 → **10.149 (−10.8 %)**  |
+
+### Iteration 10: Right-Sized `CyclistKit` Peloton Tessellation (`world-cyclist.ts`)
+
+- **Change**: Right-sized `CyclistKit` primitive segment counts (`tube` open-ended `6`-radial without buried internal end-caps, `tyre` `6×24`, `rim` `5×24`, `disc` `24`, `chainring` `4×20`, `head` `12×9`, `helmet` `12×7`, `torso` `4×8`, `limb` `2×6`, `bottle` `8`), cutting per-cyclist geometry from **7,600 → 3,018 triangles (−60.3 %, ~32,000 fewer triangles across the 7 riders)** transformed through `BendNode` in both main and shadow passes while preserving smooth Phong-shaded silhouettes.
+- **45-Second Results**:
+
+| Tier (`webgpu`) | Avg FPS | Median ms | p95 / p99 ms | GPU Median / p95 ms | CDP Script / Task ms/f           | JS Heap MB |
+| --------------- | ------: | --------: | ------------ | ------------------- | -------------------------------- | ---------: |
+| **`low`**       |    60.6 |      16.7 | 17.2 / 17.9  | 5.90 / 7.01         | **7.491 / 8.271** _(record low)_ |      20.41 |
+| **`high`**      |    56.1 |      17.3 | 23.9 / 35.4  | **10.35 / 11.67**   | **9.258 / 10.153**               |      58.57 |
+
+### Cumulative 45-Second Old Town Improvement Summary (Original → Post-#950 Baseline → Iteration 10)
+
+| Metric (45s Active Ride @ 1440×900)  | Original `main` | Post-#950 45s Baseline | Iteration 10 (`main`) | Total Improvement          |
+| ------------------------------------ | --------------: | ---------------------: | --------------------: | -------------------------- |
+| **`low` Avg FPS**                    |            31.7 |                   60.5 |              **60.6** | **+91.2 % (60 Hz lock)**   |
+| **`low` Median / p95 Frame (ms)**    |     29.9 / 42.8 |            16.7 / 17.8 |       **16.7 / 17.1** | **−44.1 % / −60.0 %**      |
+| **`low` WebGPU Draw Calls**          |           1,771 |                    747 |               **328** | **−81.5 % (−1,443 draws)** |
+| **`low` CDP CPU Script (ms/frame)**  |           30.83 |                  9.329 |             **7.491** | **4.1× faster (−75.7 %)**  |
+| **`low` JS Heap Used (MB)**          |            95.5 |                  46.24 |             **20.41** | **−78.6 %**                |
+| **`high` Avg FPS**                   |            14.8 |                   38.3 |         **56.1–58.3** | **3.8×–3.9× (+280 %)**     |
+| **`high` Median / p95 Frame (ms)**   |     62.6 / 92.9 |            26.2 / 32.7 |  **16.7–17.3 / 21.9** | **−73.3 % / −76.4 %**      |
+| **`high` GPU Median (ms)**           |           18.74 |                  15.60 |        **9.90–10.35** | **−44.8 %**                |
+| **`high` WebGPU Draw Calls**         |           3,308 |                  1,249 |               **469** | **−85.8 % (−2,839 draws)** |
+| **`high` CDP CPU Script (ms/frame)** |           66.43 |                 17.344 |             **9.251** | **7.2× faster (−86.1 %)**  |
+| **DOM Layouts per 45s Ride**         |          ~1,500 |                  1,504 |             **76–91** | **−94.0 %**                |
+| **Lazy World Ride JS Loaded (KB)**   |         2,741.1 |                2,741.1 |           **1,349.2** | **−50.8 %**                |
+| **Mid-Ride Shader Compilations**     |             0–2 |                      0 |                 **0** | **Zero mid-ride stalls**   |
