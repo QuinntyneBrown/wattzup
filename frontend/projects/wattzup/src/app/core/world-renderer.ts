@@ -3569,9 +3569,6 @@ export class ThreeWorldRenderer implements WorldRenderer {
     // The WebGPU renderer has no PCFSoftShadowMap: soft shadows (37) widen the PCF filter instead.
     renderer.shadowMap.type = PCFShadowMap;
     this.sun.shadow.radius = on.has(37) ? 4 : 1;
-    for (const rider of [this.you, ...this.pacers.values()]) {
-      if (rider) rider.contact.visible = on.has(37);
-    }
     this.sun.castShadow = on.has(12);
 
     // A material gets a new program only when a compiled feature changes: textures, roughness
