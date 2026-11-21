@@ -43,6 +43,7 @@
 .world-ride__panel {
   border-radius: var(--radius-xl);
   padding: var(--space-4);
+  contain: layout style;
 }
 .world-ride__bar,
 .world-ride__row,

@@ -3,6 +3,15 @@ import type { WorkoutSnapshot } from '@wattzup/api';
 
 const CAP_SECONDS = 1.25;
 
+/**
+ * Quantizes a `[0, 1]` progress ratio into `0.5%` CSS percentage steps (`~1.3 px` on a 272 px bar)
+ * so 60 Hz animation frames coalesce via `Object.is` instead of forcing 60 DOM layouts per second.
+ */
+export function progressWidth(progress: number): string {
+  const clamped = Math.min(Math.max(progress, 0), 1);
+  return `${Math.round(clamped * 200) / 2}%`;
+}
+
 export class CountdownClock {
   private remaining = 0;
   private elapsed = 0;

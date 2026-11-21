@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 import { CLASS_API, type ClassEntry } from '@wattzup/api';
 import { WorldRide } from '@wattzup/components';
 import { CountdownService } from '../../core/countdown.service';
+import { progressWidth } from '../../core/countdown-clock';
 import { DialogLauncher } from '../../core/dialog-launcher';
 import { formatDuration } from '../../core/format-duration';
 import { LiveStateService } from '../../core/live-state.service';
@@ -109,6 +110,8 @@ export class WorldRidePage {
     total: formatDuration(this.live.state()?.workout?.total_seconds ?? 0),
   }));
 
+  private readonly barWidth = computed(() => progressWidth(this.timer.progress()));
+
   protected readonly countdown = computed(() => {
     const w = this.live.state()?.workout;
     const duration = w?.segments[w.segment]?.duration ?? 0;
@@ -117,7 +120,7 @@ export class WorldRidePage {
       left: this.timer.remainingText(),
       ridden: Math.max(0, Math.min(duration, duration - left)),
       duration,
-      width: `${(this.timer.progress() * 100).toFixed(2)}%`,
+      width: this.barWidth(),
     };
   });
 

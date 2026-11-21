@@ -154,3 +154,17 @@ describe('routeProfileView (L2-106)', () => {
     expect(routeProfileView(profile, [seg('steady', 0, 1, 1, 1)], 0).gradeText).toBe(text);
   });
 });
+
+describe('routeProfile and routeProfileView memoization', () => {
+  it('reuses the memoized RouteProfile and static strip array across ticks of the same ride', () => {
+    const first = routeProfile(oldTown, hiitCardio);
+    const second = routeProfile(oldTown, hiitCardio);
+    expect(second).toBe(first);
+
+    const v0 = routeProfileView(first, hiitCardio, 10);
+    const v1 = routeProfileView(second, hiitCardio, 25);
+    expect(v1.strip).toBe(v0.strip);
+    expect(v1.area).toBe(v0.area);
+    expect(v1.doneWidth).toBe(25);
+  });
+});

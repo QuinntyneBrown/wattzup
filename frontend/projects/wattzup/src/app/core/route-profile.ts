@@ -17,6 +17,18 @@ export interface RouteProfile {
   readonly metres: number;
 }
 
+interface StaticProfileGeometry {
+  readonly min: number;
+  readonly range: number;
+  readonly label: string;
+  readonly width: number;
+  readonly area: string;
+}
+
+const profileCache = new WeakMap<readonly Segment[], Map<string, RouteProfile>>();
+const geometryCache = new WeakMap<RouteProfile, StaticProfileGeometry>();
+const stripCache = new WeakMap<readonly Segment[], WorldRideProfile['strip']>();
+
 /** A segment's expected speed in m/s: `10 × ∛(max(estimate, 1) ÷ 20) ÷ 3.6`. */
 export function expectedSpeed(segment: Segment): number {
   const watts = Math.max(estimateWatts(segment.cadence, segment.level), 1);
@@ -26,6 +38,14 @@ export function expectedSpeed(segment: Segment): number {
 const EASE = 0.12;
 
 export function routeProfile(world: World, segments: readonly Segment[]): RouteProfile {
+  let byWorld = profileCache.get(segments);
+  if (!byWorld) {
+    byWorld = new Map();
+    profileCache.set(segments, byWorld);
+  }
+  const hit = byWorld.get(world.id);
+  if (hit) return hit;
+
   const elevation: number[] = [];
   const grade: number[] = [];
   const climbed: number[] = [];
@@ -46,7 +66,9 @@ export function routeProfile(world: World, segments: readonly Segment[]): RouteP
       climbed.push(up);
     }
   }
-  return { elevation, grade, climbed, metres: s };
+  const computedProfile: RouteProfile = { elevation, grade, climbed, metres: s };
+  byWorld.set(world.id, computedProfile);
+  return computedProfile;
 }
 
 /** The gradient and climbed at whole second `t`, clamped to the plan. */
@@ -61,6 +83,43 @@ const LOW = 88;
 const SPAN = 78;
 const STEP = 6;
 
+function staticGeometryOf(profile: RouteProfile): StaticProfileGeometry {
+  const hit = geometryCache.get(profile);
+  if (hit) return hit;
+  const { elevation } = profile;
+  const last = elevation.length - 1;
+  let min = 0;
+  let max = 0;
+  for (let i = 0; i <= last; i++) {
+    const v = elevation[i]!;
+    if (v < min) min = v;
+    if (v > max) max = v;
+  }
+  const range = max - min;
+  const y = (e: number) => (range > 0 ? LOW - ((e - min) / range) * SPAN : LOW);
+  const points: string[] = [];
+  for (let x = 0; x <= last; x += STEP) points.push(`L${x} ${y(elevation[x]!).toFixed(2)}`);
+  if (last >= 0 && last % STEP !== 0) points.push(`L${last} ${y(elevation[last]!).toFixed(2)}`);
+  const width = elevation.length;
+  const geometry: StaticProfileGeometry = {
+    min,
+    range,
+    label: `Route profile, ${Math.round(range)} m of elevation`,
+    width,
+    area: `M0 ${FLOOR} ${points.join(' ')} L${width} ${FLOOR} Z`,
+  };
+  geometryCache.set(profile, geometry);
+  return geometry;
+}
+
+function staticStripOf(segments: readonly Segment[]): WorldRideProfile['strip'] {
+  const hit = stripCache.get(segments);
+  if (hit) return hit;
+  const strip = segments.map((s) => ({ x: s.start, width: s.duration, tone: profileTone(s.kind) }));
+  stripCache.set(segments, strip);
+  return strip;
+}
+
 /** What the route-profile panel draws at second `t` (L2-106 AC1–3). */
 export function routeProfileView(
   profile: RouteProfile,
@@ -69,25 +128,20 @@ export function routeProfileView(
 ): Omit<WorldRideProfile, 'distanceText'> {
   const { elevation } = profile;
   const last = elevation.length - 1;
-  const min = Math.min(0, ...elevation);
-  const max = Math.max(0, ...elevation);
-  const range = max - min;
-  const y = (e: number) => (range > 0 ? LOW - ((e - min) / range) * SPAN : LOW);
-  const points: string[] = [];
-  for (let x = 0; x <= last; x += STEP) points.push(`L${x} ${y(elevation[x]!).toFixed(2)}`);
-  if (last % STEP !== 0) points.push(`L${last} ${y(elevation[last]!).toFixed(2)}`);
-  const width = elevation.length;
+  const geom = staticGeometryOf(profile);
   const at = Math.min(Math.max(Math.floor(t), 0), Math.max(last, 0));
   const { grade, climbed } = profileAt(profile, at);
+  const elevationAt = elevation[at] ?? 0;
+  const playheadY = geom.range > 0 ? LOW - ((elevationAt - geom.min) / geom.range) * SPAN : LOW;
   return {
     gradeText: gradeText(grade),
     climbedText: `${Math.round(climbed)} m climbed`,
-    label: `Route profile, ${Math.round(range)} m of elevation`,
-    width,
-    area: `M0 ${FLOOR} ${points.join(' ')} L${width} ${FLOOR} Z`,
+    label: geom.label,
+    width: geom.width,
+    area: geom.area,
     doneWidth: at,
-    strip: segments.map((s) => ({ x: s.start, width: s.duration, tone: profileTone(s.kind) })),
-    playhead: { x: at, y: y(elevation[at] ?? 0) },
+    strip: staticStripOf(segments),
+    playhead: { x: at, y: playheadY },
   };
 }
 
