@@ -125,8 +125,10 @@ export class RoadBend {
 
   /** Loads the samples of `bendAhead` for this frame, and the road's height `metres` ahead. */
   update(samples: Float32Array, heightAt: (metres: number) => number): void {
-    this.vectors.forEach((v, i) => v.fromArray(samples, i * 4));
-    for (let i = 0; i < BEND_SAMPLES; i++) this.levels[i] = heightAt(BEND_FROM + i * BEND_STEP);
+    for (let i = 0; i < BEND_SAMPLES; i++) {
+      this.vectors[i]!.fromArray(samples, i * 4);
+      this.levels[i] = heightAt(BEND_FROM + i * BEND_STEP);
+    }
   }
 
   /** Bends every mesh and sprite under `root`, except those in `keep`. */

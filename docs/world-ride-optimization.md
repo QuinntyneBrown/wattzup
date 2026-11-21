@@ -305,3 +305,13 @@ Every iteration below is measured across a **45-second sustained ride** (`record
 | --------------- | ------------------------ | --------------- | ------------------------- | ----------------------- | ------------------------------------- | ------------------- |
 | **`low`**       | 60.6 → **60.4**          | 16.6 → **16.7** | 17.8 → **17.2 (−0.6 ms)** | 18.3 → **18.0**         | 1,506 / 1,507 → **94 / 95 (−93.8 %)** | 9.088 → **8.678**   |
 | **`high`**      | 56.3 → **58.3 (+3.6 %)** | 16.9 → **16.7** | 28.0 → **21.9 (−6.1 ms)** | 35.1 → **32.6**         | 1,467 / 1,467 → **84 / 84 (−94.3 %)** | 10.651 → **11.424** |
+
+### Iteration 6: Zero-Allocation `roadAhead`/`bendAhead`/`layRoad` Buffers & Analytical `fillStrip` Normals (`scene-road.ts`, `scene-bend.ts`, `world-bend.ts`, `world-renderer.ts`)
+
+- **Change**: Added in-place `out` buffer reuse and O(1) monotonic segment cursor stepping to `roadAhead()`, replaced holey temporary JS arrays and per-frame `Float32Array(512)` allocations in `bendAhead()` with pre-allocated `Float64Array` scratch buffers, eliminated 6 per-frame `heightAt` closure allocations and `[...behind, ...ahead]` spreads in `ThreeWorldRenderer`, and replaced twice-per-frame `computeVertexNormals()` + `computeBoundingSphere()` scans in `fillStrip()` with direct typed-array writes and exact analytical slope normals `(0, 1 / hypot(1, g), g / hypot(1, g))`.
+- **45-Second Results**:
+
+| Tier (`webgpu`) | Avg FPS         | Median ms | p95 / p99 ms                  | CDP Script ms/f (Before → After) | CDP Task ms/f (Before → After) | Layouts |
+| --------------- | --------------- | --------- | ----------------------------- | -------------------------------- | ------------------------------ | ------: |
+| **`low`**       | 60.4 → **60.7** | **16.7**  | 17.2 / 18.0 → **17.1 / 17.7** | 7.917 → **7.057 (−10.9 %)**      | 8.678 → **7.797 (−10.2 %)**    |      91 |
+| **`high`**      | **56.3**        | 17.4      | 22.9 / 34.3                   | 10.520 → **10.346 (−1.7 %)**     | 11.424 → **11.303 (−1.1 %)**   |      90 |
