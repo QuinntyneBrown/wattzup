@@ -24,11 +24,13 @@ import {
   SphereGeometry,
   type Texture,
   TorusGeometry,
+  Vector3,
 } from 'three/webgpu';
 import {
   canvasTexture,
   Figures,
   loopMetres,
+  profileHeight,
   Ribbons,
   type SceneStreet,
   seeded,
@@ -47,6 +49,24 @@ const CAMP_WEAR = {
   bottoms: ['#1d1f24', '#2f3e5c', '#5a5f69', '#e8d8b0'],
   skins: ['#f0c8a0', '#f5d3b5', '#e2b48c', '#c48a5f', '#8d5a3b'],
 };
+
+/** The right verge's cross-section, [x, height above the road]: scrub, then the crag's foot. */
+const rightVerge = (r: number): [number, number][] => [
+  [r + 200, 90],
+  [r + 40, 26],
+  [r + 16, 12],
+  [r + 7, 3],
+  [r + 3, 0.6],
+  [r, 0.02],
+];
+
+/** The left side's cross-section: the ravine's lip, then its fall to the sea. */
+const ravine = (r: number): [number, number][] => [
+  [-r - 0.6, 0.02],
+  [-r - 3, -3],
+  [-r - 10, -70],
+  [-r - 60, -SEA - 10],
+];
 
 /** The mountainside the hairpins climb: a cone standing ahead and to the right. */
 const MOUNTAIN = { x: 260, z: -1500, radius: 1300, height: 560 } as const;
@@ -147,30 +167,15 @@ export class CalobraStreet implements SceneStreet {
       flatShading: true,
     });
     const scrub = this.material({ map: this.repeat(scrubTexture(), 8, 8), roughness: 1 });
+    const verge = rightVerge(r);
     this.ribbons.add(points, asphalt, [
       [r, 0.012],
       [-r, 0.012],
     ]);
-    this.ribbons.add(points, scrub, [
-      [r + 3, 0.6],
-      [r, 0.02],
-    ]);
-    this.ribbons.add(points, rock, [
-      [r + 16, 12],
-      [r + 7, 3],
-      [r + 3, 0.6],
-    ]);
-    this.ribbons.add(points, scrub, [
-      [r + 200, 90],
-      [r + 40, 26],
-      [r + 16, 12],
-    ]);
-    this.ribbons.add(points, rock, [
-      [-r - 0.6, 0.02],
-      [-r - 3, -3],
-      [-r - 10, -70],
-      [-r - 60, -SEA - 10],
-    ]);
+    this.ribbons.add(points, scrub, verge.slice(4));
+    this.ribbons.add(points, rock, verge.slice(2, 5));
+    this.ribbons.add(points, scrub, verge.slice(0, 3));
+    this.ribbons.add(points, rock, ravine(r));
   }
 
   /** The low drystone parapet along the drop, coped with flat stones. */
@@ -257,16 +262,15 @@ export class CalobraStreet implements SceneStreet {
       const holder = new Group();
       holder.add(tree);
       this.group.add(holder);
-      this.props.push({
-        mesh: holder,
-        offset,
-        x: right ? roadHalf + 3 + random() * 4 : -roadHalf - 2.5 - random() * 2,
-      });
-      if (!right) tree.position.y = -2 - random() * 2;
+      // On the left, only out to the lip, where the slope is gentle enough for a trunk to meet it.
+      const x = right ? roadHalf + 3 + random() * 4 : -roadHalf - 2 - random();
+      this.props.push({ mesh: holder, offset, x });
+      // The trunk's foot sunk into the slope, so no side of it hangs over the ground (L2-110 AC12).
+      tree.position.y = profileHeight(right ? rightVerge(roadHalf) : ravine(roadHalf), x) - 0.5;
     }
   }
 
-  /** The wild goats picking over the rocks above the road. */
+  /** The wild goats picking over the verge's slope above the road. */
   private addGoats(roadHalf: number): void {
     const random = seeded(4321);
     const coats = [0x3a2e26, 0x8a6a4a, 0xd8d0c0].map((c) =>
@@ -305,18 +309,14 @@ export class CalobraStreet implements SceneStreet {
         goat.add(leg);
       }
       goat.children.forEach((c) => (c.castShadow = true));
-      const perch = new Group();
-      perch.add(goat);
-      perch.position.y = random() < 0.5 ? 0.6 : 2 + random() * 4;
+      const x = roadHalf + 2 + random() * 3;
+      // Standing on the verge's slope, hooves a little sunk so none hangs over it (L2-110 AC12).
+      goat.position.y = profileHeight(rightVerge(roadHalf), x) - 0.15;
       const holder = new Group();
-      holder.add(perch);
+      holder.add(goat);
       this.group.add(holder);
       this.goats.push({ mesh: goat, phase: random() * 6 });
-      this.props.push({
-        mesh: holder,
-        offset: 18 + k * 50 + random() * 20,
-        x: roadHalf + 2 + random() * 3,
-      });
+      this.props.push({ mesh: holder, offset: 18 + k * 50 + random() * 20, x });
     }
   }
 
@@ -416,6 +416,14 @@ export class CalobraStreet implements SceneStreet {
     this.horizon.add(mountain);
     const surface = (x: number, z: number) =>
       m.height * (1 - Math.hypot(x - m.x, z - m.z) / m.radius) - 20;
+    // The face's rise per metre in x and in z: it falls away from the peak (L2-110 AC12).
+    const rise = (x: number, z: number) => {
+      const d = Math.hypot(x - m.x, z - m.z);
+      return {
+        x: (-m.height / m.radius) * ((x - m.x) / d),
+        z: (-m.height / m.radius) * ((z - m.z) / d),
+      };
+    };
     // The hairpins' legs, swinging back and forth up the face, each on its wall.
     for (let k = 0; k < 12; k++) {
       const z = -380 - k * 32;
@@ -433,7 +441,10 @@ export class CalobraStreet implements SceneStreet {
       this.disposables.push(bend.geometry);
       leg.add(road, face, bend);
       leg.position.set(x, surface(x, z), z);
-      leg.rotation.y = (k % 2 ? 1 : -1) * (0.16 + random() * 0.08);
+      const yaw = (k % 2 ? 1 : -1) * (0.16 + random() * 0.08);
+      // Each leg climbs with the face along its length, so neither end hangs above it.
+      const r = rise(x, z);
+      leg.rotation.set(0, yaw, Math.atan(r.x * Math.cos(yaw) - r.z * Math.sin(yaw)));
       this.horizon.add(leg);
     }
     // The Nus de sa Corbata: the road looping round and passing under its own bridge.
@@ -448,9 +459,15 @@ export class CalobraStreet implements SceneStreet {
     deck.position.set(26, 2.6, 0);
     knot.add(loop, arch, deck);
     this.disposables.push(loop.geometry);
-    const kx = m.x - 260;
-    const kz = -340;
-    knot.position.set(kx, surface(kx, kz) + 2, kz);
+    // On the face beside the hairpins, laid in the slope so no side of the loop hangs above it.
+    const kx = m.x - 280;
+    const kz = -560;
+    knot.position.set(kx, surface(kx, kz) + 1, kz);
+    const r = rise(kx, kz);
+    knot.quaternion.setFromUnitVectors(
+      new Vector3(0, 1, 0),
+      new Vector3(-r.x, 1, -r.z).normalize(),
+    );
     this.horizon.add(knot);
     // Limestone crags breaking through the face.
     const block = new DodecahedronGeometry(1, 0);
