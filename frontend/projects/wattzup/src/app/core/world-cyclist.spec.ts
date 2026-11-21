@@ -1,8 +1,8 @@
-import { Color, type Mesh, MeshStandardMaterial } from 'three/webgpu';
+import { Color, type Group, type Mesh, MeshStandardMaterial, Vector3 } from 'three/webgpu';
 import { describe, expect, it, vi } from 'vitest';
 import { CyclistKit } from './world-cyclist';
 
-describe('CyclistKit rigid bike sub-assemblies', () => {
+describe('CyclistKit rigid bike and body sub-assemblies', () => {
   it('merges rigid frame, rubber, metal, spoke-lace and wheel-blur bike parts into single meshes per material', () => {
     const frame = new MeshStandardMaterial({ color: 0xeeeeea });
     const kit = new CyclistKit(frame);
@@ -29,6 +29,31 @@ describe('CyclistKit rigid bike sub-assemblies', () => {
     expect(withMaterial(kit.spokeLace)).toHaveLength(1);
     expect(withMaterial(kit.spokes)).toHaveLength(1);
     expect(cyclist.wheelBlur).toHaveLength(1);
+
+    kit.dispose();
+    frame.dispose();
+  });
+
+  it('merges rigid upper-body jersey, skin and chin-strap parts and runs pose() with zero Vector3 clones', () => {
+    const frame = new MeshStandardMaterial({ color: 0xeeeeea });
+    const kit = new CyclistKit(frame);
+    const cyclist = kit.make(new Color(0xd7ff3a), 4, frame);
+
+    const bodyGroup = cyclist.group.children.find(
+      (c): c is Group => !(c as Mesh).isMesh && c.children.length > 0,
+    )!;
+    const bodyMeshes = bodyGroup.children.filter((c): c is Mesh => (c as Mesh).isMesh);
+    const bodyWithMaterial = (m: unknown) => bodyMeshes.filter((mesh) => mesh.material === m);
+
+    expect(bodyWithMaterial(cyclist.jersey)).toHaveLength(1);
+    expect(bodyWithMaterial(kit.skin)).toHaveLength(1);
+    expect(bodyWithMaterial(kit.rubber)).toHaveLength(1);
+    expect(bodyMeshes).toHaveLength(6);
+
+    const cloneSpy = vi.spyOn(Vector3.prototype, 'clone');
+    cyclist.pose(1.1, -0.08, 0.5);
+    expect(cloneSpy).not.toHaveBeenCalled();
+    cloneSpy.mockRestore();
 
     kit.dispose();
     frame.dispose();

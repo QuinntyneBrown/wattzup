@@ -265,3 +265,13 @@ Every iteration below is measured across a **45-second sustained ride** (`record
 | --------------- | ------------------------- | --------- | --------------- | --------------- | ------------- | --------------------------- | -------------------------------- |
 | **`low`**       | 60.5 → **60.6**           | **16.6**  | 17.8 → **17.8** | 18.8 → **18.1** | 5.37          | 747 → **631 (−116)**        | 9.329 → **8.465 (−9.3 %)**       |
 | **`high`**      | 38.3 → **42.4 (+10.7 %)** | **23.7**  | 32.7 → **27.5** | 49.5 → **43.6** | 15.53         | 1,249 → **1,054 (−195)**    | 17.344 → **11.168 (−35.6 %)**    |
+
+### Iteration 2: Merge Rigid Upper-Body Sub-Assemblies & Zero-Allocation `pose()` IK (`world-cyclist.ts`)
+
+- **Change**: Pre-merged each rider's rigid upper-body jersey (`torso` + 2 `upper` arms + 2 shoulder `caps` → 1 `bodyJerseyShape`), skin (`neck` + `head` + 2 `fore`arms → 1 `bodySkinShape`), and left/right chin straps (`2 → 1` `chinStrapsShape`) in `CyclistKit`, reducing `this.body` from 14 meshes to 6 per rider, and replaced all per-frame `Vector3` clones/allocations in `Cyclist.pose()`, `placeMesh()`, and `bendInto()` with pre-allocated scratch vectors (`0` heap allocations per `pose()` call).
+- **45-Second Results**:
+
+| Tier (`webgpu`) | Avg FPS (Before → After) | Median ms | p95 ms          | p99 ms          | GPU Median / p95 ms | Draw Calls (Before → After) | CDP Script ms/f (Before → After) |
+| --------------- | ------------------------ | --------- | --------------- | --------------- | ------------------- | --------------------------- | -------------------------------- |
+| **`low`**       | 60.6 → **60.6**          | **16.7**  | 17.8 → **17.7** | 18.1 → **18.1** | 5.83 / 6.75         | 631 → **591 (−40)**         | 8.465 → **7.751 (−8.4 %)**       |
+| **`high`**      | 42.4 → **43.6 (+2.8 %)** | **22.8**  | 27.5 → **27.6** | 43.6 → **47.2** | **15.40 / 16.45**   | 1,054 → **974 (−80)**       | 11.168 → **12.988**              |
