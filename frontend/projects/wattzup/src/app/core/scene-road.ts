@@ -23,6 +23,12 @@ export interface RoadPoint {
   readonly grade: number;
 }
 
+export interface MutableRoadPoint {
+  metres: number;
+  height: number;
+  grade: number;
+}
+
 export interface RoadStart {
   /** The ride's `elapsed_seconds`. */
   readonly t: number;
@@ -57,24 +63,54 @@ export function nextArch(
   return { label: 'Finish', metres: (current.start + current.duration - t) * v };
 }
 
+function writeRoadPoint(
+  out: MutableRoadPoint[],
+  index: number,
+  metres: number,
+  height: number,
+  grade: number,
+): void {
+  const existing = out[index];
+  if (existing) {
+    existing.metres = metres;
+    existing.height = height;
+    existing.grade = grade;
+  } else {
+    out[index] = { metres, height, grade };
+  }
+}
+
 /** The road in 2 m steps ahead: each step eases towards the grade of the segment it falls in. */
 export function roadAhead(
   world: World,
   segments: readonly Segment[],
   start: RoadStart,
   steps: number,
+  out?: MutableRoadPoint[],
 ): RoadPoint[] {
   const v = Math.max(start.speed, MIN_SPEED);
   const ease = 1 - Math.pow(1 - EASE_PER_SECOND, STEP / v);
-  const road: RoadPoint[] = [{ metres: 0, height: 0, grade: start.grade }];
+  const road: MutableRoadPoint[] = out ?? [];
+  road.length = steps + 1;
+  writeRoadPoint(road, 0, 0, 0, start.grade);
   let g = start.grade;
   let height = 0;
+  let segIdx = segments.length > 0 ? indexAt(segments, start.t) : -1;
   for (let i = 1; i <= steps; i++) {
     const metres = i * STEP;
-    const segment = segments[indexAt(segments, start.t + metres / v)];
-    if (segment) g += ease * (targetGrade(world, segment.kind, start.s + metres) - g);
+    const at = start.t + metres / v;
+    if (segIdx >= 0) {
+      while (segIdx + 1 < segments.length) {
+        const cur = segments[segIdx]!;
+        if (at < cur.start + cur.duration) break;
+        segIdx++;
+      }
+      const cur = segments[segIdx]!;
+      const seg = at >= cur.start && at < cur.start + cur.duration ? cur : segments.at(-1);
+      if (seg) g += ease * (targetGrade(world, seg.kind, start.s + metres) - g);
+    }
     height += (g / 100) * STEP;
-    road.push({ metres, height, grade: g });
+    writeRoadPoint(road, i, metres, height, g);
   }
   return road;
 }

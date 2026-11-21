@@ -81,8 +81,15 @@ import {
   type WorldRideProbeReport,
   takeDropRequest,
 } from './world-ride-probe';
-import { bendAhead, bendPoint, heading, lean, racingLine } from './scene-bend';
-import { EASE_PER_SECOND, MIN_SPEED, nextArch, roadAhead, type RoadPoint } from './scene-road';
+import { BEND_SAMPLES, bendAhead, bendPoint, heading, lean, racingLine } from './scene-bend';
+import {
+  EASE_PER_SECOND,
+  MIN_SPEED,
+  type MutableRoadPoint,
+  nextArch,
+  roadAhead,
+  type RoadPoint,
+} from './scene-road';
 import { RoadBend } from './world-bend';
 import { inkOutline } from './world-ink';
 import { flatSky, ToonLook } from './world-toon';
@@ -3201,7 +3208,17 @@ export class ThreeWorldRenderer implements WorldRenderer {
   private readonly toon = new ToonLook();
   /** What the rider's and pacers' twins write to the scene pass: ink them warmer (technique 52). */
   private readonly warmInk = mrt({ ink: float(1) });
-  private bendSamples: Float32Array = new Float32Array(0);
+  private readonly bendSamples = new Float32Array(BEND_SAMPLES * 4);
+  private readonly aheadPoints: MutableRoadPoint[] = Array.from({ length: AHEAD + 1 }, () => ({
+    metres: 0,
+    height: 0,
+    grade: 0,
+  }));
+  private readonly stripPoints: MutableRoadPoint[] = Array.from(
+    { length: AHEAD + BEHIND + 1 },
+    () => ({ metres: 0, height: 0, grade: 0 }),
+  );
+  private readonly heightAtAhead = (metres: number): number => heightAt(this.aheadPoints, metres);
   private drawn = 0;
 
   async start(
@@ -3396,8 +3413,9 @@ export class ThreeWorldRenderer implements WorldRenderer {
       frame.segments,
       { t: frame.elapsed, s: frame.s, speed, grade: this.grade },
       AHEAD,
+      this.aheadPoints,
     );
-    this.bendSamples = bendAhead(world, frame.s);
+    bendAhead(world, frame.s, this.bendSamples);
     // The sun stays where it is in the sky as the road turns: ride round a right-hander and it
     // swings left across the view, and the houses' shadows swing with it.
     const turn = (heading(world, frame.s) * Math.PI) / 180;
@@ -3407,7 +3425,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
       .multiplyScalar(80)
       .add(this.sun.target.position);
     this.sky.sunPosition.value.copy(this.sunDirection()).applyAxisAngle(UP, turn);
-    this.bend.update(this.bendSamples, (metres) => heightAt(ahead, metres));
+    this.bend.update(this.bendSamples, this.heightAtAhead);
     if (++this.drawn % BEND_SWEEP === 0) {
       // Whatever joined the scene since takes the tier's look, then the bend.
       if (this.on.has(51)) this.toon.apply(this.scene, true, new Color(this.look.sky), this.unbent);
@@ -4008,12 +4026,13 @@ export class ThreeWorldRenderer implements WorldRenderer {
   }
 
   private placeRoadside(s: number, ahead: RoadPoint[]): void {
-    this.street?.place(s, (metres) => heightAt(ahead, metres));
-    if (this.world) this.corners?.place(this.world, s, (metres) => heightAt(ahead, metres));
+    this.street?.place(s, this.heightAtAhead);
+    if (this.world) this.corners?.place(this.world, s, this.heightAtAhead);
     this.ramp?.place(ahead, ROAD_HALF + 1, 0.15);
-    this.towers?.place(s, (metres) => heightAt(ahead, metres));
-    this.scenery?.place(s, (metres) => heightAt(ahead, metres));
-    this.lamps.forEach((lamp, i) => {
+    this.towers?.place(s, this.heightAtAhead);
+    this.scenery?.place(s, this.heightAtAhead);
+    for (let i = 0; i < this.lamps.length; i++) {
+      const lamp = this.lamps[i]!;
       const metres = i * LAMP_EVERY - (s % LAMP_EVERY) + 8;
       // A light is no vertex, so it takes the bend here.
       const at = bendPoint(
@@ -4022,15 +4041,16 @@ export class ThreeWorldRenderer implements WorldRenderer {
         -metres,
       );
       lamp.position.set(at.x, heightAt(ahead, metres) + 6, at.z);
-    });
-    this.posts.forEach((post, i) => {
+    }
+    for (let i = 0; i < this.posts.length; i++) {
+      const post = this.posts[i]!;
       const metres = Math.floor(i / 2) * POST_EVERY - (s % POST_EVERY) + 4;
       post.position.set(
         i % 2 === 0 ? -ROAD_HALF - 0.8 : ROAD_HALF + 0.8,
         heightAt(ahead, metres) + 0.5,
         -metres,
       );
-    });
+    }
   }
 
   private placeArch(world: World, frame: SceneFrame, speed: number, ahead: RoadPoint[]): void {
@@ -4049,12 +4069,21 @@ export class ThreeWorldRenderer implements WorldRenderer {
   /** Lays the road and the ground beside it over the points ahead, and a short run behind. */
   private layRoad(ahead: RoadPoint[], s: number): void {
     const first = ahead[0]!;
-    const behind: RoadPoint[] = [];
-    for (let i = BEHIND; i >= 1; i--) {
-      const metres = -i * STEP;
-      behind.push({ metres, height: (first.grade / 100) * metres, grade: first.grade });
+    const points = this.stripPoints;
+    for (let k = 0; k < BEHIND; k++) {
+      const metres = -(BEHIND - k) * STEP;
+      const p = points[k]!;
+      p.metres = metres;
+      p.height = (first.grade / 100) * metres;
+      p.grade = first.grade;
     }
-    const points = [...behind, ...ahead];
+    for (let k = 0; k < ahead.length; k++) {
+      const src = ahead[k]!;
+      const dst = points[BEHIND + k]!;
+      dst.metres = src.metres;
+      dst.height = src.height;
+      dst.grade = src.grade;
+    }
     fillStrip(this.road, points, ROAD_HALF, 0);
     this.street?.lay(points, s);
     this.towers?.lay(points, s);
@@ -4091,17 +4120,41 @@ function fillStrip(
   drop: number,
 ): void {
   const position = geometry.getAttribute('position') as BufferAttribute;
+  const normal = geometry.getAttribute('normal') as BufferAttribute;
   const uv = geometry.getAttribute('uv') as BufferAttribute;
-  points.forEach((p, i) => {
-    position.setXYZ(i * 2, -half, p.height + drop, -p.metres);
-    position.setXYZ(i * 2 + 1, half, p.height + drop, -p.metres);
-    uv.setXY(i * 2, 0, p.metres / DASH);
-    uv.setXY(i * 2 + 1, 1, p.metres / DASH);
-  });
+  const posArr = position.array as Float32Array;
+  const nrmArr = normal.array as Float32Array;
+  const uvArr = uv.array as Float32Array;
+  for (let i = 0; i < points.length; i++) {
+    const p = points[i]!;
+    const y = p.height + drop;
+    const z = -p.metres;
+    const g = p.grade / 100;
+    const ny = 1 / Math.hypot(1, g);
+    const nz = g * ny;
+    const pBase = i * 6;
+    posArr[pBase] = -half;
+    posArr[pBase + 1] = y;
+    posArr[pBase + 2] = z;
+    posArr[pBase + 3] = half;
+    posArr[pBase + 4] = y;
+    posArr[pBase + 5] = z;
+    nrmArr[pBase] = 0;
+    nrmArr[pBase + 1] = ny;
+    nrmArr[pBase + 2] = nz;
+    nrmArr[pBase + 3] = 0;
+    nrmArr[pBase + 4] = ny;
+    nrmArr[pBase + 5] = nz;
+    const uBase = i * 4;
+    const v = p.metres / DASH;
+    uvArr[uBase] = 0;
+    uvArr[uBase + 1] = v;
+    uvArr[uBase + 2] = 1;
+    uvArr[uBase + 3] = v;
+  }
   position.needsUpdate = true;
+  normal.needsUpdate = true;
   uv.needsUpdate = true;
-  geometry.computeVertexNormals();
-  geometry.computeBoundingSphere();
 }
 
 /** A direction in the sky: azimuth 0 is straight down the road, positive to the rider's right. */

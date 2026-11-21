@@ -1,5 +1,13 @@
 import type { Segment } from '@wattzup/api';
-import { nextArch, nextRamp, RAMP_FROM, roadAhead, type RoadPoint } from './scene-road';
+import { BEND_SAMPLES, bendAhead } from './scene-bend';
+import {
+  type MutableRoadPoint,
+  nextArch,
+  nextRamp,
+  RAMP_FROM,
+  roadAhead,
+  type RoadPoint,
+} from './scene-road';
 import { targetGrade, worldById } from './worlds';
 
 const seg = (kind: Segment['kind'], start: number, duration: number): Segment => ({
@@ -74,5 +82,34 @@ describe('nextRamp (L2-110 AC9)', () => {
 
   it('gives the steepest gradient of the ramp, in whole percent', () => {
     expect(nextRamp(road([1, 3.2, 4.4, 5.6, 6.3, 5.8]))?.grade).toBe(6);
+  });
+});
+
+describe('zero-allocation per-frame roadAhead and bendAhead buffers', () => {
+  it('fills pre-allocated RoadPoint and Float32Array buffers in place with identical values', () => {
+    const roadBuf: MutableRoadPoint[] = Array.from({ length: 41 }, () => ({
+      metres: 0,
+      height: 0,
+      grade: 0,
+    }));
+    const firstPointRef = roadBuf[0];
+    const freshRoad = roadAhead(oldTown, plan, { t: 290, s: 1000, speed: 5, grade: 0.5 }, 40);
+    const reusedRoad = roadAhead(
+      oldTown,
+      plan,
+      { t: 290, s: 1000, speed: 5, grade: 0.5 },
+      40,
+      roadBuf,
+    );
+
+    expect(reusedRoad).toBe(roadBuf);
+    expect(reusedRoad[0]).toBe(firstPointRef);
+    expect(reusedRoad).toEqual(freshRoad);
+
+    const bendBuf = new Float32Array(BEND_SAMPLES * 4);
+    const freshBend = bendAhead(oldTown, 250);
+    const reusedBend = bendAhead(oldTown, 250, bendBuf);
+    expect(reusedBend).toBe(bendBuf);
+    expect(Array.from(reusedBend)).toEqual(Array.from(freshBend));
   });
 });
