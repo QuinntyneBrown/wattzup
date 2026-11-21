@@ -79,7 +79,7 @@ describe('OldTownStreet and Corners (L2-101 AC1, L2-110 AC9, L2-111 AC10)', () =
     for (const d of disposables) d.dispose();
   });
 
-  it('batches street frontages by material and culls street blocks behind the camera', () => {
+  it('batches street frontages by material, culls blocks behind the camera, and restricts shadow casting to near blocks', () => {
     const disposables: { dispose(): void }[] = [];
     const street = new OldTownStreet((t) => t, disposables);
     street.build(3.5, 161);
@@ -94,19 +94,30 @@ describe('OldTownStreet and Corners (L2-101 AC1, L2-110 AC9, L2-111 AC10)', () =
     expect(totalMeshes).toBeLessThan(80);
 
     street.place(0, (m) => m * 0.05);
-    const countVisible = () =>
-      batched.reduce((sum, b) => {
+    const countVisibleIn = (meshes: readonly BatchedMesh[]) =>
+      meshes.reduce((sum, b) => {
         let v = 0;
         for (let id = 0; id < b.instanceCount; id++) if (b.getVisibleAt(id)) v++;
         return sum + v;
       }, 0);
-    const totalInstances = batched.reduce((sum, b) => sum + b.instanceCount, 0);
-    const visibleAtStart = countVisible();
+
+    const visibleAtStart = countVisibleIn(batched);
+    const shadowCasters = batched.filter((b) => b.castShadow);
+    const nonShadowCasters = batched.filter((b) => !b.castShadow);
+    const visibleShadowInstances = countVisibleIn(shadowCasters);
+
     expect(visibleAtStart).toBeGreaterThan(0);
-    expect(visibleAtStart).toBeLessThan(totalInstances);
+    expect(visibleAtStart).toBeLessThan(185);
+    expect(visibleShadowInstances).toBeGreaterThan(0);
+    expect(visibleShadowInstances).toBeLessThan(55);
+    // Every BatchedMesh has at least one visible instance at s=0 so warmUp() compiles all programs.
+    for (const b of [...shadowCasters, ...nonShadowCasters]) {
+      expect(countVisibleIn([b])).toBeGreaterThan(0);
+    }
 
     street.place(210, (m) => m * 0.05);
-    expect(countVisible()).toBeGreaterThan(0);
+    expect(countVisibleIn(batched)).toBeGreaterThan(0);
+    expect(countVisibleIn(shadowCasters)).toBeLessThan(55);
 
     for (const d of disposables) d.dispose();
   });
