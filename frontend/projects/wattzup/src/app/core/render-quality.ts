@@ -87,9 +87,12 @@ export const TECHNIQUES: readonly Technique[] = [
 
 const rank = (tier: Tier) => TIERS.indexOf(tier);
 
-/** The tier the scene opens at (L2-111 AC3). */
-export function startTier(backend: Backend): Tier {
-  return backend === 'webgpu' ? 'ultra' : 'high';
+/**
+ * The tier the scene opens at: `low` on both backends, so the ride never starts high and drops in
+ * front of the rider (L2-111 AC3).
+ */
+export function startTier(): Tier {
+  return 'low';
 }
 
 /** The ids of the techniques drawn (L2-111 AC2, AC5). */

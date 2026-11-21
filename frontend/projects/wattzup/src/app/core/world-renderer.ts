@@ -3235,7 +3235,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
     const probe = readWorldRideProbe((globalThis as Record<string, unknown>)[PROBE_KEY]);
     // The test-only hook pins the tier; ultra draws at high on WebGL2 (L2-111 AC2).
     const pin = probe && this.backend === 'webgl2' && probe.tier === 'ultra' ? 'high' : probe?.tier;
-    this.budget = new FrameBudget(pin ?? startTier(this.backend), undefined, { pinned: !!pin });
+    this.budget = new FrameBudget(pin ?? startTier(), undefined, { pinned: !!pin });
     this.probe = probeReport(
       this.budget.tier,
       this.backend,

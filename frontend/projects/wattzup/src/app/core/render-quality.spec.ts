@@ -30,11 +30,8 @@ describe('the technique table (L2-111)', () => {
 });
 
 describe('startTier (L2-111 AC3)', () => {
-  it.each([
-    ['webgpu', 'ultra'],
-    ['webgl2', 'high'],
-  ] as const)('starts %s at %s', (backend, tier) => {
-    expect(startTier(backend)).toBe(tier);
+  it('starts at low on both backends', () => {
+    expect(startTier()).toBe('low');
   });
 });
 

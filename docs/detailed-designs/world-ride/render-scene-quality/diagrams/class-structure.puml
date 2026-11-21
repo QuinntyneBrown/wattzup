@@ -19,7 +19,7 @@ class Technique <<interface>> {
 }
 class "render-quality.ts" as RQ <<module>> {
   TECHNIQUES: Technique[]
-  startTier(backend): Tier
+  startTier(): Tier
   techniquesAt(tier, backend, reducedMotion): Set<number>
 }
 class FrameBudget {
