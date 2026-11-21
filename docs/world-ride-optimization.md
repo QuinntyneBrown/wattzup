@@ -285,3 +285,13 @@ Every iteration below is measured across a **45-second sustained ride** (`record
 | --------------- | ------------------------ | --------- | --------------- | --------------- | ----------------------------- | ----------------------------- |
 | **`low`**       | 60.6 → **60.6**          | **16.7**  | 17.7 → **17.7** | 18.1 → **18.2** | 2,742.3 → **1,371.0 (−50 %)** | 4,003.4 → **3,987.3**         |
 | **`high`**      | 43.6 → **44.1 (+1.1 %)** | **22.8**  | 27.6 → **26.7** | 47.2 → **44.7** | 2,742.3 → **1,371.0 (−50 %)** | 10,274.2 → **10,117.4**       |
+
+### Iteration 4: Half-Resolution (`0.5×`) GTAO Ambient Occlusion (`world-renderer.ts`)
+
+- **Change**: Extracted `createAmbientOcclusion(depth, camera)` and set `aoPass.resolutionScale = 0.5` on `GTAONode` (technique 36), cutting GTAO horizon-raymarching pixel invocations by **4× (`1.30M → 0.32M` pixels/frame)** and AO render-target VRAM by **75 %** before upsampling into bloom and TRAA.
+- **45-Second Results**:
+
+| Tier (`webgpu`) | Avg FPS (Before → After)  | Median ms (Before → After) | p99 ms (Before → After)   | GPU Median / p95 ms (Before → After)       | CDP Script ms/f (Before → After) |
+| --------------- | ------------------------- | -------------------------- | ------------------------- | ------------------------------------------ | -------------------------------- |
+| **`low`**       | 60.6 → **60.6**           | 16.7 → **16.6**            | 18.2 → **18.3**           | 5.83 / 6.75 → **5.90 / 6.82**              | 7.952 → **7.922**                |
+| **`high`**      | 44.1 → **56.3 (+27.7 %)** | 22.8 → **16.9 (−25.9 %)**  | 44.7 → **35.1 (−21.5 %)** | 15.40 / 16.52 → **9.96 / 11.73 (−35.3 %)** | 13.244 → **9.441 (−28.7 %)**     |
