@@ -6,6 +6,7 @@ import { statusBadge } from '../../core/segment-labels';
 import { liveConnectionStatus } from '../../core/connection-status';
 import { CountdownService } from '../../core/countdown.service';
 import { CueService } from '../../core/cue.service';
+import { RideSound } from '../../core/ride-sound.service';
 import { formatDuration } from '../../core/format-duration';
 import { MotionPreference } from '../../core/motion-preference';
 import { DialogLauncher } from '../../core/dialog-launcher';
@@ -27,6 +28,7 @@ export class AppBar {
   protected readonly actions = inject(RideActions);
   protected readonly dialogs = inject(DialogLauncher);
   protected readonly cues = inject(CueService);
+  protected readonly sound = inject(RideSound);
   protected readonly theme = inject(ThemeService);
   protected readonly countdown = inject(CountdownService);
   protected readonly status = liveConnectionStatus();

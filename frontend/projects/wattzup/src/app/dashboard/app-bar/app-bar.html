@@ -61,6 +61,16 @@
     <button
       class="btn btn--quiet btn--icon"
       type="button"
+      aria-haspopup="dialog"
+      [attr.aria-pressed]="sound.on()"
+      [attr.aria-label]="sound.on() ? 'Ride sound on' : 'Ride sound off'"
+      (click)="dialogs.openRideSound()"
+    >
+      <wz-icon name="wave" />
+    </button>
+    <button
+      class="btn btn--quiet btn--icon"
+      type="button"
       [attr.aria-pressed]="cues.beeps()"
       [attr.aria-label]="cues.beeps() ? 'Countdown beeps on' : 'Countdown beeps off'"
       (click)="cues.toggle()"

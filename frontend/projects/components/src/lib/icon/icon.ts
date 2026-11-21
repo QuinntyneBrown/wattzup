@@ -19,6 +19,7 @@ export type IconName =
   | 'bell'
   | 'bell-off'
   | 'volume'
+  | 'wave'
   | 'volume-off'
   | 'sun'
   | 'moon'
