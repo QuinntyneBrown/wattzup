@@ -90,3 +90,12 @@ test('falls quiet when the ride is paused', async ({ page, audio, bluetooth }) =
   await page.waitForTimeout(600);
   expect(await sounding(audio)).toBe(false);
 });
+
+test('starts the wind and tyre noise with the sound', async ({ page, audio }) => {
+  const ride = await startRide(page);
+  const before = await audio.starts();
+  await turnOn(page, ride);
+  // The noise loops for as long as ride sound is on: two sources, one for wind, one for tyre.
+  await expect.poll(() => audio.loops()).toBe(2);
+  expect(await audio.starts()).toBeGreaterThanOrEqual(before + 2);
+});

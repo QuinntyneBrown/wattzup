@@ -85,6 +85,15 @@ describe('rideSoundParams (L2-129)', () => {
       expect(p.tyre.gain).toBeCloseTo(tyreGain, 9);
     });
 
+    it('rises as the speed rises from 10 to 35 km/h (#686)', () => {
+      const slow = rideSoundParams(moment({ speedKmh: 10 }));
+      const fast = rideSoundParams(moment({ speedKmh: 35 }));
+      expect(fast.wind.cutoffHz).toBeGreaterThan(slow.wind.cutoffHz);
+      expect(fast.wind.gain).toBeGreaterThan(slow.wind.gain);
+      expect(fast.tyre.centreHz).toBeGreaterThan(slow.tyre.centreHz);
+      expect(fast.tyre.gain).toBeGreaterThan(slow.tyre.gain);
+    });
+
     it('is silent with no speed reported', () => {
       const p = rideSoundParams(moment({ speedKmh: null }));
       expect([p.wind.gain, p.tyre.gain]).toEqual([0, 0]);
