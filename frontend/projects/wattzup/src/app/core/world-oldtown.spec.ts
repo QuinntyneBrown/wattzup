@@ -170,6 +170,14 @@ describe('OldTownStreet and Corners (L2-101 AC1, L2-110 AC9, L2-111 AC10)', () =
       }
     }
 
+    const crowdTriangles = crowdMeshes.reduce((sum, mesh) => {
+      const geo = mesh.geometry as BufferGeometry;
+      const tris = geo.index ? geo.index.count / 3 : geo.getAttribute('position').count / 3;
+      return sum + mesh.count * tris;
+    }, 0);
+    expect(crowdTriangles).toBeGreaterThan(100_000);
+    expect(crowdTriangles).toBeLessThan(230_000);
+
     for (const d of disposables) d.dispose();
   });
 
