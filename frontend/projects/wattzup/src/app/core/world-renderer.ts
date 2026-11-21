@@ -2259,11 +2259,11 @@ const LOOKS: Record<WorldId, Look> = {
     light: { sun: 3.2, fill: 1.2, colour: 0xfff0d8 },
     fogRange: [200, 2400],
   },
-  // Hoover Dam: Blazing desert sun, heat haze over the road.
+  // Hoover Dam: blazing desert sun high over the Black Canyon, heat haze over the crest road.
   hoover: {
     sky: 0x7ab4e8,
     fog: 0xe8d4b8,
-    ground: 0xa8805a,
+    ground: 0x4a3a30,
     road: 0x4a4846,
     sun: 58,
     wet: false,
