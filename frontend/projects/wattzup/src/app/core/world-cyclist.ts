@@ -43,6 +43,17 @@ const ACROSS = new Vector3(1, 0, 0);
 /** Where the hands hold the hoods, the pivot of a rider standing on the pedals. */
 const HOODS = new Vector3(0, HEAD_TOP.y + 0.04, HANDS.z - 0.06);
 
+// Pre-allocated scratch vectors for zero-allocation per-frame pose() IK.
+const POSE_PEDAL = new Vector3();
+const POSE_BB = new Vector3();
+const POSE_HIP = new Vector3();
+const POSE_ANKLE = new Vector3();
+const POSE_HINT = new Vector3();
+const POSE_KNEE = new Vector3();
+const PLACE_DIFF = new Vector3();
+const BEND_DIR = new Vector3();
+const BEND_SIDE = new Vector3();
+
 interface Limb {
   readonly mesh: Mesh;
   readonly length: number;
@@ -51,9 +62,7 @@ interface Limb {
 /** Geometry and materials shared by every cyclist in the scene. */
 export class CyclistKit {
   private readonly tube = new CylinderGeometry(1, 1, 1, 8);
-  private readonly head = new SphereGeometry(0.1, 20, 16);
   private readonly helmet = new SphereGeometry(0.13, 18, 10, 0, Math.PI * 2, 0, Math.PI / 1.65);
-  private readonly torso = new CapsuleGeometry(0.15, 0.3, 6, 12);
   private readonly limbs = new Map<number, CapsuleGeometry>();
   readonly rubber = new MeshStandardMaterial({ color: 0x18191c, roughness: 0.85 });
   readonly metal = new MeshStandardMaterial({ color: 0xb8bcc2, metalness: 0.8, roughness: 0.3 });
@@ -82,6 +91,9 @@ export class CyclistKit {
   private readonly bikeRubberShape: BufferGeometry;
   private readonly bikeMetalShape: BufferGeometry;
   private readonly wheelDiscsShape: BufferGeometry;
+  private readonly bodyJerseyShape: BufferGeometry;
+  private readonly bodySkinShape: BufferGeometry;
+  private readonly chinStrapsShape: BufferGeometry;
 
   /** The jersey's cut, tinted by each rider's colour: dark side panels and a pale hem band. */
   private readonly kitTexture = jerseyTexture();
@@ -93,6 +105,8 @@ export class CyclistKit {
     const rim = new TorusGeometry(WHEEL - 0.04, 0.012, 6, 40);
     const disc = new CircleGeometry(WHEEL - 0.04, 32);
     const chainring = new TorusGeometry(0.1, 0.008, 6, 32);
+    const head = new SphereGeometry(0.1, 20, 16);
+    const torso = new CapsuleGeometry(0.15, 0.3, 6, 12);
 
     const front = new Vector3(0, WHEEL, -WHEELBASE);
     const rear = new Vector3(0, WHEEL, WHEELBASE);
@@ -152,10 +166,74 @@ export class CyclistKit {
     this.wheelDiscsShape = mergeGeometries(discParts, false)!;
     for (const g of discParts) g.dispose();
 
+    // Rigid upper-body sub-assemblies: torso + upper arms + shoulder caps (jersey),
+    // neck + head + forearms (skin), and left/right chin straps (rubber).
+    const along = SHOULDER.clone().sub(HIP).normalize();
+    const skull = SHOULDER.clone().add(new Vector3(0, 0.15, -0.1));
+    const nape = SHOULDER.clone().addScaledVector(along, -0.06);
+    const throat = skull.clone().add(new Vector3(0, -0.04, 0.02));
+    const chin = skull.clone().add(new Vector3(0, -0.1, -0.06));
+
+    const torsoPart = torso.clone();
+    torsoPart.applyMatrix4(
+      new Matrix4().compose(
+        HIP.clone().lerp(SHOULDER, 0.5),
+        new Quaternion().setFromUnitVectors(UP, along),
+        new Vector3(1.15, 1, 0.85),
+      ),
+    );
+    const headPart = head.clone();
+    headPart.applyMatrix4(
+      new Matrix4().compose(
+        skull.clone().add(new Vector3(0, -0.01, -0.01)),
+        new Quaternion().setFromAxisAngle(ACROSS, 0.3),
+        new Vector3(0.82, 1.08, 1.02),
+      ),
+    );
+    const jerseyParts: BufferGeometry[] = [torsoPart];
+    const skinParts: BufferGeometry[] = [
+      limbGeometry(0.055, nape.distanceTo(throat), nape, throat),
+      headPart,
+    ];
+    const strapParts: BufferGeometry[] = [];
+    for (const side of [-1, 1]) {
+      strapParts.push(
+        limbGeometry(0.007, 0.1, skull.clone().add(new Vector3(side * 0.085, -0.02, 0.01)), chin),
+      );
+      const shoulder = SHOULDER.clone().setX(side * 0.19);
+      const hand = new Vector3(side * 0.21, HEAD_TOP.y + 0.04, HANDS.z - 0.06);
+      const elbow = bendInto(
+        new Vector3(),
+        shoulder,
+        hand,
+        UPPER_ARM,
+        FOREARM,
+        new Vector3(side * 0.7, -0.45, 0.25),
+      );
+      jerseyParts.push(limbGeometry(0.05, UPPER_ARM, shoulder, elbow));
+      jerseyParts.push(
+        limbGeometry(
+          0.065,
+          0.2,
+          SHOULDER.clone()
+            .setX(side * 0.04)
+            .addScaledVector(along, -0.03),
+          shoulder,
+        ),
+      );
+      skinParts.push(limbGeometry(0.04, FOREARM, elbow, hand));
+    }
+    this.bodyJerseyShape = mergeGeometries(jerseyParts, false)!;
+    this.bodySkinShape = mergeGeometries(skinParts, false)!;
+    this.chinStrapsShape = mergeGeometries(strapParts, false)!;
+    for (const g of [...jerseyParts, ...skinParts, ...strapParts]) g.dispose();
+
     tyre.dispose();
     rim.dispose();
     disc.dispose();
     chainring.dispose();
+    head.dispose();
+    torso.dispose();
   }
 
   /** A rider in `jersey`, with race `number` pinned to their back, on a `frame` of their own. */
@@ -193,9 +271,10 @@ export class CyclistKit {
     bikeRubber: BufferGeometry;
     bikeMetal: BufferGeometry;
     wheelDiscs: BufferGeometry;
-    head: SphereGeometry;
+    bodyJersey: BufferGeometry;
+    bodySkin: BufferGeometry;
+    chinStraps: BufferGeometry;
     helmet: SphereGeometry;
-    torso: CapsuleGeometry;
     bottle: CylinderGeometry;
   } {
     return {
@@ -203,23 +282,25 @@ export class CyclistKit {
       bikeRubber: this.bikeRubberShape,
       bikeMetal: this.bikeMetalShape,
       wheelDiscs: this.wheelDiscsShape,
+      bodyJersey: this.bodyJerseyShape,
+      bodySkin: this.bodySkinShape,
+      chinStraps: this.chinStrapsShape,
       bottle: this.bottleShape,
-      head: this.head,
       helmet: this.helmet,
-      torso: this.torso,
     };
   }
 
   dispose(): void {
     for (const d of [
       this.tube,
-      this.head,
       this.helmet,
-      this.torso,
       this.frameShape,
       this.bikeRubberShape,
       this.bikeMetalShape,
       this.wheelDiscsShape,
+      this.bodyJerseyShape,
+      this.bodySkinShape,
+      this.chinStrapsShape,
     ]) {
       d.dispose();
     }
@@ -286,73 +367,38 @@ export class Cyclist {
       this.group.add(crank);
     }
 
-    // The rider: hips on the saddle, back bent towards the bars.
-    const torso = new Mesh(parts.torso, jersey);
-    torso.position.copy(HIP).lerp(SHOULDER, 0.5);
-    torso.quaternion.setFromUnitVectors(UP, SHOULDER.clone().sub(HIP).normalize());
-    torso.scale.set(1.15, 1, 0.85);
-    torso.castShadow = true;
-    this.body.add(torso);
-    // The race number, pinned low on the back.
+    // The rider: pre-merged jersey (torso + upper arms + shoulder caps), skin (neck + head +
+    // forearms), and chin straps, plus race number, seat pad and helmet.
+    const bodyJersey = new Mesh(parts.bodyJersey, jersey);
+    const bodySkin = new Mesh(parts.bodySkin, kit.skin);
+    const chinStraps = new Mesh(parts.chinStraps, kit.rubber);
+    bodyJersey.castShadow = bodySkin.castShadow = chinStraps.castShadow = true;
+
     const along = SHOULDER.clone().sub(HIP).normalize();
     const back = new Vector3(0, -along.z, along.y);
     const number = new Mesh(kit.bibGeometry(), bib);
-    number.position.copy(torso.position).addScaledVector(along, -0.07).addScaledVector(back, 0.135);
+    number.position
+      .copy(HIP)
+      .lerp(SHOULDER, 0.5)
+      .addScaledVector(along, -0.07)
+      .addScaledVector(back, 0.135);
     number.quaternion.setFromUnitVectors(new Vector3(0, 0, 1), back);
-    this.body.add(number);
+
     const seatPad = new Mesh(kit.limb(0.1, 0.1), kit.shorts);
     seatPad.position.copy(HIP).add(new Vector3(0, 0.02, 0.04));
     seatPad.rotation.z = Math.PI / 2;
     seatPad.scale.set(1, 1, 0.9);
-    this.body.add(seatPad);
-    // The neck rises from inside the top of the back, up and forward to the base of the skull,
-    // so the head sits on the shoulders instead of floating over them.
+
     const skull = SHOULDER.clone().add(new Vector3(0, 0.15, -0.1));
-    const nape = SHOULDER.clone().addScaledVector(along, -0.06);
-    const throat = skull.clone().add(new Vector3(0, -0.04, 0.02));
-    const neck = this.limbMesh(0.055, nape.distanceTo(throat), kit.skin);
-    place(neck, nape, throat);
-    this.body.add(neck.mesh);
-    // A head is taller than it is wide and longer front to back than across: an egg, not a ball,
-    // its jaw dropping towards the throat.
-    const head = new Mesh(parts.head, kit.skin);
-    head.position.copy(skull).add(new Vector3(0, -0.01, -0.01));
-    head.scale.set(0.82, 1.08, 1.02);
-    head.rotation.x = 0.3;
-    // The helmet hugs the skull, a finger's width proud of it all round and down over the back of
-    // the head, held on by a strap from each side of the shell under the jaw.
     const helmet = new Mesh(parts.helmet, shell);
     helmet.position.copy(skull).add(new Vector3(0, 0, 0.01));
     helmet.scale.set(0.86, 0.82, 1.15);
     helmet.rotation.x = -0.15;
-    head.castShadow = helmet.castShadow = true;
-    this.body.add(head, helmet);
-    const chin = skull.clone().add(new Vector3(0, -0.1, -0.06));
+    helmet.castShadow = true;
+
+    this.body.add(bodyJersey, bodySkin, chinStraps, number, seatPad, helmet);
+
     for (const side of [-1, 1]) {
-      const strap = this.limbMesh(0.007, 0.1, kit.rubber);
-      place(strap, skull.clone().add(new Vector3(side * 0.085, -0.02, 0.01)), chin);
-      this.body.add(strap.mesh);
-    }
-    for (const side of [-1, 1]) {
-      const shoulder = SHOULDER.clone().setX(side * 0.19);
-      // Hands on the hoods, elbows bent out and down.
-      const hand = new Vector3(side * 0.21, HEAD_TOP.y + 0.04, HANDS.z - 0.06);
-      const elbow = bend(shoulder, hand, UPPER_ARM, FOREARM, new Vector3(side * 0.7, -0.45, 0.25));
-      const upper = this.limbMesh(0.05, UPPER_ARM, jersey);
-      const fore = this.limbMesh(0.04, FOREARM, kit.skin);
-      place(upper, shoulder, elbow);
-      place(fore, elbow, hand);
-      // The shoulder: the jersey rounds over the joint from the top of the back to the arm, so
-      // the arm grows out of the body instead of hanging beside it.
-      const cap = this.limbMesh(0.065, 0.2, jersey);
-      place(
-        cap,
-        SHOULDER.clone()
-          .setX(side * 0.04)
-          .addScaledVector(along, -0.03),
-        shoulder,
-      );
-      this.body.add(upper.mesh, fore.mesh, cap.mesh);
       const thigh = this.limbMesh(0.075, THIGH, kit.shorts);
       const shin = this.limbMesh(0.055, SHIN, kit.skin);
       // White race socks to mid-calf, carried on the shin.
@@ -382,22 +428,20 @@ export class Cyclist {
     this.body.rotation.x = tilt;
     this.body.position.copy(HOODS).sub(this.hip.copy(HOODS).applyAxisAngle(ACROSS, tilt));
     this.hip.copy(HIP).applyAxisAngle(ACROSS, tilt).add(this.body.position);
-    this.legs.forEach((leg, i) => {
+    for (let i = 0; i < this.legs.length; i++) {
+      const leg = this.legs[i]!;
       const a = angle + i * Math.PI;
-      const pedal = new Vector3(
-        leg.side * 0.1,
-        BB.y - Math.cos(a) * CRANK,
-        BB.z - Math.sin(a) * CRANK,
-      );
-      const crank = this.cranks[i]!;
-      place({ mesh: crank, length: CRANK }, BB.clone().setX(leg.side * 0.07), pedal, true);
-      const hip = this.hip.clone().setX(leg.side * 0.1);
-      const ankle = pedal.clone().add(new Vector3(0, 0.06, 0.03));
-      const knee = bend(hip, ankle, THIGH, SHIN, new Vector3(leg.side * 0.08, 0.3, -1));
-      place(leg.thigh, hip, knee);
-      place(leg.shin, knee, ankle);
-      leg.foot.position.copy(pedal).add(new Vector3(0, 0.03, -0.02));
-    });
+      POSE_PEDAL.set(leg.side * 0.1, BB.y - Math.cos(a) * CRANK, BB.z - Math.sin(a) * CRANK);
+      POSE_BB.set(leg.side * 0.07, BB.y, BB.z);
+      placeMesh(this.cranks[i]!, POSE_BB, POSE_PEDAL, true);
+      POSE_HIP.set(leg.side * 0.1, this.hip.y, this.hip.z);
+      POSE_ANKLE.set(POSE_PEDAL.x, POSE_PEDAL.y + 0.06, POSE_PEDAL.z + 0.03);
+      POSE_HINT.set(leg.side * 0.08, 0.3, -1);
+      bendInto(POSE_KNEE, POSE_HIP, POSE_ANKLE, THIGH, SHIN, POSE_HINT);
+      placeMesh(leg.thigh.mesh, POSE_HIP, POSE_KNEE, false);
+      placeMesh(leg.shin.mesh, POSE_KNEE, POSE_ANKLE, false);
+      leg.foot.position.set(POSE_PEDAL.x, POSE_PEDAL.y + 0.03, POSE_PEDAL.z - 0.02);
+    }
   }
 
   private stick(a: Vector3, b: Vector3, radius: number, material: Material): Mesh {
@@ -539,6 +583,17 @@ function stickGeometry(
   return part;
 }
 
+/** Places a capsule limb between `a` and `b` in local body space for static geometry merging. */
+function limbGeometry(radius: number, length: number, a: Vector3, b: Vector3): BufferGeometry {
+  const part = new CapsuleGeometry(radius, length - 2 * radius, 4, 10);
+  const pos = a.clone().lerp(b, 0.5);
+  const d = b.clone().sub(a);
+  const quat =
+    d.lengthSq() > 0 ? new Quaternion().setFromUnitVectors(UP, d.normalize()) : new Quaternion();
+  part.applyMatrix4(new Matrix4().compose(pos, quat, new Vector3(1, 1, 1)));
+  return part;
+}
+
 /** Places a wheel torus or spoke disc upright at axle `z` along the bike's centre line. */
 function wheelPartGeometry(shape: BufferGeometry, z: number): BufferGeometry {
   const part = shape.clone();
@@ -547,27 +602,35 @@ function wheelPartGeometry(shape: BufferGeometry, z: number): BufferGeometry {
   return part;
 }
 
-/** Puts a limb (or a unit tube, `stretch`) between two points. */
-function place(limb: Limb, a: Vector3, b: Vector3, stretch = false): void {
-  limb.mesh.position.copy(a).lerp(b, 0.5);
-  const d = b.clone().sub(a);
-  if (stretch) limb.mesh.scale.set(0.014, Math.max(d.length(), 0.001), 0.014);
-  if (d.lengthSq() > 0) limb.mesh.quaternion.setFromUnitVectors(UP, d.normalize());
+/** Puts a limb (or a unit tube, `stretch`) between two points without allocating heap vectors. */
+function placeMesh(mesh: Mesh, a: Vector3, b: Vector3, stretch: boolean): void {
+  mesh.position.copy(a).lerp(b, 0.5);
+  PLACE_DIFF.subVectors(b, a);
+  const lenSq = PLACE_DIFF.lengthSq();
+  if (stretch) mesh.scale.set(0.014, Math.max(Math.sqrt(lenSq), 0.001), 0.014);
+  if (lenSq > 0) {
+    mesh.quaternion.setFromUnitVectors(UP, PLACE_DIFF.divideScalar(Math.sqrt(lenSq)));
+  }
 }
 
 /**
- * The middle joint of a two-bone limb from `a` to `c` (a knee, an elbow), bent towards `hint`
- * by the law of cosines. A reach too long straightens the limb.
+ * Writes the middle joint of a two-bone limb from `a` to `c` (a knee, an elbow), bent towards
+ * `hint` by the law of cosines, into `out` without allocating heap vectors.
  */
-function bend(a: Vector3, c: Vector3, upper: number, lower: number, hint: Vector3): Vector3 {
-  const ac = c.clone().sub(a);
-  const d = Math.min(ac.length(), upper + lower - 1e-4);
+function bendInto(
+  out: Vector3,
+  a: Vector3,
+  c: Vector3,
+  upper: number,
+  lower: number,
+  hint: Vector3,
+): Vector3 {
+  BEND_DIR.subVectors(c, a);
+  const len = BEND_DIR.length();
+  const d = Math.min(len, upper + lower - 1e-4);
   const along = (upper * upper - lower * lower + d * d) / (2 * d);
-  const out = Math.sqrt(Math.max(upper * upper - along * along, 0));
-  const dir = ac.normalize();
-  const side = hint
-    .clone()
-    .sub(dir.clone().multiplyScalar(hint.dot(dir)))
-    .normalize();
-  return a.clone().add(dir.multiplyScalar(along)).add(side.multiplyScalar(out));
+  const reach = Math.sqrt(Math.max(upper * upper - along * along, 0));
+  if (len > 0) BEND_DIR.divideScalar(len);
+  BEND_SIDE.copy(hint).addScaledVector(BEND_DIR, -hint.dot(BEND_DIR)).normalize();
+  return out.copy(a).addScaledVector(BEND_DIR, along).addScaledVector(BEND_SIDE, reach);
 }
