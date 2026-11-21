@@ -31,13 +31,7 @@ import {
 } from 'three/webgpu';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { ROAD_END } from './scene-bend';
-import {
-  barrierBannerTexture,
-  type BannerPanel,
-  clothBannerTexture,
-  paintTexture,
-  seeded,
-} from './world-kit';
+import { barrierBannerTexture, type BannerPanel, seeded } from './world-kit';
 
 /** Metres from the road's centre to the house fronts. */
 export const FRONTAGE = 6.5;
@@ -239,11 +233,12 @@ export class OldTownStreet {
   private readonly brick = new MeshStandardMaterial({ color: 0x8e4a37, roughness: 0.95 });
   /** Props along the street; one that `lies` on the road, as paint does, takes its slope. */
   private readonly props: {
-    mesh: Group;
+    mesh: Mesh;
     offset: number;
     every: number;
     x: number;
     lies?: boolean;
+    shadowNear?: boolean;
   }[] = [];
   private readonly crowd: Fan[] = [];
   /** The crowd's legs, torsos, heads, arms, hats, hand flags and hair, plus compact index/offset tables. */
@@ -702,6 +697,9 @@ export class OldTownStreet {
     for (const prop of this.props) {
       const metres = ((((prop.offset - s) % prop.every) + prop.every) % prop.every) - BEHIND;
       prop.mesh.position.set(prop.x, heightAt(metres) + KERB, -metres);
+      if (prop.shadowNear) {
+        prop.mesh.castShadow = metres > HOUSE_CULL_BEHIND && metres < SHADOW_AHEAD;
+      }
       // Paint and iron set in the setts lie along a ramp, not level through it, where half the
       // writing would sink into the road and half float over it.
       if (prop.lies) {
@@ -1344,30 +1342,28 @@ export class OldTownStreet {
 
   /** Cloth banners strung across the street between the houses, with their ropes. */
   private addStreetBanners(): void {
-    const cloth = new PlaneGeometry(7, 1.3);
     const rope = new BoxGeometry(2 * FRONTAGE, 0.03, 0.03);
     rope.translate(0, 7.85 - KERB, 0);
     this.ropesMesh = new InstancedMesh(rope, this.iron, STREET_BANNERS.length);
     this.ropesMesh.frustumCulled = false;
-    this.disposables.push(cloth, rope, this.ropesMesh);
+    const atlas = clothBannerAtlasTexture(STREET_BANNERS);
+    const material = new MeshStandardMaterial({
+      map: this.track(atlas.texture),
+      side: DoubleSide,
+      roughness: 0.85,
+    });
+    this.disposables.push(rope, this.ropesMesh, material);
     this.group.add(this.ropesMesh);
     this.size.set(1, 1, 1);
     this.turn.identity();
-    STREET_BANNERS.forEach(([text, fill, ink], i) => {
-      const material = new MeshStandardMaterial({
-        map: this.track(clothBannerTexture(text, fill, ink)),
-        side: DoubleSide,
-        roughness: 0.85,
-      });
-      this.disposables.push(material);
-      const holder = new Group();
+    STREET_BANNERS.forEach((_, i) => {
+      const cloth = uvPlane(7, 1.3, atlas.rects[i]!).translate(0, 7.2 - KERB, 0);
       const banner = new Mesh(cloth, material);
-      banner.position.y = 7.2 - KERB;
       banner.castShadow = true;
-      holder.add(banner);
-      this.group.add(holder);
+      this.disposables.push(cloth);
+      this.group.add(banner);
       const offset = 70 + i * 140;
-      this.props.push({ mesh: holder, offset, every: LOOP, x: 0 });
+      this.props.push({ mesh: banner, offset, every: LOOP, x: 0, shadowNear: true });
       this.bannerOffsets.push(offset);
       this.ropesMesh!.setMatrixAt(
         i,
@@ -1379,26 +1375,25 @@ export class OldTownStreet {
   /** Fans' slogans painted on the setts, read upright as the rider rolls over them. */
   private addRoadPaint(): void {
     // Stretched along the road, as road writing is, so it reads from a rider's low eye.
-    const plane = new PlaneGeometry(3.2, 7);
-    this.disposables.push(plane);
-    ROAD_PAINT.forEach(([text, colour, x], i) => {
-      const material = new MeshStandardMaterial({
-        map: this.track(paintTexture(text, colour)),
-        transparent: true,
-        depthWrite: false,
-        polygonOffset: true,
-        polygonOffsetFactor: -2,
-        roughness: 0.7,
-      });
-      this.disposables.push(material);
+    const atlas = roadPaintAtlasTexture(ROAD_PAINT);
+    const material = new MeshStandardMaterial({
+      map: this.track(atlas.texture),
+      transparent: true,
+      depthWrite: false,
+      polygonOffset: true,
+      polygonOffsetFactor: -2,
+      roughness: 0.7,
+    });
+    this.disposables.push(material);
+    ROAD_PAINT.forEach(([, , x], i) => {
+      const plane = uvPlane(3.2, 7, atlas.rects[i]!)
+        .rotateX(-Math.PI / 2)
+        .translate(0, -KERB + 0.01, 0);
       const mesh = new Mesh(plane, material);
-      mesh.rotation.x = -Math.PI / 2;
-      mesh.position.y = -KERB + 0.01;
       mesh.receiveShadow = true;
-      const holder = new Group();
-      holder.add(mesh);
-      this.group.add(holder);
-      this.props.push({ mesh: holder, offset: 38 + i * 97, every: LOOP, x, lies: true });
+      this.disposables.push(plane);
+      this.group.add(mesh);
+      this.props.push({ mesh, offset: 38 + i * 97, every: LOOP, x, lies: true });
     });
     // Cast-iron covers set in the setts, a few to a lap.
     const plate = new CircleGeometry(0.4, 24);
@@ -1454,19 +1449,17 @@ export class OldTownStreet {
       .rotateX(Math.PI)
       .translate(-0.8, 3.02, 0);
     this.disposables.push(glass, ironLamp, lantern, basket, bloom, wicker, flowers, trailing);
-    const pennants = [
+    const penAtlas = pennantAtlasTexture([
       ['#1b1e24', '#d7ff3a'],
       ['#b8322c', '#ffffff'],
-    ].map(([fill, ink]) => {
-      const material = new MeshStandardMaterial({
-        map: this.track(pennantTexture(fill!, ink!)),
-        alphaTest: 0.5,
-        side: DoubleSide,
-        roughness: 0.85,
-      });
-      this.disposables.push(material);
-      return material;
+    ]);
+    const pennantMaterial = new MeshStandardMaterial({
+      map: this.track(penAtlas.texture),
+      alphaTest: 0.5,
+      side: DoubleSide,
+      roughness: 0.85,
     });
+    this.disposables.push(pennantMaterial);
     const lampEvery = 28;
     const count = Math.floor(LOOP / lampEvery);
     for (let i = 0; i < count; i++) {
@@ -1491,12 +1484,12 @@ export class OldTownStreet {
       this.disposables.push(mesh);
       return mesh;
     });
-    const pen0Geo = new PlaneGeometry(0.5, 1.1).translate(0.32, 2.4, 0);
-    const pen1Geo = new PlaneGeometry(0.5, 1.1).translate(-0.32, 2.4, 0);
+    const pen0Geo = uvPlane(0.5, 1.1, penAtlas.rects[0]!).translate(0.32, 2.4, 0);
+    const pen1Geo = uvPlane(0.5, 1.1, penAtlas.rects[1]!).translate(-0.32, 2.4, 0);
     const pen0Count = Math.ceil(count / 2);
     const pen1Count = Math.floor(count / 2);
-    this.lampPen0 = new InstancedMesh(pen0Geo, pennants[0]!, pen0Count);
-    this.lampPen1 = new InstancedMesh(pen1Geo, pennants[1]!, pen1Count);
+    this.lampPen0 = new InstancedMesh(pen0Geo, pennantMaterial, pen0Count);
+    this.lampPen1 = new InstancedMesh(pen1Geo, pennantMaterial, pen1Count);
     for (const pen of [this.lampPen0, this.lampPen1]) {
       pen.castShadow = true;
       pen.frustumCulled = false;
@@ -3125,30 +3118,165 @@ function shopDoorTexture(paint: string): CanvasTexture {
   return texture;
 }
 
-/** A lamp-post pennant: the race's initials down a swallow-tailed cloth. */
-function pennantTexture(fill: string, ink: string): CanvasTexture {
+function uvPlane(w: number, h: number, rect: UvRect): PlaneGeometry {
+  const plane = new PlaneGeometry(w, h);
+  const uv = plane.getAttribute('uv') as BufferAttribute;
+  for (let i = 0; i < uv.count; i++) {
+    uv.setXY(
+      i,
+      rect.u0 + uv.getX(i) * (rect.u1 - rect.u0),
+      rect.v0 + uv.getY(i) * (rect.v1 - rect.v0),
+    );
+  }
+  uv.needsUpdate = true;
+  return plane;
+}
+
+/** Stacked cloth street banners (`STREET_BANNERS`) in one `512 × 384` atlas with 4 px gutters. */
+function clothBannerAtlasTexture(banners: readonly (readonly [string, string, string])[]): {
+  texture: CanvasTexture;
+  rects: UvRect[];
+} {
+  const W = 512;
+  const rowH = 128;
+  const pad = 4;
+  const dh = rowH - 2 * pad;
+  const H = banners.length * rowH;
   const canvas = document.createElement('canvas');
-  canvas.width = 50;
-  canvas.height = 110;
+  canvas.width = W;
+  canvas.height = H;
   const ctx = canvas.getContext('2d');
+  const rects: UvRect[] = [];
+  banners.forEach(([text, fill, ink], i) => {
+    const cy = i * rowH;
+    const iy = cy + pad;
+    if (ctx) {
+      ctx.fillStyle = fill;
+      ctx.fillRect(0, cy, W, rowH);
+      ctx.strokeStyle = ink;
+      ctx.lineWidth = 4;
+      ctx.strokeRect(8, iy + 8, W - 16, dh - 16);
+      ctx.fillStyle = ink;
+      ctx.font = 'bold 56px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, W / 2, iy + dh * 0.52, W - 44);
+    }
+    rects.push({
+      u0: 0.5 / W,
+      u1: (W - 0.5) / W,
+      v0: 1 - (iy + dh - 0.5) / H,
+      v1: 1 - (iy + 0.5) / H,
+    });
+  });
   if (ctx) {
-    ctx.fillStyle = fill;
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(50, 0);
-    ctx.lineTo(50, 110);
-    ctx.lineTo(25, 92);
-    ctx.lineTo(0, 110);
-    ctx.fill();
-    ctx.fillStyle = ink;
-    ctx.font = 'bold 22px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ['O', 'T', 'C'].forEach((letter, i) => ctx.fillText(letter, 25, 20 + i * 24));
+    const folds = ctx.createLinearGradient(0, 0, W, 0);
+    for (let i = 0; i <= 6; i++) {
+      folds.addColorStop(i / 6, i % 2 ? 'rgba(0,0,0,0.14)' : 'rgba(255,255,255,0.06)');
+    }
+    ctx.fillStyle = folds;
+    ctx.fillRect(0, 0, W, H);
   }
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
-  return texture;
+  return { texture, rects };
+}
+
+/** Fans' road-painted slogans (`ROAD_PAINT`) packed into one `1024 × 560` transparent atlas. */
+function roadPaintAtlasTexture(slogans: readonly (readonly [string, string, number])[]): {
+  texture: CanvasTexture;
+  rects: UvRect[];
+} {
+  const colW = 256;
+  const H = 560;
+  const pad = 4;
+  const dw = colW - 2 * pad;
+  const dh = H - 2 * pad;
+  const W = slogans.length * colW;
+  const canvas = document.createElement('canvas');
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const rects: UvRect[] = [];
+  slogans.forEach(([text, colour], i) => {
+    const ix = i * colW + pad;
+    const iy = pad;
+    if (ctx) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(ix, iy, dw, dh);
+      ctx.clip();
+      ctx.fillStyle = colour;
+      ctx.font = 'bold 60px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.setTransform(1, 0, 0, 7, ix + dw / 2, iy + dh / 2);
+      ctx.fillText(text, 0, 0, dw - 10);
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.globalCompositeOperation = 'destination-out';
+      const random = seeded(text.length * 31);
+      const wear = new Path2D();
+      for (let k = 0; k < 2400; k++) {
+        wear.rect(ix + random() * dw, iy + random() * dh, 0.5 + random() * 2, 1 + random() * 4);
+      }
+      ctx.fill(wear);
+      ctx.restore();
+    }
+    rects.push({
+      u0: (ix + 0.5) / W,
+      u1: (ix + dw - 0.5) / W,
+      v0: 1 - (iy + dh - 0.5) / H,
+      v1: 1 - (iy + 0.5) / H,
+    });
+  });
+  const texture = new CanvasTexture(canvas);
+  texture.colorSpace = SRGBColorSpace;
+  return { texture, rects };
+}
+
+/** Lamp-post pennants packed side by side into one `128 × 128` cutout atlas: `'O' 'T' 'C'` on cloth. */
+function pennantAtlasTexture(colours: readonly (readonly [string, string])[]): {
+  texture: CanvasTexture;
+  rects: UvRect[];
+} {
+  const colW = 64;
+  const W = colours.length * colW;
+  const H = 128;
+  const dw = 50;
+  const dh = 110;
+  const canvas = document.createElement('canvas');
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const rects: UvRect[] = [];
+  colours.forEach(([fill, ink], i) => {
+    const ix = i * colW + 7;
+    const iy = 9;
+    if (ctx) {
+      ctx.fillStyle = fill;
+      ctx.beginPath();
+      ctx.moveTo(ix, iy);
+      ctx.lineTo(ix + dw, iy);
+      ctx.lineTo(ix + dw, iy + dh);
+      ctx.lineTo(ix + dw / 2, iy + 92);
+      ctx.lineTo(ix, iy + dh);
+      ctx.fill();
+      ctx.fillStyle = ink;
+      ctx.font = 'bold 22px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ['O', 'T', 'C'].forEach((letter, k) => ctx.fillText(letter, ix + dw / 2, iy + 20 + k * 24));
+    }
+    rects.push({
+      u0: ix / W,
+      u1: (ix + dw) / W,
+      v0: 1 - (iy + dh) / H,
+      v1: 1 - iy / H,
+    });
+  });
+  const texture = new CanvasTexture(canvas);
+  texture.colorSpace = SRGBColorSpace;
+  return { texture, rects };
 }
 
 /** Granite kerbstones a metre long: speckled grey, each a shade apart, butted at fine joints. */
