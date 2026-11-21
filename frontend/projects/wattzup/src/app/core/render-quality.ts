@@ -113,11 +113,14 @@ export function nextLower(tier: Tier): Tier | null {
 
 /** A window is over budget when its median frame is this many frame periods or more. */
 const OVER = 1.2;
+/** A window this many frame periods or more is far over: the drop goes straight to `low` (#896). */
+const FAR_OVER = 3;
 const WINDOW_MS = 2000;
 
 /**
  * Lowers the tier after two 2 s windows in a row whose median frame is over 1.2 × the display's
- * frame period: 20 ms at 60 Hz (AC4).
+ * frame period: 20 ms at 60 Hz (AC4). When the second window's median is 3 frame periods or
+ * more, the drop goes straight to `low`, so the rider sees one change of look, not three (#896).
  */
 export class FrameBudget {
   private start: number | null = null;
@@ -184,7 +187,7 @@ export class FrameBudget {
     this.overInARow = median > OVER * this.periodMs ? this.overInARow + 1 : 0;
     if (this.overInARow < 2 || this.current === 'low') return 'keep';
     this.overInARow = 0;
-    this.current = nextLower(this.current)!;
+    this.current = median >= FAR_OVER * this.periodMs ? 'low' : nextLower(this.current)!;
     return 'drop';
   }
 }
