@@ -156,3 +156,50 @@ describe('WorldScene frame period (L2-111 AC9)', () => {
     expect(screens.listening()).toBe(1);
   });
 });
+
+describe('WorldScene while it loads (L2-111 AC12, #896)', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('keeps the canvas busy and unseen until the scene has started, then shows it', async () => {
+    const frames = fakeFrames();
+    fakeScreens();
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        observe() {
+          /* not needed */
+        }
+        disconnect() {
+          /* not needed */
+        }
+      },
+    );
+    let started: (ok: boolean) => void = () => undefined;
+    const renderer = new FakeRenderer();
+    renderer.start = () => new Promise<boolean>((resolve) => (started = resolve));
+    TestBed.configureTestingModule({
+      providers: [
+        provideZonelessChangeDetection(),
+        { provide: WORLD_RENDERER, useValue: () => Promise.resolve(renderer) },
+      ],
+    });
+    const fixture = TestBed.createComponent(WorldScene);
+    fixture.componentRef.setInput('world', WORLDS[0]);
+    fixture.componentRef.setInput('segments', []);
+    fixture.componentRef.setInput('elapsed', 0);
+    fixture.componentRef.setInput('speedKmh', null);
+    fixture.componentRef.setInput('running', false);
+    fixture.detectChanges();
+    await settle(fixture);
+    frames.refresh(1000 / 60, 31);
+    await settle(fixture);
+    const canvas = (fixture.nativeElement as HTMLElement).querySelector('canvas')!;
+    // The warm-up draws hidden parts from an unplaced camera: the rider never sees it.
+    expect(canvas.getAttribute('aria-busy')).toBe('true');
+
+    started(true);
+    await settle(fixture);
+    fixture.detectChanges();
+    expect(canvas.getAttribute('aria-busy')).toBe('false');
+  });
+});

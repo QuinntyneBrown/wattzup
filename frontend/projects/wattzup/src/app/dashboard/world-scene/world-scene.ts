@@ -43,7 +43,11 @@ export class WorldScene {
   private readonly frames = inject(FrameScheduler);
   private readonly motion = inject(MotionPreference);
   private readonly canvas = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
-  private readonly driver = signal<SceneDriver | null>(null);
+  /**
+   * Set once the scene has started. Until then the canvas is busy and unseen: the load draws
+   * hidden parts from a camera no frame has placed yet (L2-111 AC12, #896).
+   */
+  protected readonly driver = signal<SceneDriver | null>(null);
   /** True while the display's frame period is measured again: the scene holds its picture. */
   private readonly measuring = signal(false);
 

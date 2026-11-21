@@ -9,3 +9,8 @@
   width: 100%;
   height: 100%;
 }
+
+// The load's warm-up frames are drawn but never seen (L2-111 AC12).
+.world-scene[aria-busy='true'] {
+  opacity: 0;
+}
