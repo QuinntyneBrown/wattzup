@@ -37,6 +37,9 @@ export class RideSound {
   private tick: AudioBuffer | null = null;
   private chain: TickVoice | null = null;
   private freewheelVoice: TickVoice | null = null;
+  /** Wind and tyre: one looped noise bed each, through a filter that follows the speed (AC6). */
+  private wind: TickVoice | null = null;
+  private tyre: TickVoice | null = null;
   private pump: ReturnType<typeof setInterval> | null = null;
 
   private freewheel: FreewheelState | null = null;
@@ -79,6 +82,16 @@ export class RideSound {
     this.tick = tickBuffer(ctx);
     this.chain = voice(ctx, 'bandpass', 2400);
     this.freewheelVoice = voice(ctx, 'highpass', 3000);
+    const noise = noiseBuffer(ctx);
+    this.wind = voice(ctx, 'lowpass', 300);
+    this.tyre = voice(ctx, 'bandpass', 150);
+    for (const bed of [this.wind, this.tyre]) {
+      const source = ctx.createBufferSource();
+      source.buffer = noise;
+      source.loop = true;
+      source.connect(bed.filter);
+      source.start();
+    }
     this._on.set(true);
     this.pump = setInterval(() => this.schedule(), PUMP_MS);
     this.schedule();
@@ -89,7 +102,7 @@ export class RideSound {
     this.pump = null;
     void this.context?.close();
     this.context = null;
-    this.chain = this.freewheelVoice = null;
+    this.chain = this.freewheelVoice = this.wind = this.tyre = null;
     this._on.set(false);
   }
 
@@ -112,7 +125,9 @@ export class RideSound {
   /** Tops up each voice's ticks on the audio clock and moves its gain (AC4, AC5, AC9). */
   private schedule(): void {
     const ctx = this.context;
-    if (!ctx || !this.chain || !this.freewheelVoice || !this.tick) return;
+    if (!ctx || !this.chain || !this.freewheelVoice || !this.wind || !this.tyre || !this.tick) {
+      return;
+    }
     if (ctx.state === 'suspended') void ctx.resume();
     if (this.freewheel && performance.now() - this.freewheel.startedAt >= 3000) {
       this.freewheel = null;
@@ -120,6 +135,15 @@ export class RideSound {
     const p = untracked(() => this.params());
     this.play(this.chain, p.chain.ticksPerSecond, p.chain.gain);
     this.play(this.freewheelVoice, p.freewheel.clicksPerSecond, p.freewheel.gain);
+    this.follow(this.wind, p.wind.cutoffHz, p.wind.gain);
+    this.follow(this.tyre, p.tyre.centreHz, p.tyre.gain);
+  }
+
+  /** Moves a noise bed's filter and gain towards the speed's values (AC6). */
+  private follow(bed: TickVoice, hz: number, gain: number): void {
+    const now = this.context!.currentTime;
+    bed.filter.frequency.setTargetAtTime(hz, now, SMOOTH_S);
+    bed.gain.gain.setTargetAtTime(gain, now, SMOOTH_S);
   }
 
   private play(v: TickVoice, perSecond: number, gain: number): void {
@@ -162,6 +186,19 @@ function tickBuffer(ctx: AudioContext): AudioBuffer {
   for (let i = 0; i < length; i++) {
     seed = (seed * 16807) % 2147483647;
     data[i] = ((seed / 2147483647) * 2 - 1) * Math.exp(-i / (length / 5));
+  }
+  return buffer;
+}
+
+/** 2 s of white noise, looped: the bed under the wind and the tyres. */
+function noiseBuffer(ctx: AudioContext): AudioBuffer {
+  const length = ctx.sampleRate * 2;
+  const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  let seed = 7;
+  for (let i = 0; i < length; i++) {
+    seed = (seed * 16807) % 2147483647;
+    data[i] = (seed / 2147483647) * 2 - 1;
   }
   return buffer;
 }

@@ -5,6 +5,8 @@ import type { Page } from '@playwright/test';
 interface AudioProbe {
   contexts: AudioContext[];
   starts: number;
+  /** Looping sources started: the wind and tyre noise. */
+  loops: number;
 }
 
 export class FakeAudio {
@@ -12,7 +14,7 @@ export class FakeAudio {
 
   async install(): Promise<void> {
     await this.page.addInitScript(() => {
-      const probe: AudioProbe = { contexts: [], starts: 0 };
+      const probe: AudioProbe = { contexts: [], starts: 0, loops: 0 };
       (window as unknown as { __wzAudio: AudioProbe }).__wzAudio = probe;
       const Real = window.AudioContext;
       if (!Real) return;
@@ -25,6 +27,7 @@ export class FakeAudio {
       const start = AudioBufferSourceNode.prototype.start;
       AudioBufferSourceNode.prototype.start = function (...args: Parameters<typeof start>) {
         probe.starts++;
+        if (this.loop) probe.loops++;
         return start.apply(this, args);
       };
     });
@@ -50,6 +53,13 @@ export class FakeAudio {
   starts(): Promise<number> {
     return this.page.evaluate(
       () => (window as unknown as { __wzAudio: AudioProbe }).__wzAudio.starts,
+    );
+  }
+
+  /** How many looping sources (the noise beds) have been started. */
+  loops(): Promise<number> {
+    return this.page.evaluate(
+      () => (window as unknown as { __wzAudio: AudioProbe }).__wzAudio.loops,
     );
   }
 }
