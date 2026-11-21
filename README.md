@@ -193,7 +193,8 @@ node scripts/compare-performance.mjs performance-reports/<before>.json performan
 ```
 
 Each run writes `performance-reports/<timestamp>.json` and a Markdown table beside it (not
-committed). The compare prints the median and p95 deltas per scene and tier and marks every one
+committed). Each row also counts the shader programs compiled once the scene had loaded
+and the frames over 50 ms in the first 5 s. The compare prints the median and p95 deltas per scene and tier and marks every one
 more than 10 % slower as a regression.
 
 [Continuous integration](.github/workflows/ci.yml) runs every check above on every pull request.

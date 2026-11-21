@@ -22,6 +22,8 @@ export interface WorldRideReport {
   drawCalls: number;
   /** Shader programs alive. */
   programs: number;
+  /** Shader programs alive when the scene had loaded, before its first frame. */
+  programsBeforeRide: number | null;
   /** The scene's distinct materials by type and features, most shared first. */
   materials: Record<string, number>;
 }

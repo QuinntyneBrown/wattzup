@@ -49,3 +49,21 @@ describe('FrameScheduler.measurePeriod (L2-111 AC9)', () => {
     stop();
   });
 });
+
+describe('FrameScheduler.nextFrame (L2-111 AC10)', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('resolves on the next frame, and asks for no frame after it', async () => {
+    const frames = fakeFrames();
+    let next = false;
+    void TestBed.inject(FrameScheduler)
+      .nextFrame()
+      .then(() => (next = true));
+    await Promise.resolve();
+    expect(next).toBe(false);
+    frames.refresh(1000 / 60);
+    await Promise.resolve();
+    expect(next).toBe(true);
+    expect(frames.pending()).toBe(0);
+  });
+});

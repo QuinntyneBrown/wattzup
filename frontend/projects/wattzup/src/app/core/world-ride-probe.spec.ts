@@ -42,6 +42,7 @@ describe('probeReport (#674)', () => {
       gpuMs: [],
       drawCalls: 0,
       programs: 0,
+      programsBeforeRide: null,
       materials: {},
     });
     report?.frames.push(16.7);

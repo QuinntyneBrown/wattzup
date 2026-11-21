@@ -36,6 +36,7 @@ import {
   Fog,
   Group,
   HemisphereLight,
+  type Light,
   type Material,
   Mesh,
   MeshBasicMaterial,
@@ -3178,7 +3179,11 @@ export class ThreeWorldRenderer implements WorldRenderer {
   private bendSamples: Float32Array = new Float32Array(0);
   private drawn = 0;
 
-  async start(canvas: HTMLCanvasElement, world: World): Promise<boolean> {
+  async start(
+    canvas: HTMLCanvasElement,
+    world: World,
+    nextFrame: () => Promise<void>,
+  ): Promise<boolean> {
     try {
       // Timer queries only for the performance sweep: a rider's frames never pay for them (#675).
       const asked = readWorldRideProbe((globalThis as Record<string, unknown>)[PROBE_KEY]);
@@ -3224,7 +3229,43 @@ export class ThreeWorldRenderer implements WorldRenderer {
     if (world.id === 'docklands') this.addTowers();
     this.applyTier();
     this.bend.apply(this.scene, this.unbent);
+    await this.warmUp(canvas, nextFrame);
+    if (this.probe) this.probe.programsBeforeRide = this.renderer.info.memory.programs;
     return true;
+  }
+
+  /**
+   * Draws the whole scene through the tier's pass chain over three frames while it is still
+   * loading, at the canvas's own size, and waits for the GPU to finish: the programs, buffers
+   * and render targets the ride needs exist before its first frame (L2-111 AC10). Parts hidden
+   * or out of view at the start are drawn too, so their programs are ready when they appear.
+   */
+  private async warmUp(canvas: HTMLCanvasElement, nextFrame: () => Promise<void>): Promise<void> {
+    const renderer = this.renderer;
+    if (!renderer) return;
+    this.resize(canvas.clientWidth, canvas.clientHeight, devicePixelRatio);
+    const hidden: Object3D[] = [];
+    const culled: Object3D[] = [];
+    this.scene.traverse((part) => {
+      // A light is left as it is: the lights a material is compiled for are part of its program.
+      if (!part.visible && !(part as Light).isLight) hidden.push(part);
+      if (part.frustumCulled) culled.push(part);
+    });
+    for (const part of hidden) part.visible = true;
+    for (const part of culled) part.frustumCulled = false;
+    // Three frames, one per animation frame (the scene pass runs once per frame): the pass
+    // chain's history (temporal anti-aliasing, motion vectors) takes its programs from the
+    // second, and its depth copy from the first frame the drawing buffer has its full size.
+    for (let frame = 0; frame < 3; frame++) {
+      if (frame > 0) await nextFrame();
+      if (this.pipeline) this.pipeline.render();
+      else renderer.render(this.scene, this.camera);
+    }
+    for (const part of hidden) part.visible = false;
+    for (const part of culled) part.frustumCulled = true;
+    // WebGPU builds pipelines in the GPU process: wait for them, not just for the call.
+    const device = (renderer.backend as { device?: GPUDevice }).device;
+    await device?.queue.onSubmittedWorkDone();
   }
 
   resize(width: number, height: number, pixelRatio: number): void {

@@ -89,6 +89,22 @@ test.describe('the test-only tier hook (#672)', () => {
   });
 });
 
+test.describe('compiles ahead (L2-111 AC10)', () => {
+  test('compiles every program before the first frame, at a pinned tier', async ({
+    page,
+    worldRide,
+  }) => {
+    await worldRide.pin('high');
+    await new WorldRidePage(page).startFromClass();
+    await expect
+      .poll(async () => (await worldRide.report())?.programsBeforeRide ?? null, STARTED)
+      .not.toBeNull();
+    await page.waitForTimeout(RECORD_MS);
+    const report = await worldRide.report();
+    expect(report?.programs).toBe(report?.programsBeforeRide);
+  });
+});
+
 test.describe('frame times per scene and tier (#674)', () => {
   for (const scene of scenes) {
     for (const backend of backends) {
@@ -128,6 +144,8 @@ test.describe('frame times per scene and tier (#674)', () => {
               : null,
             drawCalls: report.drawCalls,
             programs: report.programs,
+            // Programs compiled once the ride began: none at a pinned tier (L2-111 AC10).
+            compiledDuringRide: report.programs - (report.programsBeforeRide ?? 0),
             stalls: stalls(report.frames),
             materials: report.materials,
           };

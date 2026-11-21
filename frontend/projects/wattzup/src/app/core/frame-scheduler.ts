@@ -52,6 +52,11 @@ export class FrameScheduler {
     });
   }
 
+  /** Resolves on the next frame: the scene's warm-up draws one frame at a time (L2-111 AC10). */
+  nextFrame(): Promise<void> {
+    return new Promise((next) => this.requestDraw(() => next()));
+  }
+
   /** Runs `draw` on the next frame; several requests in one frame run it once. */
   requestDraw(draw: () => void): void {
     this.draws.add(draw);

@@ -83,6 +83,13 @@ None.
 
 `defines` and `customProgramCacheKey` belong to the classic `WebGLRenderer`, which World Ride does not use. `compiledFeatures(material)` names the features that decide a program; on a tier change, the renderer sets `needsUpdate` only on a material whose key changed, so a drop rebuilds only the programs it must. The bend (L2-111 criterion 8) stays in every material's vertex stage, unchanged. The performance sweep's material variants include `env-map`, so a run shows which materials carry the wet-surface code.
 
+**Compile ahead (L2-111 AC10, #682).** A program compiled the first time a mesh appears costs a long frame, which the budget reads as slowness. So `ThreeWorldRenderer.start` ends with a warm-up, while the canvas is still empty. It sizes the renderer to the canvas, then draws the scene through the tier's pass chain over three frames. Every part is drawn, with hidden parts made visible and frustum culling off. Then everything is put back and the warm-up waits for the GPU queue. Three details matter:
+- Lights are left as they are, because the lights a material is compiled for are part of its program.
+- Three frames are needed: the scene pass runs once per animation frame, the pass chain's history takes its programs from the second frame, and TRAA's depth copy waits for the first frame at the drawing buffer's full size.
+- The frames come from `FrameScheduler.nextFrame()`, passed into `start`, so the scheduler stays the only `requestAnimationFrame` caller.
+
+`renderer.compileAsync(scene, camera)` was tried first and rejected. It compiles for drawing straight to the screen, while World Ride draws the scene into the pass chain's render targets, so the first frame compiled its own set as well (112 programs instead of 70). The probe's `programsBeforeRide` is the count when `start` resolves; the sweep checks that the count stays there at a pinned tier, and reports `compiledDuringRide` for every scene. A tier drop still compiles its new pass chain.
+
 **Shared surface materials (`core/world-materials.ts`, #681).** `SurfaceMaterials` hands a scene one `MeshStandardMaterial` per look, keyed by every parameter (textures by identity, colours by value), and disposes each once with the scene. A shared material is never changed after it is handed out; a part that changes its material as it draws (Times Square's flashing ball facets) makes its own. Times Square's street asks it for every standard surface. Measured with the sweep, that took Times Square from 318 to 316 distinct materials with the same programs and no change in frame time beyond noise: three already shares one program between materials alike, and most of the scene's materials are per-texture billboards that cannot be shared. Other scenes move over only when a profile shows near-duplicate materials worth sharing.
 
 **The bend at every tier (L2-111 criterion 8, ADR 0023).** The road's bend is a vertex-stage `positionNode` on every material, not a technique: it is on at every tier and on both backends, and no tier turns it off. Its cost is a few arithmetic steps per vertex and one 2 KB upload a frame; frustum culling is off for bent meshes. The frame budget is the same as on a straight road, so a screen that cannot hold its tier on a bending road drops one as it would for any other load (`world-ride/draw-class-scene`, The bending road).
@@ -120,6 +127,9 @@ Unit tests (`render-quality.spec.ts`):
 - `FrameBudget`: two windows over budget drop one tier; one window over budget keeps it; nothing drops below `low`; no window ever raises it (AC4). One case per row of 30 Hz at 34 and 45 ms, 60 Hz at 18 and 25 ms, and 144 Hz at 8 and 18 ms (AC4); while paused and across `setPeriod`, no window is judged (AC9).
 - `estimateFramePeriod`: one case per row of 30, 60, 120 and 144 Hz, jittery intervals, a long first interval and gaps over 100 ms left out, and too few intervals falling back to 60 Hz (AC9).
 - `FrameScheduler.measurePeriod`: driven by a fake `requestAnimationFrame` clock, never a sleep (AC9).
+- `FrameScheduler.nextFrame`: resolves on the next frame and asks for no frame after it (AC10).
+
+Performance sweep (`frontend/e2e/sweeps/performance.sweep.ts`, run only when a person asks): `compiles every program before the first frame, at a pinned tier` rides the default class for 20 s at `high` and expects the program count to stay at `programsBeforeRide` (AC10).
 
 A behaviour spec cannot set the refresh rate of the rider's display: the headless browser always reports its own. The unit tests prove the rules; the e2e specs prove World Ride still opens and draws.
 
@@ -166,6 +176,7 @@ The WebGL2 backend takes 2.5 to 5 times the GPU time of WebGPU for the same scen
 
 ### Open questions
 
+- Times Square still compiles three small full-screen programs (its ambient occlusion pass and the step that applies it) on its first frame after the warm-up, one more program alive than when it had loaded (#682). The default scene compiles none. Why the warm-up's GTAO programs are not reused there is not yet known.
 - **Captured assets.** The photogrammetry, scans, splats and baked data of each scene are <TO SUPPLY>. Until they exist, techniques 1, 2, 3, 5, 13, 40, 41, 43 and 44 draw their fallback forms.
 - **Ray-tracing builder.** Techniques 45 to 48 need a BVH over the scene. Building it in-house or adding a package (an amendment of ADR 0021) is <TO SUPPLY>.
 - **World Ride chunk budget.** Only the initial bundle has a budget. A budget for the World Ride chunk and each scene's assets is <TO SUPPLY>.
@@ -174,7 +185,7 @@ The WebGL2 backend takes 2.5 to 5 times the GPU time of WebGPU for the same scen
 
 | L2 ID    | Refines (L1) | Requirement                                                                                                                                                                                                                                                                                             |
 | -------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `L2-111` | `L1-017`     | World Ride rendering quality. The scene draws with WebGPU or WebGL2 at a quality tier that turns on the techniques of the table, starts high and drops on a frame budget of the display's measured frame period, honours reduced motion, falls back when an asset is missing, and never blocks the HUD. |
+| `L2-111` | `L1-017`     | World Ride rendering quality. The scene draws with WebGPU or WebGL2 at a quality tier that turns on the techniques of the table, starts high and drops on a frame budget of the display's measured frame period, compiles its programs while it loads, honours reduced motion, falls back when an asset is missing, and never blocks the HUD. |
 | `L2-110` | `L1-017`     | World Ride scene rendering. The fallback notice, the hidden tab and reduced motion apply at every tier.                                                                                                                                                                                                 |
 | `L2-101` | `L1-017`     | The scenes. Every captured or baked asset is bundled and served from the same origin.                                                                                                                                                                                                                   |
 
