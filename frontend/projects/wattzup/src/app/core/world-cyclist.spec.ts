@@ -1,4 +1,11 @@
-import { Color, type Group, type Mesh, MeshStandardMaterial, Vector3 } from 'three/webgpu';
+import {
+  type BufferGeometry,
+  Color,
+  type Group,
+  type Mesh,
+  MeshStandardMaterial,
+  Vector3,
+} from 'three/webgpu';
 import { describe, expect, it, vi } from 'vitest';
 import { CyclistKit } from './world-cyclist';
 
@@ -97,6 +104,25 @@ describe('CyclistKit rigid bike and body sub-assemblies', () => {
 
     cyclist.setCastShadow(true);
     expect(countCasters()).toBe(initial);
+
+    kit.dispose();
+    frame.dispose();
+  });
+
+  it('keeps per-cyclist geometry within 3,300 triangles across bike and rider meshes', () => {
+    const frame = new MeshStandardMaterial({ color: 0xeeeeea });
+    const kit = new CyclistKit(frame);
+    const cyclist = kit.make(new Color(0xd7ff3a), 4, frame);
+
+    let triangles = 0;
+    cyclist.group.traverse((o) => {
+      if (!(o as Mesh).isMesh) return;
+      const geo = (o as Mesh).geometry as BufferGeometry;
+      triangles += geo.index ? geo.index.count / 3 : geo.getAttribute('position').count / 3;
+    });
+
+    expect(triangles).toBeGreaterThan(1500);
+    expect(triangles).toBeLessThan(3300);
 
     kit.dispose();
     frame.dispose();
