@@ -3880,7 +3880,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.you = you;
     this.wheelBlur.push(...you.wheelBlur);
     this.scene.add(you.group);
-    this.disposables.push(kit, you.jersey, you.bib, you.shell, this.frameMaterial);
+    this.disposables.push(kit, you.jersey, you.shell, this.frameMaterial);
     // The simulated pacers ride with the rider, each in its board colour (L2-107 AC7).
     for (const pacer of PACERS) {
       // Each pacer rides a frame of their own paint.
@@ -3895,7 +3895,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
       this.wheelBlur.push(...rider.wheelBlur);
       this.pacers.set(pacer.jersey, rider);
       this.scene.add(rider.group);
-      this.disposables.push(rider.jersey, rider.bib, rider.shell);
+      this.disposables.push(rider.jersey, rider.shell);
     }
   }
 
