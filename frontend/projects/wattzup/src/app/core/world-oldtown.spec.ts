@@ -1,6 +1,8 @@
 import { vi } from 'vitest';
 import {
   BatchedMesh,
+  InstancedMesh,
+  Matrix4,
   Mesh,
   RepeatWrapping,
   SRGBColorSpace,
@@ -118,6 +120,35 @@ describe('OldTownStreet and Corners (L2-101 AC1, L2-110 AC9, L2-111 AC10)', () =
     street.place(210, (m) => m * 0.05);
     expect(countVisibleIn(batched)).toBeGreaterThan(0);
     expect(countVisibleIn(shadowCasters)).toBeLessThan(55);
+
+    for (const d of disposables) d.dispose();
+  });
+
+  it('compacts spectator hats, hand flags and hair InstancedMeshes with zero degenerate scale=0 instances', () => {
+    const disposables: { dispose(): void }[] = [];
+    const street = new OldTownStreet((t) => t, disposables);
+    street.build(3.5, 161);
+    street.place(25, (m) => m * 0.03);
+
+    const instanced = street.group.children.filter(
+      (c): c is InstancedMesh => c instanceof InstancedMesh,
+    );
+    // Crowd InstancedMeshes are the 7 added by addCrowd (before bunting flags, cords and swifts).
+    const crowdMeshes = instanced.slice(-10, -3);
+    expect(crowdMeshes).toHaveLength(7);
+    const [legs, , , , hats, waved, hair] = crowdMeshes;
+
+    expect(hats!.count + hair!.count).toBe(legs!.count);
+    expect(waved!.count).toBeGreaterThan(0);
+    expect(waved!.count).toBeLessThan(Math.ceil(legs!.count * 0.3));
+
+    const m = new Matrix4();
+    for (const accessory of [hats!, waved!, hair!]) {
+      for (let i = 0; i < accessory.count; i++) {
+        accessory.getMatrixAt(i, m);
+        expect(Math.abs(m.determinant())).toBeGreaterThan(1e-6);
+      }
+    }
 
     for (const d of disposables) d.dispose();
   });

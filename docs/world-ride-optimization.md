@@ -335,3 +335,13 @@ Every iteration below is measured across a **45-second sustained ride** (`record
 | --------------- | ------------------------ | --------------- | ------------------------- | --------------------------------- | ---------------------: | ------------------- |
 | **`low`**       | 60.6 → **60.6**          | **16.7**        | **17.1**                  | 5.96 / 7.01                       |     65 → **64 (`+0`)** | 7.891 → **7.626**   |
 | **`high`**      | 54.8 → **56.5 (+3.1 %)** | 17.5 → **17.3** | 25.7 → **22.3 (−3.4 ms)** | 10.42 / 12.91 → **10.35 / 11.53** |   240 → **239 (`+0`)** | 10.633 → **10.430** |
+
+### Iteration 9: Compact Spectator Accessory `InstancedMesh`es & Zero-Allocation `placeCrowd()` (`world-oldtown.ts`)
+
+- **Change**: Compacted `OldTownStreet` spectator `hats`, `waved` hand flags, and `hair` `InstancedMesh`es to allocate only active non-zero-scale instances (`1,905 → ~740` total accessory instances across the 635 spectators, eliminating **~1,165 degenerate `scale = 0` instances**, **−74.6 KB/frame** of `instanceMatrix` GPU uploads, and ~120,000 wasted vertex-shader transforms per frame while preserving the exact `seeded(47)` PRNG sequence), and rewrote `placeCrowd()` with flat typed-array index tables and zero per-frame array allocations.
+- **45-Second Results**:
+
+| Tier (`webgpu`) | Avg FPS | Median ms | p95 / p99 ms    | GPU Median ms | CDP Script ms/f (Before → After) | CDP Task ms/f (Before → After) |
+| --------------- | ------: | --------: | --------------- | ------------: | -------------------------------- | ------------------------------ |
+| **`low`**       |    60.5 |      16.7 | **17.1 / 17.9** |          5.90 | 7.626 → **7.547 (−1.0 %)**       | 8.410 → **8.311 (−1.2 %)**     |
+| **`high`**      |    56.0 |      17.4 | 23.3 / 34.8     |         10.42 | 10.430 → **9.251 (−11.3 %)**     | 11.380 → **10.149 (−10.8 %)**  |
