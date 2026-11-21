@@ -27,8 +27,10 @@ import {
   Vector3,
 } from 'three/webgpu';
 import {
+  bob,
   canvasTexture,
   legPair,
+  loopFade,
   loopMetres,
   Ribbons,
   type SceneStreet,
@@ -139,6 +141,7 @@ export class WestminsterStreet implements SceneStreet {
     for (const v of this.vehicles) {
       const metres = loopMetres(v.offset + v.speed * this.time, s, LOOP, BEHIND);
       v.mesh.position.set(v.x, heightAt(metres), -metres);
+      v.mesh.scale.setScalar(loopFade(metres, LOOP, BEHIND));
     }
     this.placeWalkers(s, heightAt);
     this.landmarks.position.set(0, heightAt(1e6), -TOWER_AHEAD);
@@ -150,9 +153,9 @@ export class WestminsterStreet implements SceneStreet {
     this.walkers.forEach((w, i) => {
       const metres = loopMetres(w.offset + w.speed * this.time, s, LOOP, BEHIND);
       const y = heightAt(metres) + KERB;
-      const step = Math.abs(Math.sin(this.time * 5.5 + w.phase)) * 0.04;
+      const step = bob(this.time * 5.5 + w.phase) * 0.04;
       this.turn.setFromAxisAngle(this.up, w.speed > 0 ? 0 : Math.PI);
-      this.size.setScalar(w.height);
+      this.size.setScalar(w.height * loopFade(metres, LOOP, BEHIND));
       this.spot.set(w.x, y + step, -metres);
       legs.setMatrixAt(i, this.matrix.compose(this.spot, this.turn, this.size));
       this.spot.set(w.x, y + 1.15 * w.height + step, -metres);
@@ -315,11 +318,13 @@ export class WestminsterStreet implements SceneStreet {
       { x: ONCOMING - 1.6, speed: () => -(6 + random() * 3), count: 6 },
     ];
     for (const kind of kinds) {
+      // A lane moves at one speed, so its vehicles keep their order and never drive through
+      // each other (#897).
+      const speed = kind.speed();
       for (let i = 0; i < kind.count; i++) {
         const isBus = random() < 0.5;
         const mesh = isBus ? this.bus() : this.cab();
         // Oncoming traffic faces the rider.
-        const speed = kind.speed();
         if (speed < 0) mesh.rotation.y = Math.PI;
         this.group.add(mesh);
         this.vehicles.push({

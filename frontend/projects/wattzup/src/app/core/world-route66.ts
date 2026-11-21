@@ -24,7 +24,17 @@ import {
   type Texture,
 } from 'three/webgpu';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { canvasTexture, loopMetres, Ribbons, type SceneStreet, seeded, speckle } from './world-kit';
+import {
+  bob,
+  canvasTexture,
+  loopFade,
+  loopMetres,
+  Ribbons,
+  type SceneStreet,
+  seeded,
+  speckle,
+  wrapFade,
+} from './world-kit';
 import type { StreetPoint } from './world-oldtown';
 
 /** The highway repeats every LOOP metres; its parts run from BEHIND metres behind the rider. */
@@ -116,13 +126,16 @@ export class Route66Street implements SceneStreet {
     for (const car of this.traffic) {
       const metres = loopMetres(car.offset + car.speed * this.time, s, LOOP, BEHIND);
       car.mesh.position.set(car.x, heightAt(metres), -metres);
+      car.mesh.scale.setScalar(loopFade(metres, LOOP, BEHIND));
     }
     // A tumbleweed blows across the road from the right, bounding as it rolls.
     for (const weed of this.tumbleweeds) {
       const metres = loopMetres(weed.offset, s, LOOP, BEHIND);
       const across = ((this.time * 3.2 + weed.phase * 90) % 90) - 45;
-      const bound = Math.abs(Math.sin(this.time * 3 + weed.phase * 6)) * 0.5;
+      const bound = bob(this.time * 3 + weed.phase * 6) * 0.5;
       weed.mesh.position.set(-across, heightAt(metres) + 0.45 + bound, -metres);
+      // It dwindles away before it wraps back across the road, and grows back after (#902).
+      weed.mesh.scale.setScalar(wrapFade(across, -45, 45, 8) * loopFade(metres, LOOP, BEHIND));
       weed.mesh.rotation.z = this.time * 2.6;
     }
     // The mesas stand round the horizon and keep their distance as the rider rides.
@@ -442,7 +455,9 @@ export class Route66Street implements SceneStreet {
     rig.add(cab, trailer, stack);
     rig.rotation.y = Math.PI;
     this.group.add(rig);
-    this.traffic.push({ mesh: rig, offset: 260, x, speed: -18 });
+    // The rig keeps the cars' speed in their lane, between two of them, so none drives through
+    // it (#902).
+    this.traffic.push({ mesh: rig, offset: 210, x, speed: -22 });
   }
 
   /** Tumbleweeds blowing across the highway. */

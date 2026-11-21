@@ -32,11 +32,13 @@ import {
 import {
   barrierBannerTexture,
   type BannerPanel,
+  bob,
   canvasTexture,
   clothBannerTexture,
   Crowd,
   Figures,
   hazedMaterial,
+  loopFade,
   loopMetres,
   paintTexture,
   Ribbons,
@@ -45,6 +47,7 @@ import {
   seeded,
   slopeAt,
   speckle,
+  wrapFade,
 } from './world-kit';
 import type { StreetPoint } from './world-oldtown';
 
@@ -174,6 +177,8 @@ export class KnicksStreet implements SceneStreet {
   private readonly turn = new Quaternion();
   private readonly tumble = new Euler();
   private readonly size = new Vector3(1, 1, 1);
+  /** One piece of tape's size this frame. */
+  private readonly piece = new Vector3();
 
   constructor(
     private readonly track: <T extends Texture>(texture: T) => T,
@@ -252,13 +257,24 @@ export class KnicksStreet implements SceneStreet {
       const y = heightAt(Math.max(metres, 0));
       const x = i % 2 ? FLOAT_X : -FLOAT_X;
       float.position.set(x, y, -metres);
+      // A float dwindles away at the far end of the loop and grows back there (#900).
+      const shown = loopFade(metres, LOOP, BEHIND);
+      float.scale.setScalar(shown);
       if (!crew) return;
       spots.forEach(([dx, dz], k) => {
         // The crew face the crowd on their side of the deck and jump with the music.
         const heading =
           dx === 0 ? (x > 0 ? -Math.PI / 2 : Math.PI / 2) : dx > 0 ? -Math.PI / 2 : Math.PI / 2;
-        const bob = Math.abs(Math.sin(this.time * 4 + i * 1.3 + k)) * 0.22;
-        crew.set(i * CREW + k, x + dx, y + DECK, -metres + dz, heading, 1.05, bob);
+        const jump = bob(this.time * 4 + i * 1.3 + k) * 0.22;
+        crew.set(
+          i * CREW + k,
+          x + dx * shown,
+          y + DECK * shown,
+          -metres + dz * shown,
+          heading,
+          1.05 * shown,
+          jump * shown,
+        );
       });
     });
     crew?.commit();
@@ -281,7 +297,12 @@ export class KnicksStreet implements SceneStreet {
       );
       this.tumble.set(t * p.spin[0] + p.phase * 7, t * p.spin[1] + p.phase * 3, t * p.spin[2]);
       this.turn.setFromEuler(this.tumble);
-      this.matrix.compose(this.spot, this.turn, this.size);
+      // A piece shrinks away as it lands and grows back at the top, rather than leaping up, and
+      // fades at the far end of the cloud (#900).
+      this.piece
+        .setScalar(wrapFade(drop, 0, TAPE_TOP, 1.5) * loopFade(metres, TAPE_SPAN, 12))
+        .multiply(this.size);
+      this.matrix.compose(this.spot, this.turn, this.piece);
       if (i < TAPE) tape.setMatrixAt(i, this.matrix);
       else streamers.setMatrixAt(i - TAPE, this.matrix);
     });

@@ -11,8 +11,13 @@ export interface SceneFrame {
   /** The pedals' angle, in radians. */
   readonly crank: number;
   readonly segments: readonly Segment[];
-  /** The ride's `elapsed_seconds`. */
+  /** The ride's `elapsed_seconds`, whole seconds as the engine counts them. */
   readonly elapsed: number;
+  /**
+   * The scene time moving parts are placed by, in seconds: it follows `elapsed` but advances by
+   * each frame's own time, so they move smoothly rather than once a second (#897).
+   */
+  readonly time: number;
   readonly speedKmh: number;
   /** No camera sway and no turning pedals (L2-110 AC6). */
   readonly reducedMotion: boolean;

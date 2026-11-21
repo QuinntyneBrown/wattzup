@@ -3315,6 +3315,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
         crank: 0,
         segments,
         elapsed: 0,
+        time: 0,
         speedKmh: 0,
         reducedMotion: this.reducedMotion,
       });
@@ -3413,7 +3414,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
     if (this.towers) {
       // The road over an effort is a bridge ramp, laid at the same speed as the road ahead.
       const efforts = frame.segments.filter((g) => g.kind === 'work');
-      this.towers.setTime(frame.reducedMotion ? 0 : frame.elapsed, frame.reducedMotion);
+      this.towers.setTime(frame.reducedMotion ? 0 : frame.time, frame.reducedMotion);
       this.towers.setBridge(
         (metres) => {
           const t = frame.elapsed + metres / v;
@@ -3422,7 +3423,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
         efforts.map((g) => (g.start - frame.elapsed) * v),
       );
     }
-    this.scenery?.setTime(frame.reducedMotion ? 0 : frame.elapsed);
+    // Moving parts ride by the scene's smooth time, not the engine's whole seconds (#897).
+    this.scenery?.setTime(frame.reducedMotion ? 0 : frame.time);
     this.layRoad(ahead, frame.s);
     const texture = this.roadMaterial.map;
     if (texture) texture.offset.y = (frame.s / DASH) % 1;
@@ -3851,7 +3853,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
   /** Puts each pacer in view at its gap, and hides the rest (L2-107 AC7). */
   private placePacers(world: World, frame: SceneFrame, ahead: RoadPoint[]): void {
     for (const rider of this.pacers.values()) rider.group.visible = false;
-    for (const p of pacersOnRoad(frame.elapsed, AHEAD * STEP)) {
+    for (const p of pacersOnRoad(frame.time, AHEAD * STEP)) {
       const rider = this.pacers.get(p.jersey);
       if (!rider) continue;
       rider.group.visible = true;

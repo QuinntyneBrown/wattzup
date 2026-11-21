@@ -24,8 +24,10 @@ import {
 } from 'three/webgpu';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {
+  bob,
   canvasTexture,
   Figures,
+  loopFade,
   loopMetres,
   Ribbons,
   type SceneStreet,
@@ -165,14 +167,16 @@ export class VegasStreet implements SceneStreet {
     for (const car of this.cars) {
       const metres = loopMetres(car.offset + car.speed * this.time, s, LOOP, BEHIND);
       car.mesh.position.set(car.x, heightAt(Math.max(metres, 0)), -metres);
+      car.mesh.scale.setScalar(loopFade(metres, LOOP, BEHIND));
     }
     const figures = this.figures;
     if (figures) {
       this.walkers.forEach((w, i) => {
         const metres = loopMetres(w.offset + w.speed * this.time, s, LOOP, BEHIND);
-        const step = Math.abs(Math.sin(this.time * 4.5 + w.phase)) * 0.04;
+        const step = bob(this.time * 4.5 + w.phase) * 0.04;
         const y = heightAt(Math.max(metres, 0)) + KERB;
-        figures.set(i, w.x, y, -metres, w.speed > 0 ? 0 : Math.PI, w.scale, step);
+        const scale = w.scale * loopFade(metres, LOOP, BEHIND);
+        figures.set(i, w.x, y, -metres, w.speed > 0 ? 0 : Math.PI, scale, step);
       });
       figures.commit();
     }
@@ -482,6 +486,9 @@ export class VegasStreet implements SceneStreet {
       [-roadHalf - NEAR_LANES - MEDIAN - 8.75, -1],
     ];
     for (const [x, way] of lanes) {
+      // A lane moves at one speed, so its cars keep their order and never drive through each
+      // other (#901).
+      const speed = way * (9 + random() * 5);
       for (let offset = random() * 30; offset < LOOP; offset += 28 + random() * 40) {
         const car = new Group();
         const limo = random() < 0.08;
@@ -504,7 +511,7 @@ export class VegasStreet implements SceneStreet {
         }
         if (way < 0) car.rotation.y = Math.PI;
         this.group.add(car);
-        this.cars.push({ mesh: car, offset, x, speed: way * (9 + random() * 5) });
+        this.cars.push({ mesh: car, offset, x, speed });
       }
     }
   }
