@@ -366,20 +366,31 @@ Every iteration below is measured across a **45-second sustained ride** (`record
 | **`low`**       | **60.5**                 |  **16.7** | 17.2 / 17.9 → **17.1 / 17.8**           | **5.90 / 6.95**                   | **328**            | 3,911.6 → **3,785.6 (−126 ms)**   |
 | **`high`**      | 56.1 → **57.2 (+2.0 %)** |  **17.2** | 23.9 / 35.4 → **21.8 / 33.0 (−2.1 ms)** | 10.35 / 11.67 → **10.29 / 11.21** | 469 → **467 (−2)** | 11,247.1 → **10,028.5 (−10.8 %)** |
 
-### Cumulative 45-Second Old Town Improvement Summary (Original → Post-#950 Baseline → Iteration 11)
+### Iteration 12: Merged `Corners` Furniture, Distance-Gated Corner Shadows & `2 m` Grid `apexes()` Memoization (`world-corners.ts`, `scene-bend.ts`)
 
-| Metric (45s Active Ride @ 1440×900)  | Original `main` | Post-#950 45s Baseline | Iteration 11 (`main`) | Total Improvement          |
+- **Change**: Merged each corner's steel chevron posts (`0x8d939b`) into `matteMesh` and its two-sided yellow marshal cloth (`0xf5d000`) into `flagArmGeometry` (`5 → 3` meshes per corner across `4 → 2` `MeshStandardMaterial`s, eliminating 4 `flag` wrapper `Group`s), right-sized corner figure capsules/spheres (`~55 %` fewer vertices across 28 corner figures), gated corner `castShadow` to `metres ∈ (−30, 90)`, added bounded early-exit `limit` + O(1) `angle === 0` short-circuit to `apexes()`, and memoized `Corners.place()` across the `2 m` (`APEX_STEP`) grid (`~92 %` fewer `apexes()` scans and `0` trig/array allocations on 11 of every 12 frames).
+- **45-Second Results**:
+
+| Tier (`webgpu`) | Avg FPS | Median ms          | GPU Median / p95 ms | Draw Calls         | Programs (`+mid-ride`)   | CDP Script / Task ms/f           | JS Heap MB |
+| --------------- | ------: | ------------------ | ------------------- | ------------------ | ------------------------ | -------------------------------- | ---------: |
+| **`low`**       |    60.6 | **16.7**           | 6.09 / 7.01         | 328 → **326 (−2)** | 64 (`+0`)                | **7.213 / 8.003** _(record low)_ |  **18.44** |
+| **`high`**      |    57.0 | 17.2 → **17.0 ms** | **10.22 / 11.27**   | 467 → **461 (−6)** | 239 → **237 (−2, `+0`)** | 10.166 / 11.135                  |      45.38 |
+
+### Cumulative 45-Second Old Town Improvement Summary (Original → Post-#950 Baseline → Iteration 12)
+
+| Metric (45s Active Ride @ 1440×900)  | Original `main` | Post-#950 45s Baseline | Iteration 12 (`main`) | Total Improvement          |
 | ------------------------------------ | --------------: | ---------------------: | --------------------: | -------------------------- |
-| **`low` Avg FPS**                    |            31.7 |                   60.5 |              **60.5** | **+90.9 % (60 Hz lock)**   |
+| **`low` Avg FPS**                    |            31.7 |                   60.5 |              **60.6** | **+91.2 % (60 Hz lock)**   |
 | **`low` Median / p95 Frame (ms)**    |     29.9 / 42.8 |            16.7 / 17.8 |       **16.7 / 17.1** | **−44.1 % / −60.0 %**      |
-| **`low` WebGPU Draw Calls**          |           1,771 |                    747 |               **328** | **−81.5 % (−1,443 draws)** |
-| **`low` CDP CPU Script (ms/frame)**  |           30.83 |                  9.329 |             **7.355** | **4.2× faster (−76.1 %)**  |
-| **`low` JS Heap Used (MB)**          |            95.5 |                  46.24 |             **21.09** | **−77.9 %**                |
-| **`high` Avg FPS**                   |            14.8 |                   38.3 |         **57.2–58.3** | **3.9× (+286 %)**          |
-| **`high` Median / p95 Frame (ms)**   |     62.6 / 92.9 |            26.2 / 32.7 |  **16.7–17.2 / 21.8** | **−73.3 % / −76.5 %**      |
-| **`high` GPU Median / p95 (ms)**     |           18.74 |          15.60 / 17.30 |     **10.29 / 11.21** | **−45.1 %**                |
-| **`high` WebGPU Draw Calls**         |           3,308 |                  1,249 |               **467** | **−85.9 % (−2,841 draws)** |
-| **`high` CDP CPU Script (ms/frame)** |           66.43 |                 17.344 |      **9.251–10.181** | **6.5×–7.2× faster**       |
-| **DOM Layouts per 45s Ride**         |          ~1,500 |                  1,504 |             **76–86** | **−94.3 %**                |
-| **Lazy World Ride JS Loaded (KB)**   |         2,741.1 |                2,741.1 |           **1,377.2** | **−49.8 %**                |
+| **`low` WebGPU Draw Calls**          |           1,771 |                    747 |               **326** | **−81.6 % (−1,445 draws)** |
+| **`low` CDP CPU Script (ms/frame)**  |           30.83 |                  9.329 |             **7.213** | **4.3× faster (−76.6 %)**  |
+| **`low` JS Heap Used (MB)**          |            95.5 |                  46.24 |             **18.44** | **−80.7 %**                |
+| **`high` Avg FPS**                   |            14.8 |                   38.3 |         **57.0–58.3** | **3.9× (+285 %)**          |
+| **`high` Median / p95 Frame (ms)**   |     62.6 / 92.9 |            26.2 / 32.7 |  **16.7–17.0 / 21.8** | **−73.3 % / −76.5 %**      |
+| **`high` GPU Median / p95 (ms)**     |           18.74 |          15.60 / 17.30 |     **10.22 / 11.21** | **−45.5 %**                |
+| **`high` WebGPU Draw Calls**         |           3,308 |                  1,249 |               **461** | **−86.1 % (−2,847 draws)** |
+| **`high` Shader Programs**           |            ~240 |                    240 |               **237** | **−3 (`0` mid-ride)**      |
+| **`high` CDP CPU Script (ms/frame)** |           66.43 |                 17.344 |      **9.251–10.166** | **6.5×–7.2× faster**       |
+| **DOM Layouts per 45s Ride**         |          ~1,500 |                  1,504 |             **73–93** | **−95.1 %**                |
+| **Lazy World Ride JS Loaded (KB)**   |         2,741.1 |                2,741.1 |           **1,377.4** | **−49.7 %**                |
 | **Mid-Ride Shader Compilations**     |             0–2 |                      0 |                 **0** | **Zero mid-ride stalls**   |

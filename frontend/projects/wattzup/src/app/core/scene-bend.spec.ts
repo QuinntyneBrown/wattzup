@@ -222,6 +222,12 @@ describe('apexes (L2-110 AC9)', () => {
       expect(part).toEqual(whole.filter((s) => s >= from));
     }
   });
+
+  it('stops after the requested limit of nearest apexes', () => {
+    const whole = apexes(oldtown, 0, 3000);
+    expect(whole.length).toBeGreaterThan(4);
+    expect(apexes(oldtown, 0, 3000, 3)).toEqual(whole.slice(0, 3));
+  });
 });
 
 function alpeHeading(s: number): number {
