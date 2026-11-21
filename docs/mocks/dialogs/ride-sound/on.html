@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ride sound · on — Wattzup mocks</title>
+<meta name="mock:kind" content="dialog">
+<meta name="mock:screen" content="ride-sound">
+<meta name="mock:state" content="on">
+<meta name="mock:requirements" content="L2-129 L2-017">
+<meta name="description" content="Ride sound on at 60 % volume, following the live cadence, resistance and speed.">
+<link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div inert aria-hidden="true">
+<div class="app app--fixed">
+<header class="app-bar">
+  <a class="lockup " href="../../pages/ride/default.html" aria-label="Wattzup dashboard"><svg class="lockup__mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12"/><path d="M8.5 16 L15.5 34 L23 21 L30.5 34 L39.5 10"/></svg><span class="lockup__word">wattzup</span></a>
+  <span class="app-bar__divider" aria-hidden="true"></span>
+  <div class="statusline"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg><span class="statusline__name">Echelon EX-5s</span><span class="statusline__state">Connected</span></div>
+  <a class="btn btn--quiet btn--sm" href="../../pages/setup/default.html" aria-label="Edit workout: HIIT · 8 × 40s / 20s"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 7h-9M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>HIIT · 8 × 40s / 20s</a>
+  <div class="app-bar__end">
+    
+    <span class="ride-clock" aria-label="Elapsed 7:07 of 12:40">7:07<span class="ride-clock__total"> / 12:40</span></span>
+    <button class="btn btn--collapsible" type="button"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg><span class="btn__label">Pause</span></button>
+    <button class="btn btn--quiet-danger btn--collapsible" type="button"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></svg><span class="btn__label">End</span></button>
+    <button class="btn btn--quiet btn--icon" type="button" aria-haspopup="dialog" aria-pressed="true" aria-label="Ride sound on"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M2 12h2l2-6 3 12 3-9 2 6 2-3h6"/></svg></button><button class="btn btn--quiet btn--icon" type="button" aria-pressed="false" aria-label="Countdown beeps off"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M2 2l20 20M8.7 4.7A6 6 0 0 1 18 11v3M18 18H4l2-2v-5a6 6 0 0 1 .6-2.6M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn btn--quiet btn--icon" type="button" aria-pressed="false" aria-label="Light theme"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v2M12 19v2M5 5l1.4 1.4M17.6 17.6 19 19M3 12h2M19 12h2M5 19l1.4-1.4M17.6 6.4 19 5M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg></button>
+    <button class="btn btn--quiet btn--icon" type="button" aria-label="Diagnostics"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></button>
+  </div>
+</header>
+
+<div class="ride-layout">
+<main id="main" class="ride-main">
+  <h1 class="visually-hidden">Ride dashboard</h1>
+  <div class="readouts">
+  <div class="readout readout--power">
+    <span class="label">Power</span>
+    <div class="readout__value"><span class="numeral">317</span><span class="readout__unit">W</span></div>
+    <div class="readout__sub"><span>Target 327 W</span><span class="delta delta--on">On target</span></div>
+  </div>
+  <div class="readout readout--cadence">
+    <span class="label">Cadence</span>
+    <div class="readout__value"><span class="numeral">95</span><span class="readout__unit">rpm</span></div>
+    <div class="readout__sub">Aim for 98</div>
+  </div>
+  <div class="interval">
+    <div class="interval__head">
+      <span class="interval__kind"><span class="swatch swatch--work" aria-hidden="true"></span>Work <small>Round 5 of 8</small></span>
+      <span class="numeral interval__left" role="timer" aria-live="off" aria-label="0:33 left in this interval">0:33</span>
+    </div>
+    <div class="progress progress--thin progress--work" role="progressbar" aria-label="Interval progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="18"><div class="progress__bar" style="--value: 17.5%;"></div></div>
+    <p class="interval__next">Next: <b>Recover</b> 0:20 at level 6</p>
+  </div>
+</div>
+<figure class="trace">
+  <figcaption class="trace__head"><span>Power vs. plan</span><ul class="trace__legend" aria-label="Legend"><li>Actual</li><li class="is-work">Work target</li><li class="is-rest">Recover</li></ul></figcaption>
+  <div class="trace__plot"><svg viewBox="0 0 760 500" preserveAspectRatio="none" role="img" aria-labelledby="trace-title">
+<title id="trace-title">Power against the plan: actual power up to 7:07, target blocks for the whole ride</title>
+<line class="grid-line" x1="0" x2="760" y1="400" y2="400"/>
+<line class="grid-line" x1="0" x2="760" y1="300" y2="300"/>
+<line class="grid-line" x1="0" x2="760" y1="200" y2="200"/>
+<line class="grid-line" x1="0" x2="760" y1="100" y2="100"/>
+<rect class="plan plan--past is-easy" x="1.5" y="357" width="177.0" height="143"/>
+<line class="plan-line plan-line--past is-easy" x1="1.5" x2="178.5" y1="357" y2="357"/>
+<rect class="plan plan--past is-work" x="181.5" y="173" width="37.0" height="327"/>
+<line class="plan-line plan-line--past is-work" x1="181.5" x2="218.5" y1="173" y2="173"/>
+<rect class="plan plan--past is-rest" x="221.5" y="393" width="17.0" height="107"/>
+<line class="plan-line plan-line--past is-rest" x1="221.5" x2="238.5" y1="393" y2="393"/>
+<rect class="plan plan--past is-work" x="241.5" y="173" width="37.0" height="327"/>
+<line class="plan-line plan-line--past is-work" x1="241.5" x2="278.5" y1="173" y2="173"/>
+<rect class="plan plan--past is-rest" x="281.5" y="393" width="17.0" height="107"/>
+<line class="plan-line plan-line--past is-rest" x1="281.5" x2="298.5" y1="393" y2="393"/>
+<rect class="plan plan--past is-work" x="301.5" y="173" width="37.0" height="327"/>
+<line class="plan-line plan-line--past is-work" x1="301.5" x2="338.5" y1="173" y2="173"/>
+<rect class="plan plan--past is-rest" x="341.5" y="393" width="17.0" height="107"/>
+<line class="plan-line plan-line--past is-rest" x1="341.5" x2="358.5" y1="393" y2="393"/>
+<rect class="plan plan--past is-work" x="361.5" y="173" width="37.0" height="327"/>
+<line class="plan-line plan-line--past is-work" x1="361.5" x2="398.5" y1="173" y2="173"/>
+<rect class="plan plan--past is-rest" x="401.5" y="393" width="17.0" height="107"/>
+<line class="plan-line plan-line--past is-rest" x1="401.5" x2="418.5" y1="393" y2="393"/>
+<rect class="plan is-work" x="421.5" y="173" width="37.0" height="327"/>
+<line class="plan-line is-work" x1="421.5" x2="458.5" y1="173" y2="173"/>
+<rect class="plan is-rest" x="461.5" y="393" width="17.0" height="107"/>
+<line class="plan-line is-rest" x1="461.5" x2="478.5" y1="393" y2="393"/>
+<rect class="plan is-work" x="481.5" y="173" width="37.0" height="327"/>
+<line class="plan-line is-work" x1="481.5" x2="518.5" y1="173" y2="173"/>
+<rect class="plan is-rest" x="521.5" y="393" width="17.0" height="107"/>
+<line class="plan-line is-rest" x1="521.5" x2="538.5" y1="393" y2="393"/>
+<rect class="plan is-work" x="541.5" y="173" width="37.0" height="327"/>
+<line class="plan-line is-work" x1="541.5" x2="578.5" y1="173" y2="173"/>
+<rect class="plan is-rest" x="581.5" y="393" width="17.0" height="107"/>
+<line class="plan-line is-rest" x1="581.5" x2="598.5" y1="393" y2="393"/>
+<rect class="plan is-work" x="601.5" y="173" width="37.0" height="327"/>
+<line class="plan-line is-work" x1="601.5" x2="638.5" y1="173" y2="173"/>
+<rect class="plan is-easy" x="641.5" y="396" width="117.0" height="104"/>
+<line class="plan-line is-easy" x1="641.5" x2="758.5" y1="396" y2="396"/>
+<polygon class="actual-area" points="0.5,500 0.5,360.2 1.5,363.3 2.5,354.3 3.5,364.7 4.5,356.4 5.5,359.4 6.5,365.0 7.5,356.9 8.5,365.3 9.5,358.2 10.5,364.7 11.5,364.4 12.5,358.4 13.5,351.1 14.5,363.8 15.5,362.0 16.5,354.7 17.5,348.9 18.5,355.6 19.5,358.9 20.5,348.4 21.5,365.2 22.5,350.5 23.5,360.8 24.5,363.4 25.5,363.9 26.5,360.4 27.5,351.3 28.5,362.7 29.5,355.5 30.5,354.5 31.5,359.3 32.5,356.1 33.5,364.9 34.5,364.9 35.5,362.3 36.5,353.8 37.5,358.3 38.5,360.3 39.5,355.5 40.5,357.8 41.5,360.6 42.5,351.7 43.5,353.4 44.5,361.6 45.5,355.7 46.5,356.5 47.5,350.2 48.5,352.9 49.5,360.8 50.5,348.4 51.5,363.9 52.5,358.5 53.5,352.4 54.5,363.3 55.5,357.2 56.5,365.3 57.5,354.0 58.5,352.2 59.5,355.7 60.5,350.2 61.5,360.4 62.5,353.5 63.5,355.3 64.5,355.6 65.5,357.8 66.5,350.9 67.5,349.0 68.5,357.5 69.5,354.0 70.5,364.9 71.5,353.4 72.5,354.4 73.5,348.1 74.5,351.2 75.5,360.9 76.5,359.1 77.5,354.0 78.5,365.6 79.5,357.7 80.5,363.0 81.5,363.9 82.5,364.9 83.5,352.2 84.5,363.7 85.5,361.5 86.5,359.0 87.5,350.3 88.5,364.5 89.5,357.9 90.5,356.1 91.5,350.1 92.5,351.3 93.5,350.4 94.5,361.0 95.5,358.5 96.5,359.5 97.5,350.1 98.5,348.8 99.5,363.3 100.5,362.8 101.5,361.8 102.5,361.8 103.5,357.3 104.5,355.4 105.5,361.3 106.5,365.9 107.5,358.5 108.5,359.4 109.5,355.8 110.5,348.8 111.5,353.6 112.5,356.7 113.5,354.9 114.5,353.8 115.5,365.0 116.5,349.8 117.5,352.0 118.5,350.3 119.5,351.6 120.5,358.9 121.5,358.8 122.5,364.1 123.5,354.6 124.5,364.9 125.5,364.8 126.5,362.2 127.5,363.1 128.5,359.9 129.5,365.1 130.5,366.0 131.5,363.3 132.5,364.2 133.5,359.5 134.5,365.5 135.5,350.3 136.5,354.9 137.5,363.3 138.5,361.5 139.5,359.7 140.5,359.4 141.5,363.8 142.5,350.7 143.5,348.1 144.5,357.6 145.5,357.3 146.5,364.5 147.5,364.2 148.5,359.8 149.5,361.2 150.5,351.1 151.5,363.1 152.5,365.6 153.5,348.9 154.5,356.5 155.5,363.4 156.5,356.2 157.5,365.5 158.5,356.5 159.5,348.4 160.5,350.5 161.5,353.5 162.5,361.3 163.5,359.4 164.5,363.0 165.5,352.1 166.5,356.4 167.5,352.0 168.5,360.1 169.5,362.0 170.5,351.4 171.5,348.3 172.5,350.7 173.5,351.5 174.5,351.3 175.5,352.7 176.5,361.9 177.5,356.7 178.5,359.6 179.5,365.5 180.5,319.5 181.5,246.0 182.5,194.6 183.5,169.5 184.5,164.8 185.5,173.9 186.5,165.1 187.5,164.2 188.5,164.8 189.5,175.4 190.5,178.0 191.5,177.9 192.5,178.5 193.5,178.3 194.5,170.8 195.5,165.8 196.5,166.9 197.5,173.4 198.5,170.2 199.5,167.6 200.5,180.5 201.5,170.1 202.5,165.6 203.5,167.9 204.5,168.5 205.5,173.4 206.5,178.8 207.5,167.8 208.5,176.0 209.5,167.6 210.5,164.5 211.5,174.9 212.5,174.8 213.5,165.0 214.5,169.0 215.5,178.9 216.5,179.7 217.5,179.3 218.5,165.7 219.5,167.5 220.5,234.4 221.5,304.6 222.5,363.7 223.5,390.2 224.5,395.7 225.5,392.1 226.5,399.6 227.5,401.7 228.5,384.5 229.5,390.3 230.5,392.5 231.5,385.2 232.5,394.2 233.5,386.3 234.5,387.1 235.5,398.2 236.5,397.5 237.5,396.7 238.5,397.7 239.5,391.4 240.5,342.3 241.5,257.0 242.5,200.3 243.5,165.6 244.5,175.6 245.5,173.8 246.5,171.5 247.5,165.7 248.5,174.4 249.5,165.5 250.5,173.0 251.5,172.4 252.5,172.6 253.5,181.7 254.5,174.1 255.5,178.7 256.5,181.9 257.5,167.6 258.5,178.9 259.5,173.5 260.5,168.9 261.5,172.0 262.5,176.1 263.5,172.7 264.5,172.0 265.5,167.9 266.5,180.1 267.5,171.9 268.5,177.5 269.5,177.0 270.5,168.1 271.5,172.9 272.5,171.9 273.5,168.3 274.5,165.6 275.5,174.0 276.5,171.0 277.5,172.9 278.5,172.8 279.5,169.5 280.5,228.9 281.5,309.9 282.5,372.8 283.5,385.1 284.5,389.4 285.5,386.2 286.5,385.0 287.5,397.3 288.5,391.9 289.5,385.0 290.5,386.9 291.5,399.5 292.5,399.8 293.5,394.0 294.5,400.7 295.5,397.7 296.5,400.7 297.5,389.9 298.5,387.9 299.5,385.9 300.5,344.2 301.5,251.6 302.5,190.7 303.5,179.4 304.5,166.1 305.5,164.6 306.5,178.0 307.5,164.9 308.5,174.8 309.5,173.2 310.5,164.2 311.5,167.0 312.5,179.1 313.5,174.2 314.5,172.7 315.5,175.9 316.5,178.5 317.5,176.3 318.5,169.0 319.5,181.6 320.5,172.0 321.5,174.1 322.5,181.7 323.5,176.0 324.5,170.8 325.5,172.8 326.5,180.8 327.5,164.3 328.5,167.8 329.5,164.5 330.5,180.1 331.5,177.2 332.5,181.3 333.5,168.0 334.5,177.1 335.5,179.7 336.5,174.4 337.5,165.6 338.5,167.3 339.5,177.3 340.5,234.3 341.5,303.0 342.5,371.1 343.5,389.4 344.5,400.4 345.5,401.0 346.5,389.6 347.5,394.3 348.5,400.7 349.5,385.1 350.5,390.6 351.5,387.6 352.5,400.5 353.5,386.6 354.5,400.8 355.5,386.5 356.5,393.8 357.5,395.9 358.5,392.0 359.5,385.3 360.5,342.2 361.5,262.2 362.5,193.1 363.5,177.7 364.5,180.0 365.5,179.1 366.5,181.1 367.5,178.4 368.5,176.4 369.5,176.5 370.5,168.3 371.5,176.8 372.5,173.0 373.5,178.8 374.5,175.8 375.5,181.7 376.5,177.5 377.5,181.7 378.5,168.8 379.5,172.1 380.5,178.6 381.5,173.5 382.5,165.2 383.5,180.1 384.5,167.3 385.5,174.2 386.5,173.1 387.5,167.0 388.5,174.9 389.5,172.9 390.5,169.6 391.5,164.3 392.5,175.8 393.5,167.0 394.5,169.3 395.5,170.6 396.5,174.7 397.5,175.7 398.5,181.0 399.5,179.7 400.5,235.7 401.5,306.2 402.5,376.8 403.5,399.1 404.5,400.5 405.5,386.9 406.5,386.3 407.5,389.9 408.5,396.9 409.5,397.6 410.5,396.7 411.5,393.7 412.5,399.2 413.5,394.0 414.5,397.3 415.5,384.7 416.5,384.5 417.5,392.2 418.5,397.6 419.5,384.6 420.5,341.4 421.5,258.1 422.5,202.6 423.5,175.1 424.5,173.5 425.5,173.0 426.5,178.4 426.5,500"/>
+<polyline class="actual-line" points="0.5,360.2 1.5,363.3 2.5,354.3 3.5,364.7 4.5,356.4 5.5,359.4 6.5,365.0 7.5,356.9 8.5,365.3 9.5,358.2 10.5,364.7 11.5,364.4 12.5,358.4 13.5,351.1 14.5,363.8 15.5,362.0 16.5,354.7 17.5,348.9 18.5,355.6 19.5,358.9 20.5,348.4 21.5,365.2 22.5,350.5 23.5,360.8 24.5,363.4 25.5,363.9 26.5,360.4 27.5,351.3 28.5,362.7 29.5,355.5 30.5,354.5 31.5,359.3 32.5,356.1 33.5,364.9 34.5,364.9 35.5,362.3 36.5,353.8 37.5,358.3 38.5,360.3 39.5,355.5 40.5,357.8 41.5,360.6 42.5,351.7 43.5,353.4 44.5,361.6 45.5,355.7 46.5,356.5 47.5,350.2 48.5,352.9 49.5,360.8 50.5,348.4 51.5,363.9 52.5,358.5 53.5,352.4 54.5,363.3 55.5,357.2 56.5,365.3 57.5,354.0 58.5,352.2 59.5,355.7 60.5,350.2 61.5,360.4 62.5,353.5 63.5,355.3 64.5,355.6 65.5,357.8 66.5,350.9 67.5,349.0 68.5,357.5 69.5,354.0 70.5,364.9 71.5,353.4 72.5,354.4 73.5,348.1 74.5,351.2 75.5,360.9 76.5,359.1 77.5,354.0 78.5,365.6 79.5,357.7 80.5,363.0 81.5,363.9 82.5,364.9 83.5,352.2 84.5,363.7 85.5,361.5 86.5,359.0 87.5,350.3 88.5,364.5 89.5,357.9 90.5,356.1 91.5,350.1 92.5,351.3 93.5,350.4 94.5,361.0 95.5,358.5 96.5,359.5 97.5,350.1 98.5,348.8 99.5,363.3 100.5,362.8 101.5,361.8 102.5,361.8 103.5,357.3 104.5,355.4 105.5,361.3 106.5,365.9 107.5,358.5 108.5,359.4 109.5,355.8 110.5,348.8 111.5,353.6 112.5,356.7 113.5,354.9 114.5,353.8 115.5,365.0 116.5,349.8 117.5,352.0 118.5,350.3 119.5,351.6 120.5,358.9 121.5,358.8 122.5,364.1 123.5,354.6 124.5,364.9 125.5,364.8 126.5,362.2 127.5,363.1 128.5,359.9 129.5,365.1 130.5,366.0 131.5,363.3 132.5,364.2 133.5,359.5 134.5,365.5 135.5,350.3 136.5,354.9 137.5,363.3 138.5,361.5 139.5,359.7 140.5,359.4 141.5,363.8 142.5,350.7 143.5,348.1 144.5,357.6 145.5,357.3 146.5,364.5 147.5,364.2 148.5,359.8 149.5,361.2 150.5,351.1 151.5,363.1 152.5,365.6 153.5,348.9 154.5,356.5 155.5,363.4 156.5,356.2 157.5,365.5 158.5,356.5 159.5,348.4 160.5,350.5 161.5,353.5 162.5,361.3 163.5,359.4 164.5,363.0 165.5,352.1 166.5,356.4 167.5,352.0 168.5,360.1 169.5,362.0 170.5,351.4 171.5,348.3 172.5,350.7 173.5,351.5 174.5,351.3 175.5,352.7 176.5,361.9 177.5,356.7 178.5,359.6 179.5,365.5 180.5,319.5 181.5,246.0 182.5,194.6 183.5,169.5 184.5,164.8 185.5,173.9 186.5,165.1 187.5,164.2 188.5,164.8 189.5,175.4 190.5,178.0 191.5,177.9 192.5,178.5 193.5,178.3 194.5,170.8 195.5,165.8 196.5,166.9 197.5,173.4 198.5,170.2 199.5,167.6 200.5,180.5 201.5,170.1 202.5,165.6 203.5,167.9 204.5,168.5 205.5,173.4 206.5,178.8 207.5,167.8 208.5,176.0 209.5,167.6 210.5,164.5 211.5,174.9 212.5,174.8 213.5,165.0 214.5,169.0 215.5,178.9 216.5,179.7 217.5,179.3 218.5,165.7 219.5,167.5 220.5,234.4 221.5,304.6 222.5,363.7 223.5,390.2 224.5,395.7 225.5,392.1 226.5,399.6 227.5,401.7 228.5,384.5 229.5,390.3 230.5,392.5 231.5,385.2 232.5,394.2 233.5,386.3 234.5,387.1 235.5,398.2 236.5,397.5 237.5,396.7 238.5,397.7 239.5,391.4 240.5,342.3 241.5,257.0 242.5,200.3 243.5,165.6 244.5,175.6 245.5,173.8 246.5,171.5 247.5,165.7 248.5,174.4 249.5,165.5 250.5,173.0 251.5,172.4 252.5,172.6 253.5,181.7 254.5,174.1 255.5,178.7 256.5,181.9 257.5,167.6 258.5,178.9 259.5,173.5 260.5,168.9 261.5,172.0 262.5,176.1 263.5,172.7 264.5,172.0 265.5,167.9 266.5,180.1 267.5,171.9 268.5,177.5 269.5,177.0 270.5,168.1 271.5,172.9 272.5,171.9 273.5,168.3 274.5,165.6 275.5,174.0 276.5,171.0 277.5,172.9 278.5,172.8 279.5,169.5 280.5,228.9 281.5,309.9 282.5,372.8 283.5,385.1 284.5,389.4 285.5,386.2 286.5,385.0 287.5,397.3 288.5,391.9 289.5,385.0 290.5,386.9 291.5,399.5 292.5,399.8 293.5,394.0 294.5,400.7 295.5,397.7 296.5,400.7 297.5,389.9 298.5,387.9 299.5,385.9 300.5,344.2 301.5,251.6 302.5,190.7 303.5,179.4 304.5,166.1 305.5,164.6 306.5,178.0 307.5,164.9 308.5,174.8 309.5,173.2 310.5,164.2 311.5,167.0 312.5,179.1 313.5,174.2 314.5,172.7 315.5,175.9 316.5,178.5 317.5,176.3 318.5,169.0 319.5,181.6 320.5,172.0 321.5,174.1 322.5,181.7 323.5,176.0 324.5,170.8 325.5,172.8 326.5,180.8 327.5,164.3 328.5,167.8 329.5,164.5 330.5,180.1 331.5,177.2 332.5,181.3 333.5,168.0 334.5,177.1 335.5,179.7 336.5,174.4 337.5,165.6 338.5,167.3 339.5,177.3 340.5,234.3 341.5,303.0 342.5,371.1 343.5,389.4 344.5,400.4 345.5,401.0 346.5,389.6 347.5,394.3 348.5,400.7 349.5,385.1 350.5,390.6 351.5,387.6 352.5,400.5 353.5,386.6 354.5,400.8 355.5,386.5 356.5,393.8 357.5,395.9 358.5,392.0 359.5,385.3 360.5,342.2 361.5,262.2 362.5,193.1 363.5,177.7 364.5,180.0 365.5,179.1 366.5,181.1 367.5,178.4 368.5,176.4 369.5,176.5 370.5,168.3 371.5,176.8 372.5,173.0 373.5,178.8 374.5,175.8 375.5,181.7 376.5,177.5 377.5,181.7 378.5,168.8 379.5,172.1 380.5,178.6 381.5,173.5 382.5,165.2 383.5,180.1 384.5,167.3 385.5,174.2 386.5,173.1 387.5,167.0 388.5,174.9 389.5,172.9 390.5,169.6 391.5,164.3 392.5,175.8 393.5,167.0 394.5,169.3 395.5,170.6 396.5,174.7 397.5,175.7 398.5,181.0 399.5,179.7 400.5,235.7 401.5,306.2 402.5,376.8 403.5,399.1 404.5,400.5 405.5,386.9 406.5,386.3 407.5,389.9 408.5,396.9 409.5,397.6 410.5,396.7 411.5,393.7 412.5,399.2 413.5,394.0 414.5,397.3 415.5,384.7 416.5,384.5 417.5,392.2 418.5,397.6 419.5,384.6 420.5,341.4 421.5,258.1 422.5,202.6 423.5,175.1 424.5,173.5 425.5,173.0 426.5,178.4"/>
+<line class="playhead" x1="427" x2="427" y1="0" y2="500"/>
+</svg><span class="trace__max">500 W</span></div>
+  <div class="trace__axis" aria-hidden="true"><span style="left: 0.00%;">0:00</span><span style="left: 15.79%;">2:00</span><span style="left: 31.58%;">4:00</span><span style="left: 47.37%;">6:00</span><span style="left: 63.16%;">8:00</span><span style="left: 78.95%;">10:00</span><span style="left: 94.74%;">12:00</span></div>
+</figure>
+<dl class="metrics">
+  <div><dt>Heart rate</dt><dd><span class="numeral is-heart">156</span><small>bpm</small></dd></div>
+  <div><dt>Avg power</dt><dd><span class="numeral">208</span><small>W</small></dd></div>
+  <div><dt>Speed</dt><dd><span class="numeral">25.1</span><small>km/h · 15.6 mph</small></dd></div>
+  <div><dt>Distance</dt><dd><span class="numeral">2.53</span><small>km</small></dd></div>
+  <div><dt>Energy</dt><dd><span class="numeral">89</span><small>kcal</small></dd></div>
+</dl>
+  
+</main>
+<aside class="ride-aside" aria-label="Bike control">
+  <h2 class="label">Resistance</h2>
+  <div class="level-control">
+    <button class="step-btn" type="button" aria-label="Lower resistance"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
+    <div class="level-readout"><span class="numeral" aria-live="polite">18</span><small>of 32</small></div>
+    <button class="step-btn" type="button" aria-label="Raise resistance"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+  </div>
+  <div class="level-picker" role="slider" aria-label="Resistance level" aria-valuemin="1" aria-valuemax="32" aria-valuenow="18" aria-valuetext="Level 18 of 32" tabindex="0"><span class="level-picker__bar is-lit" aria-hidden="true" style="--h: 30.2%;"></span><span class="level-picker__bar is-lit" aria-hidden="true" style="--h: 32.5%;"></span><span class="level-picker__bar is-lit" aria-hidden="true" style="--h: 34.8%;"></span><span class="level-picker__bar is-lit" aria-hidden="true" style="--h: 37.0%;"></span><span class="level-picker__bar is-lit" aria-hidden="true" style="--h: 39.2%;"></span><span class="level-picker__bar is-lit" aria-hidden="true" style="--h: 41.5%;"></span><span class="level-picker__bar is-lit" aria-hidden="true" style="--h: 43.8%;"></span><span class="level-picker__bar is-lit" aria-hidden="true" style="--h: 46.0%;"></span><span class="level-picker__bar is-lit" aria-hidden="true" style="--h: 48.2%;"></span><span class="level-picker__bar is-lit" aria-hidden="true" style="--h: 50.5%;"></span><span class="level-picker__bar is-lit" aria-hidden="true" style="--h: 52.8%;"></span><span class="level-picker__bar is-lit" aria-hidden="true" style="--h: 55.0%;"></span><span class="level-picker__bar is-lit" aria-hidden="true" style="--h: 57.2%;"></span><span class="level-picker__bar is-lit" aria-hidden="true" style="--h: 59.5%;"></span><span class="level-picker__bar is-lit" aria-hidden="true" style="--h: 61.8%;"></span><span class="level-picker__bar is-lit" aria-hidden="true" style="--h: 64.0%;"></span><span class="level-picker__bar is-lit" aria-hidden="true" style="--h: 66.2%;"></span><span class="level-picker__bar is-lit is-set" aria-hidden="true" style="--h: 68.5%;"></span><span class="level-picker__bar" aria-hidden="true" style="--h: 70.8%;"></span><span class="level-picker__bar" aria-hidden="true" style="--h: 73.0%;"></span><span class="level-picker__bar" aria-hidden="true" style="--h: 75.2%;"></span><span class="level-picker__bar" aria-hidden="true" style="--h: 77.5%;"></span><span class="level-picker__bar" aria-hidden="true" style="--h: 79.8%;"></span><span class="level-picker__bar" aria-hidden="true" style="--h: 82.0%;"></span><span class="level-picker__bar" aria-hidden="true" style="--h: 84.2%;"></span><span class="level-picker__bar" aria-hidden="true" style="--h: 86.5%;"></span><span class="level-picker__bar" aria-hidden="true" style="--h: 88.8%;"></span><span class="level-picker__bar" aria-hidden="true" style="--h: 91.0%;"></span><span class="level-picker__bar" aria-hidden="true" style="--h: 93.2%;"></span><span class="level-picker__bar" aria-hidden="true" style="--h: 95.5%;"></span><span class="level-picker__bar" aria-hidden="true" style="--h: 97.8%;"></span><span class="level-picker__bar" aria-hidden="true" style="--h: 100.0%;"></span></div>
+  <div class="plan-note"><span>Following the plan — levels change with each interval.</span></div>
+  <div class="ride-aside__foot">
+  <section class="cmd-log" aria-labelledby="cmd-title">
+    <div class="cmd-log__head"><h3 id="cmd-title">Sent to bike</h3><code>BLE · 0bf669f1</code></div>
+    <ol><li><time>7:01</time><span class="cmd-log__cmd">RES 18 <span>· plan</span></span><span class="cmd-log__ack">ack 40ms</span></li>
+<li><time>6:40</time><span class="cmd-log__cmd">RES 6 <span>· plan</span></span><span class="cmd-log__ack">ack 34ms</span></li>
+<li><time>6:00</time><span class="cmd-log__cmd">RES 18 <span>· plan</span></span><span class="cmd-log__ack">ack 41ms</span></li></ol>
+  </section>
+  </div>
+</aside>
+</div>
+</div>
+
+</div>
+<div class="backdrop"></div>
+<div class="dialog" role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="dlg-title" aria-describedby="dlg-desc" data-dismiss-on-escape>
+  <div class="dialog__panel dialog__panel--sm">
+    <div class="dialog__header">
+      <div class="dialog__icon dialog__icon--info" aria-hidden="true"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M2 12h2l2-6 3 12 3-9 2 6 2-3h6"/></svg></div>
+      <div class="dialog__heading">
+        <h2 class="dialog__title" id="dlg-title">Ride sound</h2>
+        <p id="dlg-desc" class="dialog__desc">Hear the chain, the freewheel and the wind follow your pedalling. The sound is made in your browser; nothing is downloaded.</p>
+      </div>
+      <button class="btn btn--ghost btn--icon" type="button" aria-label="Close"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="dialog__body stack">
+      <div class="toggles"><label class="toggle-row"><span class="toggle-row__label"><b>Ride sound</b><small>On</small></span><span class="switch"><input type="checkbox" role="switch" checked></span></label></div>
+      <div class="level-slider"><div class="level-slider__head"><label for="ride-sound-volume">Volume</label><output class="numeral" for="ride-sound-volume">60<small> %</small></output></div><input id="ride-sound-volume" type="range" min="0" max="100" step="5" value="60" aria-valuetext="60 percent"><div class="level-slider__scale" aria-hidden="true"><span>Quiet</span><span>Loud</span></div></div>
+    </div>
+    <div class="dialog__footer">
+      <button class="btn btn--primary" type="button" autofocus>Done</button>
+    </div>
+  </div>
+</div>
+<p class="mock-note" style="top: 1rem; right: 1rem;">The chain ticks once per pedal stroke at the live cadence and grows louder with resistance; wind and tyre noise rise with speed. Moving the slider changes the volume at once; the volume is kept in this browser.</p>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="All mocks">⌂</a>
+  <span class="mock-bar__screen">Ride sound</span>
+  <ul class="mock-bar__states"><li><a href="default.html">default</a></li><li><a href="on.html" aria-current="page">on</a></li><li><a href="video.html">video</a></li></ul>
+  <button type="button" data-theme-toggle aria-pressed="true">☀ Light</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

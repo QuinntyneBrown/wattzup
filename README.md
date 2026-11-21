@@ -46,6 +46,9 @@ Edge.
   own times, levels and cadence aims, plus a warm-up and cool-down of any length. Work efforts aim
   at 100 rpm.
 - **Classes.** A library of classes, each a plan with the YouTube video it follows.
+- **Ride sound.** An optional chain, freewheel, wind and tyre sound generated in the browser from
+  the live cadence, resistance and speed. It is off on every page load; turn it on, and set its
+  volume (kept in this browser, 60 % at first), from the `Ride sound` button in the app bar.
 - **World Ride music.** Each world plays its own royalty-free Pixabay track while you ride, with a
   `Music` toggle that is remembered ([the list](docs/world-music.md)).
 - **Ride history.** Rides are kept in the browser (IndexedDB), with a summary of each, progress,

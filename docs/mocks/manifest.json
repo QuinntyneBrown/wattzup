@@ -320,6 +320,25 @@
       }
     },
     {
+      "id": "ride-sound",
+      "kind": "dialog",
+      "title": "Ride sound",
+      "opens_from": "ride",
+      "requirements": [
+        "L2-129",
+        "L2-017"
+      ],
+      "states": [
+        "default",
+        "on",
+        "video"
+      ],
+      "not_applicable": {
+        "busy": "Turning the sound on or off and moving the volume act at once; nothing is waited for.",
+        "invalid": "A switch and a range slider cannot hold an invalid value."
+      }
+    },
+    {
       "id": "replace-ride",
       "kind": "dialog",
       "title": "Replace ride in progress",
