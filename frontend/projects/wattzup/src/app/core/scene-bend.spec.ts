@@ -23,6 +23,14 @@ describe('bendAhead and bendPoint (L2-101 AC6, L2-110 AC9)', () => {
     expect(bendAhead(alpe, 1234)).toHaveLength(BEND_SAMPLES * 4);
   });
 
+  it('writes bendPoint into a caller-supplied mutable point in place when provided', () => {
+    const samples = bendAhead(alpe, 1234);
+    const out = { x: 0, z: 0 };
+    const res = bendPoint(samples, -3.5, -60, out);
+    expect(res).toBe(out);
+    expect(res).toEqual(bendPoint(samples, -3.5, -60));
+  });
+
   it('keeps the road under the rider at (0, 0), pointing straight down the view', () => {
     for (const s of [0, 777, 4321]) {
       const samples = bendAhead(alpe, s);
