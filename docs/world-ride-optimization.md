@@ -396,21 +396,32 @@ Every iteration below is measured across a **45-second sustained ride** (`record
 | **`low`**       | **60.6**                 | **16.7 / 17.1 / 17.7** | **5.96 / 7.01**     | 7.313 / 8.071 → **7.292 / 8.058**       | **3,769.3** _(record low)_         |
 | **`high`**      | 57.0 → **57.3 (+0.5 %)** | **17.1 / 22.2 / 34.2** | **10.22 / 11.40**   | 10.257 / 11.241 → **9.885 / 10.840**    | **9,941.0** _(`< 10 s` sustained)_ |
 
-### Cumulative 45-Second Old Town Improvement Summary (Original → Post-#950 Baseline → Iteration 14)
+### Iteration 15: Right-Sized 635-Spectator Crowd `InstancedMesh` Tessellation (`world-oldtown.ts`)
 
-| Metric (45s Active Ride @ 1440×900)  | Original `main` | Post-#950 45s Baseline |  Iteration 14 (`main`) | Total Improvement          |
+- **Change**: Right-sized `OldTownStreet.addCrowd()`'s 6 instanced spectator primitive geometries (`legs` `2×6`, `torso` `2×7`, `head` `8×6`, `arm` `1×5`, `hat` `8`, `hair` `8×4`) across all 635 pavement spectators (`1,270` arms), cutting colour-pass crowd triangles from **`521,708 → 203,470` (−61.0 %)** and shadow-pass crowd triangles from **`449,580 → 171,450` (−61.9 %)** — **~596,000 fewer `RoadBend`-transformed triangles every single frame** with pixel-faithful spectator silhouettes.
+- **45-Second Results**:
+
+| Tier (`webgpu`) | Avg FPS                         | Median / p95 / p99 ms           | GPU Median / p95 ms (Before → After)      | CDP Script / Task ms/f | Cold Load ms               |
+| --------------- | ------------------------------- | ------------------------------- | ----------------------------------------- | ---------------------- | -------------------------- |
+| **`low`**       | **60.5**                        | **16.7 / 17.2 / 18.1**          | 5.96 / 7.01 → **5.83 / 6.75**             | 7.526 / 8.327          | **3,737.5** _(record low)_ |
+| **`high`**      | 57.3 → **58.7** _(record high)_ | **16.7 / 20.7 / 32.9** _(best)_ | 10.22 / 11.40 → **9.83 / 11.34** _(best)_ | **9.491 / 10.358**     | 10,391.1                   |
+
+### Cumulative 45-Second Old Town Improvement Summary (Original → Post-#950 Baseline → Iteration 15)
+
+| Metric (45s Active Ride @ 1440×900)  | Original `main` | Post-#950 45s Baseline |  Iteration 15 (`main`) | Total Improvement          |
 | ------------------------------------ | --------------: | ---------------------: | ---------------------: | -------------------------- |
-| **`low` Avg FPS**                    |            31.7 |                   60.5 |          **60.6–60.8** | **+91.8 % (60 Hz lock)**   |
+| **`low` Avg FPS**                    |            31.7 |                   60.5 |          **60.5–60.8** | **+91.8 % (60 Hz lock)**   |
 | **`low` Median / p95 / p99 (ms)**    |     29.9 / 42.8 |     16.7 / 17.8 / 18.8 | **16.7 / 17.1 / 17.7** | **−44.1 % / −60.0 %**      |
+| **`low` GPU Median / p95 (ms)**      |           ~6.50 |            4.92 / 5.70 |        **5.83 / 6.75** | **Sub-6 ms GPU budget**    |
 | **`low` WebGPU Draw Calls**          |           1,771 |                    747 |                **325** | **−81.6 % (−1,446 draws)** |
-| **`low` CDP CPU Script (ms/frame)**  |           30.83 |                  9.329 |        **7.213–7.292** | **4.3× faster (−76.6 %)**  |
-| **`low` Cold Load Wall (ms)**        |          ~4,200 |                3,944.5 |            **3,769.3** | **−175.2 ms**              |
-| **`high` Avg FPS**                   |            14.8 |                   38.3 |          **57.3–58.3** | **3.9× (+287 %)**          |
-| **`high` Median / p95 Frame (ms)**   |     62.6 / 92.9 |            26.2 / 32.7 |   **16.7–17.1 / 21.8** | **−73.3 % / −76.5 %**      |
-| **`high` GPU Median / p95 (ms)**     |           18.74 |          15.60 / 17.30 |      **10.22 / 11.21** | **−45.5 %**                |
+| **`low` CDP CPU Script (ms/frame)**  |           30.83 |                  9.329 |        **7.213–7.526** | **4.1×–4.3× faster**       |
+| **`low` Cold Load Wall (ms)**        |          ~4,200 |                3,944.5 |            **3,737.5** | **−207.0 ms**              |
+| **`high` Avg FPS**                   |            14.8 |                   38.3 |               **58.7** | **4.0× (+297 %)**          |
+| **`high` Median / p95 / p99 (ms)**   |     62.6 / 92.9 |     26.2 / 32.7 / 49.5 | **16.7 / 20.7 / 32.9** | **−73.3 % / −77.7 %**      |
+| **`high` GPU Median / p95 (ms)**     |           18.74 |          15.60 / 17.30 |       **9.83 / 11.34** | **−47.5 %**                |
 | **`high` WebGPU Draw Calls**         |           3,308 |                  1,249 |                **459** | **−86.1 % (−2,849 draws)** |
-| **`high` Cold Load Wall (ms)**       |         ~11,500 |               10,861.2 |        **9,809–9,941** | **−1,051.9 ms (−9.7 %)**   |
-| **`high` CDP CPU Script (ms/frame)** |           66.43 |                 17.344 |        **9.251–9.885** | **6.7×–7.2× faster**       |
-| **DOM Layouts per 45s Ride**         |          ~1,500 |                  1,504 |              **73–94** | **−95.1 %**                |
-| **Lazy World Ride JS Loaded (KB)**   |         2,741.1 |                2,741.1 |            **1,374.9** | **−49.8 %**                |
+| **`high` Cold Load Wall (ms)**       |         ~11,500 |               10,861.2 |       **9,809–10,391** | **−1,051.9 ms (−9.7 %)**   |
+| **`high` CDP CPU Script (ms/frame)** |           66.43 |                 17.344 |        **9.251–9.491** | **7.0×–7.2× faster**       |
+| **DOM Layouts per 45s Ride**         |          ~1,500 |                  1,504 |              **73–93** | **−95.1 %**                |
+| **Lazy World Ride JS Loaded (KB)**   |         2,741.1 |                2,741.1 |            **1,378.6** | **−49.7 %**                |
 | **Mid-Ride Shader Compilations**     |             0–2 |                      0 |                  **0** | **Zero mid-ride stalls**   |

@@ -1091,13 +1091,13 @@ export class OldTownStreet {
       });
     }
     // Unit parts, scaled per spectator: legs 0.9 m and a torso 0.75 m long before scaling.
-    const legs = new CapsuleGeometry(0.13, 0.64, 4, 8);
+    const legs = new CapsuleGeometry(0.13, 0.64, 2, 6);
     legs.scale(1.25, 1, 0.8);
-    const torso = new CapsuleGeometry(0.17, 0.41, 4, 10);
+    const torso = new CapsuleGeometry(0.17, 0.41, 2, 7);
     torso.scale(1.1, 1, 0.7);
-    const head = new SphereGeometry(0.105, 12, 8);
+    const head = new SphereGeometry(0.105, 8, 6);
     // An arm 0.6 m long, its middle at the origin.
-    const arm = new CapsuleGeometry(0.05, 0.5, 4, 6);
+    const arm = new CapsuleGeometry(0.05, 0.5, 1, 5);
     const material = new MeshStandardMaterial({ roughness: 0.8 });
     this.disposables.push(legs, torso, head, arm, material);
     const n = this.crowd.length;
@@ -1120,7 +1120,7 @@ export class OldTownStreet {
     this.fans = [legs, torso, head].map((g) => new InstancedMesh(g, material, n));
     this.fans.push(new InstancedMesh(arm, material, 2 * n));
     // Sun hats and caps on a fifth of the crowd: compacted to hatted fans only.
-    const hat = new CylinderGeometry(0.1, 0.17, 0.09, 12);
+    const hat = new CylinderGeometry(0.1, 0.17, 0.09, 8);
     this.disposables.push(hat);
     this.fans.push(new InstancedMesh(hat, material, Math.max(hatTotal, 1)));
     // Hand flags, held up by two in three of those cheering: compacted to flag-waving fans only.
@@ -1130,7 +1130,7 @@ export class OldTownStreet {
     this.disposables.push(pennant, cloth);
     this.fans.push(new InstancedMesh(pennant, cloth, Math.max(wavedTotal, 1)));
     // Hair on every bare head: compacted to bare-headed fans only.
-    const hair = new SphereGeometry(0.112, 12, 6, 0, Math.PI * 2, 0, Math.PI / 2.1);
+    const hair = new SphereGeometry(0.112, 8, 4, 0, Math.PI * 2, 0, Math.PI / 2.1);
     this.disposables.push(hair);
     this.fans.push(new InstancedMesh(hair, material, Math.max(hairTotal, 1)));
     this.fans[4]!.count = hatTotal;
