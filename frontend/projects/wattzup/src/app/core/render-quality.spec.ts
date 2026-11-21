@@ -10,11 +10,11 @@ const ids = (from: Tier[]) =>
 
 describe('the technique table (L2-111)', () => {
   it('holds the techniques built so far, numbered from 1', () => {
-    expect(TECHNIQUES.map((t) => t.id)).toEqual(Array.from({ length: 51 }, (_, i) => i + 1));
+    expect(TECHNIQUES.map((t) => t.id)).toEqual(Array.from({ length: 52 }, (_, i) => i + 1));
   });
 
   it('marks the drawn look low-only (AC11, ADR 0024)', () => {
-    expect(TECHNIQUES.filter((t) => t.lowOnly).map((t) => t.id)).toEqual([51]);
+    expect(TECHNIQUES.filter((t) => t.lowOnly).map((t) => t.id)).toEqual([51, 52]);
   });
 
   it('builds no rear-view mirror and no windshield water', () => {
@@ -44,8 +44,8 @@ describe('techniquesAt (L2-111 AC2, AC5)', () => {
     expect(at(tier)).toEqual(ids(from));
   });
 
-  it('draws low as banded toon shading, anisotropic mipmaps and AgX tone mapping (AC11)', () => {
-    expect(at('low')).toEqual([8, 17, 51]);
+  it('draws low as toon shading, ink outlines, anisotropic mipmaps and AgX (AC11)', () => {
+    expect(at('low')).toEqual([8, 17, 51, 52]);
   });
 
   it.each<Tier>(['medium', 'high', 'ultra'])(
@@ -53,6 +53,7 @@ describe('techniquesAt (L2-111 AC2, AC5)', () => {
     (tier) => {
       expect(at(tier)).toContain(4);
       expect(at(tier)).not.toContain(51);
+      expect(at(tier)).not.toContain(52);
     },
   );
 

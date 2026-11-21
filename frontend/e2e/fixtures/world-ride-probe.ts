@@ -28,6 +28,8 @@ export interface WorldRideReport {
   materials: Record<string, number>;
   /** Materials in the scene that should follow the bend but do not (L2-111 AC8). */
   unbent: number;
+  /** Whether the post chain draws the ink outline pass (L2-111 technique 52). */
+  outlines: boolean;
 }
 
 export class WorldRideProbe {

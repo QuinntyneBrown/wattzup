@@ -1,4 +1,4 @@
-import { RIM, toonRamp, toonShade } from './drawn-look';
+import { EDGE, edgeAmount, INK, RIM, toonRamp, toonShade } from './drawn-look';
 
 describe('toonShade: diffuse light in three soft-edged bands (L2-111 AC11)', () => {
   // x is dot(N, L) mapped to 0..1, as three's toon lighting samples its ramp.
@@ -42,5 +42,31 @@ describe('RIM', () => {
     expect(RIM.power).toBe(3);
     expect(RIM.strength).toBeGreaterThan(0);
     expect(RIM.strength).toBeLessThanOrEqual(0.5);
+  });
+});
+
+describe('edgeAmount: where the ink outline falls (L2-111 AC11, technique 52)', () => {
+  it.each([
+    ['a flat wall', 0, 0, 0],
+    ['a gentle curve', 0.01, 0.1, 0],
+    ['a crease between faces', 0, 0.8, 1],
+    ['a silhouette against the distance', 0.5, 0, 1],
+    ['a step in depth just over the threshold', EDGE.depth + EDGE.soft, 0, 1],
+    ['a turn of the normal just under the threshold', 0, EDGE.normal - EDGE.soft, 0],
+  ])('is %s: depth jump %f, normal turn %f -> %f', (_, depthJump, normalTurn, amount) => {
+    expect(edgeAmount(depthJump, normalTurn)).toBeCloseTo(amount, 9);
+  });
+
+  it('grows smoothly between none and full', () => {
+    const mid = edgeAmount(EDGE.depth, 0);
+    expect(mid).toBeGreaterThan(0);
+    expect(mid).toBeLessThan(1);
+  });
+});
+
+describe('INK', () => {
+  it('outlines riders in a warmer ink than the scenery', () => {
+    const warmth = (hex: number) => ((hex >> 16) & 0xff) - (hex & 0xff);
+    expect(warmth(INK.riders)).toBeGreaterThan(warmth(INK.scenery));
   });
 });

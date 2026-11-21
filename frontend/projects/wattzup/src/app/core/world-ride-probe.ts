@@ -34,6 +34,8 @@ export interface WorldRideProbeReport {
   materials: Record<string, number>;
   /** Materials in the scene that should follow the bend but do not (L2-111 AC8). */
   unbent: number;
+  /** Whether the post chain draws the ink outline pass (L2-111 technique 52). */
+  outlines: boolean;
 }
 
 /** The pinned tier, or null when the hook is not set (every rider's ride). */
@@ -66,6 +68,7 @@ export function probeReport(
     programsBeforeRide: null,
     materials: {},
     unbent: 0,
+    outlines: false,
   };
   (probe as { report?: WorldRideProbeReport }).report = report;
   return report;

@@ -1388,7 +1388,8 @@ test.describe('World Ride scene (L2-110, L2-101 AC4)', () => {
   }) => {
     test.slow();
     await worldRide.pin('low');
-    await new WorldRidePage(page).startFromClass();
+    const world = new WorldRidePage(page);
+    await world.startFromClass();
     await expect
       .poll(async () => Object.keys((await worldRide.report())?.materials ?? {}).length, STARTED)
       .toBeGreaterThan(0);
@@ -1397,6 +1398,9 @@ test.describe('World Ride scene (L2-110, L2-101 AC4)', () => {
     expect(types).toContain('MeshToonNodeMaterial');
     expect(types.filter((t) => /Standard|Physical/.test(t))).toEqual([]);
     expect(report?.unbent).toBe(0);
+    // Silhouettes and creases are inked by one pass; the HUD is HTML over the canvas, never inked.
+    expect(report?.outlines).toBe(true);
+    await expect(world.boardTitle).toBeVisible();
   });
 
   test('keeps physically based shading above low (L2-111 AC11)', async ({ page, worldRide }) => {
@@ -1411,6 +1415,7 @@ test.describe('World Ride scene (L2-110, L2-101 AC4)', () => {
     );
     expect(types.filter((t) => /Standard|Physical/.test(t)).length).toBeGreaterThan(0);
     expect(types).not.toContain('MeshToonNodeMaterial');
+    expect((await worldRide.report())?.outlines).toBe(false);
   });
 
   test("shows This screen can't draw 3D worlds when WebGL is off, and the HUD still works", async ({
