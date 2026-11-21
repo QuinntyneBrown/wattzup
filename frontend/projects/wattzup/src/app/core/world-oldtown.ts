@@ -43,10 +43,10 @@ const DEPTH = 10;
 /** The street repeats every LOOP metres; houses run from BEHIND metres behind the rider. */
 const LOOP = 420;
 const BEHIND = 24;
-const HOUSE_BEHIND = 64;
+const HOUSE_BEHIND = 78;
 const HOUSE_SHIFT = HOUSE_BEHIND - BEHIND;
 const HOUSE_CULL_BEHIND = -16;
-const BLOCK_MAX = 48;
+const BLOCK_SLICES = 9;
 /** Beyond Old Town's 65 m directional shadow box (plus margin), blocks skip shadow casting. */
 const SHADOW_AHEAD = 75;
 /** Houses reach below the road, so a ramp never shows their footing. */
@@ -1810,18 +1810,25 @@ export class OldTownStreet {
     detailRects.set(this.leaves, detailAtlas.leaves);
     detailRects.set(this.geraniums, detailAtlas.blooms);
 
-    const rawBlocks: { offset: number; width: number; items: House[] }[] = [];
+    const sliceSpan = LOOP / BLOCK_SLICES;
+    const buckets = Array.from({ length: BLOCK_SLICES }, () => ({
+      minStart: Infinity,
+      maxEnd: -Infinity,
+      items: [] as House[],
+    }));
     for (const list of sideHouses) {
-      let current: { offset: number; width: number; items: House[] } | null = null;
       for (const item of list) {
-        if (!current || current.width + item.width > BLOCK_MAX) {
-          current = { offset: item.offset, width: 0, items: [] };
-          rawBlocks.push(current);
-        }
-        current.items.push(item);
-        current.width = item.offset + item.width - current.offset;
+        const idx = Math.min(BLOCK_SLICES - 1, Math.floor(item.offset / sliceSpan));
+        const bucket = buckets[idx]!;
+        bucket.items.push(item);
+        if (item.offset < bucket.minStart) bucket.minStart = item.offset;
+        const end = item.offset + item.width;
+        if (end > bucket.maxEnd) bucket.maxEnd = end;
       }
     }
+    const rawBlocks = buckets
+      .filter((b) => b.items.length > 0)
+      .map((b) => ({ offset: b.minStart, width: b.maxEnd - b.minStart, items: b.items }));
 
     const materialBatches = new Map<Material, { blockIdx: number; geometry: BufferGeometry }[]>();
     const xform = new Matrix4();

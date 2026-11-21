@@ -129,17 +129,19 @@ describe('OldTownStreet and Corners (L2-101 AC1, L2-110 AC9, L2-111 AC10)', () =
     const visibleShadowInstances = countVisibleIn(shadowCasters);
 
     expect(visibleAtStart).toBeGreaterThan(0);
-    expect(visibleAtStart).toBeLessThan(185);
+    expect(visibleAtStart).toBeLessThan(85);
     expect(visibleShadowInstances).toBeGreaterThan(0);
-    expect(visibleShadowInstances).toBeLessThan(55);
-    // Every BatchedMesh has at least one visible instance at s=0 so warmUp() compiles all programs.
+    expect(visibleShadowInstances).toBeLessThan(26);
+    // Cross-street pairing packs both sides into <= 10 longitudinal slices, and every BatchedMesh
+    // keeps >= 1 visible instance at s=0 so warmUp() compiles all programs ahead of the ride.
     for (const b of [...shadowCasters, ...nonShadowCasters]) {
+      expect(b.instanceCount).toBeLessThanOrEqual(10);
       expect(countVisibleIn([b])).toBeGreaterThan(0);
     }
 
     street.place(210, (m) => m * 0.05);
     expect(countVisibleIn(batched)).toBeGreaterThan(0);
-    expect(countVisibleIn(shadowCasters)).toBeLessThan(55);
+    expect(countVisibleIn(shadowCasters)).toBeLessThan(26);
 
     for (const d of disposables) d.dispose();
   });
