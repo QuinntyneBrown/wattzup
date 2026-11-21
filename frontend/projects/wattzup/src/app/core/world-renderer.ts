@@ -90,9 +90,9 @@ import { Corners } from './world-corners';
 import { RampSign } from './world-ramps';
 import type { SceneFrame, WorldRenderer } from './world-renderer-port';
 import { Cyclist, CyclistKit } from './world-cyclist';
-import { DocklandsStreet } from './world-docklands';
+import type { DocklandsStreet } from './world-docklands';
 import type { SceneStreet, StreetFactory } from './world-kit';
-import { cobbleTextures, OldTownStreet } from './world-oldtown';
+import type { OldTownStreet } from './world-oldtown';
 import { STREETS } from './world-streets';
 import { targetGrade, type World } from './worlds';
 
@@ -3247,15 +3247,15 @@ export class ThreeWorldRenderer implements WorldRenderer {
       countCompiles(this.renderer, this.probe);
     }
 
-    this.buildScene(world, canvas);
+    await this.buildScene(world, canvas);
     // Docklands' photographed distance is the mock's own still, riders and all: its towers are
     // built in 3D instead.
     // A kit-built street draws its own distance in 3D, as Docklands' towers do.
-    const street = STREETS[world.id];
-    if (world.id !== 'docklands' && !street) await this.addPanorama(world);
-    if (street) this.addScenery(street);
-    if (world.id === 'oldtown') this.addStreet();
-    if (world.id === 'docklands') this.addTowers();
+    const loadStreet = STREETS[world.id];
+    if (world.id !== 'docklands' && !loadStreet) await this.addPanorama(world);
+    if (loadStreet) this.addScenery(await loadStreet());
+    if (world.id === 'oldtown') await this.addStreet();
+    if (world.id === 'docklands') await this.addTowers();
     this.applyTier();
     this.bend.apply(this.scene, this.unbent);
     await this.warmUp(canvas, nextFrame, segments);
@@ -3727,7 +3727,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
     return direction(this.look.sun, this.look.azimuth ?? -27);
   }
 
-  private buildScene(world: World, canvas: HTMLCanvasElement): void {
+  private async buildScene(world: World, canvas: HTMLCanvasElement): Promise<void> {
     const look = this.look;
     this.scene.fog = new Fog(look.fog, look.fogRange?.[0] ?? 60, look.fogRange?.[1] ?? 650);
     const moon = look.sun < 0 ? look.moon : undefined;
@@ -3770,7 +3770,9 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.scene.add(this.sky);
 
     this.plainRoad = this.track(roadTexture(false));
-    const cobbles = COBBLED.has(world.id) ? cobbleTextures() : null;
+    const cobbles = COBBLED.has(world.id)
+      ? (await import('./world-oldtown')).cobbleTextures()
+      : null;
     const layered = world.id === 'docklands' ? wetAsphaltTexture() : roadTexture(true);
     this.layeredRoad = this.track(cobbles?.map ?? layered);
     this.roadRelief = cobbles ? this.track(cobbles.relief) : null;
@@ -3961,7 +3963,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.disposables.push(post, reflector);
   }
 
-  private addStreet(): void {
+  private async addStreet(): Promise<void> {
+    const { OldTownStreet } = await import('./world-oldtown');
     const street = new OldTownStreet((t) => this.track(t), this.disposables);
     street.build(ROAD_HALF, AHEAD + BEHIND + 1);
     this.scene.add(street.group);
@@ -3987,7 +3990,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.scenery = street;
   }
 
-  private addTowers(): void {
+  private async addTowers(): Promise<void> {
+    const { DocklandsStreet } = await import('./world-docklands');
     const towers = new DocklandsStreet((t) => this.track(t), this.disposables);
     towers.build(ROAD_HALF, AHEAD + BEHIND + 1);
     this.scene.add(towers.group);

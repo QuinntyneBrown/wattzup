@@ -275,3 +275,13 @@ Every iteration below is measured across a **45-second sustained ride** (`record
 | --------------- | ------------------------ | --------- | --------------- | --------------- | ------------------- | --------------------------- | -------------------------------- |
 | **`low`**       | 60.6 → **60.6**          | **16.7**  | 17.8 → **17.7** | 18.1 → **18.1** | 5.83 / 6.75         | 631 → **591 (−40)**         | 8.465 → **7.751 (−8.4 %)**       |
 | **`high`**      | 42.4 → **43.6 (+2.8 %)** | **22.8**  | 27.5 → **27.6** | 43.6 → **47.2** | **15.40 / 16.45**   | 1,054 → **974 (−80)**       | 11.168 → **12.988**              |
+
+### Iteration 3: Dynamic `import()` Code-Splitting for All 85 Street Modules (`world-streets.ts`, `world-renderer.ts`)
+
+- **Change**: Converted all 83 kit-built street entries in `STREETS` (`world-streets.ts`) plus `OldTownStreet` and `DocklandsStreet` (`world-renderer.ts`) into on-demand dynamic `import()` chunks (`StreetLoader = () => Promise<StreetFactory>`), cutting World Ride lazy JS loaded on entering Old Town by **50.0 % raw (`2,742.3 KB → 1,371.0 KB`, `577.7 KB → 275.1 KB` gzipped)** so unused street geometries and textures are never downloaded or parsed.
+- **45-Second Results**:
+
+| Tier (`webgpu`) | Avg FPS (Before → After) | Median ms | p95 ms          | p99 ms          | Lazy World JS (KB)            | Cold Load ms (Before → After) |
+| --------------- | ------------------------ | --------- | --------------- | --------------- | ----------------------------- | ----------------------------- |
+| **`low`**       | 60.6 → **60.6**          | **16.7**  | 17.7 → **17.7** | 18.1 → **18.2** | 2,742.3 → **1,371.0 (−50 %)** | 4,003.4 → **3,987.3**         |
+| **`high`**      | 43.6 → **44.1 (+1.1 %)** | **22.8**  | 27.6 → **26.7** | 47.2 → **44.7** | 2,742.3 → **1,371.0 (−50 %)** | 10,274.2 → **10,117.4**       |
