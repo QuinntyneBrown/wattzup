@@ -1,4 +1,11 @@
-import { FrameBudget, startTier, TECHNIQUES, techniquesAt, type Tier } from './render-quality';
+import {
+  FrameBudget,
+  nextLower,
+  startTier,
+  TECHNIQUES,
+  techniquesAt,
+  type Tier,
+} from './render-quality';
 
 /** The techniques from these tiers; a low-only one only when `from` is just `low`. */
 const ids = (from: Tier[]) =>
@@ -66,6 +73,35 @@ describe('techniquesAt (L2-111 AC2, AC5)', () => {
     for (const off of [28, 31, 33, 34, 50]) expect(drawn).not.toContain(off);
     // Still techniques stay, held still by the renderer.
     for (const still of [25, 27]) expect(drawn).toContain(still);
+  });
+});
+
+describe('FrameBudget.lower (#882)', () => {
+  it.each([
+    ['ultra', 'high'],
+    ['high', 'medium'],
+    ['medium', 'low'],
+  ] as const)('lowers %s to %s, even when pinned', (from, to) => {
+    const budget = new FrameBudget(from, undefined, { pinned: true });
+    expect(budget.lower()).toBe(true);
+    expect(budget.tier).toBe(to);
+  });
+
+  it('leaves low as it is', () => {
+    const budget = new FrameBudget('low');
+    expect(budget.lower()).toBe(false);
+    expect(budget.tier).toBe('low');
+  });
+});
+
+describe('nextLower (#882)', () => {
+  it.each([
+    ['ultra', 'high'],
+    ['high', 'medium'],
+    ['medium', 'low'],
+    ['low', null],
+  ] as const)('below %s is %s', (tier, lower) => {
+    expect(nextLower(tier)).toBe(lower);
   });
 });
 

@@ -106,6 +106,11 @@ export function techniquesAt(tier: Tier, backend: Backend, reducedMotion: boolea
   );
 }
 
+/** The tier a drop leads to, or null below `low` (#882). */
+export function nextLower(tier: Tier): Tier | null {
+  return rank(tier) > 0 ? TIERS[rank(tier) - 1]! : null;
+}
+
 /** A window is over budget when its median frame is this many frame periods or more. */
 const OVER = 1.2;
 const WINDOW_MS = 2000;
@@ -144,6 +149,15 @@ export class FrameBudget {
     this.restart();
   }
 
+  /** Lowers the tier one step at once, pinned or not; false at `low` (the sweep's drop, #882). */
+  lower(): boolean {
+    const lower = nextLower(this.current);
+    if (!lower) return false;
+    this.current = lower;
+    this.restart();
+    return true;
+  }
+
   /** Records one frame; returns `drop` when the tier has just been lowered. */
   sample(now: number, frameMs: number): 'keep' | 'drop' {
     if (this.paused || this.options.pinned) return 'keep';
@@ -170,7 +184,7 @@ export class FrameBudget {
     this.overInARow = median > OVER * this.periodMs ? this.overInARow + 1 : 0;
     if (this.overInARow < 2 || this.current === 'low') return 'keep';
     this.overInARow = 0;
-    this.current = TIERS[rank(this.current) - 1]!;
+    this.current = nextLower(this.current)!;
     return 'drop';
   }
 }

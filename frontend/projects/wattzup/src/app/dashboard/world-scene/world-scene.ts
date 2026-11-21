@@ -100,8 +100,11 @@ export class WorldScene {
       // (L2-111 AC9).
       void Promise.all([this.load(), this.frames.measurePeriod()])
         .then(async ([loaded, period]) => {
-          const started = await loaded.start(canvas, untracked(this.world), () =>
-            this.frames.nextFrame(),
+          const started = await loaded.start(
+            canvas,
+            untracked(this.world),
+            () => this.frames.nextFrame(),
+            untracked(this.segments),
           );
           if (started) loaded.setFramePeriod(period);
           return { loaded, started };

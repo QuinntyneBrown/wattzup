@@ -105,6 +105,42 @@ test.describe('compiles ahead (L2-111 AC10)', () => {
   });
 });
 
+test.describe('compiles the next-lower tier ahead (#882)', () => {
+  for (const scene of scenes) {
+    for (const backend of backends) {
+      for (const tier of tiers.filter((t) => t !== 'low')) {
+        const on = backend === 'auto' ? '' : ` on ${backend}`;
+        test(`${scene.world}: compiles nothing after a drop from ${tier}${on}`, async ({
+          page,
+          worldRide,
+        }) => {
+          await worldRide.pin(tier, backend);
+          await new WorldRidePage(page).startClass(scene.id, scene.title);
+          await expect
+            .poll(async () => (await worldRide.report())?.programsBeforeRide ?? null, STARTED)
+            .not.toBeNull();
+          await page.waitForTimeout(WARM_UP_MS);
+          const start = (await worldRide.report())!;
+          await worldRide.dropTier();
+          await expect.poll(async () => (await worldRide.report())?.tier).not.toBe(start.tier);
+          await page.waitForTimeout(WARM_UP_MS);
+          const after = (await worldRide.report())!;
+          console.log(
+            JSON.stringify({
+              scene: scene.world,
+              backend: after.backend,
+              from: start.tier,
+              to: after.tier,
+              compiledAfterDrop: after.compiled - start.compiled,
+            }),
+          );
+          expect(after.compiled).toBe(start.compiled);
+        });
+      }
+    }
+  }
+});
+
 test.describe('frame times per scene and tier (#674)', () => {
   for (const scene of scenes) {
     for (const backend of backends) {
