@@ -139,7 +139,8 @@ cd frontend && npm run build              # static files in dist/wattzup/browser
 Wattzup is live at **https://wattzup.telo.to**. Every push to `main` that passes CI is deployed
 there by the `deploy` job in `.github/workflows/ci.yml` to Azure Static Web Apps, which reads
 `frontend/public/staticwebapp.config.json` for the fallback and headers
-([ADR 0022](docs/adr/0022-hosted-on-azure-static-web-apps.md)).
+([ADR 0022](docs/adr/0022-hosted-on-azure-static-web-apps.md)). Its plan takes at most 250 MB of
+app content, so `npm run build` fails when `dist/wattzup/browser` grows past that.
 
 To host it elsewhere, serve `dist/wattzup/browser` from any static host over HTTPS (Web Bluetooth needs HTTPS, or
 `http://localhost`). The host must answer every path that is not a file with `index.html`, so
