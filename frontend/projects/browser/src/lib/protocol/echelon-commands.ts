@@ -3,11 +3,14 @@
 export const MIN_LEVEL = 1;
 export const MAX_LEVEL = 32;
 
+/** Start data stream: the last init command, and the step after an unlock (L2-002). */
+export const START_DATA = Uint8Array.of(0xf0, 0xb0, 0x01, 0x01, 0xa2);
+
 /** Device info, resistance range, then start data stream, in that order (L2-002). */
 export const INIT_SEQUENCE: readonly Uint8Array[] = [
   Uint8Array.of(0xf0, 0xa1, 0x00, 0x91),
   Uint8Array.of(0xf0, 0xa3, 0x00, 0x93),
-  Uint8Array.of(0xf0, 0xb0, 0x01, 0x01, 0xa2),
+  START_DATA,
 ];
 
 /** Written once per second while connected (L2-003). */

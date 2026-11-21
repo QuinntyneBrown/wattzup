@@ -32,6 +32,8 @@ export class RidePage {
   readonly metrics: Locator;
   readonly timeLeft: Locator;
   readonly phaseBanner: Locator;
+  /** The danger banner shown when a newer bike did not accept the unlock (L2-002 AC7). */
+  readonly unlockBanner: Locator;
   readonly traceCanvas: Locator;
 
   constructor(private readonly page: Page) {
@@ -64,6 +66,9 @@ export class RidePage {
     this.metrics = page.locator('.metrics');
     this.timeLeft = page.locator('.interval .interval__left');
     this.phaseBanner = page.locator('.phase-banner');
+    this.unlockBanner = page
+      .locator('.alert.banner[role="alert"]')
+      .filter({ hasText: "Couldn't unlock the bike" });
     this.traceCanvas = page.locator('figure.trace canvas');
   }
 

@@ -171,7 +171,8 @@ load, never in the middle of a ride. The browser can install Wattzup as an app.
 
 Wattzup has no settings file. Its one option is `?simulate` in the page address, which a
 development build (`npm start`) honours by connecting to the simulated bike; a production build
-ignores it. The classes come from `frontend/public/classes.json`.
+ignores it. `?simulate=locked` makes the simulated bike start locked, as newer Echelon firmware
+does, so the unlock handshake runs end to end. The classes come from `frontend/public/classes.json`.
 
 ## Build and test
 

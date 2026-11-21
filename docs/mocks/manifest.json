@@ -458,14 +458,17 @@
       "title": "Connection banner",
       "opens_from": "ride",
       "requirements": [
-        "L2-054",
+        "L2-002",
+        "L2-004",
         "L2-018",
+        "L2-054",
         "L2-099"
       ],
       "states": [
         "info",
         "success",
-        "danger"
+        "danger",
+        "unlock-failed"
       ],
       "not_applicable": {
         "warning": "Wattzup has no server connection to lose; warnings during a ride are toasts (ride-toast)."

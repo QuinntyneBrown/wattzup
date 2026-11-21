@@ -18,6 +18,28 @@ describe('banners', () => {
     expect(b.action?.kind).toBe('diagnostics');
   });
 
+  it.each([
+    ['UnlockError: The bike did not unlock.', 'error', ['unlock-failed']],
+    ['NetworkError: GATT Server is disconnected.', 'error', []],
+    ['UnlockError: The bike did not unlock.', 'connected', []],
+  ] as const)('for %s while %s, shows %j (L2-002 AC7)', (error, ble, ids) => {
+    const list = banners({ ...base, state: testState({ ble, error }) });
+    expect(list.map((b) => b.id)).toEqual(ids);
+  });
+
+  it("words Couldn't unlock the bike as the mock does, with Open diagnostics", () => {
+    const state = testState({ ble: 'error', error: 'UnlockError: The bike did not unlock.' });
+    expect(banners({ ...base, state })[0]).toEqual({
+      id: 'unlock-failed',
+      tone: 'danger',
+      icon: 'bluetooth-off',
+      title: "Couldn't unlock the bike",
+      text: "Newer Echelon bikes ask for an unlock code before they send data, and this one didn't accept it. Wattzup tries again every 3 seconds.",
+      action: { label: 'Open diagnostics', kind: 'diagnostics' },
+      dismissable: false,
+    });
+  });
+
   it('names ?simulate (L2-099)', () => {
     const state = testState({ simulated: true });
     expect(banners({ ...base, state })[0].text).toBe(

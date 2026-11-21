@@ -4,7 +4,9 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { BikeStateStore } from '../engine/bike-state-store';
 import { BROWSER_LOG } from '../engine/browser-log';
 import { TelemetryIngestor } from '../engine/telemetry-ingestor';
-import { INIT_SEQUENCE, KEEPALIVE } from '../protocol/echelon-commands';
+import { INIT_SEQUENCE, KEEPALIVE, START_DATA } from '../protocol/echelon-commands';
+import { isUnlockAck, isUnlockChallenge, unlockResponse } from '../protocol/echelon-unlock';
+import { MARKER, RESISTANCE, WORKOUT_DATA } from '../protocol/packet-decoder';
 import { ECHELON_UUIDS } from '../protocol/echelon-uuids';
 import { type BikeDevice, BLUETOOTH_PORT, type GattLink } from './bluetooth-port';
 import { CLOCK } from './clock';
@@ -23,6 +25,18 @@ export const STEP_TIMEOUT_MS = 15_000;
 /** Consecutive failed keepalive writes tolerated before the link is treated as lost. A real drop
  * still arrives as `gattserverdisconnected`; one flaky write must not tear down a ride. */
 export const KEEPALIVE_FAILURES_TOLERATED = 3;
+/** The wait between the unlock response and start data stream (L2-002 AC5). */
+export const UNLOCK_START_DELAY_MS = 500;
+/** How long the bike has to confirm an unlock after the response (L2-002 AC6, AC7). */
+export const UNLOCK_CONFIRM_MS = 2500;
+
+/** A newer bike did not accept the unlock response (L2-002 AC7). */
+export class UnlockError extends Error {
+  override readonly name = 'UnlockError';
+  constructor() {
+    super('The bike did not unlock.');
+  }
+}
 
 export type ReconnectResult = 'connecting' | 'already-connected' | 'no-bike';
 
@@ -39,6 +53,8 @@ export class BikeLink {
   private gatt: GattLink | null = null;
   /** Bumped by every attempt, drop and Reconnect: a loop that sees a newer one stops. */
   private generation = 0;
+  /** The attempt whose unlock waits for the bike to confirm, or null. */
+  private unlocking: number | null = null;
 
   /** True until the rider picks a bike. */
   readonly pairingRequired = computed(() => this._device() === null);
@@ -111,12 +127,15 @@ export class BikeLink {
         gatt.startNotifications((frame) => {
           this.packets.received(this.clock.epochMs(), frame);
           if (this.packets.everyPacket()) this.log.debug('Wattzup: packet', frame);
+          this.unlockFrame(frame, gatt, device, attempt);
           this.ingestor.onNotify(frame);
         }),
       );
       for (const [i, command] of INIT_SEQUENCE.entries()) {
         if (i > 0) await this.clock.delay(INIT_COMMAND_SPACING_MS);
         if (attempt !== this.generation) return;
+        // An unlock under way writes start data stream itself (L2-002 AC5).
+        if (command === START_DATA && this.unlocking === attempt) continue;
         await gatt.write(command);
       }
       void this.keepAlive(gatt, attempt);
@@ -124,6 +143,52 @@ export class BikeLink {
       if (attempt !== this.generation) return;
       this.fail(device, e);
     }
+  }
+
+  /** Answers a challenge, or ends the wait for a confirmation (L2-002 AC5 to AC8). */
+  private unlockFrame(
+    frame: Uint8Array,
+    gatt: GattLink,
+    device: BikeDevice,
+    attempt: number,
+  ): void {
+    if (isUnlockChallenge(frame)) {
+      void this.unlock(frame, gatt, device, attempt);
+    } else if (
+      this.unlocking === attempt &&
+      (isUnlockAck(frame) ||
+        (frame[0] === MARKER && (frame[1] === WORKOUT_DATA || frame[1] === RESISTANCE)))
+    ) {
+      this.unlocking = null;
+      this.log.info('Wattzup: the bike is unlocked');
+    }
+  }
+
+  private async unlock(
+    challenge: Uint8Array,
+    gatt: GattLink,
+    device: BikeDevice,
+    attempt: number,
+  ): Promise<void> {
+    const answer = unlockResponse(challenge);
+    if (!answer.ok) {
+      this.log.warn(`Wattzup: unlock challenge not answered (${answer.reason})`);
+      return;
+    }
+    this.unlocking = attempt;
+    try {
+      await gatt.write(answer.response);
+      const deadline = this.clock.delay(UNLOCK_CONFIRM_MS);
+      await this.clock.delay(UNLOCK_START_DELAY_MS);
+      if (attempt !== this.generation) return;
+      await gatt.write(START_DATA);
+      await deadline;
+    } catch (e) {
+      if (attempt === this.generation) this.fail(device, e);
+      return;
+    }
+    if (attempt === this.generation && this.unlocking === attempt)
+      this.fail(device, new UnlockError());
   }
 
   /** `step`, or a TimeoutError once STEP_TIMEOUT_MS pass without an answer. */
@@ -147,6 +212,7 @@ export class BikeLink {
 
   /** Any Web Bluetooth error: `ble` error, then a retry in 3 s (L2-091 AC3). */
   private fail(device: BikeDevice, e: unknown): void {
+    this.unlocking = null;
     this.gatt?.disconnect();
     this.gatt = null;
     const attempt = ++this.generation;
