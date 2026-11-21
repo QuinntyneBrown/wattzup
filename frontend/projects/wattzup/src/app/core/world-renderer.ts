@@ -3672,8 +3672,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
       : beauty) as unknown as ColorNode;
 
     if (on.has(36)) {
-      // GTAO rebuilds normals from depth when given none; its typings omit the null it documents.
-      const occlusion = ao(depth, null as unknown as Node, this.camera).getTextureNode().r;
+      const occlusion = createAmbientOcclusion(depth, this.camera).getTextureNode().r;
       color = vec4(color.rgb.mul(occlusion), color.a);
     }
     if (on.has(33) && needsVelocity) {
@@ -4306,6 +4305,14 @@ const PASS_TECHNIQUES = [7, 33, 36, 49, 50, 52] as const;
  * Counts each shader program and render pipeline the backend builds into the sweep's report:
  * each is a compile, and a frame that waits on one stalls (#882).
  */
+/** Builds the GTAO post-processing node (technique 36) at half resolution (0.5x). */
+export function createAmbientOcclusion(depth: Node, camera: PerspectiveCamera) {
+  // GTAO rebuilds normals from depth when given none; its typings omit the null it documents.
+  const aoPass = ao(depth, null as unknown as Node, camera);
+  aoPass.resolutionScale = 0.5;
+  return aoPass;
+}
+
 function countCompiles(renderer: WebGPURenderer, probe: WorldRideProbeReport): void {
   type Build = (...args: unknown[]) => unknown;
   const backend = renderer.backend as unknown as Record<string, Build>;

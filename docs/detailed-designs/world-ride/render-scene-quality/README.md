@@ -67,7 +67,7 @@ None.
   3. opaque geometry, with clustered lights (4, 9, 14, 15, 38, 39);
   4. sky and atmosphere (11, 25, 40), then volumetrics (26);
   5. transparent geometry and water (20, 27, 30);
-  6. GTAO (36), SSR or ray-traced reflections (10, 45), then GI (13, 46, 47, 48);
+  6. GTAO at half resolution (36), SSR or ray-traced reflections (10, 45), then GI (13, 46, 47, 48);
   7. auto exposure (35), glare (49), heat haze (50), motion blur (33, 34);
   8. TAA or FXAA (7), then AgX tone mapping (17).
 
