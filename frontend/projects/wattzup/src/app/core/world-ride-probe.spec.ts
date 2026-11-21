@@ -44,6 +44,7 @@ describe('probeReport (#674)', () => {
       programs: 0,
       programsBeforeRide: null,
       materials: {},
+      unbent: 0,
     });
     report?.frames.push(16.7);
     expect((global[PROBE_KEY] as { report: unknown }).report).toBe(report);

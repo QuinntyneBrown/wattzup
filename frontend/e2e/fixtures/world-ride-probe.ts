@@ -26,6 +26,8 @@ export interface WorldRideReport {
   programsBeforeRide: number | null;
   /** The scene's distinct materials by type and features, most shared first. */
   materials: Record<string, number>;
+  /** Materials in the scene that should follow the bend but do not (L2-111 AC8). */
+  unbent: number;
 }
 
 export class WorldRideProbe {

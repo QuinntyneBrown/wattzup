@@ -1366,6 +1366,9 @@ test.describe('World Ride simulated pacers (L2-107)', () => {
   });
 });
 
+/** The scene can take a while to load and report in software rendering. */
+const STARTED = { timeout: 60_000 };
+
 test.describe('World Ride scene (L2-110, L2-101 AC4)', () => {
   test("draws the scene of the class's world with its text alternative", async ({ page }) => {
     const world = new WorldRidePage(page);
@@ -1377,6 +1380,37 @@ test.describe('World Ride scene (L2-110, L2-101 AC4)', () => {
       'A cyclist on Cathedral Circuit in Old Town Criterium',
     );
     await expect(world.sceneNotice).toHaveCount(0);
+  });
+
+  test('shades every lit surface in bands at low, still bending the road (L2-111 AC11)', async ({
+    page,
+    worldRide,
+  }) => {
+    test.slow();
+    await worldRide.pin('low');
+    await new WorldRidePage(page).startFromClass();
+    await expect
+      .poll(async () => Object.keys((await worldRide.report())?.materials ?? {}).length, STARTED)
+      .toBeGreaterThan(0);
+    const report = await worldRide.report();
+    const types = Object.keys(report?.materials ?? {}).map((v) => v.split('+')[0]);
+    expect(types).toContain('MeshToonNodeMaterial');
+    expect(types.filter((t) => /Standard|Physical/.test(t))).toEqual([]);
+    expect(report?.unbent).toBe(0);
+  });
+
+  test('keeps physically based shading above low (L2-111 AC11)', async ({ page, worldRide }) => {
+    test.slow();
+    await worldRide.pin('medium');
+    await new WorldRidePage(page).startFromClass();
+    await expect
+      .poll(async () => Object.keys((await worldRide.report())?.materials ?? {}).length, STARTED)
+      .toBeGreaterThan(0);
+    const types = Object.keys((await worldRide.report())?.materials ?? {}).map(
+      (v) => v.split('+')[0],
+    );
+    expect(types.filter((t) => /Standard|Physical/.test(t)).length).toBeGreaterThan(0);
+    expect(types).not.toContain('MeshToonNodeMaterial');
   });
 
   test("shows This screen can't draw 3D worlds when WebGL is off, and the HUD still works", async ({

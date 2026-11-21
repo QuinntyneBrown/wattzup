@@ -32,6 +32,8 @@ export interface WorldRideProbeReport {
   programsBeforeRide: number | null;
   /** The scene's distinct materials by type and features: where program variants come from. */
   materials: Record<string, number>;
+  /** Materials in the scene that should follow the bend but do not (L2-111 AC8). */
+  unbent: number;
 }
 
 /** The pinned tier, or null when the hook is not set (every rider's ride). */
@@ -63,6 +65,7 @@ export function probeReport(
     programs: 0,
     programsBeforeRide: null,
     materials: {},
+    unbent: 0,
   };
   (probe as { report?: WorldRideProbeReport }).report = report;
   return report;
