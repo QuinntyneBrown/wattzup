@@ -69,4 +69,48 @@ describe('SceneDriver (L2-110)', () => {
       expect.objectContaining({ segments, elapsed: 100, speedKmh: 0, reducedMotion: true }),
     );
   });
+
+  describe('the scene time moving parts ride by (#897)', () => {
+    /** Frames 100 ms apart, each with the engine's whole-second `elapsed` of that moment. */
+    const run = (elapsedAt: (ms: number) => number, until: number, running = true) => {
+      const renderer = new FakeRenderer();
+      const driver = new SceneDriver(renderer);
+      for (let ms = 0; ms <= until; ms += 100) {
+        driver.frame(ms, input({ elapsed: elapsedAt(ms), running }));
+      }
+      return renderer.frames.map((f) => f.time);
+    };
+
+    it('advances by each frame time, not in the engine’s whole seconds', () => {
+      const times = run((ms) => 100 + Math.floor(ms / 1000), 3000);
+      for (let i = 1; i < times.length; i++) {
+        expect(times[i]! - times[i - 1]!).toBeCloseTo(0.1, 9);
+      }
+    });
+
+    it.each([
+      ['starts at the ride’s elapsed', 0, 100],
+      ['stays within the second the engine is in', 900, 100.9],
+      ['follows the engine into its next second', 1000, 101],
+      ['keeps going smoothly through that second', 1500, 101.5],
+    ])('%s', (_, at, expected) => {
+      const times = run((ms) => 100 + Math.floor(ms / 1000), at);
+      expect(times.at(-1)).toBeCloseTo(expected, 9);
+    });
+
+    it('never runs a second past the engine when its ticks are late', () => {
+      const times = run(() => 100, 3000);
+      expect(Math.max(...times)).toBeLessThanOrEqual(101);
+    });
+
+    it('catches up at once when the engine is ahead, as after a hidden tab', () => {
+      const times = run((ms) => (ms < 500 ? 100 : 160), 500);
+      expect(times.at(-1)).toBeCloseTo(160, 9);
+    });
+
+    it('holds still while the ride is not running', () => {
+      const times = run(() => 100, 1000, false);
+      expect(new Set(times)).toEqual(new Set([100]));
+    });
+  });
 });

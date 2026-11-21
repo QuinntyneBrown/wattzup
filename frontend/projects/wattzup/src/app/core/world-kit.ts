@@ -63,6 +63,29 @@ export function loopMetres(offset: number, s: number, every: number, behind: num
 }
 
 /**
+ * How much of a part shows as it nears either end of a span it wraps across: 0 at an end, 1 from
+ * `fade` in, eased between. Scaled by it, a part shrinks away before it wraps and grows back
+ * after, so it never pops in view (#897).
+ */
+export function wrapFade(value: number, min: number, max: number, fade: number): number {
+  const t = Math.min(Math.max(Math.min(value - min, max - value) / fade, 0), 1);
+  return t * t * (3 - 2 * t);
+}
+
+/** How far a part fades in from the far end of its loop: the near end wraps behind the camera. */
+const LOOP_FADE = 40;
+
+/** How much of a looping part shows `metres` ahead (loopMetres): it fades at the far end only. */
+export function loopFade(metres: number, every: number, behind: number): number {
+  return wrapFade(metres, -Infinity, every - behind, LOOP_FADE);
+}
+
+/** A step's or bounce's height, 0 to 1 and back each π: sin², which has no snap at its bottom. */
+export function bob(phase: number): number {
+  return Math.sin(phase) ** 2;
+}
+
+/**
  * Strips along the road, each with a cross-section `profile` of [x, height above the road].
  * A profile runs from greater x to smaller, so its faces look up (or at the road). Their
  * textures are fixed to the street, `s` metres along it, so the rider rides past them.

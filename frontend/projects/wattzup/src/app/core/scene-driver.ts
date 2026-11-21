@@ -19,6 +19,7 @@ export class SceneDriver {
   private s = 0;
   private crank = 0;
   private last: number | null = null;
+  private time: number | null = null;
 
   constructor(private readonly renderer: WorldRenderer) {}
 
@@ -32,11 +33,17 @@ export class SceneDriver {
       this.s += metres;
       this.crank = (this.crank + (metres / METRES_PER_TURN) * 2 * Math.PI) % (2 * Math.PI);
     }
+    // The engine counts whole seconds; the scene's clock runs on between them, never more than a
+    // second ahead of the engine and never behind it (#897).
+    if (this.time === null) this.time = input.elapsed;
+    else if (input.running) this.time += dt;
+    this.time = Math.min(Math.max(this.time, input.elapsed), input.elapsed + 1);
     this.renderer.draw({
       s: this.s,
       crank: this.crank,
       segments: input.segments,
       elapsed: input.elapsed,
+      time: this.time,
       speedKmh,
       reducedMotion: input.reducedMotion,
     });

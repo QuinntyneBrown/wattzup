@@ -21,8 +21,10 @@ import {
 } from 'three/webgpu';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {
+  bob,
   canvasTexture,
   Figures,
+  loopFade,
   loopMetres,
   Ribbons,
   type SceneStreet,
@@ -34,6 +36,9 @@ import type { StreetPoint } from './world-oldtown';
 /** The road repeats every LOOP metres; its parts run from BEHIND metres behind the rider. */
 const LOOP = 400;
 const BEHIND = 24;
+/** The cyclists' speeds in m/s: riding away from the rider, and towards them. */
+const OUT_SPEED = 3.75;
+const IN_SPEED = 5;
 /** The grass verge, the ditch, and where the fields begin, both sides. */
 const VERGE = 2.5;
 const DITCH = 3;
@@ -105,8 +110,17 @@ export class TulipsStreet implements SceneStreet {
         const heading = c.speed > 0 ? 0 : Math.PI;
         c.bike.position.set(c.x, y, -metres);
         c.bike.rotation.set(0, heading, 0);
-        const bob = Math.abs(Math.sin(this.time * 3 + c.phase)) * 0.02;
-        riders.set(i, c.x, y + 0.25, -metres, heading, 0.95, bob);
+        const shown = loopFade(metres, LOOP, BEHIND);
+        c.bike.scale.setScalar(shown);
+        riders.set(
+          i,
+          c.x,
+          y + 0.25,
+          -metres,
+          heading,
+          0.95 * shown,
+          bob(this.time * 3 + c.phase) * 0.02,
+        );
       });
       riders.commit();
     }
@@ -269,7 +283,7 @@ export class TulipsStreet implements SceneStreet {
     return mill;
   }
 
-  /** Fellow cyclists on upright Dutch bikes, both ways along the road. */
+  /** Fellow cyclists on upright Dutch bikes, both ways along the road, 14 m or more apart. */
   private addCyclists(roadHalf: number): void {
     const random = seeded(1817);
     const frames = [0x1d1f24, 0x2a5a3a, 0x7a1a2a, 0x2a3a6a].map((c) =>
@@ -286,7 +300,8 @@ export class TulipsStreet implements SceneStreet {
         bike: mesh,
         offset,
         x: out ? roadHalf - 0.7 - random() * 0.8 : -roadHalf + 0.8,
-        speed: out ? 3 + random() * 1.5 : -(4 + random() * 2),
+        // Each way rides at one speed, so no cyclist rides through another (#914).
+        speed: out ? OUT_SPEED : -IN_SPEED,
         phase: random() * 6,
       });
     }
