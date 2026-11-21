@@ -150,6 +150,10 @@ test.describe('frame times per scene and tier (#674)', () => {
             ? `${scene.world} at ${tier}`
             : `${scene.world} at ${tier} on ${backend}`;
         test(name, async ({ page, worldRide }, testInfo) => {
+          const cdp = await page.context().newCDPSession(page);
+          await cdp.send('Performance.enable');
+          const metricMap = (metrics: { name: string; value: number }[]) =>
+            Object.fromEntries(metrics.map((m) => [m.name, m.value]));
           await worldRide.pin(tier, backend);
           await new WorldRidePage(page).startClass(scene.id, scene.title);
           await expect.poll(() => worldRide.report(), STARTED).not.toBeNull();
@@ -157,11 +161,19 @@ test.describe('frame times per scene and tier (#674)', () => {
           const warm = await worldRide.report();
           const skipped = warm?.frames.length ?? 0;
           const skippedGpu = warm?.gpuMs?.length ?? 0;
+          const cdpBefore = metricMap((await cdp.send('Performance.getMetrics')).metrics);
           await page.waitForTimeout(RECORD_MS);
+          const cdpAfter = metricMap((await cdp.send('Performance.getMetrics')).metrics);
+          await cdp.detach();
           const report = await worldRide.report();
           if (!report) throw new Error('the scene stopped reporting');
 
           const frames = report.frames.slice(skipped).sort((a, b) => a - b);
+          const frameDenom = Math.max(frames.length, 1);
+          const scriptMs =
+            ((cdpAfter['ScriptDuration'] ?? 0) - (cdpBefore['ScriptDuration'] ?? 0)) * 1000;
+          const taskMs =
+            ((cdpAfter['TaskDuration'] ?? 0) - (cdpBefore['TaskDuration'] ?? 0)) * 1000;
           const result = {
             scene: scene.world,
             class: scene.id,
@@ -178,6 +190,14 @@ test.describe('frame times per scene and tier (#674)', () => {
                   0.5,
                 )
               : null,
+            cdp: {
+              scriptMsPerFrame: Number((scriptMs / frameDenom).toFixed(2)),
+              taskMsPerFrame: Number((taskMs / frameDenom).toFixed(2)),
+              layoutCount: Math.round(
+                (cdpAfter['LayoutCount'] ?? 0) - (cdpBefore['LayoutCount'] ?? 0),
+              ),
+              jsHeapUsedMB: Number(((cdpAfter['JSHeapUsedSize'] ?? 0) / (1024 * 1024)).toFixed(1)),
+            },
             drawCalls: report.drawCalls,
             programs: report.programs,
             // Programs compiled once the ride began: none at a pinned tier (L2-111 AC10).

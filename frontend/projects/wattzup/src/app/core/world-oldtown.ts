@@ -2,6 +2,7 @@
 // stuccoed town houses with shuttered windows and tiled roofs on both sides of the road. The
 // houses repeat along a loop longer than the road in view, so the street never ends.
 import {
+  BatchedMesh,
   BoxGeometry,
   BufferAttribute,
   BufferGeometry,
@@ -48,6 +49,10 @@ const DEPTH = 10;
 /** The street repeats every LOOP metres; houses run from BEHIND metres behind the rider. */
 const LOOP = 420;
 const BEHIND = 24;
+const HOUSE_BEHIND = 40;
+const HOUSE_SHIFT = HOUSE_BEHIND - BEHIND;
+const HOUSE_CULL_BEHIND = -20;
+const BLOCK_MAX = 20;
 /** Houses reach below the road, so a ramp never shows their footing. */
 const FOOTING = 4;
 
@@ -180,6 +185,19 @@ interface House {
   readonly setback: number;
 }
 
+interface StreetBlock {
+  readonly offset: number;
+  readonly width: number;
+  readonly slots: { batched: BatchedMesh; instanceId: number }[];
+}
+
+interface UvRect {
+  readonly u0: number;
+  readonly u1: number;
+  readonly v0: number;
+  readonly v1: number;
+}
+
 /** A point of the road: metres ahead of the rider and the height there. */
 export interface StreetPoint {
   readonly metres: number;
@@ -192,7 +210,9 @@ const KERB_TOP = 0.25;
 
 export class OldTownStreet {
   readonly group = new Group();
-  private readonly houses: House[] = [];
+  private readonly blocks: StreetBlock[] = [];
+  private readonly blockMatrix = new Matrix4();
+  private readonly tempGeometries: BufferGeometry[] = [];
   private readonly ribbons: {
     geometry: BufferGeometry;
     strips: { profile: [number, number][]; across: Float32Array; vSign: -1 | 1 }[];
@@ -206,6 +226,7 @@ export class OldTownStreet {
     return seeded(7919 * (this.houseIndex + 1) + 104729 * feature)();
   }
   private readonly unit = new BoxGeometry(1, 1, 1);
+  private readonly frontUnit = openBackBox();
   private readonly brick = new MeshStandardMaterial({ color: 0x8e4a37, roughness: 0.95 });
   /** Props along the street; one that `lies` on the road, as paint does, takes its slope. */
   private readonly props: {
@@ -261,22 +282,22 @@ export class OldTownStreet {
   private readonly doorLeaf = new PlaneGeometry(1.1, 2.5);
   private readonly fasciaBoard = new PlaneGeometry(5.2, 0.42);
   private readonly fascias = ['BOEKEN', 'BAKKERIJ', 'BLOEMEN', 'MODE'].map(
-    (trade) => new MeshStandardMaterial({ map: fasciaTexture(trade), roughness: 0.5 }),
+    () => new MeshBasicMaterial(),
   );
-  private readonly geraniums = new MeshStandardMaterial({ map: bloomTexture(), roughness: 0.9 });
+  private readonly geraniums = new MeshBasicMaterial();
   /** Glazed shop doors in painted wood, a brass handle and a bell over each. */
   private readonly shopDoors = ['#2d4e3f', '#5a2730', '#1f2b44', '#3a3a3a'].map(
-    (paint) => new MeshStandardMaterial({ map: shopDoorTexture(paint), roughness: 0.6 }),
+    () => new MeshBasicMaterial(),
   );
   private readonly stone = new MeshStandardMaterial({ color: 0xbdb5a6, roughness: 0.95 });
   private readonly alleyFloor = new MeshStandardMaterial({ color: 0x8a837a, roughness: 0.95 });
   /** Half a disc, its flat edge up: one scallop of an awning's hem. */
-  private readonly scallop = new CircleGeometry(0.15, 10, Math.PI, Math.PI);
-  private readonly finial = new SphereGeometry(0.16, 8, 6);
-  private readonly chimneyPot = new CylinderGeometry(0.1, 0.13, 0.4, 8);
-  private readonly oculus = new CylinderGeometry(0.4, 0.4, 0.04, 16);
-  private readonly pot = new CylinderGeometry(0.24, 0.18, 0.5, 10);
-  private readonly bush = new SphereGeometry(0.42, 10, 8);
+  private readonly scallop = new CircleGeometry(0.15, 6, Math.PI, Math.PI);
+  private readonly finial = new SphereGeometry(0.16, 6, 4);
+  private readonly chimneyPot = new CylinderGeometry(0.1, 0.13, 0.4, 6);
+  private readonly oculus = new CylinderGeometry(0.4, 0.4, 0.04, 12);
+  private readonly pot = new CylinderGeometry(0.24, 0.18, 0.5, 7);
+  private readonly bush = new SphereGeometry(0.42, 7, 5);
   private readonly terracotta = new MeshStandardMaterial({ color: 0xb4603f, roughness: 0.9 });
   /** Clipped bay: a dense mass of small leaves, lit and shaded leaf by leaf. */
   private readonly leaves = new MeshStandardMaterial({
@@ -285,21 +306,11 @@ export class OldTownStreet {
   });
   private readonly flagCloth = new PlaneGeometry(2.0, 1.35, 6, 1);
   /** Civic flags in two or three bands, read from either side. */
-  private readonly houseFlags = FLAGS.map(
-    (bands) =>
-      new MeshStandardMaterial({ map: flagTexture(bands), side: DoubleSide, roughness: 0.85 }),
-  );
+  private readonly houseFlags = FLAGS.map(() => new MeshBasicMaterial());
   private readonly dormer = tiledBox(1.6, 1.6, 1.5, 1.6, 0.25);
   private readonly dormerRoof = prism(1.9, 0.8, 1.8);
   /** The shop signs: a gilt emblem on a painted board, read from either side. */
-  private readonly signs = SIGNS.map(
-    (sign) =>
-      new MeshStandardMaterial({
-        map: signTexture(sign.ground, sign.emblem),
-        side: DoubleSide,
-        roughness: 0.6,
-      }),
-  );
+  private readonly signs = SIGNS.map(() => new MeshBasicMaterial());
   /** Wrought iron: balusters and a scroll, cut out of the canvas. */
   private readonly railing = new MeshStandardMaterial({
     map: railingTexture(),
@@ -320,20 +331,38 @@ export class OldTownStreet {
   ) {}
 
   build(roadHalf: number, points: number): void {
-    this.disposables.push(this.unit, this.brick, this.railing);
-    if (this.railing.map) this.track(this.railing.map);
-    this.disposables.push(this.iron, this.signBoard, this.dormer, this.dormerRoof, ...this.signs);
-    this.disposables.push(this.flagCloth, ...this.houseFlags);
     this.disposables.push(
+      this.unit,
+      this.frontUnit,
+      this.brick,
+      this.railing,
+      this.iron,
+      this.signBoard,
+      this.clockFace,
+      this.doorLeaf,
+      this.fasciaBoard,
+      this.scallop,
+      this.finial,
+      this.chimneyPot,
+      this.dormer,
+      this.dormerRoof,
+      this.flagCloth,
       this.oculus,
       this.pot,
       this.bush,
       this.terracotta,
+      this.stone,
+      this.alleyFloor,
       this.leaves,
       this.zinc,
+      this.geraniums,
+      ...this.fascias,
+      ...this.shopDoors,
+      ...this.houseFlags,
+      ...this.signs,
     );
-    for (const flag of this.houseFlags) if (flag.map) this.track(flag.map);
-    for (const sign of this.signs) if (sign.map) this.track(sign.map);
+    if (this.railing.map) this.track(this.railing.map);
+    if (this.leaves.map) this.track(this.leaves.map);
     this.addFurniture(roadHalf);
     this.addRoadPaint();
     this.addStreetBanners();
@@ -444,29 +473,24 @@ export class OldTownStreet {
         [x(roadHalf + 0.4), KERB + 1.0],
       ]),
     );
-    const upper = PALETTES.map((p) => this.material(this.track(bayTexture(p, false))));
-    const shut = PALETTES.map((p, i) =>
-      p.shutter ? this.material(this.track(bayTexture(p, false, true))) : upper[i]!,
-    );
-    // Shops light their windows from inside: a warm glow that only the glass gives off.
-    const glow = this.track(shopGlowTexture());
-    const shop = PALETTES.map((p) => {
-      const material = this.material(this.track(bayTexture(p, true)));
-      material.emissiveMap = glow;
-      material.emissive.set(0xffc58a);
-      material.emissiveIntensity = 0.32;
-      return material;
-    });
-    const roofs = ROOFS.map((color) => this.material(this.track(tileTexture(color))));
-    const gables = PALETTES.map((p) => this.material(null, p.wall));
-    const trims = PALETTES.map((p) => this.material(null, p.trim));
-    const homes = PALETTES.map((p) => this.material(this.track(homeTexture(p))));
-    const awnings = AWNINGS.map((colour) => this.material(this.track(stripeTexture(colour))));
+    const upper = PALETTES.map(() => new MeshBasicMaterial());
+    const shut = PALETTES.map((p, i) => (p.shutter ? new MeshBasicMaterial() : upper[i]!));
+    const shop = PALETTES.map(() => new MeshBasicMaterial());
+    const roofs = ROOFS.map(() => new MeshBasicMaterial());
+    const gables = PALETTES.map(() => new MeshBasicMaterial());
+    const trims = PALETTES.map(() => new MeshBasicMaterial());
+    const homes = PALETTES.map(() => new MeshBasicMaterial());
+    const awnings = AWNINGS.map(() => new MeshBasicMaterial());
+    const tempMarkers: Material[] = [
+      ...new Set([...upper, ...shut, ...shop, ...homes, ...roofs, ...gables, ...trims, ...awnings]),
+    ];
+    const sideHouses: [House[], House[]] = [[], []];
     const layout = seeded(3);
     // Alleys draw from a sequence of their own, so the houses keep their looks.
     const alleys = seeded(71);
     let built = 0;
     for (const side of [-1, 1] as const) {
+      const list = sideHouses[side === -1 ? 0 : 1];
       let offset = side === 1 ? 5 : 0;
       let near = false;
       let last = -1;
@@ -500,24 +524,24 @@ export class OldTownStreet {
           trade: style % 4,
           flowers: !!PALETTES[style]!.flowers,
         });
-        mesh.rotation.y = side === 1 ? Math.PI : 0;
-        this.group.add(mesh);
         // Old frontages never quite line up: each house stands up to 45 cm back.
-        this.houses.push({ mesh, side, offset, width, setback: this.chance(8) * 0.45 });
+        list.push({ mesh, side, offset, width, setback: this.chance(8) * 0.45 });
         offset += width;
         // Now and then an alley runs off between two houses; one opens in view of the start.
         const roll = alleys();
         const opening: boolean = !near && offset > 40 && offset < 75;
         if (opening || (roll < 0.14 && offset + ALLEY < LOOP && offset > 8)) {
           const alley = this.alley(gables[style]!);
-          alley.rotation.y = side === 1 ? Math.PI : 0;
-          this.group.add(alley);
-          this.houses.push({ mesh: alley, side, offset, width: ALLEY, setback: 0 });
+          list.push({ mesh: alley, side, offset, width: ALLEY, setback: 0 });
           offset += ALLEY;
           if (opening) near = true;
         }
       }
     }
+    this.batchStreet(sideHouses, { upper, shut, shop, homes, roofs, gables, trims, awnings });
+    for (const g of this.tempGeometries) g.dispose();
+    this.tempGeometries.length = 0;
+    for (const m of tempMarkers) m.dispose();
   }
 
   /**
@@ -629,10 +653,25 @@ export class OldTownStreet {
     const slope = (end - road(ROAD_END - 2)) / 2;
     const heightAt = (metres: number) =>
       metres <= ROAD_END ? road(metres) : end + slope * (metres - ROAD_END);
-    for (const house of this.houses) {
-      const start = ((((house.offset - s) % LOOP) + LOOP) % LOOP) - BEHIND;
-      const middle = start + house.width / 2;
-      house.mesh.position.set(house.side * (FRONTAGE + house.setback), heightAt(middle), -middle);
+    const m = this.blockMatrix.elements;
+    for (const block of this.blocks) {
+      const start = ((((block.offset + HOUSE_SHIFT - s) % LOOP) + LOOP) % LOOP) - HOUSE_BEHIND;
+      const visible = start + block.width > HOUSE_CULL_BEHIND;
+      if (visible) {
+        const middle = start + block.width / 2;
+        const grade = (heightAt(middle + 2) - heightAt(middle - 2)) / 4;
+        m[9] = -grade;
+        m[13] = heightAt(middle);
+        m[14] = -middle;
+      }
+      for (const { batched, instanceId } of block.slots) {
+        if (batched.getVisibleAt(instanceId) !== visible) {
+          batched.setVisibleAt(instanceId, visible);
+        }
+        if (visible) {
+          batched.setMatrixAt(instanceId, this.blockMatrix);
+        }
+      }
     }
     for (const prop of this.props) {
       const metres = ((((prop.offset - s) % prop.every) + prop.every) % prop.every) - BEHIND;
@@ -1381,13 +1420,20 @@ export class OldTownStreet {
   private house(width: number, storeys: number, look: HouseLook): Group {
     const { upper, shop, roof, trim } = look;
     const group = new Group();
-    const shopBox = tiledBox(DEPTH, SHOP + FOOTING, width, SHOP, FOOTING, look.groundBay);
+    const shopBox = tiledBox(DEPTH, SHOP, width, SHOP, 0, look.groundBay);
     const shopMesh = new Mesh(shopBox, shop);
-    shopMesh.position.set(-DEPTH / 2, (SHOP - FOOTING) / 2, 0);
+    shopMesh.position.set(-DEPTH / 2, SHOP / 2, 0);
+    const footing = new Mesh(this.unit, roof[1]!);
+    footing.scale.set(DEPTH, FOOTING, width);
+    footing.position.set(-DEPTH / 2, -FOOTING / 2, 0);
+    group.add(footing);
     const height = storeys * STOREY;
-    const upperBox = tiledBox(DEPTH, height, width, STOREY, 0);
-    const upperMesh = new Mesh(upperBox, upper);
-    upperMesh.position.set(-DEPTH / 2, SHOP + height / 2, 0);
+    const upperBox = storeyCourse(DEPTH, STOREY, width);
+    for (let s = 0; s < storeys; s++) {
+      const upperMesh = new Mesh(upperBox, upper);
+      upperMesh.position.set(-DEPTH / 2, SHOP + (s + 0.5) * STOREY, 0);
+      group.add(upperMesh);
+    }
     const rise = 2.2 + this.random() * 1.6;
     const roofGeometry = prism(DEPTH + 0.6, rise, width + 0.2);
     const roofMesh = new Mesh(roofGeometry, roof);
@@ -1441,11 +1487,7 @@ export class OldTownStreet {
     pipe.position.set(0.1, (SHOP + height) / 2, end);
     ridge.castShadow = gutter.castShadow = pipe.castShadow = true;
     group.add(ridge, gutter, pipe);
-    for (const m of [shopMesh, upperMesh, roofMesh]) {
-      m.castShadow = true;
-      m.receiveShadow = true;
-    }
-    group.add(shopMesh, upperMesh, roofMesh);
+    group.add(shopMesh, roofMesh);
     if (look.awning) group.add(this.awning(look.awning, width));
     if (this.random() < 0.4) group.add(this.balcony(look.trim, width));
     if (look.groundBay === BAY && this.random() < 0.6) group.add(this.sign(width));
@@ -1472,7 +1514,7 @@ export class OldTownStreet {
     if (this.chance(7) < 0.5) {
       for (const end of [-1, 1]) {
         for (let k = 0, y = SHOP + 0.2; y < SHOP + height - 0.6; k++, y += 0.5) {
-          const quoin = new Mesh(this.unit, trim);
+          const quoin = new Mesh(this.frontUnit, trim);
           const long = k % 2 === 0 ? 0.75 : 0.45;
           quoin.scale.set(0.08, 0.42, long);
           quoin.position.set(0.04, y + 0.21, end * (width / 2 - long / 2));
@@ -1487,20 +1529,20 @@ export class OldTownStreet {
     // A stone sill under every upper window, a lintel and keystone over it.
     for (let k = 0; k < storeys; k++) {
       for (let bay = 0; bay < Math.round(width / BAY); bay++) {
-        const sill = new Mesh(this.unit, trim);
+        const sill = new Mesh(this.frontUnit, trim);
         sill.scale.set(0.2, 0.09, 1.2);
         sill.position.set(0.08, SHOP + k * STOREY + 0.62, -width / 2 + (bay + 0.5) * BAY);
         // And over it a lintel with its keystone.
-        const lintel = new Mesh(this.unit, trim);
+        const lintel = new Mesh(this.frontUnit, trim);
         lintel.scale.set(0.1, 0.16, 1.22);
         lintel.position.set(0.05, SHOP + k * STOREY + 2.62, sill.position.z);
-        const key = new Mesh(this.unit, trim);
+        const key = new Mesh(this.frontUnit, trim);
         key.scale.set(0.14, 0.26, 0.2);
         key.position.set(0.07, SHOP + k * STOREY + 2.64, sill.position.z);
         group.add(sill, lintel, key);
         if (look.flowers) {
           // A window box on the sill, geraniums spilling over its front.
-          const planter = new Mesh(this.unit, this.terracotta);
+          const planter = new Mesh(this.frontUnit, this.terracotta);
           planter.scale.set(0.24, 0.2, 1.05);
           planter.position.set(0.16, SHOP + k * STOREY + 0.76, sill.position.z);
           const blooms = new Mesh(this.bush, this.geraniums);
@@ -1512,69 +1554,340 @@ export class OldTownStreet {
     }
     // A row of dentils under the cornice.
     for (let z = -width / 2 + 0.2; z < width / 2 - 0.1; z += 0.3) {
-      const dentil = new Mesh(this.unit, trim);
+      const dentil = new Mesh(this.frontUnit, trim);
       dentil.scale.set(0.18, 0.14, 0.14);
       dentil.position.set(0.09, SHOP + height - 0.52, z);
       group.add(dentil);
     }
     group.add(this.trim(trim, width, 0.2, 0.24, SHOP));
-    this.disposables.push(shopBox, upperBox, roofGeometry);
-    this.flatten(group);
+    this.tempGeometries.push(shopBox, upperBox, roofGeometry);
     return group;
   }
 
   /**
-   * Merges a group's parts that share a material into one mesh (splitting multi-material prisms
-   * by group): a draw per material rather than per part.
+   * Consolidates the street's ~90 town houses and alleys into contiguous street blocks and packs
+   * them into 9 `BatchedMesh`es (`FrontSide` on closed volumes, `DoubleSide` only on flat sheets).
+   */
+  private batchStreet(
+    sideHouses: readonly [readonly House[], readonly House[]],
+    markers: {
+      upper: readonly Material[];
+      shut: readonly Material[];
+      shop: readonly Material[];
+      homes: readonly Material[];
+      roofs: readonly Material[];
+      gables: readonly Material[];
+      trims: readonly Material[];
+      awnings: readonly Material[];
+    },
+  ): void {
+    const upperSources: CanvasTexture[] = PALETTES.map((p) => bayTexture(p, false));
+    const shutRowIdx: number[] = [];
+    PALETTES.forEach((p, i) => {
+      if (p.shutter) {
+        shutRowIdx.push(upperSources.length);
+        upperSources.push(bayTexture(p, false, true));
+      } else {
+        shutRowIdx.push(i);
+      }
+    });
+    const upperAtlas = stackedFacadeAtlas(upperSources, 192, 204, 8);
+    const upperMat = new MeshStandardMaterial({
+      map: this.track(upperAtlas.texture),
+      roughness: 0.9,
+    });
+    const shopAtlas = stackedFacadeAtlas(
+      PALETTES.map((p) => bayTexture(p, true)),
+      192,
+      240,
+      8,
+    );
+    const glow = this.track(shopGlowTexture(PALETTES.length, 240, 8));
+    const shopMat = new MeshStandardMaterial({
+      map: this.track(shopAtlas.texture),
+      emissiveMap: glow,
+      emissive: new Color(0xffc58a),
+      emissiveIntensity: 0.32,
+      roughness: 0.9,
+    });
+    const homeAtlas = stackedFacadeAtlas(
+      PALETTES.map((p) => homeTexture(p)),
+      384,
+      240,
+      8,
+    );
+    const homeMat = new MeshStandardMaterial({
+      map: this.track(homeAtlas.texture),
+      roughness: 0.9,
+    });
+    const matte = new MeshStandardMaterial({
+      vertexColors: true,
+      roughness: 0.92,
+    });
+    const metal = new MeshStandardMaterial({
+      vertexColors: true,
+      metalness: 0.5,
+      roughness: 0.48,
+    });
+    const roofMat = new MeshStandardMaterial({
+      map: this.track(tileTexture('#ffffff')),
+      vertexColors: true,
+      roughness: 0.9,
+    });
+    const awningMat = new MeshStandardMaterial({
+      map: this.track(awningAtlasTexture()),
+      roughness: 0.9,
+      side: DoubleSide,
+    });
+    const detailAtlas = houseDetailAtlas();
+    const detailMat = new MeshStandardMaterial({
+      map: this.track(detailAtlas.texture),
+      roughness: 0.72,
+      side: DoubleSide,
+    });
+    this.disposables.push(upperMat, shopMat, homeMat, matte, metal, roofMat, awningMat, detailMat);
+
+    const facadeBands = new Map<Material, { target: Material; v0: number; v1: number }>();
+    markers.upper.forEach((m, i) => {
+      const [v0, v1] = upperAtlas.bands[i]!;
+      facadeBands.set(m, { target: upperMat, v0, v1 });
+    });
+    markers.shut.forEach((m, i) => {
+      const [v0, v1] = upperAtlas.bands[shutRowIdx[i]!]!;
+      facadeBands.set(m, { target: upperMat, v0, v1 });
+    });
+    markers.shop.forEach((m, i) => {
+      const [v0, v1] = shopAtlas.bands[i]!;
+      facadeBands.set(m, { target: shopMat, v0, v1 });
+    });
+    markers.homes.forEach((m, i) => {
+      const [v0, v1] = homeAtlas.bands[i]!;
+      facadeBands.set(m, { target: homeMat, v0, v1 });
+    });
+
+    const matteColors = new Map<Material, Color>();
+    markers.gables.forEach((m, i) => matteColors.set(m, new Color(PALETTES[i]!.wall)));
+    markers.trims.forEach((m, i) => matteColors.set(m, new Color(PALETTES[i]!.trim)));
+    matteColors.set(this.brick, new Color(0x8e4a37));
+    matteColors.set(this.terracotta, new Color(0xb4603f));
+    matteColors.set(this.stone, new Color(0xbdb5a6));
+    matteColors.set(this.alleyFloor, new Color(0x8a837a));
+
+    const metalColors = new Map<Material, Color>([
+      [this.zinc, new Color(0x8a9096)],
+      [this.iron, new Color(0x1e2023)],
+    ]);
+    const roofColors = new Map<Material, Color>();
+    markers.roofs.forEach((m, i) => roofColors.set(m, new Color(ROOFS[i]!)));
+
+    const awningCols = new Map<Material, number>();
+    markers.awnings.forEach((m, i) => awningCols.set(m, i));
+
+    const detailRects = new Map<Material, UvRect>();
+    this.fascias.forEach((m, i) => detailRects.set(m, detailAtlas.fascias[i]!));
+    this.shopDoors.forEach((m, i) => detailRects.set(m, detailAtlas.shopDoors[i]!));
+    this.signs.forEach((m, i) => detailRects.set(m, detailAtlas.signs[i]!));
+    this.houseFlags.forEach((m, i) => detailRects.set(m, detailAtlas.flags[i]!));
+    detailRects.set(this.leaves, detailAtlas.leaves);
+    detailRects.set(this.geraniums, detailAtlas.blooms);
+
+    const rawBlocks: { offset: number; width: number; items: House[] }[] = [];
+    for (const list of sideHouses) {
+      let current: { offset: number; width: number; items: House[] } | null = null;
+      for (const item of list) {
+        if (!current || current.width + item.width > BLOCK_MAX) {
+          current = { offset: item.offset, width: 0, items: [] };
+          rawBlocks.push(current);
+        }
+        current.items.push(item);
+        current.width = item.offset + item.width - current.offset;
+      }
+    }
+
+    const materialBatches = new Map<Material, { blockIdx: number; geometry: BufferGeometry }[]>();
+    const xform = new Matrix4();
+    rawBlocks.forEach((raw, blockIdx) => {
+      this.blocks.push({ offset: raw.offset, width: raw.width, slots: [] });
+      const blockMiddle = raw.offset + raw.width / 2;
+      const perMat = new Map<Material, BufferGeometry[]>();
+      const pushPart = (
+        srcMat: Material,
+        rawGeo: BufferGeometry,
+        worldXform: Matrix4,
+        disposeRaw: boolean,
+      ) => {
+        let targetMat = srcMat;
+        let vColor: Color | undefined;
+        let uvMap: ((u: number, v: number) => [number, number]) | undefined;
+        const fb = facadeBands.get(srcMat);
+        const mc = matteColors.get(srcMat);
+        const mtc = metalColors.get(srcMat);
+        const rc = roofColors.get(srcMat);
+        const ac = awningCols.get(srcMat);
+        const dr = detailRects.get(srcMat);
+        if (fb) {
+          targetMat = fb.target;
+          uvMap = (u, v) => [u, fb.v0 + Math.min(Math.max(v, 0), 1) * (fb.v1 - fb.v0)];
+        } else if (mc) {
+          targetMat = matte;
+          vColor = mc;
+        } else if (mtc) {
+          targetMat = metal;
+          vColor = mtc;
+        } else if (rc) {
+          targetMat = roofMat;
+          vColor = rc;
+        } else if (ac !== undefined) {
+          targetMat = awningMat;
+          const colU = ((ac + 0.5) * 64) / 512;
+          uvMap = (_u, v) => [colU, v * 3];
+        } else if (dr) {
+          targetMat = detailMat;
+          uvMap = (u, v) => [dr.u0 + u * (dr.u1 - dr.u0), dr.v0 + v * (dr.v1 - dr.v0)];
+        }
+        const prepared = prepareBatchGeometry(rawGeo, worldXform, vColor, uvMap);
+        if (disposeRaw) rawGeo.dispose();
+        const list = perMat.get(targetMat) ?? [];
+        list.push(prepared);
+        perMat.set(targetMat, list);
+      };
+
+      for (const item of raw.items) {
+        item.mesh.rotation.y = item.side === 1 ? Math.PI : 0;
+        item.mesh.position.set(
+          item.side * (FRONTAGE + item.setback),
+          0,
+          -(item.offset + item.width / 2 - blockMiddle),
+        );
+        item.mesh.updateMatrixWorld(true);
+        item.mesh.traverse((o) => {
+          if (!(o instanceof Mesh)) return;
+          const geometry = o.geometry as BufferGeometry;
+          xform.copy(o.matrixWorld);
+          if (Array.isArray(o.material)) {
+            if (!geometry.index) return;
+            for (const grp of geometry.groups) {
+              const mat = o.material[grp.materialIndex ?? 0];
+              if (!mat) continue;
+              const sub = extractSubGeometry(geometry, grp.start, grp.count);
+              pushPart(mat, sub, xform, true);
+            }
+            return;
+          }
+          pushPart(o.material as Material, geometry, xform, false);
+        });
+      }
+
+      for (const [mat, parts] of perMat) {
+        const merged = parts.length > 1 ? mergeGeometries(parts)! : parts[0]!;
+        if (parts.length > 1) for (const p of parts) p.dispose();
+        const entries = materialBatches.get(mat) ?? [];
+        entries.push({ blockIdx, geometry: merged });
+        materialBatches.set(mat, entries);
+      }
+    });
+
+    const initMatrix = new Matrix4();
+    for (const [mat, entries] of materialBatches) {
+      let totalVerts = 0;
+      let totalIndices = 0;
+      for (const { geometry } of entries) {
+        totalVerts += geometry.getAttribute('position').count;
+        totalIndices += geometry.index!.count;
+      }
+      const batched = new BatchedMesh(entries.length, totalVerts, totalIndices, mat);
+      batched.frustumCulled = false;
+      batched.perObjectFrustumCulled = false;
+      batched.sortObjects = false;
+      batched.castShadow = mat !== detailMat && mat !== metal && mat !== this.railing;
+      batched.receiveShadow = true;
+      for (const { blockIdx, geometry } of entries) {
+        const geoId = batched.addGeometry(geometry);
+        const instanceId = batched.addInstance(geoId);
+        geometry.dispose();
+        const block = this.blocks[blockIdx]!;
+        const start = ((((block.offset + HOUSE_SHIFT) % LOOP) + LOOP) % LOOP) - HOUSE_BEHIND;
+        const middle = start + block.width / 2;
+        initMatrix.elements[14] = -middle;
+        batched.setMatrixAt(instanceId, initMatrix);
+        block.slots.push({ batched, instanceId });
+      }
+      this.group.add(batched);
+      this.disposables.push(batched, batched.geometry);
+    }
+  }
+
+  /**
+   * Merges a group's parts into one mesh per textured material and one vertex-coloured mesh per
+   * solid finish (`fog`/`metalness`), splitting multi-material prisms by group.
    */
   private flatten(house: Group, castShadows = true): void {
     house.updateMatrixWorld(true);
-    // Each part's place relative to the house, whatever the house's own place.
     const local = new Matrix4().copy(house.matrixWorld).invert();
-    const multiMeshes = new Set<Mesh>();
+    const solidMaterials = new Map<string, MeshStandardMaterial>();
     const buckets = new Map<
-      string,
+      Material,
       { material: Material; parts: BufferGeometry[]; meshes: Mesh[] }
     >();
-    const addPart = (material: Material, part: BufferGeometry, mesh: Mesh) => {
-      const key = [
-        material.uuid,
-        part.index ? 'indexed' : 'flat',
-        Object.keys(part.attributes).sort().join(),
-      ].join('|');
-      const bucket = buckets.get(key) ?? { material, parts: [], meshes: [] };
+    const pushBucket = (
+      srcMat: Material,
+      rawGeo: BufferGeometry,
+      xform: Matrix4,
+      mesh: Mesh,
+      disposeRaw: boolean,
+    ) => {
+      let targetMat = srcMat;
+      let vColor: Color | undefined;
+      if (
+        srcMat instanceof MeshStandardMaterial &&
+        !srcMat.map &&
+        !srcMat.alphaMap &&
+        !srcMat.emissiveMap &&
+        !srcMat.normalMap &&
+        !srcMat.transparent &&
+        srcMat.alphaTest === 0 &&
+        (srcMat.emissiveIntensity === 0 || srcMat.emissive.getHex() === 0)
+      ) {
+        const solidKey = `${srcMat.fog ? 1 : 0}|${srcMat.metalness >= 0.4 ? 1 : 0}`;
+        let shared = solidMaterials.get(solidKey);
+        if (!shared) {
+          shared = new MeshStandardMaterial({
+            vertexColors: true,
+            fog: srcMat.fog,
+            roughness: srcMat.roughness,
+            metalness: srcMat.metalness,
+          });
+          this.disposables.push(shared);
+          solidMaterials.set(solidKey, shared);
+        }
+        targetMat = shared;
+        vColor = srcMat.color;
+      }
+      const part = prepareBatchGeometry(rawGeo, xform, vColor);
+      if (disposeRaw) rawGeo.dispose();
+      const bucket = buckets.get(targetMat) ?? { material: targetMat, parts: [], meshes: [] };
       bucket.parts.push(part);
       bucket.meshes.push(mesh);
-      buckets.set(key, bucket);
+      buckets.set(targetMat, bucket);
     };
+    const xform = new Matrix4();
     house.traverse((o) => {
       if (!(o instanceof Mesh)) return;
       const geometry = o.geometry as BufferGeometry;
-      const xform = new Matrix4().multiplyMatrices(local, o.matrixWorld);
+      xform.multiplyMatrices(local, o.matrixWorld);
       if (Array.isArray(o.material)) {
-        if (!geometry.index || geometry.groups.length === 0) return;
-        multiMeshes.add(o);
-        const idxArr = geometry.index.array;
+        if (!geometry.index) return;
         for (const grp of geometry.groups) {
           const mat = o.material[grp.materialIndex ?? 0];
           if (!mat) continue;
-          const sub = geometry.clone();
-          sub.setIndex(Array.from(idxArr.slice(grp.start, grp.start + grp.count)));
-          sub.clearGroups();
-          sub.applyMatrix4(xform);
-          addPart(mat, sub, o);
+          const sub = extractSubGeometry(geometry, grp.start, grp.count);
+          pushBucket(mat, sub, xform, o, true);
         }
         return;
       }
-      addPart(o.material as Material, geometry.clone().applyMatrix4(xform), o);
+      pushBucket(o.material as Material, geometry, xform, o, false);
     });
     for (const { material, parts, meshes } of buckets.values()) {
-      const hasMulti = meshes.some((m) => multiMeshes.has(m));
-      if (parts.length === 1 && !hasMulti) {
-        parts[0]!.dispose();
-        if (!castShadows) meshes[0]!.castShadow = false;
-        continue;
-      }
       const merged = parts.length > 1 ? mergeGeometries(parts) : parts[0]!;
       if (parts.length > 1) for (const part of parts) part.dispose();
       if (!merged) continue;
@@ -1640,7 +1953,6 @@ export class OldTownStreet {
     window.scale.set(0.05, 1.2, 0.9);
     window.position.set(-4.48, SHOP + 2.5, 0);
     group.add(floor, back, bridge, window);
-    this.flatten(group);
     return group;
   }
 
@@ -1722,7 +2034,7 @@ export class OldTownStreet {
     group.add(slab);
     const front = new PlaneGeometry(width - 0.8, 0.95);
     const end = new PlaneGeometry(deep, 0.95);
-    this.disposables.push(front, end);
+    this.tempGeometries.push(front, end);
     const rail = new Mesh(front, this.railing);
     rail.rotation.y = Math.PI / 2;
     rail.position.set(deep, floor + 0.55, 0);
@@ -1781,19 +2093,115 @@ export class OldTownStreet {
       scallop.position.set(out, SHOP - 0.35 - drop - 0.16, (i + 0.5 - scallops / 2) * 0.3);
       group.add(scallop);
     }
-    this.disposables.push(canvas, valance.geometry);
+    this.tempGeometries.push(canvas, valance.geometry);
     return group;
   }
 
   /** A moulding `height` high standing `out` proud of the façade, centred `y` above the road. */
   private trim(material: Material, width: number, out: number, height: number, y: number): Mesh {
-    const mesh = new Mesh(this.unit, material);
+    const mesh = new Mesh(this.frontUnit, material);
     mesh.scale.set(out + 0.1, height, width);
     mesh.position.set((out - 0.1) / 2, y, 0);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     return mesh;
   }
+}
+
+/** Unit box without its `-x` face, for mouldings and quoins seated flush against a wall. */
+function openBackBox(): BufferGeometry {
+  const box = new BoxGeometry(1, 1, 1);
+  const src = box.index!.array;
+  const indices: number[] = [];
+  for (let i = 0; i < src.length; i++) {
+    // Face 1 (`indices 6..11`) is the `-x` face buried inside the house wall.
+    if (i < 6 || i >= 12) indices.push(src[i]!);
+  }
+  box.setIndex(indices);
+  box.clearGroups();
+  return box;
+}
+
+function extractSubGeometry(
+  geometry: BufferGeometry,
+  start: number,
+  count: number,
+): BufferGeometry {
+  const srcIdx = geometry.index!.array;
+  const pos = geometry.getAttribute('position') as BufferAttribute;
+  const norm = geometry.getAttribute('normal') as BufferAttribute;
+  const uv = geometry.getAttribute('uv') as BufferAttribute;
+  const remap = new Map<number, number>();
+  const newIndices: number[] = [];
+  const pOut: number[] = [];
+  const nOut: number[] = [];
+  const uOut: number[] = [];
+  for (let i = start; i < start + count; i++) {
+    const oldV = srcIdx[i]!;
+    let newV = remap.get(oldV);
+    if (newV === undefined) {
+      newV = remap.size;
+      remap.set(oldV, newV);
+      pOut.push(pos.getX(oldV), pos.getY(oldV), pos.getZ(oldV));
+      nOut.push(norm.getX(oldV), norm.getY(oldV), norm.getZ(oldV));
+      uOut.push(uv.getX(oldV), uv.getY(oldV));
+    }
+    newIndices.push(newV);
+  }
+  const sub = new BufferGeometry();
+  sub.setAttribute('position', new BufferAttribute(new Float32Array(pOut), 3));
+  sub.setAttribute('normal', new BufferAttribute(new Float32Array(nOut), 3));
+  sub.setAttribute('uv', new BufferAttribute(new Float32Array(uOut), 2));
+  sub.setIndex(newIndices);
+  return sub;
+}
+
+function prepareBatchGeometry(
+  source: BufferGeometry,
+  xform: Matrix4,
+  vColor?: Color,
+  uvMap?: (u: number, v: number) => [number, number],
+): BufferGeometry {
+  const cloned = source.clone().applyMatrix4(xform);
+  const pos = cloned.getAttribute('position') as BufferAttribute;
+  const norm = cloned.getAttribute('normal') as BufferAttribute;
+  const uv = cloned.getAttribute('uv') as BufferAttribute;
+  const vCount = pos.count;
+  const out = new BufferGeometry();
+  out.setAttribute('position', new BufferAttribute(new Float32Array(pos.array), 3));
+  out.setAttribute('normal', new BufferAttribute(new Float32Array(norm.array), 3));
+  const uvArr = new Float32Array(vCount * 2);
+  for (let i = 0; i < vCount; i++) {
+    const u = uv.getX(i);
+    const v = uv.getY(i);
+    if (uvMap) {
+      const [nu, nv] = uvMap(u, v);
+      uvArr[i * 2] = nu;
+      uvArr[i * 2 + 1] = nv;
+    } else {
+      uvArr[i * 2] = u;
+      uvArr[i * 2 + 1] = v;
+    }
+  }
+  out.setAttribute('uv', new BufferAttribute(uvArr, 2));
+  if (vColor) {
+    const cArr = new Float32Array(vCount * 3);
+    for (let i = 0; i < vCount; i++) {
+      cArr[i * 3] = vColor.r;
+      cArr[i * 3 + 1] = vColor.g;
+      cArr[i * 3 + 2] = vColor.b;
+    }
+    out.setAttribute('color', new BufferAttribute(cArr, 3));
+  }
+  if (cloned.index) {
+    out.setIndex(Array.from(cloned.index.array));
+  } else {
+    const seq = new Array<number>(vCount);
+    for (let i = 0; i < vCount; i++) seq[i] = i;
+    out.setIndex(seq);
+  }
+  cloned.dispose();
+  return out;
 }
 
 /**
@@ -1816,11 +2224,59 @@ function tiledBox(
     const across = face < 2 ? bays : face >= 4 ? Math.max(1, Math.round(depth / bay)) : 1;
     const up = face < 2 || face >= 4 ? height / storey : 1;
     for (let v = face * 4; v < face * 4 + 4; v++) {
-      uv.setXY(v, uv.getX(v) * across, uv.getY(v) * up - below / storey);
+      uv.setXY(v, uv.getX(v) * across, Math.max(0, uv.getY(v) * up - below / storey));
     }
   }
   uv.needsUpdate = true;
   return box;
+}
+
+/** One upper-storey wall course without interior top/bottom caps (`+x`, `-x`, `+z`, `-z` only). */
+function storeyCourse(depth: number, storey: number, width: number): BufferGeometry {
+  const box = tiledBox(depth, storey, width, storey, 0);
+  const src = box.index!.array;
+  const indices: number[] = [];
+  for (let i = 0; i < src.length; i++) {
+    // Faces 2 and 3 (`indices 12..23`) are the `+y` and `-y` caps hidden under the roof/between floors.
+    if (i < 12 || i >= 24) indices.push(src[i]!);
+  }
+  box.setIndex(indices);
+  box.clearGroups();
+  return box;
+}
+
+/** Stacks horizontally repeating (`wrapS`) façade tiles vertically with edge-extruded gutters. */
+function stackedFacadeAtlas(
+  sources: readonly CanvasTexture[],
+  w: number,
+  innerH: number,
+  pad: number,
+): { texture: CanvasTexture; bands: [number, number][] } {
+  const rowH = innerH + 2 * pad;
+  const H = sources.length * rowH;
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const bands: [number, number][] = [];
+  sources.forEach((srcTex, i) => {
+    const img = srcTex.image as HTMLCanvasElement;
+    const sw = img.width;
+    const sh = img.height;
+    const cy = i * rowH;
+    const iy = cy + pad;
+    if (ctx) {
+      ctx.drawImage(img, 0, iy, w, innerH);
+      ctx.drawImage(img, 0, 0, sw, 1, 0, cy, w, pad);
+      ctx.drawImage(img, 0, sh - 1, sw, 1, 0, iy + innerH, w, pad);
+    }
+    srcTex.dispose();
+    bands.push([1 - (iy + innerH - 0.5) / H, 1 - (iy + 0.5) / H]);
+  });
+  const texture = new CanvasTexture(canvas);
+  texture.wrapS = RepeatWrapping;
+  texture.colorSpace = SRGBColorSpace;
+  return { texture, bands };
 }
 
 /**
@@ -1908,10 +2364,16 @@ function homeTexture(palette: Palette): CanvasTexture {
     ctx.fillStyle = palette.wall;
     ctx.fillRect(0, 0, w, h);
     const random = seeded(palette.wall.length + 7);
+    const darkPath = new Path2D();
+    const lightPath = new Path2D();
     for (let i = 0; i < 1600; i++) {
-      ctx.fillStyle = random() < 0.5 ? 'rgba(0,0,0,0.035)' : 'rgba(255,255,255,0.05)';
-      ctx.fillRect(random() * w, random() * h, 2 + random() * 6, 2 + random() * 6);
+      const p = random() < 0.5 ? darkPath : lightPath;
+      p.rect(random() * w, random() * h, 2 + random() * 6, 2 + random() * 6);
     }
+    ctx.fillStyle = 'rgba(0,0,0,0.035)';
+    ctx.fill(darkPath);
+    ctx.fillStyle = 'rgba(255,255,255,0.05)';
+    ctx.fill(lightPath);
     // Rusticated stone up to the sills.
     ctx.fillStyle = 'rgba(70,55,40,0.16)';
     ctx.fillRect(0, h - 70, w, 70);
@@ -1982,10 +2444,16 @@ function bayTexture(palette: Palette, shop: boolean, closed = false): CanvasText
     ctx.fillStyle = palette.wall;
     ctx.fillRect(0, 0, w, h);
     const random = seeded(palette.wall.length + (shop ? 3 : 1));
+    const darkPath = new Path2D();
+    const lightPath = new Path2D();
     for (let i = 0; i < 900; i++) {
-      ctx.fillStyle = random() < 0.5 ? 'rgba(0,0,0,0.035)' : 'rgba(255,255,255,0.05)';
-      ctx.fillRect(random() * w, random() * h, 2 + random() * 6, 2 + random() * 6);
+      const p = random() < 0.5 ? darkPath : lightPath;
+      p.rect(random() * w, random() * h, 2 + random() * 6, 2 + random() * 6);
     }
+    ctx.fillStyle = 'rgba(0,0,0,0.035)';
+    ctx.fill(darkPath);
+    ctx.fillStyle = 'rgba(255,255,255,0.05)';
+    ctx.fill(lightPath);
     // Weathering: grime splashed up from the street, and rain streaks under each sill.
     const grime = ctx.createLinearGradient(0, h * 0.7, 0, h);
     grime.addColorStop(0, 'rgba(60,50,40,0)');
@@ -2206,7 +2674,24 @@ export function cobbleTextures(): { map: CanvasTexture; relief: CanvasTexture } 
     const sett = 0.13;
     const rows = Math.round(10 / sett);
     const rowH = h / rows;
+    // Stamp a reusable domed sett height tile rather than allocating 4,200 radial gradients.
+    const stamp = document.createElement('canvas');
+    stamp.width = 48;
+    stamp.height = 32;
+    const sctx = stamp.getContext('2d');
+    if (sctx) {
+      const dome = sctx.createRadialGradient(24, 16, 1, 24, 16, 28);
+      dome.addColorStop(0, '#fff');
+      dome.addColorStop(1, '#5a5a5a');
+      sctx.fillStyle = dome;
+      roundRect(sctx, 0, 0, 48, 32, 6);
+    }
     for (let row = 0; row < rows; row++) {
+      const y = row * rowH;
+      const g = ctx.createLinearGradient(0, y, 0, y + rowH);
+      g.addColorStop(0, 'rgba(255,255,255,0.16)');
+      g.addColorStop(0.5, 'rgba(255,255,255,0)');
+      g.addColorStop(1, 'rgba(0,0,0,0.18)');
       let x = row % 2 ? -0.5 * sett * pxX : 0;
       while (x < w) {
         const sw = (0.11 + random() * 0.06) * pxX;
@@ -2216,26 +2701,10 @@ export function cobbleTextures(): { map: CanvasTexture; relief: CanvasTexture } 
         const tone = 165 + worn + random() * (worn ? 34 : 50);
         const warm = random() * 16;
         ctx.fillStyle = `rgb(${tone + warm},${tone + warm * 0.6},${tone})`;
-        const y = row * rowH;
         roundRect(ctx, x + 1.5, y + 1.5, sw - 3, rowH - 3, 4);
-        const g = ctx.createLinearGradient(0, y, 0, y + rowH);
-        g.addColorStop(0, 'rgba(255,255,255,0.16)');
-        g.addColorStop(0.5, 'rgba(255,255,255,0)');
-        g.addColorStop(1, 'rgba(0,0,0,0.18)');
         ctx.fillStyle = g;
         roundRect(ctx, x + 1.5, y + 1.5, sw - 3, rowH - 3, 4);
-        const dome = hctx.createRadialGradient(
-          x + sw / 2,
-          y + rowH / 2,
-          1,
-          x + sw / 2,
-          y + rowH / 2,
-          Math.max(sw, rowH) * 0.62,
-        );
-        dome.addColorStop(0, '#fff');
-        dome.addColorStop(1, '#5a5a5a');
-        hctx.fillStyle = dome;
-        roundRect(hctx, x + 1.5, y + 1.5, sw - 3, rowH - 3, 4);
+        hctx.drawImage(stamp, x + 1.5, y + 1.5, sw - 3, rowH - 3);
         x += sw;
       }
     }
@@ -2297,18 +2766,24 @@ function normalsFrom(
   const ctx = canvas.getContext('2d');
   if (!ctx) return canvas;
   const out = ctx.createImageData(w, h);
-  const at = (x: number, y: number) => source[(((y + h) % h) * w + ((x + w) % w)) * 4]! / 255;
+  const dst = out.data;
+  const scale = strength / 255;
   for (let y = 0; y < h; y++) {
+    const yPrev = ((y - 1 + h) % h) * w;
+    const yRow = y * w;
+    const yNext = ((y + 1) % h) * w;
     for (let x = 0; x < w; x++) {
-      const dx = (at(x + 1, y) - at(x - 1, y)) * strength;
+      const xPrev = (x - 1 + w) % w;
+      const xNext = (x + 1) % w;
+      const dx = (source[(yRow + xNext) * 4]! - source[(yRow + xPrev) * 4]!) * scale;
       // The canvas runs down the texture's v: a rise down the canvas tips the normal to +v.
-      const dy = (at(x, y + 1) - at(x, y - 1)) * strength;
-      const len = Math.hypot(dx, dy, 1);
-      const i = (y * w + x) * 4;
-      out.data[i] = ((-dx / len) * 0.5 + 0.5) * 255;
-      out.data[i + 1] = ((dy / len) * 0.5 + 0.5) * 255;
-      out.data[i + 2] = ((1 / len) * 0.5 + 0.5) * 255;
-      out.data[i + 3] = 255;
+      const dy = (source[(yNext + x) * 4]! - source[(yPrev + x) * 4]!) * scale;
+      const invLen = 1 / Math.sqrt(dx * dx + dy * dy + 1);
+      const i = (yRow + x) * 4;
+      dst[i] = (-dx * invLen * 0.5 + 0.5) * 255;
+      dst[i + 1] = (dy * invLen * 0.5 + 0.5) * 255;
+      dst[i + 2] = (invLen * 0.5 + 0.5) * 255;
+      dst[i + 3] = 255;
     }
   }
   ctx.putImageData(out, 0, 0);
@@ -2439,27 +2914,30 @@ function coverTexture(): CanvasTexture {
   return texture;
 }
 
-/** Where a shop bay glows: its window's interior, brightest low down where the lamps fall. */
-function shopGlowTexture(): CanvasTexture {
+/** Where a shop bay glows: aligned with each row of `shopAtlas` (`rows` repeats vertically). */
+function shopGlowTexture(rows: number, innerH: number, pad: number): CanvasTexture {
   const w = 192;
-  const h = 268;
+  const rowH = innerH + 2 * pad;
   const canvas = document.createElement('canvas');
   canvas.width = w;
-  canvas.height = h;
+  canvas.height = rowH;
   const ctx = canvas.getContext('2d');
   if (ctx) {
     ctx.fillStyle = '#000';
-    ctx.fillRect(0, 0, w, h);
-    // The window as bayTexture draws it: inset 22 px, from 54 px down to 66 px off the foot.
-    const glow = ctx.createLinearGradient(0, 54, 0, h - 66);
+    ctx.fillRect(0, 0, w, rowH);
+    const scaleY = innerH / 268;
+    const y0 = pad + 54 * scaleY;
+    const y1 = pad + (268 - 66) * scaleY;
+    const glow = ctx.createLinearGradient(0, y0, 0, y1);
     glow.addColorStop(0, '#202020');
     glow.addColorStop(1, '#ffffff');
     ctx.fillStyle = glow;
-    ctx.fillRect(22, 54, w - 44, h - 26 - 54 - 40);
+    ctx.fillRect(22, y0, w - 44, y1 - y0);
   }
   const texture = new CanvasTexture(canvas);
   texture.wrapS = RepeatWrapping;
   texture.wrapT = RepeatWrapping;
+  texture.repeat.set(1, rows);
   texture.colorSpace = SRGBColorSpace;
   return texture;
 }
@@ -2756,26 +3234,85 @@ function railingTexture(): CanvasTexture {
   return texture;
 }
 
-/** Awning canvas: broad stripes of the colour and cream, running down the slope. */
-function stripeTexture(colour: string): CanvasTexture {
+/** Awning canvas atlas: one 64 px striped column per awning colour, repeating down `v`. */
+function awningAtlasTexture(): CanvasTexture {
   const canvas = document.createElement('canvas');
-  canvas.width = 64;
+  canvas.width = 512;
   canvas.height = 64;
   const ctx = canvas.getContext('2d');
   if (ctx) {
-    ctx.fillStyle = '#efe6d2';
-    ctx.fillRect(0, 0, 64, 64);
-    ctx.fillStyle = colour;
-    ctx.fillRect(0, 0, 64, 32);
-    ctx.fillStyle = 'rgba(0,0,0,0.08)';
-    for (let y = 0; y < 64; y += 4) ctx.fillRect(0, y, 64, 1);
+    AWNINGS.forEach((colour, i) => {
+      const x = i * 64;
+      ctx.fillStyle = '#efe6d2';
+      ctx.fillRect(x, 0, 64, 64);
+      ctx.fillStyle = colour;
+      ctx.fillRect(x, 0, 64, 32);
+      ctx.fillStyle = 'rgba(0,0,0,0.08)';
+      for (let y = 0; y < 64; y += 4) ctx.fillRect(x, y, 64, 1);
+    });
   }
   const texture = new CanvasTexture(canvas);
-  texture.wrapS = RepeatWrapping;
   texture.wrapT = RepeatWrapping;
-  texture.repeat.set(1, 3);
   texture.colorSpace = SRGBColorSpace;
   return texture;
+}
+
+/**
+ * Packs shop fascias, shop doors, hanging signs, civic flags, bay leaves and geranium blooms into
+ * one 1024 × 512 texture atlas with 4 px edge-extruded gutters so mipmaps never bleed across cells.
+ */
+function houseDetailAtlas(): {
+  texture: CanvasTexture;
+  fascias: UvRect[];
+  shopDoors: UvRect[];
+  signs: UvRect[];
+  flags: UvRect[];
+  leaves: UvRect;
+  blooms: UvRect;
+} {
+  const W = 1024;
+  const H = 512;
+  const pad = 4;
+  const canvas = document.createElement('canvas');
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const place = (srcTex: CanvasTexture, cx: number, cy: number, dw: number, dh: number): UvRect => {
+    const img = srcTex.image as HTMLCanvasElement;
+    const sw = img.width;
+    const sh = img.height;
+    const ix = cx + pad;
+    const iy = cy + pad;
+    if (ctx) {
+      ctx.drawImage(img, ix, iy, dw, dh);
+      ctx.drawImage(img, 0, 0, sw, 1, ix, iy - pad, dw, pad);
+      ctx.drawImage(img, 0, sh - 1, sw, 1, ix, iy + dh, dw, pad);
+      ctx.drawImage(img, 0, 0, 1, sh, ix - pad, iy, pad, dh);
+      ctx.drawImage(img, sw - 1, 0, 1, sh, ix + dw, iy, pad, dh);
+    }
+    srcTex.dispose();
+    return {
+      u0: (ix + 0.5) / W,
+      u1: (ix + dw - 0.5) / W,
+      v0: 1 - (iy + dh - 0.5) / H,
+      v1: 1 - (iy + 0.5) / H,
+    };
+  };
+  const fascias = ['BOEKEN', 'BAKKERIJ', 'BLOEMEN', 'MODE'].map((trade, i) =>
+    place(fasciaTexture(trade), i * 256, 0, 248, 42),
+  );
+  const shopDoors = ['#2d4e3f', '#5a2730', '#1f2b44', '#3a3a3a'].map((paint, i) =>
+    place(shopDoorTexture(paint), i * 104, 56, 88, 200),
+  );
+  const leaves = place(leafTexture(), 432, 56, 256, 128);
+  const blooms = place(bloomTexture(), 704, 56, 128, 64);
+  const signs = SIGNS.map((sign, i) =>
+    place(signTexture(sign.ground, sign.emblem), i * 144, 272, 128, 100),
+  );
+  const flags = FLAGS.map((bands, i) => place(flagTexture(bands), i * 112, 388, 96, 64));
+  const texture = new CanvasTexture(canvas);
+  texture.colorSpace = SRGBColorSpace;
+  return { texture, fascias, shopDoors, signs, flags, leaves, blooms };
 }
 
 /** Pavement flagstones, one metre square per repeat, in two rows of 50 cm slabs. */

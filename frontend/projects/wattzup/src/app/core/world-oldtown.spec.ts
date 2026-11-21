@@ -1,6 +1,13 @@
 import { vi } from 'vitest';
-import { Mesh, type BufferAttribute, type BufferGeometry } from 'three/webgpu';
-import { OldTownStreet } from './world-oldtown';
+import {
+  BatchedMesh,
+  Mesh,
+  RepeatWrapping,
+  SRGBColorSpace,
+  type BufferAttribute,
+  type BufferGeometry,
+} from 'three/webgpu';
+import { cobbleTextures, OldTownStreet } from './world-oldtown';
 import { Corners } from './world-corners';
 import { apexes } from './scene-bend';
 import { worldById } from './worlds';
@@ -70,5 +77,48 @@ describe('OldTownStreet and Corners (L2-101 AC1, L2-110 AC9, L2-111 AC10)', () =
     });
 
     for (const d of disposables) d.dispose();
+  });
+
+  it('batches street frontages by material and culls street blocks behind the camera', () => {
+    const disposables: { dispose(): void }[] = [];
+    const street = new OldTownStreet((t) => t, disposables);
+    street.build(3.5, 161);
+
+    const batched: BatchedMesh[] = [];
+    let totalMeshes = 0;
+    street.group.traverse((obj) => {
+      if (obj instanceof Mesh) totalMeshes++;
+      if (obj instanceof BatchedMesh) batched.push(obj);
+    });
+    expect(batched.length).toBeGreaterThan(0);
+    expect(totalMeshes).toBeLessThan(80);
+
+    street.place(0, (m) => m * 0.05);
+    const countVisible = () =>
+      batched.reduce((sum, b) => {
+        let v = 0;
+        for (let id = 0; id < b.instanceCount; id++) if (b.getVisibleAt(id)) v++;
+        return sum + v;
+      }, 0);
+    const totalInstances = batched.reduce((sum, b) => sum + b.instanceCount, 0);
+    const visibleAtStart = countVisible();
+    expect(visibleAtStart).toBeGreaterThan(0);
+    expect(visibleAtStart).toBeLessThan(totalInstances);
+
+    street.place(210, (m) => m * 0.05);
+    expect(countVisible()).toBeGreaterThan(0);
+
+    for (const d of disposables) d.dispose();
+  });
+
+  it('creates repeating cobbled diffuse and normal relief textures', () => {
+    const { map, relief } = cobbleTextures();
+    expect(map.colorSpace).toBe(SRGBColorSpace);
+    expect(map.wrapS).toBe(RepeatWrapping);
+    expect(map.wrapT).toBe(RepeatWrapping);
+    expect(relief.wrapS).toBe(RepeatWrapping);
+    expect(relief.wrapT).toBe(RepeatWrapping);
+    map.dispose();
+    relief.dispose();
   });
 });
