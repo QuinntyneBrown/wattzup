@@ -1,0 +1,23 @@
+@startuml
+actor Rider
+participant RideSoundDialog
+participant RideSound
+participant "rideSoundParams()" as Params
+participant LiveStateService
+participant "Web Audio" as Audio
+Rider -> RideSoundDialog : turns the switch on
+RideSoundDialog -> RideSound : turnOn()
+RideSound -> Audio : new AudioContext() (inside the press)
+loop each live state
+  LiveStateService -> RideSound : state (cadence 90, resistance 18, 33.7 km/h, running)
+  RideSound -> Params : rideSoundParams(input)
+  Params --> RideSound : chain 3/s at 66 % of the volume, wind 1648 Hz, tyre 487 Hz
+  RideSound -> Audio : ramp rates, gains and filters
+end
+LiveStateService -> RideSound : cadence 0 (speed 0)
+RideSound -> Params : freewheel from 33.7 km/h
+Params --> RideSound : chain off, freewheel 33.7 clicks/s, falling to 0 over 3 s
+RideSound -> Audio : freewheel voice
+Rider -> RideSound : pauses (status paused)
+RideSound -> Audio : fade all voices to 0 within 0.5 s
+@enduml

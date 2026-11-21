@@ -17,6 +17,7 @@ This tree holds the detailed designs for Wattzup: an Angular app that runs entir
 |  | [Set up a ride](workouts/set-up-ride/README.md) | `L2-010`, `L2-029`, `L2-052`, `L2-059`, `L2-080` |
 |  | [Show the workout countdown](workouts/show-workout-countdown/README.md) | `L2-024`, `L2-025` |
 |  | [Play workout cues](workouts/play-workout-cues/README.md) | `L2-027` |
+|  | [Play ride sound](workouts/play-ride-sound/README.md) | `L2-129` |
 |  | [Ride along to a video](workouts/ride-along-video/README.md) | `L2-076`, `L2-010`, `L2-014`, `L2-029`, `L2-059`, `L2-097` |
 | live-state | [Run rides](live-state/run-rides/README.md) | `L2-014`, `L2-038`, `L2-050`, `L2-092`, `L2-093` |
 | dashboard | [Show connection status](dashboard/show-connection-status/README.md) | `L2-018`, `L2-054`, `L2-058` |
