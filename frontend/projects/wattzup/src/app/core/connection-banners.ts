@@ -3,7 +3,7 @@ import type { BikeState } from '@wattzup/api';
 import { formatDuration } from './format-duration';
 import { isActive } from './workout-status';
 
-export type BannerId = 'adapter-off' | 'reconnected' | 'simulated';
+export type BannerId = 'adapter-off' | 'unlock-failed' | 'reconnected' | 'simulated';
 export type BannerTone = 'info' | 'success' | 'warning' | 'danger';
 export type BannerAction = 'diagnostics';
 
@@ -34,6 +34,19 @@ export function banners(input: BannerInput): Banner[] {
       icon: 'bluetooth-off',
       title: 'Bluetooth is off',
       text: 'Turn Bluetooth on to reach the bike. Wattzup retries every 3 seconds.',
+      action: { label: 'Open diagnostics', kind: 'diagnostics' },
+      dismissable: false,
+    });
+  }
+  // A newer bike did not accept the unlock: a Bluetooth error the rider can do little about but
+  // wait for the retry (L2-002 AC7). The detail stays in the console.
+  if (state.ble === 'error' && state.error?.startsWith('UnlockError:')) {
+    list.push({
+      id: 'unlock-failed',
+      tone: 'danger',
+      icon: 'bluetooth-off',
+      title: "Couldn't unlock the bike",
+      text: "Newer Echelon bikes ask for an unlock code before they send data, and this one didn't accept it. Wattzup tries again every 3 seconds.",
       action: { label: 'Open diagnostics', kind: 'diagnostics' },
       dismissable: false,
     });

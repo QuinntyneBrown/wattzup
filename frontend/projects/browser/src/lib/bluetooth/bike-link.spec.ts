@@ -28,7 +28,9 @@ class FakeGatt implements GattLink {
   ) {
     this.log = log;
   }
-  async startNotifications(): Promise<void> {
+  onPacket: ((frame: Uint8Array) => void) | null = null;
+  async startNotifications(onPacket: (frame: Uint8Array) => void): Promise<void> {
+    this.onPacket = onPacket;
     this.log.push('subscribe');
   }
   async write(bytes: Uint8Array): Promise<void> {
@@ -58,6 +60,13 @@ class FakePort implements BluetoothPort {
   /** How many next connection attempts the bike never answers, as an asleep bike. */
   connectHangs = 0;
   private readonly dropped: (() => void)[] = [];
+  /** The link of the latest connection. */
+  gatt: FakeGatt | null = null;
+
+  /** The bike sends a frame, as space-separated hex bytes. */
+  notify(hex: string): void {
+    this.gatt?.onPacket?.(Uint8Array.from(hex.split(' ').map((b) => parseInt(b, 16))));
+  }
 
   support(): 'ready' {
     return 'ready';
@@ -107,7 +116,8 @@ class FakePort implements BluetoothPort {
         }
         const failure = this.connectFailures.shift();
         if (failure) throw failure;
-        return new FakeGatt(this.log, this.strict);
+        this.gatt = new FakeGatt(this.log, this.strict);
+        return this.gatt;
       },
       onDisconnected: (listener) => this.dropped.push(listener),
     };
@@ -135,6 +145,7 @@ async function connected() {
 }
 
 function setUp() {
+  const warnings: string[] = [];
   const port = new FakePort();
   const clock = new FakeClock();
   TestBed.configureTestingModule({
@@ -147,11 +158,21 @@ function setUp() {
       { provide: CLOCK, useValue: clock },
       {
         provide: BROWSER_LOG,
-        useValue: { info: () => undefined, warn: () => undefined, debug: () => undefined },
+        useValue: {
+          info: () => undefined,
+          warn: (m: string) => warnings.push(m),
+          debug: () => undefined,
+        },
       },
     ],
   });
-  return { port, clock, store: TestBed.inject(BikeStateStore), link: TestBed.inject(BikeLink) };
+  return {
+    port,
+    clock,
+    warnings,
+    store: TestBed.inject(BikeStateStore),
+    link: TestBed.inject(BikeLink),
+  };
 }
 
 describe('BikeLink', () => {
@@ -372,5 +393,72 @@ describe('BikeLink', () => {
     const { port, link } = await connected();
     expect(await link.reconnect()).toBe('already-connected');
     expect(port.count('connect')).toBe(1);
+  });
+
+  describe('unlocking a newer bike (L2-002 AC5 to AC9)', () => {
+    const CHALLENGE = 'F0 E0 12 34 56 78 09 ED';
+    const RESPONSE = 'write f0e00000020000d2';
+    const START = 'write f0b00101a2';
+    const writes = (log: string[]) => log.filter((e) => e.startsWith('write') && e !== KEEPALIVE);
+
+    it('answers a challenge, starts the data stream 500 ms later, and init skips its own start', async () => {
+      const { port, clock, link } = setUp();
+      void link.pair();
+      await clock.advance(0);
+      port.notify(CHALLENGE);
+      await clock.advance(0);
+      expect(writes(port.log)).toEqual(['write f0a10091', RESPONSE]);
+      await clock.advance(499);
+      expect(port.count(START)).toBe(0);
+      await clock.advance(1);
+      expect(writes(port.log)).toEqual(['write f0a10091', RESPONSE, 'write f0a30093', START]);
+      await clock.advance(2000);
+      expect(port.count(START)).toBe(1);
+    });
+
+    it.each([
+      ['workout data', 'F0 D1 09 00 05 00 00 00 00 00 5F 00 1F'],
+      ['resistance', 'F0 D2 01 0C CF'],
+      ['the acknowledgement', 'F0 A5 01 0E A4'],
+    ])('is unlocked by %s within 2.5 s', async (_, frame) => {
+      const { port, clock, store } = await connected();
+      port.notify(CHALLENGE);
+      await clock.advance(2499);
+      port.notify(frame);
+      await clock.advance(5000);
+      expect(store.state()).toMatchObject({ ble: 'connected', error: null });
+      expect(port.count('connect')).toBe(1);
+    });
+
+    it('fails as a Bluetooth error when nothing confirms within 2.5 s, and retries 3 s later', async () => {
+      const { port, clock, store } = await connected();
+      port.notify(CHALLENGE);
+      await clock.advance(2499);
+      expect(store.state().ble).toBe('connected');
+      await clock.advance(1);
+      expect(store.state()).toMatchObject({
+        ble: 'error',
+        error: 'UnlockError: The bike did not unlock.',
+      });
+      expect(port.log.at(-1)).toBe('disconnect');
+      await clock.advance(3000);
+      expect(port.count('connect')).toBe(2);
+      expect(port.count('chooser')).toBe(1);
+      expect(store.state().ble).toBe('connected');
+    });
+
+    it.each([
+      ['too short', 'F0 E0 12 34 56 78 09', 'length'],
+      ['without digits', 'F0 E0 12 34 A6 78 09 ED', 'no-digits'],
+      ['dividing by 0', 'F0 E0 12 34 56 78 00 E4', 'zero-divisor'],
+    ])('leaves a challenge %s unanswered and says why in the console', async (_, frame, why) => {
+      const { port, clock, store, warnings } = await connected();
+      const before = writes(port.log).length;
+      port.notify(frame);
+      await clock.advance(5000);
+      expect(writes(port.log)).toHaveLength(before);
+      expect(store.state()).toMatchObject({ ble: 'connected', error: null });
+      expect(warnings.some((w) => w.includes(why))).toBe(true);
+    });
   });
 });

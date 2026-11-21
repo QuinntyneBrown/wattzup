@@ -77,6 +77,9 @@ prototype. All 5,686 captured frames carry a correct checksum.
 | `D0` | from bike | Unknown | 5 | 1 | Ignored (L2-005) |
 | `D1` | from bike | Workout data | 13 | 9 | Decoded (L2-007) |
 | `D2` | from bike | Resistance | 5 | 1 | Decoded (L2-006) |
+| `E0` | from bike | Unlock challenge | 8 | — | Answered (L2-002 AC5) |
+| `E0` | to bike | Unlock response | 8 | — | Sent in answer to a challenge (L2-002 AC5) |
+| `A5` | from bike | Unlock acknowledgement | 5 | 1 | Confirms the unlock (L2-002 AC6) |
 
 The capture contains no reply to the device info or resistance range requests, so their response
 frames are undocumented. Decoding rejects these frames (L2-005):
@@ -208,6 +211,39 @@ Example (L2-007): `F0 D1 09 00 05 00 00 00 00 00 50 00 1F`
 | Cadence | `00 50` | 80 rpm, so 30.0 km/h and 18.6 mph |
 | Byte 11 | `00` | |
 | Checksum | `1F` | |
+
+### `E0` Unlock challenge and response: 64 bits
+
+_Source: the handshake as documented in qdomyos-zwift (`src/devices/echelonconnectsport/echelonunlock.cpp`), which credits Christian Emerson with finding the algorithm. Wattzup re-implements it from this description; no code is copied (qdomyos-zwift is GPL-3.0). No capture from a real locked bike is in this repository yet; the example below is worked by hand from the rule._
+
+Newer Echelon firmware sends a challenge after the link opens, and streams no `D1` or `D2` frames until it is answered.
+
+| Bits | Byte | Size | Field |
+|---|---|---|---|
+| 0–7 | 0 | 8 | Marker `F0` |
+| 8–15 | 1 | 8 | Type `E0` |
+| 16–55 | 2–6 | 40 | Challenge bytes _c2_ to _c6_ |
+| 56–63 | 7 | 8 | Checksum (not checked) |
+
+The response is computed from the challenge:
+
+1. Write bytes 4 and 2, in that order, as two-digit upper-case hex, and read the decimal digits it starts with as the number _a_. Do the same with bytes 3 and 5 for _b_, and with byte 6 alone for _c_. A string that starts with a letter has no digits, and the challenge is malformed.
+2. _auth_ = (_a_ × _b_) mod _c_. The challenge is malformed when _c_ is 0. Since _c_ is at most 99, _auth_ is at most 98.
+3. Write `F0 E0 00 00 <auth as packed BCD> 00 00 <checksum>`, the checksum as for every frame.
+4. 500 ms later, write start data stream, `F0 B0 01 01 A2`.
+5. A `D1` frame, a `D2` frame or the acknowledgement `F0 A5 01 0E A4` within 2.5 s confirms the unlock.
+
+Worked example: challenge `F0 E0 12 34 56 78 09 ED`.
+
+- _a_ is `56` then `12`, so 5612.
+- _b_ is `34` then `78`, so 3478.
+- _c_ is `09`, so 9.
+- _auth_ = 5612 × 3478 mod 9 = 2.
+- The response is `F0 E0 00 00 02 00 00 D2`.
+
+### `A5` Unlock acknowledgement: 40 bits
+
+Bytes: `F0 A5 01 0E A4`. It confirms an unlock (L2-002 AC6) and changes no metric.
 
 ### `D0` Unknown: 40 bits
 

@@ -44,6 +44,19 @@ Verification:
 - Unit tests of `BikeLink` with a fake `BluetoothPort` and `FakeClock`, one per row of the state table, plus: a known bike connected once it advertises, left alone without `whenNearby`, and not connected when the rider picked one meanwhile; subscribe before the first write; 3 init writes in order, each with response, at least 300 ms apart; 4–6 keepalives in 5 s; 1 overdue keepalive after a 60 s gap; retries every 3 s; `already_connected`.
 - Playwright specs with the fake `navigator.bluetooth` fixture (see `simulate-the-bike`): Connect bike, cancel, connect, disconnect and reconnect, the filters passed to `requestDevice`, and a bike remembered from an earlier visit (`rememberBikeBeforeLoad`, `advertise`) connected without the chooser.
 
+### Unlocking newer bikes (L2-002 criteria 5 to 10, #707)
+
+Newer Echelon firmware stays locked until it is answered.
+
+- **Rule:** `unlockResponse(challenge)` (`lib/protocol/echelon-unlock.ts`) is a pure function from the 8-byte challenge to the 8-byte response, or to the reason the challenge is malformed. It has a unit test with one row per case of the protocol reference.
+- **Handshake:** `BikeLink` looks at each notification before the `TelemetryIngestor`.
+  - A challenge starts the unlock: it writes the response, waits 500 ms on the injected clock, then writes start data stream. Initialisation skips its own start data stream while the unlock is under way.
+  - A `D1`, a `D2` or the `A5` acknowledgement within 2.5 s ends it.
+  - Otherwise the attempt fails as any Bluetooth error does, with the error named `UnlockError`. `connection-banners` shows **Couldn't unlock the bike** for it.
+  - A malformed challenge is logged to the console and not answered.
+- **Simulated bike:** with `?simulate=locked` it sends the worked example's challenge after connecting and streams nothing until it is answered with its response.
+- **Tests:** unit tests drive the timers with the fake clock. The e2e fixture pushes a challenge and asserts the writes and their order.
+
 ## Requirements
 
 | L2 ID | Refines (L1) | Requirement |
