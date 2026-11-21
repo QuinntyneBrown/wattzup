@@ -30,6 +30,10 @@ export interface WorldRideReport {
   unbent: number;
   /** Whether the post chain draws the ink outline pass (L2-111 technique 52). */
   outlines: boolean;
+  /** Whether the sky is the flat three-stop gradient (L2-111 technique 53). */
+  skyGradient: boolean;
+  /** Materials cut by the ordered dither (L2-111 technique 54). */
+  dithered: number;
 }
 
 export class WorldRideProbe {

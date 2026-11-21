@@ -50,3 +50,46 @@ export function edgeAmount(depthJump: number, normalTurn: number): number {
     smoothstep(EDGE.normal - EDGE.soft, EDGE.normal + EDGE.soft, normalTurn),
   );
 }
+
+/** Where on the screen (0 at the top) the sky reaches its middle and horizon stops. */
+export const SKY_AT = { middle: 0.3, horizon: 0.5 } as const;
+
+export interface SkyStops {
+  readonly zenith: number;
+  readonly middle: number;
+  readonly horizon: number;
+}
+
+const mixHex = (a: number, b: number, t: number) =>
+  [16, 8, 0].reduce((hex, shift) => {
+    const c = Math.round(((a >> shift) & 0xff) * (1 - t) + ((b >> shift) & 0xff) * t);
+    return hex | (c << shift);
+  }, 0);
+
+/**
+ * The scene's flat sky (technique 53): its own sky colour in the middle, deeper overhead and
+ * paler at the horizon, where the fog takes its tint.
+ */
+export function skyStops(sky: number): SkyStops {
+  return { zenith: mixHex(sky, 0x000000, 0.2), middle: sky, horizon: mixHex(sky, 0xffffff, 0.35) };
+}
+
+/** The sky's colour at screen height `y`, 0 at the top: straight lines between the stops. */
+export function skyAt(stops: SkyStops, y: number): number {
+  if (y <= SKY_AT.middle) return mixHex(stops.zenith, stops.middle, Math.max(y, 0) / SKY_AT.middle);
+  const t = Math.min((y - SKY_AT.middle) / (SKY_AT.horizon - SKY_AT.middle), 1);
+  return mixHex(stops.middle, stops.horizon, t);
+}
+
+/** A 4 × 4 ordered (Bayer) dither, row by row: each threshold once, neighbours far apart. */
+export const BAYER_4: readonly number[] = [
+  0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5,
+].map((n) => (n + 0.5) / 16);
+
+/** How far the dither moves a material's alpha cut-off, either way in all (technique 54). */
+export const DITHER = { spread: 0.4 } as const;
+
+/** The alpha cut-off at a pixel whose dither threshold is `bayer`, kept within 0.02 to 0.98. */
+export function ditherThreshold(alphaTest: number, bayer: number): number {
+  return Math.min(Math.max(alphaTest + (bayer - 0.5) * DITHER.spread, 0.02), 0.98);
+}

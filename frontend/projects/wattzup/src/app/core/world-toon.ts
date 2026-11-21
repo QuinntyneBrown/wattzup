@@ -4,17 +4,26 @@
 // rim in the colour of the scene's sky. Leaving `low` puts the originals back. One WebGPURenderer
 // node material serves both backends.
 import {
+  clamp,
+  color,
   float,
+  materialAlphaTest,
   materialEmissive,
+  mix,
   normalView,
   normalWorld,
   positionViewDirection,
+  screenCoordinate,
+  screenUV,
+  texture,
   uniform,
 } from 'three/tsl';
 import {
   Color,
   DataTexture,
   LinearFilter,
+  NearestFilter,
+  RepeatWrapping,
   type Material,
   type Mesh,
   MeshToonNodeMaterial,
@@ -22,7 +31,7 @@ import {
   type Object3D,
   RedFormat,
 } from 'three/webgpu';
-import { RIM, toonRamp } from './drawn-look';
+import { BAYER_4, DITHER, RIM, SKY_AT, skyStops, toonRamp } from './drawn-look';
 
 const RAMP_TEXELS = 64;
 
@@ -38,11 +47,38 @@ export class ToonLook {
   /** Each swapped mesh's own materials, to put back above `low`. */
   private readonly originals = new Map<Mesh, Slot>();
   private readonly made: MeshToonNodeMaterial[] = [];
+  /** The 4 × 4 ordered dither, tiled over the screen one threshold per pixel (technique 54). */
+  private readonly bayer: DataTexture;
+  /** Twins whose alpha cut-off is dithered. */
+  private readonly ditheredTwins = new Set<MeshToonNodeMaterial>();
 
   constructor() {
     this.ramp = new DataTexture(toonRamp(RAMP_TEXELS), RAMP_TEXELS, 1, RedFormat);
     this.ramp.magFilter = this.ramp.minFilter = LinearFilter;
     this.ramp.needsUpdate = true;
+    this.bayer = new DataTexture(
+      Uint8Array.from(BAYER_4, (t) => Math.round(t * 255)),
+      4,
+      4,
+      RedFormat,
+    );
+    this.bayer.magFilter = this.bayer.minFilter = NearestFilter;
+    this.bayer.wrapS = this.bayer.wrapT = RepeatWrapping;
+    this.bayer.generateMipmaps = false;
+    this.bayer.needsUpdate = true;
+  }
+
+  /** How many of the twins now in the scene are cut by the dither (technique 54). */
+  dithered(root: Object3D): number {
+    const seen = new Set<Material>();
+    root.traverse((object) => {
+      const mesh = object as Mesh;
+      if (!mesh.isMesh) return;
+      for (const m of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) {
+        if (this.ditheredTwins.has(m as MeshToonNodeMaterial)) seen.add(m);
+      }
+    });
+    return seen.size;
   }
 
   /**
@@ -88,6 +124,7 @@ export class ToonLook {
   dispose(): void {
     for (const twin of this.made) twin.dispose();
     this.ramp.dispose();
+    this.bayer.dispose();
   }
 
   private twin(source: Lit): MeshToonNodeMaterial {
@@ -129,6 +166,18 @@ export class ToonLook {
     twin.maskNode = source.maskNode ?? null;
     twin.mrtNode = source.mrtNode ?? null;
     twin.gradientMap = this.ramp;
+    // A cut-out (leaves, flags, crowds) is edged by the ordered dither, not a hard cut, since no
+    // tier draws alpha-to-coverage at low. The pattern is fixed to the screen, so it holds still
+    // while the camera does (technique 54).
+    if (source.alphaTest > 0 && !source.alphaTestNode) {
+      const bayer = texture(this.bayer, screenCoordinate.xy.div(4)).r;
+      twin.alphaTestNode = clamp(
+        materialAlphaTest.add(bayer.sub(0.5).mul(DITHER.spread)),
+        0.02,
+        0.98,
+      );
+      this.ditheredTwins.add(twin);
+    }
     // Rim light: (1 − N·V)^power × strength, in the sky's colour, added to the glow it had. It
     // fades on surfaces facing up, so the road and ground seen edge-on do not wash out.
     const rim = float(1)
@@ -149,4 +198,19 @@ export class ToonLook {
 /** A physically based surface: MeshStandard or MeshPhysical, node material or not. */
 function isLit(m: Material): m is Lit {
   return (m as { isMeshStandardMaterial?: boolean }).isMeshStandardMaterial === true;
+}
+
+/**
+ * The drawn look's flat sky (technique 53): the scene's sky in three stops down the screen, deeper
+ * overhead and paler at the horizon, mirroring skyAt().
+ */
+export function flatSky(sky: number) {
+  const stops = skyStops(sky);
+  const y = screenUV.y;
+  const overhead = mix(color(stops.zenith), color(stops.middle), clamp(y.div(SKY_AT.middle), 0, 1));
+  return mix(
+    overhead,
+    color(stops.horizon),
+    clamp(y.sub(SKY_AT.middle).div(SKY_AT.horizon - SKY_AT.middle), 0, 1),
+  );
 }

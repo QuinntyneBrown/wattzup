@@ -1400,7 +1400,31 @@ test.describe('World Ride scene (L2-110, L2-101 AC4)', () => {
     expect(report?.unbent).toBe(0);
     // Silhouettes and creases are inked by one pass; the HUD is HTML over the canvas, never inked.
     expect(report?.outlines).toBe(true);
+    // A flat graded sky, and cut-outs such as leaves and flags edged by an ordered dither.
+    expect(report?.skyGradient).toBe(true);
+    expect(report?.dithered).toBeGreaterThan(0);
     await expect(world.boardTitle).toBeVisible();
+  });
+
+  test('draws nothing that moves on its own at low with reduced motion (L2-111 AC11)', async ({
+    page,
+    worldRide,
+  }) => {
+    test.slow();
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await worldRide.pin('low');
+    const world = new WorldRidePage(page);
+    await world.startFromClass();
+    await expect
+      .poll(async () => (await worldRide.report())?.frames.length ?? 0, STARTED)
+      .toBeGreaterThan(3);
+    await world.pauseButton.click();
+    await expect(world.resumeButton).toBeVisible();
+    // Paused, the rider holds still; nothing else in the scene may move by itself.
+    await page.waitForTimeout(1500);
+    const first = await world.scene.screenshot();
+    await page.waitForTimeout(1500);
+    expect((await world.scene.screenshot()).equals(first)).toBe(true);
   });
 
   test('keeps physically based shading above low (L2-111 AC11)', async ({ page, worldRide }) => {
@@ -1415,7 +1439,10 @@ test.describe('World Ride scene (L2-110, L2-101 AC4)', () => {
     );
     expect(types.filter((t) => /Standard|Physical/.test(t)).length).toBeGreaterThan(0);
     expect(types).not.toContain('MeshToonNodeMaterial');
-    expect((await worldRide.report())?.outlines).toBe(false);
+    const report = await worldRide.report();
+    expect(report?.outlines).toBe(false);
+    expect(report?.skyGradient).toBe(false);
+    expect(report?.dithered).toBe(0);
   });
 
   test("shows This screen can't draw 3D worlds when WebGL is off, and the HUD still works", async ({
