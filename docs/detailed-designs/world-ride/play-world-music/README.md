@@ -8,7 +8,7 @@ World Ride (L1-017) gives every world a background track of its own (L2-128). Th
 
 **music on** — the rider's kept choice; on until the rider turns it off
 
-The tracks come from Pixabay under the Pixabay Content License. Soca goes to the Caribbean and carnival worlds first; every other world gets a genre that fits its place. No two worlds share a track. `docs/world-music.md` lists each world's track with its title, artist and Pixabay page. Each file is the Pixabay MP3 re-encoded as Opus at 96 kbps mono, cut to at most 3 minutes with a short fade at each end so the loop does not click.
+The tracks come from Pixabay under the Pixabay Content License. Soca goes to the Caribbean and carnival worlds first; every other world gets a genre that fits its place. No two worlds share a track. `docs/world-music.md` lists each world's track with its title, artist and Pixabay page. Each file is the Pixabay MP3 re-encoded as Opus at 48 kbps mono, cut to at most 3 minutes with a short fade at each end so the loop does not click.
 
 ## Description
 
