@@ -315,3 +315,13 @@ Every iteration below is measured across a **45-second sustained ride** (`record
 | --------------- | --------------- | --------- | ----------------------------- | -------------------------------- | ------------------------------ | ------: |
 | **`low`**       | 60.4 → **60.7** | **16.7**  | 17.2 / 18.0 → **17.1 / 17.7** | 7.917 → **7.057 (−10.9 %)**      | 8.678 → **7.797 (−10.2 %)**    |      91 |
 | **`high`**      | **56.3**        | 17.4      | 22.9 / 34.3                   | 10.520 → **10.346 (−1.7 %)**     | 11.424 → **11.303 (−1.1 %)**   |      90 |
+
+### Iteration 7: Coarser `StreetBlock` Packing (`48 m`) & Shadow-Corridor `near`/`far` `BatchedMesh` Split (`world-oldtown.ts`)
+
+- **Change**: Widened `BLOCK_MAX` from `20 m` (`54` street blocks) to `48 m` (`20` street blocks, with `HOUSE_BEHIND = 64 m` so blocks wrap strictly behind the chase camera), and split the 6 shadow-casting `BatchedMesh` materials into `near` (`castShadow = true`, `start < 75 m` inside the directional shadow box) and `far` (`castShadow = false`, `start ≥ 75 m`) pairs sharing the exact same materials (`0` extra shader programs). Because Three.js's WebGPU backend issues one indexed draw per visible `BatchedMesh` instance, this halved main-pass frontage draws and eliminated ~75 % of house shadow-pass draws.
+- **45-Second Results**:
+
+| Tier (`webgpu`) | Avg FPS | Median ms | p95 / p99 ms    | Draw Calls (Before → After)   | Programs (`+mid-ride`) | Layouts |
+| --------------- | ------: | --------: | --------------- | ----------------------------- | ---------------------: | ------: |
+| **`low`**       |    60.6 |      16.7 | **17.1 / 17.8** | 591 → **328 (−263, −44.5 %)** |              65 (`+0`) |      87 |
+| **`high`**      |    54.8 |      17.5 | 25.7 / 35.7     | 974 → **469 (−505, −51.8 %)** |             240 (`+0`) |      89 |

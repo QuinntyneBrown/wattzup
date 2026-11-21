@@ -49,10 +49,12 @@ const DEPTH = 10;
 /** The street repeats every LOOP metres; houses run from BEHIND metres behind the rider. */
 const LOOP = 420;
 const BEHIND = 24;
-const HOUSE_BEHIND = 40;
+const HOUSE_BEHIND = 64;
 const HOUSE_SHIFT = HOUSE_BEHIND - BEHIND;
-const HOUSE_CULL_BEHIND = -20;
-const BLOCK_MAX = 20;
+const HOUSE_CULL_BEHIND = -16;
+const BLOCK_MAX = 48;
+/** Beyond Old Town's 65 m directional shadow box (plus margin), blocks skip shadow casting. */
+const SHADOW_AHEAD = 75;
 /** Houses reach below the road, so a ramp never shows their footing. */
 const FOOTING = 4;
 
@@ -185,10 +187,17 @@ interface House {
   readonly setback: number;
 }
 
+interface BlockSlot {
+  readonly near: BatchedMesh;
+  readonly nearId: number;
+  readonly far: BatchedMesh | null;
+  readonly farId: number;
+}
+
 interface StreetBlock {
   readonly offset: number;
   readonly width: number;
-  readonly slots: { batched: BatchedMesh; instanceId: number }[];
+  readonly slots: BlockSlot[];
 }
 
 interface UvRect {
@@ -657,6 +666,8 @@ export class OldTownStreet {
     for (const block of this.blocks) {
       const start = ((((block.offset + HOUSE_SHIFT - s) % LOOP) + LOOP) % LOOP) - HOUSE_BEHIND;
       const visible = start + block.width > HOUSE_CULL_BEHIND;
+      const inShadow = visible && start < SHADOW_AHEAD;
+      const outShadow = visible && !inShadow;
       if (visible) {
         const middle = start + block.width / 2;
         const grade = (heightAt(middle + 2) - heightAt(middle - 2)) / 4;
@@ -664,12 +675,15 @@ export class OldTownStreet {
         m[13] = heightAt(middle);
         m[14] = -middle;
       }
-      for (const { batched, instanceId } of block.slots) {
-        if (batched.getVisibleAt(instanceId) !== visible) {
-          batched.setVisibleAt(instanceId, visible);
-        }
-        if (visible) {
-          batched.setMatrixAt(instanceId, this.blockMatrix);
+      for (const { near, nearId, far, farId } of block.slots) {
+        if (far) {
+          if (near.getVisibleAt(nearId) !== inShadow) near.setVisibleAt(nearId, inShadow);
+          if (inShadow) near.setMatrixAt(nearId, this.blockMatrix);
+          if (far.getVisibleAt(farId) !== outShadow) far.setVisibleAt(farId, outShadow);
+          if (outShadow) far.setMatrixAt(farId, this.blockMatrix);
+        } else {
+          if (near.getVisibleAt(nearId) !== visible) near.setVisibleAt(nearId, visible);
+          if (visible) near.setMatrixAt(nearId, this.blockMatrix);
         }
       }
     }
@@ -1788,6 +1802,23 @@ export class OldTownStreet {
     });
 
     const initMatrix = new Matrix4();
+    const makeBatched = (
+      count: number,
+      verts: number,
+      indices: number,
+      mat: Material,
+      castShadow: boolean,
+    ): BatchedMesh => {
+      const b = new BatchedMesh(count, verts, indices, mat);
+      b.frustumCulled = false;
+      b.perObjectFrustumCulled = false;
+      b.sortObjects = false;
+      b.castShadow = castShadow;
+      b.receiveShadow = true;
+      this.group.add(b);
+      this.disposables.push(b, b.geometry);
+      return b;
+    };
     for (const [mat, entries] of materialBatches) {
       let totalVerts = 0;
       let totalIndices = 0;
@@ -1795,25 +1826,30 @@ export class OldTownStreet {
         totalVerts += geometry.getAttribute('position').count;
         totalIndices += geometry.index!.count;
       }
-      const batched = new BatchedMesh(entries.length, totalVerts, totalIndices, mat);
-      batched.frustumCulled = false;
-      batched.perObjectFrustumCulled = false;
-      batched.sortObjects = false;
-      batched.castShadow = mat !== detailMat && mat !== metal && mat !== this.railing;
-      batched.receiveShadow = true;
+      const casts = mat !== detailMat && mat !== metal && mat !== this.railing;
+      const near = makeBatched(entries.length, totalVerts, totalIndices, mat, casts);
+      const far = casts ? makeBatched(entries.length, totalVerts, totalIndices, mat, false) : null;
       for (const { blockIdx, geometry } of entries) {
-        const geoId = batched.addGeometry(geometry);
-        const instanceId = batched.addInstance(geoId);
+        const nearGeo = near.addGeometry(geometry);
+        const nearId = near.addInstance(nearGeo);
+        const farId = far ? far.addInstance(far.addGeometry(geometry)) : -1;
         geometry.dispose();
         const block = this.blocks[blockIdx]!;
         const start = ((((block.offset + HOUSE_SHIFT) % LOOP) + LOOP) % LOOP) - HOUSE_BEHIND;
+        const visible = start + block.width > HOUSE_CULL_BEHIND;
+        const inShadow = visible && start < SHADOW_AHEAD;
         const middle = start + block.width / 2;
         initMatrix.elements[14] = -middle;
-        batched.setMatrixAt(instanceId, initMatrix);
-        block.slots.push({ batched, instanceId });
+        near.setMatrixAt(nearId, initMatrix);
+        if (far) {
+          far.setMatrixAt(farId, initMatrix);
+          near.setVisibleAt(nearId, inShadow);
+          far.setVisibleAt(farId, visible && !inShadow);
+        } else {
+          near.setVisibleAt(nearId, visible);
+        }
+        block.slots.push({ near, nearId, far, farId });
       }
-      this.group.add(batched);
-      this.disposables.push(batched, batched.geometry);
     }
   }
 
