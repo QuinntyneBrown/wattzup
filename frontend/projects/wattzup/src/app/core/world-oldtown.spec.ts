@@ -4,6 +4,7 @@ import {
   InstancedMesh,
   Matrix4,
   Mesh,
+  MeshStandardMaterial,
   RepeatWrapping,
   SRGBColorSpace,
   type BufferAttribute,
@@ -149,6 +150,56 @@ describe('OldTownStreet and Corners (L2-101 AC1, L2-110 AC9, L2-111 AC10)', () =
         expect(Math.abs(m.determinant())).toBeGreaterThan(1e-6);
       }
     }
+
+    for (const d of disposables) d.dispose();
+  });
+
+  it('packs street banners, road paint and lamp pennants into shared atlas materials and distance-gates banner shadows', () => {
+    const disposables: { dispose(): void }[] = [];
+    const street = new OldTownStreet((t) => t, disposables);
+    street.build(3.5, 161);
+    street.place(0, (m) => m * 0.04);
+
+    // Direct non-instanced, non-batched Mesh children on street.group include the 3 street banners
+    // (x === 0, elevated above the road) and 4 road-paint slogans (transparent,polygonOffset).
+    const directMeshes = street.group.children.filter(
+      (c): c is Mesh =>
+        c instanceof Mesh && !(c instanceof InstancedMesh) && !(c instanceof BatchedMesh),
+    );
+    const paintMeshes = directMeshes.filter(
+      (m) =>
+        m.material instanceof MeshStandardMaterial &&
+        m.material.transparent &&
+        m.material.polygonOffset &&
+        m.position.z !== 0,
+    );
+    const bannerMeshes = directMeshes.filter(
+      (m) =>
+        m.material instanceof MeshStandardMaterial &&
+        !m.material.transparent &&
+        m.position.x === 0 &&
+        m.position.z !== 0,
+    );
+
+    expect(paintMeshes).toHaveLength(4);
+    expect(new Set(paintMeshes.map((m) => m.material)).size).toBe(1);
+    for (const m of paintMeshes) {
+      expect(m.rotation.x).toBeCloseTo(Math.atan(0.04), 5);
+    }
+
+    expect(bannerMeshes).toHaveLength(3);
+    expect(new Set(bannerMeshes.map((m) => m.material)).size).toBe(1);
+    expect(bannerMeshes.filter((m) => m.castShadow)).toHaveLength(1);
+
+    street.place(170, (m) => m * 0.04);
+    expect(bannerMeshes.filter((m) => m.castShadow)).toHaveLength(1);
+
+    const instanced = street.group.children.filter(
+      (c): c is InstancedMesh => c instanceof InstancedMesh,
+    );
+    // Lamp pennants are the 6th and 7th InstancedMeshes added by addFurniture.
+    const [pen0, pen1] = [instanced[5]!, instanced[6]!];
+    expect(pen0.material).toBe(pen1.material);
 
     for (const d of disposables) d.dispose();
   });
