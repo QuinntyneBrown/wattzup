@@ -23,10 +23,11 @@ describe('CyclistKit rigid bike and body sub-assemblies', () => {
     expect(frameMeshes).toHaveLength(1);
     expect(frameMeshes[0]?.castShadow).toBe(true);
 
-    // 2 tyres + 1 saddle merged into 1 shadow-casting rubber mesh.
-    const rubberMeshes = withMaterial(kit.rubber);
-    expect(rubberMeshes).toHaveLength(1);
-    expect(rubberMeshes[0]?.castShadow).toBe(true);
+    // 2 tyres + 1 saddle + 1 bottle merged into 1 shadow-casting solid mesh, plus 6 articulated leg
+    // meshes (2 thighs + 2 shins-with-socks + 2 feet) = 7 direct solid meshes on cyclist.group.
+    const solidMeshes = withMaterial(kit.solid);
+    expect(solidMeshes).toHaveLength(7);
+    expect(solidMeshes[0]?.castShadow).toBe(true);
 
     // 2 rims + 1 chainring merged into 1 static metal mesh, plus 2 animated cranks = 3 metal meshes.
     const metalMeshes = withMaterial(kit.metal);
@@ -53,9 +54,17 @@ describe('CyclistKit rigid bike and body sub-assemblies', () => {
     const bodyWithMaterial = (m: unknown) => bodyMeshes.filter((mesh) => mesh.material === m);
 
     expect(bodyWithMaterial(cyclist.jersey)).toHaveLength(1);
-    expect(bodyWithMaterial(kit.skin)).toHaveLength(1);
-    expect(bodyWithMaterial(kit.rubber)).toHaveLength(1);
-    expect(bodyMeshes).toHaveLength(6);
+    expect(bodyWithMaterial(kit.solid)).toHaveLength(1);
+    expect(bodyMeshes).toHaveLength(4);
+
+    let totalMeshes = 0;
+    cyclist.group.traverse((o) => {
+      if ((o as Mesh).isMesh) totalMeshes++;
+    });
+    expect(totalMeshes).toBeLessThanOrEqual(17);
+
+    const other = kit.make(new Color(0x3a9ad9), 2, frame);
+    expect(other.bib).toBe(cyclist.bib);
 
     const cloneSpy = vi.spyOn(Vector3.prototype, 'clone');
     cyclist.pose(1.1, -0.08, 0.5);
