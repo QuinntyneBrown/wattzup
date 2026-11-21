@@ -156,16 +156,22 @@ describe('FrameBudget (L2-111 AC4)', () => {
   };
 
   it.each([
-    ['30 Hz', 34, 'keep', 1000 / 30],
-    ['30 Hz', 45, 'drop', 1000 / 30],
-    ['60 Hz', 18, 'keep', 1000 / 60],
-    ['60 Hz', 25, 'drop', 1000 / 60],
-    ['144 Hz', 8, 'keep', 1000 / 144],
-    ['144 Hz', 18, 'drop', 1000 / 144],
-  ] as const)('on a %s display, two windows at %d ms: %s', (_, ms, expected, period) => {
+    ['30 Hz', 34, 'ultra', 1000 / 30],
+    ['30 Hz', 45, 'high', 1000 / 30],
+    ['30 Hz', 100, 'low', 1000 / 30],
+    ['60 Hz', 18, 'ultra', 1000 / 60],
+    ['60 Hz', 25, 'high', 1000 / 60],
+    ['60 Hz', 49, 'high', 1000 / 60],
+    ['60 Hz', 85, 'low', 1000 / 60],
+    ['144 Hz', 8, 'ultra', 1000 / 144],
+    ['144 Hz', 18, 'high', 1000 / 144],
+    ['144 Hz', 21, 'low', 1000 / 144],
+  ] as const)('on a %s display, two windows at %d ms from ultra: %s', (_, ms, expected, period) => {
     const budget = new FrameBudget('ultra', period);
-    expect(ride(budget, ms).includes('drop') ? 'drop' : 'keep').toBe(expected);
-    expect(budget.tier).toBe(expected === 'drop' ? 'high' : 'ultra');
+    const drops = ride(budget, ms).filter((v) => v === 'drop').length;
+    expect(budget.tier).toBe(expected);
+    // However far it falls, the rider sees one change of look (#896).
+    expect(drops).toBe(expected === 'ultra' ? 0 : 1);
   });
 
   it('judges against 60 Hz until it is given a period', () => {

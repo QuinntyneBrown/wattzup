@@ -95,6 +95,8 @@ None.
 - **The sky's light, made once.** The image-based light from the physical sky (6) is made once per scene. Remade at every tier change, it compiled PMREM's programs again and gave every lit material a new environment.
 - **Built once at load.** The flat sky's node (53) is built once. So is the arch's banner mesh, made with the arch: a new effort swaps only its texture, where a new mesh compiled at the current tier mid-ride.
 
+**Fall once, start clean (L2-111 AC4, AC10, AC12, #896).** A drop is a visible change of look, so a scene far over budget falls straight to `low` instead of a tier per four seconds: when the second window's median is 3 × _P_ or more, `FrameBudget` drops to `low`. The warm-up therefore draws `low` as well as `nextLower` (one round each, lower tiers first). Each pass chain's TRAA node is kept beside it; after the warm-up's rounds, and whenever a different chain is swapped in, its history is restarted by sizing it to 1 × 1, which makes `TRAANode` copy the next frame's own picture in as its history. The warm-up draws hidden parts, so without this the ride's first frames blended in parts the rider never sees: the smeared, pale first frame of #896. The road keeps its pattern at `low`: the drawn look's toon twin takes the layered road map (the setts on a cobbled world), not the plain one, so a cobbled street still reads as cobbles in bands.
+
 Last, the ride's own frame (laying the road, placing riders, scenery and the arch) is rehearsed four times at the start line with the ride's segments. Its first run cost 30 to 48 ms of script. The rehearsal is hidden from the probe and the frame budget. The probe counts every program and render pipeline the backend creates (`compiled`). A test-only `drop` request lowers the tier one step (`FrameBudget.lower`), so the sweep can check a drop.
 
 Measured on the reference laptop (Adreno X1-85, headed):
@@ -148,7 +150,7 @@ Unit tests (`render-quality.spec.ts`):
 
 - `startTier` for each backend (AC3);
 - `techniquesAt`: one case per tier on each backend, and with reduced motion. Each checks the techniques drawn against the table, with 21 and 29 never drawn and `ultra` only on WebGPU (AC2, AC5);
-- `FrameBudget`: two windows over budget drop one tier; one window over budget keeps it; nothing drops below `low`; no window ever raises it (AC4). One case per row of 30 Hz at 34 and 45 ms, 60 Hz at 18 and 25 ms, and 144 Hz at 8 and 18 ms (AC4); while paused and across `setPeriod`, no window is judged (AC9).
+- `FrameBudget`: two windows over budget drop one tier, or straight to `low` at 3 × _P_ or more, in one drop; one window over budget keeps it; nothing drops below `low`; no window ever raises it (AC4). One case per row of 30 Hz at 34, 45 and 100 ms, 60 Hz at 18, 25, 49 and 85 ms, and 144 Hz at 8, 18 and 21 ms (AC4); while paused and across `setPeriod`, no window is judged (AC9).
 - `estimateFramePeriod`: one case per row of 30, 60, 120 and 144 Hz, jittery intervals, a long first interval and gaps over 100 ms left out, and too few intervals falling back to 60 Hz (AC9).
 - `FrameScheduler.measurePeriod`: driven by a fake `requestAnimationFrame` clock, never a sleep (AC9).
 - `FrameScheduler.nextFrame`: resolves on the next frame and asks for no frame after it (AC10).
@@ -231,6 +233,6 @@ The WebGL2 backend takes 2.5 to 5 times the GPU time of WebGPU for the same scen
 
 ### Behaviour — drop a tier on the frame budget
 
-Before the first frame, `WorldScene` measures the display's frame period and hands it to the renderer (L2-111 criterion 9). Each frame then feeds the budget. After two windows in a row over 1.2 × the period, the renderer drops one tier and rebuilds its passes (criterion 4). When the tab returns or the window changes screen, the budget pauses while the period is measured again.
+Before the first frame, `WorldScene` measures the display's frame period and hands it to the renderer (L2-111 criterion 9). Each frame then feeds the budget. After two windows in a row over 1.2 × the period, the renderer drops one tier, or straight to `low` when the window is 3 × the period or more, and swaps in that tier's passes with a fresh history (criterion 4). When the tab returns or the window changes screen, the budget pauses while the period is measured again.
 
 ![Sequence diagram for dropping a tier](diagrams/sequence-drop-tier.png)

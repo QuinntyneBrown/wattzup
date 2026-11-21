@@ -3146,6 +3146,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
   private skyLight: Texture | null | undefined = undefined;
   /** Each tier's pass chain, kept once built: a drop swaps to one compiled ahead (#882). */
   private readonly pipelines = new Map<string, RenderPipeline>();
+  /** Each pass chain's temporal anti-aliasing (technique 7), whose history is reset (#896). */
+  private readonly temporal = new Map<RenderPipeline, { setSize(w: number, h: number): void }>();
   private backend: Backend = 'webgl2';
   private budget: FrameBudget | null = null;
   /** What the test-only hook's sweep reads; null on every rider's ride (#672, #674). */
@@ -3276,15 +3278,19 @@ export class ThreeWorldRenderer implements WorldRenderer {
     const tier = this.budget?.tier;
     if (!renderer || !tier) return;
     this.resize(canvas.clientWidth, canvas.clientHeight, devicePixelRatio);
-    // The tier a slow budget would drop to is drawn first, so a drop compiles nothing (#882);
-    // the tier the ride starts at is drawn last, so its history is the one the ride inherits.
-    const lower = nextLower(tier);
-    if (lower) {
-      this.applyTier(lower);
+    // The tiers a slow budget could drop to (one step, or straight to low) are drawn first, so a
+    // drop compiles nothing (#882, #896); the tier the ride starts at is drawn last.
+    const lower = [...new Set([nextLower(tier), 'low' as const])].filter(
+      (t): t is Tier => t !== null && t !== tier,
+    );
+    for (const t of lower) {
+      this.applyTier(t);
       await this.warmRound(nextFrame);
-      this.applyTier(tier);
     }
+    if (lower.length) this.applyTier(tier);
     await this.warmRound(nextFrame);
+    // The warm-up drew hidden parts: its history is not the ride's, or the first frame smears.
+    this.freshHistory();
     await this.rehearse(nextFrame, segments);
     // WebGPU builds pipelines in the GPU process: wait for them, not just for the call.
     const device = (renderer.backend as { device?: GPUDevice }).device;
@@ -3317,6 +3323,16 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.lastFrameAt = null;
     this.lastS = 0;
     this.drawn = 0;
+  }
+
+  /**
+   * Starts the drawn pass chain's history afresh: on its next frame, temporal anti-aliasing takes
+   * that frame's own picture as its history instead of blending in older ones (#896).
+   */
+  private freshHistory(): void {
+    const node = this.pipeline && this.temporal.get(this.pipeline);
+    // A history of another size than the picture is restarted from the picture (TRAANode).
+    node?.setSize(1, 1);
   }
 
   /** One warm-up: every part drawn, in view or not, over three frames. */
@@ -3475,6 +3491,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.flatSkyNode = null;
     for (const pipeline of this.pipelines.values()) pipeline.dispose();
     this.pipelines.clear();
+    this.temporal.clear();
     this.pipeline = null;
     this.renderer?.dispose();
     this.renderer = null;
@@ -3560,7 +3577,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
     // A material gets a new program only when a compiled feature changes: textures, roughness
     // and colour are uniforms, so a tier drop rebuilds only what it must (#680).
     const road = compiledFeatures(this.roadMaterial);
-    this.roadMaterial.map = on.has(9) ? this.layeredRoad : this.plainRoad;
+    // The drawn look keeps the road's own pattern, so cobbles still read as cobbles (#896).
+    this.roadMaterial.map = on.has(9) || on.has(51) ? this.layeredRoad : this.plainRoad;
     // The setts' relief comes with the photometric-stereo materials (technique 3).
     this.roadMaterial.normalMap = on.has(3) ? this.roadRelief : null;
     const wet = on.has(14) && look.wet;
@@ -3594,7 +3612,10 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.bend.apply(this.scene, this.unbent);
     this.report();
 
+    const previous = this.pipeline;
     this.pipeline = this.pipelineFor(renderer, on);
+    // A chain swapped in carries history from the last time it was drawn, perhaps the warm-up.
+    if (this.pipeline !== previous) this.freshHistory();
   }
 
   /**
@@ -3664,9 +3685,14 @@ export class ThreeWorldRenderer implements WorldRenderer {
       ) as unknown as ColorNode;
     }
     if (on.has(49)) color = color.add(bloom(color, 0.12, 0.2, 1.4)) as unknown as ColorNode;
-    pipeline.outputNode = on.has(7)
-      ? traa(color, depth, scenePass.getTextureNode('velocity'), this.camera)
-      : fxaa(color);
+    if (on.has(7)) {
+      const temporal = traa(color, depth, scenePass.getTextureNode('velocity'), this.camera);
+      // TRAANode's typings omit the setSize it has.
+      this.temporal.set(pipeline, temporal as unknown as { setSize(w: number, h: number): void });
+      pipeline.outputNode = temporal;
+    } else {
+      pipeline.outputNode = fxaa(color);
+    }
     return pipeline;
   }
 
