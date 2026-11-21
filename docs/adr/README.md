@@ -25,3 +25,4 @@
 | [0021](0021-webgpu-renderer-with-webgl2-fallback.md) | World Ride draws with Three.js's WebGPU renderer, falling back to WebGL2 | Accepted, amended by 0023 |
 | [0022](0022-hosted-on-azure-static-web-apps.md) | Hosted on Azure Static Web Apps, deployed from main | Accepted |
 | [0023](0023-bend-the-road-in-the-vertex-stage.md) | World Ride bends the road in the vertex stage | Accepted |
+| [0024](0024-drawn-look-at-low.md) | World Ride draws a stylised look at the low tier | Proposed |

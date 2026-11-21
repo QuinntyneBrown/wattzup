@@ -108,9 +108,19 @@ None.
 - splats (44);
 - virtual-texture pages (41).
 
+### The drawn look at `low` (criterion 11, ADR 0024, #663)
+
+At `low`, techniques 51 to 54 replace physically based shading with a deliberately drawn look. Each is built in its own sub-issue, in this order:
+
+1. **Banded toon shading (51, #691).** `applyTier` gives every lit surface a toon node material at `low`. It keeps the surface's colour map, alpha and the road bend's `positionNode`, so the bend (ADR 0023) is unchanged. Diffuse light falls into three bands with `smoothstep` edges, and a rim term is coloured by the scene's sky. Because `WebGPURenderer` compiles node materials for both backends, one material serves WebGPU and WebGL2. The pure rule (`core/drawn-look.ts`) owns the band thresholds and the rim colour, with unit tests one row per band.
+2. **Ink outlines (52, #692).** One full-screen pass in the post chain, at `low` only, reads the scene pass's depth and normals and darkens edges past a threshold. The rider and pacers are drawn into a mask, so their outline takes a warmer ink. The HUD is HTML over the canvas, so it is never outlined.
+3. **Flat sky gradient and dithered foliage (53, 54, #693).** At `low`, the sky is a three-stop vertical gradient from the scene's sky colours, and the fog colour is its horizon stop. Foliage without alpha-to-coverage is cut by an alpha test against a 4 × 4 Bayer matrix in screen space, which holds still while the camera does.
+
+Nothing in the drawn look animates on its own, so reduced motion needs no rule of its own. The performance sweep (`e2e/sweeps/`) compares the drawn look's median frame time with today's `low`, on both backends.
+
 ### Screen states
 
-No new screen state. The scene looks better or plainer; the HUD mocks `pages/world-ride/*` hold at every tier.
+No new screen state. The scene looks better or plainer, or drawn at `low`; the HUD mocks `pages/world-ride/*` hold at every tier. The drawn look has no mock: it is a look of the 3D scene, so it is reviewed from screenshots (`docs/screenshots/<world>/drawn-low.png`) once #692 lands.
 
 ### Acceptance tests
 
@@ -175,6 +185,8 @@ Sources of program variants, most first:
 The WebGL2 backend takes 2.5 to 5 times the GPU time of WebGPU for the same scene and programs, and first-use stalls cluster there: Galibier on WebGL2 has 20 to 27 frames over 50 ms in its first 5 s.
 
 ### Open questions
+
+- **The drawn look's review.** ADR 0024 chose to replace PBR at `low`, with no rider option and no per-class override. A person reviews the first screenshots of the drawn look before the ADR is accepted.
 
 - Times Square still compiles three small full-screen programs (its ambient occlusion pass and the step that applies it) on its first frame after the warm-up, one more program alive than when it had loaded (#682). The default scene compiles none. Why the warm-up's GTAO programs are not reused there is not yet known.
 - **Captured assets.** The photogrammetry, scans, splats and baked data of each scene are <TO SUPPLY>. Until they exist, techniques 1, 2, 3, 5, 13, 40, 41, 43 and 44 draw their fallback forms.
