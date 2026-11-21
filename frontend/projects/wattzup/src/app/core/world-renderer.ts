@@ -3289,8 +3289,6 @@ export class ThreeWorldRenderer implements WorldRenderer {
     }
     if (lower.length) this.applyTier(tier);
     await this.warmRound(nextFrame);
-    // The warm-up drew hidden parts: its history is not the ride's, or the first frame smears.
-    this.freshHistory();
     await this.rehearse(nextFrame, segments);
     // WebGPU builds pipelines in the GPU process: wait for them, not just for the call.
     const device = (renderer.backend as { device?: GPUDevice }).device;
@@ -3319,6 +3317,11 @@ export class ThreeWorldRenderer implements WorldRenderer {
         speedKmh: 0,
         reducedMotion: this.reducedMotion,
       });
+      // The warm-up drew hidden parts from a camera no frame had placed yet, so the first
+      // rehearsal jumps the whole view and smears. The rest start the history afresh from a
+      // still camera, so the picture held while the frame period is measured, and the ride's
+      // first frames, are clean (#896).
+      if (i === 0) this.freshHistory();
     }
     this.probe = probe;
     this.lastFrameAt = null;
