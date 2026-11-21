@@ -1,6 +1,7 @@
 // A cyclist on a road bike, seen from the chase camera (L2-110): the rider's bike and the
 // simulated pacers are drawn from one kit. The bike points along -z; its rear axle is at +z.
 import {
+  type BufferGeometry,
   CanvasTexture,
   CapsuleGeometry,
   CircleGeometry,
@@ -9,15 +10,18 @@ import {
   DoubleSide,
   Group,
   type Material,
+  Matrix4,
   Mesh,
   MeshBasicMaterial,
   MeshStandardMaterial,
   PlaneGeometry,
+  Quaternion,
   SphereGeometry,
   SRGBColorSpace,
   TorusGeometry,
   Vector3,
 } from 'three/webgpu';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 const WHEEL = 0.34;
 const WHEELBASE = 0.5;
@@ -47,9 +51,6 @@ interface Limb {
 /** Geometry and materials shared by every cyclist in the scene. */
 export class CyclistKit {
   private readonly tube = new CylinderGeometry(1, 1, 1, 8);
-  private readonly tyre = new TorusGeometry(WHEEL - 0.012, 0.016, 8, 40);
-  private readonly rim = new TorusGeometry(WHEEL - 0.04, 0.012, 6, 40);
-  private readonly disc = new CircleGeometry(WHEEL - 0.04, 32);
   private readonly head = new SphereGeometry(0.1, 20, 16);
   private readonly helmet = new SphereGeometry(0.13, 18, 10, 0, Math.PI * 2, 0, Math.PI / 1.65);
   private readonly torso = new CapsuleGeometry(0.15, 0.3, 6, 12);
@@ -75,16 +76,87 @@ export class CyclistKit {
     side: DoubleSide,
   });
   readonly bottle = new MeshStandardMaterial({ color: 0x2f7bd0, roughness: 0.4 });
-  private readonly chainring = new TorusGeometry(0.1, 0.008, 6, 32);
   private readonly bottleShape = new CylinderGeometry(0.034, 0.034, 0.2, 10);
   private readonly bibPlane = new PlaneGeometry(0.21, 0.16);
+  private readonly frameShape: BufferGeometry;
+  private readonly bikeRubberShape: BufferGeometry;
+  private readonly bikeMetalShape: BufferGeometry;
+  private readonly wheelDiscsShape: BufferGeometry;
 
   /** The jersey's cut, tinted by each rider's colour: dark side panels and a pale hem band. */
   private readonly kitTexture = jerseyTexture();
   /** A road helmet's shell: vents running front to back over the crown. */
   private readonly ventTexture = ventTexture();
 
-  constructor(private readonly frame: Material) {}
+  constructor(private readonly frame: Material) {
+    const tyre = new TorusGeometry(WHEEL - 0.012, 0.016, 8, 40);
+    const rim = new TorusGeometry(WHEEL - 0.04, 0.012, 6, 40);
+    const disc = new CircleGeometry(WHEEL - 0.04, 32);
+    const chainring = new TorusGeometry(0.1, 0.008, 6, 32);
+
+    const front = new Vector3(0, WHEEL, -WHEELBASE);
+    const rear = new Vector3(0, WHEEL, WHEELBASE);
+    const bar = HANDS.clone().setY(HEAD_TOP.y + 0.03);
+    const tubes: [Vector3, Vector3, number][] = [
+      [BB, SEAT, 0.018],
+      [SEAT, HEAD_TOP, 0.016],
+      [BB, HEAD_BOTTOM, 0.022],
+      [HEAD_BOTTOM, HEAD_TOP, 0.02],
+      [HEAD_BOTTOM, front, 0.014],
+      [SEAT, SEAT.clone().add(new Vector3(0, 0.06, 0.02)), 0.012],
+      [HEAD_TOP, bar, 0.014],
+      [bar.clone().setX(-0.21), bar.clone().setX(0.21), 0.012],
+    ];
+    for (const x of [-0.045, 0.045]) {
+      tubes.push([BB.clone().setX(x), rear.clone().setX(x), 0.011]);
+      tubes.push([SEAT.clone().setX(x * 0.4), rear.clone().setX(x), 0.01]);
+    }
+    for (const x of [-0.21, 0.21]) {
+      const hood = bar
+        .clone()
+        .setX(x)
+        .add(new Vector3(0, 0, -0.06));
+      tubes.push([bar.clone().setX(x), hood, 0.012]);
+      tubes.push([hood, hood.clone().add(new Vector3(0, -0.13, 0.05)), 0.012]);
+    }
+    const frameParts = tubes.map(([a, b, r]) => stickGeometry(this.tube, a, b, r));
+    this.frameShape = mergeGeometries(frameParts, false)!;
+    for (const g of frameParts) g.dispose();
+
+    const rubberParts = [
+      wheelPartGeometry(tyre, -WHEELBASE),
+      wheelPartGeometry(tyre, WHEELBASE),
+      stickGeometry(
+        this.tube,
+        SEAT.clone().add(new Vector3(0, 0.07, 0.1)),
+        SEAT.clone().add(new Vector3(0, 0.07, -0.14)),
+        0.035,
+        1.6,
+      ),
+    ];
+    this.bikeRubberShape = mergeGeometries(rubberParts, false)!;
+    for (const g of rubberParts) g.dispose();
+
+    const ringPart = chainring.clone();
+    ringPart.rotateY(Math.PI / 2);
+    ringPart.translate(0.055, BB.y, BB.z);
+    const metalParts = [
+      wheelPartGeometry(rim, -WHEELBASE),
+      wheelPartGeometry(rim, WHEELBASE),
+      ringPart,
+    ];
+    this.bikeMetalShape = mergeGeometries(metalParts, false)!;
+    for (const g of metalParts) g.dispose();
+
+    const discParts = [wheelPartGeometry(disc, -WHEELBASE), wheelPartGeometry(disc, WHEELBASE)];
+    this.wheelDiscsShape = mergeGeometries(discParts, false)!;
+    for (const g of discParts) g.dispose();
+
+    tyre.dispose();
+    rim.dispose();
+    disc.dispose();
+    chainring.dispose();
+  }
 
   /** A rider in `jersey`, with race `number` pinned to their back, on a `frame` of their own. */
   make(jersey: Color, number: number, frame: Material = this.frame): Cyclist {
@@ -117,21 +189,21 @@ export class CyclistKit {
   }
 
   parts(): {
-    tyre: TorusGeometry;
-    rim: TorusGeometry;
-    disc: CircleGeometry;
+    frame: BufferGeometry;
+    bikeRubber: BufferGeometry;
+    bikeMetal: BufferGeometry;
+    wheelDiscs: BufferGeometry;
     head: SphereGeometry;
     helmet: SphereGeometry;
     torso: CapsuleGeometry;
-    chainring: TorusGeometry;
     bottle: CylinderGeometry;
   } {
     return {
-      chainring: this.chainring,
+      frame: this.frameShape,
+      bikeRubber: this.bikeRubberShape,
+      bikeMetal: this.bikeMetalShape,
+      wheelDiscs: this.wheelDiscsShape,
       bottle: this.bottleShape,
-      tyre: this.tyre,
-      rim: this.rim,
-      disc: this.disc,
       head: this.head,
       helmet: this.helmet,
       torso: this.torso,
@@ -139,14 +211,22 @@ export class CyclistKit {
   }
 
   dispose(): void {
-    for (const d of [this.tube, this.tyre, this.rim, this.disc, this.head, this.helmet])
+    for (const d of [
+      this.tube,
+      this.head,
+      this.helmet,
+      this.torso,
+      this.frameShape,
+      this.bikeRubberShape,
+      this.bikeMetalShape,
+      this.wheelDiscsShape,
+    ]) {
       d.dispose();
-    this.torso.dispose();
+    }
     for (const g of this.limbs.values()) g.dispose();
     this.kitTexture.dispose();
     this.ventTexture.dispose();
     this.bibPlane.dispose();
-    this.chainring.dispose();
     this.bottleShape.dispose();
     this.spokeLace.alphaMap?.dispose();
     for (const m of [
@@ -183,39 +263,15 @@ export class Cyclist {
   ) {
     const parts = kit.parts();
     // No blob under the bike: the shadow map grounds the rider in their own shape (#933, #937).
-    for (const z of [-WHEELBASE, WHEELBASE]) {
-      const tyre = new Mesh(parts.tyre, kit.rubber);
-      const rim = new Mesh(parts.rim, kit.metal);
-      const disc = new Mesh(parts.disc, kit.spokes);
-      const lace = new Mesh(parts.disc, kit.spokeLace);
-      for (const m of [tyre, rim, disc, lace]) {
-        m.rotation.y = Math.PI / 2;
-        m.position.set(0, WHEEL, z);
-        this.group.add(m);
-      }
-      tyre.castShadow = true;
-      this.wheelBlur.push(disc);
-    }
-    const front = new Vector3(0, WHEEL, -WHEELBASE);
-    const rear = new Vector3(0, WHEEL, WHEELBASE);
-    const tubes: [Vector3, Vector3, number][] = [
-      [BB, SEAT, 0.018],
-      [SEAT, HEAD_TOP, 0.016],
-      [BB, HEAD_BOTTOM, 0.022],
-      [HEAD_BOTTOM, HEAD_TOP, 0.02],
-      [HEAD_BOTTOM, front, 0.014],
-      [SEAT, SEAT.clone().add(new Vector3(0, 0.06, 0.02)), 0.012],
-      [HEAD_TOP, HANDS.clone().setY(HEAD_TOP.y + 0.03), 0.014],
-    ];
-    for (const x of [-0.045, 0.045]) {
-      tubes.push([BB.clone().setX(x), rear.clone().setX(x), 0.011]);
-      tubes.push([SEAT.clone().setX(x * 0.4), rear.clone().setX(x), 0.01]);
-    }
-    for (const [a, b, r] of tubes) this.group.add(this.stick(a, b, r, frame));
-    // The chainring on the drive side, and a bottle in its cage on the down tube.
-    const ring = new Mesh(parts.chainring, kit.metal);
-    ring.rotation.y = Math.PI / 2;
-    ring.position.copy(BB).setX(0.055);
+    const frameMesh = new Mesh(parts.frame, frame);
+    frameMesh.castShadow = true;
+    const bikeRubber = new Mesh(parts.bikeRubber, kit.rubber);
+    bikeRubber.castShadow = true;
+    const bikeMetal = new Mesh(parts.bikeMetal, kit.metal);
+    const spokeLace = new Mesh(parts.wheelDiscs, kit.spokeLace);
+    const blurDisc = new Mesh(parts.wheelDiscs, kit.spokes);
+    blurDisc.visible = false;
+    this.wheelBlur.push(blurDisc);
     const bottle = new Mesh(parts.bottle, kit.bottle);
     const down = HEAD_BOTTOM.clone().sub(BB);
     bottle.position
@@ -223,26 +279,7 @@ export class Cyclist {
       .addScaledVector(down, 0.45)
       .add(new Vector3(0, 0.035, 0.02));
     bottle.quaternion.setFromUnitVectors(UP, down.normalize());
-    this.group.add(ring, bottle);
-    // Drop bars: the tops across, and each drop curling down and back.
-    const bar = HANDS.clone().setY(HEAD_TOP.y + 0.03);
-    this.group.add(this.stick(bar.clone().setX(-0.21), bar.clone().setX(0.21), 0.012, frame));
-    for (const x of [-0.21, 0.21]) {
-      const hood = bar
-        .clone()
-        .setX(x)
-        .add(new Vector3(0, 0, -0.06));
-      this.group.add(this.stick(bar.clone().setX(x), hood, 0.012, frame));
-      this.group.add(this.stick(hood, hood.clone().add(new Vector3(0, -0.13, 0.05)), 0.012, frame));
-    }
-    const saddle = this.stick(
-      SEAT.clone().add(new Vector3(0, 0.07, 0.1)),
-      SEAT.clone().add(new Vector3(0, 0.07, -0.14)),
-      0.035,
-      kit.rubber,
-    );
-    saddle.scale.x *= 1.6;
-    this.group.add(saddle);
+    this.group.add(frameMesh, bikeRubber, bikeMetal, spokeLace, blurDisc, bottle);
     for (let i = 0; i < 2; i++) {
       const crank = this.stick(BB, BB, 0.014, kit.metal);
       this.cranks.push(crank);
@@ -481,6 +518,33 @@ function jerseyTexture(): CanvasTexture {
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
   return texture;
+}
+
+/** Places a unit cylinder between `a` and `b` in local bike space for static geometry merging. */
+function stickGeometry(
+  unitTube: BufferGeometry,
+  a: Vector3,
+  b: Vector3,
+  radius: number,
+  scaleX = 1,
+): BufferGeometry {
+  const part = unitTube.clone();
+  const pos = a.clone().lerp(b, 0.5);
+  const quat =
+    a.distanceTo(b) > 0
+      ? new Quaternion().setFromUnitVectors(UP, b.clone().sub(a).normalize())
+      : new Quaternion();
+  const scale = new Vector3(radius * scaleX, Math.max(a.distanceTo(b), 0.001), radius);
+  part.applyMatrix4(new Matrix4().compose(pos, quat, scale));
+  return part;
+}
+
+/** Places a wheel torus or spoke disc upright at axle `z` along the bike's centre line. */
+function wheelPartGeometry(shape: BufferGeometry, z: number): BufferGeometry {
+  const part = shape.clone();
+  part.rotateY(Math.PI / 2);
+  part.translate(0, WHEEL, z);
+  return part;
 }
 
 /** Puts a limb (or a unit tube, `stretch`) between two points. */
