@@ -199,3 +199,32 @@ In every built world, placeholder looks included, the road bends left and right 
 | 189 | Zwift Group Workout: HIIT Intervals | Bay of Islands Group Ride | 35% |  | A New Zealand bunch ride past sheltered bays and green hills. |
 | 190 | Race Winning Intervals | Yorkshire Dales | 35% |  | Stone walls, moors and race-day crowds on the Buttertubs climb. |
 | 191 | 60 Minute Turbo Trainer Class | Engadin Lakes | 35% |  | A Swiss high valley road along St. Moritz's chain of lakes. |
+
+## Rider feedback
+
+What the rider has said about the worlds as they ride now. A world named here is kept as it is when it changes: check any change to it against how it rides now. The references are where a new world, or a reworked one, looks first.
+
+**The top references, in order.** Ibiza Sunset Strip (`ibiza`) is the best world, hands down ([#919](https://github.com/QuinntyneBrown/wattzup/issues/919)). Sa Calobra, Mallorca (`calobra`) ranks with it, and its concept, its camera angles and its movement are the model for other worlds' concepts, framing and smooth motion ([#921](https://github.com/QuinntyneBrown/wattzup/issues/921)). Then Napa Vineyards (`napa`, [#915](https://github.com/QuinntyneBrown/wattzup/issues/915)), Dubai Marina (`dubai`, [#923](https://github.com/QuinntyneBrown/wattzup/issues/923)) and Amsterdam Canals (`amsterdam`, [#903](https://github.com/QuinntyneBrown/wattzup/issues/903)).
+
+**Epic, kept as references for look and feel.** Sea Point, Cape Town (`seapoint`, [#908](https://github.com/QuinntyneBrown/wattzup/issues/908)); Montreal Jazz Fest (`montreal`, [#909](https://github.com/QuinntyneBrown/wattzup/issues/909)); Marina Bay Night (`marinabay`, [#913](https://github.com/QuinntyneBrown/wattzup/issues/913)); Glastonbury Fields (`glastonbury`, [#916](https://github.com/QuinntyneBrown/wattzup/issues/916)); Santa Monica Pier (`santamonica`, [#927](https://github.com/QuinntyneBrown/wattzup/issues/927)); the Antwerp Port Sprint (`antwerp`, [#928](https://github.com/QuinntyneBrown/wattzup/issues/928)); South Beach Sunrise, really good ([#898](https://github.com/QuinntyneBrown/wattzup/issues/898)).
+
+**Good, kept as they are.** Golden Gate Park (`goldengate`, [#907](https://github.com/QuinntyneBrown/wattzup/issues/907)), Stanley Park Seawall (`stanleypark`, [#910](https://github.com/QuinntyneBrown/wattzup/issues/910)), Edinburgh Fringe (`edinburgh`, [#911](https://github.com/QuinntyneBrown/wattzup/issues/911)), North Shore, Oahu (`northshore`, [#912](https://github.com/QuinntyneBrown/wattzup/issues/912)), Montmartre (`montmartre`, [#917](https://github.com/QuinntyneBrown/wattzup/issues/917)) and Prospect Park (`prospect`, [#920](https://github.com/QuinntyneBrown/wattzup/issues/920)).
+
+**References for one part of a world.**
+
+| For | The reference | Kept |
+| --- | --- | --- |
+| Gameplay | Suburban Sunrise ([#899](https://github.com/QuinntyneBrown/wattzup/issues/899)) | How it plays |
+| Concept | Mont Ventoux (`ventoux`, [#906](https://github.com/QuinntyneBrown/wattzup/issues/906)); Lee Valley Velodrome (`velodrome`, [#925](https://github.com/QuinntyneBrown/wattzup/issues/925)), above all for indoor and track worlds | The concept, and the velodrome's scene |
+| Minimalist worlds | Rio Sambadrome (`sambadrome`, [#930](https://github.com/QuinntyneBrown/wattzup/issues/930)), Lisbon Tram Hills (`lisbon`, [#931](https://github.com/QuinntyneBrown/wattzup/issues/931)), Cornish Harbour (`cornwall`, [#932](https://github.com/QuinntyneBrown/wattzup/issues/932)) | Kept minimalist |
+| Roads | Coney Island Boardwalk (`coney`, [#926](https://github.com/QuinntyneBrown/wattzup/issues/926)) first, then Bonneville Salt Flats (`bonneville`, [#918](https://github.com/QuinntyneBrown/wattzup/issues/918)) | Both roads as they are; Coney Island is epic as a whole |
+| Turns | Machu Picchu Road (`machupicchu`, [#939](https://github.com/QuinntyneBrown/wattzup/issues/939)) | How its road bends |
+| Hills and scenery | Winnats Pass (`winnats`, [#924](https://github.com/QuinntyneBrown/wattzup/issues/924)) | Its scenes and hills |
+| Atmosphere | Strade Bianche's smoke (`strade`, [#922](https://github.com/QuinntyneBrown/wattzup/issues/922)): the `dust` `Mist` and `addDust()` clouds over the gravel in `world-strade.ts` | The dust |
+| Trees | Angkor Temples' tall trees (`angkor`, [#929](https://github.com/QuinntyneBrown/wattzup/issues/929)): `addTrees()` in `world-angkor.ts` | The trees |
+| Sunsets | Kīlauea Lava Road (`kilauea`, [#936](https://github.com/QuinntyneBrown/wattzup/issues/936)) | Its sky and light |
+| Sun flares | Every world's sun flare ([#934](https://github.com/QuinntyneBrown/wattzup/issues/934)): most likely the physical sky's sun (technique 11) bloomed by screen-space glare (technique 49), both from `medium` (L2-111); no code is named flare, so confirm with the rider before changing either | Kept through any change to skies, lighting or tiers |
+| Low-memory devices | Giza Plateau ([#904](https://github.com/QuinntyneBrown/wattzup/issues/904)) and Daytona Beach Sand ([#905](https://github.com/QuinntyneBrown/wattzup/issues/905)) run well on them | Kept light; how they are built is the model for making other worlds light |
+| Music | See [World music](world-music.md#rider-feedback) | |
+
+**Needs rework.** Hoover Dam (`hoover`) is terrible: it has no scene of its own yet ([#940](https://github.com/QuinntyneBrown/wattzup/issues/940)).

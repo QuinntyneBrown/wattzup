@@ -207,3 +207,11 @@ Downloaded 20 November 2026.
 | Yorkshire Dales | `music/dales.ogg` | Old Story From Scotland | [_Music_for_Creators_](https://pixabay.com/users/_music_for_creators_-24430395/) | [147143](https://pixabay.com/music/folk-old-story-from-scotland-147143/) |
 | Engadin Lakes | `music/engadin.ogg` | Swiss Lights | [JoyInSound](https://pixabay.com/users/joyinsound-51634429/) | [403374](https://pixabay.com/music/future-bass-swiss-lights-403374/) |
 | Miami Neon Nights | `music/miami.ogg` | Miami | [AlisiaBeats](https://pixabay.com/users/alisiabeats-39461785/) | [177359](https://pixabay.com/music/funk-miami-177359/) |
+
+## Rider feedback
+
+Overseas Highway's track, Saint Kitts Bay, is the best music of any world
+([#935](https://github.com/QuinntyneBrown/wattzup/issues/935)), and Brooklyn Bridge Commute's,
+Beautiful Boom Bap, the third best
+([#938](https://github.com/QuinntyneBrown/wattzup/issues/938)). Keep both tracks, and use them as
+the reference when choosing music for other worlds.
