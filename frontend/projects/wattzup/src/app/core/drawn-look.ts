@@ -32,3 +32,21 @@ export function toonRamp(size: number): Uint8Array {
  * catches silhouettes, not the road and ground, which face up.
  */
 export const RIM = { power: 3, strength: 0.35 } as const;
+
+/**
+ * The ink outline's thresholds (technique 52). `depth` is the jump in view depth to a neighbour,
+ * as a share of the pixel's own depth; `normal` is 1 − N·N' between the two. Each edge is soft
+ * over ±`soft`; `strength` is how dark a full edge inks.
+ */
+export const EDGE = { depth: 0.06, normal: 0.4, soft: 0.02, strength: 0.85 } as const;
+
+/** Ink colours: the scenery's, and a warmer one for the rider and pacers. */
+export const INK = { scenery: 0x2a2522, riders: 0x6b2e12 } as const;
+
+/** How much ink a pixel takes, 0 to 1: the larger of its depth and normal edges. */
+export function edgeAmount(depthJump: number, normalTurn: number): number {
+  return Math.max(
+    smoothstep(EDGE.depth - EDGE.soft, EDGE.depth + EDGE.soft, depthJump),
+    smoothstep(EDGE.normal - EDGE.soft, EDGE.normal + EDGE.soft, normalTurn),
+  );
+}

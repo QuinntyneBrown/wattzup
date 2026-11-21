@@ -80,6 +80,7 @@ export const TECHNIQUES: readonly Technique[] = [
   t(50, 'Heat haze', 'high', 'off'),
   // The drawn look: at `low`, in place of PBR (AC11, ADR 0024).
   t(51, 'Banded toon shading', 'low', 'kept', true),
+  t(52, 'Ink outlines', 'low', 'kept', true),
 ];
 
 const rank = (tier: Tier) => TIERS.indexOf(tier);

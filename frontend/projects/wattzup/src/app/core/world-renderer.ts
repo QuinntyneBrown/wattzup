@@ -10,8 +10,10 @@ import { traa } from 'three/addons/tsl/display/TRAANode.js';
 import { SkyMesh } from 'three/addons/objects/SkyMesh.js';
 import {
   convertToTexture,
+  directionToColor,
   float,
   mrt,
+  normalView,
   output,
   pass,
   screenUV,
@@ -73,6 +75,7 @@ import {
 import { bendAhead, bendPoint, heading, lean, racingLine } from './scene-bend';
 import { EASE_PER_SECOND, MIN_SPEED, nextArch, roadAhead, type RoadPoint } from './scene-road';
 import { RoadBend } from './world-bend';
+import { inkOutline } from './world-ink';
 import { ToonLook } from './world-toon';
 import { Corners } from './world-corners';
 import { RampSign } from './world-ramps';
@@ -3179,6 +3182,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
   private readonly unbent = new Set<Object3D>([this.sky]);
   /** The drawn look's toon shading at `low` (L2-111 technique 51). */
   private readonly toon = new ToonLook();
+  /** What the rider's and pacers' twins write to the scene pass: ink them warmer (technique 52). */
+  private readonly warmInk = mrt({ ink: float(1) });
   private bendSamples: Float32Array = new Float32Array(0);
   private drawn = 0;
 
@@ -3411,6 +3416,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
       for (const m of list) if (m && !(m as { positionNode?: unknown }).positionNode) unbent++;
     });
     this.probe.unbent = unbent;
+    this.probe.outlines = this.on.has(52);
   }
 
   /** The scene's distinct materials by variant, for the performance sweep (#679). */
@@ -3493,6 +3499,12 @@ export class ThreeWorldRenderer implements WorldRenderer {
 
     // At low, lit surfaces shade in bands; the twins follow the bend at once (technique 51).
     this.toon.apply(this.scene, on.has(51), new Color(look.sky), this.unbent);
+    // The rider and pacers take a warmer ink than the scenery (technique 52).
+    if (on.has(52)) {
+      for (const rider of [this.you, ...this.pacers.values()]) {
+        if (rider) this.toon.inkWarm(rider.group, this.warmInk);
+      }
+    }
     this.bend.apply(this.scene, this.unbent);
     this.report();
 
@@ -3505,7 +3517,17 @@ export class ThreeWorldRenderer implements WorldRenderer {
     const pipeline = new RenderPipeline(renderer);
     const scenePass = pass(this.scene, this.camera);
     const needsVelocity = on.has(7) || on.has(33);
-    if (needsVelocity) scenePass.setMRT(mrt({ output, velocity }));
+    // The ink outline reads normals and the riders' ink mask beside the colour (technique 52).
+    const outlines = on.has(52);
+    if (needsVelocity || outlines) {
+      scenePass.setMRT(
+        mrt({
+          output,
+          ...(needsVelocity ? { velocity } : {}),
+          ...(outlines ? { normal: directionToColor(normalView), ink: float(0) } : {}),
+        }),
+      );
+    }
     const depth = scenePass.getTextureNode('depth');
     const beauty = scenePass.getTextureNode('output');
 
@@ -3535,6 +3557,12 @@ export class ThreeWorldRenderer implements WorldRenderer {
     if (on.has(33) && needsVelocity) {
       const moving = scenePass.getTextureNode('velocity');
       color = motionBlur(convertToTexture(color), moving.mul(0.5)) as unknown as ColorNode;
+    }
+    if (outlines) {
+      color = inkOutline(
+        color,
+        scenePass as unknown as Parameters<typeof inkOutline>[1],
+      ) as unknown as ColorNode;
     }
     if (on.has(49)) color = color.add(bloom(color, 0.12, 0.2, 1.4)) as unknown as ColorNode;
     pipeline.outputNode = on.has(7)

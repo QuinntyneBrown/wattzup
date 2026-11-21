@@ -68,6 +68,23 @@ export class ToonLook {
     });
   }
 
+  /**
+   * Marks the toon twins under `root` as inked warmer: they write 1 to the scene pass's `ink`
+   * target (technique 52). Only twins, which exist only at `low`, where the outline pass runs.
+   */
+  inkWarm(root: Object3D, ink: NonNullable<MeshToonNodeMaterial['mrtNode']>): void {
+    root.traverse((object) => {
+      const mesh = object as Mesh;
+      if (!mesh.isMesh) return;
+      for (const m of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) {
+        const twin = m as MeshToonNodeMaterial;
+        if (!twin.isMeshToonNodeMaterial || twin.mrtNode === ink) continue;
+        twin.mrtNode = ink;
+        twin.needsUpdate = true;
+      }
+    });
+  }
+
   dispose(): void {
     for (const twin of this.made) twin.dispose();
     this.ramp.dispose();
@@ -110,6 +127,7 @@ export class ToonLook {
     twin.normalNode = source.normalNode ?? null;
     twin.positionNode = source.positionNode ?? null;
     twin.maskNode = source.maskNode ?? null;
+    twin.mrtNode = source.mrtNode ?? null;
     twin.gradientMap = this.ramp;
     // Rim light: (1 − N·V)^power × strength, in the sky's colour, added to the glow it had. It
     // fades on surfaces facing up, so the road and ground seen edge-on do not wash out.
