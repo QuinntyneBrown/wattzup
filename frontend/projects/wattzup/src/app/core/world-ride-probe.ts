@@ -28,6 +28,8 @@ export interface WorldRideProbeReport {
   drawCalls: number;
   /** Shader programs alive. */
   programs: number;
+  /** Shader programs alive when the scene had loaded, before its first frame (L2-111 AC10). */
+  programsBeforeRide: number | null;
   /** The scene's distinct materials by type and features: where program variants come from. */
   materials: Record<string, number>;
 }
@@ -59,6 +61,7 @@ export function probeReport(
     gpuMs: gpuTimed ? [] : null,
     drawCalls: 0,
     programs: 0,
+    programsBeforeRide: null,
     materials: {},
   };
   (probe as { report?: WorldRideProbeReport }).report = report;
