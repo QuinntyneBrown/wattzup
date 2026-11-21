@@ -325,3 +325,13 @@ Every iteration below is measured across a **45-second sustained ride** (`record
 | --------------- | ------: | --------: | --------------- | ----------------------------- | ---------------------: | ------: |
 | **`low`**       |    60.6 |      16.7 | **17.1 / 17.8** | 591 → **328 (−263, −44.5 %)** |              65 (`+0`) |      87 |
 | **`high`**      |    54.8 |      17.5 | 25.7 / 35.7     | 974 → **469 (−505, −51.8 %)** |             240 (`+0`) |      89 |
+
+### Iteration 8: Distance-Gated Pacer Shadow Casting, Merged `addArch()` & Pre-Warmed `RampSign` Texture (`world-cyclist.ts`, `world-ramps.ts`, `world-renderer.ts`)
+
+- **Change**: Added `Cyclist.setCastShadow(on)` and gated pacer shadow casting in `placePacers()` to pacers inside the directional shadow corridor (`p.metres ∈ (-25, 75)` in Old Town), merged `addArch()`'s 8 steel truss chords and 3 frame boxes into 2 meshes with an in-place `1024 × 96` banner canvas, and bound `RampSign`'s persistent `192 × 256` `CanvasTexture` (`alphaTest: 0.5`, opaque pass) at construction time so ramp grade updates repaint in place with zero shader recompiles and full `ToonLook` twin sharing.
+- **45-Second Results**:
+
+| Tier (`webgpu`) | Avg FPS (Before → After) | Median ms       | p95 ms (Before → After)   | GPU Median / p95 ms               | Programs (`+mid-ride`) | CDP Script ms/f     |
+| --------------- | ------------------------ | --------------- | ------------------------- | --------------------------------- | ---------------------: | ------------------- |
+| **`low`**       | 60.6 → **60.6**          | **16.7**        | **17.1**                  | 5.96 / 7.01                       |     65 → **64 (`+0`)** | 7.891 → **7.626**   |
+| **`high`**      | 54.8 → **56.5 (+3.1 %)** | 17.5 → **17.3** | 25.7 → **22.3 (−3.4 ms)** | 10.42 / 12.91 → **10.35 / 11.53** |   240 → **239 (`+0`)** | 10.633 → **10.430** |

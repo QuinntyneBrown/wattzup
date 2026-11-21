@@ -8,6 +8,7 @@ import { ao } from 'three/addons/tsl/display/GTAONode.js';
 import { motionBlur } from 'three/addons/tsl/display/MotionBlur.js';
 import { traa } from 'three/addons/tsl/display/TRAANode.js';
 import { SkyMesh } from 'three/addons/objects/SkyMesh.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {
   convertToTexture,
   directionToColor,
@@ -3196,7 +3197,13 @@ export class ThreeWorldRenderer implements WorldRenderer {
   private plainRoad: CanvasTexture | null = null;
   private layeredRoad: CanvasTexture | null = null;
   private roadRelief: CanvasTexture | null = null;
-  private archLabel: { text: string; mesh: Mesh; material: MeshBasicMaterial } | null = null;
+  private archLabel: {
+    text: string;
+    canvas: HTMLCanvasElement;
+    texture: CanvasTexture;
+    mesh: Mesh;
+    material: MeshBasicMaterial;
+  } | null = null;
   private world: World | null = null;
   private look: Look = LOOKS.oldtown;
   private grade = 0;
@@ -3873,10 +3880,12 @@ export class ThreeWorldRenderer implements WorldRenderer {
   /** Puts each pacer in view at its gap, and hides the rest (L2-107 AC7). */
   private placePacers(world: World, frame: SceneFrame, ahead: RoadPoint[]): void {
     for (const rider of this.pacers.values()) rider.group.visible = false;
+    const shadowAhead = (world.id === 'oldtown' ? 45 : 25) + 30;
     for (const p of pacersOnRoad(frame.time, AHEAD * STEP)) {
       const rider = this.pacers.get(p.jersey);
       if (!rider) continue;
       rider.group.visible = true;
+      rider.setCastShadow(p.metres > -25 && p.metres < shadowAhead);
       // Through a bend each pacer cuts to the inside, towards the apex; one beside the rider
       // holds their lane so as not to ride into them.
       const clear = Math.min(Math.max((Math.abs(p.metres) - 3) / 10, 0), 1);
@@ -3893,13 +3902,13 @@ export class ThreeWorldRenderer implements WorldRenderer {
     }
   }
 
-  /** The arch over the road ahead: two posts, a beam and its label. */
+  /** The arch over the road ahead: two posts, a beam and its label, merged per material. */
   private addArch(): void {
     const material = new MeshStandardMaterial({ color: 0x1b1e24, roughness: 0.5 });
     const steel = new MeshStandardMaterial({ color: 0x8d939b, metalness: 0.7, roughness: 0.35 });
-    // Each leg is a truss: four steel chords on a weighted foot.
-    const chord = new BoxGeometry(0.06, 5.2, 0.06);
-    const foot = new BoxGeometry(0.9, 0.25, 0.9);
+    // Each leg is a truss: four steel chords on a weighted foot, merged into 1 steel + 1 frame mesh.
+    const chordParts: BufferGeometry[] = [];
+    const frameParts: BufferGeometry[] = [];
     for (const x of [-ROAD_HALF - 0.7, ROAD_HALF + 0.7]) {
       for (const [dx, dz] of [
         [-0.18, -0.18],
@@ -3907,20 +3916,27 @@ export class ThreeWorldRenderer implements WorldRenderer {
         [-0.18, 0.18],
         [0.18, 0.18],
       ] as const) {
-        const mesh = new Mesh(chord, steel);
-        mesh.position.set(x + dx, 2.75, dz);
-        mesh.castShadow = true;
-        this.arch.add(mesh);
+        const c = new BoxGeometry(0.06, 5.2, 0.06);
+        c.translate(x + dx, 2.75, dz);
+        chordParts.push(c);
       }
-      const base = new Mesh(foot, material);
-      base.position.set(x, 0.125, 0);
-      base.castShadow = true;
-      this.arch.add(base);
+      const f = new BoxGeometry(0.9, 0.25, 0.9);
+      f.translate(x, 0.125, 0);
+      frameParts.push(f);
     }
-    const beam = new Mesh(new BoxGeometry(2 * ROAD_HALF + 2, 1.4, 0.45), material);
-    beam.position.y = 5.6;
-    beam.castShadow = true;
-    this.arch.add(beam);
+    const beamPart = new BoxGeometry(2 * ROAD_HALF + 2, 1.4, 0.45);
+    beamPart.translate(0, 5.6, 0);
+    frameParts.push(beamPart);
+    const chordsGeo = mergeGeometries(chordParts, false)!;
+    const frameGeo = mergeGeometries(frameParts, false)!;
+    for (const g of [...chordParts, ...frameParts]) g.dispose();
+
+    const chordsMesh = new Mesh(chordsGeo, steel);
+    chordsMesh.castShadow = true;
+    const frameMesh = new Mesh(frameGeo, material);
+    frameMesh.castShadow = true;
+    this.arch.add(chordsMesh, frameMesh);
+
     // The line across the road where the effort starts.
     const line = new Mesh(
       new PlaneGeometry(2 * ROAD_HALF, 0.4),
@@ -3930,21 +3946,31 @@ export class ThreeWorldRenderer implements WorldRenderer {
     line.position.y = 0.02;
     line.receiveShadow = true;
     this.arch.add(line);
-    // The banner's lettering: one mesh made with the arch, so the warm-up compiles it at every
-    // tier it may be drawn at; a new effort swaps only its texture (#882).
+    // The banner's lettering: one persistent canvas/texture painted in place (#882).
+    const labelCanvas = document.createElement('canvas');
+    labelCanvas.width = 1024;
+    labelCanvas.height = 96;
+    paintArchLabel(labelCanvas, '');
+    const labelTex = new CanvasTexture(labelCanvas);
+    labelTex.colorSpace = SRGBColorSpace;
     const label = new Mesh(
       new PlaneGeometry(2 * ROAD_HALF + 1.8, 1.2),
-      new MeshBasicMaterial({ map: labelTexture(''), side: DoubleSide }),
+      new MeshBasicMaterial({ map: labelTex, side: DoubleSide }),
     );
     label.position.set(0, 5.6, 0.24);
     this.arch.add(label);
-    this.archLabel = { text: '', mesh: label, material: label.material };
+    this.archLabel = {
+      text: '',
+      canvas: labelCanvas,
+      texture: labelTex,
+      mesh: label,
+      material: label.material,
+    };
     this.disposables.push(
       material,
       steel,
-      chord,
-      foot,
-      beam.geometry,
+      chordsGeo,
+      frameGeo,
       line.geometry,
       line.material as Material,
     );
@@ -4061,8 +4087,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.arch.position.set(0, heightAt(ahead, arch.metres), -arch.metres);
     const label = this.archLabel;
     if (!label || label.text === arch.label) return;
-    label.material.map?.dispose();
-    label.material.map = labelTexture(arch.label);
+    paintArchLabel(label.canvas, arch.label);
+    label.texture.needsUpdate = true;
     label.text = arch.label;
   }
 
@@ -4325,27 +4351,20 @@ function riderColour(element: Element, n: number): Color {
 /** Frame paints for the pacers' bikes: white, red, navy, silver and teal. */
 const FRAME_PAINT = [0xeeeeea, 0xb3262c, 0x1d2b4a, 0xa9aeb5, 0x2a7d7a];
 
-function labelTexture(text: string): CanvasTexture {
-  const canvas = document.createElement('canvas');
-  canvas.width = 1024;
-  canvas.height = 96;
+function paintArchLabel(canvas: HTMLCanvasElement, text: string): void {
   const ctx = canvas.getContext('2d');
-  if (ctx) {
-    // As the mocks: dark lettering on the volt banner, inside a dark keyline.
-    ctx.fillStyle = '#d8ff3e';
-    ctx.fillRect(0, 0, 1024, 96);
-    ctx.strokeStyle = '#1b1e24';
-    ctx.lineWidth = 6;
-    ctx.strokeRect(8, 8, 1008, 80);
-    ctx.fillStyle = '#1b1e24';
-    ctx.font = 'bold 60px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(text.toUpperCase(), 512, 50);
-  }
-  const texture = new CanvasTexture(canvas);
-  texture.colorSpace = SRGBColorSpace;
-  return texture;
+  if (!ctx) return;
+  // As the mocks: dark lettering on the volt banner, inside a dark keyline.
+  ctx.fillStyle = '#d8ff3e';
+  ctx.fillRect(0, 0, 1024, 96);
+  ctx.strokeStyle = '#1b1e24';
+  ctx.lineWidth = 6;
+  ctx.strokeRect(8, 8, 1008, 80);
+  ctx.fillStyle = '#1b1e24';
+  ctx.font = 'bold 60px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text.toUpperCase(), 512, 50);
 }
 
 /** How many times the load runs the ride's own frame before the ride starts (#882). */

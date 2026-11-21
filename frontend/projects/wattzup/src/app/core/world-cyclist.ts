@@ -331,6 +331,8 @@ export class Cyclist {
   readonly wheelBlur: Mesh[] = [];
   private readonly legs: { thigh: Limb; shin: Limb; foot: Mesh; side: number }[] = [];
   private readonly cranks: Mesh[] = [];
+  private readonly shadowCasters: Mesh[] = [];
+  private castingShadow = true;
   /** Torso, head and arms: they pivot about the hands when the rider stands on the pedals. */
   private readonly body = new Group();
   private readonly hip = HIP.clone();
@@ -412,7 +414,19 @@ export class Cyclist {
       this.legs.push({ thigh, shin, foot, side });
     }
     this.group.add(this.body);
+    this.group.traverse((o) => {
+      if ((o as Mesh).isMesh && o.castShadow) this.shadowCasters.push(o as Mesh);
+    });
     this.pose(0);
+  }
+
+  /** Enables or disables shadow casting across this cyclist's meshes when entering/leaving the shadow box. */
+  setCastShadow(on: boolean): void {
+    if (this.castingShadow === on) return;
+    this.castingShadow = on;
+    for (const mesh of this.shadowCasters) {
+      mesh.castShadow = on;
+    }
   }
 
   /**

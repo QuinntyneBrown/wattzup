@@ -75,4 +75,30 @@ describe('CyclistKit rigid bike and body sub-assemblies', () => {
     expect(disposeSpy).toHaveBeenCalledOnce();
     frame.dispose();
   });
+
+  it('toggles shadow casting across all cyclist shadow-casting meshes via setCastShadow()', () => {
+    const frame = new MeshStandardMaterial({ color: 0xeeeeea });
+    const kit = new CyclistKit(frame);
+    const cyclist = kit.make(new Color(0xd7ff3a), 4, frame);
+
+    const countCasters = () => {
+      let n = 0;
+      cyclist.group.traverse((o) => {
+        if ((o as Mesh).isMesh && o.castShadow) n++;
+      });
+      return n;
+    };
+
+    const initial = countCasters();
+    expect(initial).toBeGreaterThan(0);
+
+    cyclist.setCastShadow(false);
+    expect(countCasters()).toBe(0);
+
+    cyclist.setCastShadow(true);
+    expect(countCasters()).toBe(initial);
+
+    kit.dispose();
+    frame.dispose();
+  });
 });
