@@ -76,6 +76,7 @@ None.
 - **Reduced motion.** `SceneFrame.reducedMotion` drops the `off` techniques and holds the clock of the `still` ones (L2-111 criterion 5; L2-110 criterion 6).
 
 **Compile-time technique features (`core/material-features.ts`, #680).** World Ride draws through `WebGPURenderer` on both backends, so every material is a node material on WebGPU and on WebGL2 alike, and three's node builder emits code only for the features a material has. That makes each per-material technique a compile-time switch:
+
 - clear-coat frame paint (15) compiles in only while `clearcoat > 0`, which is from `medium`;
 - the wet road (14) is roughness and colour uniforms, and its sky reflection compiles in only while the road has an `envMap`, which is only in a wet scene from `medium`;
 - the layered road (9) swaps the texture its map reads, which is a uniform, not a program;
@@ -84,6 +85,7 @@ None.
 `defines` and `customProgramCacheKey` belong to the classic `WebGLRenderer`, which World Ride does not use. `compiledFeatures(material)` names the features that decide a program; on a tier change, the renderer sets `needsUpdate` only on a material whose key changed, so a drop rebuilds only the programs it must. The bend (L2-111 criterion 8) stays in every material's vertex stage, unchanged. The performance sweep's material variants include `env-map`, so a run shows which materials carry the wet-surface code.
 
 **Compile ahead (L2-111 AC10, #682).** A program compiled the first time a mesh appears costs a long frame, which the budget reads as slowness. So `ThreeWorldRenderer.start` ends with a warm-up, while the canvas is still empty. It sizes the renderer to the canvas, then draws the scene through the tier's pass chain over three frames. Every part is drawn, with hidden parts made visible and frustum culling off. Then everything is put back and the warm-up waits for the GPU queue. Three details matter:
+
 - Lights are left as they are, because the lights a material is compiled for are part of its program.
 - Three frames are needed: the scene pass runs once per animation frame, the pass chain's history takes its programs from the second frame, and TRAA's depth copy waits for the first frame at the drawing buffer's full size.
 - The frames come from `FrameScheduler.nextFrame()`, passed into `start`, so the scheduler stays the only `requestAnimationFrame` caller.
@@ -91,6 +93,7 @@ None.
 `renderer.compileAsync(scene, camera)` was tried first and rejected. It compiles for drawing straight to the screen, while World Ride draws the scene into the pass chain's render targets, so the first frame compiled its own set as well (112 programs instead of 70). The probe's `programsBeforeRide` is the count when `start` resolves; the sweep checks that the count stays there at a pinned tier, and reports `compiledDuringRide` for every scene.
 
 **Compile the next-lower tier too, and rehearse the first frames (L2-111 AC10, #882).** The warm-up first draws the scene at the tier a drop would lead to (`nextLower`), then at the tier the ride starts at, so the ride inherits the starting tier's history. Three things keep a drop from compiling anything:
+
 - **Shared pass chains.** Pass chains are kept, keyed by the techniques `buildPipeline` reads (7, 33, 36, 49, 50, 52). Tiers that draw the same passes share one chain: `ultra` and `high` do, since no ultra-only technique is built yet. This matters for GTAO, whose instances share one full-screen quad in three. Two chains each with an AO pass would release each other's program.
 - **The sky's light, made once.** The image-based light from the physical sky (6) is made once per scene. Remade at every tier change, it compiled PMREM's programs again and gave every lit material a new environment.
 - **Built once at load.** The flat sky's node (53) is built once. So is the arch's banner mesh, made with the arch: a new effort swaps only its texture, where a new mesh compiled at the current tier mid-ride.
@@ -100,14 +103,15 @@ None.
 Last, the ride's own frame (laying the road, placing riders, scenery and the arch) is rehearsed four times at the start line with the ride's segments. Its first run cost 30 to 48 ms of script. The rehearsal is hidden from the probe and the frame budget. The probe counts every program and render pipeline the backend creates (`compiled`). A test-only `drop` request lowers the tier one step (`FrameBudget.lower`), so the sweep can check a drop.
 
 Measured on the reference laptop (Adreno X1-85, headed):
+
 - **Drops.** A drop compiled 49 to 99 programs on WebGPU before. It now compiles none: Old Town, South Beach, Times Square and Stelvio, from `medium`, `high` and `ultra`, on WebGPU and WebGL2 (24 of 24).
-- **First 5 s.** On WebGPU, across runs, Stelvio has no frame over 50 ms at `low`, `medium` and `ultra`, and 0 or 1 at `high` (it had 1 at every tier before). Times Square has none at `low` and `medium` (it had 1 or 2), and 1 to 4 at `high` and `ultra`, its first frame landing near 50 ms. Old Town (every tier) and South Beach (`medium` and up) draw over 50 ms in steady state on this laptop, so the 50 ms bar cannot be met there without a faster scene.
+- **First 5 s.** On WebGPU, across runs, Stelvio has no frame over 50 ms at `low`, `medium` and `ultra`, and 0 or 1 at `high` (it had 1 at every tier before). Times Square has none at `low` and `medium` (it had 1 or 2), and 1 to 4 at `high` and `ultra`, its first frame landing near 50 ms. After batching Old Town's frontages, corners, lamps and ribbons (`world-oldtown.ts`, `world-corners.ts`), Old Town locks to 60 fps (16.7 ms median) at `low` with 0–1 first-5 s stalls and cuts `medium`–`ultra` median frame times by 44–57 %; South Beach (`medium` and up) still draws over 50 ms in steady state until its street adopts the same batching.
 
 **Shared surface materials (`core/world-materials.ts`, #681).** `SurfaceMaterials` hands a scene one `MeshStandardMaterial` per look, keyed by every parameter (textures by identity, colours by value), and disposes each once with the scene. A shared material is never changed after it is handed out; a part that changes its material as it draws (Times Square's flashing ball facets) makes its own. Times Square's street asks it for every standard surface. Measured with the sweep, that took Times Square from 318 to 316 distinct materials with the same programs and no change in frame time beyond noise: three already shares one program between materials alike, and most of the scene's materials are per-texture billboards that cannot be shared. Other scenes move over only when a profile shows near-duplicate materials worth sharing.
 
 **The bend at every tier (L2-111 criterion 8, ADR 0023).** The road's bend is a vertex-stage `positionNode` on every material, not a technique: it is on at every tier and on both backends, and no tier turns it off. Its cost is a few arithmetic steps per vertex and one 2 KB upload a frame; frustum culling is off for bent meshes. The frame budget is the same as on a straight road, so a screen that cannot hold its tier on a bending road drops one as it would for any other load (`world-ride/draw-class-scene`, The bending road).
 
-**Test-only tier hook (`core/world-ride-probe.ts`, #672).** The performance sweep (`frontend/e2e/sweeps/performance.sweep.ts`) must draw every tier on demand. Its fixture, `e2e/fixtures/world-ride-probe.ts`, sets `window.__wzWorldRide = { tier, backend }` before the app boots; `backend: 'webgl2'` builds the renderer with `forceWebGL`, so the sweep can profile the WebGL2 fallback on a WebGPU screen (#679). `readWorldRideProbe` reads it when the renderer starts. The scene then opens at that tier (`ultra` draws at `high` on WebGL2), and its `FrameBudget` is built `pinned`, so no window lowers it. The renderer keeps `__wzWorldRide.report` current: `{ tier, backend, frames, gpuMs, drawCalls, programs, materials }`, the time between each drawn frame and the last frame's draw calls (counted across every pass, so `info.autoReset` is off while the hook is set) and the programs alive (`renderer.info`, #674). `gpuMs` is each frame's GPU time from timer queries: while the hook is set the renderer is built with `trackTimestamp`, which uses WebGPU's `timestamp-query` feature or WebGL2's `EXT_disjoint_timer_query_webgl2`, and resolves the time after each frame. Where `hasFeature('timestamp-query')` is false, `gpuMs` is `null`, written rather than omitted. A rider's renderer is built without timer queries (#675). `materials` counts the scene's distinct materials by type and features (`materialVariants`: transparent, double-sided, map, normal map, emissive map, alpha test, vertex colours, clear-coat, transmission), refreshed every 120 frames: where program variants come from. The sweep also counts first-use stalls, frames over 50 ms in the first 5 s (#679). The sweep rides each scene's first class at each pinned tier, skips 3 s, records 20 s and attaches the median and p95 frame time with the counts; it judges no number. The hook is not a rider option and is not in the README; nothing in the app sets the global, only the lazy World Ride chunk reads it, and the behaviour specs never use it.
+**Test-only tier hook (`core/world-ride-probe.ts`, #672).** The performance sweep (`frontend/e2e/sweeps/performance.sweep.ts`) must draw every tier on demand. Its fixture, `e2e/fixtures/world-ride-probe.ts`, sets `window.__wzWorldRide = { tier, backend }` before the app boots; `backend: 'webgl2'` builds the renderer with `forceWebGL`, so the sweep can profile the WebGL2 fallback on a WebGPU screen (#679). `readWorldRideProbe` reads it when the renderer starts. The scene then opens at that tier (`ultra` draws at `high` on WebGL2), and its `FrameBudget` is built `pinned`, so no window lowers it. The renderer keeps `__wzWorldRide.report` current: `{ tier, backend, frames, gpuMs, drawCalls, programs, materials }`, the time between each drawn frame and the last frame's draw calls (counted across every pass, so `info.autoReset` is off while the hook is set) and the programs alive (`renderer.info`, #674). `gpuMs` is each frame's GPU time from timer queries: while the hook is set the renderer is built with `trackTimestamp`, which uses WebGPU's `timestamp-query` feature or WebGL2's `EXT_disjoint_timer_query_webgl2`, and resolves the time after each frame. Where `hasFeature('timestamp-query')` is false, `gpuMs` is `null`, written rather than omitted. A rider's renderer is built without timer queries (#675). `materials` counts the scene's distinct materials by type and features (`materialVariants`: transparent, double-sided, map, normal map, emissive map, alpha test, vertex colours, clear-coat, transmission), refreshed every 120 frames: where program variants come from. The sweep also opens a Chromium DevTools Protocol session (`context.newCDPSession(page)`, `Performance.getMetrics`) to record `cdp` CPU script time per frame, task time per frame, layout count and JS heap size alongside GPU timer queries, and counts first-use stalls, frames over 50 ms in the first 5 s (#679). The sweep rides each scene's first class at each pinned tier, skips 3 s, records 20 s and attaches the median and p95 frame time with the counts; it judges no number. The hook is not a rider option and is not in the README; nothing in the app sets the global, only the lazy World Ride chunk reads it, and the behaviour specs never use it.
 
 **Scene component.** `WorldScene` awaits `start`. It emits `unavailable` when `start` resolves `false` or rejects (L2-111 criterion 1).
 
@@ -165,32 +169,32 @@ How each tier looks (AC2), and the fallback form of each technique when its asse
 
 Recorded before any shader work (#680 to #682) with the performance sweep, headed, one worker, at commit `1fcf211a`, on a Microsoft Surface Laptop 7 (Snapdragon X Elite X1E80100, Adreno X1-85), Playwright 1.65.1's bundled Chromium at 1440 × 900. `webgl2` rows force three's WebGL2 backend on the same machine. Times compare runs on this machine only.
 
-| Scene | Tier | Drawn at | Backend | Frames | Median (ms) | p95 (ms) | GPU median (ms) | Draw calls | Programs | Stalls in first 5 s |
-|---|---|---|---|---|---|---|---|---|---|---|
-| timessquare | low | low | webgpu | 1048 | 18.8 | 24.7 | 6.8 | 860 | 36 | 5 |
-| timessquare | medium | medium | webgpu | 782 | 25.2 | 31.7 | 9.1 | 1078 | 63 | 6 |
-| timessquare | high | high | webgpu | 704 | 27.4 | 32.8 | 11.5 | 1086 | 71 | 8 |
-| timessquare | ultra | ultra | webgpu | 723 | 27.1 | 34.6 | 11.5 | 1086 | 71 | 8 |
-| timessquare | low | low | webgl2 | 793 | 24.3 | 31.6 | 23.0 | 860 | 36 | 3 |
-| timessquare | medium | medium | webgl2 | 509 | 39.4 | 43.9 | 37.3 | 1078 | 65 | 1 |
-| timessquare | high | high | webgl2 | 457 | 43.7 | 53.9 | 41.0 | 1086 | 73 | 1 |
-| timessquare | ultra | high | webgl2 | 463 | 42.9 | 50.7 | 41.1 | 1086 | 73 | 12 |
-| bigsur | low | low | webgpu | 1217 | 16.7 | 17.6 | 3.5 | 264 | 13 | 2 |
-| bigsur | medium | medium | webgpu | 1205 | 16.7 | 17.9 | 5.8 | 477 | 34 | 4 |
-| bigsur | high | high | webgpu | 1209 | 16.6 | 17.7 | 7.5 | 485 | 42 | 6 |
-| bigsur | ultra | ultra | webgpu | 1215 | 16.7 | 17.8 | 7.5 | 485 | 42 | 6 |
-| bigsur | low | low | webgl2 | 1213 | 16.6 | 17.6 | 8.8 | 264 | 13 | 1 |
-| bigsur | medium | medium | webgl2 | 808 | 24.7 | 29.5 | 21.1 | 477 | 34 | 2 |
-| bigsur | high | high | webgl2 | 813 | 24.8 | 28.4 | 20.9 | 485 | 42 | 3 |
-| bigsur | ultra | high | webgl2 | 811 | 24.8 | 28.4 | 21.2 | 485 | 42 | 4 |
-| galibier | low | low | webgpu | 1210 | 16.7 | 17.9 | 4.7 | 728 | 20 | 3 |
-| galibier | medium | medium | webgpu | 650 | 31.1 | 35.4 | 7.0 | 1316 | 45 | 6 |
-| galibier | high | high | webgpu | 611 | 31.6 | 42.3 | 8.5 | 1324 | 53 | 6 |
-| galibier | ultra | ultra | webgpu | 602 | 32.6 | 43.4 | 7.9 | 1324 | 53 | 10 |
-| galibier | low | low | webgl2 | 878 | 22.7 | 27.0 | 20.8 | 728 | 20 | 4 |
-| galibier | medium | medium | webgl2 | 473 | 43.1 | 50.1 | 38.3 | 1316 | 45 | 20 |
-| galibier | high | high | webgl2 | 451 | 45.1 | 52.1 | 40.7 | 1324 | 53 | 20 |
-| galibier | ultra | high | webgl2 | 451 | 45.3 | 53.2 | 40.9 | 1324 | 53 | 27 |
+| Scene       | Tier   | Drawn at | Backend | Frames | Median (ms) | p95 (ms) | GPU median (ms) | Draw calls | Programs | Stalls in first 5 s |
+| ----------- | ------ | -------- | ------- | ------ | ----------- | -------- | --------------- | ---------- | -------- | ------------------- |
+| timessquare | low    | low      | webgpu  | 1048   | 18.8        | 24.7     | 6.8             | 860        | 36       | 5                   |
+| timessquare | medium | medium   | webgpu  | 782    | 25.2        | 31.7     | 9.1             | 1078       | 63       | 6                   |
+| timessquare | high   | high     | webgpu  | 704    | 27.4        | 32.8     | 11.5            | 1086       | 71       | 8                   |
+| timessquare | ultra  | ultra    | webgpu  | 723    | 27.1        | 34.6     | 11.5            | 1086       | 71       | 8                   |
+| timessquare | low    | low      | webgl2  | 793    | 24.3        | 31.6     | 23.0            | 860        | 36       | 3                   |
+| timessquare | medium | medium   | webgl2  | 509    | 39.4        | 43.9     | 37.3            | 1078       | 65       | 1                   |
+| timessquare | high   | high     | webgl2  | 457    | 43.7        | 53.9     | 41.0            | 1086       | 73       | 1                   |
+| timessquare | ultra  | high     | webgl2  | 463    | 42.9        | 50.7     | 41.1            | 1086       | 73       | 12                  |
+| bigsur      | low    | low      | webgpu  | 1217   | 16.7        | 17.6     | 3.5             | 264        | 13       | 2                   |
+| bigsur      | medium | medium   | webgpu  | 1205   | 16.7        | 17.9     | 5.8             | 477        | 34       | 4                   |
+| bigsur      | high   | high     | webgpu  | 1209   | 16.6        | 17.7     | 7.5             | 485        | 42       | 6                   |
+| bigsur      | ultra  | ultra    | webgpu  | 1215   | 16.7        | 17.8     | 7.5             | 485        | 42       | 6                   |
+| bigsur      | low    | low      | webgl2  | 1213   | 16.6        | 17.6     | 8.8             | 264        | 13       | 1                   |
+| bigsur      | medium | medium   | webgl2  | 808    | 24.7        | 29.5     | 21.1            | 477        | 34       | 2                   |
+| bigsur      | high   | high     | webgl2  | 813    | 24.8        | 28.4     | 20.9            | 485        | 42       | 3                   |
+| bigsur      | ultra  | high     | webgl2  | 811    | 24.8        | 28.4     | 21.2            | 485        | 42       | 4                   |
+| galibier    | low    | low      | webgpu  | 1210   | 16.7        | 17.9     | 4.7             | 728        | 20       | 3                   |
+| galibier    | medium | medium   | webgpu  | 650    | 31.1        | 35.4     | 7.0             | 1316       | 45       | 6                   |
+| galibier    | high   | high     | webgpu  | 611    | 31.6        | 42.3     | 8.5             | 1324       | 53       | 6                   |
+| galibier    | ultra  | ultra    | webgpu  | 602    | 32.6        | 43.4     | 7.9             | 1324       | 53       | 10                  |
+| galibier    | low    | low      | webgl2  | 878    | 22.7        | 27.0     | 20.8            | 728        | 20       | 4                   |
+| galibier    | medium | medium   | webgl2  | 473    | 43.1        | 50.1     | 38.3            | 1316       | 45       | 20                  |
+| galibier    | high   | high     | webgl2  | 451    | 45.1        | 52.1     | 40.7            | 1324       | 53       | 20                  |
+| galibier    | ultra  | high     | webgl2  | 451    | 45.3        | 53.2     | 40.9            | 1324       | 53       | 27                  |
 
 Sources of program variants, most first:
 
@@ -211,11 +215,11 @@ The WebGL2 backend takes 2.5 to 5 times the GPU time of WebGPU for the same scen
 
 ## Requirements
 
-| L2 ID    | Refines (L1) | Requirement                                                                                                                                                                                                                                                                                             |
-| -------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| L2 ID    | Refines (L1) | Requirement                                                                                                                                                                                                                                                                                                                                   |
+| -------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `L2-111` | `L1-017`     | World Ride rendering quality. The scene draws with WebGPU or WebGL2 at a quality tier that turns on the techniques of the table, starts high and drops on a frame budget of the display's measured frame period, compiles its programs while it loads, honours reduced motion, falls back when an asset is missing, and never blocks the HUD. |
-| `L2-110` | `L1-017`     | World Ride scene rendering. The fallback notice, the hidden tab and reduced motion apply at every tier.                                                                                                                                                                                                 |
-| `L2-101` | `L1-017`     | The scenes. Every captured or baked asset is bundled and served from the same origin.                                                                                                                                                                                                                   |
+| `L2-110` | `L1-017`     | World Ride scene rendering. The fallback notice, the hidden tab and reduced motion apply at every tier.                                                                                                                                                                                                                                       |
+| `L2-101` | `L1-017`     | The scenes. Every captured or baked asset is bundled and served from the same origin.                                                                                                                                                                                                                                                         |
 
 ## Diagrams
 

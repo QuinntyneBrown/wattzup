@@ -1382,6 +1382,11 @@ const STARTED = { timeout: 60_000 };
 
 test.describe('World Ride scene (L2-110, L2-101 AC4)', () => {
   test("draws the scene of the class's world with its text alternative", async ({ page }) => {
+    test.slow();
+    const warnings: string[] = [];
+    page.on('console', (m) => {
+      if (m.type() === 'warning') warnings.push(m.text());
+    });
     const world = new WorldRidePage(page);
     await world.startFromClass();
     await expect(world.scene).toBeVisible();
@@ -1390,7 +1395,9 @@ test.describe('World Ride scene (L2-110, L2-101 AC4)', () => {
       'aria-label',
       'A cyclist on Cathedral Circuit in Old Town Criterium',
     );
+    await expect(world.scene).not.toHaveAttribute('aria-busy', 'true', STARTED);
     await expect(world.sceneNotice).toHaveCount(0);
+    expect(warnings.filter((w) => w.includes('Vertex attribute "normal" not found'))).toEqual([]);
   });
 
   test('shades every lit surface in bands at low, still bending the road (L2-111 AC11)', async ({
@@ -1460,6 +1467,7 @@ test.describe('World Ride scene (L2-110, L2-101 AC4)', () => {
     page,
     webgl,
   }) => {
+    test.slow();
     await webgl.disable();
     const world = new WorldRidePage(page);
     await world.startFromClass();

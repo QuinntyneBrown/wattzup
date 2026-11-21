@@ -2,6 +2,7 @@
 // stuccoed town houses with shuttered windows and tiled roofs on both sides of the road. The
 // houses repeat along a loop longer than the road in view, so the street never ends.
 import {
+  BatchedMesh,
   BoxGeometry,
   BufferAttribute,
   BufferGeometry,
@@ -48,6 +49,10 @@ const DEPTH = 10;
 /** The street repeats every LOOP metres; houses run from BEHIND metres behind the rider. */
 const LOOP = 420;
 const BEHIND = 24;
+const HOUSE_BEHIND = 40;
+const HOUSE_SHIFT = HOUSE_BEHIND - BEHIND;
+const HOUSE_CULL_BEHIND = -20;
+const BLOCK_MAX = 20;
 /** Houses reach below the road, so a ramp never shows their footing. */
 const FOOTING = 4;
 
@@ -180,6 +185,19 @@ interface House {
   readonly setback: number;
 }
 
+interface StreetBlock {
+  readonly offset: number;
+  readonly width: number;
+  readonly slots: { batched: BatchedMesh; instanceId: number }[];
+}
+
+interface UvRect {
+  readonly u0: number;
+  readonly u1: number;
+  readonly v0: number;
+  readonly v1: number;
+}
+
 /** A point of the road: metres ahead of the rider and the height there. */
 export interface StreetPoint {
   readonly metres: number;
@@ -192,8 +210,13 @@ const KERB_TOP = 0.25;
 
 export class OldTownStreet {
   readonly group = new Group();
-  private readonly houses: House[] = [];
-  private readonly ribbons: { geometry: BufferGeometry; profile: [number, number][] }[] = [];
+  private readonly blocks: StreetBlock[] = [];
+  private readonly blockMatrix = new Matrix4();
+  private readonly tempGeometries: BufferGeometry[] = [];
+  private readonly ribbons: {
+    geometry: BufferGeometry;
+    strips: { profile: [number, number][]; across: Float32Array; vSign: -1 | 1 }[];
+  }[] = [];
   /** Each house draws its details from its own sequence, so one new detail moves no other. */
   private random = seeded(29);
   private houseIndex = 0;
@@ -203,6 +226,7 @@ export class OldTownStreet {
     return seeded(7919 * (this.houseIndex + 1) + 104729 * feature)();
   }
   private readonly unit = new BoxGeometry(1, 1, 1);
+  private readonly frontUnit = openBackBox();
   private readonly brick = new MeshStandardMaterial({ color: 0x8e4a37, roughness: 0.95 });
   /** Props along the street; one that `lies` on the road, as paint does, takes its slope. */
   private readonly props: {
@@ -213,8 +237,10 @@ export class OldTownStreet {
     lies?: boolean;
   }[] = [];
   private readonly crowd: Fan[] = [];
-  /** The crowd's legs, torsos, heads, arms, hats, hand flags and hair. */
+  /** The crowd's legs, torsos, heads, arms, hats, hand flags and hair, plus their local y/z offsets. */
   private fans: InstancedMesh[] = [];
+  private fanBaseY: Float32Array[] = [];
+  private fanBaseZ: Float32Array[] = [];
   private readonly hatted: boolean[] = [];
   private readonly reach = new Vector3();
   private readonly shoulder = new Vector3();
@@ -222,10 +248,23 @@ export class OldTownStreet {
   private readonly armTurn = new Quaternion();
   private flags: InstancedMesh | null = null;
   private cords: InstancedMesh | null = null;
+  private readonly buntingSagY = new Float32Array(BUNTING_FLAGS);
+  private lampMeshes: InstancedMesh[] = [];
+  private lampPen0: InstancedMesh | null = null;
+  private lampPen1: InstancedMesh | null = null;
+  private lampOffsets: { offset: number; side: -1 | 1; x: number }[] = [];
+  private swiftsMesh: InstancedMesh | null = null;
+  private coversMesh: InstancedMesh | null = null;
+  private readonly coverSpots: readonly (readonly [number, number])[] = [
+    [33, 1.4],
+    [150, -1.1],
+    [290, 0.6],
+  ];
+  private ropesMesh: InstancedMesh | null = null;
+  private readonly bannerOffsets: number[] = [];
   private readonly cathedral = new Group();
   /** The television motorbike, riding ahead of the rider with its camera turned on them. */
   private readonly moto = new Group();
-  private readonly swifts: Group[] = [];
   /** A parish church's brick belfry over the roofs to the left, short of the cathedral. */
   private readonly belfry = new Group();
   private readonly iron = new MeshStandardMaterial({
@@ -243,22 +282,22 @@ export class OldTownStreet {
   private readonly doorLeaf = new PlaneGeometry(1.1, 2.5);
   private readonly fasciaBoard = new PlaneGeometry(5.2, 0.42);
   private readonly fascias = ['BOEKEN', 'BAKKERIJ', 'BLOEMEN', 'MODE'].map(
-    (trade) => new MeshStandardMaterial({ map: fasciaTexture(trade), roughness: 0.5 }),
+    () => new MeshBasicMaterial(),
   );
-  private readonly geraniums = new MeshStandardMaterial({ map: bloomTexture(), roughness: 0.9 });
+  private readonly geraniums = new MeshBasicMaterial();
   /** Glazed shop doors in painted wood, a brass handle and a bell over each. */
   private readonly shopDoors = ['#2d4e3f', '#5a2730', '#1f2b44', '#3a3a3a'].map(
-    (paint) => new MeshStandardMaterial({ map: shopDoorTexture(paint), roughness: 0.6 }),
+    () => new MeshBasicMaterial(),
   );
   private readonly stone = new MeshStandardMaterial({ color: 0xbdb5a6, roughness: 0.95 });
   private readonly alleyFloor = new MeshStandardMaterial({ color: 0x8a837a, roughness: 0.95 });
   /** Half a disc, its flat edge up: one scallop of an awning's hem. */
-  private readonly scallop = new CircleGeometry(0.15, 10, Math.PI, Math.PI);
-  private readonly finial = new SphereGeometry(0.16, 8, 6);
-  private readonly chimneyPot = new CylinderGeometry(0.1, 0.13, 0.4, 8);
-  private readonly oculus = new CylinderGeometry(0.4, 0.4, 0.04, 16);
-  private readonly pot = new CylinderGeometry(0.24, 0.18, 0.5, 10);
-  private readonly bush = new SphereGeometry(0.42, 10, 8);
+  private readonly scallop = new CircleGeometry(0.15, 6, Math.PI, Math.PI);
+  private readonly finial = new SphereGeometry(0.16, 6, 4);
+  private readonly chimneyPot = new CylinderGeometry(0.1, 0.13, 0.4, 6);
+  private readonly oculus = new CylinderGeometry(0.4, 0.4, 0.04, 12);
+  private readonly pot = new CylinderGeometry(0.24, 0.18, 0.5, 7);
+  private readonly bush = new SphereGeometry(0.42, 7, 5);
   private readonly terracotta = new MeshStandardMaterial({ color: 0xb4603f, roughness: 0.9 });
   /** Clipped bay: a dense mass of small leaves, lit and shaded leaf by leaf. */
   private readonly leaves = new MeshStandardMaterial({
@@ -267,21 +306,11 @@ export class OldTownStreet {
   });
   private readonly flagCloth = new PlaneGeometry(2.0, 1.35, 6, 1);
   /** Civic flags in two or three bands, read from either side. */
-  private readonly houseFlags = FLAGS.map(
-    (bands) =>
-      new MeshStandardMaterial({ map: flagTexture(bands), side: DoubleSide, roughness: 0.85 }),
-  );
+  private readonly houseFlags = FLAGS.map(() => new MeshBasicMaterial());
   private readonly dormer = tiledBox(1.6, 1.6, 1.5, 1.6, 0.25);
   private readonly dormerRoof = prism(1.9, 0.8, 1.8);
   /** The shop signs: a gilt emblem on a painted board, read from either side. */
-  private readonly signs = SIGNS.map(
-    (sign) =>
-      new MeshStandardMaterial({
-        map: signTexture(sign.ground, sign.emblem),
-        side: DoubleSide,
-        roughness: 0.6,
-      }),
-  );
+  private readonly signs = SIGNS.map(() => new MeshBasicMaterial());
   /** Wrought iron: balusters and a scroll, cut out of the canvas. */
   private readonly railing = new MeshStandardMaterial({
     map: railingTexture(),
@@ -302,20 +331,38 @@ export class OldTownStreet {
   ) {}
 
   build(roadHalf: number, points: number): void {
-    this.disposables.push(this.unit, this.brick, this.railing);
-    if (this.railing.map) this.track(this.railing.map);
-    this.disposables.push(this.iron, this.signBoard, this.dormer, this.dormerRoof, ...this.signs);
-    this.disposables.push(this.flagCloth, ...this.houseFlags);
     this.disposables.push(
+      this.unit,
+      this.frontUnit,
+      this.brick,
+      this.railing,
+      this.iron,
+      this.signBoard,
+      this.clockFace,
+      this.doorLeaf,
+      this.fasciaBoard,
+      this.scallop,
+      this.finial,
+      this.chimneyPot,
+      this.dormer,
+      this.dormerRoof,
+      this.flagCloth,
       this.oculus,
       this.pot,
       this.bush,
       this.terracotta,
+      this.stone,
+      this.alleyFloor,
       this.leaves,
       this.zinc,
+      this.geraniums,
+      ...this.fascias,
+      ...this.shopDoors,
+      ...this.houseFlags,
+      ...this.signs,
     );
-    for (const flag of this.houseFlags) if (flag.map) this.track(flag.map);
-    for (const sign of this.signs) if (sign.map) this.track(sign.map);
+    if (this.railing.map) this.track(this.railing.map);
+    if (this.leaves.map) this.track(this.leaves.map);
     this.addFurniture(roadHalf);
     this.addRoadPaint();
     this.addStreetBanners();
@@ -327,17 +374,14 @@ export class OldTownStreet {
     this.addSwifts();
     const kerb = this.material(this.track(kerbTexture()));
     const pavement = this.material(this.track(slabTexture()));
-    // The left barriers are seen from the other face: their print runs the other way.
-    const banners = [-1, 1].map((side) => {
-      const texture = this.track(barrierBannerTexture(BARRIER_PANELS));
-      texture.repeat.set(-1, -side / 24);
-      const material = this.material(texture);
-      material.alphaTest = 0.5;
-      // Printed vinyl: a soft sheen that catches the low sun along the barriers.
-      material.roughness = 0.5;
-      material.metalness = 0.05;
-      return material;
-    });
+    // The left barriers are seen from the other face: their print runs the other way (`vSign`).
+    const bannerTexture = this.track(barrierBannerTexture(BARRIER_PANELS));
+    bannerTexture.repeat.set(-1, 1 / 24);
+    const banner = this.material(bannerTexture);
+    banner.alphaTest = 0.5;
+    // Printed vinyl: a soft sheen that catches the low sun along the barriers.
+    banner.roughness = 0.5;
+    banner.metalness = 0.05;
     const damp = new MeshStandardMaterial({
       color: 0x2a2622,
       roughness: 0.2,
@@ -364,62 +408,89 @@ export class OldTownStreet {
     const rail = this.material(null, '#b9bdc2');
     rail.metalness = 0.7;
     rail.roughness = 0.35;
-    for (const side of [-1, 1]) {
-      const x = (v: number) => side * v;
-      this.ribbon(points, kerb, [
+    const bothSides = (
+      profileFor: (x: (v: number) => number) => [number, number][],
+      flipV = false,
+    ): { profile: [number, number][]; vSign: -1 | 1 }[] =>
+      ([-1, 1] as const).map((side) => ({
+        profile: profileFor((v) => side * v),
+        vSign: flipV ? (-side as -1 | 1) : 1,
+      }));
+    this.ribbon(
+      points,
+      kerb,
+      bothSides((x) => [
         [x(roadHalf), 0],
         [x(roadHalf), KERB],
         [x(roadHalf + KERB_TOP), KERB],
-      ]);
-      this.ribbon(points, pavement, [
+      ]),
+    );
+    this.ribbon(
+      points,
+      pavement,
+      bothSides((x) => [
         [x(roadHalf + KERB_TOP), KERB],
         [x(FRONTAGE + 0.5), KERB],
-      ]);
-      // A damp line along the gutter, darker and glossier than the dry setts beside it.
-      this.ribbon(points, damp, [
+      ]),
+    );
+    // A damp line along the gutter, darker and glossier than the dry setts beside it.
+    this.ribbon(
+      points,
+      damp,
+      bothSides((x) => [
         [x(roadHalf - 0.4), 0.004],
         [x(roadHalf), 0.004],
-      ]);
-      // Shade where the pavement meets the houses, as ambient light fails into the corner.
-      this.ribbon(points, foot, [
+      ]),
+    );
+    // Shade where the pavement meets the houses, as ambient light fails into the corner.
+    this.ribbon(
+      points,
+      foot,
+      bothSides((x) => [
         [x(FRONTAGE - 0.9), KERB + 0.004],
         [x(FRONTAGE + 0.5), KERB + 0.004],
-      ]);
-      // Race-day crowd barriers along the kerb, hung with the race's banners.
-      this.ribbon(points, banners[side === -1 ? 0 : 1]!, [
-        [x(roadHalf + 0.4), KERB + 0.08],
-        [x(roadHalf + 0.4), KERB + 1.0],
-      ]);
-      this.ribbon(points, rail, [
+      ]),
+    );
+    // Race-day crowd barriers along the kerb, hung with the race's banners.
+    this.ribbon(
+      points,
+      banner,
+      bothSides(
+        (x) => [
+          [x(roadHalf + 0.4), KERB + 0.08],
+          [x(roadHalf + 0.4), KERB + 1.0],
+        ],
+        true,
+      ),
+    );
+    this.ribbon(
+      points,
+      rail,
+      bothSides((x) => [
         [x(roadHalf + 0.4), KERB + 1.0],
         [x(roadHalf + 0.44), KERB + 1.06],
         [x(roadHalf + 0.36), KERB + 1.06],
         [x(roadHalf + 0.4), KERB + 1.0],
-      ]);
-    }
-    const upper = PALETTES.map((p) => this.material(this.track(bayTexture(p, false))));
-    const shut = PALETTES.map((p, i) =>
-      p.shutter ? this.material(this.track(bayTexture(p, false, true))) : upper[i]!,
+      ]),
     );
-    // Shops light their windows from inside: a warm glow that only the glass gives off.
-    const glow = this.track(shopGlowTexture());
-    const shop = PALETTES.map((p) => {
-      const material = this.material(this.track(bayTexture(p, true)));
-      material.emissiveMap = glow;
-      material.emissive.set(0xffc58a);
-      material.emissiveIntensity = 0.32;
-      return material;
-    });
-    const roofs = ROOFS.map((color) => this.material(this.track(tileTexture(color))));
-    const gables = PALETTES.map((p) => this.material(null, p.wall));
-    const trims = PALETTES.map((p) => this.material(null, p.trim));
-    const homes = PALETTES.map((p) => this.material(this.track(homeTexture(p))));
-    const awnings = AWNINGS.map((colour) => this.material(this.track(stripeTexture(colour))));
+    const upper = PALETTES.map(() => new MeshBasicMaterial());
+    const shut = PALETTES.map((p, i) => (p.shutter ? new MeshBasicMaterial() : upper[i]!));
+    const shop = PALETTES.map(() => new MeshBasicMaterial());
+    const roofs = ROOFS.map(() => new MeshBasicMaterial());
+    const gables = PALETTES.map(() => new MeshBasicMaterial());
+    const trims = PALETTES.map(() => new MeshBasicMaterial());
+    const homes = PALETTES.map(() => new MeshBasicMaterial());
+    const awnings = AWNINGS.map(() => new MeshBasicMaterial());
+    const tempMarkers: Material[] = [
+      ...new Set([...upper, ...shut, ...shop, ...homes, ...roofs, ...gables, ...trims, ...awnings]),
+    ];
+    const sideHouses: [House[], House[]] = [[], []];
     const layout = seeded(3);
     // Alleys draw from a sequence of their own, so the houses keep their looks.
     const alleys = seeded(71);
     let built = 0;
     for (const side of [-1, 1] as const) {
+      const list = sideHouses[side === -1 ? 0 : 1];
       let offset = side === 1 ? 5 : 0;
       let near = false;
       let last = -1;
@@ -453,24 +524,24 @@ export class OldTownStreet {
           trade: style % 4,
           flowers: !!PALETTES[style]!.flowers,
         });
-        mesh.rotation.y = side === 1 ? Math.PI : 0;
-        this.group.add(mesh);
         // Old frontages never quite line up: each house stands up to 45 cm back.
-        this.houses.push({ mesh, side, offset, width, setback: this.chance(8) * 0.45 });
+        list.push({ mesh, side, offset, width, setback: this.chance(8) * 0.45 });
         offset += width;
         // Now and then an alley runs off between two houses; one opens in view of the start.
         const roll = alleys();
         const opening: boolean = !near && offset > 40 && offset < 75;
         if (opening || (roll < 0.14 && offset + ALLEY < LOOP && offset > 8)) {
           const alley = this.alley(gables[style]!);
-          alley.rotation.y = side === 1 ? Math.PI : 0;
-          this.group.add(alley);
-          this.houses.push({ mesh: alley, side, offset, width: ALLEY, setback: 0 });
+          list.push({ mesh: alley, side, offset, width: ALLEY, setback: 0 });
           offset += ALLEY;
           if (opening) near = true;
         }
       }
     }
+    this.batchStreet(sideHouses, { upper, shut, shop, homes, roofs, gables, trims, awnings });
+    for (const g of this.tempGeometries) g.dispose();
+    this.tempGeometries.length = 0;
+    for (const m of tempMarkers) m.dispose();
   }
 
   /**
@@ -478,46 +549,99 @@ export class OldTownStreet {
    * Their textures are fixed to the street, `s` metres along it, so the rider rides past them.
    */
   lay(points: readonly StreetPoint[], s: number): void {
-    for (const { geometry, profile } of this.ribbons) {
+    const count = points.length;
+    for (const { geometry, strips } of this.ribbons) {
       const position = geometry.getAttribute('position') as BufferAttribute;
-      const n = profile.length;
-      points.forEach((p, i) => {
-        profile.forEach(([x, y], j) => position.setXYZ(i * n + j, x, p.height + y, -p.metres));
-      });
       const uv = geometry.getAttribute('uv') as BufferAttribute;
-      points.forEach((p, i) => {
-        let across = 0;
-        profile.forEach(([x, y], j) => {
-          if (j > 0) across += Math.hypot(x - profile[j - 1]![0], y - profile[j - 1]![1]);
-          uv.setXY(i * n + j, across, p.metres + s);
-        });
-      });
+      const posArr = position.array as Float32Array;
+      const uvArr = uv.array as Float32Array;
+      let base = 0;
+      for (const { profile, across, vSign } of strips) {
+        const n = profile.length;
+        for (let i = 0; i < count; i++) {
+          const p = points[i]!;
+          const z = -p.metres;
+          const v = vSign * (p.metres + s);
+          const row = base + i * n;
+          for (let j = 0; j < n; j++) {
+            const pt = profile[j]!;
+            const vIdx = row + j;
+            const pOff = vIdx * 3;
+            posArr[pOff] = pt[0];
+            posArr[pOff + 1] = p.height + pt[1];
+            posArr[pOff + 2] = z;
+            const uOff = vIdx * 2;
+            uvArr[uOff] = across[j]!;
+            uvArr[uOff + 1] = v;
+          }
+        }
+        base += count * n;
+      }
       position.needsUpdate = true;
       uv.needsUpdate = true;
-      geometry.computeVertexNormals();
-      geometry.computeBoundingSphere();
     }
   }
 
-  /** A strip along the road whose cross-section is `profile`: [x, height above the road]. */
-  private ribbon(points: number, material: Material, profile: [number, number][]): void {
-    const n = profile.length;
-    const geometry = new BufferGeometry();
-    geometry.setAttribute('position', new BufferAttribute(new Float32Array(points * n * 3), 3));
-    geometry.setAttribute('uv', new BufferAttribute(new Float32Array(points * n * 2), 2));
+  /** Strips along the road sharing `material`, with cross-section normals ready at build time. */
+  private ribbon(
+    points: number,
+    material: Material,
+    defs: { profile: [number, number][]; vSign: -1 | 1 }[],
+  ): void {
+    const totalVertices = defs.reduce((sum, d) => sum + points * d.profile.length, 0);
+    const posArr = new Float32Array(totalVertices * 3);
+    const normArr = new Float32Array(totalVertices * 3);
+    const uvArr = new Float32Array(totalVertices * 2);
     const index: number[] = [];
-    for (let i = 0; i < points - 1; i++) {
+    const strips: { profile: [number, number][]; across: Float32Array; vSign: -1 | 1 }[] = [];
+    let base = 0;
+    for (const { profile, vSign } of defs) {
+      const n = profile.length;
+      const across = new Float32Array(n);
+      const nx = new Float32Array(n);
+      const ny = new Float32Array(n);
       for (let j = 0; j < n - 1; j++) {
-        const a = i * n + j;
-        index.push(a, a + n, a + 1, a + 1, a + n, a + n + 1);
+        const dx = profile[j + 1]![0] - profile[j]![0];
+        const dy = profile[j + 1]![1] - profile[j]![1];
+        across[j + 1] = across[j]! + Math.hypot(dx, dy);
+        nx[j] = nx[j]! + dy;
+        ny[j] = ny[j]! - dx;
+        nx[j + 1] = nx[j + 1]! + dy;
+        ny[j + 1] = ny[j + 1]! - dx;
       }
+      for (let j = 0; j < n; j++) {
+        const len = Math.hypot(nx[j]!, ny[j]!) || 1;
+        nx[j] = nx[j]! / len;
+        ny[j] = ny[j]! / len;
+      }
+      for (let i = 0; i < points; i++) {
+        const row = base + i * n;
+        for (let j = 0; j < n; j++) {
+          const nOff = (row + j) * 3;
+          normArr[nOff] = nx[j]!;
+          normArr[nOff + 1] = ny[j]!;
+          normArr[nOff + 2] = 0;
+        }
+      }
+      for (let i = 0; i < points - 1; i++) {
+        for (let j = 0; j < n - 1; j++) {
+          const a = base + i * n + j;
+          index.push(a, a + n, a + 1, a + 1, a + n, a + n + 1);
+        }
+      }
+      strips.push({ profile, across, vSign });
+      base += points * n;
     }
+    const geometry = new BufferGeometry();
+    geometry.setAttribute('position', new BufferAttribute(posArr, 3));
+    geometry.setAttribute('normal', new BufferAttribute(normArr, 3));
+    geometry.setAttribute('uv', new BufferAttribute(uvArr, 2));
     geometry.setIndex(index);
     const mesh = new Mesh(geometry, material);
     mesh.receiveShadow = true;
     mesh.frustumCulled = false;
     this.group.add(mesh);
-    this.ribbons.push({ geometry, profile });
+    this.ribbons.push({ geometry, strips });
     this.disposables.push(geometry);
   }
 
@@ -529,10 +653,25 @@ export class OldTownStreet {
     const slope = (end - road(ROAD_END - 2)) / 2;
     const heightAt = (metres: number) =>
       metres <= ROAD_END ? road(metres) : end + slope * (metres - ROAD_END);
-    for (const house of this.houses) {
-      const start = ((((house.offset - s) % LOOP) + LOOP) % LOOP) - BEHIND;
-      const middle = start + house.width / 2;
-      house.mesh.position.set(house.side * (FRONTAGE + house.setback), heightAt(middle), -middle);
+    const m = this.blockMatrix.elements;
+    for (const block of this.blocks) {
+      const start = ((((block.offset + HOUSE_SHIFT - s) % LOOP) + LOOP) % LOOP) - HOUSE_BEHIND;
+      const visible = start + block.width > HOUSE_CULL_BEHIND;
+      if (visible) {
+        const middle = start + block.width / 2;
+        const grade = (heightAt(middle + 2) - heightAt(middle - 2)) / 4;
+        m[9] = -grade;
+        m[13] = heightAt(middle);
+        m[14] = -middle;
+      }
+      for (const { batched, instanceId } of block.slots) {
+        if (batched.getVisibleAt(instanceId) !== visible) {
+          batched.setVisibleAt(instanceId, visible);
+        }
+        if (visible) {
+          batched.setMatrixAt(instanceId, this.blockMatrix);
+        }
+      }
     }
     for (const prop of this.props) {
       const metres = ((((prop.offset - s) % prop.every) + prop.every) % prop.every) - BEHIND;
@@ -543,6 +682,8 @@ export class OldTownStreet {
         prop.mesh.rotation.x = Math.atan((heightAt(metres + 1) - heightAt(metres - 1)) / 2);
       }
     }
+    this.placeLamps(s, heightAt);
+    this.placeExtras(s, heightAt);
     this.placeCrowd(s, heightAt);
     this.placeBunting(s, heightAt);
     this.cathedral.position.set(CATHEDRAL_X, end - 2, -CATHEDRAL_AHEAD);
@@ -551,16 +692,76 @@ export class OldTownStreet {
     this.moto.rotation.x = Math.atan((heightAt(MOTO_AHEAD + 1) - heightAt(MOTO_AHEAD - 1)) / 2);
     this.belfry.position.set(BELFRY_X, end - 2, -BELFRY_AHEAD);
     // The swifts wheel over the roofs, a turn for every 60 m ridden.
-    this.swifts.forEach((bird, i) => {
-      const a = s / 60 + i * 2.4;
-      const r = 6 + (i % 4) * 3;
-      bird.position.set(
-        Math.cos(a) * r,
-        heightAt(80) + 24 + (i % 5) * 2.5,
-        -70 - (i % 3) * 25 + Math.sin(a) * r,
-      );
-      bird.rotation.y = -a;
-    });
+    if (this.swiftsMesh) {
+      const skyY = heightAt(80) + 24;
+      this.size.set(1, 1, 1);
+      for (let i = 0; i < 12; i++) {
+        const a = s / 60 + i * 2.4;
+        const r = 6 + (i % 4) * 3;
+        this.spot.set(Math.cos(a) * r, skyY + (i % 5) * 2.5, -70 - (i % 3) * 25 + Math.sin(a) * r);
+        this.turn.setFromAxisAngle(UP, -a);
+        this.swiftsMesh.setMatrixAt(i, this.matrix.compose(this.spot, this.turn, this.size));
+      }
+      this.swiftsMesh.instanceMatrix.needsUpdate = true;
+    }
+  }
+
+  private placeLamps(s: number, heightAt: (metres: number) => number): void {
+    if (!this.lampMeshes.length) return;
+    let p0 = 0;
+    let p1 = 0;
+    const pen0Arr = this.lampPen0?.instanceMatrix.array as Float32Array | undefined;
+    const pen1Arr = this.lampPen1?.instanceMatrix.array as Float32Array | undefined;
+    for (let i = 0; i < this.lampOffsets.length; i++) {
+      const lamp = this.lampOffsets[i]!;
+      const metres = ((((lamp.offset - s) % LOOP) + LOOP) % LOOP) - BEHIND;
+      const y = heightAt(metres) + KERB;
+      const z = -metres;
+      const off = i * 16;
+      for (const mesh of this.lampMeshes) {
+        const arr = mesh.instanceMatrix.array as Float32Array;
+        arr[off + 13] = y;
+        arr[off + 14] = z;
+      }
+      if (i % 2 === 0 && pen0Arr) {
+        const pOff = p0++ * 16;
+        pen0Arr[pOff + 13] = y;
+        pen0Arr[pOff + 14] = z;
+      } else if (pen1Arr) {
+        const pOff = p1++ * 16;
+        pen1Arr[pOff + 13] = y;
+        pen1Arr[pOff + 14] = z;
+      }
+    }
+    for (const mesh of this.lampMeshes) mesh.instanceMatrix.needsUpdate = true;
+    if (this.lampPen0) this.lampPen0.instanceMatrix.needsUpdate = true;
+    if (this.lampPen1) this.lampPen1.instanceMatrix.needsUpdate = true;
+  }
+
+  private placeExtras(s: number, heightAt: (metres: number) => number): void {
+    if (this.ropesMesh) {
+      const arr = this.ropesMesh.instanceMatrix.array as Float32Array;
+      for (let i = 0; i < this.bannerOffsets.length; i++) {
+        const metres = ((((this.bannerOffsets[i]! - s) % LOOP) + LOOP) % LOOP) - BEHIND;
+        const off = i * 16;
+        arr[off + 13] = heightAt(metres) + KERB;
+        arr[off + 14] = -metres;
+      }
+      this.ropesMesh.instanceMatrix.needsUpdate = true;
+    }
+    if (this.coversMesh) {
+      const xAxis = this.reach.set(1, 0, 0);
+      this.size.set(1, 1, 1);
+      for (let i = 0; i < this.coverSpots.length; i++) {
+        const [offset, x] = this.coverSpots[i]!;
+        const metres = ((((offset - s) % LOOP) + LOOP) % LOOP) - BEHIND;
+        const pitch = Math.atan((heightAt(metres + 1) - heightAt(metres - 1)) / 2);
+        this.turn.setFromAxisAngle(xAxis, pitch);
+        this.spot.set(x, heightAt(metres) + KERB, -metres);
+        this.coversMesh.setMatrixAt(i, this.matrix.compose(this.spot, this.turn, this.size));
+      }
+      this.coversMesh.instanceMatrix.needsUpdate = true;
+    }
   }
 
   /**
@@ -659,7 +860,7 @@ export class OldTownStreet {
       hand.position.set(Math.sin(-angle) * (h / 2), 71 + Math.cos(angle) * (h / 2), 10.2);
       hand.rotation.z = angle;
     }
-    this.flatten(c);
+    this.flatten(c, false);
     this.group.add(c);
   }
 
@@ -667,26 +868,25 @@ export class OldTownStreet {
   private placeBunting(s: number, heightAt: (metres: number) => number): void {
     const flags = this.flags;
     if (!flags) return;
+    const flagsArr = flags.instanceMatrix.array as Float32Array;
+    const cordsArr = this.cords?.instanceMatrix.array as Float32Array | undefined;
     let i = 0;
     for (let line = 0; line < BUNTING_LINES; line++) {
       const metres = ((((line * BUNTING_EVERY + 14 - s) % LOOP) + LOOP) % LOOP) - BEHIND;
       const y = heightAt(metres);
+      const z = -metres;
       for (let k = 0; k < BUNTING_FLAGS; k++) {
-        const x = -FRONTAGE + ((k + 0.5) / BUNTING_FLAGS) * 2 * FRONTAGE;
-        const sag = 1.6 * (1 - (x / FRONTAGE) ** 2);
-        // The cord's slope here, which each pennant and its length of cord follow.
-        this.turn.setFromAxisAngle(FORWARD, Math.atan((3.2 * x) / FRONTAGE ** 2));
-        this.matrix.compose(
-          this.spot.set(x, y + BUNTING_HEIGHT - sag, -metres),
-          this.turn,
-          this.size.set(1, 1, 1),
-        );
-        flags.setMatrixAt(i, this.matrix);
-        this.cords?.setMatrixAt(i++, this.matrix);
+        const py = y + this.buntingSagY[k]!;
+        const off = i++ * 16;
+        flagsArr[off + 13] = py;
+        flagsArr[off + 14] = z;
+        if (cordsArr) {
+          cordsArr[off + 13] = py;
+          cordsArr[off + 14] = z;
+        }
       }
     }
     flags.instanceMatrix.needsUpdate = true;
-    flags.computeBoundingSphere();
     if (this.cords) this.cords.instanceMatrix.needsUpdate = true;
   }
 
@@ -703,10 +903,10 @@ export class OldTownStreet {
     );
     pennant.setAttribute('uv', new BufferAttribute(new Float32Array([0, 1, 1, 1, 0.5, 0]), 2));
     const cloth = new MeshStandardMaterial({ roughness: 0.85, side: DoubleSide });
-    this.disposables.push(pennant, cloth);
-    this.flags = new InstancedMesh(pennant, cloth, BUNTING_LINES * BUNTING_FLAGS);
+    const total = BUNTING_LINES * BUNTING_FLAGS;
+    this.flags = new InstancedMesh(pennant, cloth, total);
     const colour = new Color();
-    for (let i = 0; i < BUNTING_LINES * BUNTING_FLAGS; i++) {
+    for (let i = 0; i < total; i++) {
       this.flags.setColorAt(i, colour.set(PENNANTS[i % PENNANTS.length]!));
     }
     this.flags.castShadow = true;
@@ -714,67 +914,57 @@ export class OldTownStreet {
     this.group.add(this.flags);
     // The cord the pennants hang from, a length per pennant.
     const length = new BoxGeometry((2 * FRONTAGE) / BUNTING_FLAGS + 0.04, 0.015, 0.015);
-    this.disposables.push(length);
-    this.cords = new InstancedMesh(length, this.iron, BUNTING_LINES * BUNTING_FLAGS);
+    this.cords = new InstancedMesh(length, this.iron, total);
     this.cords.frustumCulled = false;
     this.group.add(this.cords);
+    this.disposables.push(pennant, cloth, length, this.flags, this.cords);
+    this.size.set(1, 1, 1);
+    for (let k = 0; k < BUNTING_FLAGS; k++) {
+      const x = -FRONTAGE + ((k + 0.5) / BUNTING_FLAGS) * 2 * FRONTAGE;
+      this.buntingSagY[k] = BUNTING_HEIGHT - 1.6 * (1 - (x / FRONTAGE) ** 2);
+      this.turn.setFromAxisAngle(FORWARD, Math.atan((3.2 * x) / FRONTAGE ** 2));
+      this.matrix.compose(this.spot.set(x, this.buntingSagY[k]!, 0), this.turn, this.size);
+      for (let line = 0; line < BUNTING_LINES; line++) {
+        const idx = line * BUNTING_FLAGS + k;
+        this.flags.setMatrixAt(idx, this.matrix);
+        this.cords.setMatrixAt(idx, this.matrix);
+      }
+    }
   }
 
   /** The crowd, moved with the street: one instance per spectator's legs, torso and head. */
   private placeCrowd(s: number, heightAt: (metres: number) => number): void {
     const [legs, torsos, heads, arms, hats, waved, hair] = this.fans;
     if (!legs || !torsos || !heads || !arms || !hats || !waved || !hair) return;
-    this.crowd.forEach((fan, i) => {
+    const singleMeshes = [legs, torsos, heads, hats, waved, hair];
+    const singleArrays = singleMeshes.map((m) => m.instanceMatrix.array as Float32Array);
+    const singleBaseY = [0, 1, 2, 4, 5, 6].map((idx) => this.fanBaseY[idx]!);
+    const singleBaseZ = [0, 1, 2, 4, 5, 6].map((idx) => this.fanBaseZ[idx]!);
+    const armArr = arms.instanceMatrix.array as Float32Array;
+    const armBaseY = this.fanBaseY[3]!;
+    const armBaseZ = this.fanBaseZ[3]!;
+    const count = this.crowd.length;
+    for (let i = 0; i < count; i++) {
+      const fan = this.crowd[i]!;
       const metres = ((((fan.offset - s) % LOOP) + LOOP) % LOOP) - BEHIND;
       const y = heightAt(metres) + KERB;
-      const hip = fan.height * 0.47;
-      const neck = fan.height - 0.21;
-      this.turn.setFromAxisAngle(UP, fan.turn);
-      const set = (mesh: InstancedMesh, at: number, sy: number) => {
-        this.matrix.compose(
-          this.spot.set(fan.x, y + at, -metres),
-          this.turn,
-          this.size.set(1, sy, 1),
-        );
-        mesh.setMatrixAt(i, this.matrix);
-      };
-      set(legs, hip / 2, hip / 0.9);
-      set(torsos, (hip + neck) / 2, (neck - hip + 0.08) / 0.75);
-      set(heads, fan.height - 0.11, 1);
-      set(hats, fan.height - 0.02, this.hatted[i] ? 1 : 0);
-      set(hair, fan.height - 0.1, this.hatted[i] ? 0 : 1);
-      // Each arm hangs from its shoulder, or reaches up and out to cheer.
-      for (const side of [-1, 1]) {
-        this.reach.set(side * (fan.cheer ? 0.35 : 0.1), fan.cheer ? 1 : -1, 0.08).normalize();
-        this.shoulder.set(side * 0.21, 0, 0).applyQuaternion(this.turn);
-        this.shoulder.y = y + neck - 0.06;
-        this.shoulder.x += fan.x;
-        this.shoulder.z -= metres;
-        this.lean.setFromUnitVectors(UP, this.reach);
-        this.armTurn.copy(this.turn).multiply(this.lean);
-        this.reach.applyQuaternion(this.turn);
-        this.matrix.compose(
-          this.spot.copy(this.shoulder).addScaledVector(this.reach, 0.3),
-          this.armTurn,
-          this.size.set(1, 1, 1),
-        );
-        arms.setMatrixAt(2 * i + (side > 0 ? 1 : 0), this.matrix);
-        if (side > 0) {
-          // The flag on its stick, at the raised right hand.
-          // Flown square to the street, so the riders see it coming.
-          const flying = fan.cheer && i % 3 !== 0;
-          this.matrix.compose(
-            this.spot.copy(this.shoulder).addScaledVector(this.reach, 0.62),
-            this.lean.identity(),
-            this.size.setScalar(flying ? 1 : 0),
-          );
-          waved.setMatrixAt(i, this.matrix);
-        }
+      const off = i * 16;
+      for (let m = 0; m < singleArrays.length; m++) {
+        const arr = singleArrays[m]!;
+        arr[off + 13] = y + singleBaseY[m]![i]!;
+        arr[off + 14] = singleBaseZ[m]![i]! - metres;
       }
-    });
+      const a0 = 2 * i;
+      const a1 = a0 + 1;
+      const a0Off = a0 * 16;
+      const a1Off = a1 * 16;
+      armArr[a0Off + 13] = y + armBaseY[a0]!;
+      armArr[a0Off + 14] = armBaseZ[a0]! - metres;
+      armArr[a1Off + 13] = y + armBaseY[a1]!;
+      armArr[a1Off + 14] = armBaseZ[a1]! - metres;
+    }
     for (const mesh of this.fans) {
       mesh.instanceMatrix.needsUpdate = true;
-      mesh.computeBoundingSphere();
     }
   }
 
@@ -858,6 +1048,8 @@ export class OldTownStreet {
     const hair = new SphereGeometry(0.112, 12, 6, 0, Math.PI * 2, 0, Math.PI / 2.1);
     this.disposables.push(hair);
     this.fans.push(new InstancedMesh(hair, material, n));
+    this.fanBaseY = this.fans.map((m) => new Float32Array(m.count));
+    this.fanBaseZ = this.fans.map((m) => new Float32Array(m.count));
     const hats = seeded(47);
     const colour = new Color();
     this.crowd.forEach((fan, i) => {
@@ -870,12 +1062,51 @@ export class OldTownStreet {
       this.fans[4]!.setColorAt(i, colour.set(HATS[Math.floor(hats() * HATS.length)]!));
       this.fans[5]!.setColorAt(i, colour.set(PENNANTS[i % PENNANTS.length]!));
       this.fans[6]!.setColorAt(i, colour.set(HAIR[Math.floor(hats() * HAIR.length)]!));
+      const hip = fan.height * 0.47;
+      const neck = fan.height - 0.21;
+      this.turn.setFromAxisAngle(UP, fan.turn);
+      const setPart = (mIdx: number, at: number, sy: number) => {
+        this.matrix.compose(this.spot.set(fan.x, at, 0), this.turn, this.size.set(1, sy, 1));
+        this.fans[mIdx]!.setMatrixAt(i, this.matrix);
+        this.fanBaseY[mIdx]![i] = at;
+        this.fanBaseZ[mIdx]![i] = 0;
+      };
+      setPart(0, hip / 2, hip / 0.9);
+      setPart(1, (hip + neck) / 2, (neck - hip + 0.08) / 0.75);
+      setPart(2, fan.height - 0.11, 1);
+      setPart(4, fan.height - 0.02, this.hatted[i] ? 1 : 0);
+      setPart(6, fan.height - 0.1, this.hatted[i] ? 0 : 1);
+      for (const side of [-1, 1]) {
+        this.reach.set(side * (fan.cheer ? 0.35 : 0.1), fan.cheer ? 1 : -1, 0.08).normalize();
+        this.shoulder.set(side * 0.21, 0, 0).applyQuaternion(this.turn);
+        this.shoulder.y = neck - 0.06;
+        this.shoulder.x += fan.x;
+        this.lean.setFromUnitVectors(UP, this.reach);
+        this.armTurn.copy(this.turn).multiply(this.lean);
+        this.reach.applyQuaternion(this.turn);
+        this.spot.copy(this.shoulder).addScaledVector(this.reach, 0.3);
+        this.matrix.compose(this.spot, this.armTurn, this.size.set(1, 1, 1));
+        const aIdx = 2 * i + (side > 0 ? 1 : 0);
+        this.fans[3]!.setMatrixAt(aIdx, this.matrix);
+        this.fanBaseY[3]![aIdx] = this.spot.y;
+        this.fanBaseZ[3]![aIdx] = this.spot.z;
+        if (side > 0) {
+          const flying = fan.cheer && i % 3 !== 0;
+          this.spot.copy(this.shoulder).addScaledVector(this.reach, 0.62);
+          this.matrix.compose(this.spot, this.lean.identity(), this.size.setScalar(flying ? 1 : 0));
+          this.fans[5]!.setMatrixAt(i, this.matrix);
+          this.fanBaseY[5]![i] = this.spot.y;
+          this.fanBaseZ[5]![i] = this.spot.z;
+        }
+      }
     });
-    for (const mesh of this.fans) {
-      mesh.castShadow = true;
+    this.fans.forEach((mesh, idx) => {
+      // Legs, torsos, heads and arms cast crowd shadows on the cobbles (L2-111 AC13).
+      mesh.castShadow = idx <= 3;
       mesh.frustumCulled = false;
       this.group.add(mesh);
-    }
+      this.disposables.push(mesh);
+    });
   }
 
   /** The belfry: a square brick tower, its louvred stage and a slate spire, hazed by distance. */
@@ -918,27 +1149,29 @@ export class OldTownStreet {
       louvre.position.set(x, 39.5, z);
       b.add(louvre);
     }
-    this.flatten(b);
+    this.flatten(b, false);
     this.group.add(b);
   }
 
   /** A dozen swifts: dark crescents on swept wings, high over the street ahead. */
   private addSwifts(): void {
     const wing = new BoxGeometry(0.42, 0.02, 0.1);
+    const parts = [-1, 1].map((side) => {
+      const w = new Mesh(wing);
+      w.position.x = side * 0.2;
+      w.rotation.y = side * 0.5;
+      w.rotation.z = side * 0.15;
+      w.updateMatrix();
+      return wing.clone().applyMatrix4(w.matrix);
+    });
+    wing.dispose();
+    const bird = mergeGeometries(parts)!;
+    for (const part of parts) part.dispose();
     const black = new MeshBasicMaterial({ color: 0x2a2a30, fog: false });
-    this.disposables.push(wing, black);
-    for (let i = 0; i < 12; i++) {
-      const bird = new Group();
-      for (const side of [-1, 1]) {
-        const w = new Mesh(wing, black);
-        w.position.x = side * 0.2;
-        w.rotation.y = side * 0.5;
-        w.rotation.z = side * 0.15;
-        bird.add(w);
-      }
-      this.swifts.push(bird);
-      this.group.add(bird);
-    }
+    this.swiftsMesh = new InstancedMesh(bird, black, 12);
+    this.swiftsMesh.frustumCulled = false;
+    this.disposables.push(bird, black, this.swiftsMesh);
+    this.group.add(this.swiftsMesh);
   }
 
   /** The TV moto: a white motorbike, its pilot, and a cameraman sat backwards on the pillion. */
@@ -1002,7 +1235,13 @@ export class OldTownStreet {
   private addStreetBanners(): void {
     const cloth = new PlaneGeometry(7, 1.3);
     const rope = new BoxGeometry(2 * FRONTAGE, 0.03, 0.03);
-    this.disposables.push(cloth, rope);
+    rope.translate(0, 7.85 - KERB, 0);
+    this.ropesMesh = new InstancedMesh(rope, this.iron, STREET_BANNERS.length);
+    this.ropesMesh.frustumCulled = false;
+    this.disposables.push(cloth, rope, this.ropesMesh);
+    this.group.add(this.ropesMesh);
+    this.size.set(1, 1, 1);
+    this.turn.identity();
     STREET_BANNERS.forEach(([text, fill, ink], i) => {
       const material = new MeshStandardMaterial({
         map: this.track(clothBannerTexture(text, fill, ink)),
@@ -1014,11 +1253,15 @@ export class OldTownStreet {
       const banner = new Mesh(cloth, material);
       banner.position.y = 7.2 - KERB;
       banner.castShadow = true;
-      const line = new Mesh(rope, this.iron);
-      line.position.y = 7.85 - KERB;
-      holder.add(banner, line);
+      holder.add(banner);
       this.group.add(holder);
-      this.props.push({ mesh: holder, offset: 70 + i * 140, every: LOOP, x: 0 });
+      const offset = 70 + i * 140;
+      this.props.push({ mesh: holder, offset, every: LOOP, x: 0 });
+      this.bannerOffsets.push(offset);
+      this.ropesMesh!.setMatrixAt(
+        i,
+        this.matrix.compose(this.spot.set(0, 0, 0), this.turn, this.size),
+      );
     });
   }
 
@@ -1048,6 +1291,8 @@ export class OldTownStreet {
     });
     // Cast-iron covers set in the setts, a few to a lap.
     const plate = new CircleGeometry(0.4, 24);
+    plate.rotateX(-Math.PI / 2);
+    plate.translate(0, -KERB + 0.008, 0);
     const iron = new MeshStandardMaterial({
       map: this.track(coverTexture()),
       roughness: 0.55,
@@ -1055,22 +1300,11 @@ export class OldTownStreet {
       polygonOffset: true,
       polygonOffsetFactor: -2,
     });
-    this.disposables.push(plate, iron);
-    for (const [offset, x] of [
-      [33, 1.4],
-      [150, -1.1],
-      [290, 0.6],
-    ] as const) {
-      const cover = new Mesh(plate, iron);
-      cover.rotation.x = -Math.PI / 2;
-      cover.scale.y = 1;
-      cover.position.y = -KERB + 0.008;
-      cover.receiveShadow = true;
-      const holder = new Group();
-      holder.add(cover);
-      this.group.add(holder);
-      this.props.push({ mesh: holder, offset, every: LOOP, x, lies: true });
-    }
+    this.coversMesh = new InstancedMesh(plate, iron, this.coverSpots.length);
+    this.coversMesh.receiveShadow = true;
+    this.coversMesh.frustumCulled = false;
+    this.disposables.push(plate, iron, this.coversMesh);
+    this.group.add(this.coversMesh);
   }
 
   /** Iron lamp posts along both pavements, each with a hanging basket and a pennant. */
@@ -1084,23 +1318,31 @@ export class OldTownStreet {
       emissiveIntensity: 0.35,
       roughness: 0.2,
     });
-    const pole = new CylinderGeometry(0.06, 0.09, 4, 8);
-    const foot = new CylinderGeometry(0.16, 0.2, 0.5, 8);
-    const lantern = new CylinderGeometry(0.2, 0.13, 0.5, 6);
-    const cap = new ConeGeometry(0.28, 0.3, 6);
-    const bollard = new CylinderGeometry(0.09, 0.11, 0.9, 10);
-    const knob = new SphereGeometry(0.11, 10, 6);
+    const pole = new CylinderGeometry(0.06, 0.09, 4, 8).translate(0, 2.2, 0);
+    const foot = new CylinderGeometry(0.16, 0.2, 0.5, 8).translate(0, 0.25, 0);
+    const cap = new ConeGeometry(0.28, 0.3, 6).translate(0, 4.85, 0);
+    const arm = new BoxGeometry(0.9, 0.04, 0.04).translate(-0.45, 3.6, 0);
+    const ironLamp = mergeGeometries([foot, pole, cap, arm])!;
+    for (const part of [foot, pole, cap, arm]) part.dispose();
+    const lantern = new CylinderGeometry(0.2, 0.13, 0.5, 6).translate(0, 4.45, 0);
     // A hanging basket of geraniums on an arm from each lamp, out over the barrier.
-    const arm = new BoxGeometry(0.9, 0.04, 0.04);
-    const basket = new SphereGeometry(0.3, 12, 6, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2);
-    const bloom = new SphereGeometry(0.36, 12, 8);
+    const basket = new SphereGeometry(
+      0.3,
+      12,
+      6,
+      0,
+      Math.PI * 2,
+      Math.PI / 2,
+      Math.PI / 2,
+    ).translate(-0.8, 3.2, 0);
+    const bloom = new SphereGeometry(0.36, 12, 8).scale(1, 0.8, 1).translate(-0.8, 3.25, 0);
     const wicker = new MeshStandardMaterial({ color: 0x5a3e26, roughness: 0.95 });
     const flowers = new MeshStandardMaterial({ map: this.track(bloomTexture()), roughness: 0.9 });
-    this.disposables.push(glass, pole, foot, lantern, cap, bollard, knob);
-    this.disposables.push(arm, basket, bloom, wicker, flowers);
-    const trailing = new ConeGeometry(0.4, 0.34, 12, 1, true);
-    this.disposables.push(trailing);
-    const pennantCloth = new PlaneGeometry(0.5, 1.1);
+    // Ivy and lobelia trailing out of the basket and down.
+    const trailing = new ConeGeometry(0.4, 0.34, 12, 1, true)
+      .rotateX(Math.PI)
+      .translate(-0.8, 3.02, 0);
+    this.disposables.push(glass, ironLamp, lantern, basket, bloom, wicker, flowers, trailing);
     const pennants = [
       ['#1b1e24', '#d7ff3a'],
       ['#b8322c', '#ffffff'],
@@ -1114,49 +1356,54 @@ export class OldTownStreet {
       this.disposables.push(material);
       return material;
     });
-    this.disposables.push(pennantCloth);
     const lampEvery = 28;
-    for (let i = 0; i < LOOP / lampEvery; i++) {
-      const lamp = new Group();
-      const parts: [Mesh, number][] = [
-        [new Mesh(foot, iron), 0.25],
-        [new Mesh(pole, iron), 2.2],
-        [new Mesh(lantern, glass), 4.45],
-        [new Mesh(cap, iron), 4.85],
-      ];
-      for (const [mesh, y] of parts) {
-        mesh.position.y = y;
-        mesh.castShadow = true;
-        lamp.add(mesh);
-      }
-      const side = i % 2 ? 1 : -1;
-      const reach = new Mesh(arm, iron);
-      reach.position.set(-side * 0.45, 3.6, 0);
-      const hang = new Mesh(basket, wicker);
-      hang.position.set(-side * 0.8, 3.2, 0);
-      const blooms = new Mesh(bloom, flowers);
-      blooms.position.set(-side * 0.8, 3.25, 0);
-      blooms.scale.set(1, 0.8, 1);
-      // Ivy and lobelia trailing out of the basket and down.
-      const trail = new Mesh(trailing, this.leaves);
-      trail.rotation.x = Math.PI;
-      trail.position.set(-side * 0.8, 3.02, 0);
-      hang.castShadow = blooms.castShadow = trail.castShadow = true;
-      lamp.add(trail);
-      // A race pennant on the post, square to the street, below the basket.
-      const pennant = new Mesh(pennantCloth, pennants[i % pennants.length]!);
-      pennant.position.set(-side * 0.32, 2.4, 0);
-      pennant.castShadow = true;
-      lamp.add(reach, hang, blooms, pennant);
-      this.flatten(lamp);
-      this.group.add(lamp);
-      this.props.push({
-        mesh: lamp,
+    const count = Math.floor(LOOP / lampEvery);
+    for (let i = 0; i < count; i++) {
+      const side: -1 | 1 = i % 2 ? 1 : -1;
+      this.lampOffsets.push({
         offset: i * lampEvery + 6,
-        every: LOOP,
+        side,
         x: side * (roadHalf + 0.7),
       });
     }
+    this.lampMeshes = [
+      [ironLamp, iron],
+      [lantern, glass],
+      [basket, wicker],
+      [bloom, flowers],
+      [trailing, this.leaves],
+    ].map(([geometry, material]) => {
+      const mesh = new InstancedMesh(geometry as BufferGeometry, material as Material, count);
+      mesh.castShadow = material !== glass;
+      mesh.frustumCulled = false;
+      this.group.add(mesh);
+      this.disposables.push(mesh);
+      return mesh;
+    });
+    const pen0Geo = new PlaneGeometry(0.5, 1.1).translate(0.32, 2.4, 0);
+    const pen1Geo = new PlaneGeometry(0.5, 1.1).translate(-0.32, 2.4, 0);
+    const pen0Count = Math.ceil(count / 2);
+    const pen1Count = Math.floor(count / 2);
+    this.lampPen0 = new InstancedMesh(pen0Geo, pennants[0]!, pen0Count);
+    this.lampPen1 = new InstancedMesh(pen1Geo, pennants[1]!, pen1Count);
+    for (const pen of [this.lampPen0, this.lampPen1]) {
+      pen.castShadow = true;
+      pen.frustumCulled = false;
+      this.group.add(pen);
+    }
+    this.disposables.push(pen0Geo, pen1Geo, this.lampPen0, this.lampPen1);
+    this.size.set(1, 1, 1);
+    let p0 = 0;
+    let p1 = 0;
+    this.lampOffsets.forEach((lamp, i) => {
+      this.turn.setFromAxisAngle(UP, lamp.side === 1 ? 0 : Math.PI);
+      this.matrix.compose(this.spot.set(lamp.x, 0, 0), this.turn, this.size);
+      for (const mesh of this.lampMeshes) mesh.setMatrixAt(i, this.matrix);
+      this.turn.identity();
+      this.matrix.compose(this.spot.set(lamp.x, 0, 0), this.turn, this.size);
+      if (i % 2 === 0) this.lampPen0!.setMatrixAt(p0++, this.matrix);
+      else this.lampPen1!.setMatrixAt(p1++, this.matrix);
+    });
   }
 
   private material(map: Texture | null, color?: string): MeshStandardMaterial {
@@ -1173,13 +1420,20 @@ export class OldTownStreet {
   private house(width: number, storeys: number, look: HouseLook): Group {
     const { upper, shop, roof, trim } = look;
     const group = new Group();
-    const shopBox = tiledBox(DEPTH, SHOP + FOOTING, width, SHOP, FOOTING, look.groundBay);
+    const shopBox = tiledBox(DEPTH, SHOP, width, SHOP, 0, look.groundBay);
     const shopMesh = new Mesh(shopBox, shop);
-    shopMesh.position.set(-DEPTH / 2, (SHOP - FOOTING) / 2, 0);
+    shopMesh.position.set(-DEPTH / 2, SHOP / 2, 0);
+    const footing = new Mesh(this.unit, roof[1]!);
+    footing.scale.set(DEPTH, FOOTING, width);
+    footing.position.set(-DEPTH / 2, -FOOTING / 2, 0);
+    group.add(footing);
     const height = storeys * STOREY;
-    const upperBox = tiledBox(DEPTH, height, width, STOREY, 0);
-    const upperMesh = new Mesh(upperBox, upper);
-    upperMesh.position.set(-DEPTH / 2, SHOP + height / 2, 0);
+    const upperBox = storeyCourse(DEPTH, STOREY, width);
+    for (let s = 0; s < storeys; s++) {
+      const upperMesh = new Mesh(upperBox, upper);
+      upperMesh.position.set(-DEPTH / 2, SHOP + (s + 0.5) * STOREY, 0);
+      group.add(upperMesh);
+    }
     const rise = 2.2 + this.random() * 1.6;
     const roofGeometry = prism(DEPTH + 0.6, rise, width + 0.2);
     const roofMesh = new Mesh(roofGeometry, roof);
@@ -1233,11 +1487,7 @@ export class OldTownStreet {
     pipe.position.set(0.1, (SHOP + height) / 2, end);
     ridge.castShadow = gutter.castShadow = pipe.castShadow = true;
     group.add(ridge, gutter, pipe);
-    for (const m of [shopMesh, upperMesh, roofMesh]) {
-      m.castShadow = true;
-      m.receiveShadow = true;
-    }
-    group.add(shopMesh, upperMesh, roofMesh);
+    group.add(shopMesh, roofMesh);
     if (look.awning) group.add(this.awning(look.awning, width));
     if (this.random() < 0.4) group.add(this.balcony(look.trim, width));
     if (look.groundBay === BAY && this.random() < 0.6) group.add(this.sign(width));
@@ -1264,7 +1514,7 @@ export class OldTownStreet {
     if (this.chance(7) < 0.5) {
       for (const end of [-1, 1]) {
         for (let k = 0, y = SHOP + 0.2; y < SHOP + height - 0.6; k++, y += 0.5) {
-          const quoin = new Mesh(this.unit, trim);
+          const quoin = new Mesh(this.frontUnit, trim);
           const long = k % 2 === 0 ? 0.75 : 0.45;
           quoin.scale.set(0.08, 0.42, long);
           quoin.position.set(0.04, y + 0.21, end * (width / 2 - long / 2));
@@ -1279,20 +1529,20 @@ export class OldTownStreet {
     // A stone sill under every upper window, a lintel and keystone over it.
     for (let k = 0; k < storeys; k++) {
       for (let bay = 0; bay < Math.round(width / BAY); bay++) {
-        const sill = new Mesh(this.unit, trim);
+        const sill = new Mesh(this.frontUnit, trim);
         sill.scale.set(0.2, 0.09, 1.2);
         sill.position.set(0.08, SHOP + k * STOREY + 0.62, -width / 2 + (bay + 0.5) * BAY);
         // And over it a lintel with its keystone.
-        const lintel = new Mesh(this.unit, trim);
+        const lintel = new Mesh(this.frontUnit, trim);
         lintel.scale.set(0.1, 0.16, 1.22);
         lintel.position.set(0.05, SHOP + k * STOREY + 2.62, sill.position.z);
-        const key = new Mesh(this.unit, trim);
+        const key = new Mesh(this.frontUnit, trim);
         key.scale.set(0.14, 0.26, 0.2);
         key.position.set(0.07, SHOP + k * STOREY + 2.64, sill.position.z);
         group.add(sill, lintel, key);
         if (look.flowers) {
           // A window box on the sill, geraniums spilling over its front.
-          const planter = new Mesh(this.unit, this.terracotta);
+          const planter = new Mesh(this.frontUnit, this.terracotta);
           planter.scale.set(0.24, 0.2, 1.05);
           planter.position.set(0.16, SHOP + k * STOREY + 0.76, sill.position.z);
           const blooms = new Mesh(this.bush, this.geraniums);
@@ -1304,55 +1554,346 @@ export class OldTownStreet {
     }
     // A row of dentils under the cornice.
     for (let z = -width / 2 + 0.2; z < width / 2 - 0.1; z += 0.3) {
-      const dentil = new Mesh(this.unit, trim);
+      const dentil = new Mesh(this.frontUnit, trim);
       dentil.scale.set(0.18, 0.14, 0.14);
       dentil.position.set(0.09, SHOP + height - 0.52, z);
       group.add(dentil);
     }
     group.add(this.trim(trim, width, 0.2, 0.24, SHOP));
-    this.disposables.push(shopBox, upperBox, roofGeometry);
-    this.flatten(group);
+    this.tempGeometries.push(shopBox, upperBox, roofGeometry);
     return group;
   }
 
   /**
-   * Merges a house's parts that share a material into one mesh: a draw per material rather
-   * than per part, so the street fits the frame budget at the higher tiers.
+   * Consolidates the street's ~90 town houses and alleys into contiguous street blocks and packs
+   * them into 9 `BatchedMesh`es (`FrontSide` on closed volumes, `DoubleSide` only on flat sheets).
    */
-  private flatten(house: Group): void {
+  private batchStreet(
+    sideHouses: readonly [readonly House[], readonly House[]],
+    markers: {
+      upper: readonly Material[];
+      shut: readonly Material[];
+      shop: readonly Material[];
+      homes: readonly Material[];
+      roofs: readonly Material[];
+      gables: readonly Material[];
+      trims: readonly Material[];
+      awnings: readonly Material[];
+    },
+  ): void {
+    const upperSources: CanvasTexture[] = PALETTES.map((p) => bayTexture(p, false));
+    const shutRowIdx: number[] = [];
+    PALETTES.forEach((p, i) => {
+      if (p.shutter) {
+        shutRowIdx.push(upperSources.length);
+        upperSources.push(bayTexture(p, false, true));
+      } else {
+        shutRowIdx.push(i);
+      }
+    });
+    const upperAtlas = stackedFacadeAtlas(upperSources, 192, 204, 8);
+    const upperMat = new MeshStandardMaterial({
+      map: this.track(upperAtlas.texture),
+      roughness: 0.9,
+    });
+    const shopAtlas = stackedFacadeAtlas(
+      PALETTES.map((p) => bayTexture(p, true)),
+      192,
+      240,
+      8,
+    );
+    const glow = this.track(shopGlowTexture(PALETTES.length, 240, 8));
+    const shopMat = new MeshStandardMaterial({
+      map: this.track(shopAtlas.texture),
+      emissiveMap: glow,
+      emissive: new Color(0xffc58a),
+      emissiveIntensity: 0.32,
+      roughness: 0.9,
+    });
+    const homeAtlas = stackedFacadeAtlas(
+      PALETTES.map((p) => homeTexture(p)),
+      384,
+      240,
+      8,
+    );
+    const homeMat = new MeshStandardMaterial({
+      map: this.track(homeAtlas.texture),
+      roughness: 0.9,
+    });
+    const matte = new MeshStandardMaterial({
+      vertexColors: true,
+      roughness: 0.92,
+    });
+    const metal = new MeshStandardMaterial({
+      vertexColors: true,
+      metalness: 0.5,
+      roughness: 0.48,
+    });
+    const roofMat = new MeshStandardMaterial({
+      map: this.track(tileTexture('#ffffff')),
+      vertexColors: true,
+      roughness: 0.9,
+    });
+    const awningMat = new MeshStandardMaterial({
+      map: this.track(awningAtlasTexture()),
+      roughness: 0.9,
+      side: DoubleSide,
+    });
+    const detailAtlas = houseDetailAtlas();
+    const detailMat = new MeshStandardMaterial({
+      map: this.track(detailAtlas.texture),
+      roughness: 0.72,
+      side: DoubleSide,
+    });
+    this.disposables.push(upperMat, shopMat, homeMat, matte, metal, roofMat, awningMat, detailMat);
+
+    const facadeBands = new Map<Material, { target: Material; v0: number; v1: number }>();
+    markers.upper.forEach((m, i) => {
+      const [v0, v1] = upperAtlas.bands[i]!;
+      facadeBands.set(m, { target: upperMat, v0, v1 });
+    });
+    markers.shut.forEach((m, i) => {
+      const [v0, v1] = upperAtlas.bands[shutRowIdx[i]!]!;
+      facadeBands.set(m, { target: upperMat, v0, v1 });
+    });
+    markers.shop.forEach((m, i) => {
+      const [v0, v1] = shopAtlas.bands[i]!;
+      facadeBands.set(m, { target: shopMat, v0, v1 });
+    });
+    markers.homes.forEach((m, i) => {
+      const [v0, v1] = homeAtlas.bands[i]!;
+      facadeBands.set(m, { target: homeMat, v0, v1 });
+    });
+
+    const matteColors = new Map<Material, Color>();
+    markers.gables.forEach((m, i) => matteColors.set(m, new Color(PALETTES[i]!.wall)));
+    markers.trims.forEach((m, i) => matteColors.set(m, new Color(PALETTES[i]!.trim)));
+    matteColors.set(this.brick, new Color(0x8e4a37));
+    matteColors.set(this.terracotta, new Color(0xb4603f));
+    matteColors.set(this.stone, new Color(0xbdb5a6));
+    matteColors.set(this.alleyFloor, new Color(0x8a837a));
+
+    const metalColors = new Map<Material, Color>([
+      [this.zinc, new Color(0x8a9096)],
+      [this.iron, new Color(0x1e2023)],
+    ]);
+    const roofColors = new Map<Material, Color>();
+    markers.roofs.forEach((m, i) => roofColors.set(m, new Color(ROOFS[i]!)));
+
+    const awningCols = new Map<Material, number>();
+    markers.awnings.forEach((m, i) => awningCols.set(m, i));
+
+    const detailRects = new Map<Material, UvRect>();
+    this.fascias.forEach((m, i) => detailRects.set(m, detailAtlas.fascias[i]!));
+    this.shopDoors.forEach((m, i) => detailRects.set(m, detailAtlas.shopDoors[i]!));
+    this.signs.forEach((m, i) => detailRects.set(m, detailAtlas.signs[i]!));
+    this.houseFlags.forEach((m, i) => detailRects.set(m, detailAtlas.flags[i]!));
+    detailRects.set(this.leaves, detailAtlas.leaves);
+    detailRects.set(this.geraniums, detailAtlas.blooms);
+
+    const rawBlocks: { offset: number; width: number; items: House[] }[] = [];
+    for (const list of sideHouses) {
+      let current: { offset: number; width: number; items: House[] } | null = null;
+      for (const item of list) {
+        if (!current || current.width + item.width > BLOCK_MAX) {
+          current = { offset: item.offset, width: 0, items: [] };
+          rawBlocks.push(current);
+        }
+        current.items.push(item);
+        current.width = item.offset + item.width - current.offset;
+      }
+    }
+
+    const materialBatches = new Map<Material, { blockIdx: number; geometry: BufferGeometry }[]>();
+    const xform = new Matrix4();
+    rawBlocks.forEach((raw, blockIdx) => {
+      this.blocks.push({ offset: raw.offset, width: raw.width, slots: [] });
+      const blockMiddle = raw.offset + raw.width / 2;
+      const perMat = new Map<Material, BufferGeometry[]>();
+      const pushPart = (
+        srcMat: Material,
+        rawGeo: BufferGeometry,
+        worldXform: Matrix4,
+        disposeRaw: boolean,
+      ) => {
+        let targetMat = srcMat;
+        let vColor: Color | undefined;
+        let uvMap: ((u: number, v: number) => [number, number]) | undefined;
+        const fb = facadeBands.get(srcMat);
+        const mc = matteColors.get(srcMat);
+        const mtc = metalColors.get(srcMat);
+        const rc = roofColors.get(srcMat);
+        const ac = awningCols.get(srcMat);
+        const dr = detailRects.get(srcMat);
+        if (fb) {
+          targetMat = fb.target;
+          uvMap = (u, v) => [u, fb.v0 + Math.min(Math.max(v, 0), 1) * (fb.v1 - fb.v0)];
+        } else if (mc) {
+          targetMat = matte;
+          vColor = mc;
+        } else if (mtc) {
+          targetMat = metal;
+          vColor = mtc;
+        } else if (rc) {
+          targetMat = roofMat;
+          vColor = rc;
+        } else if (ac !== undefined) {
+          targetMat = awningMat;
+          const colU = ((ac + 0.5) * 64) / 512;
+          uvMap = (_u, v) => [colU, v * 3];
+        } else if (dr) {
+          targetMat = detailMat;
+          uvMap = (u, v) => [dr.u0 + u * (dr.u1 - dr.u0), dr.v0 + v * (dr.v1 - dr.v0)];
+        }
+        const prepared = prepareBatchGeometry(rawGeo, worldXform, vColor, uvMap);
+        if (disposeRaw) rawGeo.dispose();
+        const list = perMat.get(targetMat) ?? [];
+        list.push(prepared);
+        perMat.set(targetMat, list);
+      };
+
+      for (const item of raw.items) {
+        item.mesh.rotation.y = item.side === 1 ? Math.PI : 0;
+        item.mesh.position.set(
+          item.side * (FRONTAGE + item.setback),
+          0,
+          -(item.offset + item.width / 2 - blockMiddle),
+        );
+        item.mesh.updateMatrixWorld(true);
+        item.mesh.traverse((o) => {
+          if (!(o instanceof Mesh)) return;
+          const geometry = o.geometry as BufferGeometry;
+          xform.copy(o.matrixWorld);
+          if (Array.isArray(o.material)) {
+            if (!geometry.index) return;
+            for (const grp of geometry.groups) {
+              const mat = o.material[grp.materialIndex ?? 0];
+              if (!mat) continue;
+              const sub = extractSubGeometry(geometry, grp.start, grp.count);
+              pushPart(mat, sub, xform, true);
+            }
+            return;
+          }
+          pushPart(o.material as Material, geometry, xform, false);
+        });
+      }
+
+      for (const [mat, parts] of perMat) {
+        const merged = parts.length > 1 ? mergeGeometries(parts)! : parts[0]!;
+        if (parts.length > 1) for (const p of parts) p.dispose();
+        const entries = materialBatches.get(mat) ?? [];
+        entries.push({ blockIdx, geometry: merged });
+        materialBatches.set(mat, entries);
+      }
+    });
+
+    const initMatrix = new Matrix4();
+    for (const [mat, entries] of materialBatches) {
+      let totalVerts = 0;
+      let totalIndices = 0;
+      for (const { geometry } of entries) {
+        totalVerts += geometry.getAttribute('position').count;
+        totalIndices += geometry.index!.count;
+      }
+      const batched = new BatchedMesh(entries.length, totalVerts, totalIndices, mat);
+      batched.frustumCulled = false;
+      batched.perObjectFrustumCulled = false;
+      batched.sortObjects = false;
+      batched.castShadow = mat !== detailMat && mat !== metal && mat !== this.railing;
+      batched.receiveShadow = true;
+      for (const { blockIdx, geometry } of entries) {
+        const geoId = batched.addGeometry(geometry);
+        const instanceId = batched.addInstance(geoId);
+        geometry.dispose();
+        const block = this.blocks[blockIdx]!;
+        const start = ((((block.offset + HOUSE_SHIFT) % LOOP) + LOOP) % LOOP) - HOUSE_BEHIND;
+        const middle = start + block.width / 2;
+        initMatrix.elements[14] = -middle;
+        batched.setMatrixAt(instanceId, initMatrix);
+        block.slots.push({ batched, instanceId });
+      }
+      this.group.add(batched);
+      this.disposables.push(batched, batched.geometry);
+    }
+  }
+
+  /**
+   * Merges a group's parts into one mesh per textured material and one vertex-coloured mesh per
+   * solid finish (`fog`/`metalness`), splitting multi-material prisms by group.
+   */
+  private flatten(house: Group, castShadows = true): void {
     house.updateMatrixWorld(true);
-    // Each part's place relative to the house, whatever the house's own place.
     const local = new Matrix4().copy(house.matrixWorld).invert();
+    const solidMaterials = new Map<string, MeshStandardMaterial>();
     const buckets = new Map<
-      string,
+      Material,
       { material: Material; parts: BufferGeometry[]; meshes: Mesh[] }
     >();
+    const pushBucket = (
+      srcMat: Material,
+      rawGeo: BufferGeometry,
+      xform: Matrix4,
+      mesh: Mesh,
+      disposeRaw: boolean,
+    ) => {
+      let targetMat = srcMat;
+      let vColor: Color | undefined;
+      if (
+        srcMat instanceof MeshStandardMaterial &&
+        !srcMat.map &&
+        !srcMat.alphaMap &&
+        !srcMat.emissiveMap &&
+        !srcMat.normalMap &&
+        !srcMat.transparent &&
+        srcMat.alphaTest === 0 &&
+        (srcMat.emissiveIntensity === 0 || srcMat.emissive.getHex() === 0)
+      ) {
+        const solidKey = `${srcMat.fog ? 1 : 0}|${srcMat.metalness >= 0.4 ? 1 : 0}`;
+        let shared = solidMaterials.get(solidKey);
+        if (!shared) {
+          shared = new MeshStandardMaterial({
+            vertexColors: true,
+            fog: srcMat.fog,
+            roughness: srcMat.roughness,
+            metalness: srcMat.metalness,
+          });
+          this.disposables.push(shared);
+          solidMaterials.set(solidKey, shared);
+        }
+        targetMat = shared;
+        vColor = srcMat.color;
+      }
+      const part = prepareBatchGeometry(rawGeo, xform, vColor);
+      if (disposeRaw) rawGeo.dispose();
+      const bucket = buckets.get(targetMat) ?? { material: targetMat, parts: [], meshes: [] };
+      bucket.parts.push(part);
+      bucket.meshes.push(mesh);
+      buckets.set(targetMat, bucket);
+    };
+    const xform = new Matrix4();
     house.traverse((o) => {
-      if (!(o instanceof Mesh) || Array.isArray(o.material)) return;
+      if (!(o instanceof Mesh)) return;
       const geometry = o.geometry as BufferGeometry;
-      const key = [
-        (o.material as Material).uuid,
-        geometry.index ? 'indexed' : 'flat',
-        Object.keys(geometry.attributes).sort().join(),
-      ].join('|');
-      const bucket = buckets.get(key) ?? {
-        material: o.material as Material,
-        parts: [],
-        meshes: [],
-      };
-      bucket.parts.push(
-        geometry.clone().applyMatrix4(new Matrix4().multiplyMatrices(local, o.matrixWorld)),
-      );
-      bucket.meshes.push(o);
-      buckets.set(key, bucket);
+      xform.multiplyMatrices(local, o.matrixWorld);
+      if (Array.isArray(o.material)) {
+        if (!geometry.index) return;
+        for (const grp of geometry.groups) {
+          const mat = o.material[grp.materialIndex ?? 0];
+          if (!mat) continue;
+          const sub = extractSubGeometry(geometry, grp.start, grp.count);
+          pushBucket(mat, sub, xform, o, true);
+        }
+        return;
+      }
+      pushBucket(o.material as Material, geometry, xform, o, false);
     });
     for (const { material, parts, meshes } of buckets.values()) {
-      const merged = meshes.length > 1 ? mergeGeometries(parts) : null;
-      for (const part of parts) part.dispose();
+      const merged = parts.length > 1 ? mergeGeometries(parts) : parts[0]!;
+      if (parts.length > 1) for (const part of parts) part.dispose();
       if (!merged) continue;
       for (const mesh of meshes) mesh.removeFromParent();
       const mesh = new Mesh(merged, material);
-      mesh.castShadow = true;
+      mesh.castShadow = castShadows;
       mesh.receiveShadow = true;
       house.add(mesh);
       this.disposables.push(merged);
@@ -1412,7 +1953,6 @@ export class OldTownStreet {
     window.scale.set(0.05, 1.2, 0.9);
     window.position.set(-4.48, SHOP + 2.5, 0);
     group.add(floor, back, bridge, window);
-    this.flatten(group);
     return group;
   }
 
@@ -1494,7 +2034,7 @@ export class OldTownStreet {
     group.add(slab);
     const front = new PlaneGeometry(width - 0.8, 0.95);
     const end = new PlaneGeometry(deep, 0.95);
-    this.disposables.push(front, end);
+    this.tempGeometries.push(front, end);
     const rail = new Mesh(front, this.railing);
     rail.rotation.y = Math.PI / 2;
     rail.position.set(deep, floor + 0.55, 0);
@@ -1553,19 +2093,115 @@ export class OldTownStreet {
       scallop.position.set(out, SHOP - 0.35 - drop - 0.16, (i + 0.5 - scallops / 2) * 0.3);
       group.add(scallop);
     }
-    this.disposables.push(canvas, valance.geometry);
+    this.tempGeometries.push(canvas, valance.geometry);
     return group;
   }
 
   /** A moulding `height` high standing `out` proud of the façade, centred `y` above the road. */
   private trim(material: Material, width: number, out: number, height: number, y: number): Mesh {
-    const mesh = new Mesh(this.unit, material);
+    const mesh = new Mesh(this.frontUnit, material);
     mesh.scale.set(out + 0.1, height, width);
     mesh.position.set((out - 0.1) / 2, y, 0);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     return mesh;
   }
+}
+
+/** Unit box without its `-x` face, for mouldings and quoins seated flush against a wall. */
+function openBackBox(): BufferGeometry {
+  const box = new BoxGeometry(1, 1, 1);
+  const src = box.index!.array;
+  const indices: number[] = [];
+  for (let i = 0; i < src.length; i++) {
+    // Face 1 (`indices 6..11`) is the `-x` face buried inside the house wall.
+    if (i < 6 || i >= 12) indices.push(src[i]!);
+  }
+  box.setIndex(indices);
+  box.clearGroups();
+  return box;
+}
+
+function extractSubGeometry(
+  geometry: BufferGeometry,
+  start: number,
+  count: number,
+): BufferGeometry {
+  const srcIdx = geometry.index!.array;
+  const pos = geometry.getAttribute('position') as BufferAttribute;
+  const norm = geometry.getAttribute('normal') as BufferAttribute;
+  const uv = geometry.getAttribute('uv') as BufferAttribute;
+  const remap = new Map<number, number>();
+  const newIndices: number[] = [];
+  const pOut: number[] = [];
+  const nOut: number[] = [];
+  const uOut: number[] = [];
+  for (let i = start; i < start + count; i++) {
+    const oldV = srcIdx[i]!;
+    let newV = remap.get(oldV);
+    if (newV === undefined) {
+      newV = remap.size;
+      remap.set(oldV, newV);
+      pOut.push(pos.getX(oldV), pos.getY(oldV), pos.getZ(oldV));
+      nOut.push(norm.getX(oldV), norm.getY(oldV), norm.getZ(oldV));
+      uOut.push(uv.getX(oldV), uv.getY(oldV));
+    }
+    newIndices.push(newV);
+  }
+  const sub = new BufferGeometry();
+  sub.setAttribute('position', new BufferAttribute(new Float32Array(pOut), 3));
+  sub.setAttribute('normal', new BufferAttribute(new Float32Array(nOut), 3));
+  sub.setAttribute('uv', new BufferAttribute(new Float32Array(uOut), 2));
+  sub.setIndex(newIndices);
+  return sub;
+}
+
+function prepareBatchGeometry(
+  source: BufferGeometry,
+  xform: Matrix4,
+  vColor?: Color,
+  uvMap?: (u: number, v: number) => [number, number],
+): BufferGeometry {
+  const cloned = source.clone().applyMatrix4(xform);
+  const pos = cloned.getAttribute('position') as BufferAttribute;
+  const norm = cloned.getAttribute('normal') as BufferAttribute;
+  const uv = cloned.getAttribute('uv') as BufferAttribute;
+  const vCount = pos.count;
+  const out = new BufferGeometry();
+  out.setAttribute('position', new BufferAttribute(new Float32Array(pos.array), 3));
+  out.setAttribute('normal', new BufferAttribute(new Float32Array(norm.array), 3));
+  const uvArr = new Float32Array(vCount * 2);
+  for (let i = 0; i < vCount; i++) {
+    const u = uv.getX(i);
+    const v = uv.getY(i);
+    if (uvMap) {
+      const [nu, nv] = uvMap(u, v);
+      uvArr[i * 2] = nu;
+      uvArr[i * 2 + 1] = nv;
+    } else {
+      uvArr[i * 2] = u;
+      uvArr[i * 2 + 1] = v;
+    }
+  }
+  out.setAttribute('uv', new BufferAttribute(uvArr, 2));
+  if (vColor) {
+    const cArr = new Float32Array(vCount * 3);
+    for (let i = 0; i < vCount; i++) {
+      cArr[i * 3] = vColor.r;
+      cArr[i * 3 + 1] = vColor.g;
+      cArr[i * 3 + 2] = vColor.b;
+    }
+    out.setAttribute('color', new BufferAttribute(cArr, 3));
+  }
+  if (cloned.index) {
+    out.setIndex(Array.from(cloned.index.array));
+  } else {
+    const seq = new Array<number>(vCount);
+    for (let i = 0; i < vCount; i++) seq[i] = i;
+    out.setIndex(seq);
+  }
+  cloned.dispose();
+  return out;
 }
 
 /**
@@ -1588,11 +2224,59 @@ function tiledBox(
     const across = face < 2 ? bays : face >= 4 ? Math.max(1, Math.round(depth / bay)) : 1;
     const up = face < 2 || face >= 4 ? height / storey : 1;
     for (let v = face * 4; v < face * 4 + 4; v++) {
-      uv.setXY(v, uv.getX(v) * across, uv.getY(v) * up - below / storey);
+      uv.setXY(v, uv.getX(v) * across, Math.max(0, uv.getY(v) * up - below / storey));
     }
   }
   uv.needsUpdate = true;
   return box;
+}
+
+/** One upper-storey wall course without interior top/bottom caps (`+x`, `-x`, `+z`, `-z` only). */
+function storeyCourse(depth: number, storey: number, width: number): BufferGeometry {
+  const box = tiledBox(depth, storey, width, storey, 0);
+  const src = box.index!.array;
+  const indices: number[] = [];
+  for (let i = 0; i < src.length; i++) {
+    // Faces 2 and 3 (`indices 12..23`) are the `+y` and `-y` caps hidden under the roof/between floors.
+    if (i < 12 || i >= 24) indices.push(src[i]!);
+  }
+  box.setIndex(indices);
+  box.clearGroups();
+  return box;
+}
+
+/** Stacks horizontally repeating (`wrapS`) façade tiles vertically with edge-extruded gutters. */
+function stackedFacadeAtlas(
+  sources: readonly CanvasTexture[],
+  w: number,
+  innerH: number,
+  pad: number,
+): { texture: CanvasTexture; bands: [number, number][] } {
+  const rowH = innerH + 2 * pad;
+  const H = sources.length * rowH;
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const bands: [number, number][] = [];
+  sources.forEach((srcTex, i) => {
+    const img = srcTex.image as HTMLCanvasElement;
+    const sw = img.width;
+    const sh = img.height;
+    const cy = i * rowH;
+    const iy = cy + pad;
+    if (ctx) {
+      ctx.drawImage(img, 0, iy, w, innerH);
+      ctx.drawImage(img, 0, 0, sw, 1, 0, cy, w, pad);
+      ctx.drawImage(img, 0, sh - 1, sw, 1, 0, iy + innerH, w, pad);
+    }
+    srcTex.dispose();
+    bands.push([1 - (iy + innerH - 0.5) / H, 1 - (iy + 0.5) / H]);
+  });
+  const texture = new CanvasTexture(canvas);
+  texture.wrapS = RepeatWrapping;
+  texture.colorSpace = SRGBColorSpace;
+  return { texture, bands };
 }
 
 /**
@@ -1680,10 +2364,16 @@ function homeTexture(palette: Palette): CanvasTexture {
     ctx.fillStyle = palette.wall;
     ctx.fillRect(0, 0, w, h);
     const random = seeded(palette.wall.length + 7);
+    const darkPath = new Path2D();
+    const lightPath = new Path2D();
     for (let i = 0; i < 1600; i++) {
-      ctx.fillStyle = random() < 0.5 ? 'rgba(0,0,0,0.035)' : 'rgba(255,255,255,0.05)';
-      ctx.fillRect(random() * w, random() * h, 2 + random() * 6, 2 + random() * 6);
+      const p = random() < 0.5 ? darkPath : lightPath;
+      p.rect(random() * w, random() * h, 2 + random() * 6, 2 + random() * 6);
     }
+    ctx.fillStyle = 'rgba(0,0,0,0.035)';
+    ctx.fill(darkPath);
+    ctx.fillStyle = 'rgba(255,255,255,0.05)';
+    ctx.fill(lightPath);
     // Rusticated stone up to the sills.
     ctx.fillStyle = 'rgba(70,55,40,0.16)';
     ctx.fillRect(0, h - 70, w, 70);
@@ -1754,10 +2444,16 @@ function bayTexture(palette: Palette, shop: boolean, closed = false): CanvasText
     ctx.fillStyle = palette.wall;
     ctx.fillRect(0, 0, w, h);
     const random = seeded(palette.wall.length + (shop ? 3 : 1));
+    const darkPath = new Path2D();
+    const lightPath = new Path2D();
     for (let i = 0; i < 900; i++) {
-      ctx.fillStyle = random() < 0.5 ? 'rgba(0,0,0,0.035)' : 'rgba(255,255,255,0.05)';
-      ctx.fillRect(random() * w, random() * h, 2 + random() * 6, 2 + random() * 6);
+      const p = random() < 0.5 ? darkPath : lightPath;
+      p.rect(random() * w, random() * h, 2 + random() * 6, 2 + random() * 6);
     }
+    ctx.fillStyle = 'rgba(0,0,0,0.035)';
+    ctx.fill(darkPath);
+    ctx.fillStyle = 'rgba(255,255,255,0.05)';
+    ctx.fill(lightPath);
     // Weathering: grime splashed up from the street, and rain streaks under each sill.
     const grime = ctx.createLinearGradient(0, h * 0.7, 0, h);
     grime.addColorStop(0, 'rgba(60,50,40,0)');
@@ -1978,7 +2674,24 @@ export function cobbleTextures(): { map: CanvasTexture; relief: CanvasTexture } 
     const sett = 0.13;
     const rows = Math.round(10 / sett);
     const rowH = h / rows;
+    // Stamp a reusable domed sett height tile rather than allocating 4,200 radial gradients.
+    const stamp = document.createElement('canvas');
+    stamp.width = 48;
+    stamp.height = 32;
+    const sctx = stamp.getContext('2d');
+    if (sctx) {
+      const dome = sctx.createRadialGradient(24, 16, 1, 24, 16, 28);
+      dome.addColorStop(0, '#fff');
+      dome.addColorStop(1, '#5a5a5a');
+      sctx.fillStyle = dome;
+      roundRect(sctx, 0, 0, 48, 32, 6);
+    }
     for (let row = 0; row < rows; row++) {
+      const y = row * rowH;
+      const g = ctx.createLinearGradient(0, y, 0, y + rowH);
+      g.addColorStop(0, 'rgba(255,255,255,0.16)');
+      g.addColorStop(0.5, 'rgba(255,255,255,0)');
+      g.addColorStop(1, 'rgba(0,0,0,0.18)');
       let x = row % 2 ? -0.5 * sett * pxX : 0;
       while (x < w) {
         const sw = (0.11 + random() * 0.06) * pxX;
@@ -1988,26 +2701,10 @@ export function cobbleTextures(): { map: CanvasTexture; relief: CanvasTexture } 
         const tone = 165 + worn + random() * (worn ? 34 : 50);
         const warm = random() * 16;
         ctx.fillStyle = `rgb(${tone + warm},${tone + warm * 0.6},${tone})`;
-        const y = row * rowH;
         roundRect(ctx, x + 1.5, y + 1.5, sw - 3, rowH - 3, 4);
-        const g = ctx.createLinearGradient(0, y, 0, y + rowH);
-        g.addColorStop(0, 'rgba(255,255,255,0.16)');
-        g.addColorStop(0.5, 'rgba(255,255,255,0)');
-        g.addColorStop(1, 'rgba(0,0,0,0.18)');
         ctx.fillStyle = g;
         roundRect(ctx, x + 1.5, y + 1.5, sw - 3, rowH - 3, 4);
-        const dome = hctx.createRadialGradient(
-          x + sw / 2,
-          y + rowH / 2,
-          1,
-          x + sw / 2,
-          y + rowH / 2,
-          Math.max(sw, rowH) * 0.62,
-        );
-        dome.addColorStop(0, '#fff');
-        dome.addColorStop(1, '#5a5a5a');
-        hctx.fillStyle = dome;
-        roundRect(hctx, x + 1.5, y + 1.5, sw - 3, rowH - 3, 4);
+        hctx.drawImage(stamp, x + 1.5, y + 1.5, sw - 3, rowH - 3);
         x += sw;
       }
     }
@@ -2069,18 +2766,24 @@ function normalsFrom(
   const ctx = canvas.getContext('2d');
   if (!ctx) return canvas;
   const out = ctx.createImageData(w, h);
-  const at = (x: number, y: number) => source[(((y + h) % h) * w + ((x + w) % w)) * 4]! / 255;
+  const dst = out.data;
+  const scale = strength / 255;
   for (let y = 0; y < h; y++) {
+    const yPrev = ((y - 1 + h) % h) * w;
+    const yRow = y * w;
+    const yNext = ((y + 1) % h) * w;
     for (let x = 0; x < w; x++) {
-      const dx = (at(x + 1, y) - at(x - 1, y)) * strength;
+      const xPrev = (x - 1 + w) % w;
+      const xNext = (x + 1) % w;
+      const dx = (source[(yRow + xNext) * 4]! - source[(yRow + xPrev) * 4]!) * scale;
       // The canvas runs down the texture's v: a rise down the canvas tips the normal to +v.
-      const dy = (at(x, y + 1) - at(x, y - 1)) * strength;
-      const len = Math.hypot(dx, dy, 1);
-      const i = (y * w + x) * 4;
-      out.data[i] = ((-dx / len) * 0.5 + 0.5) * 255;
-      out.data[i + 1] = ((dy / len) * 0.5 + 0.5) * 255;
-      out.data[i + 2] = ((1 / len) * 0.5 + 0.5) * 255;
-      out.data[i + 3] = 255;
+      const dy = (source[(yNext + x) * 4]! - source[(yPrev + x) * 4]!) * scale;
+      const invLen = 1 / Math.sqrt(dx * dx + dy * dy + 1);
+      const i = (yRow + x) * 4;
+      dst[i] = (-dx * invLen * 0.5 + 0.5) * 255;
+      dst[i + 1] = (dy * invLen * 0.5 + 0.5) * 255;
+      dst[i + 2] = (invLen * 0.5 + 0.5) * 255;
+      dst[i + 3] = 255;
     }
   }
   ctx.putImageData(out, 0, 0);
@@ -2211,27 +2914,30 @@ function coverTexture(): CanvasTexture {
   return texture;
 }
 
-/** Where a shop bay glows: its window's interior, brightest low down where the lamps fall. */
-function shopGlowTexture(): CanvasTexture {
+/** Where a shop bay glows: aligned with each row of `shopAtlas` (`rows` repeats vertically). */
+function shopGlowTexture(rows: number, innerH: number, pad: number): CanvasTexture {
   const w = 192;
-  const h = 268;
+  const rowH = innerH + 2 * pad;
   const canvas = document.createElement('canvas');
   canvas.width = w;
-  canvas.height = h;
+  canvas.height = rowH;
   const ctx = canvas.getContext('2d');
   if (ctx) {
     ctx.fillStyle = '#000';
-    ctx.fillRect(0, 0, w, h);
-    // The window as bayTexture draws it: inset 22 px, from 54 px down to 66 px off the foot.
-    const glow = ctx.createLinearGradient(0, 54, 0, h - 66);
+    ctx.fillRect(0, 0, w, rowH);
+    const scaleY = innerH / 268;
+    const y0 = pad + 54 * scaleY;
+    const y1 = pad + (268 - 66) * scaleY;
+    const glow = ctx.createLinearGradient(0, y0, 0, y1);
     glow.addColorStop(0, '#202020');
     glow.addColorStop(1, '#ffffff');
     ctx.fillStyle = glow;
-    ctx.fillRect(22, 54, w - 44, h - 26 - 54 - 40);
+    ctx.fillRect(22, y0, w - 44, y1 - y0);
   }
   const texture = new CanvasTexture(canvas);
   texture.wrapS = RepeatWrapping;
   texture.wrapT = RepeatWrapping;
+  texture.repeat.set(1, rows);
   texture.colorSpace = SRGBColorSpace;
   return texture;
 }
@@ -2528,26 +3234,85 @@ function railingTexture(): CanvasTexture {
   return texture;
 }
 
-/** Awning canvas: broad stripes of the colour and cream, running down the slope. */
-function stripeTexture(colour: string): CanvasTexture {
+/** Awning canvas atlas: one 64 px striped column per awning colour, repeating down `v`. */
+function awningAtlasTexture(): CanvasTexture {
   const canvas = document.createElement('canvas');
-  canvas.width = 64;
+  canvas.width = 512;
   canvas.height = 64;
   const ctx = canvas.getContext('2d');
   if (ctx) {
-    ctx.fillStyle = '#efe6d2';
-    ctx.fillRect(0, 0, 64, 64);
-    ctx.fillStyle = colour;
-    ctx.fillRect(0, 0, 64, 32);
-    ctx.fillStyle = 'rgba(0,0,0,0.08)';
-    for (let y = 0; y < 64; y += 4) ctx.fillRect(0, y, 64, 1);
+    AWNINGS.forEach((colour, i) => {
+      const x = i * 64;
+      ctx.fillStyle = '#efe6d2';
+      ctx.fillRect(x, 0, 64, 64);
+      ctx.fillStyle = colour;
+      ctx.fillRect(x, 0, 64, 32);
+      ctx.fillStyle = 'rgba(0,0,0,0.08)';
+      for (let y = 0; y < 64; y += 4) ctx.fillRect(x, y, 64, 1);
+    });
   }
   const texture = new CanvasTexture(canvas);
-  texture.wrapS = RepeatWrapping;
   texture.wrapT = RepeatWrapping;
-  texture.repeat.set(1, 3);
   texture.colorSpace = SRGBColorSpace;
   return texture;
+}
+
+/**
+ * Packs shop fascias, shop doors, hanging signs, civic flags, bay leaves and geranium blooms into
+ * one 1024 × 512 texture atlas with 4 px edge-extruded gutters so mipmaps never bleed across cells.
+ */
+function houseDetailAtlas(): {
+  texture: CanvasTexture;
+  fascias: UvRect[];
+  shopDoors: UvRect[];
+  signs: UvRect[];
+  flags: UvRect[];
+  leaves: UvRect;
+  blooms: UvRect;
+} {
+  const W = 1024;
+  const H = 512;
+  const pad = 4;
+  const canvas = document.createElement('canvas');
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const place = (srcTex: CanvasTexture, cx: number, cy: number, dw: number, dh: number): UvRect => {
+    const img = srcTex.image as HTMLCanvasElement;
+    const sw = img.width;
+    const sh = img.height;
+    const ix = cx + pad;
+    const iy = cy + pad;
+    if (ctx) {
+      ctx.drawImage(img, ix, iy, dw, dh);
+      ctx.drawImage(img, 0, 0, sw, 1, ix, iy - pad, dw, pad);
+      ctx.drawImage(img, 0, sh - 1, sw, 1, ix, iy + dh, dw, pad);
+      ctx.drawImage(img, 0, 0, 1, sh, ix - pad, iy, pad, dh);
+      ctx.drawImage(img, sw - 1, 0, 1, sh, ix + dw, iy, pad, dh);
+    }
+    srcTex.dispose();
+    return {
+      u0: (ix + 0.5) / W,
+      u1: (ix + dw - 0.5) / W,
+      v0: 1 - (iy + dh - 0.5) / H,
+      v1: 1 - (iy + 0.5) / H,
+    };
+  };
+  const fascias = ['BOEKEN', 'BAKKERIJ', 'BLOEMEN', 'MODE'].map((trade, i) =>
+    place(fasciaTexture(trade), i * 256, 0, 248, 42),
+  );
+  const shopDoors = ['#2d4e3f', '#5a2730', '#1f2b44', '#3a3a3a'].map((paint, i) =>
+    place(shopDoorTexture(paint), i * 104, 56, 88, 200),
+  );
+  const leaves = place(leafTexture(), 432, 56, 256, 128);
+  const blooms = place(bloomTexture(), 704, 56, 128, 64);
+  const signs = SIGNS.map((sign, i) =>
+    place(signTexture(sign.ground, sign.emblem), i * 144, 272, 128, 100),
+  );
+  const flags = FLAGS.map((bands, i) => place(flagTexture(bands), i * 112, 388, 96, 64));
+  const texture = new CanvasTexture(canvas);
+  texture.colorSpace = SRGBColorSpace;
+  return { texture, fascias, shopDoors, signs, flags, leaves, blooms };
 }
 
 /** Pavement flagstones, one metre square per repeat, in two rows of 50 cm slabs. */

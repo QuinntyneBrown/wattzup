@@ -16,6 +16,12 @@ interface Result {
   medianMs: number | null;
   p95Ms: number | null;
   gpuMedianMs: number | null;
+  cdp?: {
+    scriptMsPerFrame: number;
+    taskMsPerFrame: number;
+    layoutCount: number;
+    jsHeapUsedMB: number;
+  };
   drawCalls: number;
   programs: number;
   compiledDuringRide: number;
