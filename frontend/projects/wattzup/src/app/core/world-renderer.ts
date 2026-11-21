@@ -61,17 +61,25 @@ import {
   Vector3,
   WebGPURenderer,
 } from 'three/webgpu';
-import type { WorldId } from '@wattzup/api';
+import type { Segment, WorldId } from '@wattzup/api';
 import { compiledFeatures } from './material-features';
 import { skyStops } from './drawn-look';
 import { PACERS, pacersOnRoad } from './pacers';
-import { type Backend, FrameBudget, startTier, techniquesAt, type Tier } from './render-quality';
+import {
+  type Backend,
+  FrameBudget,
+  nextLower,
+  startTier,
+  techniquesAt,
+  type Tier,
+} from './render-quality';
 import {
   materialVariants,
   PROBE_KEY,
   probeReport,
   readWorldRideProbe,
   type WorldRideProbeReport,
+  takeDropRequest,
 } from './world-ride-probe';
 import { bendAhead, bendPoint, heading, lean, racingLine } from './scene-bend';
 import { EASE_PER_SECOND, MIN_SPEED, nextArch, roadAhead, type RoadPoint } from './scene-road';
@@ -3132,6 +3140,12 @@ const BEND_SWEEP = 120;
 export class ThreeWorldRenderer implements WorldRenderer {
   private renderer: WebGPURenderer | null = null;
   private pipeline: RenderPipeline | null = null;
+  /** The flat sky's node (technique 53), made the first time `low` is applied. */
+  private flatSkyNode: ReturnType<typeof flatSky> | null = null;
+  /** The sky's light (technique 6): undefined until first made, null where it could not be. */
+  private skyLight: Texture | null | undefined = undefined;
+  /** Each tier's pass chain, kept once built: a drop swaps to one compiled ahead (#882). */
+  private readonly pipelines = new Map<string, RenderPipeline>();
   private backend: Backend = 'webgl2';
   private budget: FrameBudget | null = null;
   /** What the test-only hook's sweep reads; null on every rider's ride (#672, #674). */
@@ -3173,7 +3187,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
   private plainRoad: CanvasTexture | null = null;
   private layeredRoad: CanvasTexture | null = null;
   private roadRelief: CanvasTexture | null = null;
-  private archLabel: { text: string; texture: CanvasTexture; mesh: Mesh } | null = null;
+  private archLabel: { text: string; mesh: Mesh; material: MeshBasicMaterial } | null = null;
   private world: World | null = null;
   private look: Look = LOOKS.oldtown;
   private grade = 0;
@@ -3192,6 +3206,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
     canvas: HTMLCanvasElement,
     world: World,
     nextFrame: () => Promise<void>,
+    segments: readonly Segment[] = [],
   ): Promise<boolean> {
     try {
       // Timer queries only for the performance sweep: a rider's frames never pay for them (#675).
@@ -3225,7 +3240,10 @@ export class ThreeWorldRenderer implements WorldRenderer {
       this.renderer.hasFeature('timestamp-query'),
     );
     // The sweep counts every pass of a frame, so the counts reset per frame, not per render.
-    if (this.probe) this.renderer.info.autoReset = false;
+    if (this.probe) {
+      this.renderer.info.autoReset = false;
+      countCompiles(this.renderer, this.probe);
+    }
 
     this.buildScene(world, canvas);
     // Docklands' photographed distance is the mock's own still, riders and all: its towers are
@@ -3238,7 +3256,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
     if (world.id === 'docklands') this.addTowers();
     this.applyTier();
     this.bend.apply(this.scene, this.unbent);
-    await this.warmUp(canvas, nextFrame);
+    await this.warmUp(canvas, nextFrame, segments);
     if (this.probe) this.probe.programsBeforeRide = this.renderer.info.memory.programs;
     return true;
   }
@@ -3249,10 +3267,61 @@ export class ThreeWorldRenderer implements WorldRenderer {
    * and render targets the ride needs exist before its first frame (L2-111 AC10). Parts hidden
    * or out of view at the start are drawn too, so their programs are ready when they appear.
    */
-  private async warmUp(canvas: HTMLCanvasElement, nextFrame: () => Promise<void>): Promise<void> {
+  private async warmUp(
+    canvas: HTMLCanvasElement,
+    nextFrame: () => Promise<void>,
+    segments: readonly Segment[],
+  ): Promise<void> {
     const renderer = this.renderer;
-    if (!renderer) return;
+    const tier = this.budget?.tier;
+    if (!renderer || !tier) return;
     this.resize(canvas.clientWidth, canvas.clientHeight, devicePixelRatio);
+    // The tier a slow budget would drop to is drawn first, so a drop compiles nothing (#882);
+    // the tier the ride starts at is drawn last, so its history is the one the ride inherits.
+    const lower = nextLower(tier);
+    if (lower) {
+      this.applyTier(lower);
+      await this.warmRound(nextFrame);
+      this.applyTier(tier);
+    }
+    await this.warmRound(nextFrame);
+    await this.rehearse(nextFrame, segments);
+    // WebGPU builds pipelines in the GPU process: wait for them, not just for the call.
+    const device = (renderer.backend as { device?: GPUDevice }).device;
+    await device?.queue.onSubmittedWorkDone();
+  }
+
+  /**
+   * Runs the ride's own frame (laying the road, placing the riders and the scenery) a few times
+   * at the start line, so the ride's first frames run warmed code rather than paying for its
+   * first run (#882). The sweep's report and the frame budget see none of it.
+   */
+  private async rehearse(
+    nextFrame: () => Promise<void>,
+    segments: readonly Segment[],
+  ): Promise<void> {
+    const probe = this.probe;
+    this.probe = null;
+    for (let i = 0; i < REHEARSALS; i++) {
+      await nextFrame();
+      this.draw({
+        s: 0,
+        crank: 0,
+        segments,
+        elapsed: 0,
+        speedKmh: 0,
+        reducedMotion: this.reducedMotion,
+      });
+    }
+    this.probe = probe;
+    this.lastFrameAt = null;
+    this.lastS = 0;
+    this.drawn = 0;
+  }
+
+  /** One warm-up: every part drawn, in view or not, over three frames. */
+  private async warmRound(nextFrame: () => Promise<void>): Promise<void> {
+    const renderer = this.renderer!;
     const hidden: Object3D[] = [];
     const culled: Object3D[] = [];
     this.scene.traverse((part) => {
@@ -3272,9 +3341,6 @@ export class ThreeWorldRenderer implements WorldRenderer {
     }
     for (const part of hidden) part.visible = false;
     for (const part of culled) part.frustumCulled = true;
-    // WebGPU builds pipelines in the GPU process: wait for them, not just for the call.
-    const device = (renderer.backend as { device?: GPUDevice }).device;
-    await device?.queue.onSubmittedWorkDone();
   }
 
   resize(width: number, height: number, pixelRatio: number): void {
@@ -3399,8 +3465,17 @@ export class ThreeWorldRenderer implements WorldRenderer {
     for (const d of this.disposables) d.dispose();
     this.toon.dispose();
     for (const t of this.textures) t.dispose();
-    this.archLabel?.texture.dispose();
-    this.pipeline?.dispose();
+    if (this.archLabel) {
+      this.archLabel.material.map?.dispose();
+      this.archLabel.material.dispose();
+      this.archLabel.mesh.geometry.dispose();
+      this.archLabel = null;
+    }
+    this.skyLight = undefined;
+    this.flatSkyNode = null;
+    for (const pipeline of this.pipelines.values()) pipeline.dispose();
+    this.pipelines.clear();
+    this.pipeline = null;
     this.renderer?.dispose();
     this.renderer = null;
   }
@@ -3438,15 +3513,19 @@ export class ThreeWorldRenderer implements WorldRenderer {
     const last = this.lastFrameAt;
     this.lastFrameAt = now;
     if (this.probe && last !== null) this.probe.frames.push(now - last);
+    // The sweep's drop, as a slow budget's would be (#882).
+    if (this.probe && takeDropRequest() && this.budget?.lower()) this.applyTier();
     if (last === null || now - last > 1000 || !this.budget) return;
     if (this.budget.sample(now, now - last) === 'drop') this.applyTier();
   }
 
-  /** Turns the tier's techniques on and off, and rebuilds the pass chain (L2-111 AC2, AC5). */
-  private applyTier(): void {
+  /**
+   * Turns the tier's techniques on and off, and swaps in its pass chain (L2-111 AC2, AC5). The
+   * load also applies the next-lower tier for a moment, to compile it ahead (#882).
+   */
+  private applyTier(tier: Tier | undefined = this.budget?.tier): void {
     const renderer = this.renderer;
-    if (!renderer || !this.budget) return;
-    const tier = this.budget.tier;
+    if (!renderer || !tier) return;
     const on = techniquesAt(tier, this.backend, this.reducedMotion);
     if (this.probe) this.probe.tier = tier;
     this.on = on;
@@ -3465,7 +3544,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.sky.visible = on.has(11) && this.world?.id !== 'docklands';
     // At low the sky is a flat three-stop gradient, and the fog takes its horizon (technique 53).
     this.scene.background = on.has(11) || on.has(53) ? null : new Color(look.sky);
-    this.scene.backgroundNode = on.has(53) ? flatSky(look.sky) : null;
+    // Made once: a new node would be a new program at every tier change (#882).
+    this.scene.backgroundNode = on.has(53) ? (this.flatSkyNode ??= flatSky(look.sky)) : null;
     (this.scene.fog as Fog | null)?.color.set(on.has(53) ? skyStops(look.sky).horizon : look.fog);
 
     renderer.shadowMap.enabled = on.has(12);
@@ -3500,8 +3580,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
     for (const lamp of this.lamps) lamp.visible = on.has(23) && night;
     for (const post of this.posts) post.visible = on.has(24);
 
-    this.scene.environment = null;
-    if (on.has(6)) this.lightFromSky(renderer);
+    this.scene.environment = on.has(6) ? this.lightFromSky(renderer) : null;
+    this.scene.environmentIntensity = 0.06;
 
     // At low, lit surfaces shade in bands; the twins follow the bend at once (technique 51).
     this.toon.apply(this.scene, on.has(51), new Color(look.sky), this.unbent);
@@ -3514,8 +3594,21 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.bend.apply(this.scene, this.unbent);
     this.report();
 
-    this.pipeline?.dispose();
-    this.pipeline = this.buildPipeline(renderer, on);
+    this.pipeline = this.pipelineFor(renderer, on);
+  }
+
+  /**
+   * The pass chain for these techniques, built the first time it is asked for. Tiers that draw
+   * the same passes share one chain, so a drop between them changes nothing (#882).
+   */
+  private pipelineFor(renderer: WebGPURenderer, on: Set<number>): RenderPipeline {
+    const key = PASS_TECHNIQUES.filter((id) => on.has(id)).join(',');
+    let pipeline = this.pipelines.get(key);
+    if (!pipeline) {
+      pipeline = this.buildPipeline(renderer, on);
+      this.pipelines.set(key, pipeline);
+    }
+    return pipeline;
   }
 
   /** The post-processing chain of the tier, in the order of the design. */
@@ -3578,7 +3671,13 @@ export class ThreeWorldRenderer implements WorldRenderer {
   }
 
   /** Image-based lighting from the scene's sky (technique 6). */
-  private lightFromSky(renderer: WebGPURenderer): void {
+  /**
+   * The sky's light, made once per scene: it depends only on the world's sun, so a tier change
+   * reuses it, and the materials lit by it keep their programs (#882). The physical sky is HDR
+   * radiance: a small share of it lights the scene (environmentIntensity).
+   */
+  private lightFromSky(renderer: WebGPURenderer): Texture | null {
+    if (this.skyLight !== undefined) return this.skyLight;
     try {
       const skyScene = new Scene();
       const sky = new SkyMesh();
@@ -3586,13 +3685,14 @@ export class ThreeWorldRenderer implements WorldRenderer {
       sky.sunPosition.value.copy(this.sunDirection());
       skyScene.add(sky);
       const pmrem = new PMREMGenerator(renderer);
-      this.scene.environment = pmrem.fromScene(skyScene).texture;
-      // The physical sky is HDR radiance: a small share of it lights the scene.
-      this.scene.environmentIntensity = 0.06;
+      const target = pmrem.fromScene(skyScene);
       pmrem.dispose();
+      this.disposables.push(target);
+      this.skyLight = target.texture;
     } catch {
-      this.scene.environment = null;
+      this.skyLight = null;
     }
+    return this.skyLight;
   }
 
   private sunDirection(): Vector3 {
@@ -3782,6 +3882,15 @@ export class ThreeWorldRenderer implements WorldRenderer {
     line.position.y = 0.02;
     line.receiveShadow = true;
     this.arch.add(line);
+    // The banner's lettering: one mesh made with the arch, so the warm-up compiles it at every
+    // tier it may be drawn at; a new effort swaps only its texture (#882).
+    const label = new Mesh(
+      new PlaneGeometry(2 * ROAD_HALF + 1.8, 1.2),
+      new MeshBasicMaterial({ map: labelTexture(''), side: DoubleSide }),
+    );
+    label.position.set(0, 5.6, 0.24);
+    this.arch.add(label);
+    this.archLabel = { text: '', mesh: label, material: label.material };
     this.disposables.push(
       material,
       steel,
@@ -3898,22 +4007,11 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.arch.visible = arch !== null && arch.metres <= far;
     if (!arch || !this.arch.visible) return;
     this.arch.position.set(0, heightAt(ahead, arch.metres), -arch.metres);
-    if (this.archLabel?.text === arch.label) return;
-    if (this.archLabel) {
-      this.arch.remove(this.archLabel.mesh);
-      this.archLabel.texture.dispose();
-      this.archLabel.mesh.geometry.dispose();
-      (this.archLabel.mesh.material as Material).dispose();
-    }
-    const texture = labelTexture(arch.label);
-    const mesh = new Mesh(
-      new PlaneGeometry(2 * ROAD_HALF + 1.8, 1.2),
-      new MeshBasicMaterial({ map: texture, side: DoubleSide }),
-    );
-    mesh.position.set(0, 5.6, 0.24);
-    this.arch.add(mesh);
-    this.bend.apply(this.arch);
-    this.archLabel = { text: arch.label, texture, mesh };
+    const label = this.archLabel;
+    if (!label || label.text === arch.label) return;
+    label.material.map?.dispose();
+    label.material.map = labelTexture(arch.label);
+    label.text = arch.label;
   }
 
   /** Lays the road and the ground beside it over the points ahead, and a short run behind. */
@@ -4160,4 +4258,26 @@ function labelTexture(text: string): CanvasTexture {
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
   return texture;
+}
+
+/** How many times the load runs the ride's own frame before the ride starts (#882). */
+const REHEARSALS = 4;
+
+/** The techniques buildPipeline reads: a pass chain is keyed by those of them a tier draws. */
+const PASS_TECHNIQUES = [7, 33, 36, 49, 50, 52] as const;
+
+/**
+ * Counts each shader program and render pipeline the backend builds into the sweep's report:
+ * each is a compile, and a frame that waits on one stalls (#882).
+ */
+function countCompiles(renderer: WebGPURenderer, probe: WorldRideProbeReport): void {
+  type Build = (...args: unknown[]) => unknown;
+  const backend = renderer.backend as unknown as Record<string, Build>;
+  for (const name of ['createProgram', 'createRenderPipeline']) {
+    const build = backend[name]!.bind(backend);
+    backend[name] = (...args) => {
+      probe.compiled++;
+      return build(...args);
+    };
+  }
 }

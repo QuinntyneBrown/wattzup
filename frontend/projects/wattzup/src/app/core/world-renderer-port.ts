@@ -22,9 +22,15 @@ export interface WorldRenderer {
   /**
    * Starts drawing `world` on `canvas` with WebGPU, else WebGL2; resolves false when neither
    * starts (L2-110 AC4, L2-111 AC1, ADR 0021). Before it resolves, the scene is drawn over a few
-   * frames, each awaited through `nextFrame`, so its programs compile while it loads (AC10).
+   * frames, each awaited through `nextFrame`, so its programs compile while it loads (AC10), and
+   * the ride's own frame is rehearsed at the start of `segments` (#882).
    */
-  start(canvas: HTMLCanvasElement, world: World, nextFrame: () => Promise<void>): Promise<boolean>;
+  start(
+    canvas: HTMLCanvasElement,
+    world: World,
+    nextFrame: () => Promise<void>,
+    segments?: readonly Segment[],
+  ): Promise<boolean>;
   resize(width: number, height: number, pixelRatio: number): void;
   draw(frame: SceneFrame): void;
   /** Judges frames against the display's measured frame period from now on (L2-111 AC4, AC9). */

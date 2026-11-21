@@ -1,4 +1,10 @@
-import { materialVariants, PROBE_KEY, probeReport, readWorldRideProbe } from './world-ride-probe';
+import {
+  materialVariants,
+  PROBE_KEY,
+  probeReport,
+  readWorldRideProbe,
+  takeDropRequest,
+} from './world-ride-probe';
 
 describe('readWorldRideProbe (test-only tier hook, #672)', () => {
   it.each(['low', 'medium', 'high', 'ultra'] as const)('pins %s', (tier) => {
@@ -48,6 +54,7 @@ describe('probeReport (#674)', () => {
       outlines: false,
       skyGradient: false,
       dithered: 0,
+      compiled: 0,
     });
     report?.frames.push(16.7);
     expect((global[PROBE_KEY] as { report: unknown }).report).toBe(report);
@@ -56,6 +63,26 @@ describe('probeReport (#674)', () => {
   it('writes null GPU time, not none, when the browser offers no timer query (#675)', () => {
     global[PROBE_KEY] = { tier: 'low' };
     expect(probeReport('low', 'webgl2', false)).toHaveProperty('gpuMs', null);
+  });
+});
+
+describe('takeDropRequest (#882)', () => {
+  const global = globalThis as Record<string, unknown>;
+  afterEach(() => delete global[PROBE_KEY]);
+
+  it('answers a drop the sweep asked for once, then not again', () => {
+    global[PROBE_KEY] = { tier: 'high', drop: true };
+    expect(takeDropRequest()).toBe(true);
+    expect(takeDropRequest()).toBe(false);
+  });
+
+  it.each([
+    ['no hook', undefined],
+    ['a hook that asks for none', { tier: 'high' }],
+    ['a hook without a tier', { drop: true }],
+  ])('is false with %s', (_, hook) => {
+    if (hook) global[PROBE_KEY] = hook;
+    expect(takeDropRequest()).toBe(false);
   });
 });
 

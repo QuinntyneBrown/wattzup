@@ -34,6 +34,8 @@ export interface WorldRideReport {
   skyGradient: boolean;
   /** Materials cut by the ordered dither (L2-111 technique 54). */
   dithered: number;
+  /** Shader programs and render pipelines the backend has built, ever: each one a compile. */
+  compiled: number;
 }
 
 export class WorldRideProbe {
@@ -50,6 +52,14 @@ export class WorldRideProbe {
       },
       [tier, backend] as const,
     );
+  }
+
+  /** Lowers the drawn tier one step on the next frame, as a slow frame budget would (#882). */
+  async dropTier(): Promise<void> {
+    await this.page.evaluate(() => {
+      const hook = (window as unknown as Record<string, { drop?: boolean }>)['__wzWorldRide'];
+      if (hook) hook.drop = true;
+    });
   }
 
   /** The renderer's latest report, or null before the scene has started. */

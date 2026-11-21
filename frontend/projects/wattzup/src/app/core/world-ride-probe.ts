@@ -40,6 +40,8 @@ export interface WorldRideProbeReport {
   skyGradient: boolean;
   /** Materials cut by the ordered dither (L2-111 technique 54). */
   dithered: number;
+  /** Shader programs and render pipelines the backend has built, ever: each one a compile. */
+  compiled: number;
 }
 
 /** The pinned tier, or null when the hook is not set (every rider's ride). */
@@ -49,6 +51,17 @@ export function readWorldRideProbe(value: unknown): WorldRideProbe | null {
   return TIERS.includes(tier as Tier)
     ? { tier: tier as Tier, forceWebGL: backend === 'webgl2' }
     : null;
+}
+
+/**
+ * True once after the sweep sets `__wzWorldRide.drop`: the renderer lowers the tier one step, as
+ * a slow frame budget would, so the sweep can see what a drop compiles (#882).
+ */
+export function takeDropRequest(): boolean {
+  const probe = (globalThis as Record<string, unknown>)[PROBE_KEY];
+  if (!readWorldRideProbe(probe) || !(probe as { drop?: unknown }).drop) return false;
+  (probe as { drop?: unknown }).drop = false;
+  return true;
 }
 
 /**
@@ -75,6 +88,7 @@ export function probeReport(
     outlines: false,
     skyGradient: false,
     dithered: 0,
+    compiled: 0,
   };
   (probe as { report?: WorldRideProbeReport }).report = report;
   return report;
