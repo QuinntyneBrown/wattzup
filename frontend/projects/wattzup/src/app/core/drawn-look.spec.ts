@@ -1,4 +1,17 @@
-import { EDGE, edgeAmount, INK, RIM, toonRamp, toonShade } from './drawn-look';
+import {
+  BAYER_4,
+  DITHER,
+  ditherThreshold,
+  EDGE,
+  edgeAmount,
+  INK,
+  RIM,
+  SKY_AT,
+  skyAt,
+  skyStops,
+  toonRamp,
+  toonShade,
+} from './drawn-look';
 
 describe('toonShade: diffuse light in three soft-edged bands (L2-111 AC11)', () => {
   // x is dot(N, L) mapped to 0..1, as three's toon lighting samples its ramp.
@@ -68,5 +81,55 @@ describe('INK', () => {
   it('outlines riders in a warmer ink than the scenery', () => {
     const warmth = (hex: number) => ((hex >> 16) & 0xff) - (hex & 0xff);
     expect(warmth(INK.riders)).toBeGreaterThan(warmth(INK.scenery));
+  });
+});
+
+describe('skyStops and skyAt: a flat three-stop sky (L2-111 AC11, technique 53)', () => {
+  const sky = 0x8fb6d9;
+  const stops = skyStops(sky);
+
+  it('keeps the scene sky in the middle, deeper above and paler at the horizon', () => {
+    expect(stops.middle).toBe(sky);
+    const lum = (hex: number) => ((hex >> 16) & 0xff) + ((hex >> 8) & 0xff) + (hex & 0xff);
+    expect(lum(stops.zenith)).toBeLessThan(lum(sky));
+    expect(lum(stops.horizon)).toBeGreaterThan(lum(sky));
+  });
+
+  it.each([
+    ['the top of the screen', 0, 'zenith'],
+    ['the middle stop', SKY_AT.middle, 'middle'],
+    ['the horizon', SKY_AT.horizon, 'horizon'],
+    ['below the horizon', 0.9, 'horizon'],
+  ] as const)('is the %s stop at y = %f', (_, y, stop) => {
+    expect(skyAt(stops, y)).toBe(stops[stop]);
+  });
+
+  it('blends halfway between the zenith and the middle stop', () => {
+    const half = skyAt(stops, SKY_AT.middle / 2);
+    const channel = (hex: number, shift: number) => (hex >> shift) & 0xff;
+    for (const shift of [16, 8, 0]) {
+      const want = (channel(stops.zenith, shift) + channel(stops.middle, shift)) / 2;
+      expect(Math.abs(channel(half, shift) - want)).toBeLessThanOrEqual(1);
+    }
+  });
+});
+
+describe('BAYER_4 and ditherThreshold: ordered-dither foliage (technique 54)', () => {
+  it('holds the sixteen thresholds of a 4 x 4 ordered dither, once each', () => {
+    expect([...BAYER_4].sort((a, b) => a - b)).toEqual(
+      Array.from({ length: 16 }, (_, i) => (i + 0.5) / 16),
+    );
+    // Neighbours differ by half the range: the pattern is spread, not clustered.
+    expect(Math.abs(BAYER_4[0] - BAYER_4[1])).toBeCloseTo(0.5, 9);
+  });
+
+  it.each([
+    [0.5, 0.5, 0.5],
+    [0.5, 0, 0.5 - DITHER.spread / 2],
+    [0.5, 1, 0.5 + DITHER.spread / 2],
+    [0.1, 0, 0.02],
+    [0.95, 1, 0.98],
+  ])('cuts alpha test %f at %f of the dither as %f', (alphaTest, bayer, threshold) => {
+    expect(ditherThreshold(alphaTest, bayer)).toBeCloseTo(threshold, 9);
   });
 });

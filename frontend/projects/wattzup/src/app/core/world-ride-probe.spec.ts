@@ -46,6 +46,8 @@ describe('probeReport (#674)', () => {
       materials: {},
       unbent: 0,
       outlines: false,
+      skyGradient: false,
+      dithered: 0,
     });
     report?.frames.push(16.7);
     expect((global[PROBE_KEY] as { report: unknown }).report).toBe(report);

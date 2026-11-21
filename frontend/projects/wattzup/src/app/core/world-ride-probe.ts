@@ -36,6 +36,10 @@ export interface WorldRideProbeReport {
   unbent: number;
   /** Whether the post chain draws the ink outline pass (L2-111 technique 52). */
   outlines: boolean;
+  /** Whether the sky is the flat three-stop gradient (L2-111 technique 53). */
+  skyGradient: boolean;
+  /** Materials cut by the ordered dither (L2-111 technique 54). */
+  dithered: number;
 }
 
 /** The pinned tier, or null when the hook is not set (every rider's ride). */
@@ -69,6 +73,8 @@ export function probeReport(
     materials: {},
     unbent: 0,
     outlines: false,
+    skyGradient: false,
+    dithered: 0,
   };
   (probe as { report?: WorldRideProbeReport }).report = report;
   return report;

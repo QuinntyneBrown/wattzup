@@ -63,6 +63,7 @@ import {
 } from 'three/webgpu';
 import type { WorldId } from '@wattzup/api';
 import { compiledFeatures } from './material-features';
+import { skyStops } from './drawn-look';
 import { PACERS, pacersOnRoad } from './pacers';
 import { type Backend, FrameBudget, startTier, techniquesAt, type Tier } from './render-quality';
 import {
@@ -76,7 +77,7 @@ import { bendAhead, bendPoint, heading, lean, racingLine } from './scene-bend';
 import { EASE_PER_SECOND, MIN_SPEED, nextArch, roadAhead, type RoadPoint } from './scene-road';
 import { RoadBend } from './world-bend';
 import { inkOutline } from './world-ink';
-import { ToonLook } from './world-toon';
+import { flatSky, ToonLook } from './world-toon';
 import { Corners } from './world-corners';
 import { RampSign } from './world-ramps';
 import type { SceneFrame, WorldRenderer } from './world-renderer-port';
@@ -3417,6 +3418,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
     });
     this.probe.unbent = unbent;
     this.probe.outlines = this.on.has(52);
+    this.probe.skyGradient = this.scene.backgroundNode !== null;
+    this.probe.dithered = this.toon.dithered(this.scene);
   }
 
   /** The scene's distinct materials by variant, for the performance sweep (#679). */
@@ -3460,7 +3463,10 @@ export class ThreeWorldRenderer implements WorldRenderer {
 
     // Docklands draws its own night sky (world-docklands.ts); the physical sky is black at night.
     this.sky.visible = on.has(11) && this.world?.id !== 'docklands';
-    this.scene.background = on.has(11) ? null : new Color(look.sky);
+    // At low the sky is a flat three-stop gradient, and the fog takes its horizon (technique 53).
+    this.scene.background = on.has(11) || on.has(53) ? null : new Color(look.sky);
+    this.scene.backgroundNode = on.has(53) ? flatSky(look.sky) : null;
+    (this.scene.fog as Fog | null)?.color.set(on.has(53) ? skyStops(look.sky).horizon : look.fog);
 
     renderer.shadowMap.enabled = on.has(12);
     // The WebGPU renderer has no PCFSoftShadowMap: soft shadows (37) widen the PCF filter instead.

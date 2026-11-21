@@ -81,6 +81,8 @@ export const TECHNIQUES: readonly Technique[] = [
   // The drawn look: at `low`, in place of PBR (AC11, ADR 0024).
   t(51, 'Banded toon shading', 'low', 'kept', true),
   t(52, 'Ink outlines', 'low', 'kept', true),
+  t(53, 'Flat sky gradient', 'low', 'kept', true),
+  t(54, 'Dithered foliage', 'low', 'kept', true),
 ];
 
 const rank = (tier: Tier) => TIERS.indexOf(tier);
