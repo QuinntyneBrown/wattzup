@@ -295,3 +295,13 @@ Every iteration below is measured across a **45-second sustained ride** (`record
 | --------------- | ------------------------- | -------------------------- | ------------------------- | ------------------------------------------ | -------------------------------- |
 | **`low`**       | 60.6 → **60.6**           | 16.7 → **16.6**            | 18.2 → **18.3**           | 5.83 / 6.75 → **5.90 / 6.82**              | 7.952 → **7.922**                |
 | **`high`**      | 44.1 → **56.3 (+27.7 %)** | 22.8 → **16.9 (−25.9 %)**  | 44.7 → **35.1 (−21.5 %)** | 15.40 / 16.52 → **9.96 / 11.73 (−35.3 %)** | 13.244 → **9.441 (−28.7 %)**     |
+
+### Iteration 5: HUD Layout Containment, `0.5 %` Progress Coalescing & Route-Profile Memoization (`world-ride.scss`, `countdown-clock.ts`, `world-ride-page.ts`, `route-profile.ts`)
+
+- **Change**: Quantized segment progress-bar width updates in `WorldRidePage` via `progressWidth()` (`0.5 %` / `~1.3 px` steps) so `Object.is` signal equality skips ~97 % of 60 Hz `OnPush` checks, added `contain: layout style` to `.world-ride__panel` so HUD card updates never reflow sibling `backdrop-filter` panels, and WeakMap-memoized `routeProfile()` plus static `routeProfileView()` SVG `area` polygon and `strip` array references.
+- **45-Second Results**:
+
+| Tier (`webgpu`) | Avg FPS (Before → After) | Median ms       | p95 ms (Before → After)   | p99 ms (Before → After) | Layouts / Styles (Before → After)     | CDP Task ms/f       |
+| --------------- | ------------------------ | --------------- | ------------------------- | ----------------------- | ------------------------------------- | ------------------- |
+| **`low`**       | 60.6 → **60.4**          | 16.6 → **16.7** | 17.8 → **17.2 (−0.6 ms)** | 18.3 → **18.0**         | 1,506 / 1,507 → **94 / 95 (−93.8 %)** | 9.088 → **8.678**   |
+| **`high`**      | 56.3 → **58.3 (+3.6 %)** | 16.9 → **16.7** | 28.0 → **21.9 (−6.1 ms)** | 35.1 → **32.6**         | 1,467 / 1,467 → **84 / 84 (−94.3 %)** | 10.651 → **11.424** |

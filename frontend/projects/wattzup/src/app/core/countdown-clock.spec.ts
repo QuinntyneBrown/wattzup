@@ -1,4 +1,4 @@
-import { CountdownClock } from './countdown-clock';
+import { CountdownClock, progressWidth } from './countdown-clock';
 import { testWorkout } from './test-state';
 
 describe('CountdownClock (L2-024)', () => {
@@ -34,5 +34,21 @@ describe('CountdownClock (L2-024)', () => {
     c.anchor(null, 0);
     expect(c.remainingAt(10)).toBe(0);
     expect(c.progressAt(10)).toBe(0);
+  });
+});
+
+describe('progressWidth', () => {
+  it.each([
+    [-0.1, '0%'],
+    [0, '0%'],
+    [0.001, '0%'],
+    [0.0024, '0%'],
+    [0.0026, '0.5%'],
+    [0.124, '12.5%'],
+    [0.5, '50%'],
+    [0.998, '100%'],
+    [1.2, '100%'],
+  ])('quantizes progress %d to %s so sub-pixel ticks coalesce', (ratio, expected) => {
+    expect(progressWidth(ratio)).toBe(expected);
   });
 });
