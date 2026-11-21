@@ -67,14 +67,26 @@ const SHOE_HEX = 0xf1f1ee;
 const BOTTLE_HEX = 0x2f7bd0;
 const PAINT_COLOR = new Color();
 
+interface AtlasRect {
+  readonly u0: number;
+  readonly u1: number;
+  readonly v0: number;
+  readonly v1: number;
+}
+
+export interface CyclistOptions {
+  readonly helmetColor?: Color | number;
+  readonly frameColor?: Color | number;
+}
+
 /** Geometry and materials shared by every cyclist in the scene. */
 export class CyclistKit {
   private readonly tube = new CylinderGeometry(1, 1, 1, 6, 1, true);
-  private readonly helmet = new SphereGeometry(0.13, 12, 7, 0, Math.PI * 2, 0, Math.PI / 1.65);
   private readonly bibPlanes = new Map<number, PlaneGeometry>();
+  private readonly ownedGeometries: BufferGeometry[] = [];
   readonly solid = new MeshStandardMaterial({ vertexColors: true, roughness: 0.72 });
   readonly metal = new MeshStandardMaterial({ color: 0xb8bcc2, metalness: 0.8, roughness: 0.3 });
-  readonly bib = new MeshStandardMaterial({ map: bibAtlasTexture(), roughness: 0.8 });
+  readonly apparel: MeshStandardMaterial;
   readonly spokes = new MeshBasicMaterial({
     color: 0x9aa0a6,
     transparent: true,
@@ -95,17 +107,19 @@ export class CyclistKit {
   private readonly bikeMetalShape: BufferGeometry;
   private readonly wheelDiscsShape: BufferGeometry;
   private readonly bodyJerseyShape: BufferGeometry;
+  private readonly helmetShape: BufferGeometry;
   private readonly bodySolidShape: BufferGeometry;
   private readonly thighShape: BufferGeometry;
   private readonly shinShape: BufferGeometry;
   private readonly footShape: BufferGeometry;
 
-  /** The jersey's cut, tinted by each rider's colour: dark side panels and a pale hem band. */
-  private readonly kitTexture = jerseyTexture();
-  /** A road helmet's shell: vents running front to back over the crown. */
-  private readonly ventTexture = ventTexture();
-
   constructor(private readonly frame: Material) {
+    const atlas = apparelAtlasTexture();
+    this.apparel = new MeshStandardMaterial({
+      map: atlas.texture,
+      vertexColors: true,
+      roughness: 0.55,
+    });
     const tyre = new TorusGeometry(WHEEL - 0.012, 0.016, 6, 24);
     const rim = new TorusGeometry(WHEEL - 0.04, 0.012, 5, 24);
     const disc = new CircleGeometry(WHEEL - 0.04, 24);
@@ -139,7 +153,7 @@ export class CyclistKit {
       tubes.push([hood, hood.clone().add(new Vector3(0, -0.13, 0.05)), 0.012]);
     }
     const frameParts = tubes.map(([a, b, r]) => stickGeometry(this.tube, a, b, r));
-    this.frameShape = mergeGeometries(frameParts, false)!;
+    this.frameShape = paintGeometry(mergeGeometries(frameParts, false)!, 0xffffff);
     for (const g of frameParts) g.dispose();
 
     const down = HEAD_BOTTOM.clone().sub(BB);
@@ -182,8 +196,8 @@ export class CyclistKit {
     this.wheelDiscsShape = mergeGeometries(discParts, false)!;
     for (const g of discParts) g.dispose();
 
-    // Rigid upper-body sub-assemblies: torso + upper arms + shoulder caps (jersey), and
-    // neck + head + forearms + chin straps + seat pad (vertex-coloured solid).
+    // Rigid upper-body sub-assemblies: torso + upper arms + shoulder caps (jersey), helmet shell,
+    // and neck + head + forearms + chin straps + seat pad (vertex-coloured solid).
     const along = SHOULDER.clone().sub(HIP).normalize();
     const skull = SHOULDER.clone().add(new Vector3(0, 0.15, -0.1));
     const nape = SHOULDER.clone().addScaledVector(along, -0.06);
@@ -250,9 +264,19 @@ export class CyclistKit {
       );
       bodySolidParts.push(paintGeometry(limbGeometry(0.04, FOREARM, elbow, hand), SKIN_HEX));
     }
-    this.bodyJerseyShape = mergeGeometries(jerseyParts, false)!;
+    this.bodyJerseyShape = remapAtlasUv(mergeGeometries(jerseyParts, false)!, atlas.jersey);
     this.bodySolidShape = mergeGeometries(bodySolidParts, false)!;
     for (const g of [...jerseyParts, ...bodySolidParts]) g.dispose();
+
+    const helmetGeo = new SphereGeometry(0.13, 12, 7, 0, Math.PI * 2, 0, Math.PI / 1.65);
+    helmetGeo.applyMatrix4(
+      new Matrix4().compose(
+        skull.clone().add(new Vector3(0, 0, 0.01)),
+        new Quaternion().setFromAxisAngle(ACROSS, -0.15),
+        new Vector3(0.86, 0.82, 1.15),
+      ),
+    );
+    this.helmetShape = remapAtlasUv(helmetGeo, atlas.vent);
 
     this.thighShape = paintGeometry(new CapsuleGeometry(0.075, THIGH - 0.15, 2, 6), SHORTS_HEX);
     const shinCore = paintGeometry(new CapsuleGeometry(0.055, SHIN - 0.11, 2, 6), SKIN_HEX);
@@ -274,14 +298,29 @@ export class CyclistKit {
   }
 
   /** A rider in `jersey`, with race `number` pinned to their back, on a `frame` of their own. */
-  make(jersey: Color, number: number, frame: Material = this.frame): Cyclist {
-    const top = new MeshStandardMaterial({ color: jersey, roughness: 0.65, map: this.kitTexture });
-    const shell = new MeshStandardMaterial({
-      color: jersey,
-      map: this.ventTexture,
-      roughness: 0.35,
-    });
-    return new Cyclist(this, frame, top, this.bib, shell, number);
+  make(
+    jersey: Color,
+    number: number,
+    frame: Material = this.frame,
+    options?: CyclistOptions,
+  ): Cyclist {
+    const jerseyPart = paintByColor(this.bodyJerseyShape.clone(), jersey);
+    const shellColor =
+      options?.helmetColor !== undefined ? PAINT_COLOR.set(options.helmetColor) : jersey;
+    const helmetPart = paintByColor(this.helmetShape.clone(), shellColor);
+    const bibPart = paintGeometry(this.bibGeometry(number).clone(), 0xffffff);
+    const bodyApparel = mergeGeometries([jerseyPart, helmetPart, bibPart], false)!;
+    jerseyPart.dispose();
+    helmetPart.dispose();
+    bibPart.dispose();
+    this.ownedGeometries.push(bodyApparel);
+
+    let frameGeo = this.frameShape;
+    if (options?.frameColor !== undefined) {
+      frameGeo = paintByColor(this.frameShape.clone(), PAINT_COLOR.set(options.frameColor));
+      this.ownedGeometries.push(frameGeo);
+    }
+    return new Cyclist(this, frame, frameGeo, bodyApparel);
   }
 
   bibGeometry(number: number): PlaneGeometry {
@@ -293,13 +332,21 @@ export class CyclistKit {
       const row = Math.floor(slot / 4);
       const u0 = (col * 128 + 1) / 512;
       const u1 = ((col + 1) * 128 - 1) / 512;
-      const v0 = 1 - ((row + 1) * 96 - 1) / 192;
-      const v1 = 1 - (row * 96 + 1) / 192;
+      const v0 = 1 - ((row + 1) * 96 - 1) / 320;
+      const v1 = 1 - (row * 96 + 1) / 320;
       const uv = plane.getAttribute('uv') as BufferAttribute;
       for (let i = 0; i < uv.count; i++) {
         uv.setXY(i, u0 + uv.getX(i) * (u1 - u0), v0 + uv.getY(i) * (v1 - v0));
       }
       uv.needsUpdate = true;
+      const along = SHOULDER.clone().sub(HIP).normalize();
+      const back = new Vector3(0, -along.z, along.y);
+      const pos = HIP.clone()
+        .lerp(SHOULDER, 0.5)
+        .addScaledVector(along, -0.07)
+        .addScaledVector(back, 0.135);
+      const quat = new Quaternion().setFromUnitVectors(new Vector3(0, 0, 1), back);
+      plane.applyMatrix4(new Matrix4().compose(pos, quat, new Vector3(1, 1, 1)));
       this.bibPlanes.set(slot, plane);
     }
     return plane;
@@ -314,49 +361,45 @@ export class CyclistKit {
     bikeSolid: BufferGeometry;
     bikeMetal: BufferGeometry;
     wheelDiscs: BufferGeometry;
-    bodyJersey: BufferGeometry;
     bodySolid: BufferGeometry;
     thigh: BufferGeometry;
     shin: BufferGeometry;
     foot: BufferGeometry;
-    helmet: SphereGeometry;
   } {
     return {
       frame: this.frameShape,
       bikeSolid: this.bikeSolidShape,
       bikeMetal: this.bikeMetalShape,
       wheelDiscs: this.wheelDiscsShape,
-      bodyJersey: this.bodyJerseyShape,
       bodySolid: this.bodySolidShape,
       thigh: this.thighShape,
       shin: this.shinShape,
       foot: this.footShape,
-      helmet: this.helmet,
     };
   }
 
   dispose(): void {
     for (const d of [
       this.tube,
-      this.helmet,
       this.frameShape,
       this.bikeSolidShape,
       this.bikeMetalShape,
       this.wheelDiscsShape,
       this.bodyJerseyShape,
+      this.helmetShape,
       this.bodySolidShape,
       this.thighShape,
       this.shinShape,
       this.footShape,
+      ...this.ownedGeometries,
     ]) {
       d.dispose();
     }
+    this.ownedGeometries.length = 0;
     for (const g of this.bibPlanes.values()) g.dispose();
-    this.kitTexture.dispose();
-    this.ventTexture.dispose();
     this.spokeLace.alphaMap?.dispose();
-    this.bib.map?.dispose();
-    for (const m of [this.spokeLace, this.solid, this.metal, this.bib, this.spokes]) {
+    this.apparel.map?.dispose();
+    for (const m of [this.spokeLace, this.solid, this.metal, this.apparel, this.spokes]) {
       m.dispose();
     }
   }
@@ -366,6 +409,7 @@ export class Cyclist {
   readonly group = new Group();
   /** The discs that blur the spokes at speed (technique 34). */
   readonly wheelBlur: Mesh[] = [];
+  readonly apparel: MeshStandardMaterial;
   private readonly legs: { thigh: Limb; shin: Limb; foot: Mesh; side: number }[] = [];
   private readonly cranks: Mesh[] = [];
   private readonly shadowCasters: Mesh[] = [];
@@ -377,14 +421,13 @@ export class Cyclist {
   constructor(
     private readonly kit: CyclistKit,
     frame: Material,
-    readonly jersey: MeshStandardMaterial,
-    readonly bib: MeshStandardMaterial,
-    readonly shell: MeshStandardMaterial,
-    bibNumber = 1,
+    frameGeo: BufferGeometry,
+    bodyApparelGeo: BufferGeometry,
   ) {
+    this.apparel = kit.apparel;
     const parts = kit.parts();
     // No blob under the bike: the shadow map grounds the rider in their own shape (#933, #937).
-    const frameMesh = new Mesh(parts.frame, frame);
+    const frameMesh = new Mesh(frameGeo, frame);
     frameMesh.castShadow = true;
     const bikeSolid = new Mesh(parts.bikeSolid, kit.solid);
     bikeSolid.castShadow = true;
@@ -400,30 +443,12 @@ export class Cyclist {
       this.group.add(crank);
     }
 
-    // The rider: pre-merged jersey (torso + upper arms + shoulder caps) and vertex-coloured
-    // solid (neck + head + forearms + chin straps + seat pad), plus bib number and helmet.
-    const bodyJersey = new Mesh(parts.bodyJersey, jersey);
+    // The rider: pre-merged apparel (jersey + helmet + bib number) and solid (neck + head +
+    // forearms + chin straps + seat pad) — 2 body meshes total.
+    const bodyApparel = new Mesh(bodyApparelGeo, kit.apparel);
     const bodySolid = new Mesh(parts.bodySolid, kit.solid);
-    bodyJersey.castShadow = bodySolid.castShadow = true;
-
-    const along = SHOULDER.clone().sub(HIP).normalize();
-    const back = new Vector3(0, -along.z, along.y);
-    const number = new Mesh(kit.bibGeometry(bibNumber), bib);
-    number.position
-      .copy(HIP)
-      .lerp(SHOULDER, 0.5)
-      .addScaledVector(along, -0.07)
-      .addScaledVector(back, 0.135);
-    number.quaternion.setFromUnitVectors(new Vector3(0, 0, 1), back);
-
-    const skull = SHOULDER.clone().add(new Vector3(0, 0.15, -0.1));
-    const helmet = new Mesh(parts.helmet, shell);
-    helmet.position.copy(skull).add(new Vector3(0, 0, 0.01));
-    helmet.scale.set(0.86, 0.82, 1.15);
-    helmet.rotation.x = -0.15;
-    helmet.castShadow = true;
-
-    this.body.add(bodyJersey, bodySolid, number, helmet);
+    bodyApparel.castShadow = bodySolid.castShadow = true;
+    this.body.add(bodyApparel, bodySolid);
 
     for (const side of [-1, 1]) {
       const thighMesh = new Mesh(parts.thigh, kit.solid);
@@ -497,29 +522,56 @@ export class Cyclist {
   }
 }
 
-function paintGeometry<T extends BufferGeometry>(geometry: T, hex: number): T {
+function paintByColor<T extends BufferGeometry>(geometry: T, c: Color): T {
   const count = geometry.getAttribute('position').count;
   const colours = new Float32Array(count * 3);
-  PAINT_COLOR.setHex(hex);
   for (let i = 0; i < count; i++) {
-    colours[i * 3] = PAINT_COLOR.r;
-    colours[i * 3 + 1] = PAINT_COLOR.g;
-    colours[i * 3 + 2] = PAINT_COLOR.b;
+    colours[i * 3] = c.r;
+    colours[i * 3 + 1] = c.g;
+    colours[i * 3 + 2] = c.b;
   }
   geometry.setAttribute('color', new BufferAttribute(colours, 3));
   geometry.clearGroups();
   return geometry;
 }
 
-/** Race numbers 1..8 packed into one `512 × 192` (`4 × 2`) cloth atlas with corner safety pins. */
-function bibAtlasTexture(): CanvasTexture {
+function paintGeometry<T extends BufferGeometry>(geometry: T, hex: number): T {
+  return paintByColor(geometry, PAINT_COLOR.setHex(hex));
+}
+
+function remapAtlasUv<T extends BufferGeometry>(geometry: T, rect: AtlasRect): T {
+  const uv = geometry.getAttribute('uv') as BufferAttribute;
+  for (let i = 0; i < uv.count; i++) {
+    uv.setXY(
+      i,
+      rect.u0 + uv.getX(i) * (rect.u1 - rect.u0),
+      rect.v0 + uv.getY(i) * (rect.v1 - rect.v0),
+    );
+  }
+  uv.needsUpdate = true;
+  return geometry;
+}
+
+/**
+ * Packs race bib numbers `1..8`, the jersey cut (`jerseyTexture`), and the helmet vents
+ * (`ventTexture`) into one `512 × 320` atlas with 4 px edge-extruded gutters so all riders share
+ * a single `kit.apparel` `MeshStandardMaterial`.
+ */
+function apparelAtlasTexture(): {
+  texture: CanvasTexture;
+  jersey: AtlasRect;
+  vent: AtlasRect;
+} {
+  const W = 512;
+  const H = 320;
+  const pad = 4;
   const canvas = document.createElement('canvas');
-  canvas.width = 512;
-  canvas.height = 192;
+  canvas.width = W;
+  canvas.height = H;
   const ctx = canvas.getContext('2d');
   if (ctx) {
     ctx.fillStyle = '#f4f4f0';
-    ctx.fillRect(0, 0, 512, 192);
+    ctx.fillRect(0, 0, W, 192);
     ctx.font = 'bold 64px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -539,9 +591,38 @@ function bibAtlasTexture(): CanvasTexture {
       }
     }
   }
+  const place = (
+    srcTex: CanvasTexture,
+    cx: number,
+    cy: number,
+    dw: number,
+    dh: number,
+  ): AtlasRect => {
+    const img = srcTex.image as HTMLCanvasElement;
+    const sw = img.width;
+    const sh = img.height;
+    const ix = cx + pad;
+    const iy = cy + pad;
+    if (ctx) {
+      ctx.drawImage(img, ix, iy, dw, dh);
+      ctx.drawImage(img, 0, 0, sw, 1, ix, iy - pad, dw, pad);
+      ctx.drawImage(img, 0, sh - 1, sw, 1, ix, iy + dh, dw, pad);
+      ctx.drawImage(img, 0, 0, 1, sh, ix - pad, iy, pad, dh);
+      ctx.drawImage(img, sw - 1, 0, 1, sh, ix + dw, iy, pad, dh);
+    }
+    srcTex.dispose();
+    return {
+      u0: (ix + 0.5) / W,
+      u1: (ix + dw - 0.5) / W,
+      v0: 1 - (iy + dh - 0.5) / H,
+      v1: 1 - (iy + 0.5) / H,
+    };
+  };
+  const jersey = place(jerseyTexture(), 0, 192, 184, 120);
+  const vent = place(ventTexture(), 192, 192, 312, 120);
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
-  return texture;
+  return { texture, jersey, vent };
 }
 
 /** Spokes for a wheel disc: thirty-two lines from the hub to the rim, crossing in pairs. */

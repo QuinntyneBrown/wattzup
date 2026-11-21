@@ -3174,7 +3174,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
   private readonly ground = stripGeometry();
   private readonly roadMaterial = new MeshStandardMaterial({ roughness: 0.9 });
   private readonly frameMaterial = new MeshPhysicalMaterial({
-    color: 0x15171c,
+    vertexColors: true,
     metalness: 0.6,
     roughness: 0.35,
   });
@@ -3876,26 +3876,21 @@ export class ThreeWorldRenderer implements WorldRenderer {
   /** The rider on their bike, from behind, in the You colour of the rider board. */
   private addRider(canvas: HTMLCanvasElement): void {
     const kit = new CyclistKit(this.frameMaterial);
-    const you = kit.make(riderColour(canvas, 4), 4);
+    const you = kit.make(riderColour(canvas, 4), 4, this.frameMaterial, { frameColor: 0x15171c });
     this.you = you;
     this.wheelBlur.push(...you.wheelBlur);
     this.scene.add(you.group);
-    this.disposables.push(kit, you.jersey, you.shell, this.frameMaterial);
+    this.disposables.push(kit, this.frameMaterial);
     // The simulated pacers ride with the rider, each in its board colour (L2-107 AC7).
     for (const pacer of PACERS) {
-      // Each pacer rides a frame of their own paint.
-      const frame = this.frameMaterial.clone();
-      frame.color.set(FRAME_PAINT[pacer.jersey % FRAME_PAINT.length]!);
-      this.frames.push(frame);
-      this.disposables.push(frame);
-      const rider = kit.make(riderColour(canvas, pacer.jersey), pacer.jersey, frame);
-      // Half the pacers wear a white helmet rather than one in their colour.
-      if (pacer.jersey % 2 === 0) rider.shell.color.set(0xf2f2ee);
+      const rider = kit.make(riderColour(canvas, pacer.jersey), pacer.jersey, this.frameMaterial, {
+        frameColor: FRAME_PAINT[pacer.jersey % FRAME_PAINT.length]!,
+        helmetColor: pacer.jersey % 2 === 0 ? 0xf2f2ee : undefined,
+      });
       rider.group.visible = false;
       this.wheelBlur.push(...rider.wheelBlur);
       this.pacers.set(pacer.jersey, rider);
       this.scene.add(rider.group);
-      this.disposables.push(rider.jersey, rider.shell);
     }
   }
 
