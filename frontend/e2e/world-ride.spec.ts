@@ -1048,6 +1048,17 @@ test.describe('World Ride (L2-102)', () => {
     await expect(world.boardTitle).toHaveText('Riders nearby · Col du Galibier');
   });
 
+  test('rides 30 Minutes of Threshold Power over the crest of Hoover Dam', async ({ page }) => {
+    const world = new WorldRidePage(page);
+    await world.startFromClass(
+      '30 Minutes of Threshold Power',
+      'Hoover Dam',
+      '30-minutes-of-threshold-power',
+    );
+    await expect(world.heading).toHaveText('Hoover Dam');
+    await expect(world.boardTitle).toHaveText('Riders nearby · Hoover Dam');
+  });
+
   test('rides Ride to the Beat along the neon-lit beachfront of Miami Neon Nights', async ({
     page,
   }) => {
