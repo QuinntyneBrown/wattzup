@@ -46,6 +46,7 @@ import {
   slopeAt,
   type Wardrobe,
 } from './world-kit';
+import { SurfaceMaterials } from './world-materials';
 import type { StreetPoint } from './world-oldtown';
 
 /** The street repeats every LOOP metres; its parts run from BEHIND metres behind the rider. */
@@ -185,6 +186,8 @@ export class TimesSquareStreet implements SceneStreet {
   private readonly size = new Vector3(1, 1, 1);
   private readonly axis = new Vector3(0.6, 0.8, 0.2).normalize();
   private readonly ballMaterials: MeshStandardMaterial[] = [];
+  /** Every part of the same look shares one material (#681). */
+  private readonly surfaces = new SurfaceMaterials();
   private readonly boardTextures = new Map<number, CanvasTexture>();
   /** The countdown screens: every one shows the same clock, counting down each minute to zero. */
   private countdown?: CanvasTexture;
@@ -197,6 +200,7 @@ export class TimesSquareStreet implements SceneStreet {
     private readonly track: <T extends Texture>(texture: T) => T,
     private readonly disposables: { dispose(): void }[],
   ) {
+    this.disposables.push(this.surfaces);
     this.ribbons = new Ribbons(this.group, disposables);
     // The party packed solid behind the barriers, the cross streets kept clear.
     this.crowd = new Crowd(this.group, disposables, {
@@ -715,8 +719,9 @@ export class TimesSquareStreet implements SceneStreet {
     const groups = facets.index ? facets.index.count / 3 : facets.attributes['position']!.count / 3;
     facets.clearGroups();
     for (let f = 0; f < groups; f++) facets.addGroup(f * 3, 3, f % colours.length);
+    // Each facet colour flashes on its own clock: its own material, never a shared one.
     const materials = colours.map((colour) => {
-      const m = this.material({
+      const m = this.ownMaterial({
         color: colour,
         emissive: new Color(colour),
         emissiveIntensity: 2,
@@ -763,7 +768,13 @@ export class TimesSquareStreet implements SceneStreet {
     return this.unitGeometry;
   }
 
+  /** The scene's shared material of this look; never changed once made (#681). */
   private material(options: ConstructorParameters<typeof MeshStandardMaterial>[0]) {
+    return this.surfaces.standard({ roughness: 0.9, ...options });
+  }
+
+  /** A material of this part's own, for a part that changes it as it draws. */
+  private ownMaterial(options: ConstructorParameters<typeof MeshStandardMaterial>[0]) {
     const material = new MeshStandardMaterial({ roughness: 0.9, ...options });
     this.disposables.push(material);
     return material;
