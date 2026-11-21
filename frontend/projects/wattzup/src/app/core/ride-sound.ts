@@ -18,6 +18,8 @@ export interface RideSoundInput {
   readonly freewheel: FreewheelState | null;
   /** True while a cue beep plays, and 0.15 s after it (AC7). */
   readonly ducked: boolean;
+  /** The World Ride world's ambience, or null (AC12). */
+  readonly ambience: AmbiencePreset | null;
   /** ms, on the same clock as `freewheel.startedAt`. */
   readonly now: number;
 }
@@ -27,7 +29,31 @@ export interface RideSoundParams {
   readonly freewheel: { readonly clicksPerSecond: number; readonly gain: number };
   readonly wind: { readonly cutoffHz: number; readonly gain: number };
   readonly tyre: { readonly centreHz: number; readonly gain: number };
+  readonly ambience: AmbienceVoice | null;
 }
+
+export type AmbiencePreset = 'coast' | 'alpine' | 'city' | 'park';
+
+/** A noise bed through `filter` at `hz`, its level swelled by a sine at `swellHz` (AC12). */
+export interface AmbienceVoice {
+  readonly preset: AmbiencePreset;
+  readonly filter: 'lowpass' | 'bandpass';
+  readonly hz: number;
+  readonly swellHz: number;
+  /** How far the swell dips, 0 to 1. */
+  readonly swellDepth: number;
+  readonly gain: number;
+}
+
+/** Each preset's sound, and its share of the volume (AC12). */
+export const AMBIENCE: Readonly<
+  Record<AmbiencePreset, Omit<AmbienceVoice, 'preset' | 'gain'> & { readonly share: number }>
+> = {
+  coast: { filter: 'lowpass', hz: 500, swellHz: 1 / 12, swellDepth: 0.8, share: 0.2 },
+  alpine: { filter: 'bandpass', hz: 800, swellHz: 1 / 20, swellDepth: 0.5, share: 0.12 },
+  city: { filter: 'lowpass', hz: 250, swellHz: 1 / 5, swellDepth: 0.2, share: 0.15 },
+  park: { filter: 'bandpass', hz: 3000, swellHz: 1 / 3, swellDepth: 0.4, share: 0.1 },
+};
 
 /** How long the flywheel takes to spin down (AC5). */
 export const FREEWHEEL_MS = 3000;
@@ -59,7 +85,14 @@ export function rideSoundParams(input: RideSoundInput): RideSoundParams {
     freewheel: { clicksPerSecond, gain: 0.5 * volume * left },
     wind: { cutoffHz: 300 + 40 * speed, gain: 0.6 * volume * Math.min(speed / 50, 1) },
     tyre: { centreHz: 150 + 10 * speed, gain: 0.3 * volume * Math.min(speed / 40, 1) },
+    ambience: ambienceVoice(input.ambience, volume),
   };
+}
+
+function ambienceVoice(preset: AmbiencePreset | null, volume: number): AmbienceVoice | null {
+  if (!preset) return null;
+  const { share, ...sound } = AMBIENCE[preset];
+  return { preset, ...sound, gain: volume * share };
 }
 
 export interface FreewheelStep {

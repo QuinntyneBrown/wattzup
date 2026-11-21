@@ -9,6 +9,7 @@ const moment = (change: Partial<RideSoundInput> = {}): RideSoundInput => ({
   volume: 1,
   freewheel: null,
   ducked: false,
+  ambience: null,
   now: 0,
   ...change,
 });
@@ -118,6 +119,36 @@ describe('rideSoundParams (L2-129)', () => {
     for (const v of ['chain', 'freewheel', 'wind', 'tyre'] as const) {
       expect(ducked[v].gain).toBeCloseTo(open[v].gain * 0.3, 9);
     }
+  });
+
+  describe('ambience: a quiet bed per world (AC12)', () => {
+    it.each([
+      // preset, filter, hz, swell Hz, swell depth, share
+      ['coast', 'lowpass', 500, 1 / 12, 0.8, 0.2],
+      ['alpine', 'bandpass', 800, 1 / 20, 0.5, 0.12],
+      ['city', 'lowpass', 250, 1 / 5, 0.2, 0.15],
+      ['park', 'bandpass', 3000, 1 / 3, 0.4, 0.1],
+    ] as const)('%s', (ambience, filter, hz, swellHz, swellDepth, share) => {
+      expect(rideSoundParams(moment({ ambience, volume: 0.5 })).ambience).toEqual({
+        preset: ambience,
+        filter,
+        hz,
+        swellHz,
+        swellDepth,
+        gain: 0.5 * share,
+      });
+    });
+
+    it('is none when the world declares none', () => {
+      expect(rideSoundParams(moment()).ambience).toBeNull();
+    });
+
+    it('ducks and falls silent with the other voices', () => {
+      expect(
+        rideSoundParams(moment({ ambience: 'coast', ducked: true })).ambience?.gain,
+      ).toBeCloseTo(0.2 * 0.3, 9);
+      expect(rideSoundParams(moment({ ambience: 'coast', audible: false })).ambience?.gain).toBe(0);
+    });
   });
 
   // Paused, hidden, the bike lost or a video playing all close the gate (AC8, AC9).

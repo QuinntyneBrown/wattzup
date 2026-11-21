@@ -1457,6 +1457,33 @@ test.describe('World Ride music (L2-128)', () => {
     await expect(world.rideSoundButton).toHaveAttribute('aria-pressed', 'true');
   });
 
+  test('plays the coast ambience in South Beach Sunrise, and none in Old Town (L2-129 AC12)', async ({
+    page,
+    audio,
+  }) => {
+    const world = new WorldRidePage(page);
+    const dialog = new RideSoundDialog(page);
+    await world.startFromClass();
+    await world.rideSoundButton.click();
+    await dialog.soundSwitch.check();
+    await dialog.doneButton.click();
+    // Wind and tyre loop; Old Town declares no ambience, so nothing more does.
+    await expect.poll(() => audio.loops()).toBe(2);
+    await page.waitForTimeout(500);
+    expect(await audio.loops()).toBe(2);
+
+    await world.startFromClass(
+      'Calorie Burning Workout',
+      'South Beach Sunrise',
+      'calorie-burning-workout',
+    );
+    await world.rideSoundButton.click();
+    await dialog.soundSwitch.check();
+    await dialog.doneButton.click();
+    // A fresh page load: wind, tyre and the coast's surf.
+    await expect.poll(() => audio.loops()).toBe(3);
+  });
+
   test('mutes and unmutes with the Music toggle', async ({ page }) => {
     const world = new WorldRidePage(page);
     await world.probeMusic();
