@@ -18,12 +18,13 @@ The bike reports no speed of its own: `speed_kmh` is `cadence × 0.375` (L2-007)
 
 Pure helper in `frontend/projects/wattzup/src/app/core/`, with unit tests:
 
-- **`rideSoundParams(input)`** (`ride-sound.ts`) turns one moment into the voices' parameters. Its input is `{cadence, speedKmh, resistance, audible, volume, freewheel, now}`:
+- **`rideSoundParams(input)`** (`ride-sound.ts`) turns one moment into the voices' parameters. Its input is `{cadence, speedKmh, resistance, audible, volume, freewheel, ducked, now}`:
   - `volume` is 0 to 1;
   - `audible` is false while any gate of criterion 9 is closed, or a video plays (criterion 8);
-  - `freewheel` is `{fromKmh, startedAt}` or `null`.
+  - `freewheel` is `{fromKmh, startedAt}` or `null`;
+  - `ducked` is true while a cue beep plays and 0.15 s after it (criterion 7).
 
-  It returns `{chain: {ticksPerSecond, gain}, freewheel: {clicksPerSecond, gain}, wind: {cutoffHz, gain}, tyre: {centreHz, gain}}`, by the table below. Ducking multiplies every gain by 0.3 in the service, not here.
+  It returns `{chain: {ticksPerSecond, gain}, freewheel: {clicksPerSecond, gain}, wind: {cutoffHz, gain}, tyre: {centreHz, gain}}`, by the table below.
 
 | Voice | Rule | Example |
 |---|---|---|
@@ -32,6 +33,7 @@ Pure helper in `frontend/projects/wattzup/src/app/core/`, with unit tests:
 | freewheel | while 0 ≤ _t_ < 3 s after it started: `clicksPerSecond` = _from_ × (1 − _t_ ÷ 3), `gain` = 0.5 × volume × (1 − _t_ ÷ 3) | from 33.7 km/h: 33.7 at 0 s, 16.9 at 1.5 s, 0 at 3 s |
 | wind | `cutoffHz` = 300 + 40 × _s_; `gain` = 0.6 × volume × min(_s_ ÷ 50, 1) | 0 km/h → silent, 33.7 km/h → 1,648 Hz |
 | tyre | `centreHz` = 150 + 10 × _s_; `gain` = 0.3 × volume × min(_s_ ÷ 40, 1) | 33.7 km/h → 487 Hz |
+| all | every gain × 0.3 while `ducked` | under a countdown beep |
 | all | every gain is 0 while `audible` is false | paused, hidden, bike lost, video playing |
 
 - **`nextFreewheel(previous, {previousCadence, cadence, lastKmh, now})`** (`ride-sound.ts`) returns the freewheel state:
@@ -50,16 +52,17 @@ Services and components:
     - the chain and freewheel ticks, short noise bursts scheduled ahead on the context clock at the current rate, like the countdown's tones.
   - `turnOff()` closes the context.
   - An `effect` on `LiveStateService.state()`, the volume, `document.visibilityState`, the duck and the video flag calls `rideSoundParams`. It ramps each gain and filter with `setTargetAtTime`, with a 0.1 s time constant, so a change never clicks. A closed gate ramps to 0 within 0.5 s (criterion 9). The state's `workout.status` must be `running` and `ble` must be connected.
-  - `duck(seconds)` holds the gains at 30 % for `seconds` + 0.15 s (criterion 7).
+  - `duck(seconds)` sets `ducked` for `seconds` + 0.15 s (criterion 7). An `effect` on `CueService.beeped` calls it.
+  - `volume` reads `RideSoundPreference`; `setVolume(percent)` keeps it.
   - `setVideoPlaying(playing)` sets the video flag (criterion 8).
 - **`CueService`** gains `beeped`, a signal set to `{seconds}` each time `beep` plays a tone. `RideSound` reads it to duck. `CueService` does not depend on ride sound.
 - **`VideoSync`** gains `playing`, a computed that is true while the player reports `playing`. `RidePage`, which provides `VideoSync`, passes it to `RideSound.setVideoPlaying` in an `effect`, and clears it when the page is destroyed.
-- **`RideSoundButton`** (`dashboard/ride-sound-button/`, selector `wz-ride-sound-button`) is the app bar icon button. It sits before the beeps toggle on the ride dashboard, and before Music in World Ride, where it shows the label `Sound` when there is room.
+- **The `Ride sound` button** sits before the beeps toggle in the ride dashboard's `AppBar`, and before Music in the `WorldRide` bar, where it shows the label `Sound` when there is room.
   - Its accessible name is `Ride sound off` or `Ride sound on`, and `aria-pressed` is bound to `on`. It has `aria-haspopup="dialog"`.
-  - It opens the dialog. It is an orchestrating component, since it injects `RideSound` and `Dialog`, so it stays in the app.
+  - It opens the dialog through `DialogLauncher.openRideSound()`. In World Ride, the presentation component `WorldRide` takes `soundOn` and emits `soundPressed`; `WorldRidePage` wires them.
 - **`RideSoundDialog`** (`dashboard/ride-sound-dialog/`, opened with the CDK `Dialog`, never hand-rolled; AGENTS.md "No inline forms") renders the mock `dialogs/ride-sound/*`:
   - the `Ride sound` switch (`role="switch"`), with `On` or `Off` beside its label;
-  - the `Volume` range input, 0 to 100 in steps of 5, with `aria-valuetext` such as `60 percent` and an `output` showing the value;
+  - the `Volume` range input, 0 to 100 in steps of 5, with `aria-valuetext` such as `60 percent` and an `output` showing the value. It is the `Slider` component (block `level-slider`) with its range, suffix, scale and value text set;
   - the notice `Muted while the video plays` while the video flag is set;
   - Done, which takes focus. Escape and Close also close the dialog.
 
@@ -69,7 +72,7 @@ With `prefers-reduced-motion: reduce`, nothing changes: ride sound has no animat
 
 ### Acceptance tests
 
-Playwright (`frontend/e2e/`), with the fake `navigator.bluetooth` fixture driving the bike and time controlled by `page.clock`. Sound is checked through the `AudioContext` test double that the cues specs already install with `page.addInitScript`. It is extended to record each node's scheduled rate, gain and filter frequency.
+Playwright (`frontend/e2e/`), with the fake `navigator.bluetooth` fixture driving the bike. Sound is checked through the `audio` fixture (`e2e/fixtures/fake-audio.ts`). It wraps the page's real `AudioContext` with `page.addInitScript` and counts the contexts made, whether one runs, the sounds started and the looping sources. A voice whose gain is 0 schedules no ticks, so silence reads as no new starts.
 
 - `e2e/pages/ride-sound.dialog.ts` is the dialog's page object. The ride and World Ride page objects own the button.
 - `e2e/ride-sound.spec.ts`:

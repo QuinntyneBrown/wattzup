@@ -39,6 +39,16 @@
         <button
           class="btn btn--quiet btn--collapsible"
           type="button"
+          aria-haspopup="dialog"
+          [attr.aria-pressed]="soundOn()"
+          [attr.aria-label]="soundOn() ? 'Ride sound on' : 'Ride sound off'"
+          (click)="soundPressed.emit()"
+        >
+          <wz-icon name="wave" size="sm" /><span class="btn__label">Sound</span>
+        </button>
+        <button
+          class="btn btn--quiet btn--collapsible"
+          type="button"
           aria-label="Music"
           [attr.aria-pressed]="musicOn()"
           (click)="musicToggled.emit()"

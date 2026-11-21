@@ -16,6 +16,7 @@ export class WorldRidePage {
   readonly resumeButton: Locator;
   readonly endButton: Locator;
   readonly musicButton: Locator;
+  readonly rideSoundButton: Locator;
   readonly notFoundTitle: Locator;
   readonly metrics: Locator;
   readonly power: Locator;
@@ -64,6 +65,7 @@ export class WorldRidePage {
     this.resumeButton = this.bar.getByRole('button', { name: 'Resume' });
     this.endButton = this.bar.getByRole('button', { name: 'End' });
     this.musicButton = this.bar.getByRole('button', { name: 'Music' });
+    this.rideSoundButton = this.bar.getByRole('button', { name: /^Ride sound (on|off)$/ });
     this.notFoundTitle = page.getByRole('heading', { level: 1, name: "We can't find that class" });
     this.metrics = this.main.getByRole('region', { name: 'Live metrics' });
     this.power = this.metrics.locator('.world-ride__power');

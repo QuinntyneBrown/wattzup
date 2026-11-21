@@ -10,6 +10,8 @@
     (endRequested)="end()"
     [musicOn]="musicOn()"
     (musicToggled)="toggleMusic()"
+    [soundOn]="rideSound.on()"
+    (soundPressed)="dialogs.openRideSound()"
     (stepped)="step($event)"
     [reconnecting]="reconnecting()"
     (navigate)="navigate($event)"

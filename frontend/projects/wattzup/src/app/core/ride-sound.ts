@@ -16,6 +16,8 @@ export interface RideSoundInput {
   /** 0 to 1. */
   readonly volume: number;
   readonly freewheel: FreewheelState | null;
+  /** True while a cue beep plays, and 0.15 s after it (AC7). */
+  readonly ducked: boolean;
   /** ms, on the same clock as `freewheel.startedAt`. */
   readonly now: number;
 }
@@ -30,12 +32,15 @@ export interface RideSoundParams {
 /** How long the flywheel takes to spin down (AC5). */
 export const FREEWHEEL_MS = 3000;
 const TOP_LEVEL = 32;
+/** The share of its level ride sound keeps under a cue beep (AC7). */
+export const DUCKED = 0.3;
 
 /** The voices' rates, gains and filters for one moment (L2-129 AC4 to AC6, AC8, AC9). */
 export function rideSoundParams(input: RideSoundInput): RideSoundParams {
   const cadence = Math.max(input.cadence ?? 0, 0);
   const speed = Math.max(input.speedKmh ?? 0, 0);
-  const volume = input.audible ? input.volume : 0;
+  // A closed gate silences; a cue beep ducks to 30 % (AC7, AC8, AC9).
+  const volume = input.audible ? input.volume * (input.ducked ? DUCKED : 1) : 0;
 
   // One tick per pedal stroke, two strokes a turn; louder with resistance, a quarter at level 1.
   const ticksPerSecond = (cadence * 2) / 60;

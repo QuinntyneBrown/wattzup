@@ -18,6 +18,9 @@ export class CueService {
   private readonly _beeps = signal(false);
   readonly beeps = this._beeps.asReadonly();
   private context: AudioContext | null = null;
+  private readonly _beeped = signal<{ seconds: number } | null>(null);
+  /** Set each time a tone plays; ride sound ducks under it (L2-129 AC7). */
+  readonly beeped = this._beeped.asReadonly();
 
   toggle(): void {
     if (this._beeps()) {
@@ -50,6 +53,7 @@ export class CueService {
     osc.connect(gain).connect(ctx.destination);
     osc.start(start);
     osc.stop(start + seconds);
+    this._beeped.set({ seconds });
   }
 
   private audio(): AudioContext | null {
