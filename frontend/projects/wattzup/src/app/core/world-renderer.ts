@@ -4066,6 +4066,9 @@ function stripGeometry(): BufferGeometry {
   const count = AHEAD + BEHIND + 1;
   const geometry = new BufferGeometry();
   geometry.setAttribute('position', new BufferAttribute(new Float32Array(count * 6), 3));
+  const normals = new Float32Array(count * 6);
+  for (let i = 0; i < count * 2; i++) normals[i * 3 + 1] = 1;
+  geometry.setAttribute('normal', new BufferAttribute(normals, 3));
   geometry.setAttribute('uv', new BufferAttribute(new Float32Array(count * 4), 2));
   const index: number[] = [];
   for (let i = 0; i < count - 1; i++) {
