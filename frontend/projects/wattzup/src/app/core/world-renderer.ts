@@ -3844,6 +3844,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
       // Half the pacers wear a white helmet rather than one in their colour.
       if (pacer.jersey % 2 === 0) rider.shell.color.set(0xf2f2ee);
       rider.group.visible = false;
+      this.wheelBlur.push(...rider.wheelBlur);
       this.pacers.set(pacer.jersey, rider);
       this.scene.add(rider.group);
       this.disposables.push(rider.jersey, rider.bib, rider.shell);

@@ -242,3 +242,26 @@ To extend sub-`16.7 ms` startup and 60 FPS rendering across every World Ride sce
 | **Rigid Sub-Assembly Merging in `Cyclist`**                                                | Global CPU draw-call floor (`~350` draws in all worlds)      | **−240 draws (`−480` with shadows)** in _every_ world (`~4 ms/frame` saved) | **Zero visual loss**: wheels, cranks, legs, and rider lean continue animating identically via hierarchy pivots.                                                                                     | ~1 hour refactor in `world-cyclist.ts`; benefits all 191 worlds at once.                                                                     | **Highest ROI next step** for global 60 FPS.                                              |
 | **HUD Compositor `scaleX` + CSS `contain`**                                                | Main-thread DOM layout & `backdrop-filter` invalidation      | Cuts `LayoutCount` by **> 90 %** (`~1 ms/frame` saved)                      | Rounded pill ends on a `scaleX`-transformed bar distort at tiny percentages unless clipped by `overflow: hidden` on the track; quantizing width to `0.25 %` avoids distortion with 90 % of the win. | Trivial CSS/signal change; preserves crisp `backdrop-filter` glass UI.                                                                       | **Use `overflow: hidden` clip or `0.25 %` quantization** + `contain: layout style paint`. |
 | **Half-Resolution (`0.5×`) GTAO at `high`/`ultra`**                                        | Integrated GPU fragment bandwidth (`gpuMedianMs` ~16–18 ms)  | **−4 to −6 ms GPU time** at `high`/`ultra`                                  | Very slightly softer contact ambient occlusion in fine cobble crevices; imperceptible in motion behind FXAA/TRAA.                                                                                   | **−75 % AO render-target VRAM**; single parameter in `buildPipeline`.                                                                        | **Strong win** for locking 60 FPS at `high`/`ultra` on laptop GPUs.                       |
+
+---
+
+## 8. 45-Second Old Town Iterative Optimization Log
+
+Every iteration below is measured across a **45-second sustained ride** (`recordMs = 45,000 ms` after `2,000 ms` settle, `95 rpm` / `~450 m` — more than one full `384 m` Old Town Criterium circuit) at `1440 × 900` via Playwright + Chrome DevTools Protocol (`Performance.getMetrics` + WebGPU `timestamp-query`).
+
+### 45-Second Baseline (`main` post-PR #950)
+
+| Tier (`webgpu`) | Avg FPS | Median (ms) | p95 (ms) | p99 (ms) | GPU Median / p95 (ms) | Draw Calls | Programs (`+mid-ride`) | CDP Script (ms/f) | CDP Task (ms/f) | Layouts / Styles | Cold Load (ms) |
+| --------------- | ------: | ----------: | -------: | -------: | --------------------: | ---------: | ---------------------: | ----------------: | --------------: | ---------------: | -------------: |
+| **`low`**       |    60.5 |        16.7 |     17.8 |     18.8 |           4.92 / 5.70 |        747 |              65 (`+0`) |             9.329 |          10.331 |    1,504 / 1,506 |        3,944.5 |
+| **`high`**      |    38.3 |        26.2 |     32.7 |     49.5 |         15.60 / 17.30 |      1,249 |             240 (`+0`) |            17.344 |          18.835 |    1,314 / 1,319 |       10,861.2 |
+
+### Iteration 1: Merge Rigid Bike Sub-Assemblies in `CyclistKit` (`world-cyclist.ts`, `world-renderer.ts`)
+
+- **Change**: Pre-merged each bike's 16 rigid frame and drop-bar tubes into 1 shared `frameShape`, 2 tyres + 1 saddle into 1 `bikeRubberShape`, 2 rims + 1 chainring into 1 `bikeMetalShape`, and front/rear wheel spoke-lace and speed-blur discs into 1 `wheelDiscsShape` inside `CyclistKit`, and registered pacer `wheelBlur` meshes so `opacity = 0` transparent blur discs are hidden at `low`.
+- **45-Second Results**:
+
+| Tier (`webgpu`) | Avg FPS (Before → After)  | Median ms | p95 ms          | p99 ms          | GPU Median ms | Draw Calls (Before → After) | CDP Script ms/f (Before → After) |
+| --------------- | ------------------------- | --------- | --------------- | --------------- | ------------- | --------------------------- | -------------------------------- |
+| **`low`**       | 60.5 → **60.6**           | **16.6**  | 17.8 → **17.8** | 18.8 → **18.1** | 5.37          | 747 → **631 (−116)**        | 9.329 → **8.465 (−9.3 %)**       |
+| **`high`**      | 38.3 → **42.4 (+10.7 %)** | **23.7**  | 32.7 → **27.5** | 49.5 → **43.6** | 15.53         | 1,249 → **1,054 (−195)**    | 17.344 → **11.168 (−35.6 %)**    |
