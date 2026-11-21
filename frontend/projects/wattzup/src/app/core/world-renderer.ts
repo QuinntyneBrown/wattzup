@@ -65,7 +65,7 @@ import {
 import type { Segment, WorldId } from '@wattzup/api';
 import { compiledFeatures } from './material-features';
 import { skyStops } from './drawn-look';
-import { PACERS, pacersOnRoad } from './pacers';
+import { type MutablePacerOnRoad, PACERS, pacersOnRoad } from './pacers';
 import {
   type Backend,
   FrameBudget,
@@ -3221,11 +3221,25 @@ export class ThreeWorldRenderer implements WorldRenderer {
     height: 0,
     grade: 0,
   }));
+  private readonly aheadHeights = new Float64Array(AHEAD + 1);
+  private firstGradeSlope = 0;
   private readonly stripPoints: MutableRoadPoint[] = Array.from(
     { length: AHEAD + BEHIND + 1 },
     () => ({ metres: 0, height: 0, grade: 0 }),
   );
-  private readonly heightAtAhead = (metres: number): number => heightAt(this.aheadPoints, metres);
+  private readonly cameraEye = { x: 0, z: 0 };
+  private readonly cameraLook = { x: 0, z: 0 };
+  private readonly lampAt = { x: 0, z: 0 };
+  private readonly activePacers: MutablePacerOnRoad[] = [];
+  private readonly heightAtAhead = (metres: number): number => {
+    const heights = this.aheadHeights;
+    if (metres < 0) return heights[0]! + this.firstGradeSlope * metres;
+    const f = metres * (1 / STEP);
+    if (f >= AHEAD) return heights[AHEAD]!;
+    const i = f | 0;
+    const a = heights[i]!;
+    return a + (heights[i + 1]! - a) * (f - i);
+  };
   private drawn = 0;
 
   async start(
@@ -3422,6 +3436,9 @@ export class ThreeWorldRenderer implements WorldRenderer {
       AHEAD,
       this.aheadPoints,
     );
+    const heights = this.aheadHeights;
+    for (let i = 0; i < ahead.length; i++) heights[i] = ahead[i]!.height;
+    this.firstGradeSlope = (ahead[0]?.grade ?? 0) / 100;
     bendAhead(world, frame.s, this.bendSamples);
     // The sun stays where it is in the sky as the road turns: ride round a right-hander and it
     // swings left across the view, and the houses' shadows swing with it.
@@ -3462,13 +3479,14 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.placePacers(world, frame, ahead);
 
     // The bike rocks under the pedal strokes and leans into a bend: right on a right-hander.
+    const riderGrade = ahead[0]?.grade ?? 0;
     this.you?.pose(
       frame.reducedMotion ? 0 : frame.crank,
       -lean(world, frame.s, speed),
-      standing(gradeAt(ahead, 0)),
+      standing(riderGrade),
     );
     // It sits on the road: nose up on a climb, down on a descent.
-    if (this.you) this.you.group.rotation.x = pitch(gradeAt(ahead, 0));
+    if (this.you) this.you.group.rotation.x = pitch(riderGrade);
     const blur = this.on.has(34) ? Math.min(0.55, speed / 14) : 0;
     for (const disc of this.wheelBlur) {
       disc.visible = blur > 0.02;
@@ -3477,11 +3495,11 @@ export class ThreeWorldRenderer implements WorldRenderer {
     const sway = frame.reducedMotion ? 0 : Math.sin(frame.s / 3) * 0.04;
     // The camera rides the bend: its eye and the point it looks at both follow the road (L2-110
     // AC9), and both depend only on s, so under reduced motion it turns only as the rider rides.
-    const eye = bendPoint(this.bendSamples, sway, 5.5);
-    const look = bendPoint(this.bendSamples, 0, -24);
+    const eye = bendPoint(this.bendSamples, sway, 5.5, this.cameraEye);
+    const look = bendPoint(this.bendSamples, 0, -24, this.cameraLook);
     // The eye rides 2.1 m over the road under it, 5.5 m behind the rider: lower on a climb.
-    this.camera.position.set(eye.x, heightAt(ahead, -5.5) + 2.1, eye.z);
-    this.camera.lookAt(look.x, 1.2 + heightAt(ahead, 24), look.z);
+    this.camera.position.set(eye.x, this.heightAtAhead(-5.5) + 2.1, eye.z);
+    this.camera.lookAt(look.x, 1.2 + this.heightAtAhead(24), look.z);
 
     if (this.probe) this.renderer.info.reset();
     if (this.pipeline) this.pipeline.render();
@@ -3885,7 +3903,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
   private placePacers(world: World, frame: SceneFrame, ahead: RoadPoint[]): void {
     for (const rider of this.pacers.values()) rider.group.visible = false;
     const shadowAhead = (world.id === 'oldtown' ? 45 : 25) + 30;
-    for (const p of pacersOnRoad(frame.time, AHEAD * STEP)) {
+    const speedMs = frame.speedKmh / 3.6;
+    for (const p of pacersOnRoad(frame.time, AHEAD * STEP, PACERS, this.activePacers)) {
       const rider = this.pacers.get(p.jersey);
       if (!rider) continue;
       rider.group.visible = true;
@@ -3895,13 +3914,14 @@ export class ThreeWorldRenderer implements WorldRenderer {
       const clear = Math.min(Math.max((Math.abs(p.metres) - 3) / 10, 0), 1);
       const line = racingLine(world, frame.s + p.metres, p.lane, ROAD_HALF);
       const lane = p.lane + (line - p.lane) * clear;
-      rider.group.position.set(lane, heightAt(ahead, p.metres), -p.metres);
-      rider.group.rotation.x = pitch(gradeAt(ahead, p.metres));
+      const pGrade = gradeAt(ahead, p.metres);
+      rider.group.position.set(lane, this.heightAtAhead(p.metres), -p.metres);
+      rider.group.rotation.x = pitch(pGrade);
       // Each pacer leans into the bend it is riding through, as the rider does.
       rider.pose(
         frame.reducedMotion ? 0 : frame.crank * (0.9 + p.jersey * 0.03) + p.jersey,
-        -lean(world, frame.s + p.metres, frame.speedKmh / 3.6),
-        standing(gradeAt(ahead, p.metres)),
+        -lean(world, frame.s + p.metres, speedMs),
+        standing(pGrade),
       );
     }
   }
@@ -3984,7 +4004,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
 
   /** Street lamps for a night scene and reflective posts on both verges (techniques 23, 24). */
   private addRoadside(): void {
-    for (let i = 0; i < LAMPS; i++) {
+    const lamps = this.look.sun < 0 ? LAMPS : 0;
+    for (let i = 0; i < lamps; i++) {
       const lamp = new PointLight(0xffc98a, 40, 45, 2);
       lamp.visible = false;
       this.lamps.push(lamp);
@@ -4069,15 +4090,16 @@ export class ThreeWorldRenderer implements WorldRenderer {
         this.bendSamples,
         i % 2 === 0 ? -ROAD_HALF - 1.5 : ROAD_HALF + 1.5,
         -metres,
+        this.lampAt,
       );
-      lamp.position.set(at.x, heightAt(ahead, metres) + 6, at.z);
+      lamp.position.set(at.x, this.heightAtAhead(metres) + 6, at.z);
     }
     for (let i = 0; i < this.posts.length; i++) {
       const post = this.posts[i]!;
       const metres = Math.floor(i / 2) * POST_EVERY - (s % POST_EVERY) + 4;
       post.position.set(
         i % 2 === 0 ? -ROAD_HALF - 0.8 : ROAD_HALF + 0.8,
-        heightAt(ahead, metres) + 0.5,
+        this.heightAtAhead(metres) + 0.5,
         -metres,
       );
     }

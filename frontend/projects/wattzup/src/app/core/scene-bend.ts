@@ -30,6 +30,11 @@ export interface BendPoint {
   readonly z: number;
 }
 
+export interface MutableBendPoint {
+  x: number;
+  z: number;
+}
+
 /** The road's heading at `s`, in degrees, positive to the rider's right (L2-101 AC6). */
 export function heading(world: World, s: number): number {
   const { angle, length } = world.bend;
@@ -149,7 +154,12 @@ export function bendAhead(world: World, s: number, out?: Float32Array): Float32A
 }
 
 /** Where a point of the straight road, `x` across and `z` along it, lies on the bending one. */
-export function bendPoint(samples: Float32Array, x: number, z: number): BendPoint {
+export function bendPoint(
+  samples: Float32Array,
+  x: number,
+  z: number,
+  out?: MutableBendPoint,
+): BendPoint {
   const m = -z;
   const f = Math.min(Math.max((m - BEND_FROM) / BEND_STEP, 0), BEND_SAMPLES - 1);
   const i = Math.min(Math.floor(f), BEND_SAMPLES - 2);
@@ -168,7 +178,14 @@ export function bendPoint(samples: Float32Array, x: number, z: number): BendPoin
   const tz = -Math.cos(phi);
   // On the inside of a bend, ease towards its centre, so nothing folds back over the road.
   const across = eased(x, k);
-  return { x: cx + across * nx + dm * tx, z: cz + across * nz + dm * tz };
+  const rx = cx + across * nx + dm * tx;
+  const rz = cz + across * nz + dm * tz;
+  if (out) {
+    out.x = rx;
+    out.z = rz;
+    return out;
+  }
+  return { x: rx, z: rz };
 }
 
 /**
