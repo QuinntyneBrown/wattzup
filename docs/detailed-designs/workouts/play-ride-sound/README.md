@@ -34,8 +34,8 @@ Pure helper in `frontend/projects/wattzup/src/app/core/`, with unit tests:
 | tyre | `centreHz` = 150 + 10 × _s_; `gain` = 0.3 × volume × min(_s_ ÷ 40, 1) | 33.7 km/h → 487 Hz |
 | all | every gain is 0 while `audible` is false | paused, hidden, bike lost, video playing |
 
-- **`nextFreewheel(previous, cadence, speedKmh, lastKmh, now)`** (`ride-sound.ts`) returns the freewheel state:
-  - when `cadence` falls from above 0 to 0, `{fromKmh: lastKmh, startedAt: now}`;
+- **`nextFreewheel(previous, {previousCadence, cadence, lastKmh, now})`** (`ride-sound.ts`) returns the freewheel state:
+  - when `cadence` falls from above 0 to 0 with a last speed above 0, `{fromKmh: lastKmh, startedAt: now}`;
   - while cadence stays 0, `previous`, which runs out after 3 s;
   - when cadence rises above 0 again, `null` (criterion 5).
 
