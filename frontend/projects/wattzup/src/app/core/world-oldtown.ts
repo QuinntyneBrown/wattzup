@@ -266,9 +266,10 @@ export class OldTownStreet {
   private cords: InstancedMesh | null = null;
   private readonly buntingSagY = new Float32Array(BUNTING_FLAGS);
   private lampMeshes: InstancedMesh[] = [];
+  private lampArrays: Float32Array[] = [];
+  private lampOffsetMetres = new Float32Array(0);
   private lampPen0: InstancedMesh | null = null;
   private lampPen1: InstancedMesh | null = null;
-  private lampOffsets: { offset: number; side: -1 | 1; x: number }[] = [];
   private swiftsMesh: InstancedMesh | null = null;
   private coversMesh: InstancedMesh | null = null;
   private readonly coverSpots: readonly (readonly [number, number])[] = [
@@ -315,11 +316,8 @@ export class OldTownStreet {
   private readonly pot = new CylinderGeometry(0.24, 0.18, 0.5, 7);
   private readonly bush = new SphereGeometry(0.42, 7, 5);
   private readonly terracotta = new MeshStandardMaterial({ color: 0xb4603f, roughness: 0.9 });
-  /** Clipped bay: a dense mass of small leaves, lit and shaded leaf by leaf. */
-  private readonly leaves = new MeshStandardMaterial({
-    map: leafTexture(),
-    roughness: 0.9,
-  });
+  /** Clipped bay: a dense mass of small leaves, resolved into `houseDetailAtlas`. */
+  private readonly leaves = new MeshBasicMaterial();
   private readonly flagCloth = new PlaneGeometry(2.0, 1.35, 6, 1);
   /** Civic flags in two or three bands, read from either side. */
   private readonly houseFlags = FLAGS.map(() => new MeshBasicMaterial());
@@ -378,8 +376,14 @@ export class OldTownStreet {
       ...this.signs,
     );
     if (this.railing.map) this.track(this.railing.map);
-    if (this.leaves.map) this.track(this.leaves.map);
-    this.addFurniture(roadHalf);
+    const detailAtlas = houseDetailAtlas();
+    const detailMat = new MeshStandardMaterial({
+      map: this.track(detailAtlas.texture),
+      roughness: 0.72,
+      side: DoubleSide,
+    });
+    this.disposables.push(detailMat);
+    this.addFurniture(roadHalf, detailAtlas, detailMat);
     this.addRoadPaint();
     this.addStreetBanners();
     this.addCrowd(roadHalf);
@@ -554,7 +558,12 @@ export class OldTownStreet {
         }
       }
     }
-    this.batchStreet(sideHouses, { upper, shut, shop, homes, roofs, gables, trims, awnings });
+    this.batchStreet(
+      sideHouses,
+      { upper, shut, shop, homes, roofs, gables, trims, awnings },
+      detailAtlas,
+      detailMat,
+    );
     for (const g of this.tempGeometries) g.dispose();
     this.tempGeometries.length = 0;
     for (const m of tempMarkers) m.dispose();
@@ -731,19 +740,19 @@ export class OldTownStreet {
   }
 
   private placeLamps(s: number, heightAt: (metres: number) => number): void {
-    if (!this.lampMeshes.length) return;
+    const arrays = this.lampArrays;
+    if (!arrays.length) return;
+    const offsets = this.lampOffsetMetres;
     let p0 = 0;
     let p1 = 0;
     const pen0Arr = this.lampPen0?.instanceMatrix.array as Float32Array | undefined;
     const pen1Arr = this.lampPen1?.instanceMatrix.array as Float32Array | undefined;
-    for (let i = 0; i < this.lampOffsets.length; i++) {
-      const lamp = this.lampOffsets[i]!;
-      const metres = ((((lamp.offset - s) % LOOP) + LOOP) % LOOP) - BEHIND;
+    for (let i = 0; i < offsets.length; i++) {
+      const metres = ((((offsets[i]! - s) % LOOP) + LOOP) % LOOP) - BEHIND;
       const y = heightAt(metres) + KERB;
       const z = -metres;
       const off = i * 16;
-      for (const mesh of this.lampMeshes) {
-        const arr = mesh.instanceMatrix.array as Float32Array;
+      for (const arr of arrays) {
         arr[off + 13] = y;
         arr[off + 14] = z;
       }
@@ -1414,7 +1423,11 @@ export class OldTownStreet {
   }
 
   /** Iron lamp posts along both pavements, each with a hanging basket and a pennant. */
-  private addFurniture(roadHalf: number): void {
+  private addFurniture(
+    roadHalf: number,
+    detailAtlas: ReturnType<typeof houseDetailAtlas>,
+    detailMat: MeshStandardMaterial,
+  ): void {
     const iron = this.material(null, '#1f2124');
     iron.metalness = 0.6;
     iron.roughness = 0.45;
@@ -1431,24 +1444,32 @@ export class OldTownStreet {
     const ironLamp = mergeGeometries([foot, pole, cap, arm])!;
     for (const part of [foot, pole, cap, arm]) part.dispose();
     const lantern = new CylinderGeometry(0.2, 0.13, 0.5, 6).translate(0, 4.45, 0);
-    // A hanging basket of geraniums on an arm from each lamp, out over the barrier.
+    // A hanging basket of geraniums on an arm from each lamp, out over the barrier, merged with
+    // its trailing ivy into one `houseDetailAtlas` geometry.
     const basket = new SphereGeometry(
       0.3,
-      12,
-      6,
+      10,
+      5,
       0,
       Math.PI * 2,
       Math.PI / 2,
       Math.PI / 2,
     ).translate(-0.8, 3.2, 0);
-    const bloom = new SphereGeometry(0.36, 12, 8).scale(1, 0.8, 1).translate(-0.8, 3.25, 0);
+    const bloom = remapUv(
+      new SphereGeometry(0.36, 10, 6).scale(1, 0.8, 1).translate(-0.8, 3.25, 0),
+      detailAtlas.blooms,
+    );
+    const trailing = remapUv(
+      new ConeGeometry(0.4, 0.34, 10, 1, true).rotateX(Math.PI).translate(-0.8, 3.02, 0),
+      detailAtlas.leaves,
+    );
+    bloom.clearGroups();
+    trailing.clearGroups();
+    const foliage = mergeGeometries([bloom, trailing])!;
+    bloom.dispose();
+    trailing.dispose();
     const wicker = new MeshStandardMaterial({ color: 0x5a3e26, roughness: 0.95 });
-    const flowers = new MeshStandardMaterial({ map: this.track(bloomTexture()), roughness: 0.9 });
-    // Ivy and lobelia trailing out of the basket and down.
-    const trailing = new ConeGeometry(0.4, 0.34, 12, 1, true)
-      .rotateX(Math.PI)
-      .translate(-0.8, 3.02, 0);
-    this.disposables.push(glass, ironLamp, lantern, basket, bloom, wicker, flowers, trailing);
+    this.disposables.push(glass, ironLamp, lantern, basket, foliage, wicker);
     const penAtlas = pennantAtlasTexture([
       ['#1b1e24', '#d7ff3a'],
       ['#b8322c', '#ffffff'],
@@ -1462,20 +1483,15 @@ export class OldTownStreet {
     this.disposables.push(pennantMaterial);
     const lampEvery = 28;
     const count = Math.floor(LOOP / lampEvery);
+    this.lampOffsetMetres = new Float32Array(count);
     for (let i = 0; i < count; i++) {
-      const side: -1 | 1 = i % 2 ? 1 : -1;
-      this.lampOffsets.push({
-        offset: i * lampEvery + 6,
-        side,
-        x: side * (roadHalf + 0.7),
-      });
+      this.lampOffsetMetres[i] = i * lampEvery + 6;
     }
     this.lampMeshes = [
       [ironLamp, iron],
       [lantern, glass],
       [basket, wicker],
-      [bloom, flowers],
-      [trailing, this.leaves],
+      [foliage, detailMat],
     ].map(([geometry, material]) => {
       const mesh = new InstancedMesh(geometry as BufferGeometry, material as Material, count);
       mesh.castShadow = material !== glass;
@@ -1484,6 +1500,7 @@ export class OldTownStreet {
       this.disposables.push(mesh);
       return mesh;
     });
+    this.lampArrays = this.lampMeshes.map((m) => m.instanceMatrix.array as Float32Array);
     const pen0Geo = uvPlane(0.5, 1.1, penAtlas.rects[0]!).translate(0.32, 2.4, 0);
     const pen1Geo = uvPlane(0.5, 1.1, penAtlas.rects[1]!).translate(-0.32, 2.4, 0);
     const pen0Count = Math.ceil(count / 2);
@@ -1499,15 +1516,17 @@ export class OldTownStreet {
     this.size.set(1, 1, 1);
     let p0 = 0;
     let p1 = 0;
-    this.lampOffsets.forEach((lamp, i) => {
-      this.turn.setFromAxisAngle(UP, lamp.side === 1 ? 0 : Math.PI);
-      this.matrix.compose(this.spot.set(lamp.x, 0, 0), this.turn, this.size);
+    for (let i = 0; i < count; i++) {
+      const side: -1 | 1 = i % 2 ? 1 : -1;
+      const x = side * (roadHalf + 0.7);
+      this.turn.setFromAxisAngle(UP, side === 1 ? 0 : Math.PI);
+      this.matrix.compose(this.spot.set(x, 0, 0), this.turn, this.size);
       for (const mesh of this.lampMeshes) mesh.setMatrixAt(i, this.matrix);
       this.turn.identity();
-      this.matrix.compose(this.spot.set(lamp.x, 0, 0), this.turn, this.size);
-      if (i % 2 === 0) this.lampPen0!.setMatrixAt(p0++, this.matrix);
-      else this.lampPen1!.setMatrixAt(p1++, this.matrix);
-    });
+      this.matrix.compose(this.spot.set(x, 0, 0), this.turn, this.size);
+      if (i % 2 === 0) this.lampPen0.setMatrixAt(p0++, this.matrix);
+      else this.lampPen1.setMatrixAt(p1++, this.matrix);
+    }
   }
 
   private material(map: Texture | null, color?: string): MeshStandardMaterial {
@@ -1684,6 +1703,8 @@ export class OldTownStreet {
       trims: readonly Material[];
       awnings: readonly Material[];
     },
+    detailAtlas: ReturnType<typeof houseDetailAtlas>,
+    detailMat: MeshStandardMaterial,
   ): void {
     const upperSources: CanvasTexture[] = PALETTES.map((p) => bayTexture(p, false));
     const shutRowIdx: number[] = [];
@@ -1743,13 +1764,7 @@ export class OldTownStreet {
       roughness: 0.9,
       side: DoubleSide,
     });
-    const detailAtlas = houseDetailAtlas();
-    const detailMat = new MeshStandardMaterial({
-      map: this.track(detailAtlas.texture),
-      roughness: 0.72,
-      side: DoubleSide,
-    });
-    this.disposables.push(upperMat, shopMat, homeMat, matte, metal, roofMat, awningMat, detailMat);
+    this.disposables.push(upperMat, shopMat, homeMat, matte, metal, roofMat, awningMat);
 
     const facadeBands = new Map<Material, { target: Material; v0: number; v1: number }>();
     markers.upper.forEach((m, i) => {
@@ -3118,9 +3133,8 @@ function shopDoorTexture(paint: string): CanvasTexture {
   return texture;
 }
 
-function uvPlane(w: number, h: number, rect: UvRect): PlaneGeometry {
-  const plane = new PlaneGeometry(w, h);
-  const uv = plane.getAttribute('uv') as BufferAttribute;
+function remapUv<T extends BufferGeometry>(geometry: T, rect: UvRect): T {
+  const uv = geometry.getAttribute('uv') as BufferAttribute;
   for (let i = 0; i < uv.count; i++) {
     uv.setXY(
       i,
@@ -3129,7 +3143,11 @@ function uvPlane(w: number, h: number, rect: UvRect): PlaneGeometry {
     );
   }
   uv.needsUpdate = true;
-  return plane;
+  return geometry;
+}
+
+function uvPlane(w: number, h: number, rect: UvRect): PlaneGeometry {
+  return remapUv(new PlaneGeometry(w, h), rect);
 }
 
 /** Stacked cloth street banners (`STREET_BANNERS`) in one `512 × 384` atlas with 4 px gutters. */
@@ -3362,13 +3380,24 @@ function leafTexture(): CanvasTexture {
     ctx.fillStyle = '#2f5528';
     ctx.fillRect(0, 0, 256, 128);
     const random = seeded(67);
+    const tones = [76, 90, 104, 118, 132];
+    const paths = tones.map(() => new Path2D());
     for (let i = 0; i < 1400; i++) {
-      const g = 70 + random() * 70;
-      ctx.fillStyle = `rgb(${g * 0.45},${g},${g * 0.38})`;
-      ctx.beginPath();
-      ctx.ellipse(random() * 256, random() * 128, 3, 1.6, random() * Math.PI, 0, Math.PI * 2);
-      ctx.fill();
+      const bucket = Math.min(4, Math.floor(random() * 5));
+      paths[bucket]!.ellipse(
+        random() * 256,
+        random() * 128,
+        3,
+        1.6,
+        random() * Math.PI,
+        0,
+        Math.PI * 2,
+      );
     }
+    tones.forEach((g, idx) => {
+      ctx.fillStyle = `rgb(${Math.round(g * 0.45)},${g},${Math.round(g * 0.38)})`;
+      ctx.fill(paths[idx]!);
+    });
   }
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
