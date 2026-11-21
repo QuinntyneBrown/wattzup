@@ -20,6 +20,7 @@ export class RidePage {
   readonly levelValue: Locator;
   readonly raiseButton: Locator;
   readonly rideClock: Locator;
+  readonly rideSoundButton: Locator;
   readonly pauseButton: Locator;
   readonly resumeButton: Locator;
   readonly endButton: Locator;
@@ -50,6 +51,7 @@ export class RidePage {
     this.levelValue = page.locator('.level-readout .numeral');
     const bar = page.locator('.app-bar');
     this.rideClock = bar.locator('.ride-clock');
+    this.rideSoundButton = page.getByRole('button', { name: /^Ride sound (on|off)$/ });
     this.pauseButton = bar.getByRole('button', { name: 'Pause', exact: true });
     this.resumeButton = bar.getByRole('button', { name: 'Resume', exact: true });
     this.endButton = bar.getByRole('button', { name: 'End', exact: true });

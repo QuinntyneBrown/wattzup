@@ -35,6 +35,11 @@ export class DialogLauncher {
     this.open(DiagnosticsDialog, 'diagnostics', 'first-tabbable');
   }
 
+  async openRideSound(): Promise<void> {
+    const { RideSoundDialog } = await import('../dashboard/ride-sound-dialog/ride-sound-dialog');
+    this.open(RideSoundDialog, 'ride-sound', '[data-autofocus]');
+  }
+
   /** `next` is where the rider goes once the ride has ended. */
   async openEndRide(): Promise<void> {
     const { EndRideDialog } = await import('../dashboard/end-ride-dialog/end-ride-dialog');

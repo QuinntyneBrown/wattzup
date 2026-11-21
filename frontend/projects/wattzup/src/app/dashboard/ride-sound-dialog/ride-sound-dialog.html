@@ -1,0 +1,31 @@
+<wz-dialog
+  dialogId="ride-sound"
+  heading="Ride sound"
+  description="Hear the chain, the freewheel and the wind follow your pedalling. The sound is made in your browser; nothing is downloaded."
+  icon="wave"
+  tone="info"
+  size="sm"
+>
+  <div class="stack">
+    <div class="toggles">
+      <label class="toggle-row">
+        <span class="toggle-row__label"
+          ><b>Ride sound</b><small>{{ sound.on() ? 'On' : 'Off' }}</small></span
+        >
+        <span class="switch"
+          ><input
+            type="checkbox"
+            role="switch"
+            aria-label="Ride sound"
+            [checked]="sound.on()"
+            (change)="toggle($any($event.target).checked)"
+        /></span>
+      </label>
+    </div>
+  </div>
+  <div dialog-footer class="ride-sound__actions">
+    <button class="btn btn--primary" type="button" data-autofocus (click)="ref.close()">
+      Done
+    </button>
+  </div>
+</wz-dialog>
