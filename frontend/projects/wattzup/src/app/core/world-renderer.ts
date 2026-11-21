@@ -3797,8 +3797,12 @@ export class ThreeWorldRenderer implements WorldRenderer {
     const cobbles = COBBLED.has(world.id)
       ? (await import('./world-oldtown')).cobbleTextures()
       : null;
-    const layered = world.id === 'docklands' ? wetAsphaltTexture() : roadTexture(true);
-    this.layeredRoad = this.track(cobbles?.map ?? layered);
+    const roadMap = cobbles
+      ? cobbles.map
+      : world.id === 'docklands'
+        ? wetAsphaltTexture()
+        : roadTexture(true);
+    this.layeredRoad = this.track(roadMap);
     this.roadRelief = cobbles ? this.track(cobbles.relief) : null;
     this.roadMaterial.color.set(look.road);
     const groundMesh = this.addMesh(

@@ -376,21 +376,31 @@ Every iteration below is measured across a **45-second sustained ride** (`record
 | **`low`**       |    60.6 | **16.7**           | 6.09 / 7.01         | 328 → **326 (−2)** | 64 (`+0`)                | **7.213 / 8.003** _(record low)_ |  **18.44** |
 | **`high`**      |    57.0 | 17.2 → **17.0 ms** | **10.22 / 11.27**   | 467 → **461 (−6)** | 239 → **237 (−2, `+0`)** | 10.166 / 11.135                  |      45.38 |
 
-### Cumulative 45-Second Old Town Improvement Summary (Original → Post-#950 Baseline → Iteration 12)
+### Iteration 13: Unified Lamp Foliage `houseDetailAtlas`, Typed-Array `placeLamps()` & Skipped Unused `roadTexture(true)` (`world-oldtown.ts`, `world-renderer.ts`)
 
-| Metric (45s Active Ride @ 1440×900)  | Original `main` | Post-#950 45s Baseline | Iteration 12 (`main`) | Total Improvement          |
-| ------------------------------------ | --------------: | ---------------------: | --------------------: | -------------------------- |
-| **`low` Avg FPS**                    |            31.7 |                   60.5 |              **60.6** | **+91.2 % (60 Hz lock)**   |
-| **`low` Median / p95 Frame (ms)**    |     29.9 / 42.8 |            16.7 / 17.8 |       **16.7 / 17.1** | **−44.1 % / −60.0 %**      |
-| **`low` WebGPU Draw Calls**          |           1,771 |                    747 |               **326** | **−81.6 % (−1,445 draws)** |
-| **`low` CDP CPU Script (ms/frame)**  |           30.83 |                  9.329 |             **7.213** | **4.3× faster (−76.6 %)**  |
-| **`low` JS Heap Used (MB)**          |            95.5 |                  46.24 |             **18.44** | **−80.7 %**                |
-| **`high` Avg FPS**                   |            14.8 |                   38.3 |         **57.0–58.3** | **3.9× (+285 %)**          |
-| **`high` Median / p95 Frame (ms)**   |     62.6 / 92.9 |            26.2 / 32.7 |  **16.7–17.0 / 21.8** | **−73.3 % / −76.5 %**      |
-| **`high` GPU Median / p95 (ms)**     |           18.74 |          15.60 / 17.30 |     **10.22 / 11.21** | **−45.5 %**                |
-| **`high` WebGPU Draw Calls**         |           3,308 |                  1,249 |               **461** | **−86.1 % (−2,847 draws)** |
-| **`high` Shader Programs**           |            ~240 |                    240 |               **237** | **−3 (`0` mid-ride)**      |
-| **`high` CDP CPU Script (ms/frame)** |           66.43 |                 17.344 |      **9.251–10.166** | **6.5×–7.2× faster**       |
-| **DOM Layouts per 45s Ride**         |          ~1,500 |                  1,504 |             **73–93** | **−95.1 %**                |
-| **Lazy World Ride JS Loaded (KB)**   |         2,741.1 |                2,741.1 |           **1,377.4** | **−49.7 %**                |
-| **Mid-Ride Shader Compilations**     |             0–2 |                      0 |                 **0** | **Zero mid-ride stalls**   |
+- **Change**: Remapped lamp-basket geranium blooms and trailing ivy into `houseDetailAtlas` and merged them into a single `foliage` `InstancedMesh` sharing `detailMat` (`5 → 4` lamp `InstancedMesh`es, eliminating duplicate `leafTexture()` / `bloomTexture()` canvases, 2 GPU textures, and 2 `MeshStandardMaterial`s), batched `leafTexture()`'s 1,400 ellipses into 5 `Path2D` fills, hoisted flat `Float32Array` `lampOffsetMetres` and `lampArrays` in `placeLamps()`, and skipped the discarded `roadTexture(true)` (`9,000` `fillRect` calls + untracked `CanvasTexture`) when loading cobbled worlds in `ThreeWorldRenderer.buildScene()`.
+- **45-Second Results**:
+
+| Tier (`webgpu`) | Avg FPS             | Median / p95 / p99 ms  | GPU Median / p95 ms | Draw Calls         | Cold Load ms (Before → After)                     |
+| --------------- | ------------------- | ---------------------- | ------------------- | ------------------ | ------------------------------------------------- |
+| **`low`**       | **60.8** _(record)_ | **16.7 / 17.1 / 17.7** | 6.03 / 7.14         | 326 → **325 (−1)** | 3,810.8 → **3,783.6** _(record low)_              |
+| **`high`**      | **57.0**            | **17.0 / 22.7 / 35.3** | **10.22 / 11.34**   | 461 → **459 (−2)** | 10,146.3 → **9,809.3 (−337 ms, first `< 10 s`!)** |
+
+### Cumulative 45-Second Old Town Improvement Summary (Original → Post-#950 Baseline → Iteration 13)
+
+| Metric (45s Active Ride @ 1440×900)  | Original `main` | Post-#950 45s Baseline |  Iteration 13 (`main`) | Total Improvement          |
+| ------------------------------------ | --------------: | ---------------------: | ---------------------: | -------------------------- |
+| **`low` Avg FPS**                    |            31.7 |                   60.5 |               **60.8** | **+91.8 % (60 Hz lock)**   |
+| **`low` Median / p95 / p99 (ms)**    |     29.9 / 42.8 |     16.7 / 17.8 / 18.8 | **16.7 / 17.1 / 17.7** | **−44.1 % / −60.0 %**      |
+| **`low` WebGPU Draw Calls**          |           1,771 |                    747 |                **325** | **−81.6 % (−1,446 draws)** |
+| **`low` CDP CPU Script (ms/frame)**  |           30.83 |                  9.329 |        **7.213–7.313** | **4.2×–4.3× faster**       |
+| **`low` Cold Load Wall (ms)**        |          ~4,200 |                3,944.5 |            **3,783.6** | **−160.9 ms**              |
+| **`high` Avg FPS**                   |            14.8 |                   38.3 |          **57.0–58.3** | **3.9× (+285 %)**          |
+| **`high` Median / p95 Frame (ms)**   |     62.6 / 92.9 |            26.2 / 32.7 |   **16.7–17.0 / 21.8** | **−73.3 % / −76.5 %**      |
+| **`high` GPU Median / p95 (ms)**     |           18.74 |          15.60 / 17.30 |      **10.22 / 11.21** | **−45.5 %**                |
+| **`high` WebGPU Draw Calls**         |           3,308 |                  1,249 |                **459** | **−86.1 % (−2,849 draws)** |
+| **`high` Cold Load Wall (ms)**       |         ~11,500 |               10,861.2 |            **9,809.3** | **−1,051.9 ms (−9.7 %)**   |
+| **`high` CDP CPU Script (ms/frame)** |           66.43 |                 17.344 |       **9.251–10.257** | **6.5×–7.2× faster**       |
+| **DOM Layouts per 45s Ride**         |          ~1,500 |                  1,504 |              **73–91** | **−95.1 %**                |
+| **Lazy World Ride JS Loaded (KB)**   |         2,741.1 |                2,741.1 |            **1,377.7** | **−49.7 %**                |
+| **Mid-Ride Shader Compilations**     |             0–2 |                      0 |                  **0** | **Zero mid-ride stalls**   |
