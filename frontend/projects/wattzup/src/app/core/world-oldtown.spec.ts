@@ -71,13 +71,32 @@ describe('OldTownStreet and Corners (L2-101 AC1, L2-110 AC9, L2-111 AC10)', () =
     corners.place(world, 5, (m) => m * 0.06);
     expect(visible[0]!.position.z).toBeCloseTo(beforePosZ + 5, 5);
 
-    // Every corner mesh has normals ready for lighting and bending.
-    corners.group.traverse((obj) => {
-      if (!(obj instanceof Mesh)) return;
-      const normal = (obj.geometry as BufferGeometry).getAttribute('normal') as
-        BufferAttribute | undefined;
-      expect(normal).toBeDefined();
-    });
+    // Every corner mesh has normals ready for lighting and bending, uses at most 3 meshes per
+    // corner across 2 shared materials, and gates shadow casting to corners inside (-30, 90) m.
+    const materials = new Set<unknown>();
+    for (const corner of corners.group.children) {
+      let meshCount = 0;
+      corner.traverse((obj) => {
+        if (!(obj instanceof Mesh)) return;
+        meshCount++;
+        materials.add(obj.material);
+        const normal = (obj.geometry as BufferGeometry).getAttribute('normal') as
+          BufferAttribute | undefined;
+        expect(normal).toBeDefined();
+      });
+      expect(meshCount).toBeLessThanOrEqual(3);
+    }
+    expect(materials.size).toBe(2);
+
+    const firstApexS = expected[0]!.s;
+    corners.place(world, firstApexS - 40, (m) => m * 0.06);
+    for (const corner of corners.group.children.filter((c) => c.visible)) {
+      const metres = -corner.position.z;
+      const inShadow = metres > -30 && metres < 90;
+      corner.traverse((obj) => {
+        if (obj instanceof Mesh) expect(obj.castShadow).toBe(inShadow);
+      });
+    }
 
     for (const d of disposables) d.dispose();
   });

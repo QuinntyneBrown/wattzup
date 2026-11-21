@@ -60,21 +60,25 @@ export interface Apex {
 
 /** A bend turning less than this, in radians per metre (0.15° a metre), has no corner to mark. */
 export const APEX_MIN = (0.15 * Math.PI) / 180;
-const APEX_STEP = 2;
+export const APEX_STEP = 2;
 
 /** The apexes of the bends from `from` to `to` metres along the road, nearest first. */
-export function apexes(world: World, from: number, to: number): Apex[] {
+export function apexes(world: World, from: number, to: number, limit = Infinity): Apex[] {
+  if (world.bend.angle === 0 || limit <= 0) return [];
   const found: Apex[] = [];
   const start = Math.floor(from / APEX_STEP) * APEX_STEP;
   let before = Math.abs(curvature(world, start - APEX_STEP));
-  let here = Math.abs(curvature(world, start));
+  let hereK = curvature(world, start);
+  let here = Math.abs(hereK);
   for (let s = start; s <= to; s += APEX_STEP) {
-    const k = curvature(world, s + APEX_STEP);
-    const after = Math.abs(k);
+    const nextK = curvature(world, s + APEX_STEP);
+    const after = Math.abs(nextK);
     if (s >= from && here >= APEX_MIN && here > before && here >= after) {
-      found.push({ s, turn: curvature(world, s) > 0 ? 1 : -1 });
+      found.push({ s, turn: hereK > 0 ? 1 : -1 });
+      if (found.length >= limit) break;
     }
     before = here;
+    hereK = nextK;
     here = after;
   }
   return found;
