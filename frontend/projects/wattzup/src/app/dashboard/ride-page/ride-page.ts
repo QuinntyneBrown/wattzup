@@ -45,6 +45,7 @@ import { RideOverlay } from '../ride-overlay/ride-overlay';
 import { RideTrace } from '../ride-trace/ride-trace';
 import { Interval } from '../interval/interval';
 import { VideoSync } from '../../core/video-sync.service';
+import { RideSound } from '../../core/ride-sound.service';
 import { RideVideo } from '../ride-video/ride-video';
 
 /** Route `/`: the ride dashboard. */
@@ -86,6 +87,13 @@ export class RidePage {
     computation: () => 'video',
   });
   private readonly videoSync = inject(VideoSync);
+  private readonly rideSound = inject(RideSound);
+  /** A playing video mutes ride sound; leaving the page lifts it (L2-129 AC8). */
+  private readonly onVideoPlaying = effect((onCleanup) => {
+    const playing = this.videoSync.playing();
+    untracked(() => this.rideSound.setVideoPlaying(playing));
+    onCleanup(() => this.rideSound.setVideoPlaying(false));
+  });
   /** A player error selects Power vs. plan; the ride carries on (L2-076 AC7). */
   private readonly onVideoError = effect(() => {
     if (this.videoSync.failed()) untracked(() => this.mainView.set('chart'));

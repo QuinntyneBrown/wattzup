@@ -7,6 +7,14 @@
   size="sm"
 >
   <div class="stack">
+    @if (sound.on() && sound.videoPlaying()) {
+      <wz-alert
+        tone="info"
+        icon="info"
+        heading="Muted while the video plays"
+        text="The class video has its own sound. Ride sound comes back when you pause the video."
+      />
+    }
     <div class="toggles">
       <label class="toggle-row">
         <span class="toggle-row__label"
@@ -22,6 +30,18 @@
         /></span>
       </label>
     </div>
+    <wz-slider
+      fieldId="ride-sound-volume"
+      label="Volume"
+      [level]="sound.volume()"
+      (levelChange)="sound.setVolume($event)"
+      [min]="0"
+      [max]="100"
+      [step]="5"
+      suffix=" %"
+      [scale]="['Quiet', 'Loud']"
+      [valueText]="sound.volume() + ' percent'"
+    />
   </div>
   <div dialog-footer class="ride-sound__actions">
     <button class="btn btn--primary" type="button" data-autofocus (click)="ref.close()">

@@ -157,6 +157,18 @@ export class FakeYouTube {
     }, refuse);
   }
 
+  /** The newest player's state, as YouTube would report it. */
+  async playerState(): Promise<FakePlayerState | null> {
+    return this.page.evaluate(() => {
+      const names = ['ended', 'playing', 'paused', 'buffering'];
+      const p = (
+        window as unknown as { __fakeYT: { players: { state: number }[] } }
+      ).__fakeYT.players.at(-1);
+      if (!p) return null;
+      return (p.state === -1 ? 'unstarted' : names[p.state]) as FakePlayerState;
+    });
+  }
+
   /** The newest player: moves it to `state` at `time`, as the rider or YouTube would. */
   async drive(state: FakePlayerState, time?: number): Promise<void> {
     await this.page.evaluate(

@@ -11,6 +11,7 @@ import { ClassesPage } from './pages/classes.page';
 import { ReplaceRideDialog } from './pages/replace-ride.dialog';
 import { RidePage } from './pages/ride.page';
 import { SetupPage } from './pages/setup.page';
+import { RideSoundDialog } from './pages/ride-sound.dialog';
 import { WorldRidePage } from './pages/world-ride.page';
 
 /** 95 rpm at 35.6 km/h, then resistance 18, as main's live spec sends them. */
@@ -1139,7 +1140,14 @@ test.describe('World Ride access and app bar (L2-102, L2-103)', () => {
     await expect(world.classLine).toHaveText('Cathedral Circuit · 30 Minute HIIT Cardio');
     await expect(world.bike).toHaveText('ECHEX-3-141844');
     await expect(world.clock).toHaveText('5:00 / 30:00');
-    expect(await world.barOrder()).toEqual(['Wattzup dashboard', 'Class', 'Music', 'Pause', 'End']);
+    expect(await world.barOrder()).toEqual([
+      'Wattzup dashboard',
+      'Class',
+      'Ride sound off',
+      'Music',
+      'Pause',
+      'End',
+    ]);
   });
 
   test('pauses and resumes the ride', async ({ page }) => {
@@ -1435,6 +1443,18 @@ test.describe('World Ride music (L2-128)', () => {
     await world.resumeButton.click();
     await expect.poll(async () => (await world.music())?.paused).toBe(false);
     expect((await world.music())?.time ?? 0).toBeGreaterThanOrEqual(at);
+  });
+
+  test('opens the Ride sound dialog from the bar (L2-129 AC2)', async ({ page }) => {
+    const world = new WorldRidePage(page);
+    await world.startFromClass();
+    await expect(world.rideSoundButton).toHaveAccessibleName('Ride sound off');
+    await world.rideSoundButton.click();
+    const dialog = new RideSoundDialog(page);
+    await dialog.soundSwitch.check();
+    await dialog.doneButton.click();
+    await expect(world.rideSoundButton).toHaveAccessibleName('Ride sound on');
+    await expect(world.rideSoundButton).toHaveAttribute('aria-pressed', 'true');
   });
 
   test('mutes and unmutes with the Music toggle', async ({ page }) => {

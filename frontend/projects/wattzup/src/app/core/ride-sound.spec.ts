@@ -8,6 +8,7 @@ const moment = (change: Partial<RideSoundInput> = {}): RideSoundInput => ({
   audible: true,
   volume: 1,
   freewheel: null,
+  ducked: false,
   now: 0,
   ...change,
 });
@@ -106,6 +107,17 @@ describe('rideSoundParams (L2-129)', () => {
     expect(quiet.chain.gain).toBeCloseTo(loud.chain.gain / 2, 9);
     expect(quiet.wind.gain).toBeCloseTo(loud.wind.gain / 2, 9);
     expect(quiet.tyre.gain).toBeCloseTo(loud.tyre.gain / 2, 9);
+  });
+
+  // A cue beep ducks every voice to 30 % of its level (AC7).
+  it('ducks every voice to 30 % under a cue beep', () => {
+    const open = rideSoundParams(moment({ freewheel: { fromKmh: 30, startedAt: 0 } }));
+    const ducked = rideSoundParams(
+      moment({ freewheel: { fromKmh: 30, startedAt: 0 }, ducked: true }),
+    );
+    for (const v of ['chain', 'freewheel', 'wind', 'tyre'] as const) {
+      expect(ducked[v].gain).toBeCloseTo(open[v].gain * 0.3, 9);
+    }
   });
 
   // Paused, hidden, the bike lost or a video playing all close the gate (AC8, AC9).

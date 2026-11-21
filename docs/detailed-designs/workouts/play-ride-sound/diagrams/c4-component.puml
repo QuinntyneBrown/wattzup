@@ -9,7 +9,7 @@ Container_Boundary(app, "Wattzup app (wattzup project)") {
   Component(service, "RideSound", "core/ride-sound.service.ts", "Owns the ride sound AudioContext and its voices; on/off, volume, gates")
   Component(cue, "CueService", "core/cue.service.ts", "Countdown beeps; reports each beep for ducking")
   Component(video, "VideoSync", "core/video-sync.service.ts", "The ride-along player; reports whether it plays")
-  Component(button, "RideSoundButton", "dashboard/ride-sound-button/", "App bar button, Ride sound off / on")
+  Component(button, "Ride sound button", "AppBar, WorldRide", "Ride sound off / on; opens the dialog")
   Component(dialog, "RideSoundDialog", "dashboard/ride-sound-dialog/", "CDK Dialog: switch and Volume slider")
 }
 Rel(rider, button, "Presses")

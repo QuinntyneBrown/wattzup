@@ -15,12 +15,14 @@ import { Router } from '@angular/router';
 import { CLASS_API, type ClassEntry } from '@wattzup/api';
 import { WorldRide } from '@wattzup/components';
 import { CountdownService } from '../../core/countdown.service';
+import { DialogLauncher } from '../../core/dialog-launcher';
 import { formatDuration } from '../../core/format-duration';
 import { LiveStateService } from '../../core/live-state.service';
 import { MusicPreference } from '../../core/music-preference';
 import { ResistanceCommandService } from '../../core/resistance-command.service';
 import { stepLevel } from '../../core/resistance-controls';
 import { RideActions } from '../../core/ride-actions';
+import { RideSound } from '../../core/ride-sound.service';
 import { worldRideAccess } from '../../core/world-ride-access';
 import { musicPlays } from '../../core/world-music';
 import { WorldMusicPlayer } from '../../core/world-music-player';
@@ -62,6 +64,8 @@ export class WorldRidePage {
   private readonly timer = inject(CountdownService);
   private readonly music = inject(WorldMusicPlayer);
   private readonly musicPreference = inject(MusicPreference);
+  protected readonly rideSound = inject(RideSound);
+  protected readonly dialogs = inject(DialogLauncher);
   protected readonly musicOn = this.musicPreference.on;
 
   protected readonly phase = signal<Phase>('loading');

@@ -1,12 +1,12 @@
 import { DialogRef } from '@angular/cdk/dialog';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Dialog } from '@wattzup/components';
+import { Alert, Dialog, Slider } from '@wattzup/components';
 import { RideSound } from '../../core/ride-sound.service';
 
-/** Ride sound: on or off (L2-129 AC2). */
+/** Ride sound: on or off, and its volume (L2-129 AC2, AC3, AC8). */
 @Component({
   selector: 'wz-ride-sound-dialog',
-  imports: [Dialog],
+  imports: [Alert, Dialog, Slider],
   templateUrl: './ride-sound-dialog.html',
   styleUrl: './ride-sound-dialog.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

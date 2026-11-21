@@ -2,7 +2,9 @@
 // every page load; the AudioContext is made in the rider's press, as the browser requires. The
 // numbers come from rideSoundParams(); this service only plays them.
 import { DOCUMENT, DestroyRef, Injectable, effect, inject, signal, untracked } from '@angular/core';
+import { CueService } from './cue.service';
 import { LiveStateService } from './live-state.service';
+import { RideSoundPreference } from './ride-sound-preference';
 import {
   type FreewheelState,
   nextFreewheel,
@@ -15,7 +17,8 @@ const AHEAD_S = 0.25;
 const PUMP_MS = 50;
 /** Gains move with this time constant, so a change never clicks (s). */
 const SMOOTH_S = 0.1;
-const VOLUME = 0.6;
+/** Ride sound stays ducked this long after a beep ends (AC7). */
+const DUCK_TAIL_MS = 150;
 
 interface TickVoice {
   readonly gain: GainNode;
@@ -28,6 +31,15 @@ interface TickVoice {
 export class RideSound {
   private readonly live = inject(LiveStateService);
   private readonly document = inject(DOCUMENT);
+  private readonly preference = inject(RideSoundPreference);
+  private readonly cues = inject(CueService);
+  /** Percent, 0 to 100, kept in this browser (AC3). */
+  readonly volume = this.preference.volume;
+  private readonly _videoPlaying = signal(false);
+  /** A ride-along video is playing: ride sound is silent, though still on (AC8). */
+  readonly videoPlaying = this._videoPlaying.asReadonly();
+  /** Ducked until this time (ms, performance.now()). */
+  private duckedUntil = 0;
   private readonly _on = signal(false);
   /** Off on every page load (AC1). */
   readonly on = this._on.asReadonly();
@@ -52,6 +64,11 @@ export class RideSound {
     inject(DestroyRef).onDestroy(() => {
       this.document.removeEventListener('visibilitychange', onVisibility);
       this.turnOff();
+    });
+    // Each beep ducks the sound for its length and 0.15 s more (AC7).
+    effect(() => {
+      const beep = this.cues.beeped();
+      if (beep) untracked(() => this.duck(beep.seconds));
     });
     // The freewheel follows each live state: it starts when the cadence falls to 0 (AC5).
     effect(() => {
@@ -97,6 +114,25 @@ export class RideSound {
     this.schedule();
   }
 
+  setVolume(percent: number): void {
+    this.preference.setVolume(percent);
+    this.schedule();
+  }
+
+  setVideoPlaying(playing: boolean): void {
+    this._videoPlaying.set(playing);
+    this.schedule();
+  }
+
+  /** Holds every voice at 30 % for `seconds` and 0.15 s after (AC7). */
+  duck(seconds: number): void {
+    this.duckedUntil = Math.max(
+      this.duckedUntil,
+      performance.now() + seconds * 1000 + DUCK_TAIL_MS,
+    );
+    this.schedule();
+  }
+
   turnOff(): void {
     if (this.pump !== null) clearInterval(this.pump);
     this.pump = null;
@@ -110,15 +146,20 @@ export class RideSound {
   private params(): RideSoundParams {
     const state = this.live.state();
     const audible =
-      this.visible() && state?.workout?.status === 'running' && state.ble === 'connected';
+      this.visible() &&
+      !this._videoPlaying() &&
+      state?.workout?.status === 'running' &&
+      state.ble === 'connected';
+    const now = performance.now();
     return rideSoundParams({
       cadence: state?.cadence ?? null,
       speedKmh: state?.speed_kmh ?? null,
       resistance: state?.resistance ?? null,
       audible,
-      volume: VOLUME,
+      volume: this.preference.volume() / 100,
       freewheel: this.freewheel,
-      now: performance.now(),
+      ducked: now < this.duckedUntil,
+      now,
     });
   }
 

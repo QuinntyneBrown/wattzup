@@ -5,17 +5,22 @@
 >
   <div class="level-slider__head">
     <label [for]="fieldId()">{{ label() }}</label>
-    <output class="numeral" [for]="fieldId()">{{ level() }}<small> / 32</small></output>
+    <output class="numeral" [for]="fieldId()"
+      >{{ level() }}<small>{{ suffix() }}</small></output
+    >
   </div>
   <input
     type="range"
-    min="1"
-    max="32"
-    step="1"
+    [min]="min()"
+    [max]="max()"
+    [step]="step()"
     [id]="fieldId()"
     [value]="level()"
     [disabled]="disabled()"
+    [attr.aria-valuetext]="valueText()"
     (input)="onInput($event)"
   />
-  <div class="level-slider__scale" aria-hidden="true"><span>Light</span><span>Max</span></div>
+  <div class="level-slider__scale" aria-hidden="true">
+    <span>{{ scale()[0] }}</span><span>{{ scale()[1] }}</span>
+  </div>
 </div>

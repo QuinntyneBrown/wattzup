@@ -32,6 +32,8 @@ export class VideoSync {
 
   /** The browser refused to play twice in a row: the rider has to press play (criterion 6). */
   readonly blocked = computed(() => isBlocked(this.handle()?.refused() ?? 0));
+  /** The ride-along video is playing: ride sound keeps quiet (L2-129 AC8). */
+  readonly playing = computed(() => this.handle()?.state() === 'playing');
   /** The player raised an error; the ride carries on without it (criterion 7). */
   readonly failed = this._failed.asReadonly();
 
