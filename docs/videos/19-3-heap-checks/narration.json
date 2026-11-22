@@ -1,0 +1,71 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Leave a screen, and Telo Ride gives its memory back. Now there's a check that proves it."
+      ]
+    },
+    {
+      "id": "measure",
+      "bars": 5,
+      "lines": [
+        "Each check forces a garbage collection, then reads the heap, through the DevTools protocol."
+      ]
+    },
+    {
+      "id": "budget",
+      "bars": 5,
+      "lines": [
+        "The race and its 3D world, in and out six times. After the first round, the heap may grow five megabytes at most."
+      ]
+    },
+    {
+      "id": "world",
+      "bars": 5,
+      "lines": [
+        "A class ride gets the same six rounds, and a three-hour class may grow fifty megabytes at most."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 4,
+      "lines": [
+        "The class ride these checks enter and leave, from a phone to the full screen."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "They run only when a person asks: never in verify, never in CI."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}
