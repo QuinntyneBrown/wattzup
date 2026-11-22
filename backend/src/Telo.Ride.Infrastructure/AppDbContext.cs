@@ -6,6 +6,7 @@ using Telo.Ride.Domain.Accounts;
 using Telo.Ride.Domain.Maps;
 using Telo.Ride.Domain.Results;
 using Telo.Ride.Domain.Rides;
+using Telo.Ride.Domain.Workouts;
 
 namespace Telo.Ride.Infrastructure;
 
@@ -21,6 +22,8 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<RecordedRide> Rides => Set<RecordedRide>();
 
     public DbSet<MapProgress> MapProgress => Set<MapProgress>();
+
+    public DbSet<CustomWorkout> CustomWorkouts => Set<CustomWorkout>();
 
     public DbSet<SessionResult> SessionResults => Set<SessionResult>();
 
@@ -89,6 +92,13 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             progress.Property(p => p.MapId).HasMaxLength(64);
             progress.Property(p => p.Stars).HasConversion<int>();
             progress.HasOne<Rider>().WithMany().HasForeignKey(p => p.RiderId).OnDelete(DeleteBehavior.Cascade);
+        });
+        modelBuilder.Entity<CustomWorkout>(workout =>
+        {
+            // One row for each rider: the app's settings as JSON, kept as they came, and when they were saved.
+            workout.HasKey(w => w.RiderId);
+            workout.Property(w => w.Settings).HasMaxLength(CustomWorkout.MaxSettingsLength);
+            workout.HasOne<Rider>().WithMany().HasForeignKey(w => w.RiderId).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<SessionResult>(result =>

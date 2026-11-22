@@ -286,6 +286,24 @@ namespace Telo.Ride.Infrastructure.Migrations
                     b.ToTable("Rides");
                 });
 
+            modelBuilder.Entity("Telo.Ride.Domain.Workouts.CustomWorkout", b =>
+                {
+                    b.Property<Guid>("RiderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("SavedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Settings")
+                        .IsRequired()
+                        .HasMaxLength(8000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RiderId");
+
+                    b.ToTable("CustomWorkouts");
+                });
+
             modelBuilder.Entity("Telo.Ride.Domain.Accounts.RiderSession", b =>
                 {
                     b.HasOne("Telo.Ride.Domain.Accounts.Rider", null)
@@ -358,6 +376,15 @@ namespace Telo.Ride.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("Telo.Ride.Domain.Rides.RecordedRide", b =>
+                {
+                    b.HasOne("Telo.Ride.Domain.Accounts.Rider", null)
+                        .WithMany()
+                        .HasForeignKey("RiderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Telo.Ride.Domain.Workouts.CustomWorkout", b =>
                 {
                     b.HasOne("Telo.Ride.Domain.Accounts.Rider", null)
                         .WithMany()

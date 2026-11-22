@@ -14,6 +14,7 @@ using Telo.Ride.Domain.Accounts;
 using Telo.Ride.Domain.Maps;
 using Telo.Ride.Domain.Results;
 using Telo.Ride.Domain.Rides;
+using Telo.Ride.Domain.Workouts;
 using Telo.Ride.Infrastructure;
 
 namespace Telo.Ride.Api.Tests;
@@ -43,6 +44,7 @@ public sealed class ConcurrentRideApi : SignInApi
         public DbSet<RecordedRide> Rides => db.Rides;
 
         public DbSet<MapProgress> MapProgress => db.MapProgress;
+        public DbSet<CustomWorkout> CustomWorkouts => db.CustomWorkouts;
 
         public DbSet<SessionResult> SessionResults => db.SessionResults;
 
