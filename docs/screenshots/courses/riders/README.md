@@ -16,6 +16,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 5 | One pelvis for a seat, sleeves closed over the shoulders, the back of the head: hair, ears, the helmet's cradle and straps | 120.1 fps, none over 20 ms | 16.9 ms | 314 fps (3.19 ms): 320, 310, 314 | 84,781 | 74 | Yes |
 | 6 | Out of the saddle on a steep climb, the bike thrown from side to side; a pose that allocates nothing | 119.9 fps; one frame of 25 ms in 2 timings of 11, none in 9 (the pass before: none in 8) | 25.3 ms | 302 fps (3.31 ms): 302, 311, 302 | 84,781 | 74 | Yes, with that noted |
 | 7 | Riders who differ: skin, hair, height, the bike's colour, shoes and socks | 120.1 fps, none over 20 ms in 4 timings | 8.7 ms | 312 fps (3.21 ms): 301, 312, 321 | 84,781 | 74 | Yes |
+| 8 | Bike lights at night: a red rear lamp that glows, and the pools the lamps throw on the road | 119.8 fps; two frames of 25 ms in 1 timing of 4, none in 3 | 16.7 ms filmed, 25.1 ms worst | 294 fps (3.40 ms): 301, 292, 294 | 85,051 | 84 | Yes, with that noted |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -255,3 +256,35 @@ timings, the same 74 draw calls and triangles. Three small geometries more a rid
   races.
 - A table of finishes keyed by colour had to become a weak one once colours were made for each rider, or every race
   would have left its riders' colours in it.
+
+## Pass 8: bike lights at night
+
+**Before** (`rider-07.mp4`): at night the bikes are unlit; a rider up the road is a dim figure between street lamps.
+
+**After** (`rider-08-start.jpg`, `rider-08.jpg`, `rider-08.mp4`): every bike carries a rear lamp on the seat post,
+below the saddle, that glows red, and throws a red pool on the wet road behind the rear wheel; a front lamp under
+the stem throws a pale pool ahead. The riders up the road are each marked by a red point and its light on the
+road. The pale pool ahead is hard to see where the street lamps already light the road. The ghost carries no light.
+By day (a course whose file is not `night`) nothing is made or drawn.
+
+**What changed.** `course-cyclist.ts`: where the course is ridden at night the kit makes one soft round glow
+texture (64 px), one additive material, and two shapes shared by every rider: the lamp's glow (a 0.3 m square
+facing back) and the road's (a red 1.3 × 2.6 m and a pale 2.2 × 6 m flat on the road, one mesh). The lamp's glow
+rides in the rig with the bike; the road's is in the rider's group and turned back by the rider's lean each pose, so
+it stays flat on the road through a bend. Two small dark lamp bodies are in the bike's mesh.
+
+**Cost.** Two draw calls a rider (84 for a pack of five, from 74) and the pools' overdraw: 294 fps against 312.
+Display pace 119.8 fps. One timing of four had two frames of 25 ms (at 6.0 s and 9.5 s); the filmed run and two
+others had none. Since pass 6, 3 timings of 19 have had such a frame and 16 none, against none of 8 for pass 5:
+not enough to lay at a pass's door, and nothing in passes 6 to 8 allocates in a frame, but it is on the record.
+
+**Tried and dropped.**
+
+- The lamp on top of the seat post: it was inside the rider's seat and showed on nobody's bike but the far ones.
+- A double-sided glow: a transparent double-sided mesh is drawn twice. Each plane faces the one way it is seen.
+
+**Learned.**
+
+- At night a rider is found by their light before their shape: a point of red and its pool on the road say
+  "rider" at two hundred metres, where five pixels of jersey do not.
+- What lies on the road must not lean with the rider: it is the one part that takes the lean back out.

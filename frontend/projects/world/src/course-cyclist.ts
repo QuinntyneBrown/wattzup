@@ -8,6 +8,7 @@
 // (rider-batch.ts). The bike points along -z, as the cyclist kit's.
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {
+  AdditiveBlending,
   BufferAttribute,
   BufferGeometry,
   CanvasTexture,
@@ -413,13 +414,38 @@ export class CourseCyclistKit {
     side: DoubleSide,
   });
   private readonly bibPlane = new PlaneGeometry(0.2, 0.15);
+  // The bikes' lights, where the course is ridden at night: the glow of the rear lamp, and the pools the rear and
+  // front lamps throw on the road.
+  private readonly glowTexture: CanvasTexture | null = null;
+  private readonly glow: MeshBasicMaterial | null = null;
+  private readonly lampGlow: BufferGeometry | null = null;
+  private readonly roadGlow: BufferGeometry | null = null;
 
-  /** `plain` draws everything coloured by vertex: the renderer's own material for the riders. */
-  constructor(private readonly plain: Material) {}
+  /**
+   * `plain` draws everything coloured by vertex: the renderer's own material for the riders. With `lights` the bikes
+   * carry lights that are on: a course ridden at night.
+   */
+  constructor(
+    private readonly plain: Material,
+    lights = false,
+  ) {
+    if (!lights) return;
+    this.glowTexture = glowTexture();
+    this.glow = new MeshBasicMaterial({
+      map: this.glowTexture,
+      vertexColors: true,
+      blending: AdditiveBlending,
+      transparent: true,
+      depthWrite: false,
+      fog: false,
+    });
+    this.lampGlow = lampGlowShape();
+    this.roadGlow = roadGlowShape();
+  }
 
-  /** A rider in `jersey`, race `number` pinned to their back. */
-  make(jersey: Color, number: number): RiderModel {
-    return new CourseCyclist(this, this.plain, jersey, number);
+  /** A rider in `jersey`, race `number` pinned to their back; `lit` false leaves their bike's lights off. */
+  make(jersey: Color, number: number, lit = true): RiderModel {
+    return new CourseCyclist(this, this.plain, jersey, number, lit);
   }
 
   /** The shared shapes a rider is put together from. */
@@ -430,6 +456,9 @@ export class CourseCyclistKit {
       spokeDisc: this.spokeDisc,
       spokes: this.spokes,
       bibPlane: this.bibPlane,
+      glow: this.glow,
+      lampGlow: this.lampGlow,
+      roadGlow: this.roadGlow,
     };
   }
 
@@ -441,8 +470,12 @@ export class CourseCyclistKit {
       this.spokeTexture,
       this.spokes,
       this.bibPlane,
+      this.glowTexture,
+      this.glow,
+      this.lampGlow,
+      this.roadGlow,
     ]) {
-      d.dispose();
+      d?.dispose();
     }
   }
 }
@@ -467,11 +500,13 @@ class CourseCyclist implements RiderModel {
   private readonly ankle = new Vector3();
   private readonly hip = new Vector3();
   private readonly rise = new Quaternion();
+  /** The pools the bike's lights throw on the road, at night. */
+  private road: Mesh | null = null;
   private readonly knee = new Vector3();
   private readonly from = new Vector3();
   private readonly to = new Vector3();
 
-  constructor(kit: CourseCyclistKit, plain: Material, jersey: Color, number: number) {
+  constructor(kit: CourseCyclistKit, plain: Material, jersey: Color, number: number, lit: boolean) {
     const shapes = kit.shapes();
     const look = riderLook(number);
     const colours = palette(look);
@@ -514,6 +549,13 @@ class CourseCyclist implements RiderModel {
     this.torso.add(bib);
     this.owned.push(cloth, cloth.map!);
 
+    // The bike's lights: the rear lamp's glow rides with the bike; the pools of light lie on the road, so they
+    // are kept level when the rider leans.
+    if (lit && shapes.glow && shapes.lampGlow && shapes.roadGlow) {
+      this.rig.add(new Mesh(shapes.lampGlow, shapes.glow));
+      this.road = new Mesh(shapes.roadGlow, shapes.glow);
+      this.group.add(this.road);
+    }
     // The legs are the rider's own: their skin, their socks, their shoes.
     const thigh = thighShape(colours);
     const shin = shinShape(colours);
@@ -545,6 +587,8 @@ class CourseCyclist implements RiderModel {
     // sway the other way over it, about the line from the hips to the hands, and the back rises and falls a touch
     // twice a turn.
     const stroke = Math.sin(angle);
+    // The renderer has leant the rider into the bend; the light on the road stays flat on it.
+    if (this.road) this.road.rotation.z = -this.group.rotation.z;
     // Out of the saddle the bike is thrown from side to side under the rider, who stays over it.
     this.rig.rotation.z = stroke * (0.03 + 0.05 * standing);
     // Standing, the rider turns about their hands on the hoods: the hips lift off the saddle and the shoulders
@@ -708,6 +752,23 @@ function bike(look: Palette): BufferGeometry[] {
     4,
   );
   stick(new Vector3(0.052, BB.y - 0.097, BB.z), cage.clone().setX(0.05), 0.004, 0.004, STEEL, 4);
+  // The lamps: one on the seat post facing back, one under the stem facing ahead.
+  stick(
+    REAR_LAMP.clone().add(new Vector3(0, -0.02, -0.02)),
+    REAR_LAMP.clone().add(new Vector3(0, 0.02, -0.005)),
+    0.016,
+    0.016,
+    SOLE,
+    6,
+  );
+  stick(
+    BAR.clone().add(new Vector3(0, -0.03, -0.01)),
+    BAR.clone().add(new Vector3(0, -0.03, -0.07)),
+    0.016,
+    0.02,
+    SOLE,
+    6,
+  );
   // A bottle in its cage on the down tube.
   const down = HEAD_BOTTOM.clone().sub(BB).normalize();
   const foot = BB.clone()
@@ -980,6 +1041,77 @@ function kitTexture(jersey: Color): CanvasTexture {
   texture.colorSpace = SRGBColorSpace;
   texture.anisotropy = 4;
   return texture;
+}
+
+/** A soft round glow, bright at its middle, for a lamp and for the light it throws. */
+function glowTexture(): CanvasTexture {
+  const size = 64;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    const fade = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+    fade.addColorStop(0, '#ffffff');
+    fade.addColorStop(0.18, '#9a9a9a');
+    fade.addColorStop(0.5, '#2a2a2a');
+    fade.addColorStop(1, '#000000');
+    ctx.fillStyle = fade;
+    ctx.fillRect(0, 0, size, size);
+  }
+  const texture = new CanvasTexture(canvas);
+  texture.colorSpace = SRGBColorSpace;
+  return texture;
+}
+
+/** A flat piece of glow of one colour: a plane with its UV, coloured by vertex. */
+function glowPlane(width: number, height: number, colour: Color, matrix: Matrix4): BufferGeometry {
+  const plane = new PlaneGeometry(width, height);
+  const geometry = plane.toNonIndexed();
+  plane.dispose();
+  geometry.deleteAttribute('normal');
+  const count = geometry.getAttribute('position').count;
+  const colours = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) colours.set([colour.r, colour.g, colour.b], i * 3);
+  geometry.setAttribute('color', new BufferAttribute(colours, 3));
+  geometry.applyMatrix4(matrix);
+  return geometry;
+}
+
+/** Where the rear lamp is: on the seat post below the saddle, clear of the rider's seat. */
+const REAR_LAMP = new Vector3(0, SEAT.y + 0.03, SEAT.z + 0.045);
+const REAR_LIGHT = new Color(1, 0.06, 0.04);
+const FRONT_LIGHT = new Color(1, 0.95, 0.82);
+
+/** The rear lamp's glow, on the seat post, facing back. */
+function lampGlowShape(): BufferGeometry {
+  return glowPlane(
+    0.3,
+    0.3,
+    REAR_LIGHT,
+    new Matrix4().setPosition(REAR_LAMP.x, REAR_LAMP.y, REAR_LAMP.z + 0.03),
+  );
+}
+
+/** The light the lamps throw on the road: a red pool behind the rear wheel, a pale one ahead of the front. */
+function roadGlowShape(): BufferGeometry {
+  const flat = new Matrix4().makeRotationX(-Math.PI / 2);
+  const rear = glowPlane(
+    1.3,
+    2.6,
+    REAR_LIGHT.clone().multiplyScalar(0.3),
+    flat.clone().setPosition(0, 0.03, 1.7),
+  );
+  const front = glowPlane(
+    2.2,
+    6,
+    FRONT_LIGHT.clone().multiplyScalar(0.22),
+    flat.clone().setPosition(0, 0.03, -3.6),
+  );
+  const both = mergeGeometries([rear, front], false)!;
+  rear.dispose();
+  front.dispose();
+  return both;
 }
 
 /** A race number: black digits on white cloth, with a safety pin at each corner. */

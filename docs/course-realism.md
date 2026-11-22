@@ -655,6 +655,22 @@ race) can pass its own lists; a real rider's chosen look would replace the numbe
 **Watch for.** Lists whose lengths share a factor with their pace: the picks repeat early. A scale on the rider
 alone leaves a tall rider on a small bike; scale the rig.
 
+### R7. Bike lights and their light on the road (riders pass 8)
+
+**What it gives.** On a night map, every rider marked by a red rear lamp and its pool of light on the road.
+
+**How it works.** `course-cyclist.ts`: `CourseCyclistKit(plain, lights)` with `lights` true makes a glow texture,
+an additive material and two shared shapes (`lampGlowShape`, `roadGlowShape`); each rider gets a mesh of each. The
+renderer passes `file.night === true`.
+
+**To apply it.** A map gets it by being `night` in its theme (technique 17). Dusk and tunnel maps could pass it too.
+The pools' sizes and strengths are in `roadGlowShape`; on a dry map make the pools shorter and fainter.
+
+**Cost.** Two draw calls a rider and some overdraw; about 5 % of a frame for a pack of five.
+
+**Watch for.** A lamp buried in the rider (it goes below the saddle). Double-sided transparent meshes (drawn twice).
+The road's glow leaning with the rider.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.

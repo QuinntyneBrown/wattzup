@@ -554,7 +554,8 @@ export class CourseRenderer implements WorldRenderer {
     this.scene.add(fill, this.sun, this.sun.target);
     this.disposables.push(fill, this.sun);
 
-    const kit = new CourseCyclistKit(this.plain);
+    // At night the bikes' lights are on.
+    const kit = new CourseCyclistKit(this.plain, this.course!.file.night === true);
     this.kit = kit;
     // The rider wears the You jersey of the race board (L2-060).
     const you = kit.make(jerseyColour(canvas, 'you'), 4);
@@ -702,7 +703,8 @@ export class CourseRenderer implements WorldRenderer {
     if (made) return made;
     if (!this.kit || !this.canvas) return null;
     const colour = jerseyColour(this.canvas, jersey);
-    const cyclist = this.kit.make(colour, this.riders.size + 1);
+    // The ghost is a figure of glass: it carries no light.
+    const cyclist = this.kit.make(colour, this.riders.size + 1, jersey !== 'ghost');
     this.disposables.push(...cyclist.owned);
     if (jersey === 'ghost') {
       const glass = new MeshStandardMaterial({
