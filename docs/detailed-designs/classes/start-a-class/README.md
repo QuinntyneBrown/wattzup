@@ -176,6 +176,10 @@ Riding alone needs no request: the page navigates to the class ride in solo mode
 
 ## Open questions
 
+- **The chosen way to ride.** No requirement says which option is chosen when Class Start opens.
+  The `default` mock has the group chosen and `solo` has alone; slice 14.2 chooses the group
+  while a session can be joined and alone otherwise, and a rider's own choice stays for the visit.
+
 - **HIIT's offset and work level.** Slice 6.1 took 30 Minute HIIT Cardio's sync offset (3 s)
   and work level (18) from `main`. The specs give 0:12.0 (`L2-080`, `L2-084`, `L2-088`) and the
   GCN ladder's work level 24 (`L2-096`), which yields the ~154 W of `L2-084` AC2; slice 6.3 set the
