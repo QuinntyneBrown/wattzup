@@ -16,6 +16,11 @@
   min-width: 0;
 }
 
+// The notice above the level, as when a ride was too short to save (L2-108 AC3): its place in the column only.
+.profile__notice {
+  margin-bottom: var(--space-6);
+}
+
 // Block settings: the aside's title and its ruled list of rows.
 .settings__title {
   font-size: var(--font-size-sm);

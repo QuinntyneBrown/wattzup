@@ -125,6 +125,7 @@ export { HttpRidesApi } from './rides/http-rides-api';
 export {
   RIDES_API,
   type ClassRideFacts,
+  type CustomRideFacts,
   type MapStarsDto,
   type PersonalBestDto,
   type RaceRideFacts,

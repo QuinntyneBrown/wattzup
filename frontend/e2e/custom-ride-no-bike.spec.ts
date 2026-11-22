@@ -34,6 +34,7 @@ test('with no bike the ride waits for Connect bike and Start (L2-106 AC1 to AC4)
   );
   await expect(ride.clock).toHaveText('0:00 / 30:00');
   await expect(ride.start).toBeDisabled();
+  await expect(ride.end).toBeDisabled();
   await expect(ride.power).toHaveText('—');
   await expect(ride.powerFoot).toContainText('Target 143 W');
   await expect(ride.cadence).toHaveText('—');

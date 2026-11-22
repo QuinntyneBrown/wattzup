@@ -1,9 +1,11 @@
 import { DestroyRef, Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 import {
   BIKE_CONNECTION,
   BLUETOOTH_SUPPORT,
   REMEMBERED_BIKE,
+  RIDE_OUTBOX,
   SCREEN_WAKE_LOCK,
   VIDEO_PLAYER_FACTORY,
   type VideoPlayer,
@@ -23,6 +25,7 @@ import {
   PowerModel,
   PowerTrace,
   RideClock,
+  RideRecorder,
   ResistanceController,
   RideTicker,
   RideTotals,
@@ -38,6 +41,9 @@ import {
   videoOf,
 } from '@telo/domain';
 import { CustomWorkoutStore } from '../custom-workout/custom-workout-store';
+
+/** A ride shorter than this is not worth keeping (L2-108 AC3). */
+const MIN_SAVED_SECONDS = 60;
 
 /**
  * The custom ride's state (docs/detailed-designs/custom-workout/ride-a-custom-workout), provided by the page so it goes
@@ -61,6 +67,10 @@ export class CustomRideStore {
   private readonly draft = inject(CustomWorkoutStore).draft;
   private readonly totals = inject(RideTotals);
   private readonly resistance = inject(ResistanceController);
+  private readonly outbox = inject(RIDE_OUTBOX);
+  private readonly router = inject(Router);
+  /** The ride's facts, second by second, for its submission (L2-108). */
+  private readonly recorder = new RideRecorder();
   /** The seconds recorded: the trace and the totals have moved on to it. */
   private readonly recorded = signal(0);
   private lastSecond = 0;
@@ -191,6 +201,7 @@ export class CustomRideStore {
   readonly run = computed<RideRun>(() =>
     !this.started() ? 'start' : this.pausedByRider() ? 'resume' : 'pause',
   );
+  readonly endDisabled = computed(() => !this.started());
   readonly runDisabled = computed(() =>
     this.started() ? this.bikeLost() : this.connection.ble() !== 'connected',
   );
@@ -287,6 +298,10 @@ export class CustomRideStore {
    * those of the moment.
    */
   private record(second: number): void {
+    const power = this.telemetry.powerW();
+    const target = this.target();
+    const onTarget = power !== null && target !== null && PowerModel.onTarget(power, target);
+    this.recorder.record(power, this.telemetry.speedKmh(), second - this.lastSecond, onTarget);
     for (let s = this.lastSecond; s < second; s++) this.totals.onRunningSecond();
     this.trace.record(second, this.telemetry.powerW());
     this.lastSecond = Math.max(this.lastSecond, second);
@@ -370,8 +385,22 @@ export class CustomRideStore {
     }
   }
 
-  /** The plan's end: the clock stops at its length. */
-  private end(): void {
+  /**
+   * End, the plan's end, or End with the bike lost (L2-108 AC1, AC2; L2-105 AC4): the ride stops, and with a minute or
+   * more ridden it goes to the outbox, which keeps it on the device and sends it to the backend; Profile opens. A ride
+   * under a minute is discarded, and Profile says it was too short to save (AC3).
+   */
+  end(): void {
+    if (!this.started() || this.ended()) return;
+    this.stop();
+    const facts = this.recorder.facts(new Date());
+    const tooShort = facts.elapsedSeconds < MIN_SAVED_SECONDS;
+    if (!tooShort) this.outbox.submit({ ...facts, kind: 'custom' });
+    void this.router.navigateByUrl('/profile', { state: tooShort ? { rideTooShort: true } : {} });
+  }
+
+  /** The ride stops where it is: the clock, the ticker and the video, and the screen may sleep. */
+  private stop(): void {
     this.ended.set(true);
     this.clock.pause();
     this.ticker.stop();
