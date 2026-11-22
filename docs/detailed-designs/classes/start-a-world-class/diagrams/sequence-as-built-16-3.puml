@@ -1,0 +1,49 @@
+@startuml
+title UML sequence behaviour — Start a solo world class, as built in slice 16.3
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ClassRidePage" as page
+  participant "WorldLoadStore" as store
+  participant "ClassRideSession\n(ClassRideStore)" as session
+  participant "ClassWorld" as dir
+end box
+box "Frontend — Ride app (world library, lazy chunk)" #E0F2FE
+  participant "WorldScene\n(main's, with prepared)" as scene
+  participant "WorldMusicPlayer\n(main's)" as music
+end box
+participant "BIKE_CONNECTION" as bike
+store -> page : ready (slice 16.2)
+alt No bike connected (L2-157)
+  page -> page : "No bike", "Your bike isn’t connected.", Start riding disabled
+  actor -> page : Connect bike
+  page -> bike : reconnectNow()
+  bike --> page : ble connected
+end
+page -> page : Start riding enabled and focused (L2-153 AC2)
+actor -> page : Start riding
+page -> store : ride()
+store --> page : PreparedWorld { renderer, canvas }; nothing disposed
+page -> session : created with the world; clock at 0:00, first target resistance (AC3)
+session -> dir : the world's id, the prepared renderer, the ride's inputs
+dir -> scene : import('@telo/world'); createComponent(WorldScene); prepared
+scene -> scene : the prepared canvas takes the place of its own; measure the frame period
+scene -> scene : main's SceneDriver draws on main's frame loop; the canvas fades in over 200 ms
+dir -> music : load(world); sync(the ride runs and no video plays)
+actor -> page : Leave class
+dir -> scene : destroyed: renderer disposed
+dir -> music : destroy()
+@enduml
