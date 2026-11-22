@@ -1,3 +1,5 @@
+@use '../../styles/page';
+
 // Block world-loading (docs/design-system/assets/components.css, World loading): the slim class header over the
 // world's panorama, the class on the left and the load card (26 rem) on the right from lg, stacked below. It never
 // scrolls sideways; below lg the body scrolls under the header (L2-151 AC4).
