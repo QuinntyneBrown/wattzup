@@ -27,6 +27,7 @@ public sealed class InputValidationTests(SignedInProbeApi api) : IClassFixture<S
         Assert.True(problem.GetProperty("errors").GetProperty(field).GetArrayLength() > 0, body);
         Assert.DoesNotContain("System.", body);
         Assert.DoesNotContain("Telo.Ride", body);
+        Assert.Equal(JsonValueKind.String, problem.GetProperty("traceId").ValueKind);
         return problem;
     }
 

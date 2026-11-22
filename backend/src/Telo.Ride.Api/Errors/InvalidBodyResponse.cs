@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Telo.Ride.Api.Errors;
 
@@ -16,16 +18,16 @@ internal static class InvalidBodyResponse
             var fields = context.ModelState.Where(entry => entry.Value?.Errors.Count > 0).Select(entry => entry.Key).ToList();
             // The bound parameter itself ("request") fails only because a field in it did; name the field instead.
             var named = fields.Where(key => !parameters.Contains(key)).ToList();
-            var errors = (named.Count > 0 ? named : fields)
-                .Select(Field)
-                .Distinct()
-                .ToDictionary(field => field, field => new[] { field == Body ? "The body is not valid JSON." : "This field has the wrong type." });
-            var problem = new ValidationProblemDetails(errors)
+            var errors = new ModelStateDictionary();
+            foreach (var field in (named.Count > 0 ? named : fields).Select(Field).Distinct())
             {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Check what you entered.",
-                Extensions = { ["code"] = "validation_failed" },
-            };
+                errors.AddModelError(field, field == Body ? "The body is not valid JSON." : "This field has the wrong type.");
+            }
+
+            // The factory gives it the type, trace id and counting every other refusal has.
+            var problem = context.HttpContext.RequestServices.GetRequiredService<ProblemDetailsFactory>().CreateValidationProblemDetails(
+                context.HttpContext, errors, StatusCodes.Status400BadRequest, "Check what you entered.");
+            problem.Extensions["code"] = "validation_failed";
             return new BadRequestObjectResult(problem) { ContentTypes = { "application/problem+json" } };
         });
 
