@@ -107,7 +107,6 @@ public sealed class GroupSessionJoinTests(GroupSessionJoinApi api) : IClassFixtu
     [InlineData("no-such-class", "no-such-class@20261121T1945Z")]
     [InlineData("hiit-cardio-30", "hiit-cardio-30@20261121T1946Z")]
     [InlineData("hiit-cardio-30", "power-intervals-20@20261121T1945Z")]
-    [InlineData("hiit-cardio-30", "hiit-cardio-30")]
     public async Task A_session_the_schedule_does_not_hold_refuses_with_session_not_found(string classId, string sessionId)
     {
         var (rider, _) = await Rider("ana");

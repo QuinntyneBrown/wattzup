@@ -21,23 +21,35 @@ package "Telo.Ride.Application" {
   class "AbstractValidator<T>" as AV
   class SubmitRideCommandValidator
   class ReportProgressCommandValidator
+  class "Get/Join/Find/Set/Leave…Validator" as Ids
+  class InputRules <<static>> {
+    +CatalogueId(): 1-64 of a-z 0-9 -
+    +SessionId(): id@yyyyMMddTHHmm[ss]Z, at most 96
+    +Power(): 0 to 2,000 W
+    +NotNegative(): finite, 0 or more
+  }
   class RequestValidationException {
     +IReadOnlyList<FieldError> Errors
   }
   class FieldError {
     +string Field
-    +string Code
     +string Message
   }
 }
 AV <|-- SubmitRideCommandValidator
 AV <|-- ReportProgressCommandValidator
+AV <|-- Ids
+ReportProgressCommandValidator ..> InputRules : uses
+Ids ..> InputRules : uses
 VB --> AV : runs
 VB ..> RequestValidationException : throws
 RequestValidationException "1" *-- "*" FieldError
 package "Telo.Ride.Api" {
   class ProblemDetailsExceptionHandler {
     +TryHandleAsync(context, exception, ct): ValueTask<bool>
+  }
+  class InvalidBodyResponse <<ApiBehaviorOptions>> {
+    +InvalidModelStateResponseFactory: 400 validation_failed, errors by field
   }
   class ValidationHubFilter {
     +InvokeMethodAsync(context, next): ValueTask<object?>

@@ -22,6 +22,17 @@ const noBluetooth = {
   ],
 };
 
+/** Text from a rider, a bike or Bluetooth is data, never markup (L2-129 AC2): nothing turns Angular's sanitising off. */
+const noBypass = {
+  'no-restricted-syntax': [
+    'error',
+    {
+      selector: 'CallExpression[callee.property.name=/^bypassSecurityTrust/]',
+      message: "Never bypass Angular's sanitiser: render text with interpolation (L2-129 AC2).",
+    },
+  ],
+};
+
 module.exports = defineConfig([
   {
     files: ['**/*.ts'],
@@ -48,6 +59,7 @@ module.exports = defineConfig([
       '@angular-eslint/use-component-view-encapsulation': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
       ...noBluetooth,
+      ...noBypass,
     },
   },
   // Dependency direction (AGENTS.md, L2-146 AC2): ride -> components, api, domain, video, world; domain -> api;
@@ -212,6 +224,14 @@ module.exports = defineConfig([
     extends: [angular.configs.templateRecommended, angular.configs.templateAccessibility],
     rules: {
       '@angular-eslint/template/no-inline-styles': 'error',
+      // Untrusted text is rendered as text (L2-129 AC2): a template never binds markup.
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'BoundAttribute[name=/^(innerHTML|outerHTML)$/]',
+          message: 'Bind text with interpolation, never [innerHTML] or [outerHTML] (L2-129 AC2).',
+        },
+      ],
     },
   },
 ]);

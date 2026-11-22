@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.SignalR;
 using Telo.Ride.Api.Authentication;
 using Telo.Ride.Api.Commands;
 using Telo.Ride.Api.Errors;
@@ -19,8 +20,8 @@ builder.Services.AddProblemDetails(options => options.CustomizeProblemDetails = 
         context.ProblemDetails.Extensions.TryGetValue("code", out var code) ? code?.ToString() ?? "none" : "none",
         context.ProblemDetails.Status ?? context.HttpContext.Response.StatusCode));
 builder.Services.AddExceptionHandler<ProblemDetailsExceptionHandler>();
-builder.Services.AddControllers();
-builder.Services.AddSignalR();
+builder.Services.AddControllers().AnswerInvalidBodies();
+builder.Services.AddSignalR(options => options.AddFilter<ValidationHubFilter>());
 builder.Services.AddSingleton<ISessionNotifier, RideHubNotifier>();
 builder.Services.AddAppHosting();
 builder.Services.AddTransportSecurity();
