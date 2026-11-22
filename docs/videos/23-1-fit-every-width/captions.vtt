@@ -1,0 +1,61 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.728
+A rider might open Telo Ride on a small phone, or on a big screen across the room.
+
+00:00:07.728 --> 00:00:09.848
+Every screen has to fit both.
+
+00:00:10.324 --> 00:00:15.273
+At three hundred and twenty pixels, the narrowest, every screen now fits: nothing
+
+00:00:15.273 --> 00:00:16.612
+scrolls sideways.
+
+00:00:23.228 --> 00:00:28.427
+One didn't. The custom ride's clock, Pause and End ran five pixels past the edge.
+
+00:00:28.427 --> 00:00:30.652
+Now End wraps under the clock.
+
+00:00:36.133 --> 00:00:41.378
+The page margin is sixteen pixels on a phone, twenty-four from small and thirty-two
+
+00:00:41.378 --> 00:00:44.774
+from large; content stops at eighty rem, centred.
+
+00:00:49.038 --> 00:00:53.859
+At twenty-five sixty, the widest, Home sits in the middle, no wider than it reads
+
+00:00:53.859 --> 00:00:54.457
+well.
+
+00:00:59.361 --> 00:01:04.397
+Fifteen screens are opened at both ends of the range on every run. The sweep through
+
+00:01:04.397 --> 00:01:07.755
+every breakpoint between waits until a person asks.
+
+00:01:12.266 --> 00:01:15.185
+The custom ride, from a phone to the full screen.
+
+00:01:22.590 --> 00:01:27.193
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:27.538 --> 00:01:32.050
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:32.050 --> 00:01:33.721
+every hill and interval.
+
+00:01:34.066 --> 00:01:39.244
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:39.244 --> 00:01:44.692
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:44.692 --> 00:01:47.682
+XP, rider levels, stars and map unlocks.
+
+00:01:48.027 --> 00:01:50.520
+A custom workout lives under Profile.

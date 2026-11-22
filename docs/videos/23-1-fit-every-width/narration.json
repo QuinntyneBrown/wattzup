@@ -1,0 +1,78 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "A rider might open Telo Ride on a small phone, or on a big screen across the room. Every screen has to fit both."
+      ]
+    },
+    {
+      "id": "narrow",
+      "bars": 5,
+      "lines": [
+        "At three hundred and twenty pixels, the narrowest, every screen now fits: nothing scrolls sideways."
+      ]
+    },
+    {
+      "id": "found",
+      "bars": 5,
+      "lines": [
+        "One didn't. The custom ride's clock, Pause and End ran five pixels past the edge. Now End wraps under the clock."
+      ]
+    },
+    {
+      "id": "margins",
+      "bars": 5,
+      "lines": [
+        "The page margin is sixteen pixels on a phone, twenty-four from small and thirty-two from large; content stops at eighty rem, centred."
+      ]
+    },
+    {
+      "id": "wide",
+      "bars": 4,
+      "lines": [
+        "At twenty-five sixty, the widest, Home sits in the middle, no wider than it reads well."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 5,
+      "lines": [
+        "Fifteen screens are opened at both ends of the range on every run. The sweep through every breakpoint between waits until a person asks."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 4,
+      "lines": [
+        "The custom ride, from a phone to the full screen."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}
