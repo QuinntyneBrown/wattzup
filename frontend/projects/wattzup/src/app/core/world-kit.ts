@@ -1855,15 +1855,63 @@ function sliceNonIndexed(ni: BufferGeometry, start: number, count: number): Buff
   return out;
 }
 
+export function tintGeometry(geometry: BufferGeometry, colour: string | number): BufferGeometry {
+  const c = new Color(colour);
+  const pos = geometry.getAttribute('position');
+  const existing = geometry.getAttribute('color') as BufferAttribute | undefined;
+  if (existing) {
+    const arr = existing.array as Float32Array;
+    for (let i = 0; i < pos.count; i++) {
+      const o = i * 3;
+      arr[o] = arr[o]! * c.r;
+      arr[o + 1] = arr[o + 1]! * c.g;
+      arr[o + 2] = arr[o + 2]! * c.b;
+    }
+    existing.needsUpdate = true;
+    return geometry;
+  }
+  const paint = new Float32Array(pos.count * 3);
+  for (let i = 0; i < pos.count; i++) {
+    const o = i * 3;
+    paint[o] = c.r;
+    paint[o + 1] = c.g;
+    paint[o + 2] = c.b;
+  }
+  geometry.setAttribute('color', new BufferAttribute(paint, 3));
+  return geometry;
+}
+
+function canFoldIntoSolid(m: Material, solid: MeshStandardMaterial): m is MeshStandardMaterial {
+  return (
+    m instanceof MeshStandardMaterial &&
+    !m.map &&
+    !m.alphaMap &&
+    !m.emissiveMap &&
+    !m.transparent &&
+    m.opacity === 1 &&
+    m.alphaTest === 0 &&
+    !m.flatShading &&
+    m.emissive.r === 0 &&
+    m.emissive.g === 0 &&
+    m.emissive.b === 0 &&
+    m.side === solid.side &&
+    m.fog === solid.fog
+  );
+}
+
 /**
  * Collapses static `Mesh` descendants of `root` that share the same `Material`, attribute layout
  * and shadow flags into single merged `Mesh`es directly under `root`, splitting multi-material
  * boxes by face material and leaving `InstancedMesh`es and any subtree in `skip` untouched.
+ * When `sharedSolidMaterial` (`vertexColors: true`) is supplied, opaque non-textured non-emissive
+ * `MeshStandardMaterial` pieces bake their material colour into vertex colours and fold into a
+ * single merged `Mesh` on `sharedSolidMaterial`.
  */
 export function mergeStaticGroup(
   root: Group,
   disposables: { dispose(): void }[],
   skip?: ReadonlySet<Object3D>,
+  sharedSolidMaterial?: MeshStandardMaterial,
 ): void {
   root.updateMatrixWorld(true);
   const rootInverse = root.matrixWorld.clone().invert();
@@ -1873,9 +1921,11 @@ export function mergeStaticGroup(
     fromMulti: boolean;
     groupStart?: number;
     groupCount?: number;
+    solidColor?: Color;
   }
   interface Bucket {
     material: Material;
+    isSolidFold: boolean;
     castShadow: boolean;
     receiveShadow: boolean;
     frustumCulled: boolean;
@@ -1891,6 +1941,43 @@ export function mergeStaticGroup(
     }
     return id;
   };
+  const pushPiece = (node: Mesh, m: Material, attrSig: string, piece: Piece) => {
+    if (sharedSolidMaterial && canFoldIntoSolid(m, sharedSolidMaterial)) {
+      piece.solidColor = m.color;
+      const key = `solid|${node.frustumCulled ? 1 : 0}`;
+      let b = buckets.get(key);
+      if (!b) {
+        b = {
+          material: sharedSolidMaterial,
+          isSolidFold: true,
+          castShadow: node.castShadow,
+          receiveShadow: node.receiveShadow,
+          frustumCulled: node.frustumCulled,
+          pieces: [],
+        };
+        buckets.set(key, b);
+      } else {
+        b.castShadow = b.castShadow || node.castShadow;
+        b.receiveShadow = b.receiveShadow || node.receiveShadow;
+      }
+      b.pieces.push(piece);
+      return;
+    }
+    const key = `${matId(m)}|${attrSig}|${node.castShadow ? 1 : 0}|${node.receiveShadow ? 1 : 0}|${node.frustumCulled ? 1 : 0}`;
+    let b = buckets.get(key);
+    if (!b) {
+      b = {
+        material: m,
+        isSolidFold: false,
+        castShadow: node.castShadow,
+        receiveShadow: node.receiveShadow,
+        frustumCulled: node.frustumCulled,
+        pieces: [],
+      };
+      buckets.set(key, b);
+    }
+    b.pieces.push(piece);
+  };
   const visit = (node: Object3D) => {
     if (skip?.has(node) || node instanceof InstancedMesh) return;
     if (node instanceof Mesh) {
@@ -1901,19 +1988,7 @@ export function mergeStaticGroup(
           for (const grp of g.groups) {
             const m = node.material[grp.materialIndex ?? 0];
             if (!m || grp.count <= 0) continue;
-            const key = `${matId(m)}|${attrSig}|${node.castShadow ? 1 : 0}|${node.receiveShadow ? 1 : 0}|${node.frustumCulled ? 1 : 0}`;
-            let b = buckets.get(key);
-            if (!b) {
-              b = {
-                material: m,
-                castShadow: node.castShadow,
-                receiveShadow: node.receiveShadow,
-                frustumCulled: node.frustumCulled,
-                pieces: [],
-              };
-              buckets.set(key, b);
-            }
-            b.pieces.push({
+            pushPiece(node, m, attrSig, {
               mesh: node,
               fromMulti: true,
               groupStart: grp.start,
@@ -1922,20 +1997,7 @@ export function mergeStaticGroup(
           }
         }
       } else {
-        const m = node.material;
-        const key = `${matId(m)}|${attrSig}|${node.castShadow ? 1 : 0}|${node.receiveShadow ? 1 : 0}|${node.frustumCulled ? 1 : 0}`;
-        let b = buckets.get(key);
-        if (!b) {
-          b = {
-            material: m,
-            castShadow: node.castShadow,
-            receiveShadow: node.receiveShadow,
-            frustumCulled: node.frustumCulled,
-            pieces: [],
-          };
-          buckets.set(key, b);
-        }
-        b.pieces.push({ mesh: node, fromMulti: false });
+        pushPiece(node, node.material, attrSig, { mesh: node, fromMulti: false });
       }
     }
     for (const child of node.children) visit(child);
@@ -1944,25 +2006,32 @@ export function mergeStaticGroup(
 
   const consumed = new Set<Mesh>();
   for (const bucket of buckets.values()) {
-    if (bucket.pieces.length <= 1 && !bucket.pieces[0]?.fromMulti) continue;
+    if (!bucket.isSolidFold && bucket.pieces.length <= 1 && !bucket.pieces[0]?.fromMulti) continue;
     const parts: BufferGeometry[] = [];
     for (const piece of bucket.pieces) {
       const src = piece.mesh.geometry as BufferGeometry;
       rel.multiplyMatrices(rootInverse, piece.mesh.matrixWorld);
       const neg = rel.determinant() < 0;
+      let part: BufferGeometry;
       if (piece.fromMulti) {
         const ni = src.index ? src.toNonIndexed() : src;
-        const part = sliceNonIndexed(ni, piece.groupStart!, piece.groupCount!);
+        part = sliceNonIndexed(ni, piece.groupStart!, piece.groupCount!);
         if (ni !== src) ni.dispose();
-        part.applyMatrix4(rel);
-        if (neg) flipTriangleWinding(part);
-        parts.push(part);
       } else {
-        const part = src.index ? src.toNonIndexed() : src.clone();
-        part.applyMatrix4(rel);
-        if (neg) flipTriangleWinding(part);
-        parts.push(part);
+        part = src.index ? src.toNonIndexed() : src.clone();
       }
+      part.applyMatrix4(rel);
+      if (neg) flipTriangleWinding(part);
+      if (bucket.isSolidFold && piece.solidColor) {
+        for (const attrName of Object.keys(part.attributes)) {
+          if (attrName !== 'position' && attrName !== 'normal' && attrName !== 'color') {
+            part.deleteAttribute(attrName);
+          }
+        }
+        if (!part.getAttribute('normal')) part.computeVertexNormals();
+        tintGeometry(part, piece.solidColor.getHex());
+      }
+      parts.push(part);
       consumed.add(piece.mesh);
     }
     const merged = mergeGeometries(parts);
