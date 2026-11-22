@@ -53,18 +53,21 @@ describe('CyclistKit rigid bike and body sub-assemblies', () => {
     const bodyMeshes = bodyGroup.children.filter((c): c is Mesh => (c as Mesh).isMesh);
     const bodyWithMaterial = (m: unknown) => bodyMeshes.filter((mesh) => mesh.material === m);
 
-    expect(bodyWithMaterial(cyclist.jersey)).toHaveLength(1);
+    expect(bodyWithMaterial(kit.apparel)).toHaveLength(1);
     expect(bodyWithMaterial(kit.solid)).toHaveLength(1);
-    expect(bodyMeshes).toHaveLength(4);
+    expect(bodyMeshes).toHaveLength(2);
 
     let totalMeshes = 0;
     cyclist.group.traverse((o) => {
       if ((o as Mesh).isMesh) totalMeshes++;
     });
-    expect(totalMeshes).toBeLessThanOrEqual(17);
+    expect(totalMeshes).toBeLessThanOrEqual(15);
 
-    const other = kit.make(new Color(0x3a9ad9), 2, frame);
-    expect(other.bib).toBe(cyclist.bib);
+    const other = kit.make(new Color(0x3a9ad9), 2, frame, {
+      helmetColor: 0xf2f2ee,
+      frameColor: 0xb3262c,
+    });
+    expect(other.apparel).toBe(cyclist.apparel);
 
     const cloneSpy = vi.spyOn(Vector3.prototype, 'clone');
     cyclist.pose(1.1, -0.08, 0.5);
