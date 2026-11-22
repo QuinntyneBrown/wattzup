@@ -26,6 +26,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 15 | Shoes, hands and arms: a cupped heel with a tab, a strap and toe cap; a hand that holds the hood; arms with their muscles | 120.0 fps, 0 over 20 ms | 16.7 ms | 303 fps (3.30 ms): 291, 307, 303 | 90,791 | 84 | Yes |
 | 16 | Lamp light with a side: what faces the nearest lamp is lit more, what faces away less | 119.7 fps, 0 over 20 ms | 16.8 ms | 296 fps (3.37 ms): 296, 301, 293 | 90,791 | 84 | Yes |
 | 17 | Wheels that turn: deep rims with decals and laced spokes, rolling with the road | 120.1 fps, 0 over 20 ms | 8.7 ms | 305 fps (3.28 ms): 300, 305, 307 | 90,871 | 84 | Yes |
+| 18 | Muscle drawn on the legs' skin: the calf's two heads and the groove between, the Achilles tendon, the hollow behind the knee | 119.7 fps, 0 over 20 ms | 16.8 ms | 301 fps (3.32 ms): 303, 301, 299 | 96,711 | 84 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -622,3 +623,25 @@ from behind a wheel is seen edge on and this shows little.
 creep, as on film. The decals, two to a wheel, read truly.
 
 **Learned.** Something that turns needs a mark on it. Twenty-four alike spokes show no turning; two decals do.
+
+## Pass 18: muscle drawn on the legs
+
+**Regression check first.** The whole end-to-end suite after pass 17: 198 passed, 13 failed, the same 13 that failed
+before the riders' work (two of `race-course`, eleven of `race-world-*`).
+
+**Before** (`rider-17.mp4`, `rider-15-start.jpg`): the calves have a calf's outline (pass 13) but their skin is one
+flat colour, so from behind, where they fill a good part of the picture, they read as smooth tubes.
+
+**After** (`rider-18-legs.jpg`, the legs enlarged at the start line and on the bridge; `rider-18.jpg`,
+`rider-18.mp4`): the calf has a groove down its back between two heads that catch the light, the hollow behind the
+knee is in shade with a tendon either side, the Achilles tendon stands pale above the heel with a hollow each side,
+and the shin's front is a touch lighter. It moves with the leg, being the leg's own colours.
+
+**What changed.** `course-cyclist.ts`: a rider's palette gains `skinShade` (their skin × 0.74) and `skinLight`
+(their skin 14 % towards white); `shinShape` and the bare part of `thighShape` choose among the three by `t` and
+`round`, and are 20 round where they were 12 and 14, so the bands are a vertex wide and blend into the skin.
+
+**Cost.** A few hundred triangles for the pack. No texture, no draw call.
+
+**Learned.** Muscle is light and shade before it is shape. Three tones of a skin, placed where the anatomy puts
+them, did more for the calf than its outline had.

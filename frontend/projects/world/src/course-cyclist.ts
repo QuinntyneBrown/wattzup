@@ -136,6 +136,9 @@ interface Palette {
   readonly frame: Color;
   readonly shoe: Color;
   readonly sock: Color;
+  /** The skin where it lies in a hollow, and where it is drawn tight over a muscle or a tendon. */
+  readonly skinShade: Color;
+  readonly skinLight: Color;
 }
 function palette(look: RiderLook): Palette {
   const as = (hex: number, part: Color): Color => {
@@ -149,6 +152,8 @@ function palette(look: RiderLook): Palette {
     frame: as(look.frame, FRAME),
     shoe: as(look.shoe, SHOE),
     sock: as(look.sock, SOCK),
+    skinShade: as(new Color(look.skin).multiplyScalar(0.74).getHex(), SKIN),
+    skinLight: as(new Color(look.skin).lerp(new Color(0xffffff), 0.14).getHex(), SKIN),
   };
 }
 
@@ -365,8 +370,14 @@ const thighShape = (look: Palette) =>
       { t: 1, rx: 0.05, rz: 0.054 },
     ],
     THIGH,
-    (t) => (t < 0.74 ? SHORTS : t < 0.8 ? GRIPPER : look.skin),
-    14,
+    // Below the shorts the back of the knee is in shade, its two tendons either side of the hollow.
+    (t, round) => {
+      if (t < 0.74) return SHORTS;
+      if (t < 0.8) return GRIPPER;
+      const back = Math.abs(round - 0.75);
+      return back < 0.05 ? look.skinShade : back < 0.13 ? look.skinLight : look.skin;
+    },
+    20,
   );
 /** The shin, knee to ankle: the kneecap, the calf swelling behind, the thin ankle; a sock to mid-calf. */
 const shinShape = (look: Palette) =>
@@ -386,8 +397,23 @@ const shinShape = (look: Palette) =>
       { t: 1, rx: 0.036, rz: 0.04 },
     ],
     SHIN,
-    (t) => (t < 0.69 ? look.skin : look.sock),
-    12,
+    // The calf's muscles are drawn on the skin, for the eye that follows: a groove down the back between its two
+    // heads, each head catching the light, the hollow behind the knee, and the tendon standing out above the heel
+    // with a hollow either side. (Round a shin, three quarters of the way is its back.)
+    (t, round) => {
+      if (t >= 0.69) return look.sock;
+      const back = Math.abs(round - 0.75);
+      if (t < 0.08) return back < 0.12 ? look.skinShade : look.skin;
+      if (t < 0.44) {
+        if (back < 0.03) return look.skinShade;
+        if (back < 0.12 && t > 0.12 && t < 0.38) return look.skinLight;
+        return look.skin;
+      }
+      if (back < 0.03) return look.skinLight;
+      if (back < 0.12) return look.skinShade;
+      return Math.abs(round - 0.25) < 0.06 ? look.skinLight : look.skin;
+    },
+    20,
   );
 /** A road shoe, heel to toe along +y, its sole dark: laid on the pedal by its ball. */
 function shoeShape(look: Palette): BufferGeometry {
