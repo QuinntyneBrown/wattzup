@@ -78,3 +78,14 @@
 .ride-header__clock-total {
   color: var(--color-faint);
 }
+
+// Start, Pause and Resume: 48 px to press mid-ride on a phone, the control height from sm (L2-101 AC4).
+.ride-header__run {
+  height: var(--target-ride);
+}
+
+@media (min-width: 40rem) {
+  .ride-header__run {
+    height: var(--control-height-md);
+  }
+}

@@ -12,6 +12,7 @@ import {
   type RideBikeTone,
   type RideDelta,
   type RideMetric,
+  type RideRun,
   type TraceSegment,
   formatClock,
   formatMetric,
@@ -67,6 +68,8 @@ export class CustomRideStore {
   private readonly playerMissing = signal(false);
   private videoHost: HTMLElement | null = null;
   private destroyed = false;
+  /** Whether the rider paused the ride (L2-105 AC1). */
+  private readonly pausedByRider = signal(false);
 
   /** The plan as the ride started it; editing the workout leaves this ride (L2-101 AC3). */
   readonly plan = inject(CustomWorkoutStore).plan();
@@ -168,6 +171,9 @@ export class CustomRideStore {
   /** "Sent to bike", newest first, at most 50 rows (L2-029 AC1, AC3). */
   readonly sent = this.resistance.log;
 
+  /** The header's run button: Pause while the ride runs, Resume once the rider has paused it. */
+  readonly run = computed<RideRun>(() => (this.pausedByRider() ? 'resume' : 'pause'));
+
   /** The progress strip's label (L2-103 AC4). */
   readonly progressLabel = computed(
     () => `Ride progress: ${this.clockText()} of ${this.totalText}`,
@@ -248,6 +254,33 @@ export class CustomRideStore {
     this.trace.record(second, this.telemetry.powerW());
     this.lastSecond = Math.max(this.lastSecond, second);
     this.recorded.set(this.lastSecond);
+  }
+
+  /** Pause or Resume, as the run button reads. */
+  toggleRun(): void {
+    if (this.pausedByRider()) this.resume();
+    else this.pause();
+  }
+
+  /**
+   * Holds the clock, and with it the plan, the readouts' targets and the video; the resistance controls stay enabled
+   * (L2-105 AC1). A paused clock publishes no second, so the engine sends nothing (L2-027 AC3).
+   */
+  pause(): void {
+    if (this.pausedByRider()) return;
+    this.pausedByRider.set(true);
+    this.clock.pause();
+    this.player()?.pause();
+  }
+
+  /** Carries the ride on from where it held, with the video back on the clock plus its offset. */
+  resume(): void {
+    if (!this.pausedByRider()) return;
+    this.pausedByRider.set(false);
+    this.clock.resume();
+    const player = this.player();
+    player?.seekTo(this.offset + this.clock.elapsedMs() / 1000);
+    player?.play();
   }
 
   raise(): void {

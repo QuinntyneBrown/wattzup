@@ -5,6 +5,8 @@
   [bikeTone]="store.bike().tone"
   [clock]="store.clockText()"
   [total]="store.totalText"
+  [run]="store.run()"
+  (ran)="store.toggleRun()"
   [fullscreen]="fullscreen.active()"
   (fullscreenToggled)="toggleFullscreen()"
 >
