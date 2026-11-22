@@ -40,6 +40,9 @@ export class CustomWorkoutPage {
   readonly profileBars: Locator;
   readonly axis: Locator;
   readonly factNames: Locator;
+  /** Start ride, and why it is off (L2-099 AC4, L2-100 AC3). */
+  readonly startRide: Locator;
+  readonly startBlocked: Locator;
   /** The video section (L2-098). */
   readonly videoSwitch: Locator;
   readonly videoLink: Locator;
@@ -86,6 +89,8 @@ export class CustomWorkoutPage {
     this.profileBars = this.profile.locator('rect');
     this.axis = this.preview.locator('.plan-preview__axis span');
     this.factNames = this.preview.locator('.plan-preview__fact dt');
+    this.startRide = this.preview.getByRole('button', { name: 'Start ride' });
+    this.startBlocked = this.preview.locator('.plan-preview__blocked');
     this.videoSwitch = page.getByRole('switch', { name: /Ride along to a video/ });
     this.videoLink = page.getByRole('textbox', { name: 'YouTube link' });
     this.videoLinkError = page.locator('.video-sync__error');

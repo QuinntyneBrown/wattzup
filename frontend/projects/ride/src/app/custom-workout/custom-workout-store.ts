@@ -52,6 +52,16 @@ export class CustomWorkoutStore {
     return on && link.trim() !== '' && this.videoId() === null ? VIDEO_LINK_ERROR : null;
   });
   readonly offset = computed(() => formatOffset(this.draft().video.offset));
+  /**
+   * Why Start ride is off (L2-100 AC3, L2-099 AC5): a plan whose total is not 1 to 180 minutes, one with a segment under
+   * 5 seconds or a level outside 1 to 32, or a video link that is not YouTube's; `null` when the ride can start.
+   */
+  readonly blocked = computed(() => {
+    const problems = this.problems();
+    if (problems.includes('total-out-of-range')) return 'The ride needs to last 1 to 180 minutes.';
+    if (problems.length > 0) return 'Every interval needs 5 seconds or more at level 1 to 32.';
+    return this.videoError() === null ? null : 'Fix the YouTube link to start.';
+  });
 
   chooseMode(mode: TrainingMode): void {
     this.state.update((d) => chooseMode(d, mode));

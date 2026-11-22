@@ -33,8 +33,9 @@ end a custom ride*.
   `RideTicker`, `WorkoutEngine`, `ResistanceController`, `BikeTelemetry` and `VideoClockSync`. It
   rides the plan of the parent route's `CustomWorkoutStore`. Telemetry sits on the left and the
   control aside on the right at lg; below lg the aside goes under the telemetry.
-- **`CustomRideStore`** — signal store. The ride starts once the bike is connected; the clock,
-  the engine and the target resistance then follow the plan as in a class ride. It derives the
+- **`CustomRideStore`** — signal store. The ride starts the moment the page opens, as a solo
+  class does; the clock, the engine and the target resistance then follow the plan. Waiting for a
+  missing bike is slice 21.4's. It derives the
   header's workout and clock, the readouts, the interval card, the main view, the progress strip
   and the metrics from the engine, the clock, the bike telemetry and a `RideRecorder`. At the
   plan's end the clock stops at the total; what follows is slice 21.4's. The workout link
@@ -49,7 +50,7 @@ end a custom ride*.
 - **`RideReadouts`** (`wz-ride-readouts`) — Power ("107 W", "Target 107 W", "On target") and
   Cadence ("72 rpm", "Aim for 72"), then the projected **`RideInterval`**
   (`wz-ride-interval`): "Recover", "Round 1 of 8", "1:38" (`aria-label="1:38 left in this
-  interval"`), a bar eased over 1000 ms each second (no easing with reduced motion), and "Next:
+  interval"`), a bar eased over 1000 ms each second (a timer, which reduced motion keeps), and "Next:
   Work 0:30 at level 24" or "Last stretch".
 - **`RideView`** (`wz-ride-view`) — tab list "Main view" with "Video" (only with a video) and
   "Power vs. plan"; the Video panel is the player's frame captioned "In sync · pauses with the
@@ -155,5 +156,8 @@ The workout link pauses the ride and opens Custom workout with this plan (`L2-10
    bike, and the plan's end are slice 21.4's (`L2-105` to `L2-108`); "Feedback" is slice 26.1's.
 3. **Edit workout.** The workout link opens Custom workout with the ride's plan; the ride is not
    kept, so Start ride begins a new one.
-4. **The trace in SVG.** The design names a canvas; the mock draws SVG, and the trace is SVG,
+4. **Bike status.** The mock's status opens Diagnostics, which is slice 25.1's; until then it is
+   text.
+5. **Ride sound.** `L2-163`'s ride sound is not played in the custom ride yet.
+6. **The trace in SVG.** The design names a canvas; the mock draws SVG, and the trace is SVG,
    bounded by the plan's length in seconds.

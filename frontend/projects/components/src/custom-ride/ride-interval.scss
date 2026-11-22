@@ -1,0 +1,92 @@
+// Block ride-interval (docs/design-system/assets/components.css): the current interval, coloured by its kind.
+:host {
+  flex: 1;
+  min-width: var(--dashboard-interval-min);
+}
+
+@media (min-width: 64rem) {
+  :host {
+    max-width: 24rem;
+    margin-left: auto;
+  }
+}
+
+:host(.ride-kind--warmup),
+:host(.ride-kind--cooldown) {
+  --kind: var(--dashboard-segment-easy);
+}
+
+:host(.ride-kind--work),
+:host(.ride-kind--steady) {
+  --kind: var(--color-volt);
+}
+
+:host(.ride-kind--rest) {
+  --kind: var(--color-rest);
+}
+
+.ride-interval__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.ride-interval__name {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  white-space: nowrap;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.ride-interval__swatch {
+  width: var(--space-2-5);
+  height: var(--space-2-5);
+  border-radius: var(--radius-xs);
+  background: var(--kind);
+}
+
+.ride-interval__round {
+  font-weight: var(--font-weight-regular);
+  color: var(--color-muted);
+}
+
+.ride-interval__countdown {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: var(--letter-spacing-display);
+  font-size: var(--font-size-4xl);
+  line-height: var(--line-height-4xl);
+}
+
+.ride-interval__bar {
+  margin-top: var(--space-3);
+  height: var(--space-1-5);
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: var(--color-raised);
+}
+
+.ride-interval__fill {
+  width: var(--value);
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--kind);
+  transition: width var(--duration-countdown) linear;
+}
+
+.ride-interval__next {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.ride-interval__next-kind {
+  color: var(--color-fg);
+}

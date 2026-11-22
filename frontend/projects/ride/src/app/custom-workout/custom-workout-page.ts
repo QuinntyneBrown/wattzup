@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BIKE_CONNECTION, FULLSCREEN, type HiitPresetId, REMEMBERED_BIKE } from '@telo/api';
 import {
   IntervalLadder,
@@ -58,6 +58,14 @@ export default class CustomWorkoutPage {
     () => (this.connection.bike() ?? this.remembered)?.name ?? null,
   );
   protected readonly title = computed(() => presetOf(this.draft().preset).title);
+
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+
+  /** Start ride opens the ride, which rides this draft's plan (L2-099 AC4). */
+  protected start(): void {
+    void this.router.navigate(['ride'], { relativeTo: this.route });
+  }
 
   protected toggleFullscreen(): void {
     if (this.fullscreen.active()) this.fullscreen.exit();

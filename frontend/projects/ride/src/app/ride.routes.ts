@@ -18,6 +18,7 @@ import {
 import { provideAppCache } from './app-cache/provide-app-cache';
 import { provideBikeConnection } from './bike/provide-bike-connection';
 import { rememberedBikeGuard } from './bike/remembered-bike.guard';
+import { reconnectRememberedBikeGuard } from './bike/reconnect-remembered-bike.guard';
 import { RiderProgressStore } from './progress/rider-progress-store';
 import { authGuard } from './session/auth.guard';
 import { provideSession } from './session/provide-session';
@@ -89,6 +90,7 @@ export const rideRoutes: Routes = [
       // Custom workout has its own header, with no app navigation (docs/mocks/pages/custom-setup/).
       {
         path: 'profile/custom',
+        canActivate: [reconnectRememberedBikeGuard],
         loadChildren: () =>
           import('./custom-workout/custom-workout.routes').then((m) => m.customWorkoutRoutes),
       },

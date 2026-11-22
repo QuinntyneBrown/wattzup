@@ -1,0 +1,33 @@
+<div class="ride-interval__head">
+  <h2 class="ride-interval__name">
+    <span class="ride-interval__swatch" aria-hidden="true"></span>{{ label() }}
+    @if (round(); as round) {
+      <span class="ride-interval__round">Round {{ round.number }} of {{ round.of }}</span>
+    }
+  </h2>
+  <span
+    class="ride-interval__countdown"
+    role="timer"
+    [attr.aria-label]="countdown() + ' left in this interval'"
+    >{{ countdown() }}</span
+  >
+</div>
+<div
+  class="ride-interval__bar"
+  role="progressbar"
+  aria-label="Interval progress"
+  aria-valuemin="0"
+  aria-valuemax="100"
+  [attr.aria-valuenow]="now()"
+>
+  <div class="ride-interval__fill"></div>
+</div>
+<p class="ride-interval__next">
+  @if (next(); as next) {
+    Next: <span class="ride-interval__next-kind">{{ nextLabel() }}</span>
+    {{ clock(next.duration) }} at level
+    {{ next.level }}
+  } @else {
+    Last stretch
+  }
+</p>

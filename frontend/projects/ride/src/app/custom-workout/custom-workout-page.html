@@ -116,5 +116,7 @@
     [segments]="store.plan().segments"
     [totalSeconds]="store.preview().totalSeconds"
     [facts]="store.preview().facts"
+    [blocked]="store.blocked()"
+    (started)="start()"
   ></aside>
 </main>

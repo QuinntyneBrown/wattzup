@@ -132,3 +132,4 @@ export {
   planLength,
   validatePlan,
 } from './engine/custom-plan';
+export { type IntervalPlace, customWorkoutLabel, intervalPlace } from './engine/custom-ride';
