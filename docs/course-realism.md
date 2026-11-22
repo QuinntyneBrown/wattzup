@@ -704,6 +704,11 @@ also be lit by its `diffuseColor`, not its plain colour.
 
 **Watch for.** Shade painted where baked shade (R8) already falls: under the arms both are light on purpose.
 
+### Tried for the riders and not kept
+
+- **Spray off the rear wheel on a wet road** (after riders pass 10): hidden behind the HUD for the rider's own bike
+  and a few pixels on the others, for two draw calls a rider. See the riders' log.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.

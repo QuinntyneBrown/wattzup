@@ -417,3 +417,17 @@ skipped after the page has handed it over, in the browser's compositor or the GP
 point at something that happens once a second (the HUD's numbers changing over the canvas is the first thing to
 try: pause it and time again; the machine's other programs are the second). It is about one frame in several
 thousand on this machine. The riders' passes are cleared of it; it is left here as a finding for the race screen.
+
+## Tried and not kept: spray off the rear wheel
+
+On a wet road a rear wheel throws its water up and back, and from behind that tail is the plainest sign of riding in
+the rain. It was built (two crossed sheets from the tyre's contact to 0.6 m up and 1.5 m back, a texture of streaks
+scrolled along them, on courses whose file is `wet`) and looked at on the start line and the bridge.
+
+It could not be seen. The rider's own rear wheel meets the road under the panel at the foot of the screen, so their
+spray is behind the HUD; on the riders up the road it is a few faint pixels. It cost two draw calls a rider (94 for
+a pack of five, from 84). Nothing seen for ten draw calls: not kept, and no film made of it.
+
+What would make it worth another try: a camera that shows the road behind the rider's wheel (the race camera's
+height and distance are the requirement's, L2-166 AC9), or riders close ahead, where their spray would hang in the
+rider's own view. Then it wants soft mist low on the road more than streaks.
