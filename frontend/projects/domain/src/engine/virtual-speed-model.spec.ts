@@ -1,6 +1,7 @@
 // Unit test
 // Traces to: L2-059 AC3
-// Description: the virtual speed from power is main's 10 × ∛(W ÷ 20) km/h, with power taken as at least 1 W.
+// Description: the virtual speed from power is main's 10 × ∛(W ÷ 20) km/h, with power taken as at least 1 W. The
+// service runs the same table of cases (VirtualSpeedModelTests.cs), so the two copies stay equal (L2-123 AC4).
 import { VirtualSpeedModel } from './virtual-speed-model';
 
 describe('VirtualSpeedModel', () => {

@@ -1,12 +1,15 @@
 // Unit test
 // Traces to: L2-121 AC1, AC2; L2-052 AC1, AC5; L2-053 AC1, AC2; L2-054 AC1, AC2, AC3; L2-055 AC1, AC2, AC3; L2-057 AC2;
-// L2-120 AC3; L2-121 AC3
+// L2-120 AC3; L2-121 AC3; L2-123 AC1, AC2
 // Description: a race session seats riders in the first open seat, each in the next free jersey, and a seated rider who
 // asks again keeps their seat. It is open while a seat is free and more than 10 seconds remain. A leaver's seat opens
 // again with their name before the bots fill it, and goes to the next bot after. At 10 seconds to the start bots take
 // every open seat, ready, in the bot list's order. A seat whose rider's connection has been gone 10 seconds is freed,
-// unless the rider joins the session again.
+// unless the rider joins the session again. From the start it keeps each seated rider's distance, ignoring a report
+// less than 500 ms after the last, and ranks by distance held at the route's length, a tie to whoever reached it first
+// (L2-123 AC1, AC2), each gap the seconds since the leader reached the rider's distance, from a trace of the last 600.
 using System.Globalization;
+using Telo.Ride.Domain.Classes;
 using Telo.Ride.Domain.Races;
 
 namespace Telo.Ride.Api.Tests;
@@ -137,6 +140,67 @@ public sealed class RaceSessionTests
         session.Tick(Opened.AddSeconds(15));
 
         Assert.Equal("jwatts", session.Seats[1]!.Name);
+    }
+
+    [Fact]
+    public void A_race_ranks_by_distance_held_at_the_route_length_a_tie_to_whoever_reached_it_first()
+    {
+        var session = Full();
+        session.Ride(Start, RouteMetres);
+        session.RecordProgress(Rider(3), 400, 300, Start.AddSeconds(0.5));
+        session.Ride(Start.AddSeconds(1), RouteMetres);
+        session.RecordProgress(Rider(5), 300, 300, Start.AddSeconds(1.5));
+        session.RecordProgress(Rider(2), 120, 250, Start.AddSeconds(1.5));
+
+        var rows = session.Ride(Start.AddSeconds(2), RouteMetres)!;
+
+        Assert.Equal(
+            [(1, 3, 300.0, 0.0), (2, 5, 300.0, 0.0), (3, 2, 120.0, 1.6), (4, 1, 0.0, 2.0)],
+            rows.Take(4).Select(row => (row.Position, row.Seat, row.DistanceMetres, row.GapSeconds)));
+        Assert.Equal([1, 4, 6, 7, 8, 9, 10], rows.Skip(3).Select(row => row.Seat));
+        Assert.Equal(new RaceStandingRow(1, 3, "rider 3", "priya", 3, RiderKind.Person, 300, 0), rows[0]);
+    }
+
+    [Fact]
+    public void Progress_counts_from_a_seated_rider_from_the_start_half_a_second_or_more_after_their_last()
+    {
+        var session = Full();
+
+        Assert.False(session.RecordProgress(Rider(1), 10, 200, Start.AddSeconds(-1)));
+        Assert.False(session.RecordProgress(Rider(11), 10, 200, Start));
+        Assert.False(session.RecordProgress(Rider(1), double.NaN, 200, Start));
+        Assert.True(session.RecordProgress(Rider(1), 10, 200, Start));
+        Assert.False(session.RecordProgress(Rider(1), 12, 200, Start.AddSeconds(0.4)));
+        Assert.True(session.RecordProgress(Rider(1), 12, 200, Start.AddSeconds(0.5)));
+    }
+
+    [Fact]
+    public void The_trace_keeps_the_last_600_seconds_so_a_gap_is_at_most_600()
+    {
+        var session = Full();
+        for (var second = 0; second < 700; second++)
+        {
+            session.RecordProgress(Rider(1), second + 1, 200, Start.AddSeconds(second + 0.5));
+            session.Ride(Start.AddSeconds(second + 1), 10_000);
+        }
+
+        var rows = session.Ride(Start.AddSeconds(700), 10_000)!;
+
+        Assert.Equal((1, 0.0), (rows[0].Seat, rows[0].GapSeconds));
+        Assert.Equal((2, 600.0), (rows[1].Seat, rows[1].GapSeconds));
+    }
+
+    [Fact]
+    public void Before_the_start_a_race_has_no_standings() => Assert.Null(Full().Ride(Start.AddSeconds(-1), RouteMetres));
+
+    private const double RouteMetres = 300;
+
+    /// <summary>A session of ten riders, "rider 1" to "rider 10" at level n, so no bot takes a seat.</summary>
+    private static RaceSession Full()
+    {
+        var session = new RaceSession("old-town-criterium", Start);
+        for (var n = 1; n <= RaceSession.Capacity; n++) session.TrySeat(Rider(n), $"rider {n}", n);
+        return session;
     }
 
     private static Guid Rider(int n) => new($"00000000-0000-0000-0000-{n:D12}");

@@ -16,5 +16,8 @@ internal sealed class RideHubNotifier(IHubContext<RideHub> hub) : ISessionNotifi
     public Task SeatsChanged(SeatsChangedDto seats, CancellationToken cancellationToken) =>
         hub.Clients.Group(Group(seats.SessionId)).SendAsync("SeatsChanged", seats, cancellationToken);
 
+    public Task RaceStandingsUpdated(RaceStandingsDto standings, CancellationToken cancellationToken) =>
+        hub.Clients.Group(Group(standings.SessionId)).SendAsync("RaceStandingsUpdated", standings, cancellationToken);
+
     private static string Group(string sessionId) => $"session:{sessionId}";
 }
