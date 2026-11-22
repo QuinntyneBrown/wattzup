@@ -29,10 +29,11 @@ export class RideTicker {
     });
   }
 
+  /** Starts ticking, publishing at once the second of a clock started in the past (L2-121 AC3). */
   start(): void {
     this.stop();
     this.document.addEventListener('visibilitychange', this.onVisibilityChange);
-    this.scheduleNext();
+    this.tick();
   }
 
   stop(): void {

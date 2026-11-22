@@ -9,7 +9,7 @@ Container_Boundary(app, "Ride app") {
   Component(session, "LiveSessionStore", "Route-scoped signal store · ride", "Hub connection, clock offset, race seat and grid")
   Component(local, "LocalLobby", "Service · domain/engine", "Bots lobby rules")
   Component(res, "ResistanceController", "Service · domain/engine", "Target resistance")
-  Component(ui, "StartGrid / StartClock", "Presentation components · components", "Grid and clock")
+  Component(ui, "StartGrid / StartClock / RaceCountdown", "Presentation components · components", "Grid, clock and countdown overlay")
   Component(hub, "RideHubClient", "SignalR client · api", "Single hub connection")
 }
 Container_Boundary(api, "Telo Ride API") {

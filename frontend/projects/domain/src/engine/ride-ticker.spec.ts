@@ -1,7 +1,7 @@
 // Unit test (the slice's acceptance table: the readouts it drives come with slice 5.2)
-// Traces to: L2-133 AC2; L2-134 AC2
-// Description: the ticker publishes each whole second of the ride clock once, catches up at once when a hidden tab is
-// shown again, and releases its timer and listener when it stops or its owner is destroyed. Fake timers, never sleeps.
+// Traces to: L2-133 AC2; L2-134 AC2; L2-121 AC3
+// Description: the ticker publishes each whole second of the ride clock once, at once for a clock started in the past,
+// catches up at once when a hidden tab is shown again, and releases its timer and listener when it stops or its owner is destroyed. Fake timers, never sleeps.
 import { TestBed } from '@angular/core/testing';
 import { MONOTONIC_TIME } from '@telo/api';
 import { RideClock } from './ride-clock';
@@ -45,6 +45,17 @@ describe('RideTicker', () => {
 
     expect(ticks).toEqual([1, 2, 3]);
     expect(ticker.second()).toBe(3);
+  });
+
+  it('publishes the second of a clock started in the past at once, as a late rider joins a live session (L2-121 AC3)', () => {
+    ticker.stop();
+    clock.start(Date.now() - 4_500);
+    ticker.start();
+
+    expect(ticker.second()).toBe(4);
+    expect(ticks).toEqual([4]);
+    vi.advanceTimersByTime(500);
+    expect(ticks).toEqual([4, 5]);
   });
 
   it('publishes no new second while the ride is paused', () => {

@@ -59,5 +59,8 @@ end
 rs -> rs : At 0:10 bots fill every open seat, ready (L2-054 AC1, AC2)
 ridehub -> hub : SeatsChanged (10 / 10)
 store --> page : "On the start line"; first segment level sent (L2-051 AC4)
-note right of store : The 3, 2, 1, Go overlay and the shared start (L2-056) come with slice 15.2;\nuntil then the clock rests at 0:00
+store --> page : From 0:03, countdownStep 3, 2, 1 over the inert lobby, ready or not (L2-053 AC4, L2-056)
+store --> page : At startsAt, Go
+store -> actor : Open /race/:mapId/ride?mode=online&session=<id>
+note right of store : The race joins its session again (JoinRace) and starts its clock\nat startsAt minus the offset (L2-121 AC3, run-a-race-session)
 @enduml

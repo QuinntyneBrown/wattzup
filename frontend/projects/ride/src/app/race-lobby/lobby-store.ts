@@ -30,6 +30,8 @@ const ONLINE_LOBBY_SECONDS = 30;
  * corrected by the measured offset, on the seconds before it (L2-051 AC5). "I'm ready" and Leave go to the hub.
  *
  * Once every seat is taken the rider is on the start line, and the first stretch's level goes to the bike (L2-051 AC4).
+ * From 0:03 the countdown covers the lobby, and at Go, 0:00, the race opens: an online race in its session, whose
+ * clock starts on the session's server time (L2-056, L2-121 AC3).
  */
 @Injectable()
 export class LobbyStore {
@@ -62,6 +64,12 @@ export class LobbyStore {
   readonly ready = this.isReady.asReadonly();
   /** Whole seconds to the start. */
   readonly seconds = this.secondsLeft.asReadonly();
+  /** From 0:03 the countdown covers the lobby, ready or not: 3, 2, 1, then Go at the start (L2-053 AC4, L2-056). */
+  readonly countdownStep = computed(() => {
+    const seconds = this.secondsLeft();
+    if (seconds === 0) return 'Go';
+    return seconds <= 3 ? String(seconds) : null;
+  });
   readonly seats = computed<readonly LobbySeat[]>(() =>
     this.online ? this.onlineSeats() : LocalLobby.seats(this.level(), this.isReady()),
   );
@@ -109,7 +117,7 @@ export class LobbyStore {
       effect(() => {
         const race = this.live.race();
         if (race === null) return;
-        untracked(() => this.countDown(Date.parse(race.startsAt)));
+        untracked(() => this.countDown(Date.parse(race.startsAt), race.sessionId));
       });
     }
     inject(DestroyRef).onDestroy(() => clearTimeout(this.timer));
@@ -172,14 +180,22 @@ export class LobbyStore {
     }, 1000);
   }
 
-  /** The riders-online clock: the whole seconds to the start, waking on the seconds before it (L155). */
-  private countDown(startsAt: number): void {
+  /**
+   * The riders-online clock: the whole seconds to the start, waking on the seconds before it (L155). At the start the
+   * race opens in the rider's session (L2-056 AC3).
+   */
+  private countDown(startsAt: number, session: string): void {
     clearTimeout(this.timer);
     const now = this.live.serverNow() ?? Date.now();
     const remaining = startsAt - now;
     this.secondsLeft.set(Math.max(0, Math.ceil(remaining / 1000)));
-    if (remaining > 0)
-      this.timer = setTimeout(() => this.countDown(startsAt), remaining % 1000 || 1000);
+    if (remaining > 0) {
+      this.timer = setTimeout(() => this.countDown(startsAt, session), remaining % 1000 || 1000);
+      return;
+    }
+    void this.router.navigate(['/race', this.mapId, 'ride'], {
+      queryParams: { mode: 'online', session },
+    });
   }
 }
 

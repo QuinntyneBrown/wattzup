@@ -1,12 +1,13 @@
 // Acceptance test
 // Traces to: L2-121 AC1, AC2, AC4; L2-051 AC3, AC5; L2-052 AC1, AC5; L2-053 AC1; L2-054 AC1, AC2; L2-055 AC1, AC2, AC3;
-// L2-057 AC1, AC2
+// L2-057 AC1, AC2; L2-121 AC3; L2-056 AC3
 // Description: "Find a race" seats a rider in the open session for the map, or opens one that starts 30 seconds later.
 // Every rider in the session hears the seats change: a rider joining takes the first open seat, a rider pressing ready
 // shows ready, and a rider leaving before 0:10 opens their seat again with their name for the notice. At 10 seconds to
 // the start bots take every open seat, ready, in the bot list's order; a rider who leaves after that is replaced by a
 // bot at once. A rider whose connection is gone for 10 seconds in the lobby loses the seat. Race Setup reads the count
-// of riders queuing for a map over HTTP. Real sign-ins give each rider a session cookie, which a real SignalR client
+// of riders queuing for a map over HTTP. At Go the race page joins its session again on a new connection and hears
+// the start as server time, the seat kept past the start. Real sign-ins give each rider a session cookie, which a real SignalR client
 // carries to the API hosted in memory; the fake clock drives the ticker.
 using System.Net;
 using System.Net.Http.Json;
@@ -24,6 +25,7 @@ public sealed class RaceLobbyTests(RaceLobbyApi api) : IClassFixture<RaceLobbyAp
 
     private readonly List<HubConnection> connections = [];
     private readonly List<HttpClient> browsers = [];
+    private readonly Dictionary<HubConnection, string> cookies = [];
     private int riders;
 
     private static CancellationToken Cancel => TestContext.Current.CancellationToken;
@@ -175,6 +177,50 @@ public sealed class RaceLobbyTests(RaceLobbyApi api) : IClassFixture<RaceLobbyAp
     }
 
     [Fact]
+    [Trait("Category", "Critical")]
+    public async Task At_the_start_the_race_joins_its_session_again_on_a_new_connection_and_hears_the_start_as_server_time()
+    {
+        var (quinn, _) = await Rider("quinn");
+        var found = await Find(quinn, Map);
+        var heard = Listen(quinn);
+        api.Clock.Advance(found.StartsAt!.Value.AddSeconds(-10) - api.Clock.GetUtcNow());
+        await heard.Await(c => c.SessionId == found.SessionId && c.Seats.All(seat => seat.Kind != "open"), Wait);
+
+        // The lobby's connection closes as the race opens at Go, and the race's opens.
+        await quinn.StopAsync(Cancel);
+        api.Clock.Advance(TimeSpan.FromSeconds(10));
+        var race = await Reconnect(quinn);
+        var joined = await Join(race, found.SessionId!);
+
+        Assert.Null(joined.Code);
+        Assert.Equal(found.SessionId, joined.SessionId);
+        Assert.Equal(found.StartsAt, joined.StartsAt);
+        Assert.Equal(1, joined.Seat);
+        Assert.Equal(("rider", "quinn", found.Seats[0].Jersey, 1, false), Describe(joined.Seats[0]));
+        Assert.Equal(Pacers, joined.Seats.Skip(1).Select(seat => seat.Name));
+
+        // A lost connection after the start keeps the seat: the race goes on (L2-120 AC3).
+        await race.StopAsync(Cancel);
+        api.Clock.Advance(TimeSpan.FromSeconds(15));
+        var again = await Join(await Reconnect(quinn), found.SessionId!);
+        Assert.Equal(1, again.Seat);
+    }
+
+    [Fact]
+    public async Task Joining_a_session_the_rider_holds_no_seat_in_is_refused()
+    {
+        var (jwatts, _) = await Rider("jwatts");
+        var (kenji, _) = await Rider("kenji.cyc");
+        var found = await Find(jwatts, Map);
+
+        var stranger = await Join(kenji, found.SessionId!);
+        var unknown = await Join(kenji, "old-town-criterium@19990101T000000Z");
+
+        Assert.Equal(("session_not_found", null), (stranger.Code, stranger.SessionId));
+        Assert.Equal(("session_not_found", null), (unknown.Code, unknown.SessionId));
+    }
+
+    [Fact]
     public async Task Find_a_race_on_a_map_the_service_does_not_know_is_refused()
     {
         var (vale, _) = await Rider("vale");
@@ -192,6 +238,8 @@ public sealed class RaceLobbyTests(RaceLobbyApi api) : IClassFixture<RaceLobbyAp
     }
 
     private static Task<Found> Find(HubConnection hub, string mapId) => hub.InvokeAsync<Found>("FindRace", mapId, Cancel);
+
+    private static Task<Found> Join(HubConnection hub, string sessionId) => hub.InvokeAsync<Found>("JoinRace", sessionId, Cancel);
 
     private static (string, string?, string?, int?, bool) Describe(Seat seat) => (seat.Kind, seat.Name, seat.Jersey, seat.Level, seat.Ready);
 
@@ -215,6 +263,14 @@ public sealed class RaceLobbyTests(RaceLobbyApi api) : IClassFixture<RaceLobbyAp
         var cookie = confirmed.Headers.GetValues("Set-Cookie").Single(v => v.StartsWith("__Host-telo-session=", StringComparison.Ordinal)).Split(';')[0];
         using var named = await browser.PutAsJsonAsync("/api/riders/me/display-name", new { displayName }, Cancel);
         Assert.Equal(HttpStatusCode.OK, named.StatusCode);
+        return (await Connect(cookie), browser);
+    }
+
+    /// <summary>A new hub connection for the rider of that connection, as a new page opens one.</summary>
+    private Task<HubConnection> Reconnect(HubConnection hub) => Connect(cookies[hub]);
+
+    private async Task<HubConnection> Connect(string cookie)
+    {
         var hub = new HubConnectionBuilder()
             .WithUrl(new Uri("https://localhost/hubs/ride"), options =>
             {
@@ -224,8 +280,9 @@ public sealed class RaceLobbyTests(RaceLobbyApi api) : IClassFixture<RaceLobbyAp
             })
             .Build();
         connections.Add(hub);
+        cookies[hub] = cookie;
         await hub.StartAsync(Cancel);
-        return (hub, browser);
+        return hub;
     }
 
     private sealed record Found(string? Code, string? SessionId, DateTimeOffset? StartsAt, int? Seat, IReadOnlyList<Seat> Seats);

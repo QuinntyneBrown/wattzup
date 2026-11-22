@@ -5,7 +5,9 @@ import {
   MONOTONIC_TIME,
   HttpProgressApi,
   PROGRESS_API,
+  RIDE_HUB_CLIENT,
   SCREEN_WAKE_LOCK,
+  SignalRRideHubClient,
   WORLD_RENDERER,
 } from '@telo/api';
 import { BrowserScreenWakeLock, MapsKeyStore, NoBestRides } from '@telo/domain';
@@ -31,6 +33,8 @@ export const raceRoutes: Routes = [
       // No ride has a best until rides are recorded (10.1) and a best's trace kept (11.2).
       { provide: GHOST_API, useClass: NoBestRides },
       { provide: MONOTONIC_TIME, useValue: { now: () => performance.now() } },
+      // The ride hub's client, whose SignalR library is imported only when a riders-online race joins its session.
+      { provide: RIDE_HUB_CLIENT, useClass: SignalRRideHubClient },
       { provide: SCREEN_WAKE_LOCK, useClass: BrowserScreenWakeLock },
       // The rider's Google Maps Platform key, on this device only (L2-066 AC3).
       { provide: MAPS_KEY, useClass: MapsKeyStore },

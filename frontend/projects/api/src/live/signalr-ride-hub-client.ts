@@ -93,6 +93,11 @@ export class SignalRRideHubClient implements RideHubClient {
     return raceSeatFrom(await this.connection.invoke<FindRaceResult>('FindRace', mapId));
   }
 
+  async joinRace(sessionId: string): Promise<RaceSeatAssignment> {
+    if (this.connection === null) throw new Error('The ride hub is not connected');
+    return raceSeatFrom(await this.connection.invoke<FindRaceResult>('JoinRace', sessionId));
+  }
+
   async setReady(sessionId: string, ready: boolean): Promise<void> {
     if (this.connection?.state !== 'Connected') return;
     await this.connection.send('SetReady', sessionId, ready);

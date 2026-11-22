@@ -41,7 +41,8 @@ local --> store : Every seat ready
 loop once a second from 0:05 (L2-053 AC3); pressing again holds it at 0:05
   store --> page : timer "Starts in {n} seconds"
 end
-store -> router : At 0:00, navigate /race/:mapId/ride?mode=bots&pack=medium
-note right of store : The 3, 2, 1, Go overlay (L2-056) comes with slice 15.2
+store --> page : From 0:03, countdownStep 3, 2, 1 over the inert lobby (L2-056 AC1, AC2)
+store --> page : At 0:00, Go
+store -> router : Navigate /race/:mapId/ride?mode=bots&pack=medium
 router --> actor : Race opens with its clock at 0:00 (L2-056 AC3)
 @enduml

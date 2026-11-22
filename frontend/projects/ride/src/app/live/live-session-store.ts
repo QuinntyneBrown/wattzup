@@ -14,7 +14,8 @@ import {
 
 /**
  * The session the rider holds a seat in: the arguments a rejoin repeats (L2-120 AC3). A class names its session; a race
- * names its map, and the hub chooses the session (L2-121 AC1).
+ * lobby names its map, and the hub chooses the session (L2-121 AC1); the race names the session it holds a seat in
+ * (L2-056 AC3).
  */
 export interface SessionRef {
   readonly kind: 'class' | 'race';
@@ -133,8 +134,7 @@ export class LiveSessionStore {
 
   private async takeSeat(): Promise<void> {
     const session = this.session;
-    if (session?.kind === 'race' && session.mapId !== undefined)
-      return this.findRace(session, session.mapId);
+    if (session?.kind === 'race') return this.findRace(session);
     if (
       session?.kind !== 'class' ||
       session.classId === undefined ||
@@ -150,9 +150,13 @@ export class LiveSessionStore {
     }
   }
 
-  private async findRace(session: SessionRef, mapId: string): Promise<void> {
+  /** A lobby finds a race on its map (L2-121 AC1); the race joins its session again at Go (L2-056 AC3). */
+  private async findRace(session: SessionRef): Promise<void> {
     try {
-      const race = await this.hub.findRace(mapId);
+      const race =
+        session.sessionId !== undefined
+          ? await this.hub.joinRace(session.sessionId)
+          : await this.hub.findRace(session.mapId ?? '');
       if (this.session !== session) return;
       this.raceSeat.set(race);
       this.grid.set(race.seats);

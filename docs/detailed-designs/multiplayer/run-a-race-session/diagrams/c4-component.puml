@@ -33,6 +33,6 @@ Rel(count, registry, "Counts seated riders")
 Rel(find, session, "Seat(rider)")
 Rel(tick, session, "FillWithBots, Start")
 Rel(find, notifier, "SeatsChanged")
-Rel(tick, notifier, "CountdownStarted, SessionStarted")
+Rel(tick, notifier, "SeatsChanged at the bot fill")
 Rel(notifier, hubc, "Pushes messages", "SignalR")
 @enduml

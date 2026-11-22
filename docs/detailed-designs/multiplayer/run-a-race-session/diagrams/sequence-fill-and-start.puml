@@ -15,48 +15,43 @@ skinparam package {
   BackgroundColor #F9FAFB
 }
 box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "LobbyStore" as lobby
+  participant "RaceStore" as race
   participant "LiveSessionStore" as store
 end box
 box "Frontend — Ride app (domain library)" #E0F2FE
-  participant "measureClockOffset" as clock
   participant "RideClock" as rideclock
 end box
 box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RideHub" as hub
   participant "RideHubNotifier" as notifier
 end box
 box "Backend — Telo.Ride.Application and Domain" #ECFDF3
   participant "TickLiveSessionsCommandHandler" as tick
   participant "RaceSession" as session
-  participant "BotRoster" as roster
 end box
 box "Backend — Telo.Ride.Infrastructure" #FFF4E5
   participant "SessionTicker" as ticker
   participant "InMemoryRaceSessionRegistry" as registry
 end box
-loop every 1 s on TimeProvider
+loop every 1 s on TimeProvider, until the start
   ticker -> tick : Send TickLiveSessionsCommand(now)
-  tick -> registry : All()
-  registry --> tick : Live sessions
-  alt StartsAt - now <= 10 s and state Seating
-    tick -> session : FillWithBots(roster)
-    session -> roster : Next() for each open seat
-    roster --> session : Pacer Nova, Rook, ...
-    session --> tick : 10 / 10, every bot ready (L2-121 AC2)
+  tick -> registry : Lobbies(now)
+  registry --> tick : Sessions not started
+  opt StartsAt - now <= 10 s, not yet filled
+    tick -> session : Tick(now): bots take every open seat, ready
+    session --> tick : 10 / 10 (L2-121 AC2)
     tick -> notifier : SeatsChanged(sessionId, seats)
     notifier --> store : SeatsChanged
-  else StartsAt - now <= 3 s and state Full
-    tick -> session : BeginCountdown()
-    tick -> notifier : CountdownStarted(sessionId, StartsAt)
-    notifier --> store : CountdownStarted(startsAt)
-    store -> clock : toLocal(startsAt)
-    clock --> store : Local deadline
-  else now >= StartsAt
-    tick -> session : Start() whether or not all are ready (L2-053 AC4)
-    tick -> notifier : SessionStarted(sessionId, StartsAt)
-    notifier --> store : SessionStarted(startsAt)
-    store -> clock : toLocal(startsAt) with measured offset
-    clock --> store : Local deadline
-    store -> rideclock : Start at deadline; clocks within 250 ms (L2-121 AC3)
   end
 end
+lobby -> lobby : From 0:03 on server time (startsAt minus the offset), 3, 2, 1 over the inert lobby, ready or not (L2-053 AC4, L2-056)
+lobby -> lobby : Go at startsAt; open /race/:mapId/ride?mode=online&session=<id>
+race -> store : join({ kind: race, sessionId })
+store -> hub : ServerTime x5, measure the offset; JoinRace(sessionId)
+hub -> session : Rejoin(rider): the held seat, before or after the start
+hub --> store : sessionId, startsAt, seat, seats
+store --> race : race, offset
+race -> rideclock : start(startsAt minus offset); clocks within 250 ms (L2-121 AC3)
+note right of race : No server message marks the start: every client holds startsAt,\nas a group class does (slice 14.4). A race opened early holds at 0:00 until it.
 @enduml

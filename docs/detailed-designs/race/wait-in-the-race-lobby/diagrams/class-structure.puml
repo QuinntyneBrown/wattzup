@@ -34,6 +34,7 @@ class LobbyStore {
   +seconds: Signal<number>
   +ready: Signal<boolean>
   +notice: Signal<string | null>
+  +countdownStep: Signal<'3' | '2' | '1' | 'Go' | null>
   +leaveQuery: Record<string, string>
   +toggleReady(): void
   +leave(): void
@@ -67,6 +68,7 @@ class RaceSeatDto <<api>> {
 }
 interface RideHubClient <<api>> {
   +findRace(mapId): Promise<RaceSeatAssignment>
+  +joinRace(sessionId): Promise<RaceSeatAssignment>
   +setReady(sessionId, ready): Promise<void>
   +leaveRace(sessionId): Promise<void>
   +onSeatsChanged(handler): () => void
@@ -76,6 +78,9 @@ class RaceLobbyPage
 class StartGrid <<components>> {
   +seats: InputSignal<LobbySeat[]>
 }
+class RaceCountdown <<components>> {
+  +step: InputSignal<string>
+}
 class StartClock <<components>> {
   +status, seconds, hint, ready, notice
   +readyToggled: OutputEmitterRef<void>
@@ -83,6 +88,7 @@ class StartClock <<components>> {
 RaceLobbyPage ..> LobbyStore : reads
 RaceLobbyPage ..> StartGrid : renders
 RaceLobbyPage ..> StartClock : renders
+RaceLobbyPage ..> RaceCountdown : renders from 0:03
 LobbyStore "1" *-- "10" LobbySeat
 LobbySeat --> LobbySeatKind
 LobbyStore ..> LocalLobby : bots lobby

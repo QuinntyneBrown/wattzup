@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FULLSCREEN } from '@telo/api';
-import { FullscreenToggle, Lockup, StartClock, StartGrid } from '@telo/components';
+import { FullscreenToggle, Lockup, RaceCountdown, StartClock, StartGrid } from '@telo/components';
 import { ResistanceController } from '@telo/domain';
 import { LiveSessionStore } from '../live/live-session-store';
 import { LobbyStore } from './lobby-store';
@@ -14,7 +14,7 @@ import { LobbyStore } from './lobby-store';
  */
 @Component({
   selector: 'wz-race-lobby-page',
-  imports: [FullscreenToggle, Lockup, RouterLink, StartClock, StartGrid],
+  imports: [FullscreenToggle, Lockup, RaceCountdown, RouterLink, StartClock, StartGrid],
   templateUrl: './race-lobby-page.html',
   styleUrl: './race-lobby-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -39,6 +39,10 @@ internal sealed class RideHub(ISender sender) : Hub
     public Task<FindRaceResult> FindRace(string mapId) =>
         sender.Send(new FindRaceCommand(Rider, mapId, Context.ConnectionId), Context.ConnectionAborted);
 
+    /// <summary>The race joins the rider's session again at Go, and hears its start as server time (L2-121 AC3).</summary>
+    public Task<FindRaceResult> JoinRace(string sessionId) =>
+        sender.Send(new JoinRaceCommand(Rider, sessionId, Context.ConnectionId), Context.ConnectionAborted);
+
     /// <summary>"I'm ready", or "You're ready" again, in a race lobby (L2-053 AC1, AC2).</summary>
     public Task SetReady(string sessionId, bool ready) =>
         sender.Send(new SetReadyCommand(Rider, sessionId, ready), Context.ConnectionAborted);

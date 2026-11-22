@@ -38,7 +38,10 @@ export interface SeatsChanged {
   readonly left: string | null;
 }
 
-/** The seat the hub gave, or the refusal as a `RideHubError` (`map_not_found`). */
+/**
+ * The seat the hub gave, or the refusal as a `RideHubError`: `map_not_found` for FindRace, `session_not_found` for
+ * JoinRace and any code the app does not know.
+ */
 export function raceSeatFrom(result: FindRaceResult): RaceSeatAssignment {
   if (
     result.code === null &&
@@ -52,5 +55,8 @@ export function raceSeatFrom(result: FindRaceResult): RaceSeatAssignment {
       seat: result.seat,
       seats: result.seats,
     };
-  throw new RideHubError('map_not_found', null);
+  throw new RideHubError(
+    result.code === 'map_not_found' ? 'map_not_found' : 'session_not_found',
+    null,
+  );
 }
