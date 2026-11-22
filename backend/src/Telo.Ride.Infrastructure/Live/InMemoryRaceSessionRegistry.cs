@@ -53,5 +53,14 @@ internal sealed class InMemoryRaceSessionRegistry : IRaceSessionRegistry
         }
     }
 
+    public IReadOnlyList<RaceSession> Started(DateTimeOffset now)
+    {
+        lock (sessions)
+        {
+            Prune(now);
+            return [.. sessions.Where(session => session.StartsAt <= now)];
+        }
+    }
+
     private void Prune(DateTimeOffset now) => sessions.RemoveAll(session => session.StartsAt + Kept < now);
 }

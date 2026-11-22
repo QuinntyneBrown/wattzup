@@ -35,6 +35,12 @@ internal sealed class RideHub(ISender sender) : Hub
             new ReportProgressCommand(Rider, sessionId, outputKj, powerWatts),
             Context.ConnectionAborted);
 
+    /// <summary>The rider's distance in metres and power in watts in a race session, about once a second (L2-123 AC1).</summary>
+    public Task ReportRaceProgress(string sessionId, double distanceMetres, double powerWatts) =>
+        sender.Send(
+            new ReportRaceProgressCommand(Rider, sessionId, distanceMetres, powerWatts),
+            Context.ConnectionAborted);
+
     /// <summary>"Find a race": a seat in a race session on the map, or the refusal's code (L2-121 AC1).</summary>
     public Task<FindRaceResult> FindRace(string mapId) =>
         sender.Send(new FindRaceCommand(Rider, mapId, Context.ConnectionId), Context.ConnectionAborted);

@@ -1,6 +1,7 @@
 import { InjectionToken, type Signal } from '@angular/core';
 import type { RaceSeatAssignment, SeatsChanged } from './find-race';
 import type { SeatAssignment } from './join-class-session';
+import type { RaceStandings } from './race-standings';
 import type { Standings } from './standings';
 
 /** The link to the ride hub (docs/detailed-designs/multiplayer/connect-to-the-ride-hub). */
@@ -31,6 +32,11 @@ export interface RideHubClient {
    */
   reportProgress(sessionId: string, outputKj: number, powerWatts: number): Promise<void>;
   /**
+   * Sends the rider's distance ridden in metres and power in watts in a race session (`ReportRaceProgress`, L2-123
+   * AC1), awaiting no answer; it does nothing while the hub is not connected.
+   */
+  reportRaceProgress(sessionId: string, distanceMetres: number, powerWatts: number): Promise<void>;
+  /**
    * "Find a race" on a map (L2-121 AC1): a seat in the open race session with the most riders, or a new one; a seated
    * rider who asks again keeps the seat (L2-120 AC3). It rejects with a `RideHubError` (`map_not_found`) when the hub
    * refuses, and with any other error when the connection goes.
@@ -50,6 +56,8 @@ export interface RideHubClient {
   onSeatsChanged(handler: (seats: SeatsChanged) => void): () => void;
   /** Runs `handler` on each `StandingsUpdated` the hub sends (L2-123 AC3); returns what removes it. */
   onStandings(handler: (standings: Standings) => void): () => void;
+  /** Runs `handler` on each `RaceStandingsUpdated` the hub sends (L2-123 AC3); returns what removes it. */
+  onRaceStandings(handler: (standings: RaceStandings) => void): () => void;
   /** Runs `handler` after each reconnect (AC3); returns what removes it. */
   onReconnected(handler: () => void): () => void;
 }

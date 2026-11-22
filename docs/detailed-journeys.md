@@ -62,7 +62,7 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 14.5 | Live group board | Group class board ranks riders by output and updates every second from the backend. | 3 | 14. Ride a class with a group | 100% |
 | 15.1 | Race lobby | Wait for riders, see who's in, leave before the start. | 3 | 15. Race people live | 100% |
 | 15.2 | Start a live race | Shared countdown; everyone starts on the same server time. | 3 | 15. Race people live | 100% |
-| 15.3 | Live standings | Positions and gaps every second from the backend. | 3 | 15. Race people live | 0% |
+| 15.3 | Live standings | Positions and gaps every second from the backend. | 3 | 15. Race people live | 100% |
 | 15.4 | Mark leavers and DNF | Riders who leave or drop out are marked DNF. | 3 | 15. Race people live | 0% |
 | 15.5 | Record results nobody can change | The backend computes the final placings and locks them so no client can change them. | 3 | 15. Race people live | 0% |
 | 16.1 | Download the world | Load card with progress, saved worlds, resume after failure. | 3 | 16. Ride a world class | 0% |
@@ -103,4 +103,4 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 27.1 | Installable app | Manifest, icons and install from Chrome or Edge. | 2 | 27. Install the app | 0% |
 | 27.2 | Update to a new version | Tell the rider a new version is ready; reload between rides. | 1 | 27. Install the app | 0% |
 
-**Total:** 95 slices, 238 days. **Complete:** 55 slices, 144 days (61%).
+**Total:** 95 slices, 238 days. **Complete:** 56 slices, 147 days (62%).

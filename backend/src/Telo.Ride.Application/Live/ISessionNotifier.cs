@@ -15,4 +15,7 @@ public interface ISessionNotifier
 
     /// <summary>Sends <c>SeatsChanged</c>, a race lobby's grid after a change, to every rider in the session (L2-055 AC3).</summary>
     Task SeatsChanged(Races.SeatsChangedDto seats, CancellationToken cancellationToken);
+
+    /// <summary>Sends <c>RaceStandingsUpdated</c> to every rider in the race session (L2-123 AC3).</summary>
+    Task RaceStandingsUpdated(Races.RaceStandingsDto standings, CancellationToken cancellationToken);
 }

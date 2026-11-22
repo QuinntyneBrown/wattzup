@@ -6,6 +6,7 @@ import {
   type ClockSample,
   type RaceSeatAssignment,
   type RaceSeatDto,
+  type RaceStandings,
   RideHubError,
   type RideHubErrorCode,
   type SeatAssignment,
@@ -50,6 +51,8 @@ export class LiveSessionStore {
   private readonly grid = signal<readonly RaceSeatDto[]>([]);
   private readonly leaver = signal<string | null>(null);
   private forgetSeats: (() => void) | null = null;
+  private readonly latestRace = signal<RaceStandings | null>(null);
+  private forgetRaceStandings: (() => void) | null = null;
   private lastReportAt: number | null = null;
   private forgetStandings: (() => void) | null = null;
   private session: SessionRef | null = null;
@@ -70,6 +73,8 @@ export class LiveSessionStore {
   readonly seats = this.grid.asReadonly();
   /** The rider who last left the race lobby with their seat open again, for the notice (L2-055 AC1). */
   readonly left = this.leaver.asReadonly();
+  /** The latest race standings the hub sent for the race session; each replaces the last, so nothing grows (L2-123 AC3). */
+  readonly raceStandings = this.latestRace.asReadonly();
 
   constructor() {
     inject(DestroyRef).onDestroy(() => this.leave());
@@ -81,6 +86,9 @@ export class LiveSessionStore {
     this.forgetReconnect = this.hub.onReconnected(() => this.rejoin());
     this.forgetStandings = this.hub.onStandings((standings) => {
       if (standings.sessionId === ref.sessionId) this.latest.set(standings);
+    });
+    this.forgetRaceStandings = this.hub.onRaceStandings((standings) => {
+      if (standings.sessionId === this.raceSeat()?.sessionId) this.latestRace.set(standings);
     });
     this.forgetSeats = this.hub.onSeatsChanged((change) => {
       if (change.sessionId !== this.raceSeat()?.sessionId) return;
@@ -97,16 +105,22 @@ export class LiveSessionStore {
   }
 
   /**
-   * Sends the rider's output in kJ and power in watts once seated, dropping a report less than 500 ms after the last
-   * one sent, so the hub hears at most two a second (L2-123 AC1).
+   * Sends the rider's progress and power in watts once seated: in a class the output in kJ, in a race the metres
+   * ridden. A report less than 500 ms after the last one sent is dropped, so the hub hears at most two a second
+   * (L2-123 AC1).
    */
-  report(outputKj: number, powerWatts: number): void {
+  report(amount: number, powerWatts: number): void {
     const seat = this.taken();
-    if (this.session === null || seat === null) return;
+    const race = this.raceSeat();
+    if (this.session === null || (seat === null && race === null)) return;
     const now = this.time.now();
     if (this.lastReportAt !== null && now - this.lastReportAt < REPORT_INTERVAL_MS) return;
     this.lastReportAt = now;
-    void this.hub.reportProgress(seat.sessionId, outputKj, powerWatts).catch(() => undefined);
+    const sent =
+      seat !== null
+        ? this.hub.reportProgress(seat.sessionId, amount, powerWatts)
+        : this.hub.reportRaceProgress(race!.sessionId, amount, powerWatts);
+    void sent.catch(() => undefined);
   }
 
   /** Tells the hub the rider is ready, or no longer (L2-053 AC1, AC2). */
@@ -189,6 +203,8 @@ export class LiveSessionStore {
     this.forgetStandings = null;
     this.forgetSeats?.();
     this.forgetSeats = null;
+    this.forgetRaceStandings?.();
+    this.forgetRaceStandings = null;
     void this.hub.stop();
   }
 }

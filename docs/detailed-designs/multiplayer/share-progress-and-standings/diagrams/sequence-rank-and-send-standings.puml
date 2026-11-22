@@ -23,27 +23,36 @@ box "Backend — Telo.Ride.Api" #D1FADF
 end box
 box "Backend — Telo.Ride.Application and Domain" #ECFDF3
   participant "TickLiveSessionsCommandHandler" as tick
-  participant "LiveSession" as session
+  participant "RaceSession | GroupClassSession" as session
   participant "BotPaceModel" as pace
-  participant "RankingPolicy" as rank
+  participant "VirtualSpeedModel" as speed
 end box
 box "Backend — Telo.Ride.Infrastructure" #FFF4E5
   participant "SessionTicker" as ticker
 end box
 ticker -> tick : Send TickLiveSessionsCommand(now) every 1 s
-tick -> session : AdvanceBots(pace, second)
-session -> pace : PowerAt(bot, second, seed) for each bot
-pace --> session : Power around pack strength (L2-123 AC4)
-tick -> rank : Rank(session)
 alt race session
-  rank -> rank : Finished by finish time, then distance (L2-123 AC2)
-  rank -> session : Leader trace TimeAt(distance) for gaps
+  tick -> session : Ride(now, route metres)
+  loop each whole second since the last
+    session -> pace : Watts(bot, second), medium pack, seeded by session id
+    pace --> session : Power (L2-123 AC4)
+    session -> speed : SpeedMs(watts)
+    session -> session : Distances held at the route's length; trace point each (last 600)
+  end
+  session -> session : Furthest first, a tie to who reached it first (L2-123 AC2)
+  session -> session : Gap = seconds since the leader reached the distance
+  session --> tick : Race standings (position, seat, name, jersey, level, kind, metres, gap s)
+  tick -> notifier : RaceStandingsUpdated(sessionId, rows)
+  notifier --> client : RaceStandingsUpdated to every rider (L2-123 AC3)
+  client --> store : Replace race standings
+  store -> store : RaceStore: gap to the rider = your gap to the leader − the row's
 else group class session
-  rank -> rank : Output in kJ, highest first (L2-123 AC2)
+  tick -> session : Tick(now)
+  session -> pace : Watts(bot, second), easy pack
+  session -> session : Output in kJ, highest first (L2-123 AC2)
+  session --> tick : Standings (name, jersey, level, kind, position, kJ, gap kJ)
+  tick -> notifier : StandingsUpdated(sessionId, standings)
+  notifier --> client : StandingsUpdated to every rider (L2-123 AC3)
+  client --> store : Replace standings
 end
-rank --> tick : Standings (name, jersey, level, kind, position, gap)
-tick -> notifier : StandingsUpdated(sessionId, standings)
-notifier --> client : StandingsUpdated to every rider (L2-123 AC3)
-client --> store : Replace standings
-store -> store : Derive gaps relative to the rider
 @enduml

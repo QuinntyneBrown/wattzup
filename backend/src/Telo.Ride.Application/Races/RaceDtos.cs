@@ -21,3 +21,13 @@ public sealed record SeatsChangedDto(string SessionId, IReadOnlyList<RaceSeatDto
 
 /// <summary>How many riders are queuing for a map: seated in its sessions still open (L2-121 AC4, L2-048 AC3).</summary>
 public sealed record RaceQueueDto(int Riders);
+
+/// <summary>
+/// One rider on a race's board: <c>Kind</c> is <c>person</c> or <c>bot</c>, a bot has no level, and the seat finds the
+/// rider's own row (L2-123 AC3).
+/// </summary>
+public sealed record RaceStandingRowDto(
+    int Position, int Seat, string Name, string Jersey, int? Level, string Kind, double DistanceMetres, double GapSeconds);
+
+/// <summary>A race session's standings, ranked, as every rider in it receives them once a second (L2-123 AC3).</summary>
+public sealed record RaceStandingsDto(string SessionId, IReadOnlyList<RaceStandingRowDto> Rows);
