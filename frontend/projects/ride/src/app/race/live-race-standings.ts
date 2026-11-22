@@ -4,7 +4,7 @@ import { type Standing, YOU } from '@telo/domain';
 /**
  * A riders-online race's board from the service's standings (L2-123 AC3, L2-060 AC1, AC2): the places as the service
  * ranked them, the rider's row found by seat (a rider and a bot can share a jersey) as "You", and each gap the rider's
- * gap to the leader less the row's, so a rider ahead is positive. Before the first standings, the start grid by seat
+ * gap to the leader less the row's, so a rider ahead is positive; a DNF row is marked (L2-124). Before the first standings, the start grid by seat
  * with every gap level; before a seat, nothing.
  */
 export function liveRaceStandings(
@@ -34,5 +34,6 @@ export function liveRaceStandings(
     you: mine(row.seat),
     place: row.position,
     gap: mine(row.seat) ? 0 : yours - row.gapSeconds,
+    ...(row.status === 'dnf' ? { dnf: true } : {}),
   }));
 }

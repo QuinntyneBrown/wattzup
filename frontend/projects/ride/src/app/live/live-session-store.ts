@@ -129,7 +129,10 @@ export class LiveSessionStore {
     if (race !== null) void this.hub.setReady(race.sessionId, ready).catch(() => undefined);
   }
 
-  /** Releases the rider's seat in the race lobby (L2-057 AC1), then closes the connection as the route goes. */
+  /**
+   * Leaves the race session: the lobby releases the seat (L2-057 AC1), a running race marks the rider DNF (L2-124 AC1);
+   * the connection closes as the route goes.
+   */
   leaveRace(): void {
     const race = this.raceSeat();
     if (race !== null) void this.hub.leaveRace(race.sessionId).catch(() => undefined);

@@ -251,7 +251,8 @@ export class RaceStore {
       jersey: row.jersey,
       bot: row.bot,
       you: row.you,
-      gap: row.you ? '' : formatGap(row.gap),
+      gap: row.you ? '' : row.dnf ? 'DNF' : formatGap(row.gap),
+      dnf: row.dnf ?? false,
     })),
   );
 
@@ -279,9 +280,10 @@ export class RaceStore {
     }
     const ahead = rows[you.place - 2];
     const behind = rows[you.place];
+    const value = (row: Standing) => (row.dnf ? 'DNF' : formatGap(row.gap));
     return [
-      ...(ahead ? [{ label: 'Ahead', value: formatGap(ahead.gap) }] : []),
-      ...(behind ? [{ label: 'Behind', value: formatGap(behind.gap) }] : []),
+      ...(ahead ? [{ label: 'Ahead', value: value(ahead) }] : []),
+      ...(behind ? [{ label: 'Behind', value: value(behind) }] : []),
     ];
   });
 
@@ -365,6 +367,14 @@ export class RaceStore {
       this.watchBike();
       this.watchPedals();
     });
+  }
+
+  /**
+   * Leave, on its way to Race Setup: a riders-online race tells its session, which marks the rider DNF for everyone at
+   * once (L2-124 AC1); the route then closes the connection.
+   */
+  leave(): void {
+    if (this.mode === 'online') this.live.leaveRace();
   }
 
   /** Holds a solo race where it is; a bots or riders-online race has no Pause (L2-068 AC1, AC3). */

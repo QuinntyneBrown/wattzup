@@ -45,18 +45,20 @@ export async function openRace(
   return race;
 }
 
-/** One row of a RaceStandingsUpdated message: the seat's place, distance and seconds behind the leader. */
+/** One row of a RaceStandingsUpdated message: the seat's place, distance, seconds behind the leader and status. */
 export interface RaceStandingLine {
   readonly seat: number;
   readonly metres: number;
   readonly gapSeconds: number;
+  /** `riding` when not given. */
+  readonly status?: 'riding' | 'finished' | 'dnf';
 }
 
 /** A RaceStandingsUpdated message for the session, its rows in the order given, each named from the start grid. */
 export function raceStandings(lines: readonly RaceStandingLine[]) {
   return {
     sessionId: RACE_SESSION,
-    rows: lines.map(({ seat, metres, gapSeconds }, i) => {
+    rows: lines.map(({ seat, metres, gapSeconds, status = 'riding' }, i) => {
       const grid = atTheStart.find((each) => each.number === seat)!;
       return {
         position: i + 1,
@@ -67,6 +69,7 @@ export function raceStandings(lines: readonly RaceStandingLine[]) {
         kind: grid.kind === 'bot' ? 'bot' : 'person',
         distanceMetres: metres,
         gapSeconds,
+        status,
       };
     }),
   };
@@ -87,4 +90,13 @@ export const peersBoard: readonly RaceStandingLine[] = [
   { seat: 2, metres: 2_068, gapSeconds: 12 },
   { seat: 4, metres: 2_067, gapSeconds: 12 },
   { seat: 1, metres: 2_066, gapSeconds: 12 },
+];
+
+/**
+ * The race mock's someone-left board (docs/mocks/pages/race/someone-left.html): the peers board after MarcoVelo left,
+ * marked DNF in last place at the distance they reached.
+ */
+export const someoneLeftBoard: readonly RaceStandingLine[] = [
+  ...peersBoard.filter((line) => line.seat !== 2),
+  { seat: 2, metres: 2_068, gapSeconds: 12, status: 'dnf' },
 ];

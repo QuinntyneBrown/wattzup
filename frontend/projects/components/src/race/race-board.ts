@@ -16,8 +16,10 @@ export interface RaceBoardRow {
   readonly jersey: string;
   readonly bot: boolean;
   readonly you: boolean;
-  /** "+0:07" ahead, "−0:05" behind; empty on the rider's row. */
+  /** "+0:07" ahead, "−0:05" behind, "DNF"; empty on the rider's row. */
   readonly gap: string;
+  /** Whether the service marked the rider DNF (L2-124): the row is faint. */
+  readonly dnf?: boolean;
 }
 
 /** How long a row slides to its new place (L2-060 AC3). */

@@ -14,6 +14,8 @@ export interface Standing {
   readonly place: number;
   /** Seconds the opponent is ahead (> 0) or behind (< 0) the rider; 0 for the rider. */
   readonly gap: number;
+  /** Whether a riders-online race's service marked the rider DNF (L2-124). */
+  readonly dnf?: boolean;
 }
 
 /** The rider's id among the standings. */
