@@ -22,7 +22,7 @@ box "Frontend — Ride app (domain library)" #E0F2FE
   participant "WorkoutEngine" as engine
 end box
 box "Frontend — Ride app (ride application)" #E0F2FE
-  participant "RideSessionStore" as store
+  participant "RaceStore / ClassRideStore" as store
   participant "BrowserScreenWakeLock" as wake
   participant "Ride page" as page
 end box

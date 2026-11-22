@@ -54,28 +54,35 @@ integrations sit in the `ride` application, scoped to the ride route.
   its notification at the bike's 1 Hz rate.
 - **`BoardOrder`** — helper in `domain/engine`. It holds the board order and applies a new ranking
   at most once a second.
-- **`ScreenWakeLock`** — contract in `api` (token `SCREEN_WAKE_LOCK`), implemented in the `ride`
-  application's `browser/` folder over `navigator.wakeLock`. It requests a `screen` lock when a
-  ride starts, requests it again on `visibilitychange` to visible, and releases it when the ride
-  ends. Where the API is absent it does nothing.
-- **`LeaveRideGuard`** — service in the `ride` application. While a ride runs it registers a
-  `beforeunload` listener that calls `preventDefault()`, so the browser asks the rider to confirm
-  leaving. It removes the listener when the ride ends.
-- **`RideSessionStore`** — route-scoped store in the `ride` application, provided on each ride
-  route. It owns the clock, ticker, wake lock and leave guard for one ride and tears all of them
-  down through `DestroyRef` when the rider leaves the route.
+- **`ScreenWakeLock`** — contract in `api` (token `SCREEN_WAKE_LOCK`), implemented by
+  `BrowserScreenWakeLock` in `domain`'s `browser/` folder over `navigator.wakeLock`. `hold()`
+  requests a `screen` lock when a ride starts and again on `visibilitychange` to visible;
+  `release()` lets it go when the ride ends. Where the API is absent it does nothing.
+- **Leave guard** — each ride screen (`ClassRideSession`, `RacePage`) listens for `beforeunload`
+  through its component `host` binding and calls `preventDefault()` while its ride runs, so the
+  browser asks the rider to confirm leaving. Angular removes the listener with the component.
+- **`RaceStore`** and **`ClassRideStore`** — the ride screens' stores in the `ride` application,
+  provided with `RideClock`, `RideTicker` and `WorkoutEngine` on each ride screen. Each starts the
+  clock and ticker, holds the wake lock while the ride runs and releases it on finishing or
+  leaving; destroying the screen tears all of them down through `DestroyRef`.
 
-Whether the browser integrations move into a dedicated `browser` library is `<TO SUPPLY>`; the
-dependency rules allow either.
+The browser integrations (`BrowserScreenWakeLock`, `BrowserNetworkStatus`, `BrowserFullscreen`)
+live in `domain`'s `browser/` folder, bound on the routes that use them.
 
 Slice 5.1 builds `MonotonicTime`, `RideClock`, `RideTicker`, `planStateAt` and `WorkoutEngine`,
 proved by unit tests with fake timers and end to end on the simulated bike. The class ride
 screen (slice 5.2) binds `MONOTONIC_TIME` and runs them with the Playwright proof;
 `ScreenWakeLock` and `LeaveRideGuard` (`L2-133` AC3, AC4) come with pausing, leaving and
-finishing a class (slice 5.4), and `RideSessionStore` gathers them then. Distance is counted once per
+finishing a class (slice 5.4), and the class ride's store holds them. Distance is counted once per
 running second by `RideTotals` (slice 3.2, `L2-022`); the screen that runs it counts every
 second the ticker publishes, so a late tick misses none. `ReadoutSampler` and `BoardOrder` come
 with the screens that show readouts and boards.
+
+Slice 18.2 proves a throttled hidden tab end to end on the race and the class ride: while the tab
+is hidden the page's timers wait for the next whole minute, as Chrome's intensive throttling
+does, and the bike's notifications still arrive each second; shown again after 10 minutes, the
+clock, the plan's segment and the race's distance are where a visible tab's would be. It also
+gives the race its leave guard (`L2-133` AC4), which only the class ride had.
 
 ## Requirements
 
@@ -106,7 +113,7 @@ Only the Ride app takes part. The backend never times a ride.
 
 ### Components
 
-The route-scoped `RideSessionStore` owns the timing parts. `RideClock` reads `MonotonicTime`;
+Each ride screen's store owns its timing parts. `RideClock` reads `MonotonicTime`;
 `RideTicker` drives `WorkoutEngine` and the readouts once a second; the browser integrations
 guard the screen and the tab.
 
