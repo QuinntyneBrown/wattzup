@@ -94,7 +94,9 @@ lost-bike alert of `L2-092` (`L2-157` AC4).
   `frontend/projects/ride/public/music/`): `ClassWorldScene` loads the world's track and plays it while the ride runs
   and no class video is playing, because a class video has its own sound and the music plays under
   the ride sound, which a class video mutes (`L2-163` AC1). In practice the track plays when the
-  video is unavailable. The "World music" setting arrives with slice 20.4, so it is on until then.
+  video is unavailable. The "World music" setting arrives with slice 20.4, so it is on until then. Since slice 16.4 the
+  player and its audio element are made only the first time the music is wanted, so a ride whose
+  video plays loads no track: only what is needed now.
 - **Not copied:** `main`'s `world-ride-view.ts` (the view model of `main`'s World Ride HUD) and
   `world-ride-access.ts` (the guard of `main`'s `/classes/:id/world` route). The screens around
   the world are built from Telo Ride's mocks, and the class ride is reached through World loading

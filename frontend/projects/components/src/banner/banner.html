@@ -27,7 +27,9 @@
   }
 }
 <p class="banner__body">
-  <span class="banner__title">{{ title() }}</span>
+  <span class="banner__title"
+    ><ng-content select="[slot=title]">{{ title() }}</ng-content></span
+  >
   @if (detail()) {
     &ngsp;<span class="banner__detail">{{ detail() }}</span>
   }

@@ -19,6 +19,7 @@ const base: WorldLoadState = {
   shaderSeconds: 0,
   slowPercent: 0,
   bikeConnected: true,
+  groupStartsAt: null,
 };
 
 const downloaded = { received: 18_900_000, total: 18_900_000 };
@@ -270,5 +271,26 @@ describe('worldLoadView', () => {
     expect(worldLoadView({ ...base, phase: 'building', progress: downloaded }).canStart).toBe(
       false,
     );
+  });
+
+  it('waits for the group: no start, the start time announced once, and the group’s hint (L2-154 AC1, AC2)', () => {
+    const building = worldLoadView({
+      ...base,
+      phase: 'building',
+      progress: downloaded,
+      startPercent: 52,
+      groupStartsAt: '7:39 PM',
+    });
+    const ready = worldLoadView({
+      ...base,
+      phase: 'ready',
+      progress: downloaded,
+      groupStartsAt: '7:39 PM',
+    });
+
+    expect(building.status).toBe('Building the shaders, 52 percent. The group starts at 7:39 PM.');
+    expect(building.hint).toBe('Pedal easy: everyone’s warm-up starts together.');
+    expect(ready.canStart).toBe(false);
+    expect(ready.hint).toBe('Pedal easy: everyone’s warm-up starts together.');
   });
 });

@@ -23,9 +23,14 @@ import { WorldLoadingPage } from './pages/world-loading.page';
 /** A session that started a minute before SESSIONS_NOW, so the ride rides at once. */
 const session = hiitSession('2026-11-21T19:29:00Z', []);
 
-/** Opens the group ride in the session and, once it rides, stands the clock half a second past SESSIONS_NOW (L154). */
-async function openRiding(page: Page, ride: ClassRidePage): Promise<void> {
+/**
+ * Opens the group ride in the session and, once it rides, stands the clock half a second past SESSIONS_NOW (L154). It
+ * waits for the seat first, then for the class ride, so a slow step says which it was: World loading joins the session
+ * and measures the clock offset before the class ride takes its place.
+ */
+async function openRiding(page: Page, ride: ClassRidePage, hub: HubFixture): Promise<void> {
   await ride.openGroup(hiitCardio.id, session.id);
+  await expect.poll(() => hub.invocations('JoinClassSession').length).toBe(1);
   await expect(ride.clock).not.toHaveText(/^0:00/);
   await page.clock.pauseAt(SESSIONS_NOW - 500);
   await page.clock.runFor(1_000);
@@ -42,8 +47,10 @@ async function arrive(
 }
 
 test.describe('The group output board', () => {
-  test.beforeEach(async ({ page, bluetooth, hub }) => {
+  test.beforeEach(async ({ page, bluetooth, hub, webgl }) => {
     await page.clock.install({ time: SESSIONS_NOW - 10_000 });
+    // The class rides its panorama: these specs ride the board, not the world, whose build would run on every frame.
+    await webgl.disable();
     await bluetooth.remember(echelonBike);
     hub.open();
     hub.answer('ServerTime', () => page.evaluate(() => Date.now()));
@@ -55,7 +62,7 @@ test.describe('The group output board', () => {
     hub,
   }) => {
     const ride = new ClassRidePage(page);
-    await openRiding(page, ride);
+    await openRiding(page, ride, hub);
 
     await arrive(page, hub, standings(session, boardAtSeven));
 
@@ -78,7 +85,7 @@ test.describe('The group output board', () => {
 
   test('each new standings reorders the board (L2-090 AC2)', async ({ page, hub }) => {
     const ride = new ClassRidePage(page);
-    await openRiding(page, ride);
+    await openRiding(page, ride, hub);
     await arrive(page, hub, standings(session, boardAtSeven));
     await expect(ride.boardPlace).toHaveText('5th / 9');
 
@@ -97,7 +104,7 @@ test.describe('The group output board', () => {
     bluetooth,
   }) => {
     const ride = new ClassRidePage(page);
-    await openRiding(page, ride);
+    await openRiding(page, ride, hub);
     await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(8));
     await bluetooth.notify(ECHELON_NOTIFY, workoutFrame(80));
     const before = hub.invocations('ReportProgress').length;
@@ -113,8 +120,7 @@ test.describe('The group output board', () => {
     expect(reports.at(-1)![2]).toBeGreaterThan(0);
   });
 
-  test('a solo class ride has no board (L2-090 AC4)', async ({ page, bluetooth, webgl }) => {
-    await webgl.disable();
+  test('a solo class ride has no board (L2-090 AC4)', async ({ page, bluetooth }) => {
     const ride = new ClassRidePage(page);
     await ride.open(hiitCardio.id);
     await connectBike(bluetooth);

@@ -35,6 +35,10 @@ export class WorldLoadingPage {
   readonly panoramaRide: Locator;
   readonly startAtLow: Locator;
   readonly connectBike: Locator;
+  /** A group's countdown (L2-154): the time left in the notice, and the disabled action naming the start. */
+  readonly groupNotice: Locator;
+  readonly groupTimer: Locator;
+  readonly groupStart: Locator;
 
   constructor(private readonly page: Page) {
     this.root = page.locator('.world-loading');
@@ -60,6 +64,13 @@ export class WorldLoadingPage {
     this.panoramaRide = page.getByRole('button', { name: 'Ride with the panorama' });
     this.startAtLow = page.getByRole('button', { name: 'Start at Low quality' });
     this.connectBike = this.alert.getByRole('button', { name: 'Connect bike' });
+    this.groupNotice = page
+      .locator('.load-card .banner--info')
+      .filter({ has: page.getByRole('timer') });
+    this.groupTimer = this.groupNotice.getByRole('timer');
+    this.groupStart = page
+      .locator('.load-card')
+      .getByRole('button', { name: /^Starts with the group/ });
   }
 
   /** Waits for the world to be ready, then presses Start riding: the class ride takes World loading's place. */
