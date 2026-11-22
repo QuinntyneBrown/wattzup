@@ -135,6 +135,13 @@ function raised(camera: PerspectiveCamera): PerspectiveCamera {
   return camera;
 }
 
+/**
+ * How finely the riders are made at each tier (1 is the finest), and how much more coarsely the riders other than
+ * the one the camera follows: they are seen from further off, and there may be a dozen of them.
+ */
+const RIDER_DETAIL = [0.6, 0.7, 0.8, 0.9, 1] as const;
+const OTHERS_DETAIL = 0.6;
+
 /** How far up the road, in metres, a rider's lean into a bend is read from. */
 const LEAN_AHEAD = 6;
 const GHOST_OPACITY = 0.45;
@@ -600,7 +607,9 @@ export class CourseRenderer implements WorldRenderer {
     const kit = new CourseCyclistKit(this.plain, this.course!.file.night === true);
     this.kit = kit;
     // The rider wears the You jersey of the race board (L2-060).
-    const you = kit.make(jerseyColour(canvas, 'you'), 4);
+    // The rider the camera follows is made as finely as the device's tier allows; the others, seen from further
+    // off, more coarsely (RIDER_DETAIL, OTHERS_DETAIL).
+    const you = kit.make(jerseyColour(canvas, 'you'), 4, true, RIDER_DETAIL[this.tier] ?? 1);
     this.you = you;
     // Every rider's moving parts of a plain colour are drawn by one batch (rider-batch.ts), in the material that
     // draws their still ones.
@@ -761,7 +770,12 @@ export class CourseRenderer implements WorldRenderer {
     if (!this.kit || !this.canvas) return null;
     const colour = jerseyColour(this.canvas, jersey);
     // The ghost is a figure of glass: it carries no light.
-    const cyclist = this.kit.make(colour, this.riders.size + 1, jersey !== 'ghost');
+    const cyclist = this.kit.make(
+      colour,
+      this.riders.size + 1,
+      jersey !== 'ghost',
+      (RIDER_DETAIL[this.tier] ?? 1) * OTHERS_DETAIL,
+    );
     this.disposables.push(...cyclist.owned);
     if (jersey === 'ghost') {
       const glass = new MeshStandardMaterial({

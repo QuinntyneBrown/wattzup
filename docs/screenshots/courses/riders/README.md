@@ -31,6 +31,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 20 | The camera at the reference's distance: the rider half the picture's height | 119.9 fps, 0 over 20 ms | 16.7 ms | 295 fps (3.39 ms): 295, 296, 293 | 100,371 | 84 | Yes |
 | 21 | By day, a shadow with the rider's shape: the bike from its side or the rider end on, as the sun stands (measured on Cliffside Coast) | 120.1 fps, 0 over 20 ms | 9.5 ms | 373 fps (2.68 ms): 373, 377, 354; Docklands unchanged at 295 | 83,511 | 70 | Yes |
 | 22 | By day, the sky's light in a rider's shade and the sun along their edges (measured on Cliffside Coast) | 120.1 fps, 0 over 20 ms | 10.0 ms | 367 fps (2.72 ms): 373, 355, 367; Docklands unchanged at 296 | 83,511 | 70 | Yes |
+| 23 | Riders made as finely as they are seen: the others at 0.6 of the camera's rider, and every rider coarser on a slower tier | 120.1 fps (the display was at 60 Hz), 0 over 20 ms | 9.8 ms | 310 fps (3.23 ms): 310, 309, 310 | 78,951 (100,371 before) | 84 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -749,3 +750,43 @@ The race's end-to-end specs: the same 13 failures as before the riders' work.
 
 **Learned.** A backlit figure is drawn by its edges. The sun behind a rider is no reason for a dark rider; it is
 the chance for a rim of light, which is how such a rider is seen.
+
+## Pass 23: riders made as finely as they are seen
+
+**What a rider had come to cost.** A solo ride on the bridge draws 58,737 triangles; the same place with the medium
+pack drew 100,371. Four riders in view, 41,600 triangles: some 10,400 a rider, each made as finely as the one the
+camera sits 2.75 m behind. A dozen riders would have been 125,000 triangles of riders, on a tablet as on a desktop.
+
+**A correction.** The note "what the page allocates" above gives 134 MB in 10 s for "pass 9, no other riders". That
+run was not a solo ride: an empty query fell back to the pack, so it measured the pack twice. A solo ride (after
+pass 22) makes 86 MB in 10 s against 98 MB with the pack: the riders account for about 12 MB of the page's churn,
+not none. The larger part, the renderer's own, stands. (Seen in passing: at the lowest tier, which has no bloom
+pass, the page made 29 MB in the same 10 s. The bloom pipeline is worth a look as the churn's main source.)
+
+**After** (`rider-23.jpg`, `rider-23-start.jpg`, `rider-23-tiers.jpg` with the top tier beside the lowest;
+`rider-23.mp4`): the rider the camera follows is made as before on the top tier. The other riders are made at 0.6 of
+that fineness (every loft and round shape with 0.6 as many sides, never fewer than five), and all riders are made
+coarser tier by tier (1, 0.9, 0.8, 0.7, 0.6). Up the road the riders look as they did; side by side at the start
+line the difference is not seen at the race camera's distance.
+
+| On the bridge, medium pack | Triangles | Draw calls |
+| --- | --- | --- |
+| Before, top tier | 100,371 | 84 |
+| After, top tier | 78,951 | 84 |
+| After, lowest tier | 66,469 | 72 |
+
+**What changed.** `course-cyclist.ts`: a `fineness` in force while one rider is put together scales the sides of
+`loft`, `wrap`, the spheres, the tyres and the sprockets (`fine(sides, least)`); `make(…, detail)` sets it. The
+baked shade (pass 9) is kept for each fineness. `course-renderer.ts`: `RIDER_DETAIL` by tier, `OTHERS_DETAIL` 0.6.
+
+**Measured.** 309 fps uncapped against 296: the first gain in frame rate since pass 9. The display changed from
+120 Hz to 60 Hz during the first timing (112.9 fps, three slow frames, one uncapped run of 218 fps); at 60 Hz four
+timings held 60.0 to 60.1 fps with no frame over 17.2 ms, and the film and the figures here are from after it.
+
+**Learned.**
+
+- Count what one of a thing costs. Twenty-two passes each added "a few hundred triangles for the pack"; together
+  they had made a rider cost ten thousand.
+- Detail belongs where the camera is. One number on the way into the rider's builder buys back a fifth of the
+  frame's triangles and takes nothing the eye can find.
+- A measurement is only what was asked for. An empty setting is not "none".

@@ -777,6 +777,24 @@ rim (`SUN_RIM`), an overcast one more lift (`SKY_LIFT`).
 
 **Watch for.** Black kit taking the sun's colour along its edge: right, but strong on a low orange sun.
 
+### R15. Riders made as finely as they are seen (riders pass 23)
+
+**What it gives.** The pack for a fifth fewer triangles, and a lighter rider on slower devices, with no change the
+race camera shows.
+
+**How it works.** `fineness`, set by `CourseCyclistKit.make(jersey, number, lit, detail)`, scales the sides of every
+shape a rider is built from. The renderer passes `RIDER_DETAIL[tier]` for the rider the camera follows and that
+× `OTHERS_DETAIL` (0.6) for the rest.
+
+**To apply it.** Nothing to do for a map. A map with a big field (a gran fondo's start) could pass less for riders
+beyond the first few.
+
+**Cost.** Saves: 100,371 to 78,951 triangles on the bridge with five riders in view.
+
+**Watch for.** Anything cached by a rider's shape (the baked shade) must be kept for each fineness. Bands painted
+round a loft (calf muscles, helmet vents) need about twenty sides to be crisp; at 0.6 they soften, which is right
+for a rider up the road and wrong for the one in front of the camera.
+
 ### R10. The rider framed above the HUD (riders pass 11)
 
 **What it gives.** The rider whole in the picture on every map: wheels, the road under them, their shadow and

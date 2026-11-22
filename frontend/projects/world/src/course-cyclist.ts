@@ -161,6 +161,15 @@ function palette(look: RiderLook): Palette {
   };
 }
 
+/**
+ * How finely a rider is being made, 1 for the finest: the rider the camera follows on a fast device. Every loft's and
+ * every round shape's count of sides is scaled by it, so a rider up the road, or any rider on a slower device, is the
+ * same shape in fewer triangles. Set while one rider is put together (`CourseCyclist`), 1 otherwise.
+ */
+let fineness = 1;
+/** `sides` at the fineness in force, never fewer than `least`. */
+const fine = (sides: number, least = 5): number => Math.max(least, Math.round(sides * fineness));
+
 /** One section of a lofted tube: how far along it (0 to 1), its half-widths, and how far off the axis it sits. */
 interface Section {
   readonly t: number;
@@ -179,8 +188,9 @@ function loft(
   sections: readonly Section[],
   length: number,
   colour: (t: number, round: number) => Color,
-  around = 12,
+  asked = 12,
 ): BufferGeometry {
+  const around = fine(asked);
   const positions: number[] = [];
   const colours: number[] = [];
   const finishes: number[] = [];
@@ -243,8 +253,9 @@ function wrap(
   length: number,
   u0: number,
   u1: number,
-  around = 16,
+  asked = 16,
 ): BufferGeometry {
+  const around = fine(asked);
   const positions: number[] = [];
   const uvs: number[] = [];
   const index: number[] = [];
@@ -509,13 +520,16 @@ export class CourseCyclistKit {
     this.roadGlow = roadGlowShape();
   }
 
-  /** A rider in `jersey`, race `number` pinned to their back; `lit` false leaves their bike's lights off. */
-  make(jersey: Color, number: number, lit = true): RiderModel {
-    return new CourseCyclist(this, this.plain, jersey, number, lit);
+  /**
+   * A rider in `jersey`, race `number` pinned to their back; `lit` false leaves their bike's lights off. `detail`
+   * is how finely they are made, 1 for the finest: less for a rider seen from further off or on a slower device.
+   */
+  make(jersey: Color, number: number, lit = true, detail = 1): RiderModel {
+    return new CourseCyclist(this, this.plain, jersey, number, lit, detail);
   }
 
-  /** How shaded each vertex of a rider's still meshes is (rider-shade.ts), worked out for the first rider made. */
-  private shades: Float32Array[] | null = null;
+  /** How shaded each vertex of a rider's still meshes is (rider-shade.ts), by the meshes' sizes. */
+  private readonly shades = new Map<string, Float32Array[]>();
 
   /**
    * Darkens the colours of a rider's still meshes where the parts stand close over one another. Every rider has the
@@ -523,7 +537,10 @@ export class CourseCyclistKit {
    */
   shade(meshes: readonly BufferGeometry[]): void {
     const counts = meshes.map((mesh) => mesh.getAttribute('position').count);
-    if (!this.shades || this.shades.some((shade, i) => shade.length !== counts[i])) {
+    // One working-out for each fineness riders are made at: the shape is the same, its vertices are not.
+    const key = counts.join(',');
+    let shades = this.shades.get(key);
+    if (!shades) {
       const total = counts.reduce((sum, count) => sum + count, 0);
       const positions = new Float32Array(total * 3);
       const normals = new Float32Array(total * 3);
@@ -546,11 +563,13 @@ export class CourseCyclistKit {
       }
       const all = occlusion(positions, normals, SHADE_REACH, samples);
       let from = 0;
-      this.shades = counts.map((count) => all.slice(from, (from += count)));
+      shades = counts.map((count) => all.slice(from, (from += count)));
+      this.shades.set(key, shades);
     }
+    const made = shades;
     meshes.forEach((mesh, m) => {
       const colour = mesh.getAttribute('color');
-      const shade = this.shades![m]!;
+      const shade = made[m]!;
       for (let i = 0; i < shade.length; i++) {
         const lit = 1 - SHADE_DEPTH * shade[i]!;
         colour.setXYZ(i, colour.getX(i) * lit, colour.getY(i) * lit, colour.getZ(i) * lit);
@@ -618,7 +637,16 @@ class CourseCyclist implements RiderModel {
   private readonly from = new Vector3();
   private readonly to = new Vector3();
 
-  constructor(kit: CourseCyclistKit, plain: Material, jersey: Color, number: number, lit: boolean) {
+  constructor(
+    kit: CourseCyclistKit,
+    plain: Material,
+    jersey: Color,
+    number: number,
+    lit: boolean,
+    detail: number,
+  ) {
+    // Everything made from here to the end of this rider is made this finely.
+    fineness = detail;
     const shapes = kit.shapes();
     const look = riderLook(number);
     const colours = palette(look);
@@ -701,6 +729,7 @@ class CourseCyclist implements RiderModel {
       });
     }
     this.pose(0);
+    fineness = 1;
   }
 
   roll(metres: number): void {
@@ -857,8 +886,8 @@ function bike(look: Palette): BufferGeometry[] {
   }
   // Wheels: tyre, a deep rim, the hub.
   for (const axle of [FRONT, REAR]) {
-    placed(new TorusGeometry(WHEEL - 0.013, 0.0135, 8, 40), TYRE, wheelAt(axle));
-    const rim = solid(new TorusGeometry(WHEEL - 0.046, 0.022, 6, 40), RIM);
+    placed(new TorusGeometry(WHEEL - 0.013, 0.0135, fine(8), fine(40, 18)), TYRE, wheelAt(axle));
+    const rim = solid(new TorusGeometry(WHEEL - 0.046, 0.022, 6, fine(40, 18)), RIM);
     rim.applyMatrix4(new Matrix4().makeScale(1, 1, 0.5));
     rim.applyMatrix4(wheelAt(axle));
     parts.push(rim);
@@ -875,7 +904,7 @@ function bike(look: Palette): BufferGeometry[] {
   for (let i = 0; i < 7; i++) {
     const radius = 0.054 - i * 0.0042;
     placed(
-      new CylinderGeometry(radius, radius, 0.0022, 20),
+      new CylinderGeometry(radius, radius, 0.0022, fine(20, 8)),
       SPROCKET,
       acrossAt(REAR.clone().setX(0.026 + i * 0.0048)),
     );
@@ -955,7 +984,7 @@ function body(jersey: Color, look: Palette): { still: BufferGeometry[]; kit: Buf
     parts.push(piece);
   };
   const ball = (at: Vector3, size: Vector3, colour: Color, lat = 10) => {
-    const piece = solid(new SphereGeometry(1, 14, lat), colour);
+    const piece = solid(new SphereGeometry(1, fine(14, 7), fine(lat, 4)), colour);
     piece.applyMatrix4(new Matrix4().makeScale(size.x, size.y, size.z));
     return { piece, at };
   };
