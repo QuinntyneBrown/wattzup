@@ -75,7 +75,7 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 18.1 | Lose the service mid-ride | Multiplayer drops; the ride carries on and rejoins. | 3 | 18. Ride through a lost service | 100% |
 | 18.2 | Keep the ride clock true | Clock stays right through hidden tabs and throttling. | 2 | 18. Ride through a lost service | 100% |
 | 19.1 | Bundle budgets | Lazy routes, tight initial budget, gzip check in verify. | 2 | 19. Stay smooth on long rides | 100% |
-| 19.2 | Bounded ride buffers | Power and cadence traces, packet logs and leaderboards use fixed-size buffers, so memory stays flat over an hour. | 2 | 19. Stay smooth on long rides | 0% |
+| 19.2 | Bounded ride buffers | Power and cadence traces, packet logs and leaderboards use fixed-size buffers, so memory stays flat over an hour. | 2 | 19. Stay smooth on long rides | 100% |
 | 19.3 | Heap checks | Heap stays stable across repeated enter and leave of the race, class and world screens. | 2 | 19. Stay smooth on long rides | 0% |
 | 19.4 | Web vitals and frame budget | Measure LCP, INP and frame times on reference devices. | 2 | 19. Stay smooth on long rides | 0% |
 | 20.1 | Settings page and store | `/settings`, sections, apply at once, kept on device, reset. | 3 | 20. Tune ride settings | 0% |
@@ -103,4 +103,4 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 27.1 | Installable app | Manifest, icons and install from Chrome or Edge. | 2 | 27. Install the app | 0% |
 | 27.2 | Update to a new version | Tell the rider a new version is ready; reload between rides. | 1 | 27. Install the app | 0% |
 
-**Total:** 95 slices, 238 days. **Complete:** 68 slices, 178 days (75%).
+**Total:** 95 slices, 238 days. **Complete:** 69 slices, 180 days (76%).
