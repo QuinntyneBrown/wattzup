@@ -10,6 +10,7 @@
       class="race-lobby__leave"
       [routerLink]="['/race', store.mapId]"
       [queryParams]="store.leaveQuery"
+      (click)="store.leave()"
     >
       <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
         <path d="m16 17 5-5-5-5" />
@@ -29,6 +30,7 @@
         [seconds]="store.seconds()"
         [hint]="store.hint()"
         [ready]="store.ready()"
+        [notice]="store.notice()"
         (readyToggled)="store.toggleReady()"
       />
       <wz-start-grid [seats]="store.seats()" />

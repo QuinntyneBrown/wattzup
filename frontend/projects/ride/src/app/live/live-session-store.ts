@@ -4,16 +4,21 @@ import {
   MONOTONIC_TIME,
   RIDE_HUB_CLIENT,
   type ClockSample,
+  type RaceSeatAssignment,
+  type RaceSeatDto,
   RideHubError,
   type RideHubErrorCode,
   type SeatAssignment,
   type Standings,
 } from '@telo/api';
 
-/** The session the rider holds a seat in: the arguments a rejoin repeats (L2-120 AC3). */
+/**
+ * The session the rider holds a seat in: the arguments a rejoin repeats (L2-120 AC3). A class names its session; a race
+ * names its map, and the hub chooses the session (L2-121 AC1).
+ */
 export interface SessionRef {
   readonly kind: 'class' | 'race';
-  readonly sessionId: string;
+  readonly sessionId?: string;
   readonly classId?: string;
   readonly mapId?: string;
 }
@@ -40,6 +45,10 @@ export class LiveSessionStore {
   private readonly taken = signal<SeatAssignment | null>(null);
   private readonly refusal = signal<RideHubErrorCode | null>(null);
   private readonly latest = signal<Standings | null>(null);
+  private readonly raceSeat = signal<RaceSeatAssignment | null>(null);
+  private readonly grid = signal<readonly RaceSeatDto[]>([]);
+  private readonly leaver = signal<string | null>(null);
+  private forgetSeats: (() => void) | null = null;
   private lastReportAt: number | null = null;
   private forgetStandings: (() => void) | null = null;
   private session: SessionRef | null = null;
@@ -54,6 +63,12 @@ export class LiveSessionStore {
   readonly refused = this.refusal.asReadonly();
   /** The latest standings the hub sent for the session; each replaces the last, so nothing grows (L2-123 AC3). */
   readonly standings = this.latest.asReadonly();
+  /** The rider's seat in a race session: its id, start and seat number; `null` until the hub gives it (L2-121 AC1). */
+  readonly race = this.raceSeat.asReadonly();
+  /** The race session's start grid, the latest the hub sent; each replaces the last (L2-055 AC3). */
+  readonly seats = this.grid.asReadonly();
+  /** The rider who last left the race lobby with their seat open again, for the notice (L2-055 AC1). */
+  readonly left = this.leaver.asReadonly();
 
   constructor() {
     inject(DestroyRef).onDestroy(() => this.leave());
@@ -65,6 +80,11 @@ export class LiveSessionStore {
     this.forgetReconnect = this.hub.onReconnected(() => this.rejoin());
     this.forgetStandings = this.hub.onStandings((standings) => {
       if (standings.sessionId === ref.sessionId) this.latest.set(standings);
+    });
+    this.forgetSeats = this.hub.onSeatsChanged((change) => {
+      if (change.sessionId !== this.raceSeat()?.sessionId) return;
+      this.grid.set(change.seats);
+      if (change.left !== null) this.leaver.set(change.left);
     });
     try {
       await this.hub.start();
@@ -88,6 +108,18 @@ export class LiveSessionStore {
     void this.hub.reportProgress(seat.sessionId, outputKj, powerWatts).catch(() => undefined);
   }
 
+  /** Tells the hub the rider is ready, or no longer (L2-053 AC1, AC2). */
+  setReady(ready: boolean): void {
+    const race = this.raceSeat();
+    if (race !== null) void this.hub.setReady(race.sessionId, ready).catch(() => undefined);
+  }
+
+  /** Releases the rider's seat in the race lobby (L2-057 AC1), then closes the connection as the route goes. */
+  leaveRace(): void {
+    const race = this.raceSeat();
+    if (race !== null) void this.hub.leaveRace(race.sessionId).catch(() => undefined);
+  }
+
   /** The server's time now, in Unix milliseconds, or `null` before the offset is measured. */
   serverNow(): number | null {
     const offset = this.offset();
@@ -101,12 +133,30 @@ export class LiveSessionStore {
 
   private async takeSeat(): Promise<void> {
     const session = this.session;
-    if (session?.kind !== 'class' || session.classId === undefined) return;
+    if (session?.kind === 'race' && session.mapId !== undefined)
+      return this.findRace(session, session.mapId);
+    if (
+      session?.kind !== 'class' ||
+      session.classId === undefined ||
+      session.sessionId === undefined
+    )
+      return;
     try {
       const seat = await this.hub.joinClassSession(session.classId, session.sessionId);
       if (this.session === session) this.taken.set(seat);
     } catch (error) {
       // A lost connection is not a refusal: the next reconnect asks again.
+      if (error instanceof RideHubError && this.session === session) this.refusal.set(error.code);
+    }
+  }
+
+  private async findRace(session: SessionRef, mapId: string): Promise<void> {
+    try {
+      const race = await this.hub.findRace(mapId);
+      if (this.session !== session) return;
+      this.raceSeat.set(race);
+      this.grid.set(race.seats);
+    } catch (error) {
       if (error instanceof RideHubError && this.session === session) this.refusal.set(error.code);
     }
   }
@@ -133,6 +183,8 @@ export class LiveSessionStore {
     this.forgetReconnect = null;
     this.forgetStandings?.();
     this.forgetStandings = null;
+    this.forgetSeats?.();
+    this.forgetSeats = null;
     void this.hub.stop();
   }
 }

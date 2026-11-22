@@ -3,12 +3,14 @@ import { RouterLink } from '@angular/router';
 import { FULLSCREEN } from '@telo/api';
 import { FullscreenToggle, Lockup, StartClock, StartGrid } from '@telo/components';
 import { ResistanceController } from '@telo/domain';
+import { LiveSessionStore } from '../live/live-session-store';
 import { LobbyStore } from './lobby-store';
 
 /**
  * The race lobby at `/race/:mapId/lobby` (docs/mocks/pages/race-lobby/, L2-051): the header with the map, Leave and
- * Full screen, the start clock and the start grid, the clock beside the grid from lg. It provides its store and the
- * target resistance, which go when the rider leaves.
+ * Full screen, the start clock and the start grid, the clock beside the grid from lg. It provides its store, the live
+ * session (whose hub connection opens only in a riders-online lobby) and the target resistance, which go when the
+ * rider leaves.
  */
 @Component({
   selector: 'wz-race-lobby-page',
@@ -16,7 +18,7 @@ import { LobbyStore } from './lobby-store';
   templateUrl: './race-lobby-page.html',
   styleUrl: './race-lobby-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [LobbyStore, ResistanceController],
+  providers: [LobbyStore, LiveSessionStore, ResistanceController],
 })
 export default class RaceLobbyPage {
   protected readonly store = inject(LobbyStore);

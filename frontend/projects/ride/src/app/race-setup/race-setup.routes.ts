@@ -1,5 +1,5 @@
 import type { Routes } from '@angular/router';
-import { HttpProgressApi, PROGRESS_API } from '@telo/api';
+import { HttpProgressApi, HttpRaceQueueApi, PROGRESS_API, RACE_QUEUE_API } from '@telo/api';
 import { provideMaps } from '../maps/provide-maps';
 import { openMapGuard } from '../maps/open-map.guard';
 
@@ -16,6 +16,8 @@ export const raceSetupRoutes: Routes = [
       provideMaps(),
       // The rider's maps and level, from the backend (L2-040, L2-041).
       { provide: PROGRESS_API, useClass: HttpProgressApi },
+      // The riders queuing for Riders online, over HTTP: Race Setup holds no hub connection (L2-048 AC3, L2-120 AC4).
+      { provide: RACE_QUEUE_API, useClass: HttpRaceQueueApi },
     ],
     canActivate: [openMapGuard],
     loadComponent: () => import('./race-setup-page'),

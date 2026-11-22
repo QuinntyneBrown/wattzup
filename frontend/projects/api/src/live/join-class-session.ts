@@ -22,7 +22,7 @@ export interface SeatAssignment {
 
 /** The codes a join is refused with; a screen branches on them. */
 export type RideHubErrorCode =
-  'session_full' | 'session_started' | 'class_locked' | 'session_not_found';
+  'session_full' | 'session_started' | 'class_locked' | 'session_not_found' | 'map_not_found';
 
 /** A refused join (L2-122 AC2, L2-086 AC3, L2-082): its code and the session offered instead, when there is one. */
 export class RideHubError extends Error {

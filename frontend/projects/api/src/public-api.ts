@@ -40,6 +40,7 @@ export type { Plan, Segment, SegmentKind } from './workout/plan';
 export { FULLSCREEN, type Fullscreen } from './screen/fullscreen';
 export { SCREEN_WAKE_LOCK, type ScreenWakeLock } from './screen/screen-wake-lock';
 export { HttpMapsApi } from './maps/http-maps-api';
+export { HttpRaceQueueApi, RACE_QUEUE_API, type RaceQueueApi } from './race/race-queue-api';
 export type { MapDto, MapRating, MapTerrain, RealPlace } from './maps/map-dto';
 export { MAPS_KEY, type MapsKey } from './maps/maps-key';
 export { MAPS_API, type MapsApi } from './maps/maps-api';
@@ -116,6 +117,13 @@ export {
   type SeatAssignment,
 } from './live/join-class-session';
 export { RIDE_HUB_CLIENT, type RideHubClient, type RideHubState } from './live/ride-hub-client';
+export {
+  type FindRaceResult,
+  type RaceSeatAssignment,
+  type RaceSeatDto,
+  type SeatsChanged,
+  raceSeatFrom,
+} from './live/find-race';
 export { RideHubRetryPolicy, type RetryContext } from './live/ride-hub-retry-policy';
 export { SignalRRideHubClient } from './live/signalr-ride-hub-client';
 export type { StandingRow, Standings } from './live/standings';

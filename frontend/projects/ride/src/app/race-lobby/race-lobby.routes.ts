@@ -1,5 +1,12 @@
 import type { Routes } from '@angular/router';
-import { FULLSCREEN, HttpProgressApi, PROGRESS_API } from '@telo/api';
+import {
+  FULLSCREEN,
+  HttpProgressApi,
+  MONOTONIC_TIME,
+  PROGRESS_API,
+  RIDE_HUB_CLIENT,
+  SignalRRideHubClient,
+} from '@telo/api';
 import { BrowserFullscreen } from '@telo/domain';
 import { openMapGuard } from '../maps/open-map.guard';
 import { provideMaps } from '../maps/provide-maps';
@@ -19,6 +26,10 @@ export const raceLobbyRoutes: Routes = [
       { provide: PROGRESS_API, useClass: HttpProgressApi },
       // The header's Full screen (L2-051 AC1, L2-144).
       { provide: FULLSCREEN, useClass: BrowserFullscreen },
+      // The clock the live session measures its offset on, and the ride hub's client, whose SignalR library is imported
+      // only when a riders-online lobby joins its session (L2-120).
+      { provide: MONOTONIC_TIME, useValue: { now: () => performance.now() } },
+      { provide: RIDE_HUB_CLIENT, useClass: SignalRRideHubClient },
     ],
     canActivate: [openMapGuard],
     loadComponent: () => import('./race-lobby-page'),
