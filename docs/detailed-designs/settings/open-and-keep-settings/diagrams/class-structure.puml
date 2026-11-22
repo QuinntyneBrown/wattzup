@@ -14,6 +14,9 @@ skinparam class {
 hide empty members
 title Class structure — Open and keep settings
 class RideSettings <<api>> {
+  .. slice 20.1 ..
+  +keepAwake: boolean
+  .. slices 20.2 to 20.5 ..
   +quality: 'auto' | 'ultra' | 'high' | 'medium' | 'low'
   +stepDown: boolean
   +frameRate: 'display' | '30'
@@ -26,7 +29,6 @@ class RideSettings <<api>> {
   +reduceMotion: 'device' | 'on' | 'off'
   +theme: 'device' | 'dark' | 'light'
   +rideNumbers: 'standard' | 'large'
-  +keepAwake: boolean
   +fullScreenOnStart: boolean
   +keepWorlds: boolean
   +deviceCheck?: DeviceCheckResult
@@ -39,12 +41,9 @@ interface RideSettingsStore <<api>> {
 }
 class LocalRideSettingsStore <<domain/storage>> {
   -key = 'telo-ride.settings.v1'
-  -state: WritableSignal<RideSettings>
-  -onStorage(event: StorageEvent): void
-}
-class SafeStorage <<domain/storage>> {
-  +read(key: string): string | null
-  +write(key: string, value: string): boolean
+  -current: WritableSignal<RideSettings>
+  -kept: WritableSignal<boolean>
+  -keep(settings: RideSettings): void
 }
 class "parseRideSettings()" as parse <<domain/storage>> {
   +parseRideSettings(raw: string | null): RideSettings
@@ -56,12 +55,12 @@ class SettingsPage <<ride>> {
   +reset(): void
 }
 class SettingsSection <<components>> {
+  +name: InputSignal<string>
   +heading: InputSignal<string>
   +description: InputSignal<string>
 }
 RideSettingsStore <|.. LocalRideSettingsStore
 LocalRideSettingsStore --> RideSettings : holds
-LocalRideSettingsStore *-- SafeStorage
 LocalRideSettingsStore ..> parse : parses
 SettingsPage ..> RideSettingsStore : RIDE_SETTINGS
 SettingsPage ..> SettingsSection : renders 5

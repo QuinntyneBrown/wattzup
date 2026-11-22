@@ -1,0 +1,15 @@
+<span class="switch-row__text">
+  <span class="switch-row__label" aria-hidden="true">{{ label() }}</span>
+  @if (description()) {
+    <span class="switch-row__desc" [id]="name() + '-desc'">{{ description() }}</span>
+  }
+</span>
+<button
+  wz-switch
+  class="switch-row__switch"
+  [checked]="checked()"
+  [attr.aria-describedby]="description() ? name() + '-desc' : null"
+  (click)="toggled.emit(!checked())"
+>
+  <span class="visually-hidden">{{ label() }}</span>
+</button>

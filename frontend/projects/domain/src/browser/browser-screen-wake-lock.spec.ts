@@ -1,9 +1,11 @@
 // Unit test
-// Traces to: L2-133 AC3
+// Traces to: L2-133 AC3, L2-164 AC5
 // Description: the screen lock is asked for on hold, asked for again each time the tab becomes visible, let go on
 // release or when its owner is destroyed, and the app carries on where the browser has no Screen Wake Lock API or
-// refuses one.
+// refuses one. With Keep the screen awake off, it asks for nothing.
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { RIDE_SETTINGS, type RideSettingsStore } from '@telo/api';
 import { BrowserScreenWakeLock } from './browser-screen-wake-lock';
 
 interface FakeSentinel {
@@ -14,6 +16,7 @@ interface FakeSentinel {
 describe('BrowserScreenWakeLock', () => {
   let sentinels: FakeSentinel[];
   let request: ReturnType<typeof vi.fn>;
+  const keepAwake = signal(true);
 
   const install = (wakeLock: unknown) =>
     Object.defineProperty(navigator, 'wakeLock', { configurable: true, value: wakeLock });
@@ -22,11 +25,22 @@ describe('BrowserScreenWakeLock', () => {
     document.dispatchEvent(new Event('visibilitychange'));
   };
   const create = () => {
-    TestBed.configureTestingModule({ providers: [BrowserScreenWakeLock] });
+    TestBed.configureTestingModule({
+      providers: [
+        BrowserScreenWakeLock,
+        {
+          provide: RIDE_SETTINGS,
+          useValue: {
+            settings: () => ({ keepAwake: keepAwake() }),
+          } as unknown as RideSettingsStore,
+        },
+      ],
+    });
     return TestBed.inject(BrowserScreenWakeLock);
   };
 
   beforeEach(() => {
+    keepAwake.set(true);
     sentinels = [];
     request = vi.fn(async () => {
       const sentinel: FakeSentinel = {
@@ -86,6 +100,14 @@ describe('BrowserScreenWakeLock', () => {
     await vi.waitFor(() => expect(sentinels).toHaveLength(1));
     TestBed.resetTestingModule();
     expect(sentinels[0].released).toBe(true);
+  });
+
+  it('asks for nothing with Keep the screen awake off', async () => {
+    keepAwake.set(false);
+    create().hold();
+    setVisibility('visible');
+    await Promise.resolve();
+    expect(request).not.toHaveBeenCalled();
   });
 
   it('does nothing where the browser has no Screen Wake Lock API', () => {

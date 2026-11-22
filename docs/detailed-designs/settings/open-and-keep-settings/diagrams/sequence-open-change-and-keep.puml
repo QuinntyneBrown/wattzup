@@ -20,22 +20,18 @@ box "Frontend — Ride app (ride application)" #E0F2FE
   participant "Ride screens" as consumers
 end box
 box "Frontend — Ride app (components library)" #E0F2FE
-  participant "Segmented / SwitchRow" as control
+  participant "SwitchRow" as control
 end box
 box "Frontend — Ride app (domain library)" #E0F2FE
   participant "LocalRideSettingsStore" as store
-  participant "SafeStorage" as safe
 end box
 participant "localStorage" as ls
-store -> safe : read('telo-ride.settings.v1') at start
+store -> ls : getItem('telo-ride.settings.v1') at start
 alt Storage available
-  safe -> ls : getItem
-  ls --> safe : JSON or null
-  safe --> store : raw
+  ls --> store : JSON or null
   store -> store : parseRideSettings(raw): bad fields take recommended values (L2-158 AC5)
-else Storage refused
-  safe --> store : null; persisted = false
-  store -> store : RECOMMENDED_SETTINGS in memory
+else Storage refused (throws)
+  store -> store : persisted = false; RECOMMENDED_SETTINGS in memory
 end
 actor -> page : Open /settings (from Profile or "Quality settings")
 page -> store : settings(), persisted()
@@ -43,15 +39,13 @@ page -> control : Render five sections and the section nav (L2-158 AC1, AC2)
 opt persisted is false
   page --> actor : warning "This browser isn’t keeping your settings." (L2-158 AC7)
 end
-actor -> control : Change "Ride numbers" to Large
-control -> page : change(value)
-page -> store : set('rideNumbers', 'large')
-store -> store : state.update; signal changes
+actor -> control : Turn "Keep the screen awake" off
+control -> page : toggled(false)
+page -> store : set('keepAwake', false)
+store -> store : current.set; signal changes
 store --> consumers : computed settings change at once, mid-ride too (L2-158 AC3)
-store -> safe : write(key, JSON)
-alt Written
-  safe -> ls : setItem; this device only, never sent (L2-158 AC4)
-else Refused
-  safe --> store : false; the value lasts for this tab
+store -> ls : setItem(key, JSON); this device only, never sent (L2-158 AC4)
+alt Refused (throws)
+  store -> store : persisted = false; the value lasts for this tab
 end
 @enduml

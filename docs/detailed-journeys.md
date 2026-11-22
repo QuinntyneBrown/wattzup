@@ -78,7 +78,7 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 19.2 | Bounded ride buffers | Power and cadence traces, packet logs and leaderboards use fixed-size buffers, so memory stays flat over an hour. | 2 | 19. Stay smooth on long rides | 100% |
 | 19.3 | Heap checks | Heap stays stable across repeated enter and leave of the race, class and world screens. | 2 | 19. Stay smooth on long rides | 100% |
 | 19.4 | Web vitals and frame budget | Measure LCP, INP and frame times on reference devices. | 2 | 19. Stay smooth on long rides | 100% |
-| 20.1 | Settings page and store | `/settings`, sections, apply at once, kept on device, reset. | 3 | 20. Tune ride settings | 0% |
+| 20.1 | Settings page and store | `/settings`, sections, apply at once, kept on device, reset. | 3 | 20. Tune ride settings | 100% |
 | 20.2 | World quality controls | Quality cards, step-down, frame rate, resolution, graphics API. | 3 | 20. Tune ride settings | 0% |
 | 20.3 | Check this device | Off-screen trials find the level the device holds. | 2 | 20. Tune ride settings | 0% |
 | 20.4 | Sound, motion and display | Ride sound, music, reduce motion, theme, ride numbers, wake lock. | 2 | 20. Tune ride settings | 0% |
@@ -103,4 +103,4 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 27.1 | Installable app | Manifest, icons and install from Chrome or Edge. | 2 | 27. Install the app | 0% |
 | 27.2 | Update to a new version | Tell the rider a new version is ready; reload between rides. | 1 | 27. Install the app | 0% |
 
-**Total:** 95 slices, 238 days. **Complete:** 71 slices, 184 days (77%).
+**Total:** 95 slices, 238 days. **Complete:** 72 slices, 187 days (79%).

@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
+import { filter, map } from 'rxjs';
 import {
   BIKE_CONNECTION,
   BLUETOOTH_SUPPORT,
@@ -20,8 +22,9 @@ import { bikeStatus } from '@telo/domain';
 import { toLevelView } from '../progress/level-view';
 
 /**
- * The layout route of the four home screens and Page not found: the app header over the scrolling page. The router
- * marks the current item (`ariaCurrentWhenActive`), so an address that matches no screen marks none. Entering it reads
+ * The layout route of the four home screens, Settings and Page not found: the app header over the scrolling page. The
+ * item the address falls under is current, and Profile is current on Settings too (L2-158 AC1); an address that
+ * matches no item marks none. Entering it reads
  * the rider's progress again, so the level link shows what the last ride earned (L2-032 AC2).
  */
 @Component({
@@ -29,7 +32,6 @@ import { toLevelView } from '../progress/level-view';
   imports: [
     RouterOutlet,
     RouterLink,
-    RouterLinkActive,
     AppHeader,
     AppHeaderBike,
     AppHeaderBrand,
@@ -80,9 +82,35 @@ export default class MainShell {
   );
 
   protected readonly items = [
-    { label: 'Home', path: '/', exact: true },
-    { label: 'Race', path: '/race', exact: false },
-    { label: 'Classes', path: '/classes', exact: false },
-    { label: 'Profile', path: '/profile', exact: false },
+    { label: 'Home', path: '/', also: [] },
+    { label: 'Race', path: '/race', also: [] },
+    { label: 'Classes', path: '/classes', also: [] },
+    { label: 'Profile', path: '/profile', also: ['/settings'] },
   ] as const;
+
+  private readonly router = inject(Router);
+  private readonly path = toSignal(
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map(() => pathOf(this.router.url)),
+    ),
+    { initialValue: pathOf(this.router.url) },
+  );
+
+  /** The item the address falls under: Home on `/` only, any other on its path and below. */
+  protected readonly current = computed(() => {
+    const path = this.path();
+    return (
+      this.items.find((item) =>
+        item.path === '/'
+          ? path === '/'
+          : [item.path, ...item.also].some((p) => path === p || path.startsWith(`${p}/`)),
+      )?.path ?? null
+    );
+  });
+}
+
+/** The address without its query or fragment. */
+function pathOf(url: string): string {
+  return url.split(/[?#]/)[0] ?? url;
 }

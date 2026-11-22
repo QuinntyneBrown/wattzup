@@ -81,6 +81,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 19.2 | [Bounded ride buffers](19-2-bounded-ride-buffers/README.md) | 1:41 | A three-hour class ridden to its end, its ride submitted with one speed sample a second from a buffer set aside once, at every width |
 | 19.3 | [Heap checks](19-3-heap-checks/README.md) | 1:41 | The heap checks a person runs: the race with its world and a class ride entered and left six times, and a three-hour class, at every width |
 | 19.4 | [Web vitals and frame budget](19-4-web-vitals-and-frame-budget/README.md) | 1:41 | The performance checks a person runs on the device measured: Home's LCP and INP on a phone profile over 4G, and the race's frame rate at 1920 × 1080, at every width |
+| 20.1 | [Settings page and store](20-1-settings-page-and-store/README.md) | 1:41 | Settings at `/settings` from Profile: five sections and their nav, a change applied at once and kept on this device, Reset to recommended, the warning under refused storage, at every width |
 
 ## What every video is
 

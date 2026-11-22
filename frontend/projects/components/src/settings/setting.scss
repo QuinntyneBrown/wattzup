@@ -1,0 +1,20 @@
+// Block setting (docs/mocks/pages/settings/): one row of a section's list.
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  padding-block: var(--space-4);
+}
+
+:host(:first-child) {
+  padding-top: 0;
+}
+
+:host(:last-child) {
+  padding-bottom: 0;
+}
+
+:host(:not(:first-child)) {
+  border-top: var(--border-width-hairline) solid var(--color-line);
+}
