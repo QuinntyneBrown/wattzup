@@ -31,7 +31,8 @@ public sealed record SubmitRideRequest(
     double OnTargetShare,
     IReadOnlyList<double>? SpeedSamplesKmh,
     DateTimeOffset? FinishedAt,
-    string? TimeZoneId)
+    string? TimeZoneId,
+    string? SessionId = null)
 {
     /// <summary>What the plausibility rule checks.</summary>
     public RideFacts Facts => new(ElapsedSeconds, DistanceMeters, MaxPowerWatts, MaxSpeedKmh, SpeedSamplesKmh ?? []);
@@ -115,6 +116,12 @@ public sealed class SubmitRideCommandHandler(IAppDbContext db, IMapCatalogue map
             throw new DomainRuleException("ride_not_plausible", RuleKind.Unprocessable, "No one could have ridden this ride.");
         }
 
+        if (ride.Mode == "online")
+        {
+            request = request with { Ride = await FromResult(request, cancellationToken) };
+            ride = request.Ride;
+        }
+
         var rider = await db.Riders.FirstOrDefaultAsync(known => known.Id == request.RiderId, cancellationToken)
             ?? throw new DomainRuleException("rider_not_found", RuleKind.NotFound, "No such rider.");
         var kind = ride.Kind == "race" ? RideKind.Race : RideKind.Class;
@@ -149,6 +156,7 @@ public sealed class SubmitRideCommandHandler(IAppDbContext db, IMapCatalogue map
             PreviousBestSeconds = finish?.PreviousBestSeconds,
             IsNewBest = finish?.IsNewBest ?? false,
             OpenedMapId = openedMapId,
+            SessionId = ride.SessionId,
             FinishedAt = ride.FinishedAt!.Value,
             TimeZoneId = ride.TimeZoneId!,
             RecordedAt = time.GetUtcNow(),
@@ -172,6 +180,29 @@ public sealed class SubmitRideCommandHandler(IAppDbContext db, IMapCatalogue map
             var first = await Recorded(request, cancellationToken) ?? throw new InvalidOperationException("The ride was neither recorded nor found.");
             return new(RideRecordedDto.From(first), false);
         }
+    }
+
+    /// <summary>
+    /// A riders-online race as the service recorded it, never as the app sent it (L2-125 AC1): the rider's place, the
+    /// field, the second they reached the line (the app's time when the race placed them by distance) and their output.
+    /// Refused with 409 <c>result_pending</c> before the race's result exists, and 404 <c>session_not_found</c> when the
+    /// rider has no seat in it.
+    /// </summary>
+    private async Task<SubmitRideRequest> FromResult(SubmitRideCommand request, CancellationToken cancellationToken)
+    {
+        var ride = request.Ride;
+        var result = await db.SessionResults.FirstOrDefaultAsync(known => known.SessionId == ride.SessionId, cancellationToken)
+            ?? throw new DomainRuleException("result_pending", RuleKind.Conflict, "The race's result is not recorded yet.");
+        var entry = result.Entries.FirstOrDefault(each => each.RiderId == request.RiderId)
+            ?? throw new DomainRuleException("session_not_found", RuleKind.NotFound, "No such race session.");
+        return ride with
+        {
+            MapId = result.MapId,
+            Place = entry.Place,
+            FieldSize = result.Entries.Count,
+            ElapsedSeconds = entry.TimeSeconds ?? ride.ElapsedSeconds,
+            OutputKj = entry.OutputKj,
+        };
     }
 
     /// <summary>Records a race's finish on the rider's progress on its map, started on the first race there (L2-039, L2-077).</summary>

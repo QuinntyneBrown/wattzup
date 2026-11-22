@@ -24,6 +24,9 @@ public sealed class RecordedRide
     /// <summary>The bots' pack strength; none in a solo race.</summary>
     public string? Pack { get; init; }
 
+    /// <summary>The riders-online race session whose result gave this ride its place, time and output (L2-125 AC1).</summary>
+    public string? SessionId { get; init; }
+
     public int? Place { get; init; }
 
     public int? FieldSize { get; init; }

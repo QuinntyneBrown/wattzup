@@ -58,7 +58,7 @@ internal sealed class InMemoryRaceSessionRegistry : IRaceSessionRegistry
         lock (sessions)
         {
             Prune(now);
-            return [.. sessions.Where(session => session.StartsAt <= now)];
+            return [.. sessions.Where(session => session.StartsAt <= now && !session.Ended)];
         }
     }
 
