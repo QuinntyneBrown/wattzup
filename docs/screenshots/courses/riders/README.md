@@ -24,6 +24,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 13 | Hips and legs of a cyclist: glutes that are the thighs' own tops, fuller thighs, calves that swell behind | 119.8 fps, 1 over 20 ms | 25.0 ms | 308 fps (3.25 ms): 305, 312, 308 | 87,691 | 84 | Yes |
 | 14 | A road helmet: a long low shell with vents along its crown, a dark rim and a pale tail | 119.7 fps, 1 over 20 ms | 25.0 ms | 303 fps (3.30 ms): 299, 303, 309 | 87,751 | 84 | Yes |
 | 15 | Shoes, hands and arms: a cupped heel with a tab, a strap and toe cap; a hand that holds the hood; arms with their muscles | 120.0 fps, 0 over 20 ms | 16.7 ms | 303 fps (3.30 ms): 291, 307, 303 | 90,791 | 84 | Yes |
+| 16 | Lamp light with a side: what faces the nearest lamp is lit more, what faces away less | 119.7 fps, 0 over 20 ms | 16.8 ms | 296 fps (3.37 ms): 296, 301, 293 | 90,791 | 84 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -568,3 +569,26 @@ ball is three lofts (palm, fingers, thumb); the arm's lofts have their muscles' 
 **Cost.** A few hundred triangles for the pack; the frame rate is within the spread of the passes before.
 
 **Learned.** What the following camera sees of a foot is its heel. The heel got the detail; the toe got a cap.
+
+## Pass 16: lamp light with a side
+
+**Before** (`rider-15.mp4`): the lamps' light on a rider depends on where the rider is and on whether a surface
+faces up or down, and on nothing else: a lamp ahead and a lamp behind light the rider's back alike.
+
+**After** (`rider-16.mp4`; `rider-16.jpg` is five frames of it): a surface that faces the nearest lamp takes up to
+45 % more of its light and one that faces away 45 % less. The rider's back brightens as a lamp falls behind and
+dims as the next comes up ahead, in step with the pools of light on the road. Where a rider is nearer one kerb than
+the other, that side of them is the lit one. On the centre line, between two rows of lamps, the two sides are lit
+alike: this pass shows mostly as the light on the rider's back rising and falling, less as a lit and a shaded side.
+
+**What changed.** `lamp-glow.ts`: the slope of the lamps' light across the ground is read from the same grid that
+gives the light (four more samples, 1.5 cells apart); its direction is towards the nearest lamp. A rider's lamp-lit
+material multiplies the lamps' light by `1 + 0.45 × (the surface's horizontal facing · that direction)`. Only the
+riders' materials use it; the map's are as they were.
+
+**Cost.** Four texture samples for each of a rider's pixels: 296 fps against 303, no frame over 20 ms.
+
+**Tried and dropped.** 60 %: at its brightest the jersey washed out.
+
+**Learned.** A map of how much light there is also says where it comes from: its slope points at the lamp. No list
+of lamps has to reach the shader.

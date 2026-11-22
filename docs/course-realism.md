@@ -712,6 +712,22 @@ also be lit by its `diffuseColor`, not its plain colour.
 
 **Watch for.** Shade painted where baked shade (R8) already falls: under the arms both are light on purpose.
 
+### R11. The lamps' light from a side (riders pass 16)
+
+**What it gives.** Riders whose lit side follows the lamps: brighter towards the nearest one, changing as it passes.
+
+**How it works.** `LampGlow` reads the light grid's slope (technique 9's grid, four samples) and turns it into a
+direction on the ground, at most one long; `rider()` multiplies the lamps' light by
+`1 + SIDE_LIGHT × dot(normal.xz, direction)`.
+
+**To apply it.** Nothing to do for a map with `lamps` or `lights`. A map with lamps down one kerb only shows it
+most. The same factor could light the map's own standing things (posts, crates, parked cars) if they should show a
+lit side.
+
+**Cost.** Four texture samples a pixel of a rider.
+
+**Watch for.** A grid too coarse for its lamps: the slope is then noise. `SLOPE_CELLS` widens the read.
+
 ### R10. The rider framed above the HUD (riders pass 11)
 
 **What it gives.** The rider whole in the picture on every map: wheels, the road under them, their shadow and

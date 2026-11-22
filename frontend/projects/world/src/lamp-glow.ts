@@ -47,6 +47,14 @@ const FADE_TO = 9;
 /** The share of a lamp's light that reaches a surface facing straight down, off the ground beneath it. */
 const FROM_BELOW = 0.22;
 
+/**
+ * A rider's lit side: how many cells apart the light's slope is read, how fast the slope counts as all one way, and
+ * how much more (or less) light the side facing a lamp takes.
+ */
+const SLOPE_CELLS = 1.5;
+const SLOPE_GAIN = 9;
+const SIDE_LIGHT = 0.45;
+
 /** The lamps' light as materials read it. */
 export class LampGlow {
   private readonly grid: DataTexture;
@@ -58,6 +66,8 @@ export class LampGlow {
   readonly coloured: Node<'vec3'> | null = null;
   /** The lamps' light at the surface being drawn, in the lamps' colour: 1 is a lone lamp straight overhead. */
   readonly light: Node<'vec3'>;
+  /** How much more or less of the lamps' light a surface takes for facing towards or away from the nearest lamp. */
+  private readonly sided: Node<'float'>;
 
   constructor(map: LampLightMap, lamps: CourseLamps, colours: ColourLightMap | null = null) {
     const grid = new DataTexture(map.texels, map.width, map.height, RGFormat, UnsignedByteType);
@@ -68,6 +78,17 @@ export class LampGlow {
       .sub(vec2(map.minX, map.minZ))
       .div(vec2(map.width * map.cell, map.height * map.cell));
     const cell = texture(grid, at);
+    // Which way the light grows across the ground, from the grid's own slope: towards the nearest lamp. A surface
+    // that faces that way is lit more and one that faces away less, so a rider has a lit side and a shaded one,
+    // and they change over as each lamp is passed. Under a lamp the light is level and falls on both alike.
+    const du = vec2(SLOPE_CELLS / map.width, 0);
+    const dv = vec2(0, SLOPE_CELLS / map.height);
+    const slope = vec2(
+      texture(grid, at.add(du)).r.sub(texture(grid, at.sub(du)).r),
+      texture(grid, at.add(dv)).r.sub(texture(grid, at.sub(dv)).r),
+    ).mul(SLOPE_GAIN);
+    const towards = slope.div(slope.length().max(1));
+    this.sided = float(1).add(normalWorld.xz.dot(towards).mul(SIDE_LIGHT));
     const above = positionWorld.y.sub(cell.g.mul(map.spanY).add(map.minY));
     const tint = new Color(lamps.colour);
     let lit: Node<'vec3'> = vec3(tint.r, tint.g, tint.b).mul(
@@ -126,6 +147,7 @@ export class LampGlow {
     // The lamps' glow is all around, so a glossy surface throws it back along its edges, in the lamps' own colour.
     material.emissiveNode = surface
       .mul(this.light)
+      .mul(this.sided)
       .mul(strength)
       .add(this.light.mul(sheen(gloss)).mul(SHEEN));
     return material;
