@@ -129,7 +129,12 @@
       </div>
       <!-- The group board, from the hub's standings: a right-hand column from lg, under the video below (L2-090). -->
       @if (store.board(); as board) {
-        <wz-class-board [place]="board.place" [total]="board.total" [rows]="board.rows" />
+        <wz-class-board
+          [place]="board.place"
+          [total]="board.total"
+          [rows]="board.rows"
+          [notice]="store.boardNotice()"
+        />
       }
     </main>
     @if (store.bikeLost()) {

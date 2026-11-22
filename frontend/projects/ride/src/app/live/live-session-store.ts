@@ -1,4 +1,4 @@
-import { DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core';
 import {
   measureClockOffset,
   MONOTONIC_TIME,
@@ -24,6 +24,9 @@ export interface SessionRef {
   readonly classId?: string;
   readonly mapId?: string;
 }
+
+/** What a board says while the service is lost and the ride carries on (L2-126 AC1). */
+export const SERVICE_LOST_NOTICE = 'Reconnecting. The standings will catch up.';
 
 /** How many ServerTime calls one measurement of the clock offset takes. */
 const SAMPLES = 5;
@@ -60,6 +63,8 @@ export class LiveSessionStore {
   private forgetReconnect: (() => void) | null = null;
 
   readonly connection = this.hub.state;
+  /** Whether the hub connection dropped and is retrying; the ride carries on with the bike all the while (L2-126 AC1). */
+  readonly serviceLost = computed(() => this.connection() === 'reconnecting');
   /** The server's clock minus the device's monotonic clock, in milliseconds; `null` until measured. */
   readonly offsetMs = this.offset.asReadonly();
   /** The rider's seat in the session; `null` until the hub gives it. */

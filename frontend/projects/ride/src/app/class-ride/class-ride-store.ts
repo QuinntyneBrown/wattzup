@@ -26,7 +26,7 @@ import {
   WorkoutEngine,
   planStateAt,
 } from '@telo/domain';
-import { LiveSessionStore } from '../live/live-session-store';
+import { LiveSessionStore, SERVICE_LOST_NOTICE } from '../live/live-session-store';
 import { groupBoardView } from './group-board-view';
 
 /** A live stat as the bike panel shows it. */
@@ -87,6 +87,8 @@ export class ClassRideStore {
   readonly ride = this.loaded.asReadonly();
   /** Whether the ride is in a group session (`?session=`): its header reads "Group" and it has no Pause (L2-087 AC1). */
   readonly group: boolean;
+  /** The board's notice while the service is lost and the ride carries on (L2-126 AC1); `null` otherwise. */
+  readonly boardNotice = computed(() => (this.live?.serviceLost() ? SERVICE_LOST_NOTICE : null));
   /** The group board from the hub's latest standings (L2-090 AC1); `null` in a solo ride or before the first. */
   readonly board = computed(() =>
     this.live === null

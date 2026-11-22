@@ -47,7 +47,7 @@ import {
   routeProfileView,
 } from '@telo/domain';
 import { catchError, of, take } from 'rxjs';
-import { LiveSessionStore } from '../live/live-session-store';
+import { LiveSessionStore, SERVICE_LOST_NOTICE } from '../live/live-session-store';
 import { liveRaceStandings } from './live-race-standings';
 
 /**
@@ -237,6 +237,9 @@ export class RaceStore {
   /** The bike's reported resistance (L2-063 AC1), and whether Lower and Raise can reach it (L2-028 AC4). */
   readonly resistance = this.telemetry.resistance;
   readonly canControl = this.resistanceControl.canControl;
+
+  /** The board's notice while the service is lost and the race carries on (L2-126 AC1); `null` otherwise. */
+  readonly boardNotice = computed(() => (this.live.serviceLost() ? SERVICE_LOST_NOTICE : null));
 
   /** "Standings · 10 riders", or "You vs your best" in a solo race (L2-060 AC1, AC4). */
   readonly boardHeading = computed(() =>

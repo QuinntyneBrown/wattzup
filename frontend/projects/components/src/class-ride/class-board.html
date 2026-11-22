@@ -7,6 +7,11 @@
       >
     }
   </div>
+  <div class="class-board__status" role="status">
+    @if (notice(); as notice) {
+      <wz-inline-message size="sm">{{ notice }}</wz-inline-message>
+    }
+  </div>
   <ol class="class-board__list">
     @for (row of rows(); track row.jersey) {
       <li

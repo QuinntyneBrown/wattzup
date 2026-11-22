@@ -15,4 +15,6 @@ export type InlineMessageTone = 'warn' | 'error' | 'success';
 })
 export class InlineMessage {
   readonly tone = input<InlineMessageTone>('warn');
+  /** `sm` for a line inside a small panel, such as a board's notice (design-system `inline-message--sm`). */
+  readonly size = input<'md' | 'sm'>('md');
 }

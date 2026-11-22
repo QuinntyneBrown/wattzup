@@ -1,5 +1,10 @@
 <aside class="race-board" aria-labelledby="race-board-title">
   <h2 class="race-board__title" id="race-board-title">{{ heading() }}</h2>
+  <div class="race-board__status" role="status">
+    @if (notice(); as notice) {
+      <wz-inline-message size="sm">{{ notice }}</wz-inline-message>
+    }
+  </div>
   <ol class="race-board__list">
     @for (row of rows(); track row.id) {
       <li

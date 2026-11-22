@@ -25,6 +25,10 @@
   padding-inline: var(--space-4);
 }
 
+.class-board__status:not(:empty) {
+  padding: var(--space-1) var(--space-4) 0;
+}
+
 .class-board__title {
   margin: 0;
   font-size: var(--font-size-sm);

@@ -3,6 +3,7 @@
   [class.inline-message--warn]="tone() === 'warn'"
   [class.inline-message--error]="tone() === 'error'"
   [class.inline-message--success]="tone() === 'success'"
+  [class.inline-message--sm]="size() === 'sm'"
 >
   <svg class="inline-message__icon" viewBox="0 0 24 24" aria-hidden="true">
     @switch (tone()) {
