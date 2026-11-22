@@ -61,3 +61,6 @@ device; with `WZ_BENCH_TIER=low` it is the nearest the bench comes to a tablet. 
 `WZ_BENCH_PROFILE=1` samples the page's processor while it is timed and writes the forty functions with the most
 self time, as a share of the ten seconds, to `<label>-cpu.txt` (`(idle)` and `(program)`, the browser's own work,
 among them).
+
+`WZ_BENCH_CSS=<rules>` adds style rules to the page and `WZ_BENCH_HIDE_HUD=1` hides everything but the canvas: for
+finding what a panel over the canvas costs before changing it (`docs/screenshots/courses/low-power/README.md`).

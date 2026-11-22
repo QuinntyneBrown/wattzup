@@ -69,7 +69,11 @@
 
 .race-interval__fill {
   fill: var(--kind);
-  transition: width var(--duration-countdown) linear;
+  // The bar eases to each second's place in four steps, not continuously. It moves less than a pixel a second
+  // (an interval is 30 seconds to five minutes across some 300 px), so the eye sees the same bar; but a continuous
+  // transition of a width is worked out, laid out and painted on every frame the display shows, which on a slow
+  // processor cost a fifth of each frame of the race (docs/screenshots/courses/low-power/README.md).
+  transition: width var(--duration-countdown) steps(4, end);
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;

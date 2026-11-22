@@ -150,6 +150,15 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
     );
   }
 
+  // WZ_BENCH_HIDE_HUD=1 hides everything on the page but the canvas, to see what the panels over it cost.
+  if (process.env["WZ_BENCH_HIDE_HUD"] === "1") {
+    await page.addStyleTag({
+      content: "body *:not(canvas):not(:has(canvas)) { display: none !important; }",
+    });
+  }
+  // WZ_BENCH_CSS=<rules> adds style rules to the page, to try a change to the panels without building it.
+  const css = process.env["WZ_BENCH_CSS"];
+  if (css) await page.addStyleTag({ content: css });
   // WZ_BENCH_CPU=<n> slows the page's processor n times, as a stand-in for a slower device's. It does not slow the
   // graphics chip: a real device is the only true test.
   const slowed = Number(process.env["WZ_BENCH_CPU"] ?? 1);
