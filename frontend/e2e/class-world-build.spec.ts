@@ -52,6 +52,9 @@ test.describe('Building the world', () => {
     await expect(loading.facts.nth(1)).toHaveText('Auto quality · Low');
     await expect(loading.cardTitle).toHaveText('Old Town Criterium is ready', { timeout: 30_000 });
     await expect(loading.step(1).detail).toHaveText(/^[1-9]\d* programs for (WebGPU|WebGL 2)$/);
+    // The programs are built for the API the world is drawn with, which may be WebGL 2 where WebGPU was offered.
+    const api = await loading.facts.last().textContent();
+    await expect(loading.step(1).detail).toHaveText(new RegExp(`programs for ${api}$`));
     await expect(loading.step(2).detail).toHaveText(/^Holding [1-9]\d* fps at Low$/);
     await expect(loading.facts.nth(1)).toHaveText('Auto quality · Low');
   });

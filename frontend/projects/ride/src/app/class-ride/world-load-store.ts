@@ -277,6 +277,8 @@ export class WorldLoadStore {
     if (this.destroyed) return;
     if (progress.step === 'shaders') {
       this.programs.set({ built: progress.built, total: progress.total });
+      // The programs are built for the API the renderer started with, which may be WebGL 2 where WebGPU was offered.
+      this.backend.set(progress.backend);
     } else if (progress.step === 'warm-up') {
       this.phase.set('warming');
       this.startPercent.set(this.view()?.percent ?? 0);

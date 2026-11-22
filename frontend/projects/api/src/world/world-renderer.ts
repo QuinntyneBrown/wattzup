@@ -50,7 +50,13 @@ export type WorldTier = 'low' | 'medium' | 'high' | 'ultra';
  * in batches (AC4), the warm-up starting at its level, and the frame rate it held there (AC5).
  */
 export type WorldStartProgress =
-  | { readonly step: 'shaders'; readonly built: number; readonly total: number }
+  | {
+      readonly step: 'shaders';
+      readonly built: number;
+      readonly total: number;
+      /** The GPU API the programs are built for, known once the renderer has started. */
+      readonly backend: Backend;
+    }
   | { readonly step: 'warm-up'; readonly tier: WorldTier }
   | { readonly step: 'warmed'; readonly fps: number; readonly tier: WorldTier };
 

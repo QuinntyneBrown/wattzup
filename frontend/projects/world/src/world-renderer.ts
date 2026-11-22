@@ -3372,7 +3372,12 @@ export class ThreeWorldRenderer implements WorldRenderer {
     }
     try {
       await renderer.compileAsync(this.scene, this.camera, null, (event) =>
-        progress?.({ step: 'shaders', built: event.loaded, total: event.total }),
+        progress?.({
+          step: 'shaders',
+          built: event.loaded,
+          total: event.total,
+          backend: this.backend,
+        }),
       );
     } finally {
       renderer.setRenderTarget(target);
