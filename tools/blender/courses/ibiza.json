@@ -4,6 +4,7 @@
   "world": "ibiza",
   "theme": "ibiza",
   "seed": 46,
+  "layout": 48,
   "class": {
     "id": "intervals-to-the-beat",
     "title": "Intervals to the Beat",

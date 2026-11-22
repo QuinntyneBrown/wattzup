@@ -4,6 +4,7 @@
   "world": "coast",
   "theme": "coast",
   "seed": 37,
+  "layout": 2,
   "map": "cliffside-coast",
   "route": "Headland Road",
   "distanceKm": 32,

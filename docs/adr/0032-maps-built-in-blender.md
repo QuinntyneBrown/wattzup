@@ -44,11 +44,15 @@ is the same hill next time. They stand as the concept of each world (`world-<nam
   distance: a rider faster or slower than the course's pace meets a hill before or after its
   resistance. Setting a race's resistance from the rider's place on the course would close that
   (open question 16).
-- `CourseRenderer` draws one quality and steps only its pixel ratio down when frames run slow. The
-  tiers and techniques of L2-159 to L2-161, the Graphics API setting, and the test-only probe's
-  report are `main`'s renderer's and do not apply to a course yet.
-- The map is 3.9 MB uncompressed and about 245,000 triangles, downloaded when the course opens.
-  Draco (the decoder the build already copies for 3D Tiles) would cut it several times over.
+- `CourseRenderer` has its own five tiers (pixel ratio and bloom), opens on a cheap one and steps
+  up only while frames keep the display's pace (L2-166 AC6). The quality and Graphics API settings
+  of L2-159 to L2-161 and the test-only probe's report are `main`'s renderer's and do not reach a
+  course yet.
+- A map is built for low-power tablets (L2-166 AC12): vertex colours and no textures, chunks along
+  the road drawn by distance, blob shadows, merged riders. That budget stands in for a frame rate
+  nobody has yet measured on a real tablet. The maps are 5 to 10 MB each, 2.5 to 5.7 MB gzipped:
+  only Ibiza is within the 3 MB the budget allows. Draco, which Blender proper can write and whose
+  decoder the build already copies for 3D Tiles, would cut the download several times.
 - Ibiza Sunset Strip joins the map catalogue (ADR 0029) as its eighth map, open from the start,
   with the class's 20:00 plan rather than the 30:00 every other map rides. Its place on the unlock
   path is still to be decided.

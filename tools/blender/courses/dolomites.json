@@ -4,6 +4,7 @@
   "world": "dolomites",
   "theme": "dolomites",
   "seed": 64,
+  "layout": 2,
   "map": "dolomites",
   "route": "Val Gardena Valley Road",
   "distanceKm": 38.5,

@@ -4,6 +4,7 @@
   "world": "vicecity",
   "theme": "vicecity",
   "seed": 71,
+  "layout": 1,
   "map": "vice-city",
   "route": "Ocean Drive to the Causeway",
   "distanceKm": 24,

@@ -69,13 +69,28 @@ light ride with the camera. Other riders come from `ridersOnRoad` (as `main`'s) 
 
 **Look.** `courseLook(file)` gives the sky's bands, the haze (the fog and the background), the sun's colour and
 intensity and the hemisphere fill; each part a file does not name, or names wrongly, is the sunset's. The glowing
-meshes (any whose name starts `Glow` or `Accent` too) (neon, bulbs, the arches, the sun, the beams) are drawn past the tone
-mapping, and a bloom pass over the scene (`RenderPipeline`, `BloomNode`) lets them glow. Only the
-riders cast shadows, from one 1024 px map that follows the rider, onto the road and the promenade.
+meshes are unlit and drawn past the tone mapping; at the tiers that have it, a bloom pass over the scene
+(`RenderPipeline`, `BloomNode`) lets them glow.
 
-**Budget.** The map's meshes are static (`matrixAutoUpdate` off), untextured, and shaded flat from
-derivatives (the glb carries no normals). The pixel ratio steps down (2, 1.5, 1, 0.75) when 90
-frames average more than 1.6 display periods; the bloom is drawn only at the first two.
+**The map's meshes.** The glb holds a few groups, each coloured by vertex and drawn with one cheap material (no
+texture, no PBR, shaded flat): `Land`, `Solid`, `Leaves`, `Glow`, `Beams` and `Confetti`, cut into chunks along the
+road (`Solid_012`), and `Sea`, `Sun`, `Conillera`, `StartRed` and `StartGreen` whole. What stands on the ground is
+darker at its foot, baked into its colours. A mesh named for no group is drawn as the loader made it.
+
+**What a frame draws.** Every few frames, and at once when the camera has jumped, each chunk is shown or hidden by
+its distance from the camera, by group: the land to 950 m, solid scenery to 250 m, glow to 400 m, beams to 460 m,
+leaves to 210 m, confetti to 300 m; the haze (200 m to 1500 m) covers the rest. No more than the four nearest riders
+are drawn. A rider's still parts are merged into one mesh a material, and those of a plain colour into one
+vertex-coloured mesh (`merged-cyclist.ts`): some 12 draw calls a rider, not 50. Each rider's shadow is a dark blob
+stretched away from the sun; there is no shadow map.
+
+**Tiers.** Cheapest first: 0.75, 1, 1.5 device pixels a CSS pixel, then 1.5 and 2 with bloom. The ride opens on 1
+with no bloom (L2-111 AC3's rule). Every 90 frames the average frame time is compared with the display's period:
+within 1.1 of it, the tier steps up; over 1.6, it steps down and never steps up again.
+
+**Budget (L2-166 AC12).** The worst frame within 120,000 triangles and 140 draw calls, the map's file within 3 MB
+gzipped. `docs/screenshots/courses/README.md` gives each map's numbers. It is a budget, not a frame rate measured on
+a tablet.
 
 **Dispose.** Every geometry and material of the glb, the sky, the lights, the cyclist kit and each
 rider's materials, and the renderer.

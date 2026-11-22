@@ -4,6 +4,7 @@
   "world": "docklands",
   "theme": "docklands",
   "seed": 52,
+  "layout": 5,
   "map": "neon-docklands",
   "route": "Harbour Bridges Loop",
   "distanceKm": 21.6,

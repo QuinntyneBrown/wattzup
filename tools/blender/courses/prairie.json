@@ -4,6 +4,7 @@
   "world": "prairie",
   "theme": "prairie",
   "seed": 11,
+  "layout": 0,
   "map": "prairie-paceline",
   "route": "Route 9 Wind Farm",
   "distanceKm": 18.4,

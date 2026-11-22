@@ -17,7 +17,7 @@ It writes:
 
 | File | What it is |
 | --- | --- |
-| `frontend/projects/ride/public/courses/<id>.glb` | The map the Ride app draws: glTF binary, +Y up, flat colours, no textures, no normals (the app shades it flat). |
+| `frontend/projects/ride/public/courses/<id>.glb` | The map the Ride app draws: glTF binary, +Y up, coloured by vertex, no textures, no normals (the app shades it flat). |
 | `frontend/projects/ride/public/courses/<id>.course.json` | The road's centre line and the plan's stages along it. The app rides this. |
 | `tools/blender/scenes/<id>.blend` | The Blender scene: open it to look the map over or model it further. The `Guides` collection holds the centre line and is left out of the glb. |
 
@@ -110,6 +110,22 @@ foot of every effort, flags where each recovery begins and arrow boards round ev
 To add a map: write `courses/<id>.json` from the class's plan (`theme` names its theme), give the theme its
 data and scenery in `themes.py`, run the script, and name the world in
 `frontend/projects/world/src/course-worlds.ts`.
+
+## Built for low-power tablets
+
+- **Groups and chunks.** Every part hands its faces to the assembly (`assemble`), which joins them into a
+  few groups by material (`Land`, `Solid`, `Leaves`, `Glow`, `Beams`, `Confetti`), puts each face's colour
+  into its vertices, and cuts each group into chunks of 240 m of road (the land and beams four times as
+  long, glow and leaves three). The app draws a chunk only near the camera, in one draw call.
+- **Baked shading.** What stands on the ground is darkened at its foot in its colours.
+- **`pack_glb.py`** rewrites the exported vertex colours as bytes, a quarter of their size.
+- **`layout`.** Searching the layouts a seed can deal for one whose start and finish look out to sea can
+  take minutes. The script prints the layout it chose, and each course file names it (`"layout": 2`) so
+  the next build goes straight to it. Remove the line to search again after changing the seed.
+- **The film's lamps.** The street lamps the film lights at night (`GlowLamp`) are kept whole in a `Film`
+  collection of the scene, out of the glb, beside their chunks.
+- **The budget** (L2-166 AC12): the worst frame within 120,000 triangles and 140 draw calls, the file
+  within 3 MB gzipped. `docs/screenshots/courses/README.md` gives each map's numbers.
 
 A hand-modelled change made in the `.blend` is lost the next time the script runs. Until the
 pipeline can keep one, change the script, or export the glb from Blender yourself and leave the

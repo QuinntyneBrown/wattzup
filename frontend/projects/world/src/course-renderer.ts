@@ -7,29 +7,34 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
 import { pass } from 'three/tsl';
 import {
+  AdditiveBlending,
   AgXToneMapping,
   BackSide,
   BufferAttribute,
+  CircleGeometry,
   Color,
   DirectionalLight,
+  DoubleSide,
   Fog,
   HemisphereLight,
   type Material,
   Mesh,
   MeshBasicMaterial,
+  MeshLambertMaterial,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
   type Object3D,
-  PCFShadowMap,
   PerspectiveCamera,
   RenderPipeline,
   Scene,
   SphereGeometry,
   SRGBColorSpace,
+  Vector3,
   WebGPURenderer,
 } from 'three/webgpu';
 import type { Backend, SceneFrame, TimedSegment as Segment, World, WorldRenderer } from '@telo/api';
 import { Course, type CoursePlace, courseLook, parseCourse } from './course';
+import { mergeStillParts } from './merged-cyclist';
 import { ridersOnRoad } from './race-riders';
 import { type Cyclist, CyclistKit } from './world-cyclist';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
@@ -44,21 +49,48 @@ const CLOSE_BACK = 3.5;
 const CLOSE_UP = 1.8;
 const CLOSE_START = 45;
 const CLOSE_FINISH = 70;
-/** The riders' shadows fall on the road within this many metres of the rider. */
-const SHADOW_REACH = 16;
-/** Meshes of the map that glow: drawn past the tone mapping, so neon stays neon. */
-const GLOWS = /^(Neon|Beam|Bulb|Gold|Confetti|Glow|LampRed|EffortChevrons|Sun|Accent)/;
-/** Meshes the riders' shadows fall on. */
-const SHADOWED = /^(Road|RoadPaint|CentreLine|Promenade|Kerbs)$/;
-/** Riders further ahead than this are not drawn. */
-const FAR_RIDERS = 220;
-const FOG: readonly [number, number] = [320, 4200];
+/** Each rider's shadow: a dark blob on the road, this long down-sun and this wide, in metres. */
+const SHADOW_LENGTH = 3.4;
+const SHADOW_WIDTH = 0.8;
+/**
+ * How far from the camera, in metres, a chunk of each group of the map is drawn: the land keeps the island's shape to
+ * the haze, and what stands on it is drawn nearer, the smallest things nearest.
+ */
+const DRAW_DISTANCE: Readonly<Record<string, number>> = {
+  Land: 950,
+  Solid: 250,
+  Glow: 400,
+  Beams: 460,
+  Leaves: 210,
+  Confetti: 300,
+};
+/** The start lights are drawn until the rider is this many metres up the road. */
+const START_LIGHTS = 150;
+/** How often, in frames, the chunks to draw are chosen. */
+const CHUNK_SWEEP = 12;
+/** Riders further ahead than this are not drawn, and no more than this many of the nearest. */
+const FAR_RIDERS = 120;
+const MOST_RIDERS = 4;
+/** The haze the distance fades into, from these metres to these; its colour is the course's (`courseLook`). */
+const FOG: readonly [number, number] = [200, 1500];
 const GHOST_OPACITY = 0.45;
-/** The sharpest the map is drawn, in device pixels a CSS pixel; a slow device steps down this list. */
-const PIXEL_RATIOS = [2, 1.5, 1, 0.75] as const;
-/** Frames judged before a step down, and how much slower than the display they must run on average. */
+/**
+ * How the map is drawn, cheapest first: the most device pixels a CSS pixel, and whether the neon blooms. The ride
+ * opens on `START`, so it never starts high and drops in front of the rider (L2-111 AC3); frames that keep the
+ * display's pace step it up, and slow ones step it down, after which it never steps up again.
+ */
+const TIERS = [
+  { ratio: 0.75, bloom: false },
+  { ratio: 1, bloom: false },
+  { ratio: 1.5, bloom: false },
+  { ratio: 1.5, bloom: true },
+  { ratio: 2, bloom: true },
+] as const;
+const START = 1;
+/** Frames judged before a step, and how their average time must compare with the display's frame period. */
 const JUDGED_FRAMES = 90;
 const TOO_SLOW = 1.6;
+const AT_PACE = 1.1;
 
 /** A race rider's colour, the design system's `--jersey-<jersey>`, as world-renderer.ts reads it. */
 function jerseyColour(element: Element, jersey: string): Color {
@@ -80,6 +112,26 @@ export class CourseRenderer implements WorldRenderer {
   /** The scene's pass with bloom over it, for the neon; null where it could not be built. */
   private pipeline: RenderPipeline | null = null;
   private map: Object3D | null = null;
+  /** The map's chunks along the road, each with its centre and how near the camera must be to draw it. */
+  private readonly chunks: {
+    mesh: Mesh;
+    x: number;
+    y: number;
+    z: number;
+    reach: number;
+  }[] = [];
+  private frames = 0;
+  private readonly chosenAt = new Vector3();
+  /** The start lights: red until the ride's clock starts, green from then. */
+  private startRed: Mesh | null = null;
+  private startGreen: Mesh | null = null;
+  private beams: MeshBasicMaterial | null = null;
+  private readonly confetti: Mesh[] = [];
+  /** The blob every rider's shadow is drawn with, and each rider's own. */
+  private blob: { geometry: CircleGeometry; material: MeshBasicMaterial } | null = null;
+  private readonly shadows = new Map<Cyclist, Mesh>();
+  /** Draws every rider's plain-coloured still parts, merged into one mesh a rider (merged-cyclist.ts). */
+  private readonly plain = new MeshLambertMaterial({ vertexColors: true });
   private kit: CyclistKit | null = null;
   private canvas: HTMLCanvasElement | null = null;
   private you: Cyclist | null = null;
@@ -94,9 +146,11 @@ export class CourseRenderer implements WorldRenderer {
   private clockScale = 1;
   private readonly here: CoursePlace = { x: 0, y: 0, z: 0, heading: 0, pitch: 0 };
   private readonly there: CoursePlace = { x: 0, y: 0, z: 0, heading: 0, pitch: 0 };
-  // The frame budget: the pixel ratio steps down when frames run slow (L2-166 AC6).
+  // The frame budget: the tier follows what the device can draw at the display's pace (L2-166 AC6).
   private size: readonly [number, number, number] = [0, 0, 1];
-  private ratio = 0;
+  private tier = START;
+  /** Set once slow frames have stepped the tier down: it steps up no more. */
+  private settled = false;
   private period: number | null = null;
   private lastFrameAt: number | null = null;
   private judged = 0;
@@ -126,8 +180,6 @@ export class CourseRenderer implements WorldRenderer {
       renderer.outputColorSpace = SRGBColorSpace;
       renderer.toneMapping = AgXToneMapping;
       renderer.toneMappingExposure = 1.15;
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = PCFShadowMap;
 
       const [file, gltf] = await Promise.all([
         fetch(`${this.path}.course.json`).then((response) => {
@@ -158,7 +210,7 @@ export class CourseRenderer implements WorldRenderer {
   resize(width: number, height: number, pixelRatio: number): void {
     if (!this.renderer || width === 0 || height === 0) return;
     this.size = [width, height, pixelRatio];
-    this.renderer.setPixelRatio(Math.min(pixelRatio, PIXEL_RATIOS[this.ratio]!));
+    this.renderer.setPixelRatio(Math.min(pixelRatio, TIERS[this.tier]!.ratio));
     this.renderer.setSize(width, height, false);
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
@@ -176,6 +228,14 @@ export class CourseRenderer implements WorldRenderer {
     you.pose(frame.reducedMotion ? 0 : frame.crank);
     this.placeRiders(frame, metres);
     this.aim(metres);
+    // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
+    const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
+    if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
+    // The start lights: red until the clock starts, green from then, and not drawn once they are far behind.
+    const lights = metres < START_LIGHTS;
+    if (this.startRed) this.startRed.visible = lights && frame.time <= 0;
+    if (this.startGreen) this.startGreen.visible = lights && frame.time > 0;
+    if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
   }
@@ -203,14 +263,16 @@ export class CourseRenderer implements WorldRenderer {
     this.pipeline = null;
     this.map?.traverse((part) => {
       const mesh = part as Mesh;
-      if (!mesh.isMesh) return;
-      mesh.geometry.dispose();
-      for (const material of [mesh.material].flat()) material.dispose();
+      if (mesh.isMesh) mesh.geometry.dispose();
     });
     this.map = null;
+    this.chunks.length = 0;
+    this.confetti.length = 0;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.riders.clear();
+    this.shadows.clear();
+    this.blob = null;
     this.renderer?.dispose();
     this.renderer = null;
   }
@@ -223,21 +285,59 @@ export class CourseRenderer implements WorldRenderer {
     this.scene.background = new Color(look.haze);
     this.sun.color.setHex(look.light.colour);
     this.sun.intensity = look.light.intensity;
+    // The map comes as a few groups of meshes, coloured by vertex and cut into chunks along the road (ADR 0032).
+    // Each group is drawn with one cheap material: no texture, no PBR, shaded flat.
+    const lit = { vertexColors: true, flatShading: true } as const;
+    const glow = { vertexColors: true, toneMapped: false } as const;
+    const materials: Record<string, Material> = {
+      Land: new MeshLambertMaterial(lit),
+      Solid: new MeshLambertMaterial(lit),
+      Leaves: new MeshLambertMaterial({ ...lit, side: DoubleSide }),
+      Sea: new MeshLambertMaterial(lit),
+      Conillera: new MeshLambertMaterial({ ...lit, fog: false }),
+      Glow: new MeshBasicMaterial(glow),
+      Confetti: new MeshBasicMaterial({ ...glow, side: DoubleSide }),
+      Sun: new MeshBasicMaterial({ ...glow, fog: false }),
+      StartRed: new MeshBasicMaterial(glow),
+      StartGreen: new MeshBasicMaterial(glow),
+      Beams: new MeshBasicMaterial({
+        ...glow,
+        transparent: true,
+        opacity: 0.2,
+        depthWrite: false,
+        fog: false,
+        side: DoubleSide,
+        blending: AdditiveBlending,
+      }),
+    };
+    this.disposables.push(...Object.values(materials));
+    this.beams = materials['Beams'] as MeshBasicMaterial;
     map.traverse((part) => {
       const mesh = part as Mesh;
       if (!mesh.isMesh) return;
+      // A chunk is named for its group and its place along the road: `Solid_012`.
+      const [group = '', chunk] = mesh.name.split('_');
+      const material = materials[group];
+      if (!material) return;
+      for (const loaded of [mesh.material].flat()) loaded.dispose();
+      mesh.material = material;
       // The map is set once and never moves: its matrices are worked out here, not every frame.
       mesh.matrixAutoUpdate = false;
       mesh.updateMatrix();
-      mesh.receiveShadow = SHADOWED.test(mesh.name);
-      for (const material of [mesh.material].flat() as Material[]) {
-        const standard = material as MeshStandardMaterial;
-        // The sun and the island beside it stand beyond the haze; the beams are light, not solid.
-        if (mesh.name === 'Sun' || mesh.name === 'Conillera') standard.fog = false;
-        if (GLOWS.test(mesh.name)) standard.toneMapped = false;
-        if (mesh.name.startsWith('Beam')) {
-          standard.depthWrite = false;
-          standard.fog = false;
+      if (group === 'Confetti') this.confetti.push(mesh);
+      if (group === 'StartRed') this.startRed = mesh;
+      if (group === 'StartGreen') this.startGreen = mesh;
+      if (chunk !== undefined) {
+        mesh.geometry.computeBoundingSphere();
+        const sphere = mesh.geometry.boundingSphere;
+        if (sphere) {
+          this.chunks.push({
+            mesh,
+            x: sphere.center.x,
+            y: sphere.center.y,
+            z: sphere.center.z,
+            reach: (DRAW_DISTANCE[group] ?? 700) + sphere.radius,
+          });
         }
       }
     });
@@ -245,15 +345,29 @@ export class CourseRenderer implements WorldRenderer {
     this.scene.add(map);
 
     // The sky: bands of sunset from the horizon up, on a dome that rides with the camera.
-    const dome = new SphereGeometry(9000, 32, 16);
+    const dome = new SphereGeometry(9000, 48, 24);
     const position = dome.getAttribute('position');
     const colours = new Float32Array(position.count * 3);
+    const WHITE = new Color(0xffffff);
     const band = new Color();
     const next = new Color();
     for (let i = 0; i < position.count; i++) {
       const up = Math.max(position.getY(i) / 9000, 0) ** 0.55 * (SKY.length - 1);
       const from = Math.min(Math.floor(up), SKY.length - 2);
       band.setHex(SKY[from]!).lerp(next.setHex(SKY[from + 1]!), up - from);
+      // Streaks of cloud lit from below, low in the sky: bands that waver with the bearing.
+      const height = position.getY(i) / 9000;
+      const bearing = Math.atan2(position.getZ(i), position.getX(i));
+      const streak = Math.sin(
+        height * 46 + Math.sin(bearing * 3) * 2.2 + Math.sin(bearing * 7) * 0.8,
+      );
+      if (height > 0.05 && height < 0.5 && streak > 0.55) {
+        // A cloud is the horizon's own colour, lightened.
+        band.lerp(
+          next.setHex(SKY[0]!).lerp(WHITE, 0.45),
+          (streak - 0.55) * 1.1 * (1 - height * 1.6),
+        );
+      }
       colours.set([band.r, band.g, band.b], i * 3);
     }
     dome.setAttribute('color', new BufferAttribute(colours, 3));
@@ -269,15 +383,17 @@ export class CourseRenderer implements WorldRenderer {
     this.disposables.push(dome, air);
 
     const fill = new HemisphereLight(look.fill[0], look.fill[1], 1.5);
-    // The low sun throws the riders' shadows long across the road, and only the riders'.
-    this.sun.castShadow = true;
-    this.sun.shadow.mapSize.set(1024, 1024);
-    const reach = this.sun.shadow.camera;
-    reach.left = reach.bottom = -SHADOW_REACH;
-    reach.right = reach.top = SHADOW_REACH;
-    reach.near = 1;
-    reach.far = 160;
-    this.sun.shadow.bias = -0.002;
+    // The low sun throws each rider's shadow long across the road: a soft dark blob, with no shadow map to draw.
+    const circle = new CircleGeometry(0.5, 20);
+    circle.rotateX(-Math.PI / 2);
+    const shade = new MeshBasicMaterial({
+      color: 0x1a1024,
+      transparent: true,
+      opacity: 0.36,
+      depthWrite: false,
+    });
+    this.blob = { geometry: circle, material: shade };
+    this.disposables.push(circle, shade);
     this.scene.add(fill, this.sun, this.sun.target);
     this.disposables.push(fill, this.sun);
 
@@ -286,9 +402,10 @@ export class CourseRenderer implements WorldRenderer {
     // The rider wears the You jersey of the race board (L2-060).
     const you = kit.make(jerseyColour(canvas, 'you'), 4);
     this.you = you;
+    this.disposables.push(...mergeStillParts(you, this.plain));
     this.shadow(you);
     this.scene.add(you.group);
-    this.disposables.push(kit, you.jersey, you.bib, you.shell, this.frameMaterial);
+    this.disposables.push(kit, you.jersey, you.bib, you.shell, this.frameMaterial, this.plain);
   }
 
   /** Places the scene as the ride's first frame will, so what the start shows is what compiles. */
@@ -297,6 +414,8 @@ export class CourseRenderer implements WorldRenderer {
     this.ride(this.you, 0, 0);
     this.you.pose(0);
     this.aim(0);
+    this.choose();
+    if (this.startGreen) this.startGreen.visible = false;
   }
 
   /** Stands a cyclist on the road `metres` from the start line, `lane` metres right of its centre. */
@@ -304,6 +423,15 @@ export class CourseRenderer implements WorldRenderer {
     const at = this.course!.place(metres, lane, this.here);
     cyclist.group.position.set(at.x, at.y + 0.02, at.z);
     cyclist.group.rotation.set(at.pitch, at.heading, 0, 'YXZ');
+    // The shadow lies on the road, stretched away from the sun.
+    const shadow = this.shadows.get(cyclist);
+    if (shadow) {
+      const [sx, , sz] = this.course!.file.sun;
+      const far = SHADOW_LENGTH * 0.42;
+      shadow.position.set(at.x - sx * far, at.y + 0.05, at.z - sz * far);
+      shadow.rotation.set(at.pitch, Math.atan2(-sx, -sz), 0, 'YXZ');
+      shadow.visible = cyclist.group.visible;
+    }
   }
 
   /** The chase camera behind the rider, looking up the road, with the sky and the sun's light around it. */
@@ -326,7 +454,6 @@ export class CourseRenderer implements WorldRenderer {
     this.camera.lookAt(ahead.x, ahead.y + LOOK_UP, ahead.z);
     this.sky?.position.copy(this.camera.position);
     const [x, , z] = course.file.sun;
-    // The light stands a little higher than the sun, so shadows are long but stay on the road.
     this.sun.target.position.set(ahead.x, ahead.y, ahead.z);
     this.sun.position.set(ahead.x + x * 70, ahead.y + 34, ahead.z + z * 70);
     this.sun.target.updateMatrixWorld();
@@ -334,9 +461,16 @@ export class CourseRenderer implements WorldRenderer {
 
   /** The race's other riders at their places, each on a line of their own (L2-064 AC3). */
   private placeRiders(frame: SceneFrame, metres: number): void {
-    for (const rider of this.riders.values()) rider.group.visible = false;
+    for (const rider of this.riders.values()) {
+      rider.group.visible = false;
+      const shadow = this.shadows.get(rider);
+      if (shadow) shadow.visible = false;
+    }
     if (!frame.riders) return;
-    for (const rider of ridersOnRoad(frame.riders, FAR_RIDERS)) {
+    const nearest = ridersOnRoad(frame.riders, FAR_RIDERS)
+      .sort((a, b) => Math.abs(a.metres) - Math.abs(b.metres))
+      .slice(0, MOST_RIDERS);
+    for (const rider of nearest) {
       const cyclist = this.rider(rider.jersey);
       if (!cyclist) continue;
       cyclist.group.visible = true;
@@ -367,17 +501,43 @@ export class CourseRenderer implements WorldRenderer {
         if (mesh.isMesh) mesh.material = glass;
       });
     }
+    this.disposables.push(...mergeStillParts(cyclist, this.plain));
     if (jersey !== 'ghost') this.shadow(cyclist);
     this.riders.set(jersey, cyclist);
     this.scene.add(cyclist.group);
     return cyclist;
   }
 
-  /** Every part of a cyclist casts a shadow. */
+  /** What moves on the map: the light beams breathe and the confetti flutters. Two numbers a frame. */
+  private animate(time: number): void {
+    if (this.beams) this.beams.opacity = 0.17 + 0.06 * Math.sin(time * 1.7);
+    for (const confetti of this.confetti) {
+      confetti.position.y = 0.45 * Math.sin(time * 1.3);
+      confetti.rotation.y = 0.012 * Math.sin(time * 0.9);
+      confetti.updateMatrix();
+    }
+  }
+
+  /** Draws only the chunks of the map near enough to the camera; the haze hides the rest. */
+  private choose(): void {
+    const { x, y, z } = this.camera.position;
+    this.chosenAt.copy(this.camera.position);
+    for (const chunk of this.chunks) {
+      const dx = chunk.x - x;
+      const dy = chunk.y - y;
+      const dz = chunk.z - z;
+      chunk.mesh.visible = dx * dx + dy * dy + dz * dz < chunk.reach * chunk.reach;
+    }
+  }
+
+  /** Gives a cyclist their shadow on the road. */
   private shadow(cyclist: Cyclist): void {
-    cyclist.group.traverse((part) => {
-      part.castShadow = true;
-    });
+    if (!this.blob) return;
+    const mesh = new Mesh(this.blob.geometry, this.blob.material);
+    mesh.scale.set(SHADOW_WIDTH, 1, SHADOW_LENGTH);
+    mesh.renderOrder = 1;
+    this.shadows.set(cyclist, mesh);
+    this.scene.add(mesh);
   }
 
   /** The scene's pass with a soft bloom over it, so the neon, the bulbs and the sun glow. */
@@ -393,15 +553,15 @@ export class CourseRenderer implements WorldRenderer {
     }
   }
 
-  /** Draws the frame: with the bloom at the two sharpest pixel ratios, plainly below them. */
+  /** Draws the frame: through the bloom at the tiers that have it, plainly at the others. */
   private render(): void {
     const renderer = this.renderer;
     if (!renderer) return;
-    if (this.pipeline && this.ratio < 2) this.pipeline.render();
+    if (this.pipeline && TIERS[this.tier]!.bloom) this.pipeline.render();
     else renderer.render(this.scene, this.camera);
   }
 
-  /** Steps the pixel ratio down when the judged frames ran slower than the display allows. */
+  /** Steps the tier down when the judged frames ran slower than the display allows, and up while they keep its pace. */
   private judge(): void {
     const now = performance.now();
     const last = this.lastFrameAt;
@@ -409,12 +569,19 @@ export class CourseRenderer implements WorldRenderer {
     if (this.period === null || last === null) return;
     this.spent += now - last;
     if (++this.judged < JUDGED_FRAMES) return;
-    const slow = this.spent / this.judged > this.period * TOO_SLOW;
+    const average = this.spent / this.judged;
     this.judged = 0;
     this.spent = 0;
-    if (slow && this.ratio < PIXEL_RATIOS.length - 1) {
-      this.ratio++;
-      this.resize(...this.size);
+    if (average > this.period * TOO_SLOW) {
+      this.settled = true;
+      if (this.tier > 0) this.step(-1);
+    } else if (!this.settled && average <= this.period * AT_PACE && this.tier < TIERS.length - 1) {
+      this.step(1);
     }
+  }
+
+  private step(by: number): void {
+    this.tier += by;
+    this.resize(...this.size);
   }
 }

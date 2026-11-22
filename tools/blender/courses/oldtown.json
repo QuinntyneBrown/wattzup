@@ -4,6 +4,7 @@
   "world": "oldtown",
   "theme": "oldtown",
   "seed": 23,
+  "layout": 0,
   "map": "old-town-criterium",
   "route": "Cathedral Circuit",
   "distanceKm": 14.2,

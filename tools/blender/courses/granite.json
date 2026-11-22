@@ -4,6 +4,7 @@
   "world": "granite",
   "theme": "granite",
   "seed": 88,
+  "layout": 1,
   "map": "col-du-granit",
   "route": null,
   "distanceKm": 16.1,

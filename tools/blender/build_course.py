@@ -39,6 +39,7 @@ from mathutils import Vector, kdtree
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import themes  # noqa: E402  (beside this script)
+from pack_glb import pack as pack_glb  # noqa: E402  (beside this script)
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -239,7 +240,9 @@ def lay_centre_line(course: dict, theme: dict | None = None):
 
     seed = course.get("seed", 1)
     best = None
-    for attempt in range(200):
+    # The search over layouts can take minutes; a course file that names its `layout` goes straight to that one.
+    pinned = course.get("layout")
+    for attempt in [pinned] if pinned is not None else range(200):
         rng = random.Random(seed * 1000 + attempt)
         raw = deal_turns(st, total, rng, theme.get("turns"), max(620.0, reach))
         if raw is None:
@@ -277,13 +280,15 @@ def lay_centre_line(course: dict, theme: dict | None = None):
                     blocked += 1
                     break
         if best is None or blocked < best[0]:
-            best = (blocked, curv, xs, ys, hs)
+            best = (blocked, curv, xs, ys, hs, attempt)
         # Inland, no view of the sea to look for: the first road that keeps clear of itself will do.
-        if blocked == 0 or attempt >= (11 if theme else 119) or not theme.get("terrain", {"sea": True}).get("sea", True):
+        if blocked == 0 or attempt >= (11 if theme else 119) or not (theme or {}).get("terrain", {"sea": True}).get("sea", True):
             break
     if best is None:
         raise RuntimeError("No road found that keeps clear of itself; change the course's seed.")
-    _, curv, xs, ys, hs = best
+    _, curv, xs, ys, hs, chosen = best
+    if pinned is None:
+        print(f'Layout {chosen} chosen: add "layout": {chosen} to the course file to build it again at once.', flush=True)
     n = len(curv)
 
     grades = []
@@ -331,7 +336,7 @@ def srgb(hex_: int) -> tuple[float, float, float, float]:
 
 
 MATERIALS: dict[str, dict] = {
-    "asphalt": {"color": 0x24242B, "rough": 0.92},
+    "asphalt": {"color": 0x3A3842, "rough": 0.92},
     "paint": {"color": 0xF4F0E6, "rough": 0.7},
     "yellow": {"color": 0xF2B21E, "rough": 0.7},
     "kerb-red": {"color": 0xE23A4E, "rough": 0.7},
@@ -343,14 +348,21 @@ MATERIALS: dict[str, dict] = {
     "sea": {"color": 0x1F9AA6, "rough": 0.15, "metal": 0.1},
     "trunk": {"color": 0x8A6A48, "rough": 0.9},
     "leaf": {"color": 0x2F8A4E, "rough": 0.8, "double": True},
+    "leaf-dark": {"color": 0x1F6A3C, "rough": 0.8, "double": True},
+    "glint": {"color": 0xFFD9A0, "glow": 2.0},
     "bush": {"color": 0x3F7A46, "rough": 0.9},
     "bougainvillea": {"color": 0xD02A8A, "rough": 0.8},
     "whitewash": {"color": 0xF8F3EA, "rough": 0.85},
     "wood": {"color": 0x8A6440, "rough": 0.8},
     "dark": {"color": 0x18181C, "rough": 0.6},
     "rock": {"color": 0x8C7B6A, "rough": 1.0},
+    "skin": {"color": 0xD9A17C, "rough": 0.8},
+    "club-window": {"color": 0x2C4658, "rough": 0.3},
+    "awning": {"color": 0xE8566E, "rough": 0.8, "double": True},
+    "awning-white": {"color": 0xF6F1EA, "rough": 0.8, "double": True},
     "glow-door": {"color": 0xFF9A4A, "glow": 1.3},
     "lamp-red": {"color": 0xFF3020, "glow": 2.2},
+    "lamp-green": {"color": 0x3AFF7A, "glow": 2.2},
     "neon-pink": {"color": 0xFF4A9A, "glow": 2.0},
     "neon-cyan": {"color": 0x3AE8FF, "glow": 2.0},
     "neon-amber": {"color": 0xF2C230, "glow": 2.0},
@@ -419,6 +431,9 @@ def material(name: str):
 class Builder:
     """One mesh of one material, gathered face by face."""
 
+    # The collection the map is built into: a part built into it joins the assembly (see `assemble`).
+    map_collection = None
+
     def __init__(self, name: str, mat: str):
         self.name, self.mat = name, mat
         self.verts: list[tuple[float, float, float]] = []
@@ -444,11 +459,16 @@ class Builder:
         for z in (cz, cz + h):
             for dx, dy in ((-hx, -hy), (hx, -hy), (hx, hy), (-hx, hy)):
                 self.verts.append((cx + dx * c - dy * s, cy + dx * s + dy * c, z))
-        for f in ((3, 2, 1, 0), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)):
+        # No underside: a box stands on something, and nothing looks up at it.
+        for f in ((4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)):
             self.faces.append(tuple(base + i for i in f))
 
     def build(self, collection):
         if not self.faces:
+            return None
+        if collection is Builder.map_collection:
+            # A part of the map: `assemble` builds the map's meshes from every part.
+            PARTS.append(self)
             return None
         mesh = bpy.data.meshes.new(self.name)
         mesh.from_pydata(self.verts, [], self.faces)
@@ -467,6 +487,118 @@ class Builder:
         obj = bpy.data.objects.new(self.name, mesh)
         collection.objects.link(obj)
         return obj
+
+
+PARTS: list[Builder] = []
+CHUNK = 240.0  # metres of road a chunk of the map holds: the app draws only the chunks near the rider
+# The land and the light beams are few triangles a chunk: theirs are four times as long, a quarter as many meshes.
+# Materials whose colour is not shaded by height (see `assemble`): the road's own, and what hangs clear of the ground.
+UNSHADED = {"asphalt", "paint", "yellow", "kerb-red", "promenade", "sand", "club-window", "awning", "awning-white"}
+# Parts the film's staging looks up by name: kept whole in the scene, out of the glb, beside their chunks.
+FILM_KEEPS = {"GlowLamp"}
+WIDER = {"Land": 4, "Beams": 4, "Glow": 3, "Leaves": 3}
+WHOLE = {"sea": "Sea", "sun": "Sun", "moon": "Sun", "island": "Conillera", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
+
+
+def group_of(mat: str) -> tuple[str, bool]:
+    """The mesh a part's faces join, and whether that mesh is cut into chunks along the road."""
+    if mat in WHOLE:
+        return WHOLE[mat], False
+    spec = MATERIALS[mat]
+    if mat == "confetti":
+        return "Confetti", True
+    if mat == "terrain":
+        return "Land", True
+    if "alpha" in spec:
+        return "Beams", True
+    if "glow" in spec:
+        return "Glow", True
+    return ("Leaves" if spec.get("double") else "Solid"), True
+
+
+def group_material(name: str):
+    """One material a group: every face's colour is in its vertices, so a chunk of a group is one draw call."""
+    mat = bpy.data.materials.get(name)
+    if mat:
+        return mat
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
+    bsdf = next(n for n in mat.node_tree.nodes if n.type == "BSDF_PRINCIPLED")
+    attr = mat.node_tree.nodes.new("ShaderNodeVertexColor")
+    attr.layer_name = "Color"
+    mat.node_tree.links.new(attr.outputs["Color"], bsdf.inputs["Base Color"])
+    bsdf.inputs["Roughness"].default_value = 0.2 if name == "Sea" else 0.85
+    if name in ("Glow", "Confetti", "Sun", "StartRed", "StartGreen", "Beams"):
+        mat.node_tree.links.new(attr.outputs["Color"], bsdf.inputs["Emission Color"])
+        bsdf.inputs["Emission Strength"].default_value = 1.5
+    if name == "Beams":
+        bsdf.inputs["Alpha"].default_value = 0.22
+        for key, value in (("blend_method", "BLEND"), ("surface_render_method", "BLENDED")):
+            try:
+                setattr(mat, key, value)
+            except (AttributeError, TypeError):
+                pass
+    mat.use_backface_culling = name not in ("Leaves", "Confetti", "Beams")
+    return mat
+
+
+def assemble(road: "Road", col) -> dict:
+    """Builds the map's meshes: each group's faces, welded, coloured by vertex and cut into chunks along the road."""
+    per_chunk = int(CHUNK / STEP)
+    meshes: dict[str, dict] = {}
+    film = None
+    for part in PARTS:
+        if part.name in FILM_KEEPS:
+            if film is None:
+                film = bpy.data.collections.new("Film")
+                bpy.context.scene.collection.children.link(film)
+                film.hide_viewport = film.hide_render = True
+            data = bpy.data.meshes.new(part.name)
+            data.from_pydata(part.verts, [], part.faces)
+            film.objects.link(bpy.data.objects.new(part.name, data))
+        group, chunked = group_of(part.mat)
+        flat = srgb(MATERIALS[part.mat]["color"])
+        for face in part.faces:
+            name = group
+            if chunked:
+                cx = sum(part.verts[i][0] for i in face) / len(face)
+                cy = sum(part.verts[i][1] for i in face) / len(face)
+                _, j, _ = road.tree.find((cx, cy, 0.0))
+                name = f"{group}_{j // (per_chunk * WIDER.get(group, 1)):03d}"
+            mesh = meshes.setdefault(name, {"group": group, "verts": [], "cols": [], "faces": [], "index": {}})
+            ids = []
+            for i in face:
+                v = part.verts[i]
+                c = part.colours[i] if part.colours else flat
+                if group == "Solid" and part.mat not in UNSHADED:
+                    # Baked into the colour, so it costs the app nothing: dark where a wall meets the ground, lighter
+                    # towards its top, where more of the sky reaches it.
+                    _, near, _ = road.tree.find((v[0], v[1], 0.0))
+                    lift = v[2] - road.s[near]["z"]
+                    shade = 0.74 + 0.3 * smoothstep(0.0, 4.5, lift) if lift > 0.2 else (0.62 if lift < -0.3 else 1.0)
+                    c = (c[0] * shade, c[1] * shade, c[2] * shade, 1.0)
+                key = (round(v[0], 3), round(v[1], 3), round(v[2], 3), round(c[0], 3), round(c[1], 3), round(c[2], 3))
+                at = mesh["index"].get(key)
+                if at is None:
+                    at = mesh["index"][key] = len(mesh["verts"])
+                    mesh["verts"].append(v)
+                    mesh["cols"].append(c)
+                ids.append(at)
+            if len(set(ids)) == len(ids):
+                mesh["faces"].append(tuple(ids))
+    triangles = 0
+    for name in sorted(meshes):
+        m = meshes[name]
+        data = bpy.data.meshes.new(name)
+        data.from_pydata(m["verts"], [], m["faces"])
+        layer = data.color_attributes.new("Color", "FLOAT_COLOR", "POINT")
+        layer.data.foreach_set("color", [c for col_ in m["cols"] for c in (col_[0], col_[1], col_[2], 1.0)])
+        data.materials.append(group_material(m["group"]))
+        data.update()
+        col.objects.link(bpy.data.objects.new(name, data))
+        triangles += sum(len(f) - 2 for f in m["faces"])
+    PARTS.clear()
+    return {"meshes": len(meshes), "triangles": triangles}
 
 
 class Road:
@@ -651,7 +783,7 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
         b.build(col)
 
 
-def build_terrain(road: Road, col, cell: float = 14.0):
+def build_terrain(road: Road, col, cell: float = 18.0):
     """The island: land that holds the road's height beside it and falls to the sea away from it."""
     xs = [p["x"] for p in road.s]
     ys = [p["y"] for p in road.s]
@@ -828,7 +960,7 @@ def build_land(road: Road, col, theme: dict, cell: float = 14.0):
     return obj, height_at
 
 
-def palm(trunk: Builder, leaf: Builder, x: float, y: float, z: float, rng: random.Random) -> None:
+def palm(trunk: Builder, leaf: Builder, dark_leaf: Builder, x: float, y: float, z: float, rng: random.Random) -> None:
     height, lean, yaw = rng.uniform(6.0, 9.5), rng.uniform(0.0, 1.4), rng.uniform(0, math.tau)
     rings = []
     for k in range(4):
@@ -841,25 +973,34 @@ def palm(trunk: Builder, leaf: Builder, x: float, y: float, z: float, rng: rando
         for j in range(5):
             trunk.quad(rings[k][j], rings[k][(j + 1) % 5], rings[k + 1][(j + 1) % 5], rings[k + 1][j])
     top = (x + math.cos(yaw) * lean, y + math.sin(yaw) * lean, z + height)
-    for j in range(7):
-        a = yaw + j * math.tau / 7 + rng.uniform(-0.2, 0.2)
-        reach, droop = rng.uniform(2.6, 3.6), rng.uniform(1.0, 2.0)
+    # Nine fronds, each arching out and drooping at its tip, in two greens.
+    for j in range(9):
+        a = yaw + j * math.tau / 9 + rng.uniform(-0.2, 0.2)
+        reach, droop = rng.uniform(3.0, 4.2), rng.uniform(1.2, 2.4)
         ca, sa = math.cos(a), math.sin(a)
-        mid = (top[0] + ca * reach * 0.55, top[1] + sa * reach * 0.55, top[2] + 0.45)
-        tip = (top[0] + ca * reach, top[1] + sa * reach, top[2] - droop)
-        w = 0.5
-        l0 = (mid[0] - sa * w, mid[1] + ca * w, mid[2])
-        r0 = (mid[0] + sa * w, mid[1] - ca * w, mid[2])
-        leaf.tri(top, r0, l0)
-        leaf.tri(l0, r0, tip)
+        w = 0.55
+        spine = [
+            top,
+            (top[0] + ca * reach * 0.35, top[1] + sa * reach * 0.35, top[2] + 0.55),
+            (top[0] + ca * reach * 0.72, top[1] + sa * reach * 0.72, top[2] + 0.15),
+            (top[0] + ca * reach, top[1] + sa * reach, top[2] - droop),
+        ]
+        b = leaf if j % 3 else dark_leaf
+        l1 = (spine[1][0] - sa * w, spine[1][1] + ca * w, spine[1][2] - 0.1)
+        r1 = (spine[1][0] + sa * w, spine[1][1] - ca * w, spine[1][2] - 0.1)
+        l2 = (spine[2][0] - sa * w * 0.8, spine[2][1] + ca * w * 0.8, spine[2][2] - 0.15)
+        r2 = (spine[2][0] + sa * w * 0.8, spine[2][1] - ca * w * 0.8, spine[2][2] - 0.15)
+        b.tri(top, r1, l1)
+        b.quad(l1, r1, r2, l2)
+        b.tri(l2, r2, spine[3])
 
 
 def build_scenery(road: Road, st: list[dict], length: float, height_at, course: dict, col) -> dict:
     rng = random.Random(course.get("seed", 1) * 7 + 3)
     s, n = road.s, len(road.s)
     names = (
-        "trunk leaf bush bougainvillea whitewash wall wood dark stone rock arrow sail sail-pink "
-        "glow-door lamp-red gold confetti bulb paint sun island"
+        "trunk leaf leaf-dark glint bush bougainvillea whitewash wall wood dark stone rock skin club-window awning awning-white arrow sail sail-pink "
+        "glow-door lamp-red lamp-green gold confetti bulb paint sun island"
     ).split() + NEONS + BEAMS + CROWD
     B = {name: Builder("".join(p.title() for p in name.split("-")), name) for name in names}
     B["whitewash"].name, B["dark"].name, B["paint"].name = "Clubs", "Dark", "GatePaint"
@@ -888,9 +1029,9 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         """A dancer in one colour, arms in the air."""
         b = B[rng.choice(CROWD)]
         h = rng.uniform(0.92, 1.08)
-        b.box(c, (0.2, 0.3, 0.8 * h), yaw)
+        (b if rng.random() < 0.4 else B["dark"]).box(c, (0.2, 0.3, 0.8 * h), yaw)
         b.box((c[0], c[1], c[2] + 0.8 * h), (0.24, 0.42, 0.58 * h), yaw)
-        b.box((c[0], c[1], c[2] + 1.44 * h), (0.23, 0.23, 0.25), yaw)
+        B["skin"].box((c[0], c[1], c[2] + 1.44 * h), (0.23, 0.23, 0.25), yaw)
         for side in (1, -1):
             lift = rng.uniform(0.45, 0.8)
             out = 0.27 + lift * 0.18
@@ -950,7 +1091,7 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         off = (kerb + SIDEWALK + 1.9) if side > 0 else -(kerb + 1.3)
         x, y, z = road.at(i, off + rng.uniform(-0.3, 0.3))
         if road.clear_of_road(x, y, 7.5, i):
-            palm(B["trunk"], B["leaf"], x, y, z - (1.6 if side > 0 else 0.0), rng)
+            palm(B["trunk"], B["leaf"], B["leaf-dark"], x, y, z - (1.6 if side > 0 else 0.0), rng)
         i += rng.choice((4, 5, 6))
 
     # Rocks under the seawall, all the way along.
@@ -992,13 +1133,32 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         doors = max(2, int(width / 5))
         for k in range(doors):
             along = -width / 2 + (k + 0.5) * width / doors
-            B["glow-door"].box(P(i, along, -(front - 0.06), 0.12), (1.5, 0.14, 2.5), yaw)
-            B["glow-door"].box(P(i, along, -(front - 0.06), 2.62), (1.1, 0.14, 0.35), yaw)
+            # An arched doorway glowing warm, under a striped awning.
+            off = -(front - 0.07)
+            B["glow-door"].box(P(i, along, off, 0.12), (1.5, 0.14, 2.1), yaw)
+            for k2 in range(6):
+                a0, a1 = math.pi * k2 / 6, math.pi * (k2 + 1) / 6
+                B["glow-door"].tri(
+                    P(i, along, off - 0.07, 2.22),
+                    P(i, along + math.cos(a0) * 0.75, off - 0.07, 2.22 + math.sin(a0) * 0.75),
+                    P(i, along + math.cos(a1) * 0.75, off - 0.07, 2.22 + math.sin(a1) * 0.75),
+                )
+            for k2 in range(6):
+                u0, u1 = along - 1.2 + k2 * 0.4, along - 1.2 + (k2 + 1) * 0.4
+                B["awning" if k2 % 2 else "awning-white"].quad(
+                    P(i, u0, off, 3.5), P(i, u1, off, 3.5), P(i, u1, off + 1.1, 3.05), P(i, u0, off + 1.1, 3.05)
+                )
+        # Windows upstairs, a few of them lit.
+        panes = max(3, int(width / 3.2))
+        for k in range(panes):
+            along = -width / 2 + (k + 0.5) * width / panes
+            pane = B["glow-door"] if rng.random() < 0.35 else B["club-window"]
+            pane.box(P(i, along, -(front - 0.05), 4.3), (1.1, 0.1, 1.5), yaw)
         for k in range(rng.choice((2, 3))):
             neon = B[NEONS[(len(clubs) + k) % len(NEONS)]]
             along = -width / 2 + (k + 0.5) * width / 3 + rng.uniform(-0.6, 0.6)
             w, h, t = rng.uniform(1.4, 2.6), rng.uniform(1.0, 1.9), 0.12
-            up = 4.1
+            up = 6.7
             off = -(front - 0.1)
             neon.box(P(i, along, off, up), (w, t, t), yaw)
             neon.box(P(i, along, off, up + h), (w, t, t), yaw)
@@ -1071,8 +1231,8 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
     for k, lit in ((-1, False), (0, True), (1, False)):
         B["dark"].box(P(i0, -0.9, k * 1.9, 4.3 + (0.0 if k else -0.35)), (0.5, 1.15, 2.9), yaw0)
         B["dark"].box(P(i0, -0.9, k * 1.9, 7.0), (0.1, 0.1, 0.5), yaw0)
-        for lamp in range(3):
-            mat = B["lamp-red"] if (lit and lamp == 2) else B["rock"]
+        # Every housing holds a red lamp over a green one: the app lights red before the start and green from it.
+        for lamp, mat in ((2, B["lamp-red"]), (1, B["rock"]), (0, B["lamp-green"])):
             mat.box(P(i0, -1.2, k * 1.9, 4.5 + lamp * 0.86 + (0.0 if k else -0.35)), (0.12, 0.7, 0.7), yaw0)
     for back in (6, 14, 22, 30):
         ib = road.index(-back)
@@ -1168,6 +1328,34 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         p0 = (sx - math.sin(az) * math.cos(a0) * radius, sy + math.cos(az) * math.cos(a0) * radius, alt + math.sin(a0) * radius)
         p1 = (sx - math.sin(az) * math.cos(a1) * radius, sy + math.cos(az) * math.cos(a1) * radius, alt + math.sin(a1) * radius)
         B["sun"].tri((sx, sy, alt), p1, p0)
+    # The glow round the sun: a wider disc behind it that fades into the sky's own colour at its edge.
+    halo = Builder("SunHalo", "sun")
+    halo.colours = []
+    hot, sky_ = srgb(0xFF9458), srgb(0xF0A784)
+    hx, hy = sx + math.cos(az) * 40, sy + math.sin(az) * 40
+    for q in range(32):
+        a0, a1 = q * math.tau / 32, (q + 1) * math.tau / 32
+        ring = [(hx - math.sin(az) * math.cos(a) * radius * 1.6, hy + math.cos(az) * math.cos(a) * radius * 1.6, alt + math.sin(a) * radius * 1.6) for a in (a1, a0)]
+        base = len(halo.verts)
+        halo.verts += [(hx, hy, alt), ring[0], ring[1]]
+        halo.colours += [hot, sky_, sky_]
+        halo.faces.append((base, base + 1, base + 2))
+    halo.build(col)
+    # The sun's path on the water: glints scattered towards it from the finish's shore.
+    for _ in range(170):
+        out = rng.uniform(120, 2600)
+        across = rng.uniform(-1, 1) * (30 + out * 0.07)
+        gx, gy = fx + math.cos(az) * out - math.sin(az) * across, fy + math.sin(az) * out + math.cos(az) * across
+        if height_at(gx, gy) > -2.0:
+            continue
+        w, d = rng.uniform(3, 9) * (1 + out / 900), rng.uniform(0.4, 1.0) * (1 + out / 900)
+        c, sn = math.cos(az), math.sin(az)
+        B["glint"].quad(
+            (gx - c * d + sn * w, gy - sn * d - c * w, 0.06),
+            (gx + c * d + sn * w, gy + sn * d - c * w, 0.06),
+            (gx + c * d - sn * w, gy + sn * d + c * w, 0.06),
+            (gx - c * d - sn * w, gy - sn * d + c * w, 0.06),
+        )
     ia = az + math.radians(11)
     ix, iy = fx + math.cos(ia) * 3300, fy + math.sin(ia) * 3300
     profile = [(-900, 0), (-760, 90), (-600, 150), (-470, 260), (-330, 230), (-210, 380), (-60, 440), (90, 330), (230, 360), (380, 210), (520, 250), (690, 110), (820, 60), (900, 0)]
@@ -1287,6 +1475,7 @@ def export_glb(path: Path) -> None:
         "export_skins": False,
         "export_morph": False,
         "use_visible": True,
+        "export_all_vertex_colors": False,
     }
     bpy.ops.export_scene.gltf(**{k: v for k, v in wanted.items() if k in props})
 
@@ -1601,6 +1790,8 @@ def main(argv: list[str] | None = None) -> dict:
     scene.unit_settings.system = "METRIC"
     col = bpy.data.collections.new("Map")
     scene.collection.children.link(col)
+    Builder.map_collection = col
+    PARTS.clear()
 
     samples, st, length, mean, per_level = lay_centre_line(course, theme)
     road = Road(samples)
@@ -1611,6 +1802,7 @@ def main(argv: list[str] | None = None) -> dict:
     else:
         _, height_at = build_terrain(road, col)
         facts = build_scenery(road, st, length, height_at, course, col)
+    built = assemble(road, col)
     add_guides(samples, course)
 
     args.out.mkdir(parents=True, exist_ok=True)
@@ -1619,6 +1811,7 @@ def main(argv: list[str] | None = None) -> dict:
     # Only the map goes into the glb: the guides stay in the scene.
     bpy.data.collections["Guides"].hide_viewport = True
     export_glb(args.out / f"{course['id']}.glb")
+    pack_glb(args.out / f"{course['id']}.glb")
     bpy.data.collections["Guides"].hide_viewport = False
     if theme:
         light_scene_theme(facts["sunAzimuth"], theme)
@@ -1627,10 +1820,10 @@ def main(argv: list[str] | None = None) -> dict:
     bpy.ops.wm.save_as_mainfile(filepath=str(args.blend / f"{course['id']}.blend"), compress=True)
     if args.preview:
         render_previews(args.preview, road, length)
-    tris = sum(len(p.vertices) - 2 for o in col.objects for p in o.data.polygons)
+    tris = built["triangles"]
     print(
         f"{course['name']}: {data['lengthMetres']} m, {data['climbingMetres']} m climbed, "
-        f"{len(st)} stages, {facts.get('clubs', 0)} clubs, {facts['efforts']} effort gates, {tris} triangles"
+        f"{len(st)} stages, {facts.get('clubs', 0)} clubs, {facts['efforts']} effort gates, {tris} triangles in {built['meshes']} meshes"
     )
     film = {}
     if args.video:
