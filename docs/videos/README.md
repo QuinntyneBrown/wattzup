@@ -92,6 +92,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 21.4 | [Pause, leave or end](21-4-pause-leave-or-end/README.md) | 1:56 | The custom ride stops when the rider does: Pause and Resume, a lost bike, waiting for a bike, Bluetooth off, Leave this ride? under Library, End and a ride too short to save, at every width |
 | 22.1 | [Authenticate every request](22-1-authenticate-every-request/README.md) | 2:03 | Every endpoint and the ride hub need a session unless listed: sign-in and sign-out, the public catalogues, health and the app; 401 for the rest, proved by asking every endpoint; a change or hub connection from another origin refused with 403 `cross_origin`; sign-in from 390 to 1440 px; 488 backend tests |
 | 22.2 | [Validate input and encode output](22-2-validate-input-and-encode-output/README.md) | 1:53 | A validator on every request with input; 400 `validation_failed` naming the field for a broken rule or a wrong type, with no type name; the ride hub refusing the same way; a bike named with markup shown as text on Connect Bike and in the header; lint refusing `[innerHTML]` and sanitiser bypasses; 390 to 1440 px |
+| 22.3 | [Limit abuse](22-3-limit-abuse/README.md) | 1:53 | The 61st ride in an hour refused with 429 and `Retry-After`, rides counted not requests; the outbox sending the ride again when the wait has passed; two progress messages a second on the hub, the rest dropped and a client over for 10 s disconnected; 390 to 1440 px |
 
 ## What every video is
 

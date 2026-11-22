@@ -6,7 +6,7 @@
 // the backend (no answer, 5xx, 429, 401) stops the rest and waits offline. A ride refused for good is not recorded and
 // dropped. While the backend answers result_pending, it is sent again every 5 seconds for up to 3 minutes. It follows
 // the last ten rides, and stops listening for the network and retrying when it goes.
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import {
   RIDES_API,
@@ -192,6 +192,29 @@ describe('DeviceRideOutbox', () => {
     expect(sent.length).toBe(3);
     expect(device.kept.get('a')?.attempts).toBe(2);
   });
+
+  for (const seconds of [5, 120]) {
+    it(`sends a ride refused with 429 again when its Retry-After of ${seconds} s has passed, not on the growing delay (L2-130 AC1)`, async () => {
+      await start();
+      outbox.submit(ride('a'));
+      await settle();
+      sent[0].reply.error(
+        new HttpErrorResponse({
+          status: 429,
+          error: { status: 429, code: 'rate_limited' },
+          headers: new HttpHeaders({ 'Retry-After': String(seconds) }),
+        }),
+      );
+      await settle();
+
+      await vi.advanceTimersByTimeAsync(seconds * 1000 - 1);
+      expect(sent.length).toBe(1);
+      expect(outbox.status('a')()).toEqual({ kind: 'waitingOffline' });
+      await vi.advanceTimersByTimeAsync(1);
+      await settle();
+      expect(sent.length).toBe(2);
+    });
+  }
 
   it('sends the rides waiting on the device when it starts, oldest first, one at a time (L2-135 AC2)', async () => {
     await start(
