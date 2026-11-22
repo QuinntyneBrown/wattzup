@@ -113,6 +113,7 @@ export {
   type XpLineDto,
 } from './rides/rides-api';
 export { RIDE_OUTBOX, type RideOutbox, type RideSyncState } from './rides/ride-outbox';
+export { RIDES_WAITING, type RidesWaiting, type WaitingRide } from './rides/rides-waiting';
 export { RIDERS_API, type RiderMe, type RidersApi } from './riders/riders-api';
 export { sessionInterceptor } from './riders/session.interceptor';
 export {

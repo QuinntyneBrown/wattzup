@@ -32,9 +32,9 @@ const SENDING = signal<RideSyncState>({ kind: 'sending' }).asReadonly();
 /**
  * Results (docs/mocks/pages/results/, L2-073 to L2-079): where the rider finished, the final standings, what the ride
  * earned and what to ride next. The ride hands its result and the ride itself over in the navigation's history state,
- * which a reload keeps, until the outbox keeps finished rides (L2-135); with no result the rider goes Home. Results
- * submits the ride to the outbox too, which sends a ride id once: after a reload the backend answers the repeat as it
- * answered the first time. When the answer names a map the ride opened, Results reads the catalogue, only then, for
+ * which a reload keeps; with no result the rider goes Home. Results submits the ride to the outbox too, which keeps it
+ * on the device until the backend has it (L2-135) and sends a ride id once: after a reload the backend answers the
+ * repeat as it answered the first time. When the answer names a map the ride opened, Results reads the catalogue, only then, for
  * the unlock card. From lg it is two columns, the result and then what was earned, with the actions below.
  */
 @Component({
