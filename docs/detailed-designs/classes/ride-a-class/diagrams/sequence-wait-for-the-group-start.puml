@@ -22,7 +22,6 @@ box "Frontend — Ride app (ride application and components library)" #E0F2FE
 end box
 box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
   participant "SignalRRideHubClient" as hub
-  participant "ServerClock" as sclock
   participant "RideClock" as clock
   participant "WorkoutEngine" as engine
   participant "YouTubeVideoPlayer" as player
@@ -31,15 +30,17 @@ box "Backend — Telo.Ride.Api" #D1FADF
   participant "RideHub" as rhub
 end box
 rider -> page : Arrive after joining (?session=id)
-page -> store : init(class, Group, startsAt)
-store -> player : load, seekTo(offset), hold paused
-store --> page : Clock 0:00 and time left to the start L2-087 AC4
-rhub -> hub : SessionStarted(serverStartMs)
-hub --> live : Session started
-live --> store : startsAt = serverStartMs
-store -> clock : startAt(serverStartMs, serverClock)
-clock -> sclock : Correct for measured offset (L2-121 AC3)
-store -> engine : follow(plan, clock)
-store -> player : play() from offset + elapsed
-page --> rider : Header "30 Minute HIIT Cardio · Group · 9 riders", clock running
+page -> store : init(class, Group)
+store -> live : join(class, session)
+live -> hub : ServerTime x5, JoinClassSession
+hub -> rhub : invoke
+rhub --> hub : Seat (startsAt, server time)
+live --> store : seat, offsetMs (L2-121 AC3)
+store -> store : deadline = startsAt - offsetMs
+store -> player : load at sync offset, autoplay off (parked)
+store --> page : Clock 0:00, "Starts in 9:00" on whole seconds (L2-087 AC4)
+store -> clock : start(deadline) at the deadline (or at once, from it, if past)
+store -> engine : follow(plan)
+store -> player : seekTo(offset + elapsed), play()
+page --> rider : Header "30 Minute HIIT Cardio · Group", clock running
 @enduml

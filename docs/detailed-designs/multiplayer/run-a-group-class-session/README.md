@@ -37,9 +37,10 @@ ride (`docs/detailed-designs/classes/ride-with-a-group`) shows the board this se
 - **`ClassRideStore`** — `ride` store. On a refusal it leaves the ride: back to Class Start,
   which reads the sessions again and offers the next one (`L2-086` AC2, AC3), or to the Class
   Library for `class_locked`.
-- **`LiveSessionStore`** and **`ServerClock`** — as in `multiplayer/run-a-race-session`. On
-  `SessionStarted`, the store hands the local deadline to the `RideClock` and to the video player,
-  so the video and the clock start together (`L2-122` AC3).
+- **`LiveSessionStore`** and **`ServerClock`** — as in `multiplayer/run-a-race-session`. The seat
+  carries the session's start in server time; `ClassRideStore` converts it through the measured
+  clock offset and starts the `RideClock` and the video player at that moment, so every client's
+  video and clock start together (`L2-122` AC3).
 
 **Backend**
 
@@ -53,7 +54,8 @@ ride (`docs/detailed-designs/classes/ride-with-a-group`) shows the board this se
   and asks it to seat the rider. The session refuses with `session_started` once its start has
   passed, offering the next session, and with `session_full` when 10 riders are seated, offering
   the one 15 minutes later (`L2-122` AC1, AC2, `L2-086` AC3). Adding the connection to the
-  session's group and `SeatsChanged` come with slice 14.4, which is the first to send to it.
+  session's group and `SeatsChanged` come with slice 14.5, the live board, which is the first to
+  send to it.
 - **`GroupSessionSchedule`** — domain service in `Telo.Ride.Domain`. `Next(now, count)` yields
   the next slot start times after now, 15 minutes apart on the quarter hours (UTC), so a slot
   that starts now has started; `SessionId(classId, start)` names a slot's session
@@ -71,7 +73,8 @@ ride (`docs/detailed-designs/classes/ride-with-a-group`) shows the board this se
   session goes three hours after its start, longer than any class, so the registry holds at most
   each class's next two slots and the sessions still riding.
 - **`TickLiveSessionsCommandHandler`** — at a group session's start, calls `FillWithBots`, which
-  seats bots up to 10, and sends `SessionStarted` with the start as server time (`L2-122` AC3).
+  seats bots up to 10 (`L2-122` AC3), and from then on moves them, for the board's standings. No
+  start message is sent: each client already holds the start from its seat.
 - **`GetClassSessionsQueryHandler`** — serves `GET /api/classes/{classId}/sessions` for Class
   Start; its design belongs to `classes/start-a-class`. It reads the same schedule and seat counts.
 
@@ -79,8 +82,9 @@ ride (`docs/detailed-designs/classes/ride-with-a-group`) shows the board this se
 /api/classes/{classId}/sessions` (Class Start) and `GET /api/classes/sessions` (every class's
 next session, for the Class Library's chip). Both need a signed-in rider, since a session lists
 its riders. Slice 14.3 adds `JoinClassSession`, `GroupClassSession` and the in-memory registry,
-whose seats both reads now show; slice 14.4 starts the session, adds the session's hub group and
-fills it with bots. A seat is held until the session goes; leaving a session (`L2-124`) frees
+whose seats both reads now show. Slice 14.4 starts every client at the session's server time, from
+the seat's start and the measured offset, with no backend change; slice 14.5 adds the session's
+hub group, fills it with bots at the start and sends the standings. A seat is held until the session goes; leaving a session (`L2-124`) frees
 it in journey 15.
 
 ## Requirements
@@ -134,7 +138,7 @@ AC2).
 
 ### Behaviour — start the session
 
-At the slot, bots fill the session to 10 and every client starts its video and clock at the same
-server time (`L2-122` AC3).
+At the slot, every client starts its video and clock at the same server time, read from its seat
+through its measured clock offset, and bots fill the session to 10 (`L2-122` AC3).
 
 ![Sequence diagram for starting a group session](diagrams/sequence-start-the-session.png)

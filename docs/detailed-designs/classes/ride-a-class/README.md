@@ -34,7 +34,8 @@ service sends as a server time (`L2-121` AC3). The output board of a group ride 
   them down when the rider leaves.
 - **`LiveSessionStore`** — route-scoped live session state, owned by the multiplayer subsystem
   and provided on this route only in group mode. It wraps `RIDE_HUB_CLIENT` for the session and
-  exposes the server start time from `SessionStarted`.
+  exposes the seat, whose `startsAt` is the session's start in server time, and the measured clock
+  offset (`offsetMs`).
 - **`ClassRideStore`** — signal store. It holds the class, the mode (solo or group), the
   session start (from `LiveSessionStore`), the current segment view, the power and cadence readouts with their targets,
   and the video state (`ready`, `unavailable`). It exposes the actions the header and the
@@ -113,12 +114,15 @@ Bluetooth with a fake clock; the backend's `GET /api/classes/{id}` comes with th
 (6.1). Slice 5.3 adds the `video` library, `VideoClockSync`, the video with its notice and the
 class's `video` (`VideoDto { videoId, syncOffsetSeconds }`, as the catalogue serves it). Pause,
 Leave, the wake lock and the leave guard are 5.4; Full screen
-is journey 24; the group header and board come with the group class. A class that cannot load
+is journey 24; the group header and board come with the group class: slice 14.4 reads "· Group"
+in the header, drops Pause from a group ride and holds it at 0:00 under "Starts in m:ss" until the
+session's start; the board is 14.5. A class that cannot load
 is a mock gap, for the class start (6.3).
 
 **Backend.** A solo class ride makes no backend request until it loads its class, and none
-again until it ends. A group ride receives
-`SessionStarted` from `RideHub`, sent by the multiplayer subsystem's `SessionTicker`.
+again until it ends. A group ride learns its start from the seat `JoinClassSession` returns, so it
+needs no start message: the schedule is fixed, and every client converts the same server time
+through its own measured offset.
 
 ## Requirements
 
@@ -168,7 +172,14 @@ the sync offset (`L2-087` AC1, `L2-088` AC1).
 ### Behaviour — wait for the group start
 
 The clock and video hold at 0:00 with the time left; both begin at the server start time,
-corrected for the device's clock offset (`L2-087` AC4).
+corrected for the device's clock offset (`L2-087` AC4). The seat carries the start
+(`SeatAssignment.startsAt`); the store converts it to the monotonic clock once (`startsAt` less
+`offsetMs`) and counts down on whole seconds before it, so "Starts in" flips as the start draws a
+second closer. The video loads parked at its sync offset (`autoplay` off) and plays from the
+offset plus the time ridden when the clock starts. A rider who arrives after the start (a reload,
+a rejoin) starts the `RideClock` from the session's start, so the clock reads the session's time.
+Without a seat or an offset (the hub cannot be reached) the ride starts at once with the bike, as
+a ride alone does (`L2-126`); a refused join leaves the ride.
 
 ![Sequence diagram for waiting for the group start](diagrams/sequence-wait-for-the-group-start.png)
 

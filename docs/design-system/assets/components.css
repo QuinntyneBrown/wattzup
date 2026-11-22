@@ -2460,6 +2460,11 @@ a.map-row:hover .map-row__name, a.map-row[data-state="hover"] .map-row__name { c
 .class-video .mock-note { top: var(--space-3); right: var(--space-3); }
 .class-video__paused { position: absolute; inset: 0; display: grid; place-items: center; background: color-mix(in srgb, var(--color-ink) 70%, transparent); }
 .class-video__paused-label { font-size: var(--font-size-lg); line-height: var(--line-height-lg); font-weight: var(--font-weight-semibold); }
+/* Waiting for a group session's start (L2-087 AC4): the video parked under the time left. */
+.class-video__wait { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: var(--space-1); padding: var(--space-4); text-align: center; background: color-mix(in srgb, var(--color-ink) 70%, transparent); }
+.class-video__wait-label { font-size: var(--font-size-sm); line-height: var(--line-height-sm); font-weight: var(--font-weight-medium); color: var(--color-muted); }
+.class-video__wait-time { font-family: var(--font-family-display); font-weight: var(--font-weight-bold); letter-spacing: var(--letter-spacing-display); font-feature-settings: 'tnum' 1; font-size: var(--font-size-4xl); line-height: var(--line-height-none); color: var(--color-volt-fg); }
+.class-video__wait-note { max-width: 32ch; font-size: var(--font-size-sm); line-height: var(--line-height-sm); color: var(--color-muted); }
 
 /* The bike, under the video */
 .class-bike { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
