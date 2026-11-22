@@ -1,0 +1,98 @@
+<header
+  wz-training-header
+  [bike]="bike()"
+  [fullscreen]="fullscreen.active()"
+  (fullscreenToggled)="toggleFullscreen()"
+>
+  <a wz-training-close routerLink="/profile">Close</a>
+</header>
+<main class="setup">
+  <div class="setup__settings">
+    <div class="setup__form">
+      <h1 class="setup__title">Set up your ride</h1>
+      <p class="setup__lead">Telo Ride drives the bike's resistance for you. Pick how.</p>
+      <wz-training-modes [mode]="draft().mode" (chosen)="store.chooseMode($event)" />
+
+      @if (draft().mode === 'hiit') {
+        <div class="setup__section">
+          <wz-preset-chips
+            [presets]="presets"
+            [chosen]="draft().preset"
+            [edited]="draft().edited"
+            (picked)="pick($event)"
+          />
+          <section
+            wz-interval-ladder
+            [title]="title()"
+            [rounds]="draft().rounds"
+            [bounds]="limits"
+            (effortStepped)="store.stepEffort($event.index, $event.direction)"
+            (recoveryStepped)="store.stepRecovery($event.index, $event.direction)"
+            (removed)="store.removeRound($event)"
+            (added)="store.addRound()"
+            (evened)="store.makeRoundsSame()"
+          ></section>
+        </div>
+        <div class="setup__levels">
+          <wz-level-slider
+            label="Work resistance"
+            [value]="draft().workLevel"
+            (changed)="store.setWorkLevel($event)"
+          />
+          <wz-level-slider
+            label="Recover resistance"
+            variant="rest"
+            [value]="draft().recoverLevel"
+            (changed)="store.setRecoverLevel($event)"
+          />
+        </div>
+        <div class="setup__steppers setup__steppers--ruled">
+          <wz-training-stepper
+            label="Warm-up"
+            [value]="clock(draft().warmUp)"
+            [atMin]="draft().warmUp <= limits.warmUp.min"
+            [atMax]="draft().warmUp >= limits.warmUp.max"
+            (less)="store.stepWarmUp(-1)"
+            (more)="store.stepWarmUp(1)"
+          />
+          <wz-training-stepper
+            label="Cool-down"
+            [value]="clock(draft().coolDown)"
+            [atMin]="draft().coolDown <= limits.coolDown.min"
+            [atMax]="draft().coolDown >= limits.coolDown.max"
+            (less)="store.stepCoolDown(-1)"
+            (more)="store.stepCoolDown(1)"
+          />
+        </div>
+      } @else {
+        <div class="setup__section">
+          <wz-level-slider
+            label="Resistance level"
+            variant="large"
+            [value]="draft().flat.level"
+            (changed)="store.setFlatLevel($event)"
+          />
+        </div>
+        <div class="setup__steppers setup__steppers--spaced">
+          <wz-training-stepper
+            label="Duration"
+            [value]="draft().flat.minutes + ' min'"
+            [atMin]="draft().flat.minutes <= limits.flatMinutes.min"
+            [atMax]="draft().flat.minutes >= limits.flatMinutes.max"
+            (less)="store.stepFlatMinutes(-1)"
+            (more)="store.stepFlatMinutes(1)"
+          />
+          <wz-training-stepper
+            label="Cadence goal"
+            [value]="draft().flat.cadence + ' rpm'"
+            [atMin]="draft().flat.cadence <= limits.flatCadence.min"
+            [atMax]="draft().flat.cadence >= limits.flatCadence.max"
+            (less)="store.stepFlatCadence(-1)"
+            (more)="store.stepFlatCadence(1)"
+          />
+        </div>
+        <p class="setup__note">You can still nudge the level mid-ride from the dashboard.</p>
+      }
+    </div>
+  </div>
+</main>

@@ -1,0 +1,25 @@
+<div class="training-stepper__label" [id]="id">{{ label() }}</div>
+<div class="training-stepper__row">
+  <button
+    class="training-stepper__btn"
+    type="button"
+    [attr.aria-label]="'Less ' + label()"
+    [disabled]="atMin()"
+    (click)="less.emit()"
+  >
+    <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" /></svg>
+  </button>
+  <span class="training-stepper__value" aria-live="polite">{{ value() }}</span>
+  <button
+    class="training-stepper__btn"
+    type="button"
+    [attr.aria-label]="'More ' + label()"
+    [disabled]="atMax()"
+    (click)="more.emit()"
+  >
+    <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 12h14" />
+      <path d="M12 5v14" />
+    </svg>
+  </button>
+</div>

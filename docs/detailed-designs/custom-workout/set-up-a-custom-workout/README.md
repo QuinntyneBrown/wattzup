@@ -27,70 +27,61 @@ the preview, plan expansion and start are the *preview a custom workout* feature
 
 ## Description
 
-The route `/profile/custom` uses `loadChildren`. Its parent route provides
-`CustomWorkoutStore`, so the setup screen and the custom ride (`/profile/custom/ride`) share one
-draft and the draft goes when the rider leaves both.
+The route `/profile/custom` uses `loadChildren` (`custom-workout.routes.ts`). Its parent route
+provides `CustomWorkoutStore`, so the setup screen and, from slice 21.3, the custom ride
+(`/profile/custom/ride`) share one draft, and the draft goes when the rider leaves both.
 
-**Frontend — `ride` application**
+**Frontend — `api` library**
 
-- **`CustomWorkoutPage`** (`wz-custom-workout-page`, child route `''`) — routed page. It renders
-  the header (lockup, bike name, "Close" to Profile, Full screen), "Set up your ride", the
-  training mode, the mode's settings, the video section and the preview column. At lg settings
-  and preview are two independently scrolling columns; at sm the mode cards and steppers go two
-  across.
-- **`CustomWorkoutStore`** — signal store holding the `CustomWorkoutDraft`. Every editing action
-  (`choosePreset`, `longerEffort(n)`, `shorterRecovery(n)`, `addRound`, `removeRound(n)`,
-  `makeRoundsSame`, `setWorkLevel`, `setWarmUp`, `chooseFlat`, `setFlatDuration`,
-  `setVideoLink`, `nudgeOffset`, …) applies `CustomWorkoutLimits` and marks the preset as
-  edited. On open it loads the last saved workout through `CUSTOM_WORKOUT_API`, falling back to
-  `SettingsStore`, then to `HiitPresets.gcn30`.
+- **`CustomWorkoutDraft`** (`workout/custom-workout.ts`) — `mode` (`hiit` or `flat`), `preset`
+  (`gcn30`, `tabata`, `forty-twenty`, `minute-on`, `long-climbs`), `edited`, `rounds` (each an
+  `effort` and a `recovery` in seconds), `workLevel`, `recoverLevel`, `warmUp` and `coolDown` in
+  seconds, and `flat` (`level`, `minutes`, `cadence`).
+
+**Frontend — `domain` library (`engine/custom-workout.ts`)**
+
+- **`HIIT_PRESETS`** — each plan's name, its ladder title and rounds: GCN 30-min HIIT ("GCN
+  30-min HIIT · GCN Training"), eight efforts of 0:30 with recoveries 3:00, 2:30, 2:30, 2:00,
+  2:00, 1:30, 1:30 and 1:30 (the last runs into the cool-down); Tabata 8 × 0:20 / 0:15;
+  40 / 20 10 × 0:40 / 0:20; Minute on 10 × 1:00 / 1:00; Long climbs 4 × 5:00 / 3:00 (`L2-095`
+  AC7), the others titled "· Telo Ride".
+- **`newCustomWorkout()`** — GCN 30-min HIIT, work 24, recover 6, warm-up 5:00, cool-down 6:00,
+  flat level 12 for 30 min at 85 rpm.
+- **Edits**, pure functions of a draft with `CUSTOM_WORKOUT_LIMITS`: `choosePreset`,
+  `chooseMode`, `stepEffort` (±0:05 within 0:05 to 5:00), `stepRecovery` (±0:15 within 0:15 to
+  10:00), `addRound` (a copy of the last, up to 30), `removeRound` (down to one),
+  `makeRoundsSame`, `setLevel` (1 to 32), `stepWarmUp` and `stepCoolDown` (±1:00 within 0:00 to
+  20:00), `stepFlatMinutes` (±5 within 5 to 120) and `stepFlatCadence` (±5 within 40 to 120).
+  Every edit of a round marks the draft `edited`; choosing a plan clears it.
 
 **Frontend — `components` library**
 
-- **`TrainingModes`** / **`TrainingMode`** (`wz-training-modes`) — radio group "Training mode":
-  "HIIT intervals" and "Flat resistance" with their descriptions.
-- **`PresetChips`** / **`PresetChip`** (`wz-preset-chips`) — group "Plans"; the chosen chip
-  carries `aria-pressed="true"` and an edited mark after any change.
-- **`IntervalLadder`** (`wz-interval-ladder`) with **`LadderBlock`** — one row per round with
-  "Longer effort N", "Shorter effort N", "Longer recovery N", "Shorter recovery N" and "Remove
-  round N"; "+ Add round"; "Make every round the same"; the last round reads "Into cool-down".
-- **`LevelSliders`** / **`LevelSlider`** (`wz-level-slider`) — range 1 to 32 labelled "Light …
-  Max", 24 px tall, reading "24 / 32".
-- **`TrainingSteppers`** / **`TrainingStepper`** (`wz-training-stepper`) — "Warm-up",
-  "Cool-down", "Duration", "Cadence goal", with "More" and "Less" buttons.
-- **`SetupToggle`** with **`Switch`** — "Ride along to a video" (`aria-checked`).
-- **`VideoSync`** (`wz-video-sync`) — "YouTube link" field, preview player host, "Ride 0:00
-  starts at" with "Half a second earlier" / "Half a second later", "Use video's current time",
-  "Check" and the help text.
+- **`TrainingHeader`** (`wz-training-header`) — the lockup, the bike name, its projected Close
+  link (`a[wz-training-close]`) and Full screen.
+- **`TrainingModes`** (`wz-training-modes`) — radio group "Training mode": "HIIT intervals" and
+  "Flat resistance" with their descriptions, arrow keys moving the choice.
+- **`PresetChips`** (`wz-preset-chips`) — group "Plans"; the chosen chip `aria-pressed="true"`,
+  reading "· edited" after its name once changed.
+- **`IntervalLadder`** (`wz-interval-ladder`) — the ladder block's title and "Make every round
+  the same", then a row per round with its mini-steppers ("Shorter effort N", "Longer effort N",
+  "Shorter recovery N", "Longer recovery N") and "Remove round N"; the last round reads "Into
+  cool-down"; "Add round". A button at its bound is disabled.
+- **`LevelSlider`** (`wz-level-slider`) — label, "24 / 32", a range from 1 to 32 and "Light …
+  Max"; the rest and large variants.
+- **`TrainingStepper`** (`wz-training-stepper`) — a group named by its label, "Less" and "More"
+  ("Less Warm-up", "More Warm-up") around its value.
 
-**Frontend — `domain`, `api` and `video` libraries**
+**Frontend — `ride` application**
 
-- **`HiitPresets`** (`domain/engine`) — the preset round tables. GCN 30-min HIIT is eight
-  efforts of 0:30 with recoveries 3:00, 2:30, 2:30, 2:00, 2:00, 1:30, 1:30 and the last round
-  into the cool-down. The rounds of Tabata, 40 / 20, Minute on and Long climbs are
-  `<TO SUPPLY>` (L2.md open question 4).
-- **`CustomWorkoutLimits`** (`domain/engine`) — step sizes and bounds: effort ±0:05 within 0:05
-  to 5:00; recovery ±0:15 within 0:15 to 10:00; 1 to 30 rounds; levels 1 to 32; warm-up and
-  cool-down ±1:00 within 0:00 to 20:00; flat duration ±5 min within 5 to 120 min; cadence goal
-  ±5 rpm within 40 to 120; offset ±0.5 s, never below 0.
-- **`YouTubeLink`** (`domain/engine`) — `parse(text)` accepts `youtube.com/watch?v=`,
-  `youtu.be/` and `youtube.com/shorts/` addresses with an 11-character video id and returns the
-  id, or an invalid result. Only the id is kept; a submitted URL never reaches an iframe
-  (ADR 0012).
-- **`SettingsStore`** (`domain/storage`) — IndexedDB copy of the last saved workout for offline
-  use.
-- **`CustomWorkoutApi`** / `CUSTOM_WORKOUT_API` / **`HttpCustomWorkoutApi`** — `GET` and `PUT
-  /api/riders/me/custom-workout`.
-- **`VideoPlayer`** / `VIDEO_PLAYER_FACTORY` (**`YouTubeVideoPlayer`**, `video` library) — the
-  preview player, loaded only once a valid link is entered.
+- **`CustomWorkoutStore`** — the draft as a signal, and one method per edit.
+- **`CustomWorkoutPage`** (`/profile/custom`) — the header, "Set up your ride", the lead, the
+  training mode, then HIIT's plans, ladder, level sliders, warm-up and cool-down, or flat's
+  resistance level, duration, cadence goal and its note.
 
-**Backend**
-
-- **`CustomWorkoutController`** (`Telo.Ride.Api`) — `GET /api/riders/me/custom-workout` sends
-  one `GetCustomWorkoutQuery`; it returns 204 when the rider has none.
-- **`GetCustomWorkoutQueryHandler`** — reads the signed-in rider's `CustomWorkout` through
-  `IAppDbContext`. A rider reads only their own workout (`L2-128`).
-- **`CustomWorkout`** (`Telo.Ride.Domain`) — the rider's saved workout, owned by `Rider`.
+**Later slices.** The "Your ride" preview and Start ride (`L2-099`, `L2-100`) are slice 21.2.
+The video section (`L2-098`), the saved workout it opens from (`L2-094` AC3's "last saved",
+through `CUSTOM_WORKOUT_API`) and the ride are slice 21.3, where Start ride first saves a
+workout and a ride plays the video.
 
 ## Requirements
 
@@ -158,3 +149,13 @@ The link is parsed to a video id; only a valid id loads the preview player. The 
 nudged, captured from the preview or checked against it (`L2-098`).
 
 ![Sequence diagram for lining up a video](diagrams/sequence-line-up-a-video.png)
+
+## Open questions
+
+1. **The other plans.** Their rounds are settled in `L2-095` AC7. Tabata's recoveries are 0:15,
+   not the classic 0:10, since no recovery is shorter than 0:15.
+2. **The edited mark.** "· edited" after the chosen chip's name, as `custom-setup/edited` draws it.
+3. **Stepper buttons.** Drawn 40 px; they are 44 px here, the touch minimum AGENTS.md sets. The chips,
+   "Make every round the same", "Add round" and Close are 44 px tall for the same reason.
+4. **Ladder buttons.** The mini-steppers are 28 px and the remove button 32 px, as drawn; each
+   takes touches across 44 px around it.

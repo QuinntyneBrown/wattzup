@@ -1,0 +1,71 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Under Profile, Custom workout sets up your own ride. Telo Ride drives the bike's resistance; you pick how."
+      ]
+    },
+    {
+      "id": "plans",
+      "bars": 5,
+      "lines": [
+        "It starts from GCN's thirty-minute HIIT: eight thirty-second efforts, the recoveries shrinking from three minutes to ninety seconds. Four other plans sit beside it."
+      ]
+    },
+    {
+      "id": "ladder",
+      "bars": 5,
+      "lines": [
+        "Each round steps on its own: efforts by five seconds, recoveries by fifteen. Add a round, remove one, or make every round the same. The plan then reads edited."
+      ]
+    },
+    {
+      "id": "levels",
+      "bars": 4,
+      "lines": [
+        "Work and recover resistance slide from one to thirty-two. Warm-up and cool-down step a minute at a time."
+      ]
+    },
+    {
+      "id": "flat",
+      "bars": 5,
+      "lines": [
+        "Flat resistance holds one level the whole ride: pick it, how long, and a cadence goal. You set the pace with your legs."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 4,
+      "lines": [
+        "Custom workout, from a phone to the full screen."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

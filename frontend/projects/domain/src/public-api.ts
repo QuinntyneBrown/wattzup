@@ -85,3 +85,25 @@ export { PlanSummary } from './engine/plan-summary';
 export { CachedMapsApi } from './storage/cached-maps-api';
 export { MAP_CATALOGUE_KEY, MapCatalogueCache } from './storage/map-catalogue-cache';
 export { isEmailAddress } from './accounts/email-address';
+export {
+  CUSTOM_WORKOUT_LIMITS,
+  HIIT_PRESETS,
+  type HiitPreset,
+  addRound,
+  canStep,
+  chooseMode,
+  choosePreset,
+  makeRoundsSame,
+  newCustomWorkout,
+  presetOf,
+  removeRound,
+  setFlatLevel,
+  setRecoverLevel,
+  setWorkLevel,
+  stepCoolDown,
+  stepEffort,
+  stepFlatCadence,
+  stepFlatMinutes,
+  stepRecovery,
+  stepWarmUp,
+} from './engine/custom-workout';

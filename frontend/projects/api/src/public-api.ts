@@ -104,6 +104,13 @@ export {
   type WorldDownloadProgress,
 } from './world/world-downloader';
 export { WORLD_PANORAMAS, panoramaUrl } from './world/world-panoramas';
+export type {
+  CustomWorkoutDraft,
+  FlatSettings,
+  HiitPresetId,
+  Round,
+  TrainingMode,
+} from './workout/custom-workout';
 export { SAVED_WORLDS, type SavedWorld, type SavedWorlds } from './world/saved-worlds';
 export type { LoadStepState, LoadStepView } from './world/load-step-view';
 export { AUTH_API, type AuthApi, type ConfirmCodeResult } from './auth/auth-api';

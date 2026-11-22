@@ -2807,6 +2807,7 @@ a.map-table__map:hover, a.map-table__map[data-state="hover"] { color: var(--colo
 }
 .preset-chip:hover, .preset-chip[data-state="hover"] { color: var(--color-fg); }
 .preset-chip[aria-pressed="true"] { background: var(--color-fg); color: var(--color-ink); }
+.preset-chip__edited { font-weight: var(--font-weight-normal); }
 
 /* ---------- Ladder block: title + "Make every round the same", then IntervalLadder ---------- */
 .ladder-block { margin-top: var(--space-8); }

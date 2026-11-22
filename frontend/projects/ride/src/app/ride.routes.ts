@@ -86,6 +86,12 @@ export const rideRoutes: Routes = [
         canActivate: [rememberedBikeGuard],
         loadChildren: () => import('./race-lobby/race-lobby.routes').then((m) => m.raceLobbyRoutes),
       },
+      // Custom workout has its own header, with no app navigation (docs/mocks/pages/custom-setup/).
+      {
+        path: 'profile/custom',
+        loadChildren: () =>
+          import('./custom-workout/custom-workout.routes').then((m) => m.customWorkoutRoutes),
+      },
       // Race Setup has its own header, with no app navigation (docs/mocks/pages/race-setup/).
       {
         path: 'race/:mapId',
