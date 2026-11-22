@@ -5,8 +5,8 @@ title Containers — Authenticate every request
 Person(rider, "Rider", "Rides a smart bike at home")
 System_Ext(probe, "Hosting platform health probe", "Host <TO SUPPLY>")
 System_Boundary(telo, "Telo Ride") {
-  Container(app, "Ride app", "Angular, Chrome or Edge", "Sends the session cookie and the anti-forgery header")
-  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Fallback policy, anti-forgery, owner scoping, health checks")
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Sends the session cookie; the browser adds Sec-Fetch-Site and Origin")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Same-origin proof, fallback policy, owner scoping, health checks")
   ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Sessions and rider-owned data")
 }
 Rel(rider, app, "Uses", "HTTPS")

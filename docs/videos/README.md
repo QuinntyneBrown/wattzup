@@ -90,6 +90,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 21.2 | [Preview a custom workout](21-2-preview-a-custom-workout/README.md) | 1:54 | Your ride beside Custom workout: the total, the resistance profile and the facts for GCN 30-min HIIT and flat resistance, following every change, and Ride along to a video synced from the preview player, at every width |
 | 21.3 | [Ride a custom workout](21-3-ride-a-custom-workout/README.md) | 2:06 | The custom ride: the plan sets the bike's level every interval, with the interval card, Power vs. plan, the video in sync, the bike control and Sent to bike, flat resistance, the workout saved for next time and a refused plan, at every width |
 | 21.4 | [Pause, leave or end](21-4-pause-leave-or-end/README.md) | 1:56 | The custom ride stops when the rider does: Pause and Resume, a lost bike, waiting for a bike, Bluetooth off, Leave this ride? under Library, End and a ride too short to save, at every width |
+| 22.1 | [Authenticate every request](22-1-authenticate-every-request/README.md) | 2:03 | Every endpoint and the ride hub need a session unless listed: sign-in and sign-out, the public catalogues, health and the app; 401 for the rest, proved by asking every endpoint; a change or hub connection from another origin refused with 403 `cross_origin`; sign-in from 390 to 1440 px; 488 backend tests |
 
 ## What every video is
 

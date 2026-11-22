@@ -16,15 +16,12 @@ title Class structure — Authenticate every request
 package "Telo.Ride.Api" {
   class AuthorizationSetup <<configuration>> {
     +FallbackPolicy = RequireAuthenticatedUser
-    +AnonymousEndpoints = [POST /api/auth/code, POST /api/auth/code/confirm, /health/live, /health/ready]
+    +AnonymousEndpoints = [POST /api/auth/code, POST /api/auth/code/confirm, POST /api/auth/sign-out,\n GET /api/classes, GET /api/classes/{id}, GET /api/maps, GET /api/maps/{mapId}/queue,\n /health/live, /health/ready, the app's files]
   }
-  class AntiforgerySetup <<configuration>> {
-    +HeaderName = "X-XSRF-TOKEN"
-    +CookieName = "XSRF-TOKEN"
-    +Filter = AutoValidateAntiforgeryToken
-  }
-  class SameOriginHubFilter {
-    +InvokeAsync(context: HttpContext, next: RequestDelegate): Task
+  class SameOriginRequests {
+    +Code = "cross_origin"
+    +InvokeAsync(context: HttpContext): Task
+    -IsSameOrigin(request: HttpRequest): bool
   }
   class HealthEndpoints <<configuration>> {
     +Live = "/health/live" (no checks)
