@@ -11,11 +11,11 @@ import { SkyMesh } from 'three/addons/objects/SkyMesh.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {
   convertToTexture,
-  directionToColor,
   float,
   mrt,
   normalView,
   output,
+  packNormalToRGB,
   pass,
   screenUV,
   sin,
@@ -3678,7 +3678,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
         mrt({
           output,
           ...(needsVelocity ? { velocity } : {}),
-          ...(outlines ? { normal: directionToColor(normalView), ink: float(0) } : {}),
+          ...(outlines ? { normal: packNormalToRGB(normalView), ink: float(0) } : {}),
         }),
       );
     }

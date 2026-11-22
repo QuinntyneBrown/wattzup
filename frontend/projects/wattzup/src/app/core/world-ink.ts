@@ -6,7 +6,6 @@ import {
   cameraFar,
   cameraNear,
   color,
-  colorToDirection,
   float,
   max,
   mix,
@@ -14,6 +13,7 @@ import {
   screenSize,
   screenUV,
   smoothstep,
+  unpackRGBToNormal,
   vec2,
   vec4,
 } from 'three/tsl';
@@ -42,27 +42,31 @@ export function inkOutline(beauty: Vec4Node, scenePass: ScenePass): Vec4Node {
   const depth = scenePass.getTextureNode('depth');
   const normals = scenePass.getTextureNode('normal');
   const ink = scenePass.getTextureNode('ink');
-  const texel = vec2(1, 1).div(screenSize);
+  const texel = vec2(1, 1).div(screenSize).toVar();
   const viewZ = (uv: Vec2Node) =>
     perspectiveDepthToViewZ(depth.sample(uv).r, cameraNear, cameraFar) as unknown as FloatNode;
-  const normalAt = (uv: Vec2Node) => colorToDirection(normals.sample(uv).rgb);
+  const normalAt = (uv: Vec2Node) => unpackRGBToNormal(normals.sample(uv).rgb);
 
-  const here = screenUV as unknown as Vec2Node;
-  const z = viewZ(here);
-  const n = normalAt(here);
+  const here = screenUV.toVar() as unknown as Vec2Node;
+  const z = viewZ(here).toVar() as unknown as FloatNode;
+  const invAbsZ = float(1).div(z.abs()).toVar() as unknown as FloatNode;
+  const n = normalAt(here).toVar();
+  const beautySample = beauty.toVar();
   let depthJump = float(0) as unknown as FloatNode;
   let normalTurn = float(0) as unknown as FloatNode;
-  let warm: FloatNode = ink.sample(here).r as unknown as FloatNode;
+  let warm: FloatNode = ink.sample(here).r.toVar() as unknown as FloatNode;
   for (const [dx, dy] of NEIGHBOURS) {
-    const uv = here.add(texel.mul(vec2(dx, dy))) as unknown as Vec2Node;
-    depthJump = max(depthJump, viewZ(uv).sub(z).abs().div(z.abs())) as unknown as FloatNode;
+    const uv = here.add(texel.mul(vec2(dx, dy))).toVar() as unknown as Vec2Node;
+    depthJump = max(depthJump, viewZ(uv).sub(z).abs().mul(invAbsZ)) as unknown as FloatNode;
     normalTurn = max(normalTurn, float(1).sub(n.dot(normalAt(uv)))) as unknown as FloatNode;
     warm = max(warm, ink.sample(uv).r) as unknown as FloatNode;
   }
   const edge = max(
     smoothstep(float(EDGE.depth - EDGE.soft), float(EDGE.depth + EDGE.soft), depthJump),
     smoothstep(float(EDGE.normal - EDGE.soft), float(EDGE.normal + EDGE.soft), normalTurn),
-  ).mul(EDGE.strength);
+  )
+    .mul(EDGE.strength)
+    .toVar();
   const inkColour = mix(color(INK.scenery), color(INK.riders), warm);
-  return vec4(mix(beauty.rgb, inkColour, edge), beauty.a);
+  return vec4(mix(beautySample.rgb, inkColour, edge), beautySample.a);
 }
