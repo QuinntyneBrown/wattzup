@@ -107,9 +107,12 @@ test.describe('Group sessions on Class Start', () => {
     await expect(start.body(start.group)).toHaveText('7:39 PM · starts in 9 min · 5 of 10 riders');
 
     riders = sixRiders;
-    await page.clock.runFor(60_000);
+    const reads = () => api.requests().filter((r) => r === `GET ${SESSIONS}`).length;
+    await page.clock.runFor(30_000);
+    await expect.poll(reads).toBe(2);
+    await page.clock.runFor(30_000);
 
     await expect(start.body(start.group)).toHaveText('7:39 PM · starts in 8 min · 6 of 10 riders');
-    expect(api.requests().filter((r) => r === `GET ${SESSIONS}`).length).toBeGreaterThanOrEqual(3);
+    await expect.poll(reads).toBe(3);
   });
 });
