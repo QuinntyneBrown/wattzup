@@ -40,11 +40,8 @@ const TRACK_WIDTH = 0.5;
 /** How bright the ground is straight under a lamp, against its colour in daylight. */
 const LAMP_STRENGTH = 4.2;
 
-/** The ground's material and the texture it reads, to be disposed with the map. */
-export function groundMaterial(
-  roadHalfWidth: number,
-  lamps: CourseLamps | null,
-): { material: Material; dispose(): void } {
+/** The detail texture the ground and the walls read (surface-detail.ts): repeating, mipped, to be disposed. */
+export function surfaceTexture(): DataTexture {
   const size = SURFACE_DETAIL_SIZE;
   const detail = new DataTexture(surfaceDetail(), size, size, RGBAFormat, UnsignedByteType);
   detail.wrapS = detail.wrapT = RepeatWrapping;
@@ -53,7 +50,15 @@ export function groundMaterial(
   detail.generateMipmaps = true;
   detail.anisotropy = 8;
   detail.needsUpdate = true;
+  return detail;
+}
 
+/** The ground's material, reading `detail`. */
+export function groundMaterial(
+  detail: DataTexture,
+  roadHalfWidth: number,
+  lamps: CourseLamps | null,
+): Material {
   // glTF keeps a UV's second number upside down: the metres from the start line come back as 1 - v.
   const left = uv().x;
   const along = float(1).sub(uv().y);
@@ -124,11 +129,5 @@ export function groundMaterial(
       .mul(max(light, 0).mul(LAMP_STRENGTH));
   }
 
-  return {
-    material,
-    dispose: () => {
-      material.dispose();
-      detail.dispose();
-    },
-  };
+  return material;
 }

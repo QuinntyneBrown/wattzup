@@ -9,7 +9,9 @@ its numbers, picture and film) and is written so it can be applied to any other 
 
 1. **One significant change a pass.** A surface, a light, a kind of scenery. Not a retune.
 2. **Measure before and after in the real app**, with `tools/course-bench` (its README has the commands): the
-   display's pace, and the frame rate with the limit off, at the top tier, on a real GPU.
+   display's pace, and the frame rate with the limit off, at the top tier, on a real GPU. Take the median of three
+   uncapped runs, and measure the before and the after in the same sitting: one run differs from the next by a
+   tenth or more.
 3. **Keep it only if the frame rate holds**: 60 fps or more at the display's pace with no run of slow frames, and
    uncapped above 240 fps on the bench machine (so a device a quarter as fast still draws 60). Otherwise take it
    out, and record what was tried.
@@ -96,11 +98,40 @@ change. By day the same grid can hold shade instead of light (under a bridge, a 
 **Watch for.** Walls overlit to their tops (keep them near a third of the ground's strength and fade with height);
 pale colours blooming; the light has no direction and casts no shadow.
 
+### 3. Walls of brick, steel and plaster (Docklands pass 3)
+
+**What it gives.** Buildings and containers stop being flat boxes: brick in courses with mortar, each brick its own
+shade; ribbed, rusting steel; mottled, cracked plaster; rain streaks and a dirty foot on every wall.
+
+**How it works.**
+
+- `tools/blender/build_course.py`: a part whose material is in `WALL_KINDS` joins the `Walls` group. For each face
+  `assemble` works out the wall's own axes from the face's normal: `u` is the metres along the wall (level, square
+  to the way it faces), `v` the metres above the road beside it plus `WALL_KIND_STEP` (1,000) for each kind. A roof
+  or a floor is kind 0, its UV its place on the map.
+- `frontend/projects/world/src/wall-material.ts`: one flat-shaded Lambert node material. It takes the kind and the
+  height back out of `v`, then draws the kind's pattern from `u` and the height: brick (0.225 x 0.075 m, 12 mm
+  joints, a hash of the brick's row and column for its shade), ribs (a sine, 0.28 m pitch), plaster (the detail
+  texture's grain, patches and cracks). `fwidth` of the UV says how much of a pattern one pixel covers; past a
+  fifth of a repeat the pattern fades into its average.
+- It reads the same detail texture as the ground (two reads) and adds the lamps' light as technique 2 does.
+
+**To apply it to another map.** Rebuild it: its parts built of the materials in `WALL_KINDS` (`facade-*`, `deco-*`,
+`whitewash`, `brick`, `tower`, `wall`, `container-*`) become walls with no other change. Give a new kind of wall a
+number in `WALL_KINDS` and a pattern in `wall-material.ts` (timber boards, stone blocks, corrugated roofing, glass
+curtain wall). The vertex colour stays the wall's base colour, so each theme's palette still decides it.
+
+**Cost.** Too little to measure at 1080p on an Adreno X1-85; a draw call a chunk for the new group; about 0.14 MB
+gzipped for Docklands' walls.
+
+**Watch for.** Moire on far walls (fade the pattern sooner); a mortar colour that glows against dark brick at
+night; kinds that need more than `u` and height (a pitched roof's tiles need the roof's own slope).
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
 
-1. Walls are one flat colour: no brick, no window frames, no doors.
+1. Windows, doors and signs are flat panels: no frames, sills, glass or light spilling from them.
 2. The riders' shadows are blobs, and nothing else casts a shadow.
 3. The sky is bands of colour: no stars, moon or cloud at night; no real clouds by day.
 4. The water is a flat colour: no reflection of the lights along the quay.

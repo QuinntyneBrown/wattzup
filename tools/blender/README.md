@@ -114,13 +114,16 @@ data and scenery in `themes.py`, run the script, and name the world in
 ## Built for low-power tablets
 
 - **Groups and chunks.** Every part hands its faces to the assembly (`assemble`), which joins them into a
-  few groups by material (`Land`, `Ground`, `Solid`, `Leaves`, `Glow`, `Beams`, `Confetti`), puts each face's colour
+  few groups by material (`Land`, `Ground`, `Walls`, `Solid`, `Leaves`, `Glow`, `Beams`, `Confetti`), puts each face's colour
   into its vertices, and cuts each group into chunks of 240 m of road (the land and beams four times as
   long, glow and leaves three). The app draws a chunk only near the camera, in one draw call.
 - **The ground.** What the road builds (asphalt, paint, kerbs, pavements, shoulders) is the `Ground` group, the only
   one with a UV: each vertex's metres left of the centre line and metres from the start line. The app draws its
   surface and the lamps' light from that (`docs/course-realism.md`). A theme with street lamps names them (`lamps`)
   and the course file carries where their light falls.
+- **The walls.** What is built of a material in `WALL_KINDS` (brick, containers, plaster) is the `Walls` group. Its
+  UV is each vertex's metres along its wall and metres above the road beside it, plus 1,000 m for each kind of
+  wall, from which the app draws brick courses, ribs or plaster (`docs/course-realism.md`).
 - **Baked shading.** What stands on the ground is darkened at its foot in its colours.
 - **`pack_glb.py`** rewrites the exported vertex colours as bytes, a quarter of their size.
 - **`layout`.** Searching the layouts a seed can deal for one whose start and finish look out to sea can

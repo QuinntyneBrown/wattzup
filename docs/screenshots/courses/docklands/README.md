@@ -11,6 +11,11 @@ tier (bloom on), over ten seconds from 0:12 of the ride. "Display" is the frame 
 display switches between 60 and 120 Hz, so it reads one or the other); "uncapped" is with the frame rate limit off,
 the number that compares passes. The film and the picture of each pass are beside this file.
 
+**One run is not enough (found in pass 3).** The same build read 262 and 307 fps uncapped in two runs a minute
+apart: a laptop warms and slows, and other work on the machine shows. From pass 3 the bench takes three uncapped runs
+and the median is the number; a pass is compared with the pass before it measured the same way, in the same
+sitting. Passes 0 to 2 were single runs: read their uncapped numbers as within a tenth.
+
 **The rule.** A pass is kept only if the display's pace holds (60 fps or more, no run of slow frames) and uncapped
 stays above 240 fps, so a device a quarter as fast still draws 60.
 
@@ -18,7 +23,8 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 0 | Baseline: every surface one flat colour, shaded flat | 119.8 fps | 357 fps (2.80 ms) | 39 ms | 73,629 | 117 | 3.37 MB | |
 | 1 | The ground's surface and the lamps' light on it | 119.6 fps | 342 fps (2.92 ms) | 37 ms | 74,889 | 122 | 3.28 MB | Yes |
-| 2 | The lamps light what stands near the road: riders, posts, walls, land | 119.0 fps | 321 fps (3.11 ms) | 73 ms | 74,889 | 122 | 3.28 MB | Yes |
+| 2 | The lamps light what stands near the road: riders, posts, walls, land | 119.0 fps | 321 fps (3.11 ms); median of three 299 fps (3.34 ms) | 73 ms | 74,889 | 122 | 3.28 MB | Yes |
+| 3 | Walls of brick, steel and plaster | 117.9 fps | median of three 291 fps (3.43 ms): 322, 286, 291 | 74 ms | 75,005 | 131 | 3.42 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -90,3 +96,39 @@ either way (pass 0 has them too), so it is the machine, not the pass.
 - Pale jerseys bloom under a strong lamp. The riders take less of it than the ground does.
 - It lights without direction: a wall facing away from the lamp is lit as one facing it, and nothing casts a
   shadow. The shape of things still comes only from the moon's light. Shadows are the next gap.
+
+## Pass 3: walls of brick, steel and plaster
+
+**Before** (`pass-02.jpg`, `pass-02.mp4`): a warehouse is a box of one flat red-brown; a container a box of one flat
+colour.
+
+**After** (`pass-03.jpg`, `pass-03.mp4`): the warehouses are brick, laid in courses half a brick out of step with
+mortar between, each brick a shade of its own, streaked where rain has run down and dark where the road has
+splashed their foot; the containers have their upright ribs and patches of rust; the lamps light all of it.
+
+**What changed.**
+
+- The Blender build puts what is built of brick, steel or plaster (`WALL_KINDS`) in a new `Walls` group. Each face
+  gets a UV in its wall's own axes: metres along the wall, metres above the road beside it, with 1,000 m added to
+  the height for each kind of wall (1 brick, 2 steel, 3 plaster; roofs are 0).
+- The app draws `Walls` with one material (`wall-material.ts`): brick courses, mortar and a shade a brick worked out
+  from the UV; a container's ribs from a sine along the wall; stains and streaks from the ground's detail texture.
+  Where a course of brick is less than a pixel tall, the pattern fades into its average.
+
+**Cost.** Nothing that three runs can tell apart: 299 fps before (330, 299, 295), 291 after (322, 286, 291). 9 more
+draw calls (the walls are their own group) and 0.14 MB more in the file gzipped (the walls' UVs, and corners no
+longer shared between a box's faces). At the display's pace the last run had 5 frames of 1,180 over 20 ms and the
+run before it 1; the mean is 118 to 120 fps either way.
+
+**Tried and dropped.** The kind of wall in the alpha of each vertex's colour: Blender's glTF exporter writes the
+alpha as 1 whatever the mesh holds. It rides in the UV instead.
+
+**Learned.**
+
+- The first measurement said this pass cost 0.6 ms (321 to 269 fps). Cutting the shader's texture reads from four
+  to two changed nothing, which gave it away: it was the machine, not the shader. Measure three times before
+  optimising anything.
+- A pattern finer than a pixel must fade out before it gets there (from 0.18 to 0.6 of a course a pixel): faded
+  later, the far walls crawled with bands.
+- A wall's kind and its place on the wall are all a material needs for brick, ribs or plaster. Windows, doors and
+  signs are still flat panels laid on the wall: a later pass.

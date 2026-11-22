@@ -500,6 +500,13 @@ FILM_KEEPS = {"GlowLamp"}
 # each vertex's place on the road in its UV (metres left of the centre line, metres from the start line), so the app
 # can draw its surface, its wear and the lamps' light on it (L2-166 AC13).
 GROUND_PARTS = {"Road", "RoadPaint", "Kerbs", "CentreLine", "Promenade", "Shoulder"}
+# The walls of what is built: their own group, with each vertex's place on its wall in its UV (metres along the
+# wall, metres above the road beside it), so the app can draw brick courses, a container's ribs or stained plaster
+# (L2-166 AC15). The kind of wall rides in the UV too: `WALL_KIND_STEP` metres are added to the height for each kind
+# (the exporter keeps no alpha in a vertex's colour). Roofs and floors are kind 0, their UV their place on the map.
+WALL_KIND_STEP = 1000.0
+WALL_KINDS = {"brick": 1, **{f"container-{i}": 2 for i in range(4)}, "whitewash": 3, "tower": 3, "wall": 3,
+              **{f"facade-{i}": 3 for i in range(6)}, **{f"deco-{i}": 3 for i in range(4)}}
 WIDER = {"Land": 4, "Beams": 4, "Glow": 3, "Leaves": 3}
 WHOLE = {"sea": "Sea", "sun": "Sun", "moon": "Sun", "island": "Conillera", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
 
@@ -563,6 +570,8 @@ def assemble(road: "Road", col) -> dict:
         group, chunked = group_of(part.mat)
         if part.name in GROUND_PARTS:
             group = "Ground"
+        elif part.mat in WALL_KINDS and chunked:
+            group = "Walls"
         flat = srgb(MATERIALS[part.mat]["color"])
         for face in part.faces:
             name = group
@@ -573,6 +582,16 @@ def assemble(road: "Road", col) -> dict:
                 name = f"{group}_{j // (per_chunk * WIDER.get(group, 1)):03d}"
             mesh = meshes.setdefault(name, {"group": group, "verts": [], "cols": [], "uvs": [], "faces": [], "index": {}})
             ids = []
+            if group == "Walls":
+                # The wall's own axes: along it (level, square to the way it faces) and up it.
+                a, b, c_ = (part.verts[i] for i in face[:3])
+                nx = (b[1] - a[1]) * (c_[2] - a[2]) - (b[2] - a[2]) * (c_[1] - a[1])
+                ny = (b[2] - a[2]) * (c_[0] - a[0]) - (b[0] - a[0]) * (c_[2] - a[2])
+                nz = (b[0] - a[0]) * (c_[1] - a[1]) - (b[1] - a[1]) * (c_[0] - a[0])
+                flat_len = math.hypot(nx, ny)
+                upright = flat_len > abs(nz)
+                tx, ty = (-ny / flat_len, nx / flat_len) if upright else (1.0, 0.0)
+                kind = WALL_KINDS[part.mat] if upright else 0
             for i in face:
                 v = part.verts[i]
                 c = part.colours[i] if part.colours else flat
@@ -584,11 +603,17 @@ def assemble(road: "Road", col) -> dict:
                     shade = 0.74 + 0.3 * smoothstep(0.0, 4.5, lift) if lift > 0.2 else (0.62 if lift < -0.3 else 1.0)
                     c = (c[0] * shade, c[1] * shade, c[2] * shade, 1.0)
                 key = (round(v[0], 3), round(v[1], 3), round(v[2], 3), round(c[0], 3), round(c[1], 3), round(c[2], 3))
+                if group == "Walls":
+                    _, near, _ = road.tree.find((v[0], v[1], 0.0))
+                    wall_uv = (v[0] * tx + v[1] * ty, v[2] - road.s[near]["z"] + kind * WALL_KIND_STEP) if upright else (v[0], v[1] % 400.0)
+                    key = (*key, kind, round(wall_uv[0], 3), round(wall_uv[1], 3))
                 at = mesh["index"].get(key)
                 if at is None:
                     at = mesh["index"][key] = len(mesh["verts"])
                     mesh["verts"].append(v)
                     mesh["cols"].append(c)
+                    if group == "Walls":
+                        mesh["uvs"].append(wall_uv)
                     if group == "Ground":
                         _, near, _ = road.tree.find((v[0], v[1], 0.0))
                         p = road.s[near]

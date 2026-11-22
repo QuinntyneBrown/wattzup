@@ -34,11 +34,12 @@ import {
 } from 'three/webgpu';
 import type { Backend, SceneFrame, TimedSegment as Segment, World, WorldRenderer } from '@telo/api';
 import { Course, type CoursePlace, courseLamps, courseLook, parseCourse } from './course';
-import { groundMaterial } from './ground-material';
+import { groundMaterial, surfaceTexture } from './ground-material';
 import { LampGlow } from './lamp-glow';
 import { lampLightMap } from './lamp-light-map';
 import { mergeStillParts } from './merged-cyclist';
 import { ridersOnRoad } from './race-riders';
+import { wallMaterial } from './wall-material';
 import { type Cyclist, CyclistKit } from './world-cyclist';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
@@ -63,6 +64,7 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   Land: 950,
   Ground: 420,
   Solid: 250,
+  Walls: 250,
   Glow: 400,
   Beams: 460,
   Leaves: 210,
@@ -82,7 +84,7 @@ const GHOST_OPACITY = 0.45;
  * How bright the lamps' light is on what stands near the road, against the ground straight under a lamp: walls and
  * posts catch it side on, the land and the leaves as the ground does, the riders from above and beside.
  */
-const LAMP_ON = { Solid: 1.5, Land: 4.2, Leaves: 1.8, rider: 1.5 } as const;
+const LAMP_ON = { Solid: 1.5, Walls: 1.5, Land: 4.2, Leaves: 1.8, rider: 1.5 } as const;
 /**
  * How the map is drawn, cheapest first: the most device pixels a CSS pixel, and whether the neon blooms. The ride
  * opens on `START`, so it never starts high and drops in front of the rider (L2-111 AC3); frames that keep the
@@ -351,9 +353,11 @@ export class CourseRenderer implements WorldRenderer {
     this.disposables.push(...Object.values(materials));
     // The ground the road builds has its place on the road in its UV: its surface and the lamps' light are drawn
     // from that (ground-material.ts). A map built before it has no such group.
-    const ground = groundMaterial(this.course!.file.roadHalfWidth, lamps);
-    materials['Ground'] = ground.material;
-    this.disposables.push(ground);
+    const detail = surfaceTexture();
+    materials['Ground'] = groundMaterial(detail, this.course!.file.roadHalfWidth, lamps);
+    // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
+    materials['Walls'] = wallMaterial(detail, this.lampGlow?.light ?? null, LAMP_ON.Walls);
+    this.disposables.push(detail, materials['Ground'], materials['Walls']);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     map.traverse((part) => {
       const mesh = part as Mesh;

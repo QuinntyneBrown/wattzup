@@ -55,6 +55,7 @@ All of it is in the `world` library; nothing outside it changes.
 | `ground-material.ts` | The `Ground` group's material (L2-166 AC13): the surface worked out from each vertex's place on the road (its UV) and a detail texture, and the lamps' light on it. `docs/course-realism.md` describes it. |
 | `lamp-light-map.ts` | `lampLightMap(course, lamps)`: a grid over the map seen from above, the lamps' light on the ground and the road's height in each cell (L2-166 AC14). No Three.js; unit-tested. |
 | `lamp-glow.ts` | `LampGlow`: the grid as a texture and the node that adds the lamps' light to a material; the scenery's and the riders' lit materials. |
+| `wall-material.ts` | The `Walls` group's material (L2-166 AC15): brick, steel or plaster drawn from each vertex's place on its wall and the wall's kind, both in its UV. |
 | `surface-detail.ts` | The detail texture's texels, worked out on the device: grain, patches, cracks, stones. No Three.js; unit-tested. |
 | `world-renderer-loader.ts` | Returns a `MapRenderer`. It imports neither renderer, so Three.js still loads only when a world starts. |
 

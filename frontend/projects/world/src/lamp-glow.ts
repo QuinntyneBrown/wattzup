@@ -36,7 +36,7 @@ const FADE_TO = 9;
 export class LampGlow {
   private readonly grid: DataTexture;
   /** The lamps' light at the surface being drawn, in the lamps' colour: 1 is a lone lamp straight overhead. */
-  private readonly light: Node<'vec3'>;
+  readonly light: Node<'vec3'>;
 
   constructor(map: LampLightMap, lamps: CourseLamps) {
     const grid = new DataTexture(map.texels, map.width, map.height, RGFormat, UnsignedByteType);
