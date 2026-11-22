@@ -1530,6 +1530,11 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         data["haze"] = hexs(theme["haze"])
         data["light"] = {"colour": hexs(theme["light"][0]), "intensity": theme["light"][1]}
         data["fill"] = [hexs(c) for c in theme["fill"]]
+        # A map by the sea: the app draws the sheet round the land as water. Inland it is the ground beyond the land.
+        if theme["terrain"].get("sea"):
+            data["sea"] = True
+        if theme.get("night"):
+            data["night"] = True
         if "wet" in theme:
             data["wet"] = theme["wet"]
         if "lamps" in theme:

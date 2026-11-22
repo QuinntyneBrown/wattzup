@@ -42,6 +42,10 @@ export interface CourseFile {
   readonly light?: { readonly colour: string; readonly intensity: number };
   /** The fill light from the sky and from the ground. */
   readonly fill?: readonly [string, string];
+  /** Whether the sheet round the land is the sea: the app draws it as water. */
+  readonly sea?: boolean;
+  /** Whether it is night: the land's lights stand in the water. */
+  readonly night?: boolean;
   /** How wet the ground is, from 0, dry, to 1, standing water everywhere; a course that names none is dry. */
   readonly wet?: number;
   /** The street lamps that light the ground, where the course has them. */

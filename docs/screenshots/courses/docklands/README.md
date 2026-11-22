@@ -34,6 +34,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 10 | A glow in the air round every lamp | 119.3 fps, 2 frames over 20 ms | median of three 294 fps (3.40 ms): 304, 286, 294, on the first ramp | | 67,845 | 129 | 3.95 MB | Yes |
 | 11 | The file smaller: positions in whole centimetres | 119.4 fps, 1 frame over 20 ms | turn about with pass 10's map: 273 fps against 264 (277, 270, 273 and 267, 264, 254), on the first ramp | | 75,149 | 130 | 3.31 MB | Yes |
 | 12 | The lamps' light comes from above: riders and scenery have shape | 119.3 fps, 2 frames over 20 ms | median of three 269 fps (3.72 ms): 288, 269, 264; pass 11 read 270 in the same sitting | | 75,149 | 130 | 3.31 MB | Yes |
+| 13 | Harbour water that ripples and mirrors the city | 120.1 fps, no frame over 20 ms | median of three 278 fps (3.60 ms): 287, 278, 271; pass 12 read 269 | | 75,149 | 130 | 3.31 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -454,3 +455,31 @@ still 4.2).
 
 **Learned.** Light with no direction flattens whatever it lights. A lamp's direction is nearly "down" for
 everything under it, and that one fact, with no lamp looked up, is enough to model a rider's shape.
+
+## Pass 13: harbour water that ripples and mirrors the city
+
+**Before** (`pass-12-start.jpg`): the harbour is a flat sheet of one dark blue, the same from every angle.
+
+**After** (`pass-13-start.jpg` at the start line, where the harbour is in view; `pass-13.jpg` and `pass-13.mp4` on
+the first ramp): the water ripples and moves; across it stand columns of warm light under the city's towers,
+broken by the ripples; towards the horizon it takes the sky's glow, and near the quay, looked down on, it is dark.
+The moon has a glint on it.
+
+**What changed.**
+
+- The course file says the sheet round the land is the sea (`sea`) and that it is night (`night`), from the theme.
+- `water-material.ts` draws the `Sea` group of such a course: two reads of the detail texture, running across each
+  other with the ride's clock, tip the surface; the eye's ray is mirrored in it; the mirrored ray's height gives
+  the sky's colour, its compass bearing (read into the detail texture) says whether a lit building stands there,
+  and its angle to the moon gives the glint; Schlick's term says how much of all that the water shows. A map
+  inland keeps its plain ground.
+
+**Cost.** None measurable: 278 fps against 269 for pass 12 an hour of the same sitting earlier (the sea is a small
+part of the frame on the ramp).
+
+**Learned.**
+
+- The reflected city need not be the city: where a mirrored ray runs low, columns of light at bearings that never
+  change read as towers in the water, because that is all a rider sees of them.
+- The first columns were as bright as the windows themselves and as regular as a comb. Reflections are dimmer than
+  what they reflect, and fewer.

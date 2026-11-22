@@ -335,6 +335,32 @@ the confetti) must be named in `MOVED`. Code that reads a mesh's geometry must u
 **Watch for.** Two surfaces a centimetre or two apart (paint on a road) must still be whole steps apart after
 stepping, or they fight; a mesh more than 655 m across is held more coarsely than a centimetre.
 
+### 12. Water that mirrors by the angle it is seen at (Docklands pass 13)
+
+**What it gives.** A sea that ripples, takes the sky's colour towards the horizon, carries the far shore's lights as
+columns and the sun's or the moon's glint, and is dark looked down on.
+
+**How it works.** `frontend/projects/world/src/water-material.ts`, `waterMaterial(look, sun, detail, lights)`, for
+the map's `Sea` group when the course file has `sea: true`:
+
+- the surface's tilt is two reads of the detail texture at `positionWorld.xz`, scrolled across each other by the
+  ride's clock;
+- the eye's ray (`cameraPosition - positionWorld`) is reflected in the tilted surface;
+- the reflected ray's height mixes the haze's colour (low) with the top of the sky (high);
+- with `lights` (the file's `night`), where the ray runs low a warm column is added wherever the detail texture,
+  read at the ray's compass bearing, is high;
+- the ray's dot with `sun`, to a high power, is the glint;
+- Schlick's `(1 - dot(up, toEye))^5` mixes the water's own dark colour with all of that.
+
+**To apply it to another map.** A theme whose `terrain` has `sea: True` gets it on rebuilding (the coast, Vice City,
+Ibiza). By day there are no shore lights; the sky's colours and the sun's glint come from the course file as they
+are. A lake or a river is the same material on its own mesh named `Sea`.
+
+**Cost.** None measurable where the sea is a small part of the frame; three texture reads a pixel of water.
+
+**Watch for.** Shore lights as bright as their windows (keep them near half); ripples so steep the horizon breaks
+up (`RIPPLE`); water seen through the land's edge where the land's mesh is coarse.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
@@ -344,7 +370,7 @@ The pictures the work aims at differ from a course in these ways, most visible f
 2. The map's file is 3.31 MB gzipped against 3 MB: what is left is positions and indices, which need a mesh codec
    (meshopt).
 3. Nothing but the riders casts a shadow: posts, walls and containers throw none.
-4. The water is a flat colour: no reflection of the lights along the quay or of the city.
+4. The water does not mirror the quay's own lamps, cranes and ships: only the sky and the far shore.
 5. The neon signs and lit windows are not mirrored in the wet road, and throw no light on it.
 6. Lit windows and neon throw no light on the ground, and the neon has no glow in the air.
 7. The riders are simple figures: smooth limbs, no cloth, no faces.

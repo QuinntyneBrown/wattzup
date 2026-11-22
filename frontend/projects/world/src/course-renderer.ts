@@ -51,6 +51,7 @@ import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
 import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
+import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
 import { type Cyclist, CyclistKit } from './world-cyclist';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
@@ -139,6 +140,8 @@ export class CourseRenderer implements WorldRenderer {
   private sky: Mesh | null = null;
   /** Moves the sky's cloud on to a second of the ride's clock. */
   private skyClock: ((seconds: number) => void) | null = null;
+  /** Moves the sea's ripples on to a second of the ride's clock. */
+  private waterClock: ((seconds: number) => void) | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
   private groundEye: GroundEye | null = null;
   /** The scene's pass with bloom over it, for the neon; null where it could not be built. */
@@ -402,6 +405,19 @@ export class CourseRenderer implements WorldRenderer {
     materials['Walls'] = wallMaterial(detail, this.lampGlow?.light ?? null, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
+    // By the sea, the sheet round the land is water (water-material.ts).
+    if (this.course!.file.sea === true) {
+      const water = waterMaterial(
+        look,
+        this.course!.file.sun,
+        detail,
+        this.course!.file.night === true,
+      );
+      materials['Sea']!.dispose();
+      materials['Sea'] = water.material;
+      this.waterClock = water.at;
+      this.disposables.push(water.material);
+    }
     // Windows are panels with their place on the pane in their UV (window-material.ts).
     materials['Windows'] = windowMaterial(
       detail,
@@ -626,6 +642,7 @@ export class CourseRenderer implements WorldRenderer {
   private animate(time: number): void {
     if (this.beams) this.beams.opacity = 0.17 + 0.06 * Math.sin(time * 1.7);
     this.skyClock?.(time);
+    this.waterClock?.(time);
     for (const confetti of this.confetti) {
       confetti.position.y = 0.45 * Math.sin(time * 1.3);
       confetti.rotation.y = 0.012 * Math.sin(time * 0.9);
