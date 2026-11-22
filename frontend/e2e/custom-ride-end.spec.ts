@@ -36,7 +36,11 @@ async function rideTo(page: Page, bluetooth: FakeBluetooth, at: number): Promise
   }
 }
 
-test('End submits the ride and opens Profile (L2-108 AC1)', async ({ page, bluetooth, api }) => {
+test('End submits the ride and opens Profile (L2-108 AC1) @critical', async ({
+  page,
+  bluetooth,
+  api,
+}) => {
   const ride = await startCustomRide(page, bluetooth);
   await rideTo(page, bluetooth, 412);
   await expect(ride.clock).toHaveText('6:52 / 30:00');

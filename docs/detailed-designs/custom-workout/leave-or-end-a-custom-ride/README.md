@@ -41,7 +41,8 @@ without a network is kept and sent when the network returns.
 **Frontend — `components` library**
 
 - **`RideHeader`** — "Library" carries `aria-haspopup="dialog"` and `aria-expanded="true"` while
-  the popover is open, and emits `library`; End emits `ended`.
+  the popover is open, and emits `library` with the button, the popover's anchor; End emits
+  `stopped`.
 
 **Frontend — `domain` and `api` libraries**
 
