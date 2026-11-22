@@ -52,6 +52,12 @@ export const rideRoutes: Routes = [
         path: 'results',
         loadChildren: () => import('./results/results.routes').then((m) => m.resultsRoutes),
       },
+      // The race lobby is full height, with its own header (docs/mocks/pages/race-lobby/).
+      {
+        path: 'race/:mapId/lobby',
+        canActivate: [rememberedBikeGuard],
+        loadChildren: () => import('./race-lobby/race-lobby.routes').then((m) => m.raceLobbyRoutes),
+      },
       // Race Setup has its own header, with no app navigation (docs/mocks/pages/race-setup/).
       {
         path: 'race/:mapId',
