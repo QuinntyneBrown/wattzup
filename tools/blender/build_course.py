@@ -37,6 +37,9 @@ import bpy
 import bmesh  # after bpy: the bpy module provides it
 from mathutils import Vector, kdtree
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import themes  # noqa: E402  (beside this script)
+
 ROOT = Path(__file__).resolve().parents[2]
 
 # --- The road's rules -------------------------------------------------------------------------
@@ -52,11 +55,11 @@ SEA_CLEARANCE = 4.0  # the road's lowest point above the sea
 START_LINE = 14.0  # the start line and its gate stand this far up the road: the rider starts on the grid behind it
 
 
-def stages(plan: dict) -> list[dict]:
+def stages(plan: dict, metres_per_turn: float = METRES_PER_TURN) -> list[dict]:
     """The plan's segments with the seconds and the metres each starts and ends at."""
     out, t, d = [], 0.0, 0.0
     for seg in plan["segments"]:
-        length = seg["duration"] * seg["cadenceAim"] / 60.0 * METRES_PER_TURN
+        length = seg["duration"] * seg["cadenceAim"] / 60.0 * metres_per_turn
         out.append({**seg, "start": t, "from": d, "to": d + length})
         t += seg["duration"]
         d += length
@@ -102,10 +105,10 @@ class Grid:
         return False
 
 
-def deal_turns(stages_: list[dict], total: float, rng: random.Random) -> list[float] | None:
+def deal_turns(stages_: list[dict], total: float, rng: random.Random, weights: dict | None = None, reach: float = 620.0) -> list[float] | None:
     """The road's curvature at each sample, dealt feature by feature so it never meets itself."""
     n = int(math.ceil(total / STEP)) + 1
-    weights = {
+    weights = weights or {
         "work": (("hairpin", 0.3), ("ess", 0.3), ("sweep", 0.25), ("straight", 0.15)),
         "recover": (("sweep", 0.45), ("ess", 0.2), ("straight", 0.3), ("hairpin", 0.05)),
         "calm": (("sweep", 0.4), ("straight", 0.45), ("ess", 0.15)),
@@ -159,7 +162,7 @@ def deal_turns(stages_: list[dict], total: float, rng: random.Random) -> list[fl
                 return False
         # Far from where it started, the road turns for home.
         far = math.hypot(fx, fy)
-        if far > 620:
+        if far > reach:
             home = math.atan2(-fy, -fx)
             off = abs((fth - home + math.pi) % (2 * math.pi) - math.pi)
             if off > math.radians(95) and far > math.hypot(state[0], state[1]):
@@ -218,18 +221,27 @@ def deal_turns(stages_: list[dict], total: float, rng: random.Random) -> list[fl
     return curv[:n]
 
 
-def lay_centre_line(course: dict):
+def lay_centre_line(course: dict, theme: dict | None = None):
     """The centre line's samples (x, y, z, heading, curvature, grade) in Blender's Z-up metres."""
-    st = stages(course["plan"])
+    theme = theme or {}
+    grade_rule = theme.get("grade", {})
+    per_level = grade_rule.get("perLevel", GRADE_PER_LEVEL)
+    roll, wave, climb = grade_rule.get("roll", 0.0), grade_rule.get("rollWave", 400.0), grade_rule.get("climb", 0.0)
+    turns = sum(seg["duration"] * seg["cadenceAim"] / 60.0 for seg in course["plan"]["segments"])
+    # A map in the catalogue is raced over its listed distance: its gearing is set so the road is exactly that
+    # long, every stage's stretch still in proportion to its seconds and its cadence aim.
+    metres_per_turn = course["distanceKm"] * 1000.0 / turns if course.get("distanceKm") else METRES_PER_TURN
+    st = stages(course["plan"], metres_per_turn)
     length = st[-1]["to"]
     total = LEAD_IN + length + RUN_OUT
     mean = sum(s["level"] * (s["to"] - s["from"]) for s in st) / length
+    reach = theme.get("reach", 620.0) * (math.sqrt(total / 11740.0) if course.get("distanceKm") else 1.0)
 
     seed = course.get("seed", 1)
     best = None
     for attempt in range(200):
         rng = random.Random(seed * 1000 + attempt)
-        raw = deal_turns(st, total, rng)
+        raw = deal_turns(st, total, rng, theme.get("turns"), max(620.0, reach))
         if raw is None:
             continue
         curv = box_smooth(raw, int(20 / STEP))
@@ -266,7 +278,8 @@ def lay_centre_line(course: dict):
                     break
         if best is None or blocked < best[0]:
             best = (blocked, curv, xs, ys, hs)
-        if blocked == 0 or attempt >= 119:
+        # Inland, no view of the sea to look for: the first road that keeps clear of itself will do.
+        if blocked == 0 or attempt >= (11 if theme else 119) or not theme.get("terrain", {"sea": True}).get("sea", True):
             break
     if best is None:
         raise RuntimeError("No road found that keeps clear of itself; change the course's seed.")
@@ -276,19 +289,35 @@ def lay_centre_line(course: dict):
     grades = []
     for i in range(n):
         stage = stage_at(st, i * STEP - LEAD_IN)
-        grades.append((stage["level"] - mean) * GRADE_PER_LEVEL if stage else 0.0)
+        g = (stage["level"] - mean) * per_level if stage else 0.0
+        d = i * STEP - LEAD_IN
+        if roll and 0 < d < length - 300:
+            # Rolling ground between the class's hills, so every map rises and falls along the way.
+            g += roll * math.sin(math.tau * d / wave + 0.7) * smoothstep(0, 120, d)
+        if climb and stage:
+            g += -climb if stage["kind"] == "cool-down" else climb
+        grades.append(g)
     grades = box_smooth(grades, int(28 / STEP))
+    if course.get("climbingMetres"):
+        # A catalogue map climbs what it lists: every gradient is scaled alike, so each hill keeps its place
+        # and its share of the climbing.
+        start, finish = int(LEAD_IN / STEP), int((LEAD_IN + length) / STEP)
+        climbed = sum(max(0.0, g) / 100.0 * STEP for g in grades[start + 1 : finish + 1])
+        if climbed > 0:
+            scale = course["climbingMetres"] / climbed
+            grades = [g * scale for g in grades]
+            per_level *= scale
     zs, z = [], 0.0
     for g in grades:
         z += g / 100.0 * STEP
         zs.append(z)
     low = min(zs)
-    zs = [v - low + SEA_CLEARANCE for v in zs]
+    zs = [v - low + theme.get("sea_clearance", SEA_CLEARANCE) for v in zs]
     samples = [
         {"x": xs[i], "y": ys[i], "z": zs[i], "h": hs[i], "k": curv[i], "g": grades[i], "d": i * STEP - LEAD_IN}
         for i in range(n)
     ]
-    return samples, st, length, mean
+    return samples, st, length, mean, per_level
 
 
 # --- Meshes -----------------------------------------------------------------------------------
@@ -346,6 +375,8 @@ MATERIALS: dict[str, dict] = {
     "crowd-4": {"color": 0x8A5AE8, "rough": 0.9},
     "crowd-5": {"color": 0x3A4A9A, "rough": 0.9},
 }
+MATERIALS.update({k: v for k, v in themes.MATERIALS.items() if k not in MATERIALS})
+MATERIALS["moon"] = themes.MATERIALS["moon"]
 NEONS = ["neon-pink", "neon-cyan", "neon-amber", "neon-violet", "neon-lime"]
 BEAMS = ["beam-pink", "beam-cyan", "beam-amber"]
 CROWD = [f"crowd-{i}" for i in range(6)]
@@ -487,7 +518,9 @@ def mix(a, b, t):
     return tuple(a[i] + (b[i] - a[i]) * t for i in range(4))
 
 
-def build_road(road: Road, st: list[dict], length: float, col) -> None:
+def build_road(road: Road, st: list[dict], length: float, col, theme: dict | None = None) -> None:
+    edge = (theme or {}).get("edge", "seawall")
+    white_centre = (theme or {}).get("centre") == "white"
     s = road.s
     n = len(s)
     asphalt, paint, red = Builder("Road", "asphalt"), Builder("RoadPaint", "paint"), Builder("Kerbs", "kerb-red")
@@ -499,11 +532,49 @@ def build_road(road: Road, st: list[dict], length: float, col) -> None:
         """A quad from sample i to i+1 between two offsets; `l0` is the further left."""
         b.quad(road.at(i, l0, u0), road.at(i, l1, u1), road.at(i + 1, l1, u1), road.at(i + 1, l0, u0))
 
+    def edges(i: int) -> None:
+        """Each theme's road edge beyond the kerbs: verge, pavement, quay, beach, cliff, rail or parapet."""
+        if edge == "verge":
+            strip(sand, i, kerb + 8.0, -0.25, kerb, 0.12)
+            strip(sand, i, kerb + 14.0, -1.6, kerb + 8.0, -0.25)
+            strip(sand, i, -kerb, 0.12, -(kerb + 8.0), -0.25)
+            strip(sand, i, -(kerb + 8.0), -0.25, -(kerb + 14.0), -1.6)
+            return
+        if edge in ("pavement", "quay", "beach"):
+            strip(prom, i, kerb + 3.0, 0.12, kerb, 0.12)
+            strip(prom, i, -kerb, 0.12, -(kerb + 3.0), 0.12)
+            if edge == "quay":
+                # The quay: wide stone apron, then the quay wall straight down into the harbour.
+                strip(prom, i, kerb + 26.0, 0.12, kerb + 3.0, 0.12)
+                strip(wall, i, kerb + 26.0, -5.0, kerb + 26.0, 0.12)
+            elif edge == "beach":
+                strip(wall, i, kerb + 3.3, 0.6, kerb + 3.0, 0.6)
+                strip(wall, i, kerb + 3.0, 0.6, kerb + 3.0, 0.12)
+                strip(sand, i, kerb + 26.0, -1.6, kerb + 3.3, 0.6)
+            else:
+                strip(prom, i, kerb + 9.0, 0.12, kerb + 3.0, 0.12)
+            strip(prom, i, -(kerb + 3.0), 0.12, -(kerb + 12.0), 0.12)
+            strip(sand, i, -(kerb + 12.0), 0.12, -(kerb + 16.0), -2.4)
+            if edge == "pavement":
+                strip(sand, i, kerb + 13.0, -2.4, kerb + 9.0, 0.12)
+            return
+        # Mountain and cliff roads: a gravel shoulder, then the land.
+        strip(sand, i, kerb + 2.4, 0.0, kerb, 0.12)
+        strip(sand, i, -kerb, 0.12, -(kerb + 2.4), 0.0)
+        drop = -6.0 if edge == "cliff" else -2.2
+        strip(sand, i, kerb + 7.0, drop, kerb + 2.4, 0.0)
+        strip(sand, i, -(kerb + 2.4), 0.0, -(kerb + 7.0), -1.6)
+
     for i in range(n - 1):
         strip(asphalt, i, ROAD_HALF, 0.0, -ROAD_HALF, 0.0)
         # The double yellow line down the middle and a white line inside each edge.
-        strip(yellow, i, 0.30, 0.02, 0.14, 0.02)
-        strip(yellow, i, -0.14, 0.02, -0.30, 0.02)
+        if white_centre:
+            # A dashed white line down the middle: 3 m painted, 5 m bare.
+            if (i % 2) == 0:
+                strip(paint, i, 0.08, 0.02, -0.08, 0.02)
+        else:
+            strip(yellow, i, 0.30, 0.02, 0.14, 0.02)
+            strip(yellow, i, -0.14, 0.02, -0.30, 0.02)
         strip(paint, i, ROAD_HALF - 0.3, 0.02, ROAD_HALF - 0.46, 0.02)
         strip(paint, i, -ROAD_HALF + 0.46, 0.02, -ROAD_HALF + 0.3, 0.02)
         bend = abs(s[i]["k"]) > 1 / 170
@@ -513,6 +584,9 @@ def build_road(road: Road, st: list[dict], length: float, col) -> None:
                 strip(block, i, kerb, 0.12, ROAD_HALF, 0.05)
             else:
                 strip(block, i, -ROAD_HALF, 0.05, -kerb, 0.12)
+        if edge != "seawall":
+            edges(i)
+            continue
         # Left: a sidewalk, then the seawall, then the rocks and sand falling to the sea.
         w0, w1 = kerb + SIDEWALK, kerb + SIDEWALK + 0.45
         strip(prom, i, w0, 0.12, kerb, 0.12)
@@ -642,6 +716,113 @@ def build_terrain(road: Road, col, cell: float = 14.0):
         ix, iy = int(fx), int(fy)
         tx, ty = fx - ix, fy - iy
         g = lambda a, c: heights.get((a, c), -6.0)  # noqa: E731
+        return (g(ix, iy) * (1 - tx) + g(ix + 1, iy) * tx) * (1 - ty) + (g(ix, iy + 1) * (1 - tx) + g(ix + 1, iy + 1) * tx) * ty
+
+    return obj, height_at
+
+
+def build_land(road: Road, col, theme: dict, cell: float = 14.0):
+    """A theme's land: it holds the road's height beside it and, away from it, rolls (farmland, town), climbs into
+    valley walls (mountains) or, where the theme has a sea, falls to it on the road's left."""
+    ter, land = theme["terrain"], theme["land"]
+    sea = ter.get("sea", False)
+    rise, valley, cliff = ter.get("rise", 8.0), ter.get("valley", False), ter.get("cliff", False)
+    xs = [p["x"] for p in road.s]
+    ys = [p["y"] for p in road.s]
+    margin = 300.0 if sea else 560.0
+    cell = cell * max(1.0, math.sqrt(len(road.s) * STEP / 11900.0))
+    x0, x1, y0, y1 = min(xs) - margin, max(xs) + margin, min(ys) - margin, max(ys) + margin
+    nx, ny = int((x1 - x0) / cell) + 1, int((y1 - y0) / cell) + 1
+    low_c, mid_c, high_c, rock_c = (srgb(land[k]) for k in ("low", "mid", "high", "rock"))
+    snow_c = srgb(land["snow"]) if "snow" in land else None
+    zs = [p["z"] for p in road.s]
+    z_lo, z_hi = min(zs), max(zs)
+    floor = -6.0 if sea else z_lo - 10.0
+    heights, dist = {}, {}
+    b = Builder("Terrain", "terrain")
+    b.colours = []
+    index = {}
+    for iy in range(ny):
+        for ix in range(nx):
+            x, y = x0 + ix * cell, y0 + iy * cell
+            near = road.tree.find_n((x, y, 0.0), 8)
+            d = near[0][2]
+            w_sum = h_sum = 0.0
+            for _, j, dj in near:
+                w = 1.0 / (dj * dj + 4.0)
+                w_sum += w
+                h_sum += w * road.s[j]["z"]
+            h_road = h_sum / w_sum
+            p0 = road.s[near[0][1]]
+            leftward = (x - p0["x"]) * -math.sin(p0["h"]) + (y - p0["y"]) * math.cos(p0["h"])
+            n1 = noise(x, y)
+            if valley:
+                # The valley's walls: the further from the road, the higher, rising to the peaks.
+                wall = rise * smoothstep(30.0, 420.0, d) * (0.7 + 0.3 * n1) + abs(n1) * 14.0 * smoothstep(20.0, 80.0, d)
+                h = h_road - 1.4 + wall
+            else:
+                h = h_road - 1.4 + (n1 * 0.5 + 0.5) * rise * smoothstep(24.0, 160.0, d)
+            if sea:
+                seaward = smoothstep(4.0, 14.0, leftward)
+                drop = smoothstep(10.0, 40.0, d) if cliff else smoothstep(13.0, 64.0, d)
+                fall = smoothstep(80.0, 240.0, d) * (1 - seaward) + drop * seaward
+                h = h * (1 - fall) + (-8.0) * fall
+            if d < 26.0:
+                h = min(h, h_road - 1.4)
+            if not sea:
+                # At the land's edge it eases down to the ground beyond, so no cliff shows from above.
+                edge_ = min(x - x0, x1 - x, y - y0, y1 - y)
+                h = floor + (h - floor) * smoothstep(0.0, margin * 0.55, edge_)
+            heights[(ix, iy)], dist[(ix, iy)] = h, d
+    # Where two stretches of road are equally near, the land would step from one's height to the other's:
+    # ease it, away from the road, so the land between them is a slope and not a cliff.
+    for _ in range(4):
+        eased = {}
+        for (ix, iy), h in heights.items():
+            if dist[(ix, iy)] < 30.0:
+                continue
+            around = [heights.get((ix + a, iy + c), h) for a in (-1, 0, 1) for c in (-1, 0, 1)]
+            eased[(ix, iy)] = sum(around) / 9.0
+        heights.update(eased)
+    for iy in range(ny):
+        for ix in range(nx):
+            h, d = heights[(ix, iy)], dist[(ix, iy)]
+            x, y = x0 + ix * cell, y0 + iy * cell
+            hx = heights.get((ix + 1, iy), h) - heights.get((ix - 1, iy), h)
+            hy = heights.get((ix, iy + 1), h) - heights.get((ix, iy - 1), h)
+            slope = math.hypot(hx, hy) / (2 * cell)
+            if land.get("stripes"):
+                # Fields: wheat and green in long strips, as farmland seen from the road.
+                band = (int((x * 0.8 + y * 0.6) // 70) + int((x * -0.6 + y * 0.8) // 160)) % 3
+                c = (low_c, mid_c, high_c)[band]
+            else:
+                c = mix(low_c, mid_c, 0.5 + 0.5 * noise(x * 0.7, y * 0.7))
+                c = mix(c, high_c, smoothstep(z_hi * 0.6, z_hi + 60.0, h))
+            if sea:
+                c = mix(srgb(0xD8C49A), c, smoothstep(-2.0, 2.0, h))
+            c = mix(c, rock_c, smoothstep(0.35, 0.8, slope))
+            if snow_c:
+                c = mix(c, snow_c, smoothstep(z_hi + 70.0, z_hi + 140.0, h))
+            shade = 0.92 + 0.08 * noise(x * 1.3, y * 1.1)
+            b.colours.append((c[0] * shade, c[1] * shade, c[2] * shade, 1.0))
+            index[(ix, iy)] = b.v((x, y, h))
+    for iy in range(ny - 1):
+        for ix in range(nx - 1):
+            corners = [(ix, iy), (ix + 1, iy), (ix + 1, iy + 1), (ix, iy + 1)]
+            if sea and all(dist[c] > 300.0 for c in corners):
+                continue
+            b.faces.append(tuple(index[c] for c in corners))
+    obj = b.build(col)
+    ground = Builder("Sea" if sea else "Ground", "sea")
+    cx, cy, r = (x0 + x1) / 2, (y0 + y1) / 2, 9000.0
+    ground.quad((cx - r, cy - r, 0 if sea else floor), (cx + r, cy - r, 0 if sea else floor), (cx + r, cy + r, 0 if sea else floor), (cx - r, cy + r, 0 if sea else floor))
+    ground.build(col)
+
+    def height_at(x: float, y: float) -> float:
+        fx, fy = (x - x0) / cell, (y - y0) / cell
+        ix, iy = int(fx), int(fy)
+        tx, ty = fx - ix, fy - iy
+        g = lambda a, c: heights.get((a, c), floor)  # noqa: E731
         return (g(ix, iy) * (1 - tx) + g(ix + 1, iy) * tx) * (1 - ty) + (g(ix, iy + 1) * (1 - tx) + g(ix + 1, iy + 1) * tx) * ty
 
     return obj, height_at
@@ -1003,18 +1184,54 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
     return {"sunAzimuth": az, "clubs": len(clubs), "efforts": efforts}
 
 
+def build_themed_scenery(road: Road, st: list[dict], length: float, height_at, course: dict, theme: dict, col) -> dict:
+    """Every map but Ibiza's: the theme's scenery (themes.py), and the sun (or the moon) where the finish points."""
+    rng = random.Random(course.get("seed", 1) * 7 + 3)
+
+    class Bag(dict):
+        def __missing__(self, name):
+            b = Builder("".join(p.title() for p in name.split("-")), name)
+            self[name] = b
+            return b
+
+    B = Bag()
+    kit = themes.Kit(road, st, length, height_at, rng, B, STEP, ROAD_HALF)
+    facts = themes.SCENERY[course["theme"]](kit)
+    s = road.s
+    tail, fin = road.index(length - 220), road.index(length)
+    az = math.atan2(s[fin]["y"] - s[tail]["y"], s[fin]["x"] - s[tail]["x"])
+    fx, fy = s[fin]["x"], s[fin]["y"]
+    alt = theme.get("sun_altitude", 0.1)
+    dist_, radius = 5200.0, 300.0 if theme.get("night") else 420.0
+    sx, sy, sz = fx + math.cos(az) * dist_, fy + math.sin(az) * dist_, max(160.0, dist_ * alt)
+    disc = B["moon" if theme.get("night") else "sun"]
+    for q in range(32):
+        a0, a1 = q * math.tau / 32, (q + 1) * math.tau / 32
+        p0 = (sx - math.sin(az) * math.cos(a0) * radius, sy + math.cos(az) * math.cos(a0) * radius, sz + math.sin(a0) * radius)
+        p1 = (sx - math.sin(az) * math.cos(a1) * radius, sy + math.cos(az) * math.cos(a1) * radius, sz + math.sin(a1) * radius)
+        disc.tri((sx, sy, sz), p1, p0)
+    disc.name = "Sun"
+    for b in B.values():
+        b.build(col)
+    facts.setdefault("clubs", 0)
+    facts["sunAzimuth"] = az
+    return facts
+
+
 # --- The files --------------------------------------------------------------------------------
 
 
-def write_course_json(path: Path, course: dict, samples, st, length, mean, facts) -> dict:
+def write_course_json(path: Path, course: dict, samples, st, length, mean, facts, per_level: float = GRADE_PER_LEVEL) -> dict:
     """The centre line in the glb's own axes (+Y up: x, z, -y of Blender's) and the stages along it."""
     climb = sum(max(0.0, samples[i + 1]["z"] - samples[i]["z"]) for i in range(len(samples) - 1) if 0 <= samples[i]["d"] < length)
     az = facts["sunAzimuth"]
+    theme = themes.THEMES.get(course.get("theme", ""))
+    alt = theme.get("sun_altitude", 0.11) if theme else 0.11
+    flat = math.sqrt(1 - alt * alt)
     data = {
         "id": course["id"],
         "name": course["name"],
         "world": course["world"],
-        "class": course["class"],
         "lengthMetres": round(length, 1),
         "climbingMetres": round(climb),
         "durationSeconds": sum(s["duration"] for s in st),
@@ -1022,9 +1239,9 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         "startIndex": int(LEAD_IN / STEP),
         "roadHalfWidth": ROAD_HALF,
         "meanLevel": round(mean, 2),
-        "gradePerLevel": GRADE_PER_LEVEL,
+        "gradePerLevel": per_level,
         # The direction the light comes from, as a unit vector in the glb's axes.
-        "sun": [round(math.cos(az) * 0.994, 4), 0.11, round(-math.sin(az) * 0.994, 4)],
+        "sun": [round(math.cos(az) * flat, 4), round(alt, 4), round(-math.sin(az) * flat, 4)],
         "stages": [
             {
                 "kind": s["kind"],
@@ -1039,6 +1256,15 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         ],
         "points": [v for p in samples for v in (round(p["x"], 2), round(p["z"], 2), round(-p["y"], 2))],
     }
+    if "class" in course:
+        data["class"] = course["class"]
+    if theme:
+        # The sky the app draws, horizon up, the haze the distance fades into, and its lights.
+        hexs = lambda v: f"#{v:06x}"  # noqa: E731
+        data["sky"] = [hexs(c) for c in theme["sky"]]
+        data["haze"] = hexs(theme["haze"])
+        data["light"] = {"colour": hexs(theme["light"][0]), "intensity": theme["light"][1]}
+        data["fill"] = [hexs(c) for c in theme["fill"]]
     path.write_text(json.dumps(data, separators=(",", ":")) + "\n", encoding="utf-8")
     return data
 
@@ -1079,6 +1305,42 @@ def add_guides(samples, course: dict) -> None:
     guides.hide_render = True
     guides.hide_viewport = False
     bpy.context.scene["telo_course"] = course["id"]
+
+
+def light_scene_theme(az: float, theme: dict) -> None:
+    """The theme's sky as a gradient from the horizon up, and its sun (or moon) where the finish points."""
+    scene = bpy.context.scene
+    world = bpy.data.worlds.new("Sky")
+    world.use_nodes = True
+    nodes, links = world.node_tree.nodes, world.node_tree.links
+    bg = nodes["Background"]
+    coord = nodes.new("ShaderNodeTexCoord")
+    sep = nodes.new("ShaderNodeSeparateXYZ")
+    ramp = nodes.new("ShaderNodeValToRGB")
+    links.new(coord.outputs["Generated"], sep.inputs[0])
+    links.new(sep.outputs["Z"], ramp.inputs["Fac"])
+    links.new(ramp.outputs["Color"], bg.inputs["Color"])
+    els = ramp.color_ramp.elements
+    sky = theme["sky"]
+    while len(els) < len(sky) + 1:
+        els.new(0.5)
+    # The view's direction: its Z runs from 0 at the horizon to 1 overhead. The haze below, the bands above,
+    # spaced as the app's sky dome spaces them (up ** 0.55).
+    els[0].position, els[0].color = 0.0, srgb(theme["haze"])
+    for k, c in enumerate(sky):
+        els[k + 1].position = min(0.999, 0.004 + (k / (len(sky) - 1)) ** (1 / 0.55))
+        els[k + 1].color = srgb(c)
+    bg.inputs[1].default_value = 1.4 if theme.get("night") else 1.0
+    scene.world = world
+    colour, energy = theme["light"]
+    sun = bpy.data.lights.new("SunLight", "SUN")
+    c = srgb(colour)
+    sun.energy, sun.color, sun.angle = energy * (3.0 if theme.get("night") else 1.3), (c[0], c[1], c[2]), math.radians(2)
+    obj = bpy.data.objects.new("SunLight", sun)
+    alt = max(0.25, theme.get("sun_altitude", 0.1))
+    direction = Vector((-math.cos(az), -math.sin(az), -alt)).normalized()
+    obj.rotation_euler = direction.to_track_quat("-Z", "Y").to_euler()
+    scene.collection.objects.link(obj)
 
 
 def light_scene(az: float) -> None:
@@ -1132,45 +1394,257 @@ def render_previews(out: Path, road: Road, length: float) -> None:
         bpy.ops.render.render(write_still=True)
 
 
-def main() -> None:
-    argv = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else sys.argv[1:]
+def reset_scene() -> None:
+    """An empty scene: factory settings in the background, or the open file emptied in a running Blender."""
+    if bpy.app.background:
+        bpy.ops.wm.read_factory_settings(use_empty=True)
+        return
+    scene = bpy.context.scene
+    for obj in list(bpy.data.objects):
+        bpy.data.objects.remove(obj, do_unlink=True)
+    for child in list(scene.collection.children):
+        scene.collection.children.unlink(child)
+    for blocks in (bpy.data.collections, bpy.data.meshes, bpy.data.materials, bpy.data.curves, bpy.data.lights, bpy.data.cameras, bpy.data.worlds, bpy.data.actions):
+        for block in list(blocks):
+            blocks.remove(block)
+    scene.animation_data_clear()
+
+
+def rider_mesh(name: str, jersey: int):
+    """A cyclist on a bike, low-poly, +X forward: for the film only, never in the glb."""
+    b = Builder(name, "dark")
+    j = Builder(name + "Jersey", "dark")
+    for cx in (-0.55, 0.55):
+        ring = []
+        for q in range(14):
+            a = q * math.tau / 14
+            ring.append((cx + math.cos(a) * 0.34, 0.0, 0.34 + math.sin(a) * 0.34))
+        for q in range(14):
+            p0, p1 = ring[q], ring[(q + 1) % 14]
+            b.quad((p0[0], -0.03, p0[2]), (p1[0], -0.03, p1[2]), (p1[0], 0.03, p1[2]), (p0[0], 0.03, p0[2]))
+    b.box((0.0, 0.0, 0.55), (1.0, 0.06, 0.06))
+    b.box((-0.2, 0.0, 0.34), (0.06, 0.06, 0.55))
+    b.box((0.5, 0.0, 0.34), (0.06, 0.06, 0.7))
+    j.box((-0.15, 0.0, 0.85), (0.18, 0.32, 0.45))  # hips over the saddle
+    torso = [(-0.25, -0.17, 1.05), (-0.25, 0.17, 1.05), (0.35, 0.17, 1.25), (0.35, -0.17, 1.25)]
+    top = [(p[0], p[1], p[2] + 0.28) for p in torso]
+    for k in range(4):
+        j.quad(torso[k], torso[(k + 1) % 4], top[(k + 1) % 4], top[k])
+    j.faces.append(tuple(j.v(p) for p in top))
+    j.box((0.45, 0.0, 1.38), (0.24, 0.22, 0.24))  # helmet
+    for side in (-0.14, 0.14):
+        j.box((0.0, side, 0.45), (0.1, 0.1, 0.55))
+        j.box((0.4, side, 0.95), (0.08, 0.08, 0.35))
+    kit = bpy.data.materials.new(name + "Kit")
+    kit.use_nodes = True
+    bsdf = next(n for n in kit.node_tree.nodes if n.type == "BSDF_PRINCIPLED")
+    bsdf.inputs["Base Color"].default_value = srgb(jersey)
+    bsdf.inputs["Emission Color"].default_value = srgb(jersey)
+    bsdf.inputs["Emission Strength"].default_value = 0.4
+    riders = bpy.data.collections.get("Riders")
+    if riders is None:
+        riders = bpy.data.collections.new("Riders")
+        bpy.context.scene.collection.children.link(riders)
+    frame = b.build(riders)
+    body = j.build(riders)
+    body.data.materials[0] = kit
+    body.parent = frame
+    return frame
+
+
+def set_video_output(scene, path: Path, fps: int) -> None:
+    settings = scene.render.image_settings
+    if hasattr(settings, "media_type"):
+        settings.media_type = "VIDEO"
+    settings.file_format = "FFMPEG"
+    scene.render.ffmpeg.format = "MPEG4"
+    scene.render.ffmpeg.codec = "H264"
+    scene.render.ffmpeg.constant_rate_factor = "HIGH"
+    scene.render.ffmpeg.ffmpeg_preset = "GOOD"
+    scene.render.fps = fps
+    scene.render.filepath = str(path)
+
+
+def stage_video(path: Path, road: Road, st: list[dict], length: float, seconds: float = 20.0, fps: int = 30, size=(1280, 720), night: bool = False) -> dict:
+    """Sets up a 20-second film of the map: an aerial of its turns and hills, then a drone chasing the rider out of
+    the start, up the twistiest climb and in to the finish. Render it with `bpy.ops.render.render(animation=True)`."""
+    scene = bpy.context.scene
+    s, n = road.s, len(road.s)
+    frames = int(seconds * fps)
+    scene.frame_start, scene.frame_end = 1, frames
+    scene.render.engine = "BLENDER_EEVEE"
+    try:
+        scene.eevee.taa_render_samples = 16
+    except AttributeError:
+        pass
+    scene.render.resolution_x, scene.render.resolution_y, scene.render.resolution_percentage = size[0], size[1], 100
+    try:
+        scene.view_settings.view_transform = "AgX"
+        scene.view_settings.look = "AgX - Medium High Contrast"
+    except TypeError:
+        pass
+    set_video_output(scene, path, fps)
+
+    cam_data = bpy.data.cameras.new("Film")
+    cam_data.clip_start, cam_data.clip_end = 0.5, 20000
+    cam_data.lens = 24
+    cam = bpy.data.objects.new("Film", cam_data)
+    scene.collection.objects.link(cam)
+    scene.camera = cam
+    cam.rotation_mode = "QUATERNION"
+    # The sun's disc stands in the sky: it lights nothing and shades nothing.
+    disc = bpy.data.objects.get("Sun")
+    if disc is not None:
+        disc.visible_shadow = False
+    lamps = bpy.data.objects.get("GlowLamp")
+    if lamps is not None and scene.world and scene.world.name == "Sky" and night:
+        # At night the street lamps light the road in the film (the glb's lamps only glow): one light a lamp
+        # near the road, as far as EEVEE keeps its frame time.
+        data = bpy.data.lights.new("LampLight", "POINT")
+        data.energy, data.color, data.shadow_soft_size = 900.0, (1.0, 0.82, 0.55), 0.4
+        try:
+            data.use_shadow = False
+        except AttributeError:
+            pass
+        mesh = lamps.data
+        seen = set()
+        for poly in mesh.polygons:
+            c = poly.center
+            key = (round(c.x / 20), round(c.y / 20))
+            if key in seen:
+                continue
+            seen.add(key)
+            light = bpy.data.objects.new("LampLight", data)
+            light.location = (c.x, c.y, c.z - 0.6)
+            scene.collection.objects.link(light)
+    you = rider_mesh("Rider", 0xD7FF3A)
+    bots = [rider_mesh(f"Bot{k}", c) for k, c in enumerate((0xFF4A9A, 0x3AC8E8, 0xF2A23A))]
+
+    xs, ys = [p["x"] for p in s], [p["y"] for p in s]
+    cx, cy = (min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2
+    span = max(max(xs) - min(xs), max(ys) - min(ys))
+    zmid = sum(p["z"] for p in s) / n
+    # The twistiest climb: the 300 m with the most turning and climbing.
+    window = int(300 / STEP)
+    best, best_i = -1.0, road.index(length * 0.4)
+    lo, hi = road.index(400), road.index(length - 700)
+    for i in range(lo, max(lo + 1, hi - window), 3):
+        score = sum(abs(s[j]["k"]) * STEP for j in range(i, i + window)) + max(0.0, s[i + window]["z"] - s[i]["z"]) * 0.05
+        if score > best:
+            best, best_i = score, i
+    climb_from = s[best_i]["d"]
+    shots = [
+        ("aerial", 0.0, 4.0, None, None),
+        ("start", 4.0, 9.0, -12.0, 170.0),
+        ("climb", 9.0, 15.0, climb_from, climb_from + 300.0),
+        ("finish", 15.0, seconds, length - 240.0, length - 4.0),
+    ]
+    prev_q = None
+    for f in range(1, frames + 1):
+        t = (f - 1) / fps
+        name, t0, t1, d0, d1 = next(sh for sh in shots if sh[1] <= t < sh[2] or sh is shots[-1])
+        u = (t - t0) / (t1 - t0)
+        if name == "aerial":
+            a = -1.9 + u * 0.6
+            loc = Vector((cx + math.cos(a) * span * 0.8, cy + math.sin(a) * span * 0.8, zmid + span * 0.36))
+            target = Vector((cx, cy, zmid))
+            d = -12.0
+        else:
+            ease = u if name != "finish" else 1 - (1 - u) ** 1.6
+            d = d0 + (d1 - d0) * ease
+            back, up = (16.0, 7.5) if name == "climb" else (11.0, 4.5)
+            if name == "finish":
+                back, up = 11.0 - 5.0 * u, 4.5 - 2.0 * u
+            loc = Vector(road.pos(d - back, 1.5, up))
+            target = Vector(road.pos(d + 22.0, 0.0, 1.2))
+        q = (target - loc).to_track_quat("-Z", "Y")
+        if prev_q is not None and q.dot(prev_q) < 0:
+            q.negate()
+        prev_q = q
+        cam.location = loc
+        cam.rotation_quaternion = q
+        cam.keyframe_insert("location", frame=f)
+        cam.keyframe_insert("rotation_quaternion", frame=f)
+        for rider, ahead, lane in ((you, 0.0, 0.0), (bots[0], 9.0, -2.2), (bots[1], 17.0, 1.8), (bots[2], -7.0, -2.6)):
+            rd = d + ahead
+            p0, p1 = Vector(road.pos(rd, -lane, 0.0)), Vector(road.pos(rd + 2.0, -lane, 0.0))
+            fwd = p1 - p0
+            rider.location = p0
+            rider.rotation_euler = (0.0, -math.atan2(fwd.z, fwd.xy.length), math.atan2(fwd.y, fwd.x))
+            rider.keyframe_insert("location", frame=f)
+            rider.keyframe_insert("rotation_euler", frame=f)
+    return {"frames": frames, "climbFrom": round(climb_from)}
+
+
+def main(argv: list[str] | None = None) -> dict:
+    if argv is None:
+        argv = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else sys.argv[1:]
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("course", type=Path)
     parser.add_argument("--out", type=Path, default=ROOT / "frontend/projects/ride/public/courses")
     parser.add_argument("--blend", type=Path, default=ROOT / "tools/blender/scenes")
     parser.add_argument("--preview", type=Path, default=None)
+    parser.add_argument("--video", type=Path, default=None, help="stage a 20 s film of the map (an .mp4 path) and save its scene beside it")
+    parser.add_argument("--render", action="store_true", help="with --video: render the film now")
     args = parser.parse_args(argv)
 
     course = json.loads(args.course.read_text(encoding="utf-8"))
-    bpy.ops.wm.read_factory_settings(use_empty=True)
+    theme = themes.THEMES.get(course.get("theme", ""))
+    if theme:
+        for name, colour in theme.get("palette", {}).items():
+            MATERIALS[name] = {**MATERIALS[name], "color": colour}
+        if not theme["terrain"].get("sea"):
+            # Inland the "sea" is the ground beyond the land: matt, not a mirror.
+            MATERIALS["sea"] = {**MATERIALS["sea"], "color": theme["land"]["mid"], "rough": 1.0, "metal": 0.0}
+    reset_scene()
     scene = bpy.context.scene
     scene.unit_settings.system = "METRIC"
     col = bpy.data.collections.new("Map")
     scene.collection.children.link(col)
 
-    samples, st, length, mean = lay_centre_line(course)
+    samples, st, length, mean, per_level = lay_centre_line(course, theme)
     road = Road(samples)
-    build_road(road, st, length, col)
-    _, height_at = build_terrain(road, col)
-    facts = build_scenery(road, st, length, height_at, course, col)
+    build_road(road, st, length, col, theme)
+    if theme:
+        _, height_at = build_land(road, col, theme)
+        facts = build_themed_scenery(road, st, length, height_at, course, theme, col)
+    else:
+        _, height_at = build_terrain(road, col)
+        facts = build_scenery(road, st, length, height_at, course, col)
     add_guides(samples, course)
 
     args.out.mkdir(parents=True, exist_ok=True)
     args.blend.mkdir(parents=True, exist_ok=True)
-    data = write_course_json(args.out / f"{course['id']}.course.json", course, samples, st, length, mean, facts)
+    data = write_course_json(args.out / f"{course['id']}.course.json", course, samples, st, length, mean, facts, per_level)
     # Only the map goes into the glb: the guides stay in the scene.
     bpy.data.collections["Guides"].hide_viewport = True
     export_glb(args.out / f"{course['id']}.glb")
     bpy.data.collections["Guides"].hide_viewport = False
-    light_scene(facts["sunAzimuth"])
+    if theme:
+        light_scene_theme(facts["sunAzimuth"], theme)
+    else:
+        light_scene(facts["sunAzimuth"])
     bpy.ops.wm.save_as_mainfile(filepath=str(args.blend / f"{course['id']}.blend"), compress=True)
     if args.preview:
         render_previews(args.preview, road, length)
     tris = sum(len(p.vertices) - 2 for o in col.objects for p in o.data.polygons)
     print(
         f"{course['name']}: {data['lengthMetres']} m, {data['climbingMetres']} m climbed, "
-        f"{len(st)} stages, {facts['clubs']} clubs, {facts['efforts']} effort gates, {tris} triangles"
+        f"{len(st)} stages, {facts.get('clubs', 0)} clubs, {facts['efforts']} effort gates, {tris} triangles"
     )
+    film = {}
+    if args.video:
+        args.video.parent.mkdir(parents=True, exist_ok=True)
+        film = stage_video(args.video, road, st, length, night=bool(theme and theme.get("night")))
+        if args.render:
+            bpy.ops.render.render(animation=True)
+    return {
+        "lengthMetres": data["lengthMetres"],
+        "climbingMetres": data["climbingMetres"],
+        "triangles": tris,
+        **film,
+        **{k: v for k, v in facts.items() if k != "sunAzimuth"},
+    }
 
 
 if __name__ == "__main__":

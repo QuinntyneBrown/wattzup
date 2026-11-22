@@ -34,6 +34,54 @@ export interface CourseFile {
   readonly stages: readonly CourseStage[];
   /** The centre line, x, y, z a point, in the glb's axes (+Y up), metres. */
   readonly points: readonly number[];
+  /** The world's sky from the horizon up, as `#rrggbb`; a course without one is drawn in Ibiza's sunset. */
+  readonly sky?: readonly string[];
+  /** The haze the distance fades into. */
+  readonly haze?: string;
+  /** The sun's (or the moon's) light. */
+  readonly light?: { readonly colour: string; readonly intensity: number };
+  /** The fill light from the sky and from the ground. */
+  readonly fill?: readonly [string, string];
+}
+
+/** How a course's world is lit and what its sky is, as colours Three.js reads. */
+export interface CourseLook {
+  readonly sky: readonly number[];
+  readonly haze: number;
+  readonly light: { readonly colour: number; readonly intensity: number };
+  readonly fill: readonly [number, number];
+}
+
+/** Ibiza Sunset Strip's sunset: the look of a course file that names none. */
+const SUNSET: CourseLook = {
+  sky: [0xffc27a, 0xf7a070, 0xe0708a, 0x7a4f9a, 0x2f2a5e],
+  haze: 0xf2a77a,
+  light: { colour: 0xff9a5a, intensity: 2.6 },
+  fill: [0xffd9c0, 0x6a5a7a],
+};
+
+/** `#rrggbb` as a number, or null for anything else: the file is data, read as nothing else. */
+function colour(value: unknown): number | null {
+  return typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value)
+    ? parseInt(value.slice(1), 16)
+    : null;
+}
+
+/** The course's sky, haze and lights; each part it does not name, or names wrongly, is the sunset's. */
+export function courseLook(file: CourseFile): CourseLook {
+  const sky = Array.isArray(file.sky) ? file.sky.map(colour) : [];
+  const fill = Array.isArray(file.fill) ? file.fill.map(colour) : [];
+  const light = colour(file.light?.colour);
+  const intensity = file.light?.intensity;
+  return {
+    sky: sky.length >= 2 && sky.every((c) => c !== null) ? (sky as number[]) : SUNSET.sky,
+    haze: colour(file.haze) ?? SUNSET.haze,
+    light:
+      light !== null && isNumber(intensity) && intensity >= 0
+        ? { colour: light, intensity }
+        : SUNSET.light,
+    fill: fill.length === 2 && fill.every((c) => c !== null) ? [fill[0]!, fill[1]!] : SUNSET.fill,
+  };
 }
 
 /** A place on the road, in the map's axes. */

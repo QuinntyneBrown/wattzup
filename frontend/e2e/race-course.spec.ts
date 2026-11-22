@@ -1,5 +1,5 @@
 // Acceptance test
-// Traces to: L2-166 AC1, AC2
+// Traces to: L2-166 AC1, AC2, AC10
 // Description: a race on a map whose world is built as a course draws the course's map, loaded from the app's own
 // `courses/` folder, and moves along it as the rider rides: two pictures of the world a few seconds apart
 // differ. Comparing two pictures of the same canvas reads no pixel's colour (ADR 0021). The course draws in software
@@ -59,4 +59,30 @@ test.describe('a course', () => {
 
     expect((await picture(page, race.world)).equals(first)).toBe(false);
   });
+
+  // Every catalogue map is a course (ADR 0033); Vice City's world is drawn under South Beach's id.
+  for (const [id, course] of [
+    ['prairie-paceline', 'prairie'],
+    ['vice-city', 'vicecity'],
+  ] as const) {
+    test(`draws ${id} as its own course built in Blender (L2-166 AC10)`, async ({
+      page,
+      bluetooth,
+      api,
+      webgl,
+    }) => {
+      await webgl.withoutWebGpu();
+      const loaded: string[] = [];
+      page.on('requestfinished', (request) => loaded.push(new URL(request.url()).pathname));
+      const race = await startRace(page, bluetooth, api, id, 'mode=solo', { world: true });
+      await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
+
+      expect(loaded).toContain(`/courses/${course}.glb`);
+      expect(loaded).toContain(`/courses/${course}.course.json`);
+      await ride(page, bluetooth, 80);
+      const first = await picture(page, race.world);
+      await ride(page, bluetooth, 80);
+      expect((await picture(page, race.world)).equals(first)).toBe(false);
+    });
+  }
 });

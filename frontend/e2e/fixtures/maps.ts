@@ -154,3 +154,16 @@ export const maps = [
     terrain: terrain(3, 8, 3.5, -5, 5, 0.8),
   },
 ];
+
+/**
+ * A test-only map whose world `main`'s World Ride scenes still draw: every catalogue map is a course built in
+ * Blender (ADR 0033), so World Ride's own specs (its quality tiers, step-down, riders, a hidden tab) race this,
+ * served with `catalogue: [worldRideMap]`. Old Town's plan and terrain, on Amsterdam's canals.
+ */
+export const worldRideMap = {
+  ...maps[1]!,
+  id: 'canal-criterium',
+  name: 'Canal Criterium',
+  world: 'amsterdam',
+  realPlace: null,
+};

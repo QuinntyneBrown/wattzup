@@ -11,6 +11,7 @@
 import type { Page } from '@playwright/test';
 import type { ApiFixture } from './fixtures/api';
 import type { FakeBluetooth } from './fixtures/fake-bluetooth';
+import { worldRideMap } from './fixtures/maps';
 import { startRace, stepUntil } from './fixtures/race';
 import { expect, test } from './fixtures/test';
 import type { FakeWebGl } from './fixtures/webgl';
@@ -41,8 +42,9 @@ test.describe('the race world steps down when frames drop', () => {
   ): Promise<void> {
     await webgl.withoutWebGpu();
     await worldRide.open(tier);
-    const race = await startRace(page, bluetooth, api, 'old-town-criterium', 'mode=solo', {
+    const race = await startRace(page, bluetooth, api, worldRideMap.id, 'mode=solo', {
       world: true,
+      catalogue: [worldRideMap],
     });
     await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
   }

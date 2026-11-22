@@ -29,7 +29,7 @@ import {
   WebGPURenderer,
 } from 'three/webgpu';
 import type { Backend, SceneFrame, TimedSegment as Segment, World, WorldRenderer } from '@telo/api';
-import { Course, type CoursePlace, parseCourse } from './course';
+import { Course, type CoursePlace, courseLook, parseCourse } from './course';
 import { ridersOnRoad } from './race-riders';
 import { type Cyclist, CyclistKit } from './world-cyclist';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
@@ -47,14 +47,11 @@ const CLOSE_FINISH = 70;
 /** The riders' shadows fall on the road within this many metres of the rider. */
 const SHADOW_REACH = 16;
 /** Meshes of the map that glow: drawn past the tone mapping, so neon stays neon. */
-const GLOWS = /^(Neon|Beam|Bulb|Gold|Confetti|GlowDoor|LampRed|EffortChevrons|Sun)/;
+const GLOWS = /^(Neon|Beam|Bulb|Gold|Confetti|Glow|LampRed|EffortChevrons|Sun|Accent)/;
 /** Meshes the riders' shadows fall on. */
 const SHADOWED = /^(Road|RoadPaint|CentreLine|Promenade|Kerbs)$/;
 /** Riders further ahead than this are not drawn. */
 const FAR_RIDERS = 220;
-/** The sunset's sky from the horizon up, and the haze the distance fades into. */
-const SKY = [0xffc27a, 0xf7a070, 0xe0708a, 0x7a4f9a, 0x2f2a5e] as const;
-const HAZE = 0xf2a77a;
 const FOG: readonly [number, number] = [320, 4200];
 const GHOST_OPACITY = 0.45;
 /** The sharpest the map is drawn, in device pixels a CSS pixel; a slow device steps down this list. */
@@ -219,8 +216,13 @@ export class CourseRenderer implements WorldRenderer {
   }
 
   private build(map: Object3D, canvas: HTMLCanvasElement): void {
-    this.scene.fog = new Fog(HAZE, FOG[0], FOG[1]);
-    this.scene.background = new Color(HAZE);
+    // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
+    const look = courseLook(this.course!.file);
+    const SKY = look.sky;
+    this.scene.fog = new Fog(look.haze, FOG[0], FOG[1]);
+    this.scene.background = new Color(look.haze);
+    this.sun.color.setHex(look.light.colour);
+    this.sun.intensity = look.light.intensity;
     map.traverse((part) => {
       const mesh = part as Mesh;
       if (!mesh.isMesh) return;
@@ -266,7 +268,7 @@ export class CourseRenderer implements WorldRenderer {
     this.scene.add(this.sky);
     this.disposables.push(dome, air);
 
-    const fill = new HemisphereLight(0xffd9c0, 0x6a5a7a, 1.5);
+    const fill = new HemisphereLight(look.fill[0], look.fill[1], 1.5);
     // The low sun throws the riders' shadows long across the road, and only the riders'.
     this.sun.castShadow = true;
     this.sun.shadow.mapSize.set(1024, 1024);

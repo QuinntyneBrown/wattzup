@@ -1,4 +1,4 @@
-import { Course, type CourseFile, parseCourse } from './course';
+import { Course, type CourseFile, courseLook, parseCourse } from './course';
 
 /**
  * A straight road north (-Z), a point every 4 m from 8 m before the start line: flat for 40 m, then climbing 10 %
@@ -116,5 +116,35 @@ describe('parseCourse (L2-166 AC5)', () => {
     ],
   ])('refuses %s', (_, value, message) => {
     expect(() => parseCourse(value)).toThrow(message);
+  });
+});
+
+describe('courseLook (L2-166)', () => {
+  it("draws a course that names no sky in Ibiza's sunset", () => {
+    const look = courseLook(courseFile());
+    expect(look.sky).toEqual([0xffc27a, 0xf7a070, 0xe0708a, 0x7a4f9a, 0x2f2a5e]);
+    expect(look.haze).toBe(0xf2a77a);
+    expect(look.light).toEqual({ colour: 0xff9a5a, intensity: 2.6 });
+    expect(look.fill).toEqual([0xffd9c0, 0x6a5a7a]);
+  });
+
+  it("draws a course in its own world's sky, haze and light", () => {
+    const look = courseLook({
+      ...courseFile(),
+      sky: ['#2a2448', '#1c1c3c', '#12142c', '#0a0c1e', '#05060f'],
+      haze: '#1e2040',
+      light: { colour: '#9ab0ff', intensity: 0.9 },
+      fill: ['#5a6aa8', '#2a1e3a'],
+    });
+    expect(look.sky).toEqual([0x2a2448, 0x1c1c3c, 0x12142c, 0x0a0c1e, 0x05060f]);
+    expect(look.haze).toBe(0x1e2040);
+    expect(look.light).toEqual({ colour: 0x9ab0ff, intensity: 0.9 });
+    expect(look.fill).toEqual([0x5a6aa8, 0x2a1e3a]);
+  });
+
+  it('keeps the sunset where a colour is not a colour: the file is data', () => {
+    const look = courseLook({ ...courseFile(), sky: ['red'], haze: 'javascript:1' });
+    expect(look.sky).toEqual([0xffc27a, 0xf7a070, 0xe0708a, 0x7a4f9a, 0x2f2a5e]);
+    expect(look.haze).toBe(0xf2a77a);
   });
 });

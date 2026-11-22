@@ -1,6 +1,6 @@
 # Ride a course
 
-**Requirement:** L2-166 (L1-027). **Decision:** ADR 0032. **Mock:** none changes: the course is drawn
+**Requirement:** L2-166 (L1-027). **Decisions:** ADR 0032, ADR 0033 (every catalogue map a course). **Mock:** none changes: the course is drawn
 on the canvas of the race scene (`docs/mocks`, the race), whose HUD stands as it is.
 
 A course is a map built in Blender from the class it is modelled after. This design covers building
@@ -19,9 +19,28 @@ class's plan, into three files.
 | Road | A sample every 4 m, from 80 m before the start line to 200 m past the finish. |
 | Map | The road with kerbs, paint and effort chevrons; an island heightfield that holds the road's height beside it and falls to the sea; the theme's scenery; gates at the start, the finish and the foot of every effort. One mesh a material. |
 
+**Catalogue maps (ADR 0033).** A course file with `distanceKm` and `climbingMetres` (each catalogue map's)
+is built to them: the metres a turn are `distanceKm x 1000 / the plan's turns`, and every gradient is scaled by
+`climbingMetres / the metres the laid road climbs`. Its `theme` names its dress in `tools/blender/themes.py`:
+palette, sky and lights, land (rolling farmland, a town in the countryside, a headland over the sea, a harbour,
+an alpine valley, a beachfront, a high pass), road edge, the turns' weights, the gradient a level, a rolling
+wave and a col's steady climb, and its scenery. The radius the road turns for home in grows with the square root
+of its length, and the land's cells with it.
+
+| Map | Course | Length | Climbing | Theme |
+| --- | --- | --- | --- | --- |
+| Prairie Paceline | `prairie` | 18.4 km | 90 m | Farmland at golden hour: fenced verges, fields in strips, barns and silos, a wind farm |
+| Old Town Criterium | `oldtown` | 14.2 km | 140 m | Pastel houses on both pavements, bunting, cafés, a cathedral; the real Bruges streams by World Ride |
+| Cliffside Coast | `coast` | 32 km | 410 m | Guard rail over the sea, pines and gorse, cottages, a lighthouse, sea stacks |
+| Neon Docklands | `docklands` | 21.6 km | 120 m | Night: lamps, brick warehouses with lit windows and neon, cranes, containers, ships, bridges |
+| Dolomites | `dolomites` | 38.5 km | 860 m | Alpine valley: spruce, chalets, a chapel on the highest bend, limestone peaks |
+| Vice City | `vicecity` | 24 km | 60 m | Magenta sunset: palms, art deco hotels with neon, convertibles, the beach |
+| Col du Granit | `granite` | 16.1 km | 1,240 m | High pass at first light: hairpins, parapets, snow poles, larches, granite peaks |
+
 `<id>.course.json` carries `lengthMetres`, `durationSeconds`, `step`, `startIndex`, `roadHalfWidth`,
 `sun` (the light's direction), `stages` (the plan's segments with `start`, `from`, `to`) and `points`
-(the centre line, x, y, z in the glb's axes).
+(the centre line, x, y, z in the glb's axes). A themed course adds `sky` (five colours, horizon up), `haze`,
+`light` (`colour`, `intensity`) and `fill` (sky and ground), as `#rrggbb`.
 
 ## Drawing a course
 
@@ -31,7 +50,7 @@ All of it is in the `world` library; nothing outside it changes.
 | --- | --- |
 | `course-worlds.ts` | Names the worlds drawn as courses and where their files are served. No Three.js. |
 | `course.ts` | `parseCourse` validates the file. `Course` answers `metresAt(seconds)`, `stageAt(seconds)`, `place(metres, lane)` and `gradeAt(metres)`. No Three.js; unit-tested in `course.spec.ts`. |
-| `map-renderer.ts` | `MapRenderer`, the `WorldRenderer` the loader returns. On `start` it imports `CourseRenderer` or `main`'s `ThreeWorldRenderer` by the world's id, and passes every call on. |
+| `map-renderer.ts` | `MapRenderer`, the `WorldRenderer` the loader returns. On `start` it imports `CourseRenderer` or `main`'s `ThreeWorldRenderer` by the world's id, and passes every call on. On `stream` (a real place, L2-066) while a course draws, it disposes the course, starts `main`'s renderer on the same canvas with the size and frame period it was given, and streams with it. |
 | `course-renderer.ts` | `CourseRenderer`: loads the glb and the course file, builds the sky, the lights and the rider, and draws. |
 | `world-renderer-loader.ts` | Returns a `MapRenderer`. It imports neither renderer, so Three.js still loads only when a world starts. |
 
@@ -48,7 +67,9 @@ and 1.8 m at the start and the finish (L2-166 AC9). The sky dome and the sun's
 light ride with the camera. Other riders come from `ridersOnRoad` (as `main`'s) and are stood at
 `metres + gap` on their lanes.
 
-**Look.** The glowing meshes (neon, bulbs, the arches, the sun, the beams) are drawn past the tone
+**Look.** `courseLook(file)` gives the sky's bands, the haze (the fog and the background), the sun's colour and
+intensity and the hemisphere fill; each part a file does not name, or names wrongly, is the sunset's. The glowing
+meshes (any whose name starts `Glow` or `Accent` too) (neon, bulbs, the arches, the sun, the beams) are drawn past the tone
 mapping, and a bloom pass over the scene (`RenderPipeline`, `BloomNode`) lets them glow. Only the
 riders cast shadows, from one 1024 px map that follows the rider, onto the road and the promenade.
 
@@ -63,7 +84,17 @@ rider's materials, and the renderer.
 
 - `course.spec.ts`, `course-worlds.spec.ts`: the rules above, case by case.
 - `e2e/race-course.spec.ts`: a race on a map whose world is `ibiza` loads `courses/ibiza.glb`, shows
-  the renderer's tag, and its picture changes as the clock runs.
+  the renderer's tag, and its picture changes as the clock runs; Prairie Paceline and Vice City load their own
+  courses (`prairie`, `vicecity`).
+- `e2e/race-scenery.spec.ts`: Old Town's course hands over to World Ride to stream the real Bruges.
+- World Ride's own specs race `worldRideMap`, a test-only map on Amsterdam, which `main` still draws.
+
+## Films
+
+`tools/blender/render_film.py <world>...` builds each course and renders its 20-second film to `blender/<id>.mp4`
+with EEVEE (1280 x 720, 30 fps): four seconds of aerial over the turns and hills, then a drone 11 to 16 m behind
+the rider and three bots out of the start, up the 300 m with the most turning and climbing, and into the finish
+under the arch. At night the street lamps get point lights for the film only.
 
 ## Not yet
 

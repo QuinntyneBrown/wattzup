@@ -7,6 +7,7 @@
 import type { Page } from '@playwright/test';
 import { ECHELON_NOTIFY, resistanceFrame, workoutFrame } from './fixtures/echelon';
 import type { FakeBluetooth } from './fixtures/fake-bluetooth';
+import { worldRideMap } from './fixtures/maps';
 import { startRace, stepUntil } from './fixtures/race';
 import { expect, test } from './fixtures/test';
 import type { DrawnRider, WorldRideProbe } from './fixtures/world-ride-probe';
@@ -52,16 +53,10 @@ test.describe('the race world', () => {
   }) => {
     await webgl.withoutWebGpu();
     await worldRide.pin('low');
-    const race = await startRace(
-      page,
-      bluetooth,
-      api,
-      'old-town-criterium',
-      'mode=bots&pack=medium',
-      {
-        world: true,
-      },
-    );
+    const race = await startRace(page, bluetooth, api, worldRideMap.id, 'mode=bots&pack=medium', {
+      world: true,
+      catalogue: [worldRideMap],
+    });
     await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
     await ride(page, bluetooth, 90);
 
@@ -88,8 +83,9 @@ test.describe('the race world', () => {
   }) => {
     await webgl.withoutWebGpu();
     await worldRide.pin('low');
-    const race = await startRace(page, bluetooth, api, 'old-town-criterium', 'mode=solo', {
+    const race = await startRace(page, bluetooth, api, worldRideMap.id, 'mode=solo', {
       world: true,
+      catalogue: [worldRideMap],
     });
     await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
     await ride(page, bluetooth, 90);

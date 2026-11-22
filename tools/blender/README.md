@@ -22,7 +22,38 @@ It writes:
 | `tools/blender/scenes/<id>.blend` | The Blender scene: open it to look the map over or model it further. The `Guides` collection holds the centre line and is left out of the glb. |
 
 `--preview <dir>` also renders four stills with Cycles (an overview, the start, the steepest climb and
-the finale). `--out` and `--blend` move the outputs.
+the finale). `--out` and `--blend` move the outputs. `--video blender/<id>.mp4` stages a 20-second film of
+the map after the build (an aerial of its turns and hills, then a drone chasing the rider and three bots out
+of the start, up the twistiest climb and in to the finish, rendered with EEVEE at 1280 x 720, 30 fps);
+`--render` renders it there and then. The films live in the repository's `blender/` folder.
+
+### From a running Blender (the Blender MCP)
+
+With Blender open and its MCP add-on connected, the same build runs inside the open file (emptied first, not
+reset to factory settings) from Blender's Python:
+
+```python
+import sys; sys.path.insert(0, r"<repo>/tools/blender")
+import build_course
+build_course.main([r"<repo>/tools/blender/courses/prairie.json", "--video", r"<repo>/blender/prairie.mp4"])
+```
+
+`render_film.py` does the build and the render in one go, in the background, for any number of maps:
+
+```
+blender --background --factory-startup --python tools/blender/render_film.py -- prairie oldtown coast
+```
+
+On a machine short of memory, `film.sh` renders one map in steps, one Blender at a time: it stages the film's
+scene, renders frames 1 to 300 and 301 to 600 as PNGs, and encodes them with ffmpeg (on the `PATH`):
+
+```
+for step in stage a b encode; do tools/blender/film.sh <scratch dir> $step prairie; done
+```
+
+`main` returns the map's facts (length, climbing, triangles, what the theme placed). Rendering the film from
+the open Blender blocks its window for the length of the render; `blender --background <scene> --render-anim`
+of the scene saved beside the film does the same out of the way.
 
 ## How a class becomes a map
 
@@ -34,6 +65,9 @@ its target resistance (`level`) and its cadence aim (rpm).
 - **Elevation.** A level above the course's mean climbs and one below it descends, 1 % of gradient a
   level, eased over 28 m. Ibiza's mean level is 15.9: the level 24 sprints climb at 8 %, the level
   11 recoveries and the cool-down descend at 5 %.
+- **A catalogue map (ADR 0033)** names its `distanceKm` and `climbingMetres`: the metres a turn of the
+  pedals are set so the road is exactly that long, and every gradient is scaled alike so it climbs exactly
+  that much. Each stretch keeps its share of the length and each hill its place.
 - **Turns.** Dealt from the course's `seed`: hairpins and esses on the efforts, sweeps on the
   recoveries, straights and gentle sweeps on the warm-up and cool-down. The road never comes within
   46 m of an earlier stretch of itself, and turns for home when it strays far. Change the seed for
@@ -51,8 +85,30 @@ its target resistance (`level`) and its cadence aim (rpm).
   confetti in the air. Of the layouts a seed can deal, the script keeps one whose start and finish
   look out to open sea.
 
-To add a map: write `courses/<id>.json` from the class's plan, give the theme its scenery in
-`build_scenery`, run the script, and name the world in
+## Themes
+
+Ibiza Sunset Strip's scenery is `build_scenery` here. Every other map names a theme in `themes.py`: its sky
+(which the course file carries for the app), haze and lights, a palette for the shared materials, its land
+(farmland, a town in the countryside, a headland over the sea, a harbour, an alpine valley, a beachfront, a
+high pass), its road edge (verge, pavement, cliff, quay, guard rail, beach, parapet), the turns it deals and
+how steep its hills are (`grade`: the gradient a level, a rolling wave between the class's hills, and a
+climb for a col). All seven map worlds have one:
+
+| Course | Theme | What lines the road |
+| --- | --- | --- |
+| `prairie` | Open farmland at golden hour | Fenced verges, wheat and green fields in strips, red barns and silos, round bales, windbreaks, a wind farm and a grain elevator by the start |
+| `oldtown` | A cobbled old town on race day | Pastel houses door to door on both pavements, tiled roofs, shuttered windows, café umbrellas, bunting across the street, lamps, a cathedral with two spires, cypresses beyond the walls |
+| `coast` | A clifftop road at sunset | A guard rail over the drop to the sea, rocks at the edge, a stone wall inland, gorse and pines, white cottages with lit windows, a lighthouse on the point, sea stacks |
+| `docklands` | A harbour city after dark | Lamps every 24 m, brick warehouses with lit windows and neon, cranes and container stacks on the quay, lit ships at anchor, a skyline of towers, steel bridges over the efforts |
+| `dolomites` | An alpine valley | Guard rails, spruce on the valley walls, chalets with flower boxes in the meadows, a chapel on the highest bend, pale limestone peaks with snow all round |
+| `vicecity` | A neon beachfront at a magenta sunset | Palms on both sides, art deco hotels in pastel with neon bands and signs, convertibles at the kerb, lifeguard towers and umbrellas on the beach, a neon skyline |
+| `granite` | A high pass at first light | Hairpins up bare granite, stone parapet blocks, snow poles, larches below the tree line, boulders and snow patches above, a refuge and the col's sign at the top, granite peaks |
+
+Every map has the start pylons and lights, the finish arch, barriers and crowds at both ends, an arch at the
+foot of every effort, flags where each recovery begins and arrow boards round every tight bend.
+
+To add a map: write `courses/<id>.json` from the class's plan (`theme` names its theme), give the theme its
+data and scenery in `themes.py`, run the script, and name the world in
 `frontend/projects/world/src/course-worlds.ts`.
 
 A hand-modelled change made in the `.blend` is lost the next time the script runs. Until the

@@ -5,6 +5,7 @@
 // Low, so nothing reads a pixel (ADR 0021).
 import type { Page } from '@playwright/test';
 import { ECHELON_NOTIFY, resistanceFrame, workoutFrame } from './fixtures/echelon';
+import { worldRideMap } from './fixtures/maps';
 import { startRace, stepUntil } from './fixtures/race';
 import { hideTab, showTab } from './fixtures/tab';
 import { expect, test } from './fixtures/test';
@@ -33,8 +34,9 @@ test.describe('the race world and a hidden tab', () => {
   }) => {
     await webgl.withoutWebGpu();
     await worldRide.pin('low');
-    const race = await startRace(page, bluetooth, api, 'old-town-criterium', 'mode=solo', {
+    const race = await startRace(page, bluetooth, api, worldRideMap.id, 'mode=solo', {
       world: true,
+      catalogue: [worldRideMap],
     });
     await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
     await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(16));
@@ -58,8 +60,9 @@ test.describe('the race world and a hidden tab', () => {
   }) => {
     await webgl.withoutWebGpu();
     await worldRide.pin('low');
-    const race = await startRace(page, bluetooth, api, 'old-town-criterium', 'mode=solo', {
+    const race = await startRace(page, bluetooth, api, worldRideMap.id, 'mode=solo', {
       world: true,
+      catalogue: [worldRideMap],
     });
     await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
     await hideTab(page);
