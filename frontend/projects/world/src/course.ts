@@ -46,6 +46,11 @@ export interface CourseFile {
   readonly sea?: boolean;
   /** Whether it is night: the land's lights stand in the water. */
   readonly night?: boolean;
+  /**
+   * Coloured lights that stand still (a neon sign, a bridge's lit cables), five numbers each: x and z in the
+   * glb's axes, the colour as one number (0xRRGGBB), the metres it reaches and how strong it is beneath it.
+   */
+  readonly lights?: readonly number[];
   /** How wet the ground is, from 0, dry, to 1, standing water everywhere; a course that names none is dry. */
   readonly wet?: number;
   /** The street lamps that light the ground, where the course has them. */
@@ -109,6 +114,32 @@ export function courseLook(file: CourseFile): CourseLook {
         : SUNSET.light,
     fill: fill.length === 2 && fill.every((c) => c !== null) ? [fill[0]!, fill[1]!] : SUNSET.fill,
   };
+}
+
+/** A coloured light that stands still. */
+export interface CourseLight {
+  readonly x: number;
+  readonly z: number;
+  /** 0xRRGGBB. */
+  readonly colour: number;
+  /** Metres. */
+  readonly reach: number;
+  /** Against a street lamp's 1 on the ground beneath it. */
+  readonly strength: number;
+}
+
+/** The course's coloured lights; none where it names none or names them wrongly: the file is data. */
+export function courseLights(file: CourseFile): CourseLight[] {
+  const flat = file.lights as unknown;
+  if (!Array.isArray(flat) || flat.length % 5 !== 0 || !flat.every(isNumber)) return [];
+  const lights: CourseLight[] = [];
+  for (let i = 0; i < flat.length; i += 5) {
+    const [x, z, colour, reach, strength] = flat.slice(i, i + 5) as number[];
+    const whole = Number.isInteger(colour) && colour! >= 0 && colour! <= 0xffffff;
+    if (!whole || reach! <= 0 || strength! <= 0) return [];
+    lights.push({ x: x!, z: z!, colour: colour!, reach: reach!, strength: strength! });
+  }
+  return lights;
 }
 
 /** How wet the course's ground is, from 0 to 1: dry where it names none or names it wrongly; the file is data. */

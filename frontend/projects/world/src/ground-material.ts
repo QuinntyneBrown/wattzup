@@ -60,12 +60,15 @@ export interface GroundEye {
   at(along: number, left: number, height: number): void;
 }
 
+/** How bright a coloured light is on the dry ground against the ground's colour, and mirrored in water. */
+const COLOURED = { ground: 7.5, mirrored: 0.22 } as const;
 /** How bright a lamp's reflection in standing water is, and the sky's, against the lamp itself. */
 const MIRROR = { lamp: 2.6, sky: 0.4 } as const;
 
 /**
  * The ground's material, reading `detail`. `wet` is how wet the ground is, 0 to 1: above 0 the ground is darker and
- * smoother in patches, and those patches mirror the lamps and the sky's `haze` as seen from the eye.
+ * smoother in patches, and those patches mirror the lamps and the sky's `haze` as seen from the eye. `coloured` is
+ * the coloured lights' light at the surface (lamp-glow.ts), where the course has any.
  */
 export function groundMaterial(
   detail: DataTexture,
@@ -73,6 +76,7 @@ export function groundMaterial(
   lamps: CourseLamps | null,
   wet = 0,
   haze: Color | null = null,
+  coloured: Node<'vec3'> | null = null,
 ): { material: Material; eye: GroundEye } {
   // glTF keeps a UV's second number upside down: the metres from the start line come back as 1 - v.
   const left = uv().x;
@@ -192,7 +196,13 @@ export function groundMaterial(
       .pow(5);
     emitted = emitted.add(vec3(haze.r, haze.g, haze.b).mul(glance.mul(water).mul(MIRROR.sky)));
   }
-  if (lamps || wet > 0) material.emissiveNode = emitted;
+  if (coloured) {
+    // Neon and the bridges' cables: their colour on the ground, and brighter where it lies in water.
+    emitted = emitted.add(
+      colour.mul(coloured).mul(COLOURED.ground).add(coloured.mul(water.mul(COLOURED.mirrored))),
+    );
+  }
+  if (lamps || wet > 0 || coloured) material.emissiveNode = emitted;
 
   return {
     material,

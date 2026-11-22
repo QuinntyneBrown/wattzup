@@ -1,4 +1,12 @@
-import { Course, type CourseFile, courseLamps, courseLook, courseWet, parseCourse } from './course';
+import {
+  Course,
+  type CourseFile,
+  courseLamps,
+  courseLights,
+  courseLook,
+  courseWet,
+  parseCourse,
+} from './course';
 
 /**
  * A straight road north (-Z), a point every 4 m from 8 m before the start line: flat for 40 m, then climbing 10 %
@@ -188,4 +196,33 @@ describe('courseWet (L2-166 AC20)', () => {
       expect(courseWet({ ...courseFile(), wet: named } as unknown as CourseFile)).toBe(0);
     },
   );
+});
+
+describe('courseLights (L2-166 AC23)', () => {
+  it('reads the coloured lights a course file names, five numbers each', () => {
+    expect(
+      courseLights({
+        ...courseFile(),
+        lights: [12.5, -40, 0x3ae8ff, 15, 0.5, 0, 8, 0xff4a9a, 7, 0.7],
+      }),
+    ).toEqual([
+      { x: 12.5, z: -40, colour: 0x3ae8ff, reach: 15, strength: 0.5 },
+      { x: 0, z: 8, colour: 0xff4a9a, reach: 7, strength: 0.7 },
+    ]);
+  });
+
+  it('has none on a course that names none', () => {
+    expect(courseLights(courseFile())).toEqual([]);
+  });
+
+  it.each([
+    ['a light short of a number', [1, 2, 0xffffff, 10]],
+    ['a colour that is not a colour', [1, 2, 0x1ffffff, 10, 1]],
+    ['a reach of nothing', [1, 2, 0xffffff, 0, 1]],
+    ['a strength of nothing', [1, 2, 0xffffff, 10, 0]],
+    ['a place that is not a number', [1, 'north', 0xffffff, 10, 1]],
+    ['something that is not a list', 'lights'],
+  ])('has none for %s: the file is data', (_, named) => {
+    expect(courseLights({ ...courseFile(), lights: named } as unknown as CourseFile)).toEqual([]);
+  });
 });

@@ -1496,6 +1496,7 @@ def build_themed_scenery(road: Road, st: list[dict], length: float, height_at, c
     B = Bag()
     kit = themes.Kit(road, st, length, height_at, rng, B, STEP, ROAD_HALF)
     facts = themes.SCENERY[course["theme"]](kit)
+    facts["lights"] = kit.lights
     s = road.s
     tail, fin = road.index(length - 220), road.index(length)
     az = math.atan2(s[fin]["y"] - s[tail]["y"], s[fin]["x"] - s[tail]["x"])
@@ -1571,6 +1572,14 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
             data["night"] = True
         if "wet" in theme:
             data["wet"] = theme["wet"]
+        if facts.get("lights"):
+            # Coloured lights that stand still, five numbers each: where (x, z in the glb's axes), the colour as one
+            # number (0xRRGGBB), how far it reaches in metres and how strong it is beneath it.
+            data["lights"] = [
+                v
+                for x, y, glow, reach, strength in facts["lights"]
+                for v in (round(x, 1), round(-y, 1), MATERIALS[glow]["color"], reach, round(strength, 2))
+            ]
         if "lamps" in theme:
             # The street lamps, both sides: where their light falls on the ground (see `Kit.lamp`).
             lamps = theme["lamps"]
@@ -1964,7 +1973,7 @@ def main(argv: list[str] | None = None) -> dict:
         "climbingMetres": data["climbingMetres"],
         "triangles": tris,
         **film,
-        **{k: v for k, v in facts.items() if k != "sunAzimuth"},
+        **{k: v for k, v in facts.items() if k not in ("sunAzimuth", "lights")},
     }
 
 

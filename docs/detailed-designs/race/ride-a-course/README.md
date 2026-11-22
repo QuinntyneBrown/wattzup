@@ -113,6 +113,9 @@ each technique.
 **Wet ground (L2-166 AC20).** `courseWet(file)` reads the file's `wet`. The ground's material mirrors the lamps and
 the sky in its water as seen from an eye in the road's own measure, which `aim` sets each frame.
 
+**Coloured lights (L2-166 AC23).** `courseLights(file)` reads the file's `lights`; `colourLightMap` makes their grid;
+`LampGlow` adds it to the lamps' light and hands it to the ground's material.
+
 **Lamplight (L2-166 AC14).** Where the file has `lamps`, `Solid`, `Land` and `Leaves` are drawn with
 `LampGlow.scenery`, and each rider's lit materials are swapped for `LampGlow.rider` copies when the rider is made
 (kept in a map by their source, so riders share them).

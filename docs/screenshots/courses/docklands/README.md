@@ -39,6 +39,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 15 | The climbs are bridges over the harbour | 120.0 fps, no frame over 20 ms | median of three 290 fps (3.45 ms): 290, 298, 289; pass 14 read 288 | | 72,083 | 126 | 3.14 MB | Yes |
 | 16 | Pylons and stay cables strung with light over each bridge | 119.0 fps, 2 frames over 20 ms | median of three 292 fps (3.43 ms): 294, 292, 289; pass 15 read 290 | | 72,151 | 126 | 3.17 MB | Yes |
 | 17 | The riders' moving parts in one draw call | 119.4 fps, 1 frame over 20 ms | median of three 315 fps (3.17 ms): 315, 326, 295; pass 16 read 292 | | 73,359 | 77 | 3.17 MB | Yes |
+| 18 | Neon and the bridges' cables throw their colour on the ground and the riders | 117.2 to 119.2 fps over three runs, 5, 2 and 2 frames over 20 ms | median of three 323 fps (3.10 ms): 321, 323, 323; pass 17 read 315 | | 73,359 | 77 | 3.17 MB, and 52 KB for the course file | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -599,3 +600,34 @@ did not move at all (146 before, 146 after). It is a draw-call saving only where
   moving things at once: no rig, no weights to paint, no animation system.
 - The other riders' still parts (four or so draw calls each: jersey, bib, helmet, wheels) are what is left; one
   texture atlas a rider would take them to one.
+
+## Pass 18: neon throws its colour
+
+**Before** (`pass-17.jpg`, `pass-13-start.jpg`): the neon signs on the warehouses and the lit stays over the bridges
+glow, and light nothing. The pavement under a pink sign is the same grey as anywhere.
+
+**After** (`pass-18-start.jpg` at the start line, `pass-18.jpg` and `pass-18.mp4` on the first bridge): each sign
+lays its colour on the pavement and the road before it, pink, cyan, amber or violet, and the riders take it as they
+pass; where the ground is wet the colour lies brighter in the water. On a bridge the deck and the riders are washed
+in the colour of its stays.
+
+**What changed.**
+
+- `Kit.light(at, glow, reach, strength)` (themes.py) records a coloured light that stands still; Docklands gives
+  two to each warehouse's sign and one every 16 m of deck under each pylon's stays (1,160 in all). The course file
+  carries them as `lights`, five numbers each: 52 KB gzipped for the file, from 46.
+- `courseLights` reads them (unit-tested; a malformed list is no lights). `colourLightMap` sums their pools into a
+  second grid seen from above, 4 m a cell, red, green and blue.
+- `lamp-glow.ts` reads that grid as it reads the lamps' and adds it to the light every lit surface takes; the
+  ground's material adds it too, and again, fainter, wherever water lies.
+
+**Cost.** None measurable: 323 fps against 315. One more texture, 0.8 MB on the GPU. At the display's pace the three
+runs had 5, 2 and 2 frames of some 1,190 over 20 ms, the worst 83 ms: these few hitches have been there since
+pass 3 and have not grown, but they are not gone either.
+
+**Learned.**
+
+- A second grid for coloured light costs one more texture read and makes every glowing thing in the map able to
+  light its surroundings. The lamps' grid of pass 2 was the right shape for it from the start.
+- Colour on the ground has to be several times stronger than seems right (7.5 times the ground's own colour) to
+  show at all on dark asphalt under tone mapping; on the pale pavement the same strength is plain.

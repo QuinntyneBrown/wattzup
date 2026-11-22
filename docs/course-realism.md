@@ -443,6 +443,34 @@ same class for other rigid moving things: a crowd waving, flags, traffic, a wind
 **Watch for.** `BatchedMesh` does not reduce draw calls on WebGPU. A bone that is in the scene graph is moved by
 the scene: keep these out of it. The mesh is built again whenever a rider is added, so add riders rarely.
 
+### 17. Coloured light from what glows (Docklands pass 18)
+
+**What it gives.** Neon signs, lit cables and anything else that glows throw their colour on the ground, on what
+stands on it and on the riders, brighter still where the ground is wet.
+
+**How it works.**
+
+- `tools/blender/themes.py`: `Kit.light(at, glow, reach, strength)` records a light: where, the glowing material
+  whose colour it has, how far it reaches and how strong it is beneath it (a street lamp is 1). `build_course.py`
+  writes them to the course file as `lights`: x, z, 0xRRGGBB, reach, strength, flat.
+- `course.ts`, `courseLights(file)`: the list, or none if it is malformed.
+- `lamp-light-map.ts`, `colourLightMap(course, lights)`: a grid over the map, 4 m a cell, four bytes a cell: each
+  light's colour times `(1 - distance / reach)²` times its strength, summed.
+- `lamp-glow.ts`: `LampGlow` takes the grid as a second texture; `coloured` is its light at the surface, and it is
+  added to the lamps' before the fade with height and the shaping from above. `ground-material.ts` takes
+  `coloured` and adds the ground's colour times it, and it again times the water.
+
+**To apply it to another map.** Call `k.light(...)` beside whatever the theme builds that glows: Vice City's hotel
+signs, Ibiza's club doors, the old town's cafe windows, a finish arch's bulbs. A map needs `lamps` for it to show
+(the grid rides with the lamps' light): for a map with coloured lights and no street lamps, give `LampGlow` an
+empty lamps' grid.
+
+**Cost.** None measurable; one texture of the map's footprint at 4 m a cell; a few bytes a light in the course
+file.
+
+**Watch for.** Too many overlapping lights wash to white (the grid holds 1.5 a channel at most). The light has no
+shadow: it passes through walls, so keep a sign's pool on the sign's own side of its building.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
@@ -451,8 +479,8 @@ The pictures the work aims at differ from a course in these ways, most visible f
    (meshopt).
 2. Nothing but the riders casts a shadow: posts, walls and containers throw none.
 3. The water does not mirror the quay's own lamps, cranes and ships: only the sky and the far shore.
-4. The neon signs and lit windows are not mirrored in the wet road, and throw no light on it.
-5. Lit windows and neon throw no light on the ground, and the neon has no glow in the air.
+4. The lit windows throw no light on the pavement beneath them.
+5. The neon signs have no glow in the air round them, as the lamps have.
 6. The riders are simple figures: smooth limbs, no cloth, no faces.
 7. Doors, signs, pipes, gutters and roof lines: a building is still a box with windows.
-8. The stays' light falls on nothing: the deck, the riders and the water take no colour from them.
+8. The harbour's water takes no colour from the bridges' stays above it.

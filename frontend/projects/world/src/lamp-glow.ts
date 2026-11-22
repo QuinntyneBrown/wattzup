@@ -24,11 +24,17 @@ import {
   type MeshStandardMaterial,
   MeshStandardNodeMaterial,
   type Node,
+  RGBAFormat,
   RGFormat,
   UnsignedByteType,
 } from 'three/webgpu';
 import type { CourseLamps } from './course';
-import { LAMP_LIGHT_MAX, type LampLightMap } from './lamp-light-map';
+import {
+  COLOUR_LIGHT_MAX,
+  type ColourLightMap,
+  LAMP_LIGHT_MAX,
+  type LampLightMap,
+} from './lamp-light-map';
 
 /** Metres above the road where the lamps' light starts to fade, and where it is gone. */
 const FADE_FROM = 1.5;
@@ -39,10 +45,16 @@ const FROM_BELOW = 0.22;
 /** The lamps' light as materials read it. */
 export class LampGlow {
   private readonly grid: DataTexture;
+  private readonly colours: DataTexture | null = null;
+  /**
+   * The coloured lights' light on the ground at the surface being drawn (neon, a bridge's lit cables), where the
+   * course has any: for the ground's own material, which works the lamps' light out itself.
+   */
+  readonly coloured: Node<'vec3'> | null = null;
   /** The lamps' light at the surface being drawn, in the lamps' colour: 1 is a lone lamp straight overhead. */
   readonly light: Node<'vec3'>;
 
-  constructor(map: LampLightMap, lamps: CourseLamps) {
+  constructor(map: LampLightMap, lamps: CourseLamps, colours: ColourLightMap | null = null) {
     const grid = new DataTexture(map.texels, map.width, map.height, RGFormat, UnsignedByteType);
     grid.magFilter = grid.minFilter = LinearFilter;
     grid.needsUpdate = true;
@@ -53,8 +65,29 @@ export class LampGlow {
     const cell = texture(grid, at);
     const above = positionWorld.y.sub(cell.g.mul(map.spanY).add(map.minY));
     const tint = new Color(lamps.colour);
-    this.light = vec3(tint.r, tint.g, tint.b)
-      .mul(cell.r.mul(cell.r).mul(LAMP_LIGHT_MAX))
+    let lit: Node<'vec3'> = vec3(tint.r, tint.g, tint.b).mul(cell.r.mul(cell.r).mul(LAMP_LIGHT_MAX));
+    if (colours) {
+      // The coloured lights are a second grid, read the same way and added to the lamps'.
+      const second = new DataTexture(
+        colours.texels,
+        colours.width,
+        colours.height,
+        RGBAFormat,
+        UnsignedByteType,
+      );
+      second.magFilter = second.minFilter = LinearFilter;
+      second.needsUpdate = true;
+      this.colours = second;
+      const texel = texture(
+        second,
+        positionWorld.xz
+          .sub(vec2(colours.minX, colours.minZ))
+          .div(vec2(colours.width * colours.cell, colours.height * colours.cell)),
+      ).rgb;
+      this.coloured = texel.mul(texel).mul(COLOUR_LIGHT_MAX);
+      lit = lit.add(this.coloured);
+    }
+    this.light = lit
       .mul(float(1).sub(smoothstep(FADE_FROM, FADE_TO, above)))
       // A lamp is overhead: what faces up takes all of its light, a wall about two thirds, and what faces down
       // only what comes back off the ground. This is what gives a rider and a crate their shape under the lamps.
@@ -85,5 +118,6 @@ export class LampGlow {
 
   dispose(): void {
     this.grid.dispose();
+    this.colours?.dispose();
   }
 }

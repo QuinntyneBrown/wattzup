@@ -1,5 +1,5 @@
 import { Course, type CourseFile, type CourseLamps } from './course';
-import { lampLightAt, lampLightMap } from './lamp-light-map';
+import { colourLightAt, colourLightMap, lampLightAt, lampLightMap } from './lamp-light-map';
 
 /** A straight road north (-Z), a point every 4 m from 80 m before the start line, climbing 1 m every 4 m. */
 function course(): Course {
@@ -56,5 +56,35 @@ describe('lampLightMap (L2-166 AC14)', () => {
 
   it('lights nothing beyond its edges', () => {
     expect(lampLightAt(map, 99999, 0).light).toBe(0);
+  });
+});
+
+describe('colourLightMap (L2-166 AC23)', () => {
+  const cyan = { x: 0, z: -100, colour: 0x00ffff, reach: 16, strength: 0.6 };
+  const pink = { x: 12, z: -100, colour: 0xff0080, reach: 16, strength: 0.6 };
+  const map = colourLightMap(course(), [cyan, pink]);
+
+  it('holds a light in its own colour, strongest beneath it', () => {
+    const [red, green, blue] = colourLightAt(map, -2, -100);
+    expect(green).toBeGreaterThan(0.3);
+    expect(blue).toBeGreaterThan(0.3);
+    expect(green).toBeGreaterThan(red * 2);
+  });
+
+  it('is dark beyond every light’s reach', () => {
+    expect(colourLightAt(map, 0, -140)).toEqual([0, 0, 0]);
+    expect(colourLightAt(map, 0, 99999)).toEqual([0, 0, 0]);
+  });
+
+  it('adds the colours of lights whose pools overlap', () => {
+    const [red, green, blue] = colourLightAt(map, 6, -100);
+    expect(red).toBeGreaterThan(0.05);
+    expect(green).toBeGreaterThan(0.05);
+    expect(blue).toBeGreaterThan(0.1);
+  });
+
+  it('is dark with no lights', () => {
+    const none = colourLightMap(course(), []);
+    expect(colourLightAt(none, 0, -100)).toEqual([0, 0, 0]);
   });
 });

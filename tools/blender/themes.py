@@ -220,6 +220,9 @@ class Kit:
     def __init__(self, road, st, length, height_at, rng, builders, step, road_half):
         self.road, self.s, self.st, self.length = road, road.s, st, length
         self.height_at, self.rng, self.B = height_at, rng, builders
+        # Coloured lights that stand still (a neon sign, a bridge's lit stays): where each throws its light on the
+        # ground. The course file carries them and the app lights what is near (see `light`).
+        self.lights: list[tuple] = []
         self.n, self.step, self.half = len(road.s), step, road_half
         self.kerb = road_half + 0.6
         # A longer map spreads more scenery over its larger land.
@@ -316,6 +319,11 @@ class Kit:
             b.verts.append(self.P(i, along + da, off, up + du))
             b.uvs.append((u + (2 if lit else 0), v + 2 * number))
         b.faces.append((base, base + 1, base + 2, base + 3))
+
+    def light(self, at, glow: str, reach: float, strength: float) -> None:
+        """A coloured light at `at`, in a glowing material's colour: it lights the ground, and what stands on it,
+        out to `reach` metres, `strength` strong beneath it against a street lamp's 1."""
+        self.lights.append((at[0], at[1], glow, reach, strength))
 
     def halo(self, at, glow: str) -> None:
         """The glow in the air round a light: four corners at one place, which the app spreads to face the eye. Its
@@ -819,6 +827,9 @@ def docklands(k: Kit) -> dict:
             neon = ("neon-pink", "neon-cyan", "neon-amber", "neon-violet")[sheds % 4]
             B[neon].box(k.P(i, rng.uniform(-width / 4, width / 4), wall + 0.1, floors * 3.6 - 1.2), (width * 0.5, 0.14, 0.3), yaw)
             B[neon].box(k.P(i, -width / 2 + 0.4, wall + 0.4, 3.0), (0.2, 0.2, floors * 3.6 - 3.5), yaw)
+            # The sign's light on the pavement and the road before it.
+            k.light(k.P(i, 0, wall + 3.0, 0), neon, 13.0, 0.75)
+            k.light(k.P(i, -width / 2 + 0.4, wall + 1.6, 0), neon, 7.0, 0.7)
             sheds += 1
             i += int((width + rng.uniform(4, 14)) / k.step) + 1
         else:
@@ -956,6 +967,10 @@ def docklands(k: Kit) -> dict:
                                 (head[0], head[1], head[2] + 0.16 + lift),
                             )
                             B[neon].quad(*(quad[q] for q in order))
+            # The stays' light on the deck: a pool every 16 m as far as they reach.
+            for reach in range(-24, 28, 4):
+                if i0 <= i + reach <= i1:
+                    k.light(k.road.at(i + reach, 0.0), neon, 15.0, 0.55 - 0.012 * abs(reach))
             # The head beam and a beam under the deck tie the two legs.
             B["tower"].box(k.P(i, 0, 0, top - 3.0), (1.6, 2 * out + 1.2, 2.2), yaw)
             B["tower"].box(k.P(i, 0, 0, -3.2), (2.2, 2 * out + 1.8, 1.8), yaw)

@@ -37,6 +37,7 @@ import {
   Course,
   type CoursePlace,
   courseLamps,
+  courseLights,
   courseLook,
   courseWet,
   parseCourse,
@@ -45,7 +46,7 @@ import { fenceMaterial } from './fence-material';
 import { type GroundEye, groundMaterial, surfaceTexture } from './ground-material';
 import { haloMaterial } from './halo-material';
 import { LampGlow } from './lamp-glow';
-import { lampLightMap } from './lamp-light-map';
+import { colourLightMap, lampLightMap } from './lamp-light-map';
 import { mergeStillParts } from './merged-cyclist';
 import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
@@ -378,7 +379,12 @@ export class CourseRenderer implements WorldRenderer {
     // Where the course has street lamps, what stands near the road is lit by them (lamp-glow.ts).
     const lamps = courseLamps(this.course!.file);
     if (lamps) {
-      const lampGlow = new LampGlow(lampLightMap(this.course!, lamps), lamps);
+      const lights = courseLights(this.course!.file);
+      const lampGlow = new LampGlow(
+        lampLightMap(this.course!, lamps),
+        lamps,
+        lights.length ? colourLightMap(this.course!, lights) : null,
+      );
       this.lampGlow = lampGlow;
       // The riders' shadows fall away from the lamps: the rider, and the riders drawn with them.
       this.lampShadows = new RiderShadows(this.course!, lamps, MOST_RIDERS + 1);
@@ -403,6 +409,7 @@ export class CourseRenderer implements WorldRenderer {
       lamps,
       courseWet(this.course!.file),
       new Color(look.haze),
+      this.lampGlow?.coloured ?? null,
     );
     materials['Ground'] = ground.material;
     this.groundEye = ground.eye;
