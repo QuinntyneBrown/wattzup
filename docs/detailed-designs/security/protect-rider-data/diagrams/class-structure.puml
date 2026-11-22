@@ -28,16 +28,10 @@ package "Telo.Ride.Infrastructure" {
   class CodeHashOptions <<configuration>> {
     +Key: Auth:CodeHashKey (secret store)
   }
-  class TelemetryScrubbingProcessor {
-    +OnEnd(activity: Activity): void
-  }
-  class TeloDataClassifications <<static>> {
-    +Personal: DataClassification
-    +Secret: DataClassification
-  }
-  class LogEvents <<partial, LoggerMessage>> {
-    +CodeSent(logger, [Personal] email: string): void
-    +SessionStarted(logger, riderId: Guid): void
+}
+package "Telo.Ride.Api" {
+  class TelemetrySetup <<static>> {
+    +AddTeloRideTelemetry(services, configuration): IServiceCollection
   }
 }
 package "Telo.Ride.Domain" {
@@ -51,10 +45,9 @@ package "Telo.Ride.Domain" {
 ISignInCodeHasher <|.. HmacSignInCodeHasher
 HmacSignInCodeHasher --> CodeHashOptions
 HmacSignInCodeHasher ..> SignInCode : produces CodeHash
-LogEvents ..> TeloDataClassifications : tags parameters with
-note right of TelemetryScrubbingProcessor
-  Removes url.query, url.full, request and
-  response bodies; keeps http.route template;
-  rejects tags named email, code, token, message
+note right of TelemetrySetup
+  Spans named by route template; query values
+  redacted and url.query cleared; no bodies;
+  Microsoft.AspNetCore logs at Warning
 end note
 @enduml

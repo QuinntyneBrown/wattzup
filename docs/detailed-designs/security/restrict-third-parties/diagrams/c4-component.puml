@@ -4,23 +4,25 @@ LAYOUT_WITH_LEGEND()
 title Components — Restrict third parties
 System_Ext(youtube, "YouTube", "IFrame Player API")
 System_Ext(gmaps, "Google Maps Platform", "Map Tiles API")
+Container_Boundary(api, "Telo Ride API") {
+  Component(file, "security-headers.json", "Embedded resource · Telo.Ride.Api", "The policy, directive by directive, and the two other headers")
+  Component(headers, "SecurityHeaders", "Middleware · Telo.Ride.Api", "Adds them to every response: files, deep links, answers")
+}
 Container_Boundary(app, "Ride app") {
-  Component(policy, "Content Security Policy", "Response header from staticwebapp.config.json", "Allow-list of origins per directive")
-  Component(origins, "ThirdPartyOrigins", "Constants · api", "The only foreign origins the app may name")
-  Component(yt, "YouTubePlayerLoader", "Service · domain", "Loads iframe_api once; players on youtube-nocookie")
-  Component(tiles, "GoogleTilesSource", "Service · world", "Streams 3D Tiles with the rider's key")
-  Component(settings, "SettingsStore", "Service · domain/storage", "Holds the Google key on this device")
+  Component(yt, "YouTubeVideoPlayer", "Player · video", "iframe_api from www.youtube.com; players on youtube-nocookie")
+  Component(tiles, "PhotorealTiles", "Renderer · world", "Streams 3D Tiles with the rider's key")
   Component(fonts, "Bundled fonts", "Static assets · ride", "@font-face from the app's origin")
 }
-Container_Boundary(api, "Telo Ride API") {
-  Component(headers, "SecurityHeadersMiddleware", "Middleware · Telo.Ride.Api", "nosniff, Referrer-Policy, CSP frame-ancestors 'none'")
+Container_Boundary(e2e, "Playwright specs") {
+  Component(serve, "serve-dist.mjs", "Node server · frontend/scripts", "Sends the same headers with the build")
+  Component(guard, "ContentSecurityPolicyFixture", "Fixture · e2e", "Fails a spec on any refusal it did not take")
 }
-Rel(yt, origins, "Reads origins from")
-Rel(tiles, origins, "Reads origins from")
-Rel(tiles, settings, "Reads the key from")
+Rel(headers, file, "Reads")
+Rel(serve, file, "Reads")
+Rel(headers, yt, "Permits, through the policy")
+Rel(headers, tiles, "Permits, through the policy")
+Rel(headers, fonts, "Permits 'self' only for")
 Rel(yt, youtube, "Loads script and frames from", "HTTPS")
 Rel(tiles, gmaps, "Fetches tiles from", "HTTPS")
-Rel(policy, yt, "Permits")
-Rel(policy, tiles, "Permits")
-Rel(policy, fonts, "Permits 'self' only for")
+Rel(guard, serve, "Runs the app under the headers of")
 @enduml

@@ -31,35 +31,35 @@ design therefore sends the policy as a response header from the static host.
 
 ### Policy and headers
 
-- **`staticwebapp.config.json`** (frontend hosting, ADR 0022) — `globalHeaders` on every response
-  the static host serves:
-  - `Content-Security-Policy` with the directives below;
-  - `X-Content-Type-Options: nosniff`;
-  - `Referrer-Policy: strict-origin-when-cross-origin`.
+- **`security-headers.json`** (`Telo.Ride.Api`, `Hosting/`) — the one place the headers of `L2-131` are written: the
+  Content Security Policy, directive by directive, `X-Content-Type-Options: nosniff` and
+  `Referrer-Policy: strict-origin-when-cross-origin`. The API embeds it; nothing else holds a copy.
+- **`SecurityHeaders`** (`Telo.Ride.Api`, `Hosting/SecurityHeaders.cs`) — middleware that adds those headers to every
+  response as it starts: the app's files, which the API serves (ADR 0026), its deep links, and every backend answer,
+  ProblemDetails included.
 - **Content Security Policy** directives:
 
   | Directive | Value |
   |-----------|-------|
   | `default-src` | `'self'` |
   | `script-src` | `'self' https://www.youtube.com 'wasm-unsafe-eval'` |
-  | `style-src` | `'self'` and the Angular component-style allowance, `<TO SUPPLY>` (see below) |
-  | `frame-src` | `https://www.youtube-nocookie.com` |
-  | `worker-src` | `'self' blob:` |
-  | `connect-src` | `'self' https://tile.googleapis.com blob:` |
-  | `img-src` | `'self' https://i.ytimg.com https://tile.googleapis.com blob:` |
+  | `style-src` | `'self' 'unsafe-inline'` |
   | `font-src` | `'self'` |
+  | `img-src` | `'self' https://i.ytimg.com https://tile.googleapis.com blob:` |
+  | `connect-src` | `'self' https://tile.googleapis.com blob:` |
+  | `worker-src` | `'self' blob:` |
+  | `frame-src` | `https://www.youtube-nocookie.com` |
   | `object-src` | `'none'` |
   | `base-uri` | `'self'` |
   | `form-action` | `'self'` |
   | `frame-ancestors` | `'none'` |
 
-  `connect-src 'self'` covers the API and the ride hub's WebSocket because both are on the app
-  origin. If the API is given its own origin, that origin is added and is `<TO SUPPLY>`.
-- **Component styles** — Angular injects component styles as `<style>` elements at run time.
-  `style-src 'self'` alone blocks them unless each carries a nonce, and a static host cannot mint a
-  nonce per response (ADR 0018). The allowance is `<TO SUPPLY>`: either `'unsafe-inline'` for
-  styles only, as ADR 0018 accepts, or a host that injects a per-response nonce written to
-  `ngCspNonce`.
+  `connect-src 'self'` covers the API and the ride hub's WebSocket because both are on the app's origin.
+- **A static policy** — the service worker keeps `index.html` by the hash of its bytes (ADR 0032), so no nonce can be
+  written into it per response. Angular injects component styles as `<style>` elements, so `style-src` carries
+  `'unsafe-inline'`, as ADR 0018 accepts: an attacker who could insert markup could add a style, but no script, frame,
+  connection or font from another origin. Styles Angular sets through bindings go through the CSSOM, which the policy
+  does not govern.
 - **3D Tiles resources** — settled by slice 8.7. Google's tiles are Draco-compressed glTF:
   Three.js's `DRACOLoader` decodes them in a worker it builds from a `blob:` URL, running the
   decoder's WebAssembly (`worker-src 'self' blob:`, `'wasm-unsafe-eval'` in `script-src`, which
@@ -67,27 +67,26 @@ design therefore sends the policy as a response header from the static host.
   textures through `blob:` URLs with `fetch` or an image (`blob:` in `connect-src` and
   `img-src`). A `blob:` URL is made by the page's own code from bytes it already holds, so it
   admits no foreign origin; the decoder's files are served from the app's origin (`/draco/`).
-- **`SecurityHeadersMiddleware`** (`Telo.Ride.Api`) — adds `X-Content-Type-Options: nosniff`,
-  `Referrer-Policy: strict-origin-when-cross-origin` and
-  `Content-Security-Policy: default-src 'none'; frame-ancestors 'none'` to every API response,
-  so JSON and ProblemDetails bodies cannot be framed or sniffed as another type.
 
 ### Ride app (frontend)
 
-- **`ThirdPartyOrigins`** (`api` library) — constants for the four foreign origins the policy
-  lists. Code that builds a foreign URL takes its origin from here, so the code and the policy
-  name the same set.
-- **`YouTubePlayerLoader`** (`domain` library) — loads `https://www.youtube.com/iframe_api` once,
-  creates each player with host `https://www.youtube-nocookie.com`, and destroys the player when
-  its owner is destroyed.
-- **`GoogleTilesSource`** — streams tiles from `https://tile.googleapis.com` only when
-  `SettingsStore.googleMapsKey` holds a key the rider entered. Its library and final name belong
-  to [Render the race world](../../race/render-the-race-world/README.md).
-- **Bundled fonts** — `@font-face` rules in the global foundations stylesheet point at font files
-  in the app's own assets.
-- **End-to-end guard** — the Playwright fixture of [Test without hardware or
-  databases](../../platform/test-without-hardware-or-databases/README.md) fails any spec that
-  makes a request off localhost, so a new foreign request is caught before it ships.
+- **`YouTubeVideoPlayer`** (`video` library, imported dynamically) — loads `https://www.youtube.com/iframe_api` and
+  embeds each video from `https://www.youtube-nocookie.com`. Class covers come from `https://i.ytimg.com`.
+- **`PhotorealTiles`** (`world` library) — streams tiles from `https://tile.googleapis.com` only with a key the rider
+  entered in Settings ([Render the race world](../../race/render-the-race-world/README.md)).
+- **Bundled fonts** — `@font-face` rules in the global foundations stylesheet point at font files in the app's own
+  assets. No analytics, advertising or tracking script is loaded.
+
+### Proof
+
+- **`serve-dist.mjs`** (`frontend/scripts/`) — the server the Playwright specs run the app on reads
+  `security-headers.json` and sends the same headers, so every spec runs the app under the policy.
+- **`ContentSecurityPolicyFixture`** (`frontend/e2e/fixtures/`) — records each `securitypolicyviolation` the page
+  reports. The shared fixture fails any spec on a refusal it did not take, beside its failure on a request off
+  localhost ([Test without hardware or
+  databases](../../platform/test-without-hardware-or-databases/README.md)), so a new foreign origin is caught before
+  it ships. `e2e/content-security-policy.spec.ts` checks the headers and that a script and a connection to another
+  origin are refused before they leave the page.
 
 ## Requirements
 
@@ -103,36 +102,35 @@ level-1 (L1) requirement, cited by identifier.
 ### System context
 
 Telo Ride reaches only two third parties: YouTube for video and, with the rider's own key, Google
-Maps Platform for 3D Tiles. The static web host delivers the app with its policy.
+Maps Platform for 3D Tiles. The Telo Ride API delivers the app with its policy (ADR 0026).
 
 ![C4 system context for restricting third parties](diagrams/c4-context.png)
 
 ### Containers
 
-The Ride app runs under the policy the static host sends, connects to the Telo Ride API on its own
+The Ride app runs under the policy the API sends with its files, connects to the API on the same
 origin, and reaches YouTube and Google only through the directives that list them.
 
 ![C4 container view for restricting third parties](diagrams/c4-container.png)
 
 ### Components
 
-`YouTubePlayerLoader` and `GoogleTilesSource` build foreign URLs from `ThirdPartyOrigins`; the
-policy permits exactly those origins and `'self'` for fonts. `SecurityHeadersMiddleware` adds the
-response headers on the API.
+`YouTubeVideoPlayer` and `PhotorealTiles` name the only foreign origins; the policy permits exactly
+those and `'self'` for fonts. `SecurityHeaders` adds the headers from `security-headers.json`.
 
 ![C4 component view for restricting third parties](diagrams/c4-component.png)
 
 ### Class structure
 
-`StaticWebAppConfig` holds the policy and the two other headers. `ThirdPartyOrigins` is the
-single list the loaders read, and `GoogleTilesSource` takes the key from `SettingsStore`.
+`security-headers.json` holds the policy and the two other headers; `SecurityHeaders` sends them and
+`serve-dist.mjs` sends the same for the specs, whose fixture fails on a refusal.
 
 ![Class diagram for restricting third parties](diagrams/class-structure.png)
 
 ### Behaviour — serve the app with its policy
 
-The static host sends the policy and headers with the app shell; the app's own files, the API and
-the YouTube player all load within it (`L2-131` AC1, AC2, AC4).
+The API sends the policy and headers with the app shell; the app's own files, the API and the
+YouTube player all load within it (`L2-131` AC1, AC2, AC4).
 
 ![Sequence diagram for serving the app with its policy](diagrams/sequence-serve-the-app-with-its-policy.png)
 
@@ -142,3 +140,12 @@ The browser blocks any connection to an unlisted origin before it leaves the dev
 request goes to Google only when the rider has given a key (`L2-131` AC3).
 
 ![Sequence diagram for blocking a request to an origin off the list](diagrams/sequence-block-an-off-list-request.png)
+
+## Open questions
+
+1. **Style nonce (decided).** The policy stays static with `style-src 'unsafe-inline'` (ADR 0018): the service
+   worker checks `index.html` against the hash of its bytes (ADR 0032), so a nonce written per response would make every
+   cached shell fail its check.
+2. **`ThirdPartyOrigins` (decided).** The design named a constants list in `api` for the foreign origins. It is not
+   built: the four origins are written in the code that loads them, and the policy file is the list the browser
+   enforces, with every spec failing on a refusal. A constants list would add a name without adding a check.

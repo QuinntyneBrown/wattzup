@@ -16,7 +16,7 @@ skinparam package {
 }
 box "Frontend — Ride app" #E0F2FE
   participant "Injected or mistaken code" as code
-  participant "GoogleTilesSource" as tiles
+  participant "PhotorealTiles" as tiles
 end box
 participant "Chrome or Edge (CSP enforcement)" as browser
 participant "Google Maps Platform" as gmaps
