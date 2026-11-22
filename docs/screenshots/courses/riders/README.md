@@ -21,6 +21,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 10 | Cloth painted as cloth: the back's shape, folds, pocket shade, mesh panels, seams, the knit's grain; lamp light that keeps what is painted | 119.9 fps; two frames of 25 ms in 1 timing of 4, neither with a collection | 16.9 ms filmed, 25.0 ms worst | 294 fps (3.40 ms): 296, 286, 294 | 85,051 | 84 | Yes |
 | 11 | The whole rider in the frame: the picture raised a tenth so the wheels and the road under them show above the panel | 119.8 fps, none over 20 ms | 16.8 ms | 304 fps (3.29 ms): 304, 294, 313 | 85,051 | 84 | Yes |
 | 12 | The camera closer: the rider some two fifths of the picture's height, where they were a ninth | 119.9 fps, none over 20 ms | 16.7 ms | 302 fps (3.31 ms): 305, 284, 302 | 85,051 | 84 | Yes |
+| 13 | Hips and legs of a cyclist: glutes that are the thighs' own tops, fuller thighs, calves that swell behind | 119.8 fps, 1 over 20 ms | 25.0 ms | 308 fps (3.25 ms): 305, 312, 308 | 87,691 | 84 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -481,3 +482,27 @@ plainly. The distances are four numbers if the old view is wanted back.
 
 **Learned.** How real a rider looks is first how much of the picture they are given. Every earlier pass is worth
 more at this distance than it was at the old one.
+
+## Pass 13: hips and legs of a cyclist
+
+**Before** (`rider-12-start.jpg`): seen this close, the seat is one black ellipsoid wider than the waist, sitting on
+the saddle like a cushion, with the thighs starting abruptly under it; the legs are thin, and the calf's swell was on
+the front of the shin (its offset had the wrong sign: along a shin, +z is the front).
+
+**After** (`rider-13-start.jpg`, `rider-13.jpg`, `rider-13.mp4`): each thigh begins above and behind the hip joint
+with a rounded glute that turns with the leg, so the seat is two glutes running into two thighs with the saddle
+between them, and it works as the rider pedals. The thighs are fuller, with the quadriceps to the front; the calves
+swell behind, widest a third of the way down, and draw in to the ankle.
+
+**What changed.** `course-cyclist.ts`: `thighShape` gains three sections above the hip (t from -0.17) and fuller
+ones below; `shinShape`'s calf is on -z and larger; the pelvis is a smaller filler between the hips
+(0.122 × 0.08 × 0.098 m).
+
+**Cost.** None beyond the run-to-run spread; a few hundred triangles for the pack.
+
+**Learned.**
+
+- A loft may start before its joint (a negative t): that is how a muscle that crosses a joint is made part of the
+  limb that moves it.
+- Write down which way a limb's own axes point. The calf was on the wrong side for twelve passes because nobody
+  could see it from 4.9 m.

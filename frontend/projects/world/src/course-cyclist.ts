@@ -348,10 +348,15 @@ function bend(
 const thighShape = (look: Palette) =>
   loft(
     [
-      { t: 0, rx: 0.078, rz: 0.092 },
-      { t: 0.12, rx: 0.086, rz: 0.098, z: -0.006 },
-      { t: 0.4, rx: 0.08, rz: 0.09, z: -0.01 },
-      { t: 0.74, rx: 0.062, rz: 0.068, z: -0.006 },
+      // It begins above the hip joint, behind it: the glute, rounded over, which turns with the thigh. (Along a
+      // thigh +z is its front, the quadriceps; -z its back, the glute and the hamstrings.)
+      { t: -0.17, rx: 0.028, rz: 0.03, z: -0.034 },
+      { t: -0.13, rx: 0.06, rz: 0.06, z: -0.036 },
+      { t: -0.05, rx: 0.082, rz: 0.088, z: -0.03 },
+      { t: 0.08, rx: 0.09, rz: 0.102, z: -0.018 },
+      { t: 0.3, rx: 0.086, rz: 0.1, z: -0.004 },
+      { t: 0.55, rx: 0.074, rz: 0.086, z: 0.002 },
+      { t: 0.74, rx: 0.063, rz: 0.07 },
       { t: 0.78, rx: 0.061, rz: 0.066 },
       { t: 0.8, rx: 0.057, rz: 0.062 },
       { t: 0.93, rx: 0.052, rz: 0.058 },
@@ -366,11 +371,15 @@ const shinShape = (look: Palette) =>
   loft(
     [
       { t: 0, rx: 0.05, rz: 0.055 },
-      { t: 0.06, rx: 0.053, rz: 0.058, z: -0.004 },
-      { t: 0.28, rx: 0.052, rz: 0.062, z: 0.014 },
-      { t: 0.5, rx: 0.044, rz: 0.05, z: 0.01 },
-      { t: 0.68, rx: 0.036, rz: 0.04, z: 0.004 },
-      { t: 0.7, rx: 0.038, rz: 0.042, z: 0.004 },
+      // The kneecap to the front (+z); the calf's two heads behind (-z), widest a third of the way down, drawn in
+      // to the tendon above the ankle.
+      { t: 0.06, rx: 0.054, rz: 0.058, z: 0.004 },
+      { t: 0.16, rx: 0.058, rz: 0.064, z: -0.012 },
+      { t: 0.3, rx: 0.061, rz: 0.068, z: -0.018 },
+      { t: 0.46, rx: 0.05, rz: 0.055, z: -0.012 },
+      { t: 0.62, rx: 0.039, rz: 0.042, z: -0.004 },
+      { t: 0.68, rx: 0.036, rz: 0.04 },
+      { t: 0.7, rx: 0.038, rz: 0.042 },
       { t: 0.92, rx: 0.034, rz: 0.037 },
       { t: 1, rx: 0.036, rz: 0.04 },
     ],
@@ -1017,11 +1026,11 @@ function body(jersey: Color, look: Palette): { still: BufferGeometry[]; kit: Buf
         .setPosition(fist.at.clone().add(new Vector3(0, -0.012, -0.028))),
     );
   }
-  // The seat: one pelvis in the shorts, wide over the saddle and round behind, that the trunk grows out of and the
-  // thighs leave. Two rounds side by side read as two balls once the light caught their edges.
+  // The seat: the pelvis between the hips, in the shorts, that the trunk grows out of. The glutes are the thighs'
+  // own tops (thighShape), so they turn with the legs; this fills between them over the saddle.
   const pelvis = ball(
-    HIP.clone().add(new Vector3(0, -0.026, 0.03)),
-    new Vector3(0.15, 0.09, 0.118),
+    HIP.clone().add(new Vector3(0, -0.02, 0.02)),
+    new Vector3(0.122, 0.08, 0.098),
     SHORTS,
     12,
   );

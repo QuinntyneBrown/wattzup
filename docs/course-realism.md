@@ -563,6 +563,11 @@ different bike (a time-trial bike, a gravel bike) is the frame's eight points an
 
 **Cost.** None: faster than the kit it replaces, with 15 fewer draw calls for a pack of five.
 
+**Limbs' own axes.** Along a limb laid by `between`, +y runs from the upper joint to the lower, +x across the bike
+and +z to the limb's front (the quadriceps, the kneecap, the shin); a muscle at the back (glute, hamstring, calf) is
+an offset on -z. A loft may begin before its joint (a negative `t`): the glute is the thigh's own top (riders pass
+13).
+
 **Watch for.** An open end of a tube that is not buried in another part: close it with two or three small sections
 (riders pass 5). Two round parts side by side where the body has one (a seat is one pelvis, not two spheres). A colour that smears: it blends over the gap between two sections. A limb that twists as it moves:
 `between` keeps its width across the bike, which is right for legs that swing fore and aft. Parts that meet at a
