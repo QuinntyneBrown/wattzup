@@ -29,6 +29,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 5 | A night sky and the city on the horizon | 60.1 fps (the display was at 60 Hz) | median of three 331 fps (3.02 ms): 331, 325, 331 | | 76,115 | 128 | 3.39 MB | Yes |
 | 6 | Windows with frames, panes and rooms behind them | 119.8 fps | median of three 328 fps (3.05 ms): 333, 328, 319 | | 74,869 | 129 | 3.38 MB | Yes |
 | 7 | A working quay: railing, bollards, drums, crates, lorries, masts, cranes | 60.0 fps (the display was at 60 Hz) | best of six 301 fps; medians 241 and 232 on a busy machine (see the pass) | | 79,834 | 134 | 3.99 MB | Yes |
+| 8 | Hills a rider can see: each effort a ramp up onto a bridge | 120.0 fps, no frame over 20 ms | median of three 308 fps (3.24 ms): 311, 308, 307, on the first ramp | | 66,997 | 123 | 3.92 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -290,3 +291,34 @@ further over now.
   3.8 km in. Film what the map is for, not where the ride happens to start.
 - The file's size is now the map's weakest number. Positions and UVs are 32-bit floats; quantising them, or Draco,
   is the pass that would pay for the clutter.
+
+## Pass 8: hills a rider can see
+
+Asked for by the rider: "Where are the hills?" From this pass the bench films and times the first effort (3,760 m
+up the road, `WZ_BENCH_FROM`), where the map turns and climbs, not the start line.
+
+**Before** (`pass-07-climb-1.mp4`, `pass-07-climb-2.mp4`): each of the eight efforts climbed some 15 m at a steady
+4 % over its 460 m, and each recovery gave it back at 1.5 % over 2 km, on ground that also rolled a little
+everywhere. From behind a rider it looked level.
+
+**After** (`pass-08.jpg`, `pass-08.mp4`): each effort climbs a ramp at 8.3 % over the first two fifths of its
+stretch (184 m, 14 m up) onto a harbour bridge and runs level across it; each recovery comes down off it at 5.3 %
+in its first seventh, then the quays are flat. The road ahead stands up in front of the rider and the crest shows
+against the sky. The map still climbs the 120 m it lists.
+
+**What changed.** `build_course.py`: a theme's `grade` may name a `ramp`, the share of an effort's stretch that
+climbs and of a recovery's that descends; the stage's whole rise is put into that share and the rest runs level.
+Docklands' theme: `"ramp": {"work": 0.4, "recover": 0.15}`, and no rolling ground. Nothing in the app changed.
+
+**Cost.** None: 308 fps (311, 308, 307) with no frame over 20 ms, on a quiet machine, at the first ramp. The file is
+0.07 MB smaller gzipped.
+
+**Learned.**
+
+- A gradient has to pass about 6 % before the road ahead reads as a hill from a chase camera 2.25 m up. The same
+  metres climbed at 4 % are invisible.
+- Rolling ground spends a map's listed climbing where no one sees it. On a flat map, put all of it in the hills.
+- This departs from "1 % of gradient a level" (L2-166 AC3) for a theme that names a ramp: the resistance is still
+  highest where the road climbs, but the climb is the first part of the effort, not all of it.
+- The land and the quay still rise with the road, so the "bridge" has ground beside it. A bridge that leaves the
+  quay behind (piers, water beneath, a drop either side) is the next step for these hills.

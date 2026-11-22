@@ -240,6 +240,25 @@ anything long and thin beside the road: a prairie's post-and-rail fence (change 
 **Watch for.** The count: a thing every sample of the road is thousands of things. A railing, a kerb or a line is a
 panel or a formula, never boxes. Check the file's size and the frame's triangles after every rebuild.
 
+### 8. Hills a rider can see (Docklands pass 8)
+
+**What it gives.** Climbs that stand up in front of the rider, on a map whose listed climbing is small, without
+changing what the map lists.
+
+**How it works.** `tools/blender/build_course.py`, `lay_centre_line`: a theme's `grade` rule may hold
+`"ramp": {"work": share, "recover": share}`. For a stage of that kind, its gradient is divided by the share and
+applied over that share of its stretch from its start; the rest of the stretch is level. The gradients are then
+eased over 40 m and scaled as before so the map climbs exactly its listed metres.
+
+**To apply it to another map.** Give its theme a `ramp` where its hills do not show: any map whose efforts climb
+at under about 6 % (work the gradient out as the listed climbing over the efforts' total length). Drop `roll` on a
+map that should be flat between its hills. Leave the mountain maps as they are: a col's steady climb is the point.
+
+**Cost.** None.
+
+**Watch for.** Ramps steeper than about 10 % look like a wall and no longer match the resistance; a ramp shorter
+than the 40 m the gradients are eased over is flattened.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
@@ -252,3 +271,4 @@ The pictures the work aims at differ from a course in these ways, most visible f
    on the ground.
 6. The riders are simple figures: smooth limbs, no cloth, no faces.
 7. Doors, signs, pipes, gutters and roof lines: a building is still a box with windows.
+8. The land rises with the road: a climb onto a bridge has ground beside it, not water beneath.

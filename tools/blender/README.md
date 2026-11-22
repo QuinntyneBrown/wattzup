@@ -68,6 +68,9 @@ its target resistance (`level`) and its cadence aim (rpm).
 - **A catalogue map (ADR 0033)** names its `distanceKm` and `climbingMetres`: the metres a turn of the
   pedals are set so the road is exactly that long, and every gradient is scaled alike so it climbs exactly
   that much. Each stretch keeps its share of the length and each hill its place.
+- **Ramps.** A theme's `grade` may name a `ramp` (`{"work": 0.4, "recover": 0.15}`): an effort's whole climb is
+  laid in that share of its stretch and the rest runs level, and a recovery's descent likewise, so a small climb is
+  a hill a rider can see. Neon Docklands climbs 8 % onto each of its bridges for its listed 120 m.
 - **Turns.** Dealt from the course's `seed`: hairpins and esses on the efforts, sweeps on the
   recoveries, straights and gentle sweeps on the warm-up and cool-down. The road never comes within
   46 m of an earlier stretch of itself, and turns for home when it strays far. Change the seed for

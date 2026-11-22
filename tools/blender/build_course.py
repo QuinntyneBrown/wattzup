@@ -291,18 +291,25 @@ def lay_centre_line(course: dict, theme: dict | None = None):
         print(f'Layout {chosen} chosen: add "layout": {chosen} to the course file to build it again at once.', flush=True)
     n = len(curv)
 
+    # A theme may gather a stage's climb or descent into a ramp at its start (`ramp`: the share of an effort's stretch
+    # that climbs, and of a recovery's that descends) and run level for the rest: a hill a rider can see, for the
+    # same metres climbed. Docklands' efforts are ramps up onto its harbour bridges.
+    ramp = grade_rule.get("ramp", {})
     grades = []
     for i in range(n):
         stage = stage_at(st, i * STEP - LEAD_IN)
         g = (stage["level"] - mean) * per_level if stage else 0.0
         d = i * STEP - LEAD_IN
+        share = ramp.get(stage["kind"]) if stage else None
+        if share:
+            g = g / share if (d - stage["from"]) < (stage["to"] - stage["from"]) * share else 0.0
         if roll and 0 < d < length - 300:
             # Rolling ground between the class's hills, so every map rises and falls along the way.
             g += roll * math.sin(math.tau * d / wave + 0.7) * smoothstep(0, 120, d)
         if climb and stage:
             g += -climb if stage["kind"] == "cool-down" else climb
         grades.append(g)
-    grades = box_smooth(grades, int(28 / STEP))
+    grades = box_smooth(grades, int((40 if ramp else 28) / STEP))
     if course.get("climbingMetres"):
         # A catalogue map climbs what it lists: every gradient is scaled alike, so each hill keeps its place
         # and its share of the climbing.

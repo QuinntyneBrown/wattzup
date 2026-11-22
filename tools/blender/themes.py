@@ -143,7 +143,9 @@ THEMES: dict[str, dict] = {
         "turns": {"work": (("ess", 0.4), ("sweep", 0.25), ("hairpin", 0.1), ("straight", 0.25)),
                   "recover": (("straight", 0.45), ("sweep", 0.35), ("ess", 0.2)),
                   "calm": (("straight", 0.55), ("sweep", 0.3), ("ess", 0.15))},
-        "grade": {"perLevel": 0.45, "roll": 2.5, "rollWave": 640.0},
+        # The harbour bridges: each effort climbs a ramp over the first two fifths of its stretch and runs level across
+        # the bridge; each recovery comes down off it in its first seventh. No rolling ground: the quays are flat.
+        "grade": {"perLevel": 0.45, "ramp": {"work": 0.4, "recover": 0.15}},
         "reach": 1100.0,
         "night": True,
         # Street lamps on both kerbs: every this many samples from this one, this far behind the kerb, this tall.
