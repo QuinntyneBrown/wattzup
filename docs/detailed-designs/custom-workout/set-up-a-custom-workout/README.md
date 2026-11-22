@@ -155,7 +155,7 @@ nudged, captured from the preview or checked against it (`L2-098`).
 1. **The other plans.** Their rounds are settled in `L2-095` AC7. Tabata's recoveries are 0:15,
    not the classic 0:10, since no recovery is shorter than 0:15.
 2. **The edited mark.** "· edited" after the chosen chip's name, as `custom-setup/edited` draws it.
-3. **Slider height.** `L2-096` AC1 draws the ranges 24 px tall; they are 44 px tall here, as every
-   other range in the app, for touch.
+3. **Stepper buttons.** Drawn 40 px; they are 44 px here, the touch minimum AGENTS.md sets. The chips,
+   "Make every round the same", "Add round" and Close are 44 px tall for the same reason.
 4. **Ladder buttons.** The mini-steppers are 28 px and the remove button 32 px, as drawn; each
    takes touches across 44 px around it.

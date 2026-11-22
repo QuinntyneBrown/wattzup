@@ -1,0 +1,17 @@
+<div class="level-slider__head">
+  <label class="level-slider__label" [for]="id">{{ label() }}</label>
+  <span class="level-slider__value" aria-hidden="true"
+    >{{ value() }}<span class="level-slider__max"> / {{ max() }}</span></span
+  >
+</div>
+<input
+  class="range"
+  type="range"
+  min="1"
+  [id]="id"
+  [max]="max()"
+  [value]="value()"
+  [attr.aria-valuetext]="value() + ' of ' + max()"
+  (input)="change($event)"
+/>
+<div class="level-slider__scale" aria-hidden="true"><span>Light</span><span>Max</span></div>

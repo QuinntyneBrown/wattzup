@@ -1,0 +1,18 @@
+@for (option of modes; track option.id; let i = $index) {
+  <button
+    #card
+    class="training-mode"
+    type="button"
+    role="radio"
+    [attr.aria-checked]="mode() === option.id"
+    [attr.tabindex]="mode() === option.id ? 0 : -1"
+    (click)="chosen.emit(option.id)"
+    (keydown)="move($event, i)"
+  >
+    <span class="training-mode__head"
+      ><span class="training-mode__radio" aria-hidden="true"></span
+      ><span class="training-mode__title">{{ option.title }}</span></span
+    >
+    <span class="training-mode__body">{{ option.body }}</span>
+  </button>
+}

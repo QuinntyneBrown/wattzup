@@ -1,0 +1,104 @@
+<div class="ladder-block__head">
+  <h2 class="ladder-block__title" id="ladder-title">{{ title() }}</h2>
+  <button class="ladder-block__same" type="button" (click)="evened.emit()">
+    Make every round the same
+  </button>
+</div>
+<div class="interval-ladder">
+  <div class="interval-ladder__head" aria-hidden="true">
+    <span>#</span>
+    <span class="interval-ladder__key"><span class="kind-swatch"></span>Effort</span>
+    <span class="interval-ladder__key"
+      ><span class="kind-swatch kind-swatch--rest"></span>Recover</span
+    >
+    <span></span>
+  </div>
+  <ol class="interval-ladder__rows" aria-label="Rounds">
+    @for (round of rounds(); track $index; let i = $index, last = $last) {
+      <li class="interval-ladder__row">
+        <span class="interval-ladder__num">{{ i + 1 }}</span>
+        <div class="mini-stepper">
+          <button
+            class="mini-stepper__btn"
+            type="button"
+            [attr.aria-label]="'Shorter effort ' + (i + 1)"
+            [disabled]="round.effort <= bounds().effort.min"
+            (click)="effortStepped.emit({ index: i, direction: -1 })"
+          >
+            <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14" />
+            </svg>
+          </button>
+          <span class="mini-stepper__value">{{ clock(round.effort) }}</span>
+          <button
+            class="mini-stepper__btn"
+            type="button"
+            [attr.aria-label]="'Longer effort ' + (i + 1)"
+            [disabled]="round.effort >= bounds().effort.max"
+            (click)="effortStepped.emit({ index: i, direction: 1 })"
+          >
+            <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14" />
+              <path d="M12 5v14" />
+            </svg>
+          </button>
+        </div>
+        @if (last) {
+          <span class="interval-ladder__into">Into cool-down</span>
+        } @else {
+          <div class="mini-stepper">
+            <button
+              class="mini-stepper__btn"
+              type="button"
+              [attr.aria-label]="'Shorter recovery ' + (i + 1)"
+              [disabled]="round.recovery <= bounds().recovery.min"
+              (click)="recoveryStepped.emit({ index: i, direction: -1 })"
+            >
+              <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h14" />
+              </svg>
+            </button>
+            <span class="mini-stepper__value">{{ clock(round.recovery) }}</span>
+            <button
+              class="mini-stepper__btn"
+              type="button"
+              [attr.aria-label]="'Longer recovery ' + (i + 1)"
+              [disabled]="round.recovery >= bounds().recovery.max"
+              (click)="recoveryStepped.emit({ index: i, direction: 1 })"
+            >
+              <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h14" />
+                <path d="M12 5v14" />
+              </svg>
+            </button>
+          </div>
+        }
+        <button
+          class="interval-ladder__remove"
+          type="button"
+          [attr.aria-label]="'Remove round ' + (i + 1)"
+          [disabled]="rounds().length <= bounds().rounds.min"
+          (click)="removed.emit(i)"
+        >
+          <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </li>
+    }
+  </ol>
+  <button
+    class="interval-ladder__add"
+    type="button"
+    aria-label="Add round"
+    [disabled]="rounds().length >= bounds().rounds.max"
+    (click)="added.emit()"
+  >
+    <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 12h14" />
+      <path d="M12 5v14" />
+    </svg>
+    Add round
+  </button>
+</div>

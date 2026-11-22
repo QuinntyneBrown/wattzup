@@ -1,0 +1,59 @@
+// Block level-slider (docs/design-system/assets/components.css).
+:host {
+  display: block;
+}
+
+.level-slider__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.level-slider__label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.level-slider__value {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-3xl);
+}
+
+:host(.level-slider--large) .level-slider__value {
+  font-size: var(--font-size-6xl);
+  line-height: var(--line-height-none);
+}
+
+.level-slider__max {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-faint);
+}
+
+.range {
+  display: block;
+  width: 100%;
+  height: var(--target-min);
+  margin-top: var(--space-3);
+  accent-color: var(--color-volt);
+  cursor: pointer;
+}
+
+:host(.level-slider--rest) .range {
+  accent-color: var(--color-rest);
+}
+
+.level-slider__scale {
+  margin-top: var(--space-1);
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-2xs);
+  line-height: var(--line-height-normal);
+  color: var(--color-faint);
+}

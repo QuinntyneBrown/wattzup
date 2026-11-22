@@ -109,3 +109,14 @@ export {
   type DeviceCheckResultView,
   type DeviceCheckRunningView,
 } from './device-check/device-check';
+export {
+  IntervalLadder,
+  type LadderBounds,
+  type RoundStep,
+} from './custom-workout/interval-ladder';
+export { LevelSlider, type LevelSliderVariant } from './custom-workout/level-slider';
+export { PresetChips, type PresetChip } from './custom-workout/preset-chips';
+export { TrainingClose } from './custom-workout/training-close';
+export { TrainingHeader } from './custom-workout/training-header';
+export { TrainingModes } from './custom-workout/training-modes';
+export { TrainingStepper } from './custom-workout/training-stepper';
