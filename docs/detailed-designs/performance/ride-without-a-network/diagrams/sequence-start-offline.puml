@@ -20,12 +20,12 @@ box "Frontend — Ride app (service worker)" #E0F2FE
   participant "Angular service worker" as sw
 end box
 box "Frontend — Ride app (ride application)" #E0F2FE
-  participant "ClassStartPage" as page
-  participant "NetworkStatus" as net
+  participant "ClassStartStore" as page
 end box
 box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "BrowserNetworkStatus" as net
   participant "CachedClassesApi" as classes
-  participant "MultiplayerAvailability" as avail
+  participant "multiplayerAvailability" as avail
 end box
 actor -> browser : Open Telo Ride with no network
 browser -> sw : GET /classes/… and app chunks
@@ -35,11 +35,11 @@ page -> classes : get(classId)
 classes -> sw : GET /api/classes
 sw --> classes : No network
 classes --> page : The class from the catalogue kept on the device (ADR 0028)
-page -> avail : forMode(group, online)
-avail -> net : online()
-net --> avail : false
-avail --> page : unavailable('offline')
-page --> actor : "Ride alone" offered; group join disabled with the reason as text (L2-135 AC4)
+page -> net : online()
+net --> page : false, so the group sessions are not asked for
+page -> avail : multiplayerAvailability(false, …)
+avail --> page : offline
+page --> actor : "Ride alone" chosen; "Ride with a group" disabled: "You’re offline. Group classes need a network." (L2-135 AC4)
 actor -> page : Ride alone
 page --> actor : Class ride starts without a network
 @enduml

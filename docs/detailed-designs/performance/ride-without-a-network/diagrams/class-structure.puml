@@ -46,18 +46,26 @@ class DeviceRideOutbox <<domain/storage>> {
   -drain(): Promise<void>
   -retryIn(attempts: number): void
 }
-class NetworkStatus <<ride>> {
+interface NetworkStatus <<api>> {
   +online: Signal<boolean>
-  +backendReachable: Signal<boolean>
 }
-class MultiplayerAvailability <<domain/engine>> {
-  +forMode(mode: RideMode, online: boolean): Availability
+class BrowserNetworkStatus <<domain/browser>> {
+  +online: Signal<boolean>
 }
+class multiplayerAvailability <<domain/engine>> {
+  +multiplayerAvailability(online: boolean, reached: boolean): "open" | "offline" | "unreachable"
+}
+class RaceSetupStore <<ride>>
+class ClassStartStore <<ride>>
 IndexedDbRidesWaiting ..|> RidesWaiting
 HttpRidesApi ..|> RidesApi
 DeviceRideOutbox ..|> RideOutbox
 DeviceRideOutbox --> RidesWaiting : keeps rides in
 DeviceRideOutbox --> RidesApi : submits with
 RidesWaiting "1" o-- "*" WaitingRide
-MultiplayerAvailability ..> NetworkStatus : reads online
+BrowserNetworkStatus ..|> NetworkStatus
+RaceSetupStore ..> NetworkStatus : reads online
+ClassStartStore ..> NetworkStatus : reads online
+RaceSetupStore ..> multiplayerAvailability : asks
+ClassStartStore ..> multiplayerAvailability : asks
 @enduml
