@@ -34,42 +34,43 @@ its ride outbox waits for `Retry-After` before submitting again.
 
 ### Telo Ride API (backend)
 
-- **Rate limiter** (`Telo.Ride.Api`) — ASP.NET Core rate limiting middleware (`AddRateLimiter`,
-  `UseRateLimiter`) with two named policies, both sliding windows of one hour partitioned by the
-  signed-in rider's id: `rides-per-rider` (60) on `POST /api/rides` and `feedback-per-rider` (10)
-  on `POST /api/feedback`. Policies attach to endpoints with `[EnableRateLimiting]`.
-- **`RateLimitRejection`** — the limiter's `OnRejected` callback. It sets `Retry-After` from the
-  lease's `RetryAfter` metadata in whole seconds and writes a 429 ProblemDetails with code
-  `rate_limited`.
-- **`SignInCodeLimits`** (`Telo.Ride.Application`) — the sign-in limits, applied by
-  `SendSignInCodeCommandHandler` of [Sign in with an email
-  code](../../accounts/sign-in-with-an-email-code/README.md). The per-email limit depends on the
-  request body, so it is counted from the stored `SignInCode` rows rather than in middleware; the
-  per-IP count comes from the same rows, which hold a hash of the client address. A refusal is
-  answered with the same 429 shape and `Retry-After`.
-- **`ProgressRateHubFilter`** — `IHubFilter` on `RideHub` that keeps one `ProgressRateGate` per
-  connection and consults it for each `ReportProgress` invocation. On `Drop` it returns without
-  invoking the hub method. On `Disconnect` it calls `Context.Abort()`. It discards the gate when
-  the connection closes, so no state outlives a connection.
-- **`ProgressRateGate`** — counts admitted messages per second. The third and later messages
-  within a second are dropped. When the client has been over the limit for 10 seconds without
-  falling back under it, the gate answers `Disconnect`. Time comes from `TimeProvider`, so the
-  rule is unit-tested with `FakeTimeProvider` and never sleeps.
+- **Ride limit** (`Telo.Ride.Application`) — `SubmitRideCommandHandler` counts the rider's rides recorded in the past
+  hour, after it has answered a repeat of a ride already recorded. At `RidesPerHour` (60) it refuses the next with a
+  `DomainRuleException` `rate_limited`, `RuleKind.TooManyRequests`, carrying the wait until the oldest of the hour's
+  rides falls out of it. `ProblemDetailsExceptionHandler` answers 429 ProblemDetails with code `rate_limited` and
+  `Retry-After` in whole seconds, as it answers the sign-in limits. Counting recorded rides rather than requests means
+  a repeat of a ride id, which answers its first answer (`L2-125` AC3), and a race result asked for again every
+  5 seconds while it is pending (`L2-125` AC1) cost nothing; and the count holds across API instances.
+- **Sign-in limits** (`Telo.Ride.Application`) — `SendSignInCodeCommandHandler` of [Sign in with an email
+  code](../../accounts/sign-in-with-an-email-code/README.md) counts the stored `SignInCode` rows of the past hour: 5
+  per email and 20 per network, whose hash each row holds. A refusal is answered with the same 429 shape and
+  `Retry-After`. The limit depends on the request body, so it is counted from the rows rather than in middleware.
+- **Feedback limit** — 10 reports an hour per rider (`L2-119` AC3), built with the feedback endpoint as [Receive
+  feedback](../../feedback/receive-feedback/README.md) describes, with the same 429 shape and `Retry-After`.
+- **`ProgressRateHubFilter`** (`Telo.Ride.Api`) — `IHubFilter` on `RideHub`, added before `ValidationHubFilter`, that
+  puts each `ReportProgress` and `ReportRaceProgress` through its connection's `ProgressRateGate`. On `Drop` it returns
+  without invoking the hub method and without an error. On `Disconnect` it calls `Context.Abort()`. The gate is kept in
+  the connection's `Items`, so it goes with the connection and no state outlives it.
+- **`ProgressRateGate`** (`Telo.Ride.Api`) — counts one connection's progress messages, class and race alike, in
+  seconds counted from the first message of each. The first two in a second are admitted; the third and later are
+  dropped. When the client has been over the limit for 10 seconds, with no second at or under it and no whole second
+  without messages in between, the gate answers `Disconnect`. Time comes from `TimeProvider`, so the rule is
+  unit-tested with `FakeTimeProvider` and never sleeps.
 - **Client address** — behind App Service's front end, the client IP address comes from
   `ForwardedHeaders` middleware reading `X-Forwarded-For` with the default `ForwardLimit` of 1, so
   only the rightmost entry, the one the front end appends, is used and a client cannot forge it.
   The front end has no fixed address to trust by name, so no proxy list is kept (TransportSecurity).
-- **Instance count** — the rate limiter's windows are held in process memory. With more than one
-  API instance, each instance would count separately. The backend's instance count, and a shared
-  store if it is more than one, are `<TO SUPPLY>`. The sign-in limits are counted from the
-  database and hold across instances.
+- **Instance count** — every request limit is counted from the database, so it holds across API instances. The
+  progress gate is per connection, and a connection lives on one instance.
 
 ### Ride app (frontend)
 
-- **`SignalRRideHubClient`** (`api` library) — sends progress at most twice a second.
-- **`toApiError`** (`api` library) — copies `Retry-After` into `ApiError.retryAfterSeconds`;
-  the code screen of sign-in and the ride outbox use it to say when to try again and to schedule
-  the next attempt.
+- **`LiveSessionStore`** (`ride`) — drops a progress report less than 500 ms after the last one sent, so the hub hears
+  at most two a second (`L2-123` AC1).
+- **`DeviceRideOutbox`** (`domain`) — keeps a ride refused with 429 and sends it again when its `Retry-After` has
+  passed, in place of the growing delay it uses for a backend out of reach (`L2-135` AC2).
+- **`HttpAuthApi`** (`api`) — copies `Retry-After` into `AuthApiError.retryAfterSeconds`; the code screen of
+  sign-in says when to try again.
 
 ## Requirements
 
@@ -98,24 +99,23 @@ counted from. The Ride app throttles its own progress messages and honours `Retr
 
 ### Components
 
-The rate limiter admits ride and feedback submissions or refuses them through
-`RateLimitRejection`. The send-code handler counts codes in the database. `ProgressRateHubFilter`
-sits between the hub client and `RideHub`.
+The submit-ride and send-code handlers count what the database holds and refuse past the limit;
+`ProblemDetailsExceptionHandler` answers 429 with `Retry-After`. `ProgressRateHubFilter` sits between the hub client
+and `RideHub`.
 
 ![C4 component view for limiting abuse](diagrams/c4-component.png)
 
 ### Class structure
 
-`ProgressRateHubFilter` owns one `ProgressRateGate` per connection, whose `Admit` returns a
-`GateDecision`. `SignInCodeLimits` holds the sign-in thresholds, and `RateLimitPolicies` the
-per-rider windows.
+`ProgressRateHubFilter` keeps one `ProgressRateGate` per connection, whose `Admit` returns a
+`GateDecision`. The handlers hold the request limits and refuse through `DomainRuleException`.
 
 ![Class diagram for limiting abuse](diagrams/class-structure.png)
 
 ### Behaviour — refuse requests over a limit
 
-The 61st ride submission within an hour is refused before the controller runs, with 429 and
-`Retry-After` (`L2-130` AC1, AC3). The ride stays in the outbox until the wait has passed.
+A 61st ride recorded within an hour is refused with 429 and `Retry-After` (`L2-130` AC1, AC3); a repeat of a ride
+already recorded is still answered. The ride stays in the outbox until the wait has passed.
 
 ![Sequence diagram for refusing requests over a limit](diagrams/sequence-refuse-over-limit-requests.png)
 
@@ -125,3 +125,14 @@ The gate admits two progress messages a second and drops the rest. A client that
 limit for 10 seconds is disconnected (`L2-130` AC2).
 
 ![Sequence diagram for gating hub progress messages](diagrams/sequence-gate-hub-progress.png)
+
+## Open questions
+
+1. **Request limits in middleware or in handlers (decided).** The design first put the ride and feedback limits in
+   ASP.NET Core's rate limiting middleware. Slice 22.3 counts recorded rides in the handler instead, as the sign-in
+   limits do: the middleware would count repeats of a ride id and the 5-second retries of a pending race result
+   against the rider's hour, and it holds its windows in one instance's memory. `RateLimitPolicies` and
+   `RateLimitRejection` are not built; the feedback limit is left to its own slice.
+2. **Jitter at the hub (open).** The app sends a report at most every 500 ms by its own clock; with network jitter two
+   may land within the same server second as a third, and one is dropped. A dropped report costs nothing, since the
+   next carries the same totals, and only 10 seconds over without a break disconnects.

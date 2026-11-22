@@ -14,31 +14,36 @@ skinparam package {
   FontColor #101828
   BackgroundColor #F9FAFB
 }
-actor "Rider" as actor
 box "Frontend — Ride app" #E0F2FE
-  participant "RideOutbox" as outbox
+  participant "DeviceRideOutbox" as outbox
   participant "HttpRidesApi" as client
 end box
 box "Backend — Telo.Ride.Api" #D1FADF
-  participant "Rate limiter" as rl
-  participant "RateLimitRejection" as rej
   participant "RidesController" as ctrl
+  participant "ProblemDetailsExceptionHandler" as errors
 end box
 box "Backend — Telo.Ride.Application and Domain" #ECFDF3
   participant "SubmitRideCommandHandler" as handler
 end box
-outbox -> client : submit(ride)
-client -> rl : POST /api/rides
-rl -> rl : Partition by rider id, sliding window of one hour
-alt 60 or fewer submissions this hour
-  rl -> ctrl : Admit
-  ctrl -> handler : Send SubmitRideCommand
-  handler --> ctrl : Result
-  ctrl --> client : 201
-else the 61st submission within an hour (L2-130 AC3)
-  rl -> rej : OnRejected
-  rej --> client : 429 ProblemDetails code rate_limited, Retry-After: seconds (L2-130 AC1)
-  client --> outbox : Keep the ride; retry after Retry-After
+database "Telo Ride database" as db
+outbox -> client : submitRide(ride)
+client -> ctrl : POST /api/rides
+ctrl -> handler : Send SubmitRideCommand
+handler -> db : Find the ride id
+alt already recorded
+  handler --> ctrl : The first answer
+  ctrl --> client : 200
+else new
+  handler -> db : The rider's rides recorded in the past hour
+  alt fewer than 60
+    handler -> db : Record the ride
+    handler --> ctrl : RideRecordedDto
+    ctrl --> client : 201
+  else 60 already (L2-130 AC3)
+    handler --> errors : DomainRuleException rate_limited, wait until the hour's oldest falls out
+    errors --> client : 429 ProblemDetails code rate_limited, Retry-After: seconds (L2-130 AC1)
+    client --> outbox : Keep the ride; send it again when Retry-After has passed
+  end
 end
-note over rl : POST /api/feedback uses feedback-per-rider: 10 an hour (L2-119 AC3).\nPOST /api/auth/code limits are counted from stored codes by the\nsend-code handler and answered with the same 429 shape (L2-003).
+note over handler : POST /api/auth/code limits are counted from stored codes by the\nsend-code handler and answered with the same 429 shape (L2-003).\nPOST /api/feedback answers with the same 429 shape (L2-119 AC3).
 @enduml
