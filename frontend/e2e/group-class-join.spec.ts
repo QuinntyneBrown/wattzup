@@ -18,6 +18,7 @@ import { expect, test } from './fixtures/test';
 import { ClassLibraryPage } from './pages/class-library.page';
 import { ClassRidePage } from './pages/class-ride.page';
 import { ClassStartPage } from './pages/class-start.page';
+import { WorldLoadingPage } from './pages/world-loading.page';
 
 const SESSIONS = `/api/classes/${hiitCardio.id}/sessions`;
 
@@ -45,7 +46,8 @@ test.describe('Joining a group session', () => {
       .poll(() => hub.invocations('JoinClassSession'))
       .toEqual([[hiitCardio.id, hiitSessions[0].id]]);
     await expect(page).toHaveURL(`/classes/${hiitCardio.id}/ride?session=${hiitSessions[0].id}`);
-    await expect(new ClassRidePage(page).leave).toBeVisible();
+    // Seated, it stays: World loading counts down to the session's start (L2-154 AC1).
+    await expect(new WorldLoadingPage(page).groupTimer).toBeVisible();
   });
 
   test('a full session refuses, and Class Start offers the next one (L2-122 AC2, L2-086 AC2)', async ({

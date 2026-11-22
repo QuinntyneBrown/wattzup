@@ -132,4 +132,25 @@ test.describe('Starting a world class', () => {
     await expect(ride.worldPanorama).toBeVisible();
     await expect.poll(() => music.played()).toContain('music/oldtown.ogg');
   });
+
+  test('Connect bike tries the bike again after its connection failed (L2-157 AC1, AC3)', async ({
+    page,
+    bluetooth,
+    webgl,
+  }) => {
+    await webgl.disable();
+    await bluetooth.switchOff();
+    await ride.open(hiitCardio.id);
+    await expect(loading.connectBike).toBeVisible();
+    await expect(loading.start).toBeDisabled();
+    expect(bluetooth.log()).toEqual([]);
+
+    await bluetooth.switchOn();
+    await loading.connectBike.click();
+
+    await connectBike(bluetooth);
+    await expect(loading.facts.first()).toHaveText('Echelon EX-5s');
+    await expect(loading.start).toBeEnabled();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('30 Minute HIIT Cardio');
+  });
 });

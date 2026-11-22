@@ -12,7 +12,7 @@ import { ClassRidePage } from './pages/class-ride.page';
 import { WorldLoadingPage } from './pages/world-loading.page';
 import { HomePage } from './pages/home.page';
 
-/** A seat in a session ten minutes away, so the ride waits for it rather than starting (L2-087 AC4). */
+/** A seat in a session ten minutes away, so World loading counts down to it rather than starting (L2-154 AC1). */
 function laterSession(): { id: string; startsAt: string } {
   return { id: 'session-0715', startsAt: new Date(Date.now() + 600_000).toISOString() };
 }
@@ -34,7 +34,8 @@ test('a group class ride opens one hub connection and measures its clock offset;
   expect(hub.negotiations()).toBe(1);
   expect(hub.connections()).toBe(1);
 
-  await ride.leave.click();
+  // The group's World loading holds the connection until the start; Back to class leaves the page and closes it.
+  await new WorldLoadingPage(page).back.click();
   await expect(page).toHaveURL(`/classes/${hiitCardio.id}`);
   await expect.poll(() => hub.connections()).toBe(0);
 });

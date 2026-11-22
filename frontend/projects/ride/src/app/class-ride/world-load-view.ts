@@ -29,6 +29,8 @@ export interface WorldLoadState {
   readonly slowPercent: number;
   /** The bike is connected; Start riding waits for it, and loading never does (L2-157). */
   readonly bikeConnected: boolean;
+  /** A group's session start in the rider's time ("7:39 PM"): the ride starts with everyone then (L2-154); `null` solo. */
+  readonly groupStartsAt: string | null;
 }
 
 /** World loading in words: the load card's heading, steps, percentage, status and hint (L2-152, L2-153, L2-156). */
@@ -152,7 +154,7 @@ export function worldLoadView(state: WorldLoadState): WorldLoadView {
     ],
     percent,
     ready: phase === 'ready',
-    canStart: phase === 'ready' && state.bikeConnected,
+    canStart: phase === 'ready' && state.bikeConnected && state.groupStartsAt === null,
     status:
       phase === 'failed'
         ? ''
@@ -161,21 +163,25 @@ export function worldLoadView(state: WorldLoadState): WorldLoadView {
             : phase === 'ready'
               ? `${name} is ready${panoramaOnly ? ' as a panorama' : ''}.`
               : `${doing[0]!.toUpperCase()}${doing.slice(1)}, ${state.startPercent} percent.`) +
-          bikeStatus,
-    hint: slowNow
-      ? 'Or keep waiting: Start riding turns on when the world is ready.'
-      : noBike
-        ? 'Start riding turns on when the bike is connected and the world is ready.'
-        : phase === 'downloading'
-          ? 'The first time takes longest. Next time this world opens from this device.'
-          : phase === 'building' || phase === 'warming'
-            ? 'Ready in a few seconds. Pedal easy while you wait.'
-            : phase === 'ready'
-              ? panoramaOnly
-                ? 'Turn on graphics acceleration in Chrome or Edge to ride the 3D world.'
-                : state.warmUpSeconds === null
-                  ? 'Your class starts the moment you press Start.'
-                  : `Your ${clock(state.warmUpSeconds)} warm-up starts the moment you press Start.`
-              : '',
+          bikeStatus +
+          (state.groupStartsAt === null ? '' : ` The group starts at ${state.groupStartsAt}.`),
+    hint:
+      state.groupStartsAt !== null && phase !== 'failed'
+        ? 'Pedal easy: everyone’s warm-up starts together.'
+        : slowNow
+          ? 'Or keep waiting: Start riding turns on when the world is ready.'
+          : noBike
+            ? 'Start riding turns on when the bike is connected and the world is ready.'
+            : phase === 'downloading'
+              ? 'The first time takes longest. Next time this world opens from this device.'
+              : phase === 'building' || phase === 'warming'
+                ? 'Ready in a few seconds. Pedal easy while you wait.'
+                : phase === 'ready'
+                  ? panoramaOnly
+                    ? 'Turn on graphics acceleration in Chrome or Edge to ride the 3D world.'
+                    : state.warmUpSeconds === null
+                      ? 'Your class starts the moment you press Start.'
+                      : `Your ${clock(state.warmUpSeconds)} warm-up starts the moment you press Start.`
+                  : '',
   };
 }

@@ -18,6 +18,7 @@ import {
   Pill,
 } from '@telo/components';
 import { FetchWorldDownloader } from '@telo/domain';
+import { LiveSessionStore } from '../live/live-session-store';
 import { ClassRideSession } from './class-ride-session';
 import { WorldLoadStore } from './world-load-store';
 
@@ -43,7 +44,12 @@ import { WorldLoadStore } from './world-load-store';
   templateUrl: './class-ride-page.html',
   styleUrl: './class-ride-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [WorldLoadStore, { provide: WORLD_DOWNLOADER, useClass: FetchWorldDownloader }],
+  // The group session's store lives with the page, so World loading's join lasts through the class ride (slice 16.4).
+  providers: [
+    WorldLoadStore,
+    LiveSessionStore,
+    { provide: WORLD_DOWNLOADER, useClass: FetchWorldDownloader },
+  ],
 })
 export default class ClassRidePage {
   protected readonly load = inject(WorldLoadStore);

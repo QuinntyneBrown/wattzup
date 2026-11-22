@@ -1,0 +1,52 @@
+@startuml
+title UML sequence behaviour — Join a group world class, as built in slice 16.4
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ClassRidePage" as page
+  participant "WorldLoadStore" as store
+  participant "LiveSessionStore\n(page-scoped)" as live
+  participant "ClassRideSession\n(ClassRideStore)" as session
+  participant "ClassWorldScene" as dir
+end box
+box "Frontend — Ride app (world library, lazy chunk)" #E0F2FE
+  participant "WorldScene\n(main's, with prepared)" as scene
+end box
+participant "Ride hub" as hub
+actor -> page : open /classes/:id/ride?session=…
+page -> store : created
+store -> live : join(class, session)
+live -> hub : JoinClassSession
+hub --> live : seat (startsAt), clock offset
+store -> store : download, build, warm up (slices 16.1, 16.2)
+loop each second until the start
+  store -> page : "The group starts in 1:12.", "Starts with the group at 7:39 PM" (disabled)
+end
+alt Seat refused
+  store -> page : leave for Class Start or the Class Library
+end
+store -> page : the session's start: riding, the world still loading
+page -> session : created; join() returns the same seat
+session -> session : clock from the start, first target resistance (L2-154 AC3)
+session -> dir : the world's id, no prepared renderer yet
+dir -> dir : the panorama on the stage; world music as in slice 16.3
+store -> store : the world is ready
+store -> page : PreparedWorld { renderer, canvas }
+page -> session : prepared
+session -> dir : prepared
+dir -> scene : createComponent(WorldScene); prepared
+scene -> scene : fades in over 200 ms; clock and bike untouched (L2-154 AC4)
+@enduml

@@ -1,4 +1,4 @@
-import { DestroyRef, Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
+import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -120,8 +120,14 @@ export class ClassRideStore {
   readonly canControl = this.resistance.canControl;
   /** Whether the rider paused the ride: the clock, the plan and the video hold (L2-091 AC1). */
   readonly paused = this.pausedByRider.asReadonly();
-  /** Whether the bike has stopped answering (`ble` disconnected, L2-017); a solo ride waits for it (L2-092 AC4). */
-  readonly bikeLost = computed(() => this.connection.ble() === 'disconnected');
+  /**
+   * Whether the bike has stopped answering (`ble` disconnected, L2-017); a solo ride waits for it (L2-092 AC4). A group
+   * ride, which starts with everyone whether the bike is there or not, counts any bike not connected as lost
+   * (L2-157 AC4).
+   */
+  readonly bikeLost = computed(() =>
+    this.group ? this.connection.ble() !== 'connected' : this.connection.ble() === 'disconnected',
+  );
   /** Whether the ride runs: started, and held neither by the rider nor by a lost bike; the world moves while it does. */
   readonly running = computed(() => this.started() && !this.pausedByRider() && !this.bikeLost());
   /** The bike's speed, for the world's cyclist (L2-153). */
@@ -166,29 +172,15 @@ export class ClassRideStore {
   constructor() {
     const route = inject(ActivatedRoute).snapshot;
     const id = route.paramMap.get('id') ?? '';
-    // A group ride arrives with its session (`?session=`) and holds the hub connection for as long as it lasts, joining
-    // the session as it connects; a solo ride holds none (L2-120 AC1, AC4). A refused join leaves the ride for Class
-    // Start, which reads the sessions again and offers the next one (L2-122 AC2, L2-086 AC3), or for the Class Library
-    // when the class is locked (L2-082).
+    // A group ride arrives with its session (`?session=`). World loading joined it on the page's `LiveSessionStore`,
+    // which holds the hub connection for as long as the ride lasts and leaves on a refused join (slice 16.4); joining
+    // again here gets that same join and its seat. A solo ride holds none (L2-120 AC1, AC4).
     const sessionId = route.queryParamMap.get('session');
     this.group = sessionId !== null;
     if (sessionId !== null) {
       const live = inject(LiveSessionStore);
       this.live = live;
       this.joined = live.join({ kind: 'class', classId: id, sessionId });
-      effect(() => {
-        const refused = live.refused();
-        if (refused === null) return;
-        untracked(
-          () =>
-            void this.router.navigate(
-              refused === 'class_locked' ? ['/classes'] : ['/classes', id],
-              {
-                replaceUrl: true,
-              },
-            ),
-        );
-      });
     }
     inject(CLASSES_API)
       .get(id)
@@ -316,6 +308,8 @@ export class ClassRideStore {
    * within a second of the bike's return, unless the rider paused it meanwhile (L2-092 AC4). The alert shows at once.
    */
   private followBike(ride: ClassDto): void {
+    // A group ride goes on without the bike: the video, clock and board move on (L2-092 AC2).
+    if (this.group) return;
     const lost = this.bikeLost();
     if (lost === this.pausedByBike()) return;
     this.pausedByBike.set(lost);

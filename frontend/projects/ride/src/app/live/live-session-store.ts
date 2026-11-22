@@ -56,6 +56,7 @@ export class LiveSessionStore {
   private lastReportAt: number | null = null;
   private forgetStandings: (() => void) | null = null;
   private session: SessionRef | null = null;
+  private joining: Promise<void> | null = null;
   private forgetReconnect: (() => void) | null = null;
 
   readonly connection = this.hub.state;
@@ -80,8 +81,14 @@ export class LiveSessionStore {
     inject(DestroyRef).onDestroy(() => this.leave());
   }
 
-  async join(ref: SessionRef): Promise<void> {
-    if (this.session !== null) return;
+  /** Joins the session once: a second call, from World loading then the class ride, gets the same join. */
+  join(ref: SessionRef): Promise<void> {
+    this.joining ??= this.connect(ref);
+    return this.joining;
+  }
+
+  /** The one join: every caller of `join` awaits it, so World loading and the class ride share one seat. */
+  private async connect(ref: SessionRef): Promise<void> {
     this.session = ref;
     this.forgetReconnect = this.hub.onReconnected(() => this.rejoin());
     this.forgetStandings = this.hub.onStandings((standings) => {

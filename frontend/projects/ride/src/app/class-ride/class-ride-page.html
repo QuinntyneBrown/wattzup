@@ -38,13 +38,33 @@
               [status]="view.status"
               [hint]="view.hint"
             >
-              <span wz-pill slot="facts" [tone]="load.bike().ok ? 'ok' : 'heart'">{{
-                load.bike().name
-              }}</span>
+              <!-- A group's facts name its session, and the bike only when it is missing (world-loading/group). -->
+              @if (load.groupView(); as group) {
+                <span wz-pill slot="facts" tone="ok">{{ group.fact }}</span>
+              }
+              @if (!load.group || !load.bike().ok) {
+                <span wz-pill slot="facts" [tone]="load.bike().ok ? 'ok' : 'heart'">{{
+                  load.bike().name
+                }}</span>
+              }
               @if (load.quality(); as quality) {
                 <span wz-pill slot="facts">{{ quality }}</span>
               }
-              <span wz-pill slot="facts">{{ load.graphics() }}</span>
+              @if (!load.group) {
+                <span wz-pill slot="facts">{{ load.graphics() }}</span>
+              }
+              @if (load.groupView(); as group) {
+                <wz-banner
+                  slot="notice"
+                  tone="info"
+                  detail="You start with everyone. If the world isn’t ready by then, you ride the panorama and the world fades in when it is."
+                >
+                  <span slot="title"
+                    >The group starts in
+                    <span class="figure" role="timer">{{ group.left }}</span>.</span
+                  >
+                </wz-banner>
+              }
               @if (load.slow()) {
                 <wz-banner
                   slot="notice"
@@ -104,7 +124,7 @@
                   Try again
                 </button>
               }
-              @if (load.failed()) {
+              @if (load.failed() && !load.group) {
                 <button
                   wz-button
                   slot="actions"
@@ -115,6 +135,20 @@
                   (click)="load.ride()"
                 >
                   Ride with the panorama
+                </button>
+              }
+              <!-- A group starts with everyone at the session's start, ready or not (L2-154 AC2, AC3). -->
+              @if (load.groupView(); as group) {
+                <button
+                  wz-button
+                  slot="actions"
+                  variant="primary"
+                  size="xl"
+                  [block]="true"
+                  type="button"
+                  disabled
+                >
+                  Starts with the group at {{ group.time }}
                 </button>
               }
               @if (view.canStart) {
@@ -157,7 +191,7 @@
                   Ride with the panorama
                 </button>
               }
-              @if (!view.canStart && !load.failed() && !load.slow()) {
+              @if (!view.canStart && !load.failed() && !load.slow() && !load.group) {
                 <button
                   wz-button
                   slot="actions"

@@ -133,8 +133,13 @@
       }
     </main>
     @if (store.bikeLost()) {
+      <!-- A group goes on without the bike; a solo ride waits for it (L2-092 AC1, AC4). -->
       <wz-class-lost
-        body="Your ride is paused. Pedal to wake the bike and it carries on from here."
+        [body]="
+          store.group
+            ? 'The class keeps going. Pedal to wake the bike and you’ll rejoin where everyone is.'
+            : 'Your ride is paused. Pedal to wake the bike and it carries on from here.'
+        "
         (reconnect)="store.reconnect()"
       />
     }
