@@ -21,11 +21,13 @@ import {
   PowerModel,
   PowerTrace,
   RideClock,
+  ResistanceController,
   RideTicker,
   RideTotals,
   VideoClockSync,
   WorkoutEngine,
   bikeStatus,
+  bleLinkName,
   customWorkoutLabel,
   intervalPlace,
   planLength,
@@ -55,6 +57,7 @@ export class CustomRideStore {
   private readonly wakeLock = inject(SCREEN_WAKE_LOCK);
   private readonly draft = inject(CustomWorkoutStore).draft;
   private readonly totals = inject(RideTotals);
+  private readonly resistance = inject(ResistanceController);
   /** The seconds recorded: the trace and the totals have moved on to it. */
   private readonly recorded = signal(0);
   private lastSecond = 0;
@@ -148,6 +151,23 @@ export class CustomRideStore {
     };
   });
 
+  /** The bike's reported resistance, which the aside reads (L2-026 AC1). */
+  readonly level = this.telemetry.resistance;
+  readonly canControl = this.resistance.canControl;
+  readonly connected = computed(() => this.connection.ble() === 'connected');
+  /** Who sets the level (L2-028). */
+  readonly mode =
+    this.draft().mode === 'flat'
+      ? 'Holding a flat level for the whole ride.'
+      : 'Following the plan — levels change with each interval.';
+  /** The link "Sent to bike" names, "BLE · 0bf669f1", with a bike (L2-029 AC4). */
+  readonly link = computed(() => {
+    const bike = this.connection.bike() ?? this.remembered;
+    return bike === null ? null : bleLinkName(bike.kind);
+  });
+  /** "Sent to bike", newest first, at most 50 rows (L2-029 AC1, AC3). */
+  readonly sent = this.resistance.log;
+
   /** The progress strip's label (L2-103 AC4). */
   readonly progressLabel = computed(
     () => `Ride progress: ${this.clockText()} of ${this.totalText}`,
@@ -228,6 +248,19 @@ export class CustomRideStore {
     this.trace.record(second, this.telemetry.powerW());
     this.lastSecond = Math.max(this.lastSecond, second);
     this.recorded.set(this.lastSecond);
+  }
+
+  raise(): void {
+    void this.resistance.nudge(1);
+  }
+
+  lower(): void {
+    void this.resistance.nudge(-1);
+  }
+
+  /** A "Level N" bar: N becomes the target, as the rider's own (L2-028 AC2). */
+  pick(level: number): void {
+    void this.resistance.setManual(level);
   }
 
   /** The plan's end: the clock stops at its length. */

@@ -133,3 +133,4 @@ export { RideView, type RideViewTab } from './custom-ride/ride-view';
 export { RideMetrics, type RideMetric } from './custom-ride/ride-metrics';
 export { RideVideo } from './custom-ride/ride-video';
 export { RideProgress } from './custom-ride/ride-progress';
+export { RideControl, type RideSentRow } from './custom-ride/ride-control';

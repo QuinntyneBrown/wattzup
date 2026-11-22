@@ -74,8 +74,8 @@ end a custom ride*.
 - **`PowerTrace`** (`domain/engine`) — fixed-size `Float32Array`, one slot per second of the
   plan (at most 10,800 for 180 minutes), allocated at the start and released with the page.
   Nothing grows during the ride.
-- **`SentLog`** (`domain/engine`) — the commands sent this ride, newest first, at most 50
-  (`L2-029` AC3).
+- **`ResistanceController.log`** (`domain/engine`) — the commands the bike took this ride,
+  newest first, at most 50 (`L2-029` AC3), each at the ride clock's second.
 - **`VideoPlayer`** / `VIDEO_PLAYER_FACTORY` — loaded only when the workout has a video. Without
   one the main view opens on "Power vs. plan" (`L2-098` AC6).
 
@@ -164,6 +164,12 @@ The workout link pauses the ride and opens Custom workout with this plan (`L2-10
 7. **The trace's top and ticks.** The maximum is the highest target with a fifth to spare, up to
    the next 300 W (600 W for GCN 30-min HIIT, 300 W for flat). Ticks fall every 5:00, every 15:00
    past an hour, with one at the end. Before the first reading the label says "no power yet".
-8. **The trace in SVG.** The design names a canvas; the mock draws SVG, and the trace is SVG,
+8. **Level bars to touch.** The 32 bars are 56 px tall but, in the 340 px aside, about 9 px wide:
+   less than the 44 px AGENTS.md asks. Lower and Raise (64 px) do the same, so the bars are an
+   alternative way, not the only one.
+9. **The log in the controller.** "Sent to bike" is kept by `ResistanceController`, which stamps
+   each command with the ride clock's second (`SentCommand.rideTime`), rather than by a separate
+   `SentLog` service.
+10. **The trace in SVG.** The design names a canvas; the mock draws SVG, and the trace is SVG,
    bounded by the plan's length in seconds and drawn as at most 900 points, each averaging its
    seconds.

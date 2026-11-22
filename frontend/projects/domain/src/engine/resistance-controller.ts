@@ -7,6 +7,8 @@ import {
 } from '@telo/api';
 import { MAX_RESISTANCE, MIN_RESISTANCE } from '../protocol/echelon-protocol';
 import { BikeTelemetry } from './bike-telemetry';
+import { RideClock } from './ride-clock';
+import { logSent } from './sent-log';
 
 const clamp = (level: number): number =>
   Math.min(MAX_RESISTANCE, Math.max(MIN_RESISTANCE, Math.round(level)));
@@ -16,7 +18,9 @@ const clamp = (level: number): number =>
  * through the connection (L2-025 AC2, L2-027 AC1), with the last command and its acknowledgement time (L2-025 AC4).
  * The target stays the plan's level whatever resistance the bike reports (L2-026 AC1). With the bike away the
  * connection keeps the target and sends it first after the reconnect (L2-027 AC4); with the bike away, or once an
- * FTMS bike refuses control, `canControl` is false (L2-028 AC4). Provided by each ride screen.
+ * FTMS bike refuses control, `canControl` is false (L2-028 AC4). Each command the bike took goes to the top of a log
+ * of at most 50, at the ride clock's whole second when the screen has one (L2-029 AC1, AC3). Provided by each ride
+ * screen.
  */
 @Injectable()
 export class ResistanceController {
@@ -26,11 +30,15 @@ export class ResistanceController {
   private readonly from = signal<ResistanceSource>('plan');
   private readonly refused = signal(false);
   private readonly sent = signal<SentCommand | null>(null);
+  private readonly clock = inject(RideClock, { optional: true });
+  private readonly entries = signal<readonly SentCommand[]>([]);
 
   readonly target = this.level.asReadonly();
   readonly source = this.from.asReadonly();
   readonly canControl = computed(() => this.connection.ble() === 'connected' && !this.refused());
   readonly last = this.sent.asReadonly();
+  /** The commands the bike took, newest first, at most 50 (L2-029 AC1, AC3). */
+  readonly log = this.entries.asReadonly();
 
   applyPlanLevel(level: number): Promise<void> {
     return this.send(level, 'plan');
@@ -56,9 +64,12 @@ export class ResistanceController {
     const target = clamp(level);
     this.level.set(target);
     this.from.set(source);
+    const rideTime = this.clock === null ? null : Math.floor(this.clock.elapsedMs() / 1000);
     try {
       const ackMs = await this.connection.setResistance(target);
-      this.sent.set({ rideTime: null, level: target, source, ackMs });
+      const command: SentCommand = { rideTime, level: target, source, ackMs };
+      this.sent.set(command);
+      this.entries.update((log) => logSent(log, command));
     } catch (error) {
       if (error instanceof BikeConnectionError && error.code === 'read-only')
         this.refused.set(true);

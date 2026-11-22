@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FULLSCREEN } from '@telo/api';
 import {
+  RideControl,
   RideHeader,
   RideInterval,
   RideMetrics,
@@ -23,13 +24,14 @@ import { CustomRideStore } from './custom-ride-store';
 
 /**
  * The custom ride (docs/mocks/pages/custom-ride/, L2-101 to L2-104) at `/profile/custom/ride`: the ride header, the
- * telemetry with Power, Cadence and the interval card, the main view with the workout's video and the metrics.
+ * telemetry with Power, Cadence and the interval card, the main view with the workout's video and the metrics, and the bike control.
  * Every part of the ride is provided here, so leaving the page stops the clock, the ticker and the video and releases
  * them.
  */
 @Component({
   selector: 'wz-custom-ride-page',
   imports: [
+    RideControl,
     RideHeader,
     RideInterval,
     RideMetrics,

@@ -55,4 +55,16 @@
     </wz-ride-view>
     <dl wz-ride-metrics [metrics]="store.metrics()"></dl>
   </section>
+  <aside
+    wz-ride-control
+    [level]="store.level()"
+    [canControl]="store.canControl()"
+    [connected]="store.connected()"
+    [mode]="store.mode"
+    [link]="store.link()"
+    [rows]="store.sent()"
+    (lower)="store.lower()"
+    (raise)="store.raise()"
+    (picked)="store.pick($event)"
+  ></aside>
 </main>
