@@ -537,9 +537,10 @@ export class RaceStore {
       kind: 'race',
       mapId: result.mapId,
       mode: result.mode,
-      pack: result.pack,
+      pack: result.mode === 'online' ? null : result.pack,
       place: result.place,
       fieldSize: result.field,
+      ...(this.session ? { sessionId: this.session } : {}),
     };
     this.outbox.submit(ride);
     return ride;

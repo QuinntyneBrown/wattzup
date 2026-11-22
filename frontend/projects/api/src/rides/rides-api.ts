@@ -31,10 +31,15 @@ export interface RaceRideFacts {
   readonly kind: 'race';
   readonly mapId: string;
   readonly mode: RaceMode;
-  /** The bots' pack strength; none in a solo race. */
+  /** The bots' pack strength; none in a solo or riders-online race. */
   readonly pack: PackStrengthId | null;
   readonly place: number;
   readonly fieldSize: number;
+  /**
+   * A riders-online race's session, whose result the backend takes the place, field, time and output from instead
+   * (L2-125 AC1); none otherwise.
+   */
+  readonly sessionId?: string;
 }
 
 /** A finished class. */

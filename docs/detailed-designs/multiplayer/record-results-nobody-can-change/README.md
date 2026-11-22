@@ -78,8 +78,10 @@ recording of a ride id (AC3) were built with `progression/keep-progress-on-the-b
   second ridden, of the power last reported for a person or of the pace model's power for a bot,
   in kJ) and its status (`finished`, `dnf`, or `riding` for one placed by distance). Bots have
   entries with no rider id.
-- **`SessionResultRecorder`** saves the `SessionResult`, keyed by the session id, with its entries,
-  and the ticker then sends `SessionEnded` with the session id to the session's group.
+- **`TickLiveSessionsCommandHandler`** does the recorder's work itself: it saves the
+  `SessionResult`, keyed by the session id, with its entries, then ends the session and sends
+  `SessionEnded` with the session id to the session's group. A failed save leaves the race
+  running, so the next second records it. No separate `SessionResultRecorder` was needed.
 - **`POST /api/rides`** takes `mode: "online"` with a `sessionId`. After the idempotency and
   plausibility steps, the rider's entry replaces the ride's place, field size, time and output; the
   field size is the number of entries. With no result yet the answer is 409 `result_pending`, and
@@ -88,6 +90,7 @@ recording of a ride id (AC3) were built with `progression/keep-progress-on-the-b
 - **The Ride app** submits a riders-online race with its `sessionId`. The outbox sends a ride
   answered `result_pending` again every 5 seconds, for at most 3 minutes, and Results shows
   "Recording your ride…" (the `recording` state) meanwhile; after that it is not recorded.
+  A riders-online race sends no pack.
 
 ## Open questions
 

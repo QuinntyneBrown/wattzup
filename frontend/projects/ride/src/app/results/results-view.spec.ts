@@ -39,6 +39,12 @@ describe('resultsView', () => {
     ...over,
   });
 
+  it('heads a riders-online race "Live race" (the peers mock)', () => {
+    const view = resultsView({ ...race(1, [rider('You', 1621, true)]), mode: 'online' }, SENDING);
+
+    expect(view.context).toBe('Old Town Criterium · Live race');
+  });
+
   it('reads 2nd of 10 against bots as a podium place, with the standings (AC1, AC3)', () => {
     const view = resultsView(
       race(2, [rider('Pacer Nova', 1592), rider('You', 1598, true), rider('Pacer Rook', 1607)], {
