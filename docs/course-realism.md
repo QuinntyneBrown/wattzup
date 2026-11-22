@@ -155,13 +155,42 @@ built yet.
 per-instance values in the instance's matrix or colour. Shadows drawn too faint to see look exactly like shadows
 not drawn: log the numbers.
 
+### 5. A sky worked out a pixel, and what stands on the horizon (Docklands pass 5)
+
+**What it gives.** Drifting cloud, a glow round the sun or the moon, haze along the horizon and, at night, stars;
+and a skyline of towers with lit windows that is always in view.
+
+**How it works.**
+
+- `frontend/projects/world/src/sky-material.ts`: `skyMaterial(look, sun, detail)` for a dome centred on the camera.
+  The direction of each pixel gives: the course file's sky colours by height; cloud, the detail texture's patches
+  laid on a flat ceiling (`direction.xz / (direction.y + 0.16)`) at two scales drifting in opposite ways, lit in
+  the horizon's colour; a tight and a wide glow round `sun`; the haze's colour near the horizon. If the sky's top
+  colour is darker than 0.02 it is night: stars are added (a grid on the sky, a hash a square, one in seven a
+  star) and the cloud is drawn thinner and darker. `at(seconds)` moves the cloud; it is not called with reduced
+  motion.
+- `tools/blender/build_course.py`: a part named `Skyline` becomes the `Skyline` group: whole, not chunked, with the
+  walls' UV and kind 4. `Kit.skyline` in `themes.py` builds its towers into that part.
+- `wall-material.ts`: kind 4 is a grid of windows, lit by a hash of the window's row and column. Given a haze
+  colour, the material mixes the wall half-way to it and takes no fog.
+
+**To apply it to another map.** The sky needs nothing: every course gets it from the `sky`, `haze` and `light` its
+file already has (by day: white-lit cloud, no stars, a wider sun glow). A map with a skyline (`Kit.skyline`, as Vice
+City has) gets the windows on rebuilding. Mountains on the horizon (`Kit.peaks`) should become a group of their own
+in the same way, so they too are always drawn.
+
+**Cost.** None measurable at 1080p on an Adreno X1-85. About 5,000 triangles always drawn for 209 towers.
+
+**Watch for.** Cloud too even (raise the lower edge of its `smoothstep`); stars that swim (they are fixed to the
+sky's direction, so they should not); towers that read as glowing slabs (the far-off average is on too soon or too
+bright).
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
 
 1. Windows, doors and signs are flat panels: no frames, sills, glass or light spilling from them.
 2. Nothing but the riders casts a shadow: posts, walls and containers throw none.
-3. The sky is bands of colour: no stars, moon or cloud at night; no real clouds by day.
 4. The water is a flat colour: no reflection of the lights along the quay.
 5. Wet ground: reflections of the neon and the lamps in the road.
 6. The land beside the road is bare: no clutter (bollards, crates, bins, fences, parked vehicles).

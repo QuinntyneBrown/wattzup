@@ -39,6 +39,7 @@ import { LampGlow } from './lamp-glow';
 import { lampLightMap } from './lamp-light-map';
 import { mergeStillParts } from './merged-cyclist';
 import { ridersOnRoad } from './race-riders';
+import { skyMaterial } from './sky-material';
 import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
 import { type Cyclist, CyclistKit } from './world-cyclist';
@@ -123,6 +124,8 @@ export class CourseRenderer implements WorldRenderer {
   private readonly camera = new PerspectiveCamera(58, 16 / 9, 0.3, 14000);
   private readonly sun = new DirectionalLight(0xff9a5a, 2.6);
   private sky: Mesh | null = null;
+  /** Moves the sky's cloud on to a second of the ride's clock. */
+  private skyClock: ((seconds: number) => void) | null = null;
   /** The scene's pass with bloom over it, for the neon; null where it could not be built. */
   private pipeline: RenderPipeline | null = null;
   private map: Object3D | null = null;
@@ -368,7 +371,9 @@ export class CourseRenderer implements WorldRenderer {
     materials['Ground'] = groundMaterial(detail, this.course!.file.roadHalfWidth, lamps);
     // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
     materials['Walls'] = wallMaterial(detail, this.lampGlow?.light ?? null, LAMP_ON.Walls);
-    this.disposables.push(detail, materials['Ground'], materials['Walls']);
+    // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
+    materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
+    this.disposables.push(detail, materials['Ground'], materials['Walls'], materials['Skyline']);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     map.traverse((part) => {
       const mesh = part as Mesh;
@@ -404,43 +409,14 @@ export class CourseRenderer implements WorldRenderer {
     this.map = map;
     this.scene.add(map);
 
-    // The sky: bands of sunset from the horizon up, on a dome that rides with the camera.
-    const dome = new SphereGeometry(9000, 48, 24);
-    const position = dome.getAttribute('position');
-    const colours = new Float32Array(position.count * 3);
-    const WHITE = new Color(0xffffff);
-    const band = new Color();
-    const next = new Color();
-    for (let i = 0; i < position.count; i++) {
-      const up = Math.max(position.getY(i) / 9000, 0) ** 0.55 * (SKY.length - 1);
-      const from = Math.min(Math.floor(up), SKY.length - 2);
-      band.setHex(SKY[from]!).lerp(next.setHex(SKY[from + 1]!), up - from);
-      // Streaks of cloud lit from below, low in the sky: bands that waver with the bearing.
-      const height = position.getY(i) / 9000;
-      const bearing = Math.atan2(position.getZ(i), position.getX(i));
-      const streak = Math.sin(
-        height * 46 + Math.sin(bearing * 3) * 2.2 + Math.sin(bearing * 7) * 0.8,
-      );
-      if (height > 0.05 && height < 0.5 && streak > 0.55) {
-        // A cloud is the horizon's own colour, lightened.
-        band.lerp(
-          next.setHex(SKY[0]!).lerp(WHITE, 0.45),
-          (streak - 0.55) * 1.1 * (1 - height * 1.6),
-        );
-      }
-      colours.set([band.r, band.g, band.b], i * 3);
-    }
-    dome.setAttribute('color', new BufferAttribute(colours, 3));
-    const air = new MeshBasicMaterial({
-      vertexColors: true,
-      side: BackSide,
-      fog: false,
-      depthWrite: false,
-    });
-    this.sky = new Mesh(dome, air);
+    // The sky, worked out a pixel on a dome that rides with the camera (sky-material.ts).
+    const dome = new SphereGeometry(9000, 24, 12);
+    const sky = skyMaterial(look, this.course!.file.sun, detail);
+    this.skyClock = sky.at;
+    this.sky = new Mesh(dome, sky.material);
     this.sky.renderOrder = -1;
     this.scene.add(this.sky);
-    this.disposables.push(dome, air);
+    this.disposables.push(dome, sky.material);
 
     const fill = new HemisphereLight(look.fill[0], look.fill[1], 1.5);
     // The low sun throws each rider's shadow long across the road: a soft dark blob, with no shadow map to draw.
@@ -599,6 +575,7 @@ export class CourseRenderer implements WorldRenderer {
   /** What moves on the map: the light beams breathe and the confetti flutters. Two numbers a frame. */
   private animate(time: number): void {
     if (this.beams) this.beams.opacity = 0.17 + 0.06 * Math.sin(time * 1.7);
+    this.skyClock?.(time);
     for (const confetti of this.confetti) {
       confetti.position.y = 0.45 * Math.sin(time * 1.3);
       confetti.rotation.y = 0.012 * Math.sin(time * 0.9);

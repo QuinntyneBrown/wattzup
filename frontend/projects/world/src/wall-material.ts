@@ -12,13 +12,20 @@ import {
   mix,
   sin,
   smoothstep,
+  step,
   texture,
   uv,
   vec2,
   vec3,
   vertexColor,
 } from 'three/tsl';
-import { type DataTexture, type Material, MeshLambertNodeMaterial, type Node } from 'three/webgpu';
+import {
+  type Color,
+  type DataTexture,
+  type Material,
+  MeshLambertNodeMaterial,
+  type Node,
+} from 'three/webgpu';
 
 /** A brick and the mortar round it, in metres: a course's height and a brick's length along it. */
 const COURSE = 0.075;
@@ -26,17 +33,23 @@ const BRICK = 0.225;
 const MORTAR = 0.012;
 /** The pitch of a container's ribs, in metres. */
 const RIB = 0.28;
+/** A tower's windows: a window's bay in metres, the share of them lit, and how bright a lit one is. */
+const WINDOW = { wide: 3.2, tall: 3.4, lit: 0.36, glow: 1.5 } as const;
+/** How far a wall on the horizon gives way to the haze's colour. */
+const HAZED = 0.5;
 /** What the build adds to a wall's height for each kind (build_course.py, `WALL_KIND_STEP`). */
 const KIND_STEP = 1000;
 
 /**
  * The walls' material. `detail` is the ground's detail texture (surface-detail.ts); `light`, where the course has
- * street lamps, is their light at the surface (lamp-glow.ts), added `strength` strong.
+ * street lamps, is their light at the surface (lamp-glow.ts), added `strength` strong. With `haze`, the walls are
+ * the city on the horizon: drawn through the haze in its colour, not faded out by it.
  */
 export function wallMaterial(
   detail: DataTexture,
   light: Node<'vec3'> | null,
   strength: number,
+  haze: Color | null = null,
 ): Material {
   const along = uv().x;
   // glTF keeps a UV's second number upside down.
@@ -87,8 +100,33 @@ export function wallMaterial(
     .mul(mix(float(1), mix(float(0.72), float(1.08), streaks), upright))
     .mul(mix(float(1), mix(float(0.55), float(1), smoothstep(0, 1.6, up)), upright));
 
+  // A tower of the skyline (kind 4): a grid of windows, some lit, warm or cool, each its own brightness. Far off,
+  // where a window is less than a pixel, a tower glows with its windows' average.
+  const isTower = smoothstep(3.5, 3.6, kind);
+  const pane = place.div(vec2(WINDOW.wide, WINDOW.tall));
+  const window = floor(pane);
+  const within = fract(pane);
+  const chance = fract(sin(window.dot(vec2(12.9898, 78.233))).mul(43758.5453));
+  const tone = fract(sin(window.dot(vec2(39.346, 11.135))).mul(24634.6345));
+  const glass = step(0.16, within.x)
+    .mul(step(within.x, 0.84))
+    .mul(step(0.3, within.y))
+    .mul(step(within.y, 0.86));
+  const farOff = smoothstep(0.7, 1.6, fwidth(place).length().div(WINDOW.tall));
+  const lamp = mix(vec3(1, 0.72, 0.4), vec3(0.7, 0.85, 1), step(0.72, tone)).mul(
+    tone.mul(0.9).add(0.45),
+  );
+  const shining = mix(
+    lamp.mul(glass).mul(step(1 - WINDOW.lit, chance)),
+    vec3(0.95, 0.76, 0.5).mul(WINDOW.lit * 0.22),
+    farOff,
+  ).mul(isTower.mul(WINDOW.glow));
+  const walled = mix(weathered, weathered.mul(0.45), glass.mul(isTower).mul(farOff.oneMinus()));
+
   const material = new MeshLambertNodeMaterial({ flatShading: true });
-  material.colorNode = weathered;
-  if (light) material.emissiveNode = weathered.mul(light).mul(strength);
+  // Far walls stand in the haze: their own colour gives way to it, and their windows shine through.
+  material.colorNode = haze ? mix(walled, vec3(haze.r, haze.g, haze.b), HAZED) : walled;
+  if (haze) material.fog = false;
+  material.emissiveNode = light ? walled.mul(light).mul(strength).add(shining) : shining;
   return material;
 }

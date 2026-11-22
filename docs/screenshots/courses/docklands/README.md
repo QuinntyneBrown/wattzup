@@ -26,6 +26,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 2 | The lamps light what stands near the road: riders, posts, walls, land | 119.0 fps | 321 fps (3.11 ms); median of three 299 fps (3.34 ms) | 73 ms | 74,889 | 122 | 3.28 MB | Yes |
 | 3 | Walls of brick, steel and plaster | 117.9 fps | median of three 291 fps (3.43 ms): 322, 286, 291 | 74 ms | 75,005 | 131 | 3.42 MB | Yes |
 | 4 | The riders' shadows fall away from the lamps | 119.5 fps | median of three 306 fps (3.27 ms): 327, 299, 306 | | 74,955 | 127 | 3.42 MB | Yes |
+| 5 | A night sky and the city on the horizon | 60.1 fps (the display was at 60 Hz) | median of three 331 fps (3.02 ms): 331, 325, 331 | | 76,115 | 128 | 3.39 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -171,3 +172,39 @@ the film.
   are what stops the riders floating.
 - A shape laid flat needs its three axes in a right-handed order, or it faces down and is not drawn.
 - Still nothing else casts a shadow: the posts, the warehouses, the containers.
+
+## Pass 5: a night sky and the city on the horizon
+
+**Before** (`pass-04.jpg`, `pass-04.mp4`): the sky is flat navy; nothing stands on the horizon (the skyline's towers
+were built into the map but stood beyond the scenery's draw distance, so they were never drawn).
+
+**After** (`pass-05.jpg`, `pass-05.mp4`): broken cloud drifts across a sky of stars, lit from below by the city;
+the moon has a glow; a band of haze lies along the horizon; and across the harbour stands a city of towers, their
+windows lit warm and cool, some dark.
+
+**What changed.**
+
+- `sky-material.ts` draws the sky a pixel: the course's own colours from the horizon up, cloud from the ground's
+  detail texture read at two scales that drift past each other, a glow round the moon, haze on the horizon, and,
+  because the top of this sky is dark, stars from a grid with one star in a few of its squares, hidden by cloud.
+  The dome is 24 x 12 faces now, not 48 x 24 with a colour a vertex.
+- The Blender build puts the skyline's towers in a `Skyline` group that is never cut into chunks and is always
+  drawn (5,300 triangles), as walls of a kind of their own (4). It builds more of them (209, was 133), taller and
+  nearer, some with a lower wing; the light strips that stood for their windows are gone.
+- `wall-material.ts` draws kind 4: a grid of windows 3.2 x 3.4 m, 36 % of them lit, each warm or cool and its own
+  brightness. The skyline's material stands in the haze's colour rather than being faded out by the fog, so the
+  windows shine through.
+
+**Cost.** None measurable: 306 fps before, 331 after (the display run and the bench ran cooler; read it as the
+same). 1,160 more triangles in the frame and one more draw call. The file is 0.03 MB smaller gzipped.
+
+**Learned.**
+
+- The towers had been in the map all along and never drawn: what is far has to be its own group, drawn always, or
+  the draw distances that keep the frame cheap cut it out. Check that what the build places is on screen.
+- Fog that fades a lit window as it fades a wall kills a skyline: the towers became faint grey blocks. Lights carry
+  through haze; walls do not. The wall's colour gives way to the haze, the window's light does not.
+- The far-off average of the windows, switched on as soon as a window was a few pixels, turned each tower into a
+  glowing beige slab. Windows this large stay crisp until they are well under a pixel (0.7 to 1.6 of a window a
+  pixel), and their average is a fifth of a lit window, not two fifths.
+- A sky worked out a pixel costs less than it looks: three texture reads and a hash over a third of the screen.

@@ -124,6 +124,8 @@ data and scenery in `themes.py`, run the script, and name the world in
 - **The walls.** What is built of a material in `WALL_KINDS` (brick, containers, plaster) is the `Walls` group. Its
   UV is each vertex's metres along its wall and metres above the road beside it, plus 1,000 m for each kind of
   wall, from which the app draws brick courses, ribs or plaster (`docs/course-realism.md`).
+- **The skyline.** `Kit.skyline` builds its towers into a part named `Skyline`, which becomes one mesh that is not cut
+  into chunks and is always drawn; the app draws their lit windows.
 - **Baked shading.** What stands on the ground is darkened at its foot in its colours.
 - **`pack_glb.py`** rewrites the exported vertex colours as bytes, a quarter of their size.
 - **`layout`.** Searching the layouts a seed can deal for one whose start and finish look out to sea can

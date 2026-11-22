@@ -432,16 +432,18 @@ class Kit:
     def skyline(self, count: int, near: float, far: float, glow: str = "glow-window") -> None:
         cx, cy, reach = self.centre()
         rng = self.rng
+        # The towers are one part of their own, `Skyline`: the app draws their lit windows on them (build_course.py).
+        towers = self.B.setdefault("skyline", type(self.B["tower"])("Skyline", "tower"))
         for k in range(count):
             a = rng.uniform(0, math.tau)
             r = reach + rng.uniform(near, far)
             x, y = cx + math.cos(a) * r, cy + math.sin(a) * r
-            h, w = rng.uniform(40, 160), rng.uniform(18, 34)
+            h, w = rng.uniform(50, 210), rng.uniform(18, 34)
             yaw = a + math.pi / 2
-            self.B["tower"].box((x, y, -2), (w, w * rng.uniform(0.6, 1.0), h), yaw)
-            for f in range(int(h / 9)):
-                if rng.random() < 0.55:
-                    self.B[glow].box((x, y, 4 + f * 9), (w + 0.3, w * rng.uniform(0.6, 1.0) * 0.3 + 0.3, 1.4), yaw)
+            towers.box((x, y, -2), (w, w * rng.uniform(0.6, 1.0), h), yaw)
+            # A lower wing against some, so the skyline steps.
+            if rng.random() < 0.4:
+                towers.box((x + math.cos(yaw) * w * 0.8, y + math.sin(yaw) * w * 0.8, -2), (w * 0.7, w * 0.6, h * rng.uniform(0.35, 0.7)), yaw)
 
     def guardrail(self, left: float, start: int = 2, posts: bool = True) -> None:
         for i in range(start, self.n - 2):
@@ -792,7 +794,7 @@ def docklands(k: Kit) -> dict:
             B[rng.choice(CONTAINERS)].box((x + math.cos(yaw) * u, y + math.sin(yaw) * u, 5), (11, L * 0.14, 2.6), yaw)
         B["glow-window"].box((x - math.cos(yaw) * L * 0.35, y - math.sin(yaw) * L * 0.35, 11), (L * 0.185, L * 0.145, 0.6), yaw)
         ships += 1
-    k.skyline(int(70 * k.scale), 300, 1400)
+    k.skyline(int(110 * k.scale), 180, 1100)
     # The bridges: steel trusses over the road with lights, at every third effort.
     efforts = k.gates("neon-cyan", "neon-pink", CROWD, "gold", "bulb")
     for n_, stage in enumerate(st for st in k.st if st["kind"] == "work"):
