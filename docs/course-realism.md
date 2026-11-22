@@ -185,13 +185,44 @@ in the same way, so they too are always drawn.
 sky's direction, so they should not); towers that read as glowing slabs (the far-off average is on too soon or too
 bright).
 
+### 6. Windows drawn on one panel each (Docklands pass 6)
+
+**What it gives.** Every window has a lintel, a sill, a frame and glazing bars, and behind the glass a lit room or
+dark panes, each window different, for two triangles a window.
+
+**How it works.**
+
+- `tools/blender/themes.py`: `Kit.window(i, along, off, up, w, h, lit, yaw)` adds one quad to the `Windows` part,
+  `WINDOW_SURROUND` larger than the opening, with a UV a corner: 0 to 1 across the panel plus 2 if lit, 0 to 1 up it
+  plus 2 x the window's number. `build_course.py` makes the part the `Windows` group, chunked like the scenery.
+- `frontend/projects/world/src/window-material.ts`: an unlit node material. It takes the lit flag and the number
+  back out of the UV, finds the place within the opening, and draws stone above and below it, wood at its edge and
+  along the bars, and glass elsewhere. A lit room is its lamp's colour (a hash of the number: warm or cool, and how
+  bright), a gradient up the window, a blind down to a height of its own, and the detail texture's patches for
+  shapes in the room. Dark glass is the haze's colour, faint, brighter towards the top. `alphaTest` cuts the panel
+  away beside the opening.
+
+**To apply it to another map.** In its theme, call `k.window(...)` where it calls `k.panel(B["window"], ...)` or
+`k.windows(...)` for a building's windows (Old Town's houses, the coast's cottages, Vice City's hotels), and
+rebuild. For another shape of window (arched, shuttered, a shop front), add a kind beside the lit flag and its
+drawing in `window-material.ts`. By day the lit share should be near none and the dark glass brighter: the haze's
+colour already does the second.
+
+**Cost.** None measurable; one draw call a chunk in view; no triangles beyond the two a window already had.
+
+**Watch for.** The opening's share of the panel (`OPENING`) follows `WINDOW_SURROUND` and the window's size: a
+window of another size needs the same surround in proportion, or the constants given as part of the UV.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
 
-1. Windows, doors and signs are flat panels: no frames, sills, glass or light spilling from them.
+1. The land beside the road is bare: no clutter (bollards, crates, bins, fences, parked vehicles), and the quay is
+   an empty apron.
 2. Nothing but the riders casts a shadow: posts, walls and containers throw none.
-4. The water is a flat colour: no reflection of the lights along the quay.
-5. Wet ground: reflections of the neon and the lamps in the road.
-6. The land beside the road is bare: no clutter (bollards, crates, bins, fences, parked vehicles).
-7. Lamps and neon have no glow in the air (halos, haze under each lamp).
+3. The water is a flat colour: no reflection of the lights along the quay or of the city.
+4. Wet ground: reflections of the neon and the lamps in the road.
+5. Lamps and neon have no glow in the air (halos, haze under each lamp), and lit windows and neon throw no light
+   on the ground.
+6. The riders are simple figures: smooth limbs, no cloth, no faces.
+7. Doors, signs, pipes, gutters and roof lines: a building is still a box with windows.

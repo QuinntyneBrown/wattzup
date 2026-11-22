@@ -42,6 +42,7 @@ import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
 import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
+import { windowMaterial } from './window-material';
 import { type Cyclist, CyclistKit } from './world-cyclist';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
@@ -67,6 +68,7 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   Ground: 420,
   Solid: 250,
   Walls: 250,
+  Windows: 250,
   Glow: 400,
   Beams: 460,
   Leaves: 210,
@@ -373,7 +375,19 @@ export class CourseRenderer implements WorldRenderer {
     materials['Walls'] = wallMaterial(detail, this.lampGlow?.light ?? null, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
-    this.disposables.push(detail, materials['Ground'], materials['Walls'], materials['Skyline']);
+    // Windows are panels with their place on the pane in their UV (window-material.ts).
+    materials['Windows'] = windowMaterial(
+      detail,
+      new Color(look.haze),
+      this.lampGlow?.light ?? null,
+    );
+    this.disposables.push(
+      detail,
+      materials['Ground'],
+      materials['Walls'],
+      materials['Skyline'],
+      materials['Windows'],
+    );
     this.beams = materials['Beams'] as MeshBasicMaterial;
     map.traverse((part) => {
       const mesh = part as Mesh;

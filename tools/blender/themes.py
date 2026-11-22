@@ -204,6 +204,10 @@ THEMES: dict[str, dict] = {
 }
 
 
+# What a window's panel holds beyond its opening, in metres: each side, the sill beneath and the lintel above.
+WINDOW_SURROUND = (0.18, 0.14, 0.24)
+
+
 class Kit:
     """What a theme's scenery is built with."""
 
@@ -291,6 +295,21 @@ class Kit:
     def panel(self, b, i: int, along: float, off: float, up: float, w: float, h: float) -> None:
         """A flat panel on a wall facing the road (a window, a sign): two triangles, seen from both sides."""
         b.quad(self.P(i, along - w / 2, off, up), self.P(i, along + w / 2, off, up), self.P(i, along + w / 2, off, up + h), self.P(i, along - w / 2, off, up + h))
+
+    def window(self, i: int, along: float, off: float, up: float, w: float, h: float, lit: bool, yaw: float) -> None:
+        """A window on a wall facing the road: one flat panel the app draws as a frame, panes and the room behind,
+        under a lintel and over a sill. The panel is `WINDOW_SURROUND` larger than the opening for those."""
+        b = self.B.setdefault("windows", type(self.B["tower"])("Windows", "window"))
+        if b.uvs is None:
+            b.uvs = []
+        # The window's own number, the same every build: which room is behind it.
+        number = (i * 7919 + int(along * 13) * 31 + int(up * 7)) % 500
+        side, sill, lintel = WINDOW_SURROUND
+        base = len(b.verts)
+        for da, du, u, v in ((-w / 2 - side, -sill, 0, 0), (w / 2 + side, -sill, 1, 0), (w / 2 + side, h + lintel, 1, 1), (-w / 2 - side, h + lintel, 0, 1)):
+            b.verts.append(self.P(i, along + da, off, up + du))
+            b.uvs.append((u + (2 if lit else 0), v + 2 * number))
+        b.faces.append((base, base + 1, base + 2, base + 3))
 
     def windows(self, b, i: int, along_c: float, off: float, width: float, floors: int, up0: float, floor_h: float, yaw: float, every: float = 2.6) -> None:
         cols = max(1, int(width / every))
@@ -748,7 +767,7 @@ def docklands(k: Kit) -> dict:
                 cols = int(width / 3.0)
                 for c in range(cols):
                     lit = rng.random() < 0.45
-                    k.panel(B["glow-window" if lit else "window"], i, -width / 2 + (c + 0.5) * width / cols, wall + 0.06, 1.4 + f * 3.6, 1.4, 1.9)
+                    k.window(i, -width / 2 + (c + 0.5) * width / cols, wall + 0.06, 1.4 + f * 3.6, 1.4, 1.9, lit, yaw)
             neon = ("neon-pink", "neon-cyan", "neon-amber", "neon-violet")[sheds % 4]
             B[neon].box(k.P(i, rng.uniform(-width / 4, width / 4), wall + 0.1, floors * 3.6 - 1.2), (width * 0.5, 0.14, 0.3), yaw)
             B[neon].box(k.P(i, -width / 2 + 0.4, wall + 0.4, 3.0), (0.2, 0.2, floors * 3.6 - 3.5), yaw)

@@ -27,6 +27,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 3 | Walls of brick, steel and plaster | 117.9 fps | median of three 291 fps (3.43 ms): 322, 286, 291 | 74 ms | 75,005 | 131 | 3.42 MB | Yes |
 | 4 | The riders' shadows fall away from the lamps | 119.5 fps | median of three 306 fps (3.27 ms): 327, 299, 306 | | 74,955 | 127 | 3.42 MB | Yes |
 | 5 | A night sky and the city on the horizon | 60.1 fps (the display was at 60 Hz) | median of three 331 fps (3.02 ms): 331, 325, 331 | | 76,115 | 128 | 3.39 MB | Yes |
+| 6 | Windows with frames, panes and rooms behind them | 119.8 fps | median of three 328 fps (3.05 ms): 333, 328, 319 | | 74,869 | 129 | 3.38 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -208,3 +209,37 @@ same). 1,160 more triangles in the frame and one more draw call. The file is 0.0
   glowing beige slab. Windows this large stay crisp until they are well under a pixel (0.7 to 1.6 of a window a
   pixel), and their average is a fifth of a lit window, not two fifths.
 - A sky worked out a pixel costs less than it looks: three texture reads and a hash over a third of the screen.
+
+## Pass 6: windows with frames, panes and rooms behind them
+
+**Before** (`pass-05.jpg`, `pass-05.mp4`): a window is a flat rectangle on the brick, dark grey or one glowing
+yellow.
+
+**After** (`pass-06.jpg`, `pass-06.mp4`): each window sits under a stone lintel and over a sill, in a dark frame
+with glazing bars, two panes across and three up. A lit one shows a room: its lamp warm or, one in five, cool,
+brighter towards the ceiling, a blind drawn part-way down, shapes against the light. A dark one is black glass
+holding a little of the sky, a pane here and there darker. No two alike.
+
+**What changed.**
+
+- `Kit.window` (themes.py) builds each window as one flat panel in a new `Windows` group, 0.18 m wider each side,
+  0.14 m lower and 0.24 m taller than the opening. Its UV is the place on the panel, with 2 added across if it is
+  lit and 2 added up for each step of the window's own number (0 to 499, from where it is, so every build gives the
+  same). Docklands' warehouses use it.
+- `window-material.ts` draws the panel: lintel and sill in stone, the frame and bars, and the glass by the window's
+  number. Beside the opening the panel is cut away (`alphaTest`), so the brick shows.
+
+**Cost.** None measurable: 331 fps before, 328 after. One more draw call; no more triangles than the flat
+rectangles were (two a window).
+
+**Tried and dropped.** Sills and lintels as boxes of their own: Docklands has some 18,000 windows, and two boxes
+each took the map from 308,000 to 676,000 triangles and its file from 3.4 to 9.1 MB gzipped. They are drawn on the
+panel instead, at no triangles.
+
+**Learned.**
+
+- Count what a small part is multiplied by before modelling it. Anything a window, a lamp or a metre of road has
+  must cost nothing in triangles: draw it in the material.
+- A number of its own for each thing (a window here, a brick in pass 3) is what stops a wall of them looking
+  stamped out. It rides in the UV for free.
+- The windows give no light to the pavement beneath them, and the ground-floor ones have no doors between them.

@@ -439,6 +439,8 @@ class Builder:
         self.verts: list[tuple[float, float, float]] = []
         self.faces: list[tuple[int, ...]] = []
         self.colours: list[tuple[float, float, float, float]] | None = None
+        # A UV a vertex, for a part whose material the app draws from it (the windows).
+        self.uvs: list[tuple[float, float]] | None = None
 
     def v(self, p) -> int:
         self.verts.append((p[0], p[1], p[2]))
@@ -508,6 +510,10 @@ WALL_KIND_STEP = 1000.0
 # The city on the horizon: one mesh, never cut into chunks and always drawn, its towers walls of a kind of their
 # own, whose lit windows the app draws (L2-166 AC17).
 SKYLINE_PART, SKYLINE_KIND = "Skyline", 4
+# Windows: one flat panel each, in a group of their own, its UV the place on the pane (0 to 1 each way) with 2 added
+# across for a lit window and 2 added up for each step of the window's own number, from which the app draws its
+# frame, its panes and the room behind them (L2-166 AC18; `Kit.window` in themes.py).
+WINDOWS_PART = "Windows"
 WALL_KINDS = {"brick": 1, **{f"container-{i}": 2 for i in range(4)}, "whitewash": 3, "tower": 3, "wall": 3,
               **{f"facade-{i}": 3 for i in range(6)}, **{f"deco-{i}": 3 for i in range(4)}}
 WIDER = {"Land": 4, "Beams": 4, "Glow": 3, "Leaves": 3}
@@ -573,6 +579,8 @@ def assemble(road: "Road", col) -> dict:
         group, chunked = group_of(part.mat)
         if part.name in GROUND_PARTS:
             group = "Ground"
+        elif part.name == WINDOWS_PART:
+            group = "Windows"
         elif part.name == SKYLINE_PART:
             group, chunked = "Skyline", False
         elif part.mat in WALL_KINDS and chunked:
@@ -609,6 +617,8 @@ def assemble(road: "Road", col) -> dict:
                     shade = 0.74 + 0.3 * smoothstep(0.0, 4.5, lift) if lift > 0.2 else (0.62 if lift < -0.3 else 1.0)
                     c = (c[0] * shade, c[1] * shade, c[2] * shade, 1.0)
                 key = (round(v[0], 3), round(v[1], 3), round(v[2], 3), round(c[0], 3), round(c[1], 3), round(c[2], 3))
+                if group == "Windows":
+                    key = (*key, *part.uvs[i])
                 if walled:
                     _, near, _ = road.tree.find((v[0], v[1], 0.0))
                     wall_uv = (v[0] * tx + v[1] * ty, v[2] - road.s[near]["z"] + kind * WALL_KIND_STEP) if upright else (v[0], v[1] % 400.0)
@@ -618,6 +628,8 @@ def assemble(road: "Road", col) -> dict:
                     at = mesh["index"][key] = len(mesh["verts"])
                     mesh["verts"].append(v)
                     mesh["cols"].append(c)
+                    if group == "Windows":
+                        mesh["uvs"].append(part.uvs[i])
                     if walled:
                         mesh["uvs"].append(wall_uv)
                     if group == "Ground":

@@ -59,6 +59,7 @@ All of it is in the `world` library; nothing outside it changes.
 | `lamp-shadows.ts` | `lampShadows(lamps, metres, lane)`: the four shadows a rider throws under the lamps (L2-166 AC16). No Three.js; unit-tested. |
 | `rider-shadows.ts` | `RiderShadows`: one instanced mesh that lays every rider's shadows on the road. |
 | `sky-material.ts` | `skyMaterial(look, sun, detail)`: the sky worked out a pixel, with cloud, a glow, haze and, at night, stars (L2-166 AC17). |
+| `window-material.ts` | The `Windows` group's material (L2-166 AC18): lintel, sill, frame, bars and a lit room or dark glass, drawn on one panel a window from its UV. |
 | `surface-detail.ts` | The detail texture's texels, worked out on the device: grain, patches, cracks, stones. No Three.js; unit-tested. |
 | `world-renderer-loader.ts` | Returns a `MapRenderer`. It imports neither renderer, so Three.js still loads only when a world starts. |
 
