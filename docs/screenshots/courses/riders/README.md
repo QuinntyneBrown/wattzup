@@ -31,7 +31,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 20 | The camera at the reference's distance: the rider half the picture's height | 119.9 fps, 0 over 20 ms | 16.7 ms | 295 fps (3.39 ms): 295, 296, 293 | 100,371 | 84 | Yes |
 | 21 | By day, a shadow with the rider's shape: the bike from its side or the rider end on, as the sun stands (measured on Cliffside Coast) | 120.1 fps, 0 over 20 ms | 9.5 ms | 373 fps (2.68 ms): 373, 377, 354; Docklands unchanged at 295 | 83,511 | 70 | Yes |
 | 22 | By day, the sky's light in a rider's shade and the sun along their edges (measured on Cliffside Coast) | 120.1 fps, 0 over 20 ms | 10.0 ms | 367 fps (2.72 ms): 373, 355, 367; Docklands unchanged at 296 | 83,511 | 70 | Yes |
-| 23 | Riders made as finely as they are seen: the others at 0.6 of the camera's rider, and every rider coarser on a slower tier | 120.1 fps (the display was at 60 Hz), 0 over 20 ms | 9.8 ms | 310 fps (3.23 ms): 310, 309, 310 | 78,951 (100,371 before) | 84 | Yes |
+| 23 | Riders made as finely as they are seen: the others at 0.6 of the camera's rider, and every rider coarser on a slower tier | 120.1 fps, 0 over 20 ms | 9.8 ms | 310 fps (3.23 ms): 310, 309, 310 | 78,951 (100,371 before) | 84 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -781,7 +781,8 @@ baked shade (pass 9) is kept for each fineness. `course-renderer.ts`: `RIDER_DET
 
 **Measured.** 309 fps uncapped against 296: the first gain in frame rate since pass 9. The display changed from
 120 Hz to 60 Hz during the first timing (112.9 fps, three slow frames, one uncapped run of 218 fps); at 60 Hz four
-timings held 60.0 to 60.1 fps with no frame over 17.2 ms, and the film and the figures here are from after it.
+timings held 60.0 to 60.1 fps with no frame over 17.2 ms. The display was back at 120 Hz for the last run, which
+the film and the table's figures are from: 120.1 fps, no frame over 20 ms.
 
 **Learned.**
 
