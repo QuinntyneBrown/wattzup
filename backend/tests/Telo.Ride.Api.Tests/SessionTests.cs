@@ -9,10 +9,13 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Telo.Ride.Infrastructure.Live;
 
 namespace Telo.Ride.Api.Tests;
 
-public sealed class SessionTests(SignInApi api) : IClassFixture<SignInApi>
+public sealed class SessionTests(SessionApi api) : IClassFixture<SessionApi>
 {
     private static CancellationToken Cancel => TestContext.Current.CancellationToken;
 
@@ -180,5 +183,19 @@ public sealed class SessionTests(SignInApi api) : IClassFixture<SignInApi>
         Assert.Equal(HttpStatusCode.OK, usedAgain.StatusCode);
         Assert.Equal(HttpStatusCode.Unauthorized, lapsed.StatusCode);
         Assert.Equal("unauthenticated", await ProblemCode(lapsed));
+    }
+}
+
+/// <summary>
+/// A sign-in host without the live sessions' once-a-second ticker: these tests move the clock a year at a time, and the
+/// fake clock would fire the ticker's timer for every second of it (L172).
+/// </summary>
+public sealed class SessionApi : SignInApi
+{
+    protected override void ConfigureServices(IServiceCollection services)
+    {
+        base.ConfigureServices(services);
+        var ticker = services.Single(service => service.ServiceType == typeof(IHostedService) && service.ImplementationType == typeof(SessionTicker));
+        services.Remove(ticker);
     }
 }
