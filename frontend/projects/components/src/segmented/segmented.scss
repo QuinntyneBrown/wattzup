@@ -1,0 +1,41 @@
+// Block segmented (docs/design-system/assets/components.css, raised and strong): the chosen option filled with the
+// foreground, every option at least 44 px tall.
+:host {
+  display: inline-flex;
+  align-self: flex-start;
+  max-width: 100%;
+  gap: var(--space-0-5);
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  background: var(--color-raised);
+  padding: var(--space-0-5);
+}
+
+.segmented__option {
+  flex-shrink: 0;
+  height: var(--target-min);
+  padding-inline: var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  color: var(--color-muted);
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+
+  &:hover:not(:disabled) {
+    color: var(--color-fg);
+  }
+
+  &[aria-checked='true'] {
+    background: var(--color-fg);
+    color: var(--color-ink);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}

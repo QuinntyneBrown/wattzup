@@ -33,53 +33,59 @@ this feature gives its step-down rule and its inputs.
 
 **Frontend — `components` library**
 
-- **`QualityOptions`** (`wz-quality-options`, block `quality-options`) — a `fieldset` "Quality"
-  of five selectable cards, each with a visible radio, Auto first and tagged "Recommended". Each
-  card's text is the requirement's (`L2-159` AC2). Inputs `value`, `backend`, `autoText`; output
-  `choose(quality)`. With backend `webgl2` the Ultra card is disabled and tagged "Needs WebGPU"
-  (`L2-159` AC6). With backend `none` the whole fieldset is disabled (`L2-161` AC4).
-- **`WorldSettings`** (`wz-world-settings`) — the section: the graphics-API pill, the no-3D notice,
-  `QualityOptions`, the step-down `SwitchRow`, the frame-rate `Segmented`, the resolution `Slider`
-  and the graphics `Select`. Presentation only: inputs from the page, outputs to it.
+- **`WorldSettings`** (`wz-world-settings`) — the World section's controls, presentation only:
+  - **Quality** — a `fieldset` of five selectable cards, each a real radio, Auto first and tagged
+    "Recommended", each card's text the requirement's (`L2-159` AC2). With WebGL 2 only, Ultra is
+    disabled and tagged "Needs WebGPU" (`L2-159` AC6).
+  - **Step down when frames drop** — a `SwitchRow`, on and disabled with Auto, the rider's with a
+    fixed level, whose name it reads ("Turn it off to keep High …") (`L2-160` AC1, AC2).
+  - **Frame rate** — `Segmented`, a WAI-ARIA radio group: "Match display" and "30 fps" (`L2-160`
+    AC4).
+  - **Resolution** — a native range, 50 to 100 % in steps of 5, its value and scale beside it
+    (`L2-160` AC5).
+  - **Graphics** — a native select: "Automatic · WebGPU" and "WebGL 2" where WebGPU is there;
+    "Automatic · WebGL 2" and a disabled "WebGPU · not available here" where it is not (`L2-161`
+    AC1, AC2).
 
-**Frontend — `domain/engine` (pure, with unit tests)**
+  With neither API, every control is disabled and the step-down switch reads "Comes back when this
+  browser can draw 3D worlds." (`L2-161` AC4). Inputs `settings` and `api`; one output per control.
+- **`SettingsSection`** gains a `[slot=head]` (the graphics API pill) and a `[slot=notice]` (the
+  no-3D banner).
 
-- **`qualityPolicy(settings, backend, deviceCheck)`** — returns a `QualityPolicy`:
-  - `startLevel`: the fixed level when one is chosen; with Auto, the device check's level when
-    there is one, otherwise Ultra with WebGPU and High with WebGL 2 (`L2-159` AC3–AC5); never
-    above High with WebGL 2;
-  - `stepDown`: always true with Auto; the switch's value with a fixed level (`L2-160` AC1, AC2);
-  - `frameCapFps`: the display's rate or 30 (`L2-160` AC4);
-  - `renderScale`: `resolution / 100` (`L2-160` AC5).
-- **`autoText(deviceCheck)`** — the Auto card's text: "Starts at Low, the drawn look, or at the
-  level this device's check found, …", or "Starts at High on this device (checked today) …". The
-  world opens at Low on both graphics APIs, as `main`'s does (`L2-065` AC5, ADR 0030), so the
-  text no longer depends on the graphics API.
+**Frontend — `api`, `domain`**
 
-**Frontend — `world` library (lazy)**
+- **`RideSettings`** gains `quality` (`'auto'` or a level), `stepDown`, `frameRate`, `resolution`
+  and `graphics`, each parsed to its recommended value when stored wrong (`L2-158` AC5).
+- **`GraphicsSupport`** / `GRAPHICS_SUPPORT` — what this browser draws worlds with: `webgpu`,
+  `webgl2` or `none`. **`BrowserGraphicsSupport`** (`domain/browser`) asks for a WebGPU adapter,
+  then for a WebGL 2 context, which it lets go at once. Bound on the Settings route only.
+- **`worldQuality(settings)`** (`domain/engine`, pure, with unit tests) returns a `WorldQuality`:
+  `tier` (null for Auto, which opens at Low as `main`'s world does, `L2-065` AC5), `stepDown`
+  (always true with Auto), `frameCapFps` (30 or null), `renderScale` (`resolution / 100`) and
+  `forceWebGL`. The device check's level joins Auto in slice 20.3.
 
-- **`QualityGovernor`** (from `performance/meet-performance-budgets`) — takes the `QualityPolicy`.
-  It judges frames with `FrameBudget`: after two slow windows in a row it applies the next lower
-  level, when `stepDown` is true, for the rest of the ride (`L2-159` AC4, `L2-160` AC3). At 30 fps
-  it judges against 33.3 ms (`L2-160` AC4). The rule in `performance/meet-performance-budgets`
-  (a 50-frames-a-second moving average, with a raise after a calm period) differs from
-  `L2-159` AC4; which rule governs a race is `<TO SUPPLY>`. This design applies `L2-159` AC4 to
-  every world and never raises a level mid-ride.
-- **`FramePacer`** — skips `requestAnimationFrame` callbacks to hold the frame cap.
-- **`WorldRenderer.setLevel(level)`** — builds the new level's programs ahead with
-  `ProgramCompiler` while the old level keeps drawing, then switches on the next frame without
-  pausing the ride (`L2-159` AC7). `WorldRenderer.setRenderScale(scale)` resizes the drawing
-  buffer only.
-- **`RendererBackendProbe.probe(choice)`** — with `auto`, WebGPU when an adapter is granted, else
-  WebGL 2; with `webgl2`, WebGL 2 only.
+**Frontend — `world` library (lazy), `main`'s code with these changes**
+
+- **`WorldRenderer.start`** takes `stepDown` and `forceWebGL` beside `tier` in its options. A fixed
+  Ultra draws at High on WebGL 2; with `stepDown` false the `FrameBudget` is pinned, so no window
+  lowers the level (`L2-160` AC2); `forceWebGL` asks three's renderer for its WebGL 2 backend.
+- **`WorldScene`** takes a `quality` input. It starts the renderer with the level, step-down and
+  graphics API; sizes the drawing buffer at `devicePixelRatio × renderScale`, so the HUD over it
+  stays sharp (`L2-160` AC5); judges frames against `max(period, 1000 / cap)`; and under a cap
+  draws a frame once its share of a second has passed, give or take half a display frame
+  (`L2-160` AC4). A new scale or cap applies at once, mid-ride too; a new object with the same
+  values does nothing, so the budget's windows are never restarted by a rebind.
+- **`readWorldRideProbe`** — the test-only hook may watch a ride opened from the settings (judged,
+  with no tier), reporting what is drawn.
 
 **Frontend — `ride` application**
 
-- **`WorldQualityBridge`** — provided with each world (race and world class). An `effect` over
-  `qualityPolicy()` passes level, step-down, frame cap and render scale to the running renderer.
-  A change to `graphics` mid-ride is not applied: it takes effect from the next world that opens,
-  and the bridge raises a toast that says so (`L2-161` AC3). The toast is a mock gap; its copy
-  is `<TO SUPPLY>`.
+- **`RaceWorld`** and **`ClassWorldScene`** hand their `WorldScene` one `computed`
+  `worldQuality(settings)`. **`WorldLoadStore`** starts a class's world at the fixed level, with
+  step-down and the graphics API, and its quality fact reads "Quality · Medium" for a fixed level
+  ("Auto quality · Low" for Auto).
+- **`SettingsPage`** renders the World section's pill ("WebGPU", "WebGL 2" or "Panorama only"),
+  the no-3D notice and `WorldSettings`, and writes each change through `RIDE_SETTINGS`.
 
 ## Requirements
 
@@ -134,3 +140,16 @@ Two slow windows in a row drop one level for the rest of the ride, unless the ri
 step-down off for a fixed level.
 
 ![Sequence diagram for stepping down when frames drop](diagrams/sequence-step-down.png)
+
+## Open questions
+
+1. A level or graphics API changed during a ride (`L2-159` AC7, `L2-161` AC3) is not built: Settings
+   is not reachable from a running ride, so a change always meets the next world that opens. The
+   toast's copy is still to be supplied.
+2. Which step-down rule governs a race: this design applies `L2-159` AC4 (two slow 2-second
+   windows, never raised mid-ride), as `main`'s `FrameBudget` does; `performance/meet-performance-budgets`
+   describes a moving average with a raise.
+3. Whether "Graphics: WebGL 2" draws with WebGL 2 is not proven by an acceptance test: the test
+   browser offers no WebGPU, and a stand-in adapter cannot draw. The renderer passes the choice to
+   three's `forceWebGL`.
+4. World loading's quality fact for a fixed level, "Quality · Medium", is not in a mock.

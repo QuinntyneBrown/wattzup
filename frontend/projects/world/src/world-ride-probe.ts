@@ -15,7 +15,8 @@ const TIERS: readonly Tier[] = ['low', 'medium', 'high', 'ultra'];
  * ride opens, and the frame budget judges it as it does a rider's ride (L2-159 AC4).
  */
 export interface WorldRideProbe {
-  readonly tier: Tier;
+  /** The tier pinned; null where a judged hook only watches a ride opened from the rider's settings (slice 20.2). */
+  readonly tier: Tier | null;
   readonly forceWebGL: boolean;
   readonly judged: boolean;
 }
@@ -70,8 +71,11 @@ export function readWorldRideProbe(value: unknown): WorldRideProbe | null {
     backend?: unknown;
     judged?: unknown;
   };
-  return TIERS.includes(tier as Tier)
-    ? { tier: tier as Tier, forceWebGL: backend === 'webgl2', judged: judged === true }
+  if (TIERS.includes(tier as Tier)) {
+    return { tier: tier as Tier, forceWebGL: backend === 'webgl2', judged: judged === true };
+  }
+  return tier === undefined && judged === true
+    ? { tier: null, forceWebGL: false, judged: true }
     : null;
 }
 

@@ -35,11 +35,41 @@ export class SettingsPage {
     this.resetText = page.locator('.settings-reset__text');
     this.reset = page.getByRole('button', { name: 'Reset to recommended' });
     this.announcement = page.locator('.cdk-live-announcer-element');
+    const world = this.section('World');
+    this.graphicsApi = world.locator('.settings-section__head .pill');
+    this.noWorlds = world.getByRole('status');
+    this.qualities = world.getByRole('group', { name: 'Quality' }).getByRole('radio');
+    this.stepDown = world.getByRole('switch', { name: 'Step down when frames drop' });
+    this.stepDownText = world.locator('#step-down-desc');
+    this.frameRate = world.getByRole('radiogroup', { name: 'Frame rate' });
+    this.resolution = world.getByRole('slider', { name: 'Resolution' });
+    this.resolutionValue = world.locator('.setting__value');
+    this.graphics = world.getByRole('combobox', { name: 'Graphics' });
+    this.graphicsHint = world.locator('#graphics-hint');
   }
+
+  /** The World section's tag: the graphics API in use, or "Panorama only" (L2-159 AC1). */
+  readonly graphicsApi: Locator;
+  /** The World section's notice when the browser can't draw 3D (L2-161 AC4). */
+  readonly noWorlds: Locator;
+  /** The five Quality cards, in order, each a radio (L2-159 AC2). */
+  readonly qualities: Locator;
+  readonly stepDown: Locator;
+  readonly stepDownText: Locator;
+  readonly frameRate: Locator;
+  readonly resolution: Locator;
+  readonly resolutionValue: Locator;
+  readonly graphics: Locator;
+  readonly graphicsHint: Locator;
 
   /** A section landmark by its heading. */
   section(name: string): Locator {
     return this.page.locator('main').getByRole('region', { name, exact: true });
+  }
+
+  /** A Quality card by its level ("Auto", "Ultra", "High", "Medium", "Low"). */
+  quality(level: string): Locator {
+    return this.section('World').locator(`input[name="quality"][value="${level.toLowerCase()}"]`);
   }
 
   /** A section's link in "Settings sections". */

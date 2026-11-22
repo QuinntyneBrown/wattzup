@@ -27,6 +27,14 @@ describe('readWorldRideProbe (test-only tier hook, #672)', () => {
     });
   });
 
+  it("watches a ride opened from the rider's settings when judged with no tier", () => {
+    expect(readWorldRideProbe({ judged: true })).toEqual({
+      tier: null,
+      forceWebGL: false,
+      judged: true,
+    });
+  });
+
   it.each([
     ['nothing set', undefined],
     ['null', null],

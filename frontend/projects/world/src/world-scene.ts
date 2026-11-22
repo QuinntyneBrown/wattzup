@@ -14,6 +14,7 @@ import {
   viewChild,
 } from '@angular/core';
 import {
+  AUTO_QUALITY,
   type Backend,
   type PreparedWorld,
   type SceneRider,
@@ -21,6 +22,7 @@ import {
   type SceneryState,
   type Segment,
   WORLD_RENDERER,
+  type WorldQuality,
   type WorldRenderer,
 } from '@telo/api';
 import { FrameScheduler } from './frame-scheduler';
@@ -59,6 +61,11 @@ export class WorldScene implements AfterViewInit {
    * canvas and fades it in, rather than loading and starting another (L2-153 AC3, AC5). Read once, on first render.
    */
   readonly prepared = input<PreparedWorld | null>(null);
+  /**
+   * How the rider's World settings ask the world to be drawn (L2-159, L2-160, L2-161): the level, step-down and graphics
+   * API when it starts, and the frame cap and the drawing buffer's scale from then on, mid-ride too.
+   */
+  readonly quality = input<WorldQuality>(AUTO_QUALITY);
   /** Emitted once when WebGL is unavailable or the renderer fails to start (L2-110 AC4). */
   readonly unavailable = output<void>();
   /** Emitted once the renderer has started, with the GPU API drawing the world (L2-065 AC1). */
@@ -94,6 +101,16 @@ export class WorldScene implements AfterViewInit {
     let observer: ResizeObserver | null = null;
     let screen: MediaQueryList | null = null;
     let destroyed = false;
+    let resize: (() => void) | null = null;
+    // The display's measured frame period, and when the world last drew, for a frame cap (L2-160 AC4).
+    let displayPeriod = 1000 / 60;
+    let lastDrawn = -Infinity;
+    // Frames are judged against the cap's period at 30 fps: 33.3 ms (L2-160 AC4).
+    const judged = (period: number) => {
+      displayPeriod = period;
+      const cap = untracked(this.quality).frameCapFps;
+      return cap === null ? period : Math.max(period, 1000 / cap);
+    };
 
     // The tab's return or another screen may change the display's refresh rate: measure it
     // again, judging and drawing nothing meanwhile (L2-111 AC9).
@@ -104,7 +121,7 @@ export class WorldScene implements AfterViewInit {
       this.measuring.set(true);
       void this.frames.measurePeriod().then((period) => {
         if (destroyed) return;
-        r.setFramePeriod(period);
+        r.setFramePeriod(judged(period));
         this.measuring.set(false);
       });
     };
@@ -135,7 +152,13 @@ export class WorldScene implements AfterViewInit {
     // Draws with a started renderer from now on: sized to its canvas, on the loop, until the scene goes.
     const begin = (loaded: WorldRenderer, canvas: HTMLCanvasElement) => {
       renderer = loaded;
-      const resize = () => loaded.resize(canvas.clientWidth, canvas.clientHeight, devicePixelRatio);
+      // The drawing buffer at the rider's resolution; the HUD over it stays sharp (L2-160 AC5).
+      resize = () =>
+        loaded.resize(
+          canvas.clientWidth,
+          canvas.clientHeight,
+          devicePixelRatio * untracked(this.quality).renderScale,
+        );
       resize();
       observer = new ResizeObserver(resize);
       observer.observe(canvas);
@@ -161,7 +184,7 @@ export class WorldScene implements AfterViewInit {
             prepared.renderer.dispose();
             return;
           }
-          prepared.renderer.setFramePeriod(period);
+          prepared.renderer.setFramePeriod(judged(period));
           begin(prepared.renderer, prepared.canvas);
           prepared.canvas.classList.remove('world-scene--busy');
         });
@@ -171,13 +194,19 @@ export class WorldScene implements AfterViewInit {
       // (L2-111 AC9).
       void Promise.all([this.load(), this.frames.measurePeriod()])
         .then(async ([loaded, period]) => {
+          const quality = untracked(this.quality);
           const started = await loaded.start(
             canvas,
             untracked(this.world),
             () => this.frames.nextFrame(),
             untracked(this.timed),
+            {
+              tier: quality.tier ?? undefined,
+              stepDown: quality.stepDown,
+              forceWebGL: quality.forceWebGL,
+            },
           );
-          if (started) loaded.setFramePeriod(period);
+          if (started) loaded.setFramePeriod(judged(period));
           return { loaded, started };
         })
         .then(
@@ -221,11 +250,35 @@ export class WorldScene implements AfterViewInit {
       );
     });
 
-    // One frame per tick of the loop, and one whenever the inputs change.
+    // A new resolution or frame rate applies at once, mid-ride too (L2-158 AC3).
+    // Only a new scale or cap acts, so the windows the frame budget judges are not restarted by the rest (L2-159 AC4).
+    const renderScale = computed(() => this.quality().renderScale);
+    const frameCap = computed(() => this.quality().frameCapFps);
+    // The scene starts sized and judged; from then on, a change is applied once.
+    let applied: { scale: number; cap: number | null } | null = null;
+    effect(() => {
+      const scale = renderScale();
+      const cap = frameCap();
+      if (!this.driver()) return;
+      const before = applied;
+      applied = { scale, cap };
+      if (!before) return;
+      untracked(() => {
+        if (before.scale !== scale) resize?.();
+        if (before.cap !== cap && !this.measuring())
+          renderer?.setFramePeriod(judged(displayPeriod));
+      });
+    });
+
+    // One frame per tick of the loop, and one whenever the inputs change. Under a frame cap, a frame is drawn once its
+    // share of a second has passed, give or take half a display frame (L2-160 AC4).
     effect(() => {
       const driver = this.driver();
       if (!driver || this.measuring() || !this.visible()) return;
       const now = this.frames.now();
+      const cap = this.quality().frameCapFps;
+      if (cap !== null && now - lastDrawn < 1000 / cap - displayPeriod / 2) return;
+      lastDrawn = now;
       driver.frame(now, {
         segments: this.timed(),
         elapsed: this.elapsed(),

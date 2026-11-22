@@ -16,42 +16,31 @@ skinparam package {
 }
 actor "Rider" as actor
 box "Frontend — Ride app (ride application and components library)" #E0F2FE
-  participant "SettingsPage" as page
-  participant "WorldQualityBridge" as bridge
+  participant "SettingsPage / WorldSettings" as page
+  participant "RaceWorld / ClassWorldScene" as host
 end box
 box "Frontend — Ride app (domain library)" #E0F2FE
   participant "LocalRideSettingsStore" as store
-  participant "qualityPolicy()" as policy
+  participant "worldQuality()" as policy
 end box
-box "Frontend — Ride app (world library, lazy chunk)" #E0F2FE
-  participant "RendererBackendProbe" as probe
+box "Frontend — Ride app (world library, lazy)" #E0F2FE
+  participant "WorldScene" as scene
   participant "WorldRenderer" as renderer
 end box
-group A world opens
-  bridge -> store : settings()
-  bridge -> probe : probe(graphics: auto)
-  probe --> bridge : webgpu
-  bridge -> policy : qualityPolicy(settings, webgpu, check)
-  policy --> bridge : Auto: start Ultra, stepDown, cap display, scale 1.0 (L2-159 AC4)
-  bridge -> renderer : start at Ultra
-end
-group Mid-ride, the rider picks Medium
-  actor -> page : Quality: Medium
-  page -> store : set('quality', 'medium')
-  store --> bridge : settings changed
-  bridge -> policy : qualityPolicy(..)
-  policy --> bridge : start Medium, stepDown on (L2-160 AC2)
-  bridge -> renderer : setLevel(medium)
-  renderer -> renderer : build Medium programs while Ultra keeps drawing
-  renderer -> renderer : switch on the next frame; no pause (L2-159 AC7)
-end
-group Mid-ride, the rider sets Frame rate 30 fps and Resolution 75 %
-  page -> store : set('frameRate', '30'), set('resolution', 75)
-  bridge -> renderer : FramePacer cap 30; setRenderScale(0.75), HUD unchanged (L2-160 AC4, AC5)
-end
-group Mid-ride, the rider picks WebGL 2
-  page -> store : set('graphics', 'webgl2')
-  bridge --> actor : toast: applies from the next world (L2-161 AC3; copy <TO SUPPLY>)
-  note right of bridge : The running renderer keeps its backend
+actor -> page : Open Settings
+page --> actor : Graphics API in use; Quality: Auto chosen (L2-159 AC1, AC3)
+actor -> page : Choose Medium; turn step-down off; 30 fps; 50 %
+page -> store : set('quality', 'medium') … each change kept at once (L2-158 AC3)
+actor -> host : Open a race or a world class
+host -> store : settings()
+host -> policy : worldQuality(settings)
+policy --> host : tier medium, stepDown false, cap 30, scale 0.5
+host -> scene : quality input
+scene -> renderer : start(…, { tier: 'medium', stepDown: false, forceWebGL })
+renderer --> scene : opens at Medium; ultra draws at High on WebGL 2 (L2-159 AC5)
+scene -> renderer : setFramePeriod(33.3) (L2-160 AC4)
+scene -> renderer : resize(w, h, devicePixelRatio × 0.5); the HUD stays sharp (L2-160 AC5)
+loop each display frame
+  scene -> renderer : draw, at most 30 a second (L2-160 AC4)
 end
 @enduml

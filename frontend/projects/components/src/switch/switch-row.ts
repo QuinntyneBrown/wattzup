@@ -18,5 +18,7 @@ export class SwitchRow {
   readonly label = input.required<string>();
   readonly description = input('');
   readonly checked = input.required<boolean>();
+  /** A setting that cannot change now: its switch is disabled and its description says why. */
+  readonly disabled = input(false);
   readonly toggled = output<boolean>();
 }

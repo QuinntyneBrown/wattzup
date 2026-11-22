@@ -8,6 +8,7 @@
   wz-switch
   class="switch-row__switch"
   [checked]="checked()"
+  [disabled]="disabled()"
   [attr.aria-describedby]="description() ? name() + '-desc' : null"
   (click)="toggled.emit(!checked())"
 >

@@ -1,10 +1,24 @@
 import { InjectionToken, type Signal } from '@angular/core';
+import type { WorldTier } from '../world/world-renderer';
+
+/** Quality: Auto, or a fixed level (L2-159 AC2). */
+export type QualityChoice = 'auto' | WorldTier;
 
 /**
  * Every ride setting on Settings, kept on this device (L2-158). Each slice of Settings adds its own: slice 20.1 the
- * first, Keep the screen awake (L2-164 AC5).
+ * first, Keep the screen awake (L2-164 AC5); slice 20.2 the World section's (L2-159, L2-160, L2-161).
  */
 export interface RideSettings {
+  /** Auto by default (L2-159 AC3). */
+  readonly quality: QualityChoice;
+  /** Whether slow frames lower a fixed level; always on with Auto (L2-160 AC1, AC2). */
+  readonly stepDown: boolean;
+  /** "Match display" or "30 fps" (L2-160 AC4). */
+  readonly frameRate: 'display' | '30';
+  /** The world's drawing buffer, 50 to 100 % in steps of 5 (L2-160 AC5). */
+  readonly resolution: number;
+  /** The graphics API: Automatic (WebGPU, else WebGL 2) or WebGL 2 (L2-161). */
+  readonly graphics: 'auto' | 'webgl2';
   /** Holds a screen wake lock while a ride runs; on by default. */
   readonly keepAwake: boolean;
 }

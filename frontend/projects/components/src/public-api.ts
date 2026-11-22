@@ -97,3 +97,5 @@ export { SideNavLink, type SideNavIcon } from './side-nav/side-nav-link';
 export { Setting } from './settings/setting';
 export { SettingsSection } from './settings/settings-section';
 export { SettingsReset } from './settings/settings-reset';
+export { Segmented, type SegmentedOption } from './segmented/segmented';
+export { WorldSettings } from './world-settings/world-settings';

@@ -3284,7 +3284,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
         antialias: false,
         trackTimestamp: asked !== null,
         // The sweep may profile the WebGL2 fallback on a WebGPU screen (#679).
-        forceWebGL: asked?.forceWebGL ?? false,
+        // The rider may ask for WebGL 2 in Settings (L2-161 AC1).
+        forceWebGL: (asked?.forceWebGL ?? false) || options.forceWebGL === true,
       });
       await renderer.init();
       this.renderer = renderer;
@@ -3300,11 +3301,17 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.renderer.outputColorSpace = SRGBColorSpace;
     const probe = readWorldRideProbe((globalThis as Record<string, unknown>)[PROBE_KEY]);
     // The test-only hook pins the tier; ultra draws at high on WebGL2 (L2-111 AC2).
-    const pin = probe && this.backend === 'webgl2' && probe.tier === 'ultra' ? 'high' : probe?.tier;
+    const pin =
+      probe && this.backend === 'webgl2' && probe.tier === 'ultra'
+        ? 'high'
+        : (probe?.tier ?? undefined);
+    // A level the rider fixed in Settings; ultra draws at high on WebGL2 (L2-159 AC5, L2-161 AC1).
+    const fixed = this.backend === 'webgl2' && options.tier === 'ultra' ? 'high' : options.tier;
     // A judged hook opens the ride at its tier and lets slow frames drop it, as a rider's (L2-159 AC4).
     // World loading may ask for a level: Low, when the rider chose it or a build above it failed (L2-155, L2-156).
-    this.budget = new FrameBudget(pin ?? options.tier ?? startTier(), undefined, {
-      pinned: !!pin && !probe?.judged,
+    // With Settings' step-down off, slow frames never lower the level (L2-160 AC2).
+    this.budget = new FrameBudget(pin ?? fixed ?? startTier(), undefined, {
+      pinned: (!!pin && !probe?.judged) || options.stepDown === false,
     });
     this.probe = probeReport(
       this.budget.tier,

@@ -1,0 +1,101 @@
+<fieldset wz-setting class="quality-options" [disabled]="none()">
+  <legend class="world-settings__label">Quality</legend>
+  <div class="quality-options__cards">
+    @for (quality of qualities; track quality.value) {
+      <label class="card card--select quality-option">
+        <input
+          class="radio__input"
+          type="radio"
+          name="quality"
+          [value]="quality.value"
+          [checked]="settings().quality === quality.value"
+          [disabled]="none() || (quality.value === 'ultra' && api() === 'webgl2')"
+          (change)="chooseQuality($event)"
+        />
+        <span class="card__text">
+          <span class="card__title"
+            >{{ levelName[quality.value] }}
+            @if (quality.value === 'auto') {
+              &ngsp;<span wz-pill tone="volt">Recommended</span>
+            }
+            @if (quality.value === 'ultra' && api() === 'webgl2') {
+              &ngsp;<span wz-pill>Needs WebGPU</span>
+            }
+          </span>
+          &ngsp;<span class="card__meta">{{ quality.text }}</span>
+        </span>
+      </label>
+    }
+  </div>
+</fieldset>
+<div wz-setting>
+  <wz-switch-row
+    name="step-down"
+    label="Step down when frames drop"
+    [description]="stepDown().text"
+    [checked]="stepDown().on"
+    [disabled]="stepDown().locked"
+    (toggled)="stepDownToggled.emit($event)"
+  />
+</div>
+<div wz-setting>
+  <span class="world-settings__label" id="frame-rate">Frame rate</span>
+  <wz-segmented
+    aria-labelledby="frame-rate"
+    aria-describedby="frame-rate-hint"
+    [options]="frameRates"
+    [value]="settings().frameRate"
+    [disabled]="none()"
+    (chosen)="frameRateChosen.emit($event)"
+  />
+  <p class="world-settings__hint" id="frame-rate-hint">
+    30 fps halves the work for the graphics chip: cooler, quieter and longer on battery. Numbers
+    still update every second.
+  </p>
+</div>
+<div wz-setting>
+  <div class="world-settings__head">
+    <label class="world-settings__label" for="resolution">Resolution</label>
+    <span class="setting__value" aria-hidden="true">{{ settings().resolution }} %</span>
+  </div>
+  <input
+    class="range"
+    id="resolution"
+    type="range"
+    min="50"
+    max="100"
+    step="5"
+    [value]="settings().resolution"
+    [attr.aria-valuetext]="settings().resolution + ' percent'"
+    aria-describedby="resolution-hint"
+    [disabled]="none()"
+    (input)="changeResolution($event)"
+  />
+  <div class="world-settings__scale" aria-hidden="true"><span>50 %</span><span>100 %</span></div>
+  <p class="world-settings__hint" id="resolution-hint">
+    Draws fewer pixels for a smoother ride on a weak chip. Text and numbers stay sharp.
+  </p>
+</div>
+<div wz-setting>
+  <label class="world-settings__label" for="graphics">Graphics</label>
+  <span class="select">
+    <select
+      class="select__control"
+      id="graphics"
+      aria-describedby="graphics-hint"
+      [disabled]="none()"
+      (change)="chooseGraphics($event)"
+    >
+      @for (option of graphics().options; track option.value) {
+        <option
+          [value]="option.value"
+          [disabled]="option.disabled"
+          [selected]="option.value === graphics().value"
+        >
+          {{ option.label }}
+        </option>
+      }
+    </select>
+  </span>
+  <p class="world-settings__hint" id="graphics-hint">{{ graphics().hint }}</p>
+</div>

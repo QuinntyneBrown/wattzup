@@ -40,7 +40,12 @@ export type { Plan, Segment, SegmentKind } from './workout/plan';
 export { NETWORK_STATUS, type NetworkStatus } from './network/network-status';
 export { FULLSCREEN, type Fullscreen } from './screen/fullscreen';
 export { SCREEN_WAKE_LOCK, type ScreenWakeLock } from './screen/screen-wake-lock';
-export { RIDE_SETTINGS, type RideSettings, type RideSettingsStore } from './settings/ride-settings';
+export {
+  RIDE_SETTINGS,
+  type QualityChoice,
+  type RideSettings,
+  type RideSettingsStore,
+} from './settings/ride-settings';
 export { HttpMapsApi } from './maps/http-maps-api';
 export { HttpRaceQueueApi, RACE_QUEUE_API, type RaceQueueApi } from './race/race-queue-api';
 export type { MapDto, MapRating, MapTerrain, RealPlace } from './maps/map-dto';
@@ -146,3 +151,5 @@ export { SignalRRideHubClient } from './live/signalr-ride-hub-client';
 export type { StandingRow, Standings } from './live/standings';
 export type { RaceStandingRow, RaceStandings } from './live/race-standings';
 export type { LobbySeat, LobbySeatKind } from './live/lobby-seat';
+export { AUTO_QUALITY, type WorldQuality } from './world/world-quality';
+export { GRAPHICS_SUPPORT, type GraphicsApi, type GraphicsSupport } from './world/graphics-support';
