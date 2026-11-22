@@ -55,7 +55,8 @@ export class CustomRideStore {
   private readonly telemetry = inject(BikeTelemetry);
   private readonly connection = inject(BIKE_CONNECTION);
   private readonly support = inject(BLUETOOTH_SUPPORT);
-  private readonly remembered = inject(REMEMBERED_BIKE).get();
+  private readonly rememberedBike = inject(REMEMBERED_BIKE);
+  private readonly remembered = this.rememberedBike.get();
   private readonly wakeLock = inject(SCREEN_WAKE_LOCK);
   private readonly draft = inject(CustomWorkoutStore).draft;
   private readonly totals = inject(RideTotals);
@@ -71,8 +72,8 @@ export class CustomRideStore {
   private destroyed = false;
   /** Whether the rider paused the ride, or a lost bike paused it for them (L2-105 AC1, AC2). */
   private readonly pausedByRider = signal(false);
-  /** Whether the ride has started. */
-  private readonly started = signal(true);
+  /** Whether the ride has started: at once with a bike, otherwise by Start once one is connected (L2-106). */
+  private readonly started = signal(false);
   /** Whether the ride has ended: at the plan's length, or by End. */
   private readonly ended = signal(false);
   /** Whether the bike has stopped answering since the ride started (`ble` not connected, L2-017). */
@@ -183,12 +184,27 @@ export class CustomRideStore {
   /** "Sent to bike", newest first, at most 50 rows (L2-029 AC1, AC3). */
   readonly sent = this.resistance.log;
 
-  /** The header's run button: Pause while the ride runs, Resume once paused, off while the bike is lost. */
-  readonly run = computed<RideRun>(() => (this.pausedByRider() ? 'resume' : 'pause'));
-  readonly runDisabled = this.bikeLost;
+  /**
+   * The header's run button: Start until the ride has started, off until a bike is connected (L2-106 AC1, AC3); then
+   * Pause while it runs and Resume once paused, off while the bike is lost (L2-105).
+   */
+  readonly run = computed<RideRun>(() =>
+    !this.started() ? 'start' : this.pausedByRider() ? 'resume' : 'pause',
+  );
+  readonly runDisabled = computed(() =>
+    this.started() ? this.bikeLost() : this.connection.ble() !== 'connected',
+  );
 
-  /** The overlay over the telemetry, or `null` while the ride can run (L2-105 AC2). */
-  readonly overlay = computed<RideOverlayKind | null>(() => (this.bikeLost() ? 'lost' : null));
+  /**
+   * The overlay over the telemetry, or `null` while the ride can run: Bluetooth off, no bike before the start (L2-106
+   * AC2), or the bike lost since (L2-105 AC2).
+   */
+  readonly overlay = computed<RideOverlayKind | null>(() => {
+    if (this.ended()) return null;
+    if (this.support.state() === 'adapter-off') return 'bluetooth-off';
+    if (!this.started()) return this.connection.ble() === 'connected' ? null : 'connect';
+    return this.bikeLost() ? 'lost' : null;
+  });
   /** The bike's name for the overlay's words. */
   readonly bikeName = computed(() => (this.connection.bike() ?? this.remembered)?.name ?? null);
 
@@ -223,10 +239,8 @@ export class CustomRideStore {
 
   constructor() {
     const destroyRef = inject(DestroyRef);
-    this.wakeLock.hold();
-    this.clock.start();
-    this.ticker.start();
-    this.engine.follow(this.plan);
+    // From Start ride the bike is connected and the ride starts at once; with none it waits for Start (L2-106).
+    if (this.connection.ble() === 'connected') this.begin();
     // A lost bike pauses the ride where it is; when the bike is back, the ride stays paused until Resume (L2-105).
     effect(() => {
       if (this.bikeLost()) untracked(() => this.pause());
@@ -259,7 +273,8 @@ export class CustomRideStore {
         void player.load(host, videoId, {
           startSeconds: this.offset + this.clock.elapsedMs() / 1000,
           controls: false,
-          autoplay: true,
+          // Before the start the video waits at its offset; Start plays it.
+          autoplay: this.started(),
           title: this.workout,
         });
       },
@@ -278,14 +293,21 @@ export class CustomRideStore {
     this.recorded.set(this.lastSecond);
   }
 
-  /** The overlay's action: Reconnect tries the lost bike at once, rather than at the connection's next retry. */
+  /**
+   * The overlay's action: Connect bike opens the browser's chooser (L2-106 AC2), Reconnect tries the lost bike at once
+   * rather than at the connection's next retry (L2-105 AC2), and Check again asks the browser for Bluetooth again.
+   */
   act(): void {
-    if (this.overlay() === 'lost') this.connection.reconnectNow();
+    const overlay = this.overlay();
+    if (overlay === 'connect') void this.connectBike();
+    else if (overlay === 'lost') this.connection.reconnectNow();
+    else if (overlay === 'bluetooth-off') void this.support.recheck();
   }
 
-  /** Pause or Resume, as the run button reads. */
+  /** Start, Pause or Resume, as the run button reads. */
   toggleRun(): void {
-    if (this.pausedByRider()) this.resume();
+    if (!this.started()) this.begin();
+    else if (this.pausedByRider()) this.resume();
     else this.pause();
   }
 
@@ -321,6 +343,31 @@ export class CustomRideStore {
   /** A "Level N" bar: N becomes the target, as the rider's own (L2-028 AC2). */
   pick(level: number): void {
     void this.resistance.setManual(level);
+  }
+
+  /** Starts the ride: the clock, the ticker and the engine following the plan, and the video from its offset. */
+  private begin(): void {
+    if (this.started() || this.connection.ble() !== 'connected') return;
+    this.started.set(true);
+    this.wakeLock.hold();
+    this.clock.start();
+    this.ticker.start();
+    this.engine.follow(this.plan);
+    const player = this.player();
+    player?.seekTo(this.offset);
+    player?.play();
+  }
+
+  /** Picks a bike in the browser's chooser, from the rider's press, connects it and remembers it for next time. */
+  private async connectBike(): Promise<void> {
+    try {
+      const bike = await this.connection.requestBike();
+      if (bike === null || this.destroyed) return;
+      await this.connection.connect();
+      this.rememberedBike.save(bike);
+    } catch {
+      // A chooser that is blocked or a bike that fails to connect leaves the overlay as it was.
+    }
   }
 
   /** The plan's end: the clock stops at its length. */
