@@ -161,13 +161,13 @@ interface Section {
 
 /**
  * A tube along +y from 0 to `length`, its section an ellipse that changes along it, closed at both ends, with a
- * colour for each section. Position, normal and colour, not indexed: every piece of the rider is made this way so
+ * colour for each section (and, where it is wanted, for each place round it: `round` runs 0 to 1). Position, normal and colour, not indexed: every piece of the rider is made this way so
  * they can be merged.
  */
 function loft(
   sections: readonly Section[],
   length: number,
-  colour: (t: number) => Color,
+  colour: (t: number, round: number) => Color,
   around = 12,
 ): BufferGeometry {
   const positions: number[] = [];
@@ -175,8 +175,8 @@ function loft(
   const finishes: number[] = [];
   const index: number[] = [];
   for (const section of sections) {
-    const c = colour(section.t);
     for (let s = 0; s < around; s++) {
+      const c = colour(section.t, s / around);
       const a = (s / around) * Math.PI * 2;
       positions.push(
         (section.x ?? 0) + Math.cos(a) * section.rx,
@@ -200,7 +200,7 @@ function loft(
     [sections.length - 1, true],
   ] as const) {
     const section = sections[at]!;
-    const c = colour(section.t);
+    const c = colour(section.t, 0);
     const middle = positions.length / 3;
     positions.push(section.x ?? 0, section.t * length, section.z ?? 0);
     colours.push(c.r, c.g, c.b);
@@ -901,7 +901,7 @@ function body(jersey: Color, look: Palette): { still: BufferGeometry[]; kit: Buf
   trunk.applyMatrix4(between(base, neckBase));
   kit.push(trunk);
 
-  // Neck and head; the helmet over the skull, its vents dark from front to back, its tail drawn out behind.
+  // Neck and head.
   const skull = HEAD.clone();
   const nape = neckBase.clone().addScaledVector(up, -0.03);
   const neck = loft(
@@ -947,27 +947,38 @@ function body(jersey: Color, look: Palette): { still: BufferGeometry[]; kit: Buf
       placed(strap, between(top, chin));
     }
   }
-  const shellShape = new SphereGeometry(1, 20, 10, 0, Math.PI * 2, 0, Math.PI * 0.56);
-  const shell = solid(shellShape, jersey, LACQUER);
-  // Vents: every other stripe round the crown is dark, away from the rim.
-  const place = shell.getAttribute('position');
-  const tint = shell.getAttribute('color');
-  for (let i = 0; i < place.count; i += 3) {
-    const x = (place.getX(i) + place.getX(i + 1) + place.getX(i + 2)) / 3;
-    const y = (place.getY(i) + place.getY(i + 1) + place.getY(i + 2)) / 3;
-    const band = Math.floor((x + 1) * 3.5);
-    const dark = band % 2 === 1 && y > 0.25 && y < 0.93;
-    const rim = y < 0.06;
-    const c = dark ? VENT : rim ? VENT : jersey;
-    for (let k = 0; k < 3; k++) tint.setXYZ(i + k, c.r, c.g, c.b);
-  }
-  placed(
-    shell,
-    new Matrix4()
-      .makeRotationX(-0.2)
-      .multiply(new Matrix4().makeScale(0.094, 0.088, 0.142))
-      .setPosition(skull.x, skull.y + 0.022, skull.z + 0.022),
+  // The helmet: a road helmet's long low shell from the brow to a tail raised behind, in the rider's colour with a
+  // pale tail, lacquered; five vents run along its crown, dark, and a dark rim under its edge. A loft from front to
+  // back: laid that way its +z points down, so the crown is three quarters of the way round it.
+  const paint = jersey.clone();
+  const tail = jersey.clone().lerp(new Color(0xffffff), 0.8);
+  FINISHES.set(paint, LACQUER);
+  FINISHES.set(tail, LACQUER);
+  const brow = skull.clone().add(new Vector3(0, 0.03, -0.138));
+  const stern = skull.clone().add(new Vector3(0, 0.066, 0.168));
+  const helmet = loft(
+    [
+      { t: 0, rx: 0.03, rz: 0.018, z: 0.012 },
+      { t: 0.07, rx: 0.068, rz: 0.044, z: 0.006 },
+      { t: 0.24, rx: 0.09, rz: 0.068 },
+      { t: 0.48, rx: 0.097, rz: 0.078 },
+      { t: 0.72, rx: 0.09, rz: 0.07, z: 0.004 },
+      { t: 0.9, rx: 0.064, rz: 0.046, z: 0.008 },
+      { t: 1, rx: 0.026, rz: 0.018, z: 0.012 },
+    ],
+    brow.distanceTo(stern),
+    (t, round) => {
+      // How far round from the crown, 0 at the crown to 0.25 at either edge.
+      const off = Math.abs(round - 0.75);
+      if (off > 0.25) return VENT;
+      if (off > 0.215) return VENT;
+      const vent = [0, 0.075, 0.15].some((at) => Math.abs(off - at) < 0.018);
+      if (vent && t > 0.14 && t < 0.88) return VENT;
+      return t > 0.93 ? tail : paint;
+    },
+    28,
   );
+  placed(helmet, between(brow, stern));
 
   // Arms: the shoulder rounding over the joint, the upper arm in its sleeve, the forearm, a gloved hand on the hood.
   for (const side of [-1, 1]) {

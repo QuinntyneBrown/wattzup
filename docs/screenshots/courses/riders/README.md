@@ -22,6 +22,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 11 | The whole rider in the frame: the picture raised a tenth so the wheels and the road under them show above the panel | 119.8 fps, none over 20 ms | 16.8 ms | 304 fps (3.29 ms): 304, 294, 313 | 85,051 | 84 | Yes |
 | 12 | The camera closer: the rider some two fifths of the picture's height, where they were a ninth | 119.9 fps, none over 20 ms | 16.7 ms | 302 fps (3.31 ms): 305, 284, 302 | 85,051 | 84 | Yes |
 | 13 | Hips and legs of a cyclist: glutes that are the thighs' own tops, fuller thighs, calves that swell behind | 119.8 fps, 1 over 20 ms | 25.0 ms | 308 fps (3.25 ms): 305, 312, 308 | 87,691 | 84 | Yes |
+| 14 | A road helmet: a long low shell with vents along its crown, a dark rim and a pale tail | 119.7 fps, 1 over 20 ms | 25.0 ms | 303 fps (3.30 ms): 299, 303, 309 | 87,751 | 84 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -521,3 +522,26 @@ What it showed is what is missing: the road shows the lamps' reflections but not
 worth having carries the rider's colours (a jersey lit by a lamp, smeared down the wet road), which is a mirrored
 or smeared draw of the rider, not a dark quad. That is a pass of its own, and it wants the road below the rider's
 wheels in the frame.
+
+## Pass 14: a road helmet
+
+**Before** (`rider-13-start.jpg`): the helmet is half a ball with its vents coloured in by triangle, which at the
+new camera distance shows as a checkerboard on a ball.
+
+**After** (`rider-14-start.jpg`, `rider-14.jpg`, `rider-14.mp4`): a road helmet's shell, long and low from the brow
+to a tail raised behind the head, lacquered in the rider's colour with a pale tip to the tail and a dark rim under
+its edge; five vents run along the crown. From directly behind, the shell, its rim and its tail are what is seen;
+the vents are on top and show when the rider is seen from above or the side.
+
+**What changed.** `course-cyclist.ts`: `loft`'s colour may now depend on where round the tube a vertex is
+(`colour(t, round)`), so one loft can carry stripes along it. The helmet is a loft of seven sections from brow to
+tail, 28 round, coloured by `round` for the vents and the rim and by `t` for the tail.
+
+**Cost.** Sixty triangles more for the pack; 303 fps against 308, within the spread. The filmed run had the one
+25 ms frame already traced to the display.
+
+**Tried and dropped.** A tail pale from four fifths of the way back: from behind, where only the tail shows, the
+helmet read as a white cap.
+
+**Learned.** Colour a shape along the lines it was built on. Stripes painted on a ball's triangles zigzag; the same
+stripes on a loft whose columns run front to back are straight for nothing.

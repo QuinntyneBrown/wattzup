@@ -563,6 +563,9 @@ different bike (a time-trial bike, a gravel bike) is the frame's eight points an
 
 **Cost.** None: faster than the kit it replaces, with 15 fewer draw calls for a pack of five.
 
+**Stripes along a loft.** `loft`'s colour is `colour(t, round)`: `t` along it, `round` 0 to 1 about it. The helmet's
+vents and rim are bands of `round` (riders pass 14); a frame's decals or a sock's stripes would be bands of `t`.
+
 **Limbs' own axes.** Along a limb laid by `between`, +y runs from the upper joint to the lower, +x across the bike
 and +z to the limb's front (the quadriceps, the kneecap, the shin); a muscle at the back (glute, hamstring, calf) is
 an offset on -z. A loft may begin before its joint (a negative `t`): the glute is the thigh's own top (riders pass
