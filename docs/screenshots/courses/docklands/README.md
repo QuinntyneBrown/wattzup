@@ -37,6 +37,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 13 | Harbour water that ripples and mirrors the city | 120.1 fps, no frame over 20 ms | median of three 278 fps (3.60 ms): 287, 278, 271; pass 12 read 269 | | 75,149 | 130 | 3.31 MB | Yes |
 | 14 | Street furniture: lamp columns with a lit head, and direction boards | 119.5 fps, 1 frame over 20 ms | median of three 288 fps (3.47 ms): 291, 280, 288; pass 13 read 278 | | 74,165 | 130 | 3.37 MB | Yes |
 | 15 | The climbs are bridges over the harbour | 120.0 fps, no frame over 20 ms | median of three 290 fps (3.45 ms): 290, 298, 289; pass 14 read 288 | | 72,083 | 126 | 3.14 MB | Yes |
+| 16 | Pylons and stay cables strung with light over each bridge | 119.0 fps, 2 frames over 20 ms | median of three 292 fps (3.43 ms): 294, 292, 289; pass 15 read 290 | | 72,151 | 126 | 3.17 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -541,3 +542,27 @@ at the bridge's foot. **The file is 0.23 MB smaller, 3.14 MB gzipped**: a bridge
   ("the land here is the sea's bed") was enough to open water under a bridge, with no holes at its ends.
 - Draw calls still pass 140 in places: 146 on this bridge's deck, where the frame takes in the quays on both
   shores.
+
+## Pass 16: pylons and stay cables strung with light
+
+**Before** (`pass-15.jpg`): a bridge is a bare deck between parapets. Nothing stands above it, and from the quay a
+rider cannot see it coming. (A dark gantry across the road stood at every third effort; it is gone.)
+
+**After** (`pass-16.jpg`, `pass-16.mp4`): two pylons stand over each bridge, their legs outside the parapets from
+the sea's bed to 38 m above the deck, tied by a beam at the head and one under the deck. From each head, stay
+cables fan down to the deck's edge every 16 m out to 96 m each way, strung with light: cyan on the first bridge,
+then pink, amber and violet in turn, with a glow at each pylon's head. The bridge is seen from the quay long
+before it is climbed, and each one is told from the last by its colour.
+
+**What changed.** `themes.py`, Docklands only: the scenery finds each run of bridge samples and builds, at 0.3 and
+0.7 of its length, the pylons (boxes in the towers' material) and the stays (thin upright ribbons in a neon
+material, laid twice a hair apart and wound each way). About 280 triangles a bridge.
+
+**Cost.** None: 292 fps against 290. 0.03 MB in the file.
+
+**Learned.**
+
+- A map wants a landmark that can be seen from far off and names the place. Eight bridges in four colours do more
+  for "Neon Docklands" than every surface pass before them, for 2,200 triangles.
+- A line of light is two triangles. Cables, neon tubes, rails, a string of lamps along a pier: the cheapest thing
+  in the scene and the most visible at night.

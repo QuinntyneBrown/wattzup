@@ -403,6 +403,27 @@ a tunnel, the same marking with the edge a wall and a roof.
 **Watch for.** Scenery placed by its own rule that ignores the marks (a building on stilts beside the deck); the
 land's coarse grid leaving a slope of land poking up beside the deck's first metres.
 
+### 15. A landmark in lines of light (Docklands pass 16)
+
+**What it gives.** Something tall, lit and unmistakable that a rider sees from far off and rides through: here,
+cable-stayed pylons over each bridge, the stays strung with light, a colour a bridge.
+
+**How it works.** `tools/blender/themes.py`, in the theme's scenery function: runs of marked samples (the bridges of
+technique 14) are found; at 0.3 and 0.7 of each run stand two legs outside the parapets (`B["tower"].box`) with a
+beam at the head and one under the deck; from each leg's head, a quad 0.16 m tall runs to the deck's edge every
+fourth sample out to 96 m each way, in a glowing material (`neon-*`), which puts it in the `Glow` group: unlit,
+bloomed at the tiers that bloom. `Kit.halo` adds a glow at each head.
+
+**To apply it to another map.** Give each map one landmark built the same way: a few boxes for its mass and lines
+or panels of a glowing material for what is lit. A lighthouse and its beam on the coast, a cathedral's lit spires
+over the old town, a cable car's line of cabins in the Dolomites, a pier's Ferris wheel in Vice City. Place it
+where the road turns towards it.
+
+**Cost.** None measurable; a few hundred triangles.
+
+**Watch for.** Ribbons seen edge on vanish: lay them upright, so a rider on the road sees their height. Two faces
+on the same corners: Blender keeps one, so lay the second a hair away.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
@@ -417,4 +438,4 @@ The pictures the work aims at differ from a course in these ways, most visible f
 6. Lit windows and neon throw no light on the ground, and the neon has no glow in the air.
 7. The riders are simple figures: smooth limbs, no cloth, no faces.
 8. Doors, signs, pipes, gutters and roof lines: a building is still a box with windows.
-9. The bridges are bare decks: no cables, arches or trusses above them, and the lamps' pools stop at the parapet.
+9. The stays' light falls on nothing: the deck, the riders and the water take no colour from them.

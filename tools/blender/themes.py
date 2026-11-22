@@ -916,19 +916,49 @@ def docklands(k: Kit) -> dict:
         B["glow-window"].box((x - math.cos(yaw) * L * 0.35, y - math.sin(yaw) * L * 0.35, 11), (L * 0.185, L * 0.145, 0.6), yaw)
         ships += 1
     k.skyline(int(110 * k.scale), 180, 1100)
-    # The bridges: steel trusses over the road with lights, at every third effort.
     efforts = k.gates("neon-cyan", "neon-pink", CROWD, "gold", "bulb")
-    for n_, stage in enumerate(st for st in k.st if st["kind"] == "work"):
-        if n_ % 3:
+    # The harbour bridges: over each one's deck, two pylons with stay cables fanned down to the deck either side of
+    # them, the cables strung with light. Each bridge takes its light's colour in turn.
+    spans, start = [], None
+    for i in range(k.n):
+        if s[i].get("bridge") and start is None:
+            start = i
+        elif not s[i].get("bridge") and start is not None:
+            spans.append((start, i - 1))
+            start = None
+    out = k.kerb + 2.6
+    for n_, (i0, i1) in enumerate(spans):
+        if i1 - i0 < 40:
             continue
-        i = k.road.index((stage["from"] + stage["to"]) / 2)
-        yaw = s[i]["h"]
-        span = k.kerb + 6
-        for side in (1, -1):
-            B["tower"].box(k.P(i, 0, span * side, -1), (3, 3, 12), yaw)
-        B["tower"].box(k.P(i, 0, 0, 10), (4, 2 * span + 3, 2.5), yaw)
-        for q in range(9):
-            B["glow-lamp"].box(k.P(i, -2.1, -span + q * span / 4, 10.4), (0.1, 0.5, 0.5), yaw)
+        neon = ("neon-cyan", "neon-pink", "neon-amber", "neon-violet")[n_ % 4]
+        for share in (0.3, 0.7):
+            i = i0 + int((i1 - i0) * share)
+            yaw, deck = s[i]["h"], s[i]["z"]
+            top = 38.0
+            for side in (1, -1):
+                # A leg from the sea's bed to the pylon's head, slimmer above the deck.
+                B["tower"].box(k.P(i, 0, out * side, -9.0 - deck), (2.6, 1.8, deck + 9.0 + 1.0), yaw)
+                B["tower"].box(k.P(i, 0, out * side, 1.0), (1.7, 1.2, top - 1.0), yaw)
+                k.halo(k.P(i, 0, out * side, top + 0.6), neon)
+                # The stays: from the head down to the deck's edge, every 16 m out to 96 m each way.
+                head = k.P(i, 0, out * side, top - 1.0)
+                for reach in range(4, 28, 4):
+                    for way in (1, -1):
+                        j = i + reach * way
+                        if j < i0 or j > i1:
+                            continue
+                        foot = k.road.at(j, out * side, 1.0)
+                        for lift, order in ((0.0, (0, 1, 2, 3)), (0.02, (3, 2, 1, 0))):
+                            quad = (
+                                (head[0], head[1], head[2] + lift),
+                                (foot[0], foot[1], foot[2] + lift),
+                                (foot[0], foot[1], foot[2] + 0.16 + lift),
+                                (head[0], head[1], head[2] + 0.16 + lift),
+                            )
+                            B[neon].quad(*(quad[q] for q in order))
+            # The head beam and a beam under the deck tie the two legs.
+            B["tower"].box(k.P(i, 0, 0, top - 3.0), (1.6, 2 * out + 1.2, 2.2), yaw)
+            B["tower"].box(k.P(i, 0, 0, -3.2), (2.2, 2 * out + 1.8, 1.8), yaw)
     return {"efforts": efforts, "warehouses": sheds, "cranes": cranes, "ships": ships, "lorries": lorries, "masts": masts}
 
 
