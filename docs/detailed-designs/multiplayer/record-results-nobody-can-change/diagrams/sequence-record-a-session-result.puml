@@ -20,8 +20,7 @@ box "Backend — Telo.Ride.Api" #D1FADF
 end box
 box "Backend — Telo.Ride.Application and Domain" #ECFDF3
   participant "TickLiveSessionsCommandHandler" as tick
-  participant "LiveSession" as session
-  participant "RankingPolicy" as rank
+  participant "RaceSession" as session
   participant "SessionResultRecorder" as recorder
 end box
 box "Backend — Telo.Ride.Infrastructure" #FFF4E5
@@ -29,19 +28,16 @@ box "Backend — Telo.Ride.Infrastructure" #FFF4E5
   database "Telo Ride database" as db
 end box
 ticker -> tick : Send TickLiveSessionsCommand(now)
-tick -> session : IsDue(now)
-alt group class at its length, or race all finished / DNF, or 2 min after first finisher (L2-071 AC3)
-  session --> tick : Due
-  tick -> recorder : RecordAsync(session)
-  recorder -> rank : Rank(session) from received progress only
-  rank --> recorder : Final standings
+tick -> session : End(now)
+alt every person finished or DNF, or 2 min after the first finished (L2-071 AC3)
+  session --> tick : Final standings from received progress only; State = Ended
+  tick -> recorder : Record(session, standings)
   recorder -> recorder : SessionResult.From(session, standings) (L2-125 AC1)
   recorder -> db : Save SessionResult and entries
   db --> recorder : Committed
   recorder --> tick : SessionResult
-  tick -> notifier : SessionEnded(sessionId, entries)
+  tick -> notifier : SessionEnded(sessionId)
   notifier --> apps : SessionEnded
-  tick -> session : State = Ended; removed from registry
 else not due
   session --> tick : Keep running
 end
