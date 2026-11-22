@@ -96,8 +96,9 @@ test("pressing You're ready again holds the clock at 0:05 once more (L2-053 AC2,
 }) => {
   const lobby = await openLobby(page, bluetooth);
   await press(page, lobby);
-  await page.clock.runFor(2_000);
-  await expect(lobby.clock).toHaveText('0:03');
+  // Before 0:03, when the countdown makes the lobby inert (L2-056 AC1).
+  await page.clock.runFor(1_000);
+  await expect(lobby.clock).toHaveText('0:04');
 
   await press(page, lobby);
 

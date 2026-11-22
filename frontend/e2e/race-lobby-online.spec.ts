@@ -71,6 +71,7 @@ test(
     await expect(lobby.title).toHaveText('Old Town Criterium · 14.2 km · Riders online');
     await expect(lobby.status).toHaveText('Waiting for riders');
     await expect(lobby.clock).toHaveText('0:24');
+    await expect(lobby.clock).toHaveAttribute('role', 'timer');
     await expect(lobby.clock).toHaveAttribute('aria-label', 'Starts in 24 seconds');
     await expect(lobby.hint).toHaveText(
       '6 of 10 seats taken. At 0:10 bots fill the rest so the race starts full.',

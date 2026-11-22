@@ -28,7 +28,7 @@ export class RaceLobbyPage {
       .locator('.race-lobby__header')
       .getByRole('button', { name: 'Full screen' });
     this.status = page.locator('.race-lobby__status');
-    this.clock = page.getByRole('timer');
+    this.clock = page.locator('.race-lobby__clock');
     this.hint = page.locator('.race-lobby__hint');
     this.notice = page.locator('.race-lobby__notice');
     this.ready = page.locator('.race-lobby__ready');

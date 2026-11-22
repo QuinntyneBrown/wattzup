@@ -32,6 +32,7 @@ export { RideChoice, type RideOption } from './class-start/ride-choice';
 export { ClassStartHeader } from './class-start/class-start-header';
 export { ClassBike } from './class-ride/class-bike';
 export { ClassBoard, type ClassBoardRow } from './class-ride/class-board';
+export { RaceCountdown } from './race-lobby/race-countdown';
 export { StartClock } from './race-lobby/start-clock';
 export { StartGrid } from './race-lobby/start-grid';
 export { ClassHeader } from './class-ride/class-header';

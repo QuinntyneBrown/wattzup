@@ -23,7 +23,11 @@
       <wz-fullscreen-toggle [active]="fullscreen.active()" (toggled)="toggleFullscreen()" />
     }
   </header>
-  <div class="race-lobby__scroll">
+  <div
+    class="race-lobby__scroll"
+    [inert]="store.countdownStep() !== null"
+    [attr.aria-hidden]="store.countdownStep() === null ? null : 'true'"
+  >
     <div class="race-lobby__body">
       <wz-start-clock
         [status]="store.status()"
@@ -36,4 +40,7 @@
       <wz-start-grid [seats]="store.seats()" />
     </div>
   </div>
+  @if (store.countdownStep(); as step) {
+    <wz-race-countdown [step]="step" />
+  }
 </main>
