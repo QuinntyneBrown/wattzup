@@ -83,7 +83,7 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 20.3 | Check this device | Off-screen trials find the level the device holds. | 2 | 20. Tune ride settings | 100% |
 | 20.4 | Sound, motion and display | Ride sound, music, reduce motion, theme, ride numbers, wake lock. | 2 | 20. Tune ride settings | 100% |
 | 20.5 | Manage saved worlds | This device section lists saved worlds and their size, clears them with a toast, and can stop saving. | 2 | 20. Tune ride settings | 100% |
-| 21.1 | Set up a custom workout | Build your own workout under Profile: warm-up, ordered interval sets and cool-down. | 3 | 21. Ride a custom workout | 0% |
+| 21.1 | Set up a custom workout | Build your own workout under Profile: warm-up, ordered interval sets and cool-down. | 3 | 21. Ride a custom workout | 100% |
 | 21.2 | Preview a custom workout | Preview the workout's resistance profile, length and expected average power before starting. | 2 | 21. Ride a custom workout | 0% |
 | 21.3 | Ride a custom workout | The plan drives target resistance through each interval, with the ride clock and live readouts. | 3 | 21. Ride a custom workout | 0% |
 | 21.4 | Pause, leave or end | Pause, lose the bike, leave or end the ride. | 2 | 21. Ride a custom workout | 0% |
@@ -103,4 +103,4 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 27.1 | Installable app | Manifest, icons and install from Chrome or Edge. | 2 | 27. Install the app | 0% |
 | 27.2 | Update to a new version | Tell the rider a new version is ready; reload between rides. | 1 | 27. Install the app | 0% |
 
-**Total:** 95 slices, 238 days. **Complete:** 76 slices, 196 days (82%).
+**Total:** 95 slices, 238 days. **Complete:** 77 slices, 199 days (84%).
