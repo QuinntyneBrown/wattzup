@@ -53,6 +53,8 @@ RUN_OUT = 200.0  # road after the finish line
 ROAD_HALF = 5.0
 CLEAR = 46.0  # the road keeps this far from an earlier stretch of itself
 SEA_CLEARANCE = 4.0  # the road's lowest point above the sea
+BRIDGE_BED = -9.0  # the land's height under a bridge: below the sea
+BRIDGE_CLEAR = 1.6  # a bridge's deck stands this far above the quay it left before the quay stops beside it
 START_LINE = 14.0  # the start line and its gate stand this far up the road: the rider starts on the grid behind it
 
 
@@ -329,6 +331,20 @@ def lay_centre_line(course: dict, theme: dict | None = None):
         {"x": xs[i], "y": ys[i], "z": zs[i], "h": hs[i], "k": curv[i], "g": grades[i], "d": i * STEP - LEAD_IN}
         for i in range(n)
     ]
+    if theme.get("bridges"):
+        # A theme of bridges: from the foot of each effort's ramp, the road is a bridge for as long as it stands
+        # `BRIDGE_CLEAR` above where the ramp began. A bridge's samples are marked: no quay is laid beside them, the
+        # land beneath them is the harbour's bed, and nothing is stood on them but their own lamps.
+        for stage in st:
+            if stage["kind"] != "work":
+                continue
+            i0 = int((stage["from"] + LEAD_IN) / STEP)
+            foot = samples[i0]["z"]
+            for i in range(i0, min(n, i0 + int(1400 / STEP))):
+                if samples[i]["z"] > foot + BRIDGE_CLEAR:
+                    samples[i]["bridge"] = True
+                elif i > i0 + int(120 / STEP):
+                    break
     return samples, st, length, mean, per_level
 
 
@@ -743,6 +759,22 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
 
     def edges(i: int) -> None:
         """Each theme's road edge beyond the kerbs: verge, pavement, quay, beach, cliff, rail or parapet."""
+        if s[i].get("bridge") and s[i + 1].get("bridge"):
+            # A bridge: a walkway each side, a parapet a metre high with a flat top, and the deck's edge below it.
+            walk, top, deep = kerb + 1.5, 1.05, -1.3
+            strip(prom, i, walk, 0.12, kerb, 0.12)
+            strip(wall, i, walk, top, walk, 0.12)
+            strip(wall, i, walk + 0.3, top, walk, top)
+            strip(wall, i, walk + 0.3, deep, walk + 0.3, top)
+            strip(prom, i, -kerb, 0.12, -walk, 0.12)
+            strip(wall, i, -walk, 0.12, -walk, top)
+            strip(wall, i, -walk, top, -(walk + 0.3), top)
+            strip(wall, i, -(walk + 0.3), top, -(walk + 0.3), deep)
+            if i % 9 == 4:
+                # A pier down into the water.
+                mid = road.at(i, 0.0)
+                wall.box((mid[0], mid[1], -9.0), (2.4, 2 * walk - 1.0, mid[2] + 9.0 + deep), s[i]["h"])
+            return
         if edge == "verge":
             strip(sand, i, kerb + 8.0, -0.25, kerb, 0.12)
             strip(sand, i, kerb + 14.0, -1.6, kerb + 8.0, -0.25)
@@ -882,7 +914,8 @@ def build_terrain(road: Road, col, cell: float = 18.0):
             for _, j, dj in near:
                 w = 1.0 / (dj * dj + 4.0)
                 w_sum += w
-                h_sum += w * road.s[j]["z"]
+                # Under a bridge the land is the harbour's bed: the water shows beneath the deck.
+                h_sum += w * (BRIDGE_BED if road.s[j].get("bridge") else road.s[j]["z"])
             h_road = h_sum / w_sum
             j0 = near[0][1]
             p0 = road.s[j0]
@@ -960,7 +993,8 @@ def build_land(road: Road, col, theme: dict, cell: float = 14.0):
             for _, j, dj in near:
                 w = 1.0 / (dj * dj + 4.0)
                 w_sum += w
-                h_sum += w * road.s[j]["z"]
+                # Under a bridge the land is the harbour's bed: the water shows beneath the deck.
+                h_sum += w * (BRIDGE_BED if road.s[j].get("bridge") else road.s[j]["z"])
             h_road = h_sum / w_sum
             p0 = road.s[near[0][1]]
             leftward = (x - p0["x"]) * -math.sin(p0["h"]) + (y - p0["y"]) * math.cos(p0["h"])

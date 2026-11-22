@@ -146,6 +146,8 @@ THEMES: dict[str, dict] = {
         # The harbour bridges: each effort climbs a ramp over the first two fifths of its stretch and runs level across
         # the bridge; each recovery comes down off it in its first seventh. No rolling ground: the quays are flat.
         "grade": {"perLevel": 0.45, "ramp": {"work": 0.4, "recover": 0.15}},
+        # Each of those climbs is a bridge: the quay stops, the road crosses water on piers between parapets.
+        "bridges": True,
         "reach": 1100.0,
         "night": True,
         # After rain: how much of the ground holds water, 0 to 1. The app darkens it and mirrors the lamps in it.
@@ -801,7 +803,8 @@ def docklands(k: Kit) -> dict:
     front = k.kerb + 3.0
     while i < k.n - 6:
         off = -(front + 8.0)
-        if k.straight(i, 4, 1 / 70) and k.room(i, off, 18.0, 60.0):
+        on_bridge = any(s[j].get("bridge") for j in range(max(i - 5, 0), min(i + 6, k.n)))
+        if not on_bridge and k.straight(i, 4, 1 / 70) and k.room(i, off, 18.0, 60.0):
             yaw = s[i]["h"]
             width = rng.uniform(16, 26)
             floors = rng.randint(3, 6)
@@ -825,7 +828,7 @@ def docklands(k: Kit) -> dict:
     for i in range(8, k.n - 8, 3):
         off = k.kerb + rng.uniform(14, 24)
         x, y, z = k.road.at(i, off)
-        if not k.road.clear_of_road(x, y, 14.0, i):
+        if not k.road.clear_of_road(x, y, 14.0, i) or any(s[j].get("bridge") for j in range(max(i - 4, 0), min(i + 5, k.n))):
             continue
         yaw = s[i]["h"]
         if rng.random() < 0.06 and cranes < 26:
@@ -846,6 +849,9 @@ def docklands(k: Kit) -> dict:
     lorries = masts = 0
     for i in range(6, k.n - 8):
         yaw = s[i]["h"]
+        # Nothing of the quay's stands on a bridge, or within a few metres of its ends.
+        if any(s[j].get("bridge") for j in range(i - 3, i + 4)):
+            continue
         # The railing: a post a sample and two rails on to the next, with a gap for a gate now and then.
         if (i // 14) % 5 != 2:
             k.fence(i, k.kerb + 3.0, 1.15)

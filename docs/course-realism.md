@@ -378,13 +378,38 @@ before adding new kinds of scenery: guard rails, snow poles, kilometre stones, b
 
 **Watch for.** Triangles a copy times thousands of copies. Two faces on the same corners: Blender keeps one.
 
+### 14. Bridges: a climb with nothing beside it (Docklands pass 15)
+
+**What it gives.** A climb that is a bridge over water: parapets, a walkway, piers, the sea beneath and the view
+either side, where there was a ramp of paving with the land rising alongside.
+
+**How it works.** `tools/blender/build_course.py`:
+
+- `lay_centre_line`: with `bridges` in the theme, each sample of road from the foot of an effort's ramp is marked
+  `bridge` while the road stands `BRIDGE_CLEAR` (1.6 m) above the height the ramp began at.
+- `build_road`, `edges`: between two marked samples it lays a walkway to 1.5 m beyond the kerb, a parapet 1.05 m
+  high and 0.3 m thick, the deck's side 1.3 m down, and every ninth sample a pier down to the sea's bed, in place of
+  the theme's own edge.
+- `build_land`: a marked sample counts as `BRIDGE_BED` (9 m below the sea) when the land's height near the road is
+  worked out, so the land dips under the sea beneath a bridge.
+- The theme's scenery skips marked samples (`s[i].get("bridge")`), and a few either side of them.
+
+**To apply it to another map.** A theme with `ramp` and a sea (`terrain.sea`) can name `bridges`. For a viaduct
+over a valley, mark the samples the same way and give the land a bed below the road instead of below the sea. For
+a tunnel, the same marking with the edge a wall and a roof.
+
+**Cost.** None; Docklands' file fell 0.23 MB.
+
+**Watch for.** Scenery placed by its own rule that ignores the marks (a building on stilts beside the deck); the
+land's coarse grid leaving a slope of land poking up beside the deck's first metres.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
 
 1. Draw calls pass their budget of 140 in places (146 where the road runs beside itself), and the five riders are
    some 60 of them: a rider far ahead should be one mesh.
-2. The map's file is 3.31 MB gzipped against 3 MB: what is left is positions and indices, which need a mesh codec
+2. The map's file is 3.14 MB gzipped against 3 MB: what is left is positions and indices, which need a mesh codec
    (meshopt).
 3. Nothing but the riders casts a shadow: posts, walls and containers throw none.
 4. The water does not mirror the quay's own lamps, cranes and ships: only the sky and the far shore.
@@ -392,4 +417,4 @@ The pictures the work aims at differ from a course in these ways, most visible f
 6. Lit windows and neon throw no light on the ground, and the neon has no glow in the air.
 7. The riders are simple figures: smooth limbs, no cloth, no faces.
 8. Doors, signs, pipes, gutters and roof lines: a building is still a box with windows.
-9. The land rises with the road: a climb onto a bridge has ground beside it, not water beneath.
+9. The bridges are bare decks: no cables, arches or trusses above them, and the lamps' pools stop at the parapet.

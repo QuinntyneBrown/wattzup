@@ -36,6 +36,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 12 | The lamps' light comes from above: riders and scenery have shape | 119.3 fps, 2 frames over 20 ms | median of three 269 fps (3.72 ms): 288, 269, 264; pass 11 read 270 in the same sitting | | 75,149 | 130 | 3.31 MB | Yes |
 | 13 | Harbour water that ripples and mirrors the city | 120.1 fps, no frame over 20 ms | median of three 278 fps (3.60 ms): 287, 278, 271; pass 12 read 269 | | 75,149 | 130 | 3.31 MB | Yes |
 | 14 | Street furniture: lamp columns with a lit head, and direction boards | 119.5 fps, 1 frame over 20 ms | median of three 288 fps (3.47 ms): 291, 280, 288; pass 13 read 278 | | 74,165 | 130 | 3.37 MB | Yes |
+| 15 | The climbs are bridges over the harbour | 120.0 fps, no frame over 20 ms | median of three 290 fps (3.45 ms): 290, 298, 289; pass 14 read 288 | | 72,083 | 126 | 3.14 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -509,3 +510,34 @@ gets both on rebuilding.
 
 **Learned.** The eye goes to what it knows the shape of. A lamp post and a road sign are small, but every rider has
 seen thousands, and a wrong one says "model" before anything else in the frame does.
+
+## Pass 15: the climbs are bridges over the harbour
+
+**Before** (`pass-14.jpg`): each effort's ramp climbs 14 m, and the quay, its railing and the land climb with it:
+a hill of paving, on a map called Harbour Bridges Loop.
+
+**After** (`pass-15.jpg` at the foot of the first bridge, `pass-15-deck.jpg` on it, `pass-15.mp4`): where the ramp
+leaves the quay, the quay stops. The road crosses the water on piers, between a walkway and a waist-high parapet
+each side, with the lamps on the walkways; beneath and beyond is the harbour, the city standing in it and the far
+shore's lights. It comes down to the quay again in the next recovery.
+
+**What changed.**
+
+- `build_course.py`: a theme with `bridges` marks the samples of road from the foot of each effort's ramp for as
+  long as the road stands 1.6 m above where the ramp began. Beside those samples `build_road` lays a bridge's edge
+  (walkway, parapet, the deck's side, a pier every 36 m) in place of the theme's own; `build_land` takes the land
+  under them to be the harbour's bed, 9 m down, so the sea's sheet shows.
+- `themes.py`, Docklands: `"bridges": True`; warehouses, cranes, containers, the railing and the quay's clutter
+  keep off the bridges.
+
+**Cost.** None: 290 fps against 288, no frame over 20 ms, 4 fewer draw calls and 2,000 fewer triangles in the frame
+at the bridge's foot. **The file is 0.23 MB smaller, 3.14 MB gzipped**: a bridge has less beside it than a quay.
+
+**Learned.**
+
+- A hill needs something level to be seen against. Pass 8 made the gradient steep enough to see; taking the
+  ground away from beside it is what makes it a climb.
+- The land's grid is 19 m a cell and was eased to the road's height everywhere. One number a sample of road
+  ("the land here is the sea's bed") was enough to open water under a bridge, with no holes at its ends.
+- Draw calls still pass 140 in places: 146 on this bridge's deck, where the frame takes in the quays on both
+  shores.
