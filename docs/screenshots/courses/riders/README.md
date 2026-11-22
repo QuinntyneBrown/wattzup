@@ -11,6 +11,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 0 | Before: the class worlds' rider, a figure of capsules and spheres | 119.9 fps | 25 ms | 306 fps (pass 22 of the map; 248 to 315 on a busy machine in pass 23) | 83,391 | 79 | |
 | 1 | A rider with the shape of a body, on a bike with the proportions of one | 60.1 fps (the display was at 60 Hz), none over 20 ms | 16.9 ms | 335 fps (2.99 ms): 335, 339, 314 | 83,881 | 64 | Yes |
 | 2 | Kit with a design: panels, pockets, lettering, cuffs; shoulders that join the arms | 120.1 fps, none over 20 ms | 16.8 ms | 323 fps (3.10 ms): 324, 314, 323 | 81,601 | 69 | Yes |
+| 3 | Riders that move: a lean into each bend, the bike rocking under the stroke, the shoulders swaying over it | 120.1 fps, none over 20 ms | 9.6 ms | 320 fps (3.12 ms): 331, 320, 293 | 81,601 | 74 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -87,3 +88,41 @@ inside it. It runs the other way now.
 - Colour by vertex is right for parts with a few flat colours and wrong for anything written or stitched: that
   wants a texture, and a texture wants its own mesh. Only what needs it got one.
 - A joint looks like a joint when the two shapes overlap inside each other, not when a ball is put between them.
+
+## Pass 3: riders that move
+
+**Before** (`rider-02.mp4`): only the legs move. The rider and the bike stand bolt upright through every bend, as if
+on rails, and the body above the saddle is one rigid piece with the frame. (The bike's rock under the stroke, written
+in pass 1, never showed: the renderer set the rider's whole turn each frame and wrote over it.)
+
+**After** (`rider-03.mp4`, and `rider-03.jpg`, four frames of it through the bridge's bend): the rider leans into
+the bend with the bike, as far as the bend is tight, and comes upright as the road straightens; the whole pack leans
+together. Under each stroke the bike rocks a little about the tyres, the shoulders sway the other way over it, and
+the back rises and falls a few millimetres twice a turn.
+
+**What changed.**
+
+- `rider-lean.ts`, new, with its unit tests: `bendLean(heading, ahead, metres)` is the lean that balances a bike
+  round the curve the road makes over the next `metres`, at 10 m/s, to at most 0.35 rad (twenty degrees).
+  `CourseRenderer.ride` reads the road's heading 6 m ahead and gives the rider that roll.
+- `course-cyclist.ts`: the rider is now three levels. The group the renderer places and leans; inside it a `rig`
+  (bike, legs, rider) that rocks 0.03 rad with the stroke; inside that a `torso` (the kit's mesh, the head and arms,
+  the number) that turns 0.07 rad the other way about the line from the hips to the hands, so the hips stay on the
+  saddle and the hands on the hoods.
+- With reduced motion the cranks do not turn, so nothing rocks or sways; the lean, which is where the rider is and
+  not an animation, stays.
+
+**Cost.** One draw call a rider (the head and arms are no longer in the bike's mesh): 74 for a pack of five. 320 fps
+against 323; no frame over 20 ms, the worst 9.6 ms. A first run had one frame of 25 ms and was run again.
+
+**Tried and dropped.** A lean of up to 0.42 rad: right by the physics for this bend, but with a camera that stays
+level it looked like a fall. 0.35.
+
+**Learned.**
+
+- A motion written into a group that someone else also writes is lost without a sign. Each thing that turns the
+  rider got a group of its own: placing and leaning, rocking, swaying.
+- The lean is read from the road, not from each rider's speed: a pack leans as one, and nobody stands up mid-bend
+  because they eased off.
+- Turning the upper body about the line through the two places it is held (saddle and bars) lets it move without
+  the hands leaving the hoods; no arm has to be solved again each frame.

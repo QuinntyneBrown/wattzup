@@ -61,6 +61,7 @@ import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
 import { type Rain, rain } from './rain';
 import { RiderBatch } from './rider-batch';
+import { bendLean } from './rider-lean';
 import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
@@ -108,6 +109,8 @@ const MOST_RIDERS = 4;
 const MOST_FIELD = 12;
 /** The haze the distance fades into, from these metres to these; its colour is the course's (`courseLook`). */
 const FOG: readonly [number, number] = [200, 1500];
+/** How far up the road, in metres, a rider's lean into a bend is read from. */
+const LEAN_AHEAD = 6;
 const GHOST_OPACITY = 0.45;
 /**
  * How bright the lamps' light is on what stands near the road, against the ground straight under a lamp: walls and
@@ -594,9 +597,16 @@ export class CourseRenderer implements WorldRenderer {
 
   /** Stands a cyclist on the road `metres` from the start line, `lane` metres right of its centre. */
   private ride(cyclist: Cyclist, metres: number, lane: number): void {
+    // The rider leans into a bend: by how far the road turns over the next few metres.
+    const ahead = this.course!.place(metres + LEAN_AHEAD, lane, this.here).heading;
     const at = this.course!.place(metres, lane, this.here);
     cyclist.group.position.set(at.x, at.y + 0.02, at.z);
-    cyclist.group.rotation.set(at.pitch, at.heading, 0, 'YXZ');
+    cyclist.group.rotation.set(
+      at.pitch,
+      at.heading,
+      bendLean(at.heading, ahead, LEAN_AHEAD),
+      'YXZ',
+    );
     if (this.casting.has(cyclist) && cyclist.group.visible) this.lampShadows?.add(metres, lane);
     // The shadow lies on the road, stretched away from the sun.
     const shadow = this.shadows.get(cyclist);

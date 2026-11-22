@@ -62,6 +62,8 @@ const UPPER_ARM = 0.29;
 const FOREARM = 0.265;
 
 const ACROSS = new Vector3(1, 0, 0);
+/** The line from the hips to the hands, which the rider's sway turns about. */
+const SPINE = new Vector3(0, HOOD.y - HIP.y, HOOD.z - HIP.z).normalize();
 const SKIN = new Color(0xc08a68);
 const SHORTS = new Color(0x121316);
 const GRIPPER = new Color(0x2c2e34);
@@ -380,6 +382,10 @@ class CourseCyclist implements RiderModel {
   readonly group = new Group();
   readonly owned: { dispose(): void }[] = [];
   readonly still: Mesh;
+  /** Bike and rider together: it rocks under the pedalling, inside the group the renderer places and leans. */
+  private readonly rig = new Group();
+  /** The rider from the hips up: it sways against the bike about the line from the hips to the hands. */
+  private readonly torso = new Group();
   private readonly legs: {
     thigh: Mesh;
     shin: Mesh;
@@ -395,14 +401,21 @@ class CourseCyclist implements RiderModel {
   constructor(kit: CourseCyclistKit, plain: Material, jersey: Color, number: number) {
     const shapes = kit.shapes();
     const rider = body(jersey);
-    const still = mergeGeometries([...bike(), ...rider.still], false)!;
+    this.group.add(this.rig);
+    this.rig.add(this.torso);
+    this.torso.position.copy(HIP);
+    const still = mergeGeometries(bike(), false)!;
     this.still = new Mesh(still, plain);
-    this.group.add(this.still);
-    this.owned.push(still);
+    this.rig.add(this.still);
+    const trunk = mergeGeometries(rider.still, false)!;
+    trunk.translate(-HIP.x, -HIP.y, -HIP.z);
+    this.torso.add(new Mesh(trunk, plain));
+    this.owned.push(still, trunk);
     // The jersey and the shorts' seat: one mesh, drawn with the rider's own kit (its panels, pockets and lettering).
     const worn = mergeGeometries(rider.kit, false)!;
     const fabric = new MeshStandardMaterial({ map: kitTexture(jersey), roughness: 0.72 });
-    this.group.add(new Mesh(worn, fabric));
+    worn.translate(-HIP.x, -HIP.y, -HIP.z);
+    this.torso.add(new Mesh(worn, fabric));
     this.owned.push(worn, fabric, fabric.map!);
     for (const piece of [...rider.still, ...rider.kit]) piece.dispose();
 
@@ -411,7 +424,7 @@ class CourseCyclist implements RiderModel {
       const disc = new Mesh(shapes.spokeDisc, shapes.spokes);
       disc.rotation.y = Math.PI / 2;
       disc.position.copy(axle);
-      this.group.add(disc);
+      this.rig.add(disc);
     }
 
     // The race number, pinned low on the back.
@@ -419,9 +432,9 @@ class CourseCyclist implements RiderModel {
     const back = new Vector3(0, -up.z, up.y);
     const cloth = new MeshStandardMaterial({ map: bibTexture(number), roughness: 0.85 });
     const bib = new Mesh(shapes.bibPlane, cloth);
-    bib.position.copy(HIP).addScaledVector(up, 0.2).addScaledVector(back, 0.153);
+    bib.position.set(0, 0, 0).addScaledVector(up, 0.2).addScaledVector(back, 0.153);
     bib.quaternion.setFromUnitVectors(new Vector3(0, 0, 1), back);
-    this.group.add(bib);
+    this.torso.add(bib);
     this.owned.push(cloth, cloth.map!);
 
     for (const side of [-1, 1]) {
@@ -430,7 +443,7 @@ class CourseCyclist implements RiderModel {
         // The pedalling moves it: the renderer draws every rider's such parts as one (rider-batch.ts).
         mesh.userData['moving'] = true;
         mesh.matrixAutoUpdate = false;
-        this.group.add(mesh);
+        this.rig.add(mesh);
         return mesh;
       };
       this.legs.push({
@@ -446,8 +459,13 @@ class CourseCyclist implements RiderModel {
   }
 
   pose(angle: number): void {
-    // The bike rocks a little under each pedal stroke, about where the tyres meet the road.
-    this.group.rotation.z = Math.sin(angle) * 0.025;
+    // The bike rocks a little under each pedal stroke, about where the tyres meet the road; the rider's shoulders
+    // sway the other way over it, about the line from the hips to the hands, and the back rises and falls a touch
+    // twice a turn.
+    const stroke = Math.sin(angle);
+    this.rig.rotation.z = stroke * 0.03;
+    this.torso.quaternion.setFromAxisAngle(SPINE, -stroke * 0.07);
+    this.torso.position.copy(HIP).setY(HIP.y + Math.cos(angle * 2) * 0.004);
     this.legs.forEach((leg, i) => {
       const a = angle + i * Math.PI;
       const pedal = this.pedalAt.set(

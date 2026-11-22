@@ -586,6 +586,24 @@ sponsor's name are lines in `kitTexture`. A rider's own design could be a pictur
 **Watch for.** Lettering in a mirror (the UV's direction). The seam: it runs down the rider's right side, under the
 arm, where a panel hides it.
 
+### R3. Lean, rock and sway (riders pass 3)
+
+**What it gives.** Riders that lean into every bend of every map and whose bodies move over the bike as they pedal.
+
+**How it works.** `rider-lean.ts`: `bendLean(heading, ahead, metres)` = atan(v² × turn / (metres × g)) at v = 10
+m/s, held within ±0.35 rad; the renderer's `ride` takes the heading from `Course.place` here and 6 m on, and sets
+it as the rider's roll. `course-cyclist.ts` nests three groups, one for each thing that turns the rider: `group`
+(placed and leant by the renderer), `rig` (rocks with sin of the crank's angle), `torso` (turns the other way about
+the hips-to-hands line, and lifts with cos of twice the angle).
+
+**To apply it.** Nothing to do for a map: the lean comes from the centre line every course file already has. A map
+with hairpins shows it most. The three amplitudes (0.03, 0.07, 4 mm) and the cap are constants.
+
+**Cost.** One draw call a rider.
+
+**Watch for.** The sign of the lean (positive roll leans the way a growing heading turns). A course whose centre
+line has a kink: the lean will snap there; smooth the line, do not filter the lean.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
@@ -594,7 +612,7 @@ The pictures the work aims at differ from a course in these ways, most visible f
 2. The water does not mirror the quay's own lamps, cranes and ships: only the sky and the far shore.
 3. Lit windows on the upper floors light nothing: only the ground floor's throw light.
 4. The neon signs have no glow in the air round them, as the lamps have.
-5. The riders: skin and cloth that shine alike, a rigid upper body, one build and one bike for all (see the
-   riders' own log).
+5. The riders: skin and cloth that shine alike, nobody out of the saddle on a climb, one build and one bike for
+   all (see the riders' own log).
 6. Signs with lettering, pipes, gutters and fire escapes: a warehouse's wall is still flat between its windows.
 7. The lamps along the quay are not mirrored in the harbour beside them.
