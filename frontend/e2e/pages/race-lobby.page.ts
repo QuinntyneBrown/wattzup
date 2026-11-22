@@ -15,6 +15,10 @@ export class RaceLobbyPage {
   readonly count: Locator;
   readonly seats: Locator;
   readonly readyChecks: Locator;
+  /** The 3, 2, 1, Go overlay, its numeral, and the page behind it, which it makes inert (L2-056). */
+  readonly countdown: Locator;
+  readonly countdownStep: Locator;
+  readonly behind: Locator;
 
   constructor(private readonly page: Page) {
     this.heading = page.getByRole('heading', { level: 1 });
@@ -32,6 +36,9 @@ export class RaceLobbyPage {
     this.count = page.locator('.start-grid__count');
     this.seats = page.locator('.start-grid__seat');
     this.readyChecks = this.seats.getByRole('img', { name: 'Ready' });
+    this.countdown = page.locator('.race-countdown');
+    this.countdownStep = this.countdown.locator('.race-countdown__num');
+    this.behind = page.locator('.race-lobby__scroll');
   }
 
   async open(mapId: string, query: string): Promise<void> {

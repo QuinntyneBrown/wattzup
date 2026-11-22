@@ -108,6 +108,35 @@ test("pressing You're ready again holds the clock at 0:05 once more (L2-053 AC2,
   await expect(lobby.clock).toHaveText('0:05');
 });
 
+test('at 0:03 the countdown covers the lobby, 3, 2, 1 and Go, and at Go the race opens (L2-056 AC1, AC2, AC3)', async ({
+  page,
+  bluetooth,
+}) => {
+  await new FakeWebGl(page).disable();
+  const lobby = await openLobby(page, bluetooth);
+  await press(page, lobby);
+  await expect(lobby.countdown).toHaveCount(0);
+
+  await page.clock.runFor(2_000);
+  await expect(lobby.countdown).toHaveAttribute('role', 'timer');
+  await expect(lobby.countdown).toHaveAttribute('aria-live', 'assertive');
+  await expect(lobby.countdown).toHaveAttribute('aria-label', 'Race starts in 3');
+  await expect(lobby.countdownStep).toHaveText('3');
+  await expect(lobby.behind).toHaveAttribute('inert', '');
+  await page.clock.runFor(1_000);
+  await expect(lobby.countdownStep).toHaveText('2');
+  await expect(lobby.countdown).toHaveAttribute('aria-label', 'Race starts in 2');
+  await page.clock.runFor(1_000);
+  await expect(lobby.countdownStep).toHaveText('1');
+  await page.clock.runFor(1_000);
+  await expect(lobby.countdownStep).toHaveText('Go');
+  await expect(lobby.countdown).toHaveAttribute('aria-label', 'Go');
+
+  // The race loads on the running clock, which the paused one would hold (L161).
+  await page.clock.resume();
+  await expect(page).toHaveURL('/race/old-town-criterium/ride?mode=bots&pack=medium');
+});
+
 test('at 0:00 the race opens against the same bots (L2-053 AC3)', async ({ page, bluetooth }) => {
   await new FakeWebGl(page).disable();
   const lobby = await openLobby(page, bluetooth);

@@ -21,6 +21,7 @@ import {
   withSeat,
 } from './fixtures/race-lobby';
 import { expect, test } from './fixtures/test';
+import { FakeWebGl } from './fixtures/webgl';
 import { RaceLobbyPage } from './pages/race-lobby.page';
 import { RaceSetupPage } from './pages/race-setup.page';
 
@@ -176,6 +177,32 @@ test("I'm ready tells the hub, and the rider's seat shows ready once the hub say
 
   await change(page, hub, seatsChanged(withSeat(lobbyOfSix, rider(6, 'quinn', 'kenji', 7, true))));
   expect((await lobby.seatLines())[0]).toBe('1 You Lv 7 ready');
+});
+
+test('at 0:03 the countdown covers the lobby whether or not the rider is ready, and at Go the race opens in its session (L2-053 AC4, L2-056)', async ({
+  page,
+  hub,
+  bluetooth,
+}) => {
+  await new FakeWebGl(page).disable();
+  hub.answer('JoinRace', async () =>
+    found((await page.evaluate(() => Date.now())) - 100, 6, lobbyOfSix),
+  );
+  const lobby = await openLobby(page, hub, bluetooth);
+
+  await page.clock.runFor(20_000);
+  await expect(lobby.clock).toHaveText('0:04');
+  await expect(lobby.countdown).toHaveCount(0);
+  await page.clock.runFor(1_000);
+  await expect(lobby.countdownStep).toHaveText('3');
+  await expect(lobby.countdown).toHaveAttribute('aria-label', 'Race starts in 3');
+  await expect(lobby.behind).toHaveAttribute('inert', '');
+  await expect(lobby.ready).toHaveText("I'm ready");
+  await page.clock.runFor(3_000);
+  await expect(lobby.countdownStep).toHaveText('Go');
+
+  await page.clock.resume();
+  await expect(page).toHaveURL(`/race/old-town-criterium/ride?mode=online&session=${RACE_SESSION}`);
 });
 
 test('Leave releases the seat and returns to Race Setup with Riders online (L2-057 AC1)', async ({
