@@ -13,7 +13,7 @@ proves memory stays flat.
 - **sample** — one second of a ride's trace: the speed the ride moved at in that second, in km/h
 - **trace** — chart of a metric over the ride, drawn by the `RideTrace` component
 - **decimation** — reduction of a series to at most one point per horizontal pixel of a chart
-- **heap check** — measurement of the page's JavaScript heap at the first and last minute of a simulated ride
+- **heap check** — measurement of the page's used JavaScript heap after a forced garbage collection, at two moments a check compares
 
 The feature belongs to the performance subsystem and is frontend-only. The bounded packet log is
 designed in `diagnostics/record-the-packet-log`.
@@ -39,10 +39,18 @@ designed in `diagnostics/record-the-packet-log`.
   its newest entries, first needed by the packet log's bounded command log (slice 25.2).
 - **Teardown** — every part registers its cleanup with `DestroyRef`: timers, listeners,
   `ResizeObserver`s and object URLs end with the ride route.
-- **Long-ride heap check** — Playwright script `e2e/heap/long-ride.heap.ts` with the simulated bike
-  (`?simulate`) and `page.clock`. It reads `JSHeapUsedSize` through the Chrome DevTools Protocol
-  after a forced garbage collection at minute 1 and at minute 180. It runs only when a person
-  asks.
+- **Heap checks** — `frontend/e2e/heap/*.heap.ts`, run by `npm run heap` through
+  `playwright.heap.config.ts` (the production build, one check at a time, 20 minutes each) and
+  only when a person asks, never by verify, CI or an agent. Each reads the page's used heap with
+  `Runtime.getHeapUsage` after `HeapProfiler.collectGarbage` through the Chrome DevTools Protocol
+  (`e2e/heap/heap.ts`), and fails naming both readings.
+  - `long-ride.heap.ts` rides the three-hour endurance class second by second on Playwright's
+    paused clock, the fake bike notifying each second, and allows 50 MB of growth from minute 1 to
+    minute 180 (`L2-138` AC1).
+  - `enter-and-leave.heap.ts` enters and leaves the race with its 3D world (WebGL 2), and a class
+    ride with its world loading, six times each in one page on the running clock. After the first
+    leave every lazy chunk is loaded, so five more rounds may grow the heap by at most 5 MB; a
+    leaked world or ride costs more than that each round.
 
 ## Requirements
 
@@ -95,8 +103,9 @@ The trace receives at most one point per pixel of its width, recomputed when the
 
 ### Behaviour — check the heap over a long ride
 
-A person runs the heap check: a simulated three-hour ride under a fake clock, measured at the
-first and last minute (`L2-138` AC1).
+A person runs the long-ride heap check: a three-hour class ridden second by second under
+Playwright's paused clock with the fake bike, measured at the first and last minute (`L2-138`
+AC1).
 
 ![Sequence diagram for the long-ride heap check](diagrams/sequence-heap-check.png)
 
@@ -115,3 +124,10 @@ first and last minute (`L2-138` AC1).
   binds `NoBestRides`, so every ghost rides the medium pace (`L2-050` AC4). Keeping the best
   ride's samples and serving them is outside this slice; it is recorded here for the slice that
   takes it.
+- **Slice 19.3 writes the heap checks but does not run them.** AGENTS.md lets only a person run a
+  heap check, so the slice's checks are type-checked, linted and listed, and built only from flows
+  the behaviour specs already prove (`startRace`, `startClassRide`, Leave race, Leave class, Race
+  Setup's Start ride, Class Start's Start class). Their thresholds (5 MB over five rounds, 50 MB
+  over three hours) are a person's first run to confirm; the 5 MB is this design's, `L2-138` names
+  only the 50 MB. The long ride rides a class with the fake bike rather than a custom ride with
+  `?simulate`, which has no screen until slice 21.3.

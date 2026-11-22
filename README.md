@@ -141,10 +141,11 @@ dotnet run --no-launch-profile --project src/Telo.Ride.Api -- --webroot ../front
 |---|---|---|
 | Format and lint | `cd frontend && npm run format:check && npm run lint` | Prettier, angular-eslint and its dependency boundaries |
 | Unit tests | `cd frontend && npm test` | The unit tests of every frontend project, on a fake clock |
-| Build | `cd frontend && npm run build` | The production build in `dist/ride/browser`, within the `angular.json` bundle budgets |
+| Build | `cd frontend && npm run build && npm run bundle:size` | The production build in `dist/ride/browser`, within the `angular.json` bundle budgets, and its initial bundle at most 300 KB gzipped |
 | Behaviour specs | `cd frontend && npx playwright install chromium && npm run e2e` | Playwright on Chromium, with page objects, against a fake `navigator.bluetooth` and fixture answers for the API and hub |
 | Backend | `cd backend && dotnet format Telo.Ride.slnx --verify-no-changes && dotnet test --solution Telo.Ride.slnx` | Format, build and acceptance tests through the API on EF Core InMemory |
 | Everything | `node tools/verify/verify.mjs` | All of the above, side by side; run it before you push |
+| Heap checks | `cd frontend && npm run heap` | Only when a person asks, never in verify or CI: the race with its world and a class ride entered and left six times, and a three-hour class, each reading the heap after a forced garbage collection (L2-138 AC1) |
 
 No automated test uses a real bike, Bluetooth, backend or database. [CI](.github/workflows/ci.yml)
 runs lint, the production builds and one critical acceptance path per feature in under 5 minutes.
