@@ -71,22 +71,30 @@
         name="sound"
         heading="Sound"
         description="Made in the browser as you ride; nothing is downloaded."
-      ></section>
+      >
+        <wz-sound-settings
+          [settings]="settings()"
+          (rideSoundToggled)="store.set('rideSound', $event)"
+          (volumeChanged)="store.set('rideSoundVolume', $event)"
+          (worldMusicToggled)="store.set('worldMusic', $event)"
+          (muteUnderVideoToggled)="store.set('muteUnderVideo', $event)"
+        />
+      </section>
       <section
         wz-settings-section
         name="display"
         heading="Motion and display"
         description="For reading from the saddle and riding for an hour."
       >
-        <div wz-setting>
-          <wz-switch-row
-            name="wake"
-            label="Keep the screen awake"
-            description="Stops the screen dimming or locking while a ride runs."
-            [checked]="settings().keepAwake"
-            (toggled)="setKeepAwake($event)"
-          />
-        </div>
+        <wz-display-settings
+          [settings]="settings()"
+          [deviceReducesMotion]="display.deviceReducesMotion()"
+          (reduceMotionChosen)="store.set('reduceMotion', $event)"
+          (themeChosen)="store.set('theme', $event)"
+          (rideNumbersChosen)="store.set('rideNumbers', $event)"
+          (keepAwakeToggled)="store.set('keepAwake', $event)"
+          (fullScreenOnStartToggled)="store.set('fullScreenOnStart', $event)"
+        />
       </section>
       <section wz-settings-section name="bike" heading="Bike">
         <div wz-setting>

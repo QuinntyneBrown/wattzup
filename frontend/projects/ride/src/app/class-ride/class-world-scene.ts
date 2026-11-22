@@ -11,7 +11,13 @@ import {
   signal,
   untracked,
 } from '@angular/core';
-import { type PreparedWorld, RIDE_SETTINGS, type Segment, type WorldId } from '@telo/api';
+import {
+  DISPLAY_PREFERENCES,
+  type PreparedWorld,
+  RIDE_SETTINGS,
+  type Segment,
+  type WorldId,
+} from '@telo/api';
 import { worldQuality } from '@telo/domain';
 import type * as WorldLibrary from '@telo/world';
 import type { WorldMusicPlayer, WorldScene } from '@telo/world';
@@ -40,9 +46,13 @@ export class ClassWorldScene {
   private readonly scene = signal<ComponentRef<WorldScene> | null>(null);
   /** The rider's World settings, as the world reads them (L2-159, L2-160, L2-161). */
   private readonly settings = inject(RIDE_SETTINGS).settings;
+  /** Reduce motion as the rider's Settings apply it, which stills the world's moving parts (L2-164 AC2). */
+  private readonly display = inject(DISPLAY_PREFERENCES);
   /** One value until the settings change, so binding every second hands the scene nothing new. */
   private readonly quality = computed(() => worldQuality(this.settings()));
   private readonly player = signal<WorldMusicPlayer | null>(null);
+  /** The track plays when the ride wants it and the rider's World music is on (L2-163 AC1). */
+  private readonly musicOn = computed(() => this.music() && this.settings().worldMusic);
 
   constructor() {
     const host = inject(ViewContainerRef);
@@ -58,7 +68,7 @@ export class ClassWorldScene {
     });
     effect(() => {
       const library = world();
-      if (!library || !this.music() || untracked(this.player)) return;
+      if (!library || !this.musicOn() || untracked(this.player)) return;
       untracked(() => {
         const player = new library.WorldMusicPlayer(() => doc.createElement('audio'), doc);
         player.load(this.worldId());
@@ -82,7 +92,7 @@ export class ClassWorldScene {
       const scene = this.scene();
       if (scene) this.bind(scene);
     });
-    effect(() => this.player()?.sync(this.music()));
+    effect(() => this.player()?.sync(this.musicOn()));
   }
 
   /** Hands the scene the ride's inputs; read in the effect, they follow the ride. */
@@ -93,5 +103,6 @@ export class ClassWorldScene {
     scene.setInput('speedKmh', this.speedKmh());
     scene.setInput('running', this.running());
     scene.setInput('quality', this.quality());
+    scene.setInput('reducedMotion', this.display.reducedMotion());
   }
 }

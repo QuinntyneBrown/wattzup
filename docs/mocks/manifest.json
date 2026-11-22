@@ -252,7 +252,8 @@
         "L2-070",
         "L2-071",
         "L2-072",
-        "L2-126"
+        "L2-126",
+        "L2-164"
       ],
       "states": [
         "default",
@@ -262,7 +263,8 @@
         "disconnected",
         "scenery-streaming",
         "scenery-refused",
-        "service-lost"
+        "service-lost",
+        "large-numbers"
       ],
       "not_applicable": {
         "empty": "A race always has riders on the board (you and, solo, your best-time ghost).",
@@ -371,7 +373,8 @@
         "L2-092",
         "L2-093",
         "L2-153",
-        "L2-126"
+        "L2-126",
+        "L2-164"
       ],
       "states": [
         "default",
@@ -381,7 +384,8 @@
         "video-unavailable",
         "solo-disconnected",
         "world",
-        "service-lost"
+        "service-lost",
+        "large-numbers"
       ],
       "not_applicable": {
         "empty": "A class ride always has its video and plan; a ride alone shows no rider board (‘solo’).",

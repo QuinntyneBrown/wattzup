@@ -1,0 +1,58 @@
+<div wz-setting>
+  <span class="display-settings__label" id="motion">Reduce motion</span>
+  <wz-segmented
+    aria-labelledby="motion"
+    aria-describedby="motion-hint"
+    [options]="motions"
+    [value]="settings().reduceMotion"
+    (chosen)="reduceMotionChosen.emit($event)"
+  />
+  <p class="display-settings__hint" id="motion-hint">
+    On stills the wind, motion blur and tyre spray and makes every transition instant.
+    {{ deviceReducesMotion() ? 'This device asks for it.' : 'This device doesn’t ask for it.' }}
+  </p>
+</div>
+<div wz-setting>
+  <span class="display-settings__label" id="theme">Theme</span>
+  <wz-segmented
+    aria-labelledby="theme"
+    aria-describedby="theme-hint"
+    [options]="themes"
+    [value]="settings().theme"
+    (chosen)="themeChosen.emit($event)"
+  />
+  <p class="display-settings__hint" id="theme-hint">
+    Match device is dark unless this device asks for light.
+  </p>
+</div>
+<div wz-setting>
+  <span class="display-settings__label" id="readouts">Ride numbers</span>
+  <wz-segmented
+    aria-labelledby="readouts"
+    aria-describedby="readouts-hint"
+    [options]="rideNumbers"
+    [value]="settings().rideNumbers"
+    (chosen)="rideNumbersChosen.emit($event)"
+  />
+  <p class="display-settings__hint" id="readouts-hint">
+    Large makes power, the clock and the target bigger on every ride screen.
+  </p>
+</div>
+<div wz-setting>
+  <wz-switch-row
+    name="wake"
+    label="Keep the screen awake"
+    description="Stops the screen dimming or locking while a ride runs."
+    [checked]="settings().keepAwake"
+    (toggled)="keepAwakeToggled.emit($event)"
+  />
+</div>
+<div wz-setting>
+  <wz-switch-row
+    name="auto-full"
+    label="Go full screen when a ride starts"
+    description="Leave full screen with Esc or the button in the header."
+    [checked]="settings().fullScreenOnStart"
+    (toggled)="fullScreenOnStartToggled.emit($event)"
+  />
+</div>

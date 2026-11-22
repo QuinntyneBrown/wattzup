@@ -38,14 +38,18 @@ export {
 } from './video/video-player';
 export type { Plan, Segment, SegmentKind } from './workout/plan';
 export { NETWORK_STATUS, type NetworkStatus } from './network/network-status';
+export { DISPLAY_PREFERENCES, type DisplayPreferences } from './screen/display-preferences';
+export { RIDE_SOUND, type RideSound, type RideSoundSource } from './sound/ride-sound';
 export { FULLSCREEN, type Fullscreen } from './screen/fullscreen';
 export { SCREEN_WAKE_LOCK, type ScreenWakeLock } from './screen/screen-wake-lock';
 export {
   RIDE_SETTINGS,
   type DeviceCheckResult,
   type QualityChoice,
+  type ReduceMotionChoice,
   type RideSettings,
   type RideSettingsStore,
+  type ThemeChoice,
 } from './settings/ride-settings';
 export { HttpMapsApi } from './maps/http-maps-api';
 export { HttpRaceQueueApi, RACE_QUEUE_API, type RaceQueueApi } from './race/race-queue-api';

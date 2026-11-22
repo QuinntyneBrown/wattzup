@@ -99,6 +99,8 @@ export { SettingsSection } from './settings/settings-section';
 export { SettingsReset } from './settings/settings-reset';
 export { Segmented, type SegmentedOption } from './segmented/segmented';
 export { WorldSettings } from './world-settings/world-settings';
+export { SoundSettings } from './sound-settings/sound-settings';
+export { DisplaySettings } from './display-settings/display-settings';
 export {
   DeviceCheck,
   type DeviceCheckResultView,

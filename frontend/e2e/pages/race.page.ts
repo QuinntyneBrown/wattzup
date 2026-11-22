@@ -31,6 +31,8 @@ export class RacePage {
   readonly you: Locator;
   readonly position: Locator;
   readonly watts: Locator;
+  /** The watts number itself, without its unit. */
+  readonly wattsValue: Locator;
   readonly target: Locator;
   readonly scenery: Locator;
   readonly sceneryTitle: Locator;
@@ -96,6 +98,7 @@ export class RacePage {
     this.boardNotice = page.locator('.race-board__status');
     this.you = page.locator('.race-board__row[aria-current="true"]');
     this.watts = page.locator('.race-power__watts');
+    this.wattsValue = page.locator('.race-power__watts-value');
     this.target = page.locator('.race-power__target-label');
     this.scenery = page.locator('.race-scenery');
     this.sceneryTitle = this.scenery.locator('.race-scenery__title');

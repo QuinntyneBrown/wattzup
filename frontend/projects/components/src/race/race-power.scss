@@ -75,11 +75,12 @@
 }
 
 .race-power__watts-value {
-  font-size: var(--race-watts-size);
+  // Large ride numbers scale power, the clock and the target (L2-164 AC4).
+  font-size: calc(var(--race-watts-size) * var(--ride-number-scale));
   line-height: 0.9;
 
   @media (min-width: 40rem) {
-    font-size: var(--race-watts-size-sm);
+    font-size: calc(var(--race-watts-size-sm) * var(--ride-number-scale));
   }
 }
 
@@ -94,8 +95,8 @@
   align-items: center;
   gap: var(--space-2);
   margin-top: var(--space-1);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
+  font-size: calc(var(--font-size-sm) * var(--ride-number-scale));
+  line-height: calc(var(--line-height-sm) * var(--ride-number-scale));
   white-space: nowrap;
 }
 

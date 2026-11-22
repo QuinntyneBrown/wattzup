@@ -1,0 +1,47 @@
+// Settings' Sound controls (docs/mocks/pages/settings/): the volume's head, scale and hint, and the range, which has no
+// component of its own yet.
+:host {
+  display: block;
+}
+
+.sound-settings__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.sound-settings__label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.sound-settings__value {
+  flex-shrink: 0;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+}
+
+.sound-settings__scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-faint);
+}
+
+.sound-settings__hint {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-snug);
+  color: var(--color-muted);
+}
+
+// The native range, 44 px tall for touch.
+.range {
+  width: 100%;
+  height: var(--target-min);
+  accent-color: var(--color-volt);
+}

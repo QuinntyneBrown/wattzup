@@ -7,7 +7,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { WORLD_DOWNLOADER } from '@telo/api';
+import { FULLSCREEN, RIDE_SETTINGS, WORLD_DOWNLOADER } from '@telo/api';
 import {
   BackLink,
   Banner,
@@ -17,7 +17,7 @@ import {
   LoadCard,
   Pill,
 } from '@telo/components';
-import { FetchWorldDownloader } from '@telo/domain';
+import { FetchWorldDownloader, enterFullScreenOnStart } from '@telo/domain';
 import { LiveSessionStore } from '../live/live-session-store';
 import { ClassRideSession } from './class-ride-session';
 import { WorldLoadStore } from './world-load-store';
@@ -54,9 +54,17 @@ import { WorldLoadStore } from './world-load-store';
 export default class ClassRidePage {
   protected readonly load = inject(WorldLoadStore);
   private readonly start = viewChild('start', { read: ElementRef<HTMLButtonElement> });
+  private readonly settings = inject(RIDE_SETTINGS).settings;
+  private readonly fullscreen = inject(FULLSCREEN);
 
   constructor() {
     // Start riding takes focus when the world is ready (L2-153 AC2).
     effect(() => this.start()?.nativeElement.focus());
+  }
+
+  /** Start riding, or Ride with the panorama: full screen first when Settings asks for it, in the press (L2-164 AC6). */
+  protected ride(): void {
+    enterFullScreenOnStart(this.settings(), this.fullscreen);
+    this.load.ride();
   }
 }

@@ -32,6 +32,13 @@ describe('parseRideSettings (L2-158 AC5)', () => {
       'a device check with a trial of no rate',
       '{"deviceCheck":{"level":"high","displayFps":60,"tried":[{"level":"ultra"}],"checkedAt":"2026-11-22T19:31:00Z"}}',
     ],
+    ['a ride sound volume below 0 %', '{"rideSoundVolume":-5}'],
+    ['a ride sound volume above 100 %', '{"rideSoundVolume":105}'],
+    ['a ride sound volume off the 5 % steps', '{"rideSoundVolume":42}'],
+    ['a reduce motion that is not a choice', '{"reduceMotion":true}'],
+    ['a theme that is not a choice', '{"theme":"blue"}'],
+    ['ride numbers that are not a size', '{"rideNumbers":"huge"}'],
+    ['a full screen choice of the wrong type', '{"fullScreenOnStart":"yes"}'],
     [
       'a device check with no time',
       '{"deviceCheck":{"level":"high","displayFps":60,"tried":[],"checkedAt":"soon"}}',
@@ -41,7 +48,7 @@ describe('parseRideSettings (L2-158 AC5)', () => {
   });
 
   it('keeps a valid field and drops an unknown one', () => {
-    expect(parseRideSettings('{"keepAwake":false,"theme":7}')).toEqual({
+    expect(parseRideSettings('{"keepAwake":false,"wheelSize":7}')).toEqual({
       ...RECOMMENDED_SETTINGS,
       keepAwake: false,
     });
@@ -56,6 +63,24 @@ describe('parseRideSettings (L2-158 AC5)', () => {
       graphics: 'webgl2',
     };
     expect(parseRideSettings(JSON.stringify(world))).toEqual({ ...RECOMMENDED_SETTINGS, ...world });
+  });
+
+  it('keeps Sound and Motion and display as stored (L2-163 AC1, L2-164)', () => {
+    const chosen = {
+      rideSound: false,
+      rideSoundVolume: 0,
+      worldMusic: false,
+      muteUnderVideo: false,
+      reduceMotion: 'off',
+      theme: 'light',
+      rideNumbers: 'large',
+      keepAwake: false,
+      fullScreenOnStart: true,
+    };
+    expect(parseRideSettings(JSON.stringify(chosen))).toEqual({
+      ...RECOMMENDED_SETTINGS,
+      ...chosen,
+    });
   });
 
   it('keeps a whole device check result (L2-162 AC3)', () => {

@@ -3,8 +3,10 @@ import type {
   DeviceCheckResult,
   DeviceCheckTrial,
   QualityChoice,
+  ReduceMotionChoice,
   RideSettings,
   RideSettingsStore,
+  ThemeChoice,
   WorldTier,
 } from '@telo/api';
 
@@ -19,21 +21,31 @@ export const RECOMMENDED_SETTINGS: RideSettings = {
   resolution: 100,
   graphics: 'auto',
   deviceCheck: null,
+  rideSound: true,
+  rideSoundVolume: 70,
+  worldMusic: true,
+  muteUnderVideo: true,
+  reduceMotion: 'device',
+  theme: 'device',
+  rideNumbers: 'standard',
   keepAwake: true,
+  fullScreenOnStart: false,
 };
 
 const QUALITIES: readonly QualityChoice[] = ['auto', 'ultra', 'high', 'medium', 'low'];
+const DEVICE_OR_ON_OFF: readonly ReduceMotionChoice[] = ['device', 'on', 'off'];
+const DEVICE_DARK_LIGHT: readonly ThemeChoice[] = ['device', 'dark', 'light'];
 
 /** One of `allowed`, else the recommended value. */
 function oneOf<T>(value: unknown, allowed: readonly T[], recommended: T): T {
   return allowed.includes(value as T) ? (value as T) : recommended;
 }
 
-/** 50 to 100 in steps of 5 (L2-160 AC5), else the recommended value. */
-function resolution(value: unknown): number {
-  return typeof value === 'number' && value >= 50 && value <= 100 && value % 5 === 0
+/** A percentage from `min` to 100 in steps of 5 (L2-160 AC5, L2-163 AC1), else the recommended value. */
+function percent(value: unknown, min: number, recommended: number): number {
+  return typeof value === 'number' && value >= min && value <= 100 && value % 5 === 0
     ? value
-    : RECOMMENDED_SETTINGS.resolution;
+    : recommended;
 }
 
 const LEVELS: readonly WorldTier[] = ['ultra', 'high', 'medium', 'low'];
@@ -92,10 +104,22 @@ export function parseRideSettings(raw: string | null): RideSettings {
     quality: oneOf(fields['quality'], QUALITIES, recommended.quality),
     stepDown: flag(fields['stepDown'], recommended.stepDown),
     frameRate: oneOf(fields['frameRate'], ['display', '30'] as const, recommended.frameRate),
-    resolution: resolution(fields['resolution']),
+    resolution: percent(fields['resolution'], 50, recommended.resolution),
     graphics: oneOf(fields['graphics'], ['auto', 'webgl2'] as const, recommended.graphics),
     deviceCheck: deviceCheck(fields['deviceCheck']),
+    rideSound: flag(fields['rideSound'], recommended.rideSound),
+    rideSoundVolume: percent(fields['rideSoundVolume'], 0, recommended.rideSoundVolume),
+    worldMusic: flag(fields['worldMusic'], recommended.worldMusic),
+    muteUnderVideo: flag(fields['muteUnderVideo'], recommended.muteUnderVideo),
+    reduceMotion: oneOf(fields['reduceMotion'], DEVICE_OR_ON_OFF, recommended.reduceMotion),
+    theme: oneOf(fields['theme'], DEVICE_DARK_LIGHT, recommended.theme),
+    rideNumbers: oneOf(
+      fields['rideNumbers'],
+      ['standard', 'large'] as const,
+      recommended.rideNumbers,
+    ),
     keepAwake: flag(fields['keepAwake'], recommended.keepAwake),
+    fullScreenOnStart: flag(fields['fullScreenOnStart'], recommended.fullScreenOnStart),
   };
 }
 

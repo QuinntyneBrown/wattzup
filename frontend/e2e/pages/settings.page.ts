@@ -55,6 +55,64 @@ export class SettingsPage {
     this.stopCheck = world.getByRole('button', { name: 'Stop the check' });
     this.checkResult = world.locator('.device-check__result');
     this.checkAgain = world.getByRole('button', { name: 'Check again' });
+    const sound = this.section('Sound');
+    this.soundText = sound.locator('.settings-section__desc');
+    this.rideSound = sound.getByRole('switch', { name: 'Ride sound', exact: true });
+    this.rideSoundText = sound.locator('#ride-sound-desc');
+    this.volume = sound.getByRole('slider', { name: 'Ride sound volume' });
+    this.volumeValue = sound.locator('.sound-settings__value');
+    this.volumeScale = sound.locator('.sound-settings__scale');
+    this.volumeHint = sound.locator('#ride-volume-hint');
+    this.worldMusic = sound.getByRole('switch', { name: 'World music' });
+    this.worldMusicText = sound.locator('#world-music-desc');
+    this.muteUnderVideo = sound.getByRole('switch', {
+      name: 'Mute ride sound under a class video',
+    });
+    this.muteUnderVideoText = sound.locator('#duck-desc');
+    const display = this.section('Motion and display');
+    this.displayText = display.locator('.settings-section__desc');
+    this.reduceMotion = display.getByRole('radiogroup', { name: 'Reduce motion' });
+    this.reduceMotionHint = display.locator('#motion-hint');
+    this.theme = display.getByRole('radiogroup', { name: 'Theme' });
+    this.themeHint = display.locator('#theme-hint');
+    this.rideNumbers = display.getByRole('radiogroup', { name: 'Ride numbers' });
+    this.rideNumbersHint = display.locator('#readouts-hint');
+    this.keepAwakeText = display.locator('#wake-desc');
+    this.fullScreenOnStart = display.getByRole('switch', {
+      name: 'Go full screen when a ride starts',
+    });
+    this.fullScreenOnStartText = display.locator('#auto-full-desc');
+  }
+
+  /** Sound's line and its four controls, each with its words (L2-163 AC1). */
+  readonly soundText: Locator;
+  readonly rideSound: Locator;
+  readonly rideSoundText: Locator;
+  readonly volume: Locator;
+  /** The volume as it reads beside its label, "70 %". */
+  readonly volumeValue: Locator;
+  /** "Quiet" and "Loud" under the slider. */
+  readonly volumeScale: Locator;
+  readonly volumeHint: Locator;
+  readonly worldMusic: Locator;
+  readonly worldMusicText: Locator;
+  readonly muteUnderVideo: Locator;
+  readonly muteUnderVideoText: Locator;
+  /** Motion and display's line and its choices, each with its words (L2-164 AC1 to AC4, AC6). */
+  readonly displayText: Locator;
+  readonly reduceMotion: Locator;
+  readonly reduceMotionHint: Locator;
+  readonly theme: Locator;
+  readonly themeHint: Locator;
+  readonly rideNumbers: Locator;
+  readonly rideNumbersHint: Locator;
+  readonly keepAwakeText: Locator;
+  readonly fullScreenOnStart: Locator;
+  readonly fullScreenOnStartText: Locator;
+
+  /** The option of a radio group by its words ("Match device", "On", "Large"). */
+  option(group: Locator, name: string): Locator {
+    return group.getByRole('radio', { name, exact: true });
   }
 
   /** "Check this device" and what it does (L2-162 AC1). */

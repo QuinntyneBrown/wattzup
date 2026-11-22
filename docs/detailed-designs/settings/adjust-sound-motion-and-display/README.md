@@ -23,46 +23,73 @@ motion rules are those of `ui/support-screen-readers-and-motion` with the rider'
 
 ## Description
 
+**Frontend — `api` library**
+
+- **`RideSettings`** gains `rideSound` (on), `rideSoundVolume` (70), `worldMusic` (on),
+  `muteUnderVideo` (on), `reduceMotion` (`device`, `on`, `off`; `device`), `theme` (`device`,
+  `dark`, `light`; `device`), `rideNumbers` (`standard`, `large`; `standard`) and
+  `fullScreenOnStart` (off), beside slice 20.1's `keepAwake` (on). `LocalRideSettingsStore` reads
+  each field on its own: a missing or malformed one, or a volume off the 5 % steps, takes its
+  recommended value.
+- **`RIDE_SOUND`** (`RideSound`: `play(source)`, `stop()`) and **`RideSoundSource`** (cadence,
+  speed, resistance, `running`, `videoPlaying`, each a signal).
+- **`DISPLAY_PREFERENCES`** (`DisplayPreferences`: `deviceReducesMotion`, `reducedMotion`,
+  `theme`).
+
 **Frontend — `components` library**
 
-- **`SoundSettings`** (`wz-sound-settings`) — "Made in the browser as you ride; nothing is
-  downloaded.", with "Ride sound", "Ride sound volume" (0 % to 100 % in steps of 5, "Quiet" to
-  "Loud"), "World music" and "Mute ride sound under a class video" (`L2-163` AC1).
-- **`DisplaySettings`** (`wz-display-settings`) — "For reading from the saddle and riding for an
-  hour.", with "Reduce motion" (Match device, On, Off), "Theme" (Match device, Dark, Light),
-  "Ride numbers" (Standard, Large), "Keep the screen awake" and "Go full screen when a ride
-  starts" (`L2-164` AC1–AC6).
+- **`SoundSettings`** (`wz-sound-settings`) — "Ride sound", "Ride sound volume" (a native range,
+  0 to 100 in steps of 5, its value "70 %" beside the label, "Quiet" and "Loud" under it, changing
+  as the rider drags), "World music" and "Mute ride sound under a class video", each with the
+  mock's words (`L2-163` AC1).
+- **`DisplaySettings`** (`wz-display-settings`) — "Reduce motion" (Match device, On, Off), whose
+  hint ends "This device asks for it." or "This device doesn’t ask for it."; "Theme" (Match device,
+  Dark, Light); "Ride numbers" (Standard, Large); "Keep the screen awake" (slice 20.1's switch,
+  moved here); and "Go full screen when a ride starts" (`L2-164` AC1 to AC6). The choices are
+  `wz-segmented` radio groups.
+- The readouts scale with the token `--ride-number-scale`: the race's watts, clock and target
+  line, and the class ride's stat numbers, power's hint (its target) and clock.
 
-**Frontend — `ride` application and `domain`**
+**Frontend — `domain` library**
 
-- **`RideSoundEngine`** (`domain/engine`, contract `RIDE_SOUND` in `api`) — generates the ride
-  sound with the Web Audio API from cadence and speed. It creates its `AudioContext` only when
-  ride sound is on and a ride runs (`L2-163` AC3), and closes it when the ride ends. Volume and
-  on/off changes ramp the master gain over 50 ms with `setTargetAtTime`, so a change is heard
-  within 100 ms with no click or gap (`L2-163` AC2). World music plays through its own gain node.
-- **`VideoDucking`** — part of the class ride. While `muteUnderVideo` is on and `VideoPlayer`
-  reports playing, it ramps the ride sound to silence; on pause it ramps back.
-- **`MotionPreference`** (from `ui/support-screen-readers-and-motion`) — `reduced` becomes a
-  computed signal: the rider's "On" or "Off" when chosen, the `prefers-reduced-motion` query when
-  "Match device". The text "This device doesn’t ask for it." reads the query. With `reduced`
-  true, `html` carries `data-motion="reduced"`, which the duration tokens honour, and the world
-  drops or stills its moving techniques (`L2-164` AC2, ADR 0021).
-- **`ThemeController`** (from `ui/switch-theme-and-full-screen`) — sets `data-theme` on `<html>`
-  from the rider's choice; with "Match device" it follows `prefers-color-scheme`, dark unless the
-  device asks for light (`L2-164` AC3). The open question in that design about devices that
-  report no preference stands.
-- **`RideNumbersSize`** — sets `data-ride-numbers="large"` on `<html>`. The ride screens' readout
-  tokens scale under it; each ride screen keeps its no-sideways-scroll rule and never covers the
-  road ahead (`L2-164` AC4). The scale factor is `<TO SUPPLY>` until the ride screens' large
-  layouts are mocked.
-- **`ScreenWakeLock`** (`browser/` folder of `ride`, contract `WAKE_LOCK` in `api`) — while
-  `RideActivity.riding` is true and "Keep the screen awake" is on, holds
-  `navigator.wakeLock.request('screen')`. It takes the lock again on `visibilitychange` to visible
-  and releases it when the ride ends or the rider leaves (`L2-164` AC5). Where the API is missing
-  it does nothing.
-- **`StartFullScreen`** — part of each ride's start action (Start riding, Join). When
-  `fullScreenOnStart` is on it calls `FULLSCREEN.enter()` inside that press, which supplies the
-  user activation the Fullscreen API asks for (`L2-164` AC6).
+- **`BrowserDisplayPreferences`** (`browser/`) — reads the settings and the device's
+  `prefers-reduced-motion` and `prefers-color-scheme: light` queries, and marks `<html>` with
+  `data-motion` (`reduced` or `full`), `data-theme` (`dark` or `light`) and `data-ride-numbers`.
+  The route that parents every screen binds it and starts it with an environment initializer, so
+  every screen follows a choice at once (`L2-164` AC2 to AC4).
+- **`WebAudioRideSound`** (`browser/`), after `main`'s `RideSound` — a chain and a freewheel
+  ticking on the audio clock, and wind and tyres as looped noise through filters that follow the
+  speed, all into one master gain. It makes its `AudioContext` only while a ride plays and "Ride
+  sound" is on, and closes it when either ends (`L2-163` AC3). The master gain is the volume while
+  the ride runs, the tab shows and no class video plays over it with "Mute ride sound under a class
+  video" on, else 0; it follows each change with `setTargetAtTime` and a 30 ms time constant, past
+  95 % within 100 ms with no click (`L2-163` AC2). The voices follow the pedalling with `main`'s
+  100 ms constant.
+- **ride sound rules** (`engine/ride-sound.ts`) — `main`'s `rideSoundParams` and `nextFreewheel`,
+  without cue ducking and world ambience, which Telo Ride does not have.
+- **`enterFullScreenOnStart`** (`engine/`) — enters full screen inside a start press when
+  `fullScreenOnStart` is on, the browser can and the app is not in full screen (`L2-164` AC6).
+
+**Frontend — `ride` application and `world` library**
+
+- **Settings** binds both components to `RIDE_SETTINGS`, and reads `deviceReducesMotion` for the
+  hint.
+- **`RaceStore`** and **`ClassRideStore`** call `RIDE_SOUND.play` when the ride starts (the class
+  ride's `videoPlaying` is its player's `playing` state) and `stop` when it finishes or the rider
+  leaves. Each ride route binds `WebAudioRideSound`.
+- **Start riding** and **Ride with the panorama** on World loading, **Join** on Class Start and
+  the race's start on Race Setup call `enterFullScreenOnStart`. `FULLSCREEN` moves to the parent
+  route, so every screen shares one.
+- **`ClassWorldScene`** plays the world's track only with "World music" on (`L2-163` AC1).
+- **`WorldScene`** (copied from `main`) gains one input, `reducedMotion`, which the race's and the
+  class's world scenes bind to `DISPLAY_PREFERENCES.reducedMotion`; with none it follows the
+  device as `main` does. `main`'s renderer then drops or stills the techniques whose
+  `reducedMotion` is `off` or `still` (`L2-164` AC2).
+- **Tokens** — the durations zero under `html[data-motion="reduced"]`, and under the device's
+  `prefers-reduced-motion` only while `<html>` has no `data-motion`; `--ride-number-scale` is 1,
+  and 1.25 under `html[data-ride-numbers="large"]`. The race board's row slide reads
+  `--duration-fast`, so it follows the rider's choice too.
+- **Keep the screen awake** is slice 20.1's `BrowserScreenWakeLock`, unchanged (`L2-164` AC5).
 
 ## Requirements
 
@@ -116,3 +143,22 @@ The motion and theme choices set attributes on `<html>` at once. The wake lock i
 ride and taken again when the tab returns; full screen starts on the start press.
 
 ![Sequence diagram for motion, theme, wake lock and full screen](diagrams/sequence-motion-display-and-wake-lock.png)
+
+## Open questions
+
+1. **A sound change mid-ride (`L2-163` AC2).** Settings and a ride never show at the same time:
+   Settings opens from Profile, and no ride screen offers it. The engine follows the settings
+   signal at once (its unit test proves the 30 ms ramp), so a sound control on a ride screen, or
+   the settings following another tab's `storage` event, would meet the criterion. Neither is
+   built.
+2. **Devices with no colour preference.** Chromium no longer reports `no-preference`: such a
+   device reads as light, so Match device shows the light theme there. "Dark unless this device
+   asks for light" holds only where the browser tells the two apart.
+3. **Ride numbers' scale.** Large is 1.25 times Standard, chosen here; the `large-numbers` mock
+   states of the race and the class ride show it. No ride screen scrolls sideways at 390 px, which
+   the acceptance tests check; that the numbers never cover the road ahead is checked by eye in
+   the mocks only.
+4. **Dialog fades.** The profile dialogs' opacity fades follow the device's
+   `prefers-reduced-motion`, not the rider's choice; `L2-142` AC2 keeps opacity fades anyway.
+5. **World ambience and cue ducking.** `main`'s ride sound has both; Telo Ride's Sound section
+   names neither, so the rules leave them out.

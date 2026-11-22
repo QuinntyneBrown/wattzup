@@ -2,6 +2,7 @@ import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+  FULLSCREEN,
   MAPS_API,
   type MapDto,
   NETWORK_STATUS,
@@ -10,9 +11,10 @@ import {
   type PackStrengthId,
   RACE_QUEUE_API,
   type RaceMode,
+  RIDE_SETTINGS,
 } from '@telo/api';
 import type { ModeOption } from '@telo/components';
-import { RaceStartPlanner, multiplayerAvailability } from '@telo/domain';
+import { RaceStartPlanner, enterFullScreenOnStart, multiplayerAvailability } from '@telo/domain';
 import { catchError, of, switchMap, timer } from 'rxjs';
 
 /** How often Race Setup asks how many riders are queuing, while Riders online is open (L2-048 AC3). */
@@ -113,6 +115,8 @@ export class RaceSetupStore {
   readonly raceStart = computed(() => RaceStartPlanner.plan(this.mapId, this.mode(), this.pack()));
 
   private readonly router = inject(Router);
+  private readonly settings = inject(RIDE_SETTINGS).settings;
+  private readonly fullscreen = inject(FULLSCREEN);
 
   constructor() {
     inject(MAPS_API)
@@ -158,8 +162,9 @@ export class RaceSetupStore {
     this.chosen.set(mode);
   }
 
-  /** Opens the race the choice leads to (L2-050 AC1, AC2). */
+  /** Opens the race the choice leads to (L2-050 AC1, AC2), in full screen when Settings asks for it (L2-164 AC6). */
   start(): void {
+    enterFullScreenOnStart(this.settings(), this.fullscreen);
     const { route, queryParams } = this.raceStart();
     void this.router.navigate([...route], { queryParams });
   }

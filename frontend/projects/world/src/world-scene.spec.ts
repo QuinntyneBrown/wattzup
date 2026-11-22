@@ -48,6 +48,8 @@ class FakeRenderer implements WorldRenderer {
   readonly backend = 'webgl2' as const;
   readonly calls: string[] = [];
   draws = 0;
+  /** Whether the last frame drawn was still. */
+  reducedMotion: boolean | null = null;
   start(): Promise<boolean> {
     this.calls.push('start');
     return Promise.resolve(true);
@@ -55,8 +57,9 @@ class FakeRenderer implements WorldRenderer {
   resize(): void {
     /* not needed */
   }
-  draw(): void {
+  draw(frame: { reducedMotion: boolean }): void {
     this.draws++;
+    this.reducedMotion = frame.reducedMotion;
   }
   setFramePeriod(ms: number): void {
     this.calls.push(`period ${ms.toFixed(1)}`);
@@ -114,6 +117,29 @@ async function ridingScene(ms: number) {
   await settle(fixture);
   return { fixture, frames, screens, renderer, before };
 }
+
+describe('WorldScene reduced motion (L2-164 AC2)', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('follows this device until the rider chooses, then the rider’s choice', async () => {
+    const { fixture, frames, renderer } = await ridingScene(1000 / 60);
+    frames.refresh(1000 / 60);
+    await settle(fixture);
+    expect(renderer.reducedMotion).toBe(false);
+
+    fixture.componentRef.setInput('reducedMotion', true);
+    await settle(fixture);
+    frames.refresh(1000 / 60);
+    await settle(fixture);
+    expect(renderer.reducedMotion).toBe(true);
+
+    fixture.componentRef.setInput('reducedMotion', false);
+    await settle(fixture);
+    frames.refresh(1000 / 60);
+    await settle(fixture);
+    expect(renderer.reducedMotion).toBe(false);
+  });
+});
 
 describe('WorldScene frame period (L2-111 AC9)', () => {
   afterEach(() => vi.unstubAllGlobals());

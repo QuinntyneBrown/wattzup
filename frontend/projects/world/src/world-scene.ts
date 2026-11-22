@@ -66,6 +66,11 @@ export class WorldScene implements AfterViewInit {
    * API when it starts, and the frame cap and the drawing buffer's scale from then on, mid-ride too.
    */
   readonly quality = input<WorldQuality>(AUTO_QUALITY);
+  /**
+   * Reduce motion as the rider's Settings apply it (L2-164 AC2); null follows this device's `prefers-reduced-motion`,
+   * as `main` does.
+   */
+  readonly reducedMotion = input<boolean | null>(null);
   /** Emitted once when WebGL is unavailable or the renderer fails to start (L2-110 AC4). */
   readonly unavailable = output<void>();
   /** Emitted once the renderer has started, with the GPU API drawing the world (L2-065 AC1). */
@@ -284,7 +289,7 @@ export class WorldScene implements AfterViewInit {
         elapsed: this.elapsed(),
         speedKmh: this.speedKmh(),
         running: this.running(),
-        reducedMotion: this.motion.reduced(),
+        reducedMotion: this.reducedMotion() ?? this.motion.reduced(),
         riders: this.riders(),
       });
     });
