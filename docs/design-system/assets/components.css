@@ -2626,6 +2626,7 @@ a.map-row:hover .map-row__name, a.map-row[data-state="hover"] .map-row__name { c
 .profile { display: grid; gap: var(--space-10); padding-block: var(--space-6); }
 @media (min-width: 64rem) { .profile { grid-template-columns: minmax(0, 1fr) var(--profile-aside-width); gap: var(--space-14); padding-block: var(--space-10); } }
 .profile__main { min-width: 0; }
+.banner.profile__notice { margin-bottom: var(--space-6); }
 
 /* Level: the headline (flex-wrap items-center gap-6; disc h-24 w-24 text-5xl) */
 .profile-level { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-6); }

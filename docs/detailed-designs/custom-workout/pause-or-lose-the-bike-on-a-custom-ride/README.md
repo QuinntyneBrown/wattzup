@@ -21,37 +21,49 @@ differs from a solo class ride, which carries on when the bike is back (`L2-092`
 
 **Frontend — `ride` application**
 
-- **`CustomRideStore`** (see *ride a custom workout*) — adds `pause()`, `resume()`, `start()`
-  and `connectBike()`. It holds a `RideRunState`: `waiting` (no bike, not started), `running`,
-  `paused` or `lost`. It watches `BIKE_CONNECTION.ble`: `lost` while running moves to `lost` and
-  pauses; `connected` while `lost` moves to `paused`; `connected` while `waiting` enables Start.
+- **`CustomRideStore`** (see *ride a custom workout*) — adds `pause()`, `resume()`, `start()`,
+  `connectBike()`, `reconnect()` and `checkBluetooth()`. It holds a `RideRunState`: `waiting` (no
+  bike when the page opened, not started), `running`, `paused` or `ended`, and reads the bike as
+  lost while the ride has started and `BIKE_CONNECTION.ble` is not `connected`. A lost bike holds
+  the clock and the video at once; when it is back the ride is `paused` until Resume. A bike
+  already connected when the page opens starts the ride at once, as slice 21.3 built it.
 - **`CustomRidePage`** — renders the overlay for the current state.
 
 **Frontend — `components` library**
 
-- **`RideHeader`** — "Start" in place of Pause before the ride starts; Pause and Resume swap;
-  the bike status reads "Disconnected" in red while lost; Resume and End disabled where the
-  state says.
-- **`RideOverlay`** (`wz-ride-overlay`) — "Connect your bike" with "Wake the Echelon EX-5s with a
-  few pedal strokes, then pick it from the list your browser shows. We’ll remember it next time.",
-  **Connect bike** and the hint of `L2-012` AC5; or the lost-bike alert "Lost the bike" with
-  "Echelon EX-5s stopped answering. Wake it with a pedal stroke, then reconnect — your ride is
-  saved at 6:52." and **Reconnect**. The bike name comes from the connection and is rendered as
-  text.
+- **`RideHeader`** — "Start" in place of Pause before the ride starts; Pause and Resume swap
+  (`aria-pressed` is not used: the label says what the button does); the bike status reads
+  "Disconnected" in red while lost; Start, Resume and End disabled where the state says.
+- **`RideOverlay`** (`wz-ride-overlay`, block `ride-overlay`) — three kinds:
+  - `connect`: "Connect your bike" with "Wake the Echelon EX-5s with a few pedal strokes, then
+    pick it from the list your browser shows. We’ll remember it next time.", **Connect bike** and
+    the hint of `L2-012` AC5;
+  - `lost` (`role="alert"`): "Lost the bike" with "Echelon EX-5s stopped answering. Wake it with a
+    pedal stroke, then reconnect — your ride is saved at 6:52." and **Reconnect**;
+  - `bluetooth-off`: "Turn on Bluetooth" with "Your browser can’t see a Bluetooth radio. Switch it
+    on in your computer’s settings — or, if this machine has none, plug in a USB Bluetooth
+    adapter." and **Check again**.
+
+  The bike's name comes from the connection, or the remembered bike, and is rendered as text;
+  with none known the copy reads "your bike".
 - **`RideControl`** — every level bar, − and + disabled while there is no bike or it is lost;
-  enabled while paused with a bike.
+  enabled while paused with a bike. The level reads "—" with no bike.
 - **`RideReadouts`** and **`RideMetrics`** — "—" for any value with no live reading; no value
-  from a stale ride (`L2-106` AC4).
+  from a stale ride (`L2-106` AC4): every reading belongs to the page's own providers.
 
-**Frontend — `domain` library**
+**Frontend — `domain` and `api` libraries**
 
-- **`RideClock`** and **`WorkoutEngine`** — `pause()` and `resume()`; nothing changes while
-  paused.
-- **`BikeConnection`** / `BIKE_CONNECTION` — `ble` state, `connect()` (opens the browser's
-  chooser from the rider's press, `L2-012`) and `reconnect()`; owned by the bike subsystem.
-- **`RideRecorder`** — keeps the totals ridden so far through a pause or a lost bike. Writing an
-  in-progress checkpoint to IndexedDB, so a reload during a lost bike keeps the ride, is
-  `<TO SUPPLY>` (the performance subsystem's *stay smooth on long rides* may settle it).
+- **`RideClock`** — `pause()` and `resume()`; a paused clock publishes no second, so
+  **`WorkoutEngine`** changes no segment and sends nothing (`L2-027` AC3).
+- **`BikeConnection`** / `BIKE_CONNECTION` — `ble`, `requestBike()` then `connect()` from the
+  rider's press (`L2-012`), and `reconnectNow()` for **Reconnect**; the bike connected this way is
+  remembered (`REMEMBERED_BIKE`). A cancelled or failed chooser leaves the overlay as it was.
+- **`BLUETOOTH_SUPPORT`** — `adapter-off` shows the `bluetooth-off` overlay; **Check again** is
+  `recheck()`.
+- **`RideRecorder`** (`domain/engine`, built for the class ride) — records each running second, so
+  the ride is kept in memory through a pause or a lost bike. An in-progress checkpoint in
+  IndexedDB, so a reload during a lost bike keeps the ride, is `<TO SUPPLY>` (the performance
+  subsystem's *stay smooth on long rides* may settle it).
 
 **Backend.** None.
 
@@ -110,3 +122,15 @@ With no bike, the dashboard waits behind the overlay; **Connect bike** opens the
 chooser, and a connected bike enables Start (`L2-106`).
 
 ![Sequence diagram for connecting a bike before the start](diagrams/sequence-connect-before-the-start.png)
+
+## Open questions
+
+1. **Browser panels deferred.** The mocks' `needs-chromium` and `needs-https` states of the custom
+   ride are not in `L2-105` or `L2-106`; Connect Bike already blocks those browsers. They wait for
+   a slice that names them.
+2. **A connected bike starts the ride.** `L2-106` covers opening with no bike. Opening with one
+   (the usual path, from Start ride) starts the ride at once, as slice 21.3 built it.
+3. **"Saved at 6:52".** The lost bike's alert says the ride is saved; it is kept in memory and
+   submitted by End (`L2-105` AC4). A reload loses it until the checkpoint above is settled.
+4. **Lost while paused.** A bike lost while the rider has paused shows the same alert; Resume is
+   disabled until it is back.

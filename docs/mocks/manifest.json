@@ -436,13 +436,15 @@
         "L2-111",
         "L2-112",
         "L2-158",
-        "L2-006"
+        "L2-006",
+        "L2-108"
       ],
       "states": [
         "default",
         "new-rider",
         "veteran",
-        "sign-out-failed"
+        "sign-out-failed",
+        "ride-too-short"
       ],
       "not_applicable": {
         "empty": "‘new-rider’ is the empty state: level 1, no rides, no stars yet.",
