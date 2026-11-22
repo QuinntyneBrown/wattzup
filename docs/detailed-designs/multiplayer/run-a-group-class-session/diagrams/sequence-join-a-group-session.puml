@@ -28,7 +28,7 @@ box "Backend — Telo.Ride.Api" #D1FADF
 end box
 box "Backend — Telo.Ride.Application and Domain" #ECFDF3
   participant "JoinClassSessionCommandHandler" as handler
-  participant "ClassSessionSchedule" as schedule
+  participant "GroupSessionSchedule" as schedule
   participant "GroupClassSession" as session
 end box
 box "Backend — Telo.Ride.Infrastructure" #FFF4E5

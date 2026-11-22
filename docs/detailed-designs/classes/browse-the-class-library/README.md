@@ -107,8 +107,10 @@ starts without a network once the catalogue has been read. Slice 6.2 builds the 
 screen, its store and its components, with the locks for the rider level `PROGRESS_API` gives
 (level 1 until journey 10 keeps progress, so the new rider's locks of `L2-082` AC3 show). Slice
 6.3 adds `classUnlockedGuard` with the Class Start route it guards (`L2-082` AC4). The group
-chip comes with the group class (journey 14); until then, and whenever group sessions cannot be
-read, an open card shows none (`L2-081` AC6). The mid rider's locks (`L2-082` AC1) follow once
+chip comes with slice 14.2: the store reads every class's next session (`GET
+/api/classes/sessions`, `CLASSES_API.nextSessions()`) every 30 seconds and `groupChip()` turns
+each into "Group in 9 min · 6/10" (whole minutes rounded up, from the device's clock); whenever
+the sessions cannot be read, or the rider is signed out, an open card shows none (`L2-081` AC6). The mid rider's locks (`L2-082` AC1) follow once
 the backend gives a level (journeys 10 and 12).
 
 ## Requirements

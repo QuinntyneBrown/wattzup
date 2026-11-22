@@ -11,7 +11,7 @@ Container_Boundary(app, "Ride app") {
 Container_Boundary(api, "Telo Ride API") {
   Component(hub, "RideHub", "SignalR hub · Telo.Ride.Api", "JoinClassSession")
   Component(join, "JoinClassSessionCommandHandler", "MediatR handler · Telo.Ride.Application", "Seats or refuses")
-  Component(schedule, "ClassSessionSchedule", "Domain service · Telo.Ride.Domain", "A slot every 15 minutes")
+  Component(schedule, "GroupSessionSchedule", "Domain service · Telo.Ride.Domain", "A slot every 15 minutes")
   Component(session, "GroupClassSession", "Domain entity · Telo.Ride.Domain", "Up to 10 seats for one slot")
   Component(tick, "TickLiveSessionsCommandHandler", "MediatR handler · Telo.Ride.Application", "Fills bots and starts at the slot")
   Component(ticker, "SessionTicker", "BackgroundService · Telo.Ride.Infrastructure", "One tick a second")

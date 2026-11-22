@@ -28,7 +28,7 @@ box "Third party — YouTube" #F2F4F7
   participant "YouTube embed" as yt
 end box
 box "Backend — Telo.Ride.Api" #D1FADF
-  participant "ClassesController" as ctrl
+  participant "ClassSessionsController" as ctrl
 end box
 box "Backend — Telo.Ride.Application and Domain" #ECFDF3
   participant "GetClassSessionsQueryHandler" as handler

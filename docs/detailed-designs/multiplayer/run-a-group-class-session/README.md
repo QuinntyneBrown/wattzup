@@ -39,15 +39,16 @@ ride (`docs/detailed-designs/classes/ride-with-a-group`) shows the board this se
 - **`RideHub.JoinClassSession(classId, sessionId)`** — sends `JoinClassSessionCommand`.
 - **`JoinClassSessionCommandHandler`** — `Telo.Ride.Application`. It reads the class from the
   catalogue and refuses a rider below the class's opening level with `class_locked` (`L2-082`).
-  It resolves the slot through `ClassSessionSchedule`, gets or creates the `GroupClassSession`
+  It resolves the slot through `GroupSessionSchedule`, gets or creates the `GroupClassSession`
   for that slot, and asks the session to seat the rider. The session refuses with
   `session_started` once its start has passed and with `session_full` when 10 riders are seated
   (`L2-122` AC1, AC2). On success the handler adds the connection to the session group and sends
   `SeatsChanged`.
-- **`ClassSessionSchedule`** — domain service in `Telo.Ride.Domain`. `SlotsFrom(classId, now)`
-  yields the slot start times, 15 minutes apart. The anchor of the first slot is `<TO SUPPLY>`;
-  the mocks show "7:54 PM", which is not a quarter hour. `Next(slot)` is the slot 15 minutes
-  later.
+- **`GroupSessionSchedule`** — domain service in `Telo.Ride.Domain`. `Next(now, count)` yields
+  the next slot start times after now, 15 minutes apart on the quarter hours (UTC), so a slot
+  that starts now has started; `SessionId(classId, start)` names a slot's session
+  (`hiit-cardio-30@20261121T1945Z`). The mocks' "7:39 PM" and "7:54 PM" are examples of what
+  the app shows for the times it is given, not the anchor.
 - **`GroupClassSession`** — `LiveSession` for one `ClassId` and slot. Its id is derived from the
   class id and the slot start, so two riders asking for the same slot reach the same session.
   `TrySeat(rider, now)` returns a `JoinOutcome`.
@@ -55,6 +56,12 @@ ride (`docs/detailed-designs/classes/ride-with-a-group`) shows the board this se
   seats bots up to 10, and sends `SessionStarted` with the start as server time (`L2-122` AC3).
 - **`GetClassSessionsQueryHandler`** — serves `GET /api/classes/{classId}/sessions` for Class
   Start; its design belongs to `classes/start-a-class`. It reads the same schedule and seat counts.
+
+**Slices.** Slice 14.2 builds `GroupSessionSchedule` and the two reads of it, `GET
+/api/classes/{classId}/sessions` (Class Start) and `GET /api/classes/sessions` (every class's
+next session, for the Class Library's chip). Both need a signed-in rider, since a session lists
+its riders. No rider is seated until slice 14.3 adds `JoinClassSession`, `GroupClassSession` and
+the in-memory registry, so every seat reads free until then; slice 14.4 starts the session.
 
 ## Requirements
 
@@ -85,7 +92,7 @@ rider's level from the database and keeps the live session in memory.
 
 ### Components
 
-`RideHub` sends the join to its handler, which uses `ClassSessionSchedule` and
+`RideHub` sends the join to its handler, which uses `GroupSessionSchedule` and
 `GroupClassSession`; `SessionTicker` starts the session on time.
 
 ![C4 component view for running a group class session](diagrams/c4-component.png)
@@ -93,7 +100,7 @@ rider's level from the database and keeps the live session in memory.
 ### Class structure
 
 `GroupClassSession` specializes `LiveSession` and returns a `JoinOutcome`;
-`ClassSessionSchedule` produces its slots.
+`GroupSessionSchedule` produces its slots.
 
 ![Class diagram for running a group class session](diagrams/class-structure.png)
 
