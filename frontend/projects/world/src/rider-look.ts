@@ -10,6 +10,8 @@ export interface RiderLook {
   readonly shoe: number;
   readonly sock: number;
   readonly scale: number;
+  /** Their build: how broad they are for their height, against the middling rider. */
+  readonly build: number;
   /** Which of the kit's designs their jersey is cut to, and the second colour it is trimmed in. */
   readonly design: KitDesign;
   readonly trim: number;
@@ -24,6 +26,7 @@ const FRAMES = [0x16181d, 0xd8dade, 0x7a1f22, 0x1f3f6e, 0x1e5a44, 0x2a2c31, 0xc8
 const SHOES = [0xe9e9e4, 0x17181b, 0xd23a2e, 0xe9e9e4];
 const SOCKS = [0xf2f2ee, 0xf2f2ee, 0x16171a];
 const SCALES = [1, 0.96, 1.04, 0.98, 1.06, 0.94, 1.02];
+const BUILDS = [1, 1.07, 0.94, 1.03, 0.97];
 const DESIGNS: readonly KitDesign[] = ['yoke', 'hoop', 'panels', 'sash'];
 const TRIMS = [0xf2f2ee, 0x16223f, 0x18191c, 0xf2c230, 0x0f6e6a];
 
@@ -40,6 +43,7 @@ export function riderLook(number: number): RiderLook {
     shoe: pick(SHOES, 1, 0),
     sock: pick(SOCKS, 1, 1),
     scale: pick(SCALES, 1, 3),
+    build: pick(BUILDS, 2, 2),
     design: pick(DESIGNS, 1, 0),
     trim: pick(TRIMS, 2, 3),
   };

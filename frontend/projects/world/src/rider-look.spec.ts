@@ -30,6 +30,15 @@ describe('what each rider looks like (L2-166 AC30)', () => {
     for (let n = 1; n < 40; n++) expect(riderLook(n).design).not.toBe(riderLook(n + 1).design);
   });
 
+  it('gives the pack slight riders and broad ones, none far from the middling build', () => {
+    const builds = Array.from({ length: 12 }, (_, i) => riderLook(i + 1).build);
+    expect(new Set(builds).size).toBeGreaterThanOrEqual(4);
+    for (const build of builds) {
+      expect(build).toBeGreaterThanOrEqual(0.93);
+      expect(build).toBeLessThanOrEqual(1.08);
+    }
+  });
+
   it('keeps every rider within a height a bike of this size fits', () => {
     for (let n = 0; n < 60; n++) {
       expect(riderLook(n).scale).toBeGreaterThanOrEqual(0.94);

@@ -33,6 +33,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 22 | By day, the sky's light in a rider's shade and the sun along their edges (measured on Cliffside Coast) | 120.1 fps, 0 over 20 ms | 10.0 ms | 367 fps (2.72 ms): 373, 355, 367; Docklands unchanged at 296 | 83,511 | 70 | Yes |
 | 23 | Riders made as finely as they are seen: the others at 0.6 of the camera's rider, and every rider coarser on a slower tier | 120.1 fps, 0 over 20 ms | 9.8 ms | 310 fps (3.23 ms): 310, 309, 310 | 78,951 (100,371 before) | 84 | Yes |
 | 24 | Kit in four designs: a yoke, a hoop, bold side panels or a sash, trimmed in a second colour | 120.0 fps, 0 over 20 ms | 16.7 ms | 310 fps (3.22 ms): 311, 310, 308 | 78,951 | 84 | Yes |
+| 25 | The race number where a number is worn, and riders of different builds | 120.1 fps, 0 over 20 ms | 10.2 ms | 311 fps (3.22 ms): 311, 308, 311 | 78,951 | 84 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -815,3 +816,23 @@ of the texture to match.
 **Cost.** None: it is the same texture, painted differently.
 
 **Learned.** To look at something only the far riders have, put it on the near one for a moment. And say so.
+
+## Pass 25: the number where it is worn, and riders' builds
+
+**Before** (`rider-24-designs.jpg`): the race number is a plate 20 cm by 15 cm in the middle of the back, over the
+jersey's design, its folds and half its lettering. And every rider is the same build: pass 7 gave them heights, not
+widths.
+
+**After** (`rider-25-start.jpg`, `rider-25.jpg`, `rider-25.mp4`): the number is 16 cm by 11.5 cm and pinned over
+the pockets, low on the back, where a number is worn; the back above it, with its lettering, its design and its
+spine, is seen. Each rider also has a build from their number: 0.94 to 1.07 as broad as the middling rider for
+their height. The build is seen on the riders up the road, slighter and broader; the rider the camera follows
+(number 4) is the middling build.
+
+**What changed.** `rider-look.ts`: `build`, with a unit test. `course-cyclist.ts`: the rig is scaled across by
+`scale × build`; the number's plate is smaller and lower.
+
+**Cost.** None.
+
+**Learned.** What is pinned on a rider should not hide the rider. The number had been covering the part of the
+jersey five passes went into.

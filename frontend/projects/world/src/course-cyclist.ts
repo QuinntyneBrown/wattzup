@@ -490,7 +490,7 @@ export class CourseCyclistKit {
     side: DoubleSide,
     roughness: 0.35,
   });
-  private readonly bibPlane = new PlaneGeometry(0.2, 0.15);
+  private readonly bibPlane = new PlaneGeometry(0.16, 0.115);
   // The bikes' lights, where the course is ridden at night: the glow of the rear lamp, and the pools the rear and
   // front lamps throw on the road.
   private readonly glowTexture: CanvasTexture | null = null;
@@ -651,7 +651,9 @@ class CourseCyclist implements RiderModel {
     const look = riderLook(number);
     const colours = palette(look);
     // Taller and shorter riders, each on a bike their size.
-    this.rig.scale.setScalar(look.scale);
+    // And slighter and broader ones: a rider's build is their width for their height. The bike is as narrow as
+    // a bike is, so the difference shows in the rider.
+    this.rig.scale.set(look.scale * look.build, look.scale, look.scale);
     this.size = look.scale;
     const rider = body(jersey, colours);
     this.group.add(this.rig);
@@ -688,12 +690,13 @@ class CourseCyclist implements RiderModel {
       this.wheels.push(disc);
     }
 
-    // The race number, pinned low on the back.
+    // The race number, pinned over the jersey's pockets, where a number is worn: it leaves the back's design and
+    // lettering to be seen.
     const up = SHOULDER.clone().sub(HIP).normalize();
     const back = new Vector3(0, -up.z, up.y);
     const cloth = new MeshStandardMaterial({ map: bibTexture(number), roughness: 0.85 });
     const bib = new Mesh(shapes.bibPlane, cloth);
-    bib.position.set(0, 0, 0).addScaledVector(up, 0.2).addScaledVector(back, 0.153);
+    bib.position.set(0, 0, 0).addScaledVector(up, 0.135).addScaledVector(back, 0.152);
     bib.quaternion.setFromUnitVectors(new Vector3(0, 0, 1), back);
     this.torso.add(bib);
     this.owned.push(cloth, cloth.map!);
