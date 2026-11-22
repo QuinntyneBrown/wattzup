@@ -49,6 +49,10 @@ const HOUSE_CULL_BEHIND = -16;
 const BLOCK_SLICES = 9;
 /** Beyond Old Town's 65 m directional shadow box (plus margin), blocks skip shadow casting. */
 const SHADOW_AHEAD = 75;
+const CROWD_BUCKET_M = 2;
+const CROWD_NEAR_BEHIND = -14;
+const CROWD_NEAR_AHEAD = 72;
+const CROWD_FAR_AHEAD = ROAD_END + 8;
 /** Houses reach below the road, so a ramp never shows their footing. */
 const FOOTING = 4;
 
@@ -241,8 +245,11 @@ export class OldTownStreet {
     shadowNear?: boolean;
   }[] = [];
   private readonly crowd: Fan[] = [];
-  /** The crowd's legs, torsos, heads, arms, hats, hand flags and hair, plus compact index/offset tables. */
-  private fans: InstancedMesh[] = [];
+  /** Near shadow-casting, far non-shadow-casting, and compact accessory spectator InstancedMeshes. */
+  private nearFans: InstancedMesh[] = [];
+  private farFans: InstancedMesh[] = [];
+  private accessoryFans: InstancedMesh[] = [];
+  private lastCrowdBucket = Number.NaN;
   private fanOffsets = new Float32Array(0);
   private fanWorldY = new Float32Array(0);
   private fanWorldZ = new Float32Array(0);
@@ -251,13 +258,41 @@ export class OldTownStreet {
   private headBaseY = new Float32Array(0);
   private armBaseY = new Float32Array(0);
   private armBaseZ = new Float32Array(0);
-  private hatFanIdx = new Uint16Array(0);
+  private legsTpl = new Float32Array(0);
+  private torsoTpl = new Float32Array(0);
+  private headTpl = new Float32Array(0);
+  private armTpl = new Float32Array(0);
+  private legsCol = new Float32Array(0);
+  private torsoCol = new Float32Array(0);
+  private headCol = new Float32Array(0);
+  private armCol = new Float32Array(0);
+  private fanHatSlot = new Int16Array(0);
+  private hatTpl = new Float32Array(0);
+  private hatCol = new Float32Array(0);
   private hatBaseY = new Float32Array(0);
-  private wavedFanIdx = new Uint16Array(0);
+  private fanWavedSlot = new Int16Array(0);
+  private wavedTpl = new Float32Array(0);
+  private wavedCol = new Float32Array(0);
   private wavedBaseY = new Float32Array(0);
   private wavedBaseZ = new Float32Array(0);
-  private hairFanIdx = new Uint16Array(0);
+  private fanHairSlot = new Int16Array(0);
+  private hairTpl = new Float32Array(0);
+  private hairCol = new Float32Array(0);
   private hairBaseY = new Float32Array(0);
+  private activeNearIdx = new Uint16Array(0);
+  private activeNearCount = 0;
+  private activeFarIdx = new Uint16Array(0);
+  private activeFarCount = 0;
+  private activeHatFan = new Uint16Array(0);
+  private activeHatSlot = new Uint16Array(0);
+  private activeHatCount = 0;
+  private activeWavedFan = new Uint16Array(0);
+  private activeWavedSlot = new Uint16Array(0);
+  private activeWavedCount = 0;
+  private activeHairFan = new Uint16Array(0);
+  private activeHairSlot = new Uint16Array(0);
+  private activeHairCount = 0;
+  private readonly cloth = new MeshStandardMaterial({ roughness: 0.85, side: DoubleSide });
   private readonly reach = new Vector3();
   private readonly shoulder = new Vector3();
   private readonly lean = new Quaternion();
@@ -349,6 +384,7 @@ export class OldTownStreet {
       this.unit,
       this.frontUnit,
       this.brick,
+      this.cloth,
       this.railing,
       this.iron,
       this.signBoard,
@@ -935,9 +971,8 @@ export class OldTownStreet {
       new BufferAttribute(new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1]), 3),
     );
     pennant.setAttribute('uv', new BufferAttribute(new Float32Array([0, 1, 1, 1, 0.5, 0]), 2));
-    const cloth = new MeshStandardMaterial({ roughness: 0.85, side: DoubleSide });
     const total = BUNTING_LINES * BUNTING_FLAGS;
-    this.flags = new InstancedMesh(pennant, cloth, total);
+    this.flags = new InstancedMesh(pennant, this.cloth, total);
     const colour = new Color();
     for (let i = 0; i < total; i++) {
       this.flags.setColorAt(i, colour.set(PENNANTS[i % PENNANTS.length]!));
@@ -950,7 +985,7 @@ export class OldTownStreet {
     this.cords = new InstancedMesh(length, this.iron, total);
     this.cords.frustumCulled = false;
     this.group.add(this.cords);
-    this.disposables.push(pennant, cloth, length, this.flags, this.cords);
+    this.disposables.push(pennant, length, this.flags, this.cords);
     this.size.set(1, 1, 1);
     for (let k = 0; k < BUNTING_FLAGS; k++) {
       const x = -FRONTAGE + ((k + 0.5) / BUNTING_FLAGS) * 2 * FRONTAGE;
@@ -965,17 +1000,173 @@ export class OldTownStreet {
     }
   }
 
-  /** The crowd, moved with the street: zero per-frame allocations and compact accessory loops. */
+  /** Rebuilds near/far/accessory crowd slots only when crossing a 2 m longitudinal bucket. */
+  private rebuildCrowdBucket(bucket: number): void {
+    this.lastCrowdBucket = bucket;
+    const [nLegs, nTorsos, nHeads, nArms] = this.nearFans;
+    const [fLegs, fTorsos, fHeads, fArms] = this.farFans;
+    const [hats, waved, hair] = this.accessoryFans;
+    if (
+      !nLegs ||
+      !nTorsos ||
+      !nHeads ||
+      !nArms ||
+      !fLegs ||
+      !fTorsos ||
+      !fHeads ||
+      !fArms ||
+      !hats ||
+      !waved ||
+      !hair
+    ) {
+      return;
+    }
+    const s0 = bucket * CROWD_BUCKET_M;
+    const offsets = this.fanOffsets;
+    const n = offsets.length;
+    const nLegsMat = nLegs.instanceMatrix.array as Float32Array;
+    const nTorsoMat = nTorsos.instanceMatrix.array as Float32Array;
+    const nHeadMat = nHeads.instanceMatrix.array as Float32Array;
+    const nArmMat = nArms.instanceMatrix.array as Float32Array;
+    const nLegsCol = nLegs.instanceColor!.array as Float32Array;
+    const nTorsoCol = nTorsos.instanceColor!.array as Float32Array;
+    const nHeadCol = nHeads.instanceColor!.array as Float32Array;
+    const nArmCol = nArms.instanceColor!.array as Float32Array;
+
+    const fLegsMat = fLegs.instanceMatrix.array as Float32Array;
+    const fTorsoMat = fTorsos.instanceMatrix.array as Float32Array;
+    const fHeadMat = fHeads.instanceMatrix.array as Float32Array;
+    const fArmMat = fArms.instanceMatrix.array as Float32Array;
+    const fLegsCol = fLegs.instanceColor!.array as Float32Array;
+    const fTorsoCol = fTorsos.instanceColor!.array as Float32Array;
+    const fHeadCol = fHeads.instanceColor!.array as Float32Array;
+    const fArmCol = fArms.instanceColor!.array as Float32Array;
+
+    const hatMat = hats.instanceMatrix.array as Float32Array;
+    const wavedMat = waved.instanceMatrix.array as Float32Array;
+    const hairMat = hair.instanceMatrix.array as Float32Array;
+    const hatCol = hats.instanceColor!.array as Float32Array;
+    const wavedCol = waved.instanceColor!.array as Float32Array;
+    const hairCol = hair.instanceColor!.array as Float32Array;
+
+    let nearCount = 0;
+    let farCount = 0;
+    let hatCount = 0;
+    let wavedCount = 0;
+    let hairCount = 0;
+
+    for (let i = 0; i < n; i++) {
+      const m0 = ((((offsets[i]! - s0) % LOOP) + LOOP) % LOOP) - BEHIND;
+      if (m0 <= CROWD_NEAR_BEHIND || m0 > CROWD_FAR_AHEAD) continue;
+      const srcOff = i * 16;
+      const srcCol = i * 3;
+      const a0 = 2 * i;
+      const a1 = a0 + 1;
+      if (m0 < CROWD_NEAR_AHEAD) {
+        const k = nearCount++;
+        this.activeNearIdx[k] = i;
+        const dstOff = k * 16;
+        const dstCol = k * 3;
+        copyMat16(nLegsMat, dstOff, this.legsTpl, srcOff);
+        copyMat16(nTorsoMat, dstOff, this.torsoTpl, srcOff);
+        copyMat16(nHeadMat, dstOff, this.headTpl, srcOff);
+        copyCol3(nLegsCol, dstCol, this.legsCol, srcCol);
+        copyCol3(nTorsoCol, dstCol, this.torsoCol, srcCol);
+        copyCol3(nHeadCol, dstCol, this.headCol, srcCol);
+        copyMat16(nArmMat, 2 * k * 16, this.armTpl, a0 * 16);
+        copyMat16(nArmMat, (2 * k + 1) * 16, this.armTpl, a1 * 16);
+        copyCol3(nArmCol, 2 * k * 3, this.armCol, a0 * 3);
+        copyCol3(nArmCol, (2 * k + 1) * 3, this.armCol, a1 * 3);
+      } else {
+        const k = farCount++;
+        this.activeFarIdx[k] = i;
+        const dstOff = k * 16;
+        const dstCol = k * 3;
+        copyMat16(fLegsMat, dstOff, this.legsTpl, srcOff);
+        copyMat16(fTorsoMat, dstOff, this.torsoTpl, srcOff);
+        copyMat16(fHeadMat, dstOff, this.headTpl, srcOff);
+        copyCol3(fLegsCol, dstCol, this.legsCol, srcCol);
+        copyCol3(fTorsoCol, dstCol, this.torsoCol, srcCol);
+        copyCol3(fHeadCol, dstCol, this.headCol, srcCol);
+        copyMat16(fArmMat, 2 * k * 16, this.armTpl, a0 * 16);
+        copyMat16(fArmMat, (2 * k + 1) * 16, this.armTpl, a1 * 16);
+        copyCol3(fArmCol, 2 * k * 3, this.armCol, a0 * 3);
+        copyCol3(fArmCol, (2 * k + 1) * 3, this.armCol, a1 * 3);
+      }
+      const hs = this.fanHatSlot[i]!;
+      if (hs >= 0) {
+        const k = hatCount++;
+        this.activeHatFan[k] = i;
+        this.activeHatSlot[k] = hs;
+        copyMat16(hatMat, k * 16, this.hatTpl, hs * 16);
+        copyCol3(hatCol, k * 3, this.hatCol, hs * 3);
+      } else {
+        const hrs = this.fanHairSlot[i]!;
+        if (hrs >= 0) {
+          const k = hairCount++;
+          this.activeHairFan[k] = i;
+          this.activeHairSlot[k] = hrs;
+          copyMat16(hairMat, k * 16, this.hairTpl, hrs * 16);
+          copyCol3(hairCol, k * 3, this.hairCol, hrs * 3);
+        }
+      }
+      const ws = this.fanWavedSlot[i]!;
+      if (ws >= 0) {
+        const k = wavedCount++;
+        this.activeWavedFan[k] = i;
+        this.activeWavedSlot[k] = ws;
+        copyMat16(wavedMat, k * 16, this.wavedTpl, ws * 16);
+        copyCol3(wavedCol, k * 3, this.wavedCol, ws * 3);
+      }
+    }
+
+    this.activeNearCount = nearCount;
+    this.activeFarCount = farCount;
+    this.activeHatCount = hatCount;
+    this.activeWavedCount = wavedCount;
+    this.activeHairCount = hairCount;
+
+    nLegs.count = nearCount;
+    nTorsos.count = nearCount;
+    nHeads.count = nearCount;
+    nArms.count = 2 * nearCount;
+    fLegs.count = farCount;
+    fTorsos.count = farCount;
+    fHeads.count = farCount;
+    fArms.count = 2 * farCount;
+    hats.count = hatCount;
+    waved.count = wavedCount;
+    hair.count = hairCount;
+
+    for (const mesh of [...this.nearFans, ...this.farFans, ...this.accessoryFans]) {
+      mesh.instanceColor!.needsUpdate = true;
+      mesh.instanceMatrix.needsUpdate = true;
+    }
+  }
+
+  /** The crowd, moved with the street: updates only visible near/far/accessory spectators. */
   private placeCrowd(s: number, heightAt: (metres: number) => number): void {
-    const [legs, torsos, heads, arms, hats, waved, hair] = this.fans;
-    if (!legs || !torsos || !heads || !arms || !hats || !waved || !hair) return;
-    const legsArr = legs.instanceMatrix.array as Float32Array;
-    const torsoArr = torsos.instanceMatrix.array as Float32Array;
-    const headArr = heads.instanceMatrix.array as Float32Array;
-    const armArr = arms.instanceMatrix.array as Float32Array;
-    const hatArr = hats.instanceMatrix.array as Float32Array;
-    const wavedArr = waved.instanceMatrix.array as Float32Array;
-    const hairArr = hair.instanceMatrix.array as Float32Array;
+    const [nLegs, nTorsos, nHeads, nArms] = this.nearFans;
+    const [fLegs, fTorsos, fHeads, fArms] = this.farFans;
+    const [hats, waved, hair] = this.accessoryFans;
+    if (
+      !nLegs ||
+      !nTorsos ||
+      !nHeads ||
+      !nArms ||
+      !fLegs ||
+      !fTorsos ||
+      !fHeads ||
+      !fArms ||
+      !hats ||
+      !waved ||
+      !hair
+    ) {
+      return;
+    }
+    const bucket = Math.floor(s / CROWD_BUCKET_M);
+    if (bucket !== this.lastCrowdBucket) this.rebuildCrowdBucket(bucket);
+
     const offsets = this.fanOffsets;
     const worldY = this.fanWorldY;
     const worldZ = this.fanWorldZ;
@@ -984,62 +1175,94 @@ export class OldTownStreet {
     const headY = this.headBaseY;
     const armY = this.armBaseY;
     const armZ = this.armBaseZ;
-    const count = offsets.length;
-    for (let i = 0; i < count; i++) {
-      const metres = ((((offsets[i]! - s) % LOOP) + LOOP) % LOOP) - BEHIND;
-      const y = heightAt(metres) + KERB;
-      const z = -metres;
-      worldY[i] = y;
-      worldZ[i] = z;
-      const off = i * 16;
-      legsArr[off + 13] = y + legsY[i]!;
-      legsArr[off + 14] = z;
-      torsoArr[off + 13] = y + torsoY[i]!;
-      torsoArr[off + 14] = z;
-      headArr[off + 13] = y + headY[i]!;
-      headArr[off + 14] = z;
-      const a0 = 2 * i;
-      const a1 = a0 + 1;
-      const a0Off = a0 * 16;
-      const a1Off = a1 * 16;
-      armArr[a0Off + 13] = y + armY[a0]!;
-      armArr[a0Off + 14] = armZ[a0]! + z;
-      armArr[a1Off + 13] = y + armY[a1]!;
-      armArr[a1Off + 14] = armZ[a1]! + z;
-    }
-    const hatIdx = this.hatFanIdx;
+
+    const updatePartition = (
+      indices: Uint16Array,
+      count: number,
+      legsArr: Float32Array,
+      torsoArr: Float32Array,
+      headArr: Float32Array,
+      armArr: Float32Array,
+    ) => {
+      for (let k = 0; k < count; k++) {
+        const i = indices[k]!;
+        const metres = ((((offsets[i]! - s) % LOOP) + LOOP) % LOOP) - BEHIND;
+        const y = heightAt(metres) + KERB;
+        const z = -metres;
+        worldY[i] = y;
+        worldZ[i] = z;
+        const off = k * 16;
+        legsArr[off + 13] = y + legsY[i]!;
+        legsArr[off + 14] = z;
+        torsoArr[off + 13] = y + torsoY[i]!;
+        torsoArr[off + 14] = z;
+        headArr[off + 13] = y + headY[i]!;
+        headArr[off + 14] = z;
+        const a0 = 2 * i;
+        const a1 = a0 + 1;
+        const a0Off = 2 * k * 16;
+        const a1Off = (2 * k + 1) * 16;
+        armArr[a0Off + 13] = y + armY[a0]!;
+        armArr[a0Off + 14] = armZ[a0]! + z;
+        armArr[a1Off + 13] = y + armY[a1]!;
+        armArr[a1Off + 14] = armZ[a1]! + z;
+      }
+    };
+
+    updatePartition(
+      this.activeNearIdx,
+      this.activeNearCount,
+      nLegs.instanceMatrix.array as Float32Array,
+      nTorsos.instanceMatrix.array as Float32Array,
+      nHeads.instanceMatrix.array as Float32Array,
+      nArms.instanceMatrix.array as Float32Array,
+    );
+    updatePartition(
+      this.activeFarIdx,
+      this.activeFarCount,
+      fLegs.instanceMatrix.array as Float32Array,
+      fTorsos.instanceMatrix.array as Float32Array,
+      fHeads.instanceMatrix.array as Float32Array,
+      fArms.instanceMatrix.array as Float32Array,
+    );
+
+    const hatArr = hats.instanceMatrix.array as Float32Array;
     const hatY = this.hatBaseY;
-    for (let k = 0; k < hatIdx.length; k++) {
-      const fi = hatIdx[k]!;
+    for (let k = 0; k < this.activeHatCount; k++) {
+      const fi = this.activeHatFan[k]!;
+      const hs = this.activeHatSlot[k]!;
       const off = k * 16;
-      hatArr[off + 13] = worldY[fi]! + hatY[k]!;
+      hatArr[off + 13] = worldY[fi]! + hatY[hs]!;
       hatArr[off + 14] = worldZ[fi]!;
     }
-    const wavedIdx = this.wavedFanIdx;
+    const wavedArr = waved.instanceMatrix.array as Float32Array;
     const wavedY = this.wavedBaseY;
     const wavedZ = this.wavedBaseZ;
-    for (let k = 0; k < wavedIdx.length; k++) {
-      const fi = wavedIdx[k]!;
+    for (let k = 0; k < this.activeWavedCount; k++) {
+      const fi = this.activeWavedFan[k]!;
+      const ws = this.activeWavedSlot[k]!;
       const off = k * 16;
-      wavedArr[off + 13] = worldY[fi]! + wavedY[k]!;
-      wavedArr[off + 14] = wavedZ[k]! + worldZ[fi]!;
+      wavedArr[off + 13] = worldY[fi]! + wavedY[ws]!;
+      wavedArr[off + 14] = wavedZ[ws]! + worldZ[fi]!;
     }
-    const hairIdx = this.hairFanIdx;
+    const hairArr = hair.instanceMatrix.array as Float32Array;
     const hairY = this.hairBaseY;
-    for (let k = 0; k < hairIdx.length; k++) {
-      const fi = hairIdx[k]!;
+    for (let k = 0; k < this.activeHairCount; k++) {
+      const fi = this.activeHairFan[k]!;
+      const hrs = this.activeHairSlot[k]!;
       const off = k * 16;
-      hairArr[off + 13] = worldY[fi]! + hairY[k]!;
+      hairArr[off + 13] = worldY[fi]! + hairY[hrs]!;
       hairArr[off + 14] = worldZ[fi]!;
     }
-    for (const mesh of this.fans) {
+
+    for (const mesh of [...this.nearFans, ...this.farFans, ...this.accessoryFans]) {
       mesh.instanceMatrix.needsUpdate = true;
     }
   }
 
   /**
-   * Spectators behind the barriers, in knots along both pavements: a body in a shirt of its
-   * own colour and a head, drawn as two instanced meshes.
+   * Spectators behind the barriers, partitioned into near shadow-casting (`(-14, 72) m`) and far
+   * non-shadow-casting (`[72, 308] m`) InstancedMeshes, culling behind-camera and far-horizon fans.
    */
   private addCrowd(roadHalf: number): void {
     const random = seeded(41);
@@ -1098,8 +1321,13 @@ export class OldTownStreet {
     const head = new SphereGeometry(0.105, 8, 6);
     // An arm 0.6 m long, its middle at the origin.
     const arm = new CapsuleGeometry(0.05, 0.5, 1, 5);
+    const hat = new CylinderGeometry(0.1, 0.17, 0.09, 8);
+    const pennant = new PlaneGeometry(0.4, 0.28);
+    pennant.translate(0.2, 0, 0);
+    const hair = new SphereGeometry(0.112, 8, 4, 0, Math.PI * 2, 0, Math.PI / 2.1);
     const material = new MeshStandardMaterial({ roughness: 0.8 });
-    this.disposables.push(legs, torso, head, arm, material);
+    this.disposables.push(legs, torso, head, arm, hat, pennant, hair, material);
+
     const n = this.crowd.length;
     const hatsRng = seeded(47);
     const hattedFlags: boolean[] = [];
@@ -1117,26 +1345,6 @@ export class OldTownStreet {
     }
     const hairTotal = n - hatTotal;
 
-    this.fans = [legs, torso, head].map((g) => new InstancedMesh(g, material, n));
-    this.fans.push(new InstancedMesh(arm, material, 2 * n));
-    // Sun hats and caps on a fifth of the crowd: compacted to hatted fans only.
-    const hat = new CylinderGeometry(0.1, 0.17, 0.09, 8);
-    this.disposables.push(hat);
-    this.fans.push(new InstancedMesh(hat, material, Math.max(hatTotal, 1)));
-    // Hand flags, held up by two in three of those cheering: compacted to flag-waving fans only.
-    const pennant = new PlaneGeometry(0.4, 0.28);
-    pennant.translate(0.2, 0, 0);
-    const cloth = new MeshStandardMaterial({ roughness: 0.85, side: DoubleSide });
-    this.disposables.push(pennant, cloth);
-    this.fans.push(new InstancedMesh(pennant, cloth, Math.max(wavedTotal, 1)));
-    // Hair on every bare head: compacted to bare-headed fans only.
-    const hair = new SphereGeometry(0.112, 8, 4, 0, Math.PI * 2, 0, Math.PI / 2.1);
-    this.disposables.push(hair);
-    this.fans.push(new InstancedMesh(hair, material, Math.max(hairTotal, 1)));
-    this.fans[4]!.count = hatTotal;
-    this.fans[5]!.count = wavedTotal;
-    this.fans[6]!.count = hairTotal;
-
     this.fanOffsets = new Float32Array(n);
     this.fanWorldY = new Float32Array(n);
     this.fanWorldZ = new Float32Array(n);
@@ -1145,50 +1353,73 @@ export class OldTownStreet {
     this.headBaseY = new Float32Array(n);
     this.armBaseY = new Float32Array(2 * n);
     this.armBaseZ = new Float32Array(2 * n);
-    this.hatFanIdx = new Uint16Array(hatTotal);
+    this.legsTpl = new Float32Array(n * 16);
+    this.torsoTpl = new Float32Array(n * 16);
+    this.headTpl = new Float32Array(n * 16);
+    this.armTpl = new Float32Array(2 * n * 16);
+    this.legsCol = new Float32Array(n * 3);
+    this.torsoCol = new Float32Array(n * 3);
+    this.headCol = new Float32Array(n * 3);
+    this.armCol = new Float32Array(2 * n * 3);
+
+    this.fanHatSlot = new Int16Array(n).fill(-1);
+    this.hatTpl = new Float32Array(hatTotal * 16);
+    this.hatCol = new Float32Array(hatTotal * 3);
     this.hatBaseY = new Float32Array(hatTotal);
-    this.wavedFanIdx = new Uint16Array(wavedTotal);
+
+    this.fanWavedSlot = new Int16Array(n).fill(-1);
+    this.wavedTpl = new Float32Array(wavedTotal * 16);
+    this.wavedCol = new Float32Array(wavedTotal * 3);
     this.wavedBaseY = new Float32Array(wavedTotal);
     this.wavedBaseZ = new Float32Array(wavedTotal);
-    this.hairFanIdx = new Uint16Array(hairTotal);
+
+    this.fanHairSlot = new Int16Array(n).fill(-1);
+    this.hairTpl = new Float32Array(hairTotal * 16);
+    this.hairCol = new Float32Array(hairTotal * 3);
     this.hairBaseY = new Float32Array(hairTotal);
 
     const colour = new Color();
+    const writeCol = (dst: Float32Array, idx: number, hex: string) => {
+      colour.set(hex);
+      dst[idx * 3] = colour.r;
+      dst[idx * 3 + 1] = colour.g;
+      dst[idx * 3 + 2] = colour.b;
+    };
     let hatSlot = 0;
     let wavedSlot = 0;
     let hairSlot = 0;
     this.crowd.forEach((fan, i) => {
       this.fanOffsets[i] = fan.offset;
-      this.fans[0]!.setColorAt(i, colour.set(fan.trousers));
-      this.fans[1]!.setColorAt(i, colour.set(fan.shirt));
-      this.fans[2]!.setColorAt(i, colour.set(fan.skin));
-      this.fans[3]!.setColorAt(2 * i, colour.set(fan.shirt));
-      this.fans[3]!.setColorAt(2 * i + 1, colour.set(fan.shirt));
+      writeCol(this.legsCol, i, fan.trousers);
+      writeCol(this.torsoCol, i, fan.shirt);
+      writeCol(this.headCol, i, fan.skin);
+      writeCol(this.armCol, 2 * i, fan.shirt);
+      writeCol(this.armCol, 2 * i + 1, fan.shirt);
       const hip = fan.height * 0.47;
       const neck = fan.height - 0.21;
       this.turn.setFromAxisAngle(UP, fan.turn);
-      const setCore = (mIdx: number, outY: Float32Array, at: number, sy: number) => {
+      const setCore = (tpl: Float32Array, outY: Float32Array, at: number, sy: number) => {
         this.matrix.compose(this.spot.set(fan.x, at, 0), this.turn, this.size.set(1, sy, 1));
-        this.fans[mIdx]!.setMatrixAt(i, this.matrix);
+        this.matrix.toArray(tpl, i * 16);
         outY[i] = at;
       };
-      setCore(0, this.legsBaseY, hip / 2, hip / 0.9);
-      setCore(1, this.torsoBaseY, (hip + neck) / 2, (neck - hip + 0.08) / 0.75);
-      setCore(2, this.headBaseY, fan.height - 0.11, 1);
+      setCore(this.legsTpl, this.legsBaseY, hip / 2, hip / 0.9);
+      setCore(this.torsoTpl, this.torsoBaseY, (hip + neck) / 2, (neck - hip + 0.08) / 0.75);
+      setCore(this.headTpl, this.headBaseY, fan.height - 0.11, 1);
       if (hattedFlags[i]) {
         const at = fan.height - 0.02;
         this.matrix.compose(this.spot.set(fan.x, at, 0), this.turn, this.size.set(1, 1, 1));
-        this.fans[4]!.setColorAt(hatSlot, colour.set(hatColours[i]!));
-        this.fans[4]!.setMatrixAt(hatSlot, this.matrix);
-        this.hatFanIdx[hatSlot] = i;
+        this.matrix.toArray(this.hatTpl, hatSlot * 16);
+        writeCol(this.hatCol, hatSlot, hatColours[i]!);
+        this.fanHatSlot[i] = hatSlot;
         this.hatBaseY[hatSlot] = at;
         hatSlot++;
       } else {
         const at = fan.height - 0.1;
         this.matrix.compose(this.spot.set(fan.x, at, 0), this.turn, this.size.set(1, 1, 1));
-        this.fans[6]!.setColorAt(hairSlot, colour.set(hairColours[i]!));
-        this.fans[6]!.setMatrixAt(hairSlot, this.matrix);
-        this.hairFanIdx[hairSlot] = i;
+        this.matrix.toArray(this.hairTpl, hairSlot * 16);
+        writeCol(this.hairCol, hairSlot, hairColours[i]!);
+        this.fanHairSlot[i] = hairSlot;
         this.hairBaseY[hairSlot] = at;
         hairSlot++;
       }
@@ -1203,28 +1434,96 @@ export class OldTownStreet {
         this.spot.copy(this.shoulder).addScaledVector(this.reach, 0.3);
         this.matrix.compose(this.spot, this.armTurn, this.size.set(1, 1, 1));
         const aIdx = 2 * i + (side > 0 ? 1 : 0);
-        this.fans[3]!.setMatrixAt(aIdx, this.matrix);
+        this.matrix.toArray(this.armTpl, aIdx * 16);
         this.armBaseY[aIdx] = this.spot.y;
         this.armBaseZ[aIdx] = this.spot.z;
         if (side > 0 && fan.cheer && i % 3 !== 0) {
           this.spot.copy(this.shoulder).addScaledVector(this.reach, 0.62);
           this.matrix.compose(this.spot, this.lean.identity(), this.size.setScalar(1));
-          this.fans[5]!.setColorAt(wavedSlot, colour.set(PENNANTS[i % PENNANTS.length]!));
-          this.fans[5]!.setMatrixAt(wavedSlot, this.matrix);
-          this.wavedFanIdx[wavedSlot] = i;
+          this.matrix.toArray(this.wavedTpl, wavedSlot * 16);
+          writeCol(this.wavedCol, wavedSlot, PENNANTS[i % PENNANTS.length]!);
+          this.fanWavedSlot[i] = wavedSlot;
           this.wavedBaseY[wavedSlot] = this.spot.y;
           this.wavedBaseZ[wavedSlot] = this.spot.z;
           wavedSlot++;
         }
       }
     });
-    this.fans.forEach((mesh, idx) => {
-      // Legs, torsos, heads and arms cast crowd shadows on the cobbles (L2-111 AC13).
-      mesh.castShadow = idx <= 3;
+
+    // Compute exact worst-case bucket capacities across all LOOP / CROWD_BUCKET_M = 210 buckets.
+    let maxNear = 1;
+    let maxFar = 1;
+    let maxHats = 1;
+    let maxWaved = 1;
+    let maxHair = 1;
+    const totalBuckets = LOOP / CROWD_BUCKET_M;
+    for (let b = 0; b < totalBuckets; b++) {
+      const s0 = b * CROWD_BUCKET_M;
+      let nc = 0;
+      let fc = 0;
+      let hc = 0;
+      let wc = 0;
+      let hrc = 0;
+      for (let i = 0; i < n; i++) {
+        const m0 = ((((this.fanOffsets[i]! - s0) % LOOP) + LOOP) % LOOP) - BEHIND;
+        if (m0 <= CROWD_NEAR_BEHIND || m0 > CROWD_FAR_AHEAD) continue;
+        if (m0 < CROWD_NEAR_AHEAD) nc++;
+        else fc++;
+        if (this.fanHatSlot[i]! >= 0) hc++;
+        else hrc++;
+        if (this.fanWavedSlot[i]! >= 0) wc++;
+      }
+      if (nc > maxNear) maxNear = nc;
+      if (fc > maxFar) maxFar = fc;
+      if (hc > maxHats) maxHats = hc;
+      if (wc > maxWaved) maxWaved = wc;
+      if (hrc > maxHair) maxHair = hrc;
+    }
+
+    this.activeNearIdx = new Uint16Array(maxNear);
+    this.activeFarIdx = new Uint16Array(maxFar);
+    this.activeHatFan = new Uint16Array(maxHats);
+    this.activeHatSlot = new Uint16Array(maxHats);
+    this.activeWavedFan = new Uint16Array(maxWaved);
+    this.activeWavedSlot = new Uint16Array(maxWaved);
+    this.activeHairFan = new Uint16Array(maxHair);
+    this.activeHairSlot = new Uint16Array(maxHair);
+
+    this.nearFans = [
+      new InstancedMesh(legs, material, maxNear),
+      new InstancedMesh(torso, material, maxNear),
+      new InstancedMesh(head, material, maxNear),
+      new InstancedMesh(arm, material, 2 * maxNear),
+    ];
+    this.farFans = [
+      new InstancedMesh(legs, material, maxFar),
+      new InstancedMesh(torso, material, maxFar),
+      new InstancedMesh(head, material, maxFar),
+      new InstancedMesh(arm, material, 2 * maxFar),
+    ];
+    this.accessoryFans = [
+      new InstancedMesh(hat, material, maxHats),
+      new InstancedMesh(pennant, this.cloth, maxWaved),
+      new InstancedMesh(hair, material, maxHair),
+    ];
+
+    colour.setHex(0xffffff);
+    this.nearFans.forEach((mesh) => {
+      mesh.setColorAt(0, colour);
+      mesh.castShadow = true;
       mesh.frustumCulled = false;
       this.group.add(mesh);
       this.disposables.push(mesh);
     });
+    for (const mesh of [...this.farFans, ...this.accessoryFans]) {
+      mesh.setColorAt(0, colour);
+      mesh.castShadow = false;
+      mesh.frustumCulled = false;
+      this.group.add(mesh);
+      this.disposables.push(mesh);
+    }
+
+    this.rebuildCrowdBucket(0);
   }
 
   /** The belfry: a square brick tower, its louvred stage and a slate spire, hazed by distance. */
@@ -2268,6 +2567,16 @@ function openBackBox(): BufferGeometry {
   box.setIndex(indices);
   box.clearGroups();
   return box;
+}
+
+function copyMat16(dst: Float32Array, d: number, src: Float32Array, s: number): void {
+  for (let k = 0; k < 16; k++) dst[d + k] = src[s + k]!;
+}
+
+function copyCol3(dst: Float32Array, d: number, src: Float32Array, s: number): void {
+  dst[d] = src[s]!;
+  dst[d + 1] = src[s + 1]!;
+  dst[d + 2] = src[s + 2]!;
 }
 
 function extractSubGeometry(
