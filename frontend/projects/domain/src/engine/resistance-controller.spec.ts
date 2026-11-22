@@ -11,12 +11,14 @@ import {
   BikeConnectionError,
   type BikeConnection,
   type BleState,
+  MONOTONIC_TIME,
   TICKER,
 } from '@telo/api';
 import { Subject } from 'rxjs';
 import { SimulatedBikeConnection } from '../bluetooth/simulated-bike-connection';
 import { BikeTelemetry } from './bike-telemetry';
 import { ResistanceController } from './resistance-controller';
+import { RideClock } from './ride-clock';
 
 describe('ResistanceController', () => {
   const ble = signal<BleState>('connected');
@@ -199,5 +201,36 @@ describe('ResistanceController by hand', () => {
     expect(setResistance).not.toHaveBeenCalled();
     expect(controller.target()).toBe(12);
     expect(controller.source()).toBe('plan');
+  });
+
+  it('logs each command the bike took at the ride clock’s second, newest first (L2-029 AC1)', async () => {
+    TestBed.resetTestingModule();
+    let now = 0;
+    TestBed.configureTestingModule({
+      providers: [
+        ResistanceController,
+        RideClock,
+        { provide: BIKE_CONNECTION, useValue: { ble, setResistance } },
+        { provide: MONOTONIC_TIME, useValue: { now: () => now } },
+      ],
+    });
+    const clock = TestBed.inject(RideClock);
+    const logged = TestBed.inject(ResistanceController);
+    clock.start();
+
+    await logged.applyPlanLevel(8);
+    now = 330_400;
+    await logged.setManual(20);
+
+    expect(logged.log()).toEqual([
+      { rideTime: 330, level: 20, source: 'manual', ackMs: 30 },
+      { rideTime: 0, level: 8, source: 'plan', ackMs: 30 },
+    ]);
+  });
+
+  it('logs nothing the bike did not take', async () => {
+    setResistance.mockRejectedValueOnce(new BikeConnectionError('failed', 'gone'));
+    await controller.applyPlanLevel(8);
+    expect(controller.log()).toEqual([]);
   });
 });

@@ -1,0 +1,31 @@
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { FullscreenToggle } from '../fullscreen-toggle/fullscreen-toggle';
+import { Lockup } from '../lockup/lockup';
+
+/** How the ride header's bike status reads: connected, lost, or with no bike at all (L2-019). */
+export type RideBikeTone = 'ok' | 'alert' | 'none';
+
+/**
+ * The custom ride's header (design-system block ride-header, L2-101): the lockup, the bike status, the workout link the
+ * page projects (`slot=workout`), the clock as "6:52 / 30:00" read "Elapsed 6:52 of 30:00", the page's ride controls
+ * (`slot=end`) and Full screen.
+ */
+@Component({
+  selector: 'header[wz-ride-header]',
+  imports: [FullscreenToggle, Lockup],
+  templateUrl: './ride-header.html',
+  styleUrl: './ride-header.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'ride-header' },
+})
+export class RideHeader {
+  /** The bike's name, shown while connected or lost; `null` with no bike. */
+  readonly bikeName = input<string | null>(null);
+  /** The bike status's words: "Connected", "Disconnected", "No bike connected", "Bluetooth is off". */
+  readonly bikeState = input.required<string>();
+  readonly bikeTone = input<RideBikeTone>('none');
+  readonly clock = input.required<string>();
+  readonly total = input.required<string>();
+  readonly fullscreen = input.required<boolean>();
+  readonly fullscreenToggled = output<void>();
+}

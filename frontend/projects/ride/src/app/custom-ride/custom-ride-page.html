@@ -1,0 +1,70 @@
+<header
+  wz-ride-header
+  [bikeName]="store.bike().name"
+  [bikeState]="store.bike().state"
+  [bikeTone]="store.bike().tone"
+  [clock]="store.clockText()"
+  [total]="store.totalText"
+  [fullscreen]="fullscreen.active()"
+  (fullscreenToggled)="toggleFullscreen()"
+>
+  <a wz-ride-workout-link slot="workout" routerLink="/profile/custom"
+    >{{ store.workout }}<span class="visually-hidden"> — edit workout</span></a
+  >
+</header>
+<main class="custom-ride__body" id="main">
+  <section class="custom-ride__telemetry" aria-label="Telemetry">
+    <h1 class="visually-hidden">Custom ride</h1>
+    <wz-ride-readouts
+      [power]="store.power()"
+      [target]="store.target()"
+      [delta]="store.delta()"
+      [cadence]="store.cadence()"
+      [aim]="store.aim()"
+    >
+      @if (store.interval(); as interval) {
+        <wz-ride-interval
+          [kind]="interval.kind"
+          [round]="interval.round"
+          [left]="interval.left"
+          [percent]="interval.percent"
+          [next]="interval.next"
+        />
+      }
+    </wz-ride-readouts>
+    <wz-ride-view
+      [hasVideo]="store.videoId !== null"
+      [progressLabel]="store.progressLabel()"
+      [segments]="store.segments"
+      [averages]="store.averages()"
+      [bucket]="store.bucket"
+      [elapsed]="store.elapsed()"
+      [total]="store.lengthSeconds"
+      [max]="store.traceMax"
+      [traceLabel]="store.traceLabel()"
+    >
+      @if (store.videoId; as videoId) {
+        <wz-ride-video
+          slot="video"
+          [videoId]="videoId"
+          [title]="store.workout"
+          [unavailable]="store.videoUnavailable()"
+          (frame)="store.playVideo($event)"
+        />
+      }
+    </wz-ride-view>
+    <dl wz-ride-metrics [metrics]="store.metrics()"></dl>
+  </section>
+  <aside
+    wz-ride-control
+    [level]="store.level()"
+    [canControl]="store.canControl()"
+    [connected]="store.connected()"
+    [mode]="store.mode"
+    [link]="store.link()"
+    [rows]="store.sent()"
+    (lower)="store.lower()"
+    (raise)="store.raise()"
+    (picked)="store.pick($event)"
+  ></aside>
+</main>

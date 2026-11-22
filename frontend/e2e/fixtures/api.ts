@@ -98,6 +98,11 @@ const CLASS_SESSIONS = /^GET \/api\/classes\/[^/]+\/sessions$/;
 /** A map's race queue (`GET /api/maps/{id}/queue`), which no spec has to answer: unanswered, Riders online cannot be reached. */
 const RACE_QUEUE = /^GET \/api\/maps\/[^/]+\/queue$/;
 const UNREACHABLE: Handler = () => ({ status: 503 });
+/** No custom workout saved yet (`GET /api/riders/me/custom-workout`). */
+const NO_CUSTOM_WORKOUT: Handler = () => ({
+  status: 404,
+  body: { status: 404, title: 'Not found.', code: 'custom_workout_not_found' },
+});
 
 export class ApiFixture {
   private readonly answers = new Map<string, Handler>();
@@ -119,6 +124,9 @@ export class ApiFixture {
     // Class Start and the Class Library read the group sessions (L2-083, L2-085); unless a spec serves them, they cannot
     // be reached, and both screens offer riding alone only (L2-085 AC5, L2-081 AC6).
     api.answer('GET', '/api/classes/sessions', UNREACHABLE);
+    // Custom workout opens on the rider's saved workout; unless a spec serves one, there is none, and Start ride saves.
+    api.answer('GET', '/api/riders/me/custom-workout', NO_CUSTOM_WORKOUT);
+    api.answer('PUT', '/api/riders/me/custom-workout', () => ({ status: 204 }));
     // On the context, not the page: once the app cache's service worker controls the page, it makes the requests.
     await page.context().route(
       (url) =>

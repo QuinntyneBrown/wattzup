@@ -1,0 +1,74 @@
+<h2 class="ride-control__title" id="resistance-title">Resistance</h2>
+<div class="ride-control__stepper">
+  <button
+    class="ride-step"
+    type="button"
+    aria-label="Lower resistance"
+    [disabled]="!canControl() || atMin()"
+    (click)="lower.emit()"
+  >
+    <svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" /></svg>
+  </button>
+  <div class="ride-control__level">
+    <p
+      class="ride-control__level-number"
+      [class.ride-control__level-number--idle]="level() === null"
+    >
+      {{ level() ?? '—' }}
+    </p>
+    <p class="ride-control__level-of">of 32</p>
+  </div>
+  <button
+    class="ride-step"
+    type="button"
+    aria-label="Raise resistance"
+    [disabled]="!canControl() || atMax()"
+    (click)="raise.emit()"
+  >
+    <svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 12h14" />
+      <path d="M12 5v14" />
+    </svg>
+  </button>
+</div>
+<div class="ride-levels" role="group" aria-label="Pick a resistance level">
+  @for (n of levels; track n) {
+    <button
+      class="ride-levels__bar"
+      type="button"
+      [class.ride-levels__bar--on]="level() !== null && n <= level()!"
+      [attr.aria-label]="'Level ' + n"
+      [attr.aria-current]="n === level() ? 'true' : null"
+      [disabled]="!canControl()"
+      (click)="picked.emit(n)"
+    ></button>
+  }
+</div>
+<p class="ride-control__mode">{{ mode() }}</p>
+<div class="ride-log">
+  <div class="ride-log__head">
+    <h3 class="ride-log__title">Sent to bike</h3>
+    @if (link(); as link) {
+      <span class="ride-log__link">{{ link }}</span>
+    }
+  </div>
+  <ul class="ride-log__list">
+    @for (row of rows(); track $index) {
+      <li class="ride-log__item">
+        <span class="ride-log__time">{{
+          row.rideTime === null ? '—' : clock(row.rideTime)
+        }}</span><span class="ride-log__cmd"
+          >RES <span class="ride-log__level">{{ row.level }}</span><span class="ride-log__source">
+            · {{ row.source }}</span
+          ></span
+        ><span class="ride-log__ack">{{
+          row.ackMs === null ? 'no ack' : 'ack ' + row.ackMs + 'ms'
+        }}</span>
+      </li>
+    } @empty {
+      @if (!connected()) {
+        <li class="ride-log__empty">Nothing sent — no bike connected.</li>
+      }
+    }
+  </ul>
+</div>

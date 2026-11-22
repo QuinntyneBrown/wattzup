@@ -1,0 +1,29 @@
+// Block ride-progress (docs/design-system/assets/components.css): the plan across the ride, under the video.
+.ride-progress {
+  display: block;
+  margin-top: var(--space-2);
+  width: 100%;
+  height: var(--space-2);
+}
+
+.ride-progress__seg--warmup,
+.ride-progress__seg--cooldown {
+  fill: var(--dashboard-segment-easy);
+}
+
+.ride-progress__seg--work,
+.ride-progress__seg--steady {
+  fill: var(--color-volt);
+}
+
+.ride-progress__seg--rest {
+  fill: var(--color-rest);
+}
+
+.ride-progress__seg--past {
+  opacity: 0.35;
+}
+
+.ride-progress__head {
+  fill: var(--dashboard-progress-head);
+}

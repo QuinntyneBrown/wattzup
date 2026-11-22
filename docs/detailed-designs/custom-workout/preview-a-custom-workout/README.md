@@ -63,10 +63,10 @@ cases.
   `youtu.be/` or `youtube.com/shorts/` link, else `null`; `formatOffset` ("0:12.0") and
   `parseOffset`; the offset steps by 0.5 s, never below 0.
 
-**Later slices.** Start ride, saving the workout to the device and the account
+**Start ride** (slice 21.3, with the ride it starts) saves the workout to the account
 (`CustomWorkoutApi.save`, `PUT /api/riders/me/custom-workout`, the backend's
-`SaveCustomWorkoutCommand` with `WorkoutPlanRules` refusing with `plan_invalid`) and opening the
-next setup from it are slice 21.3, with the ride they start.
+`SaveCustomWorkoutCommand` with `WorkoutPlanRules` refusing with `plan_invalid`), and the next
+setup opens from it (see *ride a custom workout*).
 
 ## Requirements
 
@@ -114,7 +114,7 @@ Each draft change re-expands the plan, validates it and recomputes the facts (`L
 
 ### Behaviour — start the ride
 
-"Start ride" saves the workout on the device and to the account, then opens the custom ride with
+"Start ride" saves the workout to the account, then opens the custom ride with
 the plan (`L2-099` AC4).
 
 ![Sequence diagram for starting the custom ride](diagrams/sequence-start-the-ride.png)

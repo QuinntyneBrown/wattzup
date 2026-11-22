@@ -1,0 +1,19 @@
+<svg
+  class="ride-progress"
+  [attr.viewBox]="viewBox()"
+  preserveAspectRatio="none"
+  role="img"
+  [attr.aria-label]="label()"
+>
+  @for (bar of bars(); track $index) {
+    <rect
+      [class]="'ride-progress__seg ride-progress__seg--' + bar.modifier"
+      [class.ride-progress__seg--past]="bar.past"
+      [attr.x]="bar.x"
+      [attr.width]="bar.width"
+      y="0"
+      height="1"
+    />
+  }
+  <rect class="ride-progress__head" [attr.x]="elapsed()" [attr.width]="head()" y="0" height="1" />
+</svg>

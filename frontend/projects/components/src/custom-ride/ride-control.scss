@@ -1,0 +1,217 @@
+@use 'sass:math';
+
+// Block ride-control (docs/design-system/assets/components.css): the bike control, beside the telemetry from lg.
+:host {
+  display: flex;
+  flex-direction: column;
+  border-top: var(--border-width-hairline) solid var(--color-line);
+  background: var(--color-panel);
+  padding: var(--space-6) var(--space-5);
+}
+
+@media (min-width: 64rem) {
+  :host {
+    min-height: 0;
+    overflow-y: auto;
+    border-top: 0;
+    border-left: var(--border-width-hairline) solid var(--color-line);
+    padding-inline: var(--space-6);
+  }
+}
+
+.ride-control__title {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-muted);
+}
+
+.ride-control__stepper {
+  margin-top: var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+// StepButton: 64 px, raised.
+.ride-step {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--space-16);
+  height: var(--space-16);
+  border-radius: var(--radius-xl);
+  background: var(--color-raised);
+  color: var(--color-fg);
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.ride-step:hover:not(:disabled) {
+  background: var(--color-line);
+}
+
+.ride-step:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.ride-step:disabled {
+  opacity: 0.3;
+}
+
+.ride-control__level {
+  text-align: center;
+}
+
+.ride-control__level-number {
+  margin: 0;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: var(--letter-spacing-display);
+  font-size: calc(var(--dashboard-level-size) * var(--ride-number-scale));
+  line-height: var(--line-height-none);
+}
+
+.ride-control__level-number--idle {
+  color: var(--color-faint);
+}
+
+.ride-control__level-of {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-faint);
+}
+
+// 32 level bars, each a quarter of a level taller than the last (30.25 % to 100 %).
+.ride-levels {
+  margin-top: var(--space-6);
+  display: flex;
+  align-items: flex-end;
+  gap: calc(var(--space-0-5) + var(--space-px));
+  height: var(--space-14);
+}
+
+.ride-levels__bar {
+  flex: 1;
+  border-radius: var(--radius-xs);
+  background: var(--color-raised);
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+@for $n from 1 through 32 {
+  .ride-levels__bar:nth-child(#{$n}) {
+    height: math.percentage(math.div(30.25 + ($n - 1) * 2.25, 100));
+  }
+}
+
+.ride-levels__bar:hover:not(:disabled) {
+  background: var(--color-line);
+}
+
+// On: --color-volt-fg, which keeps 3:1 on paper as well as on ink (WCAG 1.4.11).
+.ride-levels__bar--on {
+  background: var(--color-volt-fg);
+}
+
+.ride-levels__bar--on:hover:not(:disabled) {
+  background: var(--color-volt-fg-hover);
+}
+
+.ride-levels__bar:disabled {
+  cursor: not-allowed;
+}
+
+.ride-control__mode {
+  margin: var(--space-4) 0 0;
+  min-height: var(--target-comfortable);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.ride-log {
+  margin-top: var(--space-6);
+  border-top: var(--border-width-hairline) solid var(--color-line);
+  padding-top: var(--space-5);
+}
+
+@media (min-width: 64rem) {
+  .ride-log {
+    margin-top: auto;
+  }
+}
+
+.ride-log__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ride-log__title {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-muted);
+}
+
+.ride-log__link {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  line-height: var(--line-height-2xs);
+  color: var(--color-faint);
+}
+
+.ride-log__list {
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.ride-log__empty {
+  font-family: var(--font-family-sans);
+  color: var(--color-faint);
+}
+
+.ride-log__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ride-log__time {
+  width: var(--space-10);
+  color: var(--color-faint);
+}
+
+.ride-log__cmd {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ride-log__level {
+  color: var(--color-fg);
+}
+
+.ride-log__source {
+  color: var(--color-faint);
+}
+
+// The ack time in --color-volt-dim read 3.1:1 on the dark panel; the word carries the meaning.
+.ride-log__ack {
+  color: var(--color-muted);
+}

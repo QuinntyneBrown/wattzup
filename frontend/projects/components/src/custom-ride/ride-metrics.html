@@ -1,0 +1,10 @@
+@for (metric of metrics(); track metric.label; let first = $first) {
+  <div>
+    <dt class="ride-metric__label">{{ metric.label }}</dt>
+    <dd class="ride-metric__value">
+      <span class="ride-metric__number" [class.ride-metric__number--heart]="first">{{
+        metric.value
+      }}</span><span class="ride-metric__unit">{{ metric.unit }}</span>
+    </dd>
+  </div>
+}

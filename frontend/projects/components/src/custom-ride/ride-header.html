@@ -1,0 +1,28 @@
+<wz-lockup size="sm" />
+<span class="ride-header__divider" aria-hidden="true"></span>
+<span class="ride-header__status">
+  @if (bikeTone() === 'ok') {
+    <svg class="icon icon--md ride-header__status-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="m7 7 10 10-5 5V2l5 5L7 17" />
+    </svg>
+  }
+  @if (bikeName(); as name) {
+    <span class="ride-header__status-name">{{ name }}</span>
+  }
+  <span
+    class="ride-header__status-text"
+    [class.ride-header__status-text--alert]="bikeTone() === 'alert'"
+    >{{ bikeState() }}</span
+  >
+</span>
+<ng-content select="[slot=workout]" />
+<div class="ride-header__end">
+  <span
+    class="ride-header__clock"
+    role="timer"
+    [attr.aria-label]="'Elapsed ' + clock() + ' of ' + total()"
+    >{{ clock() }}<span class="ride-header__clock-total"> / {{ total() }}</span></span
+  >
+  <ng-content select="[slot=end]" />
+</div>
+<wz-fullscreen-toggle [active]="fullscreen()" (toggled)="fullscreenToggled.emit()" />

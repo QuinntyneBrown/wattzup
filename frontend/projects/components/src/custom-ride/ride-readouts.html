@@ -1,0 +1,37 @@
+<div class="ride-readouts__item">
+  <h2 class="ride-readout__label">Power</h2>
+  <p class="ride-readout__value">
+    <span class="ride-readout__number ride-readout__number--power">{{ power() }}</span><span
+      class="ride-readout__unit ride-readout__unit--power"
+      >W</span
+    >
+  </p>
+  <p class="ride-readout__foot">
+    @if (target() !== null) {
+      <span>Target {{ target() }} W </span>
+    }
+    @if (delta(); as delta) {
+      <span
+        class="ride-readout__delta"
+        [class.ride-readout__delta--on]="delta.tone === 'on'"
+        [class.ride-readout__delta--under]="delta.tone === 'under'"
+        >{{ delta.text }}</span
+      >
+    }
+  </p>
+</div>
+<div class="ride-readouts__item">
+  <h2 class="ride-readout__label">Cadence</h2>
+  <p class="ride-readout__value">
+    <span class="ride-readout__number ride-readout__number--cadence">{{ cadence() }}</span><span
+      class="ride-readout__unit ride-readout__unit--cadence"
+      >rpm</span
+    >
+  </p>
+  <p class="ride-readout__foot">
+    @if (aim() !== null) {
+      Aim for {{ aim() }}
+    }
+  </p>
+</div>
+<ng-content />

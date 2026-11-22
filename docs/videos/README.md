@@ -88,6 +88,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 20.5 | [Manage saved worlds](20-5-manage-saved-worlds/README.md) | 1:43 | Settings' This device: the saved worlds' number, size and names, Clear saved worlds with its toast, Keep worlds after a ride, and an evicted world downloading again, at every width |
 | 21.1 | [Set up a custom workout](21-1-set-up-a-custom-workout/README.md) | 1:41 | Custom workout under Profile: the training mode, GCN 30-min HIIT and four other plans, the ladder's rounds stepped, added, removed and made the same, the levels, warm-up and cool-down, and flat resistance, at every width |
 | 21.2 | [Preview a custom workout](21-2-preview-a-custom-workout/README.md) | 1:54 | Your ride beside Custom workout: the total, the resistance profile and the facts for GCN 30-min HIIT and flat resistance, following every change, and Ride along to a video synced from the preview player, at every width |
+| 21.3 | [Ride a custom workout](21-3-ride-a-custom-workout/README.md) | 2:06 | The custom ride: the plan sets the bike's level every interval, with the interval card, Power vs. plan, the video in sync, the bike control and Sent to bike, flat resistance, the workout saved for next time and a refused plan, at every width |
 
 ## What every video is
 

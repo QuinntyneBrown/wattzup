@@ -112,3 +112,18 @@
 .kind-swatch--rest {
   background: var(--color-rest);
 }
+
+// Start ride (h-14 rounded-xl bg-volt); off, raised and faint rather than faded.
+.plan-preview__start:disabled {
+  opacity: 1;
+  background: var(--color-raised);
+  color: var(--color-faint);
+}
+
+.plan-preview__blocked {
+  margin: var(--space-2) 0 0;
+  text-align: center;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-muted);
+}

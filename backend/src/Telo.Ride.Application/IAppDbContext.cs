@@ -3,6 +3,7 @@ using Telo.Ride.Domain.Accounts;
 using Telo.Ride.Domain.Maps;
 using Telo.Ride.Domain.Results;
 using Telo.Ride.Domain.Rides;
+using Telo.Ride.Domain.Workouts;
 
 namespace Telo.Ride.Application;
 
@@ -29,6 +30,9 @@ public interface IAppDbContext
 
     /// <summary>The results of finished riders-online races, as the service computed them (L2-125 AC1).</summary>
     DbSet<SessionResult> SessionResults { get; }
+
+    /// <summary>Each rider's last saved custom workout (L2-099 AC4).</summary>
+    DbSet<CustomWorkout> CustomWorkouts { get; }
 
     /// <summary>Whether the database answers; readiness reports it (L2-127 AC4).</summary>
     Task<bool> CanConnectAsync(CancellationToken cancellationToken);

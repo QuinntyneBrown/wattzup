@@ -1,0 +1,85 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Press Start ride, and the plan takes the bike: every interval sets its own resistance."
+      ]
+    },
+    {
+      "id": "interval",
+      "bars": 5,
+      "lines": [
+        "Six fifty-two in, it is round one's recovery: one thirty-eight left, then thirty seconds of work at level twenty-four. A hundred and seven watts, on target."
+      ]
+    },
+    {
+      "id": "trace",
+      "bars": 5,
+      "lines": [
+        "Power versus plan draws every interval's target as a block, and your watts over it, up to six hundred."
+      ]
+    },
+    {
+      "id": "video",
+      "bars": 5,
+      "lines": [
+        "With a video, it plays locked to the ride clock at your offset, above the plan's progress strip."
+      ]
+    },
+    {
+      "id": "control",
+      "bars": 5,
+      "lines": [
+        "Raise, lower, or pick one of thirty-two levels. Sent to bike logs every command, and the next interval takes the plan back."
+      ]
+    },
+    {
+      "id": "flat",
+      "bars": 4,
+      "lines": [
+        "Flat resistance holds one level, level twelve, for the whole ride."
+      ]
+    },
+    {
+      "id": "saved",
+      "bars": 5,
+      "lines": [
+        "Start ride saves the workout to your account, so Custom workout opens on it next time. A plan Telo Ride refuses cannot start."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 4,
+      "lines": [
+        "The custom ride, from a phone to the full screen."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

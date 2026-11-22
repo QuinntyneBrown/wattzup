@@ -112,6 +112,8 @@ export type {
   TrainingMode,
   VideoSettings,
 } from './workout/custom-workout';
+export { CUSTOM_WORKOUT_API, type CustomWorkoutApi } from './workout/custom-workout-api';
+export { HttpCustomWorkoutApi } from './workout/http-custom-workout-api';
 export { SAVED_WORLDS, type SavedWorld, type SavedWorlds } from './world/saved-worlds';
 export type { LoadStepState, LoadStepView } from './world/load-step-view';
 export { AUTH_API, type AuthApi, type ConfirmCodeResult } from './auth/auth-api';
