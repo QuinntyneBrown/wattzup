@@ -35,6 +35,11 @@ export class RideRecorder {
     this.topPowerW = Math.max(this.topPowerW, power);
   }
 
+  /** The output so far in kJ, the sum of each second's power ÷ 1000 (L2-023 AC5). */
+  get outputKj(): number {
+    return this.joules / 1000;
+  }
+
   /** The ride's facts as the backend reads them, finished at `finishedAt` on this device's time zone. */
   facts(finishedAt: Date): RideFacts {
     const speedSamplesKmh = Array.from(this.speedsKmh.subarray(0, this.seconds));

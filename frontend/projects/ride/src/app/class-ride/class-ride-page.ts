@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import {
   Button,
   ClassBike,
+  ClassBoard,
   ClassHeader,
   ClassLost,
   ClassResist,
@@ -31,6 +32,7 @@ import { ClassRideStore } from './class-ride-store';
   imports: [
     Button,
     ClassBike,
+    ClassBoard,
     ClassHeader,
     ClassLost,
     ClassResist,

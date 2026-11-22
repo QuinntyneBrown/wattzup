@@ -118,3 +118,4 @@ export {
 export { RIDE_HUB_CLIENT, type RideHubClient, type RideHubState } from './live/ride-hub-client';
 export { RideHubRetryPolicy, type RetryContext } from './live/ride-hub-retry-policy';
 export { SignalRRideHubClient } from './live/signalr-ride-hub-client';
+export type { StandingRow, Standings } from './live/standings';

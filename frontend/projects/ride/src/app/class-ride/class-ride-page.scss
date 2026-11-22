@@ -28,6 +28,13 @@
   }
 }
 
+// A group ride's board is a right-hand column from lg (L2-090 AC3).
+.class-ride__body--group {
+  @media (min-width: 64rem) {
+    grid-template-columns: minmax(0, 1fr) var(--classes-board-width);
+  }
+}
+
 .class-ride__stage {
   display: flex;
   min-width: 0;
