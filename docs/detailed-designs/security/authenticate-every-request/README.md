@@ -9,10 +9,11 @@ mechanisms that make that true by default rather than endpoint by endpoint.
 
 - **fallback policy** — authorization policy that ASP.NET Core applies to every endpoint that
   declares no policy of its own; here it requires an authenticated rider
-- **anonymous endpoint** — endpoint marked `[AllowAnonymous]`; only the code-sending, code-confirm
-  and health endpoints are anonymous
-- **anti-forgery token** — per-session secret the Ride app echoes in a request header, proving a
-  data-changing request came from the app and not from another site
+- **anonymous endpoint** — endpoint marked `[AllowAnonymous]` or `.AllowAnonymous()`; the list is
+  below and nothing else is anonymous
+- **same-origin proof** — the browser's own `Sec-Fetch-Site` or `Origin` header, which a page cannot
+  set, showing that a data-changing request came from the Ride app's origin and not from another
+  site (ADR 0033)
 - **rider-owned data** — rows that belong to one rider (progress, rides, workouts, feedback),
   readable only by that rider
 - **liveness** and **readiness** — health answers that say, respectively, that the API responds
@@ -33,25 +34,34 @@ output](../validate-input-and-encode-output/README.md).
 - **Fallback authorization policy** (`Telo.Ride.Api`) — `AddAuthorization` sets
   `FallbackPolicy` to `RequireAuthenticatedUser()`. A request without a valid session to any
   endpoint that is not anonymous receives 401 with a ProblemDetails body; there is no redirect.
-- **Anonymous endpoints** — exactly `POST /api/auth/code`, `POST /api/auth/code/confirm`,
-  `GET /health/live` and `GET /health/ready`, each marked explicitly. The ride hub `/hubs/ride`
-  is not anonymous: a connection without a valid session is refused at negotiation.
+- **Anonymous endpoints** — exactly these, each marked explicitly where it is mapped, so a new
+  endpoint needs a session unless someone marks it:
 
-### Anti-forgery
+  | Endpoint | Why it needs no session |
+  |---|---|
+  | `POST /api/auth/code`, `POST /api/auth/code/confirm` | A visitor asks for and confirms a code before they have a session (L2-001, L2-002). |
+  | `POST /api/auth/sign-out` | Without a session there is nothing to end, and it answers 204 (L2-006 AC1). |
+  | `GET /api/classes`, `GET /api/classes/{id}` | The class catalogue is public and holds nothing personal (ADR 0028). |
+  | `GET /api/maps`, `GET /api/maps/{mapId}/queue` | The map catalogue and its queue count are public and hold nothing personal (ADR 0029). |
+  | `GET /health/live`, `GET /health/ready` | The hosting platform's probes (L2-127 AC4). |
+  | The app's shell and files | The app loads before the rider signs in (ADR 0026). |
 
-- **Anti-forgery service** — ASP.NET Core `IAntiforgery`, configured with header `X-XSRF-TOKEN`
-  and a script-readable cookie `XSRF-TOKEN` (`Secure`, `SameSite=Strict`) issued after sign-in.
-  The global `AutoValidateAntiforgeryToken` filter validates the token on every `POST`, `PUT`,
-  `PATCH` and `DELETE` and refuses a missing or wrong token with 400 and code
-  `antiforgery_failed`.
-- **Angular XSRF support** — the `ride` application's `provideHttpClient(withXsrfConfiguration(…))`
-  copies the cookie into the header on every same-origin mutating request. This relies on the API
-  being served from the app's origin under `/api`; a separate API origin is `<TO SUPPLY>` (see
-  [Host and deliver](../../platform/host-and-deliver/README.md)).
-- **`SameOriginHubFilter`** (`Telo.Ride.Api`) — middleware on `/hubs/ride` that refuses a
-  negotiation or WebSocket upgrade whose `Origin` header is not the app's origin with 403. The
-  session cookie's `SameSite=Lax` already withholds it from cross-site requests; the origin check
-  is the same-site proof for the hub, which carries no anti-forgery header.
+  The ride hub `/hubs/ride` is not anonymous: a connection without a valid session is refused at
+  negotiation.
+
+### Same-origin proof
+
+- **`SameOriginRequests`** (`Telo.Ride.Api`, ADR 0033) — middleware ahead of authentication that
+  looks at every unsafe request (any method but `GET`, `HEAD`, `OPTIONS` and `TRACE`) and every
+  WebSocket upgrade, so the REST API, sign-in and the ride hub share one rule. `Sec-Fetch-Site:
+  same-origin` or `none` passes; `same-site` or `cross-site` is refused. Without
+  `Sec-Fetch-Site`, an `Origin` passes only when it is the request's own scheme and host. A
+  request with neither header comes from a client that is not a browser and passes. A refusal is
+  403 with a ProblemDetails body and code `cross_origin`, before any controller or hub runs.
+- **The Ride app sends nothing extra** — Chrome and Edge add both headers themselves and a page
+  cannot change them, so no token is issued, stored or copied, and a shell served from the
+  service worker's cache keeps working. The session cookie's `SameSite=Lax` and `__Host-` prefix
+  stay as a second line.
 
 ### Owner scoping
 
@@ -86,7 +96,7 @@ level-1 (L1) requirement, cited by identifier.
 
 | L2 ID | Refines (L1) | Requirement |
 |-------|--------------|-------------|
-| `L2-127` | `L1-021` | A request without a valid session to any endpoint other than the health endpoints, send code and confirm code shall be refused with 401. A request that changes data without a valid anti-forgery token or same-site proof shall be refused. A signed-out session shall be refused at once. A health endpoint shall answer with a status and nothing else: liveness that the API responds, readiness 503 when the database cannot be reached. |
+| `L2-127` | `L1-021` | A request without a valid session to any endpoint other than the listed anonymous ones shall be refused with 401. A request that changes data, or a connection to the ride hub, that the browser marks as coming from another origin shall be refused with 403. A signed-out session shall be refused at once. A health endpoint shall answer with a status and nothing else: liveness that the API responds, readiness 503 when the database cannot be reached. |
 | `L2-128` | `L1-021` | A request for another rider's progress, rides, workouts or feedback shall be refused with 404 without revealing whether it exists. A session roster asked for by another rider shall return only names, jerseys, countries, levels and kinds (`L2-005` AC5). Ride and session ids shall be random and shall not be guessable. |
 
 ## Diagrams
@@ -100,15 +110,15 @@ account's data are refused. The hosting platform probes the health endpoints.
 
 ### Containers
 
-Every request from the Ride app, REST or hub, passes the Telo Ride API's authentication,
-authorization and anti-forgery checks before it reaches data in the Telo Ride database.
+Every request from the Ride app, REST or hub, passes the Telo Ride API's same-origin proof,
+authentication and authorization before it reaches data in the Telo Ride database.
 
 ![C4 container view for authenticating every request](diagrams/c4-container.png)
 
 ### Components
 
-Cookie authentication supplies the principal to the fallback policy; anti-forgery validates unsafe
-methods; `SameOriginHubFilter` guards the hub. The rider-owned query filter reads
+`SameOriginRequests` refuses an unsafe request or hub connection from another origin; cookie
+authentication supplies the principal to the fallback policy. The rider-owned query filter reads
 `ICurrentRider` and scopes every query; the health checks test the database connection.
 
 ![C4 component view for authenticating every request](diagrams/c4-component.png)
@@ -127,13 +137,13 @@ request with 401 before any controller runs (`L2-127` AC1, AC3).
 
 ![Sequence diagram for refusing a request without a valid session](diagrams/sequence-refuse-an-unauthenticated-request.png)
 
-### Behaviour — refuse a change without anti-forgery proof
+### Behaviour — refuse a change from another origin
 
-A mutating request needs the header copied from the anti-forgery cookie; a cross-site request
-cannot read that cookie and is refused. A hub negotiation from another origin is refused with 403
-(`L2-127` AC2).
+The browser marks every request with where it came from. A change or a hub negotiation marked as
+coming from another origin is refused with 403 and code `cross_origin` before authentication; one
+from the Ride app's origin carries on (`L2-127` AC2).
 
-![Sequence diagram for refusing a change without anti-forgery proof](diagrams/sequence-refuse-a-forged-change.png)
+![Sequence diagram for refusing a change from another origin](diagrams/sequence-refuse-a-forged-change.png)
 
 ### Behaviour — read only the rider's own data
 
@@ -148,3 +158,14 @@ Liveness answers without checks; readiness checks the database and answers 503 w
 unreachable, with the status word only (`L2-127` AC4).
 
 ![Sequence diagram for answering health probes](diagrams/sequence-health-probes.png)
+
+## Open questions
+
+1. **Anti-forgery tokens (resolved, slice 22.1).** The design planned `IAntiforgery` with an
+   `XSRF-TOKEN` cookie and `X-XSRF-TOKEN` header, and a separate origin check for the hub. The
+   service worker serves the shell from its cache (ADR 0032), so the server could not refresh the
+   token, and the first change after a browser restart would fail. ADR 0033 replaces both with one
+   same-origin proof from the browser's Fetch Metadata.
+2. **The anonymous list (resolved, slice 22.1).** L2-127 named only the health endpoints, send code
+   and confirm code. Sign-out (L2-006 AC1) and the class and map catalogues (ADR 0028, ADR 0029)
+   were already anonymous; the requirement and this design now list them.

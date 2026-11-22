@@ -34,3 +34,4 @@
 | [0030](0030-world-library-carried-from-main.md) | World Ride's rendering is carried from `main` into a lazy `world` library | Accepted |
 | [0031](0031-sign-in-code-email-over-smtp.md) | Sign-in codes are emailed over SMTP with MailKit | Accepted |
 | [0032](0032-register-the-service-worker-from-the-first-screen.md) | The service worker is registered from the first screen's lazy chunk | Accepted |
+| [0033](0033-same-origin-proof-instead-of-anti-forgery-tokens.md) | A same-origin proof, not anti-forgery tokens, guards every change | Accepted |

@@ -48,9 +48,9 @@ dialog and the account-deleted message are drawn in `docs/mocks/pages/profile/`,
   form shows "Your account was deleted. Its personal data is erased within 30 days." under the
   lead as a status message.
 - **`AuthApi.signOut()`** and **`RidersApi.deleteMe()`** (`api` library) — send
-  `POST /api/auth/sign-out` and `DELETE /api/riders/me`. No anti-forgery header: the session
-  cookie is `SameSite=Lax` and the API shares the app's origin (ADR 0026), so another site's form
-  cannot send it, and a cross-site `fetch` of either needs a CORS preflight the API refuses.
+  `POST /api/auth/sign-out` and `DELETE /api/riders/me`. No anti-forgery header: the API shares
+  the app's origin (ADR 0026), and `SameOriginRequests` refuses a change the browser marks as
+  coming from another origin (ADR 0033); the session cookie is also `SameSite=Lax`.
 - The device's waiting rides (`RideOutbox`) do not exist yet; journey 10 builds them, and
   `AccountStore.deleteAccount()` clears them from then on.
 

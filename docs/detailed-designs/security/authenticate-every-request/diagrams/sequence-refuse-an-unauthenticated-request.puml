@@ -36,7 +36,7 @@ authn --> authz : Anonymous principal
 authz -> authz : Endpoint has no [AllowAnonymous]: apply fallback policy (L2-127 AC1)
 authz --> client : 401 ProblemDetails, no body detail
 note over ctrl : Never reached
-alt endpoint is POST /api/auth/code, /api/auth/code/confirm or /health/*
+alt endpoint is listed anonymous: sign-in and sign-out, the class and map catalogues, /health/*
   authz -> ctrl : [AllowAnonymous] endpoint runs without a session
 end
 @enduml
