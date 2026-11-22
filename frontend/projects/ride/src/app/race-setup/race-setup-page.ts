@@ -10,6 +10,7 @@ import {
   SetupMap,
 } from '@telo/components';
 import { RaceSetupStore } from './race-setup-store';
+import { FullscreenButton } from '../fullscreen/fullscreen-button';
 
 /**
  * Race Setup at `/race/:mapId` (L2-047 to L2-050): the map between Map Select and the race, with "← Maps" back to Map
@@ -18,6 +19,7 @@ import { RaceSetupStore } from './race-setup-store';
 @Component({
   selector: 'wz-race-setup-page',
   imports: [
+    FullscreenButton,
     RouterLink,
     BackLink,
     Button,

@@ -23,6 +23,7 @@ import { RouterLink } from '@angular/router';
 import { LiveSessionStore } from '../live/live-session-store';
 import { RaceStore } from './race-store';
 import { RaceWorld } from './race-world';
+import { FullscreenButton } from '../fullscreen/fullscreen-button';
 
 /**
  * The race at `/race/:mapId/ride` (docs/mocks/pages/race/): full screen with no app header, the scene behind the HUD.
@@ -31,6 +32,7 @@ import { RaceWorld } from './race-world';
 @Component({
   selector: 'wz-race-page',
   imports: [
+    FullscreenButton,
     Button,
     RaceBar,
     RaceBarButton,

@@ -17,6 +17,8 @@ import { Lockup } from '../lockup/lockup';
 export class TrainingHeader {
   /** The bike's name; absent while no bike is known. */
   readonly bike = input<string | null>(null);
+  /** Whether the browser has the Fullscreen API: without it there is no Full screen (L2-144 AC2). */
+  readonly fullscreenAvailable = input.required<boolean>();
   readonly fullscreen = input.required<boolean>();
   readonly fullscreenToggled = output<void>();
 }

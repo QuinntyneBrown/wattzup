@@ -13,6 +13,7 @@
   (stopped)="store.end()"
   (ran)="store.toggleRun()"
   [fullscreen]="fullscreen.active()"
+  [fullscreenAvailable]="fullscreen.available()"
   (fullscreenToggled)="toggleFullscreen()"
 >
   <a wz-ride-workout-link slot="workout" routerLink="/profile/custom"

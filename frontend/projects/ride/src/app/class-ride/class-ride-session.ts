@@ -23,6 +23,7 @@ import {
 } from '@telo/domain';
 import { ClassRideStore } from './class-ride-store';
 import { ClassWorldScene } from './class-world-scene';
+import { FullscreenButton } from '../fullscreen/fullscreen-button';
 
 /**
  * The class ride (docs/mocks/pages/class-ride/, solo), which `ClassRidePage` shows once the rider presses Start riding on
@@ -33,6 +34,7 @@ import { ClassWorldScene } from './class-world-scene';
 @Component({
   selector: 'wz-class-ride-session',
   imports: [
+    FullscreenButton,
     Button,
     ClassBike,
     ClassBoard,

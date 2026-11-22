@@ -37,7 +37,17 @@ class "Page header" as Header <<ride>> {
   -fullscreen: Fullscreen
   +toggleFullscreen(): void
 }
+class FullscreenButton <<ride>> {
+  -fullscreen: Fullscreen
+  -toggle(): void
+}
+class "Slotted header" as Slotted <<components>> {
+  slot="end"
+}
 BrowserFullscreen ..|> Fullscreen
 Header --> Fullscreen : injects FULLSCREEN
 Header *-- FullscreenToggle
+FullscreenButton --> Fullscreen : injects FULLSCREEN
+FullscreenButton *-- FullscreenToggle : only where available
+Slotted o-- FullscreenButton : projected by the page
 @enduml

@@ -13,6 +13,7 @@ import {
 } from '@telo/components';
 import { enterFullScreenOnStart } from '@telo/domain';
 import { ClassStartStore } from './class-start-store';
+import { FullscreenButton } from '../fullscreen/fullscreen-button';
 
 /**
  * Class Start at `/classes/:id` (L2-084, L2-085): the class between the library and its ride, with "← Classes" back to
@@ -21,6 +22,7 @@ import { ClassStartStore } from './class-start-store';
 @Component({
   selector: 'wz-class-start-page',
   imports: [
+    FullscreenButton,
     ClassSession,
     RouterLink,
     BackLink,

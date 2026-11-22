@@ -20,6 +20,7 @@ import {
 } from '@telo/api';
 import { Button, MapStars, ResultsHeader, Standings, UnlockCard, XpEarned } from '@telo/components';
 import { type ResultsView, resultsView } from './results-view';
+import { FullscreenButton } from '../fullscreen/fullscreen-button';
 
 /** What a finished ride leaves in the navigation's state for Results: its result and the ride as it was submitted. */
 interface ResultsState {
@@ -40,7 +41,16 @@ const SENDING = signal<RideSyncState>({ kind: 'sending' }).asReadonly();
  */
 @Component({
   selector: 'wz-results-page',
-  imports: [RouterLink, Button, MapStars, ResultsHeader, Standings, UnlockCard, XpEarned],
+  imports: [
+    FullscreenButton,
+    RouterLink,
+    Button,
+    MapStars,
+    ResultsHeader,
+    Standings,
+    UnlockCard,
+    XpEarned,
+  ],
   templateUrl: './results-page.html',
   styleUrl: './results-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

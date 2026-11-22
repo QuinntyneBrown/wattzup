@@ -60,8 +60,19 @@ tell", and a `light` report counts as asking for light (decided in slice 24.1).
   it (`docs/mocks/pages/home/full-screen.html`). It sets no `aria-pressed`: a toggle whose
   name also changes would be announced twice ("Exit full screen, pressed"). The name change is
   what `L2-144` AC1 asks for.
-- **Headers** — each page header renders `FullscreenToggle` inside `@if (fullscreen.available())`,
-  so the button is absent where the API is missing.
+- **Headers** — every page header the mocks draw offers the toggle; sign-in's has none, so sign-in
+  shows none. The button is absent where the API is missing (`L2-144` AC2):
+  - the main shell's app header and the race lobby render `FullscreenToggle` inside
+    `@if (fullscreen.available())`;
+  - the custom ride's `RideHeader` and the custom workout's `TrainingHeader` take
+    `fullscreenAvailable` (required) beside `fullscreen` and render the toggle only when it is true;
+  - **`FullscreenButton`** (`wz-fullscreen-button`, in the `ride` application's `fullscreen/`)
+    injects `FULLSCREEN`, renders `FullscreenToggle` only where it is available, and enters or
+    leaves full screen when pressed. Its host is `display: contents`, so it sits in its header's
+    own layout. Pages project it into the headers that take a `[slot=end]`: the race's `RaceBar`,
+    the class ride's `ClassHeader`, Class Start's `ClassStartHeader`, Race Setup's `SetupHeader`
+    and Results' `ResultsHeader` (which gains its end slot in slice 24.2), and Connect Bike
+    places it in its own `connect__header` beside the lockup, as its mock draws it.
 
 ## Requirements
 

@@ -4,4 +4,6 @@
   <span class="training-header__bike">{{ name }}</span>
 }
 <ng-content />
-<wz-fullscreen-toggle [active]="fullscreen()" (toggled)="fullscreenToggled.emit()" />
+@if (fullscreenAvailable()) {
+  <wz-fullscreen-toggle [active]="fullscreen()" (toggled)="fullscreenToggled.emit()" />
+}

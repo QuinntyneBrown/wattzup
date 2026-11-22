@@ -17,12 +17,22 @@ export class AppDocument {
   readonly app: Locator;
   /** What a screen reader hears: the one live region the app announces through (L2-141 AC2). */
   readonly announcement: Locator;
+  /** "Full screen" in the page's header, whichever header the screen has (L2-144 AC1). */
+  readonly fullScreen: Locator;
+  /** "Exit full screen" in the page's header, in full screen. */
+  readonly exitFullScreen: Locator;
 
   constructor(private readonly page: Page) {
     this.root = page.locator('html');
     this.container = page.locator('main.container');
     this.app = page.locator('wz-root');
     this.announcement = page.locator('.live-announcer');
+    this.fullScreen = page
+      .locator('header')
+      .getByRole('button', { name: 'Full screen', exact: true });
+    this.exitFullScreen = page
+      .locator('header')
+      .getByRole('button', { name: 'Exit full screen', exact: true });
   }
 
   /** A duration token's value on `<html>` in milliseconds, such as `--duration-base` (the build writes 200ms as .2s). */
