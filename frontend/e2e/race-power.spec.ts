@@ -30,7 +30,7 @@ test(
     await expect(race.delta).toHaveText('-47 W');
     await expect(race.delta).toHaveClass(/race-power__delta--under/);
     await expect(race.statLabels).toHaveText(['Cadence', 'Heart', 'Speed']);
-    await expect(race.stats).toHaveText(['87rpm', '—bpm', '26.5km/h']);
+    await expect(race.stats).toHaveText(['87rpm', '—bpm', '52.9km/h']);
 
     await bluetooth.notify(ECHELON_NOTIFY, workoutFrame(95));
     await page.clock.runFor(100);

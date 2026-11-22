@@ -51,13 +51,13 @@ test(
     await rideToTheLine(page, bluetooth);
 
     await resultsOpened(page);
-    // 57 s at 8.92 m/s is 508 m, the first second past 500 m.
+    // 29 s at 17.83 m/s is 517 m, the first second past 500 m.
     expect(await result(page)).toEqual({
       mapId: 'old-town-criterium',
       mapName: 'Old Town Criterium',
       mode: 'bots',
       pack: 'medium',
-      finishTimeS: 57,
+      finishTimeS: 29,
       place: 1,
       field: 10,
       standings: expect.any(Array),
@@ -80,7 +80,7 @@ test('bots that crossed the line first finish ahead of the rider (L2-071 AC1)', 
 
   await resultsOpened(page);
   expect(await result(page)).toEqual(
-    expect.objectContaining({ finishTimeS: 177, place: 10, field: 10 }),
+    expect.objectContaining({ finishTimeS: 149, place: 10, field: 10 }),
   );
 });
 

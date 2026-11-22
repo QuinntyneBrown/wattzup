@@ -20,10 +20,10 @@ test(
     // A minute stopped: the ghost rides 353 m at 190 W, 88 s at the 4 m/s floor.
     await page.clock.runFor(60_000);
     await expect(race.boardNames).toHaveText(['Your best', 'You']);
-    await expect(race.boardGaps).toHaveText(['+1:28', '']);
+    await expect(race.boardGaps).toHaveText(['+2:56', '']);
     await expect(race.you).toHaveText(/^2You$/);
     await expect(race.position).toHaveText('Behind');
-    await expect(race.gaps).toHaveText(['Best +1:28']);
+    await expect(race.gaps).toHaveText(['Best +2:56']);
 
     // 661 W closes 3 m/s on the ghost; in three minutes the rider is past it.
     await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(32));

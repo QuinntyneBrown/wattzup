@@ -28,7 +28,7 @@ const shortCriterium = maps.map((map) =>
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
-/** Rides 661 W (120 rpm on level 32, 32.09 km/h) until Results opens, a frame every 4 s. */
+/** Rides 661 W (120 rpm on level 32, 64.18 km/h) until Results opens, a frame every 4 s. */
 async function rideToTheLine(page: Page, bluetooth: FakeBluetooth) {
   await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(32));
   for (let second = 0; second < 120 && !page.url().endsWith('/results'); second += 4) {
@@ -63,22 +63,22 @@ test(
       pack: 'medium',
       place: 1,
       fieldSize: 10,
-      elapsedSeconds: 57,
+      elapsedSeconds: 29,
       distanceMeters: expect.any(Number),
       outputKj: expect.any(Number),
       maxPowerWatts: 661,
-      maxSpeedKmh: 32.09,
+      maxSpeedKmh: 64.18,
       // 661 W against the warm-up's 143 W target is never within 10 %.
       onTargetShare: 0,
       speedSamplesKmh: expect.any(Array),
       finishedAt: expect.stringMatching(/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/),
       timeZoneId,
     });
-    // 57 s at 32.09 km/h is 508 m, the first second past 500 m, and each second adds its speed.
-    expect(ride.speedSamplesKmh).toHaveLength(57);
-    expect(ride.distanceMeters).toBeCloseTo(508, 0);
+    // 29 s at 64.18 km/h is 517 m, the first second past 500 m, and each second adds its speed.
+    expect(ride.speedSamplesKmh).toHaveLength(29);
+    expect(ride.distanceMeters).toBeCloseTo(517, 0);
     expect(sampledMeters(ride)).toBeCloseTo(ride.distanceMeters, 0);
-    expect(ride['outputKj']).toBeCloseTo((661 * 57) / 1000, 1);
+    expect(ride['outputKj']).toBeCloseTo((661 * 29) / 1000, 1);
   },
 );
 

@@ -17,7 +17,7 @@ import { expect, test } from './fixtures/test';
 import type { RacePage } from './pages/race.page';
 import { RaceSetupPage } from './pages/race-setup.page';
 
-/** Rides 661 W (120 rpm on level 32, 32.1 km/h) for a minute, a frame every 4 s. */
+/** Rides 661 W (120 rpm on level 32, 64.2 km/h) for a minute, a frame every 4 s. */
 async function rideAMinute(page: Page, bluetooth: FakeBluetooth) {
   await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(32));
   for (let second = 0; second < 60; second += 4) {
@@ -66,7 +66,7 @@ test('in a bots race the rider coasts while the bike is lost, and carries on whe
   await expect(race.raise).toBeDisabled();
   await expect(race.lower).toBeDisabled();
 
-  // The speed decays from 32.1 km/h towards standstill, and the race clock runs on.
+  // The speed decays from 64.2 km/h towards standstill, and the race clock runs on.
   const early = await speed(race);
   await page.clock.runFor(4000);
   const later = await speed(race);
@@ -80,7 +80,7 @@ test('in a bots race the rider coasts while the bike is lost, and carries on whe
   await bluetooth.notify(ECHELON_NOTIFY, workoutFrame(120));
   await page.clock.runFor(2000);
   await expect(race.clock).not.toHaveText('1:05 / 30:00');
-  await expect(race.stats.nth(2)).toContainText('32.1');
+  await expect(race.stats.nth(2)).toContainText('64.2');
 });
 
 test(

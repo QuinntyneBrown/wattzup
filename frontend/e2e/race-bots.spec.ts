@@ -49,7 +49,7 @@ test('a rider at 661 W rides through the pack to first (L2-060 AC1, L2-059 AC1, 
 }) => {
   const race = await startRace(page, bluetooth, api, 'old-town-criterium', 'mode=bots&pack=medium');
   await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(32));
-  // 120 rpm on level 32 is 661 W, 32.1 km/h; the medium pack rides about 21 km/h.
+  // 120 rpm on level 32 is 661 W, 64.2 km/h; the medium pack rides about 42 km/h.
   for (let second = 0; second < 240; second += 4) {
     await bluetooth.notify(ECHELON_NOTIFY, workoutFrame(120));
     await page.clock.runFor(4000);

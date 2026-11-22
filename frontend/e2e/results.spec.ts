@@ -55,11 +55,11 @@ test.describe('Results', () => {
       await expect(results.big).toHaveText('1st');
       await expect(results.big).toHaveClass(/results__big--podium/);
       await expect(results.of).toHaveText('of 10');
-      await expect(results.sub).toHaveText('0:57 · on the podium');
+      await expect(results.sub).toHaveText('0:29 · on the podium');
 
       await expect(results.rows).toHaveCount(10);
       await expect(results.you).toHaveCount(1);
-      expect(await results.rowText(results.rows.first())).toBe('You 0:57');
+      expect(await results.rowText(results.rows.first())).toBe('You 0:29');
       await expect(results.rows.first()).toHaveAttribute('aria-current', 'true');
       const times: number[] = [];
       for (const row of await results.rows.all()) {
@@ -114,7 +114,7 @@ test.describe('Results', () => {
     await results.shown();
 
     await expect(results.context).toHaveText('Old Town Criterium · vs your best');
-    await expect(results.big).toHaveText('0:57');
+    await expect(results.big).toHaveText('0:29');
     await expect(results.of).toHaveCount(0);
     await expect(results.standings).toHaveCount(0);
     await expect(results.again).toHaveAttribute('href', '/race/old-town-criterium?mode=solo');
