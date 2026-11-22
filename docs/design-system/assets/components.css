@@ -2963,7 +2963,8 @@ a.map-table__map:hover, a.map-table__map[data-state="hover"] { color: var(--colo
 .ride-header__status:hover { background: var(--color-raised); }
 .ride-header__status-name { white-space: nowrap; font-weight: var(--font-weight-medium); }
 .ride-header__status-text { white-space: nowrap; }
-.ride-header__end { margin-left: auto; display: flex; align-items: center; gap: var(--space-3); }
+/* The clock and its buttons wrap below 344 px, End under the clock, so 320 px never scrolls sideways (L2-139 AC1) */
+.ride-header__end { margin-left: auto; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: var(--space-3); }
 .ride-header__clock { font-family: var(--font-family-display); font-weight: var(--font-weight-bold); font-feature-settings: 'tnum' 1; letter-spacing: var(--letter-spacing-display); font-size: var(--font-size-2xl); line-height: var(--line-height-2xl); white-space: nowrap; }
 .ride-header__clock.is-idle, .ride-header__clock-total { color: var(--color-faint); }
 /* End: h-10 px-3 text-sm semibold muted, heart on hover */

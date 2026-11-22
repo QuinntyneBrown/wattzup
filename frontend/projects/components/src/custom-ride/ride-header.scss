@@ -88,9 +88,13 @@
   color: var(--color-heart-fg);
 }
 
+// The clock and its buttons wrap at the narrowest widths, End under the clock, so 320 px never scrolls sideways
+// (L2-139 AC1).
 .ride-header__end {
   margin-left: auto;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   align-items: center;
   gap: var(--space-3);
 }
