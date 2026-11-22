@@ -1,6 +1,10 @@
 import type { WorldRenderer } from '@telo/api';
+import { MapRenderer } from './map-renderer';
 
-/** Imports the Three.js renderer on demand, so it stays in the World Ride chunk (ADR 0020). */
+/**
+ * The renderer for whichever world the scene starts: it imports Three.js on demand, with `main`'s scenes or a
+ * course's map, so both stay in the World Ride chunks (ADR 0020, ADR 0032).
+ */
 export function loadWorldRenderer(): Promise<WorldRenderer> {
-  return import('./world-renderer').then((m) => new m.ThreeWorldRenderer());
+  return Promise.resolve(new MapRenderer());
 }

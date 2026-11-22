@@ -929,6 +929,233 @@
         },
         "roll": 0.8
       }
+    },
+    {
+      "id": "ibiza-sunset-strip",
+      "name": "Ibiza Sunset Strip",
+      "routeName": "Intervals to the Beat",
+      "place": "The waterfront strip of Sant Antoni at sunset",
+      "distanceKm": 8.4,
+      "climbingM": 159,
+      "rating": "Moderate",
+      "world": "ibiza",
+      "thumbnailUrl": "maps/ibiza-sunset-strip.jpg",
+      "photoUrl": "maps/ibiza-sunset-strip-photo.jpg",
+      "unlock": {
+        "kind": "start"
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 150,
+            "level": 14,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 45,
+            "level": 19,
+            "cadenceAim": 70
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 14,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 75,
+            "level": 21,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 13,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 21,
+            "cadenceAim": 74
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 13,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 21,
+            "cadenceAim": 74
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 13,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 21,
+            "cadenceAim": 74
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 13,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 22,
+            "cadenceAim": 65
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 22,
+            "cadenceAim": 65
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 22,
+            "cadenceAim": 65
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 15,
+            "level": 24,
+            "cadenceAim": 70
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 21,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 15,
+            "level": 24,
+            "cadenceAim": 70
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 21,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 20,
+            "level": 22,
+            "cadenceAim": 110
+          },
+          {
+            "kind": "recover",
+            "duration": 20,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 20,
+            "level": 22,
+            "cadenceAim": 110
+          },
+          {
+            "kind": "recover",
+            "duration": 20,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 20,
+            "level": 22,
+            "cadenceAim": 110
+          },
+          {
+            "kind": "recover",
+            "duration": 20,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 20,
+            "level": 22,
+            "cadenceAim": 110
+          },
+          {
+            "kind": "recover",
+            "duration": 20,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 20,
+            "level": 22,
+            "cadenceAim": 110
+          },
+          {
+            "kind": "cool-down",
+            "duration": 150,
+            "level": 11,
+            "cadenceAim": 81
+          }
+        ]
+      },
+      "terrain": {
+        "grade": {
+          "warm-up": -2,
+          "work": 5.5,
+          "recover": -3.5,
+          "cool-down": -5,
+          "steady": 0
+        },
+        "roll": 0
+      }
     }
   ]
 }

@@ -6,6 +6,14 @@
 > to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map
 > unlocks. A custom workout lives under Profile.
 
+**Direction.** Telo Ride is mainly a kart-racing-style game (in the spirit of Mario Kart, never a
+recreation of its characters, art, music or courses). The characters are cyclists, driven by
+riders on their Echelon indoor bikes over Bluetooth. Each map is modelled after a GCN online
+class, which gives the course its structure (resistance, rpm and stages). The map's size is
+relative to the class's length, and its resistance settings drive the map's elevation (lower
+resistance is downhill, higher is uphill). Riders score highly for holding the cadence (rpm)
+each stage of the course specifies.
+
 Before adding or changing anything, ask how it serves that purpose; if it does not, do not build
 it, and if a request works against it, say so.
 

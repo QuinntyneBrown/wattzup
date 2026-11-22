@@ -35,3 +35,4 @@
 | [0031](0031-sign-in-code-email-over-smtp.md) | Sign-in codes are emailed over SMTP with MailKit | Accepted |
 | [0032](0032-register-the-service-worker-from-the-first-screen.md) | The service worker is registered from the first screen's lazy chunk | Accepted |
 | [0033](0033-same-origin-proof-instead-of-anti-forgery-tokens.md) | A same-origin proof, not anti-forgery tokens, guards every change | Accepted |
+| [0032](0032-maps-built-in-blender.md) | Maps are built in Blender from the class they are modelled after, and ridden by the clock | Proposed |

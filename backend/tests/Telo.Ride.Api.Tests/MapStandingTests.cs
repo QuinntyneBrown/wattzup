@@ -59,17 +59,17 @@ public sealed class MapStandingTests(SignInApi api) : IClassFixture<SignInApi>
 
     [Fact]
     [Trait("Category", "Critical")]
-    public async Task A_new_rider_has_two_maps_open_and_a_top_three_race_opens_a_third() // L2-040 AC1, AC2, L2-041 AC1
+    public async Task A_new_rider_has_three_maps_open_and_a_top_three_race_opens_a_fourth() // L2-040 AC1, AC2, L2-041 AC1
     {
         using var browser = await SignedIn("ivy.maps@example.com");
         Assert.Equal(
-            """openMapIds=["prairie-paceline","old-town-criterium"];nextUnlockId="cliffside-coast";stars={};bestTimeSeconds={}""",
+            """openMapIds=["prairie-paceline","old-town-criterium","ibiza-sunset-strip"];nextUnlockId="cliffside-coast";stars={};bestTimeSeconds={}""",
             await Maps(browser));
 
         using var _ = await browser.PostAsJsonAsync("/api/rides", RideBodies.RaceIn(Guid.NewGuid(), 1800), Cancel);
 
         Assert.Equal(
-            """openMapIds=["prairie-paceline","old-town-criterium","neon-docklands"];nextUnlockId="cliffside-coast";stars={"old-town-criterium":2};bestTimeSeconds={"old-town-criterium":1800}""",
+            """openMapIds=["prairie-paceline","old-town-criterium","neon-docklands","ibiza-sunset-strip"];nextUnlockId="cliffside-coast";stars={"old-town-criterium":2};bestTimeSeconds={"old-town-criterium":1800}""",
             await Maps(browser));
     }
 

@@ -43,7 +43,7 @@ public sealed class NextRideTests(SignInApi api) : IClassFixture<SignInApi>
         {
             var progress = MapProgress.Start(riderId, mapId);
             progress.Restore(stars, null);
-            if (mapId is not ("prairie-paceline" or "old-town-criterium"))
+            if (mapId is not ("prairie-paceline" or "old-town-criterium" or "ibiza-sunset-strip"))
             {
                 api.Clock.Advance(TimeSpan.FromHours(1));
                 progress.Open(api.Clock.GetUtcNow());
@@ -112,7 +112,8 @@ public sealed class NextRideTests(SignInApi api) : IClassFixture<SignInApi>
             ("neon-docklands", MapStar.Finish | MapStar.TopThree),
             ("dolomites", MapStar.Finish),
             ("vice-city", MapStar.Finish),
-            ("col-du-granit", MapStar.All));
+            ("col-du-granit", MapStar.All),
+            ("ibiza-sunset-strip", MapStar.All));
 
         Assert.StartsWith("""nextRideMapId="dolomites";""", await Home(browser));
     }
