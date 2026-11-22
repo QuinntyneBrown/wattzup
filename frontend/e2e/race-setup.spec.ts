@@ -7,6 +7,7 @@ import { echelonBike } from './fixtures/echelon';
 import { maps } from './fixtures/maps';
 import { expect, test } from './fixtures/test';
 import { RacePage } from './pages/race.page';
+import { RaceLobbyPage } from './pages/race-lobby.page';
 import { RaceSetupPage } from './pages/race-setup.page';
 
 test.beforeEach(({ api }) => {
@@ -120,7 +121,7 @@ test('against bots, Pack strength offers easy, medium and hard, each with its no
   await expect(setup.packNote).toHaveCount(0);
 });
 
-test('against bots, Go to the start line opens the race with the chosen pack (L2-050 AC1)', async ({
+test('against bots, Go to the start line opens the lobby with the chosen pack (L2-050 AC1)', async ({
   page,
   bluetooth,
 }) => {
@@ -132,8 +133,10 @@ test('against bots, Go to the start line opens the race with the chosen pack (L2
   await expect(setup.start).toHaveText('Go to the start line');
   await setup.start.click();
 
-  await expect(page).toHaveURL('/race/old-town-criterium/ride?mode=bots&pack=hard');
-  await expect(new RacePage(page).route).toHaveText('Cathedral Circuit · vs Bots, hard');
+  await expect(page).toHaveURL('/race/old-town-criterium/lobby?mode=bots&pack=hard');
+  await expect(new RaceLobbyPage(page).title).toHaveText(
+    'Old Town Criterium · 14.2 km · Bots, hard',
+  );
 });
 
 test('against your best time, Start ride opens the race at once, solo (L2-050 AC2)', async ({
