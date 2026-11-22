@@ -1,0 +1,85 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Every request to Telo Ride needs a signed-in rider, unless it is on a short, written list."
+      ]
+    },
+    {
+      "id": "list",
+      "bars": 5,
+      "lines": [
+        "The list: sign-in and sign-out, the public class and map catalogues, the health checks, and the app itself. Each is marked anonymous where it is mapped."
+      ]
+    },
+    {
+      "id": "refused",
+      "bars": 4,
+      "lines": [
+        "Everything else answers 401 without a session, as ProblemDetails, never a redirect."
+      ]
+    },
+    {
+      "id": "every",
+      "bars": 5,
+      "lines": [
+        "A new test asks every endpoint the API maps, the ride hub included. Mark rides anonymous by mistake, and it fails."
+      ]
+    },
+    {
+      "id": "origin",
+      "bars": 5,
+      "lines": [
+        "A change must also come from Telo Ride itself. The browser marks where each request came from, and a page cannot change that mark."
+      ]
+    },
+    {
+      "id": "forged",
+      "bars": 5,
+      "lines": [
+        "A change from another site is refused with 403, cross origin, before it reaches the rider's data. So is a hub connection."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 4,
+      "lines": [
+        "Riders see nothing new: sign-in still opens, from a phone to the full screen."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "Four hundred and eighty-eight backend tests pass, on a host in memory, with no real database."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}
