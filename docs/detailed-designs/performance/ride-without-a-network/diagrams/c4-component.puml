@@ -4,7 +4,7 @@ LAYOUT_WITH_LEGEND()
 title Components — Ride without a network
 
 Container(api, "Telo Ride API", "ASP.NET Core", "POST /api/rides, GET /api/maps, GET /api/classes")
-ContainerDb(idb, "Browser storage", "IndexedDB and Cache Storage", "rides-waiting, ngsw caches")
+ContainerDb(idb, "Browser storage", "IndexedDB, Cache Storage and localStorage", "rides-waiting, ngsw caches, kept catalogues")
 Container_Boundary(app, "Ride app") {
   Component(results, "ResultsPage", "Angular page · ride", "Shows XP pending")
   Component(setup, "RaceSetupPage and ClassStartPage", "Angular pages · ride", "Offer multiplayer choices")
@@ -13,7 +13,8 @@ Container_Boundary(app, "Ride app") {
   Component(avail, "MultiplayerAvailability", "Helper · domain/engine", "Join rule while offline")
   Component(outbox, "IndexedDbRidesWaiting", "Service · domain/storage", "IndexedDB rides-waiting store")
   Component(ridesApi, "HttpRidesApi", "HTTP client · api", "Implements RidesApi")
-  Component(sw, "Angular service worker", "ngsw-worker.js", "Caches shell, chunks, worlds and catalogues")
+  Component(register, "provideAppCache", "Environment initializer · ride, on the lazy parent route", "Registers the service worker once the first screen settles")
+  Component(sw, "Angular service worker", "ngsw-worker.js", "Caches the shell and chunks at once; map art and worlds on first use")
 }
 Rel(results, sync, "Hands the finished ride to")
 Rel(sync, outbox, "Adds, lists and deletes")
@@ -23,6 +24,7 @@ Rel(setup, avail, "Asks")
 Rel(avail, net, "Reads online")
 Rel(outbox, idb, "Reads and writes")
 Rel(ridesApi, sw, "Fetch passes through")
+Rel(register, sw, "Registers")
 Rel(sw, idb, "Caches in")
 Rel(sw, api, "Forwards when online", "HTTPS")
 @enduml

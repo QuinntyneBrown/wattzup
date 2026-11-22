@@ -22,9 +22,10 @@ mock yet (`<TO SUPPLY>`).
   `standalone`, `background_color` and `theme_color` to the dark ink value (`#0a0b0d`, the value of
   `--palette-ink`; a manifest cannot read CSS tokens), and lists 192 px, 512 px and maskable icons.
   The icon artwork is `<TO SUPPLY>`.
-- **Angular service worker** — registered by `provideServiceWorker('ngsw-worker.js',
-  { registrationStrategy: 'registerWhenStable:30000' })` in `app.config.ts`. It caches the app
-  shell (`performance/ride-without-a-network`) and checks for a new version on each navigation.
+- **Angular service worker** — registered by `provideAppCache` on the screens' lazy parent route
+  once the first screen settles (`performance/ride-without-a-network`, ADR 0032). It caches the app
+  shell and checks for a new version on each navigation. `SwUpdate` is bound on the same route,
+  so none of it joins the initial bundle.
 - **`RideActivity`** — root service in the `ride` application with the signal `inProgress`. Ride
   pages set it on start and clear it when Results opens or the rider leaves.
 - **`UpdatePrompt`** — root service in the `ride` application, started from `app.config.ts`. It
