@@ -31,9 +31,8 @@ designed in `progression/keep-progress-on-the-backend` and
   memory for the session, as before this slice.
 - **`RideOutbox`** — contract in `api` (token `RIDE_OUTBOX`), implemented by `DeviceRideOutbox` in
   `domain/storage` and bound on the screens' lazy parent route (`provideSession`), whose injector
-  lasts as long as the app, so rides wait across screens. It is the `OutboxSync` of the
-  diagrams: `submit` writes the ride to `RidesWaiting` before sending it, and `status` follows it
-  for Results. It sends waiting rides one at a time, oldest first, through
+  lasts as long as the app, so rides wait across screens. `submit` writes the ride to
+  `RidesWaiting` before sending it, and `status` follows it for Results. It sends waiting rides one at a time, oldest first, through
   `RidesApi.submitRide`: when the app starts (an environment initializer creates it), on the window
   `online` event, after each new ride and on its own retry timer. A ride is removed from the device
   once the backend has recorded it.

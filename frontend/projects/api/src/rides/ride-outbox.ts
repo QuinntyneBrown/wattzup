@@ -13,9 +13,9 @@ export type RideSyncState =
   | { readonly kind: 'notRecorded' };
 
 /**
- * The finished rides on their way to the backend (L2-044 AC2, L2-135): `submit` sends a ride once for its ride id, a
- * second call for the same id changing nothing, and `status` follows it. A ride waiting for a network is sent again when
- * the browser is back online.
+ * The finished rides on their way to the backend (L2-044 AC2, L2-135): `submit` keeps a ride on the device and sends it
+ * once for its ride id, a second call for the same id changing nothing, and `status` follows it. A ride waiting for a
+ * network is sent again when the app starts, when the browser is back online and after a growing delay.
  */
 export interface RideOutbox {
   submit(ride: SubmitRideRequest): void;

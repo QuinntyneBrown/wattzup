@@ -14,7 +14,13 @@ export { WebBluetoothSupport } from './bluetooth/web-bluetooth-support';
 export { WebBluetoothHeartRateStrap } from './bluetooth/web-bluetooth-heart-rate-strap';
 export { RememberedStrapStore } from './storage/remembered-strap-store';
 export { FetchWorldDownloader, WORLD_CACHE } from './storage/fetch-world-downloader';
-export { SessionRideOutbox } from './storage/session-ride-outbox';
+export {
+  DeviceRideOutbox,
+  FIRST_RETRY_MS,
+  LONGEST_RETRY_MS,
+  retryDelay,
+} from './storage/device-ride-outbox';
+export { IndexedDbRidesWaiting } from './storage/indexed-db-rides-waiting';
 export { SimulatedRiderProfile } from './bluetooth/simulated-rider-profile';
 export { WebBluetoothBikeConnection } from './bluetooth/web-bluetooth-bike-connection';
 export { BikeTelemetry, CADENCE_TIMEOUT_MS } from './engine/bike-telemetry';
