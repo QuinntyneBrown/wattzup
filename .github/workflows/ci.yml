@@ -94,6 +94,9 @@ jobs:
       - name: The ride app, within its budgets
         run: npm run build
         working-directory: frontend
+      - name: The ride app's initial bundle, at most 300 KB gzipped
+        run: npm run bundle:size
+        working-directory: frontend
       - name: The marketing site, within its budgets
         run: npm run build:marketing
         working-directory: frontend

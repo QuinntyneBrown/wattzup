@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Builds and checks everything CI checks, as fast as this machine allows: install, then format, lint, unit tests
-// and the production build with its budget side by side, then the Playwright behaviour specs; beside them, the
-// backend's format check, then its build and tests. Prints each step's
-// time and the total; exits non-zero on the first failure, with that step's output.
+// and the production build with its budget side by side, then its gzipped initial bundle and the Playwright
+// behaviour specs; beside them, the backend's format check, then its build and tests. Prints each step's time and
+// the total; exits non-zero on the first failure, with that step's output.
 //
 //   node tools/verify/verify.mjs
 import { spawn } from 'node:child_process';
@@ -75,6 +75,7 @@ const web = async () => {
     unitTests(),
     (async () => {
       await step('production build and budget', 'npm run build', frontend);
+      await step('initial bundle gzipped', 'npm run bundle:size', frontend);
       await step('behaviour specs', 'npm run e2e', frontend);
     })(),
     step('marketing build and budget', 'npm run build:marketing', frontend),
