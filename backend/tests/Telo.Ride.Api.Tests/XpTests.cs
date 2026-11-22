@@ -1,9 +1,9 @@
 // Acceptance test
-// Traces to: L2-037 AC1, AC2, AC3, AC6; L2-044 AC2, AC4; L2-125 AC3
+// Traces to: L2-037 AC1, AC2, AC3, AC6; L2-044 AC2, AC4; L2-125 AC3; L2-108 AC1
 // Description: the backend computes a recorded ride's XP and adds it to the rider's total. 2nd of 10 against bots and
 // 84 % on target, as the rider's first ride, earns "Finished" +100, "2 of 10" +160, "Podium" +75, "84% on target" +67
-// and "1-day streak" +10, 412 in all. A place off the podium has no podium line, and a solo race or a class has no place
-// or podium line. A repeat of the ride id answers with the same lines and adds nothing, and XP the body sends is not read.
+// and "1-day streak" +10, 412 in all. A place off the podium has no podium line, and a solo race, a class or a custom
+// workout has no place or podium line. A repeat of the ride id answers with the same lines and adds nothing, and XP the body sends is not read.
 // An on-target share outside 0 to 1 is refused with 400.
 using System.Net;
 using System.Net.Http.Json;
@@ -68,6 +68,17 @@ public sealed class XpTests(SignInApi api) : IClassFixture<SignInApi>
         Assert.Equal(["Finished +100", "50% on target +40", "1-day streak +10"], Lines(answer));
         Assert.Equal(150, answer.GetProperty("xpTotal").GetInt32());
         Assert.Equal(562, answer.GetProperty("totalXp").GetInt32());
+    }
+
+    [Fact]
+    public async Task A_custom_workout_is_recorded_with_no_place_or_podium_line()
+    {
+        using var browser = await SignedIn("xavi.custom@example.com");
+
+        var answer = await Submit(browser, RideBodies.Custom(Guid.NewGuid()));
+
+        Assert.Equal(["Finished +100", "75% on target +60", "1-day streak +10"], Lines(answer));
+        Assert.Equal(170, answer.GetProperty("totalXp").GetInt32());
     }
 
     [Fact]

@@ -74,4 +74,23 @@ public static class RideBodies
         ["finishedAt"] = "2026-11-21T07:20:00+00:00",
         ["timeZoneId"] = "America/Toronto",
     };
+
+    /// <summary>
+    /// A 30-minute custom workout at 27 km/h each second, which is the 13,500 m it reports, three quarters of it on
+    /// target. A custom ride names no map or class.
+    /// </summary>
+    public static Dictionary<string, object?> Custom(Guid rideId) => new()
+    {
+        ["rideId"] = rideId,
+        ["kind"] = "custom",
+        ["elapsedSeconds"] = 1800,
+        ["distanceMeters"] = 13_500.0,
+        ["outputKj"] = 270.0,
+        ["maxPowerWatts"] = 384,
+        ["maxSpeedKmh"] = 27.0,
+        ["onTargetShare"] = 0.75,
+        ["speedSamplesKmh"] = Enumerable.Repeat(27.0, 1800).ToArray(),
+        ["finishedAt"] = "2026-11-21T07:30:00+00:00",
+        ["timeZoneId"] = "America/Toronto",
+    };
 }
