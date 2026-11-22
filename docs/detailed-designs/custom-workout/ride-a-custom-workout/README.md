@@ -25,57 +25,61 @@ end a custom ride*.
 
 **Frontend — `ride` application**
 
+- **Start ride** (in *preview a custom workout*'s `PlanPreview`) — disabled while the plan is
+  refused (`L2-100` AC3) or the video link is not YouTube's (`L2-098` AC2), with the reason under
+  it; pressed, it saves the workout and opens `/profile/custom/ride` (`L2-099` AC4).
 - **`CustomRidePage`** (`wz-custom-ride-page`, child route `ride` of `/profile/custom`) — routed
-  page. It provides the route-scoped `CustomRideStore`, `WorkoutEngine`, `RideClock`,
-  `RideRecorder`, `PowerTrace` and, when the workout has a video, `VideoClockSync`. It reads the
-  plan from the parent route's `CustomWorkoutStore`. Telemetry sits on the left and the control
-  aside on the right at lg; below lg the aside goes under the telemetry.
-- **`CustomRideStore`** — signal store. It derives the header view, the readouts, the interval
-  card, the main view, the progress strip and the metrics from the engine, the clock, the bike
-  telemetry and the recorder. `editWorkout()` pauses the ride and navigates to
-  `/profile/custom` with this plan (`L2-101` AC3).
+  page. It provides the route-scoped `CustomRideStore` and the class ride's engine: `RideClock`,
+  `RideTicker`, `WorkoutEngine`, `ResistanceController`, `BikeTelemetry` and `VideoClockSync`. It
+  rides the plan of the parent route's `CustomWorkoutStore`. Telemetry sits on the left and the
+  control aside on the right at lg; below lg the aside goes under the telemetry.
+- **`CustomRideStore`** — signal store. The ride starts once the bike is connected; the clock,
+  the engine and the target resistance then follow the plan as in a class ride. It derives the
+  header's workout and clock, the readouts, the interval card, the main view, the progress strip
+  and the metrics from the engine, the clock, the bike telemetry and a `RideRecorder`. At the
+  plan's end the clock stops at the total; what follows is slice 21.4's. The workout link
+  navigates to `/profile/custom`, whose draft is the ride's plan (`L2-101` AC3).
 
 **Frontend — `components` library**
 
-- **`RideHeader`** (`wz-ride-header`) — lockup and "Library", bike status (`L2-019`), the
-  workout link ("HIIT · 8 × 0:30 · 3:00 → 1:30 recover" or "Flat · Level 12 · 30 min", with the
-  hidden text "— edit workout"), "Feedback" (`L2-116`), the clock (`role="timer"`, "Elapsed 6:52
-  of 30:00"), Pause, End and Full screen. Pause, Resume and End are at least 48 px on a phone and
-  at least 40 px from sm.
+- **`RideHeader`** (`header[wz-ride-header]`) — the lockup, the bike status (`L2-019`), the
+  projected workout link ("HIIT · 8 × 0:30 · 3:00 → 1:30 recover" or "Flat · Level 12 · 30 min",
+  with the hidden text "— edit workout"), the clock (`role="timer"`, "Elapsed 6:52 of 30:00") and
+  Full screen. "Library", Pause and End join it in slice 21.4 and "Feedback" in slice 26.1.
 - **`RideReadouts`** (`wz-ride-readouts`) — Power ("107 W", "Target 107 W", "On target") and
-  Cadence ("73 rpm", "Aim for 72").
-- **`RideInterval`** (`wz-ride-interval`) — "Recover", "Round 1 of 8", "1:38"
-  (`aria-label="1:38 left in this interval"`), a bar eased over 1000 ms each second (no easing
-  with reduced motion), and "Next: Work 0:30 at level 24" or "Last stretch".
-- **`RideView`** (`wz-ride-view`) — tab list "Main view" with "Video" and "Power vs. plan". The
-  Video tab hosts **`RideVideo`** captioned "In sync · pauses with the ride".
-- **`RideTrace`** (`wz-ride-trace`) — canvas chart of the power trace against the plan's target
-  power, legend Actual, Work target and Recover, maximum 600 W (300 W for flat), with the label
-  "Power against the plan: {p} watts now against a {t} watt target, {elapsed} of {total} ridden".
-- **`RideProgress`** (`wz-ride-progress`) — "Ride progress: 6:52 of 30:00" with a tick every
-  5:00.
+  Cadence ("72 rpm", "Aim for 72"), then the projected **`RideInterval`**
+  (`wz-ride-interval`): "Recover", "Round 1 of 8", "1:38" (`aria-label="1:38 left in this
+  interval"`), a bar eased over 1000 ms each second (no easing with reduced motion), and "Next:
+  Work 0:30 at level 24" or "Last stretch".
+- **`RideView`** (`wz-ride-view`) — tab list "Main view" with "Video" (only with a video) and
+  "Power vs. plan"; the Video panel is the player's frame captioned "In sync · pauses with the
+  ride", then the progress strip; the chart panel is **`RideTrace`**; the time ticks every 5:00.
+- **`RideTrace`** (`wz-ride-trace`) — SVG, as the mock draws it: the plan's target blocks, the
+  rider's power as a line and area, and the playhead; maximum 600 W (300 W for flat); the label
+  "Power against the plan: {p} watts now against a {t} watt target, {elapsed} of {total}
+  ridden".
 - **`RideMetrics`** (`wz-ride-metrics`) — Heart rate, Avg power, Speed, Distance and Energy; two
   columns on a phone, five from sm.
-- **`RideControl`** (`wz-ride-control`) — the aside: **`RideLevels`** (32 "Level N" bars, the
-  current one `aria-current="true"`), **`RideStep`** (− and +) and the note "Following the plan —
-  levels change with each interval." or "Holding a flat level for the whole ride."
+- **`RideControl`** (`aside[wz-ride-control]`) — "Resistance": Lower and Raise around the
+  level, 32 "Level N" bars, the current one `aria-current="true"`, the note "Following the plan —
+  levels change with each interval." or "Holding a flat level for the whole ride.", and "Sent to
+  bike" (`L2-029`).
 
 **Frontend — `domain`, `api` and `video` libraries**
 
-- **`WorkoutEngine`**, **`RideClock`**, **`PowerModel`**, **`ResistanceController`** and
-  **`VideoClockSync`** — as in the class ride (see *ride a class*).
+- **`WorkoutEngine`**, **`RideClock`**, **`RideTicker`**, **`PowerModel`**,
+  **`ResistanceController`**, **`BikeTelemetry`**, **`VideoClockSync`** and **`RideRecorder`** —
+  as in the class ride (see *ride a class*).
 - **`PowerTrace`** (`domain/engine`) — fixed-size `Float32Array`, one slot per second of the
   plan (at most 10,800 for 180 minutes), allocated at the start and released with the page.
   Nothing grows during the ride.
-- **`RideRecorder`** (`domain/engine`) — running totals: average power, distance, energy, output
-  and the on-target share.
-- **`BikeConnection`** / `BIKE_CONNECTION` — telemetry (power, cadence, speed, resistance, heart
-  rate) and the `ble` state, from the bike subsystem; speed and distance follow `L2-022`, energy
-  `L2-023` AC4, heart rate `L2-030` and `L2-031`.
+- **`SentLog`** (`domain/engine`) — the commands sent this ride, newest first, at most 50
+  (`L2-029` AC3).
 - **`VideoPlayer`** / `VIDEO_PLAYER_FACTORY` — loaded only when the workout has a video. Without
   one the main view opens on "Power vs. plan" (`L2-098` AC6).
 
-**Backend.** The running ride makes no backend request.
+**Backend.** Start ride saves the workout: `PUT /api/riders/me/custom-workout`, read back by
+`GET` when Custom workout opens (`L2-094` AC3). The running ride makes no backend request.
 
 ## Requirements
 
@@ -142,3 +146,14 @@ The tabs swap the video and the chart; the video, when present, stays locked to 
 The workout link pauses the ride and opens Custom workout with this plan (`L2-101` AC3).
 
 ![Sequence diagram for editing the workout mid-ride](diagrams/sequence-edit-the-workout.png)
+
+## Open questions
+
+1. **72 rpm, not 73.** `L2-102` AC1 read 73 rpm with 107 W at level 6; by `L2-023` AC3 73 rpm
+   is 108 W, so the spec and mocks now read 72 rpm.
+2. **Slice 21.4.** "Library", Pause and End, the overlays for no bike, Bluetooth off and a lost
+   bike, and the plan's end are slice 21.4's (`L2-105` to `L2-108`); "Feedback" is slice 26.1's.
+3. **Edit workout.** The workout link opens Custom workout with the ride's plan; the ride is not
+   kept, so Start ride begins a new one.
+4. **The trace in SVG.** The design names a canvas; the mock draws SVG, and the trace is SVG,
+   bounded by the plan's length in seconds.
