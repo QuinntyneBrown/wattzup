@@ -49,6 +49,7 @@ import { lampLightMap } from './lamp-light-map';
 import { mergeStillParts } from './merged-cyclist';
 import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
+import { RiderBatch } from './rider-batch';
 import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
@@ -168,6 +169,8 @@ export class CourseRenderer implements WorldRenderer {
   /** Under street lamps the riders' shadows are the lamps' instead (rider-shadows.ts), for these riders. */
   private lampShadows: RiderShadows | null = null;
   private readonly casting = new Set<Cyclist>();
+  /** Draws every rider's moving parts of a plain colour in one draw call. */
+  private riderBatch: RiderBatch | null = null;
   /** Draws every rider's plain-coloured still parts, merged into one mesh a rider (merged-cyclist.ts). */
   private readonly plain = new MeshLambertMaterial({ vertexColors: true });
   private kit: CyclistKit | null = null;
@@ -282,6 +285,7 @@ export class CourseRenderer implements WorldRenderer {
     you.pose(frame.reducedMotion ? 0 : frame.crank);
     this.placeRiders(frame, metres);
     this.lampShadows?.end();
+    this.riderBatch?.follow();
     this.aim(metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
@@ -329,6 +333,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lamplit.clear();
     this.lampGlow = null;
     this.groundEye = null;
+    this.riderBatch = null;
     this.shadows.clear();
     this.casting.clear();
     this.lampShadows = null;
@@ -505,7 +510,20 @@ export class CourseRenderer implements WorldRenderer {
     // The rider wears the You jersey of the race board (L2-060).
     const you = kit.make(jerseyColour(canvas, 'you'), 4);
     this.you = you;
-    this.disposables.push(...mergeStillParts(you, this.plain));
+    // Every rider's moving parts of a plain colour are drawn by one batch (rider-batch.ts), in the material that
+    // draws their still ones.
+    let batched: Material = this.plain;
+    if (this.lampGlow) {
+      batched = this.lampGlow.rider(this.plain as unknown as MeshStandardMaterial, LAMP_ON.rider);
+      this.lamplit.set(this.plain, batched);
+      this.disposables.push(batched);
+    }
+    this.riderBatch = new RiderBatch(batched);
+    this.scene.add(this.riderBatch.group);
+    this.disposables.push(this.riderBatch);
+    const still = mergeStillParts(you, this.plain);
+    this.disposables.push(...still);
+    this.riderBatch.add(you, new Set(still));
     this.lamplight(you);
     this.shadow(you);
     this.scene.add(you.group);
@@ -518,6 +536,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lampShadows?.begin();
     this.ride(this.you, 0, 0);
     this.lampShadows?.end();
+    this.riderBatch?.follow();
     this.you.pose(0);
     this.aim(0);
     this.choose();
@@ -607,8 +626,12 @@ export class CourseRenderer implements WorldRenderer {
         if (mesh.isMesh) mesh.material = glass;
       });
     }
-    this.disposables.push(...mergeStillParts(cyclist, this.plain));
-    if (jersey !== 'ghost') this.lamplight(cyclist);
+    const still = mergeStillParts(cyclist, this.plain);
+    this.disposables.push(...still);
+    if (jersey !== 'ghost') {
+      this.riderBatch?.add(cyclist, new Set(still));
+      this.lamplight(cyclist);
+    }
     if (jersey !== 'ghost') this.shadow(cyclist);
     this.riders.set(jersey, cyclist);
     this.scene.add(cyclist.group);

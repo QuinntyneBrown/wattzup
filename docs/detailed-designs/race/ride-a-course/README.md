@@ -63,6 +63,7 @@ All of it is in the `world` library; nothing outside it changes.
 | `fence-material.ts` | The `Fences` group's material (L2-166 AC19): posts and rails drawn on one panel a stretch of railing. |
 | `halo-material.ts` | The `Halos` group's material (L2-166 AC21): four corners at a light's place, spread to face the eye, drawn as an added glow. |
 | `water-material.ts` | The `Sea` group's material where the file has `sea` (L2-166 AC22): ripples, and the sky, the far shore's lights and the glint mirrored by the angle of view. |
+| `rider-batch.ts` | `RiderBatch`: every rider's moving parts of a plain colour as one skinned mesh, a bone a part, so they are one draw call (L2-166 AC12). |
 | `surface-detail.ts` | The detail texture's texels, worked out on the device: grain, patches, cracks, stones. No Three.js; unit-tested. |
 | `world-renderer-loader.ts` | Returns a `MapRenderer`. It imports neither renderer, so Three.js still loads only when a world starts. |
 

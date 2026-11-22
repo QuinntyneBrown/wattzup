@@ -38,6 +38,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 14 | Street furniture: lamp columns with a lit head, and direction boards | 119.5 fps, 1 frame over 20 ms | median of three 288 fps (3.47 ms): 291, 280, 288; pass 13 read 278 | | 74,165 | 130 | 3.37 MB | Yes |
 | 15 | The climbs are bridges over the harbour | 120.0 fps, no frame over 20 ms | median of three 290 fps (3.45 ms): 290, 298, 289; pass 14 read 288 | | 72,083 | 126 | 3.14 MB | Yes |
 | 16 | Pylons and stay cables strung with light over each bridge | 119.0 fps, 2 frames over 20 ms | median of three 292 fps (3.43 ms): 294, 292, 289; pass 15 read 290 | | 72,151 | 126 | 3.17 MB | Yes |
+| 17 | The riders' moving parts in one draw call | 119.4 fps, 1 frame over 20 ms | median of three 315 fps (3.17 ms): 315, 326, 295; pass 16 read 292 | | 73,359 | 77 | 3.17 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -566,3 +567,35 @@ material, laid twice a hair apart and wound each way). About 280 triangles a bri
   for "Neon Docklands" than every surface pass before them, for 2,200 triangles.
 - A line of light is two triangles. Cables, neon tubes, rails, a string of lamps along a pier: the cheapest thing
   in the scene and the most visible at night.
+
+## Pass 17: the riders' moving parts in one draw call
+
+Not a change to the picture (`pass-17.jpg`, `pass-17.mp4`): it brings the frame back inside its budget of 140 draw
+calls, which passes 3 to 10 had taken it past in places.
+
+**Before:** 126 draw calls at the foot of the first bridge and 146 on its deck. A race against bots drew the same
+place with 89 draw calls for the rider and the ghost alone, and 146 with four bots beside them: 14 a rider, of which
+10 are the legs, the cranks and the pedals, each its own mesh because the pedalling moves it.
+
+**After:** 77 at the foot of the bridge and 97 on its deck. Every rider's moving parts of a plain colour are one
+skinned mesh: 60 parts for six riders, one draw call.
+
+**What changed.** `rider-batch.ts`: each such part gets a bone, its vertices hang on that bone alone, and the parts
+are merged into one `SkinnedMesh` in the material that draws the riders' still parts. Each frame, once the riders
+are placed and posed, each bone's matrix is copied from its part's; a hidden rider's bones are shrunk to nothing.
+The parts themselves stay in the scene (the cyclist kit still moves them) and are simply drawn no more. The mesh is
+made again when a rider first rides into view.
+
+**Cost.** Less than nothing: 315 fps against 292 (the draw calls it saves cost more than the skinning).
+
+**Tried and dropped.** Three.js's `BatchedMesh`: on WebGPU it is drawn as one draw for each part in it, so the count
+did not move at all (146 before, 146 after). It is a draw-call saving only where the GPU has multi-draw.
+
+**Learned.**
+
+- Count draw calls with and without the thing suspected (here, a solo race against a race with bots) before
+  cutting anything: the map was never the problem, the riders were.
+- A skinned mesh whose bones are simply copies of other objects' matrices is a general way to draw many rigid,
+  moving things at once: no rig, no weights to paint, no animation system.
+- The other riders' still parts (four or so draw calls each: jersey, bib, helmet, wheels) are what is left; one
+  texture atlas a rider would take them to one.

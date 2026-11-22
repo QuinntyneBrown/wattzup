@@ -424,18 +424,35 @@ where the road turns towards it.
 **Watch for.** Ribbons seen edge on vanish: lay them upright, so a rider on the road sees their height. Two faces
 on the same corners: Blender keeps one, so lay the second a hair away.
 
+### 16. Many moving parts, one draw call (Docklands pass 17)
+
+**What it gives.** Room in the draw-call budget: five riders' legs, cranks and pedals drawn at once.
+
+**How it works.** `frontend/projects/world/src/rider-batch.ts`, `RiderBatch`: `add(rider, keep)` takes each of the
+rider's visible meshes of a plain colour (not the merged still parts), copies its geometry with a colour a vertex
+and `skinIndex`/`skinWeight` that hang every vertex on one bone of its own, and switches the mesh's layers off so it
+is not drawn. The copies are merged into one `SkinnedMesh` bound to a `Skeleton` of those bones with identity
+inverses. `follow()`, called each frame after the riders are placed and posed, copies each part's `matrixWorld` to
+its bone (the bones are in no scene, so nothing else moves them).
+
+**To apply it to another map.** It applies to every course already: it is the renderer's, not the map's. Use the
+same class for other rigid moving things: a crowd waving, flags, traffic, a windmill's sails.
+
+**Cost.** Faster than what it replaces on an Adreno X1-85 (about 50 fewer draw calls for a pack of five).
+
+**Watch for.** `BatchedMesh` does not reduce draw calls on WebGPU. A bone that is in the scene graph is moved by
+the scene: keep these out of it. The mesh is built again whenever a rider is added, so add riders rarely.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
 
-1. Draw calls pass their budget of 140 in places (146 where the road runs beside itself), and the five riders are
-   some 60 of them: a rider far ahead should be one mesh.
-2. The map's file is 3.14 MB gzipped against 3 MB: what is left is positions and indices, which need a mesh codec
+1. The map's file is 3.14 MB gzipped against 3 MB: what is left is positions and indices, which need a mesh codec
    (meshopt).
-3. Nothing but the riders casts a shadow: posts, walls and containers throw none.
-4. The water does not mirror the quay's own lamps, cranes and ships: only the sky and the far shore.
-5. The neon signs and lit windows are not mirrored in the wet road, and throw no light on it.
-6. Lit windows and neon throw no light on the ground, and the neon has no glow in the air.
-7. The riders are simple figures: smooth limbs, no cloth, no faces.
-8. Doors, signs, pipes, gutters and roof lines: a building is still a box with windows.
-9. The stays' light falls on nothing: the deck, the riders and the water take no colour from them.
+2. Nothing but the riders casts a shadow: posts, walls and containers throw none.
+3. The water does not mirror the quay's own lamps, cranes and ships: only the sky and the far shore.
+4. The neon signs and lit windows are not mirrored in the wet road, and throw no light on it.
+5. Lit windows and neon throw no light on the ground, and the neon has no glow in the air.
+6. The riders are simple figures: smooth limbs, no cloth, no faces.
+7. Doors, signs, pipes, gutters and roof lines: a building is still a box with windows.
+8. The stays' light falls on nothing: the deck, the riders and the water take no colour from them.

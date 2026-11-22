@@ -56,7 +56,7 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
   });
   await bluetooth.remember(echelonBike);
   const race = new RacePage(page);
-  await race.open(map, "mode=bots&pack=medium");
+  await race.open(map, process.env["WZ_BENCH_QUERY"] ?? "mode=bots&pack=medium");
   await expect
     .poll(() => bluetooth.writes().map((write) => write.hex), {
       timeout: 30_000,
