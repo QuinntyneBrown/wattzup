@@ -15,20 +15,20 @@ title Class structure — Support screen readers and motion preferences
 hide empty members
 
 interface Announcer <<api>> {
-  +announce(message: string, politeness: 'polite' | 'assertive'): void
+  +announce(message: string): void
 }
-class CdkLiveAnnouncerAdapter <<ride>> {
-  -live: LiveAnnouncer
+class LiveRegionAnnouncer <<domain>> {
+  -region: HTMLElement | null
+  -timer
+  +ngOnDestroy(): void
 }
-class LiveAnnouncer <<Angular CDK>>
 class Dialog <<Angular CDK>> {
   +open(component, config: DialogConfig): DialogRef
   +afterOpened: Subject<DialogRef>
   +afterAllClosed: Observable<void>
 }
-class InertBackground <<ride>> {
-  -appRoot: HTMLElement
-  -setInert(on: boolean): void
+class provideInertBehindDialogs <<ride>> {
+  {static} +provideInertBehindDialogs(): EnvironmentProviders
 }
 class MotionPreference <<ride>> {
   +reduced: Signal<boolean>
@@ -40,9 +40,8 @@ class RideTitleStrategy <<ride>> {
   +updateTitle(snapshot: RouterStateSnapshot): void
 }
 class TitleStrategy <<Angular router>>
-CdkLiveAnnouncerAdapter ..|> Announcer
-CdkLiveAnnouncerAdapter --> LiveAnnouncer
-InertBackground ..> Dialog : listens to
+LiveRegionAnnouncer ..|> Announcer
+provideInertBehindDialogs ..> Dialog : listens to
 BoardReorderAnimator ..> MotionPreference : reduced passed in by page
 TitleStrategy <|-- RideTitleStrategy
 @enduml

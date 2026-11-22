@@ -61,6 +61,7 @@ describe('resultsView', () => {
       podium: true,
       of: 'of 10',
       sub: '26:38 · on the podium',
+      announcement: 'Race results: You finished 2nd of 10.',
       standings: [
         { place: 1, name: 'Pacer Nova', jersey: 'nova', bot: true, you: false, value: '26:32' },
         { place: 2, name: 'You', jersey: 'you', bot: false, you: true, value: '26:38' },
@@ -133,6 +134,7 @@ describe('resultsView', () => {
       podium: false,
       of: null,
       sub: '342 kJ · 84% on target',
+      announcement: 'Class results: You finished 30:00.',
       standings: null,
       again: { label: 'Ride it again', path: '/classes/hiit-cardio-30', query: {} },
       xp: WAITING,
@@ -189,6 +191,7 @@ describe('resultsView', () => {
     it('shows the total and each line in the order returned, and the stars on the map (L2-074 AC1, L2-075 AC1)', () => {
       const view = resultsView(bots, answer({}));
 
+      expect(view.announcement).toBe('Race results: You finished 2nd of 10. +442 XP earned.');
       expect(view.xp).toEqual({
         state: 'ready',
         total: '+442',

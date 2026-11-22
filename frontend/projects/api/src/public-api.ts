@@ -38,6 +38,7 @@ export {
 } from './video/video-player';
 export type { Plan, Segment, SegmentKind } from './workout/plan';
 export { NETWORK_STATUS, type NetworkStatus } from './network/network-status';
+export { ANNOUNCER, type Announcer } from './screen/announcer';
 export { DISPLAY_PREFERENCES, type DisplayPreferences } from './screen/display-preferences';
 export { RIDE_SOUND, type RideSound, type RideSoundSource } from './sound/ride-sound';
 export { FULLSCREEN, type Fullscreen } from './screen/fullscreen';

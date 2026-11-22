@@ -2,6 +2,7 @@ import { DestroyRef, Injectable, computed, effect, inject, signal, untracked } f
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import {
+  ANNOUNCER,
   BIKE_CONNECTION,
   BLUETOOTH_SUPPORT,
   REMEMBERED_BIKE,
@@ -41,6 +42,7 @@ import {
   videoOf,
 } from '@telo/domain';
 import { CustomWorkoutStore } from '../custom-workout/custom-workout-store';
+import { customStepAnnouncement } from '../rides/step-announcement';
 
 /** A ride shorter than this is not worth keeping (L2-108 AC3). */
 const MIN_SAVED_SECONDS = 60;
@@ -251,6 +253,15 @@ export class CustomRideStore {
 
   constructor() {
     const destroyRef = inject(DestroyRef);
+    // Each step, said once as it starts, in the interval card's words (L2-141 AC2).
+    const announcer = inject(ANNOUNCER);
+    const step = computed(() => this.state()?.index ?? null);
+    effect(() => {
+      const index = step();
+      if (index === null) return;
+      const segment = this.plan.segments[index]!;
+      announcer.announce(customStepAnnouncement(segment, intervalPlace(this.plan, index).round));
+    });
     // From Start ride the bike is connected and the ride starts at once; with none it waits for Start (L2-106).
     if (this.connection.ble() === 'connected') this.begin();
     // A lost bike pauses the ride where it is; when the bike is back, the ride stays paused until Resume (L2-105).

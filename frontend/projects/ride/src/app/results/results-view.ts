@@ -26,6 +26,11 @@ export interface ResultsView {
   readonly of: string | null;
   readonly sub: string | null;
   readonly standings: readonly StandingsRow[] | null;
+  /**
+   * What a screen reader hears as Results opens (L2-141 AC2): the heading, the place or the time, and the XP once
+   * recorded, "Race results: You finished 2nd of 10. +442 XP earned."
+   */
+  readonly announcement: string;
   /** "Race it again" to Race Setup with the same mode and pack, or "Ride it again" to Class Start. */
   readonly again: {
     readonly label: string;
@@ -68,9 +73,13 @@ export function resultsView(
 ): ResultsView {
   const answer = sync.kind === 'recorded' ? sync.answer : null;
   const view = 'mapId' in result ? raceView(result, answer) : classView(result);
+  const xp = xpView(sync);
+  const of = view.of === null ? '' : ` ${view.of}`;
+  const earned = xp.total === null ? '' : ` ${xp.total} XP earned.`;
   return {
     ...view,
-    xp: xpView(sync),
+    announcement: `${view.heading}: ${view.lead} ${view.big}${of}.${earned}`,
+    xp,
     stars:
       'mapId' in result && answer?.stars
         ? {
@@ -124,7 +133,7 @@ function bestLine(best: RideRecordedDto['best']): string | null {
     : `Best: ${clock(best.bestSeconds)}`;
 }
 
-type Panels = 'xp' | 'stars' | 'unlock';
+type Panels = 'xp' | 'stars' | 'unlock' | 'announcement';
 
 function raceView(result: RaceResult, answer: RideRecordedDto | null): Omit<ResultsView, Panels> {
   const time = clock(result.finishTimeS);

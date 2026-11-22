@@ -20,7 +20,9 @@ box "Frontend — Ride app (domain library)" #E0F2FE
 end box
 box "Frontend — Ride app (ride application)" #E0F2FE
   participant "Ride page" as page
-  participant "CdkLiveAnnouncerAdapter" as announcer
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "LiveRegionAnnouncer" as announcer
 end box
 box "Frontend — Ride app (components library)" #E0F2FE
   participant "RideReadout (role=timer)" as timer
@@ -31,6 +33,10 @@ loop every second
 end
 conn -> page : ble = disconnected
 page -> page : Show the lost-bike state with icon and text (L2-141 AC4)
-page -> announcer : announce(lost-bike message from the mock, 'assertive')
+page -> announcer : announce(lost-bike message from the mock)
 announcer --> actor : Announced once (L2-141 AC2)
+page -> page : The plan's step index changes
+page -> announcer : announce("Work, round 1 of 8: 0:30 at level 24")
+announcer -> announcer : Empty the region, write the words 100 ms later
+announcer --> actor : Heard once, as the step starts (L2-141 AC2)
 @enduml

@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import {
+  ANNOUNCER,
   type ClassResult,
   MAPS_API,
   type MapDto,
@@ -71,6 +72,13 @@ export default class ResultsPage {
       onCleanup(() => reading.unsubscribe());
     });
     this.view = computed(() => (result === null ? null : resultsView(result, sync(), openedMap())));
+    // The result, said as Results opens, and again once the XP is recorded (L2-141 AC2).
+    const announcer = inject(ANNOUNCER);
+    const announcement = computed(() => this.view()?.announcement ?? null);
+    effect(() => {
+      const heard = announcement();
+      if (heard !== null) announcer.announce(heard);
+    });
     if (result === null) void inject(Router).navigateByUrl('/', { replaceUrl: true });
   }
 }

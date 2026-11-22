@@ -1,7 +1,8 @@
-import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
+import { DestroyRef, Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+  ANNOUNCER,
   BIKE_CONNECTION,
   CLASSES_API,
   type ClassDto,
@@ -29,6 +30,7 @@ import {
 } from '@telo/domain';
 import { LiveSessionStore, SERVICE_LOST_NOTICE } from '../live/live-session-store';
 import { groupBoardView } from './group-board-view';
+import { classStepAnnouncement } from '../rides/step-announcement';
 
 /** A live stat as the bike panel shows it. */
 export interface StatView {
@@ -176,6 +178,14 @@ export class ClassRideStore {
   });
 
   constructor() {
+    // Each segment, said once as it starts, in the segment card's words (L2-141 AC2).
+    const announcer = inject(ANNOUNCER);
+    const step = computed(() => this.engine.state()?.index ?? null);
+    effect(() => {
+      if (step() === null) return;
+      const segment = untracked(() => this.engine.state()?.segment);
+      if (segment) announcer.announce(classStepAnnouncement(segment));
+    });
     const route = inject(ActivatedRoute).snapshot;
     const id = route.paramMap.get('id') ?? '';
     // A group ride arrives with its session (`?session=`). World loading joined it on the page's `LiveSessionStore`,

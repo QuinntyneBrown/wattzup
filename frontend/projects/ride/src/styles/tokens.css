@@ -590,6 +590,7 @@
    (Settings, L2-164 AC2): "reduced" zeroes the durations, "full" keeps them. */
 @media (prefers-reduced-motion: reduce) {
   :root:not([data-motion]) {
+    --duration-countdown: 0ms;
     --duration-loop: 0ms;
     --duration-pulse: 0ms;
     --duration-fast: 0ms;
@@ -598,6 +599,7 @@
   }
 }
 :root[data-motion='reduced'] {
+  --duration-countdown: 0ms;
   --duration-loop: 0ms;
   --duration-pulse: 0ms;
   --duration-fast: 0ms;

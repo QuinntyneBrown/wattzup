@@ -13,10 +13,16 @@ export class AppDocument {
   readonly root: Locator;
   /** The page's main content in its container: the page margin either side, at most 80 rem wide (L2-139 AC2). */
   readonly container: Locator;
+  /** The app itself, behind any dialog: inert while one is open (L2-141 AC3). */
+  readonly app: Locator;
+  /** What a screen reader hears: the one live region the app announces through (L2-141 AC2). */
+  readonly announcement: Locator;
 
   constructor(private readonly page: Page) {
     this.root = page.locator('html');
     this.container = page.locator('main.container');
+    this.app = page.locator('wz-root');
+    this.announcement = page.locator('.live-announcer');
   }
 
   /** A duration token's value on `<html>` in milliseconds, such as `--duration-base` (the build writes 200ms as .2s). */
@@ -150,6 +156,40 @@ export class AppDocument {
       stops.push(stop);
     }
     return stops;
+  }
+
+  /**
+   * What still moves (L2-142 AC2): each running animation, and each element whose transition of anything but its
+   * opacity, or whose CSS animation, takes longer than nothing. Resolves to a description of each.
+   */
+  moving(): Promise<string[]> {
+    return this.page.evaluate(() => {
+      const moving = new Set<string>();
+      const name = (element: Element) =>
+        `${element.tagName.toLowerCase()}.${element.classList[0] ?? ''}`;
+      for (const element of document.querySelectorAll('*')) {
+        const style = getComputedStyle(element);
+        const durations = style.transitionDuration
+          .split(',')
+          .map((duration) => parseFloat(duration));
+        style.transitionProperty.split(',').forEach((property, i) => {
+          if (property.trim() !== 'opacity' && durations[i % durations.length] > 0) {
+            moving.add(`transition of ${property.trim()} on ${name(element)}`);
+          }
+        });
+        const animated = style.animationDuration
+          .split(',')
+          .some((duration) => parseFloat(duration) > 0);
+        if (style.animationName !== 'none' && animated)
+          moving.add(`animation ${style.animationName} on ${name(element)}`);
+      }
+      return [...moving];
+    });
+  }
+
+  /** Whether the focus is on `region` or something in it. */
+  static holdsFocus(region: Locator): Promise<boolean> {
+    return region.evaluate((element) => element.contains(document.activeElement));
   }
 
   scrollsSideways(): Promise<boolean> {
