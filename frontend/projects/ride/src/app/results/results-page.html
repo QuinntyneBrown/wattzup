@@ -1,6 +1,8 @@
 @if (view(); as view) {
   <div class="results-page">
-    <wz-results-header [context]="view.context" />
+    <wz-results-header [context]="view.context">
+      <wz-fullscreen-button slot="end" />
+    </wz-results-header>
     <div class="results-page__scroll">
       <main id="main" class="container results" tabindex="-1">
         <section aria-labelledby="result-title">

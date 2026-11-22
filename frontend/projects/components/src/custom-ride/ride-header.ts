@@ -39,6 +39,8 @@ export class RideHeader {
   /** Library, which asks to leave the ride in a popover under it (L2-107 AC1); emitted with the button, its anchor. */
   readonly libraryOpen = input(false);
   readonly library = output<HTMLElement>();
+  /** Whether the browser has the Fullscreen API: without it there is no Full screen (L2-144 AC2). */
+  readonly fullscreenAvailable = input.required<boolean>();
   readonly fullscreen = input.required<boolean>();
   readonly fullscreenToggled = output<void>();
 }

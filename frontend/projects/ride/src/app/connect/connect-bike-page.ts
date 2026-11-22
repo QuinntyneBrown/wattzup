@@ -1,8 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { BLUETOOTH_SUPPORT } from '@telo/api';
-import { Button, ConnectDevice, type ConnectDeviceState, ConnectWorks } from '@telo/components';
+import {
+  Button,
+  ConnectDevice,
+  type ConnectDeviceState,
+  ConnectWorks,
+  Lockup,
+} from '@telo/components';
 import { SUPPORTED_BIKES } from '@telo/domain';
 import { ConnectBikeStore } from './connect-bike-store';
+import { FullscreenButton } from '../fullscreen/fullscreen-button';
 
 /** The bike the card offers before the search: the model Telo Ride fully controls. */
 const OFFERED = 'Echelon EX-5s';
@@ -10,7 +17,7 @@ const OFFERED = 'Echelon EX-5s';
 /** Connect Bike at `/connect` (docs/mocks/pages/connect-bike/): pick the bike and pair it, with no app navigation. */
 @Component({
   selector: 'wz-connect-bike-page',
-  imports: [Button, ConnectDevice, ConnectWorks],
+  imports: [FullscreenButton, Lockup, Button, ConnectDevice, ConnectWorks],
   templateUrl: './connect-bike-page.html',
   styleUrl: './connect-bike-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

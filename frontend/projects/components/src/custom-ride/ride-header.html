@@ -84,4 +84,6 @@
   </button>
   <ng-content select="[slot=end]" />
 </div>
-<wz-fullscreen-toggle [active]="fullscreen()" (toggled)="fullscreenToggled.emit()" />
+@if (fullscreenAvailable()) {
+  <wz-fullscreen-toggle [active]="fullscreen()" (toggled)="fullscreenToggled.emit()" />
+}

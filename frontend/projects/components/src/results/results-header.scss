@@ -29,3 +29,8 @@
   line-height: var(--line-height-sm);
   color: var(--color-muted);
 }
+
+.results-header__end {
+  display: flex;
+  margin-left: auto;
+}

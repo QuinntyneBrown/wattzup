@@ -1,0 +1,4 @@
+// The toggle sits in its header's own layout, as if the header held it directly.
+:host {
+  display: contents;
+}
