@@ -48,6 +48,7 @@ import { RaceWorld } from './race-world';
   templateUrl: './race-page.html',
   styleUrl: './race-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { '(window:beforeunload)': 'confirmLeaving($event)' },
   providers: [
     RaceStore,
     LiveSessionStore,
@@ -60,4 +61,9 @@ import { RaceWorld } from './race-world';
 })
 export default class RacePage {
   protected readonly store = inject(RaceStore);
+
+  /** While the race runs, closing or reloading the tab asks the rider to confirm (L2-133 AC4). */
+  protected confirmLeaving(event: BeforeUnloadEvent): void {
+    if (this.store.map() !== null && !this.store.dnf()) event.preventDefault();
+  }
 }

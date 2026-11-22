@@ -45,6 +45,8 @@ export class RacePage {
   readonly grade: Locator;
   readonly climbed: Locator;
   readonly distance: Locator;
+  /** The speed readout in km/h, one decimal. */
+  readonly speed: Locator;
   readonly profile: Locator;
   readonly here: Locator;
   readonly resistance: Locator;
@@ -108,6 +110,10 @@ export class RacePage {
     this.grade = page.locator('.race-route__grade');
     this.climbed = page.locator('.race-route__climb');
     this.distance = page.locator('.race-route__km');
+    this.speed = page
+      .locator('.race-power__stats > div')
+      .filter({ has: page.locator('.race-power__stat-label', { hasText: 'Speed' }) })
+      .locator('.race-power__stat-value');
     this.profile = page.locator('.race-route__profile');
     this.here = page.locator('.race-route__here');
     this.resistance = page.locator('.race-resist__readout');
