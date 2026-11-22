@@ -21,7 +21,11 @@ builder.Services.AddProblemDetails(options => options.CustomizeProblemDetails = 
         context.ProblemDetails.Status ?? context.HttpContext.Response.StatusCode));
 builder.Services.AddExceptionHandler<ProblemDetailsExceptionHandler>();
 builder.Services.AddControllers().AnswerInvalidBodies();
-builder.Services.AddSignalR(options => options.AddFilter<ValidationHubFilter>());
+builder.Services.AddSignalR(options =>
+{
+    options.AddFilter<ProgressRateHubFilter>();
+    options.AddFilter<ValidationHubFilter>();
+});
 builder.Services.AddSingleton<ISessionNotifier, RideHubNotifier>();
 builder.Services.AddAppHosting();
 builder.Services.AddTransportSecurity();
