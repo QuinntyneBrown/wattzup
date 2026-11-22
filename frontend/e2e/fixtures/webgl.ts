@@ -22,6 +22,29 @@ export class FakeWebGl {
     });
   }
 
+  /** Call before the page loads: counts the WebGPU and WebGL 2 contexts the page makes, read with `contexts`. */
+  async countContexts(): Promise<void> {
+    await this.page.addInitScript(() => {
+      const counted = window as unknown as { __contexts: number };
+      counted.__contexts = 0;
+      const original = HTMLCanvasElement.prototype.getContext;
+      HTMLCanvasElement.prototype.getContext = function (
+        this: HTMLCanvasElement,
+        kind: string,
+        ...rest: unknown[]
+      ) {
+        const context = (original as (...args: unknown[]) => unknown).call(this, kind, ...rest);
+        if ((kind === 'webgpu' || kind === 'webgl2') && context) counted.__contexts++;
+        return context;
+      } as typeof original;
+    });
+  }
+
+  /** The WebGPU and WebGL 2 contexts made since the page loaded (after `countContexts`). */
+  contexts(): Promise<number> {
+    return this.page.evaluate(() => (window as unknown as { __contexts: number }).__contexts);
+  }
+
   /** Call before the page loads: no WebGPU, so the world draws with WebGL 2 (L2-065). */
   async withoutWebGpu(): Promise<void> {
     await this.page.addInitScript(() => {

@@ -15,3 +15,9 @@
 .world-scene--busy {
   opacity: 0;
 }
+
+// A world handed over warm from World loading fades in over 200 ms, at once with reduced motion, whose tokens make the
+// duration 0 (L2-153 AC3).
+.world-scene--handed {
+  transition: opacity var(--duration-base) var(--ease-out);
+}

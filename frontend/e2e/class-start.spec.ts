@@ -7,6 +7,7 @@
 // "Ride alone" is chosen, the group option says group sessions can't be reached, and Start class opens the ride.
 import { echelonBike } from './fixtures/echelon';
 import { library } from './fixtures/library';
+import { connectBike } from './fixtures/class-ride';
 import { expect, test } from './fixtures/test';
 import { ClassLibraryPage } from './pages/class-library.page';
 import { ClassRidePage } from './pages/class-ride.page';
@@ -107,6 +108,7 @@ test.describe('Class Start', () => {
     // A world class opens World loading before the ride (L2-151 AC1).
     const loading = new WorldLoadingPage(page);
     await expect(loading.title).toHaveText('30 Minute HIIT Cardio');
+    await connectBike(bluetooth);
     await loading.startRiding();
     await expect(new ClassRidePage(page).name).toContainText('30 Minute HIIT Cardio');
   });

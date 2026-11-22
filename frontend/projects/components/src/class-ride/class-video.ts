@@ -23,11 +23,14 @@ import { formatClock } from '../metric/format-clock';
   templateUrl: './class-video.html',
   styleUrl: './class-video.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { '[class.class-video--inset]': 'inset()' },
 })
 export class ClassVideo implements AfterViewInit {
   readonly videoId = input.required<string>();
   readonly title = input.required<string>();
   readonly unavailable = input(false);
+  /** The video sits in the corner of the class's world (class-ride/world): 16:9 at every width, raised over it. */
+  readonly inset = input(false);
   /** Draws "Paused" over the picture; the page announces the pause itself. */
   readonly paused = input(false);
   /** The whole seconds left to the group session's start while the ride waits for it; `null` once it has started. */

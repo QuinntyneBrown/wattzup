@@ -64,18 +64,21 @@ export type { MapStarsView, UnlockCardView, XpEarnedView, XpLineView } from './r
 export type { ClassResult } from './classes/class-result';
 export type { GradeTone, RouteProfileView, RouteStripBar } from './race/route-profile-view';
 export type {
+  AmbiencePreset,
   Backend,
   SceneRider,
   TimedSegment,
   World,
   WorldId,
   WorldRidePacer,
+  WorkoutStatus,
 } from './world/world';
 export {
   WORLD_RENDERER,
   type SceneFrame,
   type SceneryRequest,
   type SceneryState,
+  type PreparedWorld,
   type WorldRenderer,
   type WorldRendererLoader,
   type WorldStartOptions,

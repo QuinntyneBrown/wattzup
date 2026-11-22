@@ -363,7 +363,8 @@
         "L2-090",
         "L2-091",
         "L2-092",
-        "L2-093"
+        "L2-093",
+        "L2-153"
       ],
       "states": [
         "default",
@@ -371,7 +372,8 @@
         "paused",
         "disconnected",
         "video-unavailable",
-        "solo-disconnected"
+        "solo-disconnected",
+        "world"
       ],
       "not_applicable": {
         "empty": "A class ride always has its video and plan; a ride alone shows no rider board (‘solo’).",

@@ -1,5 +1,9 @@
 @if (load.riding()) {
-  <wz-class-ride-session />
+  <wz-class-ride-session
+    [world]="load.world()"
+    [panorama]="load.panorama()"
+    [prepared]="load.prepared()"
+  />
 } @else {
   <div class="class-ride-page">
     <wz-class-start-header>
@@ -34,7 +38,7 @@
               [status]="view.status"
               [hint]="view.hint"
             >
-              <span wz-pill slot="facts" [tone]="load.bike().ok ? 'ok' : null">{{
+              <span wz-pill slot="facts" [tone]="load.bike().ok ? 'ok' : 'heart'">{{
                 load.bike().name
               }}</span>
               @if (load.quality(); as quality) {
@@ -48,6 +52,27 @@
                   title="This is taking longer than usual."
                   detail="Shaders are built once per device, so next time is quicker. Low quality builds a quarter as many."
                 />
+              }
+              <!-- Loading carries on without the bike; Start riding waits for it (L2-157 AC1, AC2). -->
+              @if (load.noBike()) {
+                <wz-banner
+                  slot="notice"
+                  tone="danger"
+                  [alert]="true"
+                  title="Your bike isn’t connected."
+                  detail="The world keeps loading. Pedal once to wake the bike, then connect it."
+                >
+                  <button
+                    wz-button
+                    slot="action"
+                    variant="light"
+                    size="sm"
+                    type="button"
+                    (click)="load.connectBike()"
+                  >
+                    Connect bike
+                  </button>
+                </wz-banner>
               }
               @if (load.failed()) {
                 <wz-banner
@@ -92,7 +117,7 @@
                   Ride with the panorama
                 </button>
               }
-              @if (view.ready) {
+              @if (view.canStart) {
                 <button
                   #start
                   wz-button
@@ -132,7 +157,7 @@
                   Ride with the panorama
                 </button>
               }
-              @if (!view.ready && !load.failed() && !load.slow()) {
+              @if (!view.canStart && !load.failed() && !load.slow()) {
                 <button
                   wz-button
                   slot="actions"

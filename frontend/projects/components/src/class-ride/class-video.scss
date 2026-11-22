@@ -26,6 +26,26 @@
   }
 }
 
+// Inset in the corner of the class's world (class-ride/world, L2-153 AC3): 16:9 at every width, edged and raised.
+:host(.class-video--inset) {
+  flex: none;
+}
+
+:host(.class-video--inset) .class-video {
+  flex: none;
+  aspect-ratio: 16 / 9;
+  border: var(--border-width-hairline) solid var(--color-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-3);
+}
+
+// Under the inset the notice sits over the world, so it takes the panel's surface to stay readable.
+:host(.class-video--inset) .class-video__notice {
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-panel);
+}
+
 .photo {
   position: absolute;
   inset: 0;

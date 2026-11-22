@@ -14,6 +14,7 @@ import {
   type Backend,
   CLASSES_API,
   type ClassDto,
+  type PreparedWorld,
   type World,
   WORLD_DOWNLOADER,
   WORLD_PANORAMAS,
@@ -62,6 +63,7 @@ export class WorldLoadStore {
   private readonly remembered = inject(REMEMBERED_BIKE).get();
   private readonly abort = new AbortController();
   private renderer: WorldRenderer | null = null;
+  private canvas: HTMLCanvasElement | null = null;
   private frame: number | null = null;
   private timer: ReturnType<typeof setInterval> | null = null;
   private destroyed = false;
@@ -71,6 +73,8 @@ export class WorldLoadStore {
 
   /** The class ride replaces World loading: the rider pressed Start riding, or the ride is a group's. */
   readonly riding: WritableSignal<boolean>;
+  /** The started renderer and its canvas, handed to the class ride by Start riding (L2-153 AC3, AC5). */
+  readonly prepared = signal<PreparedWorld | null>(null);
   /** The class's id, for Back to class. */
   readonly classId: string;
   readonly dto = signal<ClassDto | null>(null);
@@ -133,6 +137,7 @@ export class WorldLoadStore {
       slow: this.slow(),
       shaderSeconds: this.shaderSeconds(),
       slowPercent: this.slowPercent(),
+      bikeConnected: this.connection.ble() === 'connected',
     });
   });
 
@@ -159,6 +164,9 @@ export class WorldLoadStore {
       ? { name: bike.name, ok: true }
       : { name: 'No bike', ok: false };
   });
+
+  /** The bike is not connected and World loading has not failed: the alert with Connect bike shows (L2-157 AC1). */
+  readonly noBike = computed(() => !this.bike().ok && !this.failed());
 
   /** The graphics fact: "WebGPU", "WebGL 2", or "Panorama" without 3D (L2-152 AC7, L2-156 AC4). */
   readonly graphics = computed(() => {
@@ -198,11 +206,22 @@ export class WorldLoadStore {
     this.tier.set('low');
   }
 
+  /** Connect bike: tries the remembered bike at once, keeping World loading and its world (L2-157 AC1). */
+  connectBike(): void {
+    this.connection.reconnectNow();
+  }
+
   /**
-   * Start riding, or Ride with the panorama: the class ride takes World loading's place. The renderer World loading
-   * built goes with it; slice 16.3 hands it to the ride instead.
+   * Start riding, or Ride with the panorama: the class ride takes World loading's place. A world that is ready goes to
+   * the ride with its renderer and canvas, warm, rather than being disposed (L2-153 AC3, AC5); anything still loading is
+   * stopped and released.
    */
   ride(): void {
+    if (this.phase() === 'ready' && this.renderer && this.canvas) {
+      this.prepared.set({ renderer: this.renderer, canvas: this.canvas });
+      this.renderer = null;
+      this.canvas = null;
+    }
     this.release();
     this.riding.set(true);
   }
@@ -255,6 +274,7 @@ export class WorldLoadStore {
         const canvas = document.createElement('canvas');
         canvas.width = innerWidth;
         canvas.height = innerHeight;
+        this.canvas = canvas;
         return renderer.start(canvas, drawn, () => this.nextFrame(), segments, {
           tier,
           progress: (progress) => this.report(progress),
@@ -312,6 +332,7 @@ export class WorldLoadStore {
   private disposeRenderer(): void {
     this.renderer?.dispose();
     this.renderer = null;
+    this.canvas = null;
   }
 
   /** Stops the download and the renderer's load, and disposes the renderer (L2-151 AC5). */

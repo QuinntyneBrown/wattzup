@@ -18,6 +18,7 @@ const base: WorldLoadState = {
   slow: false,
   shaderSeconds: 0,
   slowPercent: 0,
+  bikeConnected: true,
 };
 
 const downloaded = { received: 18_900_000, total: 18_900_000 };
@@ -235,5 +236,39 @@ describe('worldLoadView', () => {
     expect(ready.hint).toBe('Your 5:00 warm-up starts the moment you press Start.');
     expect(failed.status).toBe('');
     expect(failed.hint).toBe('');
+  });
+
+  it('waits for the bike to start, and says so, while loading carries on (L2-157 AC1, AC2)', () => {
+    const building = worldLoadView({
+      ...base,
+      phase: 'building',
+      progress: downloaded,
+      startPercent: 64,
+      bikeConnected: false,
+    });
+    const ready = worldLoadView({
+      ...base,
+      phase: 'ready',
+      progress: downloaded,
+      bikeConnected: false,
+    });
+
+    expect(building.status).toBe('Building the shaders, 64 percent. The bike is not connected.');
+    expect(building.hint).toBe(
+      'Start riding turns on when the bike is connected and the world is ready.',
+    );
+    expect(ready.ready).toBe(true);
+    expect(ready.canStart).toBe(false);
+    expect(ready.status).toBe('Neon Docklands is ready. The bike is not connected.');
+    expect(ready.hint).toBe(
+      'Start riding turns on when the bike is connected and the world is ready.',
+    );
+  });
+
+  it('can start once the world is ready and the bike connected (L2-153 AC2, L2-157 AC3)', () => {
+    expect(worldLoadView({ ...base, phase: 'ready', progress: downloaded }).canStart).toBe(true);
+    expect(worldLoadView({ ...base, phase: 'building', progress: downloaded }).canStart).toBe(
+      false,
+    );
   });
 });

@@ -61,12 +61,47 @@ warm-up (`classes/load-a-class-world`), so the first 10 seconds draw no frame lo
 the reference laptop (`L2-153` AC5). The check is a heap-and-frame measurement that runs only when
 a person asks, like the other performance sweeps.
 
-**Class ride in a world.** The class ride that takes over (the race HUD with the class's plan) is
-a mock gap in `docs/specs/L2.md`; `WorldScene` and `adoptWorld()` are named here and their layout
-is `<TO SUPPLY>` until that mock exists.
+**Class ride in a world.** The class ride that takes over is the class ride of
+`classes/ride-a-class` with the world on its stage (`docs/mocks/pages/class-ride/world.html`): the
+world fills the stage over its panorama, and the class video plays in the stage's corner with its
+own sound. The header and the bike panel are unchanged.
 
 **Group with no bike.** At the session start a group class starts even with no bike, showing the
 lost-bike alert of `L2-092` (`L2-157` AC4).
+
+## As built in slice 16.3
+
+- **The gate** (`L2-153` AC1, AC2, `L2-157` AC1 to AC3): Start riding is enabled only when the
+  world is ready and the bike is connected. With no bike the facts read "No bike" in the danger
+  tone, a danger alert reads "Your bike isn’t connected." and "The world keeps loading. Pedal once
+  to wake the bike, then connect it.", with "Connect bike", and the hint reads "Start riding turns
+  on when the bike is connected and the world is ready." The status adds "The bike is not
+  connected." Loading carries on regardless. "Connect bike" asks the connection to try the
+  remembered bike at once (`reconnectNow()`), as the class ride's Reconnect does: a class ride
+  always has a remembered bike, and leaving for Connect would throw away the world being built.
+- **The hand-over** (`L2-153` AC3, AC5): `WorldLoadStore.ride()` hands the started renderer and
+  the canvas it drew on (`PreparedWorld` in `api`) to the class ride, and no longer disposes them.
+  `ClassRideSession` takes the class's world, its panorama and the prepared renderer as inputs
+  from `ClassRidePage`, and lays them out with the `ClassWorld` component (`components`, block
+  `class-world`), the class video inset in its corner (`ClassVideo`'s new `inset`). Its
+  `ClassWorldScene` directive imports the `world` library and creates `main`'s `WorldScene` there,
+  as the race's `RaceWorld` does, with the new `prepared` input. `WorldScene` then puts the prepared canvas in
+  place of its own, measures the frame period and draws on `main`'s loop and `SceneDriver`, with
+  no second renderer and nothing compiled again. The canvas fades in over `--duration-base`
+  (200 ms), which the tokens make 0 with reduced motion. A ride that reaches the class without a
+  prepared renderer (the panorama, or a group until slice 16.4) shows the panorama on the stage.
+- **The world's music** (`main`'s `world-music.ts` and `world-music-player.ts`, with
+  `frontend/projects/ride/public/music/`): `ClassWorldScene` loads the world's track and plays it while the ride runs
+  and no class video is playing, because a class video has its own sound and the music plays under
+  the ride sound, which a class video mutes (`L2-163` AC1). In practice the track plays when the
+  video is unavailable. The "World music" setting arrives with slice 20.4, so it is on until then.
+- **Not copied:** `main`'s `world-ride-view.ts` (the view model of `main`'s World Ride HUD) and
+  `world-ride-access.ts` (the guard of `main`'s `/classes/:id/world` route). The screens around
+  the world are built from Telo Ride's mocks, and the class ride is reached through World loading
+  at `/classes/:id/ride`, so neither has a use. `world-ambience.ts` is copied with its spec;
+  playing the ambience waits for ride sound in slice 20.4.
+
+![Start a solo world class, as built in slice 16.3](diagrams/sequence-as-built-16-3.png)
 
 ## Requirements
 
@@ -122,3 +157,13 @@ The class starts at the session time for everyone. A world still loading keeps l
 panorama and fades in when ready.
 
 ![Sequence diagram for joining a group world class](diagrams/sequence-join-group.png)
+
+## Open questions
+
+1. A world class now shows its video as an inset of the stage, so the world fills the stage and the
+   coach still leads (`docs/specs/L2.md` open question 13). The inset's size and corner are this
+   slice's choice, drawn in the `world` mock.
+2. `main`'s World Ride plays the world's track whenever the ride runs. A class ride has a video
+   with its own sound, so the track plays only while no video plays (`L2-163` AC1).
+3. "Connect bike" retries the remembered bike in place rather than opening Connect, which would
+   leave World loading.

@@ -15,6 +15,7 @@ import {
 } from '@angular/core';
 import {
   type Backend,
+  type PreparedWorld,
   type SceneRider,
   type SceneryRequest,
   type SceneryState,
@@ -53,6 +54,11 @@ export class WorldScene implements AfterViewInit {
   readonly scenery = input<SceneryRequest | null>(null);
   /** Whether Google refused the key or the tiles stream, with Google's attribution (L2-066 AC4, AC7). */
   readonly sceneryState = output<SceneryState>();
+  /**
+   * A renderer World loading has started and warmed up, with its canvas: the scene draws with it in place of its own
+   * canvas and fades it in, rather than loading and starting another (L2-153 AC3, AC5). Read once, on first render.
+   */
+  readonly prepared = input<PreparedWorld | null>(null);
   /** Emitted once when WebGL is unavailable or the renderer fails to start (L2-110 AC4). */
   readonly unavailable = output<void>();
   /** Emitted once the renderer has started, with the GPU API drawing the world (L2-065 AC1). */
@@ -126,8 +132,41 @@ export class WorldScene implements AfterViewInit {
 
     // Started once the view is in place: `ngAfterViewInit` rather than `main`'s `afterNextRender`, whose render hooks
     // would grow the initial bundle (L72, L77).
+    // Draws with a started renderer from now on: sized to its canvas, on the loop, until the scene goes.
+    const begin = (loaded: WorldRenderer, canvas: HTMLCanvasElement) => {
+      renderer = loaded;
+      const resize = () => loaded.resize(canvas.clientWidth, canvas.clientHeight, devicePixelRatio);
+      resize();
+      observer = new ResizeObserver(resize);
+      observer.observe(canvas);
+      document.addEventListener('visibilitychange', onVisibility);
+      watchScreen();
+      this.driver.set(new SceneDriver(loaded));
+      this.started.emit(loaded.backend);
+    };
+
     this.startOnView = () => {
       const canvas = this.canvas().nativeElement;
+      const prepared = untracked(this.prepared);
+      if (prepared) {
+        // World loading's canvas takes this one's place, with its attributes (so this scene's styles reach it), and
+        // fades in once the frame period is measured: nothing is loaded or compiled again (slice 16.3).
+        for (const { name, value } of Array.from(canvas.attributes)) {
+          prepared.canvas.setAttribute(name, value);
+        }
+        prepared.canvas.classList.add('world-scene--handed');
+        canvas.replaceWith(prepared.canvas);
+        void this.frames.measurePeriod().then((period) => {
+          if (destroyed) {
+            prepared.renderer.dispose();
+            return;
+          }
+          prepared.renderer.setFramePeriod(period);
+          begin(prepared.renderer, prepared.canvas);
+          prepared.canvas.classList.remove('world-scene--busy');
+        });
+        return;
+      }
       // The display's frame period is measured before the scene's own work can slow it
       // (L2-111 AC9).
       void Promise.all([this.load(), this.frames.measurePeriod()])
@@ -152,16 +191,7 @@ export class WorldScene implements AfterViewInit {
               this.unavailable.emit();
               return;
             }
-            renderer = loaded;
-            const resize = () =>
-              loaded.resize(canvas.clientWidth, canvas.clientHeight, devicePixelRatio);
-            resize();
-            observer = new ResizeObserver(resize);
-            observer.observe(canvas);
-            document.addEventListener('visibilitychange', onVisibility);
-            watchScreen();
-            this.driver.set(new SceneDriver(loaded));
-            this.started.emit(loaded.backend);
+            begin(loaded, canvas);
           },
           () => {
             if (!destroyed) this.unavailable.emit();

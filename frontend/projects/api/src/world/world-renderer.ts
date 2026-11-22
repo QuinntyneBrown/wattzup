@@ -98,6 +98,15 @@ export interface WorldRenderer {
   dispose(): void;
 }
 
+/**
+ * A renderer World loading has started and warmed up, with the canvas it draws on, handed to the class ride so the world
+ * draws there without a second renderer or anything compiled again (L2-153 AC3, AC5).
+ */
+export interface PreparedWorld {
+  readonly renderer: WorldRenderer;
+  readonly canvas: HTMLCanvasElement;
+}
+
 /** Loads a renderer: the real one imports Three.js only when World Ride opens (L2-102 AC8). */
 export type WorldRendererLoader = () => Promise<WorldRenderer>;
 

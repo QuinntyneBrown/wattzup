@@ -35,6 +35,11 @@ export class ClassRidePage {
   readonly waitTime: Locator;
   readonly waitNote: Locator;
   readonly lower: Locator;
+  /** The class's world on the stage (class-ride/world): its panorama, the world drawn over it, and the video in the corner. */
+  readonly world: Locator;
+  readonly worldPanorama: Locator;
+  readonly worldScene: Locator;
+  readonly worldVideo: Locator;
 
   constructor(private readonly page: Page) {
     this.name = page.locator('.class-ride__name');
@@ -72,6 +77,10 @@ export class ClassRidePage {
     this.waitTime = this.wait.getByRole('timer');
     this.waitNote = page.locator('.class-video__wait-note');
     this.lower = page.getByRole('button', { name: 'Lower resistance' });
+    this.world = page.locator('.class-world');
+    this.worldPanorama = this.world.locator('.class-world__panorama');
+    this.worldScene = this.world.locator('canvas.world-scene');
+    this.worldVideo = this.world.locator('.class-world__video .class-video');
   }
 
   /** Opens the ride in a group session, as Class Start does once the rider has joined it. */

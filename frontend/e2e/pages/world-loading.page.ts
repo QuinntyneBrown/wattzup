@@ -34,6 +34,7 @@ export class WorldLoadingPage {
   readonly tryAgain: Locator;
   readonly panoramaRide: Locator;
   readonly startAtLow: Locator;
+  readonly connectBike: Locator;
 
   constructor(private readonly page: Page) {
     this.root = page.locator('.world-loading');
@@ -58,6 +59,7 @@ export class WorldLoadingPage {
     this.tryAgain = page.getByRole('button', { name: 'Try again' });
     this.panoramaRide = page.getByRole('button', { name: 'Ride with the panorama' });
     this.startAtLow = page.getByRole('button', { name: 'Start at Low quality' });
+    this.connectBike = this.alert.getByRole('button', { name: 'Connect bike' });
   }
 
   /** Waits for the world to be ready, then presses Start riding: the class ride takes World loading's place. */

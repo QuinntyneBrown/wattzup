@@ -222,6 +222,19 @@ export interface WorldRidePacer {
 /** The GPU API drawing the world: WebGPU, or WebGL 2 where no WebGPU adapter is granted (L2-065, ADR 0021). */
 export type Backend = 'webgpu' | 'webgl2';
 
+/** A ride's status as `main` names it (`main`'s api `WorkoutStatus`), which its world music reads (L2-163). */
+export type WorkoutStatus =
+  | 'waiting for bike'
+  | 'running'
+  | 'paused'
+  | 'paused: bike disconnected'
+  | 'stopped'
+  | 'ended'
+  | 'ended: bike shut off';
+
+/** The ambience a world declares under the ride sound, as `main`'s ride-sound.ts names them (L2-163). */
+export type AmbiencePreset = 'coast' | 'alpine' | 'city' | 'park';
+
 /** One of the World Ride scenes built into the frontend (L2-101), as `main`'s `worlds.ts` describes it. */
 export interface World {
   readonly id: WorldId;
