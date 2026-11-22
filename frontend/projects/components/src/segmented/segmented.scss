@@ -1,17 +1,19 @@
 // Block segmented (docs/design-system/assets/components.css, raised and strong): the chosen option filled with the
-// foreground, every option at least 44 px tall.
+// foreground. Every option draws 24 px tall and takes touches across 44 px (L2-140 AC2); the options wrap, rather
+// than scroll, on the narrowest screens, so nothing clips that tap area.
 :host {
   display: inline-flex;
   align-self: flex-start;
   max-width: 100%;
+  flex-wrap: wrap;
   gap: var(--space-0-5);
-  overflow-x: auto;
   border-radius: var(--radius-lg);
   background: var(--color-raised);
   padding: var(--space-0-5);
 }
 
 .segmented__option {
+  position: relative;
   flex-shrink: 0;
   height: var(--target-min);
   padding-inline: var(--space-4);
@@ -24,6 +26,13 @@
   transition:
     background-color var(--duration-fast) var(--ease-standard),
     color var(--duration-fast) var(--ease-standard);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    inset-block: min(0px, calc((100% - var(--target-comfortable)) / 2));
+  }
 
   &:hover:not(:disabled) {
     color: var(--color-fg);

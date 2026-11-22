@@ -39,9 +39,10 @@
   color: var(--color-muted);
 }
 
-// The native range, 44 px tall for touch.
+// The native range. 44 px tall for touch, the track drawn in its middle; the negative margins keep the layout of a 24 px range.
 .range {
   width: 100%;
-  height: var(--target-min);
+  height: var(--target-comfortable);
+  margin-block: calc((var(--target-min) - var(--target-comfortable)) / 2);
   accent-color: var(--color-volt);
 }

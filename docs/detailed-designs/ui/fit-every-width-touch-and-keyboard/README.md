@@ -43,13 +43,29 @@ in its feature design.
 - **Focus styles** — the global `:focus-visible` rule draws `--shadow-focus` on every control.
 - **Hover rule** — only `.btn`, `.icon-btn` and links declare `:hover` styles, inside
   `@media (hover: hover)`. No other block declares a hover state.
-- **Target sizes** — buttons and links use `min-block-size` and `min-inline-size` of
-  `--target-comfortable` for primary actions and `--target-ride` for controls pressed mid-ride on a
-  phone. Open question 12 in `docs/specs/L2.md` notes that the mocks draw mid-ride header buttons
-  at 36 to 40 px; this design follows `L2-140` AC2.
+- **Target sizes** — a control keeps the size the mock draws and takes touches across at least
+  `--target-comfortable` (44 px): where it draws smaller, an absolutely placed `::after` (or
+  `::before`) overhangs it, `inset-block: min(0px, calc((100% - var(--target-comfortable)) / 2))`,
+  as `.btn`, the header links, the icon button, the switch, the segmented option, the side-nav link
+  below lg and the custom ride's view tab do. A native range is 44 px tall with negative margins
+  that keep a 24 px range's layout; the select is drawn at 44 px. A scroller clips what overhangs
+  it, so the side nav's row is padded to make room and the segmented options wrap instead of
+  scrolling.
+- **Mid-ride targets** — below sm, the race, class ride and custom ride pages set
+  `--target-comfortable` to `--target-ride` on their host, so every tap area on them is 48 px; the
+  class ride's Pause and Leave are drawn at 48 px, as the mock asks (open question 12 in
+  `docs/specs/L2.md`).
+- **Focus** — the global `:focus-visible` outline draws the ring on every control; a card that
+  clips its cover (the class card) draws the ring on the cover instead. Focus follows the DOM
+  order; no `tabindex` above 0.
 - **Proof** — `e2e/fit-every-width.spec.ts` opens every screen, from the shared table
   `e2e/fixtures/screens.ts`, at 320 and 2560 px and fails on sideways scroll; it also measures the
   page margin at 320, 640 and 1024 px and the 80 rem container at 2560 px.
+- **Proof of touch and keyboard** — `e2e/touch-and-keyboard.spec.ts` opens every screen of the
+  same table. At 390 px it taps each edge of a 44 × 44 px square (48 on a ride) centred on every
+  control and fails on any tap that misses it (`AppDocument.untappable`); at 1280 px it tabs
+  through the page and fails on any stop out of view or without a ring (`AppDocument.tabStops`).
+  `e2e/app-shell.spec.ts` proves the skip link.
 - **Sweeps** — the responsive sweep (`e2e/sweeps/responsive.sweep.ts`, `npm run sweep:responsive`
   with `playwright.sweeps.config.ts`) opens the same screens at 320, 640, 768, 1024, 1280 and
   2560 px. It runs only when a person asks.
@@ -109,3 +125,16 @@ Styles change through media queries alone; a component whose structure changes r
 breakpoint signal (`L2-139` AC3).
 
 ![Sequence diagram for crossing a breakpoint](diagrams/sequence-cross-a-breakpoint.png)
+
+## Open questions
+
+1. **The level bars (decided in slice 23.2).** The custom ride's 32 level bars draw about 8 px
+   wide and cannot take 24 px each. The resistance stepper beside them sets the same levels with
+   48 px buttons, so the bars are exempt as an equivalent control (WCAG 2.5.8); they stay in the
+   tab order.
+2. **Hover on anything but a button or link (`L2-140` AC3)** is not proved yet; no behaviour spec
+   checks it.
+3. **The app header's focus order on a phone.** Below sm the nav links draw on a second row
+   (`order: 99`) but come before the level and Full screen in the DOM, so Tab reaches them first.
+4. **The side nav from lg** draws its links 24 px tall in a column, where a desktop pointer uses
+   it; only below lg, in a row, do they take touches across 44 px.

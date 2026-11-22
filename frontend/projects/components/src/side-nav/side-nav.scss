@@ -11,8 +11,11 @@
   gap: var(--space-1);
   overflow-x: auto;
   scrollbar-width: none;
+  // Room above and below the row for each link's 44 px tap area, which the scroller would otherwise clip; the
+  // negative margin keeps the row where it was.
+  margin-block: calc(var(--space-1) - (var(--target-comfortable) - var(--target-min)) / 2);
   margin-inline: calc(var(--space-1) * -1);
-  padding: var(--space-1);
+  padding: calc((var(--target-comfortable) - var(--target-min)) / 2) var(--space-1);
 
   &::-webkit-scrollbar {
     display: none;

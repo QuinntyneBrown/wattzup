@@ -1,4 +1,5 @@
-// Element side-nav__link. It is at least 44 px tall, for touch.
+// Element side-nav__link. Below lg it draws 24 px tall in a row and takes touches across 44 px (L2-140 AC2); from lg,
+// in a column, it draws at the target minimum.
 :host {
   position: relative;
   display: flex;
@@ -18,6 +19,17 @@
   @media (min-width: 64rem) {
     flex-shrink: 1;
     white-space: normal;
+  }
+}
+
+:host::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block: min(0px, calc((100% - var(--target-comfortable)) / 2));
+
+  @media (min-width: 64rem) {
+    content: none;
   }
 }
 

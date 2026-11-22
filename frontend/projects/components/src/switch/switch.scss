@@ -15,7 +15,7 @@
   content: '';
   position: absolute;
   inset-inline: 0;
-  inset-block: calc((100% - var(--target-min)) / 2);
+  inset-block: min(0px, calc((100% - var(--target-comfortable)) / 2));
 }
 
 :host::after {

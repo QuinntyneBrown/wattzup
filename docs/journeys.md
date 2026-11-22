@@ -29,10 +29,10 @@ Estimates are working days for one intermediate developer, using `docs/detailed-
 | 20 | Tune ride settings | Quality, device check, sound, motion, display and saved worlds. | 12 | 100% |
 | 21 | Ride a custom workout | Set up, preview and ride your own intervals from Profile. | 10 | 100% |
 | 22 | Stay secure | Authenticated requests, rate limits, CSP, validated input, protected rider data. | 8 | 100% |
-| 23 | Use by touch, keyboard and screen reader | Every width, 44 px targets, keyboard paths, announcements, reduced motion. | 8 | 38% |
+| 23 | Use by touch, keyboard and screen reader | Every width, 44 px targets, keyboard paths, announcements, reduced motion. | 8 | 63% |
 | 24 | Switch theme and full screen | Match device, dark or light; full screen on any ride screen. | 3 | 0% |
 | 25 | Check diagnostics | Bike and browser state, packet log to download. | 5 | 0% |
 | 26 | Send feedback | Report a bug, share an idea or send kudos. | 5 | 0% |
 | 27 | Install the app | Install as an app from Chrome or Edge. | 3 | 0% |
 
-**Total:** 238 days. **Complete:** 217 days (91%).
+**Total:** 238 days. **Complete:** 219 days (92%).

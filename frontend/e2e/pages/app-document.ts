@@ -4,6 +4,10 @@ import type { Locator, Page } from '@playwright/test';
  * The page as a whole, as the display settings change it (L2-164): the `<html>` element's attributes, a token's
  * value and whether the page scrolls sideways; and the page container every screen's content sits in (L2-139).
  */
+/** What a rider taps or tabs to: links, buttons, inputs and anything else in the tab order. */
+const CONTROLS =
+  'a[href], button:not(:disabled), input:not([type="hidden"]):not(:disabled), select, textarea, summary, [tabindex]:not([tabindex="-1"])';
+
 export class AppDocument {
   /** `<html>`: `data-theme`, `data-motion` and `data-ride-numbers`. */
   readonly root: Locator;
@@ -45,6 +49,107 @@ export class AppDocument {
         paddingRight: parseFloat(style.paddingRight),
       };
     });
+  }
+
+  /**
+   * The controls a tap of `size` px misses (L2-140 AC2): each control on the page is scrolled into the middle of the
+   * window, and a tap at each edge of a `size` × `size` square centred on it must reach the control (or the label of
+   * an input). Its look may be smaller; its tap area may not. Resolves to a description of each control it misses.
+   */
+  async untappable(size: number, except: readonly string[] = []): Promise<string[]> {
+    const controls = this.page.locator(CONTROLS);
+    const missed: string[] = [];
+    for (const control of await controls.all()) {
+      const miss = await control.evaluate(
+        (element, [side, skipped]) => {
+          if (skipped.some((selector) => element.matches(selector))) return null;
+          if (
+            element.classList.contains('skip-link') ||
+            element.closest('[inert], [aria-hidden="true"]')
+          )
+            return null;
+          let box = element.getBoundingClientRect();
+          if (box.width === 0 && box.height === 0) return null;
+          element.scrollIntoView({ block: 'center', inline: 'center' });
+          box = element.getBoundingClientRect();
+          const reach = side / 2 - 1;
+          const x = box.left + box.width / 2;
+          const y = box.top + box.height / 2;
+          const label = element instanceof HTMLInputElement ? element.labels?.[0] : undefined;
+          const reaches = (hit: Element | null) =>
+            !!hit && (element.contains(hit) || (!!label && label.contains(hit)));
+          const points = [
+            [x, y - reach],
+            [x, y + reach],
+            [x - reach, y],
+            [x + reach, y],
+          ];
+          if (points.every(([px, py]) => reaches(document.elementFromPoint(px, py)))) return null;
+          const name = (element.getAttribute('aria-label') ?? element.textContent ?? '')
+            .trim()
+            .replace(/\s+/g, ' ');
+          return `${element.tagName.toLowerCase()}.${element.classList[0] ?? ''} "${name.slice(0, 40)}" ${Math.round(box.width)}×${Math.round(box.height)}`;
+        },
+        [size, except] as const,
+      );
+      if (miss) missed.push(miss);
+    }
+    return missed;
+  }
+
+  /**
+   * Tabs through the page from its start (L2-140 AC1): each stop the focus lands on until it leaves the page, with
+   * whether it shows a focus ring (an outline or a box shadow) and whether it is drawn in the window.
+   */
+  async tabStops(limit = 80): Promise<{ name: string; ring: boolean; shown: boolean }[]> {
+    await this.page.evaluate(() => {
+      (document.activeElement as HTMLElement | null)?.blur();
+      (window as { __tabbed?: WeakSet<Element> }).__tabbed = new WeakSet();
+    });
+    const stops: { name: string; ring: boolean; shown: boolean }[] = [];
+    let wraps = 0;
+    for (let i = 0; i < limit; i++) {
+      await this.page.keyboard.press('Tab');
+      const stop = await this.page.evaluate(() => {
+        const e = document.activeElement;
+        const tabbed = (window as { __tabbed?: WeakSet<Element> }).__tabbed!;
+        if (!e || e === document.body) return 'body';
+        if (tabbed.has(e)) return null;
+        tabbed.add(e);
+        const style = getComputedStyle(e);
+        const box = e.getBoundingClientRect();
+        const outlined = (style: CSSStyleDeclaration) =>
+          style.outlineStyle !== 'none' && parseFloat(style.outlineWidth) >= 2;
+        // The ring is the control's outline or box shadow, or an outline it draws on a part of itself (a card's cover).
+        const ring =
+          outlined(style) ||
+          (style.boxShadow !== 'none' && style.boxShadow !== '') ||
+          [...e.querySelectorAll('*')].some((part) => outlined(getComputedStyle(part)));
+        const shown =
+          box.width > 0 &&
+          box.height > 0 &&
+          box.bottom > 0 &&
+          box.right > 0 &&
+          box.top < innerHeight &&
+          box.left < innerWidth;
+        const name = (e.getAttribute('aria-label') ?? e.textContent ?? '')
+          .trim()
+          .replace(/\s+/g, ' ');
+        return {
+          name: `${e.tagName.toLowerCase()}.${e.classList[0] ?? ''} "${name.slice(0, 40)}"`,
+          ring,
+          shown,
+        };
+      });
+      if (!stop) break;
+      // From the body or the window's edge, Tab passes through the page itself once before the first control.
+      if (stop === 'body') {
+        if (++wraps > 2) break;
+        continue;
+      }
+      stops.push(stop);
+    }
+    return stops;
   }
 
   scrollsSideways(): Promise<boolean> {
