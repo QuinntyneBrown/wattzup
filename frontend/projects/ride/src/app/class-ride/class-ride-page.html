@@ -1,115 +1,117 @@
-<div class="class-ride">
-  @if (store.ride(); as ride) {
-    <wz-class-header
-      [title]="ride.title"
-      [mode]="store.mode()"
-      [elapsed]="store.elapsed()"
-      [total]="ride.lengthSeconds"
-    >
-      <!-- A group ride rides the session's shared clock, so it has no Pause (L2-087 AC1). -->
-      @if (!store.group) {
-        <button
-          wz-button
-          variant="raised"
-          size="sm"
-          slot="end"
-          type="button"
-          class="class-ride__action"
-          [attr.aria-label]="store.paused() ? 'Resume' : 'Pause'"
-          (click)="store.paused() ? store.resume() : store.pause()"
-        >
-          @if (store.paused()) {
-            <svg class="class-ride__icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"
+@if (load.riding()) {
+  <wz-class-ride-session />
+} @else {
+  <div class="class-ride-page">
+    <wz-class-start-header>
+      <a wz-back-link slot="back" [routerLink]="['/classes', load.classId]">Back to class</a>
+    </wz-class-start-header>
+    @if (load.dto(); as dto) {
+      @if (load.view(); as view) {
+        <main id="main" class="world-loading" tabindex="-1" [attr.aria-busy]="!view.ready">
+          <div class="world-loading__scene">
+            @if (load.panorama(); as panorama) {
+              <img class="world-loading__photo" [src]="panorama.url" [alt]="panorama.alt" />
+            }
+          </div>
+          <div class="container world-loading__body">
+            <section class="world-loading__intro" aria-labelledby="class-title">
+              <p class="world-loading__eyebrow">{{ load.eyebrow() }}</p>
+              <h1 class="world-loading__title" id="class-title">{{ dto.title }}</h1>
+              <p class="world-loading__about">{{ load.world()?.description }}</p>
+              <wz-class-plan
+                class="world-loading__plan"
+                [lengthSeconds]="dto.lengthSeconds"
+                [segments]="dto.plan.segments"
+                [summary]="load.planSummary()"
               />
-            </svg>
-            <span class="class-ride__pause-label">Resume</span>
-          } @else {
-            <svg class="class-ride__icon" viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="14" y="3" width="5" height="18" rx="1" />
-              <rect x="5" y="3" width="5" height="18" rx="1" />
-            </svg>
-            <span class="class-ride__pause-label">Pause</span>
-          }
-        </button>
+            </section>
+            <wz-load-card
+              [heading]="view.heading"
+              [percent]="view.percent"
+              [progressLabel]="'Loading ' + load.world()?.name"
+              [done]="view.ready"
+              [steps]="view.steps"
+              [status]="view.status"
+              [hint]="view.hint"
+            >
+              <span wz-pill slot="facts" [tone]="load.bike().ok ? 'ok' : null">{{
+                load.bike().name
+              }}</span>
+              <span wz-pill slot="facts">{{ load.graphics() }}</span>
+              @if (load.failed()) {
+                <wz-banner
+                  slot="notice"
+                  tone="danger"
+                  [alert]="true"
+                  title="The download stopped."
+                  detail="Check your connection and try again, or ride with the panorama: the plan, clock and bike work the same."
+                />
+              }
+              @if (view.ready && load.graphics() === 'Panorama') {
+                <wz-banner
+                  slot="notice"
+                  tone="info"
+                  title="This browser can’t draw 3D worlds."
+                  detail="Neither WebGPU nor WebGL 2 is on here, so you ride with the world’s panorama. The plan, clock and bike work the same."
+                />
+              }
+              @if (load.failed()) {
+                <button
+                  wz-button
+                  slot="actions"
+                  variant="primary"
+                  size="xl"
+                  [block]="true"
+                  type="button"
+                  (click)="load.retry()"
+                >
+                  Try again
+                </button>
+              }
+              @if (load.failed()) {
+                <button
+                  wz-button
+                  slot="actions"
+                  variant="raised"
+                  size="lg"
+                  [block]="true"
+                  type="button"
+                  (click)="load.ride()"
+                >
+                  Ride with the panorama
+                </button>
+              }
+              @if (view.ready) {
+                <button
+                  #start
+                  wz-button
+                  slot="actions"
+                  variant="primary"
+                  size="xl"
+                  [block]="true"
+                  type="button"
+                  (click)="load.ride()"
+                >
+                  Start riding
+                </button>
+              }
+              @if (!view.ready && !load.failed()) {
+                <button
+                  wz-button
+                  slot="actions"
+                  variant="primary"
+                  size="xl"
+                  [block]="true"
+                  type="button"
+                  disabled
+                >
+                  Start riding
+                </button>
+              }
+            </wz-load-card>
+          </div>
+        </main>
       }
-      <!-- Leave earns nothing and asks for no confirmation (L2-093 AC1); leaving the page stops the ride. -->
-      <a
-        wz-button
-        size="sm"
-        slot="end"
-        class="class-ride__action class-ride__leave"
-        aria-label="Leave class"
-        [routerLink]="['/classes', ride.id]"
-      >
-        <svg class="class-ride__icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m16 17 5-5-5-5" />
-          <path d="M21 12H9" />
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-        </svg>
-      </a>
-    </wz-class-header>
-    <main
-      id="main"
-      class="class-ride__body"
-      [class.class-ride__body--group]="store.board() !== null"
-      tabindex="-1"
-    >
-      <h1 class="visually-hidden">
-        {{ ride.title }} · {{ store.group ? 'group' : 'solo' }} class ride
-      </h1>
-      <p class="visually-hidden" role="status">{{ store.paused() ? 'Ride paused' : '' }}</p>
-      <div class="class-ride__stage">
-        <wz-class-video
-          [videoId]="ride.video.videoId"
-          [title]="ride.title"
-          [unavailable]="store.videoUnavailable()"
-          [paused]="store.paused() || store.bikeLost()"
-          [startsIn]="store.startsIn()"
-          [startsAt]="store.startsAt()"
-          (frame)="store.playVideo($event)"
-        />
-        @if (store.plan(); as plan) {
-          <wz-class-bike>
-            <wz-class-segment
-              [segments]="ride.plan.segments"
-              [index]="plan.index"
-              [remaining]="plan.remainingMs / 1000"
-              [progress]="plan.progress"
-            />
-            <wz-class-stat
-              label="Power"
-              unit="W"
-              [value]="store.power().value"
-              [hint]="store.power().hint"
-              [tone]="store.power().tone"
-            />
-            <wz-class-stat
-              label="Cadence"
-              unit="rpm"
-              [value]="store.cadence().value"
-              [hint]="store.cadence().hint"
-            />
-            <wz-class-resist
-              [level]="store.level()"
-              [disabled]="!store.canControl()"
-              (lower)="store.lower()"
-              (raise)="store.raise()"
-            />
-          </wz-class-bike>
-        }
-      </div>
-      <!-- The group board, from the hub's standings: a right-hand column from lg, under the video below (L2-090). -->
-      @if (store.board(); as board) {
-        <wz-class-board [place]="board.place" [total]="board.total" [rows]="board.rows" />
-      }
-    </main>
-    @if (store.bikeLost()) {
-      <wz-class-lost
-        body="Your ride is paused. Pedal to wake the bike and it carries on from here."
-        (reconnect)="store.reconnect()"
-      />
     }
-  }
-</div>
+  </div>
+}

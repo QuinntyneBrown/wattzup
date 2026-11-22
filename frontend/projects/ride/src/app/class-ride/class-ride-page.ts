@@ -1,66 +1,56 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  effect,
+  inject,
+  viewChild,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { WORLD_DOWNLOADER } from '@telo/api';
 import {
+  BackLink,
+  Banner,
   Button,
-  ClassBike,
-  ClassBoard,
-  ClassHeader,
-  ClassLost,
-  ClassResist,
-  ClassSegment,
-  ClassStat,
-  ClassVideo,
+  ClassPlan,
+  ClassStartHeader,
+  LoadCard,
+  Pill,
 } from '@telo/components';
-import {
-  BikeTelemetry,
-  ResistanceController,
-  RideClock,
-  RideTicker,
-  VideoClockSync,
-  WorkoutEngine,
-} from '@telo/domain';
-import { LiveSessionStore } from '../live/live-session-store';
-import { ClassRideStore } from './class-ride-store';
+import { FetchWorldDownloader } from '@telo/domain';
+import { ClassRideSession } from './class-ride-session';
+import { WorldLoadStore } from './world-load-store';
 
 /**
- * Class Ride at `/classes/:id/ride` (docs/mocks/pages/class-ride/, solo): the header with the class and its clock,
- * the class video, and the bike panel with the segment card, Power, Cadence and the resistance stepper. Every part of the ride is
- * provided here, so leaving the page stops the clock and the ticker and releases them.
+ * `/classes/:id/ride`: World loading (docs/mocks/pages/world-loading/) until the class's world is ready and the rider
+ * presses Start riding, then the class ride at the same address (L2-151). World loading is the class over its world's
+ * panorama and the load card; the ride's own providers come with `ClassRideSession`, so its clock and its first
+ * command wait for Start riding. Leaving releases what the load acquired (AC5).
  */
 @Component({
   selector: 'wz-class-ride-page',
   imports: [
+    BackLink,
+    Banner,
     Button,
-    ClassBike,
-    ClassBoard,
-    ClassHeader,
-    ClassLost,
-    ClassResist,
-    ClassSegment,
-    ClassStat,
-    ClassVideo,
+    ClassPlan,
+    ClassRideSession,
+    ClassStartHeader,
+    LoadCard,
+    Pill,
     RouterLink,
   ],
   templateUrl: './class-ride-page.html',
   styleUrl: './class-ride-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { '(window:beforeunload)': 'confirmLeaving($event)' },
-  providers: [
-    ClassRideStore,
-    RideClock,
-    RideTicker,
-    WorkoutEngine,
-    ResistanceController,
-    BikeTelemetry,
-    VideoClockSync,
-    LiveSessionStore,
-  ],
+  providers: [WorldLoadStore, { provide: WORLD_DOWNLOADER, useClass: FetchWorldDownloader }],
 })
 export default class ClassRidePage {
-  protected readonly store = inject(ClassRideStore);
+  protected readonly load = inject(WorldLoadStore);
+  private readonly start = viewChild('start', { read: ElementRef<HTMLButtonElement> });
 
-  /** Closing or reloading the tab mid-ride asks the rider to confirm (L2-133 AC4); the listener goes with the page. */
-  protected confirmLeaving(event: BeforeUnloadEvent): void {
-    if (this.store.ride()) event.preventDefault();
+  constructor() {
+    // Start riding takes focus when the world is ready (L2-153 AC2).
+    effect(() => this.start()?.nativeElement.focus());
   }
 }

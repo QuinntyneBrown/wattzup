@@ -17,6 +17,7 @@ import { ECHELON_NOTIFY, echelonBike, resistanceFrame, workoutFrame } from './fi
 import type { HubFixture } from './fixtures/hub';
 import { expect, test } from './fixtures/test';
 import { ClassRidePage } from './pages/class-ride.page';
+import { WorldLoadingPage } from './pages/world-loading.page';
 
 /** A session that started a minute before SESSIONS_NOW, so the ride rides at once. */
 const session = hiitSession('2026-11-21T19:29:00Z', []);
@@ -111,9 +112,11 @@ test.describe('The group output board', () => {
     expect(reports.at(-1)![2]).toBeGreaterThan(0);
   });
 
-  test('a solo class ride has no board (L2-090 AC4)', async ({ page }) => {
+  test('a solo class ride has no board (L2-090 AC4)', async ({ page, webgl }) => {
+    await webgl.disable();
     const ride = new ClassRidePage(page);
     await ride.open(hiitCardio.id);
+    await new WorldLoadingPage(page).startRiding();
     await expect(ride.clock).toBeVisible();
 
     await expect(ride.board).toHaveCount(0);

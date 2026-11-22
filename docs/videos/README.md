@@ -68,6 +68,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 15.3 | [Live standings](15-3-live-standings/README.md) | 1:43 | A riders-online race's board from the service's standings, the rider 5th then 4th, each gap to the rider, the race reporting its distance, and the board at every width |
 | 15.4 | [Mark leavers and DNF](15-4-mark-leavers-and-dnf/README.md) | 1:43 | A riders-online race's leaver marked DNF in last place on every board at once, silent and lost riders caught, and the board at every width |
 | 15.5 | [Record results nobody can change](15-5-record-results-nobody-can-change/README.md) | 1:43 | A riders-online race's places, times and output recorded by the service and taken by every submitted ride, Results waiting while the result is pending, at every width |
+| 16.1 | [Download the world](16-1-download-the-world/README.md) | 1:56 | World loading before a solo class: the world downloaded with its bytes, saved on the device, resumed after a stop, built by `main`'s renderer, or ready as a panorama without 3D, at every width |
 
 ## What every video is
 

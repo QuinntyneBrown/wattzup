@@ -1,0 +1,115 @@
+<div class="class-ride">
+  @if (store.ride(); as ride) {
+    <wz-class-header
+      [title]="ride.title"
+      [mode]="store.mode()"
+      [elapsed]="store.elapsed()"
+      [total]="ride.lengthSeconds"
+    >
+      <!-- A group ride rides the session's shared clock, so it has no Pause (L2-087 AC1). -->
+      @if (!store.group) {
+        <button
+          wz-button
+          variant="raised"
+          size="sm"
+          slot="end"
+          type="button"
+          class="class-ride__action"
+          [attr.aria-label]="store.paused() ? 'Resume' : 'Pause'"
+          (click)="store.paused() ? store.resume() : store.pause()"
+        >
+          @if (store.paused()) {
+            <svg class="class-ride__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"
+              />
+            </svg>
+            <span class="class-ride__pause-label">Resume</span>
+          } @else {
+            <svg class="class-ride__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="14" y="3" width="5" height="18" rx="1" />
+              <rect x="5" y="3" width="5" height="18" rx="1" />
+            </svg>
+            <span class="class-ride__pause-label">Pause</span>
+          }
+        </button>
+      }
+      <!-- Leave earns nothing and asks for no confirmation (L2-093 AC1); leaving the page stops the ride. -->
+      <a
+        wz-button
+        size="sm"
+        slot="end"
+        class="class-ride__action class-ride__leave"
+        aria-label="Leave class"
+        [routerLink]="['/classes', ride.id]"
+      >
+        <svg class="class-ride__icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m16 17 5-5-5-5" />
+          <path d="M21 12H9" />
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+        </svg>
+      </a>
+    </wz-class-header>
+    <main
+      id="main"
+      class="class-ride__body"
+      [class.class-ride__body--group]="store.board() !== null"
+      tabindex="-1"
+    >
+      <h1 class="visually-hidden">
+        {{ ride.title }} · {{ store.group ? 'group' : 'solo' }} class ride
+      </h1>
+      <p class="visually-hidden" role="status">{{ store.paused() ? 'Ride paused' : '' }}</p>
+      <div class="class-ride__stage">
+        <wz-class-video
+          [videoId]="ride.video.videoId"
+          [title]="ride.title"
+          [unavailable]="store.videoUnavailable()"
+          [paused]="store.paused() || store.bikeLost()"
+          [startsIn]="store.startsIn()"
+          [startsAt]="store.startsAt()"
+          (frame)="store.playVideo($event)"
+        />
+        @if (store.plan(); as plan) {
+          <wz-class-bike>
+            <wz-class-segment
+              [segments]="ride.plan.segments"
+              [index]="plan.index"
+              [remaining]="plan.remainingMs / 1000"
+              [progress]="plan.progress"
+            />
+            <wz-class-stat
+              label="Power"
+              unit="W"
+              [value]="store.power().value"
+              [hint]="store.power().hint"
+              [tone]="store.power().tone"
+            />
+            <wz-class-stat
+              label="Cadence"
+              unit="rpm"
+              [value]="store.cadence().value"
+              [hint]="store.cadence().hint"
+            />
+            <wz-class-resist
+              [level]="store.level()"
+              [disabled]="!store.canControl()"
+              (lower)="store.lower()"
+              (raise)="store.raise()"
+            />
+          </wz-class-bike>
+        }
+      </div>
+      <!-- The group board, from the hub's standings: a right-hand column from lg, under the video below (L2-090). -->
+      @if (store.board(); as board) {
+        <wz-class-board [place]="board.place" [total]="board.total" [rows]="board.rows" />
+      }
+    </main>
+    @if (store.bikeLost()) {
+      <wz-class-lost
+        body="Your ride is paused. Pedal to wake the bike and it carries on from here."
+        (reconnect)="store.reconnect()"
+      />
+    }
+  }
+</div>

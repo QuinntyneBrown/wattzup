@@ -8,6 +8,7 @@ import { hiitCardio, seated } from './fixtures/classes';
 import { echelonBike } from './fixtures/echelon';
 import { expect, test } from './fixtures/test';
 import { ClassRidePage } from './pages/class-ride.page';
+import { WorldLoadingPage } from './pages/world-loading.page';
 import { HomePage } from './pages/home.page';
 
 /** A seat in a session ten minutes away, so the ride waits for it rather than starting (L2-087 AC4). */
@@ -60,13 +61,16 @@ test('a solo class ride and the screens around it hold no hub connection (L2-120
   page,
   bluetooth,
   hub,
+  webgl,
 }) => {
+  await webgl.disable();
   await bluetooth.remember(echelonBike);
   const home = new HomePage(page);
   await home.open();
   await home.header.link('Classes').click();
   const ride = new ClassRidePage(page);
   await ride.open(hiitCardio.id);
+  await new WorldLoadingPage(page).startRiding();
   await expect(ride.leave).toBeVisible();
   await ride.leave.click();
   await expect(page).toHaveURL(`/classes/${hiitCardio.id}`);

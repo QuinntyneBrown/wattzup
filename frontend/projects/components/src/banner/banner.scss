@@ -4,7 +4,7 @@
   --banner-border: var(--color-line);
   --banner-accent: var(--color-fg);
 
-  margin-top: var(--space-6);
+  margin-top: var(--banner-margin-top, var(--space-6));
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -22,6 +22,28 @@
   --banner-bg: var(--color-gold-subtle);
   --banner-border: var(--color-gold-border);
   --banner-accent: var(--color-gold-fg);
+}
+
+:host(.banner--danger) {
+  --banner-bg: var(--color-danger-bg);
+  --banner-border: var(--color-danger-border);
+  --banner-accent: var(--color-danger-fg);
+}
+
+:host(.banner--info) {
+  --banner-bg: var(--color-info-bg);
+  --banner-border: var(--color-info-border);
+  --banner-accent: var(--color-info-fg);
+}
+
+:host(.banner--danger),
+:host(.banner--info) {
+  align-items: flex-start;
+}
+
+:host(.banner--danger) .banner__title,
+:host(.banner--info) .banner__title {
+  color: var(--banner-accent);
 }
 
 .banner__icon {

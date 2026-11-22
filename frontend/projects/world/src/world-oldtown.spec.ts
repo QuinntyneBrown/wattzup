@@ -1,7 +1,10 @@
 import { vi } from 'vitest';
 import {
   BatchedMesh,
+  InstancedMesh,
+  Matrix4,
   Mesh,
+  MeshStandardMaterial,
   RepeatWrapping,
   SRGBColorSpace,
   type BufferAttribute,
@@ -68,18 +71,37 @@ describe('OldTownStreet and Corners (L2-101 AC1, L2-110 AC9, L2-111 AC10)', () =
     corners.place(world, 5, (m) => m * 0.06);
     expect(visible[0]!.position.z).toBeCloseTo(beforePosZ + 5, 5);
 
-    // Every corner mesh has normals ready for lighting and bending.
-    corners.group.traverse((obj) => {
-      if (!(obj instanceof Mesh)) return;
-      const normal = (obj.geometry as BufferGeometry).getAttribute('normal') as
-        BufferAttribute | undefined;
-      expect(normal).toBeDefined();
-    });
+    // Every corner mesh has normals ready for lighting and bending, uses at most 3 meshes per
+    // corner across 2 shared materials, and gates shadow casting to corners inside (-30, 90) m.
+    const materials = new Set<unknown>();
+    for (const corner of corners.group.children) {
+      let meshCount = 0;
+      corner.traverse((obj) => {
+        if (!(obj instanceof Mesh)) return;
+        meshCount++;
+        materials.add(obj.material);
+        const normal = (obj.geometry as BufferGeometry).getAttribute('normal') as
+          BufferAttribute | undefined;
+        expect(normal).toBeDefined();
+      });
+      expect(meshCount).toBeLessThanOrEqual(3);
+    }
+    expect(materials.size).toBe(2);
+
+    const firstApexS = expected[0]!.s;
+    corners.place(world, firstApexS - 40, (m) => m * 0.06);
+    for (const corner of corners.group.children.filter((c) => c.visible)) {
+      const metres = -corner.position.z;
+      const inShadow = metres > -30 && metres < 90;
+      corner.traverse((obj) => {
+        if (obj instanceof Mesh) expect(obj.castShadow).toBe(inShadow);
+      });
+    }
 
     for (const d of disposables) d.dispose();
   });
 
-  it('batches street frontages by material and culls street blocks behind the camera', () => {
+  it('batches street frontages by material, culls blocks behind the camera, and restricts shadow casting to near blocks', () => {
     const disposables: { dispose(): void }[] = [];
     const street = new OldTownStreet((t) => t, disposables);
     street.build(3.5, 161);
@@ -94,19 +116,174 @@ describe('OldTownStreet and Corners (L2-101 AC1, L2-110 AC9, L2-111 AC10)', () =
     expect(totalMeshes).toBeLessThan(80);
 
     street.place(0, (m) => m * 0.05);
-    const countVisible = () =>
-      batched.reduce((sum, b) => {
+    const countVisibleIn = (meshes: readonly BatchedMesh[]) =>
+      meshes.reduce((sum, b) => {
         let v = 0;
         for (let id = 0; id < b.instanceCount; id++) if (b.getVisibleAt(id)) v++;
         return sum + v;
       }, 0);
-    const totalInstances = batched.reduce((sum, b) => sum + b.instanceCount, 0);
-    const visibleAtStart = countVisible();
+
+    const visibleAtStart = countVisibleIn(batched);
+    const shadowCasters = batched.filter((b) => b.castShadow);
+    const nonShadowCasters = batched.filter((b) => !b.castShadow);
+    const visibleShadowInstances = countVisibleIn(shadowCasters);
+
     expect(visibleAtStart).toBeGreaterThan(0);
-    expect(visibleAtStart).toBeLessThan(totalInstances);
+    expect(visibleAtStart).toBeLessThan(85);
+    expect(visibleShadowInstances).toBeGreaterThan(0);
+    expect(visibleShadowInstances).toBeLessThan(26);
+    // Cross-street pairing packs both sides into <= 10 longitudinal slices, and every BatchedMesh
+    // keeps >= 1 visible instance at s=0 so warmUp() compiles all programs ahead of the ride.
+    for (const b of [...shadowCasters, ...nonShadowCasters]) {
+      expect(b.instanceCount).toBeLessThanOrEqual(10);
+      expect(countVisibleIn([b])).toBeGreaterThan(0);
+    }
 
     street.place(210, (m) => m * 0.05);
-    expect(countVisible()).toBeGreaterThan(0);
+    expect(countVisibleIn(batched)).toBeGreaterThan(0);
+    expect(countVisibleIn(shadowCasters)).toBeLessThan(26);
+
+    for (const d of disposables) d.dispose();
+  });
+
+  it('partitions crowd shadow casters to near spectators, culls far-horizon spectators, and compacts accessories', () => {
+    const disposables: { dispose(): void }[] = [];
+    const street = new OldTownStreet((t) => t, disposables);
+    street.build(3.5, 161);
+    street.place(25, (m) => m * 0.03);
+
+    const instanced = street.group.children.filter(
+      (c): c is InstancedMesh => c instanceof InstancedMesh,
+    );
+    // Crowd InstancedMeshes are the 11 added by addCrowd (4 near shadow casters + 4 far non-shadow + 3 accessories).
+    const crowdMeshes = instanced.slice(-14, -3);
+    expect(crowdMeshes).toHaveLength(11);
+    const nearMeshes = crowdMeshes.slice(0, 4);
+    const farMeshes = crowdMeshes.slice(4, 8);
+    const [hats, waved, hair] = crowdMeshes.slice(8) as [
+      InstancedMesh,
+      InstancedMesh,
+      InstancedMesh,
+    ];
+    for (const mesh of nearMeshes) expect(mesh.castShadow).toBe(true);
+    for (const mesh of [...farMeshes, hats, waved, hair]) expect(mesh.castShadow).toBe(false);
+
+    const nearLegs = nearMeshes[0]!;
+    const farLegs = farMeshes[0]!;
+    const visibleFans = nearLegs.count + farLegs.count;
+    expect(nearLegs.count).toBeGreaterThan(80);
+    expect(nearLegs.count).toBeLessThan(170);
+    expect(farLegs.count).toBeGreaterThan(250);
+    expect(visibleFans).toBeLessThan(530);
+
+    expect(hats.count + hair.count).toBe(visibleFans);
+    expect(waved.count).toBeGreaterThan(0);
+    expect(waved.count).toBeLessThan(Math.ceil(visibleFans * 0.3));
+
+    const m = new Matrix4();
+    for (const accessory of [hats, waved, hair]) {
+      for (let i = 0; i < accessory.count; i++) {
+        accessory.getMatrixAt(i, m);
+        expect(Math.abs(m.determinant())).toBeGreaterThan(1e-6);
+      }
+    }
+
+    const trisOf = (meshes: readonly InstancedMesh[]) =>
+      meshes.reduce((sum, mesh) => {
+        const geo = mesh.geometry as BufferGeometry;
+        const tris = geo.index ? geo.index.count / 3 : geo.getAttribute('position').count / 3;
+        return sum + mesh.count * tris;
+      }, 0);
+
+    expect(trisOf(nearMeshes)).toBeLessThan(46_000);
+    const crowdTriangles = trisOf(crowdMeshes);
+    expect(crowdTriangles).toBeGreaterThan(100_000);
+    expect(crowdTriangles).toBeLessThan(175_000);
+
+    // Bunting flags share the crowd hand-flags cloth material rather than duplicating it.
+    const buntingFlags = instanced[instanced.length - 3]!;
+    expect(buntingFlags.material).toBe(waved.material);
+
+    for (const d of disposables) d.dispose();
+  });
+
+  it('packs street banners, road paint and lamp pennants into shared atlas materials and distance-gates banner shadows', () => {
+    const disposables: { dispose(): void }[] = [];
+    const street = new OldTownStreet((t) => t, disposables);
+    street.build(3.5, 161);
+    street.place(0, (m) => m * 0.04);
+
+    // Direct non-instanced, non-batched Mesh children on street.group include the 3 street banners
+    // (x === 0, elevated above the road) and 4 road-paint slogans (transparent,polygonOffset).
+    const directMeshes = street.group.children.filter(
+      (c): c is Mesh =>
+        c instanceof Mesh && !(c instanceof InstancedMesh) && !(c instanceof BatchedMesh),
+    );
+    const paintMeshes = directMeshes.filter(
+      (m) =>
+        m.material instanceof MeshStandardMaterial &&
+        m.material.transparent &&
+        m.material.polygonOffset &&
+        m.position.z !== 0,
+    );
+    const bannerMeshes = directMeshes.filter(
+      (m) =>
+        m.material instanceof MeshStandardMaterial &&
+        !m.material.transparent &&
+        m.position.x === 0 &&
+        m.position.z !== 0,
+    );
+
+    expect(paintMeshes).toHaveLength(4);
+    expect(new Set(paintMeshes.map((m) => m.material)).size).toBe(1);
+    for (const m of paintMeshes) {
+      expect(m.visible).toBe(true);
+      expect(m.rotation.x).toBeCloseTo(Math.atan(0.04), 5);
+    }
+
+    // At s = 50, the first slogan (offset 38 -> metres = 384 > 312) wraps past the 300 m road and culls.
+    street.place(50, (m) => m * 0.04);
+    expect(paintMeshes.filter((m) => m.visible).length).toBe(3);
+    street.place(0, (m) => m * 0.04);
+
+    expect(bannerMeshes).toHaveLength(3);
+    expect(bannerMeshes.filter((m) => m.visible)).toHaveLength(2);
+    expect(new Set(bannerMeshes.map((m) => m.material)).size).toBe(1);
+    expect(bannerMeshes.filter((m) => m.visible && m.castShadow)).toHaveLength(1);
+
+    street.place(170, (m) => m * 0.04);
+    expect(bannerMeshes.filter((m) => m.visible && m.castShadow)).toHaveLength(1);
+
+    // Cathedral packs lancets + openwork into 1 gothic atlas material (2 total meshes after flatten),
+    // and the TV moto casts shadows only from its solid body mesh (1 shadow-casting mesh, not 3).
+    const cathedral = street.group.children.find((c) => c.position.z === -500)!;
+    const cathedralMeshes = cathedral.children.filter((c): c is Mesh => c instanceof Mesh);
+    expect(cathedralMeshes).toHaveLength(2);
+
+    const moto = street.group.children.find((c) => c.position.z === -30)!;
+    const motoShadowMeshes = moto.children.filter(
+      (c): c is Mesh => c instanceof Mesh && c.castShadow,
+    );
+    expect(motoShadowMeshes).toHaveLength(1);
+
+    const belfry = street.group.children.find((c) => c.position.z === -260)!;
+    const belfryMeshes = belfry.children.filter((c): c is Mesh => c instanceof Mesh);
+    expect(belfryMeshes).toHaveLength(1);
+
+    const instanced = street.group.children.filter(
+      (c): c is InstancedMesh => c instanceof InstancedMesh,
+    );
+    const batchedMaterials = new Set<unknown>(
+      street.group.children
+        .filter((c): c is BatchedMesh => c instanceof BatchedMesh)
+        .map((b) => b.material),
+    );
+    // Lamp iron + wicker basket merge into vertex-coloured instanced[0], lantern is instanced[1],
+    // foliage (instanced[2]) shares houseDetailAtlas detailMat, and pennants are instanced[3..4].
+    expect((instanced[0]!.material as MeshStandardMaterial).vertexColors).toBe(true);
+    expect(batchedMaterials.has(instanced[2]!.material)).toBe(true);
+    const [pen0, pen1] = [instanced[3]!, instanced[4]!];
+    expect(pen0.material).toBe(pen1.material);
 
     for (const d of disposables) d.dispose();
   });

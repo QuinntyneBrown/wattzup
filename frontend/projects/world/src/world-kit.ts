@@ -22,13 +22,13 @@ import {
   MeshStandardMaterial,
   type Object3D,
   PlaneGeometry,
-  Quaternion,
   RepeatWrapping,
   Shape,
   SphereGeometry,
   SRGBColorSpace,
   type Texture,
-  Vector3,
+  Uint16BufferAttribute,
+  Uint32BufferAttribute,
 } from 'three/webgpu';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { StreetPoint } from './world-oldtown';
@@ -91,7 +91,24 @@ export function bob(phase: number): number {
  * textures are fixed to the street, `s` metres along it, so the rider rides past them.
  */
 export class Ribbons {
-  private readonly strips: { geometry: BufferGeometry; profile: [number, number][] }[] = [];
+  private readonly entries = new Map<
+    Material,
+    {
+      points: number;
+      mesh: Mesh;
+      geometry: BufferGeometry;
+      totalVerts: number;
+      indices: number[];
+      strips: {
+        baseVertex: number;
+        profile: [number, number][];
+        across: Float32Array;
+        nx: Float32Array;
+        ny: Float32Array;
+      }[];
+    }
+  >();
+  private slopes = new Float32Array(0);
 
   constructor(
     private readonly group: Group,
@@ -100,43 +117,155 @@ export class Ribbons {
 
   add(points: number, material: Material, profile: [number, number][]): Mesh {
     const n = profile.length;
+    const across = new Float32Array(n);
+    const segNx = new Float32Array(Math.max(1, n - 1));
+    const segNy = new Float32Array(Math.max(1, n - 1));
+    for (let j = 0; j < n - 1; j++) {
+      const dx = profile[j + 1]![0] - profile[j]![0];
+      const dy = profile[j + 1]![1] - profile[j]![1];
+      const len = Math.hypot(dx, dy);
+      across[j + 1] = across[j]! + len;
+      if (len > 1e-6) {
+        segNx[j] = dy / len;
+        segNy[j] = -dx / len;
+      } else {
+        segNx[j] = 0;
+        segNy[j] = 1;
+      }
+    }
+    const nx = new Float32Array(n);
+    const ny = new Float32Array(n);
+    for (let j = 0; j < n; j++) {
+      const rx = j === 0 ? segNx[0]! : j === n - 1 ? segNx[n - 2]! : segNx[j - 1]! + segNx[j]!;
+      const ry = j === 0 ? segNy[0]! : j === n - 1 ? segNy[n - 2]! : segNy[j - 1]! + segNy[j]!;
+      const len = Math.hypot(rx, ry) || 1;
+      nx[j] = rx / len;
+      ny[j] = ry / len;
+    }
+
+    const addVerts = points * n;
+    let entry = this.entries.get(material);
+    if (entry && entry.points === points) {
+      const prevVerts = entry.totalVerts;
+      const nextVerts = prevVerts + addVerts;
+      const grow = (name: string, itemSize: number) => {
+        const oldAttr = entry!.geometry.getAttribute(name) as BufferAttribute;
+        const next = new Float32Array(nextVerts * itemSize);
+        next.set(oldAttr.array as Float32Array);
+        entry!.geometry.setAttribute(name, new BufferAttribute(next, itemSize));
+        return next;
+      };
+      grow('position', 3);
+      grow('uv', 2);
+      const normArr = grow('normal', 3);
+      for (let i = 0; i < points; i++) {
+        for (let j = 0; j < n; j++) {
+          const k = (prevVerts + i * n + j) * 3;
+          normArr[k] = nx[j]!;
+          normArr[k + 1] = ny[j]!;
+          normArr[k + 2] = 0;
+        }
+      }
+      for (let i = 0; i < points - 1; i++) {
+        for (let j = 0; j < n - 1; j++) {
+          const a = prevVerts + i * n + j;
+          entry.indices.push(a, a + n, a + 1, a + 1, a + n, a + n + 1);
+        }
+      }
+      entry.geometry.setIndex(entry.indices);
+      entry.strips.push({ baseVertex: prevVerts, profile, across, nx, ny });
+      entry.totalVerts = nextVerts;
+      return entry.mesh;
+    }
+
     const geometry = new BufferGeometry();
-    geometry.setAttribute('position', new BufferAttribute(new Float32Array(points * n * 3), 3));
-    geometry.setAttribute('uv', new BufferAttribute(new Float32Array(points * n * 2), 2));
-    const index: number[] = [];
+    geometry.setAttribute('position', new BufferAttribute(new Float32Array(addVerts * 3), 3));
+    geometry.setAttribute('uv', new BufferAttribute(new Float32Array(addVerts * 2), 2));
+    const normInit = new Float32Array(addVerts * 3);
+    for (let i = 0; i < points; i++) {
+      for (let j = 0; j < n; j++) {
+        const k = (i * n + j) * 3;
+        normInit[k] = nx[j]!;
+        normInit[k + 1] = ny[j]!;
+        normInit[k + 2] = 0;
+      }
+    }
+    geometry.setAttribute('normal', new BufferAttribute(normInit, 3));
+    const indices: number[] = [];
     for (let i = 0; i < points - 1; i++) {
       for (let j = 0; j < n - 1; j++) {
         const a = i * n + j;
-        index.push(a, a + n, a + 1, a + 1, a + n, a + n + 1);
+        indices.push(a, a + n, a + 1, a + 1, a + n, a + n + 1);
       }
     }
-    geometry.setIndex(index);
+    geometry.setIndex(indices);
     const mesh = new Mesh(geometry, material);
     mesh.receiveShadow = true;
     mesh.frustumCulled = false;
     this.group.add(mesh);
-    this.strips.push({ geometry, profile });
     this.disposables.push(geometry);
+    entry = {
+      points,
+      mesh,
+      geometry,
+      totalVerts: addVerts,
+      indices,
+      strips: [{ baseVertex: 0, profile, across, nx, ny }],
+    };
+    this.entries.set(material, entry);
     return mesh;
   }
 
   lay(points: readonly StreetPoint[], s: number): void {
-    for (const { geometry, profile } of this.strips) {
+    const pLen = points.length;
+    if (pLen === 0) return;
+    if (this.slopes.length < pLen) this.slopes = new Float32Array(pLen);
+    const slopes = this.slopes;
+    for (let i = 0; i < pLen; i++) {
+      const pPrev = points[i > 0 ? i - 1 : 0]!;
+      const pNext = points[i < pLen - 1 ? i + 1 : pLen - 1]!;
+      const dm = pNext.metres - pPrev.metres;
+      slopes[i] = Math.abs(dm) > 1e-5 ? (pNext.height - pPrev.height) / dm : 0;
+    }
+    for (const entry of this.entries.values()) {
+      const { geometry, strips } = entry;
       const position = geometry.getAttribute('position') as BufferAttribute;
       const uv = geometry.getAttribute('uv') as BufferAttribute;
-      const n = profile.length;
-      points.forEach((p, i) => {
-        let across = 0;
-        profile.forEach(([x, y], j) => {
-          position.setXYZ(i * n + j, x, p.height + y, -p.metres);
-          if (j > 0) across += Math.hypot(x - profile[j - 1]![0], y - profile[j - 1]![1]);
-          uv.setXY(i * n + j, across, p.metres + s);
-        });
-      });
+      const normal = geometry.getAttribute('normal') as BufferAttribute;
+      const posArr = position.array as Float32Array;
+      const uvArr = uv.array as Float32Array;
+      const normArr = normal.array as Float32Array;
+      for (const { baseVertex, profile, across, nx, ny } of strips) {
+        const n = profile.length;
+        for (let i = 0; i < pLen; i++) {
+          const p = points[i]!;
+          const slope = slopes[i]!;
+          const z = -p.metres;
+          const vCoord = p.metres + s;
+          const rowBase = baseVertex + i * n;
+          for (let j = 0; j < n; j++) {
+            const prof = profile[j]!;
+            const vi = rowBase + j;
+            const p3 = vi * 3;
+            posArr[p3] = prof[0];
+            posArr[p3 + 1] = p.height + prof[1];
+            posArr[p3 + 2] = z;
+            const u2 = vi * 2;
+            uvArr[u2] = across[j]!;
+            uvArr[u2 + 1] = vCoord;
+            const cx = nx[j]!;
+            const cy = ny[j]!;
+            const cz = cy * slope;
+            const inv = 1 / (Math.hypot(cx, cy, cz) || 1);
+            normArr[p3] = cx * inv;
+            normArr[p3 + 1] = cy * inv;
+            normArr[p3 + 2] = cz * inv;
+          }
+        }
+      }
       position.needsUpdate = true;
       uv.needsUpdate = true;
-      geometry.computeVertexNormals();
-      geometry.computeBoundingSphere();
+      normal.needsUpdate = true;
     }
   }
 }
@@ -202,12 +331,22 @@ export function canvasTexture(
   const canvas = document.createElement('canvas');
   canvas.width = w;
   canvas.height = h;
-  draw(canvas.getContext('2d')!);
+  const g = canvas.getContext('2d');
+  if (g) draw(g);
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
   texture.anisotropy = 8;
   return texture;
 }
+
+const SPECKLE_FILLS = [
+  'rgba(0,0,0,0.03)',
+  'rgba(0,0,0,0.06)',
+  'rgba(0,0,0,0.09)',
+  'rgba(255,255,255,0.03)',
+  'rgba(255,255,255,0.06)',
+  'rgba(255,255,255,0.09)',
+] as const;
 
 /** Fills the canvas with `base` and flecks it lighter and darker. */
 export function speckle(
@@ -220,7 +359,34 @@ export function speckle(
   g.fillStyle = base;
   g.fillRect(0, 0, w, h);
   const random = seeded(seed);
-  for (let i = 0; i < w * h * 0.02; i++) {
+  const count = w * h * 0.02;
+  if (typeof Path2D !== 'undefined') {
+    const paths = [
+      new Path2D(),
+      new Path2D(),
+      new Path2D(),
+      new Path2D(),
+      new Path2D(),
+      new Path2D(),
+    ];
+    for (let i = 0; i < count; i++) {
+      const v = Math.floor(random() * 60) - 30;
+      const x = random() * w;
+      const y = random() * h;
+      const sw = 2 + random() * 3;
+      const sh = 2 + random() * 3;
+      if (v === 0) continue;
+      const tier = Math.min(2, Math.floor((Math.abs(v) - 1) / 10));
+      const idx = (v > 0 ? 3 : 0) + tier;
+      paths[idx]!.rect(x, y, sw, sh);
+    }
+    for (let b = 0; b < 6; b++) {
+      g.fillStyle = SPECKLE_FILLS[b]!;
+      g.fill(paths[b]!);
+    }
+    return;
+  }
+  for (let i = 0; i < count; i++) {
     const v = Math.floor(random() * 60) - 30;
     const c = v > 0 ? 255 : 0;
     g.fillStyle = `rgba(${c},${c},${c},${Math.abs(v) / 300})`;
@@ -231,7 +397,7 @@ export function speckle(
 /** Two legs standing slightly apart, from the ground to the hips, as one geometry. */
 export function legPair(radius: number, length: number): BufferGeometry {
   const parts = [-1, 1].map((side) => {
-    const leg = new CapsuleGeometry(radius, length - 2 * radius, 3, 8);
+    const leg = new CapsuleGeometry(radius, length - 2 * radius, 2, 6);
     leg.translate(side * 0.1, length / 2, 0);
     return leg;
   });
@@ -267,19 +433,44 @@ export interface Wardrobe {
   readonly robes?: readonly { readonly colour: string; readonly share: number }[];
 }
 
+function writeYawScaleMatrix(
+  arr: Float32Array,
+  slot: number,
+  x: number,
+  y: number,
+  z: number,
+  cosS: number,
+  sinS: number,
+  scale: number,
+): void {
+  const o = slot * 16;
+  arr[o] = cosS;
+  arr[o + 1] = 0;
+  arr[o + 2] = -sinS;
+  arr[o + 3] = 0;
+  arr[o + 4] = 0;
+  arr[o + 5] = scale;
+  arr[o + 6] = 0;
+  arr[o + 7] = 0;
+  arr[o + 8] = sinS;
+  arr[o + 9] = 0;
+  arr[o + 10] = cosS;
+  arr[o + 11] = 0;
+  arr[o + 12] = x;
+  arr[o + 13] = y;
+  arr[o + 14] = z;
+  arr[o + 15] = 1;
+}
+
 /**
  * `count` people drawn as three instanced meshes (legs, torso, head), the same build in every
  * scene: a figure stands 1.72 m at scale 1, its feet at its origin, facing -z.
  */
 export class Figures {
-  private readonly legs: InstancedMesh;
-  private readonly bodies: InstancedMesh;
-  private readonly heads: InstancedMesh;
-  private readonly matrix = new Matrix4();
-  private readonly spot = new Vector3();
-  private readonly turn = new Quaternion();
-  private readonly size = new Vector3();
-  private readonly up = new Vector3(0, 1, 0);
+  readonly legs: InstancedMesh;
+  readonly bodies: InstancedMesh;
+  readonly heads: InstancedMesh;
+  readonly material: MeshStandardMaterial;
 
   constructor(
     group: Group,
@@ -287,27 +478,39 @@ export class Figures {
     count: number,
     wardrobe: Wardrobe,
     seed: number,
+    castShadow = true,
+    sharedMaterial?: MeshStandardMaterial,
   ) {
+    const cap = Math.max(1, count);
+    const material = sharedMaterial ?? new MeshStandardMaterial({ roughness: 0.82 });
+    if (!sharedMaterial) disposables.push(material);
+    this.material = material;
     const pair = legPair(0.08, 0.84);
-    const body = new CapsuleGeometry(0.19, 0.4, 4, 10);
-    const head = new SphereGeometry(0.115, 12, 10);
-    const make = (geometry: BufferGeometry, roughness: number) => {
-      const material = new MeshStandardMaterial({ roughness });
-      const mesh = new InstancedMesh(geometry, material, count);
+    const body = new CapsuleGeometry(0.19, 0.4, 3, 7);
+    const head = new SphereGeometry(0.115, 8, 6);
+    if (material.vertexColors) {
+      tintGeometry(pair, 0xffffff);
+      tintGeometry(body, 0xffffff);
+      tintGeometry(head, 0xffffff);
+    }
+    const make = (geometry: BufferGeometry) => {
+      geometry.deleteAttribute('uv');
+      const mesh = new InstancedMesh(geometry, material, cap);
+      mesh.count = count;
       mesh.frustumCulled = false;
-      mesh.castShadow = true;
+      mesh.castShadow = castShadow;
       group.add(mesh);
-      disposables.push(geometry, material, mesh);
+      disposables.push(geometry, mesh);
       return mesh;
     };
-    this.legs = make(pair, 0.9);
-    this.bodies = make(body, 0.85);
-    this.heads = make(head, 0.7);
+    this.legs = make(pair);
+    this.bodies = make(body);
+    this.heads = make(head);
     const random = seeded(seed);
     const pick = (list: readonly string[]) => list[Math.floor(random() * list.length)]!;
     const c = new Color();
     const robing = seeded(seed + 7);
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < cap; i++) {
       this.bodies.setColorAt(i, c.set(pick(wardrobe.tops)));
       this.legs.setColorAt(i, c.set(pick(wardrobe.bottoms)));
       this.heads.setColorAt(i, c.set(pick(wardrobe.skins)));
@@ -326,19 +529,93 @@ export class Figures {
 
   /** Stands figure `i` at (x, y, z), turned `heading` radians, `scale` tall, lifted `bob`. */
   set(i: number, x: number, y: number, z: number, heading: number, scale: number, bob = 0): void {
-    this.turn.setFromAxisAngle(this.up, heading);
-    this.size.setScalar(scale);
-    this.spot.set(x, y + bob, z);
-    this.legs.setMatrixAt(i, this.matrix.compose(this.spot, this.turn, this.size));
-    this.spot.set(x, y + 1.15 * scale + bob, z);
-    this.bodies.setMatrixAt(i, this.matrix.compose(this.spot, this.turn, this.size));
-    this.spot.set(x, y + 1.6 * scale + bob, z);
-    this.heads.setMatrixAt(i, this.matrix.compose(this.spot, this.turn, this.size));
+    this.setYawScaled(i, x, y, z, Math.cos(heading) * scale, Math.sin(heading) * scale, scale, bob);
+  }
+
+  /** Writes figure `i` directly from pre-scaled yaw `(cos(h)*scale, sin(h)*scale)`. */
+  setYawScaled(
+    i: number,
+    x: number,
+    y: number,
+    z: number,
+    cosS: number,
+    sinS: number,
+    scale: number,
+    bob = 0,
+  ): void {
+    writeYawScaleMatrix(
+      this.legs.instanceMatrix.array as Float32Array,
+      i,
+      x,
+      y + bob,
+      z,
+      cosS,
+      sinS,
+      scale,
+    );
+    writeYawScaleMatrix(
+      this.bodies.instanceMatrix.array as Float32Array,
+      i,
+      x,
+      y + 1.15 * scale + bob,
+      z,
+      cosS,
+      sinS,
+      scale,
+    );
+    writeYawScaleMatrix(
+      this.heads.instanceMatrix.array as Float32Array,
+      i,
+      x,
+      y + 1.6 * scale + bob,
+      z,
+      cosS,
+      sinS,
+      scale,
+    );
+  }
+
+  /** Sets active instance count across all three body-part meshes. */
+  setCount(n: number): void {
+    this.legs.count = n;
+    this.bodies.count = n;
+    this.heads.count = n;
+  }
+
+  /** Copies RGB floats into slot `i` of bodies, legs and heads. */
+  setColors(
+    i: number,
+    br: number,
+    bg: number,
+    bb: number,
+    lr: number,
+    lg: number,
+    lb: number,
+    hr: number,
+    hg: number,
+    hb: number,
+  ): void {
+    const o = i * 3;
+    const bArr = this.bodies.instanceColor!.array as Float32Array;
+    const lArr = this.legs.instanceColor!.array as Float32Array;
+    const hArr = this.heads.instanceColor!.array as Float32Array;
+    bArr[o] = br;
+    bArr[o + 1] = bg;
+    bArr[o + 2] = bb;
+    lArr[o] = lr;
+    lArr[o + 1] = lg;
+    lArr[o + 2] = lb;
+    hArr[o] = hr;
+    hArr[o + 1] = hg;
+    hArr[o + 2] = hb;
   }
 
   /** Uploads the figures set this frame. */
-  commit(): void {
-    for (const mesh of [this.legs, this.bodies, this.heads]) mesh.instanceMatrix.needsUpdate = true;
+  commit(colorsChanged = false): void {
+    for (const mesh of [this.legs, this.bodies, this.heads]) {
+      mesh.instanceMatrix.needsUpdate = true;
+      if (colorsChanged && mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+    }
   }
 }
 
@@ -359,8 +636,16 @@ export function paintTexture(text: string, colour: string): CanvasTexture {
     // Worn: specks of road showing through the paint.
     ctx.globalCompositeOperation = 'destination-out';
     const random = seeded(text.length * 31);
-    for (let i = 0; i < 2400; i++) {
-      ctx.fillRect(random() * 512, random() * 1120, 1 + random() * 4, 2 + random() * 8);
+    if (typeof Path2D !== 'undefined') {
+      const wear = new Path2D();
+      for (let i = 0; i < 2400; i++) {
+        wear.rect(random() * 512, random() * 1120, 1 + random() * 4, 2 + random() * 8);
+      }
+      ctx.fill(wear);
+    } else {
+      for (let i = 0; i < 2400; i++) {
+        ctx.fillRect(random() * 512, random() * 1120, 1 + random() * 4, 2 + random() * 8);
+      }
     }
   }
   const texture = new CanvasTexture(canvas);
@@ -468,19 +753,48 @@ export interface CrowdOptions {
    * Drawn from a seed of its own, so a crowd that leaves it out is laid out as before.
    */
   readonly armsUp?: number;
+  /** Optional shared matte material for figure legs, bodies, heads and arms. */
+  readonly figureMaterial?: MeshStandardMaterial;
+  /** Optional shared material when solid-colour flags coalesce into one `InstancedMesh`. */
+  readonly sharedSolidFlagMaterial?: MeshStandardMaterial;
 }
 
 interface Fan {
   readonly side: -1 | 1;
+  readonly row: number;
   readonly offset: number;
   readonly x: number;
   readonly height: number;
   readonly phase: number;
+  readonly sinP: number;
+  readonly cosP: number;
+  readonly cosH: number;
+  readonly sinH: number;
   /** Which flag, if any, this fan waves over their head. */
   readonly flag: number;
   /** Whether this fan dances with both arms up. */
   readonly armsUp: boolean;
+  readonly br: number;
+  readonly bg: number;
+  readonly bb: number;
+  readonly lr: number;
+  readonly lg: number;
+  readonly lb: number;
+  readonly hr: number;
+  readonly hg: number;
+  readonly hb: number;
+  readonly ar: number;
+  readonly ag: number;
+  readonly ab: number;
+  readonly fr: number;
+  readonly fg: number;
+  readonly fb: number;
 }
+
+const CROWD_BEHIND_CULL = -14;
+const CROWD_SHADOW_END = 34;
+const CROWD_FRONT_ROW_ONLY = 115;
+const CROWD_HORIZON_CULL = 308;
 
 /**
  * The crowd behind the barriers on both sides of the road: figures (`Figures`) bouncing on
@@ -488,17 +802,14 @@ interface Fan {
  */
 export class Crowd {
   private readonly fans: Fan[] = [];
-  private figures: Figures | null = null;
+  private nearFigures: Figures | null = null;
+  private farFigures: Figures | null = null;
+  private nearCap = 1;
   private arms: InstancedMesh | null = null;
   private readonly flags: InstancedMesh[] = [];
-  private readonly matrix = new Matrix4();
-  private readonly spot = new Vector3();
-  private readonly turn = new Quaternion();
-  private readonly wave = new Quaternion();
-  private readonly size = new Vector3();
-  private readonly up = new Vector3(0, 1, 0);
-  private readonly forward = new Vector3(0, 0, 1);
-  private readonly shoulder = new Vector3();
+  private flagCounts = new Int32Array(0);
+  private coalescedSolidFlags = false;
+  private lastBucket = Number.NaN;
 
   constructor(
     private readonly group: Group,
@@ -509,14 +820,25 @@ export class Crowd {
   build(): void {
     const o = this.options;
     const random = seeded(o.seeds[0]);
+    const raw: {
+      side: -1 | 1;
+      row: number;
+      offset: number;
+      x: number;
+      height: number;
+      phase: number;
+      flag: number;
+      armsUp: boolean;
+    }[] = [];
     for (const side of [-1, 1] as const) {
       for (let offset = 0; offset < o.loop; offset += o.spacing) {
         const rows = 1 + Math.floor(random() * 3);
         for (let row = 0; row < rows; row++) {
           const x = side * (o.near + row * 0.75 + random() * 0.35);
           if (Math.abs(x) > o.far) continue;
-          const fan: Fan = {
+          const fan = {
             side,
+            row,
             offset: offset + random() * 0.4,
             x,
             height: 0.92 + random() * 0.16,
@@ -524,46 +846,156 @@ export class Crowd {
             flag: random() < o.flagShare ? Math.floor(random() * o.flags.length) : -1,
             armsUp: false,
           };
-          if (!o.skip?.(side, fan.offset, fan.x)) this.fans.push(fan);
+          if (!o.skip?.(side, fan.offset, fan.x)) raw.push(fan);
         }
       }
     }
     if (o.armsUp) {
       const dancing = seeded(o.seeds[0] + 2);
-      this.fans.forEach((fan, i) => {
-        if (fan.flag < 0 && dancing() < o.armsUp!) this.fans[i] = { ...fan, armsUp: true };
+      raw.forEach((fan, i) => {
+        if (fan.flag < 0 && dancing() < o.armsUp!) raw[i] = { ...fan, armsUp: true };
       });
     }
-    const n = this.fans.length;
-    this.figures = new Figures(this.group, this.disposables, n, o.wardrobe, o.seeds[1]);
-    // The raised arm of a fan holding a flag, in a skin tone of the wardrobe.
-    const arm = new CylinderGeometry(0.045, 0.045, 0.7, 6);
-    const skin = new MeshStandardMaterial({ roughness: 0.7 });
-    this.disposables.push(arm, skin);
-    // Two arms a fan at most: one for a flag, or both thrown up to dance.
-    this.arms = this.instanced(arm, skin, 2 * n);
-    const c = new Color();
+    const n = raw.length;
+    const dress = seeded(o.seeds[1]);
+    const pick = (list: readonly string[]) => list[Math.floor(dress() * list.length)]!;
+    const robing = seeded(o.seeds[1] + 7);
     const tones = seeded(o.seeds[1] + 1);
     const skins: string[] = [];
     for (let i = 0; i < 2 * n; i++) {
       skins.push(o.wardrobe.skins[Math.floor(tones() * o.wardrobe.skins.length)]!);
     }
-    // Every fan is placed on every frame in the same order, so each raised arm keeps its slot:
-    // a flag's arm takes the next one, a dancer's two arms the next pair, in one skin tone.
-    let slot = 0;
-    for (const fan of this.fans) {
-      if (fan.armsUp) {
-        this.arms.setColorAt(slot, c.set(skins[slot]!));
-        this.arms.setColorAt(slot + 1, c);
-        slot += 2;
-      } else if (fan.flag >= 0) {
-        this.arms.setColorAt(slot, c.set(skins[slot]!));
-        slot++;
+    const canCoalesceFlags =
+      o.flags.length > 1 &&
+      o.flags.every(
+        (m): m is MeshStandardMaterial =>
+          m instanceof MeshStandardMaterial &&
+          !m.map &&
+          !m.alphaMap &&
+          !m.emissiveMap &&
+          !m.transparent &&
+          m.alphaTest === 0,
+      );
+    this.coalescedSolidFlags = canCoalesceFlags;
+    const cBody = new Color();
+    const cLeg = new Color();
+    const cHead = new Color();
+    const cArm = new Color();
+    let armSlot = 0;
+    let totalFlags = 0;
+    const flagCaps = new Int32Array(o.flags.length);
+    for (let i = 0; i < n; i++) {
+      const r = raw[i]!;
+      cBody.set(pick(o.wardrobe.tops));
+      cLeg.set(pick(o.wardrobe.bottoms));
+      cHead.set(pick(o.wardrobe.skins));
+      if (o.wardrobe.robes) {
+        let roll = robing();
+        for (const robe of o.wardrobe.robes) {
+          if (roll < robe.share) {
+            cBody.set(robe.colour);
+            cLeg.set(robe.colour);
+            break;
+          }
+          roll -= robe.share;
+        }
       }
+      let fr = 1;
+      let fg = 1;
+      let fb = 1;
+      if (r.armsUp) {
+        cArm.set(skins[armSlot]!);
+        armSlot += 2;
+      } else if (r.flag >= 0) {
+        cArm.set(skins[armSlot]!);
+        armSlot++;
+        flagCaps[r.flag]!++;
+        totalFlags++;
+        if (canCoalesceFlags) {
+          const fc = (o.flags[r.flag] as MeshStandardMaterial).color;
+          fr = fc.r;
+          fg = fc.g;
+          fb = fc.b;
+        }
+      } else {
+        cArm.setRGB(1, 1, 1);
+      }
+      const heading = r.side < 0 ? Math.PI / 2 - 0.3 : -Math.PI / 2 + 0.3;
+      this.fans.push({
+        ...r,
+        sinP: Math.sin(r.phase),
+        cosP: Math.cos(r.phase),
+        cosH: Math.cos(heading),
+        sinH: Math.sin(heading),
+        br: cBody.r,
+        bg: cBody.g,
+        bb: cBody.b,
+        lr: cLeg.r,
+        lg: cLeg.g,
+        lb: cLeg.b,
+        hr: cHead.r,
+        hg: cHead.g,
+        hb: cHead.b,
+        ar: cArm.r,
+        ag: cArm.g,
+        ab: cArm.b,
+        fr,
+        fg,
+        fb,
+      });
     }
+    const figMat = o.figureMaterial ?? new MeshStandardMaterial({ roughness: 0.82 });
+    if (!o.figureMaterial) this.disposables.push(figMat);
+    this.nearCap = Math.max(
+      1,
+      Math.min(n, Math.ceil(((CROWD_SHADOW_END - CROWD_BEHIND_CULL + 16) / o.loop) * n) + 32),
+    );
+    this.nearFigures = new Figures(
+      this.group,
+      this.disposables,
+      this.nearCap,
+      o.wardrobe,
+      o.seeds[1],
+      true,
+      figMat,
+    );
+    this.farFigures = new Figures(
+      this.group,
+      this.disposables,
+      Math.max(1, n),
+      o.wardrobe,
+      o.seeds[1],
+      false,
+      figMat,
+    );
+    const arm = new CylinderGeometry(0.045, 0.045, 0.7, 6);
+    arm.deleteAttribute('uv');
+    if (figMat.vertexColors) tintGeometry(arm, 0xffffff);
+    this.disposables.push(arm);
+    this.arms = this.instanced(arm, figMat, Math.max(1, armSlot), false);
+    this.arms.setColorAt(0, cArm.setRGB(1, 1, 1));
     const flag = new PlaneGeometry(0.75, 0.5, 4, 1);
     this.disposables.push(flag);
-    for (const material of o.flags) this.flags.push(this.instanced(flag, material, n));
+    if (canCoalesceFlags) {
+      const firstFlag = o.flags[0] as MeshStandardMaterial;
+      const flagMat =
+        o.sharedSolidFlagMaterial ??
+        new MeshStandardMaterial({ side: firstFlag.side, roughness: firstFlag.roughness });
+      if (!o.sharedSolidFlagMaterial) this.disposables.push(flagMat);
+      if (flagMat.vertexColors) {
+        tintGeometry(flag, 0xffffff);
+        flag.deleteAttribute('uv');
+      }
+      const mesh = this.instanced(flag, flagMat, Math.max(1, totalFlags), false);
+      mesh.setColorAt(0, cArm.setRGB(1, 1, 1));
+      this.flags.push(mesh);
+      this.flagCounts = new Int32Array(1);
+    } else {
+      this.flagCounts = new Int32Array(o.flags.length);
+      o.flags.forEach((material, k) => {
+        this.flags.push(this.instanced(flag, material, Math.max(1, flagCaps[k]!), false));
+      });
+    }
   }
 
   /**
@@ -576,62 +1008,173 @@ export class Crowd {
     along: (offset: number, every: number) => number,
     kerb: number,
   ): void {
-    const { figures, arms } = this;
-    if (!figures || !arms) return;
-    const flagCount = this.flags.map(() => 0);
+    const { nearFigures, farFigures, arms } = this;
+    if (!nearFigures || !farFigures || !arms) return;
+    const loop = this.options.loop;
+    const bucket = Math.floor(along(0, loop) * 0.5);
+    const colorsChanged = bucket !== this.lastBucket;
+    this.lastBucket = bucket;
+    const flagCount = this.flagCounts;
+    flagCount.fill(0);
+    const armMatrices = arms.instanceMatrix.array as Float32Array;
+    const armColors = arms.instanceColor!.array as Float32Array;
+    const coalescedFlags = this.coalescedSolidFlags;
+    const coalescedFlagColors =
+      coalescedFlags && this.flags[0]?.instanceColor
+        ? (this.flags[0].instanceColor.array as Float32Array)
+        : null;
+    const s42 = Math.sin(time * 4.2);
+    const c42 = Math.cos(time * 4.2);
+    const s30 = Math.sin(time * 3);
+    const c30 = Math.cos(time * 3);
+    let near = 0;
+    let far = 0;
     let arm = 0;
-    this.fans.forEach((fan, i) => {
-      const metres = along(fan.offset, this.options.loop);
+    for (const fan of this.fans) {
+      const metres = along(fan.offset, loop);
+      if (metres <= CROWD_BEHIND_CULL || metres > CROWD_HORIZON_CULL) continue;
+      if (metres > CROWD_FRONT_ROW_ONLY && fan.row > 0) continue;
       const y = heightAt(metres) + kerb;
-      // Fans face the road, turned a little towards the rider coming up the street.
-      const heading = fan.side < 0 ? Math.PI / 2 - 0.3 : -Math.PI / 2 + 0.3;
-      const bounce = Math.abs(Math.sin(time * 4.2 + fan.phase)) * 0.05;
+      const w42 = s42 * fan.cosP + c42 * fan.sinP;
+      const bounce = (w42 < 0 ? -w42 : w42) * 0.05;
       const h = fan.height;
-      figures.set(i, fan.x, y, -metres, heading, h, bounce);
-      if (fan.armsUp) {
-        // Both arms thrown up in a V from the shoulders, swaying wider and narrower on the beat.
-        const open = 0.38 + Math.sin(time * 4.2 + fan.phase) * 0.14;
-        this.turn.setFromAxisAngle(this.up, heading);
-        this.size.setScalar(h);
-        for (const hand of [-1, 1]) {
-          this.wave.setFromAxisAngle(this.forward, hand * open);
-          this.wave.premultiply(this.turn);
-          this.shoulder.set(hand * (0.2 + Math.sin(open) * 0.3) * h, 0, 0);
-          this.shoulder.applyQuaternion(this.turn);
-          this.spot.set(fan.x + this.shoulder.x, y + 1.62 * h + bounce, -metres + this.shoulder.z);
-          arms.setMatrixAt(arm++, this.matrix.compose(this.spot, this.wave, this.size));
+      const cosS = fan.cosH * h;
+      const sinS = fan.sinH * h;
+      if (metres < CROWD_SHADOW_END && near < this.nearCap) {
+        nearFigures.setYawScaled(near, fan.x, y, -metres, cosS, sinS, h, bounce);
+        if (colorsChanged) {
+          nearFigures.setColors(
+            near,
+            fan.br,
+            fan.bg,
+            fan.bb,
+            fan.lr,
+            fan.lg,
+            fan.lb,
+            fan.hr,
+            fan.hg,
+            fan.hb,
+          );
         }
-        return;
+        near++;
+      } else {
+        farFigures.setYawScaled(far, fan.x, y, -metres, cosS, sinS, h, bounce);
+        if (colorsChanged) {
+          farFigures.setColors(
+            far,
+            fan.br,
+            fan.bg,
+            fan.bb,
+            fan.lr,
+            fan.lg,
+            fan.lb,
+            fan.hr,
+            fan.hg,
+            fan.hb,
+          );
+        }
+        far++;
       }
-      if (fan.flag < 0) return;
-      // A flag held high on a short pole, waving from side to side.
-      const sway = Math.sin(time * 3 + fan.phase) * 0.5;
-      const k = fan.flag;
-      this.size.setScalar(h);
-      this.spot.set(fan.x + Math.sin(sway) * 0.25, y + 2.2 * h + bounce, -metres);
-      this.wave.setFromAxisAngle(this.up, fan.side * 0.4 + sway * 0.6);
-      this.flags[k]!.setMatrixAt(
-        flagCount[k]!,
-        this.matrix.compose(this.spot, this.wave, this.size),
+      if (fan.armsUp) {
+        const open = 0.38 + w42 * 0.14;
+        const op2 = open * open;
+        const cz = 1 - 0.5 * op2 * (1 - 0.08333333 * op2);
+        const szAbs = open * (1 - 0.16666667 * op2);
+        const reach = (0.2 + szAbs * 0.3) * h;
+        const ay = y + 1.62 * h + bounce;
+        const cy = fan.cosH;
+        const sy = fan.sinH;
+        for (const hand of [-1, 1]) {
+          const sz = hand * szAbs;
+          const sx0 = hand * reach;
+          const o = arm * 16;
+          armMatrices[o] = cosS * cz;
+          armMatrices[o + 1] = sz * h;
+          armMatrices[o + 2] = -sinS * cz;
+          armMatrices[o + 3] = 0;
+          armMatrices[o + 4] = -cosS * sz;
+          armMatrices[o + 5] = cz * h;
+          armMatrices[o + 6] = sinS * sz;
+          armMatrices[o + 7] = 0;
+          armMatrices[o + 8] = sinS;
+          armMatrices[o + 9] = 0;
+          armMatrices[o + 10] = cosS;
+          armMatrices[o + 11] = 0;
+          armMatrices[o + 12] = fan.x + sx0 * cy;
+          armMatrices[o + 13] = ay;
+          armMatrices[o + 14] = -metres - sx0 * sy;
+          armMatrices[o + 15] = 1;
+          if (colorsChanged) {
+            const c3 = arm * 3;
+            armColors[c3] = fan.ar;
+            armColors[c3 + 1] = fan.ag;
+            armColors[c3 + 2] = fan.ab;
+          }
+          arm++;
+        }
+        continue;
+      }
+      if (fan.flag < 0) continue;
+      const sway = (s30 * fan.cosP + c30 * fan.sinP) * 0.5;
+      const k = coalescedFlags ? 0 : fan.flag;
+      const wy = fan.side * 0.4 + sway * 0.6;
+      const wy2 = wy * wy;
+      const cwy = 1 - 0.5 * wy2 * (1 - 0.08333333 * wy2);
+      const swy = wy * (1 - 0.16666667 * wy2);
+      const sSway = sway * (1 - 0.16666667 * sway * sway);
+      const flagSlot = flagCount[k]!;
+      flagCount[k] = flagSlot + 1;
+      writeYawScaleMatrix(
+        this.flags[k]!.instanceMatrix.array as Float32Array,
+        flagSlot,
+        fan.x + sSway * 0.25,
+        y + 2.2 * h + bounce,
+        -metres,
+        cwy * h,
+        swy * h,
+        h,
       );
-      flagCount[k]!++;
-      this.turn.setFromAxisAngle(this.up, heading);
-      this.spot.set(fan.x, y + 1.4 * h + bounce, -metres);
-      arms.setMatrixAt(arm++, this.matrix.compose(this.spot, this.turn, this.size));
-    });
-    figures.commit();
+      if (colorsChanged && coalescedFlagColors) {
+        const fc3 = flagSlot * 3;
+        coalescedFlagColors[fc3] = fan.fr;
+        coalescedFlagColors[fc3 + 1] = fan.fg;
+        coalescedFlagColors[fc3 + 2] = fan.fb;
+      }
+      writeYawScaleMatrix(armMatrices, arm, fan.x, y + 1.4 * h + bounce, -metres, cosS, sinS, h);
+      if (colorsChanged) {
+        const c3 = arm * 3;
+        armColors[c3] = fan.ar;
+        armColors[c3 + 1] = fan.ag;
+        armColors[c3 + 2] = fan.ab;
+      }
+      arm++;
+    }
+    nearFigures.setCount(near);
+    farFigures.setCount(far);
+    nearFigures.commit(colorsChanged);
+    farFigures.commit(colorsChanged);
     arms.count = arm;
     arms.instanceMatrix.needsUpdate = true;
-    this.flags.forEach((flags, k) => {
-      flags.count = flagCount[k]!;
-      flags.instanceMatrix.needsUpdate = true;
-    });
+    if (colorsChanged && arms.instanceColor) arms.instanceColor.needsUpdate = true;
+    for (let k = 0; k < this.flags.length; k++) {
+      const f = this.flags[k]!;
+      f.count = flagCount[k]!;
+      f.instanceMatrix.needsUpdate = true;
+      if (colorsChanged && coalescedFlags && f.instanceColor) {
+        f.instanceColor.needsUpdate = true;
+      }
+    }
   }
 
-  private instanced(geometry: BufferGeometry, material: Material, n: number): InstancedMesh {
+  private instanced(
+    geometry: BufferGeometry,
+    material: Material,
+    n: number,
+    castShadow = true,
+  ): InstancedMesh {
     const mesh = new InstancedMesh(geometry, material, n);
     mesh.frustumCulled = false;
-    mesh.castShadow = true;
+    mesh.castShadow = castShadow;
     this.disposables.push(mesh);
     this.group.add(mesh);
     return mesh;
@@ -761,83 +1304,81 @@ function mistTexture(curtain: boolean): CanvasTexture {
  * valance on every side naming the tent, and a trestle table under it laid with water bottles.
  */
 export class PopupTents {
-  private readonly leg = new CylinderGeometry(0.03, 0.03, 2.3, 6).translate(0, 1.15, 0);
-  private readonly roof = new ConeGeometry(2.12, 0.8, 4, 1, true).rotateY(Math.PI / 4);
-  private readonly valance = new PlaneGeometry(3, 0.5);
-  private readonly top = new BoxGeometry(1.9, 0.05, 0.7);
-  private readonly bottle = new CylinderGeometry(0.035, 0.035, 0.22, 8);
+  private readonly frame: BufferGeometry;
+  private readonly roof = new ConeGeometry(2.12, 0.8, 4, 1, true)
+    .rotateY(Math.PI / 4)
+    .translate(0, 2.7, 0);
+  private readonly valanceRing: BufferGeometry;
   private readonly white = new MeshStandardMaterial({
     color: 0xf2f2ee,
     metalness: 0.4,
     roughness: 0.4,
   });
-  private readonly water = new MeshStandardMaterial({
-    color: 0x4fa3d8,
-    roughness: 0.2,
-    transparent: true,
-    opacity: 0.85,
-  });
+
+  private readonly cloths = new Map<string, MeshStandardMaterial>();
+  private readonly prints = new Map<string, MeshStandardMaterial>();
 
   constructor(
     private readonly disposables: { dispose(): void }[],
     private readonly track: <T extends Texture>(texture: T) => T,
   ) {
-    disposables.push(
-      this.leg,
-      this.roof,
-      this.valance,
-      this.top,
-      this.bottle,
-      this.white,
-      this.water,
-    );
-  }
-
-  /** A tent with `text` on its valance, in `fill` with `ink` lettering. */
-  make(text: string, fill: string, ink: string): Group {
-    const tent = new Group();
+    const frameParts: BufferGeometry[] = [];
     for (const [lx, lz] of [
       [-1.45, -1.45],
       [1.45, -1.45],
       [-1.45, 1.45],
       [1.45, 1.45],
     ] as const) {
-      const l = new Mesh(this.leg, this.white);
-      l.position.set(lx, 0, lz);
-      tent.add(l);
+      frameParts.push(new CylinderGeometry(0.03, 0.03, 2.3, 6).translate(lx, 1.15, lz));
     }
-    const cloth = new MeshStandardMaterial({ color: fill, side: DoubleSide, roughness: 0.7 });
-    const print = new MeshStandardMaterial({
-      map: this.track(clothBannerTexture(text, fill, ink)),
-      side: DoubleSide,
-      roughness: 0.7,
-    });
-    this.disposables.push(cloth, print);
-    const canopy = new Mesh(this.roof, cloth);
-    canopy.position.y = 2.3 + 0.4;
-    canopy.castShadow = true;
-    tent.add(canopy);
+    frameParts.push(new BoxGeometry(1.9, 0.05, 0.7).translate(0, 0.75, 0));
+    for (const [tx, tz] of [
+      [-0.85, -0.3],
+      [-0.85, 0.3],
+      [0.85, -0.3],
+      [0.85, 0.3],
+    ] as const) {
+      frameParts.push(new CylinderGeometry(0.03, 0.03, 0.74, 6).translate(tx, 0.37, tz));
+    }
+    this.frame = mergeGeometries(frameParts.map((p) => (p.index ? p.toNonIndexed() : p)))!;
+    frameParts.forEach((p) => p.dispose());
+
+    const valances: BufferGeometry[] = [];
     for (let k = 0; k < 4; k++) {
-      const v = new Mesh(this.valance, print);
       const a = (k * Math.PI) / 2;
-      v.position.set(Math.sin(a) * 1.5, 2.05, Math.cos(a) * 1.5);
-      v.rotation.y = a;
-      tent.add(v);
+      valances.push(
+        new PlaneGeometry(3, 0.5).rotateY(a).translate(Math.sin(a) * 1.5, 2.05, Math.cos(a) * 1.5),
+      );
     }
-    const table = new Mesh(this.top, this.white);
-    table.position.y = 0.75;
-    tent.add(table);
-    for (const tx of [-0.75, -0.5, 0.75]) {
-      const tableLeg = new Mesh(this.leg, this.white);
-      tableLeg.scale.y = 0.32;
-      tableLeg.position.set(tx < 0 ? -0.85 : 0.85, 0, tx === -0.5 ? 0.3 : -0.3);
-      tent.add(tableLeg);
+    this.valanceRing = mergeGeometries(valances)!;
+    valances.forEach((v) => v.dispose());
+
+    disposables.push(this.frame, this.roof, this.valanceRing, this.white);
+  }
+
+  /** A tent with `text` on its valance, in `fill` with `ink` lettering. */
+  make(text: string, fill: string, ink: string): Group {
+    const tent = new Group();
+    let cloth = this.cloths.get(fill);
+    if (!cloth) {
+      cloth = new MeshStandardMaterial({ color: fill, side: DoubleSide, roughness: 0.7 });
+      this.cloths.set(fill, cloth);
+      this.disposables.push(cloth);
     }
-    for (let b = 0; b < 8; b++) {
-      const m = new Mesh(this.bottle, this.water);
-      m.position.set(-0.8 + b * 0.22, 0.88, (b % 2) * 0.14 - 0.07);
-      tent.add(m);
+    const printKey = `${text}|${fill}|${ink}`;
+    let print = this.prints.get(printKey);
+    if (!print) {
+      print = new MeshStandardMaterial({
+        map: this.track(clothBannerTexture(text, fill, ink)),
+        side: DoubleSide,
+        roughness: 0.7,
+      });
+      this.prints.set(printKey, print);
+      this.disposables.push(print);
     }
+    const canopy = new Mesh(this.roof, cloth);
+    canopy.castShadow = true;
+    tent.add(new Mesh(this.frame, this.white), canopy, new Mesh(this.valanceRing, print));
     return tent;
   }
 }
@@ -1488,4 +2029,298 @@ export function heightfield(
   field.computeVertexNormals();
   disposables.push(field);
   return field;
+}
+
+function flipTriangleWinding(geometry: BufferGeometry): void {
+  const index = geometry.index;
+  if (index) {
+    const idxArr = index.array as Uint16Array | Uint32Array;
+    for (let i = 0; i + 2 < idxArr.length; i += 3) {
+      const tmp = idxArr[i + 1]!;
+      idxArr[i + 1] = idxArr[i + 2]!;
+      idxArr[i + 2] = tmp;
+    }
+    index.needsUpdate = true;
+    return;
+  }
+  const pos = geometry.getAttribute('position');
+  if (!pos) return;
+  const count = pos.count;
+  for (const name of Object.keys(geometry.attributes)) {
+    const attr = geometry.getAttribute(name) as BufferAttribute;
+    const arr = attr.array as Float32Array;
+    const item = attr.itemSize;
+    for (let v = 0; v + 2 < count; v += 3) {
+      const o1 = (v + 1) * item;
+      const o2 = (v + 2) * item;
+      for (let k = 0; k < item; k++) {
+        const tmp = arr[o1 + k]!;
+        arr[o1 + k] = arr[o2 + k]!;
+        arr[o2 + k] = tmp;
+      }
+    }
+  }
+}
+
+function sliceGeometryRange(src: BufferGeometry, start: number, count: number): BufferGeometry {
+  const index = src.index;
+  if (index) {
+    const srcIdx = index.array;
+    const remap = new Map<number, number>();
+    const outIndices = new Uint32Array(count);
+    const usedVerts: number[] = [];
+    for (let i = 0; i < count; i++) {
+      const oldV = srcIdx[start + i]!;
+      let newV = remap.get(oldV);
+      if (newV === undefined) {
+        newV = usedVerts.length;
+        remap.set(oldV, newV);
+        usedVerts.push(oldV);
+      }
+      outIndices[i] = newV;
+    }
+    const out = new BufferGeometry();
+    for (const name of Object.keys(src.attributes)) {
+      const attr = src.getAttribute(name) as BufferAttribute;
+      const srcArr = attr.array as Float32Array;
+      const item = attr.itemSize;
+      const dstArr = new Float32Array(usedVerts.length * item);
+      for (let v = 0; v < usedVerts.length; v++) {
+        const so = usedVerts[v]! * item;
+        const doff = v * item;
+        for (let k = 0; k < item; k++) dstArr[doff + k] = srcArr[so + k]!;
+      }
+      out.setAttribute(name, new BufferAttribute(dstArr, item, attr.normalized));
+    }
+    out.setIndex(
+      new BufferAttribute(usedVerts.length <= 65535 ? new Uint16Array(outIndices) : outIndices, 1),
+    );
+    return out;
+  }
+  const out = new BufferGeometry();
+  for (const name of Object.keys(src.attributes)) {
+    const attr = src.getAttribute(name) as BufferAttribute;
+    const item = attr.itemSize;
+    const sliced = (attr.array as Float32Array).slice(start * item, (start + count) * item);
+    out.setAttribute(name, new BufferAttribute(sliced, item, attr.normalized));
+  }
+  return out;
+}
+
+export function tintGeometry(
+  geometry: BufferGeometry,
+  colour: string | number | Color,
+): BufferGeometry {
+  const c = colour instanceof Color ? colour : new Color(colour);
+  const pos = geometry.getAttribute('position');
+  const existing = geometry.getAttribute('color') as BufferAttribute | undefined;
+  if (existing) {
+    const arr = existing.array as Float32Array;
+    for (let i = 0; i < pos.count; i++) {
+      const o = i * 3;
+      arr[o] = arr[o]! * c.r;
+      arr[o + 1] = arr[o + 1]! * c.g;
+      arr[o + 2] = arr[o + 2]! * c.b;
+    }
+    existing.needsUpdate = true;
+    return geometry;
+  }
+  const paint = new Float32Array(pos.count * 3);
+  for (let i = 0; i < pos.count; i++) {
+    const o = i * 3;
+    paint[o] = c.r;
+    paint[o + 1] = c.g;
+    paint[o + 2] = c.b;
+  }
+  geometry.setAttribute('color', new BufferAttribute(paint, 3));
+  return geometry;
+}
+
+function canFoldIntoSolid(m: Material, solid: MeshStandardMaterial): m is MeshStandardMaterial {
+  return (
+    m instanceof MeshStandardMaterial &&
+    !m.map &&
+    !m.alphaMap &&
+    !m.emissiveMap &&
+    !m.transparent &&
+    m.opacity === 1 &&
+    m.alphaTest === 0 &&
+    !m.flatShading &&
+    m.emissive.r === 0 &&
+    m.emissive.g === 0 &&
+    m.emissive.b === 0 &&
+    m.side === solid.side &&
+    m.fog === solid.fog
+  );
+}
+
+/**
+ * Collapses static `Mesh` descendants of `root` that share the same `Material`, attribute layout
+ * and shadow flags into single merged `Mesh`es directly under `root`, splitting multi-material
+ * boxes by face material and leaving `InstancedMesh`es and any subtree in `skip` untouched.
+ * When `sharedSolidMaterial` (`vertexColors: true`) is supplied, opaque non-textured non-emissive
+ * `MeshStandardMaterial` pieces bake their material colour into vertex colours and fold into a
+ * single merged `Mesh` on `sharedSolidMaterial`.
+ */
+export function mergeStaticGroup(
+  root: Group,
+  disposables: { dispose(): void }[],
+  skip?: ReadonlySet<Object3D>,
+  sharedSolidMaterial?: MeshStandardMaterial,
+): void {
+  root.updateMatrixWorld(true);
+  const rootInverse = root.matrixWorld.clone().invert();
+  const rel = new Matrix4();
+  interface Piece {
+    mesh: Mesh;
+    fromMulti: boolean;
+    groupStart?: number;
+    groupCount?: number;
+    solidColor?: Color;
+  }
+  interface Bucket {
+    material: Material;
+    isSolidFold: boolean;
+    castShadow: boolean;
+    receiveShadow: boolean;
+    frustumCulled: boolean;
+    pieces: Piece[];
+  }
+  const matIds = new Map<Material, number>();
+  const buckets = new Map<string, Bucket>();
+  const matId = (m: Material) => {
+    let id = matIds.get(m);
+    if (id === undefined) {
+      id = matIds.size;
+      matIds.set(m, id);
+    }
+    return id;
+  };
+  const pushPiece = (node: Mesh, m: Material, attrSig: string, piece: Piece) => {
+    if (sharedSolidMaterial && canFoldIntoSolid(m, sharedSolidMaterial)) {
+      piece.solidColor = m.color;
+      const key = `solid|${node.frustumCulled ? 1 : 0}`;
+      let b = buckets.get(key);
+      if (!b) {
+        b = {
+          material: sharedSolidMaterial,
+          isSolidFold: true,
+          castShadow: node.castShadow,
+          receiveShadow: node.receiveShadow,
+          frustumCulled: node.frustumCulled,
+          pieces: [],
+        };
+        buckets.set(key, b);
+      } else {
+        b.castShadow = b.castShadow || node.castShadow;
+        b.receiveShadow = b.receiveShadow || node.receiveShadow;
+      }
+      b.pieces.push(piece);
+      return;
+    }
+    const key = `${matId(m)}|${attrSig}|${node.castShadow ? 1 : 0}|${node.receiveShadow ? 1 : 0}|${node.frustumCulled ? 1 : 0}`;
+    let b = buckets.get(key);
+    if (!b) {
+      b = {
+        material: m,
+        isSolidFold: false,
+        castShadow: node.castShadow,
+        receiveShadow: node.receiveShadow,
+        frustumCulled: node.frustumCulled,
+        pieces: [],
+      };
+      buckets.set(key, b);
+    }
+    b.pieces.push(piece);
+  };
+  const visit = (node: Object3D) => {
+    if (skip?.has(node) || node instanceof InstancedMesh) return;
+    if (node instanceof Mesh) {
+      const g = node.geometry as BufferGeometry;
+      const attrSig = Object.keys(g.attributes).sort().join(',');
+      if (Array.isArray(node.material)) {
+        if (g.groups.length > 0) {
+          for (const grp of g.groups) {
+            const m = node.material[grp.materialIndex ?? 0];
+            if (!m || grp.count <= 0) continue;
+            pushPiece(node, m, attrSig, {
+              mesh: node,
+              fromMulti: true,
+              groupStart: grp.start,
+              groupCount: grp.count,
+            });
+          }
+        }
+      } else {
+        pushPiece(node, node.material, attrSig, { mesh: node, fromMulti: false });
+      }
+    }
+    for (const child of node.children) visit(child);
+  };
+  for (const child of root.children) visit(child);
+
+  const consumed = new Set<Mesh>();
+  for (const bucket of buckets.values()) {
+    if (!bucket.isSolidFold && bucket.pieces.length <= 1 && !bucket.pieces[0]?.fromMulti) continue;
+    const parts: BufferGeometry[] = [];
+    for (const piece of bucket.pieces) {
+      const src = piece.mesh.geometry as BufferGeometry;
+      rel.multiplyMatrices(rootInverse, piece.mesh.matrixWorld);
+      const neg = rel.determinant() < 0;
+      let part: BufferGeometry;
+      if (piece.fromMulti) {
+        part = sliceGeometryRange(src, piece.groupStart!, piece.groupCount!);
+      } else {
+        part = src.clone();
+      }
+      part.applyMatrix4(rel);
+      if (neg) flipTriangleWinding(part);
+      if (bucket.isSolidFold && piece.solidColor) {
+        for (const attrName of Object.keys(part.attributes)) {
+          if (attrName !== 'position' && attrName !== 'normal' && attrName !== 'color') {
+            part.deleteAttribute(attrName);
+          }
+        }
+        if (!part.getAttribute('normal')) part.computeVertexNormals();
+        tintGeometry(part, piece.solidColor.getHex());
+      }
+      parts.push(part);
+      consumed.add(piece.mesh);
+    }
+    for (const p of parts) {
+      if (!p.index) {
+        const count = p.getAttribute('position').count;
+        if (count <= 65535) {
+          const idx = new Uint16Array(count);
+          for (let i = 0; i < count; i++) idx[i] = i;
+          p.setIndex(new Uint16BufferAttribute(idx, 1));
+        } else {
+          const idx = new Uint32Array(count);
+          for (let i = 0; i < count; i++) idx[i] = i;
+          p.setIndex(new Uint32BufferAttribute(idx, 1));
+        }
+      }
+    }
+    const merged = mergeGeometries(parts);
+    parts.forEach((p) => p.dispose());
+    if (!merged) continue;
+    disposables.push(merged);
+    const out = new Mesh(merged, bucket.material);
+    out.castShadow = bucket.castShadow;
+    out.receiveShadow = bucket.receiveShadow;
+    out.frustumCulled = bucket.frustumCulled;
+    root.add(out);
+  }
+  for (const mesh of consumed) {
+    let cur: Object3D | null = mesh;
+    while (cur && cur !== root && !skip?.has(cur)) {
+      const parent: Object3D | null = cur.parent;
+      if (cur === mesh || cur.children.length === 0) {
+        parent?.remove(cur);
+      } else {
+        break;
+      }
+      cur = parent;
+    }
+  }
 }

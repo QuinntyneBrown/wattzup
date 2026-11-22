@@ -10,6 +10,7 @@ import { library } from './fixtures/library';
 import { expect, test } from './fixtures/test';
 import { ClassLibraryPage } from './pages/class-library.page';
 import { ClassRidePage } from './pages/class-ride.page';
+import { WorldLoadingPage } from './pages/world-loading.page';
 import { ClassStartPage } from './pages/class-start.page';
 
 test.describe('Class Start', () => {
@@ -88,7 +89,9 @@ test.describe('Class Start', () => {
   test('Ride alone is chosen, the group option says why it cannot be chosen, and Start class opens the ride alone (L2-085 AC1, AC4, AC5) @critical', async ({
     page,
     bluetooth,
+    webgl,
   }) => {
+    await webgl.disable();
     await bluetooth.remember(echelonBike);
     const start = new ClassStartPage(page);
     await start.open('hiit-cardio-30');
@@ -101,6 +104,10 @@ test.describe('Class Start', () => {
 
     await start.start.click();
     await expect(page).toHaveURL('/classes/hiit-cardio-30/ride?mode=solo');
+    // A world class opens World loading before the ride (L2-151 AC1).
+    const loading = new WorldLoadingPage(page);
+    await expect(loading.title).toHaveText('30 Minute HIIT Cardio');
+    await loading.startRiding();
     await expect(new ClassRidePage(page).name).toContainText('30 Minute HIIT Cardio');
   });
 });

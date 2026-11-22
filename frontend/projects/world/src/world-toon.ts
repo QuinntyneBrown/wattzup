@@ -51,6 +51,10 @@ export class ToonLook {
   private readonly bayer: DataTexture;
   /** Twins whose alpha cut-off is dithered. */
   private readonly ditheredTwins = new Set<MeshToonNodeMaterial>();
+  /** Shared rim-light node (`(1 − N·V)³ × (1 − |N.y|) × strength × sky`), avoiding `pow` log2/exp2. */
+  private readonly rimNode: ReturnType<typeof float>;
+  /** Shared ordered-dither alphaTest node across all cut-out toon twins (technique 54). */
+  private readonly ditherAlphaNode: MeshToonNodeMaterial['alphaTestNode'];
 
   constructor() {
     this.ramp = new DataTexture(toonRamp(RAMP_TEXELS), RAMP_TEXELS, 1, RedFormat);
@@ -66,6 +70,18 @@ export class ToonLook {
     this.bayer.wrapS = this.bayer.wrapT = RepeatWrapping;
     this.bayer.generateMipmaps = false;
     this.bayer.needsUpdate = true;
+    const facing = float(1).sub(normalView.dot(positionViewDirection).max(0)).toVar();
+    const facingPow = RIM.power === 3 ? facing.mul(facing).mul(facing) : facing.pow(RIM.power);
+    this.rimNode = facingPow
+      .mul(float(1).sub(normalWorld.y.abs()))
+      .mul(RIM.strength)
+      .mul(this.sky) as unknown as ReturnType<typeof float>;
+    const bayerSample = texture(this.bayer, screenCoordinate.xy.div(4)).r;
+    this.ditherAlphaNode = clamp(
+      materialAlphaTest.add(bayerSample.sub(0.5).mul(DITHER.spread)),
+      0.02,
+      0.98,
+    );
   }
 
   /** How many of the twins now in the scene are cut by the dither (technique 54). */
@@ -170,25 +186,12 @@ export class ToonLook {
     // tier draws alpha-to-coverage at low. The pattern is fixed to the screen, so it holds still
     // while the camera does (technique 54).
     if (source.alphaTest > 0 && !source.alphaTestNode) {
-      const bayer = texture(this.bayer, screenCoordinate.xy.div(4)).r;
-      twin.alphaTestNode = clamp(
-        materialAlphaTest.add(bayer.sub(0.5).mul(DITHER.spread)),
-        0.02,
-        0.98,
-      );
+      twin.alphaTestNode = this.ditherAlphaNode;
       this.ditheredTwins.add(twin);
     }
-    // Rim light: (1 − N·V)^power × strength, in the sky's colour, added to the glow it had. It
-    // fades on surfaces facing up, so the road and ground seen edge-on do not wash out.
-    const rim = float(1)
-      .sub(normalView.dot(positionViewDirection).max(0))
-      .pow(RIM.power)
-      .mul(float(1).sub(normalWorld.y.abs()))
-      .mul(RIM.strength)
-      .mul(this.sky);
     // Typed as a bare Node by three, it is the vec3 glow `materialEmissive` would give.
     const glow = (source.emissiveNode ?? materialEmissive) as typeof materialEmissive;
-    twin.emissiveNode = glow.add(rim);
+    twin.emissiveNode = glow.add(this.rimNode);
     this.twins.set(source, twin);
     this.made.push(twin);
     return twin;

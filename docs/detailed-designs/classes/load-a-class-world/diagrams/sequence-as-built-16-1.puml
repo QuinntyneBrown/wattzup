@@ -1,0 +1,65 @@
+@startuml
+title UML sequence behaviour — Load the world, as built in slice 16.1
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ClassRidePage" as page
+  participant "WorldLoadStore" as store
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "FetchWorldDownloader\n(WORLD_DOWNLOADER)" as loader
+  participant "Cache Storage\n(telo-worlds)" as cache
+end box
+box "Frontend — Ride app (world library, lazy chunk)" #E0F2FE
+  participant "worldForMap" as worlds
+  participant "WorldRenderer\n(main's, unchanged)" as renderer
+end box
+participant "Static host" as host
+actor -> page : Start class on Class Start, solo (L2-151 AC1)
+page -> store : provided with the page; class from CLASSES_API
+store -> store : WebGPU or WebGL 2 on? (else the panorama only)
+store -> worlds : import('@telo/world'); worldForMap(class.world)
+worlds --> store : main's world: name, route, description
+store -> loader : download(worldId, progress, abort.signal)
+loader -> cache : match(/worlds/<id>/panorama.webp)
+alt Saved on this device
+  cache --> loader : the panorama
+  loader --> store : its size; step done at once (L2-152 AC3)
+else Not saved
+  loader -> host : GET /worlds/<id>/panorama.webp (Range: bytes=<received>- after a stop)
+  loop as bytes arrive
+    host --> loader : chunk
+    loader --> store : "0.1 of 0.2 MB" (L2-152 AC2)
+  end
+  alt Stopped part way
+    loader --> store : WorldDownloadError(received, total)
+    store -> page : "Couldn’t load …", Try again, Ride with the panorama (L2-156 AC1)
+  else Whole
+    loader -> cache : put(panorama)
+    loader --> store : its size; "· saved on this device for next time"
+  end
+end
+alt 3D on
+  store -> renderer : loadWorldRenderer(); start(unseen canvas, world, nextFrame, segments)
+  renderer --> store : true; backend (shaders built, first frames warm)
+  store -> page : "… is ready", Start riding takes focus (L2-153 AC2)
+else Neither WebGPU nor WebGL 2
+  store -> page : "… is ready as a panorama" (L2-156 AC4)
+end
+actor -> page : Start riding
+page -> store : ride(): abort, dispose the renderer
+page -> page : ClassRideSession: the clock starts, the first target resistance is sent
+@enduml

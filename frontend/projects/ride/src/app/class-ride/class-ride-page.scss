@@ -1,6 +1,9 @@
-// Block class-ride (docs/design-system/assets/components.css, Class Ride): the header over the scrolling stage.
-.class-ride {
-  position: relative;
+@use '../../styles/page';
+
+// Block world-loading (docs/design-system/assets/components.css, World loading): the slim class header over the
+// world's panorama, the class on the left and the load card (26 rem) on the right from lg, stacked below. It never
+// scrolls sideways; below lg the body scrolls under the header (L2-151 AC4).
+.class-ride-page {
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -9,79 +12,115 @@
   color: var(--color-fg);
 }
 
-.class-ride__body {
-  display: grid;
+.world-loading {
+  --world-loading-card-width: 26rem;
+
+  position: relative;
+  isolation: isolate;
+  display: flex;
   flex: 1;
   min-height: 0;
-  grid-template-columns: minmax(0, 1fr);
-  align-content: start;
+  flex-direction: column;
   overflow-y: auto;
 
   &:focus {
     outline: none; // focused by the skip link, never by a pointer
   }
+}
 
-  // From lg the page fits the screen: the video fills the column above the bike panel.
-  @media (min-width: 64rem) {
-    align-content: stretch;
-    overflow: hidden;
+.world-loading__scene {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: var(--color-raised);
+
+  // The ink scrim keeps every word on the photo at 4.5:1: solid at the foot, a tint at the top (L2-151 AC3).
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      var(--color-ink) 0,
+      color-mix(in srgb, var(--color-ink) 92%, transparent) 50%,
+      color-mix(in srgb, var(--color-ink) 88%, transparent) 100%
+    );
+
+    // From lg the words sit at the foot, so the top of the world can show through.
+    @media (min-width: 64rem) {
+      background: linear-gradient(
+        to top,
+        var(--color-ink) 0,
+        color-mix(in srgb, var(--color-ink) 88%, transparent) 55%,
+        color-mix(in srgb, var(--color-ink) 35%, transparent) 100%
+      );
+    }
   }
 }
 
-// A group ride's board is a right-hand column from lg (L2-090 AC3).
-.class-ride__body--group {
+.world-loading__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.world-loading__body {
+  display: grid;
+  gap: var(--space-6);
+  margin-top: auto;
+  width: 100%;
+  padding-block: var(--space-10) var(--space-6);
+
   @media (min-width: 64rem) {
-    grid-template-columns: minmax(0, 1fr) var(--classes-board-width);
+    grid-template-columns: minmax(0, 1fr) var(--world-loading-card-width);
+    align-items: end;
+    gap: var(--space-12);
+    padding-block: var(--space-16) var(--space-10);
   }
 }
 
-.class-ride__stage {
-  display: flex;
+.world-loading__intro {
   min-width: 0;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-3);
+}
+
+.world-loading__eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.world-loading__title {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-3xl);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
 
   @media (min-width: 40rem) {
-    padding: var(--space-4);
-  }
-
-  @media (min-width: 64rem) {
-    min-height: 0;
+    font-size: var(--font-size-4xl);
+    line-height: var(--line-height-4xl);
   }
 }
 
-// The header's actions (class-ride .btn--sm): 48 px to press mid-ride on a phone, icon only below sm.
-.class-ride__action {
+.world-loading__about {
+  margin-top: var(--space-3);
+  max-width: var(--layout-text-xl);
+  color: var(--color-muted);
+}
+
+// On a phone the load card comes first after the description: the plan was on Class Start already.
+.world-loading__plan {
+  display: block;
+  margin-top: var(--space-6);
+
   @media (max-width: 39.99rem) {
-    --btn-height: var(--target-ride);
-
-    min-width: var(--target-ride);
+    display: none;
   }
-}
-
-.class-ride__icon {
-  width: var(--space-4);
-  height: var(--space-4);
-  flex-shrink: 0;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.class-ride__pause-label {
-  display: none;
-
-  @media (min-width: 40rem) {
-    display: inline;
-  }
-}
-
-// Leave is quiet beside Pause: muted, turning to the heart tone on hover (class-ride__leave).
-.class-ride__leave {
-  --btn-pad: var(--space-2);
-  --btn-fg: var(--color-muted);
-  --btn-fg-hover: var(--color-heart-fg);
 }
