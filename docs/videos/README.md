@@ -61,6 +61,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 14.1 | [Connect to the ride hub](14-1-connect-to-the-ride-hub/README.md) | 1:53 | A group class ride holding one connection to the ride hub with the session cookie; the clock offset from five ServerTime calls; reconnecting at once after a drop and measuring again; a solo ride and Home holding none |
 | 14.2 | [Group session schedule](14-2-group-session-schedule/README.md) | 1:54 | Group sessions every 15 minutes on the quarter hours, ten seats each; Class Start offering the next with its riders and Join, the full and starting sessions; the Class Library's group chips; all read every 30 seconds |
 | 14.3 | [Join a group session](14-3-join-a-group-session/README.md) | 1:54 | Join opening the group ride, which takes a seat through the ride hub with its jersey; a full or started session sending the rider back to Class Start with the next one offered; a reconnect keeping the same seat |
+| 14.4 | [Start together](14-4-start-together/README.md) | 1:41 | A group ride holding at 0:00 with its video parked under "Starts in 9:00"; the clock and the video starting together at the session's server time; a late rider riding from the session's time |
 
 ## What every video is
 

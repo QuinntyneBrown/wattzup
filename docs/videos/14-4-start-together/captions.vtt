@@ -1,0 +1,52 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.455
+A group ride now waits for its session, then every rider starts at the same moment.
+
+00:00:10.324 --> 00:00:15.141
+Before the start, the clock holds at zero, the video waits at its first frame, and
+
+00:00:15.141 --> 00:00:16.968
+the time left counts down.
+
+00:00:23.228 --> 00:00:27.791
+At the session's time, read from the server's clock, the clock and the video start
+
+00:00:27.791 --> 00:00:29.482
+together on every screen.
+
+00:00:36.133 --> 00:00:40.666
+Arrive after the start, and the ride picks up from the session's time, two minutes
+
+00:00:40.666 --> 00:00:41.132
+in.
+
+00:00:46.457 --> 00:00:50.237
+The countdown and the warm-up ahead look the same on every screen.
+
+00:00:59.361 --> 00:01:04.313
+What the tests prove: zero until the start, both starting together, and a late rider
+
+00:01:04.313 --> 00:01:05.085
+in step.
+
+00:01:09.685 --> 00:01:14.288
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:14.633 --> 00:01:19.145
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:19.145 --> 00:01:20.816
+every hill and interval.
+
+00:01:21.161 --> 00:01:26.339
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:26.339 --> 00:01:31.787
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:31.787 --> 00:01:34.777
+XP, rider levels, stars and map unlocks.
+
+00:01:35.123 --> 00:01:37.615
+A custom workout lives under Profile.
