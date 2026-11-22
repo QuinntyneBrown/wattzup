@@ -7,6 +7,9 @@ import { startRace, stepUntil } from './fixtures/race';
 import { expect, test } from './fixtures/test';
 import { RaceSetupPage } from './pages/race-setup.page';
 
+// The world builds in software here, which takes CI's shared runners up to half a minute alongside other worlds (L202).
+test.describe.configure({ timeout: 120_000 });
+
 test(
   'draws the world with WebGL 2 where WebGPU is missing, and the tag names it (L2-065 AC1)',
   { tag: '@critical' },
