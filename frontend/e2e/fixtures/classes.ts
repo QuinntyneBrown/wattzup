@@ -39,6 +39,23 @@ export const hiitCardio = {
   },
 };
 
+/** A three-hour endurance class: a 10-minute warm-up, 160 minutes steady and a 10-minute cool-down. */
+export const enduranceClass = {
+  ...hiitCardio,
+  id: 'endurance-180',
+  title: '3 Hour Endurance Ride',
+  focus: 'Endurance',
+  lengthSeconds: 10_800,
+  summary: 'Three hours at a steady, sustainable effort.',
+  plan: {
+    segments: [
+      { kind: 'warm-up', duration: 600, level: 8, cadenceAim: 80 },
+      { kind: 'steady', duration: 9_600, level: 14, cadenceAim: 85 },
+      { kind: 'cool-down', duration: 600, level: 6, cadenceAim: 70 },
+    ],
+  },
+};
+
 /** The catalogue as `GET /api/classes` answers it: the 30-minute shelf with 30 Minute HIIT Cardio on it. */
 export const catalogue = {
   shelves: [

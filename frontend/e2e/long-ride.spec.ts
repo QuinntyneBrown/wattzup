@@ -4,26 +4,9 @@
 // a list that grows with it. A three-hour class ridden to its end submits exactly 10,800 speed samples, and the
 // distance they add up to.
 import { startClassRide } from './fixtures/class-ride';
-import { hiitCardio } from './fixtures/classes';
+import { enduranceClass } from './fixtures/classes';
 import { ECHELON_NOTIFY, resistanceFrame, workoutFrame } from './fixtures/echelon';
 import { expect, test } from './fixtures/test';
-
-/** A three-hour endurance class: a 10-minute warm-up, 160 minutes steady and a 10-minute cool-down. */
-const enduranceClass = {
-  ...hiitCardio,
-  id: 'endurance-180',
-  title: '3 Hour Endurance Ride',
-  focus: 'Endurance',
-  lengthSeconds: 10_800,
-  summary: 'Three hours at a steady, sustainable effort.',
-  plan: {
-    segments: [
-      { kind: 'warm-up', duration: 600, level: 8, cadenceAim: 80 },
-      { kind: 'steady', duration: 9_600, level: 14, cadenceAim: 85 },
-      { kind: 'cool-down', duration: 600, level: 6, cadenceAim: 70 },
-    ],
-  },
-};
 
 interface SubmittedRide {
   readonly elapsedSeconds: number;
