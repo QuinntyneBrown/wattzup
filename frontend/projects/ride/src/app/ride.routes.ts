@@ -1,5 +1,7 @@
+import { inject, provideEnvironmentInitializer } from '@angular/core';
 import type { Routes } from '@angular/router';
 import {
+  DISPLAY_PREFERENCES,
   FULLSCREEN,
   HttpRiderProgressApi,
   NETWORK_STATUS,
@@ -7,7 +9,12 @@ import {
   RIDE_SETTINGS,
   RIDER_PROGRESS_API,
 } from '@telo/api';
-import { BrowserFullscreen, BrowserNetworkStatus, LocalRideSettingsStore } from '@telo/domain';
+import {
+  BrowserDisplayPreferences,
+  BrowserFullscreen,
+  BrowserNetworkStatus,
+  LocalRideSettingsStore,
+} from '@telo/domain';
 import { provideAppCache } from './app-cache/provide-app-cache';
 import { provideBikeConnection } from './bike/provide-bike-connection';
 import { rememberedBikeGuard } from './bike/remembered-bike.guard';
@@ -30,6 +37,11 @@ export const rideRoutes: Routes = [
       { provide: NETWORK_STATUS, useClass: BrowserNetworkStatus },
       // The ride settings, which Settings changes and every ride screen follows (L2-158 AC3).
       { provide: RIDE_SETTINGS, useClass: LocalRideSettingsStore },
+      // Theme, motion and ride numbers on <html>, applied from the start and at once on each change (L2-164 AC2 to AC4).
+      { provide: DISPLAY_PREFERENCES, useClass: BrowserDisplayPreferences },
+      provideEnvironmentInitializer(() => void inject(DISPLAY_PREFERENCES)),
+      // Full screen, which the header offers and a ride's start can enter (L2-144, L2-164 AC6).
+      { provide: FULLSCREEN, useClass: BrowserFullscreen },
     ],
     // Every screen needs a rider but sign-in, the code screen and not-found (L2-001 AC1).
     canActivateChild: [authGuard],
@@ -82,10 +94,8 @@ export const rideRoutes: Routes = [
       {
         path: '',
         loadComponent: () => import('./main-shell/main-shell'),
-        // The rider's progress, which the header, Home and Profile share (L2-032 AC2), and the header's Full screen
-        // (L2-144).
+        // The rider's progress, which the header, Home and Profile share (L2-032 AC2).
         providers: [
-          { provide: FULLSCREEN, useClass: BrowserFullscreen },
           { provide: RIDER_PROGRESS_API, useClass: HttpRiderProgressApi },
           RiderProgressStore,
           { provide: PROGRESS_STORE, useExisting: RiderProgressStore },

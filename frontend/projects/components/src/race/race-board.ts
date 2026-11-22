@@ -51,18 +51,21 @@ export class RaceBoard implements AfterViewChecked {
 
   /**
    * FLIP, after the view is updated and before it is painted: a row whose top moved since the last check starts at its
-   * old place and slides to its new one. A lifecycle hook, not a render hook, keeps the initial bundle as it was.
+   * old place and slides to its new one. A lifecycle hook, not a render hook, keeps the initial bundle as it was. Reduced
+   * motion, the rider's or the device's, zeroes the slide's token, `--duration-fast` (L2-164 AC2); it is read once a
+   * row has moved.
    */
   ngAfterViewChecked(): void {
-    const view = this.host.nativeElement.ownerDocument.defaultView;
-    const still = view?.matchMedia('(prefers-reduced-motion: reduce)').matches ?? true;
+    let still: boolean | null = null;
     const tops = new Map<string, number>();
     for (const row of this.host.nativeElement.querySelectorAll<HTMLElement>('.race-board__row')) {
       const id = row.dataset['id'] ?? '';
       const top = row.offsetTop;
       const before = this.tops.get(id);
       tops.set(id, top);
-      if (still || before === undefined || before === top) continue;
+      if (before === undefined || before === top) continue;
+      still ??= !(parseFloat(getComputedStyle(row).getPropertyValue('--duration-fast')) > 0);
+      if (still) continue;
       row.animate([{ translate: `0 ${before - top}px` }, { translate: '0 0' }], {
         duration: SLIDE_MS,
         easing: 'ease-out',

@@ -1,0 +1,16 @@
+// Settings' Motion and display controls (docs/mocks/pages/settings/): each choice's label and hint.
+:host {
+  display: block;
+}
+
+.display-settings__label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.display-settings__hint {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-snug);
+  color: var(--color-muted);
+}

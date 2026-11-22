@@ -19,6 +19,8 @@ export default defineConfig({
     baseURL: `http://localhost:${port}`,
     locale: 'en-US',
     timezoneId: 'UTC',
+    // The app follows the device's colour scheme (L2-164 AC3) and Playwright's default asks for light; the design is dark.
+    colorScheme: 'dark',
     trace: 'retain-on-failure',
     // A service worker would answer the page's requests before the fixtures could; only the app cache's spec allows it.
     serviceWorkers: 'block',

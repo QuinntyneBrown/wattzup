@@ -18,6 +18,7 @@ import {
   type SceneRider,
   type SceneryRequest,
   type SceneryState,
+  RIDE_SOUND,
   SCREEN_WAKE_LOCK,
   TICKER,
 } from '@telo/api';
@@ -50,6 +51,9 @@ import { catchError, of, take } from 'rxjs';
 import { LiveSessionStore, SERVICE_LOST_NOTICE } from '../live/live-session-store';
 import { liveRaceStandings } from './live-race-standings';
 
+/** A race has no class video over its ride sound. */
+const NO_VIDEO = signal(false).asReadonly();
+
 /**
  * The race's state (docs/detailed-designs/race/ride-a-race), provided by the page so it goes when the rider leaves. It
  * reads the map of the address from `MAPS_API` and starts the race the moment it arrives: the clock, the ticker and the
@@ -69,6 +73,7 @@ export class RaceStore {
   private readonly telemetry = inject(BikeTelemetry);
   private readonly resistanceControl = inject(ResistanceController);
   private readonly wakeLock = inject(SCREEN_WAKE_LOCK);
+  private readonly sound = inject(RIDE_SOUND);
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute).snapshot;
   private readonly mapId = this.route.paramMap.get('mapId') ?? '';
@@ -333,8 +338,11 @@ export class RaceStore {
       this.destroyed = true;
       clearTimeout(this.startTimer);
     });
-    // The lock is bound on the route, whose injector outlives the page.
-    this.destroyRef.onDestroy(() => this.wakeLock.release());
+    // The lock and the sound are bound on the route, whose injector outlives the page.
+    this.destroyRef.onDestroy(() => {
+      this.wakeLock.release();
+      this.sound.stop();
+    });
   }
 
   /**
@@ -357,6 +365,14 @@ export class RaceStore {
     this.loaded.set(map);
     this.recorder = new RideRecorder();
     this.wakeLock.hold();
+    // Ride sound follows the pedalling at the race's speed, quiet while paused or out of the race (L2-163).
+    this.sound.play({
+      cadence: this.telemetry.cadence,
+      speedKmh: this.speedKmh,
+      resistance: this.telemetry.resistance,
+      running: this.running,
+      videoPlaying: NO_VIDEO,
+    });
     this.clock.start(at);
     this.ticker.start();
     this.line = new FinishLine(map.distanceKm * 1000);

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { FULLSCREEN, RIDE_SETTINGS } from '@telo/api';
 import {
   BackLink,
   ClassPlan,
@@ -10,6 +11,7 @@ import {
   RideChoice,
   ClassSession,
 } from '@telo/components';
+import { enterFullScreenOnStart } from '@telo/domain';
 import { ClassStartStore } from './class-start-store';
 
 /**
@@ -37,6 +39,8 @@ import { ClassStartStore } from './class-start-store';
 export default class ClassStartPage {
   protected readonly store = inject(ClassStartStore);
   private readonly router = inject(Router);
+  private readonly settings = inject(RIDE_SETTINGS).settings;
+  private readonly fullscreen = inject(FULLSCREEN);
 
   /** Start class: the class ride, alone, at once (L2-085 AC4). */
   protected start(id: string): void {
@@ -48,6 +52,8 @@ export default class ClassStartPage {
    * hub for the seat first, and offers the next session when it is refused.
    */
   protected join(id: string, sessionId: string): void {
+    // Full screen first when Settings asks for it, in the press (L2-164 AC6).
+    enterFullScreenOnStart(this.settings(), this.fullscreen);
     void this.router.navigate(['/classes', id, 'ride'], { queryParams: { session: sessionId } });
   }
 }

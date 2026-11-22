@@ -13,6 +13,7 @@ import {
 import {
   type Backend,
   type MapDto,
+  DISPLAY_PREFERENCES,
   RIDE_SETTINGS,
   type SceneRider,
   type SceneryRequest,
@@ -47,6 +48,8 @@ export class RaceWorld {
   private readonly scene = signal<ComponentRef<WorldScene> | null>(null);
   /** The rider's World settings, as the world reads them (L2-159, L2-160, L2-161). */
   private readonly settings = inject(RIDE_SETTINGS).settings;
+  /** Reduce motion as the rider's Settings apply it, which stills the world's moving parts (L2-164 AC2). */
+  private readonly display = inject(DISPLAY_PREFERENCES);
   /** One value until the settings change, so binding every second hands the scene nothing new. */
   private readonly quality = computed(() => worldQuality(this.settings()));
 
@@ -80,5 +83,6 @@ export class RaceWorld {
     scene.setInput('riders', this.riders());
     scene.setInput('scenery', this.scenery());
     scene.setInput('quality', this.quality());
+    scene.setInput('reducedMotion', this.display.reducedMotion());
   }
 }

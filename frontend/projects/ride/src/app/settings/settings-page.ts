@@ -14,6 +14,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   BIKE_CONNECTION,
   BLUETOOTH_SUPPORT,
+  DISPLAY_PREFERENCES,
   GRAPHICS_SUPPORT,
   type GraphicsApi,
   REMEMBERED_BIKE,
@@ -23,6 +24,7 @@ import {
   BackLink,
   Banner,
   DeviceCheck,
+  DisplaySettings,
   Pill,
   Setting,
   SettingRow,
@@ -31,7 +33,7 @@ import {
   SideNav,
   SideNavLink,
   type SideNavIcon,
-  SwitchRow,
+  SoundSettings,
   WorldSettings,
 } from '@telo/components';
 import { deviceCheckResult, deviceCheckRunning } from '@telo/domain';
@@ -43,7 +45,7 @@ import { DeviceCheckStore } from './device-check-store';
  * applying at once through `RIDE_SETTINGS` with no Save, Reset to recommended, and the warning when the browser
  * refuses to keep anything. Opened at a section (`/settings#world`), it shows that section. Slice 20.1 builds the
  * page and its first control, Keep the screen awake; slice 20.2 the World controls; slice 20.3 Check this device;
- * slices 20.4 and 20.5 fill the rest.
+ * slice 20.4 Sound and Motion and display; slice 20.5 the rest.
  */
 @Component({
   selector: 'wz-settings-page',
@@ -52,6 +54,7 @@ import { DeviceCheckStore } from './device-check-store';
     BackLink,
     Banner,
     DeviceCheck,
+    DisplaySettings,
     Pill,
     Setting,
     SettingRow,
@@ -59,7 +62,7 @@ import { DeviceCheckStore } from './device-check-store';
     SettingsSection,
     SideNav,
     SideNavLink,
-    SwitchRow,
+    SoundSettings,
     WorldSettings,
   ],
   templateUrl: './settings-page.html',
@@ -82,6 +85,8 @@ export default class SettingsPage {
   protected readonly announcement = signal('');
   protected readonly settings = this.store.settings;
   protected readonly persisted = this.store.persisted;
+  /** Whether this device asks for reduced motion, which Reduce motion's words say (L2-164 AC2). */
+  protected readonly display = inject(DISPLAY_PREFERENCES);
   /** What this browser draws worlds with, for the World section (L2-159 AC1, L2-161). */
   protected readonly graphicsApi = inject(GRAPHICS_SUPPORT).api;
   protected readonly apiName: Record<GraphicsApi, string> = {
@@ -124,10 +129,6 @@ export default class SettingsPage {
       const name = this.fragment();
       if (name) host.querySelector(`#${CSS.escape(name)}`)?.scrollIntoView();
     });
-  }
-
-  protected setKeepAwake(on: boolean): void {
-    this.store.set('keepAwake', on);
   }
 
   protected reset(): void {

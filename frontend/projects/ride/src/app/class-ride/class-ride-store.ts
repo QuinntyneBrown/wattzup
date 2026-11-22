@@ -8,6 +8,7 @@ import {
   type ClassResult,
   type SubmitRideRequest,
   RIDE_OUTBOX,
+  RIDE_SOUND,
   SCREEN_WAKE_LOCK,
   TICKER,
   VIDEO_PLAYER_FACTORY,
@@ -68,6 +69,7 @@ export class ClassRideStore {
   private readonly beat = inject(TICKER);
   private readonly router = inject(Router);
   private readonly wakeLock = inject(SCREEN_WAKE_LOCK);
+  private readonly sound = inject(RIDE_SOUND);
   private readonly outbox = inject(RIDE_OUTBOX);
   private readonly time = inject(MONOTONIC_TIME);
   private readonly started = signal(false);
@@ -134,6 +136,8 @@ export class ClassRideStore {
   readonly running = computed(() => this.started() && !this.pausedByRider() && !this.bikeLost());
   /** The bike's speed, for the world's cyclist (L2-153). */
   readonly speedKmh = this.telemetry.speedKmh;
+  /** The class video plays its own sound now. */
+  private readonly videoPlaying = computed(() => this.player()?.state() === 'playing');
   /** Whether the video cannot play: its code or YouTube's did not load, or the player failed. */
   readonly videoUnavailable = computed(
     () => this.playerMissing() || this.player()?.state() === 'error',
@@ -192,8 +196,9 @@ export class ClassRideStore {
       this.destroyed = true;
       if (this.startTimer !== null) clearTimeout(this.startTimer);
       this.player()?.destroy();
-      // The lock is bound on the route, whose injector outlives the page.
+      // The lock and the sound are bound on the route, whose injector outlives the page.
       this.wakeLock.release();
+      this.sound.stop();
     });
   }
 
@@ -285,6 +290,14 @@ export class ClassRideStore {
     this.started.set(true);
     this.recorder = new RideRecorder();
     this.wakeLock.hold();
+    // Ride sound follows the pedalling, quiet while paused and, when Settings asks, under the playing video (L2-163).
+    this.sound.play({
+      cadence: this.telemetry.cadence,
+      speedKmh: this.telemetry.speedKmh,
+      resistance: this.telemetry.resistance,
+      running: this.running,
+      videoPlaying: this.videoPlaying,
+    });
     this.clock.start(at);
     // A video parked while waiting starts with the clock, from the sync offset plus the time ridden.
     const player = this.player();
@@ -330,6 +343,7 @@ export class ClassRideStore {
     this.ticker.stop();
     this.player()?.pause();
     this.wakeLock.release();
+    this.sound.stop();
     const submitted = this.submit(ride);
     const classResult: ClassResult = {
       classId: ride.id,

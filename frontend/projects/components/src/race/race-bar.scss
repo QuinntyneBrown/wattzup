@@ -93,14 +93,15 @@
   margin-left: auto;
 }
 
+// Large ride numbers scale the clock (L2-164 AC4).
 .race-bar__clock {
-  font-size: var(--font-size-xl);
-  line-height: var(--line-height-xl);
+  font-size: calc(var(--font-size-xl) * var(--ride-number-scale));
+  line-height: calc(var(--line-height-xl) * var(--ride-number-scale));
   white-space: nowrap;
 
   @media (min-width: 40rem) {
-    font-size: var(--font-size-2xl);
-    line-height: var(--line-height-2xl);
+    font-size: calc(var(--font-size-2xl) * var(--ride-number-scale));
+    line-height: calc(var(--line-height-2xl) * var(--ride-number-scale));
   }
 }
 

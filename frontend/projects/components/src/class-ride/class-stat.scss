@@ -28,7 +28,8 @@
   font-weight: var(--font-weight-bold);
   letter-spacing: var(--letter-spacing-display);
   font-feature-settings: 'tnum' 1;
-  font-size: var(--font-size-5xl);
+  // Large ride numbers scale power and the other readouts (L2-164 AC4).
+  font-size: calc(var(--font-size-5xl) * var(--ride-number-scale));
   line-height: var(--line-height-none);
 }
 
@@ -40,8 +41,9 @@
 
 .class-stat__hint {
   margin-top: var(--space-1);
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
+  // Power's hint carries the target, which large ride numbers scale (L2-164 AC4).
+  font-size: calc(var(--font-size-xs) * var(--ride-number-scale));
+  line-height: calc(var(--line-height-xs) * var(--ride-number-scale));
   color: var(--color-muted);
 }
 
