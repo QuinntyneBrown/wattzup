@@ -22,7 +22,7 @@ Estimates are working days for one intermediate developer, using `docs/detailed-
 | 13 | Choose the next ride | Home suggests the next ride; app header and profile. | 5 | 100% |
 | 14 | Ride a class with a group | Join a session, start together, ride with a live board. | 15 | 100% |
 | 15 | Race people live | Lobby, live race session, standings, leavers marked DNF, tamper-proof results. | 15 | 100% |
-| 16 | Ride a world class | Load the class's world with progress, then start solo or with the group. | 10 | 0% |
+| 16 | Ride a world class | Load the class's world with progress, then start solo or with the group. | 10 | 30% |
 | 17 | Ride without a network | Finish offline; rides wait and send when back online. | 8 | 0% |
 | 18 | Ride through a lost service | Lost bike or multiplayer service mid-ride; the ride carries on. | 5 | 0% |
 | 19 | Stay smooth on long rides | Bundle and frame budgets, bounded buffers, stable heap across an hour. | 8 | 0% |
@@ -35,4 +35,4 @@ Estimates are working days for one intermediate developer, using `docs/detailed-
 | 26 | Send feedback | Report a bug, share an idea or send kudos. | 5 | 0% |
 | 27 | Install the app | Install as an app from Chrome or Edge. | 3 | 0% |
 
-**Total:** 238 days. **Complete:** 153 days (64%).
+**Total:** 238 days. **Complete:** 156 days (66%).
