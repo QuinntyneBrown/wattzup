@@ -1,0 +1,61 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.517
+On a phone beside the bike, a thumb has to land. At a desk, the keyboard has to show
+
+00:00:07.517 --> 00:00:08.522
+where it is.
+
+00:00:10.324 --> 00:00:15.112
+Every control now takes a tap across forty-four pixels, even where it is drawn
+
+00:00:15.112 --> 00:00:18.726
+smaller. A switch still looks twenty-four pixels tall.
+
+00:00:23.228 --> 00:00:27.606
+The first run found thirty-four controls a tap could miss, on five screens.
+
+00:00:27.606 --> 00:00:29.599
+Twenty-four were in Settings.
+
+00:00:36.133 --> 00:00:41.017
+Mid-ride on a phone, the target is forty-eight pixels. The class ride's Pause and
+
+00:00:41.017 --> 00:00:43.126
+Leave now draw at forty-eight.
+
+00:00:49.038 --> 00:00:54.236
+At a desk, Tab stops on every control in turn, and each one shows its ring. A class
+
+00:00:54.236 --> 00:00:56.477
+card draws it around its cover.
+
+00:01:01.942 --> 00:01:06.940
+Take the focus style away, and the check fails on every screen. Fifteen screens are
+
+00:01:06.940 --> 00:01:09.107
+tapped and tabbed on every run.
+
+00:01:14.847 --> 00:01:17.246
+Settings, from a phone to the full screen.
+
+00:01:25.170 --> 00:01:29.774
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:30.119 --> 00:01:34.631
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:34.631 --> 00:01:36.302
+every hill and interval.
+
+00:01:36.647 --> 00:01:41.825
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:41.825 --> 00:01:47.273
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:47.273 --> 00:01:50.263
+XP, rider levels, stars and map unlocks.
+
+00:01:50.608 --> 00:01:53.101
+A custom workout lives under Profile.
