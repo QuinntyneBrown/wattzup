@@ -146,7 +146,7 @@ describe('OldTownStreet and Corners (L2-101 AC1, L2-110 AC9, L2-111 AC10)', () =
     for (const d of disposables) d.dispose();
   });
 
-  it('compacts spectator hats, hand flags and hair InstancedMeshes with zero degenerate scale=0 instances', () => {
+  it('partitions crowd shadow casters to near spectators, culls far-horizon spectators, and compacts accessories', () => {
     const disposables: { dispose(): void }[] = [];
     const street = new OldTownStreet((t) => t, disposables);
     street.build(3.5, 161);
@@ -155,30 +155,54 @@ describe('OldTownStreet and Corners (L2-101 AC1, L2-110 AC9, L2-111 AC10)', () =
     const instanced = street.group.children.filter(
       (c): c is InstancedMesh => c instanceof InstancedMesh,
     );
-    // Crowd InstancedMeshes are the 7 added by addCrowd (before bunting flags, cords and swifts).
-    const crowdMeshes = instanced.slice(-10, -3);
-    expect(crowdMeshes).toHaveLength(7);
-    const [legs, , , , hats, waved, hair] = crowdMeshes;
+    // Crowd InstancedMeshes are the 11 added by addCrowd (4 near shadow casters + 4 far non-shadow + 3 accessories).
+    const crowdMeshes = instanced.slice(-14, -3);
+    expect(crowdMeshes).toHaveLength(11);
+    const nearMeshes = crowdMeshes.slice(0, 4);
+    const farMeshes = crowdMeshes.slice(4, 8);
+    const [hats, waved, hair] = crowdMeshes.slice(8) as [
+      InstancedMesh,
+      InstancedMesh,
+      InstancedMesh,
+    ];
+    for (const mesh of nearMeshes) expect(mesh.castShadow).toBe(true);
+    for (const mesh of [...farMeshes, hats, waved, hair]) expect(mesh.castShadow).toBe(false);
 
-    expect(hats!.count + hair!.count).toBe(legs!.count);
-    expect(waved!.count).toBeGreaterThan(0);
-    expect(waved!.count).toBeLessThan(Math.ceil(legs!.count * 0.3));
+    const nearLegs = nearMeshes[0]!;
+    const farLegs = farMeshes[0]!;
+    const visibleFans = nearLegs.count + farLegs.count;
+    expect(nearLegs.count).toBeGreaterThan(80);
+    expect(nearLegs.count).toBeLessThan(170);
+    expect(farLegs.count).toBeGreaterThan(250);
+    expect(visibleFans).toBeLessThan(530);
+
+    expect(hats.count + hair.count).toBe(visibleFans);
+    expect(waved.count).toBeGreaterThan(0);
+    expect(waved.count).toBeLessThan(Math.ceil(visibleFans * 0.3));
 
     const m = new Matrix4();
-    for (const accessory of [hats!, waved!, hair!]) {
+    for (const accessory of [hats, waved, hair]) {
       for (let i = 0; i < accessory.count; i++) {
         accessory.getMatrixAt(i, m);
         expect(Math.abs(m.determinant())).toBeGreaterThan(1e-6);
       }
     }
 
-    const crowdTriangles = crowdMeshes.reduce((sum, mesh) => {
-      const geo = mesh.geometry as BufferGeometry;
-      const tris = geo.index ? geo.index.count / 3 : geo.getAttribute('position').count / 3;
-      return sum + mesh.count * tris;
-    }, 0);
+    const trisOf = (meshes: readonly InstancedMesh[]) =>
+      meshes.reduce((sum, mesh) => {
+        const geo = mesh.geometry as BufferGeometry;
+        const tris = geo.index ? geo.index.count / 3 : geo.getAttribute('position').count / 3;
+        return sum + mesh.count * tris;
+      }, 0);
+
+    expect(trisOf(nearMeshes)).toBeLessThan(46_000);
+    const crowdTriangles = trisOf(crowdMeshes);
     expect(crowdTriangles).toBeGreaterThan(100_000);
-    expect(crowdTriangles).toBeLessThan(230_000);
+    expect(crowdTriangles).toBeLessThan(175_000);
+
+    // Bunting flags share the crowd hand-flags cloth material rather than duplicating it.
+    const buntingFlags = instanced[instanced.length - 3]!;
+    expect(buntingFlags.material).toBe(waved.material);
 
     for (const d of disposables) d.dispose();
   });

@@ -446,21 +446,31 @@ Every iteration below is measured across a **45-second sustained ride** (`record
 | **`low`**       | **60.6**                        | **16.7 / 17.2 / 18.0** (`2` drops / 2,727f) | **6.49 / 7.34**     | **6.516 / 7.310** _(record low)_ | **3,539.6** _(record low)_  |
 | **`high`**      | 59.2 → **59.6** _(record high)_ | **16.7 / 18.1 / 29.9** _(`< 30 ms` p99!)_   | **9.63 / 11.21**    | 9.968 / 10.920                   | **9,504.2** _(record low!)_ |
 
-### Cumulative 45-Second Old Town Improvement Summary (Original → Post-#950 Baseline → Iteration 19)
+### Iteration 20: Distance-Partitioned Spectator Crowd Shadows, Horizon Culling & Shared Cloth Material (`world-oldtown.ts`)
 
-| Metric (45s Active Ride @ 1440×900)  | Original `main` | Post-#950 45s Baseline |  Iteration 19 (`main`) | Total Improvement          |
-| ------------------------------------ | --------------: | ---------------------: | ---------------------: | -------------------------- |
-| **`low` Avg FPS**                    |            31.7 |                   60.5 |          **60.6–60.8** | **+91.8 % (60 Hz lock)**   |
-| **`low` Median / p95 / p99 (ms)**    |     29.9 / 42.8 |     16.7 / 17.8 / 18.8 | **16.7 / 17.1 / 17.9** | **−44.1 % / −59.8 %**      |
-| **`low` WebGPU Draw Calls**          |           1,771 |                    747 |                **192** | **−89.2 % (−1,579 draws)** |
-| **`low` CDP CPU Script (ms/frame)**  |           30.83 |                  9.329 |              **6.516** | **4.7× faster (−78.9 %)**  |
-| **`low` Cold Load Wall (ms)**        |          ~4,200 |                3,944.5 |            **3,539.6** | **−404.9 ms (−10.3 %)**    |
-| **`high` Avg FPS**                   |            14.8 |                   38.3 |               **59.6** | **4.03× (+303 %, 60 Hz!)** |
-| **`high` Median / p95 / p99 (ms)**   |     62.6 / 92.9 |     26.2 / 32.7 / 49.5 | **16.7 / 18.1 / 29.9** | **−73.3 % / −80.5 %**      |
-| **`high` GPU Median / p95 (ms)**     |           18.74 |          15.60 / 17.30 |       **9.63 / 11.08** | **−48.6 % / −36.0 %**      |
-| **`high` WebGPU Draw Calls**         |           3,308 |                  1,249 |                **299** | **−91.0 % (−3,009 draws)** |
-| **`high` Cold Load Wall (ms)**       |         ~11,500 |               10,861.2 |            **9,504.2** | **−1,357.0 ms (−12.5 %)**  |
-| **`high` CDP CPU Script (ms/frame)** |           66.43 |                 17.344 |        **9.107–9.968** | **6.7×–7.3× faster**       |
-| **DOM Layouts per 45s Ride**         |          ~1,500 |                  1,504 |              **73–95** | **−95.1 %**                |
-| **Lazy World Ride JS Loaded (KB)**   |         2,741.1 |                2,741.1 |            **1,353.6** | **−50.6 %**                |
-| **Mid-Ride Shader Compilations**     |             0–2 |                      0 |                  **0** | **Zero mid-ride stalls**   |
+- **Change**: Partitioned `OldTownStreet.addCrowd()`'s 4 shadow-casting spectator `InstancedMesh`es (`legs`, `torso`, `head`, `arms`) into tight-capacity `nearFans` (`castShadow = true`, `metres ∈ (−14, 72) m`) and `farFans` (`castShadow = false`, `metres ∈ [72, 308] m`), culling spectators behind the camera (`<= −14 m`) and past the end of the `300 m` laid road (`> 308 m`) across all 11 crowd `InstancedMesh`es (`hats`, `waved`, `hair` included), shared 1 `cloth` `MeshStandardMaterial` between crowd hand flags and overhead bunting (`−1` material), and memoized `near`/`far`/accessory slot packing across `2 m` longitudinal buckets (`Math.floor(s / 2)`) so ~92 % of frames update only `[13] = y + baseY` and `[14] = z` on the `~487` visible spectators (`−23.3 %` colour-pass crowd triangles and **`−79.5 %` (`171,450 → ~35,100`) shadow-pass crowd triangles/frame**).
+- **45-Second Results**:
+
+| Tier (`webgpu`) | Avg FPS                         | Median / p95 / p99 ms                       | GPU Median / p95 ms                | CDP Script / Task ms/f               | Dropped > 33 ms |
+| --------------- | ------------------------------- | ------------------------------------------- | ---------------------------------- | ------------------------------------ | --------------: |
+| **`low`**       | **60.7**                        | **16.7 / 17.1 / 17.9**                      | **6.42 / 7.34** _(best low GPU!)_  | **6.686 / 7.494**                    |  **2 / 2,732f** |
+| **`high`**      | 59.6 → **59.9** _(60 Hz lock!)_ | **16.7 / 17.3 / 28.2** _(all-time record!)_ | **9.83 / 10.62** _(`< 11ms` p95!)_ | **8.494 / 9.348** _(record `<8.5`!)_ |  **4 / 2,696f** |
+
+### Cumulative 45-Second Old Town Improvement Summary (Original → Post-#950 Baseline → Iteration 20)
+
+| Metric (45s Active Ride @ 1440×900)  | Original `main` | Post-#950 45s Baseline |  Iteration 20 (`main`) | Total Improvement            |
+| ------------------------------------ | --------------: | ---------------------: | ---------------------: | ---------------------------- |
+| **`low` Avg FPS**                    |            31.7 |                   60.5 |          **60.7–60.8** | **+91.8 % (60 Hz lock)**     |
+| **`low` Median / p95 / p99 (ms)**    |     29.9 / 42.8 |     16.7 / 17.8 / 18.8 | **16.7 / 17.1 / 17.9** | **−44.1 % / −60.0 %**        |
+| **`low` WebGPU Draw Calls**          |           1,771 |                    747 |            **192–196** | **−88.9 % (−1,575 draws)**   |
+| **`low` CDP CPU Script (ms/frame)**  |           30.83 |                  9.329 |        **6.516–6.686** | **4.6×–4.7× faster**         |
+| **`low` Cold Load Wall (ms)**        |          ~4,200 |                3,944.5 |            **3,539.6** | **−404.9 ms (−10.3 %)**      |
+| **`high` Avg FPS**                   |            14.8 |                   38.3 |               **59.9** | **4.05× (+305 %, 60.0 Hz!)** |
+| **`high` Median / p95 / p99 (ms)**   |     62.6 / 92.9 |     26.2 / 32.7 / 49.5 | **16.7 / 17.3 / 28.2** | **−73.3 % / −81.4 %**        |
+| **`high` GPU Median / p95 (ms)**     |           18.74 |          15.60 / 17.30 |       **9.63 / 10.62** | **−48.6 % / −38.6 %**        |
+| **`high` WebGPU Draw Calls**         |           3,308 |                  1,249 |            **299–303** | **−90.8 % (−3,005 draws)**   |
+| **`high` Cold Load Wall (ms)**       |         ~11,500 |               10,861.2 |            **9,504.2** | **−1,357.0 ms (−12.5 %)**    |
+| **`high` CDP CPU Script (ms/frame)** |           66.43 |                 17.344 |              **8.494** | **7.8× faster (−87.2 %)**    |
+| **DOM Layouts per 45s Ride**         |          ~1,500 |                  1,504 |              **73–95** | **−95.1 %**                  |
+| **Lazy World Ride JS Loaded (KB)**   |         2,741.1 |                2,741.1 |            **1,358.8** | **−50.4 %**                  |
+| **Mid-Ride Shader Compilations**     |             0–2 |                      0 |                  **0** | **Zero mid-ride stalls**     |
