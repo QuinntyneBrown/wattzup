@@ -127,4 +127,5 @@ export {
 export { RideHubRetryPolicy, type RetryContext } from './live/ride-hub-retry-policy';
 export { SignalRRideHubClient } from './live/signalr-ride-hub-client';
 export type { StandingRow, Standings } from './live/standings';
+export type { RaceStandingRow, RaceStandings } from './live/race-standings';
 export type { LobbySeat, LobbySeatKind } from './live/lobby-seat';

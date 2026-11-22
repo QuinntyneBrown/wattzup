@@ -16,6 +16,7 @@ import {
   type RideHubState,
   type SeatAssignment,
   type SeatsChanged,
+  type RaceStandings,
   type Standings,
 } from '@telo/api';
 import { LiveSessionStore } from './live-session-store';
@@ -70,6 +71,8 @@ class FakeHub implements RideHubClient {
   readonly readies: [string, boolean][] = [];
   readonly leaves: string[] = [];
   readonly seatListeners = new Set<(seats: SeatsChanged) => void>();
+  readonly raceReports: [string, number, number][] = [];
+  readonly raceListeners = new Set<(standings: RaceStandings) => void>();
   /** What the next FindRace answers: a seat, or an error to reject with. */
   raceAnswer: RaceSeatAssignment | Error = RACE;
 
@@ -95,6 +98,13 @@ class FakeHub implements RideHubClient {
   }
   async reportProgress(sessionId: string, outputKj: number, powerWatts: number): Promise<void> {
     this.reports.push([sessionId, outputKj, powerWatts]);
+  }
+  async reportRaceProgress(
+    sessionId: string,
+    distanceMetres: number,
+    powerWatts: number,
+  ): Promise<void> {
+    this.raceReports.push([sessionId, distanceMetres, powerWatts]);
   }
   async findRace(mapId: string): Promise<RaceSeatAssignment> {
     this.races.push(mapId);
@@ -127,6 +137,14 @@ class FakeHub implements RideHubClient {
   /** The hub sends StandingsUpdated. */
   standings(standings: Standings): void {
     for (const listener of this.listeners) listener(standings);
+  }
+  onRaceStandings(handler: (standings: RaceStandings) => void): () => void {
+    this.raceListeners.add(handler);
+    return () => this.raceListeners.delete(handler);
+  }
+  /** The hub sends RaceStandingsUpdated. */
+  raceStandings(standings: RaceStandings): void {
+    for (const listener of this.raceListeners) listener(standings);
   }
   onReconnected(handler: () => void): () => void {
     this.handlers.add(handler);
@@ -381,6 +399,37 @@ describe('LiveSessionStore', () => {
       injector.destroy();
 
       expect(hub.seatListeners.size).toBe(0);
+    });
+
+    it('reports the distance and power to its session once seated, dropping a report within 500 ms of the last (L2-123 AC1)', async () => {
+      store.report(10, 200);
+      await store.join({ ...race, sessionId: RACE.sessionId });
+
+      store.report(42, 250);
+      hub.now += 499;
+      store.report(44, 250);
+      hub.now += 1;
+      store.report(48, 260);
+
+      expect(hub.raceReports).toEqual([
+        [RACE.sessionId, 42, 250],
+        [RACE.sessionId, 48, 260],
+      ]);
+      expect(hub.reports).toEqual([]);
+    });
+
+    it('holds only the latest race standings of its session, and stops listening when its route goes (L2-123 AC3)', async () => {
+      await store.join({ ...race, sessionId: RACE.sessionId });
+      const latest: RaceStandings = { sessionId: RACE.sessionId, rows: [] };
+
+      hub.raceStandings({ sessionId: RACE.sessionId, rows: [] });
+      hub.raceStandings({ sessionId: 'other@20261122T180100Z', rows: [] });
+      hub.raceStandings(latest);
+      hub.raceStandings({ sessionId: 'other@20261122T180100Z', rows: [] });
+
+      expect(store.raceStandings()).toBe(latest);
+      injector.destroy();
+      expect(hub.raceListeners.size).toBe(0);
     });
   });
 });

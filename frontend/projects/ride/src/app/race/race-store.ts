@@ -48,6 +48,7 @@ import {
 } from '@telo/domain';
 import { catchError, of, take } from 'rxjs';
 import { LiveSessionStore } from '../live/live-session-store';
+import { liveRaceStandings } from './live-race-standings';
 
 /**
  * The race's state (docs/detailed-designs/race/ride-a-race), provided by the page so it goes when the rider leaves. It
@@ -432,12 +433,14 @@ export class RaceStore {
 
   /**
    * The race's opponents: nine bots paced by the pack, or in a solo race the ghost of the rider's best on the map, the
-   * medium pace when there is none or it cannot be read (L2-067 AC1, AC2; L2-050 AC4). Riders online have their own
-   * field with journey 15.
+   * medium pace when there is none or it cannot be read (L2-067 AC1, AC2; L2-050 AC4). Riders online are the
+   * service's, ranked by `rankLive` (slice 15.3).
    */
   private startField(map: MapDto): void {
     if (this.mode === 'bots') {
       this.field = new BotPack(map.id, this.pack);
+      this.rank();
+    } else if (this.mode === 'online') {
       this.rank();
     } else if (this.mode === 'solo') {
       this.ghosts
@@ -454,8 +457,12 @@ export class RaceStore {
     }
   }
 
-  /** Ranks the rider and the field at the last second ridden, the gaps at the rider's speed of the moment. */
+  /**
+   * Ranks the rider and the field at the last second ridden, the gaps at the rider's speed of the moment; riders
+   * online are ranked by the service.
+   */
   private rank(): void {
+    if (this.mode === 'online') return this.rankLive();
     if (!this.field || !this.line) return;
     const power = this.telemetry.powerW();
     const speed =
@@ -465,6 +472,24 @@ export class RaceStore {
     const you = this.line.hold(YOU, this.ridden(), second);
     this.standings.set(rankStandings(field, you, speed, this.line.crossings));
     this.riders.set(field.map((rider) => ({ jersey: rider.jersey, metres: rider.metres - you })));
+  }
+
+  /**
+   * A riders-online race: reports the rider's distance and power to the session (L2-123 AC1), then draws the board from
+   * the service's latest standings, and the world's riders at the service's distances (L2-123 AC3).
+   */
+  private rankLive(): void {
+    if (!this.line) return;
+    const you = this.line.hold(YOU, this.ridden(), this.lastSecond);
+    this.live.report(you, this.telemetry.powerW() ?? 0);
+    const race = this.live.race();
+    const standings = this.live.raceStandings();
+    this.standings.set(liveRaceStandings(standings, race));
+    this.riders.set(
+      (standings?.rows ?? [])
+        .filter((row) => row.seat !== race?.seat)
+        .map((row) => ({ jersey: row.jersey, metres: row.distanceMetres - you })),
+    );
   }
 
   /**
