@@ -604,6 +604,24 @@ with hairpins shows it most. The three amplitudes (0.03, 0.07, 4 mm) and the cap
 **Watch for.** The sign of the lean (positive roll leans the way a growing heading turns). A course whose centre
 line has a kink: the lean will snap there; smooth the line, do not filter the lean.
 
+### R4. Finish by vertex, and the lamps along the edges (riders pass 4)
+
+**What it gives.** Skin, lycra, lacquer, carbon, steel and rubber that each take the light as themselves, in one
+mesh and one material; at night, lamp light along every glossy edge.
+
+**How it works.** `course-cyclist.ts` writes a `finish` attribute (gloss, metal) on every vertex from a table keyed
+by the part's colour. `rider-finish.ts`: `vertexFinish` turns it into `roughnessNode` and `metalnessNode`;
+`sheen(gloss)` is a Fresnel-like edge term. `LampGlow.rider` adds `light × sheen × 1.6` to the emission.
+
+**To apply it.** Nothing to do for a map. By day the sun's highlight comes from the standard material alone; at
+night the sheen needs the map's `lights` or `lamps` (techniques 9 and 18). A new part gets a row in `FINISHES`.
+
+**Cost.** Two floats a vertex; some 1 % of a frame for the standard material.
+
+**Watch for.** Geometry merged with geometry that lacks the attribute (the merge fails): everything drawn by the
+riders' material must be made by `loft` or `solid`. Round shapes that meet at a crease: the edge light outlines
+each.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
@@ -612,7 +630,7 @@ The pictures the work aims at differ from a course in these ways, most visible f
 2. The water does not mirror the quay's own lamps, cranes and ships: only the sky and the far shore.
 3. Lit windows on the upper floors light nothing: only the ground floor's throw light.
 4. The neon signs have no glow in the air round them, as the lamps have.
-5. The riders: skin and cloth that shine alike, nobody out of the saddle on a climb, one build and one bike for
+5. The riders: a seat made of two spheres, no face, nobody out of the saddle on a climb, one build and one bike for
    all (see the riders' own log).
 6. Signs with lettering, pipes, gutters and fire escapes: a warehouse's wall is still flat between its windows.
 7. The lamps along the quay are not mirrored in the harbour beside them.

@@ -28,6 +28,10 @@ import {
   RGFormat,
   UnsignedByteType,
 } from 'three/webgpu';
+import { sheen, vertexFinish } from './rider-finish';
+
+/** How bright the lamps' glow comes back off the edge of the glossiest surface. */
+const SHEEN = 1.6;
 import type { CourseLamps } from './course';
 import {
   COLOUR_LIGHT_MAX,
@@ -65,7 +69,9 @@ export class LampGlow {
     const cell = texture(grid, at);
     const above = positionWorld.y.sub(cell.g.mul(map.spanY).add(map.minY));
     const tint = new Color(lamps.colour);
-    let lit: Node<'vec3'> = vec3(tint.r, tint.g, tint.b).mul(cell.r.mul(cell.r).mul(LAMP_LIGHT_MAX));
+    let lit: Node<'vec3'> = vec3(tint.r, tint.g, tint.b).mul(
+      cell.r.mul(cell.r).mul(LAMP_LIGHT_MAX),
+    );
     if (colours) {
       // The coloured lights are a second grid, read the same way and added to the lamps'.
       const second = new DataTexture(
@@ -112,7 +118,13 @@ export class LampGlow {
     material.vertexColors = source.vertexColors;
     material.side = source.side;
     const surface = source.vertexColors ? materialColor.mul(vertexColor().rgb) : materialColor;
-    material.emissiveNode = surface.mul(this.light).mul(strength);
+    // What is coloured by vertex carries its finish there too (rider-finish.ts); cloth has the one it was made with.
+    const gloss = source.vertexColors ? vertexFinish(material) : float(1 - material.roughness);
+    // The lamps' glow is all around, so a glossy surface throws it back along its edges, in the lamps' own colour.
+    material.emissiveNode = surface
+      .mul(this.light)
+      .mul(strength)
+      .add(this.light.mul(sheen(gloss)).mul(SHEEN));
     return material;
   }
 

@@ -22,6 +22,7 @@ import {
   Mesh,
   MeshBasicMaterial,
   MeshLambertMaterial,
+  MeshStandardNodeMaterial,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
   type Object3D,
@@ -62,6 +63,7 @@ import { skyMaterial } from './sky-material';
 import { type Rain, rain } from './rain';
 import { RiderBatch } from './rider-batch';
 import { bendLean } from './rider-lean';
+import { vertexFinish } from './rider-finish';
 import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
@@ -109,6 +111,13 @@ const MOST_RIDERS = 4;
 const MOST_FIELD = 12;
 /** The haze the distance fades into, from these metres to these; its colour is the course's (`courseLook`). */
 const FOG: readonly [number, number] = [200, 1500];
+/** The material for everything of a rider that is coloured by vertex, each part with its own finish. */
+function riderMaterial(): MeshStandardNodeMaterial {
+  const material = new MeshStandardNodeMaterial({ vertexColors: true });
+  vertexFinish(material);
+  return material;
+}
+
 /** How far up the road, in metres, a rider's lean into a bend is read from. */
 const LEAN_AHEAD = 6;
 const GHOST_OPACITY = 0.45;
@@ -191,7 +200,7 @@ export class CourseRenderer implements WorldRenderer {
   /** Set once the race's riders have been made, on its first frame. */
   private fieldMade = false;
   /** Draws everything of a rider that is coloured by vertex: the body and the bike (course-cyclist.ts). */
-  private readonly plain = new MeshLambertMaterial({ vertexColors: true });
+  private readonly plain = riderMaterial();
   private kit: CourseCyclistKit | null = null;
   private canvas: HTMLCanvasElement | null = null;
   private you: Cyclist | null = null;

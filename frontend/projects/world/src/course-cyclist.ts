@@ -78,6 +78,32 @@ const STEEL = new Color(0xa9adb3);
 const TAPE = new Color(0x202226);
 const SADDLE = new Color(0x0e0f11);
 const VENT = new Color(0x15161a);
+const BOTTLE = new Color(0xdfe3e8);
+
+/** A part's finish: how glossy it is, 0 to 1, and how much of a metal. */
+type Finish = readonly [gloss: number, metal: number];
+/** Cloth, and whatever is not named below. */
+const MATT: Finish = [0.22, 0];
+/** A helmet's shell: lacquered plastic. */
+const LACQUER: Finish = [0.9, 0];
+const FINISHES = new Map<Color, Finish>([
+  [SKIN, [0.5, 0]],
+  [SHORTS, [0.38, 0]],
+  [GRIPPER, [0.3, 0]],
+  [SOCK, [0.08, 0]],
+  [SHOE, [0.8, 0]],
+  [SOLE, [0.6, 0]],
+  [GLOVE, [0.25, 0]],
+  [FRAME, [0.95, 0.25]],
+  [TYRE, [0.12, 0]],
+  [RIM, [0.85, 0.3]],
+  [STEEL, [0.8, 1]],
+  [TAPE, [0.1, 0]],
+  [SADDLE, [0.45, 0]],
+  [VENT, [0.1, 0]],
+  [BOTTLE, [0.7, 0]],
+]);
+const finishOf = (colour: Color): Finish => FINISHES.get(colour) ?? MATT;
 
 /** One section of a lofted tube: how far along it (0 to 1), its half-widths, and how far off the axis it sits. */
 interface Section {
@@ -101,6 +127,7 @@ function loft(
 ): BufferGeometry {
   const positions: number[] = [];
   const colours: number[] = [];
+  const finishes: number[] = [];
   const index: number[] = [];
   for (const section of sections) {
     const c = colour(section.t);
@@ -112,6 +139,7 @@ function loft(
         (section.z ?? 0) + Math.sin(a) * section.rz,
       );
       colours.push(c.r, c.g, c.b);
+      finishes.push(...finishOf(c));
     }
   }
   for (let i = 0; i < sections.length - 1; i++) {
@@ -131,6 +159,7 @@ function loft(
     const middle = positions.length / 3;
     positions.push(section.x ?? 0, section.t * length, section.z ?? 0);
     colours.push(c.r, c.g, c.b);
+    finishes.push(...finishOf(c));
     for (let s = 0; s < around; s++) {
       const a = at * around + s;
       const b = at * around + ((s + 1) % around);
@@ -140,6 +169,7 @@ function loft(
   const geometry = new BufferGeometry();
   geometry.setAttribute('position', new BufferAttribute(new Float32Array(positions), 3));
   geometry.setAttribute('color', new BufferAttribute(new Float32Array(colours), 3));
+  geometry.setAttribute('finish', new BufferAttribute(new Float32Array(finishes), 2));
   geometry.setIndex(index);
   geometry.computeVertexNormals();
   const flat = geometry.toNonIndexed();
@@ -217,8 +247,8 @@ function tube(length: number, from: number, to: number, colour: Color, around = 
   );
 }
 
-/** One of Three.js's own shapes with position, normal and one colour, not indexed, ready to merge. */
-function solid(shape: BufferGeometry, colour: Color): BufferGeometry {
+/** One of Three.js's own shapes with position, normal, one colour and one finish, not indexed, ready to merge. */
+function solid(shape: BufferGeometry, colour: Color, finish = finishOf(colour)): BufferGeometry {
   const geometry = shape.index ? shape.toNonIndexed() : shape.clone();
   shape.dispose();
   for (const name of Object.keys(geometry.attributes)) {
@@ -228,6 +258,9 @@ function solid(shape: BufferGeometry, colour: Color): BufferGeometry {
   const colours = new Float32Array(count * 3);
   for (let i = 0; i < count; i++) colours.set([colour.r, colour.g, colour.b], i * 3);
   geometry.setAttribute('color', new BufferAttribute(colours, 3));
+  const finishes = new Float32Array(count * 2);
+  for (let i = 0; i < count; i++) finishes.set(finish, i * 2);
+  geometry.setAttribute('finish', new BufferAttribute(finishes, 2));
   return geometry;
 }
 
@@ -413,7 +446,7 @@ class CourseCyclist implements RiderModel {
     this.owned.push(still, trunk);
     // The jersey and the shorts' seat: one mesh, drawn with the rider's own kit (its panels, pockets and lettering).
     const worn = mergeGeometries(rider.kit, false)!;
-    const fabric = new MeshStandardMaterial({ map: kitTexture(jersey), roughness: 0.72 });
+    const fabric = new MeshStandardMaterial({ map: kitTexture(jersey), roughness: 0.62 });
     worn.translate(-HIP.x, -HIP.y, -HIP.z);
     this.torso.add(new Mesh(worn, fabric));
     this.owned.push(worn, fabric, fabric.map!);
@@ -607,7 +640,7 @@ function bike(): BufferGeometry[] {
   const foot = BB.clone()
     .addScaledVector(down, 0.2)
     .add(new Vector3(0, 0.04, 0.012));
-  stick(foot, foot.clone().addScaledVector(down, 0.17), 0.035, 0.035, new Color(0xdfe3e8), 10);
+  stick(foot, foot.clone().addScaledVector(down, 0.17), 0.035, 0.035, BOTTLE, 10);
   stick(
     foot.clone().addScaledVector(down, 0.17),
     foot.clone().addScaledVector(down, 0.21),
@@ -679,7 +712,7 @@ function body(jersey: Color): { still: BufferGeometry[]; kit: BufferGeometry[] }
   const head = ball(skull, new Vector3(0.076, 0.098, 0.092), SKIN, 12);
   placed(head.piece, new Matrix4().makeRotationX(0.25).setPosition(head.at));
   const shellShape = new SphereGeometry(1, 20, 10, 0, Math.PI * 2, 0, Math.PI * 0.56);
-  const shell = solid(shellShape, jersey);
+  const shell = solid(shellShape, jersey, LACQUER);
   // Vents: every other stripe round the crown is dark, away from the rim.
   const place = shell.getAttribute('position');
   const tint = shell.getAttribute('color');

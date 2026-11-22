@@ -67,6 +67,7 @@ All of it is in the `world` library; nothing outside it changes.
 | `rain.ts` | `rain(strength, light)`: the rain as one mesh, each streak falling, wrapping round the camera and facing the eye in the vertex shader, lit by the lamps' grid (L2-166 AC24). |
 | `course-cyclist.ts` | `CourseCyclistKit`: the course's own rider (L2-166 AC26), a body and a bike of lofted sections coloured by vertex, merged into one mesh but for the parts the pedalling moves. The class worlds' `world-cyclist.ts` is not used by a course. |
 | `rider-lean.ts` | `bendLean`: how far a rider leans for the turn the road makes over the next metres (L2-166 AC27). Pure, unit-tested. |
+| `rider-finish.ts` | `vertexFinish`, `sheen`: the gloss and metal a rider's vertices carry, as the material's roughness and metalness, and the edge light the lamps add (L2-166 AC28). |
 | `surface-detail.ts` | The detail texture's texels, worked out on the device: grain, patches, cracks, stones. No Three.js; unit-tested. |
 | `world-renderer-loader.ts` | Returns a `MapRenderer`. It imports neither renderer, so Three.js still loads only when a world starts. |
 

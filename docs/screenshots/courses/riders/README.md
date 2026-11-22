@@ -12,6 +12,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 1 | A rider with the shape of a body, on a bike with the proportions of one | 60.1 fps (the display was at 60 Hz), none over 20 ms | 16.9 ms | 335 fps (2.99 ms): 335, 339, 314 | 83,881 | 64 | Yes |
 | 2 | Kit with a design: panels, pockets, lettering, cuffs; shoulders that join the arms | 120.1 fps, none over 20 ms | 16.8 ms | 323 fps (3.10 ms): 324, 314, 323 | 81,601 | 69 | Yes |
 | 3 | Riders that move: a lean into each bend, the bike rocking under the stroke, the shoulders swaying over it | 120.1 fps, none over 20 ms | 9.6 ms | 320 fps (3.12 ms): 331, 320, 293 | 81,601 | 74 | Yes |
+| 4 | A finish for each surface: skin, lycra, lacquer, carbon, steel, rubber; lamp light along glossy edges | 120.0 fps, none over 20 ms | 16.6 ms | 317 fps (3.15 ms): 326, 317, 317 | 81,601 | 74 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -126,3 +127,39 @@ level it looked like a fall. 0.35.
   because they eased off.
 - Turning the upper body about the line through the two places it is held (saddle and bars) lets it move without
   the hands leaving the hoods; no arm has to be solved again each frame.
+
+## Pass 4: a finish for each surface
+
+**Before** (`rider-03.mp4`, `rider-02-start.jpg`): everything coloured by vertex (skin, shorts, shoes, helmet, the
+whole bike) was drawn fully matt, by one Lambert material, and the lamps only tinted it. Skin, rubber and steel
+differed in colour and in nothing else.
+
+**After** (`rider-04-start.jpg`, `rider-04.jpg`, `rider-04.mp4`): each part has its own finish. Under the street
+lamps the light runs along the edge of a calf, the lycra over the seat, the helmet's shell and the frame's tubes;
+socks, bar tape and tyres stay dull; the cassette and hubs are metal.
+
+**What changed.**
+
+- `course-cyclist.ts`: beside its colour, every vertex carries a `finish` (gloss 0 to 1, metal 0 to 1), looked up
+  from the colour it is painted (`FINISHES`: skin 0.5, shorts 0.38, shoes 0.8, frame 0.95 and a quarter metal, steel
+  0.8 and all metal, tyres 0.12, socks 0.08; cloth 0.22 where nothing is named; the helmet's shell 0.9).
+- `rider-finish.ts`, new: `vertexFinish(material)` reads the attribute into the material's roughness
+  (1 - 0.82 × gloss) and metalness; `sheen(gloss)` is how much of an all-round light a surface throws back along
+  its edges ((1 - facing)³ × gloss).
+- The riders' vertex-coloured material is a standard (physically lit) material in place of Lambert, on every map,
+  so the sun and the moon draw a highlight on what is glossy.
+- `lamp-glow.ts`: a rider's lamp-lit material adds the lamps' light × `sheen` to what it emits, in the lamps' own
+  colour, so a magenta sign rims a rider in magenta.
+
+**Cost.** 317 fps against 320; no frame over 20 ms. No draw calls, no triangles, no textures: two floats a vertex.
+
+**Tried and dropped.** Shorts at 0.55: the seat's two rounds each took a bright ring and read as two balls. 0.38,
+the same as the kit's cloth above them.
+
+**Learned.**
+
+- The lamps here are not lights the renderer shades with (they are a map the surfaces read), so a glossy material
+  alone showed nothing at night. The gloss had to be given something to throw back: the same map, at the edges.
+- A finish in the vertices costs nothing a frame and keeps the rider one mesh; a material for each finish would have
+  been a draw call for each.
+- The rim light is unkind to crude shapes: it drew a line round the seat's two spheres. Shape first, then shine.
