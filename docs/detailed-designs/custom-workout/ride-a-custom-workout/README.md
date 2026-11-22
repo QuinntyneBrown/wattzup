@@ -79,14 +79,28 @@ end a custom ride*.
 - **`VideoPlayer`** / `VIDEO_PLAYER_FACTORY` — loaded only when the workout has a video. Without
   one the main view opens on "Power vs. plan" (`L2-098` AC6).
 
-**Backend.** Start ride saves the workout: `PUT /api/riders/me/custom-workout`, read back by
-`GET` when Custom workout opens (`L2-094` AC3). The running ride makes no backend request.
+**Saving** (`api`, `domain` and the backend)
+
+- **`CustomWorkoutApi`** / `CUSTOM_WORKOUT_API` — `load()` and `save(draft, plan)`, bound on the
+  `/profile/custom` route to `HttpCustomWorkoutApi`. Start ride saves without waiting: the ride
+  starts whether the save lands or not.
+- **`restoreCustomWorkout(saved)`** (`domain/engine`) — the saved settings as a draft, or `null`
+  when one is unknown, out of bounds or of the wrong kind; Custom workout then opens on GCN 30-min
+  HIIT. A saved workout that arrives after the rider has changed something is not applied.
+- **`PUT /api/riders/me/custom-workout`** — `{ draft, segments }`; `SaveCustomWorkoutCommand`
+  keeps the draft's JSON as it came (at most 8,000 characters) once `WorkoutPlanRules` accepts the
+  segments, else 400 `plan_invalid`. 204.
+- **`GET /api/riders/me/custom-workout`** — `{ draft }`, or 404 `custom_workout_not_found`.
+- **`CustomWorkout`** (`Telo.Ride.Domain.Workouts`) — one row per rider, keyed by rider, deleted
+  with the account.
+
+The running ride makes no backend request.
 
 ## Requirements
 
 | L2 ID | Refines (L1) | Requirement |
 |-------|--------------|-------------|
-| `L2-101` | `L1-016` | The custom ride at `/profile/custom/ride` shall show a header holding the lockup and "Library" (`L2-107`); the bike status (`L2-019`); the workout "HIIT · 8 × 0:30 · 3:00 → 1:30 recover" with the hidden text "— edit workout"; "Feedback" (`L2-116`) and the clock (`role="timer"`, "Elapsed 6:52 of 30:00"); Pause, End and Full screen. In flat mode the workout shall read "Flat · Level 12 · 30 min". Choosing the workout link shall pause the ride and open Custom workout with this plan. On a phone Pause, Resume and End shall be at least 48 px; from sm at least 40 px. |
+| `L2-101` | `L1-016` | The custom ride at `/profile/custom/ride` shall show a header holding the lockup and "Library" (`L2-107`); the bike status (`L2-019`); the workout "HIIT · 8 × 0:30 · 3:00 → 1:30 recover" with the hidden text "— edit workout"; "Feedback" (`L2-116`) and the clock (`role="timer"`, "Elapsed 6:52 of 30:00"); Pause, End and Full screen. In flat mode the workout shall read "Flat · Level 12 · 30 min". Choosing the workout link shall stop the ride and open Custom workout with this plan; Start ride shall begin a new ride. On a phone Pause, Resume and End shall be at least 48 px; from sm at least 40 px. |
 | `L2-102` | `L1-016` | At 6:52 into the GCN plan, Power shall read "107 W" with "Target 107 W" and "On target"; Cadence "73 rpm" with "Aim for 72"; the interval card "Recover", "Round 1 of 8" and "1:38" (`aria-label="1:38 left in this interval"`) with its bar at 46 % and "Next: Work 0:30 at level 24". On the last segment the next line shall read "Last stretch". Each second the interval bar shall ease to its new value over 1000 ms, with no easing under reduced motion. |
 | `L2-103` | `L1-016` | The main view shall be a tab list "Main view" with "Video" and "Power vs. plan". Video shall play the workout's video locked to the ride clock at its offset (`L2-088` AC1–3), captioned "In sync · pauses with the ride". "Power vs. plan" shall draw the rider's power against the plan's target power with the legend Actual, Work target and Recover, a maximum of 600 W (300 W for flat) and the label "Power against the plan: {p} watts now against a {t} watt target, {elapsed} of {total} ridden". The progress strip shall read "Ride progress: 6:52 of 30:00" with a tick every 5:00. |
 | `L2-104` | `L1-016` | The metrics shall read Heart rate, Avg power, Speed, Distance and Energy ("123 bpm", "156 W", "17.5 km/h", "2.24 km", "64 kcal"), two columns on a phone and five from sm. At lg or wider telemetry shall be on the left and a 340 px control aside on the right; below lg the aside shall go under the telemetry. |
@@ -144,7 +158,8 @@ The tabs swap the video and the chart; the video, when present, stays locked to 
 
 ### Behaviour — edit the workout mid-ride
 
-The workout link pauses the ride and opens Custom workout with this plan (`L2-101` AC3).
+The workout link stops the ride and opens Custom workout with this plan (`L2-101` AC3); the
+sequence diagram still draws a pause.
 
 ![Sequence diagram for editing the workout mid-ride](diagrams/sequence-edit-the-workout.png)
 
@@ -155,7 +170,8 @@ The workout link pauses the ride and opens Custom workout with this plan (`L2-10
 2. **Slice 21.4.** "Library", Pause and End, the overlays for no bike, Bluetooth off and a lost
    bike, and the plan's end are slice 21.4's (`L2-105` to `L2-108`); "Feedback" is slice 26.1's.
 3. **Edit workout.** The workout link opens Custom workout with the ride's plan; the ride is not
-   kept, so Start ride begins a new one.
+   kept, so Start ride begins a new one (`L2-101` AC3 now says so). Saving a ride left this way,
+   as far as it went, belongs with Library's leave popover (slice 21.4).
 4. **Bike status.** The mock's status opens Diagnostics, which is slice 25.1's; until then it is
    text.
 5. **Ride sound.** `L2-163`'s ride sound is not played in the custom ride yet.
@@ -170,6 +186,9 @@ The workout link pauses the ride and opens Custom workout with this plan (`L2-10
 9. **The log in the controller.** "Sent to bike" is kept by `ResistanceController`, which stamps
    each command with the ride clock's second (`SentCommand.rideTime`), rather than by a separate
    `SentLog` service.
-10. **The trace in SVG.** The design names a canvas; the mock draws SVG, and the trace is SVG,
+10. **No device copy.** The setup design named a copy on the device as a fallback; `L2-094` AC3
+    and `L2-099` AC4 name only the account, so with no network Custom workout opens on GCN
+    30-min HIIT.
+11. **The trace in SVG.** The design names a canvas; the mock draws SVG, and the trace is SVG,
    bounded by the plan's length in seconds and drawn as at most 900 points, each averaging its
    seconds.

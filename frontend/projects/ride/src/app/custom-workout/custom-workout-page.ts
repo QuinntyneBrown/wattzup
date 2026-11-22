@@ -64,6 +64,7 @@ export default class CustomWorkoutPage {
 
   /** Start ride opens the ride, which rides this draft's plan (L2-099 AC4). */
   protected start(): void {
+    this.store.save();
     void this.router.navigate(['ride'], { relativeTo: this.route });
   }
 

@@ -1,5 +1,10 @@
 import type { Routes } from '@angular/router';
-import { MONOTONIC_TIME, SCREEN_WAKE_LOCK } from '@telo/api';
+import {
+  CUSTOM_WORKOUT_API,
+  HttpCustomWorkoutApi,
+  MONOTONIC_TIME,
+  SCREEN_WAKE_LOCK,
+} from '@telo/api';
 import { BrowserScreenWakeLock } from '@telo/domain';
 import { provideClassVideo } from '../classes/provide-class-video';
 import { CustomWorkoutStore } from './custom-workout-store';
@@ -11,8 +16,13 @@ import { CustomWorkoutStore } from './custom-workout-store';
 export const customWorkoutRoutes: Routes = [
   {
     path: '',
-    // The draft, and the video's player, whose code loads only when the preview or the ride asks for it (AGENTS.md).
-    providers: [CustomWorkoutStore, provideClassVideo()],
+    // The draft, saved on the rider's account, and the video's player, whose code loads only when the preview or the
+    // ride asks for it (AGENTS.md).
+    providers: [
+      { provide: CUSTOM_WORKOUT_API, useClass: HttpCustomWorkoutApi },
+      CustomWorkoutStore,
+      provideClassVideo(),
+    ],
     children: [
       {
         path: '',

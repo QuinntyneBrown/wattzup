@@ -139,4 +139,5 @@ export {
   traceMaxWatts,
 } from './engine/custom-ride';
 export { PowerTrace } from './engine/power-trace';
+export { restoreCustomWorkout } from './engine/restore-custom-workout';
 export { SENT_LOG_ROWS, bleLinkName, logSent } from './engine/sent-log';

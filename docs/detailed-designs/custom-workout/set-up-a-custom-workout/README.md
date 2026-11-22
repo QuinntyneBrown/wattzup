@@ -125,7 +125,7 @@ settings, and an optional `VideoSetting`. The backend's `CustomWorkout` mirrors 
 
 ### Behaviour — open the setup
 
-The store loads the last saved workout from the backend, falls back to the device copy, and then
+The store loads the last saved workout from the backend and, with none or no network, falls back
 to the GCN 30-min HIIT preset (`L2-094` AC3).
 
 ![Sequence diagram for opening the custom workout setup](diagrams/sequence-open-the-setup.png)
