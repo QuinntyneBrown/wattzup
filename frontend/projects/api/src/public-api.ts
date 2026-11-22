@@ -107,6 +107,14 @@ export {
 } from './riders/display-name';
 export type { NextRideReward, NextRideView } from './home/next-ride-view';
 export { measureClockOffset, type ClockSample } from './live/clock-offset';
+export {
+  RideHubError,
+  seatFrom,
+  type JoinClassSessionResult,
+  type OfferedSession,
+  type RideHubErrorCode,
+  type SeatAssignment,
+} from './live/join-class-session';
 export { RIDE_HUB_CLIENT, type RideHubClient, type RideHubState } from './live/ride-hub-client';
 export { RideHubRetryPolicy, type RetryContext } from './live/ride-hub-retry-policy';
 export { SignalRRideHubClient } from './live/signalr-ride-hub-client';

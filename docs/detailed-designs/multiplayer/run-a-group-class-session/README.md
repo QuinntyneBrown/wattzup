@@ -25,33 +25,51 @@ ride (`docs/detailed-designs/classes/ride-with-a-group`) shows the board this se
 
 **Frontend (Ride app)**
 
-- **`RideHubClient.joinClassSession(classId, sessionId)`** — `api` contract method. It resolves
-  with a `SeatAssignmentDto`, or rejects with a `RideHubError` whose `code` is `session_full`,
-  `session_started` or `class_locked`, carrying the next session's id and start time.
-- **`ClassStartPage`** — `ride` page. It branches on the refusal `code`: for `session_full` and
-  `session_started` it shows the next session (`L2-086` AC2, AC3).
+- **`RideHubClient.joinClassSession(classId, sessionId)`** — `api` contract method. The hub
+  answers every join with a `JoinClassSessionResult`; the client resolves a seat with a
+  `SeatAssignment` (session, start, jersey) and turns a refusal into a `RideHubError` whose
+  `code` is `session_full`, `session_started`, `class_locked` or `session_not_found`, carrying
+  the next session's id and start time when there is one. A refusal is an answer, not a hub
+  error, so its code reaches the app (SignalR hides a server exception's message).
+- **`LiveSessionStore`** — joins as the class ride connects, after measuring the clock offset,
+  and joins again after every reconnect, keeping the seat (`L2-120` AC3). A refusal sets its
+  `refused` code.
+- **`ClassRideStore`** — `ride` store. On a refusal it leaves the ride: back to Class Start,
+  which reads the sessions again and offers the next one (`L2-086` AC2, AC3), or to the Class
+  Library for `class_locked`.
 - **`LiveSessionStore`** and **`ServerClock`** — as in `multiplayer/run-a-race-session`. On
   `SessionStarted`, the store hands the local deadline to the `RideClock` and to the video player,
   so the video and the clock start together (`L2-122` AC3).
 
 **Backend**
 
-- **`RideHub.JoinClassSession(classId, sessionId)`** — sends `JoinClassSessionCommand`.
-- **`JoinClassSessionCommandHandler`** — `Telo.Ride.Application`. It reads the class from the
-  catalogue and refuses a rider below the class's opening level with `class_locked` (`L2-082`).
-  It resolves the slot through `GroupSessionSchedule`, gets or creates the `GroupClassSession`
-  for that slot, and asks the session to seat the rider. The session refuses with
-  `session_started` once its start has passed and with `session_full` when 10 riders are seated
-  (`L2-122` AC1, AC2). On success the handler adds the connection to the session group and sends
-  `SeatsChanged`.
+- **`RideHub.JoinClassSession(classId, sessionId)`** — sends `JoinClassSessionCommand` with the
+  signed-in rider's id.
+- **`JoinClassSessionCommandHandler`** — `Telo.Ride.Application`. An id that is not one of the
+  class's slots (`GroupSessionSchedule.TryParse`), or a slot past the next two, is
+  `session_not_found`, so nobody can make sessions far ahead. It reads the rider and refuses one
+  below the class's opening level with `class_locked` (`L2-082`). It gets or creates the
+  `GroupClassSession` for an upcoming slot (or finds a started one) in `IGroupSessionRegistry`,
+  and asks it to seat the rider. The session refuses with `session_started` once its start has
+  passed, offering the next session, and with `session_full` when 10 riders are seated, offering
+  the one 15 minutes later (`L2-122` AC1, AC2, `L2-086` AC3). Adding the connection to the
+  session's group and `SeatsChanged` come with slice 14.4, which is the first to send to it.
 - **`GroupSessionSchedule`** — domain service in `Telo.Ride.Domain`. `Next(now, count)` yields
   the next slot start times after now, 15 minutes apart on the quarter hours (UTC), so a slot
   that starts now has started; `SessionId(classId, start)` names a slot's session
   (`hiit-cardio-30@20261121T1945Z`). The mocks' "7:39 PM" and "7:54 PM" are examples of what
   the app shows for the times it is given, not the anchor.
-- **`GroupClassSession`** — `LiveSession` for one `ClassId` and slot. Its id is derived from the
-  class id and the slot start, so two riders asking for the same slot reach the same session.
-  `TrySeat(rider, now)` returns a `JoinOutcome`.
+- **`GroupClassSession`** — `Telo.Ride.Domain`, one `ClassId` and slot. Its id is derived from
+  the class id and the slot start, so two riders asking for the same slot reach the same
+  session. `TrySeat(rider, name, now)` returns a `JoinOutcome` and the seat; a seated rider keeps
+  their seat on every later join, even after the start, so a reconnect rejoins with it
+  (`L2-120` AC3). Each seat takes the next jersey of a fixed palette of ten design-system jersey
+  tokens (`lena`, `marco`, `priya`, `jwatts`, `ollie`, `kenji`, `ana`, `nova`, `rook`, `juno`),
+  since a rider has no jersey of their own yet; a rider without a display name is "Rider".
+- **`InMemoryGroupSessionRegistry`** — `Telo.Ride.Infrastructure`, behind
+  `IGroupSessionRegistry`: the live sessions in the one API instance's memory (ADR 0025). A
+  session goes three hours after its start, longer than any class, so the registry holds at most
+  each class's next two slots and the sessions still riding.
 - **`TickLiveSessionsCommandHandler`** — at a group session's start, calls `FillWithBots`, which
   seats bots up to 10, and sends `SessionStarted` with the start as server time (`L2-122` AC3).
 - **`GetClassSessionsQueryHandler`** — serves `GET /api/classes/{classId}/sessions` for Class
@@ -60,8 +78,10 @@ ride (`docs/detailed-designs/classes/ride-with-a-group`) shows the board this se
 **Slices.** Slice 14.2 builds `GroupSessionSchedule` and the two reads of it, `GET
 /api/classes/{classId}/sessions` (Class Start) and `GET /api/classes/sessions` (every class's
 next session, for the Class Library's chip). Both need a signed-in rider, since a session lists
-its riders. No rider is seated until slice 14.3 adds `JoinClassSession`, `GroupClassSession` and
-the in-memory registry, so every seat reads free until then; slice 14.4 starts the session.
+its riders. Slice 14.3 adds `JoinClassSession`, `GroupClassSession` and the in-memory registry,
+whose seats both reads now show; slice 14.4 starts the session, adds the session's hub group and
+fills it with bots. A seat is held until the session goes; leaving a session (`L2-124`) frees
+it in journey 15.
 
 ## Requirements
 
@@ -99,8 +119,9 @@ rider's level from the database and keeps the live session in memory.
 
 ### Class structure
 
-`GroupClassSession` specializes `LiveSession` and returns a `JoinOutcome`;
-`GroupSessionSchedule` produces its slots.
+`GroupClassSession` holds up to ten `SessionSeat`s and returns a `JoinOutcome`;
+`GroupSessionSchedule` names and reads its slots; `InMemoryGroupSessionRegistry` keeps the live
+sessions.
 
 ![Class diagram for running a group class session](diagrams/class-structure.png)
 

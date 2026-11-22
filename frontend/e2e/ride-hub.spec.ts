@@ -3,8 +3,8 @@
 // Description: a group class ride holds one connection to the ride hub and measures its clock offset from five
 // ServerTime calls; when the connection drops it reconnects at once and measures again, and leaving the ride closes
 // it. A solo class ride and the rest of the app hold none: the shared fixture fails any hub request it was not opened
-// for. Joining a session (JoinClassSession) is slice 14.3's; here the ride opens with its session in the address.
-import { hiitCardio } from './fixtures/classes';
+// for. The ride joins its session (JoinClassSession) as it connects; group-class-join.spec.ts covers the join.
+import { hiitCardio, seated } from './fixtures/classes';
 import { echelonBike } from './fixtures/echelon';
 import { expect, test } from './fixtures/test';
 import { ClassRidePage } from './pages/class-ride.page';
@@ -17,6 +17,9 @@ test('a group class ride opens one hub connection and measures its clock offset;
 }) => {
   hub.open();
   hub.answer('ServerTime', () => Date.now() + 1500);
+  hub.answer('JoinClassSession', () =>
+    seated({ id: 'session-0715', startsAt: '2026-11-21T07:15:00+00:00' }),
+  );
   await bluetooth.remember(echelonBike);
   const ride = new ClassRidePage(page);
 
@@ -38,6 +41,9 @@ test('when the connection drops, the ride reconnects at once and measures its cl
 }) => {
   hub.open();
   hub.answer('ServerTime', () => Date.now());
+  hub.answer('JoinClassSession', () =>
+    seated({ id: 'session-0715', startsAt: '2026-11-21T07:15:00+00:00' }),
+  );
   await bluetooth.remember(echelonBike);
   await new ClassRidePage(page).openGroup(hiitCardio.id, 'session-0715');
   await expect.poll(() => hub.invocations('ServerTime').length).toBe(5);

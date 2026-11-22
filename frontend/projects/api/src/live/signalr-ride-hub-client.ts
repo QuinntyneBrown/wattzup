@@ -1,5 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import type { HubConnection } from '@microsoft/signalr';
+import { type JoinClassSessionResult, type SeatAssignment, seatFrom } from './join-class-session';
 import type { RideHubClient, RideHubState } from './ride-hub-client';
 import { RideHubRetryPolicy } from './ride-hub-retry-policy';
 
@@ -58,6 +59,13 @@ export class SignalRRideHubClient implements RideHubClient {
   serverTime(): Promise<number> {
     if (this.connection === null) return Promise.reject(new Error('The ride hub is not connected'));
     return this.connection.invoke<number>('ServerTime');
+  }
+
+  async joinClassSession(classId: string, sessionId: string): Promise<SeatAssignment> {
+    if (this.connection === null) throw new Error('The ride hub is not connected');
+    return seatFrom(
+      await this.connection.invoke<JoinClassSessionResult>('JoinClassSession', classId, sessionId),
+    );
   }
 
   onReconnected(handler: () => void): () => void {

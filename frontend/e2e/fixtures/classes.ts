@@ -85,3 +85,26 @@ export const hiitSessions = [
   hiitSession('2026-11-21T19:39:00Z', sixRiders),
   hiitSession('2026-11-21T19:54:00Z', sixRiders.slice(0, 2)),
 ];
+
+/** The hub's answer to JoinClassSession when the rider takes a seat in the session. */
+export function seated(
+  session: { readonly id: string; readonly startsAt: string },
+  jersey = 'lena',
+) {
+  return { code: null, sessionId: session.id, startsAt: session.startsAt, jersey, next: null };
+}
+
+/** The hub's answer to JoinClassSession when it refuses (session_full, session_started), with the session it offers. */
+export function refused(
+  code: string,
+  session: { readonly id: string; readonly startsAt: string },
+  next: { readonly id: string; readonly startsAt: string },
+) {
+  return {
+    code,
+    sessionId: session.id,
+    startsAt: session.startsAt,
+    jersey: null,
+    next: { id: next.id, startsAt: next.startsAt },
+  };
+}
