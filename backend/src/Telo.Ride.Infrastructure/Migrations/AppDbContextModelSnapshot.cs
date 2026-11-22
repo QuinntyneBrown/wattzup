@@ -168,6 +168,25 @@ namespace Telo.Ride.Infrastructure.Migrations
                     b.ToTable("MapProgress");
                 });
 
+            modelBuilder.Entity("Telo.Ride.Domain.Results.SessionResult", b =>
+                {
+                    b.Property<string>("SessionId")
+                        .HasMaxLength(96)
+                        .HasColumnType("nvarchar(96)");
+
+                    b.Property<DateTimeOffset>("EndedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("MapId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.HasKey("SessionId");
+
+                    b.ToTable("SessionResults");
+                });
+
             modelBuilder.Entity("Telo.Ride.Domain.Rides.RecordedRide", b =>
                 {
                     b.Property<Guid>("RiderId")
@@ -240,6 +259,10 @@ namespace Telo.Ride.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("RecordedAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("SessionId")
+                        .HasMaxLength(96)
+                        .HasColumnType("nvarchar(96)");
+
                     b.Property<int?>("StarsEarned")
                         .HasColumnType("int");
 
@@ -279,6 +302,59 @@ namespace Telo.Ride.Infrastructure.Migrations
                         .HasForeignKey("RiderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Telo.Ride.Domain.Results.SessionResult", b =>
+                {
+                    b.OwnsMany("Telo.Ride.Domain.Results.SessionResultEntry", "Entries", b1 =>
+                        {
+                            b1.Property<string>("SessionId")
+                                .HasColumnType("nvarchar(96)");
+
+                            b1.Property<int>("Seat")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Seat"));
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(40)
+                                .HasColumnType("nvarchar(40)");
+
+                            b1.Property<double>("OutputKj")
+                                .HasColumnType("float");
+
+                            b1.Property<int>("Place")
+                                .HasColumnType("int");
+
+                            b1.Property<Guid?>("RiderId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Status")
+                                .IsRequired()
+                                .HasMaxLength(16)
+                                .HasColumnType("nvarchar(16)");
+
+                            b1.Property<int?>("TimeSeconds")
+                                .HasColumnType("int");
+
+                            b1.HasKey("SessionId", "Seat");
+
+                            b1.HasIndex("RiderId");
+
+                            b1.ToTable("SessionResultEntries", (string)null);
+
+                            b1.HasOne("Telo.Ride.Domain.Accounts.Rider", null)
+                                .WithMany()
+                                .HasForeignKey("RiderId")
+                                .OnDelete(DeleteBehavior.SetNull);
+
+                            b1.WithOwner()
+                                .HasForeignKey("SessionId");
+                        });
+
+                    b.Navigation("Entries");
                 });
 
             modelBuilder.Entity("Telo.Ride.Domain.Rides.RecordedRide", b =>

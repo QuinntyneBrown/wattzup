@@ -1,6 +1,6 @@
 // Unit test
 // Traces to: L2-121 AC1, AC2; L2-052 AC1, AC5; L2-053 AC1, AC2; L2-054 AC1, AC2, AC3; L2-055 AC1, AC2, AC3; L2-057 AC2;
-// L2-120 AC3; L2-121 AC3; L2-123 AC1, AC2; L2-124 AC1, AC2, AC4
+// L2-120 AC3; L2-121 AC3; L2-123 AC1, AC2; L2-124 AC1, AC2, AC4; L2-125 AC1; L2-071 AC3
 // Description: a race session seats riders in the first open seat, each in the next free jersey, and a seated rider who
 // asks again keeps their seat. It is open while a seat is free and more than 10 seconds remain. A leaver's seat opens
 // again with their name before the bots fill it, and goes to the next bot after. At 10 seconds to the start bots take
@@ -10,9 +10,12 @@
 // (L2-123 AC1, AC2), each gap the seconds since the leader reached the rider's distance, from a trace of the last 600.
 // Once started, a leaver keeps the seat marked DNF, as does a racer silent 15 seconds; a rider gone 30 seconds is
 // removed and refused a rejoin; DNF ranks last, and a rider held at the line is finished (L2-124 AC1, AC2, AC4).
+// It ends when every person has finished or is DNF, or 2 minutes after the first person finished, with each seat's
+// place, time and output from the progress it received; once ended it rides no further (L2-125 AC1, L2-071 AC3).
 using System.Globalization;
 using Telo.Ride.Domain.Classes;
 using Telo.Ride.Domain.Races;
+using Telo.Ride.Domain.Results;
 
 namespace Telo.Ride.Api.Tests;
 
@@ -248,6 +251,63 @@ public sealed class RaceSessionTests
         Assert.Equal(RaceStatus.Dnf, session.Standings().Single(row => row.Seat == 1).Status);
     }
 
+    [Theory]
+    [InlineData(14, false)]
+    [InlineData(15, true)]
+    public void A_race_ends_once_every_person_has_finished_or_is_DNF(int second, bool ended)
+    {
+        var session = Full();
+        session.RecordProgress(Rider(1), 400, 300, Start.AddSeconds(1));
+
+        session.Ride(Start.AddSeconds(second), RouteMetres);
+        var result = session.Result(Start.AddSeconds(second));
+
+        Assert.Equal(ended, result is not null);
+        if (result is null) return;
+        Assert.Equal((1, Rider(1), 1, 0.3, RaceStatus.Finished), Describe(result.Entries[0]));
+        Assert.All(result.Entries.Skip(1), entry => Assert.Equal((null, 0.0, RaceStatus.Dnf), (entry.TimeSeconds, entry.OutputKj, entry.Status)));
+    }
+
+    [Theory]
+    [InlineData(120, false)]
+    [InlineData(121, true)]
+    public void A_race_ends_2_minutes_after_the_first_person_finished_the_rest_placed_by_distance(int second, bool ended)
+    {
+        var session = new RaceSession("old-town-criterium", Start);
+        session.TrySeat(Rider(1), "lena.k", 4);
+        session.TrySeat(Rider(2), "MarcoVelo", 11);
+        session.Tick(Start.AddSeconds(-10));
+        session.RecordProgress(Rider(1), 400, 300, Start.AddSeconds(1));
+        for (var t = 1; t <= second; t += 10)
+        {
+            session.RecordProgress(Rider(2), t, 200, Start.AddSeconds(t));
+            session.Ride(Start.AddSeconds(Math.Min(t + 10, second)), RouteMetres);
+        }
+
+        var result = session.Result(Start.AddSeconds(second));
+
+        Assert.Equal(ended, result is not null);
+        if (result is null) return;
+        Assert.Equal((1, Rider(1), 1, 0.3, RaceStatus.Finished), Describe(result.Entries[0]));
+        var marco = result.Entries.Single(entry => entry.RiderId == Rider(2));
+        Assert.Equal((10, null, RaceStatus.Riding), (marco.Place, marco.TimeSeconds, marco.Status));
+        Assert.All(result.Entries.Where(entry => entry.Name.StartsWith("Pacer", StringComparison.Ordinal)), bot => Assert.Null(bot.RiderId));
+    }
+
+    [Fact]
+    public void An_ended_race_rides_no_further_and_has_no_result_again()
+    {
+        var session = Full();
+        session.RecordProgress(Rider(1), 400, 300, Start.AddSeconds(1));
+        session.Ride(Start.AddSeconds(15), RouteMetres);
+        Assert.NotNull(session.Result(Start.AddSeconds(15)));
+
+        session.End();
+
+        Assert.Null(session.Ride(Start.AddSeconds(16), RouteMetres));
+        Assert.Null(session.Result(Start.AddSeconds(16)));
+    }
+
     [Fact]
     public void Before_the_start_a_race_has_no_standings() => Assert.Null(Full().Ride(Start.AddSeconds(-1), RouteMetres));
 
@@ -260,6 +320,9 @@ public sealed class RaceSessionTests
         for (var n = 1; n <= RaceSession.Capacity; n++) session.TrySeat(Rider(n), $"rider {n}", n);
         return session;
     }
+
+    private static (int, Guid?, int?, double, RaceStatus) Describe(SessionResultEntry entry) =>
+        (entry.Place, entry.RiderId, entry.TimeSeconds, entry.OutputKj, entry.Status);
 
     private static Guid Rider(int n) => new($"00000000-0000-0000-0000-{n:D12}");
 }

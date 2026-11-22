@@ -6,5 +6,5 @@ namespace Telo.Ride.Domain.Rides;
 /// </summary>
 public sealed record RideResult(RideKind Kind, string? Mode, RideOutcome Outcome, int? Place, int? FieldSize, double OnTargetShare)
 {
-    public bool HasPlaces => Kind == RideKind.Race && Mode == "bots";
+    public bool HasPlaces => Kind == RideKind.Race && Mode is "bots" or "online";
 }

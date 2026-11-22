@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Telo.Ride.Application;
 using Telo.Ride.Domain.Accounts;
 using Telo.Ride.Domain.Maps;
+using Telo.Ride.Domain.Results;
 using Telo.Ride.Domain.Rides;
 
 namespace Telo.Ride.Infrastructure;
@@ -20,6 +21,8 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<RecordedRide> Rides => Set<RecordedRide>();
 
     public DbSet<MapProgress> MapProgress => Set<MapProgress>();
+
+    public DbSet<SessionResult> SessionResults => Set<SessionResult>();
 
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
@@ -63,6 +66,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             ride.Property(r => r.MapId).HasMaxLength(64);
             ride.Property(r => r.Mode).HasMaxLength(8);
             ride.Property(r => r.Pack).HasMaxLength(8);
+            ride.Property(r => r.SessionId).HasMaxLength(96);
             ride.Property(r => r.ClassId).HasMaxLength(64);
             ride.Property(r => r.OpenedMapId).HasMaxLength(64);
             ride.Property(r => r.TimeZoneId).HasMaxLength(64);
@@ -85,6 +89,23 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             progress.Property(p => p.MapId).HasMaxLength(64);
             progress.Property(p => p.Stars).HasConversion<int>();
             progress.HasOne<Rider>().WithMany().HasForeignKey(p => p.RiderId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<SessionResult>(result =>
+        {
+            // One result for each finished race session, with an entry for each seat (L2-125 AC1).
+            result.HasKey(r => r.SessionId);
+            result.Property(r => r.SessionId).HasMaxLength(96);
+            result.Property(r => r.MapId).HasMaxLength(64);
+            result.OwnsMany(r => r.Entries, entry =>
+            {
+                entry.ToTable("SessionResultEntries");
+                entry.WithOwner().HasForeignKey("SessionId");
+                entry.HasKey("SessionId", nameof(SessionResultEntry.Seat));
+                entry.Property(e => e.Name).HasMaxLength(40);
+                entry.Property(e => e.Status).HasConversion<string>().HasMaxLength(16);
+                entry.HasOne<Rider>().WithMany().HasForeignKey(e => e.RiderId).OnDelete(DeleteBehavior.SetNull);
+            });
         });
     }
 }

@@ -20,6 +20,6 @@ public interface IRaceSessionRegistry
     /// <summary>Every session that has not started, for the once-a-second tick and a lost connection.</summary>
     IReadOnlyList<RaceSession> Lobbies(DateTimeOffset now);
 
-    /// <summary>Every session that has started and is still kept, for the once-a-second standings.</summary>
+    /// <summary>Every session that has started and not ended, for the once-a-second standings.</summary>
     IReadOnlyList<RaceSession> Started(DateTimeOffset now);
 }

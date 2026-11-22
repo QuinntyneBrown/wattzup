@@ -66,6 +66,45 @@ second submission of the same ride id records nothing new and answers with the f
   submission defined by `L2-044`; their exact shape is owned there.
 - **`ProblemDetails` `code`s** — `ride_not_plausible` (422) and `result_pending` (409).
 
+### As built in slice 15.5
+
+Slice 15.5 builds the race half of `L2-125` AC1; the plausibility check (AC2) and the single
+recording of a ride id (AC3) were built with `progression/keep-progress-on-the-backend`.
+
+- **The race session ends itself.** `RaceSession.End(now)` is due when every person has finished
+  or is DNF, or 2 minutes after the first person finished; it returns the final standings and
+  leaves the session `Ended`, which stops its ticks. Each entry is the seat's place, its time (the
+  race second it reached the line, none for a rider placed by distance), its output (the sum, each
+  second ridden, of the power last reported for a person or of the pace model's power for a bot,
+  in kJ) and its status (`finished`, `dnf`, or `riding` for one placed by distance). Bots have
+  entries with no rider id.
+- **`TickLiveSessionsCommandHandler`** does the recorder's work itself: it saves the
+  `SessionResult`, keyed by the session id, with its entries, then ends the session and sends
+  `SessionEnded` with the session id to the session's group. A failed save leaves the race
+  running, so the next second records it. No separate `SessionResultRecorder` was needed.
+- **`POST /api/rides`** takes `mode: "online"` with a `sessionId`. After the idempotency and
+  plausibility steps, the rider's entry replaces the ride's place, field size, time and output; the
+  field size is the number of entries. With no result yet the answer is 409 `result_pending`, and
+  a session the rider has no entry in is 404 `session_not_found`. The recorded ride keeps its
+  `SessionId`.
+- **The Ride app** submits a riders-online race with its `sessionId`. The outbox sends a ride
+  answered `result_pending` again every 5 seconds, for at most 3 minutes, and Results shows
+  "Recording your ride…" (the `recording` state) meanwhile; after that it is not recorded.
+  A riders-online race sends no pack. Results heads the race "Live race", as the peers mock does.
+
+## Open questions
+
+1. A group class session's result (its output, at the class length) is not recorded yet; a group
+   class ride still records the output its client sends.
+2. Results' headline and final standings are still the Ride app's own; only the XP and the
+   recorded ride take the service's place. Showing the service's place on Results needs the
+   answer to carry it.
+3. The service takes each reported distance as it comes. A report that implies more than
+   100 km/h since the last one is not yet capped, so the service's time is only as honest as the
+   progress it received.
+4. The Ride app does not listen for `SessionEnded`; the outbox's retry finds the result within
+   5 seconds of it.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a

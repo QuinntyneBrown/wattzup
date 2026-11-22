@@ -1,5 +1,6 @@
 using Telo.Ride.Domain.Bots;
 using Telo.Ride.Domain.Classes;
+using Telo.Ride.Domain.Results;
 
 namespace Telo.Ride.Domain.Races;
 
@@ -60,7 +61,11 @@ public sealed class RaceSession(string mapId, DateTimeOffset startsAt)
 
     private readonly RaceSeat?[] seats = new RaceSeat?[Capacity];
     private readonly Dictionary<Guid, DateTimeOffset> lost = [];
-    private readonly Dictionary<Guid, (double Metres, DateTimeOffset At)> progress = [];
+    /// <summary>How long after the first person finished a race ends for everyone still riding (L2-071 AC3).</summary>
+    public static readonly TimeSpan FinishWindow = TimeSpan.FromMinutes(2);
+
+    private readonly Dictionary<Guid, (double Metres, double Watts, DateTimeOffset At)> progress = [];
+    private readonly double[] joules = new double[Capacity];
     private readonly double[] distances = new double[Capacity];
     private readonly int[] reachedAt = new int[Capacity];
     private readonly Queue<double>[] traces = [.. Enumerable.Range(0, Capacity).Select(_ => new Queue<double>())];
@@ -70,6 +75,9 @@ public sealed class RaceSession(string mapId, DateTimeOffset startsAt)
     private Dictionary<string, BotPace>? paces;
     private int secondsRidden;
     private bool filled;
+
+    /// <summary>Whether the race has ended and its result is recorded: it rides no further.</summary>
+    public bool Ended { get; private set; }
 
     public string MapId { get; } = mapId;
 
@@ -263,7 +271,7 @@ public sealed class RaceSession(string mapId, DateTimeOffset startsAt)
             if (now < StartsAt || !Array.Exists(seats, seat => seat?.RiderId == riderId) || !double.IsFinite(distanceMetres) || !double.IsFinite(powerWatts))
                 return false;
             if (progress.TryGetValue(riderId, out var last) && now - last.At < ReportInterval) return false;
-            progress[riderId] = (Math.Max(0, distanceMetres), now);
+            progress[riderId] = (Math.Max(0, distanceMetres), Math.Max(0, powerWatts), now);
             return true;
         }
     }
@@ -277,7 +285,7 @@ public sealed class RaceSession(string mapId, DateTimeOffset startsAt)
     {
         lock (seats)
         {
-            if (now < StartsAt) return null;
+            if (now < StartsAt || Ended) return null;
             route = routeMetres;
             paces ??= BotPaceModel.Paces(Id, BotPack).ToDictionary(pace => $"Pacer {pace.Name}");
             if (traces[0].Count == 0) Trace();
@@ -286,6 +294,7 @@ public sealed class RaceSession(string mapId, DateTimeOffset startsAt)
             {
                 for (var i = 0; i < Capacity; i++)
                 {
+                    if (!dnf[i] && distances[i] < routeMetres) joules[i] += Watts(i, secondsRidden);
                     var metres = Math.Min(routeMetres, Next(i, secondsRidden));
                     if (metres > distances[i]) reachedAt[i] = secondsRidden + 1;
                     distances[i] = metres;
@@ -323,6 +332,58 @@ public sealed class RaceSession(string mapId, DateTimeOffset startsAt)
         { RiderId: { } riderId } when progress.TryGetValue(riderId, out var last) => last.Metres,
         _ => distances[index],
     };
+
+    /// <summary>The power seat <paramref name="index"/> rides second <paramref name="second"/> at: a bot's pace, a rider's last report.</summary>
+    private double Watts(int index, int second) => seats[index] switch
+    {
+        { Kind: RaceSeatKind.Bot } bot when paces!.TryGetValue(bot.Name, out var pace) => BotPaceModel.Watts(pace, second),
+        { RiderId: { } riderId } when progress.TryGetValue(riderId, out var last) => last.Watts,
+        _ => 0,
+    };
+
+    /// <summary>
+    /// The race's result once it is due, from the progress the service received only (L2-125 AC1): when every person
+    /// has finished or is DNF, or 2 minutes after the first person finished, those still riding placed by distance
+    /// (L2-071 AC3). Each entry carries the seat's place, the second it reached the line, its output and its status;
+    /// <c>null</c> while the race runs on or once it has ended. <see cref="End"/> closes it once the result is kept.
+    /// </summary>
+    public SessionResult? Result(DateTimeOffset now)
+    {
+        lock (seats)
+        {
+            if (Ended || now < StartsAt) return null;
+            var people = Enumerable.Range(0, Capacity).Where(i => seats[i]?.RiderId is not null).ToList();
+            var finished = people.Where(i => !dnf[i] && distances[i] >= route).ToList();
+            var due = people.All(i => dnf[i] || distances[i] >= route)
+                || (finished.Count > 0 && now >= StartsAt.AddSeconds(finished.Min(i => reachedAt[i])) + FinishWindow);
+            if (!due) return null;
+            return new SessionResult
+            {
+                SessionId = Id,
+                MapId = MapId,
+                EndedAt = now,
+                Entries =
+                [
+                    .. Rank().Select(row => new SessionResultEntry
+                    {
+                        Seat = row.Seat,
+                        Place = row.Position,
+                        RiderId = seats[row.Seat - 1]!.RiderId,
+                        Name = row.Name,
+                        TimeSeconds = row.Status == RaceStatus.Finished ? reachedAt[row.Seat - 1] : null,
+                        OutputKj = Math.Round(joules[row.Seat - 1] / 1000, 2),
+                        Status = row.Status,
+                    }),
+                ],
+            };
+        }
+    }
+
+    /// <summary>Ends the race once its result is kept: it rides no further and sends no more standings.</summary>
+    public void End()
+    {
+        lock (seats) Ended = true;
+    }
 
     /// <summary>Adds each seat's distance to its trace, keeping the last 600 seconds.</summary>
     private void Trace()

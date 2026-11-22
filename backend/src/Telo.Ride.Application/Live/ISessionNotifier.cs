@@ -18,4 +18,7 @@ public interface ISessionNotifier
 
     /// <summary>Sends <c>RaceStandingsUpdated</c> to every rider in the race session (L2-123 AC3).</summary>
     Task RaceStandingsUpdated(Races.RaceStandingsDto standings, CancellationToken cancellationToken);
+
+    /// <summary>Sends <c>SessionEnded</c> to every rider in the session once its result is recorded (L2-125 AC1).</summary>
+    Task SessionEnded(string sessionId, CancellationToken cancellationToken);
 }

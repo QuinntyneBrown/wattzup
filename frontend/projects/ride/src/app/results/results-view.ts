@@ -13,7 +13,7 @@ import { ordinal } from '@telo/domain';
 
 /** Results as one screen draws it (docs/mocks/pages/results/). */
 export interface ResultsView {
-  /** "Old Town Criterium · vs Bots". */
+  /** "Old Town Criterium · vs Bots", "· Live race" for a riders-online race. */
   readonly context: string;
   /** The hidden heading: "Race results" or "Class results". */
   readonly heading: string;
@@ -148,7 +148,7 @@ function raceView(result: RaceResult, answer: RideRecordedDto | null): Omit<Resu
   const podium = result.place <= PODIUM;
   const third = result.standings[PODIUM - 1]?.finishTimeS ?? result.finishTimeS;
   return {
-    context: `${result.mapName} · vs Bots`,
+    context: `${result.mapName} · ${result.mode === 'online' ? 'Live race' : 'vs Bots'}`,
     heading: 'Race results',
     lead: 'You finished',
     big: ordinal(result.place),

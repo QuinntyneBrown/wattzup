@@ -13,14 +13,14 @@ export interface ApiReply {
   offline?: true;
 }
 
-type Handler = (request: Request) => ApiReply | Promise<ApiReply>;
+export type Handler = (request: Request) => ApiReply | Promise<ApiReply>;
 
 /**
  * What the backend answers for a ride it records (Record a ride), for a new rider's first ride: "Finished" +100 and a
  * 1-day streak +10, and for a race its first star and its first best, the ride's own time. Every spec's finished ride is
  * recorded unless the spec answers `POST /api/rides` itself.
  */
-const RIDE_RECORDED: Handler = (request) => {
+export const RIDE_RECORDED: Handler = (request) => {
   const ride = request.postDataJSON() as { rideId: string; kind: string; elapsedSeconds: number };
   const race = ride.kind === 'race';
   return {

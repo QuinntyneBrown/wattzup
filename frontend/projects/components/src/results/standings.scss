@@ -47,8 +47,29 @@
   background: var(--jersey);
 }
 
-// Each rider's jersey, from the design system's jersey tokens.
-@each $jersey in (you, ghost, nova, rook, juno, atlas, kite, vale, moss, flint, echo) {
+// Each rider's jersey, from the design system's jersey tokens: the rider, the ghost, the bots and riders online.
+@each $jersey
+  in (
+    you,
+    ghost,
+    nova,
+    rook,
+    juno,
+    atlas,
+    kite,
+    vale,
+    moss,
+    flint,
+    echo,
+    lena,
+    marco,
+    priya,
+    jwatts,
+    ollie,
+    kenji,
+    ana
+  )
+{
   .standings__dot--#{$jersey} {
     --jersey: var(--jersey-#{$jersey});
   }

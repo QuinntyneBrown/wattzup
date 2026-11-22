@@ -15,10 +15,16 @@ public sealed record TickLiveSessionsCommand : IRequest;
 /// seats of riders whose connection has been gone 10 seconds, fills the open seats with bots at 10 seconds to the start,
 /// and sends the grid when it changed (L2-057 AC2, L2-121 AC2, L2-054 AC1). For every race that has started: rides
 /// its bots and riders to the second, held at the route's length, ranks them and sends the race standings to the
-/// session's riders (L2-123 AC2, AC3, AC4).
+/// session's riders (L2-123 AC2, AC3, AC4); once it is due, keeps its result and ends it, then tells the session
+/// (L2-125 AC1, L2-071 AC3).
 /// </summary>
 public sealed class TickLiveSessionsCommandHandler(
-    IGroupSessionRegistry registry, IRaceSessionRegistry races, IMapCatalogue maps, ISessionNotifier notifier, TimeProvider time)
+    IGroupSessionRegistry registry,
+    IRaceSessionRegistry races,
+    IMapCatalogue maps,
+    ISessionNotifier notifier,
+    IAppDbContext db,
+    TimeProvider time)
     : IRequestHandler<TickLiveSessionsCommand>
 {
     public async Task Handle(TickLiveSessionsCommand request, CancellationToken cancellationToken)
@@ -47,6 +53,13 @@ public sealed class TickLiveSessionsCommandHandler(
             var rows = race.Ride(now, route);
             if (rows is null) continue;
             await notifier.RaceStandingsUpdated(RaceStandingsDto.Of(race.Id, rows), cancellationToken);
+            if (race.Result(now) is not { } result) continue;
+
+            // The result is kept before the race ends, so a failed save leaves it running to be recorded next second.
+            db.SessionResults.Add(result);
+            await db.SaveChangesAsync(cancellationToken);
+            race.End();
+            await notifier.SessionEnded(race.Id, cancellationToken);
         }
     }
 
