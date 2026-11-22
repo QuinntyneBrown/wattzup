@@ -84,20 +84,35 @@ setting that allows it is in `localStorage`.
 
 ### Components
 
-`SavedWorldsStore` lists and clears through `WORLD_CACHE`; `WorldAssetLoader` saves through the
-same contract when the rider keeps worlds.
+`SavedWorldsStore` lists and clears through `SAVED_WORLDS`; `FetchWorldDownloader` saves into the
+same cache when the rider keeps worlds.
 
 ![C4 component view for managing saved worlds](diagrams/c4-component.png)
 
 ### Class structure
 
-`CacheStorageWorldCache` implements the contract over one named cache with an index entry.
+`CacheStorageSavedWorlds` implements the contract over the cache the downloader keeps worlds in,
+reading each file's name and size from its headers.
 
 ![Class diagram for managing saved worlds](diagrams/class-structure.png)
 
 ### Behaviour — save, list and clear worlds
 
-A finished download is saved when the rider keeps worlds. Settings lists what is saved and clears
-it with a toast; an evicted world downloads again.
+A finished download is saved when the rider keeps worlds; an evicted world downloads again. Settings
+lists what is saved and clears it with a toast.
 
 ![Sequence diagram for saving, listing and clearing worlds](diagrams/sequence-save-list-and-clear.png)
+
+## Open questions
+
+1. **Saved when the download finishes.** `L2-165` AC3 saves a world "when a ride in a world ends".
+   The downloader saves it when its download finishes, so the world is on the device by the time
+   the ride ends, and a ride the rider leaves early still saves it. Saving only at a ride's end
+   would hold the file in memory for the whole ride.
+2. **Which worlds are saved.** Only a class world's panorama is downloaded today (`main`'s worlds
+   are drawn by code); a race does not download its world, so it saves none. The names are the
+   worlds' names (Old Town Criterium), which the race maps share.
+3. **Files saved before this slice** carry no name or size: This device names them by their world's
+   id and sizes them from the file.
+4. **Focus after clearing.** "Clear saved worlds" goes once the worlds are cleared, so focus falls
+   back to the page; the toast is read by the polite region. Moving focus to the row is not built.

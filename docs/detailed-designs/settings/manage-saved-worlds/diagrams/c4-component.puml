@@ -3,18 +3,18 @@
 LAYOUT_WITH_LEGEND()
 title Components — Manage saved worlds
 Person(rider, "Rider", "Rides a smart bike at home")
-ContainerDb(cs, "Cache Storage", "telo-ride-worlds-v1", "Bundles and index")
+ContainerDb(cs, "Cache Storage", "telo-worlds", "World files, each with its name and size")
 Container_Boundary(app, "Ride app") {
-  Component(view, "DeviceSettings / Toast", "Presentation · components", "Saved worlds, clear, keep switch")
-  Component(sstore, "SavedWorldsStore", "Route-scoped store · ride", "List, size, clear, toast")
-  Component(cache, "CacheStorageWorldCache", "Service · domain/storage (WORLD_CACHE)", "get, put, list, totalBytes, clear")
+  Component(view, "DeviceSettings / Toast", "Presentation · components", "Saved worlds, clear, keep switch, toast")
+  Component(sstore, "SavedWorldsStore", "Page-scoped store · ride", "List, words, clear, toast")
+  Component(saved, "CacheStorageSavedWorlds", "Service · domain/storage (SAVED_WORLDS)", "list, clear")
   Component(settings, "LocalRideSettingsStore", "Service · domain/storage (RIDE_SETTINGS)", "keepWorlds")
-  Component(loader, "WorldAssetLoader", "world (lazy)", "Saves after a download")
+  Component(loader, "FetchWorldDownloader", "Service · domain/storage (WORLD_DOWNLOADER)", "Downloads, saves while keeping worlds")
 }
 Rel(rider, view, "Clear saved worlds")
-Rel(view, sstore, "clear")
-Rel(sstore, cache, "list, totalBytes, clear")
+Rel(view, sstore, "clear (via SettingsPage)")
+Rel(sstore, saved, "list, clear")
 Rel(loader, settings, "Reads keepWorlds")
-Rel(loader, cache, "get, put")
-Rel(cache, cs, "match, put, delete")
+Rel(loader, cs, "match, put")
+Rel(saved, cs, "has, keys, match, delete")
 @enduml
