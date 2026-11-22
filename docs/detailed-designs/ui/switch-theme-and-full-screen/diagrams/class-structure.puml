@@ -14,11 +14,10 @@ skinparam class {
 title Class structure — Switch theme and full screen
 hide empty members
 
-class ThemeController <<ride>> {
-  -query: MediaQueryList
+class BrowserDisplayPreferences <<domain>> {
+  -deviceAsksLight: Signal<boolean>
   +theme: Signal<'dark' | 'light'>
-  +start(): void
-  -apply(theme: 'dark' | 'light'): void
+  +reducedMotion: Signal<boolean>
 }
 interface Fullscreen <<api>> {
   +available: Signal<boolean>

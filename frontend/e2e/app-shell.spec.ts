@@ -63,6 +63,7 @@ test.describe('App shell', () => {
     await home.open();
 
     expect(await home.background()).toBe('rgb(10, 11, 13)');
-    expect(await home.header.productColour()).toBe('rgb(255, 69, 33)');
+    // "Ride" reads --color-volt-fg, the signal as text: #ff5233 on dark, 4.5:1 on every surface (L2-143 AC2).
+    expect(await home.header.productColour()).toBe('rgb(255, 82, 51)');
   });
 });

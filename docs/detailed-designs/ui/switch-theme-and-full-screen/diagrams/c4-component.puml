@@ -6,7 +6,7 @@ title Components — Switch theme and full screen
 System_Ext(device, "Rider's device and browser", "prefers-color-scheme; Fullscreen API")
 Container_Boundary(app, "Ride app") {
   Component(index, "index.html", "Document · ride", "color-scheme meta, data-theme=dark first paint")
-  Component(theme, "ThemeController", "Root service · ride", "Sets data-theme from the device")
+  Component(theme, "BrowserDisplayPreferences", "Service · domain", "Sets data-theme from the choice and the device")
   Component(tokens, "tokens.css", "Global foundations · ride", "Role tokens for dark and light")
   Component(header, "Page header", "Angular component · ride", "Hosts the toggle where available")
   Component(toggle, "FullscreenToggle", "Presentation component · components", "Full screen or Exit full screen")

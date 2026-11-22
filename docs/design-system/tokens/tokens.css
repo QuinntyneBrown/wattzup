@@ -13,8 +13,9 @@
    alias them, so documentation, tooling and anyone new can read the system by role.
 
    Themes
-     Telo Ride is dark first: every product page ships <html data-theme="dark">. Light is an
-     addition (the design draws dark only). :root carries the light values so tooling that
+     Telo Ride is dark unless the device asks for light (L2-143): the served page carries no
+     data-theme, so its first paint follows prefers-color-scheme, and the app then sets the
+     rider's choice. Light is an addition (the design draws dark only). :root carries the light values so tooling that
      reads :root as light keeps working; [data-theme="dark"] and its prefers-color-scheme twin
      (byte-identical, keep them so) carry dark. Every token that changes with the theme is
      declared on the theme selectors themselves, and the role aliases on ':root, [data-theme]',
@@ -43,6 +44,7 @@
   --palette-faint: #878d97;          /* tertiary text, raised from #636873 (3.2:1) to pass 4.5:1 on raised */
   --palette-signal: #ff4521;        /* Telo signal orange; the design calls it "volt" */
   --palette-signal-hover: #ff6a4b;
+  --palette-signal-bright: #ff5233; /* signal text on dark surfaces: 4.76:1 on raised, where #ff4521 gives 4.48 */
   --palette-signal-dim: #b8361c;
   --palette-blue: #2e8bff;
   --palette-red: #e5194b;
@@ -69,7 +71,7 @@
   --palette-blue-deep: #1263cc;
   --palette-red-deep: #b5103a;
   --palette-amber-deep: #8f5a00;
-  --palette-green-deep: #047857;
+  --palette-green-deep: #04704f;
 
   /* Theme-independent colour roles */
   --color-volt: var(--palette-signal);        /* "you" and the primary action, both themes */
@@ -381,7 +383,7 @@
   --color-faint: var(--palette-faint);
   --color-disabled: var(--palette-steel);
   --color-on-fill: var(--palette-ink);
-  --color-volt-fg: var(--palette-signal);
+  --color-volt-fg: var(--palette-signal-bright);
   --color-volt-fg-hover: var(--palette-signal-hover);
   --color-gold-fg: var(--palette-gold);
   --color-rest-fg: var(--palette-blue);
@@ -444,7 +446,7 @@
     --color-faint: var(--palette-faint);
     --color-disabled: var(--palette-steel);
     --color-on-fill: var(--palette-ink);
-    --color-volt-fg: var(--palette-signal);
+    --color-volt-fg: var(--palette-signal-bright);
     --color-volt-fg-hover: var(--palette-signal-hover);
     --color-gold-fg: var(--palette-gold);
     --color-rest-fg: var(--palette-blue);
