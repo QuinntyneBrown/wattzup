@@ -86,6 +86,9 @@ test.describe('Joining a group world class', () => {
     await expect(loading.groupNotice).toContainText(
       'You start with everyone. If the world isn’t ready by then, you ride the panorama and the world fades in when it is.',
     );
+    await expect(loading.eyebrow).toHaveText(
+      'Old Town Criterium · Cathedral Circuit · Group class',
+    );
     await expect(loading.groupStart).toHaveText('Starts with the group at 7:39 PM');
     await expect(loading.groupStart).toBeDisabled();
     await expect(loading.start).toHaveCount(0);

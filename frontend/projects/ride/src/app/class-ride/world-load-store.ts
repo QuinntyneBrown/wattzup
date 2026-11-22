@@ -121,10 +121,10 @@ export class WorldLoadStore {
   private readonly slowPercent = signal(0);
   private readonly expected: Backend = 'gpu' in navigator ? 'webgpu' : 'webgl2';
 
-  /** "Neon Docklands · Harbour Bridges Loop · Solo" (L2-151 AC2). */
+  /** "Neon Docklands · Harbour Bridges Loop · Solo", or "· Group class" in a group session (L2-151 AC2, L2-154). */
   readonly eyebrow = computed(() => {
     const world = this.world();
-    return world ? `${world.name} · ${world.route} · Solo` : '';
+    return world ? `${world.name} · ${world.route} · ${this.group ? 'Group class' : 'Solo'}` : '';
   });
 
   /** "Telo Ride Studio · VO₂ max · 5:00 warm-up, 6 × 1:00 efforts with 1:00 recoveries, 4:00 cool-down". */
