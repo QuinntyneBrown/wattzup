@@ -60,8 +60,10 @@ bindings.
 - **`ValidationHubFilter`** — `IHubFilter` on `RideHub`. Hub methods send MediatR requests, so
   they pass through the same `ValidationBehavior`; the filter turns `RequestValidationException`
   into a `HubException` whose message is `validation_failed: ` and the fields it names, comma
-  separated (`validation_failed: powerWatts`). SignalR already drops every other exception's
-  detail: the client hears only that the call failed.
+  separated (`validation_failed: powerWatts`). SignalR passes a `HubException`'s message on after
+  its own words, so the client hears "An unexpected error occurred invoking 'ReportProgress' on
+  the server. HubException: validation_failed: powerWatts". SignalR already drops every other
+  exception's detail: the client hears only that the call failed.
 - **`AppDbContext`** (`Telo.Ride.Infrastructure`) — every query is LINQ, which EF Core sends as
   parameters. Raw SQL, where any is needed, uses `FromSql` with interpolation, which also
   produces parameters; `FromSqlRaw` with joined strings is not used.
@@ -155,3 +157,8 @@ code and trace id only (`L2-129` AC4).
    and custom workout are refused with their own codes, not `validation_failed`, because their
    screens branch on those codes (L2-001, L2-002, L2-005, L2-100). Their bodies name no field; the
    code names it.
+3. **A malformed session id (resolved, slice 22.2).** Joining with a session id that is not one
+   (`hiit-cardio-30`, with no start) was refused with `session_not_found` (L2-122 AC2). It now
+   breaks the session id's rule and is refused with `validation_failed: sessionId`; a well-formed
+   id the schedule does not hold is still `session_not_found`. The app only sends ids the API gave
+   it, so no screen sees the change.
