@@ -56,6 +56,8 @@ All of it is in the `world` library; nothing outside it changes.
 | `lamp-light-map.ts` | `lampLightMap(course, lamps)`: a grid over the map seen from above, the lamps' light on the ground and the road's height in each cell (L2-166 AC14). No Three.js; unit-tested. |
 | `lamp-glow.ts` | `LampGlow`: the grid as a texture and the node that adds the lamps' light to a material; the scenery's and the riders' lit materials. |
 | `wall-material.ts` | The `Walls` group's material (L2-166 AC15): brick, steel or plaster drawn from each vertex's place on its wall and the wall's kind, both in its UV. |
+| `lamp-shadows.ts` | `lampShadows(lamps, metres, lane)`: the four shadows a rider throws under the lamps (L2-166 AC16). No Three.js; unit-tested. |
+| `rider-shadows.ts` | `RiderShadows`: one instanced mesh that lays every rider's shadows on the road. |
 | `surface-detail.ts` | The detail texture's texels, worked out on the device: grain, patches, cracks, stones. No Three.js; unit-tested. |
 | `world-renderer-loader.ts` | Returns a `MapRenderer`. It imports neither renderer, so Three.js still loads only when a world starts. |
 
@@ -87,7 +89,7 @@ its distance from the camera, by group: the land to 950 m, solid scenery to 250 
 leaves to 210 m, confetti to 300 m; the haze (200 m to 1500 m) covers the rest. No more than the four nearest riders
 are drawn. A rider's still parts are merged into one mesh a material, and those of a plain colour into one
 vertex-coloured mesh (`merged-cyclist.ts`): some 12 draw calls a rider, not 50. Each rider's shadow is a dark blob
-stretched away from the sun; there is no shadow map.
+stretched away from the sun, or under street lamps the lamps' own shadows (`rider-shadows.ts`); there is no shadow map.
 
 **Tiers.** Cheapest first: 0.75, 1, 1.5 device pixels a CSS pixel, then 1.5 and 2 with bloom. The ride opens on 1
 with no bloom (L2-111 AC3's rule). Every 90 frames the average frame time is compared with the display's period:

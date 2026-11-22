@@ -39,6 +39,7 @@ import { LampGlow } from './lamp-glow';
 import { lampLightMap } from './lamp-light-map';
 import { mergeStillParts } from './merged-cyclist';
 import { ridersOnRoad } from './race-riders';
+import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
 import { type Cyclist, CyclistKit } from './world-cyclist';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
@@ -143,6 +144,9 @@ export class CourseRenderer implements WorldRenderer {
   /** The blob every rider's shadow is drawn with, and each rider's own. */
   private blob: { geometry: CircleGeometry; material: MeshBasicMaterial } | null = null;
   private readonly shadows = new Map<Cyclist, Mesh>();
+  /** Under street lamps the riders' shadows are the lamps' instead (rider-shadows.ts), for these riders. */
+  private lampShadows: RiderShadows | null = null;
+  private readonly casting = new Set<Cyclist>();
   /** Draws every rider's plain-coloured still parts, merged into one mesh a rider (merged-cyclist.ts). */
   private readonly plain = new MeshLambertMaterial({ vertexColors: true });
   private kit: CyclistKit | null = null;
@@ -247,9 +251,11 @@ export class CourseRenderer implements WorldRenderer {
     const metres = frame.riders
       ? Math.min(frame.s, course.end)
       : course.metresAt(frame.time * this.clockScale);
+    this.lampShadows?.begin();
     this.ride(you, metres, 0);
     you.pose(frame.reducedMotion ? 0 : frame.crank);
     this.placeRiders(frame, metres);
+    this.lampShadows?.end();
     this.aim(metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
@@ -297,6 +303,8 @@ export class CourseRenderer implements WorldRenderer {
     this.lamplit.clear();
     this.lampGlow = null;
     this.shadows.clear();
+    this.casting.clear();
+    this.lampShadows = null;
     this.blob = null;
     this.renderer?.dispose();
     this.renderer = null;
@@ -340,7 +348,10 @@ export class CourseRenderer implements WorldRenderer {
     if (lamps) {
       const lampGlow = new LampGlow(lampLightMap(this.course!, lamps), lamps);
       this.lampGlow = lampGlow;
-      this.disposables.push(lampGlow);
+      // The riders' shadows fall away from the lamps: the rider, and the riders drawn with them.
+      this.lampShadows = new RiderShadows(this.course!, lamps, MOST_RIDERS + 1);
+      this.scene.add(this.lampShadows.mesh);
+      this.disposables.push(lampGlow, this.lampShadows);
       for (const [group, material] of [
         ['Solid', lampGlow.scenery(LAMP_ON.Solid)],
         ['Land', lampGlow.scenery(LAMP_ON.Land)],
@@ -461,7 +472,9 @@ export class CourseRenderer implements WorldRenderer {
   /** Places the scene as the ride's first frame will, so what the start shows is what compiles. */
   private rehearse(): void {
     if (!this.you) return;
+    this.lampShadows?.begin();
     this.ride(this.you, 0, 0);
+    this.lampShadows?.end();
     this.you.pose(0);
     this.aim(0);
     this.choose();
@@ -473,6 +486,7 @@ export class CourseRenderer implements WorldRenderer {
     const at = this.course!.place(metres, lane, this.here);
     cyclist.group.position.set(at.x, at.y + 0.02, at.z);
     cyclist.group.rotation.set(at.pitch, at.heading, 0, 'YXZ');
+    if (this.casting.has(cyclist) && cyclist.group.visible) this.lampShadows?.add(metres, lane);
     // The shadow lies on the road, stretched away from the sun.
     const shadow = this.shadows.get(cyclist);
     if (shadow) {
@@ -606,6 +620,10 @@ export class CourseRenderer implements WorldRenderer {
 
   /** Gives a cyclist their shadow on the road. */
   private shadow(cyclist: Cyclist): void {
+    if (this.lampShadows) {
+      this.casting.add(cyclist);
+      return;
+    }
     if (!this.blob) return;
     const mesh = new Mesh(this.blob.geometry, this.blob.material);
     mesh.scale.set(SHADOW_WIDTH, 1, SHADOW_LENGTH);

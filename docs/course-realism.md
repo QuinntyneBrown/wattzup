@@ -127,12 +127,40 @@ gzipped for Docklands' walls.
 **Watch for.** Moire on far walls (fade the pattern sooner); a mortar colour that glows against dark brick at
 night; kinds that need more than `u` and height (a pitched roof's tiles need the roof's own slope).
 
+### 4. Shadows from standing lights, worked out (Docklands pass 4)
+
+**What it gives.** Riders throw soft shadows away from each street lamp near them, which swing, stretch and fade as
+they pass under it, in one draw call and with no shadow map.
+
+**How it works.**
+
+- `frontend/projects/world/src/lamp-shadows.ts`: `lampShadows(lamps, metres, lane)` gives the shadow of each of the
+  four lamps nearest a rider (the row behind and the row ahead, both kerbs): its far end, `rider height / (lamp
+  height - rider height)` times the way from the lamp, no longer than 9 m; its darkness, that lamp's fall-off over
+  the sum of all four and a little ambient light, softened as it lengthens. Pure and unit-tested.
+- `frontend/projects/world/src/rider-shadows.ts`: one `InstancedMesh` of a flat square with a soft round edge. Each
+  frame every drawn rider adds five instances: the dark under the bike and the four shadows, each laid from one
+  place on the road to another (`course.place`), so it follows bends and slopes. How dark an instance is rides in
+  its instance colour.
+- `course-renderer.ts` makes it where the course file has `lamps`; otherwise the sun's blob shadow stays.
+
+**To apply it to another map.** Any map whose theme has `lamps` gets it. For a map lit by a low sun the same mesh
+draws one long shadow a rider instead: give `lay` the sun's direction and a length of `rider height / tan(sun's
+altitude)`. A sun shadow map (riders and scenery casting on everything) is the fuller answer by day and is not
+built yet.
+
+**Cost.** None measurable; four fewer draw calls than a blob a rider.
+
+**Watch for.** On Three.js 0.187 (WebGPU) a custom instanced attribute's later values did not reach the GPU: carry
+per-instance values in the instance's matrix or colour. Shadows drawn too faint to see look exactly like shadows
+not drawn: log the numbers.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
 
 1. Windows, doors and signs are flat panels: no frames, sills, glass or light spilling from them.
-2. The riders' shadows are blobs, and nothing else casts a shadow.
+2. Nothing but the riders casts a shadow: posts, walls and containers throw none.
 3. The sky is bands of colour: no stars, moon or cloud at night; no real clouds by day.
 4. The water is a flat colour: no reflection of the lights along the quay.
 5. Wet ground: reflections of the neon and the lamps in the road.

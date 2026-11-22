@@ -25,6 +25,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 1 | The ground's surface and the lamps' light on it | 119.6 fps | 342 fps (2.92 ms) | 37 ms | 74,889 | 122 | 3.28 MB | Yes |
 | 2 | The lamps light what stands near the road: riders, posts, walls, land | 119.0 fps | 321 fps (3.11 ms); median of three 299 fps (3.34 ms) | 73 ms | 74,889 | 122 | 3.28 MB | Yes |
 | 3 | Walls of brick, steel and plaster | 117.9 fps | median of three 291 fps (3.43 ms): 322, 286, 291 | 74 ms | 75,005 | 131 | 3.42 MB | Yes |
+| 4 | The riders' shadows fall away from the lamps | 119.5 fps | median of three 306 fps (3.27 ms): 327, 299, 306 | | 74,955 | 127 | 3.42 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -132,3 +133,41 @@ alpha as 1 whatever the mesh holds. It rides in the UV instead.
   later, the far walls crawled with bands.
 - A wall's kind and its place on the wall are all a material needs for brick, ribs or plaster. Windows, doors and
   signs are still flat panels laid on the wall: a later pass.
+
+## Pass 4: the riders' shadows fall away from the lamps
+
+**Before** (`pass-03.jpg`, `pass-03.mp4`): each rider has one hard-edged dark oval, always pointing the same way
+(away from the moon), though the light on the road is the lamps'.
+
+**After** (`pass-04.jpg`, `pass-04.mp4`): each rider throws a soft shadow away from each lamp near them, the two
+behind and the two ahead, and has the dark of the bike under them. Passing a lamp, its shadow shortens, swings
+round from behind to ahead and fades as the next lamp's takes over. The riders sit on the road. It shows best in
+the film.
+
+**What changed.**
+
+- `lamp-shadows.ts` works out, for a rider's place on the road, the four shadows: each runs straight away from its
+  lamp, as long as similar triangles make it (the rider's 1.5 m over the lamp's 6.65 m), as dark as that lamp's
+  share of the light there. Unit-tested.
+- `rider-shadows.ts` draws them: one instanced mesh, a soft-edged shape for each shadow laid on the road along its
+  slope, all riders in one draw call. The four blob meshes are gone where a course has lamps; a course without
+  them keeps its blobs.
+
+**Cost.** None measurable: 291 fps before, 306 after (within the noise), and 4 fewer draw calls.
+
+**Tried and dropped.**
+
+- How dark each shadow is, as an instanced attribute of its own (`instancedDynamicBufferAttribute`, and as an
+  attribute of the geometry): on Three.js 0.187's WebGPU renderer the values it was made with reached the GPU, and
+  no later value did, so every shadow stayed at nothing. Three.js keeps an instanced mesh's own colours up to date,
+  so the darkness rides in each instance's colour instead (`vInstanceColor`).
+- Half an hour went on "the shadows are not drawn" when they were drawn at nothing. Logging the numbers the page
+  held would have shown it in a minute.
+
+**Learned.**
+
+- Shadows under lamps are short: a lamp 6.65 m up throws a 1.5 m rider's shadow only 0.29 m for every metre between
+  them. Honest shadows here are a dark pool under and beside the bike, not the long streaks of a low sun, and they
+  are what stops the riders floating.
+- A shape laid flat needs its three axes in a right-handed order, or it faces down and is not drawn.
+- Still nothing else casts a shadow: the posts, the warehouses, the containers.
