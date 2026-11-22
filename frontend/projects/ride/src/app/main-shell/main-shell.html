@@ -6,9 +6,7 @@
         wz-app-header-link
         slot="nav"
         [routerLink]="item.path"
-        routerLinkActive
-        ariaCurrentWhenActive="page"
-        [routerLinkActiveOptions]="{ exact: item.exact }"
+        [attr.aria-current]="current() === item.path ? 'page' : null"
         >{{ item.label }}</a
       >
     }

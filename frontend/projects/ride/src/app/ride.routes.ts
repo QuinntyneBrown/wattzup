@@ -4,9 +4,10 @@ import {
   HttpRiderProgressApi,
   NETWORK_STATUS,
   PROGRESS_STORE,
+  RIDE_SETTINGS,
   RIDER_PROGRESS_API,
 } from '@telo/api';
-import { BrowserFullscreen, BrowserNetworkStatus } from '@telo/domain';
+import { BrowserFullscreen, BrowserNetworkStatus, LocalRideSettingsStore } from '@telo/domain';
 import { provideAppCache } from './app-cache/provide-app-cache';
 import { provideBikeConnection } from './bike/provide-bike-connection';
 import { rememberedBikeGuard } from './bike/remembered-bike.guard';
@@ -27,6 +28,8 @@ export const rideRoutes: Routes = [
       provideAppCache(),
       // Whether the browser has a network, for the screens that offer rides with other people (L2-135 AC4).
       { provide: NETWORK_STATUS, useClass: BrowserNetworkStatus },
+      // The ride settings, which Settings changes and every ride screen follows (L2-158 AC3).
+      { provide: RIDE_SETTINGS, useClass: LocalRideSettingsStore },
     ],
     // Every screen needs a rider but sign-in, the code screen and not-found (L2-001 AC1).
     canActivateChild: [authGuard],
@@ -105,6 +108,11 @@ export const rideRoutes: Routes = [
             path: 'classes',
             loadChildren: () =>
               import('./class-library/class-library.routes').then((m) => m.classLibraryRoutes),
+          },
+          {
+            path: 'settings',
+            title: 'Settings · Telo Ride',
+            loadComponent: () => import('./settings/settings-page'),
           },
           {
             path: 'profile',

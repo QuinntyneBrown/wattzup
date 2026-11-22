@@ -13,6 +13,12 @@ export { SimulatedBluetoothSupport } from './bluetooth/simulated-bluetooth-suppo
 export { WebBluetoothSupport } from './bluetooth/web-bluetooth-support';
 export { WebBluetoothHeartRateStrap } from './bluetooth/web-bluetooth-heart-rate-strap';
 export { RememberedStrapStore } from './storage/remembered-strap-store';
+export {
+  LocalRideSettingsStore,
+  RECOMMENDED_SETTINGS,
+  RIDE_SETTINGS_KEY,
+  parseRideSettings,
+} from './storage/local-ride-settings-store';
 export { FetchWorldDownloader, WORLD_CACHE } from './storage/fetch-world-downloader';
 export {
   DeviceRideOutbox,

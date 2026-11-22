@@ -26,41 +26,49 @@ open question in `docs/specs/L2.md`.
 
 **Frontend — `ride` application**
 
-- **`SettingsPage`** (`wz-settings-page`, route `/settings`, `loadComponent`) — routed page. It
-  renders the app header with Profile current, "← Profile", the heading "Settings", the lead and
-  the section nav, then one section component per section: `WorldSettings`, `SoundSettings`,
-  `DisplaySettings`, the bike row and `DeviceSettings`. It scrolls to the fragment (`#world`) when
-  one is given. It reads and writes settings only through `RIDE_SETTINGS`.
-- **`SettingsResetFlow`** — part of the page. "Reset to recommended" calls
-  `RideSettingsStore.reset()` and announces "Settings reset" through `ANNOUNCER`. Rides,
-  progress and saved worlds are untouched (`L2-158` AC6).
+- **`SettingsPage`** (`wz-settings-page`, route `/settings` under the main shell, `loadComponent`)
+  — routed page. It renders "← Profile", the heading "Settings", the lead and the section nav, then
+  the five sections: World, Sound, Motion and display, Bike (the bike row, as Profile's) and This
+  device. Slice 20.1 builds the page and its first control, "Keep the screen awake"; slices 20.2 to
+  20.5 fill the sections. It scrolls to the fragment (`#world`) when one is given, on opening and
+  from the section nav. It reads and writes settings only through `RIDE_SETTINGS`.
+- **Reset** — part of the page. "Reset to recommended" calls `RideSettingsStore.reset()` and
+  announces "Settings reset" through the Angular CDK's `LiveAnnouncer`. Rides, progress and saved
+  worlds are untouched (`L2-158` AC6).
+- **`MainShell`** — the app header marks the item the address falls under; Profile is current on
+  `/settings` too (`L2-158` AC1).
 
 **Frontend — `components` library**
 
-- **`SettingsSection`** (`wz-settings-section`, block `settings-section`) — a `section` landmark
-  labelled by its `h2`, with a line of context and a list of settings separated by hairlines.
-- **`SideNav`** (block `side-nav`, existing) — "Settings sections": a scrolling row below lg and
-  a sticky column from lg (`L2-158` AC2).
-- **`SwitchRow`**, **`Segmented`** (radio group), **`Slider`**, **`Select`** and the selectable
-  **`Card`** — existing design-system blocks. Each control is at least 44 × 44 px, works by touch
-  and keyboard, and carries its state by a radio, a switch position, `aria-checked` or words
-  (`L2-158` AC8).
+- **`SettingsSection`** (`section[wz-settings-section]`, block `settings-section`) — a `section`
+  landmark labelled by its `h2`, with a line of context and its settings, each a **`Setting`**
+  (`div[wz-setting]`, block `setting`) that draws the hairline above it.
+- **`SideNav`** (`nav[wz-side-nav]`, block `side-nav`) and **`SideNavLink`**
+  (`a[wz-side-nav-link]`, its icon and label) — "Settings sections": a scrolling row below lg and
+  a sticky column from lg (`L2-158` AC2). The page gives each link its fragment.
+- **`SwitchRow`** (block `switch-row`) over **`Switch`** (`button[wz-switch]`, `role="switch"`,
+  `aria-checked`, its knob's side), and **`SettingsReset`** (block `settings-reset`). The later
+  slices add `Segmented` (radio group), `Slider`, `Select` and the selectable `Card`. Each control
+  is at least 44 × 44 px, works by touch and keyboard, and carries its state by a radio, a switch
+  position, `aria-checked` or words (`L2-158` AC8).
 - **`Banner`** — the refused-storage warning: "This browser isn’t keeping your settings." and
   "Changes work until you close this tab. …" (`L2-158` AC7).
 
 **Frontend — `api` and `domain/storage`**
 
-- **`RideSettings`** (`api`) — the type of every ride setting: `quality`, `stepDown`, `frameRate`,
-  `resolution`, `graphics`, `rideSound`, `rideVolume`, `worldMusic`, `muteUnderVideo`,
-  `reduceMotion`, `theme`, `rideNumbers`, `keepAwake`, `fullScreenOnStart` and `keepWorlds`.
+- **`RideSettings`** (`api`) — the type of every ride setting. Each slice adds its own, with its
+  recommended value and its parsing: slice 20.1 `keepAwake`; then `quality`, `stepDown`,
+  `frameRate`, `resolution`, `graphics`, `rideSound`, `rideVolume`, `worldMusic`,
+  `muteUnderVideo`, `reduceMotion`, `theme`, `rideNumbers`, `fullScreenOnStart` and `keepWorlds`.
   The device check's result is kept beside them as `deviceCheck`.
 - **`RideSettingsStore`** / `RIDE_SETTINGS` (contract in `api`) — `settings` (signal),
   `persisted` (signal, false under refused storage), `set(key, value)` and `reset()`.
-- **`LocalRideSettingsStore`** (`domain/storage`, provided in `root` because every ride screen
-  reads it) — reads the key `telo-ride.settings.v1` once at start, writes it on each change, and
-  updates from the window `storage` event so two tabs agree. Every access goes through
-  `SafeStorage`, which catches a throwing or missing `localStorage` and sets `persisted` to false;
-  the settings then live in memory for the tab (`L2-158` AC7).
+- **`LocalRideSettingsStore`** (`domain/storage`, bound once in the parent route of every screen
+  in `ride.routes.ts`, because every ride screen reads it) — reads the key `telo-ride.settings.v1`
+  once at start and writes it on each change. A throwing or missing `localStorage` is caught and
+  sets `persisted` to false; the settings then live in memory for the tab (`L2-158` AC7).
+- **`BrowserScreenWakeLock`** (`domain/browser`) — asks for no screen lock while "Keep the screen
+  awake" is off (`L2-164` AC5).
 - **`parseRideSettings(raw)`** and **`RECOMMENDED_SETTINGS`** (`domain/storage`, pure, with unit
   tests) — parse the stored JSON field by field. A missing, malformed or out-of-range field takes
   its recommended value; unknown fields are dropped (`L2-158` AC5).
@@ -122,3 +130,13 @@ once, or kept for the tab when storage is refused.
 Reset writes the recommended values in one step and leaves rides, progress and saved worlds alone.
 
 ![Sequence diagram for resetting to recommended](diagrams/sequence-reset.png)
+
+## Open questions
+
+1. Two open tabs do not yet follow each other's changes: the store reads storage once at start.
+   Listening to the window `storage` event would make them agree; no requirement asks for it yet.
+2. The switch is named by its label hidden inside it, and the visible label is hidden from
+   assistive technology so it is not read twice; the mock names it with `aria-labelledby` on the
+   label and description together.
+3. The Bike section's row sits in the section's list as one setting, not in Profile's ruled
+   `settings__list`, so it has no hairline above and below it.

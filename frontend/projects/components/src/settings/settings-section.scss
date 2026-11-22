@@ -1,0 +1,38 @@
+// Block settings-section (docs/mocks/pages/settings/).
+:host {
+  display: block;
+  scroll-margin-top: var(--space-6);
+  border-radius: var(--radius-2xl);
+  background: var(--color-panel);
+  padding: var(--space-5);
+
+  @media (min-width: 40rem) {
+    padding: var(--space-6);
+  }
+}
+
+.settings-section__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+
+.settings-section__title {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.settings-section__desc {
+  margin-top: var(--space-1);
+  max-width: var(--layout-text-xl);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.settings-section__list:not(:empty) {
+  margin-top: var(--space-4);
+}

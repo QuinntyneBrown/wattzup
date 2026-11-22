@@ -1,0 +1,16 @@
+// Block settings-reset (docs/mocks/pages/settings/).
+:host {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-6);
+  max-width: var(--layout-container-form);
+}
+
+.settings-reset__text {
+  max-width: var(--layout-text-md);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}

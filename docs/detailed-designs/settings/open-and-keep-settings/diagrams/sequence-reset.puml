@@ -20,13 +20,13 @@ box "Frontend — Ride app (ride application)" #E0F2FE
 end box
 box "Frontend — Ride app (domain and api libraries)" #E0F2FE
   participant "LocalRideSettingsStore" as store
-  participant "Announcer" as ann
+  participant "LiveAnnouncer (CDK)" as ann
   participant "WorldCache" as cache
 end box
 participant "localStorage" as ls
 actor -> page : Reset to recommended
 page -> store : reset()
-store -> store : state.set(RECOMMENDED_SETTINGS); deviceCheck kept
+store -> store : current.set(RECOMMENDED_SETTINGS)
 store -> ls : setItem(key, JSON)
 page -> ann : "Settings reset"
 note right of cache : Saved worlds, rides and progress are untouched (L2-158 AC6)

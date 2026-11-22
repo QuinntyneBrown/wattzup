@@ -1,0 +1,57 @@
+// Block switch (docs/design-system/components/switch.html). It draws 44 × 24 px and takes touches across 44 px.
+:host {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  width: var(--space-11);
+  height: var(--space-6);
+  border-radius: var(--radius-full);
+  background: var(--color-raised);
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+:host::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block: calc((100% - var(--target-min)) / 2);
+}
+
+:host::after {
+  content: '';
+  position: absolute;
+  left: var(--space-0-5);
+  width: var(--space-5);
+  height: var(--space-5);
+  border-radius: var(--radius-full);
+  background: var(--color-fg);
+  transition: translate var(--duration-fast) var(--ease-standard);
+}
+
+// The off track (raised) is 1.2:1 on a panel; a strong hairline gives it a 3:1 edge (1.4.11).
+:host(:not([aria-checked='true'])) {
+  box-shadow: inset 0 0 0 var(--border-width-hairline) var(--color-line-strong);
+}
+
+:host(:hover:not(:disabled):not([aria-checked='true'])) {
+  background: var(--color-raised-hover);
+}
+
+:host([aria-checked='true']) {
+  background: var(--color-volt);
+}
+
+:host([aria-checked='true']:hover:not(:disabled)) {
+  background: var(--color-volt-hover);
+}
+
+:host([aria-checked='true'])::after {
+  translate: var(--space-5) 0;
+  background: var(--color-on-fill);
+}
+
+:host(:disabled) {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
