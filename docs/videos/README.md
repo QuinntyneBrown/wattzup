@@ -83,6 +83,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 19.4 | [Web vitals and frame budget](19-4-web-vitals-and-frame-budget/README.md) | 1:41 | The performance checks a person runs on the device measured: Home's LCP and INP on a phone profile over 4G, and the race's frame rate at 1920 × 1080, at every width |
 | 20.1 | [Settings page and store](20-1-settings-page-and-store/README.md) | 1:41 | Settings at `/settings` from Profile: five sections and their nav, a change applied at once and kept on this device, Reset to recommended, the warning under refused storage, at every width |
 | 20.2 | [World quality controls](20-2-world-quality-controls/README.md) | 1:41 | Settings' World section: Quality cards with Auto first, step-down, frame rate, resolution and graphics API, the no-WebGPU and no-3D states, and a race opened at Medium, at every width |
+| 20.3 | [Check this device](20-3-check-this-device/README.md) | 1:41 | Check this device on Settings: trials off screen from the top level down, the level found kept on this device and where Auto then starts, stopped or hidden keeping nothing, at every width |
 
 ## What every video is
 
