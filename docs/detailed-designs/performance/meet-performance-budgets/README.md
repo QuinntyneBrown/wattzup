@@ -58,7 +58,7 @@ frame budget is held and measured.
     screen at 1.75×, the CPU slowed 4 times through `Emulation.setCPUThrottlingRate`, and slow 4G
     through `Network.emulateNetworkConditions` (150 ms round trips, 1.6 Mbit/s down, 750 kbit/s
     up). The page reports Largest Contentful Paint and its slowest interaction through
-    `PerformanceObserver` (`largest-contentful-paint`, `event`); after a tap and the first Tab
+    `PerformanceObserver` (`largest-contentful-paint`, `event`); after the first Tab and a tap
     the check holds them to 2.5 s and 200 ms (`L2-136` AC2).
   - `race-frames.perf.ts` opens a solo race at 1920 × 1080 on the real clock, since Playwright's
     clock would stand in for `requestAnimationFrame`, with the fake bike notifying each second.
@@ -84,14 +84,14 @@ frame budget is held and measured.
 
 ## Requirements
 
-| L2 ID | Refines (L1) | Requirement |
-|-------|--------------|-------------|
-| `L2-136` AC1 | `L1-022` | The production build's initial bundle shall be at most 300 KB gzipped, and the 3D world shall be loaded only when a race opens. |
-| `L2-136` AC2 | `L1-022` | Home, loaded cold on a mid-range phone over a 4G profile, shall reach Largest Contentful Paint within 2.5 s and keep Interaction to Next Paint under 200 ms. |
-| `L2-136` AC3 | `L1-022` | A race at 1920 × 1080 on the reference laptop (integrated GPU) shall hold at least 50 frames a second on average and shall not drop below 30 for more than one second; quality shall step down before frame rate does. |
-| `L2-137` AC1 | `L1-022` | At 200 requests a second across the API, 95 % of requests shall answer within 200 ms. |
-| `L2-137` AC2 | `L1-022` | In a session of 10 riders, standings shall reach every rider within 100 ms of the once-a-second tick at the 95th percentile. |
-| `L2-137` AC3 | `L1-022` | One API instance shall hold 2,000 concurrent hub connections within those budgets. |
+| L2 ID        | Refines (L1) | Requirement                                                                                                                                                                                                            |
+| ------------ | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `L2-136` AC1 | `L1-022`     | The production build's initial bundle shall be at most 300 KB gzipped, and the 3D world shall be loaded only when a race opens.                                                                                        |
+| `L2-136` AC2 | `L1-022`     | Home, loaded cold on a mid-range phone over a 4G profile, shall reach Largest Contentful Paint within 2.5 s and keep Interaction to Next Paint under 200 ms.                                                           |
+| `L2-136` AC3 | `L1-022`     | A race at 1920 × 1080 on the reference laptop (integrated GPU) shall hold at least 50 frames a second on average and shall not drop below 30 for more than one second; quality shall step down before frame rate does. |
+| `L2-137` AC1 | `L1-022`     | At 200 requests a second across the API, 95 % of requests shall answer within 200 ms.                                                                                                                                  |
+| `L2-137` AC2 | `L1-022`     | In a session of 10 riders, standings shall reach every rider within 100 ms of the once-a-second tick at the 95th percentile.                                                                                           |
+| `L2-137` AC3 | `L1-022`     | One API instance shall hold 2,000 concurrent hub connections within those budgets.                                                                                                                                     |
 
 ## Diagrams
 

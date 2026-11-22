@@ -53,10 +53,10 @@ test('Home, cold on a mid-range phone over 4G, paints within 2.5 s and answers w
   await home.open();
   await expect(home.main).toBeAttached();
   await page.waitForLoadState('networkidle');
-  // A rider's first touches: a tap on the page, then the keyboard's first Tab.
-  await home.main.tap({ position: { x: 8, y: 8 } });
+  // A rider's first interactions: the keyboard's first Tab, which reaches the skip link, then a tap on the page.
   await page.keyboard.press('Tab');
   await expect(home.skipLink).toBeFocused();
+  await home.main.tap({ position: { x: 8, y: 8 } });
 
   const vitals = await page.evaluate(() => (window as unknown as { vitals: Vitals }).vitals);
   expect(
