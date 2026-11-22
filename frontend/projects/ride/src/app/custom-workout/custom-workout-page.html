@@ -95,4 +95,10 @@
       }
     </div>
   </div>
+  <aside
+    wz-plan-preview
+    [segments]="store.plan().segments"
+    [totalSeconds]="store.preview().totalSeconds"
+    [facts]="store.preview().facts"
+  ></aside>
 </main>

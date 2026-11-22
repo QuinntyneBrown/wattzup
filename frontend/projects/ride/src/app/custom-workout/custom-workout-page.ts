@@ -4,6 +4,7 @@ import { BIKE_CONNECTION, FULLSCREEN, type HiitPresetId, REMEMBERED_BIKE } from 
 import {
   IntervalLadder,
   LevelSlider,
+  PlanPreview,
   PresetChips,
   TrainingClose,
   TrainingHeader,
@@ -24,6 +25,7 @@ import { CustomWorkoutStore } from './custom-workout-store';
   imports: [
     IntervalLadder,
     LevelSlider,
+    PlanPreview,
     PresetChips,
     RouterLink,
     TrainingClose,

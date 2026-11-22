@@ -1,9 +1,11 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 import type { CustomWorkoutDraft, HiitPresetId, TrainingMode } from '@telo/api';
 import {
   addRound,
   chooseMode,
   choosePreset,
+  customWorkoutPreview,
+  expandCustomWorkout,
   makeRoundsSame,
   newCustomWorkout,
   removeRound,
@@ -16,13 +18,21 @@ import {
   stepFlatMinutes,
   stepRecovery,
   stepWarmUp,
+  validatePlan,
 } from '@telo/domain';
 
-/** The custom workout being set up (L2-094 to L2-097): the draft, and one method per edit, each a rule of the domain. */
+/**
+ * The custom workout being set up (L2-094 to L2-097): the draft, and one method per edit, each a rule of the domain;
+ * the plan it expands to, the rules that plan breaks and what "Your ride" reads of it, all following every edit at once
+ * (L2-099, L2-100).
+ */
 @Injectable()
 export class CustomWorkoutStore {
   private readonly state = signal<CustomWorkoutDraft>(newCustomWorkout());
   readonly draft = this.state.asReadonly();
+  readonly plan = computed(() => expandCustomWorkout(this.draft()));
+  readonly problems = computed(() => validatePlan(this.plan()));
+  readonly preview = computed(() => customWorkoutPreview(this.draft(), this.plan(), 'Off'));
 
   chooseMode(mode: TrainingMode): void {
     this.state.update((d) => chooseMode(d, mode));

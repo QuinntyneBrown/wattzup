@@ -107,3 +107,13 @@ export {
   stepRecovery,
   stepWarmUp,
 } from './engine/custom-workout';
+export {
+  CUSTOM_CADENCE_AIMS,
+  type CustomWorkoutPreview,
+  type PlanProblem,
+  type PreviewFact,
+  customWorkoutPreview,
+  expandCustomWorkout,
+  planLength,
+  validatePlan,
+} from './engine/custom-plan';
