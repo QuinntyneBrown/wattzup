@@ -942,3 +942,22 @@ one on such devices.
 
 **Learned.** Measure what the saving is for, not the saving. Draw calls and triangles fell as planned; the frame on
 a slowed processor did not.
+
+## The slow processor, profiled
+
+The lowest tier with the processor six times slower, profiled for its ten seconds (46 frames a second, 21.8 ms a
+frame):
+
+- 41 % of the time is the browser's own work outside JavaScript (`(program)`): the graphics commands on their way
+  to the GPU process, compositing, layout. Nothing in the page's code names it.
+- The JavaScript is Three.js's renderer, spread thin. The largest single function is `updateMatrixWorld` at 3.3 %:
+  the scene's every object is asked each frame whether it has moved, though only the riders, their shadows, the sky
+  and the rain do. Turning that off for the scene and placing the movers by hand would save some 3 % of a frame, at
+  the risk of a mover being forgotten. Not done.
+- 1.5 % is `offsetTop`: the standings board (`race-board.ts`) measures every row's place after every check of its
+  view, whether or not the order changed. It forces the page's layout each time. Worth making it measure only when
+  the order changes; it is the board's change, not the riders', and it is small. Not done.
+- The garbage collector is 0.7 %.
+
+Nothing here is a tenth of the frame, let alone the third that 60 fps on such a processor would need. A frame on a
+slow processor is short of everything a little, not of one thing a lot.
