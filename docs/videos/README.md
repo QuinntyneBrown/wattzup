@@ -79,6 +79,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 18.2 | [Keep the ride clock true](18-2-keep-the-ride-clock-true/README.md) | 1:56 | A race and a class ride shown again after ten throttled minutes in a hidden tab with the clock, segment and distance of a visible tab, and a running race asking before the tab closes, at every width |
 | 19.1 | [Bundle budgets](19-1-bundle-budgets/README.md) | 1:41 | Home's first load measured gzipped at 89.77 kB after every build, a tight raw budget, and the 3D world's code arriving only with a race, at every width |
 | 19.2 | [Bounded ride buffers](19-2-bounded-ride-buffers/README.md) | 1:41 | A three-hour class ridden to its end, its ride submitted with one speed sample a second from a buffer set aside once, at every width |
+| 19.3 | [Heap checks](19-3-heap-checks/README.md) | 1:41 | The heap checks a person runs: the race with its world and a class ride entered and left six times, and a three-hour class, at every width |
 
 ## What every video is
 

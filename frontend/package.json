@@ -16,7 +16,8 @@
     "lint": "ng lint && tsc -p e2e/tsconfig.json",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "heap": "playwright test -c playwright.heap.config.ts"
   },
   "dependencies": {
     "@angular/cdk": "^22.3.0",
