@@ -1,5 +1,5 @@
 // Unit test
-// Traces to: L2-159 AC4, AC5, L2-160 AC1, AC2, AC4, AC5, L2-161 AC1
+// Traces to: L2-159 AC4, AC5, L2-160 AC1, AC2, AC4, AC5, L2-161 AC1, L2-162 AC3, AC4
 import { RECOMMENDED_SETTINGS } from '../storage/local-ride-settings-store';
 import { worldQuality } from './world-quality';
 
@@ -21,6 +21,23 @@ describe('worldQuality', () => {
     ['low', false, false],
   ] as const)('with %s and the switch %s, steps down: %s', (quality, stepDown, expected) => {
     expect(worldQuality({ ...RECOMMENDED_SETTINGS, quality, stepDown }).stepDown).toBe(expected);
+  });
+
+  const checked = {
+    level: 'medium',
+    displayFps: 60,
+    tried: [{ level: 'high', fps: 33 }],
+    checkedAt: '2026-11-22T19:31:00.000Z',
+  } as const;
+
+  it('opens Auto where the device check found', () => {
+    expect(worldQuality({ ...RECOMMENDED_SETTINGS, deviceCheck: checked }).tier).toBe('medium');
+  });
+
+  it('opens a fixed level there whatever the device check found', () => {
+    expect(
+      worldQuality({ ...RECOMMENDED_SETTINGS, quality: 'low', deviceCheck: checked }).tier,
+    ).toBe('low');
   });
 
   it('opens a fixed level there', () => {

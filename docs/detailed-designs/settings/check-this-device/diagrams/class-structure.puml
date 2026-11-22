@@ -13,60 +13,55 @@ skinparam class {
 ' --------------------------
 hide empty members
 title Class structure — Check this device
-enum CheckState {
-  idle
-  running
-  done
+interface DeviceCheck <<api>> {
+  +run(options: DeviceCheckOptions): Promise<DeviceCheckOutcome | null>
 }
-class DeviceCheckResult <<api>> {
-  +level: QualityLevel
-  +fps: Map<QualityLevel, number>
-  +checkedAt: string
+class DeviceCheckOptions <<api>> {
+  +levels: WorldTier[]
+  +forceWebGL: boolean
+  +progress(p: DeviceCheckProgress): void
+  +signal: AbortSignal
 }
-class TrialView {
-  +level: QualityLevel
+class DeviceCheckProgress <<api>> {
+  +level: WorldTier
   +secondsLeft: number
   +percent: number
-  +tried: Map<QualityLevel, number>
+  +tried: DeviceCheckTrial[]
+}
+class DeviceCheckOutcome <<api>> {
+  +level: WorldTier
+  +displayFps: number
+  +tried: DeviceCheckTrial[]
+}
+class DeviceCheckResult <<api>> {
+  +checkedAt: string
+}
+class DeviceCheckTrial <<api>> {
+  +level: WorldTier
+  +fps: number
+}
+class WorldDeviceCheck <<world>> {
+  -trial: number
+  +run(options): Promise<DeviceCheckOutcome | null>
 }
 class DeviceCheckStore <<ride>> {
-  +state: Signal<CheckState>
-  +trial: Signal<TrialView | null>
-  +result: Signal<DeviceCheckResult | undefined>
-  +disabled: Signal<boolean>
-  -abort: AbortController
+  +progress: Signal<DeviceCheckProgress | null>
+  +running: Signal<boolean>
   +start(): Promise<void>
   +stop(): void
 }
-class DeviceCheckRunner <<world>> {
-  +run(backend: RendererBackend, periodMs: number, signal: AbortSignal, onTrial: (t: TrialView) => void): Promise<DeviceCheckResult>
-  +dispose(): void
-}
-class TestWorld <<world>>
-class FrameBudget <<world>> {
-  +holds(medianMs: number, periodMs: number): boolean
-}
-class RideActivity <<ride>> {
-  +riding: Signal<boolean>
-}
-interface RideSettingsStore <<api>> {
-  +set(key: 'deviceCheck', value: DeviceCheckResult): void
-}
-class DeviceCheck <<components>> {
-  +state: InputSignal<CheckState>
-  +trial: InputSignal<TrialView | null>
-  +result: InputSignal<DeviceCheckResult | undefined>
+class "DeviceCheck (component)" as DeviceCheckView <<components>> {
+  +running: InputSignal<DeviceCheckRunningView | null>
+  +result: InputSignal<DeviceCheckResultView | null>
   +disabled: InputSignal<boolean>
-  +start: OutputEmitterRef<void>
-  +stop: OutputEmitterRef<void>
+  +checkStarted, checkStopped
 }
-DeviceCheckStore --> CheckState
-DeviceCheckStore --> TrialView
-DeviceCheckStore ..> DeviceCheckRunner : dynamic import
-DeviceCheckRunner *-- TestWorld
-DeviceCheckRunner *-- FrameBudget
-DeviceCheckRunner ..> DeviceCheckResult : returns
-DeviceCheckStore ..> RideActivity
-DeviceCheckStore ..> RideSettingsStore : RIDE_SETTINGS
-DeviceCheck ..> DeviceCheckStore : bound by SettingsPage
+DeviceCheck <|.. WorldDeviceCheck
+DeviceCheckOutcome <|-- DeviceCheckResult
+DeviceCheckOutcome *-- DeviceCheckTrial
+DeviceCheckStore ..> DeviceCheck : DEVICE_CHECK loader
+DeviceCheckStore ..> DeviceCheckResult : RIDE_SETTINGS.set('deviceCheck')
+DeviceCheck ..> DeviceCheckOptions
+DeviceCheckOptions ..> DeviceCheckProgress
+DeviceCheckView ..> DeviceCheckStore : via SettingsPage
 @enduml

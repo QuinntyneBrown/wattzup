@@ -16,39 +16,39 @@ skinparam package {
 }
 actor "Rider" as actor
 box "Frontend — Ride app (ride application and components library)" #E0F2FE
-  participant "DeviceCheck" as view
+  participant "SettingsPage / DeviceCheck" as page
   participant "DeviceCheckStore" as store
-  participant "RideActivity" as activity
-end box
-box "Frontend — Ride app (world library, lazy chunk)" #E0F2FE
-  participant "DeviceCheckRunner" as runner
 end box
 box "Frontend — Ride app (domain library)" #E0F2FE
   participant "LocalRideSettingsStore" as settings
 end box
-store -> activity : riding()
-alt A ride runs
-  store --> view : disabled (L2-162 AC5)
-else No ride
-  store --> view : "Check this device" with its text (L2-162 AC1)
+box "Frontend — Ride app (world library, lazy)" #E0F2FE
+  participant "WorldDeviceCheck" as runner
+  participant "FrameScheduler" as frames
+  participant "WorldRenderer" as renderer
+end box
+actor -> page : Check this device (L2-162 AC1)
+page -> store : start()
+store -> store : levels from the graphics API: Ultra with WebGPU, else High (AC2)
+store -> runner : run(levels, forceWebGL, progress, signal) — loaded on the press
+runner -> frames : measurePeriod(): 16.7 ms, 60 fps
+loop each level, from the top
+  runner -> renderer : start(off-screen canvas, Old Town, { tier, stepDown: false })
+  loop about 30 s of frames
+    runner -> frames : nextFrame()
+    runner -> renderer : draw (SceneDriver at 30 km/h)
+    runner --> page : "Trying High · 6 s left", 55 %, "Ultra held 41 fps." (AC2)
+  end
+  runner -> renderer : dispose()
+  alt median frame ≤ 1.2 × the display's period
+    runner --> store : { level, displayFps, tried }
+  else slower
+    runner -> runner : next level down; Low when none holds
+  end
 end
-actor -> view : Check this device
-view -> store : start()
-store -> runner : import('world'); run(webgpu, 16.7 ms, abort.signal)
-loop each level from Ultra down
-  runner -> runner : trial of about 30 s off screen
-  runner --> store : "Trying High · 6 s left", 55 %, "Ultra held 41 fps." (L2-162 AC2)
-  store --> view : running face (polite live region)
+store -> settings : set('deviceCheck', { …, checkedAt }) (AC3)
+page --> actor : "High holds 60 fps on this device." Auto now starts at High here … (AC3)
+alt Stop the check, the tab hidden, or Settings left
+  store -> runner : abort: the awaited frame ends, dispose(), nothing kept (AC6)
 end
-alt A level holds the frame rate
-  runner --> store : result: High, Ultra 41 fps, checked 7:31 PM
-  store -> settings : set('deviceCheck', result) (L2-162 AC3)
-  store --> view : "High holds 60 fps on this device."; "Auto now starts at High here."
-  note right of settings : A fixed level is unchanged (L2-162 AC4)
-else Stop the check, leave, or tab hidden
-  actor -> view : Stop the check
-  view -> store : stop()
-  store -> runner : abort; dispose(); no result kept (L2-162 AC6)
-end
-store -> runner : dispose() after the result
 @enduml

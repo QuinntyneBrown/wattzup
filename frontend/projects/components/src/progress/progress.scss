@@ -35,3 +35,37 @@
   background: var(--progress-fill);
   transition: width var(--duration-base) var(--ease-standard);
 }
+
+.progress__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.progress__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-muted);
+}
+
+.progress__value {
+  flex-shrink: 0;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  color: var(--color-fg);
+}
+
+.progress__foot {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-muted);
+}

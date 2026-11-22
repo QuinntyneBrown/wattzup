@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 /**
  * A progress bar (design-system block progress): a track filled to `value` (0 to 100), a `progressbar` named by `label`
  * with its value for a screen reader. `lg` is the load card's taller bar; `ok` fills it green when the load is done.
+ * With a `caption`, a head reads it beside the percentage; with a `foot`, a line under the bar reads it.
  */
 @Component({
   selector: 'wz-progress',
@@ -21,6 +22,8 @@ export class Progress {
   readonly label = input.required<string>();
   readonly size = input<'md' | 'lg'>('md');
   readonly tone = input<'ok' | null>(null);
+  readonly caption = input<string | null>(null);
+  readonly foot = input<string | null>(null);
 
   protected readonly fill = computed(() => `${this.value()}%`);
 }

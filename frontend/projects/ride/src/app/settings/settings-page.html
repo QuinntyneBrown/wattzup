@@ -55,6 +55,15 @@
             (resolutionChanged)="store.set('resolution', $event)"
             (graphicsChosen)="store.set('graphics', $event)"
           />
+          <div wz-setting>
+            <wz-device-check
+              [running]="checkRunning()"
+              [result]="checkResult()"
+              [disabled]="api === 'none'"
+              (checkStarted)="deviceCheck.start()"
+              (checkStopped)="deviceCheck.stop()"
+            />
+          </div>
         }
       </section>
       <section
@@ -92,6 +101,7 @@
       </section>
       <section wz-settings-section name="device" heading="This device"></section>
       <wz-settings-reset (resetToRecommended)="reset()" />
+      <p class="settings-page__announcement visually-hidden" role="status">{{ announcement() }}</p>
     </div>
   </div>
 </main>

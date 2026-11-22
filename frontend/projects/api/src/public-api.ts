@@ -42,6 +42,7 @@ export { FULLSCREEN, type Fullscreen } from './screen/fullscreen';
 export { SCREEN_WAKE_LOCK, type ScreenWakeLock } from './screen/screen-wake-lock';
 export {
   RIDE_SETTINGS,
+  type DeviceCheckResult,
   type QualityChoice,
   type RideSettings,
   type RideSettingsStore,
@@ -152,4 +153,13 @@ export type { StandingRow, Standings } from './live/standings';
 export type { RaceStandingRow, RaceStandings } from './live/race-standings';
 export type { LobbySeat, LobbySeatKind } from './live/lobby-seat';
 export { AUTO_QUALITY, type WorldQuality } from './world/world-quality';
+export {
+  DEVICE_CHECK,
+  type DeviceCheck,
+  type DeviceCheckLoader,
+  type DeviceCheckOptions,
+  type DeviceCheckOutcome,
+  type DeviceCheckProgress,
+  type DeviceCheckTrial,
+} from './world/device-check';
 export { GRAPHICS_SUPPORT, type GraphicsApi, type GraphicsSupport } from './world/graphics-support';

@@ -114,3 +114,10 @@ Board rows slide over 150 ms, or move at once when the rider prefers reduced mot
 (`L2-142` AC1, AC2).
 
 ![Sequence diagram for reordering a board](diagrams/sequence-reduced-motion-board.png)
+
+## Open questions
+
+1. CDK's `LiveAnnouncer` injects Angular's `DomSanitizer`, and any use of it, even from a lazy
+   chunk, puts the HTML sanitizer in the initial bundle (3.3 kB; found in slice 20.3, which took it
+   off Settings). The `Announcer` should be built on a polite status region of its own unless that
+   cost is accepted in an ADR.

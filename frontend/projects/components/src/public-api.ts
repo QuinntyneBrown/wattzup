@@ -99,3 +99,8 @@ export { SettingsSection } from './settings/settings-section';
 export { SettingsReset } from './settings/settings-reset';
 export { Segmented, type SegmentedOption } from './segmented/segmented';
 export { WorldSettings } from './world-settings/world-settings';
+export {
+  DeviceCheck,
+  type DeviceCheckResultView,
+  type DeviceCheckRunningView,
+} from './device-check/device-check';
