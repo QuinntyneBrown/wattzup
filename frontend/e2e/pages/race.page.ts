@@ -24,6 +24,8 @@ export class RacePage {
   readonly boardRows: Locator;
   readonly boardNames: Locator;
   readonly boardGaps: Locator;
+  /** The board's rows marked DNF (L2-124). */
+  readonly boardDnf: Locator;
   readonly you: Locator;
   readonly position: Locator;
   readonly watts: Locator;
@@ -86,6 +88,7 @@ export class RacePage {
     this.boardRows = page.locator('.race-board__row');
     this.boardNames = page.locator('.race-board__name');
     this.boardGaps = page.locator('.race-board__gap');
+    this.boardDnf = page.locator('.race-board__row--dnf');
     this.you = page.locator('.race-board__row[aria-current="true"]');
     this.watts = page.locator('.race-power__watts');
     this.target = page.locator('.race-power__target-label');

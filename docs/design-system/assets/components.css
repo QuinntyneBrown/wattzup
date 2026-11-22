@@ -2080,6 +2080,8 @@ a.map-row:hover .map-row__name, a.map-row[data-state="hover"] .map-row__name { c
 .race-board__bot { color: var(--color-faint); }
 .race-board__gap { font-size: var(--font-size-md); line-height: var(--line-height-md); color: var(--color-muted); }
 .race-board__row--you .race-board__gap { color: inherit; }
+.race-board__row--dnf { color: var(--color-faint); }
+.race-board__row--dnf .race-board__gap { color: var(--color-faint); font-size: var(--font-size-sm); line-height: var(--line-height-sm); font-weight: var(--font-weight-semibold); }
 
 /* Scenery source: ask for a Google Maps Platform key (bottom-[150px], centred, w-[min(420px,100%-1.5rem)]) */
 .race-scenery { position: absolute; z-index: var(--z-hud); bottom: var(--race-scenery-bottom); left: 50%; width: min(var(--race-scenery-width), calc(100% - var(--space-6))); translate: -50% 0; }

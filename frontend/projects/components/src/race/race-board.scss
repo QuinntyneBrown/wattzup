@@ -66,8 +66,29 @@
   background: var(--jersey);
 }
 
-// Each rider's jersey, from the design system's jersey tokens.
-@each $jersey in (you, ghost, nova, rook, juno, atlas, kite, vale, moss, flint, echo) {
+// Each rider's jersey, from the design system's jersey tokens: the rider, the ghost, the bots and riders online.
+@each $jersey
+  in (
+    you,
+    ghost,
+    nova,
+    rook,
+    juno,
+    atlas,
+    kite,
+    vale,
+    moss,
+    flint,
+    echo,
+    lena,
+    marco,
+    priya,
+    jwatts,
+    ollie,
+    kenji,
+    ana
+  )
+{
   .race-board__dot--#{$jersey} {
     --jersey: var(--jersey-#{$jersey});
   }
@@ -97,4 +118,16 @@
   .race-board__row--you & {
     color: inherit;
   }
+
+  .race-board__row--dnf & {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-faint);
+  }
+}
+
+// A rider the service marked DNF (L2-124): faint, with "DNF" in place of the gap, so the text carries the state.
+.race-board__row--dnf {
+  color: var(--color-faint);
 }

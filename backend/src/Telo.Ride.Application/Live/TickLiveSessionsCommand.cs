@@ -3,7 +3,6 @@ using Telo.Ride.Application.Classes;
 using Telo.Ride.Application.Maps;
 using Telo.Ride.Application.Races;
 using Telo.Ride.Domain.Classes;
-using Telo.Ride.Domain.Races;
 
 namespace Telo.Ride.Application.Live;
 
@@ -47,12 +46,9 @@ public sealed class TickLiveSessionsCommandHandler(
             var route = maps.Maps.FirstOrDefault(map => map.Id == race.MapId)?.DistanceKm * 1000 ?? double.PositiveInfinity;
             var rows = race.Ride(now, route);
             if (rows is null) continue;
-            await notifier.RaceStandingsUpdated(new RaceStandingsDto(race.Id, [.. rows.Select(RaceRow)]), cancellationToken);
+            await notifier.RaceStandingsUpdated(RaceStandingsDto.Of(race.Id, rows), cancellationToken);
         }
     }
-
-    private static RaceStandingRowDto RaceRow(RaceStandingRow row) =>
-        new(row.Position, row.Seat, row.Name, row.Jersey, row.Level, row.Kind == RiderKind.Bot ? "bot" : "person", row.DistanceMetres, row.GapSeconds);
 
     private static StandingRowDto Row(StandingRow row) =>
         new(row.Position, row.Name, row.Jersey, row.Level, row.Kind == RiderKind.Bot ? "bot" : "person", row.OutputKj, row.GapKj);

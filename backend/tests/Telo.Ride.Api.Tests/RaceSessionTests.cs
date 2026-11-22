@@ -1,6 +1,6 @@
 // Unit test
 // Traces to: L2-121 AC1, AC2; L2-052 AC1, AC5; L2-053 AC1, AC2; L2-054 AC1, AC2, AC3; L2-055 AC1, AC2, AC3; L2-057 AC2;
-// L2-120 AC3; L2-121 AC3; L2-123 AC1, AC2
+// L2-120 AC3; L2-121 AC3; L2-123 AC1, AC2; L2-124 AC1, AC2, AC4
 // Description: a race session seats riders in the first open seat, each in the next free jersey, and a seated rider who
 // asks again keeps their seat. It is open while a seat is free and more than 10 seconds remain. A leaver's seat opens
 // again with their name before the bots fill it, and goes to the next bot after. At 10 seconds to the start bots take
@@ -8,6 +8,8 @@
 // unless the rider joins the session again. From the start it keeps each seated rider's distance, ignoring a report
 // less than 500 ms after the last, and ranks by distance held at the route's length, a tie to whoever reached it first
 // (L2-123 AC1, AC2), each gap the seconds since the leader reached the rider's distance, from a trace of the last 600.
+// Once started, a leaver keeps the seat marked DNF, as does a racer silent 15 seconds; a rider gone 30 seconds is
+// removed and refused a rejoin; DNF ranks last, and a rider held at the line is finished (L2-124 AC1, AC2, AC4).
 using System.Globalization;
 using Telo.Ride.Domain.Classes;
 using Telo.Ride.Domain.Races;
@@ -158,7 +160,7 @@ public sealed class RaceSessionTests
             [(1, 3, 300.0, 0.0), (2, 5, 300.0, 0.0), (3, 2, 120.0, 1.6), (4, 1, 0.0, 2.0)],
             rows.Take(4).Select(row => (row.Position, row.Seat, row.DistanceMetres, row.GapSeconds)));
         Assert.Equal([1, 4, 6, 7, 8, 9, 10], rows.Skip(3).Select(row => row.Seat));
-        Assert.Equal(new RaceStandingRow(1, 3, "rider 3", "priya", 3, RiderKind.Person, 300, 0), rows[0]);
+        Assert.Equal(new RaceStandingRow(1, 3, "rider 3", "priya", 3, RiderKind.Person, 300, 0, RaceStatus.Finished), rows[0]);
     }
 
     [Fact]
@@ -188,6 +190,62 @@ public sealed class RaceSessionTests
 
         Assert.Equal((1, 0.0), (rows[0].Seat, rows[0].GapSeconds));
         Assert.Equal((2, 600.0), (rows[1].Seat, rows[1].GapSeconds));
+    }
+
+    [Fact]
+    public void A_rider_who_leaves_a_running_race_keeps_the_seat_marked_DNF_ranked_last_at_their_distance()
+    {
+        var session = Full();
+        session.Ride(Start, RouteMetres);
+        session.RecordProgress(Rider(4), 90, 300, Start.AddSeconds(0.5));
+        session.Ride(Start.AddSeconds(1), RouteMetres);
+
+        Assert.Equal(new RaceLeave("rider 4"), session.Leave(Rider(4), Start.AddSeconds(1.5)));
+
+        var rows = session.Standings();
+        Assert.Equal((10, 4, 90.0, RaceStatus.Dnf), (rows[^1].Position, rows[^1].Seat, rows[^1].DistanceMetres, rows[^1].Status));
+        Assert.All(rows.SkipLast(1), row => Assert.Equal(RaceStatus.Riding, row.Status));
+        Assert.Equal("rider 4", session.Seats[3]!.Name);
+    }
+
+    [Theory]
+    [InlineData(14, RaceStatus.Riding)]
+    [InlineData(15, RaceStatus.Dnf)]
+    public void A_racing_rider_silent_for_15_seconds_is_DNF(int silentSeconds, RaceStatus status)
+    {
+        var session = Full();
+        session.RecordProgress(Rider(1), 20, 300, Start.AddSeconds(1));
+
+        var rows = session.Ride(Start.AddSeconds(1 + silentSeconds), RouteMetres)!;
+
+        Assert.Equal(status, rows.Single(row => row.Seat == 1).Status);
+    }
+
+    [Fact]
+    public void A_rider_held_at_the_line_is_finished_and_never_DNF_however_long_silent()
+    {
+        var session = Full();
+        session.RecordProgress(Rider(1), 400, 300, Start.AddSeconds(1));
+
+        var rows = session.Ride(Start.AddSeconds(60), RouteMetres)!;
+
+        Assert.Equal((1, RaceStatus.Finished), (rows[0].Seat, rows[0].Status));
+        Assert.Equal(RaceStatus.Dnf, rows.Single(row => row.Seat == 2).Status);
+    }
+
+    [Fact]
+    public void A_rider_gone_30_seconds_from_a_running_race_is_removed_and_cannot_rejoin()
+    {
+        var session = Full();
+        session.ConnectionLost(Rider(1), Start.AddSeconds(2));
+        session.ConnectionLost(Rider(2), Start.AddSeconds(2));
+        Assert.Equal(2, session.Rejoin(Rider(2)));
+
+        session.Ride(Start.AddSeconds(32), RouteMetres);
+
+        Assert.Null(session.Rejoin(Rider(1)));
+        Assert.Equal(2, session.Rejoin(Rider(2)));
+        Assert.Equal(RaceStatus.Dnf, session.Standings().Single(row => row.Seat == 1).Status);
     }
 
     [Fact]

@@ -5,6 +5,7 @@
       <li
         class="race-board__row"
         [class.race-board__row--you]="row.you"
+        [class.race-board__row--dnf]="row.dnf"
         [attr.aria-current]="row.you ? 'true' : null"
         [attr.data-id]="row.id"
       >

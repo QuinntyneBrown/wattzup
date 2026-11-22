@@ -52,12 +52,21 @@ public sealed class RaceSession(string mapId, DateTimeOffset startsAt)
     /// <summary>How many seconds of distance each seat's trace keeps, and so the largest gap (L2-123 AC3).</summary>
     public const int TraceSeconds = 600;
 
+    /// <summary>How long a racing rider may send no progress before they are DNF (L2-124 AC2).</summary>
+    public static readonly TimeSpan RaceSilenceLimit = TimeSpan.FromSeconds(15);
+
+    /// <summary>How long a running race keeps a rider whose connection has gone before removing them (L2-124 AC4).</summary>
+    public static readonly TimeSpan DisconnectLimit = TimeSpan.FromSeconds(30);
+
     private readonly RaceSeat?[] seats = new RaceSeat?[Capacity];
     private readonly Dictionary<Guid, DateTimeOffset> lost = [];
     private readonly Dictionary<Guid, (double Metres, DateTimeOffset At)> progress = [];
     private readonly double[] distances = new double[Capacity];
     private readonly int[] reachedAt = new int[Capacity];
     private readonly Queue<double>[] traces = [.. Enumerable.Range(0, Capacity).Select(_ => new Queue<double>())];
+    private readonly bool[] dnf = new bool[Capacity];
+    private readonly HashSet<Guid> removed = [];
+    private double route = double.PositiveInfinity;
     private Dictionary<string, BotPace>? paces;
     private int secondsRidden;
     private bool filled;
@@ -139,7 +148,7 @@ public sealed class RaceSession(string mapId, DateTimeOffset startsAt)
         lock (seats)
         {
             var held = Array.FindIndex(seats, seat => seat?.RiderId == riderId);
-            if (held < 0) return null;
+            if (held < 0 || removed.Contains(riderId)) return null;
             lost.Remove(riderId);
             return held + 1;
         }
@@ -219,6 +228,31 @@ public sealed class RaceSession(string mapId, DateTimeOffset startsAt)
     }
 
     /// <summary>
+    /// The rider leaves: before the start by the lobby's rule (<see cref="Release"/>, L2-055); once started they keep
+    /// their seat, marked DNF at the distance they reached (L2-124 AC1). <c>null</c> when they hold no seat.
+    /// </summary>
+    public RaceLeave? Leave(Guid riderId, DateTimeOffset now)
+    {
+        lock (seats)
+        {
+            if (now < StartsAt) return Release(riderId);
+            var index = Array.FindIndex(seats, seat => seat?.RiderId == riderId);
+            if (index < 0) return null;
+            dnf[index] = true;
+            return new RaceLeave(seats[index]!.Name);
+        }
+    }
+
+    /// <summary>The standings as the race last rode them, for a change between seconds such as a leaver (L2-124 AC1).</summary>
+    public IReadOnlyList<RaceStandingRow> Standings()
+    {
+        lock (seats)
+        {
+            return Rank();
+        }
+    }
+
+    /// <summary>
     /// Keeps a seated rider's distance and power from the start, unless their last report came less than 500 ms ago;
     /// says whether it was kept (L2-123 AC1).
     /// </summary>
@@ -244,6 +278,7 @@ public sealed class RaceSession(string mapId, DateTimeOffset startsAt)
         lock (seats)
         {
             if (now < StartsAt) return null;
+            route = routeMetres;
             paces ??= BotPaceModel.Paces(Id, BotPack).ToDictionary(pace => $"Pacer {pace.Name}");
             if (traces[0].Count == 0) Trace();
             var elapsed = (int)Math.Floor((now - StartsAt).TotalSeconds);
@@ -254,17 +289,34 @@ public sealed class RaceSession(string mapId, DateTimeOffset startsAt)
                     var metres = Math.Min(routeMetres, Next(i, secondsRidden));
                     if (metres > distances[i]) reachedAt[i] = secondsRidden + 1;
                     distances[i] = metres;
+                    Presence(i, StartsAt.AddSeconds(secondsRidden + 1));
                 }
 
                 Trace();
             }
 
-            return Standings();
+            return Rank();
+        }
+    }
+
+    /// <summary>
+    /// Marks a racing rider DNF once they have sent nothing for 15 seconds (since the start when they never have), and
+    /// removes one whose connection has been gone 30 seconds; a finished rider is neither (L2-124 AC2, AC4).
+    /// </summary>
+    private void Presence(int index, DateTimeOffset at)
+    {
+        if (seats[index] is not { RiderId: { } riderId } || distances[index] >= route) return;
+        var heard = progress.TryGetValue(riderId, out var last) ? last.At : StartsAt;
+        if (at - heard >= RaceSilenceLimit) dnf[index] = true;
+        if (lost.TryGetValue(riderId, out var since) && at - since >= DisconnectLimit)
+        {
+            dnf[index] = true;
+            removed.Add(riderId);
         }
     }
 
     /// <summary>Where seat <paramref name="index"/> is after riding second <paramref name="second"/>.</summary>
-    private double Next(int index, int second) => seats[index] switch
+    private double Next(int index, int second) => dnf[index] ? distances[index] : seats[index] switch
     {
         { Kind: RaceSeatKind.Bot } bot when paces!.TryGetValue(bot.Name, out var pace) =>
             distances[index] + VirtualSpeedModel.SpeedMs(BotPaceModel.Watts(pace, second)),
@@ -283,14 +335,15 @@ public sealed class RaceSession(string mapId, DateTimeOffset startsAt)
     }
 
     /// <summary>
-    /// Furthest first, a tie to whoever reached the distance first, then seat order; each gap the seconds since the
-    /// leader reached that distance (L2-123 AC2, AC3).
+    /// Furthest first, a tie to whoever reached the distance first, then seat order, every DNF after the rest; each gap
+    /// the seconds since the leader reached that distance (L2-123 AC2, AC3; L2-124).
     /// </summary>
-    private List<RaceStandingRow> Standings()
+    private List<RaceStandingRow> Rank()
     {
         var order = Enumerable.Range(0, Capacity)
             .Where(i => seats[i] is not null)
-            .OrderByDescending(i => distances[i])
+            .OrderBy(i => dnf[i])
+            .ThenByDescending(i => distances[i])
             .ThenBy(i => reachedAt[i])
             .ThenBy(i => i)
             .ToList();
@@ -302,9 +355,10 @@ public sealed class RaceSession(string mapId, DateTimeOffset startsAt)
             {
                 var seat = seats[i]!;
                 var kind = seat.Kind == RaceSeatKind.Bot ? RiderKind.Bot : RiderKind.Person;
+                var status = dnf[i] ? RaceStatus.Dnf : distances[i] >= route ? RaceStatus.Finished : RaceStatus.Riding;
                 return new RaceStandingRow(
                     place + 1, i + 1, seat.Name, seat.Jersey, seat.Level, kind,
-                    Math.Round(distances[i], 2), Math.Round(Gap(leader, distances[i]), 1));
+                    Math.Round(distances[i], 2), Math.Round(Gap(leader, distances[i]), 1), status);
             }),
         ];
     }
@@ -313,7 +367,7 @@ public sealed class RaceSession(string mapId, DateTimeOffset startsAt)
     private static double Gap(double[] leader, double metres)
     {
         var last = leader.Length - 1;
-        if (metres >= leader[last]) return 0;
+        if (last < 0 || metres >= leader[last]) return 0;
         var t = Array.FindIndex(leader, point => point >= metres);
         if (t <= 0) return last;
         return last - ((t - 1) + ((metres - leader[t - 1]) / (leader[t] - leader[t - 1])));
