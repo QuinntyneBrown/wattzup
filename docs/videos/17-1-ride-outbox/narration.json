@@ -1,0 +1,78 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "A finished ride now waits on the device until the backend has it, network or not."
+      ]
+    },
+    {
+      "id": "pending",
+      "bars": 5,
+      "lines": [
+        "Without a network, Results shows the ride with its XP pending, and the ride is kept in IndexedDB."
+      ]
+    },
+    {
+      "id": "order",
+      "bars": 5,
+      "lines": [
+        "When the app is next open online, waiting rides are sent one at a time, the oldest first."
+      ]
+    },
+    {
+      "id": "retry",
+      "bars": 5,
+      "lines": [
+        "While the backend stays out of reach, the ride is tried again after thirty seconds, then a minute, up to an hour."
+      ]
+    },
+    {
+      "id": "recorded",
+      "bars": 5,
+      "lines": [
+        "Once the backend records it, the XP fills in and the ride is removed from the device."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 5,
+      "lines": [
+        "The pending ride, from a phone to the full screen."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: kept on the device, sent oldest first, retried with growing delays, and removed."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}
