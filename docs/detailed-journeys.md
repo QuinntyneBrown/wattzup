@@ -87,7 +87,7 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 21.2 | Preview a custom workout | Preview the workout's resistance profile, length and expected average power before starting. | 2 | 21. Ride a custom workout | 100% |
 | 21.3 | Ride a custom workout | The plan drives target resistance through each interval, with the ride clock and live readouts. | 3 | 21. Ride a custom workout | 100% |
 | 21.4 | Pause, leave or end | Pause, lose the bike, leave or end the ride. | 2 | 21. Ride a custom workout | 100% |
-| 22.1 | Authenticate every request | Every endpoint and hub needs authentication by default; anonymous endpoints are explicit and listed. | 2 | 22. Stay secure | 0% |
+| 22.1 | Authenticate every request | Every endpoint and hub needs authentication by default; anonymous endpoints are explicit and listed. | 2 | 22. Stay secure | 100% |
 | 22.2 | Validate input and encode output | Validators on every request; device names rendered as text. | 2 | 22. Stay secure | 0% |
 | 22.3 | Limit abuse | Rate limits on sign-in codes, ride submissions and feedback, refusing with a code the screen branches on. | 2 | 22. Stay secure | 0% |
 | 22.4 | Restrict third parties | Static CSP; rider data seen only by its owner. | 2 | 22. Stay secure | 0% |
@@ -103,4 +103,4 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 27.1 | Installable app | Manifest, icons and install from Chrome or Edge. | 2 | 27. Install the app | 0% |
 | 27.2 | Update to a new version | Tell the rider a new version is ready; reload between rides. | 1 | 27. Install the app | 0% |
 
-**Total:** 95 slices, 238 days. **Complete:** 80 slices, 206 days (87%).
+**Total:** 95 slices, 238 days. **Complete:** 81 slices, 208 days (87%).
