@@ -21,38 +21,45 @@ without a network is kept and sent when the network returns.
 
 **Frontend — `ride` application**
 
-- **`CustomRideStore`** (see *ride a custom workout*) — adds `end()`, `openLeave()`,
-  `saveAndOpenLibrary()`, `discardAndOpenLibrary()` and `keepRiding()`. `end()` runs on End and
-  when the clock reaches the plan's length. It also runs while the bike is lost, saving the ride
-  as far as it went (`L2-105` AC4).
-- **`LeaveRideDialog`** (`wz-leave-ride-dialog`) — opened by the store's page through CDK
-  `Dialog` with a connected overlay position under "Library", so it reads as a popover while
-  keeping the dialog's focus trap and `aria-modal="true"`. It reads "Leave this ride?" and "You’re
-  6:52 in with 2.24 km ridden. The ride is paused while you decide.", puts initial focus on "Save
-  ride and open library", offers "Discard and open library" and "Keep riding", and treats Escape
-  as "Keep riding". On a phone it fits within the side margins, at most 20 rem wide. Its BEM
+- **`CustomRideStore`** (see *ride a custom workout*) — adds `end()`, `openLeave()`, `leave(choice)`
+  and `keepRiding()`. `end()` runs on End and when the clock reaches the plan's length, and also
+  while the bike is lost, saving the ride as far as it went (`L2-105` AC4). It submits the ride
+  when it lasted a minute or more and opens Profile; under a minute it submits nothing and opens
+  Profile with the notice.
+- **`LeaveRideDialog`** (`wz-leave-ride-dialog`) — opened by the page through CDK `Dialog` with a
+  flexible connected position under "Library", so it reads as a popover while keeping the
+  dialog's focus trap and `aria-modal="true"`. It reads "Leave this ride?" and "You’re 6:52 in
+  with 2.24 km ridden. The ride is paused while you decide.", puts initial focus on "Save ride and
+  open library", offers "Discard and open library" and "Keep riding", and closes with a
+  `LeaveChoice` (`save`, `discard` or `keep`); Escape and a press outside close it with none,
+  which is "Keep riding". On a phone it fits within the side margins, at most 20 rem wide. Its BEM
   block is the mock's `ride-leave`.
+- **`ProfilePage`** — reads `rideTooShort` from the navigation's state and shows the notice
+  "That ride was under a minute, too short to save." (`role="status"`, the mock
+  `profile/ride-too-short`).
+
+**Frontend — `components` library**
+
 - **`RideHeader`** — "Library" carries `aria-haspopup="dialog"` and `aria-expanded="true"` while
-  the popover is open.
+  the popover is open, and emits `library` with the button, the popover's anchor; End emits
+  `stopped`.
 
 **Frontend — `domain` and `api` libraries**
 
-- **`RideRecorder`** — `toSubmission(meta)` builds the `RideSubmission` (kind `custom`, ride id,
-  start time, duration, distance, output, average power, on-target share).
-- **`RideOutbox`** (`domain/storage`) — `enqueue` writes the submission to IndexedDB and sends it
-  through `RIDES_API`; it removes it once the backend has recorded it and retries otherwise
-  (`L2-135`).
+- **`RideRecorder`** (`domain/engine`, built for the class ride) — `facts(finishedAt)` gives the
+  ride id, its seconds, distance, output, top power and speed, on-target share and speed samples.
+  The store submits them with `kind: 'custom'` (`CustomRideFacts` in `api`).
+- **`RideOutbox`** / `RIDE_OUTBOX` — `submit(ride)` keeps the ride on the device and sends it
+  through `RIDES_API` once for its ride id, retrying offline (`L2-135`).
 - **`RidesApi`** / `RIDES_API` / **`HttpRidesApi`** — `POST /api/rides`, owned by the
   progression subsystem.
-- **`ProfileNotice`** — one-shot message the store hands to Profile through router navigation
-  state, carrying the "too short to save" notice. Its copy is `<TO SUPPLY>`; `L2-108` AC3 gives
-  the meaning, not the words, and no mock draws it.
 
 **Backend** (progression subsystem, *keep progress on the backend*)
 
-- **`RidesController`** → **`SubmitRideCommandHandler`** — records the ride once per ride id,
-  checks plausibility (`L2-125` AC2), computes XP (no place or podium line for a custom workout,
-  `L2-037` AC6) and returns the result.
+- **`RidesController`** → **`SubmitRideCommand`** — accepts `kind: "custom"` (`RideKind.Custom`,
+  stored as text, so no migration), records the ride once per ride id, checks its plausibility
+  (`L2-125` AC2) and computes XP as for a class: "Finished", on target and streak, with no place
+  or podium line (`L2-037` AC6).
 
 ## Requirements
 
@@ -103,3 +110,15 @@ End, or the end of the plan, saves and submits the ride and opens Profile; a rid
 minute is discarded instead (`L2-108`).
 
 ![Sequence diagram for ending a custom ride](diagrams/sequence-end-a-custom-ride.png)
+
+## Open questions
+
+1. **The notice's words.** `L2-108` AC3 gives the meaning; the copy "That ride was under a minute,
+   too short to save." and the mock `profile/ride-too-short` settle it.
+2. **Leaving a short ride.** "Save ride and open library" on a ride under a minute discards it, as
+   End does, and opens the Class Library with no notice; the Library has none to show.
+3. **Library before the start.** With no bike and the ride not started there is nothing to save,
+   so "Library" opens the Class Library at once, without the popover.
+4. **The Class Library** is `/classes`.
+5. **End while lost** saves the ride as far as it went and opens Profile, like End (`L2-105`
+   AC4); the plan's end does the same.

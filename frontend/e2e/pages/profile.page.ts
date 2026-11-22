@@ -31,6 +31,8 @@ export class ProfilePage {
   /** What Settings says when an action failed. */
   readonly settingsMessage: Locator;
   readonly deleteDialog: DeleteAccountDialog;
+  /** The notice above the level, as when a ride was too short to save (L2-108 AC3). */
+  readonly notice: Locator;
 
   constructor(private readonly page: Page) {
     this.header = new AppHeader(page);
@@ -51,6 +53,7 @@ export class ProfilePage {
     this.deleteAccount = this.settings.getByRole('button', { name: /^Delete my account/ });
     this.settingsMessage = this.settings.getByRole('alert');
     this.deleteDialog = new DeleteAccountDialog(page);
+    this.notice = this.mainColumn.locator('.profile__notice');
   }
 
   async open(): Promise<void> {

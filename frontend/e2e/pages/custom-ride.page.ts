@@ -8,6 +8,23 @@ export class CustomRidePage {
   readonly workout: Locator;
   readonly clock: Locator;
   readonly fullScreen: Locator;
+  /** Library, which asks to leave the ride (L2-107). */
+  readonly library: Locator;
+  /** Start, Pause and Resume, one button whose label says what it does (L2-105, L2-106). */
+  readonly start: Locator;
+  readonly pause: Locator;
+  readonly resume: Locator;
+  readonly end: Locator;
+  /** The overlay over the telemetry: Connect your bike, Lost the bike, Turn on Bluetooth (L2-105, L2-106). */
+  readonly overlay: Locator;
+  readonly connectBike: Locator;
+  readonly reconnect: Locator;
+  readonly checkAgain: Locator;
+  /** Leave this ride? (L2-107). */
+  readonly leave: Locator;
+  readonly saveAndLeave: Locator;
+  readonly discardAndLeave: Locator;
+  readonly keepRiding: Locator;
   /** Power, Cadence and the interval card (L2-102). */
   readonly power: Locator;
   readonly powerFoot: Locator;
@@ -46,8 +63,22 @@ export class CustomRidePage {
     this.lockup = header.getByRole('img', { name: 'Telo Ride' });
     this.bike = header.locator('.ride-header__status');
     this.workout = header.locator('a.ride-header__link').filter({ hasText: 'edit workout' });
-    this.clock = header.getByRole('timer');
+    this.clock = header.getByRole('timer', { includeHidden: true });
     this.fullScreen = header.getByRole('button', { name: 'Full screen' });
+    // A modal "Leave this ride?" hides the page behind it from assistive technology, Library included.
+    this.library = header.getByRole('button', { name: 'Library', includeHidden: true });
+    this.start = header.getByRole('button', { name: 'Start', exact: true });
+    this.pause = header.getByRole('button', { name: 'Pause', exact: true });
+    this.resume = header.getByRole('button', { name: 'Resume', exact: true });
+    this.end = header.getByRole('button', { name: 'End', exact: true });
+    this.overlay = page.locator('.ride-overlay__card');
+    this.connectBike = this.overlay.getByRole('button', { name: 'Connect bike' });
+    this.reconnect = this.overlay.getByRole('button', { name: 'Reconnect' });
+    this.checkAgain = this.overlay.getByRole('button', { name: 'Check again' });
+    this.leave = page.getByRole('dialog', { name: 'Leave this ride?' });
+    this.saveAndLeave = this.leave.getByRole('button', { name: 'Save ride and open library' });
+    this.discardAndLeave = this.leave.getByRole('button', { name: 'Discard and open library' });
+    this.keepRiding = this.leave.getByRole('button', { name: 'Keep riding' });
     const telemetry = page.getByRole('region', { name: 'Telemetry' });
     this.power = telemetry.locator('.ride-readout__number--power');
     this.powerFoot = telemetry.locator('.ride-readout__foot').first();

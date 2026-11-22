@@ -9,7 +9,7 @@ namespace Telo.Ride.Application.Rides;
 /// Whether a submission is a ride at all (Record a ride): a ride id; a kind; for a race a map in the catalogue, a mode
 /// of <c>solo</c>, <c>bots</c> or <c>online</c>, a pack for a bots race, a session for a riders-online race and a place
 /// within the field; for a class a class in the
-/// catalogue; 1 to <see cref="MaxSeconds"/> elapsed seconds; no negative distance, output, power or speed; an on-target
+/// catalogue; for a custom workout nothing more; 1 to <see cref="MaxSeconds"/> elapsed seconds; no negative distance, output, power or speed; an on-target
 /// share from 0 to 1; no more speed
 /// samples than seconds; a finish instant; and a known IANA time zone. Each error names the fact as the app sends it.
 /// </summary>
@@ -18,14 +18,14 @@ public sealed class SubmitRideCommandValidator : AbstractValidator<SubmitRideCom
     /// <summary>Four hours, the longest ride the app records, and so the most speed samples a ride carries.</summary>
     public const int MaxSeconds = 14_400;
 
-    private static readonly string[] Kinds = ["race", "class"];
+    private static readonly string[] Kinds = ["race", "class", "custom"];
     private static readonly string[] Modes = ["solo", "bots", "online"];
     private static readonly string[] Packs = ["easy", "medium", "hard"];
 
     public SubmitRideCommandValidator(IMapCatalogue maps, IClassCatalogue classes)
     {
         Fact(ride => ride.RideId).NotEmpty();
-        Fact(ride => ride.Kind).Must(kind => kind is not null && Kinds.Contains(kind)).WithMessage("Kind is race or class.");
+        Fact(ride => ride.Kind).Must(kind => kind is not null && Kinds.Contains(kind)).WithMessage("Kind is race, class or custom.");
         When(command => command.Ride.Kind == "race", () =>
         {
             Fact(ride => ride.MapId).Must(id => maps.Maps.Any(map => map.Id == id)).WithMessage("No such map.");

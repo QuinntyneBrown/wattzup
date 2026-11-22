@@ -5,6 +5,13 @@
   [bikeTone]="store.bike().tone"
   [clock]="store.clockText()"
   [total]="store.totalText"
+  [run]="store.run()"
+  [runDisabled]="store.runDisabled()"
+  [endDisabled]="store.endDisabled()"
+  [libraryOpen]="leaveOpen()"
+  (library)="openLeave($event)"
+  (stopped)="store.end()"
+  (ran)="store.toggleRun()"
   [fullscreen]="fullscreen.active()"
   (fullscreenToggled)="toggleFullscreen()"
 >
@@ -54,6 +61,14 @@
       }
     </wz-ride-view>
     <dl wz-ride-metrics [metrics]="store.metrics()"></dl>
+    @if (store.overlay(); as overlay) {
+      <wz-ride-overlay
+        [kind]="overlay"
+        [bikeName]="store.bikeName()"
+        [savedAt]="store.clockText()"
+        (acted)="store.act()"
+      />
+    }
   </section>
   <aside
     wz-ride-control

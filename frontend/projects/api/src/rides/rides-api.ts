@@ -3,7 +3,7 @@ import type { Observable } from 'rxjs';
 import type { PackStrengthId, RaceMode } from '../race/race-mode';
 
 /** Which door a ride came through. */
-export type RideKind = 'race' | 'class';
+export type RideKind = 'race' | 'class' | 'custom';
 
 /**
  * What every finished ride says of itself (docs/detailed-designs/progression/keep-progress-on-the-backend): the ride id
@@ -48,8 +48,13 @@ export interface ClassRideFacts {
   readonly classId: string;
 }
 
+/** A finished custom workout (docs/detailed-designs/custom-workout/leave-or-end-a-custom-ride): no map or class. */
+export interface CustomRideFacts {
+  readonly kind: 'custom';
+}
+
 /** A finished ride as the app submits it: facts only, never XP, stars or unlocks, which the backend computes (L2-044 AC4). */
-export type SubmitRideRequest = RideFacts & (RaceRideFacts | ClassRideFacts);
+export type SubmitRideRequest = RideFacts & (RaceRideFacts | ClassRideFacts | CustomRideFacts);
 
 /** One line of a ride's XP, as Results shows it: "2 of 10" +160 (L2-037). */
 export interface XpLineDto {

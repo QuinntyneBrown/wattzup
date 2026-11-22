@@ -16,6 +16,33 @@
   }
 }
 
+// Library: muted until hovered or open, 44 px tall to touch.
+.ride-header__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--target-comfortable);
+  white-space: nowrap;
+  border-radius: var(--radius-md);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.ride-header__link:hover,
+.ride-header__link[aria-expanded='true'] {
+  background: var(--color-raised);
+  color: var(--color-fg);
+}
+
+.ride-header__link--strong {
+  font-weight: var(--font-weight-medium);
+}
+
 .ride-header__divider {
   display: none;
   width: var(--space-px);
@@ -41,6 +68,10 @@
 
 .ride-header__status-icon {
   color: var(--color-volt);
+}
+
+.ride-header__status-icon--alert {
+  color: var(--color-heart-fg);
 }
 
 .ride-header__status-name {
@@ -77,4 +108,45 @@
 
 .ride-header__clock-total {
   color: var(--color-faint);
+}
+
+// Start, Pause and Resume: 48 px to press mid-ride on a phone, the control height from sm (L2-101 AC4).
+.ride-header__run {
+  height: var(--target-ride);
+}
+
+@media (min-width: 40rem) {
+  .ride-header__run {
+    height: var(--control-height-md);
+  }
+}
+
+// End: muted, heart on hover; 48 px to press mid-ride on a phone, the control height from sm (L2-101 AC4).
+.ride-header__stop {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--target-ride);
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  color: var(--color-muted);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.ride-header__stop:hover:not(:disabled) {
+  color: var(--color-heart-fg);
+}
+
+.ride-header__stop:disabled {
+  opacity: 0.4;
+}
+
+@media (min-width: 40rem) {
+  .ride-header__stop {
+    height: var(--control-height-md);
+  }
 }

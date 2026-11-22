@@ -124,7 +124,12 @@ public sealed class SubmitRideCommandHandler(IAppDbContext db, IMapCatalogue map
 
         var rider = await db.Riders.FirstOrDefaultAsync(known => known.Id == request.RiderId, cancellationToken)
             ?? throw new DomainRuleException("rider_not_found", RuleKind.NotFound, "No such rider.");
-        var kind = ride.Kind == "race" ? RideKind.Race : RideKind.Class;
+        var kind = ride.Kind switch
+        {
+            "race" => RideKind.Race,
+            "custom" => RideKind.Custom,
+            _ => RideKind.Class,
+        };
         var streakDays = rider.RecordRide(ride.FinishedAt!.Value, ride.TimeZoneId!);
         var xpLines = XpCalculator.Compute(
             new RideResult(kind, ride.Mode, RideOutcome.Finished, ride.Place, ride.FieldSize, ride.OnTargetShare), streakDays);

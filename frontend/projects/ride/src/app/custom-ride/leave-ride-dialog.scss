@@ -1,0 +1,4 @@
+// The dialog only holds the popover (block ride-leave); its place is the CDK overlay's.
+:host {
+  display: block;
+}
