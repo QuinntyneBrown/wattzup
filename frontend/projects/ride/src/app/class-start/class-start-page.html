@@ -30,7 +30,9 @@
           (choose)="store.choose($event)"
         >
           @if (store.mode() === 'group' && store.group(); as group) {
-            <wz-class-session [riders]="group.riders" [next]="group.next" />
+            <wz-class-session slot="session" [riders]="group.riders" [next]="group.next" />
+          }
+          @if (store.mode() === 'group' && store.group(); as group) {
             <button
               wz-button
               variant="primary"
