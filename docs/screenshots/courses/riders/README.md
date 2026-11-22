@@ -18,6 +18,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 7 | Riders who differ: skin, hair, height, the bike's colour, shoes and socks | 120.1 fps, none over 20 ms in 4 timings | 8.7 ms | 312 fps (3.21 ms): 301, 312, 321 | 84,781 | 74 | Yes |
 | 8 | Bike lights at night: a red rear lamp that glows, and the pools the lamps throw on the road | 119.8 fps; two frames of 25 ms in 1 timing of 4, none in 3 | 16.7 ms filmed, 25.1 ms worst | 294 fps (3.40 ms): 301, 292, 294 | 85,051 | 84 | Yes, with that noted |
 | 9 | Shade baked where the parts meet: under the helmet, inside the arms, beneath the seat, at the frame's joins | 119.9 fps; one frame of 25 ms in 1 timing of 3 | 25.1 ms | 317 fps (3.15 ms): 323, 313, 317 | 85,051 | 84 | Yes |
+| 10 | Cloth painted as cloth: the back's shape, folds, pocket shade, mesh panels, seams, the knit's grain; lamp light that keeps what is painted | 119.9 fps; two frames of 25 ms in 1 timing of 4, neither with a collection | 16.9 ms filmed, 25.0 ms worst | 294 fps (3.40 ms): 296, 286, 294 | 85,051 | 84 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -363,3 +364,38 @@ as after them: the churn is not the riders'. Who makes it:
 After the two fixes, six timings in a row had no frame over 20 ms (0 to 3 frames over 12 ms each). That is not
 proof either, but the heap is now collected four times in ten seconds, not five, and the bench can say next time
 whether a slow frame came with a collection.
+
+## Pass 10: cloth painted as cloth
+
+**Before** (`rider-09-start.jpg`): the jersey's design is flat fills, and under a street lamp the whole jersey goes
+to one pale orange: the lamps' light was added to every textured part as if it were white, washing out whatever was
+painted on it (the panels, the cuffs, the number's digits).
+
+**After** (`rider-10-start.jpg`, `rider-10.jpg`, `rider-10.mp4`): the jersey holds its colour under the lamps, with
+its darker side panels and cuffs, and the shorts their seams. Painted over the design: the spine's hollow and the
+shoulder blades, shade under the arms, folds gathered at the waist and pulled from the armpits, shade under the
+pockets' top edge and the swell of what is in them, rows of holes in the mesh side panels, a sheen and three seams
+on the shorts, a seam and folds on the sleeve, and a grain over all of it. From the race camera the colour, panels,
+cuffs and seams read; the folds and the grain are fine detail that mostly reads close to.
+
+**What changed.**
+
+- `course-cyclist.ts`: `cloth(ctx, …)` paints light and dark over the kit's texture with soft (blurred) strokes and
+  blobs, then a grain from a fixed seed.
+- `lamp-glow.ts`: a rider's lamp-lit material multiplies the lamps' light by the surface's colour as the material
+  has worked it out (`diffuseColor`: colour × vertex colours × map), where it used the plain colour and so ignored
+  the map.
+
+**Cost.** 294 fps against 317 for pass 9; the timings of pass 8 on a like machine were 294 too, and nothing here is
+drawn or sampled that was not before. No draw calls, no triangles. Some 20 ms more a rider when they are made (the
+grain reads the canvas back), at load. Of four timings one had two frames of 25 ms. The bench's new columns say what they were not: neither came with a
+collection of the heap (four collections in that timing, none at a slow frame), so the churn of memory is not what
+makes them. They came at 0.575 s and 2.575 s, exactly two seconds apart: something on a timer. That is the next
+thing to find.
+
+**Learned.**
+
+- Check what light is multiplied by. An emission that forgets the map is invisible on flat-coloured parts and
+  flattens exactly the parts that were given detail.
+- Detail has a distance. What is painted at a millimetre's scale is for the rider you are beside; the race camera
+  reads panels, seams and colour.

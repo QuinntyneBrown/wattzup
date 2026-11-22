@@ -3,6 +3,7 @@
 // node lights a wall, a post, the land and a rider, and it fades with the surface's height above the road: a lamp
 // lights what is beneath it.
 import {
+  diffuseColor,
   float,
   materialColor,
   mix,
@@ -117,7 +118,9 @@ export class LampGlow {
     material.metalness = source.metalness ?? 0;
     material.vertexColors = source.vertexColors;
     material.side = source.side;
-    const surface = source.vertexColors ? materialColor.mul(vertexColor().rgb) : materialColor;
+    // The surface's colour as the material itself has worked it out: its colour, its vertices' and its map's, so
+    // what is painted on a jersey is lit as painted and not washed over.
+    const surface = diffuseColor.rgb;
     // What is coloured by vertex carries its finish there too (rider-finish.ts); cloth has the one it was made with.
     const gloss = source.vertexColors ? vertexFinish(material) : float(1 - material.roughness);
     // The lamps' glow is all around, so a glossy surface throws it back along its edges, in the lamps' own colour.

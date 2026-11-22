@@ -688,6 +688,22 @@ start arch, a parked car, a boat): pass its vertices.
 **Watch for.** Parts that move against one another: leave them out, or the shade is wrong half the time. Meshes
 without a `color` attribute: give them white first.
 
+### R9. Cloth painted over the kit, and lamps that respect it (riders pass 10)
+
+**What it gives.** A jersey that looks worn on a body (the back's shape, folds, pockets, mesh, seams, grain), and
+that keeps its colours under a street lamp.
+
+**How it works.** `cloth()` in `course-cyclist.ts` paints translucent black and white over the kit's canvas through
+a blur, in the trunk's and sleeve's UV layout of technique R2. `LampGlow.rider` uses `diffuseColor.rgb` as the
+surface the lamps light.
+
+**To apply it.** Nothing to do for a map. Any other textured thing the lamps should light (a banner, a sign) must
+also be lit by its `diffuseColor`, not its plain colour.
+
+**Cost.** None a frame; one canvas read a rider at load.
+
+**Watch for.** Shade painted where baked shade (R8) already falls: under the arms both are light on purpose.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.

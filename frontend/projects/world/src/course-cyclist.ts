@@ -1098,11 +1098,203 @@ function kitTexture(jersey: Color): CanvasTexture {
     ctx.fillRect(trunk, 0, size - trunk, y(0.8));
     ctx.fillStyle = pale;
     ctx.fillRect(trunk, y(0.8), size - trunk, 6);
+    cloth(ctx, size, trunk, back, y);
   }
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
   texture.anisotropy = 4;
   return texture;
+}
+
+/**
+ * What makes the painted kit cloth on a body: the back's own shape showing through (the spine's hollow, the
+ * shoulder blades), folds drawn in at the waist and the armpits, the shadow under the pockets' top edge and the
+ * swell of what is in them, mesh in the side panels, the shorts' seams and sheen, and the grain of the knit. Light
+ * and dark only, laid over the colours already there.
+ */
+function cloth(
+  ctx: CanvasRenderingContext2D,
+  size: number,
+  trunk: number,
+  back: number,
+  y: (v: number) => number,
+): void {
+  const soft = (blur: number) => (ctx.filter = `blur(${blur}px)`);
+  const dark = (alpha: number) => `rgba(0, 0, 0, ${alpha})`;
+  const light = (alpha: number) => `rgba(255, 255, 255, ${alpha})`;
+  const blob = (x: number, at: number, rx: number, ry: number, fill: string) => {
+    ctx.fillStyle = fill;
+    ctx.beginPath();
+    ctx.ellipse(x, at, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fill();
+  };
+  const stroke = (points: readonly (readonly [number, number])[], width: number, style: string) => {
+    ctx.strokeStyle = style;
+    ctx.lineWidth = width;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    points.forEach(([x, at], i) => (i ? ctx.lineTo(x, at) : ctx.moveTo(x, at)));
+    ctx.stroke();
+  };
+  ctx.save();
+  // Only the trunk's share of the canvas for what belongs to the trunk.
+  ctx.beginPath();
+  ctx.rect(0, 0, trunk, size);
+  ctx.clip();
+
+  // The back under the jersey: the spine's hollow, the shoulder blades either side, the small of the back.
+  soft(7);
+  stroke(
+    [
+      [back, y(0.9)],
+      [back, y(0.46)],
+    ],
+    9,
+    dark(0.22),
+  );
+  for (const side of [-1, 1]) {
+    blob(back + side * 44, y(0.8), 26, 34, light(0.13));
+    blob(back + side * 30, y(0.56), 20, 40, light(0.07));
+    // Under each arm the cloth is in shade, on the back and on the chest.
+    blob(back + side * 86, y(0.74), 16, 50, dark(0.2));
+    blob(trunk * 0.25 + side * 86, y(0.74), 16, 50, dark(0.2));
+  }
+  // The chest: a hollow down the breastbone, the zip in it.
+  stroke(
+    [
+      [trunk * 0.25, y(0.95)],
+      [trunk * 0.25, y(0.3)],
+    ],
+    7,
+    dark(0.14),
+  );
+  // Folds: the jersey gathers at the waist as the rider bends, and pulls from the armpits towards the spine.
+  soft(2.5);
+  for (const side of [-1, 1]) {
+    for (const [from, to, rise, alpha] of [
+      [78, 30, 0.035, 0.2],
+      [72, 22, 0.02, 0.16],
+      [80, 44, 0.05, 0.14],
+    ] as const) {
+      const at = 0.3 + rise;
+      stroke(
+        [
+          [back + side * from, y(at + 0.03)],
+          [back + side * (from + to) * 0.5, y(at + 0.012)],
+          [back + side * to, y(at)],
+        ],
+        3.5,
+        dark(alpha),
+      );
+      stroke(
+        [
+          [back + side * from, y(at + 0.042)],
+          [back + side * to, y(at + 0.012)],
+        ],
+        2.5,
+        light(alpha * 0.6),
+      );
+    }
+    stroke(
+      [
+        [back + side * 84, y(0.8)],
+        [back + side * 60, y(0.7)],
+        [back + side * 40, y(0.66)],
+      ],
+      3,
+      dark(0.16),
+    );
+    stroke(
+      [
+        [back + side * 82, y(0.72)],
+        [back + side * 56, y(0.62)],
+      ],
+      3,
+      dark(0.12),
+    );
+  }
+  // The pockets: shade under their top edge, and each one filled out by what it holds.
+  soft(3);
+  ctx.fillStyle = dark(0.3);
+  ctx.fillRect(back - 62, y(0.44) + 2, 124, 7);
+  for (const [x, alpha] of [
+    [-41, 0.12],
+    [0, 0.16],
+    [41, 0.1],
+  ] as const) {
+    blob(back + x, y(0.355), 15, 24, light(alpha));
+    blob(back + x, y(0.3), 16, 8, dark(0.18));
+  }
+  // The shorts: a sheen over each side of the seat, the seam down the middle and the panels' seams beside it.
+  soft(6);
+  for (const side of [-1, 1]) blob(back + side * 34, y(0.13), 20, 30, light(0.1));
+  soft(0.6);
+  stroke(
+    [
+      [back, y(0.238)],
+      [back, y(0)],
+    ],
+    1.5,
+    light(0.16),
+  );
+  for (const side of [-1, 1]) {
+    stroke(
+      [
+        [back + side * 52, y(0.238)],
+        [back + side * 40, y(0.12)],
+        [back + side * 46, y(0)],
+      ],
+      1.5,
+      light(0.14),
+    );
+  }
+  // Mesh in the side panels: rows of small holes.
+  ctx.filter = 'none';
+  ctx.fillStyle = dark(0.3);
+  for (const x of [0, trunk * 0.5, trunk]) {
+    for (let px = x - 21; px < x + 22; px += 5) {
+      for (let py = y(0.77); py < y(0.275); py += 5) {
+        ctx.fillRect(px + ((py / 5) % 2 ? 2 : 0), py, 2, 2);
+      }
+    }
+  }
+  ctx.restore();
+
+  // The sleeve: its seam along the arm, and the cloth drawn in just above the cuff.
+  soft(2);
+  const sleeve = (trunk + size) / 2;
+  stroke(
+    [
+      [sleeve, y(0.05)],
+      [sleeve, y(0.8)],
+    ],
+    2,
+    dark(0.16),
+  );
+  for (const v of [0.66, 0.72, 0.5]) {
+    stroke(
+      [
+        [trunk + 14, y(v)],
+        [size - 14, y(v + 0.04)],
+      ],
+      3,
+      dark(0.12),
+    );
+  }
+  ctx.filter = 'none';
+
+  // The knit's grain: every pixel a little lighter or darker, the same for every rider.
+  const image = ctx.getImageData(0, 0, size, size);
+  const data = image.data;
+  let seed = 1234567;
+  for (let i = 0; i < data.length; i += 4) {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    const grain = 1 + ((seed >>> 16) / 65536 - 0.5) * 0.09;
+    data[i] = Math.min(data[i]! * grain, 255);
+    data[i + 1] = Math.min(data[i + 1]! * grain, 255);
+    data[i + 2] = Math.min(data[i + 2]! * grain, 255);
+  }
+  ctx.putImageData(image, 0, 0);
 }
 
 /** A soft round glow, bright at its middle, for a lamp and for the light it throws. */
