@@ -644,14 +644,34 @@ With Old Town Criterium locked at the 60 Hz VSync ceiling, we apply all Old Town
 | `knicks`   | **`low`**       |       **60.5** (60 Hz lock! +46.5%) | **16.7 / 17.2 / 17.8** (−33%) | **4.85 / 5.83** (−26.0%)   | 1,169 → **226 (−80.7%)** | 46 (+0)         |  108 → **53** | **8.089 / 8.683** (−65.9%)   |          **61.67** |  **2,468.0** (−11.7%) |
 | `knicks`   | **`high`**      |  **59.7** (60 Hz lock! **`2.67×`**) | **16.7 / 19.3 / 28.1** (−64%) | **9.50 / 10.49** (−37.5%)  | 1,801 → **304 (−83.1%)** | 165 (+0)        |  108 → **53** | **11.594 / 12.443** (−73.5%) | **25.99** (−80.5%) |  **6,516.4** (−15.1%) |
 
+### Parades Iteration 7 / Iteration 31 — Cross-Street `StreetBlock` Consolidation, 7-Palette Canyon `facadeAtlasTexture`, Shared `Crowd`/`Ensemble` Matte Materials & Indexed `mergeStaticGroup` (**`60.0–60.7 FPS` Across All Four Tiers**)
+
+1. **Always-Indexed `mergeStaticGroup` & Shared `Figures`/`Crowd` Matte/Flag Materials (`world-kit.ts`)**:
+   - Upgraded `mergeStaticGroup` so mixed indexed/non-indexed buckets synthesize sequential `[0..count-1]` index buffers on non-indexed pieces instead of expanding indexed meshes via `.toNonIndexed()`, preserving shared-vertex index buffers across every merged static group in Wattzup.
+   - Consolidated `Figures` + `Crowd` (`nearFigures`, `farFigures`, `arms`) onto **1** shared matte `MeshStandardMaterial` (`10 → 1` across `Crowd` + `crew`), coalesced multi-colour solid crowd flags into **1** `InstancedMesh` with `instanceColor`, and replaced ~5,000 per-frame `Math.sin`/`Math.cos` calls in `Crowd.place()` with precomputed angle-addition sines/cosines (`sinP`, `cosP`, `cosH`, `sinH`).
+2. **Knicks Cross-Street `StreetBlock` Packing, 7-Palette `facadeAtlasTexture` & `canyonClothAtlasTexture` (`world-knicks.ts`)**:
+   - Packed all 7 canyon tower `PALETTES` into 1 `wrapT = RepeatWrapping` `facadeAtlasTexture` (`2800 × 256` with 8 px edge-extruded mipmap gutters, `7 → 1` material) and merged `STREET_BANNERS` + float skirts/boards + vertical `DRAPES` into 1 `canyonClothAtlasTexture`.
+   - Grouped all ~46 canyon towers and 4 overhead street banners into `10` cross-street `48 m` `StreetBlock`s with vertical road-grade shear (`m[9] = -grade`) and near/far shadow-corridor `BatchedMesh`es (`221 → < 65` meshes, `53 → 31` scene materials), batched all 16 road-paint stencils into 1 `BatchedMesh`, shared `doubleSideVertexMat` across confetti/streamers/bunting/flags, and quantized confetti tumble rates (`5,320 → 96` trig calls/frame), dropping Knicks draws to **`151` (`low`) / `224` (`high`, −87.6%)**, CPU script to **`6.080` / `8.707 ms/f` (−25%)**, `high` p95 to **`17.3 ms`** (`1` drop / 2,702 frames), and lifting FPS to **`60.7 FPS` (`low`) / `60.0 FPS` (`high`)**.
+3. **Caribana `Ensemble` Attribute Normalisation, `28 m` `StreetBlock` Consolidation & Shared Banner/Matte/Cloth Materials (`world-caribana-crowd.ts`, `world-caribana.ts`)**:
+   - Upgraded `Ensemble.build()` to strip unused `'uv'` attributes on untextured materials and synthesize default white `'color'` attributes on `vertexColors: true` materials, allowing `Spectators`, `teeShirts`, and `officerEnsemble` to share `propSolidMat` (`17 → 5` `Ensemble` `BatchedMesh`es).
+   - Packed `BARRICADE_BANNERS`, food-stall valances, `MEDIA` vests, grandstand skirt, footbridge banner, and judging-gantry banners into 1 `19`-row `sharedClothBannerMat`, shared `sharedTrussMat`, `sharedFringeMat`, `sharedCondoMat`, `sharedDoubleSideVertexMat`, and `propSolidMat` (`101 → 78` scene materials, `279 → 266` `high` programs, **`11.42 s → 10.68 s` cold load**), consolidated non-marching static props into `15` longitudinal `28 m` `StreetBlock`s plus batched `royals`/`bandBanners`/`engineRoom`/`pannistGroup` (`140 → < 105` meshes, `428 → 407` `high` draws, `356 → 335` `low` draws), and converted `placeBarricades`, `placeMokoJumbies`, `placeLampsAndBunting`, `placeTrees`, and `placeRoadsideFiguresAndSectionFlags` to direct `_matricesTexture` writes, lifting **`caribana high` from `59.2 → 60.2 FPS` (`11.15×` baseline, `16.7 ms` median, `18.7 ms` p95, `5` drops vs. `16`)**!
+
+| World      | Tier (`webgpu`) |                              Avg FPS | Median / p95 / p99 ms         | GPU Median / p95 ms        |               Draw Calls | Programs (+mid) |    Materials | CDP Script / Task ms/f       |         JS Heap MB |     Cold Load Wall ms |
+| ---------- | --------------- | -----------------------------------: | ----------------------------- | -------------------------- | -----------------------: | --------------- | -----------: | ---------------------------- | -----------------: | --------------------: |
+| `caribana` | **`low`**       |       **60.4** (60 Hz lock! `5.81×`) | **16.7 / 17.3 / 18.1** (−82%) | **6.68 / 7.73** (−86.8%)   | 4,209 → **335 (−92.0%)** | 77 (+0)         | 785 → **78** | **9.153 / 9.888** (−90.4%)   | **62.61** (−53.1%) |  **3,888.9** (−34.3%) |
+| `caribana` | **`high`**      | **60.2** (60 Hz lock! **`11.15×`**!) | **16.7 / 18.7 / 22.5** (−91%) | **10.75 / 11.67** (−88.4%) | 7,730 → **407 (−94.7%)** | 266 (+0)        | 785 → **78** | **11.533 / 12.408** (−93.8%) | **34.44** (−78.1%) | **10,675.0** (−40.8%) |
+| `knicks`   | **`low`**       |        **60.7** (60 Hz lock! +47.0%) | **16.7 / 17.2 / 17.7** (−33%) | **6.16 / 7.14** (−6.0%)    | 1,169 → **151 (−87.1%)** | 51 (+0)         | 108 → **31** | **6.080 / 6.762** (−74.4%)   | **26.62** (−35.4%) |   **2,566.9** (−8.1%) |
+| `knicks`   | **`high`**      |  **60.0** (60 Hz lock! **`2.68×`**!) | **16.7 / 17.3 / 21.8** (−64%) | **9.24 / 10.29** (−39.2%)  | 1,801 → **224 (−87.6%)** | 184 (+0)        | 108 → **31** | **8.707 / 9.490** (−80.1%)   | **36.93** (−72.3%) |   **7,393.6** (−3.6%) |
+
 ### Cumulative Parade Progression Summary (45-Second Active Ride, `1440 × 900`, 95 rpm)
 
-| Iteration                                           | `caribana low` FPS | `caribana high` FPS | `knicks low` FPS | `knicks high` FPS |
-| --------------------------------------------------- | -----------------: | ------------------: | ---------------: | ----------------: |
-| **Baseline (`Iteration 24`, PR #974)**              |               10.4 |                 5.4 |             41.3 |              22.4 |
-| **Parades Iter 1 (`Iteration 25`, PR #975)**        |               31.8 |                22.8 |         **60.1** |              35.0 |
-| **Parades Iter 2 (`Iteration 26`, PR #976)**        |               38.1 |                27.6 |         **60.6** |              58.1 |
-| **Parades Iter 3 (`Iteration 27`, PR #977)**        |           **60.5** |                44.3 |         **60.5** |          **59.5** |
-| **Parades Iter 4 (`Iteration 28`, PR #978)**        |           **60.3** |                51.7 |         **60.5** |          **60.2** |
-| **Parades Iter 5 (`Iteration 29`, PR #979)**        |           **60.4** |                57.3 |         **60.4** |          **60.1** |
-| **Parades Iter 6 (`Iteration 30`, PR #980 — Lock)** |           **60.4** |            **59.2** |         **60.5** |          **59.7** |
+| Iteration                                               | `caribana low` FPS | `caribana high` FPS | `knicks low` FPS | `knicks high` FPS |
+| ------------------------------------------------------- | -----------------: | ------------------: | ---------------: | ----------------: |
+| **Baseline (`Iteration 24`, PR #974)**                  |               10.4 |                 5.4 |             41.3 |              22.4 |
+| **Parades Iter 1 (`Iteration 25`, PR #975)**            |               31.8 |                22.8 |         **60.1** |              35.0 |
+| **Parades Iter 2 (`Iteration 26`, PR #976)**            |               38.1 |                27.6 |         **60.6** |              58.1 |
+| **Parades Iter 3 (`Iteration 27`, PR #977)**            |           **60.5** |                44.3 |         **60.5** |          **59.5** |
+| **Parades Iter 4 (`Iteration 28`, PR #978)**            |           **60.3** |                51.7 |         **60.5** |          **60.2** |
+| **Parades Iter 5 (`Iteration 29`, PR #979)**            |           **60.4** |                57.3 |         **60.4** |          **60.1** |
+| **Parades Iter 6 (`Iteration 30`, PR #980)**            |           **60.4** |            **59.2** |         **60.5** |          **59.7** |
+| **Parades Iter 7 (`Iteration 31`, PR #981 — 60.0+ Hz)** |           **60.4** |            **60.2** |         **60.7** |          **60.0** |

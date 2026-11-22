@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import { InstancedMesh, Mesh, type BufferGeometry } from 'three/webgpu';
+import { BatchedMesh, InstancedMesh, Matrix4, Mesh, type BufferGeometry } from 'three/webgpu';
 import { KnicksStreet } from './world-knicks';
 
 describe('KnicksStreet (L2-101 AC1, L2-111 AC10)', () => {
@@ -44,9 +44,9 @@ describe('KnicksStreet (L2-101 AC1, L2-111 AC10)', () => {
       }
     });
     // Down from ~860+ meshes (multi-material towers, 160 lamp meshes, 30 bunting meshes, 56 Woolworth sub-draws, 90 float meshes).
-    expect(totalMeshes).toBeLessThan(260);
+    expect(totalMeshes).toBeLessThan(65);
     // Street banners (4 -> 1) and road paint (8 -> 1) pack into shared texture atlases (< 48 unique materials vs 67+).
-    expect(uniqueMaterials.size).toBeLessThan(48);
+    expect(uniqueMaterials.size).toBeLessThan(20);
 
     const points = Array.from({ length: 161 }, (_, i) => ({
       metres: (i - 10) * 2,
@@ -70,10 +70,24 @@ describe('KnicksStreet (L2-101 AC1, L2-111 AC10)', () => {
     expect(particleInstances).toBeGreaterThan(0);
     expect(particleInstances).toBeLessThanOrEqual(900);
 
-    // Props beyond 320 m along the 480 m loop are hidden, and no visible canyon prop past 45 m casts shadows.
+    // Props and batched canyon blocks beyond 320 m along the 480 m loop are hidden, and no visible prop/block past 45 m casts shadows.
     let visiblePastRoad = 0;
     let farShadowCasters = 0;
+    const scratchMat = new Matrix4();
     for (const child of street.group.children) {
+      if (child instanceof BatchedMesh) {
+        for (let id = 0; id < child.maxInstanceCount; id++) {
+          if (!child.getVisibleAt(id)) continue;
+          child.getMatrixAt(id, scratchMat);
+          const e = scratchMat.elements;
+          const nonZeroScale = e[0] !== 0 || e[5] !== 0 || e[10] !== 0;
+          if (!nonZeroScale) continue;
+          const metres = -e[14];
+          if (metres > 320 && metres < 500) visiblePastRoad++;
+          if (child.castShadow && metres > 45) farShadowCasters++;
+        }
+        continue;
+      }
       if (child instanceof InstancedMesh || child instanceof Mesh) continue;
       const metres = -child.position.z;
       if (metres > 320 && metres < 500 && child.visible) visiblePastRoad++;
