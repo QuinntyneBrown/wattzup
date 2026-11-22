@@ -2881,6 +2881,7 @@ a.map-table__map:hover, a.map-table__map[data-state="hover"] { color: var(--colo
 .video-sync__label { display: block; font-size: var(--font-size-sm); line-height: var(--line-height-sm); color: var(--color-muted); }
 .input.video-sync__url { margin-top: var(--space-2); height: var(--target-comfortable); background: var(--color-raised); }
 .input.video-sync__url:focus { border-color: var(--color-volt); }
+.video-sync__error { margin-top: var(--space-2); }
 .video-sync__player { position: relative; margin-top: var(--space-4); aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-xl); background: var(--color-video); }
 .video-sync__player .mock-note { top: var(--space-3); left: var(--space-3); }
 .video-sync__controls { margin-top: var(--space-5); display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; column-gap: var(--space-6); row-gap: var(--space-4); }

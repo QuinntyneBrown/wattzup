@@ -24,50 +24,49 @@ cases.
 
 **Frontend — `ride` application**
 
-- **`CustomWorkoutStore`** (see *set up a custom workout*) — derives `plan` (a `computed`
-  signal over the draft through `PlanExpander`), `validation` (through `PlanValidator`) and
-  `preview` (through `PlanSummary`). `start()` saves the draft and navigates to
-  `/profile/custom/ride`.
+- **`CustomWorkoutStore`** (see *set up a custom workout*) — derives `plan` (a `computed` signal
+  over the draft through `expandCustomWorkout`), `problems` (through `validatePlan`) and
+  `preview` (through `customWorkoutPreview`). From slice 21.3, `start()` saves the draft and
+  navigates to `/profile/custom/ride`.
+- **`CustomWorkoutPage`** — hosts the video section's preview player through
+  `VIDEO_PLAYER_FACTORY`, parked at the offset with YouTube's controls, and destroys it when the
+  switch goes off, the link changes or the rider leaves.
 
 **Frontend — `components` library**
 
-- **`PlanPreview`** (`wz-plan-preview`) — "Your ride": total, a **`PlanChart`** resistance
-  profile from 0:00 to the total, the facts list, and "Start ride" (disabled while the plan or
-  the video link is invalid).
+- **`PlanPreview`** (`aside[wz-plan-preview]`) — "Your ride": the total, the resistance profile
+  from 0:00 to the total (Class Start's **`ClassProfile`**, at the preview's height, so both
+  draw a plan alike), the facts list and the legend. Start ride joins it in slice 21.3.
+- **`VideoSync`** (`wz-video-sync`) — "Ride along to a video": the switch, the "YouTube link"
+  field (invalid with its message), the player's frame, "Ride 0:00 starts at" with "Half a
+  second earlier" and "Half a second later", "Use video's current time", "Check" and the help
+  text (`L2-098`).
 
 **Frontend — `domain` library (`engine/`)**
 
-- **`PlanExpander`** — `expand(draft): Plan`. HIIT: a warm-up at level 8 with a cadence aim of
-  80 rpm (`L2-096` AC3); then for each round a work segment at the work level and, except after
-  the last round, a recover segment at the recover level; then a cool-down at the recover level.
-  The GCN plan expands to 17 segments. Flat: one steady segment at the chosen level and cadence
-  goal. Recover segments aim at 72 rpm, as `L2-102` AC1 shows; the cadence aims of work and
-  cool-down segments are `<TO SUPPLY>` (L2.md open question 4).
-- **`Plan`** — segments with start times, `totalSeconds`, and `segmentAt(elapsed)`, which finds
-  the current segment and its time left (6:52 → segment 3 of 17, Recover, round 1, 1:38 left).
-- **`PlanValidator`** — every segment at least 5 seconds, every level 1 to 32, total 1 to 180
-  minutes (`L2-100` AC3).
-- **`PlanSummary`** — structure ("8 × 0:30 · 3:00 → 1:30 recover" or "Level 12 throughout"),
-  time under load, video ("Synced from 0:12.0"), peak resistance ("Level 24"), expected average
-  power (duration-weighted target power) and expected energy (`L2-023` AC4:
-  round(P × seconds ÷ 1000 ÷ 0.24 ÷ 4.184)). The Class Start screen uses the same helper.
-- **`PowerModel`** — `targetPower(level, cadenceAim)`.
+- **`expandCustomWorkout(draft): Plan`** — HIIT: a warm-up at level 8 aiming at 80 rpm
+  (`L2-096` AC3); then for each round a work segment at the work level aiming at 90 rpm and,
+  except after the last round, a recover segment at the recover level aiming at 72 rpm, as
+  `L2-102` AC1 shows; then a cool-down at the recover level aiming at 85 rpm. A warm-up or
+  cool-down of 0:00 is left out. The GCN plan expands to 17 segments. Flat: one steady segment at
+  the chosen level and cadence goal.
+- **`planStateAt(plan, elapsedMs)`** (slice 6.1) — finds the current segment and its time left:
+  6:52 → segment 3 of 17, Recover, 1:38 left (`L2-100` AC2).
+- **`validatePlan(plan)`** — every segment at least 5 seconds, every level 1 to 32, total 1 to
+  180 minutes (`L2-100` AC3); returns the rules broken, none for a valid plan.
+- **`customWorkoutPreview(draft, plan)`** — the total, and the facts: structure
+  (`PlanSummary.structure`, "8 × 0:30 · 3:00 → 1:30 recover" or "Level 12 throughout"), time
+  under load (HIIT only), video ("Synced from 0:12.0", "Off" or "Link needed"), peak resistance
+  ("Level 24"), expected average power (`PlanSummary.averagePower`, duration-weighted target
+  power) and expected energy (`EnergyModel.kcal`, `L2-023` AC4).
+- **`video-link.ts`** — `videoIdOf(link)`: the 11-character id of a `youtube.com/watch?v=`,
+  `youtu.be/` or `youtube.com/shorts/` link, else `null`; `formatOffset` ("0:12.0") and
+  `parseOffset`; the offset steps by 0.5 s, never below 0.
 
-**Frontend — `api` and `storage`**
-
-- **`CustomWorkoutApi.save(dto)`** — `PUT /api/riders/me/custom-workout`.
-- **`SettingsStore`** — keeps the saved workout on the device, so a custom ride can start without
-  a network (`L2-135` AC3). A save that fails offline is retried on the next start; the ride
-  starts either way.
-
-**Backend**
-
-- **`CustomWorkoutController`** — `PUT /api/riders/me/custom-workout` sends one
-  `SaveCustomWorkoutCommand`.
-- **`SaveCustomWorkoutCommandValidator`** (FluentValidation) and **`WorkoutPlanRules`**
-  (`Telo.Ride.Domain`) — expand and validate the plan by the rules of `L2-100` AC3 and check the
-  video id form. A refusal is a 400 ProblemDetails with `code` `plan_invalid`.
-- **`SaveCustomWorkoutCommandHandler`** — upserts the rider's `CustomWorkout`.
+**Later slices.** Start ride, saving the workout to the device and the account
+(`CustomWorkoutApi.save`, `PUT /api/riders/me/custom-workout`, the backend's
+`SaveCustomWorkoutCommand` with `WorkoutPlanRules` refusing with `plan_invalid`) and opening the
+next setup from it are slice 21.3, with the ride they start.
 
 ## Requirements
 
@@ -119,3 +118,14 @@ Each draft change re-expands the plan, validates it and recomputes the facts (`L
 the plan (`L2-099` AC4).
 
 ![Sequence diagram for starting the custom ride](diagrams/sequence-start-the-ride.png)
+
+## Open questions
+
+1. **Cadence aims.** Work aims at 90 rpm and the cool-down at 85 rpm: the one pair that gives
+   `L2-099` AC1's ~154 W and ~276 kcal. `main` aims at 100 and 70 rpm (~155 W, ~278 kcal).
+2. **The chart.** The preview draws Class Start's `ClassProfile` rather than a chart of its own,
+   with its bars scaled to the plan's highest level, as the mock's are for GCN.
+3. **Video wording.** "Off" with the switch off, and "Link needed" with a link that is not
+   YouTube's, added to `L2-099` AC5 with the `video-off` and `invalid-link` mocks.
+4. **A typed offset.** The offset field takes "0:12.0", "12.5" or "1:02:03.5"; anything else
+   puts back the last offset.
