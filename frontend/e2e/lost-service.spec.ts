@@ -13,7 +13,7 @@ import {
   SESSIONS_NOW,
   standings,
 } from './fixtures/classes';
-import { echelonBike } from './fixtures/echelon';
+import { ECHELON_NOTIFY, echelonBike, resistanceFrame } from './fixtures/echelon';
 import { openRace, peersBoard, raceStandings } from './fixtures/live-race';
 import { expect, test } from './fixtures/test';
 import { ClassRidePage } from './pages/class-ride.page';
@@ -38,6 +38,7 @@ test('a riders-online race carries on through a lost service, then rejoins and u
   await expect(race.boardNotice).toHaveText(NOTICE);
   await expect(race.boardNotice).toHaveAttribute('role', 'status');
   await expect(race.clock).not.toHaveText(before ?? '');
+  await expect(race.lost).toHaveCount(0);
   await expect(race.place).toHaveText('5th');
 
   hub.restore();
@@ -80,9 +81,12 @@ test.describe('A group class through a lost service', () => {
   test('the class rides on with its last standings and the notice, then rejoins and the board updates (L2-126 AC1, AC2)', async ({
     page,
     hub,
+    bluetooth,
   }) => {
     const ride = new ClassRidePage(page);
     await openRiding(page, ride);
+    // The bike reports its resistance, so its link is up through the lost service.
+    await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(6));
     await hub.send('StandingsUpdated', standings(session, boardAtSeven));
     await page.clock.runFor(100);
     await expect(ride.boardPlace).toHaveText('5th / 9');
@@ -95,6 +99,7 @@ test.describe('A group class through a lost service', () => {
     await expect(ride.boardNotice).toHaveText(NOTICE);
     await expect(ride.boardNotice).toHaveAttribute('role', 'status');
     await expect(ride.clock).not.toHaveText(before ?? '');
+    await expect(ride.lost).toHaveCount(0);
     await expect(ride.boardPlace).toHaveText('5th / 9');
 
     hub.restore();
