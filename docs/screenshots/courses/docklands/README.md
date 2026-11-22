@@ -31,6 +31,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 7 | A working quay: railing, bollards, drums, crates, lorries, masts, cranes | 60.0 fps (the display was at 60 Hz) | best of six 301 fps; medians 241 and 232 on a busy machine (see the pass) | | 79,834 | 134 | 3.99 MB | Yes |
 | 8 | Hills a rider can see: each effort a ramp up onto a bridge | 120.0 fps, no frame over 20 ms | median of three 308 fps (3.24 ms): 311, 308, 307, on the first ramp | | 66,997 | 123 | 3.92 MB | Yes |
 | 9 | Wet ground that mirrors the lamps and the sky | 119.8 fps, no frame over 20 ms | median of three 298 fps (3.36 ms): 326, 296, 298, on the first ramp | | 66,997 | 123 | 3.92 MB | Yes |
+| 10 | A glow in the air round every lamp | 119.3 fps, 2 frames over 20 ms | median of three 294 fps (3.40 ms): 304, 286, 294, on the first ramp | | 67,845 | 129 | 3.95 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -359,3 +360,34 @@ highlight three times as tight, from three rows.
 - Lamps that repeat need not be looped over: the mirror's geometry says which one a pixel can show.
 - The pavements and the quay are wet by the same rule and it suits them; the brick, the riders and the water of the
   harbour are not, and the neon signs are not mirrored: only the lamps and the sky.
+
+## Pass 10: a glow in the air round every lamp
+
+**Before** (`pass-09.jpg`, `pass-09-start.jpg`, `pass-09.mp4`): a lamp's head is a small pale block. The road
+beneath it is lit and mirrors it, but the lamp itself does not look lit.
+
+**After** (`pass-10.jpg` on the first ramp, `pass-10-start.jpg` at the start line, `pass-10.mp4`): every lamp has a
+soft disc of light round it, bright at its heart and fading out, as a lamp has in damp air, and the floodlight
+masts have theirs. Down the road the lamps dwindle to a string of points of light, which is what tells the eye how
+far the road runs.
+
+**What changed.**
+
+- `Kit.halo` (themes.py) puts four corners at a light's own place in a new `Halos` group, the corner in their UV
+  and the light's colour in their vertices. `Kit.lamp` gives every lamp one; the floodlight masts have two each.
+- `halo-material.ts` spreads the four corners 2.4 m to each side in the eye's own axes, so the disc faces the eye
+  wherever it is, and draws the glow added to what is behind it. Halos are drawn to 420 m and fade out from 250 m.
+
+**Cost.** 0.05 ms a frame (298 to 294 fps, inside the noise); 6 more draw calls (129 of 140) and 850 more triangles
+in the frame; 0.03 MB in the file. Two frames of 1,190 over 20 ms at the display's pace in this run.
+
+**Tried and dropped.** The first build drew nothing: glTF keeps a UV's second number upside down, which turns the
+corners' order round, so every disc faced away and was culled. They are drawn from both sides.
+
+**Learned.**
+
+- A light source needs a glow of its own to look lit: the light it throws on the ground is not enough, and bloom
+  alone does not find a block a few pixels wide.
+- Corners that all sit at one place, spread in the vertex shader, are the cheapest thing that faces the eye: no
+  instancing, no sprites, one draw call a chunk like everything else.
+- Draw calls are now the nearest budget (129 of 140): the next new group should be joined to an old one.

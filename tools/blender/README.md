@@ -131,6 +131,8 @@ data and scenery in `themes.py`, run the script, and name the world in
   into chunks and is always drawn; the app draws their lit windows.
 - **Windows.** `Kit.window` builds a window as one panel of the `Windows` group, its UV its place on the panel, whether
   it is lit and its own number; the app draws the rest. Nothing a window has is modelled: there are thousands.
+- **Halos.** `Kit.halo` puts four corners at a light's place in the `Halos` group; the app spreads them to face the eye
+  and draws the light's glow. `Kit.lamp` gives every lamp one.
 - **Baked shading.** What stands on the ground is darkened at its foot in its colours.
 - **`pack_glb.py`** rewrites the exported vertex colours as bytes, a quarter of their size.
 - **`layout`.** Searching the layouts a seed can deal for one whose start and finish look out to sea can

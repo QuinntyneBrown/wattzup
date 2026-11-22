@@ -288,6 +288,30 @@ theme, or give it the sun's glint by the same highlight with the sun's direction
 between rows of lamps (take a row either side); on tight bends the road's measure bends and the streaks lean: they
 are faint there, and it has not been a problem.
 
+### 10. A glow round every light (Docklands pass 10)
+
+**What it gives.** Lamps that look lit: a soft disc of light in the air round each, facing the eye, dwindling to a
+string of points down the road.
+
+**How it works.**
+
+- `tools/blender/themes.py`: `Kit.halo(at, glow)` adds a quad whose four corners are all at `at`, with UVs (0,0),
+  (1,0), (1,1), (0,1), to the `Halos` part in the light's glowing material. `build_course.py` makes it the `Halos`
+  group, in chunks three long.
+- `frontend/projects/world/src/halo-material.ts`: an unlit, additive node material with no fog and no depth write.
+  Its `vertexNode` is the projection of the light's place in the eye's axes plus the corner's offset
+  (`(uv - 0.5) x 2 x radius` in x and y). Its colour is the vertex colour times a tight gaussian and a wide cubic
+  skirt of the distance from the middle, times a fade with distance from the eye.
+
+**To apply it to another map.** Any map whose lamps are placed with `Kit.lamp` gets halos on rebuilding. Call
+`k.halo(place, material)` for any other light: a lighthouse's lantern, a neon sign's ends, a string of bulbs (one
+for a few bulbs, not one each), the sun's disc at dusk. By day leave them out: a lamp that is not lit has no glow.
+
+**Cost.** About 0.05 ms a frame; a draw call a chunk in view; two triangles a light.
+
+**Watch for.** Winding: the UV's flip on export turns the corners round, so draw both sides. Halos in front of
+everything (they must test depth but not write it). Too many of them close together add up to a white smear.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
@@ -296,8 +320,7 @@ The pictures the work aims at differ from a course in these ways, most visible f
 2. Nothing but the riders casts a shadow: posts, walls and containers throw none.
 3. The water is a flat colour: no reflection of the lights along the quay or of the city.
 4. The neon signs and lit windows are not mirrored in the wet road, and throw no light on it.
-5. Lamps and neon have no glow in the air (halos, haze under each lamp), and lit windows and neon throw no light
-   on the ground.
+5. Lit windows and neon throw no light on the ground, and the neon has no glow in the air.
 6. The riders are simple figures: smooth limbs, no cloth, no faces.
 7. Doors, signs, pipes, gutters and roof lines: a building is still a box with windows.
 8. The land rises with the road: a climb onto a bridge has ground beside it, not water beneath.

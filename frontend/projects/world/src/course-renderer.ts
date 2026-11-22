@@ -43,6 +43,7 @@ import {
 } from './course';
 import { fenceMaterial } from './fence-material';
 import { type GroundEye, groundMaterial, surfaceTexture } from './ground-material';
+import { haloMaterial } from './halo-material';
 import { LampGlow } from './lamp-glow';
 import { lampLightMap } from './lamp-light-map';
 import { mergeStillParts } from './merged-cyclist';
@@ -78,6 +79,7 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   Walls: 250,
   Windows: 250,
   Fences: 200,
+  Halos: 420,
   Glow: 400,
   Beams: 460,
   Leaves: 210,
@@ -415,7 +417,9 @@ export class CourseRenderer implements WorldRenderer {
     );
     // Railings are panels with their place along the railing in their UV (fence-material.ts).
     materials['Fences'] = fenceMaterial(this.lampGlow?.light ?? null, LAMP_ON.Solid);
-    this.disposables.push(materials['Fences']);
+    // The glow round each light: corners the material spreads to face the eye (halo-material.ts).
+    materials['Halos'] = haloMaterial(DRAW_DISTANCE['Halos']! * 0.6, DRAW_DISTANCE['Halos']!);
+    this.disposables.push(materials['Fences'], materials['Halos']);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     map.traverse((part) => {
       const mesh = part as Mesh;

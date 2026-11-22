@@ -524,9 +524,12 @@ WINDOWS_PART = "Windows"
 # Railings and fences: one flat panel a stretch, in a group of their own, its UV the metres along it and the share of
 # its height, from which the app draws the posts and the rails (L2-166 AC19; `Kit.fence` in themes.py).
 FENCES_PART = "Fences"
+# The glow in the air round a light: four corners at the light's own place, in a group of their own, which the app
+# spreads to face the eye (L2-166 AC21; `Kit.halo` in themes.py). Its UV is the corner.
+HALOS_PART = "Halos"
 WALL_KINDS = {"brick": 1, **{f"container-{i}": 2 for i in range(4)}, "whitewash": 3, "tower": 3, "wall": 3,
               **{f"facade-{i}": 3 for i in range(6)}, **{f"deco-{i}": 3 for i in range(4)}}
-WIDER = {"Land": 4, "Beams": 4, "Glow": 3, "Leaves": 3}
+WIDER = {"Land": 4, "Beams": 4, "Glow": 3, "Leaves": 3, "Halos": 3}
 WHOLE = {"sea": "Sea", "sun": "Sun", "moon": "Sun", "island": "Conillera", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
 
 
@@ -593,6 +596,8 @@ def assemble(road: "Road", col) -> dict:
             group = "Windows"
         elif part.name == FENCES_PART:
             group = "Fences"
+        elif part.name == HALOS_PART:
+            group = "Halos"
         elif part.name == SKYLINE_PART:
             group, chunked = "Skyline", False
         elif part.mat in WALL_KINDS and chunked:
@@ -629,7 +634,7 @@ def assemble(road: "Road", col) -> dict:
                     shade = 0.74 + 0.3 * smoothstep(0.0, 4.5, lift) if lift > 0.2 else (0.62 if lift < -0.3 else 1.0)
                     c = (c[0] * shade, c[1] * shade, c[2] * shade, 1.0)
                 key = (round(v[0], 3), round(v[1], 3), round(v[2], 3), round(c[0], 3), round(c[1], 3), round(c[2], 3))
-                if group in ("Windows", "Fences"):
+                if group in ("Windows", "Fences", "Halos"):
                     key = (*key, *part.uvs[i])
                 if walled:
                     _, near, _ = road.tree.find((v[0], v[1], 0.0))
@@ -640,7 +645,7 @@ def assemble(road: "Road", col) -> dict:
                     at = mesh["index"][key] = len(mesh["verts"])
                     mesh["verts"].append(v)
                     mesh["cols"].append(c)
-                    if group in ("Windows", "Fences"):
+                    if group in ("Windows", "Fences", "Halos"):
                         mesh["uvs"].append(part.uvs[i])
                     if walled:
                         mesh["uvs"].append(wall_uv)

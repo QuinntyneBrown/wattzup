@@ -315,6 +315,18 @@ class Kit:
             b.uvs.append((u + (2 if lit else 0), v + 2 * number))
         b.faces.append((base, base + 1, base + 2, base + 3))
 
+    def halo(self, at, glow: str) -> None:
+        """The glow in the air round a light: four corners at one place, which the app spreads to face the eye. Its
+        UV is the corner, 0 or 1 each way; its colour the light's."""
+        b = self.B.setdefault("halos:" + glow, type(self.B["tower"])("Halos", glow))
+        if b.uvs is None:
+            b.uvs = []
+        base = len(b.verts)
+        for u, v in ((0, 0), (1, 0), (1, 1), (0, 1)):
+            b.verts.append(tuple(at))
+            b.uvs.append((u, v))
+        b.faces.append((base, base + 1, base + 2, base + 3))
+
     def fence(self, i: int, off: float, height: float) -> None:
         """A railing from this sample of the road to the next: one flat panel, whose posts and rails the app draws.
         Its UV is the metres along the road and the share of its height."""
@@ -429,6 +441,7 @@ class Kit:
         arm = -1.2 if off > 0 else 1.2
         self.B["dark"].box(self.P(i, 0, off + arm / 2, height - 0.1), (0.12, 1.4, 0.12), yaw)
         self.B[glow].box(self.P(i, 0, off + arm, height - 0.35), (0.5, 0.35, 0.22), yaw)
+        self.halo(self.P(i, 0, off + arm, height - 0.4), glow)
 
     def turbine(self, x, y, z, yaw: float) -> None:
         h = self.rng.uniform(55, 70)
@@ -859,6 +872,8 @@ def docklands(k: Kit) -> dict:
             B["dark"].box(k.P(i, 0, base, 17.0), (0.3, 3.2, 0.3), yaw)
             for side in (-1.3, -0.45, 0.45, 1.3):
                 B["glow-lamp"].box(k.P(i, 0.25, base + side, 16.55), (0.5, 0.6, 0.4), yaw)
+            for side in (-0.9, 0.9):
+                k.halo(k.P(i, 0.3, base + side, 16.5), "glow-lamp")
     # Ships at anchor in the harbour, lit.
     cx, cy, reach = k.centre()
     ships = 0
