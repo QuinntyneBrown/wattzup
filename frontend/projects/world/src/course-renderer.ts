@@ -178,12 +178,21 @@ export class CourseRenderer implements WorldRenderer {
   /** The map's chunks along the road, each with its centre and how near the camera must be to draw it. */
   private readonly chunks: {
     mesh: Mesh;
+    group: string;
     x: number;
     y: number;
     z: number;
     reach: number;
   }[] = [];
   private frames = 0;
+  /** What the pinned probe reports of the frame just drawn. */
+  private readonly drawn = {
+    tier: 0 as number,
+    backend: '' as string,
+    drawCalls: 0,
+    triangles: 0,
+    groups: {} as Record<string, number>,
+  };
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
   private startRed: Mesh | null = null;
@@ -518,6 +527,7 @@ export class CourseRenderer implements WorldRenderer {
           const middle = sphere.center.clone().applyMatrix4(mesh.matrixWorld);
           this.chunks.push({
             mesh,
+            group,
             x: middle.x,
             y: middle.y,
             z: middle.z,
@@ -818,14 +828,18 @@ export class CourseRenderer implements WorldRenderer {
   /** Writes what the frame cost to the test-only hook, for the bench (tools/course-bench). */
   private report(renderer: WebGPURenderer): void {
     const hook = (globalThis as Record<string, unknown>)[PROBE_KEY] as Record<string, unknown>;
-    const { drawCalls, triangles } = renderer.info.render;
-    // The chunks of each group in view: where the map's draw calls come from.
-    const groups: Record<string, number> = {};
-    for (const { mesh } of this.chunks) {
-      const group = mesh.name.split('_')[0]!;
-      if (mesh.visible) groups[group] = (groups[group] ?? 0) + 1;
+    // The chunks of each group in view: where the map's draw calls come from. Counted into the one record, so a
+    // test that watches the frame rate is not measuring its own report.
+    const drawn = this.drawn;
+    for (const group in drawn.groups) drawn.groups[group] = 0;
+    for (const { mesh, group } of this.chunks) {
+      if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
-    hook['course'] = { tier: this.tier, backend: this.backend, drawCalls, triangles, groups };
+    drawn.tier = this.tier;
+    drawn.backend = this.backend;
+    drawn.drawCalls = renderer.info.render.drawCalls;
+    drawn.triangles = renderer.info.render.triangles;
+    hook['course'] = drawn;
   }
 
   /** Steps the tier down when the judged frames ran slower than the display allows, and up while they keep its pace. */

@@ -37,8 +37,11 @@ export function lampShadows(
   const h2 = height * height;
   let light = AMBIENT;
   let count = 0;
-  for (const row of [behind, behind + every]) {
-    for (const side of [across, -across]) {
+  // Two rows of lamps, one on each kerb; counted, not listed, so a frame allocates nothing.
+  for (let r = 0; r < 2; r++) {
+    const row = behind + r * every;
+    for (let k = 0; k < 2; k++) {
+      const side = k === 0 ? across : -across;
       const dAlong = metres - row;
       const dAcross = lane - side;
       const d2 = dAlong * dAlong + dAcross * dAcross;

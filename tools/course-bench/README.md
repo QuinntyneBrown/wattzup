@@ -40,3 +40,12 @@ ffmpeg must be on the `PATH`.
 
 On a busy machine the median of three moves by a third. Then run the old and the new turn about (swap the map's
 glb in `frontend/dist/ride/browser/courses/`, or the build) and compare the best run of each.
+
+## Memory
+
+Each timing also records, in `<label>.json` under `frames`: `over12Ms` (frames the display showed twice at 120 Hz),
+`allocatedMb` (what the page made while it was timed), `collections` (times the heap fell by over 1 MB) and
+`slowWithCollection` (frames over 20 ms that came with one). `WZ_BENCH_ALLOC=1` samples the allocations as well and
+writes the 25 functions that made the most, with their callers, to `<label>-alloc.txt`; build with
+`npx ng build ride --source-map` first if the names are to mean anything. The browser is started with
+`--enable-precise-memory-info` so the heap is exact.

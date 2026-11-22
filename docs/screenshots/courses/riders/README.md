@@ -335,3 +335,31 @@ milliseconds when the first rider is made. One timing of three had the one 25 ms
   for the whole pack.
 - The legs move, so they neither shade nor are shaded here; what the legs do to the seat and the frame is still
   missing.
+
+## The odd slow frame: what the page allocates
+
+The bench now counts frames over 12 ms, reads the JavaScript heap every frame (how much was made, how often it was
+collected, whether a slow frame came with a collection) and, with `WZ_BENCH_ALLOC=1`, samples who allocates
+(`<label>-alloc.txt`). On the bridge, ten seconds at display pace:
+
+| Build | Made in 10 s | Collections |
+| --- | --- | --- |
+| Pass 5 | 145 MB | 5 |
+| Pass 9 | 134 MB | 5 |
+| Pass 9, no other riders | 134 MB | 5 |
+| Pass 9, after the two fixes below | 98 MB | 4 |
+
+So the page makes some 13 MB of short-lived objects a second, with or without riders and before the riders' passes
+as after them: the churn is not the riders'. Who makes it:
+
+- 36 MB: the renderer's own report for the test hook (`CourseRenderer.report`), which split every chunk's name and
+  built two records each frame. It runs only when a test pins the tier, so the bench was measuring its own report.
+  The group is now kept with the chunk and the report writes into one record.
+- 3 MB: `lampShadows` listed its two rows and two kerbs in arrays for every rider every frame. It counts them now.
+- The rest, some 95 MB: Three.js's WebGPU renderer (cache keys of node materials worked out for every object every
+  frame, render lists, pass descriptors). Not ours to change in a pass; it is the next place to look (fewer objects
+  drawn is fewer keys).
+
+After the two fixes, six timings in a row had no frame over 20 ms (0 to 3 frames over 12 ms each). That is not
+proof either, but the heap is now collected four times in ten seconds, not five, and the bench can say next time
+whether a slow frame came with a collection.

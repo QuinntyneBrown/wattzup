@@ -33,6 +33,8 @@ export default defineConfig({
         '--ignore-gpu-blocklist',
         '--enable-gpu',
         '--enable-unsafe-webgpu',
+        // The heap the bench reads each frame is exact, not rounded.
+        '--enable-precise-memory-info',
         ...(uncapped ? ['--disable-frame-rate-limit', '--disable-gpu-vsync'] : []),
       ],
     },

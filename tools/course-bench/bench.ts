@@ -37,6 +37,15 @@ interface Frames {
   over20Ms: number;
   /** When each frame over 20 ms came, in ms from the start of the timing. */
   slowAt: number[];
+  /** Frames over 12 ms: at 120 Hz, each is a frame the display showed twice. */
+  over12Ms: number;
+  /** The JavaScript heap, in MB, at the start and the end of the timing, and how much was made in between. */
+  heapStartMb: number;
+  heapEndMb: number;
+  allocatedMb: number;
+  /** How many times the heap was collected (it fell by over 1 MB), and how many slow frames came with one. */
+  collections: number;
+  slowWithCollection: number;
 }
 
 test(`bench ${map}`, async ({ page, bluetooth, api }) => {
@@ -133,15 +142,39 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
     );
   }
 
+  // WZ_BENCH_ALLOC=1 also samples what the page allocates while it is timed, and writes who made the most.
+  const sampling = process.env["WZ_BENCH_ALLOC"] === "1";
+  const cdp = sampling ? await page.context().newCDPSession(page) : null;
+  await cdp?.send("HeapProfiler.startSampling", {
+    samplingInterval: 8192,
+    includeObjectsCollectedByMajorGC: true,
+    includeObjectsCollectedByMinorGC: true,
+  });
   const frames = await page.evaluate(
     (ms) =>
       new Promise<Frames>((resolve) => {
         const gaps: number[] = [];
         const slow: number[] = [];
+        const heap = (): number =>
+          (performance as unknown as { memory?: { usedJSHeapSize: number } })
+            .memory?.usedJSHeapSize ?? 0;
+        const heapStart = heap();
+        let heapLast = heapStart;
+        let allocated = 0;
+        let collections = 0;
+        let slowWithCollection = 0;
         let last = performance.now();
         const start = last;
         const tick = (now: number) => {
-          if (now - last > 20) slow.push(Math.round(now - start));
+          const used = heap();
+          const collected = heapLast - used > 1048576;
+          if (collected) collections++;
+          else if (used > heapLast) allocated += used - heapLast;
+          heapLast = used;
+          if (now - last > 20) {
+            slow.push(Math.round(now - start));
+            if (collected) slowWithCollection++;
+          }
           gaps.push(now - last);
           last = now;
           if (now - start < ms) requestAnimationFrame(tick);
@@ -161,6 +194,12 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
               worstMs: sorted[sorted.length - 1]!,
               over20Ms: gaps.filter((gap) => gap > 20).length,
               slowAt: slow,
+              over12Ms: gaps.filter((gap) => gap > 12).length,
+              heapStartMb: heapStart / 1048576,
+              heapEndMb: heapLast / 1048576,
+              allocatedMb: allocated / 1048576,
+              collections,
+              slowWithCollection,
             });
           }
         };
@@ -168,6 +207,30 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
       }),
     TIMED * 1000,
   );
+  if (cdp) {
+    const { profile } = await cdp.send("HeapProfiler.stopSampling");
+    interface Sampled {
+      callFrame: { functionName: string; url: string; lineNumber: number };
+      selfSize: number;
+      children?: Sampled[];
+    }
+    const by = new Map<string, number>();
+    const walk = (node: Sampled, caller: string): void => {
+      const file = node.callFrame.url.split("/").pop() ?? "";
+      const name = `${node.callFrame.functionName || "(anonymous)"} ${file}:${node.callFrame.lineNumber}`;
+      if (node.selfSize) {
+        const key = `${name}  <-  ${caller}`;
+        by.set(key, (by.get(key) ?? 0) + node.selfSize);
+      }
+      for (const child of node.children ?? []) walk(child, name);
+    };
+    walk(profile.head as Sampled, "");
+    const top = [...by.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 25)
+      .map(([who, bytes]) => `${(bytes / 1048576).toFixed(2)} MB  ${who}`);
+    fs.writeFileSync(path.join(out, `${label}-alloc.txt`), top.join(String.fromCharCode(10)) + String.fromCharCode(10));
+  }
   const drawn = await page.evaluate(
     () =>
       (window as unknown as Record<string, { course?: unknown }>)[
