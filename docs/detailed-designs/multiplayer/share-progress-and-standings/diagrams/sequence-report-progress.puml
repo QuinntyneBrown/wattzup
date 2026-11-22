@@ -14,9 +14,9 @@ skinparam package {
   FontColor #101828
   BackgroundColor #F9FAFB
 }
-box "Frontend — Ride app (domain and api libraries)" #E0F2FE
-  participant "WorkoutEngine" as engine
-  participant "ProgressReporter" as reporter
+box "Frontend — Ride app (ride application and api library)" #E0F2FE
+  participant "Ride store" as engine
+  participant "LiveSessionStore" as reporter
   participant "SignalRRideHubClient" as client
 end box
 box "Backend — Telo.Ride.Api" #D1FADF
@@ -30,8 +30,7 @@ box "Backend — Telo.Ride.Infrastructure" #FFF4E5
   participant "InMemorySessionRegistry" as registry
 end box
 loop every second of the ride
-  reporter -> engine : Read distance, output, power
-  engine --> reporter : Totals
+  engine -> reporter : report(distance | outputKj, power)
   alt at least 500 ms since the last report (L2-123 AC1)
     reporter -> client : reportProgress({distance | outputKj, power})
     client -> hub : ReportProgress(report)

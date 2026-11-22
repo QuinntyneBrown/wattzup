@@ -4,10 +4,9 @@ LAYOUT_WITH_LEGEND()
 title Components — Share progress and standings
 
 Container_Boundary(app, "Ride app") {
-  Component(engine, "WorkoutEngine", "Service · domain/engine", "Distance, output, power")
-  Component(reporter, "ProgressReporter", "Service · domain/engine", "One report a second, never under 500 ms apart")
+  Component(engine, "Ride store", "Signal store · ride (ClassRideStore)", "Distance or output, power")
   Component(hubc, "SignalRRideHubClient", "SignalR client · api", "RideHubClient")
-  Component(store, "LiveSessionStore", "Signal store · ride", "Latest standings only")
+  Component(store, "LiveSessionStore", "Signal store · ride", "Latest standings; reports never under 500 ms apart")
 }
 Container_Boundary(api, "Telo Ride API") {
   Component(hub, "RideHub", "SignalR hub · Telo.Ride.Api", "ReportProgress")
@@ -18,8 +17,8 @@ Container_Boundary(api, "Telo Ride API") {
   Component(session, "LiveSession", "Domain entity · Telo.Ride.Domain", "RiderProgress per seat")
   Component(notifier, "RideHubNotifier", "ISessionNotifier · Telo.Ride.Api", "StandingsUpdated to session:{id}")
 }
-Rel(reporter, engine, "Reads totals")
-Rel(reporter, hubc, "reportProgress")
+Rel(engine, store, "report(totals, power) each second")
+Rel(store, hubc, "reportProgress")
 Rel(hubc, hub, "ReportProgress", "SignalR")
 Rel(hub, report, "Sends ReportProgressCommand")
 Rel(report, session, "RecordProgress")

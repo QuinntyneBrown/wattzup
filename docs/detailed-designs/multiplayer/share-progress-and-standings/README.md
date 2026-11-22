@@ -29,11 +29,14 @@ bots race. The race standings board (`race/ride-a-race`) and the group output bo
 
 **Frontend (Ride app)**
 
-- **`ProgressReporter`** — service in `domain/engine`. It reads the ride's distance, output and
-  power from the `WorkoutEngine` and calls `RideHubClient.reportProgress` once a second. It drops
-  any call less than 500 ms after the previous one (`L2-123` AC1). Its interval is cleared through
-  `DestroyRef` when the ride ends.
-- **`RideHubClient.reportProgress(report)`** — `api` method sending `ReportProgress`.
+- **`LiveSessionStore.report(totals, power)`** — the ride's store (`ClassRideStore` for a group
+  class) calls it on each of the ride clock's seconds with the ride's output (or, in a race,
+  distance) and power. It sends nothing before the seat, and drops a report less than 500 ms
+  after the last one sent (`L2-123` AC1); the ride clock's seconds stop with the ride, so nothing
+  needs clearing.
+- **`RideHubClient.reportProgress(sessionId, outputKj, powerWatts)`** — `api` method sending
+  `ReportProgress` without awaiting an answer; `onStandings(handler)` hands on
+  `StandingsUpdated`.
 - **`LiveSessionStore.standings`** — signal holding the latest `StandingsDto` only. Each
   `StandingsUpdated` replaces it, so nothing grows during a ride (`AGENTS.md`, bounded buffers).
   A computed signal derives each row's gap relative to the rider from the rows' gaps to the
@@ -69,6 +72,17 @@ bots race. The race standings board (`race/ride-a-race`) and the group output bo
   bot with `BotPaceModel`, ranks with `RankingPolicy`, and sends `StandingsUpdated` to the
   session group through `ISessionNotifier`.
 
+**As built for group classes (slice 14.5).** A group class keeps its progress in
+`GroupClassSession` (the seats, each rider's last report and the bots) rather than a general
+`LiveSession`; `ReportProgress` names its session, and the session keeps a report only from a
+seated rider, from the start, 500 ms or more after the rider's last. Its bots ride
+`BotPaceModel` around the easy pack (130 W), seeded with the session's id; each is "Pacer Nova",
+"Pacer Rook" and so on, in the jersey of its name, and has no level. Bots fill a session to 10 at
+its first tick when fewer than 8 riders are seated (`L2-083`). The standings rank by output,
+seats before bots on a tie, with each gap to the leader in kJ. The service's `BotPaceModel` and
+the Ride app's run one table of cases in their unit tests. `LiveSession`, `RiderProgress`, race
+ranking and the distance trace come with the riders-online race.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a
@@ -98,7 +112,7 @@ connection; live progress stays in the API's memory.
 
 ### Components
 
-`ProgressReporter` feeds `RideHub`; the tick handler combines `BotPaceModel` and `RankingPolicy`
+The ride's store reports through `LiveSessionStore` to `RideHub`; the tick handler combines `BotPaceModel` and `RankingPolicy`
 and pushes the standings back through `RideHubNotifier`.
 
 ![C4 component view for sharing progress and standings](diagrams/c4-component.png)

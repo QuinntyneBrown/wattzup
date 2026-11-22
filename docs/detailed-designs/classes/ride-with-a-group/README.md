@@ -25,44 +25,56 @@ board and gives the video the full width.
 **Frontend — `ride` application**
 
 - **`LiveSessionStore`** — route-scoped live session state, owned by the multiplayer subsystem.
-  It wraps `RIDE_HUB_CLIENT` for the session and exposes the latest standings.
-- **`ProgressReporter`** — owned by the multiplayer subsystem. It reads the rider's output and
-  power from `ClassRideStore` and sends them through `RIDE_HUB_CLIENT.reportProgress` at most
-  twice a second (`L2-123` AC1).
-- **`GroupBoardStore`** — signal store provided on `/classes/:id/ride` only in group mode. It
-  reads the standings from `LiveSessionStore`, keeps at most 10 rows (a fixed-size
-  array replaced on each update, so nothing grows for the length of a ride), and publishes a new
-  ordering at most once a second (`L2-090` AC2). It derives the rider's place ("5th / 9").
-- **`ClassRideStore`** (see *ride a class*) — accumulates the rider's output in kJ and exposes
-  it, with power, to `ProgressReporter`.
-- **`ClassRidePage`** — places the board as a right-hand column at lg or wider and under the
-  video below lg; in solo it renders no board (`L2-090` AC3–4).
+  It wraps `RIDE_HUB_CLIENT` for the session, holds only the latest standings for its session
+  (each `StandingsUpdated` replaces the last, so nothing grows for the length of a ride) and
+  sends progress with `report(outputKj, powerWatts)`, which waits for the seat and drops a report
+  less than 500 ms after the last one sent (`L2-123` AC1).
+- **`ClassRideStore`** (see *ride a class*) — adds each second's power to the ride's output
+  (`RideRecorder.outputKj`) and, in a group ride, calls `LiveSessionStore.report` with it and the
+  power on each of the ride clock's seconds. It derives the board from the standings with
+  `groupBoardView` and the header's mode, "Group · 9 riders" once the board counts the field.
+- **`groupBoardView`** — pure helper with its unit tests. It keeps the hub's order (the hub
+  ranks once a second, so the board reorders at most once a second, `L2-090` AC2), rounds each
+  output to whole kJ, marks the rider's own row (the row in their seat's jersey, unique in a
+  session) as "You" in the `you` jersey, and gives the place as an ordinal over the field
+  ("5th / 9").
+- **`ClassRidePage`** — places the board as a right-hand column at lg or wider
+  (`class-ride__body--group`) and under the video below lg; in solo it renders no board
+  (`L2-090` AC3–4).
 
 **Frontend — `components` library**
 
 - **`ClassBoard`** (`wz-class-board`) — "Output" heading with the place, and an ordered list of
-  rows. It animates a reorder by sliding rows over 150 ms (no movement with reduced motion).
-- **`ClassBoardRow`** (`wz-class-board-row`) — rank, jersey dot, display name (rendered as
-  text), level and output in kJ. The rider's row carries `aria-current="true"`.
+  rows: rank, jersey dot, display name (rendered as text) and output in kJ; the rider's row
+  carries `aria-current="true"`. When the order changes each row slides from its old place over
+  `--duration-fast` (150 ms, 0 under reduced motion), by FLIP with the Web Animations API.
 
 **Frontend — `api` library**
 
 - **`RideHubClient`** / `RIDE_HUB_CLIENT` / **`SignalRRideHubClient`** — owned by the
-  multiplayer subsystem. This slice uses `reportProgress(ProgressReport)` and the
-  `standings` signal fed by the `StandingsUpdated` server event.
-- **`StandingsDto`** — session id and rows of display name, jersey, level, kind (person or bot),
-  position, gap and output.
+  multiplayer subsystem. This slice adds `reportProgress(sessionId, outputKj, powerWatts)`, sent
+  without awaiting an answer, and `onStandings(handler)` for the `StandingsUpdated` server event.
+- **`Standings`** / **`StandingRow`** — session id and rows of position, name, jersey, level
+  (none for a bot), kind (`person` or `bot`), output in kJ and gap to the leader in kJ.
 
 **Backend** (multiplayer subsystem, *share progress and standings*)
 
-- **`RideHub.ReportProgress`** sends one `ReportProgressCommand`.
-- **`ReportProgressCommandHandler`** updates the rider's progress in the live session held by
-  `ISessionRegistry`.
-- **`SessionTicker`** — hosted service that, once a second, moves the bots on the pace model,
-  asks `RankingPolicy` to rank each session (a class by output, `L2-123` AC2) and sends
-  `StandingsUpdated` to the session's group.
-- **`RankingPolicy`** (`Telo.Ride.Domain`) — orders a race by distance then finish time and a
-  class by output.
+- **`RideHub.ReportProgress(sessionId, outputKj, powerWatts)`** sends one
+  `ReportProgressCommand`; the handler records it in the session `IGroupSessionRegistry` holds.
+- **`SessionTicker`** — hosted service in `Telo.Ride.Infrastructure` that sends
+  `TickLiveSessionsCommand` once a second. Its handler, for each started session, fills it with
+  bots at the first tick when fewer than 8 riders are seated (`L2-083`), moves them, ranks the
+  field by output and sends `StandingsUpdated` to the session's hub group through
+  `ISessionNotifier` (`RideHubNotifier`). A seated rider's connection joins that group in
+  `JoinClassSession`.
+- **`GroupClassSession`** (`Telo.Ride.Domain`) — keeps each seated rider's last report and its
+  bots. Its bots ride `BotPaceModel` around the easy pack (130 W), seeded with the session's id,
+  so a session replays the same way; each is "Pacer Nova", "Pacer Rook" and so on in its own
+  jersey. Its standings rank by output, highest first, seats before bots on a tie, with each
+  gap to the leader in kJ.
+
+**Slices.** Slice 14.5 builds all of the above. Leaving a session, a rider who stops reporting
+and dropping a gone connection are journey 15 (`L2-124`).
 
 ## Requirements
 
@@ -108,7 +120,19 @@ The class ride sends output and power at most twice a second (`L2-123` AC1).
 
 ### Behaviour — update the output board
 
-The service ranks by output and sends the standings once a second. The store reorders at most
-once a second, and the board slides rows over 150 ms (`L2-090` AC1–2).
+The service ranks by output and sends the standings once a second, so the board reorders at most
+once a second; it slides moved rows over 150 ms (`L2-090` AC1–2).
 
 ![Sequence diagram for updating the output board](diagrams/sequence-update-the-output-board.png)
+
+## Open questions
+
+- **The mock's field.** The Class Ride mock draws nine riders, eight people and one bot ("Pacer
+  Nova"). Under `L2-083` a session with eight riders starts without bots, and one with fewer is
+  filled to 10, so no session the service runs looks like that. The board draws whatever the
+  standings hold, so the mock is kept as drawn; redraw it with ten riders if the field should
+  match a real session.
+- **The rider's own row.** The board finds it by the seat's jersey, which is unique in a
+  session: bots ride in the jerseys of their names, which no seat of a session with bots uses.
+  A rider id in the standings would do the same, at the cost of sending every rider's id to
+  everyone.
