@@ -1,0 +1,61 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:06.388
+Telo Ride talks to two companies besides itself: YouTube for video, and Google, with
+
+00:00:06.388 --> 00:00:08.864
+your own key, for real-world tiles. Nobody else.
+
+00:00:10.324 --> 00:00:15.311
+Every response carries a Content Security Policy that says so: scripts, frames,
+
+00:00:15.311 --> 00:00:18.705
+images and connections, each with its short list.
+
+00:00:23.228 --> 00:00:28.131
+A tracker's script, or a call home to anyone else, is refused by the browser before
+
+00:00:28.131 --> 00:00:29.672
+it leaves the device.
+
+00:00:36.133 --> 00:00:41.594
+And every behaviour spec now runs the app under that policy. A single refusal fails
+
+00:00:41.594 --> 00:00:44.920
+the spec, so a new third party cannot slip in.
+
+00:00:49.038 --> 00:00:53.877
+The policy is static: the offline shell is checked by its bytes, so styles stay
+
+00:00:53.877 --> 00:00:56.015
+inline, and nothing else does.
+
+00:00:59.361 --> 00:01:04.766
+Behind it, a sign-in leaves no email, code, token or query string in any span,
+
+00:01:04.766 --> 00:01:06.036
+metric or log.
+
+00:01:12.266 --> 00:01:15.694
+Home, under its policy, from a phone to the full screen.
+
+00:01:22.590 --> 00:01:27.193
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:27.538 --> 00:01:32.050
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:32.050 --> 00:01:33.721
+every hill and interval.
+
+00:01:34.066 --> 00:01:39.244
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:39.244 --> 00:01:44.692
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:44.692 --> 00:01:47.682
+XP, rider levels, stars and map unlocks.
+
+00:01:48.027 --> 00:01:50.520
+A custom workout lives under Profile.
