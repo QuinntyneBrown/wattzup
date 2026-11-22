@@ -14,56 +14,43 @@ skinparam class {
 title Class structure — Stay smooth on long rides
 hide empty members
 
-class Sample <<api>> {
-  +second: number
-  +powerW: number
-  +cadenceRpm: number
-  +speedKmh: number
-  +resistance: number
-  +heartRateBpm: number | null
-}
-class SampleChunk <<domain/engine>> {
-  +index: number
-  +length: number
-  -power: Float32Array(600)
-  -cadence: Float32Array(600)
-  -speed: Float32Array(600)
-  -resistance: Uint8Array(600)
-  -heartRate: Uint8Array(600)
-  +append(sample: Sample): boolean
-  +isFull(): boolean
+class RideFacts <<api>> {
+  +rideId: string
+  +elapsedSeconds: number
+  +distanceMeters: number
+  +speedSamplesKmh: number[]
 }
 class RideRecorder <<domain/engine>> {
-  -current: SampleChunk
-  -lastSecond: number
-  +record(sample: Sample): void
-  +finish(): Promise<StoredRide>
+  {static} +maxSeconds = 14400
+  -speedsKmh: Float64Array(14400)
+  -seconds: number
+  -joules: number
+  +record(powerW, speedKmh, seconds, onTarget): void
+  +facts(finishedAt: Date): RideFacts
 }
-class TraceSeries <<domain/engine>> {
+class "RaceStore / ClassRideStore" as Store <<ride>> {
+  -recorder: RideRecorder
+}
+interface RideOutbox <<api>> {
+  +submit(ride: SubmitRideRequest): void
+}
+class TraceSeries <<domain/engine · slice 21.3>> {
   -width: number
   +points: Signal<Point[]>
   +add(point: Point): void
   +resize(width: number): void
 }
-interface RideSampleStore <<api>> {
-  +put(rideId: string, chunk: SampleChunk): Promise<void>
-  +readAll(rideId: string): Promise<SampleChunk[]>
-  +delete(rideId: string): Promise<void>
+class RideTrace <<components · slice 21.3>> {
+  +points: InputSignal<Point[]>
 }
-class IndexedDbRideSampleStore <<domain/storage>>
-class RingBuffer<T> <<domain/engine>> {
+class RingBuffer<T> <<domain/engine · slice 25.2>> {
   -capacity: number
   -start: number
   +push(value: T): void
   +values(): T[]
 }
-class RideTrace <<components>> {
-  +points: InputSignal<Point[]>
-}
-RideRecorder *-- "1" SampleChunk : current
-RideRecorder *-- TraceSeries
-RideRecorder --> RideSampleStore : hands full chunks
-IndexedDbRideSampleStore ..|> RideSampleStore
-SampleChunk ..> Sample : stores columns of
+Store *-- "1" RideRecorder : one per ride
+RideRecorder ..> RideFacts : gives
+Store --> RideOutbox : submits the facts to
 RideTrace ..> TraceSeries : draws points of
 @enduml

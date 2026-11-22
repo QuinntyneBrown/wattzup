@@ -14,25 +14,23 @@ skinparam package {
   FontColor #101828
   BackgroundColor #F9FAFB
 }
-box "Frontend — Ride app (domain library)" #E0F2FE
+box "Frontend — Ride app" #E0F2FE
   participant "RideTicker" as ticker
+  participant "RaceStore / ClassRideStore" as store
   participant "RideRecorder" as recorder
-  participant "SampleChunk" as chunk
-  participant "TraceSeries" as series
-  participant "IndexedDbRideSampleStore" as store
+  participant "RideOutbox" as outbox
 end box
-database "Browser storage (IndexedDB)" as idb
-ticker -> recorder : record(sample for second n)
-alt second n already recorded
-  recorder --> ticker : Ignored (one sample a second, L2-138 AC2)
-else new second
-  recorder -> chunk : append(sample)
-  recorder -> series : add(point)
-  opt chunk is full (600 samples)
-    recorder -> store : put(rideId, chunk)
-    store -> idb : Write ride-samples[rideId, index]
-    idb --> store : Committed
-    recorder -> recorder : Replace with a new SampleChunk; old chunk is released (L2-138 AC1)
-  end
-end
+ticker -> store : second n
+store -> recorder : record(power, speed, n − last second)
+note right of recorder
+  Writes one speed per second into the fixed
+  Float64Array(14400): a hidden tab's skipped
+  seconds at the speed of the moment (L2-138 AC2).
+  Totals are running sums; nothing grows (AC1).
+end note
+...the ride finishes...
+store -> recorder : facts(finishedAt)
+recorder --> store : RideFacts, speedSamplesKmh one a second
+store -> outbox : submit(ride)
+note over store, recorder : Leaving the screen releases the store and its recorder
 @enduml
