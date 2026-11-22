@@ -30,8 +30,9 @@ sync" disclosure, "How do you want to ride?" with "Ride alone" chosen and Start 
 option cannot be chosen and says why (`L2-085` AC5), as it does whenever the sessions cannot be
 reached. Slice 14.2 reads the next two sessions and shows the group option, the roster, the
 full and starting-soon states and the Join label; its Join opens the group ride
-(`/classes/:id/ride?session={sessionId}`), which holds the hub connection (slice 14.1). Slice
-14.3 asks the hub for the seat before opening it, and offers the next session when refused.
+(`/classes/:id/ride?session={sessionId}`), which holds the hub connection (slice 14.1). From
+slice 14.3 the ride asks the hub for the seat as it connects; a refusal brings the rider back to
+Class Start, whose fresh read of the sessions offers the next one.
 
 ## Description
 
@@ -50,9 +51,15 @@ full and starting-soon states and the Join label; its Join opens the group ride
 - **`classUnlockedGuard`** — `canActivate` on the route. It reads the class and the rider's
   level (`PROGRESS_API`) and opens the Class Library instead for a locked class, a class the
   catalogue does not hold, or no catalogue (`L2-082` AC4).
-- **`ClassJoinFlow`** — orchestration in the page. Alone, it navigates to
-  `/classes/:id/ride?mode=solo`. Group, it calls `RIDE_HUB_CLIENT.joinClassSession` and, on
-  success, navigates to `/classes/:id/ride?session={sessionId}`. On `session_full` or `session_started`, it reloads the sessions and offers the next one (`L2-086`).
+- **Start and Join** — in the page. Alone, it navigates to `/classes/:id/ride?mode=solo`.
+  Group, it navigates to `/classes/:id/ride?session={sessionId}`; the class ride, which holds the
+  one hub connection, joins the session as it connects (`L2-120` AC1). Class Start and the class
+  ride are sibling routes, so a connection opened here could not carry into the ride, and
+  joining twice would open two. On `session_full`, `session_started` or `session_not_found` the
+  ride goes back to Class Start (replacing itself in history), which reads the sessions again:
+  a full session shows "Join the next session", and a started one is no longer listed, so the
+  next is offered (`L2-086` AC2, AC3). On `class_locked` the class ride goes to the Class
+  Library, as `classUnlockedGuard` would.
 
 **Frontend — `components` library**
 
@@ -74,9 +81,10 @@ full and starting-soon states and the Join label; its Join opens the group ride
 - **`ClassesApi.sessions(classId)`** — `GET /api/classes/{classId}/sessions`, returning
   `ClassSessionDto[]`: session id, start as server time, seats taken, capacity, riders (display
   name and jersey) and whether it is full.
-- **`RideHubClient`** / `RIDE_HUB_CLIENT` — hub client owned by the multiplayer subsystem. This
-  slice calls `joinClassSession(sessionId)`. The connection opens only here, when the rider
-  joins (`L2-120` AC4).
+- **`RideHubClient`** / `RIDE_HUB_CLIENT` — hub client owned by the multiplayer subsystem.
+  `joinClassSession(classId, sessionId)` resolves with the seat or rejects with a
+  `RideHubError` whose `code` the ride branches on. The class ride calls it through
+  `LiveSessionStore`; the connection opens only when the rider joins (`L2-120` AC1, AC4).
 - **`PlanSummary`** (`domain/engine`) — pure helper. It turns a plan into the structure line
   "8 × 0:30 · 3:00 → 1:30 recover" and the expected average power "~154 W average", using
   `PowerModel` (`L2-023` AC3). The custom workout preview uses the same helper.
@@ -163,8 +171,9 @@ The page parks the video at the sync offset, summarises the plan, and polls the 
 
 ### Behaviour — join a group session
 
-The hub connection opens when the rider joins. A full or started session is refused, and the
-page offers the next session (`L2-085` AC3, `L2-086`).
+Join opens the group ride, which connects and asks for the seat. A full or started session is
+refused, and the rider is back on Class Start with the next session offered (`L2-085` AC3,
+`L2-086`).
 
 ![Sequence diagram for joining a group session](diagrams/sequence-join-a-group-session.png)
 

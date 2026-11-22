@@ -15,68 +15,78 @@ set separator none
 title Class structure — Run a group class session
 
 package "Telo.Ride.Domain" {
-  abstract class LiveSession {
-    +Guid Id
-    +DateTimeOffset StartsAt
-    +SessionState State
-    +IReadOnlyList<Seat> Seats
-    +FillWithBots(roster: BotRoster): void
-  }
   class GroupClassSession {
     +string ClassId
-    +static IdFor(classId: string, slot: DateTimeOffset): Guid
-    +TrySeat(rider: RiderOccupant, now: DateTimeOffset): JoinOutcome
-    +RidersSeated: int
+    +DateTimeOffset StartsAt
+    +string Id
+    +IReadOnlyList<SessionSeat> Seats
+    +int SeatsTaken
+    +bool Full
+    +static Jerseys: string[10]
+    +TrySeat(riderId: Guid, displayName: string, now: DateTimeOffset): (JoinOutcome, SessionSeat?)
   }
-  class GroupSessionSchedule {
+  class SessionSeat <<record>> {
+    +Guid RiderId
+    +string DisplayName
+    +string Jersey
+  }
+  class GroupSessionSchedule <<static>> {
+    +Capacity: int = 10
     +Interval: TimeSpan = 15 min
-    +SlotsFrom(classId: string, now: DateTimeOffset): IEnumerable<DateTimeOffset>
-    +Next(slot: DateTimeOffset): DateTimeOffset
+    +Next(now: DateTimeOffset, count: int): IReadOnlyList<DateTimeOffset>
+    +SessionId(classId: string, start: DateTimeOffset): string
+    +TryParse(sessionId: string, out classId: string, out start: DateTimeOffset): bool
   }
-  class JoinOutcome {
-    +Seat? Seat
-    +JoinRefusal? Refusal
-  }
-  enum JoinRefusal {
-    session_full
-    session_started
-    class_locked
+  enum JoinOutcome {
+    Seated
+    Full
+    Started
   }
   class ClassDefinition {
     +string Id
     +int OpensAtLevel
-    +TimeSpan Length
   }
 }
 package "Telo.Ride.Application" {
-  class JoinClassSessionCommand {
+  class JoinClassSessionCommand <<record>> {
     +Guid RiderId
     +string ClassId
-    +Guid SessionId
-    +string ConnectionId
+    +string SessionId
   }
   class JoinClassSessionCommandHandler {
-    +Handle(cmd: JoinClassSessionCommand): Task<JoinResultDto>
+    +Handle(cmd: JoinClassSessionCommand): Task<JoinClassSessionResult>
   }
-  class JoinResultDto {
-    +SeatAssignmentDto? Seat
+  class JoinClassSessionResult <<record>> {
     +string? Code
-    +Guid? NextSessionId
-    +long? NextStartsAt
+    +string SessionId
+    +DateTimeOffset? StartsAt
+    +string? Jersey
+    +OfferedSessionDto? Next
   }
-  interface ISessionRegistry
-  interface ISessionNotifier
+  class OfferedSessionDto <<record>> {
+    +string Id
+    +DateTimeOffset StartsAt
+  }
+  interface IGroupSessionRegistry {
+    +GetOrCreate(classId, startsAt, now): GroupClassSession
+    +Find(sessionId, now): GroupClassSession?
+  }
   interface IAppDbContext
 }
+package "Telo.Ride.Infrastructure" {
+  class InMemoryGroupSessionRegistry
+}
 
-LiveSession <|-- GroupClassSession
+GroupClassSession *-- SessionSeat
 GroupClassSession ..> JoinOutcome : returns
-JoinOutcome --> JoinRefusal
+GroupClassSession ..> GroupSessionSchedule : id
 JoinClassSessionCommandHandler ..> JoinClassSessionCommand : handles
 JoinClassSessionCommandHandler ..> GroupSessionSchedule
-JoinClassSessionCommandHandler ..> ISessionRegistry
-JoinClassSessionCommandHandler ..> ISessionNotifier
-JoinClassSessionCommandHandler ..> IAppDbContext : class and rider level
-JoinClassSessionCommandHandler ..> JoinResultDto : returns
-GroupClassSession --> ClassDefinition : for
+JoinClassSessionCommandHandler ..> IGroupSessionRegistry
+JoinClassSessionCommandHandler ..> IAppDbContext : rider level and name
+JoinClassSessionCommandHandler ..> ClassDefinition : from the catalogue
+JoinClassSessionCommandHandler ..> JoinClassSessionResult : returns
+JoinClassSessionResult --> OfferedSessionDto
+InMemoryGroupSessionRegistry ..|> IGroupSessionRegistry
+IGroupSessionRegistry --> GroupClassSession : holds
 @enduml

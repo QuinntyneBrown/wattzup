@@ -1,4 +1,4 @@
-import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
+import { DestroyRef, Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -118,11 +118,28 @@ export class ClassRideStore {
   constructor() {
     const route = inject(ActivatedRoute).snapshot;
     const id = route.paramMap.get('id') ?? '';
-    // A group ride arrives with its session (`?session=`, slice 14.3 joins it on Class Start) and holds the hub
-    // connection for as long as it lasts; a solo ride holds none (L2-120 AC1, AC4).
+    // A group ride arrives with its session (`?session=`) and holds the hub connection for as long as it lasts, joining
+    // the session as it connects; a solo ride holds none (L2-120 AC1, AC4). A refused join leaves the ride for Class
+    // Start, which reads the sessions again and offers the next one (L2-122 AC2, L2-086 AC3), or for the Class Library
+    // when the class is locked (L2-082).
     const sessionId = route.queryParamMap.get('session');
-    if (sessionId !== null)
-      void inject(LiveSessionStore).join({ kind: 'class', classId: id, sessionId });
+    if (sessionId !== null) {
+      const live = inject(LiveSessionStore);
+      void live.join({ kind: 'class', classId: id, sessionId });
+      effect(() => {
+        const refused = live.refused();
+        if (refused === null) return;
+        untracked(
+          () =>
+            void this.router.navigate(
+              refused === 'class_locked' ? ['/classes'] : ['/classes', id],
+              {
+                replaceUrl: true,
+              },
+            ),
+        );
+      });
+    }
     inject(CLASSES_API)
       .get(id)
       .pipe(takeUntilDestroyed())

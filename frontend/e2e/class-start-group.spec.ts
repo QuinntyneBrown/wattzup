@@ -9,6 +9,7 @@ import {
   hiitCardio,
   hiitSession,
   hiitSessions,
+  seated,
   type SessionRider,
   SESSIONS_NOW,
   sixRiders,
@@ -54,6 +55,7 @@ test.describe('Group sessions on Class Start', () => {
 
     hub.open();
     hub.answer('ServerTime', () => Date.now());
+    hub.answer('JoinClassSession', () => seated(hiitSessions[0]));
     await start.join.click();
     await expect(page).toHaveURL(`/classes/${hiitCardio.id}/ride?session=${hiitSessions[0].id}`);
   });

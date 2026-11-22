@@ -8,10 +8,10 @@ namespace Telo.Ride.Application.Classes;
 public sealed record GetClassSessionsQuery(string ClassId) : IRequest<IReadOnlyList<ClassSessionDto>>;
 
 /// <summary>
-/// Reads the next two sessions from <see cref="GroupSessionSchedule"/>. Riders take seats from slice 14.3, so every
-/// seat is free until then. A class the catalogue does not serve is <c>class_not_found</c> (404).
+/// Reads the next two sessions from <see cref="GroupSessionSchedule"/>, with the riders seated in each from the live
+/// sessions (<see cref="IGroupSessionRegistry"/>). A class the catalogue does not serve is <c>class_not_found</c> (404).
 /// </summary>
-public sealed class GetClassSessionsQueryHandler(IClassCatalogue catalogue, TimeProvider time)
+public sealed class GetClassSessionsQueryHandler(IClassCatalogue catalogue, IGroupSessionRegistry registry, TimeProvider time)
     : IRequestHandler<GetClassSessionsQuery, IReadOnlyList<ClassSessionDto>>
 {
     public Task<IReadOnlyList<ClassSessionDto>> Handle(GetClassSessionsQuery request, CancellationToken cancellationToken)
@@ -19,10 +19,17 @@ public sealed class GetClassSessionsQueryHandler(IClassCatalogue catalogue, Time
         var definition = catalogue.Classes.FirstOrDefault(c => c.Id == request.ClassId);
         if (definition is null || ClassPlanRules.BrokenRule(definition) is not null)
             throw new DomainRuleException("class_not_found", RuleKind.NotFound, $"The catalogue serves no class {request.ClassId}.");
+        var now = time.GetUtcNow();
         IReadOnlyList<ClassSessionDto> sessions =
         [
-            .. GroupSessionSchedule.Next(time.GetUtcNow(), 2).Select(start => new ClassSessionDto(
-                GroupSessionSchedule.SessionId(definition.Id, start), start, 0, GroupSessionSchedule.Capacity, false, [])),
+            .. GroupSessionSchedule.Next(now, 2).Select(start =>
+            {
+                var id = GroupSessionSchedule.SessionId(definition.Id, start);
+                var seats = registry.Find(id, now)?.Seats ?? [];
+                return new ClassSessionDto(
+                    id, start, seats.Count, GroupSessionSchedule.Capacity, seats.Count >= GroupSessionSchedule.Capacity,
+                    [.. seats.Select(seat => new SessionRiderDto(seat.DisplayName, seat.Jersey))]);
+            }),
         ];
         return Task.FromResult(sessions);
     }

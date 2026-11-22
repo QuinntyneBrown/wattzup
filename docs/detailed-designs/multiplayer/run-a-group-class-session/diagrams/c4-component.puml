@@ -15,7 +15,7 @@ Container_Boundary(api, "Telo Ride API") {
   Component(session, "GroupClassSession", "Domain entity · Telo.Ride.Domain", "Up to 10 seats for one slot")
   Component(tick, "TickLiveSessionsCommandHandler", "MediatR handler · Telo.Ride.Application", "Fills bots and starts at the slot")
   Component(ticker, "SessionTicker", "BackgroundService · Telo.Ride.Infrastructure", "One tick a second")
-  Component(registry, "InMemorySessionRegistry", "ISessionRegistry · Telo.Ride.Infrastructure", "Live sessions")
+  Component(registry, "InMemoryGroupSessionRegistry", "IGroupSessionRegistry · Telo.Ride.Infrastructure", "Live group sessions, bounded")
   Component(notifier, "RideHubNotifier", "ISessionNotifier · Telo.Ride.Api", "Sends to session:{id}")
 }
 Rel(page, store, "join(class, session)")
