@@ -1,6 +1,6 @@
 // Caribana Parade's people, drawn by world-caribana.ts: the body parts its figures are built
 // from, an ensemble of instanced parts posed together, and the spectators behind the
-// barricades in summer clothes, waving flags, dancing and filming the bands on their phones.
+// barricades in summer clothes, waving flags, dancing and cheering the bands.
 import {
   BoxGeometry,
   BufferAttribute,
@@ -20,12 +20,13 @@ import {
   Quaternion,
   SphereGeometry,
   SRGBColorSpace,
-  TorusGeometry,
   Vector2,
   Vector3,
 } from 'three/webgpu';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { seeded } from './world-kit';
+
+const UP_AXIS = new Vector3(0, 1, 0);
 
 /** A limb from `a` to `b`, `r1` thick at `a` and `r2` at `b`, with a round joint at `b`. */
 export function limb(
@@ -33,18 +34,17 @@ export function limb(
   b: Vector3,
   r1: number,
   r2: number,
-  sides = 8,
+  sides = 6,
   joint = true,
 ): BufferGeometry[] {
+  const segs = Math.min(sides, 7);
   const length = a.distanceTo(b);
-  const bone = new CylinderGeometry(r2, r1, length, sides, 1, true);
+  const bone = new CylinderGeometry(r2, r1, length, segs, 1, true);
   bone.translate(0, length / 2, 0);
-  bone.applyQuaternion(
-    new Quaternion().setFromUnitVectors(new Vector3(0, 1, 0), b.clone().sub(a).normalize()),
-  );
+  bone.applyQuaternion(new Quaternion().setFromUnitVectors(UP_AXIS, b.clone().sub(a).normalize()));
   bone.translate(a.x, a.y, a.z);
   if (!joint) return [bone];
-  const ball = new SphereGeometry(r2, sides, 5);
+  const ball = new SphereGeometry(r2, Math.min(segs, 6), 4);
   ball.translate(b.x, b.y, b.z);
   return [bone, ball];
 }
@@ -58,9 +58,10 @@ export function ellipsoid(
   x: number,
   y: number,
   z: number,
-  detail = 12,
+  detail = 8,
 ): BufferGeometry {
-  const ball = new SphereGeometry(r, detail, Math.max(5, Math.round(detail * 0.7)));
+  const wSeg = Math.min(detail, 10);
+  const ball = new SphereGeometry(r, wSeg, Math.max(4, Math.round(wSeg * 0.65)));
   ball.scale(sx, sy, sz);
   ball.translate(x, y, z);
   return ball;
@@ -68,23 +69,42 @@ export function ellipsoid(
 
 /** Merges parts of mixed indexing into one geometry and disposes of the parts. */
 export function merge(parts: BufferGeometry[]): BufferGeometry {
-  const merged = mergeGeometries(parts.map((p) => (p.index ? p.toNonIndexed() : p)))!;
-  parts.forEach((p) => p.dispose());
+  const nonIndexed = parts.map((p) => (p.index ? p.toNonIndexed() : p));
+  const merged = mergeGeometries(nonIndexed)!;
+  for (let i = 0; i < parts.length; i++) {
+    if (nonIndexed[i] !== parts[i]) nonIndexed[i]!.dispose();
+    parts[i]!.dispose();
+  }
   return merged;
+}
+
+interface OwnerPart {
+  readonly part: number;
+  readonly slot: number;
+  readonly r: number;
+  readonly g: number;
+  readonly b: number;
 }
 
 /**
  * Many figures, each made of several instanced parts (skin, clothes, hair, a flag) that move
- * together: a part is asked for by key, and every figure's parts share its matrix each frame.
+ * together: a part is asked for by key, and visible figures pack tightly into each part's buffer.
  */
 export class Ensemble {
   private readonly kinds = new Map<
     string,
-    { geometry: BufferGeometry; material: Material; colours: Color[]; owners: number[] }
+    {
+      geometry: BufferGeometry;
+      material: Material;
+      colours: Color[];
+      owners: number[];
+      castShadow: boolean;
+    }
   >();
-  private readonly parts: { mesh: InstancedMesh; owners: number[] }[] = [];
-  /** Each figure's parts: [part, slot] pairs. */
-  private readonly slots: [number, number][][] = [];
+  private readonly parts: { mesh: InstancedMesh }[] = [];
+  private readonly slots: OwnerPart[][] = [];
+  private counts = new Int32Array(0);
+  private dynamicMode = false;
 
   constructor(
     private readonly group: Group,
@@ -92,10 +112,17 @@ export class Ensemble {
   ) {}
 
   /** Gives figure `owner` a part of kind `key`, tinted `colour`. */
-  put(owner: number, key: string, geometry: BufferGeometry, material: Material, colour: string) {
+  put(
+    owner: number,
+    key: string,
+    geometry: BufferGeometry,
+    material: Material,
+    colour: string,
+    castShadow = false,
+  ): void {
     let kind = this.kinds.get(key);
     if (!kind) {
-      kind = { geometry, material, colours: [], owners: [] };
+      kind = { geometry, material, colours: [], owners: [], castShadow };
       this.kinds.set(key, kind);
     }
     kind.colours.push(new Color(colour));
@@ -105,27 +132,83 @@ export class Ensemble {
   /** Makes one instanced mesh per kind of part. */
   build(): void {
     for (const kind of this.kinds.values()) {
-      const mesh = new InstancedMesh(kind.geometry, kind.material, kind.owners.length);
+      const cap = Math.max(1, kind.owners.length);
+      const mesh = new InstancedMesh(kind.geometry, kind.material, cap);
+      mesh.count = kind.owners.length;
       mesh.frustumCulled = false;
-      mesh.castShadow = true;
+      mesh.castShadow = kind.castShadow;
       kind.colours.forEach((c, i) => mesh.setColorAt(i, c));
       const part = this.parts.length;
-      kind.owners.forEach((owner, slot) => (this.slots[owner] ??= []).push([part, slot]));
-      this.parts.push({ mesh, owners: kind.owners });
+      kind.owners.forEach((owner, slot) => {
+        const c = kind.colours[slot]!;
+        (this.slots[owner] ??= []).push({ part, slot, r: c.r, g: c.g, b: c.b });
+      });
+      this.parts.push({ mesh });
       this.group.add(mesh);
       this.disposables.push(mesh);
     }
+    this.counts = new Int32Array(this.parts.length);
   }
 
-  /** Moves every part of figure `owner` to `matrix`. */
-  set(owner: number, matrix: Matrix4): void {
-    for (const [part, slot] of this.slots[owner] ?? []) {
-      this.parts[part]!.mesh.setMatrixAt(slot, matrix);
+  /** Resets active counts for culled per-frame emission. */
+  beginFrame(): void {
+    this.counts.fill(0);
+    this.dynamicMode = true;
+  }
+
+  /** Packs visible figure `owner` into the next compact slot of each of its part meshes. */
+  emit(owner: number, matrix: Matrix4, colorsChanged: boolean): void {
+    const entries = this.slots[owner];
+    if (!entries) return;
+    const e = matrix.elements;
+    for (const entry of entries) {
+      const mesh = this.parts[entry.part]!.mesh;
+      const slot = this.counts[entry.part]!;
+      this.counts[entry.part] = slot + 1;
+      const mArr = mesh.instanceMatrix.array as Float32Array;
+      const o = slot * 16;
+      mArr[o] = e[0];
+      mArr[o + 1] = e[1];
+      mArr[o + 2] = e[2];
+      mArr[o + 3] = e[3];
+      mArr[o + 4] = e[4];
+      mArr[o + 5] = e[5];
+      mArr[o + 6] = e[6];
+      mArr[o + 7] = e[7];
+      mArr[o + 8] = e[8];
+      mArr[o + 9] = e[9];
+      mArr[o + 10] = e[10];
+      mArr[o + 11] = e[11];
+      mArr[o + 12] = e[12];
+      mArr[o + 13] = e[13];
+      mArr[o + 14] = e[14];
+      mArr[o + 15] = e[15];
+      if (colorsChanged && mesh.instanceColor) {
+        const cArr = mesh.instanceColor.array as Float32Array;
+        const c3 = slot * 3;
+        cArr[c3] = entry.r;
+        cArr[c3 + 1] = entry.g;
+        cArr[c3 + 2] = entry.b;
+      }
     }
   }
 
-  commit(): void {
-    for (const { mesh } of this.parts) mesh.instanceMatrix.needsUpdate = true;
+  /** Moves every part of figure `owner` to `matrix` in fixed-slot mode. */
+  set(owner: number, matrix: Matrix4): void {
+    for (const entry of this.slots[owner] ?? []) {
+      this.parts[entry.part]!.mesh.setMatrixAt(entry.slot, matrix);
+    }
+  }
+
+  commit(colorsChanged = false): void {
+    for (let p = 0; p < this.parts.length; p++) {
+      const mesh = this.parts[p]!.mesh;
+      if (this.dynamicMode) mesh.count = this.counts[p]!;
+      mesh.instanceMatrix.needsUpdate = true;
+      if (this.dynamicMode && colorsChanged && mesh.instanceColor) {
+        mesh.instanceColor.needsUpdate = true;
+      }
+    }
   }
 }
 
@@ -146,7 +229,7 @@ const STANCES: readonly (readonly [readonly number[], readonly number[]])[] = [
     [-0.33, 1.62, -0.02, -0.42, 1.9, -0.06],
     [0.33, 1.62, -0.02, 0.42, 1.9, -0.06],
   ],
-  // A phone held up in both hands, filming the band.
+  // Hands raised in front, filming or cheering.
   [
     [-0.2, 1.2, -0.18, -0.05, 1.5, -0.34],
     [0.2, 1.2, -0.18, 0.05, 1.5, -0.34],
@@ -156,7 +239,7 @@ const STANCES: readonly (readonly [readonly number[], readonly number[]])[] = [
     [-0.22, 0.98, -0.3, -0.12, 0.96, -0.52],
     [0.22, 0.98, -0.3, 0.12, 0.96, -0.52],
   ],
-  // A selfie: the right arm held up and out with the phone, the left on the hip.
+  // Right arm raised out, left on the hip.
   [
     [-0.3, 1.12, 0.02, -0.17, 0.98, -0.06],
     [0.3, 1.52, -0.3, 0.3, 1.72, -0.56],
@@ -178,37 +261,29 @@ const STANCES: readonly (readonly [readonly number[], readonly number[]])[] = [
   ],
 ];
 const FLAG_STANCE = 1;
-const PHONE_STANCE = 3;
 const LEAN_STANCE = 4;
-const SELFIE_STANCE = 5;
-const CLAP_STANCE = 6;
-const FOLDED_STANCE = 7;
 const PLACARD_STANCE = 8;
+
+/** Core stances used by the roadside crowd so instanced body variants stay compact. */
+const CROWD_STANCES = [0, FLAG_STANCE, 2, LEAN_STANCE] as const;
 
 /** What the crowd writes on its placards, and the card it is written on. */
 const PLACARDS = [
   ['TRINI TO', 'DE BONE!', '#ffffff', '#ce1126'],
   ['BIG UP', 'JAMAICA', '#fed100', '#009b3a'],
   ['BAJAN &', 'PROUD', '#ffffff', '#00267f'],
-  ['GUYANA IN', 'DE HOUSE', '#fcd116', '#009e49'],
-  ['VINCY', 'POWER!', '#ffffff', '#0072c6'],
   ['HAPPY', 'CARIBANA!', '#ff7ab8', '#111111'],
-  ['WE LIKE', 'IT!!', '#ffffff', '#111111'],
-  ['GRENADA', 'SPICE!', '#fcd116', '#ce1126'],
 ] as const;
 
 const HAIRS = ['#14100d', '#1f1712', '#2e2018', '#3d2a1c', '#6b4a2b', '#0c0c0c'];
 const CAPS = ['#c8102e', '#111111', '#ffd23f', '#1b6ad8', '#ffffff', '#0f9d58'];
 const STRAWS = ['#e3c98f', '#d8b878', '#f0e2b8'];
 const UMBRELLAS = ['#c8102e', '#ffd23f', '#0f9d58', '#1b6ad8', '#111111', '#ff2d87', '#ffffff'];
-/** The T-shirt a flag is printed on, matched to the flag: red, black, blue, green. */
-const TEE_BASES = ['#ce1126', '#111111', '#00267f', '#009e49'];
 const BALLOONS = ['#e8133c', '#ffd23f', '#0f9d58', '#ff2d87', '#1b6ad8', '#ff8a00', '#ffffff'];
 const SHOES = ['#f2f2f2', '#111111', '#d6d0c4', '#8b5e3c', '#c8102e'];
 
 /** The parts of a spectator's body and clothes for one stance and one cut of bottoms. */
 export function spectatorParts(stance: number, shorts: boolean, seated = false) {
-  // Sitting lowers everything above the hips onto a seat 0.45 m up, the thighs forward.
   const drop = seated ? 0.42 : 0;
   const v = (x: number, y: number, z: number) => new Vector3(x, y > 0.7 ? y - drop : y, z);
   const skin: BufferGeometry[] = [];
@@ -219,50 +294,40 @@ export function spectatorParts(stance: number, shorts: boolean, seated = false) 
     const knee = seated ? new Vector3(side * 0.1, 0.5, -0.42) : v(side * 0.1, 0.49, -0.02);
     const ankle = seated ? new Vector3(side * 0.1, 0.08, -0.46) : v(side * 0.1, 0.08, 0);
     const mid = hip.clone().lerp(knee, 0.8);
-    bottom.push(...limb(hip, shorts ? mid : knee, 0.095, shorts ? 0.08 : 0.065, 7, !shorts));
+    bottom.push(...limb(hip, shorts ? mid : knee, 0.095, shorts ? 0.08 : 0.065, 6, !shorts));
     if (shorts) {
-      skin.push(...limb(mid, knee, 0.068, 0.06, 6), ...limb(knee, ankle, 0.06, 0.042, 6, false));
+      skin.push(...limb(mid, knee, 0.068, 0.06, 5), ...limb(knee, ankle, 0.06, 0.042, 5, false));
     } else {
-      bottom.push(...limb(knee, ankle, 0.065, 0.055, 7, false));
+      bottom.push(...limb(knee, ankle, 0.065, 0.055, 6, false));
     }
     const shoulder = v(side * 0.18, 1.39, 0);
     const [ex, ey, ez, hx, hy, hz] = STANCES[stance]![side < 0 ? 0 : 1]!;
     const elbow = v(ex!, ey!, ez!);
     const hand = v(hx!, hy!, hz!);
     const sleeve = shoulder.clone().lerp(elbow, 0.45);
-    top.push(...limb(shoulder, sleeve, 0.068, 0.062, 7, false));
-    skin.push(...limb(sleeve, elbow, 0.046, 0.042, 6), ...limb(elbow, hand, 0.042, 0.034, 6));
-    skin.push(ellipsoid(0.045, 1, 1.25, 0.6, hand.x, hand.y, hand.z, 6));
+    top.push(...limb(shoulder, sleeve, 0.068, 0.062, 6, false));
+    skin.push(...limb(sleeve, elbow, 0.046, 0.042, 5), ...limb(elbow, hand, 0.042, 0.034, 5));
+    skin.push(ellipsoid(0.045, 1, 1.25, 0.6, hand.x, hand.y, hand.z, 5));
   }
-  bottom.push(ellipsoid(0.16, 1.05, 0.6, 0.8, 0, 0.94 - drop, 0, 9));
-  // The torso turned on a lathe: hips, a narrower waist, the chest, and shoulders rounding in
-  // to the neck, flattened front to back.
+  bottom.push(ellipsoid(0.16, 1.05, 0.6, 0.8, 0, 0.94 - drop, 0, 7));
   const torso = new LatheGeometry(
     [
       [0.001, 0.93],
       [0.155, 0.95],
       [0.145, 1.04],
-      [0.152, 1.14],
-      [0.168, 1.25],
+      [0.158, 1.18],
       [0.175, 1.33],
       [0.16, 1.39],
-      [0.11, 1.43],
-      [0.055, 1.45],
+      [0.1, 1.43],
       [0.001, 1.455],
     ].map(([r, y]) => new Vector2(r!, y! - drop)),
-    14,
+    9,
   );
   torso.scale(1.08, 1, 0.7);
   top.push(torso);
-  // A hem at the bottom of the shirt.
-  const hem = new TorusGeometry(0.157, 0.01, 4, 16);
-  hem.rotateX(Math.PI / 2);
-  hem.scale(1.08, 1, 0.7);
-  hem.translate(0, 0.95 - drop, 0);
-  top.push(hem);
   const neck = new CylinderGeometry(0.045, 0.05, 0.12, 6);
   neck.translate(0, 1.48 - drop, 0);
-  skin.push(neck, ellipsoid(0.105, 0.9, 1.1, 1, 0, 1.6 - drop, -0.01, 10));
+  skin.push(neck, ellipsoid(0.105, 0.9, 1.1, 1, 0, 1.6 - drop, -0.01, 8));
   const parts = { skin: merge(skin), top: merge(top), bottom: merge(bottom) };
   for (const g of [parts.skin, parts.top, parts.bottom]) bakeOcclusion(g);
   return parts;
@@ -275,8 +340,8 @@ export function spectatorParts(stance: number, shorts: boolean, seated = false) 
 export function faceParts(): { face: BufferGeometry; shades: BufferGeometry } {
   const face = new SphereGeometry(
     0.108,
-    12,
     8,
+    6,
     Math.PI * 1.12,
     Math.PI * 0.76,
     Math.PI * 0.3,
@@ -357,9 +422,7 @@ function placardTexture(top: string, bottom: string, fill: string, ink: string):
 }
 
 /**
- * Bakes soft ambient occlusion into a figure's vertex colours, tinting its skin: undersides
- * that face the ground darker, the creases where limbs meet the trunk and the space between
- * the legs darker still, and the tops of the shoulders and head full bright.
+ * Bakes soft ambient occlusion into a figure's vertex colours, tinting its skin.
  */
 export function bakeOcclusion(body: BufferGeometry): void {
   const position = body.getAttribute('position');
@@ -370,12 +433,13 @@ export function bakeOcclusion(body: BufferGeometry): void {
     const y = position.getY(i);
     const up = normal.getY(i) * 0.5 + 0.5;
     let ao = 0.72 + 0.28 * up;
-    // Between the thighs and under the arms, where little light reaches.
     if (y < 0.92 && y > 0.45 && Math.abs(x) < 0.06) ao *= 0.78;
     if (y > 1.2 && y < 1.36 && Math.abs(x) > 0.15 && Math.abs(x) < 0.22) ao *= 0.85;
-    // Under the chin and the bust.
     if (y > 1.46 && y < 1.52) ao *= 0.88;
-    shade.set([ao, ao * 0.97, ao * 0.95], i * 3);
+    const o = i * 3;
+    shade[o] = ao;
+    shade[o + 1] = ao * 0.97;
+    shade[o + 2] = ao * 0.95;
   }
   body.setAttribute('color', new BufferAttribute(shade, 3));
 }
@@ -393,13 +457,13 @@ export function shoeGeometry(): BufferGeometry {
 
 /** Hair and hats: a close crop, an afro, a baseball cap with its brim, or a headwrap. */
 export function hairParts(): BufferGeometry[] {
-  const crop = ellipsoid(0.112, 0.94, 0.72, 0.95, 0, 1.655, 0.03, 10);
-  const afro = ellipsoid(0.16, 1, 0.9, 0.9, 0, 1.71, 0.07, 10);
-  const crown = ellipsoid(0.115, 0.95, 0.6, 1.0, 0, 1.675, 0.01, 10);
-  const brim = new CylinderGeometry(0.09, 0.09, 0.012, 10);
+  const crop = ellipsoid(0.112, 0.94, 0.72, 0.95, 0, 1.655, 0.03, 8);
+  const afro = ellipsoid(0.16, 1, 0.9, 0.9, 0, 1.71, 0.07, 8);
+  const crown = ellipsoid(0.115, 0.95, 0.6, 1.0, 0, 1.675, 0.01, 8);
+  const brim = new CylinderGeometry(0.09, 0.09, 0.012, 8);
   brim.scale(1, 1, 1.2);
   brim.translate(0, 1.64, -0.12);
-  const wrap = ellipsoid(0.13, 0.95, 0.9, 0.95, 0, 1.71, 0.06, 10);
+  const wrap = ellipsoid(0.13, 0.95, 0.9, 0.95, 0, 1.71, 0.06, 8);
   return [crop, afro, merge([crown, brim]), wrap];
 }
 
@@ -408,42 +472,36 @@ function umbrellaParts(): { canopy: BufferGeometry; shaft: BufferGeometry } {
   const canopy = new ConeGeometry(0.6, 0.28, 8, 1, true);
   canopy.translate(0.05, 2.24, -0.02);
   const shaft = merge(
-    limb(new Vector3(0.23, 0.95, -0.04), new Vector3(0.05, 2.36, -0.02), 0.012, 0.012, 5),
+    limb(new Vector3(0.23, 0.95, -0.04), new Vector3(0.05, 2.36, -0.02), 0.012, 0.012, 4, false),
   );
   return { canopy, shaft };
 }
 
 /** A wide-brimmed straw sun hat, and a soft bucket hat. */
 function sunHatParts(): BufferGeometry[] {
-  const crown = new CylinderGeometry(0.1, 0.115, 0.12, 12);
+  const crown = new CylinderGeometry(0.1, 0.115, 0.12, 10);
   crown.translate(0, 1.73, 0);
-  const brim = new CylinderGeometry(0.26, 0.26, 0.012, 16);
+  const brim = new CylinderGeometry(0.26, 0.26, 0.012, 12);
   brim.translate(0, 1.68, 0);
-  const bucket = new CylinderGeometry(0.11, 0.17, 0.14, 12, 1, true);
+  const bucket = new CylinderGeometry(0.11, 0.17, 0.14, 10, 1, true);
   bucket.translate(0, 1.7, 0);
-  const top = new CylinderGeometry(0.11, 0.11, 0.01, 12);
+  const top = new CylinderGeometry(0.11, 0.11, 0.01, 10);
   top.translate(0, 1.77, 0);
   return [merge([crown, brim]), merge([bucket, top])];
 }
 
-/** Who stands where, and how. */
 interface Spectator {
   readonly side: -1 | 1;
   readonly offset: number;
   readonly x: number;
   readonly height: number;
-  /** How broad they are built, across and through, as a share of the slimmest. */
-  readonly build?: number;
+  readonly build: number;
   readonly phase: number;
   readonly stance: number;
-  /** Turned away from the road, for a selfie with the bands behind. */
-  readonly turned?: boolean;
-  /** Holding a balloon on a string. */
   readonly balloon?: boolean;
   readonly flag: number;
 }
 
-/** How the spectators are laid out and dressed. */
 export interface SpectatorOptions {
   readonly loop: number;
   readonly near: number;
@@ -454,25 +512,27 @@ export interface SpectatorOptions {
   readonly skins: readonly string[];
   readonly flags: readonly Material[];
   readonly seed: number;
-  /** Leaves out anyone standing where `skip(side, offset)` is true. */
   readonly skip?: (side: -1 | 1, offset: number) => boolean;
 }
 
+const SPECTATOR_BEHIND_CULL = -14;
+const SPECTATOR_HORIZON_CULL = 308;
+
 /**
  * The crowd behind both barricades: people in T-shirts with shorts or trousers, trainers,
- * hair, caps and headwraps, a child here and there at the front, bouncing on the beat. Some
- * wave a flag over their head, some throw both arms up and some film the bands on a phone.
+ * hair, caps, sun hats and umbrellas, bouncing on the beat and waving Caribbean flags.
  */
 export class Spectators {
   private readonly people: Spectator[] = [];
   private readonly ensemble: Ensemble;
   private flags: InstancedMesh[] = [];
+  private flagCounts = new Int32Array(0);
+  private lastBucket = Number.NaN;
   private readonly matrix = new Matrix4();
   private readonly local = new Matrix4();
   private readonly spot = new Vector3();
   private readonly turn = new Quaternion();
   private readonly size = new Vector3();
-  private readonly up = new Vector3(0, 1, 0);
 
   constructor(
     private readonly group: Group,
@@ -493,12 +553,13 @@ export class Spectators {
           if (Math.abs(x) > o.far) continue;
           const child = row === 0 && random() < 0.07;
           const roll = random();
-          const stance = roll < 0.22 ? FLAG_STANCE : roll < 0.4 ? 2 : roll < 0.5 ? PHONE_STANCE : 0;
+          const stance = roll < 0.24 ? FLAG_STANCE : roll < 0.48 ? 2 : 0;
           const person: Spectator = {
             side,
             offset: offset + random() * 0.35,
             x,
             height: child ? 0.6 + random() * 0.1 : 0.92 + random() * 0.15,
+            build: 1,
             phase: random() * 6.3,
             stance,
             flag: stance === FLAG_STANCE ? Math.floor(random() * o.flags.length) : -1,
@@ -507,29 +568,20 @@ export class Spectators {
         }
       }
     }
-    // How people stand at the barricades, from a seed of its own: the front row leaning on
-    // the rail, and here and there someone turned round for a selfie.
     const habits = seeded(o.seed + 5);
     this.people.forEach((p, i) => {
       const front = Math.abs(p.x) < o.near + 0.3 && p.height > 0.9;
       const roll = habits();
       if (p.height < 0.9 && roll < 0.55) {
         this.people[i] = { ...p, stance: 0, flag: -1, balloon: true };
-      } else if (p.stance === 0 && roll > 0.93) this.people[i] = { ...p, balloon: true };
-      else if (front && p.stance === 0 && roll < 0.4)
+      } else if (p.stance === 0 && roll > 0.93) {
+        this.people[i] = { ...p, balloon: true };
+      } else if (front && p.stance === 0 && roll < 0.4) {
         this.people[i] = { ...p, stance: LEAN_STANCE };
-      else if (p.stance === 2 && p.height > 0.9 && roll < 0.3) {
+      } else if (p.stance === 2 && p.height > 0.9 && roll < 0.28) {
         this.people[i] = { ...p, stance: PLACARD_STANCE };
-      } else if (p.stance === 0 && roll > 0.4 && roll < 0.62) {
-        this.people[i] = { ...p, stance: CLAP_STANCE };
-      } else if (p.stance === 0 && p.height > 0.9 && roll > 0.62 && roll < 0.72) {
-        this.people[i] = { ...p, stance: FOLDED_STANCE };
-      } else if (p.height > 0.9 && (p.stance === 0 || p.stance === 2) && roll > 0.95) {
-        this.people[i] = { ...p, stance: SELFIE_STANCE, turned: true };
       }
     });
-    // Builds, from a seed of their own: slim to heavy-set, the occasional tall one standing
-    // out over the rest.
     const builds = seeded(o.seed + 13);
     this.people.forEach((p, i) => {
       const tall = p.height > 0.9 && builds() < 0.08;
@@ -537,30 +589,24 @@ export class Spectators {
       const build = 0.92 + builds() * builds() * 0.36;
       this.people[i] = { ...p, height, build };
     });
+
     const skinMaterial = this.material({ roughness: 0.55, vertexColors: true });
     const cotton = this.material({ roughness: 0.92, vertexColors: true });
     const denim = this.material({ roughness: 0.95, vertexColors: true });
     const rubber = this.material({ roughness: 0.7 });
     const hair = this.material({ roughness: 0.95 });
-    const phone = this.material({ color: 0x111317, roughness: 0.3, metalness: 0.4 });
-    const bodies = STANCES.map((_, stance) =>
-      [false, true].map((shorts) => spectatorParts(stance, shorts)),
-    );
-    for (const pair of bodies) {
-      for (const parts of pair) this.disposables.push(parts.skin, parts.top, parts.bottom);
+    const bodyMap = new Map<string, ReturnType<typeof spectatorParts>>();
+    for (const st of CROWD_STANCES) {
+      for (const shorts of [false, true]) {
+        const parts = spectatorParts(st, shorts);
+        this.disposables.push(parts.skin, parts.top, parts.bottom);
+        bodyMap.set(`${st}${shorts ? 's' : 't'}`, parts);
+      }
     }
     const shoes = shoeGeometry();
     const hairs = hairParts();
-    const handset = new BoxGeometry(0.075, 0.14, 0.012);
-    handset.translate(0, 1.56, -0.37);
-    // A balloon on a string from the right hand, floating over the head.
-    const balloon = ellipsoid(0.2, 1, 1.18, 1, 0.34, 2.42, -0.02, 14);
-    const string = merge(
-      limb(new Vector3(0.23, 0.8, -0.02), new Vector3(0.34, 2.2, -0.02), 0.004, 0.004, 3, false),
-    );
+    const balloon = ellipsoid(0.2, 1, 1.18, 1, 0.34, 2.42, -0.02, 8);
     const latex = this.material({ roughness: 0.25, metalness: 0.05 });
-    const twine = this.material({ color: 0xf2f2f2, roughness: 0.9 });
-    this.disposables.push(balloon, string);
     const card = new PlaneGeometry(0.72, 0.48);
     card.rotateY(Math.PI);
     card.rotateX(0.12);
@@ -568,80 +614,35 @@ export class Spectators {
     const placards = PLACARDS.map(([a, b, fill, ink]) =>
       this.material({ map: placardTexture(a, b, fill, ink), roughness: 0.8, side: DoubleSide }),
     );
-    this.disposables.push(card, ...placards.map((m) => m.map!));
-    const selfie = new BoxGeometry(0.075, 0.14, 0.012);
-    selfie.rotateX(0.5);
-    selfie.translate(0.3, 1.79, -0.58);
-    this.disposables.push(selfie);
-    this.disposables.push(shoes, handset, ...hairs);
-    const dress = seeded(o.seed + 1);
-    const tees = seeded(o.seed + 7);
-    const capes = seeded(o.seed + 11);
-    // A flag worn as a scarf: round the back of the neck, both ends hanging down the front of
-    // the chest to the waist, a little apart, each end a half of the flag.
-    const ends = [-1, 1].map((side) => {
-      const end = new PlaneGeometry(0.13, 0.5, 1, 4);
-      const uv = end.getAttribute('uv');
-      for (let v = 0; v < uv.count; v++) uv.setX(v, (side < 0 ? 0 : 0.5) + uv.getX(v) * 0.5);
-      const hang = end.getAttribute('position');
-      for (let v = 0; v < hang.count; v++) {
-        const t = 0.5 - hang.getY(v) / 0.5; // 0 at the neck, 1 at the end
-        hang.setZ(v, -0.125 - t * 0.02 - Math.sin(t * Math.PI) * 0.01);
-      }
-      end.translate(side * 0.075, 1.2, 0);
-      return end;
-    });
-    const collar = new TorusGeometry(0.085, 0.03, 5, 14, Math.PI * 1.3);
-    collar.rotateX(Math.PI / 2);
-    collar.rotateY(Math.PI * 0.35);
-    collar.translate(0, 1.43, 0.01);
-    const cape = merge([...ends, collar]);
-    this.disposables.push(cape);
-    // The print across the front of a T-shirt: the front half of the torso, a hair proud of it.
-    const teeFront = new CylinderGeometry(0.163, 0.158, 0.36, 12, 1, true, Math.PI / 2, Math.PI);
-    teeFront.scale(1, 1, 0.74);
-    teeFront.translate(0, 1.17, 0);
-    this.disposables.push(teeFront);
-    const pick = (list: readonly string[]) => list[Math.floor(dress() * list.length)]!;
-    // Summer extras from a seed of their own, so the crowd's clothes stay as they were.
-    const extra = seeded(o.seed + 3);
-    const any = (list: readonly string[]) => list[Math.floor(extra() * list.length)]!;
     const { canopy, shaft } = umbrellaParts();
     const [strawHat, bucketHat] = sunHatParts();
-    const child = spectatorParts(2, true);
-    const lift = (g: BufferGeometry) => g.scale(0.52, 0.52, 0.52).translate(0, 1.38, 0.08);
-    for (const g of [child.skin, child.top, child.bottom]) lift(g);
-    const childHair = lift(hairParts()[0]!);
     const cloth = this.material({ roughness: 0.8, side: DoubleSide });
     const straw = this.material({ roughness: 0.95 });
     const metal = this.material({ color: 0x2b2b2b, roughness: 0.5, metalness: 0.6 });
-    this.disposables.push(canopy, shaft, strawHat, bucketHat, child.skin, child.top);
-    this.disposables.push(child.bottom, childHair);
-    const { face, shades } = faceParts();
-    const features = this.material({
-      map: faceTexture(),
-      transparent: true,
-      alphaTest: 0.1,
-      roughness: 0.6,
-      depthWrite: false,
-    });
-    const glasses = this.material({ color: 0x0b0b0d, roughness: 0.15, metalness: 0.5 });
-    this.disposables.push(face, shades, features.map!);
+    this.disposables.push(
+      shoes,
+      balloon,
+      card,
+      canopy,
+      shaft,
+      strawHat,
+      bucketHat,
+      ...hairs,
+      ...placards.map((m) => m.map!),
+    );
+
+    const dress = seeded(o.seed + 1);
+    const extra = seeded(o.seed + 3);
+    const pick = (list: readonly string[]) => list[Math.floor(dress() * list.length)]!;
+    const any = (list: readonly string[]) => list[Math.floor(extra() * list.length)]!;
+
     this.people.forEach((p, i) => {
-      const shorts = dress() < 0.55;
-      const parts = bodies[p.stance]![shorts ? 1 : 0]!;
-      const key = `${p.stance}${shorts ? 's' : 't'}`;
+      const shorts = dress() < 0.6;
+      const bodyStance = p.stance === PLACARD_STANCE ? 2 : p.stance;
+      const key = `${bodyStance}${shorts ? 's' : 't'}`;
+      const parts = bodyMap.get(key)!;
       this.ensemble.put(i, `skin${key}`, parts.skin, skinMaterial, pick(o.skins));
-      const top = pick(o.tops);
-      // One in six wears their island's flag printed across the front of the T-shirt.
-      const flagTee = tees() < 0.17 ? Math.floor(tees() * o.flags.length) : -1;
-      const shirt = flagTee >= 0 ? TEE_BASES[flagTee % TEE_BASES.length]! : top;
-      this.ensemble.put(i, `top${key}`, parts.top, cotton, shirt);
-      if (flagTee >= 0)
-        this.ensemble.put(i, `tee${flagTee}`, teeFront, o.flags[flagTee]!, '#ffffff');
-      // One in eight wears an island flag round the neck as a scarf.
-      const caped = capes() < 0.125 && flagTee < 0 ? Math.floor(capes() * o.flags.length) : -1;
-      if (caped >= 0) this.ensemble.put(i, `cape${caped}`, cape, o.flags[caped]!, '#ffffff');
+      this.ensemble.put(i, `top${key}`, parts.top, cotton, pick(o.tops));
       this.ensemble.put(i, `bottom${key}`, parts.bottom, denim, pick(o.bottoms));
       this.ensemble.put(i, 'shoes', shoes, rubber, pick(SHOES));
       const style = Math.floor(dress() * hairs.length);
@@ -650,36 +651,24 @@ export class Spectators {
       if (roll < 0.06) this.ensemble.put(i, 'straw', strawHat, straw, any(STRAWS));
       else if (roll < 0.11) this.ensemble.put(i, 'bucket', bucketHat, straw, any(o.tops));
       else this.ensemble.put(i, `hair${style}`, hairs[style]!, hair, colour);
-      if (p.stance === PHONE_STANCE) this.ensemble.put(i, 'phone', handset, phone, '#ffffff');
-      if (p.stance === SELFIE_STANCE) this.ensemble.put(i, 'selfie', selfie, phone, '#ffffff');
       if (p.balloon) {
         this.ensemble.put(i, 'balloon', balloon, latex, any(BALLOONS));
-        this.ensemble.put(i, 'string', string, twine, '#ffffff');
       }
       if (p.stance === PLACARD_STANCE) {
         const k = Math.floor(extra() * placards.length);
         this.ensemble.put(i, `placard${k}`, card, placards[k]!, '#ffffff');
       }
-      this.ensemble.put(i, 'face', face, features, '#ffffff');
-      if (extra() < 0.3) this.ensemble.put(i, 'shades', shades, glasses, '#ffffff');
       const grown = p.height > 0.9;
-      const back = Math.abs(p.x) > o.near + 0.6;
       if (p.stance === 0 && grown && extra() < 0.22) {
-        // An umbrella against the August sun.
         this.ensemble.put(i, 'canopy', canopy, cloth, any(UMBRELLAS));
         this.ensemble.put(i, 'shaft', shaft, metal, '#ffffff');
-      } else if (p.stance !== FLAG_STANCE && grown && back && extra() < 0.12) {
-        // A child up on the shoulders, arms in the air.
-        this.ensemble.put(i, 'childSkin', child.skin, skinMaterial, any(o.skins));
-        this.ensemble.put(i, 'childTop', child.top, cotton, any(o.tops));
-        this.ensemble.put(i, 'childBottom', child.bottom, denim, any(o.bottoms));
-        this.ensemble.put(i, 'childHair', childHair, hair, any(HAIRS));
       }
     });
     this.ensemble.build();
+
     const flag = new PlaneGeometry(0.75, 0.5, 4, 1);
     flag.translate(0.375, 0.3, 0);
-    const pole = new CylinderGeometry(0.012, 0.012, 0.9, 5);
+    const pole = new CylinderGeometry(0.012, 0.012, 0.9, 4);
     pole.translate(0, 0.1, 0);
     this.disposables.push(flag, pole);
     const counts = o.flags.map(() => 0);
@@ -691,6 +680,7 @@ export class Spectators {
       counts.reduce((a, b) => a + b, 0),
     );
     this.flags.push(poles);
+    this.flagCounts = new Int32Array(this.flags.length);
   }
 
   /** Moves the crowd with the rider; `kerb` lifts it onto the pavement. */
@@ -700,32 +690,42 @@ export class Spectators {
     along: (offset: number, every: number) => number,
     kerb: number,
   ): void {
-    const counts = this.flags.map(() => 0);
-    const poles = this.flags[this.flags.length - 1]!;
-    this.people.forEach((p, i) => {
-      const metres = along(p.offset, this.options.loop);
+    const loop = this.options.loop;
+    const bucket = Math.floor(along(0, loop) * 0.5);
+    const colorsChanged = bucket !== this.lastBucket;
+    this.lastBucket = bucket;
+    const counts = this.flagCounts;
+    counts.fill(0);
+    const poleIdx = counts.length - 1;
+    const poles = this.flags[poleIdx]!;
+    this.ensemble.beginFrame();
+    for (let i = 0; i < this.people.length; i++) {
+      const p = this.people[i]!;
+      const metres = along(p.offset, loop);
+      if (metres <= SPECTATOR_BEHIND_CULL || metres > SPECTATOR_HORIZON_CULL) continue;
       const y = heightAt(Math.max(metres, 0)) + kerb;
-      // Facing the road, turned a little towards the bands coming up it.
-      const heading =
-        (p.side < 0 ? -Math.PI / 2 : Math.PI / 2) + p.side * 0.3 + (p.turned ? Math.PI : 0);
+      const heading = (p.side < 0 ? -Math.PI / 2 : Math.PI / 2) + p.side * 0.3;
       const beat = Math.sin(time * 4.2 + p.phase);
-      const calm = p.stance === 0 || p.stance === LEAN_STANCE || p.stance === FOLDED_STANCE;
+      const calm = p.stance === 0 || p.stance === LEAN_STANCE;
       const bounce = Math.abs(beat) * (calm ? 0.02 : 0.05);
-      this.turn.setFromAxisAngle(this.up, heading + beat * 0.05);
-      this.size.set(p.height * (p.build ?? 1), p.height, p.height * (p.build ?? 1));
+      this.turn.setFromAxisAngle(UP_AXIS, heading + beat * 0.05);
+      this.size.set(p.height * p.build, p.height, p.height * p.build);
       this.spot.set(p.x, y + bounce, -metres);
       this.matrix.compose(this.spot, this.turn, this.size);
-      this.ensemble.set(i, this.matrix);
-      if (p.flag < 0) return;
-      // The flag on its pole in the raised right hand, waving from side to side.
+      this.ensemble.emit(i, this.matrix, colorsChanged);
+      if (p.flag < 0) continue;
       const wave = Math.sin(time * 3 + p.phase) * 0.6;
       this.local.makeRotationY(wave).setPosition(0.3, 1.95, -0.06);
       this.local.premultiply(this.matrix);
       this.flags[p.flag]!.setMatrixAt(counts[p.flag]!++, this.local);
-      poles.setMatrixAt(counts[counts.length - 1]!++, this.local);
-    });
-    this.ensemble.commit();
-    for (const mesh of this.flags) mesh.instanceMatrix.needsUpdate = true;
+      poles.setMatrixAt(counts[poleIdx]!++, this.local);
+    }
+    this.ensemble.commit(colorsChanged);
+    for (let k = 0; k < this.flags.length; k++) {
+      const mesh = this.flags[k]!;
+      mesh.count = counts[k]!;
+      mesh.instanceMatrix.needsUpdate = true;
+    }
   }
 
   private material(options: ConstructorParameters<typeof MeshStandardMaterial>[0]) {
@@ -738,7 +738,7 @@ export class Spectators {
     const mesh = new InstancedMesh(geometry, material, Math.max(n, 1));
     mesh.count = n;
     mesh.frustumCulled = false;
-    mesh.castShadow = true;
+    mesh.castShadow = false;
     this.disposables.push(mesh);
     this.group.add(mesh);
     return mesh;

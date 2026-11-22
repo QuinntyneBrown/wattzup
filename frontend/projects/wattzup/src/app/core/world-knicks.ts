@@ -14,20 +14,16 @@ import {
   ConeGeometry,
   CylinderGeometry,
   DoubleSide,
-  Euler,
   Float32BufferAttribute,
   Group,
   InstancedMesh,
   type Material,
-  Matrix4,
   Mesh,
   MeshStandardMaterial,
   PlaneGeometry,
-  Quaternion,
   RepeatWrapping,
   SphereGeometry,
   type Texture,
-  Vector3,
 } from 'three/webgpu';
 import {
   barrierBannerTexture,
@@ -71,9 +67,9 @@ const FLOAT_SPEED = 2.2;
 const DECK = 1.6;
 const CREW = 5;
 /** Ticker tape and streamers fill the canyon for TAPE_SPAN metres ahead, falling from TAPE_TOP. */
-const TAPE = 2800;
-const STREAMERS = 320;
-const TAPE_SPAN = 170;
+const TAPE = 640;
+const STREAMERS = 120;
+const TAPE_SPAN = 125;
 const TAPE_TOP = 44;
 /** The Woolworth Building closes the canyon ahead, hazed by hand. */
 const WOOLWORTH_AHEAD = 600;
@@ -147,6 +143,26 @@ interface Piece {
   readonly spin: readonly [number, number, number];
 }
 
+const PROP_BEHIND_CULL = -22;
+const PROP_HORIZON_CULL = 318;
+const SHADOW_NEAR = -20;
+const SHADOW_FAR = 36;
+const FLOAT_CREW_SPOTS: readonly (readonly [number, number])[] = [
+  [-0.75, -5],
+  [0.75, -3.9],
+  [0, 4.2],
+  [-0.75, 5.2],
+  [0.75, 5.2],
+];
+
+function collectShadowMeshes(root: Group): Mesh[] {
+  const list: Mesh[] = [];
+  root.traverse((obj) => {
+    if (obj instanceof Mesh && obj.castShadow) list.push(obj);
+  });
+  return list;
+}
+
 export class KnicksStreet implements SceneStreet {
   readonly group = new Group();
   private readonly ribbons: Ribbons;
@@ -158,8 +174,10 @@ export class KnicksStreet implements SceneStreet {
     every: number;
     x: number;
     lies?: boolean;
+    shadowMeshes: Mesh[];
+    lastCast?: boolean;
   }[] = [];
-  private readonly floats: Group[] = [];
+  private readonly floats: { group: Group; shadowMeshes: Mesh[]; lastCast?: boolean }[] = [];
   /** The players riding the floats, built on the kit's figures. */
   private crew: Figures | null = null;
   private readonly woolworth = new Group();
@@ -172,13 +190,6 @@ export class KnicksStreet implements SceneStreet {
   private readonly flagMaterials = [ORANGE, BLUE, '#ffffff'].map(
     (colour) => new MeshStandardMaterial({ color: colour, side: DoubleSide, roughness: 0.8 }),
   );
-  private readonly matrix = new Matrix4();
-  private readonly spot = new Vector3();
-  private readonly turn = new Quaternion();
-  private readonly tumble = new Euler();
-  private readonly size = new Vector3(1, 1, 1);
-  /** One piece of tape's size this frame. */
-  private readonly piece = new Vector3();
 
   constructor(
     private readonly track: <T extends Texture>(texture: T) => T,
@@ -227,8 +238,18 @@ export class KnicksStreet implements SceneStreet {
     const along = (offset: number, every: number) => loopMetres(offset, s, every, BEHIND);
     for (const prop of this.props) {
       const metres = along(prop.offset, prop.every);
-      prop.mesh.position.set(prop.x, heightAt(metres), -metres);
+      prop.mesh.position.set(prop.x, heightAt(Math.max(metres, 0)), -metres);
+      const visible = metres > PROP_BEHIND_CULL && metres <= PROP_HORIZON_CULL;
+      prop.mesh.visible = visible;
+      if (!visible) continue;
       if (prop.lies) prop.mesh.rotation.x = slopeAt(heightAt, metres);
+      const cast = metres > SHADOW_NEAR && metres < SHADOW_FAR;
+      if (prop.lastCast !== cast) {
+        prop.lastCast = cast;
+        for (const sm of prop.shadowMeshes) {
+          sm.castShadow = cast;
+        }
+      }
     }
     this.crowd.place(this.time, heightAt, along, KERB);
     const far = heightAt(1e6);
@@ -243,31 +264,36 @@ export class KnicksStreet implements SceneStreet {
     along: (offset: number, every: number) => number,
     heightAt: (metres: number) => number,
   ): void {
-    // Where each of the crew stands on the deck: across and along it.
-    const spots: readonly (readonly [number, number])[] = [
-      [-0.75, -5],
-      [0.75, -3.9],
-      [0, 4.2],
-      [-0.75, 5.2],
-      [0.75, 5.2],
-    ];
     const crew = this.crew;
-    this.floats.forEach((float, i) => {
+    let crewSlot = 0;
+    for (let i = 0; i < this.floats.length; i++) {
+      const entry = this.floats[i]!;
+      const float = entry.group;
       const metres = along(40 + i * (LOOP / FLOATS) + this.time * FLOAT_SPEED, LOOP);
       const y = heightAt(Math.max(metres, 0));
       const x = i % 2 ? FLOAT_X : -FLOAT_X;
       float.position.set(x, y, -metres);
+      const visible = metres > PROP_BEHIND_CULL && metres <= PROP_HORIZON_CULL;
+      float.visible = visible;
+      if (!visible) continue;
+      const cast = metres > SHADOW_NEAR && metres < SHADOW_FAR;
+      if (entry.lastCast !== cast) {
+        entry.lastCast = cast;
+        for (const sm of entry.shadowMeshes) {
+          sm.castShadow = cast;
+        }
+      }
       // A float dwindles away at the far end of the loop and grows back there (#900).
       const shown = loopFade(metres, LOOP, BEHIND);
       float.scale.setScalar(shown);
-      if (!crew) return;
-      spots.forEach(([dx, dz], k) => {
-        // The crew face the crowd on their side of the deck and jump with the music.
+      if (!crew) continue;
+      for (let k = 0; k < FLOAT_CREW_SPOTS.length; k++) {
+        const [dx, dz] = FLOAT_CREW_SPOTS[k]!;
         const heading =
           dx === 0 ? (x > 0 ? -Math.PI / 2 : Math.PI / 2) : dx > 0 ? -Math.PI / 2 : Math.PI / 2;
         const jump = bob(this.time * 4 + i * 1.3 + k) * 0.22;
         crew.set(
-          i * CREW + k,
+          crewSlot++,
           x + dx * shown,
           y + DECK * shown,
           -metres + dz * shown,
@@ -275,9 +301,12 @@ export class KnicksStreet implements SceneStreet {
           1.05 * shown,
           jump * shown,
         );
-      });
-    });
-    crew?.commit();
+      }
+    }
+    if (crew) {
+      crew.setCount(crewSlot);
+      crew.commit();
+    }
   }
 
   /** Each piece of tape falls, flutters and tumbles; the cloud travels with the street. */
@@ -285,27 +314,50 @@ export class KnicksStreet implements SceneStreet {
     const tape = this.tape;
     const streamers = this.streamers;
     if (!tape || !streamers) return;
+    const tapeArr = tape.instanceMatrix.array as Float32Array;
+    const streamerArr = streamers.instanceMatrix.array as Float32Array;
     const t = this.time;
-    this.pieces.forEach((p, i) => {
+    for (let i = 0; i < this.pieces.length; i++) {
+      const p = this.pieces[i]!;
       const metres = loopMetres(p.offset, s, TAPE_SPAN, 12);
       const ground = heightAt(Math.max(metres, 0));
       const drop = (p.phase * TAPE_TOP + t * p.fall) % TAPE_TOP;
-      this.spot.set(
-        p.x + Math.sin(t * 0.9 + p.phase * 20) * 0.6,
-        ground + TAPE_TOP - drop,
-        -metres,
-      );
-      this.tumble.set(t * p.spin[0] + p.phase * 7, t * p.spin[1] + p.phase * 3, t * p.spin[2]);
-      this.turn.setFromEuler(this.tumble);
-      // A piece shrinks away as it lands and grows back at the top, rather than leaping up, and
-      // fades at the far end of the cloud (#900).
-      this.piece
-        .setScalar(wrapFade(drop, 0, TAPE_TOP, 1.5) * loopFade(metres, TAPE_SPAN, 12))
-        .multiply(this.size);
-      this.matrix.compose(this.spot, this.turn, this.piece);
-      if (i < TAPE) tape.setMatrixAt(i, this.matrix);
-      else streamers.setMatrixAt(i - TAPE, this.matrix);
-    });
+      const sc = wrapFade(drop, 0, TAPE_TOP, 1.5) * loopFade(metres, TAPE_SPAN, 12);
+      const px = p.x + Math.sin(t * 0.9 + p.phase * 20) * 0.6;
+      const py = ground + TAPE_TOP - drop;
+      const pz = -metres;
+      const rx = t * p.spin[0] + p.phase * 7;
+      const ry = t * p.spin[1] + p.phase * 3;
+      const rz = t * p.spin[2];
+      const cx = Math.cos(rx);
+      const sx = Math.sin(rx);
+      const cy = Math.cos(ry);
+      const sy = Math.sin(ry);
+      const cz = Math.cos(rz);
+      const sz = Math.sin(rz);
+      const arr = i < TAPE ? tapeArr : streamerArr;
+      const o = (i < TAPE ? i : i - TAPE) * 16;
+      const ae = cx * cz;
+      const af = cx * sz;
+      const be = sx * cz;
+      const bf = sx * sz;
+      arr[o] = cy * cz * sc;
+      arr[o + 1] = (be * sy + af) * sc;
+      arr[o + 2] = (-ae * sy + bf) * sc;
+      arr[o + 3] = 0;
+      arr[o + 4] = -cy * sz * sc;
+      arr[o + 5] = (-bf * sy + ae) * sc;
+      arr[o + 6] = (af * sy + be) * sc;
+      arr[o + 7] = 0;
+      arr[o + 8] = sy * sc;
+      arr[o + 9] = -sx * cy * sc;
+      arr[o + 10] = cx * cy * sc;
+      arr[o + 11] = 0;
+      arr[o + 12] = px;
+      arr[o + 13] = py;
+      arr[o + 14] = pz;
+      arr[o + 15] = 1;
+    }
     tape.instanceMatrix.needsUpdate = true;
     streamers.instanceMatrix.needsUpdate = true;
   }
@@ -536,6 +588,7 @@ export class KnicksStreet implements SceneStreet {
           offset: offset + width / 2,
           every: LOOP,
           x: side * (FRONTAGE + setback),
+          shadowMeshes: collectShadowMeshes(building),
         });
         offset += width + (layout() < 0.15 ? 11 : 0.3);
         index++;
@@ -575,6 +628,7 @@ export class KnicksStreet implements SceneStreet {
           offset: offset + (side > 0 ? 15 : 0),
           every: LOOP,
           x: side * (LANE + 0.25),
+          shadowMeshes: collectShadowMeshes(lamp),
         });
       }
     }
@@ -605,7 +659,13 @@ export class KnicksStreet implements SceneStreet {
         banner.add(w);
       }
       this.group.add(banner);
-      this.props.push({ mesh: banner, offset: 60 + i * 120, every: LOOP, x: 0 });
+      this.props.push({
+        mesh: banner,
+        offset: 60 + i * 120,
+        every: LOOP,
+        x: 0,
+        shadowMeshes: collectShadowMeshes(banner),
+      });
     });
   }
 
@@ -634,7 +694,7 @@ export class KnicksStreet implements SceneStreet {
       const string = new Group();
       geometries.forEach((g, k) => string.add(new Mesh(g, materials[k]!)));
       this.group.add(string);
-      this.props.push({ mesh: string, offset, every: LOOP, x: 0 });
+      this.props.push({ mesh: string, offset, every: LOOP, x: 0, shadowMeshes: [] });
     }
   }
 
@@ -642,17 +702,21 @@ export class KnicksStreet implements SceneStreet {
   private addRoadPaint(): void {
     const plane = new PlaneGeometry(2.6, 9);
     this.disposables.push(plane);
+    const byKey = new Map<string, MeshStandardMaterial>();
     [...ROAD_PAINT, ...ROAD_PAINT].forEach(([text, colour, x], i) => {
-      const mesh = new Mesh(
-        plane,
-        this.material({
+      const key = `${text}|${colour}`;
+      let mat = byKey.get(key);
+      if (!mat) {
+        mat = this.material({
           map: this.track(paintTexture(text, colour)),
           alphaTest: 0.35,
           polygonOffset: true,
           polygonOffsetFactor: -4,
           roughness: 0.7,
-        }),
-      );
+        });
+        byKey.set(key, mat);
+      }
+      const mesh = new Mesh(plane, mat);
       mesh.rotation.x = -Math.PI / 2;
       mesh.position.y = 0.02;
       mesh.receiveShadow = true;
@@ -665,6 +729,7 @@ export class KnicksStreet implements SceneStreet {
         every: LOOP,
         x,
         lies: true,
+        shadowMeshes: [],
       });
     });
   }
@@ -774,7 +839,7 @@ export class KnicksStreet implements SceneStreet {
         float.add(b);
       }
       this.group.add(float);
-      this.floats.push(float);
+      this.floats.push({ group: float, shadowMeshes: collectShadowMeshes(float) });
     }
     this.crew = new Figures(
       this.group,
@@ -782,6 +847,7 @@ export class KnicksStreet implements SceneStreet {
       FLOATS * CREW,
       { tops: [BLUE, ORANGE, '#ffffff'], bottoms: [BLUE, '#ffffff', ORANGE], skins: SKINS },
       131,
+      false,
     );
   }
 

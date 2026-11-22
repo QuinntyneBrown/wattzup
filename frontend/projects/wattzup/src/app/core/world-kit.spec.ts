@@ -1,4 +1,22 @@
-import { bob, loopFade, profileHeight, wrapFade } from './world-kit';
+import {
+  BoxGeometry,
+  Group,
+  InstancedMesh,
+  Mesh,
+  MeshStandardMaterial,
+  type BufferAttribute,
+  type BufferGeometry,
+} from 'three/webgpu';
+import {
+  bob,
+  Crowd,
+  loopFade,
+  loopMetres,
+  mergeStaticGroup,
+  profileHeight,
+  Ribbons,
+  wrapFade,
+} from './world-kit';
 
 describe('wrapFade: a part shrinks away before it wraps and grows back after (#897)', () => {
   it.each([
@@ -65,5 +83,117 @@ describe('profileHeight: the height of a ribbon profile above the road at x (L2-
 
   it('reads a profile laid from smaller x to greater the same way', () => {
     expect(profileHeight([...verge].reverse(), 5)).toBeCloseTo(1.8, 9);
+  });
+});
+
+describe('Ribbons: normal initialisation and zero-allocation lay()', () => {
+  it('initialises vertex normals on add() before lay() and writes unit normals on lay()', () => {
+    const group = new Group();
+    const disposables: { dispose(): void }[] = [];
+    const material = new MeshStandardMaterial();
+    disposables.push(material);
+    const ribbons = new Ribbons(group, disposables);
+    const mesh = ribbons.add(4, material, [
+      [4, 0.2],
+      [0, 0],
+    ]);
+    const geometry = mesh.geometry as BufferGeometry;
+    const before = geometry.getAttribute('normal') as BufferAttribute | undefined;
+    expect(before).toBeDefined();
+    expect(before!.count).toBe(8);
+
+    ribbons.lay(
+      [
+        { metres: 0, height: 0 },
+        { metres: 2, height: 0.1 },
+        { metres: 4, height: 0.2 },
+        { metres: 6, height: 0.3 },
+      ],
+      10,
+    );
+    const after = geometry.getAttribute('normal') as BufferAttribute;
+    for (let i = 0; i < after.count; i++) {
+      const len = Math.hypot(after.getX(i), after.getY(i), after.getZ(i));
+      expect(len).toBeCloseTo(1, 5);
+    }
+    for (const d of disposables) d.dispose();
+  });
+});
+
+describe('mergeStaticGroup: collapses static sub-meshes by material while preserving skipped subtrees', () => {
+  it('merges single- and multi-material child meshes per material, preserves skipped subtrees, and fixes negative-scale winding', () => {
+    const disposables: { dispose(): void }[] = [];
+    const red = new MeshStandardMaterial({ color: 0xff0000 });
+    const blue = new MeshStandardMaterial({ color: 0x0000ff });
+    const unit = new BoxGeometry(1, 1, 1);
+    disposables.push(red, blue, unit);
+
+    const root = new Group();
+    const a = new Mesh(unit, red);
+    a.position.set(-2, 1, 0);
+    a.castShadow = true;
+    const b = new Mesh(unit, red);
+    b.position.set(2, 1, 0);
+    b.scale.set(-1, 1, 1); // negative determinant
+    b.castShadow = true;
+    const multi = new Mesh(unit, [red, red, blue, blue, red, blue]);
+    multi.position.set(0, 2, 0);
+    multi.castShadow = true;
+
+    const animated = new Group();
+    const spinner = new Mesh(unit, red);
+    spinner.castShadow = true;
+    animated.add(spinner);
+
+    root.add(a, b, multi, animated);
+    mergeStaticGroup(root, disposables, new Set([animated]));
+
+    const directMeshes = root.children.filter((c): c is Mesh => c instanceof Mesh);
+    // All static red faces (a + b + 3 faces of multi) -> 1 red Mesh; 3 blue faces of multi -> 1 blue Mesh.
+    expect(directMeshes.length).toBe(2);
+    expect(animated.children).toContain(spinner);
+    for (const m of directMeshes) {
+      expect(m.geometry.getAttribute('normal')).toBeDefined();
+      expect(m.castShadow).toBe(true);
+    }
+
+    for (const d of disposables) d.dispose();
+  });
+});
+
+describe('Crowd: shadow partitioning and horizon culling', () => {
+  it('partitions near shadow-casting figures from far non-shadow-casting figures and culls past 308 m', () => {
+    const group = new Group();
+    const disposables: { dispose(): void }[] = [];
+    const flagMat = new MeshStandardMaterial();
+    disposables.push(flagMat);
+    const crowd = new Crowd(group, disposables, {
+      loop: 480,
+      near: 9.1,
+      far: 11.4,
+      spacing: 2,
+      wardrobe: { tops: ['#f58426'], bottoms: ['#1e2530'], skins: ['#f1c7a5'] },
+      flags: [flagMat],
+      flagShare: 0.25,
+      seeds: [101, 107],
+    });
+    crowd.build();
+    crowd.place(
+      1.5,
+      (m) => m * 0.01,
+      (offset, every) => loopMetres(offset, 0, every, 30),
+      0.15,
+    );
+
+    const instanced = group.children.filter((c): c is InstancedMesh => c instanceof InstancedMesh);
+    const shadowCasters = instanced.filter((m) => m.castShadow);
+    const nonShadow = instanced.filter((m) => !m.castShadow);
+    expect(shadowCasters.length).toBe(3); // near legs, bodies, heads only
+    expect(nonShadow.length).toBeGreaterThanOrEqual(5); // far legs, bodies, heads + arms + flags
+    // Near shadow casters contain only spectators inside (-14, 34) m (~10% of the 480 m loop).
+    expect(shadowCasters[0]!.count).toBeGreaterThan(0);
+    expect(shadowCasters[0]!.count).toBeLessThan(nonShadow[0]!.count);
+
+    for (const d of disposables) d.dispose();
   });
 });

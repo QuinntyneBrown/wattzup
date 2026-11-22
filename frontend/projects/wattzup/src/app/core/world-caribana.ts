@@ -8,9 +8,6 @@ import {
   BufferAttribute,
   BufferGeometry,
   CanvasTexture,
-  CapsuleGeometry,
-  CatmullRomCurve3,
-  CircleGeometry,
   Color,
   ConeGeometry,
   CubicBezierCurve3,
@@ -25,7 +22,7 @@ import {
   Matrix4,
   Mesh,
   MeshStandardMaterial,
-  OctahedronGeometry,
+  type Object3D,
   PlaneGeometry,
   QuadraticBezierCurve3,
   Quaternion,
@@ -45,6 +42,7 @@ import {
   canvasTexture,
   clothBannerTexture,
   loopMetres,
+  mergeStaticGroup,
   PopupTents,
   Ribbons,
   scaleFaceUv,
@@ -56,11 +54,9 @@ import {
   bakeOcclusion,
   ellipsoid,
   Ensemble,
-  merge,
-  faceParts,
-  faceTexture,
   hairParts,
   limb,
+  merge,
   shoeGeometry,
   Spectators,
   spectatorParts,
@@ -280,9 +276,31 @@ const POSES: readonly (readonly [readonly number[], readonly number[]])[] = [
   ],
 ];
 
+const PROP_BEHIND_CULL = -22;
+const PROP_HORIZON_CULL = 316;
+const DANCER_BEHIND_CULL = -16;
+const DANCER_HORIZON_CULL = 308;
+const SHADOW_NEAR = -20;
+const SHADOW_FAR = 36;
+const CONFETTI_COUNT = 320;
+const CONFETTI_SPAN = 120;
+
+function collectShadowMeshes(root: Group): Mesh[] {
+  const list: Mesh[] = [];
+  root.traverse((obj) => {
+    if (obj instanceof Mesh && obj.castShadow) list.push(obj);
+  });
+  return list;
+}
+
+function asNonIndexed(g: BufferGeometry): BufferGeometry {
+  return g.index ? g.toNonIndexed() : g;
+}
+
 export class CaribanaStreet implements SceneStreet {
   readonly group = new Group();
   private readonly ribbons: Ribbons;
+  private roadMap: CanvasTexture | null = null;
   private readonly props: {
     mesh: Group;
     offset: number;
@@ -290,41 +308,44 @@ export class CaribanaStreet implements SceneStreet {
     x: number;
     /** Standing on the road rather than up on the pavement. */
     road?: boolean;
-    /** A copy standing one loop further on, beyond the parts in full detail. */
-    beyond?: boolean;
     /** Part of the parade, chipping up the road with it. */
     marching?: boolean;
+    shadowMeshes?: Mesh[];
+    lastCast?: boolean;
   }[] = [];
   private readonly crowd: Spectators;
-  private readonly backCrowd: Spectators;
-  private readonly dancers: Masquerader[] = [];
+  private readonly dancers: (Masquerader & {
+    skinR: number;
+    skinG: number;
+    skinB: number;
+    suitR: number;
+    suitG: number;
+    suitB: number;
+    hairR: number;
+    hairG: number;
+    hairB: number;
+    rag1R: number;
+    rag1G: number;
+    rag1B: number;
+    rag2R: number;
+    rag2G: number;
+    rag2B: number;
+  })[] = [];
   private readonly bodies: InstancedMesh[] = [];
   private costumes: InstancedMesh | null = null;
   private trunks: InstancedMesh | null = null;
-  private swags: InstancedMesh | null = null;
   private medallions: InstancedMesh | null = null;
   private fringes: InstancedMesh | null = null;
-  private readonly legPlumes: InstancedMesh[] = [];
-  private readonly handFans: InstancedMesh[] = [];
   private readonly collars: InstancedMesh[] = [];
-  private readonly armbands: InstancedMesh[] = [];
-  private readonly cuffs: InstancedMesh[] = [];
   private readonly heldFlags: InstancedMesh[] = [];
   private rags: InstancedMesh | null = null;
   private hair: InstancedMesh | null = null;
-  private trims: InstancedMesh | null = null;
-  private glints: InstancedMesh | null = null;
-  /** Where on the costume each glint sits, three to a dancer, and when it flashes. */
-  private readonly sparks: { at: Vector3; phase: number; rate: number }[] = [];
-  private readonly glint = new Matrix4();
-  private faces: InstancedMesh | null = null;
-  private shades: InstancedMesh | null = null;
-  private readonly heldCounts = new Map<InstancedMesh, number>();
   private readonly held = new Matrix4();
   private readonly backpieces: InstancedMesh[] = [];
   private readonly headdresses: InstancedMesh[] = [];
   private readonly crowns: InstancedMesh[] = [];
-  private readonly crownBands: InstancedMesh[] = [];
+  private dancerBucket = Number.NaN;
+  private teeBucket = Number.NaN;
   private readonly downtown = new Group();
   private readonly barricades: { side: -1 | 1; offset: number; banner: number }[] = [];
   private barricadeFrames: InstancedMesh | null = null;
@@ -334,20 +355,17 @@ export class CaribanaStreet implements SceneStreet {
   private readonly ontarioPlace = new Group();
   private readonly rotor = new Group();
   private readonly parkdale = new Group();
-  private readonly gulls: {
-    bird: Group;
-    wings: [Mesh, Mesh];
-    centre: Vector3;
-    r: number;
-    phase: number;
-    speed: number;
-  }[] = [];
   private readonly plane = new Group();
   private readonly helicopter = new Group();
   private readonly rotorBlades = new Group();
-  private readonly smoke: { mesh: Mesh; phase: number; material: MeshStandardMaterial }[] = [];
   private readonly expressway: { car: Group; offset: number; speed: number; x: number }[] = [];
-  private readonly royals: { piece: Group; offset: number; phase: number }[] = [];
+  private readonly royals: {
+    piece: Group;
+    offset: number;
+    phase: number;
+    shadowMeshes?: Mesh[];
+    lastCast?: boolean;
+  }[] = [];
   private teeShirts: Ensemble | null = null;
   private readonly revellers: { x: number; offset: number; phase: number; facing: number }[] = [];
   private readonly pannists: { figure: Group; phase: number }[] = [];
@@ -367,25 +385,6 @@ export class CaribanaStreet implements SceneStreet {
     green: MeshStandardMaterial;
   }[] = [];
   private confetti: InstancedMesh | null = null;
-  private blasts: InstancedMesh | null = null;
-  private readonly blast: {
-    cannon: number;
-    speed: number;
-    heading: number;
-    lean: number;
-    phase: number;
-    spin: number;
-  }[] = [];
-  private spray: InstancedMesh | null = null;
-  private distant: InstancedMesh | null = null;
-  private readonly litter: {
-    mesh: InstancedMesh;
-    items: { x: number; offset: number; turn: number; tip: number }[];
-  }[] = [];
-  private distantPlumes: InstancedMesh | null = null;
-  private readonly far: { x: number; offset: number; height: number; plume: boolean }[] = [];
-  private readonly hose = new Group();
-  private readonly drops: { speed: number; spread: number; phase: number; size: number }[] = [];
   private readonly flakes: {
     x: number;
     offset: number;
@@ -400,6 +399,8 @@ export class CaribanaStreet implements SceneStreet {
     offset: number;
     x: number;
     phase: number;
+    shadowMeshes?: Mesh[];
+    lastCast?: boolean;
   }[] = [];
   private time = 0;
   /** How far the parade has chipped up the road since the ride began, in metres. */
@@ -409,10 +410,27 @@ export class CaribanaStreet implements SceneStreet {
   private readonly turn = new Quaternion();
   private readonly size = new Vector3();
   private readonly up = new Vector3(0, 1, 0);
-  private readonly forward = new Vector3(0, 0, 1);
   private readonly tilt = new Quaternion();
   private readonly tumble = new Euler();
   private readonly unit = new BoxGeometry(1, 1, 1);
+  private readonly solidMaterials = new Map<string, MeshStandardMaterial>();
+  private readonly treeSpecies: {
+    trunk: InstancedMesh;
+    crown: InstancedMesh;
+    sprigs: InstancedMesh;
+    items: { x: number; offset: number; scale: number; yaw: number }[];
+  }[] = [];
+  private lampMeshes: {
+    parts: InstancedMesh[];
+    festivals: InstancedMesh[];
+    banners: InstancedMesh[];
+    items: { side: -1 | 1; offset: number; x: number; festIdx: number; flagIdx: number }[];
+  } | null = null;
+  private buntingMeshes: {
+    flags: InstancedMesh;
+    lines: InstancedMesh;
+    offsets: number[];
+  } | null = null;
   private readonly flagMaterials = FLAG_KINDS.map(
     (kind) =>
       new MeshStandardMaterial({ map: flagTexture(kind), side: DoubleSide, roughness: 0.8 }),
@@ -433,24 +451,10 @@ export class CaribanaStreet implements SceneStreet {
       skins: SKINS,
       flags: this.flagMaterials,
       seed: 41,
-      // The grandstand takes the right-hand pavement by the judging point.
       skip: (side, offset) =>
         (side > 0 && offset > GRANDSTAND[0] && offset < GRANDSTAND[1]) ||
         SELLERS.some((at, k) => (k % 2 ? 1 : -1) === side && Math.abs(offset - at) < 1.2) ||
         CARTS.some(([at, s]) => s === side && Math.abs(offset - at) < 1.6),
-    });
-    // The crowd carries on behind the pavement, standing on the grass, looser at the back.
-    this.backCrowd = new Spectators(this.group, disposables, {
-      loop: LOOP,
-      near: PAVEMENT + 0.5,
-      far: PAVEMENT + 2.4,
-      spacing: 0.8,
-      tops: SHIRTS,
-      bottoms: TROUSERS,
-      skins: SKINS,
-      flags: this.flagMaterials,
-      seed: 53,
-      skip: (side, offset) => side > 0 && offset > GRANDSTAND[0] - 2 && offset < GRANDSTAND[1] + 2,
     });
   }
 
@@ -458,9 +462,9 @@ export class CaribanaStreet implements SceneStreet {
     this.disposables.push(this.unit, this.satinWing, this.closed, ...this.flagMaterials);
     if (this.closed.map) this.track(this.closed.map);
     for (const m of this.flagMaterials) if (m.map) this.track(m.map);
+    this.roadMap = this.repeat(roadTexture(), 2 * CURB, 18);
     this.addGround(points);
     this.crowd.build();
-    this.backCrowd.build();
     this.addMasqueraders(roadHalf);
     this.addBarricades();
     this.addMokoJumbies();
@@ -475,14 +479,7 @@ export class CaribanaStreet implements SceneStreet {
     this.addScreen();
     this.addPavilion();
     this.addFootbridge();
-    this.addSpray();
-    this.addCastings();
-    this.addLitter();
-    this.addStreamers();
-    this.addShedPlumes();
-    this.addDistantParade();
     this.addConfetti();
-    this.addCannons();
     this.addOfficers();
     this.addMountedUnit();
     this.addBandBanners();
@@ -504,19 +501,47 @@ export class CaribanaStreet implements SceneStreet {
     this.addClouds();
     this.addCirrus();
     this.addSkyLife();
+    this.flattenStaticGroups();
+  }
+
+  private flattenStaticGroups(): void {
+    const skip = new Set<Object3D>();
+    for (const f of this.sectionFlags) skip.add(f.flag);
+    for (const m of this.mounted) skip.add(m.tail);
+    if (this.engineRoom) {
+      skip.add(this.engineRoom);
+      for (const child of this.engineRoom.children) {
+        if (child instanceof Group) mergeStaticGroup(child, this.disposables);
+      }
+    }
+    for (const b of this.bandBanners) {
+      skip.add(b.group);
+      mergeStaticGroup(b.group, this.disposables);
+    }
+    for (const p of this.pannists) {
+      skip.add(p.figure);
+      mergeStaticGroup(p.figure, this.disposables);
+    }
+    skip.add(this.rotor);
+    mergeStaticGroup(this.rotor, this.disposables);
+    skip.add(this.rotorBlades);
+    mergeStaticGroup(this.rotorBlades, this.disposables);
+
+    for (const prop of this.props) mergeStaticGroup(prop.mesh, this.disposables, skip);
+    for (const r of this.royals) mergeStaticGroup(r.piece, this.disposables, skip);
+    for (const m of this.mokos) mergeStaticGroup(m.figure, this.disposables, new Set(m.legs));
+    for (const e of this.expressway) mergeStaticGroup(e.car, this.disposables, skip);
+    mergeStaticGroup(this.downtown, this.disposables, skip);
+    mergeStaticGroup(this.ontarioPlace, this.disposables, skip);
+    mergeStaticGroup(this.parkdale, this.disposables, skip);
+    mergeStaticGroup(this.plane, this.disposables, skip);
+    mergeStaticGroup(this.helicopter, this.disposables, skip);
   }
 
   /** The parade's clock, in seconds; held at 0 for reduced motion. */
   setTime(seconds: number): void {
     this.time = seconds;
     this.march = seconds * PARADE_SPEED;
-    // Smoke off the jerk drums: each puff rises, swells, drifts on the lake breeze and thins.
-    for (const puff of this.smoke) {
-      const u = (seconds * 0.22 + puff.phase) % 1;
-      puff.mesh.position.set(0.9 + u * 2.2, 1.5 + u * 5.5, u * 1.2);
-      puff.mesh.scale.setScalar(0.35 + u * 1.7);
-      puff.material.opacity = 0.42 * (1 - u) * Math.min(1, u * 6);
-    }
   }
 
   /** Lays the pavements, barricades, grass, armour stone and lake over the road's points. */
@@ -529,21 +554,27 @@ export class CaribanaStreet implements SceneStreet {
     const along = (offset: number, every: number) => loopMetres(offset, s, every, BEHIND);
     for (const prop of this.props) {
       const march = prop.marching ? this.march : 0;
-      const metres = along(prop.offset + march, prop.every) + (prop.beyond ? LOOP : 0);
+      const metres = along(prop.offset + march, prop.every);
       const lift = prop.road ? ASPHALT : KERB;
       prop.mesh.position.set(prop.x, heightAt(Math.max(metres, 0)) + lift, -metres);
+      const visible = metres > PROP_BEHIND_CULL && metres <= PROP_HORIZON_CULL;
+      prop.mesh.visible = visible;
+      if (!visible) continue;
+      const cast = metres > SHADOW_NEAR && metres < SHADOW_FAR;
+      if (prop.lastCast !== cast) {
+        prop.lastCast = cast;
+        const shadowMeshes = (prop.shadowMeshes ??= collectShadowMeshes(prop.mesh));
+        for (const sm of shadowMeshes) sm.castShadow = cast;
+      }
     }
     this.crowd.place(this.time, heightAt, along, KERB);
-    this.backCrowd.place(this.time, heightAt, along, KERB + 0.04);
     this.placeDancers(heightAt, along);
     this.placeBarricades(heightAt, along);
     this.placeMokoJumbies(heightAt, along);
     this.placeTeeShirtMas(heightAt, along);
-    this.placeConfetti(heightAt, along);
-    this.placeCannons(heightAt, along);
-    this.placeDistantParade(heightAt, along);
-    this.placeLitter(heightAt, along);
-    this.placeSpray(heightAt, along);
+    this.placeLampsAndBunting(heightAt, along);
+    this.placeTrees(heightAt, along);
+    this.placeConfetti(s, heightAt);
     // The signals run their cycle as usual though the road is closed: 20 s green, 3 amber, 20 red.
     const phase = this.time % 43;
     for (const lamp of this.signalLamps) {
@@ -591,57 +622,48 @@ export class CaribanaStreet implements SceneStreet {
         heightAt(Math.max(metres, 0)) + ASPHALT + Math.abs(Math.sin(t * 2.1)) * 0.04,
         -metres,
       );
-      // The whole frame rocks slowly as the masquerader wines inside it, turning to the crowds.
+      const visible = metres > PROP_BEHIND_CULL && metres <= PROP_HORIZON_CULL;
+      r.piece.visible = visible;
+      if (!visible) continue;
+      const cast = metres > SHADOW_NEAR && metres < SHADOW_FAR;
+      if (r.lastCast !== cast) {
+        r.lastCast = cast;
+        const shadowMeshes = (r.shadowMeshes ??= collectShadowMeshes(r.piece));
+        for (const sm of shadowMeshes) sm.castShadow = cast;
+      }
       r.piece.rotation.z = Math.sin(t * 1.05) * 0.04;
       r.piece.rotation.y = Math.PI + Math.sin(t * 0.35) * 0.35;
     }
     for (const e of this.expressway) {
       const metres = along(e.offset + this.time * e.speed, LOOP);
       e.car.position.set(e.x, heightAt(Math.max(metres, 0)) + GARDINER_DECK, -metres);
+      e.car.visible = metres > PROP_BEHIND_CULL && metres <= PROP_HORIZON_CULL;
     }
-    this.downtown.position.set(0, heightAt(1e6) - 4, -DOWNTOWN_AHEAD);
-    this.ontarioPlace.position.set(0, heightAt(1e6), 0);
-    this.parkdale.position.set(0, heightAt(1e6), 0);
-    for (const g of this.gulls) {
-      // Each gull wheels on a wide circle, flapping now and then and gliding between.
-      const a = this.time * g.speed + g.phase;
-      const metres = along(g.centre.z, LOOP);
-      g.bird.position.set(
-        g.centre.x + Math.cos(a) * g.r,
-        heightAt(Math.max(metres, 0)) + g.centre.y + Math.sin(a * 2) * 1.5,
-        -metres + Math.sin(a) * g.r,
-      );
-      g.bird.rotation.y = -a + (g.speed > 0 ? 0 : Math.PI);
-      g.bird.rotation.z = Math.sin(a) * 0.2 * Math.sign(g.speed);
-      const flap = Math.sin(this.time * 9 + g.phase * 3) * (Math.sin(a * 1.7) > 0 ? 0.7 : 0.08);
-      g.wings[0].rotation.z = 0.15 + flap;
-      g.wings[1].rotation.z = -0.15 - flap;
-    }
-    // The turboprop on final approach over the lake, sinking towards the island airport.
+    const farH = heightAt(1e6);
+    this.downtown.position.set(0, farH - 4, -DOWNTOWN_AHEAD);
+    this.ontarioPlace.position.set(0, farH, 0);
+    this.parkdale.position.set(0, farH, 0);
     const u = (this.time * 0.012) % 1;
-    this.plane.position.set(420 - u * 600, heightAt(1e6) + 260 - u * 170, -1400 + u * 200);
-    // The news helicopter holds over the route ahead, circling slowly, its rotor a blur.
+    this.plane.position.set(420 - u * 600, farH + 260 - u * 170, -1400 + u * 200);
     const orbit = this.time * 0.05;
     this.helicopter.position.set(
       40 + Math.cos(orbit) * 60,
-      heightAt(1e6) + 95 + Math.sin(this.time * 0.4) * 2,
+      farH + 95 + Math.sin(this.time * 0.4) * 2,
       -330 + Math.sin(orbit) * 60,
     );
     this.helicopter.rotation.y = -orbit;
     this.helicopter.rotation.z = 0.08;
     this.rotorBlades.rotation.y = this.time * 40;
-    // The turbine turns slowly in the lake breeze.
     this.rotor.rotation.z = this.time * 1.1;
-    // The cumulus drift slowly east with the lake breeze, a sky that never quite repeats.
-    this.clouds.position.set(((this.time * 1.5) % 1200) - 600, heightAt(1e6), 0);
-    this.boats.forEach((boat, i) => {
+    this.clouds.position.set(((this.time * 1.5) % 1200) - 600, farH, 0);
+    for (let i = 0; i < this.boats.length; i++) {
       const drift = this.time * 0.6 + i * 37;
-      boat.position.set(
+      this.boats[i]!.position.set(
         120 + i * 55,
-        heightAt(1e6) - 0.2,
+        farH - 0.2,
         -(((i * 173 + drift - s * 0.15) % 700) + 120),
       );
-    });
+    }
   }
 
   private placeDancers(
@@ -650,21 +672,37 @@ export class CaribanaStreet implements SceneStreet {
   ): void {
     const costumes = this.costumes;
     if (!costumes) return;
-    const count = this.backpieces.map(() => 0);
-    const backed = this.backpieces.map(() => 0);
-    const crowned = this.backpieces.map(() => 0);
-    const fanned = this.backpieces.map(() => 0);
-    const tufted = this.backpieces.map(() => 0);
-    const collared = this.backpieces.map(() => 0);
-    const posed = this.bodies.map(() => 0);
+    const bucket = Math.floor(along(this.march, LOOP) * 0.5);
+    const colorsChanged = bucket !== this.dancerBucket;
+    this.dancerBucket = bucket;
+    const backed = new Int32Array(this.backpieces.length);
+    const crowned = new Int32Array(this.backpieces.length);
+    const tufted = new Int32Array(this.backpieces.length);
+    const collared = new Int32Array(this.backpieces.length);
+    const posed = new Int32Array(this.bodies.length);
+    const flagSlots = new Int32Array(this.heldFlags.length);
+    let ragSlot = 0;
     let women = 0;
     let men = 0;
-    this.dancers.forEach((d, i) => {
+    let vis = 0;
+    let medallionsCount = 0;
+    let fringesCount = 0;
+
+    const setRgb = (mesh: InstancedMesh | null, slot: number, r: number, g: number, b: number) => {
+      if (!mesh || !mesh.instanceColor) return;
+      const arr = mesh.instanceColor.array as Float32Array;
+      const o = slot * 3;
+      arr[o] = r;
+      arr[o + 1] = g;
+      arr[o + 2] = b;
+    };
+
+    for (let i = 0; i < this.dancers.length; i++) {
+      const d = this.dancers[i]!;
       const metres = along(d.offset + this.march, LOOP);
+      if (metres <= DANCER_BEHIND_CULL || metres > DANCER_HORIZON_CULL) continue;
       const y = heightAt(Math.max(metres, 0)) + ASPHALT;
       const t = this.time + d.phase;
-      // Chipping down the road: a bounce on every beat, a sway of the hips, a turn to the crowd,
-      // and the wine, the hips rolling round as the body tips forward and back, side to side.
       const bounce = Math.abs(Math.sin(t * 4.2)) * 0.07;
       const sway = Math.sin(t * 2.1) * 0.35;
       const x = d.x + Math.sin(t * 0.7) * 0.4;
@@ -676,122 +714,103 @@ export class CaribanaStreet implements SceneStreet {
           sway * 0.12 + Math.sin(t * 2.1) * 0.08 * wine,
         ),
       );
-      // Half the band wines facing back up the road, to the riders and the crowd behind.
       const facing = i % 2 ? Math.PI - d.side * 0.5 : d.side * 0.55;
       this.turn.setFromAxisAngle(this.up, facing + sway).multiply(this.tilt);
       const k0 = d.child ? 0.6 : 1;
       this.size.set(d.build * k0, k0, d.build * k0);
       this.spot.set(x, y + bounce, -metres);
       this.matrix.compose(this.spot, this.turn, this.size);
+
       const body = d.pose + (d.male ? POSES.length : 0);
-      this.armbands[body]?.setMatrixAt(posed[body]!, this.matrix);
-      this.cuffs[body]?.setMatrixAt(posed[body]!, this.matrix);
-      this.bodies[body]!.setMatrixAt(posed[body]!++, this.matrix);
-      if (d.male) this.trunks?.setMatrixAt(men++, this.matrix);
-      else {
-        this.swags?.setMatrixAt(women, this.matrix);
-        costumes.setMatrixAt(women++, this.matrix);
+      const bodySlot = posed[body]!;
+      posed[body] = bodySlot + 1;
+      this.bodies[body]!.setMatrixAt(bodySlot, this.matrix);
+      if (colorsChanged) setRgb(this.bodies[body]!, bodySlot, d.skinR, d.skinG, d.skinB);
+
+      if (d.male) {
+        this.trunks?.setMatrixAt(men, this.matrix);
+        if (colorsChanged) setRgb(this.trunks, men, d.suitR, d.suitG, d.suitB);
+        men++;
+      } else {
+        costumes.setMatrixAt(women, this.matrix);
+        if (colorsChanged) setRgb(costumes, women, d.suitR, d.suitG, d.suitB);
+        women++;
+        this.fringes?.setMatrixAt(fringesCount, this.matrix);
+        if (colorsChanged) setRgb(this.fringes, fringesCount, d.suitR, d.suitG, d.suitB);
+        fringesCount++;
       }
-      // Men wear trunks, not the bead fringe.
-      if (d.male) this.held.makeScale(0, 0, 0);
-      this.fringes?.setMatrixAt(i, d.male ? this.held : this.matrix);
-      this.hair?.setMatrixAt(i, this.matrix);
-      this.trims?.setMatrixAt(i, this.matrix);
-      this.placeGlints(i, t);
-      this.faces?.setMatrixAt(i, this.matrix);
-      if (this.shades && d.shaded >= 0) this.shades.setMatrixAt(d.shaded, this.matrix);
-      this.placeHeld(d, i, t);
+
+      this.hair?.setMatrixAt(vis, this.matrix);
+      if (colorsChanged) setRgb(this.hair, vis, d.hairR, d.hairG, d.hairB);
+      vis++;
+
+      const wave = Math.sin(t * 6.3) * 0.9;
+      if (d.pose === 1) {
+        const fk = i % this.heldFlags.length;
+        this.held.makeRotationY(wave).setPosition(0.3, 1.97, -0.1).premultiply(this.matrix);
+        this.heldFlags[fk]!.setMatrixAt(flagSlots[fk]!++, this.held);
+      } else if (d.pose === 0 && this.rags) {
+        this.held.makeRotationY(wave).setPosition(-0.42, 1.93, -0.06).premultiply(this.matrix);
+        this.rags.setMatrixAt(ragSlot, this.held);
+        if (colorsChanged) setRgb(this.rags, ragSlot, d.rag1R, d.rag1G, d.rag1B);
+        ragSlot++;
+        this.held.makeRotationY(-wave).setPosition(0.42, 1.93, -0.06).premultiply(this.matrix);
+        this.rags.setMatrixAt(ragSlot, this.held);
+        if (colorsChanged) setRgb(this.rags, ragSlot, d.rag2R, d.rag2G, d.rag2B);
+        ragSlot++;
+      }
+
       const k = d.costume;
-      this.legPlumes[k]!.setMatrixAt(count[k]!, this.matrix);
-      if (d.pose === 2) this.handFans[k]!.setMatrixAt(fanned[k]!++, this.matrix);
       this.spot.set(x, y + 1.3 * k0 + bounce, -metres);
-      this.size.setScalar(d.frontline ? k0 : 0);
-      this.matrix.compose(this.spot, this.turn, this.size);
-      this.medallions?.setMatrixAt(i, this.matrix);
-      this.size.setScalar(k0);
-      this.matrix.compose(this.spot, this.turn, this.size);
-      if (d.frontline) this.backpieces[k]!.setMatrixAt(backed[k]!++, this.matrix);
-      else this.collars[k]!.setMatrixAt(collared[k]!++, this.matrix);
-      this.spot.set(x, y + 1.7 * k0 + bounce, -metres);
       this.size.setScalar(k0);
       this.matrix.compose(this.spot, this.turn, this.size);
       if (d.frontline) {
-        this.crownBands[k]!.setMatrixAt(crowned[k]!, this.matrix);
-        this.crowns[k]!.setMatrixAt(crowned[k]!++, this.matrix);
-      } else this.headdresses[k]!.setMatrixAt(tufted[k]!++, this.matrix);
-      count[k]!++;
-    });
-    for (const mesh of [...this.heldFlags, ...(this.rags ? [this.rags] : [])]) {
-      mesh.count = this.heldCounts.get(mesh) ?? 0;
-      mesh.instanceMatrix.needsUpdate = true;
-    }
-    this.heldCounts.clear();
-    costumes.instanceMatrix.needsUpdate = true;
-    if (this.trunks) this.trunks.instanceMatrix.needsUpdate = true;
-    if (this.swags) this.swags.instanceMatrix.needsUpdate = true;
-    if (this.medallions) this.medallions.instanceMatrix.needsUpdate = true;
-    if (this.fringes) this.fringes.instanceMatrix.needsUpdate = true;
-    if (this.hair) this.hair.instanceMatrix.needsUpdate = true;
-    if (this.trims) this.trims.instanceMatrix.needsUpdate = true;
-    if (this.glints) this.glints.instanceMatrix.needsUpdate = true;
-    if (this.faces) this.faces.instanceMatrix.needsUpdate = true;
-    if (this.shades) this.shades.instanceMatrix.needsUpdate = true;
-    this.bodies.forEach((mesh, p) => {
-      mesh.count = posed[p]!;
-      mesh.instanceMatrix.needsUpdate = true;
-      for (const arm of [this.armbands[p], this.cuffs[p]]) {
-        if (!arm) continue;
-        arm.count = posed[p]!;
-        arm.instanceMatrix.needsUpdate = true;
+        this.medallions?.setMatrixAt(medallionsCount, this.matrix);
+        if (colorsChanged) setRgb(this.medallions, medallionsCount, d.suitR, d.suitG, d.suitB);
+        medallionsCount++;
+        this.backpieces[k]!.setMatrixAt(backed[k]!++, this.matrix);
+      } else {
+        this.collars[k]!.setMatrixAt(collared[k]!++, this.matrix);
       }
-    });
-    this.backpieces.forEach((mesh, k) => {
-      mesh.count = backed[k]!;
-      mesh.instanceMatrix.needsUpdate = true;
+      this.spot.set(x, y + 1.7 * k0 + bounce, -metres);
+      this.matrix.compose(this.spot, this.turn, this.size);
+      if (d.frontline) this.crowns[k]!.setMatrixAt(crowned[k]!++, this.matrix);
+      else this.headdresses[k]!.setMatrixAt(tufted[k]!++, this.matrix);
+    }
+
+    for (let fk = 0; fk < this.heldFlags.length; fk++) {
+      const m = this.heldFlags[fk]!;
+      m.count = flagSlots[fk]!;
+      m.instanceMatrix.needsUpdate = true;
+    }
+    if (this.rags) {
+      this.rags.count = ragSlot;
+      this.rags.instanceMatrix.needsUpdate = true;
+      if (colorsChanged && this.rags.instanceColor) this.rags.instanceColor.needsUpdate = true;
+    }
+    const updateColored = (m: InstancedMesh | null, cnt: number) => {
+      if (!m) return;
+      m.count = cnt;
+      m.instanceMatrix.needsUpdate = true;
+      if (colorsChanged && m.instanceColor) m.instanceColor.needsUpdate = true;
+    };
+    updateColored(costumes, women);
+    updateColored(this.trunks, men);
+    updateColored(this.medallions, medallionsCount);
+    updateColored(this.fringes, fringesCount);
+    updateColored(this.hair, vis);
+    for (let p = 0; p < this.bodies.length; p++) {
+      updateColored(this.bodies[p]!, posed[p]!);
+    }
+    for (let k = 0; k < this.backpieces.length; k++) {
+      this.backpieces[k]!.count = backed[k]!;
+      this.backpieces[k]!.instanceMatrix.needsUpdate = true;
       this.collars[k]!.count = collared[k]!;
       this.collars[k]!.instanceMatrix.needsUpdate = true;
       this.headdresses[k]!.count = tufted[k]!;
       this.headdresses[k]!.instanceMatrix.needsUpdate = true;
       this.crowns[k]!.count = crowned[k]!;
       this.crowns[k]!.instanceMatrix.needsUpdate = true;
-      this.crownBands[k]!.count = crowned[k]!;
-      this.crownBands[k]!.instanceMatrix.needsUpdate = true;
-      this.legPlumes[k]!.count = count[k]!;
-      this.handFans[k]!.count = fanned[k]!;
-      this.handFans[k]!.instanceMatrix.needsUpdate = true;
-      this.legPlumes[k]!.instanceMatrix.needsUpdate = true;
-    });
-  }
-
-  /** Flashes dancer `i`'s three glints: each brief and bright as it catches the sun. */
-  private placeGlints(i: number, t: number): void {
-    const glints = this.glints;
-    if (!glints) return;
-    for (let k = 3 * i; k < 3 * i + 3; k++) {
-      const spark = this.sparks[k]!;
-      const flash = Math.pow(Math.max(0, Math.sin(t * spark.rate + spark.phase)), 8);
-      this.glint.makeScale(flash, flash, flash).setPosition(spark.at).premultiply(this.matrix);
-      glints.setMatrixAt(k, this.glint);
-    }
-  }
-
-  /**
-   * What a dancer waves, carried in the body's matrix: a flag on a stick in the raised right
-   * hand of a dancer waving one hand, a rag in each hand of a dancer with both arms up.
-   */
-  private placeHeld(d: Masquerader, i: number, t: number): void {
-    const put = (mesh: InstancedMesh, x: number, y: number, z: number, wave: number) => {
-      this.held.makeRotationY(wave).setPosition(x, y, z).premultiply(this.matrix);
-      const slot = this.heldCounts.get(mesh) ?? 0;
-      mesh.setMatrixAt(slot, this.held);
-      this.heldCounts.set(mesh, slot + 1);
-    };
-    const wave = Math.sin(t * 6.3) * 0.9;
-    if (d.pose === 1) {
-      put(this.heldFlags[i % this.heldFlags.length]!, 0.3, 1.97, -0.1, wave);
-    } else if (d.pose === 0 && this.rags) {
-      put(this.rags, -0.42, 1.93, -0.06, wave);
-      put(this.rags, 0.42, 1.93, -0.06, -wave);
     }
   }
 
@@ -815,7 +834,7 @@ export class CaribanaStreet implements SceneStreet {
     const frame = barricadeGeometry();
     const steel = this.material({ color: 0xb9bec4, metalness: 0.75, roughness: 0.42 });
     this.disposables.push(frame);
-    this.barricadeFrames = this.instanced(frame, steel, this.barricades.length);
+    this.barricadeFrames = this.instanced(frame, steel, this.barricades.length, false);
     const cloth = new PlaneGeometry(2.3, 0.72);
     cloth.rotateY(-Math.PI / 2);
     cloth.translate(-0.035, 0.66, 0);
@@ -825,7 +844,7 @@ export class CaribanaStreet implements SceneStreet {
         map: this.track(clothBannerTexture(text, fill, ink)),
         roughness: 0.75,
       });
-      this.barricadeBanners.push(this.instanced(cloth, material, this.barricades.length));
+      this.barricadeBanners.push(this.instanced(cloth, material, this.barricades.length, false));
     });
   }
 
@@ -835,23 +854,26 @@ export class CaribanaStreet implements SceneStreet {
   ): void {
     const frames = this.barricadeFrames;
     if (!frames) return;
-    const counts = this.barricadeBanners.map(() => 0);
-    this.barricades.forEach((b, i) => {
+    const counts = new Int32Array(this.barricadeBanners.length);
+    let fCount = 0;
+    for (const b of this.barricades) {
       const metres = along(b.offset, LOOP);
-      // The right side's road face looks along -x; the left side's is turned round to match.
+      if (metres <= DANCER_BEHIND_CULL || metres > DANCER_HORIZON_CULL) continue;
       this.turn.setFromAxisAngle(this.up, b.side > 0 ? 0 : Math.PI);
       this.spot.set(b.side * BARRIER, heightAt(Math.max(metres, 0)) + ASPHALT, -metres);
       this.size.set(1, 1, 1);
       this.matrix.compose(this.spot, this.turn, this.size);
-      frames.setMatrixAt(i, this.matrix);
+      frames.setMatrixAt(fCount++, this.matrix);
       if (b.banner >= 0)
         this.barricadeBanners[b.banner]!.setMatrixAt(counts[b.banner]!++, this.matrix);
-    });
+    }
+    frames.count = fCount;
     frames.instanceMatrix.needsUpdate = true;
-    this.barricadeBanners.forEach((mesh, k) => {
+    for (let k = 0; k < this.barricadeBanners.length; k++) {
+      const mesh = this.barricadeBanners[k]!;
       mesh.count = counts[k]!;
       mesh.instanceMatrix.needsUpdate = true;
-    });
+    }
   }
 
   /**
@@ -965,9 +987,15 @@ export class CaribanaStreet implements SceneStreet {
   ): void {
     const ensemble = this.teeShirts;
     if (!ensemble) return;
-    this.revellers.forEach((r, i) => {
-      const t = this.time + r.phase;
+    const bucket = Math.floor(along(this.march, LOOP) * 0.5);
+    const colorsChanged = bucket !== this.teeBucket;
+    this.teeBucket = bucket;
+    ensemble.beginFrame();
+    for (let i = 0; i < this.revellers.length; i++) {
+      const r = this.revellers[i]!;
       const metres = along(r.offset + this.march, LOOP);
+      if (metres <= DANCER_BEHIND_CULL || metres > DANCER_HORIZON_CULL) continue;
+      const t = this.time + r.phase;
       const bounce = Math.abs(Math.sin(t * 4.2)) * 0.08;
       this.turn.setFromAxisAngle(this.up, r.facing + Math.sin(t * 2.1) * 0.3);
       this.spot.set(
@@ -976,9 +1004,9 @@ export class CaribanaStreet implements SceneStreet {
         -metres,
       );
       this.size.setScalar(0.96);
-      ensemble.set(i, this.matrix.compose(this.spot, this.turn, this.size));
-    });
-    ensemble.commit();
+      ensemble.emit(i, this.matrix.compose(this.spot, this.turn, this.size), colorsChanged);
+    }
+    ensemble.commit(colorsChanged);
   }
 
   /**
@@ -1007,7 +1035,7 @@ export class CaribanaStreet implements SceneStreet {
           new Vector3(side * 0.85, 3.45, -0.05),
           0.05,
           0.04,
-        ).map((g) => g.toNonIndexed()),
+        ).map(asNonIndexed),
       ),
     )!;
     const head = ellipsoid(0.11, 0.9, 1.1, 1, 0, 3.47, -0.01);
@@ -1233,18 +1261,26 @@ export class CaribanaStreet implements SceneStreet {
     along: (offset: number, every: number) => number,
   ): void {
     for (const m of this.mokos) {
-      const t = this.time * 1.6 + m.phase;
-      // A slow, high stride: each stilt swings from the hip, the body rising over the step.
-      const swing = Math.sin(t) * 0.16;
-      m.legs[0].rotation.x = swing;
-      m.legs[1].rotation.x = -swing;
       const metres = along(m.offset + this.march, LOOP);
+      const t = this.time * 1.6 + m.phase;
       const lift = Math.abs(Math.cos(t)) * 0.05 - 0.03;
       m.figure.position.set(
         m.x + Math.sin(t * 0.25) * 0.5,
         heightAt(Math.max(metres, 0)) + ASPHALT + lift,
         -metres,
       );
+      const visible = metres > PROP_BEHIND_CULL && metres <= PROP_HORIZON_CULL;
+      m.figure.visible = visible;
+      if (!visible) continue;
+      const cast = metres > SHADOW_NEAR && metres < SHADOW_FAR;
+      if (m.lastCast !== cast) {
+        m.lastCast = cast;
+        const shadowMeshes = (m.shadowMeshes ??= collectShadowMeshes(m.figure));
+        for (const sm of shadowMeshes) sm.castShadow = cast;
+      }
+      const swing = Math.sin(t) * 0.16;
+      m.legs[0].rotation.x = swing;
+      m.legs[1].rotation.x = -swing;
       m.figure.rotation.y = Math.sin(t * 0.3) * 0.5 + (m.phase > 3 ? Math.PI : 0);
       m.figure.rotation.z = Math.sin(t) * 0.03;
     }
@@ -1262,7 +1298,7 @@ export class CaribanaStreet implements SceneStreet {
       metalness: 0.1,
     });
     const asphalt = this.material({
-      map: this.repeat(roadTexture(), 2 * CURB, 18),
+      map: this.roadMap ?? this.repeat(roadTexture(), 2 * CURB, 18),
       roughness: 0.85,
     });
     const kerb = this.material({ color: 0xc4c0b8, roughness: 0.8 });
@@ -1344,27 +1380,20 @@ export class CaribanaStreet implements SceneStreet {
    */
   private addMasqueraders(roadHalf: number): void {
     const random = seeded(73);
-    // The bands fill the lanes from 2 m out to the barricades, leaving the riders' corridor.
     const near = roadHalf - 1.5;
+    const raw: Masquerader[] = [];
     for (let offset = 0; offset < LOOP; offset += 1.9) {
-      // The bands leave room round each music truck on the left, 60 m into its stretch.
       const fromTruck = (((offset - TRUCK_EVERY / 2) % TRUCK_EVERY) + TRUCK_EVERY) % TRUCK_EVERY;
-      // Sections are 40 m long and change across the lanes: the left and right halves of the
-      // road carry neighbouring sections, so the colours mix as bands do on the road.
       for (const side of [-1, 1] as const) {
         const section = (Math.floor(offset / 40) + (side > 0 ? 4 : 0)) % COSTUMES.length;
         if (side < 0 && (fromTruck < 11 || fromTruck > TRUCK_EVERY - 11)) continue;
-        // And round each band's banner on the right.
         const fromBanner = (((offset - ROYAL_AT + 18) % TRUCK_EVERY) + TRUCK_EVERY) % TRUCK_EVERY;
         if (side > 0 && (fromBanner < 3 || fromBanner > TRUCK_EVERY - 3)) continue;
-        // And room round each King or Queen on the right.
         const fromRoyal = (((offset - ROYAL_AT) % TRUCK_EVERY) + TRUCK_EVERY) % TRUCK_EVERY;
         if (side > 0 && (fromRoyal < 6 || fromRoyal > TRUCK_EVERY - 6)) continue;
-        // And round the steel orchestra's float on the left.
-        // And round its engine room walking ahead of it.
         if (side < 0 && offset > PAN_AT - 11 && offset < PAN_AT + 19) continue;
         if (random() < 0.25) continue;
-        this.dancers.push({
+        raw.push({
           side,
           offset: offset + random() * 1.6,
           x: side * (near + random() * (BARRIER - near - 0.8)),
@@ -1381,54 +1410,76 @@ export class CaribanaStreet implements SceneStreet {
     }
     const posing = seeded(137);
     const kids = seeded(139);
-    this.dancers.forEach((d, i) => {
+    const hairs = seeded(149);
+    const dyes = ['#120c08', '#1d130d', '#2c1d14', '#0a0a0a', '#5a2a1a', '#c79a4b', '#6b1f2a'];
+    const c = new Color();
+    let ragCounter = 0;
+    raw.forEach((d) => {
       const pose = Math.floor(posing() * POSES.length);
-      const skin = SKINS[Math.floor(posing() * SKINS.length)]!;
+      const skinHex = SKINS[Math.floor(posing() * SKINS.length)]!;
       const frontline = posing() < 0.34;
       const male = posing() < 0.2;
       const build = male ? 0.98 + posing() * 0.17 : 0.94 + posing() * posing() * 0.34;
-      // A child here and there, and a family group dancing just ahead of the riders' start.
       const family = d.offset > BEHIND + 5 && d.offset < BEHIND + 9 && d.side < 0;
       const child = kids() < 0.07 || (family && !male);
-      this.dancers[i] = { ...d, pose, skin, frontline: frontline && !child, male, build, child };
+      c.set(skinHex);
+      const skinR = c.r;
+      const skinG = c.g;
+      const skinB = c.b;
+      c.set(COSTUMES[d.costume]!.suit);
+      const suitR = c.r;
+      const suitG = c.g;
+      const suitB = c.b;
+      c.set(dyes[Math.floor(hairs() * dyes.length)]!);
+      const hairR = c.r;
+      const hairG = c.g;
+      const hairB = c.b;
+      const [outer] = COSTUMES[d.costume]!.feathers;
+      c.set(outer![1]);
+      const rag1R = c.r;
+      const rag1G = c.g;
+      const rag1B = c.b;
+      if (pose === 0) ragCounter += 2;
+      c.set(ragCounter % 4 ? '#ffffff' : outer![0]);
+      const rag2R = c.r;
+      const rag2G = c.g;
+      const rag2B = c.b;
+      this.dancers.push({
+        ...d,
+        pose,
+        skin: skinHex,
+        frontline: frontline && !child,
+        male,
+        build,
+        child,
+        skinR,
+        skinG,
+        skinB,
+        suitR,
+        suitG,
+        suitB,
+        hairR,
+        hairG,
+        hairB,
+        rag1R,
+        rag1G,
+        rag1B,
+        rag2R,
+        rag2G,
+        rag2B,
+      });
     });
+
     const n = this.dancers.length;
     const skin = this.material({ roughness: 0.5, vertexColors: true });
-    const c = new Color();
     for (const male of [false, true]) {
       POSES.forEach((pose, p) => {
         const body = masBody(pose, male);
         this.disposables.push(body);
-        const mesh = this.instanced(body, skin, n);
-        let slot = 0;
-        for (const d of this.dancers) {
-          if (d.pose === p && d.male === male) mesh.setColorAt(slot++, c.set(d.skin));
-        }
-        mesh.count = slot;
+        const cap = Math.max(1, this.dancers.filter((d) => d.pose === p && d.male === male).length);
+        const mesh = this.instanced(body, skin, cap, true);
+        mesh.setColorAt(0, c.setRGB(1, 1, 1));
         this.bodies.push(mesh);
-      });
-    }
-    // Sequinned armbands round the upper arms in the section's colour, and gold cuffs at the
-    // wrists, built for each pose so they sit on its arms.
-    const bands = this.material({
-      map: this.repeat(sequinTexture(), 0.1, 0.1),
-      roughness: 0.28,
-      metalness: 0.55,
-    });
-    const gold = this.material({ color: 0xe8b830, roughness: 0.25, metalness: 0.85 });
-    for (const male of [false, true]) {
-      POSES.forEach((pose, p) => {
-        const { band, cuff } = armPieces(pose, male);
-        this.disposables.push(band, cuff);
-        const armband = this.instanced(band, bands, n);
-        let slot = 0;
-        for (const d of this.dancers) {
-          if (d.pose === p && d.male === male) {
-            armband.setColorAt(slot++, c.set(COSTUMES[d.costume]!.suit));
-          }
-        }
-        this.armbands.push(armband);
-        this.cuffs.push(this.instanced(cuff, gold, n));
       });
     }
     const costume = masCostume(false);
@@ -1439,60 +1490,13 @@ export class CaribanaStreet implements SceneStreet {
       roughness: 0.28,
       metalness: 0.55,
     });
-    this.costumes = this.instanced(costume, sequins, n);
-    // Glints off the sequins: small stars that flash as each catches the sun.
-    const sparkle = new OctahedronGeometry(0.06, 0);
-    sparkle.scale(1, 2.2, 1);
-    this.disposables.push(sparkle);
-    this.glints = this.instanced(
-      sparkle,
-      this.material({ color: 0xffffff, emissive: 0xfff6d8, emissiveIntensity: 4 }),
-      3 * n,
-    );
-    this.glints.castShadow = false;
-    const sparking = seeded(157);
-    const spots = [
-      [0, 1.3, -0.15],
-      [0.08, 0.95, -0.14],
-      [-0.08, 0.95, -0.14],
-      [0.1, 0.3, -0.07],
-      [-0.1, 0.3, -0.07],
-      [0, 1.32, 0.17],
-    ];
-    for (let k = 0; k < 3 * n; k++) {
-      const [x, y, z] = spots[Math.floor(sparking() * spots.length)]!;
-      this.sparks.push({
-        at: new Vector3(x! + (sparking() - 0.5) * 0.06, y! + (sparking() - 0.5) * 0.06, z!),
-        phase: sparking() * 20,
-        rate: 1.5 + sparking() * 2.5,
-      });
-    }
-    const trim = trimGeometry();
-    this.disposables.push(trim);
-    this.trims = this.instanced(
-      trim,
-      this.material({ color: 0xe8b830, roughness: 0.25, metalness: 0.85 }),
-      n,
-    );
-    this.trunks = this.instanced(trunks, sequins, n);
-    let women = 0;
-    let men = 0;
-    for (const d of this.dancers) {
-      const suit = c.set(COSTUMES[d.costume]!.suit);
-      if (d.male) this.trunks.setColorAt(men++, suit);
-      else this.costumes.setColorAt(women++, suit);
-    }
-    this.costumes.count = women;
-    // Rhinestone swags from the bra to the belt across the belly, on every woman's costume.
-    const swag = swagGeometry();
-    this.disposables.push(swag);
-    this.swags = this.instanced(
-      swag,
-      this.material({ color: 0xf4f0e6, roughness: 0.15, metalness: 0.9 }),
-      women,
-    );
-    this.swags.castShadow = false;
-    this.trunks.count = men;
+    const womenCap = Math.max(1, this.dancers.filter((d) => !d.male).length);
+    const menCap = Math.max(1, this.dancers.filter((d) => d.male).length);
+    this.costumes = this.instanced(costume, sequins, womenCap, false);
+    this.costumes.setColorAt(0, c.setRGB(1, 1, 1));
+    this.trunks = this.instanced(trunks, sequins, menCap, false);
+    this.trunks.setColorAt(0, c.setRGB(1, 1, 1));
+
     const feather = this.track(featherTexture());
     const plumes = this.material({
       map: feather,
@@ -1501,117 +1505,67 @@ export class CaribanaStreet implements SceneStreet {
       vertexColors: true,
       roughness: 0.6,
     });
-    for (const costume of COSTUMES) {
-      const [outer, mid, inner] = costume.feathers;
+    COSTUMES.forEach((costumeSpec, k) => {
+      const secCount = Math.max(1, this.dancers.filter((d) => d.costume === k).length);
+      const [outer, mid, inner] = costumeSpec.feathers;
       const layers = [
-        featherFan(outer!, 23, 1.55, 0.2, Math.PI * 1.08, 0.3),
-        featherFan(mid!, 17, 1.05, 0.3, Math.PI, 0.25),
-        featherFan(inner!, 13, 0.62, 0.26, Math.PI * 0.95, 0.2),
+        featherFan(outer!, 19, 1.55, 0.22, Math.PI * 1.08, 0.3),
+        featherFan(mid!, 13, 1.05, 0.3, Math.PI, 0.25),
+        featherFan(inner!, 9, 0.62, 0.26, Math.PI * 0.95, 0.2),
       ];
       const back = mergeGeometries(layers)!;
       layers.forEach((l) => l.dispose());
-      const crown = featherFan(inner!, 11, 0.55, 0.12, Math.PI * 0.6, 0.12);
+      const crown = featherFan(inner!, 9, 0.55, 0.12, Math.PI * 0.6, 0.12);
       this.disposables.push(back, crown);
-      this.backpieces.push(this.instanced(back, plumes, n));
-      this.headdresses.push(this.instanced(crown, plumes, n));
-      // The frontline's headdress: a tall fan of plumes over a band, with a centre plume.
+      this.backpieces.push(this.instanced(back, plumes, secCount, false));
+      this.headdresses.push(this.instanced(crown, plumes, secCount, false));
       const tall = mergeGeometries([
-        featherFan(outer!, 15, 0.95, 0.14, Math.PI * 0.75, 0.15),
-        featherFan(mid!, 11, 0.7, 0.16, Math.PI * 0.6, 0.1),
+        featherFan(outer!, 13, 0.95, 0.14, Math.PI * 0.75, 0.15),
+        featherFan(mid!, 9, 0.7, 0.16, Math.PI * 0.6, 0.1),
         featherFan(inner!, 3, 1.15, 0.2, 0.12, 0.05),
       ])!;
       tall.translate(0, 0.04, -0.06);
       this.disposables.push(tall);
-      this.crowns.push(this.instanced(tall, plumes, n));
-      const band = crownBandGeometry();
-      this.disposables.push(band);
-      this.crownBands.push(
-        this.instanced(
-          band,
-          this.material({ color: costume.suit, roughness: 0.25, metalness: 0.6 }),
-          n,
-        ),
-      );
-      // The backline's collar: a short fan of plumes standing up off the shoulders.
+      this.crowns.push(this.instanced(tall, plumes, secCount, false));
       const collar = mergeGeometries([
-        featherFan(mid!, 13, 0.62, 0.16, Math.PI * 0.95, 0.35),
-        featherFan(inner!, 9, 0.4, 0.15, Math.PI * 0.85, 0.25),
+        featherFan(mid!, 11, 0.62, 0.16, Math.PI * 0.95, 0.35),
+        featherFan(inner!, 7, 0.4, 0.15, Math.PI * 0.85, 0.25),
       ])!;
       collar.translate(0, 0.05, -0.02);
       this.disposables.push(collar);
-      this.collars.push(this.instanced(collar, plumes, n));
-      const legs = legPlumeGeometry(inner!, mid!);
-      this.disposables.push(legs);
-      this.legPlumes.push(this.instanced(legs, plumes, n));
-      const fans = handFanGeometry(inner!, ['#ffffff', mid![1]]);
-      this.disposables.push(fans);
-      this.handFans.push(this.instanced(fans, plumes, n));
-    }
-    // Hair under the headdress: a close cap, and braids falling down the back past the collar.
+      this.collars.push(this.instanced(collar, plumes, secCount, false));
+    });
+
     const locks: BufferGeometry[] = [ellipsoid(0.112, 0.95, 0.86, 0.96, 0, 1.645, 0.034)];
-    for (let b = 0; b < 7; b++) {
-      const a = -0.75 + (b / 6) * 1.5;
+    for (let b = 0; b < 5; b++) {
+      const a = -0.75 + (b / 4) * 1.5;
       const top = new Vector3(Math.sin(a) * 0.1, 1.6, 0.06 + Math.cos(a) * 0.04);
       const end = new Vector3(Math.sin(a) * 0.15, 1.22 + (b % 2) * 0.06, 0.12 + Math.cos(a) * 0.04);
-      locks.push(...limb(top, end, 0.022, 0.018, 5, true));
+      locks.push(...limb(top, end, 0.022, 0.018, 4, false));
     }
-    const hair = mergeGeometries(locks.map((g) => (g.index ? g.toNonIndexed() : g)))!;
-    locks.forEach((g) => g.dispose());
+    const hair = merge(locks);
     this.disposables.push(hair);
-    this.hair = this.instanced(hair, this.material({ roughness: 0.85 }), n);
-    const dyes = ['#120c08', '#1d130d', '#2c1d14', '#0a0a0a', '#5a2a1a', '#c79a4b', '#6b1f2a'];
-    const hairs = seeded(149);
-    this.dancers.forEach((_, i) =>
-      this.hair!.setColorAt(i, c.set(dyes[Math.floor(hairs() * dyes.length)]!)),
-    );
-    // No disc under the dancers: the shadow map grounds each in their own shape (#937).
-    // Faces, and dark glasses on one dancer in five.
-    const { face, shades } = faceParts();
-    this.disposables.push(face, shades);
-    this.faces = this.instanced(
-      face,
-      this.material({
-        map: this.track(faceTexture()),
-        transparent: true,
-        alphaTest: 0.1,
-        roughness: 0.6,
-        depthWrite: false,
-      }),
-      n,
-    );
-    const shading = seeded(151);
-    let worn = 0;
-    this.dancers.forEach((d, i) => {
-      if (shading() < 0.2) this.dancers[i] = { ...d, shaded: worn++ };
-    });
-    this.shades = this.instanced(
-      shades,
-      this.material({ color: 0x0b0b0d, roughness: 0.15, metalness: 0.5 }),
-      worn,
-    );
-    // Flags on sticks and rags to wave.
-    const flag = new PlaneGeometry(0.6, 0.4, 3, 1);
+    this.hair = this.instanced(hair, this.material({ roughness: 0.85 }), Math.max(1, n), false);
+    this.hair.setColorAt(0, c.setRGB(0.1, 0.08, 0.06));
+
+    const flag = new PlaneGeometry(0.6, 0.4, 2, 1);
     flag.translate(0.3, 0.32, 0);
-    const stick = new CylinderGeometry(0.01, 0.01, 0.75, 5);
+    const stick = new CylinderGeometry(0.01, 0.01, 0.75, 4);
     stick.translate(0, 0.2, 0);
-    const flagOnStick = mergeGeometries([flag.toNonIndexed(), stick.toNonIndexed()])!;
-    const rag = new PlaneGeometry(0.34, 0.3, 2, 2);
+    const flagOnStick = merge([flag, stick]);
+    const rag = new PlaneGeometry(0.34, 0.3, 1, 1);
     rag.translate(0.15, 0.1, 0);
-    this.disposables.push(flag, stick, flagOnStick, rag);
+    this.disposables.push(flagOnStick, rag);
+    const pose1Cap = Math.max(1, this.dancers.filter((d) => d.pose === 1).length);
     for (const material of this.flagMaterials) {
-      this.heldFlags.push(this.instanced(flagOnStick, material, n));
+      this.heldFlags.push(this.instanced(flagOnStick, material, pose1Cap, false));
     }
     const ragCloth = this.material({ side: DoubleSide, roughness: 0.7 });
-    this.rags = this.instanced(rag, ragCloth, 2 * n);
-    let slot = 0;
-    for (const d of this.dancers) {
-      if (d.pose !== 0) continue;
-      const [outer] = COSTUMES[d.costume]!.feathers;
-      this.rags.setColorAt(slot++, c.set(outer![1]));
-      this.rags.setColorAt(slot++, c.set(slot % 4 ? '#ffffff' : outer![0]));
-    }
-    // Strands of beads hanging from the belt over the hips, swinging as one skirt.
-    const fringe = new CylinderGeometry(0.17, 0.2, 0.26, 18, 1, true);
+    const pose0Cap = Math.max(1, this.dancers.filter((d) => d.pose === 0).length * 2);
+    this.rags = this.instanced(rag, ragCloth, pose0Cap, false);
+    this.rags.setColorAt(0, c.setRGB(1, 1, 1));
+
+    const fringe = new CylinderGeometry(0.17, 0.2, 0.26, 12, 1, true);
     fringe.scale(1.05, 1, 0.86);
     fringe.translate(0, 0.86, 0);
     this.disposables.push(fringe);
@@ -1622,15 +1576,14 @@ export class CaribanaStreet implements SceneStreet {
       roughness: 0.3,
       metalness: 0.5,
     });
-    this.fringes = this.instanced(fringe, beads, n);
-    this.dancers.forEach((d, i) => this.fringes!.setColorAt(i, c.set(COSTUMES[d.costume]!.suit)));
-    // The backpiece's sequinned frame: a jewelled medallion at the hub in the section's colour.
+    this.fringes = this.instanced(fringe, beads, womenCap, false);
+    this.fringes.setColorAt(0, c.setRGB(1, 1, 1));
+
     const medallion = medallionGeometry();
     this.disposables.push(medallion);
-    this.medallions = this.instanced(medallion, sequins, n);
-    this.dancers.forEach((d, i) =>
-      this.medallions!.setColorAt(i, c.set(COSTUMES[d.costume]!.suit)),
-    );
+    const frontCap = Math.max(1, this.dancers.filter((d) => d.frontline).length);
+    this.medallions = this.instanced(medallion, sequins, frontCap, false);
+    this.medallions.setColorAt(0, c.setRGB(1, 1, 1));
   }
 
   /**
@@ -1661,8 +1614,6 @@ export class CaribanaStreet implements SceneStreet {
       this.material({ color: c, emissive: c, emissiveIntensity: 2.2 }),
     );
     this.truckLights.push(...lights);
-    const skin = this.material({ roughness: 0.6 });
-    const cloth = this.material({ roughness: 0.9 });
     const tyre = new CylinderGeometry(0.52, 0.52, 0.3, 16);
     tyre.rotateZ(Math.PI / 2);
     const rim = new CylinderGeometry(0.3, 0.3, 0.32, 12);
@@ -1780,9 +1731,11 @@ export class CaribanaStreet implements SceneStreet {
           [person.bottom, TROUSERS[Math.floor(random() * TROUSERS.length)]!],
         ];
         for (const [geometry, colour] of pairs) {
-          const m = (geometry === person.skin ? skin : cloth).clone();
-          m.color.set(colour);
-          this.disposables.push(geometry, m);
+          const m = this.material({
+            color: colour,
+            roughness: geometry === person.skin ? 0.6 : 0.9,
+          });
+          this.disposables.push(geometry);
           figure.add(new Mesh(geometry, m));
         }
         // The DJ (stance 0) works the decks facing the band behind; the crew face the crowds.
@@ -1866,15 +1819,18 @@ export class CaribanaStreet implements SceneStreet {
       const a = (k / 9) * Math.PI * 2;
       const strand = new CylinderGeometry(0.03, 0.015, 0.6 + (k % 3) * 0.2, 5);
       strand.translate(-1.05 + Math.cos(a) * 0.36, 2.55 - (k % 3) * 0.1, Math.sin(a) * 0.36);
-      strands.push(strand.toNonIndexed());
+      strands.push(asNonIndexed(strand));
       strand.dispose();
     }
     const trailing = mergeGeometries(strands)!;
-    this.disposables.push(basketBracket, basket, blooms, trailing);
+    const lampSteelParts = [pole, plate, skirt, davit, brackets, basketBracket].map(asNonIndexed);
+    const lampSteel = mergeGeometries(lampSteelParts)!;
+    lampSteelParts.forEach((g) => g.dispose());
+    [pole, plate, skirt, davit, brackets, basketBracket].forEach((g) => g.dispose());
+    this.disposables.push(lampSteel, basket, blooms, trailing, head, lens, cloth);
     const coir = this.material({ color: 0x5a4632, roughness: 1 });
     const flowers = this.material({ vertexColors: true, roughness: 0.8 });
     const ivy = this.material({ color: 0x2f6b2a, roughness: 0.85 });
-    this.disposables.push(pole, plate, skirt, davit, head, lens, brackets, cloth);
     const steel = this.material({ color: 0xa9aeb2, metalness: 0.7, roughness: 0.45 });
     const housing = this.material({ color: 0x8c9196, metalness: 0.5, roughness: 0.5 });
     const glass = this.material({ color: 0xe8ecef, roughness: 0.2, metalness: 0.1 });
@@ -1892,42 +1848,36 @@ export class CaribanaStreet implements SceneStreet {
         roughness: 0.8,
       }),
     );
+    const items: { side: -1 | 1; offset: number; x: number; festIdx: number; flagIdx: number }[] =
+      [];
     let k = 0;
     for (const side of [-1, 1] as const) {
       for (let offset = 0; offset < LOOP; offset += 36) {
-        const lamp = new Group();
-        // Build every lamp reaching towards -x, then turn the left side's round to face in.
-        const arm = new Group();
-        arm.add(new Mesh(pole, steel), new Mesh(plate, steel), new Mesh(skirt, steel));
-        arm.add(new Mesh(davit, steel), new Mesh(head, housing), new Mesh(lens, glass));
-        arm.add(new Mesh(brackets, steel));
-        // A hanging basket of petunias and trailing ivy on a bracket out over the pavement.
-        arm.add(new Mesh(basketBracket, steel), new Mesh(basket, coir));
-        arm.add(new Mesh(blooms, flowers), new Mesh(trailing, ivy));
-        // One festival banner and one island flag on each standard.
-        const festival = new Mesh(cloth, festivals[(k >> 1) % festivals.length]!);
-        festival.position.set(-0.48, 5.15, 0);
-        const flag = new Mesh(cloth, banners[k++ % banners.length]!);
-        flag.position.set(0.48, 5.15, 0);
-        // The left side's lamps are turned round; turn their cloths back to face the riders.
-        if (side < 0) {
-          festival.rotation.y = Math.PI;
-          flag.rotation.y = Math.PI;
-        }
-        arm.add(festival, flag);
-        arm.rotation.y = side > 0 ? 0 : Math.PI;
-        arm.traverse((o) => (o.castShadow = true));
-        lamp.add(arm);
-        this.group.add(lamp);
-        this.props.push({
-          mesh: lamp,
+        const festIdx = (k >> 1) % festivals.length;
+        const flagIdx = k++ % banners.length;
+        items.push({
+          side,
           offset: offset + (side > 0 ? 18 : 0),
-          every: LOOP,
           x: side * (PAVEMENT + 0.3),
+          festIdx,
+          flagIdx,
         });
-        this.beyond(lamp, offset + (side > 0 ? 18 : 0), side * (PAVEMENT + 0.3));
       }
     }
+    const n = Math.max(1, items.length);
+    this.lampMeshes = {
+      parts: [
+        this.instanced(lampSteel, steel, n, false),
+        this.instanced(head, housing, n, false),
+        this.instanced(lens, glass, n, false),
+        this.instanced(basket, coir, n, false),
+        this.instanced(blooms, flowers, n, false),
+        this.instanced(trailing, ivy, n, false),
+      ],
+      festivals: festivals.map((m) => this.instanced(cloth, m, n, false)),
+      banners: banners.map((m) => this.instanced(cloth, m, n, false)),
+      items,
+    };
   }
 
   /**
@@ -1942,37 +1892,105 @@ export class CaribanaStreet implements SceneStreet {
     const colours = ['#ce1126', '#fcd116', '#009e49', '#111111', '#ffffff', '#00267f', '#009b3a'];
     const pennants = this.material({ vertexColors: true, side: DoubleSide, roughness: 0.75 });
     const rope = this.material({ color: 0xeeeeee, roughness: 0.8 });
+    const flagsA = buntingGeometry(span, colours, [[7.7, 0]], 1.6);
+    flagsA.rotateY(Math.atan2(along, across));
+    const normal = flagsA.getAttribute('normal') as BufferAttribute;
+    for (let i = 0; i < normal.count; i++) normal.setXYZ(i, 0, 1, 0.35);
+    const flagsB = flagsA.clone();
+    flagsB.scale(-1, 1, 1);
+    const crossedFlags = mergeGeometries([asNonIndexed(flagsA), asNonIndexed(flagsB)])!;
+    flagsA.dispose();
+    flagsB.dispose();
+    const lineA = new TubeGeometry(
+      new QuadraticBezierCurve3(
+        new Vector3(-across / 2, 7.7, along / 2),
+        new Vector3(0, 7.7 - 3.2, 0),
+        new Vector3(across / 2, 7.7, -along / 2),
+      ),
+      24,
+      0.01,
+      4,
+    );
+    const lineB = lineA.clone();
+    lineB.scale(-1, 1, 1);
+    const crossedLines = mergeGeometries([asNonIndexed(lineA), asNonIndexed(lineB)])!;
+    lineA.dispose();
+    lineB.dispose();
+    this.disposables.push(crossedFlags, crossedLines);
+    const offsets: number[] = [];
     for (let k = 0; k < 2; k++) {
-      const flags = buntingGeometry(span, colours, [[7.7, 0]], 1.6);
-      // Turn the string from across the road to run from the left lamp to the right one ahead.
-      flags.rotateY(Math.atan2(along, across));
-      // Thin cloth glows with the light through it: light every pennant as if it faced the sky.
-      const normal = flags.getAttribute('normal') as BufferAttribute;
-      for (let i = 0; i < normal.count; i++) normal.setXYZ(i, 0, 1, 0.35);
-      const line = new TubeGeometry(
-        new QuadraticBezierCurve3(
-          new Vector3(-across / 2, 7.7, along / 2),
-          new Vector3(0, 7.7 - 3.2, 0),
-          new Vector3(across / 2, 7.7, -along / 2),
-        ),
-        24,
-        0.01,
-        4,
-      );
-      this.disposables.push(flags, line);
       for (let offset = 0; offset < LOOP; offset += 72) {
-        // Each span carries two strings: one from the left lamp to the right one ahead, and its
-        // mirror from the right lamp to the left, so they cross over the middle of the road.
-        for (const mirror of [1, -1]) {
-          const string = new Group();
-          string.add(new Mesh(flags, pennants), new Mesh(line, rope));
-          string.scale.x = mirror;
-          this.group.add(string);
-          const at = offset + k * 36 + along / 2;
-          this.props.push({ mesh: string, offset: at, every: LOOP, x: 0 });
-          this.beyond(string, at, 0);
-        }
+        offsets.push(offset + k * 36 + along / 2);
       }
+    }
+    const cap = Math.max(1, offsets.length);
+    this.buntingMeshes = {
+      flags: this.instanced(crossedFlags, pennants, cap, false),
+      lines: this.instanced(crossedLines, rope, cap, false),
+      offsets,
+    };
+  }
+
+  private placeLampsAndBunting(
+    heightAt: (metres: number) => number,
+    along: (offset: number, every: number) => number,
+  ): void {
+    const lamps = this.lampMeshes;
+    if (lamps) {
+      const festCounts = new Int32Array(lamps.festivals.length);
+      const flagCounts = new Int32Array(lamps.banners.length);
+      let partCount = 0;
+      this.size.set(1, 1, 1);
+      for (const it of lamps.items) {
+        const metres = along(it.offset, LOOP);
+        if (metres <= PROP_BEHIND_CULL || metres > PROP_HORIZON_CULL) continue;
+        const y = heightAt(Math.max(metres, 0)) + KERB;
+        this.turn.setFromAxisAngle(this.up, it.side > 0 ? 0 : Math.PI);
+        this.spot.set(it.x, y, -metres);
+        this.matrix.compose(this.spot, this.turn, this.size);
+        for (const part of lamps.parts) {
+          part.setMatrixAt(partCount, this.matrix);
+        }
+        partCount++;
+        this.turn.identity();
+        this.spot.set(it.x - it.side * 0.48, y + 5.15, -metres);
+        this.matrix.compose(this.spot, this.turn, this.size);
+        lamps.festivals[it.festIdx]!.setMatrixAt(festCounts[it.festIdx]!++, this.matrix);
+        this.spot.set(it.x + it.side * 0.48, y + 5.15, -metres);
+        this.matrix.compose(this.spot, this.turn, this.size);
+        lamps.banners[it.flagIdx]!.setMatrixAt(flagCounts[it.flagIdx]!++, this.matrix);
+      }
+      for (const part of lamps.parts) {
+        part.count = partCount;
+        part.instanceMatrix.needsUpdate = true;
+      }
+      for (let f = 0; f < lamps.festivals.length; f++) {
+        lamps.festivals[f]!.count = festCounts[f]!;
+        lamps.festivals[f]!.instanceMatrix.needsUpdate = true;
+      }
+      for (let b = 0; b < lamps.banners.length; b++) {
+        lamps.banners[b]!.count = flagCounts[b]!;
+        lamps.banners[b]!.instanceMatrix.needsUpdate = true;
+      }
+    }
+    const bunt = this.buntingMeshes;
+    if (bunt) {
+      let bCount = 0;
+      this.turn.identity();
+      this.size.set(1, 1, 1);
+      for (const offset of bunt.offsets) {
+        const metres = along(offset, LOOP);
+        if (metres <= PROP_BEHIND_CULL || metres > PROP_HORIZON_CULL) continue;
+        this.spot.set(0, heightAt(Math.max(metres, 0)) + KERB, -metres);
+        this.matrix.compose(this.spot, this.turn, this.size);
+        bunt.flags.setMatrixAt(bCount, this.matrix);
+        bunt.lines.setMatrixAt(bCount, this.matrix);
+        bCount++;
+      }
+      bunt.flags.count = bCount;
+      bunt.lines.count = bCount;
+      bunt.flags.instanceMatrix.needsUpdate = true;
+      bunt.lines.instanceMatrix.needsUpdate = true;
     }
   }
 
@@ -2040,27 +2058,56 @@ export class CaribanaStreet implements SceneStreet {
       roughness: 0.85,
     });
     const random = seeded(211);
+    const placements: { x: number; offset: number; scale: number; yaw: number }[][] = shapes.map(
+      () => [],
+    );
     for (const side of [-1, 1] as const) {
       const every = side < 0 ? 26 : 23;
       for (let offset = 0; offset < LOOP; offset += every) {
-        const tree = new Group();
-        const shape = shapes[Math.floor(random() * shapes.length)]!;
-        const t = new Mesh(shape.trunk, bark);
-        const c = new Mesh(shape.crown, leaves);
-        const fringe = new Mesh(shape.sprigs, cut);
-        fringe.castShadow = true;
-        tree.add(fringe);
-        tree.scale.setScalar(0.85 + random() * 0.45);
-        tree.rotation.y = random() * Math.PI * 2;
-        t.castShadow = true;
-        c.castShadow = true;
-        tree.add(t, c);
-        this.group.add(tree);
+        const idx = Math.floor(random() * shapes.length);
+        const scale = 0.85 + random() * 0.45;
+        const yaw = random() * Math.PI * 2;
         const x = side < 0 ? -(19 + random() * 8) : 12 + random() * 2;
         const at = offset + random() * 4;
-        this.props.push({ mesh: tree, offset: at, every: LOOP, x });
-        this.beyond(tree, at, x);
+        placements[idx]!.push({ x, offset: at, scale, yaw });
       }
+    }
+    shapes.forEach((shape, idx) => {
+      const items = placements[idx]!;
+      const cap = Math.max(1, items.length);
+      this.treeSpecies.push({
+        trunk: this.instanced(shape.trunk, bark, cap, false),
+        crown: this.instanced(shape.crown, leaves, cap, false),
+        sprigs: this.instanced(shape.sprigs, cut, cap, false),
+        items,
+      });
+    });
+  }
+
+  private placeTrees(
+    heightAt: (metres: number) => number,
+    along: (offset: number, every: number) => number,
+  ): void {
+    for (const sp of this.treeSpecies) {
+      let count = 0;
+      for (const it of sp.items) {
+        const metres = along(it.offset, LOOP);
+        if (metres <= PROP_BEHIND_CULL || metres > PROP_HORIZON_CULL) continue;
+        this.turn.setFromAxisAngle(this.up, it.yaw);
+        this.spot.set(it.x, heightAt(Math.max(metres, 0)) + KERB, -metres);
+        this.size.setScalar(it.scale);
+        this.matrix.compose(this.spot, this.turn, this.size);
+        sp.trunk.setMatrixAt(count, this.matrix);
+        sp.crown.setMatrixAt(count, this.matrix);
+        sp.sprigs.setMatrixAt(count, this.matrix);
+        count++;
+      }
+      sp.trunk.count = count;
+      sp.crown.count = count;
+      sp.sprigs.count = count;
+      sp.trunk.instanceMatrix.needsUpdate = true;
+      sp.crown.instanceMatrix.needsUpdate = true;
+      sp.sprigs.instanceMatrix.needsUpdate = true;
     }
   }
 
@@ -2404,9 +2451,12 @@ export class CaribanaStreet implements SceneStreet {
           [0.2, -0.75],
           [-0.2, 0.75],
           [0.2, 0.75],
-        ].map(([x, z]) =>
-          new CylinderGeometry(0.07, 0.08, 0.1, 8).translate(x!, 0.05, z!).toNonIndexed(),
-        ),
+        ].map(([x, z]) => {
+          const h = new CylinderGeometry(0.07, 0.08, 0.1, 8).translate(x!, 0.05, z!);
+          const ni = asNonIndexed(h);
+          if (ni !== h) h.dispose();
+          return ni;
+        }),
       )!;
       const tail = new Group();
       const strands = merge([...limb(v(0, 0, 0), v(0, -0.75, 0.15), 0.07, 0.04, 6)]);
@@ -2699,7 +2749,7 @@ export class CaribanaStreet implements SceneStreet {
           mesh.setMatrixAt(k, m);
           mesh.setColorAt(k, new Color(list[Math.floor(random() * list.length)]!));
         });
-        mesh.castShadow = true;
+        mesh.castShadow = false;
         this.disposables.push(mesh);
         stand.add(mesh);
       }
@@ -2824,7 +2874,9 @@ export class CaribanaStreet implements SceneStreet {
       this.disposables.push(mesh);
       bridge.add(mesh);
     }
-    bridge.traverse((o) => (o.castShadow = true));
+    bridge.traverse((o) => {
+      if (!(o instanceof InstancedMesh)) o.castShadow = true;
+    });
     this.group.add(bridge);
     this.props.push({ mesh: bridge, offset: 58, every: LANDMARKS, x: 0, road: true });
   }
@@ -2991,7 +3043,10 @@ export class CaribanaStreet implements SceneStreet {
     }
     // The cross street runs off on both sides behind the crowds, closed with barriers and a
     // police cruiser parked across it, its roof lights flashing.
-    const side = this.material({ map: this.repeat(roadTexture(), 2 * CURB, 18), roughness: 0.85 });
+    const side = this.material({
+      map: this.roadMap ?? this.repeat(roadTexture(), 2 * CURB, 18),
+      roughness: 0.85,
+    });
     const crossRoad = new PlaneGeometry(40, 2 * CURB);
     crossRoad.rotateX(-Math.PI / 2);
     crossRoad.rotateY(Math.PI / 2);
@@ -3015,508 +3070,71 @@ export class CaribanaStreet implements SceneStreet {
   }
 
   /**
-   * Paper streamers lying across the lanes where the trucks' cannons fired them: long thin
-   * ribbons curling over the asphalt in loops and S-bends, in the bands' colours.
-   */
-  private addStreamers(): void {
-    const random = seeded(3001);
-    const colours = ['#ff2d87', '#ffd23f', '#13c3c9', '#ff8a00', '#7b2ff7', '#ffffff', '#4de0a8'];
-    const materials = colours.map((colour) =>
-      this.material({ color: colour, roughness: 0.6, side: DoubleSide }),
-    );
-    for (let k = 0; k < 140; k++) {
-      // A curling path from where it starts: its heading turning, now and then looping round.
-      let x = 0;
-      let z = 0;
-      let heading = random() * Math.PI * 2;
-      const turn = (random() - 0.5) * 0.9;
-      const width = 0.05 + random() * 0.03;
-      const length = 2 + random() * 2.5;
-      const steps = 28;
-      const position: number[] = [];
-      for (let i = 0; i <= steps; i++) {
-        const t = i / steps;
-        heading += turn + Math.sin(t * 9 + k) * 0.35;
-        x += Math.cos(heading) * (length / steps);
-        z += Math.sin(heading) * (length / steps);
-        const nx = -Math.sin(heading) * width;
-        const nz = Math.cos(heading) * width;
-        const y = 0.004 + (i % 7 === 3 ? 0.012 : 0);
-        position.push(x + nx, y, -(z + nz), x - nx, y, -(z - nz));
-      }
-      const index: number[] = [];
-      for (let i = 0; i < steps; i++) {
-        const a = i * 2;
-        index.push(a, a + 1, a + 2, a + 1, a + 3, a + 2);
-      }
-      const strip = new BufferGeometry();
-      strip.setAttribute('position', new BufferAttribute(new Float32Array(position), 3));
-      strip.setIndex(index);
-      strip.computeVertexNormals();
-      this.disposables.push(strip);
-      // Each lies on the road where it fell, laid along the loop as the litter is.
-      const holder = new Group();
-      const mesh = new Mesh(strip, materials[k % materials.length]!);
-      mesh.receiveShadow = true;
-      holder.add(mesh);
-      this.group.add(holder);
-      this.props.push({
-        mesh: holder,
-        // Thickest behind the steel orchestra and the first band, where the cannons fired.
-        offset: k % 2 ? 26 + random() * 80 : random() * LOOP,
-        every: LOOP,
-        x: (random() - 0.5) * 2 * (CURB - 1.8),
-        road: true,
-      });
-    }
-  }
-
-  /**
-   * Plumes shed from the costumes lying on the road: single long feathers, little bunches of
-   * two or three, and now and then a whole fallen collar, in the sections' colours, flat on
-   * the asphalt at their own angles.
-   */
-  private addShedPlumes(): void {
-    const random = seeded(3803);
-    const plumes = this.material({
-      map: this.track(featherTexture()),
-      alphaTest: 0.4,
-      side: DoubleSide,
-      vertexColors: true,
-      roughness: 0.6,
-    });
-    const kinds = COSTUMES.flatMap((costume) => {
-      const [outer, mid] = costume.feathers;
-      const single = featherFan(outer!, 2, 1.1, 0.24, 0.25, 0);
-      const bunch = featherFan(mid!, 4, 0.8, 0.26, 0.9, 0);
-      return [single, bunch];
-    });
-    const collar = featherFan(COSTUMES[0]!.feathers[1]!, 11, 0.8, 0.2, Math.PI * 0.9, 0.2);
-    kinds.push(collar);
-    for (const k of kinds) {
-      // Lying on the road, the tips curled up off it so they catch the light.
-      k.rotateX(-Math.PI / 2 + 0.25);
-      k.translate(0, 0.03, 0);
-      this.disposables.push(k);
-    }
-    for (let i = 0; i < 70; i++) {
-      const kind = i % 11 === 10 ? kinds.length - 1 : Math.floor(random() * (kinds.length - 1));
-      const holder = new Group();
-      const mesh = new Mesh(kinds[kind]!, plumes);
-      mesh.rotation.y = random() * Math.PI * 2;
-      mesh.receiveShadow = true;
-      holder.add(mesh);
-      this.group.add(holder);
-      this.props.push({
-        mesh: holder,
-        // A dozen in the stretch the riders start on, the rest along the loop.
-        offset: i < 12 ? BEHIND + 1 + random() * 30 : random() * LOOP,
-        every: LOOP,
-        x: (random() - 0.5) * 2 * (CURB - 0.8),
-        road: true,
-      });
-    }
-  }
-
-  /**
-   * What the parade leaves behind: clear plastic water bottles, crushed red and white cups,
-   * foam food containers and paper napkins, gathered thick along both gutters where the
-   * crowds threw them and scattered more thinly across the lanes.
-   */
-  private addLitter(): void {
-    const random = seeded(2111);
-    const bottle = mergeGeometries([
-      new CylinderGeometry(0.035, 0.035, 0.2, 8).toNonIndexed(),
-      new CylinderGeometry(0.015, 0.035, 0.05, 8).translate(0, 0.125, 0).toNonIndexed(),
-    ])!;
-    bottle.rotateZ(Math.PI / 2);
-    bottle.translate(0, 0.035, 0);
-    const cup = new CylinderGeometry(0.045, 0.032, 0.1, 8, 1, true);
-    cup.rotateZ(Math.PI / 2);
-    cup.scale(1, 0.6, 1);
-    cup.translate(0, 0.03, 0);
-    const box = new BoxGeometry(0.2, 0.06, 0.2);
-    box.translate(0, 0.03, 0);
-    const napkin = new PlaneGeometry(0.22, 0.22);
-    napkin.rotateX(-Math.PI / 2);
-    napkin.translate(0, 0.005, 0);
-    this.disposables.push(bottle, cup, box, napkin);
-    const kinds: [BufferGeometry, MeshStandardMaterial, number][] = [
-      [
-        bottle,
-        this.material({
-          color: 0xcfe6f2,
-          roughness: 0.1,
-          metalness: 0.1,
-          transparent: true,
-          opacity: 0.7,
-        }),
-        140,
-      ],
-      [cup, this.material({ color: 0xc8102e, roughness: 0.5, side: DoubleSide }), 90],
-      [cup, this.material({ color: 0xf2f2ee, roughness: 0.5, side: DoubleSide }), 60],
-      [box, this.material({ color: 0xf4f2ea, roughness: 0.7 }), 40],
-      [napkin, this.material({ color: 0xffffff, roughness: 0.9, side: DoubleSide }), 120],
-    ];
-    for (const [geometry, material, count] of kinds) {
-      const items = [];
-      for (let k = 0; k < count; k++) {
-        const gutter = random() < 0.75;
-        const side = random() < 0.5 ? -1 : 1;
-        items.push({
-          x: gutter ? side * (CURB - 0.15 - random() * 0.6) : (random() - 0.5) * 2 * (CURB - 1),
-          offset: random() * LOOP,
-          turn: random() * Math.PI * 2,
-          tip: (random() - 0.5) * 0.3,
-        });
-      }
-      const mesh = this.instanced(geometry, material, count);
-      mesh.castShadow = false;
-      this.litter.push({ mesh, items });
-    }
-  }
-
-  private placeLitter(
-    heightAt: (metres: number) => number,
-    along: (offset: number, every: number) => number,
-  ): void {
-    for (const { mesh, items } of this.litter) {
-      items.forEach((it, k) => {
-        const metres = along(it.offset, LOOP);
-        this.spot.set(it.x, heightAt(Math.max(metres, 0)) + ASPHALT, -metres);
-        this.turn.setFromEuler(this.tumble.set(0, it.turn, it.tip));
-        this.size.setScalar(1);
-        mesh.setMatrixAt(k, this.matrix.compose(this.spot, this.turn, this.size));
-      });
-      mesh.instanceMatrix.needsUpdate = true;
-    }
-  }
-
-  /** Stands a copy of `prop` one loop further on, `offset` metres in and `x` across. */
-  private beyond(prop: Group, offset: number, x: number): void {
-    const copy = prop.clone();
-    this.group.add(copy);
-    this.props.push({ mesh: copy, offset, every: LOOP, x, beyond: true });
-  }
-
-  /**
-   * The parade carrying on beyond the parts drawn in full, one loop further, to about 700 m:
-   * the crowds along both pavements and the bands on the road as simple figures in their
-   * colours, the frontline's plumes over them, all hazed by distance.
-   */
-  private addDistantParade(): void {
-    const random = seeded(2003);
-    const tops: string[] = [];
-    for (const side of [-1, 1] as const) {
-      for (let offset = 0; offset < LOOP; offset += 0.7) {
-        for (let row = 0; row < 2; row++) {
-          this.far.push({
-            x: side * (CROWD_NEAR + row * 0.9 + random() * 0.4),
-            offset: offset + random() * 0.5,
-            height: 0.92 + random() * 0.15,
-            plume: false,
-          });
-          tops.push(SHIRTS[Math.floor(random() * SHIRTS.length)]!);
-        }
-        if (random() < 0.45) {
-          const costume = COSTUMES[Math.floor(offset / 40) % COSTUMES.length]!;
-          this.far.push({
-            x: side * (2.2 + random() * 3.8),
-            offset: offset + random() * 0.5,
-            height: 0.95 + random() * 0.1,
-            plume: random() < 0.35,
-          });
-          tops.push(costume.suit);
-        }
-      }
-    }
-    const figure = new CapsuleGeometry(0.2, 1.3, 2, 6);
-    figure.translate(0, 0.85, 0);
-    const plume = new ConeGeometry(0.75, 1.6, 7);
-    plume.translate(0, 2.1, 0.15);
-    this.disposables.push(figure, plume);
-    this.distant = this.instanced(figure, this.material({ roughness: 0.9 }), this.far.length);
-    const plumes = this.far.filter((f) => f.plume).length;
-    this.distantPlumes = this.instanced(plume, this.material({ roughness: 0.7 }), plumes);
-    this.distant.castShadow = false;
-    this.distantPlumes.castShadow = false;
-    const c = new Color();
-    let k = 0;
-    this.far.forEach((f, i) => {
-      this.distant!.setColorAt(i, c.set(tops[i]!));
-      if (f.plume) this.distantPlumes!.setColorAt(k++, c.set(tops[i]!).offsetHSL(0, 0, 0.15));
-    });
-  }
-
-  private placeDistantParade(
-    heightAt: (metres: number) => number,
-    along: (offset: number, every: number) => number,
-  ): void {
-    const distant = this.distant;
-    const plumes = this.distantPlumes;
-    if (!distant || !plumes) return;
-    let k = 0;
-    this.turn.identity();
-    this.far.forEach((f, i) => {
-      const dancing = Math.abs(f.x) < BARRIER;
-      const metres = along(f.offset + (dancing ? this.march : 0), LOOP) + LOOP;
-      const bounce = Math.abs(Math.sin(this.time * 4.2 + i)) * 0.05;
-      const lift = dancing ? ASPHALT : KERB;
-      this.spot.set(f.x, heightAt(metres) + lift + bounce, -metres);
-      this.size.setScalar(f.height);
-      this.matrix.compose(this.spot, this.turn, this.size);
-      distant.setMatrixAt(i, this.matrix);
-      if (f.plume) plumes.setMatrixAt(k++, this.matrix);
-    });
-    distant.instanceMatrix.needsUpdate = true;
-    plumes.instanceMatrix.needsUpdate = true;
-  }
-
-  /**
-   * What is set into the asphalt: round cast-iron manhole covers in the lanes, rectangular
-   * utility cuts patched in darker, newer tar, and the odd oil stain, scattered along the loop
-   * so the road does not repeat its 18 m texture so evenly.
-   */
-  private addCastings(): void {
-    const random = seeded(1903);
-    const kinds = [manholeTexture(), patchTexture(), stainTexture()].map((t) =>
-      this.material({
-        map: this.track(t),
-        transparent: true,
-        alphaTest: 0.05,
-        roughness: 0.75,
-        metalness: 0,
-        depthWrite: false,
-      }),
-    );
-    const sizes = [
-      [0.9, 0.9],
-      [2.4, 1.6],
-      [1.4, 1.1],
-    ] as const;
-    for (let k = 0; k < 26; k++) {
-      const kind = k % 3;
-      const [w, d] = sizes[kind]!;
-      const plane = new PlaneGeometry(w * (0.8 + random() * 0.6), d * (0.8 + random() * 0.6));
-      plane.rotateX(-Math.PI / 2);
-      plane.rotateY(kind === 0 ? 0 : (random() - 0.5) * 0.3);
-      plane.translate(0, 0.004, 0);
-      this.disposables.push(plane);
-      const holder = new Group();
-      holder.add(new Mesh(plane, kinds[kind]!));
-      this.group.add(holder);
-      const lane = [-4.4, -2.2, 0, 2.2, 4.4][Math.floor(random() * 5)]!;
-      this.props.push({
-        mesh: holder,
-        offset: random() * LOOP,
-        every: LOOP,
-        x: lane + (random() - 0.5) * 1.2,
-        road: true,
-      });
-    }
-  }
-
-  /**
-   * Cooling the band down: a crew member at the back of the steel orchestra's float sprays a
-   * hose out over the left-hand masqueraders, an arc of droplets catching the sun, and the asphalt
-   * beneath lies dark and glossy where it lands.
-   */
-  private addSpray(): void {
-    const random = seeded(1801);
-    for (let k = 0; k < 420; k++) {
-      this.drops.push({
-        speed: 6.2 + random() * 1.6,
-        spread: (random() - 0.5) * 0.5,
-        phase: random(),
-        size: 0.5 + random() * 0.8,
-      });
-    }
-    const drop = new SphereGeometry(0.03, 5, 4);
-    drop.scale(1, 1.6, 1);
-    this.disposables.push(drop);
-    this.spray = this.instanced(
-      drop,
-      this.material({
-        color: 0xe8f4ff,
-        roughness: 0.05,
-        metalness: 0.1,
-        transparent: true,
-        opacity: 0.75,
-        emissive: 0x8fb8d8,
-        emissiveIntensity: 0.4,
-      }),
-      this.drops.length,
-    );
-    this.spray.castShadow = false;
-    // The wet patch where the water lands: overlapping puddles, each a faint dark, glossy disc
-    // pushed out of round, so the patch is darkest in the middle and ragged at its edge.
-    const scatter = seeded(1813);
-    const puddles: BufferGeometry[] = [];
-    for (let k = 0; k < 16; k++) {
-      const r = 0.6 + scatter() * 1.3;
-      const puddle = new CircleGeometry(r, 18);
-      const ring = puddle.getAttribute('position') as BufferAttribute;
-      for (let i = 1; i < ring.count; i++) {
-        const wobble = 0.75 + scatter() * 0.5;
-        ring.setXY(i, ring.getX(i) * wobble, ring.getY(i) * wobble);
-      }
-      puddle.rotateX(-Math.PI / 2);
-      puddle.translate((scatter() - 0.5) * 3.6, 0.017 + k * 0.0004, (scatter() - 0.5) * 4.4);
-      puddles.push(puddle.toNonIndexed());
-      puddle.dispose();
-    }
-    const wet = mergeGeometries(puddles)!;
-    puddles.forEach((p) => p.dispose());
-    this.disposables.push(wet);
-    const patch = new Mesh(
-      wet,
-      this.material({
-        color: 0x16181c,
-        transparent: true,
-        opacity: 0.3,
-        roughness: 0.05,
-        metalness: 0.3,
-        depthWrite: false,
-      }),
-    );
-    this.hose.add(patch);
-    this.group.add(this.hose);
-  }
-
-  private placeSpray(
-    heightAt: (metres: number) => number,
-    along: (offset: number, every: number) => number,
-  ): void {
-    const spray = this.spray;
-    if (!spray) return;
-    // The nozzle at the rear rail of the steel orchestra's deck, 2.6 m up, aimed back over the
-    // band following it and swept slowly from side to side.
-    const metres = along(PAN_AT - 7.9 + this.march, LOOP);
-    const base = heightAt(Math.max(metres, 0)) + ASPHALT;
-    const sweep = Math.sin(this.time * 0.8) * 0.35;
-    this.hose.position.set(TRUCK_X + Math.sin(sweep) * 2, base, -metres + 5.2);
-    this.drops.forEach((d, k) => {
-      const t = ((this.time * 0.9 + d.phase) % 1) * 1.1;
-      const heading = sweep + d.spread;
-      const reach = d.speed * t * Math.cos(0.5);
-      this.spot.set(
-        TRUCK_X + Math.sin(heading) * reach,
-        base + 2.6 + d.speed * t * Math.sin(0.5) - 4.9 * t * t,
-        -metres + Math.cos(heading) * reach,
-      );
-      this.size.setScalar(this.spot.y > base ? d.size : 0);
-      this.turn.identity();
-      spray.setMatrixAt(k, this.matrix.compose(this.spot, this.turn, this.size));
-    });
-    spray.instanceMatrix.needsUpdate = true;
-  }
-
-  /**
-   * Confetti and streamers in the air over the lanes, blown from the trucks' cannons: 1,600
-   * flakes in the bands' colours, each tumbling as it flutters down and drifting on the
-   * breeze, falling from 9 m to the road again and again on the ride's clock.
+   * Confetti and streamers in the air over the lanes, blown from the trucks' cannons: bright
+   * flakes in the bands' colours tumbling and drifting over the near stretch on the ride's clock.
    */
   private addConfetti(): void {
     const random = seeded(1511);
-    const n = 1600;
+    const n = CONFETTI_COUNT;
     for (let k = 0; k < n; k++) {
       this.flakes.push({
         x: (random() - 0.5) * 2 * (CURB + 1),
-        offset: random() * LOOP,
+        offset: random() * CONFETTI_SPAN,
         top: 4 + random() * 6,
         fall: 0.45 + random() * 0.5,
         spin: 2 + random() * 5,
         phase: random() * 40,
       });
     }
-    const flake = new PlaneGeometry(0.05, 0.08);
+    const flake = new PlaneGeometry(0.06, 0.095);
     this.disposables.push(flake);
     this.confetti = this.instanced(
       flake,
       this.material({ side: DoubleSide, roughness: 0.4, metalness: 0.3 }),
       n,
+      false,
     );
-    this.confetti.castShadow = false;
     const colours = ['#ff2d87', '#ffd23f', '#13c3c9', '#ff8a00', '#7b2ff7', '#ffffff', '#4de0a8'];
     const c = new Color();
     for (let k = 0; k < n; k++) this.confetti.setColorAt(k, c.set(colours[k % colours.length]!));
   }
 
-  /**
-   * Confetti cannons on the steel orchestra's float: two black CO2 tubes at the back corners
-   * of its canopy firing plumes of confetti and short streamers high over the lanes, each flake
-   * thrown up and out, slowing, tumbling and fluttering down, on the ride's clock.
-   */
-  private addCannons(): void {
-    const random = seeded(4103);
-    for (let k = 0; k < 900; k++) {
-      this.blast.push({
-        cannon: k % 2,
-        speed: 9 + random() * 6,
-        heading: (random() - 0.5) * 1.1,
-        lean: 0.12 + random() * 0.4,
-        phase: random(),
-        spin: 3 + random() * 6,
-      });
-    }
-    const flake = new PlaneGeometry(0.07, 0.11);
-    this.disposables.push(flake);
-    this.blasts = this.instanced(
-      flake,
-      this.material({ side: DoubleSide, roughness: 0.4, metalness: 0.4 }),
-      this.blast.length,
-    );
-    this.blasts.castShadow = false;
-    const colours = ['#ffd23f', '#ff2d87', '#ffffff', '#13c3c9', '#ff8a00', '#c0c0c0'];
-    const c = new Color();
-    this.blast.forEach((_, k) => this.blasts!.setColorAt(k, c.set(colours[k % colours.length]!)));
-  }
-
-  private placeCannons(
-    heightAt: (metres: number) => number,
-    along: (offset: number, every: number) => number,
-  ): void {
-    const blasts = this.blasts;
-    if (!blasts) return;
-    const metres = along(PAN_AT + this.march, LOOP);
-    const base = heightAt(Math.max(metres, 0)) + ASPHALT;
-    this.blast.forEach((f, k) => {
-      // Each flake's flight lasts three seconds, starting again as the cannon fires anew.
-      const t = ((this.time * 0.33 + f.phase) % 1) * 3;
-      const up = f.speed * Math.cos(f.lean);
-      const out = f.speed * Math.sin(f.lean);
-      // Air drag slows the flake quickly; then it flutters down at a steady rate.
-      const rise = Math.min(t, 0.8);
-      const y = 5.4 + up * rise - 6 * rise * rise - Math.max(0, t - 0.8) * 1.3;
-      const reach = out * rise;
-      const cx = TRUCK_X + 0.3 + (f.cannon ? 1.3 : -1.3);
-      this.spot.set(
-        cx + Math.sin(f.heading) * reach + Math.sin(t * 2 + k) * 0.3,
-        base + y,
-        -metres + 7.5 + Math.cos(f.heading) * reach * 0.6,
-      );
-      this.turn.setFromEuler(this.tumble.set(t * f.spin, t * f.spin * 0.6, 0));
-      this.size.setScalar(y > 0.1 ? 1 : 0);
-      blasts.setMatrixAt(k, this.matrix.compose(this.spot, this.turn, this.size));
-    });
-    blasts.instanceMatrix.needsUpdate = true;
-  }
-
-  private placeConfetti(
-    heightAt: (metres: number) => number,
-    along: (offset: number, every: number) => number,
-  ): void {
+  private placeConfetti(s: number, heightAt: (metres: number) => number): void {
     const confetti = this.confetti;
     if (!confetti) return;
-    this.flakes.forEach((f, k) => {
+    const out = confetti.instanceMatrix.array as Float32Array;
+    for (let k = 0; k < this.flakes.length; k++) {
+      const f = this.flakes[k]!;
       const t = this.time + f.phase;
       const height = f.top - ((t * f.fall) % f.top);
-      const metres = along(f.offset + Math.sin(t * 0.3) * 0.8, LOOP);
-      this.spot.set(f.x + Math.sin(t * 1.3) * 0.4, heightAt(Math.max(metres, 0)) + height, -metres);
-      this.turn.setFromEuler(this.tumble.set(t * f.spin, t * f.spin * 0.7, 0));
-      this.size.setScalar(1);
-      confetti.setMatrixAt(k, this.matrix.compose(this.spot, this.turn, this.size));
-    });
+      const metres = loopMetres(f.offset + Math.sin(t * 0.3) * 0.8, s, CONFETTI_SPAN, 12);
+      const px = f.x + Math.sin(t * 1.3) * 0.4;
+      const py = heightAt(Math.max(metres, 0)) + height;
+      const pz = -metres;
+      const rx = t * f.spin;
+      const ry = rx * 0.7;
+      const cx = Math.cos(rx);
+      const sx = Math.sin(rx);
+      const cy = Math.cos(ry);
+      const sy = Math.sin(ry);
+      const o = k * 16;
+      out[o] = cy;
+      out[o + 1] = sx * sy;
+      out[o + 2] = -cx * sy;
+      out[o + 3] = 0;
+      out[o + 4] = 0;
+      out[o + 5] = cx;
+      out[o + 6] = sx;
+      out[o + 7] = 0;
+      out[o + 8] = sy;
+      out[o + 9] = -sx * cy;
+      out[o + 10] = cx * cy;
+      out[o + 11] = 0;
+      out[o + 12] = px;
+      out[o + 13] = py;
+      out[o + 14] = pz;
+      out[o + 15] = 1;
+    }
     confetti.instanceMatrix.needsUpdate = true;
   }
 
@@ -3874,50 +3492,62 @@ export class CaribanaStreet implements SceneStreet {
     const stick = new CylinderGeometry(0.006, 0.006, 0.5, 4);
     stick.translate(0, -0.12, 0);
     const scarf = new PlaneGeometry(0.3, 0.42);
-    this.disposables.push(flag, stick, scarf);
     const wood = this.material({ color: 0x8a6a45, roughness: 0.8 });
     const steel = this.material({ color: 0x9da3a8, metalness: 0.6, roughness: 0.4 });
     const apron = this.material({ color: 0xf4f2ea, roughness: 0.9 });
-    const scarves = this.flagMaterials;
+    const trousersMat = this.material({ color: 0x1e2530, roughness: 0.9 });
+    const steelParts: BufferGeometry[] = [
+      asNonIndexed(new BoxGeometry(0.05, 2.4, 0.05).translate(0, 1.2, 0)),
+      asNonIndexed(new BoxGeometry(1.2, 0.03, 0.03).translate(0, 1.35, 0)),
+      ...[-0.3, 0.3].map((x) =>
+        asNonIndexed(
+          new CylinderGeometry(0.2, 0.2, 0.05, 12).rotateZ(Math.PI / 2).translate(x, 0.2, 0),
+        ),
+      ),
+    ];
+    const cartSteel = mergeGeometries(steelParts)!;
+    steelParts.forEach((g) => g.dispose());
+    const m4 = new Matrix4();
+    const rot = new Euler();
+    const woodStickParts: BufferGeometry[] = [
+      asNonIndexed(new BoxGeometry(0.7, 0.5, 0.5).translate(0, 0.55, 0)),
+    ];
+    for (let f = 0; f < 28; f++) {
+      const a = (f / 28) * Math.PI * 2;
+      const up = 1.9 + (f % 4) * 0.16;
+      m4.makeRotationFromEuler(rot.set(0, -a, 0.5 + (f % 3) * 0.15));
+      m4.setPosition(Math.cos(a) * 0.15, up, Math.sin(a) * 0.15);
+      woodStickParts.push(asNonIndexed(stick.clone().applyMatrix4(m4)));
+    }
+    m4.makeScale(1.6, 1.6, 1.6).setPosition(0.8 + 0.3, 2.1, 0.2 - 0.06);
+    woodStickParts.push(asNonIndexed(stick.clone().applyMatrix4(m4)));
+    const cartWood = mergeGeometries(woodStickParts)!;
+    woodStickParts.forEach((g) => g.dispose());
+    this.disposables.push(cartSteel, cartWood);
     for (let k = 0; k < SELLERS.length; k++) {
       const cart = new Group();
-      // The cart: two wheels, a box, and a pole up the middle.
-      const box = new Mesh(this.unit, wood);
-      box.scale.set(0.7, 0.5, 0.5);
-      box.position.y = 0.55;
-      const pole = new Mesh(this.unit, steel);
-      pole.scale.set(0.05, 2.4, 0.05);
-      pole.position.y = 1.2;
-      const rail = new Mesh(this.unit, steel);
-      rail.scale.set(1.2, 0.03, 0.03);
-      rail.position.y = 1.35;
-      cart.add(box, pole, rail);
-      for (const x of [-0.3, 0.3]) {
-        const wheel = new Mesh(new CylinderGeometry(0.2, 0.2, 0.05, 12), steel);
-        wheel.geometry.rotateZ(Math.PI / 2);
-        this.disposables.push(wheel.geometry);
-        wheel.position.set(x, 0.2, 0);
-        cart.add(wheel);
-      }
-      // A head of flags fanned out from the top of the pole.
+      cart.add(new Mesh(cartWood, wood), new Mesh(cartSteel, steel));
+      const byFlag: BufferGeometry[][] = this.flagMaterials.map(() => []);
       for (let f = 0; f < 28; f++) {
         const a = (f / 28) * Math.PI * 2;
         const up = 1.9 + (f % 4) * 0.16;
-        const holder = new Group();
-        holder.add(
-          new Mesh(flag, this.flagMaterials[(f + k) % this.flagMaterials.length]!),
-          new Mesh(stick, wood),
-        );
-        holder.position.set(Math.cos(a) * 0.15, up, Math.sin(a) * 0.15);
-        holder.rotation.set(0, -a, 0.5 + (f % 3) * 0.15);
-        cart.add(holder);
+        m4.makeRotationFromEuler(rot.set(0, -a, 0.5 + (f % 3) * 0.15));
+        m4.setPosition(Math.cos(a) * 0.15, up, Math.sin(a) * 0.15);
+        byFlag[(f + k) % byFlag.length]!.push(asNonIndexed(flag.clone().applyMatrix4(m4)));
       }
-      // Bandanas and scarves hung from the rail.
       for (let f = 0; f < 4; f++) {
-        const hang = new Mesh(scarf, scarves[(f + k + 1) % scarves.length]!);
-        hang.position.set(-0.45 + f * 0.3, 1.12, 0.03);
-        cart.add(hang);
+        m4.makeTranslation(-0.45 + f * 0.3, 1.12, 0.03);
+        byFlag[(f + k + 1) % byFlag.length]!.push(asNonIndexed(scarf.clone().applyMatrix4(m4)));
       }
+      m4.makeScale(1.6, 1.6, 1.6).setPosition(0.8 + 0.3, 2.1, 0.2 - 0.06);
+      byFlag[k % byFlag.length]!.push(asNonIndexed(flag.clone().applyMatrix4(m4)));
+      byFlag.forEach((list, fi) => {
+        if (!list.length) return;
+        const merged = mergeGeometries(list)!;
+        list.forEach((g) => g.dispose());
+        this.disposables.push(merged);
+        cart.add(new Mesh(merged, this.flagMaterials[fi]!));
+      });
       // The seller beside the cart, holding a flag up.
       const parts = spectatorParts(1, random() < 0.5);
       this.disposables.push(parts.skin, parts.top, parts.bottom);
@@ -3927,15 +3557,7 @@ export class CaribanaStreet implements SceneStreet {
         roughness: 0.6,
       });
       seller.add(new Mesh(parts.skin, skin), new Mesh(parts.top, apron));
-      seller.add(new Mesh(parts.bottom, this.material({ color: 0x1e2530, roughness: 0.9 })));
-      const held = new Group();
-      held.add(
-        new Mesh(flag, this.flagMaterials[k % this.flagMaterials.length]!),
-        new Mesh(stick, wood),
-      );
-      held.position.set(0.3, 2.1, -0.06);
-      held.scale.setScalar(1.6);
-      seller.add(held);
+      seller.add(new Mesh(parts.bottom, trousersMat));
       seller.position.set(0.8, 0, 0.2);
       cart.add(seller);
       cart.traverse((o) => (o.castShadow = true));
@@ -3950,12 +3572,15 @@ export class CaribanaStreet implements SceneStreet {
         x: side * (CROWD_NEAR + 0.3),
       });
     }
+    flag.dispose();
+    stick.dispose();
+    scarf.dispose();
   }
 
   /**
    * Food stalls on the grass behind both crowds: white pop-up tents with the vendor's name on
    * the valance, a jerk drum on angle-iron legs with its lid propped open over glowing coals
-   * and chicken, smoke pouring off it, a cooler, and the vendor at the table.
+   * and chicken, a cooler, and the vendor at the table.
    */
   private addStalls(): void {
     const tents = new PopupTents(this.disposables, this.track);
@@ -3973,66 +3598,53 @@ export class CaribanaStreet implements SceneStreet {
     const meat = this.material({ color: 0x6a2e15, roughness: 0.7 });
     const cooler = this.material({ color: 0x1b6ad8, roughness: 0.5 });
     const lid = this.material({ color: 0xf2f2ee, roughness: 0.5 });
+    const vendorTop = this.material({ color: '#f5f0e6', roughness: 0.8 });
+    const vendorBottom = this.material({ color: '#1e2530', roughness: 0.8 });
     const half = new CylinderGeometry(0.42, 0.42, 0.95, 16, 1, false, Math.PI / 2, Math.PI);
     half.rotateZ(Math.PI / 2);
+    half.translate(0, 0.95, 0);
     const cap = new CylinderGeometry(0.42, 0.42, 0.95, 16, 1, false, -Math.PI / 2, Math.PI);
     cap.rotateZ(Math.PI / 2);
-    cap.translate(0, -0.0, 0);
-    const puff = new SphereGeometry(0.7, 10, 8);
-    this.disposables.push(half, cap, puff);
+    cap.rotateX(-1.9);
+    cap.translate(0, 1.0, 0.42);
+    const grillDrum = mergeGeometries([asNonIndexed(half), asNonIndexed(cap)])!;
+    half.dispose();
+    cap.dispose();
+    const legParts = [
+      [-0.4, -0.3],
+      [0.4, -0.3],
+      [-0.4, 0.3],
+      [0.4, 0.3],
+    ].map(([x, z]) => asNonIndexed(new BoxGeometry(0.04, 0.8, 0.04).translate(x!, 0.4, z!)));
+    const grillLegs = mergeGeometries(legParts)!;
+    legParts.forEach((g) => g.dispose());
+    const meatParts: BufferGeometry[] = [];
+    for (let p = 0; p < 6; p++) {
+      meatParts.push(
+        asNonIndexed(
+          new BoxGeometry(0.13, 0.05, 0.1).translate(-0.3 + p * 0.12, 1.02, (p % 2) * 0.16 - 0.08),
+        ),
+      );
+    }
+    const grillMeat = mergeGeometries(meatParts)!;
+    meatParts.forEach((g) => g.dispose());
+    const coalsGeo = new BoxGeometry(0.8, 0.03, 0.55).translate(0, 0.98, 0);
+    this.disposables.push(grillDrum, grillLegs, grillMeat, coalsGeo);
     const random = seeded(919);
     let k = 0;
     for (const side of [-1, 1] as const) {
       for (let offset = side < 0 ? 14 : 44; offset < LOOP; offset += 58) {
         const [text, fill, ink] = names[k++ % names.length]!;
         const stall = tents.make(text, fill, ink);
-        // The jerk drum beside the table, its lid hinged back.
         const grill = new Group();
-        const body = new Mesh(half, drum);
-        body.position.y = 0.95;
-        const top = new Mesh(cap, drum);
-        top.position.set(0, 0.95, 0.42);
-        top.rotation.x = -1.9;
-        top.position.y = 1.0;
-        grill.add(body, top);
-        for (const [x, z] of [
-          [-0.4, -0.3],
-          [0.4, -0.3],
-          [-0.4, 0.3],
-          [0.4, 0.3],
-        ] as const) {
-          const leg = new Mesh(this.unit, rust);
-          leg.scale.set(0.04, 0.8, 0.04);
-          leg.position.set(x, 0.4, z);
-          grill.add(leg);
-        }
-        const coals = new Mesh(this.unit, ember);
-        coals.scale.set(0.8, 0.03, 0.55);
-        coals.position.y = 0.98;
-        grill.add(coals);
-        for (let p = 0; p < 6; p++) {
-          const piece = new Mesh(this.unit, meat);
-          piece.scale.set(0.13, 0.05, 0.1);
-          piece.position.set(-0.3 + p * 0.12, 1.02, (p % 2) * 0.16 - 0.08);
-          grill.add(piece);
-        }
+        grill.add(
+          new Mesh(grillDrum, drum),
+          new Mesh(grillLegs, rust),
+          new Mesh(coalsGeo, ember),
+          new Mesh(grillMeat, meat),
+        );
         grill.position.set(-side * 1.9, 0, 0.6);
         stall.add(grill);
-        for (let p = 0; p < 6; p++) {
-          const material = this.material({
-            color: 0xd8d5cf,
-            transparent: true,
-            opacity: 0.3,
-            depthWrite: false,
-            roughness: 1,
-          });
-          const m = new Mesh(puff, material);
-          const holder = new Group();
-          holder.position.set(-side * 1.9 - 0.9, 0, 0.6);
-          holder.add(m);
-          stall.add(holder);
-          this.smoke.push({ mesh: m, phase: p / 6 + random() * 0.05, material });
-        }
         const box = new Mesh(this.unit, cooler);
         box.scale.set(0.7, 0.45, 0.45);
         box.position.set(side * 1.1, 0.225, -1.0);
@@ -4040,20 +3652,22 @@ export class CaribanaStreet implements SceneStreet {
         boxLid.scale.set(0.72, 0.06, 0.47);
         boxLid.position.set(side * 1.1, 0.47, -1.0);
         stall.add(box, boxLid);
-        // The vendor behind the table, facing the crowd's backs and the road.
         const vendor = spectatorParts(0, false);
         const figure = new Group();
-        const tones = [SKINS[Math.floor(random() * SKINS.length)]!, '#f5f0e6', '#1e2530'];
-        [vendor.skin, vendor.top, vendor.bottom].forEach((geometry, i) => {
-          const m = this.material({ color: tones[i], roughness: 0.8 });
-          this.disposables.push(geometry);
-          figure.add(new Mesh(geometry, m));
+        const skinMat = this.material({
+          color: SKINS[Math.floor(random() * SKINS.length)]!,
+          roughness: 0.8,
         });
+        this.disposables.push(vendor.skin, vendor.top, vendor.bottom);
+        figure.add(
+          new Mesh(vendor.skin, skinMat),
+          new Mesh(vendor.top, vendorTop),
+          new Mesh(vendor.bottom, vendorBottom),
+        );
         figure.position.set(side * 0.2, 0, -0.9);
         figure.rotation.y = Math.PI;
         stall.add(figure);
         stall.traverse((o) => (o.castShadow = true));
-        // Turn the stall's front, its table and vendor, towards the road.
         stall.rotation.y = side < 0 ? -Math.PI / 2 : Math.PI / 2;
         this.group.add(stall);
         this.props.push({ mesh: stall, offset, every: LOOP, x: side * 13.6 });
@@ -4533,7 +4147,6 @@ export class CaribanaStreet implements SceneStreet {
       bridge.position.set((ax + bx) / 2, 29, (az + bz) / 2);
       bridge.rotation.y = Math.atan2(bx - ax, bz - az);
     }
-    this.ontarioPlace.traverse((o) => (o.castShadow = true));
     this.group.add(this.ontarioPlace);
   }
 
@@ -4649,40 +4262,10 @@ export class CaribanaStreet implements SceneStreet {
   }
 
   /**
-   * The sky's life: ring-billed gulls wheeling over the crowds and the food stalls, a twin
-   * turboprop descending over the lake towards the island airport, and a jet's contrail high
-   * above the city.
+   * The sky's life: a twin turboprop descending over the lake towards the island airport, a
+   * news helicopter orbiting over the route, and a jet's contrail high above the city.
    */
   private addSkyLife(): void {
-    const white = this.material({ color: 0xf4f4f2, roughness: 0.7 });
-    const grey = this.material({ color: 0xaab0b6, roughness: 0.7, side: DoubleSide });
-    const body = ellipsoid(0.12, 1, 0.9, 2.6, 0, 0, 0, 8);
-    const wing = new BufferGeometry();
-    wing.setAttribute(
-      'position',
-      new BufferAttribute(new Float32Array([0, 0, -0.1, 0.62, 0.02, 0.05, 0, 0, 0.14]), 3),
-    );
-    wing.computeVertexNormals();
-    this.disposables.push(body, wing);
-    const random = seeded(1301);
-    for (let k = 0; k < 14; k++) {
-      const bird = new Group();
-      bird.add(new Mesh(body, white));
-      const left = new Mesh(wing, grey);
-      left.scale.x = -1;
-      const right = new Mesh(wing, grey);
-      bird.add(left, right);
-      this.group.add(bird);
-      const side = k % 3 === 0 ? -1 : 1;
-      this.gulls.push({
-        bird,
-        wings: [left, right],
-        centre: new Vector3(side * (10 + random() * 14), 14 + random() * 16, random() * LOOP),
-        r: 6 + random() * 10,
-        phase: random() * 6.3,
-        speed: (0.25 + random() * 0.2) * (random() < 0.5 ? 1 : -1),
-      });
-    }
     // A twin turboprop, high-winged, white with a dark tail.
     const fuselage = new CylinderGeometry(1.3, 1.1, 30, 10);
     fuselage.rotateX(Math.PI / 2);
@@ -4812,8 +4395,7 @@ export class CaribanaStreet implements SceneStreet {
       const crown = new IcosahedronGeometry(r, 1);
       crown.scale(1.2, 0.75, 1);
       crown.translate(-95 - random() * 70, 8 + random() * 14 + (k % 3) * 3, -120 - random() * 620);
-      canopy.push(crown.toNonIndexed());
-      crown.dispose();
+      canopy.push(asNonIndexed(crown));
     }
     const trees = mergeGeometries(canopy)!;
     canopy.forEach((c) => c.dispose());
@@ -4857,6 +4439,25 @@ export class CaribanaStreet implements SceneStreet {
   }
 
   private material(options: ConstructorParameters<typeof MeshStandardMaterial>[0]) {
+    if (
+      options &&
+      options.color !== undefined &&
+      !options.map &&
+      options.emissive === undefined &&
+      !options.vertexColors &&
+      !options.transparent &&
+      !options.flatShading &&
+      options.alphaTest === undefined
+    ) {
+      const hex = new Color(options.color).getHexString();
+      const key = `${hex}|${options.roughness ?? 1}|${options.metalness ?? 0}|${options.side ?? 0}|${options.fog === false ? 0 : 1}`;
+      const cached = this.solidMaterials.get(key);
+      if (cached) return cached;
+      const created = new MeshStandardMaterial(options);
+      this.solidMaterials.set(key, created);
+      this.disposables.push(created);
+      return created;
+    }
     const material = new MeshStandardMaterial(options);
     this.disposables.push(material);
     return material;
@@ -4869,10 +4470,15 @@ export class CaribanaStreet implements SceneStreet {
     return this.track(texture);
   }
 
-  private instanced(geometry: BufferGeometry, material: Material, n: number): InstancedMesh {
+  private instanced(
+    geometry: BufferGeometry,
+    material: Material,
+    n: number,
+    castShadow = true,
+  ): InstancedMesh {
     const mesh = new InstancedMesh(geometry, material, n);
     mesh.frustumCulled = false;
-    mesh.castShadow = true;
+    mesh.castShadow = castShadow;
     this.disposables.push(mesh);
     this.group.add(mesh);
     return mesh;
@@ -4911,8 +4517,12 @@ function masBody(pose: readonly (readonly number[])[], male = false): BufferGeom
   neck.translate(0, 1.47, 0);
   parts.push(neck);
   parts.push(ellipsoid(0.105, 0.9, 1.1, 1, 0, 1.6, -0.01)); // head
-  const merged = mergeGeometries(parts.map((p) => p.toNonIndexed()))!;
-  parts.forEach((p) => p.dispose());
+  const nonIdx = parts.map(asNonIndexed);
+  const merged = mergeGeometries(nonIdx)!;
+  parts.forEach((p, i) => {
+    p.dispose();
+    if (nonIdx[i] !== p) nonIdx[i]!.dispose();
+  });
   bakeOcclusion(merged);
   return merged;
 }
@@ -4985,98 +4595,12 @@ function masCostume(male: boolean): BufferGeometry {
   collar.rotateX(Math.PI / 2);
   collar.translate(0, 1.42, 0);
   parts.push(collar);
-  const merged = mergeGeometries(parts.map((p) => p.toNonIndexed()))!;
-  parts.forEach((p) => p.dispose());
-  return merged;
-}
-
-/**
- * The arm pieces for a pose: a sequinned band round each upper arm and a gold cuff round each
- * wrist, set square to the arm where the body (`masBody`) puts it.
- */
-function armPieces(
-  pose: readonly (readonly number[])[],
-  male: boolean,
-): { band: BufferGeometry; cuff: BufferGeometry } {
-  const bands: BufferGeometry[] = [];
-  const cuffs: BufferGeometry[] = [];
-  const z = new Vector3(0, 0, 1);
-  const ring = (a: Vector3, b: Vector3, at: number, radius: number, tube: number, wide: number) => {
-    const torus = new TorusGeometry(radius, tube, 6, 14);
-    torus.scale(1, 1, wide);
-    torus.applyQuaternion(new Quaternion().setFromUnitVectors(z, b.clone().sub(a).normalize()));
-    const spot = a.clone().lerp(b, at);
-    torus.translate(spot.x, spot.y, spot.z);
-    return torus.toNonIndexed();
-  };
-  const arm = male ? 1.2 : 1;
-  for (const side of [-1, 1]) {
-    const shoulder = new Vector3(side * (male ? 0.2 : 0.17), 1.38, 0);
-    const [ex, ey, ez, hx, hy, hz] = pose[side < 0 ? 0 : 1]!;
-    const elbow = new Vector3(ex! * (male ? 1.08 : 1), ey!, ez!);
-    const hand = new Vector3(hx! * (male ? 1.06 : 1), hy!, hz!);
-    bands.push(ring(shoulder, elbow, 0.5, 0.046 * arm, 0.016, 2.2));
-    cuffs.push(ring(elbow, hand, 0.86, 0.036 * arm, 0.012, 2.6));
-  }
-  const band = mergeGeometries(bands)!;
-  const cuff = mergeGeometries(cuffs)!;
-  [...bands, ...cuffs].forEach((g) => g.dispose());
-  return { band, cuff };
-}
-
-/**
- * Rhinestone swags: three chains of stones hanging in arcs across the belly from the bra
- * band to the beaded belt, and a chain from each cup up round the neck to the collar.
- */
-function swagGeometry(): BufferGeometry {
-  const parts: BufferGeometry[] = [];
-  const chain = (points: Vector3[]) => {
-    const curve = new CatmullRomCurve3(points);
-    for (let i = 0; i <= 18; i++) {
-      const p = curve.getPoint(i / 18);
-      const stone = new OctahedronGeometry(0.011, 0);
-      stone.translate(p.x, p.y, p.z);
-      parts.push(stone.toNonIndexed());
-      stone.dispose();
-    }
-  };
-  // Across the belly, front of the waist, sagging in arcs between bra and belt.
-  for (const [drop, spread] of [
-    [1.06, 0.13],
-    [1.12, 0.12],
-    [1.18, 0.11],
-  ] as const) {
-    chain([
-      new Vector3(-spread, 1.25, -0.08),
-      new Vector3(-spread * 0.5, drop + 0.02, -0.115),
-      new Vector3(0, drop, -0.12),
-      new Vector3(spread * 0.5, drop + 0.02, -0.115),
-      new Vector3(spread, 1.25, -0.08),
-    ]);
-  }
-  // From each cup up round the neck.
-  for (const side of [-1, 1]) {
-    chain([
-      new Vector3(side * 0.07, 1.36, -0.13),
-      new Vector3(side * 0.06, 1.42, -0.09),
-      new Vector3(side * 0.05, 1.45, -0.04),
-    ]);
-  }
-  const merged = mergeGeometries(parts)!;
-  parts.forEach((p) => p.dispose());
-  return merged;
-}
-
-/** The gold trims: a beaded cuff at the top of each boot, standing proud of the shaft. */
-function trimGeometry(): BufferGeometry {
-  const parts = [-1, 1].map((side) => {
-    const cuff = new TorusGeometry(0.07, 0.016, 6, 16);
-    cuff.rotateX(Math.PI / 2);
-    cuff.translate(side * 0.1, 0.45, -0.02);
-    return cuff.toNonIndexed();
+  const nonIdx = parts.map(asNonIndexed);
+  const merged = mergeGeometries(nonIdx)!;
+  parts.forEach((p, i) => {
+    p.dispose();
+    if (nonIdx[i] !== p) nonIdx[i]!.dispose();
   });
-  const merged = mergeGeometries(parts)!;
-  parts.forEach((p) => p.dispose());
   return merged;
 }
 
@@ -5157,55 +4681,6 @@ function featherFan(
   return merged;
 }
 
-/**
- * Hand pieces for the arms-spread pose: a small fan of plumes held up in each hand, spread
- * outward and up, in the section's outer and middle colours.
- */
-function handFanGeometry(
-  outer: readonly [string, string],
-  mid: readonly [string, string],
-): BufferGeometry {
-  const [left, right] = POSES[2]!;
-  const parts: BufferGeometry[] = [];
-  for (const [hand, side] of [
-    [left!, -1],
-    [right!, 1],
-  ] as const) {
-    const fan = mergeGeometries([
-      featherFan(outer, 11, 0.62, 0.12, Math.PI * 0.75, 0.02),
-      featherFan(mid, 9, 0.44, 0.12, Math.PI * 0.65, 0.02),
-    ])!;
-    fan.translate(0, 0, -0.24);
-    // Held up from the hand, tipped a little outward from the body, in front of the wings.
-    fan.rotateZ(-side * 0.25);
-    fan.translate(hand[3]!, hand[4]! + 0.05, hand[5]!);
-    parts.push(fan);
-  }
-  const merged = mergeGeometries(parts)!;
-  parts.forEach((p) => p.dispose());
-  return merged;
-}
-
-/**
- * Feathered leg pieces: a ring of short plumes round each calf below the knee, splayed out and
- * up, coloured `inner` and `mid` in turn.
- */
-function legPlumeGeometry(inner: readonly [string, string], mid: readonly [string, string]) {
-  const parts: BufferGeometry[] = [];
-  for (const side of [-1, 1]) {
-    for (let k = 0; k < 8; k++) {
-      const plume = featherFan(k % 2 ? inner : mid, 2, 0.34, 0.1, 0.25, 0.45);
-      plume.translate(0, 0, -0.16);
-      plume.rotateY((k / 8) * Math.PI * 2);
-      plume.translate(side * 0.1, 0.36, -0.02);
-      parts.push(plume);
-    }
-  }
-  const merged = mergeGeometries(parts)!;
-  parts.forEach((p) => p.dispose());
-  return merged;
-}
-
 /** Bead fringe: strands of round beads on threads, cut out of the canvas. */
 function fringeTexture(): CanvasTexture {
   return canvasTexture(256, 64, (g) => {
@@ -5224,29 +4699,6 @@ function fringeTexture(): CanvasTexture {
   });
 }
 
-/** A headdress band: a jewelled tiara rising to a point at the front, studded with stones. */
-function crownBandGeometry(): BufferGeometry {
-  const parts: BufferGeometry[] = [];
-  const band = new CylinderGeometry(0.12, 0.115, 0.07, 18, 1, true);
-  band.translate(0, -0.03, 0.01);
-  parts.push(band.toNonIndexed());
-  const peak = new ConeGeometry(0.06, 0.16, 4);
-  peak.scale(1, 1, 0.3);
-  peak.translate(0, 0.07, -0.11);
-  parts.push(peak.toNonIndexed());
-  for (let k = 0; k < 7; k++) {
-    const a = Math.PI + (k - 3) * 0.35;
-    const stone = new SphereGeometry(0.016, 6, 4);
-    stone.translate(Math.sin(a) * 0.123, -0.02, Math.cos(a) * 0.123 + 0.01);
-    parts.push(stone.toNonIndexed());
-  }
-  const merged = mergeGeometries(parts)!;
-  parts.forEach((p) => p.dispose());
-  band.dispose();
-  peak.dispose();
-  return merged;
-}
-
 /** The hub of a backpiece: a sequinned disc in a raised ring, studded with rhinestones. */
 function medallionGeometry(): BufferGeometry {
   const parts: BufferGeometry[] = [];
@@ -5263,8 +4715,12 @@ function medallionGeometry(): BufferGeometry {
     stone.translate(Math.cos(a) * 0.13, 0.02 + Math.sin(a) * 0.13, 0.13);
     parts.push(stone);
   }
-  const merged = mergeGeometries(parts.map((p) => p.toNonIndexed()))!;
-  parts.forEach((p) => p.dispose());
+  const nonIdx = parts.map(asNonIndexed);
+  const merged = mergeGeometries(nonIdx)!;
+  parts.forEach((p, i) => {
+    p.dispose();
+    if (nonIdx[i] !== p) nonIdx[i]!.dispose();
+  });
   return merged;
 }
 
@@ -5282,10 +4738,20 @@ function roadTexture(): CanvasTexture {
   return canvasTexture(w, h, (g) => {
     speckle(g, w, h, '#4d4f54', 4211);
     const random = seeded(4213);
+    const aggFills = [
+      'hsla(220,4%,24%,0.38)',
+      'hsla(220,4%,31%,0.42)',
+      'hsla(220,4%,60%,0.38)',
+      'hsla(220,4%,70%,0.42)',
+    ];
+    const aggPaths = aggFills.map(() => new Path2D());
     for (let i = 0; i < 16000; i++) {
-      const l = random() < 0.5 ? 20 + random() * 15 : 55 + random() * 20;
-      g.fillStyle = `hsla(220,4%,${l}%,${(0.25 + random() * 0.35).toFixed(2)})`;
-      g.fillRect(random() * w, random() * h, 1.5, 1.5);
+      const bi = (random() < 0.5 ? 0 : 2) + (random() < 0.5 ? 0 : 1);
+      aggPaths[bi]!.rect(random() * w, random() * h, 1.5, 1.5);
+    }
+    for (let b = 0; b < aggFills.length; b++) {
+      g.fillStyle = aggFills[b]!;
+      g.fill(aggPaths[b]!);
     }
     // Wheel tracks: smoother, darker bands where the traffic runs the rest of the year.
     for (const lane of [-4.4, 0, 4.4]) {
@@ -5344,16 +4810,31 @@ function roadTexture(): CanvasTexture {
       for (let y = 0; y < h; y += 9 * py) g.fillRect(x, y, 0.12 * px, 3 * py);
     }
     g.fillStyle = 'rgba(77,79,84,0.55)';
-    for (let i = 0; i < 900; i++) g.fillRect(random() * w, random() * h, 3, 2);
+    const wearPath = new Path2D();
+    for (let i = 0; i < 900; i++) wearPath.rect(random() * w, random() * h, 3, 2);
+    g.fill(wearPath);
     // The parade's litter: confetti, glitter and feathers dropped from the costumes.
     const colours = ['#ff2d87', '#ffd23f', '#13c3c9', '#ff8a00', '#7b2ff7', '#ffffff', '#4de0a8'];
+    const litterPaths = colours.map(() => new Path2D());
     for (let i = 0; i < 1400; i++) {
-      g.fillStyle = colours[Math.floor(random() * colours.length)]!;
-      g.save();
-      g.translate(random() * w, random() * h);
-      g.rotate(random() * Math.PI);
-      g.fillRect(-2, -1.5, 4 + random() * 3, 3);
-      g.restore();
+      const ci = Math.floor(random() * colours.length);
+      const cx = random() * w;
+      const cy = random() * h;
+      const a = random() * Math.PI;
+      const hw = 2 + random() * 1.5;
+      const hh = 1.5;
+      const ca = Math.cos(a);
+      const sa = Math.sin(a);
+      const p = litterPaths[ci]!;
+      p.moveTo(cx - hw * ca + hh * sa, cy - hw * sa - hh * ca);
+      p.lineTo(cx + hw * ca + hh * sa, cy + hw * sa - hh * ca);
+      p.lineTo(cx + hw * ca - hh * sa, cy + hw * sa + hh * ca);
+      p.lineTo(cx - hw * ca - hh * sa, cy - hw * sa + hh * ca);
+      p.closePath();
+    }
+    for (let c = 0; c < colours.length; c++) {
+      g.fillStyle = colours[c]!;
+      g.fill(litterPaths[c]!);
     }
     for (let i = 0; i < 26; i++) {
       const x = gutter + random() * (w - 2 * gutter);
@@ -5690,8 +5171,12 @@ function barricadeGeometry(): BufferGeometry {
   }
   for (let k = 1; k <= 14; k++) bar(0.02, 0.9, 0.02, 0, 0.62, -1.18 + (k * 2.36) / 15);
   bar(0.03, 0.03, 0.14, 0, 0.95, 1.25);
-  const merged = mergeGeometries(parts.map((p) => p.toNonIndexed()))!;
-  parts.forEach((p) => p.dispose());
+  const nonIdx = parts.map(asNonIndexed);
+  const merged = mergeGeometries(nonIdx)!;
+  parts.forEach((p, i) => {
+    p.dispose();
+    if (nonIdx[i] !== p) nonIdx[i]!.dispose();
+  });
   return merged;
 }
 
@@ -5742,15 +5227,18 @@ function grassTexture(): CanvasTexture {
     g.fillStyle = '#4f8a3a';
     g.fillRect(0, 0, 512, 512);
     const random = seeded(9);
+    const shades = ['hsl(98,45%,33%)', 'hsl(104,45%,39%)', 'hsl(110,45%,45%)', 'hsl(116,45%,51%)'];
+    const bladePaths = shades.map(() => new Path2D());
     for (let i = 0; i < 9000; i++) {
-      const l = 30 + random() * 25;
-      g.strokeStyle = `hsl(${95 + random() * 25},45%,${l}%)`;
+      const p = bladePaths[Math.floor(random() * shades.length)]!;
       const x = random() * 512;
       const y = random() * 512;
-      g.beginPath();
-      g.moveTo(x, y);
-      g.lineTo(x + random() * 4 - 2, y - 4 - random() * 6);
-      g.stroke();
+      p.moveTo(x, y);
+      p.lineTo(x + random() * 4 - 2, y - 4 - random() * 6);
+    }
+    for (let s = 0; s < shades.length; s++) {
+      g.strokeStyle = shades[s]!;
+      g.stroke(bladePaths[s]!);
     }
   });
 }
@@ -6017,92 +5505,6 @@ function streetSignTexture(name: string): CanvasTexture {
     g.textAlign = 'center';
     g.textBaseline = 'middle';
     g.fillText(name, 256, 56, 470);
-  });
-}
-
-/** A cast-iron manhole cover: a raised grid of lugs in a rim, rust at the edge. */
-function manholeTexture(): CanvasTexture {
-  return canvasTexture(128, 128, (g) => {
-    g.clearRect(0, 0, 128, 128);
-    g.fillStyle = '#3a3836';
-    g.beginPath();
-    g.arc(64, 64, 62, 0, Math.PI * 2);
-    g.fill();
-    g.strokeStyle = '#6b5a48';
-    g.lineWidth = 4;
-    g.stroke();
-    g.fillStyle = '#55524e';
-    for (let y = 22; y < 110; y += 12) {
-      for (let x = 22; x < 110; x += 12) {
-        if (Math.hypot(x - 64, y - 64) < 46) g.fillRect(x - 3, y - 3, 6, 6);
-      }
-    }
-    g.strokeStyle = '#2a2826';
-    g.lineWidth = 3;
-    g.beginPath();
-    g.arc(64, 64, 52, 0, Math.PI * 2);
-    g.stroke();
-  });
-}
-
-/** A utility cut: a rectangle of newer, darker tar with sealed seams. */
-function patchTexture(): CanvasTexture {
-  return canvasTexture(256, 192, (g) => {
-    g.clearRect(0, 0, 256, 192);
-    // An irregular cut, not a clean rectangle: its corners wander and one side steps in.
-    const random = seeded(1907);
-    const corners = [
-      [10 + random() * 14, 8 + random() * 12],
-      [140 + random() * 30, 6 + random() * 10],
-      [150 + random() * 20, 60 + random() * 20],
-      [240 - random() * 14, 70 + random() * 14],
-      [236 - random() * 14, 180 - random() * 12],
-      [12 + random() * 12, 184 - random() * 10],
-    ];
-    g.beginPath();
-    corners.forEach(([x, y], k) => (k ? g.lineTo(x!, y!) : g.moveTo(x!, y!)));
-    g.closePath();
-    g.save();
-    g.clip();
-    // Newer tar, only a little darker than the road round it, with its own aggregate.
-    g.fillStyle = '#46484d';
-    g.fillRect(0, 0, 256, 192);
-    for (let i = 0; i < 2600; i++) {
-      const l = random() < 0.5 ? 22 + random() * 12 : 50 + random() * 18;
-      g.fillStyle = `hsla(220,4%,${l}%,${(0.3 + random() * 0.4).toFixed(2)})`;
-      g.fillRect(random() * 256, random() * 192, 1.5, 1.5);
-    }
-    g.restore();
-    // The seam sealed with a wandering band of black crack filler, wider in places.
-    g.strokeStyle = 'rgba(18,18,20,0.85)';
-    g.lineJoin = 'round';
-    for (let pass = 0; pass < 2; pass++) {
-      g.lineWidth = pass ? 3 : 7;
-      g.globalAlpha = pass ? 0.9 : 0.35;
-      g.beginPath();
-      corners.forEach(([x, y], k) => {
-        const jx = x! + (random() - 0.5) * 4;
-        const jy = y! + (random() - 0.5) * 4;
-        if (k) g.lineTo(jx, jy);
-        else g.moveTo(jx, jy);
-      });
-      g.closePath();
-      g.stroke();
-    }
-    g.globalAlpha = 1;
-  });
-}
-
-/** An oil stain: a soft dark blot with a faint sheen ring. */
-function stainTexture(): CanvasTexture {
-  return canvasTexture(128, 128, (g) => {
-    g.clearRect(0, 0, 128, 128);
-    const blot = g.createRadialGradient(64, 64, 4, 64, 64, 60);
-    blot.addColorStop(0, 'rgba(20,18,22,0.55)');
-    blot.addColorStop(0.7, 'rgba(40,30,50,0.25)');
-    blot.addColorStop(1, 'rgba(20,18,22,0)');
-    g.fillStyle = blot;
-    g.fillRect(0, 0, 128, 128);
   });
 }
 
@@ -6412,17 +5814,28 @@ function driftTexture(): CanvasTexture {
   return canvasTexture(128, 512, (g) => {
     g.clearRect(0, 0, 128, 512);
     const colours = ['#ff2d87', '#ffd23f', '#13c3c9', '#ff8a00', '#7b2ff7', '#ffffff', '#4de0a8'];
+    const paths = colours.map(() => new Path2D());
     const random = seeded(3601);
     for (let i = 0; i < 9000; i++) {
       // Most flakes near the kerb: the square of a random number crowds them to u = 0.
       const u = Math.pow(random(), 2.2) * 128;
       const v = random() * 512;
-      g.fillStyle = colours[Math.floor(random() * colours.length)]!;
-      g.save();
-      g.translate(u, v);
-      g.rotate(random() * Math.PI);
-      g.fillRect(-2, -1.5, 3 + random() * 3, 3);
-      g.restore();
+      const ci = Math.floor(random() * colours.length);
+      const a = random() * Math.PI;
+      const hw = 1.5 + random() * 1.5;
+      const hh = 1.5;
+      const ca = Math.cos(a);
+      const sa = Math.sin(a);
+      const p = paths[ci]!;
+      p.moveTo(u - hw * ca + hh * sa, v - hw * sa - hh * ca);
+      p.lineTo(u + hw * ca + hh * sa, v + hw * sa - hh * ca);
+      p.lineTo(u + hw * ca - hh * sa, v + hw * sa + hh * ca);
+      p.lineTo(u - hw * ca - hh * sa, v - hw * sa + hh * ca);
+      p.closePath();
+    }
+    for (let c = 0; c < colours.length; c++) {
+      g.fillStyle = colours[c]!;
+      g.fill(paths[c]!);
     }
   });
 }
