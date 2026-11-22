@@ -8,7 +8,8 @@ its numbers, picture and film) and is written so it can be applied to any other 
 ## The method
 
 1. **One significant change a pass.** A surface, a light, a kind of scenery. Not a retune.
-2. **Measure before and after in the real app**, with `tools/course-bench` (its README has the commands): the
+2. **Measure before and after in the real app** (the worst frame as well as the mean: stutter is a few bad frames)
+   , with `tools/course-bench` (its README has the commands): the
    display's pace, and the frame rate with the limit off, at the top tier, on a real GPU. Take the median of three
    uncapped runs, and measure the before and the after in the same sitting: one run differs from the next by a
    tenth or more.
@@ -470,6 +471,22 @@ file.
 
 **Watch for.** Too many overlapping lights wash to white (the grid holds 1.5 a channel at most). The light has no
 shadow: it passes through walls, so keep a sign's pool on the sign's own side of its building.
+
+### 18. Everything on the GPU before the first frame (Docklands pass 19)
+
+**What it gives.** A ride with no stutter as new stretches of the map come into view.
+
+**How it works.** `course-renderer.ts`, `warm`, called once after the programs compile: every chunk is made visible
+with frustum culling off, the scene is drawn once, culling goes back on and the chunks near the camera are chosen
+as usual. Three.js sends a mesh's geometry to the GPU the first time it draws it; this makes that time the load.
+
+**To apply it to another map.** Nothing to do: it is the renderer's. The same holds for anything made later in a
+ride (a rider first seen, a material first used): make it at load, or it costs a frame when it appears.
+
+**Cost.** One heavy frame at load and the whole map's geometry in GPU memory (9.8 MB for Docklands).
+
+**Watch for.** Measure stutter with nothing else running on the machine and no film being taken: the bench times
+the display's pace in a run of its own, and reports the worst frame beside the mean.
 
 ## What is left, in the order it is worth doing
 

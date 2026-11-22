@@ -254,6 +254,7 @@ export class CourseRenderer implements WorldRenderer {
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
       await renderer.compileAsync(this.scene, this.camera);
+      this.warm(renderer);
       this.pipeline = this.glow(renderer);
       this.render();
       await nextFrame();
@@ -535,6 +536,21 @@ export class CourseRenderer implements WorldRenderer {
     this.shadow(you);
     this.scene.add(you.group);
     this.disposables.push(kit, you.jersey, you.bib, you.shell, this.frameMaterial, this.plain);
+  }
+
+  /**
+   * Sends every chunk of the map to the GPU while the map loads. A chunk's geometry is otherwise sent the first time
+   * it is drawn, a frame of 40 to 80 ms each time a new stretch of the map comes into view: a stutter every few
+   * seconds of the ride.
+   */
+  private warm(renderer: WebGPURenderer): void {
+    for (const { mesh } of this.chunks) {
+      mesh.visible = true;
+      mesh.frustumCulled = false;
+    }
+    renderer.render(this.scene, this.camera);
+    for (const { mesh } of this.chunks) mesh.frustumCulled = true;
+    this.choose();
   }
 
   /** Places the scene as the ride's first frame will, so what the start shows is what compiles. */

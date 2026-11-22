@@ -56,7 +56,10 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
   });
   await bluetooth.remember(echelonBike);
   const race = new RacePage(page);
-  await race.open(map, process.env["WZ_BENCH_QUERY"] ?? "mode=bots&pack=medium");
+  await race.open(
+    map,
+    process.env["WZ_BENCH_QUERY"] ?? "mode=bots&pack=medium",
+  );
   await expect
     .poll(() => bluetooth.writes().map((write) => write.hex), {
       timeout: 30_000,
@@ -77,7 +80,8 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
 
   // A 10-second film of the window's page, taken off the screen while the frames are timed.
   let film: ChildProcess | null = null;
-  if (!uncapped) {
+  // WZ_BENCH_FILM=0 times the frames with no film being taken: the film's own work shows in them.
+  if (!uncapped && process.env["WZ_BENCH_FILM"] !== "0") {
     const at = await page.evaluate(() => {
       const edge = (window.outerWidth - window.innerWidth) / 2;
       return {

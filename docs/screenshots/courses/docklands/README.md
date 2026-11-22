@@ -40,6 +40,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 16 | Pylons and stay cables strung with light over each bridge | 119.0 fps, 2 frames over 20 ms | median of three 292 fps (3.43 ms): 294, 292, 289; pass 15 read 290 | | 72,151 | 126 | 3.17 MB | Yes |
 | 17 | The riders' moving parts in one draw call | 119.4 fps, 1 frame over 20 ms | median of three 315 fps (3.17 ms): 315, 326, 295; pass 16 read 292 | | 73,359 | 77 | 3.17 MB | Yes |
 | 18 | Neon and the bridges' cables throw their colour on the ground and the riders | 117.2 to 119.2 fps over three runs, 5, 2 and 2 frames over 20 ms | median of three 323 fps (3.10 ms): 321, 323, 323; pass 17 read 315 | | 73,359 | 77 | 3.17 MB, and 52 KB for the course file | Yes |
+| 19 | No stutter when a new stretch of the map comes into view | 120.0 fps, no frame over 20 ms, worst 16.7 ms (timed with no film being taken) | median of three 324 fps (3.09 ms): 327, 324, 304; pass 18 read 323 | | 73,359 | 77 | 3.17 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -631,3 +632,33 @@ pass 3 and have not grown, but they are not gone either.
   light its surroundings. The lamps' grid of pass 2 was the right shape for it from the start.
 - Colour on the ground has to be several times stronger than seems right (7.5 times the ground's own colour) to
   show at all on dark asphalt under tone mapping; on the pale pavement the same strength is plain.
+
+## Pass 19: no stutter when a new stretch of the map comes into view
+
+Not a change to a still picture, but to how real the ride is in motion: since pass 3 every ten seconds of riding
+has had a slow frame or two, the worst 75 to 85 ms, five to ten frames' worth at 120 Hz. A rider sees that as the
+world catching.
+
+**Before**, four runs of ten seconds on the first bridge, no film being taken: 3, 2, 2 and 2 frames over 20 ms,
+worst 83, 75, 83 and 75 ms. **After**, the same four runs: none over 20 ms; worst 8.6, 9.3, 9.5 and 9.5 ms.
+
+**What it was.** Two things, told apart by taking each away in turn:
+
+- **The map.** A chunk's geometry went to the GPU the first time the chunk was drawn. At 46 km/h a new chunk of some
+  group comes into view every few seconds, and each cost a frame of 75 ms or so. `course-renderer.ts` now draws
+  every chunk once while the map loads (`warm`), so all of it is on the GPU before the ride's first frame.
+- **The bench.** Taking the film off the screen with ffmpeg cost a slow frame or two in ten seconds by itself (0, 1,
+  0 and 4 over 20 ms with the map warmed and a film being taken). The bench now takes the film in one run and times
+  the display's pace in another with no film.
+
+**Cost.** One frame at load that draws the whole map (380,000 triangles, once), and the map's 9.8 MB of geometry
+held on the GPU from the start, not as it is reached. No change to the frame rate: 324 fps against 323.
+
+**Learned.**
+
+- A measurement that disturbs what it measures hides the thing looked for. For 16 passes the film's own hitches
+  and the map's were one number, and were written off as "the machine".
+- Take away one suspect at a time and count again. Two cheap experiments (no film; no warming) named both causes in
+  ten minutes.
+- An average frame rate says nothing about stutter: 118.7 fps with an 83 ms frame in it is a worse ride than a
+  steady 60. The worst frame is now in the bench's summary.

@@ -67,6 +67,9 @@ All of it is in the `world` library; nothing outside it changes.
 | `surface-detail.ts` | The detail texture's texels, worked out on the device: grain, patches, cracks, stones. No Three.js; unit-tested. |
 | `world-renderer-loader.ts` | Returns a `MapRenderer`. It imports neither renderer, so Three.js still loads only when a world starts. |
 
+**Warm.** Once the programs have compiled, every chunk is drawn once (`warm`), so its geometry is on the GPU before
+the ride's first frame and a chunk coming into view later costs nothing.
+
 **Start.** `WebGPURenderer` with its WebGL2 fallback (ADR 0021), then the course file and the glb
 together. A failure of either resolves `false`, and `WorldScene` emits `unavailable` as it does for
 `main`'s renderer. The scene is compiled (`compileAsync`) and drawn once at the start line before
