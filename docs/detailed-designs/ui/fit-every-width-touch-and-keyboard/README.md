@@ -47,8 +47,14 @@ in its feature design.
   `--target-comfortable` for primary actions and `--target-ride` for controls pressed mid-ride on a
   phone. Open question 12 in `docs/specs/L2.md` notes that the mocks draw mid-ride header buttons
   at 36 to 40 px; this design follows `L2-140` AC2.
-- **Sweeps** — the responsive sweep (`e2e/sweeps/responsive.spec.ts`) checks every screen at
-  320, 640, 768, 1024, 1280 and 2560 px for horizontal scroll. It runs only when a person asks.
+- **Proof** — `e2e/fit-every-width.spec.ts` opens every screen, from the shared table
+  `e2e/fixtures/screens.ts`, at 320 and 2560 px and fails on sideways scroll; it also measures the
+  page margin at 320, 640 and 1024 px and the 80 rem container at 2560 px.
+- **Sweeps** — the responsive sweep (`e2e/sweeps/responsive.sweep.ts`, `npm run sweep:responsive`
+  with `playwright.sweeps.config.ts`) opens the same screens at 320, 640, 768, 1024, 1280 and
+  2560 px. It runs only when a person asks.
+- **Narrow ride header** — the custom ride's clock, Pause and End (`ride-header__end`) wrap at the
+  narrowest widths, End under the clock, so 320 px does not scroll sideways.
 
 ## Requirements
 
