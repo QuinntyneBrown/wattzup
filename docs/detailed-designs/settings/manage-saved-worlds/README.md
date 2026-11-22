@@ -23,33 +23,40 @@ in a cache of their own, so the rider can see and clear them.
 
 **Frontend — `components` library**
 
-- **`DeviceSettings`** (`wz-device-settings`) — "Saved worlds" with the count and size, the names
-  ("Prairie Paceline, Old Town Criterium and Cliffside Coast open in seconds, even offline.") and
-  "Clear saved worlds" (`L2-165` AC1). With none saved it reads "None saved" and "Each world
-  downloads again the next time you ride it." and hides the button (`L2-165` AC2). Below it,
-  the "Keep worlds after a ride" switch (`L2-165` AC3).
-- **`Toast`** (existing block `toast`) — "Saved worlds cleared" and "61 MB freed. Each world
-  downloads again the next time you ride it.", in the page's polite toast region.
+- **`DeviceSettings`** (`wz-device-settings`) — "Saved worlds" with the count and size
+  ("3 worlds · 61 MB"), the names ("Prairie Paceline, Old Town Criterium and Cliffside Coast open
+  in seconds, even offline.") and "Clear saved worlds" (`L2-165` AC1). With none saved it reads
+  "None saved" and "Each world downloads again the next time you ride it." and has no button
+  (`L2-165` AC2). Below it, the "Keep worlds after a ride" switch (`L2-165` AC3). It takes the
+  row's words and the switch's state, and emits `cleared` and `keepWorldsToggled`.
+- **`Toast`** (`wz-toast`, design-system block `toast`) — a tone, a title, its text projected and
+  × ("Dismiss"). Settings shows "Saved worlds cleared" and "61 MB freed. Each world downloads again
+  the next time you ride it." in a polite live region; the toast closes on its own after 6 seconds,
+  or with ×.
 
 **Frontend — `api` and `domain/storage`**
 
-- **`WorldCache`** / `WORLD_CACHE` (contract in `api`) — `get(worldId)`, `put(worldId, bundle)`,
-  `list()` (world id, name and bytes), `totalBytes()` and `clear()`.
-- **`CacheStorageWorldCache`** (`domain/storage`) — implements the contract on the Cache Storage
-  cache `telo-ride-worlds-v1`, one request per world bundle file. It records each world's name
-  and bytes in an index entry in the same cache, so listing needs no download. `clear()` deletes
-  the cache.
-- **`WorldAssetLoader`** (`world`, from `classes/load-a-class-world`) — calls `put()` after a
-  finished download only when `keepWorlds` is on (`L2-165` AC3). A `get()` that finds a world
-  partly evicted returns nothing, and the loader downloads it again (`L2-165` AC4).
+- **`RideSettings.keepWorlds`** — on by default; Reset to recommended turns it back on.
+- **`SavedWorlds`** / `SAVED_WORLDS` (contract in `api`) — `list()` (each saved world's id, name
+  and bytes, in the order they were saved) and `clear()`.
+- **`CacheStorageSavedWorlds`** (`domain/storage`) — implements the contract on the Cache Storage
+  cache `telo-worlds` that slice 16.1's `FetchWorldDownloader` keeps worlds in. Each saved file
+  carries its world's name and bytes in its own headers (`x-telo-world-name`,
+  `x-telo-world-bytes`), so listing reads no file. `clear()` deletes the cache.
+- **`FetchWorldDownloader`** (from `classes/load-a-class-world`) — takes the world's id and name,
+  and saves a finished download, with those headers, only while `keepWorlds` is on (`L2-165` AC3).
+  A world the browser evicted is not found in the cache, so it downloads again (`L2-165` AC4).
 
 **Frontend — `ride` application**
 
-- **`SavedWorldsStore`** — provided on the Settings route. It loads `list()` and `totalBytes()`
-  when the page opens, formats "3 worlds · 61 MB", and on "Clear saved worlds" calls `clear()`,
-  reloads the list and raises the toast with the bytes freed.
+- **`SavedWorldsStore`** — provided by the Settings page. It loads `list()` when the page opens and
+  words the row through `savedWorldsView` ("3 worlds · 61 MB", "0.2 MB" under 10 MB); on "Clear
+  saved worlds" it calls `clear()`, lists again and raises the toast with the bytes freed, and
+  clears the toast's timer when the page goes.
+- **World loading** reads "18.9 MB" for a finished download with `keepWorlds` off, instead of
+  "· saved on this device for next time" (`L2-152` AC2).
 - **Storage pressure.** The app does not call `navigator.storage.persist()`: worlds are a cache,
-  and eviction costs only a download. Whether to ask for persistent storage is `<TO SUPPLY>`.
+  and eviction costs only a download.
 
 ## Requirements
 
