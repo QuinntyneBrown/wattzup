@@ -10,6 +10,11 @@ import { expect, test } from './fixtures/test';
 import { ClassRidePage } from './pages/class-ride.page';
 import { HomePage } from './pages/home.page';
 
+/** A seat in a session ten minutes away, so the ride waits for it rather than starting (L2-087 AC4). */
+function laterSession(): { id: string; startsAt: string } {
+  return { id: 'session-0715', startsAt: new Date(Date.now() + 600_000).toISOString() };
+}
+
 test('a group class ride opens one hub connection and measures its clock offset; leaving closes it (L2-120 AC1, AC4; L2-121 AC3) @critical', async ({
   page,
   bluetooth,
@@ -17,9 +22,7 @@ test('a group class ride opens one hub connection and measures its clock offset;
 }) => {
   hub.open();
   hub.answer('ServerTime', () => Date.now() + 1500);
-  hub.answer('JoinClassSession', () =>
-    seated({ id: 'session-0715', startsAt: '2026-11-21T07:15:00+00:00' }),
-  );
+  hub.answer('JoinClassSession', () => seated(laterSession()));
   await bluetooth.remember(echelonBike);
   const ride = new ClassRidePage(page);
 
@@ -41,9 +44,7 @@ test('when the connection drops, the ride reconnects at once and measures its cl
 }) => {
   hub.open();
   hub.answer('ServerTime', () => Date.now());
-  hub.answer('JoinClassSession', () =>
-    seated({ id: 'session-0715', startsAt: '2026-11-21T07:15:00+00:00' }),
-  );
+  hub.answer('JoinClassSession', () => seated(laterSession()));
   await bluetooth.remember(echelonBike);
   await new ClassRidePage(page).openGroup(hiitCardio.id, 'session-0715');
   await expect.poll(() => hub.invocations('ServerTime').length).toBe(5);

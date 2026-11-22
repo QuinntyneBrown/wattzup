@@ -33,7 +33,7 @@ Rel(resist, conn, "Set resistance")
 Rel(store, conn, "Reads telemetry")
 Rel(sync, player, "play, pause, seekTo")
 Rel(store, live, "Session start (group)")
-Rel(live, hub, "SessionStarted")
+Rel(live, hub, "ServerTime, JoinClassSession: seat and start")
 Rel(conn, bike, "GATT", "Web Bluetooth")
 Rel(player, youtube, "IFrame API")
 @enduml

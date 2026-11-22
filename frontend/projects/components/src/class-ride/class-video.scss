@@ -45,6 +45,46 @@
 }
 
 // Ink at 70 % over the picture, "Paused" centred (components/video.html).
+// Waiting for a group session's start (L2-087 AC4): the parked picture under the time left.
+.class-video__wait {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  text-align: center;
+  background: color-mix(in srgb, var(--color-ink) 70%, transparent);
+}
+
+.class-video__wait-label {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-muted);
+}
+
+.class-video__wait-time {
+  margin: 0;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-4xl);
+  line-height: var(--line-height-none);
+  color: var(--color-volt-fg);
+}
+
+.class-video__wait-note {
+  margin: 0;
+  max-width: 32ch;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
 .class-video__paused {
   position: absolute;
   inset: 0;

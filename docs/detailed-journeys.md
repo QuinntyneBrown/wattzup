@@ -58,7 +58,7 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 14.1 | Connect to the ride hub | SignalR client behind a token: connects only when needed, measures the server clock offset and reconnects after drops. | 3 | 14. Ride a class with a group | 100% |
 | 14.2 | Group session schedule | A session every 15 minutes, 10 seats, shown on Class Start. | 3 | 14. Ride a class with a group | 100% |
 | 14.3 | Join a group session | Join; full or started sessions offer the next one. | 3 | 14. Ride a class with a group | 100% |
-| 14.4 | Start together | Clock and video wait, then start at the session time. | 3 | 14. Ride a class with a group | 0% |
+| 14.4 | Start together | Clock and video wait, then start at the session time. | 3 | 14. Ride a class with a group | 100% |
 | 14.5 | Live group board | Group class board ranks riders by output and updates every second from the backend. | 3 | 14. Ride a class with a group | 0% |
 | 15.1 | Race lobby | Wait for riders, see who's in, leave before the start. | 3 | 15. Race people live | 0% |
 | 15.2 | Start a live race | Shared countdown; everyone starts on the same server time. | 3 | 15. Race people live | 0% |
@@ -103,4 +103,4 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 27.1 | Installable app | Manifest, icons and install from Chrome or Edge. | 2 | 27. Install the app | 0% |
 | 27.2 | Update to a new version | Tell the rider a new version is ready; reload between rides. | 1 | 27. Install the app | 0% |
 
-**Total:** 95 slices, 238 days. **Complete:** 51 slices, 132 days (55%).
+**Total:** 95 slices, 238 days. **Complete:** 52 slices, 135 days (57%).

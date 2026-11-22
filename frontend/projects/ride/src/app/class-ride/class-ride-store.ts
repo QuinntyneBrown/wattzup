@@ -12,6 +12,7 @@ import {
   TICKER,
   VIDEO_PLAYER_FACTORY,
   type VideoPlayer,
+  MONOTONIC_TIME,
 } from '@telo/api';
 import { type ClassStatTone, formatMetric } from '@telo/components';
 import {
@@ -23,6 +24,7 @@ import {
   RideTicker,
   VideoClockSync,
   WorkoutEngine,
+  planStateAt,
 } from '@telo/domain';
 import { LiveSessionStore } from '../live/live-session-store';
 
@@ -43,6 +45,9 @@ export interface StatView {
  * resumes it, a lost bike holds it until the bike is back (docs/detailed-designs/classes/pause-leave-or-finish-a-class,
  * L2-091, L2-092 AC4), the screen stays awake while it runs (L2-133 AC3), and at the class length it opens Results.
  */
+/** The rider's local time, "7:39 PM". */
+const LOCAL_TIME = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' });
+
 @Injectable()
 export class ClassRideStore {
   private readonly clock = inject(RideClock);
@@ -63,6 +68,15 @@ export class ClassRideStore {
   private readonly router = inject(Router);
   private readonly wakeLock = inject(SCREEN_WAKE_LOCK);
   private readonly outbox = inject(RIDE_OUTBOX);
+  private readonly time = inject(MONOTONIC_TIME);
+  private readonly started = signal(false);
+  /** The group session's start on the monotonic clock while the ride waits for it, and the time now. */
+  private readonly waitUntil = signal<{ readonly at: number; readonly now: number } | null>(null);
+  private readonly sessionStart = signal<string | null>(null);
+  private startTimer: ReturnType<typeof setTimeout> | null = null;
+  /** The seat taken as the ride connects, in a group ride; settled when the join is done, seated or not. */
+  private joined: Promise<void> | null = null;
+  private live: LiveSessionStore | null = null;
   /** The ride's record for the backend, with the ride id given when the class starts (Record a ride). */
   private recorder: RideRecorder | null = null;
   private lastSecond = 0;
@@ -70,8 +84,25 @@ export class ClassRideStore {
   private destroyed = false;
 
   readonly ride = this.loaded.asReadonly();
+  /** Whether the ride is in a group session (`?session=`): its header reads "Group" and it has no Pause (L2-087 AC1). */
+  readonly group: boolean;
+  /** The whole seconds left to the group session's start while the ride waits for it (L2-087 AC4). */
+  readonly startsIn = computed(() => {
+    const wait = this.waitUntil();
+    return wait === null ? null : Math.max(0, Math.ceil((wait.at - wait.now) / 1000));
+  });
+  /** The session's start in the rider's time, "7:39 PM". */
+  readonly startsAt = computed(() => {
+    const start = this.sessionStart();
+    return start === null ? null : LOCAL_TIME.format(new Date(start));
+  });
   readonly elapsed = this.ticker.second;
-  readonly plan = this.engine.state;
+  /** Where the plan stands; while a group ride waits for its start, the first segment ahead, with nothing sent. */
+  readonly plan = computed(() => {
+    const state = this.engine.state();
+    const ride = this.loaded();
+    return state ?? (this.waitUntil() !== null && ride !== null ? planStateAt(ride.plan, 0) : null);
+  });
   readonly level = this.telemetry.resistance;
   readonly canControl = this.resistance.canControl;
   /** Whether the rider paused the ride: the clock, the plan and the video hold (L2-091 AC1). */
@@ -123,9 +154,11 @@ export class ClassRideStore {
     // Start, which reads the sessions again and offers the next one (L2-122 AC2, L2-086 AC3), or for the Class Library
     // when the class is locked (L2-082).
     const sessionId = route.queryParamMap.get('session');
+    this.group = sessionId !== null;
     if (sessionId !== null) {
       const live = inject(LiveSessionStore);
-      void live.join({ kind: 'class', classId: id, sessionId });
+      this.live = live;
+      this.joined = live.join({ kind: 'class', classId: id, sessionId });
       effect(() => {
         const refused = live.refused();
         if (refused === null) return;
@@ -146,6 +179,7 @@ export class ClassRideStore {
       .subscribe((dto) => this.start(dto));
     this.destroyRef.onDestroy(() => {
       this.destroyed = true;
+      if (this.startTimer !== null) clearTimeout(this.startTimer);
       this.player()?.destroy();
       // The lock is bound on the route, whose injector outlives the page.
       this.wakeLock.release();
@@ -164,7 +198,8 @@ export class ClassRideStore {
         void player.load(host, ride.video.videoId, {
           startSeconds: ride.video.syncOffsetSeconds + this.clock.elapsedMs() / 1000,
           controls: false,
-          autoplay: true,
+          // A group ride waiting for its start parks the video at the sync offset (L2-087 AC4).
+          autoplay: this.started(),
           title: ride.title,
         });
       },
@@ -200,11 +235,52 @@ export class ClassRideStore {
     void this.resistance.nudge(-1);
   }
 
+  /** The class has arrived: a solo ride starts at once; a group ride waits for its seat, then for its start. */
   private start(dto: ClassDto): void {
     this.loaded.set(dto);
+    if (this.joined === null) return this.begin(dto);
+    void this.joined.then(() => this.waitForStart(dto));
+  }
+
+  /**
+   * Holds a seated group ride at 0:00 until the server's time reaches its session's start, read through the measured
+   * clock offset, so every rider starts at the same moment (L2-087 AC4, L2-122 AC3); one that arrives after the start
+   * rides from the session's time. Without a seat or an offset (the hub cannot be reached) the ride carries on with
+   * the bike at once (L2-126); a refused join leaves the ride instead.
+   */
+  private waitForStart(dto: ClassDto): void {
+    const live = this.live;
+    if (this.destroyed || live === null || live.refused() !== null) return;
+    const seat = live.seat();
+    const offset = live.offsetMs();
+    if (seat === null || offset === null) return this.begin(dto);
+    const at = Date.parse(seat.startsAt) - offset;
+    this.sessionStart.set(seat.startsAt);
+    this.countDown(dto, at);
+  }
+
+  /** Shows the time left and wakes on each whole second before the start; at the start it begins the ride. */
+  private countDown(dto: ClassDto, at: number): void {
+    const now = this.time.now();
+    if (now >= at) return this.begin(dto, at);
+    this.waitUntil.set({ at, now });
+    this.startTimer = setTimeout(() => this.countDown(dto, at), (at - now) % 1000 || 1000);
+  }
+
+  /** Starts the ride: now, or from `at`, the group session's start on the monotonic clock. */
+  private begin(dto: ClassDto, at?: number): void {
+    this.startTimer = null;
+    this.waitUntil.set(null);
+    this.started.set(true);
     this.recorder = new RideRecorder();
     this.wakeLock.hold();
-    this.clock.start();
+    this.clock.start(at);
+    // A video parked while waiting starts with the clock, from the sync offset plus the time ridden.
+    const player = this.player();
+    if (player !== null) {
+      player.seekTo(dto.video.syncOffsetSeconds + this.clock.elapsedMs() / 1000);
+      player.play();
+    }
     this.ticker.start();
     this.engine.follow(dto.plan);
     this.ticker.ticks.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((second) => {

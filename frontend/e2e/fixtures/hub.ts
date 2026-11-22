@@ -60,7 +60,10 @@ export class HubFixture {
     this.opened = true;
   }
 
-  /** Answers an invocation of `method` that awaits a result (`connection.invoke`) with what `result` returns. */
+  /**
+   * Answers an invocation of `method` that awaits a result (`connection.invoke`) with what `result` returns, or what it
+   * resolves to: `() => page.evaluate(() => Date.now())` answers ServerTime on the page's installed clock.
+   */
   answer(method: string, result: (...args: unknown[]) => unknown): void {
     this.results.set(method, result);
   }
@@ -131,12 +134,11 @@ export class HubFixture {
       socket.send(frame({ type: 3, invocationId: message.invocationId, error: 'unanswered' }));
       return;
     }
-    socket.send(
-      frame({
-        type: 3,
-        invocationId: message.invocationId,
-        result: result(...(message.arguments ?? [])),
-      }),
+    const invocationId = message.invocationId;
+    // An answer read from the page settles after the page has closed when the spec has ended; nobody awaits it then.
+    void Promise.resolve(result(...(message.arguments ?? []))).then(
+      (answer) => socket.send(frame({ type: 3, invocationId, result: answer })),
+      () => undefined,
     );
   }
 }

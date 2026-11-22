@@ -13,5 +13,5 @@ System_Boundary(telo, "Telo Ride") {
 Rel(rider, app, "Uses")
 Rel(app, bike, "Telemetry and target resistance", "Web Bluetooth")
 Rel(app, youtube, "Embeds player", "HTTPS")
-Rel(app, api, "SessionStarted (group only)", "SignalR /hubs/ride")
+Rel(app, api, "ServerTime, JoinClassSession (group only)", "SignalR /hubs/ride")
 @enduml

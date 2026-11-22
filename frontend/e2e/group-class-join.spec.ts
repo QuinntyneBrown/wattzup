@@ -26,7 +26,7 @@ test.describe('Joining a group session', () => {
     await page.clock.install({ time: SESSIONS_NOW });
     await bluetooth.remember(echelonBike);
     hub.open();
-    hub.answer('ServerTime', () => Date.now());
+    hub.answer('ServerTime', () => page.evaluate(() => Date.now()));
   });
 
   test('Join opens the group ride, which asks the hub for a seat in that session and stays (L2-085 AC3, L2-122 AC1) @critical', async ({
