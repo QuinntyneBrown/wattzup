@@ -46,3 +46,42 @@ export const catalogue = {
   ],
   classes: [hiitCardio],
 };
+
+/** A rider seated in a group session, as `GET /api/classes/{id}/sessions` lists them. */
+export interface SessionRider {
+  readonly displayName: string;
+  readonly jersey: string;
+}
+
+/** The six riders of the mocks' 7:39 PM session (docs/mocks/pages/class-start/default.html). */
+export const sixRiders: readonly SessionRider[] = [
+  { displayName: 'lena.k', jersey: 'lena' },
+  { displayName: 'MarcoVelo', jersey: 'marco' },
+  { displayName: 'priya_spins', jersey: 'priya' },
+  { displayName: 'jwatts', jersey: 'jwatts' },
+  { displayName: 'Ollie R.', jersey: 'ollie' },
+  { displayName: 'kenji.cyc', jersey: 'kenji' },
+];
+
+/** One group session of 30 Minute HIIT Cardio starting at `startsAt` (ISO, UTC), with these riders seated. */
+export function hiitSession(startsAt: string, riders: readonly SessionRider[], full = false) {
+  const start = new Date(startsAt);
+  const stamp = start.toISOString().replace(/[-:]/g, '').slice(0, 13);
+  return {
+    id: `hiit-cardio-30@${stamp}Z`,
+    startsAt: start.toISOString(),
+    seatsTaken: full ? 10 : riders.length,
+    capacity: 10,
+    full,
+    riders,
+  };
+}
+
+/** The clock of the group-session specs: 7:30 PM, with the mocks' next session at 7:39 and the one after at 7:54. */
+export const SESSIONS_NOW = new Date('2026-11-21T19:30:00Z').getTime();
+
+/** HIIT's next two sessions as the mocks show them: 7:39 PM with six riders, then 7:54 PM with two. */
+export const hiitSessions = [
+  hiitSession('2026-11-21T19:39:00Z', sixRiders),
+  hiitSession('2026-11-21T19:54:00Z', sixRiders.slice(0, 2)),
+];

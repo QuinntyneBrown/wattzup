@@ -93,6 +93,10 @@ const SESSION_ENDED: ApiReply = {
  * Every spec starts signed in as `signedInRider`, a new rider, and its finished rides are recorded; `signedOut()` ends the
  * session.
  */
+/** A class's group sessions (`GET /api/classes/{id}/sessions`), which no spec has to answer: unanswered, they cannot be reached. */
+const CLASS_SESSIONS = /^GET \/api\/classes\/[^/]+\/sessions$/;
+const UNREACHABLE: Handler = () => ({ status: 503 });
+
 export class ApiFixture {
   private readonly answers = new Map<string, Handler>();
   private readonly sent: string[] = [];
@@ -109,6 +113,9 @@ export class ApiFixture {
     // Home reads the catalogues for its Next ride card and its doors (L2-033 to L2-035).
     api.answer('GET', '/api/maps', maps);
     api.answer('GET', '/api/classes', catalogue);
+    // Class Start and the Class Library read the group sessions (L2-083, L2-085); unless a spec serves them, they cannot
+    // be reached, and both screens offer riding alone only (L2-085 AC5, L2-081 AC6).
+    api.answer('GET', '/api/classes/sessions', UNREACHABLE);
     await page.route(
       (url) =>
         ['localhost', '127.0.0.1'].includes(url.hostname) && url.pathname.startsWith('/api/'),
@@ -117,7 +124,8 @@ export class ApiFixture {
         const key = `${request.method()} ${new URL(request.url()).pathname}`;
         api.sent.push(key);
         if (request.postData() !== null) api.bodies.push({ key, body: request.postDataJSON() });
-        const handler = api.answers.get(key);
+        const handler =
+          api.answers.get(key) ?? (CLASS_SESSIONS.test(key) ? UNREACHABLE : undefined);
         if (!handler) {
           api.missed.push(key);
           await route.fulfill({

@@ -25,6 +25,7 @@ export { ClassShelf } from './class-library/class-shelf';
 export { TierTabs, type TierTab } from './class-library/tier-tabs';
 export { BackLink } from './class-start/back-link';
 export { ClassPlan } from './class-start/class-plan';
+export { ClassSession } from './class-start/class-session';
 export { ClassStartVideo } from './class-start/class-start-video';
 export { ClassSync } from './class-start/class-sync';
 export { RideChoice, type RideOption } from './class-start/ride-choice';

@@ -59,6 +59,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 13.2 | [Choose the next ride](13-2-home-next-ride/README.md) | 2:06 | Home's greeting by the time of day or a new rider's welcome; the Next ride card for the mid rider, a new rider, a level goal and every map open; the Race door's counts and tiles; the Classes door's featured class with Ride alone; the gold banner shown once |
 | 13.3 | [Show the profile](13-3-show-the-profile/README.md) | 1:51 | Profile's headline with the level, an XP bar named by the XP, the rides, kilometres and streak, for the mid rider and a new rider; Settings with the bike and its state, Ride settings and Custom workout before the account rows; No bike yet to Connect Bike |
 | 14.1 | [Connect to the ride hub](14-1-connect-to-the-ride-hub/README.md) | 1:53 | A group class ride holding one connection to the ride hub with the session cookie; the clock offset from five ServerTime calls; reconnecting at once after a drop and measuring again; a solo ride and Home holding none |
+| 14.2 | [Group session schedule](14-2-group-session-schedule/README.md) | 1:54 | Group sessions every 15 minutes on the quarter hours, ten seats each; Class Start offering the next with its riders and Join, the full and starting sessions; the Class Library's group chips; all read every 30 seconds |
 
 ## What every video is
 

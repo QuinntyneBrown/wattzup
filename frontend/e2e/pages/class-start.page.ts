@@ -16,6 +16,12 @@ export class ClassStartPage {
   readonly alone: Locator;
   readonly group: Locator;
   readonly start: Locator;
+  /** Join, whatever its words ("Join · starts in 9 min", "Join the next session"). */
+  readonly join: Locator;
+  readonly sessionLabel: Locator;
+  readonly riders: Locator;
+  readonly next: Locator;
+  readonly note: Locator;
 
   constructor(private readonly page: Page) {
     this.back = page.locator('.class-header').getByRole('link', { name: 'Classes' });
@@ -32,6 +38,11 @@ export class ClassStartPage {
     this.alone = this.choice.getByRole('radio', { name: /Ride alone/ });
     this.group = this.choice.getByRole('radio', { name: /Ride with a group/ });
     this.start = page.getByRole('button', { name: 'Start class' });
+    this.join = page.getByRole('button', { name: /^Join/ });
+    this.sessionLabel = page.locator('.class-session__label');
+    this.riders = page.locator('.class-session__riders');
+    this.next = page.locator('.class-session__next');
+    this.note = page.locator('.class-session__note');
   }
 
   async open(classId: string): Promise<void> {

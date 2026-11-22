@@ -15,7 +15,7 @@ Container_Boundary(app, "Ride app") {
   Component(player, "YouTubeVideoPlayer", "Service · video", "VIDEO_PLAYER_FACTORY, lazily imported")
 }
 Container_Boundary(backend, "Telo Ride API") {
-  Component(ctrl, "ClassesController", "ASP.NET Core controller · Telo.Ride.Api", "GET /api/classes/{classId}/sessions")
+  Component(ctrl, "ClassSessionsController", "ASP.NET Core controller · Telo.Ride.Api", "GET /api/classes/{classId}/sessions")
   Component(rhub, "RideHub", "SignalR hub · Telo.Ride.Api", "/hubs/ride")
   Component(query, "GetClassSessionsQueryHandler", "MediatR handler · Telo.Ride.Application", "Next two sessions")
   Component(join, "JoinClassSessionCommandHandler", "MediatR handler · Telo.Ride.Application", "Seats a rider; session_full, session_started, class_locked (multiplayer)")

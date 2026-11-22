@@ -28,7 +28,7 @@ package "Telo.Ride.Domain" {
     +TrySeat(rider: RiderOccupant, now: DateTimeOffset): JoinOutcome
     +RidersSeated: int
   }
-  class ClassSessionSchedule {
+  class GroupSessionSchedule {
     +Interval: TimeSpan = 15 min
     +SlotsFrom(classId: string, now: DateTimeOffset): IEnumerable<DateTimeOffset>
     +Next(slot: DateTimeOffset): DateTimeOffset
@@ -73,7 +73,7 @@ LiveSession <|-- GroupClassSession
 GroupClassSession ..> JoinOutcome : returns
 JoinOutcome --> JoinRefusal
 JoinClassSessionCommandHandler ..> JoinClassSessionCommand : handles
-JoinClassSessionCommandHandler ..> ClassSessionSchedule
+JoinClassSessionCommandHandler ..> GroupSessionSchedule
 JoinClassSessionCommandHandler ..> ISessionRegistry
 JoinClassSessionCommandHandler ..> ISessionNotifier
 JoinClassSessionCommandHandler ..> IAppDbContext : class and rider level

@@ -1,0 +1,24 @@
+<div class="class-session">
+  @if (next(); as next) {
+    <h3 class="class-session__label">Next session</h3>
+    <p class="class-session__next">{{ next }}</p>
+  } @else {
+    <h3 class="class-session__label">Riding in this session</h3>
+    @if (riders().length > 0) {
+      <ul
+        class="class-session__riders"
+        [attr.aria-label]="riders().length + (riders().length === 1 ? ' rider' : ' riders')"
+      >
+        @for (rider of riders(); track $index) {
+          <li class="class-session__rider">
+            <span class="class-dot" [class]="'class-dot class-dot--' + rider.jersey"></span
+            >{{ rider.displayName }}
+          </li>
+        }
+      </ul>
+    }
+  }
+  <p class="class-session__note">
+    Everyone rides the same video in sync. The board ranks riders by output, so heavier gears count.
+  </p>
+</div>

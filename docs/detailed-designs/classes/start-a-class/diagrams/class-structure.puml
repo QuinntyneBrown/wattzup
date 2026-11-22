@@ -42,10 +42,6 @@ package "domain library" {
     +structure(plan: Plan): string
     +expectedAveragePower(plan: Plan): number
   }
-  class ServerClock {
-    +offsetMs: number
-    +now(): number
-  }
 }
 package "ride application" {
   enum RideMode {
@@ -56,14 +52,20 @@ package "ride application" {
     +classDto: Signal<ClassDto>
     +mode: Signal<RideMode>
     +sessions: Signal<ClassSessionDto[]>
-    +groupOption: Signal<string>
-    +button: Signal<JoinButtonView>
+    +group: Signal<GroupSessionView | null>
     +choose(mode: RideMode): void
     +refreshSessions(): void
   }
-  class JoinButtonView {
-    +label: string
-    +targetSessionId: string
+  class GroupSessionView {
+    +optionBody: string
+    +joinLabel: string
+    +sessionId: string
+    +full: boolean
+    +riders: SessionRiderDto[]
+    +next: string | null
+  }
+  class "groupSessionView()" as view <<helper>> {
+    +groupSessionView(sessions: ClassSessionDto[], now: number): GroupSessionView | null
   }
   class ClassStartPage {
     +join(): Promise<void>
@@ -73,7 +75,8 @@ package "Telo.Ride.Domain" {
   class GroupSessionSchedule {
     +TimeSpan Interval = 15 min
     +int Capacity = 10
-    +NextStarts(classId: string, now: DateTimeOffset, count: int): IReadOnlyList<DateTimeOffset>
+    +Next(now: DateTimeOffset, count: int): IReadOnlyList<DateTimeOffset>
+    +SessionId(classId: string, start: DateTimeOffset): string
   }
   class GroupClassSession {
     +Guid Id
@@ -98,9 +101,9 @@ package "Telo.Ride.Application" {
 ClassSessionDto "1" *-- "*" SessionRiderDto
 ClassStartStore --> RideMode
 ClassStartStore "1" o-- "*" ClassSessionDto
-ClassStartStore *-- JoinButtonView
+ClassStartStore *-- GroupSessionView
 ClassStartStore ..> PlanSummary
-ClassStartStore ..> ServerClock
+ClassStartStore ..> view
 ClassStartPage --> ClassStartStore
 ClassStartPage ..> RideHubClient : joins
 ClassStartPage ..> VideoPlayer : parks video

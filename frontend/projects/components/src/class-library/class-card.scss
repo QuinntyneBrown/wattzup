@@ -77,6 +77,26 @@
   font-weight: var(--font-weight-semibold);
 }
 
+.class-card__group {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  border-radius: var(--radius-sm);
+  background: var(--color-scrim-strong);
+  color: var(--color-on-photo);
+  padding: var(--space-0-5) var(--space-1-5);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-medium);
+
+  .icon {
+    color: var(--color-volt);
+  }
+}
+
 .class-card__time {
   position: absolute;
   right: var(--space-2);

@@ -25,20 +25,36 @@
           />
         </section>
         <wz-ride-choice
-          [options]="store.options"
+          [options]="store.options()"
           [selected]="store.mode()"
-          (choose)="store.mode.set($event)"
+          (choose)="store.choose($event)"
         >
-          <button
-            wz-button
-            variant="primary"
-            size="xl"
-            [block]="true"
-            type="button"
-            (click)="start(dto.id)"
-          >
-            Start class
-          </button>
+          @if (store.mode() === 'group' && store.group(); as group) {
+            <wz-class-session slot="session" [riders]="group.riders" [next]="group.next" />
+          }
+          @if (store.mode() === 'group' && store.group(); as group) {
+            <button
+              wz-button
+              variant="primary"
+              size="xl"
+              [block]="true"
+              type="button"
+              (click)="join(dto.id, group.sessionId)"
+            >
+              {{ group.joinLabel }}
+            </button>
+          } @else {
+            <button
+              wz-button
+              variant="primary"
+              size="xl"
+              [block]="true"
+              type="button"
+              (click)="start(dto.id)"
+            >
+              Start class
+            </button>
+          }
         </wz-ride-choice>
       </main>
     }

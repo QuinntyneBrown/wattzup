@@ -18,6 +18,11 @@ export type { BikeSupportLevel, SupportedBike } from './bike/supported-bike';
 export type { TelemetrySample } from './bike/telemetry-sample';
 export type { ClassCatalogueDto, ShelfDto } from './classes/class-catalogue-dto';
 export type { ClassDto } from './classes/class-dto';
+export type {
+  ClassSessionDto,
+  NextGroupSessionDto,
+  SessionRiderDto,
+} from './classes/class-session-dto';
 export { CLASSES_API, type ClassesApi } from './classes/classes-api';
 export { ClassesApiError, type ClassesApiErrorCode } from './classes/classes-api-error';
 export { HttpClassesApi } from './classes/http-classes-api';

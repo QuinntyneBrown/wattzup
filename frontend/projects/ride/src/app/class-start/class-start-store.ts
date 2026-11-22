@@ -1,14 +1,26 @@
 import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { CLASSES_API, type ClassDto, VIDEO_PLAYER_FACTORY, type VideoPlayer } from '@telo/api';
+import {
+  CLASSES_API,
+  type ClassDto,
+  type ClassSessionDto,
+  VIDEO_PLAYER_FACTORY,
+  type VideoPlayer,
+} from '@telo/api';
+import { catchError, of, switchMap, timer } from 'rxjs';
 import type { RideOption } from '@telo/components';
 import { PlanSummary } from '@telo/domain';
+import { groupSessionView } from './group-session-view';
+
+/** How often Class Start reads the group sessions again (L2-083 AC2). */
+const SESSIONS_EVERY = 30_000;
 
 /**
  * Class Start's state, provided on its page (docs/detailed-designs/classes/start-a-class): the class of the address,
  * read from `CLASSES_API` (the device's copy when the backend cannot be reached), what the page says of it, and its
- * video parked at the sync offset. It goes, with the player, when the rider leaves.
+ * video parked at the sync offset; and the class's next group sessions, read every 30 seconds (L2-083 AC2). It goes,
+ * with the player and the polling, when the rider leaves.
  */
 @Injectable()
 export class ClassStartStore {
@@ -27,29 +39,48 @@ export class ClassStartStore {
     return dto ? `${dto.channel} · ${Math.round(dto.lengthSeconds / 60)} min · ${dto.focus}` : '';
   });
 
-  /**
-   * The ways to ride (L2-085): alone, chosen; with a group, which cannot be chosen until group sessions can be read
-   * (slices 14.2 and 14.3, L2-085 AC5).
-   */
-  readonly options: readonly RideOption[] = [
-    {
-      id: 'alone',
-      title: 'Ride alone',
-      body: 'Start now. Pause whenever you like.',
-      icon: 'alone',
-      disabled: false,
-    },
-    {
-      id: 'group',
-      title: 'Ride with a group',
-      body: 'Group sessions can’t be reached right now.',
-      icon: 'group',
-      disabled: true,
-    },
-  ];
+  /** The next two group sessions and when they were read; `null` while they cannot be read (L2-085 AC5). */
+  private readonly sessions = signal<{
+    readonly list: readonly ClassSessionDto[];
+    readonly at: number;
+  } | null>(null);
+  private readonly chosen = signal<string | null>(null);
 
-  /** The chosen way to ride. */
-  readonly mode = signal('alone');
+  /** The next group session's words, or `null` when there is none to offer. */
+  readonly group = computed(() => {
+    const sessions = this.sessions();
+    return sessions ? groupSessionView(sessions.list, sessions.at) : null;
+  });
+
+  /**
+   * The ways to ride (L2-085): alone; with a group, reading the next session, which cannot be chosen while the sessions
+   * cannot be read (AC5).
+   */
+  readonly options = computed<readonly RideOption[]>(() => {
+    const group = this.group();
+    return [
+      {
+        id: 'alone',
+        title: 'Ride alone',
+        body: 'Start now. Pause whenever you like.',
+        icon: 'alone',
+        disabled: false,
+      },
+      {
+        id: 'group',
+        title: 'Ride with a group',
+        body: group?.optionBody ?? 'Group sessions can’t be reached right now.',
+        icon: 'group',
+        disabled: group === null,
+      },
+    ];
+  });
+
+  /** The chosen way to ride: the group, as the mocks open, while a session can be joined; alone otherwise. */
+  readonly mode = computed(() => {
+    const chosen = this.chosen() ?? 'group';
+    return chosen === 'group' && this.group() === null ? 'alone' : chosen;
+  });
 
   /** "8 × 0:30 · 3:00 → 1:30 recover · ~154 W average" (L2-084 AC2). */
   readonly planSummary = computed(() => {
@@ -59,14 +90,25 @@ export class ClassStartStore {
 
   constructor() {
     const id = inject(ActivatedRoute).snapshot.paramMap.get('id') ?? '';
-    inject(CLASSES_API)
+    const classes = inject(CLASSES_API);
+    classes
       .get(id)
       .pipe(takeUntilDestroyed())
       .subscribe((dto) => this.loaded.set(dto));
+    timer(0, SESSIONS_EVERY)
+      .pipe(
+        switchMap(() => classes.sessions(id).pipe(catchError(() => of(null)))),
+        takeUntilDestroyed(),
+      )
+      .subscribe((list) => this.sessions.set(list ? { list, at: Date.now() } : null));
     inject(DestroyRef).onDestroy(() => {
       this.destroyed = true;
       this.player?.destroy();
     });
+  }
+
+  choose(mode: string): void {
+    this.chosen.set(mode);
   }
 
   /**

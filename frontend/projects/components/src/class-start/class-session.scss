@@ -1,0 +1,84 @@
+// Block class-session (docs/design-system/assets/components.css, Class Start): who rides the next group session, with
+// a dot in each rider's jersey (block class-dot).
+:host {
+  display: block;
+}
+
+.class-session {
+  margin-top: var(--space-5);
+}
+
+.class-session__label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-muted);
+}
+
+.class-session__next {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.class-session__riders {
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--space-4);
+  row-gap: var(--space-1-5);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.class-session__rider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+}
+
+.class-session__note {
+  margin-top: var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.class-dot {
+  display: block;
+  flex-shrink: 0;
+  width: var(--space-2-5);
+  height: var(--space-2-5);
+  border-radius: var(--radius-full);
+  background: var(--jersey, var(--color-muted));
+}
+
+// Each rider's jersey, from the design system's jersey tokens.
+@each $jersey
+  in (
+    you,
+    ghost,
+    lena,
+    marco,
+    priya,
+    jwatts,
+    ollie,
+    kenji,
+    ana,
+    nova,
+    rook,
+    juno,
+    atlas,
+    kite,
+    vale,
+    moss,
+    flint,
+    echo
+  )
+{
+  .class-dot--#{$jersey} {
+    --jersey: var(--jersey-#{$jersey});
+  }
+}

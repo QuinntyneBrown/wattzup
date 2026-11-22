@@ -28,7 +28,10 @@ sync offset, the class facts, "What the bike will do" with `PlanSummary`, the "V
 sync" disclosure, "How do you want to ride?" with "Ride alone" chosen and Start class, and
 `classUnlockedGuard`. Until the schedule and the hub exist (slices 14.2 and 14.3), the group
 option cannot be chosen and says why (`L2-085` AC5), as it does whenever the sessions cannot be
-reached. The session roster, Join and the full and starting-soon states come with them.
+reached. Slice 14.2 reads the next two sessions and shows the group option, the roster, the
+full and starting-soon states and the Join label; its Join opens the group ride
+(`/classes/:id/ride?session={sessionId}`), which holds the hub connection (slice 14.1). Slice
+14.3 asks the hub for the seat before opening it, and offers the next session when refused.
 
 ## Description
 
@@ -85,17 +88,27 @@ reached. The session roster, Join and the full and starting-soon states come wit
   `provideClassVideo()` binds the factory for Class Start and the class ride. The `video` library
   depends on `api` only; the change that adds it adds it to the dependency rule and the ESLint
   boundaries.
-- **`ServerClock`** (`domain/engine`) — offset between the device clock and the server's,
-  measured by the hub client. It turns a session's server start time into whole minutes left.
+- **`groupSessionView()`** — pure helper in `ride` with unit tests. From the next two sessions
+  and the device's time it builds the group option's text ("7:39 PM · starts in 9 min · 6 of 10
+  riders", or "This session is full. Next one starts 15 minutes later."), the Join label
+  ("Join · starts in 9 min", "Join now · starting" within a minute, or "Join the next session"),
+  the session to join, and either "Riding in this session" with the riders or "Next session"
+  with "7:54 PM · 2 of 10 riders so far". The minutes left are whole minutes rounded up, from the
+  device's clock: Class Start holds no hub connection (`L2-120` AC4), so there is no measured
+  offset here, and a minute's rounding hides a device's usual drift. Times read as the rider's
+  local time, "7:39 PM".
 
 **Backend**
 
-- **`ClassesController`** — `GET /api/classes/{classId}/sessions` sends one
-  `GetClassSessionsQuery`.
+- **`ClassSessionsController`** — `GET /api/classes/{classId}/sessions` sends one
+  `GetClassSessionsQuery`, and `GET /api/classes/sessions` one `GetNextGroupSessionsQuery`
+  (the Class Library's chips). Unlike the anonymous catalogue, both need a signed-in rider; a
+  signed-out rider's Class Start offers Ride alone only, as when the sessions cannot be reached.
 - **`GetClassSessionsQueryHandler`** — asks `GroupSessionSchedule` for the next two session
-  start times and reads their seats from `GroupClassSession` rows.
+  start times and reads their seats from the live sessions (from slice 14.3; free until then).
+  A class the catalogue does not serve is 404 `class_not_found`.
 - **`GroupSessionSchedule`** (`Telo.Ride.Domain`) — one session every 15 minutes per open class,
-  10 seats each (`L2-083` AC1).
+  on the quarter hours (UTC), 10 seats each (`L2-083` AC1).
 - **`JoinClassSessionCommandHandler`** — reached through `RideHub.JoinClassSession`; owned by
   the multiplayer subsystem. It refuses a full session with `session_full` (`L2-122` AC2), a
   started one with `session_started` (`L2-086` AC3) and a class above the rider's level with
@@ -136,7 +149,7 @@ and button text. Joining goes through `RIDE_HUB_CLIENT` to `RideHub`. The parked
 ### Class structure
 
 `ClassStartStore` holds a `RideMode` and the next `ClassSessionDto`s and derives a
-`JoinButtonView`. On the backend, `GroupSessionSchedule` produces the session times that
+`GroupSessionView`. On the backend, `GroupSessionSchedule` produces the session times that
 `GetClassSessionsQueryHandler` combines with `GroupClassSession` seats.
 
 ![Class diagram for starting a class](diagrams/class-structure.png)
@@ -162,6 +175,10 @@ Riding alone needs no request: the page navigates to the class ride in solo mode
 ![Sequence diagram for starting a class alone](diagrams/sequence-start-alone.png)
 
 ## Open questions
+
+- **The chosen way to ride.** No requirement says which option is chosen when Class Start opens.
+  The `default` mock has the group chosen and `solo` has alone; slice 14.2 chooses the group
+  while a session can be joined and alone otherwise, and a rider's own choice stays for the visit.
 
 - **HIIT's offset and work level.** Slice 6.1 took 30 Minute HIIT Cardio's sync offset (3 s)
   and work level (18) from `main`. The specs give 0:12.0 (`L2-080`, `L2-084`, `L2-088`) and the
