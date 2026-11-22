@@ -49,3 +49,8 @@ Each timing also records, in `<label>.json` under `frames`: `over12Ms` (frames t
 writes the 25 functions that made the most, with their callers, to `<label>-alloc.txt`; build with
 `npx ng build ride --source-map` first if the names are to mean anything. The browser is started with
 `--enable-precise-memory-info` so the heap is exact.
+
+For each frame over 20 ms the timing also records `slowLateMs` (how late the frame's callback ran after the
+display's tick) and `slowScriptMs` (how long the frame before spent in script), and `longFrames` lists what the
+browser's long-animation-frame entries say ran. A slow frame with all three small was skipped by the compositor or
+the GPU, not by the page.

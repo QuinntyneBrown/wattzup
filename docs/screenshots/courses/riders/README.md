@@ -399,3 +399,21 @@ thing to find.
   flattens exactly the parts that were given detail.
 - Detail has a distance. What is painted at a millimetre's scale is for the rider you are beside; the race camera
   reads panels, seams and colour.
+
+## The odd slow frame: not the page's script
+
+The bench now also asks the browser for its long animation frames, and records for each frame over 20 ms how late
+its callback ran after the display's tick and how long the frame before it spent in script. Eighteen more timings
+of pass 10 on the bridge: three had slow frames (one, one and two).
+
+- The browser reported no long animation frame for any of them: no script ran long.
+- For the two measured, the callback ran 1.0 and 1.5 ms after the display's tick, and the frame before had spent
+  3.8 and 3.0 ms in script. The page was on time and had 4 ms of work; the display showed the frame late anyway.
+- None came with a collection of the heap.
+- Pairs fell a whole number of seconds apart (2.000 s, 7.000 s).
+
+So the 25 ms frame is not made by the riders, the renderer's JavaScript or the garbage collector: the frame is
+skipped after the page has handed it over, in the browser's compositor or the GPU. The whole seconds between them
+point at something that happens once a second (the HUD's numbers changing over the canvas is the first thing to
+try: pause it and time again; the machine's other programs are the second). It is about one frame in several
+thousand on this machine. The riders' passes are cleared of it; it is left here as a finding for the race screen.

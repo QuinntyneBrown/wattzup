@@ -46,6 +46,14 @@ interface Frames {
   /** How many times the heap was collected (it fell by over 1 MB), and how many slow frames came with one. */
   collections: number;
   slowWithCollection: number;
+  /** What the browser says each long frame was spent on: its length, and each script's caller, function and time. */
+  longFrames: string[];
+  /**
+   * For each frame over 20 ms: how late its callback ran after the display's own tick, and how long the frame before
+   * it spent in script, in ms. Both small means the page was on time and the display skipped a frame.
+   */
+  slowLateMs: number[];
+  slowScriptMs: number[];
 }
 
 test(`bench ${map}`, async ({ page, bluetooth, api }) => {
@@ -163,9 +171,50 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
         let allocated = 0;
         let collections = 0;
         let slowWithCollection = 0;
+        const slowLate: number[] = [];
+        const slowScript: number[] = [];
+        // How long the last frame's callbacks took: from this callback to a task queued behind them.
+        let script = 0;
+        const channel = new MessageChannel();
+        let began = 0;
+        channel.port1.onmessage = () => (script = performance.now() - began);
+        // The browser's own account of a long frame: which script ran, what called it, and for how long.
+        const longFrames: string[] = [];
+        interface LongFrame extends PerformanceEntry {
+          renderStart: number;
+          styleAndLayoutStart: number;
+          scripts: {
+            invoker: string;
+            invokerType: string;
+            sourceFunctionName: string;
+            sourceURL: string;
+            duration: number;
+          }[];
+        }
+        let watcher: PerformanceObserver | null = null;
+        try {
+          watcher = new PerformanceObserver((list) => {
+            for (const entry of list.getEntries() as LongFrame[]) {
+              const scripts = entry.scripts
+                .map(
+                  (script) =>
+                    `${script.invokerType} ${script.invoker} ${script.sourceFunctionName} ${script.sourceURL.split("/").pop()} ${script.duration.toFixed(1)}ms`,
+                )
+                .join(" | ");
+              longFrames.push(
+                `at ${Math.round(entry.startTime - start)} ms: ${entry.duration.toFixed(1)} ms, render after ${(entry.renderStart - entry.startTime).toFixed(1)}, layout after ${(entry.styleAndLayoutStart - entry.startTime).toFixed(1)}: ${scripts}`,
+              );
+            }
+          });
+          watcher.observe({ type: "long-animation-frame", buffered: false });
+        } catch {
+          // A browser without long animation frames: the bench does without.
+        }
         let last = performance.now();
         const start = last;
         const tick = (now: number) => {
+          began = performance.now();
+          channel.port2.postMessage(0);
           const used = heap();
           const collected = heapLast - used > 1048576;
           if (collected) collections++;
@@ -173,12 +222,15 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
           heapLast = used;
           if (now - last > 20) {
             slow.push(Math.round(now - start));
+            slowLate.push(Math.round((performance.now() - now) * 10) / 10);
+            slowScript.push(Math.round(script * 10) / 10);
             if (collected) slowWithCollection++;
           }
           gaps.push(now - last);
           last = now;
           if (now - start < ms) requestAnimationFrame(tick);
           else {
+            watcher?.disconnect();
             const sorted = [...gaps].sort((a, b) => a - b);
             const at = (q: number) =>
               sorted[
@@ -200,6 +252,9 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
               allocatedMb: allocated / 1048576,
               collections,
               slowWithCollection,
+              longFrames,
+              slowLateMs: slowLate,
+              slowScriptMs: slowScript,
             });
           }
         };
