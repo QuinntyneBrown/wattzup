@@ -752,8 +752,9 @@ turning; spokes alone strobe.
 their lamp's light, clear of the race's panel.
 
 **How it works.** `raised(camera)` in `course-renderer.ts` calls `camera.setViewOffset(1, 1, 0, FRAME_RISE, 1, 1)`
-with `FRAME_RISE` 0.15: an off-centre frustum, kept through every resize. Riders pass 12 brought the camera to
-3.3 m behind and 1.9 m above the rider, so the rider is some two fifths of the picture's height.
+with `FRAME_RISE` 0.15: an off-centre frustum, kept through every resize. Riders passes 12 and 20 brought the
+camera to 2.75 m behind and 1.8 m above the rider, with `FRAME_RISE` 0.19, so the rider is half the picture's
+height.
 
 **To apply it.** Nothing to do for a map. If the panel's height changes, change `FRAME_RISE` with it (the panel
 takes about a tenth of the frame's height on a 16:9 screen).

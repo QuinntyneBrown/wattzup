@@ -28,6 +28,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 17 | Wheels that turn: deep rims with decals and laced spokes, rolling with the road | 120.1 fps, 0 over 20 ms | 8.7 ms | 305 fps (3.28 ms): 300, 305, 307 | 90,871 | 84 | Yes |
 | 18 | Muscle drawn on the legs' skin: the calf's two heads and the groove between, the Achilles tendon, the hollow behind the knee | 119.7 fps, 0 over 20 ms | 16.8 ms | 301 fps (3.32 ms): 303, 301, 299 | 96,711 | 84 | Yes |
 | 19 | A drivetrain: seven sprockets, a derailleur with its cage and jockey wheels, a dark chain, slim hubs, black cranks | 119.7 fps, 1 over 20 ms | 25.0 ms | 301 fps (3.33 ms): 301, 298, 302 | 100,371 | 84 | Yes |
+| 20 | The camera at the reference's distance: the rider half the picture's height | 119.9 fps, 0 over 20 ms | 16.7 ms | 295 fps (3.39 ms): 295, 296, 293 | 100,371 | 84 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -664,3 +665,22 @@ discs; `SPROCKET` and `CHAIN` colours with metal finishes; hubs and cranks in th
 
 **Learned.** A stack of thin discs reads as a cassette from every side for less than its cone looked like one. And
 the brightest part of a bike should not be its hub.
+
+## Pass 20: the camera at the reference's distance
+
+**Compared first** (`rider-20-compare.jpg`: the rider after pass 19 beside the picture this work aims at, at the
+same scale). The build and proportions agree: shoulders to hips, the legs' length and thickness, the head. What
+differs is that the reference's rider is about a fifth larger in the frame, is lit by the sun, and throws a shadow.
+
+**After** (`rider-20-start.jpg`, `rider-20.jpg`, `rider-20.mp4`): the camera rides 2.75 m behind and 1.8 m above
+the rider (3.3 m and 1.9 m since pass 12), 2.4 m and 1.65 m at the lines, and the picture is raised 0.19 of its
+height (0.15). The rider is half the picture's height, as in the reference, with the wheels clear of the panel; the
+road ahead, the riders on it and the skyline are still in the frame, the sky having given up the room.
+
+**What changed.** Five constants in `course-renderer.ts`; L2-166 AC9 and the design carry them.
+
+**Cost.** 295 fps against 301: a nearer rider covers more pixels with the riders' more costly material. No frame
+over 20 ms. The race's end-to-end specs: the same 13 failures as before the riders' work, no others.
+
+**To weigh.** This is as near as the camera can go and still show the road the rider is about to ride; the sky is
+now the top third of the picture where it was nearly half.
