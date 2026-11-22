@@ -13,4 +13,9 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Telo.Ride.Api.Tests" />
   </ItemGroup>
+  <ItemGroup>
+    <!-- The headers of L2-131, which frontend/scripts/serve-dist.mjs sends too. -->
+    <Content Remove="Hosting/security-headers.json" />
+    <EmbeddedResource Include="Hosting/security-headers.json" LogicalName="security-headers.json" />
+  </ItemGroup>
 </Project>
