@@ -189,6 +189,7 @@ The same step updates **% complete** in [`detailed-journeys.md`](detailed-journe
 | L162 | A clock started from a past moment (a late rider in a live session) is read on a schedule by others: `RideTicker` published only at the next whole second, so the race showed 0:00 for up to a second. When a start moves into the past, check each scheduled reader shows the moment at once, and tick on start. | 15.2 | | |
 | L163 | An overlay that makes a screen inert can block a control a requirement still names, and a second element with the same role makes a page object's `getByRole` match both. Before adding `inert` or a role, grep the specs that press controls or read that role in the window, scope the locator to the block's BEM class, and settle the clash in the design. | 15.2 | | |
 | L164 | A periodic ticker on `FakeTimeProvider` fires once for one large `Advance`, at its end, skipping every threshold in between (a bot fill at 0:10 before a start at 0:30). Advance to each threshold, await its event, then go on. | 15.2 | | |
+| L165 | A spec that answers a hub with a time read from the page when it answers (`Date.now() + 23_500`) and pauses at another read later lets the page's load time leak into the paused moment: CI's slower load put the lobby at 0:23, not 0:24. Fix the session's start and the paused moment on the installed clock (`STARTS_AT`, `pauseAt(STARTS_AT - 23_500)`), with a few seconds of slack before the pause for the page to open. | 15.2 (CI) | 15.3 | |
 
 ## Log
 

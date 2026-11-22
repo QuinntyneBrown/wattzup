@@ -26,11 +26,13 @@ import { RaceLobbyPage } from './pages/race-lobby.page';
 import { RaceSetupPage } from './pages/race-setup.page';
 
 const NOW = new Date('2026-11-22T18:00:00Z').getTime();
+/** The session's start: far enough ahead that the page opens and connects before the clock is paused 10 s in. */
+const STARTS_AT = NOW + 33_500;
 
 /**
- * Opens a riders-online lobby whose session starts 23.5 seconds after the hub answers, on the page's clock, then
- * pauses the clock once seated: the clock reads 0:24 and flips half a second later (L154). The hub answers ServerTime
- * from the page (L153).
+ * Opens a riders-online lobby whose session starts at a fixed moment on the page's installed clock, then, once seated,
+ * pauses the clock at a fixed moment 23.5 seconds before it: the clock reads 0:24 and flips half a second later
+ * (L154), however long the page took to open (L165). The hub answers ServerTime from the page (L153).
  */
 async function openLobby(
   page: Page,
@@ -39,15 +41,13 @@ async function openLobby(
 ): Promise<RaceLobbyPage> {
   hub.open();
   hub.answer('ServerTime', () => page.evaluate(() => Date.now()));
-  hub.answer('FindRace', async () =>
-    found((await page.evaluate(() => Date.now())) + 23_500, 6, lobbyOfSix),
-  );
+  hub.answer('FindRace', () => found(STARTS_AT, 6, lobbyOfSix));
   await page.clock.install({ time: NOW });
   await bluetooth.remember(echelonBike);
   const lobby = new RaceLobbyPage(page);
   await lobby.open('old-town-criterium', 'mode=online');
   await expect(lobby.count).toHaveText('6 / 10');
-  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 100));
+  await page.clock.pauseAt(STARTS_AT - 23_500);
   await page.clock.runFor(100);
   return lobby;
 }

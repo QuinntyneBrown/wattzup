@@ -13,6 +13,8 @@ import { FakeWebGl } from './fixtures/webgl';
 import { RacePage } from './pages/race.page';
 
 const NOW = new Date('2026-11-22T18:00:30Z').getTime();
+/** Where each spec stands: far enough ahead that the page opens and joins first. */
+const PAUSED_AT = NOW + 15_000;
 
 /** The session's grid at the start: the mock's riders and the rider, the open seats filled by bots. */
 const atTheStart = lobbyOfSix.map((seat, i) =>
@@ -20,9 +22,9 @@ const atTheStart = lobbyOfSix.map((seat, i) =>
 );
 
 /**
- * Opens the race in the rider's session, whose start the hub answers `fromStart` ms before the moment it answers (a
- * negative value: still to come). Once the clock shows the race has started, or holds at 0:00 for one to come, the
- * clock is paused (L143), and stands half a second into the second it shows (L154).
+ * Opens the race in the rider's session, then pauses the clock at a fixed moment on the page's installed clock,
+ * `fromStart` ms after the session's start (a negative value: still to come), whose start the hub answers. The clock
+ * stands half a second into the second it shows (L154), however long the page took to open (L165).
  */
 async function openRace(
   page: Page,
@@ -33,16 +35,14 @@ async function openRace(
   await new FakeWebGl(page).disable();
   hub.open();
   hub.answer('ServerTime', () => page.evaluate(() => Date.now()));
-  hub.answer('JoinRace', async () =>
-    found((await page.evaluate(() => Date.now())) - fromStart, 6, atTheStart),
-  );
+  hub.answer('JoinRace', () => found(PAUSED_AT - fromStart, 6, atTheStart));
   await page.clock.install({ time: NOW });
   await bluetooth.remember(echelonBike);
   const race = new RacePage(page);
   await race.open('old-town-criterium', `mode=online&session=${RACE_SESSION}`);
   await expect.poll(() => hub.invocations('JoinRace').length).toBe(1);
   await expect(race.route).toHaveText('Cathedral Circuit · Live race');
-  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 100));
+  await page.clock.pauseAt(PAUSED_AT);
   await page.clock.runFor(100);
   return race;
 }
