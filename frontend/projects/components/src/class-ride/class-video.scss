@@ -39,6 +39,13 @@
   box-shadow: var(--shadow-3);
 }
 
+// Under the inset the notice sits over the world, so it takes the panel's surface to stay readable.
+:host(.class-video--inset) .class-video__notice {
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-panel);
+}
+
 .photo {
   position: absolute;
   inset: 0;
