@@ -212,10 +212,33 @@ The same step updates **% complete** in [`detailed-journeys.md`](detailed-journe
 | L185 | A page that goes silent for seconds in a trace (routed requests with no answer, cached dynamic imports resolving late) while the same spec passes alone and throttled 10× is waiting on the browser, not running code. Read the network timeline for what was asked just as it woke (`music/oldtown.ogg`): a media element made on every ride for music that was not playing was the cost. Make such resources only when first wanted, and split the spec's one wait into named stages (seated, then the clock) so a stall says where. | 16.4 | 17.1 | Saved time in 17.1 |
 | L186 | A spec that finishes a ride and navigates on at once can leave before the app's IndexedDB write commits, so the ride is never kept: wait for what the device holds (`expect.poll(() => ridesWaiting(page))`) before the next navigation, and read the store from the page only after `indexedDB.databases()` shows it, since opening a missing database makes it empty before the app can. Await a write's transaction `oncomplete`, not the request's `onsuccess`. | 17.1 | | |
 | L187 | Once a service worker controls the page, `page.route` sees none of the requests it makes: they reach the static server, which answers `/api/*` with `index.html` and 200, silently. Block service workers in the config (`serviceWorkers: 'block'`) and allow them only in the spec about the cache, and route the API fixture on the context (`page.context().route`), which does see the worker's requests. | 17.2 | | |
-| L188 | An offline spec that answers the backend from fixtures can hide what the device does not keep: the race's offline specs answered `/api/progress`, so nobody saw that the open-map check needed the network. For a without-a-network criterion, fail every request as a lost connection (`api.offline()` with `context.setOffline(true)`) and see what still opens. | 17.2 | | |
-| L189 | Measure the initial chunk before taking a framework's convenience provider: `provideServiceWorker` brought `SwPush` and `SwUpdate` into main (+6.3 kB, past the warning) though nothing used them; registering from the lazy parent route cost 40 bytes, with an ADR for the departure. | 17.2 | | |
+| L188 | An offline spec that answers the backend from fixtures can hide what the device does not keep: the race's offline specs answered `/api/progress`, so nobody saw that the open-map check needed the network. For a without-a-network criterion, fail every request as a lost connection (`api.offline()` with `context.setOffline(true)`) and see what still opens. | 17.2 | 17.3 | Saved time in 17.3 |
+| L189 | Measure the initial chunk before taking a framework's convenience provider: `provideServiceWorker` brought `SwPush` and `SwUpdate` into main (+6.3 kB, past the warning) though nothing used them; registering from the lazy parent route cost 40 bytes, with an ADR for the departure. | 17.2 | 17.3 | Saved time in 17.3 |
+| L190 | A helper that two lazy chunks share is hoisted into the initial chunk: `toObservable` from `@angular/core/rxjs-interop`, used by Race Setup's store and Class Start's, added 0.9 kB to main though neither screen is in it. React to a signal with `effect((onCleanup) => …)`, already in core, unsubscribing in `onCleanup`, and read main after every new import. | 17.3 | | |
 
 ## Log
+
+### 17.3 Offline choices (2026-11-22)
+
+**Applied from earlier**
+
+- **L1 own worktree and install; L2 port 4310; L3 format first — saved time.**
+- **L41 spec each step first — saved time:** both acceptance tests failed on the missing words, and both unit specs on
+  the missing modules, before any code was written.
+- **L188 take the browser offline in the spec — saved time:** `context.setOffline` fires the window's real events, so
+  the words were proven against what the browser does, not a stubbed status.
+- **L5 initial chunk; L189 measure before taking a convenience — saved time:** the build output showed main 0.9 kB
+  larger at once, and the cause was found before the commit (L190).
+- **L34 diagrams; L121 film rules — saved time:** three diagrams re-rendered with exit status 0; the first contact
+  sheet showed the race-mode close-ups overlapping, fixed by placing them side by side.
+
+**What slowed it down**
+
+- `toObservable` in two lazy stores was hoisted into main (L190); the stores now react through `effect`.
+- The film's close-up showed the app drawing a lock on the closed mode that the new mock had left out; the mock gained
+  it.
+
+**New lessons:** L190.
 
 ### 17.2 Cache the app (2026-11-22)
 
