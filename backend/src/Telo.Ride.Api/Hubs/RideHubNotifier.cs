@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 using Telo.Ride.Application.Live;
+using Telo.Ride.Application.Races;
 
 namespace Telo.Ride.Api.Hubs;
 
@@ -11,6 +12,9 @@ internal sealed class RideHubNotifier(IHubContext<RideHub> hub) : ISessionNotifi
 
     public Task StandingsUpdated(StandingsDto standings, CancellationToken cancellationToken) =>
         hub.Clients.Group(Group(standings.SessionId)).SendAsync("StandingsUpdated", standings, cancellationToken);
+
+    public Task SeatsChanged(SeatsChangedDto seats, CancellationToken cancellationToken) =>
+        hub.Clients.Group(Group(seats.SessionId)).SendAsync("SeatsChanged", seats, cancellationToken);
 
     private static string Group(string sessionId) => $"session:{sessionId}";
 }
