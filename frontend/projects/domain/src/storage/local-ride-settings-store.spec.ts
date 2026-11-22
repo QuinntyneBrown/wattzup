@@ -19,6 +19,23 @@ describe('parseRideSettings (L2-158 AC5)', () => {
     ['a resolution above 100 %', '{"resolution":105}'],
     ['a resolution off the 5 % steps', '{"resolution":72}'],
     ['a graphics API that is not one', '{"graphics":"webgpu"}'],
+    ['a device check that is not an object', '{"deviceCheck":"high"}'],
+    [
+      'a device check at no level',
+      '{"deviceCheck":{"level":"epic","displayFps":60,"tried":[],"checkedAt":"2026-11-22T19:31:00Z"}}',
+    ],
+    [
+      'a device check with no display rate',
+      '{"deviceCheck":{"level":"high","tried":[],"checkedAt":"2026-11-22T19:31:00Z"}}',
+    ],
+    [
+      'a device check with a trial of no rate',
+      '{"deviceCheck":{"level":"high","displayFps":60,"tried":[{"level":"ultra"}],"checkedAt":"2026-11-22T19:31:00Z"}}',
+    ],
+    [
+      'a device check with no time',
+      '{"deviceCheck":{"level":"high","displayFps":60,"tried":[],"checkedAt":"soon"}}',
+    ],
   ])('reads %s as the recommended values', (_, raw) => {
     expect(parseRideSettings(raw)).toEqual(RECOMMENDED_SETTINGS);
   });
@@ -39,6 +56,19 @@ describe('parseRideSettings (L2-158 AC5)', () => {
       graphics: 'webgl2',
     };
     expect(parseRideSettings(JSON.stringify(world))).toEqual({ ...RECOMMENDED_SETTINGS, ...world });
+  });
+
+  it('keeps a whole device check result (L2-162 AC3)', () => {
+    const deviceCheck = {
+      level: 'high',
+      displayFps: 60,
+      tried: [{ level: 'ultra', fps: 41 }],
+      checkedAt: '2026-11-22T19:31:00.000Z',
+    };
+    expect(parseRideSettings(JSON.stringify({ deviceCheck }))).toEqual({
+      ...RECOMMENDED_SETTINGS,
+      deviceCheck,
+    });
   });
 });
 

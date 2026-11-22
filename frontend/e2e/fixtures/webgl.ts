@@ -40,6 +40,36 @@ export class FakeWebGl {
     });
   }
 
+  /** Call before the page loads: counts the WebGL 2 draw calls the page makes, read with `draws`. */
+  async countDraws(): Promise<void> {
+    await this.page.addInitScript(() => {
+      const counted = window as unknown as { __draws: number };
+      counted.__draws = 0;
+      const gl = WebGL2RenderingContext.prototype as unknown as Record<
+        string,
+        (...args: unknown[]) => unknown
+      >;
+      for (const name of [
+        'drawArrays',
+        'drawElements',
+        'drawArraysInstanced',
+        'drawElementsInstanced',
+        'drawRangeElements',
+      ]) {
+        const original = gl[name]!;
+        gl[name] = function (this: unknown, ...args: unknown[]) {
+          counted.__draws++;
+          return original.apply(this, args);
+        };
+      }
+    });
+  }
+
+  /** The WebGL 2 draw calls made since the page loaded (after `countDraws`). */
+  draws(): Promise<number> {
+    return this.page.evaluate(() => (window as unknown as { __draws: number }).__draws);
+  }
+
   /** The WebGPU and WebGL 2 contexts made since the page loaded (after `countContexts`). */
   contexts(): Promise<number> {
     return this.page.evaluate(() => (window as unknown as { __contexts: number }).__contexts);

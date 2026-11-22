@@ -1,12 +1,19 @@
 import { InjectionToken, type Signal } from '@angular/core';
+import type { DeviceCheckOutcome } from '../world/device-check';
 import type { WorldTier } from '../world/world-renderer';
 
 /** Quality: Auto, or a fixed level (L2-159 AC2). */
 export type QualityChoice = 'auto' | WorldTier;
 
+/** The device check's result, kept on this device: what it found and when (L2-162 AC3). */
+export interface DeviceCheckResult extends DeviceCheckOutcome {
+  /** ISO 8601. */
+  readonly checkedAt: string;
+}
+
 /**
  * Every ride setting on Settings, kept on this device (L2-158). Each slice of Settings adds its own: slice 20.1 the
- * first, Keep the screen awake (L2-164 AC5); slice 20.2 the World section's (L2-159, L2-160, L2-161).
+ * first, Keep the screen awake (L2-164 AC5); slice 20.2 the World section's (L2-159, L2-160, L2-161); slice 20.3 the device check's result (L2-162).
  */
 export interface RideSettings {
   /** Auto by default (L2-159 AC3). */
@@ -19,6 +26,8 @@ export interface RideSettings {
   readonly resolution: number;
   /** The graphics API: Automatic (WebGPU, else WebGL 2) or WebGL 2 (L2-161). */
   readonly graphics: 'auto' | 'webgl2';
+  /** Where Auto starts on this device, once the device check has run; none until then (L2-159 AC4, L2-162 AC3). */
+  readonly deviceCheck: DeviceCheckResult | null;
   /** Holds a screen wake lock while a ride runs; on by default. */
   readonly keepAwake: boolean;
 }

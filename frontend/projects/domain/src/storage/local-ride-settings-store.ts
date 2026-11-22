@@ -1,5 +1,12 @@
 import { DOCUMENT, Injectable, inject, signal } from '@angular/core';
-import type { QualityChoice, RideSettings, RideSettingsStore } from '@telo/api';
+import type {
+  DeviceCheckResult,
+  DeviceCheckTrial,
+  QualityChoice,
+  RideSettings,
+  RideSettingsStore,
+  WorldTier,
+} from '@telo/api';
 
 /** Where the ride settings live in localStorage. */
 export const RIDE_SETTINGS_KEY = 'telo-ride.settings.v1';
@@ -11,6 +18,7 @@ export const RECOMMENDED_SETTINGS: RideSettings = {
   frameRate: 'display',
   resolution: 100,
   graphics: 'auto',
+  deviceCheck: null,
   keepAwake: true,
 };
 
@@ -26,6 +34,39 @@ function resolution(value: unknown): number {
   return typeof value === 'number' && value >= 50 && value <= 100 && value % 5 === 0
     ? value
     : RECOMMENDED_SETTINGS.resolution;
+}
+
+const LEVELS: readonly WorldTier[] = ['ultra', 'high', 'medium', 'low'];
+
+/** A whole number of frames a second above 0. */
+function isFps(value: unknown): value is number {
+  return typeof value === 'number' && Number.isInteger(value) && value > 0;
+}
+
+/** A level tried and the rate it held, else null. */
+function trial(value: unknown): DeviceCheckTrial | null {
+  if (typeof value !== 'object' || value === null) return null;
+  const { level, fps } = value as Record<string, unknown>;
+  return LEVELS.includes(level as WorldTier) && isFps(fps)
+    ? { level: level as WorldTier, fps }
+    : null;
+}
+
+/** The device check's result, whole and well formed, else none: Auto then starts as if never checked (L2-162 AC3). */
+function deviceCheck(value: unknown): DeviceCheckResult | null {
+  if (typeof value !== 'object' || value === null) return null;
+  const { level, displayFps, tried, checkedAt } = value as Record<string, unknown>;
+  if (!LEVELS.includes(level as WorldTier) || !isFps(displayFps) || !Array.isArray(tried))
+    return null;
+  if (typeof checkedAt !== 'string' || Number.isNaN(Date.parse(checkedAt))) return null;
+  const trials = tried.map(trial);
+  if (trials.some((t) => t === null)) return null;
+  return {
+    level: level as WorldTier,
+    displayFps,
+    tried: trials as DeviceCheckTrial[],
+    checkedAt,
+  };
 }
 
 /** A boolean, else the recommended value. */
@@ -53,6 +94,7 @@ export function parseRideSettings(raw: string | null): RideSettings {
     frameRate: oneOf(fields['frameRate'], ['display', '30'] as const, recommended.frameRate),
     resolution: resolution(fields['resolution']),
     graphics: oneOf(fields['graphics'], ['auto', 'webgl2'] as const, recommended.graphics),
+    deviceCheck: deviceCheck(fields['deviceCheck']),
     keepAwake: flag(fields['keepAwake'], recommended.keepAwake),
   };
 }

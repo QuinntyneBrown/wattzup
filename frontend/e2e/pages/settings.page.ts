@@ -34,10 +34,10 @@ export class SettingsPage {
     this.bikeRow = this.section('Bike').getByRole('link');
     this.resetText = page.locator('.settings-reset__text');
     this.reset = page.getByRole('button', { name: 'Reset to recommended' });
-    this.announcement = page.locator('.cdk-live-announcer-element');
+    this.announcement = page.locator('.settings-page__announcement');
     const world = this.section('World');
     this.graphicsApi = world.locator('.settings-section__head .pill');
-    this.noWorlds = world.getByRole('status');
+    this.noWorlds = world.locator('.settings-section__notice').getByRole('status');
     this.qualities = world.getByRole('group', { name: 'Quality' }).getByRole('radio');
     this.stepDown = world.getByRole('switch', { name: 'Step down when frames drop' });
     this.stepDownText = world.locator('#step-down-desc');
@@ -46,7 +46,29 @@ export class SettingsPage {
     this.resolutionValue = world.locator('.setting__value');
     this.graphics = world.getByRole('combobox', { name: 'Graphics' });
     this.graphicsHint = world.locator('#graphics-hint');
+    this.checkHint = world.locator('#check-hint');
+    this.check = world.getByRole('button', { name: 'Check this device' });
+    this.checkProgress = world.getByRole('progressbar', { name: 'Checking this device' });
+    this.checkLabel = world.locator('.device-check .progress__label');
+    this.checkPercent = world.locator('.device-check .progress__value');
+    this.checkFoot = world.locator('.device-check .progress__foot');
+    this.stopCheck = world.getByRole('button', { name: 'Stop the check' });
+    this.checkResult = world.locator('.device-check__result');
+    this.checkAgain = world.getByRole('button', { name: 'Check again' });
   }
+
+  /** "Check this device" and what it does (L2-162 AC1). */
+  readonly checkHint: Locator;
+  readonly check: Locator;
+  /** The running check: its bar, "Trying High · 6 s left", the percentage and what the levels tried held (AC2). */
+  readonly checkProgress: Locator;
+  readonly checkLabel: Locator;
+  readonly checkPercent: Locator;
+  readonly checkFoot: Locator;
+  readonly stopCheck: Locator;
+  /** The finished check: the level that held, where Auto starts and when it was checked (AC3). */
+  readonly checkResult: Locator;
+  readonly checkAgain: Locator;
 
   /** The World section's tag: the graphics API in use, or "Panorama only" (L2-159 AC1). */
   readonly graphicsApi: Locator;

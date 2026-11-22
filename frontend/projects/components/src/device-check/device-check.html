@@ -1,0 +1,66 @@
+@if (running(); as running) {
+  <div class="device-check" aria-live="polite">
+    <wz-progress
+      label="Checking this device"
+      [value]="running.percent"
+      [caption]="running.label"
+      [foot]="running.foot"
+    />
+    <div class="device-check__actions">
+      <button wz-button variant="outline" size="sm" type="button" (click)="checkStopped.emit()">
+        Stop the check
+      </button>
+    </div>
+  </div>
+} @else if (result(); as result) {
+  <div class="device-check" role="status">
+    <p class="device-check__result">
+      <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" />
+        <path d="m9 12 2 2 4-4" />
+      </svg>
+      <span>
+        <span class="device-check__title"
+          >{{ result.level }} holds <span class="device-check__figure">{{ result.fps }}</span> on
+          this device.</span
+        >
+        &ngsp;<span class="device-check__detail">{{ result.detail }}</span>
+      </span>
+    </p>
+    <div class="device-check__actions">
+      <button
+        wz-button
+        variant="outline"
+        size="sm"
+        type="button"
+        [disabled]="disabled()"
+        (click)="checkStarted.emit()"
+      >
+        Check again
+      </button>
+    </div>
+  </div>
+} @else {
+  <span class="device-check__label">Check this device</span>
+  <p class="device-check__hint" id="check-hint">
+    Rides 30 seconds of a test world off screen at each level and picks the best one that holds 60
+    fps.
+  </p>
+  <div class="device-check__actions">
+    <button
+      wz-button
+      variant="raised"
+      size="sm"
+      type="button"
+      aria-describedby="check-hint"
+      [disabled]="disabled()"
+      (click)="checkStarted.emit()"
+    >
+      <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m12 14 4-4" />
+        <path d="M3.34 19a10 10 0 1 1 17.32 0" />
+      </svg>
+      Check this device
+    </button>
+  </div>
+}
