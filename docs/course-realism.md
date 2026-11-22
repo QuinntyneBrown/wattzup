@@ -591,6 +591,9 @@ the left 70 % of the texture, the back's middle three quarters of the way across
 `kitTexture(jersey)` paints a 512 px canvas in shades of the rider's colour. The three pieces are one mesh with one
 `MeshStandardMaterial`, which the lamps light as they do every rider's material.
 
+**Designs.** Riders pass 24 added three more cuts (a hoop, side panels, a sash) in a second colour, chosen with the
+rest of a rider's look (R6).
+
 **To apply it.** Change the painting, not the mesh: a team's design, a leader's jersey, stripes for a champion, a
 sponsor's name are lines in `kitTexture`. A rider's own design could be a picture drawn into the same canvas.
 

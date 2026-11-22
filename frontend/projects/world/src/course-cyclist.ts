@@ -29,7 +29,7 @@ import {
   TorusGeometry,
   Vector3,
 } from 'three/webgpu';
-import { type RiderLook, riderLook } from './rider-look';
+import { type KitDesign, type RiderLook, riderLook } from './rider-look';
 import { occlusion } from './rider-shade';
 
 /** What the course's renderer asks of a rider: where it stands, and how it pedals. */
@@ -666,7 +666,7 @@ class CourseCyclist implements RiderModel {
     // The jersey and the shorts' seat: one mesh, drawn with the rider's own kit (its panels, pockets and lettering).
     const worn = mergeGeometries(rider.kit, false)!;
     const fabric = new MeshStandardMaterial({
-      map: kitTexture(jersey),
+      map: kitTexture(jersey, look.design, new Color(look.trim)),
       roughness: 0.62,
       vertexColors: true,
     });
@@ -1207,7 +1207,7 @@ const KIT_TRUNK = 0.7;
  * panels; three pockets across the small of the back; the team's name between the shoulders; a pale collar; a
  * dark cuff with a pale line.
  */
-function kitTexture(jersey: Color): CanvasTexture {
+function kitTexture(jersey: Color, design: KitDesign, second: Color): CanvasTexture {
   const size = 512;
   const canvas = document.createElement('canvas');
   canvas.width = size;
@@ -1228,6 +1228,29 @@ function kitTexture(jersey: Color): CanvasTexture {
     // Side panels, under each arm from the hem to the armpit.
     ctx.fillStyle = deep;
     for (const x of [0, trunk * 0.5, trunk]) ctx.fillRect(x - 24, y(0.78), 48, y(0.266) - y(0.78));
+    // The design the jersey is cut to, in the rider's second colour: a hoop round the chest and back, bold panels
+    // down each side, or a sash from one hip to the other shoulder, on the back and on the chest. (A yoke is drawn
+    // on every design, below.)
+    const trim = css(second);
+    ctx.fillStyle = trim;
+    if (design === 'hoop') {
+      ctx.fillRect(0, y(0.66), trunk, y(0.5) - y(0.66));
+      ctx.fillStyle = pale;
+      ctx.fillRect(0, y(0.665), trunk, 3);
+      ctx.fillRect(0, y(0.5) - 3, trunk, 3);
+    } else if (design === 'panels') {
+      for (const x of [0, trunk * 0.5, trunk]) ctx.fillRect(x - 44, y(0.9), 88, y(0.266) - y(0.9));
+    } else if (design === 'sash') {
+      for (const middle of [back, trunk * 0.25]) {
+        ctx.beginPath();
+        ctx.moveTo(middle - 80, y(0.3));
+        ctx.lineTo(middle - 48, y(0.3));
+        ctx.lineTo(middle + 80, y(0.86));
+        ctx.lineTo(middle + 48, y(0.86));
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
     // A darker yoke over the shoulders, and the name under it.
     ctx.fillStyle = dark;
     ctx.fillRect(0, 0, trunk, y(0.9));
@@ -1262,10 +1285,12 @@ function kitTexture(jersey: Color): CanvasTexture {
     // The sleeve: the cuff dark, a pale line above it.
     ctx.fillStyle = main;
     ctx.fillRect(trunk, 0, size - trunk, size);
-    ctx.fillStyle = dark;
-    ctx.fillRect(trunk, 0, size - trunk, y(0.8));
+    // A yoke's sleeve ends in a dark cuff; the other designs' sleeves are in the second colour from the elbow
+    // side of the shoulder down.
+    ctx.fillStyle = design === 'yoke' ? dark : trim;
+    ctx.fillRect(trunk, 0, size - trunk, y(design === 'yoke' ? 0.8 : 0.45));
     ctx.fillStyle = pale;
-    ctx.fillRect(trunk, y(0.8), size - trunk, 6);
+    ctx.fillRect(trunk, y(design === 'yoke' ? 0.8 : 0.45), size - trunk, 6);
     cloth(ctx, size, trunk, back, y);
   }
   const texture = new CanvasTexture(canvas);

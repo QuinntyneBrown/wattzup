@@ -32,6 +32,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 21 | By day, a shadow with the rider's shape: the bike from its side or the rider end on, as the sun stands (measured on Cliffside Coast) | 120.1 fps, 0 over 20 ms | 9.5 ms | 373 fps (2.68 ms): 373, 377, 354; Docklands unchanged at 295 | 83,511 | 70 | Yes |
 | 22 | By day, the sky's light in a rider's shade and the sun along their edges (measured on Cliffside Coast) | 120.1 fps, 0 over 20 ms | 10.0 ms | 367 fps (2.72 ms): 373, 355, 367; Docklands unchanged at 296 | 83,511 | 70 | Yes |
 | 23 | Riders made as finely as they are seen: the others at 0.6 of the camera's rider, and every rider coarser on a slower tier | 120.1 fps, 0 over 20 ms | 9.8 ms | 310 fps (3.23 ms): 310, 309, 310 | 78,951 (100,371 before) | 84 | Yes |
+| 24 | Kit in four designs: a yoke, a hoop, bold side panels or a sash, trimmed in a second colour | 120.0 fps, 0 over 20 ms | 16.7 ms | 310 fps (3.22 ms): 311, 310, 308 | 78,951 | 84 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -791,3 +792,26 @@ the film and the table's figures are from: 120.1 fps, no frame over 20 ms.
 - Detail belongs where the camera is. One number on the way into the rider's builder buys back a fifth of the
   frame's triangles and takes nothing the eye can find.
 - A measurement is only what was asked for. An empty setting is not "none".
+
+## Pass 24: kit in four designs
+
+**Before** (`rider-23.mp4`): every rider's jersey is cut the same (a darker yoke over the shoulders) and differs
+only in its colour: one team in ten colours.
+
+**After** (`rider-24-designs.jpg`; `rider-24.jpg`, `rider-24.mp4`): a jersey is cut to one of four designs, by the
+rider's race number: the yoke; a hoop round the chest and back; bold panels down each side; or a sash from one hip
+to the other shoulder. The hoop, panels and sash are in a second colour (off-white, navy, black, yellow or teal,
+also from the number), and those jerseys' sleeves are in it from above the elbow. Riders next to each other in the
+numbers never wear the same design. The rider the camera follows (number 4) keeps the yoke.
+
+`rider-24-designs.jpg` shows the three new designs on the camera's own rider, which was given the numbers 5, 6 and
+7 in turn for the picture and then put back: in the race the bots ride some 40 m up the road at the start, where a
+jersey is a few pixels and its number covers the middle of its back. The designs are for when riders are close.
+
+**What changed.** `rider-look.ts`: `design` and `trim` join a rider's look, with unit tests. `course-cyclist.ts`:
+`kitTexture(jersey, design, second)` paints the design under the yoke, lettering and pockets, and the sleeve's part
+of the texture to match.
+
+**Cost.** None: it is the same texture, painted differently.
+
+**Learned.** To look at something only the far riders have, put it on the near one for a moment. And say so.

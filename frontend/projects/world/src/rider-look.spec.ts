@@ -20,6 +20,16 @@ describe('what each rider looks like (L2-166 AC30)', () => {
     }
   });
 
+  it("cuts the pack's jerseys to several designs, trimmed in several colours", () => {
+    const pack = Array.from({ length: 12 }, (_, i) => riderLook(i + 1));
+    expect(new Set(pack.map((look) => look.design)).size).toBe(4);
+    expect(new Set(pack.map((look) => look.trim)).size).toBeGreaterThanOrEqual(3);
+  });
+
+  it('gives riders next to each other in the numbers different designs', () => {
+    for (let n = 1; n < 40; n++) expect(riderLook(n).design).not.toBe(riderLook(n + 1).design);
+  });
+
   it('keeps every rider within a height a bike of this size fits', () => {
     for (let n = 0; n < 60; n++) {
       expect(riderLook(n).scale).toBeGreaterThanOrEqual(0.94);
