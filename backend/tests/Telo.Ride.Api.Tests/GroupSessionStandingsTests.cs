@@ -67,7 +67,8 @@ public sealed class GroupSessionStandingsTests(GroupSessionStandingsApi api)
         await Report(priya, session, 3.0, 120);
         api.Clock.Advance(TimeSpan.FromSeconds(1));
 
-        var standings = await heard.Await(s => s.SessionId == session && s.Rows.Any(row => row.OutputKj == 12.5), Wait);
+        // The ticker also ticks between the two reports, so wait for the standings that carry both (L168).
+        var standings = await heard.Await(s => s.SessionId == session && s.Rows.Any(row => row.OutputKj == 12.5) && s.Rows.Any(row => row.OutputKj == 3.0), Wait);
         Assert.Equal(("Ollie R.", 1, 12.5, 0.0), (standings.Rows[0].Name, standings.Rows[0].Position, standings.Rows[0].OutputKj, standings.Rows[0].GapKj));
         Assert.Equal(("priya_spins", 2, 3.0, 9.5), (standings.Rows[1].Name, standings.Rows[1].Position, standings.Rows[1].OutputKj, standings.Rows[1].GapKj));
     }

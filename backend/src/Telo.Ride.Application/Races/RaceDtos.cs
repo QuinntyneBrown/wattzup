@@ -27,7 +27,17 @@ public sealed record RaceQueueDto(int Riders);
 /// rider's own row (L2-123 AC3).
 /// </summary>
 public sealed record RaceStandingRowDto(
-    int Position, int Seat, string Name, string Jersey, int? Level, string Kind, double DistanceMetres, double GapSeconds);
+    int Position, int Seat, string Name, string Jersey, int? Level, string Kind, double DistanceMetres, double GapSeconds, string Status);
 
-/// <summary>A race session's standings, ranked, as every rider in it receives them once a second (L2-123 AC3).</summary>
-public sealed record RaceStandingsDto(string SessionId, IReadOnlyList<RaceStandingRowDto> Rows);
+/// <summary>
+/// A race session's standings, ranked, as every rider in it receives them once a second (L2-123 AC3) and at once when a
+/// rider leaves (L2-124 AC1). <c>Status</c> is <c>riding</c>, <c>finished</c> or <c>dnf</c>.
+/// </summary>
+public sealed record RaceStandingsDto(string SessionId, IReadOnlyList<RaceStandingRowDto> Rows)
+{
+    public static RaceStandingsDto Of(string sessionId, IEnumerable<Domain.Races.RaceStandingRow> rows) =>
+        new(sessionId, [.. rows.Select(row => new RaceStandingRowDto(
+            row.Position, row.Seat, row.Name, row.Jersey, row.Level,
+            row.Kind == Domain.Classes.RiderKind.Bot ? "bot" : "person",
+            row.DistanceMetres, row.GapSeconds, row.Status.ToString().ToLowerInvariant()))]);
+}
