@@ -1,4 +1,11 @@
 import type { CustomWorkoutDraft, HiitPresetId, Round, TrainingMode } from '@telo/api';
+import {
+  DEFAULT_VIDEO_LINK,
+  OFFSET_STEP,
+  clampOffset,
+  formatOffset,
+  videoIdOf,
+} from './video-link';
 
 /** A HIIT plan: its chip, its ladder's title and its rounds (L2-095 AC1, AC2, AC7). */
 export interface HiitPreset {
@@ -68,7 +75,10 @@ export function presetOf(id: HiitPresetId): HiitPreset {
   return HIIT_PRESETS.find((preset) => preset.id === id)!;
 }
 
-/** A new custom workout: GCN 30-min HIIT, work 24, recover 6, 5:00 and 6:00, flat 12 for 30 min at 85 rpm (L2-094 AC3). */
+/**
+ * A new custom workout: GCN 30-min HIIT, work 24, recover 6, 5:00 and 6:00, flat 12 for 30 min at 85 rpm (L2-094 AC3),
+ * and the video off with GCN Training's video in its link.
+ */
 export function newCustomWorkout(): CustomWorkoutDraft {
   return {
     mode: 'hiit',
@@ -80,6 +90,7 @@ export function newCustomWorkout(): CustomWorkoutDraft {
     warmUp: 300,
     coolDown: 360,
     flat: { level: 12, minutes: 30, cadence: 85 },
+    video: { on: false, link: DEFAULT_VIDEO_LINK, offset: 0 },
   };
 }
 
@@ -189,4 +200,36 @@ export function stepFlatCadence(draft: CustomWorkoutDraft, direction: 1 | -1): C
     ...draft,
     flat: { ...draft.flat, cadence: step(draft.flat.cadence, L.flatCadence, direction) },
   };
+}
+
+/** Turns Ride along to a video on or off (L2-098 AC1). */
+export function setVideoOn(draft: CustomWorkoutDraft, on: boolean): CustomWorkoutDraft {
+  return { ...draft, video: { ...draft.video, on } };
+}
+
+export function setVideoLink(draft: CustomWorkoutDraft, link: string): CustomWorkoutDraft {
+  return { ...draft, video: { ...draft.video, link } };
+}
+
+/** The offset half a second earlier or later, never below 0 (L2-098 AC3). */
+export function stepOffset(draft: CustomWorkoutDraft, direction: 1 | -1): CustomWorkoutDraft {
+  return setOffset(draft, draft.video.offset + direction * OFFSET_STEP);
+}
+
+/** The offset at `seconds`, to a tenth, as "Use video's current time" or a typed time sets it (L2-098 AC4). */
+export function setOffset(draft: CustomWorkoutDraft, seconds: number): CustomWorkoutDraft {
+  return { ...draft, video: { ...draft.video, offset: clampOffset(seconds) } };
+}
+
+/** The video the ride plays: its id while the switch is on and the link is YouTube's, else `null`. */
+export function videoOf(draft: CustomWorkoutDraft): string | null {
+  return draft.video.on ? videoIdOf(draft.video.link) : null;
+}
+
+/** What "Your ride" reads of the video (L2-099 AC1, AC5): "Synced from 0:12.0", "Off" or "Link needed". */
+export function videoFact(draft: CustomWorkoutDraft): string {
+  if (!draft.video.on) return 'Off';
+  return videoOf(draft) === null
+    ? 'Link needed'
+    : `Synced from ${formatOffset(draft.video.offset)}`;
 }

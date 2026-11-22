@@ -120,3 +120,6 @@ export { TrainingClose } from './custom-workout/training-close';
 export { TrainingHeader } from './custom-workout/training-header';
 export { TrainingModes } from './custom-workout/training-modes';
 export { TrainingStepper } from './custom-workout/training-stepper';
+export { PlanPreview, type PlanPreviewFact } from './custom-workout/plan-preview';
+export { VideoFrame } from './custom-workout/video-frame';
+export { VideoSync, type VideoFrameDrawn } from './custom-workout/video-sync';

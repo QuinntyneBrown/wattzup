@@ -504,7 +504,9 @@
         "flat",
         "needs-chromium",
         "needs-https",
-        "edited"
+        "edited",
+        "video-off",
+        "invalid-link"
       ],
       "not_applicable": {
         "empty": "The form always starts from a plan (the GCN 30-minute ladder), never blank.",

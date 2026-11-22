@@ -1,0 +1,78 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Before a custom ride starts, Your ride shows what it will ask of you, right beside the settings."
+      ]
+    },
+    {
+      "id": "total",
+      "bars": 5,
+      "lines": [
+        "GCN's thirty-minute HIIT reads thirty minutes, its resistance profile from start to finish: seventeen bars, warm-up to cool-down."
+      ]
+    },
+    {
+      "id": "facts",
+      "bars": 5,
+      "lines": [
+        "Then the facts: eight thirty-second efforts, four minutes under load, level twenty-four at the peak, about a hundred and fifty-four watts and two hundred and seventy-six kilocalories."
+      ]
+    },
+    {
+      "id": "follows",
+      "bars": 4,
+      "lines": [
+        "Change anything, and Your ride follows at once. Remove a round: twenty-six thirty."
+      ]
+    },
+    {
+      "id": "flat",
+      "bars": 4,
+      "lines": [
+        "Flat at level twelve reads level twelve throughout: about two hundred and five watts, with no time under load."
+      ]
+    },
+    {
+      "id": "video",
+      "bars": 6,
+      "lines": [
+        "Ride along to a video parks the YouTube preview at your offset. Scrub past the intro, use the video's current time, and Your ride reads synced from twelve seconds. A link that is not YouTube's is caught at once."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 4,
+      "lines": [
+        "Your ride, from a phone to the full screen."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

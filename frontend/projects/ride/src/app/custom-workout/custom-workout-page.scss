@@ -1,5 +1,5 @@
 // Block setup (docs/design-system/assets/components.css): the settings column, and on lg the preview's column beside
-// it (slice 21.2). The level sliders and steppers' layout follows the design system's level-sliders and
+// it. The level sliders and steppers' layout follows the design system's level-sliders and
 // training-steppers.
 :host {
   display: flex;
@@ -13,6 +13,13 @@
   min-height: 0;
   grid-template-columns: minmax(0, 1fr);
   overflow-y: auto;
+}
+
+@media (min-width: 64rem) {
+  .setup {
+    grid-template-columns: minmax(0, 1fr) var(--setup-preview-width);
+    overflow: hidden;
+  }
 }
 
 .setup__settings {

@@ -78,9 +78,9 @@ provides `CustomWorkoutStore`, so the setup screen and, from slice 21.3, the cus
   training mode, then HIIT's plans, ladder, level sliders, warm-up and cool-down, or flat's
   resistance level, duration, cadence goal and its note.
 
-**Later slices.** The "Your ride" preview and Start ride (`L2-099`, `L2-100`) are slice 21.2.
-The video section (`L2-098`), the saved workout it opens from (`L2-094` AC3's "last saved",
-through `CUSTOM_WORKOUT_API`) and the ride are slice 21.3, where Start ride first saves a
+**Later slices.** The "Your ride" preview (`L2-099`, `L2-100`) and the video section
+(`L2-098`) are slice 21.2. Start ride, the saved workout it opens from (`L2-094` AC3's "last
+saved", through `CUSTOM_WORKOUT_API`) and the ride are slice 21.3, where Start ride first saves a
 workout and a ride plays the video.
 
 ## Requirements

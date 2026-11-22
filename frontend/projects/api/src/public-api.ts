@@ -110,6 +110,7 @@ export type {
   HiitPresetId,
   Round,
   TrainingMode,
+  VideoSettings,
 } from './workout/custom-workout';
 export { SAVED_WORLDS, type SavedWorld, type SavedWorlds } from './world/saved-worlds';
 export type { LoadStepState, LoadStepView } from './world/load-step-view';

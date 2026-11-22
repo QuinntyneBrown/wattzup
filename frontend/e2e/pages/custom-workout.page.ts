@@ -33,6 +33,24 @@ export class CustomWorkoutPage {
   readonly duration: Locator;
   readonly cadenceGoal: Locator;
   readonly note: Locator;
+  /** The "Your ride" preview (L2-099). */
+  readonly preview: Locator;
+  readonly previewTotal: Locator;
+  readonly profile: Locator;
+  readonly profileBars: Locator;
+  readonly axis: Locator;
+  readonly factNames: Locator;
+  /** The video section (L2-098). */
+  readonly videoSwitch: Locator;
+  readonly videoLink: Locator;
+  readonly videoLinkError: Locator;
+  readonly player: Locator;
+  readonly offset: Locator;
+  readonly earlier: Locator;
+  readonly later: Locator;
+  readonly useCurrentTime: Locator;
+  readonly check: Locator;
+  readonly videoHelp: Locator;
 
   constructor(private readonly page: Page) {
     const header = page.locator('.training-header');
@@ -62,6 +80,30 @@ export class CustomWorkoutPage {
     this.duration = this.stepper('Duration');
     this.cadenceGoal = this.stepper('Cadence goal');
     this.note = page.locator('.setup__note');
+    this.preview = page.getByRole('complementary', { name: 'Your ride' });
+    this.previewTotal = this.preview.locator('.plan-preview__total');
+    this.profile = this.preview.getByRole('img', { name: 'Resistance profile' });
+    this.profileBars = this.profile.locator('rect');
+    this.axis = this.preview.locator('.plan-preview__axis span');
+    this.factNames = this.preview.locator('.plan-preview__fact dt');
+    this.videoSwitch = page.getByRole('switch', { name: /Ride along to a video/ });
+    this.videoLink = page.getByRole('textbox', { name: 'YouTube link' });
+    this.videoLinkError = page.locator('.video-sync__error');
+    this.player = page.locator('.video-sync__player');
+    this.offset = page.getByRole('textbox', { name: 'Ride 0:00 starts at' });
+    this.earlier = page.getByRole('button', { name: 'Half a second earlier' });
+    this.later = page.getByRole('button', { name: 'Half a second later' });
+    this.useCurrentTime = page.getByRole('button', { name: "Use video's current time" });
+    this.check = page.getByRole('button', { name: 'Check' });
+    this.videoHelp = page.locator('.video-sync__help');
+  }
+
+  /** A fact of the preview by its name ("Expected avg power"). */
+  fact(name: string): Locator {
+    return this.preview
+      .locator('.plan-preview__fact')
+      .filter({ has: this.page.locator('dt', { hasText: name }) })
+      .locator('dd');
   }
 
   /** A plan's chip by its name. */

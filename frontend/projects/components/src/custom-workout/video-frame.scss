@@ -1,0 +1,6 @@
+// The player's frame fills the video-sync__player box it is drawn in.
+:host,
+.video-frame {
+  position: absolute;
+  inset: 0;
+}
