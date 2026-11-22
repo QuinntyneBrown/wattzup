@@ -563,7 +563,8 @@ different bike (a time-trial bike, a gravel bike) is the frame's eight points an
 
 **Cost.** None: faster than the kit it replaces, with 15 fewer draw calls for a pack of five.
 
-**Watch for.** A colour that smears: it blends over the gap between two sections. A limb that twists as it moves:
+**Watch for.** An open end of a tube that is not buried in another part: close it with two or three small sections
+(riders pass 5). Two round parts side by side where the body has one (a seat is one pelvis, not two spheres). A colour that smears: it blends over the gap between two sections. A limb that twists as it moves:
 `between` keeps its width across the bike, which is right for legs that swing fore and aft. Parts that meet at a
 joint must overlap, or a gap opens as the joint bends.
 
@@ -630,7 +631,7 @@ The pictures the work aims at differ from a course in these ways, most visible f
 2. The water does not mirror the quay's own lamps, cranes and ships: only the sky and the far shore.
 3. Lit windows on the upper floors light nothing: only the ground floor's throw light.
 4. The neon signs have no glow in the air round them, as the lamps have.
-5. The riders: a seat made of two spheres, no face, nobody out of the saddle on a climb, one build and one bike for
+5. The riders: wheels that do not turn, no face, nobody out of the saddle on a climb, one build and one bike for
    all (see the riders' own log).
 6. Signs with lettering, pipes, gutters and fire escapes: a warehouse's wall is still flat between its windows.
 7. The lamps along the quay are not mirrored in the harbour beside them.

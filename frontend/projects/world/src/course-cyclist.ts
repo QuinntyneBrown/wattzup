@@ -79,6 +79,7 @@ const TAPE = new Color(0x202226);
 const SADDLE = new Color(0x0e0f11);
 const VENT = new Color(0x15161a);
 const BOTTLE = new Color(0xdfe3e8);
+const HAIR = new Color(0x2b2019);
 
 /** A part's finish: how glossy it is, 0 to 1, and how much of a metal. */
 type Finish = readonly [gloss: number, metal: number];
@@ -99,9 +100,10 @@ const FINISHES = new Map<Color, Finish>([
   [RIM, [0.85, 0.3]],
   [STEEL, [0.8, 1]],
   [TAPE, [0.1, 0]],
-  [SADDLE, [0.45, 0]],
+  [SADDLE, [0.15, 0]],
   [VENT, [0.1, 0]],
   [BOTTLE, [0.7, 0]],
+  [HAIR, [0.35, 0]],
 ]);
 const finishOf = (colour: Color): Finish => FINISHES.get(colour) ?? MATT;
 
@@ -711,6 +713,37 @@ function body(jersey: Color): { still: BufferGeometry[]; kit: BufferGeometry[] }
   placed(neck, between(nape, skull));
   const head = ball(skull, new Vector3(0.076, 0.098, 0.092), SKIN, 12);
   placed(head.piece, new Matrix4().makeRotationX(0.25).setPosition(head.at));
+  // The back of the head, which is what a rider behind sees: hair below the helmet, the ears, the helmet's cradle
+  // on the nape and its straps down past each ear to the chin.
+  const hair = ball(
+    skull.clone().add(new Vector3(0, -0.012, 0.03)),
+    new Vector3(0.075, 0.074, 0.074),
+    HAIR,
+    10,
+  );
+  placed(hair.piece, new Matrix4().setPosition(hair.at));
+  const cradle = ball(
+    skull.clone().add(new Vector3(0, -0.04, 0.094)),
+    new Vector3(0.036, 0.016, 0.012),
+    VENT,
+    6,
+  );
+  placed(cradle.piece, new Matrix4().setPosition(cradle.at));
+  for (const side of [-1, 1]) {
+    const ear = ball(
+      skull.clone().add(new Vector3(side * 0.075, -0.012, -0.004)),
+      new Vector3(0.011, 0.027, 0.018),
+      SKIN,
+      6,
+    );
+    placed(ear.piece, new Matrix4().setPosition(ear.at));
+    for (const z of [0.03, -0.035]) {
+      const top = skull.clone().add(new Vector3(side * 0.082, 0.022, z));
+      const chin = skull.clone().add(new Vector3(side * 0.058, -0.088, -0.03));
+      const strap = tube(top.distanceTo(chin), 0.005, 0.005, VENT, 4);
+      placed(strap, between(top, chin));
+    }
+  }
   const shellShape = new SphereGeometry(1, 20, 10, 0, Math.PI * 2, 0, Math.PI * 0.56);
   const shell = solid(shellShape, jersey, LACQUER);
   // Vents: every other stripe round the crown is dark, away from the rim.
@@ -744,8 +777,11 @@ function body(jersey: Color): { still: BufferGeometry[]; kit: BufferGeometry[] }
     const cuff = shoulder.clone().lerp(elbow, 0.62);
     const sleeve = wrap(
       [
-        { t: 0, rx: 0.058, rz: 0.06 },
-        { t: 0.12, rx: 0.056, rz: 0.058 },
+        // Closed over the shoulder in a dome, so no open edge stands out of the trunk.
+        { t: 0, rx: 0.012, rz: 0.012 },
+        { t: 0.03, rx: 0.036, rz: 0.038 },
+        { t: 0.08, rx: 0.052, rz: 0.054 },
+        { t: 0.16, rx: 0.056, rz: 0.058 },
         { t: 0.5, rx: 0.05, rz: 0.054 },
         { t: 0.95, rx: 0.045, rz: 0.048 },
         { t: 1, rx: 0.043, rz: 0.046 },
@@ -787,15 +823,15 @@ function body(jersey: Color): { still: BufferGeometry[]; kit: BufferGeometry[] }
         .setPosition(fist.at.clone().add(new Vector3(0, -0.012, -0.028))),
     );
   }
-  // The seat: the glutes either side of the saddle, in the shorts.
-  for (const side of [-1, 1]) {
-    const glute = ball(
-      HIP.clone().add(new Vector3(side * 0.072, -0.03, 0.035)),
-      new Vector3(0.092, 0.1, 0.11),
-      SHORTS,
-    );
-    placed(glute.piece, new Matrix4().setPosition(glute.at));
-  }
+  // The seat: one pelvis in the shorts, wide over the saddle and round behind, that the trunk grows out of and the
+  // thighs leave. Two rounds side by side read as two balls once the light caught their edges.
+  const pelvis = ball(
+    HIP.clone().add(new Vector3(0, -0.026, 0.03)),
+    new Vector3(0.15, 0.09, 0.118),
+    SHORTS,
+    12,
+  );
+  placed(pelvis.piece, new Matrix4().makeRotationX(-0.35).setPosition(pelvis.at));
   return { still: parts, kit };
 }
 

@@ -13,6 +13,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 2 | Kit with a design: panels, pockets, lettering, cuffs; shoulders that join the arms | 120.1 fps, none over 20 ms | 16.8 ms | 323 fps (3.10 ms): 324, 314, 323 | 81,601 | 69 | Yes |
 | 3 | Riders that move: a lean into each bend, the bike rocking under the stroke, the shoulders swaying over it | 120.1 fps, none over 20 ms | 9.6 ms | 320 fps (3.12 ms): 331, 320, 293 | 81,601 | 74 | Yes |
 | 4 | A finish for each surface: skin, lycra, lacquer, carbon, steel, rubber; lamp light along glossy edges | 120.0 fps, none over 20 ms | 16.6 ms | 317 fps (3.15 ms): 326, 317, 317 | 81,601 | 74 | Yes |
+| 5 | One pelvis for a seat, sleeves closed over the shoulders, the back of the head: hair, ears, the helmet's cradle and straps | 120.1 fps, none over 20 ms | 16.9 ms | 314 fps (3.19 ms): 320, 310, 314 | 84,781 | 74 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -163,3 +164,29 @@ the same as the kit's cloth above them.
 - A finish in the vertices costs nothing a frame and keeps the rider one mesh; a material for each finish would have
   been a draw call for each.
 - The rim light is unkind to crude shapes: it drew a line round the seat's two spheres. Shape first, then shine.
+
+## Pass 5: the seat, the shoulders and the back of the head
+
+**Before** (`rider-04-start.jpg`): the seat is two spheres side by side, which the edge light of pass 4 drew a ring
+round each; each sleeve's open top stands out of the trunk as a point at the shoulder; below the helmet the head is
+a bare skin-coloured ball.
+
+**After** (`rider-05-start.jpg`, `rider-05.jpg`, `rider-05.mp4`): one pelvis, wide over the saddle and round
+behind, that the trunk grows out of and the thighs leave. The sleeves close over the shoulders in a dome. Dark hair
+shows between the helmet and the collar, with ears, the helmet's cradle on the nape and its straps down to the chin.
+
+**What changed.** `course-cyclist.ts`: the two glutes are one ellipsoid (0.15 × 0.09 × 0.118 m, tipped forward with
+the pelvis); the sleeve's loft starts with three small sections; `HAIR` and four small pieces a head; the saddle is
+dull (0.15) so its tail does not ring.
+
+**Cost.** 3,200 more triangles in the frame for five riders. 314 fps against 317, inside the run-to-run spread; no
+frame over 20 ms.
+
+**Tried and dropped.** A pelvis 0.16 m wide: wider than the waist above it, it sat like a cushion.
+
+**Learned.**
+
+- An open end of a tube must be inside something or closed. It hid at pass 2 and showed once the shoulders were
+  looked at closely.
+- From a camera behind the rider, the back of the head and the seat are the two places the eye rests. They were the
+  two crudest.
