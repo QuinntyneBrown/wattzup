@@ -37,10 +37,16 @@ produces.
 - **`measureClockOffset`** — function in `domain/engine`, shared with group classes. From five
   `ServerTime` round trips it keeps the offset of the shortest:
   `offset = serverTime − (sentAt + receivedAt) / 2` (`L2-121` AC3).
-- **`LiveSessionStore`** — signal store in the `ride` application, provided by the lobby page.
-  It measures the offset, then sends `FindRace`; it holds the race seat, the grid from each
-  `SeatsChanged` of its session and the last leaver's name, and finds the race again after a
-  reconnect. The start deadline and the race clock come with slice 15.2.
+- **`LiveSessionStore`** — signal store in the `ride` application, provided by the lobby page
+  and by the race page. It measures the offset, then sends `FindRace` from the lobby, or
+  `JoinRace(sessionId)` from the race, which opens at Go with the session in its address. It
+  holds the race seat, the grid from each `SeatsChanged` of its session and the last leaver's
+  name, and takes the seat again after a reconnect.
+- **`RaceStore`** — the race page's store. In a riders-online race it starts the `RideClock` at
+  the session's `startsAt` less the measured offset, so every rider's clock reads the same at the
+  same moment (`L2-121` AC3); a race opened a moment early holds at 0:00 until then, and one
+  without a seat or an offset starts at once and rides on with the bike. `RideTicker` publishes
+  the second of a clock started in the past at once.
 - **`RaceQueueApi`** — `api` contract, token `RACE_QUEUE_API`, implementation `HttpRaceQueueApi`.
   It reads `GET /api/maps/{mapId}/queue`, which Race Setup polls for the "{n} riders queuing now"
   line while the "Riders online" option shows (`L2-121` AC4, `L2-048` AC3). Race Setup holds no
@@ -68,8 +74,14 @@ produces.
 - **`TickLiveSessionsCommandHandler`** — runs once a second for every live session. For a race
   lobby it releases seats whose connection has been gone 10 seconds, and at 10 seconds to the
   start fills every open seat with bots (`L2-121` AC2), sending one `SeatsChanged` per leaver or
-  one for the change. The 3-second countdown and the start are slice 15.2; the start does not
-  wait for ready riders (`L2-053` AC4).
+  one for the change. No message marks the countdown or the start: every client holds the
+  session's `startsAt` and counts to it, so the start does not wait for ready riders
+  (`L2-053` AC4).
+- **`RideHub.JoinRace(sessionId)`** and **`JoinRaceCommandHandler`** — give a seated rider back
+  their seat on a new connection, before or after the start, with the session's start as server
+  time, and add the connection to the session group; a lost connection no longer frees the seat.
+  A session the service does not hold, or one the rider has no seat in, is refused with
+  `session_not_found`.
 - **`GetRaceQueueQueryHandler`** — counts the riders seated in open sessions for the map
   (`L2-121` AC4).
 - **`SessionTicker`** — `BackgroundService` in `Telo.Ride.Infrastructure`. A `PeriodicTimer` of
@@ -139,9 +151,9 @@ later (`L2-121` AC1).
 
 ### Behaviour — fill seats and start together
 
-Each tick applies the 10-second bot fill, the 3-second countdown and the start at a server time;
-each client turns that server time into a local deadline with its measured offset (`L2-121` AC2,
-AC3). Slice 15.1 built the bot fill; the countdown and the start are slice 15.2.
+Each tick applies the 10-second bot fill (`L2-121` AC2). Each client counts down to the
+session's `startsAt` through its measured offset; at Go the race joins its session again and
+starts its clock at that start (`L2-121` AC3).
 
 ![Sequence diagram for filling seats and starting together](diagrams/sequence-fill-and-start.png)
 
@@ -157,8 +169,12 @@ Race Setup reads the number of riders seated in open sessions for the map over H
 1. **As built in slice 15.1.** `RaceSession` stands alone rather than specializing an abstract
    `LiveSession`: group class sessions hold no seats list of their own, so nothing yet shares
    one. `RaceSessionMatcher` folded into the registry's `Open(mapId, now)`, `ServerClock` is the
-   group classes' `measureClockOffset`, and `SessionState` waits for the start in slice 15.2.
-   Seats carry no country yet.
+   group classes' `measureClockOffset`. Seats carry no country yet.
+4. **As built in slice 15.2.** `CountdownStarted`, `SessionStarted` and `SessionState` were not
+   built: every client already holds `startsAt` from `FindRace`, and a group class starts the
+   same way (slice 14.4), so the countdown and the start come from the clock offset alone. The
+   lobby and the race are sibling routes, so the lobby's connection closes at Go and the race
+   opens its own, joining with `JoinRace`; the seat survives the moment between.
 2. **Who may find a race.** `FindRace` does not check the rider's level (3 or more) or that the
    map is open to them; Race Setup does. A refusal code may follow.
 3. **A leaver after the fill.** The next unseated bot takes the seat; with all nine seated it
