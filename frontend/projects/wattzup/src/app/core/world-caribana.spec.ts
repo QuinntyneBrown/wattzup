@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import { InstancedMesh, Mesh, type BufferGeometry } from 'three/webgpu';
+import { BatchedMesh, InstancedMesh, Matrix4, Mesh, type BufferGeometry } from 'three/webgpu';
 import { CaribanaStreet } from './world-caribana';
 
 describe('CaribanaStreet (L2-101 AC1, L2-111 AC10)', () => {
@@ -29,7 +29,7 @@ describe('CaribanaStreet (L2-101 AC1, L2-111 AC10)', () => {
     for (const d of disposables) d.dispose();
   });
 
-  it('declutters redundant street micro-objects, consolidates solid prop hierarchies and instanced crowds, culls past 300 m, and gates shadows', () => {
+  it('declutters redundant street micro-objects, batches shared-material props and crowds, culls past 300 m, and gates shadows', () => {
     const disposables: { dispose(): void }[] = [];
     const street = new CaribanaStreet((t) => t, disposables);
     street.build(3.5, 161);
@@ -45,11 +45,11 @@ describe('CaribanaStreet (L2-101 AC1, L2-111 AC10)', () => {
       }
       if (obj instanceof InstancedMesh) instancedMeshes++;
     });
-    // Down from ~4,200+ meshes -> 1,085 in Iter 1 -> 630 in Iter 2 -> < 500 after Gardiner bent/traffic instancing & intersection consolidation.
-    expect(totalMeshes).toBeLessThan(500);
-    expect(instancedMeshes).toBeLessThan(125);
-    // Banner/flag/placard atlases and shared signal/truss/crowd materials cut unique materials from 785 -> 388 -> 236 -> < 150.
-    expect(uniqueMaterials.size).toBeLessThan(150);
+    // Down from ~4,200+ meshes -> 1,085 in Iter 1 -> 630 in Iter 2 -> 475 in Iter 3 -> < 240 after BatchedMesh prop & crowd draw-call consolidation.
+    expect(totalMeshes).toBeLessThan(240);
+    expect(instancedMeshes).toBeLessThan(75);
+    // Flag/lamp/stripe atlases and shared materials cut unique materials from 785 -> 388 -> 236 -> 148 -> < 125.
+    expect(uniqueMaterials.size).toBeLessThan(125);
 
     const points = Array.from({ length: 161 }, (_, i) => ({
       metres: (i - 10) * 2,
@@ -70,8 +70,29 @@ describe('CaribanaStreet (L2-101 AC1, L2-111 AC10)', () => {
       }
       return true;
     };
+    const scratchMat = new Matrix4();
     street.group.traverse((obj) => {
       if (!(obj instanceof Mesh) || !isEffectivelyVisible(obj)) return;
+      if (obj instanceof BatchedMesh) {
+        const instInfo = (
+          obj as unknown as {
+            _instanceInfo: { visible: boolean; active: boolean; geometryIndex: number }[];
+          }
+        )._instanceInfo;
+        const geoInfo = (
+          obj as unknown as {
+            _geometryInfo: { reservedVertexCount: number }[];
+          }
+        )._geometryInfo;
+        let verts = 0;
+        for (const info of instInfo) {
+          if (!info.active || !info.visible) continue;
+          verts += geoInfo[info.geometryIndex]?.reservedVertexCount ?? 0;
+        }
+        activeVertices += verts;
+        if (obj.castShadow) shadowVertices += verts;
+        return;
+      }
       const pos = (obj.geometry as BufferGeometry).getAttribute('position');
       if (!pos) return;
       const instances = obj instanceof InstancedMesh ? obj.count : 1;
@@ -83,11 +104,22 @@ describe('CaribanaStreet (L2-101 AC1, L2-111 AC10)', () => {
     expect(activeVertices).toBeLessThan(1_350_000);
     expect(shadowVertices).toBeLessThan(145_000);
 
-    // Every visible direct child prop past 316 m or behind -22 m (excluding static sky/distant backdrop groups at z === 0 or z <= -1000) is culled,
-    // and no mesh standing more than 40 m ahead casts directional shadows outside the 25 m shadow box.
+    // Every visible direct child prop or batched shadow instance past 45 m skips directional shadow casting.
     let farShadowCasters = 0;
     for (const child of street.group.children) {
       if (!child.visible || child instanceof InstancedMesh) continue;
+      if (child instanceof BatchedMesh) {
+        if (!child.castShadow) continue;
+        for (let id = 0; id < child.maxInstanceCount; id++) {
+          if (!child.getVisibleAt(id)) continue;
+          child.getMatrixAt(id, scratchMat);
+          const e = scratchMat.elements;
+          const nonZeroScale = e[0] !== 0 || e[5] !== 0 || e[10] !== 0;
+          const metres = -e[14];
+          if (nonZeroScale && metres > 45) farShadowCasters++;
+        }
+        continue;
+      }
       const metres = -child.position.z;
       if (metres > 45) {
         child.traverse((obj) => {
