@@ -67,6 +67,7 @@ import { bendLean } from './rider-lean';
 import { type ShadowShape, shadowShape } from './rider-shadow-shape';
 import { outOfTheSaddle } from './rider-stance';
 import { endShadow, sideShadow } from './shadow-silhouette';
+import { SunGlow } from './sun-glow';
 import { vertexFinish } from './rider-finish';
 import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
@@ -260,6 +261,8 @@ export class CourseRenderer implements WorldRenderer {
   private benchFrom = 0;
   /** The street lamps' light on what stands near the road, where the course has lamps; and the riders' materials lit by it. */
   private lampGlow: LampGlow | null = null;
+  /** The daylight on the riders of a course without lamps (sun-glow.ts). */
+  private sunGlow: SunGlow | null = null;
   private readonly lamplit = new Map<Material, Material>();
 
   /** `path` is where the app serves the course's `.glb` and `.course.json`. */
@@ -395,6 +398,7 @@ export class CourseRenderer implements WorldRenderer {
     this.riders.clear();
     this.lamplit.clear();
     this.lampGlow = null;
+    this.sunGlow = null;
     this.groundEye = null;
     this.riderBatch = null;
     this.rain = null;
@@ -600,9 +604,19 @@ export class CourseRenderer implements WorldRenderer {
     this.you = you;
     // Every rider's moving parts of a plain colour are drawn by one batch (rider-batch.ts), in the material that
     // draws their still ones.
+    // A rider is lit by the course's lamps where it has them, and by its daylight where it does not.
+    if (!this.lampGlow) {
+      const [x, y, z] = this.course!.file.sun;
+      this.sunGlow = new SunGlow(
+        new Vector3(x, y, z).normalize(),
+        this.sun.color,
+        new Color(courseLook(this.course!.file).fill[0]),
+      );
+    }
+    const riderLight = this.lampGlow ?? this.sunGlow;
     let batched: Material = this.plain;
-    if (this.lampGlow) {
-      batched = this.lampGlow.rider(this.plain as unknown as MeshStandardMaterial, LAMP_ON.rider);
+    if (riderLight) {
+      batched = riderLight.rider(this.plain as unknown as MeshStandardMaterial, LAMP_ON.rider);
       this.lamplit.set(this.plain, batched);
       this.disposables.push(batched);
     }
@@ -773,9 +787,9 @@ export class CourseRenderer implements WorldRenderer {
     return cyclist;
   }
 
-  /** Where the course has street lamps, gives a rider's lit materials the lamps' light too. */
+  /** Gives a rider's lit materials the course's own light: its lamps' where it has them, its daylight where not. */
   private lamplight(cyclist: Cyclist): void {
-    const lampGlow = this.lampGlow;
+    const lampGlow = this.lampGlow ?? this.sunGlow;
     if (!lampGlow) return;
     cyclist.group.traverse((part) => {
       const mesh = part as Mesh;

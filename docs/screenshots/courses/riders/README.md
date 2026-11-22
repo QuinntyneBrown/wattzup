@@ -30,6 +30,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 19 | A drivetrain: seven sprockets, a derailleur with its cage and jockey wheels, a dark chain, slim hubs, black cranks | 119.7 fps, 1 over 20 ms | 25.0 ms | 301 fps (3.33 ms): 301, 298, 302 | 100,371 | 84 | Yes |
 | 20 | The camera at the reference's distance: the rider half the picture's height | 119.9 fps, 0 over 20 ms | 16.7 ms | 295 fps (3.39 ms): 295, 296, 293 | 100,371 | 84 | Yes |
 | 21 | By day, a shadow with the rider's shape: the bike from its side or the rider end on, as the sun stands (measured on Cliffside Coast) | 120.1 fps, 0 over 20 ms | 9.5 ms | 373 fps (2.68 ms): 373, 377, 354; Docklands unchanged at 295 | 83,511 | 70 | Yes |
+| 22 | By day, the sky's light in a rider's shade and the sun along their edges (measured on Cliffside Coast) | 120.1 fps, 0 over 20 ms | 10.0 ms | 367 fps (2.72 ms): 373, 355, 367; Docklands unchanged at 296 | 83,511 | 70 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -723,3 +724,28 @@ uncapped; Docklands 295, as before.
 - Look at every kind of map. A night map hid both the riders' shadows and how dark the riders are against a bright
   land; the first cost a pass, the second is still to do.
 - A shadow's shape is two pictures and one number; the sun's angle to the bike picks between them.
+
+## Pass 22: by day, light in the shade and sun on the edges
+
+**Before** (the left of `rider-22.jpg`; `rider-21.mp4`): on a day map with the sun ahead, the rider's back, which is
+what the camera sees, is in the rider's own shade: darker than the land about it and flat, the skin a dull brown.
+
+**After** (the middle and right of `rider-22.jpg`, on Cliffside Coast and Prairie Paceline; `rider-22.mp4`, filmed
+on Cliffside Coast): the shade is lifted by the sky's colour, so skin and cloth read as their own colours, and the
+sun draws a warm line along the edges turned towards it: down the calves and thighs, round the arms, over the
+shoulders and the helmet, and (in brown, the sun's colour on black) along the shorts. The rider stands out from the
+road as a lit body. Neon Docklands, at night, is lit by its lamps as before.
+
+**What changed.**
+
+- `sun-glow.ts`, new: `SunGlow.rider(source)` copies a rider's material as the lamps' version does (colour, map,
+  finish, holes) and adds to what it emits: its own colour × the sky's colour × 0.3, and the sun's colour × the edge
+  term of pass 4 × how far the surface is turned to the sun.
+- `course-renderer.ts`: a course without lamps makes a `SunGlow` from its file's `sun`, its light's colour and the
+  sky half of its `fill`; the riders' materials are lit by the lamps' glow or by this.
+
+**Cost.** Nothing measured on Cliffside Coast (367 fps against 373, within the spread); Docklands unchanged (296).
+The race's end-to-end specs: the same 13 failures as before the riders' work.
+
+**Learned.** A backlit figure is drawn by its edges. The sun behind a rider is no reason for a dark rider; it is
+the chance for a rim of light, which is how such a rider is seen.

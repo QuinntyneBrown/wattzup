@@ -762,6 +762,21 @@ longest. Night maps with `lamps` use the lamps' shadows (technique 10) instead.
 **Watch for.** Dark roads: a shadow needs to be near black and strong to show on asphalt. The shadow's length is
 fixed (3.4 m); it does not yet follow the sun's height.
 
+### R14. Daylight on a rider: the sky in the shade, the sun on the edges (riders pass 22)
+
+**What it gives.** On every day map, riders that are not dark shapes when the sun is ahead: their shade takes the
+sky's colour and their sunward edges a rim of sun.
+
+**How it works.** `SunGlow` (sun-glow.ts), made for a course without lamps from the file's `sun`, `light` and
+`fill`. Its `rider()` adds `diffuseColor × sky × 0.3` and `sun × sheen(gloss) × sunward` to a rider's emission.
+
+**To apply it.** Nothing to do for a map; it reads what the course file has. A map with a high white sun wants less
+rim (`SUN_RIM`), an overcast one more lift (`SKY_LIFT`).
+
+**Cost.** None measured.
+
+**Watch for.** Black kit taking the sun's colour along its edge: right, but strong on a low orange sun.
+
 ### R10. The rider framed above the HUD (riders pass 11)
 
 **What it gives.** The rider whole in the picture on every map: wheels, the road under them, their shadow and
@@ -796,7 +811,7 @@ The pictures the work aims at differ from a course in these ways, most visible f
 2. The water does not mirror the quay's own lamps, cranes and ships: only the sky and the far shore.
 3. Lit windows on the upper floors light nothing: only the ground floor's throw light.
 4. The neon signs have no glow in the air round them, as the lamps have.
-5. The riders: dark against a bright land when the sun is ahead of them (day maps), no face, one build (only height differs), a stand on the pedals that is
+5. The riders: no face, one build (only height differs), a stand on the pedals that is
    slight, on a climb, one build and one bike for
    all (see the riders' own log).
 6. Signs with lettering, pipes, gutters and fire escapes: a warehouse's wall is still flat between its windows.
