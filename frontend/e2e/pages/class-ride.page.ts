@@ -24,6 +24,10 @@ export class ClassRidePage {
   readonly resistance: Locator;
   readonly level: Locator;
   readonly raise: Locator;
+  /** Waiting for a group session's start: "Starts in 9:00" over the parked video (L2-087 AC4). */
+  readonly wait: Locator;
+  readonly waitTime: Locator;
+  readonly waitNote: Locator;
   readonly lower: Locator;
 
   constructor(private readonly page: Page) {
@@ -53,6 +57,9 @@ export class ClassRidePage {
     this.resistance = page.locator('.class-resist__value');
     this.level = page.locator('.class-resist__level');
     this.raise = page.getByRole('button', { name: 'Raise resistance' });
+    this.wait = page.locator('.class-video__wait');
+    this.waitTime = this.wait.getByRole('timer');
+    this.waitNote = page.locator('.class-video__wait-note');
     this.lower = page.getByRole('button', { name: 'Lower resistance' });
   }
 
