@@ -704,6 +704,22 @@ also be lit by its `diffuseColor`, not its plain colour.
 
 **Watch for.** Shade painted where baked shade (R8) already falls: under the arms both are light on purpose.
 
+### R10. The rider framed above the HUD (riders pass 11)
+
+**What it gives.** The rider whole in the picture on every map: wheels, the road under them, their shadow and
+their lamp's light, clear of the race's panel.
+
+**How it works.** `raised(camera)` in `course-renderer.ts` calls `camera.setViewOffset(1, 1, 0, FRAME_RISE, 1, 1)`
+with `FRAME_RISE` 0.1: an off-centre frustum, kept through every resize.
+
+**To apply it.** Nothing to do for a map. If the panel's height changes, change `FRAME_RISE` with it (the panel
+takes about a tenth of the frame's height on a 16:9 screen).
+
+**Cost.** None.
+
+**Watch for.** Anything worked out from the camera's projection as if it were centred (a screen-space effect, a
+sky dome's horizon line): check it still lines up.
+
 ### Tried for the riders and not kept
 
 - **Spray off the rear wheel on a wet road** (after riders pass 10): hidden behind the HUD for the rider's own bike

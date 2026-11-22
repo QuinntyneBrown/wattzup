@@ -19,6 +19,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 8 | Bike lights at night: a red rear lamp that glows, and the pools the lamps throw on the road | 119.8 fps; two frames of 25 ms in 1 timing of 4, none in 3 | 16.7 ms filmed, 25.1 ms worst | 294 fps (3.40 ms): 301, 292, 294 | 85,051 | 84 | Yes, with that noted |
 | 9 | Shade baked where the parts meet: under the helmet, inside the arms, beneath the seat, at the frame's joins | 119.9 fps; one frame of 25 ms in 1 timing of 3 | 25.1 ms | 317 fps (3.15 ms): 323, 313, 317 | 85,051 | 84 | Yes |
 | 10 | Cloth painted as cloth: the back's shape, folds, pocket shade, mesh panels, seams, the knit's grain; lamp light that keeps what is painted | 119.9 fps; two frames of 25 ms in 1 timing of 4, neither with a collection | 16.9 ms filmed, 25.0 ms worst | 294 fps (3.40 ms): 296, 286, 294 | 85,051 | 84 | Yes |
+| 11 | The whole rider in the frame: the picture raised a tenth so the wheels and the road under them show above the panel | 119.8 fps, none over 20 ms | 16.8 ms | 304 fps (3.29 ms): 304, 294, 313 | 85,051 | 84 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -431,3 +432,28 @@ a pack of five, from 84). Nothing seen for ten draw calls: not kept, and no film
 What would make it worth another try: a camera that shows the road behind the rider's wheel (the race camera's
 height and distance are the requirement's, L2-166 AC9), or riders close ahead, where their spray would hang in the
 rider's own view. Then it wants soft mist low on the road more than streaks.
+
+## Pass 11: the whole rider in the frame
+
+**Before** (`rider-10-start.jpg`): the rider's rear wheel meets the road behind the panel at the foot of the screen.
+The bike has no ground under it in the picture: no contact, no shadow, no pool of light. The picture this work aims
+at shows the rider whole, wheels on the road.
+
+**After** (`rider-11-start.jpg`, `rider-11.jpg`, `rider-11.mp4`): the rider, both wheels, the road under them and
+the rear lamp's red pool behind are clear of the panel, on the start line and on the bridge. The horizon and the
+riders up the road sit a tenth higher too; the sky loses that tenth at the top, under the header.
+
+**What changed.** `course-renderer.ts`: the course's camera has its lens shifted down by a tenth of the frame's
+height (`FRAME_RISE`, through `setViewOffset`), which raises the picture by as much. The camera is where it was and
+points where it did (L2-166 AC9's distances are unchanged), so nothing leans or stretches: it is the shift a view
+camera makes. AC9 now says the rider shows whole above the panel.
+
+**Cost.** None: 304 fps, no frame over 20 ms, the same draw calls and triangles. The race's end-to-end specs give
+the same results as before the riders' work (the 13 failures that were there, no others).
+
+**Learned.**
+
+- Look at the whole screen, not the crop. Ten passes went into a rider whose wheels were under the HUD; it took a
+  spray nobody could see to notice.
+- To move a subject in the frame without changing the view, shift the lens; tilting the camera down would have
+  raised the rider and lost the skyline.
