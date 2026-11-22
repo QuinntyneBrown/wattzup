@@ -83,6 +83,30 @@ seats before bots on a tie, with each gap to the leader in kJ. The service's `Bo
 the Ride app's run one table of cases in their unit tests. `LiveSession`, `RiderProgress`, race
 ranking and the distance trace come with the riders-online race.
 
+**As built for riders-online races (slice 15.3).** A riders-online race keeps its progress in
+`RaceSession`. The race's store calls `LiveSessionStore.report(metres, power)` on each of the
+race clock's seconds; holding a race seat, the store sends `ReportRaceProgress(sessionId,
+distanceMetres, powerWatts)`, and the session keeps a report only from a seated rider, from the
+start, 500 ms or more after the rider's last. Its bots, the ones seated 10 seconds before the
+start, ride `BotPaceModel` around the medium pack (190 W), seeded with the session's id, each
+second at the virtual speed of that power (`VirtualSpeedModel`, 10 × ∛(W ÷ 20) km/h, as in the
+Ride app's bots race); the service's and the Ride app's `VirtualSpeedModel` run one table of
+cases. At each tick from the start, for every whole second since the last, the session adds each
+seat's distance to its trace (one point a second, the last 600 kept), every distance held at the
+route's length from the map catalogue, and ranks: furthest first, a tie to whoever reached that
+distance first, so riders held at the line rank by finish time (`L2-123` AC2), then seat order.
+Each row's gap to the leader is the seconds since the leader reached that rider's distance, read
+from the leader's trace, at most 600. It sends `RaceStandingsUpdated` to the session: position,
+seat, name, jersey, level (none for a bot), kind, distance in metres and gap in seconds. It is a
+message of its own, not `StandingsUpdated`, because a race row carries a seat, metres and seconds
+where a class row carries kJ; and the seat, not the jersey, finds the rider's row, since a rider
+and a bot can share a jersey (`nova`, `rook`, `juno`). `LiveSessionStore.raceStandings` holds the
+latest only. `RaceStore` draws the board from it: the places as the service ranked them, each gap
+the rider's gap to the leader less the row's (positive: ahead), written as the bots race writes
+it, and the world's riders at the service's distances. Until the first standings arrive, the
+board lists the start grid with every gap at 0:00. Leavers and DNF come with slice 15.4, the
+tamper-proof result with slice 15.5.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a
@@ -137,3 +161,8 @@ Each tick moves the bots, ranks the field and sends one standings message to eve
 (`L2-123` AC2, AC3, AC4).
 
 ![Sequence diagram for ranking and sending standings](diagrams/sequence-rank-and-send-standings.png)
+
+## Open questions
+
+1. **Pack strength of a riders-online race's bots.** `<TO SUPPLY>` above; as built, the medium
+   pack (190 W), the bots race's default.

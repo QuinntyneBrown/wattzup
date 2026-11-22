@@ -41,7 +41,9 @@ came with slice 7.5 (finish-a-race, pause-leave-or-lose-the-bike-in-a-race), and
 development-only Finish is not built; the renderer tag and the drawn world with
 journey 8, and until then the scene is the map's photo, as the mock draws it, one image described
 as "The Old Town Criterium world: a cobbled European old town on race day"; Full screen with
-slice 24.2; riders online with journey 15.
+slice 24.2; riders online with journey 15. In a riders-online race (slice 15.3) the board and the
+world's riders come from the service's standings (multiplayer/share-progress-and-standings): its
+places, and each gap the rider's gap to the leader less the row's.
 
 **Names in the code.** `RaceEngine`'s second is `RaceStore`'s tick (`ride/src/app/race`): it
 rides the rider's distance, advances the `RaceField` and ranks the standings. `StandingsRanker`

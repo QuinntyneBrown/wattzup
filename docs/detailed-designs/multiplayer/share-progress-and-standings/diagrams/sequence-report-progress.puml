@@ -23,25 +23,31 @@ box "Backend — Telo.Ride.Api" #D1FADF
   participant "RideHub" as hub
 end box
 box "Backend — Telo.Ride.Application and Domain" #ECFDF3
-  participant "ReportProgressCommandHandler" as handler
-  participant "LiveSession" as session
+  participant "Report(Race)ProgressCommandHandler" as handler
+  participant "RaceSession | GroupClassSession" as session
 end box
 box "Backend — Telo.Ride.Infrastructure" #FFF4E5
-  participant "InMemorySessionRegistry" as registry
+  participant "Session registries" as registry
 end box
 loop every second of the ride
   engine -> reporter : report(distance | outputKj, power)
   alt at least 500 ms since the last report (L2-123 AC1)
-    reporter -> client : reportProgress({distance | outputKj, power})
-    client -> hub : ReportProgress(report)
-    hub -> handler : Send ReportProgressCommand(riderId, report)
-    handler -> registry : Session holding the rider
-    registry --> handler : LiveSession
+    alt race seat
+      reporter -> client : reportRaceProgress(sessionId, metres, power)
+      client -> hub : ReportRaceProgress(sessionId, metres, power)
+      hub -> handler : Send ReportRaceProgressCommand(riderId, ...)
+    else class seat
+      reporter -> client : reportProgress(sessionId, outputKj, power)
+      client -> hub : ReportProgress(sessionId, outputKj, power)
+      hub -> handler : Send ReportProgressCommand(riderId, ...)
+    end
+    handler -> registry : Find(sessionId)
+    registry --> handler : The session
     handler -> session : RecordProgress(riderId, sample at server time)
     alt under 500 ms since this rider's last sample
       session --> handler : Ignored
     else accepted
-      session --> handler : Recorded; trace point added
+      session --> handler : Recorded
     end
   else too soon
     reporter -> reporter : Drop
