@@ -44,6 +44,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 20 | Rain falling through the lamplight; and every rider made before the ride | 120.0 fps, no frame over 20 ms, worst 16.8 ms | median of three 321 fps (3.12 ms): 327, 321, 295; pass 19 read 324 | | 83,391 | 79 | 3.17 MB | Yes |
 | 21 | Warehouses with loading doors and things on their roofs | 119.7 fps, no frame over 20 ms, worst 16.8 ms | median of three 310 fps (3.23 ms): 299, 326, 310; pass 20 read 321 | | 83,391 | 79 | 3.30 MB | Yes |
 | 22 | Lit windows light the pavement; the water takes the bridges' colour | 120.1 fps, no frame over 20 ms, worst 16.7 ms | median of three 306 fps (3.27 ms): 306, 322, 305; pass 21 read 310 | | 83,391 | 79 | 3.30 MB, and 56 KB for the course file | Yes |
+| 23 | The file within its budget: the meshopt codec | 119.9 fps, 1 frame over 20 ms, worst 25 ms | six runs: 313, 273, 248, 261, 307, 315 fps on a busy machine; pass 22 read 306 | | 83,391 | 79 | **1.41 MB** | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -750,3 +751,36 @@ draw call and the smaller file with no work at all: the coast's file falls from 
 prairie's from 3.20 to 2.39 MB. What they do not get without work in their themes: walls and windows on their
 buildings (they place panels the old way), the sea's water on the coast (it has `sea` and gets the water),
 lamps, rain, bridges.
+
+## Pass 23: the file within its budget
+
+Not a change to the picture (`pass-23.jpg`, `pass-23.mp4`): the map's download, the last number over its budget.
+
+**Before:** 3.30 MB gzipped against a budget of 3 MB (and 3.37 MB before any of these passes). **After: 1.41 MB
+gzipped**, with every mesh, name, attribute and number in the file as it was.
+
+**What changed.**
+
+- `tools/blender/meshopt_glb.mjs`, which the build runs after `pack_glb.py`: it puts each mesh's triangles and
+  vertices in an order the meshopt codec packs well and writes each buffer with the codec
+  (EXT_meshopt_compression) in place of raw bytes. `meshoptimizer`, which the app's packages already brought in,
+  is now named among them.
+- `course-renderer.ts` gives its loader the decoder Three.js ships. A map written without the codec loads as
+  before (the other seven are).
+
+**Where the bytes went (gzipped):** positions 1.52 to about 0.5 MB, triangles 1.24 to about 0.3 MB, UVs 0.64 to
+about 0.4 MB.
+
+**Cost.** None at run time: the frame is the same 83,391 triangles in 79 draw calls. The six uncapped runs of this
+sitting spread from 248 to 315 fps with another program taking the processor; the best equals pass 22's.
+
+**Tried and dropped.** `gltfpack`, which does the same and more, and made the file 1.34 MB: it also removed every
+UV (no texture uses them, but the materials read them) and every lamp's glow (four corners at one place are
+triangles of no area). Its own compression is the same codec, so the codec is used directly.
+
+**Learned.**
+
+- A general tool optimises for the general case. These maps keep their meaning in attributes and in triangles that
+  a general tool is right to think unused; the codec underneath it had no such opinions.
+- The budget that looked like it needed the map cut back needed only its bytes written better: 60 % off, for
+  nothing in the picture.

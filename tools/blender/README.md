@@ -138,6 +138,9 @@ data and scenery in `themes.py`, run the script, and name the world in
 - **Baked shading.** What stands on the ground is darkened at its foot in its colours.
 - **`pack_glb.py`** rewrites the exported vertex colours as bytes, a quarter of their size, and each mesh's positions as
   16-bit steps of its own box, a step a centimetre, put back by the mesh's node (KHR_mesh_quantization).
+- **`meshopt_glb.mjs`** then writes the glb's buffers with the meshopt codec (Node, with the app's packages installed):
+  a third of the download, and nothing in the file changed. Without Node the build leaves the glb as the packer
+  wrote it.
 - **`layout`.** Searching the layouts a seed can deal for one whose start and finish look out to sea can
   take minutes. The script prints the layout it chose, and each course file names it (`"layout": 2`) so
   the next build goes straight to it. Remove the line to search again after changing the seed.

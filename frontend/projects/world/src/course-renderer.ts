@@ -3,6 +3,7 @@
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
 // metres they have ridden. `main`'s scenes are drawn by
 // world-renderer.ts; map-renderer.ts picks between the two.
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
 import { pass } from 'three/tsl';
@@ -257,7 +258,9 @@ export class CourseRenderer implements WorldRenderer {
           if (!response.ok) throw new Error(`The course file answered ${response.status}.`);
           return response.json() as Promise<unknown>;
         }),
-        new GLTFLoader().loadAsync(`${this.path}.glb`),
+        // A map's buffers are written with the meshopt codec (tools/blender/meshopt_glb.mjs); one written without
+        // it loads as before.
+        new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(`${this.path}.glb`),
       ]);
       if (this.disposed) return false;
       this.course = new Course(parseCourse(file));

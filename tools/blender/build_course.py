@@ -30,6 +30,8 @@ import argparse
 import json
 import math
 import random
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -1951,6 +1953,13 @@ def main(argv: list[str] | None = None) -> dict:
     bpy.data.collections["Guides"].hide_viewport = True
     export_glb(args.out / f"{course['id']}.glb")
     pack_glb(args.out / f"{course['id']}.glb")
+    # And its buffers with the meshopt codec, where Node and the app's packages are at hand (meshopt_glb.mjs): a
+    # third of the download. Without them the map is left as it is, and loads all the same.
+    node = shutil.which("node")
+    if node and (ROOT / "frontend/node_modules/meshoptimizer").exists():
+        subprocess.run([node, str(ROOT / "tools/blender/meshopt_glb.mjs"), str(args.out / f"{course['id']}.glb")], check=True)
+    else:
+        print("meshopt_glb.mjs not run: node or frontend/node_modules/meshoptimizer is missing.", flush=True)
     bpy.data.collections["Guides"].hide_viewport = False
     if theme:
         light_scene_theme(facts["sunAzimuth"], theme)

@@ -347,7 +347,12 @@ Three.js's loader reads without a decoder). Colours were already bytes. UVs stay
 the confetti) must be named in `MOVED`. Code that reads a mesh's geometry must use the mesh's matrix, as
 `course-renderer.ts` now does for a chunk's middle.
 
-**Cost.** None at run time. Docklands: 3.95 to 3.31 MB gzipped.
+**And the codec (Docklands pass 23).** `tools/blender/meshopt_glb.mjs`, run by the build after the packer, reorders
+each mesh for the meshopt codec and writes every buffer with it (EXT_meshopt_compression); the app's loader is
+given Three.js's decoder. Docklands: 3.30 to 1.41 MB gzipped. Do not use `gltfpack` on these maps: it drops the
+UVs and the lamps' glow, which no texture or area tells it are used.
+
+**Cost.** None at run time. Docklands: 3.95 to 3.31 MB gzipped by stepping, and to 1.41 MB with the codec.
 
 **Watch for.** Two surfaces a centimetre or two apart (paint on a road) must still be whole steps apart after
 stepping, or they fight; a mesh more than 655 m across is held more coarsely than a centimetre.
@@ -531,12 +536,10 @@ alike, lit or not, looks like scratches on the lens: light it by where it is.
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
 
-1. The map's file is 3.14 MB gzipped against 3 MB: what is left is positions and indices, which need a mesh codec
-   (meshopt).
-2. Nothing but the riders casts a shadow: posts, walls and containers throw none.
-3. The water does not mirror the quay's own lamps, cranes and ships: only the sky and the far shore.
-4. Lit windows on the upper floors light nothing: only the ground floor's throw light.
-5. The neon signs have no glow in the air round them, as the lamps have.
-6. The riders are simple figures: smooth limbs, no cloth, no faces.
-7. Signs with lettering, pipes, gutters and fire escapes: a warehouse's wall is still flat between its windows.
-8. The lamps along the quay are not mirrored in the harbour beside them.
+1. Nothing but the riders casts a shadow: posts, walls and containers throw none.
+2. The water does not mirror the quay's own lamps, cranes and ships: only the sky and the far shore.
+3. Lit windows on the upper floors light nothing: only the ground floor's throw light.
+4. The neon signs have no glow in the air round them, as the lamps have.
+5. The riders are simple figures: smooth limbs, no cloth, no faces.
+6. Signs with lettering, pipes, gutters and fire escapes: a warehouse's wall is still flat between its windows.
+7. The lamps along the quay are not mirrored in the harbour beside them.
