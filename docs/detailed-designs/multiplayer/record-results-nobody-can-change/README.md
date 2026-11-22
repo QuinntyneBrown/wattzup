@@ -90,7 +90,7 @@ recording of a ride id (AC3) were built with `progression/keep-progress-on-the-b
 - **The Ride app** submits a riders-online race with its `sessionId`. The outbox sends a ride
   answered `result_pending` again every 5 seconds, for at most 3 minutes, and Results shows
   "Recording your ride…" (the `recording` state) meanwhile; after that it is not recorded.
-  A riders-online race sends no pack.
+  A riders-online race sends no pack. Results heads the race "Live race", as the peers mock does.
 
 ## Open questions
 
