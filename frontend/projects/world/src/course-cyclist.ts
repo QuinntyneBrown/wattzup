@@ -40,6 +40,8 @@ export interface RiderModel {
    * rider is, 0 seated to 1 standing on the pedals.
    */
   pose(angle: number, standing?: number): void;
+  /** Turns the wheels to where they are after `metres` of road. */
+  roll(metres: number): void;
   /** The rider's own geometries, textures and materials, to dispose with it. */
   readonly owned: readonly { dispose(): void }[];
   /** The mesh of everything that never moves against the bike: the batch of moving parts leaves it alone. */
@@ -438,13 +440,14 @@ function shoeShape(look: Palette): BufferGeometry {
 export class CourseCyclistKit {
   private readonly crank = tube(CRANK, 0.016, 0.012, STEEL);
   private readonly pedal = solid(new CylinderGeometry(0.012, 0.012, 0.09, 6), SOLE);
-  private readonly spokeDisc = new CircleGeometry(WHEEL - 0.05, 32);
-  private readonly spokeTexture = spokeTexture();
-  private readonly spokes = new MeshBasicMaterial({
-    color: 0x80868d,
-    alphaMap: this.spokeTexture,
-    alphaTest: 0.35,
+  // A wheel's side: the deep rim with its decals and the spokes inside it, one disc drawn through its own picture.
+  private readonly spokeDisc = new CircleGeometry(WHEEL - 0.024, 40);
+  private readonly spokeTexture = wheelTexture();
+  private readonly spokes = new MeshStandardMaterial({
+    map: this.spokeTexture,
+    alphaTest: 0.5,
     side: DoubleSide,
+    roughness: 0.35,
   });
   private readonly bibPlane = new PlaneGeometry(0.2, 0.15);
   // The bikes' lights, where the course is ridden at night: the glow of the rear lamp, and the pools the rear and
@@ -577,6 +580,8 @@ class CourseCyclist implements RiderModel {
   private readonly ankle = new Vector3();
   private readonly hip = new Vector3();
   private readonly rise = new Quaternion();
+  private readonly wheels: Mesh[] = [];
+  private readonly size: number;
   /** The pools the bike's lights throw on the road, at night. */
   private road: Mesh | null = null;
   private readonly knee = new Vector3();
@@ -589,6 +594,7 @@ class CourseCyclist implements RiderModel {
     const colours = palette(look);
     // Taller and shorter riders, each on a bike their size.
     this.rig.scale.setScalar(look.scale);
+    this.size = look.scale;
     const rider = body(jersey, colours);
     this.group.add(this.rig);
     this.rig.add(this.torso);
@@ -614,12 +620,14 @@ class CourseCyclist implements RiderModel {
     this.owned.push(worn, fabric, fabric.map!);
     for (const piece of [...rider.still, ...rider.kit]) piece.dispose();
 
-    // Spokes: a disc a wheel, drawn through a mask of thirty-two of them.
+    // The wheels' sides: a disc a wheel, with its rim, decals and spokes.
     for (const axle of [FRONT, REAR]) {
       const disc = new Mesh(shapes.spokeDisc, shapes.spokes);
-      disc.rotation.y = Math.PI / 2;
+      // On its side, then turned about its own axle as the bike rolls (`roll`).
+      disc.rotation.set(0, Math.PI / 2, 0, 'YXZ');
       disc.position.copy(axle);
       this.rig.add(disc);
+      this.wheels.push(disc);
     }
 
     // The race number, pinned low on the back.
@@ -663,6 +671,12 @@ class CourseCyclist implements RiderModel {
       });
     }
     this.pose(0);
+  }
+
+  roll(metres: number): void {
+    // A wheel turns once in its own circumference; forwards is the top going ahead.
+    const turn = -(metres / (WHEEL * this.size)) % (Math.PI * 2);
+    for (const wheel of this.wheels) wheel.rotation.z = turn;
   }
 
   pose(angle: number, standing = 0): void {
@@ -1463,27 +1477,56 @@ function bibTexture(n: number): CanvasTexture {
   return texture;
 }
 
-/** Spokes for a wheel's disc: twenty-four thin lines from the hub to the rim, as a mask. */
-function spokeTexture(): CanvasTexture {
-  const size = 256;
+/**
+ * A wheel's side, as a picture with holes: a deep carbon rim round the edge with two pale decals opposite one
+ * another (so the eye can see it turn), twenty-four steel spokes laced to a hub, and nothing between the spokes.
+ */
+function wheelTexture(): CanvasTexture {
+  const size = 512;
   const canvas = document.createElement('canvas');
   canvas.width = size;
   canvas.height = size;
   const ctx = canvas.getContext('2d');
   if (ctx) {
-    ctx.fillStyle = '#000';
-    ctx.fillRect(0, 0, size, size);
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 1.6;
     const c = size / 2;
+    ctx.clearRect(0, 0, size, size);
+    // Spokes, hub to rim.
+    ctx.strokeStyle = '#b9bdc2';
+    ctx.lineWidth = 2.2;
     for (let i = 0; i < 24; i++) {
       const a = (i / 24) * Math.PI * 2;
       const hub = a + (i % 2 ? 0.45 : -0.45);
       ctx.beginPath();
-      ctx.moveTo(c + Math.cos(hub) * 9, c + Math.sin(hub) * 9);
-      ctx.lineTo(c + Math.cos(a) * c, c + Math.sin(a) * c);
+      ctx.moveTo(c + Math.cos(hub) * 16, c + Math.sin(hub) * 16);
+      ctx.lineTo(c + Math.cos(a) * c * 0.86, c + Math.sin(a) * c * 0.86);
       ctx.stroke();
     }
+    ctx.fillStyle = '#8f949a';
+    ctx.beginPath();
+    ctx.arc(c, c, 18, 0, Math.PI * 2);
+    ctx.fill();
+    // The rim: a band from 0.8 of the disc's radius to its edge.
+    ctx.strokeStyle = '#17181c';
+    ctx.lineWidth = c * 0.2;
+    ctx.beginPath();
+    ctx.arc(c, c, c * 0.9, 0, Math.PI * 2);
+    ctx.stroke();
+    // Its decals: two pale arcs opposite one another, and a thin line round the brake track.
+    ctx.strokeStyle = '#d9dbde';
+    ctx.lineWidth = c * 0.075;
+    for (const at of [0.3, 0.3 + Math.PI]) {
+      ctx.beginPath();
+      ctx.arc(c, c, c * 0.9, at, at + 0.62);
+      ctx.stroke();
+    }
+    ctx.strokeStyle = '#3a3d44';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(c, c, c * 0.985, 0, Math.PI * 2);
+    ctx.stroke();
   }
-  return new CanvasTexture(canvas);
+  const texture = new CanvasTexture(canvas);
+  texture.colorSpace = SRGBColorSpace;
+  texture.anisotropy = 4;
+  return texture;
 }

@@ -139,6 +139,8 @@ export class LampGlow {
     material.metalness = source.metalness ?? 0;
     material.vertexColors = source.vertexColors;
     material.side = source.side;
+    // A picture with holes (a wheel's spokes) keeps its holes.
+    material.alphaTest = source.alphaTest;
     // The surface's colour as the material itself has worked it out: its colour, its vertices' and its map's, so
     // what is painted on a jersey is lit as painted and not washed over.
     const surface = diffuseColor.rgb;

@@ -728,6 +728,20 @@ lit side.
 
 **Watch for.** A grid too coarse for its lamps: the slope is then noise. `SLOPE_CELLS` widens the read.
 
+### R12. Wheels that roll with the road (riders pass 17)
+
+**What it gives.** Wheels that turn at the bike's true rate on every map, with rims and spokes worth looking at.
+
+**How it works.** A disc a wheel, textured with `wheelTexture()` (rim, decals, spokes; holes by `alphaTest`), turned
+by `roll(metres)`: the angle is the distance ridden over the wheel's radius, so it needs no clock and no speed.
+
+**To apply it.** Nothing to do for a map. A disc wheel, a tri-spoke or a different rim is a different picture.
+
+**Cost.** None.
+
+**Watch for.** A material rebuilt for the lamps must carry `alphaTest` over. Marks on the rim are what show the
+turning; spokes alone strobe.
+
 ### R10. The rider framed above the HUD (riders pass 11)
 
 **What it gives.** The rider whole in the picture on every map: wheels, the road under them, their shadow and
@@ -761,7 +775,7 @@ The pictures the work aims at differ from a course in these ways, most visible f
 2. The water does not mirror the quay's own lamps, cranes and ships: only the sky and the far shore.
 3. Lit windows on the upper floors light nothing: only the ground floor's throw light.
 4. The neon signs have no glow in the air round them, as the lamps have.
-5. The riders: wheels that do not turn, no face, one build (only height differs), a stand on the pedals that is
+5. The riders: no face, one build (only height differs), a stand on the pedals that is
    slight, on a climb, one build and one bike for
    all (see the riders' own log).
 6. Signs with lettering, pipes, gutters and fire escapes: a warehouse's wall is still flat between its windows.

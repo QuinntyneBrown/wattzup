@@ -25,6 +25,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 14 | A road helmet: a long low shell with vents along its crown, a dark rim and a pale tail | 119.7 fps, 1 over 20 ms | 25.0 ms | 303 fps (3.30 ms): 299, 303, 309 | 87,751 | 84 | Yes |
 | 15 | Shoes, hands and arms: a cupped heel with a tab, a strap and toe cap; a hand that holds the hood; arms with their muscles | 120.0 fps, 0 over 20 ms | 16.7 ms | 303 fps (3.30 ms): 291, 307, 303 | 90,791 | 84 | Yes |
 | 16 | Lamp light with a side: what faces the nearest lamp is lit more, what faces away less | 119.7 fps, 0 over 20 ms | 16.8 ms | 296 fps (3.37 ms): 296, 301, 293 | 90,791 | 84 | Yes |
+| 17 | Wheels that turn: deep rims with decals and laced spokes, rolling with the road | 120.1 fps, 0 over 20 ms | 8.7 ms | 305 fps (3.28 ms): 300, 305, 307 | 90,871 | 84 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -592,3 +593,32 @@ riders' materials use it; the map's are as they were.
 
 **Learned.** A map of how much light there is also says where it comes from: its slope points at the lamp. No list
 of lamps has to reach the shader.
+
+## Pass 17: wheels that turn
+
+**Checked first.** In pass 16's film the rider seemed, in a small crop, to lean out of a bend. In the whole frame
+the road bends right and the rider leans right: the lean is the right way.
+
+**Before** (`rider-16.mp4`): the wheels do not turn. Each wheel's side is a disc of thin spokes, unlit and one grey,
+standing still while the bike does 46 km/h.
+
+**After** (`rider-17.mp4`; `rider-17.jpg` is four frames of it a sixtieth of a second apart, enlarged): each wheel
+has a deep carbon rim with two pale decals opposite one another and twenty-four laced steel spokes on a hub, lit as
+the rest of the bike is, and it turns as the bike covers the road, once in its own circumference. Through a bend,
+where the wheels are seen from the side, the decals and spokes are in a different place in every frame. Straight
+from behind a wheel is seen edge on and this shows little.
+
+**What changed.**
+
+- `course-cyclist.ts`: `wheelTexture()` (512 px, with holes) is the wheel's side; its disc reaches the tyre; its
+  material is a standard one, so the lamps light it. `RiderModel.roll(metres)` turns both discs about their axles
+  by `metres / (wheel's radius × the rider's size)`.
+- `CourseRenderer.ride` calls `roll` with where the rider is on the road.
+- `LampGlow.rider` keeps a material's `alphaTest`, or the lit wheel would have been a solid disc.
+
+**Cost.** None measured: 305 fps, no frame over 20 ms, the same draw calls.
+
+**Known.** At speed the spokes move further in a frame than the gap between them, so they can seem to stand or
+creep, as on film. The decals, two to a wheel, read truly.
+
+**Learned.** Something that turns needs a mark on it. Twenty-four alike spokes show no turning; two decals do.

@@ -637,6 +637,7 @@ export class CourseRenderer implements WorldRenderer {
     const ahead = this.course!.place(metres + LEAN_AHEAD, lane, this.here).heading;
     const at = this.course!.place(metres, lane, this.here);
     cyclist.group.position.set(at.x, at.y + 0.02, at.z);
+    cyclist.roll(metres);
     cyclist.group.rotation.set(
       at.pitch,
       at.heading,
