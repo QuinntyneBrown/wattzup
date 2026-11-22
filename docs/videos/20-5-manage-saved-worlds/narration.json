@@ -1,0 +1,71 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Each world you ride is kept on this device, so the next ride opens in seconds, even offline. This device shows what is kept."
+      ]
+    },
+    {
+      "id": "saved",
+      "bars": 5,
+      "lines": [
+        "Saved worlds reads how many, how much space they take, and names them: three worlds, sixty-one megabytes."
+      ]
+    },
+    {
+      "id": "clear",
+      "bars": 5,
+      "lines": [
+        "Clear saved worlds deletes them. The row reads None saved, and a toast says how much was freed, then closes on its own."
+      ]
+    },
+    {
+      "id": "keep",
+      "bars": 5,
+      "lines": [
+        "Keep worlds after a ride is on by default. Turn it off, and nothing new is saved: the next ride downloads the world again."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 4,
+      "lines": [
+        "This device, from a phone to the full screen."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 5,
+      "lines": [
+        "And if the browser clears space on its own, World loading simply downloads the world again. Nothing fails."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}
