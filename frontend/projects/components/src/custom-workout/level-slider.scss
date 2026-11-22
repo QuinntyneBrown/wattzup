@@ -36,11 +36,13 @@
   color: var(--color-faint);
 }
 
+// 44 px tall for touch, the track drawn in its middle; the negative margins keep the layout of a 24 px range.
 .range {
   display: block;
   width: 100%;
-  height: var(--target-min);
-  margin-top: var(--space-3);
+  height: var(--target-comfortable);
+  margin-top: calc(var(--space-3) + (var(--target-min) - var(--target-comfortable)) / 2);
+  margin-bottom: calc((var(--target-min) - var(--target-comfortable)) / 2);
   accent-color: var(--color-volt);
   cursor: pointer;
 }

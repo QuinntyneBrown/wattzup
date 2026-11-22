@@ -72,3 +72,11 @@
     );
   }
 }
+
+// On a phone, mid-ride, every tap area that reads the comfortable target takes the ride target instead: 48 px
+// (L2-140 AC2).
+@media (max-width: 39.99rem) {
+  :host {
+    --target-comfortable: var(--target-ride);
+  }
+}

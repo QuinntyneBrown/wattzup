@@ -51,8 +51,9 @@
   }
 }
 
-// The header's actions (class-ride .btn--sm): 48 px to press mid-ride on a phone, icon only below sm.
-.class-ride__action {
+// The header's actions (class-ride .btn--sm): 48 px to press mid-ride on a phone, icon only below sm. Scoped under
+// the block so it outweighs the button's own small size, which loads after it.
+.class-ride .class-ride__action {
   @media (max-width: 39.99rem) {
     --btn-height: var(--target-ride);
 

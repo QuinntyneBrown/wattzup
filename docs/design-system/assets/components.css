@@ -197,7 +197,7 @@ textarea.input.input--autogrow { field-sizing: content; min-height: var(--space-
 /* ---------- Select (native) ---------- */
 .select {
   --select-bg: var(--color-ink); --select-border: var(--color-line-strong); --select-border-hover: var(--color-muted);
-  --select-radius: var(--radius-lg); --select-height: var(--control-height-md); --select-chevron: var(--color-muted);
+  --select-radius: var(--radius-lg); --select-height: var(--target-comfortable); --select-chevron: var(--color-muted);
   --select-pad: var(--space-3); --select-font-size: var(--font-size-sm);
   position: relative; display: block; width: 100%;
 }
@@ -3326,3 +3326,24 @@ a.map-table__map:hover, a.map-table__map[data-state="hover"] { color: var(--colo
 /* Block delete-account-form: the confirmation in the Delete my account dialog (L2-006 AC2) */
 .delete-account-form { display: flex; flex-direction: column; gap: var(--space-4); padding-bottom: var(--space-5); }
 .delete-account-form__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-2); }
+
+/* ---------- Tap areas (L2-140 AC2) ----------
+   Each control keeps the look above and takes touches across 44 px; on a phone, mid-ride, the custom ride's header
+   and view take the ride target, 48 px (the class ride's header and the race bar already draw at 48 px). A scroller
+   clips what overhangs it, so the side nav's row makes room and the settings' segmented options wrap. */
+.tier-tabs__tab { min-width: var(--target-comfortable); justify-content: center; }
+@media (max-width: 63.99rem) {
+  .side-nav__list { padding-block: calc((var(--target-comfortable) - var(--target-min)) / 2); margin-block: calc((var(--target-min) - var(--target-comfortable)) / 2); }
+  .side-nav__link { position: relative; }
+  .side-nav__link::after { content: ''; position: absolute; inset-inline: 0; inset-block: min(0px, calc((100% - var(--target-comfortable)) / 2)); }
+}
+.setting .segmented { overflow-x: visible; flex-wrap: wrap; }
+.segmented__option { position: relative; }
+.segmented__option::after { content: ''; position: absolute; inset-inline: 0; inset-block: min(0px, calc((100% - var(--target-comfortable)) / 2)); }
+.switch::before { content: ''; position: absolute; inset-inline: 0; inset-block: min(0px, calc((100% - var(--target-comfortable)) / 2)); }
+.range { height: var(--target-comfortable); margin-block: calc((var(--target-min) - var(--target-comfortable)) / 2); }
+.ride-view__tab { position: relative; }
+.ride-view__tab::after { content: ''; position: absolute; z-index: 1; inset-inline: 0; inset-block: min(0px, calc((100% - var(--target-comfortable)) / 2)); }
+@media (max-width: 39.99rem) {
+  .ride-header, .ride-view { --target-comfortable: var(--target-ride); }
+}
