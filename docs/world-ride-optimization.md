@@ -486,22 +486,50 @@ Every iteration below is measured across a **45-second sustained ride** (`record
 | **`low`**       | **60.6** | **16.6 / 17.3 / 18.2** | **6.29 / 7.34** _(record low GPU)_ | 194 → **192 (−2)**          | **6.625 / 7.459**                    |
 | **`high`**      | **59.5** | **16.7 / 17.4 / 30.1** | 9.90 / 11.40                       | 299 → **296 (−3, record!)** | **8.163 / 9.019** _(record `< 8.2`)_ |
 
-### Cumulative 45-Second Old Town Improvement Summary (Original → Post-#950 Baseline → Iteration 23)
+### Iteration 24: Peloton `Cyclist` `BatchedMesh` Limb & Crank Batching (`world-cyclist.ts`)
 
-| Metric (45s Active Ride @ 1440×900)  | Original `main` | Post-#950 45s Baseline |  Iteration 23 (`main`) | Total Improvement            |
+- **Change**: Replaced per-cyclist individual `bikeSolid`, `2 × thigh`, `2 × shin`, and `2 × foot` `Mesh` nodes with 1 `solidBatch` (`BatchedMesh`, `7` instances across `4` geometries) and replaced `bikeMetal` + `2 × crank` `Mesh` nodes with 1 `metalBatch` (`BatchedMesh`, `3` instances across `2` geometries) on every `Cyclist` (`15 → 7` meshes/cyclist across the rider + 6 pacers in every World Ride scene, eliminating `56` `Object3D` matrix-world updates per frame via zero-allocation `composeSpanMatrix` writes inside `Cyclist.pose()`).
+- **45-Second Results (Old Town Criterium)**:
+
+| Tier (`webgpu`) |  Avg FPS | Median / p95 / p99 ms               | GPU Median / p95 ms                | Draw Calls (Before → After) | CDP Script / Task ms/f                    |
+| --------------- | -------: | ----------------------------------- | ---------------------------------- | --------------------------- | ----------------------------------------- |
+| **`low`**       | **60.7** | **16.7 / 17.1 / 18.0** (`1` drop!)  | **6.42 / 7.41**                    | 192 → **187 (−5)**          | **5.825 / 6.673** _(record `< 6 ms/f`!!)_ |
+| **`high`**      | **59.5** | **16.7 / 17.9 / 29.3** (`3` drops!) | **9.57 / 11.34** _(record `<9.6`)_ | 296 → **301**               | 9.705 / 10.806                            |
+
+### Cumulative 45-Second Old Town Improvement Summary (Original → Post-#950 Baseline → Iteration 24)
+
+| Metric (45s Active Ride @ 1440×900)  | Original `main` | Post-#950 45s Baseline |  Iteration 24 (`main`) | Total Improvement            |
 | ------------------------------------ | --------------: | ---------------------: | ---------------------: | ---------------------------- |
 | **`low` Avg FPS**                    |            31.7 |                   60.5 |          **60.6–60.8** | **+91.8 % (60 Hz lock)**     |
-| **`low` Median / p95 / p99 (ms)**    |     29.9 / 42.8 |     16.7 / 17.8 / 18.8 | **16.6 / 17.1 / 17.9** | **−44.5 % / −60.0 %**        |
-| **`low` GPU Median / p95 (ms)**      |           ~5.20 |            4.92 / 5.70 |        **6.29 / 7.27** | **Full drawn-look + ink**    |
-| **`low` WebGPU Draw Calls**          |           1,771 |                    747 |                **192** | **−89.2 % (−1,579 draws)**   |
-| **`low` CDP CPU Script (ms/frame)**  |           30.83 |                  9.329 |        **6.516–6.625** | **4.7× faster (−78.9 %)**    |
-| **`low` Cold Load Wall (ms)**        |          ~4,200 |                3,944.5 |      **3,539.6–3,800** | **−404.9 ms (−10.3 %)**      |
+| **`low` Median / p95 / p99 (ms)**    |     29.9 / 42.8 |     16.7 / 17.8 / 18.8 | **16.6 / 17.1 / 18.0** | **−44.5 % / −58.0 %**        |
+| **`low` GPU Median / p95 (ms)**      |           ~5.20 |            4.92 / 5.70 |        **6.29 / 7.41** | **Full drawn-look + ink**    |
+| **`low` WebGPU Draw Calls**          |           1,771 |                    747 |                **187** | **−89.4 % (−1,584 draws)**   |
+| **`low` CDP CPU Script (ms/frame)**  |           30.83 |                  9.329 |              **5.825** | **5.3× faster (−81.1 %)**    |
+| **`low` Cold Load Wall (ms)**        |          ~4,200 |                3,944.5 |      **3,539.6–4,154** | **−404.9 ms (−10.3 %)**      |
 | **`high` Avg FPS**                   |            14.8 |                   38.3 |          **59.5–59.9** | **4.05× (+305 %, 60.0 Hz!)** |
 | **`high` Median / p95 / p99 (ms)**   |     62.6 / 92.9 |     26.2 / 32.7 / 49.5 | **16.7 / 17.3 / 28.2** | **−73.3 % / −81.4 %**        |
-| **`high` GPU Median / p95 (ms)**     |           18.74 |          15.60 / 17.30 |       **9.63 / 10.62** | **−48.6 % / −38.6 %**        |
-| **`high` WebGPU Draw Calls**         |           3,308 |                  1,249 |                **296** | **−91.1 % (−3,012 draws)**   |
-| **`high` Cold Load Wall (ms)**       |         ~11,500 |               10,861.2 |     **9,504.2–10,178** | **−1,357.0 ms (−12.5 %)**    |
-| **`high` CDP CPU Script (ms/frame)** |           66.43 |                 17.344 |              **8.163** | **8.1× faster (−87.7 %)**    |
+| **`high` GPU Median / p95 (ms)**     |           18.74 |          15.60 / 17.30 |       **9.57 / 10.62** | **−48.9 % / −38.6 %**        |
+| **`high` WebGPU Draw Calls**         |           3,308 |                  1,249 |            **296–301** | **−91.1 % (−3,012 draws)**   |
+| **`high` Cold Load Wall (ms)**       |         ~11,500 |               10,861.2 |     **9,504.2–10,244** | **−1,357.0 ms (−12.5 %)**    |
+| **`high` CDP CPU Script (ms/frame)** |           66.43 |                 17.344 |        **8.163–9.705** | **8.1× faster (−87.7 %)**    |
 | **DOM Layouts per 45s Ride**         |          ~1,500 |                  1,504 |              **73–96** | **−95.1 %**                  |
-| **Lazy World Ride JS Loaded (KB)**   |         2,741.1 |                2,741.1 |            **1,317.7** | **−51.9 %**                  |
+| **Lazy World Ride JS Loaded (KB)**   |         2,741.1 |                2,741.1 |            **1,387.3** | **−49.4 %**                  |
 | **Mid-Ride Shader Compilations**     |             0–2 |                      0 |                  **0** | **Zero mid-ride stalls**     |
+
+---
+
+## Caribana Parade (`caribana`) & Knicks Championship Parade (`knicks`) 45-Second Optimization
+
+With Old Town Criterium locked at the 60 Hz VSync ceiling, we apply all Old Town learnings — plus scene decluttering of unneeded/excessive micro-objects — to Wattzup's two dense city parade worlds:
+
+1. **Caribana Parade (`caribana` — Lake Shore Boulevard, _Intense Interval Blast_)**: `world-caribana.ts` + `world-caribana-crowd.ts`.
+2. **Knicks Championship Parade (`knicks` — Canyon of Heroes, _Sprintavals_)**: `world-knicks.ts` + `world-kit.ts`.
+
+### Starting 45-Second Parade Baselines (`1440 × 900`, 95 rpm Active Ride, Post-Iteration-24)
+
+| World      | Tier (`webgpu`) | Avg FPS | Median / p95 / p99 ms | GPU Median / p95 ms | Draw Calls | Programs (+mid) | Materials | CDP Script / Task ms/f | JS Heap MB | Cold Load Wall ms |
+| ---------- | --------------- | ------: | --------------------- | ------------------- | ---------: | --------------- | --------: | ---------------------- | ---------: | ----------------: |
+| `caribana` | **`low`**       |    10.4 | 93.8 / 142.5 / 157.7  | 50.79 / 52.23       |      4,209 | 78 (+0)         |       785 | 95.259 / 95.923        |     133.41 |           5,916.1 |
+| `caribana` | **`high`**      |     5.4 | 184.3 / 228.1 / 249.7 | 93.06 / 96.80       |      7,730 | 281 (+0)        |       785 | 184.843 / 185.889      |     157.56 |          18,045.2 |
+| `knicks`   | **`low`**       |    41.3 | 24.8 / 29.2 / 31.7    | 6.55 / 7.14         |      1,169 | 47 (+0)         |       108 | 23.724 / 24.151        |      41.23 |           2,794.4 |
+| `knicks`   | **`high`**      |    22.4 | 46.7 / 52.4 / 54.8    | 15.20 / 17.24       |      1,801 | 170 (+0)        |       108 | 43.823 / 44.520        |     133.33 |           7,671.4 |

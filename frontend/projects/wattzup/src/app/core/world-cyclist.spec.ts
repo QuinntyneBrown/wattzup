@@ -1,7 +1,9 @@
 import {
+  BatchedMesh,
   type BufferGeometry,
   Color,
   type Group,
+  Matrix4,
   type Mesh,
   MeshStandardMaterial,
   Vector3,
@@ -23,15 +25,19 @@ describe('CyclistKit rigid bike and body sub-assemblies', () => {
     expect(frameMeshes).toHaveLength(1);
     expect(frameMeshes[0]?.castShadow).toBe(true);
 
-    // 2 tyres + 1 saddle + 1 bottle merged into 1 shadow-casting solid mesh, plus 6 articulated leg
-    // meshes (2 thighs + 2 shins-with-socks + 2 feet) = 7 direct solid meshes on cyclist.group.
+    // 2 tyres + 1 saddle + 1 bottle + 2 thighs + 2 shins-with-socks + 2 feet batched into 1
+    // shadow-casting BatchedMesh (7 instances) on cyclist.group.
     const solidMeshes = withMaterial(kit.solid);
-    expect(solidMeshes).toHaveLength(7);
+    expect(solidMeshes).toHaveLength(1);
+    expect(solidMeshes[0]).toBeInstanceOf(BatchedMesh);
+    expect((solidMeshes[0] as BatchedMesh).instanceCount).toBe(7);
     expect(solidMeshes[0]?.castShadow).toBe(true);
 
-    // 2 rims + 1 chainring merged into 1 static metal mesh, plus 2 animated cranks = 3 metal meshes.
+    // 2 rims + 1 chainring + 2 animated cranks batched into 1 BatchedMesh (3 instances).
     const metalMeshes = withMaterial(kit.metal);
-    expect(metalMeshes).toHaveLength(3);
+    expect(metalMeshes).toHaveLength(1);
+    expect(metalMeshes[0]).toBeInstanceOf(BatchedMesh);
+    expect((metalMeshes[0] as BatchedMesh).instanceCount).toBe(3);
 
     // Front and rear spoke lace & blur discs merged into 1 mesh each.
     expect(withMaterial(kit.spokeLace)).toHaveLength(1);
@@ -61,7 +67,7 @@ describe('CyclistKit rigid bike and body sub-assemblies', () => {
     cyclist.group.traverse((o) => {
       if ((o as Mesh).isMesh) totalMeshes++;
     });
-    expect(totalMeshes).toBeLessThanOrEqual(15);
+    expect(totalMeshes).toBeLessThanOrEqual(7);
 
     const other = kit.make(new Color(0x3a9ad9), 2, frame, {
       helmetColor: 0xf2f2ee,
@@ -83,7 +89,15 @@ describe('CyclistKit rigid bike and body sub-assemblies', () => {
     const kit = new CyclistKit(frame);
     const cyclist = kit.make(new Color(0x3a9ad9), 2, frame);
 
+    const solidBatch = cyclist.group.children.find(
+      (c): c is BatchedMesh => c instanceof BatchedMesh && c.material === kit.solid,
+    )!;
+    const beforeThigh = new Matrix4();
+    const afterThigh = new Matrix4();
+    solidBatch.getMatrixAt(1, beforeThigh);
     cyclist.pose(Math.PI / 2, 0.12, 0.8);
+    solidBatch.getMatrixAt(1, afterThigh);
+    expect(afterThigh.elements[13]).not.toBeCloseTo(beforeThigh.elements[13]!, 3);
     expect(cyclist.group.rotation.z).toBeCloseTo(0.12 + (0.03 + 0.09 * 0.8), 5);
 
     const frameMesh = cyclist.group.children.find(
