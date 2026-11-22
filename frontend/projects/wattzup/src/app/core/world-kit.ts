@@ -22,13 +22,11 @@ import {
   MeshStandardMaterial,
   type Object3D,
   PlaneGeometry,
-  Quaternion,
   RepeatWrapping,
   Shape,
   SphereGeometry,
   SRGBColorSpace,
   type Texture,
-  Vector3,
 } from 'three/webgpu';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { StreetPoint } from './world-oldtown';
@@ -672,6 +670,7 @@ export interface CrowdOptions {
 
 interface Fan {
   readonly side: -1 | 1;
+  readonly row: number;
   readonly offset: number;
   readonly x: number;
   readonly height: number;
@@ -696,6 +695,7 @@ interface Fan {
 
 const CROWD_BEHIND_CULL = -14;
 const CROWD_SHADOW_END = 34;
+const CROWD_FRONT_ROW_ONLY = 115;
 const CROWD_HORIZON_CULL = 308;
 
 /**
@@ -711,14 +711,6 @@ export class Crowd {
   private readonly flags: InstancedMesh[] = [];
   private flagCounts = new Int32Array(0);
   private lastBucket = Number.NaN;
-  private readonly matrix = new Matrix4();
-  private readonly spot = new Vector3();
-  private readonly turn = new Quaternion();
-  private readonly wave = new Quaternion();
-  private readonly size = new Vector3();
-  private readonly up = new Vector3(0, 1, 0);
-  private readonly forward = new Vector3(0, 0, 1);
-  private readonly shoulder = new Vector3();
 
   constructor(
     private readonly group: Group,
@@ -731,6 +723,7 @@ export class Crowd {
     const random = seeded(o.seeds[0]);
     const raw: {
       side: -1 | 1;
+      row: number;
       offset: number;
       x: number;
       height: number;
@@ -746,6 +739,7 @@ export class Crowd {
           if (Math.abs(x) > o.far) continue;
           const fan = {
             side,
+            row,
             offset: offset + random() * 0.4,
             x,
             height: 0.92 + random() * 0.16,
@@ -871,6 +865,7 @@ export class Crowd {
     this.lastBucket = bucket;
     const flagCount = this.flagCounts;
     flagCount.fill(0);
+    const armMatrices = arms.instanceMatrix.array as Float32Array;
     const armColors = arms.instanceColor!.array as Float32Array;
     let near = 0;
     let far = 0;
@@ -878,6 +873,7 @@ export class Crowd {
     for (const fan of this.fans) {
       const metres = along(fan.offset, loop);
       if (metres <= CROWD_BEHIND_CULL || metres > CROWD_HORIZON_CULL) continue;
+      if (metres > CROWD_FRONT_ROW_ONLY && fan.row > 0) continue;
       const y = heightAt(metres) + kerb;
       const heading = fan.side < 0 ? Math.PI / 2 - 0.3 : -Math.PI / 2 + 0.3;
       const bounce = Math.abs(Math.sin(time * 4.2 + fan.phase)) * 0.05;
@@ -919,44 +915,75 @@ export class Crowd {
       }
       if (fan.armsUp) {
         const open = 0.38 + Math.sin(time * 4.2 + fan.phase) * 0.14;
-        this.turn.setFromAxisAngle(this.up, heading);
-        this.size.setScalar(h);
+        const cy = Math.cos(heading);
+        const sy = Math.sin(heading);
+        const cz = Math.cos(open);
+        const szAbs = Math.sin(open);
+        const reach = (0.2 + szAbs * 0.3) * h;
+        const ay = y + 1.62 * h + bounce;
         for (const hand of [-1, 1]) {
-          this.wave.setFromAxisAngle(this.forward, hand * open);
-          this.wave.premultiply(this.turn);
-          this.shoulder.set(hand * (0.2 + Math.sin(open) * 0.3) * h, 0, 0);
-          this.shoulder.applyQuaternion(this.turn);
-          this.spot.set(fan.x + this.shoulder.x, y + 1.62 * h + bounce, -metres + this.shoulder.z);
+          const sz = hand * szAbs;
+          const sx0 = hand * reach;
+          const o = arm * 16;
+          armMatrices[o] = cy * cz * h;
+          armMatrices[o + 1] = sz * h;
+          armMatrices[o + 2] = -sy * cz * h;
+          armMatrices[o + 3] = 0;
+          armMatrices[o + 4] = -cy * sz * h;
+          armMatrices[o + 5] = cz * h;
+          armMatrices[o + 6] = sy * sz * h;
+          armMatrices[o + 7] = 0;
+          armMatrices[o + 8] = sy * h;
+          armMatrices[o + 9] = 0;
+          armMatrices[o + 10] = cy * h;
+          armMatrices[o + 11] = 0;
+          armMatrices[o + 12] = fan.x + sx0 * cy;
+          armMatrices[o + 13] = ay;
+          armMatrices[o + 14] = -metres - sx0 * sy;
+          armMatrices[o + 15] = 1;
           if (colorsChanged) {
             const c3 = arm * 3;
             armColors[c3] = fan.ar;
             armColors[c3 + 1] = fan.ag;
             armColors[c3 + 2] = fan.ab;
           }
-          arms.setMatrixAt(arm++, this.matrix.compose(this.spot, this.wave, this.size));
+          arm++;
         }
         continue;
       }
       if (fan.flag < 0) continue;
       const sway = Math.sin(time * 3 + fan.phase) * 0.5;
       const k = fan.flag;
-      this.size.setScalar(h);
-      this.spot.set(fan.x + Math.sin(sway) * 0.25, y + 2.2 * h + bounce, -metres);
-      this.wave.setFromAxisAngle(this.up, fan.side * 0.4 + sway * 0.6);
-      this.flags[k]!.setMatrixAt(
-        flagCount[k]!,
-        this.matrix.compose(this.spot, this.wave, this.size),
+      const wy = fan.side * 0.4 + sway * 0.6;
+      const flagSlot = flagCount[k]!;
+      flagCount[k] = flagSlot + 1;
+      writeYawScaleMatrix(
+        this.flags[k]!.instanceMatrix.array as Float32Array,
+        flagSlot,
+        fan.x + Math.sin(sway) * 0.25,
+        y + 2.2 * h + bounce,
+        -metres,
+        Math.cos(wy) * h,
+        Math.sin(wy) * h,
+        h,
       );
-      flagCount[k]!++;
-      this.turn.setFromAxisAngle(this.up, heading);
-      this.spot.set(fan.x, y + 1.4 * h + bounce, -metres);
+      writeYawScaleMatrix(
+        armMatrices,
+        arm,
+        fan.x,
+        y + 1.4 * h + bounce,
+        -metres,
+        Math.cos(heading) * h,
+        Math.sin(heading) * h,
+        h,
+      );
       if (colorsChanged) {
         const c3 = arm * 3;
         armColors[c3] = fan.ar;
         armColors[c3 + 1] = fan.ag;
         armColors[c3 + 2] = fan.ab;
       }
-      arms.setMatrixAt(arm++, this.matrix.compose(this.spot, this.turn, this.size));
+      arm++;
     }
     nearFigures.setCount(near);
     farFigures.setCount(far);
@@ -1121,6 +1148,9 @@ export class PopupTents {
     roughness: 0.4,
   });
 
+  private readonly cloths = new Map<string, MeshStandardMaterial>();
+  private readonly prints = new Map<string, MeshStandardMaterial>();
+
   constructor(
     private readonly disposables: { dispose(): void }[],
     private readonly track: <T extends Texture>(texture: T) => T,
@@ -1162,13 +1192,23 @@ export class PopupTents {
   /** A tent with `text` on its valance, in `fill` with `ink` lettering. */
   make(text: string, fill: string, ink: string): Group {
     const tent = new Group();
-    const cloth = new MeshStandardMaterial({ color: fill, side: DoubleSide, roughness: 0.7 });
-    const print = new MeshStandardMaterial({
-      map: this.track(clothBannerTexture(text, fill, ink)),
-      side: DoubleSide,
-      roughness: 0.7,
-    });
-    this.disposables.push(cloth, print);
+    let cloth = this.cloths.get(fill);
+    if (!cloth) {
+      cloth = new MeshStandardMaterial({ color: fill, side: DoubleSide, roughness: 0.7 });
+      this.cloths.set(fill, cloth);
+      this.disposables.push(cloth);
+    }
+    const printKey = `${text}|${fill}|${ink}`;
+    let print = this.prints.get(printKey);
+    if (!print) {
+      print = new MeshStandardMaterial({
+        map: this.track(clothBannerTexture(text, fill, ink)),
+        side: DoubleSide,
+        roughness: 0.7,
+      });
+      this.prints.set(printKey, print);
+      this.disposables.push(print);
+    }
     const canopy = new Mesh(this.roof, cloth);
     canopy.castShadow = true;
     tent.add(new Mesh(this.frame, this.white), canopy, new Mesh(this.valanceRing, print));
@@ -1825,6 +1865,17 @@ export function heightfield(
 }
 
 function flipTriangleWinding(geometry: BufferGeometry): void {
+  const index = geometry.index;
+  if (index) {
+    const idxArr = index.array as Uint16Array | Uint32Array;
+    for (let i = 0; i + 2 < idxArr.length; i += 3) {
+      const tmp = idxArr[i + 1]!;
+      idxArr[i + 1] = idxArr[i + 2]!;
+      idxArr[i + 2] = tmp;
+    }
+    index.needsUpdate = true;
+    return;
+  }
   const pos = geometry.getAttribute('position');
   if (!pos) return;
   const count = pos.count;
@@ -1844,10 +1895,44 @@ function flipTriangleWinding(geometry: BufferGeometry): void {
   }
 }
 
-function sliceNonIndexed(ni: BufferGeometry, start: number, count: number): BufferGeometry {
+function sliceGeometryRange(src: BufferGeometry, start: number, count: number): BufferGeometry {
+  const index = src.index;
+  if (index) {
+    const srcIdx = index.array;
+    const remap = new Map<number, number>();
+    const outIndices = new Uint32Array(count);
+    const usedVerts: number[] = [];
+    for (let i = 0; i < count; i++) {
+      const oldV = srcIdx[start + i]!;
+      let newV = remap.get(oldV);
+      if (newV === undefined) {
+        newV = usedVerts.length;
+        remap.set(oldV, newV);
+        usedVerts.push(oldV);
+      }
+      outIndices[i] = newV;
+    }
+    const out = new BufferGeometry();
+    for (const name of Object.keys(src.attributes)) {
+      const attr = src.getAttribute(name) as BufferAttribute;
+      const srcArr = attr.array as Float32Array;
+      const item = attr.itemSize;
+      const dstArr = new Float32Array(usedVerts.length * item);
+      for (let v = 0; v < usedVerts.length; v++) {
+        const so = usedVerts[v]! * item;
+        const doff = v * item;
+        for (let k = 0; k < item; k++) dstArr[doff + k] = srcArr[so + k]!;
+      }
+      out.setAttribute(name, new BufferAttribute(dstArr, item, attr.normalized));
+    }
+    out.setIndex(
+      new BufferAttribute(usedVerts.length <= 65535 ? new Uint16Array(outIndices) : outIndices, 1),
+    );
+    return out;
+  }
   const out = new BufferGeometry();
-  for (const name of Object.keys(ni.attributes)) {
-    const attr = ni.getAttribute(name) as BufferAttribute;
+  for (const name of Object.keys(src.attributes)) {
+    const attr = src.getAttribute(name) as BufferAttribute;
     const item = attr.itemSize;
     const sliced = (attr.array as Float32Array).slice(start * item, (start + count) * item);
     out.setAttribute(name, new BufferAttribute(sliced, item, attr.normalized));
@@ -1855,8 +1940,11 @@ function sliceNonIndexed(ni: BufferGeometry, start: number, count: number): Buff
   return out;
 }
 
-export function tintGeometry(geometry: BufferGeometry, colour: string | number): BufferGeometry {
-  const c = new Color(colour);
+export function tintGeometry(
+  geometry: BufferGeometry,
+  colour: string | number | Color,
+): BufferGeometry {
+  const c = colour instanceof Color ? colour : new Color(colour);
   const pos = geometry.getAttribute('position');
   const existing = geometry.getAttribute('color') as BufferAttribute | undefined;
   if (existing) {
@@ -2014,11 +2102,9 @@ export function mergeStaticGroup(
       const neg = rel.determinant() < 0;
       let part: BufferGeometry;
       if (piece.fromMulti) {
-        const ni = src.index ? src.toNonIndexed() : src;
-        part = sliceNonIndexed(ni, piece.groupStart!, piece.groupCount!);
-        if (ni !== src) ni.dispose();
+        part = sliceGeometryRange(src, piece.groupStart!, piece.groupCount!);
       } else {
-        part = src.index ? src.toNonIndexed() : src.clone();
+        part = src.clone();
       }
       part.applyMatrix4(rel);
       if (neg) flipTriangleWinding(part);
@@ -2034,8 +2120,17 @@ export function mergeStaticGroup(
       parts.push(part);
       consumed.add(piece.mesh);
     }
-    const merged = mergeGeometries(parts);
-    parts.forEach((p) => p.dispose());
+    const allIndexed = parts.every((p) => p.index !== null);
+    const normalizedParts = allIndexed
+      ? parts
+      : parts.map((p) => {
+          if (!p.index) return p;
+          const ni = p.toNonIndexed();
+          p.dispose();
+          return ni;
+        });
+    const merged = mergeGeometries(normalizedParts);
+    normalizedParts.forEach((p) => p.dispose());
     if (!merged) continue;
     disposables.push(merged);
     const out = new Mesh(merged, bucket.material);

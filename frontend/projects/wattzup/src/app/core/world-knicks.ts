@@ -32,14 +32,12 @@ import {
   type BannerPanel,
   bob,
   canvasTexture,
-  clothBannerTexture,
   Crowd,
   Figures,
   hazedMaterial,
   loopFade,
   loopMetres,
   mergeStaticGroup,
-  paintTexture,
   Ribbons,
   scaleFaceUv,
   type SceneStreet,
@@ -202,6 +200,7 @@ export class KnicksStreet implements SceneStreet {
     roughness: 0.85,
     fog: false,
   });
+  private clothAtlasMat: MeshStandardMaterial | null = null;
   private readonly flagMaterials = [ORANGE, BLUE, '#ffffff'].map(
     (colour) => new MeshStandardMaterial({ color: colour, side: DoubleSide, roughness: 0.8 }),
   );
@@ -225,6 +224,18 @@ export class KnicksStreet implements SceneStreet {
 
   build(roadHalf: number, points: number): void {
     this.disposables.push(this.unit, this.solidMat, this.hazedSolidMat, ...this.flagMaterials);
+    this.clothAtlasMat = this.material({
+      map: this.track(
+        clothBannerAtlasTexture([
+          ...STREET_BANNERS,
+          ['NEW YORK CHAMPIONS', ORANGE, '#ffffff'],
+          ['KNICKS', BLUE, ORANGE],
+          ['KNICKS CHAMPIONS', BLUE, ORANGE],
+        ]),
+      ),
+      side: DoubleSide,
+      roughness: 0.78,
+    });
     this.addGround(roadHalf, points);
     this.crowd.build();
     this.addTowers();
@@ -254,7 +265,8 @@ export class KnicksStreet implements SceneStreet {
     for (const prop of this.props) {
       const metres = along(prop.offset, prop.every);
       prop.mesh.position.set(prop.x, heightAt(Math.max(metres, 0)), -metres);
-      const visible = metres > PROP_BEHIND_CULL && metres <= PROP_HORIZON_CULL;
+      const horizon = prop.lies ? 140 : PROP_HORIZON_CULL;
+      const visible = metres > PROP_BEHIND_CULL && metres <= horizon;
       prop.mesh.visible = visible;
       if (!visible) continue;
       if (prop.lies) prop.mesh.rotation.x = slopeAt(heightAt, metres);
@@ -741,20 +753,15 @@ export class KnicksStreet implements SceneStreet {
 
   /** Cloth banners slung across the canyon on wires from tower to tower. */
   private addStreetBanners(): void {
-    const cloth = new PlaneGeometry(13, 2.2);
+    const totalRows = STREET_BANNERS.length + 3;
     const wire = new BoxGeometry(FRONTAGE - 6.5, 0.04, 0.04);
-    this.disposables.push(cloth, wire);
+    this.disposables.push(wire);
     const steel = this.material({ color: 0x2b2d31, roughness: 0.5 });
-    STREET_BANNERS.forEach(([text, fill, ink], i) => {
+    STREET_BANNERS.forEach((_, i) => {
+      const cloth = atlasPlane(13, 2.2, 0, 1, i, totalRows, 700, 130 * totalRows);
+      this.disposables.push(cloth);
       const banner = new Group();
-      const c = new Mesh(
-        cloth,
-        this.material({
-          map: this.track(clothBannerTexture(text, fill, ink)),
-          side: DoubleSide,
-          roughness: 0.8,
-        }),
-      );
+      const c = new Mesh(cloth, this.clothAtlasMat!);
       c.position.y = 10.5;
       c.castShadow = true;
       banner.add(c);
@@ -821,23 +828,31 @@ export class KnicksStreet implements SceneStreet {
 
   /** What the fans have painted on the tarmac. */
   private addRoadPaint(): void {
-    const plane = new PlaneGeometry(2.6, 9);
-    this.disposables.push(plane);
-    const byKey = new Map<string, MeshStandardMaterial>();
-    [...ROAD_PAINT, ...ROAD_PAINT].forEach(([text, colour, x], i) => {
-      const key = `${text}|${colour}`;
-      let mat = byKey.get(key);
-      if (!mat) {
-        mat = this.material({
-          map: this.track(paintTexture(text, colour)),
-          alphaTest: 0.35,
-          polygonOffset: true,
-          polygonOffsetFactor: -4,
-          roughness: 0.7,
-        });
-        byKey.set(key, mat);
-      }
-      const mesh = new Mesh(plane, mat);
+    const cols = 4;
+    const rows = Math.ceil(ROAD_PAINT.length / cols);
+    const atlasMat = this.material({
+      map: this.track(roadPaintAtlasTexture(ROAD_PAINT, cols, rows)),
+      alphaTest: 0.35,
+      polygonOffset: true,
+      polygonOffsetFactor: -4,
+      roughness: 0.7,
+    });
+    const planes = ROAD_PAINT.map((_, idx) => {
+      const g = atlasPlane(
+        2.6,
+        9,
+        idx % cols,
+        cols,
+        Math.floor(idx / cols),
+        rows,
+        cols * 256,
+        rows * 560,
+      );
+      this.disposables.push(g);
+      return g;
+    });
+    [...ROAD_PAINT, ...ROAD_PAINT].forEach(([, , x], i) => {
+      const mesh = new Mesh(planes[i % planes.length]!, atlasMat);
       mesh.rotation.x = -Math.PI / 2;
       mesh.position.y = 0.02;
       mesh.receiveShadow = true;
@@ -861,40 +876,48 @@ export class KnicksStreet implements SceneStreet {
    * the players dancing on the deck.
    */
   private addFloats(): void {
+    const totalRows = STREET_BANNERS.length + 3;
     const cab = this.material({ color: BLUE, roughness: 0.35, metalness: 0.3 });
     const glass = this.material({ color: 0x1c2630, roughness: 0.1, metalness: 0.5 });
     const deck = this.material({ color: 0xf2efe6, roughness: 0.8 });
     const chassis = this.material({ color: 0x15171b, roughness: 0.6 });
     const ball = this.material({ map: this.track(ballTexture()), roughness: 0.75 });
     const gold = this.material({ color: 0xe2b23c, metalness: 0.9, roughness: 0.28 });
-    const skirts = [
-      ['NEW YORK CHAMPIONS', ORANGE, '#ffffff'],
-      ['KNICKS', BLUE, ORANGE],
-    ].map(([text, fill, ink]) =>
-      this.material({
-        map: this.track(clothBannerTexture(text!, fill!, ink!)),
-        side: DoubleSide,
-        roughness: 0.8,
-      }),
-    );
-    const board = this.material({
-      map: this.track(clothBannerTexture('KNICKS CHAMPIONS', BLUE, ORANGE)),
-      side: DoubleSide,
-      roughness: 0.6,
+    const skirtGeos = [0, 1].map((k) => {
+      const g = atlasPlane(
+        11.6,
+        1.3,
+        0,
+        1,
+        STREET_BANNERS.length + k,
+        totalRows,
+        700,
+        130 * totalRows,
+      );
+      this.disposables.push(g);
+      return g;
     });
+    const sign = atlasPlane(
+      8.5,
+      2.4,
+      0,
+      1,
+      STREET_BANNERS.length + 2,
+      totalRows,
+      700,
+      130 * totalRows,
+    );
     const balloons = [ORANGE, BLUE, '#ffffff'].map((c) =>
       this.material({ color: c, roughness: 0.3 }),
     );
-    const sphere = new SphereGeometry(1, 28, 18);
-    const cup = new CylinderGeometry(1, 0.45, 1.8, 24);
+    const sphere = new SphereGeometry(1, 20, 14);
+    const cup = new CylinderGeometry(1, 0.45, 1.8, 18);
     cup.translate(0, 0.9, 0);
-    const stem = new CylinderGeometry(0.22, 0.32, 1.6, 12);
+    const stem = new CylinderGeometry(0.22, 0.32, 1.6, 10);
     stem.translate(0, 0.8, 0);
-    const foot = new CylinderGeometry(0.9, 1.05, 0.9, 20);
+    const foot = new CylinderGeometry(0.9, 1.05, 0.9, 16);
     foot.translate(0, 0.45, 0);
-    const skirt = new PlaneGeometry(11.6, 1.3);
-    const sign = new PlaneGeometry(8.5, 2.4);
-    this.disposables.push(sphere, cup, stem, foot, skirt, sign);
+    this.disposables.push(sphere, cup, stem, foot, sign);
     const random = seeded(127);
     for (let i = 0; i < FLOATS; i++) {
       const float = new Group();
@@ -919,7 +942,7 @@ export class KnicksStreet implements SceneStreet {
       box(chassis, 2.6, 0.6, 14.4, 0, 0.1, -1.2);
       box(deck, 2.8, 0.25, 11.6, 0, DECK - 0.25, 0);
       for (const side of [-1, 1]) {
-        const s = new Mesh(skirt, skirts[i % skirts.length]!);
+        const s = new Mesh(skirtGeos[i % skirtGeos.length]!, this.clothAtlasMat!);
         s.position.set(side * 1.42, DECK - 0.8, 0);
         s.rotation.y = side * (Math.PI / 2);
         float.add(s);
@@ -946,7 +969,7 @@ export class KnicksStreet implements SceneStreet {
         trophy.traverse((o) => (o.castShadow = true));
         float.add(trophy);
       } else {
-        const s = new Mesh(sign, board);
+        const s = new Mesh(sign, this.clothAtlasMat!);
         s.position.set(0, DECK + 2.2, 0.4);
         s.rotation.y = Math.PI / 2;
         float.add(s);
@@ -977,16 +1000,16 @@ export class KnicksStreet implements SceneStreet {
   private addTickerTape(): void {
     const scrap = new PlaneGeometry(0.2, 0.12);
     const ribbon = new PlaneGeometry(0.05, 1.5);
+    const confettiMat = this.material({ side: DoubleSide, roughness: 0.8 });
     const make = (geometry: PlaneGeometry, count: number, colours: readonly string[]) => {
-      const material = new MeshStandardMaterial({ side: DoubleSide, roughness: 0.8 });
-      const mesh = new InstancedMesh(geometry, material, count);
+      const mesh = new InstancedMesh(geometry, confettiMat, count);
       mesh.frustumCulled = false;
       const random = seeded(count);
       const c = new Color();
       for (let i = 0; i < count; i++)
         mesh.setColorAt(i, c.set(colours[Math.floor(random() * colours.length)]!));
       this.group.add(mesh);
-      this.disposables.push(geometry, material, mesh);
+      this.disposables.push(geometry, mesh);
       return mesh;
     };
     this.tape = make(scrap, TAPE, [
@@ -1198,6 +1221,103 @@ function shopTexture(): CanvasTexture {
         g.fillRect(x + 30 + random() * 40, 90, 30, 42);
       }
     }
+  });
+}
+
+/** Returns a PlaneGeometry whose UVs sample tile `(col, row)` of a `(cols × rows)` atlas. */
+function atlasPlane(
+  width: number,
+  height: number,
+  col: number,
+  cols: number,
+  row: number,
+  rows: number,
+  texW: number,
+  texH: number,
+): PlaneGeometry {
+  const g = new PlaneGeometry(width, height);
+  const uv = g.getAttribute('uv') as BufferAttribute;
+  const du = 0.5 / texW;
+  const dv = 0.5 / texH;
+  const u0 = col / cols + du;
+  const u1 = (col + 1) / cols - du;
+  const v0 = 1 - (row + 1) / rows + dv;
+  const v1 = 1 - row / rows - dv;
+  for (let i = 0; i < uv.count; i++) {
+    uv.setXY(i, u0 + uv.getX(i) * (u1 - u0), v0 + uv.getY(i) * (v1 - v0));
+  }
+  return g;
+}
+
+/** Stacks multiple cloth banners into one vertical texture atlas (`700 × 130n`). */
+function clothBannerAtlasTexture(
+  entries: readonly (readonly [string, string, string])[],
+): CanvasTexture {
+  const rowH = 130;
+  return canvasTexture(700, rowH * entries.length, (ctx) => {
+    entries.forEach(([text, fill, ink], r) => {
+      const y0 = r * rowH;
+      ctx.fillStyle = fill;
+      ctx.fillRect(0, y0, 700, rowH);
+      ctx.strokeStyle = ink;
+      ctx.lineWidth = 5;
+      ctx.strokeRect(10, y0 + 10, 680, 110);
+      ctx.fillStyle = ink;
+      ctx.font = 'bold 72px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, 350, y0 + 68, 640);
+      const folds = ctx.createLinearGradient(0, y0, 700, y0);
+      for (let i = 0; i <= 6; i++) {
+        folds.addColorStop(i / 6, i % 2 ? 'rgba(0,0,0,0.14)' : 'rgba(255,255,255,0.06)');
+      }
+      ctx.fillStyle = folds;
+      ctx.fillRect(0, y0, 700, rowH);
+    });
+  });
+}
+
+/** Packs road-paint stencils into a `(cols × rows)` grid atlas (`256c × 560r`). */
+function roadPaintAtlasTexture(
+  entries: readonly (readonly [string, string, number])[],
+  cols: number,
+  rows: number,
+): CanvasTexture {
+  const cellW = 256;
+  const cellH = 560;
+  return canvasTexture(cellW * cols, cellH * rows, (ctx) => {
+    entries.forEach(([text, colour], idx) => {
+      const col = idx % cols;
+      const row = Math.floor(idx / cols);
+      const x0 = col * cellW;
+      const y0 = row * cellH;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(x0, y0, cellW, cellH);
+      ctx.clip();
+      ctx.fillStyle = colour;
+      ctx.font = 'bold 60px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.setTransform(1, 0, 0, 7, x0, y0);
+      ctx.fillText(text, 128, 40, 244);
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.globalCompositeOperation = 'destination-out';
+      const random = seeded(text.length * 31);
+      if (typeof Path2D !== 'undefined') {
+        const wear = new Path2D();
+        for (let i = 0; i < 1200; i++) {
+          wear.rect(
+            x0 + random() * cellW,
+            y0 + random() * cellH,
+            1 + random() * 2,
+            1 + random() * 4,
+          );
+        }
+        ctx.fill(wear);
+      }
+      ctx.restore();
+    });
   });
 }
 

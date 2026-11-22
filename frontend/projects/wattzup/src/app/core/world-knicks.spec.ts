@@ -35,11 +35,18 @@ describe('KnicksStreet (L2-101 AC1, L2-111 AC10)', () => {
     street.build(3.5, 161);
 
     let totalMeshes = 0;
+    const uniqueMaterials = new Set<unknown>();
     street.group.traverse((obj) => {
-      if (obj instanceof Mesh) totalMeshes++;
+      if (obj instanceof Mesh) {
+        totalMeshes++;
+        const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+        for (const m of mats) uniqueMaterials.add(m);
+      }
     });
     // Down from ~860+ meshes (multi-material towers, 160 lamp meshes, 30 bunting meshes, 56 Woolworth sub-draws, 90 float meshes).
-    expect(totalMeshes).toBeLessThan(280);
+    expect(totalMeshes).toBeLessThan(260);
+    // Street banners (4 -> 1) and road paint (8 -> 1) pack into shared texture atlases (< 48 unique materials vs 67+).
+    expect(uniqueMaterials.size).toBeLessThan(48);
 
     const points = Array.from({ length: 161 }, (_, i) => ({
       metres: (i - 10) * 2,

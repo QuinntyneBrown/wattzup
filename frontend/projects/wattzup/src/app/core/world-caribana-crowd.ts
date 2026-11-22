@@ -34,17 +34,17 @@ export function limb(
   b: Vector3,
   r1: number,
   r2: number,
-  sides = 6,
+  sides = 5,
   joint = true,
 ): BufferGeometry[] {
-  const segs = Math.min(sides, 7);
+  const segs = Math.min(sides, 6);
   const length = a.distanceTo(b);
   const bone = new CylinderGeometry(r2, r1, length, segs, 1, true);
   bone.translate(0, length / 2, 0);
   bone.applyQuaternion(new Quaternion().setFromUnitVectors(UP_AXIS, b.clone().sub(a).normalize()));
   bone.translate(a.x, a.y, a.z);
   if (!joint) return [bone];
-  const ball = new SphereGeometry(r2, Math.min(segs, 6), 4);
+  const ball = new SphereGeometry(r2, Math.min(segs, 5), 3);
   ball.translate(b.x, b.y, b.z);
   return [bone, ball];
 }
@@ -58,21 +58,32 @@ export function ellipsoid(
   x: number,
   y: number,
   z: number,
-  detail = 8,
+  detail = 7,
 ): BufferGeometry {
-  const wSeg = Math.min(detail, 10);
-  const ball = new SphereGeometry(r, wSeg, Math.max(4, Math.round(wSeg * 0.65)));
+  const wSeg = Math.min(detail, 8);
+  const ball = new SphereGeometry(r, wSeg, Math.max(4, Math.round(wSeg * 0.6)));
   ball.scale(sx, sy, sz);
   ball.translate(x, y, z);
   return ball;
 }
 
-/** Merges parts of mixed indexing into one geometry and disposes of the parts. */
+/** Merges parts into one geometry (preserving index buffers when all parts are indexed) and disposes of the parts. */
 export function merge(parts: BufferGeometry[]): BufferGeometry {
-  const nonIndexed = parts.map((p) => (p.index ? p.toNonIndexed() : p));
-  const merged = mergeGeometries(nonIndexed)!;
+  const allIndexed = parts.every((p) => p.index !== null);
+  const firstAttrs = Object.keys(parts[0]?.attributes ?? {});
+  const sharedAttrs = firstAttrs.filter((attr) =>
+    parts.every((p) => p.getAttribute(attr) !== undefined),
+  );
+  const normalized = parts.map((p) => {
+    const g = allIndexed ? p : p.index ? p.toNonIndexed() : p;
+    for (const attr of Object.keys(g.attributes)) {
+      if (!sharedAttrs.includes(attr)) g.deleteAttribute(attr);
+    }
+    return g;
+  });
+  const merged = mergeGeometries(normalized)!;
   for (let i = 0; i < parts.length; i++) {
-    if (nonIndexed[i] !== parts[i]) nonIndexed[i]!.dispose();
+    if (normalized[i] !== parts[i]) normalized[i]!.dispose();
     parts[i]!.dispose();
   }
   return merged;
@@ -344,40 +355,44 @@ export function spectatorParts(stance: number, shorts: boolean, seated = false) 
     const knee = seated ? new Vector3(side * 0.1, 0.5, -0.42) : v(side * 0.1, 0.49, -0.02);
     const ankle = seated ? new Vector3(side * 0.1, 0.08, -0.46) : v(side * 0.1, 0.08, 0);
     const mid = hip.clone().lerp(knee, 0.8);
-    bottom.push(...limb(hip, shorts ? mid : knee, 0.095, shorts ? 0.08 : 0.065, 6, !shorts));
+    bottom.push(...limb(hip, shorts ? mid : knee, 0.095, shorts ? 0.08 : 0.065, 5, false));
     if (shorts) {
-      skin.push(...limb(mid, knee, 0.068, 0.06, 5), ...limb(knee, ankle, 0.06, 0.042, 5, false));
+      skin.push(
+        ...limb(mid, knee, 0.068, 0.06, 5, false),
+        ...limb(knee, ankle, 0.06, 0.042, 5, false),
+      );
     } else {
-      bottom.push(...limb(knee, ankle, 0.065, 0.055, 6, false));
+      bottom.push(...limb(knee, ankle, 0.065, 0.055, 5, false));
     }
     const shoulder = v(side * 0.18, 1.39, 0);
     const [ex, ey, ez, hx, hy, hz] = STANCES[stance]![side < 0 ? 0 : 1]!;
     const elbow = v(ex!, ey!, ez!);
     const hand = v(hx!, hy!, hz!);
     const sleeve = shoulder.clone().lerp(elbow, 0.45);
-    top.push(...limb(shoulder, sleeve, 0.068, 0.062, 6, false));
-    skin.push(...limb(sleeve, elbow, 0.046, 0.042, 5), ...limb(elbow, hand, 0.042, 0.034, 5));
+    top.push(...limb(shoulder, sleeve, 0.068, 0.062, 5, false));
+    skin.push(
+      ...limb(sleeve, elbow, 0.046, 0.042, 5),
+      ...limb(elbow, hand, 0.042, 0.034, 4, false),
+    );
     skin.push(ellipsoid(0.045, 1, 1.25, 0.6, hand.x, hand.y, hand.z, 5));
   }
-  bottom.push(ellipsoid(0.16, 1.05, 0.6, 0.8, 0, 0.94 - drop, 0, 7));
+  bottom.push(ellipsoid(0.16, 1.05, 0.6, 0.8, 0, 0.94 - drop, 0, 6));
   const torso = new LatheGeometry(
     [
       [0.001, 0.93],
-      [0.155, 0.95],
-      [0.145, 1.04],
-      [0.158, 1.18],
-      [0.175, 1.33],
-      [0.16, 1.39],
-      [0.1, 1.43],
+      [0.155, 0.96],
+      [0.148, 1.08],
+      [0.172, 1.32],
+      [0.155, 1.4],
       [0.001, 1.455],
     ].map(([r, y]) => new Vector2(r!, y! - drop)),
-    9,
+    7,
   );
   torso.scale(1.08, 1, 0.7);
   top.push(torso);
-  const neck = new CylinderGeometry(0.045, 0.05, 0.12, 6);
+  const neck = new CylinderGeometry(0.045, 0.05, 0.12, 5, 1, true);
   neck.translate(0, 1.48 - drop, 0);
-  skin.push(neck, ellipsoid(0.105, 0.9, 1.1, 1, 0, 1.6 - drop, -0.01, 8));
+  skin.push(neck, ellipsoid(0.105, 0.9, 1.1, 1, 0, 1.6 - drop, -0.01, 6));
   const parts = { skin: merge(skin), top: merge(top), bottom: merge(bottom) };
   for (const g of [parts.skin, parts.top, parts.bottom]) bakeOcclusion(g);
   return parts;
@@ -443,28 +458,34 @@ export function faceTexture(): CanvasTexture {
   return texture;
 }
 
-/** A hand-made placard: two lines in marker on a card, a little crooked. */
-function placardTexture(top: string, bottom: string, fill: string, ink: string): CanvasTexture {
+/** Packs all four hand-made crowd placards into one 2×2 texture atlas (512 × 344). */
+function placardAtlasTexture(): CanvasTexture {
+  const cellW = 256;
+  const cellH = 172;
   const canvas = document.createElement('canvas');
-  canvas.width = 256;
-  canvas.height = 172;
+  canvas.width = cellW * 2;
+  canvas.height = cellH * 2;
   const g = canvas.getContext('2d');
   if (g) {
-    g.fillStyle = fill;
-    g.fillRect(0, 0, 256, 172);
-    g.strokeStyle = 'rgba(0,0,0,0.25)';
-    g.lineWidth = 3;
-    g.strokeRect(2, 2, 252, 168);
-    g.save();
-    g.translate(128, 86);
-    g.rotate(-0.05);
-    g.fillStyle = ink;
-    g.textAlign = 'center';
-    g.textBaseline = 'middle';
-    g.font = 'bold 50px "Comic Sans MS", "Marker Felt", system-ui, sans-serif';
-    g.fillText(top, 0, -34, 236);
-    g.fillText(bottom, 4, 30, 236);
-    g.restore();
+    PLACARDS.forEach(([top, bottom, fill, ink], idx) => {
+      const x0 = (idx % 2) * cellW;
+      const y0 = Math.floor(idx / 2) * cellH;
+      g.fillStyle = fill;
+      g.fillRect(x0, y0, cellW, cellH);
+      g.strokeStyle = 'rgba(0,0,0,0.25)';
+      g.lineWidth = 3;
+      g.strokeRect(x0 + 2, y0 + 2, cellW - 4, cellH - 4);
+      g.save();
+      g.translate(x0 + 128, y0 + 86);
+      g.rotate(-0.05);
+      g.fillStyle = ink;
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      g.font = 'bold 50px "Comic Sans MS", "Marker Felt", system-ui, sans-serif';
+      g.fillText(top, 0, -34, 236);
+      g.fillText(bottom, 4, 30, 236);
+      g.restore();
+    });
   }
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
@@ -519,7 +540,7 @@ export function hairParts(): BufferGeometry[] {
 
 /** An umbrella held up over the head: an eight-panel canopy merged with its dark shaft. */
 function umbrellaGeometry(): BufferGeometry {
-  const canopy = new ConeGeometry(0.6, 0.28, 8, 1, true).toNonIndexed();
+  const canopy = new ConeGeometry(0.6, 0.28, 8, 1, true);
   canopy.translate(0.05, 2.24, -0.02);
   canopy.deleteAttribute('uv');
   tintGeometry(canopy, 0xffffff);
@@ -533,19 +554,20 @@ function umbrellaGeometry(): BufferGeometry {
 
 /** A wide-brimmed straw sun hat, and a soft bucket hat. */
 function sunHatParts(): BufferGeometry[] {
-  const crown = new CylinderGeometry(0.1, 0.115, 0.12, 10);
+  const crown = new CylinderGeometry(0.1, 0.115, 0.12, 8);
   crown.translate(0, 1.73, 0);
-  const brim = new CylinderGeometry(0.26, 0.26, 0.012, 12);
+  const brim = new CylinderGeometry(0.26, 0.26, 0.012, 9);
   brim.translate(0, 1.68, 0);
-  const bucket = new CylinderGeometry(0.11, 0.17, 0.14, 10, 1, true);
+  const bucket = new CylinderGeometry(0.11, 0.17, 0.14, 8, 1, true);
   bucket.translate(0, 1.7, 0);
-  const top = new CylinderGeometry(0.11, 0.11, 0.01, 10);
+  const top = new CylinderGeometry(0.11, 0.11, 0.01, 8);
   top.translate(0, 1.77, 0);
   return [merge([crown, brim]), merge([bucket, top])];
 }
 
 interface Spectator {
   readonly side: -1 | 1;
+  readonly row: number;
   readonly offset: number;
   readonly x: number;
   readonly height: number;
@@ -570,7 +592,8 @@ export interface SpectatorOptions {
 }
 
 const SPECTATOR_BEHIND_CULL = -14;
-const SPECTATOR_HORIZON_CULL = 308;
+const SPECTATOR_FRONT_ROW_ONLY = 75;
+const SPECTATOR_HORIZON_CULL = 225;
 
 /**
  * The crowd behind both barricades: people in T-shirts with shorts or trousers, trainers,
@@ -605,6 +628,7 @@ export class Spectators {
           const stance = roll < 0.24 ? FLAG_STANCE : roll < 0.48 ? 2 : 0;
           const person: Spectator = {
             side,
+            row,
             offset: offset + random() * 0.35,
             x,
             height: child ? 0.6 + random() * 0.1 : 0.92 + random() * 0.15,
@@ -672,28 +696,41 @@ export class Spectators {
     }
     const shoes = shoeGeometry();
     const hairs = hairParts();
-    const balloon = ellipsoid(0.2, 1, 1.18, 1, 0.34, 2.42, -0.02, 8);
+    const balloon = ellipsoid(0.2, 1, 1.18, 1, 0.34, 2.42, -0.02, 6);
     const latex = this.material({ roughness: 0.25, metalness: 0.05 });
-    const card = new PlaneGeometry(0.72, 0.48);
-    card.rotateY(Math.PI);
-    card.rotateX(0.12);
-    card.translate(0, 2.12, -0.16);
-    const placards = PLACARDS.map(([a, b, fill, ink]) =>
-      this.material({ map: placardTexture(a, b, fill, ink), roughness: 0.8, side: DoubleSide }),
-    );
+    const placardTex = placardAtlasTexture();
+    const placardMat = this.material({ map: placardTex, roughness: 0.8, side: DoubleSide });
+    const placardCards = PLACARDS.map((_, idx) => {
+      const g = new PlaneGeometry(0.72, 0.48);
+      const uv = g.getAttribute('uv') as BufferAttribute;
+      const col = idx % 2;
+      const row = Math.floor(idx / 2);
+      const du = 0.5 / 512;
+      const dv = 0.5 / 344;
+      const u0 = col * 0.5 + du;
+      const u1 = (col + 1) * 0.5 - du;
+      const v0 = 1 - (row + 1) * 0.5 + dv;
+      const v1 = 1 - row * 0.5 - dv;
+      for (let vi = 0; vi < uv.count; vi++) {
+        uv.setXY(vi, u0 + uv.getX(vi) * (u1 - u0), v0 + uv.getY(vi) * (v1 - v0));
+      }
+      g.rotateY(Math.PI);
+      g.rotateX(0.12);
+      g.translate(0, 2.12, -0.16);
+      return g;
+    });
     const umbrella = umbrellaGeometry();
     const [strawHat, bucketHat] = sunHatParts();
     const cloth = this.material({ roughness: 0.8, side: DoubleSide, vertexColors: true });
-    const straw = this.material({ roughness: 0.95 });
     this.disposables.push(
       shoes,
       balloon,
-      card,
       umbrella,
       strawHat,
       bucketHat,
+      placardTex,
+      ...placardCards,
       ...hairs,
-      ...placards.map((m) => m.map!),
     );
 
     const dress = seeded(o.seed + 1);
@@ -718,15 +755,15 @@ export class Spectators {
       const style = Math.floor(dress() * hairs.length);
       const colour = style === 2 ? pick(CAPS) : style === 3 ? pick(o.tops) : pick(HAIRS);
       const roll = extra();
-      if (roll < 0.06) this.ensemble.put(i, 'straw', strawHat, straw, any(STRAWS));
-      else if (roll < 0.11) this.ensemble.put(i, 'bucket', bucketHat, straw, any(o.tops));
+      if (roll < 0.06) this.ensemble.put(i, 'straw', strawHat, hair, any(STRAWS));
+      else if (roll < 0.11) this.ensemble.put(i, 'bucket', bucketHat, hair, any(o.tops));
       else this.ensemble.put(i, `hair${style}`, hairs[style]!, hair, colour);
       if (p.balloon) {
         this.ensemble.put(i, 'balloon', balloon, latex, any(BALLOONS));
       }
       if (p.stance === PLACARD_STANCE) {
-        const k = Math.floor(extra() * placards.length);
-        this.ensemble.put(i, `placard${k}`, card, placards[k]!, '#ffffff');
+        const k = Math.floor(extra() * placardCards.length);
+        this.ensemble.put(i, `placard${k}`, placardCards[k]!, placardMat, '#ffffff');
       }
       const grown = p.height > 0.9;
       if (p.stance === 0 && grown && extra() < 0.22) {
@@ -765,6 +802,7 @@ export class Spectators {
       const p = this.people[i]!;
       const metres = along(p.offset, loop);
       if (metres <= SPECTATOR_BEHIND_CULL || metres > SPECTATOR_HORIZON_CULL) continue;
+      if (metres > SPECTATOR_FRONT_ROW_ONLY && p.row > 0) continue;
       const y = heightAt(Math.max(metres, 0)) + kerb;
       const heading = (p.side < 0 ? -Math.PI / 2 : Math.PI / 2) + p.side * 0.3;
       const beat = Math.sin(time * 4.2 + p.phase);
