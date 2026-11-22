@@ -1,0 +1,71 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Settings now tunes how the 3D world is drawn, so the ride stays smooth on the device beside the bike."
+      ]
+    },
+    {
+      "id": "measure",
+      "bars": 5,
+      "lines": [
+        "Quality comes as five cards. Auto is chosen and recommended: it starts at Low and steps down whenever frames drop."
+      ]
+    },
+    {
+      "id": "budget",
+      "bars": 5,
+      "lines": [
+        "Pick a fixed level, and stepping down becomes yours to turn off. Frame rate, resolution and the graphics API sit below."
+      ]
+    },
+    {
+      "id": "world",
+      "bars": 5,
+      "lines": [
+        "The world follows. A race opens at the level chosen, draws at most thirty frames a second when asked, and scales only its own pixels."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 4,
+      "lines": [
+        "The World section, from a phone to the full screen."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "Without WebGPU, Ultra waits for it. Without 3D at all, Settings says so, and every World control rests."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

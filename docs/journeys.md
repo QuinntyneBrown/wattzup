@@ -26,7 +26,7 @@ Estimates are working days for one intermediate developer, using `docs/detailed-
 | 17 | Ride without a network | Finish offline; rides wait and send when back online. | 8 | 100% |
 | 18 | Ride through a lost service | Lost bike or multiplayer service mid-ride; the ride carries on. | 5 | 100% |
 | 19 | Stay smooth on long rides | Bundle and frame budgets, bounded buffers, stable heap across an hour. | 8 | 100% |
-| 20 | Tune ride settings | Quality, device check, sound, motion, display and saved worlds. | 12 | 25% |
+| 20 | Tune ride settings | Quality, device check, sound, motion, display and saved worlds. | 12 | 50% |
 | 21 | Ride a custom workout | Set up, preview and ride your own intervals from Profile. | 10 | 0% |
 | 22 | Stay secure | Authenticated requests, rate limits, CSP, validated input, protected rider data. | 8 | 0% |
 | 23 | Use by touch, keyboard and screen reader | Every width, 44 px targets, keyboard paths, announcements, reduced motion. | 8 | 0% |
@@ -35,4 +35,4 @@ Estimates are working days for one intermediate developer, using `docs/detailed-
 | 26 | Send feedback | Report a bug, share an idea or send kudos. | 5 | 0% |
 | 27 | Install the app | Install as an app from Chrome or Edge. | 3 | 0% |
 
-**Total:** 238 days. **Complete:** 187 days (79%).
+**Total:** 238 days. **Complete:** 190 days (80%).
