@@ -102,7 +102,8 @@ darker at its foot, baked into its colours. A mesh named for no group is drawn a
 its distance from the camera, by group: the land to 950 m, solid scenery to 250 m, glow to 400 m, beams to 460 m,
 leaves to 210 m, confetti to 300 m; the haze (200 m to 1500 m) covers the rest. No more than the four nearest riders
 are drawn. A rider's still parts are merged into one mesh a material, and those of a plain colour into one
-vertex-coloured mesh (`merged-cyclist.ts`): some 12 draw calls a rider, not 50. Each rider's shadow is a dark blob
+vertex-coloured mesh and the kit's mesh (`course-cyclist.ts`), with the moving parts of all riders drawn as one
+(`rider-batch.ts`): some 5 draw calls a rider. Each rider's shadow is a dark blob
 stretched away from the sun, or under street lamps the lamps' own shadows (`rider-shadows.ts`); there is no shadow map.
 
 **Tiers.** Cheapest first: 0.75, 1, 1.5 device pixels a CSS pixel, then 1.5 and 2 with bloom. The ride opens on 1

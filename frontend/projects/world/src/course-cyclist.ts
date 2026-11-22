@@ -145,6 +145,63 @@ function loft(
   return flat;
 }
 
+/**
+ * A tube as `loft` makes, open at both ends, with a UV in place of a colour: round the tube from `u0` to `u1`
+ * (the back three quarters of the way from `u0`) and along it from 0 to 1. For what is drawn
+ * with the kit's texture.
+ */
+function wrap(
+  sections: readonly Section[],
+  length: number,
+  u0: number,
+  u1: number,
+  around = 16,
+): BufferGeometry {
+  const positions: number[] = [];
+  const uvs: number[] = [];
+  const index: number[] = [];
+  const columns = around + 1;
+  for (const section of sections) {
+    // The seam's column is made twice, so the texture does not run backwards across the last strip.
+    for (let s = 0; s < columns; s++) {
+      const a = (s / around) * Math.PI * 2;
+      positions.push(
+        (section.x ?? 0) + Math.cos(a) * section.rx,
+        section.t * length,
+        (section.z ?? 0) + Math.sin(a) * section.rz,
+      );
+      // Round the other way from the angle, so what is written on the texture reads from outside the tube.
+      uvs.push(u1 - (s / around) * (u1 - u0), section.t);
+    }
+  }
+  for (let i = 0; i < sections.length - 1; i++) {
+    for (let s = 0; s < around; s++) {
+      const a = i * columns + s;
+      index.push(a, a + columns, a + 1, a + 1, a + columns, a + columns + 1);
+    }
+  }
+  const geometry = new BufferGeometry();
+  geometry.setAttribute('position', new BufferAttribute(new Float32Array(positions), 3));
+  geometry.setAttribute('uv', new BufferAttribute(new Float32Array(uvs), 2));
+  geometry.setIndex(index);
+  geometry.computeVertexNormals();
+  // The two copies of the seam share one normal, so no crease shows down it.
+  const normal = geometry.getAttribute('normal');
+  for (let i = 0; i < sections.length; i++) {
+    const first = i * columns;
+    const last = first + around;
+    const x = normal.getX(first) + normal.getX(last);
+    const y = normal.getY(first) + normal.getY(last);
+    const z = normal.getZ(first) + normal.getZ(last);
+    const size = Math.hypot(x, y, z) || 1;
+    normal.setXYZ(first, x / size, y / size, z / size);
+    normal.setXYZ(last, x / size, y / size, z / size);
+  }
+  const flat = geometry.toNonIndexed();
+  geometry.dispose();
+  return flat;
+}
+
 /** A plain tube of one colour between two radii. */
 function tube(length: number, from: number, to: number, colour: Color, around = 8): BufferGeometry {
   return loft(
@@ -337,10 +394,17 @@ class CourseCyclist implements RiderModel {
 
   constructor(kit: CourseCyclistKit, plain: Material, jersey: Color, number: number) {
     const shapes = kit.shapes();
-    const still = mergeGeometries([...bike(), ...body(jersey)], false)!;
+    const rider = body(jersey);
+    const still = mergeGeometries([...bike(), ...rider.still], false)!;
     this.still = new Mesh(still, plain);
     this.group.add(this.still);
     this.owned.push(still);
+    // The jersey and the shorts' seat: one mesh, drawn with the rider's own kit (its panels, pockets and lettering).
+    const worn = mergeGeometries(rider.kit, false)!;
+    const fabric = new MeshStandardMaterial({ map: kitTexture(jersey), roughness: 0.72 });
+    this.group.add(new Mesh(worn, fabric));
+    this.owned.push(worn, fabric, fabric.map!);
+    for (const piece of [...rider.still, ...rider.kit]) piece.dispose();
 
     // Spokes: a disc a wheel, drawn through a mask of thirty-two of them.
     for (const axle of [FRONT, REAR]) {
@@ -537,9 +601,13 @@ function bike(): BufferGeometry[] {
   return parts;
 }
 
-/** The rider's still parts: trunk, hips, neck, head and helmet, shoulders, arms and hands. */
-function body(jersey: Color): BufferGeometry[] {
+/**
+ * The rider from the hips up. `still` is coloured by vertex: neck, head and helmet, the bare arms and gloved hands,
+ * the seat. `kit` is what the kit's texture is drawn on: the trunk and the sleeves.
+ */
+function body(jersey: Color): { still: BufferGeometry[]; kit: BufferGeometry[] } {
   const parts: BufferGeometry[] = [];
+  const kit: BufferGeometry[] = [];
   const up = SHOULDER.clone().sub(HIP).normalize();
   const placed = (piece: BufferGeometry, matrix: Matrix4) => {
     piece.applyMatrix4(matrix);
@@ -550,31 +618,32 @@ function body(jersey: Color): BufferGeometry[] {
     piece.applyMatrix4(new Matrix4().makeScale(size.x, size.y, size.z));
     return { piece, at };
   };
-  const sleeve = jersey.clone().multiplyScalar(0.82);
-  const hem = jersey.clone().lerp(new Color(0xffffff), 0.55);
 
   // The trunk, pelvis to the base of the neck: hips, a narrower waist, the chest, the shoulders' width, along a
-  // back that rounds as a rider's does. Bib shorts to the waist, the jersey above, a pale band at its hem.
+  // back that rounds as a rider's does. The kit's texture is wrapped round it: shorts to the waist, the jersey
+  // above.
   const base = HIP.clone().addScaledVector(up, -0.085);
   const neckBase = SHOULDER.clone().addScaledVector(up, 0.035);
-  const trunk = loft(
+  const trunk = wrap(
     [
       { t: 0, rx: 0.1, rz: 0.085, z: 0.012 },
       { t: 0.1, rx: 0.15, rz: 0.118, z: 0.016 },
       { t: 0.24, rx: 0.158, rz: 0.118, z: 0.02 },
-      { t: 0.262, rx: 0.156, rz: 0.116, z: 0.022 },
       { t: 0.27, rx: 0.156, rz: 0.116, z: 0.022 },
       { t: 0.45, rx: 0.142, rz: 0.106, z: 0.034 },
-      { t: 0.68, rx: 0.162, rz: 0.116, z: 0.036 },
-      { t: 0.85, rx: 0.176, rz: 0.108, z: 0.026 },
-      { t: 0.94, rx: 0.13, rz: 0.082, z: 0.014 },
+      { t: 0.68, rx: 0.164, rz: 0.116, z: 0.036 },
+      { t: 0.82, rx: 0.186, rz: 0.11, z: 0.028 },
+      { t: 0.9, rx: 0.172, rz: 0.096, z: 0.02 },
+      { t: 0.96, rx: 0.11, rz: 0.074, z: 0.01 },
       { t: 1, rx: 0.062, rz: 0.058, z: 0.004 },
     ],
     base.distanceTo(neckBase),
-    (t) => (t < 0.24 ? SHORTS : t < 0.266 ? hem : jersey),
-    18,
+    0,
+    KIT_TRUNK,
+    20,
   );
-  placed(trunk, between(base, neckBase));
+  trunk.applyMatrix4(between(base, neckBase));
+  kit.push(trunk);
 
   // Neck and head; the helmet over the skull, its vents dark from front to back, its tail drawn out behind.
   const skull = HEAD.clone();
@@ -615,26 +684,38 @@ function body(jersey: Color): BufferGeometry[] {
 
   // Arms: the shoulder rounding over the joint, the upper arm in its sleeve, the forearm, a gloved hand on the hood.
   for (const side of [-1, 1]) {
-    const shoulder = SHOULDER.clone().add(new Vector3(side * 0.172, -0.012, 0.004));
+    const shoulder = SHOULDER.clone().add(new Vector3(side * 0.158, -0.018, 0.004));
     const hand = HOOD.clone()
       .setX(side * 0.2)
       .add(new Vector3(0, 0.022, 0.02));
     const elbow = bend(shoulder, hand, UPPER_ARM, FOREARM, new Vector3(side * 0.55, -0.5, 0.45));
-    const cap = ball(shoulder, new Vector3(0.062, 0.062, 0.066), jersey);
-    placed(cap.piece, new Matrix4().setPosition(cap.at));
-    const upper = loft(
+    // The sleeve, from the shoulder to above the elbow, in the kit; the bare arm below it.
+    const cuff = shoulder.clone().lerp(elbow, 0.62);
+    const sleeve = wrap(
       [
-        { t: 0, rx: 0.054, rz: 0.056 },
-        { t: 0.3, rx: 0.05, rz: 0.054 },
-        { t: 0.6, rx: 0.044, rz: 0.047 },
-        { t: 0.64, rx: 0.04, rz: 0.043 },
-        { t: 1, rx: 0.038, rz: 0.04 },
+        { t: 0, rx: 0.058, rz: 0.06 },
+        { t: 0.12, rx: 0.056, rz: 0.058 },
+        { t: 0.5, rx: 0.05, rz: 0.054 },
+        { t: 0.95, rx: 0.045, rz: 0.048 },
+        { t: 1, rx: 0.043, rz: 0.046 },
       ],
-      UPPER_ARM,
-      (t) => (t < 0.56 ? jersey : t < 0.62 ? sleeve : SKIN),
+      shoulder.distanceTo(cuff),
+      KIT_TRUNK,
+      1,
       12,
     );
-    placed(upper, between(shoulder, elbow));
+    sleeve.applyMatrix4(between(shoulder, cuff));
+    kit.push(sleeve);
+    const upper = loft(
+      [
+        { t: 0, rx: 0.04, rz: 0.043 },
+        { t: 1, rx: 0.038, rz: 0.04 },
+      ],
+      cuff.distanceTo(elbow),
+      () => SKIN,
+      12,
+    );
+    placed(upper, between(cuff, elbow));
     const fore = loft(
       [
         { t: 0, rx: 0.039, rz: 0.041 },
@@ -664,7 +745,83 @@ function body(jersey: Color): BufferGeometry[] {
     );
     placed(glute.piece, new Matrix4().setPosition(glute.at));
   }
-  return parts;
+  return { still: parts, kit };
+}
+
+/** The share of the kit's texture, from its left, that wraps the trunk; the rest is the sleeve. */
+const KIT_TRUNK = 0.7;
+
+/**
+ * A rider's kit, drawn in their colour: the trunk's wrap on the left (the middle of the chest a quarter of the
+ * way across it and the middle of the back three quarters, the pelvis at the bottom and the collar at the top) and the sleeve
+ * on the right (the shoulder at the bottom, the cuff at the top). Bib shorts to the waist; a pale hem; darker side
+ * panels; three pockets across the small of the back; the team's name between the shoulders; a pale collar; a
+ * dark cuff with a pale line.
+ */
+function kitTexture(jersey: Color): CanvasTexture {
+  const size = 512;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    const css = (c: Color) => `#${c.getHexString()}`;
+    const main = css(jersey);
+    const dark = css(jersey.clone().multiplyScalar(0.5));
+    const deep = css(jersey.clone().multiplyScalar(0.72));
+    const pale = css(jersey.clone().lerp(new Color(0xffffff), 0.62));
+    const trunk = size * KIT_TRUNK;
+    /** Canvas y for a height up the trunk or along the sleeve, 0 to 1. */
+    const y = (v: number) => (1 - v) * size;
+    const back = trunk * 0.75;
+    ctx.fillStyle = main;
+    ctx.fillRect(0, 0, size, size);
+    // Side panels, under each arm from the hem to the armpit.
+    ctx.fillStyle = deep;
+    for (const x of [0, trunk * 0.5, trunk]) ctx.fillRect(x - 24, y(0.78), 48, y(0.266) - y(0.78));
+    // A darker yoke over the shoulders, and the name under it.
+    ctx.fillStyle = dark;
+    ctx.fillRect(0, 0, trunk, y(0.9));
+    ctx.fillStyle = '#f6f6f2';
+    ctx.font = 'bold 30px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('TELO', back, y(0.76));
+    ctx.fillRect(back - 40, y(0.7), 80, 5);
+    ctx.fillRect(back - 40, y(0.675), 80, 2);
+    // The same on the chest.
+    ctx.fillText('TELO', trunk * 0.25, y(0.7));
+    // Three pockets across the small of the back: their top edge, and the seams between them.
+    ctx.strokeStyle = dark;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(back - 62, y(0.44));
+    ctx.lineTo(back + 62, y(0.44));
+    for (const x of [-62, -21, 21, 62]) {
+      ctx.moveTo(back + x, y(0.44));
+      ctx.lineTo(back + x, y(0.285));
+    }
+    ctx.stroke();
+    // The collar, the hem, and the shorts below it with a pale mark on the seat.
+    ctx.fillStyle = pale;
+    ctx.fillRect(0, 0, trunk, y(0.965));
+    ctx.fillRect(0, y(0.266), trunk, y(0.24) - y(0.266));
+    ctx.fillStyle = '#121316';
+    ctx.fillRect(0, y(0.24), trunk, size - y(0.24));
+    ctx.fillStyle = '#3a3d44';
+    ctx.fillRect(back - 16, y(0.17), 32, 7);
+    // The sleeve: the cuff dark, a pale line above it.
+    ctx.fillStyle = main;
+    ctx.fillRect(trunk, 0, size - trunk, size);
+    ctx.fillStyle = dark;
+    ctx.fillRect(trunk, 0, size - trunk, y(0.8));
+    ctx.fillStyle = pale;
+    ctx.fillRect(trunk, y(0.8), size - trunk, 6);
+  }
+  const texture = new CanvasTexture(canvas);
+  texture.colorSpace = SRGBColorSpace;
+  texture.anisotropy = 4;
+  return texture;
 }
 
 /** A race number: black digits on white cloth, with a safety pin at each corner. */

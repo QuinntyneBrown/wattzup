@@ -567,6 +567,25 @@ different bike (a time-trial bike, a gravel bike) is the frame's eight points an
 `between` keeps its width across the bike, which is right for legs that swing fore and aft. Parts that meet at a
 joint must overlap, or a gap opens as the joint bends.
 
+### R2. Kit painted for each rider (riders pass 2)
+
+**What it gives.** A jersey with a yoke, side panels, pockets, lettering, a collar, a hem and cuffs, in each
+rider's own colour, and shoulders that are part of the trunk.
+
+**How it works.** `course-cyclist.ts`: `wrap(sections, length, u0, u1)` is a loft with a UV (round the tube from
+`u1` down to `u0`, so what is written reads from outside; along it from 0 to 1) and a doubled seam. The trunk wraps
+the left 70 % of the texture, the back's middle three quarters of the way across that; each sleeve wraps the rest.
+`kitTexture(jersey)` paints a 512 px canvas in shades of the rider's colour. The three pieces are one mesh with one
+`MeshStandardMaterial`, which the lamps light as they do every rider's material.
+
+**To apply it.** Change the painting, not the mesh: a team's design, a leader's jersey, stripes for a champion, a
+sponsor's name are lines in `kitTexture`. A rider's own design could be a picture drawn into the same canvas.
+
+**Cost.** One draw call and one small texture a rider.
+
+**Watch for.** Lettering in a mirror (the UV's direction). The seam: it runs down the rider's right side, under the
+arm, where a panel hides it.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
@@ -575,7 +594,7 @@ The pictures the work aims at differ from a course in these ways, most visible f
 2. The water does not mirror the quay's own lamps, cranes and ships: only the sky and the far shore.
 3. Lit windows on the upper floors light nothing: only the ground floor's throw light.
 4. The neon signs have no glow in the air round them, as the lamps have.
-5. The riders: flat-coloured kit with no panels or lettering, shoulders that stand proud, a rigid upper body, one
-   build for all (see the riders' own log).
+5. The riders: skin and cloth that shine alike, a rigid upper body, one build and one bike for all (see the
+   riders' own log).
 6. Signs with lettering, pipes, gutters and fire escapes: a warehouse's wall is still flat between its windows.
 7. The lamps along the quay are not mirrored in the harbour beside them.

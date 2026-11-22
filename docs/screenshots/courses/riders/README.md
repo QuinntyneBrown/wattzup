@@ -10,6 +10,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 0 | Before: the class worlds' rider, a figure of capsules and spheres | 119.9 fps | 25 ms | 306 fps (pass 22 of the map; 248 to 315 on a busy machine in pass 23) | 83,391 | 79 | |
 | 1 | A rider with the shape of a body, on a bike with the proportions of one | 60.1 fps (the display was at 60 Hz), none over 20 ms | 16.9 ms | 335 fps (2.99 ms): 335, 339, 314 | 83,881 | 64 | Yes |
+| 2 | Kit with a design: panels, pockets, lettering, cuffs; shoulders that join the arms | 120.1 fps, none over 20 ms | 16.8 ms | 323 fps (3.10 ms): 324, 314, 323 | 81,601 | 69 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -53,3 +54,36 @@ five riders.
 **Not yet.** The shoulders are balls that stand proud of the trunk; the jersey and shorts are flat colours with no
 panels, pockets or lettering; skin and cloth shine alike; the upper body is rigid as the legs turn; every rider is
 the same build.
+
+## Pass 2: kit with a design
+
+**Before** (`rider-01-start.jpg`): the jersey is one flat colour from hem to collar and the shoulders are two balls
+standing proud of the trunk, the sleeves hanging from them.
+
+**After** (`rider-02-start.jpg` at the start line, `rider-02.jpg` and `rider-02.mp4` on the bridge): the jersey is
+cut and printed. A darker yoke lies over the shoulders with TELO under it and two bars beneath the name; darker
+panels run down each side under the arms; three pockets are stitched across the small of the back; the collar and
+the hem are pale; the sleeves end in a dark cuff with a pale line; the shorts carry a small mark on the seat. The
+trunk now widens into the shoulders and each sleeve starts inside it, so arm and body are one line.
+
+**What changed.** `course-cyclist.ts`:
+
+- `wrap` is `loft` with a UV in place of a colour: round the tube and along it. The trunk and the two sleeves are
+  made with it and merged into one mesh a rider, drawn with a texture of that rider's own
+  (`kitTexture(jersey)`, 512 px, painted on a canvas in the rider's colour): the trunk's wrap on the left 70 % of
+  it, the sleeve on the rest.
+- The shoulder balls are gone. The trunk's sections widen to 0.186 m at the shoulders, and the sleeve starts 14 mm
+  further in and a little wider than the arm.
+- The bare upper arm below the sleeve is a piece of its own, in the mesh coloured by vertex.
+
+**Cost.** One draw call and one 512 px texture a rider (69 draw calls for a pack of five, from 64): 323 fps against
+335, with no frame over 20 ms.
+
+**Tried and dropped.** The first lettering read backwards: a UV that runs with the angle round a tube reads from
+inside it. It runs the other way now.
+
+**Learned.**
+
+- Colour by vertex is right for parts with a few flat colours and wrong for anything written or stitched: that
+  wants a texture, and a texture wants its own mesh. Only what needs it got one.
+- A joint looks like a joint when the two shapes overlap inside each other, not when a ball is put between them.
