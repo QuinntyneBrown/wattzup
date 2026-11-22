@@ -83,9 +83,12 @@ test('a ride under a minute is discarded and Profile says so (L2-108 AC3)', asyn
   await page.clock.runFor(100);
 
   await expect(page).toHaveURL(/\/profile$/);
-  // Profile's chunk loads and draws on the paused clock.
-  await page.clock.runFor(1000);
+  // Profile's chunk loads in real time and draws on the paused clock, so the clock steps until it has.
   const profile = new ProfilePage(page);
+  await expect(async () => {
+    await page.clock.runFor(100);
+    await expect(profile.notice).toBeVisible({ timeout: 50 });
+  }).toPass();
   await expect(profile.notice).toHaveRole('status');
   await expect(profile.notice).toHaveText('That ride was under a minute, too short to save.');
   expect(api.sentBodies('POST', RIDES)).toEqual([]);
