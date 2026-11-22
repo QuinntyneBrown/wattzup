@@ -51,9 +51,11 @@ designed in `progression/keep-progress-on-the-backend` and
 - **`RidesApi`** — contract in `api` (token `RIDES_API`), implemented by `HttpRidesApi` over
   `POST /api/rides`. The body carries the ride id, so a resubmission returns the first result
   (`L2-125` AC3).
-- **`NetworkStatus`** — root-provided service in the `ride` application. It exposes `online` as a
-  signal from `navigator.onLine` and the `online`/`offline` events, and `backendReachable` from the
-  outcome of the last API call.
+- **`NetworkStatus`** — contract in `api` (token `NETWORK_STATUS`), implemented by
+  `BrowserNetworkStatus` in `domain/browser` and bound on the screens' lazy parent route, so one
+  instance lasts as long as the app. It exposes `online`, a signal from `navigator.onLine` kept by
+  the window's `online` and `offline` events, whose listeners go with it. Whether the backend
+  answers is each screen's own read (the queue, the group sessions), so it holds nothing more.
 - **Angular service worker** — `@angular/service-worker`'s `ngsw-worker.js`, written by the
   production build from `projects/ride/ngsw-config.json`. Its asset group `app` prefetches every
   file the app needs to start and ride: `index.html`, the favicon, the styles, every script chunk
@@ -77,9 +79,17 @@ designed in `progression/keep-progress-on-the-backend` and
   L2-156), which the service worker, answering only once a file has fully arrived, would hide.
 - **Telo Ride API** — serves `ngsw-worker.js` and `ngsw.json` with `Cache-Control: no-cache`, as
   `index.html`, so a deploy reaches the worker on the next start.
-- **`MultiplayerAvailability`** — helper in `domain/engine` used by Race Setup and Class Start. It
-  returns `unavailable('offline')` for riders-online races and group classes when `online` is false.
-  The screens render the reason as text. The copy is a mock gap (`<TO SUPPLY>`).
+- **`multiplayerAvailability`** — pure function in `domain/engine` used by Race Setup and Class
+  Start: from `online` and whether the screen's last read reached the service, it returns `open`,
+  `offline` or `unreachable`, offline first. While offline the screens ask the service nothing; the
+  moment the browser is back online they ask again at once. They render the reason as text
+  (`L2-135` AC4, mocks `race-setup/offline` and `class-start/offline`):
+  - Race Setup: Riders online is disabled and reads "You’re offline. Riders online needs a
+    network."; a chosen Riders online falls back to Bots, the default (`L2-048` AC1).
+  - Class Start: Ride with a group is disabled and reads "You’re offline. Group classes need a
+    network."; Ride alone is chosen (`L2-085` AC5).
+  - Unreachable keeps the words those screens already had ("Riders online can’t be reached right
+    now.", "Group sessions can’t be reached right now.").
 - **`ResultsPage`** — when submission fails, the page shows the ride from `RideOutbox` with its XP
   marked pending (state designed in `results/show-xp-stars-and-personal-best`).
 

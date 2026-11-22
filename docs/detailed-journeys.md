@@ -71,7 +71,7 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 16.4 | Join a group world class | Countdown, start with the group, world fades in when ready. | 2 | 16. Ride a world class | 100% |
 | 17.1 | Ride outbox | Finished rides wait on the device and send when online. | 3 | 17. Ride without a network | 100% |
 | 17.2 | Cache the app | Service worker caches shell, chunks, worlds and catalogues. | 3 | 17. Ride without a network | 100% |
-| 17.3 | Offline choices | Group and live options say why they're unavailable offline. | 2 | 17. Ride without a network | 0% |
+| 17.3 | Offline choices | Group and live options say why they're unavailable offline. | 2 | 17. Ride without a network | 100% |
 | 18.1 | Lose the service mid-ride | Multiplayer drops; the ride carries on and rejoins. | 3 | 18. Ride through a lost service | 0% |
 | 18.2 | Keep the ride clock true | Clock stays right through hidden tabs and throttling. | 2 | 18. Ride through a lost service | 0% |
 | 19.1 | Bundle budgets | Lazy routes, tight initial budget, gzip check in verify. | 2 | 19. Stay smooth on long rides | 0% |
@@ -103,4 +103,4 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 27.1 | Installable app | Manifest, icons and install from Chrome or Edge. | 2 | 27. Install the app | 0% |
 | 27.2 | Update to a new version | Tell the rider a new version is ready; reload between rides. | 1 | 27. Install the app | 0% |
 
-**Total:** 95 slices, 238 days. **Complete:** 64 slices, 169 days (71%).
+**Total:** 95 slices, 238 days. **Complete:** 65 slices, 171 days (72%).

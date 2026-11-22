@@ -23,7 +23,7 @@
           <wz-mode-options
             [options]="store.modes()"
             [selected]="store.mode()"
-            (choose)="store.mode.set($event)"
+            (choose)="store.choose($event)"
           />
           @if (store.mode() === 'bots') {
             <wz-pack-strength [selected]="store.pack()" (choose)="store.pack.set($event)" />

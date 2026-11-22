@@ -181,7 +181,8 @@
         "L2-047",
         "L2-048",
         "L2-049",
-        "L2-050"
+        "L2-050",
+        "L2-135"
       ],
       "states": [
         "default",
@@ -193,7 +194,8 @@
         "coast",
         "docklands",
         "dolomites",
-        "vice"
+        "vice",
+        "offline"
       ],
       "not_applicable": {
         "empty": "A map always has its three modes; ‘new-rider’ shows vs Riders locked until level 3.",
@@ -334,7 +336,8 @@
         "L2-084",
         "L2-085",
         "L2-086",
-        "L2-122"
+        "L2-122",
+        "L2-135"
       ],
       "states": [
         "default",
@@ -342,7 +345,8 @@
         "starting-soon",
         "full",
         "needs-chromium",
-        "needs-https"
+        "needs-https",
+        "offline"
       ],
       "not_applicable": {
         "empty": "A class always has its plan and its next group session.",

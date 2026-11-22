@@ -24,6 +24,10 @@ export { IndexedDbRidesWaiting } from './storage/indexed-db-rides-waiting';
 export { SimulatedRiderProfile } from './bluetooth/simulated-rider-profile';
 export { WebBluetoothBikeConnection } from './bluetooth/web-bluetooth-bike-connection';
 export { BikeTelemetry, CADENCE_TIMEOUT_MS } from './engine/bike-telemetry';
+export {
+  type MultiplayerAvailability,
+  multiplayerAvailability,
+} from './engine/multiplayer-availability';
 export { EnergyModel } from './engine/energy-model';
 export { RaceStartPlanner, type RaceStart } from './engine/race-start-planner';
 export { HeartRateSource } from './engine/heart-rate-source';
@@ -59,6 +63,7 @@ export {
   toHex,
 } from './protocol/echelon-protocol';
 export { BrowserFullscreen } from './browser/browser-fullscreen';
+export { BrowserNetworkStatus } from './browser/browser-network-status';
 export { BrowserScreenWakeLock } from './browser/browser-screen-wake-lock';
 export { CachedClassesApi } from './storage/cached-classes-api';
 export { CATALOGUE_KEY, CatalogueCache } from './storage/catalogue-cache';
