@@ -18,8 +18,9 @@ together with a shared countdown. A solo race against the rider's ghost has no l
 
 > **shared start** — race start sent by the multiplayer service as a server time, at which every client's race clock begins
 
-A bots lobby runs entirely in the browser. It seats nine bots at once; when the rider presses
-"I'm ready", every bot is ready and the clock runs from 0:05. A riders-online lobby mirrors a
+A bots lobby runs entirely in the browser. It seats nine bots at once, none ready, and holds
+the clock at 0:05; when the rider presses "I'm ready", every bot is ready and the clock runs
+from 0:05, and pressing again holds it at 0:05 once more. A riders-online lobby mirrors a
 session run by the multiplayer service: riders join and leave, bots take every open seat at
 0:10, and the race starts at 0:03 whether or not every rider is ready. In both, the countdown
 covers the screen for 3, 2, 1 and Go, and the race opens at Go with its clock at 0:00.
@@ -37,21 +38,22 @@ themselves (seating, bot fill, start time) are designed by the multiplayer subsy
   Criterium · 14.2 km · Riders online" or "· Bots, medium"), "Leave", Full screen, the hidden
   heading "Race lobby, Old Town Criterium", the start clock and the grid. At lg or wider the
   clock sits beside the grid; at sm or wider the grid is two columns.
-- **`LobbyStore`** (`ride`, provided on the lobby route) — signal store exposing `seats`,
-  `takenCount`, `status` ("Waiting for riders" or "On the start line"), `hint`,
-  `secondsToStart`, `ready`, `notice` and `countdownStep`. It drives a bots lobby through
-  `LocalLobby` and a riders-online lobby through `RaceSessionStore`. It releases its ticker and
-  hub handlers on destroy.
-- **`LocalLobby`** (`domain/engine`) — pure rules of a bots lobby: seat 1 is You, seats 2 to 10
-  take the bots in list order (Pacer Nova, Rook, Juno, Atlas, Kite, Vale, Moss, Flint, Echo),
-  "I'm ready" readies every bot and sets the clock to 5 seconds (L2-053 AC3).
-- **`LobbyClock`** (`domain/engine`) — turns a start time and the measured clock offset into
-  whole seconds to start, once a second, from at most 0:30 (L2-051 AC5). It names the
-  thresholds: bot fill at 10 s and countdown at 3 s.
-- **`RaceSessionStore`** (`ride`, provided on the `/race/:mapId` parent route) — holds the
-  riders-online session: seat list from `SeatsChanged`, `RiderLeft` notices, the start from
-  `SessionStarted`, and the clock offset measured by `RideHubClient`. It sends `SetReady` and
-  `LeaveSession`.
+- **`LobbyStore`** (`ride`, provided by the page) — signal store exposing `meta`, `seats`,
+  `status` ("Waiting for riders" or "On the start line"), `hint`, `seconds`, `ready`,
+  `notice` and `leaveQuery`. It drives a bots lobby through `LocalLobby` and a riders-online
+  lobby through `LiveSessionStore`. Online, it counts the whole seconds to the session's
+  `startsAt` on server time (the device clock plus the measured offset), waking on the seconds
+  before it. It clears its timer on destroy.
+- **`LocalLobby`** (`domain/engine`) — pure rules of a bots lobby: `seats(level, ready)` puts
+  You in seat 1 at "Lv {level}" and the bots in list order in seats 2 to 10 (Pacer Nova, Rook,
+  Juno, Atlas, Kite, Vale, Moss, Flint, Echo), ready when the rider is; `BOTS_LOBBY_SECONDS`
+  is 5 (L2-053 AC3).
+- **`LiveSessionStore`** (`ride`, provided by the page, as in a group class) — opens the ride
+  hub connection, measures the clock offset from five `ServerTime` calls, then sends
+  `FindRace(mapId)`. It holds the race seat (`race`: session, start, seat number), the grid
+  (`seats`, replaced by each `SeatsChanged` of its session) and the last leaver (`left`). It
+  sends `SetReady` and `LeaveRace`, finds the race again after a reconnect, and closes the
+  connection when the lobby goes.
 - **`StartGrid`** (`components`, block `start-grid`) — "Start grid" with "{n} / 10" and ten
   seats. A rider online shows name, jersey colour, country and level ("DE · Lv 4"); a bot shows
   its name, a bot icon and "Bot"; an empty seat reads "Open seat"; a ready seat carries a check
@@ -59,7 +61,7 @@ themselves (seating, bot fill, start time) are designed by the multiplayer subsy
 - **`StartClock`** (`components`, elements of `race-lobby`) — status line, the timer
   (`role="timer"`, `aria-label` "Starts in {n} seconds"), the hint and the "I'm ready" toggle.
   The toggle is a button with `aria-pressed`; pressed it reads "You're ready" with a check.
-- **`RaceCountdown`** (`components`, block `race-countdown`) — full-screen overlay
+- **`RaceCountdown`** (`components`, block `race-countdown`, slice 15.2) — full-screen overlay
   (`role="timer"`, `aria-live="assertive"`, "Race starts in 3") showing 3, 2, 1 and Go, one a
   second. Each step fades and scales in over 200 ms; under `prefers-reduced-motion` it only
   fades. While it shows, the page behind carries `inert`.
@@ -69,8 +71,11 @@ themselves (seating, bot fill, start time) are designed by the multiplayer subsy
 
 **Telo Ride API** (designed by multiplayer/run-a-race-session)
 
-- **`RideHub`** — `SetReady`, `LeaveSession`; pushes `SeatsChanged`, `RiderLeft`,
-  `CountdownStarted` and `SessionStarted`.
+- **`RideHub`** — `FindRace(mapId)` answers the session, its `startsAt`, the rider's seat and
+  the grid; `SetReady(sessionId, ready)` and `LeaveRace(sessionId)`; pushes `SeatsChanged`
+  (the grid, with `left` naming a rider whose seat is open again) to the session's group.
+- **`GET /api/maps/{mapId}/queue`** — the riders seated in the map's open sessions, for Race
+  Setup's "Riders online" line, polled every 10 seconds from level 3.
 - **`RaceSession`** (`Telo.Ride.Domain`) — seats at most 10, fills open seats with bots at 10 s,
   releases a seat whose connection is gone for 10 s in the lobby (L2-057 AC2).
 
@@ -108,31 +113,31 @@ the smart bike once the field is full.
 
 ### Components
 
-`RaceLobbyPage` reads `LobbyStore`. The store uses `LocalLobby` and `LobbyClock` for the rules
-and `RaceSessionStore` for the online session, and renders through `StartGrid`, `StartClock`
-and `RaceCountdown`.
+`RaceLobbyPage` reads `LobbyStore`. The store uses `LocalLobby` for a bots lobby and
+`LiveSessionStore` for the online session, and renders through `StartGrid` and `StartClock`.
 
 ![C4 component view for the race lobby](diagrams/c4-component.png)
 
 ### Class structure
 
-`LobbyStore` holds ten `LobbySeat` values. `LocalLobby` produces them for a bots lobby and
-`RaceSessionStore` maps them from `SeatDto` for an online one. `LobbyClock` supplies the
-seconds and the thresholds.
+`LobbyStore` holds ten `LobbySeat` values. `LocalLobby` produces them for a bots lobby; for an
+online one the store maps them from the `RaceSeatDto` grid `LiveSessionStore` holds, You
+first and the others by seat.
 
 ![Class diagram for the race lobby](diagrams/class-structure.png)
 
 ### Behaviour — bots lobby
 
-Nine bots are seated at once. "I'm ready" readies them and starts the clock from 0:05; the
-countdown runs from 0:03, and Go opens the race.
+Nine bots are seated at once. "I'm ready" readies them and starts the clock from 0:05; at 0:00
+the race opens. The 3, 2, 1, Go overlay comes with slice 15.2.
 
 ![Sequence diagram for a bots lobby](diagrams/sequence-bots-lobby.png)
 
 ### Behaviour — riders-online lobby
 
-Seats follow the hub. At 0:10 the service fills open seats with bots; at 0:03 the countdown
-covers the screen; Go is placed at the server's start time corrected by the measured offset.
+The lobby asks the hub for a seat and draws the grid it answers; then seats follow each
+`SeatsChanged`. At 0:10 the service fills open seats with bots. The countdown overlay and the
+shared start come with slice 15.2; until then the clock rests at 0:00.
 
 ![Sequence diagram for a riders-online lobby](diagrams/sequence-riders-online-lobby.png)
 
@@ -142,3 +147,21 @@ covers the screen; Go is placed at the server's start time corrected by the meas
 A closed tab releases the seat after the service has lost the connection for 10 seconds.
 
 ![Sequence diagram for leaving the lobby](diagrams/sequence-leave-the-lobby.png)
+
+## Open questions
+
+1. **As built in slice 15.1.** `LobbyClock` was not built: the components library cannot
+   import `domain`, and the store's countdown is a few lines. `RaceSessionStore` became the
+   group classes' `LiveSessionStore`, which already held the connection and the clock offset.
+   `RiderLeft` became the `left` field of `SeatsChanged`, so a leave is one message.
+   `LeaveSession` became `LeaveRace`, and the hub's `FindRace` gives the seat.
+2. **Where seat 1 is.** L2-052 puts "You" in seat 1, but the service seats riders in the
+   order they come. The lobby draws You first and the others in seat order, so a seat's number
+   on screen is its place in that list, not the service's seat number.
+3. **Who may find a race.** The service does not yet check that the rider is level 3 or more
+   or that the map is open to them; Race Setup does. A later slice may refuse `FindRace` with
+   a code.
+4. **Countries.** The service knows no rider's country, so a rider's seat reads "Lv 4" alone
+   (L2-052 AC2); see the requirements' open question 16.
+5. **Until slice 15.2.** An online lobby rests at 0:00 at the start time, and a bots lobby opens
+   the race at 0:00 without the 3, 2, 1, Go overlay.

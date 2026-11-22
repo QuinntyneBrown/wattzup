@@ -18,7 +18,7 @@ box "Frontend — Ride app (ride application)" #E0F2FE
   participant "LiveSessionStore" as store
 end box
 box "Frontend — Ride app (domain library)" #E0F2FE
-  participant "ServerClock" as clock
+  participant "measureClockOffset" as clock
   participant "RideClock" as rideclock
 end box
 box "Backend — Telo.Ride.Api" #D1FADF
@@ -31,7 +31,7 @@ box "Backend — Telo.Ride.Application and Domain" #ECFDF3
 end box
 box "Backend — Telo.Ride.Infrastructure" #FFF4E5
   participant "SessionTicker" as ticker
-  participant "InMemorySessionRegistry" as registry
+  participant "InMemoryRaceSessionRegistry" as registry
 end box
 loop every 1 s on TimeProvider
   ticker -> tick : Send TickLiveSessionsCommand(now)

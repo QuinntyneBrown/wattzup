@@ -12,88 +12,82 @@ skinparam class {
 }
 ' --------------------------
 title Class structure — Wait in the race lobby
-enum SeatKind {
+enum LobbySeatKind {
   you
   rider
   bot
   open
 }
-enum LobbyStatus {
-  WaitingForRiders
-  OnTheStartLine
-}
-class LobbySeat {
-  +index: number
-  +kind: SeatKind
-  +name?: string
-  +jersey?: string
-  +country?: string
-  +level?: number
+class LobbySeat <<api>> {
+  +kind: LobbySeatKind
+  +name: string
+  +jersey: string | null
+  +meta: string | null
   +ready: boolean
 }
 class LobbyStore {
+  +online: boolean
+  +meta: Signal<string>
   +seats: Signal<LobbySeat[]>
-  +takenCount: Signal<number>
-  +status: Signal<LobbyStatus>
+  +status: Signal<string>
   +hint: Signal<string>
-  +secondsToStart: Signal<number | undefined>
+  +seconds: Signal<number>
   +ready: Signal<boolean>
-  +notice: Signal<string | undefined>
-  +countdownStep: Signal<'3' | '2' | '1' | 'Go' | undefined>
+  +notice: Signal<string | null>
+  +leaveQuery: Record<string, string>
   +toggleReady(): void
-  +leave(): Promise<void>
+  +leave(): void
 }
-class LocalLobby {
-  +{static} BOT_NAMES: string[]
-  +seat(you: RiderSummary): LobbySeat[]
-  +readyAll(seats: LobbySeat[]): LobbySeat[]
-  +startSeconds(): number
+class LocalLobby <<domain>> {
+  +{static} seats(level: number, ready: boolean): LobbySeat[]
 }
-class LobbyClock {
-  +{static} BOT_FILL_AT: 10
-  +{static} COUNTDOWN_AT: 3
-  +secondsToStart(startAtServerMs: number, offsetMs: number, nowMs: number): number
+class LiveSessionStore {
+  +race: Signal<RaceSeatAssignment | null>
+  +seats: Signal<RaceSeatDto[]>
+  +left: Signal<string | null>
+  +join(ref: SessionRef): Promise<void>
+  +serverNow(): number | null
+  +setReady(ready: boolean): void
+  +leaveRace(): void
 }
-class RaceSessionStore {
-  +seats: Signal<SeatDto[]>
-  +startAtServerMs: Signal<number | undefined>
-  +offsetMs: Signal<number>
-  +lastLeft: Signal<string | undefined>
-  +setReady(ready: boolean): Promise<void>
-  +leave(): Promise<void>
-}
-class SeatDto {
+class RaceSeatAssignment <<api>> {
+  +sessionId: string
+  +startsAt: string
   +seat: number
-  +riderId?: string
-  +displayName?: string
-  +jersey?: string
-  +country?: string
-  +level?: number
-  +isBot: boolean
+  +seats: RaceSeatDto[]
+}
+class RaceSeatDto <<api>> {
+  +number: number
+  +kind: 'rider' | 'bot' | 'open'
+  +name: string | null
+  +jersey: string | null
+  +level: number | null
+  +country: string | null
   +ready: boolean
 }
-interface RideHubClient {
-  +setReady(ready: boolean): Promise<void>
-  +leaveSession(): Promise<void>
-  +on(event: HubEvent, handler): Unsubscribe
-  +clockOffsetMs(): number
+interface RideHubClient <<api>> {
+  +findRace(mapId): Promise<RaceSeatAssignment>
+  +setReady(sessionId, ready): Promise<void>
+  +leaveRace(sessionId): Promise<void>
+  +onSeatsChanged(handler): () => void
+  +serverTime(): Promise<number>
 }
 class RaceLobbyPage
-class StartGrid {
+class StartGrid <<components>> {
   +seats: InputSignal<LobbySeat[]>
 }
-class RaceCountdown {
-  +step: InputSignal<string>
+class StartClock <<components>> {
+  +status, seconds, hint, ready, notice
+  +readyToggled: OutputEmitterRef<void>
 }
 RaceLobbyPage ..> LobbyStore : reads
 RaceLobbyPage ..> StartGrid : renders
-RaceLobbyPage ..> RaceCountdown : renders at 0:03
+RaceLobbyPage ..> StartClock : renders
 LobbyStore "1" *-- "10" LobbySeat
-LobbyStore --> LobbyStatus
-LobbySeat --> SeatKind
+LobbySeat --> LobbySeatKind
 LobbyStore ..> LocalLobby : bots lobby
-LobbyStore ..> LobbyClock : uses
-LobbyStore ..> RaceSessionStore : riders-online lobby
-RaceSessionStore "1" o-- "*" SeatDto
-RaceSessionStore ..> RideHubClient : uses
+LobbyStore ..> LiveSessionStore : riders-online lobby
+LiveSessionStore --> RaceSeatAssignment
+LiveSessionStore "1" o-- "*" RaceSeatDto
+LiveSessionStore ..> RideHubClient : uses
 @enduml

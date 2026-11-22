@@ -10,7 +10,7 @@ System_Boundary(telo, "Telo Ride") {
   ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Riders and display names")
 }
 Rel(rider, app, "Uses")
-Rel(app, api, "SetReady, LeaveSession; receives SeatsChanged, RiderLeft, SessionStarted", "SignalR")
+Rel(app, api, "FindRace, SetReady, LeaveRace; receives SeatsChanged", "SignalR")
 Rel(app, bike, "Writes target resistance", "Web Bluetooth")
 Rel(api, db, "Reads rider names and levels", "EF Core")
 @enduml

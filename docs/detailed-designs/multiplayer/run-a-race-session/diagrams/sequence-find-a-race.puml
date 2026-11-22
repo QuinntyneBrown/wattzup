@@ -16,10 +16,11 @@ skinparam package {
 }
 actor "Rider" as actor
 box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "LobbyStore" as lobby
   participant "LiveSessionStore" as store
 end box
 box "Frontend — Ride app (domain and api libraries)" #E0F2FE
-  participant "ServerClock" as clock
+  participant "measureClockOffset" as clock
   participant "SignalRRideHubClient" as client
 end box
 box "Backend — Telo.Ride.Api" #D1FADF
@@ -28,42 +29,44 @@ box "Backend — Telo.Ride.Api" #D1FADF
 end box
 box "Backend — Telo.Ride.Application and Domain" #ECFDF3
   participant "FindRaceCommandHandler" as handler
-  participant "RaceSessionMatcher" as matcher
   participant "RaceSession" as session
 end box
 box "Backend — Telo.Ride.Infrastructure" #FFF4E5
-  participant "InMemorySessionRegistry" as registry
+  participant "InMemoryRaceSessionRegistry" as registry
   database "Telo Ride database" as db
 end box
-actor -> store : Choose "Find a race" on Old Town Criterium
-store -> client : findRace(mapId) at sentAt
+actor -> lobby : "Find a race" on Old Town Criterium opens /race/:mapId/lobby?mode=online
+lobby -> store : join({ kind: race, mapId })
+store -> client : start(); ServerTime x5
+store -> clock : samples
+clock --> store : offset (L2-121 AC3)
+store -> client : findRace(mapId)
 client -> hub : FindRace(mapId)
-hub -> handler : Send FindRaceCommand(riderId, mapId)
-handler -> db : Load display name, country, level
-db --> handler : RiderOccupant
-handler -> registry : Session holding this rider
-alt rider already seated
-  registry --> handler : RaceSession
-else not seated
-  handler -> matcher : FindFullestOpen(mapId)
-  matcher -> registry : OpenSessions(mapId)
-  registry --> matcher : Open sessions
-  alt an open session has a free seat
-    matcher --> handler : Session with the most riders (L2-121 AC1)
-  else none
-    matcher --> handler : None
-    handler -> session : Open(mapId, now + 30 s) (L2-121 AC1)
-    handler -> registry : Add(session)
+hub -> handler : Send FindRaceCommand(riderId, mapId, connectionId)
+handler -> db : Map exists? Rider's display name and level
+alt unknown map
+  handler --> hub : code map_not_found
+else
+  handler -> registry : Waiting(mapId, now)
+  alt rider already seated
+    registry --> handler : The session holding them
+  else not seated
+    handler -> registry : Open(mapId, now)
+    registry --> handler : Open sessions, the most riders first (L2-121 AC1)
+    handler -> session : TrySeat(rider) in the fullest with a free seat
+    opt none has a seat
+      handler -> registry : A new RaceSession starting at now + 30 s (L2-121 AC1)
+      handler -> session : TrySeat(rider)
+    end
+    session --> handler : Seat n, jersey (at most 10, L2-121 AC2)
   end
-  handler -> session : Seat(rider) in the first open seat
-  session --> handler : Seat n (at most 10, L2-121 AC2)
+  handler -> notifier : AddToSession(connectionId, sessionId)
+  handler -> notifier : SeatsChanged(sessionId, seats)
+  notifier --> client : SeatsChanged to every rider in the session
+  handler --> hub : FindRaceResult(sessionId, startsAt, seat, seats)
 end
-handler -> notifier : AddToSessionAsync(connectionId, sessionId)
-handler -> notifier : SeatsChanged(sessionId, seats)
-notifier --> client : SeatsChanged to every rider in session
-handler --> hub : SeatAssignment(sessionId, seat, serverTime)
-hub --> client : SeatAssignmentDto
-client --> store : Seat and serverTime at receivedAt
-store -> clock : sample(sentAt, serverTime, receivedAt)
-store --> actor : Lobby shows the start grid
+hub --> client : FindRaceResult
+client --> store : race seat and grid, or RideHubError
+store --> lobby : race, seats
+lobby --> actor : The start grid, counting down to startsAt on server time
 @enduml

@@ -18,7 +18,7 @@ actor "Rider" as actor
 box "Frontend — Ride app (ride application)" #E0F2FE
   participant "RaceLobbyPage" as page
   participant "LobbyStore" as store
-  participant "RaceSessionStore" as session
+  participant "LiveSessionStore" as session
   participant "Router" as router
 end box
 box "Frontend — Ride app (api library)" #E0F2FE
@@ -34,17 +34,17 @@ alt rider presses "Leave"
   actor -> page : Press "Leave"
   page -> store : leave()
   opt riders-online lobby
-    store -> session : leave()
-    session -> hub : LeaveSession()
-    hub -> ridehub : LeaveSession
+    store -> session : leaveRace()
+    session -> hub : LeaveRace(sessionId)
+    hub -> ridehub : LeaveRace
     ridehub -> rs : Release seat (L2-055 AC1, AC2)
-    session -> hub : disconnect()
   end
-  store -> router : Navigate /race/:mapId?mode=<same mode>, no confirmation (L2-057 AC1)
+  page -> router : The Leave link opens /race/:mapId?mode=<same mode>, no confirmation (L2-057 AC1)
+  router -> session : The lobby route goes; stop() closes the connection
   router --> actor : Race Setup with the same mode
 else rider closes the tab
   ridehub -> ridehub : Connection lost
   ridehub -> rs : After 10 s without the connection, release seat (L2-057 AC2)
-  ridehub -> ridehub : SeatsChanged and RiderLeft to the others
+  ridehub -> ridehub : SeatsChanged with left to the others
 end
 @enduml

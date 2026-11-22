@@ -82,10 +82,11 @@ whether this map holds the rider's next unlock.
 - **`RideHubClient`** (`api`, token `RIDE_HUB_CLIENT`) — the single SignalR client; designed by
   the multiplayer subsystem (connect-to-the-ride-hub).
 - **`RaceQueueApi`** (`api`, token `RACE_QUEUE_API`, implementation `HttpRaceQueueApi`) —
-  `getQueueCount(mapId)` over `GET /api/maps/{mapId}/queue`. An HTTP read keeps the hub closed
+  `riders(mapId)` over `GET /api/maps/{mapId}/queue`. An HTTP read keeps the hub closed
   while no multiplayer ride is joined (L2-120 AC4). This endpoint is introduced here and is
-  served by the multiplayer subsystem's session registry. The refresh interval of the count
-  while Race Setup is open is `<TO SUPPLY>`.
+  served by the multiplayer subsystem's session registry. From level 3, `RaceSetupStore` asks
+  at once and every 10 seconds while Race Setup is open; while the endpoint cannot be reached,
+  "Riders online" reads "Riders online can’t be reached right now." and stays disabled.
 
 **Telo Ride API**
 
@@ -158,9 +159,12 @@ online asks the hub for a seat before opening the lobby.
   15.1, after the race (7.3 to 7.5). Until then "Go to the start line" opens the race at once
   with the bots on the line, so a bots race can be ridden in journey 7; slice 15.1 puts the
   lobby between them.
-- **Riders online before journey 15.** Every rider is level 1 until the backend keeps progress
-  (journey 10), so "Riders online" is always disabled; its queue count and "Find a race" are
-  built with live races.
+- **Riders online (slice 15.1).** From level 3, "Riders online" reads "{n} riders queuing now.
+  8–10 per race, empty seats go to bots." and "Find a race" opens the lobby at
+  `/race/:mapId/lobby?mode=online`, which asks the hub for the seat (`L2-050` AC3); Race Setup
+  itself holds no hub connection. A Race Setup address with `?mode=online` opens with Riders
+  online chosen, which is where the lobby's Leave returns. The queue refreshes every 10 seconds,
+  the interval the design left to supply.
 - **The photo.** Each map's 21:9 photo is cropped from the mocks' world picture
   (`docs/mocks/assets/images/worlds/`) and served by the app as `maps/<mapId>-photo.jpg`; the
   rendered world replaces it with journey 8.
