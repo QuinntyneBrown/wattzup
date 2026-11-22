@@ -51,6 +51,8 @@ export interface RideSettings {
   readonly keepAwake: boolean;
   /** Enters full screen on Start riding or Join; off by default (L2-164 AC6). */
   readonly fullScreenOnStart: boolean;
+  /** Saves each world a ride downloads on this device; on by default (L2-165 AC3). */
+  readonly keepWorlds: boolean;
 }
 
 /**

@@ -1,0 +1,22 @@
+// Block toast-region (docs/design-system/assets/components.css): the toasts' place at the foot of the screen.
+:host {
+  position: fixed;
+  z-index: var(--z-toast);
+  left: var(--space-4);
+  right: var(--space-4);
+  bottom: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  pointer-events: none;
+}
+
+@media (min-width: 40rem) {
+  :host {
+    left: auto;
+    right: var(--space-6);
+    bottom: var(--space-6);
+    align-items: flex-end;
+  }
+}

@@ -13,6 +13,8 @@ export interface WorldLoadState {
   readonly api: Backend;
   /** Neither WebGPU nor WebGL 2 draws: the class rides the panorama (L2-156 AC4). */
   readonly panoramaOnly: boolean;
+  /** Keep worlds after a ride: a finished download is saved on this device (L2-165 AC3). */
+  readonly keepWorlds: boolean;
   /** The class's warm-up, in seconds, or `null` when it starts with something else. */
   readonly warmUpSeconds: number | null;
   /** The percentage when the current step started, which its status announces (L2-152 AC6). */
@@ -74,7 +76,7 @@ const clock = (seconds: number): string =>
  * panorama's and the other two are not needed.
  */
 export function worldLoadView(state: WorldLoadState): WorldLoadView {
-  const { name, phase, progress, panoramaOnly, programs, warmed, slow } = state;
+  const { name, phase, progress, panoramaOnly, keepWorlds, programs, warmed, slow } = state;
   const fraction = progress.total > 0 ? progress.received / progress.total : 0;
   const built = programs && programs.total > 0 ? programs.built / programs.total : 0;
   const percent =
@@ -89,7 +91,7 @@ export function worldLoadView(state: WorldLoadState): WorldLoadView {
   const size =
     progress.total === 0
       ? 'Built into the app'
-      : panoramaOnly
+      : panoramaOnly || !keepWorlds
         ? `${megabytes(progress.total)} MB`
         : `${megabytes(progress.total)} MB · saved on this device for next time`;
   const download: LoadStepView = {

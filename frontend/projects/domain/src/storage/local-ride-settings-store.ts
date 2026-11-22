@@ -30,6 +30,7 @@ export const RECOMMENDED_SETTINGS: RideSettings = {
   rideNumbers: 'standard',
   keepAwake: true,
   fullScreenOnStart: false,
+  keepWorlds: true,
 };
 
 const QUALITIES: readonly QualityChoice[] = ['auto', 'ultra', 'high', 'medium', 'low'];
@@ -120,6 +121,7 @@ export function parseRideSettings(raw: string | null): RideSettings {
     ),
     keepAwake: flag(fields['keepAwake'], recommended.keepAwake),
     fullScreenOnStart: flag(fields['fullScreenOnStart'], recommended.fullScreenOnStart),
+    keepWorlds: flag(fields['keepWorlds'], recommended.keepWorlds),
   };
 }
 

@@ -11,6 +11,7 @@ const base: WorldLoadState = {
   progress: { received: 0, total: 0 },
   api: 'webgpu',
   panoramaOnly: false,
+  keepWorlds: true,
   warmUpSeconds: 300,
   startPercent: 0,
   programs: null,
@@ -80,6 +81,18 @@ describe('worldLoadView', () => {
     expect(view.percent).toBe(40);
     expect(view.hint).toBe('Ready in a few seconds. Pedal easy while you wait.');
     expect(view.status).toBe('Building the shaders, 40 percent.');
+  });
+
+  it('reads the download’s size alone with Keep worlds after a ride off: nothing is saved (L2-152 AC2, L2-165 AC3)', () => {
+    const view = worldLoadView({
+      ...base,
+      phase: 'building',
+      progress: downloaded,
+      keepWorlds: false,
+      startPercent: 40,
+    });
+
+    expect(view.steps[0]!.detail).toBe('18.9 MB');
   });
 
   it('reads the world ready, at 100 %, with the warm-up the class starts with', () => {
