@@ -2,6 +2,7 @@
 // from, an ensemble of instanced parts posed together, and the spectators behind the
 // barricades in summer clothes, waving flags, dancing and cheering the bands.
 import {
+  BatchedMesh,
   BoxGeometry,
   BufferAttribute,
   CanvasTexture,
@@ -565,6 +566,48 @@ function sunHatParts(): BufferGeometry[] {
   return [merge([crown, brim]), merge([bucket, top])];
 }
 
+/** Bare lower legs below shorts, shared across every standing crowd stance. */
+function spectatorBareCalvesGeometry(): BufferGeometry {
+  const parts: BufferGeometry[] = [];
+  for (const side of [-1, 1]) {
+    const hip = new Vector3(side * 0.095, 0.9, 0);
+    const knee = new Vector3(side * 0.1, 0.49, -0.02);
+    const ankle = new Vector3(side * 0.1, 0.08, 0);
+    const mid = hip.clone().lerp(knee, 0.8);
+    parts.push(
+      ...limb(mid, knee, 0.068, 0.06, 5, false),
+      ...limb(knee, ankle, 0.06, 0.042, 5, false),
+    );
+  }
+  const calves = merge(parts);
+  bakeOcclusion(calves);
+  return calves;
+}
+
+function makeCrowdBatch(
+  geometries: readonly BufferGeometry[],
+  instanceTotal: number,
+  material: Material,
+  group: Group,
+  disposables: { dispose(): void }[],
+): { batch: BatchedMesh; geoIds: number[] } {
+  let maxVerts = 0;
+  let maxIndices = 0;
+  for (const g of geometries) {
+    maxVerts += g.getAttribute('position').count;
+    maxIndices += g.getIndex() ? g.getIndex()!.count : g.getAttribute('position').count;
+  }
+  const batch = new BatchedMesh(Math.max(1, instanceTotal), maxVerts, maxIndices, material);
+  batch.sortObjects = false;
+  batch.perObjectFrustumCulled = false;
+  batch.frustumCulled = false;
+  batch.castShadow = false;
+  const geoIds = geometries.map((g) => batch.addGeometry(g));
+  group.add(batch);
+  disposables.push(batch);
+  return { batch, geoIds };
+}
+
 interface Spectator {
   readonly side: -1 | 1;
   readonly row: number;
@@ -576,6 +619,9 @@ interface Spectator {
   readonly stance: number;
   readonly balloon?: boolean;
   readonly flag: number;
+  placardKind: number;
+  placardId: number;
+  flagId: number;
 }
 
 export interface SpectatorOptions {
@@ -586,7 +632,8 @@ export interface SpectatorOptions {
   readonly tops: readonly string[];
   readonly bottoms: readonly string[];
   readonly skins: readonly string[];
-  readonly flags: readonly Material[];
+  readonly flagAtlas: Material;
+  readonly flagCount: number;
   readonly seed: number;
   readonly skip?: (side: -1 | 1, offset: number) => boolean;
 }
@@ -602,8 +649,9 @@ const SPECTATOR_HORIZON_CULL = 225;
 export class Spectators {
   private readonly people: Spectator[] = [];
   private readonly ensemble: Ensemble;
-  private flags: InstancedMesh[] = [];
-  private flagCounts = new Int32Array(0);
+  private flagBatch: BatchedMesh | null = null;
+  private placardBatch: BatchedMesh | null = null;
+  private readonly scratchMat = new Matrix4();
   private lastBucket = Number.NaN;
 
   constructor(
@@ -635,7 +683,10 @@ export class Spectators {
             build: 1,
             phase: random() * 6.3,
             stance,
-            flag: stance === FLAG_STANCE ? Math.floor(random() * o.flags.length) : -1,
+            flag: stance === FLAG_STANCE ? Math.floor(random() * o.flagCount) : -1,
+            placardKind: -1,
+            placardId: -1,
+            flagId: -1,
           };
           if (!o.skip?.(side, person.offset)) this.people.push(person);
         }
@@ -668,34 +719,31 @@ export class Spectators {
     const denim = this.material({ roughness: 0.95, vertexColors: true });
     const rubber = this.material({ roughness: 0.7 });
     const hair = this.material({ roughness: 0.95 });
-    const skinMap = new Map<string, BufferGeometry>();
+    const upperSkinMap = new Map<number, BufferGeometry>();
     const topMap = new Map<number, BufferGeometry>();
-    let bottomShorts: BufferGeometry | null = null;
-    let bottomTrousers: BufferGeometry | null = null;
+    let bottomTrousersGeo: BufferGeometry | null = null;
     for (const st of CROWD_STANCES) {
-      for (const shorts of [false, true]) {
-        const parts = spectatorParts(st, shorts);
-        this.disposables.push(parts.skin);
-        skinMap.set(`${st}${shorts ? 's' : 't'}`, parts.skin);
-        if (!topMap.has(st)) {
-          this.disposables.push(parts.top);
-          topMap.set(st, parts.top);
-        } else {
-          parts.top.dispose();
-        }
-        if (shorts && !bottomShorts) {
-          bottomShorts = parts.bottom;
-          this.disposables.push(bottomShorts);
-        } else if (!shorts && !bottomTrousers) {
-          bottomTrousers = parts.bottom;
-          this.disposables.push(bottomTrousers);
-        } else {
-          parts.bottom.dispose();
-        }
+      const parts = spectatorParts(st, false);
+      this.disposables.push(parts.skin, parts.top);
+      upperSkinMap.set(st, parts.skin);
+      topMap.set(st, parts.top);
+      if (st === 0) {
+        bottomTrousersGeo = parts.bottom;
+        this.disposables.push(bottomTrousersGeo);
+      } else {
+        parts.bottom.dispose();
       }
     }
+    const bottomShortsParts = spectatorParts(0, true);
+    bottomShortsParts.skin.dispose();
+    bottomShortsParts.top.dispose();
+    const bareCalves = spectatorBareCalvesGeometry();
+    this.disposables.push(bottomShortsParts.bottom, bareCalves);
+
     const shoes = shoeGeometry();
-    const hairs = hairParts();
+    const allHairs = hairParts();
+    const hairs = [allHairs[0]!, allHairs[1]!, allHairs[2]!];
+    allHairs[3]!.dispose();
     const balloon = ellipsoid(0.2, 1, 1.18, 1, 0.34, 2.42, -0.02, 6);
     const latex = this.material({ roughness: 0.25, metalness: 0.05 });
     const placardTex = placardAtlasTexture();
@@ -721,13 +769,13 @@ export class Spectators {
     });
     const umbrella = umbrellaGeometry();
     const [strawHat, bucketHat] = sunHatParts();
+    bucketHat.dispose();
     const cloth = this.material({ roughness: 0.8, side: DoubleSide, vertexColors: true });
     this.disposables.push(
       shoes,
       balloon,
       umbrella,
       strawHat,
-      bucketHat,
       placardTex,
       ...placardCards,
       ...hairs,
@@ -741,29 +789,38 @@ export class Spectators {
     this.people.forEach((p, i) => {
       const shorts = dress() < 0.6;
       const bodyStance = p.stance === PLACARD_STANCE ? 2 : p.stance;
-      const key = `${bodyStance}${shorts ? 's' : 't'}`;
-      this.ensemble.put(i, `skin${key}`, skinMap.get(key)!, skinMaterial, pick(o.skins));
+      const skinCol = pick(o.skins);
+      this.ensemble.put(
+        i,
+        `skin${bodyStance}`,
+        upperSkinMap.get(bodyStance)!,
+        skinMaterial,
+        skinCol,
+      );
+      if (shorts) {
+        this.ensemble.put(i, 'calves', bareCalves, skinMaterial, skinCol);
+      }
       this.ensemble.put(i, `top${bodyStance}`, topMap.get(bodyStance)!, cotton, pick(o.tops));
       this.ensemble.put(
         i,
         shorts ? 'bottoms' : 'bottomt',
-        shorts ? bottomShorts! : bottomTrousers!,
+        shorts ? bottomShortsParts.bottom : bottomTrousersGeo!,
         denim,
         pick(o.bottoms),
       );
       this.ensemble.put(i, 'shoes', shoes, rubber, pick(SHOES));
-      const style = Math.floor(dress() * hairs.length);
+      const style = Math.floor(dress() * 4);
+      const hairIdx = style === 3 ? 1 : style;
       const colour = style === 2 ? pick(CAPS) : style === 3 ? pick(o.tops) : pick(HAIRS);
       const roll = extra();
-      if (roll < 0.06) this.ensemble.put(i, 'straw', strawHat, hair, any(STRAWS));
-      else if (roll < 0.11) this.ensemble.put(i, 'bucket', bucketHat, hair, any(o.tops));
-      else this.ensemble.put(i, `hair${style}`, hairs[style]!, hair, colour);
+      if (roll < 0.11)
+        this.ensemble.put(i, 'straw', strawHat, hair, roll < 0.06 ? any(STRAWS) : any(o.tops));
+      else this.ensemble.put(i, `hair${hairIdx}`, hairs[hairIdx]!, hair, colour);
       if (p.balloon) {
         this.ensemble.put(i, 'balloon', balloon, latex, any(BALLOONS));
       }
       if (p.stance === PLACARD_STANCE) {
-        const k = Math.floor(extra() * placardCards.length);
-        this.ensemble.put(i, `placard${k}`, placardCards[k]!, placardMat, '#ffffff');
+        p.placardKind = Math.floor(extra() * placardCards.length);
       }
       const grown = p.height > 0.9;
       if (p.stance === 0 && grown && extra() < 0.22) {
@@ -772,16 +829,58 @@ export class Spectators {
     });
     this.ensemble.build();
 
-    const flag = new PlaneGeometry(0.75, 0.5, 4, 1);
-    flag.translate(0.375, 0.3, 0);
-    const pole = new CylinderGeometry(0.012, 0.012, 0.9, 4);
-    pole.translate(0, 0.1, 0);
-    const flagWithPole = merge([flag, pole]);
-    this.disposables.push(flagWithPole);
-    const counts = o.flags.map(() => 0);
-    for (const p of this.people) if (p.flag >= 0) counts[p.flag]!++;
-    this.flags = o.flags.map((material, k) => this.instanced(flagWithPole, material, counts[k]!));
-    this.flagCounts = new Int32Array(this.flags.length);
+    let placardTotal = 0;
+    for (const p of this.people) if (p.placardKind >= 0) placardTotal++;
+    const placardPack = makeCrowdBatch(
+      placardCards,
+      placardTotal,
+      placardMat,
+      this.group,
+      this.disposables,
+    );
+    this.placardBatch = placardPack.batch;
+    for (let k = 0; k < placardCards.length; k++) {
+      const gid = placardPack.geoIds[k]!;
+      for (const p of this.people) {
+        if (p.placardKind === k) p.placardId = placardPack.batch.addInstance(gid);
+      }
+    }
+
+    const flagGeos = Array.from({ length: o.flagCount }, (_, idx) => {
+      const flag = new PlaneGeometry(0.75, 0.5, 4, 1);
+      flag.translate(0.375, 0.3, 0);
+      const uv = flag.getAttribute('uv') as BufferAttribute;
+      const col = idx % 2;
+      const row = Math.floor(idx / 2);
+      const du = 0.5 / 600;
+      const dv = 0.5 / 400;
+      const u0 = col * 0.5 + du;
+      const u1 = (col + 1) * 0.5 - du;
+      const v0 = 1 - (row + 1) * 0.5 + dv;
+      const v1 = 1 - row * 0.5 - dv;
+      for (let vi = 0; vi < uv.count; vi++) {
+        uv.setXY(vi, u0 + uv.getX(vi) * (u1 - u0), v0 + uv.getY(vi) * (v1 - v0));
+      }
+      const pole = new CylinderGeometry(0.012, 0.012, 0.9, 4);
+      pole.translate(0, 0.1, 0);
+      const pUv = pole.getAttribute('uv') as BufferAttribute;
+      for (let vi = 0; vi < pUv.count; vi++) {
+        pUv.setXY(vi, u0 + 0.01, v0 + 0.01);
+      }
+      const merged = merge([flag, pole]);
+      this.disposables.push(merged);
+      return merged;
+    });
+    let flagTotal = 0;
+    for (const p of this.people) if (p.flag >= 0) flagTotal++;
+    const flagPack = makeCrowdBatch(flagGeos, flagTotal, o.flagAtlas, this.group, this.disposables);
+    this.flagBatch = flagPack.batch;
+    for (let k = 0; k < o.flagCount; k++) {
+      const gid = flagPack.geoIds[k]!;
+      for (const p of this.people) {
+        if (p.flag === k) p.flagId = flagPack.batch.addInstance(gid);
+      }
+    }
   }
 
   /** Moves the crowd with the rider; `kerb` lifts it onto the pavement. */
@@ -795,14 +894,34 @@ export class Spectators {
     const bucket = Math.floor(along(0, loop) * 0.5);
     const colorsChanged = bucket !== this.lastBucket;
     this.lastBucket = bucket;
-    const counts = this.flagCounts;
-    counts.fill(0);
+    const flagBatch = this.flagBatch;
+    const placardBatch = this.placardBatch;
+    const me = this.scratchMat.elements;
+    me[1] = 0;
+    me[3] = 0;
+    me[4] = 0;
+    me[6] = 0;
+    me[7] = 0;
+    me[9] = 0;
+    me[11] = 0;
+    me[15] = 1;
     this.ensemble.beginFrame();
     for (let i = 0; i < this.people.length; i++) {
       const p = this.people[i]!;
       const metres = along(p.offset, loop);
-      if (metres <= SPECTATOR_BEHIND_CULL || metres > SPECTATOR_HORIZON_CULL) continue;
-      if (metres > SPECTATOR_FRONT_ROW_ONLY && p.row > 0) continue;
+      if (
+        metres <= SPECTATOR_BEHIND_CULL ||
+        metres > SPECTATOR_HORIZON_CULL ||
+        (metres > SPECTATOR_FRONT_ROW_ONLY && p.row > 0)
+      ) {
+        if (placardBatch && p.placardId >= 0 && placardBatch.getVisibleAt(p.placardId)) {
+          placardBatch.setVisibleAt(p.placardId, false);
+        }
+        if (flagBatch && p.flagId >= 0 && flagBatch.getVisibleAt(p.flagId)) {
+          flagBatch.setVisibleAt(p.flagId, false);
+        }
+        continue;
+      }
       const y = heightAt(Math.max(metres, 0)) + kerb;
       const heading = (p.side < 0 ? -Math.PI / 2 : Math.PI / 2) + p.side * 0.3;
       const beat = Math.sin(time * 4.2 + p.phase);
@@ -816,53 +935,40 @@ export class Spectators {
       const ty = y + bounce;
       const tz = -metres;
       this.ensemble.emitYawScale(i, p.x, ty, tz, cy, sy, sx, syScale, colorsChanged);
-      if (p.flag < 0) continue;
+      if (placardBatch && p.placardId >= 0) {
+        if (!placardBatch.getVisibleAt(p.placardId)) placardBatch.setVisibleAt(p.placardId, true);
+        me[0] = cy * sx;
+        me[2] = -sy * sx;
+        me[5] = syScale;
+        me[8] = sy * sx;
+        me[10] = cy * sx;
+        me[12] = p.x;
+        me[13] = ty;
+        me[14] = tz;
+        placardBatch.setMatrixAt(p.placardId, this.scratchMat);
+      }
+      if (!flagBatch || p.flagId < 0) continue;
+      if (!flagBatch.getVisibleAt(p.flagId)) flagBatch.setVisibleAt(p.flagId, true);
       const wave = Math.sin(time * 3 + p.phase) * 0.6;
       const wy = yaw + wave;
       const cwf = Math.cos(wy);
       const swf = Math.sin(wy);
-      const slot = counts[p.flag]!;
-      counts[p.flag] = slot + 1;
-      const fArr = this.flags[p.flag]!.instanceMatrix.array as Float32Array;
-      const o = slot * 16;
-      fArr[o] = cwf * sx;
-      fArr[o + 1] = 0;
-      fArr[o + 2] = -swf * sx;
-      fArr[o + 3] = 0;
-      fArr[o + 4] = 0;
-      fArr[o + 5] = syScale;
-      fArr[o + 6] = 0;
-      fArr[o + 7] = 0;
-      fArr[o + 8] = swf * sx;
-      fArr[o + 9] = 0;
-      fArr[o + 10] = cwf * sx;
-      fArr[o + 11] = 0;
-      fArr[o + 12] = p.x + (0.3 * cy - 0.06 * sy) * sx;
-      fArr[o + 13] = ty + 1.95 * syScale;
-      fArr[o + 14] = tz + (-0.3 * sy - 0.06 * cy) * sx;
-      fArr[o + 15] = 1;
+      me[0] = cwf * sx;
+      me[2] = -swf * sx;
+      me[5] = syScale;
+      me[8] = swf * sx;
+      me[10] = cwf * sx;
+      me[12] = p.x + (0.3 * cy - 0.06 * sy) * sx;
+      me[13] = ty + 1.95 * syScale;
+      me[14] = tz + (-0.3 * sy - 0.06 * cy) * sx;
+      flagBatch.setMatrixAt(p.flagId, this.scratchMat);
     }
     this.ensemble.commit(colorsChanged);
-    for (let k = 0; k < this.flags.length; k++) {
-      const mesh = this.flags[k]!;
-      mesh.count = counts[k]!;
-      mesh.instanceMatrix.needsUpdate = true;
-    }
   }
 
   private material(options: ConstructorParameters<typeof MeshStandardMaterial>[0]) {
     const material = new MeshStandardMaterial(options);
     this.disposables.push(material);
     return material;
-  }
-
-  private instanced(geometry: BufferGeometry, material: Material, n: number): InstancedMesh {
-    const mesh = new InstancedMesh(geometry, material, Math.max(n, 1));
-    mesh.count = n;
-    mesh.frustumCulled = false;
-    mesh.castShadow = false;
-    this.disposables.push(mesh);
-    this.group.add(mesh);
-    return mesh;
   }
 }
