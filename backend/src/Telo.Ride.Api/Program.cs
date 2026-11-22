@@ -41,6 +41,9 @@ app.UseSecurityHeaders();
 app.UseExceptionHandler();
 // The app's files need no session, so they are served before authentication (ADR 0026).
 app.UseStaticFiles();
+// A change or a hub connection the browser marks as coming from another origin is refused before authentication
+// (L2-127 AC2, ADR 0033).
+app.UseSameOriginRequests();
 app.UseAuthentication();
 app.UseAuthorization();
 
