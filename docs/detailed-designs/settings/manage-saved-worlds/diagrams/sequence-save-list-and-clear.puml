@@ -16,42 +16,44 @@ skinparam package {
 }
 actor "Rider" as actor
 box "Frontend — Ride app (ride application and components library)" #E0F2FE
-  participant "DeviceSettings" as view
+  participant "DeviceSettings / Toast" as view
   participant "SavedWorldsStore" as sstore
+  participant "WorldLoadStore" as load
 end box
 box "Frontend — Ride app (domain library)" #E0F2FE
   participant "LocalRideSettingsStore" as settings
-  participant "CacheStorageWorldCache" as cache
-end box
-box "Frontend — Ride app (world library, lazy chunk)" #E0F2FE
-  participant "WorldAssetLoader" as loader
+  participant "FetchWorldDownloader" as loader
+  participant "CacheStorageSavedWorlds" as cache
 end box
 participant "Cache Storage" as cs
 group A world downloads in World loading
-  loader -> settings : keepWorlds?
-  alt On (default)
-    loader -> cache : put('docklands', bundle) (L2-165 AC3)
-    cache -> cs : put files and update the index
-  else Off
-    loader -> loader : nothing new is saved
+  load -> loader : download({id: 'oldtown', name: 'Old Town Criterium'})
+  loader -> cs : match('/worlds/oldtown/panorama.webp')
+  alt Saved
+    cs --> loader : the file; done at once (L2-152 AC3)
+  else Not saved, or evicted by the browser
+    loader -> loader : fetch it with its progress; nothing fails (L2-165 AC4)
+    loader -> settings : keepWorlds?
+    alt On (default)
+      loader -> cs : put(file, x-telo-world-name, x-telo-world-bytes) (L2-165 AC3)
+    else Off
+      loader -> loader : nothing new is saved; the step reads "0.2 MB"
+    end
   end
 end
 group Settings opens
-  sstore -> cache : list(), totalBytes()
-  cache -> cs : match index
-  cache --> sstore : 3 worlds, 61 MB
-  sstore --> view : "3 worlds · 61 MB"; names (L2-165 AC1)
+  sstore -> cache : list()
+  cache -> cs : has, keys, match: each file's headers
+  cache --> sstore : Prairie Paceline 18.9 MB, Old Town Criterium 24.3 MB, Cliffside Coast 17.8 MB
+  sstore --> view : "3 worlds · 61 MB"; the names (L2-165 AC1)
 end
 group Clear saved worlds
   actor -> view : Clear saved worlds
   view -> sstore : clear()
   sstore -> cache : clear()
-  cache -> cs : caches.delete('telo-ride-worlds-v1')
+  cache -> cs : caches.delete('telo-worlds')
+  sstore -> cache : list()
   sstore --> view : "None saved"; toast "Saved worlds cleared", "61 MB freed." (L2-165 AC2)
-end
-group The browser evicted a world
-  loader -> cache : get('coast')
-  cache --> loader : undefined (index or files missing)
-  loader -> loader : download again; nothing fails (L2-165 AC4)
+  sstore -> sstore : the toast closes after 6 s, or with ×
 end
 @enduml

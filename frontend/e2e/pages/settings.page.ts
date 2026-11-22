@@ -82,7 +82,29 @@ export class SettingsPage {
       name: 'Go full screen when a ride starts',
     });
     this.fullScreenOnStartText = display.locator('#auto-full-desc');
+    const device = this.section('This device');
+    this.savedWorlds = device.locator('.device-settings__saved .setting__value');
+    this.savedWorldsHint = device.locator('#saved-worlds-hint');
+    this.clearSavedWorlds = device.getByRole('button', { name: 'Clear saved worlds' });
+    this.keepWorlds = device.getByRole('switch', { name: 'Keep worlds after a ride' });
+    this.keepWorldsText = device.locator('#keep-worlds-desc');
+    this.toast = page.locator('.toast-region').getByRole('status');
+    this.toastTitle = this.toast.locator('.toast__title');
+    this.toastText = this.toast.locator('.toast__text');
+    this.dismissToast = this.toast.getByRole('button', { name: 'Dismiss' });
   }
+
+  /** This device's Saved worlds row, its button and Keep worlds after a ride (L2-165). */
+  readonly savedWorlds: Locator;
+  readonly savedWorldsHint: Locator;
+  readonly clearSavedWorlds: Locator;
+  readonly keepWorlds: Locator;
+  readonly keepWorldsText: Locator;
+  /** The page's toast, in its polite region, with its title, text and × (L2-165 AC2). */
+  readonly toast: Locator;
+  readonly toastTitle: Locator;
+  readonly toastText: Locator;
+  readonly dismissToast: Locator;
 
   /** Sound's line and its four controls, each with its words (L2-163 AC1). */
   readonly soundText: Locator;

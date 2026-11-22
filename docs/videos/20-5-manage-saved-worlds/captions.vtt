@@ -1,0 +1,55 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.265
+Each world you ride is kept on this device, so the next ride opens in seconds, even
+
+00:00:07.265 --> 00:00:09.823
+offline. This device shows what is kept.
+
+00:00:10.324 --> 00:00:15.452
+Saved worlds reads how many, how much space they take, and names them: three worlds,
+
+00:00:15.452 --> 00:00:16.973
+sixty-one megabytes.
+
+00:00:23.228 --> 00:00:28.549
+Clear saved worlds deletes them. The row reads None saved, and a toast says how much
+
+00:00:28.549 --> 00:00:31.003
+was freed, then closes on its own.
+
+00:00:36.133 --> 00:00:41.051
+Keep worlds after a ride is on by default. Turn it off, and nothing new is saved:
+
+00:00:41.051 --> 00:00:43.780
+the next ride downloads the world again.
+
+00:00:49.038 --> 00:00:51.618
+This device, from a phone to the full screen.
+
+00:00:59.361 --> 00:01:04.390
+And if the browser clears space on its own, World loading simply downloads the world
+
+00:01:04.390 --> 00:01:05.947
+again. Nothing fails.
+
+00:01:12.266 --> 00:01:16.869
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:17.214 --> 00:01:21.726
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:21.726 --> 00:01:23.397
+every hill and interval.
+
+00:01:23.742 --> 00:01:28.920
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:28.920 --> 00:01:34.368
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:34.368 --> 00:01:37.358
+XP, rider levels, stars and map unlocks.
+
+00:01:37.704 --> 00:01:40.196
+A custom workout lives under Profile.

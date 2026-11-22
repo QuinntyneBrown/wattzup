@@ -100,6 +100,9 @@ export { SettingsReset } from './settings/settings-reset';
 export { Segmented, type SegmentedOption } from './segmented/segmented';
 export { WorldSettings } from './world-settings/world-settings';
 export { SoundSettings } from './sound-settings/sound-settings';
+export { DeviceSettings, type SavedWorldsRow } from './device-settings/device-settings';
+export { Toast, type ToastTone } from './toast/toast';
+export { ToastRegion } from './toast/toast-region';
 export { DisplaySettings } from './display-settings/display-settings';
 export {
   DeviceCheck,

@@ -39,6 +39,7 @@ describe('parseRideSettings (L2-158 AC5)', () => {
     ['a theme that is not a choice', '{"theme":"blue"}'],
     ['ride numbers that are not a size', '{"rideNumbers":"huge"}'],
     ['a full screen choice of the wrong type', '{"fullScreenOnStart":"yes"}'],
+    ['a keep worlds choice of the wrong type', '{"keepWorlds":1}'],
     [
       'a device check with no time',
       '{"deviceCheck":{"level":"high","displayFps":60,"tried":[],"checkedAt":"soon"}}',
@@ -80,6 +81,14 @@ describe('parseRideSettings (L2-158 AC5)', () => {
     expect(parseRideSettings(JSON.stringify(chosen))).toEqual({
       ...RECOMMENDED_SETTINGS,
       ...chosen,
+    });
+  });
+
+  it('keeps Keep worlds after a ride as stored, on by default (L2-165 AC3)', () => {
+    expect(RECOMMENDED_SETTINGS.keepWorlds).toBe(true);
+    expect(parseRideSettings('{"keepWorlds":false}')).toEqual({
+      ...RECOMMENDED_SETTINGS,
+      keepWorlds: false,
     });
   });
 

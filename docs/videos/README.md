@@ -85,6 +85,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 20.2 | [World quality controls](20-2-world-quality-controls/README.md) | 1:41 | Settings' World section: Quality cards with Auto first, step-down, frame rate, resolution and graphics API, the no-WebGPU and no-3D states, and a race opened at Medium, at every width |
 | 20.3 | [Check this device](20-3-check-this-device/README.md) | 1:41 | Check this device on Settings: trials off screen from the top level down, the level found kept on this device and where Auto then starts, stopped or hidden keeping nothing, at every width |
 | 20.4 | [Sound, motion and display](20-4-sound-motion-and-display/README.md) | 1:56 | Settings' Sound and Motion and display: ride sound from the pedalling with no audio while off, world music, quiet under a class video, reduce motion, the theme, Large ride numbers on a race and full screen on start, at every width |
+| 20.5 | [Manage saved worlds](20-5-manage-saved-worlds/README.md) | 1:43 | Settings' This device: the saved worlds' number, size and names, Clear saved worlds with its toast, Keep worlds after a ride, and an evicted world downloading again, at every width |
 
 ## What every video is
 

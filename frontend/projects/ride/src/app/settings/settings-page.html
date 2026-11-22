@@ -107,9 +107,27 @@
           ></a>
         </div>
       </section>
-      <section wz-settings-section name="device" heading="This device"></section>
+      <section wz-settings-section name="device" heading="This device">
+        <wz-device-settings
+          [savedWorlds]="savedWorlds.view()"
+          [keepWorlds]="store.settings().keepWorlds"
+          (cleared)="savedWorlds.clear()"
+          (keepWorldsToggled)="store.set('keepWorlds', $event)"
+        />
+      </section>
       <wz-settings-reset (resetToRecommended)="reset()" />
       <p class="settings-page__announcement visually-hidden" role="status">{{ announcement() }}</p>
     </div>
   </div>
 </main>
+<div wz-toast-region>
+  @if (savedWorlds.freed(); as freed) {
+    <wz-toast
+      tone="success"
+      title="Saved worlds cleared"
+      [figure]="freed"
+      [text]="'freed. ' + noneSaved"
+      (dismissed)="savedWorlds.dismiss()"
+    />
+  }
+</div>

@@ -19,7 +19,9 @@ export {
   RIDE_SETTINGS_KEY,
   parseRideSettings,
 } from './storage/local-ride-settings-store';
-export { FetchWorldDownloader, WORLD_CACHE } from './storage/fetch-world-downloader';
+export { FetchWorldDownloader } from './storage/fetch-world-downloader';
+export { CacheStorageSavedWorlds } from './storage/cache-storage-saved-worlds';
+export { WORLD_CACHE } from './storage/world-cache';
 export {
   DeviceRideOutbox,
   FIRST_RETRY_MS,

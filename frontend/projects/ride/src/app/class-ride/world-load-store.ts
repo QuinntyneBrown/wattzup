@@ -157,6 +157,7 @@ export class WorldLoadStore {
       progress: this.progress(),
       api: this.backend() ?? this.expected,
       panoramaOnly: this.panoramaOnly(),
+      keepWorlds: this.settings().keepWorlds,
       warmUpSeconds: first?.kind === 'warm-up' ? first.duration : null,
       startPercent: this.startPercent(),
       programs: this.programs(),
@@ -368,7 +369,7 @@ export class WorldLoadStore {
     this.phase.set('downloading');
     try {
       const size = await this.downloader.download(
-        drawn.id,
+        drawn,
         (now) => this.progress.set(now),
         this.abort.signal,
       );

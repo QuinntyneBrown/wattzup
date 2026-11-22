@@ -19,11 +19,13 @@ import {
   type GraphicsApi,
   REMEMBERED_BIKE,
   RIDE_SETTINGS,
+  SAVED_WORLDS,
 } from '@telo/api';
 import {
   BackLink,
   Banner,
   DeviceCheck,
+  DeviceSettings,
   DisplaySettings,
   Pill,
   Setting,
@@ -34,18 +36,22 @@ import {
   SideNavLink,
   type SideNavIcon,
   SoundSettings,
+  Toast,
+  ToastRegion,
   WorldSettings,
 } from '@telo/components';
-import { deviceCheckResult, deviceCheckRunning } from '@telo/domain';
+import { CacheStorageSavedWorlds, deviceCheckResult, deviceCheckRunning } from '@telo/domain';
 import { bikeRow } from '../profile/bike-row';
 import { DeviceCheckStore } from './device-check-store';
+import { SavedWorldsStore } from './saved-worlds-store';
+import { NONE_SAVED } from './saved-worlds-view';
 
 /**
  * Settings at `/settings` (docs/mocks/pages/settings/, L2-158): its five sections and their nav, each control
  * applying at once through `RIDE_SETTINGS` with no Save, Reset to recommended, and the warning when the browser
  * refuses to keep anything. Opened at a section (`/settings#world`), it shows that section. Slice 20.1 builds the
  * page and its first control, Keep the screen awake; slice 20.2 the World controls; slice 20.3 Check this device;
- * slice 20.4 Sound and Motion and display; slice 20.5 the rest.
+ * slice 20.4 Sound and Motion and display; slice 20.5 This device's saved worlds.
  */
 @Component({
   selector: 'wz-settings-page',
@@ -54,6 +60,7 @@ import { DeviceCheckStore } from './device-check-store';
     BackLink,
     Banner,
     DeviceCheck,
+    DeviceSettings,
     DisplaySettings,
     Pill,
     Setting,
@@ -63,15 +70,23 @@ import { DeviceCheckStore } from './device-check-store';
     SideNav,
     SideNavLink,
     SoundSettings,
+    Toast,
+    ToastRegion,
     WorldSettings,
   ],
   templateUrl: './settings-page.html',
   styleUrl: './settings-page.scss',
-  providers: [DeviceCheckStore],
+  providers: [
+    DeviceCheckStore,
+    SavedWorldsStore,
+    { provide: SAVED_WORLDS, useClass: CacheStorageSavedWorlds },
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class SettingsPage {
   protected readonly store = inject(RIDE_SETTINGS);
+  protected readonly savedWorlds = inject(SavedWorldsStore);
+  protected readonly noneSaved = NONE_SAVED;
   private readonly injector = inject(Injector);
   private readonly connection = inject(BIKE_CONNECTION);
   private readonly support = inject(BLUETOOTH_SUPPORT);

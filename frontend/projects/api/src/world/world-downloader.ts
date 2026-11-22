@@ -1,5 +1,5 @@
 import { InjectionToken } from '@angular/core';
-import type { WorldId } from './world';
+import type { World } from './world';
 
 /** How far a world's download has come, in bytes (L2-152 AC2). */
 export interface WorldDownloadProgress {
@@ -25,11 +25,12 @@ export class WorldDownloadError extends Error {
  * Downloads a world's assets onto the device (L2-152, L2-156, L2-165): `main`'s worlds are drawn by code, so a world's
  * assets are the files its scene reads, its panorama where it has one. A world saved on this device resolves at once.
  * After a stopped download, the next call for the same world resumes from the bytes already received (L2-156 AC2).
+ * A finished download is kept on the device only while the rider keeps worlds (L2-165 AC3).
  */
 export interface WorldDownloader {
-  /** The world's size in bytes once it is on the device. */
+  /** The world's size in bytes once it is on the device; its name is kept with it, for This device (L2-165 AC1). */
   download(
-    world: WorldId,
+    world: Pick<World, 'id' | 'name'>,
     progress: (progress: WorldDownloadProgress) => void,
     signal: AbortSignal,
   ): Promise<number>;

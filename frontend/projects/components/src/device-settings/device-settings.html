@@ -1,0 +1,28 @@
+<div wz-setting class="device-settings__saved">
+  <dl class="setting__head">
+    <dt class="setting__label">Saved worlds</dt>
+    <dd class="setting__value">{{ savedWorlds()?.value }}</dd>
+  </dl>
+  <p class="setting__hint" id="saved-worlds-hint">{{ savedWorlds()?.hint }}</p>
+  @if (savedWorlds()?.clear) {
+    <div class="setting__actions">
+      <button wz-button variant="outline" size="sm" type="button" (click)="cleared.emit()">
+        <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 6h18" />
+          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+        </svg>
+        Clear saved worlds
+      </button>
+    </div>
+  }
+</div>
+<div wz-setting>
+  <wz-switch-row
+    name="keep-worlds"
+    label="Keep worlds after a ride"
+    description="Saves each world you ride on this device so it opens fast next time."
+    [checked]="keepWorlds()"
+    (toggled)="keepWorldsToggled.emit($event)"
+  />
+</div>
