@@ -105,10 +105,16 @@ public sealed record SubmitRideCommand(Guid RiderId, SubmitRideRequest Ride) : I
 public sealed class SubmitRideCommandHandler(IAppDbContext db, IMapCatalogue maps, TimeProvider time)
     : IRequestHandler<SubmitRideCommand, RideSubmission>
 {
+    /// <summary>The most rides one rider records in an hour (L2-130 AC3).</summary>
+    public const int RidesPerHour = 60;
+
+    private static readonly TimeSpan Hour = TimeSpan.FromHours(1);
+
     public async Task<RideSubmission> Handle(SubmitRideCommand request, CancellationToken cancellationToken)
     {
         var ride = request.Ride;
         if (await Recorded(request, cancellationToken) is { } recorded) return new(RideRecordedDto.From(recorded), false);
+        await KeepWithinTheHoursLimit(request.RiderId, cancellationToken);
 
         var raceMeters = ride.Kind == "race" ? maps.Maps.Single(map => map.Id == ride.MapId).DistanceKm * 1000 : (double?)null;
         if (!RidePlausibilityRule.IsPlausible(ride.Facts, raceMeters))
@@ -193,6 +199,26 @@ public sealed class SubmitRideCommandHandler(IAppDbContext db, IMapCatalogue map
     /// Refused with 409 <c>result_pending</c> before the race's result exists, and 404 <c>session_not_found</c> when the
     /// rider has no seat in it.
     /// </summary>
+    /// <summary>
+    /// Refuses a new ride once the rider has recorded <see cref="RidesPerHour"/> in the past hour, with <c>rate_limited</c>
+    /// and the wait until the oldest of them falls out of it (L2-130 AC1, AC3). It counts recorded rides, so a repeat of
+    /// one, or a race result asked for again while it is pending, costs nothing; the count holds across instances.
+    /// </summary>
+    private async Task KeepWithinTheHoursLimit(Guid riderId, CancellationToken cancellationToken)
+    {
+        var now = time.GetUtcNow();
+        var since = now - Hour;
+        var recent = await db.Rides
+            .Where(ride => ride.RiderId == riderId && ride.RecordedAt > since)
+            .OrderBy(ride => ride.RecordedAt)
+            .Select(ride => ride.RecordedAt)
+            .ToListAsync(cancellationToken);
+        if (recent.Count < RidesPerHour) return;
+
+        var wait = recent[recent.Count - RidesPerHour] + Hour - now;
+        throw new DomainRuleException("rate_limited", RuleKind.TooManyRequests, "Too many rides recorded this hour.", wait);
+    }
+
     private async Task<SubmitRideRequest> FromResult(SubmitRideCommand request, CancellationToken cancellationToken)
     {
         var ride = request.Ride;
