@@ -12,7 +12,7 @@ budgets, names the parts that keep each budget, and names how each is measured.
 - **Interaction to Next Paint (INP)** — delay from a rider's input to the next frame
 - **quality step** — one notch of rendering detail (pixel ratio, shadow resolution, level of detail) that the 3D world gives up to keep its frame rate
 - **standings tick** — once-a-second moment at which the backend ranks a session and sends standings
-- **reference laptop** — the integrated-GPU laptop against which the race frame budget is measured; model `<TO SUPPLY>`
+- **reference laptop** — the integrated-GPU laptop against which the race frame budget is measured; model `<TO SUPPLY>`, the person who runs the check names it with the result
 
 The feature belongs to the performance subsystem. It spans both the Ride app and the Telo Ride
 API. The 3D world itself is designed in `race/render-the-race-world`; this slice covers how its
@@ -51,9 +51,21 @@ frame budget is held and measured.
   (`L2-159` AC4). The renderer applies the new level on the next frame; its programs were
   compiled while the world loaded, so the drop costs no hitch. Frame rate is protected by giving
   up detail first (`L2-136` AC3).
-- **Web Vitals measurement** — a Lighthouse run (`tools/perf/home-vitals.mjs`) with a mobile
-  device profile and a 4G throttling profile measures Home cold. The device and network profile
-  values are `<TO SUPPLY>`. Like the heap checks, it runs only when a person asks.
+- **Performance checks** — `frontend/e2e/perf/*.perf.ts`, run by `npm run perf` through
+  `playwright.perf.config.ts` against the production build, one at a time and only when a person
+  asks, on the device being measured; never by verify, CI or an agent.
+  - `home-vitals.perf.ts` loads Home cold on Lighthouse's mobile profile: a 412 × 823 touch
+    screen at 1.75×, the CPU slowed 4 times through `Emulation.setCPUThrottlingRate`, and slow 4G
+    through `Network.emulateNetworkConditions` (150 ms round trips, 1.6 Mbit/s down, 750 kbit/s
+    up). The page reports Largest Contentful Paint and its slowest interaction through
+    `PerformanceObserver` (`largest-contentful-paint`, `event`); after the first Tab and a tap
+    the check holds them to 2.5 s and 200 ms (`L2-136` AC2).
+  - `race-frames.perf.ts` opens a solo race at 1920 × 1080 on the real clock, since Playwright's
+    clock would stand in for `requestAnimationFrame`, with the fake bike notifying each second.
+    Once the world is drawn the page records a minute of frame intervals; `frameRun` gives their
+    average rate and the longest stretch slower than 30 a second, held to at least 50 and at most
+    one second (`L2-136` AC3). The GPU is whatever Chromium draws with, so on the reference laptop
+    a person runs it headed.
 
 ### Backend
 
@@ -151,3 +163,17 @@ recorded for the 95th-percentile budget (`L2-137` AC2).
   against the display's frame period and never raises the level, and so does `main`'s
   `FrameBudget`, which the world library carries (ADR 0030). `main` wins on rendering, so its far
   slow window, 3 × _P_ or more, dropping straight to Low (its #896), joins `L2-159` AC4.
+- **Slice 19.4 measures with Playwright and the DevTools Protocol, not Lighthouse.** This design
+  first named a Lighthouse run in `tools/perf/home-vitals.mjs`. The checks take Lighthouse's
+  mobile profile values but run in the Playwright fixtures the specs use (the fake Bluetooth and
+  the answered API), so Home loads as a rider's would without a backend, and no new dependency
+  joins the workspace. AGENTS.md lets only a person run them; they are type-checked, linted and
+  listed, and the film runs their flows.
+- **Production sends the build uncompressed.** The API serves the ride app with `UseStaticFiles`
+  and no response compression, so a rider downloads the 300.26 kB raw initial bundle, not the
+  89.77 kB the gzipped check of slice 19.1 measures. The Home check measures what the static
+  server sends, as production does. Whether the host compresses in front of the API is a
+  deployment question for `docs/deployment.md`.
+- **The backend's budgets (`L2-137`) are not measured yet.** Slice 19.4 covers LCP, INP and frame
+  times; the load test of 200 requests a second and 2,000 hub connections, its tool and instance
+  size remain `<TO SUPPLY>`.

@@ -1,0 +1,71 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Telo Ride has to feel quick on a phone, and smooth beside the bike. Now a person can measure both."
+      ]
+    },
+    {
+      "id": "measure",
+      "bars": 5,
+      "lines": [
+        "Home loads cold on a mid-range phone's profile: its processor slowed four times, over slow 4G."
+      ]
+    },
+    {
+      "id": "budget",
+      "bars": 5,
+      "lines": [
+        "It must paint within two and a half seconds, and answer every touch within two hundred milliseconds."
+      ]
+    },
+    {
+      "id": "world",
+      "bars": 5,
+      "lines": [
+        "The race at full HD must hold fifty frames a second, and never drop below thirty for more than a second."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 4,
+      "lines": [
+        "Home, from a phone to the full screen."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "They run only on the device being measured, when a person asks."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}
