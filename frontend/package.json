@@ -17,7 +17,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "e2e": "playwright test",
-    "heap": "playwright test -c playwright.heap.config.ts"
+    "heap": "playwright test -c playwright.heap.config.ts",
+    "perf": "playwright test -c playwright.perf.config.ts"
   },
   "dependencies": {
     "@angular/cdk": "^22.3.0",

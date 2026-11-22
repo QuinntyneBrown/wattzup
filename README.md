@@ -145,6 +145,7 @@ dotnet run --no-launch-profile --project src/Telo.Ride.Api -- --webroot ../front
 | Behaviour specs | `cd frontend && npx playwright install chromium && npm run e2e` | Playwright on Chromium, with page objects, against a fake `navigator.bluetooth` and fixture answers for the API and hub |
 | Backend | `cd backend && dotnet format Telo.Ride.slnx --verify-no-changes && dotnet test --solution Telo.Ride.slnx` | Format, build and acceptance tests through the API on EF Core InMemory |
 | Everything | `node tools/verify/verify.mjs` | All of the above, side by side; run it before you push |
+| Performance checks | `cd frontend && npm run perf` | Only when a person asks, on the device measured (headed on the reference laptop): Home's LCP and INP on a mid-range phone over 4G, and a race's frame rate at 1920 × 1080 (L2-136 AC2, AC3) |
 | Heap checks | `cd frontend && npm run heap` | Only when a person asks, never in verify or CI: the race with its world and a class ride entered and left six times, and a three-hour class, each reading the heap after a forced garbage collection (L2-138 AC1) |
 
 No automated test uses a real bike, Bluetooth, backend or database. [CI](.github/workflows/ci.yml)
