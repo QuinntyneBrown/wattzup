@@ -528,9 +528,14 @@
 }
 
 /* 6. Preferences ----------------------------------------------------------------------------- */
+/* Reduce motion: the device's wish until the app marks <html data-motion>, then the rider's choice (L2-164 AC2). */
 @media (prefers-reduced-motion: reduce) {
-  :root { --duration-loop: 0ms; --duration-pulse: 0ms; --duration-fast: 0ms; --duration-base: 0ms; --duration-slow: 0ms; }
+  :root:not([data-motion]) { --duration-loop: 0ms; --duration-pulse: 0ms; --duration-fast: 0ms; --duration-base: 0ms; --duration-slow: 0ms; }
 }
+:root[data-motion='reduced'] { --duration-loop: 0ms; --duration-pulse: 0ms; --duration-fast: 0ms; --duration-base: 0ms; --duration-slow: 0ms; }
+/* Ride numbers: power, the clock and the target on every ride screen, a quarter larger when large (L2-164 AC4). */
+:root { --ride-number-scale: 1; }
+:root[data-ride-numbers='large'] { --ride-number-scale: 1.25; }
 @media (prefers-contrast: more) {
   :root, [data-theme] { --color-border-default: var(--color-line-strong); --color-fg-subtle: var(--color-muted); }
 }
