@@ -639,6 +639,22 @@ gradients are constants in `rider-stance.ts`.
 **Watch for.** Legs that cannot reach: the hips' lift is bounded by the leg's length at the bottom of the stroke
 (thigh + shin), which is why the lift is 7 cm and not 12.
 
+### R6. A look for each rider from their number (riders pass 7)
+
+**What it gives.** A pack of different people on different bikes, the same people every race, for nothing a frame.
+
+**How it works.** `rider-look.ts`: `riderLook(number)` picks a skin, hair, frame, shoe and sock colour and a height
+from short lists, each stepped at its own pace. `course-cyclist.ts` makes a palette from it (each colour registered
+with the finish of its part) and paints the rider's meshes from that; the rig is scaled to the height.
+
+**To apply it.** Nothing to do for a map. A map or an event that wants its own field (a national team, a retro
+race) can pass its own lists; a real rider's chosen look would replace the number as the source.
+
+**Cost.** None a frame.
+
+**Watch for.** Lists whose lengths share a factor with their pace: the picks repeat early. A scale on the rider
+alone leaves a tall rider on a small bike; scale the rig.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
@@ -647,7 +663,8 @@ The pictures the work aims at differ from a course in these ways, most visible f
 2. The water does not mirror the quay's own lamps, cranes and ships: only the sky and the far shore.
 3. Lit windows on the upper floors light nothing: only the ground floor's throw light.
 4. The neon signs have no glow in the air round them, as the lamps have.
-5. The riders: wheels that do not turn, no face, a stand on the pedals that is slight, on a climb, one build and one bike for
+5. The riders: wheels that do not turn, no face, one build (only height differs), a stand on the pedals that is
+   slight, on a climb, one build and one bike for
    all (see the riders' own log).
 6. Signs with lettering, pipes, gutters and fire escapes: a warehouse's wall is still flat between its windows.
 7. The lamps along the quay are not mirrored in the harbour beside them.

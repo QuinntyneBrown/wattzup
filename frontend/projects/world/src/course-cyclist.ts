@@ -28,6 +28,7 @@ import {
   TorusGeometry,
   Vector3,
 } from 'three/webgpu';
+import { type RiderLook, riderLook } from './rider-look';
 
 /** What the course's renderer asks of a rider: where it stands, and how it pedals. */
 export interface RiderModel {
@@ -99,7 +100,7 @@ type Finish = readonly [gloss: number, metal: number];
 const MATT: Finish = [0.22, 0];
 /** A helmet's shell: lacquered plastic. */
 const LACQUER: Finish = [0.9, 0];
-const FINISHES = new Map<Color, Finish>([
+const FINISHES = new WeakMap<Color, Finish>([
   [SKIN, [0.5, 0]],
   [SHORTS, [0.38, 0]],
   [GRIPPER, [0.3, 0]],
@@ -118,6 +119,29 @@ const FINISHES = new Map<Color, Finish>([
   [HAIR, [0.35, 0]],
 ]);
 const finishOf = (colour: Color): Finish => FINISHES.get(colour) ?? MATT;
+
+/** A rider's own colours (rider-look.ts), each with the finish of the part it paints. */
+interface Palette {
+  readonly skin: Color;
+  readonly hair: Color;
+  readonly frame: Color;
+  readonly shoe: Color;
+  readonly sock: Color;
+}
+function palette(look: RiderLook): Palette {
+  const as = (hex: number, part: Color): Color => {
+    const colour = new Color(hex);
+    FINISHES.set(colour, finishOf(part));
+    return colour;
+  };
+  return {
+    skin: as(look.skin, SKIN),
+    hair: as(look.hair, HAIR),
+    frame: as(look.frame, FRAME),
+    shoe: as(look.shoe, SHOE),
+    sock: as(look.sock, SOCK),
+  };
+}
 
 /** One section of a lofted tube: how far along it (0 to 1), its half-widths, and how far off the axis it sits. */
 interface Section {
@@ -306,9 +330,9 @@ function bend(
   return into.copy(a).addScaledVector(dir, along).addScaledVector(side, out);
 }
 
-// The legs' parts are the same for every rider, so they are made once.
+// The legs' parts, in a rider's own skin, socks and shoes.
 /** The thigh, hip to knee: thick with the quadriceps at the top, narrowing to the knee; shorts to above the knee. */
-const thighShape = () =>
+const thighShape = (look: Palette) =>
   loft(
     [
       { t: 0, rx: 0.078, rz: 0.092 },
@@ -321,11 +345,11 @@ const thighShape = () =>
       { t: 1, rx: 0.05, rz: 0.054 },
     ],
     THIGH,
-    (t) => (t < 0.74 ? SHORTS : t < 0.8 ? GRIPPER : SKIN),
+    (t) => (t < 0.74 ? SHORTS : t < 0.8 ? GRIPPER : look.skin),
     14,
   );
 /** The shin, knee to ankle: the kneecap, the calf swelling behind, the thin ankle; a sock to mid-calf. */
-const shinShape = () =>
+const shinShape = (look: Palette) =>
   loft(
     [
       { t: 0, rx: 0.05, rz: 0.055 },
@@ -338,11 +362,11 @@ const shinShape = () =>
       { t: 1, rx: 0.036, rz: 0.04 },
     ],
     SHIN,
-    (t) => (t < 0.69 ? SKIN : SOCK),
+    (t) => (t < 0.69 ? look.skin : look.sock),
     12,
   );
 /** A road shoe, heel to toe along +y, its sole dark: laid on the pedal by its ball. */
-function shoeShape(): BufferGeometry {
+function shoeShape(look: Palette): BufferGeometry {
   const upper = loft(
     [
       { t: 0, rx: 0.03, rz: 0.03, z: 0.012 },
@@ -352,7 +376,7 @@ function shoeShape(): BufferGeometry {
       { t: 1, rx: 0.026, rz: 0.016, z: 0.002 },
     ],
     0.275,
-    () => SHOE,
+    () => look.shoe,
     10,
   );
   const sole = loft(
@@ -378,9 +402,6 @@ function shoeShape(): BufferGeometry {
 
 /** The geometry, textures and materials every course rider shares. */
 export class CourseCyclistKit {
-  private readonly thigh = thighShape();
-  private readonly shin = shinShape();
-  private readonly shoe = shoeShape();
   private readonly crank = tube(CRANK, 0.016, 0.012, STEEL);
   private readonly pedal = solid(new CylinderGeometry(0.012, 0.012, 0.09, 6), SOLE);
   private readonly spokeDisc = new CircleGeometry(WHEEL - 0.05, 32);
@@ -404,9 +425,6 @@ export class CourseCyclistKit {
   /** The shared shapes a rider is put together from. */
   shapes() {
     return {
-      thigh: this.thigh,
-      shin: this.shin,
-      shoe: this.shoe,
       crank: this.crank,
       pedal: this.pedal,
       spokeDisc: this.spokeDisc,
@@ -417,9 +435,6 @@ export class CourseCyclistKit {
 
   dispose(): void {
     for (const d of [
-      this.thigh,
-      this.shin,
-      this.shoe,
       this.crank,
       this.pedal,
       this.spokeDisc,
@@ -458,11 +473,15 @@ class CourseCyclist implements RiderModel {
 
   constructor(kit: CourseCyclistKit, plain: Material, jersey: Color, number: number) {
     const shapes = kit.shapes();
-    const rider = body(jersey);
+    const look = riderLook(number);
+    const colours = palette(look);
+    // Taller and shorter riders, each on a bike their size.
+    this.rig.scale.setScalar(look.scale);
+    const rider = body(jersey, colours);
     this.group.add(this.rig);
     this.rig.add(this.torso);
     this.torso.position.copy(HIP);
-    const still = mergeGeometries(bike(), false)!;
+    const still = mergeGeometries(bike(colours), false)!;
     this.still = new Mesh(still, plain);
     this.rig.add(this.still);
     const trunk = mergeGeometries(rider.still, false)!;
@@ -495,6 +514,11 @@ class CourseCyclist implements RiderModel {
     this.torso.add(bib);
     this.owned.push(cloth, cloth.map!);
 
+    // The legs are the rider's own: their skin, their socks, their shoes.
+    const thigh = thighShape(colours);
+    const shin = shinShape(colours);
+    const shoe = shoeShape(colours);
+    this.owned.push(thigh, shin, shoe);
     for (const side of [-1, 1]) {
       const part = (shape: BufferGeometry) => {
         const mesh = new Mesh(shape, plain);
@@ -505,9 +529,9 @@ class CourseCyclist implements RiderModel {
         return mesh;
       };
       this.legs.push({
-        thigh: part(shapes.thigh),
-        shin: part(shapes.shin),
-        foot: part(shapes.shoe),
+        thigh: part(thigh),
+        shin: part(shin),
+        foot: part(shoe),
         crank: part(shapes.crank),
         pedal: part(shapes.pedal),
         side,
@@ -573,7 +597,7 @@ class CourseCyclist implements RiderModel {
 }
 
 /** The bike's still parts, in the rider's own axes. */
-function bike(): BufferGeometry[] {
+function bike(look: Palette): BufferGeometry[] {
   const parts: BufferGeometry[] = [];
   const stick = (a: Vector3, b: Vector3, from: number, to: number, colour: Color, around = 8) => {
     const piece = tube(a.distanceTo(b), from, to, colour, around);
@@ -589,33 +613,40 @@ function bike(): BufferGeometry[] {
   const wheelAt = (at: Vector3) => new Matrix4().makeRotationY(Math.PI / 2).setPosition(at);
 
   // The frame's main triangle, the stays and the fork.
-  stick(BB, SEAT, 0.02, 0.017, FRAME);
-  stick(SEAT, HEAD_TOP, 0.019, 0.017, FRAME);
-  stick(BB, HEAD_BOTTOM, 0.027, 0.023, FRAME, 10);
+  stick(BB, SEAT, 0.02, 0.017, look.frame);
+  stick(SEAT, HEAD_TOP, 0.019, 0.017, look.frame);
+  stick(BB, HEAD_BOTTOM, 0.027, 0.023, look.frame, 10);
   stick(
     HEAD_BOTTOM.clone().add(new Vector3(0, -0.02, -0.006)),
     HEAD_TOP.clone().add(new Vector3(0, 0.02, 0.006)),
     0.024,
     0.024,
-    FRAME,
+    look.frame,
     10,
   );
   for (const x of [-1, 1]) {
-    stick(BB.clone().setX(x * 0.03), REAR.clone().setX(x * 0.066), 0.014, 0.01, FRAME, 6);
+    stick(BB.clone().setX(x * 0.03), REAR.clone().setX(x * 0.066), 0.014, 0.01, look.frame, 6);
     stick(
       SEAT.clone().add(new Vector3(x * 0.02, -0.03, 0)),
       REAR.clone().setX(x * 0.066),
       0.01,
       0.008,
-      FRAME,
+      look.frame,
       6,
     );
     const crown = HEAD_BOTTOM.clone().add(new Vector3(x * 0.045, -0.035, -0.012));
-    stick(crown, FRONT.clone().setX(x * 0.052), 0.016, 0.009, FRAME, 6);
-    stick(HEAD_BOTTOM.clone().add(new Vector3(0, -0.02, -0.006)), crown, 0.02, 0.016, FRAME, 6);
+    stick(crown, FRONT.clone().setX(x * 0.052), 0.016, 0.009, look.frame, 6);
+    stick(
+      HEAD_BOTTOM.clone().add(new Vector3(0, -0.02, -0.006)),
+      crown,
+      0.02,
+      0.016,
+      look.frame,
+      6,
+    );
   }
   // Seat post, saddle: a narrow nose widening to the tail.
-  stick(SEAT, SEAT.clone().add(new Vector3(0, 0.115, 0.033)), 0.0135, 0.0135, FRAME);
+  stick(SEAT, SEAT.clone().add(new Vector3(0, 0.115, 0.033)), 0.0135, 0.0135, look.frame);
   const saddle = loft(
     [
       { t: 0, rx: 0.016, rz: 0.012 },
@@ -630,7 +661,7 @@ function bike(): BufferGeometry[] {
   saddle.applyMatrix4(between(new Vector3(0, 0.928, 0.1), new Vector3(0, 0.936, 0.37)));
   parts.push(saddle);
   // Stem and drop bars: the tops, the reach to the hoods, the drops curling down and back; the brake hoods.
-  stick(HEAD_TOP.clone().add(new Vector3(0, 0.035, 0.008)), BAR, 0.017, 0.015, FRAME);
+  stick(HEAD_TOP.clone().add(new Vector3(0, 0.035, 0.008)), BAR, 0.017, 0.015, look.frame);
   stick(BAR.clone().setX(-0.2), BAR.clone().setX(0.2), 0.0125, 0.0125, TAPE);
   for (const x of [-1, 1]) {
     const top = BAR.clone().setX(x * 0.2);
@@ -664,7 +695,7 @@ function bike(): BufferGeometry[] {
   }
   // The drivetrain, on the right: chainring, cassette, the derailleur hanging below it, the chain's two runs.
   placed(new CylinderGeometry(0.098, 0.098, 0.005, 28), RIM, acrossAt(BB.clone().setX(0.052)));
-  placed(new CylinderGeometry(0.03, 0.03, 0.09, 10), FRAME, acrossAt(BB));
+  placed(new CylinderGeometry(0.03, 0.03, 0.09, 10), look.frame, acrossAt(BB));
   placed(new CylinderGeometry(0.052, 0.034, 0.036, 16), STEEL, acrossAt(REAR.clone().setX(0.045)));
   const cage = REAR.clone().add(new Vector3(0.055, -0.1, -0.012));
   stick(REAR.clone().setX(0.055), cage, 0.012, 0.009, SOLE, 6);
@@ -698,7 +729,7 @@ function bike(): BufferGeometry[] {
  * The rider from the hips up. `still` is coloured by vertex: neck, head and helmet, the bare arms and gloved hands,
  * the seat. `kit` is what the kit's texture is drawn on: the trunk and the sleeves.
  */
-function body(jersey: Color): { still: BufferGeometry[]; kit: BufferGeometry[] } {
+function body(jersey: Color, look: Palette): { still: BufferGeometry[]; kit: BufferGeometry[] } {
   const parts: BufferGeometry[] = [];
   const kit: BufferGeometry[] = [];
   const up = SHOULDER.clone().sub(HIP).normalize();
@@ -747,18 +778,18 @@ function body(jersey: Color): { still: BufferGeometry[]; kit: BufferGeometry[] }
       { t: 1, rx: 0.05, rz: 0.052 },
     ],
     nape.distanceTo(skull) - 0.05,
-    () => SKIN,
+    () => look.skin,
     10,
   );
   placed(neck, between(nape, skull));
-  const head = ball(skull, new Vector3(0.076, 0.098, 0.092), SKIN, 12);
+  const head = ball(skull, new Vector3(0.076, 0.098, 0.092), look.skin, 12);
   placed(head.piece, new Matrix4().makeRotationX(0.25).setPosition(head.at));
   // The back of the head, which is what a rider behind sees: hair below the helmet, the ears, the helmet's cradle
   // on the nape and its straps down past each ear to the chin.
   const hair = ball(
     skull.clone().add(new Vector3(0, -0.012, 0.03)),
     new Vector3(0.075, 0.074, 0.074),
-    HAIR,
+    look.hair,
     10,
   );
   placed(hair.piece, new Matrix4().setPosition(hair.at));
@@ -773,7 +804,7 @@ function body(jersey: Color): { still: BufferGeometry[]; kit: BufferGeometry[] }
     const ear = ball(
       skull.clone().add(new Vector3(side * 0.075, -0.012, -0.004)),
       new Vector3(0.011, 0.027, 0.018),
-      SKIN,
+      look.skin,
       6,
     );
     placed(ear.piece, new Matrix4().setPosition(ear.at));
@@ -839,7 +870,7 @@ function body(jersey: Color): { still: BufferGeometry[]; kit: BufferGeometry[] }
         { t: 1, rx: 0.038, rz: 0.04 },
       ],
       cuff.distanceTo(elbow),
-      () => SKIN,
+      () => look.skin,
       12,
     );
     placed(upper, between(cuff, elbow));
@@ -851,7 +882,7 @@ function body(jersey: Color): { still: BufferGeometry[]; kit: BufferGeometry[] }
         { t: 1, rx: 0.027, rz: 0.03 },
       ],
       FOREARM,
-      (t) => (t < 0.86 ? SKIN : GLOVE),
+      (t) => (t < 0.86 ? look.skin : GLOVE),
       10,
     );
     placed(fore, between(elbow, hand));

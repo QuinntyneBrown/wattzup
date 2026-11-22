@@ -15,6 +15,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 4 | A finish for each surface: skin, lycra, lacquer, carbon, steel, rubber; lamp light along glossy edges | 120.0 fps, none over 20 ms | 16.6 ms | 317 fps (3.15 ms): 326, 317, 317 | 81,601 | 74 | Yes |
 | 5 | One pelvis for a seat, sleeves closed over the shoulders, the back of the head: hair, ears, the helmet's cradle and straps | 120.1 fps, none over 20 ms | 16.9 ms | 314 fps (3.19 ms): 320, 310, 314 | 84,781 | 74 | Yes |
 | 6 | Out of the saddle on a steep climb, the bike thrown from side to side; a pose that allocates nothing | 119.9 fps; one frame of 25 ms in 2 timings of 11, none in 9 (the pass before: none in 8) | 25.3 ms | 302 fps (3.31 ms): 302, 311, 302 | 84,781 | 74 | Yes, with that noted |
+| 7 | Riders who differ: skin, hair, height, the bike's colour, shoes and socks | 120.1 fps, none over 20 ms in 4 timings | 8.7 ms | 312 fps (3.21 ms): 301, 312, 321 | 84,781 | 74 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -226,3 +227,31 @@ this on the record: if it recurs, look here first.
 - A rider's upper body can change posture without solving the arms again if it turns about the hands.
 - Timing runs must alternate with the pass before in one sitting; a run after a run compares the machine, not the
   change.
+
+## Pass 7: riders who differ
+
+**Before** (`rider-06.mp4`): the pack is one person five times, on five black bikes; only the jerseys differ.
+
+**After** (`rider-07-pack.jpg`, the pack at the start line enlarged; `rider-07.jpg`, `rider-07.mp4`): each rider has
+their own skin tone (six), hair (five), height (0.94 to 1.06 of the middling rider, on a bike their size), frame
+colour (seven: black, white, red, blue, green, graphite, gold), shoes and socks. A rider's look comes from their
+race number, so it is the same every race.
+
+**What changed.**
+
+- `rider-look.ts`, new, with its unit tests: `riderLook(number)` steps through each list at its own pace, so the
+  lists do not fall into step and two riders next to each other in the numbers never share everything.
+- `course-cyclist.ts`: the body, the legs and the bike are painted from the rider's own palette; each of its colours
+  takes the finish of the part it paints. The legs' shapes, shared by all riders until now, are made for each rider
+  (the batch of moving parts copied them for each rider already, so nothing more is drawn or held on the GPU). The
+  rider's rig is scaled by their height.
+
+**Cost.** None measured: 312 fps against 302 for pass 6 (the machine, not the change), no frame over 20 ms in four
+timings, the same 74 draw calls and triangles. Three small geometries more a rider in memory, disposed with them.
+
+**Learned.**
+
+- Variety that comes from a number the rider already has needs no data and no choosing, and stays put between
+  races.
+- A table of finishes keyed by colour had to become a weak one once colours were made for each rider, or every race
+  would have left its riders' colours in it.
