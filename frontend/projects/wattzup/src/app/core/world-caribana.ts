@@ -280,7 +280,8 @@ const POSES: readonly (readonly [readonly number[], readonly number[]])[] = [
 const PROP_BEHIND_CULL = -22;
 const PROP_HORIZON_CULL = 316;
 const DANCER_BEHIND_CULL = -16;
-const DANCER_HORIZON_CULL = 308;
+const DANCER_DETAIL_FAR = 115;
+const DANCER_HORIZON_CULL = 255;
 const SHADOW_NEAR = -20;
 const SHADOW_FAR = 36;
 const CONFETTI_COUNT = 320;
@@ -333,6 +334,7 @@ export class CaribanaStreet implements SceneStreet {
     rag2B: number;
   })[] = [];
   private readonly bodies: InstancedMesh[] = [];
+  private readonly nearBodies: InstancedMesh[] = [];
   private costumes: InstancedMesh | null = null;
   private trunks: InstancedMesh | null = null;
   private medallions: InstancedMesh | null = null;
@@ -356,7 +358,26 @@ export class CaribanaStreet implements SceneStreet {
   private readonly plane = new Group();
   private readonly helicopter = new Group();
   private readonly rotorBlades = new Group();
-  private readonly expressway: { car: Group; offset: number; speed: number; x: number }[] = [];
+  private readonly expressway: {
+    offset: number;
+    speed: number;
+    x: number;
+    r: number;
+    g: number;
+    b: number;
+  }[] = [];
+  private expresswayBodies: InstancedMesh | null = null;
+  private expresswayTrim: InstancedMesh | null = null;
+  private expresswayBucket = Number.NaN;
+  private gardinerConcrete: InstancedMesh | null = null;
+  private gardinerSteel: InstancedMesh | null = null;
+  private readonly gardinerOffsets: number[] = [];
+  private sharedTrussTex: CanvasTexture | null = null;
+  private sharedLadderMat: MeshStandardMaterial | null = null;
+  private sharedStreetSignMat: {
+    tex: CanvasTexture;
+    mat: MeshStandardMaterial;
+  } | null = null;
   private readonly royals: {
     piece: Group;
     offset: number;
@@ -366,6 +387,8 @@ export class CaribanaStreet implements SceneStreet {
   }[] = [];
   private teeShirts: Ensemble | null = null;
   private readonly revellers: { x: number; offset: number; phase: number; facing: number }[] = [];
+  private officerEnsemble: Ensemble | null = null;
+  private readonly officerSpots: { x: number; offset: number; cy: number; sy: number }[] = [];
   private readonly pannists: { figure: Group; phase: number }[] = [];
   private readonly bandBanners: { group: Group; phase: number }[] = [];
   private engineRoom: Group | null = null;
@@ -551,9 +574,6 @@ export class CaribanaStreet implements SceneStreet {
       }
       mergeStaticGroup(m.figure, this.disposables, legSet, this.propSolidMat);
     }
-    for (const e of this.expressway) {
-      mergeStaticGroup(e.car, this.disposables, skip, this.propSolidMat);
-    }
     for (const boat of this.boats) {
       mergeStaticGroup(boat, this.disposables, undefined, this.propSolidMat);
     }
@@ -598,6 +618,7 @@ export class CaribanaStreet implements SceneStreet {
     this.placeBarricades(heightAt, along);
     this.placeMokoJumbies(heightAt, along);
     this.placeTeeShirtMas(heightAt, along);
+    this.placeOfficers(heightAt, along);
     this.placeLampsAndBunting(heightAt, along);
     this.placeTrees(heightAt, along);
     this.placeConfetti(s, heightAt);
@@ -660,11 +681,7 @@ export class CaribanaStreet implements SceneStreet {
       r.piece.rotation.z = Math.sin(t * 1.05) * 0.04;
       r.piece.rotation.y = Math.PI + Math.sin(t * 0.35) * 0.35;
     }
-    for (const e of this.expressway) {
-      const metres = along(e.offset + this.time * e.speed, LOOP);
-      e.car.position.set(e.x, heightAt(Math.max(metres, 0)) + GARDINER_DECK, -metres);
-      e.car.visible = metres > PROP_BEHIND_CULL && metres <= PROP_HORIZON_CULL;
-    }
+    this.placeGardinerAndTraffic(heightAt, along);
     const farH = heightAt(1e6);
     this.downtown.position.set(0, farH - 4, -DOWNTOWN_AHEAD);
     this.ontarioPlace.position.set(0, farH, 0);
@@ -704,6 +721,7 @@ export class CaribanaStreet implements SceneStreet {
     const backed = new Int32Array(this.backpieces.length);
     const collared = new Int32Array(this.backpieces.length);
     const posed = new Int32Array(this.bodies.length);
+    const nearPosed = new Int32Array(this.nearBodies.length);
     const flagSlots = new Int32Array(this.heldFlags.length);
     let ragSlot = 0;
     let women = 0;
@@ -803,11 +821,24 @@ export class CaribanaStreet implements SceneStreet {
       const tz = -metres;
 
       const body = d.pose + (d.male ? POSES.length : 0);
-      const bodySlot = posed[body]!;
-      posed[body] = bodySlot + 1;
-      writeMat(this.bodies[body]!, bodySlot, m0, m1, m2, m4, m5, m6, m8, m9, m10, x, ty, tz);
-      if (colorsChanged) setRgb(this.bodies[body]!, bodySlot, d.skinR, d.skinG, d.skinB);
+      const nearBody = this.nearBodies[body]!;
+      if (
+        metres > SHADOW_NEAR &&
+        metres < SHADOW_FAR &&
+        nearPosed[body]! < nearBody.instanceMatrix.count
+      ) {
+        const nbSlot = nearPosed[body]!;
+        nearPosed[body] = nbSlot + 1;
+        writeMat(nearBody, nbSlot, m0, m1, m2, m4, m5, m6, m8, m9, m10, x, ty, tz);
+        if (colorsChanged) setRgb(nearBody, nbSlot, d.skinR, d.skinG, d.skinB);
+      } else {
+        const bodySlot = posed[body]!;
+        posed[body] = bodySlot + 1;
+        writeMat(this.bodies[body]!, bodySlot, m0, m1, m2, m4, m5, m6, m8, m9, m10, x, ty, tz);
+        if (colorsChanged) setRgb(this.bodies[body]!, bodySlot, d.skinR, d.skinG, d.skinB);
+      }
 
+      const nearDetail = metres <= DANCER_DETAIL_FAR;
       if (d.male) {
         writeMat(this.trunks, men, m0, m1, m2, m4, m5, m6, m8, m9, m10, x, ty, tz);
         if (colorsChanged) setRgb(this.trunks, men, d.suitR, d.suitG, d.suitB);
@@ -816,16 +847,20 @@ export class CaribanaStreet implements SceneStreet {
         writeMat(costumes, women, m0, m1, m2, m4, m5, m6, m8, m9, m10, x, ty, tz);
         if (colorsChanged) setRgb(costumes, women, d.suitR, d.suitG, d.suitB);
         women++;
-        writeMat(this.fringes, fringesCount, m0, m1, m2, m4, m5, m6, m8, m9, m10, x, ty, tz);
-        if (colorsChanged) setRgb(this.fringes, fringesCount, d.suitR, d.suitG, d.suitB);
-        fringesCount++;
+        if (nearDetail) {
+          writeMat(this.fringes, fringesCount, m0, m1, m2, m4, m5, m6, m8, m9, m10, x, ty, tz);
+          if (colorsChanged) setRgb(this.fringes, fringesCount, d.suitR, d.suitG, d.suitB);
+          fringesCount++;
+        }
       }
 
-      writeMat(this.hair, vis, m0, m1, m2, m4, m5, m6, m8, m9, m10, x, ty, tz);
-      if (colorsChanged) setRgb(this.hair, vis, d.hairR, d.hairG, d.hairB);
-      vis++;
+      if (nearDetail) {
+        writeMat(this.hair, vis, m0, m1, m2, m4, m5, m6, m8, m9, m10, x, ty, tz);
+        if (colorsChanged) setRgb(this.hair, vis, d.hairR, d.hairG, d.hairB);
+        vis++;
+      }
 
-      if (d.pose === 1 || (d.pose === 0 && this.rags)) {
+      if (d.pose === 1 || (nearDetail && d.pose === 0 && this.rags)) {
         const wave = Math.sin(t * 6.3) * 0.9;
         const cw = Math.cos(wave);
         const sw = Math.sin(wave);
@@ -898,24 +933,26 @@ export class CaribanaStreet implements SceneStreet {
       const pm10 = r22 * k0;
       const pty = ty + 1.3 * k0;
       if (d.frontline) {
-        writeMat(
-          this.medallions,
-          medallionsCount,
-          pm0,
-          pm1,
-          pm2,
-          m4,
-          m5,
-          m6,
-          pm8,
-          pm9,
-          pm10,
-          x,
-          pty,
-          tz,
-        );
-        if (colorsChanged) setRgb(this.medallions, medallionsCount, d.suitR, d.suitG, d.suitB);
-        medallionsCount++;
+        if (nearDetail) {
+          writeMat(
+            this.medallions,
+            medallionsCount,
+            pm0,
+            pm1,
+            pm2,
+            m4,
+            m5,
+            m6,
+            pm8,
+            pm9,
+            pm10,
+            x,
+            pty,
+            tz,
+          );
+          if (colorsChanged) setRgb(this.medallions, medallionsCount, d.suitR, d.suitG, d.suitB);
+          medallionsCount++;
+        }
         const bSlot = backed[k]!;
         backed[k] = bSlot + 1;
         writeMat(this.backpieces[k]!, bSlot, pm0, pm1, pm2, m4, m5, m6, pm8, pm9, pm10, x, pty, tz);
@@ -949,6 +986,7 @@ export class CaribanaStreet implements SceneStreet {
     updateColored(this.hair, vis);
     for (let p = 0; p < this.bodies.length; p++) {
       updateColored(this.bodies[p]!, posed[p]!);
+      updateColored(this.nearBodies[p]!, nearPosed[p]!);
     }
     for (let k = 0; k < this.backpieces.length; k++) {
       this.backpieces[k]!.count = backed[k]!;
@@ -979,16 +1017,19 @@ export class CaribanaStreet implements SceneStreet {
     const steel = this.material({ color: 0xb9bec4, metalness: 0.75, roughness: 0.42 });
     this.disposables.push(frame);
     this.barricadeFrames = this.instanced(frame, steel, this.barricades.length, false);
-    const cloth = new PlaneGeometry(2.3, 0.72);
-    cloth.rotateY(-Math.PI / 2);
-    cloth.translate(-0.035, 0.66, 0);
-    this.disposables.push(cloth);
-    BARRICADE_BANNERS.forEach(({ text, fill, ink }) => {
-      const material = this.material({
-        map: this.track(clothBannerTexture(text, fill, ink)),
-        roughness: 0.75,
-      });
-      this.barricadeBanners.push(this.instanced(cloth, material, this.barricades.length, false));
+    const rows = BARRICADE_BANNERS.length;
+    const atlasMat = this.material({
+      map: this.track(
+        clothBannerStackTexture(BARRICADE_BANNERS.map((b) => [b.text, b.fill, b.ink] as const)),
+      ),
+      roughness: 0.75,
+    });
+    BARRICADE_BANNERS.forEach((_, idx) => {
+      const cloth = slicePlaneUv(2.3, 0.72, 0, 1, idx, rows, 700, 130 * rows);
+      cloth.rotateY(-Math.PI / 2);
+      cloth.translate(-0.035, 0.66, 0);
+      this.disposables.push(cloth);
+      this.barricadeBanners.push(this.instanced(cloth, atlasMat, this.barricades.length, false));
     });
   }
 
@@ -1003,7 +1044,7 @@ export class CaribanaStreet implements SceneStreet {
     let fCount = 0;
     for (const b of this.barricades) {
       const metres = along(b.offset, LOOP);
-      if (metres <= DANCER_BEHIND_CULL || metres > DANCER_HORIZON_CULL) continue;
+      if (metres <= DANCER_BEHIND_CULL || metres > 235) continue;
       const sgn = b.side > 0 ? 1 : -1;
       const tx = b.side * BARRIER;
       const ty = heightAt(Math.max(metres, 0)) + ASPHALT;
@@ -1062,21 +1103,25 @@ export class CaribanaStreet implements SceneStreet {
       });
     }
     const ensemble = new Ensemble(this.group, this.disposables);
-    const skin = this.material({ roughness: 0.6 });
-    const cotton = this.material({ roughness: 0.9 });
-    const denim = this.material({ roughness: 0.9 });
-    const rubber = this.material({ roughness: 0.7 });
+    const skin = this.material({ roughness: 0.6, vertexColors: true });
+    const cotton = this.material({ roughness: 0.9, vertexColors: true });
+    const denim = this.material({ roughness: 0.9, vertexColors: true });
     const hair = this.material({ roughness: 0.95 });
-    const bodies = [2, 1, 6].map((stance) => spectatorParts(stance, true));
-    const sharedBottom = bodies[0]!.bottom;
+    const bodies = [2, 1].map((stance) => spectatorParts(stance, true));
+    const shoes = tintGeometry(shoeGeometry(), 0xe0e0e0);
+    shoes.deleteAttribute('uv');
+    bodies[0]!.bottom.deleteAttribute('uv');
+    const sharedBottom = merge([bodies[0]!.bottom, shoes]);
     this.disposables.push(sharedBottom);
     bodies.forEach((b, idx) => {
       this.disposables.push(b.skin, b.top);
       if (idx > 0) b.bottom.dispose();
     });
-    const shoes = shoeGeometry();
-    const hairs = hairParts();
-    this.disposables.push(shoes, ...hairs);
+    const allHairs = hairParts();
+    const hairs = [allHairs[0]!, allHairs[2]!];
+    allHairs[1]!.dispose();
+    allHairs[3]!.dispose();
+    this.disposables.push(...hairs);
     // Each band's T-shirt colour, by the section the reveller dances in.
     const tees = ['#ffd23f', '#ffffff', '#ff2d87', '#13c3c9', '#ff8a00', '#111111'];
     this.revellers.forEach((r, i) => {
@@ -1086,9 +1131,8 @@ export class CaribanaStreet implements SceneStreet {
       ensemble.put(i, `skin${pose}`, body.skin, skin, SKINS[Math.floor(random() * SKINS.length)]!);
       ensemble.put(i, `top${pose}`, body.top, cotton, tee);
       ensemble.put(i, 'bottom', sharedBottom, denim, TROUSERS[Math.floor(random() * 4)]!);
-      ensemble.put(i, 'shoes', shoes, rubber, random() < 0.6 ? '#f2f2f2' : '#111111');
       const style = Math.floor(random() * hairs.length);
-      ensemble.put(i, `hair${style}`, hairs[style]!, hair, style === 3 ? tee : '#1a1410');
+      ensemble.put(i, `hair${style}`, hairs[style]!, hair, style === 1 ? tee : '#1a1410');
     });
     ensemble.build();
     this.teeShirts = ensemble;
@@ -1223,13 +1267,16 @@ export class CaribanaStreet implements SceneStreet {
     this.disposables.push(leg, foot, hips, torso, arms, head, brim, crown, hat);
     const skin = this.material({ color: SKINS[1], roughness: 0.6 });
     const dark = this.material({ color: 0x111111, roughness: 0.8 });
+    const stripeMats = looks.map((look) =>
+      this.material({
+        map: this.track(stripeTexture(look.stripes[0]!, look.stripes[1]!)),
+        roughness: 0.55,
+      }),
+    );
     const random = seeded(733);
     for (let k = 0; k < 6; k++) {
       const look = looks[k % looks.length]!;
-      const stripes = this.material({
-        map: this.track(stripeTexture(look.stripes[0], look.stripes[1])),
-        roughness: 0.55,
-      });
+      const stripes = stripeMats[k % stripeMats.length]!;
       const satin = this.material({ color: look.shirt, roughness: 0.35, metalness: 0.2 });
       const hatMaterial = this.material({ color: look.hat, roughness: 0.4, metalness: 0.3 });
       const figure = new Group();
@@ -1653,9 +1700,13 @@ export class CaribanaStreet implements SceneStreet {
         const body = masBody(pose, male);
         this.disposables.push(body);
         const cap = Math.max(1, this.dancers.filter((d) => d.pose === p && d.male === male).length);
-        const mesh = this.instanced(body, skin, cap, true);
-        mesh.setColorAt(0, c.setRGB(1, 1, 1));
-        this.bodies.push(mesh);
+        const farMesh = this.instanced(body, skin, cap, false);
+        farMesh.setColorAt(0, c.setRGB(1, 1, 1));
+        this.bodies.push(farMesh);
+        const nearCap = Math.max(1, Math.min(cap, 36));
+        const nearMesh = this.instanced(body, skin, nearCap, true);
+        nearMesh.setColorAt(0, c.setRGB(1, 1, 1));
+        this.nearBodies.push(nearMesh);
       });
     }
     const costume = masCostume(false);
@@ -1778,8 +1829,9 @@ export class CaribanaStreet implements SceneStreet {
     const rubber = this.material({ color: 0x151515, roughness: 0.9 });
     const hub = this.material({ color: 0xb8bcc0, roughness: 0.3, metalness: 0.9 });
     const deckWood = this.material({ color: 0x6b5138, roughness: 0.9 });
+    const trussTex = (this.sharedTrussTex ??= this.track(trussTexture()));
     const truss = this.material({
-      map: this.track(trussTexture()),
+      map: trussTex,
       alphaTest: 0.5,
       side: DoubleSide,
       color: 0xd5d8db,
@@ -1997,21 +2049,19 @@ export class CaribanaStreet implements SceneStreet {
       const a = (k / 9) * Math.PI * 2;
       const strand = new CylinderGeometry(0.03, 0.015, 0.6 + (k % 3) * 0.2, 5);
       strand.translate(-1.05 + Math.cos(a) * 0.36, 2.55 - (k % 3) * 0.1, Math.sin(a) * 0.36);
-      strands.push(asNonIndexed(strand));
-      strand.dispose();
+      strands.push(strand);
     }
     const trailing = mergeGeometries(strands)!;
-    const lampSteelParts = [pole, plate, skirt, davit, brackets, basketBracket].map(asNonIndexed);
-    const lampSteel = mergeGeometries(lampSteelParts)!;
-    lampSteelParts.forEach((g) => g.dispose());
+    strands.forEach((g) => g.dispose());
+    const lampSteel = mergeGeometries([pole, plate, skirt, davit, brackets, basketBracket])!;
     [pole, plate, skirt, davit, brackets, basketBracket].forEach((g) => g.dispose());
     const lampBodyParts = [
-      tintGeometry(asNonIndexed(lampSteel), 0xa9aeb2),
-      tintGeometry(asNonIndexed(head), 0x8c9196),
-      tintGeometry(asNonIndexed(lens), 0xe8ecef),
-      tintGeometry(asNonIndexed(basket), 0x5a4632),
-      asNonIndexed(blooms),
-      tintGeometry(asNonIndexed(trailing), 0x2f6b2a),
+      tintGeometry(lampSteel, 0xa9aeb2),
+      tintGeometry(head, 0x8c9196),
+      tintGeometry(lens, 0xe8ecef),
+      tintGeometry(basket, 0x5a4632),
+      blooms,
+      tintGeometry(trailing, 0x2f6b2a),
     ];
     for (const part of lampBodyParts) {
       for (const attrName of Object.keys(part.attributes)) {
@@ -2022,28 +2072,40 @@ export class CaribanaStreet implements SceneStreet {
     }
     const lampBody = mergeGeometries(lampBodyParts)!;
     lampBodyParts.forEach((g) => g.dispose());
-    [lampSteel, head, lens, basket, blooms, trailing].forEach((g) => g.dispose());
     this.disposables.push(lampBody, cloth);
     const banners = FLAG_KINDS.map((kind) =>
       this.material({ map: this.track(flagTexture(kind, true)), side: DoubleSide, roughness: 0.8 }),
     );
-    const festivals = [
+    const festivalSpecs = [
       ['#c8102e', '#ffd23f'],
       ['#111111', '#ff2d87'],
       ['#0f9d58', '#ffffff'],
-    ].map(([fill, ink]) =>
-      this.material({
-        map: this.track(festivalBannerTexture(fill!, ink!)),
-        side: DoubleSide,
-        roughness: 0.8,
-      }),
-    );
+    ] as const;
+    const festivalAtlasMat = this.material({
+      map: this.track(festivalBannerAtlasTexture(festivalSpecs)),
+      side: DoubleSide,
+      roughness: 0.8,
+    });
+    const festivalCloths = festivalSpecs.map((_, idx) => {
+      const g = slicePlaneUv(
+        0.74,
+        2.2,
+        idx,
+        festivalSpecs.length,
+        0,
+        1,
+        200 * festivalSpecs.length,
+        600,
+      );
+      this.disposables.push(g);
+      return g;
+    });
     const items: { side: -1 | 1; offset: number; x: number; festIdx: number; flagIdx: number }[] =
       [];
     let k = 0;
     for (const side of [-1, 1] as const) {
       for (let offset = 0; offset < LOOP; offset += 36) {
-        const festIdx = (k >> 1) % festivals.length;
+        const festIdx = (k >> 1) % festivalSpecs.length;
         const flagIdx = k++ % banners.length;
         items.push({
           side,
@@ -2057,7 +2119,7 @@ export class CaribanaStreet implements SceneStreet {
     const n = Math.max(1, items.length);
     this.lampMeshes = {
       body: this.instanced(lampBody, this.propSolidMat, n, false),
-      festivals: festivals.map((m) => this.instanced(cloth, m, n, false)),
+      festivals: festivalCloths.map((g) => this.instanced(g, festivalAtlasMat, n, false)),
       banners: banners.map((m) => this.instanced(cloth, m, n, false)),
       items,
     };
@@ -2248,38 +2310,20 @@ export class CaribanaStreet implements SceneStreet {
       {
         seed: 11,
         clumps: 22,
-        radius: 3.0,
-        height: 6.4,
-        squash: 0.78,
-        light: '#7fae4a',
+        radius: 3.1,
+        height: 6.6,
+        squash: 0.74,
+        light: '#8db552',
         dark: '#24481f',
       },
       {
-        seed: 23,
-        clumps: 26,
-        radius: 3.4,
-        height: 7.2,
-        squash: 0.62,
-        light: '#9cbf55',
-        dark: '#2f5a23',
-      },
-      {
         seed: 37,
-        clumps: 18,
-        radius: 2.5,
-        height: 6.8,
-        squash: 1.0,
-        light: '#6c9e45',
-        dark: '#1f421c',
-      },
-      {
-        seed: 53,
-        clumps: 24,
-        radius: 3.2,
+        clumps: 20,
+        radius: 2.8,
         height: 7.0,
-        squash: 0.85,
-        light: '#8db552',
-        dark: '#2a4f22',
+        squash: 0.92,
+        light: '#74a448',
+        dark: '#1f421c',
       },
     ];
     const leaves = this.material({
@@ -2470,17 +2514,41 @@ export class CaribanaStreet implements SceneStreet {
     const random = seeded(2609);
     const pole = new CylinderGeometry(0.025, 0.03, 4.5, 6);
     pole.translate(0, 2.25, 0);
-    const cloth = new PlaneGeometry(1.8, 1.2, 6, 2);
-    cloth.translate(0.92, 3.8, 0);
-    // A little ripple in the cloth.
-    const ripple = cloth.getAttribute('position') as BufferAttribute;
-    for (let i = 0; i < ripple.count; i++) {
-      ripple.setZ(i, Math.sin(ripple.getX(i) * 4) * 0.08 * (ripple.getX(i) / 1.8));
-    }
-    // Printed to face the way the bearer faces: back down the road, to the band and the riders.
-    cloth.rotateY(Math.PI);
-    cloth.computeVertexNormals();
-    this.disposables.push(pole, cloth);
+    this.disposables.push(pole);
+    const sectionAtlasMat = this.material({
+      map: this.track(
+        sectionFlagAtlasTexture(
+          names.map((name, idx) => [name, COSTUMES[idx]!.suit] as const),
+          4,
+          2,
+        ),
+      ),
+      side: DoubleSide,
+      roughness: 0.7,
+    });
+    const sectionCloths = names.map((_, idx) => {
+      const cloth = slicePlaneUv(
+        1.8,
+        1.2,
+        idx % 4,
+        4,
+        Math.floor(idx / 4),
+        2,
+        4 * 384,
+        2 * 256,
+        6,
+        2,
+      );
+      cloth.translate(0.92, 3.8, 0);
+      const ripple = cloth.getAttribute('position') as BufferAttribute;
+      for (let i = 0; i < ripple.count; i++) {
+        ripple.setZ(i, Math.sin(ripple.getX(i) * 4) * 0.08 * (ripple.getX(i) / 1.8));
+      }
+      cloth.rotateY(Math.PI);
+      cloth.computeVertexNormals();
+      this.disposables.push(cloth);
+      return cloth;
+    });
     const wood = this.material({ color: 0xd8d2c4, roughness: 0.6, metalness: 0.4 });
     const trousers = this.material({ color: 0x1e2530, roughness: 0.9 });
     for (let k = 0; k < LOOP / 40; k++) {
@@ -2488,16 +2556,7 @@ export class CaribanaStreet implements SceneStreet {
       const colour = COSTUMES[costume]!.suit;
       const flag = new Group();
       flag.add(new Mesh(pole, wood));
-      flag.add(
-        new Mesh(
-          cloth,
-          this.material({
-            map: this.track(sectionFlagTexture(names[costume]!, colour)),
-            side: DoubleSide,
-            roughness: 0.7,
-          }),
-        ),
-      );
+      flag.add(new Mesh(sectionCloths[costume]!, sectionAtlasMat));
       flag.position.set(0.3, 0.9, -0.06);
       const parts = spectatorParts(1, random() < 0.5);
       this.disposables.push(parts.skin, parts.top, parts.bottom);
@@ -2849,30 +2908,47 @@ export class CaribanaStreet implements SceneStreet {
       person.traverse((o) => (o.castShadow = true));
       return person;
     };
+    const officerParts = spectatorParts(0, false);
+    const officerSkinMat = this.material({ roughness: 0.6, vertexColors: true });
+    const uniformSolidParts = [
+      tintGeometry(officerParts.top, 0x1c2333),
+      tintGeometry(officerParts.bottom, 0x1c2333),
+      tintGeometry(stripe.clone(), 0xd8dde0),
+      tintGeometry(crown.clone(), 0x1c2333),
+      tintGeometry(peak.clone(), 0x111111),
+    ];
+    for (const p of uniformSolidParts) p.deleteAttribute('uv');
+    const officerSolidGeo = merge(uniformSolidParts);
+    this.disposables.push(officerParts.skin, officerSolidGeo);
+    const offEnsemble = new Ensemble(this.group, this.disposables);
     for (let k = 0; k < 8; k++) {
       const side = k % 2 ? 1 : -1;
-      const officer = figure(vest, true);
-      officer.rotation.y = side < 0 ? -Math.PI / 2 + 0.6 : Math.PI / 2 - 0.6;
-      const holder = new Group();
-      holder.add(officer);
-      this.group.add(holder);
-      this.props.push({
-        mesh: holder,
-        offset: 20 + k * 45 + random() * 8,
-        every: LOOP,
+      const skinHex = SKINS[Math.floor(random() * SKINS.length)]!;
+      const yaw = side < 0 ? -Math.PI / 2 + 0.6 : Math.PI / 2 - 0.6;
+      const offset = 20 + k * 45 + random() * 8;
+      this.officerSpots.push({
         x: side * (BARRIER - 0.5),
-        road: true,
+        offset,
+        cy: Math.cos(yaw),
+        sy: Math.sin(yaw),
       });
+      offEnsemble.put(k, 'skin', officerParts.skin, officerSkinMat, skinHex);
+      offEnsemble.put(k, 'solid', officerSolidGeo, this.propSolidMat, '#ffffff');
+      offEnsemble.put(k, 'vest', torso, vest, '#ffffff');
+      offEnsemble.put(k, 'band', band, checks, '#ffffff');
     }
+    offEnsemble.build();
+    this.officerEnsemble = offEnsemble;
     // Paramedics on response bikes, a pair at the kerb.
     const frame = new BoxGeometry(0.05, 0.05, 1.0);
     frame.rotateX(-0.35);
     frame.translate(0, 0.68, 0);
-    const wheel = new TorusGeometry(0.33, 0.035, 6, 20);
+    const wheel = new TorusGeometry(0.33, 0.035, 5, 14);
     wheel.rotateY(Math.PI / 2);
     const bag = new BoxGeometry(0.3, 0.3, 0.45);
     bag.translate(0, 0.95, 0.42);
     this.disposables.push(frame, wheel, bag);
+    const medicPair = new Group();
     for (const dz of [0, 1.7]) {
       const medic = figure(green, false);
       const bike = new Group();
@@ -2884,12 +2960,40 @@ export class CaribanaStreet implements SceneStreet {
       }
       bike.position.set(0.55, 0, 0);
       bike.rotation.y = 0.15;
-      const holder = new Group();
-      holder.add(medic, bike);
-      holder.rotation.y = -Math.PI / 2 + 0.5;
-      this.group.add(holder);
-      this.props.push({ mesh: holder, offset: 31 + dz, every: LOOP, x: BARRIER - 0.9, road: true });
+      const unit = new Group();
+      unit.add(medic, bike);
+      unit.rotation.y = -Math.PI / 2 + 0.5;
+      unit.position.z = -dz;
+      medicPair.add(unit);
     }
+    this.group.add(medicPair);
+    this.props.push({ mesh: medicPair, offset: 31, every: LOOP, x: BARRIER - 0.9, road: true });
+  }
+
+  private placeOfficers(
+    heightAt: (metres: number) => number,
+    along: (offset: number, every: number) => number,
+  ): void {
+    const ensemble = this.officerEnsemble;
+    if (!ensemble) return;
+    ensemble.beginFrame();
+    for (let k = 0; k < this.officerSpots.length; k++) {
+      const sp = this.officerSpots[k]!;
+      const metres = along(sp.offset, LOOP);
+      if (metres <= PROP_BEHIND_CULL || metres > PROP_HORIZON_CULL) continue;
+      ensemble.emitYawScale(
+        k,
+        sp.x,
+        heightAt(Math.max(metres, 0)) + ASPHALT,
+        -metres,
+        sp.cy,
+        sp.sy,
+        1,
+        1,
+        true,
+      );
+    }
+    ensemble.commit(true);
   }
 
   /**
@@ -2985,14 +3089,11 @@ export class CaribanaStreet implements SceneStreet {
     stand.add(new Mesh(panel, skirt));
     // The seats filled: seated spectators, and one in six on their feet.
     const random = seeded(1709);
-    const skin = this.material({ roughness: 0.6 });
-    const cotton = this.material({ roughness: 0.9 });
-    const denim = this.material({ roughness: 0.95 });
     const sitters: Matrix4[] = [];
     const standers: Matrix4[] = [];
     const turn = new Quaternion().setFromAxisAngle(this.up, Math.PI / 2);
     for (let r = 0; r < rows; r++) {
-      for (let z = -length / 2 + 0.4; z < length / 2; z += 0.62) {
+      for (let z = -length / 2 + 0.45; z < length / 2; z += 0.9) {
         if (random() < 0.12) continue;
         const up = random() < 0.16;
         const at = new Vector3(front + 0.4 + r * 0.8 + (up ? -0.05 : 0.15), r * 0.42, z);
@@ -3004,25 +3105,33 @@ export class CaribanaStreet implements SceneStreet {
         (up ? standers : sitters).push(m);
       }
     }
+    const baked: BufferGeometry[] = [];
     const people = (parts: ReturnType<typeof spectatorParts>, at: Matrix4[]) => {
-      for (const [geometry, material, list] of [
-        [parts.skin, skin, SKINS],
-        [parts.top, cotton, SHIRTS],
-        [parts.bottom, denim, TROUSERS],
+      for (const [geometry, list] of [
+        [parts.skin, SKINS],
+        [parts.top, SHIRTS],
+        [parts.bottom, TROUSERS],
       ] as const) {
-        this.disposables.push(geometry);
-        const mesh = new InstancedMesh(geometry, material, at.length);
-        at.forEach((m, k) => {
-          mesh.setMatrixAt(k, m);
-          mesh.setColorAt(k, new Color(list[Math.floor(random() * list.length)]!));
-        });
-        mesh.castShadow = false;
-        this.disposables.push(mesh);
-        stand.add(mesh);
+        geometry.deleteAttribute('uv');
+        for (const m of at) {
+          const clone = geometry.clone();
+          clone.applyMatrix4(m);
+          tintGeometry(clone, list[Math.floor(random() * list.length)]!);
+          baked.push(clone);
+        }
+        geometry.dispose();
       }
     };
     people(spectatorParts(0, true, true), sitters);
     people(spectatorParts(2, false), standers);
+    if (baked.length > 0) {
+      const crowdGeo = mergeGeometries(baked)!;
+      baked.forEach((g) => g.dispose());
+      this.disposables.push(crowdGeo);
+      const crowdMesh = new Mesh(crowdGeo, this.propSolidMat);
+      crowdMesh.castShadow = false;
+      stand.add(crowdMesh);
+    }
     this.group.add(stand);
     this.props.push({
       mesh: stand,
@@ -3039,8 +3148,9 @@ export class CaribanaStreet implements SceneStreet {
    */
   private addFootbridge(): void {
     const bridge = new Group();
+    const trussTex = (this.sharedTrussTex ??= this.track(trussTexture()));
     const truss = this.material({
-      map: this.track(trussTexture()),
+      map: trussTex,
       alphaTest: 0.5,
       side: DoubleSide,
       color: 0x3f6f8f,
@@ -3101,19 +3211,12 @@ export class CaribanaStreet implements SceneStreet {
       0,
     );
     [-6.6, -4.7, 4.7, 6.6, 9.1, -9.1].forEach((x, k) => {
-      const material = this.material({
-        map: this.track(flagTexture(FLAG_KINDS[k % FLAG_KINDS.length]!)),
-        roughness: 0.8,
-      });
-      hang(material, 1.6, 1.05, x);
+      hang(this.flagMaterials[k % this.flagMaterials.length]!, 1.6, 1.05, x);
     });
     // Spectators along both rails over the road, leaning on the rail to watch.
     const random = seeded(2903);
-    const skin = this.material({ roughness: 0.6 });
-    const cotton = this.material({ roughness: 0.9 });
-    const denim = this.material({ roughness: 0.9 });
     const at: Matrix4[] = [];
-    for (let x = -CURB - 2; x < CURB + 2; x += 0.6) {
+    for (let x = -CURB - 2; x < CURB + 2; x += 0.85) {
       for (const z of [-1.2, 1.2]) {
         if (random() < 0.15) continue;
         const turn = new Quaternion().setFromAxisAngle(this.up, z < 0 ? 0 : Math.PI);
@@ -3127,23 +3230,32 @@ export class CaribanaStreet implements SceneStreet {
       }
     }
     const parts = spectatorParts(4, random() < 0.5);
-    for (const [geometry, material, list] of [
-      [parts.skin, skin, SKINS],
-      [parts.top, cotton, SHIRTS],
-      [parts.bottom, denim, TROUSERS],
+    const bridgeBaked: BufferGeometry[] = [];
+    for (const [geometry, list] of [
+      [parts.skin, SKINS],
+      [parts.top, SHIRTS],
+      [parts.bottom, TROUSERS],
     ] as const) {
-      this.disposables.push(geometry);
-      const mesh = new InstancedMesh(geometry, material, at.length);
-      at.forEach((m, k) => {
-        mesh.setMatrixAt(k, m);
-        mesh.setColorAt(k, new Color(list[Math.floor(random() * list.length)]!));
-      });
-      this.disposables.push(mesh);
-      bridge.add(mesh);
+      geometry.deleteAttribute('uv');
+      for (const m of at) {
+        const clone = geometry.clone();
+        clone.applyMatrix4(m);
+        tintGeometry(clone, list[Math.floor(random() * list.length)]!);
+        bridgeBaked.push(clone);
+      }
+      geometry.dispose();
     }
     bridge.traverse((o) => {
-      if (!(o instanceof InstancedMesh)) o.castShadow = true;
+      o.castShadow = true;
     });
+    if (bridgeBaked.length > 0) {
+      const railCrowd = mergeGeometries(bridgeBaked)!;
+      bridgeBaked.forEach((g) => g.dispose());
+      this.disposables.push(railCrowd);
+      const railMesh = new Mesh(railCrowd, this.propSolidMat);
+      railMesh.castShadow = false;
+      bridge.add(railMesh);
+    }
     this.group.add(bridge);
     this.props.push({ mesh: bridge, offset: 58, every: LANDMARKS, x: 0, road: true });
   }
@@ -3199,12 +3311,12 @@ export class CaribanaStreet implements SceneStreet {
    */
   private addIntersection(street: string, at: number): void {
     const crossing = new Group();
-    const paint = this.material({
+    const paint = (this.sharedLadderMat ??= this.material({
       map: this.track(ladderTexture()),
       transparent: true,
       alphaTest: 0.3,
       roughness: 0.6,
-    });
+    }));
     // Lane arrows on the approach, 15 m before the near crosswalk, one in each lane: straight
     // on in the middle and outside lanes, a left-turn arrow in the inside lane.
     const arrowPaint = this.material({ color: 0xe6e3da, roughness: 0.7 });
@@ -3235,16 +3347,18 @@ export class CaribanaStreet implements SceneStreet {
     };
     const straight = arrow(false);
     const left = arrow(true);
+    const arrowRow = new Group();
     for (const [x, g] of [
       [-4.4, left],
       [0, straight],
       [4.4, straight],
     ] as const) {
-      const holder = new Group();
-      holder.add(new Mesh(g, arrowPaint));
-      this.group.add(holder);
-      this.props.push({ mesh: holder, offset: at - 15, every: LANDMARKS, x, road: true });
+      const m = new Mesh(g, arrowPaint);
+      m.position.x = x;
+      arrowRow.add(m);
     }
+    this.group.add(arrowRow);
+    this.props.push({ mesh: arrowRow, offset: at - 15, every: LANDMARKS, x: 0, road: true });
     // Each crosswalk is placed on the road by itself, so it follows the grade.
     const stripe = new PlaneGeometry(2 * CURB, 3.2);
     stripe.rotateX(-Math.PI / 2);
@@ -3261,12 +3375,22 @@ export class CaribanaStreet implements SceneStreet {
     const yellow = this.material({ color: 0xf2c200, roughness: 0.5 });
     const lamp = (hex: number) =>
       this.material({ color: hex, emissive: hex, emissiveIntensity: 0.05, roughness: 0.3 });
-    const lamps = { red: lamp(0xff2a1a), amber: lamp(0xffa200), green: lamp(0x2aff7a) };
-    this.signalLamps.push(lamps);
-    const sign = this.material({
-      map: this.track(streetSignTexture(street)),
-      roughness: 0.5,
-    });
+    let lamps = this.signalLamps[0];
+    if (!lamps) {
+      lamps = { red: lamp(0xff2a1a), amber: lamp(0xffa200), green: lamp(0x2aff7a) };
+      this.signalLamps.push(lamps);
+    }
+    if (!this.sharedStreetSignMat) {
+      const tex = this.track(streetSignAtlasTexture(CROSS_STREETS.map(([name]) => name)));
+      this.sharedStreetSignMat = {
+        tex,
+        mat: this.material({ map: tex, roughness: 0.5 }),
+      };
+    }
+    const streetIdx = Math.max(
+      0,
+      CROSS_STREETS.findIndex(([name]) => name === street),
+    );
     const pole = new CylinderGeometry(0.13, 0.17, 7.2, 10);
     pole.translate(0, 3.6, 0);
     const arm = new CylinderGeometry(0.07, 0.1, 8.5, 8);
@@ -3276,7 +3400,16 @@ export class CaribanaStreet implements SceneStreet {
     const back = new BoxGeometry(0.62, 1.3, 0.03);
     const lens = new CylinderGeometry(0.11, 0.11, 0.04, 12);
     lens.rotateX(Math.PI / 2);
-    const plate = new PlaneGeometry(1.6, 0.32);
+    const plate = slicePlaneUv(
+      1.6,
+      0.32,
+      0,
+      1,
+      streetIdx,
+      CROSS_STREETS.length,
+      512,
+      96 * CROSS_STREETS.length,
+    );
     this.disposables.push(pole, arm, head, back, lens, plate);
     for (const side of [-1, 1]) {
       const post = new Group();
@@ -3295,7 +3428,7 @@ export class CaribanaStreet implements SceneStreet {
         unit.position.set(x, 6.1, 0);
         post.add(unit);
       }
-      const name = new Mesh(plate, sign);
+      const name = new Mesh(plate, this.sharedStreetSignMat.mat);
       name.position.set(-4.4, 7.35, 0.05);
       post.add(name);
       // A pedestrian signal on the pole, facing across the road.
@@ -3412,8 +3545,9 @@ export class CaribanaStreet implements SceneStreet {
    */
   private addGantry(): void {
     const gantry = new Group();
+    const trussTex = (this.sharedTrussTex ??= this.track(trussTexture()));
     const truss = this.material({
-      map: this.track(trussTexture()),
+      map: trussTex,
       alphaTest: 0.5,
       side: DoubleSide,
       color: 0xd5d8db,
@@ -3684,6 +3818,18 @@ export class CaribanaStreet implements SceneStreet {
     wheel.rotateZ(Math.PI / 2);
     const bottle = new CylinderGeometry(0.035, 0.04, 0.22, 8);
     this.disposables.push(canopy, pole, wheel, bottle);
+    const umbrellaMats = [
+      this.material({
+        map: this.track(umbrellaTexture('#c8102e', '#ffd23f')),
+        side: DoubleSide,
+        roughness: 0.75,
+      }),
+      this.material({
+        map: this.track(umbrellaTexture('#1b6ad8', '#ffffff')),
+        side: DoubleSide,
+        roughness: 0.75,
+      }),
+    ] as const;
     CARTS.forEach(([offset, side], k) => {
       const ice = k % 2 === 1;
       const cart = new Group();
@@ -3716,16 +3862,7 @@ export class CaribanaStreet implements SceneStreet {
       const p = new Mesh(pole, steel);
       p.position.set(0, 2.2, 0);
       cart.add(p);
-      const shade = new Mesh(
-        canopy,
-        this.material({
-          map: this.track(
-            umbrellaTexture(ice ? '#1b6ad8' : '#c8102e', ice ? '#ffffff' : '#ffd23f'),
-          ),
-          side: DoubleSide,
-          roughness: 0.75,
-        }),
-      );
+      const shade = new Mesh(canopy, umbrellaMats[ice ? 1 : 0]);
       shade.position.y = 3.25;
       cart.add(shade);
       const parts = spectatorParts(0, random() < 0.5);
@@ -3861,7 +3998,7 @@ export class CaribanaStreet implements SceneStreet {
     ] as const;
     const drum = this.material({ color: 0x2b2b2d, metalness: 0.55, roughness: 0.6 });
     const rust = this.material({ color: 0x6b3b22, roughness: 0.9 });
-    const ember = this.material({ color: 0xff5a14, emissive: 0xff4a0a, emissiveIntensity: 2.5 });
+    const ember = this.material({ color: 0xe84a12, roughness: 0.9 });
     const meat = this.material({ color: 0x6a2e15, roughness: 0.7 });
     const cooler = this.material({ color: 0x1b6ad8, roughness: 0.5 });
     const lid = this.material({ color: 0xf2f2ee, roughness: 0.5 });
@@ -3984,35 +4121,31 @@ export class CaribanaStreet implements SceneStreet {
       [f, d - 1.4],
       [n, d - 1.4],
     ]);
-    const column = new CylinderGeometry(0.75, 0.85, d - 1.4, 14);
-    column.translate(0, (d - 1.4) / 2, 0);
-    const cap = new BoxGeometry(2.2, 1.3, (n - f) * 0.92);
+    const colA = new CylinderGeometry(0.75, 0.85, d - 1.4, 10);
+    colA.translate(-6.5, (d - 1.4) / 2, 0);
+    const colB = new CylinderGeometry(0.75, 0.85, d - 1.4, 10);
+    colB.translate(6.5, (d - 1.4) / 2, 0);
+    const cap = new BoxGeometry((n - f) * 0.92, 1.3, 2.2);
     cap.translate(0, d - 2.05, 0);
-    const pole = new CylinderGeometry(0.08, 0.12, 9, 8);
+    const bentGeo = mergeGeometries([colA, colB, cap])!;
+    colA.dispose();
+    colB.dispose();
+    cap.dispose();
+    const pole = new CylinderGeometry(0.08, 0.12, 9, 6);
     pole.translate(0, d + 4.5, 0);
     const arms = new BoxGeometry(0.08, 0.08, 5);
     arms.translate(0, d + 9, 0);
-    this.disposables.push(column, cap, pole, arms);
+    const bentLampGeo = mergeGeometries([pole, arms])!;
+    pole.dispose();
+    arms.dispose();
+    this.disposables.push(bentGeo, bentLampGeo);
     const steel = this.material({ color: 0xa9aeb2, metalness: 0.7, roughness: 0.45 });
     for (let offset = 0; offset < LOOP; offset += 30) {
-      const bent = new Group();
-      const centre = (n + f) / 2;
-      for (const z of [-6.5, 6.5]) {
-        const c = new Mesh(column, concrete);
-        c.position.set(0, 0, z);
-        bent.add(c);
-      }
-      const capMesh = new Mesh(cap, concrete);
-      bent.add(capMesh);
-      bent.rotation.y = Math.PI / 2;
-      const holder = new Group();
-      holder.add(bent);
-      if ((offset / 30) % 2 === 0) holder.add(new Mesh(pole, steel), new Mesh(arms, steel));
-      holder.traverse((o) => (o.castShadow = true));
-      holder.position.x = centre;
-      this.group.add(holder);
-      this.props.push({ mesh: holder, offset, every: LOOP, x: centre, road: true });
+      this.gardinerOffsets.push(offset);
     }
+    const bentCap = Math.max(1, this.gardinerOffsets.length);
+    this.gardinerConcrete = this.instanced(bentGeo, concrete, bentCap, false);
+    this.gardinerSteel = this.instanced(bentLampGeo, steel, Math.ceil(bentCap / 2) + 1, false);
     // Overhead guide signs over the eastbound lanes, facing the traffic coming towards the city.
     const signs = [
       ['GARDINER EXPY', 'EAST  Downtown  1 km'],
@@ -4059,34 +4192,124 @@ export class CaribanaStreet implements SceneStreet {
     // Traffic: eastbound in the near lanes, westbound in the far ones.
     const paints = [0xf2f2f2, 0x1c1c1e, 0x8e9499, 0xb3121f, 0x23466e, 0xd9d4c7];
     const random = seeded(887);
-    const glass = this.material({ color: 0x1e2a33, roughness: 0.1, metalness: 0.6 });
-    const tyre = this.material({ color: 0x141414, roughness: 0.9 });
+    const carBodyGeo = new BoxGeometry(1.8, 0.75, 4.5);
+    carBodyGeo.translate(0, 0.65, 0);
+    const cabinGeo = tintGeometry(new BoxGeometry(1.6, 0.55, 2.4).translate(0, 1.3, 0.2), 0x1e2a33);
+    const wheelsGeo = tintGeometry(new BoxGeometry(1.9, 0.5, 3.2).translate(0, 0.3, 0), 0x141414);
+    cabinGeo.deleteAttribute('uv');
+    wheelsGeo.deleteAttribute('uv');
+    const carTrimGeo = mergeGeometries([cabinGeo, wheelsGeo])!;
+    cabinGeo.dispose();
+    wheelsGeo.dispose();
+    this.disposables.push(carBodyGeo, carTrimGeo);
+    const carPaintMat = this.material({ roughness: 0.3, metalness: 0.5 });
+    const c = new Color();
     for (let k = 0; k < 14; k++) {
-      const car = new Group();
-      const paint = this.material({
-        color: paints[Math.floor(random() * paints.length)]!,
-        roughness: 0.3,
-        metalness: 0.5,
-      });
-      const body = new Mesh(this.unit, paint);
-      body.scale.set(1.8, 0.75, 4.5);
-      body.position.y = 0.65;
-      const cabin = new Mesh(this.unit, glass);
-      cabin.scale.set(1.6, 0.55, 2.4);
-      cabin.position.set(0, 1.3, 0.2);
-      const wheels = new Mesh(this.unit, tyre);
-      wheels.scale.set(1.9, 0.5, 3.2);
-      wheels.position.y = 0.3;
-      car.add(body, cabin, wheels);
+      const hex = paints[Math.floor(random() * paints.length)]!;
+      c.setHex(hex);
       const eastbound = k % 2 === 0;
       const lane = Math.floor(random() * 3);
-      this.group.add(car);
       this.expressway.push({
-        car,
         offset: random() * LOOP,
         speed: eastbound ? 14 + random() * 6 : -(14 + random() * 6),
         x: eastbound ? n - 2.5 - lane * 3.5 : f + 2.5 + lane * 3.5,
+        r: c.r,
+        g: c.g,
+        b: c.b,
       });
+    }
+    this.expresswayBodies = this.instanced(carBodyGeo, carPaintMat, 14, false);
+    this.expresswayBodies.setColorAt(0, c.setRGB(1, 1, 1));
+    this.expresswayTrim = this.instanced(carTrimGeo, this.propSolidMat, 14, false);
+  }
+
+  private placeGardinerAndTraffic(
+    heightAt: (metres: number) => number,
+    along: (offset: number, every: number) => number,
+  ): void {
+    const centre = (GARDINER_NEAR + GARDINER_FAR) / 2;
+    if (this.gardinerConcrete && this.gardinerSteel) {
+      const cArr = this.gardinerConcrete.instanceMatrix.array as Float32Array;
+      const sArr = this.gardinerSteel.instanceMatrix.array as Float32Array;
+      let cCount = 0;
+      let sCount = 0;
+      for (let i = 0; i < this.gardinerOffsets.length; i++) {
+        const metres = along(this.gardinerOffsets[i]!, LOOP);
+        if (metres <= PROP_BEHIND_CULL || metres > PROP_HORIZON_CULL) continue;
+        const y = heightAt(Math.max(metres, 0)) + ASPHALT;
+        const o = cCount * 16;
+        cArr[o] = 1;
+        cArr[o + 1] = 0;
+        cArr[o + 2] = 0;
+        cArr[o + 3] = 0;
+        cArr[o + 4] = 0;
+        cArr[o + 5] = 1;
+        cArr[o + 6] = 0;
+        cArr[o + 7] = 0;
+        cArr[o + 8] = 0;
+        cArr[o + 9] = 0;
+        cArr[o + 10] = 1;
+        cArr[o + 11] = 0;
+        cArr[o + 12] = centre;
+        cArr[o + 13] = y;
+        cArr[o + 14] = -metres;
+        cArr[o + 15] = 1;
+        cCount++;
+        if (i % 2 === 0) {
+          const so = sCount * 16;
+          for (let m = 0; m < 16; m++) sArr[so + m] = cArr[o + m]!;
+          sCount++;
+        }
+      }
+      this.gardinerConcrete.count = cCount;
+      this.gardinerSteel.count = sCount;
+      this.gardinerConcrete.instanceMatrix.needsUpdate = true;
+      this.gardinerSteel.instanceMatrix.needsUpdate = true;
+    }
+    if (this.expresswayBodies && this.expresswayTrim) {
+      const bArr = this.expresswayBodies.instanceMatrix.array as Float32Array;
+      const tArr = this.expresswayTrim.instanceMatrix.array as Float32Array;
+      const cArr = this.expresswayBodies.instanceColor!.array as Float32Array;
+      const bucket = Math.floor(along(this.time * 16, LOOP) * 0.2);
+      const colorsChanged = bucket !== this.expresswayBucket;
+      this.expresswayBucket = bucket;
+      let count = 0;
+      for (const e of this.expressway) {
+        const metres = along(e.offset + this.time * e.speed, LOOP);
+        if (metres <= PROP_BEHIND_CULL || metres > PROP_HORIZON_CULL) continue;
+        const y = heightAt(Math.max(metres, 0)) + GARDINER_DECK;
+        const o = count * 16;
+        bArr[o] = 1;
+        bArr[o + 1] = 0;
+        bArr[o + 2] = 0;
+        bArr[o + 3] = 0;
+        bArr[o + 4] = 0;
+        bArr[o + 5] = 1;
+        bArr[o + 6] = 0;
+        bArr[o + 7] = 0;
+        bArr[o + 8] = 0;
+        bArr[o + 9] = 0;
+        bArr[o + 10] = 1;
+        bArr[o + 11] = 0;
+        bArr[o + 12] = e.x;
+        bArr[o + 13] = y;
+        bArr[o + 14] = -metres;
+        bArr[o + 15] = 1;
+        for (let m = 0; m < 16; m++) tArr[o + m] = bArr[o + m]!;
+        if (colorsChanged || cArr) {
+          const c3 = count * 3;
+          cArr[c3] = e.r;
+          cArr[c3 + 1] = e.g;
+          cArr[c3 + 2] = e.b;
+        }
+        count++;
+      }
+      this.expresswayBodies.count = count;
+      this.expresswayTrim.count = count;
+      this.expresswayBodies.instanceMatrix.needsUpdate = true;
+      this.expresswayTrim.instanceMatrix.needsUpdate = true;
+      if (this.expresswayBodies.instanceColor)
+        this.expresswayBodies.instanceColor.needsUpdate = true;
     }
   }
 
@@ -4099,7 +4322,7 @@ export class CaribanaStreet implements SceneStreet {
       this.disposables.push(material);
       return material;
     };
-    this.addSkyline(hazed);
+    this.addSkyline();
     const cn = cnTower(hazed(0xd3cec4, 0.38), hazed(0x8d9196, 0.36), hazed(0x2c3640, 0.4));
     this.disposables.push(...cn.children.map((m) => (m as Mesh).geometry));
     cn.position.set(-260, 0, 40);
@@ -4164,27 +4387,47 @@ export class CaribanaStreet implements SceneStreet {
    * to its right, and behind them, left of the tower, the Financial District's office towers:
    * white First Canadian Place, the black TD towers, red Scotia Plaza and gold Royal Bank Plaza.
    */
-  private addSkyline(
-    hazed: (hex: number, amount: number, map?: Texture | null) => MeshStandardMaterial,
-  ): void {
+  private addSkyline(): void {
+    const hazeColor = new Color(HAZE);
+    const hazedTint = (hex: number, amount: number) => new Color(hex).lerp(hazeColor, amount);
     const skin = (texture: CanvasTexture) => {
       texture.wrapS = RepeatWrapping;
       texture.wrapT = RepeatWrapping;
       return this.track(texture);
     };
-    const balconies = skin(condoTexture());
-    const grid = skin(officeTexture('#2b3540', '#55687a'));
-    const pinstripe = skin(pinstripeTexture());
-    const condo = [0x7fa7a8, 0x6c95a8, 0x9bb7b8, 0x8aa3b5, 0x5f8f8c].map((hex) =>
-      hazed(hex, 0.4, balconies),
-    );
-    const office = [0x8b9aa8, 0x6f8193, 0xa7b2bb].map((hex) => hazed(hex, 0.42, grid));
-    const black = hazed(0x30343a, 0.42, grid);
-    const white = hazed(0xf0eee8, 0.36, pinstripe);
-    const red = hazed(0x9a4b3e, 0.4, pinstripe);
-    const gold = hazed(0xd4a548, 0.38, grid);
+    const condoMat = new MeshStandardMaterial({
+      roughness: 0.6,
+      fog: false,
+      map: skin(condoTexture()),
+      vertexColors: true,
+    });
+    const officeMat = new MeshStandardMaterial({
+      roughness: 0.6,
+      fog: false,
+      map: skin(officeTexture('#2b3540', '#55687a')),
+      vertexColors: true,
+    });
+    const pinstripeMat = new MeshStandardMaterial({
+      roughness: 0.6,
+      fog: false,
+      map: skin(pinstripeTexture()),
+      vertexColors: true,
+    });
+    this.disposables.push(condoMat, officeMat, pinstripeMat);
+    const condo = [0x7fa7a8, 0x6c95a8, 0x9bb7b8, 0x8aa3b5, 0x5f8f8c].map((hex) => ({
+      mat: condoMat,
+      tint: hazedTint(hex, 0.4),
+    }));
+    const office = [0x8b9aa8, 0x6f8193, 0xa7b2bb].map((hex) => ({
+      mat: officeMat,
+      tint: hazedTint(hex, 0.42),
+    }));
+    const black = { mat: officeMat, tint: hazedTint(0x30343a, 0.42) };
+    const white = { mat: pinstripeMat, tint: hazedTint(0xf0eee8, 0.36) };
+    const red = { mat: pinstripeMat, tint: hazedTint(0x9a4b3e, 0.4) };
+    const gold = { mat: officeMat, tint: hazedTint(0xd4a548, 0.38) };
     const tower = (
-      material: MeshStandardMaterial,
+      spec: { mat: MeshStandardMaterial; tint: Color },
       w: number,
       d: number,
       h: number,
@@ -4193,18 +4436,18 @@ export class CaribanaStreet implements SceneStreet {
       crown = 0,
     ) => {
       const box = new BoxGeometry(w, h, d);
-      // Repeat the facade by storey (3.2 m) and bay (8 m) so every tower keeps its scale.
       for (const face of [0, 1]) scaleFaceUv(box, face, d / 8, h / 38);
       for (const face of [4, 5]) scaleFaceUv(box, face, w / 8, h / 38);
       box.translate(x, h / 2, z);
+      tintGeometry(box, spec.tint);
       this.disposables.push(box);
-      this.downtown.add(new Mesh(box, material));
+      this.downtown.add(new Mesh(box, spec.mat));
       if (crown) {
-        // A setback crown: a narrower top with a mechanical penthouse.
         const top = new BoxGeometry(w * 0.7, crown, d * 0.7);
         top.translate(x, h + crown / 2, z);
+        tintGeometry(top, spec.tint);
         this.disposables.push(top);
-        this.downtown.add(new Mesh(top, material));
+        this.downtown.add(new Mesh(top, spec.mat));
       }
     };
     // The Financial District, a kilometre beyond the tower and left of it.
@@ -4261,7 +4504,6 @@ export class CaribanaStreet implements SceneStreet {
     const random = seeded(613);
     const puffs: BufferGeometry[] = [];
     const halo: BufferGeometry[] = [];
-    const haze: BufferGeometry[] = [];
     const white = new Color(0xffffff);
     const base = new Color(0xa7b3c2);
     const c = new Color();
@@ -4272,19 +4514,21 @@ export class CaribanaStreet implements SceneStreet {
       const cz = -Math.cos(a) * far;
       const cy = 820 + random() * 520;
       const size = 150 + random() * 170;
-      const count = 20 + Math.floor(random() * 12);
+      const count = 16 + Math.floor(random() * 8);
       for (let p = 0; p < count; p++) {
         const along = (random() - 0.5) * 3.4;
         const r = size * (0.26 + random() * 0.3) * (1 - Math.abs(along) * 0.22);
         const lift = Math.max(0, (1 - Math.abs(along) / 1.8) * size * 0.75 * random());
-        const puff = new SphereGeometry(r, 14, 9);
-        // Squash the underside flat: cumulus sit on a level base.
+        const puff = new SphereGeometry(r, 9, 6);
         const position = puff.getAttribute('position') as BufferAttribute;
         for (let i = 0; i < position.count; i++) {
           const y = position.getY(i);
           if (y < 0) position.setY(i, y * 0.25);
         }
-        puff.translate(cx + along * size, cy + lift + r * 0.25, cz + (random() - 0.5) * size * 0.8);
+        const px = cx + along * size;
+        const py = cy + lift + r * 0.25;
+        const pz = cz + (random() - 0.5) * size * 0.8;
+        puff.translate(px, py, pz);
         const colour = new Float32Array(position.count * 3);
         for (let i = 0; i < position.count; i++) {
           const height = (position.getY(i) - cy) / (size * 1.6);
@@ -4292,49 +4536,34 @@ export class CaribanaStreet implements SceneStreet {
           colour.set([c.r, c.g, c.b], i * 3);
         }
         puff.setAttribute('color', new BufferAttribute(colour, 3));
-        // Two soft shells round each puff, larger and fainter, feather its edge into the sky.
-        for (const [grow, list] of [
-          [1.14, halo],
-          [1.3, haze],
-        ] as const) {
-          const shell = puff.clone();
-          shell.computeBoundingBox();
-          const centre = shell.boundingBox!.getCenter(new Vector3());
-          shell.translate(-centre.x, -centre.y, -centre.z);
-          shell.scale(grow, grow, grow);
-          shell.translate(centre.x, centre.y, centre.z);
-          list.push(shell.toNonIndexed());
-          shell.dispose();
-        }
-        puffs.push(puff.toNonIndexed());
-        puff.dispose();
+        const shell = puff.clone();
+        shell.translate(-px, -py, -pz);
+        shell.scale(1.18, 1.18, 1.18);
+        shell.translate(px, py, pz);
+        halo.push(shell);
+        puffs.push(puff);
       }
     }
     const heap = mergeGeometries(puffs)!;
     puffs.forEach((p) => p.dispose());
-    for (const [list, opacity] of [
-      [halo, 0.45],
-      [haze, 0.2],
-    ] as const) {
-      const soft = mergeGeometries(list)!;
-      list.forEach((p) => p.dispose());
-      this.disposables.push(soft);
-      const shell = new Mesh(
-        soft,
-        this.material({
-          vertexColors: true,
-          emissive: 0xdfe6f0,
-          emissiveIntensity: 0.3,
-          roughness: 1,
-          fog: false,
-          transparent: true,
-          opacity,
-          depthWrite: false,
-        }),
-      );
-      shell.frustumCulled = false;
-      this.clouds.add(shell);
-    }
+    const soft = mergeGeometries(halo)!;
+    halo.forEach((p) => p.dispose());
+    this.disposables.push(soft, heap);
+    const shell = new Mesh(
+      soft,
+      this.material({
+        vertexColors: true,
+        emissive: 0xdfe6f0,
+        emissiveIntensity: 0.3,
+        roughness: 1,
+        fog: false,
+        transparent: true,
+        opacity: 0.38,
+        depthWrite: false,
+      }),
+    );
+    shell.frustumCulled = false;
+    this.clouds.add(shell);
     const cloud = this.material({
       vertexColors: true,
       emissive: 0xdfe6f0,
@@ -4342,7 +4571,6 @@ export class CaribanaStreet implements SceneStreet {
       roughness: 1,
       fog: false,
     });
-    this.disposables.push(heap);
     const mesh = new Mesh(heap, cloud);
     mesh.frustumCulled = false;
     this.clouds.add(mesh);
@@ -4652,8 +4880,15 @@ export class CaribanaStreet implements SceneStreet {
     const balconies = this.track(slabTexture());
     balconies.wrapS = RepeatWrapping;
     balconies.wrapT = RepeatWrapping;
-    const walls = [0xb07a5c, 0xcfc6b8, 0x9c8a78, 0xd8d0c2].map((hex) =>
-      hazed(hex, 0.32, balconies),
+    const wallMat = new MeshStandardMaterial({
+      roughness: 0.85,
+      fog: false,
+      map: balconies,
+      vertexColors: true,
+    });
+    this.disposables.push(wallMat);
+    const wallTints = [0xb07a5c, 0xcfc6b8, 0x9c8a78, 0xd8d0c2].map((hex) =>
+      new Color(hex).lerp(haze, 0.32),
     );
     // The canopy along the slope: overlapping crowns in a band, darker low, lit on top.
     const canopy: BufferGeometry[] = [];
@@ -4662,7 +4897,7 @@ export class CaribanaStreet implements SceneStreet {
       const crown = new IcosahedronGeometry(r, 1);
       crown.scale(1.2, 0.75, 1);
       crown.translate(-95 - random() * 70, 8 + random() * 14 + (k % 3) * 3, -120 - random() * 620);
-      canopy.push(asNonIndexed(crown));
+      canopy.push(crown);
     }
     const trees = mergeGeometries(canopy)!;
     canopy.forEach((c) => c.dispose());
@@ -4677,8 +4912,9 @@ export class CaribanaStreet implements SceneStreet {
       for (const face of [0, 1]) scaleFaceUv(slab, face, d / 6, h / 2.9);
       for (const face of [4, 5]) scaleFaceUv(slab, face, w / 6, h / 2.9);
       slab.translate(-150 - random() * 60, h / 2 + 14, -170 - k * 52 - random() * 16);
+      tintGeometry(slab, wallTints[k % wallTints.length]!);
       this.disposables.push(slab);
-      this.parkdale.add(new Mesh(slab, walls[k % walls.length]!));
+      this.parkdale.add(new Mesh(slab, wallMat));
     }
     this.group.add(this.parkdale);
   }
@@ -4708,16 +4944,15 @@ export class CaribanaStreet implements SceneStreet {
   private material(options: ConstructorParameters<typeof MeshStandardMaterial>[0]) {
     if (
       options &&
-      options.color !== undefined &&
       !options.map &&
+      !options.emissiveMap &&
       options.emissive === undefined &&
-      !options.vertexColors &&
       !options.transparent &&
       !options.flatShading &&
       options.alphaTest === undefined
     ) {
-      const hex = new Color(options.color).getHexString();
-      const key = `${hex}|${options.roughness ?? 1}|${options.metalness ?? 0}|${options.side ?? 0}|${options.fog === false ? 0 : 1}`;
+      const hex = options.color !== undefined ? new Color(options.color).getHexString() : 'ffffff';
+      const key = `${hex}|${options.roughness ?? 1}|${options.metalness ?? 0}|${options.side ?? 0}|${options.fog === false ? 0 : 1}|${options.vertexColors ? 1 : 0}`;
       const cached = this.solidMaterials.get(key);
       if (cached) return cached;
       const created = new MeshStandardMaterial(options);
@@ -4763,33 +4998,28 @@ function masBody(pose: readonly (readonly number[])[], male = false): BufferGeom
     const hip = v(side * 0.09, 0.92, 0);
     const knee = v(side * 0.1, 0.5, -0.04);
     const ankle = v(side * 0.1, 0.09, 0);
-    parts.push(...limb(hip, knee, 0.085, 0.058), ...limb(knee, ankle, 0.058, 0.038));
+    parts.push(...limb(hip, knee, 0.085, 0.058, 5), ...limb(knee, ankle, 0.058, 0.038, 5, false));
     const shoulder = v(side * (male ? 0.2 : 0.17), 1.38, 0);
     const [ex, ey, ez, hx, hy, hz] = pose[side < 0 ? 0 : 1]!;
     const elbow = v(ex! * (male ? 1.08 : 1), ey!, ez!);
     const hand = v(hx! * (male ? 1.06 : 1), hy!, hz!);
     const arm = male ? 1.2 : 1;
-    parts.push(...limb(shoulder, elbow, 0.05 * arm, 0.04 * arm));
-    parts.push(...limb(elbow, hand, 0.04 * arm, 0.032 * arm));
-    parts.push(ellipsoid(0.045, 1, 1.3, 0.6, hand.x, hand.y + 0.03, hand.z));
+    parts.push(...limb(shoulder, elbow, 0.05 * arm, 0.04 * arm, 5));
+    parts.push(...limb(elbow, hand, 0.04 * arm, 0.032 * arm, 4, false));
+    parts.push(ellipsoid(0.045, 1, 1.3, 0.6, hand.x, hand.y + 0.03, hand.z, 5));
   }
-  parts.push(ellipsoid(0.15, male ? 0.95 : 1.05, 0.72, 0.82, 0, 0.95, 0)); // pelvis
-  const waist = new CylinderGeometry(male ? 0.14 : 0.125, male ? 0.14 : 0.14, 0.24, 12);
+  parts.push(ellipsoid(0.15, male ? 0.95 : 1.05, 0.72, 0.82, 0, 0.95, 0, 6)); // pelvis
+  const waist = new CylinderGeometry(male ? 0.14 : 0.125, male ? 0.14 : 0.14, 0.24, 8, 1, true);
   waist.scale(1, 1, 0.78);
   waist.translate(0, 1.08, 0);
   parts.push(waist);
-  parts.push(ellipsoid(0.15, male ? 1.22 : 1.08, 0.9, male ? 0.68 : 0.74, 0, 1.29, 0)); // chest
-  parts.push(ellipsoid(0.07, male ? 3.1 : 2.6, 0.75, 1.2, 0, 1.38, 0)); // shoulders
-  const neck = new CylinderGeometry(0.045, 0.052, 0.12, 8);
+  parts.push(ellipsoid(0.15, male ? 1.22 : 1.08, 0.9, male ? 0.68 : 0.74, 0, 1.29, 0, 6)); // chest
+  parts.push(ellipsoid(0.07, male ? 3.1 : 2.6, 0.75, 1.2, 0, 1.38, 0, 6)); // shoulders
+  const neck = new CylinderGeometry(0.045, 0.052, 0.12, 6, 1, true);
   neck.translate(0, 1.47, 0);
   parts.push(neck);
-  parts.push(ellipsoid(0.105, 0.9, 1.1, 1, 0, 1.6, -0.01)); // head
-  const nonIdx = parts.map(asNonIndexed);
-  const merged = mergeGeometries(nonIdx)!;
-  parts.forEach((p, i) => {
-    p.dispose();
-    if (nonIdx[i] !== p) nonIdx[i]!.dispose();
-  });
+  parts.push(ellipsoid(0.105, 0.9, 1.1, 1, 0, 1.6, -0.01, 7)); // head
+  const merged = merge(parts);
   bakeOcclusion(merged);
   return merged;
 }
@@ -4802,10 +5032,10 @@ function masCostume(male: boolean): BufferGeometry {
   const parts: BufferGeometry[] = [];
   for (const side of [-1, 1]) {
     if (!male)
-      parts.push(ellipsoid(0.072, 1, 0.92, 0.75, side * 0.07, 1.3, -0.085)); // cups
+      parts.push(ellipsoid(0.072, 1, 0.92, 0.75, side * 0.07, 1.3, -0.085, 6)); // cups
     else {
       // Trunks to mid-thigh.
-      const leg = new CylinderGeometry(0.1, 0.092, 0.2, 10);
+      const leg = new CylinderGeometry(0.1, 0.092, 0.2, 8);
       leg.translate(side * 0.092, 0.8, -0.01);
       parts.push(leg);
     }
@@ -4814,17 +5044,15 @@ function masCostume(male: boolean): BufferGeometry {
     const shaft = new LatheGeometry(
       [
         [0.05, 0.06],
-        [0.047, 0.1],
-        [0.052, 0.17],
-        [0.064, 0.28],
-        [0.067, 0.36],
+        [0.048, 0.12],
+        [0.062, 0.28],
         [0.066, 0.45],
       ].map(([r, y]) => new Vector2(r!, y!)),
-      12,
+      8,
     );
     shaft.translate(side * 0.1, 0, -0.02);
     parts.push(shaft);
-    parts.push(ellipsoid(0.052, 1, 0.75, 2.3, side * 0.1, 0.05, -0.085, 10));
+    parts.push(ellipsoid(0.052, 1, 0.75, 2.3, side * 0.1, 0.05, -0.085, 6));
     const heel = new BoxGeometry(0.05, 0.075, 0.05);
     heel.translate(side * 0.1, 0.0375, 0.03);
     parts.push(heel);
@@ -4834,41 +5062,35 @@ function masCostume(male: boolean): BufferGeometry {
   }
   if (male) {
     // A sash from the shoulder across the chest to the hip.
-    const wrap = new CylinderGeometry(0.19, 0.17, 0.12, 14, 1, true);
+    const wrap = new CylinderGeometry(0.19, 0.17, 0.12, 10, 1, true);
     wrap.scale(1.2, 1, 0.72);
     wrap.rotateZ(0.6);
     wrap.translate(0, 1.17, 0);
     parts.push(wrap);
   } else {
-    const band = new CylinderGeometry(0.158, 0.16, 0.06, 14);
+    const band = new CylinderGeometry(0.158, 0.16, 0.06, 10);
     band.scale(1.06, 1, 0.78);
     band.translate(0, 1.26, 0);
     parts.push(band);
   }
-  const bikini = new CylinderGeometry(0.152, 0.158, 0.13, 14);
+  const bikini = new CylinderGeometry(0.152, 0.158, 0.13, 10);
   bikini.scale(1.04, 1, 0.84);
   bikini.translate(0, 0.93, 0);
   parts.push(bikini);
-  const belt = new TorusGeometry(0.158, 0.018, 6, 20);
+  const belt = new TorusGeometry(0.158, 0.018, 4, 12);
   belt.rotateX(Math.PI / 2);
   belt.scale(1.06, 1, 0.84);
   belt.translate(0, 0.99, 0);
   parts.push(belt);
-  const headband = new TorusGeometry(0.1, 0.022, 6, 18);
+  const headband = new TorusGeometry(0.1, 0.022, 4, 12);
   headband.rotateX(Math.PI / 2);
   headband.translate(0, 1.66, -0.01);
   parts.push(headband);
-  const collar = new TorusGeometry(0.075, 0.022, 6, 16);
+  const collar = new TorusGeometry(0.075, 0.022, 4, 10);
   collar.rotateX(Math.PI / 2);
   collar.translate(0, 1.42, 0);
   parts.push(collar);
-  const nonIdx = parts.map(asNonIndexed);
-  const merged = mergeGeometries(nonIdx)!;
-  parts.forEach((p, i) => {
-    p.dispose();
-    if (nonIdx[i] !== p) nonIdx[i]!.dispose();
-  });
-  return merged;
+  return merge(parts);
 }
 
 /** Sequins: rows of small round scales, each catching the light its own way. */
@@ -4913,7 +5135,7 @@ function featherFan(
   const random = seeded(count * 7 + Math.round(length * 100));
   for (let i = 0; i < count; i++) {
     const long = length * (0.88 + random() * 0.2);
-    const feather = new PlaneGeometry(width, long, 2, 8);
+    const feather = new PlaneGeometry(width, long, 2, 4);
     feather.translate(0, long / 2, 0);
     // Each plume arches: its shaft curls forward along its length and the tip nods over,
     // the vane cupped a little either side of the quill.
@@ -4969,26 +5191,20 @@ function fringeTexture(): CanvasTexture {
 /** The hub of a backpiece: a sequinned disc in a raised ring, studded with rhinestones. */
 function medallionGeometry(): BufferGeometry {
   const parts: BufferGeometry[] = [];
-  const disc = new CylinderGeometry(0.2, 0.2, 0.03, 24);
+  const disc = new CylinderGeometry(0.2, 0.2, 0.03, 12);
   disc.rotateX(Math.PI / 2);
   disc.translate(0, 0.02, 0.15);
   parts.push(disc);
-  const ring = new TorusGeometry(0.22, 0.028, 6, 28);
+  const ring = new TorusGeometry(0.22, 0.028, 4, 14);
   ring.translate(0, 0.02, 0.15);
   parts.push(ring);
-  for (let i = 0; i < 10; i++) {
-    const a = (i / 10) * Math.PI * 2;
-    const stone = new SphereGeometry(0.026, 8, 6);
+  for (let i = 0; i < 8; i++) {
+    const a = (i / 8) * Math.PI * 2;
+    const stone = new SphereGeometry(0.026, 5, 4);
     stone.translate(Math.cos(a) * 0.13, 0.02 + Math.sin(a) * 0.13, 0.13);
     parts.push(stone);
   }
-  const nonIdx = parts.map(asNonIndexed);
-  const merged = mergeGeometries(nonIdx)!;
-  parts.forEach((p, i) => {
-    p.dispose();
-    if (nonIdx[i] !== p) nonIdx[i]!.dispose();
-  });
-  return merged;
+  return merge(parts);
 }
 
 /**
@@ -5242,7 +5458,7 @@ function treeGeometry(species: Species): {
   const { radius, height, squash } = species;
   const base = new Vector3(0, 0, 0);
   const fork = new Vector3(0, height * 0.42, 0);
-  const wood: BufferGeometry[] = limb(base, fork, 0.32, 0.22, 9);
+  const wood: BufferGeometry[] = limb(base, fork, 0.32, 0.22, 6);
   const tips: Vector3[] = [];
   const limbs = 3 + Math.floor(random() * 2);
   for (let k = 0; k < limbs; k++) {
@@ -5253,14 +5469,15 @@ function treeGeometry(species: Species): {
       height * (0.78 + random() * 0.12),
       Math.sin(a) * out,
     );
-    wood.push(...limb(fork, tip, 0.17, 0.07, 7));
+    wood.push(...limb(fork, tip, 0.17, 0.07, 5, false));
     tips.push(tip);
   }
   const clumps: BufferGeometry[] = [];
   const centre = new Vector3(0, height, 0);
-  for (let k = 0; k < species.clumps; k++) {
-    const r = radius * (0.4 + random() * 0.2);
-    const facets = new IcosahedronGeometry(r, 2);
+  const clumpCount = Math.max(11, Math.round(species.clumps * 0.62));
+  for (let k = 0; k < clumpCount; k++) {
+    const r = radius * (0.44 + random() * 0.22);
+    const facets = new IcosahedronGeometry(r, 1);
     facets.deleteAttribute('normal');
     facets.deleteAttribute('uv');
     const clump = mergeVertices(facets);
@@ -5318,17 +5535,15 @@ function treeGeometry(species: Species): {
     colour.set([c.r, c.g, c.b], i * 3);
   }
   crown.setAttribute('color', new BufferAttribute(colour, 3));
-  // Sprigs of leaves standing out of the crown's surface, so its edge is ragged, not smooth:
-  // each a card cut to a cluster of leaves, set on a corner of the crown facing out, shaded
-  // as the crown is there.
+  // Sprigs of leaves standing out of the crown's surface, so its edge is ragged, not smooth.
   const cards: BufferGeometry[] = [];
   const normals = crown.getAttribute('normal') as BufferAttribute;
   const out = new Vector3();
-  for (let k = 0; k < 260; k++) {
+  for (let k = 0; k < 84; k++) {
     const i = Math.floor(random() * position.count);
     out.set(normals.getX(i), normals.getY(i), normals.getZ(i));
     if (out.y < -0.5) continue;
-    const size = 1.2 + random() * 0.9;
+    const size = 1.25 + random() * 0.9;
     const card = new PlaneGeometry(size, size);
     card.rotateZ(random() * Math.PI);
     card.lookAt(out);
@@ -5346,8 +5561,7 @@ function treeGeometry(species: Species): {
   }
   const sprigs = mergeGeometries(cards)!;
   cards.forEach((c) => c.dispose());
-  const trunk = mergeGeometries(wood.map((w) => (w.index ? w.toNonIndexed() : w)))!;
-  wood.forEach((w) => w.dispose());
+  const trunk = merge(wood);
   return { trunk, crown, sprigs };
 }
 
@@ -5436,15 +5650,9 @@ function barricadeGeometry(): BufferGeometry {
     bar(0.75, 0.03, 0.06, 0, 0.015, z);
     bar(0.03, 0.12, 0.03, 0, 0.08, z);
   }
-  for (let k = 1; k <= 14; k++) bar(0.02, 0.9, 0.02, 0, 0.62, -1.18 + (k * 2.36) / 15);
+  for (let k = 1; k <= 8; k++) bar(0.02, 0.9, 0.02, 0, 0.62, -1.18 + (k * 2.36) / 9);
   bar(0.03, 0.03, 0.14, 0, 0.95, 1.25);
-  const nonIdx = parts.map(asNonIndexed);
-  const merged = mergeGeometries(nonIdx)!;
-  parts.forEach((p, i) => {
-    p.dispose();
-    if (nonIdx[i] !== p) nonIdx[i]!.dispose();
-  });
-  return merged;
+  return merge(parts);
 }
 
 /** Vertical stripes of `a` and `b`, for a moko jumbie's long trousers. */
@@ -5759,19 +5967,23 @@ function ladderTexture(): CanvasTexture {
   });
 }
 
-/** A Toronto street-name sign: white capitals on blue with a white border. */
-function streetSignTexture(name: string): CanvasTexture {
-  return canvasTexture(512, 104, (g) => {
-    g.fillStyle = '#1d4e9e';
-    g.fillRect(0, 0, 512, 104);
-    g.strokeStyle = '#ffffff';
-    g.lineWidth = 5;
-    g.strokeRect(6, 6, 500, 92);
-    g.fillStyle = '#ffffff';
-    g.font = 'bold 60px system-ui, sans-serif';
-    g.textAlign = 'center';
-    g.textBaseline = 'middle';
-    g.fillText(name, 256, 56, 470);
+/** Packs Toronto street-name signs into one vertical stack atlas (`512 × 96n`). */
+function streetSignAtlasTexture(names: readonly string[]): CanvasTexture {
+  const rowH = 96;
+  return canvasTexture(512, rowH * names.length, (g) => {
+    names.forEach((name, r) => {
+      const y0 = r * rowH;
+      g.fillStyle = '#1d4e9e';
+      g.fillRect(0, y0, 512, rowH);
+      g.strokeStyle = '#ffffff';
+      g.lineWidth = 5;
+      g.strokeRect(6, y0 + 6, 500, rowH - 12);
+      g.fillStyle = '#ffffff';
+      g.font = 'bold 58px system-ui, sans-serif';
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      g.fillText(name, 256, y0 + 52, 470);
+    });
   });
 }
 
@@ -5802,12 +6014,12 @@ function policeCruiser(
   box(red, 1.92, 0.05, 3.6, 0.68);
   box(glass, 1.6, 0.48, 2.3, 0.92, 0.2);
   box(white, 1.56, 0.06, 1.8, 1.4, 0.25);
-  const bar = [0xff2a1a, 0x2a5aff].map((hex) => {
-    const m = material({ color: hex, emissive: hex, emissiveIntensity: 0.1 });
-    lights.push(m);
-    return m;
-  });
-  bar.forEach((m, k) => {
+  if (lights.length < 2) {
+    for (const hex of [0xff2a1a, 0x2a5aff]) {
+      lights.push(material({ color: hex, emissive: hex, emissiveIntensity: 0.1 }));
+    }
+  }
+  [lights[0]!, lights[1]!].forEach((m, k) => {
     const half = new Mesh(unit, m);
     half.scale.set(0.6, 0.12, 0.25);
     half.position.set(k ? 0.32 : -0.32, 1.52, 0.25);
@@ -5868,27 +6080,94 @@ function guideSignTexture(top: string, bottom: string): CanvasTexture {
   });
 }
 
-/** A section's flag: its name in white on its colour, a gold border and the band's star. */
-function sectionFlagTexture(name: string, colour: string): CanvasTexture {
-  return canvasTexture(384, 256, (g) => {
-    g.fillStyle = colour;
-    g.fillRect(0, 0, 384, 256);
-    g.strokeStyle = '#ffd23f';
-    g.lineWidth = 12;
-    g.strokeRect(6, 6, 372, 244);
-    g.fillStyle = '#ffd23f';
-    g.beginPath();
-    for (let k = 0; k < 10; k++) {
-      const r = k % 2 ? 22 : 50;
-      const a = (k / 10) * Math.PI * 2 - Math.PI / 2;
-      g.lineTo(192 + Math.cos(a) * r, 92 + Math.sin(a) * r);
-    }
-    g.fill();
-    g.fillStyle = '#ffffff';
-    g.font = 'bold 54px system-ui, sans-serif';
-    g.textAlign = 'center';
-    g.textBaseline = 'middle';
-    g.fillText(name, 192, 196, 340);
+/** Returns a PlaneGeometry whose UVs sample tile `(col, row)` of a `(cols × rows)` atlas. */
+function slicePlaneUv(
+  width: number,
+  height: number,
+  col: number,
+  cols: number,
+  row: number,
+  rows: number,
+  texW: number,
+  texH: number,
+  wSegs = 1,
+  hSegs = 1,
+): PlaneGeometry {
+  const g = new PlaneGeometry(width, height, wSegs, hSegs);
+  const uv = g.getAttribute('uv') as BufferAttribute;
+  const du = 0.5 / texW;
+  const dv = 0.5 / texH;
+  const u0 = col / cols + du;
+  const u1 = (col + 1) / cols - du;
+  const v0 = 1 - (row + 1) / rows + dv;
+  const v1 = 1 - row / rows - dv;
+  for (let i = 0; i < uv.count; i++) {
+    uv.setXY(i, u0 + uv.getX(i) * (u1 - u0), v0 + uv.getY(i) * (v1 - v0));
+  }
+  return g;
+}
+
+/** Stacks cloth banners into one vertical texture atlas (`700 × 130n`). */
+function clothBannerStackTexture(
+  entries: readonly (readonly [string, string, string])[],
+): CanvasTexture {
+  const rowH = 130;
+  return canvasTexture(700, rowH * entries.length, (ctx) => {
+    entries.forEach(([text, fill, ink], r) => {
+      const y0 = r * rowH;
+      ctx.fillStyle = fill;
+      ctx.fillRect(0, y0, 700, rowH);
+      ctx.strokeStyle = ink;
+      ctx.lineWidth = 5;
+      ctx.strokeRect(10, y0 + 10, 680, 110);
+      ctx.fillStyle = ink;
+      ctx.font = 'bold 72px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, 350, y0 + 68, 640);
+      const folds = ctx.createLinearGradient(0, y0, 700, y0);
+      for (let i = 0; i <= 6; i++) {
+        folds.addColorStop(i / 6, i % 2 ? 'rgba(0,0,0,0.14)' : 'rgba(255,255,255,0.06)');
+      }
+      ctx.fillStyle = folds;
+      ctx.fillRect(0, y0, 700, rowH);
+    });
+  });
+}
+
+/** Packs section flags into a `(cols × rows)` grid atlas (`384c × 256r`). */
+function sectionFlagAtlasTexture(
+  entries: readonly (readonly [string, string])[],
+  cols: number,
+  rows: number,
+): CanvasTexture {
+  const cellW = 384;
+  const cellH = 256;
+  return canvasTexture(cellW * cols, cellH * rows, (g) => {
+    entries.forEach(([name, colour], idx) => {
+      const x0 = (idx % cols) * cellW;
+      const y0 = Math.floor(idx / cols) * cellH;
+      g.fillStyle = colour;
+      g.fillRect(x0, y0, cellW, cellH);
+      g.strokeStyle = '#ffd23f';
+      g.lineWidth = 12;
+      g.strokeRect(x0 + 6, y0 + 6, cellW - 12, cellH - 12);
+      g.fillStyle = '#ffd23f';
+      g.beginPath();
+      for (let k = 0; k < 10; k++) {
+        const r = k % 2 ? 22 : 50;
+        const a = (k / 10) * Math.PI * 2 - Math.PI / 2;
+        if (k === 0) g.moveTo(x0 + 192 + Math.cos(a) * r, y0 + 92 + Math.sin(a) * r);
+        else g.lineTo(x0 + 192 + Math.cos(a) * r, y0 + 92 + Math.sin(a) * r);
+      }
+      g.closePath();
+      g.fill();
+      g.fillStyle = '#ffffff';
+      g.font = 'bold 54px system-ui, sans-serif';
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      g.fillText(name, x0 + 192, y0 + 196, 340);
+    });
   });
 }
 
@@ -5950,37 +6229,39 @@ function arcadeTexture(): CanvasTexture {
   });
 }
 
-/**
- * A city street banner for the festival, hung vertically: TORONTO CARIBBEAN CARNIVAL down it
- * in `ink` on `fill`, over a dancer's plume fan in the festival's colours and the year.
- */
-function festivalBannerTexture(fill: string, ink: string): CanvasTexture {
-  return canvasTexture(200, 600, (g) => {
-    g.fillStyle = fill;
-    g.fillRect(0, 0, 200, 600);
-    // A fan of plumes, the festival's mark.
+/** Packs vertical festival street banners side by side into one `200n × 600` atlas. */
+function festivalBannerAtlasTexture(
+  entries: readonly (readonly [string, string])[],
+): CanvasTexture {
+  const colW = 200;
+  return canvasTexture(colW * entries.length, 600, (g) => {
     const colours = ['#ff2d87', '#ffd23f', '#13c3c9', '#ff8a00', '#7b2ff7', '#0f9d58', '#ffffff'];
-    for (let k = 0; k < 13; k++) {
-      const a = -Math.PI * 0.85 + (k / 12) * Math.PI * 0.7;
-      g.strokeStyle = colours[k % colours.length]!;
-      g.lineWidth = 12;
-      g.lineCap = 'round';
-      g.beginPath();
-      g.moveTo(100, 430);
-      g.lineTo(100 + Math.cos(a) * 92, 430 + Math.sin(a) * 92);
-      g.stroke();
-    }
-    g.fillStyle = ink;
-    g.textAlign = 'center';
-    g.textBaseline = 'middle';
-    g.font = 'bold 38px system-ui, sans-serif';
-    g.fillText('TORONTO', 100, 52, 186);
-    g.font = 'bold 32px system-ui, sans-serif';
-    g.fillText('CARIBBEAN', 100, 100, 186);
-    g.font = 'bold 34px system-ui, sans-serif';
-    g.fillText('CARNIVAL', 100, 146, 186);
-    g.font = 'bold 46px system-ui, sans-serif';
-    g.fillText('2026', 100, 530, 186);
+    entries.forEach(([fill, ink], col) => {
+      const x0 = col * colW;
+      g.fillStyle = fill;
+      g.fillRect(x0, 0, colW, 600);
+      for (let k = 0; k < 13; k++) {
+        const a = -Math.PI * 0.85 + (k / 12) * Math.PI * 0.7;
+        g.strokeStyle = colours[k % colours.length]!;
+        g.lineWidth = 12;
+        g.lineCap = 'round';
+        g.beginPath();
+        g.moveTo(x0 + 100, 430);
+        g.lineTo(x0 + 100 + Math.cos(a) * 92, 430 + Math.sin(a) * 92);
+        g.stroke();
+      }
+      g.fillStyle = ink;
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      g.font = 'bold 38px system-ui, sans-serif';
+      g.fillText('TORONTO', x0 + 100, 52, 186);
+      g.font = 'bold 32px system-ui, sans-serif';
+      g.fillText('CARIBBEAN', x0 + 100, 100, 186);
+      g.font = 'bold 34px system-ui, sans-serif';
+      g.fillText('CARNIVAL', x0 + 100, 146, 186);
+      g.font = 'bold 46px system-ui, sans-serif';
+      g.fillText('2026', x0 + 100, 530, 186);
+    });
   });
 }
 

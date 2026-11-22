@@ -228,6 +228,22 @@ describe('Crowd: shadow partitioning and horizon culling', () => {
     expect(shadowCasters[0]!.count).toBeGreaterThan(0);
     expect(shadowCasters[0]!.count).toBeLessThan(nonShadow[0]!.count);
 
+    // Beyond 115 m, occluded back rows (|x| >= near + 0.5) are skipped while front-row silhouettes continue to 308 m.
+    const farLegs = nonShadow[0]!;
+    const matArr = farLegs.instanceMatrix.array as Float32Array;
+    let farBackRowPast120m = 0;
+    let farFrontRowPast120m = 0;
+    for (let i = 0; i < farLegs.count; i++) {
+      const x = Math.abs(matArr[i * 16 + 12]!);
+      const metres = -matArr[i * 16 + 14]!;
+      if (metres > 120) {
+        if (x > 9.65) farBackRowPast120m++;
+        else farFrontRowPast120m++;
+      }
+    }
+    expect(farFrontRowPast120m).toBeGreaterThan(0);
+    expect(farBackRowPast120m).toBe(0);
+
     for (const d of disposables) d.dispose();
   });
 });
