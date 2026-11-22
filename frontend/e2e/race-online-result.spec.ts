@@ -25,10 +25,20 @@ const RESULT_PENDING = {
   body: { status: 409, title: "The race's result is not recorded yet.", code: 'result_pending' },
 };
 
-/** Rides 661 W (120 rpm on level 32, 32.09 km/h) until Results opens, a frame every 4 s. */
+/**
+ * Rides 661 W (120 rpm on level 32, 32.09 km/h) until the race is sent, a frame every 4 s. It stops once the ride's
+ * POST has gone rather than when Results opens, which can come a step later on a slow machine: another 4 s would pass
+ * the outbox's 5-second retry before the spec reads "Recording your ride…".
+ */
 async function rideToTheLine(page: Page, bluetooth: FakeBluetooth) {
+  let sent = false;
+  void page
+    .waitForRequest(
+      (request) => request.method() === 'POST' && request.url().endsWith('/api/rides'),
+    )
+    .then(() => (sent = true));
   await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(32));
-  for (let second = 0; second < 120 && !page.url().endsWith('/results'); second += 4) {
+  for (let second = 0; second < 120 && !sent; second += 4) {
     await bluetooth.notify(ECHELON_NOTIFY, workoutFrame(120));
     await page.clock.runFor(4000);
   }
@@ -50,7 +60,12 @@ test(
 
     const results = new ResultsPage(page);
     await expect(page).toHaveURL('/results');
-    await expect(results.context).toHaveText('Old Town Criterium · Live race');
+    // Change detection waits on a timer, so the paused clock moves a tenth of a second at a time until Results renders,
+    // far short of the 5-second retry (L157).
+    await expect(async () => {
+      await page.clock.runFor(100);
+      await expect(results.context).toHaveText('Old Town Criterium · Live race', { timeout: 100 });
+    }).toPass();
     await expect(results.xpNote).toHaveText('Recording your ride…');
     expect((await pending).status()).toBe(409);
     // The retry's 5 seconds count from when the page handled the 409, so the clock steps a second at a time (L170).
