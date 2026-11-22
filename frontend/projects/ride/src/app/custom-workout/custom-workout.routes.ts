@@ -1,4 +1,5 @@
 import type { Routes } from '@angular/router';
+import { provideClassVideo } from '../classes/provide-class-video';
 import { CustomWorkoutStore } from './custom-workout-store';
 
 /**
@@ -8,7 +9,8 @@ import { CustomWorkoutStore } from './custom-workout-store';
 export const customWorkoutRoutes: Routes = [
   {
     path: '',
-    providers: [CustomWorkoutStore],
+    // The draft, and the video's player, whose code loads only when the preview asks for it (AGENTS.md).
+    providers: [CustomWorkoutStore, provideClassVideo()],
     children: [
       {
         path: '',

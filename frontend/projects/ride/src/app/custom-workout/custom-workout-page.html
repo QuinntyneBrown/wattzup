@@ -93,6 +93,22 @@
         </div>
         <p class="setup__note">You can still nudge the level mid-ride from the dashboard.</p>
       }
+      <wz-video-sync
+        [on]="draft().video.on"
+        [link]="draft().video.link"
+        [error]="store.videoError()"
+        [videoId]="store.videoId()"
+        [offset]="store.offset()"
+        [atZero]="draft().video.offset <= 0"
+        (toggled)="store.setVideoOn($event)"
+        (linkChanged)="store.setVideoLink($event)"
+        (offsetTyped)="store.typeOffset($event)"
+        (earlier)="store.stepOffset(-1)"
+        (later)="store.stepOffset(1)"
+        (useCurrentTime)="useCurrentTime()"
+        (check)="check()"
+        (frame)="park($event)"
+      />
     </div>
   </div>
   <aside

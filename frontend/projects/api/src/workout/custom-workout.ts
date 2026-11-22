@@ -17,6 +17,14 @@ export interface FlatSettings {
   readonly cadence: number;
 }
 
+/** Ride along to a video (L2-098): whether it is on, the YouTube link as typed, and the video's time at ride 0:00. */
+export interface VideoSettings {
+  readonly on: boolean;
+  readonly link: string;
+  /** Seconds, to a tenth. */
+  readonly offset: number;
+}
+
 /**
  * The custom workout the rider is setting up (L2-094 to L2-097): its mode, the HIIT plan it started from and whether
  * its rounds were changed since, the rounds, the work and recover levels, warm-up and cool-down in seconds, and flat
@@ -32,4 +40,5 @@ export interface CustomWorkoutDraft {
   readonly warmUp: number;
   readonly coolDown: number;
   readonly flat: FlatSettings;
+  readonly video: VideoSettings;
 }

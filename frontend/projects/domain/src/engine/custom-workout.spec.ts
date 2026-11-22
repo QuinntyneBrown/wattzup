@@ -12,14 +12,20 @@ import {
   makeRoundsSame,
   newCustomWorkout,
   removeRound,
+  setOffset,
+  setVideoLink,
+  setVideoOn,
   setFlatLevel,
   setWorkLevel,
   stepCoolDown,
   stepEffort,
   stepFlatCadence,
   stepFlatMinutes,
+  stepOffset,
   stepRecovery,
   stepWarmUp,
+  videoFact,
+  videoOf,
 } from './custom-workout';
 
 describe('custom workout', () => {
@@ -36,6 +42,7 @@ describe('custom workout', () => {
       warmUp: 300,
       coolDown: 360,
       flat: { level: 12, minutes: 30, cadence: 85 },
+      video: { on: false, link: 'https://www.youtube.com/watch?v=QUoToFsMNig', offset: 0 },
     });
   });
 
@@ -144,5 +151,18 @@ describe('custom workout', () => {
     expect(canStep(5, CUSTOM_WORKOUT_LIMITS.effort, -1)).toBe(false);
     expect(canStep(5, CUSTOM_WORKOUT_LIMITS.effort, 1)).toBe(true);
     expect(canStep(300, CUSTOM_WORKOUT_LIMITS.effort, 1)).toBe(false);
+  });
+
+  it('reads the video as Off, Link needed or Synced from its offset (L2-098 AC3, L2-099 AC1, AC5)', () => {
+    const on = setVideoOn(fresh, true);
+
+    expect(videoFact(fresh)).toBe('Off');
+    expect(videoFact(on)).toBe('Synced from 0:00.0');
+    expect(videoOf(on)).toBe('QUoToFsMNig');
+    expect(videoFact(stepOffset(stepOffset(on, 1), -1))).toBe('Synced from 0:00.0');
+    expect(stepOffset(on, -1).video.offset).toBe(0);
+    expect(videoFact(setOffset(on, 12.04))).toBe('Synced from 0:12.0');
+    expect(videoFact(setVideoLink(on, 'https://vimeo.com/76979871'))).toBe('Link needed');
+    expect(videoOf(setVideoOn(on, false))).toBeNull();
   });
 });

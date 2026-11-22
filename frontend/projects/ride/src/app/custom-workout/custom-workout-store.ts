@@ -8,17 +8,26 @@ import {
   expandCustomWorkout,
   makeRoundsSame,
   newCustomWorkout,
+  parseOffset,
   removeRound,
   setFlatLevel,
+  setOffset,
   setRecoverLevel,
+  setVideoLink,
+  setVideoOn,
   setWorkLevel,
   stepCoolDown,
   stepEffort,
   stepFlatCadence,
   stepFlatMinutes,
+  stepOffset,
   stepRecovery,
   stepWarmUp,
+  VIDEO_LINK_ERROR,
+  formatOffset,
   validatePlan,
+  videoFact,
+  videoOf,
 } from '@telo/domain';
 
 /**
@@ -32,7 +41,17 @@ export class CustomWorkoutStore {
   readonly draft = this.state.asReadonly();
   readonly plan = computed(() => expandCustomWorkout(this.draft()));
   readonly problems = computed(() => validatePlan(this.plan()));
-  readonly preview = computed(() => customWorkoutPreview(this.draft(), this.plan(), 'Off'));
+  readonly preview = computed(() =>
+    customWorkoutPreview(this.draft(), this.plan(), videoFact(this.draft())),
+  );
+  /** The video the preview and the ride play, while the switch is on and the link is YouTube's. */
+  readonly videoId = computed(() => videoOf(this.draft()));
+  /** The link's message while the switch is on and the link is typed but not YouTube's (L2-098 AC2). */
+  readonly videoError = computed(() => {
+    const { on, link } = this.draft().video;
+    return on && link.trim() !== '' && this.videoId() === null ? VIDEO_LINK_ERROR : null;
+  });
+  readonly offset = computed(() => formatOffset(this.draft().video.offset));
 
   chooseMode(mode: TrainingMode): void {
     this.state.update((d) => chooseMode(d, mode));
@@ -88,5 +107,27 @@ export class CustomWorkoutStore {
 
   stepFlatCadence(direction: 1 | -1): void {
     this.state.update((d) => stepFlatCadence(d, direction));
+  }
+
+  setVideoOn(on: boolean): void {
+    this.state.update((d) => setVideoOn(d, on));
+  }
+
+  setVideoLink(link: string): void {
+    this.state.update((d) => setVideoLink(d, link));
+  }
+
+  stepOffset(direction: 1 | -1): void {
+    this.state.update((d) => stepOffset(d, direction));
+  }
+
+  setOffset(seconds: number): void {
+    this.state.update((d) => setOffset(d, seconds));
+  }
+
+  /** A typed offset; one that does not read as a time leaves the offset as it was. */
+  typeOffset(text: string): void {
+    const seconds = parseOffset(text);
+    if (seconds !== null) this.setOffset(seconds);
   }
 }
