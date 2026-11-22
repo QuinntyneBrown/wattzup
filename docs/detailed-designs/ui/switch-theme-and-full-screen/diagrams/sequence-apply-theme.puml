@@ -18,19 +18,21 @@ actor "Rider" as actor
 participant "Browser" as browser
 box "Frontend — Ride app (ride application)" #E0F2FE
   participant "index.html and tokens.css" as doc
-  participant "ThemeController" as theme
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "BrowserDisplayPreferences" as theme
 end box
 actor -> browser : Open Telo Ride
-browser -> doc : Parse html data-theme="dark"
-doc --> browser : First paint in the dark theme (L2-143 AC1)
-browser -> theme : provideAppInitializer starts the controller
-theme -> browser : matchMedia('(prefers-color-scheme: light)')
+browser -> doc : Parse <html> with no data-theme
 alt The device asks for light (L2-143 AC2)
-  theme -> doc : Set data-theme="light"
-  doc --> browser : Role tokens resolve to light values
-else Otherwise
-  theme -> doc : Keep data-theme="dark"
+  doc --> browser : First paint in the light theme (:root)
+else It asks for dark (L2-143 AC1)
+  doc --> browser : First paint in the dark theme (prefers-color-scheme: dark)
 end
+browser -> theme : The parent route's initializer starts it
+theme -> browser : matchMedia('(prefers-color-scheme: light)') and the rider's Theme choice
+theme -> doc : Set data-theme to the choice, or light when the query matches, else dark
+doc --> browser : Role tokens resolve; the theme is the one already painted
 actor -> browser : Change the device colour scheme
 browser -> theme : change event
 theme -> doc : Update data-theme

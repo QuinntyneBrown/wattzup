@@ -38,6 +38,75 @@ export class AppDocument {
     return this.page.evaluate(() => getComputedStyle(document.body).backgroundColor);
   }
 
+  /**
+   * The body's background as the served page and its stylesheets paint it before the app's scripts run: opens `path`
+   * with every script held back, reads the background once the global stylesheet applies, then lets the scripts load.
+   */
+  async firstPaint(path: string): Promise<string> {
+    let release = (): void => undefined;
+    const held = new Promise<void>((resolve) => (release = resolve));
+    const scripts = /\.m?js(\?.*)?$/;
+    await this.page.route(scripts, async (route) => {
+      await held;
+      await route.continue();
+    });
+    await this.page.goto(path, { waitUntil: 'commit' });
+    await this.page.waitForFunction(
+      () =>
+        document.body !== null &&
+        [...document.styleSheets].some((sheet) => {
+          try {
+            return sheet.cssRules.length > 0;
+          } catch {
+            return false;
+          }
+        }),
+    );
+    const background = await this.background();
+    release();
+    await this.page.unroute(scripts);
+    return background;
+  }
+
+  /**
+   * Each pair of a text colour token on a surface token, in the theme showing now, whose contrast is below `ratio`, as
+   * `--text on --surface: 3.21` (WCAG 2.2 relative luminance).
+   */
+  lowContrast(
+    texts: readonly string[],
+    surfaces: readonly string[],
+    ratio: number,
+  ): Promise<string[]> {
+    return this.page.evaluate(
+      ({ texts, surfaces, ratio }) => {
+        const probe = document.body.appendChild(document.createElement('div'));
+        const rgb = (property: 'color' | 'backgroundColor', token: string): number[] => {
+          probe.style[property] = `var(${token})`;
+          return (getComputedStyle(probe)[property].match(/[\d.]+/g) ?? []).slice(0, 3).map(Number);
+        };
+        const luminance = (channels: number[]): number => {
+          const [r, g, b] = channels.map((c) => {
+            const v = c / 255;
+            return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+          });
+          return 0.2126 * r! + 0.7152 * g! + 0.0722 * b!;
+        };
+        const low: string[] = [];
+        for (const surface of surfaces) {
+          const behind = luminance(rgb('backgroundColor', surface));
+          for (const text of texts) {
+            const front = luminance(rgb('color', text));
+            const contrast = (Math.max(front, behind) + 0.05) / (Math.min(front, behind) + 0.05);
+            if (contrast < ratio) low.push(`${text} on ${surface}: ${contrast.toFixed(2)}`);
+          }
+        }
+        probe.remove();
+        return low;
+      },
+      { texts, surfaces, ratio },
+    );
+  }
+
   /** Whether the app is in full screen. */
   inFullScreen(): Promise<boolean> {
     return this.page.evaluate(() => document.fullscreenElement !== null);
