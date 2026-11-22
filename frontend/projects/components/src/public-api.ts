@@ -127,3 +127,7 @@ export { RideHeader, type RideBikeTone } from './custom-ride/ride-header';
 export { RideWorkoutLink } from './custom-ride/ride-workout-link';
 export { RideReadouts, type RideDelta } from './custom-ride/ride-readouts';
 export { RideInterval } from './custom-ride/ride-interval';
+export { RIDE_KINDS, type TraceSegment } from './custom-ride/ride-kind';
+export { RideTrace } from './custom-ride/ride-trace';
+export { RideView, type RideViewTab } from './custom-ride/ride-view';
+export { RideMetrics, type RideMetric } from './custom-ride/ride-metrics';

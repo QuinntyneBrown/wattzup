@@ -132,4 +132,10 @@ export {
   planLength,
   validatePlan,
 } from './engine/custom-plan';
-export { type IntervalPlace, customWorkoutLabel, intervalPlace } from './engine/custom-ride';
+export {
+  type IntervalPlace,
+  customWorkoutLabel,
+  intervalPlace,
+  traceMaxWatts,
+} from './engine/custom-ride';
+export { PowerTrace } from './engine/power-trace';

@@ -1,0 +1,113 @@
+// Block ride-view (docs/design-system/assets/components.css): the synced video or power vs. plan, over the ticks.
+:host {
+  position: relative;
+  margin-top: var(--space-8);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: var(--dashboard-view-min);
+}
+
+.ride-view__bar {
+  margin-bottom: var(--space-2);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--space-4);
+  row-gap: var(--space-2);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-faint);
+}
+
+.ride-view__tabs {
+  display: flex;
+  border-radius: var(--radius-md);
+  background: var(--color-raised);
+  padding: var(--space-0-5);
+}
+
+// 44 px to touch, though drawn as the mock's compact segmented control.
+.ride-view__tab {
+  position: relative;
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2-5);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  color: var(--color-muted);
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.ride-view__tab::after {
+  content: '';
+  position: absolute;
+  inset: 50% 0 auto;
+  min-height: var(--target-comfortable);
+  translate: 0 -50%;
+}
+
+.ride-view__tab:hover {
+  color: var(--color-fg);
+}
+
+.ride-view__tab[aria-selected='true'] {
+  background: var(--color-line);
+  color: var(--color-fg);
+}
+
+.ride-view__sync {
+  white-space: nowrap;
+}
+
+.ride-view__legend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.ride-view__legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+}
+
+.ride-view__legend-item--work {
+  --kind: var(--color-volt);
+}
+
+.ride-view__legend-item--rest {
+  --kind: var(--color-rest);
+}
+
+.ride-view__legend-line {
+  width: var(--space-3);
+  height: var(--space-0-5);
+  background: var(--kind, var(--color-fg));
+}
+
+.ride-view__panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.ride-view__panel[hidden] {
+  display: none;
+}
+
+.ride-ticks {
+  display: block;
+  margin-top: var(--space-1-5);
+  width: 100%;
+  height: var(--space-4);
+  overflow: visible;
+}
+
+.ride-ticks__tick {
+  fill: var(--color-faint);
+  font-size: var(--font-size-2xs);
+}

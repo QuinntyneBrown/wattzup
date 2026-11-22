@@ -159,5 +159,11 @@ The workout link pauses the ride and opens Custom workout with this plan (`L2-10
 4. **Bike status.** The mock's status opens Diagnostics, which is slice 25.1's; until then it is
    text.
 5. **Ride sound.** `L2-163`'s ride sound is not played in the custom ride yet.
-6. **The trace in SVG.** The design names a canvas; the mock draws SVG, and the trace is SVG,
-   bounded by the plan's length in seconds.
+6. **One tab without a video.** `L2-103` AC1 names both tabs; with the switch off (`L2-098` AC6)
+   the tab list holds "Power vs. plan" alone rather than a Video tab with nothing in it.
+7. **The trace's top and ticks.** The maximum is the highest target with a fifth to spare, up to
+   the next 300 W (600 W for GCN 30-min HIIT, 300 W for flat). Ticks fall every 5:00, every 15:00
+   past an hour, with one at the end. Before the first reading the label says "no power yet".
+8. **The trace in SVG.** The design names a canvas; the mock draws SVG, and the trace is SVG,
+   bounded by the plan's length in seconds and drawn as at most 900 points, each averaging its
+   seconds.

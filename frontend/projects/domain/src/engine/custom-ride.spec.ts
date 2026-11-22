@@ -1,5 +1,5 @@
 import type { CustomWorkoutDraft, Plan } from '@telo/api';
-import { customWorkoutLabel, intervalPlace } from './custom-ride';
+import { customWorkoutLabel, intervalPlace, traceMaxWatts } from './custom-ride';
 import {
   addRound,
   chooseMode,
@@ -56,5 +56,18 @@ describe('intervalPlace', () => {
 
   it('gives the last segment nothing next', () => {
     expect(intervalPlace(plan, plan.segments.length - 1)).toEqual({ round: null, next: null });
+  });
+});
+
+describe('traceMaxWatts', () => {
+  it('draws GCN 30-min HIIT to 600 W and flat resistance to 300 W (L2-103 AC3)', () => {
+    expect(traceMaxWatts(expandCustomWorkout(gcn))).toBe(600);
+    expect(traceMaxWatts(expandCustomWorkout(chooseMode(gcn, 'flat')))).toBe(300);
+  });
+
+  it('leaves a fifth to spare above the highest target', () => {
+    expect(
+      traceMaxWatts({ segments: [{ kind: 'steady', duration: 60, level: 32, cadenceAim: 120 }] }),
+    ).toBe(900);
   });
 });

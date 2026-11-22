@@ -1,18 +1,28 @@
-import { DestroyRef, Injectable, computed, inject } from '@angular/core';
+import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BIKE_CONNECTION, BLUETOOTH_SUPPORT, REMEMBERED_BIKE, SCREEN_WAKE_LOCK } from '@telo/api';
-import { type RideBikeTone, type RideDelta, formatClock, formatMetric } from '@telo/components';
+import {
+  type RideBikeTone,
+  type RideDelta,
+  type RideMetric,
+  type TraceSegment,
+  formatClock,
+  formatMetric,
+} from '@telo/components';
 import {
   BikeTelemetry,
   PowerModel,
+  PowerTrace,
   RideClock,
   RideTicker,
+  RideTotals,
   WorkoutEngine,
   bikeStatus,
   customWorkoutLabel,
   intervalPlace,
   planLength,
   planStateAt,
+  traceMaxWatts,
 } from '@telo/domain';
 import { CustomWorkoutStore } from '../custom-workout/custom-workout-store';
 
@@ -35,6 +45,10 @@ export class CustomRideStore {
   private readonly remembered = inject(REMEMBERED_BIKE).get();
   private readonly wakeLock = inject(SCREEN_WAKE_LOCK);
   private readonly draft = inject(CustomWorkoutStore).draft;
+  private readonly totals = inject(RideTotals);
+  /** The seconds recorded: the trace and the totals have moved on to it. */
+  private readonly recorded = signal(0);
+  private lastSecond = 0;
 
   /** The plan as the ride started it; editing the workout leaves this ride (L2-101 AC3). */
   readonly plan = inject(CustomWorkoutStore).plan();
@@ -44,6 +58,20 @@ export class CustomRideStore {
   readonly elapsed = computed(() => Math.min(this.ticker.second(), this.lengthSeconds));
   readonly clockText = computed(() => formatClock(this.elapsed()));
   readonly totalText = formatClock(this.lengthSeconds);
+  /** The rider's power for each second of the plan, for the trace; released with the page. */
+  private readonly trace = new PowerTrace(this.lengthSeconds);
+  /** The seconds each point of the trace averages: at most 900 points, however long the plan. */
+  readonly bucket = Math.max(1, Math.ceil(this.lengthSeconds / 900));
+  readonly traceMax = traceMaxWatts(this.plan);
+  readonly segments: readonly TraceSegment[] = this.plan.segments.map((segment) => ({
+    kind: segment.kind,
+    duration: segment.duration,
+    target: PowerModel.target(segment.cadenceAim, segment.level),
+  }));
+  readonly averages = computed(() => {
+    this.recorded();
+    return this.trace.averages(this.bucket);
+  });
 
   /** The bike status (L2-019): the bike's name while connected or lost, and its words. */
   readonly bike = computed(() => {
@@ -97,6 +125,30 @@ export class CustomRideStore {
     };
   });
 
+  /** The trace's label (L2-103 AC3). */
+  readonly traceLabel = computed(() => {
+    const power = this.round(this.telemetry.powerW());
+    const now = power === null ? 'no power yet' : `${power} watts now`;
+    return `Power against the plan: ${now} against a ${this.target()} watt target, ${this.clockText()} of ${this.totalText} ridden`;
+  });
+
+  /** Heart rate, average power, speed, distance and energy (L2-104 AC1). */
+  readonly metrics = computed<readonly RideMetric[]>(() => {
+    this.recorded();
+    const avg = this.totals.avgPowerW();
+    return [
+      { label: 'Heart rate', value: formatMetric(this.telemetry.heartRate(), 0), unit: 'bpm' },
+      {
+        label: 'Avg power',
+        value: formatMetric(avg === null ? null : Math.round(avg), 0),
+        unit: 'W',
+      },
+      { label: 'Speed', value: formatMetric(this.telemetry.speedKmh(), 1), unit: 'km/h' },
+      { label: 'Distance', value: formatMetric(this.totals.distanceKm(), 2), unit: 'km' },
+      { label: 'Energy', value: String(this.totals.energyKcal()), unit: 'kcal' },
+    ];
+  });
+
   constructor() {
     const destroyRef = inject(DestroyRef);
     this.wakeLock.hold();
@@ -104,10 +156,22 @@ export class CustomRideStore {
     this.ticker.start();
     this.engine.follow(this.plan);
     this.ticker.ticks.pipe(takeUntilDestroyed(destroyRef)).subscribe((second) => {
+      this.record(Math.min(second, this.lengthSeconds));
       if (second >= this.lengthSeconds) this.end();
     });
     // The lock is bound on the route, whose injector outlives the page.
     destroyRef.onDestroy(() => this.wakeLock.release());
+  }
+
+  /**
+   * Each second ridden at the bike's power and speed (L2-022 AC2, L2-023 AC5); seconds a hidden tab skipped count at
+   * those of the moment.
+   */
+  private record(second: number): void {
+    for (let s = this.lastSecond; s < second; s++) this.totals.onRunningSecond();
+    this.trace.record(second, this.telemetry.powerW());
+    this.lastSecond = Math.max(this.lastSecond, second);
+    this.recorded.set(this.lastSecond);
   }
 
   /** The plan's end: the clock stops at its length. */

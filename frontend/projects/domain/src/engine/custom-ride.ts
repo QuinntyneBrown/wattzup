@@ -1,4 +1,5 @@
 import type { CustomWorkoutDraft, Plan, Segment } from '@telo/api';
+import { PowerModel } from './power-model';
 
 const clock = (seconds: number) =>
   `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
@@ -50,4 +51,13 @@ export function intervalPlace(plan: Plan, index: number): IntervalPlace {
     round: kind === 'work' || kind === 'recover' ? { number, of } : null,
     next: segments[index + 1] ?? null,
   };
+}
+
+/**
+ * The top of the trace of power against the plan (L2-103 AC3): the highest target with a fifth to spare, up to the next
+ * 300 W, so GCN 30-min HIIT's 384 W efforts draw to 600 W and flat resistance's 205 W to 300 W.
+ */
+export function traceMaxWatts(plan: Plan): number {
+  const top = Math.max(0, ...plan.segments.map((s) => PowerModel.target(s.cadenceAim, s.level)));
+  return Math.max(300, Math.ceil((top * 1.2) / 300) * 300);
 }

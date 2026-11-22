@@ -32,5 +32,15 @@
         />
       }
     </wz-ride-readouts>
+    <wz-ride-view
+      [segments]="store.segments"
+      [averages]="store.averages()"
+      [bucket]="store.bucket"
+      [elapsed]="store.elapsed()"
+      [total]="store.lengthSeconds"
+      [max]="store.traceMax"
+      [traceLabel]="store.traceLabel()"
+    />
+    <dl wz-ride-metrics [metrics]="store.metrics()"></dl>
   </section>
 </main>

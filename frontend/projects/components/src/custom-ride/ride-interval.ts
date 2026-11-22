@@ -1,14 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import type { Segment, SegmentKind } from '@telo/api';
 import { formatClock } from '../metric/format-clock';
-
-const KINDS: Record<SegmentKind, { readonly label: string; readonly modifier: string }> = {
-  'warm-up': { label: 'Warm-up', modifier: 'warmup' },
-  work: { label: 'Work', modifier: 'work' },
-  recover: { label: 'Recover', modifier: 'rest' },
-  steady: { label: 'Steady', modifier: 'steady' },
-  'cool-down': { label: 'Cool-down', modifier: 'cooldown' },
-};
+import { RIDE_KINDS as KINDS } from './ride-kind';
 
 /**
  * The current interval (design-system block ride-interval, L2-102 AC2): its kind and round, the time left in it, a bar
