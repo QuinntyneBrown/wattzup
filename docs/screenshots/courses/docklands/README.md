@@ -28,6 +28,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 4 | The riders' shadows fall away from the lamps | 119.5 fps | median of three 306 fps (3.27 ms): 327, 299, 306 | | 74,955 | 127 | 3.42 MB | Yes |
 | 5 | A night sky and the city on the horizon | 60.1 fps (the display was at 60 Hz) | median of three 331 fps (3.02 ms): 331, 325, 331 | | 76,115 | 128 | 3.39 MB | Yes |
 | 6 | Windows with frames, panes and rooms behind them | 119.8 fps | median of three 328 fps (3.05 ms): 333, 328, 319 | | 74,869 | 129 | 3.38 MB | Yes |
+| 7 | A working quay: railing, bollards, drums, crates, lorries, masts, cranes | 60.0 fps (the display was at 60 Hz) | best of six 301 fps; medians 241 and 232 on a busy machine (see the pass) | | 79,834 | 134 | 3.99 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -243,3 +244,49 @@ panel instead, at no triangles.
 - A number of its own for each thing (a window here, a brick in pass 3) is what stops a wall of them looking
   stamped out. It rides in the UV for free.
 - The windows give no light to the pavement beneath them, and the ground-floor ones have no doors between them.
+
+## Pass 7: a working quay
+
+**Before** (`pass-06.jpg`, `pass-06.mp4`): left of the road is a bare stone apron 26 m wide to the water, with one
+stack of containers in sight. The cranes and most of the containers the theme deals were never placed: they were
+dropped wherever the land under the apron fell away, which is nearly everywhere.
+
+**After** (`pass-07.jpg`, `pass-07.mp4`; the climbs in `pass-07-climb-1.mp4` and `pass-07-climb-2.mp4`): a railing
+runs between the pavement and the apron, with gaps for gates; mooring bollards stand along the water's edge; drums,
+crates on pallets and parked lorries with containers on their trailers stand about the apron; floodlight masts
+rise over it; and the gantry cranes and container stacks now stand where they were meant to.
+
+**What changed.**
+
+- `themes.py`, `docklands`: the quay's clutter, dealt from numbers of its own so the rest of the map stands where
+  it stood. Cranes and containers are placed on the apron whatever the land beneath it does.
+- `Kit.fence` builds a railing as one flat panel a 4 m of road in a new `Fences` group, its UV the metres along it
+  and the share of its height. `fence-material.ts` draws a post every 2 m and three rails on it and cuts the rest
+  away.
+- `tools/course-bench` can start a ride any number of metres up the road (`WZ_BENCH_FROM`), to film and time a
+  climb or a bend rather than the start line.
+
+**Cost.** 4,965 more triangles in the frame (79,834, of a budget of 120,000) and 5 more draw calls (134 of 140).
+The frame rate could not be told apart from pass 6 once the machine's own noise was allowed for: the same build
+with pass 6's map and with this one, run turn about, read 199, 293, 297 fps and 232, 224, 301. The best runs are
+level; the medians are not, because another program was taking the processor through this sitting. **The file is
+the real cost: 3.99 MB gzipped, from 3.38**, and the budget is 3 MB. Docklands was over it before this pass; it is
+further over now.
+
+**Tried and dropped.**
+
+- The railing as posts and rails of their own (three boxes every 4 m), a bollard of two prisms every 12 m, and the
+  quay's yellow line and crane rails as strips of ground: 598,000 triangles for the map, from 308,000, and 6.3 MB.
+  The railing became panels (two triangles every 4 m), the bollards one prism every 24 m, and the strips went.
+
+**Learned.**
+
+- This is pass 6's lesson again, and it cost a rebuild to relearn: anything laid along every metre of a 21.6 km
+  road is thousands of copies. Decide how it is drawn before placing it.
+- When the machine is busy, the median of three runs moves by a third. Run the old and the new turn about and
+  compare the best of each: the best run is the one the machine left alone.
+- Every film so far showed the first 150 m of the course, which is straight and flat, and it read as a map with no
+  bends or hills. The course has them (7,000 degrees of turning, hills of 4 % on every effort), but the first is
+  3.8 km in. Film what the map is for, not where the ride happens to start.
+- The file's size is now the map's weakest number. Positions and UVs are 32-bit floats; quantising them, or Draco,
+  is the pass that would pay for the clutter.

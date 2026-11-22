@@ -311,6 +311,18 @@ class Kit:
             b.uvs.append((u + (2 if lit else 0), v + 2 * number))
         b.faces.append((base, base + 1, base + 2, base + 3))
 
+    def fence(self, i: int, off: float, height: float) -> None:
+        """A railing from this sample of the road to the next: one flat panel, whose posts and rails the app draws.
+        Its UV is the metres along the road and the share of its height."""
+        b = self.B.setdefault("fences", type(self.B["tower"])("Fences", "rail"))
+        if b.uvs is None:
+            b.uvs = []
+        base = len(b.verts)
+        for j, up, v in ((i, 0.0, 0.0), (i + 1, 0.0, 1.0), (i + 1, height, 1.0), (i, height, 0.0)):
+            b.verts.append(self.road.at(j, off, 0.12 + up))
+            b.uvs.append((j * self.step, up / height))
+        b.faces.append((base, base + 1, base + 2, base + 3))
+
     def windows(self, b, i: int, along_c: float, off: float, width: float, floors: int, up0: float, floor_h: float, yaw: float, every: float = 2.6) -> None:
         cols = max(1, int(width / every))
         for f in range(floors):
@@ -780,7 +792,7 @@ def docklands(k: Kit) -> dict:
     for i in range(8, k.n - 8, 3):
         off = k.kerb + rng.uniform(14, 24)
         x, y, z = k.road.at(i, off)
-        if not k.road.clear_of_road(x, y, 14.0, i) or k.height_at(x, y) < z - 4:
+        if not k.road.clear_of_road(x, y, 14.0, i):
             continue
         yaw = s[i]["h"]
         if rng.random() < 0.06 and cranes < 26:
@@ -791,9 +803,58 @@ def docklands(k: Kit) -> dict:
             B["crane"].box(k.P(i, 0, off, 32), (9, 9, 6), yaw)
             B["lamp-red"].box(k.P(i, 0, off + 36, 32), (0.6, 0.6, 0.6), yaw)
             cranes += 1
-        elif rng.random() < 0.25:
+        elif rng.random() < 0.14:
             for tier in range(rng.randint(1, 4)):
                 B[rng.choice(CONTAINERS)].box(k.P(i, 0, off, tier * 2.6 - 0.2), (12.0, 2.45, 2.6), yaw)
+    # The quay is a working one: a railing between the pavement and the apron, bollards at the water's edge, drums
+    # and crates, parked lorries and floodlight masts. Dealt from its own numbers, so the rest of the map stands
+    # where it stood.
+    deal = random.Random(k.n * 31 + 7)
+    lorries = masts = 0
+    for i in range(6, k.n - 8):
+        yaw = s[i]["h"]
+        # The railing: a post a sample and two rails on to the next, with a gap for a gate now and then.
+        if (i // 14) % 5 != 2:
+            k.fence(i, k.kerb + 3.0, 1.15)
+        # A mooring bollard every 24 m, a pace in from the edge.
+        if i % 6 == 0:
+            k.prism(B["dark"], k.P(i, 0, k.kerb + 25.55, 0.12), 0.27, 0.62, 5, 0.2)
+        if not k.road.clear_of_road(*k.road.at(i, k.kerb + 12)[:2], 16.0, i):
+            continue
+        roll = deal.random()
+        off = k.kerb + deal.uniform(5.0, 11.5)
+        if roll < 0.04:
+            # Oil drums stood together, some on their sides' colours.
+            for _ in range(deal.randint(2, 6)):
+                c = k.P(i, deal.uniform(-1.4, 1.4), off + deal.uniform(-1.2, 1.2), 0.12)
+                k.prism(B[deal.choice(("container-0", "container-1", "dark", "container-3"))], c, 0.29, 0.88, 6)
+        elif roll < 0.08:
+            # Crates on pallets, stacked one, two or three high.
+            for n_ in range(deal.randint(1, 3)):
+                along = n_ * 1.5 - 1.0
+                for tier in range(deal.randint(1, 3)):
+                    B["fence"].box(k.P(i, along, off, 0.26 + tier * 1.02), (1.2, 1.0, 1.0), yaw + deal.uniform(-0.12, 0.12))
+                B["trunk"].box(k.P(i, along, off, 0.12), (1.25, 1.05, 0.14), yaw)
+        elif roll < 0.095 and i % 2 == 0:
+            # A lorry parked along the quay: cab, chassis, a container on its trailer, its wheels.
+            lorries += 1
+            away = math.pi if deal.random() < 0.5 else 0.0
+            turn = -1 if away else 1
+            B[deal.choice(CONTAINERS)].box(k.P(i, -1.2 * turn, off, 1.32), (12.0, 2.45, 2.6), yaw)
+            B["dark"].box(k.P(i, -0.6 * turn, off, 0.72), (13.6, 1.0, 0.6), yaw)
+            B[deal.choice(("whitewash", "container-1", "container-0", "crane"))].box(k.P(i, 6.6 * turn, off, 0.62), (2.3, 2.4, 2.7), yaw)
+            B["window"].box(k.P(i, 7.72 * turn, off, 2.05), (0.08, 2.1, 0.95), yaw)
+            for along in (6.4, 0.2, -1.2, -5.2, -6.6):
+                for side in (1.05, -1.05):
+                    B["dark"].box(k.P(i, along * turn, off + side, 0.12), (1.0, 0.32, 1.0), yaw)
+        elif i % 30 == 15:
+            # A floodlight mast over the apron.
+            masts += 1
+            base = k.kerb + 13.0
+            B["dark"].box(k.P(i, 0, base, 0.12), (0.34, 0.34, 17.0), yaw)
+            B["dark"].box(k.P(i, 0, base, 17.0), (0.3, 3.2, 0.3), yaw)
+            for side in (-1.3, -0.45, 0.45, 1.3):
+                B["glow-lamp"].box(k.P(i, 0.25, base + side, 16.55), (0.5, 0.6, 0.4), yaw)
     # Ships at anchor in the harbour, lit.
     cx, cy, reach = k.centre()
     ships = 0
@@ -827,7 +888,7 @@ def docklands(k: Kit) -> dict:
         B["tower"].box(k.P(i, 0, 0, 10), (4, 2 * span + 3, 2.5), yaw)
         for q in range(9):
             B["glow-lamp"].box(k.P(i, -2.1, -span + q * span / 4, 10.4), (0.1, 0.5, 0.5), yaw)
-    return {"efforts": efforts, "warehouses": sheds, "cranes": cranes, "ships": ships}
+    return {"efforts": efforts, "warehouses": sheds, "cranes": cranes, "ships": ships, "lorries": lorries, "masts": masts}
 
 
 def dolomites(k: Kit) -> dict:

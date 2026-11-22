@@ -34,6 +34,7 @@ import {
 } from 'three/webgpu';
 import type { Backend, SceneFrame, TimedSegment as Segment, World, WorldRenderer } from '@telo/api';
 import { Course, type CoursePlace, courseLamps, courseLook, parseCourse } from './course';
+import { fenceMaterial } from './fence-material';
 import { groundMaterial, surfaceTexture } from './ground-material';
 import { LampGlow } from './lamp-glow';
 import { lampLightMap } from './lamp-light-map';
@@ -69,6 +70,7 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   Solid: 250,
   Walls: 250,
   Windows: 250,
+  Fences: 200,
   Glow: 400,
   Beams: 460,
   Leaves: 210,
@@ -179,6 +181,8 @@ export class CourseRenderer implements WorldRenderer {
   private spent = 0;
   /** Set by the test-only hook: the tier never steps, and each frame's cost is written to the hook. */
   private pinned = false;
+  /** Set by the test-only hook: the metres up the road the bench starts its ride from. */
+  private benchFrom = 0;
   /** The street lamps' light on what stands near the road, where the course has lamps; and the riders' materials lit by it. */
   private lampGlow: LampGlow | null = null;
   private readonly lamplit = new Map<Material, Material>();
@@ -203,6 +207,8 @@ export class CourseRenderer implements WorldRenderer {
       this.renderer = renderer;
       if (asked && !asked.judged) {
         this.pinned = true;
+        const from = (globalThis as Record<string, unknown>)[PROBE_KEY] as { from?: unknown };
+        if (typeof from.from === 'number') this.benchFrom = from.from;
         this.tier = PINNED[asked.tier] ?? START;
         renderer.info.autoReset = false;
       }
@@ -253,9 +259,10 @@ export class CourseRenderer implements WorldRenderer {
     if (!renderer || !course || !you) return;
     // A race is won by distance, so its riders are placed by the metres they have ridden and cross the map's finish
     // line as the race's; a class is ridden by its clock (L2-166 AC2).
-    const metres = frame.riders
+    const ridden = frame.riders
       ? Math.min(frame.s, course.end)
       : course.metresAt(frame.time * this.clockScale);
+    const metres = Math.min(ridden + this.benchFrom, course.end);
     this.lampShadows?.begin();
     this.ride(you, metres, 0);
     you.pose(frame.reducedMotion ? 0 : frame.crank);
@@ -388,6 +395,9 @@ export class CourseRenderer implements WorldRenderer {
       materials['Skyline'],
       materials['Windows'],
     );
+    // Railings are panels with their place along the railing in their UV (fence-material.ts).
+    materials['Fences'] = fenceMaterial(this.lampGlow?.light ?? null, LAMP_ON.Solid);
+    this.disposables.push(materials['Fences']);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     map.traverse((part) => {
       const mesh = part as Mesh;

@@ -9,6 +9,8 @@ node tools/course-bench/bench.mjs <label> [map id] [out dir]
 ```
 
 `map id` is the catalogue's (`neon-docklands` by default); `out dir` is `.cache/course-bench-out` by default.
+`WZ_BENCH_FROM=<metres>` starts the ride that far up the road, to film and time a climb or a bend rather than the
+start line (the HUD still reads from the start line: only the world is moved on).
 
 It is not a test and not a sweep: it compares nothing, and neither `npm run e2e` nor CI runs it. It opens the
 production build (served on `:4330` by `frontend/scripts/serve-dist.mjs`) in a Chromium window, with the shared
@@ -33,3 +35,6 @@ here, on a Snapdragon X's Adreno X1-85). A change that fails is not kept.
 
 The film is taken off the screen, so the window must be in front and unobscured, at the top left of the display.
 ffmpeg must be on the `PATH`.
+
+On a busy machine the median of three moves by a third. Then run the old and the new turn about (swap the map's
+glb in `frontend/dist/ride/browser/courses/`, or the build) and compare the best run of each.

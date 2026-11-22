@@ -213,12 +213,38 @@ colour already does the second.
 **Watch for.** The opening's share of the panel (`OPENING`) follows `WINDOW_SURROUND` and the window's size: a
 window of another size needs the same surround in proportion, or the constants given as part of the UV.
 
+### 7. Dressing the roadside, and railings as panels (Docklands pass 7)
+
+**What it gives.** The land beside the road stops being bare: a railing, bollards, drums, crates, parked lorries,
+floodlight masts, cranes and containers.
+
+**How it works.**
+
+- `tools/blender/themes.py`: the theme's scenery function walks the road's samples and deals clutter from a random
+  generator of its own (`random.Random(k.n * 31 + 7)`), so adding to it moves nothing already placed. Each thing is
+  a few boxes or one prism in an existing material, so it joins the `Solid` or `Walls` group and costs no draw
+  call.
+- `Kit.fence(i, off, height)`: one quad from this sample of the road to the next, in the `Fences` part, with a UV
+  of (metres along the road, share of the height). `build_course.py` makes it the `Fences` group.
+- `frontend/projects/world/src/fence-material.ts`: a flat-shaded Lambert node material, both sides drawn, that
+  keeps a post every 2 m and three rails and cuts the rest away with `alphaTest`; the lamps light it as they do
+  the walls.
+
+**To apply it to another map.** Deal the map's own clutter in its theme's scenery function from a generator of its
+own (hay bales and troughs on the prairie, cafe tables in the old town, boats on the beach). Use `Kit.fence` for
+anything long and thin beside the road: a prairie's post-and-rail fence (change the posts' spacing and the rails in
+`fence-material.ts`, or give the panel a kind), a guard rail, a promenade's balustrade.
+
+**Cost.** About 5,000 triangles in the frame and 5 draw calls on Docklands; 0.6 MB gzipped in the file.
+
+**Watch for.** The count: a thing every sample of the road is thousands of things. A railing, a kerb or a line is a
+panel or a formula, never boxes. Check the file's size and the frame's triangles after every rebuild.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
 
-1. The land beside the road is bare: no clutter (bollards, crates, bins, fences, parked vehicles), and the quay is
-   an empty apron.
+1. The map's file is over its 3 MB budget (3.99 MB gzipped): positions and UVs are 32-bit floats.
 2. Nothing but the riders casts a shadow: posts, walls and containers throw none.
 3. The water is a flat colour: no reflection of the lights along the quay or of the city.
 4. Wet ground: reflections of the neon and the lamps in the road.
