@@ -67,6 +67,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 15.2 | [Start a live race](15-2-start-a-live-race/README.md) | 1:43 | The lobby's countdown, 3, 2, 1 and Go over the inert lobby at every width, and the race in its session, its clock on the session's server-time start however late it opened |
 | 15.3 | [Live standings](15-3-live-standings/README.md) | 1:43 | A riders-online race's board from the service's standings, the rider 5th then 4th, each gap to the rider, the race reporting its distance, and the board at every width |
 | 15.4 | [Mark leavers and DNF](15-4-mark-leavers-and-dnf/README.md) | 1:43 | A riders-online race's leaver marked DNF in last place on every board at once, silent and lost riders caught, and the board at every width |
+| 15.5 | [Record results nobody can change](15-5-record-results-nobody-can-change/README.md) | 1:43 | A riders-online race's places, times and output recorded by the service and taken by every submitted ride, Results waiting while the result is pending, at every width |
 
 ## What every video is
 
