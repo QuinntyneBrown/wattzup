@@ -10,6 +10,12 @@ import {
 /** The Cache Storage cache the device keeps its worlds in (L2-165). */
 export const WORLD_CACHE = 'telo-worlds';
 
+/**
+ * Angular's header for a request the app cache's service worker leaves alone: it would answer only once the whole file
+ * had arrived, hiding the progress and the `Range` resume (ADR 0032).
+ */
+const PAST_THE_APP_CACHE = { 'ngsw-bypass': 'true' };
+
 /** What a stopped download had received, kept so the next one resumes from it (L2-156 AC2). */
 interface Received {
   readonly chunks: Uint8Array[];
@@ -22,7 +28,8 @@ interface Received {
  * streams to report the bytes received of `Content-Length` (L2-152 AC2), and keeps the finished file in Cache Storage
  * (`telo-worlds`), from which a later load resolves at once (AC3). A download that stops part way keeps what it
  * received for as long as the class ride is open, and the next asks for the rest with `Range` (L2-156 AC2); a server
- * that answers with the whole file starts it again. Offline with nothing saved, it refuses at once (AC5).
+ * that answers with the whole file starts it again. Offline with nothing saved, it refuses at once (AC5). Its requests go
+ * past the app cache's service worker, so the bytes are counted as they arrive and a stopped download resumes.
  */
 @Injectable()
 export class FetchWorldDownloader implements WorldDownloader {
@@ -49,7 +56,10 @@ export class FetchWorldDownloader implements WorldDownloader {
     try {
       response = await fetch(url, {
         signal,
-        headers: kept.received > 0 ? { Range: `bytes=${kept.received}-` } : {},
+        headers:
+          kept.received > 0
+            ? { ...PAST_THE_APP_CACHE, Range: `bytes=${kept.received}-` }
+            : PAST_THE_APP_CACHE,
       });
       if (response.status !== 200 && response.status !== 206) throw new Error(`${response.status}`);
     } catch (error) {

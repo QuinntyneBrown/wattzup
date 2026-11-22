@@ -16,7 +16,7 @@ import { provideMaps } from '../maps/provide-maps';
 
 /**
  * The race's route, loaded with it and opened only for a map open to the rider: the map catalogue's client and the
- * rider's progress (the device's copy when the backend cannot be reached), the finished rides' client,
+ * rider's progress (the app cache's last answer when the backend cannot be reached), the finished rides' client,
  * the monotonic clock the race runs on (`performance.now()`, L2-133 AC1), the screen wake lock (AC3) and the world's
  * renderer loader, so their code
  * stays out of the other screens' chunks (AGENTS.md, lazy loading first). The page provides the race itself, which

@@ -60,4 +60,11 @@ export class MapRow {
     this.goal = root.locator('.map-row__goal-text');
     this.lock = root.locator('.map-row__lock');
   }
+
+  /** Whether the map's cover has been drawn from its file, not left broken. */
+  thumbnailDrawn(): Promise<boolean> {
+    return this.thumbnail.evaluate(
+      (image: HTMLImageElement) => image.complete && image.naturalWidth > 0,
+    );
+  }
 }

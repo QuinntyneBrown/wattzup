@@ -1,6 +1,7 @@
 import type { Routes } from '@angular/router';
 import { FULLSCREEN, HttpRiderProgressApi, PROGRESS_STORE, RIDER_PROGRESS_API } from '@telo/api';
 import { BrowserFullscreen } from '@telo/domain';
+import { provideAppCache } from './app-cache/provide-app-cache';
 import { provideBikeConnection } from './bike/provide-bike-connection';
 import { rememberedBikeGuard } from './bike/remembered-bike.guard';
 import { RiderProgressStore } from './progress/rider-progress-store';
@@ -14,7 +15,7 @@ import { provideSession } from './session/provide-session';
 export const rideRoutes: Routes = [
   {
     path: '',
-    providers: [provideBikeConnection(), provideSession()],
+    providers: [provideBikeConnection(), provideSession(), provideAppCache()],
     // Every screen needs a rider but sign-in, the code screen and not-found (L2-001 AC1).
     canActivateChild: [authGuard],
     children: [

@@ -14,7 +14,7 @@ Container_Boundary(app, "Ride app") {
   Component(outbox, "IndexedDbRidesWaiting", "Service · domain/storage", "IndexedDB rides-waiting store")
   Component(ridesApi, "HttpRidesApi", "HTTP client · api", "Implements RidesApi")
   Component(register, "provideAppCache", "Environment initializer · ride, on the lazy parent route", "Registers the service worker once the first screen settles")
-  Component(sw, "Angular service worker", "ngsw-worker.js", "Caches the shell and chunks at once; map art and worlds on first use")
+  Component(sw, "Angular service worker", "ngsw-worker.js", "Caches the shell and chunks at once, map art and worlds on first use, and the last progress")
 }
 Rel(results, sync, "Hands the finished ride to")
 Rel(sync, outbox, "Adds, lists and deletes")

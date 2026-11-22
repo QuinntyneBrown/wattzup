@@ -60,9 +60,12 @@ designed in `progression/keep-progress-on-the-backend` and
   (about 4 MB, so a screen never opened online still opens offline) and the fonts. Its asset group
   `assets` caches on first use the map covers (`/maps/**`), the bike photo (`/machines/**`), the
   world panoramas (`/worlds/**`) and the mesh decoder (`/draco/**`). World music (`/music/**`,
-  200 MB) is never cached. It has no data group: the catalogues are kept by `CachedMapsApi` and
-  `CachedClassesApi` in `localStorage` (ADR 0028, ADR 0029), which answer offline already. A new
-  deploy is fetched in the background and used from the next start; telling the rider of it is
+  200 MB) is never cached. Its one data group, `progress`, keeps the last answer of
+  `GET /api/progress` with the `freshness` strategy and no timeout: online the backend always
+  answers, and when the request fails the kept answer does, so the race's open-map check and the
+  header read the rider's maps and level offline. The catalogues need no data group: they are kept
+  by `CachedMapsApi` and `CachedClassesApi` in `localStorage` (ADR 0028, ADR 0029). A new deploy is
+  fetched in the background and used from the next start; telling the rider of it is
   `platform/install-the-app`.
 - **`provideAppCache`** — environment initializer in the `ride` application, bound on the screens'
   lazy parent route (ADR 0032). Once the first screen has settled, or 30 seconds after it starts,
@@ -158,3 +161,10 @@ device, and the multiplayer choices say why they are unavailable (`L2-135` AC3, 
    among them, so any ride can start offline after one visit. If that download proves too heavy on
    a metered connection, the World Ride chunks could move to the `assets` group, cached on first
    use, at the cost of a world class never ridden online not starting offline.
+4. The `progress` data group keeps the last answer for the device, not for a rider. A rider who
+   signs out and another who signs in on the same device would see the first rider's maps and
+   level only while the backend cannot be reached. Clearing it on sign-out would need the app to
+   reach the worker's caches; slice 17.2 leaves it.
+5. The progress is kept only once the worker controls the page, from the second screen the rider
+   opens or the next start, since the first screen's requests are made before the worker is
+   registered.
