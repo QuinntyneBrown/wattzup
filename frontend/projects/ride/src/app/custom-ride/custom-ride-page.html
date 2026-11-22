@@ -33,6 +33,8 @@
       }
     </wz-ride-readouts>
     <wz-ride-view
+      [hasVideo]="store.videoId !== null"
+      [progressLabel]="store.progressLabel()"
       [segments]="store.segments"
       [averages]="store.averages()"
       [bucket]="store.bucket"
@@ -40,7 +42,17 @@
       [total]="store.lengthSeconds"
       [max]="store.traceMax"
       [traceLabel]="store.traceLabel()"
-    />
+    >
+      @if (store.videoId; as videoId) {
+        <wz-ride-video
+          slot="video"
+          [videoId]="videoId"
+          [title]="store.workout"
+          [unavailable]="store.videoUnavailable()"
+          (frame)="store.playVideo($event)"
+        />
+      }
+    </wz-ride-view>
     <dl wz-ride-metrics [metrics]="store.metrics()"></dl>
   </section>
 </main>

@@ -45,6 +45,12 @@
     [hidden]="tab() !== 'video'"
   >
     <ng-content select="[slot=video]" />
+    <wz-ride-progress
+      [segments]="segments()"
+      [elapsed]="elapsed()"
+      [total]="total()"
+      [label]="progressLabel()"
+    />
   </div>
 }
 <div

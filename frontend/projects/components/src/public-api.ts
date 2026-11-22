@@ -131,3 +131,5 @@ export { RIDE_KINDS, type TraceSegment } from './custom-ride/ride-kind';
 export { RideTrace } from './custom-ride/ride-trace';
 export { RideView, type RideViewTab } from './custom-ride/ride-view';
 export { RideMetrics, type RideMetric } from './custom-ride/ride-metrics';
+export { RideVideo } from './custom-ride/ride-video';
+export { RideProgress } from './custom-ride/ride-progress';

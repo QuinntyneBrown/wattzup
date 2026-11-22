@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { formatClock } from '../metric/format-clock';
 import type { TraceSegment } from './ride-kind';
+import { RideProgress } from './ride-progress';
 import { RideTrace } from './ride-trace';
 import { rideTicks } from './ride-trace-geometry';
 
@@ -23,7 +24,7 @@ export type RideViewTab = 'video' | 'chart';
  */
 @Component({
   selector: 'wz-ride-view',
-  imports: [RideTrace],
+  imports: [RideProgress, RideTrace],
   templateUrl: './ride-view.html',
   styleUrl: './ride-view.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,6 +39,8 @@ export class RideView {
   readonly total = input.required<number>();
   readonly max = input.required<number>();
   readonly traceLabel = input.required<string>();
+  /** The progress strip's label, "Ride progress: 6:52 of 30:00" (L2-103 AC4). */
+  readonly progressLabel = input('');
 
   protected readonly tab = linkedSignal<RideViewTab>(() => (this.hasVideo() ? 'video' : 'chart'));
   protected readonly tabs = computed<RideViewTab[]>(() =>

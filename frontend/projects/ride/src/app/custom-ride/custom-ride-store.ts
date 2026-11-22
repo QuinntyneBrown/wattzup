@@ -1,6 +1,13 @@
 import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { BIKE_CONNECTION, BLUETOOTH_SUPPORT, REMEMBERED_BIKE, SCREEN_WAKE_LOCK } from '@telo/api';
+import {
+  BIKE_CONNECTION,
+  BLUETOOTH_SUPPORT,
+  REMEMBERED_BIKE,
+  SCREEN_WAKE_LOCK,
+  VIDEO_PLAYER_FACTORY,
+  type VideoPlayer,
+} from '@telo/api';
 import {
   type RideBikeTone,
   type RideDelta,
@@ -16,6 +23,7 @@ import {
   RideClock,
   RideTicker,
   RideTotals,
+  VideoClockSync,
   WorkoutEngine,
   bikeStatus,
   customWorkoutLabel,
@@ -23,6 +31,7 @@ import {
   planLength,
   planStateAt,
   traceMaxWatts,
+  videoOf,
 } from '@telo/domain';
 import { CustomWorkoutStore } from '../custom-workout/custom-workout-store';
 
@@ -49,11 +58,25 @@ export class CustomRideStore {
   /** The seconds recorded: the trace and the totals have moved on to it. */
   private readonly recorded = signal(0);
   private lastSecond = 0;
+  private readonly playerFactory = inject(VIDEO_PLAYER_FACTORY);
+  private readonly sync = inject(VideoClockSync);
+  private readonly player = signal<VideoPlayer | null>(null);
+  private readonly playerMissing = signal(false);
+  private videoHost: HTMLElement | null = null;
+  private destroyed = false;
 
   /** The plan as the ride started it; editing the workout leaves this ride (L2-101 AC3). */
   readonly plan = inject(CustomWorkoutStore).plan();
   readonly lengthSeconds = planLength(this.plan);
   readonly workout = customWorkoutLabel(this.draft());
+  /** The workout's YouTube video, or `null` without one (L2-098 AC6). */
+  readonly videoId = videoOf(this.draft());
+  /** Where in the video the ride's 0:00 falls, in seconds (L2-098 AC3). */
+  private readonly offset = this.draft().video.offset;
+  /** Whether the video cannot play: its code or YouTube's did not load, or the player failed. */
+  readonly videoUnavailable = computed(
+    () => this.playerMissing() || this.player()?.state() === 'error',
+  );
   /** The whole seconds ridden, never past the plan's length. */
   readonly elapsed = computed(() => Math.min(this.ticker.second(), this.lengthSeconds));
   readonly clockText = computed(() => formatClock(this.elapsed()));
@@ -125,6 +148,11 @@ export class CustomRideStore {
     };
   });
 
+  /** The progress strip's label (L2-103 AC4). */
+  readonly progressLabel = computed(
+    () => `Ride progress: ${this.clockText()} of ${this.totalText}`,
+  );
+
   /** The trace's label (L2-103 AC3). */
   readonly traceLabel = computed(() => {
     const power = this.round(this.telemetry.powerW());
@@ -158,9 +186,37 @@ export class CustomRideStore {
     this.ticker.ticks.pipe(takeUntilDestroyed(destroyRef)).subscribe((second) => {
       this.record(Math.min(second, this.lengthSeconds));
       if (second >= this.lengthSeconds) this.end();
+      else this.syncVideo();
     });
-    // The lock is bound on the route, whose injector outlives the page.
-    destroyRef.onDestroy(() => this.wakeLock.release());
+    destroyRef.onDestroy(() => {
+      this.destroyed = true;
+      this.player()?.destroy();
+      // The lock is bound on the route, whose injector outlives the page.
+      this.wakeLock.release();
+    });
+  }
+
+  /**
+   * Plays the workout's video in `host`, the frame the page draws when the workout has one, from the ride clock plus
+   * its offset, without controls (L2-103 AC2, L2-088 AC1, AC5); called once. When it cannot load, the ride goes on.
+   */
+  playVideo(host: HTMLElement): void {
+    const videoId = this.videoId;
+    if (videoId === null || this.videoHost) return;
+    this.videoHost = host;
+    this.playerFactory().then(
+      (player) => {
+        if (this.destroyed) return player.destroy();
+        this.player.set(player);
+        void player.load(host, videoId, {
+          startSeconds: this.offset + this.clock.elapsedMs() / 1000,
+          controls: false,
+          autoplay: true,
+          title: this.workout,
+        });
+      },
+      () => this.playerMissing.set(true),
+    );
   }
 
   /**
@@ -178,7 +234,16 @@ export class CustomRideStore {
   private end(): void {
     this.clock.pause();
     this.ticker.stop();
+    this.player()?.pause();
     this.wakeLock.release();
+  }
+
+  /** On each tick, a video more than 1.5 s off the ride clock plus the offset seeks back to it (L2-088 AC2). */
+  private syncVideo(): void {
+    const player = this.player();
+    if (player?.state() !== 'playing') return;
+    const seek = this.sync.check(player.currentTime(), this.clock.elapsedMs() / 1000, this.offset);
+    if (seek !== null) player.seekTo(seek);
   }
 
   private round(watts: number | null): number | null {

@@ -6,6 +6,7 @@ import {
   RideInterval,
   RideMetrics,
   RideReadouts,
+  RideVideo,
   RideView,
   RideWorkoutLink,
 } from '@telo/components';
@@ -15,14 +16,16 @@ import {
   RideClock,
   RideTicker,
   RideTotals,
+  VideoClockSync,
   WorkoutEngine,
 } from '@telo/domain';
 import { CustomRideStore } from './custom-ride-store';
 
 /**
  * The custom ride (docs/mocks/pages/custom-ride/, L2-101 to L2-104) at `/profile/custom/ride`: the ride header, the
- * telemetry with Power, Cadence and the interval card, the main view and the metrics. Every part of the ride is provided here, so leaving the page
- * stops the clock and the ticker and releases them.
+ * telemetry with Power, Cadence and the interval card, the main view with the workout's video and the metrics.
+ * Every part of the ride is provided here, so leaving the page stops the clock, the ticker and the video and releases
+ * them.
  */
 @Component({
   selector: 'wz-custom-ride-page',
@@ -31,6 +34,7 @@ import { CustomRideStore } from './custom-ride-store';
     RideInterval,
     RideMetrics,
     RideReadouts,
+    RideVideo,
     RideView,
     RideWorkoutLink,
     RouterLink,
@@ -43,6 +47,7 @@ import { CustomRideStore } from './custom-ride-store';
     ResistanceController,
     BikeTelemetry,
     RideTotals,
+    VideoClockSync,
   ],
   templateUrl: './custom-ride-page.html',
   styleUrl: './custom-ride-page.scss',

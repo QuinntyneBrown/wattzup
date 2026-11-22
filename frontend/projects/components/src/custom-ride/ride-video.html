@@ -1,0 +1,9 @@
+<div class="ride-video__box">
+  <img class="ride-video__img" [src]="cover()" [alt]="'Video: ' + title()" />
+  <div class="ride-video__player"></div>
+</div>
+@if (unavailable()) {
+  <wz-inline-message class="ride-video__notice" tone="warn" role="status"
+    >The video can’t play. The bike will still follow the plan.</wz-inline-message
+  >
+}
