@@ -4,6 +4,7 @@ import { FULLSCREEN } from '@telo/api';
 import {
   RideControl,
   RideHeader,
+  RideOverlay,
   RideInterval,
   RideMetrics,
   RideReadouts,
@@ -33,6 +34,7 @@ import { CustomRideStore } from './custom-ride-store';
   imports: [
     RideControl,
     RideHeader,
+    RideOverlay,
     RideInterval,
     RideMetrics,
     RideReadouts,

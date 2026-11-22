@@ -124,6 +124,7 @@ export { PlanPreview, type PlanPreviewFact } from './custom-workout/plan-preview
 export { VideoFrame } from './custom-workout/video-frame';
 export { VideoSync, type VideoFrameDrawn } from './custom-workout/video-sync';
 export { RideHeader, type RideBikeTone, type RideRun } from './custom-ride/ride-header';
+export { RideOverlay, type RideOverlayKind } from './custom-ride/ride-overlay';
 export { RideWorkoutLink } from './custom-ride/ride-workout-link';
 export { RideReadouts, type RideDelta } from './custom-ride/ride-readouts';
 export { RideInterval } from './custom-ride/ride-interval';

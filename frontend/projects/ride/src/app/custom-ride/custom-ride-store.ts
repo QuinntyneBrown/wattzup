@@ -1,4 +1,4 @@
-import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
+import { DestroyRef, Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   BIKE_CONNECTION,
@@ -12,6 +12,7 @@ import {
   type RideBikeTone,
   type RideDelta,
   type RideMetric,
+  type RideOverlayKind,
   type RideRun,
   type TraceSegment,
   formatClock,
@@ -68,8 +69,16 @@ export class CustomRideStore {
   private readonly playerMissing = signal(false);
   private videoHost: HTMLElement | null = null;
   private destroyed = false;
-  /** Whether the rider paused the ride (L2-105 AC1). */
+  /** Whether the rider paused the ride, or a lost bike paused it for them (L2-105 AC1, AC2). */
   private readonly pausedByRider = signal(false);
+  /** Whether the ride has started. */
+  private readonly started = signal(true);
+  /** Whether the ride has ended: at the plan's length, or by End. */
+  private readonly ended = signal(false);
+  /** Whether the bike has stopped answering since the ride started (`ble` not connected, L2-017). */
+  readonly bikeLost = computed(
+    () => this.started() && !this.ended() && this.connection.ble() !== 'connected',
+  );
 
   /** The plan as the ride started it; editing the workout leaves this ride (L2-101 AC3). */
   readonly plan = inject(CustomWorkoutStore).plan();
@@ -106,6 +115,9 @@ export class CustomRideStore {
   readonly bike = computed(() => {
     const name = (this.connection.bike() ?? this.remembered)?.name ?? null;
     const status = bikeStatus(this.connection.ble(), this.support.state(), name);
+    // While the ride waits for its lost bike, reconnecting included, the status says so in red (L2-105 AC2).
+    if (this.bikeLost() && status.rideLabel === 'No bike connected')
+      return { name, state: 'Disconnected', tone: 'alert' as RideBikeTone };
     const tone: RideBikeTone =
       status.rideLabel === 'Connected'
         ? 'ok'
@@ -171,8 +183,14 @@ export class CustomRideStore {
   /** "Sent to bike", newest first, at most 50 rows (L2-029 AC1, AC3). */
   readonly sent = this.resistance.log;
 
-  /** The header's run button: Pause while the ride runs, Resume once the rider has paused it. */
+  /** The header's run button: Pause while the ride runs, Resume once paused, off while the bike is lost. */
   readonly run = computed<RideRun>(() => (this.pausedByRider() ? 'resume' : 'pause'));
+  readonly runDisabled = this.bikeLost;
+
+  /** The overlay over the telemetry, or `null` while the ride can run (L2-105 AC2). */
+  readonly overlay = computed<RideOverlayKind | null>(() => (this.bikeLost() ? 'lost' : null));
+  /** The bike's name for the overlay's words. */
+  readonly bikeName = computed(() => (this.connection.bike() ?? this.remembered)?.name ?? null);
 
   /** The progress strip's label (L2-103 AC4). */
   readonly progressLabel = computed(
@@ -209,6 +227,10 @@ export class CustomRideStore {
     this.clock.start();
     this.ticker.start();
     this.engine.follow(this.plan);
+    // A lost bike pauses the ride where it is; when the bike is back, the ride stays paused until Resume (L2-105).
+    effect(() => {
+      if (this.bikeLost()) untracked(() => this.pause());
+    });
     this.ticker.ticks.pipe(takeUntilDestroyed(destroyRef)).subscribe((second) => {
       this.record(Math.min(second, this.lengthSeconds));
       if (second >= this.lengthSeconds) this.end();
@@ -256,6 +278,11 @@ export class CustomRideStore {
     this.recorded.set(this.lastSecond);
   }
 
+  /** The overlay's action: Reconnect tries the lost bike at once, rather than at the connection's next retry. */
+  act(): void {
+    if (this.overlay() === 'lost') this.connection.reconnectNow();
+  }
+
   /** Pause or Resume, as the run button reads. */
   toggleRun(): void {
     if (this.pausedByRider()) this.resume();
@@ -275,7 +302,7 @@ export class CustomRideStore {
 
   /** Carries the ride on from where it held, with the video back on the clock plus its offset. */
   resume(): void {
-    if (!this.pausedByRider()) return;
+    if (!this.pausedByRider() || this.bikeLost()) return;
     this.pausedByRider.set(false);
     this.clock.resume();
     const player = this.player();
@@ -298,6 +325,7 @@ export class CustomRideStore {
 
   /** The plan's end: the clock stops at its length. */
   private end(): void {
+    this.ended.set(true);
     this.clock.pause();
     this.ticker.stop();
     this.player()?.pause();

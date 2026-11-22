@@ -43,6 +43,10 @@
   color: var(--color-volt);
 }
 
+.ride-header__status-icon--alert {
+  color: var(--color-heart-fg);
+}
+
 .ride-header__status-name {
   white-space: nowrap;
   font-weight: var(--font-weight-medium);
