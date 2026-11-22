@@ -7,6 +7,7 @@ using Telo.Ride.Application.Classes;
 using Telo.Ride.Application.Maps;
 using Telo.Ride.Infrastructure.Accounts;
 using Telo.Ride.Infrastructure.Catalogue;
+using Telo.Ride.Infrastructure.Live;
 
 namespace Telo.Ride.Infrastructure;
 
@@ -27,6 +28,7 @@ public static class DependencyInjection
         services.AddSingleton<TeloRideMetrics>();
         services.AddSingleton<IClassCatalogue, EmbeddedClassCatalogue>();
         services.AddSingleton<IMapCatalogue, EmbeddedMapCatalogue>();
+        services.AddSingleton<IGroupSessionRegistry, InMemoryGroupSessionRegistry>();
         services.AddSingleton<ISignInCodeHasher, HmacSignInCodeHasher>();
         services.AddSingleton<IEmailSender, SmtpEmailSender>();
         services.AddHostedService<AccountErasureService>();

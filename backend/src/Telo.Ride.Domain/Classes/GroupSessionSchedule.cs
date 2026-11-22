@@ -21,6 +21,26 @@ public static class GroupSessionSchedule
         return [.. Enumerable.Range(0, count).Select(i => first + (Interval * i))];
     }
 
+    /// <summary>
+    /// Reads a session's class and start from its id; false for an id that names no slot of the schedule, such as one
+    /// whose start is not on a quarter hour.
+    /// </summary>
+    public static bool TryParse(string sessionId, out string classId, out DateTimeOffset start)
+    {
+        classId = string.Empty;
+        start = default;
+        var at = sessionId.LastIndexOf('@');
+        if (at <= 0)
+            return false;
+        if (!DateTimeOffset.TryParseExact(
+                sessionId[(at + 1)..], "yyyyMMdd'T'HHmm'Z'", CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out var parsed)
+            || parsed.Minute % 15 != 0)
+            return false;
+        (classId, start) = (sessionId[..at], parsed);
+        return true;
+    }
+
     /// <summary>A session's id, from its class and its start: two riders asking for the same slot reach the same session.</summary>
     public static string SessionId(string classId, DateTimeOffset start) =>
         $"{classId}@{start.ToUniversalTime().ToString("yyyyMMdd'T'HHmm'Z'", CultureInfo.InvariantCulture)}";
