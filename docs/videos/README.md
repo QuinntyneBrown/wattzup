@@ -96,6 +96,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 22.4 | [Restrict third parties](22-4-restrict-third-parties/README.md) | 1:53 | The built API's policy and headers, written once; a tracker's script and call home refused in the page; every spec run under the policy, failing on a refusal; a static policy; a sign-in leaving nothing of the rider's in telemetry; 390 to 1440 px |
 | 23.1 | [Fit every width](23-1-fit-every-width/README.md) | 1:53 | Fifteen screens fitting 320 and 2560 px; the custom ride's clock and buttons wrapping at 320 px; page margins of 16, 24 and 32 px and an 80 rem container; the responsive sweep a person runs; 390 to 1440 px |
 | 23.2 | [Touch and keyboard](23-2-touch-and-keyboard/README.md) | 1:56 | 44 px tap areas drawn over Settings at 390 px; the 34 controls the first run missed; the class ride's 48 px header and the custom ride's 48 px squares; the focus ring on Home and a class card at 1440 px; the focus style taken out for one run; Settings from 390 to 1440 px |
+| 23.3 | [Screen readers and motion](23-3-screen-readers-and-motion/README.md) | 1:56 | What a screen reader hears as the custom ride's first work starts and as Results opens; the leave dialog keeping the focus with the app inert; the interval bar stilled under reduced motion; Results from 390 to 1440 px |
 
 ## What every video is
 
