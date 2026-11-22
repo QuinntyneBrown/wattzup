@@ -1,0 +1,71 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "A tablet on the handlebars, a laptop cast to the wall: fill the screen from any page."
+      ]
+    },
+    {
+      "id": "race",
+      "bars": 5,
+      "lines": [
+        "The race had no Full screen button. Now it sits at the end of the bar, and in full screen it reads Exit full screen."
+      ]
+    },
+    {
+      "id": "everywhere",
+      "bars": 5,
+      "lines": [
+        "The class ride, Class Start, Race Setup, Results and Connect Bike gain it too: every header the mocks draw."
+      ]
+    },
+    {
+      "id": "absent",
+      "bars": 5,
+      "lines": [
+        "Where the browser has no Fullscreen API, no header offers it. The custom ride and workout used to show it anyway."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "Fourteen screens, each pressed in and out, and each checked without the API."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 4,
+      "lines": [
+        "Race Setup, from a phone to the full screen."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}
