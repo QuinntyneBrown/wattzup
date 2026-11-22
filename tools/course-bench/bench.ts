@@ -150,6 +150,13 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
     );
   }
 
+  // WZ_BENCH_CPU=<n> slows the page's processor n times, as a stand-in for a slower device's. It does not slow the
+  // graphics chip: a real device is the only true test.
+  const slowed = Number(process.env["WZ_BENCH_CPU"] ?? 1);
+  if (slowed > 1) {
+    const throttle = await page.context().newCDPSession(page);
+    await throttle.send("Emulation.setCPUThrottlingRate", { rate: slowed });
+  }
   // WZ_BENCH_ALLOC=1 also samples what the page allocates while it is timed, and writes who made the most.
   const sampling = process.env["WZ_BENCH_ALLOC"] === "1";
   const cdp = sampling ? await page.context().newCDPSession(page) : null;

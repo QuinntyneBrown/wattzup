@@ -54,3 +54,6 @@ For each frame over 20 ms the timing also records `slowLateMs` (how late the fra
 display's tick) and `slowScriptMs` (how long the frame before spent in script), and `longFrames` lists what the
 browser's long-animation-frame entries say ran. A slow frame with all three small was skipped by the compositor or
 the GPU, not by the page.
+
+`WZ_BENCH_CPU=<n>` slows the page's processor n times (Chrome's CPU throttling) as a stand-in for a slower
+device; with `WZ_BENCH_TIER=low` it is the nearest the bench comes to a tablet. It does not slow the graphics chip.

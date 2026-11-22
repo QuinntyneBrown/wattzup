@@ -78,6 +78,25 @@ const SCRATCH_Z = new Vector3();
 /** How far, in metres, one part of a rider shades another, and how dark the deepest shade is. */
 const SHADE_REACH = 0.14;
 const SHADE_DEPTH = 0.7;
+/**
+ * How much a rider moves on the bike with each pedal stroke: little. Seated, the bike rocks under them by `ROCK`
+ * radians, their shoulders sway over it by `SWAY` and their back rises and falls by `BOB` metres; out of the saddle
+ * each grows by its `_STANDING`. A rider who rolls about on the bike reads as a toy; these are a strong rider's.
+ */
+const ROCK = 0.012;
+const ROCK_STANDING = 0.03;
+const SWAY = 0.028;
+const SWAY_STANDING = 0.04;
+const BOB = 0.002;
+const BOB_STANDING = 0.006;
+/** Where the head turns: the top of the neck, under the skull. */
+const NECK = new Vector3(HEAD.x, HEAD.y - 0.07, HEAD.z + 0.025);
+/**
+ * How much of the bike's lean the head takes back out, to stay level, and how far it turns into a bend for each
+ * radian the rider leans.
+ */
+const HEAD_LEVEL = 0.75;
+const HEAD_LOOKS = 1.1;
 /** The middle of the two hands on the hoods, which a rider out of the saddle turns about. */
 const HANDS = new Vector3(0, HOOD.y, HOOD.z);
 /** How far, in radians, a rider standing on the pedals turns about their hands. */
@@ -630,6 +649,7 @@ class CourseCyclist implements RiderModel {
   private readonly hip = new Vector3();
   private readonly rise = new Quaternion();
   private readonly wheels: Mesh[] = [];
+  private readonly head: Mesh;
   private readonly size: number;
   /** The pools the bike's lights throw on the road, at night. */
   private road: Mesh | null = null;
@@ -673,12 +693,20 @@ class CourseCyclist implements RiderModel {
       vertexColors: true,
     });
     // Where the parts meet they shade one another: worked out once for the shape every rider shares.
-    kit.shade([still, trunk, worn]);
+    const skull = mergeGeometries(rider.head, false)!;
+    kit.shade([still, trunk, worn, skull]);
     trunk.translate(-HIP.x, -HIP.y, -HIP.z);
     worn.translate(-HIP.x, -HIP.y, -HIP.z);
+    // The head turns about the top of the neck.
+    skull.translate(-NECK.x, -NECK.y, -NECK.z);
+    this.head = new Mesh(skull, plain);
+    this.head.position.copy(NECK).sub(HIP);
+    this.head.rotation.order = 'YXZ';
+    this.torso.add(this.head);
+    this.owned.push(skull);
     this.torso.add(new Mesh(worn, fabric));
     this.owned.push(worn, fabric, fabric.map!);
-    for (const piece of [...rider.still, ...rider.kit]) piece.dispose();
+    for (const piece of [...rider.still, ...rider.kit, ...rider.head]) piece.dispose();
 
     // The wheels' sides: a disc a wheel, with its rim, decals and spokes.
     for (const axle of [FRONT, REAR]) {
@@ -746,22 +774,29 @@ class CourseCyclist implements RiderModel {
     // sway the other way over it, about the line from the hips to the hands, and the back rises and falls a touch
     // twice a turn.
     const stroke = Math.sin(angle);
+    // The head stays level while the bike leans and rocks under it, as a rider's does, and looks into the bend.
+    const lean = this.group.rotation.z;
+    this.head.rotation.set(
+      0,
+      Math.min(Math.max(lean * HEAD_LOOKS, -0.5), 0.5),
+      -(lean + stroke * (ROCK + ROCK_STANDING * standing)) * HEAD_LEVEL,
+    );
     // The renderer has leant the rider into the bend; the light on the road stays flat on it.
     if (this.road) this.road.rotation.z = -this.group.rotation.z;
     // Out of the saddle the bike is thrown from side to side under the rider, who stays over it.
-    this.rig.rotation.z = stroke * (0.03 + 0.05 * standing);
+    this.rig.rotation.z = stroke * (ROCK + ROCK_STANDING * standing);
     // Standing, the rider turns about their hands on the hoods: the hips lift off the saddle and the shoulders
     // come forward over the bars.
     this.rise.setFromAxisAngle(ACROSS, -STAND * standing);
     this.torso.quaternion
-      .setFromAxisAngle(SPINE, -stroke * (0.07 + 0.08 * standing))
+      .setFromAxisAngle(SPINE, -stroke * (SWAY + SWAY_STANDING * standing))
       .premultiply(this.rise);
     this.torso.position
       .copy(HIP)
       .sub(HANDS)
       .applyQuaternion(this.rise)
       .add(HANDS)
-      .setY(this.torso.position.y + Math.cos(angle * 2) * (0.004 + 0.012 * standing));
+      .setY(this.torso.position.y + Math.cos(angle * 2) * (BOB + BOB_STANDING * standing));
     this.legs.forEach((leg, i) => {
       const a = angle + i * Math.PI;
       const pedal = this.pedalAt.set(
@@ -975,11 +1010,18 @@ function bike(look: Palette): BufferGeometry[] {
 }
 
 /**
- * The rider from the hips up. `still` is coloured by vertex: neck, head and helmet, the bare arms and gloved hands,
- * the seat. `kit` is what the kit's texture is drawn on: the trunk and the sleeves.
+ * The rider from the hips up. `still` is coloured by vertex: the neck, the bare arms and gloved hands, the seat.
+ * `kit` is what the kit's texture is drawn on: the trunk and the sleeves. `head` is the head and helmet, coloured by
+ * vertex, which turns on the neck.
  */
-function body(jersey: Color, look: Palette): { still: BufferGeometry[]; kit: BufferGeometry[] } {
-  const parts: BufferGeometry[] = [];
+function body(
+  jersey: Color,
+  look: Palette,
+): { still: BufferGeometry[]; kit: BufferGeometry[]; head: BufferGeometry[] } {
+  const still: BufferGeometry[] = [];
+  const head: BufferGeometry[] = [];
+  // Where the pieces being made go: the trunk's and arms', or the head's.
+  let parts = still;
   const kit: BufferGeometry[] = [];
   const up = SHOULDER.clone().sub(HIP).normalize();
   const placed = (piece: BufferGeometry, matrix: Matrix4) => {
@@ -1031,8 +1073,10 @@ function body(jersey: Color, look: Palette): { still: BufferGeometry[]; kit: Buf
     10,
   );
   placed(neck, between(nape, skull));
-  const head = ball(skull, new Vector3(0.076, 0.098, 0.092), look.skin, 12);
-  placed(head.piece, new Matrix4().makeRotationX(0.25).setPosition(head.at));
+  // From here to the arms the pieces are the head's: it turns on the neck, apart from the trunk.
+  parts = head;
+  const face = ball(skull, new Vector3(0.076, 0.098, 0.092), look.skin, 12);
+  placed(face.piece, new Matrix4().makeRotationX(0.25).setPosition(face.at));
   // The back of the head, which is what a rider behind sees: hair below the helmet, the ears, the helmet's cradle
   // on the nape and its straps down past each ear to the chin.
   const hair = ball(
@@ -1097,6 +1141,7 @@ function body(jersey: Color, look: Palette): { still: BufferGeometry[]; kit: Buf
   );
   placed(helmet, between(brow, stern));
 
+  parts = still;
   // Arms: the shoulder rounding over the joint, the upper arm in its sleeve, the forearm, a gloved hand on the hood.
   for (const side of [-1, 1]) {
     const shoulder = SHOULDER.clone().add(new Vector3(side * 0.158, -0.018, 0.004));
@@ -1197,7 +1242,7 @@ function body(jersey: Color, look: Palette): { still: BufferGeometry[]; kit: Buf
     12,
   );
   placed(pelvis.piece, new Matrix4().makeRotationX(-0.35).setPosition(pelvis.at));
-  return { still: parts, kit };
+  return { still, kit, head };
 }
 
 /** The share of the kit's texture, from its left, that wraps the trunk; the rest is the sleeve. */

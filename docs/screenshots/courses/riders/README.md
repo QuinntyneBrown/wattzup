@@ -34,6 +34,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 23 | Riders made as finely as they are seen: the others at 0.6 of the camera's rider, and every rider coarser on a slower tier | 120.1 fps, 0 over 20 ms | 9.8 ms | 310 fps (3.23 ms): 310, 309, 310 | 78,951 (100,371 before) | 84 | Yes |
 | 24 | Kit in four designs: a yoke, a hoop, bold side panels or a sash, trimmed in a second colour | 120.0 fps, 0 over 20 ms | 16.7 ms | 310 fps (3.22 ms): 311, 310, 308 | 78,951 | 84 | Yes |
 | 25 | The race number where a number is worn, and riders of different builds | 120.1 fps, 0 over 20 ms | 10.2 ms | 311 fps (3.22 ms): 311, 308, 311 | 78,951 | 84 | Yes |
+| 26 | A head of its own: level while the bike leans, turned into the bend; and the rider's rocking calmed to less than half | 120.0 fps, 0 over 20 ms | 16.7 ms | 300 fps (3.33 ms): 299, 303, 300 | 78,951 | 89 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -836,3 +837,61 @@ their height. The build is seen on the riders up the road, slighter and broader;
 
 **Learned.** What is pinned on a rider should not hide the rider. The number had been covering the part of the
 jersey five passes went into.
+
+## Pass 26: a head of its own, and a calmer rider
+
+**Before** (the top row of `rider-26.jpg`, from `rider-25.mp4`): the head is part of the trunk, so through a bend it
+tips over with the bike, and the rider looks at the kerb.
+
+**After** (the bottom row; `rider-26.mp4`): the head is a part of its own on the neck. It takes back three quarters
+of the bike's lean and rock, so it stays near level as a rider's does, and it turns into the bend, 1.1 rad for each
+radian of lean, to at most 0.5 rad.
+
+**Asked for while this was being made: "The rider wobbles a little too much."** The rock of the bike under each
+stroke is now 0.012 rad seated (it was 0.03) and 0.042 standing (0.08); the shoulders' sway 0.028 seated (0.07) and
+0.068 standing (0.15); the back's rise and fall 2 mm seated (4) and 8 mm standing (16). They are named constants at
+the top of the rider's file (`ROCK`, `SWAY`, `BOB` and their `_STANDING`), with the reason beside them. The film is
+of the calmed rider.
+
+**What changed.** `course-cyclist.ts`: `body()` returns the head's pieces apart; the rider's constructor makes them
+a mesh at the top of the neck inside the torso; `pose` turns it from the lean the renderer has given the rider.
+
+**Cost.** One draw call a rider (89 for the pack, from 84): 300 fps against 311. A first measuring run, taken while
+the machine was in use, gave 191 fps and two slow frames; two runs after it gave 300 fps and none.
+
+## Asked: "Still 60 FPS on low power tablet?" What can and cannot be said
+
+Nothing here has been run on a tablet: every figure in this log is from one desktop, where a frame costs some
+3.3 ms. That is five times inside 60 fps on this machine and says little about a tablet.
+
+A stand-in was run: the bench can now slow the page's processor (`WZ_BENCH_CPU=<n>`; it does not slow the graphics
+chip). On the bridge with the medium pack, ten seconds each:
+
+| Build | Tier | Processor | Frames a second | Mean frame | 95th percentile | Frames over 20 ms |
+| --- | --- | --- | --- | --- | --- | --- |
+| Now | lowest | as it is | 119.9 | 8.3 ms | 8.4 ms | 1 of 1,199 |
+| Now | lowest | 4 times slower | 70 to 71 | 14.2 ms | 25.1 ms | 225 of 700 |
+| Now | lowest | 6 times slower | 43 to 47 | 21 to 23 ms | 41.6 ms | 320 of 450 |
+| Now | top | 4 times slower | 54.8 | 18.2 ms | 25.1 ms | 302 of 549 |
+| Now | top | 6 times slower | 34.2 | 29.2 ms | 41.8 ms | 307 of 343 |
+| Pass 5 | lowest | 4 times slower | 73.9 | 13.5 ms | 25.1 ms | 207 of 740 |
+| Pass 5 | lowest | 6 times slower | 41.0 | 24.4 ms | 41.7 ms | 334 of 410 |
+
+What it says:
+
+- With a processor six times slower than this desktop's, the course does **not** hold 60 fps even at the lowest
+  tier; at four times slower it averages 70 but drops frames throughout.
+- That is the same at pass 5 as now: the riders' passes since have not moved it. It is the renderer's own work for
+  each frame on the processor (some 3.3 ms here, which the allocation samples of the earlier note put mostly in
+  Three.js's WebGPU renderer: a cache key for every object every frame, render lists, pass descriptors), and it was
+  there before the riders were touched.
+- The tiers lower the pixels drawn, which helps a slow graphics chip. They do not lower this processor cost, so
+  stepping down a tier does not rescue a slow processor (lowest tier 70 fps against top tier 55 at four times
+  slower: the difference is the bloom pass and fewer draw calls, not the pixels).
+
+What it does not say: how much slower a given tablet's processor is than this desktop's, or anything about its
+graphics chip. Only the device can.
+
+What would lower the processor cost, in the order it is worth trying: fewer objects drawn each frame (the map is
+some 55 of the 77 draw calls at the lowest tier: longer chunks or merged groups on low tiers); no bloom pass below
+the top tier already holds; fewer materials that are rebuilt-keyed each frame. None is a rider's change.

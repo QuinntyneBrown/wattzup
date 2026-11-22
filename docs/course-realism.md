@@ -610,7 +610,9 @@ arm, where a panel hides it.
 m/s, held within ±0.35 rad; the renderer's `ride` takes the heading from `Course.place` here and 6 m on, and sets
 it as the rider's roll. `course-cyclist.ts` nests three groups, one for each thing that turns the rider: `group`
 (placed and leant by the renderer), `rig` (rocks with sin of the crank's angle), `torso` (turns the other way about
-the hips-to-hands line, and lifts with cos of twice the angle).
+the hips-to-hands line, and lifts with cos of twice the angle). Riders pass 26 made the head a fourth part, which
+takes most of the lean and rock back out and turns into the bend, and calmed the amplitudes (`ROCK` 0.012, `SWAY`
+0.028, `BOB` 2 mm seated): a rider who rolls about on the bike reads as a toy.
 
 **To apply it.** Nothing to do for a map: the lean comes from the centre line every course file already has. A map
 with hairpins shows it most. The three amplitudes (0.03, 0.07, 4 mm) and the cap are constants.
