@@ -66,7 +66,7 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 15.4 | Mark leavers and DNF | Riders who leave or drop out are marked DNF. | 3 | 15. Race people live | 100% |
 | 15.5 | Record results nobody can change | The backend computes the final placings and locks them so no client can change them. | 3 | 15. Race people live | 100% |
 | 16.1 | Download the world | Load card with progress, saved worlds, resume after failure. | 3 | 16. Ride a world class | 100% |
-| 16.2 | Build shaders and warm up | Programs built in batches, warm-up, slow-load and step-down options. | 3 | 16. Ride a world class | 0% |
+| 16.2 | Build shaders and warm up | Programs built in batches, warm-up, slow-load and step-down options. | 3 | 16. Ride a world class | 100% |
 | 16.3 | Start a solo world class | Start riding when ready and connected; world fades in. | 2 | 16. Ride a world class | 0% |
 | 16.4 | Join a group world class | Countdown, start with the group, world fades in when ready. | 2 | 16. Ride a world class | 0% |
 | 17.1 | Ride outbox | Finished rides wait on the device and send when online. | 3 | 17. Ride without a network | 0% |
@@ -103,4 +103,4 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 27.1 | Installable app | Manifest, icons and install from Chrome or Edge. | 2 | 27. Install the app | 0% |
 | 27.2 | Update to a new version | Tell the rider a new version is ready; reload between rides. | 1 | 27. Install the app | 0% |
 
-**Total:** 95 slices, 238 days. **Complete:** 59 slices, 156 days (66%).
+**Total:** 95 slices, 238 days. **Complete:** 60 slices, 159 days (67%).

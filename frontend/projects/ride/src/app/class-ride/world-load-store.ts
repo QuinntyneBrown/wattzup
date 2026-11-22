@@ -20,10 +20,21 @@ import {
   WorldDownloadError,
   type WorldDownloadProgress,
   type WorldRenderer,
+  type WorldStartProgress,
+  type WorldTier,
   panoramaUrl,
 } from '@telo/api';
 import { PlanSummary } from '@telo/domain';
-import { type WorldLoadPhase, type WorldLoadView, worldLoadView } from './world-load-view';
+import { startStepping } from './start-stepping';
+import {
+  TIER_NAME,
+  type WorldLoadPhase,
+  type WorldLoadView,
+  worldLoadView,
+} from './world-load-view';
+
+/** World loading is slow once it has run this long without the world being ready (L2-155 AC1). */
+const SLOW_SECONDS = 20;
 
 /** Whether this browser can draw a 3D world: WebGPU, or else WebGL 2 (L2-156 AC4). */
 function draws3d(): boolean {
@@ -39,8 +50,10 @@ function draws3d(): boolean {
  * library, which holds `main`'s worlds and draws the class's world as `main` gives it, downloads the world's assets
  * through `WORLD_DOWNLOADER`, then starts `main`'s renderer on a canvas that is never shown: `start` builds the scene's
  * programs over a few frames and rehearses the ride's first frame, so the shaders are built and the first frames warm
- * when it resolves. Where neither WebGPU nor WebGL 2 draws, the panorama is all there is to download. A group ride
- * (`?session=`) rides at once until slice 16.4.
+ * when it resolves. `start` reports the programs it builds in batches and the frame rate its warm-up held (slice 16.2),
+ * and a build that fails at a level steps down to the one below (`startStepping`). After 20 seconds without the world
+ * being ready it warns and offers Low or the panorama (L2-155). Where neither WebGPU nor WebGL 2 draws, the panorama is
+ * all there is to download. A group ride (`?session=`) rides at once until slice 16.4.
  */
 @Injectable()
 export class WorldLoadStore {
@@ -50,7 +63,11 @@ export class WorldLoadStore {
   private readonly abort = new AbortController();
   private renderer: WorldRenderer | null = null;
   private frame: number | null = null;
+  private timer: ReturnType<typeof setInterval> | null = null;
   private destroyed = false;
+  /** When World loading opened, and when the shaders started building, as `Date.now()`. */
+  private readonly openedAt = Date.now();
+  private shadersFrom: number | null = null;
 
   /** The class ride replaces World loading: the rider pressed Start riding, or the ride is a group's. */
   readonly riding: WritableSignal<boolean>;
@@ -65,6 +82,16 @@ export class WorldLoadStore {
   private readonly backend = signal<Backend | null>(null);
   /** Neither WebGPU nor WebGL 2 draws here, or the renderer could not start: the class rides the panorama. */
   private readonly panoramaOnly = signal(false);
+  /** The quality level the world is built at: `main`'s starting level, or Low (L2-152 AC7, L2-155 AC3). */
+  private readonly tier = signal<WorldTier>('low');
+  private readonly programs = signal<{ built: number; total: number } | null>(null);
+  private readonly warmed = signal<{ fps: number; tier: WorldTier } | null>(null);
+  /** Whole seconds since World loading opened, and spent on the shaders, read once a second (L2-155 AC1). */
+  private readonly seconds = signal(0);
+  private readonly shaderSeconds = signal(0);
+  /** The rider chose Start at Low quality: the warning has gone for this load (L2-155 AC3). */
+  private readonly lowChosen = signal(false);
+  private readonly slowPercent = signal(0);
   private readonly expected: Backend = 'gpu' in navigator ? 'webgpu' : 'webgl2';
 
   /** "Neon Docklands · Harbour Bridges Loop · Solo" (L2-151 AC2). */
@@ -101,10 +128,29 @@ export class WorldLoadStore {
       panoramaOnly: this.panoramaOnly(),
       warmUpSeconds: first?.kind === 'warm-up' ? first.duration : null,
       startPercent: this.startPercent(),
+      programs: this.programs(),
+      warmed: this.warmed(),
+      slow: this.slow(),
+      shaderSeconds: this.shaderSeconds(),
+      slowPercent: this.slowPercent(),
     });
   });
 
   readonly failed = computed(() => this.phase() === 'failed');
+
+  /** World loading has run 20 seconds without the world being ready, and the rider has not chosen Low (L2-155). */
+  readonly slow = computed(
+    () =>
+      this.seconds() >= SLOW_SECONDS &&
+      !this.lowChosen() &&
+      this.phase() !== 'ready' &&
+      this.phase() !== 'failed',
+  );
+
+  /** The quality fact, "Auto quality · Low", while the world is drawn in 3D (L2-152 AC7). */
+  readonly quality = computed(() =>
+    this.panoramaOnly() ? null : `Auto quality · ${TIER_NAME[this.tier()]}`,
+  );
 
   /** The bike fact: its name when connected, "No bike" otherwise (L2-152 AC7). */
   readonly bike = computed(() => {
@@ -127,6 +173,7 @@ export class WorldLoadStore {
     inject(DestroyRef).onDestroy(() => this.release());
     if (this.riding()) return;
     this.panoramaOnly.set(!draws3d());
+    this.timer = setInterval(() => this.tick(), 1000);
     inject(CLASSES_API)
       .get(this.classId)
       .pipe(takeUntilDestroyed())
@@ -143,6 +190,15 @@ export class WorldLoadStore {
   }
 
   /**
+   * Start at Low quality, for this ride only (L2-155 AC3): the warning goes and the world is built at Low. `main` starts
+   * every world at Low, so a build already running is at Low and carries on; one not yet begun starts at Low.
+   */
+  startAtLow(): void {
+    this.lowChosen.set(true);
+    this.tier.set('low');
+  }
+
+  /**
    * Start riding, or Ride with the panorama: the class ride takes World loading's place. The renderer World loading
    * built goes with it; slice 16.3 hands it to the ride instead.
    */
@@ -156,6 +212,7 @@ export class WorldLoadStore {
     if (this.destroyed) return;
     const drawn = world.worldForMap(dto.world);
     this.world.set(drawn);
+    if (!this.lowChosen()) this.tier.set(world.startTier());
     const progress = this.progress();
     this.startPercent.set(
       progress.total > 0 ? Math.floor((40 * progress.received) / progress.total) : 0,
@@ -180,23 +237,65 @@ export class WorldLoadStore {
       return;
     }
     this.phase.set('building');
-    const renderer = await world.loadWorldRenderer();
-    if (this.destroyed) return renderer.dispose();
-    this.renderer = renderer;
-    const canvas = document.createElement('canvas');
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
-    const started = await renderer
-      .start(canvas, drawn, () => this.nextFrame(), world.timedSegments(dto.plan.segments))
-      .catch(() => false);
+    this.startPercent.set(this.view()?.percent ?? 0);
+    this.shadersFrom = Date.now();
+    const segments = world.timedSegments(dto.plan.segments);
+    const started = await startStepping(
+      this.tier(),
+      async (tier) => {
+        this.disposeRenderer();
+        this.tier.set(tier);
+        this.programs.set(null);
+        const renderer = await world.loadWorldRenderer();
+        if (this.destroyed) {
+          renderer.dispose();
+          throw new Error('World loading has gone');
+        }
+        this.renderer = renderer;
+        const canvas = document.createElement('canvas');
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+        return renderer.start(canvas, drawn, () => this.nextFrame(), segments, {
+          tier,
+          progress: (progress) => this.report(progress),
+        });
+      },
+      this.abort.signal,
+    );
     if (this.destroyed) return;
-    if (started) {
-      this.backend.set(renderer.backend);
+    if (started && this.renderer) {
+      this.backend.set(this.renderer.backend);
     } else {
       this.disposeRenderer();
       this.panoramaOnly.set(true);
     }
     this.phase.set('ready');
+  }
+
+  /** The renderer's progress: programs built, the warm-up starting, and the rate it held (L2-152 AC4, AC5). */
+  private report(progress: WorldStartProgress): void {
+    if (this.destroyed) return;
+    if (progress.step === 'shaders') {
+      this.programs.set({ built: progress.built, total: progress.total });
+      // The programs are built for the API the renderer started with, which may be WebGL 2 where WebGPU was offered.
+      this.backend.set(progress.backend);
+    } else if (progress.step === 'warm-up') {
+      this.phase.set('warming');
+      this.startPercent.set(this.view()?.percent ?? 0);
+    } else {
+      this.warmed.set({ fps: progress.fps, tier: progress.tier });
+    }
+  }
+
+  /** Reads the time once a second: the load turns slow at 20 seconds, and the shaders count their seconds (L2-155). */
+  private tick(): void {
+    const now = Date.now();
+    const wasSlow = this.slow();
+    this.seconds.set(Math.floor((now - this.openedAt) / 1000));
+    if (this.shadersFrom !== null) {
+      this.shaderSeconds.set(Math.floor((now - this.shadersFrom) / 1000));
+    }
+    if (!wasSlow && this.slow()) this.slowPercent.set(this.view()?.percent ?? 0);
   }
 
   /** The next animation frame, for the renderer's load; refused once World loading has gone. */
@@ -220,6 +319,7 @@ export class WorldLoadStore {
     if (this.destroyed) return;
     this.destroyed = true;
     this.abort.abort();
+    if (this.timer !== null) clearInterval(this.timer);
     if (this.frame !== null) cancelAnimationFrame(this.frame);
     this.disposeRenderer();
   }

@@ -159,13 +159,50 @@ assets under `/worlds/<worldId>/`. A world's only asset is its panorama, so a do
 
 ![Load the world, as built in slice 16.1](diagrams/sequence-as-built-16-1.png)
 
+## As built in slice 16.2
+
+- **`WorldRenderer.start(canvas, world, nextFrame, segments, options)`** takes a `tier` to start at
+  and a `progress` callback (`WorldStartOptions` in `api`). After `main`'s `buildScene` and
+  `applyTier`, and before `main`'s warm-up, it builds the scene's programs with three's own
+  `compileAsync`, which compiles in batches and yields to each frame. It compiles into the scene
+  pass's render target and MRT, so the programs share three's cache key with the ride's
+  frames and the warm-up builds none twice. It reports `{ step: 'shaders', built, total }` as
+  three reports each item loaded (one per part and surface), and the detail reads "41 of 64 programs for WebGPU" (`L2-152` AC4). It then reports
+  `{ step: 'warm-up', tier }`, runs `main`'s warm-up and rehearsal unchanged, and reports
+  `{ step: 'warmed', fps, tier }`. The rate is the median of the rehearsal's frame intervals,
+  rounded, and the warm-up step reads "Holding 60 fps at Low" (AC5). The copied materials, scenes
+  and warm-up are unchanged.
+- **The step down** (`L2-156` AC3): a build whose `compileAsync` rejects rejects `start`.
+  `startStepping(tier, attempt)` (a pure helper in `ride` with unit tests) then disposes that
+  renderer and tries the tier below on a new one. Below Low, or where `start` resolves false
+  (no WebGPU or WebGL 2), the class rides the panorama.
+- **The quality fact** reads "Auto quality · Low" from the tier the build starts at, which is
+  `main`'s `startTier()`: always Low, so the ride never opens high and drops in front of the
+  rider. "Quality settings" still waits for slice 20.2.
+- **The percentage:** the download weighs 40 %, the shaders 40 % (by programs built of the
+  total) and the warm-up 20 %; the bar never moves backwards.
+- **Slow loading** (`L2-155`): `WorldLoadStore` reads the time once a second from when World
+  loading opened (a time difference, so a skipped tick loses nothing). After 20 seconds without
+  the world being ready the card shows a warning banner ("This is taking longer than usual.",
+  `Banner`'s new `warning` tone with a clock). The shader step's detail adds the seconds spent
+  on the shaders ("· 24 s"), the status reads "Still building the shaders, 41 percent." (or
+  "Still downloading the world, …"), and the actions are "Start at Low quality", "Ride with the
+  panorama" and "Or keep waiting: Start riding turns on when the world is ready."
+- **Start at Low quality** hides the warning for the rest of this load. A build above Low starts
+  again at Low; since `main` always starts at Low, the build already running is at Low and
+  carries on. Nothing is saved to Settings (AC3).
+- **Ride with the panorama** stops the build, disposes the renderer and opens the class ride,
+  as it does after a stopped download (AC4).
+
+![Load the world, building and warming up, as built in slice 16.2](diagrams/sequence-as-built-16-2.png)
+
 ## Open questions
 
 1. A world's code is downloaded as the `world` library's chunk through `import()`, whose bytes the
    page cannot follow; the bytes shown are the world's assets alone.
-2. "Quality settings" (`L2-151` AC7) and the "Auto quality · Low" fact (`L2-152` AC7) wait for
-   Settings and the quality controls (slices 20.1 and 20.2); the load card leaves both out until
-   then.
+2. "Quality settings" (`L2-151` AC7) waits for Settings and the quality controls (slices 20.1
+   and 20.2). The "Auto quality · Low" fact (`L2-152` AC7) shows from slice 16.2, and is always
+   Low until a rider can choose the starting level.
 3. A world `main` gives no panorama (South Beach Sunrise, which draws Vice City) has nothing to
    download and no photograph behind the card: its download step reads "Built into the app" and
    the scene's colour stands behind the card.
@@ -174,6 +211,13 @@ assets under `/worlds/<worldId>/`. A world's only asset is its panorama, so a do
    keeps what it downloaded.
 5. `L2-151` AC3 gives the alternative text of Neon Docklands' panorama only; the others
    (`WORLD_PANORAMAS` in `api`) are written in its shape from what each panorama shows.
+6. `main` has no batched build, so slice 16.2 counts what three's `compileAsync` reports: one
+   item per part and surface. Old Town Criterium's 143 items share 68 programs, and the warm-up
+   then builds only 4 more (its passes), so the count reads high against distinct programs. Until
+   Settings can choose a higher starting level, "Start at Low quality" changes nothing but the
+   warning, because `main` always starts at Low.
+7. The warm-up's frame rate is measured over `main`'s four rehearsal frames (`REHEARSALS`); the
+   design's `<TO SUPPLY>` frame count is taken from `main`.
 
 ## Requirements
 

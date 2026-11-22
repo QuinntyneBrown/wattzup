@@ -1,7 +1,7 @@
-import type { Backend, LoadStepView, WorldDownloadProgress } from '@telo/api';
+import type { Backend, LoadStepView, WorldDownloadProgress, WorldTier } from '@telo/api';
 
-/** Where World loading stands (L2-152): downloading, building the shaders and warming up, ready, or stopped. */
-export type WorldLoadPhase = 'downloading' | 'building' | 'ready' | 'failed';
+/** Where World loading stands (L2-152): downloading, building the shaders, warming up, ready, or stopped. */
+export type WorldLoadPhase = 'downloading' | 'building' | 'warming' | 'ready' | 'failed';
 
 export interface WorldLoadState {
   /** The world's name: "Neon Docklands". */
@@ -15,8 +15,18 @@ export interface WorldLoadState {
   readonly panoramaOnly: boolean;
   /** The class's warm-up, in seconds, or `null` when it starts with something else. */
   readonly warmUpSeconds: number | null;
-  /** The percentage when the download started, which its status announces (L2-152 AC6). */
+  /** The percentage when the current step started, which its status announces (L2-152 AC6). */
   readonly startPercent: number;
+  /** The shader programs built of the total, once the build has counted them (AC4). */
+  readonly programs: { readonly built: number; readonly total: number } | null;
+  /** The frame rate the warm-up held and the level it held it at, once warmed up (AC5). */
+  readonly warmed: { readonly fps: number; readonly tier: WorldTier } | null;
+  /** World loading has run 20 seconds without the world being ready, and the rider has not chosen Low (L2-155). */
+  readonly slow: boolean;
+  /** The whole seconds spent building the shaders, which the slow load adds to their step (L2-155 AC1). */
+  readonly shaderSeconds: number;
+  /** The percentage when the load became slow, which the slow status announces. */
+  readonly slowPercent: number;
 }
 
 /** World loading in words: the load card's heading, steps, percentage, status and hint (L2-152, L2-153, L2-156). */
@@ -30,8 +40,17 @@ export interface WorldLoadView {
   readonly hint: string;
 }
 
-/** The download's share of the whole load; the shaders and the warm-up take the rest. */
+/** The download's share of the whole load, then the shaders'; the warm-up takes the rest. */
 const DOWNLOAD_SHARE = 40;
+const SHADER_SHARE = 40;
+
+/** A quality level as the card names it: "Low". */
+export const TIER_NAME: Readonly<Record<WorldTier, string>> = {
+  low: 'Low',
+  medium: 'Medium',
+  high: 'High',
+  ultra: 'Ultra',
+};
 
 const API: Readonly<Record<Backend, string>> = { webgpu: 'WebGPU', webgl2: 'WebGL 2' };
 
@@ -43,20 +62,24 @@ const clock = (seconds: number): string =>
 
 /**
  * World loading for one moment of the load: the download reads its bytes ("7.6 of 18.9 MB"), then its size saved on the
- * device; the shaders read the graphics API they build for and the warm-up what it is for (their counts and frame
- * rate are slice 16.2's). The percentage weighs the download 40 % and the shaders and warm-up, which `main`'s renderer
- * runs as one, the rest. Without 3D the download is the panorama's and the other two are not needed.
+ * device; the shaders the programs built of the total for the graphics API ("41 of 64 programs for WebGPU"), with the
+ * seconds spent once the load is slow; the warm-up the frame rate it held ("Holding 60 fps at Low"). The percentage
+ * weighs the download 40 %, the shaders 40 % by programs built and the warm-up the rest. Without 3D the download is the
+ * panorama's and the other two are not needed.
  */
 export function worldLoadView(state: WorldLoadState): WorldLoadView {
-  const { name, phase, progress, panoramaOnly } = state;
+  const { name, phase, progress, panoramaOnly, programs, warmed, slow } = state;
   const fraction = progress.total > 0 ? progress.received / progress.total : 0;
+  const built = programs && programs.total > 0 ? programs.built / programs.total : 0;
   const percent =
     phase === 'ready'
       ? 100
-      : phase === 'building'
-        ? DOWNLOAD_SHARE
-        : Math.floor(DOWNLOAD_SHARE * fraction);
-  const downloaded = phase === 'building' || phase === 'ready';
+      : phase === 'warming'
+        ? DOWNLOAD_SHARE + SHADER_SHARE
+        : phase === 'building'
+          ? DOWNLOAD_SHARE + Math.floor(SHADER_SHARE * built)
+          : Math.floor(DOWNLOAD_SHARE * fraction);
+  const downloaded = phase === 'building' || phase === 'warming' || phase === 'ready';
   const size =
     progress.total === 0
       ? 'Built into the app'
@@ -74,14 +97,25 @@ export function worldLoadView(state: WorldLoadState): WorldLoadView {
           ? `${megabytes(progress.received)} of ${megabytes(progress.total)} MB`
           : '',
   };
-  const later = (label: string, detail: string, current: boolean): LoadStepView =>
+  const api = API[state.api];
+  const shadersDone = phase === 'warming' || phase === 'ready';
+  const shaderDetail =
+    programs === null
+      ? `Programs for ${api}`
+      : shadersDone
+        ? `${programs.total} programs for ${api}`
+        : `${programs.built} of ${programs.total} programs for ${api}`;
+  const later = (label: string, detail: string, current: boolean, done: boolean): LoadStepView =>
     panoramaOnly
       ? { label, state: 'skipped', detail: 'Not needed for the panorama' }
-      : {
-          label,
-          state: phase === 'ready' ? 'done' : current ? 'current' : 'waiting',
-          detail,
-        };
+      : { label, state: done ? 'done' : current ? 'current' : 'waiting', detail };
+  const slowNow = slow && phase !== 'ready' && phase !== 'failed';
+  const doing =
+    phase === 'downloading'
+      ? 'downloading the world'
+      : phase === 'building'
+        ? 'building the shaders'
+        : 'warming up the first frames';
   return {
     heading:
       phase === 'failed'
@@ -93,23 +127,37 @@ export function worldLoadView(state: WorldLoadState): WorldLoadView {
           : `Getting ${name} ready`,
     steps: [
       download,
-      later('Build the shaders', `Programs for ${API[state.api]}`, phase === 'building'),
-      later('Warm up the first frames', 'Drawn off screen so the start is smooth', false),
+      later(
+        'Build the shaders',
+        slowNow && phase === 'building'
+          ? `${shaderDetail} · ${state.shaderSeconds} s`
+          : shaderDetail,
+        phase === 'building',
+        shadersDone,
+      ),
+      later(
+        'Warm up the first frames',
+        phase === 'ready' && warmed
+          ? `Holding ${warmed.fps} fps at ${TIER_NAME[warmed.tier]}`
+          : 'Drawn off screen so the start is smooth',
+        phase === 'warming',
+        phase === 'ready',
+      ),
     ],
     percent,
     ready: phase === 'ready',
-    status:
-      phase === 'downloading'
-        ? `Downloading the world, ${state.startPercent} percent.`
-        : phase === 'building'
-          ? `Building the shaders, ${DOWNLOAD_SHARE} percent.`
-          : phase === 'ready'
-            ? `${name} is ready${panoramaOnly ? ' as a panorama' : ''}.`
-            : '',
-    hint:
-      phase === 'downloading'
+    status: slowNow
+      ? `Still ${doing}, ${state.slowPercent} percent.`
+      : phase === 'ready'
+        ? `${name} is ready${panoramaOnly ? ' as a panorama' : ''}.`
+        : phase === 'failed'
+          ? ''
+          : `${doing[0]!.toUpperCase()}${doing.slice(1)}, ${state.startPercent} percent.`,
+    hint: slowNow
+      ? 'Or keep waiting: Start riding turns on when the world is ready.'
+      : phase === 'downloading'
         ? 'The first time takes longest. Next time this world opens from this device.'
-        : phase === 'building'
+        : phase === 'building' || phase === 'warming'
           ? 'Ready in a few seconds. Pedal easy while you wait.'
           : phase === 'ready'
             ? panoramaOnly

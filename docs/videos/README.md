@@ -69,6 +69,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 15.4 | [Mark leavers and DNF](15-4-mark-leavers-and-dnf/README.md) | 1:43 | A riders-online race's leaver marked DNF in last place on every board at once, silent and lost riders caught, and the board at every width |
 | 15.5 | [Record results nobody can change](15-5-record-results-nobody-can-change/README.md) | 1:43 | A riders-online race's places, times and output recorded by the service and taken by every submitted ride, Results waiting while the result is pending, at every width |
 | 16.1 | [Download the world](16-1-download-the-world/README.md) | 1:56 | World loading before a solo class: the world downloaded with its bytes, saved on the device, resumed after a stop, built by `main`'s renderer, or ready as a panorama without 3D, at every width |
+| 16.2 | [Build shaders and warm up](16-2-build-shaders-and-warm-up/README.md) | 1:56 | World loading's programs built in batches and counted, the warm-up's frame rate at Low, and after 20 seconds the warning with Start at Low quality and Ride with the panorama, at every width |
 
 ## What every video is
 

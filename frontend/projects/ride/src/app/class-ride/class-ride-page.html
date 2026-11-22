@@ -37,7 +37,18 @@
               <span wz-pill slot="facts" [tone]="load.bike().ok ? 'ok' : null">{{
                 load.bike().name
               }}</span>
+              @if (load.quality(); as quality) {
+                <span wz-pill slot="facts">{{ quality }}</span>
+              }
               <span wz-pill slot="facts">{{ load.graphics() }}</span>
+              @if (load.slow()) {
+                <wz-banner
+                  slot="notice"
+                  tone="warning"
+                  title="This is taking longer than usual."
+                  detail="Shaders are built once per device, so next time is quicker. Low quality builds a quarter as many."
+                />
+              }
               @if (load.failed()) {
                 <wz-banner
                   slot="notice"
@@ -95,7 +106,33 @@
                   Start riding
                 </button>
               }
-              @if (!view.ready && !load.failed()) {
+              @if (load.slow()) {
+                <button
+                  wz-button
+                  slot="actions"
+                  variant="primary"
+                  size="xl"
+                  [block]="true"
+                  type="button"
+                  (click)="load.startAtLow()"
+                >
+                  Start at Low quality
+                </button>
+              }
+              @if (load.slow()) {
+                <button
+                  wz-button
+                  slot="actions"
+                  variant="raised"
+                  size="lg"
+                  [block]="true"
+                  type="button"
+                  (click)="load.ride()"
+                >
+                  Ride with the panorama
+                </button>
+              }
+              @if (!view.ready && !load.failed() && !load.slow()) {
                 <button
                   wz-button
                   slot="actions"
