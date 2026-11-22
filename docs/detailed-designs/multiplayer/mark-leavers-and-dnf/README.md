@@ -59,6 +59,23 @@ which applies when; the phase split is the design's reading and needs confirming
 - **`RiderLeft`** — server-to-client message carrying the seat number, display name and new
   status.
 
+**As built for riders-online races (slice 15.4).** A race keeps each seat's status in
+`RaceSession` beside its distance: riding, finished (held at the route's length) or DNF. The race
+page's Leave sends `LeaveRace(sessionId)`, the lobby's message, before it goes to Race Setup; once
+the race has started, `RaceSession.Leave` keeps the seat and marks it DNF (before the start the
+lobby's rule still applies, `L2-055`), and the handler sends `RaceStandingsUpdated` to the
+session at once rather than a `RiderLeft` message, so every board shows the DNF on the same
+message it already reads (`L2-124` AC1). At each second it rides, the session marks DNF a racing
+rider whose last report, or the start when there is none, is 15 seconds old (`RaceSilenceLimit`,
+AC2); a finished rider is never marked. A lost connection is noted in started races too, and at
+30 seconds (`DisconnectLimit`) the rider is removed: DNF on the board and refused a rejoin
+(`session_not_found`, AC4); joining again within 30 seconds clears the mark. A DNF seat keeps its
+distance and ranks after every other row; its row carries `status` `dnf`, and the race board
+reads "DNF" in place of its gap, the row in the faint colour (`race-board__row--dnf`, race mock
+`someone-left`). A DNF is final for this slice. The group class rules are unchanged: a silent
+rider keeps their last output (AC3, as slice 14.5 built it), and removing a class rider after 30
+seconds gone is open question 1.
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a
@@ -112,3 +129,14 @@ Each tick marks silent racers DNF, keeps silent class riders, and removes riders
 30 seconds (`L2-124` AC2, AC3, AC4).
 
 ![Sequence diagram for detecting silence and lost connections](diagrams/sequence-detect-silence-and-lost-connections.png)
+
+## Open questions
+
+1. **A group class rider gone 30 seconds (`L2-124` AC4).** Not built with slice 15.4, which
+   covers the race: a class rider whose connection has gone keeps their row at its last output,
+   as a silent one does (AC3).
+2. **No `RiderLeft` message.** As built, a race sends its standings at once instead; a class has
+   no leave message yet.
+3. **The rider marked DNF by the service.** The rider's own race does not yet hear that the
+   service marked them DNF (silent 15 seconds while the page was away); it carries on and the
+   result is settled by the service with slice 15.5.
