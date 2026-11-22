@@ -41,13 +41,19 @@ export function retryDelay(attempts: number): number {
 /** What became of one try: recorded, kept to be sent again, dropped for good, or waiting for a race's result. */
 type Outcome = 'recorded' | 'kept' | 'dropped' | 'pending';
 
+/** A try's outcome and, for a 429, the wait in milliseconds the backend's `Retry-After` asked for (L2-130 AC1). */
+interface Sent {
+  readonly outcome: Outcome;
+  readonly retryAfterMs?: number;
+}
+
 /**
  * The finished rides on their way to the backend, kept on the device until it has them
  * (docs/detailed-designs/performance/ride-without-a-network). `submit` keeps the ride in `RIDES_WAITING` before sending
  * it. Waiting rides are sent one at a time, oldest first: when the outbox starts with the app, when the browser is back
  * online, after each new ride and on a retry timer. A ride the backend records is removed. One that does not reach it
  * (no answer, 5xx, 429, or an ended session's 401, L2-004 AC4) is kept and tried again 30 seconds later, the delay
- * doubling up to an hour (L2-135 AC2). One the backend refuses for good (422 `ride_not_plausible`, another 4xx) is
+ * doubling up to an hour (L2-135 AC2); a 429 with `Retry-After` is tried again when that wait has passed (L2-130 AC1). One the backend refuses for good (422 `ride_not_plausible`, another 4xx) is
  * dropped as not recorded (L2-074 AC4). A riders-online race the backend answers `result_pending` is sent again every
  * 5 seconds for up to 3 minutes (L2-125 AC1) without holding up the rides behind it. It follows the state of the last
  * ten rides for Results, and its network listener and timers go with it.
@@ -108,12 +114,12 @@ export class DeviceRideOutbox implements RideOutbox {
         for (const waiting of await this.waiting.oldestFirst()) {
           if (this.destroyed) return;
           if (this.pendingSince.has(waiting.rideId)) continue;
-          const outcome = await this.send(waiting);
+          const { outcome, retryAfterMs } = await this.send(waiting);
           if (this.destroyed) return;
           if (outcome === 'kept') {
             const attempts = waiting.attempts + 1;
             await this.waiting.put({ ...waiting, attempts });
-            this.retryIn(retryDelay(attempts));
+            this.retryIn(retryAfterMs ?? retryDelay(attempts));
             stopped = true;
             break;
           }
@@ -127,7 +133,7 @@ export class DeviceRideOutbox implements RideOutbox {
   }
 
   /** Sends one ride and follows it: recorded, kept, dropped, or pending a race's result. */
-  private send(waiting: WaitingRide): Promise<Outcome> {
+  private send(waiting: WaitingRide): Promise<Sent> {
     const state = this.follow(waiting.rideId);
     state.set(SENDING);
     return new Promise((resolve) => {
@@ -135,19 +141,19 @@ export class DeviceRideOutbox implements RideOutbox {
         next: (answer) => {
           this.pendingSince.delete(waiting.rideId);
           state.set({ kind: 'recorded', answer });
-          resolve('recorded');
+          resolve({ outcome: 'recorded' });
         },
         error: (error: unknown) => {
           if (resultPending(error)) {
-            resolve('pending');
+            resolve({ outcome: 'pending' });
           } else if (unreached(error)) {
             this.pendingSince.delete(waiting.rideId);
             state.set(WAITING);
-            resolve('kept');
+            resolve({ outcome: 'kept', retryAfterMs: retryAfterMs(error) });
           } else {
             this.pendingSince.delete(waiting.rideId);
             state.set(NOT_RECORDED);
-            resolve('dropped');
+            resolve({ outcome: 'dropped' });
           }
         },
       });
@@ -170,10 +176,10 @@ export class DeviceRideOutbox implements RideOutbox {
     this.pendingSince.set(waiting.rideId, since);
     const timer = setTimeout(() => {
       this.timers.delete(timer);
-      void this.send(waiting).then((outcome) => {
+      void this.send(waiting).then(({ outcome, retryAfterMs }) => {
         if (this.destroyed) return;
         if (outcome === 'pending') this.waitForResult(waiting);
-        else if (outcome === 'kept') this.retryIn(retryDelay(waiting.attempts + 1));
+        else if (outcome === 'kept') this.retryIn(retryAfterMs ?? retryDelay(waiting.attempts + 1));
         else void this.waiting.remove(waiting.rideId);
       });
     }, RESULT_RETRY_MS);
@@ -223,4 +229,11 @@ function resultPending(error: unknown): boolean {
 function unreached(error: unknown): boolean {
   if (!(error instanceof HttpErrorResponse)) return false;
   return error.status === 0 || error.status >= 500 || error.status === 429 || error.status === 401;
+}
+
+/** The wait a 429's `Retry-After` asks for, in milliseconds, or undefined when there is none to read (L2-130 AC1). */
+function retryAfterMs(error: unknown): number | undefined {
+  if (!(error instanceof HttpErrorResponse) || error.status !== 429) return undefined;
+  const seconds = Number(error.headers.get('Retry-After'));
+  return Number.isFinite(seconds) && seconds > 0 ? seconds * 1000 : undefined;
 }
