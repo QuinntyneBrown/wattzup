@@ -24,6 +24,7 @@ import {
   RideTicker,
   VideoClockSync,
   WorkoutEngine,
+  planStateAt,
 } from '@telo/domain';
 import { LiveSessionStore } from '../live/live-session-store';
 
@@ -96,7 +97,12 @@ export class ClassRideStore {
     return start === null ? null : LOCAL_TIME.format(new Date(start));
   });
   readonly elapsed = this.ticker.second;
-  readonly plan = this.engine.state;
+  /** Where the plan stands; while a group ride waits for its start, the first segment ahead, with nothing sent. */
+  readonly plan = computed(() => {
+    const state = this.engine.state();
+    const ride = this.loaded();
+    return state ?? (this.waitUntil() !== null && ride !== null ? planStateAt(ride.plan, 0) : null);
+  });
   readonly level = this.telemetry.resistance;
   readonly canControl = this.resistance.canControl;
   /** Whether the rider paused the ride: the clock, the plan and the video hold (L2-091 AC1). */

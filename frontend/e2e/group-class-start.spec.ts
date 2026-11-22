@@ -49,6 +49,8 @@ test.describe('Starting a group class together', () => {
     );
     await expect(ride.clock).toHaveText(/^0:00/);
     await expect(ride.pause).toHaveCount(0);
+    await expect(ride.segmentKind).toHaveText('Warm-up');
+    await expect(ride.segmentLeft).toHaveText('5:00');
     await expect.poll(async () => (await youtube.players()).length).toBe(1);
     expect((await youtube.players())[0].playing).toBe(false);
 
