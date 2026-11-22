@@ -741,9 +741,14 @@ export class OldTownStreet {
     }
     for (const prop of this.props) {
       const metres = ((((prop.offset - s) % prop.every) + prop.every) % prop.every) - BEHIND;
-      prop.mesh.position.set(prop.x, heightAt(metres) + KERB, -metres);
+      const visible = metres > HOUSE_CULL_BEHIND && metres <= ROAD_END + 12;
+      prop.mesh.visible = visible;
+      prop.mesh.position.z = -metres;
+      if (!visible) continue;
+      prop.mesh.position.x = prop.x;
+      prop.mesh.position.y = heightAt(metres) + KERB;
       if (prop.shadowNear) {
-        prop.mesh.castShadow = metres > HOUSE_CULL_BEHIND && metres < SHADOW_AHEAD;
+        prop.mesh.castShadow = metres < SHADOW_AHEAD;
       }
       // Paint and iron set in the setts lie along a ramp, not level through it, where half the
       // writing would sink into the road and half float over it.
@@ -840,23 +845,34 @@ export class OldTownStreet {
    */
   private addCathedral(): void {
     const haze = new Color(0xdcd8cf);
+    const tempMaterials: MeshStandardMaterial[] = [];
     const stone = (hex: number, amount: number, map: Texture | null = null) => {
       const material = new MeshStandardMaterial({ roughness: 0.95, fog: false, map });
       material.color.set(hex).lerp(haze, amount);
-      this.disposables.push(material);
+      if (map) this.disposables.push(material);
+      else tempMaterials.push(material);
       return material;
     };
-    const lancets = this.track(gothicTexture(false));
-    const openwork = this.track(gothicTexture(true));
+    const gothicAtlas = gothicAtlasTexture();
+    const gothic = stone(0xd6c197, 0.25, this.track(gothicAtlas.texture));
+    const traceryUnit = remapUv(this.unit.clone(), gothicAtlas.lancets);
+    this.disposables.push(traceryUnit);
     const wall = stone(0xd6c197, 0.25);
-    const tracery = stone(0xd6c197, 0.25, lancets);
-    const spire = stone(0xd6c197, 0.25, openwork);
     const shade = stone(0x9c8a6c, 0.3);
     const roof = stone(0x55606a, 0.45);
     const glass = stone(0x3b3f4a, 0.45);
     const c = this.cathedral;
-    const box = (m: Material, w: number, h: number, d: number, x: number, y: number, z: number) => {
-      const mesh = new Mesh(this.unit, m);
+    const box = (
+      m: Material,
+      w: number,
+      h: number,
+      d: number,
+      x: number,
+      y: number,
+      z: number,
+      geo: BufferGeometry = this.unit,
+    ) => {
+      const mesh = new Mesh(geo, m);
       mesh.scale.set(w, h, d);
       mesh.position.set(x, y + h / 2, z);
       c.add(mesh);
@@ -878,10 +894,14 @@ export class OldTownStreet {
     roofMesh.position.set(0, 34, -70);
     c.add(roofMesh);
     // The west tower, its belfry stages narrowing, and the spire.
-    box(tracery, 24, 60, 22, 0, 0, 0);
-    box(tracery, 20, 22, 19, 0, 60, 0);
-    box(tracery, 16, 14, 15, 0, 82, 0);
-    cone(spire, 11, 62, 0, 96, 0);
+    box(gothic, 24, 60, 22, 0, 0, 0, traceryUnit);
+    box(gothic, 20, 22, 19, 0, 60, 0, traceryUnit);
+    box(gothic, 16, 14, 15, 0, 82, 0, traceryUnit);
+    const spireGeo = remapUv(new ConeGeometry(11, 62, 8), gothicAtlas.openwork);
+    this.disposables.push(spireGeo);
+    const spireMesh = new Mesh(spireGeo, gothic);
+    spireMesh.position.set(0, 96 + 31, 0);
+    c.add(spireMesh);
     for (const [x, z] of [
       [-8, -7],
       [8, -7],
@@ -893,7 +913,7 @@ export class OldTownStreet {
     }
     // The two lower towers either side, each with a pinnacle.
     for (const x of [-20, 20]) {
-      box(tracery, 14, 46, 16, x, 0, -4);
+      box(gothic, 14, 46, 16, x, 0, -4, traceryUnit);
       cone(shade, 6, 22, x, 46, -4);
     }
     // The portal and the rose window, facing the street.
@@ -930,6 +950,7 @@ export class OldTownStreet {
       hand.rotation.z = angle;
     }
     this.flatten(c, false);
+    for (const tm of tempMaterials) tm.dispose();
     this.group.add(c);
   }
 
@@ -1600,7 +1621,7 @@ export class OldTownStreet {
     const tyre = new TorusGeometry(0.28, 0.08, 8, 24);
     const torso = new CapsuleGeometry(0.18, 0.4, 4, 8);
     const helmet = new SphereGeometry(0.15, 12, 8);
-    this.disposables.push(black, white, blue, tyre, torso, helmet);
+    this.disposables.push(tyre, torso, helmet);
     const add = (geometry: BufferGeometry, material: Material, x: number, y: number, z: number) => {
       const mesh = new Mesh(geometry, material);
       mesh.position.set(x, y, z);
@@ -1642,9 +1663,13 @@ export class OldTownStreet {
     this.disposables.push(board, amber, plate, beacon);
     const back = new Mesh(plate, board);
     back.position.set(0, 0.95, 0.66);
-    m.add(back);
-    add(beacon, amber, -0.2, 2.45, 0.85);
+    const beaconMesh = new Mesh(beacon, amber);
+    beaconMesh.position.set(-0.2, 2.45, 0.85);
+    m.add(back, beaconMesh);
     this.flatten(m);
+    black.dispose();
+    white.dispose();
+    blue.dispose();
     this.group.add(m);
   }
 
@@ -2340,7 +2365,7 @@ export class OldTownStreet {
       if (!merged) continue;
       for (const mesh of meshes) mesh.removeFromParent();
       const mesh = new Mesh(merged, material);
-      mesh.castShadow = castShadows;
+      mesh.castShadow = castShadows && meshes.some((src) => src.castShadow);
       mesh.receiveShadow = true;
       house.add(mesh);
       this.disposables.push(merged);
@@ -3149,6 +3174,7 @@ export function cobbleTextures(): { map: CanvasTexture; relief: CanvasTexture } 
       g.addColorStop(0, 'rgba(255,255,255,0.16)');
       g.addColorStop(0.5, 'rgba(255,255,255,0)');
       g.addColorStop(1, 'rgba(0,0,0,0.18)');
+      const rowPath = new Path2D();
       let x = row % 2 ? -0.5 * sett * pxX : 0;
       while (x < w) {
         const sw = (0.11 + random() * 0.06) * pxX;
@@ -3157,13 +3183,18 @@ export function cobbleTextures(): { map: CanvasTexture; relief: CanvasTexture } 
         const worn = centre < 0.18 ? 14 : 0;
         const tone = 165 + worn + random() * (worn ? 34 : 50);
         const warm = random() * 16;
+        const rx = x + 1.5;
+        const ry = y + 1.5;
+        const rw = sw - 3;
+        const rh = rowH - 3;
         ctx.fillStyle = `rgb(${tone + warm},${tone + warm * 0.6},${tone})`;
-        roundRect(ctx, x + 1.5, y + 1.5, sw - 3, rowH - 3, 4);
-        ctx.fillStyle = g;
-        roundRect(ctx, x + 1.5, y + 1.5, sw - 3, rowH - 3, 4);
-        hctx.drawImage(stamp, x + 1.5, y + 1.5, sw - 3, rowH - 3);
+        roundRect(ctx, rx, ry, rw, rh, 4);
+        rowPath.roundRect(rx, ry, rw, rh, 4);
+        hctx.drawImage(stamp, rx, ry, rw, rh);
         x += sw;
       }
+      ctx.fillStyle = g;
+      ctx.fill(rowPath);
     }
     // The gutters: a channel of long granite slabs along each kerb, dished and darker.
     const gutter = 0.32 * pxX;
@@ -3223,25 +3254,29 @@ function normalsFrom(
   const ctx = canvas.getContext('2d');
   if (!ctx) return canvas;
   const out = ctx.createImageData(w, h);
-  const dst = out.data;
+  const dst32 = new Uint32Array(out.data.buffer);
   const scale = strength / 255;
+  const writePixel = (idx: number, left: number, right: number, up: number, down: number) => {
+    const dx = (source[right * 4]! - source[left * 4]!) * scale;
+    // The canvas runs down the texture's v: a rise down the canvas tips the normal to +v.
+    const dy = (source[down * 4]! - source[up * 4]!) * scale;
+    const invLen = 1 / Math.sqrt(dx * dx + dy * dy + 1);
+    const r = ((-dx * invLen * 0.5 + 0.5) * 255 + 0.5) | 0;
+    const g = ((dy * invLen * 0.5 + 0.5) * 255 + 0.5) | 0;
+    const b = ((invLen * 0.5 + 0.5) * 255 + 0.5) | 0;
+    dst32[idx] = (0xff000000 | (b << 16) | (g << 8) | r) >>> 0;
+  };
+  const lastX = w - 1;
   for (let y = 0; y < h; y++) {
-    const yPrev = ((y - 1 + h) % h) * w;
+    const yPrev = (y === 0 ? h - 1 : y - 1) * w;
     const yRow = y * w;
-    const yNext = ((y + 1) % h) * w;
-    for (let x = 0; x < w; x++) {
-      const xPrev = (x - 1 + w) % w;
-      const xNext = (x + 1) % w;
-      const dx = (source[(yRow + xNext) * 4]! - source[(yRow + xPrev) * 4]!) * scale;
-      // The canvas runs down the texture's v: a rise down the canvas tips the normal to +v.
-      const dy = (source[(yNext + x) * 4]! - source[(yPrev + x) * 4]!) * scale;
-      const invLen = 1 / Math.sqrt(dx * dx + dy * dy + 1);
-      const i = (yRow + x) * 4;
-      dst[i] = (-dx * invLen * 0.5 + 0.5) * 255;
-      dst[i + 1] = (dy * invLen * 0.5 + 0.5) * 255;
-      dst[i + 2] = (invLen * 0.5 + 0.5) * 255;
-      dst[i + 3] = 255;
+    const yNext = (y + 1 === h ? 0 : y + 1) * w;
+    writePixel(yRow, yRow + lastX, yRow + 1, yPrev, yNext);
+    for (let x = 1; x < lastX; x++) {
+      const idx = yRow + x;
+      writePixel(idx, idx - 1, idx + 1, yPrev + x, yNext + x);
     }
+    writePixel(yRow + lastX, yRow + lastX - 1, yRow, yPrev + lastX, yNext + lastX);
   }
   ctx.putImageData(out, 0, 0);
   return canvas;
@@ -3261,57 +3296,84 @@ function roundRect(
 }
 
 /**
- * Cathedral stone: lancet windows with tracery, three to a face; or a spire's openwork, rows
- * of quatrefoils diminishing towards the tip.
+ * Cathedral stone atlas (`256 × 528` with 4 px gutters): lancet windows with tracery (top) and
+ * spire openwork quatrefoils (bottom), sharing one material across the cathedral.
  */
-function gothicTexture(open: boolean): CanvasTexture {
-  const size = 256;
+function gothicAtlasTexture(): {
+  texture: CanvasTexture;
+  lancets: UvRect;
+  openwork: UvRect;
+} {
+  const W = 256;
+  const tile = 256;
+  const pad = 4;
+  const rowH = tile + 2 * pad;
+  const H = 2 * rowH;
   const canvas = document.createElement('canvas');
-  canvas.width = size;
-  canvas.height = size;
+  canvas.width = W;
+  canvas.height = H;
   const ctx = canvas.getContext('2d');
-  if (ctx) {
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, size, size);
-    const random = seeded(open ? 61 : 59);
-    for (let i = 0; i < 1400; i++) {
-      ctx.fillStyle = `rgba(90,75,55,${random() * 0.12})`;
-      ctx.fillRect(random() * size, random() * size, 2 + random() * 5, 1 + random() * 3);
-    }
-    ctx.fillStyle = 'rgba(60,50,40,0.12)';
-    for (let y = 0; y < size; y += 8) ctx.fillRect(0, y, size, 1);
-    ctx.fillStyle = '#3a3c44';
-    if (open) {
-      for (let row = 0; row < 10; row++) {
-        const y = 12 + row * 24;
-        for (let col = 0; col < 8; col++) {
-          const x = 16 + col * 32;
+  const paintTile = (open: boolean, cy: number): UvRect => {
+    const iy = cy + pad;
+    if (ctx) {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, cy, W, rowH);
+      const random = seeded(open ? 61 : 59);
+      const buckets = [new Path2D(), new Path2D(), new Path2D()];
+      for (let i = 0; i < 1400; i++) {
+        const b = Math.min(2, Math.floor(random() * 3));
+        buckets[b]!.rect(random() * W, iy + random() * tile, 2 + random() * 5, 1 + random() * 3);
+      }
+      [0.03, 0.06, 0.1].forEach((alpha, idx) => {
+        ctx.fillStyle = `rgba(90,75,55,${alpha})`;
+        ctx.fill(buckets[idx]!);
+      });
+      ctx.fillStyle = 'rgba(60,50,40,0.12)';
+      const courses = new Path2D();
+      for (let y = 0; y < tile; y += 8) courses.rect(0, iy + y, W, 1);
+      ctx.fill(courses);
+      ctx.fillStyle = '#3a3c44';
+      if (open) {
+        const holes = new Path2D();
+        for (let row = 0; row < 10; row++) {
+          const y = iy + 12 + row * 24;
+          for (let col = 0; col < 8; col++) {
+            const x = 16 + col * 32;
+            holes.moveTo(x + 6, y);
+            holes.arc(x, y, 6, 0, Math.PI * 2);
+          }
+        }
+        ctx.fill(holes);
+      } else {
+        for (let col = 0; col < 3; col++) {
+          const x = 30 + col * 80;
+          const w = 36;
           ctx.beginPath();
-          ctx.arc(x, y, 6, 0, Math.PI * 2);
+          ctx.moveTo(x, iy + 230);
+          ctx.lineTo(x, iy + 70);
+          ctx.quadraticCurveTo(x, iy + 34, x + w / 2, iy + 22);
+          ctx.quadraticCurveTo(x + w, iy + 34, x + w, iy + 70);
+          ctx.lineTo(x + w, iy + 230);
           ctx.fill();
+          ctx.fillStyle = 'rgba(220,205,175,0.9)';
+          ctx.fillRect(x + w / 2 - 2, iy + 40, 4, 190);
+          ctx.fillRect(x, iy + 120, w, 4);
+          ctx.fillStyle = '#3a3c44';
         }
       }
-    } else {
-      for (let col = 0; col < 3; col++) {
-        const x = 30 + col * 80;
-        const w = 36;
-        ctx.beginPath();
-        ctx.moveTo(x, 230);
-        ctx.lineTo(x, 70);
-        ctx.quadraticCurveTo(x, 34, x + w / 2, 22);
-        ctx.quadraticCurveTo(x + w, 34, x + w, 70);
-        ctx.lineTo(x + w, 230);
-        ctx.fill();
-        ctx.fillStyle = 'rgba(220,205,175,0.9)';
-        ctx.fillRect(x + w / 2 - 2, 40, 4, 190);
-        ctx.fillRect(x, 120, w, 4);
-        ctx.fillStyle = '#3a3c44';
-      }
     }
-  }
+    return {
+      u0: 0.5 / W,
+      u1: (W - 0.5) / W,
+      v0: 1 - (iy + tile - 0.5) / H,
+      v1: 1 - (iy + 0.5) / H,
+    };
+  };
+  const lancets = paintTile(false, 0);
+  const openwork = paintTile(true, rowH);
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
-  return texture;
+  return { texture, lancets, openwork };
 }
 
 /** The TV moto's back board: white letters on the broadcaster's blue. */
@@ -3941,10 +4003,16 @@ function slabTexture(): CanvasTexture {
         ctx.fillRect(x, row * slab, slab, slab);
       }
     }
+    const darkSpeckle = new Path2D();
+    const lightSpeckle = new Path2D();
     for (let i = 0; i < 700; i++) {
-      ctx.fillStyle = random() < 0.5 ? 'rgba(0,0,0,0.07)' : 'rgba(255,255,255,0.08)';
-      ctx.fillRect(random() * size, random() * size, 1 + random() * 2, 1 + random() * 2);
+      const path = random() < 0.5 ? darkSpeckle : lightSpeckle;
+      path.rect(random() * size, random() * size, 1 + random() * 2, 1 + random() * 2);
     }
+    ctx.fillStyle = 'rgba(0,0,0,0.07)';
+    ctx.fill(darkSpeckle);
+    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+    ctx.fill(lightSpeckle);
     // Old chewing gum and a damp stain or two, the wear of a busy pavement.
     for (let i = 0; i < 7; i++) {
       ctx.fillStyle = 'rgba(40,35,30,0.22)';

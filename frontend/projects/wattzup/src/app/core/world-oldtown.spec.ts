@@ -237,15 +237,34 @@ describe('OldTownStreet and Corners (L2-101 AC1, L2-110 AC9, L2-111 AC10)', () =
     expect(paintMeshes).toHaveLength(4);
     expect(new Set(paintMeshes.map((m) => m.material)).size).toBe(1);
     for (const m of paintMeshes) {
+      expect(m.visible).toBe(true);
       expect(m.rotation.x).toBeCloseTo(Math.atan(0.04), 5);
     }
 
+    // At s = 50, the first slogan (offset 38 -> metres = 384 > 312) wraps past the 300 m road and culls.
+    street.place(50, (m) => m * 0.04);
+    expect(paintMeshes.filter((m) => m.visible).length).toBe(3);
+    street.place(0, (m) => m * 0.04);
+
     expect(bannerMeshes).toHaveLength(3);
+    expect(bannerMeshes.filter((m) => m.visible)).toHaveLength(2);
     expect(new Set(bannerMeshes.map((m) => m.material)).size).toBe(1);
-    expect(bannerMeshes.filter((m) => m.castShadow)).toHaveLength(1);
+    expect(bannerMeshes.filter((m) => m.visible && m.castShadow)).toHaveLength(1);
 
     street.place(170, (m) => m * 0.04);
-    expect(bannerMeshes.filter((m) => m.castShadow)).toHaveLength(1);
+    expect(bannerMeshes.filter((m) => m.visible && m.castShadow)).toHaveLength(1);
+
+    // Cathedral packs lancets + openwork into 1 gothic atlas material (2 total meshes after flatten),
+    // and the TV moto casts shadows only from its solid body mesh (1 shadow-casting mesh, not 3).
+    const cathedral = street.group.children.find((c) => c.position.z === -500)!;
+    const cathedralMeshes = cathedral.children.filter((c): c is Mesh => c instanceof Mesh);
+    expect(cathedralMeshes).toHaveLength(2);
+
+    const moto = street.group.children.find((c) => c.position.z === -30)!;
+    const motoShadowMeshes = moto.children.filter(
+      (c): c is Mesh => c instanceof Mesh && c.castShadow,
+    );
+    expect(motoShadowMeshes).toHaveLength(1);
 
     const instanced = street.group.children.filter(
       (c): c is InstancedMesh => c instanceof InstancedMesh,
