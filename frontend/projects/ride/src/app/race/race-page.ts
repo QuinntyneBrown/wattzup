@@ -20,6 +20,7 @@ import {
   WorkoutEngine,
 } from '@telo/domain';
 import { RouterLink } from '@angular/router';
+import { LiveSessionStore } from '../live/live-session-store';
 import { RaceStore } from './race-store';
 import { RaceWorld } from './race-world';
 
@@ -47,7 +48,15 @@ import { RaceWorld } from './race-world';
   templateUrl: './race-page.html',
   styleUrl: './race-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [RaceStore, RideClock, RideTicker, WorkoutEngine, ResistanceController, BikeTelemetry],
+  providers: [
+    RaceStore,
+    LiveSessionStore,
+    RideClock,
+    RideTicker,
+    WorkoutEngine,
+    ResistanceController,
+    BikeTelemetry,
+  ],
 })
 export default class RacePage {
   protected readonly store = inject(RaceStore);

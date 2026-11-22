@@ -66,6 +66,7 @@ class FakeHub implements RideHubClient {
   readonly reports: [string, number, number][] = [];
   readonly listeners = new Set<(standings: Standings) => void>();
   readonly races: string[] = [];
+  readonly raceJoins: string[] = [];
   readonly readies: [string, boolean][] = [];
   readonly leaves: string[] = [];
   readonly seatListeners = new Set<(seats: SeatsChanged) => void>();
@@ -97,6 +98,11 @@ class FakeHub implements RideHubClient {
   }
   async findRace(mapId: string): Promise<RaceSeatAssignment> {
     this.races.push(mapId);
+    if (this.raceAnswer instanceof Error) throw this.raceAnswer;
+    return this.raceAnswer;
+  }
+  async joinRace(sessionId: string): Promise<RaceSeatAssignment> {
+    this.raceJoins.push(sessionId);
     if (this.raceAnswer instanceof Error) throw this.raceAnswer;
     return this.raceAnswer;
   }
@@ -341,6 +347,24 @@ describe('LiveSessionStore', () => {
       await hub.reconnect();
 
       expect(hub.races).toEqual(['old-town-criterium', 'old-town-criterium']);
+    });
+
+    it('joins the session it holds a seat in again at Go, rather than finding a race (L2-056 AC3, L2-121 AC3)', async () => {
+      await store.join({ ...race, sessionId: RACE.sessionId });
+
+      expect(hub.raceJoins).toEqual([RACE.sessionId]);
+      expect(hub.races).toEqual([]);
+      expect(store.race()).toEqual(RACE);
+      expect(store.offsetMs()).not.toBeNull();
+    });
+
+    it('rides on without a seat or an offset when the hub cannot be reached (L2-126)', async () => {
+      hub.refuse = true;
+
+      await store.join({ ...race, sessionId: RACE.sessionId });
+
+      expect(store.race()).toBeNull();
+      expect(store.offsetMs()).toBeNull();
     });
 
     it('sets the refusal code of a map the hub does not know', async () => {

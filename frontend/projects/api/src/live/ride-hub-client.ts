@@ -36,6 +36,12 @@ export interface RideHubClient {
    * refuses, and with any other error when the connection goes.
    */
   findRace(mapId: string): Promise<RaceSeatAssignment>;
+  /**
+   * Joins the race session the rider holds a seat in again, at Go on the race's own connection (L2-056 AC3): its seat,
+   * grid and start as server time (L2-121 AC3). It rejects with a `RideHubError` (`session_not_found`) when the rider
+   * holds no seat there.
+   */
+  joinRace(sessionId: string): Promise<RaceSeatAssignment>;
   /** Sends "I'm ready" or not for the rider's seat (`SetReady`, L2-053 AC1, AC2), awaiting no answer. */
   setReady(sessionId: string, ready: boolean): Promise<void>;
   /** Releases the rider's seat in a race lobby (`LeaveRace`, L2-057 AC1), awaiting no answer. */

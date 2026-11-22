@@ -8,6 +8,7 @@ import {
   type MapDto,
   MAPS_API,
   MAPS_KEY,
+  MONOTONIC_TIME,
   type PackStrengthId,
   type RaceMode,
   type RaceResult,
@@ -46,13 +47,17 @@ import {
   routeProfileView,
 } from '@telo/domain';
 import { catchError, of, take } from 'rxjs';
+import { LiveSessionStore } from '../live/live-session-store';
 
 /**
  * The race's state (docs/detailed-designs/race/ride-a-race), provided by the page so it goes when the rider leaves. It
  * reads the map of the address from `MAPS_API` and starts the race the moment it arrives: the clock, the ticker and the
  * engine following the map's plan, which sends each segment's level (L2-063 AC2). The screen stays awake while it runs
  * (L2-133 AC3). Its opponents (docs/detailed-designs/race/race-the-ghost-and-bots) are nine bots, or the ghost of the
- * rider's best in a solo race; each tick ranks them with the rider (L2-060, L2-059 AC1, AC4, AC5).
+ * rider's best in a solo race; each tick ranks them with the rider (L2-060, L2-059 AC1, AC4, AC5). A riders-online race
+ * (`?mode=online&session=…`) first joins its session again and starts its clock at the session's server-time start,
+ * read through the measured offset, so every rider's clock reads the same at the same moment (L2-121 AC3, L2-056 AC4);
+ * until that start it holds at 0:00, and without a seat or an offset it starts at once and rides on with the bike.
  */
 @Injectable()
 export class RaceStore {
@@ -107,6 +112,14 @@ export class RaceStore {
     (['easy', 'medium', 'hard'] as const).find(
       (pack) => pack === this.route.queryParamMap.get('pack'),
     ) ?? 'medium';
+
+  /** The riders-online session the rider holds a seat in, from the lobby's Go (L2-056 AC3). */
+  private readonly session =
+    this.mode === 'online' ? this.route.queryParamMap.get('session') : null;
+  private readonly live = inject(LiveSessionStore);
+  private readonly time = inject(MONOTONIC_TIME);
+  private startTimer: ReturnType<typeof setTimeout> | undefined;
+  private destroyed = false;
 
   readonly map = this.loaded.asReadonly();
   /** Whether the rider paused the solo race: the clock, the distance and the standings hold (L2-068 AC1). */
@@ -296,22 +309,49 @@ export class RaceStore {
   });
 
   constructor() {
+    const joined =
+      this.session === null
+        ? null
+        : this.live.join({ kind: 'race', mapId: this.mapId, sessionId: this.session });
     inject(MAPS_API)
       .list()
       .pipe(takeUntilDestroyed())
       .subscribe((maps) => {
         const map = maps.find((each) => each.id === this.mapId);
-        if (map) this.start(map);
+        if (!map) return;
+        this.loaded.set(map);
+        if (joined === null) this.start(map);
+        else void joined.then(() => this.waitForStart(map));
       });
+    this.destroyRef.onDestroy(() => {
+      this.destroyed = true;
+      clearTimeout(this.startTimer);
+    });
     // The lock is bound on the route, whose injector outlives the page.
     this.destroyRef.onDestroy(() => this.wakeLock.release());
   }
 
-  private start(map: MapDto): void {
+  /**
+   * Starts a riders-online race at its session's start on the monotonic clock, holding at 0:00 until then; one opened
+   * after the start rides from the session's time (L2-121 AC3).
+   */
+  private waitForStart(map: MapDto): void {
+    if (this.destroyed) return;
+    const race = this.live.race();
+    const offset = this.live.offsetMs();
+    if (race === null || offset === null) return this.start(map);
+    const at = Date.parse(race.startsAt) - offset;
+    const wait = at - this.time.now();
+    if (wait <= 0) return this.start(map, at);
+    this.startTimer = setTimeout(() => this.start(map, at), wait);
+  }
+
+  /** Starts the race: now, or from `at`, a riders-online session's start on the monotonic clock. */
+  private start(map: MapDto, at?: number): void {
     this.loaded.set(map);
     this.recorder = new RideRecorder();
     this.wakeLock.hold();
-    this.clock.start();
+    this.clock.start(at);
     this.ticker.start();
     this.line = new FinishLine(map.distanceKm * 1000);
     this.engine.follow(map.plan);
