@@ -126,3 +126,13 @@ The service worker serves the shell and the cached catalogue; the multiplayer ch
 are unavailable (`L2-135` AC3, AC4).
 
 ![Sequence diagram for starting a solo ride offline](diagrams/sequence-start-offline.png)
+
+## Open questions
+
+1. A ride kept because the session had ended (401, `L2-004` AC4) is tried again on the retry
+   timer, as any ride that did not reach the backend, and on the next app start. Sending it the
+   moment the rider signs in again would need the outbox to follow the current rider; slice 17.1
+   leaves it to the timer, which tries again within the hour at the latest.
+2. A ride is written to the device when it is submitted, a few milliseconds after the ride ends.
+   A tab closed in that moment loses it; the race or class submits before it opens Results, so
+   the rider sees Results only once the write has started.
