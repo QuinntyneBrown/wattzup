@@ -134,7 +134,8 @@ data and scenery in `themes.py`, run the script, and name the world in
 - **Halos.** `Kit.halo` puts four corners at a light's place in the `Halos` group; the app spreads them to face the eye
   and draws the light's glow. `Kit.lamp` gives every lamp one.
 - **Baked shading.** What stands on the ground is darkened at its foot in its colours.
-- **`pack_glb.py`** rewrites the exported vertex colours as bytes, a quarter of their size.
+- **`pack_glb.py`** rewrites the exported vertex colours as bytes, a quarter of their size, and each mesh's positions as
+  16-bit steps of its own box, a step a centimetre, put back by the mesh's node (KHR_mesh_quantization).
 - **`layout`.** Searching the layouts a seed can deal for one whose start and finish look out to sea can
   take minutes. The script prints the layout it chose, and each course file names it (`"layout": 2`) so
   the next build goes straight to it. Remove the line to search again after changing the seed.

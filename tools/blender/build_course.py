@@ -529,7 +529,7 @@ FENCES_PART = "Fences"
 HALOS_PART = "Halos"
 WALL_KINDS = {"brick": 1, **{f"container-{i}": 2 for i in range(4)}, "whitewash": 3, "tower": 3, "wall": 3,
               **{f"facade-{i}": 3 for i in range(6)}, **{f"deco-{i}": 3 for i in range(4)}}
-WIDER = {"Land": 4, "Beams": 4, "Glow": 3, "Leaves": 3, "Halos": 3}
+WIDER = {"Land": 4, "Beams": 4, "Glow": 3, "Leaves": 3, "Halos": 3, "Ground": 2}
 WHOLE = {"sea": "Sea", "sun": "Sun", "moon": "Sun", "island": "Conillera", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
 
 

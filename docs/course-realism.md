@@ -312,15 +312,37 @@ for a few bulbs, not one each), the sun's disc at dusk. By day leave them out: a
 **Watch for.** Winding: the UV's flip on export turns the corners round, so draw both sides. Halos in front of
 everything (they must test depth but not write it). Too many of them close together add up to a white smear.
 
+### 11. Paying for detail: the file's size (Docklands pass 11)
+
+**What it gives.** Room: every pass above adds vertices, and the map's download has a budget (3 MB gzipped).
+
+**How it works.** `tools/blender/pack_glb.py`, run by the build over the glb it exports: each mesh's `POSITION`
+becomes normalised 16-bit steps of the mesh's own bounding box, a step never finer than 1 cm (`STEP`), with the
+box's corner and size written to the mesh's node as its translation and scale (KHR_mesh_quantization, which
+Three.js's loader reads without a decoder). Colours were already bytes. UVs stay floats: they hold metres along a
+21.6 km road.
+
+**To apply it to another map.** Rebuild it: the packer runs on every map. Anything the app moves by its node (as
+the confetti) must be named in `MOVED`. Code that reads a mesh's geometry must use the mesh's matrix, as
+`course-renderer.ts` now does for a chunk's middle.
+
+**Cost.** None at run time. Docklands: 3.95 to 3.31 MB gzipped.
+
+**Watch for.** Two surfaces a centimetre or two apart (paint on a road) must still be whole steps apart after
+stepping, or they fight; a mesh more than 655 m across is held more coarsely than a centimetre.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
 
-1. The map's file is over its 3 MB budget (3.99 MB gzipped): positions and UVs are 32-bit floats.
-2. Nothing but the riders casts a shadow: posts, walls and containers throw none.
-3. The water is a flat colour: no reflection of the lights along the quay or of the city.
-4. The neon signs and lit windows are not mirrored in the wet road, and throw no light on it.
-5. Lit windows and neon throw no light on the ground, and the neon has no glow in the air.
-6. The riders are simple figures: smooth limbs, no cloth, no faces.
-7. Doors, signs, pipes, gutters and roof lines: a building is still a box with windows.
-8. The land rises with the road: a climb onto a bridge has ground beside it, not water beneath.
+1. Draw calls pass their budget of 140 in places (146 where the road runs beside itself), and the five riders are
+   some 60 of them: a rider far ahead should be one mesh.
+2. The map's file is 3.31 MB gzipped against 3 MB: what is left is positions and indices, which need a mesh codec
+   (meshopt).
+3. Nothing but the riders casts a shadow: posts, walls and containers throw none.
+4. The water is a flat colour: no reflection of the lights along the quay or of the city.
+5. The neon signs and lit windows are not mirrored in the wet road, and throw no light on it.
+6. Lit windows and neon throw no light on the ground, and the neon has no glow in the air.
+7. The riders are simple figures: smooth limbs, no cloth, no faces.
+8. Doors, signs, pipes, gutters and roof lines: a building is still a box with windows.
+9. The land rises with the road: a climb onto a bridge has ground beside it, not water beneath.

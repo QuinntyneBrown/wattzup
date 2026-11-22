@@ -32,6 +32,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 8 | Hills a rider can see: each effort a ramp up onto a bridge | 120.0 fps, no frame over 20 ms | median of three 308 fps (3.24 ms): 311, 308, 307, on the first ramp | | 66,997 | 123 | 3.92 MB | Yes |
 | 9 | Wet ground that mirrors the lamps and the sky | 119.8 fps, no frame over 20 ms | median of three 298 fps (3.36 ms): 326, 296, 298, on the first ramp | | 66,997 | 123 | 3.92 MB | Yes |
 | 10 | A glow in the air round every lamp | 119.3 fps, 2 frames over 20 ms | median of three 294 fps (3.40 ms): 304, 286, 294, on the first ramp | | 67,845 | 129 | 3.95 MB | Yes |
+| 11 | The file smaller: positions in whole centimetres | 119.4 fps, 1 frame over 20 ms | turn about with pass 10's map: 273 fps against 264 (277, 270, 273 and 267, 264, 254), on the first ramp | | 75,149 | 130 | 3.31 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -391,3 +392,43 @@ corners' order round, so every disc faced away and was culled. They are drawn fr
 - Corners that all sit at one place, spread in the vertex shader, are the cheapest thing that faces the eye: no
   instancing, no sprites, one draw call a chunk like everything else.
 - Draw calls are now the nearest budget (129 of 140): the next new group should be joined to an old one.
+
+## Pass 11: the file smaller
+
+Not a change to the picture: it pays back what passes 3 to 10 added to the map's download, which is what a rider
+waits for before the first frame.
+
+**Before:** 3.95 MB gzipped (11.4 MB on disk), against a budget of 3 MB. **After:** 3.31 MB gzipped (9.8 MB on
+disk), a little less than the map was before any of these passes (3.37 MB) with everything they added in it. The
+picture is the same (`pass-11.jpg`, `pass-11.mp4`).
+
+**What changed.**
+
+- `pack_glb.py` holds each mesh's positions as 16-bit steps of the mesh's own box (KHR_mesh_quantization), a step a
+  centimetre or, for a mesh more than 655 m across, a little more, and gives the mesh's node the box's corner and
+  size to put them back. The confetti keeps its floats, because the app moves it by its node.
+- `course-renderer.ts` works out each chunk's middle and reach in the map's axes, not the mesh's own, now that the
+  two differ.
+- The ground's chunks are twice as long (480 m), and windows, railings, walls and halos are drawn a little nearer
+  (160, 120, 220 and 320 m), to take draw calls back.
+- The bench's report lists the chunks of each group in view, to see where draw calls come from.
+
+**Where the bytes are now (gzipped):** positions 1.52 MB, triangle indices 1.24 MB, UVs 0.64 MB, colours 0.06 MB,
+the file's index of meshes 0.05 MB.
+
+**Cost.** None. A first reading said 271 fps against pass 10's 294; run turn about with pass 10's map in the same
+sitting it is 273 against 264: the machine had slowed, not the map.
+
+**Draw calls: over budget in places.** Sampled along the course, the frame has 123 to 146 draw calls against a
+budget of 140: 146 at 15 km, where the road runs close beside another stretch of itself and both stretches' chunks
+are drawn, and 141 at 6.3 km. Some 60 of them are the five riders and the bloom; the map's own are about 65 to 85.
+Coarser chunks of land were tried and put back (13,000 more triangles in the frame for 8 fewer draw calls).
+
+**Learned.**
+
+- Whole centimetres compress; fine steps do not. Sixteen bits spread over a 240 m chunk are 4 mm steps whose low
+  bits are noise to gzip: holding every mesh to a centimetre took another 0.2 MB off.
+- A frame rate from an hour ago is not a baseline. The only fair comparison is turn about, now.
+- A group's count of chunks in view is cheap to report and says at once where draw calls go.
+- What is left in the file is mostly positions and indices, which only a mesh codec (meshopt, Draco) shrinks
+  further; and the riders, not the map, are the largest share of the draw calls.

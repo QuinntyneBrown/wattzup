@@ -76,10 +76,10 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   Land: 950,
   Ground: 420,
   Solid: 250,
-  Walls: 250,
-  Windows: 250,
-  Fences: 200,
-  Halos: 420,
+  Walls: 220,
+  Windows: 160,
+  Fences: 120,
+  Halos: 320,
   Glow: 400,
   Beams: 460,
   Leaves: 210,
@@ -442,12 +442,17 @@ export class CourseRenderer implements WorldRenderer {
         mesh.geometry.computeBoundingSphere();
         const sphere = mesh.geometry.boundingSphere;
         if (sphere) {
+          // A mesh's positions are steps of its own box, put back by its place and scale in the map (pack_glb.py):
+          // its middle and its reach are worked out in the map's axes, not its own.
+          mesh.updateMatrixWorld(true);
+          const middle = sphere.center.clone().applyMatrix4(mesh.matrixWorld);
           this.chunks.push({
             mesh,
-            x: sphere.center.x,
-            y: sphere.center.y,
-            z: sphere.center.z,
-            reach: (DRAW_DISTANCE[group] ?? 700) + sphere.radius,
+            x: middle.x,
+            y: middle.y,
+            z: middle.z,
+            reach:
+              (DRAW_DISTANCE[group] ?? 700) + sphere.radius * mesh.matrixWorld.getMaxScaleOnAxis(),
           });
         }
       }
@@ -681,7 +686,13 @@ export class CourseRenderer implements WorldRenderer {
   private report(renderer: WebGPURenderer): void {
     const hook = (globalThis as Record<string, unknown>)[PROBE_KEY] as Record<string, unknown>;
     const { drawCalls, triangles } = renderer.info.render;
-    hook['course'] = { tier: this.tier, backend: this.backend, drawCalls, triangles };
+    // The chunks of each group in view: where the map's draw calls come from.
+    const groups: Record<string, number> = {};
+    for (const { mesh } of this.chunks) {
+      const group = mesh.name.split('_')[0]!;
+      if (mesh.visible) groups[group] = (groups[group] ?? 0) + 1;
+    }
+    hook['course'] = { tier: this.tier, backend: this.backend, drawCalls, triangles, groups };
   }
 
   /** Steps the tier down when the judged frames ran slower than the display allows, and up while they keep its pace. */
