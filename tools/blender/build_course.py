@@ -1525,6 +1525,8 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         data["haze"] = hexs(theme["haze"])
         data["light"] = {"colour": hexs(theme["light"][0]), "intensity": theme["light"][1]}
         data["fill"] = [hexs(c) for c in theme["fill"]]
+        if "wet" in theme:
+            data["wet"] = theme["wet"]
         if "lamps" in theme:
             # The street lamps, both sides: where their light falls on the ground (see `Kit.lamp`).
             lamps = theme["lamps"]

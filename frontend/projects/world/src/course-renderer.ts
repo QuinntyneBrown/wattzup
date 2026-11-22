@@ -33,9 +33,16 @@ import {
   WebGPURenderer,
 } from 'three/webgpu';
 import type { Backend, SceneFrame, TimedSegment as Segment, World, WorldRenderer } from '@telo/api';
-import { Course, type CoursePlace, courseLamps, courseLook, parseCourse } from './course';
+import {
+  Course,
+  type CoursePlace,
+  courseLamps,
+  courseLook,
+  courseWet,
+  parseCourse,
+} from './course';
 import { fenceMaterial } from './fence-material';
-import { groundMaterial, surfaceTexture } from './ground-material';
+import { type GroundEye, groundMaterial, surfaceTexture } from './ground-material';
 import { LampGlow } from './lamp-glow';
 import { lampLightMap } from './lamp-light-map';
 import { mergeStillParts } from './merged-cyclist';
@@ -130,6 +137,8 @@ export class CourseRenderer implements WorldRenderer {
   private sky: Mesh | null = null;
   /** Moves the sky's cloud on to a second of the ride's clock. */
   private skyClock: ((seconds: number) => void) | null = null;
+  /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
+  private groundEye: GroundEye | null = null;
   /** The scene's pass with bloom over it, for the neon; null where it could not be built. */
   private pipeline: RenderPipeline | null = null;
   private map: Object3D | null = null;
@@ -314,6 +323,7 @@ export class CourseRenderer implements WorldRenderer {
     this.riders.clear();
     this.lamplit.clear();
     this.lampGlow = null;
+    this.groundEye = null;
     this.shadows.clear();
     this.casting.clear();
     this.lampShadows = null;
@@ -377,7 +387,15 @@ export class CourseRenderer implements WorldRenderer {
     // The ground the road builds has its place on the road in its UV: its surface and the lamps' light are drawn
     // from that (ground-material.ts). A map built before it has no such group.
     const detail = surfaceTexture();
-    materials['Ground'] = groundMaterial(detail, this.course!.file.roadHalfWidth, lamps);
+    const ground = groundMaterial(
+      detail,
+      this.course!.file.roadHalfWidth,
+      lamps,
+      courseWet(this.course!.file),
+      new Color(look.haze),
+    );
+    materials['Ground'] = ground.material;
+    this.groundEye = ground.eye;
     // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
     materials['Walls'] = wallMaterial(detail, this.lampGlow?.light ?? null, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
@@ -508,12 +526,11 @@ export class CourseRenderer implements WorldRenderer {
       0,
     );
     const close = near * near * (3 - 2 * near);
-    const back = course.place(
-      metres - (CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close),
-      0,
-      this.here,
-    );
-    this.camera.position.set(back.x, back.y + CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close, back.z);
+    const behind = CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
+    const up = CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
+    const back = course.place(metres - behind, 0, this.here);
+    this.camera.position.set(back.x, back.y + up, back.z);
+    this.groundEye?.at(metres - behind, 0, up);
     const ahead = course.place(metres + LOOK_AHEAD, 0, this.there);
     this.camera.lookAt(ahead.x, ahead.y + LOOK_UP, ahead.z);
     this.sky?.position.copy(this.camera.position);

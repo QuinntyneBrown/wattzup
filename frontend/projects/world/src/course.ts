@@ -42,6 +42,8 @@ export interface CourseFile {
   readonly light?: { readonly colour: string; readonly intensity: number };
   /** The fill light from the sky and from the ground. */
   readonly fill?: readonly [string, string];
+  /** How wet the ground is, from 0, dry, to 1, standing water everywhere; a course that names none is dry. */
+  readonly wet?: number;
   /** The street lamps that light the ground, where the course has them. */
   readonly lamps?: {
     /** Metres of road between one lamp and the next, on both sides. */
@@ -103,6 +105,12 @@ export function courseLook(file: CourseFile): CourseLook {
         : SUNSET.light,
     fill: fill.length === 2 && fill.every((c) => c !== null) ? [fill[0]!, fill[1]!] : SUNSET.fill,
   };
+}
+
+/** How wet the course's ground is, from 0 to 1: dry where it names none or names it wrongly; the file is data. */
+export function courseWet(file: CourseFile): number {
+  const wet = file.wet as unknown;
+  return isNumber(wet) ? Math.min(Math.max(wet, 0), 1) : 0;
 }
 
 /** The course's street lamps, or null where it names none or names them wrongly: the file is data. */

@@ -259,6 +259,35 @@ map that should be flat between its hills. Leave the mountain maps as they are: 
 **Watch for.** Ramps steeper than about 10 % look like a wall and no longer match the resistance; a ramp shorter
 than the 40 m the gradients are eased over is flattened.
 
+### 9. Wet ground with reflections worked out (Docklands pass 9)
+
+**What it gives.** Standing water on the road and pavements that mirrors the street lamps as streaks towards the
+rider and holds the sky's glow, with no reflection pass and no second render of the scene.
+
+**How it works.**
+
+- The theme's `wet` (0 to 1) goes into the course file; `courseWet(file)` reads it.
+- `ground-material.ts`, `groundMaterial(detail, roadHalfWidth, lamps, wet, haze)`: `water` is a `smoothstep` of the
+  detail texture's patches (plus a little for the wheel tracks) whose threshold falls as `wet` rises. Water darkens
+  the colour and drops the roughness to 0.12, so the scene's own light glints in it.
+- The lamps' reflections: the material holds a uniform, the eye in the road's measure (metres left, metres up,
+  metres along), which `course-renderer.ts` sets each frame from the camera's place on the road. For a pixel on the
+  ground, the lamp row whose mirror image falls there is `eye + (pixel - eye) x (eye height + lamp height) / eye
+  height` along the road, rounded to a row; that row and its neighbours, both kerbs, each add
+  `pow(dot(normalize(toLamp + toEye), up), gloss)`, with `gloss` from the detail texture's grain so the streak
+  breaks up.
+- The sky's reflection: the haze's colour times `(1 - toEye.y)^5`.
+
+**To apply it to another map.** Give its theme a `wet` and rebuild: it gets the dark patches, the glints and the
+sky's sheen. The lamps' streaks need `lamps` too. By day a wet road mirrors the sky most: raise `MIRROR.sky` for a
+theme, or give it the sun's glint by the same highlight with the sun's direction in place of a lamp's.
+
+**Cost.** About 0.1 ms a frame at 1080p on an Adreno X1-85.
+
+**Watch for.** Streaks that blow out (keep them a few times a lamp's brightness; bloom adds the rest); hard edges
+between rows of lamps (take a row either side); on tight bends the road's measure bends and the streaks lean: they
+are faint there, and it has not been a problem.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
@@ -266,7 +295,7 @@ The pictures the work aims at differ from a course in these ways, most visible f
 1. The map's file is over its 3 MB budget (3.99 MB gzipped): positions and UVs are 32-bit floats.
 2. Nothing but the riders casts a shadow: posts, walls and containers throw none.
 3. The water is a flat colour: no reflection of the lights along the quay or of the city.
-4. Wet ground: reflections of the neon and the lamps in the road.
+4. The neon signs and lit windows are not mirrored in the wet road, and throw no light on it.
 5. Lamps and neon have no glow in the air (halos, haze under each lamp), and lit windows and neon throw no light
    on the ground.
 6. The riders are simple figures: smooth limbs, no cloth, no faces.

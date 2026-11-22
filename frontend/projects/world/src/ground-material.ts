@@ -12,6 +12,7 @@ import {
   mod,
   smoothstep,
   texture,
+  uniform,
   uv,
   vec2,
   vec3,
@@ -53,12 +54,26 @@ export function surfaceTexture(): DataTexture {
   return detail;
 }
 
-/** The ground's material, reading `detail`. */
+/** Where the ground is seen from, in the road's own measure, kept up to date a frame: wet ground mirrors by it. */
+export interface GroundEye {
+  /** Sets the eye: metres from the start line, metres left of the centre line, metres above the road. */
+  at(along: number, left: number, height: number): void;
+}
+
+/** How bright a lamp's reflection in standing water is, and the sky's, against the lamp itself. */
+const MIRROR = { lamp: 2.6, sky: 0.4 } as const;
+
+/**
+ * The ground's material, reading `detail`. `wet` is how wet the ground is, 0 to 1: above 0 the ground is darker and
+ * smoother in patches, and those patches mirror the lamps and the sky's `haze` as seen from the eye.
+ */
 export function groundMaterial(
   detail: DataTexture,
   roadHalfWidth: number,
   lamps: CourseLamps | null,
-): Material {
+  wet = 0,
+  haze: Color | null = null,
+): { material: Material; eye: GroundEye } {
   // glTF keeps a UV's second number upside down: the metres from the start line come back as 1 - v.
   const left = uv().x;
   const along = float(1).sub(uv().y);
@@ -99,15 +114,30 @@ export function groundMaterial(
     .mul(grain.mul(0.7).add(0.5))
     .mul(mix(0.6, 1.05, broad.g))
     .mul(middle.b.mul(0.5).oneMinus());
-  const colour = mix(mix(beside, asphalt, onRoad), paint, painted);
+  const dry = mix(mix(beside, asphalt, onRoad), paint, painted);
+  // Standing water: it lies in the broad patches and the wheel tracks' hollows, more of it the wetter the ground.
+  const water =
+    wet > 0
+      ? smoothstep(
+          1 - wet,
+          1.12 - wet * 0.6,
+          broad.g.mul(0.75).add(middle.g.mul(0.35)).add(worn.mul(0.12)),
+        )
+      : float(0);
+  // Wet ground is darker.
+  const colour = dry.mul(mix(float(1), float(0.55), water.mul(painted.oneMinus())));
 
   const material = new MeshStandardNodeMaterial();
   material.colorNode = colour;
   material.metalnessNode = float(0);
-  material.roughnessNode = mix(float(0.92), float(0.62), worn.max(painted.mul(0.6)))
-    .add(grain.sub(0.5).mul(0.2))
-    .clamp(0.3, 1);
+  material.roughnessNode = mix(
+    mix(float(0.92), float(0.62), worn.max(painted.mul(0.6))).add(grain.sub(0.5).mul(0.2)),
+    float(0.12),
+    water,
+  ).clamp(0.08, 1);
 
+  const eyeAt = uniform(vec3(0, 2, 0));
+  let emitted: Node<'vec3'> = vec3(0, 0, 0);
   if (lamps) {
     // The light under the lamps: each kerb's nearest lamp and the one after it, falling off a little faster than
     // light does on flat ground, as under a lamp with a shade.
@@ -124,10 +154,52 @@ export function groundMaterial(
       }
     }
     const tint = new Color(lamps.colour);
-    material.emissiveNode = colour
-      .mul(vec3(tint.r, tint.g, tint.b))
-      .mul(max(light, 0).mul(LAMP_STRENGTH));
-  }
+    const lampColour = vec3(tint.r, tint.g, tint.b);
+    emitted = colour.mul(lampColour).mul(max(light, 0).mul(LAMP_STRENGTH));
 
-  return material;
+    if (wet > 0) {
+      // The lamps in the water. All in the road's own measure (metres left, up, along), where the road is
+      // straight enough near the eye: a lamp mirrors at the point a share `eye height / (eye height + lamp
+      // height)` of the way from the eye to it, so the row of lamps whose mirror this point could be is known, and
+      // only that row and the one either side of it are worked out, on both kerbs. Blinn's highlight, on water that ripples a
+      // little with the grain, draws each as a streak towards the eye.
+      const point = vec3(left, 0, along);
+      const toEye = eyeAt.sub(point).normalize();
+      const reach = eyeAt.y.add(height).div(eyeAt.y);
+      const mirrored = eyeAt.z.add(along.sub(eyeAt.z).mul(reach));
+      const row = mirrored.sub(first).div(every).round();
+      const gloss = mix(float(260), float(1100), fine.r);
+      let streaks: FloatNode = float(0);
+      for (const step of [-1, 0, 1]) {
+        const at = row.add(step).mul(every).add(first);
+        for (const side of [across, -across]) {
+          const toLamp = vec3(float(side), float(height), at).sub(point).normalize();
+          streaks = streaks.add(toLamp.add(toEye).normalize().y.max(0).pow(gloss));
+        }
+      }
+      emitted = emitted.add(lampColour.mul(streaks.mul(water).mul(MIRROR.lamp)));
+    }
+  }
+  if (wet > 0 && haze) {
+    // And the sky in it, most at a glancing angle.
+    const glance = float(1)
+      .sub(
+        eyeAt
+          .sub(vec3(left, 0, along))
+          .normalize()
+          .y.max(0),
+      )
+      .pow(5);
+    emitted = emitted.add(vec3(haze.r, haze.g, haze.b).mul(glance.mul(water).mul(MIRROR.sky)));
+  }
+  if (lamps || wet > 0) material.emissiveNode = emitted;
+
+  return {
+    material,
+    eye: {
+      at: (alongMetres, leftMetres, height) => {
+        eyeAt.value.set(leftMetres, height, alongMetres);
+      },
+    },
+  };
 }

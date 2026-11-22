@@ -30,6 +30,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 6 | Windows with frames, panes and rooms behind them | 119.8 fps | median of three 328 fps (3.05 ms): 333, 328, 319 | | 74,869 | 129 | 3.38 MB | Yes |
 | 7 | A working quay: railing, bollards, drums, crates, lorries, masts, cranes | 60.0 fps (the display was at 60 Hz) | best of six 301 fps; medians 241 and 232 on a busy machine (see the pass) | | 79,834 | 134 | 3.99 MB | Yes |
 | 8 | Hills a rider can see: each effort a ramp up onto a bridge | 120.0 fps, no frame over 20 ms | median of three 308 fps (3.24 ms): 311, 308, 307, on the first ramp | | 66,997 | 123 | 3.92 MB | Yes |
+| 9 | Wet ground that mirrors the lamps and the sky | 119.8 fps, no frame over 20 ms | median of three 298 fps (3.36 ms): 326, 296, 298, on the first ramp | | 66,997 | 123 | 3.92 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -322,3 +323,39 @@ Docklands' theme: `"ramp": {"work": 0.4, "recover": 0.15}`, and no rolling groun
   highest where the road climbs, but the climb is the first part of the effort, not all of it.
 - The land and the quay still rise with the road, so the "bridge" has ground beside it. A bridge that leaves the
   quay behind (piers, water beneath, a drop either side) is the next step for these hills.
+
+## Pass 9: wet ground that mirrors the lamps and the sky
+
+**Before** (`pass-08.jpg`, `pass-08.mp4`): the road is dry and matt everywhere: the lamps light it, and nothing
+shines.
+
+**After** (`pass-09.jpg` on the first ramp, `pass-09-start.jpg` at the start line, `pass-09.mp4`): it has rained.
+Water lies in patches and in the hollows of the wheel tracks, darker than the dry road, and in it each lamp ahead
+is mirrored as a streak of light running towards the rider, broken by the grain of the surface; at a glancing
+angle the water also holds the sky's glow. The streaks slide over the road as the rider moves, as reflections do.
+
+**What changed.**
+
+- The Docklands theme names how wet it is (`"wet": 0.55`), the course file carries it, and `courseWet` reads it (a
+  course that names none, or names it wrongly, is dry).
+- `ground-material.ts`: where the detail texture's patches are high, the ground is water: 0.55 as bright, almost
+  smooth (roughness 0.12), and it adds two reflections to what it emits. The lamps': worked out in the road's own
+  measure from where the eye is (three numbers the renderer sets a frame). A lamp mirrors at the point a share
+  `eye height / (eye height + lamp height)` of the way from the eye to it, so the one row of lamps that could be
+  mirrored at a pixel is known; that row and the row either side, on both kerbs, are given Blinn's highlight (six a
+  pixel). The sky's: the haze's colour, by Schlick's fifth power of the glancing angle.
+
+**Cost.** 0.11 ms a frame (308 to 298 fps), no frame over 20 ms. No triangles, no draw calls, nothing in the file
+but one number.
+
+**Tried and dropped.** The first reflections were 14 times a lamp's brightness with a broad highlight, from only
+two rows of lamps: white slabs with hard edges where one row gave way to the next. They are 2.6 times, with a
+highlight three times as tight, from three rows.
+
+**Learned.**
+
+- A reflection needs the eye, and a material that knows only the road's own measure (metres along, metres across)
+  can still have it: give it the eye in that measure. Near the rider the road is straight enough for it to hold.
+- Lamps that repeat need not be looped over: the mirror's geometry says which one a pixel can show.
+- The pavements and the quay are wet by the same rule and it suits them; the brick, the riders and the water of the
+  harbour are not, and the neon signs are not mirrored: only the lamps and the sky.

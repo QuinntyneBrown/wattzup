@@ -1,4 +1,4 @@
-import { Course, type CourseFile, courseLamps, courseLook, parseCourse } from './course';
+import { Course, type CourseFile, courseLamps, courseLook, courseWet, parseCourse } from './course';
 
 /**
  * A straight road north (-Z), a point every 4 m from 8 m before the start line: flat for 40 m, then climbing 10 %
@@ -169,4 +169,23 @@ describe('courseLamps (L2-166 AC13)', () => {
   ])('lights no lamp for %s: the file is data', (_, malformed) => {
     expect(courseLamps({ ...courseFile(), lamps: malformed } as unknown as CourseFile)).toBeNull();
   });
+});
+
+describe('courseWet (L2-166 AC20)', () => {
+  it.each([
+    [0.55, 0.55],
+    [0, 0],
+    [1, 1],
+    [1.7, 1],
+    [-0.2, 0],
+  ])('reads a wet of %d as %d', (named, wet) => {
+    expect(courseWet({ ...courseFile(), wet: named })).toBe(wet);
+  });
+
+  it.each([[undefined], ['soaked'], [null], [Number.NaN]])(
+    'keeps the ground dry for %s: the file is data',
+    (named) => {
+      expect(courseWet({ ...courseFile(), wet: named } as unknown as CourseFile)).toBe(0);
+    },
+  );
 });

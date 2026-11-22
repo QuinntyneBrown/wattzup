@@ -107,6 +107,9 @@ a tablet.
 loads. `tools/course-bench` times a course's frames in the real app; `docs/course-realism.md` gives the method and
 each technique.
 
+**Wet ground (L2-166 AC20).** `courseWet(file)` reads the file's `wet`. The ground's material mirrors the lamps and
+the sky in its water as seen from an eye in the road's own measure, which `aim` sets each frame.
+
 **Lamplight (L2-166 AC14).** Where the file has `lamps`, `Solid`, `Land` and `Leaves` are drawn with
 `LampGlow.scenery`, and each rider's lit materials are swapped for `LampGlow.rider` copies when the rider is made
 (kept in a map by their source, so riders share them).
