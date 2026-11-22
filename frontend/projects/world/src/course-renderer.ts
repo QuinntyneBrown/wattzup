@@ -12,7 +12,7 @@ import {
   AgXToneMapping,
   BackSide,
   BufferAttribute,
-  CircleGeometry,
+  type CanvasTexture,
   Color,
   DirectionalLight,
   DoubleSide,
@@ -27,6 +27,7 @@ import {
   MeshStandardMaterial,
   type Object3D,
   PerspectiveCamera,
+  PlaneGeometry,
   RenderPipeline,
   Scene,
   SphereGeometry,
@@ -63,7 +64,9 @@ import { skyMaterial } from './sky-material';
 import { type Rain, rain } from './rain';
 import { RiderBatch } from './rider-batch';
 import { bendLean } from './rider-lean';
+import { type ShadowShape, shadowShape } from './rider-shadow-shape';
 import { outOfTheSaddle } from './rider-stance';
+import { endShadow, sideShadow } from './shadow-silhouette';
 import { vertexFinish } from './rider-finish';
 import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
@@ -212,7 +215,12 @@ export class CourseRenderer implements WorldRenderer {
   private beams: MeshBasicMaterial | null = null;
   private readonly confetti: Mesh[] = [];
   /** The blob every rider's shadow is drawn with, and each rider's own. */
-  private blob: { geometry: CircleGeometry; material: MeshBasicMaterial } | null = null;
+  private blob: {
+    geometry: PlaneGeometry;
+    side: MeshBasicMaterial;
+    end: MeshBasicMaterial;
+  } | null = null;
+  private readonly shape: ShadowShape = { side: false, width: 0.62, flipped: false };
   private readonly shadows = new Map<Cyclist, Mesh>();
   /** Under street lamps the riders' shadows are the lamps' instead (rider-shadows.ts), for these riders. */
   private lampShadows: RiderShadows | null = null;
@@ -563,16 +571,24 @@ export class CourseRenderer implements WorldRenderer {
 
     const fill = new HemisphereLight(look.fill[0], look.fill[1], 1.5);
     // The low sun throws each rider's shadow long across the road: a soft dark blob, with no shadow map to draw.
-    const circle = new CircleGeometry(0.5, 20);
-    circle.rotateX(-Math.PI / 2);
-    const shade = new MeshBasicMaterial({
-      color: 0x1a1024,
-      transparent: true,
-      opacity: 0.36,
-      depthWrite: false,
-    });
-    this.blob = { geometry: circle, material: shade };
-    this.disposables.push(circle, shade);
+    // Each rider's shadow in the sun: a square on the road drawn with the rider's own outline, from the side or
+    // end on as the sun stands (rider-shadow-shape.ts, shadow-silhouette.ts). Along it, away from the sun, is +z.
+    const square = new PlaneGeometry(1, 1);
+    square.rotateX(-Math.PI / 2);
+    const cast = (map: CanvasTexture) =>
+      new MeshBasicMaterial({
+        color: 0x07050b,
+        map,
+        transparent: true,
+        opacity: 0.8,
+        depthWrite: false,
+        side: DoubleSide,
+      });
+    const side = cast(sideShadow());
+    const end = cast(endShadow());
+    this.blob = { geometry: square, side, end };
+    this.disposables.push(side.map!, end.map!, side, end);
+    this.disposables.push(square);
     this.scene.add(fill, this.sun, this.sun.target);
     this.disposables.push(fill, this.sun);
 
@@ -652,6 +668,10 @@ export class CourseRenderer implements WorldRenderer {
       const far = SHADOW_LENGTH * 0.42;
       shadow.position.set(at.x - sx * far, at.y + 0.05, at.z - sz * far);
       shadow.rotation.set(at.pitch, Math.atan2(-sx, -sz), 0, 'YXZ');
+      // The rider as the sun sees them: from the side or end on, and as wide as that is.
+      const shape = shadowShape(at.heading, sx, sz, this.shape);
+      shadow.material = shape.side ? this.blob!.side : this.blob!.end;
+      shadow.scale.x = shape.flipped ? -shape.width : shape.width;
       shadow.visible = cyclist.group.visible;
     }
     return outOfTheSaddle(Math.tan(at.pitch) * 100);
@@ -808,7 +828,7 @@ export class CourseRenderer implements WorldRenderer {
       return;
     }
     if (!this.blob) return;
-    const mesh = new Mesh(this.blob.geometry, this.blob.material);
+    const mesh = new Mesh(this.blob.geometry, this.blob.end);
     mesh.scale.set(SHADOW_WIDTH, 1, SHADOW_LENGTH);
     mesh.renderOrder = 1;
     this.shadows.set(cyclist, mesh);

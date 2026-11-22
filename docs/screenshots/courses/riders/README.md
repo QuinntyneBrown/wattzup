@@ -29,6 +29,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 18 | Muscle drawn on the legs' skin: the calf's two heads and the groove between, the Achilles tendon, the hollow behind the knee | 119.7 fps, 0 over 20 ms | 16.8 ms | 301 fps (3.32 ms): 303, 301, 299 | 96,711 | 84 | Yes |
 | 19 | A drivetrain: seven sprockets, a derailleur with its cage and jockey wheels, a dark chain, slim hubs, black cranks | 119.7 fps, 1 over 20 ms | 25.0 ms | 301 fps (3.33 ms): 301, 298, 302 | 100,371 | 84 | Yes |
 | 20 | The camera at the reference's distance: the rider half the picture's height | 119.9 fps, 0 over 20 ms | 16.7 ms | 295 fps (3.39 ms): 295, 296, 293 | 100,371 | 84 | Yes |
+| 21 | By day, a shadow with the rider's shape: the bike from its side or the rider end on, as the sun stands (measured on Cliffside Coast) | 120.1 fps, 0 over 20 ms | 9.5 ms | 373 fps (2.68 ms): 373, 377, 354; Docklands unchanged at 295 | 83,511 | 70 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -684,3 +685,41 @@ over 20 ms. The race's end-to-end specs: the same 13 failures as before the ride
 
 **To weigh.** This is as near as the camera can go and still show the road the rider is about to ride; the sky is
 now the top third of the picture where it was nearly half.
+
+## Pass 21: by day, a shadow with the rider's shape
+
+**The riders on day maps, looked at first** (`rider-21-day-maps.jpg`: Cliffside Coast and Prairie Paceline as they
+were after pass 20). Every pass so far was looked at on Neon Docklands at night. On the two day maps the same
+riders hold 120 fps with no frame over 20 ms (69 and 63 draw calls), in the camera of pass 20. Two things show
+there that do not at night: the riders are dark against a bright land when the sun is ahead of them, and each has a
+shadow, which was a soft dark oval with no shape.
+
+**Before**: the oval, 0.8 m by 3.4 m, laid away from the sun.
+
+**After** (`rider-21.mp4`, filmed on Cliffside Coast from 2,600 m; `rider-21.jpg` is three frames of it): the shadow
+is the rider as the sun sees them. With the sun ahead or behind it is the rider end on (a wheel's edge, legs, hips,
+shoulders, a head), 0.62 m wide; with the sun abeam it is the bike from its side (two wheels, the frame, the rider
+bent over the bars), 1.75 m wide; it widens from one to the other, and turns over when the sun crosses to the other
+side. Round a bend it changes from one into the other. It is sharp at the wheels and softer towards the head. This
+is the shadow the picture this work aims at shows. Neon Docklands, at night, has the lamps' shadows instead and is
+unchanged.
+
+**What changed.**
+
+- `rider-shadow-shape.ts`, new, with its unit tests: `shadowShape(heading, sunX, sunZ)` says whether the shadow is
+  side on, how wide, and whether turned over, from how far the sun stands off the bike's own direction.
+- `shadow-silhouette.ts`, new: the two pictures (128 × 256 px, drawn once on a canvas in metres), blurred and fading
+  towards the head.
+- `course-renderer.ts`: a rider's shadow is a square with one of two materials and a width, set each frame from
+  `shadowShape`; darker (0.8 of near-black, from 0.36) since it is no longer a wide smudge.
+
+**Cost.** Nothing measured: two small textures a course, the same one draw call a rider. Cliffside Coast 373 fps
+uncapped; Docklands 295, as before.
+
+**Tried and dropped.** The first strength (0.55 of a dark purple) could hardly be seen on these maps' dark asphalt.
+
+**Learned.**
+
+- Look at every kind of map. A night map hid both the riders' shadows and how dark the riders are against a bright
+  land; the first cost a pass, the second is still to do.
+- A shadow's shape is two pictures and one number; the sun's angle to the bike picks between them.

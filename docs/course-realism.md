@@ -746,6 +746,22 @@ by `roll(metres)`: the angle is the distance ridden over the wheel's radius, so 
 **Watch for.** A material rebuilt for the lamps must carry `alphaTest` over. Marks on the rim are what show the
 turning; spokes alone strobe.
 
+### R13. A shadow with the rider's shape, by day (riders pass 21)
+
+**What it gives.** On every map with a sun, each rider's shadow is a bike and rider (side on) or a rider (end on),
+changing as the road turns under the sun.
+
+**How it works.** `shadowShape` (pure) takes the rider's heading and the course file's `sun`; `sideShadow()` and
+`endShadow()` are the two pictures; the renderer gives each rider's shadow square a material and a width from them.
+
+**To apply it.** Nothing to do for a map: it reads the `sun` every course file has. A map with a low sun shows it
+longest. Night maps with `lamps` use the lamps' shadows (technique 10) instead.
+
+**Cost.** None.
+
+**Watch for.** Dark roads: a shadow needs to be near black and strong to show on asphalt. The shadow's length is
+fixed (3.4 m); it does not yet follow the sun's height.
+
 ### R10. The rider framed above the HUD (riders pass 11)
 
 **What it gives.** The rider whole in the picture on every map: wheels, the road under them, their shadow and
@@ -780,7 +796,7 @@ The pictures the work aims at differ from a course in these ways, most visible f
 2. The water does not mirror the quay's own lamps, cranes and ships: only the sky and the far shore.
 3. Lit windows on the upper floors light nothing: only the ground floor's throw light.
 4. The neon signs have no glow in the air round them, as the lamps have.
-5. The riders: no face, one build (only height differs), a stand on the pedals that is
+5. The riders: dark against a bright land when the sun is ahead of them (day maps), no face, one build (only height differs), a stand on the pedals that is
    slight, on a climb, one build and one bike for
    all (see the riders' own log).
 6. Signs with lettering, pipes, gutters and fire escapes: a warehouse's wall is still flat between its windows.
