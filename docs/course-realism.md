@@ -800,6 +800,16 @@ beyond the first few.
 round a loft (calf muscles, helmet vents) need about twenty sides to be crisp; at 0.6 they soften, which is right
 for a rider up the road and wrong for the one in front of the camera.
 
+### R16. Lighter on the lower tiers (riders pass 27)
+
+**What it gives.** Fewer draw calls and triangles on slow devices: the race number is part of the kit's texture, the
+map's chunks are placed once, and the lowest three tiers draw 0.7, 0.8 and 0.9 as far (`DRAWN_FAR`).
+
+**Cost.** Saves 12 draw calls and a sixth of the triangles at the lowest tier.
+
+**Watch for.** It did not shorten the frame on a slowed processor (see the riders' log): on such a device the cost
+is not in how much is drawn.
+
 ### R10. The rider framed above the HUD (riders pass 11)
 
 **What it gives.** The rider whole in the picture on every map: wheels, the road under them, their shadow and

@@ -165,6 +165,12 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
     includeObjectsCollectedByMajorGC: true,
     includeObjectsCollectedByMinorGC: true,
   });
+  // WZ_BENCH_PROFILE=1 also samples where the page's processor time goes while it is timed.
+  const profiling = process.env["WZ_BENCH_PROFILE"] === "1";
+  const profiler = profiling ? await page.context().newCDPSession(page) : null;
+  await profiler?.send("Profiler.enable");
+  await profiler?.send("Profiler.setSamplingInterval", { interval: 200 });
+  await profiler?.send("Profiler.start");
   const frames = await page.evaluate(
     (ms) =>
       new Promise<Frames>((resolve) => {
@@ -292,6 +298,31 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
       .slice(0, 25)
       .map(([who, bytes]) => `${(bytes / 1048576).toFixed(2)} MB  ${who}`);
     fs.writeFileSync(path.join(out, `${label}-alloc.txt`), top.join(String.fromCharCode(10)) + String.fromCharCode(10));
+  }
+  if (profiler) {
+    const { profile } = await profiler.send("Profiler.stop");
+    const self = new Map<number, number>();
+    const deltas = profile.timeDeltas ?? [];
+    (profile.samples ?? []).forEach((id, i) =>
+      self.set(id, (self.get(id) ?? 0) + (deltas[i] ?? 0)),
+    );
+    const by = new Map<string, number>();
+    let total = 0;
+    for (const node of profile.nodes) {
+      const time = self.get(node.id) ?? 0;
+      total += time;
+      const file = node.callFrame.url.split("/").pop() ?? "";
+      const name = `${node.callFrame.functionName || "(anonymous)"} ${file}:${node.callFrame.lineNumber}`;
+      by.set(name, (by.get(name) ?? 0) + time);
+    }
+    const top = [...by.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 40)
+      .map(([who, time]) => `${((time / total) * 100).toFixed(1)} %  ${(time / 1000).toFixed(0)} ms  ${who}`);
+    fs.writeFileSync(
+      path.join(out, `${label}-cpu.txt`),
+      top.join(String.fromCharCode(10)) + String.fromCharCode(10),
+    );
   }
   const drawn = await page.evaluate(
     () =>

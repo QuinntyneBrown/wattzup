@@ -509,7 +509,6 @@ export class CourseCyclistKit {
     side: DoubleSide,
     roughness: 0.35,
   });
-  private readonly bibPlane = new PlaneGeometry(0.16, 0.115);
   // The bikes' lights, where the course is ridden at night: the glow of the rear lamp, and the pools the rear and
   // front lamps throw on the road.
   private readonly glowTexture: CanvasTexture | null = null;
@@ -603,7 +602,6 @@ export class CourseCyclistKit {
       pedal: this.pedal,
       spokeDisc: this.spokeDisc,
       spokes: this.spokes,
-      bibPlane: this.bibPlane,
       glow: this.glow,
       lampGlow: this.lampGlow,
       roadGlow: this.roadGlow,
@@ -617,7 +615,6 @@ export class CourseCyclistKit {
       this.spokeDisc,
       this.spokeTexture,
       this.spokes,
-      this.bibPlane,
       this.glowTexture,
       this.glow,
       this.lampGlow,
@@ -688,7 +685,7 @@ class CourseCyclist implements RiderModel {
     // The jersey and the shorts' seat: one mesh, drawn with the rider's own kit (its panels, pockets and lettering).
     const worn = mergeGeometries(rider.kit, false)!;
     const fabric = new MeshStandardMaterial({
-      map: kitTexture(jersey, look.design, new Color(look.trim)),
+      map: kitTexture(jersey, look.design, new Color(look.trim), number),
       roughness: 0.62,
       vertexColors: true,
     });
@@ -717,17 +714,6 @@ class CourseCyclist implements RiderModel {
       this.rig.add(disc);
       this.wheels.push(disc);
     }
-
-    // The race number, pinned over the jersey's pockets, where a number is worn: it leaves the back's design and
-    // lettering to be seen.
-    const up = SHOULDER.clone().sub(HIP).normalize();
-    const back = new Vector3(0, -up.z, up.y);
-    const cloth = new MeshStandardMaterial({ map: bibTexture(number), roughness: 0.85 });
-    const bib = new Mesh(shapes.bibPlane, cloth);
-    bib.position.set(0, 0, 0).addScaledVector(up, 0.135).addScaledVector(back, 0.152);
-    bib.quaternion.setFromUnitVectors(new Vector3(0, 0, 1), back);
-    this.torso.add(bib);
-    this.owned.push(cloth, cloth.map!);
 
     // The bike's lights: the rear lamp's glow rides with the bike; the pools of light lie on the road, so they
     // are kept level when the rider leans.
@@ -1255,7 +1241,12 @@ const KIT_TRUNK = 0.7;
  * panels; three pockets across the small of the back; the team's name between the shoulders; a pale collar; a
  * dark cuff with a pale line.
  */
-function kitTexture(jersey: Color, design: KitDesign, second: Color): CanvasTexture {
+function kitTexture(
+  jersey: Color,
+  design: KitDesign,
+  second: Color,
+  number: number,
+): CanvasTexture {
   const size = 512;
   const canvas = document.createElement('canvas');
   canvas.width = size;
@@ -1340,6 +1331,32 @@ function kitTexture(jersey: Color, design: KitDesign, second: Color): CanvasText
     ctx.fillStyle = pale;
     ctx.fillRect(trunk, y(design === 'yoke' ? 0.8 : 0.45), size - trunk, 6);
     cloth(ctx, size, trunk, back, y);
+    // The race number, pinned over the pockets where a number is worn: painted on the kit, so it follows the back
+    // and costs nothing to draw. 16 cm by 11.5 cm; the trunk's wrap is some 420 px a metre round it and 800 px a
+    // metre up it, so the plate is drawn 67 px by 92 px and its digits stretched to match.
+    const plate = { wide: 67, tall: 92, at: y(0.345) };
+    ctx.fillStyle = '#f4f4f0';
+    ctx.fillRect(back - plate.wide / 2, plate.at - plate.tall / 2, plate.wide, plate.tall);
+    ctx.fillStyle = '#9aa0a6';
+    for (const sx of [-1, 1]) {
+      for (const sy of [-1, 1]) {
+        ctx.fillRect(
+          back + sx * (plate.wide / 2 - 5) - 2,
+          plate.at + sy * (plate.tall / 2 - 7) - 3,
+          4,
+          6,
+        );
+      }
+    }
+    ctx.save();
+    ctx.translate(back, plate.at + 4);
+    ctx.scale(1, 1.9);
+    ctx.fillStyle = '#16171a';
+    ctx.font = 'bold 34px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(String(number), 0, 0);
+    ctx.restore();
   }
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
@@ -1607,35 +1624,6 @@ function roadGlowShape(): BufferGeometry {
   rear.dispose();
   front.dispose();
   return both;
-}
-
-/** A race number: black digits on white cloth, with a safety pin at each corner. */
-function bibTexture(n: number): CanvasTexture {
-  const canvas = document.createElement('canvas');
-  canvas.width = 128;
-  canvas.height = 96;
-  const ctx = canvas.getContext('2d');
-  if (ctx) {
-    ctx.fillStyle = '#f4f4f0';
-    ctx.fillRect(0, 0, 128, 96);
-    ctx.fillStyle = '#16171a';
-    ctx.font = 'bold 64px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(String(n), 64, 52);
-    ctx.fillStyle = '#9aa0a6';
-    for (const [x, y] of [
-      [8, 8],
-      [120, 8],
-      [8, 88],
-      [120, 88],
-    ] as const) {
-      ctx.fillRect(x - 3, y - 2, 6, 4);
-    }
-  }
-  const texture = new CanvasTexture(canvas);
-  texture.colorSpace = SRGBColorSpace;
-  return texture;
 }
 
 /**

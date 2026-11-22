@@ -135,6 +135,9 @@ function raised(camera: PerspectiveCamera): PerspectiveCamera {
   return camera;
 }
 
+/** How far the map is drawn at each tier, as a share of each group's draw distance: a slower device draws less far. */
+const DRAWN_FAR = [0.7, 0.8, 0.9, 1, 1] as const;
+
 /**
  * How finely the riders are made at each tier (1 is the finest), and how much more coarsely the riders other than
  * the one the camera follows: they are seen from further off, and there may be a dozen of them.
@@ -555,6 +558,8 @@ export class CourseRenderer implements WorldRenderer {
           // A mesh's positions are steps of its own box, put back by its place and scale in the map (pack_glb.py):
           // its middle and its reach are worked out in the map's axes, not its own.
           mesh.updateMatrixWorld(true);
+          // The map never moves: its place is worked out this once, not every frame.
+          mesh.matrixAutoUpdate = false;
           const middle = sphere.center.clone().applyMatrix4(mesh.matrixWorld);
           this.chunks.push({
             mesh,
@@ -841,11 +846,14 @@ export class CourseRenderer implements WorldRenderer {
   private choose(): void {
     const { x, y, z } = this.camera.position;
     this.chosenAt.copy(this.camera.position);
+    // A slower device draws less far: each tier's share of a chunk's reach.
+    const far = DRAWN_FAR[this.tier] ?? 1;
     for (const chunk of this.chunks) {
       const dx = chunk.x - x;
       const dy = chunk.y - y;
       const dz = chunk.z - z;
-      chunk.mesh.visible = dx * dx + dy * dy + dz * dz < chunk.reach * chunk.reach;
+      const reach = chunk.reach * far;
+      chunk.mesh.visible = dx * dx + dy * dy + dz * dz < reach * reach;
     }
   }
 

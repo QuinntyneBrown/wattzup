@@ -35,6 +35,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 24 | Kit in four designs: a yoke, a hoop, bold side panels or a sash, trimmed in a second colour | 120.0 fps, 0 over 20 ms | 16.7 ms | 310 fps (3.22 ms): 311, 310, 308 | 78,951 | 84 | Yes |
 | 25 | The race number where a number is worn, and riders of different builds | 120.1 fps, 0 over 20 ms | 10.2 ms | 311 fps (3.22 ms): 311, 308, 311 | 78,951 | 84 | Yes |
 | 26 | A head of its own: level while the bike leans, turned into the bend; and the rider's rocking calmed to less than half | 120.0 fps, 0 over 20 ms | 16.7 ms | 300 fps (3.33 ms): 299, 303, 300 | 78,951 | 89 | Yes |
+| 27 | Lighter for a slow device: the number painted on the kit, a map that is not placed again each frame, and a shorter view on the lower tiers | 119.7 fps, 1 over 20 ms | 25.0 ms | 304 fps (3.29 ms): 308, 301, 304 | 78,941 | 84 (89 before) | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -895,3 +896,49 @@ graphics chip. Only the device can.
 What would lower the processor cost, in the order it is worth trying: fewer objects drawn each frame (the map is
 some 55 of the 77 draw calls at the lowest tier: longer chunks or merged groups on low tiers); no bloom pass below
 the top tier already holds; fewer materials that are rebuilt-keyed each frame. None is a rider's change.
+
+## Pass 27: lighter for a slow device, and what that did not buy
+
+After the question about a low-power tablet, three things were done to lower the work for each frame, and the
+stand-in (the lowest tier, the processor six times slower) was run again.
+
+**Where the processor's time goes** (`WZ_BENCH_PROFILE=1`, new: the bench samples the page's processor for the ten
+seconds; lowest tier, not slowed). Of each 8.3 ms frame, 57 % is idle. 16 % (1.4 ms) is the browser's own work
+outside JavaScript: the graphics commands' passage to the GPU process, compositing, the page's layout. The rest,
+some 2.2 ms, is JavaScript, nearly all of it Three.js's renderer, spread thin: no function has more than 2 %. The
+riders are about an eighth of a frame: a solo ride takes 20.1 ms a frame at six times slower, the pack 23.1 ms.
+
+**What changed.**
+
+- The race number is painted on the kit's texture (`kitTexture`), over the pockets, where it was a plate of its own
+  with a texture and a material for each rider: one draw call, one texture and one material fewer a rider, on every
+  tier, and the number now follows the back's curve (`rider-27-start.jpg`).
+- The map's chunks are placed once. They never move, and their place in the world was worked out again each frame.
+- The lower tiers draw less far: 0.7, 0.8 and 0.9 of each group's draw distance at the three lowest tiers
+  (`DRAWN_FAR`). The haze hides the difference (`rider-27-low.jpg`, the lowest tier).
+
+| On the bridge, medium pack | Draw calls | Triangles |
+| --- | --- | --- |
+| Top tier, before | 89 | 78,951 |
+| Top tier, after | 84 | 78,941 |
+| Lowest tier, before | 77 | 66,469 |
+| Lowest tier, after | 65 | 55,325 |
+
+**What it bought on the stand-in: almost nothing.** Lowest tier, processor six times slower: 44 to 49 frames a
+second, against 43 to 47 before; four times slower, 70.9 against 70 to 71. Twelve draw calls and a sixth of the
+triangles fewer, and the frame is not measurably shorter. So the count of things drawn is not what a slow processor
+is short of here. What is left is the 1.4 ms outside JavaScript and the renderer's thinly spread 2 ms, neither of
+which a rider or a map's detail moves. The changes are kept: they are honest savings of draw calls, triangles and
+memory. But the answer to "60 fps on a low-power tablet?" stands as it was: not shown, and on a processor some six
+times slower than this desktop's, not met.
+
+**At the top tier**: 304 fps against 300; one frame of 25 ms in the filmed run (the display's, as traced before).
+The race's end-to-end specs: the same 13 failures as before the riders' work.
+
+**What to try next for a slow processor**, none of it the riders': drawing at 30 Hz's worth of work by rendering
+the scene every other display frame on the lowest tier is the only change sure to halve the cost; after that, the
+page's own work each frame outside the canvas (the HUD's updates), and Three.js's WebGL2 backend against its WebGPU
+one on such devices.
+
+**Learned.** Measure what the saving is for, not the saving. Draw calls and triangles fell as planned; the frame on
+a slowed processor did not.

@@ -57,3 +57,7 @@ the GPU, not by the page.
 
 `WZ_BENCH_CPU=<n>` slows the page's processor n times (Chrome's CPU throttling) as a stand-in for a slower
 device; with `WZ_BENCH_TIER=low` it is the nearest the bench comes to a tablet. It does not slow the graphics chip.
+
+`WZ_BENCH_PROFILE=1` samples the page's processor while it is timed and writes the forty functions with the most
+self time, as a share of the ten seconds, to `<label>-cpu.txt` (`(idle)` and `(program)`, the browser's own work,
+among them).
