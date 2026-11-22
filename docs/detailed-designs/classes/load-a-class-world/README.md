@@ -116,46 +116,64 @@ download. `main` wins on what a world is: its worlds are drawn by code, so what 
 assets under `/worlds/<worldId>/`. A world's only asset is its panorama, so a download is 0.1 to
 0.3 MB, not the tens of megabytes the description assumed; the mocks' "18.9 MB" is illustrative.
 
-- **`ClassRidePage`** renders `WorldLoading` while the solo class's world gets ready, and the ride
+- **`ClassRidePage`** renders World loading while the solo class's world gets ready, and the ride
   (`ClassRideSession`, the page as it was, with every provider of the ride) once the rider
   presses Start riding. The ride's store is created only then, so the clock and the bike's first
-  command wait for Start riding. A group class (Join) still opens the ride at once until 16.4.
-- **`WorldLoadStore`** (route-scoped in the page) runs the steps. Download the world:
-  `WorldDownloader` fetches the world's assets (`worldAssets(worldId)`, its panorama when `main`
-  has one) with progress, then imports the `world` library; the detail reads the bytes received
-  and the total ("0.1 of 0.2 MB"), and once done "0.2 MB · saved on this device for next time".
-  Build the shaders and Warm up the first frames: `main`'s `WorldRenderer.start()`, on a canvas
-  that is never shown, compiles the scene's programs over a few frames while it loads and
-  rehearses the ride's first frame (`main` #882), so both steps are in progress while it runs and
-  done when it resolves. The program counts, the held frame rate, the slow-load warning and the
-  step down are slice 16.2's. When `start()` resolves false, neither WebGPU nor WebGL 2 draws:
-  the screen reads "Neon Docklands is ready as a panorama", the download step "Download the
-  panorama", the other two "Not needed for the panorama", and Start riding is enabled
-  (`L2-156` AC4).
-- **`loadPercent(steps)`** weighs the download 40 %, the shaders 50 % and the warm-up 10 %; a
-  step in progress with no fraction counts nothing until it is done.
-- **`WorldDownloader`** / `WORLD_DOWNLOADER` (contract in `api`, `FetchWorldDownloader` in
-  `domain/storage`) reads a saved world from Cache Storage (`telo-worlds`) and returns at once
-  (`L2-152` AC3). Otherwise it fetches each asset; after a failure, Try again sends a `Range`
-  request from the bytes already received and joins the two parts (`L2-156` AC2). A finished
-  world is saved; the Settings that list, clear and stop saving worlds are slice 20.5's
+  command wait for Start riding (`L2-153` AC4). A group class (Join) still opens the ride at once
+  until 16.4.
+- **`WorldLoadStore`** (provided by the page) runs the steps. It imports the `world` library and
+  takes the class's world from `worldForMap`, the table the race maps already use, so Telo Ride's
+  `vicecity` is drawn as `main`'s South Beach Sunrise. Download the world: `WORLD_DOWNLOADER`
+  fetches the world's panorama with progress; the detail reads the bytes received and the total
+  ("0.1 of 0.2 MB"), and once done "0.2 MB · saved on this device for next time". Build the
+  shaders and Warm up the first frames: `main`'s `WorldRenderer.start()`, on a canvas that is
+  never shown, compiles the scene's programs over a few frames and rehearses the ride's first
+  frame (`main` #882). The shader step is in progress while it runs and both are done when it
+  resolves; the program counts, the warm-up's own progress and frame rate, the slow-load warning
+  and the step down are slice 16.2's, so until then the shader step's detail reads "Programs for
+  WebGPU" and the warm-up's "Drawn off screen so the start is smooth". Where neither WebGPU nor
+  WebGL 2 is on (checked before the download), or `start()` resolves false, the screen reads
+  "Neon Docklands is ready as a panorama", the download step "Download the panorama", the other
+  two "Not needed for the panorama", and Start riding is enabled (`L2-156` AC4).
+- **`worldLoadView(state)`** turns the state into the card's words: the download weighs 40 % and
+  the shaders and warm-up the rest; the status is set as each step starts ("Downloading the
+  world, 0 percent.", "Building the shaders, 40 percent.", "Neon Docklands is ready."), never
+  at each percent. The facts are the bike ("Echelon EX-5s" once connected, else "No bike") and
+  the graphics API ("WebGPU", "WebGL 2", or "Panorama").
+- **`FetchWorldDownloader`** (`domain/storage`, bound by the page) reads a saved world from Cache
+  Storage (`telo-worlds`) and resolves at once (`L2-152` AC3). Otherwise it fetches the panorama,
+  reading the body as it streams. A request that fails, a body that errors, or a body shorter
+  than its `Content-Length` is a stopped download: it keeps the bytes received for as long as the
+  class ride is open, and Try again sends `Range: bytes=<received>-` and joins the two parts; a
+  server that answers with the whole file starts it again (`L2-156` AC2). A finished world is
+  saved; the Settings that list, clear and stop saving worlds are slice 20.5's
   (`settings/manage-saved-worlds`). Offline with nothing saved, the download fails at once
   (`L2-156` AC5).
 - **Start riding** opens the class ride as before, and the renderer World loading built is
-  disposed; slice 16.3 hands it to the ride and fades the world in. "Back to class" aborts the
-  download and disposes the renderer (`L2-151` AC5).
+  disposed; slice 16.3 hands it to the ride and fades the world in. Ride with the panorama (after
+  a stopped download) opens the ride too. "Back to class" aborts the download and disposes the
+  renderer (`L2-151` AC5).
+- **Components:** `LoadCard`, `LoadSteps`, `Progress` and `Pill` join `components`, and `Banner`
+  gains the `danger` (an alert) and `info` tones; the world-loading layout is the page's own
+  stylesheet, as Class Start's is.
+
+![Load the world, as built in slice 16.1](diagrams/sequence-as-built-16-1.png)
 
 ## Open questions
 
 1. A world's code is downloaded as the `world` library's chunk through `import()`, whose bytes the
    page cannot follow; the bytes shown are the world's assets alone.
-2. "Quality settings" (`L2-151` AC7) waits for Settings (slice 20.1); the load card leaves the link
-   out until then.
-3. A world `main` gives no panorama (Vice City) has no assets to download and no photograph
-   behind the card; the scene's colour stands behind it instead.
+2. "Quality settings" (`L2-151` AC7) and the "Auto quality · Low" fact (`L2-152` AC7) wait for
+   Settings and the quality controls (slices 20.1 and 20.2); the load card leaves both out until
+   then.
+3. A world `main` gives no panorama (South Beach Sunrise, which draws Vice City) has nothing to
+   download and no photograph behind the card: its download step reads "Built into the app" and
+   the scene's colour stands behind the card.
 4. `L2-165` AC3 saves a world when a ride in it ends; this slice saves it when its download
    finishes, as the description's `WorldAssetLoader` does, so a ride left during loading still
    keeps what it downloaded.
+5. `L2-151` AC3 gives the alternative text of Neon Docklands' panorama only; the others
+   (`WORLD_PANORAMAS` in `api`) are written in its shape from what each panorama shows.
 
 ## Requirements
 
