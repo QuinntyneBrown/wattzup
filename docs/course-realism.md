@@ -481,12 +481,35 @@ with frustum culling off, the scene is drawn once, culling goes back on and the 
 as usual. Three.js sends a mesh's geometry to the GPU the first time it draws it; this makes that time the load.
 
 **To apply it to another map.** Nothing to do: it is the renderer's. The same holds for anything made later in a
-ride (a rider first seen, a material first used): make it at load, or it costs a frame when it appears.
+ride: `makeField` makes every rider of a race on its first frame and draws them once (pass 20), because a rider
+made when first seen cost the same 75 ms.
 
 **Cost.** One heavy frame at load and the whole map's geometry in GPU memory (9.8 MB for Docklands).
 
 **Watch for.** Measure stutter with nothing else running on the machine and no film being taken: the bench times
 the display's pace in a run of its own, and reports the worst frame beside the mean.
+
+### 19. Weather with no moving parts (Docklands pass 20)
+
+**What it gives.** Rain that falls round the rider, lit by whatever light it falls through.
+
+**How it works.** `frontend/projects/world/src/rain.ts`, `rain(strength, light)`: a mesh of up to 2,600 quads whose
+`position` attribute is the same for a quad's four corners: the streak's place in a unit cube. The material's
+`positionNode` works out, from that and a clock uniform: the place fallen and drifted, wrapped with `fract` round
+the camera in a box of air (so the rain is always round the rider, and never runs out), then the corner stepped
+along the fall and across it square to the eye. The colour is `light` (technique 2's and 17's node) read at
+`positionWorld`, so a streak is bright under a lamp and dark elsewhere. Additive, no depth write, one draw call.
+`courseRain(file)` reads the theme's `rain`; the renderer hides the mesh with reduced motion.
+
+**To apply it to another map.** Give its theme `rain` (and `wet`, technique 9, or the road will look dry in the
+rain). The same mesh with other numbers is snow (slower, shorter, wider, more drift: the Dolomites, the col),
+blown sand, blossom, or confetti that never has to be moved. A map with no street lamps passes no `light` and the
+streaks take a plain grey.
+
+**Cost.** About 0.03 ms a frame.
+
+**Watch for.** A streak right at the eye fills the view: fade them out within a metre or two. Rain everywhere
+alike, lit or not, looks like scratches on the lens: light it by where it is.
 
 ## What is left, in the order it is worth doing
 

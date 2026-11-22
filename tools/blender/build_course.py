@@ -1572,6 +1572,8 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
             data["night"] = True
         if "wet" in theme:
             data["wet"] = theme["wet"]
+        if "rain" in theme:
+            data["rain"] = theme["rain"]
         if facts.get("lights"):
             # Coloured lights that stand still, five numbers each: where (x, z in the glb's axes), the colour as one
             # number (0xRRGGBB), how far it reaches in metres and how strong it is beneath it.

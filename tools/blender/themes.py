@@ -152,6 +152,8 @@ THEMES: dict[str, dict] = {
         "night": True,
         # After rain: how much of the ground holds water, 0 to 1. The app darkens it and mirrors the lamps in it.
         "wet": 0.55,
+        # And it is still raining a little: how hard, 0 to 1. The app draws the rain falling through the lamplight.
+        "rain": 0.5,
         # Street lamps on both kerbs: every this many samples from this one, this far behind the kerb, this tall.
         "lamps": {"every": 6, "start": 3, "off": 0.7, "height": 7.0, "glow": "glow-lamp"},
     },

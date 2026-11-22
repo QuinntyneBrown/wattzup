@@ -4,6 +4,7 @@ import {
   courseLamps,
   courseLights,
   courseLook,
+  courseRain,
   courseWet,
   parseCourse,
 } from './course';
@@ -224,5 +225,20 @@ describe('courseLights (L2-166 AC23)', () => {
     ['something that is not a list', 'lights'],
   ])('has none for %s: the file is data', (_, named) => {
     expect(courseLights({ ...courseFile(), lights: named } as unknown as CourseFile)).toEqual([]);
+  });
+});
+
+describe('courseRain (L2-166 AC24)', () => {
+  it.each([
+    [0.5, 0.5],
+    [0, 0],
+    [3, 1],
+    [-1, 0],
+  ])('reads a rain of %d as %d', (named, rain) => {
+    expect(courseRain({ ...courseFile(), rain: named })).toBe(rain);
+  });
+
+  it.each([[undefined], ['pouring'], [null]])('has no rain for %s: the file is data', (named) => {
+    expect(courseRain({ ...courseFile(), rain: named } as unknown as CourseFile)).toBe(0);
   });
 });

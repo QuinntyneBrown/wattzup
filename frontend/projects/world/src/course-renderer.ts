@@ -32,13 +32,21 @@ import {
   Vector3,
   WebGPURenderer,
 } from 'three/webgpu';
-import type { Backend, SceneFrame, TimedSegment as Segment, World, WorldRenderer } from '@telo/api';
+import type {
+  Backend,
+  SceneFrame,
+  SceneRider,
+  TimedSegment as Segment,
+  World,
+  WorldRenderer,
+} from '@telo/api';
 import {
   Course,
   type CoursePlace,
   courseLamps,
   courseLights,
   courseLook,
+  courseRain,
   courseWet,
   parseCourse,
 } from './course';
@@ -50,6 +58,7 @@ import { colourLightMap, lampLightMap } from './lamp-light-map';
 import { mergeStillParts } from './merged-cyclist';
 import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
+import { type Rain, rain } from './rain';
 import { RiderBatch } from './rider-batch';
 import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
@@ -95,6 +104,8 @@ const CHUNK_SWEEP = 12;
 /** Riders further ahead than this are not drawn, and no more than this many of the nearest. */
 const FAR_RIDERS = 120;
 const MOST_RIDERS = 4;
+/** The most riders of a race made when it starts; any beyond them are made as they first ride into view. */
+const MOST_FIELD = 12;
 /** The haze the distance fades into, from these metres to these; its colour is the course's (`courseLook`). */
 const FOG: readonly [number, number] = [200, 1500];
 const GHOST_OPACITY = 0.45;
@@ -144,6 +155,8 @@ export class CourseRenderer implements WorldRenderer {
   private skyClock: ((seconds: number) => void) | null = null;
   /** Moves the sea's ripples on to a second of the ride's clock. */
   private waterClock: ((seconds: number) => void) | null = null;
+  /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
+  private rain: Rain | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
   private groundEye: GroundEye | null = null;
   /** The scene's pass with bloom over it, for the neon; null where it could not be built. */
@@ -172,6 +185,8 @@ export class CourseRenderer implements WorldRenderer {
   private readonly casting = new Set<Cyclist>();
   /** Draws every rider's moving parts of a plain colour in one draw call. */
   private riderBatch: RiderBatch | null = null;
+  /** Set once the race's riders have been made, on its first frame. */
+  private fieldMade = false;
   /** Draws every rider's plain-coloured still parts, merged into one mesh a rider (merged-cyclist.ts). */
   private readonly plain = new MeshLambertMaterial({ vertexColors: true });
   private kit: CyclistKit | null = null;
@@ -282,6 +297,7 @@ export class CourseRenderer implements WorldRenderer {
       ? Math.min(frame.s, course.end)
       : course.metresAt(frame.time * this.clockScale);
     const metres = Math.min(ridden + this.benchFrom, course.end);
+    if (frame.riders && !this.fieldMade) this.makeField(frame.riders, metres);
     this.lampShadows?.begin();
     this.ride(you, metres, 0);
     you.pose(frame.reducedMotion ? 0 : frame.crank);
@@ -296,6 +312,7 @@ export class CourseRenderer implements WorldRenderer {
     const lights = metres < START_LIGHTS;
     if (this.startRed) this.startRed.visible = lights && frame.time <= 0;
     if (this.startGreen) this.startGreen.visible = lights && frame.time > 0;
+    if (this.rain) this.rain.mesh.visible = !frame.reducedMotion;
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -336,6 +353,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lampGlow = null;
     this.groundEye = null;
     this.riderBatch = null;
+    this.rain = null;
     this.shadows.clear();
     this.casting.clear();
     this.lampShadows = null;
@@ -418,6 +436,13 @@ export class CourseRenderer implements WorldRenderer {
     materials['Walls'] = wallMaterial(detail, this.lampGlow?.light ?? null, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
+    // Rain, where it rains: it shows by the lamps' light (rain.ts).
+    const raining = courseRain(this.course!.file);
+    if (raining > 0) {
+      this.rain = rain(raining, this.lampGlow?.light ?? null);
+      this.scene.add(this.rain.mesh);
+      this.disposables.push(this.rain);
+    }
     // By the sea, the sheet round the land is water (water-material.ts).
     if (this.course!.file.sea === true) {
       const water = waterMaterial(
@@ -627,6 +652,25 @@ export class CourseRenderer implements WorldRenderer {
     }
   }
 
+  /**
+   * Makes every rider of the race on the ride's first frame, and draws them once where the rider is, so each one's
+   * geometry, textures and programs are ready: a rider made later, when they first rode into view, cost a frame of
+   * 75 ms in the middle of the ride. The frame drawn here is drawn over before it is shown.
+   */
+  private makeField(riders: readonly SceneRider[], metres: number): void {
+    this.fieldMade = true;
+    for (const [order, rider] of riders.slice(0, MOST_FIELD).entries()) {
+      const cyclist = this.rider(rider.jersey);
+      if (!cyclist) continue;
+      cyclist.group.visible = true;
+      this.ride(cyclist, metres + 6 + order, 0);
+      cyclist.pose(0);
+    }
+    this.riderBatch?.follow();
+    this.aim(metres);
+    this.render();
+  }
+
   /** A race rider in their jersey, made the first time they ride into view; the ghost in translucent gold. */
   private rider(jersey: string): Cyclist | null {
     const made = this.riders.get(jersey);
@@ -689,6 +733,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.beams) this.beams.opacity = 0.17 + 0.06 * Math.sin(time * 1.7);
     this.skyClock?.(time);
     this.waterClock?.(time);
+    this.rain?.at(time);
     for (const confetti of this.confetti) {
       confetti.position.y = 0.45 * Math.sin(time * 1.3);
       confetti.rotation.y = 0.012 * Math.sin(time * 0.9);

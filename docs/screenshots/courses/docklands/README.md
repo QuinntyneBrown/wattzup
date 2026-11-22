@@ -41,6 +41,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 17 | The riders' moving parts in one draw call | 119.4 fps, 1 frame over 20 ms | median of three 315 fps (3.17 ms): 315, 326, 295; pass 16 read 292 | | 73,359 | 77 | 3.17 MB | Yes |
 | 18 | Neon and the bridges' cables throw their colour on the ground and the riders | 117.2 to 119.2 fps over three runs, 5, 2 and 2 frames over 20 ms | median of three 323 fps (3.10 ms): 321, 323, 323; pass 17 read 315 | | 73,359 | 77 | 3.17 MB, and 52 KB for the course file | Yes |
 | 19 | No stutter when a new stretch of the map comes into view | 120.0 fps, no frame over 20 ms, worst 16.7 ms (timed with no film being taken) | median of three 324 fps (3.09 ms): 327, 324, 304; pass 18 read 323 | | 73,359 | 77 | 3.17 MB | Yes |
+| 20 | Rain falling through the lamplight; and every rider made before the ride | 120.0 fps, no frame over 20 ms, worst 16.8 ms | median of three 321 fps (3.12 ms): 327, 321, 295; pass 19 read 324 | | 83,391 | 79 | 3.17 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -662,3 +663,36 @@ held on the GPU from the start, not as it is reached. No change to the frame rat
   ten minutes.
 - An average frame rate says nothing about stutter: 118.7 fps with an 83 ms frame in it is a worse ride than a
   steady 60. The worst frame is now in the bench's summary.
+
+## Pass 20: rain falling through the lamplight
+
+**Before** (`pass-19.jpg`, `pass-18-start.jpg`): the road is wet, and the air is perfectly clear and still.
+
+**After** (`pass-20.jpg` on the first bridge, `pass-20-start.jpg` at the start line, `pass-20.mp4`): it is still
+raining a little. Thin streaks fall and drift across the view, seen where they pass through a lamp's light or a
+neon sign's colour and all but lost in the dark between, as rain is at night. With reduced motion there is no rain.
+
+**What changed.**
+
+- The Docklands theme names how hard it rains (`"rain": 0.5`); the course file carries it and `courseRain` reads
+  it (unit-tested).
+- `rain.ts`: one mesh of 1,300 streaks, four corners each, every corner holding its streak's own place in a unit
+  cube. The vertex shader lets the place fall and drift with the ride's clock, wraps it round a box of air 34 x 16
+  x 34 m that rides with the camera, and spreads the corners into a streak 0.55 m long that faces the eye. Its
+  colour is the lamps' and the coloured lights' light where it is (the grids of passes 2 and 18), so nothing about
+  where the lamps are is known to the rain. One draw call; the app moves nothing.
+- **And a stutter found on the way.** With the rain in, a frame of 75 ms came back about three seconds into every
+  run. It was not the rain: logging when each rider was first made showed the fifth being built at that moment,
+  as it first rode into the nearest four. `course-renderer.ts` now makes every rider of the race on the ride's
+  first frame and draws them once (`makeField`), so each one's geometry, textures and programs are ready.
+
+**Cost.** 0.03 ms a frame (324 to 321 fps): 2,600 thin triangles and one draw call. No frame over 20 ms; worst
+16.8 ms.
+
+**Learned.**
+
+- "It came back when I added the rain" was true and the rain was not the cause: the rain changed nothing but the
+  timing of the test. Log when things are made, and when the slow frames fall, and lay the two side by side.
+- Anything made in the middle of a ride costs a frame: a chunk first drawn (pass 19), a rider first seen (this
+  pass). Make everything before the first frame.
+- Particles need no particle system: a place a particle in a unit cube, and a clock in the shader.

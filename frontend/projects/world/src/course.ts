@@ -51,6 +51,8 @@ export interface CourseFile {
    * glb's axes, the colour as one number (0xRRGGBB), the metres it reaches and how strong it is beneath it.
    */
   readonly lights?: readonly number[];
+  /** How hard it is raining, from 0, not at all, to 1; a course that names none has no rain. */
+  readonly rain?: number;
   /** How wet the ground is, from 0, dry, to 1, standing water everywhere; a course that names none is dry. */
   readonly wet?: number;
   /** The street lamps that light the ground, where the course has them. */
@@ -140,6 +142,12 @@ export function courseLights(file: CourseFile): CourseLight[] {
     lights.push({ x: x!, z: z!, colour: colour!, reach: reach!, strength: strength! });
   }
   return lights;
+}
+
+/** How hard it rains on the course, from 0 to 1: not at all where it names none or names it wrongly. */
+export function courseRain(file: CourseFile): number {
+  const rain = file.rain as unknown;
+  return isNumber(rain) ? Math.min(Math.max(rain, 0), 1) : 0;
 }
 
 /** How wet the course's ground is, from 0 to 1: dry where it names none or names it wrongly; the file is data. */

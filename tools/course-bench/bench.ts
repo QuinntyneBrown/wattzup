@@ -35,6 +35,8 @@ interface Frames {
   p99Ms: number;
   worstMs: number;
   over20Ms: number;
+  /** When each frame over 20 ms came, in ms from the start of the timing. */
+  slowAt: number[];
 }
 
 test(`bench ${map}`, async ({ page, bluetooth, api }) => {
@@ -126,9 +128,11 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
     (ms) =>
       new Promise<Frames>((resolve) => {
         const gaps: number[] = [];
+        const slow: number[] = [];
         let last = performance.now();
         const start = last;
         const tick = (now: number) => {
+          if (now - last > 20) slow.push(Math.round(now - start));
           gaps.push(now - last);
           last = now;
           if (now - start < ms) requestAnimationFrame(tick);
@@ -147,6 +151,7 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
               p99Ms: at(0.99),
               worstMs: sorted[sorted.length - 1]!,
               over20Ms: gaps.filter((gap) => gap > 20).length,
+              slowAt: slow,
             });
           }
         };
