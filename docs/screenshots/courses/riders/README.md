@@ -288,3 +288,21 @@ not enough to lay at a pass's door, and nothing in passes 6 to 8 allocates in a 
 - At night a rider is found by their light before their shape: a point of red and its pool on the road say
   "rider" at two hundred metres, where five pixels of jersey do not.
 - What lies on the road must not lean with the rider: it is the one part that takes the lean back out.
+
+## The odd slow frame: what was measured after pass 8
+
+Passes 6 and 8 each recorded a rare frame of about 25 ms. To see whether a pass causes it, pass 5 and pass 8 were
+built side by side and timed alternately in one sitting, six timings of 10 seconds each, at display pace on the
+bridge:
+
+| Build | Timings with a frame over 20 ms | Worst frame of each timing, ms |
+| --- | --- | --- |
+| Pass 5 | 0 of 6 | 9.6, 9.3, 16.7, 10.0, 10.1, 8.6 |
+| Pass 8 | 1 of 6 (one frame, 24.9 ms) | 16.9, 16.7, 10.1, 24.9, 16.7, 16.7 |
+
+With every timing since pass 6 counted: 4 of 25 for passes 6 to 8, 0 of 14 for pass 5. That leans towards the later
+passes without settling it (passes 0 and 3 each had one such frame too, and an earlier sitting gave pass 5 a worst
+frame of 17 ms in four timings of four). The mean frame is 8.3 ms and the 99th percentile 8.5 ms in all of them, so
+this is one frame in some six thousand, not a slower picture. Nothing in passes 6 to 8 allocates or uploads in a
+frame. It stays open: the bench does not yet say which frame was slow or why, and until it does (a count of frames
+over 12 ms, and the heap before and after) more timings will not tell more.
