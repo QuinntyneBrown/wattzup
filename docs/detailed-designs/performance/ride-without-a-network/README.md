@@ -23,15 +23,31 @@ designed in `progression/keep-progress-on-the-backend` and
 
 ## Description
 
-- **`RideOutbox`** — service in `domain/storage`, contract in `api` (token `RIDE_OUTBOX`). It
-  stores each finished ride in the IndexedDB object store `rides-waiting`, keyed by ride id, with
-  `finishedAt` and `attempts`. It lists rides oldest first and deletes a ride once recorded.
-- **`OutboxSync`** — root-provided service in the `ride` application, because rides wait across
-  screens. It runs on app start, on the window `online` event and on its own retry timer. It
-  submits waiting rides one at a time, oldest first, through `RidesApi.submit`. A failure that is
-  transient (network error, 5xx, 429) schedules a retry with a growing delay, capped at one hour.
-  The first delay and growth factor are `<TO SUPPLY>`. The handling of a ride refused with 422
-  `ride_not_plausible` is `<TO SUPPLY>`: the specs do not say whether it is kept or dropped.
+- **`RidesWaiting`** — contract in `api` (token `RIDES_WAITING`), implemented by
+  `IndexedDbRidesWaiting` in `domain/storage`. It keeps each finished ride in the IndexedDB object
+  store `rides-waiting` of the database `telo-ride`, keyed by ride id, with `finishedAt` and
+  `attempts`. It lists rides oldest first by `finishedAt` and deletes a ride once it is settled.
+  Where IndexedDB cannot be opened (a private window that refuses it), it keeps the rides in
+  memory for the session, as before this slice.
+- **`RideOutbox`** — contract in `api` (token `RIDE_OUTBOX`), implemented by `DeviceRideOutbox` in
+  `domain/storage` and bound on the screens' lazy parent route (`provideSession`), whose injector
+  lasts as long as the app, so rides wait across screens. It is the `OutboxSync` of the
+  diagrams: `submit` writes the ride to `RidesWaiting` before sending it, and `status` follows it
+  for Results. It sends waiting rides one at a time, oldest first, through
+  `RidesApi.submitRide`: when the app starts (an environment initializer creates it), on the window
+  `online` event, after each new ride and on its own retry timer. A ride is removed from the device
+  once the backend has recorded it.
+  - **Kept and sent again:** a failure that is transient (no answer, 5xx, 429) or an ended
+    session (401, which `L2-004` AC4 keeps until the rider signs in again). Results reads it as
+    waiting offline ("Your XP will be added when you’re back online."). The next try is 30 seconds
+    later, the delay doubling each time (30 s, 1 min, 2 min…) up to one hour (`L2-135` AC2); the
+    `online` event tries at once.
+  - **Dropped:** a ride the backend refuses for good (422 `ride_not_plausible`, or another 4xx).
+    Sending it again would get the same answer, so it is removed and Results says it wasn't
+    recorded (`L2-074` AC4).
+  - A riders-online race the backend answers 409 `result_pending` is sent again every 5 seconds
+    for up to 3 minutes (`L2-125` AC1), without holding up the rides behind it, and is then
+    dropped as not recorded.
 - **`RidesApi`** — contract in `api` (token `RIDES_API`), implemented by `HttpRidesApi` over
   `POST /api/rides`. The body carries the ride id, so a resubmission returns the first result
   (`L2-125` AC3).
@@ -79,29 +95,29 @@ records them in the database.
 
 ### Components
 
-`OutboxSync` reads `RideOutbox` and calls `RidesApi`; the service worker answers shell and
-catalogue requests from its cache; `NetworkStatus` feeds both the sync and the join rule.
+`DeviceRideOutbox` keeps rides in `IndexedDbRidesWaiting` and calls `RidesApi`; the service
+worker answers shell and catalogue requests from its cache; `NetworkStatus` feeds the join rule.
 
 ![C4 component view for riding without a network](diagrams/c4-component.png)
 
 ### Class structure
 
-`OutboxSync` depends on the `RideOutbox` and `RidesApi` contracts and on `NetworkStatus`. A
-`WaitingRide` record carries the ride id that makes resubmission safe.
+`DeviceRideOutbox` implements `RideOutbox` and depends on the `RidesWaiting` and `RidesApi`
+contracts. A `WaitingRide` record carries the ride id that makes resubmission safe.
 
 ![Class diagram for riding without a network](diagrams/class-structure.png)
 
 ### Behaviour — finish a ride offline
 
-The submission fails, the ride is kept in the outbox, and Results shows its XP as pending
-(`L2-135` AC1).
+The ride is kept on the device before it is sent; the submission fails, it stays, and Results
+shows its XP as pending (`L2-135` AC1).
 
 ![Sequence diagram for finishing a ride offline](diagrams/sequence-finish-offline.png)
 
 ### Behaviour — send waiting rides when the network returns
 
-`OutboxSync` submits the oldest ride first, deletes it once recorded, and backs off on failure
-(`L2-135` AC2).
+`DeviceRideOutbox` submits the oldest ride first, deletes it once recorded, and backs off on
+failure (`L2-135` AC2).
 
 ![Sequence diagram for sending waiting rides](diagrams/sequence-sync-when-online.png)
 

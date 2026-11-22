@@ -16,27 +16,27 @@ skinparam package {
 }
 actor "Rider" as actor
 box "Frontend — Ride app (ride application)" #E0F2FE
-  participant "Ride page" as page
-  participant "OutboxSync" as sync
+  participant "Race or class ride" as page
   participant "ResultsPage" as results
 end box
 box "Frontend — Ride app (domain and api libraries)" #E0F2FE
-  participant "IndexedDbRideOutbox" as outbox
+  participant "DeviceRideOutbox" as sync
+  participant "IndexedDbRidesWaiting" as outbox
   participant "HttpRidesApi" as client
 end box
 box "Backend — Telo.Ride.Api" #D1FADF
   participant "RidesController" as ctrl
 end box
 actor -> page : Finish the ride
-page -> sync : finish(submission with rideId)
-sync -> outbox : add(WaitingRide) before sending
-sync -> client : submit(submission)
+page -> sync : submit(ride with its rideId)
+sync -> outbox : put(WaitingRide) before sending (L2-135 AC1)
+sync -> client : submitRide(ride), oldest waiting ride first
 client -x ctrl : POST /api/rides
-client --> sync : Network error or 5xx
-sync -> outbox : markAttempt(rideId)
-sync -> sync : scheduleRetry()
-sync --> page : Pending
-page -> results : Navigate with rideId
-results -> outbox : Read the waiting ride
-results --> actor : Ride shown with XP pending (L2-135 AC1)
+client --> sync : No answer, 5xx, 429 or 401
+sync -> outbox : put(attempts + 1)
+sync -> sync : Try again in 30 s, doubling up to 1 hour
+page -> results : Navigate with the ride
+results -> sync : status(rideId)
+sync --> results : waitingOffline
+results --> actor : Ride shown with XP pending (L2-135 AC1, L2-074 AC3)
 @enduml

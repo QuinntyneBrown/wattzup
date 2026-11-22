@@ -18,44 +18,46 @@ class WaitingRide <<api>> {
   +rideId: string
   +finishedAt: string
   +attempts: number
-  +submission: RideSubmission
+  +ride: SubmitRideRequest
 }
-interface RideOutbox <<api>> {
-  +add(ride: WaitingRide): Promise<void>
+interface RidesWaiting <<api>> {
   +oldestFirst(): Promise<WaitingRide[]>
+  +put(waiting: WaitingRide): Promise<void>
   +remove(rideId: string): Promise<void>
-  +markAttempt(rideId: string): Promise<void>
 }
-class IndexedDbRideOutbox <<domain/storage>> {
+class IndexedDbRidesWaiting <<domain/storage>> {
   -dbName: "telo-ride"
   -storeName: "rides-waiting"
 }
 interface RidesApi <<api>> {
-  +submit(ride: RideSubmission): Promise<RideResult>
+  +submitRide(ride: SubmitRideRequest): Observable<RideRecordedDto>
 }
 class HttpRidesApi <<api>> {
   -http: HttpClient
+}
+interface RideOutbox <<api>> {
+  +submit(ride: SubmitRideRequest): void
+  +status(rideId: string): Signal<RideSyncState>
+}
+class DeviceRideOutbox <<domain/storage>> {
+  -retry: timer | null
+  +submit(ride: SubmitRideRequest): void
+  +status(rideId: string): Signal<RideSyncState>
+  -drain(): Promise<void>
+  -retryIn(attempts: number): void
 }
 class NetworkStatus <<ride>> {
   +online: Signal<boolean>
   +backendReachable: Signal<boolean>
 }
-class OutboxSync <<ride>> {
-  -retryTimer: number | null
-  -delayMs: number
-  +start(): void
-  +finish(ride: RideSubmission): Promise<RideResult | Pending>
-  -drain(): Promise<void>
-  -scheduleRetry(): void
-}
 class MultiplayerAvailability <<domain/engine>> {
   +forMode(mode: RideMode, online: boolean): Availability
 }
-IndexedDbRideOutbox ..|> RideOutbox
+IndexedDbRidesWaiting ..|> RidesWaiting
 HttpRidesApi ..|> RidesApi
-OutboxSync --> RideOutbox : stores rides in
-OutboxSync --> RidesApi : submits with
-OutboxSync --> NetworkStatus : listens to
-RideOutbox "1" o-- "*" WaitingRide
+DeviceRideOutbox ..|> RideOutbox
+DeviceRideOutbox --> RidesWaiting : keeps rides in
+DeviceRideOutbox --> RidesApi : submits with
+RidesWaiting "1" o-- "*" WaitingRide
 MultiplayerAvailability ..> NetworkStatus : reads online
 @enduml
