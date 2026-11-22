@@ -87,9 +87,10 @@ together. A failure of either resolves `false`, and `WorldScene` emits `unavaila
 
 **A frame.** In a class, `metres = course.metresAt(frame.time x course seconds / plan seconds)`; in a
 race (the frame carries `riders`), `metres = frame.s`, the metres ridden. The rider is
-stood at `place(metres)` with the road's heading and slope; the camera sits 4.9 m back and 2.25 m up
-on the centre line and looks 14 m ahead, so it follows every bend and crest, and closes in to 3.5 m
-and 1.8 m at the start and the finish (L2-166 AC9). The sky dome and the sun's
+stood at `place(metres)` with the road's heading and slope; the camera sits 3.3 m back and 1.9 m up
+on the centre line and looks 14 m ahead, so it follows every bend and crest, and closes in to 2.7 m
+and 1.7 m at the start and the finish, its lens shifted so the picture sits 0.15 of its height higher
+and the rider shows whole above the race's panel (L2-166 AC9). The sky dome and the sun's
 light ride with the camera. Other riders come from `ridersOnRoad` (as `main`'s) and are stood at
 `metres + gap` on their lanes.
 
