@@ -146,6 +146,8 @@ THEMES: dict[str, dict] = {
         "grade": {"perLevel": 0.45, "roll": 2.5, "rollWave": 640.0},
         "reach": 1100.0,
         "night": True,
+        # Street lamps on both kerbs: every this many samples from this one, this far behind the kerb, this tall.
+        "lamps": {"every": 6, "start": 3, "off": 0.7, "height": 7.0, "glow": "glow-lamp"},
     },
     "dolomites": {
         "sky": [0xEAF2F8, 0xC6DDF0, 0x96C0E6, 0x5E98D6, 0x2E66B8],
@@ -723,10 +725,11 @@ def coast(k: Kit) -> dict:
 def docklands(k: Kit) -> dict:
     """A harbour city after dark: brick warehouses with lit windows and neon, cranes and containers on the quay."""
     B, s, rng = k.B, k.s, k.rng
-    # Lamps both sides, every 24 m.
-    for i in range(3, k.n - 3, 6):
+    # Lamps both sides, every 24 m: the course file tells the app where their light falls.
+    lamps = THEMES["docklands"]["lamps"]
+    for i in range(lamps["start"], k.n - 3, lamps["every"]):
         for side in (1, -1):
-            k.lamp(i, (k.kerb + 0.7) * side, "glow-lamp", 7.0)
+            k.lamp(i, (k.kerb + lamps["off"]) * side, lamps["glow"], lamps["height"])
     # Warehouses on the right.
     i, sheds = 2, 0
     front = k.kerb + 3.0

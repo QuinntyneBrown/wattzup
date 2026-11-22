@@ -1,4 +1,4 @@
-import { Course, type CourseFile, courseLook, parseCourse } from './course';
+import { Course, type CourseFile, courseLamps, courseLook, parseCourse } from './course';
 
 /**
  * A straight road north (-Z), a point every 4 m from 8 m before the start line: flat for 40 m, then climbing 10 %
@@ -146,5 +146,27 @@ describe('courseLook (L2-166)', () => {
     const look = courseLook({ ...courseFile(), sky: ['red'], haze: 'javascript:1' });
     expect(look.sky).toEqual([0xffc27a, 0xf7a070, 0xe0708a, 0x7a4f9a, 0x2f2a5e]);
     expect(look.haze).toBe(0xf2a77a);
+  });
+});
+
+describe('courseLamps (L2-166 AC13)', () => {
+  const lamps = { every: 24, first: -68, across: 5.1, height: 6.65, colour: '#ffe2a8' };
+
+  it('reads the street lamps a course file names', () => {
+    expect(courseLamps({ ...courseFile(), lamps })).toEqual({ ...lamps, colour: 0xffe2a8 });
+  });
+
+  it('lights no lamp on a course that names none', () => {
+    expect(courseLamps(courseFile())).toBeNull();
+  });
+
+  it.each([
+    ['a spacing of nothing', { ...lamps, every: 0 }],
+    ['a height of nothing', { ...lamps, height: 0 }],
+    ['a place that is not a number', { ...lamps, first: 'start' }],
+    ['a distance across that is not a number', { ...lamps, across: null }],
+    ['a colour that is not a colour', { ...lamps, colour: 'javascript:1' }],
+  ])('lights no lamp for %s: the file is data', (_, malformed) => {
+    expect(courseLamps({ ...courseFile(), lamps: malformed } as unknown as CourseFile)).toBeNull();
   });
 });

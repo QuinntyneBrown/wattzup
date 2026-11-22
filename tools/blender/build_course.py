@@ -496,6 +496,10 @@ CHUNK = 240.0  # metres of road a chunk of the map holds: the app draws only the
 UNSHADED = {"asphalt", "paint", "yellow", "kerb-red", "promenade", "sand", "club-window", "awning", "awning-white"}
 # Parts the film's staging looks up by name: kept whole in the scene, out of the glb, beside their chunks.
 FILM_KEEPS = {"GlowLamp"}
+# The ground the road builds: the asphalt, its paint and kerbs, the pavements and the shoulders. Its own group, with
+# each vertex's place on the road in its UV (metres left of the centre line, metres from the start line), so the app
+# can draw its surface, its wear and the lamps' light on it (L2-166 AC13).
+GROUND_PARTS = {"Road", "RoadPaint", "Kerbs", "CentreLine", "Promenade", "Shoulder"}
 WIDER = {"Land": 4, "Beams": 4, "Glow": 3, "Leaves": 3}
 WHOLE = {"sea": "Sea", "sun": "Sun", "moon": "Sun", "island": "Conillera", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
 
@@ -557,6 +561,8 @@ def assemble(road: "Road", col) -> dict:
             data.from_pydata(part.verts, [], part.faces)
             film.objects.link(bpy.data.objects.new(part.name, data))
         group, chunked = group_of(part.mat)
+        if part.name in GROUND_PARTS:
+            group = "Ground"
         flat = srgb(MATERIALS[part.mat]["color"])
         for face in part.faces:
             name = group
@@ -565,7 +571,7 @@ def assemble(road: "Road", col) -> dict:
                 cy = sum(part.verts[i][1] for i in face) / len(face)
                 _, j, _ = road.tree.find((cx, cy, 0.0))
                 name = f"{group}_{j // (per_chunk * WIDER.get(group, 1)):03d}"
-            mesh = meshes.setdefault(name, {"group": group, "verts": [], "cols": [], "faces": [], "index": {}})
+            mesh = meshes.setdefault(name, {"group": group, "verts": [], "cols": [], "uvs": [], "faces": [], "index": {}})
             ids = []
             for i in face:
                 v = part.verts[i]
@@ -583,6 +589,12 @@ def assemble(road: "Road", col) -> dict:
                     at = mesh["index"][key] = len(mesh["verts"])
                     mesh["verts"].append(v)
                     mesh["cols"].append(c)
+                    if group == "Ground":
+                        _, near, _ = road.tree.find((v[0], v[1], 0.0))
+                        p = road.s[near]
+                        dx, dy = v[0] - p["x"], v[1] - p["y"]
+                        ch, sh = math.cos(p["h"]), math.sin(p["h"])
+                        mesh["uvs"].append((-sh * dx + ch * dy, p["d"] + ch * dx + sh * dy))
                 ids.append(at)
             if len(set(ids)) == len(ids):
                 mesh["faces"].append(tuple(ids))
@@ -593,6 +605,11 @@ def assemble(road: "Road", col) -> dict:
         data.from_pydata(m["verts"], [], m["faces"])
         layer = data.color_attributes.new("Color", "FLOAT_COLOR", "POINT")
         layer.data.foreach_set("color", [c for col_ in m["cols"] for c in (col_[0], col_[1], col_[2], 1.0)])
+        if m["uvs"]:
+            layer = data.uv_layers.new(name="Road")
+            at = [0] * len(data.loops)
+            data.loops.foreach_get("vertex_index", at)
+            layer.data.foreach_set("uv", [c for i in at for c in m["uvs"][i]])
         data.materials.append(group_material(m["group"]))
         data.update()
         col.objects.link(bpy.data.objects.new(name, data))
@@ -1453,6 +1470,16 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         data["haze"] = hexs(theme["haze"])
         data["light"] = {"colour": hexs(theme["light"][0]), "intensity": theme["light"][1]}
         data["fill"] = [hexs(c) for c in theme["fill"]]
+        if "lamps" in theme:
+            # The street lamps, both sides: where their light falls on the ground (see `Kit.lamp`).
+            lamps = theme["lamps"]
+            data["lamps"] = {
+                "every": lamps["every"] * STEP,
+                "first": lamps["start"] * STEP - LEAD_IN,
+                "across": round(ROAD_HALF + 0.6 + lamps["off"] - 1.2, 2),
+                "height": lamps["height"] - 0.35,
+                "colour": hexs(MATERIALS[lamps["glow"]]["color"]),
+            }
     path.write_text(json.dumps(data, separators=(",", ":")) + "\n", encoding="utf-8")
     return data
 
@@ -1465,7 +1492,7 @@ def export_glb(path: Path) -> None:
         "export_yup": True,
         "export_apply": True,
         "export_normals": False,
-        "export_texcoords": False,
+        "export_texcoords": True,
         "export_tangents": False,
         "export_materials": "EXPORT",
         "export_vertex_color": "MATERIAL",

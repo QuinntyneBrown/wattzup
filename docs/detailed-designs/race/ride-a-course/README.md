@@ -52,6 +52,8 @@ All of it is in the `world` library; nothing outside it changes.
 | `course.ts` | `parseCourse` validates the file. `Course` answers `metresAt(seconds)`, `stageAt(seconds)`, `place(metres, lane)` and `gradeAt(metres)`. No Three.js; unit-tested in `course.spec.ts`. |
 | `map-renderer.ts` | `MapRenderer`, the `WorldRenderer` the loader returns. On `start` it imports `CourseRenderer` or `main`'s `ThreeWorldRenderer` by the world's id, and passes every call on. On `stream` (a real place, L2-066) while a course draws, it disposes the course, starts `main`'s renderer on the same canvas with the size and frame period it was given, and streams with it. |
 | `course-renderer.ts` | `CourseRenderer`: loads the glb and the course file, builds the sky, the lights and the rider, and draws. |
+| `ground-material.ts` | The `Ground` group's material (L2-166 AC13): the surface worked out from each vertex's place on the road (its UV) and a detail texture, and the lamps' light on it. `docs/course-realism.md` describes it. |
+| `surface-detail.ts` | The detail texture's texels, worked out on the device: grain, patches, cracks, stones. No Three.js; unit-tested. |
 | `world-renderer-loader.ts` | Returns a `MapRenderer`. It imports neither renderer, so Three.js still loads only when a world starts. |
 
 **Start.** `WebGPURenderer` with its WebGL2 fallback (ADR 0021), then the course file and the glb
@@ -92,7 +94,12 @@ within 1.1 of it, the tier steps up; over 1.6, it steps down and never steps up 
 gzipped. `docs/screenshots/courses/README.md` gives each map's numbers. It is a budget, not a frame rate measured on
 a tablet.
 
-**Dispose.** Every geometry and material of the glb, the sky, the lights, the cyclist kit and each
+**Ground (L2-166 AC13).** `courseLamps(file)` reads the file's `lamps`, or null for none or a malformed one. The
+`Ground` group is drawn to 420 m with `groundMaterial(roadHalfWidth, lamps)`; its normals are worked out when the map
+loads. `tools/course-bench` times a course's frames in the real app; `docs/course-realism.md` gives the method and
+each technique.
+
+**Dispose.** Every geometry and material of the glb, the ground's detail texture, the sky, the lights, the cyclist kit and each
 rider's materials, and the renderer.
 
 ## Tests

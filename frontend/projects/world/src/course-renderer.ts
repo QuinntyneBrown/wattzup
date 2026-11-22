@@ -33,7 +33,8 @@ import {
   WebGPURenderer,
 } from 'three/webgpu';
 import type { Backend, SceneFrame, TimedSegment as Segment, World, WorldRenderer } from '@telo/api';
-import { Course, type CoursePlace, courseLook, parseCourse } from './course';
+import { Course, type CoursePlace, courseLamps, courseLook, parseCourse } from './course';
+import { groundMaterial } from './ground-material';
 import { mergeStillParts } from './merged-cyclist';
 import { ridersOnRoad } from './race-riders';
 import { type Cyclist, CyclistKit } from './world-cyclist';
@@ -58,6 +59,7 @@ const SHADOW_WIDTH = 0.8;
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   Land: 950,
+  Ground: 420,
   Solid: 250,
   Glow: 400,
   Beams: 460,
@@ -87,6 +89,8 @@ const TIERS = [
   { ratio: 2, bloom: true },
 ] as const;
 const START = 1;
+/** The tier the test-only hook pins (world-ride-probe.ts): the bench reads frame times at one known tier. */
+const PINNED: Readonly<Record<string, number>> = { low: 0, medium: 1, high: 3, ultra: 4 };
 /** Frames judged before a step, and how their average time must compare with the display's frame period. */
 const JUDGED_FRAMES = 90;
 const TOO_SLOW = 1.6;
@@ -155,6 +159,8 @@ export class CourseRenderer implements WorldRenderer {
   private lastFrameAt: number | null = null;
   private judged = 0;
   private spent = 0;
+  /** Set by the test-only hook: the tier never steps, and each frame's cost is written to the hook. */
+  private pinned = false;
 
   /** `path` is where the app serves the course's `.glb` and `.course.json`. */
   constructor(private readonly path: string) {}
@@ -174,6 +180,11 @@ export class CourseRenderer implements WorldRenderer {
       });
       await renderer.init();
       this.renderer = renderer;
+      if (asked && !asked.judged) {
+        this.pinned = true;
+        this.tier = PINNED[asked.tier] ?? START;
+        renderer.info.autoReset = false;
+      }
       this.backend = (renderer.backend as { isWebGPUBackend?: boolean }).isWebGPUBackend
         ? 'webgpu'
         : 'webgl2';
@@ -311,6 +322,11 @@ export class CourseRenderer implements WorldRenderer {
       }),
     };
     this.disposables.push(...Object.values(materials));
+    // The ground the road builds has its place on the road in its UV: its surface and the lamps' light are drawn
+    // from that (ground-material.ts). A map built before it has no such group.
+    const ground = groundMaterial(this.course!.file.roadHalfWidth, courseLamps(this.course!.file));
+    materials['Ground'] = ground.material;
+    this.disposables.push(ground);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     map.traverse((part) => {
       const mesh = part as Mesh;
@@ -321,6 +337,8 @@ export class CourseRenderer implements WorldRenderer {
       if (!material) return;
       for (const loaded of [mesh.material].flat()) loaded.dispose();
       mesh.material = material;
+      // The ground is lit smoothly: its normals are worked out here, so the map's file carries none.
+      if (group === 'Ground') mesh.geometry.computeVertexNormals();
       // The map is set once and never moves: its matrices are worked out here, not every frame.
       mesh.matrixAutoUpdate = false;
       mesh.updateMatrix();
@@ -557,8 +575,17 @@ export class CourseRenderer implements WorldRenderer {
   private render(): void {
     const renderer = this.renderer;
     if (!renderer) return;
+    if (this.pinned) renderer.info.reset();
     if (this.pipeline && TIERS[this.tier]!.bloom) this.pipeline.render();
     else renderer.render(this.scene, this.camera);
+    if (this.pinned) this.report(renderer);
+  }
+
+  /** Writes what the frame cost to the test-only hook, for the bench (tools/course-bench). */
+  private report(renderer: WebGPURenderer): void {
+    const hook = (globalThis as Record<string, unknown>)[PROBE_KEY] as Record<string, unknown>;
+    const { drawCalls, triangles } = renderer.info.render;
+    hook['course'] = { tier: this.tier, backend: this.backend, drawCalls, triangles };
   }
 
   /** Steps the tier down when the judged frames ran slower than the display allows, and up while they keep its pace. */
@@ -566,7 +593,7 @@ export class CourseRenderer implements WorldRenderer {
     const now = performance.now();
     const last = this.lastFrameAt;
     this.lastFrameAt = now;
-    if (this.period === null || last === null) return;
+    if (this.pinned || this.period === null || last === null) return;
     this.spent += now - last;
     if (++this.judged < JUDGED_FRAMES) return;
     const average = this.spent / this.judged;

@@ -42,6 +42,27 @@ export interface CourseFile {
   readonly light?: { readonly colour: string; readonly intensity: number };
   /** The fill light from the sky and from the ground. */
   readonly fill?: readonly [string, string];
+  /** The street lamps that light the ground, where the course has them. */
+  readonly lamps?: {
+    /** Metres of road between one lamp and the next, on both sides. */
+    readonly every: number;
+    /** Metres from the start line to a lamp: negative is before it. */
+    readonly first: number;
+    /** Metres from the road's centre line to the light, either side. */
+    readonly across: number;
+    /** The light's height above the road, in metres. */
+    readonly height: number;
+    readonly colour: string;
+  };
+}
+
+/** A course's street lamps, as numbers the ground's material reads. */
+export interface CourseLamps {
+  readonly every: number;
+  readonly first: number;
+  readonly across: number;
+  readonly height: number;
+  readonly colour: number;
 }
 
 /** How a course's world is lit and what its sky is, as colours Three.js reads. */
@@ -82,6 +103,17 @@ export function courseLook(file: CourseFile): CourseLook {
         : SUNSET.light,
     fill: fill.length === 2 && fill.every((c) => c !== null) ? [fill[0]!, fill[1]!] : SUNSET.fill,
   };
+}
+
+/** The course's street lamps, or null where it names none or names them wrongly: the file is data. */
+export function courseLamps(file: CourseFile): CourseLamps | null {
+  const lamps = file.lamps as Partial<NonNullable<CourseFile['lamps']>> | undefined;
+  if (!lamps || typeof lamps !== 'object') return null;
+  const { every, first, across, height } = lamps;
+  const tint = colour(lamps.colour);
+  if (!isNumber(every) || !isNumber(first) || !isNumber(across) || !isNumber(height)) return null;
+  if (every <= 0 || height <= 0 || tint === null) return null;
+  return { every, first, across, height, colour: tint };
 }
 
 /** A place on the road, in the map's axes. */
