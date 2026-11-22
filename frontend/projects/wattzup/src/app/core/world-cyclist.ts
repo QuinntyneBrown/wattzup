@@ -1,6 +1,7 @@
 // A cyclist on a road bike, seen from the chase camera (L2-110): the rider's bike and the
 // simulated pacers are drawn from one kit. The bike points along -z; its rear axle is at +z.
 import {
+  BatchedMesh,
   BufferAttribute,
   type BufferGeometry,
   CanvasTexture,
@@ -52,12 +53,20 @@ const POSE_ANKLE = new Vector3();
 const POSE_HINT = new Vector3();
 const POSE_KNEE = new Vector3();
 const PLACE_DIFF = new Vector3();
+const PLACE_POS = new Vector3();
+const PLACE_QUAT = new Quaternion();
+const PLACE_SCALE = new Vector3(1, 1, 1);
+const PLACE_MAT = new Matrix4();
+const FOOT_QUAT = new Quaternion().setFromAxisAngle(ACROSS, Math.PI / 2);
+const UNIT_SCALE = new Vector3(1, 1, 1);
 const BEND_DIR = new Vector3();
 const BEND_SIDE = new Vector3();
 
-interface Limb {
-  readonly mesh: Mesh;
-  readonly length: number;
+interface LegBatchIds {
+  readonly thighId: number;
+  readonly shinId: number;
+  readonly footId: number;
+  readonly side: number;
 }
 
 const RUBBER_HEX = 0x18191c;
@@ -84,6 +93,7 @@ export class CyclistKit {
   private readonly tube = new CylinderGeometry(1, 1, 1, 6, 1, true);
   private readonly bibPlanes = new Map<number, PlaneGeometry>();
   private readonly ownedGeometries: BufferGeometry[] = [];
+  private readonly ownedDisposables: { dispose(): void }[] = [];
   readonly solid = new MeshStandardMaterial({ vertexColors: true, roughness: 0.72 });
   readonly metal = new MeshStandardMaterial({ color: 0xb8bcc2, metalness: 0.8, roughness: 0.3 });
   readonly apparel: MeshStandardMaterial;
@@ -378,7 +388,13 @@ export class CyclistKit {
     };
   }
 
+  trackDisposable(...items: { dispose(): void }[]): void {
+    this.ownedDisposables.push(...items);
+  }
+
   dispose(): void {
+    for (const d of this.ownedDisposables) d.dispose();
+    this.ownedDisposables.length = 0;
     for (const d of [
       this.tube,
       this.frameShape,
@@ -410,8 +426,10 @@ export class Cyclist {
   /** The discs that blur the spokes at speed (technique 34). */
   readonly wheelBlur: Mesh[] = [];
   readonly apparel: MeshStandardMaterial;
-  private readonly legs: { thigh: Limb; shin: Limb; foot: Mesh; side: number }[] = [];
-  private readonly cranks: Mesh[] = [];
+  private readonly solidBatch: BatchedMesh;
+  private readonly metalBatch: BatchedMesh;
+  private readonly legs: LegBatchIds[] = [];
+  private readonly crankIds: number[] = [];
   private readonly shadowCasters: Mesh[] = [];
   private castingShadow = true;
   /** Torso, head and arms: they pivot about the hands when the rider stands on the pedals. */
@@ -419,7 +437,7 @@ export class Cyclist {
   private readonly hip = HIP.clone();
 
   constructor(
-    private readonly kit: CyclistKit,
+    kit: CyclistKit,
     frame: Material,
     frameGeo: BufferGeometry,
     bodyApparelGeo: BufferGeometry,
@@ -429,19 +447,57 @@ export class Cyclist {
     // No blob under the bike: the shadow map grounds the rider in their own shape (#933, #937).
     const frameMesh = new Mesh(frameGeo, frame);
     frameMesh.castShadow = true;
-    const bikeSolid = new Mesh(parts.bikeSolid, kit.solid);
-    bikeSolid.castShadow = true;
-    const bikeMetal = new Mesh(parts.bikeMetal, kit.metal);
+
+    const solidTemplates = [parts.bikeSolid, parts.thigh, parts.shin, parts.foot];
+    let solidVerts = 0;
+    let solidIndices = 0;
+    for (const g of solidTemplates) {
+      solidVerts += g.getAttribute('position').count;
+      solidIndices += g.index!.count;
+    }
+    this.solidBatch = new BatchedMesh(7, solidVerts, solidIndices, kit.solid);
+    this.solidBatch.frustumCulled = false;
+    this.solidBatch.perObjectFrustumCulled = false;
+    this.solidBatch.sortObjects = false;
+    this.solidBatch.castShadow = true;
+    const gBikeSolid = this.solidBatch.addGeometry(parts.bikeSolid);
+    const gThigh = this.solidBatch.addGeometry(parts.thigh);
+    const gShin = this.solidBatch.addGeometry(parts.shin);
+    const gFoot = this.solidBatch.addGeometry(parts.foot);
+    const bikeSolidId = this.solidBatch.addInstance(gBikeSolid);
+    this.solidBatch.setMatrixAt(bikeSolidId, PLACE_MAT.identity());
+
+    const tubeGeo = kit.tubeGeometry();
+    const metalTemplates = [parts.bikeMetal, tubeGeo];
+    let metalVerts = 0;
+    let metalIndices = 0;
+    for (const g of metalTemplates) {
+      metalVerts += g.getAttribute('position').count;
+      metalIndices += g.index!.count;
+    }
+    this.metalBatch = new BatchedMesh(3, metalVerts, metalIndices, kit.metal);
+    this.metalBatch.frustumCulled = false;
+    this.metalBatch.perObjectFrustumCulled = false;
+    this.metalBatch.sortObjects = false;
+    this.metalBatch.castShadow = true;
+    const gBikeMetal = this.metalBatch.addGeometry(parts.bikeMetal);
+    const gCrank = this.metalBatch.addGeometry(tubeGeo);
+    const bikeMetalId = this.metalBatch.addInstance(gBikeMetal);
+    this.metalBatch.setMatrixAt(bikeMetalId, PLACE_MAT.identity());
+    this.crankIds.push(this.metalBatch.addInstance(gCrank), this.metalBatch.addInstance(gCrank));
+
+    kit.trackDisposable(
+      this.solidBatch,
+      this.solidBatch.geometry,
+      this.metalBatch,
+      this.metalBatch.geometry,
+    );
+
     const spokeLace = new Mesh(parts.wheelDiscs, kit.spokeLace);
     const blurDisc = new Mesh(parts.wheelDiscs, kit.spokes);
     blurDisc.visible = false;
     this.wheelBlur.push(blurDisc);
-    this.group.add(frameMesh, bikeSolid, bikeMetal, spokeLace, blurDisc);
-    for (let i = 0; i < 2; i++) {
-      const crank = this.stick(BB, BB, 0.014, kit.metal);
-      this.cranks.push(crank);
-      this.group.add(crank);
-    }
+    this.group.add(frameMesh, this.solidBatch, this.metalBatch, spokeLace, blurDisc);
 
     // The rider: pre-merged apparel (jersey + helmet + bib number) and solid (neck + head +
     // forearms + chin straps + seat pad) — 2 body meshes total.
@@ -451,17 +507,10 @@ export class Cyclist {
     this.body.add(bodyApparel, bodySolid);
 
     for (const side of [-1, 1]) {
-      const thighMesh = new Mesh(parts.thigh, kit.solid);
-      thighMesh.castShadow = true;
-      const shinMesh = new Mesh(parts.shin, kit.solid);
-      shinMesh.castShadow = true;
-      const foot = new Mesh(parts.foot, kit.solid);
-      foot.rotation.x = Math.PI / 2;
-      this.group.add(thighMesh, shinMesh, foot);
       this.legs.push({
-        thigh: { mesh: thighMesh, length: THIGH },
-        shin: { mesh: shinMesh, length: SHIN },
-        foot,
+        thighId: this.solidBatch.addInstance(gThigh),
+        shinId: this.solidBatch.addInstance(gShin),
+        footId: this.solidBatch.addInstance(gFoot),
         side,
       });
     }
@@ -499,26 +548,16 @@ export class Cyclist {
       const a = angle + i * Math.PI;
       POSE_PEDAL.set(leg.side * 0.1, BB.y - Math.cos(a) * CRANK, BB.z - Math.sin(a) * CRANK);
       POSE_BB.set(leg.side * 0.07, BB.y, BB.z);
-      placeMesh(this.cranks[i]!, POSE_BB, POSE_PEDAL, true);
+      this.metalBatch.setMatrixAt(this.crankIds[i]!, composeSpanMatrix(POSE_BB, POSE_PEDAL, true));
       POSE_HIP.set(leg.side * 0.1, this.hip.y, this.hip.z);
       POSE_ANKLE.set(POSE_PEDAL.x, POSE_PEDAL.y + 0.06, POSE_PEDAL.z + 0.03);
       POSE_HINT.set(leg.side * 0.08, 0.3, -1);
       bendInto(POSE_KNEE, POSE_HIP, POSE_ANKLE, THIGH, SHIN, POSE_HINT);
-      placeMesh(leg.thigh.mesh, POSE_HIP, POSE_KNEE, false);
-      placeMesh(leg.shin.mesh, POSE_KNEE, POSE_ANKLE, false);
-      leg.foot.position.set(POSE_PEDAL.x, POSE_PEDAL.y + 0.03, POSE_PEDAL.z - 0.02);
+      this.solidBatch.setMatrixAt(leg.thighId, composeSpanMatrix(POSE_HIP, POSE_KNEE, false));
+      this.solidBatch.setMatrixAt(leg.shinId, composeSpanMatrix(POSE_KNEE, POSE_ANKLE, false));
+      PLACE_POS.set(POSE_PEDAL.x, POSE_PEDAL.y + 0.03, POSE_PEDAL.z - 0.02);
+      this.solidBatch.setMatrixAt(leg.footId, PLACE_MAT.compose(PLACE_POS, FOOT_QUAT, UNIT_SCALE));
     }
-  }
-
-  private stick(a: Vector3, b: Vector3, radius: number, material: Material): Mesh {
-    const mesh = new Mesh(this.kit.tubeGeometry(), material);
-    mesh.scale.set(radius, Math.max(a.distanceTo(b), 0.001), radius);
-    mesh.position.copy(a).lerp(b, 0.5);
-    if (a.distanceTo(b) > 0) {
-      mesh.quaternion.setFromUnitVectors(UP, b.clone().sub(a).normalize());
-    }
-    mesh.castShadow = true;
-    return mesh;
   }
 }
 
@@ -736,15 +775,22 @@ function wheelPartGeometry(shape: BufferGeometry, z: number): BufferGeometry {
   return part;
 }
 
-/** Puts a limb (or a unit tube, `stretch`) between two points without allocating heap vectors. */
-function placeMesh(mesh: Mesh, a: Vector3, b: Vector3, stretch: boolean): void {
-  mesh.position.copy(a).lerp(b, 0.5);
+/** Composes a 4×4 matrix spanning `a` to `b` (optionally stretched as a unit crank tube) with zero allocations. */
+function composeSpanMatrix(a: Vector3, b: Vector3, stretch: boolean): Matrix4 {
+  PLACE_POS.copy(a).lerp(b, 0.5);
   PLACE_DIFF.subVectors(b, a);
   const lenSq = PLACE_DIFF.lengthSq();
-  if (stretch) mesh.scale.set(0.014, Math.max(Math.sqrt(lenSq), 0.001), 0.014);
-  if (lenSq > 0) {
-    mesh.quaternion.setFromUnitVectors(UP, PLACE_DIFF.divideScalar(Math.sqrt(lenSq)));
+  if (stretch) {
+    PLACE_SCALE.set(0.014, Math.max(Math.sqrt(lenSq), 0.001), 0.014);
+  } else {
+    PLACE_SCALE.set(1, 1, 1);
   }
+  if (lenSq > 0) {
+    PLACE_QUAT.setFromUnitVectors(UP, PLACE_DIFF.divideScalar(Math.sqrt(lenSq)));
+  } else {
+    PLACE_QUAT.identity();
+  }
+  return PLACE_MAT.compose(PLACE_POS, PLACE_QUAT, PLACE_SCALE);
 }
 
 /**
