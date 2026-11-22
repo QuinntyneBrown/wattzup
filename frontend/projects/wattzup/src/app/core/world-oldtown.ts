@@ -1550,15 +1550,17 @@ export class OldTownStreet {
   /** The belfry: a square brick tower, its louvred stage and a slate spire, hazed by distance. */
   private addBelfry(): void {
     const haze = new Color(0xdcd8cf);
+    const tempMaterials: MeshStandardMaterial[] = [];
     const tone = (hex: number) => {
       const material = new MeshStandardMaterial({ roughness: 0.95, fog: false });
       material.color.set(hex).lerp(haze, 0.32);
-      this.disposables.push(material);
+      tempMaterials.push(material);
       return material;
     };
     const brick = tone(0xa0563e);
     const stone = tone(0xd9cfb8);
     const slate = tone(0x4b545e);
+    const dark = tone(0x1e2023);
     const b = this.belfry;
     const block = (m: Material, w: number, h: number, y: number) => {
       const mesh = new Mesh(this.unit, m);
@@ -1582,12 +1584,13 @@ export class OldTownStreet {
       [0, 4.05],
       [0, -4.05],
     ] as const) {
-      const louvre = new Mesh(this.unit, this.iron);
+      const louvre = new Mesh(this.unit, dark);
       louvre.scale.set(x ? 0.1 : 2.4, 5, z ? 0.1 : 2.4);
       louvre.position.set(x, 39.5, z);
       b.add(louvre);
     }
     this.flatten(b, false);
+    for (const tm of tempMaterials) tm.dispose();
     this.group.add(b);
   }
 
@@ -1752,9 +1755,12 @@ export class OldTownStreet {
     detailAtlas: ReturnType<typeof houseDetailAtlas>,
     detailMat: MeshStandardMaterial,
   ): void {
-    const iron = this.material(null, '#1f2124');
-    iron.metalness = 0.6;
-    iron.roughness = 0.45;
+    const lampSolidMat = new MeshStandardMaterial({
+      vertexColors: true,
+      metalness: 0.35,
+      roughness: 0.65,
+      side: DoubleSide,
+    });
     const glass = new MeshStandardMaterial({
       color: 0xfff1d0,
       emissive: 0xffd9a0,
@@ -1769,7 +1775,7 @@ export class OldTownStreet {
     for (const part of [foot, pole, cap, arm]) part.dispose();
     const lantern = new CylinderGeometry(0.2, 0.13, 0.5, 6).translate(0, 4.45, 0);
     // A hanging basket of geraniums on an arm from each lamp, out over the barrier, merged with
-    // its trailing ivy into one `houseDetailAtlas` geometry.
+    // its trailing ivy into one `houseDetailAtlas` geometry, and wicker basket merged into `lampSolid`.
     const basket = new SphereGeometry(
       0.3,
       10,
@@ -1779,6 +1785,25 @@ export class OldTownStreet {
       Math.PI / 2,
       Math.PI / 2,
     ).translate(-0.8, 3.2, 0);
+    const paintVerts = (geo: BufferGeometry, hex: number) => {
+      const c = new Color(hex);
+      const count = geo.getAttribute('position').count;
+      const arr = new Float32Array(count * 3);
+      for (let i = 0; i < count; i++) {
+        arr[i * 3] = c.r;
+        arr[i * 3 + 1] = c.g;
+        arr[i * 3 + 2] = c.b;
+      }
+      geo.setAttribute('color', new BufferAttribute(arr, 3));
+      geo.clearGroups();
+      return geo;
+    };
+    const lampSolid = mergeGeometries([
+      paintVerts(ironLamp, 0x1f2124),
+      paintVerts(basket, 0x5a3e26),
+    ])!;
+    ironLamp.dispose();
+    basket.dispose();
     const bloom = remapUv(
       new SphereGeometry(0.36, 10, 6).scale(1, 0.8, 1).translate(-0.8, 3.25, 0),
       detailAtlas.blooms,
@@ -1792,8 +1817,7 @@ export class OldTownStreet {
     const foliage = mergeGeometries([bloom, trailing])!;
     bloom.dispose();
     trailing.dispose();
-    const wicker = new MeshStandardMaterial({ color: 0x5a3e26, roughness: 0.95 });
-    this.disposables.push(glass, ironLamp, lantern, basket, foliage, wicker);
+    this.disposables.push(lampSolidMat, glass, lampSolid, lantern, foliage);
     const penAtlas = pennantAtlasTexture([
       ['#1b1e24', '#d7ff3a'],
       ['#b8322c', '#ffffff'],
@@ -1812,9 +1836,8 @@ export class OldTownStreet {
       this.lampOffsetMetres[i] = i * lampEvery + 6;
     }
     this.lampMeshes = [
-      [ironLamp, iron],
+      [lampSolid, lampSolidMat],
       [lantern, glass],
-      [basket, wicker],
       [foliage, detailMat],
     ].map(([geometry, material]) => {
       const mesh = new InstancedMesh(geometry as BufferGeometry, material as Material, count);

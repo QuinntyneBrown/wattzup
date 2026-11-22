@@ -266,6 +266,10 @@ describe('OldTownStreet and Corners (L2-101 AC1, L2-110 AC9, L2-111 AC10)', () =
     );
     expect(motoShadowMeshes).toHaveLength(1);
 
+    const belfry = street.group.children.find((c) => c.position.z === -260)!;
+    const belfryMeshes = belfry.children.filter((c): c is Mesh => c instanceof Mesh);
+    expect(belfryMeshes).toHaveLength(1);
+
     const instanced = street.group.children.filter(
       (c): c is InstancedMesh => c instanceof InstancedMesh,
     );
@@ -274,10 +278,11 @@ describe('OldTownStreet and Corners (L2-101 AC1, L2-110 AC9, L2-111 AC10)', () =
         .filter((c): c is BatchedMesh => c instanceof BatchedMesh)
         .map((b) => b.material),
     );
-    // Lamp foliage (bloom + trailing merged into instanced[3]) shares houseDetailAtlas detailMat,
-    // and lamp pennants are instanced[4] and instanced[5] sharing one pennant atlas material.
-    expect(batchedMaterials.has(instanced[3]!.material)).toBe(true);
-    const [pen0, pen1] = [instanced[4]!, instanced[5]!];
+    // Lamp iron + wicker basket merge into vertex-coloured instanced[0], lantern is instanced[1],
+    // foliage (instanced[2]) shares houseDetailAtlas detailMat, and pennants are instanced[3..4].
+    expect((instanced[0]!.material as MeshStandardMaterial).vertexColors).toBe(true);
+    expect(batchedMaterials.has(instanced[2]!.material)).toBe(true);
+    const [pen0, pen1] = [instanced[3]!, instanced[4]!];
     expect(pen0.material).toBe(pen1.material);
 
     for (const d of disposables) d.dispose();

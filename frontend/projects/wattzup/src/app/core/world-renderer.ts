@@ -3910,11 +3910,24 @@ export class ThreeWorldRenderer implements WorldRenderer {
     }
   }
 
-  /** The arch over the road ahead: two posts, a beam and its label, merged per material. */
+  /** The arch over the road ahead: two posts, a beam, its start line and label, merged per finish. */
   private addArch(): void {
-    const material = new MeshStandardMaterial({ color: 0x1b1e24, roughness: 0.5 });
+    const matte = new MeshStandardMaterial({ vertexColors: true, roughness: 0.55 });
     const steel = new MeshStandardMaterial({ color: 0x8d939b, metalness: 0.7, roughness: 0.35 });
-    // Each leg is a truss: four steel chords on a weighted foot, merged into 1 steel + 1 frame mesh.
+    const paintArchPart = (geo: BufferGeometry, hex: number) => {
+      const c = new Color(hex);
+      const count = geo.getAttribute('position').count;
+      const arr = new Float32Array(count * 3);
+      for (let i = 0; i < count; i++) {
+        arr[i * 3] = c.r;
+        arr[i * 3 + 1] = c.g;
+        arr[i * 3 + 2] = c.b;
+      }
+      geo.setAttribute('color', new BufferAttribute(arr, 3));
+      geo.clearGroups();
+      return geo;
+    };
+    // Each leg is a truss: four steel chords on a weighted foot, merged into 1 steel + 1 matte mesh.
     const chordParts: BufferGeometry[] = [];
     const frameParts: BufferGeometry[] = [];
     for (const x of [-ROAD_HALF - 0.7, ROAD_HALF + 0.7]) {
@@ -3928,32 +3941,30 @@ export class ThreeWorldRenderer implements WorldRenderer {
         c.translate(x + dx, 2.75, dz);
         chordParts.push(c);
       }
-      const f = new BoxGeometry(0.9, 0.25, 0.9);
-      f.translate(x, 0.125, 0);
+      const f = paintArchPart(new BoxGeometry(0.9, 0.25, 0.9).translate(x, 0.125, 0), 0x1b1e24);
       frameParts.push(f);
     }
-    const beamPart = new BoxGeometry(2 * ROAD_HALF + 2, 1.4, 0.45);
-    beamPart.translate(0, 5.6, 0);
-    frameParts.push(beamPart);
+    frameParts.push(
+      paintArchPart(new BoxGeometry(2 * ROAD_HALF + 2, 1.4, 0.45).translate(0, 5.6, 0), 0x1b1e24),
+    );
+    // The line across the road where the effort starts, merged into the vertex-coloured matte mesh.
+    frameParts.push(
+      paintArchPart(
+        new PlaneGeometry(2 * ROAD_HALF, 0.4).rotateX(-Math.PI / 2).translate(0, 0.02, 0),
+        0xf2f3ef,
+      ),
+    );
     const chordsGeo = mergeGeometries(chordParts, false)!;
     const frameGeo = mergeGeometries(frameParts, false)!;
     for (const g of [...chordParts, ...frameParts]) g.dispose();
 
     const chordsMesh = new Mesh(chordsGeo, steel);
     chordsMesh.castShadow = true;
-    const frameMesh = new Mesh(frameGeo, material);
+    const frameMesh = new Mesh(frameGeo, matte);
     frameMesh.castShadow = true;
+    frameMesh.receiveShadow = true;
     this.arch.add(chordsMesh, frameMesh);
 
-    // The line across the road where the effort starts.
-    const line = new Mesh(
-      new PlaneGeometry(2 * ROAD_HALF, 0.4),
-      new MeshStandardMaterial({ color: 0xf2f3ef, roughness: 0.6 }),
-    );
-    line.rotation.x = -Math.PI / 2;
-    line.position.y = 0.02;
-    line.receiveShadow = true;
-    this.arch.add(line);
     // The banner's lettering: one persistent canvas/texture painted in place (#882).
     const labelCanvas = document.createElement('canvas');
     labelCanvas.width = 1024;
@@ -3974,14 +3985,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
       mesh: label,
       material: label.material,
     };
-    this.disposables.push(
-      material,
-      steel,
-      chordsGeo,
-      frameGeo,
-      line.geometry,
-      line.material as Material,
-    );
+    this.disposables.push(matte, steel, chordsGeo, frameGeo);
     this.arch.visible = false;
     this.scene.add(this.arch);
   }
