@@ -1,0 +1,71 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "A live race now shares one board: positions and gaps for every rider, every second, from the service."
+      ]
+    },
+    {
+      "id": "board",
+      "bars": 5,
+      "lines": [
+        "The board is the service's: every rider by place, you in fifth, each gap to you, seven seconds up to five behind."
+      ]
+    },
+    {
+      "id": "report",
+      "bars": 5,
+      "lines": [
+        "Each second the race sends your distance and power to the session, never more than twice a second."
+      ]
+    },
+    {
+      "id": "rank",
+      "bars": 5,
+      "lines": [
+        "The service rides the bots on the pace model, ranks by distance, and times each gap from the leader's trace."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 5,
+      "lines": [
+        "The board joins at tablet width and up; on a phone the race keeps your place beside the power."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: one ranking for everyone, each gap to you, and reports at most twice a second."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}
