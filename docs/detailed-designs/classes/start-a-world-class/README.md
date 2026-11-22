@@ -103,6 +103,45 @@ lost-bike alert of `L2-092` (`L2-157` AC4).
 
 ![Start a solo world class, as built in slice 16.3](diagrams/sequence-as-built-16-3.png)
 
+## As built in slice 16.4
+
+- **The session joins on World loading** (`L2-154` AC1, AC3): `LiveSessionStore` is provided by
+  `ClassRidePage`, not the class ride, so a group ride's hub connection lasts from World loading
+  to the end of the ride. `WorldLoadStore` joins the session when World loading opens and reads
+  the start from the seat (`startsAt`) and the measured clock offset, as `ClassRideStore` did.
+  `LiveSessionStore.join()` now returns the same promise to every caller, so the class ride's
+  join finds the seat World loading took. A refused join leaves from World loading, for Class
+  Start or the Class Library, as it did from the class ride (`L2-122` AC2, `L2-086` AC3,
+  `L2-082`). Without a seat or an offset (the hub cannot be reached) the class ride starts at
+  once, as before (`L2-126`).
+- **The countdown** (`L2-154` AC1, AC2): the facts read "Group · 7:39 PM · 6 of 10" in the
+  connected tone (seats taken of the capacity, from the class's sessions; "Group · 7:39 PM" when
+  they cannot be read), then the quality; the bike fact shows only when there is no bike. An info
+  notice reads "The group starts in 1:12." with the time in a `role="timer"` that counts down each
+  second, and "You start with everyone. If the world isn’t ready by then, you ride the panorama
+  and the world fades in when it is." The action is disabled and reads "Starts with the group at
+  7:39 PM", with "Pedal easy: everyone’s warm-up starts together." The polite status names the
+  start time once ("The group starts at 7:39 PM.") rather than every second. The slow-load warning
+  does not show in a group: the session's start decides when the ride begins.
+- **The start with everyone** (`L2-154` AC3, AC4): at the session's start on the monotonic clock,
+  World loading gives way to the class ride whether the world is ready or not, and keeps loading.
+  The class ride starts at the same moment from the same seat and offset. When the world is ready
+  later, `WorldLoadStore` hands its renderer over then, and `ClassWorldScene` creates `main`'s
+  `WorldScene` as it arrives, which fades the canvas in over the panorama as in slice 16.3. The
+  ride clock and the bike are not touched.
+- **No bike at the start** (`L2-157` AC4): a group ride counts a bike that is not connected as
+  lost, so it starts with the alert of `L2-092` AC1 ("Lost the bike", "The class keeps going.
+  Pedal to wake the bike and you’ll rejoin where everyone is.", Reconnect). A group ride does not
+  hold for the bike (`L2-092` AC2); a solo ride still does (AC4). Before this slice the group alert
+  read the solo words and the group ride held.
+- **Connect bike** (`L2-157` AC1), corrected: it tries the remembered bike again when the
+  connection has given up (`idle`, after a failed connection), retries at once when it is
+  `disconnected`, and leaves a connection that is still waiting for the bike's first answer
+  alone. In slice 16.3 it only retried a `disconnected` connection, so after a failed
+  connection it did nothing.
+
+![Join a group world class, as built in slice 16.4](diagrams/sequence-as-built-16-4.png)
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a
@@ -167,3 +206,8 @@ panorama and fades in when ready.
    with its own sound, so the track plays only while no video plays (`L2-163` AC1).
 3. "Connect bike" retries the remembered bike in place rather than opening Connect, which would
    leave World loading.
+4. A group class now waits for its start on World loading, so the class ride's own countdown over
+   the parked video (`L2-087` AC4) is reached only if the class ride opens before the start
+   without World loading, which no route does today. `L2-087` AC4 now says so.
+5. The polite status names the group's start time once rather than announcing the countdown each
+   second; the visible timer carries the seconds.
