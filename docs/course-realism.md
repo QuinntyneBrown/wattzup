@@ -731,6 +731,9 @@ sky dome's horizon line): check it still lines up.
 - **Spray off the rear wheel on a wet road** (after riders pass 10): hidden behind the HUD for the rider's own bike
   and a few pixels on the others, for two draw calls a rider. See the riders' log.
 
+- **A dark reflection of the rider in a wet road** (after riders pass 13): dark on dark, not seen. A reflection
+  needs the rider's colours. See the riders' log.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.

@@ -506,3 +506,18 @@ ones below; `shinShape`'s calf is on -z and larger; the pelvis is a smaller fill
   limb that moves it.
 - Write down which way a limb's own axes point. The calf was on the wrong side for twelve passes because nobody
   could see it from 4.9 m.
+
+## Tried and not kept: the rider's reflection in the wet road
+
+After pass 13 no shadow can be seen under a rider: the lamps' shadows (the map's pass 8) are soft dark shapes on
+asphalt that is already dark. On a wet road at night what grounds a rider is their reflection, so a dark shape was
+laid from under each rider towards the eye, as long as a flat mirror would make it (`distance × 1.5 / (eye's height
++ 1.5)`, with unit tests), in the same instanced mesh as the shadows, darker the wetter the road.
+
+It could not be seen: dark on dark, except where it happened to cross a lamp's reflection. For the rider's own bike
+it lies in the strip between the wheels and the panel. Nothing seen: not kept, no film.
+
+What it showed is what is missing: the road shows the lamps' reflections but nothing of the riders. A reflection
+worth having carries the rider's colours (a jersey lit by a lamp, smeared down the wet road), which is a mirrored
+or smeared draw of the rider, not a dark quad. That is a pass of its own, and it wants the road below the rider's
+wheels in the frame.
