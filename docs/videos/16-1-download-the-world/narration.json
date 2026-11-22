@@ -1,0 +1,78 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "A class in a world now gets its world ready first: World loading, then Start riding."
+      ]
+    },
+    {
+      "id": "download",
+      "bars": 5,
+      "lines": [
+        "The world downloads with its bytes counted, and stays on this device, so next time that step is done at once."
+      ]
+    },
+    {
+      "id": "build",
+      "bars": 5,
+      "lines": [
+        "Then the renderer from main builds the shaders and warms up the first frames off screen, and Start riding takes focus."
+      ]
+    },
+    {
+      "id": "stopped",
+      "bars": 5,
+      "lines": [
+        "If the download stops, the card says where, and Try again picks up from the bytes already received."
+      ]
+    },
+    {
+      "id": "panorama",
+      "bars": 5,
+      "lines": [
+        "A browser without WebGPU or WebGL 2 rides the panorama: the plan, clock and bike work the same."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 5,
+      "lines": [
+        "The class over its world, and the load card, from a phone to the full screen."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: the world downloads, resumes, is saved, and the ride waits for Start riding."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.651
+A class in a world now gets its world ready first: World loading, then Start riding.
+
+00:00:10.324 --> 00:00:14.992
+The world downloads with its bytes counted, and stays on this device, so next time
+
+00:00:14.992 --> 00:00:16.772
+that step is done at once.
+
+00:00:23.228 --> 00:00:27.940
+Then the renderer from main builds the shaders and warms up the first frames off
+
+00:00:27.940 --> 00:00:30.419
+screen, and Start riding takes focus.
+
+00:00:36.133 --> 00:00:40.696
+If the download stops, the card says where, and Try again picks up from the bytes
+
+00:00:40.696 --> 00:00:41.954
+already received.
+
+00:00:49.038 --> 00:00:55.126
+A browser without WebGPU or WebGL 2 rides the panorama: the plan, clock and bike
+
+00:00:55.126 --> 00:00:56.491
+work the same.
+
+00:01:01.942 --> 00:01:06.261
+The class over its world, and the load card, from a phone to the full screen.
+
+00:01:14.847 --> 00:01:19.867
+What the tests prove: the world downloads, resumes, is saved, and the ride waits for
+
+00:01:19.867 --> 00:01:20.944
+Start riding.
+
+00:01:25.170 --> 00:01:29.774
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:30.119 --> 00:01:34.631
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:34.631 --> 00:01:36.302
+every hill and interval.
+
+00:01:36.647 --> 00:01:41.825
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:41.825 --> 00:01:47.273
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:47.273 --> 00:01:50.263
+XP, rider levels, stars and map unlocks.
+
+00:01:50.608 --> 00:01:53.101
+A custom workout lives under Profile.
