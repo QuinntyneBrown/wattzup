@@ -627,3 +627,31 @@ With Old Town Criterium locked at the 60 Hz VSync ceiling, we apply all Old Town
 | `caribana` | **`high`**      |   **57.3** (`10.61×`, +961%) | **17.4 / 20.9 / 29.5** (−91%) | **10.75 / 11.67** (−88.4%) | 7,730 → **428 (−94.5%)** | 273 (+0)        | 785 → **101** | **11.814 / 12.710** (−93.6%) | **38.25** (−75.7%) | **10,776.9** (−40.3%) |
 | `knicks`   | **`low`**       |       **60.4** (60 Hz lock!) | **16.7 / 17.3 / 17.8** (−33%) | **4.85 / 5.90** (−26.0%)   | 1,169 → **226 (−80.7%)** | 46 (+0)         |  108 → **53** | **8.343 / 8.937** (−64.8%)   |          **59.25** |  **2,420.4** (−13.4%) |
 | `knicks`   | **`high`**      | **60.1** (60 Hz lock! +168%) | **16.7 / 18.3 / 21.7** (−64%) | **9.50 / 10.49** (−37.5%)  | 1,801 → **304 (−83.1%)** | 165 (+0)        |  108 → **53** | **11.126 / 11.964** (−74.6%) | **61.09** (−54.2%) |  **6,667.1** (−13.1%) |
+
+### Parades Iteration 6 / Iteration 30 — Per-Material `Ensemble` `BatchedMesh` Coalescing, Masquerader Body/Sequin Batching & Direct `_matricesTexture` Writes (**Full 60 Hz Lock Across All Four Tiers**)
+
+1. **Per-Material `Ensemble` `BatchedMesh` Coalescing & Build-Time Colour Baking (`world-caribana-crowd.ts`)**:
+   - Upgraded `Ensemble` (`Spectators`, `teeShirts`, `officerEnsemble`) from creating one `InstancedMesh` per geometry key (`35` `InstancedMesh`es) to coalescing all compatible part geometries sharing `(material, castShadow, attributeSignature)` into **one `BatchedMesh` per unique `Material`** (`35 → 17` `RenderObject`s).
+   - Baked per-instance colours (`batch.setColorAt`) **once at `build()` time** so `_colorsTexture.needsUpdate` never fires during the ride, and added `ownerVisible: Uint8Array` + `hide(owner)` so culled figures return in O(1) and `BatchedMesh._updateDrawParameters` skips its O(N) scan on steady-state frames.
+2. **Masquerader Body/Sequin `BatchedMesh` Consolidation & Direct `_matricesTexture` Writes (`world-caribana.ts`, `world-caribana-crowd.ts`)**:
+   - Consolidated masquerader `bodies` (`5 → 1` `dancerBodyBatch`), `nearBodies` (`5 → 1` `dancerNearBodyBatch`, cutting `8` shadow + main WebGPU `RenderObject` setups per frame on `high`), and `costumes` + `trunks` + `medallions` (`3 → 1` `dancerSequinBatch`) with build-time `setColorAt` and incremental `bodyState` / `medallionVis` transitions, cutting `CaribanaStreet` `InstancedMesh`es below `20` and total `Mesh`es below `145`.
+   - Replaced per-frame `BatchedMesh.setMatrixAt` + `getVisibleAt` calls across `Ensemble`, `Spectators`, `CaribanaStreet.place()`, and `CaribanaStreet.placeDancers()` with direct 16-float writes into `_matricesTexture.image.data` (`batchMatricesTexture()`), locking **all four parade configurations (`caribana low` `60.4 FPS`, `caribana high` `59.2 FPS`, `knicks low` `60.5 FPS`, `knicks high` `59.7 FPS`)** at the **60 Hz VSync ceiling (`16.7–16.8 ms` median)** over the full 45-second active ride!
+
+| World      | Tier (`webgpu`) |                             Avg FPS | Median / p95 / p99 ms         | GPU Median / p95 ms        |               Draw Calls | Programs (+mid) |     Materials | CDP Script / Task ms/f       |         JS Heap MB |     Cold Load Wall ms |
+| ---------- | --------------- | ----------------------------------: | ----------------------------- | -------------------------- | -----------------------: | --------------- | ------------: | ---------------------------- | -----------------: | --------------------: |
+| `caribana` | **`low`**       |       **60.4** (60 Hz lock! `5.8×`) | **16.7 / 17.2 / 17.9** (−82%) | **6.36 / 7.27** (−87.5%)   | 4,209 → **356 (−91.5%)** | 82 (+0)         | 785 → **101** | **9.376 / 10.031** (−90.2%)  | **45.33** (−66.0%) |  **4,103.7** (−30.6%) |
+| `caribana` | **`high`**      | **59.2** (60 Hz lock! **`10.96×`**) | **16.8 / 20.5 / 25.8** (−91%) | **10.62 / 11.67** (−88.6%) | 7,730 → **428 (−94.5%)** | 279 (+0)        | 785 → **101** | **12.103 / 12.973** (−93.5%) | **57.67** (−63.4%) | **11,416.6** (−36.7%) |
+| `knicks`   | **`low`**       |       **60.5** (60 Hz lock! +46.5%) | **16.7 / 17.2 / 17.8** (−33%) | **4.85 / 5.83** (−26.0%)   | 1,169 → **226 (−80.7%)** | 46 (+0)         |  108 → **53** | **8.089 / 8.683** (−65.9%)   |          **61.67** |  **2,468.0** (−11.7%) |
+| `knicks`   | **`high`**      |  **59.7** (60 Hz lock! **`2.67×`**) | **16.7 / 19.3 / 28.1** (−64%) | **9.50 / 10.49** (−37.5%)  | 1,801 → **304 (−83.1%)** | 165 (+0)        |  108 → **53** | **11.594 / 12.443** (−73.5%) | **25.99** (−80.5%) |  **6,516.4** (−15.1%) |
+
+### Cumulative Parade Progression Summary (45-Second Active Ride, `1440 × 900`, 95 rpm)
+
+| Iteration                                           | `caribana low` FPS | `caribana high` FPS | `knicks low` FPS | `knicks high` FPS |
+| --------------------------------------------------- | -----------------: | ------------------: | ---------------: | ----------------: |
+| **Baseline (`Iteration 24`, PR #974)**              |               10.4 |                 5.4 |             41.3 |              22.4 |
+| **Parades Iter 1 (`Iteration 25`, PR #975)**        |               31.8 |                22.8 |         **60.1** |              35.0 |
+| **Parades Iter 2 (`Iteration 26`, PR #976)**        |               38.1 |                27.6 |         **60.6** |              58.1 |
+| **Parades Iter 3 (`Iteration 27`, PR #977)**        |           **60.5** |                44.3 |         **60.5** |          **59.5** |
+| **Parades Iter 4 (`Iteration 28`, PR #978)**        |           **60.3** |                51.7 |         **60.5** |          **60.2** |
+| **Parades Iter 5 (`Iteration 29`, PR #979)**        |           **60.4** |                57.3 |         **60.4** |          **60.1** |
+| **Parades Iter 6 (`Iteration 30`, PR #980 — Lock)** |           **60.4** |            **59.2** |         **60.5** |          **59.7** |
