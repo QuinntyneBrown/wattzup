@@ -72,19 +72,19 @@ import { windowMaterial } from './window-material';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
-const CAMERA_BACK = 4.9;
-const CAMERA_UP = 2.25;
+const CAMERA_BACK = 3.3;
+const CAMERA_UP = 1.9;
 /**
  * How far the picture is raised in the frame, as a share of its height: the race's panel lies over the foot of the
  * screen, and the rider's wheels and the road under them are to show above it. The lens is shifted, as a view
  * camera's is, so the camera stays where it is and nothing leans.
  */
-const FRAME_RISE = 0.1;
+const FRAME_RISE = 0.15;
 const LOOK_AHEAD = 14;
 const LOOK_UP = 1.35;
 /** At the start line and the finish line the camera closes in to this, eased over these metres either side. */
-const CLOSE_BACK = 3.5;
-const CLOSE_UP = 1.8;
+const CLOSE_BACK = 2.7;
+const CLOSE_UP = 1.7;
 const CLOSE_START = 45;
 const CLOSE_FINISH = 70;
 /** Each rider's shadow: a dark blob on the road, this long down-sun and this wide, in metres. */

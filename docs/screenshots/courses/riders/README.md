@@ -20,6 +20,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 9 | Shade baked where the parts meet: under the helmet, inside the arms, beneath the seat, at the frame's joins | 119.9 fps; one frame of 25 ms in 1 timing of 3 | 25.1 ms | 317 fps (3.15 ms): 323, 313, 317 | 85,051 | 84 | Yes |
 | 10 | Cloth painted as cloth: the back's shape, folds, pocket shade, mesh panels, seams, the knit's grain; lamp light that keeps what is painted | 119.9 fps; two frames of 25 ms in 1 timing of 4, neither with a collection | 16.9 ms filmed, 25.0 ms worst | 294 fps (3.40 ms): 296, 286, 294 | 85,051 | 84 | Yes |
 | 11 | The whole rider in the frame: the picture raised a tenth so the wheels and the road under them show above the panel | 119.8 fps, none over 20 ms | 16.8 ms | 304 fps (3.29 ms): 304, 294, 313 | 85,051 | 84 | Yes |
+| 12 | The camera closer: the rider some two fifths of the picture's height, where they were a ninth | 119.9 fps, none over 20 ms | 16.7 ms | 302 fps (3.31 ms): 305, 284, 302 | 85,051 | 84 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -457,3 +458,26 @@ the same results as before the riders' work (the 13 failures that were there, no
   spray nobody could see to notice.
 - To move a subject in the frame without changing the view, shift the lens; tilting the camera down would have
   raised the rider and lost the skyline.
+
+## Pass 12: the camera closer
+
+**Before** (`rider-11.jpg`): the rider is whole in the frame but small, about a ninth of the picture's height. In
+the picture this work aims at the rider takes some two fifths of it: that picture is about the rider.
+
+**After** (`rider-12-start.jpg`, `rider-12.jpg`, `rider-12.mp4`): the camera rides 3.3 m behind and 1.9 m above the
+rider (it was 4.9 m and 2.25 m), and 2.7 m and 1.7 m at the start and finish lines (3.5 m and 1.8 m). The rider
+stands some two fifths of the picture high. The picture is raised 0.15 of its height (0.1 in pass 11), since a
+nearer rider sits lower in it. The kit's lettering, the number, the shorts' seams, the calves, the bike's stays and
+the lamp are all plainly read now, and so is the lean through a bend.
+
+**What changed.** Four constants in `course-renderer.ts` (`CAMERA_BACK`, `CAMERA_UP`, `CLOSE_BACK`, `CLOSE_UP`) and
+`FRAME_RISE`. L2-166 AC9 carries the new distances.
+
+**Cost.** None: 302 fps, no frame over 20 ms. The race's end-to-end specs give the same results as before.
+
+**To weigh.** A nearer camera shows less road to either side and makes the riders ahead a little smaller against the
+rider; it also shows the rider's remaining simplicity (hands, the face nobody sees, the legs' flat skin) more
+plainly. The distances are four numbers if the old view is wanted back.
+
+**Learned.** How real a rider looks is first how much of the picture they are given. Every earlier pass is worth
+more at this distance than it was at the old one.
