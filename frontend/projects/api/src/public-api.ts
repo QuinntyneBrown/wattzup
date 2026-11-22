@@ -78,6 +78,9 @@ export {
   type SceneryState,
   type WorldRenderer,
   type WorldRendererLoader,
+  type WorldStartOptions,
+  type WorldStartProgress,
+  type WorldTier,
 } from './world/world-renderer';
 export {
   WORLD_DOWNLOADER,

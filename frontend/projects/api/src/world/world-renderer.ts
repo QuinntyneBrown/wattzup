@@ -42,6 +42,24 @@ export interface SceneryRequest {
   readonly key: string;
 }
 
+/** A World Ride quality level (L2-111), as `main`'s render-quality.ts names its tiers. */
+export type WorldTier = 'low' | 'medium' | 'high' | 'ultra';
+
+/**
+ * How far `start` has come, for World loading (L2-152): the shader programs built of the total as three compiles them
+ * in batches (AC4), the warm-up starting at its level, and the frame rate it held there (AC5).
+ */
+export type WorldStartProgress =
+  | { readonly step: 'shaders'; readonly built: number; readonly total: number }
+  | { readonly step: 'warm-up'; readonly tier: WorldTier }
+  | { readonly step: 'warmed'; readonly fps: number; readonly tier: WorldTier };
+
+/** What World loading asks of `start`: the level to start at (L2-155 AC3, L2-156 AC3) and its progress. */
+export interface WorldStartOptions {
+  readonly tier?: WorldTier;
+  readonly progress?: (progress: WorldStartProgress) => void;
+}
+
 export interface WorldRenderer {
   /** The GPU API drawing the world once `start` has resolved true, for the race bar's tag (L2-065 AC1). */
   readonly backend: Backend;
@@ -49,13 +67,15 @@ export interface WorldRenderer {
    * Starts drawing `world` on `canvas` with WebGPU, else WebGL2; resolves false when neither
    * starts (L2-110 AC4, L2-111 AC1, ADR 0021). Before it resolves, the scene is drawn over a few
    * frames, each awaited through `nextFrame`, so its programs compile while it loads (AC10), and
-   * the ride's own frame is rehearsed at the start of `segments` (#882).
+   * the ride's own frame is rehearsed at the start of `segments` (#882). With `options`, it starts at `options.tier`
+   * and reports its progress; a program that fails to build rejects, so World loading can try the level below.
    */
   start(
     canvas: HTMLCanvasElement,
     world: World,
     nextFrame: () => Promise<void>,
     segments?: readonly Segment[],
+    options?: WorldStartOptions,
   ): Promise<boolean>;
   resize(width: number, height: number, pixelRatio: number): void;
   draw(frame: SceneFrame): void;

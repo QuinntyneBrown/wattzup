@@ -48,6 +48,7 @@ import {
   type Node,
   NoToneMapping,
   type Object3D,
+  type PassNode,
   PCFShadowMap,
   PerspectiveCamera,
   PlaneGeometry,
@@ -70,9 +71,12 @@ import type {
   RealPlace,
   SceneryState,
   WorldRenderer,
+  WorldStartOptions,
+  WorldStartProgress,
 } from '@telo/api';
 // A type only, erased at build: the tiles' file is imported when the rider streams (L2-066).
 import type { PhotorealTiles } from './photoreal-tiles';
+import { heldFps } from './held-fps';
 import { compiledFeatures } from './material-features';
 import { skyStops } from './drawn-look';
 import { type MutablePacerOnRoad, PACERS, pacersOnRoad } from './pacers';
@@ -3172,6 +3176,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
   /** The GPU API drawing the world, for the race bar's tag (L2-065 AC1, ADR 0030). */
   backend: Backend = 'webgl2';
   private budget: FrameBudget | null = null;
+  /** Each pass chain's scene pass, whose target and MRT World loading's batched build compiles into. */
+  private readonly scenePasses = new WeakMap<RenderPipeline, PassNode>();
   /** What the test-only hook's sweep reads; null on every rider's ride (#672, #674). */
   private probe: WorldRideProbeReport | null = null;
   private on = new Set<number>();
@@ -3268,6 +3274,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
     world: World,
     nextFrame: () => Promise<void>,
     segments: readonly Segment[] = [],
+    options: WorldStartOptions = {},
   ): Promise<boolean> {
     try {
       // Timer queries only for the performance sweep: a rider's frames never pay for them (#675).
@@ -3295,7 +3302,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
     // The test-only hook pins the tier; ultra draws at high on WebGL2 (L2-111 AC2).
     const pin = probe && this.backend === 'webgl2' && probe.tier === 'ultra' ? 'high' : probe?.tier;
     // A judged hook opens the ride at its tier and lets slow frames drop it, as a rider's (L2-159 AC4).
-    this.budget = new FrameBudget(pin ?? startTier(), undefined, {
+    // World loading may ask for a level: Low, when the rider chose it or a build above it failed (L2-155, L2-156).
+    this.budget = new FrameBudget(pin ?? options.tier ?? startTier(), undefined, {
       pinned: !!pin && !probe?.judged,
     });
     this.probe = probeReport(
@@ -3319,9 +3327,59 @@ export class ThreeWorldRenderer implements WorldRenderer {
     if (world.id === 'oldtown') await this.addStreet();
     if (world.id === 'docklands') await this.addTowers();
     this.applyTier();
-    await this.warmUp(canvas, nextFrame, segments);
+    await this.buildPrograms(options.progress);
+    const tier = this.budget.tier;
+    options.progress?.({ step: 'warm-up', tier });
+    // The warm-up's frames are timed for the rate it held (L2-152 AC5); `main`'s warm-up is unchanged.
+    const times: number[] = [];
+    await this.warmUp(
+      canvas,
+      async () => {
+        await nextFrame();
+        times.push(performance.now());
+      },
+      segments,
+    );
+    const fps = heldFps(times);
+    if (fps !== null) options.progress?.({ step: 'warmed', fps, tier });
     if (this.probe) this.probe.programsBeforeRide = this.renderer.info.memory.programs;
     return true;
+  }
+
+  /**
+   * Builds the scene's programs before the warm-up draws it, with three's own `compileAsync`, which compiles in
+   * batches and yields to each frame, reporting each one built of the total (L2-152 AC4; slice 16.2, as `main` has no
+   * batched build). Parts hidden or out of view are built too, as the warm-up draws them, and the build goes into the
+   * scene pass's render target and MRT, so its programs share three's cache key with the warm-up's and the ride's
+   * frames. A program that fails to build rejects, and with it `start`.
+   */
+  private async buildPrograms(progress?: (progress: WorldStartProgress) => void): Promise<void> {
+    const renderer = this.renderer!;
+    const hidden: Object3D[] = [];
+    const culled: Object3D[] = [];
+    this.scene.traverse((part) => {
+      if (!part.visible && !(part as Light).isLight) hidden.push(part);
+      if (part.frustumCulled) culled.push(part);
+    });
+    for (const part of hidden) part.visible = true;
+    for (const part of culled) part.frustumCulled = false;
+    const scenePass = this.pipeline ? this.scenePasses.get(this.pipeline) : undefined;
+    const target = renderer.getRenderTarget();
+    const mrt = renderer.getMRT();
+    if (scenePass) {
+      renderer.setRenderTarget(scenePass.renderTarget);
+      renderer.setMRT(scenePass.getMRT());
+    }
+    try {
+      await renderer.compileAsync(this.scene, this.camera, null, (event) =>
+        progress?.({ step: 'shaders', built: event.loaded, total: event.total }),
+      );
+    } finally {
+      renderer.setRenderTarget(target);
+      renderer.setMRT(mrt);
+      for (const part of hidden) part.visible = false;
+      for (const part of culled) part.frustumCulled = true;
+    }
   }
 
   /**
@@ -3718,6 +3776,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
   private buildPipeline(renderer: WebGPURenderer, on: Set<number>): RenderPipeline {
     const pipeline = new RenderPipeline(renderer);
     const scenePass = pass(this.scene, this.camera);
+    this.scenePasses.set(pipeline, scenePass);
     const needsVelocity = on.has(7) || on.has(33);
     // The ink outline reads normals and the riders' ink mask beside the colour (technique 52).
     const outlines = on.has(52);

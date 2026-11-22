@@ -167,8 +167,7 @@ assets under `/worlds/<worldId>/`. A world's only asset is its panorama, so a do
   `compileAsync`, which compiles in batches and yields to each frame. It compiles into the scene
   pass's render target and MRT, so the programs share three's cache key with the ride's
   frames and the warm-up builds none twice. It reports `{ step: 'shaders', built, total }` as
-  three reports each item loaded. Each item is one surface's program for the scene pass, and the
-  detail reads "41 of 64 programs for WebGPU" (`L2-152` AC4). It then reports
+  three reports each item loaded (one per part and surface), and the detail reads "41 of 64 programs for WebGPU" (`L2-152` AC4). It then reports
   `{ step: 'warm-up', tier }`, runs `main`'s warm-up and rehearsal unchanged, and reports
   `{ step: 'warmed', fps, tier }`. The rate is the median of the rehearsal's frame intervals,
   rounded, and the warm-up step reads "Holding 60 fps at Low" (AC5). The copied materials, scenes
@@ -212,8 +211,9 @@ assets under `/worlds/<worldId>/`. A world's only asset is its panorama, so a do
    keeps what it downloaded.
 5. `L2-151` AC3 gives the alternative text of Neon Docklands' panorama only; the others
    (`WORLD_PANORAMAS` in `api`) are written in its shape from what each panorama shows.
-6. `main` has no batched build, so slice 16.2 counts what three's `compileAsync` compiles: one
-   item per surface and pass state, which is a program for each surface the ride draws. Until
+6. `main` has no batched build, so slice 16.2 counts what three's `compileAsync` reports: one
+   item per part and surface. Old Town Criterium's 143 items share 68 programs, and the warm-up
+   then builds only 4 more (its passes), so the count reads high against distinct programs. Until
    Settings can choose a higher starting level, "Start at Low quality" changes nothing but the
    warning, because `main` always starts at Low.
 7. The warm-up's frame rate is measured over `main`'s four rehearsal frames (`REHEARSALS`); the

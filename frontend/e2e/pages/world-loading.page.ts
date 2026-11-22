@@ -27,11 +27,13 @@ export class WorldLoadingPage {
   readonly status: Locator;
   readonly facts: Locator;
   readonly notice: Locator;
+  readonly warning: Locator;
   readonly alert: Locator;
   readonly hint: Locator;
   readonly start: Locator;
   readonly tryAgain: Locator;
   readonly panoramaRide: Locator;
+  readonly startAtLow: Locator;
 
   constructor(private readonly page: Page) {
     this.root = page.locator('.world-loading');
@@ -48,12 +50,14 @@ export class WorldLoadingPage {
     this.steps = page.getByRole('list', { name: 'Loading steps' }).getByRole('listitem');
     this.status = page.locator('.load-card__status');
     this.facts = page.locator('.load-card__facts .pill');
-    this.notice = page.locator('.load-card .banner[role="status"]');
+    this.notice = page.locator('.load-card .banner--info');
+    this.warning = page.locator('.load-card .banner--warning');
     this.alert = page.locator('.load-card').getByRole('alert');
     this.hint = page.locator('.load-card__hint');
     this.start = page.locator('.load-card__actions').getByRole('button', { name: 'Start riding' });
     this.tryAgain = page.getByRole('button', { name: 'Try again' });
     this.panoramaRide = page.getByRole('button', { name: 'Ride with the panorama' });
+    this.startAtLow = page.getByRole('button', { name: 'Start at Low quality' });
   }
 
   /** Waits for the world to be ready, then presses Start riding: the class ride takes World loading's place. */

@@ -4,3 +4,4 @@ export { WorldScene } from './world-scene';
 export { loadWorldRenderer } from './world-renderer-loader';
 export { worldForMap } from './map-world';
 export { timedSegments } from './timed-segments';
+export { startTier } from './render-quality';

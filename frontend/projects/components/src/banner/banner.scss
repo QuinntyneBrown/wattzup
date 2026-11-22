@@ -36,13 +36,21 @@
   --banner-accent: var(--color-info-fg);
 }
 
+:host(.banner--warning) {
+  --banner-bg: var(--color-warning-bg);
+  --banner-border: var(--color-warning-border);
+  --banner-accent: var(--color-warning-fg);
+}
+
 :host(.banner--danger),
-:host(.banner--info) {
+:host(.banner--info),
+:host(.banner--warning) {
   align-items: flex-start;
 }
 
 :host(.banner--danger) .banner__title,
-:host(.banner--info) .banner__title {
+:host(.banner--info) .banner__title,
+:host(.banner--warning) .banner__title {
   color: var(--banner-accent);
 }
 
