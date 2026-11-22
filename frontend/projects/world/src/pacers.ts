@@ -64,19 +64,45 @@ export interface PacerOnRoad {
   readonly lane: number;
 }
 
+export interface MutablePacerOnRoad {
+  jersey: number;
+  metres: number;
+  lane: number;
+}
+
 /** Each pacer's line across the road, by jersey: clear of the rider and of each other. */
 const LANES: Record<number, number> = { 1: -1.7, 2: 1.5, 3: -0.9, 5: 1.1, 6: -1.3, 7: 2.0 };
 /** A pacer alongside is still drawn; one further behind is out of the chase camera's view. */
 const ALONGSIDE = -4;
+const PACER_POOL: MutablePacerOnRoad[] = Array.from({ length: 8 }, () => ({
+  jersey: 0,
+  metres: 0,
+  lane: 0,
+}));
 
 /** The pacers from 4 m behind to `far` metres ahead, from furthest ahead (L2-107 AC7). */
 export function pacersOnRoad(
   t: number,
   far: number,
   pacers: readonly Pacer[] = PACERS,
+  out?: MutablePacerOnRoad[],
 ): PacerOnRoad[] {
-  return pacers
-    .map((p) => ({ jersey: p.jersey, metres: pacerGap(p, t), lane: LANES[p.jersey] ?? 1 }))
-    .filter((p) => p.metres >= ALONGSIDE && p.metres <= far)
-    .sort((a, b) => b.metres - a.metres);
+  const dst = out ?? [];
+  dst.length = 0;
+  for (const p of pacers) {
+    const metres = pacerGap(p, t);
+    if (metres < ALONGSIDE || metres > far) continue;
+    let slot: MutablePacerOnRoad;
+    if (out) {
+      slot = PACER_POOL[dst.length] ?? (PACER_POOL[dst.length] = { jersey: 0, metres: 0, lane: 0 });
+      slot.jersey = p.jersey;
+      slot.metres = metres;
+      slot.lane = LANES[p.jersey] ?? 1;
+    } else {
+      slot = { jersey: p.jersey, metres, lane: LANES[p.jersey] ?? 1 };
+    }
+    dst.push(slot);
+  }
+  dst.sort((a, b) => b.metres - a.metres);
+  return dst;
 }

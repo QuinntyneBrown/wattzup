@@ -8,13 +8,14 @@ import { ao } from 'three/addons/tsl/display/GTAONode.js';
 import { motionBlur } from 'three/addons/tsl/display/MotionBlur.js';
 import { traa } from 'three/addons/tsl/display/TRAANode.js';
 import { SkyMesh } from 'three/addons/objects/SkyMesh.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {
   convertToTexture,
-  directionToColor,
   float,
   mrt,
   normalView,
   output,
+  packNormalToRGB,
   pass,
   screenUV,
   sin,
@@ -74,7 +75,7 @@ import type {
 import type { PhotorealTiles } from './photoreal-tiles';
 import { compiledFeatures } from './material-features';
 import { skyStops } from './drawn-look';
-import { PACERS, pacersOnRoad } from './pacers';
+import { type MutablePacerOnRoad, PACERS, pacersOnRoad } from './pacers';
 import { ridersOnRoad } from './race-riders';
 import {
   type Backend,
@@ -92,8 +93,15 @@ import {
   type WorldRideProbeReport,
   takeDropRequest,
 } from './world-ride-probe';
-import { bendAhead, bendPoint, heading, lean, racingLine } from './scene-bend';
-import { EASE_PER_SECOND, MIN_SPEED, nextArch, roadAhead, type RoadPoint } from './scene-road';
+import { BEND_SAMPLES, bendAhead, bendPoint, heading, lean, racingLine } from './scene-bend';
+import {
+  EASE_PER_SECOND,
+  MIN_SPEED,
+  type MutableRoadPoint,
+  nextArch,
+  roadAhead,
+  type RoadPoint,
+} from './scene-road';
 import { RoadBend } from './world-bend';
 import { inkOutline } from './world-ink';
 import { flatSky, ToonLook } from './world-toon';
@@ -101,9 +109,9 @@ import { Corners } from './world-corners';
 import { RampSign } from './world-ramps';
 import type { Cyclist } from './world-cyclist';
 import { CyclistKit } from './world-cyclist';
-import { DocklandsStreet } from './world-docklands';
+import type { DocklandsStreet } from './world-docklands';
 import type { SceneStreet, StreetFactory } from './world-kit';
-import { cobbleTextures, OldTownStreet } from './world-oldtown';
+import type { OldTownStreet } from './world-oldtown';
 import { STREETS } from './world-streets';
 import { targetGrade, type World } from './worlds';
 
@@ -3144,8 +3152,6 @@ const LAMP_EVERY = 40;
 const LAMPS = 6;
 const POST_EVERY = 20;
 const POSTS = 14;
-/** How often, in frames, meshes made since the last look take the bend. */
-const BEND_SWEEP = 120;
 /** How far the gradient under the rider eases towards the target each frame. */
 
 export class ThreeWorldRenderer implements WorldRenderer {
@@ -3182,7 +3188,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
   private readonly ground = stripGeometry();
   private readonly roadMaterial = new MeshStandardMaterial({ roughness: 0.9 });
   private readonly frameMaterial = new MeshPhysicalMaterial({
-    color: 0x15171c,
+    vertexColors: true,
     metalness: 0.6,
     roughness: 0.35,
   });
@@ -3194,7 +3200,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
   /** The race's riders by jersey, each made the first time it rides into view (L2-064 AC3). */
   private readonly raceRiders = new Map<string, Cyclist>();
   /** What each race rider wears, for the test-only hook's report: the jersey, or the ghost's gold. */
-  private readonly wear = new Map<string, MeshStandardMaterial>();
+  /** The colour and opacity each race rider wears, for the probe (L2-064 AC3). */
+  private readonly wear = new Map<string, { readonly color: Color; readonly opacity: number }>();
   /** The kit the riders are made from, and the canvas whose jersey tokens colour them. */
   private kit: CyclistKit | null = null;
   private canvas: HTMLCanvasElement | null = null;
@@ -3212,7 +3219,13 @@ export class ThreeWorldRenderer implements WorldRenderer {
   private plainRoad: CanvasTexture | null = null;
   private layeredRoad: CanvasTexture | null = null;
   private roadRelief: CanvasTexture | null = null;
-  private archLabel: { text: string; mesh: Mesh; material: MeshBasicMaterial } | null = null;
+  private archLabel: {
+    text: string;
+    canvas: HTMLCanvasElement;
+    texture: CanvasTexture;
+    mesh: Mesh;
+    material: MeshBasicMaterial;
+  } | null = null;
   private world: World | null = null;
   private look: Look = LOOKS.oldtown;
   private grade = 0;
@@ -3224,8 +3237,31 @@ export class ThreeWorldRenderer implements WorldRenderer {
   private readonly toon = new ToonLook();
   /** What the rider's and pacers' twins write to the scene pass: ink them warmer (technique 52). */
   private readonly warmInk = mrt({ ink: float(1) });
-  private bendSamples: Float32Array = new Float32Array(0);
-  private drawn = 0;
+  private readonly bendSamples = new Float32Array(BEND_SAMPLES * 4);
+  private readonly aheadPoints: MutableRoadPoint[] = Array.from({ length: AHEAD + 1 }, () => ({
+    metres: 0,
+    height: 0,
+    grade: 0,
+  }));
+  private readonly aheadHeights = new Float64Array(AHEAD + 1);
+  private firstGradeSlope = 0;
+  private readonly stripPoints: MutableRoadPoint[] = Array.from(
+    { length: AHEAD + BEHIND + 1 },
+    () => ({ metres: 0, height: 0, grade: 0 }),
+  );
+  private readonly cameraEye = { x: 0, z: 0 };
+  private readonly cameraLook = { x: 0, z: 0 };
+  private readonly lampAt = { x: 0, z: 0 };
+  private readonly activePacers: MutablePacerOnRoad[] = [];
+  private readonly heightAtAhead = (metres: number): number => {
+    const heights = this.aheadHeights;
+    if (metres < 0) return heights[0]! + this.firstGradeSlope * metres;
+    const f = metres * (1 / STEP);
+    if (f >= AHEAD) return heights[AHEAD]!;
+    const i = f | 0;
+    const a = heights[i]!;
+    return a + (heights[i + 1]! - a) * (f - i);
+  };
 
   async start(
     canvas: HTMLCanvasElement,
@@ -3273,17 +3309,16 @@ export class ThreeWorldRenderer implements WorldRenderer {
       countCompiles(this.renderer, this.probe);
     }
 
-    this.buildScene(world, canvas);
+    await this.buildScene(world, canvas);
     // Docklands' photographed distance is the mock's own still, riders and all: its towers are
     // built in 3D instead.
     // A kit-built street draws its own distance in 3D, as Docklands' towers do.
-    const street = STREETS[world.id];
-    if (world.id !== 'docklands' && !street) await this.addPanorama(world);
-    if (street) this.addScenery(street);
-    if (world.id === 'oldtown') this.addStreet();
-    if (world.id === 'docklands') this.addTowers();
+    const loadStreet = STREETS[world.id];
+    if (world.id !== 'docklands' && !loadStreet) await this.addPanorama(world);
+    if (loadStreet) this.addScenery(await loadStreet());
+    if (world.id === 'oldtown') await this.addStreet();
+    if (world.id === 'docklands') await this.addTowers();
     this.applyTier();
-    this.bend.apply(this.scene, this.unbent);
     await this.warmUp(canvas, nextFrame, segments);
     if (this.probe) this.probe.programsBeforeRide = this.renderer.info.memory.programs;
     return true;
@@ -3352,7 +3387,6 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.probe = probe;
     this.lastFrameAt = null;
     this.lastS = 0;
-    this.drawn = 0;
   }
 
   /**
@@ -3422,8 +3456,12 @@ export class ThreeWorldRenderer implements WorldRenderer {
       frame.segments,
       { t: frame.elapsed, s: frame.s, speed, grade: this.grade },
       AHEAD,
+      this.aheadPoints,
     );
-    this.bendSamples = bendAhead(world, frame.s);
+    const heights = this.aheadHeights;
+    for (let i = 0; i < ahead.length; i++) heights[i] = ahead[i]!.height;
+    this.firstGradeSlope = (ahead[0]?.grade ?? 0) / 100;
+    bendAhead(world, frame.s, this.bendSamples);
     // The sun stays where it is in the sky as the road turns: ride round a right-hander and it
     // swings left across the view, and the houses' shadows swing with it.
     const turn = (heading(world, frame.s) * Math.PI) / 180;
@@ -3433,13 +3471,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
       .multiplyScalar(80)
       .add(this.sun.target.position);
     this.sky.sunPosition.value.copy(this.sunDirection()).applyAxisAngle(UP, turn);
-    this.bend.update(this.bendSamples, (metres) => heightAt(ahead, metres));
-    if (++this.drawn % BEND_SWEEP === 0) {
-      // Whatever joined the scene since takes the tier's look, then the bend.
-      if (this.on.has(51)) this.toon.apply(this.scene, true, new Color(this.look.sky), this.unbent);
-      this.bend.apply(this.scene, this.unbent);
-      this.report();
-    }
+    this.bend.update(this.bendSamples, this.heightAtAhead);
     if (this.towers) {
       // The road over an effort is a bridge ramp, laid at the same speed as the road ahead.
       const efforts = frame.segments.filter((g) => g.kind === 'work');
@@ -3465,13 +3497,14 @@ export class ThreeWorldRenderer implements WorldRenderer {
     else this.placePacers(world, frame, ahead);
 
     // The bike rocks under the pedal strokes and leans into a bend: right on a right-hander.
+    const riderGrade = ahead[0]?.grade ?? 0;
     this.you?.pose(
       frame.reducedMotion ? 0 : frame.crank,
       -lean(world, frame.s, speed),
-      standing(gradeAt(ahead, 0)),
+      standing(riderGrade),
     );
     // It sits on the road: nose up on a climb, down on a descent.
-    if (this.you) this.you.group.rotation.x = pitch(gradeAt(ahead, 0));
+    if (this.you) this.you.group.rotation.x = pitch(riderGrade);
     const blur = this.on.has(34) ? Math.min(0.55, speed / 14) : 0;
     for (const disc of this.wheelBlur) {
       disc.visible = blur > 0.02;
@@ -3480,11 +3513,11 @@ export class ThreeWorldRenderer implements WorldRenderer {
     const sway = frame.reducedMotion ? 0 : Math.sin(frame.s / 3) * 0.04;
     // The camera rides the bend: its eye and the point it looks at both follow the road (L2-110
     // AC9), and both depend only on s, so under reduced motion it turns only as the rider rides.
-    const eye = bendPoint(this.bendSamples, sway, 5.5);
-    const look = bendPoint(this.bendSamples, 0, -24);
+    const eye = bendPoint(this.bendSamples, sway, 5.5, this.cameraEye);
+    const look = bendPoint(this.bendSamples, 0, -24, this.cameraLook);
     // The eye rides 2.1 m over the road under it, 5.5 m behind the rider: lower on a climb.
-    this.camera.position.set(eye.x, heightAt(ahead, -5.5) + 2.1, eye.z);
-    this.camera.lookAt(look.x, 1.2 + heightAt(ahead, 24), look.z);
+    this.camera.position.set(eye.x, this.heightAtAhead(-5.5) + 2.1, eye.z);
+    this.camera.lookAt(look.x, 1.2 + this.heightAtAhead(24), look.z);
 
     if (this.probe) this.renderer.info.reset();
     this.tiles?.update(this.camera, this.renderer);
@@ -3693,7 +3726,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
         mrt({
           output,
           ...(needsVelocity ? { velocity } : {}),
-          ...(outlines ? { normal: directionToColor(normalView), ink: float(0) } : {}),
+          ...(outlines ? { normal: packNormalToRGB(normalView), ink: float(0) } : {}),
         }),
       );
     }
@@ -3719,8 +3752,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
       : beauty) as unknown as ColorNode;
 
     if (on.has(36)) {
-      // GTAO rebuilds normals from depth when given none; its typings omit the null it documents.
-      const occlusion = ao(depth, null as unknown as Node, this.camera).getTextureNode().r;
+      const occlusion = createAmbientOcclusion(depth, this.camera).getTextureNode().r;
       color = vec4(color.rgb.mul(occlusion), color.a);
     }
     if (on.has(33) && needsVelocity) {
@@ -3774,7 +3806,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
     return direction(this.look.sun, this.look.azimuth ?? -27);
   }
 
-  private buildScene(world: World, canvas: HTMLCanvasElement): void {
+  private async buildScene(world: World, canvas: HTMLCanvasElement): Promise<void> {
     const look = this.look;
     this.scene.fog = new Fog(look.fog, look.fogRange?.[0] ?? 60, look.fogRange?.[1] ?? 650);
     const moon = look.sun < 0 ? look.moon : undefined;
@@ -3817,9 +3849,15 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.scene.add(this.sky);
 
     this.plainRoad = this.track(roadTexture(false));
-    const cobbles = COBBLED.has(world.id) ? cobbleTextures() : null;
-    const layered = world.id === 'docklands' ? wetAsphaltTexture() : roadTexture(true);
-    this.layeredRoad = this.track(cobbles?.map ?? layered);
+    const cobbles = COBBLED.has(world.id)
+      ? (await import('./world-oldtown')).cobbleTextures()
+      : null;
+    const roadMap = cobbles
+      ? cobbles.map
+      : world.id === 'docklands'
+        ? wetAsphaltTexture()
+        : roadTexture(true);
+    this.layeredRoad = this.track(roadMap);
     this.roadRelief = cobbles ? this.track(cobbles.relief) : null;
     this.roadMaterial.color.set(look.road);
     const groundMesh = this.addMesh(
@@ -3878,25 +3916,23 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.kit = kit;
     this.canvas = canvas;
     // The rider wears the You jersey of the race board (L2-060).
-    const you = kit.make(jerseyColour(canvas, 'you'), 4);
+    const you = kit.make(jerseyColour(canvas, 'you'), 4, this.frameMaterial, {
+      frameColor: 0x15171c,
+    });
     this.you = you;
     this.wheelBlur.push(...you.wheelBlur);
     this.scene.add(you.group);
-    this.disposables.push(kit, you.jersey, you.bib, you.shell, this.frameMaterial);
+    this.disposables.push(kit, this.frameMaterial);
     // The simulated pacers ride with the rider, each in its board colour (L2-107 AC7).
     for (const pacer of PACERS) {
-      // Each pacer rides a frame of their own paint.
-      const frame = this.frameMaterial.clone();
-      frame.color.set(FRAME_PAINT[pacer.jersey % FRAME_PAINT.length]!);
-      this.frames.push(frame);
-      this.disposables.push(frame);
-      const rider = kit.make(riderColour(canvas, pacer.jersey), pacer.jersey, frame);
-      // Half the pacers wear a white helmet rather than one in their colour.
-      if (pacer.jersey % 2 === 0) rider.shell.color.set(0xf2f2ee);
+      const rider = kit.make(riderColour(canvas, pacer.jersey), pacer.jersey, this.frameMaterial, {
+        frameColor: FRAME_PAINT[pacer.jersey % FRAME_PAINT.length]!,
+        helmetColor: pacer.jersey % 2 === 0 ? 0xf2f2ee : undefined,
+      });
       rider.group.visible = false;
+      this.wheelBlur.push(...rider.wheelBlur);
       this.pacers.set(pacer.jersey, rider);
       this.scene.add(rider.group);
-      this.disposables.push(rider.jersey, rider.bib, rider.shell);
     }
     // The ghost is made with the scene, so its translucent material compiles while the world loads.
     this.addGhost(kit, canvas);
@@ -3927,7 +3963,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.raceRiders.set('ghost', ghost);
     this.wear.set('ghost', glass);
     this.scene.add(ghost.group);
-    this.disposables.push(ghost.jersey, ghost.bib, ghost.shell, glass);
+    this.disposables.push(glass);
   }
 
   /**
@@ -3939,17 +3975,15 @@ export class ThreeWorldRenderer implements WorldRenderer {
     if (made) return made;
     if (!this.kit || !this.canvas) return null;
     const number = this.raceRiders.size;
-    const frame = this.frameMaterial.clone();
-    frame.color.set(FRAME_PAINT[number % FRAME_PAINT.length]!);
-    this.frames.push(frame);
-    this.disposables.push(frame);
-    const rider = this.kit.make(jerseyColour(this.canvas, jersey), number, frame);
-    if (number % 2 === 0) rider.shell.color.set(0xf2f2ee);
+    const colour = jerseyColour(this.canvas, jersey);
+    const rider = this.kit.make(colour, number, this.frameMaterial, {
+      frameColor: FRAME_PAINT[number % FRAME_PAINT.length]!,
+      helmetColor: number % 2 === 0 ? 0xf2f2ee : undefined,
+    });
     rider.group.visible = false;
     this.raceRiders.set(jersey, rider);
-    this.wear.set(jersey, rider.jersey);
+    this.wear.set(jersey, { color: colour, opacity: 1 });
     this.scene.add(rider.group);
-    this.disposables.push(rider.jersey, rider.bib, rider.shell);
     if (this.on.has(51)) this.toon.apply(rider.group, true, new Color(this.look.sky), this.unbent);
     if (this.on.has(52)) this.toon.inkWarm(rider.group, this.warmInk);
     this.bend.apply(rider.group, this.unbent);
@@ -3988,7 +4022,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
   /** Puts each pacer in view at its gap, and hides the rest (L2-107 AC7). */
   private placePacers(world: World, frame: SceneFrame, ahead: RoadPoint[]): void {
     for (const rider of this.pacers.values()) rider.group.visible = false;
-    for (const p of pacersOnRoad(frame.time, AHEAD * STEP)) {
+    for (const p of pacersOnRoad(frame.time, AHEAD * STEP, PACERS, this.activePacers)) {
       const rider = this.pacers.get(p.jersey);
       if (!rider) continue;
       this.ride(world, frame, ahead, rider, p.metres, p.lane, p.jersey);
@@ -4005,28 +4039,44 @@ export class ThreeWorldRenderer implements WorldRenderer {
     lane: number,
     seed: number,
   ): void {
+    const shadowAhead = (world.id === 'oldtown' ? 45 : 25) + 30;
     rider.group.visible = true;
+    rider.setCastShadow(metres > -25 && metres < shadowAhead);
     // Through a bend each pacer cuts to the inside, towards the apex; one beside the rider
     // holds their lane so as not to ride into them.
     const clear = Math.min(Math.max((Math.abs(metres) - 3) / 10, 0), 1);
     const line = racingLine(world, frame.s + metres, lane, ROAD_HALF);
-    rider.group.position.set(lane + (line - lane) * clear, heightAt(ahead, metres), -metres);
-    rider.group.rotation.x = pitch(gradeAt(ahead, metres));
+    const grade = gradeAt(ahead, metres);
+    rider.group.position.set(lane + (line - lane) * clear, this.heightAtAhead(metres), -metres);
+    rider.group.rotation.x = pitch(grade);
     // Each pacer leans into the bend it is riding through, as the rider does.
     rider.pose(
       frame.reducedMotion ? 0 : frame.crank * (0.9 + seed * 0.03) + seed,
       -lean(world, frame.s + metres, frame.speedKmh / 3.6),
-      standing(gradeAt(ahead, metres)),
+      standing(grade),
     );
   }
 
-  /** The arch over the road ahead: two posts, a beam and its label. */
+  /** The arch over the road ahead: two posts, a beam, its start line and label, merged per finish. */
   private addArch(): void {
-    const material = new MeshStandardMaterial({ color: 0x1b1e24, roughness: 0.5 });
+    const matte = new MeshStandardMaterial({ vertexColors: true, roughness: 0.55 });
     const steel = new MeshStandardMaterial({ color: 0x8d939b, metalness: 0.7, roughness: 0.35 });
-    // Each leg is a truss: four steel chords on a weighted foot.
-    const chord = new BoxGeometry(0.06, 5.2, 0.06);
-    const foot = new BoxGeometry(0.9, 0.25, 0.9);
+    const paintArchPart = (geo: BufferGeometry, hex: number) => {
+      const c = new Color(hex);
+      const count = geo.getAttribute('position').count;
+      const arr = new Float32Array(count * 3);
+      for (let i = 0; i < count; i++) {
+        arr[i * 3] = c.r;
+        arr[i * 3 + 1] = c.g;
+        arr[i * 3 + 2] = c.b;
+      }
+      geo.setAttribute('color', new BufferAttribute(arr, 3));
+      geo.clearGroups();
+      return geo;
+    };
+    // Each leg is a truss: four steel chords on a weighted foot, merged into 1 steel + 1 matte mesh.
+    const chordParts: BufferGeometry[] = [];
+    const frameParts: BufferGeometry[] = [];
     for (const x of [-ROAD_HALF - 0.7, ROAD_HALF + 0.7]) {
       for (const [dx, dz] of [
         [-0.18, -0.18],
@@ -4034,54 +4084,63 @@ export class ThreeWorldRenderer implements WorldRenderer {
         [-0.18, 0.18],
         [0.18, 0.18],
       ] as const) {
-        const mesh = new Mesh(chord, steel);
-        mesh.position.set(x + dx, 2.75, dz);
-        mesh.castShadow = true;
-        this.arch.add(mesh);
+        const c = new BoxGeometry(0.06, 5.2, 0.06);
+        c.translate(x + dx, 2.75, dz);
+        chordParts.push(c);
       }
-      const base = new Mesh(foot, material);
-      base.position.set(x, 0.125, 0);
-      base.castShadow = true;
-      this.arch.add(base);
+      const f = paintArchPart(new BoxGeometry(0.9, 0.25, 0.9).translate(x, 0.125, 0), 0x1b1e24);
+      frameParts.push(f);
     }
-    const beam = new Mesh(new BoxGeometry(2 * ROAD_HALF + 2, 1.4, 0.45), material);
-    beam.position.y = 5.6;
-    beam.castShadow = true;
-    this.arch.add(beam);
-    // The line across the road where the effort starts.
-    const line = new Mesh(
-      new PlaneGeometry(2 * ROAD_HALF, 0.4),
-      new MeshStandardMaterial({ color: 0xf2f3ef, roughness: 0.6 }),
+    frameParts.push(
+      paintArchPart(new BoxGeometry(2 * ROAD_HALF + 2, 1.4, 0.45).translate(0, 5.6, 0), 0x1b1e24),
     );
-    line.rotation.x = -Math.PI / 2;
-    line.position.y = 0.02;
-    line.receiveShadow = true;
-    this.arch.add(line);
-    // The banner's lettering: one mesh made with the arch, so the warm-up compiles it at every
-    // tier it may be drawn at; a new effort swaps only its texture (#882).
+    // The line across the road where the effort starts, merged into the vertex-coloured matte mesh.
+    frameParts.push(
+      paintArchPart(
+        new PlaneGeometry(2 * ROAD_HALF, 0.4).rotateX(-Math.PI / 2).translate(0, 0.02, 0),
+        0xf2f3ef,
+      ),
+    );
+    const chordsGeo = mergeGeometries(chordParts, false)!;
+    const frameGeo = mergeGeometries(frameParts, false)!;
+    for (const g of [...chordParts, ...frameParts]) g.dispose();
+
+    const chordsMesh = new Mesh(chordsGeo, steel);
+    chordsMesh.castShadow = true;
+    const frameMesh = new Mesh(frameGeo, matte);
+    frameMesh.castShadow = true;
+    frameMesh.receiveShadow = true;
+    this.arch.add(chordsMesh, frameMesh);
+
+    // The banner's lettering: one persistent canvas/texture painted in place (#882).
+    const labelCanvas = document.createElement('canvas');
+    labelCanvas.width = 1024;
+    labelCanvas.height = 96;
+    paintArchLabel(labelCanvas, '');
+    const labelTex = new CanvasTexture(labelCanvas);
+    labelTex.colorSpace = SRGBColorSpace;
     const label = new Mesh(
       new PlaneGeometry(2 * ROAD_HALF + 1.8, 1.2),
-      new MeshBasicMaterial({ map: labelTexture(''), side: DoubleSide }),
+      new MeshBasicMaterial({ map: labelTex, side: DoubleSide }),
     );
     label.position.set(0, 5.6, 0.24);
     this.arch.add(label);
-    this.archLabel = { text: '', mesh: label, material: label.material };
-    this.disposables.push(
-      material,
-      steel,
-      chord,
-      foot,
-      beam.geometry,
-      line.geometry,
-      line.material as Material,
-    );
+    this.archLabel = {
+      text: '',
+      canvas: labelCanvas,
+      texture: labelTex,
+      mesh: label,
+      material: label.material,
+    };
+    this.disposables.push(matte, steel, chordsGeo, frameGeo);
     this.arch.visible = false;
     this.scene.add(this.arch);
   }
 
   /** Street lamps for a night scene and reflective posts on both verges (techniques 23, 24). */
   private addRoadside(): void {
-    for (let i = 0; i < LAMPS; i++) {
+    const lamps = this.look.sun < 0 ? LAMPS : 0;
+    for (let i = 0; i < lamps; i++) {
       const lamp = new PointLight(0xffc98a, 40, 45, 2);
       lamp.visible = false;
       this.lamps.push(lamp);
@@ -4107,7 +4166,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.disposables.push(post, reflector);
   }
 
-  private addStreet(): void {
+  private async addStreet(): Promise<void> {
+    const { OldTownStreet } = await import('./world-oldtown');
     const street = new OldTownStreet((t) => this.track(t), this.disposables);
     street.build(ROAD_HALF, AHEAD + BEHIND + 1);
     this.scene.add(street.group);
@@ -4133,7 +4193,8 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.scenery = street;
   }
 
-  private addTowers(): void {
+  private async addTowers(): Promise<void> {
+    const { DocklandsStreet } = await import('./world-docklands');
     const towers = new DocklandsStreet((t) => this.track(t), this.disposables);
     towers.build(ROAD_HALF, AHEAD + BEHIND + 1);
     this.scene.add(towers.group);
@@ -4151,29 +4212,32 @@ export class ThreeWorldRenderer implements WorldRenderer {
   }
 
   private placeRoadside(s: number, ahead: RoadPoint[]): void {
-    this.street?.place(s, (metres) => heightAt(ahead, metres));
-    if (this.world) this.corners?.place(this.world, s, (metres) => heightAt(ahead, metres));
+    this.street?.place(s, this.heightAtAhead);
+    if (this.world) this.corners?.place(this.world, s, this.heightAtAhead);
     this.ramp?.place(ahead, ROAD_HALF + 1, 0.15);
-    this.towers?.place(s, (metres) => heightAt(ahead, metres));
-    this.scenery?.place(s, (metres) => heightAt(ahead, metres));
-    this.lamps.forEach((lamp, i) => {
+    this.towers?.place(s, this.heightAtAhead);
+    this.scenery?.place(s, this.heightAtAhead);
+    for (let i = 0; i < this.lamps.length; i++) {
+      const lamp = this.lamps[i]!;
       const metres = i * LAMP_EVERY - (s % LAMP_EVERY) + 8;
       // A light is no vertex, so it takes the bend here.
       const at = bendPoint(
         this.bendSamples,
         i % 2 === 0 ? -ROAD_HALF - 1.5 : ROAD_HALF + 1.5,
         -metres,
+        this.lampAt,
       );
-      lamp.position.set(at.x, heightAt(ahead, metres) + 6, at.z);
-    });
-    this.posts.forEach((post, i) => {
+      lamp.position.set(at.x, this.heightAtAhead(metres) + 6, at.z);
+    }
+    for (let i = 0; i < this.posts.length; i++) {
+      const post = this.posts[i]!;
       const metres = Math.floor(i / 2) * POST_EVERY - (s % POST_EVERY) + 4;
       post.position.set(
         i % 2 === 0 ? -ROAD_HALF - 0.8 : ROAD_HALF + 0.8,
-        heightAt(ahead, metres) + 0.5,
+        this.heightAtAhead(metres) + 0.5,
         -metres,
       );
-    });
+    }
   }
 
   private placeArch(world: World, frame: SceneFrame, speed: number, ahead: RoadPoint[]): void {
@@ -4184,20 +4248,29 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.arch.position.set(0, heightAt(ahead, arch.metres), -arch.metres);
     const label = this.archLabel;
     if (!label || label.text === arch.label) return;
-    label.material.map?.dispose();
-    label.material.map = labelTexture(arch.label);
+    paintArchLabel(label.canvas, arch.label);
+    label.texture.needsUpdate = true;
     label.text = arch.label;
   }
 
   /** Lays the road and the ground beside it over the points ahead, and a short run behind. */
   private layRoad(ahead: RoadPoint[], s: number): void {
     const first = ahead[0]!;
-    const behind: RoadPoint[] = [];
-    for (let i = BEHIND; i >= 1; i--) {
-      const metres = -i * STEP;
-      behind.push({ metres, height: (first.grade / 100) * metres, grade: first.grade });
+    const points = this.stripPoints;
+    for (let k = 0; k < BEHIND; k++) {
+      const metres = -(BEHIND - k) * STEP;
+      const p = points[k]!;
+      p.metres = metres;
+      p.height = (first.grade / 100) * metres;
+      p.grade = first.grade;
     }
-    const points = [...behind, ...ahead];
+    for (let k = 0; k < ahead.length; k++) {
+      const src = ahead[k]!;
+      const dst = points[BEHIND + k]!;
+      dst.metres = src.metres;
+      dst.height = src.height;
+      dst.grade = src.grade;
+    }
     fillStrip(this.road, points, ROAD_HALF, 0);
     this.street?.lay(points, s);
     this.towers?.lay(points, s);
@@ -4234,17 +4307,41 @@ function fillStrip(
   drop: number,
 ): void {
   const position = geometry.getAttribute('position') as BufferAttribute;
+  const normal = geometry.getAttribute('normal') as BufferAttribute;
   const uv = geometry.getAttribute('uv') as BufferAttribute;
-  points.forEach((p, i) => {
-    position.setXYZ(i * 2, -half, p.height + drop, -p.metres);
-    position.setXYZ(i * 2 + 1, half, p.height + drop, -p.metres);
-    uv.setXY(i * 2, 0, p.metres / DASH);
-    uv.setXY(i * 2 + 1, 1, p.metres / DASH);
-  });
+  const posArr = position.array as Float32Array;
+  const nrmArr = normal.array as Float32Array;
+  const uvArr = uv.array as Float32Array;
+  for (let i = 0; i < points.length; i++) {
+    const p = points[i]!;
+    const y = p.height + drop;
+    const z = -p.metres;
+    const g = p.grade / 100;
+    const ny = 1 / Math.hypot(1, g);
+    const nz = g * ny;
+    const pBase = i * 6;
+    posArr[pBase] = -half;
+    posArr[pBase + 1] = y;
+    posArr[pBase + 2] = z;
+    posArr[pBase + 3] = half;
+    posArr[pBase + 4] = y;
+    posArr[pBase + 5] = z;
+    nrmArr[pBase] = 0;
+    nrmArr[pBase + 1] = ny;
+    nrmArr[pBase + 2] = nz;
+    nrmArr[pBase + 3] = 0;
+    nrmArr[pBase + 4] = ny;
+    nrmArr[pBase + 5] = nz;
+    const uBase = i * 4;
+    const v = p.metres / DASH;
+    uvArr[uBase] = 0;
+    uvArr[uBase + 1] = v;
+    uvArr[uBase + 2] = 1;
+    uvArr[uBase + 3] = v;
+  }
   position.needsUpdate = true;
+  normal.needsUpdate = true;
   uv.needsUpdate = true;
-  geometry.computeVertexNormals();
-  geometry.computeBoundingSphere();
 }
 
 /** A direction in the sky: azimuth 0 is straight down the road, positive to the rider's right. */
@@ -4426,27 +4523,20 @@ const GHOST_OPACITY = 0.45;
 /** Frame paints for the pacers' bikes: white, red, navy, silver and teal. */
 const FRAME_PAINT = [0xeeeeea, 0xb3262c, 0x1d2b4a, 0xa9aeb5, 0x2a7d7a];
 
-function labelTexture(text: string): CanvasTexture {
-  const canvas = document.createElement('canvas');
-  canvas.width = 1024;
-  canvas.height = 96;
+function paintArchLabel(canvas: HTMLCanvasElement, text: string): void {
   const ctx = canvas.getContext('2d');
-  if (ctx) {
-    // As the mocks: dark lettering on the volt banner, inside a dark keyline.
-    ctx.fillStyle = '#d8ff3e';
-    ctx.fillRect(0, 0, 1024, 96);
-    ctx.strokeStyle = '#1b1e24';
-    ctx.lineWidth = 6;
-    ctx.strokeRect(8, 8, 1008, 80);
-    ctx.fillStyle = '#1b1e24';
-    ctx.font = 'bold 60px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(text.toUpperCase(), 512, 50);
-  }
-  const texture = new CanvasTexture(canvas);
-  texture.colorSpace = SRGBColorSpace;
-  return texture;
+  if (!ctx) return;
+  // As the mocks: dark lettering on the volt banner, inside a dark keyline.
+  ctx.fillStyle = '#d8ff3e';
+  ctx.fillRect(0, 0, 1024, 96);
+  ctx.strokeStyle = '#1b1e24';
+  ctx.lineWidth = 6;
+  ctx.strokeRect(8, 8, 1008, 80);
+  ctx.fillStyle = '#1b1e24';
+  ctx.font = 'bold 60px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text.toUpperCase(), 512, 50);
 }
 
 /** How many times the load runs the ride's own frame before the ride starts (#882). */
@@ -4459,6 +4549,14 @@ const PASS_TECHNIQUES = [7, 33, 36, 49, 50, 52] as const;
  * Counts each shader program and render pipeline the backend builds into the sweep's report:
  * each is a compile, and a frame that waits on one stalls (#882).
  */
+/** Builds the GTAO post-processing node (technique 36) at half resolution (0.5x). */
+export function createAmbientOcclusion(depth: Node, camera: PerspectiveCamera) {
+  // GTAO rebuilds normals from depth when given none; its typings omit the null it documents.
+  const aoPass = ao(depth, null as unknown as Node, camera);
+  aoPass.resolutionScale = 0.5;
+  return aoPass;
+}
+
 function countCompiles(renderer: WebGPURenderer, probe: WorldRideProbeReport): void {
   type Build = (...args: unknown[]) => unknown;
   const backend = renderer.backend as unknown as Record<string, Build>;

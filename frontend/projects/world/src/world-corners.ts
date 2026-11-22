@@ -8,7 +8,6 @@ import {
   CanvasTexture,
   CapsuleGeometry,
   Color,
-  DoubleSide,
   Group,
   Matrix4,
   Mesh,
@@ -20,7 +19,7 @@ import {
   Vector3,
 } from 'three/webgpu';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { apexes } from './scene-bend';
+import { APEX_STEP, apexes, type Apex } from './scene-bend';
 import type { World } from './worlds';
 
 /** The corners furnished at once: the nearest ones ahead of the rider. */
@@ -28,6 +27,8 @@ const POOL = 4;
 /** Corners are looked for from a little behind the rider to the end of the street in view. */
 const FROM = -30;
 const TO = 400;
+/** Beyond Old Town's 75 m shadow box plus the 14 m chevron lead-in, corners skip shadow casting. */
+const SHADOW_AHEAD = 90;
 /** The foam mattresses strapped to the outside barrier: how many, each how long. */
 const PADS = 6;
 const PAD = 2;
@@ -43,8 +44,13 @@ const Z_AXIS = new Vector3(0, 0, 1);
 export class Corners {
   readonly group = new Group();
   private readonly corners: Group[] = [];
-  /** Each corner marshal's flag arm, waved as the rider rides. */
-  private readonly flags: Group[] = [];
+  /** Each corner marshal's flag arm + two-sided cloth, waved as a single mesh as the rider rides. */
+  private readonly flags: Mesh[] = [];
+  private readonly shadowMeshes: (readonly [Mesh, Mesh, Mesh])[] = [];
+  private cachedWorld: World | null = null;
+  private cachedFirst = NaN;
+  private cachedLast = NaN;
+  private cachedApexes: Apex[] = [];
 
   constructor(private readonly disposables: { dispose(): void }[]) {}
 
@@ -57,39 +63,23 @@ export class Corners {
     const pad = new BoxGeometry(barrier - roadHalf - 0.12, 0.9, PAD - 0.06);
     const boardGeometry = new PlaneGeometry(1.6, 0.6);
     boardGeometry.translate(-barrier - 0.3, kerb + 1.75, CHEVRON_BEFORE);
-    const postLeft = new BoxGeometry(0.05, 1.8, 0.05);
-    postLeft.translate(-barrier - 0.9, kerb + 0.9, CHEVRON_BEFORE - 0.04);
-    const postRight = new BoxGeometry(0.05, 1.8, 0.05);
-    postRight.translate(-barrier + 0.3, kerb + 0.9, CHEVRON_BEFORE - 0.04);
-    const postsGeometry = mergeGeometries([postLeft, postRight])!;
-    postLeft.dispose();
-    postRight.dispose();
+    const postGeo = new BoxGeometry(0.05, 1.8, 0.05);
 
     const chevrons = new MeshStandardMaterial({ map: chevronTexture(), roughness: 0.6 });
-    const steel = new MeshStandardMaterial({ color: 0x8d939b, metalness: 0.6, roughness: 0.4 });
     const matte = new MeshStandardMaterial({ vertexColors: true, roughness: 0.78 });
-    const yellow = new MeshStandardMaterial({ color: 0xf5d000, roughness: 0.7, side: DoubleSide });
-    this.disposables.push(
-      boardGeometry,
-      postsGeometry,
-      chevrons,
-      chevrons.map!,
-      steel,
-      matte,
-      yellow,
-    );
+    this.disposables.push(boardGeometry, chevrons, chevrons.map!, matte);
 
-    const legsGeo = new CapsuleGeometry(0.13, 0.64, 4, 8);
-    const torsoGeo = new CapsuleGeometry(0.18, 0.42, 4, 10);
-    const headGeo = new SphereGeometry(0.105, 12, 8);
-    const armGeo = new CapsuleGeometry(0.05, 0.5, 4, 6);
+    const legsGeo = new CapsuleGeometry(0.13, 0.64, 2, 6);
+    const torsoGeo = new CapsuleGeometry(0.18, 0.42, 3, 8);
+    const headGeo = new SphereGeometry(0.105, 8, 6);
+    const armGeo = new CapsuleGeometry(0.05, 0.5, 2, 5);
     const stickGeo = new BoxGeometry(0.025, 0.9, 0.025);
-    const clothGeo = new PlaneGeometry(0.7, 0.5);
-    // Flown square to the street, out over the road, so the riders see it coming.
-    clothGeo.translate(0.57, 1.18, 0);
-    this.disposables.push(clothGeo);
+    // Flown square to the street, out over the road, two-sided under FrontSide so both faces light.
+    const clothFront = new PlaneGeometry(0.7, 0.5);
+    const clothBack = new PlaneGeometry(0.7, 0.5).rotateY(Math.PI);
 
-    // Shared waving flag-arm geometry (vest arm + dark stick) reused across all corners.
+    // Shared waving flag-arm geometry (vest arm + dark stick + two-sided yellow cloth).
+    const clothPos = new Vector3(0.57, 1.18, 0);
     const flagArmParts = [
       paintedPart(
         armGeo,
@@ -98,14 +88,29 @@ export class Corners {
         new Quaternion().setFromAxisAngle(Z_AXIS, -0.45),
       ),
       paintedPart(stickGeo, 0x20242c, new Vector3(0.27, 0.95, 0)),
+      paintedPart(clothFront, 0xf5d000, clothPos),
+      paintedPart(clothBack, 0xf5d000, clothPos),
     ];
     const flagArmGeometry = mergeGeometries(flagArmParts)!;
     for (const p of flagArmParts) p.dispose();
+    clothFront.dispose();
+    clothBack.dispose();
     this.disposables.push(flagArmGeometry);
 
     for (let c = 0; c < POOL; c++) {
       const corner = new Group();
-      const matteParts: BufferGeometry[] = [];
+      const matteParts: BufferGeometry[] = [
+        paintedPart(
+          postGeo,
+          0x8d939b,
+          new Vector3(-barrier - 0.9, kerb + 0.9, CHEVRON_BEFORE - 0.04),
+        ),
+        paintedPart(
+          postGeo,
+          0x8d939b,
+          new Vector3(-barrier + 0.3, kerb + 0.9, CHEVRON_BEFORE - 0.04),
+        ),
+      ];
 
       // Foam padding along the outside barrier, red and white mattresses in turn.
       for (let i = 0; i < PADS; i++) {
@@ -181,35 +186,50 @@ export class Corners {
 
       const board = new Mesh(boardGeometry, chevrons);
       board.castShadow = true;
-      const posts = new Mesh(postsGeometry, steel);
 
-      const flag = new Group();
+      const flag = new Mesh(flagArmGeometry, matte);
       flag.position.set(mx + 0.2, kerb + 1.5, 0);
-      const flagArm = new Mesh(flagArmGeometry, matte);
-      flagArm.castShadow = true;
-      const flagCloth = new Mesh(clothGeo, yellow);
-      flagCloth.castShadow = true;
-      flag.add(flagArm, flagCloth);
+      flag.castShadow = true;
       this.flags.push(flag);
+      this.shadowMeshes.push([matteMesh, board, flag]);
 
-      corner.add(matteMesh, board, posts, flag);
+      corner.add(matteMesh, board, flag);
       corner.visible = false;
       this.corners.push(corner);
       this.group.add(corner);
     }
 
-    for (const g of [pad, legsGeo, torsoGeo, headGeo, armGeo, stickGeo]) g.dispose();
+    for (const g of [pad, postGeo, legsGeo, torsoGeo, headGeo, armGeo, stickGeo]) g.dispose();
   }
 
   /** Puts the furniture at the corners ahead of the rider at `s`, on the road's height. */
   place(world: World, s: number, heightAt: (metres: number) => number): void {
-    const found = apexes(world, s + FROM, s + TO);
+    const firstGrid = Math.ceil((s + FROM) / APEX_STEP) * APEX_STEP;
+    const lastGrid = Math.floor((s + TO) / APEX_STEP) * APEX_STEP;
+    if (
+      this.cachedWorld !== world ||
+      firstGrid !== this.cachedFirst ||
+      lastGrid !== this.cachedLast
+    ) {
+      this.cachedWorld = world;
+      this.cachedFirst = firstGrid;
+      this.cachedLast = lastGrid;
+      this.cachedApexes = apexes(world, s + FROM, s + TO, POOL);
+    }
+    const found = this.cachedApexes;
     this.corners.forEach((corner, i) => {
       const apex = found[i];
       corner.visible = apex !== undefined;
       if (!apex) return;
       const metres = apex.s - s;
       corner.position.set(0, heightAt(metres), -metres);
+      const inShadow = metres > FROM && metres < SHADOW_AHEAD;
+      const meshes = this.shadowMeshes[i]!;
+      if (meshes[0].castShadow !== inShadow) {
+        meshes[0].castShadow = inShadow;
+        meshes[1].castShadow = inShadow;
+        meshes[2].castShadow = inShadow;
+      }
       // The corner lies along the street's slope, so on a ramp the chevron board 14 m before the
       // apex and the padding either side stand on the pavement, not level with the apex.
       corner.rotation.x = Math.atan((heightAt(metres + 1) - heightAt(metres - 1)) / 2);

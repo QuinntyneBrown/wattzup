@@ -20,9 +20,19 @@ export const EASE_TO = 0.85;
 /** Below this curvature, per metre, a bend has no inside to ease towards. */
 export const MIN_CURVATURE = 1e-4;
 
+// Pre-allocated typed-array scratch buffers so bendAhead() allocates zero temporary arrays per frame.
+const BEND_X = new Float64Array(BEND_SAMPLES);
+const BEND_Z = new Float64Array(BEND_SAMPLES);
+const BEND_CURV = new Float64Array(BEND_SAMPLES);
+
 export interface BendPoint {
   readonly x: number;
   readonly z: number;
+}
+
+export interface MutableBendPoint {
+  x: number;
+  z: number;
 }
 
 /** The road's heading at `s`, in degrees, positive to the rider's right (L2-101 AC6). */
@@ -55,21 +65,25 @@ export interface Apex {
 
 /** A bend turning less than this, in radians per metre (0.15° a metre), has no corner to mark. */
 export const APEX_MIN = (0.15 * Math.PI) / 180;
-const APEX_STEP = 2;
+export const APEX_STEP = 2;
 
 /** The apexes of the bends from `from` to `to` metres along the road, nearest first. */
-export function apexes(world: World, from: number, to: number): Apex[] {
+export function apexes(world: World, from: number, to: number, limit = Infinity): Apex[] {
+  if (world.bend.angle === 0 || limit <= 0) return [];
   const found: Apex[] = [];
   const start = Math.floor(from / APEX_STEP) * APEX_STEP;
   let before = Math.abs(curvature(world, start - APEX_STEP));
-  let here = Math.abs(curvature(world, start));
+  let hereK = curvature(world, start);
+  let here = Math.abs(hereK);
   for (let s = start; s <= to; s += APEX_STEP) {
-    const k = curvature(world, s + APEX_STEP);
-    const after = Math.abs(k);
+    const nextK = curvature(world, s + APEX_STEP);
+    const after = Math.abs(nextK);
     if (s >= from && here >= APEX_MIN && here > before && here >= after) {
-      found.push({ s, turn: curvature(world, s) > 0 ? 1 : -1 });
+      found.push({ s, turn: hereK > 0 ? 1 : -1 });
+      if (found.length >= limit) break;
     }
     before = here;
+    hereK = nextK;
     here = after;
   }
   return found;
@@ -95,7 +109,7 @@ export function racingLine(world: World, s: number, lane: number, half: number):
  * The road `m` metres ahead of the rider at `s`, as samples of four: the centre (x, z), the heading
  * in radians turned from the heading under the rider, and the curvature per metre.
  */
-export function bendAhead(world: World, s: number): Float32Array {
+export function bendAhead(world: World, s: number, out?: Float32Array): Float32Array {
   const under = heading(world, s);
   const end = heading(world, s + ROAD_END) - under;
   const turn = (m: number): number => {
@@ -103,52 +117,59 @@ export function bendAhead(world: World, s: number): Float32Array {
     const u = Math.min((m - ROAD_END) / (FADE_END - ROAD_END), 1);
     return (end * (1 - u * u * (3 - 2 * u)) * Math.PI) / 180;
   };
-  const samples = new Float32Array(BEND_SAMPLES * 4);
-  const metres = (i: number) => BEND_FROM + i * BEND_STEP;
+  const samples = out ?? new Float32Array(BEND_SAMPLES * 4);
   const rider = -BEND_FROM / BEND_STEP;
-  const x: number[] = [];
-  const z: number[] = [];
-  x[rider] = 0;
-  z[rider] = 0;
+  BEND_X[rider] = 0;
+  BEND_Z[rider] = 0;
   for (let i = rider + 1; i < BEND_SAMPLES; i++) {
-    const phi = turn(metres(i) - BEND_STEP / 2);
-    x[i] = x[i - 1]! + BEND_STEP * Math.sin(phi);
-    z[i] = z[i - 1]! - BEND_STEP * Math.cos(phi);
+    const phi = turn(BEND_FROM + i * BEND_STEP - BEND_STEP / 2);
+    BEND_X[i] = BEND_X[i - 1]! + BEND_STEP * Math.sin(phi);
+    BEND_Z[i] = BEND_Z[i - 1]! - BEND_STEP * Math.cos(phi);
   }
   for (let i = rider - 1; i >= 0; i--) {
-    const phi = turn(metres(i) + BEND_STEP / 2);
-    x[i] = x[i + 1]! - BEND_STEP * Math.sin(phi);
-    z[i] = z[i + 1]! + BEND_STEP * Math.cos(phi);
+    const phi = turn(BEND_FROM + i * BEND_STEP + BEND_STEP / 2);
+    BEND_X[i] = BEND_X[i + 1]! - BEND_STEP * Math.sin(phi);
+    BEND_Z[i] = BEND_Z[i + 1]! + BEND_STEP * Math.cos(phi);
   }
-  const curvature: number[] = [];
-  for (let i = 0; i < BEND_SAMPLES; i++)
-    curvature[i] = turn(metres(i) + 0.5) - turn(metres(i) - 0.5);
   for (let i = 0; i < BEND_SAMPLES; i++) {
-    samples[i * 4] = x[i]!;
-    samples[i * 4 + 1] = z[i]!;
-    samples[i * 4 + 2] = turn(metres(i));
+    const m = BEND_FROM + i * BEND_STEP;
+    BEND_CURV[i] = turn(m + 0.5) - turn(m - 0.5);
+  }
+  for (let i = 0; i < BEND_SAMPLES; i++) {
+    const base = i * 4;
+    samples[base] = BEND_X[i]!;
+    samples[base + 1] = BEND_Z[i]!;
+    samples[base + 2] = turn(BEND_FROM + i * BEND_STEP);
     // The tightest curvature within 8 m, so the easing inside a bend allows for a tightening one.
     let tightest = 0;
-    for (let j = Math.max(i - 2, 0); j <= Math.min(i + 2, BEND_SAMPLES - 1); j++) {
-      tightest = Math.max(tightest, Math.abs(curvature[j]!));
+    const jFrom = Math.max(i - 2, 0);
+    const jTo = Math.min(i + 2, BEND_SAMPLES - 1);
+    for (let j = jFrom; j <= jTo; j++) {
+      const ak = Math.abs(BEND_CURV[j]!);
+      if (ak > tightest) tightest = ak;
     }
-    samples[i * 4 + 3] = Math.sign(curvature[i]!) * tightest;
+    samples[base + 3] = Math.sign(BEND_CURV[i]!) * tightest;
   }
   return samples;
 }
 
 /** Where a point of the straight road, `x` across and `z` along it, lies on the bending one. */
-export function bendPoint(samples: Float32Array, x: number, z: number): BendPoint {
+export function bendPoint(
+  samples: Float32Array,
+  x: number,
+  z: number,
+  out?: MutableBendPoint,
+): BendPoint {
   const m = -z;
   const f = Math.min(Math.max((m - BEND_FROM) / BEND_STEP, 0), BEND_SAMPLES - 1);
   const i = Math.min(Math.floor(f), BEND_SAMPLES - 2);
   const t = f - i;
-  const at = (k: number) =>
-    samples[i * 4 + k]! + (samples[(i + 1) * 4 + k]! - samples[i * 4 + k]!) * t;
-  const cx = at(0);
-  const cz = at(1);
-  const phi = at(2);
-  const k = at(3);
+  const base = i * 4;
+  const next = base + 4;
+  const cx = samples[base]! + (samples[next]! - samples[base]!) * t;
+  const cz = samples[base + 1]! + (samples[next + 1]! - samples[base + 1]!) * t;
+  const phi = samples[base + 2]! + (samples[next + 2]! - samples[base + 2]!) * t;
+  const k = samples[base + 3]! + (samples[next + 3]! - samples[base + 3]!) * t;
   const dm = m - (BEND_FROM + f * BEND_STEP);
   // The right-hand normal and the way ahead.
   const nx = Math.cos(phi);
@@ -157,7 +178,14 @@ export function bendPoint(samples: Float32Array, x: number, z: number): BendPoin
   const tz = -Math.cos(phi);
   // On the inside of a bend, ease towards its centre, so nothing folds back over the road.
   const across = eased(x, k);
-  return { x: cx + across * nx + dm * tx, z: cz + across * nz + dm * tz };
+  const rx = cx + across * nx + dm * tx;
+  const rz = cz + across * nz + dm * tz;
+  if (out) {
+    out.x = rx;
+    out.z = rz;
+    return out;
+  }
+  return { x: rx, z: rz };
 }
 
 /**

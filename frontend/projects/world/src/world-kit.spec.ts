@@ -1,4 +1,22 @@
-import { bob, loopFade, profileHeight, wrapFade } from './world-kit';
+import {
+  BoxGeometry,
+  Group,
+  InstancedMesh,
+  Mesh,
+  MeshStandardMaterial,
+  type BufferAttribute,
+  type BufferGeometry,
+} from 'three/webgpu';
+import {
+  bob,
+  Crowd,
+  loopFade,
+  loopMetres,
+  mergeStaticGroup,
+  profileHeight,
+  Ribbons,
+  wrapFade,
+} from './world-kit';
 
 describe('wrapFade: a part shrinks away before it wraps and grows back after (#897)', () => {
   it.each([
@@ -65,5 +83,249 @@ describe('profileHeight: the height of a ribbon profile above the road at x (L2-
 
   it('reads a profile laid from smaller x to greater the same way', () => {
     expect(profileHeight([...verge].reverse(), 5)).toBeCloseTo(1.8, 9);
+  });
+});
+
+describe('Ribbons: normal initialisation and zero-allocation lay()', () => {
+  it('initialises vertex normals on add() before lay() and writes unit normals on lay()', () => {
+    const group = new Group();
+    const disposables: { dispose(): void }[] = [];
+    const material = new MeshStandardMaterial();
+    disposables.push(material);
+    const ribbons = new Ribbons(group, disposables);
+    const mesh = ribbons.add(4, material, [
+      [4, 0.2],
+      [0, 0],
+    ]);
+    const geometry = mesh.geometry as BufferGeometry;
+    const before = geometry.getAttribute('normal') as BufferAttribute | undefined;
+    expect(before).toBeDefined();
+    expect(before!.count).toBe(8);
+
+    ribbons.lay(
+      [
+        { metres: 0, height: 0 },
+        { metres: 2, height: 0.1 },
+        { metres: 4, height: 0.2 },
+        { metres: 6, height: 0.3 },
+      ],
+      10,
+    );
+    const after = geometry.getAttribute('normal') as BufferAttribute;
+    for (let i = 0; i < after.count; i++) {
+      const len = Math.hypot(after.getX(i), after.getY(i), after.getZ(i));
+      expect(len).toBeCloseTo(1, 5);
+    }
+    for (const d of disposables) d.dispose();
+  });
+
+  it('coalesces multiple strips sharing the same Material into one Mesh and lays both strips accurately', () => {
+    const group = new Group();
+    const disposables: { dispose(): void }[] = [];
+    const concrete = new MeshStandardMaterial();
+    const grass = new MeshStandardMaterial();
+    disposables.push(concrete, grass);
+    const ribbons = new Ribbons(group, disposables);
+    const leftKerb = ribbons.add(3, concrete, [
+      [-6.5, 0.15],
+      [-6.7, 0.15],
+    ]);
+    const rightKerb = ribbons.add(3, concrete, [
+      [6.7, 0.15],
+      [6.5, 0.15],
+    ]);
+    ribbons.add(3, grass, [
+      [18, 0.2],
+      [6.7, 0.15],
+    ]);
+
+    expect(rightKerb).toBe(leftKerb);
+    const meshes = group.children.filter((c): c is Mesh => c instanceof Mesh);
+    expect(meshes.length).toBe(2); // 1 concrete (both kerbs) + 1 grass
+
+    ribbons.lay(
+      [
+        { metres: 0, height: 1 },
+        { metres: 5, height: 2 },
+        { metres: 10, height: 3 },
+      ],
+      20,
+    );
+    const pos = leftKerb.geometry.getAttribute('position') as BufferAttribute;
+    expect(pos.count).toBe(12); // 2 strips * 3 points * 2 profile vertices
+    // First strip point 0 vertex 0 -> (-6.5, 1.15, 0); second strip point 2 vertex 0 -> (6.7, 3.15, -10).
+    expect(pos.getX(0)).toBeCloseTo(-6.5, 5);
+    expect(pos.getY(0)).toBeCloseTo(1.15, 5);
+    expect(pos.getX(10)).toBeCloseTo(6.7, 5);
+    expect(pos.getY(10)).toBeCloseTo(3.15, 5);
+    expect(pos.getZ(10)).toBeCloseTo(-10, 5);
+
+    for (const d of disposables) d.dispose();
+  });
+});
+
+describe('mergeStaticGroup: collapses static sub-meshes by material while preserving skipped subtrees', () => {
+  it('merges single- and multi-material child meshes per material, preserves skipped subtrees, and fixes negative-scale winding', () => {
+    const disposables: { dispose(): void }[] = [];
+    const red = new MeshStandardMaterial({ color: 0xff0000 });
+    const blue = new MeshStandardMaterial({ color: 0x0000ff });
+    const unit = new BoxGeometry(1, 1, 1);
+    disposables.push(red, blue, unit);
+
+    const root = new Group();
+    const a = new Mesh(unit, red);
+    a.position.set(-2, 1, 0);
+    a.castShadow = true;
+    const b = new Mesh(unit, red);
+    b.position.set(2, 1, 0);
+    b.scale.set(-1, 1, 1); // negative determinant
+    b.castShadow = true;
+    const multi = new Mesh(unit, [red, red, blue, blue, red, blue]);
+    multi.position.set(0, 2, 0);
+    multi.castShadow = true;
+
+    const animated = new Group();
+    const spinner = new Mesh(unit, red);
+    spinner.castShadow = true;
+    animated.add(spinner);
+
+    root.add(a, b, multi, animated);
+    mergeStaticGroup(root, disposables, new Set([animated]));
+
+    const directMeshes = root.children.filter((c): c is Mesh => c instanceof Mesh);
+    // All static red faces (a + b + 3 faces of multi) -> 1 red Mesh; 3 blue faces of multi -> 1 blue Mesh.
+    expect(directMeshes.length).toBe(2);
+    expect(animated.children).toContain(spinner);
+    for (const m of directMeshes) {
+      expect(m.geometry.getAttribute('normal')).toBeDefined();
+      expect(m.castShadow).toBe(true);
+    }
+
+    for (const d of disposables) d.dispose();
+  });
+
+  it('folds multiple opaque solid MeshStandardMaterials into one vertex-coloured Mesh when sharedSolidMaterial is given, keeping emissive meshes separate', () => {
+    const disposables: { dispose(): void }[] = [];
+    const wall = new MeshStandardMaterial({ color: 0xd9d0bf });
+    const trim = new MeshStandardMaterial({ color: 0xeee8db });
+    const tar = new MeshStandardMaterial({ color: 0x2c2d30 });
+    const lamp = new MeshStandardMaterial({ color: 0xff2a1a, emissive: 0xff2a1a });
+    const sharedSolid = new MeshStandardMaterial({ vertexColors: true, roughness: 0.8 });
+    const unit = new BoxGeometry(1, 1, 1);
+    disposables.push(wall, trim, tar, lamp, sharedSolid, unit);
+
+    const root = new Group();
+    const block = new Mesh(unit, [wall, wall, tar, wall, wall, wall]);
+    block.castShadow = true;
+    block.receiveShadow = true;
+    const cornice = new Mesh(unit, trim);
+    cornice.position.set(0, 2, 0);
+    const beacon = new Mesh(unit, lamp);
+    beacon.position.set(0, 3, 0);
+    root.add(block, cornice, beacon);
+
+    mergeStaticGroup(root, disposables, undefined, sharedSolid);
+
+    const directMeshes = root.children.filter((c): c is Mesh => c instanceof Mesh);
+    expect(directMeshes.length).toBe(2); // 1 sharedSolid (wall + tar + trim) + 1 emissive lamp
+    const solidMesh = directMeshes.find((m) => m.material === sharedSolid);
+    expect(solidMesh).toBeDefined();
+    expect(solidMesh!.geometry.getAttribute('color')).toBeDefined();
+    expect(solidMesh!.geometry.getAttribute('normal')).toBeDefined();
+    expect(solidMesh!.castShadow).toBe(true);
+    expect(solidMesh!.receiveShadow).toBe(true);
+
+    for (const d of disposables) d.dispose();
+  });
+});
+
+describe('Crowd: shadow partitioning and horizon culling', () => {
+  it('partitions near shadow-casting figures from far non-shadow-casting figures and culls past 308 m', () => {
+    const group = new Group();
+    const disposables: { dispose(): void }[] = [];
+    const flagMat = new MeshStandardMaterial();
+    disposables.push(flagMat);
+    const crowd = new Crowd(group, disposables, {
+      loop: 480,
+      near: 9.1,
+      far: 11.4,
+      spacing: 2,
+      wardrobe: { tops: ['#f58426'], bottoms: ['#1e2530'], skins: ['#f1c7a5'] },
+      flags: [flagMat],
+      flagShare: 0.25,
+      seeds: [101, 107],
+    });
+    crowd.build();
+    crowd.place(
+      1.5,
+      (m) => m * 0.01,
+      (offset, every) => loopMetres(offset, 0, every, 30),
+      0.15,
+    );
+
+    const instanced = group.children.filter((c): c is InstancedMesh => c instanceof InstancedMesh);
+    const shadowCasters = instanced.filter((m) => m.castShadow);
+    const nonShadow = instanced.filter((m) => !m.castShadow);
+    expect(shadowCasters.length).toBe(3); // near legs, bodies, heads only
+    expect(nonShadow.length).toBeGreaterThanOrEqual(5); // far legs, bodies, heads + arms + flags
+    // Near shadow casters contain only spectators inside (-14, 34) m (~10% of the 480 m loop).
+    expect(shadowCasters[0]!.count).toBeGreaterThan(0);
+    expect(shadowCasters[0]!.count).toBeLessThan(nonShadow[0]!.count);
+
+    // Beyond 115 m, occluded back rows (|x| >= near + 0.5) are skipped while front-row silhouettes continue to 308 m.
+    const farLegs = nonShadow[0]!;
+    const matArr = farLegs.instanceMatrix.array as Float32Array;
+    let farBackRowPast120m = 0;
+    let farFrontRowPast120m = 0;
+    for (let i = 0; i < farLegs.count; i++) {
+      const x = Math.abs(matArr[i * 16 + 12]!);
+      const metres = -matArr[i * 16 + 14]!;
+      if (metres > 120) {
+        if (x > 9.65) farBackRowPast120m++;
+        else farFrontRowPast120m++;
+      }
+    }
+    expect(farFrontRowPast120m).toBeGreaterThan(0);
+    expect(farBackRowPast120m).toBe(0);
+
+    const instancedMats = new Set(instanced.map((m) => m.material));
+    // 1 shared figure/arm matte material + 1 shared flag material = 2 unique materials total (down from 8).
+    expect(instancedMats.size).toBe(2);
+
+    for (const d of disposables) d.dispose();
+  });
+
+  it('coalesces multiple solid-colour flag materials into one InstancedMesh with instanceColor', () => {
+    const group = new Group();
+    const disposables: { dispose(): void }[] = [];
+    const flagMats = ['#f58426', '#1d4f9c', '#ffffff'].map(
+      (color) => new MeshStandardMaterial({ color }),
+    );
+    disposables.push(...flagMats);
+    const crowd = new Crowd(group, disposables, {
+      loop: 240,
+      near: 9.1,
+      far: 11.4,
+      spacing: 1.5,
+      wardrobe: { tops: ['#f58426'], bottoms: ['#1e2530'], skins: ['#f1c7a5'] },
+      flags: flagMats,
+      flagShare: 0.3,
+      seeds: [101, 107],
+    });
+    crowd.build();
+    crowd.place(
+      1.2,
+      (m) => m * 0.01,
+      (offset, every) => loopMetres(offset, 0, every, 30),
+      0.15,
+    );
+
+    const instanced = group.children.filter((c): c is InstancedMesh => c instanceof InstancedMesh);
+    // 3 nearFigures + 3 farFigures + 1 arms + 1 coalesced solid-flag InstancedMesh = 8 total.
+    expect(instanced.length).toBe(8);
+    const mats = new Set(instanced.map((m) => m.material));
+    expect(mats.size).toBe(2);
+
+    for (const d of disposables) d.dispose();
   });
 });

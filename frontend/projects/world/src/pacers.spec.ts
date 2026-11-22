@@ -74,4 +74,14 @@ describe('pacersOnRoad (L2-107)', () => {
     expect(new Set(lanes).size).toBe(PACERS.length);
     for (const lane of lanes) expect(Math.abs(lane)).toBeGreaterThanOrEqual(0.8);
   });
+
+  it('reuses a caller-supplied output array in place across frames without allocating', () => {
+    const out = [] as ReturnType<typeof pacersOnRoad>;
+    const r0 = pacersOnRoad(0, 300, PACERS, out);
+    expect(r0).toBe(out);
+    expect(r0).toEqual(pacersOnRoad(0, 300));
+    const r300 = pacersOnRoad(300, 300, PACERS, out);
+    expect(r300).toBe(out);
+    expect(r300).toEqual(pacersOnRoad(300, 300));
+  });
 });
