@@ -5,6 +5,17 @@ texture, real light, real shadow, dense scenery, while it still draws at 60 fps 
 technique here was proven on Neon Docklands (`docs/screenshots/courses/docklands/README.md` logs every pass with
 its numbers, picture and film) and is written so it can be applied to any other map.
 
+## Tried on other maps
+
+The techniques were proven on Neon Docklands, a night map. Cliffside Coast (sunset, a sea, cliffs) and Prairie
+Paceline (golden hour, farmland) were then rebuilt with the same build into a scratch folder and ridden in the app,
+unchanged and uncommitted (`docs/screenshots/courses/realism-on-coast.jpg`). Both build, and ride at 120 fps with
+no slow frame. With no work in their themes they take techniques 1 (the ground), 5 (the sky), 11 (the smaller
+file: 5.11 to 3.92 MB and 3.20 to 2.39 MB gzipped), 12 (the coast's water), 13 (street furniture), 16 (riders in
+one draw call) and 18 (everything on the GPU first). The rest need a few lines in each theme, as each technique's
+"To apply it to another map" says. The seven maps' shipped files have not been rebuilt: that is a decision for
+whoever owns the maps, since every map's download and look change with it.
+
 ## The method
 
 1. **One significant change a pass.** A surface, a light, a kind of scenery. Not a retune.
@@ -524,8 +535,8 @@ The pictures the work aims at differ from a course in these ways, most visible f
    (meshopt).
 2. Nothing but the riders casts a shadow: posts, walls and containers throw none.
 3. The water does not mirror the quay's own lamps, cranes and ships: only the sky and the far shore.
-4. The lit windows throw no light on the pavement beneath them.
+4. Lit windows on the upper floors light nothing: only the ground floor's throw light.
 5. The neon signs have no glow in the air round them, as the lamps have.
 6. The riders are simple figures: smooth limbs, no cloth, no faces.
 7. Signs with lettering, pipes, gutters and fire escapes: a warehouse's wall is still flat between its windows.
-8. The harbour's water takes no colour from the bridges' stays above it.
+8. The lamps along the quay are not mirrored in the harbour beside them.

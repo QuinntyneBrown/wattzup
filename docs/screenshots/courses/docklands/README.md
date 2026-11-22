@@ -43,6 +43,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 19 | No stutter when a new stretch of the map comes into view | 120.0 fps, no frame over 20 ms, worst 16.7 ms (timed with no film being taken) | median of three 324 fps (3.09 ms): 327, 324, 304; pass 18 read 323 | | 73,359 | 77 | 3.17 MB | Yes |
 | 20 | Rain falling through the lamplight; and every rider made before the ride | 120.0 fps, no frame over 20 ms, worst 16.8 ms | median of three 321 fps (3.12 ms): 327, 321, 295; pass 19 read 324 | | 83,391 | 79 | 3.17 MB | Yes |
 | 21 | Warehouses with loading doors and things on their roofs | 119.7 fps, no frame over 20 ms, worst 16.8 ms | median of three 310 fps (3.23 ms): 299, 326, 310; pass 20 read 321 | | 83,391 | 79 | 3.30 MB | Yes |
+| 22 | Lit windows light the pavement; the water takes the bridges' colour | 120.1 fps, no frame over 20 ms, worst 16.7 ms | median of three 306 fps (3.27 ms): 306, 322, 305; pass 21 read 310 | | 83,391 | 79 | 3.30 MB, and 56 KB for the course file | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -724,3 +725,28 @@ buildings seen from eight bridges. A tank is one prism now and the parapets are 
 
 **Learned.** Weigh a detail by how often it is seen as well as by its triangles. The doors are at eye level for
 half the ride and cost nothing; the roofs are seen for a few minutes and cost all of this pass's download.
+
+## Pass 22: light from the windows, and on the water
+
+**Before** (`pass-21-start.jpg`): a lit window or an open loading bay glows and lights nothing; under a bridge's lit
+stays the water is as dark as anywhere.
+
+**After** (`pass-22-start.jpg`, `pass-22.jpg`, `pass-22.mp4`): each lit ground-floor window and door lays a pool of
+warm light on the pavement before it, which the riders pass through; the harbour under a bridge takes the colour of
+its stays, broken by the ripples.
+
+**What changed.** Docklands' theme gives a coloured light (pass 18's `Kit.light`) to every other lit bay of a
+warehouse's ground floor: 1,950 lights in all now, 56 KB for the course file. `water-material.ts` takes the
+coloured lights' grid and adds it to the water, times the ripples.
+
+**Cost.** None measurable: 306 fps against 310, no frame over 20 ms.
+
+**Also in this pass: the techniques tried on two other maps.** Cliffside Coast and Prairie Paceline were rebuilt
+with the build as it now stands into a scratch folder and ridden in the app, with nothing about them changed and
+nothing of theirs committed (`../realism-on-coast.jpg`). Both build and both ride at 120 fps with no frame over
+20 ms (worst 9.8 and 8.8 ms; 76 and 73 draw calls; 70,604 and 103,762 triangles in the frame). They take the
+ground's surface, the worn paint, the sky worked out a pixel, the lamp columns and bend boards, the riders in one
+draw call and the smaller file with no work at all: the coast's file falls from 5.11 to 3.92 MB gzipped and the
+prairie's from 3.20 to 2.39 MB. What they do not get without work in their themes: walls and windows on their
+buildings (they place panels the old way), the sea's water on the coast (it has `sea` and gets the water),
+lamps, rain, bridges.

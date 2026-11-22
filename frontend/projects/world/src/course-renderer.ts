@@ -450,6 +450,7 @@ export class CourseRenderer implements WorldRenderer {
         this.course!.file.sun,
         detail,
         this.course!.file.night === true,
+        this.lampGlow?.coloured ?? null,
       );
       materials['Sea']!.dispose();
       materials['Sea'] = water.material;

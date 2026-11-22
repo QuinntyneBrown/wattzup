@@ -840,6 +840,9 @@ def docklands(k: Kit) -> dict:
                 for c in range(cols):
                     lit = rng.random() < 0.45
                     along = -width / 2 + (c + 0.5) * width / cols
+                    if f == 0 and lit and c % 2 == 0:
+                        # A lit ground-floor window or door throws its light on the pavement before it.
+                        k.light(k.P(i, along, wall + 1.8, 0), "glow-window", 5.5, 0.4)
                     if f == 0 and c % 3 == 1:
                         # A loading door in every third bay of the ground floor.
                         k.door(i, along, wall + 0.06, 0.12, 2.5, 3.1, lit)

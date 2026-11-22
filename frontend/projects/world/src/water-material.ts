@@ -16,13 +16,21 @@ import {
   vec3,
   vertexColor,
 } from 'three/tsl';
-import { Color, type DataTexture, type Material, MeshBasicNodeMaterial } from 'three/webgpu';
+import {
+  Color,
+  type DataTexture,
+  type Material,
+  MeshBasicNodeMaterial,
+  type Node,
+} from 'three/webgpu';
 import type { CourseLook } from './course';
 
 /** How steep the ripples are, how fast they run (metres a second), and how bright the far shore's lights are. */
 const RIPPLE = 0.16;
 const RUN = 0.35;
 const SHORE = 0.55;
+/** How bright the coloured lights above the water lie on it. */
+const GLOW = 0.5;
 
 /** The sea's material and the clock that moves its ripples. */
 export interface Water {
@@ -32,13 +40,15 @@ export interface Water {
 
 /**
  * The sea's material. `sun` is where the light comes from; `detail` the ground's detail texture; `lights` whether
- * the land is lit (a night map), so the far shore's lights stand in the water.
+ * the land is lit (a night map), so the far shore's lights stand in the water; `coloured` the coloured lights' light
+ * at a place (lamp-glow.ts), where the course has any.
  */
 export function waterMaterial(
   look: CourseLook,
   sun: readonly [number, number, number],
   detail: DataTexture,
   lights: boolean,
+  coloured: Node<'vec3'> | null = null,
 ): Water {
   const time = uniform(0);
   const at = positionWorld.xz;
@@ -75,7 +85,9 @@ export function waterMaterial(
   // How much of that the water shows: little looked down on, nearly all at a glancing angle.
   const glance = float(1).sub(up.dot(toEye).max(0)).pow(5).mul(0.97).add(0.03);
   const material = new MeshBasicNodeMaterial();
-  material.colorNode = mix(vertexColor().rgb.mul(0.3), seen, glance);
+  const water = mix(vertexColor().rgb.mul(0.3), seen, glance);
+  // Under a bridge's lit stays, and beside a neon sign, the water takes their colour, broken by its ripples.
+  material.colorNode = coloured ? water.add(coloured.mul(a.r.add(b.g).mul(GLOW))) : water;
   return {
     material,
     at: (seconds) => {
