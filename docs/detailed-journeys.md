@@ -90,7 +90,7 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 22.1 | Authenticate every request | Every endpoint and hub needs authentication by default; anonymous endpoints are explicit and listed. | 2 | 22. Stay secure | 100% |
 | 22.2 | Validate input and encode output | Validators on every request; device names rendered as text. | 2 | 22. Stay secure | 100% |
 | 22.3 | Limit abuse | Rate limits on sign-in codes, ride submissions and feedback, refusing with a code the screen branches on. | 2 | 22. Stay secure | 100% |
-| 22.4 | Restrict third parties | Static CSP; rider data seen only by its owner. | 2 | 22. Stay secure | 0% |
+| 22.4 | Restrict third parties | Static CSP; rider data seen only by its owner. | 2 | 22. Stay secure | 100% |
 | 23.1 | Fit every width | 320 to 2560 px with no sideways scroll. | 3 | 23. Use by touch, keyboard and screen reader | 0% |
 | 23.2 | Touch and keyboard | 44 px targets, focus order and visible focus everywhere. | 2 | 23. Use by touch, keyboard and screen reader | 0% |
 | 23.3 | Screen readers and motion | Screen readers hear step changes and results; dialogs make the page inert; reduced motion stills animation. | 3 | 23. Use by touch, keyboard and screen reader | 0% |
@@ -103,4 +103,4 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 27.1 | Installable app | Manifest, icons and install from Chrome or Edge. | 2 | 27. Install the app | 0% |
 | 27.2 | Update to a new version | Tell the rider a new version is ready; reload between rides. | 1 | 27. Install the app | 0% |
 
-**Total:** 95 slices, 238 days. **Complete:** 83 slices, 212 days (89%).
+**Total:** 95 slices, 238 days. **Complete:** 84 slices, 214 days (90%).

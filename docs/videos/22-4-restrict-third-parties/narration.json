@@ -1,0 +1,78 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Telo Ride talks to two companies besides itself: YouTube for video, and Google, with your own key, for real-world tiles. Nobody else."
+      ]
+    },
+    {
+      "id": "policy",
+      "bars": 5,
+      "lines": [
+        "Every response carries a Content Security Policy that says so: scripts, frames, images and connections, each with its short list."
+      ]
+    },
+    {
+      "id": "tracker",
+      "bars": 5,
+      "lines": [
+        "A tracker's script, or a call home to anyone else, is refused by the browser before it leaves the device."
+      ]
+    },
+    {
+      "id": "guard",
+      "bars": 5,
+      "lines": [
+        "And every behaviour spec now runs the app under that policy. A single refusal fails the spec, so a new third party cannot slip in."
+      ]
+    },
+    {
+      "id": "static",
+      "bars": 4,
+      "lines": [
+        "The policy is static: the offline shell is checked by its bytes, so styles stay inline, and nothing else does."
+      ]
+    },
+    {
+      "id": "telemetry",
+      "bars": 5,
+      "lines": [
+        "Behind it, a sign-in leaves no email, code, token or query string in any span, metric or log."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 4,
+      "lines": [
+        "Home, under its policy, from a phone to the full screen."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

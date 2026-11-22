@@ -49,17 +49,19 @@ are fixed by [Restrict third parties](../restrict-third-parties/README.md).
 
 ### Telemetry
 
-- **OpenTelemetry SDK** (`Telo.Ride.Api`) — ASP.NET Core, HttpClient and EF Core instrumentation,
-  the `Telo.Ride` meter and activity source, exported over OTLP. The telemetry backend product is
-  `<TO SUPPLY>`.
-- **`TelemetryScrubbingProcessor`** (`Telo.Ride.Infrastructure`) — span processor that removes
-  `url.query` and `url.full`, keeps `http.route` as the route template, and drops any tag whose
-  name marks a contact detail, code, token or message body. EF Core instrumentation is configured
-  without statement text, so no query or parameter value is exported.
-- **Redaction** — `Microsoft.Extensions.Compliance.Redaction` with `TeloDataClassifications`
-  (`Personal`, `Secret`). Source-generated `LogEvents` methods tag parameters with these
-  classifications, and the logging pipeline erases them. Request and response body logging is off.
-  Log events identify a rider by id only.
+- **OpenTelemetry SDK** (`Telo.Ride.Api`, `Telemetry/TelemetrySetup.cs`) — ASP.NET Core and EF Core
+  instrumentation and the `Telo.Ride` meter, exported over OTLP only when `OTEL_EXPORTER_OTLP_ENDPOINT` is set. The
+  telemetry backend product is `<TO SUPPLY>`.
+- **Spans** — a request's span is named by its route template (`http.route`), never its path's values. The ASP.NET Core
+  instrumentation redacts query values, and `TelemetrySetup` clears `url.query` as well. No request or response body is
+  recorded, and EF Core's spans carry no parameter values.
+- **Logs** — `Microsoft.AspNetCore` logs at `Warning` and above, so no request line with its address and query string
+  is written; request and response body logging is off. The API's own `LoggerMessage` methods name a rider by id and a
+  request by its route template, never an email, a code, a token or text a rider wrote.
+- **Proof** — `PrivateTelemetryTests` signs a rider in with an email code, names them, reads progress with a query
+  string and signs out, keeping every span, metric point and log record the API writes at its configured levels; none
+  may carry the email, the code, the session token, the display name or the query. A tag or a log line that carried one
+  fails it.
 
 ## Requirements
 
@@ -88,16 +90,16 @@ encrypted database and exports redacted telemetry.
 
 ### Components
 
-The send-code handler stores the output of `HmacSignInCodeHasher`, never the code. Every span
-passes `TelemetryScrubbingProcessor` and every log passes redaction before export.
+The send-code handler stores the output of `HmacSignInCodeHasher`, never the code. Spans carry route
+templates and logs name riders by id before the OpenTelemetry SDK exports them.
 
 ![C4 component view for protecting rider data](diagrams/c4-component.png)
 
 ### Class structure
 
 `HmacSignInCodeHasher` realises `ISignInCodeHasher` with the key from `CodeHashOptions` and
-produces `SignInCode.CodeHash`. `LogEvents` tags personal parameters with
-`TeloDataClassifications`.
+produces `SignInCode.CodeHash`. `TelemetrySetup` configures the instrumentation that records spans by route
+template.
 
 ![Class diagram for protecting rider data](diagrams/class-structure.png)
 
@@ -114,3 +116,11 @@ The span records the route template; the processor strips the query string and a
 and the logger redacts classified values before export (`L2-132` AC3).
 
 ![Sequence diagram for recording telemetry without personal data](diagrams/sequence-record-telemetry.png)
+
+## Open questions
+
+1. **Scrubbing processor and redaction (decided).** The design named a `TelemetryScrubbingProcessor` and
+   `Microsoft.Extensions.Compliance.Redaction` with data classifications. Neither is built: no code writes a contact
+   detail, a code, a token or a body into telemetry, the instrumentation already redacts query values, and
+   `PrivateTelemetryTests` fails the moment any span tag, metric tag or log line carries one. If a log must one day name
+   personal data, redaction comes with it.

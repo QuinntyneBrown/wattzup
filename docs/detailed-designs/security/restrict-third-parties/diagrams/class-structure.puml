@@ -13,56 +13,50 @@ skinparam class {
 }
 ' --------------------------
 title Class structure — Restrict third parties
-package "frontend hosting" {
-  class StaticWebAppConfig <<staticwebapp.config.json>> {
-    +globalHeaders.Content-Security-Policy
-    +globalHeaders.X-Content-Type-Options = "nosniff"
-    +globalHeaders.Referrer-Policy = "strict-origin-when-cross-origin"
+package "Telo.Ride.Api" {
+  class "security-headers.json" as File <<embedded resource>> {
+    +Content-Security-Policy: directive → sources
+    +X-Content-Type-Options = "nosniff"
+    +Referrer-Policy = "strict-origin-when-cross-origin"
   }
   class ContentSecurityPolicy <<header value>> {
     +default-src 'self'
-    +script-src 'self' https://www.youtube.com
-    +style-src 'self' <TO SUPPLY>
-    +frame-src https://www.youtube-nocookie.com
-    +connect-src 'self' https://tile.googleapis.com
-    +img-src 'self' https://i.ytimg.com https://tile.googleapis.com
+    +script-src 'self' https://www.youtube.com 'wasm-unsafe-eval'
+    +style-src 'self' 'unsafe-inline'
     +font-src 'self'
+    +img-src 'self' https://i.ytimg.com https://tile.googleapis.com blob:
+    +connect-src 'self' https://tile.googleapis.com blob:
+    +worker-src 'self' blob:
+    +frame-src https://www.youtube-nocookie.com
     +object-src 'none'
     +base-uri 'self'
     +form-action 'self'
     +frame-ancestors 'none'
   }
-  StaticWebAppConfig *-- ContentSecurityPolicy
+  class SecurityHeaders <<static>> {
+    +Headers: IReadOnlyDictionary<string, string>
+    +UseSecurityHeaders(app): IApplicationBuilder
+  }
+  File *-- ContentSecurityPolicy
+  SecurityHeaders ..> File : reads
 }
-package "api library" {
-  class ThirdPartyOrigins <<const>> {
-    +youtubeScript = "https://www.youtube.com"
-    +youtubeFrames = "https://www.youtube-nocookie.com"
-    +youtubeImages = "https://i.ytimg.com"
-    +googleTiles = "https://tile.googleapis.com"
+package "frontend" {
+  class "serve-dist.mjs" as Serve <<script>> {
+    +sends the same headers with the build
+  }
+  class ContentSecurityPolicyFixture {
+    -seen: string[]
+    +install(page): Promise<ContentSecurityPolicyFixture>
+    +take(): string[]
+    +untaken(): string[]
+  }
+  class YouTubeVideoPlayer {
+    +www.youtube.com/iframe_api
+    +www.youtube-nocookie.com embeds
+  }
+  class PhotorealTiles {
+    +tile.googleapis.com, with the rider's key
   }
 }
-package "domain library" {
-  class YouTubePlayerLoader {
-    -loaded: Promise<YT> | null
-    +load(): Promise<YT>
-    +createPlayer(host: HTMLElement, videoId: string): YT.Player
-  }
-  class SettingsStore {
-    +googleMapsKey: Signal<string | null>
-  }
-}
-package "world library" {
-  class GoogleTilesSource {
-    +stream(key: string, place: GeoPlace): Observable<TileSet>
-  }
-}
-YouTubePlayerLoader ..> ThirdPartyOrigins
-GoogleTilesSource ..> ThirdPartyOrigins
-GoogleTilesSource ..> SettingsStore : key
-package "Telo.Ride.Api" {
-  class SecurityHeadersMiddleware {
-    +InvokeAsync(context: HttpContext, next: RequestDelegate): Task
-  }
-}
+Serve ..> File : reads
 @enduml
