@@ -1,0 +1,30 @@
+<section class="start-clock" aria-label="Start clock">
+  <p class="race-lobby__status">{{ status() }}</p>
+  <div class="numeral race-lobby__clock" role="timer" [attr.aria-label]="label()">{{ face() }}</div>
+  <p class="race-lobby__hint">{{ hint() }}</p>
+  @if (notice(); as notice) {
+    <p class="race-lobby__notice" role="status">
+      <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <line x1="22" x2="16" y1="11" y2="11" />
+      </svg>
+      {{ notice }}
+    </p>
+  }
+  <button
+    class="race-lobby__ready"
+    type="button"
+    [attr.aria-pressed]="ready()"
+    (click)="readyToggled.emit()"
+  >
+    @if (ready()) {
+      <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20 6 9 17l-5-5" />
+      </svg>
+      You're ready
+    } @else {
+      I'm ready
+    }
+  </button>
+</section>

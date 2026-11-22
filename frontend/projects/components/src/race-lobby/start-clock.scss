@@ -1,0 +1,90 @@
+// The race lobby's clock elements (docs/design-system/assets/components.css, Race lobby): status, the big clock,
+// the hint, the left-rider notice and the volt "I'm ready" toggle (raised once pressed).
+:host {
+  display: block;
+}
+
+.race-lobby__status {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.race-lobby__clock {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-8xl);
+  line-height: var(--line-height-none);
+
+  @media (min-width: 40rem) {
+    font-size: var(--race-lobby-clock-size);
+  }
+}
+
+.race-lobby__hint {
+  margin: var(--space-3) 0 0;
+  max-width: var(--race-lobby-hint-width);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.race-lobby__notice {
+  margin: var(--space-5) 0 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-lg);
+  background: var(--color-raised);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+
+  .icon {
+    color: var(--color-warn-fg);
+  }
+}
+
+.race-lobby__ready {
+  margin-top: var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  height: var(--control-height-xl);
+  border: 0;
+  border-radius: var(--radius-xl);
+  background: var(--color-volt);
+  color: var(--color-on-fill);
+  font: inherit;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-semibold);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+
+  &:hover {
+    background: var(--color-volt-hover);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &[aria-pressed='true'] {
+    background: var(--color-raised);
+    color: var(--color-fg);
+
+    &:hover {
+      background: var(--color-line);
+    }
+  }
+
+  .icon {
+    color: var(--color-volt-fg);
+  }
+}

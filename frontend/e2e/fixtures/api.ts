@@ -95,6 +95,8 @@ const SESSION_ENDED: ApiReply = {
  */
 /** A class's group sessions (`GET /api/classes/{id}/sessions`), which no spec has to answer: unanswered, they cannot be reached. */
 const CLASS_SESSIONS = /^GET \/api\/classes\/[^/]+\/sessions$/;
+/** A map's race queue (`GET /api/maps/{id}/queue`), which no spec has to answer: unanswered, Riders online cannot be reached. */
+const RACE_QUEUE = /^GET \/api\/maps\/[^/]+\/queue$/;
 const UNREACHABLE: Handler = () => ({ status: 503 });
 
 export class ApiFixture {
@@ -125,7 +127,8 @@ export class ApiFixture {
         api.sent.push(key);
         if (request.postData() !== null) api.bodies.push({ key, body: request.postDataJSON() });
         const handler =
-          api.answers.get(key) ?? (CLASS_SESSIONS.test(key) ? UNREACHABLE : undefined);
+          api.answers.get(key) ??
+          (CLASS_SESSIONS.test(key) || RACE_QUEUE.test(key) ? UNREACHABLE : undefined);
         if (!handler) {
           api.missed.push(key);
           await route.fulfill({

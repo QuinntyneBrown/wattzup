@@ -63,6 +63,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 14.3 | [Join a group session](14-3-join-a-group-session/README.md) | 1:54 | Join opening the group ride, which takes a seat through the ride hub with its jersey; a full or started session sending the rider back to Class Start with the next one offered; a reconnect keeping the same seat |
 | 14.4 | [Start together](14-4-start-together/README.md) | 1:41 | A group ride holding at 0:00 with its video parked under "Starts in 9:00"; the clock and the video starting together at the session's server time; a late rider riding from the session's time |
 | 14.5 | [Live group board](14-5-live-group-board/README.md) | 1:54 | The group ride with its live output board: every rider ranked by output, the rider's place and own row, the board sliding the rider up after the next standings, beside the video or below it |
+| 15.1 | [Race lobby](15-1-race-lobby/README.md) | 1:56 | Race Setup counting the riders queuing, and the riders-online lobby: seated by the service, You first, counting down to the session's start, a rider leaving with a notice, and bots filling the grid at 0:10, beside the clock or below it |
 
 ## What every video is
 

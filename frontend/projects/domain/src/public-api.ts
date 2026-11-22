@@ -33,6 +33,7 @@ export { WorkoutEngine } from './engine/workout-engine';
 export { SpeedModel } from './engine/speed-model';
 export { VirtualSpeedModel } from './engine/virtual-speed-model';
 export { BOT_NAMES, BotPaceModel, PACK_BASE_WATTS } from './engine/bot-pace-model';
+export { BOTS_LOBBY_SECONDS, LOBBY_SEATS, LocalLobby } from './engine/local-lobby';
 export { BotPack } from './engine/bot-pack';
 export { COAST_SECONDS, CoastPolicy } from './engine/coast-policy';
 export { FinishLine } from './engine/finish-line';

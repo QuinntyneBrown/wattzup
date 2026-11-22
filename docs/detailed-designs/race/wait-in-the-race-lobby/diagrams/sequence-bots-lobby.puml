@@ -22,7 +22,6 @@ box "Frontend — Ride app (ride application)" #E0F2FE
 end box
 box "Frontend — Ride app (domain library)" #E0F2FE
   participant "LocalLobby" as local
-  participant "LobbyClock" as clock
   participant "ResistanceController" as res
 end box
 box "Device — Smart bike" #F2F4F7
@@ -30,21 +29,19 @@ box "Device — Smart bike" #F2F4F7
 end box
 actor -> page : Open /race/:mapId/lobby?mode=bots&pack=medium
 page -> store : init(mode = bots)
-store -> local : seat(you)
-local --> store : You in seat 1, nine bots in list order (L2-050 AC1, L2-054 AC2)
+store -> local : seats(level, ready = false)
+local --> store : You in seat 1, nine bots in list order, not ready (L2-050 AC1, L2-054 AC2)
 store -> res : setTarget(first segment level)
 res -> bike : Set resistance command
 store --> page : "10 / 10", "On the start line", resistance hint (L2-051 AC4)
 actor -> page : Press "I'm ready"
 page -> store : toggleReady()
-store -> local : readyAll(seats)
+store -> local : seats(level, ready = true)
 local --> store : Every seat ready
-store -> clock : start at 5 seconds (L2-053 AC3)
-loop once a second
-  clock --> store : secondsToStart
+loop once a second from 0:05 (L2-053 AC3); pressing again holds it at 0:05
   store --> page : timer "Starts in {n} seconds"
 end
-store --> page : countdownStep 3, 2, 1, Go; page behind inert (L2-056 AC1, AC2)
-store -> router : At Go, navigate /race/:mapId/ride?mode=bots&pack=medium
+store -> router : At 0:00, navigate /race/:mapId/ride?mode=bots&pack=medium
+note right of store : The 3, 2, 1, Go overlay (L2-056) comes with slice 15.2
 router --> actor : Race opens with its clock at 0:00 (L2-056 AC3)
 @enduml

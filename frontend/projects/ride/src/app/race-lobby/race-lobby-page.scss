@@ -1,0 +1,100 @@
+// Block race-lobby (docs/design-system/assets/components.css, Race lobby): a full-height page with its own header,
+// the start clock beside the start grid from lg (L2-051 AC6).
+.race-lobby {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--color-ink);
+  color: var(--color-fg);
+  outline: none;
+}
+
+.race-lobby__header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-5);
+  border-bottom: var(--border-width-hairline) solid var(--color-line);
+  padding: var(--space-2-5) var(--space-4);
+
+  @media (min-width: 40rem) {
+    padding-inline: var(--space-6);
+  }
+
+  @media (min-width: 64rem) {
+    padding-inline: var(--space-8);
+  }
+}
+
+.race-lobby__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.race-lobby__map {
+  font-weight: var(--font-weight-semibold);
+}
+
+.race-lobby__meta {
+  color: var(--color-muted);
+}
+
+.race-lobby__leave {
+  position: relative;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  border-radius: var(--radius-md);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  white-space: nowrap;
+  color: var(--color-muted);
+  text-decoration: none;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+
+  // It takes touches across 44 px, like the header's icon buttons.
+  &::after {
+    content: '';
+    position: absolute;
+    inset: min(0px, calc((100% - var(--target-comfortable)) / 2));
+  }
+
+  &:hover {
+    background: var(--color-raised);
+    color: var(--color-heart-fg);
+  }
+}
+
+.race-lobby__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.race-lobby__body {
+  display: grid;
+  gap: var(--space-8);
+  margin-inline: auto;
+  max-width: var(--layout-container-max);
+  padding: var(--space-6) var(--space-4);
+
+  @media (min-width: 40rem) {
+    padding-inline: var(--space-6);
+  }
+
+  @media (min-width: 64rem) {
+    grid-template-columns: var(--race-lobby-aside-width) minmax(0, 1fr);
+    gap: var(--space-14);
+    padding: var(--space-10) var(--space-8);
+  }
+}

@@ -7,10 +7,15 @@ import {
   type MapProgressDto,
   PROGRESS_API,
   type PackStrengthId,
+  RACE_QUEUE_API,
   type RaceMode,
 } from '@telo/api';
 import type { ModeOption } from '@telo/components';
 import { RaceStartPlanner } from '@telo/domain';
+import { EMPTY, catchError, distinctUntilChanged, map, of, switchMap, tap, timer } from 'rxjs';
+
+/** How often Race Setup asks how many riders are queuing, while Riders online is open (L2-048 AC3). */
+const QUEUE_POLL_MS = 10_000;
 
 /**
  * Race Setup's state, provided on its page (docs/detailed-designs/race/set-up-a-race): the map of the address, read
@@ -24,6 +29,8 @@ export class RaceSetupStore {
   private readonly catalogue = signal<readonly MapDto[]>([]);
   private readonly progress = signal<MapProgressDto | null>(null);
   private readonly level = signal(1);
+  /** The riders queuing for the map; `undefined` until asked, `null` when the service cannot be reached. */
+  private readonly queue = signal<number | null | undefined>(undefined);
 
   /** The map, once the catalogue has arrived. */
   readonly map = computed(() => this.catalogue().find((map) => map.id === this.mapId) ?? null);
@@ -47,8 +54,8 @@ export class RaceSetupStore {
   });
 
   /**
-   * Whom to race (L2-048 AC1): your best time, bots, and riders online, which opens at rider level 3 (AC2). Its queue
-   * count and seat come with live races (journey 15); until then a rider at level 3 is told it can't be reached.
+   * Whom to race (L2-048 AC1): your best time, bots, and riders online, which opens at rider level 3 (AC2) with the
+   * riders queuing for the map (AC3); while the service cannot be reached it says so and stays closed.
    */
   readonly modes = computed<readonly ModeOption[]>(() => [
     {
@@ -68,16 +75,17 @@ export class RaceSetupStore {
     {
       id: 'online',
       title: 'Riders online',
-      body: this.level() < 3 ? 'Opens at level 3.' : 'Riders online can’t be reached right now.',
+      body: this.onlineLine(),
       icon: 'riders',
-      disabled: true,
+      disabled: this.level() < 3 || this.queue() === null,
     },
   ]);
 
   /** The chosen mode, Bots by default (L2-048 AC1), or the one "Race it again" carries (`?mode=solo`, L2-079 AC1). */
   readonly mode = signal<RaceMode>(
-    (['solo', 'bots'] as const).find((mode) => mode === this.snapshot.queryParamMap.get('mode')) ??
-      'bots',
+    (['solo', 'bots', 'online'] as const).find(
+      (mode) => mode === this.snapshot.queryParamMap.get('mode'),
+    ) ?? 'bots',
   );
 
   /** How hard the bots ride, medium by default (L2-049 AC1), or the one "Race it again" carries (`?pack=hard`). */
@@ -101,10 +109,36 @@ export class RaceSetupStore {
       .maps()
       .pipe(takeUntilDestroyed())
       .subscribe((progress) => this.progress.set(progress));
+    // The rider's level; from level 3, the riders queuing for the map, asked again every 10 seconds while the page
+    // shows (L2-048 AC2, AC3).
+    const queue = inject(RACE_QUEUE_API);
     inject(PROGRESS_API)
       .level()
-      .pipe(takeUntilDestroyed())
-      .subscribe((level) => this.level.set(level));
+      .pipe(
+        tap((level) => this.level.set(level)),
+        map((level) => level >= 3),
+        distinctUntilChanged(),
+        switchMap((open) =>
+          open
+            ? timer(0, QUEUE_POLL_MS).pipe(
+                switchMap(() => queue.riders(this.mapId).pipe(catchError(() => of(null)))),
+              )
+            : EMPTY,
+        ),
+        takeUntilDestroyed(),
+      )
+      .subscribe((riders) => this.queue.set(riders));
+  }
+
+  /** "3 riders queuing now. 8–10 per race, empty seats go to bots." (L2-048 AC1, AC3), or why it is closed. */
+  private onlineLine(): string {
+    if (this.level() < 3) return 'Opens at level 3.';
+    const riders = this.queue();
+    if (riders === null) return 'Riders online can’t be reached right now.';
+    const field = '8–10 per race, empty seats go to bots.';
+    return riders === undefined
+      ? field
+      : `${riders} ${riders === 1 ? 'rider' : 'riders'} queuing now. ${field}`;
   }
 
   /** Opens the race the choice leads to (L2-050 AC1, AC2). */

@@ -15,102 +15,84 @@ set separator none
 title Class structure — Run a race session
 
 package "Telo.Ride.Domain" {
-  abstract class LiveSession {
-    +Guid Id
-    +DateTimeOffset StartsAt
-    +SessionState State
-    +IReadOnlyList<Seat> Seats
-    +Seat(rider: RiderOccupant): Seat
-    +Release(riderId: Guid): void
-    +MarkReady(riderId: Guid, ready: bool): void
-    +FillWithBots(roster: BotRoster): void
-    +SeatOf(riderId: Guid): Seat?
-  }
   class RaceSession {
+    +{static} Capacity = 10
+    +{static} LobbySeconds = 30
+    +{static} BotFillSeconds = 10
+    +{static} ConnectionGraceSeconds = 10
     +string MapId
-    +static Open(mapId: string, now: DateTimeOffset): RaceSession
-    +RidersSeated: int
+    +DateTimeOffset StartsAt
+    +string Id  "mapId@startsAt"
+    +IReadOnlyList<RaceSeat?> Seats
+    +int RidersSeated
+    +IsOpen(now): bool
+    +SeatOf(riderId): int?
+    +TrySeat(riderId, name, level): int?
+    +SetReady(riderId, ready): bool
+    +Release(riderId): RaceLeave?
+    +ConnectionLost(riderId, now): void
+    +Tick(now): (Left, Changed)
   }
-  class Seat {
-    +int Number
-    +SeatOccupant? Occupant
+  class RaceSeat <<record>> {
+    +RaceSeatKind Kind
+    +Guid? RiderId
+    +string Name
+    +string Jersey
+    +int? Level
     +bool Ready
   }
-  abstract class SeatOccupant
-  class RiderOccupant {
-    +Guid RiderId
-    +string DisplayName
-    +string Jersey
-    +string Country
-    +int Level
+  enum RaceSeatKind {
+    Rider
+    Bot
   }
-  class BotOccupant {
-    +string Name
-  }
-  class BotRoster {
-    +Names: Pacer Nova, Rook, Juno, Atlas, Kite, Vale, Moss, Flint, Echo
-    +Next(): string
-  }
-  enum SessionState {
-    Seating
-    Full
-    Countdown
-    Running
-    Ended
+  class BotPaceModel {
+    +Names: Nova, Rook, Juno, Atlas, Kite, Vale, Moss, Flint, Echo
   }
 }
 package "Telo.Ride.Application" {
   class FindRaceCommandHandler {
-    +Handle(cmd: FindRaceCommand): Task<SeatAssignment>
+    +Handle(cmd: FindRaceCommand): Task<FindRaceResult>
   }
-  class RaceSessionMatcher {
-    +FindFullestOpen(mapId: string): RaceSession?
-  }
+  class SetReadyCommandHandler
+  class LeaveRaceCommandHandler
+  class RaceConnectionLostCommandHandler
   class TickLiveSessionsCommandHandler {
     +Handle(cmd: TickLiveSessionsCommand): Task
   }
-  class GetRaceQueueCountQueryHandler {
-    +Handle(q: GetRaceQueueCountQuery): Task<int>
+  class GetRaceQueueQueryHandler {
+    +Handle(q: GetRaceQueueQuery): Task<RaceQueueDto>
   }
-  interface ISessionRegistry {
-    +OpenSessions(mapId: string): IEnumerable<RaceSession>
-    +Add(session: LiveSession): void
-    +All(): IEnumerable<LiveSession>
+  interface IRaceSessionRegistry {
+    +Waiting(mapId, now): RaceSession?
+    +Open(mapId, now): IEnumerable<RaceSession>
+    +Find(id, now): RaceSession?
+    +Lobbies(now): IEnumerable<RaceSession>
   }
   interface ISessionNotifier {
-    +SeatsChanged(id: Guid, seats: SeatDto[]): Task
-    +CountdownStarted(id: Guid, startsAt: long): Task
-    +SessionStarted(id: Guid, startsAt: long): Task
+    +AddToSession(connectionId, sessionId): Task
+    +SeatsChanged(SeatsChangedDto): Task
   }
 }
 package "Telo.Ride.Infrastructure" {
+  class InMemoryRaceSessionRegistry
   class SessionTicker {
     -timer: PeriodicTimer (1 s, TimeProvider)
     #ExecuteAsync(ct: CancellationToken): Task
   }
 }
-package "domain library" {
-  class ServerClock {
-    -offsetMs: number
-    -bestRttMs: number
-    +sample(sentAt: number, serverTime: number, receivedAt: number): void
-    +toLocal(serverTime: number): number
-  }
-}
 
-LiveSession <|-- RaceSession
-LiveSession "1" *-- "10" Seat
-Seat o-- "0..1" SeatOccupant
-SeatOccupant <|-- RiderOccupant
-SeatOccupant <|-- BotOccupant
-LiveSession --> SessionState
-LiveSession ..> BotRoster : FillWithBots
-FindRaceCommandHandler ..> RaceSessionMatcher
-FindRaceCommandHandler ..> ISessionRegistry
+RaceSession "1" *-- "0..10" RaceSeat
+RaceSeat --> RaceSeatKind
+RaceSession ..> BotPaceModel : fills at 0:10
+IRaceSessionRegistry <|.. InMemoryRaceSessionRegistry
+FindRaceCommandHandler ..> IRaceSessionRegistry
 FindRaceCommandHandler ..> ISessionNotifier
-RaceSessionMatcher ..> ISessionRegistry
-TickLiveSessionsCommandHandler ..> ISessionRegistry
+SetReadyCommandHandler ..> IRaceSessionRegistry
+LeaveRaceCommandHandler ..> IRaceSessionRegistry
+RaceConnectionLostCommandHandler ..> IRaceSessionRegistry
+TickLiveSessionsCommandHandler ..> IRaceSessionRegistry
 TickLiveSessionsCommandHandler ..> ISessionNotifier
-GetRaceQueueCountQueryHandler ..> ISessionRegistry
+GetRaceQueueQueryHandler ..> IRaceSessionRegistry
+InMemoryRaceSessionRegistry o-- "*" RaceSession
 SessionTicker ..> TickLiveSessionsCommandHandler : via IMediator
 @enduml

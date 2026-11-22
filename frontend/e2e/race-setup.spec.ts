@@ -5,8 +5,11 @@
 // Select. The rider chooses whom to race and, against bots, the pack strength, and the start button opens the race.
 import { echelonBike } from './fixtures/echelon';
 import { maps } from './fixtures/maps';
+import { midRiderProgress } from './fixtures/progress';
+import { found, open, rider } from './fixtures/race-lobby';
 import { expect, test } from './fixtures/test';
 import { RacePage } from './pages/race.page';
+import { RaceLobbyPage } from './pages/race-lobby.page';
 import { RaceSetupPage } from './pages/race-setup.page';
 
 test.beforeEach(({ api }) => {
@@ -78,6 +81,41 @@ test('Race against offers three modes, Bots chosen, and Riders online locked unt
   await expect(setup.mode('Bots')).toHaveAttribute('aria-checked', 'false');
 });
 
+test('from level 3, Riders online counts the riders queuing and Find a race opens its lobby (L2-048 AC1, AC3, L2-050 AC3)', async ({
+  page,
+  bluetooth,
+  api,
+  hub,
+}) => {
+  api.answer('GET', '/api/progress', midRiderProgress);
+  api.answer('GET', '/api/maps/old-town-criterium/queue', { riders: 3 });
+  hub.open();
+  hub.answer('ServerTime', () => page.evaluate(() => Date.now()));
+  hub.answer('FindRace', async () =>
+    found((await page.evaluate(() => Date.now())) + 30_000, 1, [
+      rider(1, 'quinn', 'lena', 7),
+      ...[2, 3, 4, 5, 6, 7, 8, 9, 10].map(open),
+    ]),
+  );
+  await bluetooth.remember(echelonBike);
+  const setup = new RaceSetupPage(page);
+  await setup.open('old-town-criterium');
+
+  await expect(setup.mode('Riders online')).toContainText(
+    '3 riders queuing now. 8–10 per race, empty seats go to bots.',
+  );
+  await expect(setup.mode('Riders online')).not.toHaveAttribute('aria-disabled', 'true');
+  await setup.mode('Riders online').click();
+  await expect(setup.pack).toHaveCount(0);
+  await expect(setup.start).toHaveText('Find a race');
+  await setup.start.click();
+
+  await expect(page).toHaveURL('/race/old-town-criterium/lobby?mode=online');
+  await expect(new RaceLobbyPage(page).title).toHaveText(
+    'Old Town Criterium · 14.2 km · Riders online',
+  );
+});
+
 test('the arrow keys move the race mode and pass over Riders online (L2-048 AC4)', async ({
   page,
 }) => {
@@ -120,7 +158,7 @@ test('against bots, Pack strength offers easy, medium and hard, each with its no
   await expect(setup.packNote).toHaveCount(0);
 });
 
-test('against bots, Go to the start line opens the race with the chosen pack (L2-050 AC1)', async ({
+test('against bots, Go to the start line opens the lobby with the chosen pack (L2-050 AC1)', async ({
   page,
   bluetooth,
 }) => {
@@ -132,8 +170,10 @@ test('against bots, Go to the start line opens the race with the chosen pack (L2
   await expect(setup.start).toHaveText('Go to the start line');
   await setup.start.click();
 
-  await expect(page).toHaveURL('/race/old-town-criterium/ride?mode=bots&pack=hard');
-  await expect(new RacePage(page).route).toHaveText('Cathedral Circuit · vs Bots, hard');
+  await expect(page).toHaveURL('/race/old-town-criterium/lobby?mode=bots&pack=hard');
+  await expect(new RaceLobbyPage(page).title).toHaveText(
+    'Old Town Criterium · 14.2 km · Bots, hard',
+  );
 });
 
 test('against your best time, Start ride opens the race at once, solo (L2-050 AC2)', async ({
