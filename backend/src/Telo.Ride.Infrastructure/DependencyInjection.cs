@@ -32,6 +32,7 @@ public static class DependencyInjection
         services.AddSingleton<ISignInCodeHasher, HmacSignInCodeHasher>();
         services.AddSingleton<IEmailSender, SmtpEmailSender>();
         services.AddHostedService<AccountErasureService>();
+        services.AddHostedService<SessionTicker>();
         return services;
     }
 }

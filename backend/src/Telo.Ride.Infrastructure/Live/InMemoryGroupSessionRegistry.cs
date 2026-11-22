@@ -39,6 +39,15 @@ internal sealed class InMemoryGroupSessionRegistry : IGroupSessionRegistry
         }
     }
 
+    public IReadOnlyList<GroupClassSession> Started(DateTimeOffset now)
+    {
+        lock (sessions)
+        {
+            Prune(now);
+            return [.. sessions.Values.Where(session => session.StartsAt <= now)];
+        }
+    }
+
     private void Prune(DateTimeOffset now)
     {
         foreach (var (id, session) in sessions.Where(entry => entry.Value.StartsAt + Kept < now).ToList())

@@ -25,6 +25,12 @@ internal sealed class RideHub(ISender sender) : Hub
     /// </summary>
     public Task<JoinClassSessionResult> JoinClassSession(string classId, string sessionId) =>
         sender.Send(
-            new JoinClassSessionCommand(RiderSessionTicketStore.RiderId(Context.User!) ?? Guid.Empty, classId, sessionId),
+            new JoinClassSessionCommand(RiderSessionTicketStore.RiderId(Context.User!) ?? Guid.Empty, classId, sessionId, Context.ConnectionId),
+            Context.ConnectionAborted);
+
+    /// <summary>The rider's output in kJ and power in watts in a group session, about once a second (L2-123 AC1).</summary>
+    public Task ReportProgress(string sessionId, double outputKj, double powerWatts) =>
+        sender.Send(
+            new ReportProgressCommand(RiderSessionTicketStore.RiderId(Context.User!) ?? Guid.Empty, sessionId, outputKj, powerWatts),
             Context.ConnectionAborted);
 }
