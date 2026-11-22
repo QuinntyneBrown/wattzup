@@ -99,7 +99,7 @@ const GHOST_OPACITY = 0.45;
  * How bright the lamps' light is on what stands near the road, against the ground straight under a lamp: walls and
  * posts catch it side on, the land and the leaves as the ground does, the riders from above and beside.
  */
-const LAMP_ON = { Solid: 1.5, Walls: 1.5, Land: 4.2, Leaves: 1.8, rider: 1.5 } as const;
+const LAMP_ON = { Solid: 2.4, Walls: 2.4, Land: 4.2, Leaves: 2.8, rider: 2.3 } as const;
 /**
  * How the map is drawn, cheapest first: the most device pixels a CSS pixel, and whether the neon blooms. The ride
  * opens on `START`, so it never starts high and drops in front of the rider (L2-111 AC3); frames that keep the

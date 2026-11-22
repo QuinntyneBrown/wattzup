@@ -33,6 +33,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 9 | Wet ground that mirrors the lamps and the sky | 119.8 fps, no frame over 20 ms | median of three 298 fps (3.36 ms): 326, 296, 298, on the first ramp | | 66,997 | 123 | 3.92 MB | Yes |
 | 10 | A glow in the air round every lamp | 119.3 fps, 2 frames over 20 ms | median of three 294 fps (3.40 ms): 304, 286, 294, on the first ramp | | 67,845 | 129 | 3.95 MB | Yes |
 | 11 | The file smaller: positions in whole centimetres | 119.4 fps, 1 frame over 20 ms | turn about with pass 10's map: 273 fps against 264 (277, 270, 273 and 267, 264, 254), on the first ramp | | 75,149 | 130 | 3.31 MB | Yes |
+| 12 | The lamps' light comes from above: riders and scenery have shape | 119.3 fps, 2 frames over 20 ms | median of three 269 fps (3.72 ms): 288, 269, 264; pass 11 read 270 in the same sitting | | 75,149 | 130 | 3.31 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -432,3 +433,24 @@ Coarser chunks of land were tried and put back (13,000 more triangles in the fra
 - A group's count of chunks in view is cheap to report and says at once where draw calls go.
 - What is left in the file is mostly positions and indices, which only a mesh codec (meshopt, Draco) shrinks
   further; and the riders, not the map, are the largest share of the draw calls.
+
+## Pass 12: the lamps' light comes from above
+
+**Before** (`pass-11.jpg`, `pass-10-start.jpg`): the lamps lit every face of a thing alike, whichever way it faced:
+a rider's back, the underside of their arms and the top of their shoulders were one brightness, so under the lamps
+the riders, the crates and the containers looked flat, like cut-outs.
+
+**After** (`pass-12.jpg` on the first ramp, `pass-12-start.jpg` at the start line, `pass-12.mp4`): a surface takes
+the lamps' light by how far it faces up: all of it facing up, about two thirds as a wall, a fifth facing down (what
+comes back off the ground). Shoulders, helmets and the tops of crates are bright; the undersides of arms, saddles
+and crane beams fall into shadow. The riders have shape.
+
+**What changed.** `lamp-glow.ts`: the lamps' light at a surface is multiplied by
+`mix(0.22, 1, clamp(normal.y x 0.5 + 0.5))`, the normal in the world's axes (a flat-shaded group's is its face's).
+The strengths were raised to match what a wall now takes (walls and posts 2.4, leaves 2.8, riders 2.3, the land
+still 4.2).
+
+**Cost.** None: 269 fps against 270 for pass 11 in the same sitting.
+
+**Learned.** Light with no direction flattens whatever it lights. A lamp's direction is nearly "down" for
+everything under it, and that one fact, with no lamp looked up, is enough to model a rider's shape.

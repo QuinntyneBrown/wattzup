@@ -5,6 +5,8 @@
 import {
   float,
   materialColor,
+  mix,
+  normalWorld,
   positionWorld,
   smoothstep,
   texture,
@@ -31,6 +33,8 @@ import { LAMP_LIGHT_MAX, type LampLightMap } from './lamp-light-map';
 /** Metres above the road where the lamps' light starts to fade, and where it is gone. */
 const FADE_FROM = 1.5;
 const FADE_TO = 9;
+/** The share of a lamp's light that reaches a surface facing straight down, off the ground beneath it. */
+const FROM_BELOW = 0.22;
 
 /** The lamps' light as materials read it. */
 export class LampGlow {
@@ -51,7 +55,10 @@ export class LampGlow {
     const tint = new Color(lamps.colour);
     this.light = vec3(tint.r, tint.g, tint.b)
       .mul(cell.r.mul(cell.r).mul(LAMP_LIGHT_MAX))
-      .mul(float(1).sub(smoothstep(FADE_FROM, FADE_TO, above)));
+      .mul(float(1).sub(smoothstep(FADE_FROM, FADE_TO, above)))
+      // A lamp is overhead: what faces up takes all of its light, a wall about two thirds, and what faces down
+      // only what comes back off the ground. This is what gives a rider and a crate their shape under the lamps.
+      .mul(mix(float(FROM_BELOW), float(1), normalWorld.y.mul(0.5).add(0.5).clamp(0, 1)));
   }
 
   /** A material for a group of the map, coloured by vertex and shaded flat, that the lamps light. */

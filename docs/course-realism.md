@@ -95,8 +95,12 @@ change. By day the same grid can hold shade instead of light (under a bridge, a 
 **Cost.** About 0.2 ms a frame at 1080p on an Adreno X1-85; one texture of the map's footprint at 2.5 m a cell
 (3.2 MB for Docklands' 3.3 x 3.0 km).
 
-**Watch for.** Walls overlit to their tops (keep them near a third of the ground's strength and fade with height);
-pale colours blooming; the light has no direction and casts no shadow.
+**Light from above (Docklands pass 12).** The node also multiplies the light by how far the surface faces up:
+`mix(0.22, 1, clamp(normalWorld.y x 0.5 + 0.5))`. Everything under a street lamp is lit from nearly straight
+above, so this one term gives riders and scenery their shape without knowing where any lamp is.
+
+**Watch for.** Walls overlit to their tops (keep them near half the ground's strength and fade with height); pale
+colours blooming; nothing but the riders casts a shadow.
 
 ### 3. Walls of brick, steel and plaster (Docklands pass 3)
 
