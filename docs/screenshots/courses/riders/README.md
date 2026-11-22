@@ -14,6 +14,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 3 | Riders that move: a lean into each bend, the bike rocking under the stroke, the shoulders swaying over it | 120.1 fps, none over 20 ms | 9.6 ms | 320 fps (3.12 ms): 331, 320, 293 | 81,601 | 74 | Yes |
 | 4 | A finish for each surface: skin, lycra, lacquer, carbon, steel, rubber; lamp light along glossy edges | 120.0 fps, none over 20 ms | 16.6 ms | 317 fps (3.15 ms): 326, 317, 317 | 81,601 | 74 | Yes |
 | 5 | One pelvis for a seat, sleeves closed over the shoulders, the back of the head: hair, ears, the helmet's cradle and straps | 120.1 fps, none over 20 ms | 16.9 ms | 314 fps (3.19 ms): 320, 310, 314 | 84,781 | 74 | Yes |
+| 6 | Out of the saddle on a steep climb, the bike thrown from side to side; a pose that allocates nothing | 119.9 fps; one frame of 25 ms in 2 timings of 11, none in 9 (the pass before: none in 8) | 25.3 ms | 302 fps (3.31 ms): 302, 311, 302 | 84,781 | 74 | Yes, with that noted |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -190,3 +191,38 @@ frame over 20 ms.
   looked at closely.
 - From a camera behind the rider, the back of the head and the seat are the two places the eye rests. They were the
   two crudest.
+
+## Pass 6: out of the saddle
+
+**Before** (`rider-05.mp4`): riders sit the same on an 8 % ramp as on the flat.
+
+**After** (`rider-06.mp4`, up the first bridge's ramp, 3.5 % to 8.2 %; `rider-06.jpg`, four frames of it): as the
+road passes 5 % the riders rise off the saddle, fully out of it by 7 %, and sit again over the top. Standing, the
+hips lift some 7 cm and the shoulders come forward over the bars, the bike is thrown further from side to side under
+each stroke (0.08 rad, from 0.03), and the body bobs with it. The lift is modest: it reads mostly as the bike
+rocking, and as the saddle showing under the seat.
+
+**What changed.**
+
+- `rider-stance.ts`, new, with its unit tests: `outOfTheSaddle(gradient)` is 0 to 5 %, 1 from 7 %, eased between.
+- `CourseRenderer.ride` returns it for the gradient where the rider is, and each rider's `pose(angle, standing)`
+  takes it.
+- `course-cyclist.ts`: standing turns the torso about the hands on the hoods (0.085 rad), which lifts the hips and
+  keeps the hands where they are; the legs' hips are now read from the torso, so they follow its sway and rise.
+- `between` and `bend` write into what they are given: a pose made every frame for every rider allocates nothing
+  (it made some thirty small objects a rider a frame since pass 1).
+
+**Measured.** 302 fps uncapped against 314, on a machine that also ran slower for the pass before in the same
+sitting. Display pace 119.9 fps. One frame of about 25 ms came in 2 of 11 timings of this pass (at 4.6 s and 8.6 s,
+no fixed place), and in none of 8 timings of pass 5 made alternately with them; the last four of each were clean.
+Nothing in the change makes or uploads anything, and passes 0 and 3 each had the same single frame once. Kept, with
+this on the record: if it recurs, look here first.
+
+**Tried and dropped.** Throwing the bike 0.12 rad when standing: on top of a lean into a bend it looked like a fall.
+
+**Learned.**
+
+- Posture from the road, like the lean: nothing to store, a pack rises together where the ramp begins.
+- A rider's upper body can change posture without solving the arms again if it turns about the hands.
+- Timing runs must alternate with the pass before in one sitting; a run after a run compares the machine, not the
+  change.

@@ -22,6 +22,7 @@ import {
   MeshBasicMaterial,
   MeshStandardMaterial,
   PlaneGeometry,
+  Quaternion,
   SphereGeometry,
   SRGBColorSpace,
   TorusGeometry,
@@ -31,8 +32,11 @@ import {
 /** What the course's renderer asks of a rider: where it stands, and how it pedals. */
 export interface RiderModel {
   readonly group: Group;
-  /** Turns the cranks to `angle` radians and moves the legs with them. */
-  pose(angle: number): void;
+  /**
+   * Turns the cranks to `angle` radians and moves the legs with them; `standing` is how far out of the saddle the
+   * rider is, 0 seated to 1 standing on the pedals.
+   */
+  pose(angle: number, standing?: number): void;
   /** The rider's own geometries, textures and materials, to dispose with it. */
   readonly owned: readonly { dispose(): void }[];
   /** The mesh of everything that never moves against the bike: the batch of moving parts leaves it alone. */
@@ -62,6 +66,14 @@ const UPPER_ARM = 0.29;
 const FOREARM = 0.265;
 
 const ACROSS = new Vector3(1, 0, 0);
+// What `between` and `bend` work in: a pose is made every frame for every rider, and must allocate nothing.
+const SCRATCH_X = new Vector3();
+const SCRATCH_Y = new Vector3();
+const SCRATCH_Z = new Vector3();
+/** The middle of the two hands on the hoods, which a rider out of the saddle turns about. */
+const HANDS = new Vector3(0, HOOD.y, HOOD.z);
+/** How far, in radians, a rider standing on the pedals turns about their hands. */
+const STAND = 0.085;
 /** The line from the hips to the hands, which the rider's sway turns about. */
 const SPINE = new Vector3(0, HOOD.y - HIP.y, HOOD.z - HIP.z).normalize();
 const SKIN = new Color(0xc08a68);
@@ -267,24 +279,31 @@ function solid(shape: BufferGeometry, colour: Color, finish = finishOf(colour)):
 }
 
 /** The turn and move that lay a tube made along +y from `a` to `b`, its x axis as near `across` as can be. */
-function between(a: Vector3, b: Vector3, across = ACROSS): Matrix4 {
-  const y = b.clone().sub(a).normalize();
-  const x = across.clone().addScaledVector(y, -across.dot(y));
+function between(a: Vector3, b: Vector3, into = new Matrix4()): Matrix4 {
+  const y = SCRATCH_Y.copy(b).sub(a).normalize();
+  const x = SCRATCH_X.copy(ACROSS).addScaledVector(y, -ACROSS.dot(y));
   if (x.lengthSq() < 1e-8) x.set(0, 0, 1).addScaledVector(y, -y.z);
   x.normalize();
-  const z = x.clone().cross(y);
-  return new Matrix4().makeBasis(x, y, z).setPosition(a);
+  const z = SCRATCH_Z.copy(x).cross(y);
+  return into.makeBasis(x, y, z).setPosition(a);
 }
 
 /** The middle joint of a two-bone limb from `a` to `c` (a knee, an elbow), bent towards `hint`. */
-function bend(a: Vector3, c: Vector3, upper: number, lower: number, hint: Vector3): Vector3 {
-  const ac = c.clone().sub(a);
-  const d = Math.min(ac.length(), upper + lower - 1e-4);
+function bend(
+  a: Vector3,
+  c: Vector3,
+  upper: number,
+  lower: number,
+  hint: Vector3,
+  into = new Vector3(),
+): Vector3 {
+  const dir = SCRATCH_Y.copy(c).sub(a);
+  const d = Math.min(dir.length(), upper + lower - 1e-4);
   const along = (upper * upper - lower * lower + d * d) / (2 * d);
   const out = Math.sqrt(Math.max(upper * upper - along * along, 0));
-  const dir = ac.normalize();
-  const side = hint.clone().addScaledVector(dir, -hint.dot(dir)).normalize();
-  return a.clone().addScaledVector(dir, along).addScaledVector(side, out);
+  dir.normalize();
+  const side = SCRATCH_X.copy(hint).addScaledVector(dir, -hint.dot(dir)).normalize();
+  return into.copy(a).addScaledVector(dir, along).addScaledVector(side, out);
 }
 
 // The legs' parts are the same for every rider, so they are made once.
@@ -432,6 +451,10 @@ class CourseCyclist implements RiderModel {
   private readonly pedalAt = new Vector3();
   private readonly ankle = new Vector3();
   private readonly hip = new Vector3();
+  private readonly rise = new Quaternion();
+  private readonly knee = new Vector3();
+  private readonly from = new Vector3();
+  private readonly to = new Vector3();
 
   constructor(kit: CourseCyclistKit, plain: Material, jersey: Color, number: number) {
     const shapes = kit.shapes();
@@ -493,14 +516,25 @@ class CourseCyclist implements RiderModel {
     this.pose(0);
   }
 
-  pose(angle: number): void {
+  pose(angle: number, standing = 0): void {
     // The bike rocks a little under each pedal stroke, about where the tyres meet the road; the rider's shoulders
     // sway the other way over it, about the line from the hips to the hands, and the back rises and falls a touch
     // twice a turn.
     const stroke = Math.sin(angle);
-    this.rig.rotation.z = stroke * 0.03;
-    this.torso.quaternion.setFromAxisAngle(SPINE, -stroke * 0.07);
-    this.torso.position.copy(HIP).setY(HIP.y + Math.cos(angle * 2) * 0.004);
+    // Out of the saddle the bike is thrown from side to side under the rider, who stays over it.
+    this.rig.rotation.z = stroke * (0.03 + 0.05 * standing);
+    // Standing, the rider turns about their hands on the hoods: the hips lift off the saddle and the shoulders
+    // come forward over the bars.
+    this.rise.setFromAxisAngle(ACROSS, -STAND * standing);
+    this.torso.quaternion
+      .setFromAxisAngle(SPINE, -stroke * (0.07 + 0.08 * standing))
+      .premultiply(this.rise);
+    this.torso.position
+      .copy(HIP)
+      .sub(HANDS)
+      .applyQuaternion(this.rise)
+      .add(HANDS)
+      .setY(this.torso.position.y + Math.cos(angle * 2) * (0.004 + 0.012 * standing));
     this.legs.forEach((leg, i) => {
       const a = angle + i * Math.PI;
       const pedal = this.pedalAt.set(
@@ -508,8 +542,10 @@ class CourseCyclist implements RiderModel {
         BB.y - Math.cos(a) * CRANK,
         BB.z - Math.sin(a) * CRANK,
       );
-      leg.crank.matrix.copy(
-        between(BB.clone().setX(leg.side * 0.075), pedal.clone().setX(leg.side * 0.075)),
+      between(
+        this.from.copy(BB).setX(leg.side * 0.075),
+        this.to.copy(pedal).setX(leg.side * 0.075),
+        leg.crank.matrix,
       );
       leg.pedal.matrix
         .makeRotationZ(Math.PI / 2)
@@ -523,11 +559,15 @@ class CourseCyclist implements RiderModel {
         .applyAxisAngle(ACROSS, pitch)
         .add(pedal)
         .setX(leg.side * (PEDAL_OUT - 0.01));
-      const hip = this.hip.copy(HIP).add(new Vector3(leg.side * 0.085, -0.035, 0.005));
+      // The hip is the torso's: it goes where the rider's sway and rise take it.
+      const hip = this.hip
+        .set(leg.side * 0.085, -0.035, 0.005)
+        .applyQuaternion(this.torso.quaternion)
+        .add(this.torso.position);
       // The knee tracks over the pedal, a touch out at the top of the stroke.
-      const knee = bend(hip, ankle, THIGH, SHIN, new Vector3(leg.side * 0.05, 0.25, -1));
-      leg.thigh.matrix.copy(between(hip, knee));
-      leg.shin.matrix.copy(between(knee, ankle));
+      const knee = bend(hip, ankle, THIGH, SHIN, this.to.set(leg.side * 0.05, 0.25, -1), this.knee);
+      between(hip, knee, leg.thigh.matrix);
+      between(knee, ankle, leg.shin.matrix);
     });
   }
 }

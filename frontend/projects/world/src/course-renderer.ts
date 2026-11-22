@@ -63,6 +63,7 @@ import { skyMaterial } from './sky-material';
 import { type Rain, rain } from './rain';
 import { RiderBatch } from './rider-batch';
 import { bendLean } from './rider-lean';
+import { outOfTheSaddle } from './rider-stance';
 import { vertexFinish } from './rider-finish';
 import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
@@ -313,8 +314,8 @@ export class CourseRenderer implements WorldRenderer {
     const metres = Math.min(ridden + this.benchFrom, course.end);
     if (frame.riders && !this.fieldMade) this.makeField(frame.riders, metres);
     this.lampShadows?.begin();
-    this.ride(you, metres, 0);
-    you.pose(frame.reducedMotion ? 0 : frame.crank);
+    const standing = this.ride(you, metres, 0);
+    you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.placeRiders(frame, metres);
     this.lampShadows?.end();
     this.riderBatch?.follow();
@@ -604,8 +605,11 @@ export class CourseRenderer implements WorldRenderer {
     if (this.startGreen) this.startGreen.visible = false;
   }
 
-  /** Stands a cyclist on the road `metres` from the start line, `lane` metres right of its centre. */
-  private ride(cyclist: Cyclist, metres: number, lane: number): void {
+  /**
+   * Stands a cyclist on the road `metres` from the start line, `lane` metres right of its centre, and returns how
+   * far out of the saddle the gradient there has them.
+   */
+  private ride(cyclist: Cyclist, metres: number, lane: number): number {
     // The rider leans into a bend: by how far the road turns over the next few metres.
     const ahead = this.course!.place(metres + LEAN_AHEAD, lane, this.here).heading;
     const at = this.course!.place(metres, lane, this.here);
@@ -626,6 +630,7 @@ export class CourseRenderer implements WorldRenderer {
       shadow.rotation.set(at.pitch, Math.atan2(-sx, -sz), 0, 'YXZ');
       shadow.visible = cyclist.group.visible;
     }
+    return outOfTheSaddle(Math.tan(at.pitch) * 100);
   }
 
   /** The chase camera behind the rider, looking up the road, with the sky and the sun's light around it. */
@@ -667,8 +672,8 @@ export class CourseRenderer implements WorldRenderer {
       const cyclist = this.rider(rider.jersey);
       if (!cyclist) continue;
       cyclist.group.visible = true;
-      this.ride(cyclist, metres + rider.metres, rider.lane);
-      cyclist.pose(frame.reducedMotion ? 0 : frame.crank + rider.lane);
+      const standing = this.ride(cyclist, metres + rider.metres, rider.lane);
+      cyclist.pose(frame.reducedMotion ? 0 : frame.crank + rider.lane, standing);
     }
   }
 

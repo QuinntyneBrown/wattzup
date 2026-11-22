@@ -623,6 +623,22 @@ night the sheen needs the map's `lights` or `lamps` (techniques 9 and 18). A new
 riders' material must be made by `loft` or `solid`. Round shapes that meet at a crease: the edge light outlines
 each.
 
+### R5. Out of the saddle on a climb (riders pass 6)
+
+**What it gives.** Riders who stand on the pedals up every steep ramp of every map, and throw the bike under them.
+
+**How it works.** `rider-stance.ts`: `outOfTheSaddle(gradient)`, 0 at 5 % to 1 at 7 %. The renderer reads the
+gradient from the pitch `Course.place` already gives. In `course-cyclist.ts` the torso turns about the hands by
+0.085 rad × standing; the rock grows from 0.03 to 0.08 rad and the bob from 4 to 16 mm.
+
+**To apply it.** Nothing to do for a map; a map's ramps (technique: `grade.ramp`) decide where riders stand. The two
+gradients are constants in `rider-stance.ts`.
+
+**Cost.** None measured in draw calls or triangles.
+
+**Watch for.** Legs that cannot reach: the hips' lift is bounded by the leg's length at the bottom of the stroke
+(thigh + shin), which is why the lift is 7 cm and not 12.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
@@ -631,7 +647,7 @@ The pictures the work aims at differ from a course in these ways, most visible f
 2. The water does not mirror the quay's own lamps, cranes and ships: only the sky and the far shore.
 3. Lit windows on the upper floors light nothing: only the ground floor's throw light.
 4. The neon signs have no glow in the air round them, as the lamps have.
-5. The riders: wheels that do not turn, no face, nobody out of the saddle on a climb, one build and one bike for
+5. The riders: wheels that do not turn, no face, a stand on the pedals that is slight, on a climb, one build and one bike for
    all (see the riders' own log).
 6. Signs with lettering, pipes, gutters and fire escapes: a warehouse's wall is still flat between its windows.
 7. The lamps along the quay are not mirrored in the harbour beside them.
