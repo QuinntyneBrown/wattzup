@@ -3,13 +3,22 @@ import {
   DestroyRef,
   Directive,
   ViewContainerRef,
+  computed,
   effect,
   inject,
   input,
   output,
   signal,
 } from '@angular/core';
-import type { Backend, MapDto, SceneRider, SceneryRequest, SceneryState } from '@telo/api';
+import {
+  type Backend,
+  type MapDto,
+  RIDE_SETTINGS,
+  type SceneRider,
+  type SceneryRequest,
+  type SceneryState,
+} from '@telo/api';
+import { worldQuality } from '@telo/domain';
 import type { WorldScene } from '@telo/world';
 
 /**
@@ -36,6 +45,10 @@ export class RaceWorld {
   readonly unavailable = output<void>();
 
   private readonly scene = signal<ComponentRef<WorldScene> | null>(null);
+  /** The rider's World settings, as the world reads them (L2-159, L2-160, L2-161). */
+  private readonly settings = inject(RIDE_SETTINGS).settings;
+  /** One value until the settings change, so binding every second hands the scene nothing new. */
+  private readonly quality = computed(() => worldQuality(this.settings()));
 
   constructor() {
     const host = inject(ViewContainerRef);
@@ -66,5 +79,6 @@ export class RaceWorld {
     scene.setInput('running', this.running());
     scene.setInput('riders', this.riders());
     scene.setInput('scenery', this.scenery());
+    scene.setInput('quality', this.quality());
   }
 }

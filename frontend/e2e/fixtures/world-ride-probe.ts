@@ -78,6 +78,16 @@ export class WorldRideProbe {
     }, tier);
   }
 
+  /**
+   * Call before the page loads: World Ride opens where the rider's settings say and is judged as a rider's ride is,
+   * while the renderer reports what it draws (L2-159 AC5, L2-160).
+   */
+  async watch(): Promise<void> {
+    await this.page.addInitScript(() => {
+      (window as unknown as Record<string, unknown>)['__wzWorldRide'] = { judged: true };
+    });
+  }
+
   /** Lowers the drawn tier one step on the next frame, as a slow frame budget would (#882). */
   async dropTier(): Promise<void> {
     await this.page.evaluate(() => {

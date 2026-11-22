@@ -27,9 +27,10 @@ import {
   type WorldStartProgress,
   type WorldTier,
   panoramaUrl,
+  RIDE_SETTINGS,
 } from '@telo/api';
 import { formatClock } from '@telo/components';
-import { PlanSummary } from '@telo/domain';
+import { PlanSummary, worldQuality } from '@telo/domain';
 import { LiveSessionStore } from '../live/live-session-store';
 import { startStepping } from './start-stepping';
 import {
@@ -68,6 +69,9 @@ function draws3d(): boolean {
 @Injectable()
 export class WorldLoadStore {
   private readonly downloader = inject(WORLD_DOWNLOADER);
+  /** The rider's World settings: the level, step-down and graphics API the world starts with (L2-159, L2-160, L2-161). */
+  private readonly settings = inject(RIDE_SETTINGS).settings;
+  private readonly drawing = computed(() => worldQuality(this.settings()));
   private readonly connection = inject(BIKE_CONNECTION);
   private readonly remembered = inject(REMEMBERED_BIKE).get();
   private readonly live = inject(LiveSessionStore);
@@ -194,9 +198,14 @@ export class WorldLoadStore {
       this.phase() !== 'failed',
   );
 
-  /** The quality fact, "Auto quality · Low", while the world is drawn in 3D (L2-152 AC7). */
+  /**
+   * The quality fact, "Auto quality · Low", while the world is drawn in 3D (L2-152 AC7); "Quality · Medium" when the
+   * rider fixed the level in Settings (L2-159 AC5).
+   */
   readonly quality = computed(() =>
-    this.panoramaOnly() ? null : `Auto quality · ${TIER_NAME[this.tier()]}`,
+    this.panoramaOnly()
+      ? null
+      : `${this.settings().quality === 'auto' ? 'Auto quality' : 'Quality'} · ${TIER_NAME[this.tier()]}`,
   );
 
   /** The bike fact: its name when connected, "No bike" otherwise (L2-152 AC7). */
@@ -351,7 +360,7 @@ export class WorldLoadStore {
     if (this.destroyed) return;
     const drawn = world.worldForMap(dto.world);
     this.world.set(drawn);
-    if (!this.lowChosen()) this.tier.set(world.startTier());
+    if (!this.lowChosen()) this.tier.set(this.drawing().tier ?? world.startTier());
     const progress = this.progress();
     this.startPercent.set(
       progress.total > 0 ? Math.floor((40 * progress.received) / progress.total) : 0,
@@ -395,8 +404,11 @@ export class WorldLoadStore {
         canvas.width = innerWidth;
         canvas.height = innerHeight;
         this.canvas = canvas;
+        const drawing = this.drawing();
         return renderer.start(canvas, drawn, () => this.nextFrame(), segments, {
           tier,
+          stepDown: drawing.stepDown,
+          forceWebGL: drawing.forceWebGL,
           progress: (progress) => this.report(progress),
         });
       },

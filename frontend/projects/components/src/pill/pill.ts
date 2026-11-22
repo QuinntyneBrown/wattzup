@@ -13,8 +13,9 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
     class: 'pill',
     '[class.pill--ok]': "tone() === 'ok'",
     '[class.pill--heart]': "tone() === 'heart'",
+    '[class.pill--volt]': "tone() === 'volt'",
   },
 })
 export class Pill {
-  readonly tone = input<'ok' | 'heart' | null>(null);
+  readonly tone = input<'ok' | 'heart' | 'volt' | null>(null);
 }

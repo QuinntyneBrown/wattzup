@@ -5,7 +5,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
  * one before by a hairline.
  */
 @Component({
-  selector: 'div[wz-setting]',
+  selector: 'div[wz-setting], fieldset[wz-setting]',
   templateUrl: './setting.html',
   styleUrl: './setting.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -4,13 +4,15 @@ import {
   DestroyRef,
   Directive,
   ViewContainerRef,
+  computed,
   effect,
   inject,
   input,
   signal,
   untracked,
 } from '@angular/core';
-import type { PreparedWorld, Segment, WorldId } from '@telo/api';
+import { type PreparedWorld, RIDE_SETTINGS, type Segment, type WorldId } from '@telo/api';
+import { worldQuality } from '@telo/domain';
 import type * as WorldLibrary from '@telo/world';
 import type { WorldMusicPlayer, WorldScene } from '@telo/world';
 
@@ -36,6 +38,10 @@ export class ClassWorldScene {
   readonly music = input.required<boolean>();
 
   private readonly scene = signal<ComponentRef<WorldScene> | null>(null);
+  /** The rider's World settings, as the world reads them (L2-159, L2-160, L2-161). */
+  private readonly settings = inject(RIDE_SETTINGS).settings;
+  /** One value until the settings change, so binding every second hands the scene nothing new. */
+  private readonly quality = computed(() => worldQuality(this.settings()));
   private readonly player = signal<WorldMusicPlayer | null>(null);
 
   constructor() {
@@ -86,5 +92,6 @@ export class ClassWorldScene {
     scene.setInput('elapsed', this.elapsed());
     scene.setInput('speedKmh', this.speedKmh());
     scene.setInput('running', this.running());
+    scene.setInput('quality', this.quality());
   }
 }

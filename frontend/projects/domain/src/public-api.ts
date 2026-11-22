@@ -71,6 +71,8 @@ export {
 export { BrowserFullscreen } from './browser/browser-fullscreen';
 export { BrowserNetworkStatus } from './browser/browser-network-status';
 export { BrowserScreenWakeLock } from './browser/browser-screen-wake-lock';
+export { BrowserGraphicsSupport } from './browser/browser-graphics-support';
+export { worldQuality } from './engine/world-quality';
 export { CachedClassesApi } from './storage/cached-classes-api';
 export { CATALOGUE_KEY, CatalogueCache } from './storage/catalogue-cache';
 export { PlanSummary } from './engine/plan-summary';

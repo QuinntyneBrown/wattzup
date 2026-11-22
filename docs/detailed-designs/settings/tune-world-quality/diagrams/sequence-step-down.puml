@@ -14,24 +14,21 @@ skinparam package {
   FontColor #101828
   BackgroundColor #F9FAFB
 }
-box "Frontend — Ride app (world library, lazy chunk)" #E0F2FE
-  participant "FrameBudget" as budget
-  participant "QualityGovernor" as gov
+box "Frontend — Ride app (world library, lazy)" #E0F2FE
+  participant "WorldScene" as scene
   participant "WorldRenderer" as renderer
+  participant "FrameBudget" as budget
 end box
-box "Frontend — Ride app (ride application)" #E0F2FE
-  participant "WorldQualityBridge" as bridge
-end box
-loop every 2-second window
-  renderer -> gov : onWindow(median frame, period 16.7 ms or 33.3 ms at 30 fps)
-  gov -> budget : isSlow(median > 1.2 × period)
+scene -> renderer : start(…, { tier, stepDown })
+renderer -> budget : new FrameBudget(level, period, { pinned: stepDown is false })
+loop each drawn frame
+  renderer -> budget : sample(now, frame time)
+  alt two 2 s windows in a row over 1.2 × the period, and not pinned
+    budget --> renderer : drop: next lower level, or Low at 3 × (L2-159 AC4)
+    renderer -> renderer : applyTier() for the rest of the ride (L2-160 AC3)
+  else step-down off (pinned)
+    budget --> renderer : keep, however slow (L2-160 AC2)
+  end
 end
-budget --> gov : second slow window in a row
-alt policy.stepDown is true (always with Auto)
-  gov -> renderer : setLevel(next lower) for the rest of the ride (L2-159 AC4)
-  note right of gov : Below Low there is nothing lower; the level holds
-else Fixed level with step-down off
-  gov -> gov : keep the level (L2-160 AC2)
-end
-note over bridge : The next ride starts at the chosen level again (L2-160 AC3)
+note over scene : A new quality object with the same scale and cap restarts nothing:\nthe budget's windows are restarted only by a new frame period.
 @enduml

@@ -22,3 +22,8 @@
   background: var(--color-danger-bg);
   color: var(--color-danger-fg);
 }
+
+:host(.pill--volt) {
+  background: var(--color-accent-subtle);
+  color: var(--color-fg-accent);
+}

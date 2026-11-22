@@ -67,7 +67,7 @@ test('a change applies at once and is kept on this device, with no Save (L2-158 
 
   await settings.keepAwake.click();
   await expect(settings.keepAwake).toHaveAttribute('aria-checked', 'false');
-  expect(await storedSettings(page)).toEqual({ keepAwake: false });
+  expect(await storedSettings(page)).toMatchObject({ keepAwake: false });
 
   await page.reload();
   await expect(settings.keepAwake).toHaveAttribute('aria-checked', 'false');
@@ -76,7 +76,7 @@ test('a change applies at once and is kept on this device, with no Save (L2-158 
   await settings.keepAwake.focus();
   await page.keyboard.press('Space');
   await expect(settings.keepAwake).toHaveAttribute('aria-checked', 'true');
-  expect(await storedSettings(page)).toEqual({ keepAwake: true });
+  expect(await storedSettings(page)).toMatchObject({ keepAwake: true });
 });
 
 test('a malformed stored setting reads as its recommended value (L2-158 AC5)', async ({ page }) => {
@@ -103,7 +103,7 @@ test('Reset to recommended puts every setting back as it started (L2-158 AC6)', 
 
   await settings.reset.click();
   await expect(settings.keepAwake).toHaveAttribute('aria-checked', 'true');
-  expect(await storedSettings(page)).toEqual({ keepAwake: true });
+  expect(await storedSettings(page)).toMatchObject({ keepAwake: true });
   await expect(settings.announcement).toHaveText('Settings reset');
 });
 

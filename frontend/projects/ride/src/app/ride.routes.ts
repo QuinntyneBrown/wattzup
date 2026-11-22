@@ -1,13 +1,19 @@
 import type { Routes } from '@angular/router';
 import {
   FULLSCREEN,
+  GRAPHICS_SUPPORT,
   HttpRiderProgressApi,
   NETWORK_STATUS,
   PROGRESS_STORE,
   RIDE_SETTINGS,
   RIDER_PROGRESS_API,
 } from '@telo/api';
-import { BrowserFullscreen, BrowserNetworkStatus, LocalRideSettingsStore } from '@telo/domain';
+import {
+  BrowserFullscreen,
+  BrowserGraphicsSupport,
+  BrowserNetworkStatus,
+  LocalRideSettingsStore,
+} from '@telo/domain';
 import { provideAppCache } from './app-cache/provide-app-cache';
 import { provideBikeConnection } from './bike/provide-bike-connection';
 import { rememberedBikeGuard } from './bike/remembered-bike.guard';
@@ -112,6 +118,8 @@ export const rideRoutes: Routes = [
           {
             path: 'settings',
             title: 'Settings · Telo Ride',
+            // What this browser draws worlds with, asked only on Settings (L2-159 AC1).
+            providers: [{ provide: GRAPHICS_SUPPORT, useClass: BrowserGraphicsSupport }],
             loadComponent: () => import('./settings/settings-page'),
           },
           {

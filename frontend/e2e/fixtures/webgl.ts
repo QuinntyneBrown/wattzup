@@ -45,6 +45,19 @@ export class FakeWebGl {
     return this.page.evaluate(() => (window as unknown as { __contexts: number }).__contexts);
   }
 
+  /**
+   * Call before the page loads: a WebGPU adapter is granted, so Settings offers WebGPU (L2-161 AC1). The adapter is
+   * a stand-in that draws nothing: only for screens that ask whether WebGPU is there, never for a world.
+   */
+  async withWebGpu(): Promise<void> {
+    await this.page.addInitScript(() => {
+      Object.defineProperty(navigator, 'gpu', {
+        value: { requestAdapter: () => Promise.resolve({ features: new Set(), limits: {} }) },
+        configurable: true,
+      });
+    });
+  }
+
   /** Call before the page loads: no WebGPU, so the world draws with WebGL 2 (L2-065). */
   async withoutWebGpu(): Promise<void> {
     await this.page.addInitScript(() => {
