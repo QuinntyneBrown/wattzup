@@ -23,6 +23,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 12 | The camera closer: the rider some two fifths of the picture's height, where they were a ninth | 119.9 fps, none over 20 ms | 16.7 ms | 302 fps (3.31 ms): 305, 284, 302 | 85,051 | 84 | Yes |
 | 13 | Hips and legs of a cyclist: glutes that are the thighs' own tops, fuller thighs, calves that swell behind | 119.8 fps, 1 over 20 ms | 25.0 ms | 308 fps (3.25 ms): 305, 312, 308 | 87,691 | 84 | Yes |
 | 14 | A road helmet: a long low shell with vents along its crown, a dark rim and a pale tail | 119.7 fps, 1 over 20 ms | 25.0 ms | 303 fps (3.30 ms): 299, 303, 309 | 87,751 | 84 | Yes |
+| 15 | Shoes, hands and arms: a cupped heel with a tab, a strap and toe cap; a hand that holds the hood; arms with their muscles | 120.0 fps, 0 over 20 ms | 16.7 ms | 303 fps (3.30 ms): 291, 307, 303 | 90,791 | 84 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -545,3 +546,25 @@ helmet read as a white cap.
 
 **Learned.** Colour a shape along the lines it was built on. Stripes painted on a ball's triangles zigzag; the same
 stripes on a loft whose columns run front to back are straight for nothing.
+
+## Pass 15: shoes, hands and arms
+
+**Looked at first, and left.** No shadow can be seen under a rider at night, and none could in the map's pass 23
+either: the lamps' shadows are dark shapes on dark asphalt. The lamps' light on a rider already falls from above
+(the map's pass 9), so the rider's remaining flatness is not that. Neither was changed.
+
+**Before** (`rider-14-start.jpg`): each shoe is a white lozenge, each hand a dark ball on the hood, each arm a tube.
+
+**After** (`rider-15-start.jpg`, `rider-15.jpg`, `rider-15.mp4`): the shoes have a rounded, cupped heel in a darker
+colour with a pale tab up its back, a strap over the instep and a dark toe cap; they are deepest at the instep and
+widest at the ball. From the race camera the heels, with their tabs, are what shows as the feet turn. Each hand is
+a palm lying along the hood in a fingerless glove, fingers curled down over its front and a thumb round its inner
+side; the upper arm has its triceps and the forearm is thick below the elbow and narrow at the wrist. The hands and
+arms are a small change at this distance.
+
+**What changed.** `course-cyclist.ts`: `shoeShape`'s upper is nine sections, coloured by `t` and `round`; the fist's
+ball is three lofts (palm, fingers, thumb); the arm's lofts have their muscles' sections.
+
+**Cost.** A few hundred triangles for the pack; the frame rate is within the spread of the passes before.
+
+**Learned.** What the following camera sees of a foot is its heel. The heel got the detail; the toe got a cap.

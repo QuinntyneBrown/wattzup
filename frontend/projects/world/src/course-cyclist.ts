@@ -391,15 +391,27 @@ const shinShape = (look: Palette) =>
 function shoeShape(look: Palette): BufferGeometry {
   const upper = loft(
     [
-      { t: 0, rx: 0.03, rz: 0.03, z: 0.012 },
-      { t: 0.2, rx: 0.038, rz: 0.04, z: 0.018 },
-      { t: 0.55, rx: 0.045, rz: 0.036, z: 0.012 },
-      { t: 0.85, rx: 0.042, rz: 0.026, z: 0.006 },
-      { t: 1, rx: 0.026, rz: 0.016, z: 0.002 },
+      // The heel is cupped and rounded; the shoe is deepest at the instep, widest at the ball and low at the toe.
+      { t: 0, rx: 0.012, rz: 0.014, z: 0.016 },
+      { t: 0.03, rx: 0.026, rz: 0.03, z: 0.016 },
+      { t: 0.1, rx: 0.033, rz: 0.038, z: 0.018 },
+      { t: 0.24, rx: 0.037, rz: 0.042, z: 0.02 },
+      { t: 0.45, rx: 0.042, rz: 0.038, z: 0.014 },
+      { t: 0.62, rx: 0.046, rz: 0.032, z: 0.01 },
+      { t: 0.85, rx: 0.042, rz: 0.024, z: 0.005 },
+      { t: 0.96, rx: 0.03, rz: 0.017, z: 0.002 },
+      { t: 1, rx: 0.014, rz: 0.01, z: 0.001 },
     ],
     0.275,
-    () => look.shoe,
-    10,
+    // A dark heel cup with a pale tab up its back that shows to whoever follows, a strap over the instep, a dark
+    // toe cap; the rest is the shoe's own colour. (Round a shoe, a quarter of the way is its top.)
+    (t, round) => {
+      if (t < 0.13) return Math.abs(round - 0.25) < 0.07 ? SOCK : GRIPPER;
+      if (t > 0.4 && t < 0.47 && round < 0.5) return GRIPPER;
+      if (t > 0.9) return GRIPPER;
+      return look.shoe;
+    },
+    14,
   );
   const sole = loft(
     [
@@ -1007,10 +1019,12 @@ function body(jersey: Color, look: Palette): { still: BufferGeometry[]; kit: Buf
     );
     sleeve.applyMatrix4(between(shoulder, cuff));
     kit.push(sleeve);
+    // The bare arm: the triceps behind the upper arm, the forearm thick below the elbow and narrow at the wrist.
     const upper = loft(
       [
-        { t: 0, rx: 0.04, rz: 0.043 },
-        { t: 1, rx: 0.038, rz: 0.04 },
+        { t: 0, rx: 0.041, rz: 0.046 },
+        { t: 0.45, rx: 0.041, rz: 0.047 },
+        { t: 1, rx: 0.036, rz: 0.039 },
       ],
       cuff.distanceTo(elbow),
       () => look.skin,
@@ -1019,23 +1033,55 @@ function body(jersey: Color, look: Palette): { still: BufferGeometry[]; kit: Buf
     placed(upper, between(cuff, elbow));
     const fore = loft(
       [
-        { t: 0, rx: 0.039, rz: 0.041 },
-        { t: 0.25, rx: 0.04, rz: 0.044 },
-        { t: 0.8, rx: 0.028, rz: 0.03 },
-        { t: 1, rx: 0.027, rz: 0.03 },
+        { t: 0, rx: 0.037, rz: 0.039 },
+        { t: 0.2, rx: 0.042, rz: 0.047 },
+        { t: 0.55, rx: 0.035, rz: 0.038 },
+        { t: 0.84, rx: 0.027, rz: 0.03 },
+        { t: 1, rx: 0.028, rz: 0.03 },
       ],
       FOREARM,
       (t) => (t < 0.86 ? look.skin : GLOVE),
       10,
     );
     placed(fore, between(elbow, hand));
-    const fist = ball(hand, new Vector3(0.036, 0.034, 0.05), GLOVE, 8);
-    placed(
-      fist.piece,
-      new Matrix4()
-        .makeRotationX(0.5)
-        .setPosition(fist.at.clone().add(new Vector3(0, -0.012, -0.028))),
+    // The hand on the hood, in a fingerless glove: the palm lying along it, the fingers curled down over its
+    // front, the thumb round its inner side.
+    const knuckles = hand.clone().add(new Vector3(0, -0.012, -0.076));
+    const palm = loft(
+      [
+        { t: 0, rx: 0.03, rz: 0.024 },
+        { t: 0.4, rx: 0.041, rz: 0.024 },
+        { t: 1, rx: 0.04, rz: 0.02 },
+      ],
+      hand.distanceTo(knuckles),
+      () => GLOVE,
+      10,
     );
+    placed(palm, between(hand, knuckles));
+    const tips = knuckles.clone().add(new Vector3(0, -0.07, 0.016));
+    const fingers = loft(
+      [
+        { t: 0, rx: 0.04, rz: 0.019 },
+        { t: 0.45, rx: 0.039, rz: 0.015 },
+        { t: 1, rx: 0.034, rz: 0.011 },
+      ],
+      knuckles.distanceTo(tips),
+      (t) => (t < 0.4 ? GLOVE : look.skin),
+      10,
+    );
+    placed(fingers, between(knuckles, tips));
+    const thumbFrom = hand.clone().add(new Vector3(-side * 0.03, -0.012, -0.012));
+    const thumbTo = hand.clone().add(new Vector3(-side * 0.04, -0.034, -0.064));
+    const thumb = loft(
+      [
+        { t: 0, rx: 0.015, rz: 0.015 },
+        { t: 1, rx: 0.01, rz: 0.01 },
+      ],
+      thumbFrom.distanceTo(thumbTo),
+      (t) => (t < 0.45 ? GLOVE : look.skin),
+      8,
+    );
+    placed(thumb, between(thumbFrom, thumbTo));
   }
   // The seat: the pelvis between the hips, in the shorts, that the trunk grows out of. The glutes are the thighs'
   // own tops (thighShape), so they turn with the legs; this fills between them over the saddle.
