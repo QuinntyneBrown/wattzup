@@ -76,6 +76,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 17.2 | [Cache the app](17-2-cache-the-app/README.md) | 1:56 | A solo race started with no network once the app had been opened, the service worker's caches, Map Select's covers offline and the registration kept out of the first bundle, at every width |
 | 17.3 | [Offline choices](17-3-offline-choices/README.md) | 1:56 | Riders online and group classes closed with their reason the moment the browser goes offline, Bots or Ride alone chosen in their place, and both open again online, at every width |
 | 18.1 | [Lose the service mid-ride](18-1-lose-the-service-mid-ride/README.md) | 1:56 | A riders-online race and a group class riding on through a lost service with their last standings and a notice, rejoining, and the service's standings arriving at once, at every width |
+| 18.2 | [Keep the ride clock true](18-2-keep-the-ride-clock-true/README.md) | 1:56 | A race and a class ride shown again after ten throttled minutes in a hidden tab with the clock, segment and distance of a visible tab, and a running race asking before the tab closes, at every width |
 
 ## What every video is
 

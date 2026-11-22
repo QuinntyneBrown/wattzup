@@ -16,11 +16,10 @@ skinparam package {
 }
 actor "Rider" as actor
 box "Frontend — Ride app (ride application)" #E0F2FE
-  participant "Ride page" as page
-  participant "RideSessionStore" as store
+  participant "Ride screen" as page
+  participant "RaceStore / ClassRideStore" as store
   participant "BrowserScreenWakeLock" as wake
-  participant "LeaveRideGuard" as guard
-end box
+  end box
 box "Frontend — Ride app (domain library)" #E0F2FE
   participant "RideClock" as clock
   participant "RideTicker" as ticker
@@ -31,18 +30,18 @@ page -> store : start(plan)
 store -> clock : start() reads MonotonicTime.now()
 store -> ticker : start()
 ticker -> browser : setTimeout(to next whole second)
-store -> wake : acquire()
+store -> wake : hold()
 opt navigator.wakeLock exists (L2-133 AC3)
   wake -> browser : navigator.wakeLock.request('screen')
   browser --> wake : WakeLockSentinel
 end
-store -> guard : arm()
-guard -> browser : addEventListener('beforeunload')
+page -> browser : host listens for beforeunload
 store --> page : elapsed and planState signals
 ...ride runs...
 actor -> browser : Close or reload the tab
-browser -> guard : beforeunload event
-guard -> browser : event.preventDefault() (L2-133 AC4)
+browser -> page : beforeunload event
+page -> store : ride()?
+page -> browser : event.preventDefault() (L2-133 AC4)
 browser --> actor : Confirm leaving the page
 alt Rider stays
   actor -> browser : Stay
@@ -51,6 +50,6 @@ else Rider leaves
   browser -> store : Route destroyed
   store -> ticker : stop() clears timer and listener
   store -> wake : release()
-  store -> guard : disarm()
+  browser -> page : listener removed with the screen
 end
 @enduml

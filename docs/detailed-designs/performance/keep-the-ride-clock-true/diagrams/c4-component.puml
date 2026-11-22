@@ -6,9 +6,9 @@ title Components — Keep the ride clock true
 System_Ext(bike, "Smart bike", "Bluetooth LE")
 Container_Boundary(app, "Ride app") {
   Component(page, "Ride page (race, class or custom)", "Angular page · ride", "Renders readouts, countdown and trace")
-  Component(store, "RideSessionStore", "Route-scoped store · ride", "Owns one ride's timing parts")
+  Component(store, "RaceStore / ClassRideStore", "Screen-scoped stores · ride", "Own one ride's timing parts")
   Component(wake, "ScreenWakeLock", "Browser service · ride", "navigator.wakeLock")
-  Component(guard, "LeaveRideGuard", "Browser service · ride", "beforeunload confirmation")
+  Component(guard, "RacePage / ClassRideSession", "Ride screens · ride", "beforeunload confirmation while riding")
   Component(clock, "RideClock", "Service · domain/engine", "Elapsed time from a monotonic clock")
   Component(ticker, "RideTicker", "Service · domain/engine", "One tick a second; catches up on visibility")
   Component(engine, "WorkoutEngine", "Service · domain/engine", "Segment and target resistance at an elapsed time")
