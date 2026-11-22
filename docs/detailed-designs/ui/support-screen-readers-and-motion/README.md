@@ -23,15 +23,26 @@ The feature belongs to the ui subsystem and is frontend-only. It applies to ever
   `document.title` from each route's `title`.
 - **Timers** — the countdown and clock readouts render with `role="timer"` and no `aria-live`.
   Per-second readouts carry no live region.
-- **`Announcer`** — contract in `api` (token `ANNOUNCER`) with `announce(message, politeness)`.
-  The `ride` application implements it over the Angular CDK `LiveAnnouncer`. Pages call it only for
-  state changes: lost bike, paused, unlocked, sent.
+- **`Announcer`** — contract in `api` (token `ANNOUNCER`) with `announce(message)`, always polite.
+  `LiveRegionAnnouncer` in `domain` (`browser/`) implements it over one visually hidden region of
+  its own (`aria-live="polite"`, `aria-atomic="true"`, class `live-announcer`), added on first use:
+  it empties the region and writes the message 100 ms later, so a repeat is heard as a change, and
+  removes the region and its timer on destroy. The ride's parent route binds it. It is called only
+  for state changes: lost bike, paused, unlocked, sent, a ride's step as it starts and the result.
+- **Step and result** — `CustomRideStore` and `ClassRideStore` announce each step once as its
+  index changes, in the card's words (`rides/step-announcement.ts`): "Work, round 1 of 8: 0:30 at
+  level 24" on the custom ride, "Work, 0:30" on the class ride. Results announces
+  `ResultsView.announcement`, "Race results: You finished 2nd of 10. +442 XP earned.", as it opens
+  and again once the XP is recorded.
 - **Dialogs** — every dialog opens through the CDK `Dialog` with `autoFocus: 'first-tabbable'` and
   `restoreFocus: true`. The CDK focus trap keeps focus inside.
-- **`InertBackground`** — service in the `ride` application. It subscribes to the CDK `Dialog`'s
-  `afterOpened` and `afterAllClosed` streams. It sets `inert` on the `.app` root while a dialog
-  is open and removes it when the last dialog closes. The subscriptions end through
-  `takeUntilDestroyed`.
+- **`provideInertBehindDialogs`** — an environment initializer in the `ride` application
+  (`dialogs/`), provided by each route whose pages open a dialog (Profile, the custom ride), so
+  the CDK dialog's code stays out of every other chunk. On the CDK `Dialog`'s `afterOpened` it
+  notes what has the focus, then sets `inert` on `<wz-root>`; when the last open dialog's `closed`
+  emits it removes `inert` and, if the focus was lost, gives it back to that control. The CDK
+  restores the focus while the app is still inert, which the browser refuses. The subscriptions
+  end through `takeUntilDestroyed`.
 - **State indicators** — every state (on target, locked, earned, ready, connected) renders an icon
   and a text label as well as a colour, through components such as `Badge`, `Chip` and `Stars`.
 - **Contrast** — colour pairs come only from role tokens whose contrast is recorded in
@@ -39,8 +50,9 @@ The feature belongs to the ui subsystem and is frontend-only. It applies to ever
 - **Duration tokens** — `--duration-fast` (150 ms, hovers and board slides), `--duration-base`
   (200 ms, panels), `--duration-slow` (250 ms, the unlock) and `--duration-deliberate` (1000 ms, a
   countdown step).
-- **Reduced motion in CSS** — under `prefers-reduced-motion: reduce`, `tokens.css` sets the
-  moving durations to 0 ms. Opacity fades named in `L2-056` and `L2-076` keep their durations. The
+- **Reduced motion in CSS** — under `prefers-reduced-motion: reduce`, or the rider's Reduce motion
+  On (`data-motion="reduced"`), `tokens.css` sets the moving durations to 0 ms, including
+  `--duration-countdown`, so the interval, segment and race bars jump to their place. Opacity fades named in `L2-056` and `L2-076` keep their durations. The
   countdown step is a timer, so it keeps `--duration-deliberate`.
 - **`MotionPreference`** — service in the `ride` application exposing `reduced` as a signal from
   `matchMedia('(prefers-reduced-motion: reduce)')`. Script-driven motion reads it; the media
@@ -121,3 +133,12 @@ Board rows slide over 150 ms, or move at once when the rider prefers reduced mot
    chunk, puts the HTML sanitizer in the initial bundle (3.3 kB; found in slice 20.3, which took it
    off Settings). The `Announcer` should be built on a polite status region of its own unless that
    cost is accepted in an ADR.
+   Decided in slice 23.3: the `Announcer` is built on a region of its own.
+2. **The accessibility sweep** (`e2e/sweeps/accessibility.spec.ts`, axe-core in both themes) is
+   not written yet: it needs `@axe-core/playwright`, and contrast (`L2-141` AC5) is not this
+   slice's.
+3. **What proves this slice.** `e2e/screen-readers-and-motion.spec.ts`: a custom ride's and a class
+   ride's step, and Results, each heard once; the custom ride's countdown a timer with no live
+   region; the leave dialog taking and keeping the focus with `<wz-root>` inert and giving the
+   focus back on Escape; and every screen of `e2e/fixtures/screens.ts` with nothing moving but an
+   opacity fade under `prefers-reduced-motion: reduce` (`AppDocument.moving`).

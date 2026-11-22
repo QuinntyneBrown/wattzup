@@ -72,6 +72,7 @@ export {
 } from './protocol/echelon-protocol';
 export { BrowserDisplayPreferences } from './browser/browser-display-preferences';
 export { BrowserFullscreen } from './browser/browser-fullscreen';
+export { LiveRegionAnnouncer } from './browser/live-region-announcer';
 export { WebAudioRideSound } from './browser/web-audio-ride-sound';
 export { BrowserNetworkStatus } from './browser/browser-network-status';
 export { BrowserScreenWakeLock } from './browser/browser-screen-wake-lock';

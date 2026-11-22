@@ -1,0 +1,58 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.145
+A screen reader should hear what changes, once. Not a clock, every second.
+
+00:00:10.324 --> 00:00:15.044
+As a step starts, the rider hears it once, in the card's own words: work, round one
+
+00:00:15.044 --> 00:00:17.960
+of eight, thirty seconds at level twenty-four.
+
+00:00:23.228 --> 00:00:28.047
+When Results opens, it says the result: you finished in twenty-six thirty-eight, and
+
+00:00:28.047 --> 00:00:29.150
+the XP earned.
+
+00:00:36.133 --> 00:00:40.918
+A dialog takes the focus and keeps it. The app behind it goes inert, and closing
+
+00:00:40.918 --> 00:00:43.550
+gives the focus back to what opened it.
+
+00:00:49.038 --> 00:00:54.348
+With reduced motion, nothing moves but a fade. The interval bar kept sliding; now it
+
+00:00:54.348 --> 00:00:55.849
+jumps to its place.
+
+00:01:01.942 --> 00:01:06.745
+Every screen is checked for motion on every run, beside the steps, the result and
+
+00:01:06.745 --> 00:01:07.697
+the dialog.
+
+00:01:14.847 --> 00:01:17.170
+Results, from a phone to the full screen.
+
+00:01:25.170 --> 00:01:29.774
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:30.119 --> 00:01:34.631
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:34.631 --> 00:01:36.302
+every hill and interval.
+
+00:01:36.647 --> 00:01:41.825
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:41.825 --> 00:01:47.273
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:47.273 --> 00:01:50.263
+XP, rider levels, stars and map unlocks.
+
+00:01:50.608 --> 00:01:53.101
+A custom workout lives under Profile.

@@ -1,6 +1,7 @@
 import { inject, provideEnvironmentInitializer } from '@angular/core';
 import type { Routes } from '@angular/router';
 import {
+  ANNOUNCER,
   DISPLAY_PREFERENCES,
   FULLSCREEN,
   HttpRiderProgressApi,
@@ -13,6 +14,7 @@ import {
   BrowserDisplayPreferences,
   BrowserFullscreen,
   BrowserNetworkStatus,
+  LiveRegionAnnouncer,
   LocalRideSettingsStore,
 } from '@telo/domain';
 import { provideAppCache } from './app-cache/provide-app-cache';
@@ -43,6 +45,8 @@ export const rideRoutes: Routes = [
       provideEnvironmentInitializer(() => void inject(DISPLAY_PREFERENCES)),
       // Full screen, which the header offers and a ride's start can enter (L2-144, L2-164 AC6).
       { provide: FULLSCREEN, useClass: BrowserFullscreen },
+      // What a screen reader hears: a ride's steps and the result (L2-141 AC2).
+      { provide: ANNOUNCER, useClass: LiveRegionAnnouncer },
     ],
     // Every screen needs a rider but sign-in, the code screen and not-found (L2-001 AC1).
     canActivateChild: [authGuard],
