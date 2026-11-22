@@ -3141,8 +3141,6 @@ const LAMP_EVERY = 40;
 const LAMPS = 6;
 const POST_EVERY = 20;
 const POSTS = 14;
-/** How often, in frames, meshes made since the last look take the bend. */
-const BEND_SWEEP = 120;
 /** How far the gradient under the rider eases towards the target each frame. */
 
 export class ThreeWorldRenderer implements WorldRenderer {
@@ -3240,7 +3238,6 @@ export class ThreeWorldRenderer implements WorldRenderer {
     const a = heights[i]!;
     return a + (heights[i + 1]! - a) * (f - i);
   };
-  private drawn = 0;
 
   async start(
     canvas: HTMLCanvasElement,
@@ -3295,7 +3292,6 @@ export class ThreeWorldRenderer implements WorldRenderer {
     if (world.id === 'oldtown') await this.addStreet();
     if (world.id === 'docklands') await this.addTowers();
     this.applyTier();
-    this.bend.apply(this.scene, this.unbent);
     await this.warmUp(canvas, nextFrame, segments);
     if (this.probe) this.probe.programsBeforeRide = this.renderer.info.memory.programs;
     return true;
@@ -3364,7 +3360,6 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.probe = probe;
     this.lastFrameAt = null;
     this.lastS = 0;
-    this.drawn = 0;
   }
 
   /**
@@ -3450,12 +3445,6 @@ export class ThreeWorldRenderer implements WorldRenderer {
       .add(this.sun.target.position);
     this.sky.sunPosition.value.copy(this.sunDirection()).applyAxisAngle(UP, turn);
     this.bend.update(this.bendSamples, this.heightAtAhead);
-    if (++this.drawn % BEND_SWEEP === 0) {
-      // Whatever joined the scene since takes the tier's look, then the bend.
-      if (this.on.has(51)) this.toon.apply(this.scene, true, new Color(this.look.sky), this.unbent);
-      this.bend.apply(this.scene, this.unbent);
-      this.report();
-    }
     if (this.towers) {
       // The road over an effort is a bridge ramp, laid at the same speed as the road ahead.
       const efforts = frame.segments.filter((g) => g.kind === 'work');
