@@ -27,6 +27,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 16 | Lamp light with a side: what faces the nearest lamp is lit more, what faces away less | 119.7 fps, 0 over 20 ms | 16.8 ms | 296 fps (3.37 ms): 296, 301, 293 | 90,791 | 84 | Yes |
 | 17 | Wheels that turn: deep rims with decals and laced spokes, rolling with the road | 120.1 fps, 0 over 20 ms | 8.7 ms | 305 fps (3.28 ms): 300, 305, 307 | 90,871 | 84 | Yes |
 | 18 | Muscle drawn on the legs' skin: the calf's two heads and the groove between, the Achilles tendon, the hollow behind the knee | 119.7 fps, 0 over 20 ms | 16.8 ms | 301 fps (3.32 ms): 303, 301, 299 | 96,711 | 84 | Yes |
+| 19 | A drivetrain: seven sprockets, a derailleur with its cage and jockey wheels, a dark chain, slim hubs, black cranks | 119.7 fps, 1 over 20 ms | 25.0 ms | 301 fps (3.33 ms): 301, 298, 302 | 100,371 | 84 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -645,3 +646,21 @@ and the shin's front is a touch lighter. It moves with the leg, being the leg's 
 
 **Learned.** Muscle is light and shade before it is shape. Three tones of a skin, placed where the anatomy puts
 them, did more for the calf than its outline had.
+
+## Pass 19: a drivetrain
+
+**Before** (`rider-18-legs.jpg`): beside the rear wheel the cassette is a pale cone and the hub a thick pale bar
+across the frame, the brightest things on the bike; the cranks are pale too.
+
+**After** (`rider-19-legs.jpg`, `rider-19.jpg`, `rider-19.mp4`): the cassette is seven thin sprockets stepping down
+from the wheel, in a darker steel; under it hangs the derailleur, its body behind the axle and its cage forward
+with a jockey wheel at each end; the chain is dark and runs over the chainring to the cassette and back from the
+lower jockey wheel; each hub is a slim dark shell with its skewer's steel ends showing; the cranks are black.
+
+**What changed.** `course-cyclist.ts`, in `bike()`: the cone is seven discs; the derailleur is three sticks and two
+discs; `SPROCKET` and `CHAIN` colours with metal finishes; hubs and cranks in the rim's black.
+
+**Cost.** Some 500 triangles a rider, in the mesh that was already drawn: no draw call.
+
+**Learned.** A stack of thin discs reads as a cassette from every side for less than its cone looked like one. And
+the brightest part of a bike should not be its hub.

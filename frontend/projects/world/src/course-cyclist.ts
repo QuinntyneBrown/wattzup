@@ -100,6 +100,8 @@ const SADDLE = new Color(0x0e0f11);
 const VENT = new Color(0x15161a);
 const BOTTLE = new Color(0xdfe3e8);
 const HAIR = new Color(0x2b2019);
+const SPROCKET = new Color(0x6f747b);
+const CHAIN = new Color(0x2b2d31);
 
 /** A part's finish: how glossy it is, 0 to 1, and how much of a metal. */
 type Finish = readonly [gloss: number, metal: number];
@@ -126,6 +128,8 @@ const FINISHES = new WeakMap<Color, Finish>([
   [VENT, [0.1, 0]],
   [BOTTLE, [0.7, 0]],
   [HAIR, [0.35, 0]],
+  [SPROCKET, [0.75, 1]],
+  [CHAIN, [0.5, 0.8]],
 ]);
 const finishOf = (colour: Color): Finish => FINISHES.get(colour) ?? MATT;
 
@@ -464,7 +468,7 @@ function shoeShape(look: Palette): BufferGeometry {
 
 /** The geometry, textures and materials every course rider shares. */
 export class CourseCyclistKit {
-  private readonly crank = tube(CRANK, 0.016, 0.012, STEEL);
+  private readonly crank = tube(CRANK, 0.016, 0.012, RIM);
   private readonly pedal = solid(new CylinderGeometry(0.012, 0.012, 0.09, 6), SOLE);
   // A wheel's side: the deep rim with its decals and the spokes inside it, one disc drawn through its own picture.
   private readonly spokeDisc = new CircleGeometry(WHEEL - 0.024, 40);
@@ -858,23 +862,52 @@ function bike(look: Palette): BufferGeometry[] {
     rim.applyMatrix4(new Matrix4().makeScale(1, 1, 0.5));
     rim.applyMatrix4(wheelAt(axle));
     parts.push(rim);
-    placed(new CylinderGeometry(0.018, 0.018, 0.1, 8), STEEL, acrossAt(axle));
+    // The hub: a slim dark shell between the fork's ends, its skewer's steel ends showing either side.
+    placed(new CylinderGeometry(0.014, 0.014, 0.1, 8), RIM, acrossAt(axle));
+    for (const x of [-0.058, 0.058]) {
+      placed(new CylinderGeometry(0.007, 0.007, 0.012, 6), STEEL, acrossAt(axle.clone().setX(x)));
+    }
   }
   // The drivetrain, on the right: chainring, cassette, the derailleur hanging below it, the chain's two runs.
   placed(new CylinderGeometry(0.098, 0.098, 0.005, 28), RIM, acrossAt(BB.clone().setX(0.052)));
   placed(new CylinderGeometry(0.03, 0.03, 0.09, 10), look.frame, acrossAt(BB));
-  placed(new CylinderGeometry(0.052, 0.034, 0.036, 16), STEEL, acrossAt(REAR.clone().setX(0.045)));
-  const cage = REAR.clone().add(new Vector3(0.055, -0.1, -0.012));
-  stick(REAR.clone().setX(0.055), cage, 0.012, 0.009, SOLE, 6);
+  // The cassette: seven sprockets, each a thin disc, the largest against the wheel.
+  for (let i = 0; i < 7; i++) {
+    const radius = 0.054 - i * 0.0042;
+    placed(
+      new CylinderGeometry(radius, radius, 0.0022, 20),
+      SPROCKET,
+      acrossAt(REAR.clone().setX(0.026 + i * 0.0048)),
+    );
+  }
+  // The rear derailleur: its body behind the axle, and the cage hanging forward of it with a jockey wheel at each
+  // end, which the chain runs round.
+  const hanger = REAR.clone().add(new Vector3(0.062, -0.03, 0.012));
+  const upper = REAR.clone().add(new Vector3(0.05, -0.065, -0.004));
+  const lower = REAR.clone().add(new Vector3(0.05, -0.132, -0.03));
+  stick(REAR.clone().setX(0.062), hanger, 0.01, 0.012, SOLE, 6);
+  stick(hanger, upper.clone().setX(0.06), 0.012, 0.009, SOLE, 6);
+  stick(upper.clone().setX(0.058), lower.clone().setX(0.058), 0.006, 0.006, SOLE, 5);
+  for (const wheel of [upper, lower]) {
+    placed(new CylinderGeometry(0.02, 0.02, 0.005, 12), CHAIN, acrossAt(wheel));
+  }
+  // The chain: over the chainring to the cassette, back under from the lower jockey wheel.
   stick(
     new Vector3(0.052, BB.y + 0.097, BB.z),
-    REAR.clone().add(new Vector3(0.05, 0.045, 0)),
-    0.004,
-    0.004,
-    STEEL,
+    REAR.clone().add(new Vector3(0.045, 0.044, 0)),
+    0.0045,
+    0.0045,
+    CHAIN,
     4,
   );
-  stick(new Vector3(0.052, BB.y - 0.097, BB.z), cage.clone().setX(0.05), 0.004, 0.004, STEEL, 4);
+  stick(
+    new Vector3(0.052, BB.y - 0.097, BB.z),
+    lower.clone().add(new Vector3(0, -0.018, 0)),
+    0.0045,
+    0.0045,
+    CHAIN,
+    4,
+  );
   // The lamps: one on the seat post facing back, one under the stem facing ahead.
   stick(
     REAR_LAMP.clone().add(new Vector3(0, -0.02, -0.02)),
