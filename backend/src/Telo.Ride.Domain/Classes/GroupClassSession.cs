@@ -142,6 +142,18 @@ public sealed class GroupClassSession(string classId, DateTimeOffset startsAt)
         }
     }
 
+    /// <summary>
+    /// The standings as the session last rode them, without riding on, for a rider who rejoins between ticks (L2-126
+    /// AC2); <c>null</c> before the first tick.
+    /// </summary>
+    public IReadOnlyList<StandingRow>? Current()
+    {
+        lock (seats)
+        {
+            return started ? Standings() : null;
+        }
+    }
+
     private List<StandingRow> Standings()
     {
         var riders = seats

@@ -9,8 +9,10 @@ public sealed record JoinRaceCommand(Guid RiderId, string SessionId, string Conn
 
 /// <summary>
 /// Gives the rider back the seat they hold in the session, before or after its start, with the start as server time,
-/// so every rider's race clock starts at the same moment (L2-121 AC3); the connection joins the session's group. A
-/// session the service does not hold, or one the rider has no seat in, is refused with <c>session_not_found</c>.
+/// so every rider's race clock starts at the same moment (L2-121 AC3); the connection joins the session's group, and
+/// once the race has started it hears the standings at once, so a rider rejoining after a lost connection sees the board
+/// within a second (L2-126 AC2). A session the service does not hold, or one the rider has no seat in, is refused with
+/// <c>session_not_found</c>.
 /// </summary>
 public sealed class JoinRaceCommandHandler(IRaceSessionRegistry registry, ISessionNotifier notifier, TimeProvider time)
     : IRequestHandler<JoinRaceCommand, FindRaceResult>
@@ -21,6 +23,8 @@ public sealed class JoinRaceCommandHandler(IRaceSessionRegistry registry, ISessi
         var seat = session?.Rejoin(request.RiderId);
         if (session is null || seat is null) return new FindRaceResult("session_not_found", null, null, null, []);
         await notifier.AddToSession(request.ConnectionId, session.Id, cancellationToken);
+        if (time.GetUtcNow() >= session.StartsAt)
+            await notifier.RaceStandingsTo(request.ConnectionId, RaceStandingsDto.Of(session.Id, session.Standings()), cancellationToken);
         return new FindRaceResult(null, session.Id, session.StartsAt, seat, RaceSeats.Of(session));
     }
 }
