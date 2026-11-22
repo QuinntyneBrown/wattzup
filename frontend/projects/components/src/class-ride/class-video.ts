@@ -9,11 +9,13 @@ import {
   output,
 } from '@angular/core';
 import { InlineMessage } from '../inline-message/inline-message';
+import { formatClock } from '../metric/format-clock';
 
 /**
  * The class video's frame (design-system block class-video): the class cover until the player paints over it, the
  * element the player takes over, and the warning under the frame when the video cannot play (L2-088 AC4). It emits
- * that element once it is drawn, for the page to hand to the video player; this component only draws.
+ * that element once it is drawn, for the page to hand to the video player; this component only draws. While a group
+ * ride waits for its session's start it draws the time left over the parked picture (L2-087 AC4).
  */
 @Component({
   selector: 'wz-class-video',
@@ -28,6 +30,15 @@ export class ClassVideo implements AfterViewInit {
   readonly unavailable = input(false);
   /** Draws "Paused" over the picture; the page announces the pause itself. */
   readonly paused = input(false);
+  /** The whole seconds left to the group session's start while the ride waits for it; `null` once it has started. */
+  readonly startsIn = input<number | null>(null);
+  /** The session's start in the rider's time, "7:39 PM". */
+  readonly startsAt = input<string | null>(null);
+
+  protected readonly left = computed(() => {
+    const seconds = this.startsIn();
+    return seconds === null ? null : formatClock(seconds);
+  });
 
   /** YouTube's 4:3 cover, cropped to its 16:9 picture (ADR 0014). */
   protected readonly cover = computed(

@@ -1,6 +1,7 @@
 // Unit test (the slice's acceptance table: the header clock that shows it comes with slice 5.2)
 // Traces to: L2-133 AC1; L2-027 AC3
-// Description: the ride clock is the monotonic time since the start, less the time paused; it never counts ticks.
+// Description: the ride clock is the monotonic time since the start, less the time paused; it never counts ticks. It
+// can start from a moment already past, the group session's start.
 import { TestBed } from '@angular/core/testing';
 import { MONOTONIC_TIME } from '@telo/api';
 import { RideClock } from './ride-clock';
@@ -32,6 +33,14 @@ describe('RideClock', () => {
 
     now += 600_000;
     expect(clock.elapsedMs()).toBe(607_000);
+  });
+
+  it('starts from a moment already past, so a ride joined late reads the time since that moment (L2-122 AC3)', () => {
+    now = 120_000;
+
+    clock.start(0);
+
+    expect(clock.elapsedMs()).toBe(120_000);
   });
 
   it('stands still while paused, and goes on from there after Resume (L2-027 AC3)', () => {
