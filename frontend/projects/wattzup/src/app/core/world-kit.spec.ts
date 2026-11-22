@@ -288,6 +288,44 @@ describe('Crowd: shadow partitioning and horizon culling', () => {
     expect(farFrontRowPast120m).toBeGreaterThan(0);
     expect(farBackRowPast120m).toBe(0);
 
+    const instancedMats = new Set(instanced.map((m) => m.material));
+    // 1 shared figure/arm matte material + 1 shared flag material = 2 unique materials total (down from 8).
+    expect(instancedMats.size).toBe(2);
+
+    for (const d of disposables) d.dispose();
+  });
+
+  it('coalesces multiple solid-colour flag materials into one InstancedMesh with instanceColor', () => {
+    const group = new Group();
+    const disposables: { dispose(): void }[] = [];
+    const flagMats = ['#f58426', '#1d4f9c', '#ffffff'].map(
+      (color) => new MeshStandardMaterial({ color }),
+    );
+    disposables.push(...flagMats);
+    const crowd = new Crowd(group, disposables, {
+      loop: 240,
+      near: 9.1,
+      far: 11.4,
+      spacing: 1.5,
+      wardrobe: { tops: ['#f58426'], bottoms: ['#1e2530'], skins: ['#f1c7a5'] },
+      flags: flagMats,
+      flagShare: 0.3,
+      seeds: [101, 107],
+    });
+    crowd.build();
+    crowd.place(
+      1.2,
+      (m) => m * 0.01,
+      (offset, every) => loopMetres(offset, 0, every, 30),
+      0.15,
+    );
+
+    const instanced = group.children.filter((c): c is InstancedMesh => c instanceof InstancedMesh);
+    // 3 nearFigures + 3 farFigures + 1 arms + 1 coalesced solid-flag InstancedMesh = 8 total.
+    expect(instanced.length).toBe(8);
+    const mats = new Set(instanced.map((m) => m.material));
+    expect(mats.size).toBe(2);
+
     for (const d of disposables) d.dispose();
   });
 });

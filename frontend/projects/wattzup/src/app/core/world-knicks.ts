@@ -7,6 +7,7 @@
 // canvas textures and a loop that recycles the street, with the shared crowd, figures, barriers,
 // banners and road paint of world-kit.ts.
 import {
+  BatchedMesh,
   BoxGeometry,
   type BufferAttribute,
   BufferGeometry,
@@ -14,6 +15,7 @@ import {
   Color,
   ConeGeometry,
   CylinderGeometry,
+  type DataTexture,
   DoubleSide,
   Float32BufferAttribute,
   Group,
@@ -25,6 +27,8 @@ import {
   RepeatWrapping,
   SphereGeometry,
   type Texture,
+  Uint16BufferAttribute,
+  Uint32BufferAttribute,
 } from 'three/webgpu';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {
@@ -52,6 +56,9 @@ import type { StreetPoint } from './world-oldtown';
 /** The street repeats every LOOP metres; its parts run from BEHIND metres behind the rider. */
 const LOOP = 480;
 const BEHIND = 30;
+const BLOCK_COUNT = 10;
+const BLOCK_LEN = LOOP / BLOCK_COUNT;
+const BLOCK_BEHIND = 64;
 const KERB = 0.15;
 /** Broadway is wide: the race lane in the middle and an outer lane each side for the floats. */
 const LANE = 8;
@@ -73,6 +80,7 @@ const TAPE = 640;
 const STREAMERS = 120;
 const TAPE_SPAN = 125;
 const TAPE_TOP = 44;
+const SPIN_PRESETS = 16;
 /** The Woolworth Building closes the canyon ahead, hazed by hand. */
 const WOOLWORTH_AHEAD = 600;
 const HAZE = 0xbfcbd6;
@@ -89,6 +97,13 @@ const PALETTES: readonly { wall: string; trim: string; glass: boolean }[] = [
   { wall: '#3f5467', trim: '#8a96a3', glass: true },
   { wall: '#5b5f66', trim: '#7d828a', glass: false },
 ];
+const FACADE_COL_INNER = 384;
+const FACADE_GUTTER = 8;
+const FACADE_COL_STRIDE = FACADE_COL_INNER + FACADE_GUTTER * 2;
+const FACADE_TEX_W = FACADE_COL_STRIDE * PALETTES.length;
+const FACADE_TEX_H = 256;
+const FACADE_MAX_METRES = 36;
+
 const BARRIER_PANELS: readonly BannerPanel[] = [
   { fill: BLUE, ink: ORANGE, text: 'KNICKS CHAMPIONS' },
   { fill: ORANGE, ink: '#ffffff', text: 'CANYON OF HEROES' },
@@ -109,6 +124,13 @@ const DRAPES: readonly (readonly [string, string, string])[] = [
   ['CHAMPS', BLUE, ORANGE],
   ['NY', '#ffffff', BLUE],
 ];
+const CLOTH_BANNER_W = 700;
+const CLOTH_DRAPE_COL_W = 128;
+const CLOTH_ATLAS_W = CLOTH_BANNER_W + CLOTH_DRAPE_COL_W * DRAPES.length;
+const CLOTH_ROW_H = 130;
+const CLOTH_ROWS = STREET_BANNERS.length + 3;
+const CLOTH_ATLAS_H = CLOTH_ROW_H * CLOTH_ROWS;
+
 /** What the fans paint on the tarmac, its colour and how far off the centre line. */
 const ROAD_PAINT: readonly (readonly [string, string, number])[] = [
   ['CHAMPS', '#ff8a2a', -2.0],
@@ -141,14 +163,29 @@ interface Piece {
   readonly x: number;
   readonly offset: number;
   readonly phase: number;
+  readonly sinP20: number;
+  readonly cosP20: number;
   readonly fall: number;
-  readonly spin: readonly [number, number, number];
+  readonly spinPreset: number;
+}
+
+interface BlockBatchSlot {
+  readonly farBatch: BatchedMesh;
+  readonly farArr: Float32Array;
+  readonly farId: number;
+  readonly nearBatch: BatchedMesh | null;
+  readonly nearArr: Float32Array | null;
+  readonly nearId: number;
+  state: number;
 }
 
 const PROP_BEHIND_CULL = -22;
 const PROP_HORIZON_CULL = 318;
+const BLOCK_BEHIND_CULL = -52;
 const SHADOW_NEAR = -20;
 const SHADOW_FAR = 36;
+const BLOCK_SHADOW_NEAR = -34;
+const BLOCK_SHADOW_FAR = 42;
 const FLOAT_CREW_SPOTS: readonly (readonly [number, number])[] = [
   [-0.75, -5],
   [0.75, -3.9],
@@ -156,6 +193,77 @@ const FLOAT_CREW_SPOTS: readonly (readonly [number, number])[] = [
   [-0.75, 5.2],
   [0.75, 5.2],
 ];
+
+function ensureIndexed(geometry: BufferGeometry): BufferGeometry {
+  if (!geometry.getIndex()) {
+    const count = geometry.getAttribute('position').count;
+    if (count <= 65535) {
+      const idx = new Uint16Array(count);
+      for (let i = 0; i < count; i++) idx[i] = i;
+      geometry.setIndex(new Uint16BufferAttribute(idx, 1));
+    } else {
+      const idx = new Uint32Array(count);
+      for (let i = 0; i < count; i++) idx[i] = i;
+      geometry.setIndex(new Uint32BufferAttribute(idx, 1));
+    }
+  }
+  return geometry;
+}
+
+function batchMatrices(batch: BatchedMesh): { tex: DataTexture; data: Float32Array } {
+  const tex = (batch as unknown as { _matricesTexture: DataTexture })._matricesTexture;
+  return { tex, data: tex.image.data as unknown as Float32Array };
+}
+
+function createBatch(
+  geometries: readonly BufferGeometry[],
+  maxInstances: number,
+  material: Material,
+  group: Group,
+  disposables: { dispose(): void }[],
+  castShadow: boolean,
+  withWarmupSentinel = false,
+): { batch: BatchedMesh; geoIds: number[]; tex: DataTexture; data: Float32Array } {
+  let maxVerts = 0;
+  let maxIndices = 0;
+  let minIdx = 0;
+  let minVerts = Infinity;
+  geometries.forEach((g, idx) => {
+    ensureIndexed(g);
+    const vc = g.getAttribute('position').count;
+    maxVerts += vc;
+    maxIndices += g.getIndex()!.count;
+    if (vc < minVerts) {
+      minVerts = vc;
+      minIdx = idx;
+    }
+  });
+  const extra = withWarmupSentinel ? 1 : 0;
+  const batch = new BatchedMesh(
+    Math.max(1, maxInstances + extra),
+    Math.max(3, maxVerts),
+    Math.max(3, maxIndices),
+    material,
+  );
+  batch.sortObjects = false;
+  batch.perObjectFrustumCulled = false;
+  batch.frustumCulled = false;
+  batch.castShadow = castShadow;
+  batch.receiveShadow = true;
+  const geoIds = geometries.map((g) => batch.addGeometry(g));
+  const mt = batchMatrices(batch);
+  if (withWarmupSentinel && geoIds.length > 0) {
+    const sentinel = batch.addInstance(geoIds[minIdx]!);
+    const o = sentinel * 16;
+    mt.data.fill(0, o, o + 15);
+    mt.data[o + 13] = -1000;
+    mt.data[o + 15] = 1;
+    mt.tex.needsUpdate = true;
+  }
+  group.add(batch);
+  disposables.push(batch);
+  return { batch, geoIds, tex: mt.tex, data: mt.data };
+}
 
 function collectShadowMeshes(root: Group): Mesh[] {
   const list: Mesh[] = [];
@@ -169,15 +277,16 @@ export class KnicksStreet implements SceneStreet {
   readonly group = new Group();
   private readonly ribbons: Ribbons;
   private readonly crowd: Crowd;
-  /** Props along the road; one that `lies` on it, as paint does, takes its slope. */
-  private readonly props: {
-    mesh: Group;
+  private readonly canyonBlocks: { center: number; slots: BlockBatchSlot[] }[] = [];
+  private readonly blockTextures: DataTexture[] = [];
+  private roadPaintBatch: BatchedMesh | null = null;
+  private roadPaintData: Float32Array | null = null;
+  private roadPaintTex: DataTexture | null = null;
+  private readonly roadPaintItems: {
+    id: number;
     offset: number;
-    every: number;
     x: number;
-    lies?: boolean;
-    shadowMeshes: Mesh[];
-    lastCast?: boolean;
+    vis: number;
   }[] = [];
   private readonly floats: { group: Group; shadowMeshes: Mesh[]; lastCast?: boolean }[] = [];
   /** The players riding the floats, built on the kit's figures. */
@@ -187,6 +296,8 @@ export class KnicksStreet implements SceneStreet {
   private tape: InstancedMesh | null = null;
   private streamers: InstancedMesh | null = null;
   private readonly pieces: Piece[] = [];
+  private readonly spinRates = new Float32Array(SPIN_PRESETS * 6);
+  private readonly spinTrig = new Float32Array(SPIN_PRESETS * 6);
   private lampBodies: InstancedMesh | null = null;
   private lampHeads: InstancedMesh | null = null;
   private readonly lampItems: { side: -1 | 1; offset: number; x: number }[] = [];
@@ -199,6 +310,11 @@ export class KnicksStreet implements SceneStreet {
     vertexColors: true,
     roughness: 0.85,
     fog: false,
+  });
+  private readonly doubleSideVertexMat = new MeshStandardMaterial({
+    vertexColors: true,
+    side: DoubleSide,
+    roughness: 0.8,
   });
   private clothAtlasMat: MeshStandardMaterial | null = null;
   private readonly flagMaterials = [ORANGE, BLUE, '#ffffff'].map(
@@ -219,14 +335,22 @@ export class KnicksStreet implements SceneStreet {
       flags: this.flagMaterials,
       flagShare: 0.26,
       seeds: [101, 107],
+      figureMaterial: this.solidMat,
+      sharedSolidFlagMaterial: this.doubleSideVertexMat,
     });
   }
 
   build(roadHalf: number, points: number): void {
-    this.disposables.push(this.unit, this.solidMat, this.hazedSolidMat, ...this.flagMaterials);
+    this.disposables.push(
+      this.unit,
+      this.solidMat,
+      this.hazedSolidMat,
+      this.doubleSideVertexMat,
+      ...this.flagMaterials,
+    );
     this.clothAtlasMat = this.material({
       map: this.track(
-        clothBannerAtlasTexture([
+        canyonClothAtlasTexture([
           ...STREET_BANNERS,
           ['NEW YORK CHAMPIONS', ORANGE, '#ffffff'],
           ['KNICKS', BLUE, ORANGE],
@@ -238,9 +362,8 @@ export class KnicksStreet implements SceneStreet {
     });
     this.addGround(roadHalf, points);
     this.crowd.build();
-    this.addTowers();
+    this.addCanyonBlocks();
     this.addLamps();
-    this.addStreetBanners();
     this.addBunting();
     this.addRoadPaint();
     this.addFloats();
@@ -262,22 +385,48 @@ export class KnicksStreet implements SceneStreet {
   /** Moves the street with the rider: `heightAt` gives the road's height `metres` ahead. */
   place(s: number, heightAt: (metres: number) => number): void {
     const along = (offset: number, every: number) => loopMetres(offset, s, every, BEHIND);
-    for (const prop of this.props) {
-      const metres = along(prop.offset, prop.every);
-      prop.mesh.position.set(prop.x, heightAt(Math.max(metres, 0)), -metres);
-      const horizon = prop.lies ? 140 : PROP_HORIZON_CULL;
-      const visible = metres > PROP_BEHIND_CULL && metres <= horizon;
-      prop.mesh.visible = visible;
-      if (!visible) continue;
-      if (prop.lies) prop.mesh.rotation.x = slopeAt(heightAt, metres);
-      const cast = metres > SHADOW_NEAR && metres < SHADOW_FAR;
-      if (prop.lastCast !== cast) {
-        prop.lastCast = cast;
-        for (const sm of prop.shadowMeshes) {
-          sm.castShadow = cast;
+    for (const block of this.canyonBlocks) {
+      const metres = loopMetres(block.center, s, LOOP, BLOCK_BEHIND);
+      const visible = metres > BLOCK_BEHIND_CULL && metres <= PROP_HORIZON_CULL;
+      const cast = visible && metres > BLOCK_SHADOW_NEAR && metres < BLOCK_SHADOW_FAR;
+      const clamped = metres > 0 ? metres : 0;
+      const ty = visible ? heightAt(clamped) : 0;
+      const grade = visible
+        ? (heightAt(clamped + 2) - heightAt(Math.max(0, clamped - 2))) * 0.25
+        : 0;
+      const tz = -metres;
+      for (const slot of block.slots) {
+        const useNear = cast && slot.nearBatch !== null;
+        const nextState = !visible ? 0 : useNear ? 2 : 1;
+        if (slot.state !== nextState) {
+          slot.state = nextState;
+          slot.farBatch.setVisibleAt(slot.farId, nextState === 1);
+          if (slot.nearBatch) slot.nearBatch.setVisibleAt(slot.nearId, nextState === 2);
+        }
+        if (visible) {
+          const dst = useNear ? slot.nearArr! : slot.farArr;
+          const o = (useNear ? slot.nearId : slot.farId) * 16;
+          dst[o] = 1;
+          dst[o + 1] = 0;
+          dst[o + 2] = 0;
+          dst[o + 3] = 0;
+          dst[o + 4] = 0;
+          dst[o + 5] = 1;
+          dst[o + 6] = 0;
+          dst[o + 7] = 0;
+          dst[o + 8] = 0;
+          dst[o + 9] = -grade;
+          dst[o + 10] = 1;
+          dst[o + 11] = 0;
+          dst[o + 12] = 0;
+          dst[o + 13] = ty;
+          dst[o + 14] = tz;
+          dst[o + 15] = 1;
         }
       }
     }
+    for (const tex of this.blockTextures) tex.needsUpdate = true;
+    this.placeRoadPaint(heightAt, along);
     this.crowd.place(this.time, heightAt, along, KERB);
     this.placeLampsAndBunting(heightAt, along);
     const far = heightAt(1e6);
@@ -285,6 +434,48 @@ export class KnicksStreet implements SceneStreet {
     this.skyline.position.set(0, far - 4, 0);
     this.placeFloats(along, heightAt);
     this.placeTape(s, heightAt);
+  }
+
+  private placeRoadPaint(
+    heightAt: (metres: number) => number,
+    along: (offset: number, every: number) => number,
+  ): void {
+    const batch = this.roadPaintBatch;
+    const arr = this.roadPaintData;
+    const tex = this.roadPaintTex;
+    if (!batch || !arr || !tex) return;
+    for (const it of this.roadPaintItems) {
+      const metres = along(it.offset, LOOP);
+      const visible = metres > PROP_BEHIND_CULL && metres <= 140;
+      const nv = visible ? 1 : 0;
+      if (it.vis !== nv) {
+        it.vis = nv;
+        batch.setVisibleAt(it.id, visible);
+      }
+      if (!visible) continue;
+      const slope = slopeAt(heightAt, metres);
+      const cs = 1 - 0.5 * slope * slope;
+      const ss = slope;
+      const y = heightAt(metres > 0 ? metres : 0);
+      const o = it.id * 16;
+      arr[o] = 1;
+      arr[o + 1] = 0;
+      arr[o + 2] = 0;
+      arr[o + 3] = 0;
+      arr[o + 4] = 0;
+      arr[o + 5] = cs;
+      arr[o + 6] = ss;
+      arr[o + 7] = 0;
+      arr[o + 8] = 0;
+      arr[o + 9] = -ss;
+      arr[o + 10] = cs;
+      arr[o + 11] = 0;
+      arr[o + 12] = it.x;
+      arr[o + 13] = y;
+      arr[o + 14] = -metres;
+      arr[o + 15] = 1;
+    }
+    tex.needsUpdate = true;
   }
 
   private placeLampsAndBunting(
@@ -384,18 +575,19 @@ export class KnicksStreet implements SceneStreet {
       const shown = loopFade(metres, LOOP, BEHIND);
       float.scale.setScalar(shown);
       if (!crew) continue;
+      const scale = 1.05 * shown;
       for (let k = 0; k < FLOAT_CREW_SPOTS.length; k++) {
         const [dx, dz] = FLOAT_CREW_SPOTS[k]!;
-        const heading =
-          dx === 0 ? (x > 0 ? -Math.PI / 2 : Math.PI / 2) : dx > 0 ? -Math.PI / 2 : Math.PI / 2;
+        const sgn = dx === 0 ? (x > 0 ? -1 : 1) : dx > 0 ? -1 : 1;
         const jump = bob(this.time * 4 + i * 1.3 + k) * 0.22;
-        crew.set(
+        crew.setYawScaled(
           crewSlot++,
           x + dx * shown,
           y + DECK * shown,
           -metres + dz * shown,
-          heading,
-          1.05 * shown,
+          0,
+          sgn * scale,
+          scale,
           jump * shown,
         );
       }
@@ -414,24 +606,38 @@ export class KnicksStreet implements SceneStreet {
     const tapeArr = tape.instanceMatrix.array as Float32Array;
     const streamerArr = streamers.instanceMatrix.array as Float32Array;
     const t = this.time;
+    const s09 = Math.sin(t * 0.9);
+    const c09 = Math.cos(t * 0.9);
+    const rates = this.spinRates;
+    const trig = this.spinTrig;
+    for (let p = 0; p < SPIN_PRESETS; p++) {
+      const r6 = p * 6;
+      const rx = t * rates[r6]! + rates[r6 + 3]!;
+      const ry = t * rates[r6 + 1]! + rates[r6 + 4]!;
+      const rz = t * rates[r6 + 2]!;
+      trig[r6] = Math.cos(rx);
+      trig[r6 + 1] = Math.sin(rx);
+      trig[r6 + 2] = Math.cos(ry);
+      trig[r6 + 3] = Math.sin(ry);
+      trig[r6 + 4] = Math.cos(rz);
+      trig[r6 + 5] = Math.sin(rz);
+    }
     for (let i = 0; i < this.pieces.length; i++) {
       const p = this.pieces[i]!;
       const metres = loopMetres(p.offset, s, TAPE_SPAN, 12);
-      const ground = heightAt(Math.max(metres, 0));
+      const ground = heightAt(metres > 0 ? metres : 0);
       const drop = (p.phase * TAPE_TOP + t * p.fall) % TAPE_TOP;
       const sc = wrapFade(drop, 0, TAPE_TOP, 1.5) * loopFade(metres, TAPE_SPAN, 12);
-      const px = p.x + Math.sin(t * 0.9 + p.phase * 20) * 0.6;
+      const px = p.x + (s09 * p.cosP20 + c09 * p.sinP20) * 0.6;
       const py = ground + TAPE_TOP - drop;
       const pz = -metres;
-      const rx = t * p.spin[0] + p.phase * 7;
-      const ry = t * p.spin[1] + p.phase * 3;
-      const rz = t * p.spin[2];
-      const cx = Math.cos(rx);
-      const sx = Math.sin(rx);
-      const cy = Math.cos(ry);
-      const sy = Math.sin(ry);
-      const cz = Math.cos(rz);
-      const sz = Math.sin(rz);
+      const r6 = p.spinPreset * 6;
+      const cx = trig[r6]!;
+      const sx = trig[r6 + 1]!;
+      const cy = trig[r6 + 2]!;
+      const sy = trig[r6 + 3]!;
+      const cz = trig[r6 + 4]!;
+      const sz = trig[r6 + 5]!;
       const arr = i < TAPE ? tapeArr : streamerArr;
       const o = (i < TAPE ? i : i - TAPE) * 16;
       const ae = cx * cz;
@@ -539,62 +745,80 @@ export class KnicksStreet implements SceneStreet {
   }
 
   /**
-   * The canyon's walls: towers of limestone, granite, brick and glass, each with a shopfront at
-   * the foot, a cornice over its base, and on many a tower set back above it under a copper
-   * roof or a water tank. Some hang the parade's colours down their fronts. A cross street
-   * opens now and then, so the canyon is never one wall.
+   * Builds the canyon's limestone, granite, brick and glass towers plus the overhead cloth street
+   * banners, merges both sides of Broadway into `BLOCK_COUNT` cross-street `StreetBlock`s, and
+   * packs all blocks into shared `BatchedMesh`es (`facadeAtlasMat`, `shop`, `solidMat`,
+   * `clothAtlasMat`) with near-rider shadow-corridor splitting.
    */
-  private addTowers(): void {
-    const facades = PALETTES.map((p, i) =>
-      this.track(facadeTexture(p.wall, p.trim, p.glass, 41 + i)),
-    );
-    const faces = facades.map((map) => this.material({ map, roughness: 0.75 }));
-    const walls = PALETTES.map((p) => this.material({ color: p.wall, roughness: 0.9 }));
-    const trims = PALETTES.map((p) => this.material({ color: p.trim, roughness: 0.7 }));
+  private addCanyonBlocks(): void {
+    const facadeAtlas = this.track(facadeAtlasTexture());
+    const facadeAtlasMat = this.material({ map: facadeAtlas, roughness: 0.75 });
     const shopfront = this.track(shopTexture());
     shopfront.wrapS = RepeatWrapping;
     const shop = this.material({ map: shopfront, roughness: 0.35, metalness: 0.2 });
-    const copper = this.material({ color: 0x6fa58f, roughness: 0.6, metalness: 0.25 });
-    const tar = this.material({ color: 0x2c2d30, roughness: 1 });
-    const wood = this.material({ map: this.track(staveTexture()), roughness: 0.95 });
-    const steel = this.material({ color: 0x3a3c40, metalness: 0.5, roughness: 0.5 });
-    const drapeAtlas = this.material({
-      map: this.track(drapeAtlasTexture()),
-      side: DoubleSide,
-      roughness: 0.85,
-    });
+
+    const tempMats: MeshStandardMaterial[] = [];
+    const tempSolid = (color: string | number) => {
+      const m = new MeshStandardMaterial({ color });
+      tempMats.push(m);
+      return m;
+    };
+    const walls = PALETTES.map((p) => tempSolid(p.wall));
+    const trims = PALETTES.map((p) => tempSolid(p.trim));
+    const copper = tempSolid(0x6fa58f);
+    const tar = tempSolid(0x2c2d30);
+    const wood = tempSolid(0x7a5a3e);
+    const steel = tempSolid(0x3a3c40);
+    const wireSteel = tempSolid(0x2b2d31);
+
     const pyramid = new ConeGeometry(Math.SQRT1_2, 1, 4);
     pyramid.rotateY(Math.PI / 4);
     pyramid.translate(0, 0.5, 0);
-    const tank = new CylinderGeometry(1.7, 1.7, 3.6, 16);
+    const tank = new CylinderGeometry(1.7, 1.7, 3.6, 12);
     tank.translate(0, 1.8, 0);
-    const tankRoof = new ConeGeometry(1.85, 1.4, 16);
+    const tankRoof = new ConeGeometry(1.85, 1.4, 12);
     tankRoof.translate(0, 4.3, 0);
+    const wire = new BoxGeometry(FRONTAGE - 6.5, 0.04, 0.04);
     const drapeCloths = DRAPES.map((_, k) => {
       const g = new PlaneGeometry(2.4, 10);
       const uv = g.getAttribute('uv') as BufferAttribute;
-      const u0 = k / DRAPES.length;
-      const u1 = (k + 1) / DRAPES.length;
+      const u0 = (CLOTH_BANNER_W + k * CLOTH_DRAPE_COL_W + 1) / CLOTH_ATLAS_W;
+      const u1 = (CLOTH_BANNER_W + (k + 1) * CLOTH_DRAPE_COL_W - 1) / CLOTH_ATLAS_W;
+      const v0 = 1 - 511 / CLOTH_ATLAS_H;
+      const v1 = 1 - 1 / CLOTH_ATLAS_H;
       for (let i = 0; i < uv.count; i++) {
-        uv.setX(i, u0 + uv.getX(i) * (u1 - u0));
+        uv.setXY(i, u0 + uv.getX(i) * (u1 - u0), v0 + uv.getY(i) * (v1 - v0));
       }
       this.disposables.push(g);
       return g;
     });
-    this.disposables.push(pyramid, tank, tankRoof);
-    const block = (palette: number, depth: number, height: number, width: number) => {
+    this.disposables.push(pyramid, tank, tankRoof, wire);
+
+    const blockGroups = Array.from({ length: BLOCK_COUNT }, () => new Group());
+    const blockOf = (propOffset: number) =>
+      Math.min(BLOCK_COUNT - 1, Math.max(0, Math.floor(propOffset / BLOCK_LEN)));
+
+    const makeTowerMass = (palette: number, depth: number, height: number, width: number) => {
       const geometry = new BoxGeometry(depth, height, width);
-      scaleFaceUv(geometry, 0, width / 12, height / (4 * STOREY));
-      scaleFaceUv(geometry, 4, depth / 12, height / (4 * STOREY));
-      scaleFaceUv(geometry, 5, depth / 12, height / (4 * STOREY));
+      const vRep = height / (4 * STOREY);
+      setFacadeFaceUv(geometry, 0, palette, width, vRep);
+      setFacadeFaceUv(geometry, 4, palette, depth, vRep);
+      setFacadeFaceUv(geometry, 5, palette, depth, vRep);
       this.disposables.push(geometry);
-      const face = faces[palette]!;
       const wall = walls[palette]!;
-      const mesh = new Mesh(geometry, [face, wall, tar, wall, face, face]);
+      const mesh = new Mesh(geometry, [
+        facadeAtlasMat,
+        wall,
+        tar,
+        wall,
+        facadeAtlasMat,
+        facadeAtlasMat,
+      ]);
       mesh.castShadow = true;
       mesh.receiveShadow = true;
       return mesh;
     };
+
     for (const side of [-1, 1] as const) {
       const layout = seeded(side < 0 ? 11 : 29);
       let offset = side < 0 ? 0 : 9;
@@ -618,11 +842,9 @@ export class KnicksStreet implements SceneStreet {
           building.add(mesh);
           return mesh;
         };
-        // The base, its front facing the road (+x).
-        const base = block(style, depth, baseHeight, width);
+        const base = makeTowerMass(style, depth, baseHeight, width);
         base.position.set(-depth / 2, baseHeight / 2, 0);
         building.add(base);
-        // The shopfront at the foot, and the cornice and belt course of the base.
         const shopGeometry = new BoxGeometry(0.5, 4.4, width - 0.8);
         scaleFaceUv(shopGeometry, 0, width / 12, 1);
         this.disposables.push(shopGeometry);
@@ -632,13 +854,12 @@ export class KnicksStreet implements SceneStreet {
         const trim = trims[style]!;
         box(trim, 0.8, 0.5, width + 0.2, 0.2, 4.4);
         box(trim, 1.5, 0.9, width + 0.6, 0.45, baseHeight - 0.9);
-        // A tower set back above the base, under a copper roof or a flat top and a mast.
         if (towerStoreys > 0) {
           const inset = 3 + layout() * 3;
           const towerWidth = Math.max(width - 2 * (1.5 + layout() * 3), 10);
           const towerDepth = depth - inset - 3;
           const towerHeight = towerStoreys * STOREY;
-          const tower = block(style, towerDepth, towerHeight, towerWidth);
+          const tower = makeTowerMass(style, towerDepth, towerHeight, towerWidth);
           tower.position.set(-inset - towerDepth / 2, baseHeight + towerHeight / 2, 0);
           building.add(tower);
           const top = baseHeight + towerHeight;
@@ -653,7 +874,6 @@ export class KnicksStreet implements SceneStreet {
             box(steel, 0.25, 9, 0.25, -inset - towerDepth / 2, top);
           }
         }
-        // A wooden water tank on the base's roof, behind any tower.
         if (towerStoreys === 0 || layout() < 0.4) {
           const legs = new Group();
           for (const [x, z] of [
@@ -676,31 +896,128 @@ export class KnicksStreet implements SceneStreet {
           legs.position.set(-depth + 5, baseHeight, (layout() - 0.5) * width * 0.5);
           building.add(legs);
         }
-        // The parade's colours hung down the front of every other tower.
         if (index % 2 === 0) {
           for (const z of [-width / 4, width / 4]) {
             const dIdx = (index / 2 + (z > 0 ? 1 : 0)) % drapeCloths.length;
-            const drape = new Mesh(drapeCloths[dIdx]!, drapeAtlas);
+            const drape = new Mesh(drapeCloths[dIdx]!, this.clothAtlasMat!);
             drape.position.set(0.2, 12, z);
             drape.rotation.y = Math.PI / 2;
             building.add(drape);
           }
         }
-        mergeStaticGroup(building, this.disposables, undefined, this.solidMat);
         if (side > 0) building.rotation.y = Math.PI;
         const setback = layout() * 1.2;
-        this.group.add(building);
-        this.props.push({
-          mesh: building,
-          offset: offset + width / 2,
-          every: LOOP,
-          x: side * (FRONTAGE + setback),
-          shadowMeshes: collectShadowMeshes(building),
-        });
+        const propOffset = offset + width / 2;
+        const bIdx = blockOf(propOffset);
+        const blockCenter = bIdx * BLOCK_LEN + BLOCK_LEN / 2;
+        building.position.set(side * (FRONTAGE + setback), 0, -(propOffset - blockCenter));
+        blockGroups[bIdx]!.add(building);
         offset += width + (layout() < 0.15 ? 11 : 0.3);
         index++;
       }
     }
+
+    // Overhead cloth banners slung across the canyon on wires from tower to tower.
+    STREET_BANNERS.forEach((_, i) => {
+      const cloth = bannerAtlasPlane(13, 2.2, i);
+      this.disposables.push(cloth);
+      const banner = new Group();
+      const c = new Mesh(cloth, this.clothAtlasMat!);
+      c.position.y = 10.5;
+      c.castShadow = true;
+      banner.add(c);
+      for (const side of [-1, 1]) {
+        const w = new Mesh(wire, wireSteel);
+        w.position.set(side * (6.5 + (FRONTAGE - 6.5) / 2), 11.4, 0);
+        banner.add(w);
+      }
+      const propOffset = 60 + i * 120;
+      const bIdx = blockOf(propOffset);
+      const blockCenter = bIdx * BLOCK_LEN + BLOCK_LEN / 2;
+      banner.position.set(0, 0, -(propOffset - blockCenter));
+      blockGroups[bIdx]!.add(banner);
+    });
+
+    interface BlockPiece {
+      blockIdx: number;
+      geometry: BufferGeometry;
+      castShadow: boolean;
+    }
+    const buckets = new Map<string, { material: Material; pieces: BlockPiece[] }>();
+    const matIds = new Map<Material, number>();
+    let nextMid = 1;
+
+    for (let bIdx = 0; bIdx < BLOCK_COUNT; bIdx++) {
+      const bg = blockGroups[bIdx]!;
+      mergeStaticGroup(bg, this.disposables, undefined, this.solidMat);
+      this.canyonBlocks.push({ center: bIdx * BLOCK_LEN + BLOCK_LEN / 2, slots: [] });
+      for (const child of bg.children) {
+        if (!(child instanceof Mesh) || Array.isArray(child.material)) continue;
+        const geo = ensureIndexed(child.geometry as BufferGeometry);
+        const mat = child.material as Material;
+        let mid = matIds.get(mat);
+        if (mid === undefined) {
+          mid = nextMid++;
+          matIds.set(mat, mid);
+        }
+        const attrSig = Object.keys(geo.attributes).sort().join(',');
+        const key = `${mid}|${attrSig}`;
+        let bucket = buckets.get(key);
+        if (!bucket) {
+          bucket = { material: mat, pieces: [] };
+          buckets.set(key, bucket);
+        }
+        bucket.pieces.push({ blockIdx: bIdx, geometry: geo, castShadow: child.castShadow });
+      }
+    }
+
+    for (const bucket of buckets.values()) {
+      const geos = bucket.pieces.map((p) => p.geometry);
+      const anyShadow = bucket.pieces.some((p) => p.castShadow);
+      const farPack = createBatch(
+        geos,
+        bucket.pieces.length,
+        bucket.material,
+        this.group,
+        this.disposables,
+        false,
+        true,
+      );
+      this.blockTextures.push(farPack.tex);
+      const nearPack = anyShadow
+        ? createBatch(
+            geos,
+            bucket.pieces.length,
+            bucket.material,
+            this.group,
+            this.disposables,
+            true,
+            true,
+          )
+        : null;
+      if (nearPack) this.blockTextures.push(nearPack.tex);
+
+      bucket.pieces.forEach((piece, idx) => {
+        const farId = farPack.batch.addInstance(farPack.geoIds[idx]!);
+        farPack.batch.setVisibleAt(farId, false);
+        let nearId = -1;
+        if (nearPack && piece.castShadow) {
+          nearId = nearPack.batch.addInstance(nearPack.geoIds[idx]!);
+          nearPack.batch.setVisibleAt(nearId, false);
+        }
+        this.canyonBlocks[piece.blockIdx]!.slots.push({
+          farBatch: farPack.batch,
+          farArr: farPack.data,
+          farId,
+          nearBatch: nearId >= 0 ? nearPack!.batch : null,
+          nearArr: nearId >= 0 ? nearPack!.data : null,
+          nearId,
+          state: 0,
+        });
+      });
+    }
+
+    for (const m of tempMats) m.dispose();
   }
 
   /** Street lamps on both kerbs, each carrying a pair of the parade's banners. */
@@ -751,37 +1068,6 @@ export class KnicksStreet implements SceneStreet {
     this.group.add(this.lampBodies, this.lampHeads);
   }
 
-  /** Cloth banners slung across the canyon on wires from tower to tower. */
-  private addStreetBanners(): void {
-    const totalRows = STREET_BANNERS.length + 3;
-    const wire = new BoxGeometry(FRONTAGE - 6.5, 0.04, 0.04);
-    this.disposables.push(wire);
-    const steel = this.material({ color: 0x2b2d31, roughness: 0.5 });
-    STREET_BANNERS.forEach((_, i) => {
-      const cloth = atlasPlane(13, 2.2, 0, 1, i, totalRows, 700, 130 * totalRows);
-      this.disposables.push(cloth);
-      const banner = new Group();
-      const c = new Mesh(cloth, this.clothAtlasMat!);
-      c.position.y = 10.5;
-      c.castShadow = true;
-      banner.add(c);
-      for (const side of [-1, 1]) {
-        const w = new Mesh(wire, steel);
-        w.position.set(side * (6.5 + (FRONTAGE - 6.5) / 2), 11.4, 0);
-        banner.add(w);
-      }
-      mergeStaticGroup(banner, this.disposables, undefined, this.solidMat);
-      this.group.add(banner);
-      this.props.push({
-        mesh: banner,
-        offset: 60 + i * 120,
-        every: LOOP,
-        x: 0,
-        shadowMeshes: collectShadowMeshes(banner),
-      });
-    });
-  }
-
   /** Strings of orange, blue and white pennants sagging across the canyon. */
   private addBunting(): void {
     const colours = [ORANGE, BLUE, '#ffffff'].map((c) => new Color(c));
@@ -812,21 +1098,20 @@ export class KnicksStreet implements SceneStreet {
     geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
     geometry.setAttribute('color', new Float32BufferAttribute(vertColours, 3));
     geometry.computeVertexNormals();
-    const pennantMat = this.material({ vertexColors: true, side: DoubleSide, roughness: 0.8 });
     this.disposables.push(geometry);
     for (let offset = 20; offset < LOOP; offset += 40) {
       if ((offset - 60) % 120 === 0) continue;
       this.buntingOffsets.push(offset);
     }
     const cap = Math.max(1, this.buntingOffsets.length);
-    this.buntingMesh = new InstancedMesh(geometry, pennantMat, cap);
+    this.buntingMesh = new InstancedMesh(geometry, this.doubleSideVertexMat, cap);
     this.buntingMesh.frustumCulled = false;
     this.buntingMesh.castShadow = false;
     this.disposables.push(this.buntingMesh);
     this.group.add(this.buntingMesh);
   }
 
-  /** What the fans have painted on the tarmac. */
+  /** What the fans have painted on the tarmac, batched into one `BatchedMesh`. */
   private addRoadPaint(): void {
     const cols = 4;
     const rows = Math.ceil(ROAD_PAINT.length / cols);
@@ -838,7 +1123,7 @@ export class KnicksStreet implements SceneStreet {
       roughness: 0.7,
     });
     const planes = ROAD_PAINT.map((_, idx) => {
-      const g = atlasPlane(
+      const g = gridAtlasPlane(
         2.6,
         9,
         idx % cols,
@@ -848,26 +1133,34 @@ export class KnicksStreet implements SceneStreet {
         cols * 256,
         rows * 560,
       );
+      g.rotateX(-Math.PI / 2);
+      g.translate(0, 0.02, 0);
       this.disposables.push(g);
       return g;
     });
-    [...ROAD_PAINT, ...ROAD_PAINT].forEach(([, , x], i) => {
-      const mesh = new Mesh(planes[i % planes.length]!, atlasMat);
-      mesh.rotation.x = -Math.PI / 2;
-      mesh.position.y = 0.02;
-      mesh.receiveShadow = true;
-      const holder = new Group();
-      holder.add(mesh);
-      this.group.add(holder);
-      this.props.push({
-        mesh: holder,
-        offset: 30 + i * ROAD_PAINT_EVERY,
-        every: LOOP,
-        x,
-        lies: true,
-        shadowMeshes: [],
+    const allEntries = [...ROAD_PAINT, ...ROAD_PAINT];
+    const pack = createBatch(
+      planes,
+      allEntries.length,
+      atlasMat,
+      this.group,
+      this.disposables,
+      false,
+      true,
+    );
+    this.roadPaintBatch = pack.batch;
+    this.roadPaintData = pack.data;
+    this.roadPaintTex = pack.tex;
+    // Group consecutive instances by geometryId so WebGPU merges same-stencil draws.
+    for (let pIdx = 0; pIdx < planes.length; pIdx++) {
+      const gid = pack.geoIds[pIdx]!;
+      allEntries.forEach(([, , x], i) => {
+        if (i % planes.length !== pIdx) return;
+        const id = pack.batch.addInstance(gid);
+        pack.batch.setVisibleAt(id, false);
+        this.roadPaintItems.push({ id, offset: 30 + i * ROAD_PAINT_EVERY, x, vis: 0 });
       });
-    });
+    }
   }
 
   /**
@@ -876,46 +1169,31 @@ export class KnicksStreet implements SceneStreet {
    * the players dancing on the deck.
    */
   private addFloats(): void {
-    const totalRows = STREET_BANNERS.length + 3;
-    const cab = this.material({ color: BLUE, roughness: 0.35, metalness: 0.3 });
-    const glass = this.material({ color: 0x1c2630, roughness: 0.1, metalness: 0.5 });
-    const deck = this.material({ color: 0xf2efe6, roughness: 0.8 });
-    const chassis = this.material({ color: 0x15171b, roughness: 0.6 });
+    const tempMats: MeshStandardMaterial[] = [];
+    const tempSolid = (color: string | number) => {
+      const m = new MeshStandardMaterial({ color });
+      tempMats.push(m);
+      return m;
+    };
+    const cab = tempSolid(BLUE);
+    const glass = tempSolid(0x1c2630);
+    const deck = tempSolid(0xf2efe6);
+    const chassis = tempSolid(0x15171b);
+    const gold = tempSolid(0xe2b23c);
+    const balloons = [ORANGE, BLUE, '#ffffff'].map((c) => tempSolid(c));
     const ball = this.material({ map: this.track(ballTexture()), roughness: 0.75 });
-    const gold = this.material({ color: 0xe2b23c, metalness: 0.9, roughness: 0.28 });
     const skirtGeos = [0, 1].map((k) => {
-      const g = atlasPlane(
-        11.6,
-        1.3,
-        0,
-        1,
-        STREET_BANNERS.length + k,
-        totalRows,
-        700,
-        130 * totalRows,
-      );
+      const g = bannerAtlasPlane(11.6, 1.3, STREET_BANNERS.length + k);
       this.disposables.push(g);
       return g;
     });
-    const sign = atlasPlane(
-      8.5,
-      2.4,
-      0,
-      1,
-      STREET_BANNERS.length + 2,
-      totalRows,
-      700,
-      130 * totalRows,
-    );
-    const balloons = [ORANGE, BLUE, '#ffffff'].map((c) =>
-      this.material({ color: c, roughness: 0.3 }),
-    );
-    const sphere = new SphereGeometry(1, 20, 14);
-    const cup = new CylinderGeometry(1, 0.45, 1.8, 18);
+    const sign = bannerAtlasPlane(8.5, 2.4, STREET_BANNERS.length + 2);
+    const sphere = new SphereGeometry(1, 16, 12);
+    const cup = new CylinderGeometry(1, 0.45, 1.8, 16);
     cup.translate(0, 0.9, 0);
     const stem = new CylinderGeometry(0.22, 0.32, 1.6, 10);
     stem.translate(0, 0.8, 0);
-    const foot = new CylinderGeometry(0.9, 1.05, 0.9, 16);
+    const foot = new CylinderGeometry(0.9, 1.05, 0.9, 14);
     foot.translate(0, 0.45, 0);
     this.disposables.push(sphere, cup, stem, foot, sign);
     const random = seeded(127);
@@ -986,6 +1264,7 @@ export class KnicksStreet implements SceneStreet {
       this.group.add(float);
       this.floats.push({ group: float, shadowMeshes: collectShadowMeshes(float) });
     }
+    for (const m of tempMats) m.dispose();
     this.crew = new Figures(
       this.group,
       this.disposables,
@@ -993,16 +1272,18 @@ export class KnicksStreet implements SceneStreet {
       { tops: [BLUE, ORANGE, '#ffffff'], bottoms: [BLUE, '#ffffff', ORANGE], skins: SKINS },
       131,
       false,
+      this.solidMat,
     );
   }
 
   /** Ticker tape and streamers falling through the canyon, white with the parade's colours. */
   private addTickerTape(): void {
-    const scrap = new PlaneGeometry(0.2, 0.12);
-    const ribbon = new PlaneGeometry(0.05, 1.5);
-    const confettiMat = this.material({ side: DoubleSide, roughness: 0.8 });
-    const make = (geometry: PlaneGeometry, count: number, colours: readonly string[]) => {
-      const mesh = new InstancedMesh(geometry, confettiMat, count);
+    const scrap = tintGeometry(new PlaneGeometry(0.2, 0.12), 0xffffff);
+    scrap.deleteAttribute('uv');
+    const ribbon = tintGeometry(new PlaneGeometry(0.05, 1.5), 0xffffff);
+    ribbon.deleteAttribute('uv');
+    const make = (geometry: BufferGeometry, count: number, colours: readonly string[]) => {
+      const mesh = new InstancedMesh(geometry, this.doubleSideVertexMat, count);
       mesh.frustumCulled = false;
       const random = seeded(count);
       const c = new Color();
@@ -1022,17 +1303,36 @@ export class KnicksStreet implements SceneStreet {
       '#7fa8f0',
     ]);
     this.streamers = make(ribbon, STREAMERS, [ORANGE, '#2f6fe0', '#ffffff', ORANGE, '#2f6fe0']);
+    const spinRand = seeded(991);
+    for (let p = 0; p < SPIN_PRESETS; p++) {
+      const streamer = p >= SPIN_PRESETS - 4;
+      const r6 = p * 6;
+      this.spinRates[r6] = streamer ? 0.2 + spinRand() * 0.2 : 1 + spinRand() * 2;
+      this.spinRates[r6 + 1] = streamer ? 0.8 + spinRand() * 1.2 : 1 + spinRand() * 2;
+      this.spinRates[r6 + 2] = streamer ? 0.2 + spinRand() * 0.3 : 1 + spinRand() * 2;
+      this.spinRates[r6 + 3] = spinRand() * 6.28;
+      this.spinRates[r6 + 4] = spinRand() * 6.28;
+      this.spinRates[r6 + 5] = 0;
+    }
     const random = seeded(137);
     for (let i = 0; i < TAPE + STREAMERS; i++) {
       const streamer = i >= TAPE;
+      const x = (random() * 2 - 1) * (FRONTAGE - 0.5);
+      const offset = random() * TAPE_SPAN;
+      const phase = random();
+      const fall = streamer ? 0.5 + random() * 0.3 : 0.8 + random() * 0.6;
+      // Consume the same 3 PRNG draws per piece so seeded positions stay identical.
+      random();
+      random();
+      random();
       this.pieces.push({
-        x: (random() * 2 - 1) * (FRONTAGE - 0.5),
-        offset: random() * TAPE_SPAN,
-        phase: random(),
-        fall: streamer ? 0.5 + random() * 0.3 : 0.8 + random() * 0.6,
-        spin: streamer
-          ? [0.2 + random() * 0.2, 0.8 + random() * 1.2, 0.2 + random() * 0.3]
-          : [1 + random() * 2, 1 + random() * 2, 1 + random() * 2],
+        x,
+        offset,
+        phase,
+        sinP20: Math.sin(phase * 20),
+        cosP20: Math.cos(phase * 20),
+        fall,
+        spinPreset: streamer ? SPIN_PRESETS - 4 + (i % 4) : i % (SPIN_PRESETS - 4),
       });
     }
   }
@@ -1040,8 +1340,8 @@ export class KnicksStreet implements SceneStreet {
   /** The canyon running on past the street's loop into the haze: plainer towers, further off. */
   private addSkyline(): void {
     const random = seeded(149);
-    const tones = ['#b9b4aa', '#9a978f', '#8c6b58', '#c4b393', '#7d838c'].map((c) =>
-      this.material({ color: c, roughness: 0.9 }),
+    const tones = ['#b9b4aa', '#9a978f', '#8c6b58', '#c4b393', '#7d838c'].map(
+      (c) => new MeshStandardMaterial({ color: c, roughness: 0.9 }),
     );
     for (let z = 470; z < WOOLWORTH_AHEAD - 40; z += 26 + random() * 10) {
       for (const side of [-1, 1]) {
@@ -1054,6 +1354,7 @@ export class KnicksStreet implements SceneStreet {
       }
     }
     mergeStaticGroup(this.skyline, this.disposables, undefined, this.solidMat);
+    tones.forEach((m) => m.dispose());
     this.group.add(this.skyline);
   }
 
@@ -1068,7 +1369,8 @@ export class KnicksStreet implements SceneStreet {
     terra.wrapS = RepeatWrapping;
     terra.wrapT = RepeatWrapping;
     const cream = hazedMaterial(this.disposables, haze, 0xf1ead9, 0.14, { map: terra });
-    const plain = hazedMaterial(this.disposables, haze, 0xe9e1cd, 0.16);
+    const plain = new MeshStandardMaterial({ roughness: 0.7, fog: false });
+    plain.color.set(0xe9e1cd).lerp(haze, 0.16);
     // The verdigris crown catches the high sun, so it reads green against the sky.
     const copper = hazedMaterial(this.disposables, haze, 0x5fae8e, 0.1, {
       metalness: 0.2,
@@ -1108,7 +1410,6 @@ export class KnicksStreet implements SceneStreet {
       }
     };
     stage(64, 100, 40, 0);
-    // The base's corner turrets under copper caps.
     for (const x of [-29, 29]) {
       const cap = new Mesh(pyramid, copper);
       cap.scale.set(7, 9, 7);
@@ -1133,6 +1434,7 @@ export class KnicksStreet implements SceneStreet {
     spire.position.y = 202;
     w.add(lantern, spire);
     mergeStaticGroup(w, this.disposables, undefined, this.hazedSolidMat);
+    plain.dispose();
     w.scale.setScalar(1.25);
     this.group.add(w);
   }
@@ -1151,49 +1453,90 @@ export class KnicksStreet implements SceneStreet {
   }
 }
 
+/** Maps one face of a tower box onto palette column `palette` of `facadeAtlasTexture`. */
+function setFacadeFaceUv(
+  box: BoxGeometry,
+  face: number,
+  palette: number,
+  spanMetres: number,
+  vRepeats: number,
+): void {
+  const uv = box.getAttribute('uv') as BufferAttribute;
+  const u0 = (palette * FACADE_COL_STRIDE + FACADE_GUTTER + 0.5) / FACADE_TEX_W;
+  const uSpan =
+    (Math.min(spanMetres, FACADE_MAX_METRES - 0.5) / FACADE_MAX_METRES) *
+    ((FACADE_COL_INNER - 1) / FACADE_TEX_W);
+  for (let i = face * 4; i < face * 4 + 4; i++) {
+    uv.setXY(i, u0 + uv.getX(i) * uSpan, uv.getY(i) * vRepeats);
+  }
+}
+
 /**
- * Four bays and four storeys of a tower's front: punched windows in stone surrounds, some
- * with their blinds part-drawn, or for a glass tower a curtain wall over dark spandrels.
+ * Packs all 7 canyon tower palettes side by side into one `wrapT = RepeatWrapping` atlas:
+ * 12 bays (`36 m`) across per column with 8 px edge-extruded mipmap gutters, and 4 storeys down.
  */
-function facadeTexture(wall: string, trim: string, glass: boolean, seed: number): CanvasTexture {
-  const texture = canvasTexture(512, 512, (g) => {
-    speckle(g, 512, 512, wall, seed);
-    const random = seeded(seed + 1);
-    for (let row = 0; row < 4; row++) {
-      for (let bay = 0; bay < 4; bay++) {
-        const x = bay * 128;
-        const y = row * 128;
-        if (glass) {
-          const pane = g.createLinearGradient(0, y, 0, y + 100);
+function facadeAtlasTexture(): CanvasTexture {
+  const bayW = 32;
+  const storeyH = 64;
+  const bays = FACADE_COL_INNER / bayW;
+  const texture = canvasTexture(FACADE_TEX_W, FACADE_TEX_H, (g) => {
+    PALETTES.forEach((p, col) => {
+      const colLeft = col * FACADE_COL_STRIDE;
+      const innerLeft = colLeft + FACADE_GUTTER;
+      g.save();
+      g.beginPath();
+      g.rect(colLeft, 0, FACADE_COL_STRIDE, FACADE_TEX_H);
+      g.clip();
+      g.translate(colLeft, 0);
+      speckle(g, FACADE_COL_STRIDE, FACADE_TEX_H, p.wall, 41 + col);
+      g.restore();
+
+      const random = seeded(42 + col);
+      for (let row = 0; row < 4; row++) {
+        const y = row * storeyH;
+        const pane = p.glass
+          ? g.createLinearGradient(0, y, 0, y + 50)
+          : g.createLinearGradient(0, y + 12, 0, y + 53);
+        if (p.glass) {
           pane.addColorStop(0, '#a9c2d8');
           pane.addColorStop(0.6, '#47627b');
           pane.addColorStop(1, '#2b3d4f');
-          g.fillStyle = pane;
-          g.fillRect(x + 3, y + 3, 122, 96);
-          g.fillStyle = trim;
-          g.fillRect(x, y, 3, 128);
-          continue;
+        } else {
+          pane.addColorStop(0, '#93aec4');
+          pane.addColorStop(1, '#27333f');
         }
-        g.fillStyle = trim;
-        g.fillRect(x + 30, y + 20, 68, 92);
-        const pane = g.createLinearGradient(0, y + 25, 0, y + 107);
-        pane.addColorStop(0, '#93aec4');
-        pane.addColorStop(1, '#27333f');
-        g.fillStyle = pane;
-        g.fillRect(x + 35, y + 25, 58, 82);
-        if (random() < 0.35) {
-          g.fillStyle = 'rgba(236,229,212,0.9)';
-          g.fillRect(x + 35, y + 25, 58, 10 + random() * 40);
+        for (let bay = -1; bay <= bays; bay++) {
+          const x = innerLeft + bay * bayW;
+          if (x + bayW <= colLeft || x >= colLeft + FACADE_COL_STRIDE) continue;
+          g.save();
+          g.beginPath();
+          g.rect(colLeft, y, FACADE_COL_STRIDE, storeyH);
+          g.clip();
+          if (p.glass) {
+            g.fillStyle = pane;
+            g.fillRect(x + 1, y + 1, bayW - 2, 48);
+            g.fillStyle = p.trim;
+            g.fillRect(x, y, 1.5, storeyH);
+          } else {
+            g.fillStyle = p.trim;
+            g.fillRect(x + 7, y + 10, 18, 46);
+            g.fillStyle = pane;
+            g.fillRect(x + 9, y + 12, 14, 41);
+            if (bay >= 0 && bay < bays && random() < 0.35) {
+              g.fillStyle = 'rgba(236,229,212,0.9)';
+              g.fillRect(x + 9, y + 12, 14, 5 + random() * 20);
+            }
+            g.fillStyle = p.trim;
+            g.fillRect(x + 15.5, y + 12, 1.5, 41);
+            g.fillRect(x + 9, y + 31, 14, 2);
+            g.fillStyle = 'rgba(0,0,0,0.28)';
+            g.fillRect(x + 7, y + 56, 18, 2.5);
+          }
+          g.restore();
         }
-        g.fillStyle = trim;
-        g.fillRect(x + 62, y + 25, 4, 82);
-        g.fillRect(x + 35, y + 62, 58, 4);
-        g.fillStyle = 'rgba(0,0,0,0.28)';
-        g.fillRect(x + 28, y + 112, 72, 5);
       }
-    }
+    });
   });
-  texture.wrapS = RepeatWrapping;
   texture.wrapT = RepeatWrapping;
   return texture;
 }
@@ -1215,7 +1558,6 @@ function shopTexture(): CanvasTexture {
       g.fillRect(x + 10, 50, 108, 136);
       g.fillStyle = 'rgba(255,255,255,0.14)';
       g.fillRect(x + 10, 50, 108, 18);
-      // A poster for the champions in some windows.
       if (random() < 0.6) {
         g.fillStyle = random() < 0.5 ? ORANGE : BLUE;
         g.fillRect(x + 30 + random() * 40, 90, 30, 42);
@@ -1224,8 +1566,23 @@ function shopTexture(): CanvasTexture {
   });
 }
 
-/** Returns a PlaneGeometry whose UVs sample tile `(col, row)` of a `(cols × rows)` atlas. */
-function atlasPlane(
+/** Returns a PlaneGeometry sampling horizontal banner `row` in `canyonClothAtlasTexture`. */
+function bannerAtlasPlane(width: number, height: number, row: number): PlaneGeometry {
+  const g = new PlaneGeometry(width, height);
+  const uv = g.getAttribute('uv') as BufferAttribute;
+  const u0 = 0.5 / CLOTH_ATLAS_W;
+  const u1 = (CLOTH_BANNER_W - 0.5) / CLOTH_ATLAS_W;
+  const dv = 0.5 / CLOTH_ATLAS_H;
+  const v0 = 1 - (row + 1) / CLOTH_ROWS + dv;
+  const v1 = 1 - row / CLOTH_ROWS - dv;
+  for (let i = 0; i < uv.count; i++) {
+    uv.setXY(i, u0 + uv.getX(i) * (u1 - u0), v0 + uv.getY(i) * (v1 - v0));
+  }
+  return g;
+}
+
+/** Returns a PlaneGeometry whose UVs sample tile `(col, row)` of a `(cols × rows)` grid atlas. */
+function gridAtlasPlane(
   width: number,
   height: number,
   col: number,
@@ -1249,30 +1606,46 @@ function atlasPlane(
   return g;
 }
 
-/** Stacks multiple cloth banners into one vertical texture atlas (`700 × 130n`). */
-function clothBannerAtlasTexture(
+/** Packs horizontal cloth banners (left) and vertical tower drapes (right) into one atlas. */
+function canyonClothAtlasTexture(
   entries: readonly (readonly [string, string, string])[],
 ): CanvasTexture {
-  const rowH = 130;
-  return canvasTexture(700, rowH * entries.length, (ctx) => {
+  return canvasTexture(CLOTH_ATLAS_W, CLOTH_ATLAS_H, (ctx) => {
     entries.forEach(([text, fill, ink], r) => {
-      const y0 = r * rowH;
+      const y0 = r * CLOTH_ROW_H;
       ctx.fillStyle = fill;
-      ctx.fillRect(0, y0, 700, rowH);
+      ctx.fillRect(0, y0, CLOTH_BANNER_W, CLOTH_ROW_H);
       ctx.strokeStyle = ink;
       ctx.lineWidth = 5;
-      ctx.strokeRect(10, y0 + 10, 680, 110);
+      ctx.strokeRect(10, y0 + 10, CLOTH_BANNER_W - 20, CLOTH_ROW_H - 20);
       ctx.fillStyle = ink;
       ctx.font = 'bold 72px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(text, 350, y0 + 68, 640);
-      const folds = ctx.createLinearGradient(0, y0, 700, y0);
+      ctx.fillText(text, CLOTH_BANNER_W / 2, y0 + 68, CLOTH_BANNER_W - 60);
+      const folds = ctx.createLinearGradient(0, y0, CLOTH_BANNER_W, y0);
       for (let i = 0; i <= 6; i++) {
         folds.addColorStop(i / 6, i % 2 ? 'rgba(0,0,0,0.14)' : 'rgba(255,255,255,0.06)');
       }
       ctx.fillStyle = folds;
-      ctx.fillRect(0, y0, 700, rowH);
+      ctx.fillRect(0, y0, CLOTH_BANNER_W, CLOTH_ROW_H);
+    });
+    DRAPES.forEach(([word, fill, ink], col) => {
+      const x0 = CLOTH_BANNER_W + col * CLOTH_DRAPE_COL_W;
+      ctx.fillStyle = fill;
+      ctx.fillRect(x0, 0, CLOTH_DRAPE_COL_W, 512);
+      ctx.fillStyle = ink;
+      ctx.fillRect(x0, 0, CLOTH_DRAPE_COL_W, 14);
+      ctx.fillRect(x0, 498, CLOTH_DRAPE_COL_W, 14);
+      ctx.font = 'bold 84px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const letters = word.split('');
+      const step = 460 / Math.max(letters.length, 3);
+      const start = 256 - (step * letters.length) / 2;
+      letters.forEach((c, i) =>
+        ctx.fillText(c, x0 + CLOTH_DRAPE_COL_W / 2, start + step * (i + 0.5)),
+      );
     });
   });
 }
@@ -1321,28 +1694,6 @@ function roadPaintAtlasTexture(
   });
 }
 
-/** Cloth drapes hung down tower fronts, packed side by side into one 3-column atlas. */
-function drapeAtlasTexture(): CanvasTexture {
-  const colW = 128;
-  return canvasTexture(colW * DRAPES.length, 512, (g) => {
-    DRAPES.forEach(([word, fill, ink], col) => {
-      const x0 = col * colW;
-      g.fillStyle = fill;
-      g.fillRect(x0, 0, colW, 512);
-      g.fillStyle = ink;
-      g.fillRect(x0, 0, colW, 14);
-      g.fillRect(x0, 498, colW, 14);
-      g.font = 'bold 84px sans-serif';
-      g.textAlign = 'center';
-      g.textBaseline = 'middle';
-      const letters = word.split('');
-      const step = 460 / Math.max(letters.length, 3);
-      const start = 256 - (step * letters.length) / 2;
-      letters.forEach((c, i) => g.fillText(c, x0 + 64, start + step * (i + 0.5)));
-    });
-  });
-}
-
 /** A basketball's pebbled orange leather and its black seams, wrapped round a sphere. */
 function ballTexture(): CanvasTexture {
   return canvasTexture(512, 256, (g) => {
@@ -1386,17 +1737,6 @@ function terracottaTexture(): CanvasTexture {
         g.fill();
       }
     }
-  });
-}
-
-/** The wooden staves of a rooftop water tank, bound with iron hoops. */
-function staveTexture(): CanvasTexture {
-  return canvasTexture(128, 128, (g) => {
-    speckle(g, 128, 128, '#7a5a3e', 167);
-    g.fillStyle = 'rgba(40,25,15,0.4)';
-    for (let x = 0; x < 128; x += 10) g.fillRect(x, 0, 2, 128);
-    g.fillStyle = '#2c2d30';
-    for (const y of [18, 62, 106]) g.fillRect(0, y, 128, 4);
   });
 }
 

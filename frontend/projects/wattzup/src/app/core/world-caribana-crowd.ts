@@ -176,6 +176,18 @@ export class Ensemble {
     let totalEntries = 0;
 
     for (const kind of this.kinds.values()) {
+      const stdMat = kind.material as MeshStandardMaterial;
+      const hasTexture = Boolean(stdMat.map || stdMat.alphaMap || stdMat.emissiveMap);
+      let geo = kind.geometry;
+      const needsDropUv = !hasTexture && Boolean(geo.getAttribute('uv'));
+      const needsWhiteColor = Boolean(stdMat.vertexColors) && !geo.getAttribute('color');
+      if (needsDropUv || needsWhiteColor) {
+        geo = geo.clone();
+        if (needsDropUv) geo.deleteAttribute('uv');
+        if (needsWhiteColor) tintGeometry(geo, 0xffffff);
+        this.disposables.push(geo);
+        kind.geometry = geo;
+      }
       ensureIndexed(kind.geometry);
       let mid = matIds.get(kind.material);
       if (mid === undefined) {
@@ -695,6 +707,8 @@ export interface SpectatorOptions {
   readonly flagCount: number;
   readonly seed: number;
   readonly skip?: (side: -1 | 1, offset: number) => boolean;
+  readonly solidMaterial?: MeshStandardMaterial;
+  readonly doubleSideMaterial?: MeshStandardMaterial;
 }
 
 const SPECTATOR_BEHIND_CULL = -14;
@@ -789,11 +803,7 @@ export class Spectators {
       };
     });
 
-    const skinMaterial = this.material({ roughness: 0.55, vertexColors: true });
-    const cotton = this.material({ roughness: 0.92, vertexColors: true });
-    const denim = this.material({ roughness: 0.95, vertexColors: true });
-    const rubber = this.material({ roughness: 0.7 });
-    const hair = this.material({ roughness: 0.95 });
+    const solidMat = o.solidMaterial ?? this.material({ roughness: 0.8, vertexColors: true });
     const upperSkinMap = new Map<number, BufferGeometry>();
     const topMap = new Map<number, BufferGeometry>();
     let bottomTrousersGeo: BufferGeometry | null = null;
@@ -820,7 +830,6 @@ export class Spectators {
     const hairs = [allHairs[0]!, allHairs[1]!, allHairs[2]!];
     allHairs[3]!.dispose();
     const balloon = ellipsoid(0.2, 1, 1.18, 1, 0.34, 2.42, -0.02, 6);
-    const latex = this.material({ roughness: 0.25, metalness: 0.05 });
     const placardTex = placardAtlasTexture();
     const placardMat = this.material({ map: placardTex, roughness: 0.8, side: DoubleSide });
     const placardCards = PLACARDS.map((_, idx) => {
@@ -845,7 +854,9 @@ export class Spectators {
     const umbrella = umbrellaGeometry();
     const [strawHat, bucketHat] = sunHatParts();
     bucketHat.dispose();
-    const cloth = this.material({ roughness: 0.8, side: DoubleSide, vertexColors: true });
+    const cloth =
+      o.doubleSideMaterial ??
+      this.material({ roughness: 0.8, side: DoubleSide, vertexColors: true });
     this.disposables.push(
       shoes,
       balloon,
@@ -865,34 +876,28 @@ export class Spectators {
       const shorts = dress() < 0.6;
       const bodyStance = p.stance === PLACARD_STANCE ? 2 : p.stance;
       const skinCol = pick(o.skins);
-      this.ensemble.put(
-        i,
-        `skin${bodyStance}`,
-        upperSkinMap.get(bodyStance)!,
-        skinMaterial,
-        skinCol,
-      );
+      this.ensemble.put(i, `skin${bodyStance}`, upperSkinMap.get(bodyStance)!, solidMat, skinCol);
       if (shorts) {
-        this.ensemble.put(i, 'calves', bareCalves, skinMaterial, skinCol);
+        this.ensemble.put(i, 'calves', bareCalves, solidMat, skinCol);
       }
-      this.ensemble.put(i, `top${bodyStance}`, topMap.get(bodyStance)!, cotton, pick(o.tops));
+      this.ensemble.put(i, `top${bodyStance}`, topMap.get(bodyStance)!, solidMat, pick(o.tops));
       this.ensemble.put(
         i,
         shorts ? 'bottoms' : 'bottomt',
         shorts ? bottomShortsParts.bottom : bottomTrousersGeo!,
-        denim,
+        solidMat,
         pick(o.bottoms),
       );
-      this.ensemble.put(i, 'shoes', shoes, rubber, pick(SHOES));
+      this.ensemble.put(i, 'shoes', shoes, solidMat, pick(SHOES));
       const style = Math.floor(dress() * 4);
       const hairIdx = style === 3 ? 1 : style;
       const colour = style === 2 ? pick(CAPS) : style === 3 ? pick(o.tops) : pick(HAIRS);
       const roll = extra();
       if (roll < 0.11)
-        this.ensemble.put(i, 'straw', strawHat, hair, roll < 0.06 ? any(STRAWS) : any(o.tops));
-      else this.ensemble.put(i, `hair${hairIdx}`, hairs[hairIdx]!, hair, colour);
+        this.ensemble.put(i, 'straw', strawHat, solidMat, roll < 0.06 ? any(STRAWS) : any(o.tops));
+      else this.ensemble.put(i, `hair${hairIdx}`, hairs[hairIdx]!, solidMat, colour);
       if (p.balloon) {
-        this.ensemble.put(i, 'balloon', balloon, latex, any(BALLOONS));
+        this.ensemble.put(i, 'balloon', balloon, solidMat, any(BALLOONS));
       }
       if (p.stance === PLACARD_STANCE) {
         p.placardKind = Math.floor(extra() * placardCards.length);

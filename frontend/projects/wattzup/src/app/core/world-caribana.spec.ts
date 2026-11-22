@@ -57,10 +57,10 @@ describe('CaribanaStreet (L2-101 AC1, L2-111 AC10)', () => {
       if (obj instanceof InstancedMesh) instancedMeshes++;
     });
     // Down from ~4,200+ meshes -> 1,085 -> 630 -> 475 -> 218 -> 164 -> < 145 after Ensemble & dancer per-material BatchedMesh consolidation.
-    expect(totalMeshes).toBeLessThan(145);
+    expect(totalMeshes).toBeLessThan(105);
     expect(instancedMeshes).toBeLessThan(20);
     // Flag/lamp/stripe/stall/cart/sign/royal atlases cut unique materials from 785 -> 388 -> 236 -> 148 -> 119 -> < 108.
-    expect(uniqueMaterials.size).toBeLessThan(108);
+    expect(uniqueMaterials.size).toBeLessThan(72);
 
     const points = Array.from({ length: 161 }, (_, i) => ({
       metres: (i - 10) * 2,
@@ -150,6 +150,7 @@ describe('CaribanaStreet (L2-101 AC1, L2-111 AC10)', () => {
     const sharedMat = new MeshStandardMaterial({ vertexColors: true });
     const box = new BoxGeometry(1, 1, 1);
     const ball = new SphereGeometry(0.5, 6, 4);
+    ball.deleteAttribute('uv');
     disposables.push(sharedMat, box, ball);
 
     ensemble.put(0, 'boxPart', box, sharedMat, '#ff0000');
