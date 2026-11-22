@@ -1,0 +1,48 @@
+// Block ride-leave (docs/design-system/assets/components.css): the popover under Library. Its place is the CDK
+// overlay's; on a phone the overlay keeps it within the side margins, at most 20 rem wide (L2-107 AC4).
+:host {
+  display: block;
+  width: 20rem;
+  max-width: 100%;
+  border-radius: var(--radius-xl);
+  border: var(--border-width-hairline) solid var(--color-line);
+  background: var(--color-panel);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-4);
+  color: var(--color-fg);
+}
+
+.ride-leave__title {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+.ride-leave__body {
+  margin-top: var(--space-1-5);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.ride-leave__figure {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: var(--letter-spacing-display);
+  color: var(--color-fg);
+}
+
+.ride-leave__actions {
+  margin-top: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+// Keep riding: quiet, and still 44 px to touch.
+.ride-leave__keep {
+  min-height: var(--target-comfortable);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-muted);
+}

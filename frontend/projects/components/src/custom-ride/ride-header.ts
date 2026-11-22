@@ -10,7 +10,7 @@ export type RideRun = 'start' | 'pause' | 'resume';
 export type RideBikeTone = 'ok' | 'alert' | 'none';
 
 /**
- * The custom ride's header (design-system block ride-header, L2-101): the lockup, the bike status, the workout link the
+ * The custom ride's header (design-system block ride-header, L2-101): the lockup, Library, the bike status, the workout link the
  * page projects (`slot=workout`), the clock as "6:52 / 30:00" read "Elapsed 6:52 of 30:00", the run button (Start, Pause or
  * Resume, its label saying what it does), End, the page's ride controls (`slot=end`) and Full screen.
  */
@@ -36,6 +36,9 @@ export class RideHeader {
   /** End: saves and submits the ride, with no confirmation (L2-108 AC1); off until the ride has started. */
   readonly endDisabled = input(false);
   readonly stopped = output<void>();
+  /** Library, which asks to leave the ride in a popover under it (L2-107 AC1); emitted with the button, its anchor. */
+  readonly libraryOpen = input(false);
+  readonly library = output<HTMLElement>();
   readonly fullscreen = input.required<boolean>();
   readonly fullscreenToggled = output<void>();
 }

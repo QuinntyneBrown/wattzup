@@ -1,0 +1,17 @@
+<h2 class="ride-leave__title" id="leave-title">Leave this ride?</h2>
+<p class="ride-leave__body">
+  You’re <span class="ride-leave__figure">{{ elapsed() }}</span> in with
+  <span class="ride-leave__figure">{{ distance() }}</span> ridden. The ride is paused while you
+  decide.
+</p>
+<div class="ride-leave__actions">
+  <button wz-button variant="primary" type="button" id="leave-save" (click)="saved.emit()">
+    Save ride and open library
+  </button>
+  <button wz-button variant="raised" type="button" (click)="discarded.emit()">
+    Discard and open library
+  </button>
+  <button wz-button type="button" class="ride-leave__keep" (click)="kept.emit()">
+    Keep riding
+  </button>
+</div>

@@ -63,9 +63,10 @@ export class CustomRidePage {
     this.lockup = header.getByRole('img', { name: 'Telo Ride' });
     this.bike = header.locator('.ride-header__status');
     this.workout = header.locator('a.ride-header__link').filter({ hasText: 'edit workout' });
-    this.clock = header.getByRole('timer');
+    this.clock = header.getByRole('timer', { includeHidden: true });
     this.fullScreen = header.getByRole('button', { name: 'Full screen' });
-    this.library = header.getByRole('button', { name: 'Library' });
+    // A modal "Leave this ride?" hides the page behind it from assistive technology, Library included.
+    this.library = header.getByRole('button', { name: 'Library', includeHidden: true });
     this.start = header.getByRole('button', { name: 'Start', exact: true });
     this.pause = header.getByRole('button', { name: 'Pause', exact: true });
     this.resume = header.getByRole('button', { name: 'Resume', exact: true });

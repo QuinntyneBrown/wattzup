@@ -8,6 +8,8 @@
   [run]="store.run()"
   [runDisabled]="store.runDisabled()"
   [endDisabled]="store.endDisabled()"
+  [libraryOpen]="leaveOpen()"
+  (library)="openLeave($event)"
   (stopped)="store.end()"
   (ran)="store.toggleRun()"
   [fullscreen]="fullscreen.active()"

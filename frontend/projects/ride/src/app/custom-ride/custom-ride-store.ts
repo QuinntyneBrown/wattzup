@@ -47,11 +47,12 @@ const MIN_SAVED_SECONDS = 60;
 
 /**
  * The custom ride's state (docs/detailed-designs/custom-workout/ride-a-custom-workout), provided by the page so it goes
- * when the rider leaves. It rides the plan of Custom workout's draft from the moment it opens: the clock, the ticker
- * and the engine following the plan, which sends each segment's level as the target resistance (L2-100 AC2). The
- * header, the readouts' targets and the interval card read the ticker's whole seconds (L2-134 AC2); Power and Cadence
- * read the bike's telemetry as it arrives. At the plan's end the clock stops at its length; what follows is slice
- * 21.4's.
+ * when the rider leaves. With a bike connected it rides the plan of Custom workout's draft from the moment it opens;
+ * with none it waits at 0:00 for one and for Start (L2-106). Then the clock, the ticker and the engine follow the plan,
+ * which sends each segment's level as the target resistance (L2-100 AC2). The header, the readouts' targets and the
+ * interval card read the ticker's whole seconds (L2-134 AC2); Power and Cadence read the bike's telemetry as it arrives.
+ * The rider pauses and resumes it, and a lost bike pauses it until the rider resumes (L2-105). End, the plan's end and
+ * Library's "Save ride" submit it, unless it lasted under a minute (L2-107, L2-108).
  */
 @Injectable()
 export class CustomRideStore {
@@ -386,6 +387,33 @@ export class CustomRideStore {
   }
 
   /**
+   * Library (L2-107 AC1): the ride pauses while the rider decides, and the popover reads how far it went; `null` before
+   * the ride has started, when the Class Library opens at once.
+   */
+  openLeave(): { readonly elapsed: string; readonly distance: string } | null {
+    if (!this.started() || this.ended()) {
+      void this.router.navigateByUrl('/classes');
+      return null;
+    }
+    this.pause();
+    return {
+      elapsed: this.clockText(),
+      distance: `${formatMetric(this.totals.distanceKm(), 2)} km`,
+    };
+  }
+
+  /**
+   * Save ride and open library, or Discard and open library (L2-107 AC3): the ride stops, a saved one of a minute or
+   * more goes to the outbox, and the Class Library opens.
+   */
+  leave(save: boolean): void {
+    if (!this.started() || this.ended()) return;
+    this.stop();
+    if (save) this.submit();
+    void this.router.navigateByUrl('/classes');
+  }
+
+  /**
    * End, the plan's end, or End with the bike lost (L2-108 AC1, AC2; L2-105 AC4): the ride stops, and with a minute or
    * more ridden it goes to the outbox, which keeps it on the device and sends it to the backend; Profile opens. A ride
    * under a minute is discarded, and Profile says it was too short to save (AC3).
@@ -393,10 +421,16 @@ export class CustomRideStore {
   end(): void {
     if (!this.started() || this.ended()) return;
     this.stop();
+    const saved = this.submit();
+    void this.router.navigateByUrl('/profile', { state: saved ? {} : { rideTooShort: true } });
+  }
+
+  /** Hands a ride of a minute or more to the outbox, which keeps it on the device and sends it; `false` if too short. */
+  private submit(): boolean {
     const facts = this.recorder.facts(new Date());
-    const tooShort = facts.elapsedSeconds < MIN_SAVED_SECONDS;
-    if (!tooShort) this.outbox.submit({ ...facts, kind: 'custom' });
-    void this.router.navigateByUrl('/profile', { state: tooShort ? { rideTooShort: true } : {} });
+    if (facts.elapsedSeconds < MIN_SAVED_SECONDS) return false;
+    this.outbox.submit({ ...facts, kind: 'custom' });
+    return true;
   }
 
   /** The ride stops where it is: the clock, the ticker and the video, and the screen may sleep. */

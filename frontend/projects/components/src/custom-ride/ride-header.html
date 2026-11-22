@@ -1,4 +1,19 @@
 <wz-lockup size="sm" />
+<button
+  type="button"
+  class="ride-header__link ride-header__link--strong"
+  aria-haspopup="dialog"
+  [attr.aria-expanded]="libraryOpen()"
+  (click)="library.emit($any($event.currentTarget))"
+>
+  <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+    <rect width="7" height="7" x="3" y="3" rx="1" />
+    <rect width="7" height="7" x="14" y="3" rx="1" />
+    <rect width="7" height="7" x="14" y="14" rx="1" />
+    <rect width="7" height="7" x="3" y="14" rx="1" />
+  </svg>
+  Library
+</button>
 <span class="ride-header__divider" aria-hidden="true"></span>
 <span class="ride-header__status">
   @if (bikeTone() === 'ok') {
@@ -56,7 +71,12 @@
       {{ run() === 'start' ? 'Start' : 'Resume' }}
     }
   </button>
-  <button type="button" class="ride-header__stop" [disabled]="endDisabled()" (click)="stopped.emit()">
+  <button
+    type="button"
+    class="ride-header__stop"
+    [disabled]="endDisabled()"
+    (click)="stopped.emit()"
+  >
     <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
       <rect width="18" height="18" x="3" y="3" rx="2" />
     </svg>

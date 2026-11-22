@@ -16,6 +16,33 @@
   }
 }
 
+// Library: muted until hovered or open, 44 px tall to touch.
+.ride-header__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--target-comfortable);
+  white-space: nowrap;
+  border-radius: var(--radius-md);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.ride-header__link:hover,
+.ride-header__link[aria-expanded='true'] {
+  background: var(--color-raised);
+  color: var(--color-fg);
+}
+
+.ride-header__link--strong {
+  font-weight: var(--font-weight-medium);
+}
+
 .ride-header__divider {
   display: none;
   width: var(--space-px);
