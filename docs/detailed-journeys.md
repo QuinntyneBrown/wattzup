@@ -94,7 +94,7 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 23.1 | Fit every width | 320 to 2560 px with no sideways scroll. | 3 | 23. Use by touch, keyboard and screen reader | 100% |
 | 23.2 | Touch and keyboard | 44 px targets, focus order and visible focus everywhere. | 2 | 23. Use by touch, keyboard and screen reader | 100% |
 | 23.3 | Screen readers and motion | Screen readers hear step changes and results; dialogs make the page inert; reduced motion stills animation. | 3 | 23. Use by touch, keyboard and screen reader | 100% |
-| 24.1 | Switch theme | Match device, dark or light from role tokens. | 2 | 24. Switch theme and full screen | 0% |
+| 24.1 | Switch theme | Match device, dark or light from role tokens. | 2 | 24. Switch theme and full screen | 100% |
 | 24.2 | Full screen | Full screen toggle on every page header, hidden where the browser has no Fullscreen API. | 1 | 24. Switch theme and full screen | 0% |
 | 25.1 | Inspect diagnostics | Bike, browser and connection state in a dialog. | 3 | 25. Check diagnostics | 0% |
 | 25.2 | Record the packet log | Bounded log of Bluetooth commands, or every message when switched on, downloadable as a file. | 2 | 25. Check diagnostics | 0% |
@@ -103,4 +103,4 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 27.1 | Installable app | Manifest, icons and install from Chrome or Edge. | 2 | 27. Install the app | 0% |
 | 27.2 | Update to a new version | Tell the rider a new version is ready; reload between rides. | 1 | 27. Install the app | 0% |
 
-**Total:** 95 slices, 238 days. **Complete:** 87 slices, 222 days (93%).
+**Total:** 95 slices, 238 days. **Complete:** 88 slices, 224 days (94%).
