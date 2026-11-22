@@ -35,6 +35,8 @@ import {
 import type { Backend, SceneFrame, TimedSegment as Segment, World, WorldRenderer } from '@telo/api';
 import { Course, type CoursePlace, courseLamps, courseLook, parseCourse } from './course';
 import { groundMaterial } from './ground-material';
+import { LampGlow } from './lamp-glow';
+import { lampLightMap } from './lamp-light-map';
 import { mergeStillParts } from './merged-cyclist';
 import { ridersOnRoad } from './race-riders';
 import { type Cyclist, CyclistKit } from './world-cyclist';
@@ -76,6 +78,11 @@ const MOST_RIDERS = 4;
 /** The haze the distance fades into, from these metres to these; its colour is the course's (`courseLook`). */
 const FOG: readonly [number, number] = [200, 1500];
 const GHOST_OPACITY = 0.45;
+/**
+ * How bright the lamps' light is on what stands near the road, against the ground straight under a lamp: walls and
+ * posts catch it side on, the land and the leaves as the ground does, the riders from above and beside.
+ */
+const LAMP_ON = { Solid: 1.5, Land: 4.2, Leaves: 1.8, rider: 1.5 } as const;
 /**
  * How the map is drawn, cheapest first: the most device pixels a CSS pixel, and whether the neon blooms. The ride
  * opens on `START`, so it never starts high and drops in front of the rider (L2-111 AC3); frames that keep the
@@ -161,6 +168,9 @@ export class CourseRenderer implements WorldRenderer {
   private spent = 0;
   /** Set by the test-only hook: the tier never steps, and each frame's cost is written to the hook. */
   private pinned = false;
+  /** The street lamps' light on what stands near the road, where the course has lamps; and the riders' materials lit by it. */
+  private lampGlow: LampGlow | null = null;
+  private readonly lamplit = new Map<Material, Material>();
 
   /** `path` is where the app serves the course's `.glb` and `.course.json`. */
   constructor(private readonly path: string) {}
@@ -282,6 +292,8 @@ export class CourseRenderer implements WorldRenderer {
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.riders.clear();
+    this.lamplit.clear();
+    this.lampGlow = null;
     this.shadows.clear();
     this.blob = null;
     this.renderer?.dispose();
@@ -321,10 +333,25 @@ export class CourseRenderer implements WorldRenderer {
         blending: AdditiveBlending,
       }),
     };
+    // Where the course has street lamps, what stands near the road is lit by them (lamp-glow.ts).
+    const lamps = courseLamps(this.course!.file);
+    if (lamps) {
+      const lampGlow = new LampGlow(lampLightMap(this.course!, lamps), lamps);
+      this.lampGlow = lampGlow;
+      this.disposables.push(lampGlow);
+      for (const [group, material] of [
+        ['Solid', lampGlow.scenery(LAMP_ON.Solid)],
+        ['Land', lampGlow.scenery(LAMP_ON.Land)],
+        ['Leaves', lampGlow.scenery(LAMP_ON.Leaves, true)],
+      ] as const) {
+        materials[group]!.dispose();
+        materials[group] = material;
+      }
+    }
     this.disposables.push(...Object.values(materials));
     // The ground the road builds has its place on the road in its UV: its surface and the lamps' light are drawn
     // from that (ground-material.ts). A map built before it has no such group.
-    const ground = groundMaterial(this.course!.file.roadHalfWidth, courseLamps(this.course!.file));
+    const ground = groundMaterial(this.course!.file.roadHalfWidth, lamps);
     materials['Ground'] = ground.material;
     this.disposables.push(ground);
     this.beams = materials['Beams'] as MeshBasicMaterial;
@@ -421,6 +448,7 @@ export class CourseRenderer implements WorldRenderer {
     const you = kit.make(jerseyColour(canvas, 'you'), 4);
     this.you = you;
     this.disposables.push(...mergeStillParts(you, this.plain));
+    this.lamplight(you);
     this.shadow(you);
     this.scene.add(you.group);
     this.disposables.push(kit, you.jersey, you.bib, you.shell, this.frameMaterial, this.plain);
@@ -520,10 +548,34 @@ export class CourseRenderer implements WorldRenderer {
       });
     }
     this.disposables.push(...mergeStillParts(cyclist, this.plain));
+    if (jersey !== 'ghost') this.lamplight(cyclist);
     if (jersey !== 'ghost') this.shadow(cyclist);
     this.riders.set(jersey, cyclist);
     this.scene.add(cyclist.group);
     return cyclist;
+  }
+
+  /** Where the course has street lamps, gives a rider's lit materials the lamps' light too. */
+  private lamplight(cyclist: Cyclist): void {
+    const lampGlow = this.lampGlow;
+    if (!lampGlow) return;
+    cyclist.group.traverse((part) => {
+      const mesh = part as Mesh;
+      const own = mesh.material as MeshStandardMaterial;
+      if (
+        !mesh.isMesh ||
+        Array.isArray(own) ||
+        !(own.isMeshStandardMaterial || (own as Material) === this.plain)
+      )
+        return;
+      let lit = this.lamplit.get(own);
+      if (!lit) {
+        lit = lampGlow.rider(own, LAMP_ON.rider);
+        this.lamplit.set(own, lit);
+        this.disposables.push(lit);
+      }
+      mesh.material = lit;
+    });
   }
 
   /** What moves on the map: the light beams breathe and the confetti flutters. Two numbers a frame. */

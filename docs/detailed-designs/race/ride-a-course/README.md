@@ -53,6 +53,8 @@ All of it is in the `world` library; nothing outside it changes.
 | `map-renderer.ts` | `MapRenderer`, the `WorldRenderer` the loader returns. On `start` it imports `CourseRenderer` or `main`'s `ThreeWorldRenderer` by the world's id, and passes every call on. On `stream` (a real place, L2-066) while a course draws, it disposes the course, starts `main`'s renderer on the same canvas with the size and frame period it was given, and streams with it. |
 | `course-renderer.ts` | `CourseRenderer`: loads the glb and the course file, builds the sky, the lights and the rider, and draws. |
 | `ground-material.ts` | The `Ground` group's material (L2-166 AC13): the surface worked out from each vertex's place on the road (its UV) and a detail texture, and the lamps' light on it. `docs/course-realism.md` describes it. |
+| `lamp-light-map.ts` | `lampLightMap(course, lamps)`: a grid over the map seen from above, the lamps' light on the ground and the road's height in each cell (L2-166 AC14). No Three.js; unit-tested. |
+| `lamp-glow.ts` | `LampGlow`: the grid as a texture and the node that adds the lamps' light to a material; the scenery's and the riders' lit materials. |
 | `surface-detail.ts` | The detail texture's texels, worked out on the device: grain, patches, cracks, stones. No Three.js; unit-tested. |
 | `world-renderer-loader.ts` | Returns a `MapRenderer`. It imports neither renderer, so Three.js still loads only when a world starts. |
 
@@ -99,7 +101,12 @@ a tablet.
 loads. `tools/course-bench` times a course's frames in the real app; `docs/course-realism.md` gives the method and
 each technique.
 
-**Dispose.** Every geometry and material of the glb, the ground's detail texture, the sky, the lights, the cyclist kit and each
+**Lamplight (L2-166 AC14).** Where the file has `lamps`, `Solid`, `Land` and `Leaves` are drawn with
+`LampGlow.scenery`, and each rider's lit materials are swapped for `LampGlow.rider` copies when the rider is made
+(kept in a map by their source, so riders share them).
+
+**Dispose.** Every geometry and material of the glb, the ground's detail texture, the lamps' grid and the riders'
+lamplit materials, the sky, the lights, the cyclist kit and each
 rider's materials, and the renderer.
 
 ## Tests

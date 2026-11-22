@@ -66,15 +66,44 @@ before gzip.
 **Watch for.** Lamp pools that merge into a wash (the fall-off too slow or the lamps too strong); detail too faint
 to survive bloom and tone mapping; anything standing on the lit ground that the lamps do not light.
 
+### 2. Standing light as a grid seen from above (Docklands pass 2)
+
+**What it gives.** Everything near the road (riders, posts, walls, land, leaves) is lit by the street lamps, bright
+under each and dim between, with no lights for the GPU to add up.
+
+**How it works.**
+
+- `frontend/projects/world/src/lamp-light-map.ts`: from the course's centre line and its `lamps`, a grid over the
+  whole map, 2.5 m a cell: the summed light of the lamps at ground level (the same fall-off the ground uses) and
+  the road's height at the nearest point of the centre line. Worked out once on the device, in a few milliseconds;
+  unit-tested; nothing added to the map's file.
+- `frontend/projects/world/src/lamp-glow.ts`: the grid as a two-channel texture and one TSL node, read at
+  `positionWorld.xz`: the lamps' colour times the light there, faded out between 1.5 m and 9 m above the road's
+  height. `scenery(strength)` is a flat-shaded, vertex-coloured Lambert material that emits its own colour times
+  that node; `rider(material, strength)` copies a rider's material and adds the same.
+- `course-renderer.ts`: where the course file has `lamps`, the `Solid`, `Land` and `Leaves` groups are drawn with
+  `scenery`, and each rider's materials are swapped once, when the rider is made. A course without lamps keeps its
+  plain materials and pays nothing.
+
+**To apply it to another map.** Nothing more than technique 1's `lamps` entry in the theme: the grid and the
+materials follow from the course file. For lights that are not along the road (a lit window, a neon sign, a
+floodlit quay), add their pools to the grid in `lampLightMap` from a list in the course file; the materials do not
+change. By day the same grid can hold shade instead of light (under a bridge, a tunnel, an avenue of trees).
+
+**Cost.** About 0.2 ms a frame at 1080p on an Adreno X1-85; one texture of the map's footprint at 2.5 m a cell
+(3.2 MB for Docklands' 3.3 x 3.0 km).
+
+**Watch for.** Walls overlit to their tops (keep them near a third of the ground's strength and fade with height);
+pale colours blooming; the light has no direction and casts no shadow.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
 
-1. Lamps light only the ground: the riders, the posts and the walls beside the road stay dark.
-2. Walls are one flat colour: no brick, no window frames, no doors.
-3. The riders' shadows are blobs, and nothing else casts a shadow.
-4. The sky is bands of colour: no stars, moon or cloud at night; no real clouds by day.
-5. The water is a flat colour: no reflection of the lights along the quay.
-6. Wet ground: reflections of the neon and the lamps in the road.
-7. The land beside the road is bare: no clutter (bollards, crates, bins, fences, parked vehicles).
-8. Lamps and neon have no glow in the air (halos, haze under each lamp).
+1. Walls are one flat colour: no brick, no window frames, no doors.
+2. The riders' shadows are blobs, and nothing else casts a shadow.
+3. The sky is bands of colour: no stars, moon or cloud at night; no real clouds by day.
+4. The water is a flat colour: no reflection of the lights along the quay.
+5. Wet ground: reflections of the neon and the lamps in the road.
+6. The land beside the road is bare: no clutter (bollards, crates, bins, fences, parked vehicles).
+7. Lamps and neon have no glow in the air (halos, haze under each lamp).

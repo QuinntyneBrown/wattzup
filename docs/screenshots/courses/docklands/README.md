@@ -18,6 +18,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 0 | Baseline: every surface one flat colour, shaded flat | 119.8 fps | 357 fps (2.80 ms) | 39 ms | 73,629 | 117 | 3.37 MB | |
 | 1 | The ground's surface and the lamps' light on it | 119.6 fps | 342 fps (2.92 ms) | 37 ms | 74,889 | 122 | 3.28 MB | Yes |
+| 2 | The lamps light what stands near the road: riders, posts, walls, land | 119.0 fps | 321 fps (3.11 ms) | 73 ms | 74,889 | 122 | 3.28 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -56,3 +57,36 @@ now sit together.
   passes.
 - `e2e/race-course.spec.ts`: two of its three specs (Ibiza and Vice City) already failed before this pass, at the
   race's start, before anything is drawn; Prairie Paceline's passes before and after.
+
+## Pass 2: the lamps light what stands near the road
+
+**Before** (`pass-01.jpg`, `pass-01.mp4`): the road is lit, but the riders, the lamp posts, the warehouses and the
+quay beside it are as dark as open night: they look cut out and pasted on.
+
+**After** (`pass-02.jpg`, `pass-02.mp4`): the riders ride through the pools and brighten under each lamp; the
+warehouses' brick is lit warm at street level and falls back to night above the lamps; the posts, the containers
+and the quay catch the same light. The picture reads as one place lit by its lamps.
+
+**What changed.**
+
+- `lamp-light-map.ts` works out, once when the map loads, a grid over the whole map seen from above (2.5 m a cell,
+  two bytes a cell): the lamps' light at ground level and the road's height there. No change to the map's file.
+- `lamp-glow.ts` gives that grid to the GPU as a texture and adds one node to what a material emits: the surface's
+  own colour times the lamps' light where it stands, fading from 1.5 m to 9 m above the road. The `Solid`, `Land`
+  and `Leaves` groups use it, and each rider's lit materials are swapped for copies that do (the ghost is not lit).
+- Strengths against the ground under a lamp (4.2): the land 4.2, walls and posts 1.5, leaves 1.8, riders 1.5.
+
+**Cost.** 0.19 ms a frame (342 to 321 fps uncapped): one more texture read for almost every pixel of the scene. No
+more triangles or draw calls; a 1,317 x 1,202 grid, 3.2 MB on the GPU while the course is open. One 67 ms hitch in
+the ten seconds at the display's pace in the last run and none in the run before it; uncapped has the same few
+either way (pass 0 has them too), so it is the machine, not the pass.
+
+**Learned.**
+
+- Light kept in the world's own axes, read by where a surface is, lights everything with one node: nothing has to
+  know which lamp is near it, and a rider is lit like a wall. It is the cheap form of hundreds of lights.
+- Lit to the lamps' full strength, vertical walls glowed orange to their tops: a wall catches a lamp's light side
+  on, and nothing above the lamp's head. A third of the ground's strength, faded out by 9 m up, reads as lamplight.
+- Pale jerseys bloom under a strong lamp. The riders take less of it than the ground does.
+- It lights without direction: a wall facing away from the lamp is lit as one facing it, and nothing casts a
+  shadow. The shape of things still comes only from the moon's light. Shadows are the next gap.
