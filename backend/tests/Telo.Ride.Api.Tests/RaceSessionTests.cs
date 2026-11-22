@@ -1,10 +1,11 @@
 // Unit test
 // Traces to: L2-121 AC1, AC2; L2-052 AC1, AC5; L2-053 AC1, AC2; L2-054 AC1, AC2, AC3; L2-055 AC1, AC2, AC3; L2-057 AC2;
-// L2-120 AC3
+// L2-120 AC3; L2-121 AC3
 // Description: a race session seats riders in the first open seat, each in the next free jersey, and a seated rider who
 // asks again keeps their seat. It is open while a seat is free and more than 10 seconds remain. A leaver's seat opens
 // again with their name before the bots fill it, and goes to the next bot after. At 10 seconds to the start bots take
-// every open seat, ready, in the bot list's order. A seat whose rider's connection has been gone 10 seconds is freed.
+// every open seat, ready, in the bot list's order. A seat whose rider's connection has been gone 10 seconds is freed,
+// unless the rider joins the session again.
 using System.Globalization;
 using Telo.Ride.Domain.Races;
 
@@ -121,6 +122,21 @@ public sealed class RaceSessionTests
         session.Tick(Opened.AddSeconds(15));
 
         Assert.Equal("lena.k", session.Seats[0]!.Name);
+    }
+
+    [Fact]
+    public void Joining_again_gives_back_the_held_seat_and_keeps_it_from_a_lost_connection_and_a_stranger_gets_none()
+    {
+        var session = new RaceSession("old-town-criterium", Start);
+        session.TrySeat(Rider(1), "lena.k", 4);
+        session.TrySeat(Rider(2), "jwatts", 7);
+        session.ConnectionLost(Rider(2), Opened);
+
+        Assert.Equal(2, session.Rejoin(Rider(2)));
+        Assert.Null(session.Rejoin(Rider(3)));
+        session.Tick(Opened.AddSeconds(15));
+
+        Assert.Equal("jwatts", session.Seats[1]!.Name);
     }
 
     private static Guid Rider(int n) => new($"00000000-0000-0000-0000-{n:D12}");

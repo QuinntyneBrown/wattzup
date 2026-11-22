@@ -115,6 +115,21 @@ public sealed class RaceSession(string mapId, DateTimeOffset startsAt)
         }
     }
 
+    /// <summary>
+    /// The seat a returning connection of the rider takes back, before or after the start (L2-120 AC3, L2-121 AC3), so a
+    /// lost connection no longer frees it; <c>null</c> when they hold none.
+    /// </summary>
+    public int? Rejoin(Guid riderId)
+    {
+        lock (seats)
+        {
+            var held = Array.FindIndex(seats, seat => seat?.RiderId == riderId);
+            if (held < 0) return null;
+            lost.Remove(riderId);
+            return held + 1;
+        }
+    }
+
     /// <summary>Marks the rider ready or not (L2-053 AC1, AC2); <c>false</c> when they hold no seat.</summary>
     public bool SetReady(Guid riderId, bool ready)
     {

@@ -182,10 +182,13 @@ public sealed class RaceLobbyTests(RaceLobbyApi api) : IClassFixture<RaceLobbyAp
     {
         var (quinn, _) = await Rider("quinn");
         var found = await Find(quinn, Map);
+        var heard = Listen(quinn);
+        api.Clock.Advance(found.StartsAt!.Value.AddSeconds(-10) - api.Clock.GetUtcNow());
+        await heard.Await(c => c.SessionId == found.SessionId && c.Seats.All(seat => seat.Kind != "open"), Wait);
 
         // The lobby's connection closes as the race opens at Go, and the race's opens.
         await quinn.StopAsync(Cancel);
-        api.Clock.Advance(TimeSpan.FromSeconds(30));
+        api.Clock.Advance(TimeSpan.FromSeconds(10));
         var race = await Reconnect(quinn);
         var joined = await Join(race, found.SessionId!);
 
