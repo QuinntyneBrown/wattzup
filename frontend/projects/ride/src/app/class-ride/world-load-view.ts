@@ -27,6 +27,8 @@ export interface WorldLoadState {
   readonly shaderSeconds: number;
   /** The percentage when the load became slow, which the slow status announces. */
   readonly slowPercent: number;
+  /** The bike is connected; Start riding waits for it, and loading never does (L2-157). */
+  readonly bikeConnected: boolean;
 }
 
 /** World loading in words: the load card's heading, steps, percentage, status and hint (L2-152, L2-153, L2-156). */
@@ -34,8 +36,10 @@ export interface WorldLoadView {
   readonly heading: string;
   readonly steps: readonly LoadStepView[];
   readonly percent: number;
-  /** The rider can start: the world, or its panorama, is ready. */
+  /** The world, or its panorama, is ready. */
   readonly ready: boolean;
+  /** The rider can start: the world is ready and the bike connected (L2-153 AC2, L2-157 AC3). */
+  readonly canStart: boolean;
   readonly status: string;
   readonly hint: string;
 }
@@ -110,6 +114,8 @@ export function worldLoadView(state: WorldLoadState): WorldLoadView {
       ? { label, state: 'skipped', detail: 'Not needed for the panorama' }
       : { label, state: done ? 'done' : current ? 'current' : 'waiting', detail };
   const slowNow = slow && phase !== 'ready' && phase !== 'failed';
+  const noBike = !state.bikeConnected && phase !== 'failed';
+  const bikeStatus = noBike ? ' The bike is not connected.' : '';
   const doing =
     phase === 'downloading'
       ? 'downloading the world'
@@ -146,25 +152,30 @@ export function worldLoadView(state: WorldLoadState): WorldLoadView {
     ],
     percent,
     ready: phase === 'ready',
-    status: slowNow
-      ? `Still ${doing}, ${state.slowPercent} percent.`
-      : phase === 'ready'
-        ? `${name} is ready${panoramaOnly ? ' as a panorama' : ''}.`
-        : phase === 'failed'
-          ? ''
-          : `${doing[0]!.toUpperCase()}${doing.slice(1)}, ${state.startPercent} percent.`,
+    canStart: phase === 'ready' && state.bikeConnected,
+    status:
+      phase === 'failed'
+        ? ''
+        : (slowNow
+            ? `Still ${doing}, ${state.slowPercent} percent.`
+            : phase === 'ready'
+              ? `${name} is ready${panoramaOnly ? ' as a panorama' : ''}.`
+              : `${doing[0]!.toUpperCase()}${doing.slice(1)}, ${state.startPercent} percent.`) +
+          bikeStatus,
     hint: slowNow
       ? 'Or keep waiting: Start riding turns on when the world is ready.'
-      : phase === 'downloading'
-        ? 'The first time takes longest. Next time this world opens from this device.'
-        : phase === 'building' || phase === 'warming'
-          ? 'Ready in a few seconds. Pedal easy while you wait.'
-          : phase === 'ready'
-            ? panoramaOnly
-              ? 'Turn on graphics acceleration in Chrome or Edge to ride the 3D world.'
-              : state.warmUpSeconds === null
-                ? 'Your class starts the moment you press Start.'
-                : `Your ${clock(state.warmUpSeconds)} warm-up starts the moment you press Start.`
-            : '',
+      : noBike
+        ? 'Start riding turns on when the bike is connected and the world is ready.'
+        : phase === 'downloading'
+          ? 'The first time takes longest. Next time this world opens from this device.'
+          : phase === 'building' || phase === 'warming'
+            ? 'Ready in a few seconds. Pedal easy while you wait.'
+            : phase === 'ready'
+              ? panoramaOnly
+                ? 'Turn on graphics acceleration in Chrome or Edge to ride the 3D world.'
+                : state.warmUpSeconds === null
+                  ? 'Your class starts the moment you press Start.'
+                  : `Your ${clock(state.warmUpSeconds)} warm-up starts the moment you press Start.`
+              : '',
   };
 }

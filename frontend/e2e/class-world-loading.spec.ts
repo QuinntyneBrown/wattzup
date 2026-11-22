@@ -12,6 +12,7 @@ import {
   resistanceFrame,
   targetResistanceWrite,
 } from './fixtures/echelon';
+import { connectBike } from './fixtures/class-ride';
 import { expect, test } from './fixtures/test';
 import { OLDTOWN_PANORAMA, WorldAssets, megabytes } from './fixtures/world-assets';
 import { ClassRidePage } from './pages/class-ride.page';
@@ -64,16 +65,23 @@ test.describe('World loading', () => {
       await expect(loading.progress).toHaveAccessibleName('Loading Old Town Criterium');
       await expect(loading.progress).toHaveAttribute('aria-valuenow', '0');
       await expect(loading.percent).toHaveText('0%');
-      await expect(loading.status).toHaveText('Downloading the world, 0 percent.');
+      // The bike has not answered yet: the load carries on and says so (L2-157 AC1, AC2).
+      await expect(loading.status).toHaveText(
+        'Downloading the world, 0 percent. The bike is not connected.',
+      );
       await expect(loading.start).toBeDisabled();
       await expect(loading.hint).toHaveText(
-        'The first time takes longest. Next time this world opens from this device.',
+        'Start riding turns on when the bike is connected and the world is ready.',
       );
       await expect.poll(() => bluetooth.log()).toEqual(ECHELON_INITIALISED);
       await expect(loading.facts.first()).toHaveText('No bike');
       // The bike is connected once it answers its initialisation.
       await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(6));
       await expect(loading.facts.first()).toHaveText('Echelon EX-5s');
+      await expect(loading.status).toHaveText('Downloading the world, 0 percent.');
+      await expect(loading.hint).toHaveText(
+        'The first time takes longest. Next time this world opens from this device.',
+      );
 
       await assets.release();
 
@@ -108,10 +116,12 @@ test.describe('World loading', () => {
 
   test('without WebGPU or WebGL 2 the class is ready as a panorama (L2-156 AC4)', async ({
     page,
+    bluetooth,
     webgl,
   }) => {
     await webgl.disable();
     await new ClassRidePage(page).open(hiitCardio.id);
+    await connectBike(bluetooth);
 
     await expect(loading.cardTitle).toHaveText('Old Town Criterium is ready as a panorama');
     await expect(loading.step(0).label).toHaveText('Download the panorama: Done');
@@ -133,10 +143,12 @@ test.describe('World loading', () => {
 
   test('a world downloaded once is saved on this device, so the next load skips its download (L2-152 AC3)', async ({
     page,
+    bluetooth,
     webgl,
   }) => {
     await webgl.disable();
     await new ClassRidePage(page).open(hiitCardio.id);
+    await connectBike(bluetooth);
     await expect(loading.step(0).label).toHaveText('Download the panorama: Done');
     await loading.back.click();
     await expect(new ClassStartPage(page).start).toBeVisible();

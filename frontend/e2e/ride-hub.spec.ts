@@ -6,6 +6,7 @@
 // for. The ride joins its session (JoinClassSession) as it connects; group-class-join.spec.ts covers the join.
 import { hiitCardio, seated } from './fixtures/classes';
 import { echelonBike } from './fixtures/echelon';
+import { connectBike } from './fixtures/class-ride';
 import { expect, test } from './fixtures/test';
 import { ClassRidePage } from './pages/class-ride.page';
 import { WorldLoadingPage } from './pages/world-loading.page';
@@ -70,6 +71,7 @@ test('a solo class ride and the screens around it hold no hub connection (L2-120
   await home.header.link('Classes').click();
   const ride = new ClassRidePage(page);
   await ride.open(hiitCardio.id);
+  await connectBike(bluetooth);
   await new WorldLoadingPage(page).startRiding();
   await expect(ride.leave).toBeVisible();
   await ride.leave.click();

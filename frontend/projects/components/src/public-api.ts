@@ -45,6 +45,7 @@ export { ClassResist } from './class-ride/class-resist';
 export { ClassSegment } from './class-ride/class-segment';
 export { ClassStat, type ClassStatTone } from './class-ride/class-stat';
 export { ClassVideo } from './class-ride/class-video';
+export { ClassWorld } from './class-ride/class-world';
 export { InlineMessage, type InlineMessageTone } from './inline-message/inline-message';
 export { Band, type BandSurface } from './band/band';
 export { Features, type FeatureView } from './features/features';

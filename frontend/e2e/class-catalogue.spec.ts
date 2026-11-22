@@ -5,6 +5,7 @@
 // saved on the device too.
 import { catalogue, hiitCardio } from './fixtures/classes';
 import { echelonBike, targetResistanceWrite } from './fixtures/echelon';
+import { connectBike } from './fixtures/class-ride';
 import { expect, test } from './fixtures/test';
 import { ClassRidePage } from './pages/class-ride.page';
 import { WorldLoadingPage } from './pages/world-loading.page';
@@ -22,11 +23,13 @@ test.describe('Class catalogue', () => {
     const ride = new ClassRidePage(page);
     const loading = new WorldLoadingPage(page);
     await ride.open(hiitCardio.id);
+    await connectBike(bluetooth);
     await loading.startRiding();
     await expect(ride.name).toContainText('30 Minute HIIT Cardio');
 
     api.answer('GET', '/api/classes', () => ({ status: 503 }));
     await page.reload();
+    await connectBike(bluetooth);
     const writes = bluetooth.writes().length;
     await loading.startRiding();
 

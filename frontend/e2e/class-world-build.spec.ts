@@ -20,6 +20,7 @@ import {
   resistanceFrame,
   targetResistanceWrite,
 } from './fixtures/echelon';
+import { connectBike } from './fixtures/class-ride';
 import { expect, test } from './fixtures/test';
 import { WorldAssets } from './fixtures/world-assets';
 import { ClassRidePage } from './pages/class-ride.page';
@@ -61,10 +62,12 @@ test.describe('Building the world', () => {
 
   test('after 20 seconds without the world it warns, and Start at Low quality builds it at Low (L2-155 AC1, AC2, AC3)', async ({
     page,
+    bluetooth,
   }) => {
     await page.clock.install();
     assets.hold();
     await new ClassRidePage(page).open(hiitCardio.id);
+    await connectBike(bluetooth);
     await expect(loading.step(0).root).toHaveAttribute('aria-current', 'step');
     await expect(loading.warning).toHaveCount(0);
 

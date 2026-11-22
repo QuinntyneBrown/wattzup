@@ -5,3 +5,6 @@ export { loadWorldRenderer } from './world-renderer-loader';
 export { worldForMap } from './map-world';
 export { timedSegments } from './timed-segments';
 export { startTier } from './render-quality';
+export { musicPlays, worldTrack } from './world-music';
+export { WorldMusicPlayer } from './world-music-player';
+export { ambienceOf } from './world-ambience';

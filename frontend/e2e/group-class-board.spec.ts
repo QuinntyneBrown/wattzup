@@ -15,6 +15,7 @@ import {
 } from './fixtures/classes';
 import { ECHELON_NOTIFY, echelonBike, resistanceFrame, workoutFrame } from './fixtures/echelon';
 import type { HubFixture } from './fixtures/hub';
+import { connectBike } from './fixtures/class-ride';
 import { expect, test } from './fixtures/test';
 import { ClassRidePage } from './pages/class-ride.page';
 import { WorldLoadingPage } from './pages/world-loading.page';
@@ -112,10 +113,11 @@ test.describe('The group output board', () => {
     expect(reports.at(-1)![2]).toBeGreaterThan(0);
   });
 
-  test('a solo class ride has no board (L2-090 AC4)', async ({ page, webgl }) => {
+  test('a solo class ride has no board (L2-090 AC4)', async ({ page, bluetooth, webgl }) => {
     await webgl.disable();
     const ride = new ClassRidePage(page);
     await ride.open(hiitCardio.id);
+    await connectBike(bluetooth);
     await new WorldLoadingPage(page).startRiding();
     await expect(ride.clock).toBeVisible();
 

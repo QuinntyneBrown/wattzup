@@ -61,15 +61,42 @@
       </h1>
       <p class="visually-hidden" role="status">{{ store.paused() ? 'Ride paused' : '' }}</p>
       <div class="class-ride__stage">
-        <wz-class-video
-          [videoId]="ride.video.videoId"
-          [title]="ride.title"
-          [unavailable]="store.videoUnavailable()"
-          [paused]="store.paused() || store.bikeLost()"
-          [startsIn]="store.startsIn()"
-          [startsAt]="store.startsAt()"
-          (frame)="store.playVideo($event)"
-        />
+        <!-- A world class rides in its world, the video in its corner (class-ride/world, L2-153 AC3). -->
+        @if (world(); as world) {
+          <wz-class-world [panorama]="panorama()">
+            <ng-container
+              ngProjectAs="[slot=scene]"
+              [wzClassWorldScene]="world.id"
+              [prepared]="prepared()"
+              [segments]="ride.plan.segments"
+              [elapsed]="store.elapsed()"
+              [speedKmh]="store.speedKmh()"
+              [running]="store.running()"
+              [music]="store.running() && store.videoUnavailable()"
+            />
+            <wz-class-video
+              slot="video"
+              [inset]="true"
+              [videoId]="ride.video.videoId"
+              [title]="ride.title"
+              [unavailable]="store.videoUnavailable()"
+              [paused]="store.paused() || store.bikeLost()"
+              [startsIn]="store.startsIn()"
+              [startsAt]="store.startsAt()"
+              (frame)="store.playVideo($event)"
+            />
+          </wz-class-world>
+        } @else {
+          <wz-class-video
+            [videoId]="ride.video.videoId"
+            [title]="ride.title"
+            [unavailable]="store.videoUnavailable()"
+            [paused]="store.paused() || store.bikeLost()"
+            [startsIn]="store.startsIn()"
+            [startsAt]="store.startsAt()"
+            (frame)="store.playVideo($event)"
+          />
+        }
         @if (store.plan(); as plan) {
           <wz-class-bike>
             <wz-class-segment

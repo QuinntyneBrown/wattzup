@@ -81,15 +81,17 @@ lost-bike alert of `L2-092` (`L2-157` AC4).
   always has a remembered bike, and leaving for Connect would throw away the world being built.
 - **The hand-over** (`L2-153` AC3, AC5): `WorldLoadStore.ride()` hands the started renderer and
   the canvas it drew on (`PreparedWorld` in `api`) to the class ride, and no longer disposes them.
-  `ClassRideSession` takes the class's world as an input from `ClassRidePage`. Its `ClassWorld`
-  directive imports the `world` library and creates `main`'s `WorldScene` there, as the race's
-  `RaceWorld` does, with the new `prepared` input. `WorldScene` then puts the prepared canvas in
+  `ClassRideSession` takes the class's world, its panorama and the prepared renderer as inputs
+  from `ClassRidePage`, and lays them out with the `ClassWorld` component (`components`, block
+  `class-world`), the class video inset in its corner (`ClassVideo`'s new `inset`). Its
+  `ClassWorldScene` directive imports the `world` library and creates `main`'s `WorldScene` there,
+  as the race's `RaceWorld` does, with the new `prepared` input. `WorldScene` then puts the prepared canvas in
   place of its own, measures the frame period and draws on `main`'s loop and `SceneDriver`, with
   no second renderer and nothing compiled again. The canvas fades in over `--duration-base`
   (200 ms), which the tokens make 0 with reduced motion. A ride that reaches the class without a
   prepared renderer (the panorama, or a group until slice 16.4) shows the panorama on the stage.
 - **The world's music** (`main`'s `world-music.ts` and `world-music-player.ts`, with
-  `frontend/public/music/`): `ClassWorld` loads the world's track and plays it while the ride runs
+  `frontend/projects/ride/public/music/`): `ClassWorldScene` loads the world's track and plays it while the ride runs
   and no class video is playing, because a class video has its own sound and the music plays under
   the ride sound, which a class video mutes (`L2-163` AC1). In practice the track plays when the
   video is unavailable. The "World music" setting arrives with slice 20.4, so it is on until then.

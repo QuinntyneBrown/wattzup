@@ -19,7 +19,7 @@ box "Frontend — Ride app (ride application)" #E0F2FE
   participant "ClassRidePage" as page
   participant "WorldLoadStore" as store
   participant "ClassRideSession\n(ClassRideStore)" as session
-  participant "ClassWorld" as dir
+  participant "ClassWorldScene" as dir
 end box
 box "Frontend — Ride app (world library, lazy chunk)" #E0F2FE
   participant "WorldScene\n(main's, with prepared)" as scene

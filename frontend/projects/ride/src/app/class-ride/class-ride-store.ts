@@ -122,6 +122,10 @@ export class ClassRideStore {
   readonly paused = this.pausedByRider.asReadonly();
   /** Whether the bike has stopped answering (`ble` disconnected, L2-017); a solo ride waits for it (L2-092 AC4). */
   readonly bikeLost = computed(() => this.connection.ble() === 'disconnected');
+  /** Whether the ride runs: started, and held neither by the rider nor by a lost bike; the world moves while it does. */
+  readonly running = computed(() => this.started() && !this.pausedByRider() && !this.bikeLost());
+  /** The bike's speed, for the world's cyclist (L2-153). */
+  readonly speedKmh = this.telemetry.speedKmh;
   /** Whether the video cannot play: its code or YouTube's did not load, or the player failed. */
   readonly videoUnavailable = computed(
     () => this.playerMissing() || this.player()?.state() === 'error',
