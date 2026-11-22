@@ -20,7 +20,7 @@ Estimates are working days for one intermediate developer, using `docs/detailed-
 | 11 | See results | Results with XP, stars and personal best; unlocks celebrated. | 8 | 100% |
 | 12 | Unlock maps and class tiers | Stars unlock maps; rider levels open class tiers. | 5 | 100% |
 | 13 | Choose the next ride | Home suggests the next ride; app header and profile. | 5 | 100% |
-| 14 | Ride a class with a group | Join a session, start together, ride with a live board. | 15 | 20% |
+| 14 | Ride a class with a group | Join a session, start together, ride with a live board. | 15 | 40% |
 | 15 | Race people live | Lobby, live race session, standings, leavers marked DNF, tamper-proof results. | 15 | 0% |
 | 16 | Ride a world class | Load the class's world with progress, then start solo or with the group. | 10 | 0% |
 | 17 | Ride without a network | Finish offline; rides wait and send when back online. | 8 | 0% |
@@ -35,4 +35,4 @@ Estimates are working days for one intermediate developer, using `docs/detailed-
 | 26 | Send feedback | Report a bug, share an idea or send kudos. | 5 | 0% |
 | 27 | Install the app | Install as an app from Chrome or Edge. | 3 | 0% |
 
-**Total:** 238 days. **Complete:** 126 days (53%).
+**Total:** 238 days. **Complete:** 129 days (54%).
