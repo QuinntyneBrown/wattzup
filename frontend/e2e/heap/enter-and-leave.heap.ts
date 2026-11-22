@@ -30,7 +30,8 @@ test('the race and its world, entered and left six times, hold the heap', async 
   const setup = new RaceSetupPage(page);
   const leave = async () => {
     await expect(race.backend).toBeVisible({ timeout: WORLD_DRAWN });
-    await race.leave.click();
+    // A solo race's bar names its leave link End ride (L2-069 AC2).
+    await race.end.click();
     await expect(setup.title).toBeVisible();
     await expect(race.world).toHaveCount(0);
   };
