@@ -90,14 +90,6 @@ export function merge(parts: BufferGeometry[]): BufferGeometry {
   return merged;
 }
 
-interface OwnerPart {
-  readonly part: number;
-  readonly slot: number;
-  readonly r: number;
-  readonly g: number;
-  readonly b: number;
-}
-
 /**
  * Many figures, each made of several instanced parts (skin, clothes, hair, a flag) that move
  * together: a part is asked for by key, and visible figures pack tightly into each part's buffer.
@@ -113,8 +105,13 @@ export class Ensemble {
       castShadow: boolean;
     }
   >();
-  private readonly parts: { mesh: InstancedMesh }[] = [];
-  private readonly slots: OwnerPart[][] = [];
+  private readonly parts: InstancedMesh[] = [];
+  private partMatArrays: Float32Array[] = [];
+  private partColArrays: (Float32Array | null)[] = [];
+  private ownerStart = new Int32Array(0);
+  private entryPart = new Int32Array(0);
+  private entrySlot = new Int32Array(0);
+  private entryRgb = new Float32Array(0);
   private counts = new Int32Array(0);
   private dynamicMode = false;
 
@@ -141,8 +138,11 @@ export class Ensemble {
     kind.owners.push(owner);
   }
 
-  /** Makes one instanced mesh per kind of part. */
+  /** Makes one instanced mesh per kind of part and packs owner-part tables into flat typed arrays. */
   build(): void {
+    const tempSlots: { part: number; slot: number; r: number; g: number; b: number }[][] = [];
+    let maxOwner = -1;
+    let totalEntries = 0;
     for (const kind of this.kinds.values()) {
       const cap = Math.max(1, kind.owners.length);
       const mesh = new InstancedMesh(kind.geometry, kind.material, cap);
@@ -152,13 +152,40 @@ export class Ensemble {
       kind.colours.forEach((c, i) => mesh.setColorAt(i, c));
       const part = this.parts.length;
       kind.owners.forEach((owner, slot) => {
+        if (owner > maxOwner) maxOwner = owner;
         const c = kind.colours[slot]!;
-        (this.slots[owner] ??= []).push({ part, slot, r: c.r, g: c.g, b: c.b });
+        (tempSlots[owner] ??= []).push({ part, slot, r: c.r, g: c.g, b: c.b });
+        totalEntries++;
       });
-      this.parts.push({ mesh });
+      this.parts.push(mesh);
+      this.partMatArrays.push(mesh.instanceMatrix.array as Float32Array);
+      this.partColArrays.push(
+        mesh.instanceColor ? (mesh.instanceColor.array as Float32Array) : null,
+      );
       this.group.add(mesh);
       this.disposables.push(mesh);
     }
+    const ownerCount = maxOwner + 1;
+    this.ownerStart = new Int32Array(ownerCount + 1);
+    this.entryPart = new Int32Array(totalEntries);
+    this.entrySlot = new Int32Array(totalEntries);
+    this.entryRgb = new Float32Array(totalEntries * 3);
+    let cursor = 0;
+    for (let owner = 0; owner < ownerCount; owner++) {
+      this.ownerStart[owner] = cursor;
+      const list = tempSlots[owner];
+      if (!list) continue;
+      for (const entry of list) {
+        this.entryPart[cursor] = entry.part;
+        this.entrySlot[cursor] = entry.slot;
+        const c3 = cursor * 3;
+        this.entryRgb[c3] = entry.r;
+        this.entryRgb[c3 + 1] = entry.g;
+        this.entryRgb[c3 + 2] = entry.b;
+        cursor++;
+      }
+    }
+    this.ownerStart[ownerCount] = cursor;
     this.counts = new Int32Array(this.parts.length);
   }
 
@@ -170,66 +197,83 @@ export class Ensemble {
 
   /** Packs visible figure `owner` into the next compact slot of each of its part meshes. */
   emit(owner: number, matrix: Matrix4, colorsChanged: boolean): void {
-    const entries = this.slots[owner];
-    if (!entries) return;
+    if (owner < 0 || owner + 1 >= this.ownerStart.length) return;
+    const start = this.ownerStart[owner]!;
+    const end = this.ownerStart[owner + 1]!;
+    if (start === end) return;
     const e = matrix.elements;
-    for (const entry of entries) {
-      const mesh = this.parts[entry.part]!.mesh;
-      const slot = this.counts[entry.part]!;
-      this.counts[entry.part] = slot + 1;
-      const mArr = mesh.instanceMatrix.array as Float32Array;
+    const e0 = e[0],
+      e1 = e[1],
+      e2 = e[2],
+      e3 = e[3],
+      e4 = e[4],
+      e5 = e[5],
+      e6 = e[6],
+      e7 = e[7],
+      e8 = e[8],
+      e9 = e[9],
+      e10 = e[10],
+      e11 = e[11],
+      e12 = e[12],
+      e13 = e[13],
+      e14 = e[14],
+      e15 = e[15];
+    for (let idx = start; idx < end; idx++) {
+      const part = this.entryPart[idx]!;
+      const slot = this.counts[part]!;
+      this.counts[part] = slot + 1;
+      const mArr = this.partMatArrays[part]!;
       const o = slot * 16;
-      mArr[o] = e[0];
-      mArr[o + 1] = e[1];
-      mArr[o + 2] = e[2];
-      mArr[o + 3] = e[3];
-      mArr[o + 4] = e[4];
-      mArr[o + 5] = e[5];
-      mArr[o + 6] = e[6];
-      mArr[o + 7] = e[7];
-      mArr[o + 8] = e[8];
-      mArr[o + 9] = e[9];
-      mArr[o + 10] = e[10];
-      mArr[o + 11] = e[11];
-      mArr[o + 12] = e[12];
-      mArr[o + 13] = e[13];
-      mArr[o + 14] = e[14];
-      mArr[o + 15] = e[15];
-      if (colorsChanged && mesh.instanceColor) {
-        const cArr = mesh.instanceColor.array as Float32Array;
-        const c3 = slot * 3;
-        cArr[c3] = entry.r;
-        cArr[c3 + 1] = entry.g;
-        cArr[c3 + 2] = entry.b;
+      mArr[o] = e0;
+      mArr[o + 1] = e1;
+      mArr[o + 2] = e2;
+      mArr[o + 3] = e3;
+      mArr[o + 4] = e4;
+      mArr[o + 5] = e5;
+      mArr[o + 6] = e6;
+      mArr[o + 7] = e7;
+      mArr[o + 8] = e8;
+      mArr[o + 9] = e9;
+      mArr[o + 10] = e10;
+      mArr[o + 11] = e11;
+      mArr[o + 12] = e12;
+      mArr[o + 13] = e13;
+      mArr[o + 14] = e14;
+      mArr[o + 15] = e15;
+      if (colorsChanged) {
+        const cArr = this.partColArrays[part];
+        if (cArr) {
+          const c3 = slot * 3;
+          const r3 = idx * 3;
+          cArr[c3] = this.entryRgb[r3]!;
+          cArr[c3 + 1] = this.entryRgb[r3 + 1]!;
+          cArr[c3 + 2] = this.entryRgb[r3 + 2]!;
+        }
       }
     }
   }
 
-  /** Packs visible figure `owner` using direct Y-rotation and scale `(sx, sy, sx)` with zero Matrix4 overhead. */
-  emitYawScale(
+  /** Packs visible figure `owner` using pre-scaled Y-rotation `(cySx, sySx)` and vertical scale `syScale`. */
+  emitYawScaled(
     owner: number,
     tx: number,
     ty: number,
     tz: number,
-    cy: number,
-    sy: number,
-    sx: number,
+    cySx: number,
+    sySx: number,
     syScale: number,
     colorsChanged: boolean,
   ): void {
-    const entries = this.slots[owner];
-    if (!entries) return;
-    const m0 = cy * sx;
-    const m2 = -sy * sx;
-    const m8 = sy * sx;
-    const m10 = cy * sx;
-    for (const entry of entries) {
-      const mesh = this.parts[entry.part]!.mesh;
-      const slot = this.counts[entry.part]!;
-      this.counts[entry.part] = slot + 1;
-      const mArr = mesh.instanceMatrix.array as Float32Array;
+    const start = this.ownerStart[owner]!;
+    const end = this.ownerStart[owner + 1]!;
+    const m2 = -sySx;
+    for (let idx = start; idx < end; idx++) {
+      const part = this.entryPart[idx]!;
+      const slot = this.counts[part]!;
+      this.counts[part] = slot + 1;
+      const mArr = this.partMatArrays[part]!;
       const o = slot * 16;
-      mArr[o] = m0;
+      mArr[o] = cySx;
       mArr[o + 1] = 0;
       mArr[o + 2] = m2;
       mArr[o + 3] = 0;
@@ -237,34 +281,40 @@ export class Ensemble {
       mArr[o + 5] = syScale;
       mArr[o + 6] = 0;
       mArr[o + 7] = 0;
-      mArr[o + 8] = m8;
+      mArr[o + 8] = sySx;
       mArr[o + 9] = 0;
-      mArr[o + 10] = m10;
+      mArr[o + 10] = cySx;
       mArr[o + 11] = 0;
       mArr[o + 12] = tx;
       mArr[o + 13] = ty;
       mArr[o + 14] = tz;
       mArr[o + 15] = 1;
-      if (colorsChanged && mesh.instanceColor) {
-        const cArr = mesh.instanceColor.array as Float32Array;
-        const c3 = slot * 3;
-        cArr[c3] = entry.r;
-        cArr[c3 + 1] = entry.g;
-        cArr[c3 + 2] = entry.b;
+      if (colorsChanged) {
+        const cArr = this.partColArrays[part];
+        if (cArr) {
+          const c3 = slot * 3;
+          const r3 = idx * 3;
+          cArr[c3] = this.entryRgb[r3]!;
+          cArr[c3 + 1] = this.entryRgb[r3 + 1]!;
+          cArr[c3 + 2] = this.entryRgb[r3 + 2]!;
+        }
       }
     }
   }
 
   /** Moves every part of figure `owner` to `matrix` in fixed-slot mode. */
   set(owner: number, matrix: Matrix4): void {
-    for (const entry of this.slots[owner] ?? []) {
-      this.parts[entry.part]!.mesh.setMatrixAt(entry.slot, matrix);
+    if (owner < 0 || owner + 1 >= this.ownerStart.length) return;
+    const start = this.ownerStart[owner]!;
+    const end = this.ownerStart[owner + 1]!;
+    for (let idx = start; idx < end; idx++) {
+      this.parts[this.entryPart[idx]!]!.setMatrixAt(this.entrySlot[idx]!, matrix);
     }
   }
 
   commit(colorsChanged = false): void {
     for (let p = 0; p < this.parts.length; p++) {
-      const mesh = this.parts[p]!.mesh;
+      const mesh = this.parts[p]!;
       if (this.dynamicMode) mesh.count = this.counts[p]!;
       mesh.instanceMatrix.needsUpdate = true;
       if (this.dynamicMode && colorsChanged && mesh.instanceColor) {
@@ -616,9 +666,14 @@ interface Spectator {
   readonly height: number;
   readonly build: number;
   readonly phase: number;
+  readonly sinPhase: number;
+  readonly cosPhase: number;
   readonly stance: number;
   readonly balloon?: boolean;
   readonly flag: number;
+  cosHSx: number;
+  sinHSx: number;
+  bounceAmp: number;
   placardKind: number;
   placardId: number;
   flagId: number;
@@ -651,6 +706,8 @@ export class Spectators {
   private readonly ensemble: Ensemble;
   private flagBatch: BatchedMesh | null = null;
   private placardBatch: BatchedMesh | null = null;
+  private placardVis = new Uint8Array(0);
+  private flagVis = new Uint8Array(0);
   private readonly scratchMat = new Matrix4();
   private lastBucket = Number.NaN;
 
@@ -674,6 +731,7 @@ export class Spectators {
           const child = row === 0 && random() < 0.07;
           const roll = random();
           const stance = roll < 0.24 ? FLAG_STANCE : roll < 0.48 ? 2 : 0;
+          const phase = random() * 6.3;
           const person: Spectator = {
             side,
             row,
@@ -681,9 +739,14 @@ export class Spectators {
             x,
             height: child ? 0.6 + random() * 0.1 : 0.92 + random() * 0.15,
             build: 1,
-            phase: random() * 6.3,
+            phase,
+            sinPhase: Math.sin(phase),
+            cosPhase: Math.cos(phase),
             stance,
             flag: stance === FLAG_STANCE ? Math.floor(random() * o.flagCount) : -1,
+            cosHSx: 0,
+            sinHSx: 0,
+            bounceAmp: 0.05,
             placardKind: -1,
             placardId: -1,
             flagId: -1,
@@ -711,7 +774,17 @@ export class Spectators {
       const tall = p.height > 0.9 && builds() < 0.08;
       const height = tall ? p.height * 1.08 : p.height;
       const build = 0.92 + builds() * builds() * 0.36;
-      this.people[i] = { ...p, height, build };
+      const heading = (p.side < 0 ? -Math.PI / 2 : Math.PI / 2) + p.side * 0.3;
+      const sx = height * build;
+      const calm = p.stance === 0 || p.stance === LEAN_STANCE;
+      this.people[i] = {
+        ...p,
+        height,
+        build,
+        cosHSx: Math.cos(heading) * sx,
+        sinHSx: Math.sin(heading) * sx,
+        bounceAmp: calm ? 0.02 : 0.05,
+      };
     });
 
     const skinMaterial = this.material({ roughness: 0.55, vertexColors: true });
@@ -845,6 +918,8 @@ export class Spectators {
         if (p.placardKind === k) p.placardId = placardPack.batch.addInstance(gid);
       }
     }
+    this.placardVis = new Uint8Array(Math.max(1, placardTotal));
+    this.placardVis.fill(1);
 
     const flagGeos = Array.from({ length: o.flagCount }, (_, idx) => {
       const flag = new PlaneGeometry(0.75, 0.5, 4, 1);
@@ -881,6 +956,8 @@ export class Spectators {
         if (p.flag === k) p.flagId = flagPack.batch.addInstance(gid);
       }
     }
+    this.flagVis = new Uint8Array(Math.max(1, flagTotal));
+    this.flagVis.fill(1);
   }
 
   /** Moves the crowd with the rider; `kerb` lifts it onto the pavement. */
@@ -896,6 +973,12 @@ export class Spectators {
     this.lastBucket = bucket;
     const flagBatch = this.flagBatch;
     const placardBatch = this.placardBatch;
+    const placardVis = this.placardVis;
+    const flagVis = this.flagVis;
+    const s42 = Math.sin(time * 4.2);
+    const c42 = Math.cos(time * 4.2);
+    const s30 = Math.sin(time * 3);
+    const c30 = Math.cos(time * 3);
     const me = this.scratchMat.elements;
     me[1] = 0;
     me[3] = 0;
@@ -906,61 +989,71 @@ export class Spectators {
     me[11] = 0;
     me[15] = 1;
     this.ensemble.beginFrame();
-    for (let i = 0; i < this.people.length; i++) {
-      const p = this.people[i]!;
+    const people = this.people;
+    const len = people.length;
+    for (let i = 0; i < len; i++) {
+      const p = people[i]!;
       const metres = along(p.offset, loop);
       if (
         metres <= SPECTATOR_BEHIND_CULL ||
         metres > SPECTATOR_HORIZON_CULL ||
         (metres > SPECTATOR_FRONT_ROW_ONLY && p.row > 0)
       ) {
-        if (placardBatch && p.placardId >= 0 && placardBatch.getVisibleAt(p.placardId)) {
+        if (placardBatch && p.placardId >= 0 && placardVis[p.placardId]) {
+          placardVis[p.placardId] = 0;
           placardBatch.setVisibleAt(p.placardId, false);
         }
-        if (flagBatch && p.flagId >= 0 && flagBatch.getVisibleAt(p.flagId)) {
+        if (flagBatch && p.flagId >= 0 && flagVis[p.flagId]) {
+          flagVis[p.flagId] = 0;
           flagBatch.setVisibleAt(p.flagId, false);
         }
         continue;
       }
-      const y = heightAt(Math.max(metres, 0)) + kerb;
-      const heading = (p.side < 0 ? -Math.PI / 2 : Math.PI / 2) + p.side * 0.3;
-      const beat = Math.sin(time * 4.2 + p.phase);
-      const calm = p.stance === 0 || p.stance === LEAN_STANCE;
-      const bounce = Math.abs(beat) * (calm ? 0.02 : 0.05);
-      const yaw = heading + beat * 0.05;
-      const cy = Math.cos(yaw);
-      const sy = Math.sin(yaw);
-      const sx = p.height * p.build;
+      const y = heightAt(metres > 0 ? metres : 0) + kerb;
+      const beat = s42 * p.cosPhase + c42 * p.sinPhase;
+      const bounce = (beat < 0 ? -beat : beat) * p.bounceAmp;
+      const d = beat * 0.05;
+      const cd = 1 - 0.5 * d * d;
+      const cySx = p.cosHSx * cd - p.sinHSx * d;
+      const sySx = p.sinHSx * cd + p.cosHSx * d;
       const syScale = p.height;
       const ty = y + bounce;
       const tz = -metres;
-      this.ensemble.emitYawScale(i, p.x, ty, tz, cy, sy, sx, syScale, colorsChanged);
+      this.ensemble.emitYawScaled(i, p.x, ty, tz, cySx, sySx, syScale, colorsChanged);
       if (placardBatch && p.placardId >= 0) {
-        if (!placardBatch.getVisibleAt(p.placardId)) placardBatch.setVisibleAt(p.placardId, true);
-        me[0] = cy * sx;
-        me[2] = -sy * sx;
+        if (!placardVis[p.placardId]) {
+          placardVis[p.placardId] = 1;
+          placardBatch.setVisibleAt(p.placardId, true);
+        }
+        me[0] = cySx;
+        me[2] = -sySx;
         me[5] = syScale;
-        me[8] = sy * sx;
-        me[10] = cy * sx;
+        me[8] = sySx;
+        me[10] = cySx;
         me[12] = p.x;
         me[13] = ty;
         me[14] = tz;
         placardBatch.setMatrixAt(p.placardId, this.scratchMat);
       }
       if (!flagBatch || p.flagId < 0) continue;
-      if (!flagBatch.getVisibleAt(p.flagId)) flagBatch.setVisibleAt(p.flagId, true);
-      const wave = Math.sin(time * 3 + p.phase) * 0.6;
-      const wy = yaw + wave;
-      const cwf = Math.cos(wy);
-      const swf = Math.sin(wy);
-      me[0] = cwf * sx;
-      me[2] = -swf * sx;
+      if (!flagVis[p.flagId]) {
+        flagVis[p.flagId] = 1;
+        flagBatch.setVisibleAt(p.flagId, true);
+      }
+      const wave = (s30 * p.cosPhase + c30 * p.sinPhase) * 0.6;
+      const w2 = wave * wave;
+      const cw = 1 - 0.5 * w2;
+      const sw = wave * (1 - 0.16666667 * w2);
+      const cwfSx = cySx * cw - sySx * sw;
+      const swfSx = sySx * cw + cySx * sw;
+      me[0] = cwfSx;
+      me[2] = -swfSx;
       me[5] = syScale;
-      me[8] = swf * sx;
-      me[10] = cwf * sx;
-      me[12] = p.x + (0.3 * cy - 0.06 * sy) * sx;
+      me[8] = swfSx;
+      me[10] = cwfSx;
+      me[12] = p.x + 0.3 * cySx - 0.06 * sySx;
       me[13] = ty + 1.95 * syScale;
-      me[14] = tz + (-0.3 * sy - 0.06 * cy) * sx;
+      me[14] = tz - 0.3 * sySx - 0.06 * cySx;
       flagBatch.setMatrixAt(p.flagId, this.scratchMat);
     }
     this.ensemble.commit(colorsChanged);

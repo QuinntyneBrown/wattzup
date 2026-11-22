@@ -89,13 +89,24 @@ export function bob(phase: number): number {
  * textures are fixed to the street, `s` metres along it, so the rider rides past them.
  */
 export class Ribbons {
-  private readonly strips: {
-    geometry: BufferGeometry;
-    profile: [number, number][];
-    across: Float32Array;
-    nx: Float32Array;
-    ny: Float32Array;
-  }[] = [];
+  private readonly entries = new Map<
+    Material,
+    {
+      points: number;
+      mesh: Mesh;
+      geometry: BufferGeometry;
+      totalVerts: number;
+      indices: number[];
+      strips: {
+        baseVertex: number;
+        profile: [number, number][];
+        across: Float32Array;
+        nx: Float32Array;
+        ny: Float32Array;
+      }[];
+    }
+  >();
+  private slopes = new Float32Array(0);
 
   constructor(
     private readonly group: Group,
@@ -104,9 +115,6 @@ export class Ribbons {
 
   add(points: number, material: Material, profile: [number, number][]): Mesh {
     const n = profile.length;
-    const geometry = new BufferGeometry();
-    geometry.setAttribute('position', new BufferAttribute(new Float32Array(points * n * 3), 3));
-    geometry.setAttribute('uv', new BufferAttribute(new Float32Array(points * n * 2), 2));
     const across = new Float32Array(n);
     const segNx = new Float32Array(Math.max(1, n - 1));
     const segNy = new Float32Array(Math.max(1, n - 1));
@@ -132,7 +140,46 @@ export class Ribbons {
       nx[j] = rx / len;
       ny[j] = ry / len;
     }
-    const normInit = new Float32Array(points * n * 3);
+
+    const addVerts = points * n;
+    let entry = this.entries.get(material);
+    if (entry && entry.points === points) {
+      const prevVerts = entry.totalVerts;
+      const nextVerts = prevVerts + addVerts;
+      const grow = (name: string, itemSize: number) => {
+        const oldAttr = entry!.geometry.getAttribute(name) as BufferAttribute;
+        const next = new Float32Array(nextVerts * itemSize);
+        next.set(oldAttr.array as Float32Array);
+        entry!.geometry.setAttribute(name, new BufferAttribute(next, itemSize));
+        return next;
+      };
+      grow('position', 3);
+      grow('uv', 2);
+      const normArr = grow('normal', 3);
+      for (let i = 0; i < points; i++) {
+        for (let j = 0; j < n; j++) {
+          const k = (prevVerts + i * n + j) * 3;
+          normArr[k] = nx[j]!;
+          normArr[k + 1] = ny[j]!;
+          normArr[k + 2] = 0;
+        }
+      }
+      for (let i = 0; i < points - 1; i++) {
+        for (let j = 0; j < n - 1; j++) {
+          const a = prevVerts + i * n + j;
+          entry.indices.push(a, a + n, a + 1, a + 1, a + n, a + n + 1);
+        }
+      }
+      entry.geometry.setIndex(entry.indices);
+      entry.strips.push({ baseVertex: prevVerts, profile, across, nx, ny });
+      entry.totalVerts = nextVerts;
+      return entry.mesh;
+    }
+
+    const geometry = new BufferGeometry();
+    geometry.setAttribute('position', new BufferAttribute(new Float32Array(addVerts * 3), 3));
+    geometry.setAttribute('uv', new BufferAttribute(new Float32Array(addVerts * 2), 2));
+    const normInit = new Float32Array(addVerts * 3);
     for (let i = 0; i < points; i++) {
       for (let j = 0; j < n; j++) {
         const k = (i * n + j) * 3;
@@ -142,60 +189,76 @@ export class Ribbons {
       }
     }
     geometry.setAttribute('normal', new BufferAttribute(normInit, 3));
-    const index: number[] = [];
+    const indices: number[] = [];
     for (let i = 0; i < points - 1; i++) {
       for (let j = 0; j < n - 1; j++) {
         const a = i * n + j;
-        index.push(a, a + n, a + 1, a + 1, a + n, a + n + 1);
+        indices.push(a, a + n, a + 1, a + 1, a + n, a + n + 1);
       }
     }
-    geometry.setIndex(index);
+    geometry.setIndex(indices);
     const mesh = new Mesh(geometry, material);
     mesh.receiveShadow = true;
     mesh.frustumCulled = false;
     this.group.add(mesh);
-    this.strips.push({ geometry, profile, across, nx, ny });
     this.disposables.push(geometry);
+    entry = {
+      points,
+      mesh,
+      geometry,
+      totalVerts: addVerts,
+      indices,
+      strips: [{ baseVertex: 0, profile, across, nx, ny }],
+    };
+    this.entries.set(material, entry);
     return mesh;
   }
 
   lay(points: readonly StreetPoint[], s: number): void {
     const pLen = points.length;
     if (pLen === 0) return;
-    for (const { geometry, profile, across, nx, ny } of this.strips) {
+    if (this.slopes.length < pLen) this.slopes = new Float32Array(pLen);
+    const slopes = this.slopes;
+    for (let i = 0; i < pLen; i++) {
+      const pPrev = points[i > 0 ? i - 1 : 0]!;
+      const pNext = points[i < pLen - 1 ? i + 1 : pLen - 1]!;
+      const dm = pNext.metres - pPrev.metres;
+      slopes[i] = Math.abs(dm) > 1e-5 ? (pNext.height - pPrev.height) / dm : 0;
+    }
+    for (const entry of this.entries.values()) {
+      const { geometry, strips } = entry;
       const position = geometry.getAttribute('position') as BufferAttribute;
       const uv = geometry.getAttribute('uv') as BufferAttribute;
       const normal = geometry.getAttribute('normal') as BufferAttribute;
       const posArr = position.array as Float32Array;
       const uvArr = uv.array as Float32Array;
       const normArr = normal.array as Float32Array;
-      const n = profile.length;
-      for (let i = 0; i < pLen; i++) {
-        const p = points[i]!;
-        const pPrev = points[i > 0 ? i - 1 : 0]!;
-        const pNext = points[i < pLen - 1 ? i + 1 : pLen - 1]!;
-        const dm = pNext.metres - pPrev.metres;
-        const slope = Math.abs(dm) > 1e-5 ? (pNext.height - pPrev.height) / dm : 0;
-        const z = -p.metres;
-        const vCoord = p.metres + s;
-        const rowBase = i * n;
-        for (let j = 0; j < n; j++) {
-          const prof = profile[j]!;
-          const vi = rowBase + j;
-          const p3 = vi * 3;
-          posArr[p3] = prof[0];
-          posArr[p3 + 1] = p.height + prof[1];
-          posArr[p3 + 2] = z;
-          const u2 = vi * 2;
-          uvArr[u2] = across[j]!;
-          uvArr[u2 + 1] = vCoord;
-          const cx = nx[j]!;
-          const cy = ny[j]!;
-          const cz = cy * slope;
-          const inv = 1 / (Math.hypot(cx, cy, cz) || 1);
-          normArr[p3] = cx * inv;
-          normArr[p3 + 1] = cy * inv;
-          normArr[p3 + 2] = cz * inv;
+      for (const { baseVertex, profile, across, nx, ny } of strips) {
+        const n = profile.length;
+        for (let i = 0; i < pLen; i++) {
+          const p = points[i]!;
+          const slope = slopes[i]!;
+          const z = -p.metres;
+          const vCoord = p.metres + s;
+          const rowBase = baseVertex + i * n;
+          for (let j = 0; j < n; j++) {
+            const prof = profile[j]!;
+            const vi = rowBase + j;
+            const p3 = vi * 3;
+            posArr[p3] = prof[0];
+            posArr[p3 + 1] = p.height + prof[1];
+            posArr[p3 + 2] = z;
+            const u2 = vi * 2;
+            uvArr[u2] = across[j]!;
+            uvArr[u2 + 1] = vCoord;
+            const cx = nx[j]!;
+            const cy = ny[j]!;
+            const cz = cy * slope;
+            const inv = 1 / (Math.hypot(cx, cy, cz) || 1);
+            normArr[p3] = cx * inv;
+            normArr[p3 + 1] = cy * inv;
+            normArr[p3 + 2] = cz * inv;
+          }
         }
       }
       position.needsUpdate = true;

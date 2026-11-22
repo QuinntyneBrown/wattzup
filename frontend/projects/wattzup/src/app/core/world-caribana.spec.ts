@@ -45,11 +45,11 @@ describe('CaribanaStreet (L2-101 AC1, L2-111 AC10)', () => {
       }
       if (obj instanceof InstancedMesh) instancedMeshes++;
     });
-    // Down from ~4,200+ meshes -> 1,085 in Iter 1 -> 630 in Iter 2 -> 475 in Iter 3 -> < 240 after BatchedMesh prop & crowd draw-call consolidation.
-    expect(totalMeshes).toBeLessThan(240);
-    expect(instancedMeshes).toBeLessThan(75);
-    // Flag/lamp/stripe atlases and shared materials cut unique materials from 785 -> 388 -> 236 -> 148 -> < 125.
-    expect(uniqueMaterials.size).toBeLessThan(125);
+    // Down from ~4,200+ meshes -> 1,085 -> 630 -> 475 -> 218 -> < 175 after Ribbons coalescing, Moko batching & stall/cart/sign atlasing.
+    expect(totalMeshes).toBeLessThan(175);
+    expect(instancedMeshes).toBeLessThan(70);
+    // Flag/lamp/stripe/stall/cart/sign/royal atlases cut unique materials from 785 -> 388 -> 236 -> 148 -> 119 -> < 108.
+    expect(uniqueMaterials.size).toBeLessThan(108);
 
     const points = Array.from({ length: 161 }, (_, i) => ({
       metres: (i - 10) * 2,

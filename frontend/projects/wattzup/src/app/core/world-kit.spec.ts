@@ -118,6 +118,50 @@ describe('Ribbons: normal initialisation and zero-allocation lay()', () => {
     }
     for (const d of disposables) d.dispose();
   });
+
+  it('coalesces multiple strips sharing the same Material into one Mesh and lays both strips accurately', () => {
+    const group = new Group();
+    const disposables: { dispose(): void }[] = [];
+    const concrete = new MeshStandardMaterial();
+    const grass = new MeshStandardMaterial();
+    disposables.push(concrete, grass);
+    const ribbons = new Ribbons(group, disposables);
+    const leftKerb = ribbons.add(3, concrete, [
+      [-6.5, 0.15],
+      [-6.7, 0.15],
+    ]);
+    const rightKerb = ribbons.add(3, concrete, [
+      [6.7, 0.15],
+      [6.5, 0.15],
+    ]);
+    ribbons.add(3, grass, [
+      [18, 0.2],
+      [6.7, 0.15],
+    ]);
+
+    expect(rightKerb).toBe(leftKerb);
+    const meshes = group.children.filter((c): c is Mesh => c instanceof Mesh);
+    expect(meshes.length).toBe(2); // 1 concrete (both kerbs) + 1 grass
+
+    ribbons.lay(
+      [
+        { metres: 0, height: 1 },
+        { metres: 5, height: 2 },
+        { metres: 10, height: 3 },
+      ],
+      20,
+    );
+    const pos = leftKerb.geometry.getAttribute('position') as BufferAttribute;
+    expect(pos.count).toBe(12); // 2 strips * 3 points * 2 profile vertices
+    // First strip point 0 vertex 0 -> (-6.5, 1.15, 0); second strip point 2 vertex 0 -> (6.7, 3.15, -10).
+    expect(pos.getX(0)).toBeCloseTo(-6.5, 5);
+    expect(pos.getY(0)).toBeCloseTo(1.15, 5);
+    expect(pos.getX(10)).toBeCloseTo(6.7, 5);
+    expect(pos.getY(10)).toBeCloseTo(3.15, 5);
+    expect(pos.getZ(10)).toBeCloseTo(-10, 5);
+
+    for (const d of disposables) d.dispose();
+  });
 });
 
 describe('mergeStaticGroup: collapses static sub-meshes by material while preserving skipped subtrees', () => {
