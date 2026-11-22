@@ -65,6 +65,7 @@ All of it is in the `world` library; nothing outside it changes.
 | `water-material.ts` | The `Sea` group's material where the file has `sea` (L2-166 AC22): ripples, and the sky, the far shore's lights and the glint mirrored by the angle of view. |
 | `rider-batch.ts` | `RiderBatch`: every rider's moving parts of a plain colour as one skinned mesh, a bone a part, so they are one draw call (L2-166 AC12). |
 | `rain.ts` | `rain(strength, light)`: the rain as one mesh, each streak falling, wrapping round the camera and facing the eye in the vertex shader, lit by the lamps' grid (L2-166 AC24). |
+| `course-cyclist.ts` | `CourseCyclistKit`: the course's own rider (L2-166 AC26), a body and a bike of lofted sections coloured by vertex, merged into one mesh but for the parts the pedalling moves. The class worlds' `world-cyclist.ts` is not used by a course. |
 | `surface-detail.ts` | The detail texture's texels, worked out on the device: grain, patches, cracks, stones. No Three.js; unit-tested. |
 | `world-renderer-loader.ts` | Returns a `MapRenderer`. It imports neither renderer, so Three.js still loads only when a world starts. |
 

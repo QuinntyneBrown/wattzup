@@ -532,6 +532,41 @@ streaks take a plain grey.
 **Watch for.** A streak right at the eye fills the view: fade them out within a metre or two. Rain everywhere
 alike, lit or not, looks like scratches on the lens: light it by where it is.
 
+## The riders
+
+The riders are the course renderer's own, so what follows applies to every map at once. Their passes, pictures and
+films are in `docs/screenshots/courses/riders/README.md`.
+
+### R1. A body from lofted sections, coloured by vertex (riders pass 1)
+
+**What it gives.** A rider with the shape of a cyclist (thighs, calves, a waist, shoulders, a bent back) in kit
+whose edges are drawn (shorts, grippers, socks, shoes, sleeves, gloves, a hem), on a road bike with every tube, for
+fewer draw calls than a figure of capsules.
+
+**How it works.** `frontend/projects/world/src/course-cyclist.ts`:
+
+- `loft(sections, length, colour)` makes a closed tube along +y whose section at each `t` is an ellipse of
+  half-widths `rx`, `rz`, moved off the axis by `x`, `z`. A thigh is eight sections, thick and deep at the hip,
+  narrowing to the knee; a calf is a section pushed back off the shin's axis. `colour(t)` paints each section, so a
+  thigh's shorts, gripper and skin are one mesh; a sharp edge is two sections a hair apart.
+- `between(a, b)` lays a tube from one joint to another with its width across the bike. `bend` finds a knee or an
+  elbow from the two ends and the two lengths.
+- `bike()` and `body(jersey)` return some sixty such pieces in the rider's axes; they are merged into one mesh a
+  rider, drawn with the renderer's vertex-coloured material.
+- The parts the pedalling moves are made once for all riders, marked `userData.moving`, and placed each frame by
+  `pose(angle)`: the pedal from the crank's angle, the shoe on it by its ball with a pitch that follows the stroke,
+  the ankle above the ball, the knee by `bend`. `rider-batch.ts` (technique 16) draws them all as one.
+
+**To apply it.** Nothing to do for a map. To change the rider, change the numbers: the joints' places at the top of
+the file, and each part's sections. A different build (taller, heavier, a child) is the same sections scaled; a
+different bike (a time-trial bike, a gravel bike) is the frame's eight points and the bars.
+
+**Cost.** None: faster than the kit it replaces, with 15 fewer draw calls for a pack of five.
+
+**Watch for.** A colour that smears: it blends over the gap between two sections. A limb that twists as it moves:
+`between` keeps its width across the bike, which is right for legs that swing fore and aft. Parts that meet at a
+joint must overlap, or a gap opens as the joint bends.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
@@ -540,6 +575,7 @@ The pictures the work aims at differ from a course in these ways, most visible f
 2. The water does not mirror the quay's own lamps, cranes and ships: only the sky and the far shore.
 3. Lit windows on the upper floors light nothing: only the ground floor's throw light.
 4. The neon signs have no glow in the air round them, as the lamps have.
-5. The riders are simple figures: smooth limbs, no cloth, no faces.
+5. The riders: flat-coloured kit with no panels or lettering, shoulders that stand proud, a rigid upper body, one
+   build for all (see the riders' own log).
 6. Signs with lettering, pipes, gutters and fire escapes: a warehouse's wall is still flat between its windows.
 7. The lamps along the quay are not mirrored in the harbour beside them.

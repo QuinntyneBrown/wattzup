@@ -51,12 +51,12 @@ import {
   courseWet,
   parseCourse,
 } from './course';
+import { CourseCyclistKit, type RiderModel as Cyclist } from './course-cyclist';
 import { fenceMaterial } from './fence-material';
 import { type GroundEye, groundMaterial, surfaceTexture } from './ground-material';
 import { haloMaterial } from './halo-material';
 import { LampGlow } from './lamp-glow';
 import { colourLightMap, lampLightMap } from './lamp-light-map';
-import { mergeStillParts } from './merged-cyclist';
 import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
 import { type Rain, rain } from './rain';
@@ -65,7 +65,6 @@ import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
-import { type Cyclist, CyclistKit } from './world-cyclist';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -188,9 +187,9 @@ export class CourseRenderer implements WorldRenderer {
   private riderBatch: RiderBatch | null = null;
   /** Set once the race's riders have been made, on its first frame. */
   private fieldMade = false;
-  /** Draws every rider's plain-coloured still parts, merged into one mesh a rider (merged-cyclist.ts). */
+  /** Draws everything of a rider that is coloured by vertex: the body and the bike (course-cyclist.ts). */
   private readonly plain = new MeshLambertMaterial({ vertexColors: true });
-  private kit: CyclistKit | null = null;
+  private kit: CourseCyclistKit | null = null;
   private canvas: HTMLCanvasElement | null = null;
   private you: Cyclist | null = null;
   private readonly riders = new Map<string, Cyclist>();
@@ -542,7 +541,7 @@ export class CourseRenderer implements WorldRenderer {
     this.scene.add(fill, this.sun, this.sun.target);
     this.disposables.push(fill, this.sun);
 
-    const kit = new CyclistKit(this.frameMaterial);
+    const kit = new CourseCyclistKit(this.plain);
     this.kit = kit;
     // The rider wears the You jersey of the race board (L2-060).
     const you = kit.make(jerseyColour(canvas, 'you'), 4);
@@ -558,13 +557,11 @@ export class CourseRenderer implements WorldRenderer {
     this.riderBatch = new RiderBatch(batched);
     this.scene.add(this.riderBatch.group);
     this.disposables.push(this.riderBatch);
-    const still = mergeStillParts(you, this.plain);
-    this.disposables.push(...still);
-    this.riderBatch.add(you, new Set(still));
+    this.riderBatch.add(you);
     this.lamplight(you);
     this.shadow(you);
     this.scene.add(you.group);
-    this.disposables.push(kit, you.jersey, you.bib, you.shell, this.frameMaterial, this.plain);
+    this.disposables.push(kit, ...you.owned, this.frameMaterial, this.plain);
   }
 
   /**
@@ -682,7 +679,7 @@ export class CourseRenderer implements WorldRenderer {
     if (!this.kit || !this.canvas) return null;
     const colour = jerseyColour(this.canvas, jersey);
     const cyclist = this.kit.make(colour, this.riders.size + 1);
-    this.disposables.push(cyclist.jersey, cyclist.bib, cyclist.shell);
+    this.disposables.push(...cyclist.owned);
     if (jersey === 'ghost') {
       const glass = new MeshStandardMaterial({
         color: colour,
@@ -697,10 +694,8 @@ export class CourseRenderer implements WorldRenderer {
         if (mesh.isMesh) mesh.material = glass;
       });
     }
-    const still = mergeStillParts(cyclist, this.plain);
-    this.disposables.push(...still);
     if (jersey !== 'ghost') {
-      this.riderBatch?.add(cyclist, new Set(still));
+      this.riderBatch?.add(cyclist);
       this.lamplight(cyclist);
     }
     if (jersey !== 'ghost') this.shadow(cyclist);

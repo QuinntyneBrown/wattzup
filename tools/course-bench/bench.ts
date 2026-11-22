@@ -78,6 +78,15 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
   })();
+  // WZ_BENCH_PLAY=<minutes>: no timing and no film, just the ride left open in the window to be watched.
+  const play = Number(process.env["WZ_BENCH_PLAY"] ?? 0);
+  if (play > 0) {
+    test.setTimeout((play + 2) * 60_000);
+    await page.waitForTimeout(play * 60_000);
+    riding = false;
+    await pedal;
+    return;
+  }
   await page.waitForTimeout(SETTLE * 1000);
 
   // A 10-second film of the window's page, taken off the screen while the frames are timed.
