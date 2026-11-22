@@ -1,0 +1,78 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Sound, motion and display: how Telo Ride sounds and moves for an hour in the saddle."
+      ]
+    },
+    {
+      "id": "sound",
+      "bars": 5,
+      "lines": [
+        "Ride sound is made in the browser from your pedalling: chain, freewheel, tyres and wind. Turn it off, and no audio starts at all."
+      ]
+    },
+    {
+      "id": "music",
+      "bars": 5,
+      "lines": [
+        "World music plays each world's own track underneath. Under a class video, ride sound goes quiet until the video pauses."
+      ]
+    },
+    {
+      "id": "motion",
+      "bars": 5,
+      "lines": [
+        "Reduce motion follows the device, or your choice. On, every transition is instant, and the world stops swaying in the wind."
+      ]
+    },
+    {
+      "id": "numbers",
+      "bars": 5,
+      "lines": [
+        "Large ride numbers make power, the clock and the target a quarter bigger on every ride screen, with nothing scrolling sideways."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 4,
+      "lines": [
+        "Sound and display, from a phone to the full screen."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 5,
+      "lines": [
+        "The theme matches the device, or stays as you pick it. And with full screen on, the start press goes full screen."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}
