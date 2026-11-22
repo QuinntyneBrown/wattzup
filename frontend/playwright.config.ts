@@ -20,6 +20,8 @@ export default defineConfig({
     locale: 'en-US',
     timezoneId: 'UTC',
     trace: 'retain-on-failure',
+    // A service worker would answer the page's requests before the fixtures could; only the app cache's spec allows it.
+    serviceWorkers: 'block',
   },
   projects: [
     // The production build, as riders get it.

@@ -1,0 +1,58 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.601
+Once Telo Ride has been opened, it opens again with no network, and a solo race
+
+00:00:07.601 --> 00:00:08.346
+starts.
+
+00:00:10.324 --> 00:00:15.289
+Angular's service worker keeps the app on the device: every script at once, map art
+
+00:00:15.289 --> 00:00:17.982
+and worlds the first time they are seen.
+
+00:00:23.228 --> 00:00:27.773
+Offline, the race comes from the cache, the maps from the catalogue the app keeps,
+
+00:00:27.773 --> 00:00:30.622
+and the rider's progress from its last answer.
+
+00:00:36.133 --> 00:00:40.940
+A map cover seen once still shows with no network, so Map Select looks as it did.
+
+00:00:49.038 --> 00:00:54.039
+The worker registers from the first screen's lazy chunk, so the first bundle grows
+
+00:00:54.039 --> 00:00:56.413
+by forty bytes, not six kilobytes.
+
+00:01:01.942 --> 00:01:04.967
+The offline race, from a phone to the full screen.
+
+00:01:14.847 --> 00:01:19.707
+What the tests prove: opened once, the app opens offline, a solo race starts, and
+
+00:01:19.707 --> 00:01:21.327
+the covers still show.
+
+00:01:25.170 --> 00:01:29.774
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:30.119 --> 00:01:34.631
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:34.631 --> 00:01:36.302
+every hill and interval.
+
+00:01:36.647 --> 00:01:41.825
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:41.825 --> 00:01:47.273
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:47.273 --> 00:01:50.263
+XP, rider levels, stars and map unlocks.
+
+00:01:50.608 --> 00:01:53.101
+A custom workout lives under Profile.

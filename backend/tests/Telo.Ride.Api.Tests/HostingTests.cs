@@ -1,8 +1,9 @@
 // Acceptance test
-// Traces to: L2-149 AC1, AC2, L2-131 AC4
+// Traces to: L2-149 AC1, AC2, L2-131 AC4, L2-135 AC3
 // Description: the API serves the app's build as one origin with its backend: a deep link answers the
-// app with the headers of L2-131 and is never cached stale, a file answers itself, and an unknown
-// address under /api, /hubs or /health stays the backend's, never the app.
+// app with the headers of L2-131 and is never cached stale, a file answers itself, the service worker
+// and its manifest are never cached stale either, so a deploy reaches the app cache on the next start,
+// and an unknown address under /api, /hubs or /health stays the backend's, never the app.
 using System.Net;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc;
@@ -41,6 +42,21 @@ public sealed class HostingTests(HostedAppApi api) : IClassFixture<HostedAppApi>
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal("text/javascript", response.Content.Headers.ContentType?.MediaType);
         Assert.Equal("console.log('ride');", await response.Content.ReadAsStringAsync(Cancel));
+        AssertSecurityHeaders(response);
+    }
+
+    [Theory]
+    [InlineData("/ngsw-worker.js", "text/javascript")]
+    [InlineData("/ngsw.json", "application/json")]
+    public async Task The_service_worker_and_its_manifest_are_never_cached_stale(string path, string type)
+    {
+        using var client = api.CreateClient();
+
+        using var response = await client.GetAsync(path, Cancel);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(type, response.Content.Headers.ContentType?.MediaType);
+        Assert.True(response.Headers.CacheControl?.NoCache, $"{path} must never be cached stale");
         AssertSecurityHeaders(response);
     }
 

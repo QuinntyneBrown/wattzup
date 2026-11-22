@@ -7,13 +7,14 @@ on the bike. The bike connection is local Bluetooth, so a ride itself does not n
 Only three things do: submitting the finished ride so the backend can compute its XP, loading the
 app and its catalogues, and joining a ride with other people.
 
-This feature keeps a finished ride on the device until the backend records it, caches the app and
-the catalogues so solo rides start offline, and explains why multiplayer rides cannot be joined
-while offline.
+This feature keeps a finished ride on the device until the backend records it, caches the app so
+solo rides start offline (the catalogues are already kept on the device, ADR 0028 and ADR 0029),
+and explains why multiplayer rides cannot be joined while offline.
 
 - **ride outbox** — IndexedDB store of finished rides that the backend has not yet recorded
 - **ride id** — client-generated identifier of one ride, used by the backend as its idempotency key
 - **app shell** — the HTML, scripts, styles and fonts needed to start the app
+- **app cache** — the Angular service worker's caches of the app shell, its chunks and its art
 - **catalogue** — backend-served list of maps (`GET /api/maps`) or classes (`GET /api/classes`)
 - **XP pending** — Results state of a ride whose XP the backend has not yet computed
 
@@ -53,10 +54,29 @@ designed in `progression/keep-progress-on-the-backend` and
 - **`NetworkStatus`** — root-provided service in the `ride` application. It exposes `online` as a
   signal from `navigator.onLine` and the `online`/`offline` events, and `backendReachable` from the
   outcome of the last API call.
-- **Angular service worker** — `@angular/service-worker` with `ngsw-config.json`. The asset group
-  `app` prefetches the app shell and fonts. The asset group `lazy` caches route chunks and map
-  worlds on first use. The data group `catalogues` caches `/api/maps` and `/api/classes` with the
-  `freshness` strategy and a network timeout of `<TO SUPPLY>`, so the cached copy answers offline.
+- **Angular service worker** — `@angular/service-worker`'s `ngsw-worker.js`, written by the
+  production build from `projects/ride/ngsw-config.json`. Its asset group `app` prefetches every
+  file the app needs to start and ride: `index.html`, the favicon, the styles, every script chunk
+  (about 4 MB, so a screen never opened online still opens offline) and the fonts. Its asset group
+  `assets` caches on first use the map covers (`/maps/**`), the bike photo (`/machines/**`), the
+  world panoramas (`/worlds/**`) and the mesh decoder (`/draco/**`). World music (`/music/**`,
+  200 MB) is never cached. Its one data group, `progress`, keeps the last answer of
+  `GET /api/progress` with the `freshness` strategy and no timeout: online the backend always
+  answers, and when the request fails the kept answer does, so the race's open-map check and the
+  header read the rider's maps and level offline. The catalogues need no data group: they are kept
+  by `CachedMapsApi` and `CachedClassesApi` in `localStorage` (ADR 0028, ADR 0029). A new deploy is
+  fetched in the background and used from the next start; telling the rider of it is
+  `platform/install-the-app`.
+- **`provideAppCache`** — environment initializer in the `ride` application, bound on the screens'
+  lazy parent route (ADR 0032). Once the first screen has settled, or 30 seconds after it starts,
+  it registers `ngsw-worker.js`, and it tells a worker that takes control to set itself up, as
+  Angular's `provideServiceWorker` would from the initial bundle. A development build and a
+  browser without service workers register nothing.
+- **`FetchWorldDownloader`** — sends its panorama requests with Angular's `ngsw-bypass` header:
+  it keeps the panoramas in its own cache with its own progress and `Range` resume (L2-152,
+  L2-156), which the service worker, answering only once a file has fully arrived, would hide.
+- **Telo Ride API** — serves `ngsw-worker.js` and `ngsw.json` with `Cache-Control: no-cache`, as
+  `index.html`, so a deploy reaches the worker on the next start.
 - **`MultiplayerAvailability`** — helper in `domain/engine` used by Race Setup and Class Start. It
   returns `unavailable('offline')` for riders-online races and group classes when `online` is false.
   The screens render the reason as text. The copy is a mock gap (`<TO SUPPLY>`).
@@ -94,8 +114,9 @@ records them in the database.
 
 ### Components
 
-`DeviceRideOutbox` keeps rides in `IndexedDbRidesWaiting` and calls `RidesApi`; the service
-worker answers shell and catalogue requests from its cache; `NetworkStatus` feeds the join rule.
+`DeviceRideOutbox` keeps rides in `IndexedDbRidesWaiting` and calls `RidesApi`; `provideAppCache`
+registers the service worker, which answers the shell, chunk and art requests from its cache;
+`NetworkStatus` feeds the join rule.
 
 ![C4 component view for riding without a network](diagrams/c4-component.png)
 
@@ -122,8 +143,8 @@ failure (`L2-135` AC2).
 
 ### Behaviour — start a solo ride offline
 
-The service worker serves the shell and the cached catalogue; the multiplayer choices say why they
-are unavailable (`L2-135` AC3, AC4).
+The service worker serves the shell and chunks, the catalogue comes from the copy kept on the
+device, and the multiplayer choices say why they are unavailable (`L2-135` AC3, AC4).
 
 ![Sequence diagram for starting a solo ride offline](diagrams/sequence-start-offline.png)
 
@@ -136,3 +157,14 @@ are unavailable (`L2-135` AC3, AC4).
 2. A ride is written to the device when it is submitted, a few milliseconds after the ride ends.
    A tab closed in that moment loses it; the race or class submits before it opens Results, so
    the rider sees Results only once the write has started.
+3. Slice 17.2 caches every script chunk when the app is first opened, World Ride's 1.1 MB chunk
+   among them, so any ride can start offline after one visit. If that download proves too heavy on
+   a metered connection, the World Ride chunks could move to the `assets` group, cached on first
+   use, at the cost of a world class never ridden online not starting offline.
+4. The `progress` data group keeps the last answer for the device, not for a rider. A rider who
+   signs out and another who signs in on the same device would see the first rider's maps and
+   level only while the backend cannot be reached. Clearing it on sign-out would need the app to
+   reach the worker's caches; slice 17.2 leaves it.
+5. The progress is kept only once the worker controls the page, from the second screen the rider
+   opens or the next start, since the first screen's requests are made before the worker is
+   registered.

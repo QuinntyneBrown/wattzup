@@ -73,6 +73,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 16.3 | [Start a solo world class](16-3-start-a-solo-world-class/README.md) | 1:56 | World loading waiting for the bike with Connect bike, Start riding once the world and the bike are ready, and the class ride in its world, faded in, with the video in the corner, at every width |
 | 16.4 | [Join a group world class](16-4-join-a-group-world-class/README.md) | 1:56 | World loading counting down to the group's start with the action off, the class ride starting with everyone on the panorama, the world fading in when ready, and the lost-bike alert when there is no bike, at every width |
 | 17.1 | [Ride outbox](17-1-ride-outbox/README.md) | 1:56 | Results with the XP pending for a ride finished without a network, the ride kept on the device, sent oldest first and tried again after 30 seconds then a minute, and recorded, at every width |
+| 17.2 | [Cache the app](17-2-cache-the-app/README.md) | 1:56 | A solo race started with no network once the app had been opened, the service worker's caches, Map Select's covers offline and the registration kept out of the first bundle, at every width |
 
 ## What every video is
 

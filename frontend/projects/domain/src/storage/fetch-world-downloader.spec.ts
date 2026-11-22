@@ -8,6 +8,9 @@ import { TestBed } from '@angular/core/testing';
 import { WorldDownloadError, type WorldDownloadProgress } from '@telo/api';
 import { FetchWorldDownloader } from './fetch-world-downloader';
 
+/** Past the app cache's service worker, which would hold the file back until it had fully arrived (ADR 0032). */
+const BYPASS = { 'ngsw-bypass': 'true' };
+
 const URL = '/worlds/oldtown/panorama.webp';
 const BYTES = new Uint8Array(1000).map((_, i) => i % 251);
 
@@ -73,7 +76,7 @@ describe('FetchWorldDownloader', () => {
 
     await expect(downloader.download('oldtown', progress, signal())).resolves.toBe(1000);
 
-    expect(fetchMock).toHaveBeenCalledWith(URL, expect.objectContaining({ headers: {} }));
+    expect(fetchMock).toHaveBeenCalledWith(URL, expect.objectContaining({ headers: BYPASS }));
     expect(seen).toEqual([
       { received: 0, total: 1000 },
       { received: 400, total: 1000 },
@@ -111,7 +114,7 @@ describe('FetchWorldDownloader', () => {
 
     expect(fetchMock).toHaveBeenLastCalledWith(
       URL,
-      expect.objectContaining({ headers: { Range: 'bytes=300-' } }),
+      expect.objectContaining({ headers: { ...BYPASS, Range: 'bytes=300-' } }),
     );
     expect(seen[0]).toEqual({ received: 300, total: 1000 });
     expect(seen.at(-1)).toEqual({ received: 1000, total: 1000 });

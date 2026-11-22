@@ -104,6 +104,7 @@ export class ApiFixture {
   private readonly sent: string[] = [];
   private readonly bodies: { readonly key: string; readonly body: unknown }[] = [];
   private readonly missed: string[] = [];
+  private noNetwork = false;
 
   private constructor() {}
 
@@ -118,7 +119,8 @@ export class ApiFixture {
     // Class Start and the Class Library read the group sessions (L2-083, L2-085); unless a spec serves them, they cannot
     // be reached, and both screens offer riding alone only (L2-085 AC5, L2-081 AC6).
     api.answer('GET', '/api/classes/sessions', UNREACHABLE);
-    await page.route(
+    // On the context, not the page: once the app cache's service worker controls the page, it makes the requests.
+    await page.context().route(
       (url) =>
         ['localhost', '127.0.0.1'].includes(url.hostname) && url.pathname.startsWith('/api/'),
       async (route) => {
@@ -129,6 +131,10 @@ export class ApiFixture {
         const handler =
           api.answers.get(key) ??
           (CLASS_SESSIONS.test(key) || RACE_QUEUE.test(key) ? UNREACHABLE : undefined);
+        if (!handler && api.noNetwork) {
+          await route.abort('internetdisconnected');
+          return;
+        }
         if (!handler) {
           api.missed.push(key);
           await route.fulfill({
@@ -139,7 +145,7 @@ export class ApiFixture {
           return;
         }
         const reply = await handler(request);
-        if (reply.offline) {
+        if (reply.offline || api.noNetwork) {
           await route.abort('internetdisconnected');
           return;
         }
@@ -171,6 +177,14 @@ export class ApiFixture {
   /** No session: `GET /api/riders/me` answers 401, as for a visitor or a session that has ended. */
   signedOut(): void {
     this.answer('GET', '/api/riders/me', () => SESSION_ENDED);
+  }
+
+  /**
+   * No network from now on: every request fails as a lost connection does, once its handler has replied, so an answer
+   * a spec holds back still decides when the failure arrives.
+   */
+  offline(): void {
+    this.noNetwork = true;
   }
 
   /** The answer an endpoint gives once the session has ended. */
