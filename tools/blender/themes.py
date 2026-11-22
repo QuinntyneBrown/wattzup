@@ -327,6 +327,20 @@ class Kit:
         out to `reach` metres, `strength` strong beneath it against a street lamp's 1."""
         self.lights.append((at[0], at[1], glow, reach, strength))
 
+    def door(self, i: int, along: float, off: float, up: float, w: float, h: float, lit: bool) -> None:
+        """A loading door on a wall facing the road: one flat panel the app draws as a steel frame and a roller
+        shutter, shut if it is dark and part-way up on a lit bay if it is lit. Its UV is a window's with 4 added
+        across (see `window`)."""
+        b = self.B.setdefault("windows", type(self.B["tower"])("Windows", "window"))
+        if b.uvs is None:
+            b.uvs = []
+        number = (i * 7919 + int(along * 13) * 31 + 5) % 500
+        base = len(b.verts)
+        for da, du, u, v in ((-w / 2, 0, 0, 0), (w / 2, 0, 1, 0), (w / 2, h, 1, 1), (-w / 2, h, 0, 1)):
+            b.verts.append(self.P(i, along + da, off, up + du))
+            b.uvs.append((u + 4 + (2 if lit else 0), v + 2 * number))
+        b.faces.append((base, base + 1, base + 2, base + 3))
+
     def halo(self, at, glow: str) -> None:
         """The glow in the air round a light: four corners at one place, which the app spreads to face the eye. Its
         UV is the corner, 0 or 1 each way; its colour the light's."""
@@ -825,7 +839,21 @@ def docklands(k: Kit) -> dict:
                 cols = int(width / 3.0)
                 for c in range(cols):
                     lit = rng.random() < 0.45
-                    k.window(i, -width / 2 + (c + 0.5) * width / cols, wall + 0.06, 1.4 + f * 3.6, 1.4, 1.9, lit, yaw)
+                    along = -width / 2 + (c + 0.5) * width / cols
+                    if f == 0 and c % 3 == 1:
+                        # A loading door in every third bay of the ground floor.
+                        k.door(i, along, wall + 0.06, 0.12, 2.5, 3.1, lit)
+                    else:
+                        k.window(i, along, wall + 0.06, 1.4 + f * 3.6, 1.4, 1.9, lit, yaw)
+            # On the roof, what shapes it against the sky: a water tank or a plant room, and a chimney.
+            top = floors * 3.6 + 1.0
+            spot = (i * 37) % 5
+            where = k.P(i, (spot - 2) * width * 0.16, off + ((i * 13) % 7 - 3) * 1.4, top)
+            if spot % 2:
+                k.prism(B["fence"], where, 1.5, 3.2, 6)
+            else:
+                B["wall"].box(where, (4.5, 3.2, 2.4), yaw)
+            B["brick"].box(k.P(i, -width / 2 + 2.0, off - 5.0, top), (1.1, 1.1, 3.4), yaw)
             neon = ("neon-pink", "neon-cyan", "neon-amber", "neon-violet")[sheds % 4]
             B[neon].box(k.P(i, rng.uniform(-width / 4, width / 4), wall + 0.1, floors * 3.6 - 1.2), (width * 0.5, 0.14, 0.3), yaw)
             B[neon].box(k.P(i, -width / 2 + 0.4, wall + 0.4, 3.0), (0.2, 0.2, floors * 3.6 - 3.5), yaw)

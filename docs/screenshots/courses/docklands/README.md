@@ -42,6 +42,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 18 | Neon and the bridges' cables throw their colour on the ground and the riders | 117.2 to 119.2 fps over three runs, 5, 2 and 2 frames over 20 ms | median of three 323 fps (3.10 ms): 321, 323, 323; pass 17 read 315 | | 73,359 | 77 | 3.17 MB, and 52 KB for the course file | Yes |
 | 19 | No stutter when a new stretch of the map comes into view | 120.0 fps, no frame over 20 ms, worst 16.7 ms (timed with no film being taken) | median of three 324 fps (3.09 ms): 327, 324, 304; pass 18 read 323 | | 73,359 | 77 | 3.17 MB | Yes |
 | 20 | Rain falling through the lamplight; and every rider made before the ride | 120.0 fps, no frame over 20 ms, worst 16.8 ms | median of three 321 fps (3.12 ms): 327, 321, 295; pass 19 read 324 | | 83,391 | 79 | 3.17 MB | Yes |
+| 21 | Warehouses with loading doors and things on their roofs | 119.7 fps, no frame over 20 ms, worst 16.8 ms | median of three 310 fps (3.23 ms): 299, 326, 310; pass 20 read 321 | | 83,391 | 79 | 3.30 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -696,3 +697,30 @@ neon sign's colour and all but lost in the dark between, as rain is at night. Wi
 - Anything made in the middle of a ride costs a frame: a chunk first drawn (pass 19), a rider first seen (this
   pass). Make everything before the first frame.
 - Particles need no particle system: a place a particle in a unit cube, and a clock in the shader.
+
+## Pass 21: loading doors and roofs
+
+A health check came first: the whole end-to-end suite has the same 13 failures it had before any of this work (198
+pass), and `tools/verify/verify.mjs` stops at its formatting check on this Windows checkout (811 files with CRLF
+line endings, 807 of them before this work), so it cannot gate a pass here.
+
+**Before** (`pass-20-start.jpg`): a warehouse's ground floor is a row of the same windows as every floor above it,
+and its roof is the flat top of a box.
+
+**After** (`pass-21-start.jpg` at the start line, `pass-21.jpg` and `pass-21.mp4` on the first bridge): every third
+bay of the ground floor is a loading door, a steel frame round a roller shutter of slats; a dark one is shut, a lit
+one is part-way up with the bay behind it lit like a room. On each roof stands a water tank or a plant room, and a
+chimney, which is what a rider sees of the warehouses from a bridge.
+
+**What changed.** `Kit.door` (themes.py) adds a panel to the `Windows` group with 4 added across its UV;
+`window-material.ts` takes the door flag out with the lit flag and draws the shutter. The roof's pieces are a prism
+or a box and a box, in materials the map already has.
+
+**Cost.** 0.11 ms a frame by this reading (321 to 310 fps, inside the spread of the three runs: 299 to 326); no
+frame over 20 ms. **0.13 MB in the file (3.30 MB gzipped).**
+
+**Tried and dropped.** A parapet round every roof and a tank on four legs: 0.4 MB of download, for the tops of
+buildings seen from eight bridges. A tank is one prism now and the parapets are gone.
+
+**Learned.** Weigh a detail by how often it is seen as well as by its triangles. The doors are at eye level for
+half the ride and cost nothing; the roofs are seen for a few minutes and cost all of this pass's download.

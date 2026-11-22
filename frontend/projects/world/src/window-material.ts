@@ -3,6 +3,8 @@
 // way), with 2 added across for a lit window and 2 added up for each step of the window's own number. From that the
 // material draws the stone lintel and sill, the frame and its glazing bars, and behind the glass either a lit room
 // (its lamp's colour, a blind drawn part-way, shapes against the light) or dark panes holding a little of the sky.
+// A loading door is a panel of the same group, marked as one: a steel frame and a roller shutter, part-way up on a
+// lit bay or shut.
 import {
   abs,
   float,
@@ -37,6 +39,8 @@ const OPENING = { left: 0.102, right: 0.898, bottom: 0.061, top: 0.895 } as cons
 const FRAME = 0.075;
 const BAR = 0.028;
 const PANES = [2, 3] as const;
+/** The slats of a loading door's shutter, from its foot to its head. */
+const SLATS = 22;
 /** How bright a lit room is: enough to bloom at the tiers that have it. */
 const ROOM = 1.7;
 
@@ -52,9 +56,12 @@ export function windowMaterial(
   const across = uv().x;
   // glTF keeps a UV's second number upside down.
   const raised = float(1).sub(uv().y);
-  const lit = step(1, across);
+  // Two numbers ride on the place across the panel: 2 for a lit one, 4 for a door (tools/blender/themes.py).
+  const kind = floor(across.div(2));
+  const door = step(2, kind);
+  const lit = kind.sub(door.mul(2));
   const number = floor(raised.div(2));
-  const panel = vec2(across.sub(lit.mul(2)), raised.sub(number.mul(2)));
+  const panel = vec2(across.sub(kind.mul(2)), raised.sub(number.mul(2)));
   const pick = (salt: number) => fract(sin(number.mul(12.9898).add(salt)).mul(43758.5453));
 
   // Where on the opening: 0 to 1 each way, outside it beyond.
@@ -100,10 +107,26 @@ export function windowMaterial(
   const timber = vec3(0.09, 0.1, 0.1).mul(day);
   const masonry = vec3(0.52, 0.5, 0.46).mul(grain).mul(day);
 
+  // A loading door fills its panel: a steel frame and a roller shutter of slats. A dark one is shut; a lit one is
+  // part-way up, and under it the bay shows, lit like a room.
+  const rim = min(min(panel.x, panel.x.oneMinus()), panel.y.oneMinus());
+  const open = lit.mul(pick(7).mul(0.6).add(0.25));
+  const slat = step(fract(panel.y.mul(SLATS)), 0.16);
+  const steel = vec3(0.3, 0.33, 0.37)
+    .mul(grain)
+    .mul(mix(float(1), float(0.55), slat))
+    .mul(day);
+  const bay = lamp
+    .mul(mix(0.35, 1, panel.y.div(open.max(0.01)).min(1)))
+    .mul(smoothstep(0.2, 0.65, shapes).mul(0.8).add(0.25))
+    .mul(ROOM * 0.8);
+  const shutter = mix(steel, bay, step(panel.y, open));
+  const doorway = mix(shutter, timber.mul(1.6), step(rim, 0.035));
+
   const material = new MeshBasicNodeMaterial({ side: DoubleSide });
-  material.colorNode = mix(mix(glass, timber, wood), masonry, stone);
-  // Beside the opening, between the sill and the lintel, the panel is not drawn.
-  material.opacityNode = max(inside, stone);
+  material.colorNode = mix(mix(mix(glass, timber, wood), masonry, stone), doorway, door);
+  // Beside a window's opening, between the sill and the lintel, the panel is not drawn; a door's is, all of it.
+  material.opacityNode = max(max(inside, stone), door);
   material.alphaTest = 0.5;
   return material;
 }

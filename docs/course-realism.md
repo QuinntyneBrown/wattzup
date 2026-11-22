@@ -215,6 +215,11 @@ colour already does the second.
 
 **Cost.** None measurable; one draw call a chunk in view; no triangles beyond the two a window already had.
 
+**Doors (Docklands pass 21).** `Kit.door(i, along, off, up, w, h, lit)` adds a panel to the same group with 4 added
+across its UV; the material takes the two flags apart (`kind = floor(u / 2)`: 0 a dark window, 1 a lit one, 2 a shut
+door, 3 a lit one) and draws a door as a frame and a shutter of slats, raised part-way on a lit bay. Add further
+kinds the same way: a shop front, a garage, an arched doorway.
+
 **Watch for.** The opening's share of the panel (`OPENING`) follows `WINDOW_SURROUND` and the window's size: a
 window of another size needs the same surround in proportion, or the constants given as part of the UV.
 
@@ -522,5 +527,5 @@ The pictures the work aims at differ from a course in these ways, most visible f
 4. The lit windows throw no light on the pavement beneath them.
 5. The neon signs have no glow in the air round them, as the lamps have.
 6. The riders are simple figures: smooth limbs, no cloth, no faces.
-7. Doors, signs, pipes, gutters and roof lines: a building is still a box with windows.
+7. Signs with lettering, pipes, gutters and fire escapes: a warehouse's wall is still flat between its windows.
 8. The harbour's water takes no colour from the bridges' stays above it.
