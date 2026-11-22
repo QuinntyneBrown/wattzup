@@ -1,5 +1,6 @@
 import { InjectionToken, type Signal } from '@angular/core';
 import type { SeatAssignment } from './join-class-session';
+import type { Standings } from './standings';
 
 /** The link to the ride hub (docs/detailed-designs/multiplayer/connect-to-the-ride-hub). */
 export type RideHubState = 'disconnected' | 'connecting' | 'connected' | 'reconnecting';
@@ -23,6 +24,13 @@ export interface RideHubClient {
    * `session_not_found`), and with any other error when the connection goes.
    */
   joinClassSession(classId: string, sessionId: string): Promise<SeatAssignment>;
+  /**
+   * Sends the rider's output in kJ and power in watts in a session (`ReportProgress`, L2-123 AC1), awaiting no answer;
+   * it does nothing while the hub is not connected.
+   */
+  reportProgress(sessionId: string, outputKj: number, powerWatts: number): Promise<void>;
+  /** Runs `handler` on each `StandingsUpdated` the hub sends (L2-123 AC3); returns what removes it. */
+  onStandings(handler: (standings: Standings) => void): () => void;
   /** Runs `handler` after each reconnect (AC3); returns what removes it. */
   onReconnected(handler: () => void): () => void;
 }

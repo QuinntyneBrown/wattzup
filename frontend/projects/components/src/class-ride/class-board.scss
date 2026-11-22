@@ -1,0 +1,152 @@
+// Block class-board (docs/design-system/assets/components.css, Class Ride): the group output board, a right-hand
+// column from lg and under the video below it (L2-090 AC3), with a dot in each rider's jersey (block class-dot).
+:host {
+  display: block;
+  min-height: 0;
+}
+
+.class-board {
+  height: 100%;
+  border-top: var(--border-width-hairline) solid var(--color-line);
+  background: var(--color-panel);
+  padding-block: var(--space-4);
+
+  @media (min-width: 64rem) {
+    overflow-y: auto;
+    border-top: 0;
+    border-left: var(--border-width-hairline) solid var(--color-line);
+  }
+}
+
+.class-board__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-inline: var(--space-4);
+}
+
+.class-board__title {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-muted);
+}
+
+.class-board__place {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
+  color: var(--color-volt-fg);
+}
+
+.class-board__of {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  color: var(--color-muted);
+}
+
+.class-board__list {
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.class-board-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2-5);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.class-board-row__pos {
+  width: var(--space-4);
+  text-align: right;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  color: var(--color-faint);
+}
+
+.class-board-row__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.class-board-row__kj {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  color: var(--color-muted);
+}
+
+.class-board-row__unit {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-faint);
+}
+
+// The rider's own row (aria-current="true"), in volt.
+.class-board-row[aria-current='true'] {
+  background: var(--color-volt);
+  color: var(--color-on-fill);
+
+  .class-board-row__pos,
+  .class-board-row__kj,
+  .class-board-row__unit {
+    color: inherit;
+  }
+
+  .class-board-row__name {
+    font-weight: var(--font-weight-semibold);
+  }
+}
+
+.class-dot {
+  display: block;
+  flex-shrink: 0;
+  width: var(--space-2-5);
+  height: var(--space-2-5);
+  border-radius: var(--radius-full);
+  background: var(--jersey, var(--color-muted));
+}
+
+// Each rider's jersey, from the design system's jersey tokens.
+@each $jersey
+  in (
+    you,
+    ghost,
+    lena,
+    marco,
+    priya,
+    jwatts,
+    ollie,
+    kenji,
+    ana,
+    nova,
+    rook,
+    juno,
+    atlas,
+    kite,
+    vale,
+    moss,
+    flint,
+    echo
+  )
+{
+  .class-dot--#{$jersey} {
+    --jersey: var(--jersey-#{$jersey});
+  }
+}

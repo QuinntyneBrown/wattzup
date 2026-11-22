@@ -1,5 +1,5 @@
 // Unit test
-// Traces to: L2-067 AC1
+// Traces to: L2-067 AC1; L2-123 AC4
 // Description: each bot rides around the pack strength, with its own steady drift and swing, and the same map and
 // pack draw the same paces.
 import { BOT_NAMES, BotPaceModel, PACK_BASE_WATTS } from './bot-pace-model';
@@ -43,6 +43,22 @@ describe('BotPaceModel', () => {
       BotPaceModel.paces('vice-city', 'hard'),
     );
   });
+
+  // The service rides a group session's bots on its own copy (Telo.Ride.Domain.Bots.BotPaceModel); BotPaceModelTests
+  // runs this same table, so the two stay equal (L2-123 AC4).
+  it.each([
+    ['dolomites', 'hard', 0, 0, 229.829039],
+    ['dolomites', 'hard', 3, 17, 264.577138],
+    ['dolomites', 'hard', 8, 599, 261.017859],
+    ['hiit-cardio-30@20261121T0730Z', 'easy', 0, 0, 126.067407],
+    ['hiit-cardio-30@20261121T0730Z', 'easy', 3, 17, 112.148245],
+    ['hiit-cardio-30@20261121T0730Z', 'easy', 8, 599, 127.386707],
+  ] as const)(
+    'draws for "%s" %s bot %d at %ds the power the service draws',
+    (seed, pack, bot, t, watts) => {
+      expect(BotPaceModel.watts(BotPaceModel.paces(seed, pack)[bot]!, t)).toBeCloseTo(watts, 6);
+    },
+  );
 
   it('swings each bot around its drift', () => {
     const pace = { name: 'Nova' as const, base: 190, drift: 10, swing: 15, period: 60, phase: 0 };

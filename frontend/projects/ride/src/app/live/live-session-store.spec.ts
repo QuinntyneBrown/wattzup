@@ -13,6 +13,7 @@ import {
   type RideHubClient,
   type RideHubState,
   type SeatAssignment,
+  type Standings,
 } from '@telo/api';
 import { LiveSessionStore } from './live-session-store';
 
@@ -35,6 +36,8 @@ class FakeHub implements RideHubClient {
   joinAnswer: SeatAssignment | Error = SEAT;
   readonly joins: [string, string][] = [];
   readonly handlers = new Set<() => void>();
+  readonly reports: [string, number, number][] = [];
+  readonly listeners = new Set<(standings: Standings) => void>();
 
   async start(): Promise<void> {
     this.starts += 1;
@@ -55,6 +58,17 @@ class FakeHub implements RideHubClient {
     this.joins.push([classId, sessionId]);
     if (this.joinAnswer instanceof Error) throw this.joinAnswer;
     return this.joinAnswer;
+  }
+  async reportProgress(sessionId: string, outputKj: number, powerWatts: number): Promise<void> {
+    this.reports.push([sessionId, outputKj, powerWatts]);
+  }
+  onStandings(handler: (standings: Standings) => void): () => void {
+    this.listeners.add(handler);
+    return () => this.listeners.delete(handler);
+  }
+  /** The hub sends StandingsUpdated. */
+  standings(standings: Standings): void {
+    for (const listener of this.listeners) listener(standings);
   }
   onReconnected(handler: () => void): () => void {
     this.handlers.add(handler);
@@ -180,5 +194,42 @@ describe('LiveSessionStore', () => {
     await hub.reconnect();
 
     expect(store.seat()).toEqual(SEAT);
+  });
+
+  it('reports nothing before it has a seat, then the output and power, dropping a report within 500 ms of the last', async () => {
+    store.report(1, 100);
+    await store.join(session);
+
+    store.report(2.5, 180);
+    hub.now += 499;
+    store.report(2.6, 180);
+    hub.now += 1;
+    store.report(2.7, 190);
+
+    expect(hub.reports).toEqual([
+      ['session-0715', 2.5, 180],
+      ['session-0715', 2.7, 190],
+    ]);
+  });
+
+  it('holds only the latest standings the hub sent, and stops listening when its route goes', async () => {
+    await store.join(session);
+    const first: Standings = { sessionId: 'session-0715', rows: [] };
+    const second: Standings = { sessionId: 'session-0715', rows: [] };
+
+    hub.standings(first);
+    hub.standings(second);
+    expect(store.standings()).toBe(second);
+
+    injector.destroy();
+    expect(hub.listeners.size).toBe(0);
+  });
+
+  it('ignores standings for another session', async () => {
+    await store.join(session);
+
+    hub.standings({ sessionId: 'other@20261121T1945Z', rows: [] });
+
+    expect(store.standings()).toBeNull();
   });
 });

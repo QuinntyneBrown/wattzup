@@ -7,6 +7,7 @@ import {
   RideHubError,
   type RideHubErrorCode,
   type SeatAssignment,
+  type Standings,
 } from '@telo/api';
 
 /** The session the rider holds a seat in: the arguments a rejoin repeats (L2-120 AC3). */
@@ -19,6 +20,9 @@ export interface SessionRef {
 
 /** How many ServerTime calls one measurement of the clock offset takes. */
 const SAMPLES = 5;
+
+/** The shortest time between two progress reports (L2-123 AC1). */
+const REPORT_INTERVAL_MS = 500;
 
 /**
  * The rider's live session (docs/detailed-designs/multiplayer/connect-to-the-ride-hub), provided on a route that holds
@@ -35,6 +39,9 @@ export class LiveSessionStore {
   private readonly offset = signal<number | null>(null);
   private readonly taken = signal<SeatAssignment | null>(null);
   private readonly refusal = signal<RideHubErrorCode | null>(null);
+  private readonly latest = signal<Standings | null>(null);
+  private lastReportAt: number | null = null;
+  private forgetStandings: (() => void) | null = null;
   private session: SessionRef | null = null;
   private forgetReconnect: (() => void) | null = null;
 
@@ -45,6 +52,8 @@ export class LiveSessionStore {
   readonly seat = this.taken.asReadonly();
   /** The code the hub refused the join with; `null` while it has not. */
   readonly refused = this.refusal.asReadonly();
+  /** The latest standings the hub sent for the session; each replaces the last, so nothing grows (L2-123 AC3). */
+  readonly standings = this.latest.asReadonly();
 
   constructor() {
     inject(DestroyRef).onDestroy(() => this.leave());
@@ -54,6 +63,9 @@ export class LiveSessionStore {
     if (this.session !== null) return;
     this.session = ref;
     this.forgetReconnect = this.hub.onReconnected(() => this.rejoin());
+    this.forgetStandings = this.hub.onStandings((standings) => {
+      if (standings.sessionId === ref.sessionId) this.latest.set(standings);
+    });
     try {
       await this.hub.start();
     } catch {
@@ -61,6 +73,19 @@ export class LiveSessionStore {
     }
     await this.measure();
     await this.takeSeat();
+  }
+
+  /**
+   * Sends the rider's output in kJ and power in watts once seated, dropping a report less than 500 ms after the last
+   * one sent, so the hub hears at most two a second (L2-123 AC1).
+   */
+  report(outputKj: number, powerWatts: number): void {
+    const seat = this.taken();
+    if (this.session === null || seat === null) return;
+    const now = this.time.now();
+    if (this.lastReportAt !== null && now - this.lastReportAt < REPORT_INTERVAL_MS) return;
+    this.lastReportAt = now;
+    void this.hub.reportProgress(seat.sessionId, outputKj, powerWatts).catch(() => undefined);
   }
 
   /** The server's time now, in Unix milliseconds, or `null` before the offset is measured. */
@@ -106,6 +131,8 @@ export class LiveSessionStore {
     this.session = null;
     this.forgetReconnect?.();
     this.forgetReconnect = null;
+    this.forgetStandings?.();
+    this.forgetStandings = null;
     void this.hub.stop();
   }
 }

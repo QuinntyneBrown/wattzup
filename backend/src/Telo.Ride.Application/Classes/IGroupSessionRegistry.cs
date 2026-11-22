@@ -13,4 +13,7 @@ public interface IGroupSessionRegistry
 
     /// <summary>The session with that id, or <c>null</c> when nobody has joined it.</summary>
     GroupClassSession? Find(string sessionId, DateTimeOffset now);
+
+    /// <summary>The sessions whose start has passed and that are still kept, for the once-a-second tick.</summary>
+    IReadOnlyList<GroupClassSession> Started(DateTimeOffset now);
 }

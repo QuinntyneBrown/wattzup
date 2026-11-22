@@ -94,6 +94,48 @@ export function seated(
   return { code: null, sessionId: session.id, startsAt: session.startsAt, jersey, next: null };
 }
 
+/** One rider on a group session's board, as the hub sends it in StandingsUpdated (L2-123 AC3). */
+export interface StandingRow {
+  readonly position: number;
+  readonly name: string;
+  readonly jersey: string;
+  readonly level: number | null;
+  readonly kind: 'person' | 'bot';
+  readonly outputKj: number;
+  readonly gapKj: number;
+}
+
+/** Ranks `[name, jersey, kJ]` riders as the hub does: by output, highest first, with each gap to the leader. */
+export function standings(
+  session: { readonly id: string },
+  riders: readonly (readonly [string, string, number])[],
+) {
+  const ranked = [...riders].sort((a, b) => b[2] - a[2]);
+  const rows: StandingRow[] = ranked.map(([name, jersey, outputKj], i) => ({
+    position: i + 1,
+    name,
+    jersey,
+    level: name.startsWith('Pacer ') ? null : 4,
+    kind: name.startsWith('Pacer ') ? 'bot' : 'person',
+    outputKj,
+    gapKj: Math.round((ranked[0]![2] - outputKj) * 1000) / 1000,
+  }));
+  return { sessionId: session.id, rows };
+}
+
+/** The board of the Class Ride mock at 7:00: nine riders, the rider ("lena.k", seat jersey lena) fifth on 65 kJ. */
+export const boardAtSeven: readonly (readonly [string, string, number])[] = [
+  ['kenji.cyc', 'kenji', 73.2],
+  ['Pacer Nova', 'nova', 68.4],
+  ['Ollie R.', 'ollie', 67.3],
+  ['ana_rides', 'ana', 66.9],
+  ['lena.k', 'lena', 65.1],
+  ['jwatts', 'jwatts', 63.0],
+  ['priya_spins', 'priya', 62.2],
+  ['MarcoVelo', 'marco', 50.4],
+  ['Pacer Rook', 'rook', 49.8],
+];
+
 /** The hub's answer to JoinClassSession when it refuses (session_full, session_started), with the session it offers. */
 export function refused(
   code: string,

@@ -62,6 +62,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 14.2 | [Group session schedule](14-2-group-session-schedule/README.md) | 1:54 | Group sessions every 15 minutes on the quarter hours, ten seats each; Class Start offering the next with its riders and Join, the full and starting sessions; the Class Library's group chips; all read every 30 seconds |
 | 14.3 | [Join a group session](14-3-join-a-group-session/README.md) | 1:54 | Join opening the group ride, which takes a seat through the ride hub with its jersey; a full or started session sending the rider back to Class Start with the next one offered; a reconnect keeping the same seat |
 | 14.4 | [Start together](14-4-start-together/README.md) | 1:41 | A group ride holding at 0:00 with its video parked under "Starts in 9:00"; the clock and the video starting together at the session's server time; a late rider riding from the session's time |
+| 14.5 | [Live group board](14-5-live-group-board/README.md) | 1:54 | The group ride with its live output board: every rider ranked by output, the rider's place and own row, the board sliding the rider up after the next standings, beside the video or below it |
 
 ## What every video is
 

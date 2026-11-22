@@ -16,73 +16,60 @@ title Class structure — Ride with a group
 
 package "api library" {
   interface RideHubClient {
-    +standings: Signal<StandingsDto>
-    +reportProgress(report: ProgressReport): Promise<void>
+    +reportProgress(sessionId, outputKj, powerWatts): Promise<void>
+    +onStandings(handler): () => void
   }
-  class ProgressReport {
+  class Standings {
     +sessionId: string
-    +outputKj: number
-    +powerW: number
+    +rows: StandingRow[]
   }
-  class StandingsDto {
-    +sessionId: string
-    +rows: StandingRowDto[]
-  }
-  class StandingRowDto {
-    +riderId: string
-    +displayName: string
-    +jersey: string
-    +level: number
-    +kind: RiderKind
+  class StandingRow {
     +position: number
-    +gap: string
+    +name: string
+    +jersey: string
+    +level: number | null
+    +kind: 'person' | 'bot'
     +outputKj: number
+    +gapKj: number
   }
-  enum RiderKind {
-    Person
-    Bot
+}
+package "components library" {
+  class ClassBoard {
+    +place: string | null
+    +total: number
+    +rows: ClassBoardRow[]
   }
 }
 package "ride application" {
-  class GroupBoardStore {
-    -maxRows = 10
-    -lastReorderMs: number
-    +rows: Signal<BoardRowView[]>
-    +place: Signal<string>
-    +apply(standings: StandingsDto): void
-  }
-  class BoardRowView {
-    +riderId: string
-    +name: string
-    +jersey: string
-    +outputKj: number
-    +isSelf: boolean
+  class LiveSessionStore {
+    +standings: Signal<Standings | null>
+    +seat: Signal<SeatAssignment | null>
+    +report(outputKj, powerWatts): void
   }
   class ClassRideStore {
-    +outputKj: Signal<number>
-    +power: Signal<number>
+    +board: Signal<GroupBoardView | null>
+    +mode: Signal<string>
   }
-  class ProgressReporter {
-    -maxPerSecond = 2
-    +start(sessionId: string): void
-  }
-  class LiveSessionStore {
-    +sessionId: Signal<string>
-    +standings: Signal<StandingsDto>
+  class GroupBoardView {
+    +place: string | null
+    +total: number
+    +rows: GroupBoardRowView[]
   }
 }
 package "Telo.Ride.Domain" {
-  class RankingPolicy {
-    +Rank(session: GroupClassSession): IReadOnlyList<Standing>
+  class GroupClassSession {
+    +RecordProgress(riderId, outputKj, powerWatts, now): bool
+    +Tick(now): StandingRow[]?
+  }
+  class BotPaceModel {
+    +Paces(seed, pack): BotPace[]
+    +Watts(pace, second): double
   }
 }
-StandingsDto "1" *-- "1..10" StandingRowDto
-StandingRowDto --> RiderKind
-GroupBoardStore ..> LiveSessionStore : reads standings
-LiveSessionStore ..> RideHubClient : subscribes
-GroupBoardStore "1" *-- "0..10" BoardRowView
-ProgressReporter ..> ClassRideStore : reads
-ProgressReporter ..> RideHubClient : reports
-RideHubClient ..> ProgressReport
-RideHubClient ..> StandingsDto
+Standings "1" *-- "1..10" StandingRow
+LiveSessionStore ..> RideHubClient : reports, listens
+ClassRideStore ..> LiveSessionStore : standings, report
+ClassRideStore ..> GroupBoardView : groupBoardView()
+ClassBoard ..> GroupBoardView : drawn from
+GroupClassSession ..> BotPaceModel : bots
 @enduml

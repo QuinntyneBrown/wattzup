@@ -6,6 +6,7 @@ using Telo.Ride.Api.Hosting;
 using Telo.Ride.Api.Hubs;
 using Telo.Ride.Api.Telemetry;
 using Telo.Ride.Application;
+using Telo.Ride.Application.Live;
 using Telo.Ride.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,7 @@ builder.Services.AddProblemDetails(options => options.CustomizeProblemDetails = 
 builder.Services.AddExceptionHandler<ProblemDetailsExceptionHandler>();
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<ISessionNotifier, RideHubNotifier>();
 builder.Services.AddAppHosting();
 builder.Services.AddTransportSecurity();
 // Code reads time only through TimeProvider, so tests advance a FakeTimeProvider instead of sleeping.

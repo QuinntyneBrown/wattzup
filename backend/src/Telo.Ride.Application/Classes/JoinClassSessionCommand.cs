@@ -1,22 +1,25 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Telo.Ride.Application.Live;
 using Telo.Ride.Domain.Classes;
 using Telo.Ride.Domain.Rides;
 
 namespace Telo.Ride.Application.Classes;
 
 /// <summary>A rider asks for a seat in a class's group session (L2-122 AC1, AC2, L2-086 AC3), through the ride hub.</summary>
-public sealed record JoinClassSessionCommand(Guid RiderId, string ClassId, string SessionId) : IRequest<JoinClassSessionResult>;
+/// <remarks><c>ConnectionId</c> is the hub connection a seated rider's session sends to.</remarks>
+public sealed record JoinClassSessionCommand(Guid RiderId, string ClassId, string SessionId, string ConnectionId)
+    : IRequest<JoinClassSessionResult>;
 
 /// <summary>
 /// Seats the rider in the session, or refuses with a code: <c>session_not_found</c> for an id that is not one of the
 /// class's slots, or a slot past the next two; <c>class_locked</c> below the class's opening level (L2-082);
 /// <c>session_started</c> once its start has passed, offering the next session; <c>session_full</c> with 10 seated,
 /// offering the one 15 minutes later. A rider already seated keeps their seat, so a rejoin after a reconnect keeps it
-/// (L2-120 AC3).
+/// (L2-120 AC3). A seated rider's connection joins the session's group, for its standings (L2-123 AC3).
 /// </summary>
 public sealed class JoinClassSessionCommandHandler(
-    IAppDbContext db, IClassCatalogue catalogue, IGroupSessionRegistry registry, TimeProvider time)
+    IAppDbContext db, IClassCatalogue catalogue, IGroupSessionRegistry registry, ISessionNotifier notifier, TimeProvider time)
     : IRequestHandler<JoinClassSessionCommand, JoinClassSessionResult>
 {
     private const string NoName = "Rider";
@@ -31,13 +34,15 @@ public sealed class JoinClassSessionCommandHandler(
             return Refused("session_not_found", request.SessionId);
 
         var rider = await db.Riders.AsNoTracking().SingleAsync(r => r.Id == request.RiderId, cancellationToken);
-        if (LevelTable.LevelFor(rider.TotalXp) < definition.OpensAtLevel)
+        var level = LevelTable.LevelFor(rider.TotalXp);
+        if (level < definition.OpensAtLevel)
             return Refused("class_locked", request.SessionId);
 
         var session = start <= now ? registry.Find(request.SessionId, now) : registry.GetOrCreate(classId, start, now);
         var (outcome, seat) = session is null
             ? (JoinOutcome.Started, null)
-            : session.TrySeat(rider.Id, rider.DisplayName ?? NoName, now);
+            : session.TrySeat(rider.Id, rider.DisplayName ?? NoName, now, level);
+        if (outcome == JoinOutcome.Seated) await notifier.AddToSession(request.ConnectionId, request.SessionId, cancellationToken);
         return outcome switch
         {
             JoinOutcome.Seated => new JoinClassSessionResult(null, request.SessionId, start, seat!.Jersey, null),

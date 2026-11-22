@@ -167,22 +167,50 @@ The same step updates **% complete** in [`detailed-journeys.md`](detailed-journe
 | L140 | Profile does not connect the remembered bike; Home does (L2-015). A spec or shot that needs the bike connected on another screen opens Home, waits for the three writes, pushes a frame, then follows the header to that screen. | 13.3 | | |
 | L141 | When a design names one helper for a whole list (`settingRows()`) but only one row's words change, keep the fixed rows in the template as links and buttons and extract just the changing one (`bikeRow()`) with its unit spec; then bring the design and its class diagram in line. | 13.3 | | |
 | L142 | A library imported dynamically whose ESM build calls `require` on Node-only paths (`@microsoft/signalr`) made esbuild put its `__require` shim in main (+0.73 kB). Compare main's inputs in `dist/ride/browser-stats.json` (`ng build ride --stats-json`) before and after: identical inputs with more bytes means a runtime helper; `"define": { "require": "undefined" }` in the `ride` build drops it. | 14.1 | 14.2 | Saved time: main grew 14 bytes with identical inputs, two more export names to a lazy chunk; no code to move |
-| L143 | Under Playwright's paused clock a SignalR connection does not finish opening (it waits on timers). A shot or spec that pauses the clock lets the hub connect and answer first: poll `hub.invocations(...)` before `page.clock.pauseAt`. | 14.1 | 14.3, 14.4 | Missed at first in 14.4: the spec paused the clock before the seat arrived; once the seat was waited for, it held (L154) |
+| L143 | Under Playwright's paused clock a SignalR connection does not finish opening (it waits on timers). A shot or spec that pauses the clock lets the hub connect and answer first: poll `hub.invocations(...)` before `page.clock.pauseAt`. | 14.1 | 14.3, 14.4, 14.5 | Held in 14.5: the board spec waits for the clock to pass 0:00 before pausing it |
 | L144 | A store that starts async work from a callback (`onReconnected`) is unit-tested with a fake that awaits what the handlers return (`await Promise.all([...handlers].map((h) => h() as unknown))`), not with `vi.waitFor`, which polls in real time. | 14.1 | | |
 | L145 | To build the previous version for a comparison, stash only frontend paths (`git stash push -u -- projects e2e package.json package-lock.json`), so the `.cache` link stays, and check `git stash list` before building; a failed step in an `&&` chain otherwise skips the stash and the pop finds nothing. | 14.1 | 14.2 | Saved time |
 | L146 | Playwright's `clock.runFor` over several ticks of an RxJS `timer` polled through `switchMap` fires them back to back, and each tick cancels the read before it, often before the route sees it. A polling spec steps the clock one interval at a time and waits for each read (`expect.poll`) before the next. | 14.2 | 14.3 | Saved time |
-| L147 | Content projected into a slot that a wide layout pushes to the foot (`margin-top: auto`) goes there too. Compare the first XL shot with the mock before writing the film; when the mock puts new content elsewhere in a component, add a named slot in the mock's order. | 14.2 | 14.3, 14.4 | Saved time: 14.4's first contact sheet showed the waiting ride without the bike panel the mock draws (L156) |
+| L147 | Content projected into a slot that a wide layout pushes to the foot (`margin-top: auto`) goes there too. Compare the first XL shot with the mock before writing the film; when the mock puts new content elsewhere in a component, add a named slot in the mock's order. | 14.2 | 14.3, 14.4, 14.5 | Saved time: 14.5's contact sheet matched the mock at every width on the first record |
 | L148 | When a new screen request is per id (`GET /api/classes/{id}/sessions`) and many specs pass through the screen, give the API fixture one default for the path pattern, not an answer per id; it answers as the screen's honest fallback (unreachable), and a spec that needs data serves its own. | 14.2 | 14.3 | Saved time |
 | L149 | When two screens are sibling routes, a connection opened on the first cannot carry into the second; check the route tree before deciding which screen holds a connection or a session, and put the action on the screen that holds it (the class ride joins, not Class Start). | 14.3 | | |
 | L150 | A backend refusal that a client branches on goes back over SignalR as an answer with a `code`, not a thrown exception: SignalR hides a server exception's message, so the code would never arrive. The client turns the answer into a typed error. | 14.3 | | |
 | L151 | A backend acceptance test that needs several distinct riders signs each in through the real code flow and passes the `__Host-telo-session` cookie to the SignalR client in `options.Headers`, advancing the fake clock between sign-ins; no auth stub is needed. | 14.3 | | |
-| L152 | A new call in a shared flow (the ride's join) makes every spec through that flow meet an unanswered hub invocation; grep the specs and film shots that open the flow (`openGroup`, `?session=`) and answer the call in each in the same change. | 14.3 | 14.4 | Saved time: 14.4 grepped every `openGroup` and moved the seated specs to the page's clock in the same change |
-| L153 | A fake hub's answer runs in Node, so `Date.now()` there is the real clock, not the page's installed one; a spec that compares the server's time with the page's answers `ServerTime` from the page (`() => page.evaluate(() => Date.now())`). The fixture awaits answers and drops one that settles after the page closed. | 14.4 | | |
-| L154 | `page.clock.pauseAt` jumps without firing each second's timers in order, and a measured clock offset is a few milliseconds off. Pause just short and `runFor` the last second, and stand half a second past a whole second, so no display reads a second off. | 14.4 | | |
+| L152 | A new call in a shared flow (the ride's join) makes every spec through that flow meet an unanswered hub invocation; grep the specs and film shots that open the flow (`openGroup`, `?session=`) and answer the call in each in the same change. | 14.3 | 14.4, 14.5 | Held in 14.5: the ride's reports go by `send`, which the fixture records without an answer; the neighbouring specs stayed green |
+| L153 | A fake hub's answer runs in Node, so `Date.now()` there is the real clock, not the page's installed one; a spec that compares the server's time with the page's answers `ServerTime` from the page (`() => page.evaluate(() => Date.now())`). The fixture awaits answers and drops one that settles after the page closed. | 14.4 | 14.5 | Held in 14.5: the board spec and the film answer `ServerTime` from the page |
+| L154 | `page.clock.pauseAt` jumps without firing each second's timers in order, and a measured clock offset is a few milliseconds off. Pause just short and `runFor` the last second, and stand half a second past a whole second, so no display reads a second off. | 14.4 | 14.5 | Held in 14.5: pausing 500 ms short and running the last second stood the ride at 7:00 exactly |
 | L155 | A countdown to a fixed moment wakes on the whole seconds before that moment (`(at - now) % 1000`), not on a free-running ticker, which shows a second too many for up to a second. | 14.4 | | |
 | L156 | A state that holds before the work starts (a ride waiting for its start) still draws what the mock shows around it; derive that view from the plan at 0:00, not from the engine's live state, which does not exist yet. | 14.4 | | |
+| L157 | Under a paused Playwright clock a zoneless Angular app draws nothing new: its change detection waits on a timer or frame the paused clock never fires. After a fixture pushes data (a hub event, a notification) into a page whose clock is paused, `runFor` a frame (100 ms) before asserting what it draws. | 14.5 | | |
+| L158 | A rule the backend and the app both compute (a seeded pace model) is proven the same by one table of cases written out in both suites, each row an exact value to six places; the backend's tests read no file, so the table is inline in each, never a shared fixture file. | 14.5 | | |
+| L159 | Spec and film data meant to reorder a ranking leaves a clear gap at the precision the screen shows (whole kJ): a tie keeps the stable order and leaves the rider one place lower than the data was written to show. | 14.5 | | |
 
 ## Log
+
+### 14.5 Live group board (2026-11-22)
+
+**Applied from earlier**
+
+- **L1 own worktree and install; L2 port 4310; L3 format first — saved time.**
+- **L41 spec each step first — saved time:** the board specs failed with no board and no reports, the backend's
+  standings tests with no `StandingsUpdated`, and the pace table's rows before the C# port existed.
+- **L143 let the hub connect before pausing the clock; L153 `ServerTime` from the page; L154 pause short and run the
+  last second — held:** the ride stood at exactly 7:00 in every spec and shot.
+- **L147 compare the first shots with the mock — saved time:** the board's column, rows and own row matched at every
+  width on the first record.
+- **L152 grep every flow that meets the change — held:** reports go by `send`, so no spec through the ride met an
+  unanswered invocation.
+- **L5 read the initial chunk — saved time:** main stayed at 277.40 kB; the board ships in the class ride's chunk.
+- **L121 film rules first; L34 render every diagram — saved time:** seven diagrams re-rendered with exit status 0.
+
+**What slowed it down**
+
+- The board drew in a debug run with the clock running but not in the spec, whose clock was paused: zoneless change
+  detection never ran after the hub's push (L157).
+- Porting the seeded pace model to C# bit for bit took a shared table of exact values to trust (L158).
+- The film's reorder put the rider third, not second: the data tied the rider with a bot at 69 kJ (L159).
+
+**New lessons:** L157, L158, L159.
 
 ### 14.4 Start together (2026-11-22)
 

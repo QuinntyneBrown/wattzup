@@ -64,16 +64,10 @@ package "Telo.Ride.Domain" {
     Left
   }
 }
-package "domain library" {
-  class ProgressReporter {
-    -lastSentAt: number
-    +start(kind: 'race' | 'class'): void
-    +stop(): void
-  }
-}
 package "ride application" {
   class LiveSessionStore {
     +standings: Signal<StandingsDto | null>
+    +report(totals, powerWatts): void
     +relativeGaps: Signal<number[]>
   }
 }

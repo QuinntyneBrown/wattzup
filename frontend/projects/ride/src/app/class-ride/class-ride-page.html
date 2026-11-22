@@ -2,7 +2,7 @@
   @if (store.ride(); as ride) {
     <wz-class-header
       [title]="ride.title"
-      [mode]="store.group ? 'Group' : 'Solo'"
+      [mode]="store.mode()"
       [elapsed]="store.elapsed()"
       [total]="ride.lengthSeconds"
     >
@@ -50,7 +50,12 @@
         </svg>
       </a>
     </wz-class-header>
-    <main id="main" class="class-ride__body" tabindex="-1">
+    <main
+      id="main"
+      class="class-ride__body"
+      [class.class-ride__body--group]="store.board() !== null"
+      tabindex="-1"
+    >
       <h1 class="visually-hidden">
         {{ ride.title }} · {{ store.group ? 'group' : 'solo' }} class ride
       </h1>
@@ -95,6 +100,10 @@
           </wz-class-bike>
         }
       </div>
+      <!-- The group board, from the hub's standings: a right-hand column from lg, under the video below (L2-090). -->
+      @if (store.board(); as board) {
+        <wz-class-board [place]="board.place" [total]="board.total" [rows]="board.rows" />
+      }
     </main>
     @if (store.bikeLost()) {
       <wz-class-lost

@@ -2,6 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import type { HubConnection } from '@microsoft/signalr';
 import { type JoinClassSessionResult, type SeatAssignment, seatFrom } from './join-class-session';
 import type { RideHubClient, RideHubState } from './ride-hub-client';
+import type { Standings } from './standings';
 import { RideHubRetryPolicy } from './ride-hub-retry-policy';
 
 /** The ride hub's address, on the API that serves the app (ADR 0026). */
@@ -17,6 +18,7 @@ const RIDE_HUB = '/hubs/ride';
 export class SignalRRideHubClient implements RideHubClient {
   private readonly link = signal<RideHubState>('disconnected');
   private readonly reconnected = new Set<() => void>();
+  private readonly standings = new Set<(standings: Standings) => void>();
   private connection: HubConnection | null = null;
 
   readonly state = this.link.asReadonly();
@@ -36,6 +38,9 @@ export class SignalRRideHubClient implements RideHubClient {
       for (const handler of this.reconnected) handler();
     });
     connection.onclose(() => this.link.set('disconnected'));
+    connection.on('StandingsUpdated', (standings: Standings) => {
+      for (const handler of this.standings) handler(standings);
+    });
     this.connection = connection;
     try {
       await connection.start();
@@ -66,6 +71,16 @@ export class SignalRRideHubClient implements RideHubClient {
     return seatFrom(
       await this.connection.invoke<JoinClassSessionResult>('JoinClassSession', classId, sessionId),
     );
+  }
+
+  async reportProgress(sessionId: string, outputKj: number, powerWatts: number): Promise<void> {
+    if (this.connection?.state !== 'Connected') return;
+    await this.connection.send('ReportProgress', sessionId, outputKj, powerWatts);
+  }
+
+  onStandings(handler: (standings: Standings) => void): () => void {
+    this.standings.add(handler);
+    return () => this.standings.delete(handler);
   }
 
   onReconnected(handler: () => void): () => void {
