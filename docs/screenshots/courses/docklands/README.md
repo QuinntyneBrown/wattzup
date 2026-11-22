@@ -35,6 +35,7 @@ stays above 240 fps, so a device a quarter as fast still draws 60.
 | 11 | The file smaller: positions in whole centimetres | 119.4 fps, 1 frame over 20 ms | turn about with pass 10's map: 273 fps against 264 (277, 270, 273 and 267, 264, 254), on the first ramp | | 75,149 | 130 | 3.31 MB | Yes |
 | 12 | The lamps' light comes from above: riders and scenery have shape | 119.3 fps, 2 frames over 20 ms | median of three 269 fps (3.72 ms): 288, 269, 264; pass 11 read 270 in the same sitting | | 75,149 | 130 | 3.31 MB | Yes |
 | 13 | Harbour water that ripples and mirrors the city | 120.1 fps, no frame over 20 ms | median of three 278 fps (3.60 ms): 287, 278, 271; pass 12 read 269 | | 75,149 | 130 | 3.31 MB | Yes |
+| 14 | Street furniture: lamp columns with a lit head, and direction boards | 119.5 fps, 1 frame over 20 ms | median of three 288 fps (3.47 ms): 291, 280, 288; pass 13 read 278 | | 74,165 | 130 | 3.37 MB | Yes |
 
 ## Pass 1: the ground's surface and the lamps' light
 
@@ -483,3 +484,28 @@ part of the frame on the ramp).
   change read as towers in the water, because that is all a rider sees of them.
 - The first columns were as bright as the windows themselves and as regular as a comb. Reflections are dimmer than
   what they reflect, and fewer.
+
+## Pass 14: street furniture
+
+**Before** (`pass-13.jpg`): a street lamp is a thick black slab with a pale wedge on its arm; round every tight bend
+stand blank yellow slabs on a stick, side on to the rider.
+
+**After** (`pass-14.jpg`, `pass-14.mp4`): a lamp is a slim steel column, thinner towards its top, with a thin arm
+and a dark housing whose underside is the lit glass. The boards round a bend face the rider coming, stand on two
+legs, and carry three black arrowheads pointing the way the road goes.
+
+**What changed.** `themes.py` only: `Kit.lamp` (a five-sided tapered column, an arm, a housing, a lit quad beneath
+it) and the boards in `Kit.gates` (a board across the road's direction, two legs, three triangles). Every themed map
+gets both on rebuilding.
+
+**Cost.** None: 288 fps against 278. The file is 0.06 MB larger (3.37 MB).
+
+**Tried and dropped.**
+
+- A lamp column in two prisms with a foot, and a glass box: 60,000 more triangles and 0.19 MB for 1,800 lamps. One
+  prism and a quad of glass look the same from a bike.
+- Arrowheads as one triangle drawn on both sides by listing it twice, wound each way: Blender keeps one face of two
+  on the same corners, and the one it kept faced away. The two are a hair apart now.
+
+**Learned.** The eye goes to what it knows the shape of. A lamp post and a road sign are small, but every rider has
+seen thousands, and a wrong one says "model" before anything else in the frame does.

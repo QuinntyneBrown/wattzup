@@ -437,10 +437,15 @@ class Kit:
     def lamp(self, i: int, off: float, glow: str = "glow-lamp", height: float = 6.0) -> None:
         yaw = self.s[i]["h"]
         base = self.P(i, 0, off, 0.12)
-        self.B["dark"].box(base, (0.18, 0.18, height), yaw)
+        # A steel column, slimmer towards its top; a thin arm out over the road; a dark housing at its end with the
+        # lit glass on its underside.
+        self.prism(self.B["dark"], base, 0.1, height, 5, 0.06)
         arm = -1.2 if off > 0 else 1.2
-        self.B["dark"].box(self.P(i, 0, off + arm / 2, height - 0.1), (0.12, 1.4, 0.12), yaw)
-        self.B[glow].box(self.P(i, 0, off + arm, height - 0.35), (0.5, 0.35, 0.22), yaw)
+        self.B["dark"].box(self.P(i, 0, off + arm / 2, height - 0.08), (0.07, abs(arm) + 0.2, 0.07), yaw)
+        self.B["dark"].box(self.P(i, 0, off + arm, height - 0.2), (0.62, 0.3, 0.14), yaw)
+        lo = height - 0.21
+        self.B[glow].quad(self.P(i, -0.25, off + arm - 0.11, lo), self.P(i, -0.25, off + arm + 0.11, lo), self.P(i, 0.25, off + arm + 0.11, lo), self.P(i, 0.25, off + arm - 0.11, lo))
+        self.B[glow].quad(self.P(i, 0.25, off + arm - 0.11, lo), self.P(i, 0.25, off + arm + 0.11, lo), self.P(i, -0.25, off + arm + 0.11, lo), self.P(i, -0.25, off + arm - 0.11, lo))
         self.halo(self.P(i, 0, off + arm, height - 0.4), glow)
 
     def turbine(self, x, y, z, yaw: float) -> None:
@@ -551,8 +556,19 @@ class Kit:
             side = -1 if k > 0 else 1
             yaw = self.s[i]["h"]
             off = (kerb + 1.0) * side
-            B["arrow"].box(P(i, 0, off, 0.62), (1.9, 0.12, 1.0), yaw)
-            B["dark"].box(P(i, 0, off, 0.0), (0.12, 0.12, 0.62), yaw)
+            # A chevron board on two legs, turned to face the rider coming: yellow, with three black chevrons that
+            # point the way the road bends.
+            B["arrow"].box(P(i, 0, off, 0.7), (0.08, 1.9, 0.95), yaw)
+            for leg in (-0.7, 0.7):
+                B["dark"].box(P(i, 0, off + leg, 0.0), (0.08, 0.08, 0.7), yaw)
+            turn = -side
+            for n_ in range(3):
+                # A black arrowhead: its point the way the road bends.
+                back = off + ((n_ - 1) * 0.58 - 0.2) * turn
+                # Drawn twice, wound each way and a hair apart, so one of the two faces the rider.
+                for along, order in ((-0.06, (0, 1, 2)), (-0.07, (2, 1, 0))):
+                    corners = (P(i, along, back + 0.42 * turn, 1.175), P(i, along, back, 1.52), P(i, along, back, 0.83))
+                    B["dark"].tri(*(corners[j] for j in order))
         return efforts
 
 

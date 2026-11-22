@@ -361,6 +361,23 @@ are. A lake or a river is the same material on its own mesh named `Sea`.
 **Watch for.** Shore lights as bright as their windows (keep them near half); ripples so steep the horizon breaks
 up (`RIPPLE`); water seen through the land's edge where the land's mesh is coarse.
 
+### 13. Street furniture that is the right shape (Docklands pass 14)
+
+**What it gives.** Lamp posts and bend boards that look like the real things: the small, familiar objects that
+give a scene away when they are wrong.
+
+**How it works.** `tools/blender/themes.py`: `Kit.lamp` builds a five-sided column tapering from 0.1 m to 0.06 m,
+an arm, a housing and one lit quad on its underside (35 triangles a lamp); `Kit.gates` builds each bend's board
+across the road's direction on two legs, with three black triangles for arrowheads, pointing to the inside of the
+bend.
+
+**To apply it to another map.** Rebuild it: both are in the shared kit. Give other familiar things the same care
+before adding new kinds of scenery: guard rails, snow poles, kilometre stones, bus shelters, bins.
+
+**Cost.** None at run time; 0.06 MB in Docklands' file.
+
+**Watch for.** Triangles a copy times thousands of copies. Two faces on the same corners: Blender keeps one.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.
