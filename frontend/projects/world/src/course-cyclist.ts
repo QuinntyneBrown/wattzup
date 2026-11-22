@@ -30,6 +30,7 @@ import {
   Vector3,
 } from 'three/webgpu';
 import { type RiderLook, riderLook } from './rider-look';
+import { occlusion } from './rider-shade';
 
 /** What the course's renderer asks of a rider: where it stands, and how it pedals. */
 export interface RiderModel {
@@ -72,6 +73,9 @@ const ACROSS = new Vector3(1, 0, 0);
 const SCRATCH_X = new Vector3();
 const SCRATCH_Y = new Vector3();
 const SCRATCH_Z = new Vector3();
+/** How far, in metres, one part of a rider shades another, and how dark the deepest shade is. */
+const SHADE_REACH = 0.14;
+const SHADE_DEPTH = 0.7;
 /** The middle of the two hands on the hoods, which a rider out of the saddle turns about. */
 const HANDS = new Vector3(0, HOOD.y, HOOD.z);
 /** How far, in radians, a rider standing on the pedals turns about their hands. */
@@ -97,6 +101,8 @@ const HAIR = new Color(0x2b2019);
 
 /** A part's finish: how glossy it is, 0 to 1, and how much of a metal. */
 type Finish = readonly [gloss: number, metal: number];
+/** The gloss of the kit's lycra. */
+const CLOTH_GLOSS = 0.38;
 /** Cloth, and whatever is not named below. */
 const MATT: Finish = [0.22, 0];
 /** A helmet's shell: lacquered plastic. */
@@ -254,6 +260,12 @@ function wrap(
   const geometry = new BufferGeometry();
   geometry.setAttribute('position', new BufferAttribute(new Float32Array(positions), 3));
   geometry.setAttribute('uv', new BufferAttribute(new Float32Array(uvs), 2));
+  // White, for the shade where parts meet to darken (CourseCyclistKit.shade), and the finish of lycra.
+  const points = positions.length / 3;
+  geometry.setAttribute('color', new BufferAttribute(new Float32Array(points * 3).fill(1), 3));
+  const finishes = new Float32Array(points * 2);
+  for (let i = 0; i < points; i++) finishes[i * 2] = CLOTH_GLOSS;
+  geometry.setAttribute('finish', new BufferAttribute(finishes, 2));
   geometry.setIndex(index);
   geometry.computeVertexNormals();
   // The two copies of the seam share one normal, so no crease shows down it.
@@ -448,6 +460,50 @@ export class CourseCyclistKit {
     return new CourseCyclist(this, this.plain, jersey, number, lit);
   }
 
+  /** How shaded each vertex of a rider's still meshes is (rider-shade.ts), worked out for the first rider made. */
+  private shades: Float32Array[] | null = null;
+
+  /**
+   * Darkens the colours of a rider's still meshes where the parts stand close over one another. Every rider has the
+   * same shape, so the shade is worked out once.
+   */
+  shade(meshes: readonly BufferGeometry[]): void {
+    const counts = meshes.map((mesh) => mesh.getAttribute('position').count);
+    if (!this.shades || this.shades.some((shade, i) => shade.length !== counts[i])) {
+      const total = counts.reduce((sum, count) => sum + count, 0);
+      const positions = new Float32Array(total * 3);
+      const normals = new Float32Array(total * 3);
+      let at = 0;
+      for (const mesh of meshes) {
+        positions.set(mesh.getAttribute('position').array, at);
+        normals.set(mesh.getAttribute('normal').array, at);
+        at += mesh.getAttribute('position').count * 3;
+      }
+      // One sample a triangle, at its middle: the meshes are not indexed, so each three vertices are one.
+      const samples = new Float32Array(total);
+      for (let t = 0; t < total / 3; t++) {
+        for (let axis = 0; axis < 3; axis++) {
+          samples[t * 3 + axis] =
+            (positions[t * 9 + axis]! +
+              positions[t * 9 + 3 + axis]! +
+              positions[t * 9 + 6 + axis]!) /
+            3;
+        }
+      }
+      const all = occlusion(positions, normals, SHADE_REACH, samples);
+      let from = 0;
+      this.shades = counts.map((count) => all.slice(from, (from += count)));
+    }
+    meshes.forEach((mesh, m) => {
+      const colour = mesh.getAttribute('color');
+      const shade = this.shades![m]!;
+      for (let i = 0; i < shade.length; i++) {
+        const lit = 1 - SHADE_DEPTH * shade[i]!;
+        colour.setXYZ(i, colour.getX(i) * lit, colour.getY(i) * lit, colour.getZ(i) * lit);
+      }
+    });
+  }
+
   /** The shared shapes a rider is put together from. */
   shapes() {
     return {
@@ -520,12 +576,18 @@ class CourseCyclist implements RiderModel {
     this.still = new Mesh(still, plain);
     this.rig.add(this.still);
     const trunk = mergeGeometries(rider.still, false)!;
-    trunk.translate(-HIP.x, -HIP.y, -HIP.z);
     this.torso.add(new Mesh(trunk, plain));
     this.owned.push(still, trunk);
     // The jersey and the shorts' seat: one mesh, drawn with the rider's own kit (its panels, pockets and lettering).
     const worn = mergeGeometries(rider.kit, false)!;
-    const fabric = new MeshStandardMaterial({ map: kitTexture(jersey), roughness: 0.62 });
+    const fabric = new MeshStandardMaterial({
+      map: kitTexture(jersey),
+      roughness: 0.62,
+      vertexColors: true,
+    });
+    // Where the parts meet they shade one another: worked out once for the shape every rider shares.
+    kit.shade([still, trunk, worn]);
+    trunk.translate(-HIP.x, -HIP.y, -HIP.z);
     worn.translate(-HIP.x, -HIP.y, -HIP.z);
     this.torso.add(new Mesh(worn, fabric));
     this.owned.push(worn, fabric, fabric.map!);

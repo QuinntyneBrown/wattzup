@@ -70,6 +70,7 @@ All of it is in the `world` library; nothing outside it changes.
 | `rider-finish.ts` | `vertexFinish`, `sheen`: the gloss and metal a rider's vertices carry, as the material's roughness and metalness, and the edge light the lamps add (L2-166 AC28). |
 | `rider-stance.ts` | `outOfTheSaddle`: how far out of the saddle a gradient has a rider (L2-166 AC29). Pure, unit-tested. |
 | `rider-look.ts` | `riderLook`: a rider's skin, hair, bike, shoes, socks and height from their race number (L2-166 AC30). Pure, unit-tested. |
+| `rider-shade.ts` | `occlusion`: how shut in each vertex of a rider is by the parts about it, baked once into the vertex colours (L2-166 AC32). Pure, unit-tested. |
 | `surface-detail.ts` | The detail texture's texels, worked out on the device: grain, patches, cracks, stones. No Three.js; unit-tested. |
 | `world-renderer-loader.ts` | Returns a `MapRenderer`. It imports neither renderer, so Three.js still loads only when a world starts. |
 

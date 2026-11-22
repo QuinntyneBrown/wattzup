@@ -671,6 +671,23 @@ The pools' sizes and strengths are in `roadGlowShape`; on a dry map make the poo
 **Watch for.** A lamp buried in the rider (it goes below the saddle). Double-sided transparent meshes (drawn twice).
 The road's glow leaning with the rider.
 
+### R8. Shade baked where parts meet (riders pass 9)
+
+**What it gives.** The darkness in a rider's creases (under the helmet, inside the arms, beneath the seat, at the
+frame's joins) for no cost a frame.
+
+**How it works.** `rider-shade.ts`: `occlusion` weighs, for each vertex, the samples within 0.14 m that stand in
+front of its surface, against all the samples about it. `CourseCyclistKit.shade` works it out once and multiplies
+it into each rider's vertex colours.
+
+**To apply it.** Nothing to do for a map. The same function would shade any model put together from parts (a
+start arch, a parked car, a boat): pass its vertices.
+
+**Cost.** None a frame.
+
+**Watch for.** Parts that move against one another: leave them out, or the shade is wrong half the time. Meshes
+without a `color` attribute: give them white first.
+
 ## What is left, in the order it is worth doing
 
 The pictures the work aims at differ from a course in these ways, most visible first. Each becomes a pass.

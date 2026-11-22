@@ -17,6 +17,7 @@ and a pass is kept only if the frame rate holds. `docs/course-realism.md` descri
 | 6 | Out of the saddle on a steep climb, the bike thrown from side to side; a pose that allocates nothing | 119.9 fps; one frame of 25 ms in 2 timings of 11, none in 9 (the pass before: none in 8) | 25.3 ms | 302 fps (3.31 ms): 302, 311, 302 | 84,781 | 74 | Yes, with that noted |
 | 7 | Riders who differ: skin, hair, height, the bike's colour, shoes and socks | 120.1 fps, none over 20 ms in 4 timings | 8.7 ms | 312 fps (3.21 ms): 301, 312, 321 | 84,781 | 74 | Yes |
 | 8 | Bike lights at night: a red rear lamp that glows, and the pools the lamps throw on the road | 119.8 fps; two frames of 25 ms in 1 timing of 4, none in 3 | 16.7 ms filmed, 25.1 ms worst | 294 fps (3.40 ms): 301, 292, 294 | 85,051 | 84 | Yes, with that noted |
+| 9 | Shade baked where the parts meet: under the helmet, inside the arms, beneath the seat, at the frame's joins | 119.9 fps; one frame of 25 ms in 1 timing of 3 | 25.1 ms | 317 fps (3.15 ms): 323, 313, 317 | 85,051 | 84 | Yes |
 
 ## Pass 1: the shape of a body, and of a bike
 
@@ -306,3 +307,31 @@ frame of 17 ms in four timings of four). The mean frame is 8.3 ms and the 99th p
 this is one frame in some six thousand, not a slower picture. Nothing in passes 6 to 8 allocates or uploads in a
 frame. It stays open: the bench does not yet say which frame was slow or why, and until it does (a count of frames
 over 12 ms, and the heap before and after) more timings will not tell more.
+
+## Pass 9: shade where the parts meet
+
+**Before** (`rider-08-start.jpg`): every part of the rider is lit as if it stood alone; the neck under the helmet is
+as bright as the shoulder, the inside of an arm as bright as its outside.
+
+**After** (`rider-09-start.jpg`, `rider-09.jpg`, `rider-09.mp4`): the neck under the helmet, the inside of the arms
+against the trunk, the jersey under the arms, the seat over the saddle and the joins of the frame are darker. It is
+a small change to the picture: it takes the evenness off the rider more than it draws shadows on them.
+
+**What changed.**
+
+- `rider-shade.ts`, new, with its unit tests: `occlusion(positions, normals, reach, samples)` gives each point how
+  shut in it is by the samples standing in front of it within `reach`, found through a grid of cells.
+- `CourseCyclistKit.shade` runs it once, for the first rider made (every rider has the same shape), over the bike,
+  the body and the kit together, with one sample a triangle and a reach of 0.14 m, and keeps the result; each rider's
+  vertex colours are multiplied by 1 - 0.7 × shade. The kit's mesh gained white vertex colours (and lycra's finish)
+  to carry it.
+
+**Cost.** Nothing a frame: 317 fps against 294 for pass 8 (the machine was quicker this sitting). Once, a few
+milliseconds when the first rider is made. One timing of three had the one 25 ms frame recorded since pass 6.
+
+**Learned.**
+
+- Shade that never changes belongs in the vertices, worked out once; the riders' shape is the same for all, so once
+  for the whole pack.
+- The legs move, so they neither shade nor are shaded here; what the legs do to the seat and the frame is still
+  missing.
