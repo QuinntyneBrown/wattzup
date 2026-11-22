@@ -6,6 +6,7 @@ import {
   inject,
   input,
 } from '@angular/core';
+import { InlineMessage } from '../inline-message/inline-message';
 
 /** One row of the standings board, formatted. */
 export interface RaceBoardRow {
@@ -36,10 +37,13 @@ const SLIDE_MS = 150;
   templateUrl: './race-board.html',
   styleUrl: './race-board.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [InlineMessage],
 })
 export class RaceBoard implements AfterViewChecked {
   readonly heading = input.required<string>();
   readonly rows = input.required<readonly RaceBoardRow[]>();
+  /** A status notice under the title, such as a lost service's (L2-126 AC1); its region stays in the page. */
+  readonly notice = input<string | null>(null);
 
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   /** Each row's top at the last check; at most one per rider, so it never grows past the field. */

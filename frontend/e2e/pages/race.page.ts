@@ -26,6 +26,8 @@ export class RacePage {
   readonly boardGaps: Locator;
   /** The board's rows marked DNF (L2-124). */
   readonly boardDnf: Locator;
+  /** The lost-service notice under the board's title, a status region always in the page (L2-126 AC1). */
+  readonly boardNotice: Locator;
   readonly you: Locator;
   readonly position: Locator;
   readonly watts: Locator;
@@ -89,6 +91,7 @@ export class RacePage {
     this.boardNames = page.locator('.race-board__name');
     this.boardGaps = page.locator('.race-board__gap');
     this.boardDnf = page.locator('.race-board__row--dnf');
+    this.boardNotice = page.locator('.race-board__status');
     this.you = page.locator('.race-board__row[aria-current="true"]');
     this.watts = page.locator('.race-power__watts');
     this.target = page.locator('.race-power__target-label');

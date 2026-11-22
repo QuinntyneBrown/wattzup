@@ -32,6 +32,8 @@ export class ClassRidePage {
   readonly boardPlace: Locator;
   readonly boardRows: Locator;
   readonly boardYou: Locator;
+  /** The lost-service notice under the board's head, a status region always in the page (L2-126 AC1). */
+  readonly boardNotice: Locator;
   readonly waitTime: Locator;
   readonly waitNote: Locator;
   readonly lower: Locator;
@@ -74,6 +76,7 @@ export class ClassRidePage {
     this.boardPlace = this.board.locator('.class-board__place');
     this.boardRows = this.board.locator('.class-board-row');
     this.boardYou = this.board.locator('.class-board-row[aria-current="true"]');
+    this.boardNotice = this.board.locator('.class-board__status');
     this.waitTime = this.wait.getByRole('timer');
     this.waitNote = page.locator('.class-video__wait-note');
     this.lower = page.getByRole('button', { name: 'Lower resistance' });

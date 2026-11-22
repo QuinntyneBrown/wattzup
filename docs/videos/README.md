@@ -75,6 +75,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 17.1 | [Ride outbox](17-1-ride-outbox/README.md) | 1:56 | Results with the XP pending for a ride finished without a network, the ride kept on the device, sent oldest first and tried again after 30 seconds then a minute, and recorded, at every width |
 | 17.2 | [Cache the app](17-2-cache-the-app/README.md) | 1:56 | A solo race started with no network once the app had been opened, the service worker's caches, Map Select's covers offline and the registration kept out of the first bundle, at every width |
 | 17.3 | [Offline choices](17-3-offline-choices/README.md) | 1:56 | Riders online and group classes closed with their reason the moment the browser goes offline, Bots or Ride alone chosen in their place, and both open again online, at every width |
+| 18.1 | [Lose the service mid-ride](18-1-lose-the-service-mid-ride/README.md) | 1:56 | A riders-online race and a group class riding on through a lost service with their last standings and a notice, rejoining, and the service's standings arriving at once, at every width |
 
 ## What every video is
 

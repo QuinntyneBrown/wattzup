@@ -181,7 +181,7 @@ The same step updates **% complete** in [`detailed-journeys.md`](detailed-journe
 | L154 | `page.clock.pauseAt` jumps without firing each second's timers in order, and a measured clock offset is a few milliseconds off. Pause just short and `runFor` the last second, and stand half a second past a whole second, so no display reads a second off. | 14.4 | 14.5, 15.1, 15.2, 15.3, 15.4 | Held in 15.4 |
 | L155 | A countdown to a fixed moment wakes on the whole seconds before that moment (`(at - now) % 1000`), not on a free-running ticker, which shows a second too many for up to a second. | 14.4 | 15.1, 15.2 | Held in 15.2 |
 | L156 | A state that holds before the work starts (a ride waiting for its start) still draws what the mock shows around it; derive that view from the plan at 0:00, not from the engine's live state, which does not exist yet. | 14.4 | | |
-| L157 | Under a paused Playwright clock a zoneless Angular app draws nothing new: its change detection waits on a timer or frame the paused clock never fires. After a fixture pushes data (a hub event, a notification) into a page whose clock is paused, `runFor` a frame (100 ms) before asserting what it draws. | 14.5 | 15.1, 15.2, 15.3, 15.4, 15.5, 16.1, 16.2, 16.4 | Saved time in 16.4 |
+| L157 | Under a paused Playwright clock a zoneless Angular app draws nothing new: its change detection waits on a timer or frame the paused clock never fires. After a fixture pushes data (a hub event, a notification) into a page whose clock is paused, `runFor` a frame (100 ms) before asserting what it draws. | 14.5 | 15.1, 15.2, 15.3, 15.4, 15.5, 16.1, 16.2, 16.4, 18.1 | Saved time in 16.4; applied late in 18.1 |
 | L158 | A rule the backend and the app both compute (a seeded pace model) is proven the same by one table of cases written out in both suites, each row an exact value to six places; the backend's tests read no file, so the table is inline in each, never a shared fixture file. | 14.5 | | |
 | L159 | Spec and film data meant to reorder a ranking leaves a clear gap at the precision the screen shows (whole kJ): a tie keeps the stable order and leaves the rider one place lower than the data was written to show. | 14.5 | | |
 | L160 | `toObservable` from `@angular/core/rxjs-interop` brings `ReplaySubject` into the initial chunk, since `takeUntilDestroyed` already puts that module there. Drive a poll from the source observable (`level().pipe(tap(set), …)`) instead of turning a signal back into one. To find what grew main, compare the property names of the two builds, not a diff, which minified renames swamp. | 15.1 | 15.2, 15.3 | Held in 15.3 |
@@ -214,9 +214,31 @@ The same step updates **% complete** in [`detailed-journeys.md`](detailed-journe
 | L187 | Once a service worker controls the page, `page.route` sees none of the requests it makes: they reach the static server, which answers `/api/*` with `index.html` and 200, silently. Block service workers in the config (`serviceWorkers: 'block'`) and allow them only in the spec about the cache, and route the API fixture on the context (`page.context().route`), which does see the worker's requests. | 17.2 | | |
 | L188 | An offline spec that answers the backend from fixtures can hide what the device does not keep: the race's offline specs answered `/api/progress`, so nobody saw that the open-map check needed the network. For a without-a-network criterion, fail every request as a lost connection (`api.offline()` with `context.setOffline(true)`) and see what still opens. | 17.2 | 17.3 | Saved time in 17.3 |
 | L189 | Measure the initial chunk before taking a framework's convenience provider: `provideServiceWorker` brought `SwPush` and `SwUpdate` into main (+6.3 kB, past the warning) though nothing used them; registering from the lazy parent route cost 40 bytes, with an ADR for the departure. | 17.2 | 17.3 | Saved time in 17.3 |
-| L190 | A helper that two lazy chunks share is hoisted into the initial chunk: `toObservable` from `@angular/core/rxjs-interop`, used by Race Setup's store and Class Start's, added 0.9 kB to main though neither screen is in it. React to a signal with `effect((onCleanup) => …)`, already in core, unsubscribing in `onCleanup`, and read main after every new import. | 17.3 | | |
+| L190 | A helper that two lazy chunks share is hoisted into the initial chunk: `toObservable` from `@angular/core/rxjs-interop`, used by Race Setup's store and Class Start's, added 0.9 kB to main though neither screen is in it. React to a signal with `effect((onCleanup) => …)`, already in core, unsubscribing in `onCleanup`, and read main after every new import. | 17.3 | 18.1 | No effect in 18.1: main unchanged |
+| L191 | A spec that says the ride "carries on with the bike" must give the fake bike its telemetry and assert no lost-bike alert: the class spec sent none, so its bike would have dropped on its own, and only the film's frame showed "Lost the bike". Read each film frame as a check of what the spec does not assert. | 18.1 | | |
+| L192 | To hold the SignalR client in `reconnecting`, refuse its negotiation (`route.abort('connectionrefused')`, the hub fixture's `lose()` and `restore()`): `drop()` alone reconnects at once, since the first retry waits 0 ms. Under the paused clock, run past a retry (2, 5, 10 s) after `restore()`, then run a frame for the page to draw the rejoin (L157). | 18.1 | | |
 
 ## Log
+
+### 18.1 Lose the service mid-ride (2026-11-22)
+
+**Applied from earlier**
+
+- **L1 own worktree and install; L2 port 4310; L3 format first — saved time.**
+- **L41 spec each step first — saved time:** the backend tests failed with nothing heard on the rejoin, and the specs
+  on the missing status region, before any code was written.
+- **L157 run a frame under the paused clock — applied late:** the first green run of the class spec failed on the
+  notice still drawn after the rejoin; a frame after the rejoin fixed it (L192).
+- **L5 initial chunk; L190 read main after new imports — no effect:** main stayed at 277.44 kB.
+- **L34 diagrams; L121 film rules — saved time:** four diagrams re-rendered with exit status 0; the contact sheet
+  showed the class's bike dropping and an overlong board close-up, both fixed before encoding.
+
+**What slowed it down**
+
+- The fake hub's `drop()` reconnects at once, so the reconnecting state needed a way to refuse negotiation (L192).
+- The class spec never fed the bike; the film's frame caught what the spec did not assert (L191).
+
+**New lessons:** L191, L192.
 
 ### 17.3 Offline choices (2026-11-22)
 

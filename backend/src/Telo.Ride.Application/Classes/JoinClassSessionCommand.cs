@@ -16,7 +16,9 @@ public sealed record JoinClassSessionCommand(Guid RiderId, string ClassId, strin
 /// class's slots, or a slot past the next two; <c>class_locked</c> below the class's opening level (L2-082);
 /// <c>session_started</c> once its start has passed, offering the next session; <c>session_full</c> with 10 seated,
 /// offering the one 15 minutes later. A rider already seated keeps their seat, so a rejoin after a reconnect keeps it
-/// (L2-120 AC3). A seated rider's connection joins the session's group, for its standings (L2-123 AC3).
+/// (L2-120 AC3). A seated rider's connection joins the session's group, for its standings (L2-123 AC3); once the session
+/// has started it hears them at once, so a rider rejoining after a lost connection sees the board within a second
+/// (L2-126 AC2).
 /// </summary>
 public sealed class JoinClassSessionCommandHandler(
     IAppDbContext db, IClassCatalogue catalogue, IGroupSessionRegistry registry, ISessionNotifier notifier, TimeProvider time)
@@ -42,7 +44,12 @@ public sealed class JoinClassSessionCommandHandler(
         var (outcome, seat) = session is null
             ? (JoinOutcome.Started, null)
             : session.TrySeat(rider.Id, rider.DisplayName ?? NoName, now, level);
-        if (outcome == JoinOutcome.Seated) await notifier.AddToSession(request.ConnectionId, request.SessionId, cancellationToken);
+        if (outcome == JoinOutcome.Seated)
+        {
+            await notifier.AddToSession(request.ConnectionId, request.SessionId, cancellationToken);
+            if (session!.Current() is { } rows)
+                await notifier.StandingsTo(request.ConnectionId, StandingsDto.Of(session.Id, rows), cancellationToken);
+        }
         return outcome switch
         {
             JoinOutcome.Seated => new JoinClassSessionResult(null, request.SessionId, start, seat!.Jersey, null),

@@ -2,7 +2,6 @@ using MediatR;
 using Telo.Ride.Application.Classes;
 using Telo.Ride.Application.Maps;
 using Telo.Ride.Application.Races;
-using Telo.Ride.Domain.Classes;
 
 namespace Telo.Ride.Application.Live;
 
@@ -34,7 +33,7 @@ public sealed class TickLiveSessionsCommandHandler(
         {
             var rows = session.Tick(now);
             if (rows is null) continue;
-            await notifier.StandingsUpdated(new StandingsDto(session.Id, [.. rows.Select(Row)]), cancellationToken);
+            await notifier.StandingsUpdated(StandingsDto.Of(session.Id, rows), cancellationToken);
         }
 
         foreach (var lobby in races.Lobbies(now))
@@ -62,7 +61,4 @@ public sealed class TickLiveSessionsCommandHandler(
             await notifier.SessionEnded(race.Id, cancellationToken);
         }
     }
-
-    private static StandingRowDto Row(StandingRow row) =>
-        new(row.Position, row.Name, row.Jersey, row.Level, row.Kind == RiderKind.Bot ? "bot" : "person", row.OutputKj, row.GapKj);
 }

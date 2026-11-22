@@ -4,23 +4,24 @@ LAYOUT_WITH_LEGEND()
 title Components — Ride through a lost service
 
 Container_Boundary(app, "Ride app") {
-  Component(page, "RacePage / ClassRidePage", "Angular page · ride", "Shows the notice while serviceLost")
-  Component(notice, "InlineMessage", "Presentation component · components", "role=status notice")
-  Component(store, "LiveSessionStore", "Signal store · ride", "connection, serviceLost, last standings")
-  Component(hubc, "SignalRRideHubClient", "SignalR client · api", "Retries and rejoins")
+  Component(stores, "RaceStore / ClassRideStore", "Signal stores · ride", "boardNotice while serviceLost")
+  Component(board, "RaceBoard / ClassBoard", "Presentation components · components", "role=status region under the title")
+  Component(notice, "InlineMessage", "Presentation component · components", "Warn tone: icon and words")
+  Component(store, "LiveSessionStore", "Signal store · ride", "connection, serviceLost, last standings; rejoins")
+  Component(hubc, "SignalRRideHubClient", "SignalR client · api", "Retries; sends nothing while not connected")
   Component(engine, "WorkoutEngine and RideClock", "Services · domain/engine", "Plan and clock run locally")
-  Component(reporter, "ProgressReporter", "Service · domain/engine", "Sends nothing while disconnected")
   Component(outbox, "RideOutbox", "Service · domain/storage", "Keeps and submits the ride")
 }
 Container_Boundary(api, "Telo Ride API") {
-  Component(join, "FindRaceCommandHandler / JoinClassSessionCommandHandler", "MediatR handlers · Telo.Ride.Application", "Rejoin; send current standings to caller")
-  Component(recorder, "SessionResultRecorder", "Application service · Telo.Ride.Application", "Places by last progress")
+  Component(join, "JoinRaceCommandHandler / JoinClassSessionCommandHandler", "MediatR handlers · Telo.Ride.Application", "Rejoin; current standings to the caller alone")
+  Component(session, "RaceSession / GroupClassSession", "Domain · Telo.Ride.Domain", "Standings as last ridden; DNF and last output rules")
 }
-Rel(page, store, "Reads serviceLost and standings")
-Rel(page, notice, "Renders")
+Rel(stores, store, "Reads serviceLost and standings")
+Rel(stores, board, "Passes rows and notice")
+Rel(board, notice, "Renders")
+Rel(stores, engine, "Runs on")
 Rel(store, hubc, "Observes state; rejoins")
-Rel(reporter, hubc, "reportProgress when connected")
-Rel(reporter, engine, "Reads totals")
-Rel(hubc, join, "FindRace / JoinClassSession", "SignalR")
-Rel(outbox, recorder, "Ride placed by the stored result", "POST /api/rides")
+Rel(hubc, join, "JoinRace / JoinClassSession", "SignalR")
+Rel(join, session, "Reads the standings")
+Rel(stores, outbox, "Finished ride", "")
 @enduml

@@ -28,6 +28,10 @@
   color: var(--color-muted);
 }
 
+.race-board__status:not(:empty) {
+  padding: var(--space-1) var(--space-4) 0;
+}
+
 .race-board__list {
   margin-top: var(--space-2);
 }

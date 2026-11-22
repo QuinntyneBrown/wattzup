@@ -26,16 +26,17 @@ box "Backend — Telo.Ride.Api" #D1FADF
   participant "RidesController" as controller
 end box
 box "Backend — Telo.Ride.Application and Domain" #ECFDF3
-  participant "SessionResultRecorder" as recorder
+  participant "RaceSession" as recorder
   participant "SubmitRideCommandHandler" as handler
 end box
 box "Backend — Telo.Ride.Infrastructure" #FFF4E5
   database "Telo Ride database" as db
 end box
-recorder -> recorder : Session ends; rider placed by last progress received (L2-126 AC3)
+recorder -> recorder : No progress for 15 s: DNF at the distance last received (L2-124 AC2)
+recorder -> recorder : Race due; DNF placed after the riders still racing (L2-126 AC3)
 recorder -> db : Save SessionResult
 actor -> page : Cross the line, connection still down
-page -> outbox : add(ride, rideId, sessionId)
+page -> outbox : submit(ride)
 outbox --> page : Kept in IndexedDB (L2-135)
 page --> actor : Results with XP pending
 loop until recorded, growing delays up to an hour (L2-135)

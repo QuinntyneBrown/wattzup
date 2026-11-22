@@ -16,6 +16,17 @@
   color: var(--inline-message-fg);
 }
 
+.inline-message--sm {
+  gap: var(--space-1-5);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-relaxed);
+}
+
+.inline-message--sm .inline-message__icon {
+  width: var(--space-3-5);
+  height: var(--space-3-5);
+}
+
 .inline-message--warn {
   --inline-message-icon: var(--color-warn-fg);
 }

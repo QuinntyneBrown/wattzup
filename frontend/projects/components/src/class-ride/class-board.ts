@@ -6,6 +6,7 @@ import {
   inject,
   input,
 } from '@angular/core';
+import { InlineMessage } from '../inline-message/inline-message';
 
 /** One rider on the group board: place, name, jersey token suffix (`nova` reads `--jersey-nova`) and output in kJ. */
 export interface ClassBoardRow {
@@ -27,12 +28,15 @@ export interface ClassBoardRow {
   templateUrl: './class-board.html',
   styleUrl: './class-board.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [InlineMessage],
 })
 export class ClassBoard {
   /** The rider's place, "5th"; `null` while they are not on the board. */
   readonly place = input<string | null>(null);
   readonly total = input.required<number>();
   readonly rows = input.required<readonly ClassBoardRow[]>();
+  /** A status notice under the head, such as a lost service's (L2-126 AC1); its region stays in the page. */
+  readonly notice = input<string | null>(null);
 
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   /** Where each rider's row was drawn last, by jersey, for the slide. */

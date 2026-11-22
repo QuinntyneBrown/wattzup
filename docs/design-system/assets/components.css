@@ -2069,6 +2069,7 @@ a.map-row:hover .map-row__name, a.map-row[data-state="hover"] .map-row__name { c
 .race-board { position: absolute; z-index: var(--z-hud); top: var(--race-hud-top-lg); right: var(--space-5); display: none; width: var(--race-board-width); padding-block: var(--space-3); }
 @media (min-width: 48rem) { .race-board { display: block; } }
 .race-board__title { padding-inline: var(--space-4); font-size: var(--font-size-xs); line-height: var(--line-height-xs); font-weight: var(--font-weight-medium); color: var(--color-muted); }
+.race-board__status:not(:empty) { padding: var(--space-1) var(--space-4) 0; }  /* the lost-service notice under the title (L2-126 AC1) */
 .race-board__list { margin-top: var(--space-2); }
 .race-board__row { display: flex; align-items: center; gap: var(--space-2-5); padding: var(--space-1-5) var(--space-4); font-size: var(--font-size-sm); line-height: var(--line-height-sm); transition: translate var(--duration-fast) var(--ease-out); }
 .race-board__row--you { background: var(--color-volt); color: var(--color-on-fill); }
@@ -2519,6 +2520,7 @@ a.map-row:hover .map-row__name, a.map-row[data-state="hover"] .map-row__name { c
 .class-board { border-top: var(--border-width-hairline) solid var(--color-line); background: var(--color-panel); padding-block: var(--space-4); }
 @media (min-width: 64rem) { .class-board { overflow-y: auto; border-top: 0; border-left: var(--border-width-hairline) solid var(--color-line); } }
 .class-board__head { display: flex; align-items: baseline; justify-content: space-between; padding-inline: var(--space-4); }
+.class-board__status:not(:empty) { padding: var(--space-1) var(--space-4) 0; }  /* the lost-service notice under the head (L2-126 AC1) */
 .class-board__title { font-size: var(--font-size-sm); line-height: var(--line-height-sm); font-weight: var(--font-weight-medium); color: var(--color-muted); }
 .class-board__place { font-family: var(--font-family-display); font-weight: var(--font-weight-bold); letter-spacing: var(--letter-spacing-display); font-feature-settings: 'tnum' 1; font-size: var(--font-size-xl); line-height: var(--line-height-xl); color: var(--color-volt-fg); }
 .class-board__of { font-size: var(--font-size-md); line-height: var(--line-height-md); color: var(--color-muted); }

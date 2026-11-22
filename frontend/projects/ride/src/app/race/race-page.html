@@ -70,7 +70,11 @@
       />
     }
     @if (store.boardRows().length > 0) {
-      <wz-race-board [heading]="store.boardHeading()" [rows]="store.boardRows()" />
+      <wz-race-board
+        [heading]="store.boardHeading()"
+        [rows]="store.boardRows()"
+        [notice]="store.boardNotice()"
+      />
     }
     <section class="race-hud" aria-label="Interval, route and resistance">
       @if (store.plan(); as plan) {
