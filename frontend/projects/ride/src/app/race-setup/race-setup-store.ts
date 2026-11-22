@@ -1,9 +1,10 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   MAPS_API,
   type MapDto,
+  NETWORK_STATUS,
   type MapProgressDto,
   PROGRESS_API,
   type PackStrengthId,
@@ -11,8 +12,8 @@ import {
   type RaceMode,
 } from '@telo/api';
 import type { ModeOption } from '@telo/components';
-import { RaceStartPlanner } from '@telo/domain';
-import { EMPTY, catchError, distinctUntilChanged, map, of, switchMap, tap, timer } from 'rxjs';
+import { RaceStartPlanner, multiplayerAvailability } from '@telo/domain';
+import { catchError, of, switchMap, timer } from 'rxjs';
 
 /** How often Race Setup asks how many riders are queuing, while Riders online is open (L2-048 AC3). */
 const QUEUE_POLL_MS = 10_000;
@@ -31,6 +32,11 @@ export class RaceSetupStore {
   private readonly level = signal(1);
   /** The riders queuing for the map; `undefined` until asked, `null` when the service cannot be reached. */
   private readonly queue = signal<number | null | undefined>(undefined);
+  private readonly online = inject(NETWORK_STATUS).online;
+  /** Whether riders online can be joined now: not offline, and not refused by the queue's last read (L2-135 AC4). */
+  private readonly availability = computed(() =>
+    multiplayerAvailability(this.online(), this.queue() !== null),
+  );
 
   /** The map, once the catalogue has arrived. */
   readonly map = computed(() => this.catalogue().find((map) => map.id === this.mapId) ?? null);
@@ -55,7 +61,8 @@ export class RaceSetupStore {
 
   /**
    * Whom to race (L2-048 AC1): your best time, bots, and riders online, which opens at rider level 3 (AC2) with the
-   * riders queuing for the map (AC3); while the service cannot be reached it says so and stays closed.
+   * riders queuing for the map (AC3); while the browser is offline or the service cannot be reached it says so and
+   * stays closed (L2-135 AC4).
    */
   readonly modes = computed<readonly ModeOption[]>(() => [
     {
@@ -77,16 +84,23 @@ export class RaceSetupStore {
       title: 'Riders online',
       body: this.onlineLine(),
       icon: 'riders',
-      disabled: this.level() < 3 || this.queue() === null,
+      disabled: this.level() < 3 || this.availability() !== 'open',
     },
   ]);
 
-  /** The chosen mode, Bots by default (L2-048 AC1), or the one "Race it again" carries (`?mode=solo`, L2-079 AC1). */
-  readonly mode = signal<RaceMode>(
+  /** The rider's choice, Bots by default (L2-048 AC1), or the one "Race it again" carries (`?mode=solo`, L2-079 AC1). */
+  private readonly chosen = signal<RaceMode>(
     (['solo', 'bots', 'online'] as const).find(
       (mode) => mode === this.snapshot.queryParamMap.get('mode'),
     ) ?? 'bots',
   );
+
+  /** The chosen mode, or Bots, the default, while a chosen Riders online is closed (L2-135 AC4). */
+  readonly mode = computed<RaceMode>(() => {
+    const chosen = this.chosen();
+    const closed = this.modes().find((mode) => mode.id === 'online')?.disabled ?? false;
+    return chosen === 'online' && closed ? 'bots' : chosen;
+  });
 
   /** How hard the bots ride, medium by default (L2-049 AC1), or the one "Race it again" carries (`?pack=hard`). */
   readonly pack = signal<PackStrengthId>(
@@ -109,36 +123,39 @@ export class RaceSetupStore {
       .maps()
       .pipe(takeUntilDestroyed())
       .subscribe((progress) => this.progress.set(progress));
-    // The rider's level; from level 3, the riders queuing for the map, asked again every 10 seconds while the page
-    // shows (L2-048 AC2, AC3).
-    const queue = inject(RACE_QUEUE_API);
+    // The rider's level; from level 3 and while the browser is online, the riders queuing for the map, asked at once
+    // and again every 10 seconds while the page shows (L2-048 AC2, AC3). Offline it asks nothing (L2-135 AC4).
     inject(PROGRESS_API)
       .level()
-      .pipe(
-        tap((level) => this.level.set(level)),
-        map((level) => level >= 3),
-        distinctUntilChanged(),
-        switchMap((open) =>
-          open
-            ? timer(0, QUEUE_POLL_MS).pipe(
-                switchMap(() => queue.riders(this.mapId).pipe(catchError(() => of(null)))),
-              )
-            : EMPTY,
-        ),
-        takeUntilDestroyed(),
-      )
-      .subscribe((riders) => this.queue.set(riders));
+      .pipe(takeUntilDestroyed())
+      .subscribe((level) => this.level.set(level));
+    const queue = inject(RACE_QUEUE_API);
+    effect((onCleanup) => {
+      if (this.level() < 3 || !this.online()) {
+        this.queue.set(undefined);
+        return;
+      }
+      const asking = timer(0, QUEUE_POLL_MS)
+        .pipe(switchMap(() => queue.riders(this.mapId).pipe(catchError(() => of(null)))))
+        .subscribe((riders) => this.queue.set(riders));
+      onCleanup(() => asking.unsubscribe());
+    });
   }
 
   /** "3 riders queuing now. 8–10 per race, empty seats go to bots." (L2-048 AC1, AC3), or why it is closed. */
   private onlineLine(): string {
     if (this.level() < 3) return 'Opens at level 3.';
+    if (this.availability() === 'offline') return 'You’re offline. Riders online needs a network.';
     const riders = this.queue();
     if (riders === null) return 'Riders online can’t be reached right now.';
     const field = '8–10 per race, empty seats go to bots.';
     return riders === undefined
       ? field
       : `${riders} ${riders === 1 ? 'rider' : 'riders'} queuing now. ${field}`;
+  }
+
+  choose(mode: RaceMode): void {
+    this.chosen.set(mode);
   }
 
   /** Opens the race the choice leads to (L2-050 AC1, AC2). */

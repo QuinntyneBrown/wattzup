@@ -1,16 +1,17 @@
-import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
+import { DestroyRef, Injectable, computed, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import {
   CLASSES_API,
   type ClassDto,
   type ClassSessionDto,
+  NETWORK_STATUS,
   VIDEO_PLAYER_FACTORY,
   type VideoPlayer,
 } from '@telo/api';
 import { catchError, of, switchMap, timer } from 'rxjs';
 import type { RideOption } from '@telo/components';
-import { PlanSummary } from '@telo/domain';
+import { PlanSummary, multiplayerAvailability } from '@telo/domain';
 import { groupSessionView } from './group-session-view';
 
 /** How often Class Start reads the group sessions again (L2-083 AC2). */
@@ -45,16 +46,23 @@ export class ClassStartStore {
     readonly at: number;
   } | null>(null);
   private readonly chosen = signal<string | null>(null);
+  private readonly online = inject(NETWORK_STATUS).online;
+  /** Whether a group can be joined now: not offline, and the sessions' last read reached the service (L2-135 AC4). */
+  private readonly availability = computed(() =>
+    multiplayerAvailability(this.online(), this.sessions() !== null),
+  );
 
   /** The next group session's words, or `null` when there is none to offer. */
   readonly group = computed(() => {
     const sessions = this.sessions();
-    return sessions ? groupSessionView(sessions.list, sessions.at) : null;
+    return sessions && this.availability() === 'open'
+      ? groupSessionView(sessions.list, sessions.at)
+      : null;
   });
 
   /**
    * The ways to ride (L2-085): alone; with a group, reading the next session, which cannot be chosen while the sessions
-   * cannot be read (AC5).
+   * cannot be read (AC5) or the browser is offline, saying which (L2-135 AC4).
    */
   readonly options = computed<readonly RideOption[]>(() => {
     const group = this.group();
@@ -69,7 +77,10 @@ export class ClassStartStore {
       {
         id: 'group',
         title: 'Ride with a group',
-        body: group?.optionBody ?? 'Group sessions can’t be reached right now.',
+        body:
+          this.availability() === 'offline'
+            ? 'You’re offline. Group classes need a network.'
+            : (group?.optionBody ?? 'Group sessions can’t be reached right now.'),
         icon: 'group',
         disabled: group === null,
       },
@@ -95,12 +106,18 @@ export class ClassStartStore {
       .get(id)
       .pipe(takeUntilDestroyed())
       .subscribe((dto) => this.loaded.set(dto));
-    timer(0, SESSIONS_EVERY)
-      .pipe(
-        switchMap(() => classes.sessions(id).pipe(catchError(() => of(null)))),
-        takeUntilDestroyed(),
-      )
-      .subscribe((list) => this.sessions.set(list ? { list, at: Date.now() } : null));
+    // Read at once and every 30 seconds while the browser is online; offline nothing is asked (L2-135 AC4), and back
+    // online they are read again at once.
+    effect((onCleanup) => {
+      if (!this.online()) {
+        this.sessions.set(null);
+        return;
+      }
+      const reading = timer(0, SESSIONS_EVERY)
+        .pipe(switchMap(() => classes.sessions(id).pipe(catchError(() => of(null)))))
+        .subscribe((list) => this.sessions.set(list ? { list, at: Date.now() } : null));
+      onCleanup(() => reading.unsubscribe());
+    });
     inject(DestroyRef).onDestroy(() => {
       this.destroyed = true;
       this.player?.destroy();

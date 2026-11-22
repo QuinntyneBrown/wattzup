@@ -37,6 +37,7 @@ export {
   type VideoPlayerFactory,
 } from './video/video-player';
 export type { Plan, Segment, SegmentKind } from './workout/plan';
+export { NETWORK_STATUS, type NetworkStatus } from './network/network-status';
 export { FULLSCREEN, type Fullscreen } from './screen/fullscreen';
 export { SCREEN_WAKE_LOCK, type ScreenWakeLock } from './screen/screen-wake-lock';
 export { HttpMapsApi } from './maps/http-maps-api';
