@@ -503,7 +503,8 @@
         "default",
         "flat",
         "needs-chromium",
-        "needs-https"
+        "needs-https",
+        "edited"
       ],
       "not_applicable": {
         "empty": "The form always starts from a plan (the GCN 30-minute ladder), never blank.",
