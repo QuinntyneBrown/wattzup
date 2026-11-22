@@ -3,22 +3,18 @@
 LAYOUT_WITH_LEGEND()
 title Components — Stay smooth on long rides
 
-ContainerDb(idb, "Browser storage", "IndexedDB", "ride-samples")
+ContainerDb(idb, "Browser storage", "IndexedDB", "rides waiting to send")
 Container_Boundary(app, "Ride app") {
-  Component(store, "RideSessionStore", "Route-scoped store · ride", "Owns the ride's parts")
+  Component(store, "RaceStore / ClassRideStore", "Screen-scoped stores · ride", "Own the ride's parts")
   Component(ticker, "RideTicker", "Service · domain/engine", "One tick a second")
-  Component(recorder, "RideRecorder", "Service · domain/engine", "One sample a second")
-  Component(chunk, "SampleChunk", "Class · domain/engine", "600 samples in typed arrays")
-  Component(series, "TraceSeries", "Class · domain/engine", "Decimated points, at most one per pixel")
-  Component(samples, "RideSampleStore", "Service · domain/storage", "Persists full chunks")
-  Component(trace, "RideTrace", "Presentation component · components", "Canvas trace")
+  Component(recorder, "RideRecorder", "Class · domain/engine", "One speed a second in a fixed Float64Array")
+  Component(outbox, "RideOutbox", "Service · domain/storage", "Persists and sends finished rides")
+  Component(series, "TraceSeries", "Class · domain/engine · slice 21.3", "Decimated points, at most one per pixel")
+  Component(trace, "RideTrace", "Presentation component · components · slice 21.3", "Canvas trace")
 }
-Rel(store, recorder, "Owns")
-Rel(ticker, recorder, "Signals each second")
-Rel(recorder, chunk, "Appends to")
-Rel(recorder, samples, "Hands full chunks to")
-Rel(recorder, series, "Feeds")
-Rel(samples, idb, "Writes", "IndexedDB")
-Rel(store, trace, "Passes points input to")
-Rel(series, store, "Exposes points signal")
+Rel(ticker, store, "Signals each second")
+Rel(store, recorder, "Records each second in")
+Rel(store, outbox, "Submits the finished ride to")
+Rel(outbox, idb, "Writes", "IndexedDB")
+Rel(series, trace, "Points drawn by")
 @enduml
