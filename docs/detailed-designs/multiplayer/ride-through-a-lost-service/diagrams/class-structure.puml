@@ -17,31 +17,32 @@ title Class structure — Ride through a lost service
 package "ride application" {
   class LiveSessionStore {
     +connection: Signal<RideHubState>
-    +running: Signal<boolean>
     +serviceLost: Signal<boolean>
-    +standings: Signal<StandingsDto | null>
+    +standings: Signal<Standings | null>
+    +raceStandings: Signal<RaceStandings | null>
+    +report(amount: number, powerWatts: number): void
   }
-  class RacePage {
-    #store: LiveSessionStore
+  class RaceStore {
+    +boardNotice: Signal<string | null>
   }
-  class ClassRidePage {
-    #store: LiveSessionStore
+  class ClassRideStore {
+    +boardNotice: Signal<string | null>
   }
 }
 package "components library" {
+  class RaceBoard {
+    +notice: InputSignal<string | null>
+  }
+  class ClassBoard {
+    +notice: InputSignal<string | null>
+  }
   class InlineMessage {
-    +tone: InputSignal<'info' | 'warning' | 'error'>
-    +live: InputSignal<'status' | 'alert'>
+    +tone: InputSignal<'warn' | 'error' | 'success'>
   }
 }
 package "domain library" {
-  class ProgressReporter {
-    +start(kind: 'race' | 'class'): void
-    -send(): void
-  }
   class RideOutbox {
-    +add(ride: FinishedRide): Promise<void>
-    +flush(): Promise<void>
+    +submit(ride: SubmitRideRequest): void
   }
   class WorkoutEngine
   class RideClock
@@ -49,6 +50,7 @@ package "domain library" {
 package "api library" {
   interface RideHubClient {
     +state: Signal<RideHubState>
+    +onReconnected(handler): () => void
   }
   enum RideHubState {
     disconnected
@@ -60,13 +62,13 @@ package "api library" {
 
 LiveSessionStore --> RideHubClient : RIDE_HUB_CLIENT
 RideHubClient --> RideHubState
-RacePage --> LiveSessionStore
-ClassRidePage --> LiveSessionStore
-RacePage ..> InlineMessage : renders
-ClassRidePage ..> InlineMessage : renders
-ProgressReporter ..> RideHubClient : sends when connected
-ProgressReporter ..> WorkoutEngine : reads
-RacePage ..> RideOutbox : on finish
-ClassRidePage ..> RideOutbox : on finish
+RaceStore --> LiveSessionStore : serviceLost
+ClassRideStore --> LiveSessionStore : serviceLost
+RaceBoard ..> InlineMessage : renders the notice
+ClassBoard ..> InlineMessage : renders the notice
+RaceStore ..> WorkoutEngine : runs on
+ClassRideStore ..> WorkoutEngine : runs on
+RaceStore ..> RideOutbox : on finish
+ClassRideStore ..> RideOutbox : on finish
 WorkoutEngine --> RideClock
 @enduml
