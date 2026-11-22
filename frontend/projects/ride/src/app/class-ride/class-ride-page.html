@@ -1,0 +1,117 @@
+@if (load.riding()) {
+  <wz-class-ride-session />
+} @else {
+  <div class="class-ride-page">
+    <wz-class-start-header>
+      <a wz-back-link slot="back" [routerLink]="['/classes', load.classId]">Back to class</a>
+    </wz-class-start-header>
+    @if (load.dto(); as dto) {
+      @if (load.view(); as view) {
+        <main id="main" class="world-loading" tabindex="-1" [attr.aria-busy]="!view.ready">
+          <div class="world-loading__scene">
+            @if (load.panorama(); as panorama) {
+              <img class="world-loading__photo" [src]="panorama.url" [alt]="panorama.alt" />
+            }
+          </div>
+          <div class="container world-loading__body">
+            <section class="world-loading__intro" aria-labelledby="class-title">
+              <p class="world-loading__eyebrow">{{ load.eyebrow() }}</p>
+              <h1 class="world-loading__title" id="class-title">{{ dto.title }}</h1>
+              <p class="world-loading__about">{{ load.world()?.description }}</p>
+              <wz-class-plan
+                class="world-loading__plan"
+                [lengthSeconds]="dto.lengthSeconds"
+                [segments]="dto.plan.segments"
+                [summary]="load.planSummary()"
+              />
+            </section>
+            <wz-load-card
+              [heading]="view.heading"
+              [percent]="view.percent"
+              [progressLabel]="'Loading ' + load.world()?.name"
+              [done]="view.ready"
+              [steps]="view.steps"
+              [status]="view.status"
+              [hint]="view.hint"
+            >
+              <span wz-pill slot="facts" [tone]="load.bike().ok ? 'ok' : null">{{
+                load.bike().name
+              }}</span>
+              <span wz-pill slot="facts">{{ load.graphics() }}</span>
+              @if (load.failed()) {
+                <wz-banner
+                  slot="notice"
+                  tone="danger"
+                  [alert]="true"
+                  title="The download stopped."
+                  detail="Check your connection and try again, or ride with the panorama: the plan, clock and bike work the same."
+                />
+              }
+              @if (view.ready && load.graphics() === 'Panorama') {
+                <wz-banner
+                  slot="notice"
+                  tone="info"
+                  title="This browser can’t draw 3D worlds."
+                  detail="Neither WebGPU nor WebGL 2 is on here, so you ride with the world’s panorama. The plan, clock and bike work the same."
+                />
+              }
+              @if (load.failed()) {
+                <button
+                  wz-button
+                  slot="actions"
+                  variant="primary"
+                  size="xl"
+                  [block]="true"
+                  type="button"
+                  (click)="load.retry()"
+                >
+                  Try again
+                </button>
+              }
+              @if (load.failed()) {
+                <button
+                  wz-button
+                  slot="actions"
+                  variant="raised"
+                  size="lg"
+                  [block]="true"
+                  type="button"
+                  (click)="load.ride()"
+                >
+                  Ride with the panorama
+                </button>
+              }
+              @if (view.ready) {
+                <button
+                  #start
+                  wz-button
+                  slot="actions"
+                  variant="primary"
+                  size="xl"
+                  [block]="true"
+                  type="button"
+                  (click)="load.ride()"
+                >
+                  Start riding
+                </button>
+              }
+              @if (!view.ready && !load.failed()) {
+                <button
+                  wz-button
+                  slot="actions"
+                  variant="primary"
+                  size="xl"
+                  [block]="true"
+                  type="button"
+                  disabled
+                >
+                  Start riding
+                </button>
+              }
+            </wz-load-card>
+          </div>
+        </main>
+      }
+    }
+  </div>
+}

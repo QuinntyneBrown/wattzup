@@ -33,6 +33,26 @@ export const PlanSummary = {
     return `${efforts} · ${first === last ? clock(first) : `${clock(first)} → ${clock(last)}`} recover`;
   },
 
+  /**
+   * The plan in a sentence, for World loading (L2-151 AC2): the warm-up, the efforts and their recoveries, the
+   * cool-down ("5:00 warm-up, 6 × 1:00 efforts with 1:00 recoveries, 4:00 cool-down"); a plan with no effort reads its
+   * structure after the warm-up.
+   */
+  outline(segments: readonly Segment[]): string {
+    const first = segments[0];
+    const last = segments[segments.length - 1];
+    const warmUp = first?.kind === 'warm-up' ? `${clock(first.duration)} warm-up` : null;
+    const coolDown =
+      last?.kind === 'cool-down' && last !== first ? `${clock(last.duration)} cool-down` : null;
+    const [efforts, recover] = PlanSummary.structure(segments).split(' · ');
+    const body = segments.some((segment) => segment.kind === 'work')
+      ? `${efforts} efforts${recover ? ` with ${recover.replace(' recover', ' recoveries')}` : ''}`
+      : warmUp
+        ? efforts.charAt(0).toLowerCase() + efforts.slice(1)
+        : efforts;
+    return [warmUp, body, coolDown].filter((part) => part !== null).join(', ');
+  },
+
   averagePower(segments: readonly Segment[]): number {
     const length = segments.reduce((total, segment) => total + segment.duration, 0);
     if (length === 0) return 0;

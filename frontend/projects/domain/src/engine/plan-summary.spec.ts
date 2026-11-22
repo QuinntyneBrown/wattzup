@@ -51,6 +51,38 @@ describe('PlanSummary', () => {
     expect(PlanSummary.structure(segments)).toBe(structure);
   });
 
+  it.each([
+    [
+      'the GCN HIIT ladder',
+      gcnHiit,
+      '5:00 warm-up, 8 × 0:30 efforts with 3:00 → 1:30 recoveries, 6:00 cool-down',
+    ],
+    [
+      'Power Intervals (L2-151 AC2)',
+      [
+        seg('warm-up', 300, 8, 80),
+        ...[1, 2, 3, 4, 5].flatMap(() => [seg('work', 60, 20, 95), seg('recover', 60, 6, 75)]),
+        seg('work', 60, 20, 95),
+        seg('recover', 60, 6, 75),
+        seg('cool-down', 240, 6, 70),
+      ],
+      '5:00 warm-up, 6 × 1:00 efforts with 1:00 recoveries, 4:00 cool-down',
+    ],
+    [
+      'efforts with no recovery and no cool-down',
+      [seg('warm-up', 300, 8, 80), seg('work', 360, 12, 90)],
+      '5:00 warm-up, 1 × 6:00 efforts',
+    ],
+    [
+      'a warm-up and a held level',
+      [seg('warm-up', 300, 8, 80), seg('steady', 3300, 9, 85)],
+      '5:00 warm-up, steady at level 9',
+    ],
+    ['one held level', [seg('steady', 1800, 12, 85)], 'Level 12 throughout'],
+  ])('outlines %s for World loading', (_, segments, outline) => {
+    expect(PlanSummary.outline(segments)).toBe(outline);
+  });
+
   it('weights each segment’s target power by its duration: ~154 W for the GCN HIIT ladder', () => {
     expect(PlanSummary.averagePower(gcnHiit)).toBe(154);
   });

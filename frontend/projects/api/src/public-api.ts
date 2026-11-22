@@ -79,6 +79,14 @@ export {
   type WorldRenderer,
   type WorldRendererLoader,
 } from './world/world-renderer';
+export {
+  WORLD_DOWNLOADER,
+  WorldDownloadError,
+  type WorldDownloader,
+  type WorldDownloadProgress,
+} from './world/world-downloader';
+export { WORLD_PANORAMAS, panoramaUrl } from './world/world-panoramas';
+export type { LoadStepState, LoadStepView } from './world/load-step-view';
 export { AUTH_API, type AuthApi, type ConfirmCodeResult } from './auth/auth-api';
 export { AuthApiError, type AuthApiErrorCode, type SignInError } from './auth/auth-api-error';
 export { HttpAuthApi } from './auth/http-auth-api';
