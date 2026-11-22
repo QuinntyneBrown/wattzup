@@ -29,10 +29,17 @@ describe('KnicksStreet (L2-101 AC1, L2-111 AC10)', () => {
     for (const d of disposables) d.dispose();
   });
 
-  it('right-sizes falling ticker tape, culls canyon props past the 300 m road, and gates shadows to the near shadow box', () => {
+  it('right-sizes falling ticker tape, flattens canyon buildings and props, culls past 320 m, and gates shadows to the near shadow box', () => {
     const disposables: { dispose(): void }[] = [];
     const street = new KnicksStreet((t) => t, disposables);
     street.build(3.5, 161);
+
+    let totalMeshes = 0;
+    street.group.traverse((obj) => {
+      if (obj instanceof Mesh) totalMeshes++;
+    });
+    // Down from ~860+ meshes (multi-material towers, 160 lamp meshes, 30 bunting meshes, 56 Woolworth sub-draws, 90 float meshes).
+    expect(totalMeshes).toBeLessThan(280);
 
     const points = Array.from({ length: 161 }, (_, i) => ({
       metres: (i - 10) * 2,

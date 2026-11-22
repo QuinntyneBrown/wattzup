@@ -24,7 +24,7 @@ import {
   Vector3,
 } from 'three/webgpu';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { seeded } from './world-kit';
+import { seeded, tintGeometry } from './world-kit';
 
 const UP_AXIS = new Vector3(0, 1, 0);
 
@@ -183,6 +183,56 @@ export class Ensemble {
       mArr[o + 13] = e[13];
       mArr[o + 14] = e[14];
       mArr[o + 15] = e[15];
+      if (colorsChanged && mesh.instanceColor) {
+        const cArr = mesh.instanceColor.array as Float32Array;
+        const c3 = slot * 3;
+        cArr[c3] = entry.r;
+        cArr[c3 + 1] = entry.g;
+        cArr[c3 + 2] = entry.b;
+      }
+    }
+  }
+
+  /** Packs visible figure `owner` using direct Y-rotation and scale `(sx, sy, sx)` with zero Matrix4 overhead. */
+  emitYawScale(
+    owner: number,
+    tx: number,
+    ty: number,
+    tz: number,
+    cy: number,
+    sy: number,
+    sx: number,
+    syScale: number,
+    colorsChanged: boolean,
+  ): void {
+    const entries = this.slots[owner];
+    if (!entries) return;
+    const m0 = cy * sx;
+    const m2 = -sy * sx;
+    const m8 = sy * sx;
+    const m10 = cy * sx;
+    for (const entry of entries) {
+      const mesh = this.parts[entry.part]!.mesh;
+      const slot = this.counts[entry.part]!;
+      this.counts[entry.part] = slot + 1;
+      const mArr = mesh.instanceMatrix.array as Float32Array;
+      const o = slot * 16;
+      mArr[o] = m0;
+      mArr[o + 1] = 0;
+      mArr[o + 2] = m2;
+      mArr[o + 3] = 0;
+      mArr[o + 4] = 0;
+      mArr[o + 5] = syScale;
+      mArr[o + 6] = 0;
+      mArr[o + 7] = 0;
+      mArr[o + 8] = m8;
+      mArr[o + 9] = 0;
+      mArr[o + 10] = m10;
+      mArr[o + 11] = 0;
+      mArr[o + 12] = tx;
+      mArr[o + 13] = ty;
+      mArr[o + 14] = tz;
+      mArr[o + 15] = 1;
       if (colorsChanged && mesh.instanceColor) {
         const cArr = mesh.instanceColor.array as Float32Array;
         const c3 = slot * 3;
@@ -467,14 +517,18 @@ export function hairParts(): BufferGeometry[] {
   return [crop, afro, merge([crown, brim]), wrap];
 }
 
-/** An umbrella held up over the head: an eight-panel canopy and its shaft from the hand. */
-function umbrellaParts(): { canopy: BufferGeometry; shaft: BufferGeometry } {
-  const canopy = new ConeGeometry(0.6, 0.28, 8, 1, true);
+/** An umbrella held up over the head: an eight-panel canopy merged with its dark shaft. */
+function umbrellaGeometry(): BufferGeometry {
+  const canopy = new ConeGeometry(0.6, 0.28, 8, 1, true).toNonIndexed();
   canopy.translate(0.05, 2.24, -0.02);
+  canopy.deleteAttribute('uv');
+  tintGeometry(canopy, 0xffffff);
   const shaft = merge(
     limb(new Vector3(0.23, 0.95, -0.04), new Vector3(0.05, 2.36, -0.02), 0.012, 0.012, 4, false),
   );
-  return { canopy, shaft };
+  shaft.deleteAttribute('uv');
+  tintGeometry(shaft, 0x222222);
+  return merge([canopy, shaft]);
 }
 
 /** A wide-brimmed straw sun hat, and a soft bucket hat. */
@@ -528,11 +582,6 @@ export class Spectators {
   private flags: InstancedMesh[] = [];
   private flagCounts = new Int32Array(0);
   private lastBucket = Number.NaN;
-  private readonly matrix = new Matrix4();
-  private readonly local = new Matrix4();
-  private readonly spot = new Vector3();
-  private readonly turn = new Quaternion();
-  private readonly size = new Vector3();
 
   constructor(
     private readonly group: Group,
@@ -595,12 +644,30 @@ export class Spectators {
     const denim = this.material({ roughness: 0.95, vertexColors: true });
     const rubber = this.material({ roughness: 0.7 });
     const hair = this.material({ roughness: 0.95 });
-    const bodyMap = new Map<string, ReturnType<typeof spectatorParts>>();
+    const skinMap = new Map<string, BufferGeometry>();
+    const topMap = new Map<number, BufferGeometry>();
+    let bottomShorts: BufferGeometry | null = null;
+    let bottomTrousers: BufferGeometry | null = null;
     for (const st of CROWD_STANCES) {
       for (const shorts of [false, true]) {
         const parts = spectatorParts(st, shorts);
-        this.disposables.push(parts.skin, parts.top, parts.bottom);
-        bodyMap.set(`${st}${shorts ? 's' : 't'}`, parts);
+        this.disposables.push(parts.skin);
+        skinMap.set(`${st}${shorts ? 's' : 't'}`, parts.skin);
+        if (!topMap.has(st)) {
+          this.disposables.push(parts.top);
+          topMap.set(st, parts.top);
+        } else {
+          parts.top.dispose();
+        }
+        if (shorts && !bottomShorts) {
+          bottomShorts = parts.bottom;
+          this.disposables.push(bottomShorts);
+        } else if (!shorts && !bottomTrousers) {
+          bottomTrousers = parts.bottom;
+          this.disposables.push(bottomTrousers);
+        } else {
+          parts.bottom.dispose();
+        }
       }
     }
     const shoes = shoeGeometry();
@@ -614,17 +681,15 @@ export class Spectators {
     const placards = PLACARDS.map(([a, b, fill, ink]) =>
       this.material({ map: placardTexture(a, b, fill, ink), roughness: 0.8, side: DoubleSide }),
     );
-    const { canopy, shaft } = umbrellaParts();
+    const umbrella = umbrellaGeometry();
     const [strawHat, bucketHat] = sunHatParts();
-    const cloth = this.material({ roughness: 0.8, side: DoubleSide });
+    const cloth = this.material({ roughness: 0.8, side: DoubleSide, vertexColors: true });
     const straw = this.material({ roughness: 0.95 });
-    const metal = this.material({ color: 0x2b2b2b, roughness: 0.5, metalness: 0.6 });
     this.disposables.push(
       shoes,
       balloon,
       card,
-      canopy,
-      shaft,
+      umbrella,
       strawHat,
       bucketHat,
       ...hairs,
@@ -640,10 +705,15 @@ export class Spectators {
       const shorts = dress() < 0.6;
       const bodyStance = p.stance === PLACARD_STANCE ? 2 : p.stance;
       const key = `${bodyStance}${shorts ? 's' : 't'}`;
-      const parts = bodyMap.get(key)!;
-      this.ensemble.put(i, `skin${key}`, parts.skin, skinMaterial, pick(o.skins));
-      this.ensemble.put(i, `top${key}`, parts.top, cotton, pick(o.tops));
-      this.ensemble.put(i, `bottom${key}`, parts.bottom, denim, pick(o.bottoms));
+      this.ensemble.put(i, `skin${key}`, skinMap.get(key)!, skinMaterial, pick(o.skins));
+      this.ensemble.put(i, `top${bodyStance}`, topMap.get(bodyStance)!, cotton, pick(o.tops));
+      this.ensemble.put(
+        i,
+        shorts ? 'bottoms' : 'bottomt',
+        shorts ? bottomShorts! : bottomTrousers!,
+        denim,
+        pick(o.bottoms),
+      );
       this.ensemble.put(i, 'shoes', shoes, rubber, pick(SHOES));
       const style = Math.floor(dress() * hairs.length);
       const colour = style === 2 ? pick(CAPS) : style === 3 ? pick(o.tops) : pick(HAIRS);
@@ -660,8 +730,7 @@ export class Spectators {
       }
       const grown = p.height > 0.9;
       if (p.stance === 0 && grown && extra() < 0.22) {
-        this.ensemble.put(i, 'canopy', canopy, cloth, any(UMBRELLAS));
-        this.ensemble.put(i, 'shaft', shaft, metal, '#ffffff');
+        this.ensemble.put(i, 'umbrella', umbrella, cloth, any(UMBRELLAS));
       }
     });
     this.ensemble.build();
@@ -670,16 +739,11 @@ export class Spectators {
     flag.translate(0.375, 0.3, 0);
     const pole = new CylinderGeometry(0.012, 0.012, 0.9, 4);
     pole.translate(0, 0.1, 0);
-    this.disposables.push(flag, pole);
+    const flagWithPole = merge([flag, pole]);
+    this.disposables.push(flagWithPole);
     const counts = o.flags.map(() => 0);
     for (const p of this.people) if (p.flag >= 0) counts[p.flag]!++;
-    this.flags = o.flags.map((material, k) => this.instanced(flag, material, counts[k]!));
-    const poles = this.instanced(
-      pole,
-      this.material({ color: 0x2b2b2b }),
-      counts.reduce((a, b) => a + b, 0),
-    );
-    this.flags.push(poles);
+    this.flags = o.flags.map((material, k) => this.instanced(flagWithPole, material, counts[k]!));
     this.flagCounts = new Int32Array(this.flags.length);
   }
 
@@ -696,8 +760,6 @@ export class Spectators {
     this.lastBucket = bucket;
     const counts = this.flagCounts;
     counts.fill(0);
-    const poleIdx = counts.length - 1;
-    const poles = this.flags[poleIdx]!;
     this.ensemble.beginFrame();
     for (let i = 0; i < this.people.length; i++) {
       const p = this.people[i]!;
@@ -708,17 +770,39 @@ export class Spectators {
       const beat = Math.sin(time * 4.2 + p.phase);
       const calm = p.stance === 0 || p.stance === LEAN_STANCE;
       const bounce = Math.abs(beat) * (calm ? 0.02 : 0.05);
-      this.turn.setFromAxisAngle(UP_AXIS, heading + beat * 0.05);
-      this.size.set(p.height * p.build, p.height, p.height * p.build);
-      this.spot.set(p.x, y + bounce, -metres);
-      this.matrix.compose(this.spot, this.turn, this.size);
-      this.ensemble.emit(i, this.matrix, colorsChanged);
+      const yaw = heading + beat * 0.05;
+      const cy = Math.cos(yaw);
+      const sy = Math.sin(yaw);
+      const sx = p.height * p.build;
+      const syScale = p.height;
+      const ty = y + bounce;
+      const tz = -metres;
+      this.ensemble.emitYawScale(i, p.x, ty, tz, cy, sy, sx, syScale, colorsChanged);
       if (p.flag < 0) continue;
       const wave = Math.sin(time * 3 + p.phase) * 0.6;
-      this.local.makeRotationY(wave).setPosition(0.3, 1.95, -0.06);
-      this.local.premultiply(this.matrix);
-      this.flags[p.flag]!.setMatrixAt(counts[p.flag]!++, this.local);
-      poles.setMatrixAt(counts[poleIdx]!++, this.local);
+      const wy = yaw + wave;
+      const cwf = Math.cos(wy);
+      const swf = Math.sin(wy);
+      const slot = counts[p.flag]!;
+      counts[p.flag] = slot + 1;
+      const fArr = this.flags[p.flag]!.instanceMatrix.array as Float32Array;
+      const o = slot * 16;
+      fArr[o] = cwf * sx;
+      fArr[o + 1] = 0;
+      fArr[o + 2] = -swf * sx;
+      fArr[o + 3] = 0;
+      fArr[o + 4] = 0;
+      fArr[o + 5] = syScale;
+      fArr[o + 6] = 0;
+      fArr[o + 7] = 0;
+      fArr[o + 8] = swf * sx;
+      fArr[o + 9] = 0;
+      fArr[o + 10] = cwf * sx;
+      fArr[o + 11] = 0;
+      fArr[o + 12] = p.x + (0.3 * cy - 0.06 * sy) * sx;
+      fArr[o + 13] = ty + 1.95 * syScale;
+      fArr[o + 14] = tz + (-0.3 * sy - 0.06 * cy) * sx;
+      fArr[o + 15] = 1;
     }
     this.ensemble.commit(colorsChanged);
     for (let k = 0; k < this.flags.length; k++) {

@@ -8,6 +8,7 @@
 // banners and road paint of world-kit.ts.
 import {
   BoxGeometry,
+  type BufferAttribute,
   BufferGeometry,
   type CanvasTexture,
   Color,
@@ -25,6 +26,7 @@ import {
   SphereGeometry,
   type Texture,
 } from 'three/webgpu';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {
   barrierBannerTexture,
   type BannerPanel,
@@ -36,6 +38,7 @@ import {
   hazedMaterial,
   loopFade,
   loopMetres,
+  mergeStaticGroup,
   paintTexture,
   Ribbons,
   scaleFaceUv,
@@ -43,6 +46,7 @@ import {
   seeded,
   slopeAt,
   speckle,
+  tintGeometry,
   wrapFade,
 } from './world-kit';
 import type { StreetPoint } from './world-oldtown';
@@ -185,8 +189,19 @@ export class KnicksStreet implements SceneStreet {
   private tape: InstancedMesh | null = null;
   private streamers: InstancedMesh | null = null;
   private readonly pieces: Piece[] = [];
+  private lampBodies: InstancedMesh | null = null;
+  private lampHeads: InstancedMesh | null = null;
+  private readonly lampItems: { side: -1 | 1; offset: number; x: number }[] = [];
+  private buntingMesh: InstancedMesh | null = null;
+  private readonly buntingOffsets: number[] = [];
   private time = 0;
   private readonly unit = new BoxGeometry(1, 1, 1);
+  private readonly solidMat = new MeshStandardMaterial({ vertexColors: true, roughness: 0.8 });
+  private readonly hazedSolidMat = new MeshStandardMaterial({
+    vertexColors: true,
+    roughness: 0.85,
+    fog: false,
+  });
   private readonly flagMaterials = [ORANGE, BLUE, '#ffffff'].map(
     (colour) => new MeshStandardMaterial({ color: colour, side: DoubleSide, roughness: 0.8 }),
   );
@@ -209,7 +224,7 @@ export class KnicksStreet implements SceneStreet {
   }
 
   build(roadHalf: number, points: number): void {
-    this.disposables.push(this.unit, ...this.flagMaterials);
+    this.disposables.push(this.unit, this.solidMat, this.hazedSolidMat, ...this.flagMaterials);
     this.addGround(roadHalf, points);
     this.crowd.build();
     this.addTowers();
@@ -252,11 +267,81 @@ export class KnicksStreet implements SceneStreet {
       }
     }
     this.crowd.place(this.time, heightAt, along, KERB);
+    this.placeLampsAndBunting(heightAt, along);
     const far = heightAt(1e6);
     this.woolworth.position.set(0, far - 4, -WOOLWORTH_AHEAD);
     this.skyline.position.set(0, far - 4, 0);
     this.placeFloats(along, heightAt);
     this.placeTape(s, heightAt);
+  }
+
+  private placeLampsAndBunting(
+    heightAt: (metres: number) => number,
+    along: (offset: number, every: number) => number,
+  ): void {
+    if (this.lampBodies && this.lampHeads) {
+      const bArr = this.lampBodies.instanceMatrix.array as Float32Array;
+      const hArr = this.lampHeads.instanceMatrix.array as Float32Array;
+      let count = 0;
+      for (const it of this.lampItems) {
+        const metres = along(it.offset, LOOP);
+        if (metres <= PROP_BEHIND_CULL || metres > PROP_HORIZON_CULL) continue;
+        const y = heightAt(Math.max(metres, 0));
+        const sgn = it.side < 0 ? -1 : 1;
+        const o = count * 16;
+        bArr[o] = sgn;
+        bArr[o + 1] = 0;
+        bArr[o + 2] = 0;
+        bArr[o + 3] = 0;
+        bArr[o + 4] = 0;
+        bArr[o + 5] = 1;
+        bArr[o + 6] = 0;
+        bArr[o + 7] = 0;
+        bArr[o + 8] = 0;
+        bArr[o + 9] = 0;
+        bArr[o + 10] = sgn;
+        bArr[o + 11] = 0;
+        bArr[o + 12] = it.x;
+        bArr[o + 13] = y;
+        bArr[o + 14] = -metres;
+        bArr[o + 15] = 1;
+        for (let k = 0; k < 16; k++) hArr[o + k] = bArr[o + k]!;
+        count++;
+      }
+      this.lampBodies.count = count;
+      this.lampHeads.count = count;
+      this.lampBodies.instanceMatrix.needsUpdate = true;
+      this.lampHeads.instanceMatrix.needsUpdate = true;
+    }
+    if (this.buntingMesh) {
+      const arr = this.buntingMesh.instanceMatrix.array as Float32Array;
+      let count = 0;
+      for (const offset of this.buntingOffsets) {
+        const metres = along(offset, LOOP);
+        if (metres <= PROP_BEHIND_CULL || metres > PROP_HORIZON_CULL) continue;
+        const y = heightAt(Math.max(metres, 0));
+        const o = count * 16;
+        arr[o] = 1;
+        arr[o + 1] = 0;
+        arr[o + 2] = 0;
+        arr[o + 3] = 0;
+        arr[o + 4] = 0;
+        arr[o + 5] = 1;
+        arr[o + 6] = 0;
+        arr[o + 7] = 0;
+        arr[o + 8] = 0;
+        arr[o + 9] = 0;
+        arr[o + 10] = 1;
+        arr[o + 11] = 0;
+        arr[o + 12] = 0;
+        arr[o + 13] = y;
+        arr[o + 14] = -metres;
+        arr[o + 15] = 1;
+        count++;
+      }
+      this.buntingMesh.count = count;
+      this.buntingMesh.instanceMatrix.needsUpdate = true;
+    }
   }
 
   /** The floats roll forward slowly, so the riders reel them in one after another. */
@@ -461,13 +546,11 @@ export class KnicksStreet implements SceneStreet {
     const tar = this.material({ color: 0x2c2d30, roughness: 1 });
     const wood = this.material({ map: this.track(staveTexture()), roughness: 0.95 });
     const steel = this.material({ color: 0x3a3c40, metalness: 0.5, roughness: 0.5 });
-    const drapes = DRAPES.map(([word, fill, ink]) =>
-      this.material({
-        map: this.track(drapeTexture(word, fill, ink)),
-        side: DoubleSide,
-        roughness: 0.85,
-      }),
-    );
+    const drapeAtlas = this.material({
+      map: this.track(drapeAtlasTexture()),
+      side: DoubleSide,
+      roughness: 0.85,
+    });
     const pyramid = new ConeGeometry(Math.SQRT1_2, 1, 4);
     pyramid.rotateY(Math.PI / 4);
     pyramid.translate(0, 0.5, 0);
@@ -475,8 +558,18 @@ export class KnicksStreet implements SceneStreet {
     tank.translate(0, 1.8, 0);
     const tankRoof = new ConeGeometry(1.85, 1.4, 16);
     tankRoof.translate(0, 4.3, 0);
-    const cloth = new PlaneGeometry(2.4, 10);
-    this.disposables.push(pyramid, tank, tankRoof, cloth);
+    const drapeCloths = DRAPES.map((_, k) => {
+      const g = new PlaneGeometry(2.4, 10);
+      const uv = g.getAttribute('uv') as BufferAttribute;
+      const u0 = k / DRAPES.length;
+      const u1 = (k + 1) / DRAPES.length;
+      for (let i = 0; i < uv.count; i++) {
+        uv.setX(i, u0 + uv.getX(i) * (u1 - u0));
+      }
+      this.disposables.push(g);
+      return g;
+    });
+    this.disposables.push(pyramid, tank, tankRoof);
     const block = (palette: number, depth: number, height: number, width: number) => {
       const geometry = new BoxGeometry(depth, height, width);
       scaleFaceUv(geometry, 0, width / 12, height / (4 * STOREY));
@@ -574,12 +667,14 @@ export class KnicksStreet implements SceneStreet {
         // The parade's colours hung down the front of every other tower.
         if (index % 2 === 0) {
           for (const z of [-width / 4, width / 4]) {
-            const drape = new Mesh(cloth, drapes[(index / 2 + (z > 0 ? 1 : 0)) % drapes.length]!);
+            const dIdx = (index / 2 + (z > 0 ? 1 : 0)) % drapeCloths.length;
+            const drape = new Mesh(drapeCloths[dIdx]!, drapeAtlas);
             drape.position.set(0.2, 12, z);
             drape.rotation.y = Math.PI / 2;
             building.add(drape);
           }
         }
+        mergeStaticGroup(building, this.disposables, undefined, this.solidMat);
         if (side > 0) building.rotation.y = Math.PI;
         const setback = layout() * 1.2;
         this.group.add(building);
@@ -604,34 +699,44 @@ export class KnicksStreet implements SceneStreet {
     arm.translate(-1.3, 8.3, 0);
     const head = new BoxGeometry(0.9, 0.22, 0.4);
     head.translate(-2.6, 8.2, 0);
-    const cloth = new PlaneGeometry(0.75, 2.2);
-    this.disposables.push(pole, arm, head, cloth);
-    const iron = this.material({ color: 0x3d4a3f, metalness: 0.4, roughness: 0.5 });
+    const solidParts: BufferGeometry[] = [
+      tintGeometry(pole.toNonIndexed(), 0x3d4a3f),
+      tintGeometry(arm.toNonIndexed(), 0x3d4a3f),
+    ];
+    [ORANGE, BLUE].forEach((colour, k) => {
+      for (const rotY of [0, Math.PI]) {
+        const banner = new PlaneGeometry(0.75, 2.2).toNonIndexed();
+        if (rotY !== 0) banner.rotateY(rotY);
+        banner.translate(0, 5.2, (k ? 1 : -1) * 0.45);
+        tintGeometry(banner, colour);
+        solidParts.push(banner);
+      }
+    });
+    for (const part of solidParts) part.deleteAttribute('uv');
+    const lampSolid = mergeGeometries(solidParts)!;
+    solidParts.forEach((g) => g.dispose());
+    pole.dispose();
+    arm.dispose();
+    this.disposables.push(lampSolid, head);
     const lens = this.material({ color: 0xf5f1e6, emissive: 0xfff2d6, emissiveIntensity: 0.3 });
-    const flags = [ORANGE, BLUE].map((c) =>
-      this.material({ color: c, side: DoubleSide, roughness: 0.8 }),
-    );
     for (const side of [-1, 1] as const) {
       for (let offset = 0; offset < LOOP; offset += 30) {
-        const lamp = new Group();
-        lamp.add(new Mesh(pole, iron), new Mesh(arm, iron), new Mesh(head, lens));
-        flags.forEach((flag, k) => {
-          const banner = new Mesh(cloth, flag);
-          banner.position.set(0, 5.2, (k ? 1 : -1) * 0.45);
-          lamp.add(banner);
-        });
-        // The arm reaches out over the road from either kerb.
-        lamp.rotation.y = side < 0 ? Math.PI : 0;
-        this.group.add(lamp);
-        this.props.push({
-          mesh: lamp,
+        this.lampItems.push({
+          side,
           offset: offset + (side > 0 ? 15 : 0),
-          every: LOOP,
           x: side * (LANE + 0.25),
-          shadowMeshes: collectShadowMeshes(lamp),
         });
       }
     }
+    const cap = Math.max(1, this.lampItems.length);
+    this.lampBodies = new InstancedMesh(lampSolid, this.solidMat, cap);
+    this.lampBodies.frustumCulled = false;
+    this.lampBodies.castShadow = false;
+    this.lampHeads = new InstancedMesh(head, lens, cap);
+    this.lampHeads.frustumCulled = false;
+    this.lampHeads.castShadow = false;
+    this.disposables.push(this.lampBodies, this.lampHeads);
+    this.group.add(this.lampBodies, this.lampHeads);
   }
 
   /** Cloth banners slung across the canyon on wires from tower to tower. */
@@ -658,6 +763,7 @@ export class KnicksStreet implements SceneStreet {
         w.position.set(side * (6.5 + (FRONTAGE - 6.5) / 2), 11.4, 0);
         banner.add(w);
       }
+      mergeStaticGroup(banner, this.disposables, undefined, this.solidMat);
       this.group.add(banner);
       this.props.push({
         mesh: banner,
@@ -671,31 +777,46 @@ export class KnicksStreet implements SceneStreet {
 
   /** Strings of orange, blue and white pennants sagging across the canyon. */
   private addBunting(): void {
-    const colours = [ORANGE, BLUE, '#ffffff'];
-    const materials = colours.map((c) =>
-      this.material({ color: c, side: DoubleSide, roughness: 0.8 }),
-    );
-    const vertices: number[][] = colours.map(() => []);
+    const colours = [ORANGE, BLUE, '#ffffff'].map((c) => new Color(c));
     const n = 33;
+    const positions = new Float32Array(n * 9);
+    const vertColours = new Float32Array(n * 9);
     for (let k = 0; k < n; k++) {
       const x = -FRONTAGE + ((k + 0.5) * 2 * FRONTAGE) / n;
       const y = 12.5 - 2.4 * (1 - (x / FRONTAGE) ** 2);
-      vertices[k % colours.length]!.push(x - 0.3, y, 0, x + 0.3, y, 0, x, y - 0.7, 0);
+      const o = k * 9;
+      positions[o] = x - 0.3;
+      positions[o + 1] = y;
+      positions[o + 2] = 0;
+      positions[o + 3] = x + 0.3;
+      positions[o + 4] = y;
+      positions[o + 5] = 0;
+      positions[o + 6] = x;
+      positions[o + 7] = y - 0.7;
+      positions[o + 8] = 0;
+      const c = colours[k % colours.length]!;
+      for (let v = 0; v < 3; v++) {
+        vertColours[o + v * 3] = c.r;
+        vertColours[o + v * 3 + 1] = c.g;
+        vertColours[o + v * 3 + 2] = c.b;
+      }
     }
-    const geometries = vertices.map((v) => {
-      const geometry = new BufferGeometry();
-      geometry.setAttribute('position', new Float32BufferAttribute(v, 3));
-      geometry.computeVertexNormals();
-      this.disposables.push(geometry);
-      return geometry;
-    });
+    const geometry = new BufferGeometry();
+    geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new Float32BufferAttribute(vertColours, 3));
+    geometry.computeVertexNormals();
+    const pennantMat = this.material({ vertexColors: true, side: DoubleSide, roughness: 0.8 });
+    this.disposables.push(geometry);
     for (let offset = 20; offset < LOOP; offset += 40) {
       if ((offset - 60) % 120 === 0) continue;
-      const string = new Group();
-      geometries.forEach((g, k) => string.add(new Mesh(g, materials[k]!)));
-      this.group.add(string);
-      this.props.push({ mesh: string, offset, every: LOOP, x: 0, shadowMeshes: [] });
+      this.buntingOffsets.push(offset);
     }
+    const cap = Math.max(1, this.buntingOffsets.length);
+    this.buntingMesh = new InstancedMesh(geometry, pennantMat, cap);
+    this.buntingMesh.frustumCulled = false;
+    this.buntingMesh.castShadow = false;
+    this.disposables.push(this.buntingMesh);
+    this.group.add(this.buntingMesh);
   }
 
   /** What the fans have painted on the tarmac. */
@@ -838,6 +959,7 @@ export class KnicksStreet implements SceneStreet {
         b.position.set((random() - 0.5) * 2.2, DECK + 4.4 + random() * 1.6, (random() - 0.5) * 9);
         float.add(b);
       }
+      mergeStaticGroup(float, this.disposables, undefined, this.solidMat);
       this.group.add(float);
       this.floats.push({ group: float, shadowMeshes: collectShadowMeshes(float) });
     }
@@ -908,6 +1030,7 @@ export class KnicksStreet implements SceneStreet {
         this.skyline.add(tower);
       }
     }
+    mergeStaticGroup(this.skyline, this.disposables, undefined, this.solidMat);
     this.group.add(this.skyline);
   }
 
@@ -986,6 +1109,7 @@ export class KnicksStreet implements SceneStreet {
     spire.scale.set(1.4, 2.8, 1.4);
     spire.position.y = 202;
     w.add(lantern, spire);
+    mergeStaticGroup(w, this.disposables, undefined, this.hazedSolidMat);
     w.scale.setScalar(1.25);
     this.group.add(w);
   }
@@ -1077,21 +1201,25 @@ function shopTexture(): CanvasTexture {
   });
 }
 
-/** A cloth drape hung down a tower's front: `word` letter above letter on `fill`. */
-function drapeTexture(word: string, fill: string, ink: string): CanvasTexture {
-  return canvasTexture(128, 512, (g) => {
-    g.fillStyle = fill;
-    g.fillRect(0, 0, 128, 512);
-    g.fillStyle = ink;
-    g.fillRect(0, 0, 128, 14);
-    g.fillRect(0, 498, 128, 14);
-    g.font = 'bold 84px sans-serif';
-    g.textAlign = 'center';
-    g.textBaseline = 'middle';
-    const letters = word.split('');
-    const step = 460 / Math.max(letters.length, 3);
-    const start = 256 - (step * letters.length) / 2;
-    letters.forEach((c, i) => g.fillText(c, 64, start + step * (i + 0.5)));
+/** Cloth drapes hung down tower fronts, packed side by side into one 3-column atlas. */
+function drapeAtlasTexture(): CanvasTexture {
+  const colW = 128;
+  return canvasTexture(colW * DRAPES.length, 512, (g) => {
+    DRAPES.forEach(([word, fill, ink], col) => {
+      const x0 = col * colW;
+      g.fillStyle = fill;
+      g.fillRect(x0, 0, colW, 512);
+      g.fillStyle = ink;
+      g.fillRect(x0, 0, colW, 14);
+      g.fillRect(x0, 498, colW, 14);
+      g.font = 'bold 84px sans-serif';
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      const letters = word.split('');
+      const step = 460 / Math.max(letters.length, 3);
+      const start = 256 - (step * letters.length) / 2;
+      letters.forEach((c, i) => g.fillText(c, x0 + 64, start + step * (i + 0.5)));
+    });
   });
 }
 

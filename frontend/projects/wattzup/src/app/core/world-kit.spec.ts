@@ -159,6 +159,40 @@ describe('mergeStaticGroup: collapses static sub-meshes by material while preser
 
     for (const d of disposables) d.dispose();
   });
+
+  it('folds multiple opaque solid MeshStandardMaterials into one vertex-coloured Mesh when sharedSolidMaterial is given, keeping emissive meshes separate', () => {
+    const disposables: { dispose(): void }[] = [];
+    const wall = new MeshStandardMaterial({ color: 0xd9d0bf });
+    const trim = new MeshStandardMaterial({ color: 0xeee8db });
+    const tar = new MeshStandardMaterial({ color: 0x2c2d30 });
+    const lamp = new MeshStandardMaterial({ color: 0xff2a1a, emissive: 0xff2a1a });
+    const sharedSolid = new MeshStandardMaterial({ vertexColors: true, roughness: 0.8 });
+    const unit = new BoxGeometry(1, 1, 1);
+    disposables.push(wall, trim, tar, lamp, sharedSolid, unit);
+
+    const root = new Group();
+    const block = new Mesh(unit, [wall, wall, tar, wall, wall, wall]);
+    block.castShadow = true;
+    block.receiveShadow = true;
+    const cornice = new Mesh(unit, trim);
+    cornice.position.set(0, 2, 0);
+    const beacon = new Mesh(unit, lamp);
+    beacon.position.set(0, 3, 0);
+    root.add(block, cornice, beacon);
+
+    mergeStaticGroup(root, disposables, undefined, sharedSolid);
+
+    const directMeshes = root.children.filter((c): c is Mesh => c instanceof Mesh);
+    expect(directMeshes.length).toBe(2); // 1 sharedSolid (wall + tar + trim) + 1 emissive lamp
+    const solidMesh = directMeshes.find((m) => m.material === sharedSolid);
+    expect(solidMesh).toBeDefined();
+    expect(solidMesh!.geometry.getAttribute('color')).toBeDefined();
+    expect(solidMesh!.geometry.getAttribute('normal')).toBeDefined();
+    expect(solidMesh!.castShadow).toBe(true);
+    expect(solidMesh!.receiveShadow).toBe(true);
+
+    for (const d of disposables) d.dispose();
+  });
 });
 
 describe('Crowd: shadow partitioning and horizon culling', () => {

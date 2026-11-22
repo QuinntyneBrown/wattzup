@@ -29,7 +29,7 @@ describe('CaribanaStreet (L2-101 AC1, L2-111 AC10)', () => {
     for (const d of disposables) d.dispose();
   });
 
-  it('declutters redundant street micro-objects, culls props past the 300 m road, and gates shadows to the near shadow box', () => {
+  it('declutters redundant street micro-objects, consolidates solid prop hierarchies and instanced crowds, culls past 300 m, and gates shadows', () => {
     const disposables: { dispose(): void }[] = [];
     const street = new CaribanaStreet((t) => t, disposables);
     street.build(3.5, 161);
@@ -40,9 +40,9 @@ describe('CaribanaStreet (L2-101 AC1, L2-111 AC10)', () => {
       if (obj instanceof Mesh) totalMeshes++;
       if (obj instanceof InstancedMesh) instancedMeshes++;
     });
-    // Down from ~4,200+ meshes and ~315+ instanced meshes before decluttering.
-    expect(totalMeshes).toBeLessThan(1200);
-    expect(instancedMeshes).toBeLessThan(165);
+    // Down from ~4,200+ meshes -> 1,085 in Iter 1 -> < 680 after vertex-colour prop consolidation & crowd/lamp/banner merging.
+    expect(totalMeshes).toBeLessThan(680);
+    expect(instancedMeshes).toBeLessThan(125);
 
     const points = Array.from({ length: 161 }, (_, i) => ({
       metres: (i - 10) * 2,
