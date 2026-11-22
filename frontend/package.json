@@ -18,7 +18,8 @@
     "format:check": "prettier --check .",
     "e2e": "playwright test",
     "heap": "playwright test -c playwright.heap.config.ts",
-    "perf": "playwright test -c playwright.perf.config.ts"
+    "perf": "playwright test -c playwright.perf.config.ts",
+    "sweep:responsive": "playwright test -c playwright.sweeps.config.ts e2e/sweeps/responsive.sweep.ts"
   },
   "dependencies": {
     "@angular/cdk": "^22.3.0",
