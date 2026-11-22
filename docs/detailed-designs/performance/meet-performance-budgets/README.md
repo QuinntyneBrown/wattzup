@@ -27,16 +27,19 @@ frame budget is held and measured.
 - **World library** — the race's 3D world (Three.js, WebGPU with WebGL 2 fallback) is a separate
   library imported with dynamic `import()` from `RacePage` only, so it is never in the initial
   chunk.
-- **Bundle budgets** — `angular.json` sets `budgets` of type `initial` on the production
-  configuration. The Angular CLI measures raw bytes, so the budget value that corresponds to
-  300 KB gzipped is `<TO SUPPLY>` until the first production build measures the ratio. The
-  script `tools/verify/bundle-size.mjs` gzips the initial chunks listed in the build's
-  `stats.json` and fails above 300 KB. `node tools/verify/verify.mjs` and CI run it.
-  The raw `initial` budget warns at 288 kB and fails at 300 kB since slice 5.2: the first use of
-  `HttpClient` (the class catalogue client, bound on the lazy class ride route) adds about
-  20.7 kB raw, 5.3 kB transferred, to `main` wherever it is provided, because
-  `@angular/platform-browser` and `@angular/router` import `@angular/common/http`, so esbuild
-  places that module in the initial chunk. Every backend client needs it.
+- **Bundle budgets** — `angular.json` sets a `budgets` entry of type `initial` on the ride app's
+  production configuration, measured in raw bytes. Since slice 19.1 it warns at 302 kB and fails
+  at 305 kB, a few kilobytes above the 300.26 kB the initial bundle measures (`main` 277.44 kB
+  and the global styles); raising it needs a reason in the change. The raw budget sat at 304 and
+  310 kB before: the first use of `HttpClient` (slice 5.2) puts `@angular/common/http` in `main`
+  wherever it is provided, about 20.7 kB raw, since `@angular/platform-browser` and
+  `@angular/router` import it.
+- **Gzipped initial bundle** — `frontend/scripts/bundle-size.mjs` (`npm run bundle:size`) reads
+  the built `index.html`, gzips every script, stylesheet and module preload it loads before the
+  first screen renders, and fails above 300 KB (`L2-136` AC1); it measured 89.77 kB at slice 19.1.
+  `node tools/verify/verify.mjs` runs it after the production build, and CI's build job after
+  the ride app's build. It lives in `frontend/` because CI checks out only `frontend/` and
+  `backend/`.
 - **`measureFramePeriod`** — `main`'s `frame-period.ts` in the world library. Before the world's
   first frame it takes the median of about 30 frame intervals and snaps it to the nearest common
   refresh rate: the display's frame period _P_ (16.7 ms at 60 Hz).
@@ -134,6 +137,13 @@ recorded for the 95th-percentile budget (`L2-137` AC2).
 ![Sequence diagram for delivering standings](diagrams/sequence-standings-tick.png)
 
 ## Open questions
+
+- **Slice 19.1 measures the built `index.html`, not `stats.json`.** This design first had a
+  `tools/verify/bundle-size.mjs` read the initial chunks from the build's `stats.json`. The files
+  `index.html` loads are exactly what the browser downloads before the first screen, and need no
+  stats build, so the check reads them; it lives under `frontend/scripts/` for CI's sparse
+  checkout. Every route already used `loadComponent` or `loadChildren`, so 19.1 added none; its
+  acceptance spec proves Home opens without Three.js and the world's code arrives with a race.
 
 - **Slice 8.5 follows `L2-159` AC4 and `main`.** This design first named a `FrameBudgetMonitor`
   averaging 120 frames and a `QualityGovernor` that stepped down below 50 frames a second and
