@@ -46,6 +46,8 @@ import type {
 import {
   Course,
   type CoursePlace,
+  type CourseCableway,
+  courseCableways,
   courseLamps,
   courseLights,
   courseLook,
@@ -55,6 +57,7 @@ import {
 } from './course';
 import { CourseCyclistKit, type RiderModel as Cyclist } from './course-cyclist';
 import { fenceMaterial } from './fence-material';
+import { type CabinPose, gondolaPosition } from './gondola-flight';
 import { type GroundEye, groundMaterial, surfaceTexture } from './ground-material';
 import { haloMaterial } from './halo-material';
 import { colouredGlow, LampGlow } from './lamp-glow';
@@ -238,6 +241,7 @@ export class CourseRenderer implements WorldRenderer {
   private startGreen: Mesh | null = null;
   private beams: MeshBasicMaterial | null = null;
   private readonly confetti: Mesh[] = [];
+  private funivia: { holder: Group; span: CourseCableway; pose: CabinPose } | null = null;
   /** The blob every rider's shadow is drawn with, and each rider's own. */
   private blob: {
     geometry: PlaneGeometry;
@@ -425,6 +429,7 @@ export class CourseRenderer implements WorldRenderer {
     this.near.clear();
     this.chunks.length = 0;
     this.confetti.length = 0;
+    this.funivia = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.riders.clear();
@@ -460,6 +465,7 @@ export class CourseRenderer implements WorldRenderer {
       Sea: new MeshLambertMaterial(lit),
       Conillera: new MeshLambertMaterial({ ...lit, fog: false }),
       Peaks: new MeshLambertMaterial({ ...lit, fog: false }),
+      Funivia: new MeshLambertMaterial({ ...lit, fog: false }),
       Glow: new MeshBasicMaterial(glow),
       Confetti: new MeshBasicMaterial({ ...glow, side: DoubleSide }),
       Sun: new MeshBasicMaterial({ ...glow, fog: false }),
@@ -598,6 +604,16 @@ export class CourseRenderer implements WorldRenderer {
       if (group === 'Confetti') this.confetti.push(mesh);
       if (group === 'StartRed') this.startRed = mesh;
       if (group === 'StartGreen') this.startGreen = mesh;
+      if (group === 'Funivia') {
+        const span = courseCableways(this.course!.file)[0];
+        if (span) {
+          mesh.updateMatrixWorld(true);
+          mesh.matrix.copy(mesh.matrixWorld);
+          mesh.matrixAutoUpdate = false;
+          const holder = new Group();
+          this.funivia = { holder, span, pose: { x: 0, y: 0, z: 0, sway: 0 } };
+        }
+      }
       if (chunk !== undefined) {
         mesh.geometry.computeBoundingSphere();
         const sphere = mesh.geometry.boundingSphere;
@@ -621,6 +637,15 @@ export class CourseRenderer implements WorldRenderer {
         }
       }
     });
+    if (this.funivia) {
+      const m = map.getObjectByName('Funivia') as Mesh | undefined;
+      if (m?.isMesh) {
+        this.funivia.holder.add(m);
+        this.disposables.push(m.geometry);
+      }
+      this.scene.add(this.funivia.holder);
+      this.placeFunivia(0, true);
+    }
     this.map = map;
     this.scene.add(map);
     // The map is some hundreds of chunks, and a frame draws a few dozen of them. A chunk that is only hidden is
@@ -925,6 +950,15 @@ export class CourseRenderer implements WorldRenderer {
       confetti.rotation.y = 0.012 * Math.sin(time * 0.9);
       confetti.updateMatrix();
     }
+    this.placeFunivia(time, false);
+  }
+
+  private placeFunivia(time: number, reducedMotion: boolean): void {
+    if (!this.funivia) return;
+    const { holder, span, pose } = this.funivia;
+    gondolaPosition(span, time, 0.35, reducedMotion, pose);
+    holder.position.set(pose.x, pose.y, pose.z);
+    holder.rotation.set(pose.sway, -span.yaw, 0, 'YXZ');
   }
 
   /** Draws only the chunks of the map near enough to the camera; the haze hides the rest. */
