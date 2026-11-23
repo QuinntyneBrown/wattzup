@@ -485,4 +485,13 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         evi = road.index(ev_m)
         B["foliage"].box(kit.P(evi, 0.0, kit.kerb + 2.4, 0.0), (0.42, 0.34, 1.55), road.s[evi]["h"])
         B["neon-lime"].box(kit.P(evi, 0.0, kit.kerb + 2.4, 1.35), (0.44, 0.36, 0.12), road.s[evi]["h"])
+    # Grand Fassan fresco-accented historic hotel in Canazei (at=6025 m)
+    lp_i = road.index(6025.0)
+    lpy = road.s[lp_i]["h"]
+    lpx, lpy_p, _ = road.at(lp_i, -(kit.kerb + 15.5))
+    if road.clear_of_road(lpx, lpy_p, 11.0, lp_i):
+        lpz = height_at(lpx, lpy_p)
+        B["chalet-plaster"].box((lpx, lpy_p, lpz - 1.0), (14.5, 10.2, 9.2), lpy)
+        B["gold"].box((lpx, lpy_p, lpz + 5.6), (14.7, 10.4, 0.85), lpy)
+        kit.gable(B["roof-slate"], (lpx, lpy_p, lpz + 8.2), 15.4, 11.0, 3.0, lpy)
     # [ANCHOR:villages]
