@@ -501,6 +501,13 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         mtx, mty_p, mtz = kit.P(mti, 0.0, kit.kerb + 2.8, 0.0)
         _road_cyclist(B, mtx, mty_p, mtz, s[mti]["h"] - 1.45, "foliage", standing=True)
 
+    # Celebratory Sellaronda 4-Pass Finisher overhead arch approaching Corvara finish (at=11510 m)
+    fn_a = road.index(11510.0)
+    fny = s[fn_a]["h"]
+    for side in (-1.0, 1.0):
+        B["steel"].box(kit.P(fn_a, 0.0, (kit.kerb + 1.8) * side, -0.1), (0.22, 0.22, 5.6), fny)
+    B["gold"].box(kit.P(fn_a, 0.0, 0.0, 5.15), (0.28, (kit.kerb + 1.8) * 2.0, 0.68), fny)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
