@@ -40,3 +40,8 @@ export function nearestRifugio(metres: number): SellaRifugio {
 export function rifugiOnPass(passId: SellaRifugio['passId']): readonly SellaRifugio[] {
   return SELLA_RIFUGI.filter((r) => r.passId === passId);
 }
+
+/** Returns the highest-altitude pass rifugio on the Sella Ronda roadside loop. */
+export function highestSellaRifugio(): SellaRifugio {
+  return SELLA_RIFUGI.reduce((top, r) => (r.altitudeMetres > top.altitudeMetres ? r : top));
+}
