@@ -240,4 +240,8 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         so_i = road.index(sos_m)
         B["crowd-3"].box(kit.P(so_i, 0.0, -(kit.kerb + 0.75), 0.0), (0.28, 0.28, 1.78), s[so_i]["h"])
         B["paint"].box(kit.P(so_i, 0.0, -(kit.kerb + 0.72), 1.25), (0.30, 0.24, 0.34), s[so_i]["h"])
+    # Tall yellow snowplough portal clearance wands at Pordoi & Gardena galleries
+    for gp_m in (4558.0, 4650.0, 9658.0, 9742.0):
+        gp_i = road.index(gp_m)
+        B["yellow"].box(kit.P(gp_i, 0.0, kit.kerb + 1.35, 0.0), (0.12, 0.12, 3.45), s[gp_i]["h"])
     # [ANCHOR:hairpins]
