@@ -266,4 +266,17 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
         B["larch-warm"].box((fx_b, fy_b, fz_b + 0.08), (3.4, 1.15, 0.14), fyaw)
         B["larch-aged"].box((fx_b - math.sin(fyaw) * 0.52, fy_b + math.cos(fyaw) * 0.52, fz_b + 0.22), (3.4, 0.08, 0.88), fyaw)
 
+    # 17. Flocks of woolly white Tiroler Bergschafe mountain sheep on high-altitude pastures
+    for sh_m, sh_s in ((4680.0, 1.0), (7520.0, 1.0), (9980.0, -1.0)):
+        sh_idx = road.index(sh_m)
+        shx, shy, _ = road.at(sh_idx, (kit.kerb + 14.5) * sh_s)
+        if road.clear_of_road(shx, shy, 12.0, sh_idx):
+            for s_k in range(5):
+                ang = s_k * 1.35 + 0.2
+                px_s = shx + math.cos(ang) * (2.4 + s_k * 1.4)
+                py_s = shy + math.sin(ang) * (2.4 + s_k * 1.4)
+                pz_s = height_at(px_s, py_s)
+                B["paint"].box((px_s, py_s, pz_s + 0.18), (0.92, 0.48, 0.46), ang)
+                B["dark"].box((px_s + math.cos(ang) * 0.48, py_s + math.sin(ang) * 0.48, pz_s + 0.36), (0.28, 0.24, 0.26), ang)
+
     return trees
