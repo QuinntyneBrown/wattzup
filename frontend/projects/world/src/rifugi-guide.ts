@@ -35,3 +35,8 @@ export function nearestRifugio(metres: number): SellaRifugio {
     return dCur < dBest ? r : best;
   });
 }
+
+/** Lists the pass rifugi standing on `passId` in clockwise riding order. */
+export function rifugiOnPass(passId: SellaRifugio['passId']): readonly SellaRifugio[] {
+  return SELLA_RIFUGI.filter((r) => r.passId === passId);
+}
