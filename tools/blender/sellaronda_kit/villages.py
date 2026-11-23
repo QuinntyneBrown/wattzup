@@ -118,3 +118,21 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
             B["lago-turquoise"].box((sx_t, sy_t, sz_t + 0.08), (4.2, 24.0, 0.18), st_yaw)
             B["larch-warm"].box(kit.P(st_idx, 0.0, (kit.kerb + 0.95) * side, 0.0), (8.6, 0.32, 1.18), st_yaw)
             B["larch-aged"].box(kit.P(st_idx, 0.0, (kit.kerb + 0.95) * side, 1.18), (9.0, 0.44, 0.16), st_yaw)
+
+    # Castel Wolkenstein medieval cliff fortress overlooking Selva di Val Gardena (at=9020 m)
+    cw_idx = road.index(9020.0)
+    cw_yaw = road.s[cw_idx]["h"]
+    cwx, cwy, _ = road.at(cw_idx, kit.kerb + 46.0)
+    cwz = height_at(cwx, cwy) + 14.0
+    B["stone"].box((cwx, cwy, cwz - 16.0), (14.0, 9.5, 22.0), cw_yaw + 0.3)
+    B["dolomite-pale"].box((cwx + 4.2, cwy - 2.0, cwz + 4.0), (5.2, 5.2, 9.5), cw_yaw + 0.3)
+    kit.gable(B["parasol-red"], (cwx + 4.2, cwy - 2.0, cwz + 13.5), 5.6, 5.6, 2.8, cw_yaw + 0.3)
+
+    # Octagonal stone village square fountains (Fontana / Brunnen) in Corvara, Arabba, Canazei & Selva
+    for fnt_m, f_side in ((285.0, -1.0), (3145.0, 1.0), (6140.0, -1.0), (8940.0, 1.0)):
+        f_idx = road.index(fnt_m)
+        fx_v, fy_v, _ = road.at(f_idx, (kit.kerb + 7.5) * f_side)
+        fz_v = max(height_at(fx_v, fy_v), road.s[f_idx]["z"] - 0.2)
+        B["dolomite-pale"].box((fx_v, fy_v, fz_v - 0.3), (2.6, 2.6, 1.05), 0.0)
+        B["lago-turquoise"].box((fx_v, fy_v, fz_v + 0.68), (2.1, 2.1, 0.14), 0.0)
+        B["stone"].box((fx_v, fy_v, fz_v + 0.75), (0.42, 0.42, 1.45), 0.0)
