@@ -433,4 +433,12 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["larch-warm"].box((sdx, sdy_p, sdz + 0.7), (9.8, 6.8, 2.9), sdy)
         kit.gable(B["roof-slate"], (sdx, sdy_p, sdz + 3.6), 10.4, 7.4, 1.15, sdy)
 
+    # Sculpted larch-timber Sellaronda MTB Track banked berms under the Gardena gondola line
+    for bm_m, bm_o in ((9885.0, 18.0), (9945.0, 24.0)):
+        bmi = road.index(bm_m)
+        bmx, bmy, _ = road.at(bmi, kit.kerb + bm_o)
+        if road.clear_of_road(bmx, bmy, 12.0, bmi):
+            bmz = height_at(bmx, bmy)
+            B["larch-warm"].box((bmx, bmy, bmz), (6.4, 0.35, 1.15), s[bmi]["h"] + 0.55)
+
     return cableways_out
