@@ -193,6 +193,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Sky 17 | The sunset shows down the finishing straight: the festoons' glow over the road no longer stands in one white glare in front of it | 60.3 fps (from 8,000, 8,150 and 8,300 m) | 42.6 and 45.9 fps after (the finish, 119,897 triangles: none more); Neon Docklands beside it 50.3, 54.4 |
 | Sky 18 | The sun goes down into open sea at the end of the finishing straight, the island beside it: the island's flank had stood in front of it | 60.3 and 60.1 fps (from 8,150 and 8,300 m) | 52.8 and 41.4 fps after (the finish, 119,897 triangles: none more); Neon Docklands beside it 53.5, 54.7 |
 | Sign 4 | The whole word reads on the approach: a festoon post stood in front of the first I, and the sign read BIZA | 60.3, 59.6 and 60.0 fps (from 235, 262 and 282 m) | 42.7 fps at the sign (87,915 triangles) and 48.5 at the finish (119,929); Neon Docklands beside it 48.4, 53.5 |
+| Sign 5 | The lamps in the plinth light the letters: a warm glow at the foot of each dark face, fading up it, strongest in front of each lamp | 59.9 and 60.2 fps (from 262 and 282 m) | 51.4 fps at the sign (87,915 triangles: none more) and 53.9 at the finish; Neon Docklands beside it 47.2, 43.2 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -613,6 +614,17 @@ festoons to the roadside stood four metres from the end of the square, straight 
 I. Both stand twelve metres clear of it now. From 235 m and from 282 m the word is whole; at 262 m the post
 crosses the word for a moment as it is passed, between the I and the B, and all five letters are still read.
 A small change, and nothing is added.
+
+### Sign 5: the plinth's lamps light the letters
+
+`sign-05.jpg` (from 262 and 282 m). The plinth has had three lamps in it since Sign 1, and they lit the paving
+and nothing of the letters: every face was one flat dark. Each corner of a face has a colour of its own now, warm
+amber where a lamp's light strikes the foot of the letter and the letter's own dark at its head, strongest in
+front of each of the three lamps. No triangles are added.
+
+**Two cuts before this one** were far too strong (the letters turned orange and were lost against the land
+behind them). The wash is seven parts in a hundred at its strongest: the faces are dark, as in the photograph.
+A letter's upright is one face from foot to head, so the glow fades evenly up it and cannot be kept to the foot.
 
 ### Low power: where the frames go (after Party 20)
 

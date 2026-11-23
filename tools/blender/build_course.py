@@ -409,6 +409,8 @@ MATERIALS: dict[str, dict] = {
     # The IBIZA letters: white, their faces dark, on a pale blue plinth.
     "sign-white": {"color": 0xF2F0EA, "rough": 0.7},
     "sign-face": {"color": 0x23262E, "rough": 0.5},
+    # The letters' faces, washed from below by the lamps in the plinth: each corner has a colour of its own.
+    "sign-lit": {"color": 0x23262E, "rough": 0.5},
     "sign-plinth": {"color": 0x6DB6EC, "rough": 0.8},
     # A straw hat against the low sun.
     "straw": {"color": 0xE6CC8C, "rough": 0.9},
@@ -599,7 +601,7 @@ PARTS: list[Builder] = []
 CHUNK = 240.0  # metres of road a chunk of the map holds: the app draws only the chunks near the rider
 # The land and the light beams are few triangles a chunk: theirs are four times as long, a quarter as many meshes.
 # Materials whose colour is not shaded by height (see `assemble`): the road's own, and what hangs clear of the ground.
-UNSHADED = {"asphalt", "paint", "yellow", "kerb-red", "promenade", "sand", "club-window", "awning", "awning-white", "sign-plinth", "sign-white", "sign-paving", "sign-paving-band", "party-white", "straw", "bottle-0", "bottle-1", "shade"}
+UNSHADED = {"asphalt", "paint", "yellow", "kerb-red", "promenade", "sand", "club-window", "awning", "awning-white", "sign-plinth", "sign-white", "sign-lit", "sign-paving", "sign-paving-band", "party-white", "straw", "bottle-0", "bottle-1", "shade"}
 # Parts the film's staging looks up by name: kept whole in the scene, out of the glb, beside their chunks.
 FILM_KEEPS = {"GlowLamp"}
 # The ground the road builds: the asphalt, its paint and kerbs, the pavements and the shoulders. Its own group, with
@@ -1394,8 +1396,16 @@ def ibiza_sign(B: dict, kit, at, facing: float) -> None:
         for slab in slabs:
             front = [(at[0] + ux * (u + a) + nx * SIGN_DEEP / 2, at[1] + uy * (u + a) + ny * SIGN_DEEP / 2, at[2] + plinth_h + v) for a, v in slab]
             back = [(q[0] - nx * SIGN_DEEP, q[1] - ny * SIGN_DEEP, q[2]) for q in front]
-            face, side = B["sign-face"], B["sign-white"]
+            face, side = B["sign-lit"], B["sign-white"]
+            if face.colours is None:
+                face.colours = []
             face.faces.append(tuple(face.v(q) for q in front))
+            # The lamps in the plinth wash the faces from below: warm amber at the foot, fading up the letter to
+            # its own dark, strongest in front of each lamp.
+            for (a, v), q in zip(slab, front):
+                near = min(abs(u + a - k * total / 3) for k in (-1, 0, 1))
+                wash = max(0.0, 1.0 - v / (SIGN_TALL * 0.55)) ** 2.0 * (1.0 - 0.45 * min(1.0, near / (total / 6)))
+                face.colours.append(sky.mix(srgb(0x23262E), srgb(0xFFB868), 0.07 * wash))
             side.faces.append(tuple(side.v(q) for q in reversed(back)))
             for k in range(len(front)):
                 j = (k + 1) % len(front)
@@ -1774,7 +1784,7 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         "trunk leaf leaf-dark glint bush bougainvillea whitewash wall wood dark stone rock skin club-window awning awning-white arrow sail sail-pink "
         "glow-door lamp-red lamp-green gold confetti bulb paint sun island tower "
         "skin-1 skin-2 hair-0 hair-1 hair-2 party-white drink-0 drink-1 drink-2 trunk-dark leaf-dry leaf-light dates "
-        "sign-white sign-face sign-plinth sign-paving sign-paving-band straw phone bottle-0 bottle-1 shade "
+        "sign-white sign-face sign-lit sign-plinth sign-paving sign-paving-band straw phone bottle-0 bottle-1 shade "
         "plane-body plane-tail plane-engine plane-window plane-red plane-green plane-white plane-strobe plane-beacon plane-cabin plane-belly"
     ).split() + NEONS + BEAMS + CROWD
     B = {name: Builder("".join(p.title() for p in name.split("-")), name) for name in names}
