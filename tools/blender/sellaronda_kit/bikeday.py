@@ -488,6 +488,11 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     B["ladin-blue"].box((bwx, bwy_p, bwz + 1.15), (5.44, 2.08, 0.36), bwsy)
     B["steel"].box((bwx - math.cos(bwsy) * 4.2, bwy_p - math.sin(bwsy) * 4.2, bwz + 0.35), (2.6, 1.85, 1.25), bwsy)
 
+    # Tifosi waving rose-pink Giro banners on upper Passo Pordoi switchbacks
+    for tf_m in (4710.0, 4895.0):
+        tfi = road.index(tf_m)
+        B["accent-2"].box(kit.P(tfi, 0.0, kit.kerb + 1.55, 1.65), (0.08, 0.85, 0.65), s[tfi]["h"])
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
