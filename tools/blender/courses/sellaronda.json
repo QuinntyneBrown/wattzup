@@ -1,0 +1,36 @@
+{
+  "id": "sellaronda",
+  "name": "Sella Ronda",
+  "world": "sellaronda",
+  "theme": "sellaronda",
+  "seed": 136,
+  "layout": 0,
+  "class": {
+    "id": "over-under-intervals-on-the-passo-sella",
+    "title": "Over/Under Intervals on the Passo Sella",
+    "channel": "GCN Training",
+    "videoId": "bEfCKGBJc6k",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      { "kind": "warm-up", "duration": 180, "level": 13, "cadenceAim": 80 },
+      { "kind": "work", "duration": 120, "level": 18, "cadenceAim": 90 },
+      { "kind": "work", "duration": 30, "level": 22, "cadenceAim": 100 },
+      { "kind": "recover", "duration": 140, "level": 18, "cadenceAim": 80 },
+      { "kind": "work", "duration": 30, "level": 22, "cadenceAim": 100 },
+      { "kind": "recover", "duration": 140, "level": 18, "cadenceAim": 80 },
+      { "kind": "work", "duration": 30, "level": 22, "cadenceAim": 100 },
+      { "kind": "recover", "duration": 140, "level": 18, "cadenceAim": 80 },
+      { "kind": "work", "duration": 30, "level": 22, "cadenceAim": 100 },
+      { "kind": "recover", "duration": 140, "level": 18, "cadenceAim": 80 },
+      { "kind": "work", "duration": 30, "level": 22, "cadenceAim": 100 },
+      { "kind": "recover", "duration": 140, "level": 18, "cadenceAim": 80 },
+      { "kind": "work", "duration": 30, "level": 22, "cadenceAim": 100 },
+      { "kind": "recover", "duration": 140, "level": 18, "cadenceAim": 80 },
+      { "kind": "work", "duration": 30, "level": 22, "cadenceAim": 100 },
+      { "kind": "recover", "duration": 140, "level": 18, "cadenceAim": 80 },
+      { "kind": "cool-down", "duration": 190, "level": 11, "cadenceAim": 80 }
+    ]
+  }
+}

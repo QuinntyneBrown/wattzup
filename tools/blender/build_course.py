@@ -40,6 +40,7 @@ import bmesh  # after bpy: the bpy module provides it
 from mathutils import Vector, kdtree
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import sellaronda  # noqa: E402  (beside this script)
 import sky  # noqa: E402  (beside this script)
 import themes  # noqa: E402  (beside this script)
 from pack_glb import pack as pack_glb  # noqa: E402  (beside this script)
@@ -422,6 +423,7 @@ MATERIALS: dict[str, dict] = {
     "sun": {"color": 0xFF7A3A, "glow": 1.3},
     "sky": {"color": 0xF2A77A, "glow": 1.0},
     "island": {"color": 0x5A3F52, "rough": 1.0},
+    "peaks": {"color": 0xFFFFFF, "rough": 1.0, "vertex": True},
     "beam-pink": {"color": 0xFF5AA8, "glow": 2.2, "alpha": 0.2, "double": True},
     "beam-cyan": {"color": 0x5AE8F0, "glow": 2.2, "alpha": 0.2, "double": True},
     "beam-amber": {"color": 0xFFC060, "glow": 2.2, "alpha": 0.2, "double": True},
@@ -568,7 +570,7 @@ HALOS_PART = "Halos"
 WALL_KINDS = {"brick": 1, **{f"container-{i}": 2 for i in range(4)}, "whitewash": 3, "tower": 3, "wall": 3,
               **{f"facade-{i}": 3 for i in range(6)}, **{f"deco-{i}": 3 for i in range(4)}}
 WIDER = {"Land": 4, "Beams": 6, "Glow": 6, "Leaves": 1, "Halos": 4, "Ground": 2}
-WHOLE = {"sea": "Sea", "sky": "Sky", "sun": "Sun", "moon": "Sun", "island": "Conillera", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
+WHOLE = {"sea": "Sea", "sky": "Sky", "sun": "Sun", "moon": "Sun", "island": "Conillera", "peaks": "Peaks", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
 
 
 def group_of(mat: str) -> tuple[str, bool]:
@@ -2182,10 +2184,16 @@ def main(argv: list[str] | None = None) -> dict:
     Builder.map_collection = col
     PARTS.clear()
 
-    samples, st, length, mean, per_level = lay_centre_line(course, theme)
+    if (theme or {}).get("builder") == "sellaronda":
+        samples, st, length, mean, per_level = sellaronda.lay_centre_line(course, theme)
+    else:
+        samples, st, length, mean, per_level = lay_centre_line(course, theme)
     road = Road(samples)
     build_road(road, st, length, col, theme)
-    if themed:
+    if (theme or {}).get("builder") == "sellaronda":
+        _, height_at = sellaronda.build_terrain(road, col, Builder)
+        facts = sellaronda.build_scenery(road, st, length, height_at, course, col, Builder, build_sky)
+    elif themed:
         _, height_at = build_land(road, col, theme)
         facts = build_themed_scenery(road, st, length, height_at, course, theme, col)
     else:

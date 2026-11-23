@@ -231,6 +231,20 @@ THEMES: dict[str, dict] = {
         "grade": {"perLevel": 0.5, "roll": 2.0, "rollWave": 600.0, "climb": 6.0},
         "reach": 1100.0,
     },
+    "sellaronda": {
+        "own": True,
+        "builder": "sellaronda",
+        "sky": [0xFFD4A8, 0xF29E88, 0xB88AB4, 0x5E7EB8, 0x284684],
+        "haze": 0xE2BEC0,
+        "light": [0xFFB48A, 2.9],
+        "fill": [0xD4E0F8, 0x4E6444],
+        "sun_altitude": 0.16,
+        "palette": {"asphalt": 0x36363E, "sand": 0x62863C, "promenade": 0x8E887E, "sea": 0x4E7838, "chevron": 0x3AE8FF},
+        "land": {"low": 0x4E7C34, "mid": 0x66963E, "high": 0x8A8A70, "rock": 0xCFC4B4, "snow": 0xF2F5FA},
+        "terrain": {"sea": False},
+        "edge": "guardrail",
+        "centre": "white",
+    },
 }
 
 

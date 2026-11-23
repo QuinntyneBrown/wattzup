@@ -5,7 +5,7 @@
 // differ. Comparing two pictures of the same canvas reads no pixel's colour (ADR 0021). The course draws in software
 // here, on WebGL2.
 import type { Locator, Page } from '@playwright/test';
-import { ibizaCourseMap } from './fixtures/course';
+import { ibizaCourseMap, sellaRondaCourseMap } from './fixtures/course';
 import { ECHELON_NOTIFY, resistanceFrame, workoutFrame } from './fixtures/echelon';
 import type { FakeBluetooth } from './fixtures/fake-bluetooth';
 import { startRace, stepUntil } from './fixtures/race';
@@ -52,6 +52,30 @@ test.describe('a course', () => {
     await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
     expect(loaded).toContain('/courses/ibiza.glb');
     expect(loaded).toContain('/courses/ibiza.course.json');
+    await ride(page, bluetooth, 80);
+    const first = await picture(page, race.world);
+
+    await ride(page, bluetooth, 80);
+
+    expect((await picture(page, race.world)).equals(first)).toBe(false);
+  });
+
+  test('draws Sella Ronda as its own four-pass Dolomite course built in Blender (L2-166 AC1, AC10)', async ({
+    page,
+    bluetooth,
+    api,
+    webgl,
+  }) => {
+    await webgl.withoutWebGpu();
+    const loaded: string[] = [];
+    page.on('requestfinished', (request) => loaded.push(new URL(request.url()).pathname));
+    const race = await startRace(page, bluetooth, api, sellaRondaCourseMap.id, 'mode=solo', {
+      catalogue: [sellaRondaCourseMap],
+      world: true,
+    });
+    await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
+    expect(loaded).toContain('/courses/sellaronda.glb');
+    expect(loaded).toContain('/courses/sellaronda.course.json');
     await ride(page, bluetooth, 80);
     const first = await picture(page, race.world);
 

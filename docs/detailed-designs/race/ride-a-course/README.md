@@ -36,6 +36,7 @@ of its length, and the land's cells with it.
 | Dolomites | `dolomites` | 38.5 km | 860 m | Alpine valley: spruce, chalets, a chapel on the highest bend, limestone peaks |
 | Vice City | `vicecity` | 24 km | 60 m | Magenta sunset: palms, art deco hotels with neon, convertibles, the beach |
 | Col du Granit | `granite` | 16.1 km | 1,240 m | High pass at first light: hairpins, parapets, snow poles, larches, granite peaks |
+| Sella Ronda | `sellaronda` | 11.7 km | 357 m | Four Dolomite passes circling the Sella massif in Enrosadira evening light: Campolongo, Pordoi, Sella and Gardena |
 
 `<id>.course.json` carries `lengthMetres`, `durationSeconds`, `step`, `startIndex`, `roadHalfWidth`,
 `sun` (the light's direction), `stages` (the plan's segments with `start`, `from`, `to`) and `points`

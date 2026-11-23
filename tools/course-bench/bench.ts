@@ -9,7 +9,7 @@ import {
   targetResistanceWrite,
   workoutFrame,
 } from "../../frontend/e2e/fixtures/echelon";
-import { ibizaCourseMap } from "../../frontend/e2e/fixtures/course";
+import { ibizaCourseMap, sellaRondaCourseMap } from "../../frontend/e2e/fixtures/course";
 import { maps } from "../../frontend/e2e/fixtures/maps";
 import { veteranProgress } from "../../frontend/e2e/fixtures/progress";
 import { expect, test } from "../../frontend/e2e/fixtures/test";
@@ -71,12 +71,12 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
     },
     [tier, FROM, process.env["WZ_BENCH_BACKEND"] ?? ""] as const,
   );
-  // The maps the app is told of: the fixtures' list, and Ibiza Sunset Strip, which has a fixture of its own.
-  api.answer("GET", "/api/maps", () => ({ body: [...maps, ibizaCourseMap] }));
+  // The maps the app is told of: the fixtures' list, Ibiza Sunset Strip, and Sella Ronda.
+  api.answer("GET", "/api/maps", () => ({ body: [...maps, ibizaCourseMap, sellaRondaCourseMap] }));
   // A rider with every map open, so any course can be benched.
   api.answer("GET", "/api/progress", {
     ...veteranProgress,
-    openMapIds: [...veteranProgress.openMapIds, "col-du-granit", ibizaCourseMap.id],
+    openMapIds: [...veteranProgress.openMapIds, "col-du-granit", ibizaCourseMap.id, sellaRondaCourseMap.id],
   });
   await bluetooth.remember(echelonBike);
   const race = new RacePage(page);

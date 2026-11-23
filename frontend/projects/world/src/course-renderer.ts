@@ -366,6 +366,10 @@ export class CourseRenderer implements WorldRenderer {
     const ridden = frame.riders
       ? Math.min(frame.s, course.end)
       : course.metresAt(frame.time * this.clockScale);
+    if (this.pinned) {
+      const from = ((globalThis as Record<string, unknown>)[PROBE_KEY] as { from?: unknown })?.from;
+      if (typeof from === 'number') this.benchFrom = from;
+    }
     const metres = Math.min(ridden + this.benchFrom, course.end);
     if (frame.riders && !this.fieldMade) this.makeField(frame.riders, metres);
     this.lampShadows?.begin();
@@ -455,6 +459,7 @@ export class CourseRenderer implements WorldRenderer {
       Leaves: new MeshLambertMaterial({ ...lit, side: DoubleSide }),
       Sea: new MeshLambertMaterial(lit),
       Conillera: new MeshLambertMaterial({ ...lit, fog: false }),
+      Peaks: new MeshLambertMaterial({ ...lit, fog: false }),
       Glow: new MeshBasicMaterial(glow),
       Confetti: new MeshBasicMaterial({ ...glow, side: DoubleSide }),
       Sun: new MeshBasicMaterial({ ...glow, fog: false }),

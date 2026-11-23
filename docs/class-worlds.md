@@ -7,6 +7,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Course | Class | Length | Climbing | Model | Status |
 | --- | --- | --- | --- | --- | --- |
 | Ibiza Sunset Strip (`ibiza`) | Intervals to the Beat (GCN Training, 20:00) | 8.4 km | 159 m | `public/courses/ibiza.glb` ([captures](screenshots/courses/ibiza/)) | Built and ridden; open from the start on the map catalogue |
+| Sella Ronda (`sellaronda`) | Over/Under Intervals on the Passo Sella (GCN Training, 28:00) | 11.7 km | 357 m | `public/courses/sellaronda.glb` ([captures](screenshots/courses/sellaronda/)) | Built and ridden; open from the start on the map catalogue |
 | Prairie Paceline (`prairie`) | The catalogue's 30:00 intervals (placeholder) | 18.4 km | 90 m | `public/courses/prairie.glb` ([film](../blender/prairie.mp4)) | Built in Blender (ADR 0035) and ridden in races |
 | Old Town Criterium (`oldtown`) | The catalogue's 30:00 intervals (placeholder) | 14.2 km | 140 m | `public/courses/oldtown.glb` ([film](../blender/oldtown.mp4)) | Built in Blender (ADR 0035) and ridden in races |
 | Cliffside Coast (`coast`) | The catalogue's 30:00 intervals (placeholder) | 32 km | 410 m | `public/courses/coast.glb` ([film](../blender/coast.mp4)) | Built in Blender (ADR 0035) and ridden in races |
