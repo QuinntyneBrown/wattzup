@@ -470,6 +470,9 @@ def villages(k) -> int:
             z = k.height_at(x, y)
             if z < 3.5 or any(math.hypot(x - px, y - py) < 7.4 for px, py in placed):
                 continue
+            # Vernazza's castle and church have their own ground.
+            if site["name"] == "Vernazza" and any(math.hypot(x - site["x"] - lx, y - site["y"] - ly) < reach for lx, ly, reach in LANDMARKS):
+                continue
             # Not on the cliff under the road, and not where the rock is too steep to build on.
             fall = max(abs(k.height_at(x + 5.0, y) - z), abs(k.height_at(x, y + 5.0) - z))
             if fall > 7.5 or k.road.tree.find((x, y, 0.0))[2] < 13.5:
@@ -639,6 +642,55 @@ def boats(k) -> int:
     return hauled
 
 
+# Vernazza's castle and church, from the village's place on the road: across, out to sea, and the ground each keeps.
+LANDMARKS = ((36.0, 66.0, 17.0), (-32.0, 56.0, 19.0), (-32.0, 40.0, 9.0))
+
+
+def vernazza(k) -> bool:
+    """Detail 5, Vernazza harbour: above the houses of the second village stand the round tower of the Doria castle
+    on the spur's seaward end, on its square keep, and the church of Santa Margherita by the water with its
+    octagonal bell tower under a small dome."""
+    sites = village_sites(k.s)
+    if len(sites) < 2:
+        return False
+    site, paint = sites[1], Painted(k)
+    stone, pale, dark = _lin(0x9C9280), _lin(0xC4B9A0), _lin(0x6E6656)
+    ochre, cream, tile = _lin(0xD9B46A), _lin(0xE8D8B0), _lin(0xB5674A)
+
+    def ground(x: float, y: float) -> float:
+        return max(k.height_at(x, y), 2.0)
+
+    # The castle: a keep with a crenellated wall, and the round tower rising out of it.
+    x, y = site["x"] + 36.0, site["y"] + 66.0
+    z = max(ground(x + dx, y + dy) for dx in (-8, 8) for dy in (-8, 8))
+    paint.box((x, y, z - 14.0), (20.0, 17.0, 20.0), 0.3, stone, 0.6)
+    for q in range(12):
+        a = q * math.tau / 12
+        paint.box((x + math.cos(a + 0.3) * 9.0, y + math.sin(a + 0.3) * 7.6, z + 6.0), (1.5, 1.5, 1.3), a + 0.3, pale, 0.9)
+    paint.tube((x - 2.0, y + 1.0, z + 6.0), 4.6, 4.1, 17.0, stone, pale, 12, dark)
+    for q in range(8):
+        a = q * math.tau / 8
+        paint.box((x - 2.0 + math.cos(a) * 3.9, y + 1.0 + math.sin(a) * 3.9, z + 23.0), (1.1, 1.1, 1.2), a, pale, 0.9)
+    # The church: a long nave end-on to the sea, and the bell tower at its landward end.
+    x, y = site["x"] - 32.0, site["y"] + 56.0
+    z = max(ground(x + dx, y + dy) for dx in (-6, 6) for dy in (-12, 12))
+    yaw = math.pi / 2 + 0.12
+    paint.box((x, y, z - 12.0), (25.0, 11.0, 23.0), yaw, cream, 0.6)
+    paint.roof((x, y, z + 11.0), 25.0, 11.0, 3.2, yaw, tile)
+    bx, by = x + math.cos(yaw) * -15.0, y + math.sin(yaw) * -15.0
+    paint.box((bx, by, z - 12.0), (6.0, 6.0, 34.0), yaw, ochre, 0.6)
+    paint.tube((bx, by, z + 22.0), 3.3, 3.3, 7.0, ochre, cream, 8)
+    for q in range(8):
+        # The belfry's openings, dark between its piers.
+        a = (q + 0.5) * math.tau / 8
+        out, along = (math.cos(a), math.sin(a)), (-math.sin(a), math.cos(a))
+        corner = (bx + out[0] * 3.05 - along[0] * 0.7, by + out[1] * 3.05 - along[1] * 0.7, 0.0)
+        paint.panel(corner, along, out, 0.0, 1.4, z + 23.5, z + 27.5, 0.08, _lin(PANE))
+    paint.tube((bx, by, z + 29.0), 3.5, 2.2, 1.6, tile, tile, 8)
+    paint.tube((bx, by, z + 30.6), 2.2, 0.0, 2.6, tile, _lin(0xC9785A), 8)
+    return True
+
+
 SHIRTS = (0xD9483A, 0x2F7FC4, 0xF0B429, 0x3E9A62, 0xF2EEE2, 0xE8762C, 0x7A4FB0, 0x25A0A0)
 SKIN = (0xE8B48C, 0xC88A5E, 0x8A5A3C, 0xF0C8A4)
 
@@ -720,4 +772,5 @@ def scenery(k) -> dict:
     plants = maquis(k)
     hauled = boats(k)
     path = footpath(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "houses": houses, "plants": plants, "boats": hauled, **path}
+    harbour = vernazza(k)
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "houses": houses, "plants": plants, "boats": hauled, **path, "castle": harbour}
