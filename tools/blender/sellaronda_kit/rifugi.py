@@ -260,4 +260,8 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     hbz = max(height_at(hbx, hby), road.s[hb_i]["z"] - 0.4)
     B["larch-warm"].box((hbx, hby, hbz), (6.4, 3.8, 3.1), hbyaw)
     B["glow-window"].box((hbx, hby, hbz + 0.55), (6.46, 3.86, 2.05), hbyaw)
+    # Porphyry-paved forecourt drop-off apron at Hotel Col di Lana on Passo Pordoi (at=4982 m)
+    cd_i = road.index(4982.0)
+    cdy = road.s[cd_i]["h"]
+    B["brick"].box(kit.P(cd_i, 0.0, kit.kerb + 2.8, -0.04), (10.5, 3.2, 0.10), cdy)
     # [ANCHOR:rifugi-global]
