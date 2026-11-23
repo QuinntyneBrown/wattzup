@@ -4,6 +4,7 @@ import {
   distanceToNextVillage,
   hasOnionDomeBelfry,
   LADIN_VILLAGES,
+  lowestLadinVillage,
   provinceForMetres,
   villageAtMetres,
 } from './ladin-villages';
@@ -26,5 +27,6 @@ describe('LADIN_VILLAGES', () => {
     expect(provinceForMetres(3120)).toBe('Belluno (Veneto)');
     expect(provinceForMetres(6120)).toBe('Trento (Trentino)');
     expect(provinceForMetres(8920)).toBe('Bolzano (Alto Adige / Südtirol)');
+    expect(lowestLadinVillage().id).toBe('canazei');
   });
 });

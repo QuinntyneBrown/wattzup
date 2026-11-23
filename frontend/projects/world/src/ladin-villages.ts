@@ -94,3 +94,8 @@ export function provinceForMetres(metres: number): DolomiteProvince {
   if (w >= 4958 && w < 7758) return 'Trento (Trentino)';
   return 'Bolzano (Alto Adige / Südtirol)';
 }
+
+/** Returns the lowest-altitude valley town on the Sella Ronda circuit (Canazei, 1,465 m). */
+export function lowestLadinVillage(): LadinVillage {
+  return LADIN_VILLAGES.reduce((low, v) => (v.altitudeMetres < low.altitudeMetres ? v : low));
+}
