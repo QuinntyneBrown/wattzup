@@ -204,6 +204,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Sky 22 | The sun's glow is round the sun: it was painted six degrees up, and hung over a sun that had gone down from under it | 59.9 and 60.4 fps (from 4,450 and 8,150 m) | 52.2 and 52.6 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 56.3, 54.4 |
 | Party 22 | Strollers step aside to the kerb to pass an effort gate: they walked through its feet | 60.1 fps, none over 20 ms (from 950 m) | 49.8 and 41.4 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 52.8, 52.1 |
 | Sky 23 | The gulls are seen: dark against the sunset, two and a half times the size they looked, crossing the middle of the picture for some twenty seconds | 60.0 fps, none over 20 ms (from 7,700 m, 18 s) | 44.5 and 48.9 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 54.0, 50.1 |
+| Sign 6 | The square is a place people stop: two sit on the ends of the plinth with their drinks, a friend stands back to take the picture of those posing, and a pair talk at the side | 60.2 and 60.3 fps (from 268 and 284 m) | 48.9 fps at the sign (87,010 triangles) and 48.1 at the finish (118,819); Neon Docklands beside it 52.4, 49.1 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -746,6 +747,14 @@ fast, taken at the same place and second: white is a difference). The check two 
 only: the thunderhead's lightning (held on in one of them), the aeroplane (a moment further on), and four ragged
 scraps of cloud, flat beneath, which are the low cloud in the places it has moved from and to. It drifts. At its
 own pace, a degree in eight seconds, it is weather: not to be seen moving in a few seconds of film.
+
+### Sign 6: people stop at the square
+
+`sign-06.jpg` (from 268 and 284 m). Three people posed in front of the letters and the square was otherwise
+empty. In the photograph it is a place people walk through and stop at. Six more are there now: one sits on each
+end of the plinth, clear of the letters, with a drink; two stand back across the square facing the letters, as
+whoever takes the picture does; and a pair talk at the side. The low tier draws 87,010 triangles there, a long
+way under its budget; the finish, eight kilometres on, is untouched. They have dice of their own.
 
 ### Low power: where the frames go (after Party 20)
 

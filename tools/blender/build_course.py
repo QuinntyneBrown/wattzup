@@ -2448,6 +2448,21 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
                 for across in (-5.9, -5.1, 5.6):
                     spot = (at[0] + nx * posed.uniform(0.9, 1.6) - ny * across, at[1] + ny * posed.uniform(0.9, 1.6) + nx * across, at[2])
                     person(spot, facing + posed.uniform(-0.3, 0.3), rng=posed)
+                # The square is a place people stop: two sit on the ends of the plinth with their drinks, a friend
+                # stands back to take the picture of those posing, and a pair talk at the side. Dice of their own.
+                stop = random.Random(6606 + signs)
+                wide = sum(sign_letter(c_)[0] for c_ in "IBIZA") + SIGN_GAP * 4
+
+                def stood(out: float, across: float):
+                    return (at[0] + nx * out - ny * across, at[1] + ny * out + nx * across, at[2])
+
+                for across in (-(wide / 2 + 0.75), wide / 2 + 0.7):
+                    seat = stood(0.72, across)
+                    person((seat[0], seat[1], seat[2] + 0.04), facing + stop.uniform(-0.35, 0.35), rng=stop, dice=stop, sit=True)
+                person(stood(6.4, 0.4), facing + math.pi + stop.uniform(-0.1, 0.1), rng=stop, dice=stop)
+                person(stood(6.9, 1.5), facing + math.pi + stop.uniform(-0.3, 0.3), rng=stop, dice=stop)
+                person(stood(3.6, -8.4), facing - math.pi / 2 + stop.uniform(-0.2, 0.2), rng=stop, dice=stop)
+                person(stood(3.7, -7.5), facing + math.pi / 2 + stop.uniform(-0.2, 0.2), rng=stop, dice=stop)
                 signs += 1
                 break
 
