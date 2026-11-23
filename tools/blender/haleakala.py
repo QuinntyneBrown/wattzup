@@ -1084,6 +1084,54 @@ def summit_stop(k) -> dict:
     return {"summitCars": cars, "summitVisitors": people}
 
 
+FRUIT = (0xF2C230, 0x5E9A3A, 0xE8842E, 0xD8D23A, 0xB8342E, 0x7A5A2A)
+STAND_ROOFS = (0x3F8F9A, 0xB85A3A, 0xE8E2D0, 0x4F8A4A)
+
+
+def fruit_stands(k) -> dict:
+    """Detail 7, the coastal start: the stands of the shore road. In front of the cane, on the mountain's side,
+    there stands every 400 m or so a fruit stand: four posts and a tin roof, a plank counter stacked with
+    pineapples, coconuts, papayas and hands of bananas, a painted board on the roof's edge, a pickup pulled in
+    beside it and somebody buying."""
+    near, rng, s = Painted(k, "hk-detail"), k.rng, k.s
+    wood, white = _lin(0x8A6A44), _lin(0xF2EEE2)
+    stands = 0
+    last = -200
+    for i in range(75, k.n - 30):  # clear of the start line and its crowd
+        if height_share(k, i) > COAST_TO:
+            break
+        if i - last < 110 or TOWN[0] - 12 <= i <= TOWN[1] + 12 or any(abs(s[q]["k"]) > 1 / 150 for q in range(i - 3, i + 8)):
+            continue
+        shore = 1 if math.cos(s[i]["h"]) > 0 else -1
+        off = -(k.kerb + 4.6) * shore
+        x, y, z = k.road.at(i, off)
+        if not k.road.clear_of_road(x, y, 6.0, i):
+            continue
+        h = s[i]["h"]
+        cs, sn = math.cos(h), math.sin(h)
+        at = lambda fwd, left, up=0.0: (x + cs * fwd - sn * left, y + sn * fwd + cs * left, z + up)  # noqa: E731
+        front = shore  # the counter faces the road
+        for fwd in (-1.9, 1.9):
+            for left in (-1.2, 1.2):
+                near.box(at(fwd, left), (0.12, 0.12, 2.5), h, wood, 0.85)
+        near.roof(at(0, 0, 2.5), 4.8, 3.6, 0.5, h, _lin(STAND_ROOFS[stands % len(STAND_ROOFS)]))
+        near.box(at(0, 1.0 * front), (3.6, 0.8, 0.95), h, wood, 0.9)
+        for q in range(6):
+            e = -1.5 + q * 0.6
+            near.box(at(e, 1.0 * front, 0.95), (0.5, 0.66, rng.uniform(0.22, 0.42)), h, _lin(FRUIT[(q + stands) % len(FRUIT)]), 0.85)
+        # Hands of bananas hung from the roof's edge, and the painted board above them.
+        for q in range(5):
+            near.box(at(-1.4 + q * 0.7, 1.55 * front, 1.9), (0.3, 0.14, 0.5), h, _lin(0xF2C230), 0.9)
+        near.box(at(0, 1.85 * front, 2.5), (3.0, 0.07, 0.6), h, white, 1.0)
+        near.box(at(0, 1.9 * front, 2.68), (2.2, 0.07, 0.22), h, _lin(FRUIT[(stands + 4) % len(FRUIT)]), 1.0)
+        car(near, rng, at(6.4, 0.2, 0.02), h + rng.uniform(-0.1, 0.1))
+        for q in range(rng.randint(1, 2)):
+            visitor(near, rng, at(-0.8 + q * 1.3, 2.3 * front, 0.02), h - front * math.pi / 2 + rng.uniform(-0.3, 0.3))
+        stands += 1
+        last = i
+    return {"fruitStands": stands}
+
+
 def hairpin_signs(k) -> int:
     """Detail 1, the switchback road: before each switchback stands the warning for it, a yellow diamond-coloured
     board with the black hairpin arrow bent the way the road turns, and under it the advised speed, 15."""
@@ -1255,6 +1303,7 @@ def scenery(k) -> dict:
     ranch.update(jacaranda_avenues(k))
     coast = coastal_start(k)
     coast.update(plantation_town(k))
+    coast.update(fruit_stands(k))
     coast.update(beach_park(k))
     cones = crater(k)
     lava = lava_field(k)
