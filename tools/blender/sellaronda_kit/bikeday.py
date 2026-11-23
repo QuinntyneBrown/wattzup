@@ -436,6 +436,11 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
             B["yellow"].box((hx_d - math.sin(hyw) * (sw_s * 2.4), hy_d + math.cos(hyw) * (sw_s * 2.4), hz_d), (2.2, 5.2, 0.14), hyw - sw_s * 0.42)
         B["dark"].box((hx_d, hy_d, hz_d - 1.35), (1.65, 0.38, 0.42), hyw)
 
+    # Fan banners draped on the summit-approach guardrail of Passo Sella
+    for fl_d, fl_m in ((7685.0, "ladin-blue"), (7698.0, "accent-2"), (7712.0, "foliage")):
+        fi = road.index(fl_d)
+        B[fl_m].box(kit.P(fi, 0.0, kit.kerb + 0.84, 0.25), (2.4, 0.09, 0.62), s[fi]["h"])
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
