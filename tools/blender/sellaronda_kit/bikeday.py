@@ -574,6 +574,7 @@ def _touring_motorbike(B, x: float, y: float, z: float, yaw: float, body_mat: st
     # Aluminum side panniers + top case + tall touring screen + glowing twin headlamp
     B["steel"].box((x - ca * 0.52, y - sa * 0.52, z + 0.58), (0.56, 0.86, 0.42), yaw)
     B["paint"].box((x + ca * 0.58, y + sa * 0.58, z + 1.06), (0.12, 0.36, 0.38), yaw)
+    B["dark"].box((x + ca * 0.44, y + sa * 0.44, z + 1.02), (0.10, 0.84, 0.10), yaw)
     B["bulb"].box((x + ca * 0.72, y + sa * 0.72, z + 0.88), (0.08, 0.28, 0.16), yaw)
     B["kerb-red"].box((x - ca * 0.81, y - sa * 0.81, z + 0.76), (0.06, 0.26, 0.10), yaw)
     if with_rider:
