@@ -67,5 +67,27 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
         (10130.0, -1.0, 17.5, 10.5, 2), # Passo Gardena — Rifugio Frara
         (10185.0,  1.0, 14.5,  9.4, 2), # Passo Gardena — Rifugio Cir
     )
-    for at_m, side, w, d, st_cnt in rifugi_sites:
+    for r_i, (at_m, side, w, d, st_cnt) in enumerate(rifugi_sites):
         _rifugio_complex(B, kit, road, height_at, at_m, side, w, d, st_cnt)
+        # Panoramic roadside sun terrace between the rifugio and the kerb
+        idx = road.index(at_m)
+        yaw = road.s[idx]["h"]
+        t_off = (kit.kerb + 5.2) * side
+        tx, ty, _ = road.at(idx, t_off)
+        tz = max(height_at(tx, ty), road.s[idx]["z"] - 0.35)
+        B["larch-warm"].box((tx, ty, tz - 1.2), (w * 0.86, 4.6, 1.35), yaw)
+        # Wooden picnic tables & red/cream alpine sun parasols
+        for p_k in (-1, 0, 1):
+            px_t = tx + math.cos(yaw) * (p_k * 4.4)
+            py_t = ty + math.sin(yaw) * (p_k * 4.4)
+            B["larch-aged"].box((px_t, py_t, tz + 0.15), (2.1, 1.25, 0.78), yaw)
+            B["steel"].box((px_t, py_t, tz + 0.15), (0.09, 0.09, 2.55), yaw)
+            p_mat = "parasol-red" if (p_k + r_i) % 2 == 0 else "paint"
+            kit.gable(B[p_mat], (px_t, py_t, tz + 2.45), 2.85, 2.85, 0.55, yaw + p_k * 0.4)
+        # Trio of tall alpine flagpoles (Italian green/red, Ladin blue, Tyrolean red/white)
+        flag_mats = ("foliage", "parasol-red", "ladin-blue")
+        for f_k, f_mat in enumerate(flag_mats):
+            fx = tx + math.cos(yaw) * (-w * 0.44 + f_k * 1.6) - math.sin(yaw) * (-1.8 * side)
+            fy = ty + math.sin(yaw) * (-w * 0.44 + f_k * 1.6) + math.cos(yaw) * (-1.8 * side)
+            B["paint"].box((fx, fy, tz + 0.1), (0.10, 0.10, 6.4), yaw)
+            B[f_mat].box((fx + math.cos(yaw) * 0.72, fy + math.sin(yaw) * 0.72, tz + 5.15), (1.35, 0.06, 0.88), yaw + 0.18)
