@@ -310,4 +310,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     )
     # Rifugio Sasso Piatto (2,300 m) at the southwestern foot of Sasso Piatto
     rock_tower(peaks, sp_x - ux * 195.0 + px * 145.0, sp_y - uy * 195.0 + py * 145.0, 295.0, 310.0, 14.0, 10.5, 6, yaw_sl, cfn, taper=0.94, flat_cap=True, seed_phase=2.1)
+    # 14. Monte Antelao (3,264 m — "King of the Dolomites") far eastern pyramid beyond Campolongo
+    ant_pt = road.s[road.index(2050.0)]
+    anux, anuy = ant_pt["x"] - cx, ant_pt["y"] - cy
+    anul = max(1.0, math.hypot(anux, anuy))
+    anux, anuy = anux / anul, anuy / anul
+    rock_tower(peaks, ant_pt["x"] + anux * 2580.0, ant_pt["y"] + anuy * 2580.0, 45.0, 912.0, 330.0, 245.0, 10, math.atan2(-anuy, -anux), cfn, taper=0.30, flat_cap=False, seed_phase=4.4)
     # [ANCHOR:peaks]
