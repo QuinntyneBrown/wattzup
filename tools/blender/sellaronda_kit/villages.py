@@ -324,3 +324,14 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
             kit.gable(B["roof-slate"], (mx_c, my_c, mz_c + 7.4), 13.8, 10.0, 2.8, myaw)
             for fl_i, fl_m in enumerate(("ladin-blue", "foliage", "parasol-red")):
                 B[fl_m].box((mx_c + math.cos(myaw) * (-1.4 + fl_i * 1.4), my_c + math.sin(myaw) * (-1.4 + fl_i * 1.4), mz_c + 4.4), (0.95, 9.6, 0.62), myaw)
+
+    # Larch-timber village park swing frames & slides in Corvara & Selva
+    for pg_m, pg_s in ((392.0, 1.0), (8975.0, -1.0)):
+        p_idx = road.index(pg_m)
+        px_g, py_g, _ = road.at(p_idx, (kit.kerb + 14.0) * pg_s)
+        if road.clear_of_road(px_g, py_g, 10.0, p_idx):
+            pz_g = height_at(px_g, py_g)
+            B["larch-warm"].box((px_g, py_g, pz_g + 2.25), (3.8, 0.18, 0.18), 0.3)
+            for sw_x in (-1.7, 1.7):
+                B["larch-aged"].box((px_g + sw_x * 0.9, py_g, pz_g), (0.18, 1.45, 2.35), 0.3)
+            B["parasol-red"].box((px_g, py_g + 1.8, pz_g), (0.68, 2.4, 1.35), 0.3)
