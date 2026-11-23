@@ -266,6 +266,11 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         pni = road.index(pn_m)
         pnx, pny, pnz = road.at(pni, pn_o, 2.8)
         kit.light((pnx, pny, pnz), "glow-window", 18.0, 0.54)
+    # Dusk halos at Passo Pordoi western cross & Gardena hikers' shelter
+    for sh_m in (4992.0, 10136.0):
+        shi = road.index(sh_m)
+        shx, shy, shz = road.at(shi, kit.kerb + 5.6, 2.2)
+        kit.halo((shx, shy, shz), "gold")
     # [ANCHOR:alpenglow-lights]
 
 
