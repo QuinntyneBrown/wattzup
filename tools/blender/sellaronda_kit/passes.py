@@ -392,4 +392,8 @@ def build_four_passes(B, kit, road, height_at) -> None:
     mdy = s[md_i]["h"]
     B["larch-warm"].box(kit.P(md_i, 0.0, -(kit.kerb + 4.4), -0.1), (0.45, 0.95, 2.65), mdy + 0.2)
     B["parasol-red"].box(kit.P(md_i, 0.0, -(kit.kerb + 4.4), 2.15), (0.48, 0.62, 0.34), mdy + 0.2)
+    # Yellow-and-black alpine ARTVA transceiver check post at the Pordoi trailhead
+    ar_p = road.index(4970.0)
+    B["yellow"].box(kit.P(ar_p, 0.0, kit.kerb + 6.4, 0.0), (0.28, 0.45, 1.68), s[ar_p]["h"])
+    B["dark"].box(kit.P(ar_p, 0.0, kit.kerb + 6.4, 1.25), (0.30, 0.38, 0.32), s[ar_p]["h"])
     # [ANCHOR:passes]
