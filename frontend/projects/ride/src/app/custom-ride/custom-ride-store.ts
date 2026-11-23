@@ -5,6 +5,7 @@ import {
   ANNOUNCER,
   BIKE_CONNECTION,
   BLUETOOTH_SUPPORT,
+  type FeedbackContext,
   REMEMBERED_BIKE,
   RIDE_OUTBOX,
   SCREEN_WAKE_LOCK,
@@ -43,6 +44,7 @@ import {
 } from '@telo/domain';
 import { CustomWorkoutStore } from '../custom-workout/custom-workout-store';
 import { customStepAnnouncement } from '../rides/step-announcement';
+import { rideFeedbackContext } from './ride-feedback-context';
 
 /** A ride shorter than this is not worth keeping (L2-108 AC3). */
 const MIN_SAVED_SECONDS = 60;
@@ -100,6 +102,8 @@ export class CustomRideStore {
   readonly workout = customWorkoutLabel(this.draft());
   /** The workout's YouTube video, or `null` without one (L2-098 AC6). */
   readonly videoId = videoOf(this.draft());
+  /** The main view's tab: the video when the workout has one, until the rider chooses (L2-103). */
+  readonly view = signal<'video' | 'chart'>(this.videoId === null ? 'chart' : 'video');
   /** Where in the video the ride's 0:00 falls, in seconds (L2-098 AC3). */
   private readonly offset = this.draft().video.offset;
   /** Whether the video cannot play: its code or YouTube's did not load, or the player failed. */
@@ -395,6 +399,42 @@ export class CustomRideStore {
     } catch {
       // A chooser that is blocked or a bike that fails to connect leaves the overlay as it was.
     }
+  }
+
+  /**
+   * Feedback (L2-116 AC1, L2-117 AC2): the ride's state as it stands, then the ride pauses while the rider writes, and
+   * stays paused when the dialog closes (L2-118 AC5).
+   */
+  openFeedback(): FeedbackContext {
+    const state = this.state();
+    const interval = this.interval();
+    const context = rideFeedbackContext({
+      workout: this.workout,
+      elapsed: this.clockText(),
+      total: this.totalText,
+      segment: interval && state ? { kind: interval.kind, left: interval.left } : null,
+      resistance: this.level(),
+      planLevel: state?.segment.level ?? null,
+      cadence: this.cadence(),
+      aim: this.aim(),
+      power: this.power(),
+      target: this.target(),
+      heartRate: this.metrics()[0]!.value,
+      distance: `${formatMetric(this.totals.distanceKm(), 2)} km`,
+      state: this.ended()
+        ? 'finished'
+        : !this.started()
+          ? 'not-started'
+          : this.pausedByRider()
+            ? 'paused'
+            : 'riding',
+      view: this.view(),
+      machine: this.bikeName(),
+      bluetooth: this.bike().state,
+      last: this.resistance.last(),
+    });
+    if (this.started() && !this.ended()) this.pause();
+    return context;
   }
 
   /**

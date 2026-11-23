@@ -1,0 +1,20 @@
+// Block feedback-dialog: the overlay pane gives the width, a phone's full width or 400 px from sm (L2-116 AC4); on a
+// phone a scrim covers the ride behind the bottom sheet (the mock's feedback-scrim).
+:host {
+  display: block;
+  width: 100%;
+}
+
+.feedback-dialog__scrim {
+  position: fixed;
+  inset: 0;
+  background: var(--color-scrim);
+
+  @media (min-width: 40rem) {
+    display: none;
+  }
+}
+
+wz-feedback-form {
+  position: relative;
+}

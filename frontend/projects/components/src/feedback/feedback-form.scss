@@ -1,0 +1,288 @@
+// Block feedback (docs/design-system/assets/components.css, Area: feedback): the panel, the kind picker, the message,
+// Attach diagnostics, the context it attaches, the footer and the thanks. The dialog places it: a bottom sheet on a
+// phone, a 400 px popover from sm.
+:host {
+  display: block;
+}
+
+/* The panel (flex flex-col overflow-hidden rounded-t-2xl border bg-panel sm:rounded-xl) */
+.feedback {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+  border: var(--border-width-hairline) solid var(--color-line);
+  background: var(--color-panel);
+  color: var(--color-fg);
+  box-shadow: var(--feedback-shadow);
+}
+@media (min-width: 40rem) {
+  .feedback {
+    border-radius: var(--radius-xl);
+  }
+}
+.feedback__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5) var(--space-3);
+}
+.feedback__title {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-semibold);
+}
+.feedback__close {
+  display: grid;
+  place-items: center;
+  width: var(--space-8);
+  height: var(--space-8);
+  margin-right: calc(var(--space-2) * -1);
+  border-radius: var(--radius-md);
+  color: var(--color-muted);
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+.feedback__close:hover {
+  background: var(--color-raised);
+  color: var(--color-fg);
+}
+.feedback__form {
+  padding-inline: var(--space-5);
+}
+
+/* Kind picker (grid grid-cols-3 gap-1 rounded-lg bg-ink p-1) */
+.feedback__kinds {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-1);
+  border-radius: var(--radius-lg);
+  background: var(--color-ink);
+  padding: var(--space-1);
+}
+.feedback__kind {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1-5);
+  border-radius: var(--radius-md);
+  padding: var(--space-2-5) var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  color: var(--color-muted);
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+.feedback__kind:hover:not(:disabled) {
+  color: var(--color-fg);
+}
+.feedback__kind[aria-checked='true'] {
+  background: var(--color-raised);
+  color: var(--color-fg);
+}
+.feedback__kind:disabled {
+  cursor: default;
+}
+.feedback__kind .icon {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+.feedback__kind[aria-checked='true'] .icon {
+  stroke-width: 2.25;
+}
+.feedback__kind--bug[aria-checked='true'] .icon {
+  color: var(--color-heart-fg);
+}
+.feedback__kind--idea[aria-checked='true'] .icon {
+  color: var(--color-rest-fg);
+}
+.feedback__kind--kudos[aria-checked='true'] .icon {
+  color: var(--color-volt-fg);
+}
+
+.feedback__label {
+  display: block;
+  margin-top: var(--space-4);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+}
+/* rows=4 resize-none rounded-lg border bg-ink px-3 py-2.5 text-sm leading-relaxed */
+.feedback__message {
+  display: block;
+  width: 100%;
+  margin-top: var(--space-2);
+  resize: none;
+  border-radius: var(--radius-lg);
+  border: var(--border-width-hairline) solid var(--color-line-strong);
+  background: var(--color-ink);
+  padding: var(--space-2-5) var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-fg);
+}
+.feedback__message::placeholder {
+  color: var(--color-faint);
+}
+.feedback__message:focus {
+  border-color: var(--color-muted);
+}
+.feedback__message:focus-visible {
+  outline-offset: 0;
+}
+.feedback__message:disabled {
+  opacity: 0.6;
+}
+
+/* Attach diagnostics (bug only): a visually hidden checkbox and its drawn box */
+.feedback__check {
+  margin-top: var(--space-3);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  cursor: pointer;
+}
+.feedback__box {
+  margin-top: var(--space-0-5);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--space-4);
+  height: var(--space-4);
+  border-radius: var(--radius-sm);
+  border: var(--border-width-hairline) solid var(--color-faint);
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+.feedback__check input:checked + .feedback__box {
+  border-color: var(--color-fg);
+  background: var(--color-fg);
+}
+.feedback__check input:focus-visible + .feedback__box {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+.feedback__box .icon {
+  width: 0.75rem;
+  height: 0.75rem;
+  stroke-width: 3;
+  color: var(--color-ink);
+}
+.feedback__check-text {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-snug);
+}
+.feedback__check-hint {
+  display: block;
+  color: var(--color-muted);
+}
+
+/* What was attached (mt-4 rounded-lg border), opened to a label/value list */
+.feedback__footer {
+  margin-top: var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  border-top: var(--border-width-hairline) solid var(--color-line);
+  padding: var(--space-3) var(--space-5);
+}
+.feedback__note {
+  min-width: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-faint);
+}
+.feedback__send {
+  flex-shrink: 0;
+  height: var(--control-height-sm);
+}
+.feedback__send.feedback__send--idle {
+  --btn-bg: var(--color-raised);
+  --btn-bg-hover: var(--color-raised);
+  --btn-fg: var(--color-faint);
+}
+.feedback__send.feedback__send--sending:disabled {
+  opacity: 1;
+} /* keeps the volt fill: the dim fill read under 4.5:1 with its label */
+
+/* Sent */
+.feedback__sent {
+  padding: 0 var(--space-5) var(--space-5);
+}
+.feedback__sent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3-5);
+  padding-top: var(--space-1);
+}
+.feedback__badge {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--space-9);
+  height: var(--space-9);
+  border-radius: var(--radius-full);
+  color: var(--color-on-fill);
+}
+.feedback__badge .icon {
+  width: 1.125rem;
+  height: 1.125rem;
+  stroke-width: 2.75;
+}
+.feedback__badge--bug {
+  background: var(--color-heart);
+}
+.feedback__badge--idea {
+  background: var(--color-rest);
+}
+.feedback__badge--kudos {
+  background: var(--color-volt);
+}
+.feedback__thanks {
+  font-weight: var(--font-weight-semibold);
+}
+.feedback__follow-up {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-muted);
+}
+.feedback__sent-actions {
+  margin-top: var(--space-5);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+.feedback__another {
+  height: var(--control-height-sm);
+  padding-inline: var(--space-3-5);
+}
+
+// Past 2,000 characters the count shows in words beside the field (L2-116 AC3).
+.feedback__count {
+  margin-top: var(--space-1-5);
+  text-align: right;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-heart-fg);
+}
+
+.feedback__message[aria-invalid='true'] {
+  border-color: var(--color-heart-fg);
+}
+
+// A refused send, said in words and announced (L2-118 AC4).
+.feedback__error {
+  margin-top: var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-snug);
+  color: var(--color-heart-fg);
+}

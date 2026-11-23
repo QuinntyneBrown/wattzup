@@ -152,3 +152,4 @@ export {
   packetLogSummary,
   sizeLabel,
 } from './diagnostics/packet-log-summary';
+export { commandLabel } from './diagnostics/diagnostics-facts';

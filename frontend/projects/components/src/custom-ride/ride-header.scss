@@ -43,6 +43,10 @@
   font-weight: var(--font-weight-medium);
 }
 
+.ride-header__link--feedback {
+  gap: var(--space-1-5);
+}
+
 .ride-header__divider {
   display: none;
   width: var(--space-px);

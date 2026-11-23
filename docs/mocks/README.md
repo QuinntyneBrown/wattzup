@@ -189,7 +189,7 @@ Legend: ✅ mock exists · ➖ not applicable (reason in manifest) · ❌ missin
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Diagnostics (`diagnostics`) | [✅](dialogs/diagnostics/default.html) | ➖ | ➖ | [✅](dialogs/diagnostics/packets.html) | [✅](dialogs/diagnostics/no-bike.html) | [✅](dialogs/diagnostics/bluetooth-off.html) |  |  |  |  |  |  |  |  |  |  | `L2-113`, `L2-114` |
 | Leave this ride (`end-ride`) | [✅](dialogs/end-ride/default.html) | ➖ | ➖ |  |  |  |  |  |  |  |  |  |  |  |  |  | `L2-107` |
-| Send feedback (`feedback`) | [✅](dialogs/feedback/default.html) | ➖ | ➖ |  |  |  | [✅](dialogs/feedback/idea.html) | [✅](dialogs/feedback/kudos.html) | [✅](dialogs/feedback/sending.html) | [✅](dialogs/feedback/sent.html) |  |  |  |  |  |  | `L2-116`, `L2-117`, `L2-118` |
+| Send feedback (`feedback`) | [✅](dialogs/feedback/default.html) | ➖ | [✅](dialogs/feedback/too-long.html) |  |  |  | [✅](dialogs/feedback/idea.html) | [✅](dialogs/feedback/kudos.html) | [✅](dialogs/feedback/sending.html) | [✅](dialogs/feedback/sent.html) [idea](dialogs/feedback/sent-idea.html) [kudos](dialogs/feedback/sent-kudos.html) |  |  |  |  | [✅](dialogs/feedback/failed.html) |  | `L2-116`, `L2-117`, `L2-118` |
 | Display name (`display-name`) | [✅](dialogs/display-name/default.html) | ➖ | [✅](dialogs/display-name/invalid.html) |  |  |  |  |  |  |  | [✅](dialogs/display-name/saving.html) | ➖ |  |  |  |  | `L2-005` |
 | Delete my account (`delete-account`) | [✅](dialogs/delete-account/default.html) | ➖ | ➖ |  |  |  |  |  |  |  |  |  | [✅](dialogs/delete-account/ready.html) | [✅](dialogs/delete-account/deleting.html) | [✅](dialogs/delete-account/failed.html) | ➖ | `L2-006` |
 

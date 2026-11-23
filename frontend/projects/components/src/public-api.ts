@@ -5,6 +5,11 @@ export { AppHeaderLink } from './app-header/app-header-link';
 export { AppHeaderStreak } from './app-header/app-header-streak';
 export { AppHeaderLevel } from './app-header/app-header-level';
 export { type DiagnosticsPacketCount, DiagnosticsPanel } from './diagnostics/diagnostics-panel';
+export {
+  FeedbackForm,
+  type FeedbackFormCopy,
+  type FeedbackFormStatus,
+} from './feedback/feedback-form';
 export { FullscreenToggle } from './fullscreen-toggle/fullscreen-toggle';
 export { Banner } from './banner/banner';
 export { LoadCard } from './world-loading/load-card';

@@ -1,7 +1,9 @@
 import type { Routes } from '@angular/router';
 import {
   CUSTOM_WORKOUT_API,
+  FEEDBACK_API,
   HttpCustomWorkoutApi,
+  HttpFeedbackApi,
   MONOTONIC_TIME,
   SCREEN_WAKE_LOCK,
 } from '@telo/api';
@@ -38,6 +40,8 @@ export const customWorkoutRoutes: Routes = [
         providers: [
           { provide: MONOTONIC_TIME, useValue: { now: () => performance.now() } },
           { provide: SCREEN_WAKE_LOCK, useClass: BrowserScreenWakeLock },
+          // Send feedback, from the ride's header (L2-116).
+          { provide: FEEDBACK_API, useClass: HttpFeedbackApi },
           provideInertBehindDialogs(),
         ],
         loadComponent: () => import('../custom-ride/custom-ride-page'),

@@ -1,8 +1,9 @@
 // Unit test
-// Traces to: L2-114 AC1, AC2, AC3, AC4; L2-115 AC2
+// Traces to: L2-114 AC1, AC2, AC3, AC4; L2-115 AC2; L2-117 AC4
 // Description: the packet log keeps commands only until "Log every packet" is on, then every packet both ways, each
 // as a JSON line; it never holds more than 10 MB, dropping the oldest first; the download is the log as JSON Lines
-// under the day's name, its object URL let go; and only while recording does a packet reach the console.
+// under the day's name, its object URL let go; only while recording does a packet reach the console; and a bug
+// report takes the newest lines that fit its share.
 import { TestBed } from '@angular/core/testing';
 import { APP_LOGGER, type AppLogger } from '@telo/api';
 import { EchelonProtocol } from '../protocol/echelon-protocol';
@@ -98,5 +99,22 @@ describe('MemoryPacketLog', () => {
     create.mockRestore();
     revoke.mockRestore();
     click.mockRestore();
+  });
+
+  it('gives a bug report the newest whole lines that fit its share, oldest first', () => {
+    for (let level = 1; level <= 3; level++)
+      log.record('out', EchelonProtocol.write, new Uint8Array([0xf0, 0xb1, 0x01, level]));
+    const lines = log.tail(Number.MAX_SAFE_INTEGER).trim().split('\n');
+    const [, newest] = lines.slice(1);
+    const two = lines.slice(1).join('\n').length + 1;
+
+    expect(lines.map((line) => (JSON.parse(line) as { hex: string }).hex)).toEqual([
+      'F0 B1 01 01',
+      'F0 B1 01 02',
+      'F0 B1 01 03',
+    ]);
+    expect(log.tail(two)).toBe(`${lines[1]}\n${newest}\n`);
+    expect(log.tail(two - 1)).toBe(`${newest}\n`);
+    expect(log.tail(0)).toBe('');
   });
 });
