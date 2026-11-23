@@ -41,7 +41,8 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             off = (kit.kerb + rng.uniform(11.0, 48.0)) * side
             tx, ty, _ = road.at(i, off)
             if road.clear_of_road(tx, ty, 13.0, i):
-                kit.pine(tx, ty, height_at(tx, ty), rng.uniform(0.85, 1.38), "pine" if rng.random() < 0.68 else "foliage")
+                tree_mat = "hay" if (s[i]["z"] > 82.0 and rng.random() < 0.24) else ("pine" if rng.random() < 0.68 else "foliage")
+                kit.pine(tx, ty, height_at(tx, ty), rng.uniform(0.85, 1.38), tree_mat)
                 trees += 1
 
     # 2. Wooden Tabià / Kochhütten hay barns dotting open alpine pastures (48 barns around the four climbs)
