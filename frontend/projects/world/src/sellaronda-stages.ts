@@ -35,3 +35,9 @@ export function cadenceComplianceScore(actualRpm: number, targetRpm: number): nu
   const err = Math.abs(actualRpm - targetRpm);
   return Math.round(100 * Math.exp(-((err / 14) ** 2)));
 }
+
+/** Maps indoor bike `targetResistance` (1..32) onto Sella Ronda's visual road gradient (%). */
+export function resistanceToRoadGradePercent(targetResistance: number): number {
+  const clamped = Math.max(1, Math.min(32, targetResistance));
+  return Number((((clamped - 14) / 18) * 11.5).toFixed(1));
+}

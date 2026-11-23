@@ -4,6 +4,7 @@ import {
   classifySellaRidingPhase,
   loopCompletionFraction,
   recommendedRiderPosture,
+  resistanceToRoadGradePercent,
 } from './sellaronda-stages';
 
 describe('sellaronda-stages', () => {
@@ -21,5 +22,7 @@ describe('sellaronda-stages', () => {
     expect(loopCompletionFraction(5825)).toBeCloseTo(0.5, 3);
     expect(cadenceComplianceScore(85, 85)).toBe(100);
     expect(cadenceComplianceScore(60, 85)).toBeLessThan(30);
+    expect(resistanceToRoadGradePercent(26)).toBeGreaterThan(7);
+    expect(resistanceToRoadGradePercent(8)).toBeLessThan(0);
   });
 });
