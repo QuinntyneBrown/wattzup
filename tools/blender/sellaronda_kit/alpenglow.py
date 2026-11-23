@@ -271,6 +271,11 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         shi = road.index(sh_m)
         shx, shy, shz = road.at(shi, kit.kerb + 5.6, 2.2)
         kit.halo((shx, shy, shz), "gold")
+    # Warm dusk light pools at Corvara Posta Hotel & Chalet Gerard
+    for ch_l, ch_o in ((298.0, -(kit.kerb + 10.0)), (9412.0, kit.kerb + 6.5)):
+        chi = road.index(ch_l)
+        chx, chy, chz = road.at(chi, ch_o, 2.8)
+        kit.light((chx, chy, chz), "glow-window", 18.0, 0.54)
     # [ANCHOR:alpenglow-lights]
 
 
