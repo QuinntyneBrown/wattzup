@@ -431,4 +431,6 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     crul = max(1.0, math.hypot(crux, cruy))
     crux, cruy = crux / crul, cruy / crul
     rock_tower(peaks, cr_pt["x"] + crux * 2280.0, cr_pt["y"] + cruy * 2280.0, 45.0, 845.0, 275.0, 185.0, 10, math.atan2(-cruy, -crux), cfn, taper=0.46, flat_cap=False, seed_phase=5.6)
+    # Il Salame del Sassolungo (2,899 m) detached north-ridge tower
+    rock_tower(peaks, sl_x - ux * 125.0 - px * 195.0, sl_y - uy * 125.0 - py * 195.0, 140.0, 682.0, 46.0, 44.0, 9, yaw_sl, cfn, taper=0.74, flat_cap=True, seed_phase=3.8)
     # [ANCHOR:peaks]
