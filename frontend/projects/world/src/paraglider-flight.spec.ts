@@ -4,6 +4,7 @@ import {
   paragliderGroundSpeedMps,
   paragliderPose,
   type ThermalOrbit,
+  thermalVariometerMps,
 } from './paraglider-flight';
 
 const COL_RODELLA: ThermalOrbit = {
@@ -30,5 +31,6 @@ describe('paragliderPose', () => {
     expect(b.bank).toBe(0);
     expect(paragliderGroundSpeedMps(COL_RODELLA, 6)).toBeGreaterThan(4);
     expect(paragliderGlideRangeKm(2484, 1465, 9.5)).toBeCloseTo(9.68, 1);
+    expect(thermalVariometerMps(COL_RODELLA, 0, 0)).toBeGreaterThan(0.5);
   });
 });

@@ -72,3 +72,11 @@ export function paragliderGlideRangeKm(
   const drop = Math.max(0, launchAltM - landingAltM);
   return Number(((drop * glideRatio) / 1000).toFixed(2));
 }
+
+/** Instantaneous variometer vertical climb/sink rate (m/s) along `orbit` at `seconds`. */
+export function thermalVariometerMps(orbit: ThermalOrbit, seconds: number, phase = 0): number {
+  const period = Math.max(8, orbit.periodSeconds);
+  const w = (Math.PI * 2) / period;
+  const t = seconds * w + phase * Math.PI * 2;
+  return Math.cos(t) * orbit.liftAmplitude * w;
+}
