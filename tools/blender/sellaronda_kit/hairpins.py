@@ -342,4 +342,8 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         gsi = road.index(gl_s)
         B["steel"].box(kit.P(gsi, 0.0, -(kit.kerb + 1.5), -0.1), (0.08, 0.08, 2.1), s[gsi]["h"])
         B["ladin-blue"].box(kit.P(gsi, 0.0, -(kit.kerb + 1.5), 1.6), (0.08, 0.58, 0.58), s[gsi]["h"])
+    # Stepped Dolomite check-weirs above the 4 steep uphill road cuts
+    for cw_m in (1650.0, 4280.0, 7260.0, 9550.0):
+        cwi = road.index(cw_m)
+        B["stone"].box(kit.P(cwi, 0.0, -(kit.kerb + 3.6), 1.5), (2.4, 1.8, 1.4), s[cwi]["h"])
     # [ANCHOR:hairpins]
