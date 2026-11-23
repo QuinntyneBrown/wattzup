@@ -331,8 +331,55 @@ def silverswords(k) -> int:
     return planted
 
 
+def dome(paint, c, r: float, drum: float, slit: float, sides: int = 12) -> None:
+    """An observatory: a white drum under a white dome, with the dark slit the telescope looks out of."""
+    white, shade, dark = _lin(0xF4F5F2), _lin(0xC8CED4), _lin(0x30343A)
+
+    def ring(radius: float, up: float):
+        return [(c[0] + math.cos(q * math.tau / sides) * radius, c[1] + math.sin(q * math.tau / sides) * radius, c[2] + up) for q in range(sides)]
+
+    rings = [(ring(r, -1.5), shade), (ring(r, drum), white)]
+    for step in (1, 2, 3):
+        a = step * math.pi / 8
+        rings.append((ring(r * math.cos(a), drum + r * math.sin(a)), white))
+    open_at = int(slit / math.tau * sides) % sides
+    for (lo, lo_c), (hi, hi_c) in zip(rings, rings[1:]):
+        for q in range(sides):
+            n = (q + 1) % sides
+            slot = q == open_at and lo is not rings[0][0]
+            paint.face((lo[q], lo[n], hi[n], hi[q]), (dark,) * 4 if slot else (lo_c, lo_c, hi_c, hi_c))
+    top, cap = rings[-1][0], (c[0], c[1], c[2] + drum + r)
+    for q in range(sides):
+        paint.face((top[q], top[(q + 1) % sides], cap), (dark if q == open_at else white,) * 3)
+
+
+def science_city(k) -> int:
+    """Detail 8, the summit observatories: Science City's white domes stand in a cluster on the summit above the
+    road's end, with their low white buildings and one silver tower, seen from the switchbacks below."""
+    paint, rng, s = Painted(k), k.rng, k.s
+    i = min(range(k.n), key=lambda q: abs(s[q]["d"] - (s[-1]["d"] - 330.0)))
+    # On the uphill side of the road, where the summit is.
+    side = 1 if k.height_at(*k.road.at(i, 90.0)[:2]) > k.height_at(*k.road.at(i, -90.0)[:2]) else -1
+    silver = _lin(0xAEB6BC)
+    stood = 0
+    plan = ((0, 62, 9.0, 7.0), (34, 88, 6.0, 5.0), (-30, 96, 5.0, 4.0), (58, 60, 4.2, 3.6), (-62, 66, 7.0, 6.0), (10, 122, 4.5, 4.0), (86, 96, 3.6, 3.2))
+    for along, out, r, drum in plan:
+        x, y, _ = k.P(i, along + rng.uniform(-5.0, 5.0), (out + rng.uniform(-5.0, 5.0)) * side)
+        z = k.height_at(x, y)
+        dome(paint, (x, y, z), r, drum, rng.uniform(0, math.tau))
+        # Its low building alongside.
+        yaw = rng.uniform(0, math.pi)
+        paint.box((x + math.cos(yaw) * (r + 5.0), y + math.sin(yaw) * (r + 5.0), z - 1.5), (r * 1.6, r * 0.9, 5.0), yaw, _lin(0xECECE6))
+        stood += 1
+    x, y, _ = k.P(i, -92.0, 104.0 * side)
+    k_z = k.height_at(x, y)
+    paint.box((x, y, k_z - 1.5), (9.0, 9.0, 21.0), 0.4, silver)
+    return stood
+
+
 def scenery(k) -> dict:
     posts = reflector_posts(k)
     cloud = cloud_sea(k)
     swords = silverswords(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords}
+    domes = science_city(k)
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords, "domes": domes}
