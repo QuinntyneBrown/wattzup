@@ -213,7 +213,7 @@ def build_terrain(road, col, Builder, cell: float = 28.0):
             c = mix(c, scree_c, smoothstep(125.0, 195.0, h))
             c = mix(c, rock_c, smoothstep(0.35, 0.74, slope))
             c = mix(c, enrosadira_scree, smoothstep(112.0, 192.0, h) * 0.37)
-            shade = 0.91 + 0.09 * noise(x * 2.7, y * 2.5)
+            shade = 0.905 + 0.095 * noise(x * 2.7, y * 2.5)
             b.colours.append((c[0] * shade, c[1] * shade, c[2] * shade, 1.0))
             index[(ix, iy)] = b.v((x, y, h))
 
