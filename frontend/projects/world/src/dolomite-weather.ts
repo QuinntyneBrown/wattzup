@@ -30,3 +30,9 @@ export function aerobicMaxPowerFactor(altitudeMetres: number): number {
 export function boilingPointCelsiusAtAltitude(altitudeMetres: number): number {
   return Number((100 - Math.max(0, altitudeMetres) * 0.00335).toFixed(1));
 }
+
+/** Clear-sky Alpine UV index at `altitudeMetres` (~11% increase per 1,000 m over `seaLevelUv`). */
+export function uvIndexAtAltitude(altitudeMetres: number, seaLevelUv = 7.0): number {
+  const factor = 1 + (Math.max(0, altitudeMetres) / 1000) * 0.11;
+  return Number((seaLevelUv * factor).toFixed(1));
+}
