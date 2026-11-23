@@ -153,6 +153,8 @@ def build_four_passes(B, kit, road, height_at) -> None:
         cyaw = s[c_idx]["h"]
         B["dolomite-pale"].box(kit.P(c_idx, 0.0, kit.kerb + 1.08, -0.15), (0.26, 0.42, 0.92), cyaw)
         B["paint"].box(kit.P(c_idx, -0.02, kit.kerb + 1.08, 0.48), (0.28, 0.36, 0.24), cyaw)
+        if d_cippo % 1000 == 0:
+            B["dark"].box(kit.P(c_idx, -0.02, kit.kerb + 1.08, 0.72), (0.28, 0.42, 0.08), cyaw)
 
     # Sacrario Militare del Pordoi: monumental stepped octagonal stone rotunda high on the eastern Pordoi meadow (at=4780 m)
     sac_idx = road.index(4780.0)
