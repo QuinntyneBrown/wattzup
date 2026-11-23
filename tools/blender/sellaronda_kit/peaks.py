@@ -181,6 +181,7 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         (lake_cx - mux * 95.0 + mpx * 285.0, lake_cy - muy * 95.0 + mpy * 285.0, lake_z + 4.0),
         dam_grey,
     )
+    rock_tower(peaks, lake_cx + mux * 120.0 + mpx * 270.0, lake_cy + muy * 120.0 + mpy * 270.0, lake_z, lake_z + 18.0, 18.0, 12.0, 6, yaw_mm, cfn, taper=0.95, flat_cap=True, seed_phase=0.6)
 
     # 5. Gruppo del Cir (Grande Cir 2,592 m & Piccolo Cir) jagged sawtooth spires north of Passo Gardena (at=10150 m)
     gar_pt = road.s[road.index(10150.0)]
