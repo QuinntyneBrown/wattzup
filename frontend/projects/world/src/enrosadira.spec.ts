@@ -9,6 +9,7 @@ import {
   enrosadiraStageName,
   enrosadiraTint,
   enrosadiraWindowCurve,
+  fullLoopEnrosadiraSummary,
   horizonFogBlendFactor,
   snowfieldAlbedoTint,
   twilightZenithLuminance,
@@ -53,5 +54,6 @@ describe('enrosadiraTint', () => {
     expect(directBeamKelvin(1)).toBe(9000);
     expect(horizonFogBlendFactor(2500, 'Peaks')).toBe(0);
     expect(horizonFogBlendFactor(1200, 'Solid')).toBeGreaterThan(0.2);
+    expect(fullLoopEnrosadiraSummary(0.5).stage).toBe('coral-rose');
   });
 });
