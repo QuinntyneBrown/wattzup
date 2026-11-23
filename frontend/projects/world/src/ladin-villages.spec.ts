@@ -9,6 +9,7 @@ import {
   nextClimbFromVillage,
   provinceForMetres,
   streamForVillage,
+  villageAltitudeSpreadMetres,
   villageAtMetres,
 } from './ladin-villages';
 
@@ -36,5 +37,6 @@ describe('LADIN_VILLAGES', () => {
     expect(streamForVillage('arabba')).toBe('Torrente Cordevole');
     expect(nextClimbFromVillage('arabba')).toBe('pordoi');
     expect(nextClimbFromVillage('selva')).toBe('gardena');
+    expect(villageAltitudeSpreadMetres()).toBe(137);
   });
 });
