@@ -209,7 +209,7 @@ def build_land(road, col, theme: dict, bc):
 
     North of the road the land falls to the sea in a cliff, the higher the road the longer the fall. Between the legs
     of a pair of hairpins it slopes from one to the other. South of the road the mountain climbs away inland."""
-    cell = 20.0
+    cell = 24.0  # coarser than 20 m: the land is half of what a frame draws here
     s = road.s
     xs, ys = [p["x"] for p in s], [p["y"] for p in s]
     x0, x1 = min(xs) - 520.0, max(xs) + 520.0
@@ -412,8 +412,9 @@ def terraces(k) -> int:
                 mid = front + TERRACE_DEPTH * row
                 b = k.B[mat]
                 ridge_i, ridge_j = at(i, mid, hi + 1.25), at(j, mid, hi + 1.25)
+                # Only the face that looks down to the road: the vineyard is always above the rider, and the
+                # backs of the rows were a fifth of what a frame draws by a hairpin.
                 quad(b, at(i, mid - 0.55, hi), at(j, mid - 0.55, hi), ridge_j, ridge_i)
-                quad(b, at(j, mid + 0.55, hi), at(i, mid + 0.55, hi), ridge_i, ridge_j)
             top = level + 1
         if top:
             # Behind the last step the hillside carries on up in scrub, to the land beyond.
