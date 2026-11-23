@@ -55,6 +55,8 @@ THEME: dict = {
     "centre": "yellow",
     # A national park's road: no racing kerbs round its hairpins, and a shoulder of rolled cinder, not concrete.
     "kerbs": False,
+    # The signs, the town, the fences and the domes are painted into the land: it is cut into 480 m lengths.
+    "chunks": {"Land": 2},
     # Every stage climbs: a level's share of the gradient, on top of the summit road's own steady climb.
     "grade": {"perLevel": 0.8, "climb": 5.9},
     "sea_clearance": 6.0,
