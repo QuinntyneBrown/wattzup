@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  angularElevationDegrees,
   DOLOMITE_GIANTS,
   dominantPeakAt,
   marmoladaGlacierElevationBand,
@@ -21,5 +22,6 @@ describe('DOLOMITE_GIANTS', () => {
     expect(
       marmoladaGlacierElevationBand().crestMetres - marmoladaGlacierElevationBand().snoutMetres,
     ).toBe(629);
+    expect(angularElevationDegrees(3181, 2240, 920)).toBeGreaterThan(44);
   });
 });
