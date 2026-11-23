@@ -389,4 +389,12 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["dolomite-pale"].box((cx_s, cy_s, cz_s + 0.45), (0.52, 0.52, 0.48), 0.7)
             B["dolomite-pale"].box((cx_s, cy_s, cz_s + 0.93), (0.26, 0.26, 0.38), 1.1)
 
+    # Golden Trollius europaeus (globeflower / botton d'oro) clusters beside moist valley streams
+    for gl_m in (250.0, 3105.0, 6100.0, 8910.0):
+        gi = road.index(gl_m)
+        for gs in (-1.0, 1.0):
+            gx_f, gy_f, _ = road.at(gi, (kit.kerb + 8.5) * gs)
+            if road.clear_of_road(gx_f, gy_f, 6.0, gi):
+                B["gold"].box((gx_f, gy_f, height_at(gx_f, gy_f)), (0.95, 0.95, 0.24), gl_m * 0.1)
+
     return trees
