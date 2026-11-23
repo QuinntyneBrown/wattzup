@@ -53,7 +53,7 @@ def enrosadira_colour_fn(az_sun: float):
         cassian_peach = srgb(0xFAD0A8)
         warm_band = mix(cassian_peach, apricot_gold, smoothstep(160.0, 310.0, z))
         warm_band = mix(warm_band, enrosadira_rose, smoothstep(290.0, 580.0, z))
-        warm_band = mix(warm_band, summit_magenta, smoothstep(580.0, 880.0, z) * 0.48)
+        warm_band = mix(warm_band, summit_magenta, smoothstep(570.0, 875.0, z) * 0.51)
         # Deepen vertical dihedral clefts facing away from the sun while boosting upward sky fill on ledges
         sky_bounce = 0.88 + 0.16 * max(0.0, nz)
         rock_lit = mix(shadow_indigo, pale_dolomite, smoothstep(-0.42, 0.32, dot))
