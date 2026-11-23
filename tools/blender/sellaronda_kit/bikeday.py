@@ -553,6 +553,13 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         ecy = s[ec_z]["h"]
         B["foliage"].box(kit.P(ec_z, 0.0, -(kit.kerb + 1.95), 0.25), (3.2, 0.75, 0.95), ecy)
 
+    # Electric official lead pace-car with digital roof clock near Corvara start (at=85 m)
+    pc_i = road.index(85.0)
+    pcy = s[pc_i]["h"]
+    pcx_c, pcy_c, pcz_c = kit.P(pc_i, 0.0, kit.kerb + 3.2, 0.0)
+    B["dark"].box((pcx_c, pcy_c, pcz_c), (4.55, 1.88, 1.38), pcy)
+    B["neon-lime"].box((pcx_c, pcy_c, pcz_c + 1.38), (0.35, 1.25, 0.36), pcy)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
