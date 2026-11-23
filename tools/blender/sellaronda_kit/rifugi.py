@@ -224,6 +224,7 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
         bar_y = ty + math.sin(yaw) * (w * 0.18) + math.cos(yaw) * (1.5 * side)
         B["larch-aged"].box((bar_x, bar_y, tz + 0.12), (2.6, 0.82, 1.12), yaw)
         B["dolomite-pale"].box((bar_x, bar_y, tz + 1.24), (2.75, 0.94, 0.08), yaw)
+        B["glow-window"].box((bar_x, bar_y, tz + 1.32), (0.95, 0.55, 0.48), yaw)
         rk2_x = tx + math.cos(yaw) * (w * 0.46) - math.sin(yaw) * (-2.1 * side)
         rk2_y = ty + math.sin(yaw) * (w * 0.46) + math.cos(yaw) * (-2.1 * side)
         B["dolomite-pale"].box((rk2_x, rk2_y, tz + 0.05), (1.25, 1.05, 0.62), yaw + 0.5)
