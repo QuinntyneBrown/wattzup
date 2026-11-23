@@ -539,4 +539,13 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["larch-warm"].box((npx, npy, npz), (0.22, 0.22, 2.15), s[npi]["h"])
             B["foliage"].box((npx, npy, npz + 1.65), (0.26, 0.55, 0.55), s[npi]["h"])
 
+    # Wooden alpine songbird nesting boxes along valley-edge spruce groves
+    for nb_m in (590.0, 3380.0, 6340.0, 9100.0):
+        nbi = road.index(nb_m)
+        nbx, nby, _ = road.at(nbi, kit.kerb + 10.5)
+        if road.clear_of_road(nbx, nby, 7.5, nbi):
+            nbz = height_at(nbx, nby)
+            B["larch-aged"].box((nbx, nby, nbz), (0.14, 0.14, 2.45), 0.0)
+            B["larch-warm"].box((nbx, nby, nbz + 2.15), (0.26, 0.24, 0.34), 0.0)
+
     return trees
