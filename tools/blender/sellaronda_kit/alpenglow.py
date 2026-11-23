@@ -226,6 +226,11 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         mpz_l = height_at(mpx_l, mpy_l) + 3.2
         kit.light((mpx_l, mpy_l, mpz_l), "bulb", 18.0, 0.52)
         kit.halo((mpx_l, mpy_l, mpz_l), "bulb")
+    # Celebratory golden dusk light pool under the Corvara 4-Pass Finisher arch
+    fa_i = road.index(11510.0)
+    fax, fay, faz = road.at(fa_i, 0.0, 5.0)
+    kit.light((fax, fay, faz), "gold", 22.0, 0.64)
+    kit.halo((fax, fay, faz), "gold")
     # [ANCHOR:alpenglow-lights]
 
 
