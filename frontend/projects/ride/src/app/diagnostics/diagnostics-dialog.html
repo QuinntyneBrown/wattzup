@@ -1,2 +1,10 @@
 <div class="diagnostics-dialog__scrim" aria-hidden="true"></div>
-<wz-diagnostics-panel [facts]="diagnostics.facts()" (dismissed)="close()" />
+<wz-diagnostics-panel
+  [facts]="diagnostics.facts()"
+  [everyPacket]="packetLog.everyPacket()"
+  [packets]="packets()"
+  [fileName]="fileName"
+  (dismissed)="close()"
+  (everyPacketToggled)="packetLog.setEveryPacket($event)"
+  (downloadRequested)="packetLog.download()"
+/>

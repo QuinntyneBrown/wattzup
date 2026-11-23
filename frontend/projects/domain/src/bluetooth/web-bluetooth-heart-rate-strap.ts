@@ -1,9 +1,9 @@
 /// <reference types="web-bluetooth" />
 import { Injectable, type OnDestroy, inject, signal } from '@angular/core';
-import type { HeartRateStrap, StrapState } from '@telo/api';
+import { APP_LOGGER, type HeartRateStrap, type StrapState } from '@telo/api';
 import { HeartRateMeasurementDecoder } from '../protocol/heart-rate-measurement-decoder';
 import { RememberedStrapStore } from '../storage/remembered-strap-store';
-import { describeError } from './describe-error';
+import { ConsoleAppLogger } from '../diagnostics/console-app-logger';
 import { DeviceReconnector } from './device-reconnector';
 
 /** How long the bpm stays shown without a new measurement (L2-031 AC4). */
@@ -20,6 +20,7 @@ export const STRAP_QUIET_MS = 5000;
 @Injectable()
 export class WebBluetoothHeartRateStrap implements HeartRateStrap, OnDestroy {
   private readonly store = inject(RememberedStrapStore);
+  private readonly logger = inject(APP_LOGGER, { optional: true }) ?? new ConsoleAppLogger();
   private readonly reconnector = new DeviceReconnector();
   private device: BluetoothDevice | null = null;
   private measurement: BluetoothRemoteGATTCharacteristic | null = null;
@@ -54,7 +55,7 @@ export class WebBluetoothHeartRateStrap implements HeartRateStrap, OnDestroy {
       });
     } catch (error) {
       if (!(error instanceof DOMException && error.name === 'NotFoundError'))
-        console.error(describeError(error));
+        this.logger.error('heart rate', error);
       return false;
     }
     this.use(device);
@@ -73,7 +74,7 @@ export class WebBluetoothHeartRateStrap implements HeartRateStrap, OnDestroy {
       this.use(device);
       return await this.connect();
     } catch (error) {
-      console.error(describeError(error));
+      this.logger.error('heart rate', error);
       return false;
     }
   }
@@ -119,7 +120,7 @@ export class WebBluetoothHeartRateStrap implements HeartRateStrap, OnDestroy {
       this.measurement = measurement;
       return true;
     } catch (error) {
-      console.error(describeError(error));
+      this.logger.error('heart rate', error);
       this.release();
       return false;
     }

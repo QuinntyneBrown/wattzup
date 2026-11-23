@@ -1,4 +1,15 @@
 /// <reference types="web-bluetooth" />
+import type { PacketDirection } from '@telo/api';
+
+/** Hands each message on a characteristic to the packet log (L2-114), as it is written or as it arrives. */
+export type PacketTap = (
+  direction: PacketDirection,
+  characteristic: string,
+  bytes: Uint8Array,
+) => void;
+
+/** The tap of a link nobody listens to. */
+export const NO_TAP: PacketTap = () => undefined;
 
 /** One bike protocol over an open GATT service: Echelon's own or FTMS (docs/detailed-designs/bike/connect-a-bike). */
 export interface BikeLink {
