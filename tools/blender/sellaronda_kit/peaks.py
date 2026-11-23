@@ -287,3 +287,7 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     ctpx2, ctpy2 = -ctuy2, ctux2
     for v_idx, (v_lat, v_top, v_rx) in enumerate(((-220.0, 795.0, 185.0), (0.0, 825.0, 140.0), (195.0, 775.0, 165.0))):
         rock_tower(peaks, cat_pt["x"] + ctux2 * 1650.0 + ctpx2 * v_lat, cat_pt["y"] + ctuy2 * 1650.0 + ctpy2 * v_lat, 45.0, v_top, v_rx, v_rx * 0.68, 9, math.atan2(-ctuy2, -ctux2), cfn, taper=0.34, flat_cap=False, seed_phase=2.4 + v_idx)
+
+    # Rifugio Emilio Comici (2,154 m) on the green-and-scree bench beneath Sassolungo's northeast wall
+    rock_tower(peaks, sl_x - ux * 245.0 - px * 85.0, sl_y - uy * 245.0 - py * 85.0, 155.0, 170.0, 14.0, 10.0, 6, yaw_sl, cfn, taper=0.95, flat_cap=True, seed_phase=0.6)
+    # [ANCHOR:peaks]
