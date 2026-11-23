@@ -419,6 +419,14 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         B["ladin-blue"].box((hcx, hcy_p, hcz + 0.35), (1.15, 0.38, 0.32), hcy)
         B["crowd-3"].box((hcx - math.cos(hcy) * 0.75, hcy_p - math.sin(hcy) * 0.75, hcz + 0.42), (0.24, 0.05, 1.35), hcy)
 
+    # CNSAS Soccorso Alpino red-and-white 4x4 rescue pickup at Passo Pordoi trailhead (at=4974 m)
+    sa_i = road.index(4974.0)
+    say = s[sa_i]["h"] + 0.3
+    sax, say_p, saz = kit.P(sa_i, 0.0, kit.kerb + 4.8, 0.0)
+    B["dark"].box((sax, say_p, saz), (4.85, 1.92, 0.58), say)
+    B["parasol-red"].box((sax, say_p, saz + 0.48), (4.92, 1.88, 0.85), say)
+    B["paint"].box((sax + math.cos(say) * 0.45, say_p + math.sin(say) * 0.45, saz + 1.33), (2.25, 1.78, 0.62), say)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
