@@ -48,6 +48,7 @@ def _onion_dome_church(B, kit, x: float, y: float, z: float, yaw: float, dome_ma
         kit.gable(B[dome_mat], (tx, ty, z + 18.0), 4.8, 4.8, 7.6, yaw)
         kit.gable(B[dome_mat], (tx, ty, z + 18.0), 4.8, 4.8, 7.6, yaw + math.pi * 0.5)
         B["gold"].box((tx, ty, z + 25.4), (0.22, 0.22, 1.8), yaw)
+        B["gold"].box((tx, ty, z + 26.85), (0.72, 0.08, 0.14), yaw)
     else:
         # Bulbous Tyrolean octagonal Zwiebelturm onion dome!
         tiers = (
