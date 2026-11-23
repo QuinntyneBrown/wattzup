@@ -7,6 +7,7 @@
 // and frames drawn, and nothing reads a pixel (ADR 0021). Auto's Low start and step-down are in race-world-quality and
 // race-world-step-down.
 import type { Page } from '@playwright/test';
+import { worldRideMap } from './fixtures/maps';
 import { startRace, stepUntil } from './fixtures/race';
 import { storeSettings } from './fixtures/settings-storage';
 import { expect, test } from './fixtures/test';
@@ -30,8 +31,9 @@ test.describe('the race world follows the World settings', () => {
     await storeSettings(page, JSON.stringify({ quality: 'medium', stepDown: false }));
     await webgl.withoutWebGpu();
     await worldRide.watch();
-    const race = await startRace(page, bluetooth, api, 'old-town-criterium', 'mode=solo', {
+    const race = await startRace(page, bluetooth, api, worldRideMap.id, 'mode=solo', {
       world: true,
+      catalogue: [worldRideMap],
     });
     await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
     expect((await worldRide.report())?.tier).toBe('medium');
@@ -51,8 +53,9 @@ test.describe('the race world follows the World settings', () => {
     await storeSettings(page, JSON.stringify({ frameRate: '30', resolution: 50 }));
     await webgl.withoutWebGpu();
     await worldRide.watch();
-    const race = await startRace(page, bluetooth, api, 'old-town-criterium', 'mode=solo', {
+    const race = await startRace(page, bluetooth, api, worldRideMap.id, 'mode=solo', {
       world: true,
+      catalogue: [worldRideMap],
     });
     await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
 

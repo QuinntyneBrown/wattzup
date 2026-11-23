@@ -9,6 +9,7 @@
 // rides 1 second instead of 30 (`shortTrials`), in a phone's small window, so each software frame is cheap.
 import type { Page } from '@playwright/test';
 import { shortTrials } from './fixtures/device-check';
+import { worldRideMap } from './fixtures/maps';
 import { startRace, stepUntil } from './fixtures/race';
 import { storeSettings, storedSettings } from './fixtures/settings-storage';
 import { hideTab, showTab } from './fixtures/tab';
@@ -153,8 +154,9 @@ test.describe('the race world starts where the check found', () => {
     await storeSettings(page, JSON.stringify({ quality: 'auto', deviceCheck: checked }));
     await webgl.withoutWebGpu();
     await worldRide.watch();
-    const race = await startRace(page, bluetooth, api, 'old-town-criterium', 'mode=solo', {
+    const race = await startRace(page, bluetooth, api, worldRideMap.id, 'mode=solo', {
       world: true,
+      catalogue: [worldRideMap],
     });
     await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
     expect((await worldRide.report())?.tier).toBe('medium');
@@ -170,8 +172,9 @@ test.describe('the race world starts where the check found', () => {
     await storeSettings(page, JSON.stringify({ quality: 'low', deviceCheck: checked }));
     await webgl.withoutWebGpu();
     await worldRide.watch();
-    const race = await startRace(page, bluetooth, api, 'old-town-criterium', 'mode=solo', {
+    const race = await startRace(page, bluetooth, api, worldRideMap.id, 'mode=solo', {
       world: true,
+      catalogue: [worldRideMap],
     });
     await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
     expect((await worldRide.report())?.tier).toBe('low');

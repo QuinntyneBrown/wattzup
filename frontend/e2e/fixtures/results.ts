@@ -3,10 +3,12 @@ import type { Page } from '@playwright/test';
 /**
  * Results as a reload finds it: the result and the ride a finished ride left in the navigation's state. Results submits
  * the ride again, and the backend answers a repeat as it did the first time (L2-125 AC3), so the panels fill as they
- * did. Each ride gets a new id.
+ * did. Each ride gets a new id. The state is written from the app's icon, a document of the app's origin that does
+ * not start the app: started at `/`, the router ends its first navigation after the page's load (its routes load on
+ * demand) and writes its own state over the history entry, which sent one reload in five back to the first screen.
  */
 export async function openResults(page: Page, state: object): Promise<void> {
-  await page.goto('/');
+  await page.goto('/favicon.svg');
   await page.evaluate((s) => history.replaceState(s, '', '/results'), state);
   await page.reload();
 }
