@@ -178,3 +178,14 @@ def build_four_passes(B, kit, road, height_at) -> None:
     B["dolomite-pale"].box((ux_m, uy_m, uz_m), (1.85, 1.35, 2.45), un_yaw + 0.22)
     B["larch-aged"].box((ux_m, uy_m, uz_m + 1.15), (1.92, 0.65, 0.72), un_yaw + 0.22)
     B["ladin-blue"].box((ux_m, uy_m, uz_m + 1.38), (1.96, 0.38, 0.28), un_yaw + 0.22)
+
+    # Electronic alpine pass-status boards (PASSO APERTO / OFFEN) with green LED bar & solar panel at each climb foot
+    for p in PASSES:
+        st_idx = road.index(p["climb_from"] - 35.0)
+        st_yaw = s[st_idx]["h"]
+        off = -(kit.kerb + 2.05)
+        B["steel"].box(kit.P(st_idx, 0.0, off, -0.15), (0.14, 0.14, 3.25), st_yaw)
+        B["paint"].box(kit.P(st_idx, 0.0, off, 1.75), (0.12, 1.85, 1.15), st_yaw)
+        B["dark"].box(kit.P(st_idx, -0.03, off, 2.05), (0.13, 1.62, 0.45), st_yaw)
+        B["neon-lime"].box(kit.P(st_idx, -0.05, off, 2.18), (0.14, 1.15, 0.18), st_yaw)
+        B["ladin-blue"].box(kit.P(st_idx, 0.0, off, 3.12), (0.55, 0.72, 0.08), st_yaw + 0.3)
