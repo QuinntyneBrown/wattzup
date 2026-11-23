@@ -75,6 +75,13 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     # Cresta Strenta (3,124 m) high knife-edge ridge spur extending northwest from Piz Boè
     for cs_i in range(3):
         rock_tower(peaks, cx - 55.0 - cs_i * 68.0, cy + 40.0 + cs_i * 48.0, 650.0, 772.0 - cs_i * 18.0, 62.0, 34.0, 7, 0.65, cfn, taper=0.42, flat_cap=False, seed_phase=2.1 + cs_i)
+
+    # Torre Exner (2,496 m): slender detached via-ferrata climbing needle above Passo Gardena (at=10090 m)
+    ex_pt = road.s[road.index(10090.0)]
+    eux, euy = ex_pt["x"] - cx, ex_pt["y"] - cy
+    eul = max(1.0, math.hypot(eux, euy))
+    eux, euy = eux / eul, euy / eul
+    rock_tower(peaks, cx + eux * 855.0, cy + euy * 855.0, 125.0, 445.0, 36.0, 32.0, 8, math.atan2(euy, eux), cfn, taper=0.38, flat_cap=True, seed_phase=4.9)
     top_ring = rings[-1]
     for k in range(sides):
         u = (k + 1) % sides
