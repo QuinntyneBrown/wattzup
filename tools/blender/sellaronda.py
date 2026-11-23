@@ -137,7 +137,7 @@ def lay_centre_line(course: dict, theme: dict | None = None):
         for s in st:
             if s["kind"] == "work" and s["level"] >= 22 and s["from"] <= d <= s["to"]:
                 u_seg = (d - s["from"]) / max(1.0, s["to"] - s["from"])
-                z += 9.5 * math.sin(math.pi * u_seg) ** 0.85
+                z += 9.8 * math.sin(math.pi * u_seg) ** 0.82
         raw_z.append(z)
 
     zs = box_smooth(raw_z, 6, passes=2)
