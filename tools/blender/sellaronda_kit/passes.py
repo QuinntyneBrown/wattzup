@@ -467,4 +467,9 @@ def build_four_passes(B, kit, road, height_at) -> None:
     gs_s = road.index(7760.0)
     B["dolomite-pale"].box(kit.P(gs_s, 0.0, -(kit.kerb + 3.1), -0.1), (0.95, 0.36, 1.55), s[gs_s]["h"])
     B["gold"].box(kit.P(gs_s, 0.0, -(kit.kerb + 2.9), 0.85), (0.68, 0.06, 0.48), s[gs_s]["h"])
+    # Public blue cyclist multi-tool & pump repair totems beside the 4 summit fountains
+    for p in PASSES:
+        tl_p = road.index(p["at"] + 12.2)
+        B["ladin-blue"].box(kit.P(tl_p, 0.0, -(kit.kerb + 2.45), 0.0), (0.26, 0.26, 1.38), s[tl_p]["h"])
+        B["steel"].box(kit.P(tl_p, 0.0, -(kit.kerb + 2.45), 1.25), (0.52, 0.14, 0.08), s[tl_p]["h"])
     # [ANCHOR:passes]
