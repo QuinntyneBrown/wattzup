@@ -338,6 +338,14 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         B["skin"].box((mx_v, my_v, mz_v + 1.46), (0.22, 0.22, 0.24), msyaw)
         B["yellow"].box((mx_v - math.sin(msyaw) * 0.48, my_v + math.cos(msyaw) * 0.48, mz_v + 1.25), (0.05, 0.65, 0.48), msyaw)
 
+    # Resting cyclists seated on the 4 scenic switchback lay-by benches
+    for rl_i, rl_m in enumerate((1720.0, 4420.0, 7040.0, 9820.0)):
+        rl_idx = road.index(rl_m)
+        rlyaw = s[rl_idx]["h"]
+        rx_b, ry_b, rz_b = kit.P(rl_idx, -1.8, kit.kerb + 3.4, 0.52)
+        B[jerseys[rl_i]].box((rx_b, ry_b, rz_b), (0.38, 0.42, 0.52), rlyaw)
+        B["paint"].box((rx_b, ry_b, rz_b + 0.52), (0.24, 0.24, 0.24), rlyaw)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
