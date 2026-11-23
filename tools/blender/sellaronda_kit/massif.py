@@ -223,3 +223,21 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     lcl = max(1.0, math.hypot(lcx, lcy))
     lcux, lcuy = lcx / lcl, lcy / lcl
     rock_tower(peaks, cx + lcux * 735.0, cy + lcuy * 735.0, 102.0, 578.0, 128.0, 96.0, 11, math.atan2(lcuy, lcux), cfn, taper=0.52, flat_cap=False, seed_phase=3.7)
+
+    # Lingering summer snow-couloir ribbons inside north-facing Sella chimneys (Gardena / Colfosco face)
+    for coul_at in (9280.0, 9680.0, 10380.0, 11020.0):
+        k_pt = road.s[road.index(coul_at)]
+        kux, kuy = k_pt["x"] - cx, k_pt["y"] - cy
+        kul = max(1.0, math.hypot(kux, kuy))
+        kux, kuy = kux / kul, kuy / kul
+        kpx, kpy = -kuy, kux
+        quad_shaded(
+            peaks,
+            (cx + kux * 845.0 - kpx * 12.0, cy + kuy * 845.0 - kpy * 12.0, 175.0),
+            (cx + kux * 845.0 + kpx * 12.0, cy + kuy * 845.0 + kpy * 12.0, 175.0),
+            (cx + kux * 745.0 + kpx * 5.0,  cy + kuy * 745.0 + kpy * 5.0,  525.0),
+            (cx + kux * 745.0 - kpx * 5.0,  cy + kuy * 745.0 - kpy * 5.0,  525.0),
+            cfn,
+            350.0,
+            snow=True,
+        )
