@@ -176,6 +176,7 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["parasol-red"].box((cx_t, cy_t, cz_t + arm_z), (0.95, 0.06, 0.20), cyaw + arm_ang)
             B["paint"].box((cx_t, cy_t, cz_t + arm_z + 0.01), (0.58, 0.07, 0.18), cyaw + arm_ang)
         B["dolomite-pale"].box((cx_t + 1.2, cy_t - 0.8, cz_t - 0.2), (0.95, 0.78, 0.65), cyaw)
+        B["stone"].box((cx_t + math.cos(cyaw) * 2.4, cy_t + math.sin(cyaw) * 2.4, cz_t - 0.04), (1.85, 0.95, 0.14), cyaw)
 
     # 9. Gravel twin-track farm lanes leading off the road into the pastures
     for tr_m, tr_side in ((1180.0, 1.0), (3680.0, 1.0), (6680.0, 1.0), (9180.0, -1.0), (10620.0, 1.0)):
