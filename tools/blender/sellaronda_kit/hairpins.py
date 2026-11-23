@@ -337,4 +337,9 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         cmi = road.index(cm_s)
         B["steel"].box(kit.P(cmi, 0.0, -(kit.kerb + 1.45), -0.1), (0.08, 0.08, 2.15), s[cmi]["h"])
         B["parasol-red"].box(kit.P(cmi, 0.0, -(kit.kerb + 1.45), 1.65), (0.07, 0.65, 0.60), s[cmi]["h"])
+    # Blue 'LIGHTS ON IN GALLERY' signs 30 m before Pordoi & Gardena galleries
+    for gl_s in (4530.0, 9630.0):
+        gsi = road.index(gl_s)
+        B["steel"].box(kit.P(gsi, 0.0, -(kit.kerb + 1.5), -0.1), (0.08, 0.08, 2.1), s[gsi]["h"])
+        B["ladin-blue"].box(kit.P(gsi, 0.0, -(kit.kerb + 1.5), 1.6), (0.08, 0.58, 0.58), s[gsi]["h"])
     # [ANCHOR:hairpins]
