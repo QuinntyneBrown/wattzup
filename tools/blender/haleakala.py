@@ -477,6 +477,82 @@ def cow(paint, rng, c, yaw: float) -> None:
     paint.box(at(1.05, 0, 0.6 if grazing else 0.95), (0.34, 0.3, 0.5), yaw, hide, 0.9)
 
 
+HORSES = (0x6A3E26, 0x8A5632, 0x2E2622, 0xB9B2A6, 0x4A2E20)
+
+
+def horse(paint, rng, c, yaw: float) -> None:
+    """One of the ranch's horses: longer in the leg than the cattle, neck up, a dark tail."""
+    coat = _lin(HORSES[rng.randrange(len(HORSES))])
+    cs, sn = math.cos(yaw), math.sin(yaw)
+
+    def at(fwd: float, left: float, up: float):
+        return (c[0] + fwd * cs - left * sn, c[1] + fwd * sn + left * cs, c[2] + up)
+
+    for fwd in (0.75, -0.75):
+        paint.box(at(fwd, 0, -0.2), (0.14, 0.46, 1.35), yaw, coat, 0.55)
+    paint.box(at(0, 0, 1.1), (2.1, 0.56, 0.62), yaw, coat, 0.85)
+    grazing = rng.random() < 0.4
+    paint.box(at(1.15, 0, 0.75 if grazing else 1.45), (0.36, 0.3, 0.95), yaw, coat, 0.9)
+    paint.box(at(1.5, 0, 0.5 if grazing else 2.15), (0.62, 0.24, 0.3), yaw, coat, 0.9)
+    paint.box(at(-1.12, 0, 0.75), (0.1, 0.12, 0.85), yaw, _lin(0x1E1A18), 0.9)
+
+
+def ranch_steads(k) -> dict:
+    """Detail 6, ranch land: three homesteads stand back from the road up through the pastures. Each is a white
+    board house under a red tin roof with a lanai along its front and a water tank at its end; a gate of two tall
+    posts and a crossbeam with the ranch's board stands at the fence where its track leaves the road, and horses
+    graze the paddock beside it."""
+    paint, rng, s = Painted(k), k.rng, k.s
+    white, red, glass, door, timber, tank = _lin(0xF2EFE6), _lin(0xA63A2E), _lin(0x2E3B44), _lin(0x4A6A4E), _lin(0x6A4A30), _lin(0xB9BEC2)
+    steads = horses = 0
+    for target in (0.17, 0.29, 0.41):
+        for i in range(12, k.n - 12):
+            if height_share(k, i) < target or any(abs(s[q]["k"]) > 1 / 150 for q in range(i - 8, i + 9)):
+                continue
+            side = next((sd for sd in (1, -1) if k.room(i, (k.kerb + 34.0) * sd, 26.0)), 0)
+            if not side:
+                continue
+            x, y, _ = k.road.at(i, (k.kerb + 19.0) * side)
+            rx, ry, rz = k.road.at(i, 0.0)
+            d = math.hypot(rx - x, ry - y)
+            out = ((rx - x) / d, (ry - y) / d)
+            along = (-out[1], out[0])
+            yaw, z = math.atan2(along[1], along[0]), sum(k.height_at(x + dx * along[0], y + dx * along[1]) for dx in (-7.0, 0.0, 7.0)) / 3 + 0.6
+            wide, deep, tall = 13.0, 7.0, 3.3
+            # On the slope it stands on a footing of lava stone, level under the boards.
+            paint.box((x, y, z - 5.0), (wide + 0.5, deep + 0.5, 5.0), yaw, _lin(0x4A423E), 0.8)
+            paint.box((x, y, z), (wide, deep, tall), yaw, white, 0.85)
+            paint.roof((x, y, z + tall), wide + 0.8, deep + 0.8, 2.1, yaw, red)
+            # The lanai: its own low roof on four posts, the door and the windows in its shade.
+            fx, fy = x + out[0] * deep / 2, y + out[1] * deep / 2
+            paint.box((fx + out[0] * 1.2, fy + out[1] * 1.2, z + 2.55), (wide + 0.4, 2.6, 0.14), yaw, red, 1.0)
+            paint.box((fx + out[0] * 1.2, fy + out[1] * 1.2, z - 5.0), (wide, 2.4, 5.0), yaw, timber, 0.7)
+            for e in (-0.5, -0.17, 0.17, 0.5):
+                paint.box((fx + out[0] * 2.3 + along[0] * e * (wide - 0.4), fy + out[1] * 2.3 + along[1] * e * (wide - 0.4), z - 0.1), (0.14, 0.14, 2.7), yaw, white, 1.0)
+            corner = (fx - along[0] * wide / 2, fy - along[1] * wide / 2, 0.0)
+            paint.panel(corner, along, out, wide / 2 - 0.5, wide / 2 + 0.5, z, z + 2.1, 0.04, door)
+            for a0 in (1.2, 3.6, wide - 4.8, wide - 2.4):
+                paint.panel(corner, along, out, a0, a0 + 1.2, z + 0.9, z + 2.1, 0.04, glass)
+            paint.tube((x + along[0] * (wide / 2 + 2.4), y + along[1] * (wide / 2 + 2.4), z - 3.0), 1.5, 1.5, 5.6, tank, tank, 8, _lin(0x8E9296))
+            # The gate at the fence line, the ranch's board hung from its beam.
+            gx, gy, gz = k.road.at(i, (k.kerb + 4.2) * side)
+            for e in (-2.6, 2.6):
+                paint.box((gx + along[0] * e, gy + along[1] * e, gz - 0.4), (0.28, 0.28, 5.0), yaw, timber, 0.8)
+            paint.box((gx, gy, gz + 4.3), (5.9, 0.26, 0.26), yaw, timber, 1.0)
+            paint.box((gx, gy, gz + 3.55), (2.6, 0.08, 0.6), yaw, white, 1.0)
+            paint.box((gx, gy, gz + 3.7), (1.9, 0.1, 0.16), yaw, red, 1.0)
+            # The paddock beside the house.
+            for _ in range(rng.randint(3, 5)):
+                hx = x - along[0] * rng.uniform(13.0, 30.0) + out[0] * rng.uniform(-6.0, 14.0)
+                hy = y - along[1] * rng.uniform(13.0, 30.0) + out[1] * rng.uniform(-6.0, 14.0)
+                if k.road.clear_of_road(hx, hy, 9.0, i):
+                    horse(paint, rng, (hx, hy, k.height_at(hx, hy)), rng.uniform(0, math.tau))
+                    horses += 1
+            steads += 1
+            break
+    return {"ranchHouses": steads, "horses": horses}
+
+
 def ranch_land(k) -> dict:
     """Detail 6, ranch land: on the middle slopes a post-and-wire fence runs along both sides of the road, cattle
     graze the pasture behind it, and eucalyptus stand in lines with a jacaranda in flower among them."""
@@ -900,6 +976,8 @@ def scenery(k) -> dict:
     swords = silverswords(k)
     domes = science_city(k)
     ranch = ranch_land(k)
+    steads = ranch_steads(k)
+    ranch.update(steads)
     coast = coastal_start(k)
     coast.update(plantation_town(k))
     cones = crater(k)
