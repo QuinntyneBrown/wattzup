@@ -24,6 +24,7 @@ def build_four_passes(B, kit, road, height_at) -> None:
         B["paint"].box(kit.P(idx, 6.0, -(kit.kerb + 2.39), 2.38), (2.95, 0.05, 0.44), yaw)
         B["ladin-blue"].box(kit.P(idx, 6.0, -(kit.kerb + 2.39), 1.98), (2.95, 0.05, 0.26), yaw)
         B["yellow"].box(kit.P(idx, 6.0, -(kit.kerb + 2.39), 1.78), (1.35, 0.05, 0.16), yaw)
+        B["gold"].box(kit.P(idx, 7.15, -(kit.kerb + 2.38), 2.38), (0.34, 0.06, 0.34), yaw)
         # Pitched larch shingle weather-hood cap over the summit board
         kit.gable(B["larch-aged"], kit.P(idx, 6.0, -(kit.kerb + 2.5), 3.03), 3.55, 0.68, 0.38, yaw)
         # Opposite-side secondary direction & altitude fingerpost
