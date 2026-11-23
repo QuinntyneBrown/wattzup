@@ -460,4 +460,13 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
         B["ladin-blue"].box((bdx, bdy, bdz + 0.04), (1.35, 1.05, 0.14), 0.4)
         B["crowd-3"].box((bdx + 1.2, bdy - 0.5, bdz + 0.04), (1.25, 0.98, 0.14), 0.9)
 
+    # Shingled larch hikers' picnic pavilions in sunny Campolongo & Gardena pastures
+    for pz_m, pz_s in ((1360.0, 1.0), (10580.0, 1.0)):
+        pzi = road.index(pz_m)
+        pzx, pzy, _ = road.at(pzi, (kit.kerb + 15.0) * pz_s)
+        if road.clear_of_road(pzx, pzy, 10.0, pzi):
+            pzz = height_at(pzx, pzy)
+            B["larch-warm"].box((pzx, pzy, pzz), (2.8, 2.8, 2.15), 0.3)
+            kit.gable(B["chalet-wood"], (pzx, pzy, pzz + 2.15), 3.4, 3.4, 0.95, 0.3)
+
     return trees
