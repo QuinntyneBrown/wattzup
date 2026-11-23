@@ -29,6 +29,7 @@ def build_four_passes(B, kit, road, height_at) -> None:
         B["steel"].box(kit.P(idx, -4.0, kit.kerb + 2.1, 0.0), (0.11, 0.11, 2.75), yaw)
         B["ladin-blue"].box(kit.P(idx, -4.0, kit.kerb + 2.1, 2.35), (1.65, 0.08, 0.34), yaw + 0.35)
         B["paint"].box(kit.P(idx, -4.0, kit.kerb + 2.1, 1.95), (1.55, 0.08, 0.30), yaw - 0.25)
+        B["foliage"].box(kit.P(idx, -4.0, kit.kerb + 2.1, 1.58), (1.35, 0.08, 0.24), yaw + 0.12)
 
     # Fausto Coppi stone memorial obelisk & Giro d'Italia Cima Coppi pink stele on Passo Pordoi (2,239 m)
     pordoi_idx = road.index(4950.0)
