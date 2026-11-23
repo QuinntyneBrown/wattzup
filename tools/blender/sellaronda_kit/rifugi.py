@@ -308,4 +308,7 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     # Gilded Giro stage-host plaques on Hotel Savoia's stone facade on Passo Pordoi
     hs_i = road.index(4925.0)
     B["gold"].box(kit.P(hs_i, 0.0, -(kit.kerb + 7.6), 1.45), (2.2, 0.08, 0.45), road.s[hs_i]["h"])
+    # Cast-iron Kaiserschmarrn skillet signboard outside Jimmi Hütte (at=10416 m)
+    jm_i = road.index(10416.0)
+    B["dark"].box(kit.P(jm_i, 0.0, kit.kerb + 2.8, 0.95), (0.14, 0.95, 0.95), road.s[jm_i]["h"])
     # [ANCHOR:rifugi-global]
