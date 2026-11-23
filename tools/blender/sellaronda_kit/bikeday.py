@@ -523,6 +523,14 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     B["glow-window"].box((pax, pay_p, paz + 1.15), (2.8, 2.26, 0.95), pay)
     B["steel"].box((pax + math.cos(pay) * 1.8, pay_p + math.sin(pay) * 1.8, paz), (0.12, 0.12, 4.8), pay)
 
+    # Dark-blue & red alpine patrol SUV stationed at Passo Campolongo border (at=2115 m)
+    cb_v = road.index(2115.0)
+    cbvy = s[cb_v]["h"] + 0.35
+    cbvx, cbvy_p, cbvz = kit.P(cb_v, 0.0, kit.kerb + 4.2, 0.0)
+    B["dark"].box((cbvx, cbvy_p, cbvz), (4.45, 1.88, 1.52), cbvy)
+    B["parasol-red"].box((cbvx, cbvy_p, cbvz + 0.75), (4.48, 1.92, 0.18), cbvy)
+    B["ladin-blue"].box((cbvx, cbvy_p, cbvz + 1.52), (0.38, 1.12, 0.16), cbvy)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
