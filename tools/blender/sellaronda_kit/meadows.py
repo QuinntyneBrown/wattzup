@@ -404,4 +404,13 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
         if road.clear_of_road(csx_t, csy_t, 4.0, csi):
             B["gravel"].box((csx_t, csy_t, height_at(csx_t, csy_t) + 0.02), (4.8, 1.15, 0.06), s[csi]["h"] + 1.1)
 
+    # Roofed larch alpine deer hay-and-salt mangers (Wildfütterung) at the spruce forest margin
+    for fk_m in (760.0, 3520.0, 6480.0):
+        fki = road.index(fk_m)
+        fkx, fky, _ = road.at(fki, -(kit.kerb + 19.0))
+        if road.clear_of_road(fkx, fky, 12.0, fki):
+            fkz = height_at(fkx, fky)
+            B["larch-aged"].box((fkx, fky, fkz), (1.85, 1.15, 1.45), s[fki]["h"])
+            kit.gable(B["chalet-wood"], (fkx, fky, fkz + 1.45), 2.35, 1.65, 0.65, s[fki]["h"])
+
     return trees
