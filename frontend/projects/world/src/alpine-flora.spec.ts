@@ -9,6 +9,7 @@ import {
   isAlpenroseInBloom,
   larchAutumnGoldRatio,
   mugoPineCoverWeight,
+  pastureSnowFreeProbability,
   tabiaBarnDensityWeight,
   treeLineDensity,
   wildflowerBloomIntensity,
@@ -48,5 +49,7 @@ describe('dolomiteFloraZone', () => {
     expect(dominantConiferSpecies(1600)).toBe('picea-abies-spruce');
     expect(dominantConiferSpecies(2100)).toBe('pinus-cembra-arolla');
     expect(dominantConiferSpecies(2700)).toBe('none');
+    expect(pastureSnowFreeProbability(2100, 7)).toBeGreaterThan(0.7);
+    expect(pastureSnowFreeProbability(2100, 1)).toBe(0);
   });
 });
