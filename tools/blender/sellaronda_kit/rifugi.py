@@ -193,3 +193,5 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
         pg_y = ty - math.sin(yaw) * (w * 0.25)
         for pr_i in range(-1, 2):
             B["larch-warm"].box((pg_x + math.cos(yaw) * (pr_i * 1.35), pg_y + math.sin(yaw) * (pr_i * 1.35), tz + 2.65), (0.14, 3.8, 0.18), yaw)
+        B["stone"].box((pg_x, pg_y, tz + 0.12), (1.15, 1.15, 0.48), yaw)
+        B["glow-door"].box((pg_x, pg_y, tz + 0.58), (0.72, 0.72, 0.14), yaw + 0.4)
