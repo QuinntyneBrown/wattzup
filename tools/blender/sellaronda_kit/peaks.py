@@ -519,4 +519,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     caul = max(1.0, math.hypot(caux, cauy))
     caux, cauy = caux / caul, cauy / caul
     rock_tower(peaks, ca_pt["x"] + caux * 620.0, ca_pt["y"] + cauy * 620.0, 40.0, 285.0, 175.0, 135.0, 10, math.atan2(-cauy, -caux), cfn, taper=0.74, flat_cap=True, seed_phase=2.2)
+    # Colac & Ciampac (2,715 m) steep southern Fassa ridge behind Canazei (at=5980 m)
+    clc_pt = road.s[road.index(5980.0)]
+    clx2, cly2 = clc_pt["x"] - cx, clc_pt["y"] - cy
+    cll2 = max(1.0, math.hypot(clx2, cly2))
+    clx2, cly2 = clx2 / cll2, cly2 / cll2
+    rock_tower(peaks, clc_pt["x"] + clx2 * 1120.0, clc_pt["y"] + cly2 * 1120.0, 48.0, 665.0, 195.0, 140.0, 9, math.atan2(-cly2, -clx2), cfn, taper=0.44, flat_cap=False, seed_phase=6.3)
     # [ANCHOR:peaks]
