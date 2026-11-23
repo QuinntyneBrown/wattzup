@@ -303,6 +303,12 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         wvi = road.index(wv_m)
         wvx, wvy, wvz = road.at(wvi, -(kit.kerb + 4.8), 2.0)
         kit.light((wvx, wvy, wvz), "bulb", 13.0, 0.48)
+    # Milestone 1000: Twin celebratory golden enrosadira halos crowning Corvara's start/finish arch
+    m1000_i = road.index(60.0)
+    for m1000_side in (-1.0, 1.0):
+        mx1, my1, mz1 = road.at(m1000_i, (kit.kerb + 1.6) * m1000_side, 5.2)
+        kit.halo((mx1, my1, mz1), "bulb")
+        kit.light((mx1, my1, mz1 - 2.0), "bulb", 22.0, 0.62)
     # [ANCHOR:alpenglow-lights]
 
 
