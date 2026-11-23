@@ -67,6 +67,7 @@ def _village_chalet(B, kit, road, idx: int, side: float, off_extra: float, w: fl
         return
     cz_v = max(height_at(cx_v, cy_v), road.s[idx]["z"] - 0.6)
     B["stone"].box((cx_v, cy_v, cz_v - 2.4), (w, d, 3.0), yaw)
+    B["larch-warm"].box((cx_v + math.cos(yaw) * (w * 0.52), cy_v + math.sin(yaw) * (w * 0.52), cz_v + 0.6), (0.42, d * 0.55, 1.45), yaw)
     # Traditional projecting Ladin stone bread-oven apse (forn da pan) on older chalets
     if idx % 3 == 0:
         ox = cx_v + math.cos(yaw) * (w * 0.5 + 0.9)
