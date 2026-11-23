@@ -45,3 +45,9 @@ export function recommendedDescentLayer(
   if (summitTempC < 16) return 'wind-gilet';
   return 'summer-jersey';
 }
+
+/** Standard atmospheric pressure (hPa) at `altitudeMetres` for barometric cycling computers. */
+export function barometricHectopascals(altitudeMetres: number): number {
+  const h = Math.max(0, altitudeMetres);
+  return Math.round(1013.25 * Math.pow(1 - 2.25577e-5 * h, 5.25588));
+}
