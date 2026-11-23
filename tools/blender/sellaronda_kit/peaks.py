@@ -441,4 +441,6 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     stul = max(1.0, math.hypot(stux, stuy))
     stux, stuy = stux / stul, stuy / stul
     rock_tower(peaks, stv_pt["x"] + stux * 780.0, stv_pt["y"] + stuy * 780.0, 50.0, 585.0, 210.0, 135.0, 10, math.atan2(-stuy, -stux), cfn, taper=0.78, flat_cap=True, seed_phase=2.1)
+    # Spillway gate house centered on the crest of Diga del Fedaia
+    rock_tower(peaks, lake_cx + mux * 10.0 + mpx * 270.0, lake_cy + muy * 10.0 + mpy * 270.0, lake_z + 3.0, lake_z + 14.0, 12.0, 8.0, 6, yaw_mm, cfn, taper=0.96, flat_cap=True, seed_phase=0.2)
     # [ANCHOR:peaks]
