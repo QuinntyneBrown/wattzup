@@ -94,6 +94,12 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
         tx, ty, _ = road.at(idx, t_off)
         tz = max(height_at(tx, ty), road.s[idx]["z"] - 0.35)
         B["larch-warm"].box((tx, ty, tz - 1.2), (w * 0.86, 4.6, 1.35), yaw)
+        # Timber-framed windbreak glass panels on both windward ends of the panoramic terrace
+        for wb_end in (-1.0, 1.0):
+            wx_b = tx + math.cos(yaw) * (wb_end * w * 0.42)
+            wy_b = ty + math.sin(yaw) * (wb_end * w * 0.42)
+            B["larch-aged"].box((wx_b, wy_b, tz + 0.15), (0.14, 4.4, 1.55), yaw)
+            B["glacier-ice"].box((wx_b, wy_b, tz + 0.45), (0.08, 4.1, 1.12), yaw)
         # Wooden picnic tables & red/cream alpine sun parasols
         for p_k in (-1, 0, 1):
             px_t = tx + math.cos(yaw) * (p_k * 4.4)
