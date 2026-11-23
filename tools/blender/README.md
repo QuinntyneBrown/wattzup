@@ -117,6 +117,7 @@ climb for a col). All seven map worlds have one:
 Every map has the start pylons and lights, the finish arch, barriers and crowds at both ends, an arch at the
 foot of every effort, flags where each recovery begins and arrow boards round every tight bend.
 
+A theme's `chunks` (say `{"Land": 2}`) sets how many 240 m chunks long a group's meshes are, where the default (the land: 4) draws too much at once.
 The sun stands over the finish unless a theme sets `sun_azimuth` (radians from Blender's +X), as Cinque Terre does for its evening light from the west.
 
 A theme whose road is a public one, not a circuit, sets `kerbs` to false: no red-and-white kerbs round its bends, as on Haleakalā.
