@@ -578,4 +578,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     rock_tower(peaks, apex[0], apex[1], 804.0, 818.0, 2.2, 2.2, 6, 0.0, cfn, taper=0.35, flat_cap=False, seed_phase=0.0)
     # Piz Daiet (2,796 m) western Sella buttress overlooking Val Lasties
     rock_tower(peaks, cx + lux * 785.0 + lpx * 185.0, cy + luy * 785.0 + lpy * 185.0, 118.0, 548.0, 74.0, 58.0, 8, math.atan2(luy, lux), cfn, taper=0.68, flat_cap=True, seed_phase=2.4)
+    # Punta de Joel (2,945 m) steep southern prow east of Forcella Pordoi
+    rock_tower(peaks, fc_x + px_perp * 68.0 + ux * 65.0, fc_y + py_perp * 68.0 + uy * 65.0, 132.0, 576.0, 58.0, 48.0, 8, yaw_sp, cfn, taper=0.76, flat_cap=True, seed_phase=4.2)
     # [ANCHOR:massif]
