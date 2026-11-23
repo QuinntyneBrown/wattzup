@@ -462,6 +462,15 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         ex_r, ey_r, ez_r = road.at(eri, -(kit.kerb - 0.62))
         _road_cyclist(B, ex_r, ey_r, ez_r, s[eri]["h"], "lago-turquoise", standing=True)
 
+    # Festive Ladin folk musicians welcoming Bike Day riders atop Passo Gardena (at=10148 m)
+    fk_i = road.index(10148.0)
+    fky = s[fk_i]["h"] + 1.5
+    for fk_o in (-1.2, 0.0, 1.2):
+        fkx, fky_p, fkz = kit.P(fk_i, fk_o, kit.kerb + 2.4, 0.0)
+        B["dark"].box((fkx, fky_p, fkz), (0.32, 0.36, 0.85), fky)
+        B["parasol-red"].box((fkx, fky_p, fkz + 0.85), (0.36, 0.42, 0.58), fky)
+        B["dark"].box((fkx, fky_p, fkz + 1.65), (0.38, 0.38, 0.14), fky)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
