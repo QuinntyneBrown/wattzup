@@ -573,4 +573,8 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         B["stone"].box((max_m, may_m, maz_m - 1.0), (6.2, 4.8, 2.2), may)
         B["larch-aged"].box((max_m, may_m, maz_m + 1.2), (6.4, 5.0, 2.6), may)
         kit.gable(B["chalet-wood"], (max_m, may_m, maz_m + 3.8), 7.0, 5.6, 1.5, may)
+    # Red-and-white Guide Alpine / Bergführer mountain-guide office signs in all 4 villages
+    for ga_m in (232.0, 3102.0, 6102.0, 8905.0):
+        gai = road.index(ga_m)
+        B["parasol-red"].box(kit.P(gai, 0.0, kit.kerb + 6.4, 3.1), (0.14, 0.68, 0.78), road.s[gai]["h"])
     # [ANCHOR:villages]
