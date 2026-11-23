@@ -480,4 +480,9 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
     for ped_m in (260.0, 3120.0, 6120.0, 8920.0):
         pi = road.index(ped_m)
         B["brick"].box(kit.P(pi, 0.0, 0.0, 0.012), (3.2, kit.kerb * 1.92, 0.015), road.s[pi]["h"])
+    # Green clean-mobility public charging pillars in Corvara & Canazei
+    for ev_m in (302.0, 6172.0):
+        evi = road.index(ev_m)
+        B["foliage"].box(kit.P(evi, 0.0, kit.kerb + 2.4, 0.0), (0.42, 0.34, 1.55), road.s[evi]["h"])
+        B["neon-lime"].box(kit.P(evi, 0.0, kit.kerb + 2.4, 1.35), (0.44, 0.36, 0.12), road.s[evi]["h"])
     # [ANCHOR:villages]
