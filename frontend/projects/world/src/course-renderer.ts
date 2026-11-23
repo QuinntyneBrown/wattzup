@@ -15,6 +15,7 @@ import {
   DirectionalLight,
   DoubleSide,
   Fog,
+  Group,
   HemisphereLight,
   type Material,
   Mesh,
@@ -205,12 +206,16 @@ export class CourseRenderer implements WorldRenderer {
   private readonly chunks: {
     mesh: Mesh;
     group: string;
+    /** Whether it is in the scene now: only the chunks near the camera are (`near`). */
+    near: boolean;
     x: number;
     y: number;
     z: number;
     reach: number;
   }[] = [];
   private frames = 0;
+  /** The chunks of the map that are near enough the camera to be drawn: the only ones in the scene. */
+  private readonly near = new Group();
   /** What the pinned probe reports of the frame just drawn. */
   private readonly drawn = {
     tier: 0 as number,
@@ -403,6 +408,9 @@ export class CourseRenderer implements WorldRenderer {
       if (mesh.isMesh) mesh.geometry.dispose();
     });
     this.map = null;
+    // The chunks were taken out of the map: their geometry is released here.
+    for (const { mesh } of this.chunks) mesh.geometry.dispose();
+    this.near.clear();
     this.chunks.length = 0;
     this.confetti.length = 0;
     for (const d of this.disposables) d.dispose();
@@ -565,6 +573,7 @@ export class CourseRenderer implements WorldRenderer {
           this.chunks.push({
             mesh,
             group,
+            near: false,
             x: middle.x,
             y: middle.y,
             z: middle.z,
@@ -576,6 +585,17 @@ export class CourseRenderer implements WorldRenderer {
     });
     this.map = map;
     this.scene.add(map);
+    // The map is some hundreds of chunks, and a frame draws a few dozen of them. A chunk that is only hidden is
+    // still walked twice by every frame (to place it and to ask whether it is in view), so the chunks are taken out
+    // of the map and only those near the camera are in the scene (`choose`). Each keeps its place in the world as
+    // its own, worked out here once. The confetti moves in the map's axes and stays where it is.
+    this.scene.add(this.near);
+    for (const chunk of this.chunks) {
+      if (chunk.group === 'Confetti') continue;
+      chunk.mesh.matrix.copy(chunk.mesh.matrixWorld);
+      this.near.add(chunk.mesh);
+      chunk.near = true;
+    }
 
     // The sky, worked out a pixel on a dome that rides with the camera (sky-material.ts).
     const dome = new SphereGeometry(9000, 24, 12);
@@ -655,9 +675,13 @@ export class CourseRenderer implements WorldRenderer {
    * seconds of the ride.
    */
   private warm(renderer: WebGPURenderer): void {
-    for (const { mesh } of this.chunks) {
-      mesh.visible = true;
-      mesh.frustumCulled = false;
+    for (const chunk of this.chunks) {
+      chunk.mesh.visible = true;
+      chunk.mesh.frustumCulled = false;
+      if (!chunk.near && chunk.mesh.parent === null) {
+        this.near.add(chunk.mesh);
+        chunk.near = true;
+      }
     }
     renderer.render(this.scene, this.camera);
     for (const { mesh } of this.chunks) mesh.frustumCulled = true;
@@ -857,7 +881,18 @@ export class CourseRenderer implements WorldRenderer {
       const dy = chunk.y - y;
       const dz = chunk.z - z;
       const reach = chunk.reach * far;
-      chunk.mesh.visible = dx * dx + dy * dy + dz * dz < reach * reach;
+      const show = dx * dx + dy * dy + dz * dz < reach * reach;
+      chunk.mesh.visible = show;
+      // In the scene only while it is near; a chunk the map still holds (the confetti) is hidden, not taken out.
+      if (
+        show !== chunk.near &&
+        chunk.mesh.parent !== this.map &&
+        chunk.mesh.parent?.parent !== this.map
+      ) {
+        if (show) this.near.add(chunk.mesh);
+        else this.near.remove(chunk.mesh);
+        chunk.near = show;
+      }
     }
   }
 

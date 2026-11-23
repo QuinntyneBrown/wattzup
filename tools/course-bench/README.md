@@ -64,3 +64,8 @@ among them).
 
 `WZ_BENCH_CSS=<rules>` adds style rules to the page and `WZ_BENCH_HIDE_HUD=1` hides everything but the canvas: for
 finding what a panel over the canvas costs before changing it (`docs/screenshots/courses/low-power/README.md`).
+
+Each `<label>.json` also carries `mainThread` (the browser's own account of the ten seconds: `taskMs`, `scriptMs`,
+`styleMs`, `layoutMs` and the counts of style and layout passes; divide by `frames.count` for a frame's worth),
+`animating` (what is animating as the timing ends) and `layoutReads` (how often the page read an element's
+`offsetTop`). `WZ_BENCH_BACKEND=webgl2` draws with WebGL 2.

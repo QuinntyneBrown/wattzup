@@ -48,6 +48,8 @@ export class RaceBoard implements AfterViewChecked {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   /** Each row's top at the last check; at most one per rider, so it never grows past the field. */
   private tops = new Map<string, number>();
+  /** The riders' order at the last measure: the rows are measured again only when it changes. */
+  private order = '';
 
   /**
    * FLIP, after the view is updated and before it is painted: a row whose top moved since the last check starts at its
@@ -56,6 +58,13 @@ export class RaceBoard implements AfterViewChecked {
    * row has moved.
    */
   ngAfterViewChecked(): void {
+    // A row can only have moved if the order changed. Asking every row where it is makes the browser lay the page
+    // out there and then, and this hook runs after every check of the view, twice a second through a race.
+    const order = this.rows()
+      .map((row) => row.id)
+      .join(' ');
+    if (order === this.order) return;
+    this.order = order;
     let still: boolean | null = null;
     const tops = new Map<string, number>();
     for (const row of this.host.nativeElement.querySelectorAll<HTMLElement>('.race-board__row')) {

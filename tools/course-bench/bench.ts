@@ -182,6 +182,15 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
   await profiler?.send("Profiler.enable");
   await profiler?.send("Profiler.setSamplingInterval", { interval: 200 });
   await profiler?.send("Profiler.start");
+  // The browser's own account of the page's main thread while it is timed: seconds in tasks, in script, in style
+  // and in layout. Steadier than frames a second, which the machine's other work moves.
+  const meter = await page.context().newCDPSession(page);
+  await meter.send("Performance.enable");
+  const measure = async (): Promise<Record<string, number>> =>
+    Object.fromEntries(
+      (await meter.send("Performance.getMetrics")).metrics.map((m) => [m.name, m.value]),
+    );
+  const metricsBefore = await measure();
   // How often the page asks where an element is while it is timed: each such read can force the page's layout.
   await page.evaluate(() => {
     const counted = window as unknown as { __wzLayoutReads: number };
@@ -351,6 +360,30 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
       top.join(String.fromCharCode(10)) + String.fromCharCode(10),
     );
   }
+  const metricsAfter = await measure();
+  const spent = (name: string): number =>
+    ((metricsAfter[name] ?? 0) - (metricsBefore[name] ?? 0)) * 1000;
+  const mainThread = {
+    taskMs: spent("TaskDuration"),
+    scriptMs: spent("ScriptDuration"),
+    styleMs: spent("RecalcStyleDuration"),
+    layoutMs: spent("LayoutDuration"),
+    styleCount: (metricsAfter["RecalcStyleCount"] ?? 0) - (metricsBefore["RecalcStyleCount"] ?? 0),
+    layoutCount: (metricsAfter["LayoutCount"] ?? 0) - (metricsBefore["LayoutCount"] ?? 0),
+  };
+  // What on the page is animating as the timing ends: an animation that runs all ride long is work on every frame.
+  const animating = await page.evaluate(() =>
+    document.getAnimations().map((animation) => {
+      const effect = animation.effect as KeyframeEffect | null;
+      const target = effect?.target as Element | null;
+      const what = effect?.getKeyframes().flatMap((frame) =>
+        Object.keys(frame).filter(
+          (key) => !["offset", "easing", "composite", "computedOffset"].includes(key),
+        ),
+      );
+      return `${target?.tagName.toLowerCase() ?? "?"}.${target?.getAttribute("class") ?? ""} ${[...new Set(what)].join(",")} ${animation.playState} ${String(effect?.getTiming().duration)}ms x${String(effect?.getTiming().iterations)}`;
+    }),
+  );
   const layoutReads = await page.evaluate(
     () => (window as unknown as { __wzLayoutReads: number }).__wzLayoutReads,
   );
@@ -373,7 +406,7 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
   const result = { label, map, uncapped, window: size, drawn, frames };
   fs.writeFileSync(
     path.join(out, `${label}${uncapped ? "-uncapped" : ""}.json`),
-    JSON.stringify({ ...result, layoutReads }, null, 2),
+    JSON.stringify({ ...result, layoutReads, animating, mainThread }, null, 2),
   );
   console.log(JSON.stringify(result));
 });
