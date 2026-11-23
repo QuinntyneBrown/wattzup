@@ -242,4 +242,11 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     frz = max(height_at(frx, fry), road.s[fr_i]["z"] - 0.3)
     B["stone"].box((frx, fry, frz - 1.4), (5.6, 4.4, 1.55), fryaw)
     B["larch-warm"].box((frx, fry, frz + 0.15), (5.4, 0.16, 0.95), fryaw)
+    # Outdoor cedar-rimmed turquoise alpine spa tub at Passo Sella Mountain Resort (at=7712 m)
+    sp_r = road.index(7712.0)
+    spryaw = road.s[sp_r]["h"]
+    spx_r, spy_r, _ = road.at(sp_r, -(kit.kerb + 12.5))
+    spz_r = max(height_at(spx_r, spy_r), road.s[sp_r]["z"] - 0.5)
+    B["larch-warm"].box((spx_r, spy_r, spz_r), (2.8, 2.8, 0.92), spryaw)
+    B["lago-turquoise"].box((spx_r, spy_r, spz_r + 0.84), (2.3, 2.3, 0.12), spryaw)
     # [ANCHOR:rifugi-global]
