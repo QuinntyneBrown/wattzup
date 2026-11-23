@@ -246,6 +246,11 @@ def emit_dusk_lights(kit, road, height_at) -> None:
     pax_l, pay_l, paz_l = road.at(pa_l, -(kit.kerb + 3.0), 2.5)
     kit.light((pax_l, pay_l, paz_l), "glow-window", 18.0, 0.56)
     kit.halo((pax_l, pay_l, paz_l), "glow-window")
+    # Golden riverside dusk light pools in Canazei
+    for cz_l in (6025.0, 6092.0):
+        czi = road.index(cz_l)
+        czx, czy, czz = road.at(czi, 6.5, 2.8)
+        kit.light((czx, czy, czz), "glow-window", 18.0, 0.52)
     # [ANCHOR:alpenglow-lights]
 
 
