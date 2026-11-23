@@ -326,4 +326,8 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
         kci = road.index(kc_m)
         kcx, kcy, _ = road.at(kci, (kit.kerb + 13.5) * kc_s)
         B["copper-patina"].box((kcx, kcy, height_at(kcx, kcy) + 12.8), (0.65, 0.65, 0.45), 0.0)
+    # Stepped dry-stone flower retaining wall fronting Rifugio Plan Boè
+    pb_i = road.index(1460.0)
+    B["stone"].box(kit.P(pb_i, 0.0, -(kit.kerb + 2.8), -0.3), (9.5, 0.65, 0.85), road.s[pb_i]["h"])
+    B["geranium-red"].box(kit.P(pb_i, 0.0, -(kit.kerb + 2.8), 0.55), (8.8, 0.45, 0.24), road.s[pb_i]["h"])
     # [ANCHOR:rifugi-global]
