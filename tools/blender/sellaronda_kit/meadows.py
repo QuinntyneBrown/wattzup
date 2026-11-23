@@ -223,4 +223,17 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["foliage"].box((rx_a, ry_a, rz_a - 0.1), (1.15, 0.95, 0.48), rh_i * 0.5)
             B["bougainvillea"].box((rx_a, ry_a, rz_a + 0.32), (0.92, 0.78, 0.22), rh_i * 0.5)
 
+    # 14. Traditional conical Tyrolean haystacks (Heumandln) stacked on wooden stakes in mown pastures
+    for hm_m, hm_s in ((1080.0, -1.0), (1420.0, 1.0), (6510.0, -1.0), (10580.0, -1.0)):
+        hm_idx = road.index(hm_m)
+        hmx, hmy, _ = road.at(hm_idx, (kit.kerb + 14.0) * hm_s)
+        if road.clear_of_road(hmx, hmy, 12.0, hm_idx):
+            for st_i in range(4):
+                sx_h = hmx + math.cos(st_i * 1.7) * (3.2 + st_i * 1.6)
+                sy_h = hmy + math.sin(st_i * 1.7) * (3.2 + st_i * 1.6)
+                sz_h = height_at(sx_h, sy_h)
+                B["larch-aged"].box((sx_h, sy_h, sz_h), (0.12, 0.12, 1.95), 0.0)
+                B["hay"].box((sx_h, sy_h, sz_h + 0.15), (1.15, 1.15, 1.45), st_i * 0.5)
+                kit.gable(B["hay"], (sx_h, sy_h, sz_h + 1.60), 1.25, 1.25, 0.55, st_i * 0.5)
+
     return trees
