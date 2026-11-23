@@ -41,3 +41,19 @@ export function resistanceToRoadGradePercent(targetResistance: number): number {
   const clamped = Math.max(1, Math.min(32, targetResistance));
   return Number((((clamped - 14) / 18) * 11.5).toFixed(1));
 }
+
+/** Relative climb difficulty weight (1.0..1.6) for cresting `passId` on Sella Ronda. */
+export function passDifficultyMultiplier(
+  passId: 'campolongo' | 'pordoi' | 'sella' | 'gardena',
+): number {
+  switch (passId) {
+    case 'campolongo':
+      return 1.0;
+    case 'gardena':
+      return 1.3;
+    case 'pordoi':
+      return 1.45;
+    case 'sella':
+      return 1.55;
+  }
+}
