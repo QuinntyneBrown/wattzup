@@ -32,3 +32,9 @@ export function hayHarvestMonth(altitudeMetres: number): 'june' | 'july' | 'augu
   if (altitudeMetres < 1950) return 'july';
   return 'august';
 }
+
+/** Relative dwarf mountain pine (Pinus mugo) krummholz cover (0..1), peaking between 2,050 m and 2,350 m. */
+export function mugoPineCoverWeight(altitudeMetres: number): number {
+  if (altitudeMetres <= 1850 || altitudeMetres >= 2550) return 0;
+  return Math.exp(-(((altitudeMetres - 2200) / 180) ** 2));
+}
