@@ -457,4 +457,12 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         pti = road.index(pt_m)
         B["parasol-red"].box(kit.P(pti, 0.0, -(kit.kerb + 2.15), 0.0), (0.36, 0.32, 1.25), road.s[pti]["h"])
         B["yellow"].box(kit.P(pti, 0.0, -(kit.kerb + 2.15), 0.95), (0.38, 0.34, 0.18), road.s[pti]["h"])
+    # Avisio riverside larch promenade pergola in Canazei (at=6092 m)
+    av_p = road.index(6092.0)
+    avy = road.s[av_p]["h"]
+    avx, avy_p, _ = road.at(av_p, kit.kerb + 9.5)
+    avz = max(height_at(avx, avy_p), road.s[av_p]["z"] - 0.4)
+    B["larch-warm"].box((avx, avy_p, avz + 2.35), (8.5, 2.2, 0.22), avy)
+    for ap_o in (-3.8, 0.0, 3.8):
+        B["larch-aged"].box((avx + math.cos(avy) * ap_o, avy_p + math.sin(avy) * ap_o, avz), (0.18, 2.0, 2.35), avy)
     # [ANCHOR:villages]
