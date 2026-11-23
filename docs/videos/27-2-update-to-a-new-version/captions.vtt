@@ -1,0 +1,49 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.337
+An installed app keeps the version it loaded. Now it offers each new one, between
+
+00:00:07.337 --> 00:00:07.989
+rides.
+
+00:00:10.324 --> 00:00:15.234
+When a new version is deployed, the app offers it the next time it opens: a toast
+
+00:00:15.234 --> 00:00:18.322
+with Reload. It stays until the rider chooses.
+
+00:00:23.228 --> 00:00:28.277
+During a race, class or custom ride, the offer waits, and nothing reloads. When the
+
+00:00:28.277 --> 00:00:30.341
+ride ends, the toast appears.
+
+00:00:36.133 --> 00:00:40.915
+The spec runs the real service worker and deploys a new version. Take away the
+
+00:00:40.915 --> 00:00:42.809
+ride's hold, and it fails.
+
+00:00:49.038 --> 00:00:51.479
+The offer, from a phone to the full screen.
+
+00:00:59.361 --> 00:01:03.965
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:04.310 --> 00:01:08.821
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:08.821 --> 00:01:10.492
+every hill and interval.
+
+00:01:10.838 --> 00:01:16.016
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:16.016 --> 00:01:21.464
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:21.464 --> 00:01:24.454
+XP, rider levels, stars and map unlocks.
+
+00:01:24.799 --> 00:01:27.291
+A custom workout lives under Profile.
