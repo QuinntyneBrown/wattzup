@@ -216,3 +216,10 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     pspx, pspy = -psuy, psux
     for lat_ps, h_ps in ((-125.0, 588.0), (105.0, 562.0)):
         rock_tower(peaks, cx + psux * 755.0 + pspx * lat_ps, cy + psuy * 755.0 + pspy * lat_ps, 112.0, h_ps, 112.0, 88.0, 10, math.atan2(psuy, psux), cfn, taper=0.74, flat_cap=True, seed_phase=2.6 + lat_ps * 0.01)
+
+    # Piz da Lech / Boèseekofel (2,910 m) curved limestone peak above Corvara (at=480 m)
+    lec_pt = road.s[road.index(480.0)]
+    lcx, lcy = lec_pt["x"] - cx, lec_pt["y"] - cy
+    lcl = max(1.0, math.hypot(lcx, lcy))
+    lcux, lcuy = lcx / lcl, lcy / lcl
+    rock_tower(peaks, cx + lcux * 735.0, cy + lcuy * 735.0, 102.0, 578.0, 128.0, 96.0, 11, math.atan2(lcuy, lcux), cfn, taper=0.52, flat_cap=False, seed_phase=3.7)
