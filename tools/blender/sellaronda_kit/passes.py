@@ -62,3 +62,20 @@ def build_four_passes(B, kit, road, height_at) -> None:
     kit.gable(B["larch-aged"], (bx_t, by_t, cz_ch + 8.75), 1.35, 1.35, 0.95, g_yaw)
     B["gold"].box((bx_t, by_t, cz_ch + 9.65), (0.10, 0.48, 0.85), g_yaw)
     B["larch-aged"].box((bx_t - math.cos(g_yaw) * 1.02, by_t - math.sin(g_yaw) * 1.02, cz_ch + 0.4), (0.12, 1.25, 2.25), g_yaw)
+
+    # Provincial / Regional border steles at the saddles (Bolzano-Belluno, Belluno-Trento, Trento-Bolzano)
+    borders = (
+        (2108.0, "parasol-red", "gold"),       # Campolongo: Südtirol -> Belluno (Veneto)
+        (4958.0, "gold", "ladin-blue"),        # Pordoi: Belluno -> Trentino
+        (7758.0, "ladin-blue", "parasol-red"), # Sella: Trentino -> Südtirol
+        (10158.0, "parasol-red", "foliage"),   # Gardena: Val Gardena -> Val Badia
+    )
+    for b_at, crest_a, crest_b in borders:
+        b_idx = road.index(b_at)
+        b_yaw = s[b_idx]["h"]
+        off = kit.kerb + 2.35
+        B["stone"].box(kit.P(b_idx, 0.0, off, -0.25), (1.1, 0.9, 0.55), b_yaw)
+        B["steel"].box(kit.P(b_idx, 0.0, off, 0.30), (0.12, 0.12, 2.65), b_yaw)
+        B["paint"].box(kit.P(b_idx, 0.0, off, 1.95), (0.10, 1.55, 0.92), b_yaw)
+        B[crest_a].box(kit.P(b_idx, 0.04, off - 0.36, 2.48), (0.12, 0.42, 0.32), b_yaw)
+        B[crest_b].box(kit.P(b_idx, 0.04, off + 0.36, 2.48), (0.12, 0.42, 0.32), b_yaw)
