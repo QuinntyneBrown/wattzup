@@ -371,6 +371,14 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     _touring_motorbike(B, scx, scy, scz, scyaw, "yellow", with_rider=False)
     B["yellow"].box((scx - math.sin(scyaw) * 0.85, scy + math.cos(scyaw) * 0.85, scz + 0.28), (1.55, 0.68, 0.54), scyaw)
 
+    # Orange-and-white striped paraglider launch windsock on the Passo Sella shoulder
+    ws_k = road.index(7545.0)
+    wx_s, wy_s, _ = road.at(ws_k, kit.kerb + 19.0)
+    wz_s = height_at(wx_s, wy_s)
+    B["steel"].box((wx_s, wy_s, wz_s), (0.09, 0.09, 4.8), 0.0)
+    B["crowd-3"].box((wx_s + 0.85, wy_s, wz_s + 4.45), (1.65, 0.34, 0.34), 0.15)
+    B["paint"].box((wx_s + 0.85, wy_s, wz_s + 4.45), (0.65, 0.36, 0.36), 0.15)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
