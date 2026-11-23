@@ -112,6 +112,12 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
                 )
         kit.gable(B["ladin-blue"], (gx0, gy0, gz0 + 2.35), 3.6, 3.6, 0.85, gz_yaw)
         B["paint"].box((gx0, gy0, gz0), (2.6, 0.95, 0.88), gz_yaw)
+        # Mechanical neutral-service repair tripod & spare wheel rack beside the feed gazebo
+        wk_x = gx0 + math.cos(gz_yaw) * 2.4
+        wk_y = gy0 + math.sin(gz_yaw) * 2.4
+        B["steel"].box((wk_x, wk_y, gz0), (0.12, 0.12, 1.55), gz_yaw)
+        B["ladin-blue"].box((wk_x, wk_y, gz0 + 1.15), (0.98, 0.08, 0.45), gz_yaw)
+        B["dark"].box((wk_x - math.cos(gz_yaw) * 0.75, wk_y - math.sin(gz_yaw) * 0.75, gz0), (0.66, 0.66, 0.66), gz_yaw)
 
         # Cheering hikers / tifosi lining the final 140 m to the pass
         for sp_k in range(8):
