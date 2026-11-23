@@ -431,4 +431,14 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
         if road.clear_of_road(lgx, lgy, 7.0, lgi):
             B["larch-warm"].box((lgx, lgy, height_at(lgx, lgy)), (3.2, 1.25, 1.18), s[lgi]["h"])
 
+    # Stone-and-larch high pasture dairy Malga huts on Pordoi & Sella alms
+    for mg_m, mg_s in ((4360.0, 1.0), (6980.0, 1.0)):
+        mgi = road.index(mg_m)
+        mgx, mgy, _ = road.at(mgi, (kit.kerb + 24.0) * mg_s)
+        if road.clear_of_road(mgx, mgy, 15.0, mgi):
+            mgz = height_at(mgx, mgy)
+            B["stone"].box((mgx, mgy, mgz - 1.2), (6.8, 5.2, 2.4), s[mgi]["h"])
+            B["larch-warm"].box((mgx, mgy, mgz + 1.2), (7.0, 5.4, 2.0), s[mgi]["h"])
+            kit.gable(B["chalet-wood"], (mgx, mgy, mgz + 3.2), 7.6, 6.0, 1.45, s[mgi]["h"])
+
     return trees
