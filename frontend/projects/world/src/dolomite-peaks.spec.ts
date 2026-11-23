@@ -12,6 +12,7 @@ import {
   meanDolomiteGiantAltitude,
   peaksAboveThreeThousand,
   peaksVisibleNearMetres,
+  rockStratigraphyForPeak,
   sassolungoSightline,
   unescoSystemNumberForPeak,
 } from './dolomite-peaks';
@@ -41,5 +42,7 @@ describe('DOLOMITE_GIANTS', () => {
     expect(highestDolomitePeak().altitudeMetres).toBe(3343);
     expect(peaksVisibleNearMetres(7750).length).toBeGreaterThanOrEqual(1);
     expect(unescoSystemNumberForPeak('marmolada')).toBe(2);
+    expect(rockStratigraphyForPeak('sassolungo')).toBe('sciliar-reef-dolomite');
+    expect(rockStratigraphyForPeak('piz-boe')).toBe('dolomia-principale');
   });
 });
