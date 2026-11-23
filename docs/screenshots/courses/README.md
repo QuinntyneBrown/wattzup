@@ -10,6 +10,8 @@ not a frame rate: it was drawn in software with no GPU, and **nothing here has b
 | Map | Worst frame: triangles | Draw calls | File, gzipped | Within the budget |
 | --- | --- | --- | --- | --- |
 | `ibiza` | 109,821 | 124 | 2.53 MB | Yes |
+| `cinqueterre` | 111,054 | 71 | 1.73 MB | Yes |
+| `haleakala` | 113,194 | 85 | 0.88 MB | Yes |
 | `prairie` | 108,863 | 108 | 3.20 MB | No: file |
 | `coast` | 74,722 | 108 | 5.11 MB | No: file |
 | `docklands` | 83,737 | 117 | 3.37 MB | No: file |

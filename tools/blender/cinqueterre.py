@@ -438,9 +438,10 @@ WASHING = (0xF4F2EC, 0xF4F2EC, 0xE8D8B8, 0xC8423A, 0x3F78B8, 0xE8B83A, 0x8AB8D8,
 FLOOR = 3.05  # a storey's height, in metres
 
 
-def windows(paint, rng, c, size, yaw: float, floors: int) -> None:
+def windows(paint, rng, c, size, yaw: float, floors: int, hidden=(0.0, 1.0)) -> None:
     """A house's windows, painted on its walls: on each storey a pane between a pair of open shutters, or the
-    shutters closed over it. The wall that looks out to sea, which no rider sees, has none."""
+    shutters closed over it. The wall that looks the way of `hidden` (out to sea, unless told otherwise), which no
+    rider sees, has none."""
     hx, hy = size[0] / 2, size[1] / 2
     cs, sn = math.cos(yaw), math.sin(yaw)
     corners = [(c[0] + dx * cs - dy * sn, c[1] + dx * sn + dy * cs) for dx, dy in ((-hx, -hy), (hx, -hy), (hx, hy), (-hx, hy))]
@@ -450,7 +451,7 @@ def windows(paint, rng, c, size, yaw: float, floors: int) -> None:
         wide = math.hypot(b[0] - a[0], b[1] - a[1])
         along = ((b[0] - a[0]) / wide, (b[1] - a[1]) / wide)
         out = (along[1], -along[0])
-        if out[1] > 0.5:
+        if out[0] * hidden[0] + out[1] * hidden[1] > 0.5:
             continue
         columns = max(1, int(wide / 3.1))
         door_at = rng.randrange(columns)
@@ -514,6 +515,36 @@ def villages(k) -> int:
                 paint.box((cx, cy, z + floors * FLOOR + 1.7), (0.8, 0.8, 0.14), yaw, _lin(ROOFS[0]), 1.0)
             houses += 1
         print(f"{site['name']}: {len(placed)} houses below the road {site['z']:.0f} m up, {k.s[site['i']]['d']:.0f} m from the start", flush=True)
+    return houses
+
+
+def village_streets(k) -> int:
+    """Details 1 and 6, the tower-houses and the villages: a village does not stop at the road. Along its inland
+    side, behind the boats, a row of tall houses stands shoulder to shoulder on the first terrace's wall, fronts to
+    the street, so the road through each of the five is a street with houses on both hands."""
+    paint, rng, s = Painted(k), k.rng, k.s
+    houses = 0
+    for site in village_sites(s):
+        i = site["i"] - 17
+        while i < site["i"] + 17:
+            # Not in a bend, and not where an effort's arch stands across the road.
+            if not 6 < i < k.n - 6 or abs(s[i]["k"]) > 1 / 90 or any(abs(s[i]["d"] - g[edge]) < 16.0 for g in k.st for edge in ("from", "to")):
+                i += 2
+                continue
+            inland, yaw = -seaward(k, i), s[i]["h"]
+            wide, deep, floors = rng.uniform(6.2, 8.6), 6.0, rng.randint(3, 5)
+            raised = TERRACE_RISE if terrace_levels(k, i) else 0.0
+            x, y, z = k.road.at(i, (k.kerb + TERRACE_FOOT + 0.25 + deep / 2) * inland, raised)
+            if not k.room(i, (k.kerb + TERRACE_FOOT + deep + 4.0) * inland, 10.0):
+                i += 2
+                continue
+            wall = _lin(PASTELS[rng.randrange(len(PASTELS))])
+            paint.box((x, y, z - raised - 0.5), (wide, deep, floors * FLOOR + raised + 0.5), yaw, wall)
+            paint.roof((x, y, z + floors * FLOOR), wide, deep, rng.uniform(0.9, 1.5), yaw, _lin(ROOFS[rng.randrange(len(ROOFS))]))
+            # The back wall, against the hillside, has no windows.
+            windows(paint, rng, (x, y, z), (wide, deep), yaw, floors, (-math.sin(yaw) * inland, math.cos(yaw) * inland))
+            houses += 1
+            i += max(2, int(round((wide + 0.3) / k.step)))
     return houses
 
 
@@ -974,6 +1005,7 @@ def scenery(k) -> dict:
     parapet(k)
     stepped = terraces(k)
     houses = villages(k)
+    houses += village_streets(k)
     plants = maquis(k)
     hauled = boats(k)
     path = footpath(k)
