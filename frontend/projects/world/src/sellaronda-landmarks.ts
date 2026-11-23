@@ -6,6 +6,7 @@ export interface SellaPass {
   readonly name: string;
   readonly ladinName: string;
   readonly altitudeMetres: number;
+  readonly climbFromMetres: number;
   readonly courseMetres: number;
 }
 
@@ -15,6 +16,7 @@ export const SELLA_RONDA_PASSES: readonly SellaPass[] = [
     name: 'Passo Campolongo',
     ladinName: 'Ju de Ćiaulonch',
     altitudeMetres: 1875,
+    climbFromMetres: 850,
     courseMetres: 2100,
   },
   {
@@ -22,6 +24,7 @@ export const SELLA_RONDA_PASSES: readonly SellaPass[] = [
     name: 'Passo Pordoi',
     ladinName: 'Jëuf de Pordoi',
     altitudeMetres: 2239,
+    climbFromMetres: 3300,
     courseMetres: 4950,
   },
   {
@@ -29,6 +32,7 @@ export const SELLA_RONDA_PASSES: readonly SellaPass[] = [
     name: 'Passo Sella',
     ladinName: 'Jëuf de Sela',
     altitudeMetres: 2240,
+    climbFromMetres: 6250,
     courseMetres: 7750,
   },
   {
@@ -36,6 +40,7 @@ export const SELLA_RONDA_PASSES: readonly SellaPass[] = [
     name: 'Passo Gardena',
     ladinName: 'Ju de Frara',
     altitudeMetres: 2121,
+    climbFromMetres: 9000,
     courseMetres: 10150,
   },
 ] as const;
@@ -55,4 +60,20 @@ export function sellaMassifBearing(metres: number): { radialAngle: number; side:
   const t = Math.max(0, Math.min(1, (u - 0.012) / (0.972 - 0.012)));
   const smooth = t * t * (3 - 2 * t);
   return { radialAngle: Math.PI / 2 - 5.68 * smooth, side: 'right' };
+}
+
+/** If the rider is currently on one of the four pass climbs, returns its progress (0..1) and metres to summit. */
+export function passClimbProgress(
+  metres: number,
+): { pass: SellaPass; fraction: number; remainingMetres: number } | null {
+  const active = SELLA_RONDA_PASSES.find(
+    (p) => metres >= p.climbFromMetres && metres <= p.courseMetres,
+  );
+  if (!active) return null;
+  const span = active.courseMetres - active.climbFromMetres;
+  return {
+    pass: active,
+    fraction: (metres - active.climbFromMetres) / span,
+    remainingMetres: active.courseMetres - metres,
+  };
 }
