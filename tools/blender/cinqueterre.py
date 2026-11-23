@@ -19,6 +19,9 @@ CROWD = [f"crowd-{i}" for i in range(6)]
 
 # name -> colour, roughness, glow: added to themes.MATERIALS.
 MATERIALS: dict[str, dict] = {
+    # Small things painted by vertex that only matter close to: balcony rails, nets, handrails. Unlike what is
+    # painted into the land ("terrain", drawn to 950 m), this is in the group drawn near the rider.
+    "ct-detail": {"color": 0xFFFFFF, "rough": 0.9, "vertex": True},
     # The parapet's capstones: paler than the wall they lie on, worn smooth.
     "ct-cap": {"color": 0xB5AD9A, "rough": 0.9},
     # A terrace's tread of dry earth and summer grass, and the vines trained along it.
@@ -485,12 +488,17 @@ WASHING = (0xF4F2EC, 0xF4F2EC, 0xE8D8B8, 0xC8423A, 0x3F78B8, 0xE8B83A, 0x8AB8D8,
 FLOOR = 3.05  # a storey's height, in metres
 
 
-def windows(paint, rng, c, size, yaw: float, floors: int, hidden=(0.0, 1.0)) -> None:
+GERANIUMS = (0xD8342E, 0xE0527A, 0xF2F0E8, 0xE8742E)
+
+
+def windows(paint, rng, c, size, yaw: float, floors: int, hidden=(0.0, 1.0), near=None) -> None:
     """A house's windows, painted on its walls: on each storey a pane between a pair of open shutters, or the
-    shutters closed over it. The wall that looks the way of `hidden` (out to sea, unless told otherwise), which no
+    shutters closed over it; one window in eleven above the street has a balcony, an iron rail and geraniums. The
+    wall that looks the way of `hidden` (out to sea, unless told otherwise), which no
     rider sees, has none."""
     hx, hy = size[0] / 2, size[1] / 2
     cs, sn = math.cos(yaw), math.sin(yaw)
+    near = near or paint  # what a balcony is painted with: the group drawn near, if the caller has one
     corners = [(c[0] + dx * cs - dy * sn, c[1] + dx * sn + dy * cs) for dx, dy in ((-hx, -hy), (hx, -hy), (hx, hy), (-hx, hy))]
     shutter, pane = _lin(SHUTTERS[rng.randrange(len(SHUTTERS))]), _lin(PANE)
     for q in range(4):
@@ -518,6 +526,28 @@ def windows(paint, rng, c, size, yaw: float, floors: int, hidden=(0.0, 1.0)) -> 
                         w, drop = rng.uniform(0.35, 0.8), rng.uniform(0.45, 0.95)
                         paint.panel(a, along, out, left, left + w, z - 0.2 - drop, z - 0.2, 0.32, _lin(WASHING[rng.randrange(len(WASHING))]))
                         left += w + 0.12
+                if storey and rng.random() < 0.09:
+                    # A balcony: a stone slab on the wall, an iron rail round it with geraniums along the top, and
+                    # behind it the window cut down to the floor as a door.
+                    floor = c[2] + storey * FLOOR + 0.1
+                    bx, by = a[0] + along[0] * mid + out[0] * 0.5, a[1] + along[1] * mid + out[1] * 0.5
+                    near.box((bx, by, floor - 0.14), (2.3, 1.0, 0.14), math.atan2(along[1], along[0]), _lin(0xCFC6B2), 0.8)
+                    iron, byaw = _lin(0x2A2A2E), math.atan2(along[1], along[0])
+
+                    def on(u: float, v: float, up: float, a=a, along=along, out=out, floor=floor):
+                        return (a[0] + along[0] * u + out[0] * v, a[1] + along[1] * u + out[1] * v, floor + up)
+
+                    # Solid, so it reads from along the street: the rail, its ends and bars, and the flower box.
+                    near.box(on(mid, 0.97, 0.9), (2.3, 0.06, 0.06), byaw, iron, 1.0)
+                    for end in (-1.12, 1.12):
+                        near.box(on(mid + end, 0.5, 0.9), (0.06, 1.0, 0.06), byaw, iron, 1.0)
+                    for bar in range(5):
+                        at = mid - 1.12 + bar * 2.24 / 4
+                        near.panel(a, along, out, at - 0.03, at + 0.03, floor, floor + 0.9, 0.97, iron)
+                    near.box(on(mid, 1.08, 0.62), (2.0, 0.26, 0.46), byaw, _lin(GERANIUMS[rng.randrange(len(GERANIUMS))]), 0.6)
+                    paint.panel(a, along, out, mid - 0.85, mid + 0.85, floor, z + 1.5, 0.05, shutter)
+                    paint.panel(a, along, out, mid - 0.42, mid + 0.42, floor, z + 1.46, 0.09, pane)
+                    continue
                 paint.panel(a, along, out, mid - 0.85, mid + 0.85, z, z + 1.5, 0.05, shutter)
                 if rng.random() < 0.72:
                     paint.panel(a, along, out, mid - 0.42, mid + 0.42, z + 0.04, z + 1.46, 0.09, pane)
@@ -527,7 +557,7 @@ def villages(k) -> int:
     """Details 1 and 6, the pastel tower-houses and the villages seen from the bends above: on each headland's spur
     of rock, tall narrow houses in pink, ochre and yellow stand door to door down to the water, under low roofs of
     tile and slate."""
-    paint, rng = Painted(k), k.rng
+    paint, near, rng = Painted(k), Painted(k, "ct-detail"), k.rng
     houses = 0
     for site in village_sites(k.s):
         placed: list[tuple[float, float]] = []
@@ -554,7 +584,7 @@ def villages(k) -> int:
             wall = _lin(PASTELS[rng.randrange(len(PASTELS))])
             paint.box((x, y, z - fall - 1.5), (wide, deep, tall + 1.5), yaw, wall)
             paint.roof((x, y, z + floors * FLOOR), wide, deep, rng.uniform(0.9, 1.6), yaw, _lin(ROOFS[rng.randrange(len(ROOFS))]))
-            windows(paint, rng, (x, y, z), (wide, deep), yaw, floors)
+            windows(paint, rng, (x, y, z), (wide, deep), yaw, floors, near=near)
             # A chimney or two on the roof, each under its little tiled cap.
             for _ in range(rng.randint(0, 2)):
                 cx, cy = x + rng.uniform(-wide, wide) * 0.3, y + rng.uniform(-deep, deep) * 0.3
@@ -569,7 +599,7 @@ def village_streets(k) -> int:
     """Details 1 and 6, the tower-houses and the villages: a village does not stop at the road. Along its inland
     side, behind the boats, a row of tall houses stands shoulder to shoulder on the first terrace's wall, fronts to
     the street, so the road through each of the five is a street with houses on both hands."""
-    paint, rng, s = Painted(k), k.rng, k.s
+    paint, near, rng, s = Painted(k), Painted(k, "ct-detail"), k.rng, k.s
     houses = 0
     for site in village_sites(s):
         i = site["i"] - 17
@@ -589,7 +619,7 @@ def village_streets(k) -> int:
             paint.box((x, y, z - raised - 0.5), (wide, deep, floors * FLOOR + raised + 0.5), yaw, wall)
             paint.roof((x, y, z + floors * FLOOR), wide, deep, rng.uniform(0.9, 1.5), yaw, _lin(ROOFS[rng.randrange(len(ROOFS))]))
             # The back wall, against the hillside, has no windows.
-            windows(paint, rng, (x, y, z), (wide, deep), yaw, floors, (-math.sin(yaw) * inland, math.cos(yaw) * inland))
+            windows(paint, rng, (x, y, z), (wide, deep), yaw, floors, (-math.sin(yaw) * inland, math.cos(yaw) * inland), near)
             houses += 1
             i += max(2, int(round((wide + 0.3) / k.step)))
     return houses
@@ -769,7 +799,7 @@ def fishing_gear(k, paint, i: int) -> None:
 def boats(k) -> int:
     """Detail 7, fishing boats: by each village the gozzi are hauled up off the water and stand along the street,
     bow to stern on the inland side of the road, each in its own paint."""
-    paint, rng = Painted(k), k.rng
+    paint, near, rng = Painted(k), Painted(k, "ct-detail"), k.rng
     hauled = 0
     for site in village_sites(k.s):
         for step in range(-9, 10):
@@ -778,7 +808,7 @@ def boats(k) -> int:
                 continue
             if rng.random() < 0.3:
                 # Between the boats, the fishermen's gear.
-                fishing_gear(k, paint, i)
+                fishing_gear(k, near, i)
                 continue
             x, y, z = k.road.at(i, -(k.kerb + 1.2) * seaward(k, i))
             gozzo(paint, rng, (x, y, z + 0.02), k.s[i]["h"] + rng.uniform(-0.06, 0.06))
