@@ -61,3 +61,8 @@ export function airDensityDragSavingPercent(altitudeMetres: number): number {
 export function hasAfternoonCumulusRisk(hour24: number, corvaraTempC: number): boolean {
   return hour24 >= 15 && hour24 <= 19.5 && corvaraTempC >= 25;
 }
+
+/** Atmospheric oxygen partial pressure (kPa, 20.95 % of barometric pressure) at `altitudeMetres`. */
+export function oxygenPartialPressureKpa(altitudeMetres: number): number {
+  return Number((barometricHectopascals(altitudeMetres) * 0.1 * 0.2095).toFixed(2));
+}
