@@ -73,7 +73,7 @@ def lay_centre_line(course: dict, theme: dict | None = None):
             d_phase = (s_nom - p["at"]) / max(1.0, p["descent_to"] - p["at"]) * 4.5 * math.pi
             zig += desc_env * (52.0 * math.sin(d_phase) + 9.5 * math.sin(2.0 * d_phase))
         # Gentle valley stream-following S-bends between passes
-        zig += 16.0 * math.sin(s_nom * 0.0115 + 0.7)
+        zig += 16.0 * math.sin(s_nom * 0.0115 + 0.7) + 5.5 * math.cos(s_nom * 0.0048 - 0.4)
 
         r = base_r + zig * end_fade
         raw_pts.append((cx + math.cos(phi) * r, cy + math.sin(phi) * r))
