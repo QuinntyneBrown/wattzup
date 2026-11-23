@@ -99,3 +99,15 @@ export function provinceForMetres(metres: number): DolomiteProvince {
 export function lowestLadinVillage(): LadinVillage {
   return LADIN_VILLAGES.reduce((low, v) => (v.altitudeMetres < low.altitudeMetres ? v : low));
 }
+
+const DIALECT_GREETINGS: Readonly<Record<LadinVillage['id'], string>> = {
+  corvara: 'Bëgnodüs a Corvara',
+  arabba: 'Benvegnù a Rèba',
+  canazei: 'Benvegnui a Cianacei',
+  selva: 'Bënuni te Sëlva',
+};
+
+/** Traditional Ladin valley-dialect welcome greeting for `villageId`. */
+export function ladinGreetingForVillage(villageId: LadinVillage['id']): string {
+  return DIALECT_GREETINGS[villageId];
+}
