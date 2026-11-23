@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { highestSellaRifugio, nearestRifugio, rifugiOnPass, SELLA_RIFUGI } from './rifugi-guide';
+import {
+  highestSellaRifugio,
+  isNearPassRifugio,
+  nearestRifugio,
+  rifugiOnPass,
+  SELLA_RIFUGI,
+} from './rifugi-guide';
 
 describe('SELLA_RIFUGI', () => {
   it('covers all four passes with two historic rifugi each', () => {
@@ -11,5 +17,7 @@ describe('SELLA_RIFUGI', () => {
       'Rifugio Maria Flora',
     ]);
     expect(highestSellaRifugio().name).toBe('Rifugio Maria Flora');
+    expect(isNearPassRifugio(4930)).toBe(true);
+    expect(isNearPassRifugio(3600)).toBe(false);
   });
 });
