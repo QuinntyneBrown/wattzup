@@ -546,6 +546,12 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     B["ladin-blue"].box((nsx, nsy_p, nsz + 0.35), (4.45, 1.80, 1.05), nsy)
     B["paint"].box((nsx, nsy_p, nsz + 1.40), (1.45, 1.25, 0.55), nsy)
 
+    # Angled green eco-zone bidon catch-nets 45 m past each Bike Day hydration gazebo
+    for p in PASSES:
+        ec_z = road.index(p["at"] + 12.0)
+        ecy = s[ec_z]["h"]
+        B["foliage"].box(kit.P(ec_z, 0.0, -(kit.kerb + 1.95), 0.25), (3.2, 0.75, 0.95), ecy)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
