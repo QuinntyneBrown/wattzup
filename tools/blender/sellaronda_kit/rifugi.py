@@ -379,4 +379,8 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     svwz = max(height_at(svwx, svwy_p), road.s[sv_w]["z"] - 0.5)
     B["larch-warm"].box((svwx, svwy_p, svwz), (5.4, 4.2, 2.85), svwy)
     B["glow-window"].box((svwx, svwy_p, svwz + 0.65), (5.46, 2.8, 1.55), svwy)
+    # Pass shuttle stop totems outside Hotel Savoia & Rifugio Frara
+    for sb_r in (4915.0, 10122.0):
+        sbi = road.index(sb_r)
+        B["ladin-blue"].box(kit.P(sbi, 0.0, -(kit.kerb + 2.2), 0.0), (0.14, 0.42, 2.25), road.s[sbi]["h"])
     # [ANCHOR:rifugi-global]
