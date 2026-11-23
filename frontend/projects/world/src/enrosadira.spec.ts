@@ -6,6 +6,7 @@ import {
   dolomiaCarbonateReflectance,
   duskLightPoolFalloff,
   enrosadiraTint,
+  twilightZenithLuminance,
 } from './enrosadira';
 
 describe('enrosadiraTint', () => {
@@ -32,5 +33,6 @@ describe('enrosadiraTint', () => {
     expect(duskLightPoolFalloff(0, 24)).toBe(1);
     expect(duskLightPoolFalloff(12, 24)).toBeCloseTo(0.25, 3);
     expect(duskLightPoolFalloff(30, 24)).toBe(0);
+    expect(twilightZenithLuminance(0)).toBeGreaterThan(twilightZenithLuminance(1));
   });
 });
