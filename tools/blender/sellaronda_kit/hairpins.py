@@ -257,4 +257,9 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         gi = road.index(gl_pre)
         for r_k in range(3):
             B["paint"].box(kit.P(gi, r_k * 1.9, 0.0, 0.02), (0.28, kit.kerb * 1.75, 0.015), s[gi]["h"])
+    # Tiered stone gabion retaining toes on steep Campolongo & Sella climb embankments
+    for gb_m in (1660.0, 4120.0, 7160.0, 9440.0):
+        gb_i = road.index(gb_m)
+        B["stone"].box(kit.P(gb_i, 0.0, -(kit.kerb + 1.85), -0.1), (8.8, 1.15, 1.25), s[gb_i]["h"])
+        B["steel"].box(kit.P(gb_i, 0.0, -(kit.kerb + 1.26), 0.52), (8.82, 0.06, 1.18), s[gb_i]["h"])
     # [ANCHOR:hairpins]
