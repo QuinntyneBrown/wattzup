@@ -161,3 +161,13 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         idx = road.index(d_m)
         for side in (-1.0, 1.0):
             _village_chalet(B, kit, road, idx, side, 14.0, 12.6, 9.0, 3 if side > 0 else 2, height_at)
+
+    # Val Gardena traditional woodcarver (Scultori Gardenesi) ground-floor display vitrines & guild brackets in Selva
+    for wc_m, wc_side in ((8865.0, -1.0), (8925.0, 1.0), (8985.0, -1.0)):
+        w_idx = road.index(wc_m)
+        wyaw = road.s[w_idx]["h"]
+        wx_s, wy_s, _ = road.at(w_idx, (kit.kerb + 8.6) * wc_side)
+        wz_s = max(height_at(wx_s, wy_s), road.s[w_idx]["z"] - 0.3)
+        B["larch-warm"].box((wx_s, wy_s, wz_s), (3.8, 1.4, 2.55), wyaw)
+        B["glow-window"].box((wx_s, wy_s, wz_s + 0.65), (3.2, 1.46, 1.35), wyaw)
+        B["gold"].box((wx_s, wy_s, wz_s + 2.35), (0.14, 1.85, 0.55), wyaw)
