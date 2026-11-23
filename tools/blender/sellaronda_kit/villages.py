@@ -97,6 +97,12 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         idx = road.index(d_m)
         for side in (-1.0, 1.0):
             _village_chalet(B, kit, road, idx, side, 13.5, 12.2, 8.8, 3 if side < 0 else 2, height_at)
+            # Painted Val di Fassa decorative ochre & red facade frieze band
+            fx_f, fy_f, _ = road.at(idx, (kit.kerb + 9.0) * side)
+            if road.clear_of_road(fx_f, fy_f, kit.kerb + 5.5, idx):
+                fz_f = max(height_at(fx_f, fy_f), road.s[idx]["z"] - 0.6)
+                B["yellow"].box((fx_f, fy_f, fz_f + 3.45), (12.3, 0.14, 0.28), road.s[idx]["h"])
+                B["parasol-red"].box((fx_f, fy_f, fz_f + 3.74), (12.3, 0.15, 0.14), road.s[idx]["h"])
 
     # 4. Selva di Val Gardena / Sëlva (1,563 m approach around 8,920 m between Sella & Gardena)
     sv_idx = road.index(8930.0)
