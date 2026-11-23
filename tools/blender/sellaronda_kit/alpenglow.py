@@ -171,6 +171,13 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         kit.light((fx_l, fy_l, fz_l), "glow-window", 22.0, 0.58)
         kit.halo((fx_l, fy_l, fz_l), "glow-window")
 
+    # Monumental golden evening floodlight halos on Sacrario del Pordoi & Castel Wolkenstein
+    for mn_at, mn_off, mn_z in ((4780.0, -(kit.kerb + 38.0), 8.5), (9020.0, kit.kerb + 46.0, 22.0)):
+        m_i = road.index(mn_at)
+        mx_h, my_h, _ = road.at(m_i, mn_off)
+        kit.halo((mx_h, my_h, height_at(mx_h, my_h) + mn_z), "gold")
+    # [ANCHOR:alpenglow-lights]
+
 
 def build_valley_mist(B, road, height_at) -> None:
     """Lays delicate dusk valley-mist ribbons down in the four deep valley hollows off the road."""
