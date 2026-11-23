@@ -75,6 +75,7 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
 
     # Punta Penia (3,343 m), Punta Rocca (3,309 m) & Punta Serauta (2,962 m) summit wall
     for lat_m, rad_m, top_m, rx_m, ry_m, ph_m in (
+        (-560.0, 1520.0, 880.0, 210.0, 175.0, 3.6),  # Gran Vernel (3,210 m) pyramid
         (-280.0, 1480.0, 940.0, 260.0, 180.0, 0.5),  # Punta Penia (3,343 m)
         (40.0,   1450.0, 905.0, 250.0, 175.0, 1.7),  # Punta Rocca (3,309 m)
         (350.0,  1490.0, 780.0, 220.0, 160.0, 2.8),  # Serauta (2,962 m)
