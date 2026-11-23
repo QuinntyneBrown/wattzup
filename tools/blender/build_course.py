@@ -1822,8 +1822,9 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
 
     F = _Figures()
     furniture = random.Random(6021)
+    upstairs = random.Random(1906)
 
-    def person(c, yaw: float, rng=rng, there: bool = True, serve: bool = False, sit: bool = False, walk: bool = False, figures=None) -> None:
+    def person(c, yaw: float, rng=rng, there: bool = True, serve: bool = False, sit: bool = False, walk: bool = False, figures=None, dice=None, solo: bool = False) -> None:
         """Someone at the party, a drink in their hand: legs or a dress, a body that narrows to the waist, a head
         with hair, one arm up with the glass or holding it at the chest, the other dancing or at their side. Most are
         in the island's white."""
@@ -1833,13 +1834,14 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
             rng.random()
         if not there:
             return
-        rng = people
+        # `dice` are dice of their own for a figure added later, so that the crowd before them is as it was.
+        rng = people if dice is None else dice
         # Friends stand together: four in ten turn to whoever comes next, who stands a pace beside them and turns
         # to them, and the two clink glasses over the gap between them.
         # A waiter (`serve`) is at work: no friend to drink with, no dancing, a white shirt and dark trousers, and
         # a tray of drinks carried high on one hand.
         # Someone strolling (`walk`) is built by themselves, in builders of their own (`figures`), mid stride.
-        alone = serve or sit or walk
+        alone = serve or sit or walk or solo
         FF = F if figures is None else figures
         mate, clink = (None if alone else pairing["with"]), None
         if not alone:
@@ -1918,6 +1920,9 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         if dance:
             tilt[0], tilt[1] = rng.uniform(-0.08, 0.1), rng.uniform(0.04, 0.1) * lean
             feet = ((step + rng.uniform(0.0, 0.1), 0.17 + rng.uniform(0.0, 0.1)), (-step * 0.6, -0.13))
+        if solo:
+            # Behind a parapet: nothing of them shows below the waist, so no legs or feet are made.
+            feet = ()
         if dress:
             # A summer dress: bare legs under a skirt that flares from the waist.
             for fwd, side in feet:
@@ -2099,7 +2104,7 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
                     tint = sky.mix((base[0] * k, base[1] * k, base[2] * k, 1.0), warm, 0.22 if side > 0 else 0.0)
                 part.colours.append((tint[0], tint[1], tint[2], 1.0 - 0.7 * free * lively))
         # Their shadow: long, as the sun is low, lying on the paving away from the sun and narrowing to the head.
-        if not walk and not sit:
+        if not walk and not sit and not solo:
             reach = 3.4 * h
             foot_l = (c[0] - sun_y * 0.2, c[1] + sun_x * 0.2, c[2] + 0.03)
             foot_r = (c[0] + sun_y * 0.2, c[1] - sun_x * 0.2, c[2] + 0.03)
@@ -2241,6 +2246,12 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         wood.box(P(i, 0, -(front + 0.5), 9.1), (width, 0.24, 0.2), yaw, "x")
         for k in range(slats + 1):
             wood.box(P(i, -width / 2 + k * width / slats, -(front + 1.6), 9.3), (0.12, 2.6, 0.1), yaw, "y")
+        # The party is upstairs too: on the roof terrace under that pergola, behind a low white parapet, two or three
+        # stand at the edge with a drink, looking down at the road, on every other club. They have dice of their own.
+        white.box(P(i, 0, -(front + 0.12), 6.52), (width * 0.98, 0.2, 0.95), yaw, "x")
+        for k in range(upstairs.choice((2, 2, 3)) if len(clubs) % 2 == 0 else 0):
+            along = (k - 1) * width / 3.4 + upstairs.uniform(-1.2, 1.2)
+            person(P(i, along, -(front + upstairs.uniform(0.42, 0.5)), 6.52), yaw + math.pi / 2 + upstairs.uniform(-0.6, 0.6), rng=upstairs, dice=upstairs, solo=True)
         # Doors glowing warm, and neon shapes on the wall above them.
         doors = max(2, int(width / 5))
         for k in range(doors):

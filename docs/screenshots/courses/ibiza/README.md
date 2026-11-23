@@ -187,6 +187,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Sky 15 | The sun sets as the course is ridden: its disc stands 6 degrees over the horizon at the start and sinks steadily until its lower limb touches it at the finish | 60.1 fps, at most one frame over 20 ms (from 3,250 m, twice) | 48.9 and 39.3 fps after (the finish, 116,828 triangles); Neon Docklands beside it 46.2, 56.4: the stand-in reading two ways, as noted under Sky 12 |
 | Party 17 | Friends with an arm round each other's shoulders: four pairs in ten stand side by side facing the road, drinks in their outer hands; and a stroller's arm at their side swings against its leg | 60.0 to 60.1 fps, none over 20 ms (the start line, 2,050 m, the finish) | 43.6 and 50.9 fps after (the finish, 116,678 triangles); Neon Docklands beside it 51.0, 55.4 |
 | Party 18 | Feet and necks: each leg ends in a foot (bare in sandals, white trainers, dark shoes or espadrilles) and the head narrows to a neck where it meets the shoulders | 60.1 fps, none over 20 ms, 146,381 triangles (the finish) | 47.9 and 41.4 fps after (the finish, 117,749 triangles); Neon Docklands beside it 55.9, 59.5 |
+| Party 19 | The party is upstairs too: on every other club's roof terrace two or three stand at a white parapet with a drink, looking down at the road | 60.0 fps, none over 20 ms, 157,855 triangles (from 7,950 m) | 44.4, 47.9, 46.9 fps after (the finish, 119,897 triangles: 103 under the budget); Neon Docklands beside it 52.9, 48.4 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -533,6 +534,22 @@ stump, and a head sat on the shoulders like a block on a box.
 **The first cut went over the budget.** A foot of six triangles and a neck of six more put the finish at 122,215
 triangles on the low tier, 2,215 over. A foot is two triangles now (a ridge from the ankle to the toe, sloping to
 the ground either side) and the neck is the head's own taper, which costs none: 117,749.
+
+### Party 19: on the roof terraces
+
+`party-19.jpg` (the clubs' roofs from 7,950 m, enlarged: heads and a raised arm between the neon frames on the
+second club's roof), `party-19.mp4`. Every club has a roof terrace under an upper pergola, and nobody was on it.
+Now each has a low white parapet along its edge, and on every other club two or three partygoers stand at it with
+a drink, looking down at the road. They are built from the waist up, since the parapet hides the rest: no legs, no
+feet, no shadow. They move to the music and cheer as the others do. They have dice of their own.
+
+**Three cuts before this one.** Whole figures on every club put the finish 3,416 triangles over the low tier's
+budget. Built from the waist up on every other club, they drew from the scenery's dice and moved the whole map (81
+clubs for 80). And standing a metre back from the parapet they could not be seen from the road at all: the parapet
+hid them. They stand at it now. From the road they are small, and from close by they are above the top of the
+picture.
+
+**The low tier's budget is spent again**: 103 triangles under at the finish.
 
 ### Party 1: people with drinks
 
