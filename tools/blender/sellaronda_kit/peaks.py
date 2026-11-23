@@ -421,4 +421,6 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     rock_tower(peaks, sor_pt["x"] + srux * 2420.0, sor_pt["y"] + sruy * 2420.0, 45.0, 875.0, 295.0, 195.0, 10, math.atan2(-sruy, -srux), cfn, taper=0.58, flat_cap=True, seed_phase=2.8)
     # Campanile Wessely rock needle between Cinque Dita & Punta Grohmann
     rock_tower(peaks, sella_pt["x"] + ux * 932.0 + px * 238.0, sella_pt["y"] + uy * 932.0 + py * 238.0, 120.0, 752.0, 38.0, 32.0, 7, yaw_sl, cfn, taper=0.26, flat_cap=False, seed_phase=6.0)
+    # Piccolo Vernel (3,098 m) sharp pyramid beside Gran Vernel
+    rock_tower(peaks, pordoi_pt["x"] + mux * 1490.0 - mpx * 675.0, pordoi_pt["y"] + muy * 1490.0 - mpy * 675.0, 85.0, 812.0, 135.0, 110.0, 9, yaw_mm, cfn, taper=0.36, flat_cap=False, seed_phase=4.2)
     # [ANCHOR:peaks]
