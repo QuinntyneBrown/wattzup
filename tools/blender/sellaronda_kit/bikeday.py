@@ -235,6 +235,16 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
             cx_a, cy_a, cz_a = road.at(at_idx, -(kit.kerb - 0.62))
             _road_cyclist(B, cx_a, cy_a, cz_a, s[at_idx]["h"], jerseys[seg_i % len(jerseys)], standing=True)
 
+    # Classic Italian Vespa scooters parked outside village Konditorei / cafés
+    for vs_m, vs_s in ((302.0, 1.0), (6072.0, -1.0)):
+        v_idx = road.index(vs_m)
+        vyaw = s[v_idx]["h"] + 1.15
+        for sc_k in range(3):
+            vx_s, vy_s, vz_s = kit.P(v_idx, sc_k * 1.15, (kit.kerb + 3.8) * vs_s, 0.0)
+            B["dark"].box((vx_s, vy_s, vz_s), (1.18, 0.14, 0.42), vyaw)
+            B[("parasol-red", "glacier-ice", "yellow")[sc_k]].box((vx_s, vy_s, vz_s + 0.25), (1.12, 0.36, 0.58), vyaw)
+            B["bulb"].box((vx_s + math.cos(vyaw) * 0.48, vy_s + math.sin(vyaw) * 0.48, vz_s + 0.88), (0.12, 0.18, 0.18), vyaw)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
