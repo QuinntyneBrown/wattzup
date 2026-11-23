@@ -159,7 +159,11 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
             my_c = 0.5 * (a[1] + b[1]) + p_perp_y * 1.9
             mz_c = 0.5 * (a[2] + b[2]) - 1.4
             B["steel"].box((mx_c, my_c, mz_c - 1.65), (0.12, 0.12, 1.65), yaw_l)
-            if abs(at_m - 7480.0) < 50.0:
+            if at_m < 2300.0:
+                # Open 4-seat alpine chairlift carrier with blue weather-bubble hood!
+                B["dark"].box((mx_c, my_c, mz_c - 2.55), (0.68, 2.25, 0.55), yaw_l)
+                B["ladin-blue"].box((mx_c, my_c, mz_c - 2.00), (0.72, 2.28, 0.45), yaw_l)
+            elif abs(at_m - 7480.0) < 50.0:
                 # Iconic Forcella del Sassolungo narrow upright "coffin" telecabina cabin!
                 cab_mat = ("yellow", "paint", "parasol-red")[k % 3]
                 B[cab_mat].box((mx_c, my_c, mz_c - 3.75), (0.98, 0.92, 2.15), yaw_l)
