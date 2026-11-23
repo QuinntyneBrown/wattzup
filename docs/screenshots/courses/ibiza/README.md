@@ -138,6 +138,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Pass | What | Top tier | Low-power stand-in, before / after |
 | --- | --- | --- | --- |
 | Sky 1 | A sky painted in Blender: a deck of broken cloud lit red and gold from below towards the sun, violet away from it | 60.1 fps, none over 20 ms, 98 draw calls, 112,078 triangles | 54.4, 53.2 / 52.6, 53.6 fps |
+| Party 1 | Partygoers with a drink in their hand: legs or a summer dress, a body, a head with hair, three skin tones, most in white | 60.0 fps, none over 20 ms, 88 draw calls, 133,050 triangles | 53.9, 54.1 fps after; Neon Docklands beside it 53.6 to 56.6 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -162,3 +163,24 @@ first was scrambled. Each mesh now takes its own copy of what it shares.
 56 earlier). The sky does not move it. Getting it to 60 is the next pass's work.
 
 The bench's browser is muted (`--mute-audio`): it was playing the ride's sound at whoever sat by the machine.
+
+### Party 1: people with drinks
+
+**Before** (`ibiza-01-strip.jpg`): each dancer was five boxes in one colour, both arms in the air. **After**
+(`party-01-strip.jpg`, `party-01-finish.jpg`, `party-01.mp4`): `person` in `build_course.py` makes someone at a
+party. Legs, or bare legs under a dress that flares from the waist; a body wider at the shoulders; a head and hair
+(dark, brown or fair, long down the back for some) in one of three skin tones; one arm up in a toast or holding the
+glass at the chest, the other in the air or at their side; the drink amber, pink or lime, glowing a little. Six in
+ten are in the island's white. About ninety triangles a figure, where the old one was fifty.
+
+The crowd has its own dice, so nothing else on the map moved. Two of every three places at the finish's barriers
+are taken, to hold the frame's triangles.
+
+**Cost.** The worst frame on the lowest tier (the finish) is 119,479 triangles, inside the 120,000 budget; the sky's
+dome was thinned to 160 by 24 (7,400 triangles, one mesh) to pay for it. The file is 0.85 MB gzipped.
+
+**The low-power stand-in.** This evening it reads 52 to 56 fps on Neon Docklands as well as on Ibiza (it read 60 on
+Docklands earlier in the day): the machine, not the map. Measured alternately, Ibiza is level with Docklands or a
+frame or two behind, with 58 draw calls to its 42. Tried and dropped: longer chunks for the land, the ground, the
+walls and the scenery (the draw calls did not fall, the triangles rose), and a shorter draw distance on the lowest
+tier (two draw calls). Glow, leaves, halos and beams are in longer chunks (fewer meshes).

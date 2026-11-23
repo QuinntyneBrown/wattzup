@@ -383,6 +383,17 @@ MATERIALS: dict[str, dict] = {
     "dark": {"color": 0x18181C, "rough": 0.6},
     "rock": {"color": 0x8C7B6A, "rough": 1.0},
     "skin": {"color": 0xD9A17C, "rough": 0.8},
+    "skin-1": {"color": 0xB97A56, "rough": 0.8},
+    "skin-2": {"color": 0x7A4A34, "rough": 0.8},
+    "hair-0": {"color": 0x1E1612, "rough": 0.9},
+    "hair-1": {"color": 0x5A3A22, "rough": 0.9},
+    "hair-2": {"color": 0xD8B878, "rough": 0.9},
+    # The island's white: linen shirts and summer dresses.
+    "party-white": {"color": 0xF4EEE4, "rough": 0.9},
+    # What is in the glass: it catches the light, so it glows a little.
+    "drink-0": {"color": 0xFFB030, "glow": 0.9},
+    "drink-1": {"color": 0xFF5A8A, "glow": 0.9},
+    "drink-2": {"color": 0xB8F060, "glow": 0.9},
     "club-window": {"color": 0x2C4658, "rough": 0.3},
     "awning": {"color": 0xE8566E, "rough": 0.8, "double": True},
     "awning-white": {"color": 0xF6F1EA, "rough": 0.8, "double": True},
@@ -549,7 +560,7 @@ FENCES_PART = "Fences"
 HALOS_PART = "Halos"
 WALL_KINDS = {"brick": 1, **{f"container-{i}": 2 for i in range(4)}, "whitewash": 3, "tower": 3, "wall": 3,
               **{f"facade-{i}": 3 for i in range(6)}, **{f"deco-{i}": 3 for i in range(4)}}
-WIDER = {"Land": 4, "Beams": 4, "Glow": 3, "Leaves": 3, "Halos": 3, "Ground": 2}
+WIDER = {"Land": 4, "Beams": 6, "Glow": 6, "Leaves": 4, "Halos": 4, "Ground": 2}
 WHOLE = {"sea": "Sea", "sky": "Sky", "sun": "Sun", "moon": "Sun", "island": "Conillera", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
 
 
@@ -630,7 +641,7 @@ def assemble(road: "Road", col) -> dict:
                 cx = sum(part.verts[i][0] for i in face) / len(face)
                 cy = sum(part.verts[i][1] for i in face) / len(face)
                 cz = sum(part.verts[i][2] for i in face) / len(face)
-                name = f"Sky_{int((math.atan2(cy, cx) % math.tau) / math.tau * SKY_SECTORS) % SKY_SECTORS if cz < SKY_RADIUS * 0.5 else SKY_SECTORS:03d}"
+                name = f"Sky_{int((math.atan2(cy, cx) % math.tau) / math.tau * SKY_SECTORS) % SKY_SECTORS:03d}"
             if chunked:
                 cx = sum(part.verts[i][0] for i in face) / len(face)
                 cy = sum(part.verts[i][1] for i in face) / len(face)
@@ -1116,11 +1127,11 @@ def palm(trunk: Builder, leaf: Builder, dark_leaf: Builder, x: float, y: float, 
         b.tri(l2, r2, spine[3])
 
 
-SKY_SECTORS = 2
+SKY_SECTORS = 1
 SKY_RADIUS = 8500.0
 
 
-def build_sky(col, az: float, haze_hex: int, colour_at=sky.sunset_sky_colour, turns: int = 224, rows: int = 34) -> None:
+def build_sky(col, az: float, haze_hex: int, colour_at=sky.sunset_sky_colour, turns: int = 160, rows: int = 24) -> None:
     """The sky as a dome the app carries with the camera, its picture painted in its vertices: finest by the horizon,
     where the eye is."""
     b = Builder("Sky", "sky")
@@ -1154,7 +1165,8 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
     s, n = road.s, len(road.s)
     names = (
         "trunk leaf leaf-dark glint bush bougainvillea whitewash wall wood dark stone rock skin club-window awning awning-white arrow sail sail-pink "
-        "glow-door lamp-red lamp-green gold confetti bulb paint sun island tower"
+        "glow-door lamp-red lamp-green gold confetti bulb paint sun island tower "
+        "skin-1 skin-2 hair-0 hair-1 hair-2 party-white drink-0 drink-1 drink-2"
     ).split() + NEONS + BEAMS + CROWD
     B = {name: Builder("".join(p.title() for p in name.split("-")), name) for name in names}
     B["whitewash"].name, B["dark"].name, B["paint"].name = "Clubs", "Dark", "GatePaint"
@@ -1182,18 +1194,66 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
             b.tri(top, ring[q], ring[(q + 1) % 5])
             b.tri((c[0], c[1], c[2] - r * 0.8), ring[(q + 1) % 5], ring[q])
 
-    def person(c, yaw: float) -> None:
-        """A dancer in one colour, arms in the air."""
-        b = B[rng.choice(CROWD)]
+    people = random.Random(4117)
+
+    def person(c, yaw: float, rng=rng, there: bool = True) -> None:
+        """Someone at the party, a drink in their hand: legs or a dress, a body that narrows to the waist, a head
+        with hair, one arm up with the glass or holding it at the chest, the other dancing or at their side. Most are
+        in the island's white."""
+        # The crowd has dice of its own, and takes from the scenery's what the old dancers took: nothing else moves.
+        rng.choice(CROWD)
+        for _ in range(4):
+            rng.random()
+        if not there:
+            return
+        rng = people
         h = rng.uniform(0.92, 1.08)
-        (b if rng.random() < 0.4 else B["dark"]).box(c, (0.2, 0.3, 0.8 * h), yaw)
-        b.box((c[0], c[1], c[2] + 0.8 * h), (0.24, 0.42, 0.58 * h), yaw)
-        B["skin"].box((c[0], c[1], c[2] + 1.44 * h), (0.23, 0.23, 0.25), yaw)
-        for side in (1, -1):
-            lift = rng.uniform(0.45, 0.8)
-            out = 0.27 + lift * 0.18
-            ax, ay = c[0] - math.sin(yaw) * out * side, c[1] + math.cos(yaw) * out * side
-            b.box((ax, ay, c[2] + 1.28 * h), (0.1, 0.1, lift), yaw)
+        fx, fy = math.cos(yaw), math.sin(yaw)
+        sx, sy = -fy, fx
+
+        def at(forward: float, side: float, up: float):
+            return (c[0] + fx * forward + sx * side, c[1] + fy * forward + sy * side, c[2] + up * h)
+
+        white = rng.random() < 0.6
+        top = B["party-white"] if white else B[rng.choice(CROWD)]
+        skin = B[rng.choice(("skin", "skin", "skin-1", "skin-2"))]
+        dress = rng.random() < 0.45
+        if dress:
+            # A summer dress: bare legs under a skirt that flares from the waist.
+            for side in (1, -1):
+                skin.box(at(0, 0.07 * side, 0), (0.1, 0.1, 0.5 * h), yaw)
+            kit.prism(top, at(0, 0, 0.46), 0.25, 0.42 * h, 5, 0.15, yaw)
+        else:
+            legs = B["party-white"] if white and rng.random() < 0.5 else (B["dark"] if rng.random() < 0.6 else B[rng.choice(CROWD)])
+            for side in (1, -1):
+                legs.box(at(0, 0.08 * side, 0), (0.13, 0.13, 0.86 * h), yaw)
+        # The body: hips to shoulders, wider at the shoulders; the neck; the head and its hair.
+        kit.prism(top, at(0, 0, 0.84), 0.17, 0.58 * h, 4, 0.24, yaw + math.pi / 4)
+        kit.prism(skin, at(0, 0, 1.42), 0.085, 0.24 * h, 5, 0.105, yaw)
+        hair = B[rng.choice(("hair-0", "hair-0", "hair-1", "hair-2"))]
+        kit.prism(hair, at(-0.015, 0, 1.6), 0.115, 0.09 * h, 4, 0.07, yaw + math.pi / 4)
+        if dress or rng.random() < 0.3:
+            # Long hair down the back.
+            hair.box(at(-0.1, 0, 1.3), (0.06, 0.2, 0.34 * h), yaw)
+        # The arms. One holds the drink: up in a toast, or at the chest between sips.
+        hand = rng.choice((1, -1))
+        sleeve = skin if dress or rng.random() < 0.6 else top
+        toast = rng.random() < 0.45
+        drink = B[rng.choice(("drink-0", "drink-1", "drink-2"))]
+        if toast:
+            lift = rng.uniform(0.5, 0.68)
+            sleeve.box(at(0.03, 0.27 * hand, 1.3), (0.09, 0.09, lift * h), yaw)
+            glass = at(0.03, 0.27 * hand, 1.3 + lift)
+        else:
+            sleeve.box(at(0, 0.25 * hand, 1.05), (0.09, 0.09, 0.33 * h), yaw)
+            skin.box(at(0.16, 0.22 * hand, 1.05), (0.26, 0.08, 0.08 * h), yaw)
+            glass = at(0.29, 0.22 * hand, 1.1)
+        kit.prism(drink, glass, 0.04, 0.12, 3, 0.055, yaw)
+        # The other arm: in the air with the music, or down at their side.
+        if rng.random() < 0.5:
+            sleeve.box(at(0, -0.27 * hand, 1.3), (0.09, 0.09, rng.uniform(0.4, 0.62) * h), yaw)
+        else:
+            sleeve.box(at(0, -0.26 * hand, 0.82), (0.09, 0.09, 0.56 * h), yaw)
 
     def festoon(a, b_, bulbs: int = 9, sag: float = 1.1) -> None:
         last = None
@@ -1434,9 +1494,10 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         for side in (1, -1):
             if side < 0:
                 B["wall"].box(P(i, 0, -(kerb + 0.5), 0.12), (3.6, 0.5, 1.05), yaw)
-            for _ in range(3):
+            for k in range(3):
                 off = (kerb + rng.uniform(1.0, 2.1)) if side > 0 else -(kerb + rng.uniform(1.2, 3.2))
-                person(P(i, rng.uniform(-1.8, 1.8), off, 0.12), yaw - math.pi / 2 * side + rng.uniform(-0.4, 0.4))
+                # Two of every three places are taken: each figure is a hundred triangles, and the finish is long.
+                person(P(i, rng.uniform(-1.8, 1.8), off, 0.12), yaw - math.pi / 2 * side + rng.uniform(-0.4, 0.4), there=k < 2)
         d += 4.0
     beams(P(fi, 30, -(front + 2), 8.0), s[fi]["h"] + math.pi / 2, 4)
     beams(P(i0, 70, -(front + 2), 8.0), yaw0 + math.pi / 2, 3)
