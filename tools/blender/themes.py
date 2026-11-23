@@ -253,7 +253,7 @@ THEMES: dict[str, dict] = {
         "haze": 0xE6B2AC,
         "light": [0xFFB88A, 2.95],
         "fill": [0xC8D8F8, 0x5A5248],
-        "sun_altitude": 0.16,
+        "sun_altitude": 0.155,
         "palette": {"asphalt": 0x36363E, "sand": 0x62863C, "promenade": 0x8E887E, "sea": 0x4E7838, "chevron": 0x3AE8FF},
         "land": {"low": 0x4E7C34, "mid": 0x66963E, "high": 0x8A8A70, "rock": 0xCFC4B4, "snow": 0xF2F5FA},
         "terrain": {"sea": False},
