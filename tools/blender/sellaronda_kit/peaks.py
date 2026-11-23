@@ -83,6 +83,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         my = pordoi_pt["y"] + muy * rad_m + mpy * lat_m
         rock_tower(peaks, mx, my, 85.0, top_m, rx_m, ry_m, 12, yaw_mm, cfn, taper=0.56, flat_cap=False, seed_phase=ph_m)
 
+    # High-altitude Marmolada cableway upper station blocks on Punta Rocca (3,265 m) & Serauta (2,950 m)
+    for st_lat, st_rad, st_z in ((40.0, 1435.0, 892.0), (350.0, 1470.0, 768.0)):
+        rock_tower(peaks, pordoi_pt["x"] + mux * st_rad + mpx * st_lat, pordoi_pt["y"] + muy * st_rad + mpy * st_lat, st_z - 12.0, st_z + 10.0, 16.0, 12.0, 6, yaw_mm, cfn, taper=0.96, flat_cap=True, seed_phase=1.1)
+
     # Gleaming northern Ghiacciaio della Marmolada icefield draped across the north slope facing Pordoi!
     gl_cols, gl_rows = 8, 5
     gl_grid = []
