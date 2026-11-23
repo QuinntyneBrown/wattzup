@@ -207,3 +207,12 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     bpx, bpy_ = -buy, bux
     for lat_bm, h_bm in ((-110.0, 595.0), (95.0, 560.0)):
         rock_tower(peaks, cx + bux * 740.0 + bpx * lat_bm, cy + buy * 740.0 + bpy_ * lat_bm, 105.0, h_bm, 108.0, 86.0, 11, math.atan2(buy, bux), cfn, taper=0.64, flat_cap=False, seed_phase=5.1 + lat_bm * 0.01)
+
+    # Piz Selva (2,941 m) & Sas de Mesdì western ramparts looming over Plan de Gralba & Selva (at=8650 m)
+    ps_pt = road.s[road.index(8650.0)]
+    psx, psy = ps_pt["x"] - cx, ps_pt["y"] - cy
+    psl = max(1.0, math.hypot(psx, psy))
+    psux, psuy = psx / psl, psy / psl
+    pspx, pspy = -psuy, psux
+    for lat_ps, h_ps in ((-125.0, 588.0), (105.0, 562.0)):
+        rock_tower(peaks, cx + psux * 755.0 + pspx * lat_ps, cy + psuy * 755.0 + pspy * lat_ps, 112.0, h_ps, 112.0, 88.0, 10, math.atan2(psuy, psux), cfn, taper=0.74, flat_cap=True, seed_phase=2.6 + lat_ps * 0.01)
