@@ -108,6 +108,13 @@ def emit_dusk_lights(kit, road, height_at) -> None:
             kit.light((lx, ly, lz), "glow-lamp", 24.0, 0.55)
             kit.halo((lx, ly, lz), "glow-lamp")
 
+    # Warm golden architectural floodlights on the 5 parish churches + Cappella di San Maurizio
+    for ch_at, ch_off in ((275.0, -20.0), (3135.0, 21.0), (6130.0, -21.5), (8930.0, 21.0), (10162.0, -8.5), (10980.0, 22.0)):
+        c_idx = road.index(ch_at)
+        cx_l, cy_l, cz_l = road.at(c_idx, ch_off, 12.0)
+        kit.light((cx_l, cy_l, cz_l), "gold", 30.0, 0.72)
+        kit.halo((cx_l, cy_l, cz_l), "gold")
+
 
 def build_valley_mist(B, road, height_at) -> None:
     """Lays delicate dusk valley-mist ribbons down in the four deep valley hollows off the road."""
