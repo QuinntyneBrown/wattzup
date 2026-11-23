@@ -133,7 +133,8 @@
         "L2-034",
         "L2-035",
         "L2-036",
-        "L2-041"
+        "L2-041",
+        "L2-150"
       ],
       "states": [
         "default",
@@ -142,7 +143,8 @@
         "unlocked",
         "disconnected",
         "full-screen",
-        "no-groups"
+        "no-groups",
+        "update-ready"
       ],
       "not_applicable": {
         "empty": "‘new-rider’ is the empty state: no rides yet, two starting maps, the first unlock shown as the Next ride.",

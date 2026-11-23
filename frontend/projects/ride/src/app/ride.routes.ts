@@ -21,6 +21,7 @@ import {
   LocalRideSettingsStore,
 } from '@telo/domain';
 import { provideAppCache } from './app-cache/provide-app-cache';
+import { provideAppUpdates } from './app-update/provide-app-updates';
 import { provideBikeConnection } from './bike/provide-bike-connection';
 import { rememberedBikeGuard } from './bike/remembered-bike.guard';
 import { reconnectRememberedBikeGuard } from './bike/reconnect-remembered-bike.guard';
@@ -43,6 +44,8 @@ export const rideRoutes: Routes = [
       provideBikeConnection(),
       provideSession(),
       provideAppCache(),
+      // Each new version offered between rides, never during one (L2-150 AC2).
+      provideAppUpdates(),
       // Whether the browser has a network, for the screens that offer rides with other people (L2-135 AC4).
       { provide: NETWORK_STATUS, useClass: BrowserNetworkStatus },
       // The ride settings, which Settings changes and every ride screen follows (L2-158 AC3).

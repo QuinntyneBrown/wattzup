@@ -39,6 +39,7 @@ export {
 export { EnergyModel } from './engine/energy-model';
 export { RaceStartPlanner, type RaceStart } from './engine/race-start-planner';
 export { HeartRateSource } from './engine/heart-rate-source';
+export { RideInProgress } from './engine/ride-in-progress';
 export { HeartRateStats } from './engine/heart-rate-stats';
 export { PowerModel } from './engine/power-model';
 export { ResistanceController } from './engine/resistance-controller';

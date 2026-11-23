@@ -325,6 +325,7 @@
         <tr><td><code>data-state="leaving"</code></td><td>Exit transition before removal.</td></tr>
         <tr><td><code>role="status"</code> / <code>role="alert"</code></td><td>Live containers inside the region.</td></tr>
       </tbody></table></div>
+      <p>In the app: <code>&lt;wz-toast tone="info" title="A new version is ready" text="Reload to use it now, or it opens next time." action="Reload" (actionChosen)="reload()" (dismissed)="dismiss()" /&gt;</code> inside <code>&lt;div wz-toast-region&gt;</code>. <code>action</code> renders the one small raised button in <code>.toast__actions</code>; a toast with one stays until the rider closes it.</p>
     </section>
 
     <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
@@ -332,6 +333,7 @@
       <ul>
         <li>"Ride saved": <a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a> (Save ride and open library).</li>
         <li>"Packet log downloaded": <a href="../../mocks/dialogs/diagnostics/default.html">dialogs/diagnostics/default</a>.</li>
+        <li>"A new version is ready", with Reload: <a href="../../mocks/pages/home/update-ready.html">pages/home/update-ready</a>.</li>
         <li>"Link copied": the Copy link action on <a href="../../mocks/pages/class-start/needs-chromium.html">pages/class-start/needs-chromium</a>.</li>
         <li>"Couldn’t send feedback": <a href="../../mocks/dialogs/feedback/sending.html">dialogs/feedback/sending</a>, which has no failure state.</li>
       </ul>

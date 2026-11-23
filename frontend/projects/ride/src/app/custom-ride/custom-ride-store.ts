@@ -8,6 +8,7 @@ import {
   type FeedbackContext,
   REMEMBERED_BIKE,
   RIDE_OUTBOX,
+  RIDE_ACTIVITY,
   SCREEN_WAKE_LOCK,
   VIDEO_PLAYER_FACTORY,
   type VideoPlayer,
@@ -69,6 +70,8 @@ export class CustomRideStore {
   private readonly rememberedBike = inject(REMEMBERED_BIKE);
   private readonly remembered = this.rememberedBike.get();
   private readonly wakeLock = inject(SCREEN_WAKE_LOCK);
+  /** Whether a ride is in progress, so a new version of the app waits for its end (L2-150 AC2). */
+  private readonly activity = inject(RIDE_ACTIVITY);
   private readonly draft = inject(CustomWorkoutStore).draft;
   private readonly totals = inject(RideTotals);
   private readonly resistance = inject(ResistanceController);
@@ -282,6 +285,7 @@ export class CustomRideStore {
       this.player()?.destroy();
       // The lock is bound on the route, whose injector outlives the page.
       this.wakeLock.release();
+      this.activity.end();
     });
   }
 
@@ -381,6 +385,7 @@ export class CustomRideStore {
     if (this.started() || this.connection.ble() !== 'connected') return;
     this.started.set(true);
     this.wakeLock.hold();
+    this.activity.begin();
     this.clock.start();
     this.ticker.start();
     this.engine.follow(this.plan);
@@ -491,6 +496,7 @@ export class CustomRideStore {
     this.ticker.stop();
     this.player()?.pause();
     this.wakeLock.release();
+    this.activity.end();
   }
 
   /** On each tick, a video more than 1.5 s off the ride clock plus the offset seeks back to it (L2-088 AC2). */
