@@ -219,6 +219,15 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
             B["crowd-2"].box((tx0 + ca_t * r_o, ty0 + sa_t * r_o, tz0 + 0.84), (0.46, 0.34, 0.42), tdyaw)
             B["paint"].box((tx0 + ca_t * (r_o + 0.22), ty0 + sa_t * (r_o + 0.22), tz0 + 1.18), (0.24, 0.22, 0.22), tdyaw)
 
+    # Polizia Stradale blue-and-white alpine motorbike marshals stationed at valley road-closure checkpoints
+    for cp_m in (420.0, 3265.0, 6260.0, 9060.0):
+        cp_idx = road.index(cp_m)
+        cpyaw = s[cp_idx]["h"] + 0.55
+        mx_p, my_p, mz_p = kit.P(cp_idx, 0.0, kit.kerb + 2.35, 0.0)
+        _touring_motorbike(B, mx_p, my_p, mz_p, cpyaw, "ladin-blue", with_rider=True)
+        B["parasol-red"].box(kit.P(cp_idx, 2.2, kit.kerb + 2.35, 0.0), (0.25, 1.85, 0.92), s[cp_idx]["h"])
+        B["paint"].box(kit.P(cp_idx, 2.2, kit.kerb + 2.35, 0.68), (0.27, 1.85, 0.22), s[cp_idx]["h"])
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
