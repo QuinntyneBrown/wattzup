@@ -578,4 +578,12 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
     for ga_m in (232.0, 3102.0, 6102.0, 8905.0):
         gai = road.index(ga_m)
         B["parasol-red"].box(kit.P(gai, 0.0, kit.kerb + 6.4, 3.1), (0.14, 0.68, 0.78), road.s[gai]["h"])
+    # Historic 17th-century Castel Gardena (Fischburg) manor silhouette on Selva's western bank (at=8765 m)
+    fb_i = road.index(8765.0)
+    fby = road.s[fb_i]["h"]
+    fbx, fby_p, _ = road.at(fb_i, kit.kerb + 28.0)
+    if road.clear_of_road(fbx, fby_p, 16.0, fb_i):
+        fbz = height_at(fbx, fby_p)
+        B["chalet-plaster"].box((fbx, fby_p, fbz - 1.2), (12.5, 9.6, 8.8), fby)
+        B["parasol-red"].box((fbx + 5.2, fby_p + 3.8, fbz + 7.6), (3.4, 3.4, 2.8), fby)
     # [ANCHOR:villages]
