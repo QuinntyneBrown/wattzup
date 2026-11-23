@@ -555,4 +555,12 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
         if road.clear_of_road(flx, fly, 3.0, fli):
             B["crowd-3"].box((flx, fly, height_at(flx, fly) - 0.02), (0.52, 0.52, 0.28), fl_m * 0.3)
 
+    # Traditional Fassa hay-drying tripods (cavallette da fieno) on the Sella approach meadow
+    for tp_o in (0.0, 6.0, 12.0):
+        tpi = road.index(6520.0 + tp_o)
+        tpx, tpy, _ = road.at(tpi, kit.kerb + 19.0)
+        if road.clear_of_road(tpx, tpy, 12.0, tpi):
+            tpz = height_at(tpx, tpy)
+            B["hay"].box((tpx, tpy, tpz), (1.45, 1.45, 1.75), tp_o * 0.2)
+
     return trees
