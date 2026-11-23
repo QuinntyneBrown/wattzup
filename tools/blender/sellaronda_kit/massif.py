@@ -432,4 +432,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         475.0,
         snow=True,
     )
+    # Piz Rotic (2,973 m) northwest Sella rampart overlooking Plan de Gralba
+    rock_tower(peaks, cx + psux * 725.0 + pspx * 185.0, cy + psuy * 725.0 + pspy * 185.0, 120.0, 594.0, 96.0, 78.0, 9, math.atan2(psuy, psux), cfn, taper=0.70, flat_cap=True, seed_phase=3.1)
     # [ANCHOR:massif]
