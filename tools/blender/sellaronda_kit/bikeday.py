@@ -531,6 +531,13 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     B["parasol-red"].box((cbvx, cbvy_p, cbvz + 0.75), (4.48, 1.92, 0.18), cbvy)
     B["ladin-blue"].box((cbvx, cbvy_p, cbvz + 1.52), (0.38, 1.12, 0.16), cbvy)
 
+    # Long-wingspan white alpine sailplane soaring wave lift between Pordoi & Marmolada
+    sp_g = road.index(4950.0)
+    sgx, sgy, sgz = road.at(sp_g, 185.0, 210.0)
+    B["paint"].box((sgx, sgy, sgz), (7.8, 0.55, 0.52), 0.4)
+    B["paint"].box((sgx + 0.8, sgy, sgz + 0.15), (0.95, 16.5, 0.14), 0.4)
+    B["parasol-red"].box((sgx - 3.6, sgy, sgz + 0.52), (0.85, 0.12, 1.35), 0.4)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
