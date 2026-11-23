@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   nextSellaPass,
+  passClimbLengthMetres,
   passClimbProgress,
   SELLA_RONDA_PASSES,
   sellaMassifBearing,
@@ -42,5 +43,6 @@ describe('SELLA_RONDA_PASSES', () => {
     expect(sellaSubpeaksForPass('sella').map((p) => p.name)).toContain(
       'Torri del Sella (Terza Torre)',
     );
+    expect(passClimbLengthMetres('pordoi')).toBe(1650);
   });
 });
