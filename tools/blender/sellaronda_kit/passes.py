@@ -275,3 +275,11 @@ def build_four_passes(B, kit, road, height_at) -> None:
     wx_w, wy_w, wz_w = kit.P(ww_idx, 0.0, -(kit.kerb + 7.2), -0.3)
     B["stone"].box((wx_w, wy_w, wz_w), (4.8, 0.48, 1.85), ww_yaw)
     B["accent-2"].box((wx_w, wy_w, wz_w + 1.55), (4.6, 0.52, 0.24), ww_yaw)
+
+    # UNESCO Dolomites geological interpretation pergola on Passo Sella (at=7772 m)
+    un_s_idx = road.index(7772.0)
+    uns_yaw = s[un_s_idx]["h"]
+    ux_s, uy_s, uz_s = kit.P(un_s_idx, 0.0, kit.kerb + 4.4, -0.1)
+    B["larch-aged"].box((ux_s, uy_s, uz_s), (2.9, 0.24, 2.35), uns_yaw)
+    B["paint"].box((ux_s, uy_s, uz_s + 0.95), (2.5, 0.28, 1.15), uns_yaw)
+    kit.gable(B["larch-warm"], (ux_s, uy_s, uz_s + 2.35), 3.4, 1.15, 0.52, uns_yaw)
