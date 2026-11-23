@@ -361,7 +361,7 @@ def build_scenery(road, st: list[dict], length: float, height_at, course: dict, 
     # 10. Start/finish gates, effort arches, sun disc & alpenglow sky
     efforts = kit.gates("accent-2", "flag-0", themes.CROWD)
 
-    dist_, radius, alt = 5600.0, 380.0, 920.0
+    dist_, radius, alt = 5600.0, 392.0, 920.0
     sx, sy = cx + math.cos(az) * dist_, cy + math.sin(az) * dist_
     disc = B["sun"]
     for q in range(28):
