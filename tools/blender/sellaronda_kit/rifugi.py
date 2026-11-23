@@ -314,4 +314,10 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     # Historic central clock-gable crowning Hotel Savoia on Passo Pordoi
     B["chalet-plaster"].box(kit.P(hs_i, 0.0, -(kit.kerb + 8.2), 11.8), (3.2, 1.4, 2.2), road.s[hs_i]["h"])
     B["gold"].box(kit.P(hs_i, 0.0, -(kit.kerb + 7.45), 12.6), (0.85, 0.12, 0.85), road.s[hs_i]["h"])
+    # Shingled larch mountain-dog hutches beside Plan Boè & Rifugio Salei
+    for dg_m, dg_s in ((1454.0, -1.0), (7114.0, 1.0)):
+        dgi = road.index(dg_m)
+        dgx, dgy, dgz = kit.P(dgi, 0.0, (kit.kerb + 7.8) * dg_s, 0.0)
+        B["larch-warm"].box((dgx, dgy, dgz), (1.15, 0.92, 0.85), road.s[dgi]["h"])
+        kit.gable(B["chalet-wood"], (dgx, dgy, dgz + 0.85), 1.35, 1.12, 0.42, road.s[dgi]["h"])
     # [ANCHOR:rifugi-global]
