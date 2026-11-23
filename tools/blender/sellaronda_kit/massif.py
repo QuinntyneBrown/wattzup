@@ -608,4 +608,15 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     rock_tower(peaks, cx + lux * 595.0 - lpx * 125.0, cy + luy * 595.0 - lpy * 125.0, 520.0, 712.0, 72.0, 58.0, 8, math.atan2(luy, lux), cfn, taper=0.54, flat_cap=False, seed_phase=3.6)
     # Campanile del Boè spire on the southeastern Sella crest
     rock_tower(peaks, cx + bux * 842.0 - (-buy) * 65.0, cy + buy * 842.0 - bux * 65.0, 125.0, 492.0, 34.0, 28.0, 7, math.atan2(buy, bux), cfn, taper=0.30, flat_cap=False, seed_phase=2.5)
+    # Steep snow-filled Canale Joel chute east of Forcella Pordoi
+    quad_shaded(
+        peaks,
+        (fc_x + px_perp * 45.0 + ux * 95.0, fc_y + py_perp * 45.0 + uy * 95.0, 165.0),
+        (fc_x + px_perp * 62.0 + ux * 95.0, fc_y + py_perp * 62.0 + uy * 95.0, 165.0),
+        (fc_x + px_perp * 56.0 + ux * 35.0, fc_y + py_perp * 56.0 + uy * 35.0, 520.0),
+        (fc_x + px_perp * 46.0 + ux * 35.0, fc_y + py_perp * 46.0 + uy * 35.0, 520.0),
+        cfn,
+        345.0,
+        snow=True,
+    )
     # [ANCHOR:massif]
