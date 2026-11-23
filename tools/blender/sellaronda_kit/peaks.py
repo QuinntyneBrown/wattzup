@@ -502,4 +502,15 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     sbul = max(1.0, math.hypot(sbux, sbuy))
     sbux, sbuy = sbux / sbul, sbuy / sbul
     rock_tower(peaks, sb_pt["x"] + sbux * 1380.0, sb_pt["y"] + sbuy * 1380.0, 50.0, 595.0, 175.0, 130.0, 9, math.atan2(-sbuy, -sbux), cfn, taper=0.52, flat_cap=True, seed_phase=3.7)
+    # Western snow pocket below Il Pollice in the Forcella del Sassolungo
+    quad_shaded(
+        peaks,
+        (nx0 + px * 32.0 + ux * 95.0, ny0 + py * 32.0 + uy * 95.0, 445.0),
+        (nx0 + px * 52.0 + ux * 95.0, ny0 + py * 52.0 + uy * 95.0, 445.0),
+        (nx0 + px * 46.0 + ux * 125.0, ny0 + py * 46.0 + uy * 125.0, 540.0),
+        (nx0 + px * 36.0 + ux * 125.0, ny0 + py * 36.0 + uy * 125.0, 540.0),
+        cfn,
+        492.0,
+        snow=True,
+    )
     # [ANCHOR:peaks]
