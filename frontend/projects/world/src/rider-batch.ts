@@ -1,8 +1,9 @@
 // The riders' moving parts in one draw call (L2-166 AC12). A rider's kit (course-cyclist.ts) makes everything that
-// never moves against the bike one mesh; the legs, the cranks and the pedals do move, and would be a draw call each,
-// ten a rider. They are drawn here instead as one skinned mesh for every rider on the road: each part is a bone,
+// never moves against the bike one mesh; the shoes, the cranks and the pedals do move, and would be a draw call each,
+// six a rider. They are drawn here instead as one skinned mesh for every rider on the road: each part is a bone,
 // every vertex of the part hangs on that bone alone, and each frame the bone is put where the part is. The part
-// itself keeps its place in the scene, so the pedalling moves it as before; it is only no longer drawn.
+// itself keeps its place in the scene, so the pedalling moves it as before; it is only no longer drawn. (The
+// rider's body is a skinned mesh of its own, rider-body.ts, and is not part of this.)
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {
   Bone,
