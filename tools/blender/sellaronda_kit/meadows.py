@@ -133,6 +133,7 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["larch-warm"].box((kx, ky, kz + 0.45), (1.75, 0.68, 0.78), cyaw)
             B["paint"].box((kx, ky, kz + 0.52), (0.68, 0.72, 0.68), cyaw)
             B["paint"].box((kx + math.cos(cyaw) * 0.98, ky + math.sin(cyaw) * 0.98, kz + 0.72), (0.48, 0.44, 0.46), cyaw)
+            B["gold"].box((kx + math.cos(cyaw) * 0.76, ky + math.sin(cyaw) * 0.76, kz + 0.42), (0.16, 0.16, 0.18), cyaw)
             for lx_o in (-0.58, 0.58):
                 B["larch-aged"].box((kx + math.cos(cyaw) * lx_o, ky + math.sin(cyaw) * lx_o, kz - 0.05), (0.18, 0.52, 0.55), cyaw)
 
