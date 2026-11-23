@@ -403,4 +403,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     )
     # Torre Berger (2,510 m) detached climbing needle beneath Piz Ciavazes
     rock_tower(peaks, cx_w + cux * 155.0 + cpx * 95.0, cy_w + cuy * 155.0 + cpy * 95.0, 132.0, 468.0, 32.0, 26.0, 7, math.atan2(cuy, cux), cfn, taper=0.28, flat_cap=False, seed_phase=4.9)
+    # Western prow buttress of Sass Pordoi overlooking the Pordoi -> Canazei switchbacks
+    rock_tower(peaks, sp_x - px_perp * 118.0 + ux * 45.0, sp_y - py_perp * 118.0 + uy * 45.0, 130.0, 562.0, 68.0, 56.0, 8, yaw_sp - 0.25, cfn, taper=0.72, flat_cap=True, seed_phase=2.7)
     # [ANCHOR:massif]
