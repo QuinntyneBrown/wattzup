@@ -525,4 +525,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     cll2 = max(1.0, math.hypot(clx2, cly2))
     clx2, cly2 = clx2 / cll2, cly2 / cll2
     rock_tower(peaks, clc_pt["x"] + clx2 * 1120.0, clc_pt["y"] + cly2 * 1120.0, 48.0, 665.0, 195.0, 140.0, 9, math.atan2(-cly2, -clx2), cfn, taper=0.44, flat_cap=False, seed_phase=6.3)
+    # 22. Croda da Lago & Lastoni di Formin (2,657 m) tilted plateau horizon toward Cortina (at=1980 m)
+    fm_pt = road.s[road.index(1980.0)]
+    fmux, fmuy = fm_pt["x"] - cx, fm_pt["y"] - cy
+    fmul = max(1.0, math.hypot(fmux, fmuy))
+    fmux, fmuy = fmux / fmul, fmuy / fmul
+    rock_tower(peaks, fm_pt["x"] + fmux * 2180.0, fm_pt["y"] + fmuy * 2180.0, 62.0, 685.0, 245.0, 145.0, 9, math.atan2(-fmuy, -fmux) + 0.18, cfn, taper=0.68, flat_cap=True, seed_phase=4.4)
     # [ANCHOR:peaks]
