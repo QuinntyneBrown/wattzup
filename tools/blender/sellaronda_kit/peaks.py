@@ -449,4 +449,6 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     csul = max(1.0, math.hypot(csux, csuy))
     csux, csuy = csux / csul, csuy / csul
     rock_tower(peaks, crs_pt["x"] + csux * 2360.0, crs_pt["y"] + csuy * 2360.0, 45.0, 868.0, 285.0, 185.0, 10, math.atan2(-csuy, -csux), cfn, taper=0.42, flat_cap=False, seed_phase=4.0)
+    # Rifugio Vicenza / Langkofelhütte (2,253 m) inside the Langkofelkar cirque
+    rock_tower(peaks, sp_x - ux * 125.0 - px * 145.0, sp_y - uy * 125.0 - py * 145.0, 382.0, 398.0, 13.0, 9.5, 6, yaw_sl, cfn, taper=0.95, flat_cap=True, seed_phase=0.9)
     # [ANCHOR:peaks]
