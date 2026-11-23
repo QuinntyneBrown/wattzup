@@ -363,4 +363,12 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         icz = height_at(icx, icy)
         B["larch-warm"].box((icx, icy, icz - 1.5), (22.0, 15.0, 5.2), icyaw)
         kit.gable(B["steel"], (icx, icy, icz + 3.7), 23.2, 16.2, 2.4, icyaw)
+    # Traditional Val di Fassa semicircular exterior stone bread ovens in Canazei
+    for ov_m in (6055.0, 6180.0):
+        ov_i = road.index(ov_m)
+        ovyaw = road.s[ov_i]["h"]
+        ovx, ovy, _ = road.at(ov_i, -(kit.kerb + 9.2))
+        ovz = max(height_at(ovx, ovy), road.s[ov_i]["z"] - 0.3)
+        B["chalet-plaster"].box((ovx, ovy, ovz), (1.85, 1.55, 1.95), ovyaw)
+        kit.gable(B["larch-aged"], (ovx, ovy, ovz + 1.95), 2.15, 1.85, 0.55, ovyaw)
     # [ANCHOR:villages]
