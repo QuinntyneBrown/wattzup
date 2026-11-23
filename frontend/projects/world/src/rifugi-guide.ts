@@ -108,3 +108,12 @@ export function rifugioElevationDropToNextValley(rifugio: SellaRifugio): number 
 export function isSummitRifugioOpenAtHour(hour24: number): boolean {
   return hour24 >= 7 && hour24 <= 21.5;
 }
+
+/** Lists all Sella Ronda pass rifugi within `radiusMetres` along the loop from `metres`. */
+export function rifugiWithinMetres(metres: number, radiusMetres: number): readonly SellaRifugio[] {
+  const w = ((metres % 11650) + 11650) % 11650;
+  return SELLA_RIFUGI.filter((r) => {
+    const d = Math.min(Math.abs(w - r.courseMetres), 11650 - Math.abs(w - r.courseMetres));
+    return d <= radiusMetres;
+  });
+}
