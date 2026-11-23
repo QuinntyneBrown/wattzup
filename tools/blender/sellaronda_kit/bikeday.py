@@ -508,6 +508,13 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         B["steel"].box(kit.P(fn_a, 0.0, (kit.kerb + 1.8) * side, -0.1), (0.22, 0.22, 5.6), fny)
     B["gold"].box(kit.P(fn_a, 0.0, 0.0, 5.15), (0.28, (kit.kerb + 1.8) * 2.0, 0.68), fny)
 
+    # Long-distance Alpine bikepacking riders with saddle & handlebar bags
+    for bp_m in (1640.0, 9620.0):
+        bpi = road.index(bp_m)
+        bpx_c, bpy_c, bpz_c = road.at(bpi, -(kit.kerb - 0.62))
+        _road_cyclist(B, bpx_c, bpy_c, bpz_c, s[bpi]["h"], "crowd-1", standing=False)
+        B["yellow"].box((bpx_c - math.cos(s[bpi]["h"]) * 0.42, bpy_c - math.sin(s[bpi]["h"]) * 0.42, bpz_c + 0.72), (0.38, 0.18, 0.18), s[bpi]["h"])
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
