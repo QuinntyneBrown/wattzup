@@ -531,4 +531,15 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     rock_tower(peaks, cx + vux * 795.0 + vpx * 125.0, cy + vuy * 795.0 + vpy * 125.0, 105.0, 505.0, 62.0, 48.0, 8, math.atan2(vuy, vux), cfn, taper=0.66, flat_cap=True, seed_phase=5.2)
     # Irmgard-Kante southwest arête descending from Piz Ciavazes
     rock_tower(peaks, cx_w + cux * 162.0 - cpx * 125.0, cy_w + cuy * 162.0 - cpy * 125.0, 125.0, 495.0, 38.0, 32.0, 7, math.atan2(cuy, cux) - 0.18, cfn, taper=0.72, flat_cap=True, seed_phase=2.3)
+    # Val Setus snow-lined exit notch rising into the Pisciadù cirque
+    quad_shaded(
+        peaks,
+        (cx + pux * 835.0 - ppx * 45.0, cy + puy * 835.0 - ppy * 45.0, 210.0),
+        (cx + pux * 835.0 - ppx * 25.0, cy + puy * 835.0 - ppy * 25.0, 210.0),
+        (cx + pux * 695.0 - ppx * 18.0, cy + puy * 695.0 - ppy * 18.0, 502.0),
+        (cx + pux * 695.0 - ppx * 30.0, cy + puy * 695.0 - ppy * 30.0, 502.0),
+        cfn,
+        355.0,
+        snow=True,
+    )
     # [ANCHOR:massif]
