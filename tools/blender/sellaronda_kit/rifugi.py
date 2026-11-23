@@ -275,4 +275,11 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     B["stone"].box((psx_p, psy_p, psz_p - 1.5), (7.4, 5.8, 2.0), pspy)
     B["larch-aged"].box((psx_p, psy_p, psz_p + 0.5), (7.6, 6.0, 3.2), pspy)
     kit.gable(B["chalet-wood"], (psx_p, psy_p, psz_p + 3.7), 8.2, 6.6, 1.9, pspy)
+    # Cantilevered glass-balustrade skydeck at Rifugio Maria Flora on Passo Sella (at=7792 m)
+    mf_i = road.index(7792.0)
+    mfy = road.s[mf_i]["h"]
+    mfx, mfy_p, _ = road.at(mf_i, kit.kerb + 7.5)
+    mfz = max(height_at(mfx, mfy_p), road.s[mf_i]["z"] - 0.3)
+    B["larch-warm"].box((mfx, mfy_p, mfz - 0.8), (6.8, 3.8, 0.95), mfy)
+    B["glacier-ice"].box((mfx, mfy_p, mfz + 0.15), (6.6, 0.10, 1.05), mfy)
     # [ANCHOR:rifugi-global]
