@@ -245,6 +245,14 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
             B[("parasol-red", "glacier-ice", "yellow")[sc_k]].box((vx_s, vy_s, vz_s + 0.25), (1.12, 0.36, 0.58), vyaw)
             B["bulb"].box((vx_s + math.cos(vyaw) * 0.48, vy_s + math.sin(vyaw) * 0.48, vz_s + 0.88), (0.12, 0.18, 0.18), vyaw)
 
+    # Giant waving Tricolore & Ladin flags held by tifosi on the final Pordoi & Sella steep ramps
+    for tf_at, tf_mat in ((4880.0, "foliage"), (4905.0, "parasol-red"), (7680.0, "ladin-blue"), (7705.0, "accent-2")):
+        tf_idx = road.index(tf_at)
+        tf_yaw = s[tf_idx]["h"] + 0.35
+        tx_f, ty_f, tz_f = kit.P(tf_idx, 0.0, -(kit.kerb + 1.55), 0.0)
+        B["paint"].box((tx_f, ty_f, tz_f + 0.9), (0.06, 0.06, 3.2), tf_yaw)
+        B[tf_mat].box((tx_f + math.cos(tf_yaw) * 0.8, ty_f + math.sin(tf_yaw) * 0.8, tz_f + 3.1), (1.55, 0.05, 1.05), tf_yaw)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
