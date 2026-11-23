@@ -560,4 +560,13 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
     sc_v = road.index(8885.0)
     B["dolomite-pale"].box(kit.P(sc_v, 0.0, kit.kerb + 4.2, 0.0), (1.15, 1.15, 1.05), 0.0)
     B["larch-warm"].box(kit.P(sc_v, 0.0, kit.kerb + 4.2, 1.05), (0.55, 0.55, 1.95), 0.4)
+    # Restored historic Mulino di Arabba watermill museum beside the Cordevole (at=3078 m)
+    ma_i = road.index(3078.0)
+    may = road.s[ma_i]["h"]
+    max_m, may_m, _ = road.at(ma_i, -(kit.kerb + 16.0))
+    if road.clear_of_road(max_m, may_m, 11.0, ma_i):
+        maz_m = height_at(max_m, may_m)
+        B["stone"].box((max_m, may_m, maz_m - 1.0), (6.2, 4.8, 2.2), may)
+        B["larch-aged"].box((max_m, may_m, maz_m + 1.2), (6.4, 5.0, 2.6), may)
+        kit.gable(B["chalet-wood"], (max_m, may_m, maz_m + 3.8), 7.0, 5.6, 1.5, may)
     # [ANCHOR:villages]
