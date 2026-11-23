@@ -108,3 +108,11 @@ export function cableLineLengthMetres(span: CableSpan): number {
   if (chord < 1e-3) return 0;
   return chord + (8 * span.sag * span.sag) / (3 * chord);
 }
+
+/** Peak mid-traverse vertical climb speed (m/s) of a cabin ascending `span`. */
+export function cablewayVerticalSpeedMps(span: CableSpan): number {
+  const dy = Math.abs(span.to[1] - span.from[1]);
+  const t = Math.max(1, span.traverseSeconds);
+  // Smoothstep derivative peaks at 1.5 at u = 0.5.
+  return (1.5 * dy) / t;
+}

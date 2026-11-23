@@ -3,6 +3,7 @@ import {
   cableLineLengthMetres,
   type CableSpan,
   cablewaySlopeDegrees,
+  cablewayVerticalSpeedMps,
   chairliftLoopPosition,
   gondolaPosition,
   midSpanAltitudeMetres,
@@ -47,5 +48,6 @@ describe('gondolaPosition', () => {
     expect(cablewaySlopeDegrees(SASS_PORDOI)).toBeGreaterThan(35);
     expect(midSpanAltitudeMetres(SASS_PORDOI)).toBeCloseTo(344.5, 3);
     expect(cableLineLengthMetres(SASS_PORDOI)).toBeGreaterThan(600);
+    expect(cablewayVerticalSpeedMps(SASS_PORDOI)).toBeGreaterThan(10);
   });
 });
