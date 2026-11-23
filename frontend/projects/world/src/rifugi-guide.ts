@@ -103,3 +103,8 @@ const NEXT_VALLEY_ALTITUDE: Readonly<Record<SellaRifugio['passId'], number>> = {
 export function rifugioElevationDropToNextValley(rifugio: SellaRifugio): number {
   return Math.max(0, rifugio.altitudeMetres - NEXT_VALLEY_ALTITUDE[rifugio.passId]);
 }
+
+/** True during typical Dolomite summer rifugio bar & terrace hours (07:00..21:30 local time). */
+export function isSummitRifugioOpenAtHour(hour24: number): boolean {
+  return hour24 >= 7 && hour24 <= 21.5;
+}
