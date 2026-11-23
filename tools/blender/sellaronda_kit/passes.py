@@ -455,4 +455,7 @@ def build_four_passes(B, kit, road, height_at) -> None:
     ch_b = road.index(2122.0)
     B["larch-aged"].box(kit.P(ch_b, 0.0, kit.kerb + 3.8, 0.0), (2.2, 0.18, 2.25), s[ch_b]["h"])
     kit.gable(B["chalet-wood"], kit.P(ch_b, 0.0, kit.kerb + 3.8, 2.25), 2.6, 0.85, 0.42, s[ch_b]["h"])
+    # Carved stone votive lantern pillar beside Cappella di San Maurizio
+    B["dolomite-pale"].box((bx_t - math.cos(g_yaw) * 1.85, by_t - math.sin(g_yaw) * 1.85, cz_ch + 0.35), (0.34, 0.34, 1.45), g_yaw)
+    B["bulb"].box((bx_t - math.cos(g_yaw) * 1.85, by_t - math.sin(g_yaw) * 1.85, cz_ch + 1.80), (0.24, 0.24, 0.28), g_yaw)
     # [ANCHOR:passes]
