@@ -799,7 +799,8 @@ def main():
     cage = build_cage()
     check_watertight(cage.bm, "the cage")
     armature = build_armature()
-    bodies = [make_body(cage, armature, "body", 1), make_body(cage, armature, "body-fine", 2)]
+    # Two finenesses: the cage as it is modelled, for a slow device and a rider up the road, and subdivided once.
+    bodies = [make_body(cage, armature, "body-coarse", 0), make_body(cage, armature, "body", 1)]
     cage.bm.free()
     guides = rig(armature)
     before = check_feet(armature)

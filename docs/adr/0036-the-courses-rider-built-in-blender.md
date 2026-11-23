@@ -34,7 +34,7 @@ A map is already a model built in Blender by a script (ADR 0034).
   keying, constraints cleared). The app plays the turn from the crank's angle and blends the two by
   how far the rider is out of the saddle; it works out no kinematics.
 - **Served as `public/riders/rider.glb`**, loaded with the course. It holds the body at two
-  finenesses (the cage subdivided once and twice) on the one armature. The body's regions (skin,
+  finenesses on the one armature: the cage as modelled (1,530 triangles) and subdivided once (5,684). The body's regions (skin,
   shorts, gripper, sock, glove, hair, kit) are marked in its vertex colours; the app paints each
   rider's own colours over them and draws the kit's texture on the trunk and sleeves.
 
@@ -47,6 +47,11 @@ A map is already a model built in Blender by a script (ADR 0034).
   body's shape carries them.
 - Between seated and standing the app blends two baked poses, so on a 6 % climb an ankle can sit a
   few millimetres off its pedal, inside the shoe.
+- A rider costs about what the one before did, which low-power tablets were budgeted for (L2-166
+  AC12): 11,400 triangles where there were 9,900 for the followed rider at the top tier, and 5,000
+  where there were 5,700 for a rider made at six tenths. The cage subdivided twice (21,700
+  triangles) looked no better at the chase camera's distance and was left out. Its frame rate on a
+  real tablet has not been measured.
 - A rider's body is two draw calls (the kit's texture, and everything coloured by vertex) and is
   no longer part of the batch that draws every rider's moving parts as one; the shoes, cranks and
   pedals still are.

@@ -63,7 +63,11 @@ export class RiderBody {
   static async load(url: string = RIDER_BODY_PATH): Promise<RiderBody> {
     const gltf = await new GLTFLoader().loadAsync(url);
     const clip = gltf.animations[0];
-    if (!clip || !gltf.scene.getObjectByName('body') || !gltf.scene.getObjectByName('body-fine')) {
+    if (
+      !clip ||
+      !gltf.scene.getObjectByName('body') ||
+      !gltf.scene.getObjectByName('body-coarse')
+    ) {
       throw new Error("The rider's file holds no rider.");
     }
     return new RiderBody(gltf.scene, clip);
@@ -73,7 +77,7 @@ export class RiderBody {
   make(fine: boolean): RiderBodyParts {
     const root = clone(this.scene);
     // The file holds both finenesses on the one armature: this rider keeps one.
-    root.getObjectByName(fine ? 'body' : 'body-fine')?.removeFromParent();
+    root.getObjectByName(fine ? 'body-coarse' : 'body')?.removeFromParent();
     let kit: SkinnedMesh | null = null;
     let plain: SkinnedMesh | null = null;
     const owned: { dispose(): void }[] = [];
@@ -90,7 +94,12 @@ export class RiderBody {
     });
     const head = root.getObjectByName('head') as Bone | undefined;
     if (!kit || !plain || !head) throw new Error("The rider's file holds no rider.");
-    return { root, kit, plain, head, owned };
+    // The two parts are one mesh on one armature: they share one skeleton, so its bones are worked out once a frame.
+    const [worn, bare] = [kit as SkinnedMesh, plain as SkinnedMesh];
+    bare.skeleton.dispose();
+    owned.splice(owned.indexOf(bare.skeleton), 1);
+    bare.bind(worn.skeleton, bare.bindMatrix);
+    return { root, kit: worn, plain: bare, head, owned };
   }
 
   dispose(): void {

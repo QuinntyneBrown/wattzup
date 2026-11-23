@@ -85,6 +85,8 @@ const SHADE_DEPTH = 0.7;
  */
 const ROCK = 0.012;
 const ROCK_STANDING = 0.03;
+/** How finely a rider must be made (`detail`, 1 the finest) to have the finer of the body's two finenesses. */
+const FINE_BODY = 0.8;
 /**
  * How much of the bike's lean the head takes back out, to stay level, and how far it turns into a bend for each
  * radian the rider leans.
@@ -520,10 +522,10 @@ class CourseCyclist implements RiderModel {
     this.rig.add(this.still);
     this.owned.push(still);
 
-    // The body: one skin on its own bones, the finer of its two finenesses for a rider made at the finest. Its
+    // The body: one skin on its own bones, the finer of its two finenesses for a rider made finely enough. Its
     // trunk and sleeves are drawn with the rider's own kit (its panels, pockets and lettering); the rest is painted
     // in their skin, their shorts, their socks, their gloves and their hair.
-    const body = kit.body.make(detail >= 1);
+    const body = kit.body.make(detail >= FINE_BODY);
     const fabric = new MeshStandardMaterial({
       map: kitTexture(jersey, look.design, new Color(look.trim), number),
       roughness: 0.62,
