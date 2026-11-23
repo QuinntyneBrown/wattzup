@@ -467,4 +467,6 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     ltul = max(1.0, math.hypot(ltux, ltuy))
     ltux, ltuy = ltux / ltul, ltuy / ltul
     rock_tower(peaks, lat_pt["x"] + ltux * 2150.0, lat_pt["y"] + ltuy * 2150.0, 45.0, 775.0, 225.0, 155.0, 9, math.atan2(-ltuy, -ltux), cfn, taper=0.38, flat_cap=False, seed_phase=3.3)
+    # Punta Dantersass northern spur projecting from Sassolungo toward Selva
+    rock_tower(peaks, sl_x + ux * 95.0 - px * 245.0, sl_y + uy * 95.0 - py * 245.0, 95.0, 645.0, 72.0, 56.0, 8, yaw_sl - 0.3, cfn, taper=0.44, flat_cap=False, seed_phase=5.9)
     # [ANCHOR:peaks]
