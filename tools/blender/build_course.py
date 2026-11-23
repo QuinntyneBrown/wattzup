@@ -1948,6 +1948,19 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
                         limb(legs, knee, foot, 0.08, 0.06, 3)
                 else:
                     limb(legs, hip, foot, 0.095, 0.06)
+        # Their feet: a leg ended at the ground in a stump. Each has a foot now, pointing the way they face and a
+        # little out: in sandals (bare), white trainers, dark shoes or espadrilles; a waiter's are dark.
+        shod = FF["dark"] if serve else (skin if dress and rng.random() < 0.6 else FF[rng.choice(("party-white", "party-white", "dark", "straw"))])
+        for fwd, side in feet:
+            out = 1 if side > 0 else -1
+            ankle = at(0.46 + max(0.0, fwd), 0.11 * out, 0.46) if sit else at(fwd, side * lean, 0)
+            toe = (ankle[0] + (fx - sx * 0.25 * out * lean) * 0.2, ankle[1] + (fy - sy * 0.25 * out * lean) * 0.2, ankle[2] + 0.025 - (0.07 if sit else 0.0))
+            # Two faces do for it: a ridge from the ankle to the toe, sloping to the ground either side.
+            heel = (ankle[0] - fx * 0.06, ankle[1] - fy * 0.06, ankle[2] + 0.075 - (0.04 if sit else 0.0))
+            wide = (sx * 0.055, sy * 0.055)
+            low = ankle[2] - (0.05 if sit else 0.0)
+            shod.tri(heel, (ankle[0] - wide[0], ankle[1] - wide[1], low), toe)
+            shod.tri(heel, toe, (ankle[0] + wide[0], ankle[1] + wide[1], low))
         # The body: hips to shoulders, wider at the shoulders; the neck; the head and its hair.
         # A body is wider than it is deep: hips, a waist drawn in, and shoulders broader than either, the chest
         # carried a little forward of the hips.
@@ -1960,7 +1973,8 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
                 top.quad(lo[q], lo[(q + 1) % 4], hi[(q + 1) % 4], hi[q])
         top.faces.append(tuple(top.v(q) for q in rings[-1]))
         # The head: narrower at the chin than at the crown.
-        kit.prism(skin, at(0.02, sway, 1.43), 0.07, 0.23 * h, 4, 0.115, yaw + math.pi / 4)
+        # The head narrows to a neck where it meets the shoulders: it sat on them like a block on a box.
+        kit.prism(skin, at(0.022, sway, 1.42), 0.05, 0.24 * h, 4, 0.118, yaw + math.pi / 4)
         hair = FF[rng.choice(("hair-0", "hair-0", "hair-1", "hair-2"))]
         if rng.random() < 0.22:
             # A straw hat: a wide brim, tipped a little, and a low crown.

@@ -186,6 +186,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Party 16 | The crowd cheers the rider as they pass: within 34 m a figure hops higher and faster and stretches up, most within 9 m, and settles as the rider goes | 60.1 fps, none over 20 ms (the finish) | 42.2 and 40.2 fps at the finish; Neon Docklands beside it 45.1 and 56.0: the stand-in reading two ways, as noted under Sky 12 |
 | Sky 15 | The sun sets as the course is ridden: its disc stands 6 degrees over the horizon at the start and sinks steadily until its lower limb touches it at the finish | 60.1 fps, at most one frame over 20 ms (from 3,250 m, twice) | 48.9 and 39.3 fps after (the finish, 116,828 triangles); Neon Docklands beside it 46.2, 56.4: the stand-in reading two ways, as noted under Sky 12 |
 | Party 17 | Friends with an arm round each other's shoulders: four pairs in ten stand side by side facing the road, drinks in their outer hands; and a stroller's arm at their side swings against its leg | 60.0 to 60.1 fps, none over 20 ms (the start line, 2,050 m, the finish) | 43.6 and 50.9 fps after (the finish, 116,678 triangles); Neon Docklands beside it 51.0, 55.4 |
+| Party 18 | Feet and necks: each leg ends in a foot (bare in sandals, white trainers, dark shoes or espadrilles) and the head narrows to a neck where it meets the shoulders | 60.1 fps, none over 20 ms, 146,381 triangles (the finish) | 47.9 and 41.4 fps after (the finish, 117,749 triangles); Neon Docklands beside it 55.9, 59.5 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -518,6 +519,20 @@ picture: the strollers in this pass's film are too far off.
 
 **Two odd readings of the pass before, measured again:** 60.0 fps with no frame over 20 ms from the start line
 (it had read 38) and from 2,050 m (it had seven frames over 20 ms), and on Neon Docklands from its start line.
+
+### Party 18: feet and necks
+
+`party-18.jpg` (the two sides of the finish, enlarged), `party-18.mp4` (the finish). A leg ended at the ground in a
+stump, and a head sat on the shoulders like a block on a box.
+
+- **Feet.** Each leg has a foot, pointing the way the figure faces and a little out: bare in sandals for most of
+  those in a dress, otherwise white trainers, dark shoes or straw espadrilles; a waiter's are dark. Those sitting on
+  the seawall have theirs hanging.
+- **A neck.** The head narrows from its crown to a neck at the shoulders.
+
+**The first cut went over the budget.** A foot of six triangles and a neck of six more put the finish at 122,215
+triangles on the low tier, 2,215 over. A foot is two triangles now (a ridge from the ankle to the toe, sloping to
+the ground either side) and the neck is the head's own taper, which costs none: 117,749.
 
 ### Party 1: people with drinks
 
