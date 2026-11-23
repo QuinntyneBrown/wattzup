@@ -339,4 +339,14 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["stone"].box((spx, spy, spz - 0.2), (1.35, 1.35, 0.95), s[sp_i]["h"])
             kit.gable(B["larch-aged"], (spx, spy, spz + 0.75), 1.65, 1.65, 0.48, s[sp_i]["h"])
 
+    # Agile Alpine chamois (Rupicapra rupicapra) poised on high rocky turf above Pordoi & Gardena
+    for ch_m, ch_s in ((4680.0, 1.0), (5110.0, 1.0), (10020.0, -1.0)):
+        c_idx = road.index(ch_m)
+        for ch_k in (0, 1):
+            cx_g, cy_g, _ = road.at(c_idx, (kit.kerb + 12.0 + ch_k * 2.8) * ch_s)
+            if road.clear_of_road(cx_g, cy_g, 9.0, c_idx):
+                cz_g = height_at(cx_g, cy_g)
+                B["chalet-wood"].box((cx_g, cy_g, cz_g + 0.45), (1.05, 0.34, 0.48), s[c_idx]["h"] + 0.5)
+                B["dark"].box((cx_g, cy_g, cz_g), (0.85, 0.28, 0.45), s[c_idx]["h"] + 0.5)
+
     return trees
