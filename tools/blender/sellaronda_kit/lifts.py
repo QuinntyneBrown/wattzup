@@ -453,4 +453,12 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["steel"].box((cgx, cgy_p, cgz), (0.55, 0.55, 5.4), cgy)
         B["ladin-blue"].box((cgx, cgy_p, cgz + 5.0), (4.2, 4.2, 0.32), cgy)
 
+    # Turquoise alpine snowmaking reservoir pond (bacino d'innevamento) above Arabba (at=3510 m)
+    rv_i = road.index(3510.0)
+    rvx, rvy, _ = road.at(rv_i, kit.kerb + 34.0)
+    if road.clear_of_road(rvx, rvy, 18.0, rv_i):
+        rvz = height_at(rvx, rvy)
+        B["stone"].box((rvx, rvy, rvz - 0.6), (16.0, 12.0, 0.85), 0.4)
+        B["lago-turquoise"].box((rvx, rvy, rvz + 0.25), (14.2, 10.2, 0.14), 0.4)
+
     return cableways_out
