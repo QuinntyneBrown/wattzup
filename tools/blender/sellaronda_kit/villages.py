@@ -222,6 +222,7 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         B["larch-aged"].box((bx_b, by_b, bz_b + 0.18), (3.6, 1.7, 2.25), byaw)
         B["paint"].box((bx_b, by_b, bz_b + 0.95), (1.15, 1.76, 0.85), byaw)
         kit.gable(B["chalet-wood"], (bx_b, by_b, bz_b + 2.43), 4.1, 2.2, 0.65, byaw)
+        B["ladin-blue"].box((bx_b + math.cos(byaw) * 2.15, by_b + math.sin(byaw) * 2.15, bz_b + 0.18), (0.14, 0.65, 1.95), byaw)
         # Shingled wooden Ufficio Turistico noticeboard beside the village bus stop
         nb_x, nb_y, nb_z = kit.P(b_idx, 4.2, (kit.kerb + 2.4) * b_side, -0.05)
         B["larch-aged"].box((nb_x, nb_y, nb_z), (1.85, 0.22, 2.25), byaw)
