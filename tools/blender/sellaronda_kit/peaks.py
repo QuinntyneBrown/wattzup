@@ -533,4 +533,15 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     rock_tower(peaks, fm_pt["x"] + fmux * 2180.0, fm_pt["y"] + fmuy * 2180.0, 62.0, 685.0, 245.0, 145.0, 9, math.atan2(-fmuy, -fmux) + 0.18, cfn, taper=0.68, flat_cap=True, seed_phase=4.4)
     # Sharp eastern shoulder gendarme between Cinque Dita and Punta Grohmann
     rock_tower(peaks, sella_pt["x"] + ux * 945.0 + px * 295.0, sella_pt["y"] + uy * 945.0 + py * 295.0, 82.0, 688.0, 54.0, 44.0, 7, yaw_sl, cfn, taper=0.38, flat_cap=False, seed_phase=2.9)
+    # Gleaming summit snow cornice along Marmolada's Punta Rocca crest
+    quad_shaded(
+        peaks,
+        (pordoi_pt["x"] + mux * 1425.0 + mpx * 10.0, pordoi_pt["y"] + muy * 1425.0 + mpy * 10.0, 898.0),
+        (pordoi_pt["x"] + mux * 1425.0 + mpx * 125.0, pordoi_pt["y"] + muy * 1425.0 + mpy * 125.0, 898.0),
+        (pordoi_pt["x"] + mux * 1465.0 + mpx * 115.0, pordoi_pt["y"] + muy * 1465.0 + mpy * 115.0, 922.0),
+        (pordoi_pt["x"] + mux * 1465.0 + mpx * 20.0, pordoi_pt["y"] + muy * 1465.0 + mpy * 20.0, 922.0),
+        cfn,
+        910.0,
+        snow=True,
+    )
     # [ANCHOR:peaks]
