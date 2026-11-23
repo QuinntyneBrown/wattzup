@@ -7,6 +7,7 @@ import {
   ladinGreetingForVillage,
   lowestLadinVillage,
   provinceForMetres,
+  streamForVillage,
   villageAtMetres,
 } from './ladin-villages';
 
@@ -30,5 +31,7 @@ describe('LADIN_VILLAGES', () => {
     expect(provinceForMetres(8920)).toBe('Bolzano (Alto Adige / Südtirol)');
     expect(lowestLadinVillage().id).toBe('canazei');
     expect(ladinGreetingForVillage('selva')).toContain('Sëlva');
+    expect(streamForVillage('canazei')).toBe('Torrente Avisio');
+    expect(streamForVillage('arabba')).toBe('Torrente Cordevole');
   });
 });
