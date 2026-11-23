@@ -1,4 +1,4 @@
-// The renderer the world scene is handed (ADR 0032): it learns the world only when the scene starts, so it imports
+// The renderer the world scene is handed (ADR 0034): it learns the world only when the scene starts, so it imports
 // the course renderer for a world built in Blender and `main`'s renderer for every other, and passes each call on.
 // Neither renderer, nor Three.js, is imported before then. A course follows no real place: when the rider streams
 // one (Old Town's real Bruges, L2-066), `main`'s renderer, which can, takes the canvas over from the course.

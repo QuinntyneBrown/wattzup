@@ -1,4 +1,4 @@
-// A course: a map built in Blender from the class it is modelled after (ADR 0032, L2-166). The Blender pipeline
+// A course: a map built in Blender from the class it is modelled after (ADR 0034, L2-166). The Blender pipeline
 // (tools/blender/build_course.py) writes the road's centre line and the plan's stages along it beside the map's glb;
 // this reads that file and answers where the ride's clock puts the rider on the road. No Three.js here.
 import type { SegmentKind } from '@telo/api';

@@ -1,4 +1,4 @@
-"""The worlds' themes for build_course.py (ADR 0032): each map's palette, sky, land, road edge and scenery.
+"""The worlds' themes for build_course.py (ADR 0034): each map's palette, sky, land, road edge and scenery.
 
 Ibiza Sunset Strip keeps its own scenery in build_course.py; every other course names a theme here. A theme
 is data (colours, the sky the app draws, the shape of the land) and one function that dresses the road with

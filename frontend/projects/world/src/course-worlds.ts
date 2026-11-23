@@ -1,4 +1,4 @@
-// The worlds drawn as a course, a map built in Blender (ADR 0032), and where the Ride app serves each one's files:
+// The worlds drawn as a course, a map built in Blender (ADR 0034), and where the Ride app serves each one's files:
 // `<path>.glb` and `<path>.course.json` in its public folder. Every other world is drawn by `main`'s scenes. No
 // Three.js here: the renderer loader reads this before it imports either renderer.
 import type { WorldId } from '@telo/api';

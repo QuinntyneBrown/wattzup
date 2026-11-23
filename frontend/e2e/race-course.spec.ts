@@ -60,7 +60,7 @@ test.describe('a course', () => {
     expect((await picture(page, race.world)).equals(first)).toBe(false);
   });
 
-  // Every catalogue map is a course (ADR 0033); Vice City's world is drawn under South Beach's id.
+  // Every catalogue map is a course (ADR 0035); Vice City's world is drawn under South Beach's id.
   for (const [id, course] of [
     ['prairie-paceline', 'prairie'],
     ['vice-city', 'vicecity'],

@@ -1,4 +1,4 @@
-// A map whose world is built as a course (ADR 0032): Ibiza Sunset Strip as the catalogue serves it
+// A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
 const seg = (kind: string, duration: number, level: number, cadenceAim: number) => ({

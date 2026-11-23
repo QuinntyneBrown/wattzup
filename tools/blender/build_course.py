@@ -1,4 +1,4 @@
-"""Builds a Telo Ride map in Blender from a course file (ADR 0032).
+"""Builds a Telo Ride map in Blender from a course file (ADR 0034).
 
 A course file (courses/<id>.json) holds the plan of the GCN class the map is modelled after. From it
 this script lays one continuous road:

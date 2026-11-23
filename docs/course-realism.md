@@ -1,6 +1,6 @@
 # Making a course look real
 
-How a course (a map built in Blender, ADR 0032) is brought towards the look of a modern cycling game: surfaces with
+How a course (a map built in Blender, ADR 0034) is brought towards the look of a modern cycling game: surfaces with
 texture, real light, real shadow, dense scenery, while it still draws at 60 fps on a low-power tablet. Each
 technique here was proven on Neon Docklands (`docs/screenshots/courses/docklands/README.md` logs every pass with
 its numbers, picture and film) and is written so it can be applied to any other map.

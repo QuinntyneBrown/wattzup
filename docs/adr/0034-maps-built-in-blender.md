@@ -1,4 +1,4 @@
-# 0032. Maps are built in Blender from the class they are modelled after, and ridden by the clock
+# 0034. Maps are built in Blender from the class they are modelled after, and ridden by the clock
 
 - **Status:** Proposed
 - **Date:** 2026-11-22

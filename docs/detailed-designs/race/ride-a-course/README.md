@@ -1,6 +1,6 @@
 # Ride a course
 
-**Requirement:** L2-166 (L1-027). **Decisions:** ADR 0032, ADR 0033 (every catalogue map a course). **Mock:** none changes: the course is drawn
+**Requirement:** L2-166 (L1-027). **Decisions:** ADR 0034, ADR 0035 (every catalogue map a course). **Mock:** none changes: the course is drawn
 on the canvas of the race scene (`docs/mocks`, the race), whose HUD stands as it is.
 
 A course is a map built in Blender from the class it is modelled after. This design covers building
@@ -19,7 +19,7 @@ class's plan, into three files.
 | Road | A sample every 4 m, from 80 m before the start line to 200 m past the finish. |
 | Map | The road with kerbs, paint and effort chevrons; an island heightfield that holds the road's height beside it and falls to the sea; the theme's scenery; gates at the start, the finish and the foot of every effort. One mesh a material. |
 
-**Catalogue maps (ADR 0033).** A course file with `distanceKm` and `climbingMetres` (each catalogue map's)
+**Catalogue maps (ADR 0035).** A course file with `distanceKm` and `climbingMetres` (each catalogue map's)
 is built to them: the metres a turn are `distanceKm x 1000 / the plan's turns`, and every gradient is scaled by
 `climbingMetres / the metres the laid road climbs`. Its `theme` names its dress in `tools/blender/themes.py`:
 palette, sky and lights, land (rolling farmland, a town in the countryside, a headland over the sea, a harbour,

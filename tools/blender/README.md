@@ -1,6 +1,6 @@
 # Blender maps
 
-Each Telo Ride map is modelled after a GCN online class (AGENTS.md, Direction; ADR 0032). This folder
+Each Telo Ride map is modelled after a GCN online class (AGENTS.md, Direction; ADR 0034). This folder
 builds a map in Blender from that class's plan.
 
 ```
@@ -65,7 +65,7 @@ its target resistance (`level`) and its cadence aim (rpm).
 - **Elevation.** A level above the course's mean climbs and one below it descends, 1 % of gradient a
   level, eased over 28 m. Ibiza's mean level is 15.9: the level 24 sprints climb at 8 %, the level
   11 recoveries and the cool-down descend at 5 %.
-- **A catalogue map (ADR 0033)** names its `distanceKm` and `climbingMetres`: the metres a turn of the
+- **A catalogue map (ADR 0035)** names its `distanceKm` and `climbingMetres`: the metres a turn of the
   pedals are set so the road is exactly that long, and every gradient is scaled alike so it climbs exactly
   that much. Each stretch keeps its share of the length and each hill its place.
 - **Ramps.** A theme's `grade` may name a `ramp` (`{"work": 0.4, "recover": 0.15}`): an effort's whole climb is

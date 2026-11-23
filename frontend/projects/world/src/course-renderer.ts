@@ -1,4 +1,4 @@
-// A course drawn with Three.js (ADR 0032, L2-166): the map built in Blender from the class it is modelled after,
+// A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
 // metres they have ridden. `main`'s scenes are drawn by
@@ -432,7 +432,7 @@ export class CourseRenderer implements WorldRenderer {
     this.scene.background = new Color(look.haze);
     this.sun.color.setHex(look.light.colour);
     this.sun.intensity = look.light.intensity;
-    // The map comes as a few groups of meshes, coloured by vertex and cut into chunks along the road (ADR 0032).
+    // The map comes as a few groups of meshes, coloured by vertex and cut into chunks along the road (ADR 0034).
     // Each group is drawn with one cheap material: no texture, no PBR, shaded flat.
     const lit = { vertexColors: true, flatShading: true } as const;
     const glow = { vertexColors: true, toneMapped: false } as const;
