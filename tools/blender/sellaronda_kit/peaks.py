@@ -27,6 +27,8 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     sl_x = sella_pt["x"] + ux * 920.0 - px * 160.0
     sl_y = sella_pt["y"] + uy * 920.0 - py * 160.0
     rock_tower(peaks, sl_x, sl_y, 70.0, 865.0, 290.0, 175.0, 14, yaw_sl + 0.25, cfn, taper=0.44, flat_cap=False, seed_phase=0.8)
+    # Spigolo Nord (Pichl North Ridge) prow jutting from Sassolungo toward Selva / Val Gardena
+    rock_tower(peaks, sl_x - px * 165.0, sl_y - py * 165.0, 72.0, 785.0, 115.0, 95.0, 9, yaw_sl + 0.45, cfn, taper=0.35, flat_cap=False, seed_phase=1.4)
     # Rifugio Emilio Comici (2,154 m) perched on the green terrace at Sassolungo's northern foot
     rock_tower(peaks, sella_pt["x"] + ux * 680.0 - px * 280.0, sella_pt["y"] + uy * 680.0 - py * 280.0, 142.0, 158.0, 16.0, 11.0, 6, yaw_sl, cfn, taper=0.95, flat_cap=True, seed_phase=0.7)
 
