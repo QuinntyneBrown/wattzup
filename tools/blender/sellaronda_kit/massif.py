@@ -483,4 +483,15 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
             rock_tower(peaks, pbx, pby, pb_pt["z"] + 2.0, pb_pt["z"] + 8.5, 5.2, 4.2, 6, pb_i * 0.9, cfn, taper=0.62, flat_cap=True, seed_phase=pb_i * 1.4)
     # Observation parapet rim crowning Sass Pordoi's 2,950 m summit table
     rock_tower(peaks, sp_x + ux * 95.0, sp_y + uy * 95.0, 584.0, 592.0, 48.0, 82.0, 8, yaw_sp, cfn, taper=0.96, flat_cap=True, seed_phase=0.3)
+    # Forcella dei Camosci snow-filled high saddle between Sass Pordoi & Piz Boè
+    quad_shaded(
+        peaks,
+        (sp_x - ux * 115.0 + px_perp * 65.0, sp_y - uy * 115.0 + py_perp * 65.0, 568.0),
+        (sp_x - ux * 115.0 + px_perp * 105.0, sp_y - uy * 115.0 + py_perp * 105.0, 568.0),
+        (sp_x - ux * 175.0 + px_perp * 95.0, sp_y - uy * 175.0 + py_perp * 95.0, 622.0),
+        (sp_x - ux * 175.0 + px_perp * 72.0, sp_y - uy * 175.0 + py_perp * 72.0, 622.0),
+        cfn,
+        595.0,
+        snow=True,
+    )
     # [ANCHOR:massif]
