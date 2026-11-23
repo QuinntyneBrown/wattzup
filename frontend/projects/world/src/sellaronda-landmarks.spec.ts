@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { nextSellaPass, SELLA_RONDA_PASSES, sellaMassifBearing } from './sellaronda-landmarks';
+import {
+  nextSellaPass,
+  passClimbProgress,
+  SELLA_RONDA_PASSES,
+  sellaMassifBearing,
+} from './sellaronda-landmarks';
 
 describe('SELLA_RONDA_PASSES', () => {
   it('lists all four clockwise Sella Ronda passes with their real Dolomite altitudes', () => {
@@ -21,5 +26,13 @@ describe('SELLA_RONDA_PASSES', () => {
     const pordoi = sellaMassifBearing(4950);
     expect(start.side).toBe('right');
     expect(pordoi.radialAngle).toBeLessThan(start.radialAngle);
+  });
+
+  it('tracks exact climb progress up Passo Pordoi and returns null in valley flats', () => {
+    expect(passClimbProgress(300)).toBeNull();
+    const midPordoi = passClimbProgress(4125);
+    expect(midPordoi?.pass.id).toBe('pordoi');
+    expect(midPordoi?.fraction).toBeCloseTo(0.5, 3);
+    expect(midPordoi?.remainingMetres).toBe(825);
   });
 });
