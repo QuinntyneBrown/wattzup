@@ -194,6 +194,7 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
                 for rut in (-0.85, 0.85):
                     B["gravel"].box((gx_t - math.sin(tyaw) * rut, gy_t + math.cos(tyaw) * rut, gz_t + 0.02), (5.4, 0.55, 0.06), tyaw)
                 if seg_t == 0:
+                    B["steel"].box((gx_t, gy_t, gz_t + 0.03), (0.95, 2.8, 0.04), tyaw)
                     for gp_lat in (-1.6, 1.6):
                         B["larch-aged"].box((gx_t - math.sin(tyaw) * gp_lat, gy_t + math.cos(tyaw) * gp_lat, gz_t - 0.1), (0.18, 0.18, 1.35), tyaw)
                     B["larch-warm"].box((gx_t - math.sin(tyaw) * 2.35, gy_t + math.cos(tyaw) * 2.35, gz_t), (0.85, 0.65, 0.42), tyaw)
