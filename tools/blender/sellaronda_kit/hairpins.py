@@ -246,4 +246,10 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
     for gp_m in (4558.0, 4650.0, 9658.0, 9742.0):
         gp_i = road.index(gp_m)
         B["yellow"].box(kit.P(gp_i, 0.0, kit.kerb + 1.35, 0.0), (0.12, 0.12, 3.45), s[gp_i]["h"])
+    # Cantilevered timber overlook walkways on 4 panoramic switchbacks
+    for bw_m in (1840.0, 4520.0, 7280.0, 9890.0):
+        bwi = road.index(bw_m)
+        bwy = s[bwi]["h"]
+        B["larch-warm"].box(kit.P(bwi, 0.0, kit.kerb + 1.95, -0.08), (7.6, 1.35, 0.18), bwy)
+        B["larch-aged"].box(kit.P(bwi, 0.0, kit.kerb + 2.55, 0.10), (7.6, 0.12, 0.95), bwy)
     # [ANCHOR:hairpins]
