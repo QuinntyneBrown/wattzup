@@ -193,6 +193,18 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         snow=True,
     )
 
+    # Fallen Hauptdolomit talus blocks along the inner scree foot beneath Torri del Sella (7,500..8,000 m)
+    for tb_k in range(14):
+        d_tb = 7480.0 + tb_k * 38.0
+        tb_idx = road.index(d_tb)
+        tb_pt = road.s[tb_idx]
+        off_in = -(18.0 + (tb_k % 4) * 9.5)
+        bx_t = tb_pt["x"] - math.sin(tb_pt["h"]) * off_in
+        by_t = tb_pt["y"] + math.cos(tb_pt["h"]) * off_in
+        if road.clear_of_road(bx_t, by_t, 12.0, tb_idx):
+            sz_t = 3.5 + (tb_k % 4) * 2.2
+            rock_tower(peaks, bx_t, by_t, tb_pt["z"] + 2.0, tb_pt["z"] + 4.0 + sz_t, sz_t, sz_t * 0.8, 6, tb_k * 0.7, cfn, taper=0.65, flat_cap=True, seed_phase=tb_k * 1.1)
+
     # Murfrëit & Piz Miara eastern Sella cliffs towering over Corvara & Campolongo approach (at=1250 m)
     mur_pt = road.s[road.index(1250.0)]
     mdx2, mdy2 = mur_pt["x"] - cx, mur_pt["y"] - cy
