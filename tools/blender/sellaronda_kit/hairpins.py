@@ -215,3 +215,10 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
             B["paint"].box(kit.P(j_pre, 1.15, -2.2, 0.02), (0.65, 0.65, 0.015), ayaw + math.pi * 0.25)
             B["stone"].box(kit.P(j_pre, -3.0, -(kit.kerb + 0.95), -0.15), (0.95, 0.72, 0.35), ayaw)
             B["dark"].box(kit.P(j_pre, -3.0, -(kit.kerb + 0.95), 0.19), (0.65, 0.48, 0.04), ayaw)
+
+    # Tensioned steel rockfall catch-fences perched above the Pordoi & Gardena cliff cuts
+    for rf_m in (4240.0, 4310.0, 9520.0, 9585.0):
+        rf_i = road.index(rf_m)
+        rfyaw = s[rf_i]["h"]
+        B["steel"].box(kit.P(rf_i, 0.0, -(kit.kerb + 3.2), 4.6), (9.5, 0.12, 1.85), rfyaw)
+    # [ANCHOR:hairpins]
