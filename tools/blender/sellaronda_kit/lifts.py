@@ -331,4 +331,14 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         spz_c = (lz + 6.8) + ((tz + 6.5) - (lz + 6.8)) * sp_t - 18.0 * 4.0 * sp_t * (1.0 - sp_t)
         B["crowd-3"].box((spx_c, spy_c, spz_c - 0.35), (0.72, 0.72, 0.72), 0.0)
 
+    # 14. Cabinovia Boè timber-clad valley terminal at the southern edge of Corvara (at=695 m)
+    boe_idx = road.index(695.0)
+    boeyaw = s[boe_idx]["h"] + 0.3
+    bx_b, by_b, _ = road.at(boe_idx, -(kit.kerb + 24.0))
+    if road.clear_of_road(bx_b, by_b, 12.0, boe_idx):
+        bz_b = height_at(bx_b, by_b)
+        B["stone"].box((bx_b, by_b, bz_b - 1.8), (13.2, 10.2, 2.8), boeyaw)
+        B["larch-warm"].box((bx_b, by_b, bz_b + 1.0), (13.6, 10.6, 4.0), boeyaw)
+        kit.gable(B["copper-patina"], (bx_b, by_b, bz_b + 5.0), 14.2, 11.2, 1.5, boeyaw)
+
     return cableways_out
