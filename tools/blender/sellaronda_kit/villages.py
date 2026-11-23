@@ -169,6 +169,7 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
     cwz = height_at(cwx, cwy) + 14.0
     B["stone"].box((cwx, cwy, cwz - 16.0), (14.0, 9.5, 22.0), cw_yaw + 0.3)
     B["dolomite-pale"].box((cwx + 4.2, cwy - 2.0, cwz + 4.0), (5.2, 5.2, 9.5), cw_yaw + 0.3)
+    B["stone"].box((cwx - 3.5, cwy + 1.5, cwz + 6.0), (4.6, 4.6, 2.2), cw_yaw + 0.3)
     kit.gable(B["parasol-red"], (cwx + 4.2, cwy - 2.0, cwz + 13.5), 5.6, 5.6, 2.8, cw_yaw + 0.3)
 
     # Octagonal stone village square fountains (Fontana / Brunnen) in Corvara, Arabba, Canazei & Selva
