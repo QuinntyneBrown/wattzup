@@ -145,6 +145,59 @@ def lay_centre_line(course: dict, theme: dict, bc):
     return samples, st, length, mean, per_level
 
 
+def _lin(hex_: int) -> tuple[float, float, float, float]:
+    """A colour for a vertex: sRGB hex to linear, as build_course.srgb."""
+    def lin(c: float) -> float:
+        return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+
+    return (lin((hex_ >> 16 & 255) / 255), lin((hex_ >> 8 & 255) / 255), lin((hex_ & 255) / 255), 1.0)
+
+
+# The five villages, in the order a rider heading east meets them.
+VILLAGES = ("Monterosso", "Vernazza", "Corniglia", "Manarola", "Riomaggiore")
+SPUR_REACH = 150.0  # how far a village's rock spur runs out from the road towards the sea, in metres
+
+
+def village_sites(s: list[dict]) -> list[dict]:
+    """Where the villages stand: on the headlands, the places the road swings furthest out to sea, spread along the
+    coast. Each is the sample of the road above it and the middle of its spur."""
+    step = s[1]["d"] - s[0]["d"]
+    span = int(360 / step)
+    length = s[-1]["d"]
+    found = []
+    for i in range(span, len(s) - span):
+        p = s[i]
+        if not 500.0 < p["d"] < length - 900.0 or math.cos(p["h"]) < 0.8:
+            continue
+        window = s[i - span : i + span + 1]
+        if p["y"] < max(q["y"] for q in window) or any(abs(q["k"]) > 1 / 70 for q in s[i - 30 : i + 31]):
+            continue
+        found.append((p["y"] - sum(q["y"] for q in window) / len(window), i))
+    chosen: list[int] = []
+    for _, i in sorted(found, reverse=True):
+        if all(abs(s[i]["d"] - s[j]["d"]) > 1500.0 for j in chosen):
+            chosen.append(i)
+        if len(chosen) == len(VILLAGES):
+            break
+    return [{"name": VILLAGES[q], "i": i, "x": s[i]["x"], "y": s[i]["y"], "z": s[i]["z"]} for q, i in enumerate(sorted(chosen))]
+
+
+def spur_height(site: dict, x: float, y: float) -> float:
+    """The height of a village's spur of rock at a place: a ridge running out from under the road and down to a
+    point above the water, or far below the sea where the spur is not."""
+    out = y - site["y"]
+    # Level with the road where the village's top row of houses stands beside it, then down to the water.
+    top = site["z"] - 2.6
+    ridge = top + (7.0 - top) * _smooth(36.0, SPUR_REACH - 30.0, out)
+    side = 1 - _smooth(34.0, 84.0, abs(x - site["x"]) * (1.0 + 0.3 * math.sin(out * 0.05)))
+    return -8.0 + (ridge + 8.0) * side * (1 - _smooth(SPUR_REACH - 22.0, SPUR_REACH, out)) * _smooth(-6.0, 6.0, out)
+
+
+def _smooth(a: float, b: float, v: float) -> float:
+    t = max(0.0, min(1.0, (v - a) / (b - a)))
+    return t * t * (3 - 2 * t)
+
+
 def seaward(k, i: int) -> int:
     """Which side of the road the sea is on at sample i: 1 for the left, -1 on a leg between hairpins."""
     return 1 if math.cos(k.s[i]["h"]) >= 0 else -1
@@ -183,6 +236,7 @@ def build_land(road, col, theme: dict, bc):
         b = int(f)
         return values[b] + (values[b + 1] - values[b]) * (f - b)
 
+    sites = village_sites(s)
     land = theme["land"]
     low_c, mid_c, high_c, rock_c = (bc.srgb(land[name]) for name in ("low", "mid", "high", "rock"))
     wet_c, pale_c = bc.srgb(0x4E4A44), bc.srgb(0xA8A090)
@@ -206,6 +260,10 @@ def build_land(road, col, theme: dict, bc):
                 run = 10.0 + 0.7 * max(h_road, 0.0)
                 t = bc.smoothstep(6.0, 6.0 + run, out)
                 h = h_road * (1 - t) - 8.0 * t + n2 * 0.1 * max(h_road, 0.0) * math.sin(math.pi * t)
+                # A village's spur of rock stands out from the cliff.
+                for site in sites:
+                    if abs(x - site["x"]) < 120.0:
+                        h = max(h, spur_height(site, x, y))
             else:
                 # Between the legs of the road the land slopes from one to the other; inland the mountain climbs
                 # to its ridge and falls away behind it.
@@ -367,7 +425,86 @@ def terraces(k) -> int:
     return built
 
 
+# The houses' plaster: pinks, ochres, yellows and creams, a terracotta red and a pale green now and then.
+PASTELS = (0xE8A08C, 0xE9B384, 0xF0CF82, 0xF3DDA6, 0xE98F7C, 0xF2C7A0, 0xD9776A, 0xF6E6C4, 0xE7B8A8, 0xC9D3A6, 0xEBC27A, 0xDD8E6E)
+ROOFS = (0xB5674A, 0xA85C44, 0x8C8A86, 0x9A948C)
+
+
+class Painted:
+    """Shapes coloured by vertex in the land's group, which is drawn from much further off than what stands by the
+    road: a village is seen across its bay."""
+
+    def __init__(self, k):
+        self.b = k.B["terrain"]
+        if self.b.colours is None:
+            self.b.colours = []
+
+    def face(self, points, colours) -> None:
+        self.b.faces.append(tuple(self.b.v(p) for p in points))
+        self.b.colours.extend(colours)
+
+    def box(self, c, size, yaw: float, colour, foot: float = 0.72) -> None:
+        """A box on its base centre, darker towards its foot; no underside."""
+        hx, hy, h = size[0] / 2, size[1] / 2, size[2]
+        cs, sn = math.cos(yaw), math.sin(yaw)
+        lo = [(c[0] + dx * cs - dy * sn, c[1] + dx * sn + dy * cs, c[2]) for dx, dy in ((-hx, -hy), (hx, -hy), (hx, hy), (-hx, hy))]
+        hi = [(p[0], p[1], c[2] + h) for p in lo]
+        dark = (colour[0] * foot, colour[1] * foot, colour[2] * foot, 1.0)
+        for q in range(4):
+            r = (q + 1) % 4
+            self.face((lo[q], lo[r], hi[r], hi[q]), (dark, dark, colour, colour))
+        self.face(hi, (colour,) * 4)
+
+    def roof(self, c, along: float, across: float, rise: float, yaw: float, colour) -> None:
+        """A low pitched roof on a box's top, its ridge along `along`, overhanging the walls a little."""
+        cs, sn = math.cos(yaw), math.sin(yaw)
+
+        def p(u, v, w):
+            return (c[0] + u * cs - v * sn, c[1] + u * sn + v * cs, c[2] + w)
+
+        a, d = along / 2 + 0.35, across / 2 + 0.35
+        shade = (colour[0] * 0.82, colour[1] * 0.82, colour[2] * 0.82, 1.0)
+        self.face((p(-a, d, 0), p(a, d, 0), p(a, 0, rise), p(-a, 0, rise)), (colour,) * 4)
+        self.face((p(a, -d, 0), p(-a, -d, 0), p(-a, 0, rise), p(a, 0, rise)), (shade,) * 4)
+        self.face((p(-a, -d, 0), p(-a, d, 0), p(-a, 0, rise)), (shade,) * 3)
+        self.face((p(a, d, 0), p(a, -d, 0), p(a, 0, rise)), (colour,) * 3)
+
+
+def villages(k) -> int:
+    """Details 1 and 6, the pastel tower-houses and the villages seen from the bends above: on each headland's spur
+    of rock, tall narrow houses in pink, ochre and yellow stand door to door down to the water, under low roofs of
+    tile and slate."""
+    paint, rng = Painted(k), k.rng
+    houses = 0
+    for site in village_sites(k.s):
+        placed: list[tuple[float, float]] = []
+        for _ in range(900):
+            if len(placed) >= 58:
+                break
+            x = site["x"] + rng.uniform(-72.0, 72.0)
+            y = site["y"] + rng.uniform(16.0, SPUR_REACH - 16.0)
+            z = k.height_at(x, y)
+            if z < 3.5 or any(math.hypot(x - px, y - py) < 7.4 for px, py in placed):
+                continue
+            # Not on the cliff under the road, and not where the rock is too steep to build on.
+            fall = max(abs(k.height_at(x + 5.0, y) - z), abs(k.height_at(x, y + 5.0) - z))
+            if fall > 7.5 or k.road.tree.find((x, y, 0.0))[2] < 13.5:
+                continue
+            placed.append((x, y))
+            wide, deep = rng.uniform(5.6, 8.2), rng.uniform(6.0, 9.0)
+            floors = rng.randint(3, 6)
+            yaw = rng.uniform(-0.22, 0.22) + (math.pi / 2 if rng.random() < 0.35 else 0.0)
+            tall = floors * 3.05 + fall
+            wall = _lin(PASTELS[rng.randrange(len(PASTELS))])
+            paint.box((x, y, z - fall - 1.5), (wide, deep, tall + 1.5), yaw, wall)
+            paint.roof((x, y, z + floors * 3.05), wide, deep, rng.uniform(0.9, 1.6), yaw, _lin(ROOFS[rng.randrange(len(ROOFS))]))
+            houses += 1
+        print(f"{site['name']}: {len(placed)} houses below the road {site['z']:.0f} m up, {k.s[site['i']]['d']:.0f} m from the start", flush=True)
+    return houses
+
+
 def scenery(k) -> dict:
     parapet(k)
     stepped = terraces(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped}
+    houses = villages(k)
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "houses": houses}
