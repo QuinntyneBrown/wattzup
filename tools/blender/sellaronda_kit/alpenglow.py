@@ -37,7 +37,10 @@ def enrosadira_colour_fn(az_sun: float):
         dot = nx * sun_dx + ny * sun_dy + nz * sun_dz
         if snow:
             lit = smoothstep(-0.25, 0.80, dot)
-            return mix(glacier_blue, glacier_rose, 0.28 + 0.72 * lit)
+            alt_warm = smoothstep(340.0, 820.0, z)
+            ice_shadow = mix(srgb(0x6C9EC4), glacier_blue, alt_warm)
+            ice_sun = mix(srgb(0xE8F2FA), glacier_rose, 0.35 + 0.65 * alt_warm)
+            return mix(ice_shadow, ice_sun, 0.24 + 0.76 * lit)
 
         # Subtle horizontal Hauptdolomit bedding strata modulation by elevation
         strata = 0.93 + 0.07 * math.sin(z * 0.14) * math.cos(z * 0.037)
