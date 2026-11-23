@@ -452,4 +452,9 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         B["chalet-plaster"].box((clx, cly_p, clz - 0.8), (10.4, 7.6, 5.4), cly)
         B["ladin-blue"].box((clx, cly_p, clz + 2.8), (10.6, 7.8, 0.55), cly)
         kit.gable(B["larch-aged"], (clx, cly_p, clz + 4.6), 11.2, 8.4, 2.2, cly)
+    # Red-and-yellow Poste Italiane / Südtiroler Post pillar boxes in the 4 valley villages
+    for pt_m in (228.0, 3138.0, 6155.0, 8934.0):
+        pti = road.index(pt_m)
+        B["parasol-red"].box(kit.P(pti, 0.0, -(kit.kerb + 2.15), 0.0), (0.36, 0.32, 1.25), road.s[pti]["h"])
+        B["yellow"].box(kit.P(pti, 0.0, -(kit.kerb + 2.15), 0.95), (0.38, 0.34, 0.18), road.s[pti]["h"])
     # [ANCHOR:villages]
