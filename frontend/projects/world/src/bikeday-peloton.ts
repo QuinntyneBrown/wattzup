@@ -73,3 +73,10 @@ export function kilojoulesBurnedOnClimb(
   const minutes = passClimbMinutesEstimate(lengthKm, gradePercent, riderWatts, systemKg);
   return Math.round((riderWatts * minutes * 60) / 1000);
 }
+
+/** Recommended 500 ml water bidons for `rideHours` on Sella Ronda at `airTempC`. */
+export function bidonsNeededForLoop(rideHours: number, airTempC: number): number {
+  if (rideHours <= 0) return 0;
+  const mlPerHour = airTempC >= 20 ? 750 : airTempC >= 12 ? 580 : 450;
+  return Math.max(1, Math.ceil((rideHours * mlPerHour) / 500));
+}
