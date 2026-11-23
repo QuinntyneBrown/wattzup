@@ -210,3 +210,13 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         B["awning"].box((kx_c, ky_c, kz_c + 2.85), (7.6, 2.4, 0.28), kyaw)
         for tb_o in (-2.2, 0.0, 2.2):
             B["paint"].box(kit.P(k_idx, tb_o, (kit.kerb + 6.2) * cf_s, 0.0), (0.85, 0.85, 0.76), kyaw)
+
+    # Dry-stone walled alpine kitchen gardens (orti alpini) in Arabba & Canazei
+    for g_m, g_s in ((3020.0, -1.0), (3160.0, 1.0), (6020.0, 1.0), (6160.0, -1.0)):
+        g_idx = road.index(g_m)
+        gyaw = road.s[g_idx]["h"]
+        gx_o, gy_o, _ = road.at(g_idx, (kit.kerb + 7.2) * g_s)
+        gz_o = max(height_at(gx_o, gy_o), road.s[g_idx]["z"] - 0.4)
+        B["stone"].box((gx_o, gy_o, gz_o - 0.3), (5.4, 3.6, 0.55), gyaw)
+        for row_o in (-1.2, 0.0, 1.2):
+            B["foliage"].box((gx_o + math.cos(gyaw) * row_o, gy_o + math.sin(gyaw) * row_o, gz_o + 0.25), (0.85, 2.9, 0.32), gyaw)
