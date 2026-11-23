@@ -51,6 +51,8 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         340.0,
         snow=True,
     )
+    # Rifugio Toni Demetz (2,685 m) perched squarely inside the Forcella del Sassolungo saddle!
+    rock_tower(peaks, nx0 + ux * 115.0, ny0 + uy * 115.0, 514.0, 530.0, 11.0, 8.5, 6, yaw_sl, cfn, taper=0.95, flat_cap=True, seed_phase=0.3)
 
     # Innerkoflerturm (3,098 m) & Dente del Sassolungo / Zahnkofel (3,001 m) sharp bridge needles
     for z_idx, (lat_z, rad_z, top_z) in enumerate(((435.0, 1020.0, 755.0), (498.0, 1075.0, 738.0))):
