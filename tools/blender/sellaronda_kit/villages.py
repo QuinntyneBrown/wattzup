@@ -263,3 +263,10 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         for db_o in (-1.6, 0.0, 1.6):
             B["dark"].box(kit.P(b_idx, db_o, (kit.kerb + 5.2) * bs_s, 0.0), (1.35, 0.12, 0.62), byaw + 0.3)
             B["yellow"].box(kit.P(b_idx, db_o, (kit.kerb + 5.2) * bs_s, 0.42), (0.92, 0.10, 0.42), byaw + 0.3)
+
+    # Guide Alpine / Catores limestone commemorative steles in Corvara & Selva church squares
+    for gd_m, gd_s in ((268.0, -1.0), (8938.0, 1.0)):
+        g_idx = road.index(gd_m)
+        gx_a, gy_a, gz_a = kit.P(g_idx, 0.0, (kit.kerb + 6.4) * gd_s, -0.1)
+        B["dolomite-pale"].box((gx_a, gy_a, gz_a), (0.95, 0.72, 2.25), road.s[g_idx]["h"])
+        B["gold"].box((gx_a, gy_a, gz_a + 1.35), (0.99, 0.44, 0.44), road.s[g_idx]["h"])
