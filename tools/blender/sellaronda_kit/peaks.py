@@ -115,3 +115,33 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
             bz = b_pt["z"] - 1.5 + (b_k % 4) * 1.8
             sz = 4.2 + (b_k % 5) * 2.6
             rock_tower(peaks, bx, by, bz - 3.0, bz + sz, sz * 0.95, sz * 0.72, 6, b_yaw, cfn, taper=0.68, flat_cap=True, seed_phase=b_k * 0.9)
+
+    # 4. Lago Fedaia (2,054 m) turquoise glacial reservoir & Diga del Fedaia concrete dam at the foot of Marmolada
+    lake_cx = pordoi_pt["x"] + mux * 970.0 + mpx * 15.0
+    lake_cy = pordoi_pt["y"] + muy * 970.0 + mpy * 15.0
+    lake_z = 268.0
+    turquoise = (0.06, 0.36, 0.44, 1.0)
+    dam_grey = (0.62, 0.61, 0.58, 1.0)
+
+    def _flat_quad(p0, p1, p2, p3, col_rgba):
+        base_i = len(peaks.verts)
+        for p in (p0, p1, p2, p3):
+            peaks.verts.append(p)
+            peaks.colours.append(col_rgba)
+        peaks.faces.append((base_i, base_i + 1, base_i + 2, base_i + 3))
+
+    _flat_quad(
+        (lake_cx - mux * 110.0 - mpx * 290.0, lake_cy - muy * 110.0 - mpy * 290.0, lake_z),
+        (lake_cx - mux * 110.0 + mpx * 290.0, lake_cy - muy * 110.0 + mpy * 290.0, lake_z),
+        (lake_cx + mux * 125.0 + mpx * 260.0, lake_cy + muy * 125.0 + mpy * 260.0, lake_z),
+        (lake_cx + mux * 125.0 - mpx * 260.0, lake_cy + muy * 125.0 - mpy * 260.0, lake_z),
+        turquoise,
+    )
+    # Western concrete buttress dam wall retaining Lago Fedaia
+    _flat_quad(
+        (lake_cx - mux * 95.0 + mpx * 285.0, lake_cy - muy * 95.0 + mpy * 285.0, lake_z - 38.0),
+        (lake_cx + mux * 115.0 + mpx * 255.0, lake_cy + muy * 115.0 + mpy * 255.0, lake_z - 38.0),
+        (lake_cx + mux * 115.0 + mpx * 255.0, lake_cy + muy * 115.0 + mpy * 255.0, lake_z + 4.0),
+        (lake_cx - mux * 95.0 + mpx * 285.0, lake_cy - muy * 95.0 + mpy * 285.0, lake_z + 4.0),
+        dam_grey,
+    )
