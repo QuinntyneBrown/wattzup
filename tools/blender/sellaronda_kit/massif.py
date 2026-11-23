@@ -473,4 +473,12 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     )
     # Piz Beguz (2,974 m) tabular inner-plateau summit northwest of Piz Boè
     rock_tower(peaks, cx - 195.0, cy + 155.0, 648.0, 736.0, 76.0, 62.0, 8, 0.9, cfn, taper=0.64, flat_cap=True, seed_phase=2.8)
+    # Angular fallen Dolomite talus boulders on the inner scree bench below Sass Pordoi
+    for pb_i in range(5):
+        pbi = road.index(4680.0 + pb_i * 48.0)
+        pb_pt = road.s[pbi]
+        pbx = pb_pt["x"] - math.sin(pb_pt["h"]) * -24.0
+        pby = pb_pt["y"] + math.cos(pb_pt["h"]) * -24.0
+        if road.clear_of_road(pbx, pby, 14.0, pbi):
+            rock_tower(peaks, pbx, pby, pb_pt["z"] + 2.0, pb_pt["z"] + 8.5, 5.2, 4.2, 6, pb_i * 0.9, cfn, taper=0.62, flat_cap=True, seed_phase=pb_i * 1.4)
     # [ANCHOR:massif]
