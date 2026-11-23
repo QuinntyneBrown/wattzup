@@ -453,4 +453,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     rock_tower(peaks, sp_x - ux * 125.0 - px * 145.0, sp_y - uy * 125.0 - py * 145.0, 382.0, 398.0, 13.0, 9.5, 6, yaw_sl, cfn, taper=0.95, flat_cap=True, seed_phase=0.9)
     # Sasso delle Dieci / Sas dles Diesc (3,026 m) crowning the Fanes wall east of Val Badia
     rock_tower(peaks, sc_pt["x"] + scux * 1760.0 - (-scuy) * 320.0, sc_pt["y"] + scuy * 1760.0 - scux * 320.0, 60.0, 848.0, 195.0, 145.0, 9, math.atan2(-scuy, -scux), cfn, taper=0.48, flat_cap=False, seed_phase=2.6)
+    # Seceda (2,519 m) tilted cuesta ridge west of the Odle needles
+    sec_pt = road.s[road.index(8950.0)]
+    scx2, scy2 = sec_pt["x"] - cx, sec_pt["y"] - cy
+    scl2 = max(1.0, math.hypot(scx2, scy2))
+    scx2, scy2 = scx2 / scl2, scy2 / scl2
+    rock_tower(peaks, sec_pt["x"] + scx2 * 1420.0, sec_pt["y"] + scy2 * 1420.0, 50.0, 612.0, 240.0, 135.0, 9, math.atan2(-scy2, -scx2) - 0.35, cfn, taper=0.68, flat_cap=True, seed_phase=5.1)
     # [ANCHOR:peaks]
