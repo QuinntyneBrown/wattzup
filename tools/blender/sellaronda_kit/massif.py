@@ -110,3 +110,19 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         tx = cx + sux * rad_out + spx * lat
         ty = cy + suy * rad_out + spy * lat
         rock_tower(peaks, tx, ty, 130.0, h_top, rx_t, ry_t, 10, math.atan2(suy, sux), cfn, taper=0.68, flat_cap=True, seed_phase=ph)
+
+    # Piz Ciavazes (2,828 m) overhanging southwest wall & Cengia dei Camosci ledge (between Pordoi & Sella, at=6650 m)
+    ciav_pt = road.s[road.index(6650.0)]
+    cdx, cdy = ciav_pt["x"] - cx, ciav_pt["y"] - cy
+    cdist = max(1.0, math.hypot(cdx, cdy))
+    cux, cuy = cdx / cdist, cdy / cdist
+    cpx, cpy = -cuy, cux
+    cx_w = cx + cux * 745.0 - cpx * 45.0
+    cy_w = cy + cuy * 745.0 - cpy * 45.0
+    rock_tower(peaks, cx_w, cy_w, 115.0, 575.0, 155.0, 120.0, 12, math.atan2(cuy, cux), cfn, taper=0.84, flat_cap=True, seed_phase=2.4)
+    # Prominent snow-dusted Cengia dei Camosci shelf cutting horizontally across Piz Ciavazes's south face
+    shelf_l = (cx_w + cux * 140.0 - cpx * 135.0, cy_w + cuy * 140.0 - cpy * 135.0, 355.0)
+    shelf_r = (cx_w + cux * 140.0 + cpx * 135.0, cy_w + cuy * 140.0 + cpy * 135.0, 355.0)
+    shelf_in_r = (cx_w + cux * 95.0 + cpx * 125.0, cy_w + cuy * 95.0 + cpy * 125.0, 372.0)
+    shelf_in_l = (cx_w + cux * 95.0 - cpx * 125.0, cy_w + cuy * 95.0 - cpy * 125.0, 372.0)
+    quad_shaded(peaks, shelf_l, shelf_r, shelf_in_r, shelf_in_l, cfn, 362.0, snow=True)
