@@ -182,3 +182,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     sx_h = cor_pt["x"] + sux2 * 820.0 - (-suy2) * 180.0
     sy_h = cor_pt["y"] + suy2 * 820.0 - sux2 * 180.0
     rock_tower(peaks, sx_h, sy_h, 35.0, 710.0, 215.0, 175.0, 12, math.atan2(-suy2, -sux2), cfn, taper=0.32, flat_cap=False, seed_phase=5.3)
+
+    # 7. Col Rodella (2,484 m) rocky bluff southwest of Passo Sella (at=7150 m)
+    rod_pt = road.s[road.index(7150.0)]
+    rux, ruy = rod_pt["x"] - cx, rod_pt["y"] - cy
+    rul = max(1.0, math.hypot(rux, ruy))
+    rux, ruy = rux / rul, ruy / rul
+    rock_tower(peaks, rod_pt["x"] + rux * 540.0, rod_pt["y"] + ruy * 540.0, 65.0, 465.0, 165.0, 130.0, 10, math.atan2(-ruy, -rux), cfn, taper=0.58, flat_cap=True, seed_phase=3.9)
