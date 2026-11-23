@@ -101,3 +101,17 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         px0 = pordoi_pt["x"] + mux * 690.0 + mpx * pad_lat
         py0 = pordoi_pt["y"] + muy * 690.0 + mpy * pad_lat
         rock_tower(peaks, px0, py0, 60.0, 310.0, 175.0, 110.0, 9, yaw_mm, cfn, taper=0.65, flat_cap=False, seed_phase=4.1 + pad_lat * 0.01)
+
+    # 3. Città dei Sassi ("City of Stones") boulder labyrinth along the Passo Sella saddle (7,350 m .. 8,150 m)
+    for b_k in range(28):
+        d_b = 7320.0 + b_k * 31.0
+        b_pt = road.s[road.index(d_b)]
+        b_yaw = b_pt["h"] + b_k * 0.77
+        # Place giant pale dolomite landslide blocks on the outer Sassolungo meadow flank (left of road)
+        lat_off = 19.0 + (b_k % 5) * 14.5
+        bx = b_pt["x"] - math.sin(b_pt["h"]) * lat_off
+        by = b_pt["y"] + math.cos(b_pt["h"]) * lat_off
+        if road.clear_of_road(bx, by, 14.0, road.index(d_b)):
+            bz = b_pt["z"] - 1.5 + (b_k % 4) * 1.8
+            sz = 4.2 + (b_k % 5) * 2.6
+            rock_tower(peaks, bx, by, bz - 3.0, bz + sz, sz * 0.95, sz * 0.72, 6, b_yaw, cfn, taper=0.68, flat_cap=True, seed_phase=b_k * 0.9)
