@@ -10,6 +10,7 @@ import {
   SELLA_RONDA_PASSES,
   sellaMassifBearing,
   sellaSubpeaksForPass,
+  totalSellaRondaClimbingMetres,
 } from './sellaronda-landmarks';
 
 describe('SELLA_RONDA_PASSES', () => {
@@ -56,5 +57,6 @@ describe('SELLA_RONDA_PASSES', () => {
     expect(passVerticalGainMetres('campolongo')).toBe(307);
     expect(passAverageGradientPercent('pordoi')).toBeGreaterThan(6.5);
     expect(passAverageGradientPercent('campolongo')).toBeGreaterThan(5.0);
+    expect(totalSellaRondaClimbingMetres()).toBe(2277);
   });
 });
