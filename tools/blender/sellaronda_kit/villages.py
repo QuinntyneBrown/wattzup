@@ -418,4 +418,11 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         tix, tiy, tiz = kit.P(ti_i, 0.0, (kit.kerb + 3.2) * ti_s, 0.0)
         B["ladin-blue"].box((tix, tiy, tiz), (0.42, 0.88, 2.15), tiyaw)
         B["paint"].box((tix, tiy, tiz + 1.55), (0.45, 0.42, 0.42), tiyaw)
+    # Summer Gelateria sidewalk counters & cream parasols in Corvara & Canazei
+    for gl_v in (268.0, 6122.0):
+        gv_i = road.index(gl_v)
+        gvy = road.s[gv_i]["h"]
+        gvx, gvy_p, gvz = kit.P(gv_i, 0.0, -(kit.kerb + 5.2), 0.0)
+        B["accent-2"].box((gvx, gvy_p, gvz), (2.2, 0.95, 1.05), gvy)
+        kit.gable(B["paint"], (gvx, gvy_p, gvz + 2.45), 2.8, 2.8, 0.55, gvy)
     # [ANCHOR:villages]
