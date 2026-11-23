@@ -595,6 +595,11 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         B[vs_c].box((vsx, vsy, vsz + 0.25), (1.35, 0.42, 0.62), s[vs_i]["h"] + 1.1)
         B["dark"].box((vsx, vsy, vsz), (1.28, 0.18, 0.36), s[vs_i]["h"] + 1.1)
 
+    # Iconic white-jersey rainbow-striped cyclist cresting Passo Pordoi (at=4936 m)
+    wc_i = road.index(4936.0)
+    wcx, wcy, wcz = road.at(wc_i, -(kit.kerb - 0.85))
+    _road_cyclist(B, wcx, wcy, wcz, s[wc_i]["h"], "paint", standing=True)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
