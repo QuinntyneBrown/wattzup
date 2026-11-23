@@ -111,3 +111,8 @@ export function isHighWallSector(metres: number): boolean {
   const w = ((metres % 11650) + 11650) % 11650;
   return SELLA_RONDA_PASSES.some((p) => Math.abs(w - p.courseMetres) <= 450);
 }
+
+/** Returns the highest of the four Sella Ronda passes (Passo Sella, 2,240 m). */
+export function highestSellaPass(): SellaPass {
+  return SELLA_RONDA_PASSES.reduce((top, p) => (p.altitudeMetres > top.altitudeMetres ? p : top));
+}

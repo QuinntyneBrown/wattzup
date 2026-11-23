@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  highestSellaPass,
   isHighWallSector,
   nextSellaPass,
   passClimbLengthMetres,
@@ -47,5 +48,7 @@ describe('SELLA_RONDA_PASSES', () => {
     expect(passClimbLengthMetres('pordoi')).toBe(1650);
     expect(isHighWallSector(7750)).toBe(true);
     expect(isHighWallSector(3120)).toBe(false);
+    expect(highestSellaPass().id).toBe('sella');
+    expect(highestSellaPass().altitudeMetres).toBe(2240);
   });
 });
