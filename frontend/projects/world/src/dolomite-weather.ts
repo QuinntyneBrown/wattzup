@@ -11,3 +11,10 @@ export function relativeAirDensity(altitudeMetres: number): number {
   const h = Math.max(0, altitudeMetres);
   return Math.pow(1 - 2.25577e-5 * h, 4.25588);
 }
+
+/** Perceived wind-chill temperature (°C) for `airTempC` and relative airflow `speedKmh` on fast pass descents. */
+export function windChillCelsius(airTempC: number, speedKmh: number): number {
+  if (airTempC > 14 || speedKmh < 5) return airTempC;
+  const v16 = Math.pow(speedKmh, 0.16);
+  return Number((13.12 + 0.6215 * airTempC - 11.37 * v16 + 0.3965 * airTempC * v16).toFixed(1));
+}

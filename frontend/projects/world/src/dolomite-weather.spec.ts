@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { passAirTemperatureCelsius, relativeAirDensity } from './dolomite-weather';
+import {
+  passAirTemperatureCelsius,
+  relativeAirDensity,
+  windChillCelsius,
+} from './dolomite-weather';
 
 describe('dolomite-weather', () => {
   it('cools air by ~4.4 °C from Corvara (1,568 m) up to Passo Sella (2,240 m)', () => {
@@ -11,5 +15,7 @@ describe('dolomite-weather', () => {
     const rho = relativeAirDensity(2240);
     expect(rho).toBeGreaterThan(0.75);
     expect(rho).toBeLessThan(0.83);
+    expect(windChillCelsius(10, 55)).toBeLessThan(8);
+    expect(windChillCelsius(20, 40)).toBe(20);
   });
 });
