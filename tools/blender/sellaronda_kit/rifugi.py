@@ -29,6 +29,8 @@ def _rifugio_complex(B, kit, road, height_at, at_m: float, side: float, main_w: 
     # Traditional wooden alpine rooftop bell-turret (campaniletto) straddling the ridge
     B["larch-warm"].box((rx, ry, base_z + 3.2 + upper_h + 3.1), (1.05, 1.05, 1.55), yaw)
     kit.gable(B["larch-aged"], (rx, ry, base_z + 3.2 + upper_h + 4.65), 1.35, 1.35, 0.72, yaw)
+    for fn_s in (-1.0, 1.0):
+        B["larch-aged"].box((rx + math.cos(yaw) * (fn_s * main_w * 0.54), ry + math.sin(yaw) * (fn_s * main_w * 0.54), base_z + 3.2 + upper_h + 3.35), (0.16, 0.16, 0.95), yaw)
     # Pitched Tyrolean attic dormers along the road-facing roof slope
     for dm_o in (-0.28 * main_w, 0.28 * main_w):
         dmx = rx + math.cos(yaw) * dm_o - math.sin(yaw) * -(main_d * 0.28)
