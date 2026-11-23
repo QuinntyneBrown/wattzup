@@ -83,3 +83,12 @@ export function chairliftLoopPosition(
     ascending,
   };
 }
+
+/** Average inclination angle in degrees from lower station to upper station of `span`. */
+export function cablewaySlopeDegrees(span: CableSpan): number {
+  const dx = span.to[0] - span.from[0];
+  const dy = span.to[1] - span.from[1];
+  const dz = span.to[2] - span.from[2];
+  const horiz = Math.max(1e-4, Math.hypot(dx, dz));
+  return (Math.atan2(dy, horiz) * 180) / Math.PI;
+}

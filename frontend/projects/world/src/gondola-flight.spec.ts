@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { type CableSpan, chairliftLoopPosition, gondolaPosition } from './gondola-flight';
+import {
+  type CableSpan,
+  cablewaySlopeDegrees,
+  chairliftLoopPosition,
+  gondolaPosition,
+} from './gondola-flight';
 
 const SASS_PORDOI: CableSpan = {
   from: [0, 140, 0],
@@ -37,5 +42,6 @@ describe('gondolaPosition', () => {
     expect(up.ascending).toBe(true);
     expect(down.ascending).toBe(false);
     expect(up.x).toBeCloseTo(-down.x, 3);
+    expect(cablewaySlopeDegrees(SASS_PORDOI)).toBeGreaterThan(35);
   });
 });
