@@ -81,6 +81,7 @@ def build_four_passes(B, kit, road, height_at) -> None:
         B["paint"].box(kit.P(b_idx, 0.0, off, 1.95), (0.10, 1.55, 0.92), b_yaw)
         B[crest_a].box(kit.P(b_idx, 0.04, off - 0.36, 2.48), (0.12, 0.42, 0.32), b_yaw)
         B[crest_b].box(kit.P(b_idx, 0.04, off + 0.36, 2.48), (0.12, 0.42, 0.32), b_yaw)
+        kit.gable(B["copper-patina"], kit.P(b_idx, 0.0, off, 2.87), 0.28, 1.72, 0.22, b_yaw)
 
     # Cycling climb countdown markers (km to summit + altitude + gradient %) every 350 m up all 4 climbs
     for p in PASSES:
