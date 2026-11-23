@@ -139,3 +139,9 @@ export function nextClimbFromVillage(
 ): 'campolongo' | 'pordoi' | 'sella' | 'gardena' {
   return DEPARTING_PASS[villageId];
 }
+
+/** Elevation difference (m) between the highest and lowest main Ladin valley towns on Sella Ronda. */
+export function villageAltitudeSpreadMetres(): number {
+  const alts = LADIN_VILLAGES.map((v) => v.altitudeMetres);
+  return Math.max(...alts) - Math.min(...alts);
+}
