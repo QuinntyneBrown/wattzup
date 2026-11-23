@@ -54,6 +54,11 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         a0 = (lx + px_p * off_lat, ly + py_p * off_lat, lz + 6.8)
         a1 = (tx + px_p * off_lat, ty + py_p * off_lat, tz + 6.5)
         _cable_segment(B, a0, a1, thickness=0.16, sag=18.0, steps=10)
+        for sp_t in (0.25, 0.50, 0.75):
+            spx = a0[0] + (a1[0] - a0[0]) * sp_t
+            spy = a0[1] + (a1[1] - a0[1]) * sp_t
+            spz = a0[2] + (a1[2] - a0[2]) * sp_t - 18.0 * 4.0 * sp_t * (1.0 - sp_t)
+            B["crowd-3" if sp_t != 0.50 else "paint"].box((spx, spy, spz - 0.35), (0.72, 0.72, 0.72), yaw_top)
 
     # Build origin-centered animated Funivia Sass Pordoi cabin in WHOLE group "Funivia"!
     from . import srgb as _srgb
