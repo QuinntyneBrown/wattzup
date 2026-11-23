@@ -591,4 +591,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         375.0,
         snow=True,
     )
+    # Sas de Mesdì (2,980 m) northern massif crest between Pisciadù & Val de Mesdì
+    rock_tower(peaks, cx + pux * 710.0 + ppx * 165.0, cy + puy * 710.0 + ppy * 165.0, 120.0, 608.0, 95.0, 74.0, 9, math.atan2(puy, pux), cfn, taper=0.66, flat_cap=True, seed_phase=1.8)
     # [ANCHOR:massif]
