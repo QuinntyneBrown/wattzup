@@ -115,6 +115,7 @@ def build_four_passes(B, kit, road, height_at) -> None:
         B["gold"].box((bx_v, by_v, bz_v + 1.17), (0.88, 0.88, 0.08), bv_yaw + 0.4)
         B["steel"].box((bx_v + math.cos(bv_yaw) * 2.8, by_v + math.sin(bv_yaw) * 2.8, bz_v + 0.15), (0.08, 0.08, 3.6), bv_yaw)
         B["ladin-blue"].box((bx_v + math.cos(bv_yaw) * 3.25, by_v + math.sin(bv_yaw) * 3.25, bz_v + 3.25), (0.85, 0.05, 0.48), bv_yaw)
+        B["paint"].box((bx_v - math.sin(bv_yaw) * 1.95, by_v + math.cos(bv_yaw) * 1.95, bz_v + 0.85), (1.15, 0.08, 0.34), bv_yaw)
         # Chrome panoramic sightseeing binoculars aimed across the Dolomite peaks
         bn_x = bx_v + math.cos(bv_yaw) * 1.85
         bn_y = by_v + math.sin(bv_yaw) * 1.85
