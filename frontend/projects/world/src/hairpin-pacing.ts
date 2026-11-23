@@ -104,3 +104,11 @@ export function recommendedHairpinLine(
   if (classifyBendSeverity(curvaturePerMetre) !== 'tornante') return 'hold-lane';
   return gradePercent >= 0 ? 'wide-climbing-arc' : 'late-apex-descent';
 }
+
+/** Safe bicycle cornering speed ceiling (km/h, capped at 75 km/h) for `curvaturePerMetre` and tyre grip `mu`. */
+export function maxSafeCornerSpeedKmh(curvaturePerMetre: number, mu = 0.65): number {
+  const k = Math.abs(curvaturePerMetre);
+  if (k < 1e-4) return 75;
+  const vMps = Math.sqrt((Math.max(0.2, mu) * 9.81) / k);
+  return Math.min(75, Number((vMps * 3.6).toFixed(1)));
+}
