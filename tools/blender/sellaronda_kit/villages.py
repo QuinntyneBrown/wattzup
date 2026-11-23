@@ -371,4 +371,11 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         ovz = max(height_at(ovx, ovy), road.s[ov_i]["z"] - 0.3)
         B["chalet-plaster"].box((ovx, ovy, ovz), (1.85, 1.55, 1.95), ovyaw)
         kit.gable(B["larch-aged"], (ovx, ovy, ovz + 1.95), 2.15, 1.85, 0.55, ovyaw)
+    # Stepped Cordevole torrent check-dam weirs in Arabba (at=3090 m)
+    ar_w = road.index(3090.0)
+    for wr_s in (-1.0, 1.0):
+        wx_a, wy_a, _ = road.at(ar_w, (kit.kerb + 19.0) * wr_s)
+        wz_a = min(height_at(wx_a, wy_a), road.s[ar_w]["z"] - 1.2)
+        B["stone"].box((wx_a, wy_a, wz_a - 0.4), (4.4, 0.85, 0.95), road.s[ar_w]["h"])
+        B["paint"].box((wx_a, wy_a, wz_a + 0.35), (3.8, 1.15, 0.14), road.s[ar_w]["h"])
     # [ANCHOR:villages]
