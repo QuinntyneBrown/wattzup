@@ -7,6 +7,7 @@ export interface LadinVillage {
   readonly valley: string;
   readonly altitudeMetres: number;
   readonly courseMetres: number;
+  readonly churchRoof?: 'onion-dome' | 'gothic-spire';
 }
 
 export const LADIN_VILLAGES: readonly LadinVillage[] = [
@@ -76,4 +77,9 @@ export function villageAtMetres(metres: number, radiusMetres = 220): LadinVillag
     if (dist <= radiusMetres) return v;
   }
   return null;
+}
+
+/** True when `villageId` features a bulbous Tyrolean Zwiebelturm onion dome (false for Arabba's pointed Gothic spire). */
+export function hasOnionDomeBelfry(villageId: LadinVillage['id']): boolean {
+  return villageId !== 'arabba';
 }
