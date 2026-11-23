@@ -31,3 +31,12 @@ export function enrosadiraTint(phase: number): Rgb {
   }
   return STAGES[STAGES.length - 1]![1];
 }
+
+/** Direct Enrosadira illumination factor (0..1) on a horizontal rock normal (nx, ny) for `sunAzimuth` radians. */
+export function cliffAspectIllumination(nx: number, ny: number, sunAzimuth: number): number {
+  const len = Math.hypot(nx, ny);
+  if (len < 1e-6) return 0;
+  const dot = (nx / len) * Math.cos(sunAzimuth) + (ny / len) * Math.sin(sunAzimuth);
+  const t = Math.max(0, Math.min(1, (dot + 0.15) / 0.9));
+  return t * t * (3 - 2 * t);
+}
