@@ -168,4 +168,20 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
                 for rut in (-0.85, 0.85):
                     B["gravel"].box((gx_t - math.sin(tyaw) * rut, gy_t + math.cos(tyaw) * rut, gz_t + 0.02), (5.4, 0.55, 0.06), tyaw)
 
+    # 10. Native South Tyrolean Haflinger horses (chestnut coats with flaxen cream manes & tails)
+    for hf_m, hf_side in ((1290.0, 1.0), (9210.0, -1.0), (10710.0, 1.0)):
+        hf_idx = road.index(hf_m)
+        hx0, hy0, _ = road.at(hf_idx, (kit.kerb + 15.0) * hf_side)
+        if road.clear_of_road(hx0, hy0, 13.0, hf_idx):
+            for h_k in range(3):
+                ang = h_k * 2.05 + 0.4
+                px_h = hx0 + math.cos(ang) * (3.6 + h_k * 2.2)
+                py_h = hy0 + math.sin(ang) * (3.6 + h_k * 2.2)
+                pz_h = height_at(px_h, py_h)
+                B["larch-warm"].box((px_h, py_h, pz_h + 0.58), (1.68, 0.54, 0.66), ang)
+                B["hay"].box((px_h + math.cos(ang) * 0.72, py_h + math.sin(ang) * 0.72, pz_h + 1.02), (0.58, 0.22, 0.48), ang)
+                B["hay"].box((px_h - math.cos(ang) * 0.92, py_h - math.sin(ang) * 0.92, pz_h + 0.55), (0.22, 0.18, 0.58), ang)
+                for lx_h in (-0.54, 0.54):
+                    B["larch-warm"].box((px_h + math.cos(ang) * lx_h, py_h + math.sin(ang) * lx_h, pz_h), (0.16, 0.44, 0.62), ang)
+
     return trees
