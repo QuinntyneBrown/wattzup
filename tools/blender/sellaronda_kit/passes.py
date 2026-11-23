@@ -298,3 +298,11 @@ def build_four_passes(B, kit, road, height_at) -> None:
     cbx, cby, cbz = kit.P(cb_idx, 0.0, kit.kerb + 3.4, -0.1)
     B["larch-aged"].box((cbx, cby, cbz), (3.4, 1.65, 2.25), cbyaw)
     kit.gable(B["chalet-wood"], (cbx, cby, cbz + 2.25), 3.9, 2.05, 0.65, cbyaw)
+
+    # Road-surface frost telemetry masts 180 m below each pass crest
+    for p in PASSES:
+        ic_idx = road.index(p["at"] - 180.0)
+        icyaw = s[ic_idx]["h"]
+        ix_m, iy_m, iz_m = kit.P(ic_idx, 0.0, kit.kerb + 1.65, -0.1)
+        B["steel"].box((ix_m, iy_m, iz_m), (0.09, 0.09, 3.35), icyaw)
+        B["ladin-blue"].box((ix_m, iy_m, iz_m + 2.95), (0.45, 0.55, 0.06), icyaw + 0.3)
