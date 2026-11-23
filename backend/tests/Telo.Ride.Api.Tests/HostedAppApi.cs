@@ -17,5 +17,7 @@ public sealed class HostedAppApi : TeloRideApiFactory
                 // The Angular service worker and its manifest, which the production build writes beside the app.
                 ["ngsw-worker.js"] = "self.addEventListener('fetch', () => {});",
                 ["ngsw.json"] = "{\"configVersion\":1}",
+                ["manifest.webmanifest"] = "{\"name\":\"Telo Ride\"}",
+                ["icons/icon-192.png"] = "png",
             }));
 }

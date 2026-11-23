@@ -24,8 +24,8 @@ end box
 actor -> browser : Open Telo Ride
 browser -> host : GET / and manifest.webmanifest
 host --> browser : index.html, manifest (name "Telo Ride", icons, theme_color)
-browser -> sw : Register ngsw-worker.js (registerWhenStable)
-sw -> host : Prefetch the app shell
+browser -> sw : Register ngsw-worker.js once the first screen settles (provideAppCache)
+sw -> host : Prefetch the app shell, the manifest and icons/*.png
 browser --> actor : Install offered from the address bar (L2-150 AC1)
 actor -> browser : Install
 browser --> actor : Telo Ride opens in its own window with the dark theme colour

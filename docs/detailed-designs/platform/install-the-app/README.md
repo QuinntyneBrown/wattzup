@@ -12,16 +12,24 @@ app offers each new version without interrupting a ride.
 - **version update** — new deployed build that the service worker has downloaded and can switch to
 - **ride in progress** — state from the start of a race, class or custom ride until its Results open
 
-The feature belongs to the platform subsystem and is frontend-only. The update prompt's copy has no
-mock yet (`<TO SUPPLY>`).
+The feature belongs to the platform subsystem. The app's own build serves the manifest and icons;
+the backend that hosts the build (ADR 0025) only has to answer them with their types. The update
+prompt's copy has no mock yet (`<TO SUPPLY>`).
 
 ## Description
 
 - **`manifest.webmanifest`** — in the `ride` application's `public/` folder, linked from
-  `index.html`. It sets `name` and `short_name` to "Telo Ride", `start_url` to `/`, `display` to
-  `standalone`, `background_color` and `theme_color` to the dark ink value (`#0a0b0d`, the value of
-  `--palette-ink`; a manifest cannot read CSS tokens), and lists 192 px, 512 px and maskable icons.
-  The icon artwork is `<TO SUPPLY>`.
+  `index.html`. It sets `id`, `start_url` and `scope` to `/`, `name` and `short_name` to "Telo
+  Ride", `display` to `standalone`, `background_color` and `theme_color` to the dark ink value
+  (`#0a0b0d`, the value of `--palette-ink`; a manifest cannot read CSS tokens), and lists PNG icons
+  of 192 px and 512 px and a maskable one of 512 px. `index.html` also sets
+  `<meta name="theme-color">` to the same ink, so the window's title bar matches before the
+  manifest is read.
+- **App icon** — the logo mark alone on a full ink square, and a maskable copy with the mark inside
+  the central 80% safe zone (design system: *Lockup*, App icon). Their SVG sources are in
+  `docs/design-system/assets/icons/`; `tools/icons/render-icons.mjs` renders them to the PNGs in
+  `public/icons/`, which are committed. The service worker's `app` group prefetches the manifest
+  and icons with the app shell, so an installed app opens with its icon offline.
 - **Angular service worker** — registered by `provideAppCache` on the screens' lazy parent route
   once the first screen settles (`performance/ride-without-a-network`, ADR 0032). It caches the app
   shell and checks for a new version on each navigation. `SwUpdate` is bound on the same route,
@@ -36,6 +44,15 @@ mock yet (`<TO SUPPLY>`).
   outside a ride.
 - **`Toast`** — presentation component in `components` (`wz-toast`) used for the prompt, with an
   action button. Its message and action copy are `<TO SUPPLY>`.
+
+## Proof
+
+- **Installable (`L2-150` AC1).** A behaviour spec opens Home and asks Chromium, through the
+  DevTools protocol, for the manifest it parsed and for its installability errors (none), and
+  decodes each listed icon to check it is the PNG size it declares. A backend hosting test proves
+  the API answers `manifest.webmanifest` as `application/manifest+json` and an icon as `image/png`
+  without a session.
+- The install prompt itself is the browser's; no test clicks it.
 
 ## Requirements
 
@@ -86,3 +103,12 @@ The service worker finds a new version; the prompt waits for the ride to end bef
 reload (`L2-150` AC2).
 
 ![Sequence diagram for offering a new version](diagrams/sequence-offer-update.png)
+
+## Open questions
+
+- **Icon artwork.** The requirement asked for icons whose artwork was `<TO SUPPLY>`. Slice 27.1
+  draws them from the logo mark on ink, in the dark theme's colours; a designer's own app icon
+  replaces the two SVG sources and is rendered again.
+- **An "Install" button of the app's own.** Chrome and Edge offer installation in the address bar
+  and menu. A button in the app would need a `beforeinstallprompt` handler, a mock and copy; none
+  is asked for.
