@@ -88,6 +88,10 @@ def alpenglow_sky_colour(dx: float, dy: float, dz: float, az: float, haze):
     az_diff = math.remainder(math.atan2(dy, dx) - az, math.tau)
     pillar = math.exp(-((az_diff / 0.055) ** 2)) * smoothstep(0.02, 0.14, h) * (1.0 - smoothstep(0.18, 0.44, h))
     c = mix(c, srgb(0xFFD8B0), pillar * 0.24)
+    # Subtle radial crepuscular fan beams above the western Dolomite saddles
+    ray_theta = math.atan2(h - 0.12, az_diff)
+    rays = (0.5 + 0.5 * math.sin(ray_theta * 11.0)) * math.exp(-((az_diff / 0.42) ** 2)) * smoothstep(0.02, 0.28, h) * (1.0 - smoothstep(0.32, 0.65, h))
+    c = mix(c, srgb(0xFFC89E), rays * 0.14)
     # Anti-solar Belt of Venus (Cintura di Venere) rose-lilac band above steel-blue earth shadow in the east!
     anti = max(0.0, -toward) ** 1.6
     venus = math.exp(-((h - 0.11) / 0.075) ** 2) * anti
