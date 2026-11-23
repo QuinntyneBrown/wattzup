@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   paragliderGlideRangeKm,
   paragliderGroundSpeedMps,
+  paragliderMaxBankDegrees,
   paragliderPose,
   type ThermalOrbit,
   thermalVariometerMps,
@@ -32,5 +33,7 @@ describe('paragliderPose', () => {
     expect(paragliderGroundSpeedMps(COL_RODELLA, 6)).toBeGreaterThan(4);
     expect(paragliderGlideRangeKm(2484, 1465, 9.5)).toBeCloseTo(9.68, 1);
     expect(thermalVariometerMps(COL_RODELLA, 0, 0)).toBeGreaterThan(0.5);
+    expect(paragliderMaxBankDegrees(COL_RODELLA)).toBeGreaterThan(5);
+    expect(paragliderMaxBankDegrees(COL_RODELLA)).toBeLessThanOrEqual(24.1);
   });
 });
