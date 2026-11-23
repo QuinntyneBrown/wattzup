@@ -228,6 +228,13 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         B["parasol-red"].box(kit.P(cp_idx, 2.2, kit.kerb + 2.35, 0.0), (0.25, 1.85, 0.92), s[cp_idx]["h"])
         B["paint"].box(kit.P(cp_idx, 2.2, kit.kerb + 2.35, 0.68), (0.27, 1.85, 0.22), s[cp_idx]["h"])
 
+    # Standing cyclists attacking the punchy Over/Under interval ramps!
+    for seg_i, st_seg in enumerate(kit.st):
+        if st_seg["kind"] == "work" and st_seg["level"] >= 22:
+            at_idx = road.index(st_seg["from"] + 38.0)
+            cx_a, cy_a, cz_a = road.at(at_idx, -(kit.kerb - 0.62))
+            _road_cyclist(B, cx_a, cy_a, cz_a, s[at_idx]["h"], jerseys[seg_i % len(jerseys)], standing=True)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
