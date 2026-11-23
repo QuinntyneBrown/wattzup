@@ -441,4 +441,12 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["larch-warm"].box((mgx, mgy, mgz + 1.2), (7.0, 5.4, 2.0), s[mgi]["h"])
             kit.gable(B["chalet-wood"], (mgx, mgy, mgz + 3.2), 7.6, 6.0, 1.45, s[mgi]["h"])
 
+    # Blue-violet Alpine harebell (Campanula scheuchzeri) clusters on mid-climb verges
+    for hb_i in range(30, kit.n - 30, 38):
+        if not (65.0 <= s[hb_i]["z"] <= 115.0):
+            continue
+        hbx, hby, _ = road.at(hb_i, kit.kerb + 4.8)
+        if road.clear_of_road(hbx, hby, 3.2, hb_i):
+            B["ladin-blue"].box((hbx, hby, height_at(hbx, hby) - 0.04), (0.62, 0.62, 0.20), hb_i * 0.4)
+
     return trees
