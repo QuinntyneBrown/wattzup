@@ -564,4 +564,13 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             tpz = height_at(tpx, tpy)
             B["hay"].box((tpx, tpy, tpz), (1.45, 1.45, 1.75), tp_o * 0.2)
 
+    # Angled wooden alpine flora educational lecterns beside wildflower meadows
+    for bt_m in (1760.0, 7485.0):
+        bti = road.index(bt_m)
+        btx, bty, _ = road.at(bti, kit.kerb + 3.6)
+        if road.clear_of_road(btx, bty, 2.5, bti):
+            btz = height_at(btx, bty)
+            B["larch-warm"].box((btx, bty, btz), (0.65, 0.45, 0.92), s[bti]["h"])
+            B["paint"].box((btx, bty, btz + 0.92), (0.68, 0.48, 0.06), s[bti]["h"])
+
     return trees
