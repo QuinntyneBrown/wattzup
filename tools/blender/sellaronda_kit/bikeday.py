@@ -269,6 +269,16 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         rx_f, ry_f, rz_f = kit.P(rf_idx, 0.0, -(kit.kerb + 2.15), 0.0)
         _road_cyclist(B, rx_f, ry_f, rz_f, s[rf_idx]["h"] - 0.8, jerseys[(rf_i + 3) % len(jerseys)], standing=True)
 
+    # White Giro / Bike Day tifosi campervans with striped awnings on upper Pordoi & Sella lay-bys
+    for cv_m in (4690.0, 7490.0):
+        cv_idx = road.index(cv_m)
+        cvyaw = s[cv_idx]["h"] + 0.15
+        cx_v, cy_v, cz_v = kit.P(cv_idx, 0.0, kit.kerb + 3.8, 0.0)
+        B["dark"].box((cx_v, cy_v, cz_v), (6.1, 2.25, 0.55), cvyaw)
+        B["paint"].box((cx_v, cy_v, cz_v + 0.45), (6.2, 2.22, 2.35), cvyaw)
+        B["ladin-blue"].box((cx_v, cy_v, cz_v + 1.55), (6.24, 2.25, 0.28), cvyaw)
+        B["awning"].box((cx_v - math.sin(cvyaw) * -1.85, cy_v + math.cos(cvyaw) * -1.85, cz_v + 2.48), (4.2, 1.65, 0.14), cvyaw)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
