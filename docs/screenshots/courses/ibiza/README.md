@@ -184,6 +184,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Party 15 | The strollers step: their legs swing through a stride in time with the ground they cover, the foot coming forward lifts, and the body rises twice a stride | 60.1 fps, 82 draw calls (from 4,400 m) | from 4,400 m: 44.8 and 45.0 fps; Neon Docklands beside it 43.6 and 57.0: the stand-in reading two ways, as noted under Sky 12 |
 | Sky 14 | The stars come out as the evening draws in: none for the first third of the course, all 150 by the finish; and the evening star stands beside the sunset from the start | 60.1 fps, none over 20 ms (three places), 88 to 100 draw calls | 56.7 and 55.6 fps after (the finish, 119,826 triangles: 174 under the budget); Neon Docklands beside it 58.4, 47.1 |
 | Party 16 | The crowd cheers the rider as they pass: within 34 m a figure hops higher and faster and stretches up, most within 9 m, and settles as the rider goes | 60.1 fps, none over 20 ms (the finish) | 42.2 and 40.2 fps at the finish; Neon Docklands beside it 45.1 and 56.0: the stand-in reading two ways, as noted under Sky 12 |
+| Sky 15 | The sun sets as the course is ridden: its disc stands 6 degrees over the horizon at the start and sinks steadily until its lower limb touches it at the finish | 60.1 fps, at most one frame over 20 ms (from 3,250 m, twice) | 48.9 and 39.3 fps after (the finish, 116,828 triangles); Neon Docklands beside it 46.2, 56.4: the stand-in reading two ways, as noted under Sky 12 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -481,6 +482,24 @@ the same sum out for each corner from where the rider is). Along the finish it r
 rider like a wave. A drink goes up with its hand. No triangle, no draw call; none of it with reduced motion.
 
 It is the rider it cheers, not the other riders; strollers do not cheer.
+
+### Sky 15: the sun sets
+
+`sky-15.jpg` (from 3,250 m: above, the disc held at 11 degrees to see that it moves; below, where it stands there in
+the ride, 4 degrees up, behind the island's shoulder). The evening drew in (Sky 6) and the stars came out (Sky 14)
+round a sun that never moved. Now it sets: its disc stands 6 degrees over the horizon at the start, in the middle
+of the glow painted for it, and sinks steadily with the share of the course ridden until its middle is 1.2 degrees
+up at the finish, its lower limb on the horizon (`sun` in `dusk.ts`, unit-tested). It is a mesh of its own on a
+pivot inside the sky, drawn over the sky and under the bars of cloud, which cross its face as it comes down
+through them; the land and the island hide what is below them. One draw call more; the same sun at the same
+place on every ride.
+
+The glow painted round it does not sink with it, nor does the light it throws on the land: by the finish the disc
+is 5 degrees under the middle of its own glow.
+
+**Tried first and not kept:** the sun's path on the sea. Three cuts of it in the sea's material could hardly be
+told from the sea without it: the sun stands behind the island from most of the road, and the sea in view is off
+to one side of it.
 
 ### Party 1: people with drinks
 

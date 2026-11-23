@@ -4,12 +4,14 @@ export interface Dusk {
   light: number;
   /** How far out the stars are, from 0 (none) to 1. */
   stars: number;
+  /** How high the middle of the sun stands over the horizon, in degrees. */
+  sun: number;
 }
 
 /** The evening at the start, where the sky is as it was painted (three quarters round), and at the finish. */
-const EARLY: Dusk = { sky: [1.16, 1.1, 1], light: 1.14, stars: 0 };
+const EARLY: Dusk = { sky: [1.16, 1.1, 1], light: 1.14, stars: 0, sun: 6 };
 const PAINTED = 0.75;
-const LATE: Dusk = { sky: [0.93, 0.8, 0.84], light: 0.8, stars: 1 };
+const LATE: Dusk = { sky: [0.93, 0.8, 0.84], light: 0.8, stars: 1, sun: 1.2 };
 /** The share of the course ridden at which the first stars show. */
 const FIRST_STARS = 0.35;
 
@@ -30,6 +32,8 @@ export function dusk(ridden: number, out: Dusk): Dusk {
       : 1 + (to!.sky[part]! - 1) * k;
   }
   out.light = from ? from.light + (1 - from.light) * k : 1 + (to!.light - 1) * k;
+  // The sun sets: steadily down from where it stands at the start to where its lower limb touches the horizon.
+  out.sun = EARLY.sun + (LATE.sun - EARLY.sun) * at;
   // The stars come out from a third of the way round, slowly at first.
   const out_ = Math.max(0, (at - FIRST_STARS) / (1 - FIRST_STARS));
   out.stars = out_ * out_;

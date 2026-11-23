@@ -448,6 +448,7 @@ MATERIALS: dict[str, dict] = {
     "sky-fine": {"color": 0xF2A77A, "glow": 1.0},
     "sky-over": {"color": 0xF2A77A, "glow": 1.0},
     "star": {"color": 0xFFFFFF, "glow": 1.0},
+    "sky-sun": {"color": 0xFFB040, "glow": 1.0},
     "flash-1": {"color": 0xE8DCFF, "glow": 1.0},
     # The aeroplane coming in to land (aeroplane.py): its skin, and its lights.
     "plane-body": {"color": 0xECEEF2, "rough": 0.5},
@@ -625,7 +626,7 @@ WHOLE.update({"flash-0": "SkyFlashA", "flash-1": "SkyFlashB"})
 WHOLE["gull"] = "Birds"
 # The scud is a mesh of its own round the sky, which the app turns slowly (cloud-drift.ts).
 WHOLE["scud"] = "SkyDrift"
-WHOLE.update({"sky-fine": "SkyFine", "sky-over": "SkyOver", "star": "SkyStars"})
+WHOLE.update({"sky-fine": "SkyFine", "sky-over": "SkyOver", "star": "SkyStars", "sky-sun": "SkySun"})
 
 
 def group_of(mat: str) -> tuple[str, bool]:
@@ -660,7 +661,7 @@ def group_material(name: str):
     # (leaf-material.ts, dance-material.ts). The app draws every group with a material of its own.
     if name in ("Leaves", "Solid", "Glow", "Birds", "SkyDrift") or name.startswith("Walker"):
         mat.node_tree.links.new(attr.outputs["Alpha"], bsdf.inputs["Alpha"])
-    if name in ("Glow", "Confetti", "Sun", "Sky", "StartRed", "StartGreen", "Beams", "PlaneLights", "PlaneStrobe", "PlaneBeacon", "SkyFlashA", "SkyFlashB", "Birds", "SkyDrift", "SkyFine", "SkyOver", "SkyStars"):
+    if name in ("Glow", "Confetti", "Sun", "Sky", "StartRed", "StartGreen", "Beams", "PlaneLights", "PlaneStrobe", "PlaneBeacon", "SkyFlashA", "SkyFlashB", "Birds", "SkyDrift", "SkyFine", "SkyOver", "SkyStars", "SkySun"):
         mat.node_tree.links.new(attr.outputs["Color"], bsdf.inputs["Emission Color"])
         bsdf.inputs["Emission Strength"].default_value = 1.5
     if name == "Beams":
@@ -1572,15 +1573,25 @@ def build_sky(col, az: float, haze_hex: int, colour_at=sky.sunset_sky_colour, tu
         return sky.mix(colour_at(d[0], d[1], d[2], az, haze), colour, share)
 
     # The sun: a disc low over the horizon, white hot at its heart and orange at its limb, its lower limb redder.
+    # It is a mesh of its own, which the app lowers as the ride goes on: the sun sets (dusk.ts).
     sun_at, sun_r = (0.0, math.radians(3.2)), math.radians(1.7)
-    heart = on_sky(towards(*sun_at), (1.0, 0.98, 0.84, 1.0))
+    disc = Builder("SkySun", "sky-sun")
+    disc.colours = []
+
+    def on_disc(d, colour) -> int:
+        disc.verts.append((d[0] * SKY_RADIUS * 0.99, d[1] * SKY_RADIUS * 0.99, d[2] * SKY_RADIUS * 0.99))
+        disc.colours.append(colour)
+        return len(disc.verts) - 1
+
+    heart = on_disc(towards(*sun_at), (1.0, 0.98, 0.84, 1.0))
     rim = []
     for q in range(24):
         a = q * math.tau / 24
         d = towards(sun_at[0] + math.cos(a) * sun_r / math.cos(sun_at[1]), sun_at[1] + math.sin(a) * sun_r)
-        rim.append(on_sky(d, sky.mix(srgb(0xFFB040), srgb(0xFF6A24), 0.5 - 0.5 * math.sin(a))))
+        rim.append(on_disc(d, sky.mix(srgb(0xFFB040), srgb(0xFF6A24), 0.5 - 0.5 * math.sin(a))))
     for q in range(24):
-        b.faces.append((heart, rim[q], rim[(q + 1) % 24]))
+        disc.faces.append((heart, rim[q], rim[(q + 1) % 24]))
+    disc.build(col)
     # What stands in the sky, drawn on it after it: opposite the sunset the full moon is rising, big and reddened
     # by the air it is seen through, in the pink band over the earth's shadow.
     moon_at, moon_r = (math.pi + 0.3, math.radians(6.5)), math.radians(1.25)

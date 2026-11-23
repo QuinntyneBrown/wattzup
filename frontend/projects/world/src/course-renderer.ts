@@ -234,7 +234,9 @@ export class CourseRenderer implements WorldRenderer {
   private flapClock: ((seconds: number) => void) | null = null;
   /** The sheet lightning in the sky's thunderheads: each a mesh whose light is flickered (lightning.ts). */
   private readonly flashes: Mesh[] = [];
-  private readonly evening: Dusk = { sky: [1, 1, 1], light: 1, stars: 0 };
+  private readonly evening: Dusk = { sky: [1, 1, 1], light: 1, stars: 0, sun: 0 };
+  /** The sun a map's sky carries, lowered as the evening draws in: its pivot, how far off it stands and how high. */
+  private sunset: { pivot: Group; out: number; up: number } | null = null;
   /** The stars a map carries, brought out as the evening draws in. */
   private stars: MeshBasicMaterial | null = null;
   private readonly hazeAt = new Color();
@@ -508,6 +510,7 @@ export class CourseRenderer implements WorldRenderer {
     this.flock = null;
     this.drift = null;
     this.skyFine = null;
+    this.sunset = null;
     this.stars = null;
     this.walkers.length = 0;
     this.walking.length = 0;
@@ -739,9 +742,10 @@ export class CourseRenderer implements WorldRenderer {
     // The aeroplane's flashing lights glow as its steady ones do.
     materials['PlaneStrobe'] = materials['PlaneBeacon'] = materials['PlaneLights']!;
     // The fine sky, and what stands in the sky, are painted as the sky is and darken with it.
-    materials['SkyFine'] = materials['SkyOver'] = materials['Sky']!;
+    materials['SkyFine'] = materials['SkyOver'] = materials['SkySun'] = materials['Sky']!;
     const painted: Mesh[] = [];
     const scud: Mesh[] = [];
+    const setting: Mesh[] = [];
     const strolling: [Group, Mesh][] = [];
     const flown: Mesh[] = [];
     map.traverse((part) => {
@@ -772,6 +776,13 @@ export class CourseRenderer implements WorldRenderer {
         // Carried with the sky and drawn over it, on a pivot of its own that turns.
         mesh.renderOrder = -0.7;
         scud.push(mesh);
+        painted.push(mesh);
+        return;
+      }
+      if (group === 'SkySun') {
+        // The sun's disc: over the sky and under the cloud that crosses it, on a pivot that sinks.
+        mesh.renderOrder = -0.93;
+        setting.push(mesh);
         painted.push(mesh);
         return;
       }
@@ -904,6 +915,15 @@ export class CourseRenderer implements WorldRenderer {
         sector.matrixAutoUpdate = false;
         carried.add(sector);
         this.disposables.push(sector.geometry);
+      }
+      for (const disc of setting) {
+        // Where it stands in the sky as it was built: how far off, level, and how high.
+        disc.geometry.computeBoundingSphere();
+        const middle = disc.geometry.boundingSphere!.center.clone().applyMatrix4(disc.matrix);
+        const pivot = new Group();
+        pivot.add(disc);
+        carried.add(pivot);
+        this.sunset = { pivot, out: Math.hypot(middle.x, middle.z), up: middle.y };
       }
       if (scud.length) {
         this.drift = new Group();
@@ -1113,6 +1133,10 @@ export class CourseRenderer implements WorldRenderer {
       // The evening draws in as the course is ridden: the painted sky, the haze under it and the sun's light.
       const { sky, light, stars } = dusk(metres / course.end, this.evening);
       if (this.stars) this.stars.opacity = stars;
+      if (this.sunset) {
+        const { pivot, out, up } = this.sunset;
+        pivot.position.y = out * Math.tan((this.evening.sun * Math.PI) / 180) - up;
+      }
       this.skyPaint.color.setRGB(sky[0], sky[1], sky[2]);
       (this.scene.fog as Fog).color.copy(this.hazeAt).multiply(this.skyPaint.color);
       (this.scene.background as Color).copy((this.scene.fog as Fog).color);

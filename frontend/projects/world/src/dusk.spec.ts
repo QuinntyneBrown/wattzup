@@ -1,7 +1,7 @@
 import { type Dusk, dusk } from './dusk';
 
 describe('the evening drawing in over a ride into the sunset (L2-166 AC64)', () => {
-  const at = (ridden: number): Dusk => dusk(ridden, { sky: [1, 1, 1], light: 1, stars: 0 });
+  const at = (ridden: number): Dusk => dusk(ridden, { sky: [1, 1, 1], light: 1, stars: 0, sun: 0 });
 
   it('starts earlier in the evening: the sky lighter and more golden, the sun stronger', () => {
     const start = at(0);
@@ -33,7 +33,12 @@ describe('the evening drawing in over a ride into the sunset (L2-166 AC64)', () 
         expect(last.sky[part]! - now.sky[part]!).toBeLessThan(0.02);
       }
       expect(now.light).toBeLessThanOrEqual(last.light + 1e-9);
-      last = { sky: [...now.sky] as [number, number, number], light: now.light, stars: now.stars };
+      last = {
+        sky: [...now.sky] as [number, number, number],
+        light: now.light,
+        stars: now.stars,
+        sun: now.sun,
+      };
     }
   });
 
@@ -47,6 +52,21 @@ describe('the evening drawing in over a ride into the sunset (L2-166 AC64)', () 
     for (let ridden = 0; ridden <= 1.0001; ridden += 0.02) {
       expect(at(ridden).stars).toBeGreaterThanOrEqual(last);
       last = at(ridden).stars;
+    }
+  });
+
+  it('sets the sun: well clear of the horizon at the start, its lower limb on it at the finish', () => {
+    expect(at(0).sun).toBeCloseTo(6);
+    // The disc is 1.7 degrees from its middle to its limb.
+    expect(at(1).sun).toBeGreaterThan(0.8);
+    expect(at(1).sun).toBeLessThan(1.7);
+    let last = at(0).sun;
+    for (let ridden = 0.05; ridden <= 1.0001; ridden += 0.05) {
+      const now = at(ridden).sun;
+      expect(now).toBeLessThan(last);
+      // Steadily: never more than a third of a degree in a twentieth of the course.
+      expect(last - now).toBeLessThan(0.34);
+      last = now;
     }
   });
 
