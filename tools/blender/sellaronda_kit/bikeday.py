@@ -493,6 +493,12 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         tfi = road.index(tf_m)
         B["accent-2"].box(kit.P(tfi, 0.0, kit.kerb + 1.55, 1.65), (0.08, 0.85, 0.65), s[tfi]["h"])
 
+    # Sellaronda MTB Tour riders poised at singletrack crossings on Campolongo & Gardena
+    for mtb_m in (1962.0, 10042.0):
+        mti = road.index(mtb_m)
+        mtx, mty_p, mtz = kit.P(mti, 0.0, kit.kerb + 2.8, 0.0)
+        _road_cyclist(B, mtx, mty_p, mtz, s[mti]["h"] - 1.45, "foliage", standing=True)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
