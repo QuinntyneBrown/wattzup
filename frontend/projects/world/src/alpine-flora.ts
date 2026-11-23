@@ -25,3 +25,10 @@ export function wildflowerBloomIntensity(altitudeMetres: number): number {
   const dist = Math.abs(altitudeMetres - 1925);
   return Math.max(0, 1 - (dist / 625) ** 2);
 }
+
+/** Traditional Dolomite hay-cutting month (`'june' | 'july' | 'august'`) for `altitudeMetres`. */
+export function hayHarvestMonth(altitudeMetres: number): 'june' | 'july' | 'august' {
+  if (altitudeMetres < 1650) return 'june';
+  if (altitudeMetres < 1950) return 'july';
+  return 'august';
+}
