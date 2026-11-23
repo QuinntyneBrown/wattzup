@@ -207,6 +207,17 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         cx_p = gar_pt["x"] + gux * rad_c + gpx * lat_c
         cy_p = gar_pt["y"] + guy * rad_c + gpy * lat_c
         rock_tower(peaks, cx_p, cy_p, 65.0, top_c, r_c, r_c * 0.72, 9, math.atan2(-guy, -gux), cfn, taper=0.34, flat_cap=False, seed_phase=2.2 + c_k)
+    fcir_x, fcir_y = gar_pt["x"] + gux * 615.0 - gpx * 145.0, gar_pt["y"] + guy * 615.0 - gpy * 145.0
+    quad_shaded(
+        peaks,
+        (fcir_x - gpx * 22.0, fcir_y - gpy * 22.0, 165.0),
+        (fcir_x + gpx * 22.0, fcir_y + gpy * 22.0, 165.0),
+        (fcir_x + gpx * 12.0 + gux * 65.0, fcir_y + gpy * 12.0 + guy * 65.0, 445.0),
+        (fcir_x - gpx * 12.0 + gux * 65.0, fcir_y - gpy * 12.0 + guy * 65.0, 445.0),
+        cfn,
+        305.0,
+        snow=True,
+    )
 
     # Puez-Odle high plateau & Piz Duleda (2,909 m) rising behind Gruppo del Cir
     for pz_lat, pz_top in ((-160.0, 725.0), (165.0, 742.0)):
