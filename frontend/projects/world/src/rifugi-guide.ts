@@ -76,3 +76,18 @@ export function rifugiCountByPass(): Readonly<Record<SellaRifugio['passId'], num
     gardena: rifugiOnPass('gardena').length,
   };
 }
+
+/** Returns the next roadside rifugio ahead of `metres` in clockwise loop order and its distance ahead. */
+export function nextRifugioAhead(metres: number): {
+  readonly rifugio: SellaRifugio;
+  readonly metresAhead: number;
+} {
+  const w = ((metres % 11650) + 11650) % 11650;
+  for (const r of SELLA_RIFUGI) {
+    if (r.courseMetres >= w) {
+      return { rifugio: r, metresAhead: r.courseMetres - w };
+    }
+  }
+  const first = SELLA_RIFUGI[0]!;
+  return { rifugio: first, metresAhead: 11650 - w + first.courseMetres };
+}

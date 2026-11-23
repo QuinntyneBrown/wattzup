@@ -3,6 +3,7 @@ import {
   highestSellaRifugio,
   isNearPassRifugio,
   nearestRifugio,
+  nextRifugioAhead,
   rifugiCountByPass,
   rifugiOnPass,
   rifugioSpecialtyDish,
@@ -23,5 +24,6 @@ describe('SELLA_RIFUGI', () => {
     expect(isNearPassRifugio(3600)).toBe(false);
     expect(rifugioSpecialtyDish('gardena')).toContain('Kaiserschmarrn');
     expect(rifugiCountByPass().pordoi).toBeGreaterThanOrEqual(2);
+    expect(nextRifugioAhead(3500).rifugio.passId).toBe('pordoi');
   });
 });
