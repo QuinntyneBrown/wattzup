@@ -10,6 +10,7 @@ import {
   type SubmitRideRequest,
   RIDE_OUTBOX,
   RIDE_SOUND,
+  RIDE_ACTIVITY,
   SCREEN_WAKE_LOCK,
   TICKER,
   VIDEO_PLAYER_FACTORY,
@@ -71,6 +72,8 @@ export class ClassRideStore {
   private readonly beat = inject(TICKER);
   private readonly router = inject(Router);
   private readonly wakeLock = inject(SCREEN_WAKE_LOCK);
+  /** Whether a ride is in progress, so a new version of the app waits for its end (L2-150 AC2). */
+  private readonly activity = inject(RIDE_ACTIVITY);
   private readonly sound = inject(RIDE_SOUND);
   private readonly outbox = inject(RIDE_OUTBOX);
   private readonly time = inject(MONOTONIC_TIME);
@@ -208,6 +211,7 @@ export class ClassRideStore {
       this.player()?.destroy();
       // The lock and the sound are bound on the route, whose injector outlives the page.
       this.wakeLock.release();
+      this.activity.end();
       this.sound.stop();
     });
   }
@@ -300,6 +304,7 @@ export class ClassRideStore {
     this.started.set(true);
     this.recorder = new RideRecorder();
     this.wakeLock.hold();
+    this.activity.begin();
     // Ride sound follows the pedalling, quiet while paused and, when Settings asks, under the playing video (L2-163).
     this.sound.play({
       cadence: this.telemetry.cadence,
@@ -353,6 +358,7 @@ export class ClassRideStore {
     this.ticker.stop();
     this.player()?.pause();
     this.wakeLock.release();
+    this.activity.end();
     this.sound.stop();
     const submitted = this.submit(ride);
     const classResult: ClassResult = {

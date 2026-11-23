@@ -11,10 +11,11 @@ app offers each new version without interrupting a ride.
 - **installed app** — site installed by the browser that opens in its own window
 - **version update** — new deployed build that the service worker has downloaded and can switch to
 - **ride in progress** — state from the start of a race, class or custom ride until its Results open
+  or the rider leaves it
 
 The feature belongs to the platform subsystem. The app's own build serves the manifest and icons;
 the backend that hosts the build (ADR 0025) only has to answer them with their types. The update
-prompt's copy has no mock yet (`<TO SUPPLY>`).
+prompt is drawn in `docs/mocks/pages/home/update-ready.html`.
 
 ## Description
 
@@ -32,18 +33,33 @@ prompt's copy has no mock yet (`<TO SUPPLY>`).
   and icons with the app shell, so an installed app opens with its icon offline.
 - **Angular service worker** — registered by `provideAppCache` on the screens' lazy parent route
   once the first screen settles (`performance/ride-without-a-network`, ADR 0032). It caches the app
-  shell and checks for a new version on each navigation. `SwUpdate` is bound on the same route,
-  so none of it joins the initial bundle.
-- **`RideActivity`** — root service in the `ride` application with the signal `inProgress`. Ride
-  pages set it on start and clear it when Results opens or the rider leaves.
-- **`UpdatePrompt`** — root service in the `ride` application, started from `app.config.ts`. It
-  listens to `SwUpdate.versionUpdates` for `VERSION_READY`. When no ride is in progress, it shows the
-  update toast at once. During a ride it holds the update and shows the toast when `inProgress`
-  turns false. On "Reload" it calls `SwUpdate.activateUpdate()` and then `document.location.reload()`.
-  It never reloads on its own. It also handles `SwUpdate.unrecoverable` by offering the same reload,
-  outside a ride.
-- **`Toast`** — presentation component in `components` (`wz-toast`) used for the prompt, with an
-  action button. Its message and action copy are `<TO SUPPLY>`.
+  shell and checks for a new version when the app opens (each navigation it serves). An installed
+  app keeps the version it loaded until it is reloaded.
+- **`provideAppUpdates`** — bound on the same lazy parent route as `provideAppCache`, so none of it
+  joins the initial bundle (ADR 0032). It binds Angular's `provideServiceWorker` for `SwUpdate` and
+  its channel to the worker (its registering app initializer runs only in the root injector, so it
+  registers nothing here), `APP_UPDATES`, `RIDE_ACTIVITY`, and mounts `UpdatePrompt` at the end of
+  `<body>`, where it stays on every screen.
+- **`AppUpdates` / `APP_UPDATES`** — contract and token in `api`: the signal `ready` and
+  `reload()`. **`SwAppUpdates`** in the `ride` application implements it on `SwUpdate`: `ready`
+  turns true on `VERSION_READY`, or on `unrecoverable` (the loaded version lost its files and can
+  no longer run). `reload()` calls `SwUpdate.activateUpdate()` and then
+  `document.location.reload()`, even when the switch fails, since the load that follows gets the
+  newest version anyway. Nothing calls it but the rider's Reload.
+- **`RideActivity` / `RIDE_ACTIVITY`** — contract and token in `api`: the signal `inProgress`,
+  `begin()` and `end()`; `RideInProgress` in `domain`'s `engine/` implements it. The race, class and
+  custom ride stores call `begin()` where a ride starts and `end()` where it finishes, ends as a
+  DNF, or the rider leaves it: the same points that hold and release the screen wake lock.
+  Pausing keeps the ride in progress.
+- **`UpdatePrompt`** — page-level component in the `ride` application (`wz-update-prompt`). It
+  renders a toast region and, while `ready()` is true, no ride is in progress and the rider has not
+  dismissed it, an info toast: "A new version is ready", "Reload to use it now, or it opens next
+  time.", with the action "Reload". During a ride the toast waits; it shows when `inProgress`
+  turns false. As a toast with an action, it never times out (design system: *Toast*). Dismissing
+  it hides it for the rest of the session; the next open loads the new version.
+- **`Toast`** — presentation component in `components` (`wz-toast`). This feature adds its
+  optional action: the input `action` (the label) renders one small raised button, and the output
+  `actionChosen` reports it.
 
 ## Proof
 
@@ -53,6 +69,13 @@ prompt's copy has no mock yet (`<TO SUPPLY>`).
   the API answers `manifest.webmanifest` as `application/manifest+json` and an icon as `image/png`
   without a session.
 - The install prompt itself is the browser's; no test clicks it.
+- **Offered between rides (`L2-150` AC2).** A behaviour spec lets the real service worker run on
+  the production build, as the app cache's spec does, and deploys a new version by answering the
+  worker's `ngsw.json` with the build's own plus `appData`. Opened again, the app shows the toast,
+  and Reload loads the page again. In a custom ride, the worker's check (posted as `SwUpdate` does)
+  brings `VERSION_READY`, yet no toast shows and the page is not reloaded until End opens Profile.
+  Dismissing the toast leaves the page as it is. A unit spec covers `SwAppUpdates`' events and
+  Reload.
 
 ## Requirements
 
@@ -109,6 +132,12 @@ reload (`L2-150` AC2).
 - **Icon artwork.** The requirement asked for icons whose artwork was `<TO SUPPLY>`. Slice 27.1
   draws them from the logo mark on ink, in the dark theme's colours; a designer's own app icon
   replaces the two SVG sources and is rendered again.
+- **The words of the offer.** The requirement had no copy for the toast (`<TO SUPPLY>`); slice
+  27.2 wrote "A new version is ready" and "Reload to use it now, or it opens next time." in the
+  mock. An unrecoverable state shows the same toast; words of its own would need a mock state.
+- **Checking during a long session.** The worker looks for a new version when the app opens. An
+  installed app left open for days sees a new version only when it is next opened; a periodic
+  `checkForUpdate()` would find it sooner, and no requirement asks for one.
 - **An "Install" button of the app's own.** Chrome and Edge offer installation in the address bar
   and menu. A button in the app would need a `beforeinstallprompt` handler, a mock and copy; none
   is asked for.

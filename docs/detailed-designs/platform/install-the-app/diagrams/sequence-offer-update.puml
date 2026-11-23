@@ -21,8 +21,9 @@ box "Frontend — Ride app (service worker)" #E0F2FE
 end box
 box "Frontend — Ride app (ride application)" #E0F2FE
   participant "SwUpdate" as swupdate
+  participant "SwAppUpdates" as updates
   participant "UpdatePrompt" as prompt
-  participant "RideActivity" as activity
+  participant "RideInProgress" as activity
 end box
 box "Frontend — Ride app (components library)" #E0F2FE
   participant "Toast" as toast
@@ -32,16 +33,18 @@ sw -> host : GET ngsw.json
 host --> sw : New version hash
 sw -> host : Download the new version's files
 sw -> swupdate : VERSION_READY
-swupdate -> prompt : versionUpdates
+swupdate -> updates : versionUpdates
+updates -> prompt : ready = true
 prompt -> activity : inProgress()
 alt A ride is in progress (L2-150 AC2)
-  prompt -> prompt : pending = true; no reload
-  ...ride ends; Results opens...
+  prompt -> prompt : no toast; no reload
+  ...ride ends; Results (or Profile) opens; the store calls end()...
   activity -> prompt : inProgress = false
 end
-prompt -> toast : Show update message with "Reload" (copy <TO SUPPLY>)
+prompt -> toast : "A new version is ready" with Reload
 actor -> toast : Reload
-toast -> prompt : action
-prompt -> swupdate : activateUpdate()
-prompt -> prompt : document.location.reload()
+toast -> prompt : actionChosen
+prompt -> updates : reload()
+updates -> swupdate : activateUpdate()
+updates -> updates : document.location.reload()
 @enduml

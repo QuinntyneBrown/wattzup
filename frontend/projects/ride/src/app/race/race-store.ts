@@ -19,6 +19,7 @@ import {
   type SceneryRequest,
   type SceneryState,
   RIDE_SOUND,
+  RIDE_ACTIVITY,
   SCREEN_WAKE_LOCK,
   TICKER,
 } from '@telo/api';
@@ -73,6 +74,8 @@ export class RaceStore {
   private readonly telemetry = inject(BikeTelemetry);
   private readonly resistanceControl = inject(ResistanceController);
   private readonly wakeLock = inject(SCREEN_WAKE_LOCK);
+  /** Whether a ride is in progress, so a new version of the app waits for its end (L2-150 AC2). */
+  private readonly activity = inject(RIDE_ACTIVITY);
   private readonly sound = inject(RIDE_SOUND);
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute).snapshot;
@@ -341,6 +344,7 @@ export class RaceStore {
     // The lock and the sound are bound on the route, whose injector outlives the page.
     this.destroyRef.onDestroy(() => {
       this.wakeLock.release();
+      this.activity.end();
       this.sound.stop();
     });
   }
@@ -365,6 +369,7 @@ export class RaceStore {
     this.loaded.set(map);
     this.recorder = new RideRecorder();
     this.wakeLock.hold();
+    this.activity.begin();
     // Ride sound follows the pedalling at the race's speed, quiet while paused or out of the race (L2-163).
     this.sound.play({
       cadence: this.telemetry.cadence,
@@ -447,6 +452,7 @@ export class RaceStore {
     this.clock.pause();
     this.ticker.stop();
     this.wakeLock.release();
+    this.activity.end();
   }
 
   /**
@@ -531,6 +537,7 @@ export class RaceStore {
     this.clock.pause();
     this.ticker.stop();
     this.wakeLock.release();
+    this.activity.end();
     const raceResult: RaceResult = {
       mapId: this.mapId,
       mapName: this.map()?.name ?? '',

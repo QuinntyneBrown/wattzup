@@ -1,0 +1,4 @@
+// The prompt only places the toast region (block toast-region), which positions itself at the foot of the screen.
+:host {
+  display: contents;
+}

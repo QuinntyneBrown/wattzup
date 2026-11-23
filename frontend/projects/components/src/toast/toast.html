@@ -15,6 +15,13 @@
     }
     {{ text() }}
   </p>
+  @if (action()) {
+    <div class="toast__actions">
+      <button wz-button variant="raised" size="sm" type="button" (click)="actionChosen.emit()">
+        {{ action() }}
+      </button>
+    </div>
+  }
 </div>
 <button class="icon-btn toast__close" type="button" aria-label="Dismiss" (click)="dismissed.emit()">
   <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
