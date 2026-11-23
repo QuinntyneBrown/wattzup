@@ -250,4 +250,14 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
             fz_s = height_at(fx_s, fy_s)
             B["larch-aged"].box((fx_s, fy_s, fz_s - 0.2), (5.2, 0.16, 1.65), sf_yaw)
 
+    # 9. Sellaronda winter ski-trail overpass abutments with Orange & Green circuit shields (Arabba & Plan de Gralba)
+    for sk_m in (3340.0, 8655.0):
+        sk_idx = road.index(sk_m)
+        skyaw = s[sk_idx]["h"]
+        for side in (-1.0, 1.0):
+            ax_s, ay_s, az_s = kit.P(sk_idx, 0.0, (kit.kerb + 2.8) * side, -0.4)
+            B["stone"].box((ax_s, ay_s, az_s), (5.4, 2.2, 3.85), skyaw)
+            B["larch-warm"].box((ax_s, ay_s, az_s + 3.85), (5.6, 2.3, 0.95), skyaw)
+            B["crowd-3" if side < 0 else "foliage"].box((ax_s, ay_s, az_s + 2.65), (1.45, 2.32, 0.65), skyaw)
+
     return cableways_out
