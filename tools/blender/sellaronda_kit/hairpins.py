@@ -71,6 +71,8 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
             B["stone"].box(kit.P(idx, 0.0, -(kit.kerb + 1.45), -0.3), (8.4, 1.15, 5.45), yaw)
             # Overhead concrete avalanche roof slab spanning the carriageways
             B["dolomite-pale"].box(kit.P(idx, 0.0, 0.0, 4.95), (8.4, (kit.kerb + 1.65) * 2.0, 0.62), yaw)
+            if idx % 4 == 0:
+                B["hay"].box(kit.P(idx, 0.0, -1.2, 5.57), (8.4, kit.kerb * 1.4, 0.35), yaw)
             B["yellow"].box(kit.P(idx, 0.0, 0.0, 0.022), (6.2, 0.22, 0.015), yaw)
             # Valley-side open concrete pillars framing the panoramic view + red/white portal stripes at ends
             B["dolomite-pale"].box(kit.P(idx, 0.0, kit.kerb + 1.15, -0.3), (0.75, 0.75, 5.25), yaw)
