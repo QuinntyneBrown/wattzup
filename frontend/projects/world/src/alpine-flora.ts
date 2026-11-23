@@ -63,6 +63,13 @@ export function dominantConiferSpecies(altitudeMetres: number): DolomiteConifer 
   return 'none';
 }
 
+/** Probability (0..1) that open pasture at `altitudeMetres` is free of snowpack in `month1To12`. */
+export function pastureSnowFreeProbability(altitudeMetres: number, month1To12: number): number {
+  const summerCore = Math.max(0, 1 - Math.abs(month1To12 - 7.5) / 3.2);
+  const altPenalty = Math.max(0, (altitudeMetres - 1800) / 1400);
+  return Number(Math.max(0, Math.min(1, summerCore - altPenalty * 0.45)).toFixed(2));
+}
+
 /** Relative alpine wildflower bloom density (0..1), peaking in sunny 1,750..2,100 m hay pastures. */
 export function wildflowerBloomIntensity(altitudeMetres: number): number {
   if (altitudeMetres <= 1350 || altitudeMetres >= 2550) return 0;
