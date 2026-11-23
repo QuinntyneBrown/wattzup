@@ -539,6 +539,13 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     B["paint"].box((sgx + 0.8, sgy, sgz + 0.15), (0.95, 16.5, 0.14), 0.4)
     B["parasol-red"].box((sgx - 3.6, sgy, sgz + 0.52), (0.85, 0.12, 1.35), 0.4)
 
+    # Iconic blue cycling neutral-service support car parked on upper Passo Gardena (at=10010 m)
+    ns_i = road.index(10010.0)
+    nsy = s[ns_i]["h"] + 0.1
+    nsx, nsy_p, nsz = kit.P(ns_i, 0.0, kit.kerb + 3.4, 0.0)
+    B["ladin-blue"].box((nsx, nsy_p, nsz + 0.35), (4.45, 1.80, 1.05), nsy)
+    B["paint"].box((nsx, nsy_p, nsz + 1.40), (1.45, 1.25, 0.55), nsy)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
