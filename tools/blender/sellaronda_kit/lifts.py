@@ -136,6 +136,7 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
                     sy_g = py_k - clx * 9.0
                     sz_g = height_at(sx_g, sy_g)
                     B["stone"].box((sx_g, sy_g, sz_g - 0.3), (1.1, 1.1, 0.55), yaw_l)
+                    B["ladin-blue"].box((sx_g + 0.65, sy_g - 0.45, sz_g + 0.15), (0.24, 0.24, 1.15), yaw_l)
                     B["steel"].box((sx_g, sy_g, sz_g + 0.25), (0.28, 0.28, 2.4), yaw_l)
                     B["yellow"].box((sx_g, sy_g, sz_g + 2.55), (1.15, 0.88, 0.88), yaw_l + 0.5)
                     B["dark"].box((sx_g + math.cos(yaw_l + 0.5) * 0.58, sy_g + math.sin(yaw_l + 0.5) * 0.58, sz_g + 2.62), (0.12, 0.72, 0.72), yaw_l + 0.5)
