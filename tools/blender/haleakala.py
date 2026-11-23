@@ -528,6 +528,59 @@ def ranch_land(k) -> dict:
 COAST_TO = 0.075  # the share of the climb below which the road is still by the shore
 
 
+TOWN = (150, 186)  # the samples the plantation town's shops stand along, on the mountain's side of the coast road
+SHOPS = (0xE9C46A, 0x8FC1B5, 0xE07A5F, 0xF2E8CF, 0x6FA8DC, 0xD98BA8, 0x9CCB86)
+
+
+def plantation_town(k) -> dict:
+    """Detail 7, the coastal start: the old sugar town the climb sets out from. A row of wooden shops with false
+    fronts, each its own paint, stands along the mountain's side of the road under tin awnings; behind the cane
+    beyond it is the sugar mill, a long rust-roofed shed with its tall stack."""
+    paint, rng, s = Painted(k), k.rng, k.s
+    trim, glass, door, tin, post = _lin(0xF7F3E8), _lin(0x2E3B44), _lin(0x5A3A28), _lin(0xA9ADA8), _lin(0xE8E2D4)
+    shops = 0
+    i = TOWN[0]
+    while i < TOWN[1]:
+        shore = 1 if math.cos(s[i]["h"]) > 0 else -1
+        wide, deep, tall = rng.uniform(6.5, 9.0), 7.0, rng.uniform(3.6, 4.4)
+        x, y, _ = k.road.at(i, -(k.kerb + 3.4 + deep / 2) * shore)
+        rx, ry, rz = k.road.at(i, 0.0)
+        d = math.hypot(rx - x, ry - y)
+        out = ((rx - x) / d, (ry - y) / d)
+        along = (-out[1], out[0])
+        yaw, z = math.atan2(along[1], along[0]), rz + 0.1
+        colour = _lin(SHOPS[rng.randrange(len(SHOPS))])
+        paint.box((x, y, z - 1.0), (wide, deep, tall + 1.0), yaw, colour, 0.7)
+        # The false front, taller than the shop behind it, with a pale cornice.
+        fx, fy = x + out[0] * (deep / 2 + 0.1), y + out[1] * (deep / 2 + 0.1)
+        paint.box((fx, fy, z + tall - 0.4), (wide, 0.3, rng.uniform(1.5, 2.3)), yaw, colour, 1.0)
+        paint.box((fx + out[0] * 0.75, fy + out[1] * 0.75, z + 2.75), (wide, 1.7, 0.12), yaw, tin, 1.0)
+        for e in (-1, 1):
+            paint.box((fx + out[0] * 1.5 + along[0] * e * (wide / 2 - 0.2), fy + out[1] * 1.5 + along[1] * e * (wide / 2 - 0.2), z - 0.1), (0.14, 0.14, 2.9), yaw, post, 1.0)
+        corner = (fx + out[0] * 0.15 - along[0] * wide / 2, fy + out[1] * 0.15 - along[1] * wide / 2, 0.0)
+        paint.panel(corner, along, out, wide / 2 - 0.55, wide / 2 + 0.55, z, z + 2.2, 0.04, door)
+        paint.panel(corner, along, out, 0.6, wide / 2 - 1.0, z + 0.8, z + 2.2, 0.04, glass)
+        paint.panel(corner, along, out, wide / 2 + 1.0, wide - 0.6, z + 0.8, z + 2.2, 0.04, glass)
+        paint.panel(corner, along, out, 0.8, wide - 0.8, z + tall + 0.1, z + tall + 0.8, 0.04, trim)
+        shops += 1
+        i += max(2, int(round((wide + 0.6) / k.step)))
+    # The mill, 90 m back from the road beyond the town.
+    j = TOWN[1] + 34
+    shore = 1 if math.cos(s[j]["h"]) > 0 else -1
+    x, y, _ = k.road.at(j, -(k.kerb + 92.0) * shore)
+    mill = k.road.clear_of_road(x, y, 40.0, j)
+    if mill:
+        z, yaw = k.height_at(x, y), s[j]["h"]
+        rust, wall, stack = _lin(0x8A4B32), _lin(0xB9B4A6), _lin(0xC9C3B4)
+        paint.box((x, y, z - 1.5), (46.0, 20.0, 13.5), yaw, wall, 0.7)
+        paint.roof((x, y, z + 12.0), 46.0, 20.0, 5.0, yaw, rust)
+        cs, sn = math.cos(yaw), math.sin(yaw)
+        paint.box((x + cs * 30.0, y + sn * 30.0, z - 1.5), (16.0, 14.0, 20.0), yaw, _lin(0xA7A294), 0.7)
+        paint.roof((x + cs * 30.0, y + sn * 30.0, z + 18.5), 16.0, 14.0, 3.0, yaw, rust)
+        paint.tube((x - cs * 30.0, y - sn * 30.0, z - 1.5), 2.3, 1.5, 44.0, stack, _lin(0x8E8A80), 8, _lin(0x3A3836))
+    return {"shops": shops, "mill": bool(mill)}
+
+
 def coastal_start(k) -> dict:
     """Detail 7, the coastal start: coconut palms lean along the shore side of the road and stand in ones and twos
     inland, and fields of sugar cane, taller than a rider, fill the flat land on the mountain's side."""
@@ -552,7 +605,7 @@ def coastal_start(k) -> dict:
                 k.palm(x, y, k.height_at(x, y))
                 palms += 1
         # Cane: a block of it 3 m tall from 9 m to 46 m behind the kerb, with a track through it now and then.
-        if abs(s[i]["k"]) > 1 / 90 or i % 40 > 36:
+        if abs(s[i]["k"]) > 1 / 90 or i % 40 > 36 or TOWN[0] - 3 <= i <= TOWN[1] + 3:
             continue
         near, far = [k.road.at(q, -(k.kerb + 9.0) * shore) for q in (i, i + 1)], [k.road.at(q, -(k.kerb + 46.0) * shore) for q in (i, i + 1)]
         if not all(k.road.clear_of_road(p[0], p[1], 8.0, i) for p in far):
@@ -812,6 +865,7 @@ def scenery(k) -> dict:
     domes = science_city(k)
     ranch = ranch_land(k)
     coast = coastal_start(k)
+    coast.update(plantation_town(k))
     cones = crater(k)
     lava = lava_field(k)
     signs = park_signs(k)
