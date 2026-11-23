@@ -583,4 +583,13 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
         if road.clear_of_road(stx, sty, 6.0, st_i):
             B["larch-aged"].box((stx, sty, height_at(stx, sty)), (0.48, 0.48, 0.65), st_i * 0.6)
 
+    # Roofed wooden alpine pollinator & wild-bee houses along sunny hayfields
+    for ph_m in (980.0, 10820.0):
+        phi = road.index(ph_m)
+        phx, phy, _ = road.at(phi, kit.kerb + 5.4)
+        if road.clear_of_road(phx, phy, 3.5, phi):
+            phz = height_at(phx, phy)
+            B["larch-warm"].box((phx, phy, phz), (0.55, 0.38, 1.35), s[phi]["h"])
+            kit.gable(B["chalet-wood"], (phx, phy, phz + 1.35), 0.72, 0.52, 0.24, s[phi]["h"])
+
     return trees
