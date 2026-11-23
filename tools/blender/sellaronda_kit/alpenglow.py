@@ -280,6 +280,11 @@ def emit_dusk_lights(kit, road, height_at) -> None:
     sl_h = road.index(7128.0)
     slhx, slhy, slhz = road.at(sl_h, kit.kerb + 6.4, 2.4)
     kit.halo((slhx, slhy, slhz), "bulb")
+    # Warm evening window pools at Mulino di Arabba & Savoia wellness pavilion
+    for mw_m, mw_o in ((3078.0, -(kit.kerb + 13.0)), (4938.0, -(kit.kerb + 12.0))):
+        mwi = road.index(mw_m)
+        mwx, mwy, mwz = road.at(mwi, mw_o, 2.5)
+        kit.light((mwx, mwy, mwz), "glow-window", 16.0, 0.50)
     # [ANCHOR:alpenglow-lights]
 
 
