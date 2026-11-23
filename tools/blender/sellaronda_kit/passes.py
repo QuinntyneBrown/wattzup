@@ -419,4 +419,8 @@ def build_four_passes(B, kit, road, height_at) -> None:
     fa_s = road.index(7734.0)
     B["larch-aged"].box(kit.P(fa_s, 0.0, kit.kerb + 3.8, 0.0), (0.16, 0.16, 2.45), s[fa_s]["h"])
     B["parasol-red"].box(kit.P(fa_s, 0.0, kit.kerb + 3.8, 2.05), (1.35, 0.08, 0.24), s[fa_s]["h"] + 0.6)
+    # Dry-stone mountaineers' cairn & bronze cross on Passo Pordoi's western brow (at=4992 m)
+    pc_w = road.index(4992.0)
+    B["stone"].box(kit.P(pc_w, 0.0, kit.kerb + 5.5, -0.1), (1.35, 1.35, 1.45), s[pc_w]["h"])
+    B["gold"].box(kit.P(pc_w, 0.0, kit.kerb + 5.5, 1.35), (0.12, 0.65, 1.05), s[pc_w]["h"])
     # [ANCHOR:passes]
