@@ -1372,7 +1372,8 @@ def hiker(paint, rng, c, yaw: float, gear: bool = True) -> None:
 def footpath(k) -> dict:
     """Detail 9, the coastal footpath and its hikers: about every 900 m the Sentiero Azzurro meets the road. A
     flight of stone steps climbs the first terrace wall, a wooden fingerpost with red-and-white boards stands at
-    its foot, and walkers come and go along the inland side of the road in twos and threes."""
+    its foot, a zebra is painted over the road, a bench and the trail's map board stand under the parapet, and
+    walkers come and go along the inland side of the road in twos and threes."""
     paint, rng, s = Painted(k), k.rng, k.s
     stone, tread, wood, white, red = _lin(0x978E79), _lin(0xB4AB96), _lin(0x7A5A3A), _lin(0xF2EEE2), _lin(0xC8322C)
     sites = [site["i"] for site in village_sites(s)]
@@ -1431,6 +1432,34 @@ def footpath(k) -> dict:
             paint.box((bx + math.cos(yaw) * reach * 0.75, by + math.sin(yaw) * reach * 0.75, z + up - 0.005), (0.24, 0.075, 0.21), yaw, red, 1.0)
         crossings += 1
         walkers += party(i + 4, rng.randint(2, 4))
+        # Where the path crosses: a zebra painted over the road, and on the sea's side a bench under the
+        # parapet with the trail's map board beside it and somebody looking at it.
+        near = Painted(k, "ct-detail")
+        off = -4.3
+        while off < 4.0:
+            a, b = k.P(i, 1.2, off, 0.035), k.P(i, 4.4, off, 0.035)
+            c, d = k.P(i, 4.4, off + 0.55, 0.035), k.P(i, 1.2, off + 0.55, 0.035)
+            quad = (a, b, c, d)
+            if (b[0] - a[0]) * (d[1] - a[1]) - (b[1] - a[1]) * (d[0] - a[0]) < 0:
+                quad = quad[::-1]
+            near.face(quad, (white,) * 4)
+            off += 1.1
+        sea = -inland
+        x, y, z = k.P(i, 7.0, (k.kerb + 0.75) * sea)
+        near.box((x, y, z + 0.42), (1.9, 0.5, 0.08), yaw, wood, 0.9)
+        near.box((x - math.sin(yaw) * 0.26 * sea, y + math.cos(yaw) * 0.26 * sea, z + 0.5), (1.9, 0.07, 0.5), yaw, wood, 0.8)
+        for e in (-0.8, 0.8):
+            near.box((x + math.cos(yaw) * e, y + math.sin(yaw) * e, z), (0.09, 0.44, 0.42), yaw, _lin(0x3A3A3E), 1.0)
+        bx, by, bz = k.P(i, 10.2, (k.kerb + 0.95) * sea)
+        for e in (-0.75, 0.75):
+            near.box((bx + math.cos(yaw) * e, by + math.sin(yaw) * e, bz), (0.1, 0.1, 2.1), yaw, wood, 0.9)
+        near.box((bx, by, bz + 0.95), (1.5, 0.08, 1.05), yaw, _lin(0xE8DCC0), 1.0)
+        near.box((bx, by, bz + 0.98), (1.34, 0.1, 0.3), yaw, _lin(0x3F8FB0), 1.0)
+        near.box((bx, by, bz + 1.3), (1.34, 0.1, 0.5), yaw, _lin(0x9AB878), 1.0)
+        near.box((bx, by, bz + 2.0), (1.8, 0.5, 0.07), yaw, wood, 0.8)
+        hx, hy, _ = k.P(i, 10.2, (k.kerb + 0.1) * sea)
+        hiker(near, rng, (hx, hy, bz + 0.02), yaw + sea * math.pi / 2)
+        walkers += 1
     for i in range(40, k.n - 40, 60):
         j = i + rng.randrange(40)
         if rng.random() < 0.55 and clear(j):
