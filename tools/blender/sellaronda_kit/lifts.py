@@ -46,6 +46,8 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> None:
     B["stone"].box((tx, ty, tz - 6.0), (16.0, 12.0, 9.5), yaw_top)
     B["chalet-plaster"].box((tx, ty, tz + 3.5), (17.5, 13.0, 5.2), yaw_top)
     B["ladin-blue"].box((tx, ty, tz + 8.7), (18.2, 13.6, 1.4), yaw_top)
+    # Sun-glinting panoramic observation windows on Sass Pordoi's 2,950 m cliff-lip station!
+    B["glint"].box((tx + ux * 6.6, ty + uy * 6.6, tz + 5.1), (0.35, 11.8, 2.2), yaw_top)
 
     # Twin track & haul cables spanning the sheer cliff + red-and-silver Funivia cabin mid-ascent!
     for off_lat in (-2.1, 2.1):
