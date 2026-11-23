@@ -288,6 +288,13 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
             px_g, py_g, pz_g = kit.P(cl_idx, al_o, lat_o, 0.0)
             _road_cyclist(B, px_g, py_g, pz_g, clyaw, j_mat, standing=False)
 
+    # Red RFID split-timing mats & yellow timing decoder cases at all 4 pass crests
+    for p in PASSES:
+        tm_idx = road.index(p["at"] - 2.2)
+        tmyaw = s[tm_idx]["h"]
+        B["parasol-red"].box(kit.P(tm_idx, 0.0, 0.0, 0.022), (0.68, kit.kerb * 1.88, 0.02), tmyaw)
+        B["yellow"].box(kit.P(tm_idx, 0.0, -(kit.kerb + 1.15), 0.0), (0.55, 0.45, 0.42), tmyaw)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
