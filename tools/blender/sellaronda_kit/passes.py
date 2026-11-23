@@ -385,4 +385,6 @@ def build_four_passes(B, kit, road, height_at) -> None:
     for p in PASSES:
          idx_s = road.index(p["at"])
          B["dolomite-pale"].box(kit.P(idx_s, 4.0, -(kit.kerb + 1.95), -0.05), (0.85, 0.34, 0.24), s[idx_s]["h"])
+    # Gilded bronze devotional relief beside Cappella di San Maurizio's portal
+    B["gold"].box((bx_t - math.cos(g_yaw) * 1.05, by_t - math.sin(g_yaw) * 1.05, cz_ch + 1.55), (0.08, 0.42, 0.55), g_yaw)
     # [ANCHOR:passes]
