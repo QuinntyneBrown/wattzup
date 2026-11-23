@@ -415,4 +415,8 @@ def build_four_passes(B, kit, road, height_at) -> None:
     # Twin Giro rose-pink road stripes flanking Passo Pordoi's Cima Coppi summit line
     for pk_o in (-0.45, 0.45):
         B["accent-2"].box(kit.P(pordoi_idx, pk_o, 0.0, 0.02), (0.22, kit.kerb * 1.85, 0.015), p_yaw)
+    # Friedrich-August-Weg carved timber trailhead post on Passo Sella (at=7734 m)
+    fa_s = road.index(7734.0)
+    B["larch-aged"].box(kit.P(fa_s, 0.0, kit.kerb + 3.8, 0.0), (0.16, 0.16, 2.45), s[fa_s]["h"])
+    B["parasol-red"].box(kit.P(fa_s, 0.0, kit.kerb + 3.8, 2.05), (1.35, 0.08, 0.24), s[fa_s]["h"] + 0.6)
     # [ANCHOR:passes]
