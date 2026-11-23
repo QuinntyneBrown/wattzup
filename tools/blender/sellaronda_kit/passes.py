@@ -161,3 +161,12 @@ def build_four_passes(B, kit, road, height_at) -> None:
     B["stone"].box((cx_t, cy_t, cz_t), (1.2, 1.2, 0.65), cam_yaw)
     B["larch-aged"].box((cx_t, cy_t, cz_t + 0.65), (0.52, 0.52, 2.85), cam_yaw + 0.3)
     B["gold"].box((cx_t, cy_t, cz_t + 3.50), (0.36, 0.36, 0.42), cam_yaw + 0.3)
+
+    # Passo Sella (2,240 m) stone-pillar mountaineers' summit bell arch
+    sel_idx = road.index(7764.0)
+    sel_yaw = s[sel_idx]["h"]
+    for p_lat in (-1.1, 1.1):
+        B["stone"].box(kit.P(sel_idx, p_lat, -(kit.kerb + 3.6), -0.15), (0.58, 0.58, 3.15), sel_yaw)
+    B["larch-aged"].box(kit.P(sel_idx, 0.0, -(kit.kerb + 3.6), 2.95), (2.95, 0.48, 0.36), sel_yaw)
+    kit.gable(B["larch-warm"], kit.P(sel_idx, 0.0, -(kit.kerb + 3.6), 3.31), 3.35, 0.92, 0.55, sel_yaw)
+    B["gold"].box(kit.P(sel_idx, 0.0, -(kit.kerb + 3.6), 2.38), (0.38, 0.38, 0.48), sel_yaw)
