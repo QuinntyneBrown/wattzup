@@ -328,4 +328,8 @@ def build_four_passes(B, kit, road, height_at) -> None:
         psy = s[ps_i]["h"]
         B["larch-warm"].box(kit.P(ps_i, 0.0, -(kit.kerb + 2.35), -0.05), (0.24, 0.24, 1.18), psy)
         B["parasol-red"].box(kit.P(ps_i, 0.0, -(kit.kerb + 2.35), 1.13), (0.34, 0.30, 0.22), psy)
+    # Stepped pale-dolomite ceremonial approach avenue to Sacrario Militare del Pordoi
+    for st_step in (18.0, 26.0):
+        ax_s, ay_s, _ = road.at(sac_idx, -(kit.kerb + st_step))
+        B["dolomite-pale"].box((ax_s, ay_s, height_at(ax_s, ay_s) - 0.35), (4.2, 6.5, 0.55), s[sac_idx]["h"])
     # [ANCHOR:passes]
