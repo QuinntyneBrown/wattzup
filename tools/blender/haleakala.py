@@ -22,6 +22,10 @@ MATERIALS: dict[str, dict] = {
     # A delineator post: white plastic, with an amber reflector near its top.
     "hk-post": {"color": 0xECEAE2, "rough": 0.7},
     "hk-reflector": {"color": 0xFFB020, "glow": 0.9},
+    # The silversword: a globe of silver blades, and the maroon flower stalk of its last summer.
+    "hk-silver": {"color": 0xC9D4D2, "rough": 0.45},
+    "hk-bloom": {"color": 0x7A2F44, "rough": 0.9},
+    "hk-lava": {"color": 0x2A2626, "rough": 1.0},
 }
 
 THEME: dict = {
@@ -277,7 +281,58 @@ def cloud_sea(k) -> float:
     return level
 
 
+CINDER_FROM = 0.64  # how far up the climb the bare cinder begins
+
+
+def height_share(k, i: int) -> float:
+    """How far up the climb sample i is: 0 the shore, 1 the summit."""
+    zs = [p["z"] for p in k.s]
+    return (k.s[i]["z"] - min(zs)) / (max(zs) - min(zs))
+
+
+def silversword(k, x: float, y: float, z: float, bloom: bool) -> None:
+    """One silversword: a globe of narrow silver blades sitting on the cinder, and on a few the tall flower stalk."""
+    rng, b = k.rng, k.B["hk-silver"]
+    r = rng.uniform(0.55, 0.95)
+    for tier, (blades, tilt) in enumerate(((10, 0.3), (8, 0.8), (5, 1.25))):
+        for q in range(blades):
+            a = q * math.tau / blades + tier * 0.35 + rng.uniform(-0.15, 0.15)
+            ca, sa = math.cos(a), math.sin(a)
+            tip = (x + ca * r * math.cos(tilt), y + sa * r * math.cos(tilt), z + 0.08 + r * math.sin(tilt))
+            left, right = (x - sa * 0.16, y + ca * 0.16, z + 0.06), (x + sa * 0.16, y - ca * 0.16, z + 0.06)
+            b.tri(left, right, tip)
+            b.tri(right, left, tip)
+    if bloom:
+        k.prism(k.B["hk-bloom"], (x, y, z + r * 0.5), 0.26, rng.uniform(1.4, 2.2), 5, 0.08)
+
+
+def silverswords(k) -> int:
+    """Detail 4, silverswords: on the bare cinder near the summit and nowhere lower, in loose colonies with wide
+    gaps of bare ground between them, a few in flower. Dark lumps of lava lie among them."""
+    rng, s = k.rng, k.s
+    shares = [height_share(k, i) for i in range(0, k.n, 25)]
+    planted = 0
+    for i in range(6, k.n - 6):
+        if shares[i // 25] < CINDER_FROM or rng.random() > 0.2:
+            continue
+        side = rng.choice((1, -1))
+        off = (k.kerb + rng.uniform(3.0, 20.0)) * side
+        cx, cy, _ = k.road.at(i, off)
+        for _ in range(rng.randint(3, 8)):
+            x, y = cx + rng.uniform(-5.0, 5.0), cy + rng.uniform(-5.0, 5.0)
+            if not k.road.clear_of_road(x, y, 7.0, i):
+                continue
+            z = k.ground(x, y, i, off)
+            if rng.random() < 0.22:
+                k.blob(k.B["hk-lava"], (x, y, z + 0.1), rng.uniform(0.35, 0.9))
+            else:
+                silversword(k, x, y, z, rng.random() < 0.14)
+                planted += 1
+    return planted
+
+
 def scenery(k) -> dict:
     posts = reflector_posts(k)
     cloud = cloud_sea(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud)}
+    swords = silverswords(k)
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords}
