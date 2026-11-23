@@ -161,6 +161,8 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
             B["larch-warm"].box(kit.P(st_idx, 0.0, (kit.kerb + 0.95) * side, 0.0), (8.6, 0.32, 1.18), st_yaw)
             B["larch-aged"].box(kit.P(st_idx, 0.0, (kit.kerb + 0.95) * side, 1.18), (9.0, 0.44, 0.16), st_yaw)
             B["geranium-red"].box(kit.P(st_idx, 0.0, (kit.kerb + 1.12) * side, 1.05), (5.6, 0.34, 0.28), st_yaw)
+            if side < 0:
+                B["ladin-blue"].box(kit.P(st_idx, -4.4, -(kit.kerb + 1.15), 1.45), (0.08, 1.15, 0.32), st_yaw)
             for fl_o in (-2.6, 0.0, 2.6):
                 B["geranium-red"].box(kit.P(st_idx, fl_o, (kit.kerb + 0.95) * side, 1.32), (1.45, 0.36, 0.24), st_yaw)
 
