@@ -79,3 +79,17 @@ def build_four_passes(B, kit, road, height_at) -> None:
         B["paint"].box(kit.P(b_idx, 0.0, off, 1.95), (0.10, 1.55, 0.92), b_yaw)
         B[crest_a].box(kit.P(b_idx, 0.04, off - 0.36, 2.48), (0.12, 0.42, 0.32), b_yaw)
         B[crest_b].box(kit.P(b_idx, 0.04, off + 0.36, 2.48), (0.12, 0.42, 0.32), b_yaw)
+
+    # Cycling climb countdown markers (km to summit + altitude + gradient %) every 350 m up all 4 climbs
+    for p in PASSES:
+        d_mark = p["at"] - 350.0
+        while d_mark > p["climb_from"] + 80.0:
+            m_idx = road.index(d_mark)
+            m_yaw = s[m_idx]["h"]
+            m_off = -(kit.kerb + 1.45)
+            steep_col = "parasol-red" if s[m_idx]["g"] >= 6.5 else ("yellow" if s[m_idx]["g"] >= 4.5 else "foliage")
+            B["steel"].box(kit.P(m_idx, 0.0, m_off, -0.15), (0.08, 0.08, 1.85), m_yaw)
+            B["paint"].box(kit.P(m_idx, 0.0, m_off, 1.12), (0.07, 0.72, 0.58), m_yaw)
+            B["ladin-blue"].box(kit.P(m_idx, -0.02, m_off, 1.52), (0.08, 0.72, 0.18), m_yaw)
+            B[steep_col].box(kit.P(m_idx, -0.02, m_off, 1.14), (0.08, 0.68, 0.14), m_yaw)
+            d_mark -= 350.0
