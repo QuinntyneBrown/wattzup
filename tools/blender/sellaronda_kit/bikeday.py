@@ -325,6 +325,16 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         B["parasol-red"].box((rx_c, ry_c, rz_c + 0.28), (4.05, 1.68, 0.56), rdyaw)
         B["glacier-ice"].box((rx_c + math.cos(rdyaw) * 0.45, ry_c + math.sin(rdyaw) * 0.45, rz_c + 0.84), (0.18, 1.42, 0.34), rdyaw)
 
+    # Volunteer Bike Day marshals waving yellow caution flags at fast village descent entries
+    for ms_m in (2940.0, 5940.0, 8750.0, 11320.0):
+        ms_idx = road.index(ms_m)
+        msyaw = s[ms_idx]["h"] + math.pi
+        mx_v, my_v, mz_v = kit.P(ms_idx, 0.0, -(kit.kerb + 1.35), 0.0)
+        B["dark"].box((mx_v, my_v, mz_v), (0.32, 0.36, 0.88), msyaw)
+        B["crowd-3"].box((mx_v, my_v, mz_v + 0.88), (0.34, 0.42, 0.58), msyaw)
+        B["skin"].box((mx_v, my_v, mz_v + 1.46), (0.22, 0.22, 0.24), msyaw)
+        B["yellow"].box((mx_v - math.sin(msyaw) * 0.48, my_v + math.cos(msyaw) * 0.48, mz_v + 1.25), (0.05, 0.65, 0.48), msyaw)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
