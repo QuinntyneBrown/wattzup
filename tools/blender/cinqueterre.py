@@ -51,6 +51,9 @@ THEME: dict = {
     "sun_azimuth": math.radians(162),
     # A provincial road, not a circuit: no red-and-white kerbs round its bends.
     "kerbs": False,
+    # The villages, the boats and the path are painted into the land, so it is cut into 480 m lengths, not 960 m:
+    # by a hairpin, half as much of it is drawn.
+    "chunks": {"Land": 2},
     "terrain": {"sea": True, "cliff": True, "rise": 48.0, "far": 8.0},
     "edge": "corniche",
     "centre": "white",
@@ -612,8 +615,9 @@ def olive(k, x: float, y: float, z: float) -> None:
     """An olive: a short twisted trunk under two or three mounds of silver-green."""
     rng, B = k.rng, k.B
     k.prism(B["trunk"], (x, y, z - 0.4), 0.3, 1.9, 5, 0.2)
-    for _ in range(rng.randint(2, 3)):
-        lens(B["ct-olive"], (x + rng.uniform(-1.1, 1.1), y + rng.uniform(-1.1, 1.1), z + rng.uniform(2.2, 3.2)), rng.uniform(1.5, 2.2), 1.3, rng, 6)
+    # Two mounds, a third on one tree in four, five-sided: the olives were the heaviest thing on the hillside.
+    for _ in range(3 if rng.random() < 0.25 else 2):
+        lens(B["ct-olive"], (x + rng.uniform(-1.1, 1.1), y + rng.uniform(-1.1, 1.1), z + rng.uniform(2.2, 3.2)), rng.uniform(1.7, 2.4), 1.3, rng, 5)
 
 
 def agave(k, x: float, y: float, z: float) -> None:

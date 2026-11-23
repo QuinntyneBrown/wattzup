@@ -617,9 +617,12 @@ def group_material(name: str):
     return mat
 
 
-def assemble(road: "Road", col) -> dict:
-    """Builds the map's meshes: each group's faces, welded, coloured by vertex and cut into chunks along the road."""
+def assemble(road: "Road", col, wider: dict | None = None) -> dict:
+    """Builds the map's meshes: each group's faces, welded, coloured by vertex and cut into chunks along the road.
+    `wider` overrides how many chunks long a group's meshes are (a theme's `chunks`): a world that paints much
+    into its land cuts it shorter, so less of it is drawn at once."""
     per_chunk = int(CHUNK / STEP)
+    wide = {**WIDER, **(wider or {})}
     meshes: dict[str, dict] = {}
     film = None
     for part in PARTS:
@@ -657,7 +660,7 @@ def assemble(road: "Road", col) -> dict:
                 cx = sum(part.verts[i][0] for i in face) / len(face)
                 cy = sum(part.verts[i][1] for i in face) / len(face)
                 _, j, _ = road.tree.find((cx, cy, 0.0))
-                name = f"{group}_{j // (per_chunk * WIDER.get(group, 1)):03d}"
+                name = f"{group}_{j // (per_chunk * wide.get(group, 1)):03d}"
             mesh = meshes.setdefault(name, {"group": group, "verts": [], "cols": [], "uvs": [], "faces": [], "index": {}})
             ids = []
             walled = group in ("Walls", "Skyline")
@@ -2213,7 +2216,7 @@ def main(argv: list[str] | None = None) -> dict:
     else:
         _, height_at = build_terrain(road, col)
         facts = build_scenery(road, st, length, height_at, course, col)
-    built = assemble(road, col)
+    built = assemble(road, col, (theme or {}).get("chunks"))
     add_guides(samples, course)
 
     args.out.mkdir(parents=True, exist_ok=True)
