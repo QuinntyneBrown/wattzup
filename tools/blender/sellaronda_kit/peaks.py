@@ -122,7 +122,7 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         for c_i in range(gl_cols + 1):
             u_frac = (c_i / gl_cols) - 0.5
             lat_g = u_frac * (680.0 - 150.0 * v_frac) + 20.0
-            undul = 14.0 * math.sin(c_i * 1.4 + r_i * 0.9)
+            undul = 14.0 * math.sin(c_i * 1.4 + r_i * 0.9) + (11.0 if r_i == gl_rows - 1 else 0.0)
             row_pts.append((
                 pordoi_pt["x"] + mux * rad_g + mpx * lat_g,
                 pordoi_pt["y"] + muy * rad_g + mpy * lat_g,
