@@ -235,3 +235,11 @@ def build_four_passes(B, kit, road, height_at) -> None:
         B["crowd-3"].box((sx_o, sy_o, sz_o), (0.26, 0.26, 2.15), syaw)
         B["paint"].box((sx_o, sy_o, sz_o + 1.35), (0.28, 0.22, 0.36), syaw)
         B["ladin-blue"].box((sx_o, sy_o, sz_o + 2.16), (0.48, 0.48, 0.06), syaw)
+
+    # Timber alpine souvenir & cycling-jersey kiosk on Passo Pordoi (at=4964 m)
+    ks_idx = road.index(4964.0)
+    ks_yaw = s[ks_idx]["h"]
+    kx_p, ky_p, kz_p = kit.P(ks_idx, 0.0, -(kit.kerb + 5.6), -0.2)
+    B["larch-warm"].box((kx_p, ky_p, kz_p), (4.6, 3.2, 2.75), ks_yaw)
+    B["glow-window"].box((kx_p, ky_p, kz_p + 0.95), (3.6, 3.26, 1.15), ks_yaw)
+    kit.gable(B["larch-aged"], (kx_p, ky_p, kz_p + 2.75), 5.2, 3.8, 1.15, ks_yaw)
