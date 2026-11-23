@@ -4,6 +4,7 @@ import {
   passClimbProgress,
   SELLA_RONDA_PASSES,
   sellaMassifBearing,
+  sellaSubpeaksForPass,
 } from './sellaronda-landmarks';
 
 describe('SELLA_RONDA_PASSES', () => {
@@ -34,5 +35,12 @@ describe('SELLA_RONDA_PASSES', () => {
     expect(midPordoi?.pass.id).toBe('pordoi');
     expect(midPordoi?.fraction).toBeCloseTo(0.5, 3);
     expect(midPordoi?.remainingMetres).toBe(825);
+  });
+
+  it('lists Sass Pordoi and Piz Boè above Passo Pordoi and Torri del Sella above Passo Sella', () => {
+    expect(sellaSubpeaksForPass('pordoi').map((p) => p.name)).toContain('Sass Pordoi');
+    expect(sellaSubpeaksForPass('sella').map((p) => p.name)).toContain(
+      'Torri del Sella (Terza Torre)',
+    );
   });
 });
