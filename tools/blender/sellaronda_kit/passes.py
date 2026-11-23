@@ -332,4 +332,9 @@ def build_four_passes(B, kit, road, height_at) -> None:
     for st_step in (18.0, 26.0):
         ax_s, ay_s, _ = road.at(sac_idx, -(kit.kerb + st_step))
         B["dolomite-pale"].box((ax_s, ay_s, height_at(ax_s, ay_s) - 0.35), (4.2, 6.5, 0.55), s[sac_idx]["h"])
+    # Live 360-panorama summit webcam masts on Passo Sella & Passo Gardena
+    for wc_at in (7742.0, 10146.0):
+        wc_i = road.index(wc_at)
+        B["steel"].box(kit.P(wc_i, 0.0, kit.kerb + 5.2, -0.1), (0.12, 0.12, 4.6), s[wc_i]["h"])
+        B["paint"].box(kit.P(wc_i, 0.0, kit.kerb + 5.2, 4.5), (0.28, 0.28, 0.26), 0.0)
     # [ANCHOR:passes]
