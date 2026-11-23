@@ -74,6 +74,21 @@ export function horizonFogBlendFactor(
   return Number((1 - Math.exp(-(d * d))).toFixed(4));
 }
 
+export interface EnrosadiraSnapshot {
+  readonly stage: ReturnType<typeof enrosadiraStageName>;
+  readonly kelvin: number;
+  readonly windowWeight: number;
+}
+
+/** Snapshot of Sella Ronda's enrosadira lighting state at normalised ride progress `progress` (0..1). */
+export function fullLoopEnrosadiraSummary(progress: number): EnrosadiraSnapshot {
+  return {
+    stage: enrosadiraStageName(progress),
+    kelvin: directBeamKelvin(progress),
+    windowWeight: Number(enrosadiraWindowCurve(progress).toFixed(3)),
+  };
+}
+
 /** Anti-solar Belt of Venus intensity (0..1) for view azimuth `viewAz` and elevation `horizonElev` (0..1). */
 export function beltOfVenusWeight(viewAz: number, sunAz: number, horizonElev: number): number {
   const anti = Math.max(0, -Math.cos(viewAz - sunAz));
