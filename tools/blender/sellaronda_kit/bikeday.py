@@ -131,6 +131,8 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
                 )
         kit.gable(B["ladin-blue"], (gx0, gy0, gz0 + 2.35), 3.6, 3.6, 0.85, gz_yaw)
         B["paint"].box((gx0, gy0, gz0), (2.6, 0.95, 0.88), gz_yaw)
+        B["crowd-3"].box((gx0 - math.cos(gz_yaw) * 0.65, gy0 - math.sin(gz_yaw) * 0.65, gz0 + 0.88), (0.42, 0.42, 0.55), gz_yaw)
+        B["yellow"].box((gx0 + math.cos(gz_yaw) * 0.65, gy0 + math.sin(gz_yaw) * 0.65, gz0 + 0.88), (0.68, 0.45, 0.24), gz_yaw)
         # Mechanical neutral-service repair tripod & spare wheel rack beside the feed gazebo
         wk_x = gx0 + math.cos(gz_yaw) * 2.4
         wk_y = gy0 + math.sin(gz_yaw) * 2.4
