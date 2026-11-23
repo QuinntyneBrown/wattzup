@@ -96,3 +96,35 @@ eighty clubs the whole road went grey and the terraces white. A sixth.
 
 **Not done.** Ibiza has no street lamps of its own (it is not dark), so nothing lamp-lit applies: no lamp pools, no
 lamps' shadows, no wet road. Its land is still `build_terrain`'s and not a theme's `land`.
+
+## Beside Neon Docklands
+
+`ibiza-vs-docklands.jpg`: Neon Docklands on the left, Ibiza Sunset Strip on the right, both in the app at the top
+tier with the medium pack; the start strip above (60 m in), a bend below (Docklands at 3.79 km, Ibiza at 1.6 km).
+
+| | Docklands, start | Ibiza, start | Docklands, bend | Ibiza, bend |
+| --- | --- | --- | --- | --- |
+| Display pace (60 Hz) | 60.3 fps | 60.0 fps | 60.2 fps | 60.4 fps |
+| Draw calls | 88 | 84 | 72 | 78 |
+| Triangles | 87,367 | 105,745 | 73,219 | 71,330 |
+
+What Docklands' realism work gave, and what Ibiza has of it:
+
+| Docklands | Ibiza |
+| --- | --- |
+| Road surface: grain, cracks, patches, wear, painted lines | Yes |
+| Bends dealt to each stage, ramps and rolling ground | Yes |
+| Walls with their material (brick there, stained whitewash here) | Yes |
+| Windows in frames, some lit | Yes |
+| Railings | Yes, along the open promenade |
+| Glows in the air round what is lit | Yes: doorways, neon, strings of bulbs |
+| Coloured lights tinting the ground and walls | Yes, at a sixth of a night's strength |
+| Water | Yes, the sea |
+| The riders of the riders' passes, shaped shadows, rim light | Yes, by the sun |
+| Riders in one draw call, level of detail by tier, map in near chunks | Yes (the renderer's, shared) |
+| Street lamps, their pools and the shadows they throw | No: the owner declined them (2026-11-22) |
+| Wet road and rain | No: a dry evening on the island |
+| A theme's land | No: the owner declined it; the land is still `build_terrain`'s |
+| Night sky, city skyline, bridges | No: not this map's setting |
+
+Nothing is added to a map without asking its owner first.
