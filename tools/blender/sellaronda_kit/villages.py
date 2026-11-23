@@ -475,4 +475,8 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         prz = height_at(prx, pry_p)
         B["chalet-plaster"].box((prx, pry_p, prz - 1.4), (19.5, 13.5, 4.8), pry)
         kit.gable(B["roof-slate"], (prx, pry_p, prz + 3.4), 20.6, 14.6, 2.2, pry)
+    # Porphyry-edged village pedestrian crossing aprons in all 4 valley towns
+    for ped_m in (260.0, 3120.0, 6120.0, 8920.0):
+        pi = road.index(ped_m)
+        B["brick"].box(kit.P(pi, 0.0, 0.0, 0.012), (3.2, kit.kerb * 1.92, 0.015), road.s[pi]["h"])
     # [ANCHOR:villages]
