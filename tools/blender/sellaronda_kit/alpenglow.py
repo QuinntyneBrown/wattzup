@@ -93,6 +93,8 @@ def alpenglow_sky_colour(dx: float, dy: float, dz: float, az: float, haze):
     # Subtle vertical alpine ice-crystal sun pillar rising above the WSW sun disc
     az_diff = math.remainder(math.atan2(dy, dx) - az, math.tau)
     pillar = math.exp(-((az_diff / 0.055) ** 2)) * smoothstep(0.02, 0.14, h) * (1.0 - smoothstep(0.18, 0.44, h))
+    star_d = math.hypot(az_diff - 0.32, h - 0.44)
+    c = mix(c, srgb(0xFFF6E8), math.exp(-((star_d / 0.018) ** 2)) * 0.45)
     c = mix(c, srgb(0xFFD8B0), pillar * 0.24)
     # Subtle radial crepuscular fan beams above the western Dolomite saddles
     ray_theta = math.atan2(h - 0.12, az_diff)
