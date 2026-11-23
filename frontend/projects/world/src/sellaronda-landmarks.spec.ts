@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  geologyStratumAtAltitude,
   highestSellaPass,
   isHighWallSector,
   nextSellaPass,
@@ -58,5 +59,7 @@ describe('SELLA_RONDA_PASSES', () => {
     expect(passAverageGradientPercent('pordoi')).toBeGreaterThan(6.5);
     expect(passAverageGradientPercent('campolongo')).toBeGreaterThan(5.0);
     expect(totalSellaRondaClimbingMetres()).toBe(2277);
+    expect(geologyStratumAtAltitude(2620)).toBe('raibl-cengia-marl');
+    expect(geologyStratumAtAltitude(2950)).toBe('hauptdolomit-dachstein');
   });
 });
