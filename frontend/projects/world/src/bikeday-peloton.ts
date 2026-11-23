@@ -44,3 +44,10 @@ export function passClimbMinutesEstimate(
   const speedKmh = bikeDayClimbSpeedKmh(gradePercent, riderWatts / Math.max(40, systemKg));
   return (lengthKm / speedKmh) * 60;
 }
+
+/** Vertical ascent rate VAM (m/h) on a positive `gradePercent` climb at `riderWatts`. */
+export function vamMetresPerHour(gradePercent: number, riderWatts: number, systemKg = 78): number {
+  if (gradePercent <= 0) return 0;
+  const speedKmh = bikeDayClimbSpeedKmh(gradePercent, riderWatts / Math.max(40, systemKg));
+  return Math.round(speedKmh * 1000 * (gradePercent / 100));
+}
