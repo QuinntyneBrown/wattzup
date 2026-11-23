@@ -21,3 +21,14 @@ export function pelotonDraftSavingPercent(gapMetres: number): number {
   const clamped = Math.max(0.4, gapMetres);
   return 32 * Math.exp(-(clamped - 0.4) / 3.2);
 }
+
+/** Steady-state spatial density of Bike Day riders (riders/km) given constant flow `ridersPerHour` and `gradePercent`. */
+export function bikeDayRidersPerKm(
+  ridersPerHour: number,
+  gradePercent: number,
+  riderWatts = 210,
+): number {
+  if (ridersPerHour <= 0) return 0;
+  const speedKmh = bikeDayClimbSpeedKmh(gradePercent, riderWatts);
+  return ridersPerHour / Math.max(5, speedKmh);
+}
