@@ -146,6 +146,7 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
         B["larch-aged"].box((wx, wy, wz + 2.15), (0.14, 1.25, 0.16), wyaw)
         kit.gable(B["chalet-wood"], (wx, wy, wz + 2.75), 0.55, 1.45, 0.42, wyaw)
         B["geranium-red"].box((wx, wy, wz + 0.22), (0.42, 0.42, 0.24), wyaw)
+        B["larch-warm"].box((wx + math.cos(wyaw) * 1.45, wy + math.sin(wyaw) * 1.45, wz - 0.05), (1.55, 0.46, 0.48), wyaw)
 
     # 7. High-altitude dwarf mugo pine (Pinus mugo / baranci) cushions above the tall-spruce tree line
     for i in range(14, kit.n - 14, 6):
