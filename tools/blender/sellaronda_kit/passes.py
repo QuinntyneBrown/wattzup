@@ -381,4 +381,8 @@ def build_four_passes(B, kit, road, height_at) -> None:
         uky = s[uk_i]["h"]
         B["steel"].box(kit.P(uk_i, 0.0, -(kit.kerb + 1.55), -0.1), (0.09, 0.09, 3.25), uky)
         B["parasol-red"].box(kit.P(uk_i, 0.0, -(kit.kerb + 1.25), 2.55), (0.08, 0.65, 0.65), uky)
+    # Notched Dolomite wheel-cradle plinths beside the 4 summit signs for solo bike photos
+    for p in PASSES:
+         idx_s = road.index(p["at"])
+         B["dolomite-pale"].box(kit.P(idx_s, 4.0, -(kit.kerb + 1.95), -0.05), (0.85, 0.34, 0.24), s[idx_s]["h"])
     # [ANCHOR:passes]
