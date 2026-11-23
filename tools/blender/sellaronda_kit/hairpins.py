@@ -23,6 +23,8 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
                 B["larch-warm"].box(kit.P(i, 2.0, (kit.kerb + 0.88) * outside, 0.88), (8.05, 0.16, 0.12), s[i]["h"])
             if abs_k > 1 / 52 and i % 2 == 0:
                 B["yellow"].box(kit.P(i, 2.0, (kit.kerb + 0.86) * outside, 0.12), (8.02, 0.08, 0.18), s[i]["h"])
+            if i % 40 == 0:
+                B["dolomite-pale"].box(kit.P(i, 0.0, (kit.kerb + 0.92) * outside, -0.15), (0.65, 0.55, 1.12), s[i]["h"])
 
         # Every 2 samples (~8 m) on tight switchback bends, build battered Dolomite masonry retaining wall below road!
         if abs_k > 1 / 88 and i % 2 == 0:
