@@ -27,7 +27,7 @@ def enrosadira_colour_fn(az_sun: float):
     sun_dx, sun_dy, sun_dz = math.cos(az_sun) * 0.946, math.sin(az_sun) * 0.946, 0.325
     pale_dolomite = srgb(0xCEC4B4)
     shadow_indigo = srgb(0x425272)
-    apricot_gold = srgb(0xF8B482)
+    apricot_gold = srgb(0xFAB684)
     enrosadira_rose = srgb(0xF4786A)
     summit_magenta = srgb(0xD86482)
     glacier_blue = srgb(0x98B4D8)
