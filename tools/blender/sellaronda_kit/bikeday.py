@@ -197,6 +197,9 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
             gl.faces.append(tuple(base_i + q for q in f_t))
     for seg_p in range(-3, 4):
         _gbox(0.0, seg_p * 1.95, -abs(seg_p) * 0.46, 2.75, 2.05, 0.24, 0xF05692 if abs(seg_p) < 2 else 0xFFD040)
+    for tip_s in (-1.0, 1.0):
+        _gbox(0.0, tip_s * 7.85, -1.95, 2.15, 0.24, 0.85, 0x3AE8FF)
+    _gbox(-0.65, 0.0, -6.05, 0.95, 0.42, 0.58, 0xC82834)
     _gbox(0.0, 0.0, -6.2, 0.85, 0.58, 0.98, 0x1E222A)
 
     # Event sports photographers in yellow vests with white telephoto lenses at scenic switchback apexes
