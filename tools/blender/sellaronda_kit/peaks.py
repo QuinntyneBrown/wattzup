@@ -216,6 +216,7 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     rul = max(1.0, math.hypot(rux, ruy))
     rux, ruy = rux / rul, ruy / rul
     rock_tower(peaks, rod_pt["x"] + rux * 540.0, rod_pt["y"] + ruy * 540.0, 65.0, 465.0, 165.0, 130.0, 10, math.atan2(-ruy, -rux), cfn, taper=0.58, flat_cap=True, seed_phase=3.9)
+    rock_tower(peaks, rod_pt["x"] + rux * 515.0, rod_pt["y"] + ruy * 515.0, 458.0, 476.0, 14.0, 10.0, 6, 0.3, cfn, taper=0.96, flat_cap=True, seed_phase=0.4)
 
     # 8. Col di Lana (2,452 m) & Monte Sief ridge east of Arabba / Passo Campolongo (at=2850 m)
     cdl_pt = road.s[road.index(2850.0)]
