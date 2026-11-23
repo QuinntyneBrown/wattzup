@@ -205,6 +205,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Party 22 | Strollers step aside to the kerb to pass an effort gate: they walked through its feet | 60.1 fps, none over 20 ms (from 950 m) | 49.8 and 41.4 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 52.8, 52.1 |
 | Sky 23 | The gulls are seen: dark against the sunset, two and a half times the size they looked, crossing the middle of the picture for some twenty seconds | 60.0 fps, none over 20 ms (from 7,700 m, 18 s) | 44.5 and 48.9 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 54.0, 50.1 |
 | Sign 6 | The square is a place people stop: two sit on the ends of the plinth with their drinks, a friend stands back to take the picture of those posing, and a pair talk at the side | 60.2 and 60.3 fps (from 268 and 284 m) | 48.9 fps at the sign (87,010 triangles) and 48.1 at the finish (118,819); Neon Docklands beside it 52.4, 49.1 |
+| Sky 24 | The moon has a face: the grey seas across its upper left, one to the right and a small one low down | 59.5 fps (from 262 m) | 49.1 and 46.2 fps after (the finish, 118,879 triangles); Neon Docklands beside it 54.8, 53.3 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -755,6 +756,15 @@ empty. In the photograph it is a place people walk through and stop at. Six more
 end of the plinth, clear of the letters, with a drink; two stand back across the square facing the letters, as
 whoever takes the picture does; and a pair talk at the side. The low tier draws 87,010 triangles there, a long
 way under its budget; the finish, eight kilometres on, is untouched. They have dice of their own.
+
+### Sky 24: the moon has a face
+
+`sky-24.jpg` (the moon from 262 m, enlarged: left as it was, right as it is). The full moon rising opposite the
+sunset was one bright disc. A ring of corners half way out across it carries the seas, the grey plains that make
+the face everyone knows. Forty triangles more, in every frame (the moon is in the sky's own mesh).
+
+**Faint.** The moon is some forty pixels across: the seas are a mottling on it, not a picture, and the corners
+being in one ring they lie a little like the spokes of a wheel.
 
 ### Low power: where the frames go (after Party 20)
 

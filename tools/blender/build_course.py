@@ -1630,8 +1630,20 @@ def build_sky(col, az: float, haze_hex: int, colour_at=sky.sunset_sky_colour, tu
         low = 0.5 - 0.5 * math.sin(a)
         sea = 0.22 if 2.2 < a < 4.2 else 0.0
         rim.append(on_sky(d, sky.mix(sky.mix(srgb(0xFFDDB4), srgb(0xF0A07C), low), srgb(0x9A7A8A), sea)))
+    # Its face: it was one bright disc. A ring of corners half way out carries the seas, the grey plains that make
+    # the face everyone knows: the great ones across its upper left, one to the right, a small one low down.
+    seas = ((2.35, 0.9, 0.62), (1.45, 0.5, 0.5), (0.35, 0.45, 0.55), (4.6, 0.4, 0.34))
+    face = []
     for q in range(20):
-        b.faces.append((heart, rim[q], rim[(q + 1) % 20]))
+        a = (q + 0.5) * math.tau / 20
+        d = towards(moon_at[0] + math.cos(a) * moon_r * 0.56 / math.cos(moon_at[1]), moon_at[1] + math.sin(a) * moon_r * 0.56)
+        dark = max(depth * max(0.0, 1.0 - abs(math.remainder(a - where, math.tau)) / width) for where, width, depth in seas)
+        low = 0.5 - 0.28 * math.sin(a)
+        face.append(on_sky(d, sky.mix(sky.mix(srgb(0xFFE6C6), srgb(0xF4B692), low), srgb(0x8A6E86), dark)))
+    for q in range(20):
+        b.faces.append((heart, face[q], face[(q + 1) % 20]))
+        b.faces.append((face[q], rim[(q + 1) % 20], face[(q + 1) % 20]))
+        b.faces.append((face[q], rim[q], rim[(q + 1) % 20]))
     # The evening star: one bright point low in the west, to the left of the sunset, there from the start.
     venus, glint = (0.42, math.radians(10.5)), math.radians(0.11)
     centre = on_sky(towards(*venus), (1.0, 0.98, 0.9, 1.0))
