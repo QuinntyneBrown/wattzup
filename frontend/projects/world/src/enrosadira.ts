@@ -101,3 +101,12 @@ export function enrosadiraStageName(progress: number): EnrosadiraPhaseName {
   if (progress < 0.85) return 'crimson-violet';
   return 'alpine-dusk';
 }
+
+/** Valley shadow depth (0 = sunlit pass/peak, 1 = deep valley twilight shadow) for `altitudeMetres` and `sunElevationDeg`. */
+export function valleyShadowDepth(altitudeMetres: number, sunElevationDeg: number): number {
+  const shadowLineMetres = 2450 - sunElevationDeg * 160;
+  if (altitudeMetres >= shadowLineMetres + 300) return 0;
+  if (altitudeMetres <= shadowLineMetres - 300) return 1;
+  const u = (shadowLineMetres + 300 - altitudeMetres) / 600;
+  return u * u * (3 - 2 * u);
+}
