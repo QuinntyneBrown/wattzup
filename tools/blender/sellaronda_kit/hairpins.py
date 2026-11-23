@@ -289,4 +289,9 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         kry = s[kr_i]["h"]
         B["steel"].box(kit.P(kr_i, 0.0, -(kit.kerb + 1.45), -0.1), (0.08, 0.08, 2.05), kry)
         B["ladin-blue"].box(kit.P(kr_i, 0.0, -(kit.kerb + 1.45), 1.58), (0.08, 0.58, 0.58), kry)
+    # Solar amber warning beacons ahead of Pordoi & Gardena rockfall gallery portals
+    for bc_m in (4545.0, 9645.0):
+        bci = road.index(bc_m)
+        B["steel"].box(kit.P(bci, 0.0, -(kit.kerb + 1.45), 0.0), (0.09, 0.09, 2.85), s[bci]["h"])
+        B["bulb"].box(kit.P(bci, 0.0, -(kit.kerb + 1.45), 2.85), (0.24, 0.24, 0.24), s[bci]["h"])
     # [ANCHOR:hairpins]
