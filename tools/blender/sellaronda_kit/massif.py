@@ -510,4 +510,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         113.0,
         snow=True,
     )
+    # Piz Lech Dlacè / Eisseespitze (3,009 m) 3,000er summit west of Piz Boè
+    rock_tower(peaks, cx - 135.0, cy - 88.0, 655.0, 758.0, 68.0, 54.0, 8, 1.2, cfn, taper=0.52, flat_cap=False, seed_phase=3.4)
     # [ANCHOR:massif]
