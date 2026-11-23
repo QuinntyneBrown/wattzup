@@ -940,6 +940,71 @@ def board(paint, k, i: int, off: float, wide: float, tall: float, up: float, fac
     return corner, along, out, z + up
 
 
+CARS = (0xE4E4E0, 0xB8342E, 0xA9B0B8, 0x3F7FC8, 0xE8E2D0, 0xD9B03A)
+JACKETS = (0xD9483A, 0x2F7FB8, 0xF2C230, 0x3F8A5A, 0x8A4A9A, 0xE8742E, 0x2A3A5A)
+
+
+def visitor(paint, rng, c, yaw: float) -> None:
+    """Somebody out of their car at the summit's cold: long trousers, a bright jacket, a hat."""
+    cs, sn = math.cos(yaw), math.sin(yaw)
+    h = rng.uniform(0.92, 1.08)
+    jacket, legs, skin = _lin(JACKETS[rng.randrange(len(JACKETS))]), _lin(rng.choice((0x2A2E38, 0x4A4438, 0x3A3A40))), _lin(rng.choice((0xE8B894, 0xC68A5E, 0x8A5A3A)))
+    for side in (1, -1):
+        paint.box((c[0] - sn * 0.11 * side, c[1] + cs * 0.11 * side, c[2]), (0.18, 0.17, 0.86 * h), yaw, legs, 0.6)
+        paint.box((c[0] - sn * 0.29 * side, c[1] + cs * 0.29 * side, c[2] + 0.88 * h), (0.13, 0.12, 0.56 * h), yaw, jacket, 0.9)
+    paint.box((c[0], c[1], c[2] + 0.84 * h), (0.26, 0.46, 0.62 * h), yaw, jacket, 0.85)
+    paint.box((c[0], c[1], c[2] + 1.46 * h), (0.21, 0.2, 0.24 * h), yaw, skin, 1.0)
+    paint.box((c[0], c[1], c[2] + 1.66 * h), (0.25, 0.24, 0.1), yaw, _lin(rng.choice((0x2A2A2E, 0xC8322C, 0xE8E2D0))), 1.0)
+
+
+def car(paint, rng, c, yaw: float) -> None:
+    """A parked car: the body, the cabin with its dark glass, four wheels."""
+    cs, sn = math.cos(yaw), math.sin(yaw)
+    body, glass, tyre = _lin(CARS[rng.randrange(len(CARS))]), _lin(0x1E2A34), _lin(0x18181A)
+    suv = rng.random() < 0.5
+    paint.box((c[0], c[1], c[2] + 0.3), (4.4, 1.8, 0.7 if suv else 0.6), yaw, body, 0.85)
+    top = 0.3 + (0.7 if suv else 0.6)
+    paint.box((c[0] - cs * 0.3, c[1] - sn * 0.3, c[2] + top), (2.5 if suv else 2.1, 1.66, 0.62), yaw, glass, 1.0)
+    paint.box((c[0] - cs * 0.3, c[1] - sn * 0.3, c[2] + top + 0.62), (2.5 if suv else 2.0, 1.7, 0.08), yaw, body, 1.0)
+    for fwd in (1.4, -1.4):
+        paint.box((c[0] + cs * fwd, c[1] + sn * fwd, c[2]), (0.66, 1.86, 0.64), yaw, tyre, 1.0)
+
+
+def pull_outs(k) -> dict:
+    """Detail 9, the road edge: a narrow road with no barrier still has places to stop. Every mile or so above
+    the ranch land a gravel pull-out widens the downhill shoulder, with a car or three parked on it and their
+    people standing at its edge, looking out over the cloud."""
+    land, near, rng, s = Painted(k), Painted(k, "hk-detail"), k.rng, k.s
+    gravel = _lin(0x8A7A6E)
+    shares = [height_share(k, i) for i in range(k.n)]
+    laid = cars = people = 0
+    last = -400
+    for i in range(20, k.n - 40):
+        if shares[i] < 0.42 or i - last < 380 or any(abs(s[q]["k"]) > 1 / 200 for q in range(i - 3, i + 12)):
+            continue
+        # The downhill side: the lower of the two, and clear of the road's other legs.
+        lows = {sd: k.height_at(*k.road.at(i + 4, (k.kerb + 22.0) * sd)[:2]) for sd in (1, -1)}
+        side = min(lows, key=lows.get)
+        if not k.room(i + 4, (k.kerb + 16.0) * side, 20.0):
+            continue
+        yaw = s[i + 4]["h"]
+        for q in range(i, i + 9):
+            x, y, z = k.road.at(q, (k.kerb + 5.4) * side)
+            floor = k.height_at(*k.road.at(q, (k.kerb + 10.5) * side)[:2])
+            land.box((x, y, min(floor, z) - 2.0), (k.step + 0.2, 8.4, z - min(floor, z) + 2.02), s[q]["h"], gravel, 0.95)
+        for q in range(rng.randint(1, 3)):
+            x, y, z = k.road.at(i + 1 + q * 3, (k.kerb + 5.0) * side)
+            car(near, rng, (x, y, z + 0.02), yaw + rng.uniform(-0.08, 0.08))
+            cars += 1
+            for _ in range(rng.randint(1, 2)):
+                px, py, pz = k.P(i + 1 + q * 3, rng.uniform(-1.5, 1.5), (k.kerb + rng.uniform(8.0, 9.0)) * side)
+                visitor(near, rng, (px, py, z + 0.02), yaw - side * math.pi / 2 + rng.uniform(-0.5, 0.5))
+                people += 1
+        laid += 1
+        last = i
+    return {"pullOuts": laid, "parkedCars": cars, "visitors": people}
+
+
 def hairpin_signs(k) -> int:
     """Detail 1, the switchback road: before each switchback stands the warning for it, a yellow diamond-coloured
     board with the black hairpin arrow bent the way the road turns, and under it the advised speed, 15."""
@@ -1115,6 +1180,7 @@ def scenery(k) -> dict:
     lava = lava_field(k)
     signs = park_signs(k)
     signs["hairpinSigns"] = hairpin_signs(k)
+    signs.update(pull_outs(k))
     garden = silversword_garden(k)
     shrubs = shrubland(k)
     return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "peaksAboveCloud": islands, "silverswords": swords, "domes": domes, **ranch, **coast, "cinderCones": cones, "boulders": lava, "shrubs": shrubs, **signs, "gardenSilverswords": garden}
