@@ -156,4 +156,16 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["paint"].box((cx_t, cy_t, cz_t + arm_z + 0.01), (0.58, 0.07, 0.18), cyaw + arm_ang)
         B["dolomite-pale"].box((cx_t + 1.2, cy_t - 0.8, cz_t - 0.2), (0.95, 0.78, 0.65), cyaw)
 
+    # 9. Gravel twin-track farm lanes leading off the road into the pastures
+    for tr_m, tr_side in ((1180.0, 1.0), (3680.0, 1.0), (6680.0, 1.0), (9180.0, -1.0), (10620.0, 1.0)):
+        t_idx = road.index(tr_m)
+        tyaw = s[t_idx]["h"] + 1.15 * tr_side
+        for seg_t in range(4):
+            dist_t = kit.kerb + 3.0 + seg_t * 5.2
+            gx_t, gy_t, _ = road.at(t_idx, dist_t * tr_side)
+            if road.clear_of_road(gx_t, gy_t, kit.kerb + 1.8, t_idx):
+                gz_t = height_at(gx_t, gy_t)
+                for rut in (-0.85, 0.85):
+                    B["gravel"].box((gx_t - math.sin(tyaw) * rut, gy_t + math.cos(tyaw) * rut, gz_t + 0.02), (5.4, 0.55, 0.06), tyaw)
+
     return trees
