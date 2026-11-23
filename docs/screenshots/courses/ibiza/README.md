@@ -766,6 +766,14 @@ the face everyone knows. Forty triangles more, in every frame (the moon is in th
 **Faint.** The moon is some forty pixels across: the seas are a mottling on it, not a picture, and the corners
 being in one ring they lie a little like the spokes of a wheel.
 
+### Checked after Sky 24: the gulls' wings beat
+
+`check-wings.jpg` (above: the flock as it is; below: with the beat nine times too far, as a test, a bird left of
+the palm with its wings thrown up in a tall V). With the gulls seen at last (Sky 23), the last of the sky's
+movements never seen on screen could be tested as the lightning was. The wings move. Of what the sky does, the
+lightning, the low cloud's drift and the gulls' beat are each now seen to be wired; none is left in the code
+exaggerated.
+
 ### Low power: where the frames go (after Party 20)
 
 The low-power stand-in (the low tier with the processor slowed six times) has not held 60 fps on this machine on
