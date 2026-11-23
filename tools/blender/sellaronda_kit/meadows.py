@@ -452,4 +452,12 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
         if road.clear_of_road(hbx, hby, 3.2, hb_i):
             B["ladin-blue"].box((hbx, hby, height_at(hbx, hby) - 0.04), (0.62, 0.62, 0.20), hb_i * 0.4)
 
+    # Colourful climbers' bouldering crash-pads beneath a Città dei Sassi boulder overhang
+    bd_i = road.index(7568.0)
+    bdx, bdy, _ = road.at(bd_i, kit.kerb + 18.0)
+    if road.clear_of_road(bdx, bdy, 12.0, bd_i):
+        bdz = height_at(bdx, bdy)
+        B["ladin-blue"].box((bdx, bdy, bdz + 0.04), (1.35, 1.05, 0.14), 0.4)
+        B["crowd-3"].box((bdx + 1.2, bdy - 0.5, bdz + 0.04), (1.25, 0.98, 0.14), 0.9)
+
     return trees
