@@ -15,6 +15,7 @@ def _road_cyclist(B, x: float, y: float, z: float, yaw: float, jersey_mat: str, 
         B["dark"].box((x + ca * w_off, y + sa * w_off, z + 0.02), (0.64, 0.08, 0.64), yaw)
     B["steel"].box((x, y, z + 0.42), (0.98, 0.07, 0.46), yaw)
     B["paint"].box((x + ca * 0.10, y + sa * 0.10, z + 0.50), (0.18, 0.09, 0.10), yaw)
+    B["glacier-ice"].box((x + ca * 0.48, y + sa * 0.48, z + 0.76), (0.10, 0.07, 0.03), yaw)
     # Rider legs, bib shorts, jersey trunk & aero road helmet
     hip_z = z + (0.94 if standing else 0.82)
     B["dark"].box((x - ca * 0.12, y - sa * 0.12, z + 0.48), (0.24, 0.28, 0.44), yaw)
