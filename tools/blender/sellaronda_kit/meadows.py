@@ -469,4 +469,12 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["larch-warm"].box((pzx, pzy, pzz), (2.8, 2.8, 2.15), 0.3)
             kit.gable(B["chalet-wood"], (pzx, pzy, pzz + 2.15), 3.4, 3.4, 0.95, 0.3)
 
+    # Rose-magenta Alpine fireweed (Epilobium) drifts along lower spruce forest clearings
+    for fw_i in range(22, kit.n - 22, 46):
+        if s[fw_i]["z"] > 88.0:
+            continue
+        fwx, fwy, _ = road.at(fw_i, -(kit.kerb + 9.2))
+        if road.clear_of_road(fwx, fwy, 6.5, fw_i):
+            B["bougainvillea"].box((fwx, fwy, height_at(fwx, fwy)), (0.95, 0.85, 0.38), fw_i * 0.3)
+
     return trees
