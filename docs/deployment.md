@@ -29,6 +29,9 @@ One Azure App Service runs the API and serves the app (ADR 0026). A person provi
 - **App Service:** Linux, .NET 10, plan B1, HTTPS only, **Web sockets: On** (SignalR), Always on.
   Its managed identity is a user of the database, and the `ConnectionStrings:TeloRide` above uses
   `Authentication=Active Directory Default`.
+- **Database:** Azure SQL Database, serverless (ADR 0025). It pauses after its auto-pause delay
+  with nobody riding; the first request afterwards wakes it and waits while it resumes (about a
+  minute), so that one request is slow, not refused.
 - **Custom domain:** the site's address, with the App Service managed certificate. The app and the
   API share it, so the session cookie is same-site.
 - **Deploy identity:** an Entra ID app registration with a federated credential for

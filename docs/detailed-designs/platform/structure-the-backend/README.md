@@ -50,8 +50,10 @@ feature builds on. ADR 0019 (no backend) is superseded by [ADR
   binary accepts a `migrate` command (`dotnet Telo.Ride.Api.dll migrate`) that applies pending
   migrations with `Database.MigrateAsync()`, runs the idempotent `CatalogueSeeder` (from slice 6.1, when the catalogue lands) and exits.
   Normal start-up never migrates.
-- **Database engine** — Azure SQL Database through EF Core's SQL Server provider (ADR 0025).
-  Every test runs on EF Core InMemory instead.
+- **Database engine** — Azure SQL Database through EF Core's SQL Server provider (ADR 0025), with
+  its retrying execution strategy on, so a request that finds the serverless database paused waits
+  while it resumes (up to about 70 seconds) instead of failing. Every test runs on EF Core InMemory
+  instead.
 - **Health** — `GET /health/live` answers 200 `Healthy` while the process responds;
   `GET /health/ready` runs `DatabaseHealthCheck`, which asks `IAppDbContext.CanConnectAsync`, and
   answers 503 `Unhealthy` when the database cannot be reached. Both are anonymous and write the
