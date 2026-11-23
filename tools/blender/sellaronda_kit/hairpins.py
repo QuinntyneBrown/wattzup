@@ -270,4 +270,13 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         if abs(s[i]["k"]) > 1 / 52 and st_cnt < 24:
             st_cnt += 1
             B["bulb"].box(kit.P(i, 0.0, 0.0, 0.025), (0.14, 0.14, 0.03), s[i]["h"])
+    # Ochre/red ANAS Cantoniera road-maintenance tool huts on Pordoi & Gardena climbs
+    for cn_m in (4428.0, 9828.0):
+        cni = road.index(cn_m)
+        cny = s[cni]["h"]
+        cnx, cny_p, _ = road.at(cni, kit.kerb + 7.2)
+        if road.clear_of_road(cnx, cny_p, 5.5, cni):
+            cnz = height_at(cnx, cny_p)
+            B["parasol-red"].box((cnx, cny_p, cnz - 0.5), (4.6, 3.6, 3.1), cny)
+            kit.gable(B["roof-slate"], (cnx, cny_p, cnz + 2.6), 5.1, 4.1, 1.15, cny)
     # [ANCHOR:hairpins]
