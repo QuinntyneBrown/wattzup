@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { bikeDayClimbSpeedKmh } from './bikeday-peloton';
+import { bikeDayClimbSpeedKmh, pelotonDraftSavingPercent } from './bikeday-peloton';
 
 describe('bikeDayClimbSpeedKmh', () => {
   it('climbs slower on 8 % Dolomite ramps than on 4 % gradients and sweeps briskly downhill', () => {
@@ -8,5 +8,7 @@ describe('bikeDayClimbSpeedKmh', () => {
     const descent = bikeDayClimbSpeedKmh(-6, 3.2);
     expect(steep).toBeLessThan(gentle);
     expect(descent).toBeGreaterThan(45);
+    expect(pelotonDraftSavingPercent(1)).toBeGreaterThan(20);
+    expect(pelotonDraftSavingPercent(15)).toBe(0);
   });
 });

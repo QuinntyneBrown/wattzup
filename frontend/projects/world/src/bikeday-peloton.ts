@@ -14,3 +14,10 @@ export function bikeDayClimbSpeedKmh(gradePercent: number, wattsPerKg = 3.0): nu
   const mps = (clampedWkg * 0.86) / (9.81 * slope);
   return Math.max(7.5, Math.min(34, mps * 3.6));
 }
+
+/** Aerodynamic power saving percentage (0..32 %) when drafting `gapMetres` behind a cyclist ahead. */
+export function pelotonDraftSavingPercent(gapMetres: number): number {
+  if (gapMetres <= 0 || gapMetres >= 12) return 0;
+  const clamped = Math.max(0.4, gapMetres);
+  return 32 * Math.exp(-(clamped - 0.4) / 3.2);
+}
