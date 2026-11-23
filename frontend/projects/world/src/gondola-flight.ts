@@ -144,3 +144,13 @@ export function cableSagDropAtFraction(sagMetres: number, u: number): number {
   const t = Math.max(0, Math.min(1, u));
   return 4 * Math.max(0, sagMetres) * t * (1 - t);
 }
+
+/** Computes the opposing counter-balanced cabin pose (+0.5 cycle phase) on a reversible jig-back Funivia. */
+export function twinJigBackCounterpartPose(
+  span: CableSpan,
+  seconds: number,
+  primaryPhase = 0,
+  reducedMotion = false,
+): CabinPose {
+  return gondolaPosition(span, seconds, primaryPhase + 0.5, reducedMotion);
+}

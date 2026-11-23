@@ -11,6 +11,7 @@ import {
   isCabinDocked,
   midSpanAltitudeMetres,
   sellarondaSkiCircuitColour,
+  twinJigBackCounterpartPose,
 } from './gondola-flight';
 
 const SASS_PORDOI: CableSpan = {
@@ -60,5 +61,8 @@ describe('gondolaPosition', () => {
     expect(sellarondaSkiCircuitColour(false)).toBe('green');
     expect(cableSagDropAtFraction(18, 0.5)).toBe(18);
     expect(cableSagDropAtFraction(18, 0)).toBe(0);
+    const a = gondolaPosition(SASS_PORDOI, 2, 0);
+    const b = twinJigBackCounterpartPose(SASS_PORDOI, 2, 0);
+    expect(b.y).toBeGreaterThan(a.y + 300);
   });
 });
