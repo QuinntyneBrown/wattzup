@@ -114,7 +114,7 @@ def lay_centre_line(course: dict, theme: dict | None = None):
             return 14.0
         anchors = [
             (0.0, 14.0),
-            (650.0, 18.0),
+            (650.0, 18.5),
             (2100.0, 78.0),
             (3120.0, 22.0),
             (4950.0, 134.0),
