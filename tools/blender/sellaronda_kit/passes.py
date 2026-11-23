@@ -138,3 +138,10 @@ def build_four_passes(B, kit, road, height_at) -> None:
             B["steel"].box(kit.P(g_idx, 0.0, (kit.kerb + 1.6) * side, -0.2), (0.28, 0.28, 5.8), gyaw)
         B["accent-2"].box(kit.P(g_idx, 0.0, 0.0, 5.15), (0.34, span + 0.28, 0.72), gyaw)
         B["paint"].box(kit.P(g_idx, 0.0, 0.0, 0.02), (0.42, kit.kerb * 1.85, 0.015), gyaw)
+
+    # Historic carved pale-stone Grande Strada delle Dolomiti road milestone steles (cippi chilometrici) every 250 m
+    for d_cippo in range(250, 11500, 250):
+        c_idx = road.index(float(d_cippo))
+        cyaw = s[c_idx]["h"]
+        B["dolomite-pale"].box(kit.P(c_idx, 0.0, kit.kerb + 1.08, -0.15), (0.26, 0.42, 0.92), cyaw)
+        B["paint"].box(kit.P(c_idx, -0.02, kit.kerb + 1.08, 0.48), (0.28, 0.36, 0.24), cyaw)
