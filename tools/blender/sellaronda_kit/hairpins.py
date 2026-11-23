@@ -129,6 +129,8 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
                     B["dolomite-pale"].box((sx_r - math.sin(seg_yaw) * 3.45, sy_r + math.cos(seg_yaw) * 3.45, rz0 - 3.6), (1.1, 0.85, 3.65), seg_yaw)
                 B["asphalt"].box((sx_r, sy_r, rz0), (10.2, 6.4, 0.16), seg_yaw)
                 B["paint"].box((sx_r - math.sin(seg_yaw) * 2.85, sy_r + math.cos(seg_yaw) * 2.85, rz0 + 0.17), (10.2, 0.18, 0.02), seg_yaw)
+                if seg_s in (-2, 0, 2):
+                    B["steel"].box((sx_r - math.sin(seg_yaw) * 3.15, sy_r + math.cos(seg_yaw) * 3.15, rz0 + 0.55), (10.2, 0.12, 0.24), seg_yaw)
 
     # Inner-apex porphyry stone cobble aprons on tight hairpins
     for i in range(16, kit.n - 16, 2):
