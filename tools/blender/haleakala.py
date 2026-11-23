@@ -733,6 +733,40 @@ def board(paint, k, i: int, off: float, wide: float, tall: float, up: float, fac
     return corner, along, out, z + up
 
 
+def hairpin_signs(k) -> int:
+    """Detail 1, the switchback road: before each switchback stands the warning for it, a yellow diamond-coloured
+    board with the black hairpin arrow bent the way the road turns, and under it the advised speed, 15."""
+    paint, s = Painted(k), k.s
+    yellow, black = _lin(0xF2C230), _lin(0x1C1C1E)
+    stood, turning = 0, False
+    for i in range(14, k.n - 10):
+        tight = abs(s[i]["k"]) > 1 / 40
+        if tight and not turning:
+            j, left = i - 9, s[i]["k"] > 0
+            if abs(s[j]["k"]) < 1 / 60:
+                wide = 1.0
+                corner, along, out, z = board(paint, k, j, -(k.kerb + 1.3), wide, 1.0, 1.75, yellow, black)
+
+                def ink(a0: float, a1: float, z0: float, z1: float, corner=corner, along=along, out=out, z=z, left=left) -> None:
+                    if left:
+                        a0, a1 = wide - a1, wide - a0
+                    paint.panel(corner, along, out, a0, a1, z + z0, z + z1, 0.06, black)
+
+                # Up the stem, over the top and back down to the arrow's head.
+                ink(0.2, 0.34, 0.14, 0.8)
+                ink(0.2, 0.72, 0.68, 0.82)
+                ink(0.58, 0.72, 0.42, 0.8)
+                ink(0.48, 0.82, 0.3, 0.44)
+                ink(0.58, 0.72, 0.2, 0.32)
+                # The plaque under it: 15.
+                paint.panel(corner, along, out, 0.14, 0.86, z - 0.62, z - 0.1, 0.04, yellow)
+                for a0, a1, z0, z1 in ((0.27, 0.34, -0.54, -0.18), (0.46, 0.7, -0.25, -0.18), (0.46, 0.53, -0.36, -0.18), (0.46, 0.7, -0.4, -0.33), (0.63, 0.7, -0.54, -0.33), (0.46, 0.7, -0.54, -0.47)):
+                    paint.panel(corner, along, out, a0, a1, z + z0, z + z1, 0.06, black)
+                stood += 1
+        turning = tight
+    return stood
+
+
 def park_signs(k) -> dict:
     """Details 1 and 9, the switchback road and its edge: the signs of a national park's road. A green board with a
     white border marks every tenth of the climb, as the elevation signs do each thousand feet; yellow diamonds
@@ -869,6 +903,7 @@ def scenery(k) -> dict:
     cones = crater(k)
     lava = lava_field(k)
     signs = park_signs(k)
+    signs["hairpinSigns"] = hairpin_signs(k)
     garden = silversword_garden(k)
     shrubs = shrubland(k)
     return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords, "domes": domes, **ranch, **coast, "cinderCones": cones, "boulders": lava, "shrubs": shrubs, **signs, "gardenSilverswords": garden}
