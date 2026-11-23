@@ -14,8 +14,8 @@ if _HERE not in sys.path:
 
 import sky
 import themes
-import sellaronda as sr
-from sellaronda import (
+import sellaronda_kit as sr
+from sellaronda_kit import (
     LEAD_IN,
     METRES_PER_TURN,
     PASSES,
@@ -30,7 +30,7 @@ from sellaronda import (
     smoothstep,
     srgb,
 )
-from sellaronda import massif as sr_massif
+from sellaronda_kit import massif as sr_massif
 
 SELLA_CENTER = (0.0, -1420.0)
 
@@ -236,7 +236,7 @@ def build_terrain(road, col, Builder, cell: float = 28.0):
 
 def _try_module(mod_name: str):
     try:
-        mod = importlib.import_module(f"sellaronda.{mod_name}")
+        mod = importlib.import_module(f"sellaronda_kit.{mod_name}")
         return importlib.reload(mod)
     except ModuleNotFoundError:
         return None
