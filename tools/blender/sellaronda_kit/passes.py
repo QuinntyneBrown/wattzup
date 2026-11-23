@@ -322,4 +322,10 @@ def build_four_passes(B, kit, road, height_at) -> None:
     B["stone"].box((vx_p, vy_p, vz_p), (1.05, 0.85, 0.65), vtyaw)
     B["chalet-plaster"].box((vx_p, vy_p, vz_p + 0.65), (0.92, 0.72, 1.35), vtyaw)
     kit.gable(B["larch-aged"], (vx_p, vy_p, vz_p + 2.00), 1.22, 1.02, 0.45, vtyaw)
+    # Rider summit stamp-passport posts at Campolongo, Pordoi, Sella & Gardena
+    for p in PASSES:
+        ps_i = road.index(p["at"] + 3.2)
+        psy = s[ps_i]["h"]
+        B["larch-warm"].box(kit.P(ps_i, 0.0, -(kit.kerb + 2.35), -0.05), (0.24, 0.24, 1.18), psy)
+        B["parasol-red"].box(kit.P(ps_i, 0.0, -(kit.kerb + 2.35), 1.13), (0.34, 0.30, 0.22), psy)
     # [ANCHOR:passes]
