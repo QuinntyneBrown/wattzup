@@ -279,6 +279,15 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         B["ladin-blue"].box((cx_v, cy_v, cz_v + 1.55), (6.24, 2.25, 0.28), cvyaw)
         B["awning"].box((cx_v - math.sin(cvyaw) * -1.85, cy_v + math.cos(cvyaw) * -1.85, cz_v + 2.48), (4.2, 1.65, 0.14), cvyaw)
 
+    # Sociable 3-rider Bike Day club groups spinning along the valley approaches
+    for cl_i, cl_m in enumerate((580.0, 3285.0, 6230.0, 8995.0)):
+        cl_idx = road.index(cl_m)
+        clyaw = s[cl_idx]["h"]
+        j_mat = jerseys[cl_i % len(jerseys)]
+        for r_slot, (al_o, lat_o) in enumerate(((0.0, -3.6), (-1.4, -4.2), (-2.6, -3.5))):
+            px_g, py_g, pz_g = kit.P(cl_idx, al_o, lat_o, 0.0)
+            _road_cyclist(B, px_g, py_g, pz_g, clyaw, j_mat, standing=False)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
