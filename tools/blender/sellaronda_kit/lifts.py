@@ -87,6 +87,7 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         (2165.0, -1.0, 4),  # Campolongo / Costoratta chairlift
         (3420.0, 1.0, 6),   # Arabba / Fodom gondola line
         (7480.0, 1.0, 6),   # Passo Sella / Forcella del Sassolungo telecabina line
+        (7860.0, 1.0, 4),   # Passo Sella / Città dei Sassi chairlift
         (9920.0, 1.0, 6),   # Passo Gardena / Dantercepies gondola line
     )
     for at_m, side_dir, n_pylons in lift_corridors:
