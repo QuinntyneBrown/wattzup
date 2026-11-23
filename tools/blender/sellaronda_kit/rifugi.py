@@ -289,4 +289,10 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
         wox, woy, _ = road.at(woi, kit.kerb + 9.2)
         woz = max(height_at(wox, woy), road.s[woi]["z"] - 0.3)
         B["stone"].box((wox, woy, woz), (1.45, 1.45, 2.85), road.s[woi]["h"])
+    # Bright orange alpine aperitivo sun umbrellas at Plan Boè & Jimmi Hütte
+    for ap_m, ap_s in ((1464.0, -1.0), (10424.0, 1.0)):
+        api = road.index(ap_m)
+        apx, apy, _ = road.at(api, (kit.kerb + 4.8) * ap_s)
+        apz = max(height_at(apx, apy), road.s[api]["z"] - 0.2)
+        kit.gable(B["crowd-3"], (apx, apy, apz + 2.45), 3.1, 3.1, 0.58, 0.3)
     # [ANCHOR:rifugi-global]
