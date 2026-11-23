@@ -600,6 +600,11 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     wcx, wcy, wcz = road.at(wc_i, -(kit.kerb - 0.85))
     _road_cyclist(B, wcx, wcy, wcz, s[wc_i]["h"], "paint", standing=True)
 
+    # Bike Day paramedic motorbike responder on the Passo Sella switchbacks (at=7190 m)
+    md_m = road.index(7190.0)
+    mdx_m, mdy_m, mdz_m = kit.P(md_m, 0.0, kit.kerb + 2.2, 0.0)
+    _touring_motorbike(B, mdx_m, mdy_m, mdz_m, s[md_m]["h"] + 0.3, "paint", with_rider=True)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
