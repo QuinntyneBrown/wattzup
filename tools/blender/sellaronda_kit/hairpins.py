@@ -303,4 +303,8 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         if s[i]["g"] < -3.8 and dl_cnt < 20:
             dl_cnt += 1
             B["crowd-3"].box(kit.P(i, 0.0, -(kit.kerb + 0.95), 0.0), (0.07, 0.07, 1.15), s[i]["h"])
+    # Steel rockfall catch-posts above Campolongo & Sella road cuts
+    for rc_m in (1620.0, 1690.0, 7220.0, 7290.0):
+        rci = road.index(rc_m)
+        B["steel"].box(kit.P(rci, 0.0, -(kit.kerb + 3.1), 4.5), (8.5, 0.12, 1.65), s[rci]["h"])
     # [ANCHOR:hairpins]
