@@ -24,6 +24,7 @@ import {
   MeshStandardNodeMaterial,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
+  type Node,
   type Object3D,
   PerspectiveCamera,
   PlaneGeometry,
@@ -56,7 +57,7 @@ import { CourseCyclistKit, type RiderModel as Cyclist } from './course-cyclist';
 import { fenceMaterial } from './fence-material';
 import { type GroundEye, groundMaterial, surfaceTexture } from './ground-material';
 import { haloMaterial } from './halo-material';
-import { LampGlow } from './lamp-glow';
+import { colouredGlow, LampGlow } from './lamp-glow';
 import { colourLightMap, lampLightMap } from './lamp-light-map';
 import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
@@ -133,6 +134,12 @@ function raised(camera: PerspectiveCamera): PerspectiveCamera {
   camera.setViewOffset(1, 1, 0, FRAME_RISE, 1, 1);
   return camera;
 }
+
+/**
+ * How much of a coloured light's strength shows on a course that still has the sun: the strengths in a course file
+ * are a night's, and at dusk a doorway or a string of bulbs tints the ground before it, no more.
+ */
+const DUSK_LIGHT = 0.16;
 
 /** How far the map is drawn at each tier, as a share of each group's draw distance: a slower device draws less far. */
 const DRAWN_FAR = [0.7, 0.8, 0.9, 1, 1] as const;
@@ -485,6 +492,19 @@ export class CourseRenderer implements WorldRenderer {
         materials[group] = material;
       }
     }
+    // A course without street lamps may still have coloured lights (a strip at dusk: lit doorways, neon, strings of
+    // bulbs): their light falls on the ground, the water and the walls, under the sun that still lights the rest.
+    let dusk: Node<'vec3'> | null = null;
+    if (!lamps) {
+      const lights = courseLights(this.course!.file);
+      if (lights.length) {
+        const glow = colouredGlow(colourLightMap(this.course!, lights));
+        this.disposables.push(glow.texture);
+        dusk = glow.light.mul(DUSK_LIGHT);
+      }
+    }
+    const coloured = this.lampGlow?.coloured ?? dusk;
+    const made = this.lampGlow?.light ?? dusk;
     this.disposables.push(...Object.values(materials));
     // The ground the road builds has its place on the road in its UV: its surface and the lamps' light are drawn
     // from that (ground-material.ts). A map built before it has no such group.
@@ -495,12 +515,12 @@ export class CourseRenderer implements WorldRenderer {
       lamps,
       courseWet(this.course!.file),
       new Color(look.haze),
-      this.lampGlow?.coloured ?? null,
+      coloured,
     );
     materials['Ground'] = ground.material;
     this.groundEye = ground.eye;
     // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
-    materials['Walls'] = wallMaterial(detail, this.lampGlow?.light ?? null, LAMP_ON.Walls);
+    materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -517,7 +537,7 @@ export class CourseRenderer implements WorldRenderer {
         this.course!.file.sun,
         detail,
         this.course!.file.night === true,
-        this.lampGlow?.coloured ?? null,
+        coloured,
       );
       materials['Sea']!.dispose();
       materials['Sea'] = water.material;
@@ -525,11 +545,7 @@ export class CourseRenderer implements WorldRenderer {
       this.disposables.push(water.material);
     }
     // Windows are panels with their place on the pane in their UV (window-material.ts).
-    materials['Windows'] = windowMaterial(
-      detail,
-      new Color(look.haze),
-      this.lampGlow?.light ?? null,
-    );
+    materials['Windows'] = windowMaterial(detail, new Color(look.haze), made);
     this.disposables.push(
       detail,
       materials['Ground'],
@@ -538,7 +554,7 @@ export class CourseRenderer implements WorldRenderer {
       materials['Windows'],
     );
     // Railings are panels with their place along the railing in their UV (fence-material.ts).
-    materials['Fences'] = fenceMaterial(this.lampGlow?.light ?? null, LAMP_ON.Solid);
+    materials['Fences'] = fenceMaterial(made, LAMP_ON.Solid);
     // The glow round each light: corners the material spreads to face the eye (halo-material.ts).
     materials['Halos'] = haloMaterial(DRAW_DISTANCE['Halos']! * 0.6, DRAW_DISTANCE['Halos']!);
     this.disposables.push(materials['Fences'], materials['Halos']);

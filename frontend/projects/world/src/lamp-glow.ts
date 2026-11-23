@@ -54,6 +54,33 @@ const SLOPE_CELLS = 1.5;
 const SLOPE_GAIN = 9;
 const SIDE_LIGHT = 0.45;
 
+/**
+ * The coloured lights' light at the surface being drawn (a neon sign, a lit doorway, a string of bulbs), from their
+ * grid (lamp-light-map.ts): for a course with street lamps, where it joins theirs, and for one without (a strip at
+ * dusk), where it is all the made light there is. The texture is the caller's to dispose.
+ */
+export function colouredGlow(colours: ColourLightMap): {
+  texture: DataTexture;
+  light: Node<'vec3'>;
+} {
+  const grid = new DataTexture(
+    colours.texels,
+    colours.width,
+    colours.height,
+    RGBAFormat,
+    UnsignedByteType,
+  );
+  grid.magFilter = grid.minFilter = LinearFilter;
+  grid.needsUpdate = true;
+  const texel = texture(
+    grid,
+    positionWorld.xz
+      .sub(vec2(colours.minX, colours.minZ))
+      .div(vec2(colours.width * colours.cell, colours.height * colours.cell)),
+  ).rgb;
+  return { texture: grid, light: texel.mul(texel).mul(COLOUR_LIGHT_MAX) };
+}
+
 /** The lamps' light as materials read it. */
 export class LampGlow {
   private readonly grid: DataTexture;
@@ -95,23 +122,9 @@ export class LampGlow {
     );
     if (colours) {
       // The coloured lights are a second grid, read the same way and added to the lamps'.
-      const second = new DataTexture(
-        colours.texels,
-        colours.width,
-        colours.height,
-        RGBAFormat,
-        UnsignedByteType,
-      );
-      second.magFilter = second.minFilter = LinearFilter;
-      second.needsUpdate = true;
-      this.colours = second;
-      const texel = texture(
-        second,
-        positionWorld.xz
-          .sub(vec2(colours.minX, colours.minZ))
-          .div(vec2(colours.width * colours.cell, colours.height * colours.cell)),
-      ).rgb;
-      this.coloured = texel.mul(texel).mul(COLOUR_LIGHT_MAX);
+      const glow = colouredGlow(colours);
+      this.colours = glow.texture;
+      this.coloured = glow.light;
       lit = lit.add(this.coloured);
     }
     this.light = lit

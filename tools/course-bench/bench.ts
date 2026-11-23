@@ -9,6 +9,7 @@ import {
   targetResistanceWrite,
   workoutFrame,
 } from "../../frontend/e2e/fixtures/echelon";
+import { ibizaCourseMap } from "../../frontend/e2e/fixtures/course";
 import { maps } from "../../frontend/e2e/fixtures/maps";
 import { veteranProgress } from "../../frontend/e2e/fixtures/progress";
 import { expect, test } from "../../frontend/e2e/fixtures/test";
@@ -23,7 +24,8 @@ const tier = process.env["WZ_BENCH_TIER"] ?? "ultra";
 const uncapped = process.env["WZ_BENCH_UNCAPPED"] === "1";
 /** Seconds ridden before the frames are timed, and seconds timed. */
 const SETTLE = Number(process.env["WZ_BENCH_SETTLE"] ?? 12);
-const TIMED = 10;
+// WZ_BENCH_SECONDS=<n> times and films for n seconds where the bench's ten are too few (a film to watch).
+const TIMED = Number(process.env["WZ_BENCH_SECONDS"] ?? 10);
 /** Metres up the road the ride starts from: to film and time a climb or a bend, not the start line. */
 const FROM = Number(process.env["WZ_BENCH_FROM"] ?? 0);
 
@@ -69,11 +71,12 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
     },
     [tier, FROM, process.env["WZ_BENCH_BACKEND"] ?? ""] as const,
   );
-  api.answer("GET", "/api/maps", () => ({ body: maps }));
+  // The maps the app is told of: the fixtures' list, and Ibiza Sunset Strip, which has a fixture of its own.
+  api.answer("GET", "/api/maps", () => ({ body: [...maps, ibizaCourseMap] }));
   // A rider with every map open, so any course can be benched.
   api.answer("GET", "/api/progress", {
     ...veteranProgress,
-    openMapIds: [...veteranProgress.openMapIds, "col-du-granit"],
+    openMapIds: [...veteranProgress.openMapIds, "col-du-granit", ibizaCourseMap.id],
   });
   await bluetooth.remember(echelonBike);
   const race = new RacePage(page);
@@ -82,10 +85,12 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
     process.env["WZ_BENCH_QUERY"] ?? "mode=bots&pack=medium",
   );
   await expect
-    .poll(() => bluetooth.writes().map((write) => write.hex), {
-      timeout: 30_000,
-    })
-    .toContain(targetResistanceWrite(8));
+    .poll(
+      // The race has started once it sets the bike's resistance, whatever the map's first level is.
+      () => bluetooth.writes().some((write) => write.hex.startsWith("F0 B1 01")),
+      { timeout: 30_000 },
+    )
+    .toBe(true);
   await expect(race.backend).toBeVisible({ timeout: 90_000 });
 
   // The rider pedals at 90 rpm for the whole bench.

@@ -92,7 +92,10 @@ its target resistance (`level`) and its cadence aim (rpm).
 
 ## Themes
 
-Ibiza Sunset Strip's scenery is `build_scenery` here. Every other map names a theme in `themes.py`: its sky
+Ibiza Sunset Strip's land and scenery are `build_terrain` and `build_scenery` here; its theme in `themes.py` is
+marked `own` and gives it the rest (its sky, the bends it is dealt, its ramps and roll, what the course file tells
+the app). `build_scenery` uses the themes' kit for its windows, railings, glows and lights. Every other map names a
+theme in `themes.py`: its sky
 (which the course file carries for the app), haze and lights, a palette for the shared materials, its land
 (farmland, a town in the countryside, a headland over the sea, a harbour, an alpine valley, a beachfront, a
 high pass), its road edge (verge, pavement, cliff, quay, guard rail, beach, parapet), the turns it deals and

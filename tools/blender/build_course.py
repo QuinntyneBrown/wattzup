@@ -1113,10 +1113,13 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
     s, n = road.s, len(road.s)
     names = (
         "trunk leaf leaf-dark glint bush bougainvillea whitewash wall wood dark stone rock skin club-window awning awning-white arrow sail sail-pink "
-        "glow-door lamp-red lamp-green gold confetti bulb paint sun island"
+        "glow-door lamp-red lamp-green gold confetti bulb paint sun island tower"
     ).split() + NEONS + BEAMS + CROWD
     B = {name: Builder("".join(p.title() for p in name.split("-")), name) for name in names}
     B["whitewash"].name, B["dark"].name, B["paint"].name = "Clubs", "Dark", "GatePaint"
+    # The kit the themed maps are built with (themes.py): framed windows, railings, the glow round a light and the
+    # light it throws, which the app draws and the course file carries.
+    kit = themes.Kit(road, st, length, height_at, rng, B, STEP, ROAD_HALF)
     kerb = ROAD_HALF + 0.6
     front = kerb + TERRACE  # the clubs' fronts, right of the road
 
@@ -1249,6 +1252,9 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
             # An arched doorway glowing warm, under a striped awning.
             off = -(front - 0.07)
             B["glow-door"].box(P(i, along, off, 0.12), (1.5, 0.14, 2.1), yaw)
+            # The doorway's glow in the dusk, and its warm light on the terrace before it.
+            kit.halo(P(i, along, off + 0.3, 1.6), "glow-door")
+            kit.light(P(i, along, off + 2.2, 0), "glow-door", 6.5, 0.55)
             for k2 in range(6):
                 a0, a1 = math.pi * k2 / 6, math.pi * (k2 + 1) / 6
                 B["glow-door"].tri(
@@ -1265,8 +1271,8 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         panes = max(3, int(width / 3.2))
         for k in range(panes):
             along = -width / 2 + (k + 0.5) * width / panes
-            pane = B["glow-door"] if rng.random() < 0.35 else B["club-window"]
-            pane.box(P(i, along, -(front - 0.05), 4.3), (1.1, 0.1, 1.5), yaw)
+            # A window in its frame, under a lintel and over a sill, lit or dark: the app draws the room behind it.
+            kit.window(i, along, -(front - 0.06), 4.3, 1.1, 1.5, rng.random() < 0.45, yaw)
         for k in range(rng.choice((2, 3))):
             neon = B[NEONS[(len(clubs) + k) % len(NEONS)]]
             along = -width / 2 + (k + 0.5) * width / 3 + rng.uniform(-0.6, 0.6)
@@ -1280,6 +1286,11 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         # A tall neon sign standing off the corner.
         sign = B[NEONS[(len(clubs) + 3) % len(NEONS)]]
         sign.box(P(i, -width / 2 - 0.4, -(front - 0.5), 3.4), (0.16, 0.9, 3.4), yaw)
+        # The sign's glow, and its colour on the terrace and the road before the club.
+        sign_glow = NEONS[(len(clubs) + 3) % len(NEONS)]
+        kit.halo(P(i, -width / 2 - 0.4, -(front - 0.9), 5.2), sign_glow)
+        kit.light(P(i, -width / 2 - 0.4, -(front - 3.0), 0), sign_glow, 9.0, 0.6)
+        kit.light(P(i, 0, -(front - 5.0), 0), NEONS[len(clubs) % len(NEONS)], 12.0, 0.45)
         # Bougainvillea spilling over a corner, and bushes in pots.
         for _ in range(5):
             blob(B["bougainvillea"], P(i, width / 2 - rng.uniform(0, 2.2), -(front - rng.uniform(0.2, 0.9)), rng.uniform(3.6, 6.4)), rng.uniform(0.6, 1.1))
@@ -1294,6 +1305,9 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
             pole = P(i, along, kerb + SIDEWALK - 0.3, 0.12)
             B["dark"].box(pole, (0.14, 0.14, 5.6), yaw)
             festoon(P(i, along, -(front - 3.8), 3.9), (pole[0], pole[1], pole[2] + 5.5))
+            # The string's bulbs glow together over the road, and light it.
+            kit.halo(P(i, along, 0.0, 4.2), "bulb")
+            kit.light(P(i, along, 0.0, 0), "bulb", 8.0, 0.4)
         clubs.append(i)
 
     def room_for_club(i: int) -> bool:
@@ -1315,6 +1329,14 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
             i += int((width + (rng.uniform(2, 5) if lined else rng.uniform(26, 90))) / STEP) + 1
         else:
             i += 3
+
+    # A railing along the far edge of the promenade wherever no club stands on it, over the drop to the land below.
+    taken = set()
+    for c in clubs:
+        taken.update(range(c - 4, c + 5))
+    for i in range(2, n - 3):
+        if i not in taken and i + 1 not in taken:
+            kit.fence(i, -(kerb + TERRACE - 0.15), 1.1)
 
     # Arrow boards round the outside of every tight bend.
     for i in range(2, n - 2, 2):
@@ -1482,7 +1504,7 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
     B["island"].name = "Conillera"
     for b in B.values():
         b.build(col)
-    return {"sunAzimuth": az, "clubs": len(clubs), "efforts": efforts}
+    return {"sunAzimuth": az, "clubs": len(clubs), "efforts": efforts, "lights": kit.lights}
 
 
 def build_themed_scenery(road: Road, st: list[dict], length: float, height_at, course: dict, theme: dict, col) -> dict:
@@ -1920,6 +1942,8 @@ def main(argv: list[str] | None = None) -> dict:
 
     course = json.loads(args.course.read_text(encoding="utf-8"))
     theme = themes.THEMES.get(course.get("theme", ""))
+    # A theme whose land and scenery are its own (Ibiza's) is a theme in everything else.
+    themed = bool(theme) and not theme.get("own")
     if theme:
         for name, colour in theme.get("palette", {}).items():
             MATERIALS[name] = {**MATERIALS[name], "color": colour}
@@ -1937,7 +1961,7 @@ def main(argv: list[str] | None = None) -> dict:
     samples, st, length, mean, per_level = lay_centre_line(course, theme)
     road = Road(samples)
     build_road(road, st, length, col, theme)
-    if theme:
+    if themed:
         _, height_at = build_land(road, col, theme)
         facts = build_themed_scenery(road, st, length, height_at, course, theme, col)
     else:
@@ -1961,7 +1985,7 @@ def main(argv: list[str] | None = None) -> dict:
     else:
         print("meshopt_glb.mjs not run: node or frontend/node_modules/meshoptimizer is missing.", flush=True)
     bpy.data.collections["Guides"].hide_viewport = False
-    if theme:
+    if themed:
         light_scene_theme(facts["sunAzimuth"], theme)
     else:
         light_scene(facts["sunAzimuth"])

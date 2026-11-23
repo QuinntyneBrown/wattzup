@@ -76,6 +76,28 @@ CARS = [f"car-{i}" for i in range(3)]
 # Each theme: the sky the app draws (horizon up), the haze, the sun's and the fill light's colours, the land, the
 # road's edge, the turns and the gradient. `palette` recolours the shared materials.
 THEMES: dict[str, dict] = {
+    # Ibiza Sunset Strip, the first map: its land and its scenery are its own (build_terrain and build_scenery in
+    # build_course.py, `own`), and the rest is a theme's: the sunset the app draws, the bends its stages are dealt, the
+    # hills its efforts climb, and what the course file tells the app of its lights.
+    "ibiza": {
+        "own": True,
+        "sky": [0xFFC27A, 0xF7A070, 0xE0708A, 0x7A4F9A, 0x2F2A5E],
+        "haze": 0xF2A77A,
+        "light": [0xFF9A5A, 2.6],
+        "fill": [0xFFD9C0, 0x6A5A7A],
+        "sun_altitude": 0.11,
+        "terrain": {"sea": True},
+        "centre": "yellow",
+        # A coast road: an effort winds up onto a headland through esses and a hairpin, a recovery sweeps back down
+        # to the strip, and the calm stretches between are the strip itself, with a bend in it.
+        "turns": {"work": (("ess", 0.4), ("hairpin", 0.18), ("sweep", 0.3), ("straight", 0.12)),
+                  "recover": (("sweep", 0.5), ("ess", 0.3), ("straight", 0.2)),
+                  "calm": (("sweep", 0.45), ("straight", 0.35), ("ess", 0.2))},
+        # The hills: each effort climbs in the first half of its stretch and holds the headland's height; each
+        # recovery drops off it in its first quarter. Steeper for a level than the flat maps, and the ground
+        # between rolls a little, so the strip itself is never dead level.
+        "grade": {"perLevel": 0.855, "ramp": {"work": 0.5, "recover": 0.25}, "roll": 3.3, "rollWave": 620.0},
+    },
     "prairie": {
         "sky": [0xFFE0A8, 0xF8C987, 0xD8C49A, 0x93B0D0, 0x5578B0],
         "haze": 0xF0D4A0,

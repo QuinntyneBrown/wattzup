@@ -13,8 +13,10 @@ unchanged and uncommitted (`docs/screenshots/courses/realism-on-coast.jpg`). Bot
 no slow frame. With no work in their themes they take techniques 1 (the ground), 5 (the sky), 11 (the smaller
 file: 5.11 to 3.92 MB and 3.20 to 2.39 MB gzipped), 12 (the coast's water), 13 (street furniture), 16 (riders in
 one draw call) and 18 (everything on the GPU first). The rest need a few lines in each theme, as each technique's
-"To apply it to another map" says. The seven maps' shipped files have not been rebuilt: that is a decision for
-whoever owns the maps, since every map's download and look change with it.
+"To apply it to another map" says. **Ibiza Sunset Strip has been rebuilt** with all of it that a strip at dusk can take
+(`docs/screenshots/courses/ibiza/README.md`): the ground, walls, framed windows, railings, glows, water, bends and
+ramps, and its coloured lights without street lamps (technique 20). The other six maps' shipped files have not been
+rebuilt: that is a decision for whoever owns the maps, since every map's download and look change with it.
 
 ## The method
 
@@ -531,6 +533,24 @@ streaks take a plain grey.
 
 **Watch for.** A streak right at the eye fills the view: fade them out within a metre or two. Rain everywhere
 alike, lit or not, looks like scratches on the lens: light it by where it is.
+
+### 20. Coloured lights without street lamps: a strip at dusk (Ibiza's rebuild)
+
+**What it gives.** On a map that is not dark, lit doorways, neon and strings of bulbs still tint the ground, the
+water and the walls about them.
+
+**How it works.** `Kit.light` records each light as on a night map and the course file carries them. In the app a
+course with `lights` and no `lamps` builds the coloured grid alone (`colouredGlow` in `lamp-glow.ts`) and hands it,
+times `DUSK_LIGHT` (0.16), to the ground, water, wall, window and railing materials. The sun, the sky and the
+riders' daylight (technique R14) are untouched.
+
+**To apply it.** Call `k.light(at, glow, reach, strength)` beside whatever glows, with a night's strengths; give the
+theme no `lamps`. A map at full daylight wants a smaller `DUSK_LIGHT` or none.
+
+**Cost.** One more texture sample in the materials that take it; nothing measured.
+
+**Watch for.** Many lights close together over the road (a string of bulbs at every club): at a night's strength
+they grey the whole road.
 
 ## The riders
 
