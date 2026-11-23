@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { paragliderGroundSpeedMps, paragliderPose, type ThermalOrbit } from './paraglider-flight';
+import {
+  paragliderGlideRangeKm,
+  paragliderGroundSpeedMps,
+  paragliderPose,
+  type ThermalOrbit,
+} from './paraglider-flight';
 
 const COL_RODELLA: ThermalOrbit = {
   center: [120, 220, -340],
@@ -24,5 +29,6 @@ describe('paragliderPose', () => {
     expect(b).toEqual(a);
     expect(b.bank).toBe(0);
     expect(paragliderGroundSpeedMps(COL_RODELLA, 6)).toBeGreaterThan(4);
+    expect(paragliderGlideRangeKm(2484, 1465, 9.5)).toBeCloseTo(9.68, 1);
   });
 });
