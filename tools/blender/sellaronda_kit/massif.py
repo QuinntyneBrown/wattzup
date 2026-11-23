@@ -527,4 +527,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         350.0,
         snow=True,
     )
+    # Sunlit southeastern limestone buttress above Passo Campolongo
+    rock_tower(peaks, cx + vux * 795.0 + vpx * 125.0, cy + vuy * 795.0 + vpy * 125.0, 105.0, 505.0, 62.0, 48.0, 8, math.atan2(vuy, vux), cfn, taper=0.66, flat_cap=True, seed_phase=5.2)
     # [ANCHOR:massif]
