@@ -3,6 +3,7 @@ import {
   highestSellaPass,
   isHighWallSector,
   nextSellaPass,
+  passAverageGradientPercent,
   passClimbLengthMetres,
   passClimbProgress,
   passVerticalGainMetres,
@@ -53,5 +54,7 @@ describe('SELLA_RONDA_PASSES', () => {
     expect(highestSellaPass().altitudeMetres).toBe(2240);
     expect(passVerticalGainMetres('sella')).toBe(775);
     expect(passVerticalGainMetres('campolongo')).toBe(307);
+    expect(passAverageGradientPercent('pordoi')).toBeGreaterThan(6.5);
+    expect(passAverageGradientPercent('campolongo')).toBeGreaterThan(5.0);
   });
 });

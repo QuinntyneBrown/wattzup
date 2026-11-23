@@ -129,3 +129,17 @@ export function passVerticalGainMetres(passId: SellaPass['id']): number {
   const pass = SELLA_RONDA_PASSES.find((p) => p.id === passId) ?? SELLA_RONDA_PASSES[0]!;
   return pass.altitudeMetres - VALLEY_FLOOR_ALTITUDES[pass.id];
 }
+
+const REAL_CLIMB_KM: Readonly<Record<SellaPass['id'], number>> = {
+  campolongo: 6.0,
+  pordoi: 9.4,
+  sella: 11.2,
+  gardena: 9.3,
+};
+
+/** Real-world average road gradient (%) for the clockwise ascent of `passId`. */
+export function passAverageGradientPercent(passId: SellaPass['id']): number {
+  return Number(
+    ((passVerticalGainMetres(passId) / (REAL_CLIMB_KM[passId] * 1000)) * 100).toFixed(1),
+  );
+}
