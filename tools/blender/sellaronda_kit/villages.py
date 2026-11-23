@@ -54,6 +54,7 @@ def _onion_dome_church(B, kit, x: float, y: float, z: float, yaw: float, dome_ma
         for z_off, w_oct, h_oct in tiers:
             B[dome_mat].box((tx, ty, z + z_off), (w_oct, w_oct, h_oct), yaw)
             B[dome_mat].box((tx, ty, z + z_off), (w_oct * 0.92, w_oct * 0.92, h_oct), yaw + math.pi * 0.25)
+        B["dark"].box((tx, ty, z + 22.9), (2.55, 0.85, 1.15), yaw)
         B["gold"].box((tx, ty, z + 26.7), (0.45, 0.45, 0.45), yaw)
         B["gold"].box((tx, ty, z + 27.15), (0.14, 0.85, 1.45), yaw)
 
