@@ -367,6 +367,7 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
             B["chalet-plaster"].box((fx_h, fy_h, fz_h - 0.8), (11.2, 8.2, 5.2), fyaw)
             B["parasol-red"].box((fx_h - math.sin(fyaw) * -(4.2 * fw_s), fy_h + math.cos(fyaw) * -(4.2 * fw_s), fz_h), (7.6, 0.18, 3.2), fyaw)
             B["larch-aged"].box((fx_h + math.cos(fyaw) * 4.4, fy_h + math.sin(fyaw) * 4.4, fz_h), (2.8, 2.8, 11.5), fyaw)
+            B["gold"].box((fx_h + math.cos(fyaw) * 4.4, fy_h + math.sin(fyaw) * 4.4, fz_h + 6.5), (2.9, 0.45, 0.85), fyaw)
             kit.gable(B["roof-slate"], (fx_h, fy_h, fz_h + 4.4), 11.8, 8.8, 2.1, fyaw)
     # Stadio del Ghiaccio glulam-timber arena roof in Corvara (at=435 m)
     ic_i = road.index(435.0)
