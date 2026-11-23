@@ -80,3 +80,25 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         for side in (-1.0, 1.0):
             B["stone"].box(kit.P(b_idx, 0.0, (kit.kerb + 0.85) * side, -2.8), (12.0, 0.85, 3.85), b_yaw)
             B["dolomite-pale"].box(kit.P(b_idx, 0.0, (kit.kerb + 0.85) * side, 1.05), (12.4, 0.96, 0.18), b_yaw)
+
+    # Visible down-slope switchback road ribbons snaking across the green slopes below the four high climbs!
+    for p in PASSES:
+        for tier_k in (0, 1, 2):
+            d_rib = p["climb_from"] + 280.0 + tier_k * 360.0
+            if d_rib >= p["at"] - 120.0:
+                continue
+            r_idx = road.index(d_rib)
+            ryaw = s[r_idx]["h"] + 0.18 * (1 if tier_k % 2 == 0 else -1)
+            # Place visible lower switchback terrace 34..58 m down the valley side (left of road)
+            lat_r = 36.0 + tier_k * 11.0
+            rx0, ry0, _ = road.at(r_idx, lat_r)
+            if not road.clear_of_road(rx0, ry0, 22.0, r_idx):
+                continue
+            rz0 = min(height_at(rx0, ry0) + 1.2, s[r_idx]["z"] - (11.0 + tier_k * 6.5))
+            for seg_s in range(-3, 4):
+                sx_r = rx0 + math.cos(ryaw) * (seg_s * 9.5) - math.sin(ryaw) * (math.sin(seg_s * 0.6) * 4.5)
+                sy_r = ry0 + math.sin(ryaw) * (seg_s * 9.5) + math.cos(ryaw) * (math.sin(seg_s * 0.6) * 4.5)
+                seg_yaw = ryaw + math.cos(seg_s * 0.6) * 0.25
+                B["stone"].box((sx_r, sy_r, rz0 - 3.6), (10.2, 6.8, 3.6), seg_yaw)
+                B["asphalt"].box((sx_r, sy_r, rz0), (10.2, 6.4, 0.16), seg_yaw)
+                B["paint"].box((sx_r - math.sin(seg_yaw) * 2.85, sy_r + math.cos(seg_yaw) * 2.85, rz0 + 0.17), (10.2, 0.18, 0.02), seg_yaw)
