@@ -738,6 +738,15 @@ wrong, and each is changed:
 
 The wing beat is still not seen: the birds are small in a still frame.
 
+### Checked after Sky 23: the low cloud's drift is wired
+
+`check-drift.jpg` (what differs between the frame as it is and the frame with the drift seventy-five times too
+fast, taken at the same place and second: white is a difference). The check two before this said the drift
+"could not be told apart" by eye. Taken one from the other, the two frames differ in the sky in three things
+only: the thunderhead's lightning (held on in one of them), the aeroplane (a moment further on), and four ragged
+scraps of cloud, flat beneath, which are the low cloud in the places it has moved from and to. It drifts. At its
+own pace, a degree in eight seconds, it is weather: not to be seen moving in a few seconds of film.
+
 ### Low power: where the frames go (after Party 20)
 
 The low-power stand-in (the low tier with the processor slowed six times) has not held 60 fps on this machine on
