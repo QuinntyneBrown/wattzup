@@ -337,4 +337,10 @@ def build_four_passes(B, kit, road, height_at) -> None:
         wc_i = road.index(wc_at)
         B["steel"].box(kit.P(wc_i, 0.0, kit.kerb + 5.2, -0.1), (0.12, 0.12, 4.6), s[wc_i]["h"])
         B["paint"].box(kit.P(wc_i, 0.0, kit.kerb + 5.2, 4.5), (0.28, 0.28, 0.26), 0.0)
+    # Companion Giro legends stone plinths flanking the Coppi plaza on Passo Pordoi
+    for lg_o in (-3.2, 3.2):
+        lx_p = mx + math.cos(p_yaw) * lg_o
+        ly_p = my + math.sin(p_yaw) * lg_o
+        B["dolomite-pale"].box((lx_p, ly_p, mz + 0.25), (0.72, 0.58, 1.35), p_yaw)
+        B["larch-aged"].box((lx_p, ly_p, mz + 1.60), (0.42, 0.36, 0.38), p_yaw)
     # [ANCHOR:passes]
