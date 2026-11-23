@@ -123,3 +123,11 @@ export function meanRifugioAltitudeMetres(): number {
   const sum = SELLA_RIFUGI.reduce((acc, r) => acc + r.altitudeMetres, 0);
   return Math.round(sum / Math.max(1, SELLA_RIFUGI.length));
 }
+
+/** Finds a Sella Ronda roadside rifugio by case-insensitive partial name match. */
+export function findRifugioByName(query: string): SellaRifugio | null {
+  const q = query.trim().toLowerCase();
+  if (!q) return null;
+  const hit = SELLA_RIFUGI.find((r) => r.name.toLowerCase().includes(q));
+  return hit ?? null;
+}
