@@ -289,6 +289,10 @@ def emit_dusk_lights(kit, road, height_at) -> None:
     ch_g = road.index(10162.0)
     chgx, chgy, chgz = road.at(ch_g, -(kit.kerb + 6.5), 2.2)
     kit.halo((chgx, chgy, chgz), "bulb")
+    # Evening station halo on the Piz Seteur gondola hall
+    ps_l = road.index(7335.0)
+    pslx, psly, _ = road.at(ps_l, kit.kerb + 28.0)
+    kit.halo((pslx, psly, height_at(pslx, psly) + 4.8), "glow-window")
     # [ANCHOR:alpenglow-lights]
 
 
