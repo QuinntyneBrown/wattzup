@@ -18,3 +18,10 @@ export function treeLineDensity(altitudeMetres: number): number {
   const u = (2220 - altitudeMetres) / (2220 - 1850);
   return u * u * (3 - 2 * u);
 }
+
+/** Relative alpine wildflower bloom density (0..1), peaking in sunny 1,750..2,100 m hay pastures. */
+export function wildflowerBloomIntensity(altitudeMetres: number): number {
+  if (altitudeMetres <= 1350 || altitudeMetres >= 2550) return 0;
+  const dist = Math.abs(altitudeMetres - 1925);
+  return Math.max(0, 1 - (dist / 625) ** 2);
+}

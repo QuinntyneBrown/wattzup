@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dolomiteFloraZone, treeLineDensity } from './alpine-flora';
+import { dolomiteFloraZone, treeLineDensity, wildflowerBloomIntensity } from './alpine-flora';
 
 describe('dolomiteFloraZone', () => {
   it.each([
@@ -15,5 +15,7 @@ describe('dolomiteFloraZone', () => {
     expect(treeLineDensity(1600)).toBe(1);
     expect(treeLineDensity(2035)).toBeCloseTo(0.5, 2);
     expect(treeLineDensity(2240)).toBe(0);
+    expect(wildflowerBloomIntensity(1925)).toBe(1);
+    expect(wildflowerBloomIntensity(2600)).toBe(0);
   });
 });
