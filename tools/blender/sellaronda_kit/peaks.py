@@ -198,3 +198,15 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     lpx2, lpy2 = -luy2, lux2
     for l_off, l_top in ((-140.0, 520.0), (130.0, 490.0)):
         rock_tower(peaks, cdl_pt["x"] + lux2 * 780.0 + lpx2 * l_off, cdl_pt["y"] + luy2 * 780.0 + lpy2 * l_off, 45.0, l_top, 185.0, 145.0, 10, math.atan2(-luy2, -lux2), cfn, taper=0.42, flat_cap=False, seed_phase=2.7 + l_off * 0.01)
+
+    # 9. Distant eastern Dolomite giants on the horizon: Tofana di Rozes (3,225 m), Civetta (3,220 m) & Monte Pelmo (3,168 m)
+    for d_at, dist_h, top_h, rx_h, flat_h in (
+        (1650.0, 2150.0, 885.0, 340.0, True),   # Tofana di Rozes
+        (2450.0, 2350.0, 860.0, 290.0, True),   # Monte Pelmo ("Caregon del Padreterno")
+        (3350.0, 2450.0, 895.0, 360.0, False),  # Monte Civetta northwest wall
+    ):
+        h_pt = road.s[road.index(d_at)]
+        hux, huy = h_pt["x"] - cx, h_pt["y"] - cy
+        hul = max(1.0, math.hypot(hux, huy))
+        hux, huy = hux / hul, huy / hul
+        rock_tower(peaks, h_pt["x"] + hux * dist_h, h_pt["y"] + huy * dist_h, 40.0, top_h, rx_h, rx_h * 0.72, 10, math.atan2(-huy, -hux), cfn, taper=0.62 if flat_h else 0.44, flat_cap=flat_h, seed_phase=d_at * 0.01)
