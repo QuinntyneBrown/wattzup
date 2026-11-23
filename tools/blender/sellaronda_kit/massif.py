@@ -644,4 +644,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         349.0,
         snow=True,
     )
+    # Eastern headwall buttress enclosing the glacial Vallon cirque above Corvara
+    rock_tower(peaks, cx + vux * 745.0 - vpx * 135.0, cy + vuy * 745.0 - vpy * 135.0, 128.0, 565.0, 76.0, 58.0, 8, math.atan2(vuy, vux), cfn, taper=0.68, flat_cap=True, seed_phase=1.3)
     # [ANCHOR:massif]
