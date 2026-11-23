@@ -105,3 +105,17 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> None:
                     sag=1.4,
                     steps=5,
                 )
+            # Hang lift cabins at mid-span along each pylon bay!
+            mx_c = 0.5 * (a[0] + b[0]) + p_perp_x * 1.9
+            my_c = 0.5 * (a[1] + b[1]) + p_perp_y * 1.9
+            mz_c = 0.5 * (a[2] + b[2]) - 1.4
+            B["steel"].box((mx_c, my_c, mz_c - 1.65), (0.12, 0.12, 1.65), yaw_l)
+            if abs(at_m - 7480.0) < 50.0:
+                # Iconic Forcella del Sassolungo narrow upright "coffin" telecabina cabin!
+                cab_mat = ("yellow", "paint", "parasol-red")[k % 3]
+                B[cab_mat].box((mx_c, my_c, mz_c - 3.75), (0.98, 0.92, 2.15), yaw_l)
+                B["dark"].box((mx_c, my_c, mz_c - 2.55), (1.02, 0.96, 0.58), yaw_l)
+            else:
+                # Modern 8-passenger rounded alpine gondola cabin
+                B["dark"].box((mx_c, my_c, mz_c - 3.35), (2.05, 1.55, 1.72), yaw_l)
+                B["parasol-red"].box((mx_c, my_c, mz_c - 3.35), (2.08, 1.58, 0.42), yaw_l)
