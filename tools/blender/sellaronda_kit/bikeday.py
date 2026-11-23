@@ -624,6 +624,12 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         fnx, fny, fnz = road.at(fni, -(kit.kerb - 1.0 - (fn_k % 2) * 0.7))
         _road_cyclist(B, fnx, fny, fnz, s[fni]["h"], fn_col, standing=(fn_k == 0))
 
+    # Gleaming red-and-silver Italian sport-classic motorbikes parked at Passo Sella (at=7754 m)
+    cr_i = road.index(7754.0)
+    for cr_k in range(2):
+        crx, cry, crz = kit.P(cr_i, cr_k * 1.65, kit.kerb + 3.2, 0.0)
+        _touring_motorbike(B, crx, cry, crz, s[cr_i]["h"] + 1.05, "parasol-red" if cr_k == 0 else "steel", with_rider=False)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
