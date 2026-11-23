@@ -9,7 +9,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | real-02.jpg | [Giro d'Italia. 21 maggio 2021, a Mantova.jpg](https://commons.wikimedia.org/wiki/File:Giro_d%27Italia._21_maggio_2021,_a_Mantova.jpg) | CC BY-SA 4.0; Franzk |
 | real-03.jpg | [Verona Arena (Arena di Verona).jpg](https://commons.wikimedia.org/wiki/File:Verona_Arena_(Arena_di_Verona).jpg) | CC BY 2.0; Kevin Poh |
 | real-04.jpg | [Italia - Verona, Arena di Verona - panoramio.jpg](https://commons.wikimedia.org/wiki/File:Italia_-_Verona,_Arena_di_Verona_-_panoramio.jpg) | CC BY 3.0; randreu |
-| real-05.jpg | [Giro d'Italia 2016 DSC04836 Carlos Verona (26602180820).jpg](https://commons.wikimedia.org/wiki/File:Giro_d%27Italia_2016_DSC04836_Carlos_Verona_(26602180820).jpg) | CC BY-SA 2.0; Joop van Dijk from Kampen, Netherlands |
+| real-05.jpg | [Verona, Portoni della Bra', 01.JPG](https://commons.wikimedia.org/wiki/File:Verona,_Portoni_della_Bra%27,_01.JPG) | CC BY-SA 3.0; Sailko |
 | real-06.jpg | [Piazza Bra- MG 1676a.jpg](https://commons.wikimedia.org/wiki/File:Piazza_Bra-_MG_1676a.jpg) | CC BY-SA 4.0; Claconvr |
 | real-07.jpg | [Ponte Pietra and riverside buildings, Verona - 2026-09-12.jpg](https://commons.wikimedia.org/wiki/File:Ponte_Pietra_and_riverside_buildings,_Verona_-_2026-09-12.jpg) | CC BY-SA 4.0; NorbertNagel |
 | real-08.jpg | [Verona Italy Ponte-Pietra-01.jpg](https://commons.wikimedia.org/wiki/File:Verona_Italy_Ponte-Pietra-01.jpg) | CC BY-SA 3.0; CEphoto, Uwe Aranas |
@@ -21,7 +21,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | real-14.jpg | [Palazzo Maffei (Verona).jpg](https://commons.wikimedia.org/wiki/File:Palazzo_Maffei_(Verona).jpg) | CC BY-SA 4.0; Didier Descouens |
 | real-15.jpg | [Piazza Bra seen from the arenas (Verona).jpg](https://commons.wikimedia.org/wiki/File:Piazza_Bra_seen_from_the_arenas_(Verona).jpg) | CC BY-SA 4.0; Didier Descouens |
 | game-01.jpg | MyWhoosh: [About_us_female](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2023/03/About_us_female.png) (g0854) | © MyWhoosh |
-| game-02.jpg | MyWhoosh: [MyWhoosh X UCI](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2025/06/MyWhoosh-X-UCI.jpeg) (g0530) | © MyWhoosh |
+| game-02.jpg | Zwift: [“La Boucle” Route Details (Paris)](https://zwiftinsider.com/route/la-boucle/) (g0081) | © Zwift |
 | game-03.jpg | MyWhoosh: [2 11](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2025/05/2-11.png) (g0552) | © MyWhoosh |
 | game-04.jpg | Zwift: [“Heart of Montmartre” Route Details (Paris)](https://zwiftinsider.com/route/heart-of-montmartre/) (g0061) | © Zwift |
-| game-05.jpg | Zwift: [“Castle Crit” Route Details (Makuri Islands)](https://zwiftinsider.com/route/castle-crit/) (g0013) | © Zwift |
+| game-05.jpg | Zwift: [“Sacré Trois!” Route Details (Paris)](https://zwiftinsider.com/route/sacre-trois/) (g0133) | © Zwift |

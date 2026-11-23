@@ -8,7 +8,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | real-01.jpg | [Runway of Berlin-Tempelhof Airport 2021-07-02 05.jpg](https://commons.wikimedia.org/wiki/File:Runway_of_Berlin-Tempelhof_Airport_2021-07-02_05.jpg) | CC0; Leonhard Lenz |
 | real-02.jpg | [Runway of Berlin-Tempelhof Airport 2021-07-02 02.jpg](https://commons.wikimedia.org/wiki/File:Runway_of_Berlin-Tempelhof_Airport_2021-07-02_02.jpg) | CC0; Leonhard Lenz |
 | real-03.jpg | [Runway of Berlin-Tempelhof Airport 2021-07-02 20.jpg](https://commons.wikimedia.org/wiki/File:Runway_of_Berlin-Tempelhof_Airport_2021-07-02_20.jpg) | CC0; Leonhard Lenz |
-| real-04.jpg | [Runway of Berlin-Tempelhof Airport 2021-07-02 03.jpg](https://commons.wikimedia.org/wiki/File:Runway_of_Berlin-Tempelhof_Airport_2021-07-02_03.jpg) | CC0; Leonhard Lenz |
+| real-04.jpg | [Runway of Berlin-Tempelhof Airport 2021-07-02 08.jpg](https://commons.wikimedia.org/wiki/File:Runway_of_Berlin-Tempelhof_Airport_2021-07-02_08.jpg) | CC0; Leonhard Lenz |
 | real-05.jpg | [Piste Flughafen Tempelhof.jpg](https://commons.wikimedia.org/wiki/File:Piste_Flughafen_Tempelhof.jpg) | CC BY-SA 4.0; Lukas Beck |
 | real-06.jpg | [Tempelhofer Feld in june 2019 04.jpg](https://commons.wikimedia.org/wiki/File:Tempelhofer_Feld_in_june_2019_04.jpg) | CC0; Leonhard Lenz |
 | real-07.jpg | [Tempelhofer Feld in june 2019 03.jpg](https://commons.wikimedia.org/wiki/File:Tempelhofer_Feld_in_june_2019_03.jpg) | CC0; Leonhard Lenz |

@@ -18,10 +18,10 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | real-11.jpg | [Forum Romanum through Arch of Septimius Severus Forum Romanum Rome.jpg](https://commons.wikimedia.org/wiki/File:Forum_Romanum_through_Arch_of_Septimius_Severus_Forum_Romanum_Rome.jpg) | CC0; Jebulon |
 | real-12.jpg | [Forum of Trajan 1, Rome.jpg](https://commons.wikimedia.org/wiki/File:Forum_of_Trajan_1,_Rome.jpg) | CC BY-SA 4.0; Nhartmannphotos |
 | real-13.jpg | [Piazza Venezia - Il Vittoriano (cropped).jpg](https://commons.wikimedia.org/wiki/File:Piazza_Venezia_-_Il_Vittoriano_(cropped).jpg) | CC BY-SA 3.0; Paolo Costa Baldi |
-| real-14.jpg | [Red Vespa (Unsplash).jpg](https://commons.wikimedia.org/wiki/File:Red_Vespa_(Unsplash).jpg) | CC0; Vincent Versluis studiovers |
+| real-14.jpg | [A via di san gregorio con silvio 1000255.JPG](https://commons.wikimedia.org/wiki/File:A_via_di_san_gregorio_con_silvio_1000255.JPG) | CC BY-SA 3.0; Lalupa |
 | real-15.jpg | [Piazza del Colosseo din Roma4.jpg](https://commons.wikimedia.org/wiki/File:Piazza_del_Colosseo_din_Roma4.jpg) | CC BY-SA 4.0; Cezar Suceveanu |
 | game-01.jpg | Zwift: [“Double Espresso” Route Details (Paris)](https://zwiftinsider.com/route/double-espresso/) (g0031) | © Zwift |
 | game-02.jpg | Zwift: [“Heart of Montmartre” Route Details (Paris)](https://zwiftinsider.com/route/heart-of-montmartre/) (g0061) | © Zwift |
-| game-03.jpg | MyWhoosh: [image_5_optimized](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/08/image_5_optimized.png) (g0693) | © MyWhoosh |
-| game-04.jpg | MyWhoosh: [MicrosoftTeams-image (4)](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2022/12/MicrosoftTeams-image-4.png) (g0897) | © MyWhoosh |
+| game-03.jpg | Zwift: [“Sacré Trois!” Route Details (Paris)](https://zwiftinsider.com/route/sacre-trois/) (g0133) | © Zwift |
+| game-04.jpg | Zwift: [“La Boucle” Route Details (Paris)](https://zwiftinsider.com/route/la-boucle/) (g0081) | © Zwift |
 | game-05.jpg | Zwift: [“Glasgow Crit Circuit” Route Details (Scotland)](https://zwiftinsider.com/route/glasgow-crit-circuit/) (g0053) | © Zwift |

@@ -8,8 +8,8 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | real-01.jpg | [Wendover (UT, USA), Bonneville Salt Flats -- 2022 -- 2702.jpg](https://commons.wikimedia.org/wiki/File:Wendover_(UT,_USA),_Bonneville_Salt_Flats_--_2022_--_2702.jpg) | CC BY-SA 4.0; Dietmar Rabich |
 | real-02.jpg | [Wendover (UT, USA), Bonneville Salt Flats -- 2022 -- 2693.jpg](https://commons.wikimedia.org/wiki/File:Wendover_(UT,_USA),_Bonneville_Salt_Flats_--_2022_--_2693.jpg) | CC BY-SA 4.0; Dietmar Rabich |
 | real-03.jpg | [Road at Bonneville Speedway, Wendover, UT - panoramio.jpg](https://commons.wikimedia.org/wiki/File:Road_at_Bonneville_Speedway,_Wendover,_UT_-_panoramio.jpg) | CC BY-SA 3.0; Chanilim714 |
-| real-04.jpg | [Wendover (UT, USA), Bonneville Salt Flats -- 2022 -- 2701.jpg](https://commons.wikimedia.org/wiki/File:Wendover_(UT,_USA),_Bonneville_Salt_Flats_--_2022_--_2701.jpg) | CC BY-SA 4.0; Dietmar Rabich |
-| real-05.jpg | [Bonneville Salt Flats International Speedway, Utah (29421216011).jpg](https://commons.wikimedia.org/wiki/File:Bonneville_Salt_Flats_International_Speedway,_Utah_(29421216011).jpg) | CC BY 2.0; Fabio Achilli from Milano, Italy |
+| real-04.jpg | [Motorcycle Racing on Bonneville Salt Flats (53109270196).jpg](https://commons.wikimedia.org/wiki/File:Motorcycle_Racing_on_Bonneville_Salt_Flats_(53109270196).jpg) | Public domain; BLMUtah |
+| real-05.jpg | [Speed Week (28679311750).jpg](https://commons.wikimedia.org/wiki/File:Speed_Week_(28679311750).jpg) | Public domain; BLMUtah |
 | real-06.jpg | [Speed Week (28964813425).jpg](https://commons.wikimedia.org/wiki/File:Speed_Week_(28964813425).jpg) | Public domain; BLMUtah |
 | real-07.jpg | [Speed Week 2008 (28567709490).jpg](https://commons.wikimedia.org/wiki/File:Speed_Week_2008_(28567709490).jpg) | Public domain; BLMUtah |
 | real-08.jpg | [Speed Week (28346099844).jpg](https://commons.wikimedia.org/wiki/File:Speed_Week_(28346099844).jpg) | Public domain; BLMUtah |
@@ -23,5 +23,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-01.jpg | Zwift: [“Coast to Coast” Route Details (Watopia)](https://zwiftinsider.com/route/coast-to-coast/) (g0021) | © Zwift |
 | game-02.jpg | Zwift: [“Tick Tock” Route Details (Watopia)](https://zwiftinsider.com/route/tick-tock/) (g0168) | © Zwift |
 | game-03.jpg | Zwift: [“Ven-10” Route Details (France)](https://zwiftinsider.com/route/ven-10/) (g0183) | © Zwift |
-| game-04.jpg | Zwift: [“California Dreamin’” Route Details (Watopia)](https://zwiftinsider.com/route/california-dreamin/) (g0010) | © Zwift |
-| game-05.jpg | MyWhoosh: [Rampage-1 1-min](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2025/02/Rampage-1-1-min.jpg) (g0613) | © MyWhoosh |
+| game-04.jpg | Zwift: [“Road to Ruins Reverse” Route Details (Watopia)](https://zwiftinsider.com/route/road-to-ruins-reverse/) (g0128) | © Zwift |
+| game-05.jpg | Zwift: [“Downtown Titans” Route Details (Watopia)](https://zwiftinsider.com/route/downtown-titans/) (g0035) | © Zwift |

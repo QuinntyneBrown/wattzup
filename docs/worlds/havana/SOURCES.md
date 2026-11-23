@@ -21,7 +21,7 @@ This  is a retouched picture, which means that it has been digitally altered fro
 | real-07.jpg | [Cuba. Havana - panoramio (18).jpg](https://commons.wikimedia.org/wiki/File:Cuba._Havana_-_panoramio_(18).jpg) | CC BY 3.0; Alexander Berezhnoy |
 | real-08.jpg | [Evening in Havana (48997238771).jpg](https://commons.wikimedia.org/wiki/File:Evening_in_Havana_(48997238771).jpg) | CC BY 2.0; kuhnmi |
 | real-09.jpg | [Castillo del Morro - Havana, Cuba.jpg](https://commons.wikimedia.org/wiki/File:Castillo_del_Morro_-_Havana,_Cuba.jpg) | CC BY-SA 4.0; Kate Perez |
-| real-10.jpg | [Castillo de los Tres Santos Reyes Magnos del Morro 02.jpg](https://commons.wikimedia.org/wiki/File:Castillo_de_los_Tres_Santos_Reyes_Magnos_del_Morro_02.jpg) | CC BY-SA 3.0; Gorup de Besanez |
+| real-10.jpg | [Malecón - panoramio.jpg](https://commons.wikimedia.org/wiki/File:Malec%C3%B3n_-_panoramio.jpg) | CC BY-SA 3.0; nurzumspass |
 | real-11.jpg | [Street 3 La Habana Vieja.JPG](https://commons.wikimedia.org/wiki/File:Street_3_La_Habana_Vieja.JPG) | CC BY-SA 4.0; Photo: gildemax |
 | real-12.jpg | [Vintage car parked in front of old buildings (Unsplash).jpg](https://commons.wikimedia.org/wiki/File:Vintage_car_parked_in_front_of_old_buildings_(Unsplash).jpg) | CC0; Darius Soodmand dsoodmand |
 | real-13.jpg | [Havana - Cuba - 1334.jpg](https://commons.wikimedia.org/wiki/File:Havana_-_Cuba_-_1334.jpg) | CC BY-SA 3.0; Jorge Royan |

@@ -17,7 +17,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | real-10.jpg | [En amont de Super Barèges, en me retournant. - panoramio.jpg](https://commons.wikimedia.org/wiki/File:En_amont_de_Super_Bar%C3%A8ges,_en_me_retournant._-_panoramio.jpg) | CC BY-SA 3.0; Gilles Guillamot |
 | real-11.jpg | [En arrivant dans la petite station de ski de Super-Barèges. Le col du Tourmalet est droit devant^ Si près, si haut - panoramio.jpg](https://commons.wikimedia.org/wiki/File:En_arrivant_dans_la_petite_station_de_ski_de_Super-Bar%C3%A8ges._Le_col_du_Tourmalet_est_droit_devant%5E_Si_pr%C3%A8s,_si_haut_-_panoramio.jpg) | CC BY-SA 3.0; Gilles Guillamot |
 | real-12.jpg | [Le col du Tourmalet en aout 05.jpg](https://commons.wikimedia.org/wiki/File:Le_col_du_Tourmalet_en_aout_05.jpg) | CC BY-SA 4.0; Celeda |
-| real-13.jpg | [DidiSenft-MSR2015.jpg](https://commons.wikimedia.org/wiki/File:DidiSenft-MSR2015.jpg) | CC BY-SA 4.0; Tkarcher |
+| real-13.jpg | [Le col du Tourmalet en aout 06.jpg](https://commons.wikimedia.org/wiki/File:Le_col_du_Tourmalet_en_aout_06.jpg) | CC BY-SA 4.0; Celeda |
 | real-14.jpg | [00 0847 Col du Tourmalet in the Pyrenees.jpg](https://commons.wikimedia.org/wiki/File:00_0847_Col_du_Tourmalet_in_the_Pyrenees.jpg) | CC BY-SA 4.0; W. Bulach |
 | real-15.jpg | [La Mongie (2).JPG](https://commons.wikimedia.org/wiki/File:La_Mongie_(2).JPG) | CC BY-SA 4.0; PIERRE ANDRE LECLERCQ |
 | game-01.jpg | Zwift: [“One Ride To Rule Them All” Route Details (Watopia)](https://zwiftinsider.com/route/one-ride-to-rule-them-all/) (g0113) | © Zwift |

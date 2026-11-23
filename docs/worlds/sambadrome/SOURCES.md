@@ -21,7 +21,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | real-14.jpg | [Grande Arco do Sambodromo - Rio de Janeiro - 20230918153102.JPG](https://commons.wikimedia.org/wiki/File:Grande_Arco_do_Sambodromo_-_Rio_de_Janeiro_-_20230918153102.JPG) | CC BY-SA 4.0; Donatas Dabravolskas |
 | real-15.jpg | [Sambódromo da Marquês de Sapucaí.jpg](https://commons.wikimedia.org/wiki/File:Samb%C3%B3dromo_da_Marqu%C3%AAs_de_Sapuca%C3%AD.jpg) | CC BY-SA 3.0; Eduardo P |
 | game-01.jpg | MyWhoosh: [image_18_optimized](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/08/image_18_optimized.png) (g0689) | © MyWhoosh |
-| game-02.jpg | MyWhoosh: [Screenshot 2025-09-08 170715](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2025/09/Screenshot-2025-09-08-170715.jpg) (g0481) | © MyWhoosh |
+| game-02.jpg | MyWhoosh: [SRC – women](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2025/01/SRC-women.jpg) (g0628) | © MyWhoosh |
 | game-03.jpg | MyWhoosh: [japan](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2025/01/japan.jpg) (g0619) | © MyWhoosh |
 | game-04.jpg | Zwift: [“Going Coastal” Route Details (Watopia)](https://zwiftinsider.com/route/going-coastal/) (g0056) | © Zwift |
-| game-05.jpg | Zwift: [“Watts of the Wild” Route Details (Watopia)](https://zwiftinsider.com/route/watts-of-the-wild/) (g0186) | © Zwift |
+| game-05.jpg | Zwift: [“Electric Loop” Route Details (Makuri Islands)](https://zwiftinsider.com/route/electric-loop/) (g0040) | © Zwift |

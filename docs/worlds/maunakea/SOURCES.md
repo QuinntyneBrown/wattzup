@@ -23,5 +23,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-01.jpg | Zwift: [“Four Foalsmen” Route Details (Watopia)](https://zwiftinsider.com/route/four-foalsmen/) (g0049) | © Zwift |
 | game-02.jpg | Zwift: [“Mountain Mash” Route Details (Watopia)](https://zwiftinsider.com/route/mountain-mash/) (g0102) | © Zwift |
 | game-03.jpg | Zwift: [“Power to the Tower” Route Details (Watopia)](https://zwiftinsider.com/route/power-to-the-tower/) (g0121) | © Zwift |
-| game-04.jpg | Zwift: [“Gravel Mountain Reverse” Route Details (Gravel Mountain)](https://zwiftinsider.com/route/gravel-mountain-reverse/) (g0057) | © Zwift |
-| game-05.jpg | MyWhoosh: [7](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2023/11/7-1.png) (g0804) | © MyWhoosh |
+| game-04.jpg | Zwift: [“Loopin Lava” Route Details (Watopia)](https://zwiftinsider.com/route/loopin-lava/) (g0090) | © Zwift |
+| game-05.jpg | Zwift: [“Zwift Bambino Fondo 2022” Route Details (Watopia)](https://zwiftinsider.com/route/zwift-bambino-fondo-2022/) (g0192) | © Zwift |

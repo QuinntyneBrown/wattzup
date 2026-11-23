@@ -6,7 +6,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | File | Source | Licence / credit |
 | --- | --- | --- |
 | real-01.jpg | [SS242 road makes a bend on the way to Passo Sella, Trentino-Alto Adige, Italy, 2025 October.jpg](https://commons.wikimedia.org/wiki/File:SS242_road_makes_a_bend_on_the_way_to_Passo_Sella,_Trentino-Alto_Adige,_Italy,_2025_October.jpg) | CC BY-SA 4.0; Ximonic (Simo Räsänen) |
-| real-02.jpg | [Pollença - Ma-2210 - Cap de Formentor 02 ies.jpg](https://commons.wikimedia.org/wiki/File:Pollen%C3%A7a_-_Ma-2210_-_Cap_de_Formentor_02_ies.jpg) | CC BY-SA 3.0; Frank Vincentz |
+| real-02.jpg | [Pordoi Pass - Canazei, Trento, Italy - August 12, 2013 03.jpg](https://commons.wikimedia.org/wiki/File:Pordoi_Pass_-_Canazei,_Trento,_Italy_-_August_12,_2013_03.jpg) | CC BY 4.0; Giorgio Galeotti |
 | real-03.jpg | [Strada Statale 243 Corvara.jpg](https://commons.wikimedia.org/wiki/File:Strada_Statale_243_Corvara.jpg) | CC BY-SA 3.0; Tiia Monto |
 | real-04.jpg | [Passo Campolongo, Passo di Campolongo, trinken mit Maß, bere responsabile - panoramio.jpg](https://commons.wikimedia.org/wiki/File:Passo_Campolongo,_Passo_di_Campolongo,_trinken_mit_Ma%C3%9F,_bere_responsabile_-_panoramio.jpg) | CC BY 3.0; qwesy qwesy |
 | real-05.jpg | [20130702 03 Passo Gardena (9230184794).jpg](https://commons.wikimedia.org/wiki/File:20130702_03_Passo_Gardena_(9230184794).jpg) | CC BY 2.0; Sjaak Kempe from Groningen, The Netherlands |

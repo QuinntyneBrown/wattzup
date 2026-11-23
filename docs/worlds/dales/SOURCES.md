@@ -9,9 +9,9 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | real-02.jpg | [Buttertubs Pass - geograph.org.uk - 5486548.jpg](https://commons.wikimedia.org/wiki/File:Buttertubs_Pass_-_geograph.org.uk_-_5486548.jpg) | CC BY-SA 2.0; Chris Heaton |
 | real-03.jpg | [2014 Yorkshire Dales country road Swaledale Askrigg.jpg](https://commons.wikimedia.org/wiki/File:2014_Yorkshire_Dales_country_road_Swaledale_Askrigg.jpg) | CC BY-SA 3.0; Kreuzschnabel |
 | real-04.jpg | [Buttertubs Pass (7971).jpg](https://commons.wikimedia.org/wiki/File:Buttertubs_Pass_(7971).jpg) | CC BY-SA 4.0; Nilfanion |
-| real-05.jpg | [Tour de France 2014 Route - Worrall, near Oughtibridge - 1 - geograph.org.uk - 3879835.jpg](https://commons.wikimedia.org/wiki/File:Tour_de_France_2014_Route_-_Worrall,_near_Oughtibridge_-_1_-_geograph.org.uk_-_3879835.jpg) | CC BY-SA 2.0; Terry Robinson |
+| real-05.jpg | [Butter-Tubs-Pass-2.jpg](https://commons.wikimedia.org/wiki/File:Butter-Tubs-Pass-2.jpg) | CC BY-SA 3.0; Kreuzschnabel |
 | real-06.jpg | [Skipton, The 'Tour de (^Yorkshire) France' - geograph.org.uk - 4137194.jpg](https://commons.wikimedia.org/wiki/File:Skipton,_The_%27Tour_de_(%5EYorkshire)_France%27_-_geograph.org.uk_-_4137194.jpg) | CC BY-SA 2.0; Dr Neil Clifton |
-| real-07.jpg | [Tour de France 2014 - étape 15 - région Yorkshire.jpg](https://commons.wikimedia.org/wiki/File:Tour_de_France_2014_-_%C3%A9tape_15_-_r%C3%A9gion_Yorkshire.jpg) | CC BY-SA 4.0; Marianne Casamance |
+| real-07.jpg | [Meadowland at Muker - geograph.org.uk - 2608845.jpg](https://commons.wikimedia.org/wiki/File:Meadowland_at_Muker_-_geograph.org.uk_-_2608845.jpg) | CC BY-SA 2.0; Gordon Hatton |
 | real-08.jpg | [2014 Fields Swaledale Gunnerside.jpg](https://commons.wikimedia.org/wiki/File:2014_Fields_Swaledale_Gunnerside.jpg) | CC BY-SA 3.0; Kreuzschnabel |
 | real-09.jpg | [2015 Swaledale from Kisdon Hill.jpg](https://commons.wikimedia.org/wiki/File:2015_Swaledale_from_Kisdon_Hill.jpg) | CC BY-SA 3.0; Kreuzschnabel |
 | real-10.jpg | [The Pennine Way near Hawes - geograph.org.uk - 1874436.jpg](https://commons.wikimedia.org/wiki/File:The_Pennine_Way_near_Hawes_-_geograph.org.uk_-_1874436.jpg) | CC BY-SA 2.0; Philip Barker |

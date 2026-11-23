@@ -14,12 +14,12 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | real-07.jpg | [Marine Drive at Night.jpg](https://commons.wikimedia.org/wiki/File:Marine_Drive_at_Night.jpg) | CC BY-SA 4.0; Ramesh lalwani |
 | real-08.jpg | [Marine drive at night.jpg](https://commons.wikimedia.org/wiki/File:Marine_drive_at_night.jpg) | CC BY 4.0; Namrata Mohanpuria |
 | real-09.jpg | [Fireworks on Diwali November 2013.jpg](https://commons.wikimedia.org/wiki/File:Fireworks_on_Diwali_November_2013.jpg) | CC BY-SA 2.0; Ashwin Kumar |
-| real-10.jpg | [Diwali Fireworks, Gurgaon 5.jpg](https://commons.wikimedia.org/wiki/File:Diwali_Fireworks,_Gurgaon_5.jpg) | CC BY-SA 4.0; Slyronit |
+| real-10.jpg | [Diwali.jpg](https://commons.wikimedia.org/wiki/File:Diwali.jpg) | CC BY-SA 3.0; Pratitimajumdar |
 | real-11.jpg | [Mumbai (Bombay), RTW 2012 (8403806827).jpg](https://commons.wikimedia.org/wiki/File:Mumbai_(Bombay),_RTW_2012_(8403806827).jpg) | CC BY-SA 2.0; Ana Raquel S. Hernandes from Sao Paulo, Brazil |
-| real-12.jpg | [Diwali lantern.jpg](https://commons.wikimedia.org/wiki/File:Diwali_lantern.jpg) | CC BY-SA 4.0; Apoorva Karlekar |
-| real-13.jpg | [Rangoli during diwali.jpg](https://commons.wikimedia.org/wiki/File:Rangoli_during_diwali.jpg) | CC BY-SA 4.0; Sunidhi243 |
+| real-12.jpg | [Marine Drive 23rd May, 2026.jpg](https://commons.wikimedia.org/wiki/File:Marine_Drive_23rd_May,_2026.jpg) | CC BY 4.0; GiffyTiffy |
+| real-13.jpg | [Marine drive Harbour Mumbai (20200).jpg](https://commons.wikimedia.org/wiki/File:Marine_drive_Harbour_Mumbai_(20200).jpg) | CC BY-SA 3.0; Manukrishnan80 |
 | real-14.jpg | [Mumbai, India, Mumbai taxi (taxicab) on the road.jpg](https://commons.wikimedia.org/wiki/File:Mumbai,_India,_Mumbai_taxi_(taxicab)_on_the_road.jpg) | CC BY 4.0; Vyacheslav Argenberg |
-| real-15.jpg | [Diwali Lamp.jpg](https://commons.wikimedia.org/wiki/File:Diwali_Lamp.jpg) | CC BY-SA 4.0; Phadke09 |
+| real-15.jpg | [Victoria Carriage at Marine drive Mumbai.jpg](https://commons.wikimedia.org/wiki/File:Victoria_Carriage_at_Marine_drive_Mumbai.jpg) | CC BY-SA 3.0; Subhashish |
 | game-01.jpg | Zwift: [“Deca Dash” Route Details (Watopia)](https://zwiftinsider.com/route/deca-dash/) (g0030) | © Zwift |
 | game-02.jpg | Zwift: [“London Flat” Route Details (London)](https://zwiftinsider.com/route/london-flat/) (g0085) | © Zwift |
 | game-03.jpg | Zwift: [“Neon Flats” Route Details (Makuri Islands)](https://zwiftinsider.com/route/neon-flats/) (g0109) | © Zwift |

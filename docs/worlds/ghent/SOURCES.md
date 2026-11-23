@@ -10,16 +10,16 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | real-03.jpg | [Kuipke 19-12-2008 14-38-47.JPG](https://commons.wikimedia.org/wiki/File:Kuipke_19-12-2008_14-38-47.JPG) | CC BY-SA 3.0; Paul Hermans |
 | real-04.jpg | [Ghent18.jpg](https://commons.wikimedia.org/wiki/File:Ghent18.jpg) | CC BY 2.0; Flowizm |
 | real-05.jpg | [Ghent16.jpg](https://commons.wikimedia.org/wiki/File:Ghent16.jpg) | CC BY 2.0; Flowizm |
-| real-06.jpg | [Omiya keirin1.jpg](https://commons.wikimedia.org/wiki/File:Omiya_keirin1.jpg) | CC BY-SA 3.0; Paulkeller |
-| real-07.jpg | [231000 - Cycling track Darren Harry Paul Clohessy celebrate - 3b - 2000 Sydney race photo.jpg](https://commons.wikimedia.org/wiki/File:231000_-_Cycling_track_Darren_Harry_Paul_Clohessy_celebrate_-_3b_-_2000_Sydney_race_photo.jpg) | CC BY-SA 3.0; Sport the library |
-| real-08.jpg | [231000 - Cycling track Darren Harry Paul Clohessy action - 3b - 2000 Sydney race photo.jpg](https://commons.wikimedia.org/wiki/File:231000_-_Cycling_track_Darren_Harry_Paul_Clohessy_action_-_3b_-_2000_Sydney_race_photo.jpg) | CC BY-SA 3.0; Sport the library |
-| real-09.jpg | [Omiya keirin finish 3.jpg](https://commons.wikimedia.org/wiki/File:Omiya_keirin_finish_3.jpg) | CC BY-SA 3.0; Paulkeller |
-| real-10.jpg | [231000 - Cycling track Russell Wolfe Christine Fisher action - 3b - 2000 Sydney race photo.jpg](https://commons.wikimedia.org/wiki/File:231000_-_Cycling_track_Russell_Wolfe_Christine_Fisher_action_-_3b_-_2000_Sydney_race_photo.jpg) | CC BY-SA 3.0; Sport the library |
-| real-11.jpg | [231000 - Cycling track Kerry Modra Kieran Modra action - 3b - 2000 Sydney race photo.jpg](https://commons.wikimedia.org/wiki/File:231000_-_Cycling_track_Kerry_Modra_Kieran_Modra_action_-_3b_-_2000_Sydney_race_photo.jpg) | CC BY-SA 3.0; Sport the library |
-| real-12.jpg | [Wielerbaan Kuipke - 384730 - onroerenderfgoed.jpg](https://commons.wikimedia.org/wiki/File:Wielerbaan_Kuipke_-_384730_-_onroerenderfgoed.jpg) | CC BY 4.0; Vandeweghe, Evert |
-| real-13.jpg | [Wielerbaan Kuipke - 384734 - onroerenderfgoed.jpg](https://commons.wikimedia.org/wiki/File:Wielerbaan_Kuipke_-_384734_-_onroerenderfgoed.jpg) | CC BY 4.0; Vandeweghe, Evert |
-| real-14.jpg | [Little 500 indiana u may 1977.jpg](https://commons.wikimedia.org/wiki/File:Little_500_indiana_u_may_1977.jpg) | CC BY-SA 3.0; Rdikeman at English Wikipedia |
-| real-15.jpg | [Omiya keirin finish 2.jpg](https://commons.wikimedia.org/wiki/File:Omiya_keirin_finish_2.jpg) | CC BY-SA 3.0; Paulkeller |
+| real-06.jpg | [Wielerbaan Kuipke - 384730 - onroerenderfgoed.jpg](https://commons.wikimedia.org/wiki/File:Wielerbaan_Kuipke_-_384730_-_onroerenderfgoed.jpg) | CC BY 4.0; Vandeweghe, Evert |
+| real-07.jpg | [Velodrom Berlin innen.JPG](https://commons.wikimedia.org/wiki/File:Velodrom_Berlin_innen.JPG) | CC BY-SA 3.0; Nicola |
+| real-08.jpg | [DSC 2407 (30493277401).jpg](https://commons.wikimedia.org/wiki/File:DSC_2407_(30493277401).jpg) | CC BY 2.0; Andy Thornley from London, UK |
+| real-09.jpg | [Bremer Sechstagerennen-(2014)-02.jpg](https://commons.wikimedia.org/wiki/File:Bremer_Sechstagerennen-(2014)-02.jpg) | CC BY 2.0; ...some guy (Flowizm) |
+| real-10.jpg | [Six-days Stuttgart 2008.jpg](https://commons.wikimedia.org/wiki/File:Six-days_Stuttgart_2008.jpg) | CC BY-SA 3.0; Walter Mier |
+| real-11.jpg | [DSC 2414 (30544819956).jpg](https://commons.wikimedia.org/wiki/File:DSC_2414_(30544819956).jpg) | CC BY 2.0; Andy Thornley from London, UK |
+| real-12.jpg | [2014-08-06 Radrennbahn Hannover 1.jpg](https://commons.wikimedia.org/wiki/File:2014-08-06_Radrennbahn_Hannover_1.jpg) | CC BY-SA 4.0; Tim Rademacher |
+| real-13.jpg | [DSC 2420 (29947332683).jpg](https://commons.wikimedia.org/wiki/File:DSC_2420_(29947332683).jpg) | CC BY 2.0; Andy Thornley from London, UK |
+| real-14.jpg | [DSC 2484 (30464350782).jpg](https://commons.wikimedia.org/wiki/File:DSC_2484_(30464350782).jpg) | CC BY 2.0; Andy Thornley from London, UK |
+| real-15.jpg | [AThree02 (30511946512).jpg](https://commons.wikimedia.org/wiki/File:AThree02_(30511946512).jpg) | CC BY 2.0; Andy Thornley from London, UK |
 | game-01.jpg | MyWhoosh: [image_18_optimized](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/08/image_18_optimized.png) (g0689) | © MyWhoosh |
 | game-02.jpg | MyWhoosh: [UCI1](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/01/UCI1.jpg) (g0764) | © MyWhoosh |
 | game-03.jpg | MyWhoosh: [UCI_d_1_optimized](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2025/02/UCI_d_1_optimized.png) (g0608) | © MyWhoosh |

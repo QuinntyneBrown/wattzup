@@ -24,4 +24,4 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-02.jpg | Zwift: [“Dùn Dash” Route Details (Scotland)](https://zwiftinsider.com/route/dun-dash/) (g0036) | © Zwift |
 | game-03.jpg | Zwift: [“Three Little Sisters” Route Details (Watopia)](https://zwiftinsider.com/route/three-little-sisters/) (g0163) | © Zwift |
 | game-04.jpg | Zwift: [“Canopies and Coastlines” Route Details (Watopia)](https://zwiftinsider.com/route/canopies-and-coastlines/) (g0012) | © Zwift |
-| game-05.jpg | Zwift: [“London Loop” Route Details (London)](https://zwiftinsider.com/route/london-loop/) (g0087) | © Zwift |
+| game-05.jpg | Zwift: [“Rolling Highlands” Route Details (Scotland)](https://zwiftinsider.com/route/rolling-highlands/) (g0130) | © Zwift |

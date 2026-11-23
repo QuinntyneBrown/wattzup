@@ -24,4 +24,4 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-02.jpg | Zwift: [“Bon Voyage” Route Details (France)](https://zwiftinsider.com/route/bon-voyage/) (g0007) | © Zwift |
 | game-03.jpg | Zwift: [“Cobbled Crown” Route Details (Richmond)](https://zwiftinsider.com/route/cobbled-crown/) (g0023) | © Zwift |
 | game-04.jpg | Zwift: [“Double Espresso” Route Details (Paris)](https://zwiftinsider.com/route/double-espresso/) (g0031) | © Zwift |
-| game-05.jpg | MyWhoosh: [image_5_optimized](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/08/image_5_optimized.png) (g0693) | © MyWhoosh |
+| game-05.jpg | MyWhoosh: [08_Feel the Roar](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2023/08/08_Feel-the-Roar.png) (g0833) | © MyWhoosh |

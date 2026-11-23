@@ -18,7 +18,7 @@ Later version(s) were uploaded by Kameraad Pjotr at nl.wikip |
 | real-10.jpg | [Sanfermines 2018 (43122691274).jpg](https://commons.wikimedia.org/wiki/File:Sanfermines_2018_(43122691274).jpg) | CC0; San Fermin Pamplona Navarra from España |
 | real-11.jpg | [Pamplona-Plaza-toros-abir82-01.jpg](https://commons.wikimedia.org/wiki/File:Pamplona-Plaza-toros-abir82-01.jpg) | CC BY 2.0; Abir Anwar from Sydney, Australia |
 | real-12.jpg | [14 de julio día de despedidas (29969735828).jpg](https://commons.wikimedia.org/wiki/File:14_de_julio_d%C3%ADa_de_despedidas_(29969735828).jpg) | CC0; San Fermin Pamplona Navarra from España |
-| real-13.jpg | [Plaza de la Virgen Blanca de Vitoria-Gasteiz el 4 de agosto de 2021, a la hora del Chupinazo.jpg](https://commons.wikimedia.org/wiki/File:Plaza_de_la_Virgen_Blanca_de_Vitoria-Gasteiz_el_4_de_agosto_de_2021,_a_la_hora_del_Chupinazo.jpg) | CC BY-SA 4.0; Ignaciollorente |
+| real-13.jpg | [Sanfermines 2018 (28903190347).jpg](https://commons.wikimedia.org/wiki/File:Sanfermines_2018_(28903190347).jpg) | CC0; San Fermin Pamplona Navarra from España |
 | real-14.jpg | [Plaza de toros de Pamplona tras encierro.jpg](https://commons.wikimedia.org/wiki/File:Plaza_de_toros_de_Pamplona_tras_encierro.jpg) | CC BY 2.5; BigSus |
 | real-15.jpg | [Mercaderes Kalea - Estafeta Kalea, plaques.JPG](https://commons.wikimedia.org/wiki/File:Mercaderes_Kalea_-_Estafeta_Kalea,_plaques.JPG) | CC BY-SA 3.0; Joanbanjo |
 | game-01.jpg | MyWhoosh: [08_Feel the Roar](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2023/08/08_Feel-the-Roar.png) (g0833) | © MyWhoosh |

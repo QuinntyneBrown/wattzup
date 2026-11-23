@@ -17,7 +17,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | real-10.jpg | [Auberge l'Entrecote, Pontstraat 61, Kluisbergen, 2026.jpg](https://commons.wikimedia.org/wiki/File:Auberge_l%27Entrecote,_Pontstraat_61,_Kluisbergen,_2026.jpg) | CC0; DimiTalen |
 | real-11.jpg | [Ronde van Vlaanderen 2015 - Oude Kwaremont (16868672669).jpg](https://commons.wikimedia.org/wiki/File:Ronde_van_Vlaanderen_2015_-_Oude_Kwaremont_(16868672669).jpg) | CC BY 2.0; youkeys |
 | real-12.jpg | [Ronde van Vlaanderen 2015 - Oude Kwaremont (16434617423).jpg](https://commons.wikimedia.org/wiki/File:Ronde_van_Vlaanderen_2015_-_Oude_Kwaremont_(16434617423).jpg) | CC BY 2.0; youkeys |
-| real-13.jpg | [2017 Ronde van Vlaanderen voor vrouwen 03.jpg](https://commons.wikimedia.org/wiki/File:2017_Ronde_van_Vlaanderen_voor_vrouwen_03.jpg) | CC BY-SA 4.0; Hoebele |
+| real-13.jpg | [2017 Ronde van Vlaanderen voor vrouwen 21.jpg](https://commons.wikimedia.org/wiki/File:2017_Ronde_van_Vlaanderen_voor_vrouwen_21.jpg) | CC BY-SA 4.0; Hoebele |
 | real-14.jpg | [Woning - Sluipestraat - Kluisbergen - 2023.jpg](https://commons.wikimedia.org/wiki/File:Woning_-_Sluipestraat_-_Kluisbergen_-_2023.jpg) | CC BY-SA 4.0; Spotter2 |
 | real-15.jpg | [Tour des Flandres cyclo 2017- Oude Kwaremont first part.jpg](https://commons.wikimedia.org/wiki/File:Tour_des_Flandres_cyclo_2017-_Oude_Kwaremont_first_part.jpg) | CC BY-SA 4.0; Anthospace |
 | game-01.jpg | Zwift: [“Bon Voyage” Route Details (France)](https://zwiftinsider.com/route/bon-voyage/) (g0007) | © Zwift |
