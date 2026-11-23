@@ -162,6 +162,8 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
             B["steel"].box((px_k, py_k, pz_k + 0.3), (0.62, 0.62, h_pylon), yaw_l)
             B["ladin-blue"].box((px_k, py_k, pz_k + 0.35), (0.86, 0.86, 1.85), yaw_l)
             B["steel"].box((px_k, py_k, pz_k + h_pylon), (0.55, 4.4, 0.48), yaw_l)
+            if k % 2 == 0:
+                B["steel"].box((px_k, py_k, pz_k + h_pylon + 0.48), (1.15, 3.6, 0.55), yaw_l)
             B["dark"].box((px_k, py_k, pz_k + h_pylon - 0.35), (1.85, 4.6, 0.28), yaw_l)
             # Maintenance steel ladder + yellow tower-number plate on each pylon mast
             B["dark"].box((px_k - clx * 0.38, py_k - cly * 0.38, pz_k + 0.8), (0.08, 0.38, h_pylon - 1.0), yaw_l)
