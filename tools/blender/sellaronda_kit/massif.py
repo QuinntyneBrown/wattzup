@@ -123,6 +123,15 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     chute_hi_r = (fc_x + px_perp * 16.0 - ux * 30.0, fc_y + py_perp * 16.0 - uy * 30.0, 515.0)
     chute_hi_l = (fc_x - px_perp * 16.0 - ux * 30.0, fc_y - py_perp * 16.0 - uy * 30.0, 515.0)
     quad_shaded(peaks, chute_lo_l, chute_lo_r, chute_hi_r, chute_hi_l, cfn, 340.0, snow=True)
+    # Pale zigzagging CAI 627 scree trail ribbons ascending Forcella Pordoi!
+    for zg_i in range(5):
+        f0, f1 = zg_i / 5.0, (zg_i + 1) / 5.0
+        s0 = -1.0 if zg_i % 2 == 0 else 1.0
+        z_a, z_b = 160.0 + f0 * 320.0, 160.0 + f1 * 320.0
+        r_a, r_b = 805.0 - f0 * 115.0, 805.0 - f1 * 115.0
+        p_a = (cx + ux * r_a + px_perp * (115.0 + s0 * 24.0), cy + uy * r_a + py_perp * (115.0 + s0 * 24.0), z_a)
+        p_b = (cx + ux * r_b + px_perp * (115.0 - s0 * 24.0), cy + uy * r_b + py_perp * (115.0 - s0 * 24.0), z_b)
+        quad_shaded(peaks, p_a, (p_a[0], p_a[1], p_a[2] + 3.5), (p_b[0], p_b[1], p_b[2] + 3.5), p_b, cfn, 0.5 * (z_a + z_b), snow=False)
 
     # Torri del Sella I-IV (2,533 m - 2,696 m): stepped vertical towers directly above Passo Sella (at=7750 m)
     sella_pt = road.s[road.index(7750.0)]
