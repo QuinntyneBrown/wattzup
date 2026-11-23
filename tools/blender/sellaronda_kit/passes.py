@@ -261,3 +261,10 @@ def build_four_passes(B, kit, road, height_at) -> None:
         for p_s in (-1.25, 1.25):
             B["larch-aged"].box((avx - math.sin(avyaw) * p_s, avy + math.cos(avyaw) * p_s, avz - 0.2), (0.22, 0.22, 3.15), avyaw)
         B["larch-warm"].box((avx, avy, avz + 2.65), (0.20, 2.95, 0.42), avyaw)
+
+    # Sloped Dolomite stone watershed divide plaques (Spartiacque) at all 4 cols
+    for p in PASSES:
+        ws_idx = road.index(p["at"] + 3.2)
+        ws_yaw = s[ws_idx]["h"]
+        B["stone"].box(kit.P(ws_idx, 0.0, -(kit.kerb + 1.95), -0.1), (0.72, 0.58, 0.78), ws_yaw)
+        B["ladin-blue"].box(kit.P(ws_idx, 0.0, -(kit.kerb + 1.95), 0.68), (0.64, 0.48, 0.08), ws_yaw)
