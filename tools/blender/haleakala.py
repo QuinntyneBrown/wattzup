@@ -357,16 +357,19 @@ def height_share(k, i: int) -> float:
     return (k.s[i]["z"] - min(zs)) / (max(zs) - min(zs))
 
 
-def silversword(k, x: float, y: float, z: float, bloom: bool) -> None:
-    """One silversword: a globe of narrow silver blades sitting on the cinder, and on a few the tall flower stalk."""
+def silversword(k, x: float, y: float, z: float, bloom: bool, r: float | None = None) -> None:
+    """One silversword: a globe of narrow silver blades sitting on the cinder, and on a few the tall flower stalk.
+    Given a small `r` it is a seedling: a tuft of a few short blades."""
     rng, b = k.rng, k.B["hk-silver"]
-    r = rng.uniform(0.55, 0.95)
-    for tier, (blades, tilt) in enumerate(((10, 0.3), (8, 0.8), (5, 1.25))):
+    seedling = r is not None
+    r = r or rng.uniform(0.55, 0.95)
+    for tier, (blades, tilt) in enumerate(((6, 0.5), (4, 1.1)) if seedling else ((10, 0.3), (8, 0.8), (5, 1.25))):
         for q in range(blades):
             a = q * math.tau / blades + tier * 0.35 + rng.uniform(-0.15, 0.15)
             ca, sa = math.cos(a), math.sin(a)
             tip = (x + ca * r * math.cos(tilt), y + sa * r * math.cos(tilt), z + 0.08 + r * math.sin(tilt))
-            left, right = (x - sa * 0.16, y + ca * 0.16, z + 0.06), (x + sa * 0.16, y - ca * 0.16, z + 0.06)
+            w = 0.07 if seedling else 0.16
+            left, right = (x - sa * w, y + ca * w, z + 0.06), (x + sa * w, y - ca * w, z + 0.06)
             b.tri(left, right, tip)
             b.tri(right, left, tip)
     if bloom:
@@ -377,10 +380,21 @@ def silversword(k, x: float, y: float, z: float, bloom: bool) -> None:
         k.prism(k.B["hk-bloom"], (x, y, z + r * 0.4 + 0.45 + tall * 0.55), 0.24, tall * 0.45, 6, 0.05)
 
 
+def spent_silversword(paint, rng, x: float, y: float, z: float) -> None:
+    """A silversword that has flowered: it flowers once and dies. The rosette lies collapsed and straw-coloured
+    on the cinder and the dry stalk still stands in it, grey-brown, its seed gone."""
+    straw, dry = _lin(0xB8A67E), _lin(0x6E5A48)
+    r = rng.uniform(0.55, 0.85)
+    paint.tube((x, y, z - 0.05), r, r * 0.3, 0.3, straw, _lin(0x9A8862), 7)
+    tall = rng.uniform(1.2, 1.8)
+    paint.tube((x, y, z + 0.2), 0.14, 0.2, tall * 0.5, dry, dry, 5)
+    paint.tube((x, y, z + 0.2 + tall * 0.5), 0.2, 0.04, tall * 0.5, dry, _lin(0x8A765E), 5, _lin(0x8A765E))
+
+
 def silverswords(k) -> int:
     """Detail 4, silverswords: on the bare cinder near the summit and nowhere lower, in loose colonies with wide
     gaps of bare ground between them, a few in flower. Dark lumps of lava lie among them."""
-    rng, s = k.rng, k.s
+    rng, s, paint = k.rng, k.s, Painted(k)
     shares = [height_share(k, i) for i in range(0, k.n, 25)]
     planted = 0
     for i in range(6, k.n - 6):
@@ -396,9 +410,17 @@ def silverswords(k) -> int:
             z = k.ground(x, y, i, off)
             if rng.random() < 0.22:
                 k.blob(k.B["hk-lava"], (x, y, z + 0.1), rng.uniform(0.35, 0.9))
-            else:
-                silversword(k, x, y, z, rng.random() < 0.14)
-                planted += 1
+                continue
+            if rng.random() < 0.12:
+                # One that flowered last year, and round it the seedlings it left.
+                spent_silversword(paint, rng, x, y, z)
+                for _ in range(rng.randint(2, 5)):
+                    sx, sy = x + rng.uniform(-1.8, 1.8), y + rng.uniform(-1.8, 1.8)
+                    if k.road.clear_of_road(sx, sy, 7.0, i):
+                        silversword(k, sx, sy, k.ground(sx, sy, i, off), False, rng.uniform(0.16, 0.3))
+                continue
+            silversword(k, x, y, z, rng.random() < 0.14)
+            planted += 1
     return planted
 
 
