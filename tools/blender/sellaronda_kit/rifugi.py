@@ -27,6 +27,7 @@ def _rifugio_complex(B, kit, road, height_at, at_m: float, side: float, main_w: 
     # Top timber gable attic + steep slate roof + masonry chimney
     B["larch-aged"].box((rx, ry, base_z + 3.2 + upper_h - 0.6), (main_w + 0.4, main_d + 0.4, 0.7), yaw)
     kit.gable(B["roof-slate"], (rx, ry, base_z + 3.2 + upper_h), main_w + 1.4, main_d + 1.4, 3.4, yaw)
+    B["steel"].box((rx - math.sin(yaw) * -(main_d * 0.5 + 0.45), ry + math.cos(yaw) * -(main_d * 0.5 + 0.45), base_z + 3.35 + upper_h), (main_w + 0.8, 0.08, 0.18), yaw)
     # Traditional wooden alpine rooftop bell-turret (campaniletto) straddling the ridge
     B["larch-warm"].box((rx, ry, base_z + 3.2 + upper_h + 3.1), (1.05, 1.05, 1.55), yaw)
     kit.gable(B["larch-aged"], (rx, ry, base_z + 3.2 + upper_h + 4.65), 1.35, 1.35, 0.72, yaw)
@@ -218,3 +219,6 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
         rk2_y = ty + math.sin(yaw) * (w * 0.46) + math.cos(yaw) * (-2.1 * side)
         B["dolomite-pale"].box((rk2_x, rk2_y, tz + 0.05), (1.25, 1.05, 0.62), yaw + 0.5)
         B["yellow"].box((rk2_x, rk2_y, tz + 0.66), (0.55, 0.55, 0.22), yaw)
+        # [ANCHOR:rifugi-site]
+
+    # [ANCHOR:rifugi-global]
