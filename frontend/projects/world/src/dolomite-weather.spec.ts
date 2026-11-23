@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   aerobicMaxPowerFactor,
+  barometricHectopascals,
   boilingPointCelsiusAtAltitude,
   passAirTemperatureCelsius,
   recommendedDescentLayer,
@@ -28,5 +29,7 @@ describe('dolomite-weather', () => {
     expect(uvIndexAtAltitude(2240, 7)).toBeGreaterThan(8.5);
     expect(recommendedDescentLayer(13)).toBe('wind-gilet');
     expect(recommendedDescentLayer(5)).toBe('thermal-jacket');
+    expect(barometricHectopascals(0)).toBe(1013);
+    expect(barometricHectopascals(2240)).toBeLessThan(785);
   });
 });
