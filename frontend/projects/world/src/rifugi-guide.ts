@@ -117,3 +117,9 @@ export function rifugiWithinMetres(metres: number, radiusMetres: number): readon
     return d <= radiusMetres;
   });
 }
+
+/** Mean elevation (m) across all catalogued Sella Ronda pass rifugi. */
+export function meanRifugioAltitudeMetres(): number {
+  const sum = SELLA_RIFUGI.reduce((acc, r) => acc + r.altitudeMetres, 0);
+  return Math.round(sum / Math.max(1, SELLA_RIFUGI.length));
+}

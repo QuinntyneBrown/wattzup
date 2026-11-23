@@ -3,6 +3,7 @@ import {
   highestSellaRifugio,
   isNearPassRifugio,
   isSummitRifugioOpenAtHour,
+  meanRifugioAltitudeMetres,
   nearestRifugio,
   nextRifugioAhead,
   rifugiCountByPass,
@@ -33,5 +34,6 @@ describe('SELLA_RIFUGI', () => {
     expect(isSummitRifugioOpenAtHour(18.5)).toBe(true);
     expect(isSummitRifugioOpenAtHour(2)).toBe(false);
     expect(rifugiWithinMetres(7750, 120).length).toBeGreaterThanOrEqual(2);
+    expect(meanRifugioAltitudeMetres()).toBeGreaterThan(2000);
   });
 });
