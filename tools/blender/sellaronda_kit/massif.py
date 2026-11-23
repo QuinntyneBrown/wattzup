@@ -496,4 +496,7 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     )
     # La Locomotiva (2,460 m) climbing spur below First Sella Tower
     rock_tower(peaks, cx + sux * 848.0 - spx * 195.0, cy + suy * 848.0 - spy * 195.0, 128.0, 412.0, 36.0, 26.0, 7, math.atan2(suy, sux) - 0.2, cfn, taper=0.72, flat_cap=True, seed_phase=3.5)
+    # Twin eastern ridge gendarmes on Cima Pisciadù above Val Setus
+    for pg_o in (-28.0, 28.0):
+        rock_tower(peaks, cx + pux * 755.0 + ppx * pg_o, cy + puy * 755.0 + ppy * pg_o, 420.0, 568.0, 34.0, 28.0, 7, math.atan2(puy, pux), cfn, taper=0.35, flat_cap=False, seed_phase=4.1 + pg_o * 0.02)
     # [ANCHOR:massif]
