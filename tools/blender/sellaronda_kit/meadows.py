@@ -197,4 +197,19 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["dolomite-pale"].box((ex, ey, ez - 0.4), (2.2, 1.7, 1.45), er_i * 0.37)
             B["foliage"].box((ex, ey, ez + 0.98), (1.75, 1.35, 0.18), er_i * 0.37)
 
+    # 12. Traditional Tyrolean wooden bee-houses (Bienenhäuser) with colourfully painted hive rows
+    hive_cols = ("yellow", "ladin-blue", "parasol-red", "foliage")
+    for bh_m, bh_side in ((890.0, 1.0), (2780.0, -1.0), (5740.0, 1.0), (11080.0, -1.0)):
+        b_idx = road.index(bh_m)
+        byaw = s[b_idx]["h"]
+        bx_a, by_a, _ = road.at(b_idx, (kit.kerb + 11.0) * bh_side)
+        if road.clear_of_road(bx_a, by_a, 10.0, b_idx):
+            bz_a = height_at(bx_a, by_a)
+            B["larch-warm"].box((bx_a, by_a, bz_a - 0.3), (3.1, 1.8, 2.15), byaw)
+            kit.gable(B["larch-aged"], (bx_a, by_a, bz_a + 1.85), 3.5, 2.2, 0.68, byaw)
+            for hv_k in range(4):
+                hx_c = bx_a + math.cos(byaw) * (-1.05 + hv_k * 0.7) - math.sin(byaw) * (-0.92 * bh_side)
+                hy_c = by_a + math.sin(byaw) * (-1.05 + hv_k * 0.7) + math.cos(byaw) * (-0.92 * bh_side)
+                B[hive_cols[hv_k]].box((hx_c, hy_c, bz_a + 0.65), (0.52, 0.08, 0.48), byaw)
+
     return trees
