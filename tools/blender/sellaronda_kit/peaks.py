@@ -145,3 +145,28 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         (lake_cx - mux * 95.0 + mpx * 285.0, lake_cy - muy * 95.0 + mpy * 285.0, lake_z + 4.0),
         dam_grey,
     )
+
+    # 5. Gruppo del Cir (Grande Cir 2,592 m & Piccolo Cir) jagged sawtooth spires north of Passo Gardena (at=10150 m)
+    gar_pt = road.s[road.index(10150.0)]
+    gux, guy = gar_pt["x"] - cx, gar_pt["y"] - cy
+    gul = max(1.0, math.hypot(gux, guy))
+    gux, guy = gux / gul, guy / gul
+    gpx, gpy = -guy, gux
+    for c_k, (lat_c, rad_c, top_c, r_c) in enumerate((
+        (-210.0, 620.0, 580.0, 95.0),  # Piccolo Cir
+        (-75.0,  660.0, 645.0, 125.0), # Grande Cir (2,592 m)
+        (85.0,   640.0, 595.0, 105.0), # Sas da Ciampac
+        (230.0,  670.0, 560.0, 92.0),  # Puez spur
+    )):
+        cx_p = gar_pt["x"] + gux * rad_c + gpx * lat_c
+        cy_p = gar_pt["y"] + guy * rad_c + gpy * lat_c
+        rock_tower(peaks, cx_p, cy_p, 65.0, top_c, r_c, r_c * 0.72, 9, math.atan2(-guy, -gux), cfn, taper=0.34, flat_cap=False, seed_phase=2.2 + c_k)
+
+    # 6. Sassongher (2,665 m): dramatic isolated limestone horn towering directly behind Corvara & Colfosco!
+    cor_pt = road.s[road.index(260.0)]
+    sux2, suy2 = cor_pt["x"] - cx, cor_pt["y"] - cy
+    sul2 = max(1.0, math.hypot(sux2, suy2))
+    sux2, suy2 = sux2 / sul2, suy2 / sul2
+    sx_h = cor_pt["x"] + sux2 * 820.0 - (-suy2) * 180.0
+    sy_h = cor_pt["y"] + suy2 * 820.0 - sux2 * 180.0
+    rock_tower(peaks, sx_h, sy_h, 35.0, 710.0, 215.0, 175.0, 12, math.atan2(-suy2, -sux2), cfn, taper=0.32, flat_cap=False, seed_phase=5.3)
