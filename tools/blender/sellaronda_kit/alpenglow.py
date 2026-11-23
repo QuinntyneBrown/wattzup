@@ -47,7 +47,7 @@ def enrosadira_colour_fn(az_sun: float):
         # Vertical dark meltwater seepage streaks characteristic of overhanging Dolomite walls
         az_face = math.atan2(ny, nx)
         seep = 1.0 - 0.10 * (1.0 - abs(nz)) * max(0.0, math.sin(az_face * 19.0) * math.cos(az_face * 7.0))
-        strata = (0.93 + 0.07 * math.sin(z * 0.14) * math.cos(z * 0.037)) * seep
+        strata = (0.925 + 0.06 * math.sin(z * 0.14) * math.cos(z * 0.037) + 0.015 * math.sin(z * 0.52)) * seep
         in_sun = smoothstep(-0.18, 0.72, dot)
         high_glow = smoothstep(118.0, 425.0, z) * in_sun
         cassian_peach = srgb(0xFAD0A8)
