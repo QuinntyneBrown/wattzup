@@ -436,4 +436,7 @@ def build_four_passes(B, kit, road, height_at) -> None:
     crsy = s[cr_s]["h"]
     B["stone"].box(kit.P(cr_s, 0.0, kit.kerb + 5.8, -0.1), (2.8, 2.2, 2.05), crsy)
     kit.gable(B["larch-aged"], kit.P(cr_s, 0.0, kit.kerb + 5.8, 1.95), 3.2, 2.6, 0.65, crsy)
+    # Carved Ladin 'JËUF DE SELA' wooden beam below Passo Sella's summit board
+    sl_b = road.index(7750.0)
+    B["larch-warm"].box(kit.P(sl_b, 6.0, -(kit.kerb + 2.48), 1.35), (2.95, 0.14, 0.24), s[sl_b]["h"])
     # [ANCHOR:passes]
