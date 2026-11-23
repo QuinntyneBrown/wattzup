@@ -72,7 +72,7 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             kit.gable(B["larch-aged"], (hx, hy, hz + 3.15), 4.6, 1.25, 0.55, barn_yaw)
 
     # 3. Alpine wildflower drifts (buttercup gold, magenta clover/alpenrose, oxeye white & gentian blue)
-    flower_mats = ("yellow", "geranium-red", "paint", "ladin-blue")
+    flower_mats = ("yellow", "geranium-red", "paint", "ladin-blue", "crowd-4")
     for i in range(12, kit.n - 12, 7):
         if s[i]["z"] > 132.0:
             continue
