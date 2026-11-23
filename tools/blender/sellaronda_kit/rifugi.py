@@ -147,3 +147,7 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
         B["larch-aged"].box((ent_x, ent_y, ent_z + 0.55), (0.36, 0.92, 2.15), yaw)
         B["paint"].box((ent_x, ent_y, ent_z + 1.55), (0.40, 0.72, 0.68), yaw)
         B["bulb"].box((ent_x, ent_y, ent_z + 2.72), (0.24, 0.24, 0.28), yaw)
+        # Folding wooden chalkboard menu A-frame ("APFELSTRUDEL · CANEDERLI · ESPRESSO")
+        mn_x, mn_y, mn_z = kit.P(idx, 2.4, (kit.kerb + 2.55) * side, 0.0)
+        B["larch-warm"].box((mn_x, mn_y, mn_z), (0.52, 0.72, 1.08), yaw + 0.2)
+        B["dark"].box((mn_x, mn_y, mn_z + 0.18), (0.56, 0.58, 0.76), yaw + 0.2)
