@@ -96,4 +96,26 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["larch-warm"].box((fx + math.cos(yaw) * 4.0, fy + math.sin(yaw) * 4.0, fz + 0.78), (8.2, 0.08, 0.10), yaw)
             B["larch-warm"].box((fx + math.cos(yaw) * 4.0, fy + math.sin(yaw) * 4.0, fz + 0.42), (8.2, 0.08, 0.10), yaw)
 
+    # 5. Grazing brown-and-white Simmental cattle & hollowed larch-trunk water troughs in sunny pastures
+    for herd_m, side in ((680.0, 1.0), (1620.0, -1.0), (3480.0, -1.0), (6560.0, 1.0), (9260.0, 1.0), (10960.0, -1.0)):
+        h_idx = road.index(herd_m)
+        cx_h, cy_h, _ = road.at(h_idx, (kit.kerb + 16.0) * side)
+        if not road.clear_of_road(cx_h, cy_h, 14.0, h_idx):
+            continue
+        # Hollowed larch Brunnentrog spring trough + standpipe
+        tz_h = height_at(cx_h, cy_h)
+        B["larch-aged"].box((cx_h, cy_h, tz_h - 0.1), (2.6, 0.68, 0.62), s[h_idx]["h"])
+        B["lago-turquoise"].box((cx_h, cy_h, tz_h + 0.42), (2.3, 0.46, 0.14), s[h_idx]["h"])
+        for cow_k in range(4):
+            ang = cow_k * 1.65 + herd_m * 0.01
+            kx = cx_h + math.cos(ang) * (4.2 + cow_k * 2.1)
+            ky = cy_h + math.sin(ang) * (4.2 + cow_k * 2.1)
+            kz = height_at(kx, ky)
+            cyaw = ang + 0.8
+            B["larch-warm"].box((kx, ky, kz + 0.45), (1.75, 0.68, 0.78), cyaw)
+            B["paint"].box((kx, ky, kz + 0.52), (0.68, 0.72, 0.68), cyaw)
+            B["paint"].box((kx + math.cos(cyaw) * 0.98, ky + math.sin(cyaw) * 0.98, kz + 0.72), (0.48, 0.44, 0.46), cyaw)
+            for lx_o in (-0.58, 0.58):
+                B["larch-aged"].box((kx + math.cos(cyaw) * lx_o, ky + math.sin(cyaw) * lx_o, kz - 0.05), (0.18, 0.52, 0.55), cyaw)
+
     return trees
