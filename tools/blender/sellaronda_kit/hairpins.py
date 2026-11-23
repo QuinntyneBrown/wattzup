@@ -198,3 +198,13 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         tyaw = s[t_idx]["h"]
         B["stone"].box(kit.P(t_idx, 0.0, kit.kerb + 3.2, -1.8), (13.5, 5.2, 1.82), tyaw)
         B["asphalt"].box(kit.P(t_idx, 0.0, kit.kerb + 3.0, 0.02), (13.0, 4.8, 0.06), tyaw)
+
+    # White lane turn-entry arrows ahead of the sharpest climbing switchbacks
+    ar_placed = 0
+    for i in range(30, kit.n - 30, 18):
+        if abs(s[i]["k"]) > 1 / 55 and s[i]["g"] > 2.5 and ar_placed < 14:
+            ar_placed += 1
+            j_pre = max(6, i - 5)
+            ayaw = s[j_pre]["h"]
+            B["paint"].box(kit.P(j_pre, 0.0, -2.2, 0.02), (2.2, 0.24, 0.015), ayaw)
+            B["paint"].box(kit.P(j_pre, 1.15, -2.2, 0.02), (0.65, 0.65, 0.015), ayaw + math.pi * 0.25)
