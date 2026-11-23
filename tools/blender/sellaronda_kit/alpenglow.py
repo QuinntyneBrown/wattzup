@@ -190,6 +190,11 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         hx_l, hy_l, hz_l = road.at(hm_i, (kit.kerb + 4.5) * hm_s, 3.4)
         kit.light((hx_l, hy_l, hz_l), "glow-lamp", 22.0, 0.54)
         kit.halo((hx_l, hy_l, hz_l), "glow-lamp")
+    # Warm festival light pools under the 4 Bike Day summit hydration gazebos
+    for p in PASSES:
+        gz_i = road.index(p["at"] - 35.0)
+        gx_l, gy_l, gz_l = road.at(gz_i, -(kit.kerb + 3.4), 2.4)
+        kit.light((gx_l, gy_l, gz_l), "bulb", 16.0, 0.55)
     # [ANCHOR:alpenglow-lights]
 
 
