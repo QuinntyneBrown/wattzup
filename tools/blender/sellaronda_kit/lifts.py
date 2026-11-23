@@ -443,4 +443,13 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
             bmz = height_at(bmx, bmy)
             B["larch-warm"].box((bmx, bmy, bmz), (6.4, 0.35, 1.15), s[bmi]["h"] + 0.55)
 
+    # 20. Seggiovia Cir upper return bullwheel gantry north of Passo Gardena (at=10085 m)
+    cg_i = road.index(10085.0)
+    cgy = s[cg_i]["h"]
+    cgx, cgy_p, _ = road.at(cg_i, kit.kerb + 30.0)
+    if road.clear_of_road(cgx, cgy_p, 16.0, cg_i):
+        cgz = height_at(cgx, cgy_p)
+        B["steel"].box((cgx, cgy_p, cgz), (0.55, 0.55, 5.4), cgy)
+        B["ladin-blue"].box((cgx, cgy_p, cgz + 5.0), (4.2, 4.2, 0.32), cgy)
+
     return cableways_out
