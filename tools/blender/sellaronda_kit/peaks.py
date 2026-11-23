@@ -459,4 +459,6 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     scl2 = max(1.0, math.hypot(scx2, scy2))
     scx2, scy2 = scx2 / scl2, scy2 / scl2
     rock_tower(peaks, sec_pt["x"] + scx2 * 1420.0, sec_pt["y"] + scy2 * 1420.0, 50.0, 612.0, 240.0, 135.0, 9, math.atan2(-scy2, -scx2) - 0.35, cfn, taper=0.68, flat_cap=True, seed_phase=5.1)
+    # Tiny Capanna Punta Penia (3,343 m) crowning the highest summit of the Dolomites!
+    rock_tower(peaks, pordoi_pt["x"] + mux * 1480.0 - mpx * 280.0, pordoi_pt["y"] + muy * 1480.0 - mpy * 280.0, 938.0, 950.0, 10.5, 8.0, 6, yaw_mm, cfn, taper=0.95, flat_cap=True, seed_phase=0.5)
     # [ANCHOR:peaks]
