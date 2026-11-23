@@ -693,6 +693,73 @@ def vernazza(k) -> bool:
     return True
 
 
+def vineyard_works(k) -> dict:
+    """Detail 4, terraced vineyards: what the growers built to work them. On the first terrace now and then stands
+    a casotto, a tool hut of the same dry stone under a single pitch of tiles; and here and there a trenino, the
+    vineyard monorail, climbs straight up the steps on its posts, with its little red tractor and crate car parked
+    somewhere along it."""
+    paint, rng, s = Painted(k), k.rng, k.s
+    stone, tile, door = _lin(0x8E8570), _lin(0xB5674A), _lin(0x3A2E24)
+    steel, red, crate = _lin(0x7A7E82), _lin(0xC8322C), _lin(0xD9B46A)
+    huts = rails = 0
+    for i in range(20, k.n - 20, 14):
+        i += rng.randrange(8)
+        side = -seaward(k, i)
+        levels = min(terrace_levels(k, q) for q in range(i - 2, i + 4))
+        back = k.kerb + TERRACE_FOOT + levels * TERRACE_DEPTH
+        if levels < 3 or any(abs(s[q]["k"]) > 1 / 120 for q in range(i - 3, i + 4)) or not k.room(i, back * side, 12.0):
+            continue
+        yaw = s[i]["h"]
+        if rng.random() < 0.2:
+            x, y, z = k.road.at(i, (k.kerb + TERRACE_FOOT + 3.6) * side, TERRACE_RISE)
+            paint.box((x, y, z - 0.1), (3.4, 2.8, 2.3), yaw, stone, 0.75)
+            # The roof falls towards the road; the door faces it.
+            out = (-math.sin(yaw) * -side, math.cos(yaw) * -side)
+            along = (math.cos(yaw), math.sin(yaw))
+            lo = [(x + along[0] * a + out[0] * 1.7, y + along[1] * a + out[1] * 1.7, z + 2.2) for a in (-1.95, 1.95)]
+            hi = [(x + along[0] * a - out[0] * 1.6, y + along[1] * a - out[1] * 1.6, z + 2.95) for a in (-1.95, 1.95)]
+            roof = (lo[0], lo[1], hi[1], hi[0])
+            paint.face(roof if side < 0 else roof[::-1], (tile,) * 4)
+            corner = (x - along[0] * 0.45 + out[0] * 1.4, y - along[1] * 0.45 + out[1] * 1.4, 0.0)
+            paint.panel(corner, along if side > 0 else (-along[0], -along[1]), out, 0.0 if side > 0 else -0.9, 0.9 if side > 0 else 0.0, z, z + 1.8, 0.04, door)
+            huts += 1
+        elif rng.random() < 0.45:
+            # The rail: steeply up the first wall from the shoulder, then one straight run half a metre clear of
+            # every step's edge, a square steel beam on a post every two metres.
+            fwd = (math.cos(yaw) * 0.07, math.sin(yaw) * 0.07)
+            run = levels * TERRACE_DEPTH
+
+            def beam(a, b) -> None:
+                for sign in (1, -1):
+                    q0, q1 = (a[0] + fwd[0] * sign, a[1] + fwd[1] * sign, a[2] + 0.07), (b[0] + fwd[0] * sign, b[1] + fwd[1] * sign, b[2] + 0.07)
+                    r0, r1 = (q0[0], q0[1], q0[2] - 0.14), (q1[0], q1[1], q1[2] - 0.14)
+                    face = (q0, q1, r1, r0)
+                    paint.face(face if sign * side < 0 else face[::-1], ((steel[0] * 0.6, steel[1] * 0.6, steel[2] * 0.6, 1.0),) * 4)
+                top = [(p[0] + fwd[0] * sg, p[1] + fwd[1] * sg, p[2] + 0.07) for p, sg in ((a, -1), (a, 1), (b, 1), (b, -1))]
+                paint.face(top if side > 0 else top[::-1], (steel,) * 4)
+
+            foot = k.road.at(i, (k.kerb + 1.5) * side, 0.5)
+            lip = k.road.at(i, (k.kerb + TERRACE_FOOT) * side, TERRACE_RISE + 0.5)
+            head = k.road.at(i, back * side, (levels + 1) * TERRACE_RISE + 0.5)
+            beam(foot, lip)
+            beam(lip, head)
+            x, y, z = k.road.at(i, (k.kerb + 1.5) * side, 0.0)
+            paint.box((x, y, z - 0.2), (0.07, 0.07, 0.7), yaw, steel, 0.8)
+            for q in range(int(run / 2.0)):
+                t = (q + 0.5) * 2.0 / run
+                x, y, z = k.road.at(i, (k.kerb + TERRACE_FOOT + run * t) * side, 0.0)
+                tread = z + (int(run * t / TERRACE_DEPTH) + 1) * TERRACE_RISE
+                paint.box((x, y, tread - 0.1), (0.07, 0.07, lip[2] + (head[2] - lip[2]) * t - tread + 0.1), yaw, steel, 0.8)
+            # The tractor and its crate car, parked part of the way up.
+            t = rng.uniform(0.1, 0.8)
+            cx, cy, cz = (lip[q] + (head[q] - lip[q]) * t for q in range(3))
+            ux, uy = (head[0] - lip[0]) / run, (head[1] - lip[1]) / run
+            paint.box((cx, cy, cz + 0.07), (0.7, 1.1, 0.8), yaw, red, 0.8)
+            paint.box((cx - ux * 1.6, cy - uy * 1.6, cz + 0.07 - 1.6 * (head[2] - lip[2]) / run), (0.8, 1.6, 0.6), yaw, crate, 0.8)
+            rails += 1
+    return {"huts": huts, "monorails": rails}
+
+
 SHIRTS = (0xD9483A, 0x2F7FC4, 0xF0B429, 0x3E9A62, 0xF2EEE2, 0xE8762C, 0x7A4FB0, 0x25A0A0)
 SKIN = (0xE8B48C, 0xC88A5E, 0x8A5A3C, 0xF0C8A4)
 
@@ -775,4 +842,5 @@ def scenery(k) -> dict:
     hauled = boats(k)
     path = footpath(k)
     harbour = vernazza(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "houses": houses, "plants": plants, "boats": hauled, **path, "castle": harbour}
+    works = vineyard_works(k)
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "houses": houses, "plants": plants, "boats": hauled, **path, "castle": harbour, **works}
