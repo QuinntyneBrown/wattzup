@@ -515,6 +515,14 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         _road_cyclist(B, bpx_c, bpy_c, bpz_c, s[bpi]["h"], "crowd-1", standing=False)
         B["yellow"].box((bpx_c - math.cos(s[bpi]["h"]) * 0.42, bpy_c - math.sin(s[bpi]["h"]) * 0.42, bpz_c + 0.72), (0.38, 0.18, 0.18), s[bpi]["h"])
 
+    # Race announcer commentary booth & PA mast beside Corvara start/finish (at=45 m)
+    pa_i = road.index(45.0)
+    pay = s[pa_i]["h"]
+    pax, pay_p, paz = kit.P(pa_i, 0.0, -(kit.kerb + 3.6), 0.0)
+    B["ladin-blue"].box((pax, pay_p, paz), (3.2, 2.2, 2.65), pay)
+    B["glow-window"].box((pax, pay_p, paz + 1.15), (2.8, 2.26, 0.95), pay)
+    B["steel"].box((pax + math.cos(pay) * 1.8, pay_p + math.sin(pay) * 1.8, paz), (0.12, 0.12, 4.8), pay)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
