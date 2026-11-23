@@ -92,6 +92,15 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> None:
             if k > 0:
                 B["parasol-red"].box((px_k - cly * 7.5, py_k + clx * 7.5, pz_k), (0.10, 0.10, 1.8), yaw_l)
                 B["parasol-red"].box((px_k - cly * 7.5, py_k + clx * 7.5, pz_k + 1.65), (0.08, 0.52, 0.52), yaw_l)
+                # Yellow TechnoAlpin snowmaking fan gun on tower mount beside the summer piste
+                if k % 2 == 1:
+                    sx_g = px_k + cly * 9.0
+                    sy_g = py_k - clx * 9.0
+                    sz_g = height_at(sx_g, sy_g)
+                    B["stone"].box((sx_g, sy_g, sz_g - 0.3), (1.1, 1.1, 0.55), yaw_l)
+                    B["steel"].box((sx_g, sy_g, sz_g + 0.25), (0.28, 0.28, 2.4), yaw_l)
+                    B["yellow"].box((sx_g, sy_g, sz_g + 2.55), (1.15, 0.88, 0.88), yaw_l + 0.5)
+                    B["dark"].box((sx_g + math.cos(yaw_l + 0.5) * 0.58, sy_g + math.sin(yaw_l + 0.5) * 0.58, sz_g + 2.62), (0.12, 0.72, 0.72), yaw_l + 0.5)
 
         p_perp_x, p_perp_y = -cly, clx
         for k in range(len(pylon_tops) - 1):
