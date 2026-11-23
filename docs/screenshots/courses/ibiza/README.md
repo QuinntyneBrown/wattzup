@@ -185,6 +185,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Sky 14 | The stars come out as the evening draws in: none for the first third of the course, all 150 by the finish; and the evening star stands beside the sunset from the start | 60.1 fps, none over 20 ms (three places), 88 to 100 draw calls | 56.7 and 55.6 fps after (the finish, 119,826 triangles: 174 under the budget); Neon Docklands beside it 58.4, 47.1 |
 | Party 16 | The crowd cheers the rider as they pass: within 34 m a figure hops higher and faster and stretches up, most within 9 m, and settles as the rider goes | 60.1 fps, none over 20 ms (the finish) | 42.2 and 40.2 fps at the finish; Neon Docklands beside it 45.1 and 56.0: the stand-in reading two ways, as noted under Sky 12 |
 | Sky 15 | The sun sets as the course is ridden: its disc stands 6 degrees over the horizon at the start and sinks steadily until its lower limb touches it at the finish | 60.1 fps, at most one frame over 20 ms (from 3,250 m, twice) | 48.9 and 39.3 fps after (the finish, 116,828 triangles); Neon Docklands beside it 46.2, 56.4: the stand-in reading two ways, as noted under Sky 12 |
+| Party 17 | Friends with an arm round each other's shoulders: four pairs in ten stand side by side facing the road, drinks in their outer hands; and a stroller's arm at their side swings against its leg | 60.0 to 60.1 fps, none over 20 ms (the start line, 2,050 m, the finish) | 43.6 and 50.9 fps after (the finish, 116,678 triangles); Neon Docklands beside it 51.0, 55.4 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -500,6 +501,23 @@ is 5 degrees under the middle of its own glow.
 **Tried first and not kept:** the sun's path on the sea. Three cuts of it in the sea's material could hardly be
 told from the sea without it: the sun stands behind the island from most of the road, and the sea in view is off
 to one side of it.
+
+### Party 17: an arm round a friend's shoulders
+
+`party-17.jpg` (the two sides of the finish, enlarged: the pair by the pole stand shoulder to shoulder, each with
+a drink up in their outer hand), `party-17.mp4` (the finish). Friends who paired up all did the same thing: half
+turned to each other, glasses touching (Party 3). Four pairs in ten now stand side by side instead, half a metre
+apart and facing the road, each with an arm round the other's shoulders (out level from their own shoulder, behind
+the friend's neck, the hand resting on the far shoulder) and their drink in the outer hand: the pose of every
+photograph taken at a party. They do not dance; they move to the music and cheer as the others do. No triangle
+more (an arm is an arm).
+
+**A stroller's arms swing** (`walk-material.ts`): an arm hanging at their side swings 16 cm fore and aft against
+the leg on its side, more the nearer the hand; an arm raised with a drink is still. This has not been seen in a
+picture: the strollers in this pass's film are too far off.
+
+**Two odd readings of the pass before, measured again:** 60.0 fps with no frame over 20 ms from the start line
+(it had read 38) and from 2,050 m (it had seven frames over 20 ms), and on Neon Docklands from its start line.
 
 ### Party 1: people with drinks
 

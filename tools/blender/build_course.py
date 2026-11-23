@@ -1846,15 +1846,26 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
             pairing["with"] = None
         if mate is not None and math.dist(mate[0], c) > 7.0:
             mate = None
+        # Friends stand two ways: half turned to each other to clink glasses; or (four pairs in ten) side by side
+        # with an arm round each other's shoulders, facing the road, their drinks in their outer hands. `buddy` is
+        # where the friend whose shoulders their arm is round stands.
+        buddy = None
         if mate is not None:
-            c0, yaw0, way = mate
-            c = (c0[0] - math.sin(yaw0) * 0.95 * way, c0[1] + math.cos(yaw0) * 0.95 * way, c0[2])
-            yaw = yaw0 - way * 1.15
+            c0, yaw0, way, arm = mate
+            if arm:
+                c = (c0[0] - math.sin(yaw0) * 0.5 * way, c0[1] + math.cos(yaw0) * 0.5 * way, c0[2])
+                yaw, buddy = yaw0, c0
+            else:
+                c = (c0[0] - math.sin(yaw0) * 0.95 * way, c0[1] + math.cos(yaw0) * 0.95 * way, c0[2])
+                yaw = yaw0 - way * 1.15
         elif not alone and rng.random() < 0.4:
-            c0, yaw0, way = c, yaw, rng.choice((1, -1))
-            pairing["with"] = (c0, yaw0, way)
-            yaw = yaw0 + way * 1.15
-        if not alone and (mate is not None or pairing["with"] is not None):
+            c0, yaw0, way, arm = c, yaw, rng.choice((1, -1)), rng.random() < 0.4
+            pairing["with"] = (c0, yaw0, way, arm)
+            if arm:
+                buddy = (c0[0] - math.sin(yaw0) * 0.5 * way, c0[1] + math.cos(yaw0) * 0.5 * way, c0[2])
+            else:
+                yaw = yaw0 + way * 1.15
+        if not alone and buddy is None and (mate is not None or pairing["with"] is not None):
             reach = -0.05 if mate is None else 0.05
             clink = (
                 c0[0] - math.sin(yaw0) * (0.475 + reach) * way + math.cos(yaw0) * 0.3,
@@ -1900,7 +1911,7 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         step = rng.uniform(-0.05, 0.14)
         feet = ((step, 0.09 + rng.uniform(0.02, 0.1)), (-step * 0.4, -0.08))
         # One in three is dancing: knees bent, feet apart, the body leaning into the music and thrown to one side.
-        dance = clink is None and rng.random() < 0.34 and not alone
+        dance = clink is None and buddy is None and rng.random() < 0.34 and not alone
         if walk:
             # Mid stride, as the app's stride takes them (walk-material.ts): a foot 0.28 m fore and aft of the hips.
             feet = ((0.28, 0.09), (-0.28, -0.09))
@@ -1976,6 +1987,9 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         if clink:
             # The hand nearer their friend holds the glass out to theirs.
             hand = min((1, -1), key=lambda side: math.dist(at(0, 0.22 * side, 1.37), clink))
+        if buddy:
+            # The drink is in the hand away from their friend.
+            hand = -1 if (buddy[0] - c[0]) * sx + (buddy[1] - c[1]) * sy > 0 else 1
         shoulder = at(0, 0.22 * hand + sway, 1.37)
         if clink:
             fist = clink
@@ -2020,7 +2034,16 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         how = rng.random() * (0.4 if dance else 1.0)
         if serve:
             how = 0.9
-        if how < 0.4:
+        if buddy:
+            # Round their friend's shoulders: out level from their own, behind the friend's neck, to rest on the far
+            # shoulder.
+            away = math.dist(buddy[:2], c[:2]) or 1.0
+            bx, by = (buddy[0] - c[0]) / away, (buddy[1] - c[1]) / away
+            behind = (buddy[0] - bx * 0.02 - fx * 0.11, buddy[1] - by * 0.02 - fy * 0.11, c[2] + 1.44 * h)
+            rest = (buddy[0] + bx * 0.21 - fx * 0.02, buddy[1] + by * 0.21 - fy * 0.02, c[2] + 1.39 * h)
+            limb(sleeve, other, behind, 0.055, 0.045)
+            limb(skin, behind, rest, 0.05, 0.04, 3)
+        elif how < 0.4:
             elbow = at(0.04, -(0.38 + rng.uniform(0, 0.08)) * hand, rng.uniform(1.44, 1.6))
             limb(sleeve, other, elbow, 0.055, 0.045)
             palm_ = at(0.08, -(0.3 + rng.uniform(-0.06, 0.14)) * hand, rng.uniform(1.84, 2.0))
