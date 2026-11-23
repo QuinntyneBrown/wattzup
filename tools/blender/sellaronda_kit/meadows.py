@@ -205,6 +205,7 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
         hf_idx = road.index(hf_m)
         hx0, hy0, _ = road.at(hf_idx, (kit.kerb + 15.0) * hf_side)
         if road.clear_of_road(hx0, hy0, 13.0, hf_idx):
+            B["larch-aged"].box((hx0, hy0, height_at(hx0, hy0)), (1.45, 0.48, 0.52), s[hf_idx]["h"])
             for h_k in range(3):
                 ang = h_k * 2.05 + 0.4
                 px_h = hx0 + math.cos(ang) * (3.6 + h_k * 2.2)
