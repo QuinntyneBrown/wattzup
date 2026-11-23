@@ -461,4 +461,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     rock_tower(peaks, sec_pt["x"] + scx2 * 1420.0, sec_pt["y"] + scy2 * 1420.0, 50.0, 612.0, 240.0, 135.0, 9, math.atan2(-scy2, -scx2) - 0.35, cfn, taper=0.68, flat_cap=True, seed_phase=5.1)
     # Tiny Capanna Punta Penia (3,343 m) crowning the highest summit of the Dolomites!
     rock_tower(peaks, pordoi_pt["x"] + mux * 1480.0 - mpx * 280.0, pordoi_pt["y"] + muy * 1480.0 - mpy * 280.0, 938.0, 950.0, 10.5, 8.0, 6, yaw_mm, cfn, taper=0.95, flat_cap=True, seed_phase=0.5)
+    # 20. Latemar serrated towers (Diamantiditurm, 2,842 m) beyond Val di Fassa (at=6450 m)
+    lat_pt = road.s[road.index(6450.0)]
+    ltux, ltuy = lat_pt["x"] - cx, lat_pt["y"] - cy
+    ltul = max(1.0, math.hypot(ltux, ltuy))
+    ltux, ltuy = ltux / ltul, ltuy / ltul
+    rock_tower(peaks, lat_pt["x"] + ltux * 2150.0, lat_pt["y"] + ltuy * 2150.0, 45.0, 775.0, 225.0, 155.0, 9, math.atan2(-ltuy, -ltux), cfn, taper=0.38, flat_cap=False, seed_phase=3.3)
     # [ANCHOR:peaks]
