@@ -395,6 +395,14 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         lpz_g = height_at(lpx_g, lpy_g)
         B[lg_m].box((lpx_g, lpy_g, lpz_g + 0.08), (2.2, 8.4, 0.18), s[lp_i]["h"] + 0.4)
 
+    # Cowbell-ringing tifosi cheering climbers on the steep Arabba -> Pordoi ramps
+    for cb_m in (3620.0, 4120.0, 4510.0):
+        cb_i = road.index(cb_m)
+        cby = s[cb_i]["h"]
+        cbx, cby_p, cbz = kit.P(cb_i, 0.0, -(kit.kerb + 1.55), 0.0)
+        B["parasol-red"].box((cbx, cby_p, cbz + 0.85), (0.36, 0.42, 0.62), cby)
+        B["gold"].box((cbx, cby_p + 0.35, cbz + 1.15), (0.24, 0.24, 0.30), cby)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
