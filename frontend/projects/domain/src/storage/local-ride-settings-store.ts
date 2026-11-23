@@ -1,5 +1,6 @@
 import { DOCUMENT, Injectable, inject, signal } from '@angular/core';
 import type {
+  AnnouncerVoicePreset,
   DeviceCheckResult,
   DeviceCheckTrial,
   QualityChoice,
@@ -31,11 +32,16 @@ export const RECOMMENDED_SETTINGS: RideSettings = {
   keepAwake: true,
   fullScreenOnStart: false,
   keepWorlds: true,
+  raceAnnouncer: false,
+  announcerVoice: 'arcade',
+  announcerVolume: 85,
+  announcerCaptions: true,
 };
 
 const QUALITIES: readonly QualityChoice[] = ['auto', 'ultra', 'high', 'medium', 'low'];
 const DEVICE_OR_ON_OFF: readonly ReduceMotionChoice[] = ['device', 'on', 'off'];
 const DEVICE_DARK_LIGHT: readonly ThemeChoice[] = ['device', 'dark', 'light'];
+const ANNOUNCER_VOICES: readonly AnnouncerVoicePreset[] = ['arcade', 'commentator', 'coach'];
 
 /** One of `allowed`, else the recommended value. */
 function oneOf<T>(value: unknown, allowed: readonly T[], recommended: T): T {
@@ -122,6 +128,10 @@ export function parseRideSettings(raw: string | null): RideSettings {
     keepAwake: flag(fields['keepAwake'], recommended.keepAwake),
     fullScreenOnStart: flag(fields['fullScreenOnStart'], recommended.fullScreenOnStart),
     keepWorlds: flag(fields['keepWorlds'], recommended.keepWorlds),
+    raceAnnouncer: flag(fields['raceAnnouncer'], recommended.raceAnnouncer),
+    announcerVoice: oneOf(fields['announcerVoice'], ANNOUNCER_VOICES, recommended.announcerVoice),
+    announcerVolume: percent(fields['announcerVolume'], 0, recommended.announcerVolume),
+    announcerCaptions: flag(fields['announcerCaptions'], recommended.announcerCaptions),
   };
 }
 

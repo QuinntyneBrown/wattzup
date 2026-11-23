@@ -2,6 +2,8 @@
 <header wz-site-nav homeHref="/">
   <a wz-site-link href="#film" (click)="jumpTo($event, 'film')">Film</a>
   <a wz-site-link href="#rides" (click)="jumpTo($event, 'rides')">Rides</a>
+  <a wz-site-link href="#worlds" (click)="jumpTo($event, 'worlds')">Worlds</a>
+  <a wz-site-link href="#ai" (click)="jumpTo($event, 'ai')">Local AI</a>
   <a wz-button variant="primary" [href]="app('/')">Open Telo Ride</a>
 </header>
 <main id="main" class="page__main" tabindex="-1">
@@ -26,7 +28,7 @@
     surface="panel"
     kicker="The film"
     heading="Meet Telo Ride."
-    lead="Two minutes on why another evening on the bike can be the best one of the week."
+    lead="Three minutes on how Telo Ride turns another evening on the bike into the best ride of the week—and what comes next with free in-browser AI."
   >
     <wz-film
       [src]="film.src"
@@ -49,6 +51,25 @@
   </section>
   <section
     wz-band
+    anchor="worlds"
+    surface="panel"
+    kicker="3D worlds"
+    heading="Worlds built for the saddle."
+    lead="Courses and worlds running smoothly in WebGPU and WebGL 2, with quality tiers tuned for hour-long rides on a tablet."
+  >
+    <ul wz-features [features]="worlds"></ul>
+  </section>
+  <section
+    wz-band
+    anchor="ai"
+    kicker="Coming next · Free Hugging Face AI"
+    heading="Local AI, right in the browser."
+    lead="Fifty-five planned capabilities powered by open-weight ONNX models and Chrome built-in AI—zero cloud bills, offline-ready, and nothing ever leaves your device."
+  >
+    <ul wz-features [features]="aiPlanned"></ul>
+  </section>
+  <section
+    wz-band
     anchor="pair"
     surface="panel"
     kicker="One press"
@@ -61,5 +82,7 @@
 <footer wz-site-footer [blurb]="footer.blurb" [legal]="footer.legal">
   <a wz-site-link href="#film" (click)="jumpTo($event, 'film')">Watch the film</a>
   <a wz-site-link href="#rides" (click)="jumpTo($event, 'rides')">Race and Classes</a>
+  <a wz-site-link href="#worlds" (click)="jumpTo($event, 'worlds')">Worlds</a>
+  <a wz-site-link href="#ai" (click)="jumpTo($event, 'ai')">Local AI</a>
   <a wz-site-link [href]="app('/')">Open Telo Ride</a>
 </footer>

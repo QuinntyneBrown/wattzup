@@ -4,6 +4,7 @@ import {
   RaceBar,
   RaceBarButton,
   RaceBoard,
+  RaceCalloutBanner,
   RaceInterval,
   RaceLost,
   RacePaused,
@@ -21,6 +22,7 @@ import {
 } from '@telo/domain';
 import { RouterLink } from '@angular/router';
 import { LiveSessionStore } from '../live/live-session-store';
+import { RaceAnnouncerController } from './race-announcer-controller';
 import { RaceStore } from './race-store';
 import { RaceWorld } from './race-world';
 import { FullscreenButton } from '../fullscreen/fullscreen-button';
@@ -37,6 +39,7 @@ import { FullscreenButton } from '../fullscreen/fullscreen-button';
     RaceBar,
     RaceBarButton,
     RaceBoard,
+    RaceCalloutBanner,
     RaceInterval,
     RaceLost,
     RacePaused,
@@ -53,6 +56,7 @@ import { FullscreenButton } from '../fullscreen/fullscreen-button';
   host: { '(window:beforeunload)': 'confirmLeaving($event)' },
   providers: [
     RaceStore,
+    RaceAnnouncerController,
     LiveSessionStore,
     RideClock,
     RideTicker,
@@ -63,6 +67,7 @@ import { FullscreenButton } from '../fullscreen/fullscreen-button';
 })
 export default class RacePage {
   protected readonly store = inject(RaceStore);
+  protected readonly announcer = inject(RaceAnnouncerController);
 
   /** While the race runs, closing or reloading the tab asks the rider to confirm (L2-133 AC4). */
   protected confirmLeaving(event: BeforeUnloadEvent): void {

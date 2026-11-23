@@ -47,3 +47,52 @@
     (toggled)="muteUnderVideoToggled.emit($event)"
   />
 </div>
+<div wz-setting>
+  <wz-switch-row
+    name="race-announcer"
+    label="Race announcer"
+    description="Play-by-play commentary for overtakes, climbs, ghost gaps and the final sprint. Runs on this device."
+    [checked]="settings().raceAnnouncer"
+    (toggled)="raceAnnouncerToggled.emit($event)"
+  />
+</div>
+<div wz-setting>
+  <span class="sound-settings__label" id="announcer-voice">Announcer voice</span>
+  <wz-segmented
+    aria-labelledby="announcer-voice"
+    [options]="voices"
+    [value]="settings().announcerVoice"
+    (chosen)="announcerVoiceChosen.emit($event)"
+  />
+</div>
+<div wz-setting>
+  <div class="sound-settings__head">
+    <label class="sound-settings__label" for="announcer-volume">Announcer volume</label>
+    <span class="sound-settings__announcer-value" aria-hidden="true"
+      >{{ settings().announcerVolume }} %</span
+    >
+  </div>
+  <input
+    class="range"
+    id="announcer-volume"
+    type="range"
+    min="0"
+    max="100"
+    step="5"
+    [value]="settings().announcerVolume"
+    [attr.aria-valuetext]="settings().announcerVolume + ' percent'"
+    (input)="changeAnnouncerVolume($event)"
+  />
+  <div class="sound-settings__announcer-scale" aria-hidden="true">
+    <span>Quiet</span><span>Loud</span>
+  </div>
+</div>
+<div wz-setting>
+  <wz-switch-row
+    name="announcer-captions"
+    label="Announcer captions"
+    description="Shows live play-by-play callouts on screen, even with sound off."
+    [checked]="settings().announcerCaptions"
+    (toggled)="announcerCaptionsToggled.emit($event)"
+  />
+</div>

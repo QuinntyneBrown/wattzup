@@ -40,6 +40,12 @@ describe('parseRideSettings (L2-158 AC5)', () => {
     ['ride numbers that are not a size', '{"rideNumbers":"huge"}'],
     ['a full screen choice of the wrong type', '{"fullScreenOnStart":"yes"}'],
     ['a keep worlds choice of the wrong type', '{"keepWorlds":1}'],
+    ['a race announcer choice of the wrong type', '{"raceAnnouncer":"yes"}'],
+    ['an announcer voice that is not a preset', '{"announcerVoice":"robot"}'],
+    ['an announcer volume below 0 %', '{"announcerVolume":-5}'],
+    ['an announcer volume above 100 %', '{"announcerVolume":105}'],
+    ['an announcer volume off the 5 % steps', '{"announcerVolume":73}'],
+    ['an announcer captions choice of the wrong type', '{"announcerCaptions":1}'],
     [
       'a device check with no time',
       '{"deviceCheck":{"level":"high","displayFps":60,"tried":[],"checkedAt":"soon"}}',
@@ -89,6 +95,23 @@ describe('parseRideSettings (L2-158 AC5)', () => {
     expect(parseRideSettings('{"keepWorlds":false}')).toEqual({
       ...RECOMMENDED_SETTINGS,
       keepWorlds: false,
+    });
+  });
+
+  it('keeps Race announcer settings as stored, with safe defaults (L2-169 AC1, AC5)', () => {
+    expect(RECOMMENDED_SETTINGS.raceAnnouncer).toBe(false);
+    expect(RECOMMENDED_SETTINGS.announcerVoice).toBe('arcade');
+    expect(RECOMMENDED_SETTINGS.announcerVolume).toBe(85);
+    expect(RECOMMENDED_SETTINGS.announcerCaptions).toBe(true);
+    const chosen = {
+      raceAnnouncer: true,
+      announcerVoice: 'coach' as const,
+      announcerVolume: 60,
+      announcerCaptions: false,
+    };
+    expect(parseRideSettings(JSON.stringify(chosen))).toEqual({
+      ...RECOMMENDED_SETTINGS,
+      ...chosen,
     });
   });
 

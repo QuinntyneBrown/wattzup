@@ -1,0 +1,50 @@
+:host {
+  display: block;
+}
+
+.voice-pack-storage__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.voice-pack-storage__label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.voice-pack-storage__value {
+  margin: 0;
+  flex-shrink: 0;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+}
+
+.voice-pack-storage__hint,
+.voice-pack-storage__error {
+  margin: var(--space-1) 0 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-snug);
+  color: var(--color-muted);
+}
+
+.voice-pack-storage__error {
+  color: var(--color-warn);
+}
+
+.voice-pack-storage__bar {
+  display: block;
+  width: 100%;
+  height: 0.5rem;
+  margin-top: var(--space-2);
+  accent-color: var(--color-volt);
+}
+
+.voice-pack-storage__actions {
+  margin-top: var(--space-3);
+}

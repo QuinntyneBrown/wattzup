@@ -9,6 +9,9 @@ export type QualityChoice = 'auto' | WorldTier;
 export type ReduceMotionChoice = 'device' | 'on' | 'off';
 export type ThemeChoice = 'device' | 'dark' | 'light';
 
+/** Race announcer voice preset (L2-169 AC1). */
+export type AnnouncerVoicePreset = 'arcade' | 'commentator' | 'coach';
+
 /** The device check's result, kept on this device: what it found and when (L2-162 AC3). */
 export interface DeviceCheckResult extends DeviceCheckOutcome {
   /** ISO 8601. */
@@ -53,6 +56,14 @@ export interface RideSettings {
   readonly fullScreenOnStart: boolean;
   /** Saves each world a ride downloads on this device; on by default (L2-165 AC3). */
   readonly keepWorlds: boolean;
+  /** Optional on-device play-by-play race announcer; off by default (L2-169 AC1). */
+  readonly raceAnnouncer: boolean;
+  /** Announcer voice preset; Arcade hype by default (L2-169 AC1). */
+  readonly announcerVoice: AnnouncerVoicePreset;
+  /** Announcer volume, 0 to 100 % in steps of 5; 85 by default (L2-169 AC1). */
+  readonly announcerVolume: number;
+  /** On-screen play-by-play captions, independently toggleable; on by default (L2-169 AC1). */
+  readonly announcerCaptions: boolean;
 }
 
 /**

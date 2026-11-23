@@ -180,6 +180,20 @@
         }
       }
     },
+    "ai": {
+      "projectType": "library",
+      "root": "projects/ai",
+      "sourceRoot": "projects/ai/src",
+      "prefix": "wz",
+      "architect": {
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["projects/ai/**/*.ts", "projects/ai/**/*.html"]
+          }
+        }
+      }
+    },
     "marketing": {
       "projectType": "application",
       "schematics": {

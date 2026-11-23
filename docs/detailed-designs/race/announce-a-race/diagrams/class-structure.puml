@@ -1,0 +1,133 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Announce a race (Arcade Race Energy)
+
+enum AnnouncerVoicePreset {
+  arcade
+  commentator
+  coach
+}
+
+enum RaceCalloutKind {
+  countdown
+  overtake
+  climb
+  cadenceLock
+  ghostSplit
+  finalSprint
+  finish
+}
+
+interface RaceCallout {
+  +id: string
+  +kind: RaceCalloutKind
+  +text: string
+  +priority: number
+  +createdAtMs: number
+}
+
+interface VoicePackState {
+  +status: 'absent' | 'downloading' | 'ready' | 'error'
+  +downloadedBytes: number
+  +totalBytes: number
+  +errorCode: string | null
+}
+
+interface RaceAnnouncer {
+  +activeCallout: Signal<RaceCallout | null>
+  +prepareLobby(context: LobbyAnnouncerContext): Promise<void>
+  +start(source: RaceAnnouncerSource): void
+  +pause(): void
+  +resume(): void
+  +stop(): void
+}
+
+interface VoicePackStore {
+  +state: Signal<VoicePackState>
+  +download(): Promise<void>
+  +cancel(): void
+  +remove(): Promise<void>
+}
+
+interface ThermalGovernor {
+  +allowLiveSynthesis: Signal<boolean>
+  +start(): void
+  +stop(): void
+}
+
+class LocalRaceAnnouncer {
+  +activeCallout: Signal<RaceCallout | null>
+  +prepareLobby(context: LobbyAnnouncerContext): Promise<void>
+  +start(source: RaceAnnouncerSource): void
+  +pause(): void
+  +resume(): void
+  +stop(): void
+}
+
+class RaceAnnouncerDirector {
+  -cooldownMs: number = 20000
+  -maxStaleMs: number = 5000
+  -historyLimit: number = 64
+  +evaluate(snapshot: RaceSnapshot, nowMs: number): RaceCallout | null
+  +reset(): void
+}
+
+class CalloutSanitizer {
+  +maxNameLength: number = 24
+  +sanitizeLabel(raw: string): string
+}
+
+class KokoroWorkerClient {
+  -maxCachedClips: number = 30
+  -maxCacheBytes: number = 15728640
+  +precache(phrases: string[], voice: AnnouncerVoicePreset): Promise<void>
+  +synthesize(text: string, voice: AnnouncerVoicePreset): Promise<Float32Array>
+  +dispose(): void
+}
+
+class WebAudioAnnouncerMixer {
+  +play(pcm: Float32Array, volume: number): Promise<void>
+  +setVolume(volume: number): void
+  +stopActive(): void
+  +dispose(): void
+}
+
+class OpfsVoicePackStore {
+  +state: Signal<VoicePackState>
+  +download(): Promise<void>
+  +cancel(): void
+  +remove(): Promise<void>
+}
+
+class BrowserThermalGovernor {
+  -recoveryMs: number = 30000
+  +allowLiveSynthesis: Signal<boolean>
+  +start(): void
+  +stop(): void
+}
+
+LocalRaceAnnouncer ..|> RaceAnnouncer
+OpfsVoicePackStore ..|> VoicePackStore
+BrowserThermalGovernor ..|> ThermalGovernor
+
+LocalRaceAnnouncer *-- RaceAnnouncerDirector : owns
+LocalRaceAnnouncer *-- KokoroWorkerClient : owns
+LocalRaceAnnouncer *-- WebAudioAnnouncerMixer : owns
+LocalRaceAnnouncer --> ThermalGovernor : reads
+RaceAnnouncerDirector ..> CalloutSanitizer : sanitizes names
+RaceAnnouncerDirector ..> RaceCallout : produces
+RaceCallout --> RaceCalloutKind : has
+KokoroWorkerClient ..> AnnouncerVoicePreset : uses
+OpfsVoicePackStore --> VoicePackState : exposes
+@enduml

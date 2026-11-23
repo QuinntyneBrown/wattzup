@@ -1,0 +1,22 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Announce a race (Arcade Race Energy)
+
+Person(rider, "Rider", "Opts in to voice commentary and rides 3D courses")
+
+System_Boundary(teloride, "Telo Ride") {
+  Container(spa, "Ride application", "Angular 22 (Zoneless)", "Settings UI, Race Lobby, Racing HUD, callout banner, and audio mixer")
+  Container(worker, "AI Web Worker", "ONNX Runtime Web (WebNN / WASM / WebGPU)", "Runs Kokoro-82M TTS inference off the main thread")
+  ContainerDb(opfs, "Origin Private File System", "Browser OPFS", "Persists verified ONNX voice-pack weights for offline use")
+  ContainerDb(localstorage, "Local settings storage", "Browser localStorage", "Stores device-local announcer toggle, voice, volume, and captions")
+  Container(static, "Static origin", "HTTPS CDN / Web server", "Serves /models/voice-announcer/ manifest and ONNX weights")
+}
+
+Rel(rider, spa, "Configures settings and hears/views callouts", "Touch / Keyboard / Audio")
+Rel(spa, localstorage, "Reads and writes announcer settings", "Synchronous API")
+Rel(spa, static, "Downloads voice pack on opt-in", "HTTPS (same-origin)")
+Rel(spa, opfs, "Verifies, writes, and deletes voice pack", "OPFS API")
+Rel(spa, worker, "Sends pre-cache and synthesis requests", "postMessage / Transferable PCM")
+Rel(worker, opfs, "Loads ONNX weights directly", "FileSystemSyncAccessHandle")
+@enduml

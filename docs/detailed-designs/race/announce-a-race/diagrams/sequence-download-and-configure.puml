@@ -1,0 +1,60 @@
+@startuml
+title UML sequence behaviour — Download and configure the announcer voice pack
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+
+actor "Rider" as rider
+box "Frontend — Ride application (Settings)" #E0F2FE
+  participant "SoundSettings / VoicePackStorageRow" as ui
+  participant "LocalRideSettingsStore" as settings
+  participant "OpfsVoicePackStore" as store
+end box
+box "Browser platform — Storage and Crypto" #FFF4E5
+  participant "Web Crypto" as crypto
+  database "OPFS" as opfs
+end box
+box "Static origin — Telo Ride" #D1FADF
+  participant "/models/voice-announcer/" as origin
+end box
+
+rider -> ui : Toggle Race announcer on or press Download voice pack (L2-168, L2-169)
+ui -> store : download()
+store -> origin : Fetch manifest.json (same-origin, connect-src 'self' — L2-174)
+origin --> store : Manifest with file paths and SHA-256 hashes
+store -> origin : Stream quantized ONNX weights (~85 MB)
+loop Download chunks
+  origin --> store : Chunk bytes
+  store --> ui : Update downloadedBytes / totalBytes progress (L2-168)
+end
+
+alt Rider cancels or network / QuotaExceededError occurs (L2-168)
+  store -> opfs : Delete partial temporary files
+  opfs --> store : Cleaned up
+  store --> ui : State absent or plain-language error
+else Download completes
+  store -> crypto : Compute SHA-256 digest of downloaded files (L2-174)
+  crypto --> store : Digest
+  alt Digest mismatch (L2-174)
+    store -> opfs : Reject and delete corrupted files
+    store --> ui : State error (integrity failure)
+  else Digest matches manifest
+    store -> opfs : Commit weights and call navigator.storage.persist() (L2-168)
+    opfs --> store : Persisted
+    store --> ui : State ready ("Race announcer · 85 MB")
+    ui -> settings : set('raceAnnouncer', true) (localStorage only — L2-169)
+    settings --> ui : Applied immediately
+  end
+end
+@enduml

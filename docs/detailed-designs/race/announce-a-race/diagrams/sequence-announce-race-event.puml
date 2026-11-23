@@ -1,0 +1,77 @@
+@startuml
+title UML sequence behaviour — Pre-cache and announce a race event
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+
+actor "Rider" as rider
+box "Frontend — Ride application (Lobby and Racing)" #E0F2FE
+  participant "RaceStore" as race
+  participant "LocalRaceAnnouncer" as announcer
+  participant "RaceAnnouncerDirector" as director
+  participant "BrowserThermalGovernor" as governor
+  participant "WebAudioAnnouncerMixer" as mixer
+  participant "RaceCalloutBanner" as banner
+end box
+box "Frontend — AI Web Worker" #ECFDF3
+  participant "KokoroWorkerClient / ai.worker.ts" as worker
+end box
+box "Browser platform — OPFS" #FFF4E5
+  database "OPFS" as opfs
+end box
+
+== Pre-race lobby countdown ==
+race -> announcer : prepareLobby(voicePreset) (L2-171)
+announcer -> worker : precache(staticPhrases, voicePreset)
+worker -> opfs : Load Kokoro-82M weights (WebNN -> WASM -> WebGPU — L2-173, L2-175)
+opfs --> worker : Model bytes
+worker --> announcer : Cache up to 30 PCM clips (<= 15 MB — L2-171, L2-173)
+
+== Live race event ==
+race -> announcer : Emit live snapshot (position, gap, resistance, cadence, ghost)
+announcer -> director : evaluate(snapshot, nowMs) (L2-170)
+director -> director : Prioritize, check 20 s cooldown, drop > 5 s stale, sanitize names <= 24 chars (L2-170, L2-174)
+director --> announcer : RaceCallout (or null)
+
+opt Callout selected
+  announcer -> banner : Publish activeCallout plain text + polite ARIA (L2-172, L2-174)
+  banner --> rider : Show responsive banner (>= 3.5 s, XS-XL)
+  announcer -> governor : Read allowLiveSynthesis (PressureObserver — L2-173)
+  governor --> announcer : boolean
+  alt Clip is pre-cached in memory
+    announcer -> mixer : play(cachedPcm, volume)
+  else Live synthesis allowed
+    announcer -> worker : synthesize(callout.text, voicePreset) (off main thread — L2-171)
+    alt Worker succeeds
+      worker --> announcer : Transferable Float32Array PCM
+      announcer -> mixer : play(pcm, volume)
+    else Worker or audio error (L2-175)
+      worker --> announcer : Error
+      announcer -> announcer : Disable audio cleanly; keep captions active
+    end
+  else Thermal pressure serious/critical (L2-173)
+    announcer -> announcer : Skip live synthesis; keep visual banner only
+  end
+  opt Audio clip playing
+    mixer -> mixer : Duck world music and ride sound 6-10 dB over 150 ms (L2-171)
+    mixer --> rider : Play spoken commentary
+    mixer -> mixer : Restore audio levels over 250 ms
+  end
+end
+
+== Route teardown ==
+race -> announcer : stop() on DestroyRef (L2-173)
+announcer -> mixer : stopActive() and dispose()
+announcer -> worker : dispose() (release ONNX session and PCM cache)
+@enduml

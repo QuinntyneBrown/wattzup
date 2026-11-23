@@ -55,8 +55,9 @@ A multi-project workspace under `frontend/projects/`. The baseline is three libr
 (contracts, types, injection tokens, and the HTTP and SignalR clients for the backend), `domain`
 (the bike and its rules: `protocol/`, `bluetooth/`, `engine/`, `storage/`) and `components`
 (presentation), and one application, `ride`. A `video` library (the YouTube player, imported
-dynamically) and a `world` library (World Ride's rendering from `main`, imported dynamically, ADR
-0030) have joined them.
+dynamically), a `world` library (World Ride's rendering from `main`, imported dynamically, ADR
+0030), and an `ai` library (opt-in on-device AI in a Web Worker, imported dynamically, ADR 0037)
+have joined them.
 
 That baseline is where the organisation starts, not a limit on it. When a concern earns its own
 library (a `browser` project for browser-only implementations, a `world` project for World Ride
@@ -64,9 +65,9 @@ rendering, and so on), add it. A smaller, focused library that can be lazy-loade
 better than one that keeps growing. A further application still needs its own ADR; the
 `marketing` application (ADR 0027), the one-page site with the pitch film, is the first.
 
-- **Dependency direction.** `ride` → `components`, `api`, `domain`, `video`, `world`; `domain` →
-  `api`; `components` → `api` for types only; `video` → `api`; `world` → `api`; `api` → nothing;
-  `marketing` → `components`, `api`. No library imports an app. `ride`'s
+- **Dependency direction.** `ride` → `components`, `api`, `domain`, `video`, `world`, `ai`;
+  `domain` → `api`; `components` → `api` for types only; `video` → `api`; `world` → `api`; `ai` →
+  `api`; `api` → nothing; `marketing` → `components`, `api`. No library imports an app. `ride`'s
   `app.config.ts` is the composition root and binds every token, except those the first screen
   brings, which the lazy parent route in `ride.routes.ts` binds so their code stays out of the
   initial bundle. ESLint enforces it. A new library takes its place in this direction, and the

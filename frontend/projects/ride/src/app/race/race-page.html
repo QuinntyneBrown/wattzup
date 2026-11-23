@@ -50,6 +50,13 @@
       </a>
       <wz-fullscreen-button slot="end" />
     </wz-race-bar>
+    @if (announcer.activeCallout(); as callout) {
+      <wz-race-callout-banner
+        [callout]="callout"
+        [muted]="announcer.muted()"
+        (muteToggled)="announcer.toggleMute()"
+      />
+    }
     <wz-race-power
       [place]="store.place()"
       [field]="store.fieldSize()"

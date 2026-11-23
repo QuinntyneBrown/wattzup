@@ -39,6 +39,7 @@ import {
   SoundSettings,
   Toast,
   ToastRegion,
+  VoicePackStorage,
   WorldSettings,
 } from '@telo/components';
 import { CacheStorageSavedWorlds, deviceCheckResult, deviceCheckRunning } from '@telo/domain';
@@ -46,6 +47,7 @@ import { bikeRow } from '../profile/bike-row';
 import { DeviceCheckStore } from './device-check-store';
 import { SavedWorldsStore } from './saved-worlds-store';
 import { NONE_SAVED } from './saved-worlds-view';
+import { VoicePackSettingsStore } from './voice-pack-settings-store';
 import { openDiagnostics } from '../diagnostics/open-diagnostics';
 
 /**
@@ -74,6 +76,7 @@ import { openDiagnostics } from '../diagnostics/open-diagnostics';
     SoundSettings,
     Toast,
     ToastRegion,
+    VoicePackStorage,
     WorldSettings,
   ],
   templateUrl: './settings-page.html',
@@ -81,6 +84,7 @@ import { openDiagnostics } from '../diagnostics/open-diagnostics';
   providers: [
     DeviceCheckStore,
     SavedWorldsStore,
+    VoicePackSettingsStore,
     { provide: SAVED_WORLDS, useClass: CacheStorageSavedWorlds },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -88,6 +92,7 @@ import { openDiagnostics } from '../diagnostics/open-diagnostics';
 export default class SettingsPage {
   protected readonly store = inject(RIDE_SETTINGS);
   protected readonly savedWorlds = inject(SavedWorldsStore);
+  protected readonly voicePack = inject(VoicePackSettingsStore);
   protected readonly noneSaved = NONE_SAVED;
   private readonly injector = inject(Injector);
   private readonly dialog = inject(Dialog);

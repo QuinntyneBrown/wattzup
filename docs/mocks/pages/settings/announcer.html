@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settings · announcer — Telo Ride mocks</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="settings">
+<meta name="mock:state" content="announcer">
+<meta name="mock:requirements" content="L2-168 L2-169">
+<meta name="description" content="Settings showing Sound race announcer controls (switch, voice preset, volume, captions) and This device voice pack download, saved, and error states.">
+<link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="app">
+  <div class="app__scroll">
+    <main id="main" class="container settings-page">
+      <div class="settings-page__head">
+        <a class="back-link" href="../profile/default.html">← Profile</a>
+        <h1 class="page__title">Settings</h1>
+        <p class="settings-page__lead">How Telo Ride looks, sounds and moves on this device. Changes apply at once, even mid-ride, and stay on this device.</p>
+      </div>
+      <div class="settings-page__sections">
+        <section class="settings-section" id="sound" aria-labelledby="sound-title">
+          <div class="settings-section__head"><h2 class="settings-section__title" id="sound-title">Sound</h2></div>
+          <p class="settings-section__desc">Made in the browser as you ride; optional voice pack downloads stay on this device.</p>
+          <div class="settings-section__list">
+            <div class="setting"><div class="switch-row"><span class="switch-row__text" id="race-announcer"><span class="switch-row__label">Race announcer</span><span class="switch-row__desc" id="race-announcer-desc">Play-by-play commentary for overtakes, climbs, ghost gaps and the final sprint. Runs on this device.</span></span><button class="switch" type="button" role="switch" aria-checked="true" aria-labelledby="race-announcer" aria-describedby="race-announcer-desc"></button></div></div>
+            <div class="setting"><span class="setting__label" id="announcer-voice">Announcer voice</span><div class="segmented segmented--raised segmented--strong" role="radiogroup" aria-labelledby="announcer-voice"><button class="segmented__option" type="button" role="radio" aria-checked="true">Arcade hype</button><button class="segmented__option" type="button" role="radio" aria-checked="false" tabindex="-1">Cycling commentator</button><button class="segmented__option" type="button" role="radio" aria-checked="false" tabindex="-1">Calm coach</button></div></div>
+            <div class="setting"><div class="setting__head"><label class="setting__label" for="announcer-volume">Announcer volume</label><span class="setting__value" aria-hidden="true">85 %</span></div><input class="range" id="announcer-volume" type="range" min="0" max="100" step="5" value="85" aria-valuetext="85 percent"><div class="setting__scale" aria-hidden="true"><span>Quiet</span><span>Loud</span></div></div>
+            <div class="setting"><div class="switch-row"><span class="switch-row__text" id="announcer-captions"><span class="switch-row__label">Announcer captions</span><span class="switch-row__desc" id="announcer-captions-desc">Shows live play-by-play callouts on screen, even with sound off.</span></span><button class="switch" type="button" role="switch" aria-checked="true" aria-labelledby="announcer-captions" aria-describedby="announcer-captions-desc"></button></div></div>
+          </div>
+        </section>
+        <section class="settings-section" id="device" aria-labelledby="device-title">
+          <div class="settings-section__head"><h2 class="settings-section__title" id="device-title">This device</h2></div>
+          <div class="settings-section__list">
+            <div class="setting voice-pack-storage">
+              <dl class="setting__head"><dt class="setting__label">Race announcer voice pack</dt><dd class="setting__value">Race announcer · 85 MB</dd></dl>
+              <p class="setting__hint">Stored on this device for offline race commentary. Nothing leaves your browser.</p>
+              <div class="setting__actions"><button class="btn btn--outline btn--sm" type="button">Delete voice pack</button></div>
+            </div>
+            <div class="setting voice-pack-storage voice-pack-storage--downloading">
+              <dl class="setting__head"><dt class="setting__label">Race announcer voice pack (downloading state)</dt><dd class="setting__value">42 % · 36 / 85 MB</dd></dl>
+              <progress class="voice-pack-storage__bar" max="100" value="42"></progress>
+              <div class="setting__actions"><button class="btn btn--outline btn--sm" type="button">Cancel</button></div>
+            </div>
+            <div class="setting voice-pack-storage voice-pack-storage--error">
+              <dl class="setting__head"><dt class="setting__label">Race announcer voice pack (error state)</dt><dd class="setting__value">Not downloaded</dd></dl>
+              <p class="setting__hint" role="alert">Not enough storage on this device. Free space or clear saved worlds and try again.</p>
+              <div class="setting__actions"><button class="btn btn--raised btn--sm" type="button">Download voice pack (~85 MB)</button></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

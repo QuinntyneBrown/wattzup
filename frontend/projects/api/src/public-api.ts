@@ -68,6 +68,7 @@ export { APP_UPDATES, type AppUpdates } from './app-update/app-updates';
 export { RIDE_ACTIVITY, type RideActivity } from './app-update/ride-activity';
 export {
   RIDE_SETTINGS,
+  type AnnouncerVoicePreset,
   type DeviceCheckResult,
   type QualityChoice,
   type ReduceMotionChoice,
@@ -75,6 +76,23 @@ export {
   type RideSettingsStore,
   type ThemeChoice,
 } from './settings/ride-settings';
+export {
+  NoopRaceAnnouncer,
+  RACE_ANNOUNCER,
+  THERMAL_GOVERNOR,
+  VOICE_PACK_STORE,
+  type ComputePressureState,
+  type LobbyAnnouncerContext,
+  type RaceAnnouncer,
+  type RaceAnnouncerSnapshot,
+  type RaceAnnouncerSource,
+  type RaceCallout,
+  type RaceCalloutKind,
+  type ThermalGovernor,
+  type VoicePackState,
+  type VoicePackStatus,
+  type VoicePackStore,
+} from './ai/race-announcer';
 export { HttpMapsApi } from './maps/http-maps-api';
 export { HttpRaceQueueApi, RACE_QUEUE_API, type RaceQueueApi } from './race/race-queue-api';
 export type { MapDto, MapRating, MapTerrain, RealPlace } from './maps/map-dto';

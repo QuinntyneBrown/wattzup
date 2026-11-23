@@ -1,0 +1,13 @@
+<div class="race-callout-banner" role="status" aria-live="polite" aria-atomic="true">
+  <span class="race-callout-banner__badge">{{ callout().badge }}</span>
+  <span class="race-callout-banner__text">{{ callout().text }}</span>
+  <button
+    class="race-callout-banner__mute"
+    type="button"
+    [attr.aria-label]="muted() ? 'Unmute race announcer' : 'Mute race announcer'"
+    [attr.aria-pressed]="muted()"
+    (click)="muteToggled.emit()"
+  >
+    {{ muted() ? 'Unmute' : 'Mute' }}
+  </button>
+</div>

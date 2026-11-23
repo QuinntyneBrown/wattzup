@@ -1,0 +1,406 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.797
+What happens when you ship Telo Ride with free, open-weight Hugging Face AI models
+
+00:00:07.797 --> 00:00:10.196
+running right inside the browser?
+
+00:00:10.541 --> 00:00:16.074
+Fifty-five features, zero cloud API bills, and not a single byte of your ride ever
+
+00:00:16.074 --> 00:00:17.588
+leaves the device.
+
+00:00:20.647 --> 00:00:26.340
+Local AI fits Telo Ride's architecture like a glove. Zero per-token cost keeps the
+
+00:00:26.340 --> 00:00:32.033
+dot net backend thin. Self-hosted weights keep voice, video and telemetry strictly
+
+00:00:32.033 --> 00:00:35.526
+on-device. Cached models keep working offline.
+
+00:00:35.871 --> 00:00:41.407
+And because Web Bluetooth already requires Chrome or Edge, every rider lands on the
+
+00:00:41.407 --> 00:00:46.943
+two strongest browser AI runtimes on Earth. The one hard rule: never starve Three J
+
+00:00:46.943 --> 00:00:49.511
+S during an hour-long tablet ride.
+
+00:00:51.618 --> 00:00:57.638
+Modern Chrome and Edge hand us an entire AI compute stack. WebGPU accelerates heavy
+
+00:00:57.638 --> 00:01:03.958
+math up to a hundred times, while WebNN routes models straight onto a laptop's NPU.
+
+00:01:04.303 --> 00:01:09.495
+The Origin Private File System caches gigabytes of weights for instant offline
+
+00:01:09.495 --> 00:01:15.019
+loads. AudioWorklet filters fan noise off the main thread, and the Compute Pressure
+
+00:01:15.019 --> 00:01:17.848
+API throttles AI if a tablet heats up.
+
+00:01:18.193 --> 00:01:23.311
+Best of all, cross-origin isolation with credentialless unlocks multi-threaded
+
+00:01:23.311 --> 00:01:26.957
+WebAssembly without breaking YouTube class iframes.
+
+00:01:27.751 --> 00:01:32.765
+Every model in this study is free and open-weight from Hugging Face, quantized to
+
+00:01:32.765 --> 00:01:36.718
+four-bit or eight-bit ONNX so it fits inside a browser tab.
+
+00:01:37.063 --> 00:01:42.851
+Silero voice detection is two megabytes. MoveNet pose is six. Micro embeddings are
+
+00:01:42.851 --> 00:01:48.569
+seventeen. Chronos fatigue forecasting is twenty. Moonshine speech recognition is
+
+00:01:48.569 --> 00:01:52.257
+thirty, and Kokoro studio speech is eighty-five.
+
+00:01:52.602 --> 00:01:58.257
+Compact language models like SmolLM2 and Qwen3 sit between two hundred and three
+
+00:01:58.257 --> 00:02:03.435
+hundred fifty megabytes, reserved for pre-ride and post-ride screens.
+
+00:02:06.465 --> 00:02:11.294
+Domain A: the hands-free voice cockpit. When you are drenched in sweat at a hundred
+
+00:02:11.294 --> 00:02:14.561
+and five RPM, touching a tablet breaks your rhythm.
+
+00:02:14.906 --> 00:02:20.496
+A tiny Hey Telo wake word guards against fan hum and heavy breathing. Say resistance
+
+00:02:20.496 --> 00:02:25.553
+up two, match plan, or pause ride, and Moonshine turns speech into Bluetooth
+
+00:02:25.553 --> 00:02:26.984
+commands locally.
+
+00:02:27.329 --> 00:02:32.439
+Ask how much climb is left, launch a race on Ibiza while clipping in, edit a custom
+
+00:02:32.439 --> 00:02:37.294
+workout aloud, or dictate a mid-ride bug report without losing your place.
+
+00:02:40.017 --> 00:02:45.420
+Domain B brings Telo Ride's kart-racing soul to life. Kokoro eighty-two million
+
+00:02:45.420 --> 00:02:51.260
+powers a live play-by-play announcer calling climbs, overtakes and final sprints.
+
+00:02:51.606 --> 00:02:56.842
+Bot racers get distinct personalities and playful banter, pre-generated during the
+
+00:02:56.842 --> 00:03:01.822
+lobby countdown and placed in 3D space with Web Audio panners so a passing bot
+
+00:03:01.822 --> 00:03:03.654
+sounds right beside you.
+
+00:03:03.999 --> 00:03:09.239
+Add victory fanfare on map unlocks, cadence-adaptive music energy, world-matched
+
+00:03:09.239 --> 00:03:14.675
+crowd swells, ghost time-split taunts, and multilingual callouts for Alpe d'Huez or
+
+00:03:14.675 --> 00:03:15.958
+Strade Bianche.
+
+00:03:18.731 --> 00:03:23.721
+Domain C turns raw one-hertz Bluetooth telemetry into personal coaching. A
+
+00:03:23.721 --> 00:03:29.251
+cadence-lock micro-coach spots drift patterns and warns you ten seconds before the
+
+00:03:29.251 --> 00:03:30.225
+next hill.
+
+00:03:30.570 --> 00:03:36.066
+Chronos-Bolt forecasts your sustainable power and fatigue over the next five minutes
+
+00:03:36.066 --> 00:03:41.169
+on CPU alone. A resistance nudge advisor learns your comfort offset, while the
+
+00:03:41.169 --> 00:03:45.329
+star-unlock strategist budgets your cadence stage by stage.
+
+00:03:45.674 --> 00:03:50.618
+Pair a heart-rate strap for cardiac drift alerts, race a calibrated Rival Pack for
+
+00:03:50.618 --> 00:03:55.017
+photo finishes, and read a three-bullet coaching debrief on Results.
+
+00:03:57.445 --> 00:04:02.667
+Domain D makes a hundred worlds and custom workouts effortless. Describe a
+
+00:04:02.667 --> 00:04:08.313
+twenty-five-minute Tabata pyramid in plain English, and Qwen3 emits schema-valid
+
+00:04:08.313 --> 00:04:10.801
+workout JSON every single time.
+
+00:04:11.146 --> 00:04:16.385
+A seventeen-megabyte embedding model powers offline mood search across every class
+
+00:04:16.385 --> 00:04:21.752
+and map in eight milliseconds. Paste a YouTube description to draft a synced workout
+
+00:04:21.752 --> 00:04:22.371
+plan.
+
+00:04:22.716 --> 00:04:27.607
+Get a personalized Home recommendation, vibe-to-world matching, pre-ride course
+
+00:04:27.607 --> 00:04:32.561
+scout briefings, arcade stage titles, and natural-language search over your ride
+
+00:04:32.561 --> 00:04:33.356
+history.
+
+00:04:36.159 --> 00:04:41.704
+Domain E unlocks optional local camera vision from the handlebar mount. Every frame
+
+00:04:41.704 --> 00:04:46.915
+is processed in a Web Worker and discarded at once—zero video ever leaves your
+
+00:04:46.915 --> 00:04:47.683
+device.
+
+00:04:48.028 --> 00:04:53.398
+Six-megabyte MoveNet detects standing versus seated climbs and mirrors your posture
+
+00:04:53.398 --> 00:04:58.485
+onto your 3D cyclist. Lean your shoulders to steer into corners and draft.
+
+00:04:58.830 --> 00:05:03.610
+Use silent hand gestures for pause, kudos or resistance nudges, run a private
+
+00:05:03.610 --> 00:05:08.638
+pre-ride bike-fit check, catch shoulder tension creep, or send lightweight avatar
+
+00:05:08.638 --> 00:05:10.862
+emotes without streaming video.
+
+00:05:12.292 --> 00:05:17.487
+Domain F upgrades social and multiplayer rides without bloating the backend. Local
+
+00:05:17.487 --> 00:05:22.476
+moderation pre-checks display names and notes instantly before submission.
+
+00:05:22.821 --> 00:05:27.979
+Group-ride quick-chat translates across languages on-device. After a race, generate
+
+00:05:27.979 --> 00:05:32.630
+shareable highlight story cards with your elevation profile and stars.
+
+00:05:32.976 --> 00:05:37.820
+In the lobby, a local announcer turns countdown wait time into hype, while a rival
+
+00:05:37.820 --> 00:05:42.255
+engine recommends whether to chase your ghost or step up to hard bots.
+
+00:05:43.263 --> 00:05:48.888
+Domain G puts local AI to work on hardware reliability and accessibility. On
+
+00:05:48.888 --> 00:05:55.105
+Diagnostics, click explain this Bluetooth log to diagnose Echelon keepalive drops or
+
+00:05:55.105 --> 00:05:58.069
+resistance lag completely on-device.
+
+00:05:58.414 --> 00:06:03.733
+When reporting a bug, a local summarizer condenses ten thousand packet lines into a
+
+00:06:03.733 --> 00:06:06.660
+clean, privacy-scrubbed incident summary.
+
+00:06:07.005 --> 00:06:12.051
+For blind and low-vision riders, a spatial race narrator turns corners, gradients
+
+00:06:12.051 --> 00:06:17.284
+and overtakes into calm audio cues—while the Compute Pressure auto-governor protects
+
+00:06:17.284 --> 00:06:19.640
+smooth frames for the whole hour.
+
+00:06:21.977 --> 00:06:27.337
+Domain H weaves AI into long-term progression. Bots remember past duels across
+
+00:06:27.337 --> 00:06:32.723
+sessions, building arcade rivalries without adding a single backend table.
+
+00:06:33.069 --> 00:06:38.122
+An optional audio tour guide shares ten-second landmark stories on rides like
+
+00:06:38.122 --> 00:06:43.569
+Caribana Parade, Amsterdam Canals and Havana Malecon. A streak-saver suggests short
+
+00:06:43.569 --> 00:06:48.856
+recovery spins on busy nights, and Profile builds four-week training blocks.
+
+00:06:49.202 --> 00:06:54.758
+Feature fifty-five ties everything together: one unified Race Director worker—just a
+
+00:06:54.758 --> 00:07:00.183
+hundred forty-three megabytes total—coordinating voice, telemetry, forecasting and
+
+00:07:00.183 --> 00:07:01.541
+optional vision.
+
+00:07:05.852 --> 00:07:10.829
+Next, we stress-tested all fifty-five findings across five iterative passes. The
+
+00:07:10.829 --> 00:07:15.557
+biggest win: collapsing fifty-five features onto just six shared models, and
+
+00:07:15.557 --> 00:07:20.088
+shifting static embeddings, beat grids and class cues to build time.
+
+00:07:20.433 --> 00:07:26.241
+To protect Three J S on tablets, zero large language models are allowed to run on
+
+00:07:26.241 --> 00:07:31.906
+WebGPU mid-ride. Heavy text generation stays strictly on pre-ride and post-ride
+
+00:07:31.906 --> 00:07:32.780
+screens.
+
+00:07:33.126 --> 00:07:38.504
+We also explicitly rejected five anti-features: mid-ride chatbot conversations,
+
+00:07:38.504 --> 00:07:43.745
+runtime 3D mesh generation, cloud speech recognition that leaks audio, webcam
+
+00:07:43.745 --> 00:07:48.674
+medical diagnosis, and shipping any AI weight in the initial bundle.
+
+00:07:49.728 --> 00:07:55.184
+In the Angular workspace, everything lives inside one lazy library: frontend
+
+00:07:55.184 --> 00:08:01.071
+projects AI, depending only on the API tokens and dynamically imported only when a
+
+00:08:01.071 --> 00:08:02.376
+rider opts in.
+
+00:08:02.721 --> 00:08:08.265
+Three J S owns the main thread; ONNX Runtime Web runs in a dedicated AI Web Worker
+
+00:08:08.265 --> 00:08:13.607
+backed by synchronous OPFS storage, an AudioWorklet noise gate, and the Compute
+
+00:08:13.607 --> 00:08:15.124
+Pressure governor.
+
+00:08:15.470 --> 00:08:20.550
+Model weights are mirrored on Telo Ride's own origin for strict privacy. Ride
+
+00:08:20.550 --> 00:08:25.761
+Settings manages AI packs beside saved worlds with one-click delete, Playwright
+
+00:08:25.761 --> 00:08:30.349
+tests run against a fake worker, and three ADRs gate the rollout.
+
+00:08:31.023 --> 00:08:36.347
+Rather than one giant download, riders choose modular opt-in packs. Pack zero is
+
+00:08:36.347 --> 00:08:41.172
+zero megabytes: the thermal governor and Chrome built-in AI adapter.
+
+00:08:41.517 --> 00:08:46.534
+Pack one, around a hundred seventeen megabytes, unlocks the full Voice Cockpit, Kart
+
+00:08:46.534 --> 00:08:51.192
+Announcer and spatial accessibility narrator. Pack two adds seventeen-megabyte
+
+00:08:51.192 --> 00:08:54.419
+semantic search and the custom workout generator.
+
+00:08:54.764 --> 00:08:59.986
+Pack three brings twenty-two-megabyte Chronos coaching, Pack four adds multilingual
+
+00:08:59.986 --> 00:09:05.270
+safety, and Pack five unlocks eighteen-megabyte saddle vision—starting with semantic
+
+00:09:05.270 --> 00:09:08.338
+search as our cleanest first vertical slice.
+
+00:09:09.736 --> 00:09:14.977
+Finally, what is coming next in Chrome and bleeding-edge Chrome Canary? Chrome's
+
+00:09:14.977 --> 00:09:20.218
+Multimodal Prompt API feeds audio, images and JSON schemas directly into bundled
+
+00:09:20.218 --> 00:09:23.728
+Gemini Nano—zero megabytes for Telo Ride to ship.
+
+00:09:24.073 --> 00:09:29.374
+Built-in Writer, Rewriter, Proofreader, Summarizer and Translator APIs handle
+
+00:09:29.374 --> 00:09:35.020
+recaps, logs and chat natively. WebMCP lets Telo Ride register typed cycling tools
+
+00:09:35.020 --> 00:09:38.074
+so browser agents control rides cleanly.
+
+00:09:38.420 --> 00:09:43.719
+WebNN NPU offload takes mid-ride AI completely off the GPU, WebGPU fp16 and
+
+00:09:43.719 --> 00:09:49.582
+subgroups double throughput, and developers can test it today in Chrome Canary with
+
+00:09:49.582 --> 00:09:52.779
+four flags and twenty-two gigabytes free.
+
+00:09:53.612 --> 00:09:59.699
+Telo Ride never requires Chrome Canary. Behind one AI runtime token, it runs a clean
+
+00:09:59.699 --> 00:10:02.390
+three-tier progressive waterfall.
+
+00:10:02.736 --> 00:10:08.982
+Tier A uses Chrome's zero-download built-in AI and WebMCP when available. Tier B
+
+00:10:08.982 --> 00:10:13.967
+offloads Hugging Face ONNX models onto an NPU through WebNN.
+
+00:10:14.312 --> 00:10:19.761
+And Tier C runs portable Hugging Face ONNX over WebGPU or WebAssembly with
+
+00:10:19.761 --> 00:10:25.730
+OPFS—delivering offline, private AI on every Chrome, Edge and Android tablet.
+
+00:10:27.164 --> 00:10:31.744
+Telo Ride. Local AI, zero cloud bills, your bike now a game.
+
+00:10:32.090 --> 00:10:36.693
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:10:37.038 --> 00:10:41.550
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:10:41.550 --> 00:10:43.221
+every hill and interval.
+
+00:10:43.566 --> 00:10:48.744
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:10:48.744 --> 00:10:54.192
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:10:54.192 --> 00:10:57.182
+XP, rider levels, stars and map unlocks.
+
+00:10:57.527 --> 00:11:00.020
+A custom workout lives under Profile.
