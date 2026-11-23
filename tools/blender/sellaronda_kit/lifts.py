@@ -464,4 +464,14 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["stone"].box((rvx, rvy, rvz - 0.6), (16.0, 12.0, 0.85), 0.4)
         B["lago-turquoise"].box((rvx, rvy, rvz + 0.25), (14.2, 10.2, 0.14), 0.4)
 
+    # 21. Cabinovia Pradel-Rodella mid-climb station on the Canazei -> Sella ascent (at=6920 m)
+    pr_l = road.index(6920.0)
+    prly = s[pr_l]["h"] + 0.45
+    prlx, prly_p, _ = road.at(pr_l, kit.kerb + 24.0)
+    if road.clear_of_road(prlx, prly_p, 14.0, pr_l):
+        prlz = height_at(prlx, prly_p)
+        B["stone"].box((prlx, prly_p, prlz - 1.8), (12.4, 8.6, 2.8), prly)
+        B["larch-warm"].box((prlx, prly_p, prlz + 1.0), (12.8, 9.0, 3.6), prly)
+        kit.gable(B["roof-slate"], (prlx, prly_p, prlz + 4.6), 13.4, 9.6, 1.35, prly)
+
     return cableways_out
