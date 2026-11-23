@@ -155,3 +155,9 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         idx = road.index(d_m)
         for side in (-1.0, 1.0):
             _village_chalet(B, kit, road, idx, side, 13.5, 11.2, 8.4, 2, height_at)
+
+    # 6. Plan de Gralba (1,800 m junction around 8,620 m between Passo Sella & Selva/Gardena)
+    for d_m in (8550.0, 8620.0, 8690.0):
+        idx = road.index(d_m)
+        for side in (-1.0, 1.0):
+            _village_chalet(B, kit, road, idx, side, 14.0, 12.6, 9.0, 3 if side > 0 else 2, height_at)
