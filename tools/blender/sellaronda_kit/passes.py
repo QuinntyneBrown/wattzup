@@ -400,4 +400,6 @@ def build_four_passes(B, kit, road, height_at) -> None:
     # Angled stone-and-bronze historical lectern at the Sacrario Militare turnoff on Pordoi
     B["stone"].box(kit.P(sac_idx, 0.0, -(kit.kerb + 3.2), -0.1), (0.95, 0.65, 1.05), s[sac_idx]["h"])
     B["larch-aged"].box(kit.P(sac_idx, 0.0, -(kit.kerb + 3.2), 0.95), (0.98, 0.68, 0.14), s[sac_idx]["h"])
+    # Quiet aged-larch contemplation bench outside Cappella di San Maurizio
+    B["larch-warm"].box((cx_ch + math.cos(g_yaw) * 4.4, cy_ch + math.sin(g_yaw) * 4.4, cz_ch + 0.35), (2.1, 0.55, 0.52), g_yaw)
     # [ANCHOR:passes]
