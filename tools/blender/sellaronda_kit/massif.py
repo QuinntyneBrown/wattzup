@@ -629,4 +629,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         gby = gb_pt["y"] + math.cos(gb_pt["h"]) * -22.0
         if road.clear_of_road(gbx, gby, 13.0, gbi):
             rock_tower(peaks, gbx, gby, gb_pt["z"] + 1.5, gb_pt["z"] + 7.8, 4.8, 3.8, 6, gb_i * 1.1, cfn, taper=0.64, flat_cap=True, seed_phase=gb_i * 0.8)
+    # Piz Miara (2,964 m) western summit crown overlooking upper Val de Mesdì
+    rock_tower(peaks, cx + pux * 585.0 + ppx * 135.0, cy + puy * 585.0 + ppy * 135.0, 520.0, 738.0, 78.0, 62.0, 8, math.atan2(puy, pux), cfn, taper=0.58, flat_cap=True, seed_phase=3.9)
     # [ANCHOR:massif]
