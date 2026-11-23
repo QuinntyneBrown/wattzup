@@ -28,3 +28,4 @@ processor slowed four times, its stand-in for a low-power tablet, on a 120 Hz di
 | Capture | Detail | Change | Low tier, 4× slowed |
 | --- | --- | --- | --- |
 | [000 · The bare corniche](course-000-the-bare-corniche.jpg) | 3 The corniche road | The first build: the 17.1 km road of 3 Mins On, 2 Mins Off bends above the sea and climbs with its efforts, behind a low stone parapet on the seaward shoulder. Nothing else stands on the land yet. | 120 fps, 37,779 triangles, 35 draw calls |
+| [001 · Golden light](course-001-golden-light.jpg) | 10 Golden Italian light | The sky was a flat grey-blue and the haze swallowed the road. It is now pale and warm at the horizon and deep azure overhead, the sun higher and warmer, the sea a deeper blue-green, the asphalt and the hillside in the colours of the reference photographs. The theme moved into a module of its own, `tools/blender/cinqueterre.py`. | 120 fps, 48,009 triangles, 41 draw calls |
