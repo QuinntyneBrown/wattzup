@@ -630,6 +630,15 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         crx, cry, crz = kit.P(cr_i, cr_k * 1.65, kit.kerb + 3.2, 0.0)
         _touring_motorbike(B, crx, cry, crz, s[cr_i]["h"] + 1.05, "parasol-red" if cr_k == 0 else "steel", with_rider=False)
 
+    # Cowbell-ringing tifosi supporters cheering at Passo Campolongo (at=2094 m)
+    tf_c = road.index(2094.0)
+    for tf_j, tf_col in enumerate(("accent-2", "crowd-1")):
+        tfcx, tfcy, tfcz = kit.P(tf_c, tf_j * 1.1, -(kit.kerb + 1.55), 0.0)
+        B["dark"].box((tfcx, tfcy, tfcz), (0.24, 0.24, 0.78), s[tf_c]["h"])
+        B[tf_col].box((tfcx, tfcy, tfcz + 0.78), (0.32, 0.28, 0.56), s[tf_c]["h"])
+        B["skin"].box((tfcx, tfcy, tfcz + 1.38), (0.22, 0.22, 0.24), s[tf_c]["h"])
+        B["gold"].box((tfcx, tfcy, tfcz + 1.15), (0.14, 0.14, 0.18), s[tf_c]["h"])
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
