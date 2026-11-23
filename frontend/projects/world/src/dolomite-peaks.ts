@@ -99,6 +99,11 @@ export function angularElevationDegrees(
   return (Math.atan2(peakAltM - riderAltM, horizontalDistM) * 180) / Math.PI;
 }
 
+/** True only for Dolomite massifs carrying a permanent active glacier (Marmolada, 3,343 m). */
+export function isGlaciatedPeak(peakId: DolomitePeak['id']): boolean {
+  return peakId === 'marmolada';
+}
+
 /** Sightline prominence (0..1) of Sassolungo (3,181 m) from `metres` along Sella Ronda. */
 export function sassolungoSightline(metres: number): number {
   const w = ((metres % 11650) + 11650) % 11650;
