@@ -133,3 +133,8 @@ export function isCabinDocked(span: CableSpan, seconds: number, phaseOffset = 0)
   const local = wrapped < half ? wrapped : wrapped - half;
   return local < dwell;
 }
+
+/** Dolomiti Superski Sellaronda lift-circuit colour code (`'orange'` = clockwise, `'green'` = counter-clockwise). */
+export function sellarondaSkiCircuitColour(clockwise: boolean): 'orange' | 'green' {
+  return clockwise ? 'orange' : 'green';
+}
