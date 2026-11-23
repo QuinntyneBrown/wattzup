@@ -596,4 +596,7 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         abi = road.index(ab_v)
         B["larch-warm"].box(kit.P(abi, 0.0, kit.kerb + 3.8, 0.0), (1.45, 0.16, 1.95), road.s[abi]["h"])
         B["paint"].box(kit.P(abi, 0.0, kit.kerb + 3.72, 0.85), (1.15, 0.04, 0.82), road.s[abi]["h"])
+    # Timber waterwheel disk on the streamside wall of Arabba's historic Mulino
+    if road.clear_of_road(max_m, may_m, 11.0, ma_i):
+        B["chalet-wood"].box((max_m - math.sin(may) * -2.65, may_m + math.cos(may) * -2.65, maz_m + 0.35), (2.4, 0.28, 2.4), may)
     # [ANCHOR:villages]
