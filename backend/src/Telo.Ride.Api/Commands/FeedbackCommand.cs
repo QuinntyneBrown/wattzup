@@ -1,4 +1,6 @@
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
 using MediatR;
 using Telo.Ride.Application.Feedback;
 
@@ -14,7 +16,11 @@ internal static partial class FeedbackCommand
 {
     public const string Name = "feedback";
 
-    private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
+    // Letters and symbols as themselves ("6:52 · Warm-up"), so the team reads them; <, > and & stay escaped.
+    private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web)
+    {
+        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+    };
 
     public static async Task<int> RunAsync(IServiceProvider services, TextWriter output, CancellationToken cancellationToken)
     {
