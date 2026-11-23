@@ -251,3 +251,13 @@ def build_four_passes(B, kit, road, height_at) -> None:
         pw_idx = road.index(7750.0 + pw_off)
         B["stone"].box(kit.P(pw_idx, 0.0, kit.kerb + 3.2, -0.4), (7.6, 0.58, 1.15), s[pw_idx]["h"])
         B["dolomite-pale"].box(kit.P(pw_idx, 0.0, kit.kerb + 3.2, 0.75), (7.8, 0.68, 0.14), s[pw_idx]["h"])
+
+    # Alta Via delle Dolomiti n. 2 twin-log trailhead portals at Passo Campolongo & Passo Pordoi
+    for av_at in (2072.0, 5012.0):
+        av_idx = road.index(av_at)
+        avyaw = s[av_idx]["h"] + 1.45
+        avx, avy, _ = road.at(av_idx, kit.kerb + 5.8)
+        avz = height_at(avx, avy)
+        for p_s in (-1.25, 1.25):
+            B["larch-aged"].box((avx - math.sin(avyaw) * p_s, avy + math.cos(avyaw) * p_s, avz - 0.2), (0.22, 0.22, 3.15), avyaw)
+        B["larch-warm"].box((avx, avy, avz + 2.65), (0.20, 2.95, 0.42), avyaw)
