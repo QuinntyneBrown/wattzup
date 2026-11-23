@@ -49,6 +49,12 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         snow=True,
     )
 
+    # Innerkoflerturm (3,098 m) & Dente del Sassolungo / Zahnkofel (3,001 m) sharp bridge needles
+    for z_idx, (lat_z, rad_z, top_z) in enumerate(((435.0, 1020.0, 755.0), (498.0, 1075.0, 738.0))):
+        zx = sella_pt["x"] + ux * rad_z + px * lat_z
+        zy = sella_pt["y"] + uy * rad_z + py * lat_z
+        rock_tower(peaks, zx, zy, 68.0, top_z, 68.0, 56.0, 8, yaw_sl - 0.15, cfn, taper=0.28, flat_cap=False, seed_phase=6.2 + z_idx)
+
     # Sasso Piatto / Plattkofel (2,969 m): unmistakable broad tilted west-sloping table mountain beyond Cinque Dita
     sp_x = sella_pt["x"] + ux * 1140.0 + px * 560.0
     sp_y = sella_pt["y"] + uy * 1140.0 + py * 560.0
