@@ -493,4 +493,13 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["ladin-blue"].box((sllx, slly_p, sllz + 0.7), (9.4, 6.6, 2.7), slly)
         kit.gable(B["steel"], (sllx, slly_p, sllz + 3.4), 10.0, 7.2, 1.1, slly)
 
+    # 23. Modern faceted Piz Seteur gondola station on the Passo Sella meadow (at=7335 m)
+    st_p = road.index(7335.0)
+    stpy = s[st_p]["h"] - 0.3
+    stpx, stpy_p, _ = road.at(st_p, kit.kerb + 28.0)
+    if road.clear_of_road(stpx, stpy_p, 15.0, st_p):
+        stpz = height_at(stpx, stpy_p)
+        B["dark"].box((stpx, stpy_p, stpz - 1.2), (13.2, 9.2, 4.4), stpy)
+        B["larch-warm"].box((stpx, stpy_p, stpz + 3.2), (13.8, 9.8, 1.1), stpy)
+
     return cableways_out
