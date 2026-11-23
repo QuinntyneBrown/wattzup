@@ -375,4 +375,10 @@ def build_four_passes(B, kit, road, height_at) -> None:
     for sf_d in (7695.0, 7708.0, 7805.0, 7818.0):
         sf_i = road.index(sf_d)
         B["larch-aged"].box(kit.P(sf_i, 0.0, kit.kerb + 6.8, -0.1), (9.5, 0.14, 1.45), s[sf_i]["h"] + 0.18)
+    # Red-and-white 'ULTIMO KM' summit approach pennants 250 m below each pass
+    for p in PASSES:
+        uk_i = road.index(p["at"] - 250.0)
+        uky = s[uk_i]["h"]
+        B["steel"].box(kit.P(uk_i, 0.0, -(kit.kerb + 1.55), -0.1), (0.09, 0.09, 3.25), uky)
+        B["parasol-red"].box(kit.P(uk_i, 0.0, -(kit.kerb + 1.25), 2.55), (0.08, 0.65, 0.65), uky)
     # [ANCHOR:passes]
