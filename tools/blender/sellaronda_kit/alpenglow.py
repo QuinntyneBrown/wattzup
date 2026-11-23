@@ -8,7 +8,7 @@ import sky
 from . import PASSES, VILLAGES, mix, smoothstep, srgb
 
 ALPENGLOW_SUNWARD = (
-    (0.0, 0xFFD0A0),
+    (0.0, 0xFFD2A4),
     (0.14, 0xF89474),
     (0.34, 0xD86E88),
     (0.60, 0x6472B0),
