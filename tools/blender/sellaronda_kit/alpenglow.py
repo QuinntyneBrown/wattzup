@@ -45,9 +45,11 @@ def enrosadira_colour_fn(az_sun: float):
         high_glow = smoothstep(140.0, 440.0, z) * in_sun
         warm_band = mix(apricot_gold, enrosadira_rose, smoothstep(260.0, 580.0, z))
         warm_band = mix(warm_band, summit_magenta, smoothstep(580.0, 880.0, z) * 0.48)
-        rock_lit = mix(shadow_indigo, pale_dolomite, smoothstep(-0.50, 0.30, dot))
-        c = mix(rock_lit, warm_band, high_glow * 0.86)
-        return (c[0] * strata, c[1] * strata, c[2] * strata, 1.0)
+        # Deepen vertical dihedral clefts facing away from the sun while boosting upward sky fill on ledges
+        sky_bounce = 0.88 + 0.16 * max(0.0, nz)
+        rock_lit = mix(shadow_indigo, pale_dolomite, smoothstep(-0.42, 0.32, dot))
+        c = mix(rock_lit, warm_band, high_glow * 0.90)
+        return (c[0] * strata * sky_bounce, c[1] * strata * sky_bounce, c[2] * strata * sky_bounce, 1.0)
 
     return colour_at
 
