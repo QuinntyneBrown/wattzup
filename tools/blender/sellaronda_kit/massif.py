@@ -654,4 +654,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         pby = pb_pt["y"] + math.cos(pb_pt["h"]) * -24.0
         if road.clear_of_road(pbx, pby, 14.0, pbi):
             rock_tower(peaks, pbx, pby, pb_pt["z"] + 1.2, pb_pt["z"] + 7.4, 4.6, 3.6, 6, pb_i * 0.9, cfn, taper=0.62, flat_cap=True, seed_phase=pb_i * 1.1)
+    # Sas de Lech eastern spur framing the upper lip of Cascate del Pisciadù
+    rock_tower(peaks, cx + pux * 878.0 + ppx * 78.0, cy + puy * 878.0 + ppy * 78.0, 95.0, 428.0, 52.0, 42.0, 8, math.atan2(puy, pux), cfn, taper=0.70, flat_cap=True, seed_phase=4.7)
     # [ANCHOR:massif]
