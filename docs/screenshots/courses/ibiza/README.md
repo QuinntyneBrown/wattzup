@@ -196,6 +196,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Sign 5 | The lamps in the plinth light the letters: a warm glow at the foot of each dark face, fading up it, strongest in front of each lamp | 59.9 and 60.2 fps (from 262 and 282 m) | 51.4 fps at the sign (87,915 triangles: none more) and 53.9 at the finish; Neon Docklands beside it 47.2, 43.2 |
 | Sky 19 | The sun is the brightest thing in its sky: its disc glows where it was a dull ball, darker than the sky round it | 60.1 and 60.3 fps (from 8,150 and 4,450 m) | 55.9 and 53.1 fps after (the finish, 119,899 triangles: none more); Neon Docklands beside it 57.3, 56.2 |
 | Palms 11 | Palms stand dark against the sunset: a crown seen towards the sun loses up to seven tenths of its colour, and one seen away from it is lit as it was | 60.3, 60.3 and 60.4 fps (from 8,150, 4,450 and 600 m) | 53.3 and 42.1 fps after (the finish, 119,899 triangles: none more); Neon Docklands beside it 45.5, 44.8 |
+| Palms 12 | A palm against the sun is dark from root to tip: its trunk is drawn with its leaves, and comes into sight with its crown, not before it | 60.3, 60.2 and 60.1 fps (from 8,150, 4,450 and 600 m) | 51.4 and 51.4 fps after (the finish, 118,759 triangles: 1,140 fewer); Neon Docklands beside it 57.4, 55.7 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -647,6 +648,17 @@ other maps' leaves are as they were.
 
 **Not done**: the trunks. They are not leaves and are lit as before, so against the sun a dark crown stands on a
 brown trunk.
+
+### Palms 12: the trunk with its crown
+
+`palm-12.jpg` (as `palm-11.jpg`: towards the sun from 8,150 m and 4,450 m, away from it from 600 m). Palms 11
+left a dark crown standing on a brown trunk. A palm's trunk was drawn with the walls and the furniture, and its
+crown with the leaves. The trunk is drawn with the leaves now, so:
+
+- **against the sun the whole palm is dark**, trunk and crown, and away from it both are lit as before;
+- **a trunk comes into sight with its crown.** The leaves are drawn to 210 m and the walls to 250 m: between the
+  two a palm was a bare pole. It is not drawn there now, which is 1,140 triangles fewer at the finish on the low
+  tier (118,759), with the same draw calls (77).
 
 ### Low power: where the frames go (after Party 20)
 

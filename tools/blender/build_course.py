@@ -376,6 +376,9 @@ MATERIALS: dict[str, dict] = {
     "sea": {"color": 0x1F9AA6, "rough": 0.15, "metal": 0.1},
     "trunk": {"color": 0x8A6A48, "rough": 0.9},
     "trunk-dark": {"color": 0x6A4E36, "rough": 0.9},
+    # A palm's trunk is drawn with its leaves (`double`): it comes into sight with its crown, not before it, and
+    # stands dark against a setting sun as the crown does (leaf-material.ts).
+    "bark": {"color": 0x8A6A48, "rough": 0.9, "double": True},
     "leaf": {"color": 0x3E7E44, "rough": 0.8, "double": True},
     "leaf-dark": {"color": 0x1F5634, "rough": 0.8, "double": True},
     # Last year's fronds, hanging dry under the crown.
@@ -1794,7 +1797,7 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
     SUN_AZ = math.atan2(s[road.index(length)]["y"] - s[road.index(length - 220)]["y"], s[road.index(length)]["x"] - s[road.index(length - 220)]["x"])
     B["frond"] = Builder("Fronds", "leaf")
     B["frond"].colours = []
-    B["bark"] = Builder("Bark", "trunk")
+    B["bark"] = Builder("Bark", "bark")
     B["bark"].colours = []
     # The kit the themed maps are built with (themes.py): framed windows, railings, the glow round a light and the
     # light it throws, which the app draws and the course file carries.
