@@ -111,3 +111,15 @@ const DIALECT_GREETINGS: Readonly<Record<LadinVillage['id'], string>> = {
 export function ladinGreetingForVillage(villageId: LadinVillage['id']): string {
   return DIALECT_GREETINGS[villageId];
 }
+
+const VILLAGE_STREAMS: Readonly<Record<LadinVillage['id'], string>> = {
+  corvara: 'Rü Tort / Gadera',
+  arabba: 'Torrente Cordevole',
+  canazei: 'Torrente Avisio',
+  selva: 'Rio Gardena / Derjon',
+};
+
+/** Names the Dolomite glacial torrent crossed in `villageId`. */
+export function streamForVillage(villageId: LadinVillage['id']): string {
+  return VILLAGE_STREAMS[villageId];
+}
