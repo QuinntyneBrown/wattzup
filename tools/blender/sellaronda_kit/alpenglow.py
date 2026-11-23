@@ -293,6 +293,11 @@ def emit_dusk_lights(kit, road, height_at) -> None:
     ps_l = road.index(7335.0)
     pslx, psly, _ = road.at(ps_l, kit.kerb + 28.0)
     kit.halo((pslx, psly, height_at(pslx, psly) + 4.8), "glow-window")
+    # Evening window pools at historic Passo Sella 1903 chalet & Selva Fischburg
+    for hf_m, hf_o in ((7768.0, kit.kerb + 14.0), (8765.0, kit.kerb + 24.0)):
+        hfi = road.index(hf_m)
+        hfx, hfy, hfz = road.at(hfi, hf_o, 3.0)
+        kit.light((hfx, hfy, hfz), "glow-window", 16.5, 0.50)
     # [ANCHOR:alpenglow-lights]
 
 
