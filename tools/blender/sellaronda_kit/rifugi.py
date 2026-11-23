@@ -66,6 +66,7 @@ def _rifugio_complex(B, kit, road, height_at, at_m: float, side: float, main_w: 
     sy_d = ry + math.cos(yaw) * -(main_d * 0.5 + 0.18) + math.sin(yaw) * (main_w * 0.34)
     B["paint"].box((sx_d, sy_d, base_z + 3.2 + upper_h - 1.55), (1.15, 0.08, 1.15), yaw)
     B["gold"].box((sx_d, sy_d, base_z + 3.2 + upper_h - 1.15), (0.55, 0.10, 0.55), yaw)
+    B["gold"].box((sx_d, sy_d, base_z + 3.8), (0.12, 0.95, 0.62), yaw)
     # Cantilevered wrought-iron hotel sign bracket with gilded alpine emblem
     B["dark"].box((sx_d, sy_d, base_z + 3.6), (0.10, 1.35, 0.14), yaw)
     B["gold"].box((sx_d - math.sin(yaw) * -0.45, sy_d + math.cos(yaw) * -0.45, base_z + 2.95), (0.12, 0.68, 0.62), yaw)
