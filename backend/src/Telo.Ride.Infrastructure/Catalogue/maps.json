@@ -1436,6 +1436,101 @@
         },
         "roll": 0
       }
+    },
+    {
+      "id": "haleakala",
+      "name": "Haleakalā",
+      "routeName": "Maximum Intensity Hill Climb Efforts",
+      "place": "The summit road from the Pacific coast to the crater rim",
+      "distanceKm": 15.8,
+      "climbingM": 923,
+      "rating": "Brutal",
+      "world": "haleakala",
+      "thumbnailUrl": "maps/haleakala.jpg",
+      "photoUrl": "maps/haleakala-photo.jpg",
+      "unlock": {
+        "kind": "start"
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 180,
+            "level": 13,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 120,
+            "level": 16,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 120,
+            "level": 19,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 60,
+            "level": 24,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 300,
+            "level": 16,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 240,
+            "level": 19,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 180,
+            "level": 24,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 300,
+            "level": 16,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 240,
+            "level": 19,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 180,
+            "level": 24,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "cool-down",
+            "duration": 180,
+            "level": 13,
+            "cadenceAim": 90
+          }
+        ]
+      },
+      "terrain": {
+        "grade": {
+          "warm-up": 2,
+          "work": 8,
+          "recover": 4.5,
+          "cool-down": 2,
+          "steady": 6
+        },
+        "roll": 0
+      }
     }
   ]
 }

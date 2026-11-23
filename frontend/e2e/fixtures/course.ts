@@ -115,3 +115,37 @@ export const cinqueTerreCourseMap = {
     roll: 0,
   },
 };
+
+/** Haleakalā as the catalogue serves it, with the plan of the class it is modelled after, GCN's Maximum Intensity Hill Climb Efforts. */
+export const haleakalaPlan = [
+  seg('warm-up', 180, 13, 90),
+  seg('work', 120, 16, 90),
+  seg('work', 120, 19, 90),
+  seg('work', 60, 24, 90),
+  ...Array.from({ length: 2 }, () => [
+    seg('recover', 300, 16, 90),
+    seg('work', 240, 19, 90),
+    seg('work', 180, 24, 90),
+  ]).flat(),
+  seg('cool-down', 180, 13, 90),
+];
+
+export const haleakalaCourseMap = {
+  id: 'haleakala',
+  name: 'Haleakalā',
+  routeName: 'Maximum Intensity Hill Climb Efforts',
+  place: 'The summit road from the Pacific coast to the crater rim',
+  distanceKm: 15.8,
+  climbingM: 923,
+  rating: 'Brutal',
+  world: 'haleakala',
+  thumbnailUrl: 'maps/haleakala.jpg',
+  photoUrl: 'maps/haleakala-photo.jpg',
+  unlockGoal: null,
+  unlockMapId: null,
+  plan: { segments: haleakalaPlan },
+  terrain: {
+    grade: { 'warm-up': 2, work: 8, recover: 4.5, 'cool-down': 2, steady: 6 },
+    roll: 0,
+  },
+};

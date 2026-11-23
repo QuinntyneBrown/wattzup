@@ -1,0 +1,84 @@
+{
+  "id": "haleakala",
+  "name": "Haleakalā",
+  "world": "haleakala",
+  "theme": "haleakala",
+  "seed": 143,
+  "class": {
+    "id": "maximum-intensity-hill-climb-efforts",
+    "title": "Maximum Intensity Hill Climb Efforts",
+    "channel": "GCN Training",
+    "videoId": "PSfKV8jYSrw",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 16,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 24,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 300,
+        "level": 16,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 24,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 300,
+        "level": 16,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 24,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "cool-down",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 90
+      }
+    ]
+  }
+}
