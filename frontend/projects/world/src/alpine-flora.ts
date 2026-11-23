@@ -35,6 +35,12 @@ export function isAlpenroseInBloom(dayOfYear: number): boolean {
   return dayOfYear >= 160 && dayOfYear <= 212;
 }
 
+/** Relative density (0..1) of traditional wooden Tabià hay barns at `altitudeMetres`. */
+export function tabiaBarnDensityWeight(altitudeMetres: number): number {
+  if (altitudeMetres < 1520 || altitudeMetres > 2220) return 0;
+  return Math.exp(-(((altitudeMetres - 1860) / 190) ** 2));
+}
+
 /** Relative alpine wildflower bloom density (0..1), peaking in sunny 1,750..2,100 m hay pastures. */
 export function wildflowerBloomIntensity(altitudeMetres: number): number {
   if (altitudeMetres <= 1350 || altitudeMetres >= 2550) return 0;
