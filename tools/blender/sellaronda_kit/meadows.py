@@ -151,6 +151,7 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
         B["stone"].box((wx, wy, wz - 0.25), (0.95, 0.95, 0.45), wyaw)
         B["larch-aged"].box((wx, wy, wz + 0.20), (0.16, 0.16, 2.95), wyaw)
         B["larch-aged"].box((wx, wy, wz + 2.15), (0.14, 1.25, 0.16), wyaw)
+        B["paint"].box((wx, wy, wz + 1.85), (0.18, 0.42, 0.58), wyaw)
         kit.gable(B["chalet-wood"], (wx, wy, wz + 2.75), 0.55, 1.45, 0.42, wyaw)
         B["geranium-red"].box((wx, wy, wz + 0.22), (0.42, 0.42, 0.24), wyaw)
         B["larch-warm"].box((wx + math.cos(wyaw) * 1.45, wy + math.sin(wyaw) * 1.45, wz - 0.05), (1.55, 0.46, 0.48), wyaw)
