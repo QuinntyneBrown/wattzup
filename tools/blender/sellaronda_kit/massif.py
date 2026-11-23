@@ -90,6 +90,15 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     vux2, vuy2 = vux2 / vul2, vuy2 / vul2
     for g_off, g_top in ((-55.0, 485.0), (52.0, 512.0)):
         rock_tower(peaks, cx + vux2 * 830.0 - vuy2 * g_off, cy + vuy2 * 830.0 + vux2 * g_off, 120.0, g_top, 44.0, 38.0, 8, math.atan2(vuy2, vux2), cfn, taper=0.52, flat_cap=True, seed_phase=1.3 + g_off * 0.01)
+
+    # High-altitude CAI huts on the Sella massif: Rifugio Boè (2,873 m) & Rifugio Pisciadù (2,585 m)
+    pis_h = road.s[road.index(10750.0)]
+    phx, phy = pis_h["x"] - cx, pis_h["y"] - cy
+    phl = max(1.0, math.hypot(phx, phy))
+    pux, puy = phx / phl, phy / phl
+    ppx, ppy = -puy, pux
+    rock_tower(peaks, cx - 140.0, cy + 90.0, 658.0, 676.0, 13.0, 10.0, 6, 0.2, cfn, taper=0.95, flat_cap=True, seed_phase=0.5)
+    rock_tower(peaks, cx + pux * 685.0 + ppx * 40.0, cy + puy * 685.0 + ppy * 40.0, 485.0, 502.0, 12.0, 9.5, 6, 0.8, cfn, taper=0.95, flat_cap=True, seed_phase=0.9)
     top_ring = rings[-1]
     for k in range(sides):
         u = (k + 1) % sides
