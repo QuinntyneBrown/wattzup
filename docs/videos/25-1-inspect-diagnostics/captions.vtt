@@ -1,0 +1,58 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.361
+The bike stops answering mid-ride. Before you write to us, Diagnostics shows what
+
+00:00:07.361 --> 00:00:08.664
+the browser sees.
+
+00:00:10.324 --> 00:00:15.674
+The custom ride's bike status is now a button. It opens Diagnostics as a modal
+
+00:00:15.674 --> 00:00:18.717
+dialog, and Escape gives the focus back.
+
+00:00:23.228 --> 00:00:27.694
+With the bike connected: the browser, Web Bluetooth, the page, the bike and its
+
+00:00:27.694 --> 00:00:32.047
+link, how long it has held, the last command and its acknowledgement, and the
+
+00:00:32.047 --> 00:00:33.534
+reconnects this ride.
+
+00:00:38.714 --> 00:00:43.482
+With no bike picked, the link facts step aside. With Bluetooth off, it says so, and
+
+00:00:43.482 --> 00:00:45.391
+when the bike was last seen.
+
+00:00:51.618 --> 00:00:56.604
+Four acceptance tests, failing first and passing now, and forty-three new unit tests
+
+00:00:56.604 --> 00:01:00.822
+for the facts, the link's history and when the bike was last seen.
+
+00:01:04.523 --> 00:01:09.511
+Diagnostics, from a phone to the full screen. Everything stays on this device.
+
+00:01:14.847 --> 00:01:19.450
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:19.795 --> 00:01:24.307
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:24.307 --> 00:01:25.978
+every hill and interval.
+
+00:01:26.323 --> 00:01:31.501
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:31.501 --> 00:01:36.949
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:36.949 --> 00:01:39.939
+XP, rider levels, stars and map unlocks.
+
+00:01:40.285 --> 00:01:42.777
+A custom workout lives under Profile.
