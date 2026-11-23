@@ -365,4 +365,14 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["stone"].box((pmx, pmy, pmz - 0.8), (5.8, 4.6, 3.2), s[pm_i]["h"])
         kit.gable(B["roof-slate"], (pmx, pmy, pmz + 2.4), 6.4, 5.2, 1.35, s[pm_i]["h"])
 
+    # 16. Costoratta 4-seat chairlift upper drive hut on the Boè shoulder above Campolongo (at=1965 m)
+    cs_i = road.index(1965.0)
+    csy = s[cs_i]["h"]
+    csx, csy_p, _ = road.at(cs_i, -(kit.kerb + 28.0))
+    if road.clear_of_road(csx, csy_p, 14.0, cs_i):
+        csz = height_at(csx, csy_p)
+        B["stone"].box((csx, csy_p, csz - 1.5), (8.4, 5.6, 2.2), csy)
+        B["larch-warm"].box((csx, csy_p, csz + 0.7), (8.8, 6.0, 2.8), csy)
+        kit.gable(B["roof-slate"], (csx, csy_p, csz + 3.5), 9.4, 6.6, 1.2, csy)
+
     return cableways_out
