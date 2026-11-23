@@ -251,4 +251,11 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     spz_r = max(height_at(spx_r, spy_r), road.s[sp_r]["z"] - 0.5)
     B["larch-warm"].box((spx_r, spy_r, spz_r), (2.8, 2.8, 0.92), spryaw)
     B["lago-turquoise"].box((spx_r, spy_r, spz_r + 0.84), (2.3, 2.3, 0.12), spryaw)
+    # Glazed alpine wintergarden dining veranda on Hotel Boè at Passo Campolongo (at=2076 m)
+    hb_i = road.index(2076.0)
+    hbyaw = road.s[hb_i]["h"]
+    hbx, hby, _ = road.at(hb_i, -(kit.kerb + 10.5))
+    hbz = max(height_at(hbx, hby), road.s[hb_i]["z"] - 0.4)
+    B["larch-warm"].box((hbx, hby, hbz), (6.4, 3.8, 3.1), hbyaw)
+    B["glow-window"].box((hbx, hby, hbz + 0.55), (6.46, 3.86, 2.05), hbyaw)
     # [ANCHOR:rifugi-global]
