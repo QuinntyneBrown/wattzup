@@ -184,6 +184,12 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         b_i = road.index(bn_m)
         bx_u, by_u, bz_u = road.at(b_i, 0.0, 5.1)
         kit.light((bx_u, by_u, bz_u), "glow-lamp", 20.0, 0.52)
+    # Warm chalet & square light pools at Plan de Gralba & Colfosco
+    for hm_at, hm_s in ((8620.0, 1.0), (10960.0, -1.0), (11030.0, 1.0)):
+        hm_i = road.index(hm_at)
+        hx_l, hy_l, hz_l = road.at(hm_i, (kit.kerb + 4.5) * hm_s, 3.4)
+        kit.light((hx_l, hy_l, hz_l), "glow-lamp", 22.0, 0.54)
+        kit.halo((hx_l, hy_l, hz_l), "glow-lamp")
     # [ANCHOR:alpenglow-lights]
 
 
