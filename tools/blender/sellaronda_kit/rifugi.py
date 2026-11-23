@@ -348,4 +348,12 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     cgz_r = max(height_at(cgx_r, cgy_r), road.s[cg_r]["z"] - 0.3)
     B["larch-warm"].box((cgx_r, cgy_r, cgz_r - 1.2), (7.5, 4.4, 1.35), cgry)
     B["larch-aged"].box((cgx_r, cgy_r, cgz_r + 0.15), (7.3, 0.16, 0.95), cgry)
+    # Rifugio Monte Cherz timber-and-stone belvedere annex on Passo Campolongo (Milestone 0800!)
+    mc_r = road.index(2146.0)
+    mcry = road.s[mc_r]["h"]
+    mcx_r, mcy_r, _ = road.at(mc_r, kit.kerb + 12.5)
+    mcz_r = max(height_at(mcx_r, mcy_r), road.s[mc_r]["z"] - 0.4)
+    B["stone"].box((mcx_r, mcy_r, mcz_r - 1.4), (6.8, 5.2, 2.2), mcry)
+    B["larch-warm"].box((mcx_r, mcy_r, mcz_r + 0.8), (7.0, 5.4, 2.8), mcry)
+    kit.gable(B["roof-slate"], (mcx_r, mcy_r, mcz_r + 3.6), 7.6, 6.0, 1.5, mcry)
     # [ANCHOR:rifugi-global]
