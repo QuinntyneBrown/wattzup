@@ -104,6 +104,11 @@ def build_four_passes(B, kit, road, height_at) -> None:
         B["larch-warm"].box((bx_v - math.sin(bv_yaw) * 1.65, by_v + math.cos(bv_yaw) * 1.65, bz_v + 0.15), (6.0, 0.14, 0.98), bv_yaw)
         B["stone"].box((bx_v, by_v, bz_v + 0.15), (0.62, 0.62, 1.02), bv_yaw)
         B["gold"].box((bx_v, by_v, bz_v + 1.17), (0.88, 0.88, 0.08), bv_yaw + 0.4)
+        # Chrome panoramic sightseeing binoculars aimed across the Dolomite peaks
+        bn_x = bx_v + math.cos(bv_yaw) * 1.85
+        bn_y = by_v + math.sin(bv_yaw) * 1.85
+        B["steel"].box((bn_x, bn_y, bz_v + 0.15), (0.12, 0.12, 1.38), bv_yaw)
+        B["steel"].box((bn_x, bn_y, bz_v + 1.50), (0.48, 0.28, 0.20), bv_yaw + 1.2)
 
     # Tall orange/yellow-and-black snow-depth poles lining the exposed 240 m saddle of each pass
     for p in PASSES:
