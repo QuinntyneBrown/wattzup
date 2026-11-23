@@ -16,9 +16,12 @@ on:
 permissions:
   contents: read
 
+# A newer push to a branch or pull request cancels the run before it. A run on main is never cancelled: it would stop a
+# deploy between migrating the database and publishing the build, and with pushes arriving faster than a run takes, no
+# run would ever reach the deploy. A newer push to main waits for the run in progress instead.
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
   DOTNET_NOLOGO: true
