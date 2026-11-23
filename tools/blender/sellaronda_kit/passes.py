@@ -423,4 +423,7 @@ def build_four_passes(B, kit, road, height_at) -> None:
     pc_w = road.index(4992.0)
     B["stone"].box(kit.P(pc_w, 0.0, kit.kerb + 5.5, -0.1), (1.35, 1.35, 1.45), s[pc_w]["h"])
     B["gold"].box(kit.P(pc_w, 0.0, kit.kerb + 5.5, 1.35), (0.12, 0.65, 1.05), s[pc_w]["h"])
+    # Badia & Fodom municipal heraldic shields on Passo Campolongo's summit sign
+    cm_s = road.index(2100.0)
+    B["ladin-blue"].box(kit.P(cm_s, 4.85, -(kit.kerb + 2.38), 2.38), (0.34, 0.06, 0.38), s[cm_s]["h"])
     # [ANCHOR:passes]
