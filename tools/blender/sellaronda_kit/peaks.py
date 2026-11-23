@@ -224,3 +224,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         hul = max(1.0, math.hypot(hux, huy))
         hux, huy = hux / hul, huy / hul
         rock_tower(peaks, h_pt["x"] + hux * dist_h, h_pt["y"] + huy * dist_h, 40.0, top_h, rx_h, rx_h * 0.72, 10, math.atan2(-huy, -hux), cfn, taper=0.62 if flat_h else 0.44, flat_cap=flat_h, seed_phase=d_at * 0.01)
+
+    # 10. Sasso di Santa Croce / Sas dla Crusc (2,907 m) sheer west-facing Enrosadira wall across Val Badia!
+    sc_pt = road.s[road.index(820.0)]
+    scux, scuy = sc_pt["x"] - cx, sc_pt["y"] - cy
+    scul = max(1.0, math.hypot(scux, scuy))
+    scux, scuy = scux / scul, scuy / scul
+    rock_tower(peaks, sc_pt["x"] + scux * 1680.0, sc_pt["y"] + scuy * 1680.0, 45.0, 815.0, 410.0, 165.0, 12, math.atan2(-scuy, -scux), cfn, taper=0.82, flat_cap=True, seed_phase=1.9)
