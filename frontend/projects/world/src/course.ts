@@ -55,6 +55,14 @@ export interface CourseFile {
   readonly rain?: number;
   /** How wet the ground is, from 0, dry, to 1, standing water everywhere; a course that names none is dry. */
   readonly wet?: number;
+  /** Thermal soaring paraglider orbits above high mountain passes. */
+  readonly gliders?: readonly {
+    readonly center: readonly [number, number, number];
+    readonly radiusX: number;
+    readonly radiusZ: number;
+    readonly liftAmplitude: number;
+    readonly periodSeconds: number;
+  }[];
   /** Aerial reversible cableway spans (e.g. Funivia Sass Pordoi). */
   readonly cableways?: readonly {
     readonly from: readonly [number, number, number];
@@ -163,6 +171,47 @@ export function courseRain(file: CourseFile): number {
 export function courseWet(file: CourseFile): number {
   const wet = file.wet as unknown;
   return isNumber(wet) ? Math.min(Math.max(wet, 0), 1) : 0;
+}
+
+export interface CourseGliderOrbit {
+  readonly center: readonly [number, number, number];
+  readonly radiusX: number;
+  readonly radiusZ: number;
+  readonly liftAmplitude: number;
+  readonly periodSeconds: number;
+}
+
+/** Reads validated paraglider thermal orbits from the course file; malformed entries yield []. */
+export function courseGliders(file: CourseFile): CourseGliderOrbit[] {
+  const list = file.gliders as unknown;
+  if (!Array.isArray(list)) return [];
+  const out: CourseGliderOrbit[] = [];
+  for (const raw of list) {
+    const g = raw as Partial<CourseGliderOrbit> | null;
+    if (!g || typeof g !== 'object') return [];
+    if (
+      !Array.isArray(g.center) ||
+      g.center.length !== 3 ||
+      !g.center.every(isNumber) ||
+      !isNumber(g.radiusX) ||
+      g.radiusX <= 0 ||
+      !isNumber(g.radiusZ) ||
+      g.radiusZ <= 0 ||
+      !isNumber(g.liftAmplitude) ||
+      !isNumber(g.periodSeconds) ||
+      g.periodSeconds <= 0
+    ) {
+      return [];
+    }
+    out.push({
+      center: [g.center[0]!, g.center[1]!, g.center[2]!],
+      radiusX: g.radiusX,
+      radiusZ: g.radiusZ,
+      liftAmplitude: g.liftAmplitude,
+      periodSeconds: g.periodSeconds,
+    });
+  }
+  return out;
 }
 
 export interface CourseCableway {

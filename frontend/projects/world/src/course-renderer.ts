@@ -48,6 +48,8 @@ import {
   type CoursePlace,
   type CourseCableway,
   courseCableways,
+  type CourseGliderOrbit,
+  courseGliders,
   courseLamps,
   courseLights,
   courseLook,
@@ -58,6 +60,7 @@ import {
 import { CourseCyclistKit, type RiderModel as Cyclist } from './course-cyclist';
 import { fenceMaterial } from './fence-material';
 import { type CabinPose, gondolaPosition } from './gondola-flight';
+import { type GliderPose, paragliderPose } from './paraglider-flight';
 import { type GroundEye, groundMaterial, surfaceTexture } from './ground-material';
 import { haloMaterial } from './halo-material';
 import { colouredGlow, LampGlow } from './lamp-glow';
@@ -242,6 +245,7 @@ export class CourseRenderer implements WorldRenderer {
   private beams: MeshBasicMaterial | null = null;
   private readonly confetti: Mesh[] = [];
   private funivia: { holder: Group; span: CourseCableway; pose: CabinPose } | null = null;
+  private glider: { holder: Group; orbit: CourseGliderOrbit; pose: GliderPose } | null = null;
   /** The blob every rider's shadow is drawn with, and each rider's own. */
   private blob: {
     geometry: PlaneGeometry;
@@ -430,6 +434,7 @@ export class CourseRenderer implements WorldRenderer {
     this.chunks.length = 0;
     this.confetti.length = 0;
     this.funivia = null;
+    this.glider = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.riders.clear();
@@ -466,6 +471,7 @@ export class CourseRenderer implements WorldRenderer {
       Conillera: new MeshLambertMaterial({ ...lit, fog: false }),
       Peaks: new MeshLambertMaterial({ ...lit, fog: false }),
       Funivia: new MeshLambertMaterial({ ...lit, fog: false }),
+      Glider: new MeshLambertMaterial({ ...lit, fog: false }),
       Glow: new MeshBasicMaterial(glow),
       Confetti: new MeshBasicMaterial({ ...glow, side: DoubleSide }),
       Sun: new MeshBasicMaterial({ ...glow, fog: false }),
@@ -614,6 +620,16 @@ export class CourseRenderer implements WorldRenderer {
           this.funivia = { holder, span, pose: { x: 0, y: 0, z: 0, sway: 0 } };
         }
       }
+      if (group === 'Glider') {
+        const orbit = courseGliders(this.course!.file)[0];
+        if (orbit) {
+          mesh.updateMatrixWorld(true);
+          mesh.matrix.copy(mesh.matrixWorld);
+          mesh.matrixAutoUpdate = false;
+          const holder = new Group();
+          this.glider = { holder, orbit, pose: { x: 0, y: 0, z: 0, heading: 0, bank: 0 } };
+        }
+      }
       if (chunk !== undefined) {
         mesh.geometry.computeBoundingSphere();
         const sphere = mesh.geometry.boundingSphere;
@@ -645,6 +661,15 @@ export class CourseRenderer implements WorldRenderer {
       }
       this.scene.add(this.funivia.holder);
       this.placeFunivia(0, true);
+    }
+    if (this.glider) {
+      const m = map.getObjectByName('Glider') as Mesh | undefined;
+      if (m?.isMesh) {
+        this.glider.holder.add(m);
+        this.disposables.push(m.geometry);
+      }
+      this.scene.add(this.glider.holder);
+      this.placeGlider(0, true);
     }
     this.map = map;
     this.scene.add(map);
@@ -951,6 +976,7 @@ export class CourseRenderer implements WorldRenderer {
       confetti.updateMatrix();
     }
     this.placeFunivia(time, false);
+    this.placeGlider(time, false);
   }
 
   private placeFunivia(time: number, reducedMotion: boolean): void {
@@ -959,6 +985,14 @@ export class CourseRenderer implements WorldRenderer {
     gondolaPosition(span, time, 0.35, reducedMotion, pose);
     holder.position.set(pose.x, pose.y, pose.z);
     holder.rotation.set(pose.sway, -span.yaw, 0, 'YXZ');
+  }
+
+  private placeGlider(time: number, reducedMotion: boolean): void {
+    if (!this.glider) return;
+    const { holder, orbit, pose } = this.glider;
+    paragliderPose(orbit, time, 0.15, reducedMotion, pose);
+    holder.position.set(pose.x, pose.y, pose.z);
+    holder.rotation.set(0, pose.heading, pose.bank, 'YXZ');
   }
 
   /** Draws only the chunks of the map near enough to the camera; the haze hides the rest. */
