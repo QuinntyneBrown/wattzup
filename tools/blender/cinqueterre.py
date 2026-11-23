@@ -26,6 +26,13 @@ MATERIALS: dict[str, dict] = {
     "ct-vine": {"color": 0x5C8A38, "rough": 0.9},
     "ct-vine-gold": {"color": 0x8FA040, "rough": 0.9},
     "ct-maquis": {"color": 0x4F7038, "rough": 1.0},
+    # The maquis: umbrella pines, olives silver in the light, agaves blue-grey, prickly pears, the broom's yellow.
+    "ct-pine": {"color": 0x3F6B3A, "rough": 0.9},
+    "ct-pine-dark": {"color": 0x2F5530, "rough": 0.9},
+    "ct-olive": {"color": 0x8C9C78, "rough": 0.9},
+    "ct-agave": {"color": 0x7E9C92, "rough": 0.8},
+    "ct-pear": {"color": 0x6E9A4E, "rough": 0.8},
+    "ct-broom": {"color": 0xE2C23A, "rough": 0.9},
 }
 
 THEME: dict = {
@@ -481,8 +488,114 @@ def villages(k) -> int:
     return houses
 
 
+def lens(b, c, r: float, thick: float, rng, sides: int = 7) -> None:
+    """A domed mound of leaves, flat underneath and wider than it is tall: an umbrella pine's crown, an olive's."""
+    wob = [rng.uniform(0.82, 1.15) for _ in range(sides)]
+    def ring(scale: float, up: float):
+        return [(c[0] + math.cos(q * math.tau / sides) * r * wob[q] * scale, c[1] + math.sin(q * math.tau / sides) * r * wob[q] * scale, c[2] + up) for q in range(sides)]
+
+    rim, shoulder = ring(1.0, 0.0), ring(0.62, thick * 0.72)
+    top, bottom = (c[0], c[1], c[2] + thick), (c[0], c[1], c[2] - thick * 0.12)
+    for q in range(sides):
+        n = (q + 1) % sides
+        b.quad(rim[q], rim[n], shoulder[n], shoulder[q])
+        b.tri(top, shoulder[q], shoulder[n])
+        b.tri(bottom, rim[n], rim[q])
+
+
+def umbrella_pine(k, x: float, y: float, z: float, lean: float) -> None:
+    """A stone pine: a bare trunk leaning out, forking under a wide flat crown."""
+    rng, B = k.rng, k.B
+    tall = rng.uniform(7.5, 11.5)
+    top = (x + math.cos(lean) * tall * 0.18, y + math.sin(lean) * tall * 0.18, z + tall)
+    k.prism(B["trunk-dark"], (x, y, z - 0.6), 0.34, tall * 0.62 + 0.6, 5, 0.24)
+    fork = (x + (top[0] - x) * 0.5, y + (top[1] - y) * 0.5, z + tall * 0.62)
+    for q in range(3):
+        a = lean + q * math.tau / 3
+        tip = (top[0] + math.cos(a) * 1.5, top[1] + math.sin(a) * 1.5, top[2] - 0.5)
+        B["trunk-dark"].tri((fork[0] - 0.16, fork[1], fork[2]), (fork[0] + 0.16, fork[1], fork[2]), tip)
+        B["trunk-dark"].tri((fork[0] + 0.16, fork[1], fork[2]), (fork[0] - 0.16, fork[1], fork[2]), tip)
+    lens(B["ct-pine"], top, rng.uniform(3.4, 4.8), 2.6, rng)
+    lens(B["ct-pine-dark"], (top[0] + rng.uniform(-1.6, 1.6), top[1] + rng.uniform(-1.6, 1.6), top[2] - 0.7), rng.uniform(2.4, 3.4), 2.0, rng)
+
+
+def olive(k, x: float, y: float, z: float) -> None:
+    """An olive: a short twisted trunk under two or three mounds of silver-green."""
+    rng, B = k.rng, k.B
+    k.prism(B["trunk"], (x, y, z - 0.4), 0.3, 1.9, 5, 0.2)
+    for _ in range(rng.randint(2, 3)):
+        lens(B["ct-olive"], (x + rng.uniform(-1.1, 1.1), y + rng.uniform(-1.1, 1.1), z + rng.uniform(2.2, 3.2)), rng.uniform(1.5, 2.2), 1.3, rng, 6)
+
+
+def agave(k, x: float, y: float, z: float) -> None:
+    """An agave: a rosette of blue-grey blades, each a long thin triangle."""
+    rng, b = k.rng, k.B["ct-agave"]
+    blades, r = rng.randint(7, 9), rng.uniform(0.8, 1.3)
+    for q in range(blades):
+        a = q * math.tau / blades + rng.uniform(-0.2, 0.2)
+        ca, sa = math.cos(a), math.sin(a)
+        tip = (x + ca * r, y + sa * r, z + r * rng.uniform(0.5, 1.0))
+        left, right = (x - sa * 0.16, y + ca * 0.16, z + 0.05), (x + sa * 0.16, y - ca * 0.16, z + 0.05)
+        b.tri(left, right, tip)
+        b.tri(right, left, tip)
+
+
+def prickly_pear(k, x: float, y: float, z: float) -> None:
+    """A prickly pear: flat green pads stacked on one another."""
+    rng, b = k.rng, k.B["ct-pear"]
+    for _ in range(rng.randint(4, 6)):
+        a, up = rng.uniform(0, math.tau), rng.uniform(0.2, 1.5)
+        cx, cy = x + rng.uniform(-0.6, 0.6), y + rng.uniform(-0.6, 0.6)
+        ca, sa = math.cos(a) * 0.38, math.sin(a) * 0.38
+        pad = ((cx - ca, cy - sa, z + up), (cx + ca, cy + sa, z + up), (cx + ca * 0.7, cy + sa * 0.7, z + up + 0.75), (cx - ca * 0.7, cy - sa * 0.7, z + up + 0.75))
+        b.quad(*pad)
+        b.quad(*reversed(pad))
+
+
+def maquis(k) -> int:
+    """Detail 8, Mediterranean scrub and olives: umbrella pines lean out over the parapet, agaves and prickly pears
+    grow at its foot and along the bank, broom flowers yellow, and olives stand on the open hillside between the
+    vineyards."""
+    rng, B, s = k.rng, k.B, k.s
+    planted = 0
+    for i in range(6, k.n - 6):
+        sea = seaward(k, i)
+        if abs(s[i]["k"]) > 1 / 60:
+            continue
+        # The seaward verge, beyond the parapet.
+        if rng.random() < 0.07:
+            x, y, z = k.road.at(i, (k.kerb + rng.uniform(2.6, 4.2)) * sea)
+            umbrella_pine(k, x, y, z - 0.5, s[i]["h"] + math.pi / 2 * sea + rng.uniform(-0.5, 0.5))
+            planted += 1
+        if rng.random() < 0.16:
+            x, y, z = k.road.at(i, (k.kerb + rng.uniform(1.7, 2.6)) * sea, 0.0)
+            (agave if rng.random() < 0.6 else prickly_pear)(k, x + rng.uniform(-1.5, 1.5), y + rng.uniform(-1.5, 1.5), z - 0.25)
+            planted += 1
+        # The hillside, where no vineyard is: olives, broom, scrub and the odd pine.
+        if terrace_levels(k, i) == 0:
+            for _ in range(2):
+                off = -(k.kerb + rng.uniform(4.0, 44.0)) * sea
+                x, y, _ = k.road.at(i, off)
+                x, y = x + rng.uniform(-2.0, 2.0), y + rng.uniform(-2.0, 2.0)
+                if not k.road.clear_of_road(x, y, 9.0, i):
+                    continue
+                z = k.ground(x, y, i, off)
+                pick = rng.random()
+                if pick < 0.3:
+                    olive(k, x, y, z)
+                elif pick < 0.5:
+                    k.blob(B["ct-broom"], (x, y, z + 0.5), rng.uniform(0.6, 1.1))
+                elif pick < 0.85:
+                    k.blob(B["ct-maquis"], (x, y, z + 0.4), rng.uniform(0.8, 1.9))
+                else:
+                    umbrella_pine(k, x, y, z, rng.uniform(0, math.tau))
+                planted += 1
+    return planted
+
+
 def scenery(k) -> dict:
     parapet(k)
     stepped = terraces(k)
     houses = villages(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "houses": houses}
+    plants = maquis(k)
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "houses": houses, "plants": plants}
