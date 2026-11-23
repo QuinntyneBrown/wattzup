@@ -7,6 +7,7 @@ import {
   countTornantiInCurvatures,
   isInsideRockfallGallery,
   leanAngleDegrees,
+  maxSafeCornerSpeedKmh,
   outerVsInnerHairpinGradeRatio,
   recommendedHairpinLine,
   switchbackCadenceTargetRpm,
@@ -41,5 +42,7 @@ describe('classifyBendSeverity', () => {
     expect(centripetalGForce(12, 0.02)).toBeCloseTo(0.2936, 2);
     expect(recommendedHairpinLine(7, 0.022)).toBe('wide-climbing-arc');
     expect(recommendedHairpinLine(-7, 0.022)).toBe('late-apex-descent');
+    expect(maxSafeCornerSpeedKmh(0.05, 0.65)).toBeLessThan(45);
+    expect(maxSafeCornerSpeedKmh(0, 0.65)).toBe(75);
   });
 });
