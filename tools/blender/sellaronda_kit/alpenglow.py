@@ -219,6 +219,13 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         slx, sly, slz = road.at(sli, sl_o, 2.5)
         kit.light((slx, sly, slz), "gold", 14.0, 0.55)
         kit.halo((slx, sly, slz), "gold")
+    # Festive concert light pools inside Corvara & Selva Musikpavillon bandstands
+    for mp_m, mp_s in ((380.0, -1.0), (8965.0, 1.0)):
+        mpi = road.index(mp_m)
+        mpx_l, mpy_l, _ = road.at(mpi, (kit.kerb + 15.0) * mp_s)
+        mpz_l = height_at(mpx_l, mpy_l) + 3.2
+        kit.light((mpx_l, mpy_l, mpz_l), "bulb", 18.0, 0.52)
+        kit.halo((mpx_l, mpy_l, mpz_l), "bulb")
     # [ANCHOR:alpenglow-lights]
 
 
