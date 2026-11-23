@@ -195,3 +195,16 @@ def build_valley_mist(B, road, height_at) -> None:
                 p2 = (mx + ca * 55.0 + sa * 18.0, my + sa * 55.0 - ca * 18.0, mz + 0.6)
                 p3 = (mx - ca * 55.0 + sa * 18.0, my - sa * 55.0 - ca * 18.0, mz + 0.6)
                 B["beam-amber"].quad(p0, p1, p2, p3)
+    for hg_at in (8620.0, 10980.0):
+        hi = road.index(hg_at)
+        hyaw = road.s[hi]["h"]
+        hx_m, hy_m, _ = road.at(hi, 48.0)
+        if road.clear_of_road(hx_m, hy_m, 28.0, hi):
+            hz_m = height_at(hx_m, hy_m) + 3.8
+            ca_h, sa_h = math.cos(hyaw), math.sin(hyaw)
+            B["beam-amber"].quad(
+                (hx_m - ca_h * 38.0 - sa_h * 12.0, hy_m - sa_h * 38.0 + ca_h * 12.0, hz_m),
+                (hx_m + ca_h * 38.0 - sa_h * 12.0, hy_m + sa_h * 38.0 + ca_h * 12.0, hz_m),
+                (hx_m + ca_h * 38.0 + sa_h * 12.0, hy_m + sa_h * 38.0 - ca_h * 12.0, hz_m + 0.5),
+                (hx_m - ca_h * 38.0 + sa_h * 12.0, hy_m - sa_h * 38.0 - ca_h * 12.0, hz_m + 0.5),
+            )
