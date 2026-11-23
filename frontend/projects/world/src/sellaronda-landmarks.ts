@@ -116,3 +116,16 @@ export function isHighWallSector(metres: number): boolean {
 export function highestSellaPass(): SellaPass {
   return SELLA_RONDA_PASSES.reduce((top, p) => (p.altitudeMetres > top.altitudeMetres ? p : top));
 }
+
+const VALLEY_FLOOR_ALTITUDES: Readonly<Record<SellaPass['id'], number>> = {
+  campolongo: 1568, // Corvara
+  pordoi: 1602, // Arabba
+  sella: 1465, // Canazei
+  gardena: 1563, // Selva
+};
+
+/** Real-world Dolomite vertical ascent (m) from the preceding Ladin valley town to `passId`. */
+export function passVerticalGainMetres(passId: SellaPass['id']): number {
+  const pass = SELLA_RONDA_PASSES.find((p) => p.id === passId) ?? SELLA_RONDA_PASSES[0]!;
+  return pass.altitudeMetres - VALLEY_FLOOR_ALTITUDES[pass.id];
+}
