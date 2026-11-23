@@ -118,4 +118,16 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             for lx_o in (-0.58, 0.58):
                 B["larch-aged"].box((kx + math.cos(cyaw) * lx_o, ky + math.sin(cyaw) * lx_o, kz - 0.05), (0.18, 0.52, 0.55), cyaw)
 
+    # 6. Traditional Ladin / Tyrolean carved timber wayside crucifixes (Wegkreuze) with shingle hoods
+    for wk_m, wk_side in ((1140.0, -1.0), (2620.0, 1.0), (5460.0, -1.0), (6940.0, 1.0), (9320.0, -1.0), (10880.0, 1.0)):
+        w_idx = road.index(wk_m)
+        wyaw = s[w_idx]["h"]
+        wx, wy, _ = road.at(w_idx, (kit.kerb + 3.2) * wk_side)
+        wz = height_at(wx, wy)
+        B["stone"].box((wx, wy, wz - 0.25), (0.95, 0.95, 0.45), wyaw)
+        B["larch-aged"].box((wx, wy, wz + 0.20), (0.16, 0.16, 2.95), wyaw)
+        B["larch-aged"].box((wx, wy, wz + 2.15), (0.14, 1.25, 0.16), wyaw)
+        kit.gable(B["chalet-wood"], (wx, wy, wz + 2.75), 0.55, 1.45, 0.42, wyaw)
+        B["geranium-red"].box((wx, wy, wz + 0.22), (0.42, 0.42, 0.24), wyaw)
+
     return trees
