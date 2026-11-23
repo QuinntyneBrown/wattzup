@@ -5,6 +5,7 @@ import {
   classifyBendSeverity,
   leanAngleDegrees,
   switchbackCadenceTargetRpm,
+  tornanteRadiusMetres,
 } from './hairpin-pacing';
 
 describe('classifyBendSeverity', () => {
@@ -25,5 +26,7 @@ describe('classifyBendSeverity', () => {
     expect(leanAngleDegrees(11, 0.02)).toBeGreaterThan(10);
     expect(leanAngleDegrees(0, 0.03)).toBe(0);
     expect(brakingDistanceMetres(16, 8, -9)).toBeGreaterThan(brakingDistanceMetres(16, 8, 0));
+    expect(tornanteRadiusMetres(0.02)).toBeCloseTo(50, 3);
+    expect(tornanteRadiusMetres(0)).toBe(Number.POSITIVE_INFINITY);
   });
 });

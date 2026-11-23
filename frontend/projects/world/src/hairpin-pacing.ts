@@ -44,3 +44,9 @@ export function brakingDistanceMetres(
   const decelG = Math.max(0.18, 0.55 + gradePercent * 0.01);
   return (entryMps * entryMps - apexMps * apexMps) / (2 * 9.81 * decelG);
 }
+
+/** Turning radius in metres (`Infinity` on dead-straight road) for `curvaturePerMetre`. */
+export function tornanteRadiusMetres(curvaturePerMetre: number): number {
+  const k = Math.abs(curvaturePerMetre);
+  return k < 1e-6 ? Number.POSITIVE_INFINITY : 1 / k;
+}
