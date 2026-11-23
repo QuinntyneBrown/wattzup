@@ -10,6 +10,7 @@ import {
   gondolaPosition,
   isCabinDocked,
   midSpanAltitudeMetres,
+  reversibleFuniviaHourlyPax,
   sellarondaSkiCircuitColour,
   twinJigBackCounterpartPose,
 } from './gondola-flight';
@@ -64,5 +65,6 @@ describe('gondolaPosition', () => {
     const a = gondolaPosition(SASS_PORDOI, 2, 0);
     const b = twinJigBackCounterpartPose(SASS_PORDOI, 2, 0);
     expect(b.y).toBeGreaterThan(a.y + 300);
+    expect(reversibleFuniviaHourlyPax(SASS_PORDOI, 65)).toBeGreaterThan(800);
   });
 });

@@ -154,3 +154,9 @@ export function twinJigBackCounterpartPose(
 ): CabinPose {
   return gondolaPosition(span, seconds, primaryPhase + 0.5, reducedMotion);
 }
+
+/** One-way hourly passenger capacity of a two-cabin reversible Funivia of `cabinPax` capacity. */
+export function reversibleFuniviaHourlyPax(span: CableSpan, cabinPax = 65): number {
+  const halfCycle = Math.max(1, span.traverseSeconds) + Math.max(0, span.dwellSeconds);
+  return Math.round((3600 / halfCycle) * cabinPax);
+}
