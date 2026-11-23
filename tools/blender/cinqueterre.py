@@ -373,6 +373,44 @@ def terrace_levels(k, i: int) -> int:
     return 3 + int((band + 0.35) * 1.9) % 4
 
 
+GROVE = (20, 44)  # how many samples from a village's middle its lemon groves lie between, on either side
+GROVE_SPOTS: list[tuple[int, int, int]] = []  # where terraces() left a step free of vines: sample, level, side
+
+
+def in_grove(k, i: int) -> bool:
+    return any(GROVE[0] <= abs(i - site["i"]) <= GROVE[1] for site in village_sites(k.s))
+
+
+def lemon_groves(k) -> int:
+    """Detail 8, Mediterranean scrub and olives: the terraces nearest each village grow lemons, not vines. Round
+    dark-green trees stand in rows on the steps with their yellow fruit showing, and a pair of tall black
+    cypresses marks where each grove begins and ends."""
+    paint, rng, s = Painted(k), k.rng, k.s
+    trunk, leaf, deep, fruit, cypress = _lin(0x5A4634), _lin(0x3F7A32), _lin(0x2C5A26), _lin(0xF2D23A), _lin(0x24402A)
+    trees = 0
+    for i, level, side in GROVE_SPOTS:
+        off = k.kerb + TERRACE_FOOT + (level + rng.uniform(0.4, 0.6)) * TERRACE_DEPTH
+        x, y, z = k.road.at(i, off * side, (level + 1) * TERRACE_RISE)
+        ends = any(abs(i - site["i"]) in (GROVE[0] + 1, GROVE[1] - 2) for site in village_sites(s))
+        if ends and level == 0:
+            for dx in (-1.3, 1.3):
+                cx, cy = x + math.cos(s[i]["h"]) * dx, y + math.sin(s[i]["h"]) * dx
+                paint.tube((cx, cy, z - 0.2), 0.4, 1.0, 1.6, cypress, cypress, 6)
+                paint.tube((cx, cy, z + 1.4), 1.0, 0.12, rng.uniform(6.5, 8.5), cypress, _lin(0x2F5236), 6, _lin(0x2F5236))
+            trees += 2
+            continue
+        r = rng.uniform(1.5, 1.9)
+        paint.tube((x, y, z - 0.2), 0.16, 0.14, 1.3, trunk, trunk, 3)
+        paint.tube((x, y, z + 1.0), r * 0.55, r, 0.9, deep, leaf, 5)
+        paint.tube((x, y, z + 1.9), r, r * 0.35, 1.3, leaf, leaf, 5, leaf)
+        for _ in range(2):
+            # The lemons, on the side that looks down to the road.
+            a = s[i]["h"] - side * math.pi / 2 + rng.uniform(-1.0, 1.0)
+            paint.box((x + math.cos(a) * r * 0.92, y + math.sin(a) * r * 0.92, z + rng.uniform(1.3, 2.2)), (0.3, 0.3, 0.3), a, fruit, 1.0)
+        trees += 1
+    return trees
+
+
 def terraces(k) -> int:
     """Detail 4, terraced vineyards: dry-stone walls step up the hillside above the road, a strip of earth behind
     each, and on each strip two rows of vines trained along the slope."""
@@ -405,6 +443,12 @@ def terraces(k) -> int:
             lo, hi = level * TERRACE_RISE - (0.4 if level == 0 else 0.0), (level + 1) * TERRACE_RISE
             quad(wall, at(j, front, lo), at(i, front, lo), at(i, front, hi), at(j, front, hi))
             quad(tread, at(i, front, hi), at(i, back, hi), at(j, back, hi), at(j, front, hi))
+            if in_grove(k, i):
+                # A lemon grove's step: no vines; lemon_groves() plants it.
+                if i % 3 == 0 and level < 3:
+                    GROVE_SPOTS.append((i, level, side))
+                top = level + 1
+                continue
             # Two rows of vines a step: a low ridge of leaves along the terrace, the outer row turning gold.
             for row, mat in ((0.3, "ct-vine"), (0.68, "ct-vine-gold" if (i // 9 + level) % 3 == 0 else "ct-vine")):
                 if i % 5 == 4:
@@ -1017,7 +1061,9 @@ def footpath(k) -> dict:
 
 def scenery(k) -> dict:
     parapet(k)
+    GROVE_SPOTS.clear()
     stepped = terraces(k)
+    lemons = lemon_groves(k)
     houses = villages(k)
     houses += village_streets(k)
     plants = maquis(k)
@@ -1027,4 +1073,4 @@ def scenery(k) -> dict:
     works = vineyard_works(k)
     afloat = on_the_water(k)
     furniture = road_furniture(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "houses": houses, "plants": plants, "boats": hauled, **path, "castle": harbour, **works, "afloat": afloat, **furniture}
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "lemonTrees": lemons, "houses": houses, "plants": plants, "boats": hauled, **path, "castle": harbour, **works, "afloat": afloat, **furniture}
