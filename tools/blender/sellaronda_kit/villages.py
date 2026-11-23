@@ -555,4 +555,8 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
     for fn_v in (218.0, 3075.0, 6072.0, 8878.0):
         fni = road.index(fn_v)
         B["copper-patina"].box(kit.P(fni, 0.0, kit.kerb + 1.85, 0.0), (0.22, 0.22, 1.12), 0.0)
+    # Carved Val Gardena larch mountaineer sculpture on a stone plinth in Selva (at=8885 m)
+    sc_v = road.index(8885.0)
+    B["dolomite-pale"].box(kit.P(sc_v, 0.0, kit.kerb + 4.2, 0.0), (1.15, 1.15, 1.05), 0.0)
+    B["larch-warm"].box(kit.P(sc_v, 0.0, kit.kerb + 4.2, 1.05), (0.55, 0.55, 1.95), 0.4)
     # [ANCHOR:villages]
