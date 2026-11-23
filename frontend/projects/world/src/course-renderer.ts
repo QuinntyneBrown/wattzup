@@ -134,6 +134,8 @@ const START_LIGHTS = 150;
 const FINE_SKY_FROM = 2;
 /** How much brighter than the painted sky the sun's disc is drawn. */
 const DISC_BRIGHT = 1.7;
+/** How much of a leaf's colour is lost seen straight against the setting sun. */
+const LEAF_SILHOUETTE = 0.72;
 /** How often, in frames, the chunks to draw are chosen. */
 const CHUNK_SWEEP = 12;
 /** Riders further ahead than this are not drawn, and no more than this many of the nearest. */
@@ -938,6 +940,8 @@ export class CourseRenderer implements WorldRenderer {
         pivot.add(disc);
         carried.add(pivot);
         this.sunset = { pivot, out: Math.hypot(middle.x, middle.z), up: middle.y };
+        // A map with a sun that sets has palms that stand dark against it (leaf-material.ts).
+        leaves.against(this.course!.file.sun[0], this.course!.file.sun[2], LEAF_SILHOUETTE);
       }
       if (scud.length) {
         this.drift = new Group();

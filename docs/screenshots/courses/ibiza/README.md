@@ -195,6 +195,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Sign 4 | The whole word reads on the approach: a festoon post stood in front of the first I, and the sign read BIZA | 60.3, 59.6 and 60.0 fps (from 235, 262 and 282 m) | 42.7 fps at the sign (87,915 triangles) and 48.5 at the finish (119,929); Neon Docklands beside it 48.4, 53.5 |
 | Sign 5 | The lamps in the plinth light the letters: a warm glow at the foot of each dark face, fading up it, strongest in front of each lamp | 59.9 and 60.2 fps (from 262 and 282 m) | 51.4 fps at the sign (87,915 triangles: none more) and 53.9 at the finish; Neon Docklands beside it 47.2, 43.2 |
 | Sky 19 | The sun is the brightest thing in its sky: its disc glows where it was a dull ball, darker than the sky round it | 60.1 and 60.3 fps (from 8,150 and 4,450 m) | 55.9 and 53.1 fps after (the finish, 119,899 triangles: none more); Neon Docklands beside it 57.3, 56.2 |
+| Palms 11 | Palms stand dark against the sunset: a crown seen towards the sun loses up to seven tenths of its colour, and one seen away from it is lit as it was | 60.3, 60.3 and 60.4 fps (from 8,150, 4,450 and 600 m) | 53.3 and 42.1 fps after (the finish, 119,899 triangles: none more); Neon Docklands beside it 45.5, 44.8 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -634,6 +635,18 @@ the road with bars of cloud across it). Once the sun could be seen at the end of
 could be seen for what it was: a coral ball, darker than the yellow sky painted round it. A low sun is red, and it
 is still the brightest thing there is. Its disc is drawn 1.7 times as bright as the sky's own paint, at every
 height: white-gold while it stands clear, a glowing orange-pink with a lighter heart on the horizon.
+
+### Palms 11: dark against the sunset
+
+`palm-11.jpg` (from 8,150 m and 4,450 m, looking towards the sun: the crowns are dark; from 600 m, looking away
+from it: they are lit green and gold as before). In the photograph every palm between the camera and the sunset
+is a dark shape against it. Ours were lit the same bright green whichever way they were seen. A leaf now loses
+its colour the more squarely the eye looks towards the sun at it, up to seven tenths of it straight against the
+sun (`leaf-material.ts`, worked out a vertex; no triangles, no draw call). Only a map whose sun sets has it: the
+other maps' leaves are as they were.
+
+**Not done**: the trunks. They are not leaves and are lit as before, so against the sun a dark crown stands on a
+brown trunk.
 
 ### Low power: where the frames go (after Party 20)
 
