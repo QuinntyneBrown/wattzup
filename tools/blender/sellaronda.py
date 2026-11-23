@@ -163,7 +163,7 @@ def build_terrain(road, col, Builder, cell: float = 28.0):
     y0, y1 = min(ys) - margin, max(ys) + margin
     nx, ny = int((x1 - x0) / cell) + 1, int((y1 - y0) / cell) + 1
 
-    meadow_low = srgb(0x477A32)
+    meadow_low = srgb(0x487C34)
     meadow_lush = srgb(0x64983C)
     meadow_high = srgb(0x80984E)
     scree_c = srgb(0xCABFB0)
