@@ -453,10 +453,58 @@ def ranch_land(k) -> dict:
     return {"cattle": cattle, "ranchTrees": trees}
 
 
+COAST_TO = 0.075  # the share of the climb below which the road is still by the shore
+
+
+def coastal_start(k) -> dict:
+    """Detail 7, the coastal start: coconut palms lean along the shore side of the road and stand in ones and twos
+    inland, and fields of sugar cane, taller than a rider, fill the flat land on the mountain's side."""
+    paint, rng, s = Painted(k), k.rng, k.s
+    shares = [height_share(k, i) for i in range(0, k.n, 25)]
+    cane_lo, cane_hi = _lin(0x7FA046), _lin(0xC9D488)
+    palms = fields = 0
+    field_from = None
+    for i in range(4, k.n - 4):
+        if shares[i // 25] > COAST_TO:
+            break
+        # The sea is to the north: the shore side is whichever side of the road looks that way.
+        shore = 1 if math.cos(s[i]["h"]) > 0 else -1
+        if rng.random() < 0.3:
+            x, y, z = k.road.at(i, (k.kerb + rng.uniform(3.0, 16.0)) * shore)
+            if z > 1.0 and k.road.clear_of_road(x, y, 7.0, i):
+                k.palm(x, y, k.height_at(x, y))
+                palms += 1
+        if rng.random() < 0.06:
+            x, y, z = k.road.at(i, -(k.kerb + rng.uniform(3.0, 7.0)) * shore)
+            if k.road.clear_of_road(x, y, 7.0, i):
+                k.palm(x, y, k.height_at(x, y))
+                palms += 1
+        # Cane: a block of it 3 m tall from 9 m to 46 m behind the kerb, with a track through it now and then.
+        if abs(s[i]["k"]) > 1 / 90 or i % 40 > 36:
+            continue
+        near, far = [k.road.at(q, -(k.kerb + 9.0) * shore) for q in (i, i + 1)], [k.road.at(q, -(k.kerb + 46.0) * shore) for q in (i, i + 1)]
+        if not all(k.road.clear_of_road(p[0], p[1], 8.0, i) for p in far):
+            continue
+        ground = lambda p: (p[0], p[1], k.height_at(p[0], p[1]) - 0.3)  # noqa: E731
+        top = lambda p: (p[0], p[1], k.height_at(p[0], p[1]) + 3.0 + 0.3 * math.sin(p[0] * 0.9 + p[1] * 0.7))  # noqa: E731
+        front = (ground(near[0]), ground(near[1]), top(near[1]), top(near[0]))
+        roof = (top(near[0]), top(near[1]), top(far[1]), top(far[0]))
+        flip = shore > 0
+        paint.face(front[::-1] if flip else front, ((cane_lo,) * 2 + (cane_hi,) * 2)[:: -1 if flip else 1])
+        paint.face(roof[::-1] if flip else roof, (cane_hi,) * 4)
+        if i % 40 == 0 or field_from is None:
+            end = (ground(near[0]), top(near[0]), top(far[0]), ground(far[0]))
+            paint.face(end if flip else end[::-1], (cane_lo, cane_hi, cane_hi, cane_lo) if flip else (cane_lo, cane_hi, cane_hi, cane_lo)[::-1])
+            fields += 1
+        field_from = i
+    return {"palms": palms, "caneFields": fields}
+
+
 def scenery(k) -> dict:
     posts = reflector_posts(k)
     cloud = cloud_sea(k)
     swords = silverswords(k)
     domes = science_city(k)
     ranch = ranch_land(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords, "domes": domes, **ranch}
+    coast = coastal_start(k)
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords, "domes": domes, **ranch, **coast}
