@@ -63,3 +63,20 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
             B["dolomite-pale"].box(kit.P(idx, 0.0, kit.kerb + 1.15, -0.3), (0.75, 0.75, 5.25), yaw)
             if idx in (i0, i1 - (i1 - i0) % 2):
                 B["parasol-red"].box(kit.P(idx, 0.0, kit.kerb + 1.15, 1.2), (0.80, 0.80, 0.55), yaw)
+
+    # 3-board black-and-yellow mountain chevron clusters around tightest curves + stone torrent culvert parapets
+    for i in range(22, kit.n - 22, 6):
+        if abs(s[i]["k"]) > 1 / 56:
+            outside = 1.0 if s[i]["k"] < 0 else -1.0
+            yaw = s[i]["h"] + (0.35 if outside > 0 else -0.35)
+            off = (kit.kerb + 1.55) * outside
+            B["steel"].box(kit.P(i, 0.0, off, -0.1), (0.08, 0.08, 1.75), yaw)
+            B["dark"].box(kit.P(i, 0.0, off, 1.15), (0.07, 0.78, 0.58), yaw)
+            B["yellow"].box(kit.P(i, -0.02, off, 1.22), (0.08, 0.34, 0.44), yaw)
+
+    for bridge_m in (1280.0, 3840.0, 6820.0, 9380.0):
+        b_idx = road.index(bridge_m)
+        b_yaw = s[b_idx]["h"]
+        for side in (-1.0, 1.0):
+            B["stone"].box(kit.P(b_idx, 0.0, (kit.kerb + 0.85) * side, -2.8), (12.0, 0.85, 3.85), b_yaw)
+            B["dolomite-pale"].box(kit.P(b_idx, 0.0, (kit.kerb + 0.85) * side, 1.05), (12.4, 0.96, 0.18), b_yaw)
