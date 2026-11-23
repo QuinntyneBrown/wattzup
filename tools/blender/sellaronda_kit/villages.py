@@ -20,6 +20,10 @@ def _onion_dome_church(B, kit, x: float, y: float, z: float, yaw: float, dome_ma
     B["stone"].box((x, y, z - 2.0), (16.5, 9.2, 2.6), yaw)
     B["chalet-plaster"].box((x, y, z + 0.6), (16.2, 8.8, 7.2), yaw)
     kit.gable(B["roof-slate"], (x, y, z + 7.8), 16.8, 9.4, 3.8, yaw)
+    ax_p = x + math.cos(yaw) * 9.4
+    ay_p = y + math.sin(yaw) * 9.4
+    B["chalet-plaster"].box((ax_p, ay_p, z + 0.4), (4.2, 5.8, 5.6), yaw)
+    kit.gable(B["roof-slate"], (ax_p, ay_p, z + 6.0), 4.6, 6.2, 2.1, yaw)
 
     # Tall square campanile bell tower rising beside the chancel
     tx = x + math.cos(yaw) * 6.4 - math.sin(yaw) * 3.8
