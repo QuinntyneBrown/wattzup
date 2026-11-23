@@ -4,6 +4,7 @@ import {
   cablewaySlopeDegrees,
   chairliftLoopPosition,
   gondolaPosition,
+  midSpanAltitudeMetres,
 } from './gondola-flight';
 
 const SASS_PORDOI: CableSpan = {
@@ -43,5 +44,6 @@ describe('gondolaPosition', () => {
     expect(down.ascending).toBe(false);
     expect(up.x).toBeCloseTo(-down.x, 3);
     expect(cablewaySlopeDegrees(SASS_PORDOI)).toBeGreaterThan(35);
+    expect(midSpanAltitudeMetres(SASS_PORDOI)).toBeCloseTo(344.5, 3);
   });
 });

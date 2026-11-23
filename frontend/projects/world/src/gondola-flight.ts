@@ -92,3 +92,8 @@ export function cablewaySlopeDegrees(span: CableSpan): number {
   const horiz = Math.max(1e-4, Math.hypot(dx, dz));
   return (Math.atan2(dy, horiz) * 180) / Math.PI;
 }
+
+/** Exact vertical coordinate at the midpoint (t = 0.5) of `span` after subtracting catenary sag. */
+export function midSpanAltitudeMetres(span: CableSpan): number {
+  return (span.from[1] + span.to[1]) * 0.5 - span.sag;
+}
