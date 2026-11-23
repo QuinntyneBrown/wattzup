@@ -55,4 +55,23 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             bz = height_at(bx, by)
             _hay_barn(B, kit, bx, by, bz, s[i]["h"] + rng.uniform(-0.45, 0.45), rng.uniform(0.85, 1.18))
 
+    # 3. Alpine wildflower drifts (buttercup gold, magenta clover/alpenrose, oxeye white & gentian blue)
+    flower_mats = ("yellow", "geranium-red", "paint", "ladin-blue")
+    for i in range(12, kit.n - 12, 7):
+        if s[i]["z"] > 132.0:
+            continue
+        for side in (1, -1):
+            if rng.random() > 0.56:
+                continue
+            fmat = flower_mats[(i + (1 if side > 0 else 2)) % len(flower_mats)]
+            base_off = (kit.kerb + rng.uniform(3.2, 19.0)) * side
+            cx_f, cy_f, _ = road.at(i, base_off)
+            if not road.clear_of_road(cx_f, cy_f, kit.kerb + 2.4, i):
+                continue
+            for _ in range(4):
+                fx = cx_f + rng.uniform(-2.6, 2.6)
+                fy = cy_f + rng.uniform(-2.6, 2.6)
+                fz = height_at(fx, fy)
+                B[fmat].box((fx, fy, fz - 0.05), (0.38, 0.38, 0.24), rng.uniform(0.0, math.pi))
+
     return trees
