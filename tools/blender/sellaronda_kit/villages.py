@@ -243,3 +243,13 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         B["larch-warm"].box((fx_h + math.cos(fyaw) * 4.2, fy_h + math.sin(fyaw) * 4.2, fz_h + 4.2), (2.8, 2.8, 5.4), fyaw)
         for bay_o in (-2.2, 1.2):
             B["parasol-red"].box((fx_h + math.cos(fyaw) * bay_o, fy_h + math.sin(fyaw) * bay_o, fz_h + 0.1), (2.4, 8.35, 2.95), fyaw)
+
+    # Traditional elevated Ladin larch granary cribs in Corvara & Colfosco
+    for gr_m, gr_s in ((175.0, -1.0), (11065.0, 1.0)):
+        g_idx = road.index(gr_m)
+        gyaw = road.s[g_idx]["h"]
+        gx_g, gy_g, _ = road.at(g_idx, (kit.kerb + 16.5) * gr_s)
+        gz_g = height_at(gx_g, gy_g)
+        B["dolomite-pale"].box((gx_g, gy_g, gz_g - 0.4), (3.4, 3.0, 1.15), gyaw)
+        B["larch-aged"].box((gx_g, gy_g, gz_g + 0.75), (3.9, 3.5, 2.45), gyaw)
+        kit.gable(B["chalet-wood"], (gx_g, gy_g, gz_g + 3.20), 4.4, 4.0, 1.25, gyaw)
