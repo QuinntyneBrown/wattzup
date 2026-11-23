@@ -91,3 +91,15 @@ export function nextRifugioAhead(metres: number): {
   const first = SELLA_RIFUGI[0]!;
   return { rifugio: first, metresAhead: 11650 - w + first.courseMetres };
 }
+
+const NEXT_VALLEY_ALTITUDE: Readonly<Record<SellaRifugio['passId'], number>> = {
+  campolongo: 1602, // -> Arabba
+  pordoi: 1465, // -> Canazei
+  sella: 1563, // -> Selva
+  gardena: 1568, // -> Corvara
+};
+
+/** Vertical descent (m) from `rifugio` down to the next clockwise Ladin valley town. */
+export function rifugioElevationDropToNextValley(rifugio: SellaRifugio): number {
+  return Math.max(0, rifugio.altitudeMetres - NEXT_VALLEY_ALTITUDE[rifugio.passId]);
+}
