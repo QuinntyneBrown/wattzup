@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   bikeDayClimbSpeedKmh,
   bikeDayRidersPerKm,
+  kilojoulesBurnedOnClimb,
   passClimbMinutesEstimate,
   pelotonDraftSavingPercent,
   vamMetresPerHour,
@@ -26,5 +27,6 @@ describe('bikeDayClimbSpeedKmh', () => {
     expect(vamMetresPerHour(-5, 250)).toBe(0);
     expect(wattsPerKiloClass(390, 68)).toBe('giro-pro');
     expect(wattsPerKiloClass(170, 75)).toBe('bikeday-touring');
+    expect(kilojoulesBurnedOnClimb(9.4, 6.8, 250)).toBeGreaterThan(400);
   });
 });

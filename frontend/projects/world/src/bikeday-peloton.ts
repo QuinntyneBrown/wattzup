@@ -62,3 +62,14 @@ export function wattsPerKiloClass(watts: number, riderKg: number): DolomiteClimb
   if (wkg >= 2.8) return 'granfondo';
   return 'bikeday-touring';
 }
+
+/** Mechanical work in kilojoules expended climbing `lengthKm` at `gradePercent` and `riderWatts`. */
+export function kilojoulesBurnedOnClimb(
+  lengthKm: number,
+  gradePercent: number,
+  riderWatts: number,
+  systemKg = 78,
+): number {
+  const minutes = passClimbMinutesEstimate(lengthKm, gradePercent, riderWatts, systemKg);
+  return Math.round((riderWatts * minutes * 60) / 1000);
+}
