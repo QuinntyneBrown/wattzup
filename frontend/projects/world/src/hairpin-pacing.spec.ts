@@ -3,6 +3,7 @@ import {
   apexSpeedFactor,
   brakingDistanceMetres,
   classifyBendSeverity,
+  countTornantiInCurvatures,
   leanAngleDegrees,
   outerVsInnerHairpinGradeRatio,
   switchbackCadenceTargetRpm,
@@ -30,5 +31,7 @@ describe('classifyBendSeverity', () => {
     expect(tornanteRadiusMetres(0.02)).toBeCloseTo(50, 3);
     expect(tornanteRadiusMetres(0)).toBe(Number.POSITIVE_INFINITY);
     expect(outerVsInnerHairpinGradeRatio(15, 3.75)).toBeCloseTo(0.6, 2);
+    const sampleK = Array.from({ length: 60 }, (_, i) => (i === 10 || i === 35 ? 0.025 : 0.002));
+    expect(countTornantiInCurvatures(sampleK)).toBe(2);
   });
 });
