@@ -471,4 +471,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         360.0,
         snow=True,
     )
+    # Piz Beguz (2,974 m) tabular inner-plateau summit northwest of Piz Boè
+    rock_tower(peaks, cx - 195.0, cy + 155.0, 648.0, 736.0, 76.0, 62.0, 8, 0.9, cfn, taper=0.64, flat_cap=True, seed_phase=2.8)
     # [ANCHOR:massif]
