@@ -141,3 +141,27 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> None:
                 # Modern 8-passenger rounded alpine gondola cabin
                 B["dark"].box((mx_c, my_c, mz_c - 3.35), (2.05, 1.55, 1.72), yaw_l)
                 B["parasol-red"].box((mx_c, my_c, mz_c - 3.35), (2.08, 1.58, 0.42), yaw_l)
+
+    # 3. Funifor Arabba - Porta Vescovo heavy twin-cable tramway climbing out of Arabba (at=3210 m) toward Padon!
+    ar_idx = road.index(3210.0)
+    ar_yaw = s[ar_idx]["h"] - 1.42
+    acx, acy = math.cos(ar_yaw), math.sin(ar_yaw)
+    abx, aby, _ = road.at(ar_idx, kit.kerb + 26.0)
+    abz = height_at(abx, aby)
+    B["stone"].box((abx, aby, abz - 2.0), (15.0, 11.0, 5.4), ar_yaw)
+    B["chalet-plaster"].box((abx, aby, abz + 3.4), (15.4, 11.4, 4.6), ar_yaw)
+    atx, aty, atz = abx + acx * 460.0, aby + acy * 460.0, abz + 225.0
+    for w_lat in (-3.2, 3.2):
+        _cable_segment(
+            B,
+            (abx - acy * w_lat, aby + acx * w_lat, abz + 7.2),
+            (atx - acy * w_lat, aty + acx * w_lat, atz),
+            thickness=0.15,
+            sag=11.0,
+            steps=8,
+        )
+    fcx, fcy = abx + acx * 195.0 - acy * 3.2, aby + acy * 195.0 + acx * 3.2
+    fcz = abz + 96.0
+    B["steel"].box((fcx, fcy, fcz - 2.8), (0.4, 2.8, 2.8), ar_yaw)
+    B["dark"].box((fcx, fcy, fcz - 5.9), (5.2, 3.4, 3.1), ar_yaw)
+    B["ladin-blue"].box((fcx, fcy, fcz - 4.4), (5.3, 3.5, 0.9), ar_yaw)
