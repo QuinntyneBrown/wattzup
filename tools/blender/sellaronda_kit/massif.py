@@ -48,7 +48,7 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         (0.92, 302.0, True),
         (0.90, 395.0, False),
         (0.81, 418.0, True),
-        (0.76, 610.0, False),
+        (0.77, 612.0, False),
         (0.42, 665.0, True),
     )
     rings = []
