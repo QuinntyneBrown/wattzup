@@ -261,6 +261,11 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         sti = road.index(st_r)
         stx, sty, _ = road.at(sti, 14.0)
         kit.halo((stx, sty, road.s[sti]["z"] - 0.8), "bulb")
+    # Golden evening light pools at Piazza Nives & Monte Cherz annex
+    for pn_m, pn_o in ((2146.0, kit.kerb + 10.0), (8902.0, -(kit.kerb + 11.0))):
+        pni = road.index(pn_m)
+        pnx, pny, pnz = road.at(pni, pn_o, 2.8)
+        kit.light((pnx, pny, pnz), "glow-window", 18.0, 0.54)
     # [ANCHOR:alpenglow-lights]
 
 
