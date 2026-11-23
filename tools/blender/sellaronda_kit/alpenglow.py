@@ -236,6 +236,11 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         sli = road.index(sl_v)
         slx, sly, slz = road.at(sli, kit.kerb + 1.15, 4.1)
         kit.light((slx, sly, slz), "bulb", 15.0, 0.46)
+    # Dusk station beacon halos on Col dei Rossi & Plans-Frara gondola halls
+    for lf_m, lf_o in ((5480.0, kit.kerb + 36.0), (10720.0, kit.kerb + 20.0)):
+        lfi = road.index(lf_m)
+        lfx, lfy, _ = road.at(lfi, lf_o)
+        kit.halo((lfx, lfy, height_at(lfx, lfy) + 7.5), "bulb")
     # [ANCHOR:alpenglow-lights]
 
 
