@@ -19,6 +19,9 @@ CROWD = [f"crowd-{i}" for i in range(6)]
 
 # name -> colour, roughness, glow: added to themes.MATERIALS.
 MATERIALS: dict[str, dict] = {
+    # Small things painted by vertex that only matter close to, in the group drawn near the rider (what is
+    # painted into the land, "terrain", is drawn from 950 m).
+    "hk-detail": {"color": 0xFFFFFF, "rough": 0.9, "vertex": True},
     # A delineator post: white plastic, with an amber reflector near its top.
     "hk-post": {"color": 0xECEAE2, "rough": 0.7},
     "hk-reflector": {"color": 0xFFB020, "glow": 0.9},
@@ -354,7 +357,8 @@ CINDER_FROM = 0.64  # how far up the climb the bare cinder begins
 def island_peaks(k) -> int:
     """Detail 2, above the clouds: what else stands up through them. Far across the cloud to one side are the two
     great shield volcanoes of the next island, broad and blue with distance, the nearer one snow-capped; to the
-    other, lower and nearer, the ragged green ridge of the island's western mountains. Their feet are in the cloud."""
+    other, lower and nearer, the ragged green ridge of the island's western mountains. From above, their feet are in the cloud; they stand on the sea, so from the
+    coast below it they are mountains on the horizon."""
     paint, s = Painted(k, "peaks"), k.s
     zs, xs = [p["z"] for p in s], [p["x"] for p in s]
     level = min(zs) + CLOUD_LEVEL * (max(zs) - min(zs))
@@ -363,6 +367,7 @@ def island_peaks(k) -> int:
     blue, pale, snow, green, ridge = _lin(0x6F92C0), _lin(0x8FAED2), _lin(0xF2F5F8), _lin(0x5E8A7E), _lin(0x7FA69A)
     # The shields: wide and gently sloped, a stepped profile from foot to summit.
     for x, y, r, tall, capped in ((cx + 7600.0, edge + 3400.0, 3300.0, 560.0, True), (cx + 8600.0, edge + 800.0, 3900.0, 500.0, False)):
+        paint.tube((x, y, -5.0), r * 1.5, r, level - 55.0, blue, blue, 14)
         paint.tube((x, y, level - 60.0), r, r * 0.55, tall * 0.5, blue, blue, 14)
         paint.tube((x, y, level - 60.0 + tall * 0.5), r * 0.55, r * 0.2, tall * 0.35, blue, pale, 14)
         top = snow if capped else pale
@@ -370,6 +375,7 @@ def island_peaks(k) -> int:
     # The western mountains: a row of steep summits, cut by valleys.
     for q, (dx, r, tall) in enumerate(((0.0, 1500.0, 330.0), (1300.0, 1100.0, 250.0), (-1200.0, 1250.0, 280.0), (2300.0, 800.0, 170.0), (-2300.0, 900.0, 190.0))):
         x, y = cx - 6800.0 + dx, edge + 3600.0 + 500.0 * math.sin(q * 2.1)
+        paint.tube((x, y, -5.0), r * 1.7, r, level - 55.0, green, green, 9)
         paint.tube((x, y, level - 60.0), r, r * 0.3, tall * 0.7, green, ridge, 9)
         paint.tube((x, y, level - 60.0 + tall * 0.7), r * 0.3, r * 0.04, tall * 0.3, ridge, ridge, 9, ridge)
     return 3
@@ -712,6 +718,65 @@ def plantation_town(k) -> dict:
     return {"shops": shops, "mill": bool(mill)}
 
 
+BOARDS = (0xF2E8CF, 0xE8553A, 0x2F9FB8, 0xF2C230, 0x7FC8A0, 0xE890A8)
+
+
+def beach_park(k) -> dict:
+    """Detail 7, the coastal start: the shore side of the coast road is a beach park. Outrigger canoes lie hauled
+    up beside the road, each a long bright hull with its float out on two booms; surfboards stand on end in a
+    rack; and a yellow lifeguard tower on legs looks out to sea."""
+    paint, rng, s = Painted(k, "hk-detail"), k.rng, k.s
+    wood, yellow, white, red = _lin(0x6A4A30), _lin(0xF2C230), _lin(0xF4F2EA), _lin(0xD9342E)
+    canoes = boards = towers = 0
+    for i in range(24, min(TOWN[0] - 6, k.n - 6)):
+        if abs(s[i]["k"]) > 1 / 120:
+            continue
+        shore = 1 if math.cos(s[i]["h"]) > 0 else -1
+        yaw = s[i]["h"]
+        cs, sn = math.cos(yaw), math.sin(yaw)
+        x, y, z = k.road.at(i, (k.kerb + 4.6) * shore)
+        if z < 1.2:
+            continue
+        # Each stands on a pad of sand level with the road: the land beyond the shoulder is lower and out of sight.
+        if i % 21 in (3, 11) or i % 42 == 30:
+            land = k.height_at(x, y)
+            paint.box((x, y, land - 0.6), (8.6, 4.4, z - land + 0.62), yaw, _lin(0xD9C9A0), 0.7)
+        if i % 21 == 3:
+            # A canoe: the hull, pointed at both ends, its two booms and the float.
+            hull = _lin(BOARDS[rng.randrange(1, len(BOARDS))])
+            paint.box((x, y, z + 0.05), (7.0, 0.55, 0.5), yaw, hull, 0.75)
+            for e in (-1, 1):
+                paint.box((x + cs * e * 4.1, y + sn * e * 4.1, z + 0.2), (1.3, 0.34, 0.32), yaw, hull, 0.85)
+            ox, oy = -sn * shore * 1.9, cs * shore * 1.9
+            for e in (-1.4, 1.4):
+                paint.box((x + cs * e + ox / 2, y + sn * e + oy / 2, z + 0.52), (0.08, 1.9, 0.07), yaw, wood, 1.0)
+            paint.box((x + ox, y + oy, z + 0.12), (4.2, 0.22, 0.24), yaw, yellow, 0.9)
+            canoes += 1
+        elif i % 21 == 11:
+            # A rack of boards on end.
+            paint.box((x, y, z + 0.9), (5.4, 0.1, 0.1), yaw, wood, 1.0)
+            for e in (-2.7, 2.7):
+                paint.box((x + cs * e, y + sn * e, z - 0.1), (0.12, 0.12, 1.1), yaw, wood, 1.0)
+            for q in range(6):
+                e = -2.2 + q * 0.88
+                tall = rng.uniform(1.9, 2.7)
+                colour = _lin(BOARDS[rng.randrange(len(BOARDS))])
+                paint.box((x + cs * e, y + sn * e, z + 0.05), (0.52, 0.07, tall * 0.8), yaw, colour, 1.0)
+                paint.box((x + cs * e, y + sn * e, z + 0.05 + tall * 0.8), (0.34, 0.07, tall * 0.2), yaw, colour, 0.9)
+                boards += 1
+        elif i % 42 == 30:
+            # The lifeguards' tower.
+            for ex in (-1, 1):
+                for ey in (-1, 1):
+                    paint.box((x + cs * ex * 1.1 - sn * ey * 1.1, y + sn * ex * 1.1 + cs * ey * 1.1, z - 0.2), (0.14, 0.14, 2.4), yaw, wood, 1.0)
+            paint.box((x, y, z + 2.1), (3.0, 3.0, 0.14), yaw, wood, 1.0)
+            paint.box((x, y, z + 2.24), (2.3, 2.3, 1.9), yaw, yellow, 0.85)
+            paint.box((x, y, z + 4.14), (3.1, 3.1, 0.14), yaw, white, 1.0)
+            paint.box((x - sn * shore * 1.2, y + cs * shore * 1.2, z + 3.0), (1.3, 0.06, 0.6), yaw, red, 1.0)
+            towers += 1
+    return {"canoes": canoes, "surfboards": boards, "lifeguardTowers": towers}
+
+
 def coastal_start(k) -> dict:
     """Detail 7, the coastal start: coconut palms lean along the shore side of the road and stand in ones and twos
     inland, and fields of sugar cane, taller than a rider, fill the flat land on the mountain's side."""
@@ -1034,6 +1099,7 @@ def scenery(k) -> dict:
     ranch.update(steads)
     coast = coastal_start(k)
     coast.update(plantation_town(k))
+    coast.update(beach_park(k))
     cones = crater(k)
     lava = lava_field(k)
     signs = park_signs(k)
