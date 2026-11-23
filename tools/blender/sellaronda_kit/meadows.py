@@ -130,4 +130,17 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
         kit.gable(B["chalet-wood"], (wx, wy, wz + 2.75), 0.55, 1.45, 0.42, wyaw)
         B["geranium-red"].box((wx, wy, wz + 0.22), (0.42, 0.42, 0.24), wyaw)
 
+    # 7. High-altitude dwarf mugo pine (Pinus mugo / baranci) cushions above the tall-spruce tree line
+    for i in range(14, kit.n - 14, 6):
+        if s[i]["z"] < 104.0:
+            continue
+        for side in (-1.0, 1.0):
+            if rng.random() > 0.48:
+                continue
+            mx, my, _ = road.at(i, (kit.kerb + rng.uniform(5.5, 28.0)) * side)
+            if road.clear_of_road(mx, my, kit.kerb + 3.5, i):
+                mz = height_at(mx, my)
+                rad_m = rng.uniform(1.1, 2.3)
+                B["pine"].box((mx, my, mz - 0.15), (rad_m, rad_m * 0.85, rng.uniform(0.55, 1.05)), rng.uniform(0.0, math.pi))
+
     return trees
