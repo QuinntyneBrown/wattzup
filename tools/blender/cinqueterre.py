@@ -916,6 +916,52 @@ def vineyard_works(k) -> dict:
     return {"huts": huts, "monorails": rails}
 
 
+def sea_rocks(k) -> dict:
+    """Detail 2, the Ligurian Sea below: the water is not empty to the horizon. Off each headland stand a few
+    stacks of dark rock with white water round their feet, and off two of them an islet under scrub with a white
+    lighthouse on it, its lantern red. Drawn whole from any distance, as the boats are."""
+    paint, rng, s = Painted(k, "peaks"), k.rng, k.s
+    xs, ys = [p["x"] for p in s], [p["y"] for p in s]
+    shore = max(ys) + SPUR_REACH
+    haze, sea = _lin(THEME["haze"]), _lin(THEME["palette"]["sea"])
+    rock, pale, scrub, white, red, foam = _lin(0x5E564A), _lin(0x8E8472), _lin(0x5C7A44), _lin(0xF4F2EA), _lin(0xC8322C), _lin(0xE6F0F2)
+
+    def far(colour, out: float):
+        t = 0.45 * _smooth(500.0, 2600.0, out)
+        return (*(colour[q] + (haze[q] - colour[q]) * t for q in range(3)), 1.0)
+
+    def surf(x: float, y: float, r: float, out: float, sides: int = 8) -> None:
+        inner = [(x + math.cos(q * math.tau / sides) * r, y + math.sin(q * math.tau / sides) * r, 0.3) for q in range(sides)]
+        outer = [(x + math.cos(q * math.tau / sides) * r * 1.5, y + math.sin(q * math.tau / sides) * r * 1.5, 0.3) for q in range(sides)]
+        edge = far(tuple(foam[c] * 0.35 + sea[c] * 0.65 for c in range(3)), out)
+        for q in range(sides):
+            n = (q + 1) % sides
+            paint.face((inner[q], outer[q], outer[n], inner[n]), (far(foam, out), edge, edge, far(foam, out)))
+
+    stacks = islets = 0
+    span = max(xs) - min(xs)
+    for q in range(11):
+        x, out = min(xs) + span * (q + rng.uniform(0.2, 0.8)) / 11, rng.uniform(150.0, 520.0)
+        y = shore + out
+        if q in (3, 8):
+            # The islet and its light.
+            out += 380.0
+            y = shore + out
+            paint.tube((x, y, -2.0), 46.0, 30.0, 13.0, far(rock, out), far(pale, out), 9)
+            paint.tube((x, y, 11.0), 30.0, 9.0, 8.0, far(scrub, out), far(scrub, out), 9, far(scrub, out))
+            paint.tube((x + 6.0, y - 4.0, 15.0), 2.1, 1.6, 15.0, far(white, out), far(white, out), 8)
+            paint.tube((x + 6.0, y - 4.0, 30.0), 2.3, 0.3, 3.2, far(red, out), far(red, out), 8, far(red, out))
+            surf(x, y, 47.0, out, 9)
+            islets += 1
+            continue
+        for _ in range(rng.randint(1, 3)):
+            sx, sy, r, tall = x + rng.uniform(-45.0, 45.0), y + rng.uniform(-30.0, 30.0), rng.uniform(5.0, 13.0), rng.uniform(7.0, 24.0)
+            paint.tube((sx, sy, -1.0), r, r * rng.uniform(0.25, 0.5), tall, far(rock, out), far(pale, out), 6, far(pale, out))
+            surf(sx, sy, r * 1.05, out, 6)
+            stacks += 1
+    return {"seaStacks": stacks, "islets": islets}
+
+
 def on_the_water(k) -> int:
     """Detail 2, the Ligurian Sea below: the water a rider sees is the water far out, over the parapet, so that is
     where the boats are. The ferries that run between the five villages, white with a blue band, trail long wakes
@@ -1137,5 +1183,6 @@ def scenery(k) -> dict:
     harbour = vernazza(k)
     works = vineyard_works(k)
     afloat = on_the_water(k)
+    rocks = sea_rocks(k)
     furniture = road_furniture(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "lemonTrees": lemons, "houses": houses, "plants": plants, "boats": hauled, **path, "castle": harbour, **works, "afloat": afloat, **furniture}
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "lemonTrees": lemons, "houses": houses, "plants": plants, "boats": hauled, **path, "castle": harbour, **works, "afloat": afloat, **rocks, **furniture}
