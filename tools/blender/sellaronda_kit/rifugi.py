@@ -173,3 +173,8 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
             tb_y = ty + math.sin(yaw) * tub_o + math.cos(yaw) * (2.1 * side)
             B["larch-aged"].box((tb_x, tb_y, tz + 0.12), (0.68, 0.68, 0.58), yaw)
             B["pine"].box((tb_x, tb_y, tz + 0.68), (0.78, 0.78, 0.65), yaw + 0.4)
+        # Open-rafter larch pergola shading one end of the sun terrace
+        pg_x = tx - math.cos(yaw) * (w * 0.25)
+        pg_y = ty - math.sin(yaw) * (w * 0.25)
+        for pr_i in range(-1, 2):
+            B["larch-warm"].box((pg_x + math.cos(yaw) * (pr_i * 1.35), pg_y + math.sin(yaw) * (pr_i * 1.35), tz + 2.65), (0.14, 3.8, 0.18), yaw)
