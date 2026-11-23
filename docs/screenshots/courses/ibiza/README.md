@@ -792,6 +792,21 @@ triangles, spends no more script on a frame than Neon Docklands: what the map dr
 from 60. What both share is: the ride's tick, the riders and the renderer's own work for each frame. Taking
 scenery out of Ibiza would not reach 60 here.
 
+**The once-a-second tick is not the lever** (measured after Sky 24; this corrects the note above, which called
+it out). Four profiled runs of Ibiza's finish, the ride's panels shown and hidden turn about:
+
+| Panels | fps | Script a frame | Style and layout | Long frames | Time in timer callbacks, of 10 s |
+| --- | --- | --- | --- | --- | --- |
+| shown | 40.2 | 19.6 ms | 230 ms | 11 | 0.52 s |
+| hidden | 41.4 | 20.0 ms | 5 ms | 9 | 0.50 s |
+| shown | 43.5 | 18.0 ms | 239 ms | 8 | 0.30 s |
+| hidden | 55.3 | 13.6 ms | 2 ms | 1 | 0.06 s |
+
+The tick's callbacks are three to five parts in a hundred of the time, and the panels' style and layout two more:
+taking both away altogether would not reach 60. And a run with the panels hidden is as likely to be a slow one
+(41.4) as a run with them shown. What makes a run slow or fast (13.6 or 20 ms of script a frame, for the same
+picture) is not found: it is neither the map, nor the tick, nor the panels.
+
 **One thing taken out.** The stars were drawn, at no brightness, for the first third of the course. They are not
 drawn now until the first of them shows: one draw call fewer there (81 to 80 from 600 m). At the finish nothing
 changes (77 draw calls, 119,897 triangles; 49.4 fps on this run).
