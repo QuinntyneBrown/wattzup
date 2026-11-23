@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   cableLineLengthMetres,
   type CableSpan,
+  cablewayRoundTripSeconds,
   cablewaySlopeDegrees,
   cablewayVerticalSpeedMps,
   chairliftLoopPosition,
@@ -49,5 +50,6 @@ describe('gondolaPosition', () => {
     expect(midSpanAltitudeMetres(SASS_PORDOI)).toBeCloseTo(344.5, 3);
     expect(cableLineLengthMetres(SASS_PORDOI)).toBeGreaterThan(600);
     expect(cablewayVerticalSpeedMps(SASS_PORDOI)).toBeGreaterThan(10);
+    expect(cablewayRoundTripSeconds(SASS_PORDOI)).toBe(90);
   });
 });
