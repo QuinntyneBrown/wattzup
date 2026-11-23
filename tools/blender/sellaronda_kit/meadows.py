@@ -600,4 +600,12 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
         if road.clear_of_road(tfx, tfy, 4.0, tfi):
             B["dolomite-pale"].box((tfx, tfy, height_at(tfx, tfy)), (1.25, 0.85, 0.34), tfi * 0.4)
 
+    # Golden Arnica montana flower tufts along sunny mid-altitude meadow shoulders
+    for ar_i in range(28, kit.n - 28, 38):
+        if not (55.0 <= s[ar_i]["z"] <= 118.0):
+            continue
+        arx, ary, _ = road.at(ar_i, kit.kerb + 3.8)
+        if road.clear_of_road(arx, ary, 2.4, ar_i):
+            B["yellow"].box((arx, ary, height_at(arx, ary) + 0.02), (0.62, 0.62, 0.14), ar_i * 0.5)
+
     return trees
