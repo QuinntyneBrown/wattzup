@@ -530,4 +530,13 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
         if road.clear_of_road(dwx, dwy, 8.0, dwi):
             B["stone"].box((dwx, dwy, height_at(dwx, dwy) - 0.15), (11.5, 0.55, 0.88), s[dwi]["h"] + 0.12)
 
+    # Puez-Odle Nature Park wooden boundary emblem posts north of Gardena & Colfosco
+    for np_m in (10035.0, 10860.0):
+        npi = road.index(np_m)
+        npx, npy, _ = road.at(npi, -(kit.kerb + 3.4))
+        if road.clear_of_road(npx, npy, 2.5, npi):
+            npz = height_at(npx, npy)
+            B["larch-warm"].box((npx, npy, npz), (0.22, 0.22, 2.15), s[npi]["h"])
+            B["foliage"].box((npx, npy, npz + 1.65), (0.26, 0.55, 0.55), s[npi]["h"])
+
     return trees
