@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { classifyBendSeverity } from './hairpin-pacing';
+import { apexSpeedFactor, classifyBendSeverity } from './hairpin-pacing';
 
 describe('classifyBendSeverity', () => {
   it.each([
@@ -9,5 +9,11 @@ describe('classifyBendSeverity', () => {
     [0.02, 'tornante'],
   ] as const)('classifies curvature %d rad/m as %s', (k, expected) => {
     expect(classifyBendSeverity(k)).toBe(expected);
+  });
+
+  it('moderates cornering speed smoothly as curvature tightens into a tornante', () => {
+    expect(apexSpeedFactor(0)).toBe(1);
+    expect(apexSpeedFactor(0.02)).toBeLessThan(apexSpeedFactor(0.005));
+    expect(apexSpeedFactor(0.1)).toBeGreaterThanOrEqual(0.55);
   });
 });

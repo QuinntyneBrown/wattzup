@@ -10,3 +10,9 @@ export function classifyBendSeverity(curvaturePerMetre: number): BendKind {
   if (k >= 1 / 280) return 'sweeper';
   return 'straight';
 }
+
+/** Smooth cornering speed factor (0.55..1.0) for a given curvature kappa (rad/m) on mountain descents. */
+export function apexSpeedFactor(curvaturePerMetre: number): number {
+  const k = Math.abs(curvaturePerMetre);
+  return Math.max(0.55, 1 / (1 + k * 24));
+}
