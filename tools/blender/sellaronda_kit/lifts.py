@@ -312,4 +312,14 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["foliage"].box((ax_u + math.cos(ayaw) * 0.45, ay_u + math.sin(ayaw) * 0.45, az_u + 0.48), (1.15, 1.25, 0.78), ayaw)
         B["yellow"].box((ax_u - math.cos(ayaw) * 0.55, ay_u - math.sin(ayaw) * 0.55, az_u + 0.48), (1.05, 1.28, 0.42), ayaw)
 
+    # 13. Ciampinoi gondola valley station hall in Selva di Val Gardena (at=8835 m)
+    cm_idx = road.index(8835.0)
+    cmyaw = s[cm_idx]["h"] - 0.4
+    cmx, cmy, _ = road.at(cm_idx, -(kit.kerb + 24.0))
+    if road.clear_of_road(cmx, cmy, 12.0, cm_idx):
+        cmz = height_at(cmx, cmy)
+        B["stone"].box((cmx, cmy, cmz - 2.0), (13.8, 9.4, 3.0), cmyaw)
+        B["parasol-red"].box((cmx, cmy, cmz + 1.0), (14.2, 9.8, 3.8), cmyaw)
+        kit.gable(B["roof-slate"], (cmx, cmy, cmz + 4.8), 14.8, 10.4, 1.6, cmyaw)
+
     return cableways_out
