@@ -346,6 +346,16 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         B[jerseys[rl_i]].box((rx_b, ry_b, rz_b), (0.38, 0.42, 0.52), rlyaw)
         B["paint"].box((rx_b, ry_b, rz_b + 0.52), (0.24, 0.24, 0.24), rlyaw)
 
+    # White-and-orange Croce Bianca / Weisses Kreuz event medical vans at Pordoi & Gardena
+    for am_m in (4990.0, 10192.0):
+        am_i = road.index(am_m)
+        amyaw = s[am_i]["h"] + 0.25
+        ax_m, ay_m, az_m = kit.P(am_i, 0.0, kit.kerb + 4.4, 0.0)
+        B["dark"].box((ax_m, ay_m, az_m), (5.2, 2.05, 0.52), amyaw)
+        B["paint"].box((ax_m, ay_m, az_m + 0.42), (5.3, 2.02, 2.05), amyaw)
+        B["crowd-3"].box((ax_m, ay_m, az_m + 1.25), (5.34, 2.06, 0.34), amyaw)
+        B["ladin-blue"].box((ax_m + math.cos(amyaw) * 1.6, ay_m + math.sin(amyaw) * 1.6, az_m + 2.47), (0.35, 1.15, 0.18), amyaw)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
