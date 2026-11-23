@@ -727,6 +727,41 @@ def gozzo(paint, rng, c, yaw: float) -> None:
             paint.box(at(a, 0.6 * side, 0.0), (0.25, 0.45, 0.3), yaw, dark)
 
 
+NETS = (0x2F8F8A, 0xB8643A, 0x3F6FB8, 0xC9A24A)
+
+
+def fishing_gear(k, paint, i: int) -> None:
+    """What lies between the hauled-up boats: a net hung to dry between two poles, a stack of fish boxes or pots,
+    and a few orange floats on the ground."""
+    rng, s = k.rng, k.s
+    x, y, z = k.road.at(i, -(k.kerb + 1.5) * seaward(k, i))
+    rx, ry, _ = k.road.at(i, 0.0)
+    d = math.hypot(rx - x, ry - y)
+    out = ((rx - x) / d, (ry - y) / d)
+    along = (-out[1], out[0])
+    yaw = s[i]["h"]
+    wood, float_c = _lin(0x6E5A40), _lin(0xE8622A)
+    if rng.random() < 0.6:
+        net = _lin(NETS[rng.randrange(len(NETS))])
+        dark = tuple(v * 0.6 for v in net[:3]) + (1.0,)
+        for e in (-1.7, 1.7):
+            paint.box((x + along[0] * e, y + along[1] * e, z - 0.1), (0.1, 0.1, 2.3), yaw, wood, 1.0)
+        corner = (x - along[0] * 1.7, y - along[1] * 1.7, 0.0)
+        # It hangs in folds from a sagging line, longest in the middle, light and dark by turns.
+        folds = 9
+        for q in range(folds):
+            t = (q + 0.5) / folds
+            sag = math.sin(math.pi * t)
+            paint.panel(corner, along, out, 0.1 + q * 3.2 / folds, 0.1 + (q + 1) * 3.2 / folds, z + 1.3 - 0.75 * sag + rng.uniform(-0.1, 0.1), z + 2.12 - 0.3 * sag, 0.02 + 0.04 * (q % 2), dark if q % 2 else net)
+    else:
+        for q in range(rng.randint(3, 5)):
+            box = _lin((0x3F6FB8, 0xD9B46A, 0x7A8A6A)[q % 3])
+            paint.box((x + along[0] * (q % 2 - 0.5) * 0.9, y + along[1] * (q % 2 - 0.5) * 0.9, z + (q // 2) * 0.36), (0.8, 0.55, 0.34), yaw + rng.uniform(-0.15, 0.15), box, 0.9)
+    for q in range(rng.randint(2, 4)):
+        e = rng.uniform(-1.6, 1.6)
+        paint.box((x + along[0] * e + out[0] * 0.5, y + along[1] * e + out[1] * 0.5, z), (0.32, 0.32, 0.32), rng.uniform(0, 1.5), float_c, 0.8)
+
+
 def boats(k) -> int:
     """Detail 7, fishing boats: by each village the gozzi are hauled up off the water and stand along the street,
     bow to stern on the inland side of the road, each in its own paint."""
@@ -735,7 +770,11 @@ def boats(k) -> int:
     for site in village_sites(k.s):
         for step in range(-9, 10):
             i = site["i"] + step * 2
-            if not 4 < i < k.n - 4 or abs(k.s[i]["k"]) > 1 / 80 or rng.random() < 0.3:
+            if not 4 < i < k.n - 4 or abs(k.s[i]["k"]) > 1 / 80:
+                continue
+            if rng.random() < 0.3:
+                # Between the boats, the fishermen's gear.
+                fishing_gear(k, paint, i)
                 continue
             x, y, z = k.road.at(i, -(k.kerb + 1.2) * seaward(k, i))
             gozzo(paint, rng, (x, y, z + 0.02), k.s[i]["h"] + rng.uniform(-0.06, 0.06))
