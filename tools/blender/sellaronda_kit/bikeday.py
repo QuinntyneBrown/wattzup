@@ -307,6 +307,15 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         B["neon-lime"].box((jx0, jy0, jz0 + 0.58), (0.38, 0.28, 0.34), jryaw)
         B["yellow"].box((jx0 + math.cos(jryaw) * 0.20, jy0 + math.sin(jryaw) * 0.20, jz0 + 0.88), (0.22, 0.20, 0.20), jryaw)
 
+    # Festive Giro d'Italia rose-pink overhead bunting 200 m before Passo Pordoi summit
+    for bn_d in (4750.0, 4850.0):
+        bn_idx = road.index(bn_d)
+        bnyaw = s[bn_idx]["h"]
+        for side in (-1.0, 1.0):
+            B["steel"].box(kit.P(bn_idx, 0.0, (kit.kerb + 1.5) * side, 0.0), (0.08, 0.08, 5.2), bnyaw)
+        for pn_k in range(-4, 5):
+            B["accent-2" if pn_k % 2 == 0 else "paint"].box(kit.P(bn_idx, 0.0, pn_k * 1.15, 4.75 - (1.0 - (pn_k / 5.0) ** 2) * 0.45), (0.06, 0.42, 0.48), bnyaw)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
