@@ -421,4 +421,15 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     rock_tower(peaks, cx + vux * 712.0 - vpx * 52.0, cy + vuy * 712.0 - vpy * 52.0, 412.0, 425.0, 12.0, 9.0, 6, math.atan2(vuy, vux), cfn, taper=0.94, flat_cap=True, seed_phase=1.4)
     # Sas dla Luesa (2,642 m) angular spur overlooking upper Val Lasties
     rock_tower(peaks, cx + lux * 655.0 - lpx * 65.0, cy + luy * 655.0 - lpy * 65.0, 385.0, 565.0, 66.0, 52.0, 8, math.atan2(luy, lux), cfn, taper=0.52, flat_cap=True, seed_phase=3.9)
+    # Iconic Via Ferrata Brigata Tridentina suspension bridge ribbon spanning Torre Exner -> Pisciadù
+    quad_shaded(
+        peaks,
+        (cx + pux * 805.0 - ppx * 135.0, cy + puy * 805.0 - ppy * 135.0, 472.0),
+        (cx + pux * 775.0 - ppx * 112.0, cy + puy * 775.0 - ppy * 112.0, 476.0),
+        (cx + pux * 775.0 - ppx * 112.0, cy + puy * 775.0 - ppy * 112.0, 478.2),
+        (cx + pux * 805.0 - ppx * 135.0, cy + puy * 805.0 - ppy * 135.0, 474.2),
+        cfn,
+        475.0,
+        snow=True,
+    )
     # [ANCHOR:massif]
