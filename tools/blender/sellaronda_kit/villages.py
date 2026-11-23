@@ -293,3 +293,12 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         B["copper-patina"].box((cx_k, cy_k, cz_k), (0.24, 0.24, 3.65), 0.0)
         B["paint"].box((cx_k, cy_k, cz_k + 3.65), (0.18, 0.78, 0.78), road.s[c_idx]["h"])
         B["gold"].box((cx_k, cy_k, cz_k + 4.43), (0.22, 0.22, 0.32), 0.0)
+
+    # Slatted-larch South Tyrolean ecological waste-sorting shelters at village outskirts
+    for ec_m in (410.0, 3255.0, 6250.0, 9052.0):
+        e_idx = road.index(ec_m)
+        eyaw = road.s[e_idx]["h"]
+        ex_c, ey_c, ez_c = kit.P(e_idx, 0.0, -(kit.kerb + 3.4), -0.1)
+        B["larch-warm"].box((ex_c, ey_c, ez_c), (3.2, 1.5, 1.55), eyaw)
+        for lid_k, lid_c in enumerate(("ladin-blue", "yellow", "foliage")):
+            B[lid_c].box(kit.P(e_idx, -0.9 + lid_k * 0.9, -(kit.kerb + 3.4), 1.46), (0.72, 1.15, 0.14), eyaw)
