@@ -298,7 +298,8 @@ def reflector_posts(k) -> int:
         for side in (1, -1):
             off = (k.kerb + 1.5) * side
             post.box(k.P(i, 0, off, -0.2), (0.05, 0.11, 1.25), yaw)
-            eye.box(k.P(i, -0.035, off, 0.78), (0.03, 0.09, 0.16), yaw)
+            # The reflector is one face, towards the riders coming up: a box each was a fifth of the frame's budget.
+            eye.quad(k.P(i, -0.03, off + 0.045, 0.78), k.P(i, -0.03, off - 0.045, 0.78), k.P(i, -0.03, off - 0.045, 0.94), k.P(i, -0.03, off + 0.045, 0.94))
             stood += 1
     return stood
 
@@ -445,9 +446,9 @@ def cow(paint, rng, c, yaw: float) -> None:
     def at(fwd: float, left: float, up: float):
         return (c[0] + fwd * cs - left * sn, c[1] + fwd * sn + left * cs, c[2] + up)
 
+    # Each pair of legs is one slab: a herd is seen from the road, not from among it.
     for fwd in (0.7, -0.7):
-        for left in (0.24, -0.24):
-            paint.box(at(fwd, left, -0.2), (0.16, 0.16, 0.95), yaw, hide, 0.6)
+        paint.box(at(fwd, 0, -0.2), (0.16, 0.6, 0.95), yaw, hide, 0.6)
     paint.box(at(0, 0, 0.72), (2.0, 0.72, 0.78), yaw, hide, 0.8)
     grazing = rng.random() < 0.6
     paint.box(at(1.25, 0, 0.25 if grazing else 1.15), (0.6, 0.34, 0.42), yaw, hide, 0.9)
@@ -463,14 +464,14 @@ def ranch_land(k) -> dict:
     for i in range(6, k.n - 6):
         if not RANCH[0] < shares[i // 25] < RANCH[1]:
             continue
-        # A post every 8 m and three strands between: by the road only, so in the group drawn near.
-        if i % 2 == 0 and abs(s[i]["k"]) < 1 / 60:
+        # A post every 12 m and two strands between: by the road only, so in the group drawn near.
+        if i % 3 == 0 and abs(s[i]["k"]) < 1 / 60:
             for side in (1, -1):
                 off = (k.kerb + 4.2) * side
                 x, y, z = k.road.at(i, off)
-                x1, y1, z1 = k.road.at(i + 2, off)
+                x1, y1, z1 = k.road.at(i + 3, off)
                 B["wood"].box((x, y, z - 0.5), (0.12, 0.12, 1.75), s[i]["h"])
-                for up in (0.45, 0.8, 1.15):
+                for up in (0.6, 1.1):
                     B["hk-wire"].quad((x, y, z + up - 0.02), (x1, y1, z1 + up - 0.02), (x1, y1, z1 + up + 0.02), (x, y, z + up + 0.02))
         if rng.random() < 0.035:
             side = rng.choice((1, -1))
@@ -613,7 +614,7 @@ def shrubland(k) -> int:
         if thick <= 0:
             continue
         for _ in range(3):
-            if rng.random() > 0.55 * thick:
+            if rng.random() > 0.36 * thick:
                 continue
             side = rng.choice((1, -1))
             off = (k.kerb + rng.uniform(2.8, 34.0)) * side
@@ -624,7 +625,7 @@ def shrubland(k) -> int:
             z = k.ground(x, y, i, off)
             pick = rng.random()
             if pick < 0.5:
-                lens(B["hk-shrub" if rng.random() < 0.6 else "hk-shrub-dark"], (x, y, z + 0.1), rng.uniform(0.7, 1.6), rng.uniform(0.6, 1.1), rng, 6)
+                lens(B["hk-shrub" if rng.random() < 0.6 else "hk-shrub-dark"], (x, y, z + 0.1), rng.uniform(0.8, 1.8), rng.uniform(0.6, 1.1), rng, 5)
             elif pick < 0.86:
                 # A tussock: a few blades of dry grass.
                 for q in range(4):
