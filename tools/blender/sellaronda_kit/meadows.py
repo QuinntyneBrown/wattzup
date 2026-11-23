@@ -282,4 +282,15 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
                 B["paint"].box((px_s, py_s, pz_s + 0.18), (0.92, 0.48, 0.46), ang)
                 B["dark"].box((px_s + math.cos(ang) * 0.48, py_s + math.sin(ang) * 0.48, pz_s + 0.36), (0.28, 0.24, 0.26), ang)
 
+    # 18. Weathered larch stumps & fallen woodland logs along the lower forest margins
+    for lg_i in range(20, kit.n - 20, 55):
+        if s[lg_i]["z"] > 95.0:
+            continue
+        side = 1.0 if (lg_i // 55) % 2 == 0 else -1.0
+        lx_f, ly_f, _ = road.at(lg_i, (kit.kerb + 10.5) * side)
+        if road.clear_of_road(lx_f, ly_f, kit.kerb + 7.5, lg_i):
+            lz_f = height_at(lx_f, ly_f)
+            B["larch-warm"].box((lx_f, ly_f, lz_f - 0.08), (0.48, 0.48, 0.55), 0.2)
+            B["larch-aged"].box((lx_f + 1.6, ly_f - 0.6, lz_f - 0.05), (3.4, 0.38, 0.36), lg_i * 0.4)
+
     return trees
