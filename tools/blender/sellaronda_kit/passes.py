@@ -412,4 +412,7 @@ def build_four_passes(B, kit, road, height_at) -> None:
     sd_c = road.index(2118.0)
     B["dolomite-pale"].box(kit.P(sd_c, 0.0, kit.kerb + 4.4, 0.0), (0.36, 0.36, 1.55), s[sd_c]["h"])
     B["gold"].box(kit.P(sd_c, 0.0, kit.kerb + 4.4, 1.55), (0.48, 0.48, 0.12), s[sd_c]["h"] + 0.4)
+    # Twin Giro rose-pink road stripes flanking Passo Pordoi's Cima Coppi summit line
+    for pk_o in (-0.45, 0.45):
+        B["accent-2"].box(kit.P(pordoi_idx, pk_o, 0.0, 0.02), (0.22, kit.kerb * 1.85, 0.015), p_yaw)
     # [ANCHOR:passes]
