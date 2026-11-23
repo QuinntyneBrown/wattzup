@@ -1042,6 +1042,48 @@ def pull_outs(k) -> dict:
     return {"pullOuts": laid, "parkedCars": cars, "visitors": people}
 
 
+def summit_stop(k) -> dict:
+    """Details 8 and 3, the summit: where the road ends below the domes there is the summit's car park, full by
+    sunrise, and beside it the summit shelter, a low house of glass on a lava-stone base under a shingled roof,
+    where people stand out of the wind to look into the crater."""
+    land, near, rng, s = Painted(k), Painted(k, "hk-detail"), k.rng, k.s
+    tarmac, line, stone, glass, post, roof = _lin(0x6A6466), _lin(0xE8E6DE), _lin(0x5A4E48), _lin(0x6E8E9E), _lin(0xE8E6DE), _lin(0x5A4A40)
+    i0 = k.road.index(k.length) - 62  # short of the finish straight and its barriers
+    drops = {sd: abs(k.height_at(*k.road.at(i0 + 8, (k.kerb + 12.0) * sd)[:2]) - s[i0 + 8]["z"]) for sd in (1, -1)}
+    side = min(drops, key=drops.get)
+    for q in range(i0, i0 + 16):
+        x, y, z = k.road.at(q, (k.kerb + 7.0) * side)
+        floor = min(k.height_at(*k.road.at(q, (k.kerb + 14.0) * side)[:2]), z)
+        land.box((x, y, floor - 2.0), (k.step + 0.2, 13.0, z - floor + 2.02), s[q]["h"], tarmac, 0.9)
+    cars = people = 0
+    for q in range(i0 + 1, i0 + 15):
+        x, y, z = k.road.at(q, (k.kerb + 9.5) * side)
+        yaw = s[q]["h"] + math.pi / 2
+        # A bay's line, and most bays taken.
+        lx, ly, _ = k.P(q, k.step / 2, (k.kerb + 9.5) * side)
+        near.box((lx, ly, z + 0.02), (5.0, 0.12, 0.02), yaw, line, 1.0)
+        if rng.random() < 0.7:
+            car(near, rng, (x, y, z + 0.03), yaw + rng.uniform(-0.05, 0.05))
+            cars += 1
+        if rng.random() < 0.45:
+            px, py, _ = k.P(q, rng.uniform(-1.0, 1.0), (k.kerb + rng.uniform(3.0, 5.5)) * side)
+            visitor(near, rng, (px, py, z + 0.03), rng.uniform(0, math.tau))
+            people += 1
+    # The shelter, at the car park's upper end.
+    j = i0 + 20
+    x, y, z = k.road.at(j, (k.kerb + 9.0) * side)
+    h = s[j]["h"]
+    ground = min(k.height_at(x, y), z)
+    land.box((x, y, ground - 1.0), (9.4, 9.4, z - ground + 1.9), h, stone, 0.8)
+    near.box((x, y, z + 0.9), (8.4, 8.4, 2.3), h, glass, 1.0)
+    for a in (-1, 1):
+        for b in (-1, 0, 1):
+            for cx, cy in ((a * 4.2, b * 4.2), (b * 4.2, a * 4.2)):
+                near.box((x + math.cos(h) * cx - math.sin(h) * cy, y + math.sin(h) * cx + math.cos(h) * cy, z + 0.9), (0.3, 0.3, 2.3), h, post, 1.0)
+    near.roof((x, y, z + 3.2), 10.6, 10.6, 2.2, h, roof)
+    return {"summitCars": cars, "summitVisitors": people}
+
+
 def hairpin_signs(k) -> int:
     """Detail 1, the switchback road: before each switchback stands the warning for it, a yellow diamond-coloured
     board with the black hairpin arrow bent the way the road turns, and under it the advised speed, 15."""
@@ -1219,6 +1261,7 @@ def scenery(k) -> dict:
     signs = park_signs(k)
     signs["hairpinSigns"] = hairpin_signs(k)
     signs.update(pull_outs(k))
+    signs.update(summit_stop(k))
     garden = silversword_garden(k)
     shrubs = shrubland(k)
     return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "peaksAboveCloud": islands, "silverswords": swords, "domes": domes, **ranch, **coast, "cinderCones": cones, "boulders": lava, "shrubs": shrubs, **signs, "gardenSilverswords": garden}
