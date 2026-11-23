@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { currentValley, LADIN_VILLAGES } from './ladin-villages';
+import { currentValley, distanceToNextVillage, LADIN_VILLAGES } from './ladin-villages';
 
 describe('LADIN_VILLAGES', () => {
   it('maps each inter-pass valley sector to Corvara, Arabba, Canazei, and Selva', () => {
@@ -9,5 +9,8 @@ describe('LADIN_VILLAGES', () => {
     expect(currentValley(6120).id).toBe('canazei');
     expect(currentValley(8920).id).toBe('selva');
     expect(currentValley(11100).id).toBe('corvara');
+    const fromPordoi = distanceToNextVillage(4950);
+    expect(fromPordoi.village.id).toBe('canazei');
+    expect(fromPordoi.metresAhead).toBe(1170);
   });
 });

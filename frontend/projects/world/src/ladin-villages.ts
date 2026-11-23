@@ -52,3 +52,18 @@ export function currentValley(metres: number): LadinVillage {
   if (w >= 7750 && w < 10150) return LADIN_VILLAGES[3]!;
   return LADIN_VILLAGES[0]!;
 }
+
+/** Forward distance in metres along the 11,650 m clockwise loop to the next Ladin village centre. */
+export function distanceToNextVillage(metres: number): {
+  village: LadinVillage;
+  metresAhead: number;
+} {
+  const w = ((metres % 11650) + 11650) % 11650;
+  for (const v of LADIN_VILLAGES) {
+    if (v.courseMetres >= w) {
+      return { village: v, metresAhead: v.courseMetres - w };
+    }
+  }
+  const first = LADIN_VILLAGES[0]!;
+  return { village: first, metresAhead: 11650 - w + first.courseMetres };
+}
