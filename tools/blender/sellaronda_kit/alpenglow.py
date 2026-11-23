@@ -309,6 +309,10 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         mx1, my1, mz1 = road.at(m1000_i, (kit.kerb + 1.6) * m1000_side, 5.2)
         kit.halo((mx1, my1, mz1), "bulb")
         kit.light((mx1, my1, mz1 - 2.0), "bulb", 22.0, 0.62)
+    # Soft evening halo on the Sodlisia chairlift station returning to Corvara
+    sd_a = road.index(11180.0)
+    sdax, sday, _ = road.at(sd_a, -(kit.kerb + 24.0))
+    kit.halo((sdax, sday, height_at(sdax, sday) + 4.2), "glow-window")
     # [ANCHOR:alpenglow-lights]
 
 
