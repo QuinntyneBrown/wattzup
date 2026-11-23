@@ -49,3 +49,17 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
                 j = max(4, min(kit.n - 5, i + d_step))
                 B["paint"].box(kit.P(j, 0.0, (kit.kerb + 1.15) * outside, -0.1), (0.14, 0.14, 0.95), s[j]["h"])
                 B["kerb-red"].box(kit.P(j, 0.0, (kit.kerb + 1.15) * outside, 0.62), (0.16, 0.16, 0.22), s[j]["h"])
+
+    # Concrete avalanche & rockfall protection half-galleries (gallerie paramassi) on Pordoi & Gardena cliff stretches
+    for gal_start, gal_end in ((4560.0, 4648.0), (9660.0, 9740.0)):
+        i0, i1 = road.index(gal_start), road.index(gal_end)
+        for idx in range(i0, i1 + 1, 2):
+            yaw = s[idx]["h"]
+            # Uphill (right-hand Sella cliff side = negative left) solid retaining wall
+            B["stone"].box(kit.P(idx, 0.0, -(kit.kerb + 1.45), -0.3), (8.4, 1.15, 5.45), yaw)
+            # Overhead concrete avalanche roof slab spanning the carriageways
+            B["dolomite-pale"].box(kit.P(idx, 0.0, 0.0, 4.95), (8.4, (kit.kerb + 1.65) * 2.0, 0.62), yaw)
+            # Valley-side open concrete pillars framing the panoramic view + red/white portal stripes at ends
+            B["dolomite-pale"].box(kit.P(idx, 0.0, kit.kerb + 1.15, -0.3), (0.75, 0.75, 5.25), yaw)
+            if idx in (i0, i1 - (i1 - i0) % 2):
+                B["parasol-red"].box(kit.P(idx, 0.0, kit.kerb + 1.15, 1.2), (0.80, 0.80, 0.55), yaw)
