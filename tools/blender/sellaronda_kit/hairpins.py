@@ -56,6 +56,8 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
             B["steel"].box(kit.P(i, 0.0, off, -0.2), (0.10, 0.10, 2.25), yaw)
             B["ladin-blue"].box(kit.P(i, 0.0, off, 1.58), (0.08, 1.05, 0.44), yaw)
             B["paint"].box(kit.P(i, 0.0, off, 1.24), (0.09, 1.05, 0.34), yaw)
+            if tornante_num % 2 == 1:
+                B["paint"].box(kit.P(max(4, i - 3), 0.0, -1.8, 0.02), (0.95, 0.65, 0.015), s[max(4, i - 3)]["h"])
             # Red/white apex reflector bollards flanking the switchback
             for d_step in (-3, 3):
                 j = max(4, min(kit.n - 5, i + d_step))
