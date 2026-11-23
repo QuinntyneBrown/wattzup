@@ -50,3 +50,9 @@ export function tornanteRadiusMetres(curvaturePerMetre: number): number {
   const k = Math.abs(curvaturePerMetre);
   return k < 1e-6 ? Number.POSITIVE_INFINITY : 1 / k;
 }
+
+/** Ratio of outer-line gradient to inner-apex gradient (< 1) around a switchback of `centreRadiusM` and `halfWidthM`. */
+export function outerVsInnerHairpinGradeRatio(centreRadiusM: number, halfWidthM = 3.75): number {
+  const r = Math.max(halfWidthM + 2, centreRadiusM);
+  return (r - halfWidthM) / (r + halfWidthM);
+}

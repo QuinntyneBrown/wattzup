@@ -4,6 +4,7 @@ import {
   brakingDistanceMetres,
   classifyBendSeverity,
   leanAngleDegrees,
+  outerVsInnerHairpinGradeRatio,
   switchbackCadenceTargetRpm,
   tornanteRadiusMetres,
 } from './hairpin-pacing';
@@ -28,5 +29,6 @@ describe('classifyBendSeverity', () => {
     expect(brakingDistanceMetres(16, 8, -9)).toBeGreaterThan(brakingDistanceMetres(16, 8, 0));
     expect(tornanteRadiusMetres(0.02)).toBeCloseTo(50, 3);
     expect(tornanteRadiusMetres(0)).toBe(Number.POSITIVE_INFINITY);
+    expect(outerVsInnerHairpinGradeRatio(15, 3.75)).toBeCloseTo(0.6, 2);
   });
 });
