@@ -252,6 +252,7 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["parasol-red"].box((cx_g, cy_g, cz_g + 0.62), (2.6, 2.2, 1.35), cyaw)
         B["dark"].box((cx_g + math.cos(cyaw) * 0.35, cy_g + math.sin(cyaw) * 0.35, cz_g + 1.15), (1.45, 2.25, 0.72), cyaw)
         B["steel"].box((cx_g + math.cos(cyaw) * 2.45, cy_g + math.sin(cyaw) * 2.45, cz_g + 0.05), (0.55, 3.9, 0.85), cyaw)
+        B["yellow"].box((cx_g - math.cos(cyaw) * 2.65, cy_g - math.sin(cyaw) * 2.65, cz_g + 0.05), (0.65, 4.1, 0.52), cyaw)
 
     # 5. Dolomiti Superski / Sellaronda Orange & Green circuit panoramic map boards outside lift terminals
     for map_at in (1805.0, 3405.0, 7465.0, 9905.0):
