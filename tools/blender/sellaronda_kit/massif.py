@@ -182,7 +182,7 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     top_ring = rings[-1]
     for k in range(sides):
         u = (k + 1) % sides
-        tri_shaded(peaks, top_ring[k], top_ring[u], apex, cfn, 735.0, snow=(k % 3 == 0))
+        tri_shaded(peaks, top_ring[k], top_ring[u], apex, cfn, 735.0, snow=(k % 3 == 0 or (5 <= k <= 15 and k % 2 == 0)))
 
     # Sass Pordoi (2,950 m — "Terrace of the Dolomites"): colossal flat-topped bastion jutting toward Passo Pordoi
     pordoi_pt = road.s[road.index(4950.0)]
