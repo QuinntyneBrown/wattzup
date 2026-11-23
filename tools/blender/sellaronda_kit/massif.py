@@ -38,7 +38,7 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     radii = []
     for k in range(sides):
         a = k * math.tau / sides
-        flute = 1.0 + 0.14 * math.sin(7 * a + 0.6) + 0.08 * math.cos(13 * a - 1.1) + rng.uniform(-0.035, 0.035)
+        flute = 1.0 + 0.14 * math.sin(7 * a + 0.6) + 0.08 * math.cos(13 * a - 1.1) + 0.035 * math.sin(19 * a + 0.4) + rng.uniform(-0.03, 0.03)
         radii.append(755.0 * flute)
 
     tiers = (
