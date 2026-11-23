@@ -43,7 +43,10 @@ def enrosadira_colour_fn(az_sun: float):
             return mix(ice_shadow, ice_sun, 0.24 + 0.76 * lit)
 
         # Subtle horizontal Hauptdolomit bedding strata modulation by elevation
-        strata = 0.93 + 0.07 * math.sin(z * 0.14) * math.cos(z * 0.037)
+        # Vertical dark meltwater seepage streaks characteristic of overhanging Dolomite walls
+        az_face = math.atan2(ny, nx)
+        seep = 1.0 - 0.10 * (1.0 - abs(nz)) * max(0.0, math.sin(az_face * 19.0) * math.cos(az_face * 7.0))
+        strata = (0.93 + 0.07 * math.sin(z * 0.14) * math.cos(z * 0.037)) * seep
         in_sun = smoothstep(-0.18, 0.72, dot)
         high_glow = smoothstep(118.0, 425.0, z) * in_sun
         warm_band = mix(apricot_gold, enrosadira_rose, smoothstep(260.0, 580.0, z))
