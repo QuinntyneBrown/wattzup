@@ -386,4 +386,15 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     plul = max(1.0, math.hypot(plux, pluy))
     plux, pluy = plux / plul, pluy / plul
     rock_tower(peaks, pal_pt["x"] + plux * 2480.0, pal_pt["y"] + pluy * 2480.0, 50.0, 885.0, 215.0, 145.0, 9, math.atan2(-pluy, -plux), cfn, taper=0.24, flat_cap=False, seed_phase=1.6)
+    # Inner Langkofelkar snow-hollow embraced between Sassolungo & Sasso Piatto
+    quad_shaded(
+        peaks,
+        (sp_x - ux * 110.0 - px * 180.0, sp_y - uy * 110.0 - py * 180.0, 385.0),
+        (sp_x - ux * 110.0 - px * 110.0, sp_y - uy * 110.0 - py * 110.0, 385.0),
+        (sp_x + ux * 65.0 - px * 125.0, sp_y + uy * 65.0 - py * 125.0, 545.0),
+        (sp_x + ux * 65.0 - px * 165.0, sp_y + uy * 65.0 - py * 165.0, 545.0),
+        cfn,
+        465.0,
+        snow=True,
+    )
     # [ANCHOR:peaks]
