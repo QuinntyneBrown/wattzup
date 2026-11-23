@@ -506,4 +506,9 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         cfx_f, cfy_f, cfz_f = kit.P(cfi, 0.0, kit.kerb + 5.8, 0.0)
         B["stone"].box((cfx_f, cfy_f, cfz_f), (1.85, 1.85, 0.85), 0.0)
         kit.gable(B["larch-aged"], (cfx_f, cfy_f, cfz_f + 2.15), 2.35, 2.35, 0.75, 0.0)
+    # Classic dark-iron promenade streetlamps in Corvara & Selva
+    for sl_v in (180.0, 240.0, 310.0, 8840.0, 8910.0, 8980.0):
+        sli = road.index(sl_v)
+        B["dark"].box(kit.P(sli, 0.0, kit.kerb + 1.45, 0.0), (0.12, 0.12, 4.2), road.s[sli]["h"])
+        B["bulb"].box(kit.P(sli, 0.0, kit.kerb + 1.15, 4.15), (0.28, 0.28, 0.26), road.s[sli]["h"])
     # [ANCHOR:villages]
