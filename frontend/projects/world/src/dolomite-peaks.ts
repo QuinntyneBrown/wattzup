@@ -70,3 +70,12 @@ export function marmoladaGlacierSightline(metres: number): number {
   const u = 1 - dist / 2200;
   return u * u * (3 - 2 * u);
 }
+
+/** Sightline prominence (0..1) of Sassolungo (3,181 m) from `metres` along Sella Ronda. */
+export function sassolungoSightline(metres: number): number {
+  const w = ((metres % 11650) + 11650) % 11650;
+  const dist = Math.min(Math.abs(w - 7750), 11650 - Math.abs(w - 7750));
+  if (dist >= 2500) return 0;
+  const u = 1 - dist / 2500;
+  return u * u * (3 - 2 * u);
+}
