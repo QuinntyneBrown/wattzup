@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { type CableSpan, gondolaPosition } from './gondola-flight';
+import { type CableSpan, chairliftLoopPosition, gondolaPosition } from './gondola-flight';
 
 const SASS_PORDOI: CableSpan = {
   from: [0, 140, 0],
@@ -29,5 +29,13 @@ describe('gondolaPosition', () => {
     const b = gondolaPosition(SASS_PORDOI, 37, 0.25, true);
     expect(b).toEqual(a);
     expect(b.sway).toBe(0);
+  });
+
+  it('circulates monocable carriers up one rope and down the parallel return rope', () => {
+    const up = chairliftLoopPosition([0, 100, 0], [0, 200, -200], 2, 40, 10);
+    const down = chairliftLoopPosition([0, 100, 0], [0, 200, -200], 2, 40, 30);
+    expect(up.ascending).toBe(true);
+    expect(down.ascending).toBe(false);
+    expect(up.x).toBeCloseTo(-down.x, 3);
   });
 });
