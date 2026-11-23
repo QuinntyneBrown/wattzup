@@ -593,4 +593,15 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     )
     # Sas de Mesdì (2,980 m) northern massif crest between Pisciadù & Val de Mesdì
     rock_tower(peaks, cx + pux * 710.0 + ppx * 165.0, cy + puy * 710.0 + ppy * 165.0, 120.0, 608.0, 95.0, 74.0, 9, math.atan2(puy, pux), cfn, taper=0.66, flat_cap=True, seed_phase=1.8)
+    # Pale limestone talus fan spilling from the mouth of Val Lasties
+    quad_shaded(
+        peaks,
+        (cx + lux * 865.0 - lpx * 55.0, cy + luy * 865.0 - lpy * 55.0, 82.0),
+        (cx + lux * 865.0 + lpx * 55.0, cy + luy * 865.0 + lpy * 55.0, 82.0),
+        (cx + lux * 745.0 + lpx * 18.0, cy + luy * 745.0 + lpy * 18.0, 215.0),
+        (cx + lux * 745.0 - lpx * 18.0, cy + luy * 745.0 - lpy * 18.0, 215.0),
+        cfn,
+        148.0,
+        snow=False,
+    )
     # [ANCHOR:massif]
