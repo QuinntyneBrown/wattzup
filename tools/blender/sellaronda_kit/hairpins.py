@@ -191,3 +191,10 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
             for row_z in (0.2, 0.85, 1.50):
                 B["larch-aged"].box(kit.P(idx_k, 0.0, -(kit.kerb + 1.55 + row_z * 0.25), row_z), (7.8, 0.28, 0.24), kyaw)
             B["foliage"].box(kit.P(idx_k, 0.0, -(kit.kerb + 1.75), 0.55), (7.6, 0.35, 0.95), kyaw)
+
+    # Mid-climb paved ANAS snow-plow turnaround pockets on Pordoi & Sella
+    for sp_turn in (4120.0, 6920.0):
+        t_idx = road.index(sp_turn)
+        tyaw = s[t_idx]["h"]
+        B["stone"].box(kit.P(t_idx, 0.0, kit.kerb + 3.2, -1.8), (13.5, 5.2, 1.82), tyaw)
+        B["asphalt"].box(kit.P(t_idx, 0.0, kit.kerb + 3.0, 0.02), (13.0, 4.8, 0.06), tyaw)
