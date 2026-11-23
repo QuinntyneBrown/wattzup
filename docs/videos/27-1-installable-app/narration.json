@@ -1,0 +1,64 @@
+{
+ "voice": "af_heart",
+ "bpm": 92.99,
+ "beatsPerBar": 4,
+ "gapBeats": 1,
+ "outroSeconds": 3,
+ "music": {
+  "file": "../assets/music/beautiful-boom-bap.mp3",
+  "offset": 0.009,
+  "duckDb": 16,
+  "betweenDb": 5,
+  "fadeSeconds": 2
+ },
+ "scenes": [
+  {
+   "id": "hook",
+   "bars": 4,
+   "lines": [
+    "Telo Ride now installs from Chrome or Edge, and opens in its own window, one tap from the bike."
+   ]
+  },
+  {
+   "id": "manifest",
+   "bars": 5,
+   "lines": [
+    "A web app manifest names it Telo Ride, and opens it at the start, standalone, in the dark ink of the app."
+   ]
+  },
+  {
+   "id": "icons",
+   "bars": 5,
+   "lines": [
+    "Its icons are the logo mark on ink: one hundred and ninety-two and five hundred and twelve pixels, and a maskable one inside the safe zone."
+   ]
+  },
+  {
+   "id": "check",
+   "bars": 5,
+   "lines": [
+    "The spec asks Chromium itself for the manifest it read, and its reasons not to install. There are none. The service worker keeps the icons offline."
+   ]
+  },
+  {
+   "id": "widths",
+   "bars": 4,
+   "lines": [
+    "Home, where the installed app opens, from a phone to the full screen."
+   ]
+  },
+  {
+   "id": "close",
+   "bars": 12,
+   "lines": [
+    "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+    "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+    {
+     "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+     "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+    },
+    "A custom workout lives under Profile."
+   ]
+  }
+ ]
+}
