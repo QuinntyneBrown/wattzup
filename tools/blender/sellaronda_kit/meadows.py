@@ -65,6 +65,8 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             bz = height_at(bx, by)
             barn_yaw = s[i]["h"] + rng.uniform(-0.45, 0.45)
             _hay_barn(B, kit, bx, by, bz, barn_yaw, rng.uniform(0.85, 1.18))
+            if (i // 34) % 5 == 0:
+                B["larch-warm"].box((bx - math.cos(barn_yaw) * 4.2, by - math.sin(barn_yaw) * 4.2, bz + 0.15), (1.95, 0.95, 0.65), barn_yaw + 0.3)
             # Adjacent Tyrolean Harpfe vertical hay-drying rack & winter firewood stack
             hx = bx + math.cos(barn_yaw) * 5.2
             hy = by + math.sin(barn_yaw) * 5.2
