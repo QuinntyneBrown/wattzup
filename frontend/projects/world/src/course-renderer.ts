@@ -10,8 +10,6 @@ import { pass } from 'three/tsl';
 import {
   AdditiveBlending,
   AgXToneMapping,
-  BackSide,
-  BufferAttribute,
   type CanvasTexture,
   Color,
   DirectionalLight,
@@ -299,7 +297,7 @@ export class CourseRenderer implements WorldRenderer {
         this.pinned = true;
         const from = (globalThis as Record<string, unknown>)[PROBE_KEY] as { from?: unknown };
         if (typeof from.from === 'number') this.benchFrom = from.from;
-        this.tier = PINNED[asked.tier] ?? START;
+        this.tier = (asked.tier && PINNED[asked.tier]) ?? START;
         renderer.info.autoReset = false;
       }
       this.backend = (renderer.backend as { isWebGPUBackend?: boolean }).isWebGPUBackend
@@ -427,7 +425,6 @@ export class CourseRenderer implements WorldRenderer {
   private build(map: Object3D, canvas: HTMLCanvasElement): void {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
-    const SKY = look.sky;
     this.scene.fog = new Fog(look.haze, FOG[0], FOG[1]);
     this.scene.background = new Color(look.haze);
     this.sun.color.setHex(look.light.colour);

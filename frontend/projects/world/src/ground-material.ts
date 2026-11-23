@@ -199,7 +199,10 @@ export function groundMaterial(
   if (coloured) {
     // Neon and the bridges' cables: their colour on the ground, and brighter where it lies in water.
     emitted = emitted.add(
-      colour.mul(coloured).mul(COLOURED.ground).add(coloured.mul(water.mul(COLOURED.mirrored))),
+      colour
+        .mul(coloured)
+        .mul(COLOURED.ground)
+        .add(coloured.mul(water.mul(COLOURED.mirrored))),
     );
   }
   if (lamps || wet > 0 || coloured) material.emissiveNode = emitted;

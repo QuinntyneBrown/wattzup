@@ -4,8 +4,8 @@
 // light the open sky and the bright road throw into the shade, and the line of sun along the edges that face it.
 // On a course with street lamps the lamps do this work instead (lamp-glow.ts).
 import { diffuseColor, float, normalWorld, vec3 } from 'three/tsl';
+import type { Color } from 'three/webgpu';
 import {
-  Color,
   type Material,
   type MeshStandardMaterial,
   MeshStandardNodeMaterial,

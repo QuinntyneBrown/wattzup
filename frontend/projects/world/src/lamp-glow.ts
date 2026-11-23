@@ -5,7 +5,6 @@
 import {
   diffuseColor,
   float,
-  materialColor,
   mix,
   normalWorld,
   positionWorld,

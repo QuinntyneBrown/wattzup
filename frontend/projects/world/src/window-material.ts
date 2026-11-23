@@ -21,8 +21,8 @@ import {
   vec2,
   vec3,
 } from 'three/tsl';
+import type { Color } from 'three/webgpu';
 import {
-  Color,
   type DataTexture,
   DoubleSide,
   type Material,
