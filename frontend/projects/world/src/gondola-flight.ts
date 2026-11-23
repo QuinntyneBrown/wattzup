@@ -97,3 +97,14 @@ export function cablewaySlopeDegrees(span: CableSpan): number {
 export function midSpanAltitudeMetres(span: CableSpan): number {
   return (span.from[1] + span.to[1]) * 0.5 - span.sag;
 }
+
+/** Approximate cable rope length (m) between lower and upper stations including parabolic `sag`. */
+export function cableLineLengthMetres(span: CableSpan): number {
+  const chord = Math.hypot(
+    span.to[0] - span.from[0],
+    span.to[1] - span.from[1],
+    span.to[2] - span.from[2],
+  );
+  if (chord < 1e-3) return 0;
+  return chord + (8 * span.sag * span.sag) / (3 * chord);
+}
