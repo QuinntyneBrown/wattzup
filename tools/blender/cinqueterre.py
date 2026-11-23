@@ -593,9 +593,71 @@ def maquis(k) -> int:
     return planted
 
 
+# A gozzo's paint: the hull, and the strake under its gunwale.
+BOATS = ((0x2F6FB0, 0xF2EEE2), (0xF2EEE2, 0xC23A32), (0xC23A32, 0xF2EEE2), (0x2E8A6A, 0xF2C230), (0xF2EEE2, 0x2F6FB0), (0xE8B830, 0x2F6FB0))
+
+
+def gozzo(paint, rng, c, yaw: float) -> None:
+    """A Ligurian gozzo hauled out: a double-ended wooden boat about 5 m long, bright below and with a strake of
+    another colour under the gunwale, thwarts across it, standing on its keel between chocks."""
+    hull, strake = (_lin(h) for h in BOATS[rng.randrange(len(BOATS))])
+    wood, dark = _lin(0x9A7448), _lin(0x4A3A2C)
+    half, beam, deep = rng.uniform(2.3, 2.9), rng.uniform(0.8, 0.95), 0.85
+    cs, sn = math.cos(yaw), math.sin(yaw)
+
+    def at(a: float, out: float, up: float):
+        return (c[0] + a * cs - out * sn, c[1] + a * sn + out * cs, c[2] + up)
+
+    def face(points, colour, flip: bool = False) -> None:
+        # One face, one winding: the build welds coincident faces, so a doubled face would lose a side.
+        paint.face(points[::-1] if flip else points, ((*colour[:3], 1.0),) * len(points))
+
+    stations = []
+    for q in range(9):
+        t = -1 + q / 4
+        w = beam * (1 - abs(t) ** 2.6)
+        sheer = deep + 0.3 * t * t
+        stations.append((t * half, w, sheer))
+    for (a0, w0, h0), (a1, w1, h1) in zip(stations, stations[1:]):
+        for side in (1, -1):
+            out = side > 0
+            face([at(a0, 0, 0.0), at(a1, 0, 0.0), at(a1, w1 * 0.8 * side, 0.3), at(a0, w0 * 0.8 * side, 0.3)], tuple(c * 0.8 for c in hull), out)
+            face([at(a0, w0 * 0.8 * side, 0.3), at(a1, w1 * 0.8 * side, 0.3), at(a1, w1 * side, h1 - 0.16), at(a0, w0 * side, h0 - 0.16)], hull, out)
+            face([at(a0, w0 * side, h0 - 0.16), at(a1, w1 * side, h1 - 0.16), at(a1, w1 * side, h1), at(a0, w0 * side, h0)], strake, out)
+            # The inside of the planking, seen over the far gunwale.
+            face([at(a0, w0 * 0.84 * side, 0.34), at(a1, w1 * 0.84 * side, 0.34), at(a1, w1 * 0.97 * side, h1), at(a0, w0 * 0.97 * side, h0)], wood, not out)
+        # The bottom boards, seen from above.
+        face([at(a0, -w0 * 0.85, 0.34), at(a1, -w1 * 0.85, 0.34), at(a1, w1 * 0.85, 0.34), at(a0, w0 * 0.85, 0.34)], tuple(c * 0.8 for c in wood))
+    # A thwart across every other station, and the stem and sternpost standing up past the sheer.
+    for a, w, h in stations[2:7:2]:
+        face([at(a - 0.13, -w, h - 0.2), at(a + 0.13, -w, h - 0.2), at(a + 0.13, w, h - 0.2), at(a - 0.13, w, h - 0.2)], dark)
+    for end in (-1, 1):
+        paint.box(at(end * (half - 0.04), 0, 0.0), (0.12, 0.1, deep + 0.62), yaw, strake)
+    for a in (-half * 0.5, half * 0.5):
+        for side in (1, -1):
+            paint.box(at(a, 0.6 * side, 0.0), (0.25, 0.45, 0.3), yaw, dark)
+
+
+def boats(k) -> int:
+    """Detail 7, fishing boats: by each village the gozzi are hauled up off the water and stand along the street,
+    bow to stern on the inland side of the road, each in its own paint."""
+    paint, rng = Painted(k), k.rng
+    hauled = 0
+    for site in village_sites(k.s):
+        for step in range(-9, 10):
+            i = site["i"] + step * 2
+            if not 4 < i < k.n - 4 or abs(k.s[i]["k"]) > 1 / 80 or rng.random() < 0.3:
+                continue
+            x, y, z = k.road.at(i, -(k.kerb + 1.2) * seaward(k, i))
+            gozzo(paint, rng, (x, y, z + 0.02), k.s[i]["h"] + rng.uniform(-0.06, 0.06))
+            hauled += 1
+    return hauled
+
+
 def scenery(k) -> dict:
     parapet(k)
     stepped = terraces(k)
     houses = villages(k)
     plants = maquis(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "houses": houses, "plants": plants}
+    hauled = boats(k)
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "houses": houses, "plants": plants, "boats": hauled}
