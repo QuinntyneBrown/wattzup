@@ -45,7 +45,7 @@ def enrosadira_colour_fn(az_sun: float):
         # Subtle horizontal Hauptdolomit bedding strata modulation by elevation
         strata = 0.93 + 0.07 * math.sin(z * 0.14) * math.cos(z * 0.037)
         in_sun = smoothstep(-0.18, 0.72, dot)
-        high_glow = smoothstep(140.0, 440.0, z) * in_sun
+        high_glow = smoothstep(118.0, 425.0, z) * in_sun
         warm_band = mix(apricot_gold, enrosadira_rose, smoothstep(260.0, 580.0, z))
         warm_band = mix(warm_band, summit_magenta, smoothstep(580.0, 880.0, z) * 0.48)
         # Deepen vertical dihedral clefts facing away from the sun while boosting upward sky fill on ledges
