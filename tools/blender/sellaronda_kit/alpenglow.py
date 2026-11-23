@@ -161,6 +161,13 @@ def emit_dusk_lights(kit, road, height_at) -> None:
     kit.light((cpx_l, cpy_l, cpz_l), "gold", 16.0, 0.70)
     kit.halo((cpx_l, cpy_l, cpz_l), "gold")
 
+    # Warm dusk terrace light pools at the 4 mid-climb flank huts
+    for fl_at, fl_side in ((1460.0, -1.0), (7120.0, 1.0), (9420.0, 1.0), (10420.0, 1.0)):
+        f_idx = road.index(fl_at)
+        fx_l, fy_l, fz_l = road.at(f_idx, (kit.kerb + 5.2) * fl_side, 3.0)
+        kit.light((fx_l, fy_l, fz_l), "glow-window", 22.0, 0.58)
+        kit.halo((fx_l, fy_l, fz_l), "glow-window")
+
 
 def build_valley_mist(B, road, height_at) -> None:
     """Lays delicate dusk valley-mist ribbons down in the four deep valley hollows off the road."""
