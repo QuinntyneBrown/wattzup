@@ -537,4 +537,7 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         B["stone"].box((nvx, nvy_p, nvz - 0.8), (9.2, 6.8, 1.4), nvy)
         B["larch-warm"].box((nvx, nvy_p, nvz + 0.6), (8.8, 6.4, 3.2), nvy)
         kit.gable(B["copper-patina"], (nvx, nvy_p, nvz + 3.8), 9.6, 7.2, 1.85, nvy)
+    # Pale-dolomite churchyard steps ascending toward San Vigilio in Colfosco
+    for st_k in (8.0, 12.0):
+        B["dolomite-pale"].box(kit.P(cf_idx, 0.0, kit.kerb + st_k, -0.1), (3.4, 3.2, 0.45), road.s[cf_idx]["h"])
     # [ANCHOR:villages]
