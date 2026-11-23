@@ -410,6 +410,15 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     B["paint"].box((jrx, jry, jrz), (2.8, 1.2, 0.92), jrsy)
     kit.gable(B["accent-2"], (jrx, jry, jrz + 2.35), 3.2, 3.0, 0.78, jrsy)
 
+    # Three-wheel recumbent handcycle athletes with orange visibility pennants on Campolongo & Gardena
+    for hc_m in (1890.0, 9980.0):
+        hc_i = road.index(hc_m)
+        hcy = s[hc_i]["h"]
+        hcx, hcy_p, hcz = road.at(hc_i, -(kit.kerb - 0.85))
+        B["dark"].box((hcx, hcy_p, hcz + 0.02), (1.75, 0.72, 0.42), hcy)
+        B["ladin-blue"].box((hcx, hcy_p, hcz + 0.35), (1.15, 0.38, 0.32), hcy)
+        B["crowd-3"].box((hcx - math.cos(hcy) * 0.75, hcy_p - math.sin(hcy) * 0.75, hcz + 0.42), (0.24, 0.05, 1.35), hcy)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
