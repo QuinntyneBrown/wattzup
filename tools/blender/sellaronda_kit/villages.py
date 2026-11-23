@@ -146,3 +146,12 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
             B["larch-aged"].box(kit.P(bn_idx, 0.0, (kit.kerb + 2.2) * side, -0.2), (0.18, 0.18, 6.4), bn_yaw)
         B["ladin-blue"].box(kit.P(bn_idx, 0.0, 0.0, 5.25), (0.16, span_w - 0.6, 0.92), bn_yaw)
         B["paint"].box(kit.P(bn_idx, 0.0, 0.0, 5.48), (0.20, span_w * 0.62, 0.44), bn_yaw)
+
+    # 5. Colfosco / Calfosch (1,645 m, around 10,980 m) with iconic hillside San Vigilio church!
+    cf_idx = road.index(10980.0)
+    cfx, cfy, _ = road.at(cf_idx, kit.kerb + 22.0)
+    _onion_dome_church(B, kit, cfx, cfy, height_at(cfx, cfy), road.s[cf_idx]["h"] - 0.18, dome_mat="copper-patina", spire=False)
+    for d_m in (10890.0, 10955.0, 11035.0, 11105.0):
+        idx = road.index(d_m)
+        for side in (-1.0, 1.0):
+            _village_chalet(B, kit, road, idx, side, 13.5, 11.2, 8.4, 2, height_at)
