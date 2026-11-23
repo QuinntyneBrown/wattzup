@@ -378,4 +378,14 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["parasol-red"].box((tkx, tky_p, tkz + 0.55), (2.4, 1.45, 1.15), tky)
             B["yellow"].box((tkx + math.cos(tky) * 1.55, tky_p + math.sin(tky) * 1.55, tkz + 0.08), (0.55, 2.15, 0.35), tky)
 
+    # Conical dry-stone Dolomite trail cairns (Stoanmandln) on high pasture knolls
+    for crn_m in (2020.0, 4880.0, 7680.0, 10080.0):
+        ci = road.index(crn_m)
+        cx_s, cy_s, _ = road.at(ci, kit.kerb + 8.5)
+        if road.clear_of_road(cx_s, cy_s, 6.0, ci):
+            cz_s = height_at(cx_s, cy_s)
+            B["dolomite-pale"].box((cx_s, cy_s, cz_s - 0.1), (0.85, 0.85, 0.55), 0.2)
+            B["dolomite-pale"].box((cx_s, cy_s, cz_s + 0.45), (0.52, 0.52, 0.48), 0.7)
+            B["dolomite-pale"].box((cx_s, cy_s, cz_s + 0.93), (0.26, 0.26, 0.38), 1.1)
+
     return trees
