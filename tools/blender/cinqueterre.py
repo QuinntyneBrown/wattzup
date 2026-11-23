@@ -429,6 +429,8 @@ ROOFS = (0xB5674A, 0xA85C44, 0x8C8A86, 0x9A948C)
 # Persiane, the louvred shutters: the dark Ligurian green on most houses, brown or grey-blue on a few.
 SHUTTERS = (0x2F6B4A, 0x2F6B4A, 0x2F6B4A, 0x35755A, 0x6A4A32, 0x4A6272)
 PANE = 0x27303A
+DOORS = (0x2F5A42, 0x5A3A26, 0x3A4A5A, 0x6A2E28)
+WASHING = (0xF4F2EC, 0xF4F2EC, 0xE8D8B8, 0xC8423A, 0x3F78B8, 0xE8B83A, 0x8AB8D8, 0xE89AA8)
 FLOOR = 3.05  # a storey's height, in metres
 
 
@@ -447,10 +449,23 @@ def windows(paint, rng, c, size, yaw: float, floors: int) -> None:
         if out[1] > 0.5:
             continue
         columns = max(1, int(wide / 3.1))
+        door_at = rng.randrange(columns)
         for storey in range(floors):
             for column in range(columns):
                 mid = (column + 0.5) * wide / columns
                 z = c[2] + storey * FLOOR + 1.05
+                if storey == 0 and column == door_at:
+                    # The street door, under a pale stone lintel.
+                    paint.panel(a, along, out, mid - 0.62, mid + 0.62, c[2] - 0.1, c[2] + 2.42, 0.05, _lin(0xD8CDB4))
+                    paint.panel(a, along, out, mid - 0.5, mid + 0.5, c[2] - 0.1, c[2] + 2.25, 0.09, _lin(DOORS[rng.randrange(len(DOORS))]))
+                    continue
+                if storey and rng.random() < 0.16:
+                    # Washing on a line under the sill: a sheet, a shirt, a towel.
+                    left = mid - 1.3
+                    for _ in range(rng.randint(2, 4)):
+                        w, drop = rng.uniform(0.35, 0.8), rng.uniform(0.45, 0.95)
+                        paint.panel(a, along, out, left, left + w, z - 0.2 - drop, z - 0.2, 0.32, _lin(WASHING[rng.randrange(len(WASHING))]))
+                        left += w + 0.12
                 paint.panel(a, along, out, mid - 0.85, mid + 0.85, z, z + 1.5, 0.05, shutter)
                 if rng.random() < 0.72:
                     paint.panel(a, along, out, mid - 0.42, mid + 0.42, z + 0.04, z + 1.46, 0.09, pane)
@@ -488,6 +503,11 @@ def villages(k) -> int:
             paint.box((x, y, z - fall - 1.5), (wide, deep, tall + 1.5), yaw, wall)
             paint.roof((x, y, z + floors * FLOOR), wide, deep, rng.uniform(0.9, 1.6), yaw, _lin(ROOFS[rng.randrange(len(ROOFS))]))
             windows(paint, rng, (x, y, z), (wide, deep), yaw, floors)
+            # A chimney or two on the roof, each under its little tiled cap.
+            for _ in range(rng.randint(0, 2)):
+                cx, cy = x + rng.uniform(-wide, wide) * 0.3, y + rng.uniform(-deep, deep) * 0.3
+                paint.box((cx, cy, z + floors * FLOOR + 0.2), (0.55, 0.55, 1.5), yaw, wall, 0.9)
+                paint.box((cx, cy, z + floors * FLOOR + 1.7), (0.8, 0.8, 0.14), yaw, _lin(ROOFS[0]), 1.0)
             houses += 1
         print(f"{site['name']}: {len(placed)} houses below the road {site['z']:.0f} m up, {k.s[site['i']]['d']:.0f} m from the start", flush=True)
     return houses
