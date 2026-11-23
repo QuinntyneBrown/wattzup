@@ -196,6 +196,16 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         _gbox(0.0, seg_p * 1.95, -abs(seg_p) * 0.46, 2.75, 2.05, 0.24, 0xF05692 if abs(seg_p) < 2 else 0xFFD040)
     _gbox(0.0, 0.0, -6.2, 0.85, 0.58, 0.98, 0x1E222A)
 
+    # Event sports photographers in yellow vests with white telephoto lenses at scenic switchback apexes
+    for ph_at in (1920.0, 4480.0, 7240.0, 9880.0):
+        ph_idx = road.index(ph_at)
+        phyaw = s[ph_idx]["h"] + math.pi
+        phx, phy, phz = kit.P(ph_idx, 0.0, kit.kerb + 1.65, 0.0)
+        B["dark"].box((phx, phy, phz), (0.36, 0.38, 0.62), phyaw)
+        B["yellow"].box((phx, phy, phz + 0.62), (0.36, 0.42, 0.48), phyaw)
+        B["skin"].box((phx, phy, phz + 1.10), (0.22, 0.22, 0.24), phyaw)
+        B["paint"].box((phx + math.cos(phyaw) * 0.34, phy + math.sin(phyaw) * 0.34, phz + 0.98), (0.42, 0.12, 0.12), phyaw)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
