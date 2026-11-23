@@ -137,6 +137,8 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
         rk_x = tx + math.cos(yaw) * (w * 0.36)
         rk_y = ty + math.sin(yaw) * (w * 0.36)
         B["larch-aged"].box((rk_x, rk_y, tz + 0.12), (3.4, 0.14, 1.18), yaw)
+        B["paint"].box((rk_x + math.cos(yaw) * 2.05, rk_y + math.sin(yaw) * 2.05, tz + 0.12), (0.34, 0.34, 1.38), yaw)
+        B["neon-lime"].box((rk_x + math.cos(yaw) * 2.05, rk_y + math.sin(yaw) * 2.05, tz + 1.25), (0.36, 0.36, 0.16), yaw)
         for bk_i in range(4):
             bx_r = rk_x + math.cos(yaw) * (-1.2 + bk_i * 0.8)
             by_r = rk_y + math.sin(yaw) * (-1.2 + bk_i * 0.8)
