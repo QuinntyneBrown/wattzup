@@ -493,7 +493,7 @@ def villages(k) -> int:
             if z < 3.5 or any(math.hypot(x - px, y - py) < 7.4 for px, py in placed):
                 continue
             # Vernazza's castle and church have their own ground.
-            if site["name"] == "Vernazza" and any(math.hypot(x - site["x"] - lx, y - site["y"] - ly) < reach for lx, ly, reach in LANDMARKS):
+            if site["name"] == "Vernazza" and any(math.hypot(x - site["x"] - lx, y - site["y"] - ly) < reach for lx, ly, reach in (*LANDMARKS[1:], (*castle_place(k, site), 36.0))):
                 continue
             # Not on the cliff under the road, and not where the rock is too steep to build on.
             fall = max(abs(k.height_at(x + 5.0, y) - z), abs(k.height_at(x, y + 5.0) - z))
@@ -703,6 +703,14 @@ def boats(k) -> int:
 LANDMARKS = ((36.0, 66.0, 17.0), (-32.0, 56.0, 19.0), (-32.0, 40.0, 9.0))
 
 
+def castle_place(k, site: dict) -> tuple[float, float]:
+    """Where the Doria castle stands, from the village's middle: on the seaward side of the road just past it,
+    close enough that no house row stands between it and the rider."""
+    j = min(site["i"] + 13, k.n - 2)
+    x, y, _ = k.road.at(j, 31.0 * seaward(k, j))
+    return x - site["x"], y - site["y"]
+
+
 def vernazza(k) -> bool:
     """Detail 5, Vernazza harbour: above the houses of the second village stand the round tower of the Doria castle
     on the spur's seaward end, on its square keep, and the church of Santa Margherita by the water with its
@@ -718,8 +726,14 @@ def vernazza(k) -> bool:
         return max(k.height_at(x, y), 2.0)
 
     # The castle: a keep with a crenellated wall, and the round tower rising out of it.
-    x, y = site["x"] + 36.0, site["y"] + 66.0
-    z = max(ground(x + dx, y + dy) for dx in (-8, 8) for dy in (-8, 8))
+    x, y = (site[q] + o for q, o in zip("xy", castle_place(k, site)))
+    low = max(ground(x + dx, y + dy) for dx in (-8, 8) for dy in (-8, 8))
+    # It stands on its crag, the keep's wall-walk level with the road, so the tower clears the roofs between.
+    z = max(low, k.s[site["i"] + 13]["z"] - 4.0)
+    if z - 14.0 > low - 3.0:
+        rock = _lin(0x7A705E)
+        paint.box((x, y, low - 4.0), (27.0, 23.0, z - 14.0 - low + 4.5), 0.1, rock, 0.55)
+        paint.box((x + 3.0, y - 2.0, low - 4.0), (33.0, 28.0, (z - 14.0 - low) * 0.5 + 4.0), 0.5, _lin(0x6A6252), 0.5)
     paint.box((x, y, z - 14.0), (20.0, 17.0, 20.0), 0.3, stone, 0.6)
     for q in range(12):
         a = q * math.tau / 12
