@@ -12,56 +12,56 @@ skinparam class {
 }
 ' --------------------------
 title Class structure — Inspect diagnostics
-class DiagnosticsFacts <<api>> {
-  +browser: string
-  +webBluetooth: string
-  +page: string
-  +bike: string
-  +connection?: string
-  +signal?: string
-  +lastCommand?: string
-  +reconnects?: string
-  +ridesWaiting: string
-  +appVersion: string
+class DiagnosticsFact <<api>> {
+  +term: string
+  +value: string
+  +tone?: 'ok' | 'warn' | 'bad'
 }
 interface Diagnostics <<api>> {
-  +facts: Signal<DiagnosticsFacts>
+  +facts: Signal<readonly DiagnosticsFact[]>
 }
-class BrowserDiagnostics <<domain/bluetooth>> {
-  -connection: BikeConnection
-  -support: BluetoothSupport
-  -sentLog: SentToBikeLog
-  -outbox: RideOutbox
-  -remembered: RememberedBikeStore
-  -build: BuildInfo
-  +facts: Signal<DiagnosticsFacts>
-}
-class "diagnosticsFormat" as Format <<domain/bluetooth>> {
-  +browserLabel(uaData): string
-  +duration(ms: number): string
-  +lastSeen(at: Date, now: Date): string
-  +command(cmd: SentCommand): string
+interface ConnectionHistory <<api>> {
+  +connectedSince: Signal<number | null>
+  +reconnects: Signal<number>
 }
 class BuildInfo <<api>> {
   +version: string
   +commit: string
 }
-class DiagnosticsLauncher <<ride>> {
-  -dialog: Dialog
-  +open(origin: HTMLElement): Promise<void>
+class BrowserDiagnostics <<domain/diagnostics>> {
+  -now: Signal<number>
+  -waiting: Signal<number | null>
+  -browser: Signal<BrowserSource>
+  +facts: Signal<readonly DiagnosticsFact[]>
+}
+class BikeConnectionHistory <<domain/diagnostics>> {
+  -follow(ble: BleState): void
+}
+class "diagnosticsFacts" as Format <<domain/diagnostics>> {
+  +diagnosticsFacts(input): DiagnosticsFact[]
+  +browserLabel(source): string
+  +durationLabel(ms): string
+  +agoLabel(ms): string
+  +commandLabel(command): string
+  +supportFact(state): DiagnosticsFact
+}
+class "openDiagnostics" as Launcher <<ride>> {
+  +openDiagnostics(dialog, injector): Promise<void>
 }
 class DiagnosticsDialog <<ride>> {
-  +facts: Signal<DiagnosticsFacts>
-  +close(): void
+  -close(): void
 }
-class DiagnosticsFactsList <<components>> {
-  +facts: input<DiagnosticsFacts>
+class DiagnosticsPanel <<components>> {
+  +facts: input<readonly DiagnosticsFact[]>
+  +dismissed: output<void>
 }
 BrowserDiagnostics ..|> Diagnostics
+BikeConnectionHistory ..|> ConnectionHistory
 BrowserDiagnostics ..> Format
+BrowserDiagnostics --> ConnectionHistory
 BrowserDiagnostics --> BuildInfo
-Diagnostics --> DiagnosticsFacts
-DiagnosticsLauncher ..> DiagnosticsDialog : lazy import, opens
-DiagnosticsDialog ..> Diagnostics : injects DIAGNOSTICS
-DiagnosticsDialog ..> DiagnosticsFactsList : renders
+Diagnostics --> DiagnosticsFact
+Launcher ..> DiagnosticsDialog : lazy import, opens
+DiagnosticsDialog ..> Diagnostics : provides and injects DIAGNOSTICS
+DiagnosticsDialog ..> DiagnosticsPanel : renders
 @enduml
