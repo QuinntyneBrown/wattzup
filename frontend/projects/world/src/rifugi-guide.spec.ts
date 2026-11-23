@@ -9,6 +9,7 @@ import {
   rifugioElevationDropToNextValley,
   rifugiOnPass,
   rifugioSpecialtyDish,
+  rifugiWithinMetres,
   SELLA_RIFUGI,
 } from './rifugi-guide';
 
@@ -31,5 +32,6 @@ describe('SELLA_RIFUGI', () => {
     expect(rifugioElevationDropToNextValley(pordoiHut)).toBeGreaterThan(750);
     expect(isSummitRifugioOpenAtHour(18.5)).toBe(true);
     expect(isSummitRifugioOpenAtHour(2)).toBe(false);
+    expect(rifugiWithinMetres(7750, 120).length).toBeGreaterThanOrEqual(2);
   });
 });
