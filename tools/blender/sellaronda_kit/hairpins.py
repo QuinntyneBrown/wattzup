@@ -233,4 +233,9 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         B["steel"].box(kit.P(pd_i, 0.0, -(kit.kerb + 1.45), -0.1), (0.08, 0.08, 2.15), pdyaw)
         B["parasol-red"].box(kit.P(pd_i, 0.0, -(kit.kerb + 1.45), 1.65), (0.07, 0.68, 0.62), pdyaw)
         B["paint"].box(kit.P(pd_i, -0.02, -(kit.kerb + 1.45), 1.68), (0.08, 0.46, 0.42), pdyaw)
+    # Orange ANAS SOS emergency call pillars inside Pordoi & Gardena rockfall galleries
+    for sos_m in (4604.0, 9700.0):
+        so_i = road.index(sos_m)
+        B["crowd-3"].box(kit.P(so_i, 0.0, -(kit.kerb + 0.75), 0.0), (0.28, 0.28, 1.78), s[so_i]["h"])
+        B["paint"].box(kit.P(so_i, 0.0, -(kit.kerb + 0.72), 1.25), (0.30, 0.24, 0.34), s[so_i]["h"])
     # [ANCHOR:hairpins]
