@@ -147,3 +147,28 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         bx = cx + mux * 760.0 + mpx * lat_b
         by = cy + muy * 760.0 + mpy * lat_b
         rock_tower(peaks, bx, by, 120.0, 615.0 - b_idx * 16.0, 95.0, 76.0, 10, math.atan2(muy, mux), cfn, taper=0.80, flat_cap=True, seed_phase=0.9 + b_idx)
+
+    # Cima Pisciadù (2,985 m), Val Setus snow cleft & silver Cascata del Pisciadù waterfall above Colfosco (at=10750 m)
+    pis_pt = road.s[road.index(10750.0)]
+    pdx, pdy = pis_pt["x"] - cx, pis_pt["y"] - cy
+    pdist = max(1.0, math.hypot(pdx, pdy))
+    pux, puy = pdx / pdist, pdy / pdist
+    ppx, ppy = -puy, pux
+    rock_tower(peaks, cx + pux * 735.0 - ppx * 95.0, cy + puy * 735.0 - ppy * 95.0, 110.0, 610.0, 130.0, 105.0, 12, math.atan2(puy, pux), cfn, taper=0.66, flat_cap=False, seed_phase=4.4)
+    # Cascata del Pisciadù bright white-silver waterfall ribbon plunging down the lower limestone cliff!
+    wf_x, wf_y = cx + pux * 865.0 + ppx * 35.0, cy + puy * 865.0 + ppy * 35.0
+    for seg_w in range(4):
+        z0 = 115.0 + seg_w * 68.0
+        z1 = z0 + 68.0
+        in0 = seg_w * 18.0
+        in1 = (seg_w + 1) * 18.0
+        quad_shaded(
+            peaks,
+            (wf_x - pux * in0 - ppx * 7.5, wf_y - puy * in0 - ppy * 7.5, z0),
+            (wf_x - pux * in0 + ppx * 7.5, wf_y - puy * in0 + ppy * 7.5, z0),
+            (wf_x - pux * in1 + ppx * 5.2, wf_y - puy * in1 + ppy * 5.2, z1),
+            (wf_x - pux * in1 - ppx * 5.2, wf_y - puy * in1 - ppy * 5.2, z1),
+            cfn,
+            0.5 * (z0 + z1),
+            snow=True,
+        )
