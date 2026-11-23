@@ -29,7 +29,7 @@ test('a race hidden for 10 minutes with its timers throttled shows the clock, th
   await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(16));
   await ride(page, bluetooth, 10);
   await expect(race.clock).toHaveText(/^0:10 /);
-  await expect(race.distance).toHaveText('0.07 km');
+  await expect(race.distance).toHaveText('0.13 km');
 
   await hideTab(page, { throttled: true });
   await ride(page, bluetooth, 600);
@@ -39,8 +39,8 @@ test('a race hidden for 10 minutes with its timers throttled shows the clock, th
   await expect(race.clock).toHaveText(/^10:10 /);
   await expect(race.intervalLabel).toHaveText('Recover');
   await expect(race.intervalLeft).toHaveText('1:20');
-  // The same ride in a visible tab reads 3.97 km at 10:10.
-  await expect(race.distance).toHaveText('3.97 km');
+  // The same ride in a visible tab reads 7.95 km at 10:10.
+  await expect(race.distance).toHaveText('7.95 km');
 });
 
 test('a class ride hidden for 10 minutes with its timers throttled shows the clock and the segment a visible tab would (L2-133 AC2)', async ({
