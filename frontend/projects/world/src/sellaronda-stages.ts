@@ -23,3 +23,8 @@ export function recommendedRiderPosture(
   if (gradePercent >= 6.5 && cadenceAim <= 76) return 'out-of-saddle';
   return 'seated-spin';
 }
+
+/** Normalized lap progress (0..1) along the 11,650 m Sella Ronda circuit. */
+export function loopCompletionFraction(metres: number): number {
+  return Math.max(0, Math.min(1, metres / 11650));
+}
