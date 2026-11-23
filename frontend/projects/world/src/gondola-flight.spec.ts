@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   cableLineLengthMetres,
+  cableSagDropAtFraction,
   type CableSpan,
   cablewayRoundTripSeconds,
   cablewaySlopeDegrees,
@@ -57,5 +58,7 @@ describe('gondolaPosition', () => {
     expect(isCabinDocked(SASS_PORDOI, 25, 0)).toBe(false);
     expect(sellarondaSkiCircuitColour(true)).toBe('orange');
     expect(sellarondaSkiCircuitColour(false)).toBe('green');
+    expect(cableSagDropAtFraction(18, 0.5)).toBe(18);
+    expect(cableSagDropAtFraction(18, 0)).toBe(0);
   });
 });
