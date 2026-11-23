@@ -63,6 +63,17 @@ export function directBeamKelvin(progress: number): number {
   return Math.round(2150 + ((p - 0.75) / 0.25) * 6850);
 }
 
+/** Atmospheric haze blend factor (0..1, always 0 for fog-exempt `'Peaks'`) at `distanceMetres`. */
+export function horizonFogBlendFactor(
+  distanceMetres: number,
+  group: string,
+  density = 0.00042,
+): number {
+  if (group === 'Peaks' || distanceMetres <= 0) return 0;
+  const d = distanceMetres * density;
+  return Number((1 - Math.exp(-(d * d))).toFixed(4));
+}
+
 /** Anti-solar Belt of Venus intensity (0..1) for view azimuth `viewAz` and elevation `horizonElev` (0..1). */
 export function beltOfVenusWeight(viewAz: number, sunAz: number, horizonElev: number): number {
   const anti = Math.max(0, -Math.cos(viewAz - sunAz));
