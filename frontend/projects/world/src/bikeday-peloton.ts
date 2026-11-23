@@ -32,3 +32,15 @@ export function bikeDayRidersPerKm(
   const speedKmh = bikeDayClimbSpeedKmh(gradePercent, riderWatts);
   return ridersPerHour / Math.max(5, speedKmh);
 }
+
+/** Estimated climb time in minutes over `lengthKm` at `gradePercent` for a rider sustaining `riderWatts`. */
+export function passClimbMinutesEstimate(
+  lengthKm: number,
+  gradePercent: number,
+  riderWatts: number,
+  systemKg = 78,
+): number {
+  if (lengthKm <= 0) return 0;
+  const speedKmh = bikeDayClimbSpeedKmh(gradePercent, riderWatts / Math.max(40, systemKg));
+  return (lengthKm / speedKmh) * 60;
+}

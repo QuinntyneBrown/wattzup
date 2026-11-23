@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   bikeDayClimbSpeedKmh,
   bikeDayRidersPerKm,
+  passClimbMinutesEstimate,
   pelotonDraftSavingPercent,
 } from './bikeday-peloton';
 
@@ -15,5 +16,9 @@ describe('bikeDayClimbSpeedKmh', () => {
     expect(pelotonDraftSavingPercent(1)).toBeGreaterThan(20);
     expect(pelotonDraftSavingPercent(15)).toBe(0);
     expect(bikeDayRidersPerKm(1200, 8)).toBeGreaterThan(bikeDayRidersPerKm(1200, -6));
+    expect(passClimbMinutesEstimate(9.4, 6.8, 220)).toBeGreaterThan(30);
+    expect(passClimbMinutesEstimate(9.4, 6.8, 360)).toBeLessThan(
+      passClimbMinutesEstimate(9.4, 6.8, 220),
+    );
   });
 });
