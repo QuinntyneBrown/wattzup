@@ -121,3 +121,8 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
             fb_x = tx + math.cos(yaw) * fb_along - math.sin(yaw) * (-2.0 * side)
             fb_y = ty + math.sin(yaw) * fb_along + math.cos(yaw) * (-2.0 * side)
             B["bulb"].box((fb_x, fb_y, tz + 2.85), (0.18, 0.18, 0.22), yaw)
+        # Stacked winter split-larch firewood shelter beside the terrace
+        wd_x = tx - math.cos(yaw) * (w * 0.42)
+        wd_y = ty - math.sin(yaw) * (w * 0.42)
+        B["larch-warm"].box((wd_x, wd_y, tz + 0.10), (2.4, 0.85, 1.45), yaw)
+        kit.gable(B["larch-aged"], (wd_x, wd_y, tz + 1.55), 2.7, 1.15, 0.35, yaw)
