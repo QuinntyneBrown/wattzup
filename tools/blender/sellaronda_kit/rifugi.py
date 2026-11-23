@@ -82,6 +82,7 @@ def _rifugio_complex(B, kit, road, height_at, at_m: float, side: float, main_w: 
         ey_t = ry + math.sin(yaw) * (main_w * 0.5) + math.cos(yaw) * -(main_d * 0.5)
         B["chalet-plaster"].box((ex_t, ey_t, base_z + 2.8), (2.4, 2.4, upper_h + 0.8), yaw + math.pi * 0.25)
         kit.gable(B["copper-patina"], (ex_t, ey_t, base_z + 3.6 + upper_h), 2.8, 2.8, 1.85, yaw)
+        B["dark"].box((rx, ry, base_z + 6.55 + upper_h), (main_w * 0.72, 0.32, 0.18), yaw)
         sn_x = rx + math.cos(yaw) * (main_w * 0.5 + 3.4)
         sn_y = ry + math.sin(yaw) * (main_w * 0.5 + 3.4)
         B["larch-warm"].box((sn_x, sn_y, base_z + 0.1), (2.8, 2.1, 2.1), yaw)
