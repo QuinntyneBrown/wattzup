@@ -390,4 +390,15 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
 
     # Antersass / Zwischenkofel (2,907 m) central Sella plateau watershed peak
     rock_tower(peaks, cx - 85.0, cy + 215.0, 645.0, 718.0, 82.0, 64.0, 9, 0.55, cfn, taper=0.56, flat_cap=False, seed_phase=0.5)
+    # Lech dl Dragon (2,680 m) seasonal turquoise karst tarn on the western Sella terrace
+    quad_shaded(
+        peaks,
+        (cx - 285.0, cy - 115.0, 616.0),
+        (cx - 245.0, cy - 115.0, 616.0),
+        (cx - 248.0, cy - 78.0, 616.5),
+        (cx - 282.0, cy - 78.0, 616.5),
+        cfn,
+        616.0,
+        snow=True,
+    )
     # [ANCHOR:massif]
