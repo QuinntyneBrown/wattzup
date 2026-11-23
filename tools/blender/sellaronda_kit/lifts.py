@@ -402,4 +402,14 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
             gzz = height_at(gzx, gzy_p)
             B["ladin-blue"].box((gzx, gzy_p, gzz + 0.4), (2.6, 0.52, 1.85), s[gzi]["h"] + 0.6)
 
+    # 18. Cabinovia Borest timber-and-steel valley station linking Corvara & Colfosco (at=11260 m)
+    br_i = road.index(11260.0)
+    bry = s[br_i]["h"]
+    brx, bry_p, _ = road.at(br_i, kit.kerb + 23.0)
+    if road.clear_of_road(brx, bry_p, 12.0, br_i):
+        brz = height_at(brx, bry_p)
+        B["stone"].box((brx, bry_p, brz - 1.8), (12.6, 8.8, 2.8), bry)
+        B["larch-warm"].box((brx, bry_p, brz + 1.0), (13.0, 9.2, 3.6), bry)
+        kit.gable(B["copper-patina"], (brx, bry_p, brz + 4.6), 13.6, 9.8, 1.35, bry)
+
     return cableways_out
