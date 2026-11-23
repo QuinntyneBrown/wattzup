@@ -4,6 +4,7 @@ import {
   paragliderGroundSpeedMps,
   paragliderMaxBankDegrees,
   paragliderPose,
+  thermalOrbitLoopLengthMetres,
   type ThermalOrbit,
   thermalVariometerMps,
 } from './paraglider-flight';
@@ -35,5 +36,6 @@ describe('paragliderPose', () => {
     expect(thermalVariometerMps(COL_RODELLA, 0, 0)).toBeGreaterThan(0.5);
     expect(paragliderMaxBankDegrees(COL_RODELLA)).toBeGreaterThan(5);
     expect(paragliderMaxBankDegrees(COL_RODELLA)).toBeLessThanOrEqual(24.1);
+    expect(thermalOrbitLoopLengthMetres(COL_RODELLA)).toBeGreaterThan(300);
   });
 });
