@@ -41,8 +41,8 @@ MATERIALS: dict[str, dict] = {
 
 THEME: dict = {
     # Detail 10, thin bright light: the sky a deep blue that pales only at the horizon, the sun high and white.
-    "sky": [0xDCEBF5, 0xA9D0EE, 0x6DAEE6, 0x3A86D8, 0x1E5FBF],
-    "haze": 0xCFE2EE,
+    "sky": [0xA9CDEE, 0x86BBEA, 0x579DE2, 0x2E78D2, 0x164DAE],
+    "haze": 0xB9D3EA,
     "light": [0xFFF6E2, 3.4],
     "fill": [0xCFE0F5, 0x7A6A5A],
     "sun_altitude": 0.62,
