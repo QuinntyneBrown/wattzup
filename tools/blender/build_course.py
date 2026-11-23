@@ -2421,7 +2421,7 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
                     B["sign-paving-band"].quad(P(j, -0.12, far, 0.14), P(j, 0.12, far, 0.14), P(j, 0.12, near, 0.14), P(j, -0.12, near, 0.14))
                 for off in (near, (near + far) / 2, far):
                     B["sign-paving-band"].quad(P(i - span, 0, off - 0.12, 0.14), P(i + span, 0, off - 0.12, 0.14), P(i + span, 0, off + 0.12, 0.14), P(i - span, 0, off + 0.12, 0.14))
-                posts = [P(i - span, 0, far + 0.3, 0.05), P(i, 0, far + 0.3, 0.05), P(i + span, 0, far + 0.3, 0.05), P(i - span - 1, 0, near - 0.4, 0.05), P(i + span + 1, 0, near - 0.4, 0.05)]
+                posts = [P(i - span, 0, far + 0.3, 0.05), P(i, 0, far + 0.3, 0.05), P(i + span, 0, far + 0.3, 0.05), P(i - span - 3, 0, near - 0.4, 0.05), P(i + span + 3, 0, near - 0.4, 0.05)]
                 for post in posts:
                     B["dark"].box(post, (0.14, 0.14, 4.7))
                 tops = [(q[0], q[1], q[2] + 4.6) for q in posts]

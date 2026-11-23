@@ -192,6 +192,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Sky 16 | The sun reddens and flattens as it sinks: as painted and round from six degrees up, deep red and a fifth flatter on the horizon | 60.1 fps, one frame over 20 ms (from 3,250 m); 60.0 at the finish | 48.1 and 48.5 fps after (the finish, 119,897 triangles: none more); Neon Docklands beside it 53.9, 47.7 |
 | Sky 17 | The sunset shows down the finishing straight: the festoons' glow over the road no longer stands in one white glare in front of it | 60.3 fps (from 8,000, 8,150 and 8,300 m) | 42.6 and 45.9 fps after (the finish, 119,897 triangles: none more); Neon Docklands beside it 50.3, 54.4 |
 | Sky 18 | The sun goes down into open sea at the end of the finishing straight, the island beside it: the island's flank had stood in front of it | 60.3 and 60.1 fps (from 8,150 and 8,300 m) | 52.8 and 41.4 fps after (the finish, 119,897 triangles: none more); Neon Docklands beside it 53.5, 54.7 |
+| Sign 4 | The whole word reads on the approach: a festoon post stood in front of the first I, and the sign read BIZA | 60.3, 59.6 and 60.0 fps (from 235, 262 and 282 m) | 42.7 fps at the sign (87,915 triangles) and 48.5 at the finish (119,929); Neon Docklands beside it 48.4, 53.5 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -604,6 +605,14 @@ sun as it came down to one. The island stands twenty degrees off now, its foot f
 sun goes down into open sea beside it, as it does off the island's west coast, and the last straight is ridden at
 it. The disc there is the reddened, flattened one of Sky 16: salmon pink, not the deep red its numbers say, since
 it glows and the frame's exposure whitens it.
+
+### Sign 4: the whole word reads on the approach
+
+`sign-04.jpg` (from 235, 262 and 282 m). Riding up to the sign it read BIZA: one of the two posts that carry the
+festoons to the roadside stood four metres from the end of the square, straight between the rider and the first
+I. Both stand twelve metres clear of it now. From 235 m and from 282 m the word is whole; at 262 m the post
+crosses the word for a moment as it is passed, between the I and the B, and all five letters are still read.
+A small change, and nothing is added.
 
 ### Low power: where the frames go (after Party 20)
 
