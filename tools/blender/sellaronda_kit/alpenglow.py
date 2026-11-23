@@ -118,6 +118,16 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         kit.light((cx_l, cy_l, cz_l), "gold", 30.0, 0.72)
         kit.halo((cx_l, cy_l, cz_l), "gold")
 
+    # Warm amber ceiling lamps lighting the road inside the Pordoi & Gardena rockfall galleries!
+    for gal_a, gal_b in ((4568.0, 4644.0), (9668.0, 9736.0)):
+        d_g = gal_a
+        while d_g <= gal_b:
+            g_idx = road.index(d_g)
+            gx_l, gy_l, gz_l = road.at(g_idx, 0.0, 4.75)
+            kit.light((gx_l, gy_l, gz_l), "bulb", 18.0, 0.95)
+            kit.halo((gx_l, gy_l, gz_l), "bulb")
+            d_g += 24.0
+
 
 def build_valley_mist(B, road, height_at) -> None:
     """Lays delicate dusk valley-mist ribbons down in the four deep valley hollows off the road."""
