@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  characteristicFaunaAtAltitude,
   dolomiteFloraZone,
   edelweissHabitatScore,
   hayHarvestMonth,
@@ -33,5 +34,7 @@ describe('dolomiteFloraZone', () => {
     expect(edelweissHabitatScore(1500)).toBe(0);
     expect(larchAutumnGoldRatio(180, 2000)).toBe(0);
     expect(larchAutumnGoldRatio(305, 2050)).toBeGreaterThan(0.9);
+    expect(characteristicFaunaAtAltitude(1600)).toBe('haflinger-horses');
+    expect(characteristicFaunaAtAltitude(2500)).toBe('rupicapra-chamois');
   });
 });
