@@ -133,6 +133,8 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
             B["lago-turquoise"].box((sx_t, sy_t, sz_t + 0.08), (4.2, 24.0, 0.18), st_yaw)
             B["larch-warm"].box(kit.P(st_idx, 0.0, (kit.kerb + 0.95) * side, 0.0), (8.6, 0.32, 1.18), st_yaw)
             B["larch-aged"].box(kit.P(st_idx, 0.0, (kit.kerb + 0.95) * side, 1.18), (9.0, 0.44, 0.16), st_yaw)
+            for fl_o in (-2.6, 0.0, 2.6):
+                B["geranium-red"].box(kit.P(st_idx, fl_o, (kit.kerb + 0.95) * side, 1.32), (1.45, 0.36, 0.24), st_yaw)
 
     # Castel Wolkenstein medieval cliff fortress overlooking Selva di Val Gardena (at=9020 m)
     cw_idx = road.index(9020.0)
