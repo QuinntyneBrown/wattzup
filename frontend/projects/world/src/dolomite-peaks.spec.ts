@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   DOLOMITE_GIANTS,
   dominantPeakAt,
+  marmoladaGlacierElevationBand,
   marmoladaGlacierSightline,
   peaksAboveThreeThousand,
   sassolungoSightline,
@@ -17,5 +18,8 @@ describe('DOLOMITE_GIANTS', () => {
     expect(sassolungoSightline(7750)).toBeCloseTo(1, 3);
     expect(sassolungoSightline(2100)).toBe(0);
     expect(peaksAboveThreeThousand()[0]?.id).toBe('marmolada');
+    expect(
+      marmoladaGlacierElevationBand().crestMetres - marmoladaGlacierElevationBand().snoutMetres,
+    ).toBe(629);
   });
 });

@@ -81,6 +81,14 @@ export function peaksAboveThreeThousand(): readonly DolomitePeak[] {
     .sort((a, b) => b.altitudeMetres - a.altitudeMetres);
 }
 
+/** Real-world elevation span (m) of Ghiacciaio della Marmolada on the north face above Lago Fedaia. */
+export function marmoladaGlacierElevationBand(): {
+  readonly snoutMetres: number;
+  readonly crestMetres: number;
+} {
+  return { snoutMetres: 2680, crestMetres: 3309 };
+}
+
 /** Sightline prominence (0..1) of Sassolungo (3,181 m) from `metres` along Sella Ronda. */
 export function sassolungoSightline(metres: number): number {
   const w = ((metres % 11650) + 11650) % 11650;
