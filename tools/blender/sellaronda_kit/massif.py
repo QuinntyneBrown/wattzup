@@ -67,8 +67,9 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
             u = (k + 1) % sides
             quad_shaded(peaks, r_lo[k], r_lo[u], r_hi[u], r_hi[k], cfn, z_mid, snow=is_snow)
 
-    # Piz Boè (3,152 m) summit pyramid + Capanna Piz Fassa crown block
+    # Piz Boè (3,152 m) summit pyramid + Capanna Piz Fassa high-altitude refuge crown block
     apex = (cx + 42.0, cy - 28.0, 795.0)
+    rock_tower(peaks, apex[0], apex[1], 782.0, 804.0, 14.0, 11.0, 6, 0.4, cfn, taper=0.92, flat_cap=True, seed_phase=0.2)
     top_ring = rings[-1]
     for k in range(sides):
         u = (k + 1) % sides
