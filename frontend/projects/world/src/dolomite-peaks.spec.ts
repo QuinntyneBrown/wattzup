@@ -4,6 +4,7 @@ import {
   DOLOMITE_GIANTS,
   dominantPeakAt,
   findDolomitePeak,
+  highestDolomitePeak,
   horizonReliefMetres,
   isGlaciatedPeak,
   marmoladaGlacierElevationBand,
@@ -35,5 +36,6 @@ describe('DOLOMITE_GIANTS', () => {
     );
     expect(findDolomitePeak('')).toBeNull();
     expect(meanDolomiteGiantAltitude()).toBeGreaterThan(2800);
+    expect(highestDolomitePeak().altitudeMetres).toBe(3343);
   });
 });
