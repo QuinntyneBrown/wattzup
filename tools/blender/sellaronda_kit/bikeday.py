@@ -576,6 +576,12 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     B["dark"].box((hlx, hly, hlz + 2.15), (10.5, 0.28, 0.08), 0.2)
     B["dark"].box((hlx, hly, hlz + 2.15), (0.28, 10.5, 0.08), 0.2)
 
+    # Three-rider Giro Donne climbing trio led by the rose-pink Maglia Rosa on Passo Sella
+    for gd_k, (gd_o, gd_j) in enumerate(((0.0, "accent-2"), (-2.2, "ladin-blue"), (-4.4, "yellow"))):
+        gdi = road.index(7385.0 + gd_o)
+        gdx, gdy, gdz = road.at(gdi, -(kit.kerb - 0.78))
+        _road_cyclist(B, gdx, gdy, gdz, s[gdi]["h"], gd_j, standing=(gd_k == 0))
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
