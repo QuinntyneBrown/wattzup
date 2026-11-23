@@ -810,6 +810,17 @@ map's chunks are placed once, and the lowest three tiers draw 0.7, 0.8 and 0.9 a
 **Watch for.** It did not shorten the frame on a slowed processor (see the riders' log): on such a device the cost
 is not in how much is drawn.
 
+### R17. A simple build of the riders for slow devices (low-power pass 2)
+
+**What it gives.** Four draw calls a rider on the two lowest tiers where the full build is seven; and on every tier
+both wheels as one mesh, turned by turning their picture (`CourseCyclistKit.roll`).
+
+**Cost.** Saves 20 of 65 draw calls at the lowest tier with the pack in view. See
+`docs/screenshots/courses/low-power/README.md`.
+
+**Watch for.** The simple build gives up the trunk's sway and rise and the level head: riders passes 3, 6 and 26 show
+only from the third tier up.
+
 ### R10. The rider framed above the HUD (riders pass 11)
 
 **What it gives.** The rider whole in the picture on every map: wheels, the road under them, their shadow and

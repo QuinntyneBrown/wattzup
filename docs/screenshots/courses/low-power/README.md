@@ -20,6 +20,7 @@ them. A real device is the only true test; this says which way a change moves.
 | --- | --- | --- | --- | --- | --- |
 | 0 | Before | 46.2, 44.0, 45.6, 43.3, 44.4 | 22.5 ms | about 70 % | |
 | 1 | The interval's countdown bar moves in four steps a second, not on every frame | 51.2, 50.7, 51.0, 51.8 | 19.6 ms | 14 % | Yes |
+| 2 | A simple build of the riders on the two lowest tiers, and both wheels as one mesh on every tier | before, the same sitting: 57.3, 53.8, 58.5, 60.2; after: 63.2, 60.8, 63.0, 57.0 | 17.5 ms to 16.4 ms | no better (see below) | Yes |
 
 ## Finding where the time goes
 
@@ -71,3 +72,47 @@ would want its own measure.
 - The frame of a 3D page is not only the 3D. A one-line transition in a panel cost more than all the riders.
 - Hide things to find what costs: a style rule and one run each, before any code is read.
 - What looked expensive (seven blurred panels) was free here, and what looked free (a thin bar) was not.
+
+## Pass 2: a simple build of the riders for the lowest tiers
+
+**Where the draw calls were.** At the lowest tier the bridge drew 65 things a frame, and the map was only 30 of
+them. The rest was riders: each was eight draw calls (the bike, the trunk, the head, the kit, two wheels' sides, the
+lamp's glow and its pools on the road), besides the one that draws every rider's legs.
+
+**What changed.**
+
+- On every tier, both wheels' sides are one mesh and are turned by turning their picture about its middle
+  (`CourseCyclistKit.roll`), not by turning two discs for each rider: one draw call a rider fewer, and nothing to
+  place each frame. Every wheel on the road turns with the rider's own; riders keep much the same pace.
+- On the two lowest tiers (`SIMPLE_RIDERS`) the riders are a simple build: the trunk, the head and the bike are one
+  mesh, and the lamps throw no pools on the road. Four draw calls a rider. What is given up on those tiers: the
+  trunk's slight sway and its rise out of the saddle on a climb, and the head staying level and turning into a bend
+  (`lp-02-builds.jpg`: the simple build on the left, the full one on the right, through the bridge's bend).
+
+**Measured** on the stand-in, four runs of each, alternating, in one sitting:
+
+| Build | Frames a second | Mean frame | Draw calls |
+| --- | --- | --- | --- |
+| Pass 1 | 57.3, 53.8, 58.5, 60.2 | 17.5 ms | 65 |
+| Pass 2 | 63.2, 60.8, 63.0, 57.0 | 16.4 ms | 45 |
+
+Four frames a second more, by the medians (58 to 62), and three runs of four at 60 or over. Two cautions:
+
+- **The machine moved.** Pass 1's build read 51 an hour before and 54 to 60 in this sitting. Only runs made
+  alternately in one sitting are compared in this log; the figure the loop aims at is not a fixed one on this
+  machine.
+- **Still uneven.** Four frames in ten are still over 20 ms (they are 25 ms, three ticks of the 120 Hz display,
+  among frames of 8 and 17 ms). The mean has reached 60; an even 60 has not.
+
+The race's end-to-end specs: 51 pass, the same 13 fail. Unit tests: 1,512 pass.
+
+**No film of this pass that can be trusted.** While it was being filmed the laptop was found to be on battery at
+14 %, with Windows' battery saver on: the display had gone to 60 Hz and the app was held to 34 frames a second even
+unslowed at the top tier (uncapped it still drew 260). `lp-02.mp4` was filmed in that state and is kept only as a
+record of it. The four-against-four timings above were made before the display changed (they report over 60 frames
+a second, which a 60 Hz display cannot). The film and the next pass wait for mains power.
+
+**Learned.**
+
+- Count draw calls by what makes them. "The map" was under half; the riders, each a little, were the rest.
+- Check the machine before believing a slow run: its power, its display's rate, what else is running.

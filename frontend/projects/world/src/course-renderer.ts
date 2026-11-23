@@ -144,6 +144,8 @@ const DRAWN_FAR = [0.7, 0.8, 0.9, 1, 1] as const;
  */
 const RIDER_DETAIL = [0.6, 0.7, 0.8, 0.9, 1] as const;
 const OTHERS_DETAIL = 0.6;
+/** The tiers, from the lowest to this one, whose riders are the simple build: four draw calls a rider, not seven. */
+const SIMPLE_RIDERS = 1;
 
 /** How far up the road, in metres, a rider's lean into a bend is read from. */
 const LEAN_AHEAD = 6;
@@ -357,6 +359,8 @@ export class CourseRenderer implements WorldRenderer {
     if (frame.riders && !this.fieldMade) this.makeField(frame.riders, metres);
     this.lampShadows?.begin();
     const standing = this.ride(you, metres, 0);
+    // Every wheel on the road turns with the rider's: the riders keep much the same pace.
+    this.kit?.roll(metres);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.placeRiders(frame, metres);
     this.lampShadows?.end();
@@ -608,8 +612,12 @@ export class CourseRenderer implements WorldRenderer {
     this.scene.add(fill, this.sun, this.sun.target);
     this.disposables.push(fill, this.sun);
 
-    // At night the bikes' lights are on.
-    const kit = new CourseCyclistKit(this.plain, this.course!.file.night === true);
+    // At night the bikes' lights are on. On the two lowest tiers the riders are the simple build.
+    const kit = new CourseCyclistKit(
+      this.plain,
+      this.course!.file.night === true,
+      this.tier <= SIMPLE_RIDERS,
+    );
     this.kit = kit;
     // The rider wears the You jersey of the race board (L2-060).
     // The rider the camera follows is made as finely as the device's tier allows; the others, seen from further
@@ -681,7 +689,6 @@ export class CourseRenderer implements WorldRenderer {
     const ahead = this.course!.place(metres + LEAN_AHEAD, lane, this.here).heading;
     const at = this.course!.place(metres, lane, this.here);
     cyclist.group.position.set(at.x, at.y + 0.02, at.z);
-    cyclist.roll(metres);
     cyclist.group.rotation.set(
       at.pitch,
       at.heading,

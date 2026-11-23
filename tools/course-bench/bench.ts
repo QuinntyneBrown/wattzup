@@ -59,13 +59,15 @@ interface Frames {
 test(`bench ${map}`, async ({ page, bluetooth, api }) => {
   fs.mkdirSync(out, { recursive: true });
   await page.addInitScript(
-    ([t, from]) => {
+    ([t, from, backend]) => {
       (window as unknown as Record<string, unknown>)["__wzWorldRide"] = {
         tier: t,
         from,
+        // WZ_BENCH_BACKEND=webgl2 draws with WebGL 2 where WebGPU would be used.
+        ...(backend ? { backend } : {}),
       };
     },
-    [tier, FROM] as const,
+    [tier, FROM, process.env["WZ_BENCH_BACKEND"] ?? ""] as const,
   );
   api.answer("GET", "/api/maps", () => ({ body: maps }));
   // A rider with every map open, so any course can be benched.
@@ -180,6 +182,22 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
   await profiler?.send("Profiler.enable");
   await profiler?.send("Profiler.setSamplingInterval", { interval: 200 });
   await profiler?.send("Profiler.start");
+  // How often the page asks where an element is while it is timed: each such read can force the page's layout.
+  await page.evaluate(() => {
+    const counted = window as unknown as { __wzLayoutReads: number };
+    counted.__wzLayoutReads = 0;
+    const own = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "offsetTop");
+    if (own?.get) {
+      const read = own.get;
+      Object.defineProperty(HTMLElement.prototype, "offsetTop", {
+        configurable: true,
+        get(this: HTMLElement) {
+          counted.__wzLayoutReads++;
+          return read.call(this) as number;
+        },
+      });
+    }
+  });
   const frames = await page.evaluate(
     (ms) =>
       new Promise<Frames>((resolve) => {
@@ -333,6 +351,9 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
       top.join(String.fromCharCode(10)) + String.fromCharCode(10),
     );
   }
+  const layoutReads = await page.evaluate(
+    () => (window as unknown as { __wzLayoutReads: number }).__wzLayoutReads,
+  );
   const drawn = await page.evaluate(
     () =>
       (window as unknown as Record<string, { course?: unknown }>)[
@@ -352,7 +373,7 @@ test(`bench ${map}`, async ({ page, bluetooth, api }) => {
   const result = { label, map, uncapped, window: size, drawn, frames };
   fs.writeFileSync(
     path.join(out, `${label}${uncapped ? "-uncapped" : ""}.json`),
-    JSON.stringify(result, null, 2),
+    JSON.stringify({ ...result, layoutReads }, null, 2),
   );
   console.log(JSON.stringify(result));
 });

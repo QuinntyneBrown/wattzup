@@ -40,8 +40,6 @@ export interface RiderModel {
    * rider is, 0 seated to 1 standing on the pedals.
    */
   pose(angle: number, standing?: number): void;
-  /** Turns the wheels to where they are after `metres` of road. */
-  roll(metres: number): void;
   /** The rider's own geometries, textures and materials, to dispose with it. */
   readonly owned: readonly { dispose(): void }[];
   /** The mesh of everything that never moves against the bike: the batch of moving parts leaves it alone. */
@@ -500,8 +498,10 @@ function shoeShape(look: Palette): BufferGeometry {
 export class CourseCyclistKit {
   private readonly crank = tube(CRANK, 0.016, 0.012, RIM);
   private readonly pedal = solid(new CylinderGeometry(0.012, 0.012, 0.09, 6), SOLE);
-  // A wheel's side: the deep rim with its decals and the spokes inside it, one disc drawn through its own picture.
-  private readonly spokeDisc = new CircleGeometry(WHEEL - 0.024, 40);
+  // The wheels' sides: the deep rim with its decals and the spokes inside it, both wheels' discs as one shape
+  // drawn through one picture. The picture is turned about its middle as the bikes roll (`roll`), which turns
+  // every wheel of every rider at once: one draw call a rider for two wheels, and nothing to place each frame.
+  private readonly spokeDisc = wheelSides();
   private readonly spokeTexture = wheelTexture();
   private readonly spokes = new MeshStandardMaterial({
     map: this.spokeTexture,
@@ -523,7 +523,14 @@ export class CourseCyclistKit {
   constructor(
     private readonly plain: Material,
     lights = false,
+    /**
+     * A simple build, for a slow device: the rider's trunk, head and bike are one mesh (so the trunk does not sway
+     * or rise on the bike and the head does not turn), and the lamps throw no pools on the road. Four draw calls a
+     * rider where the full build is seven.
+     */
+    readonly simple = false,
   ) {
+    this.spokeTexture.center.set(0.5, 0.5);
     if (!lights) return;
     this.glowTexture = glowTexture();
     this.glow = new MeshBasicMaterial({
@@ -595,6 +602,11 @@ export class CourseCyclistKit {
     });
   }
 
+  /** Turns every rider's wheels to where they are after `metres` of road. */
+  roll(metres: number): void {
+    this.spokeTexture.rotation = (metres / WHEEL) % (Math.PI * 2);
+  }
+
   /** The shared shapes a rider is put together from. */
   shapes() {
     return {
@@ -645,9 +657,8 @@ class CourseCyclist implements RiderModel {
   private readonly ankle = new Vector3();
   private readonly hip = new Vector3();
   private readonly rise = new Quaternion();
-  private readonly wheels: Mesh[] = [];
-  private readonly head: Mesh;
-  private readonly size: number;
+  private head: Mesh | null = null;
+  private readonly simple: boolean;
   /** The pools the bike's lights throw on the road, at night. */
   private road: Mesh | null = null;
   private readonly knee = new Vector3();
@@ -671,17 +682,21 @@ class CourseCyclist implements RiderModel {
     // And slighter and broader ones: a rider's build is their width for their height. The bike is as narrow as
     // a bike is, so the difference shows in the rider.
     this.rig.scale.set(look.scale * look.build, look.scale, look.scale);
-    this.size = look.scale;
+    this.simple = kit.simple;
     const rider = body(jersey, colours);
     this.group.add(this.rig);
     this.rig.add(this.torso);
     this.torso.position.copy(HIP);
-    const still = mergeGeometries(bike(colours), false)!;
+    // The full build keeps the bike, the trunk and the head apart, so the trunk can sway and rise and the head
+    // turn; the simple one makes them one mesh.
+    const simple = kit.simple;
+    const still = mergeGeometries(
+      simple ? [...bike(colours), ...rider.still, ...rider.head] : bike(colours),
+      false,
+    )!;
     this.still = new Mesh(still, plain);
     this.rig.add(this.still);
-    const trunk = mergeGeometries(rider.still, false)!;
-    this.torso.add(new Mesh(trunk, plain));
-    this.owned.push(still, trunk);
+    this.owned.push(still);
     // The jersey and the shorts' seat: one mesh, drawn with the rider's own kit (its panels, pockets and lettering).
     const worn = mergeGeometries(rider.kit, false)!;
     const fabric = new MeshStandardMaterial({
@@ -690,37 +705,39 @@ class CourseCyclist implements RiderModel {
       vertexColors: true,
     });
     // Where the parts meet they shade one another: worked out once for the shape every rider shares.
-    const skull = mergeGeometries(rider.head, false)!;
-    kit.shade([still, trunk, worn, skull]);
-    trunk.translate(-HIP.x, -HIP.y, -HIP.z);
-    worn.translate(-HIP.x, -HIP.y, -HIP.z);
-    // The head turns about the top of the neck.
-    skull.translate(-NECK.x, -NECK.y, -NECK.z);
-    this.head = new Mesh(skull, plain);
-    this.head.position.copy(NECK).sub(HIP);
-    this.head.rotation.order = 'YXZ';
-    this.torso.add(this.head);
-    this.owned.push(skull);
-    this.torso.add(new Mesh(worn, fabric));
+    if (simple) {
+      kit.shade([still, worn]);
+      this.rig.add(new Mesh(worn, fabric));
+    } else {
+      const trunk = mergeGeometries(rider.still, false)!;
+      const skull = mergeGeometries(rider.head, false)!;
+      kit.shade([still, trunk, worn, skull]);
+      trunk.translate(-HIP.x, -HIP.y, -HIP.z);
+      worn.translate(-HIP.x, -HIP.y, -HIP.z);
+      this.torso.add(new Mesh(trunk, plain));
+      // The head turns about the top of the neck.
+      skull.translate(-NECK.x, -NECK.y, -NECK.z);
+      this.head = new Mesh(skull, plain);
+      this.head.position.copy(NECK).sub(HIP);
+      this.head.rotation.order = 'YXZ';
+      this.torso.add(this.head);
+      this.torso.add(new Mesh(worn, fabric));
+      this.owned.push(trunk, skull);
+    }
     this.owned.push(worn, fabric, fabric.map!);
     for (const piece of [...rider.still, ...rider.kit, ...rider.head]) piece.dispose();
 
-    // The wheels' sides: a disc a wheel, with its rim, decals and spokes.
-    for (const axle of [FRONT, REAR]) {
-      const disc = new Mesh(shapes.spokeDisc, shapes.spokes);
-      // On its side, then turned about its own axle as the bike rolls (`roll`).
-      disc.rotation.set(0, Math.PI / 2, 0, 'YXZ');
-      disc.position.copy(axle);
-      this.rig.add(disc);
-      this.wheels.push(disc);
-    }
+    // The wheels' sides: both wheels' discs, with their rims, decals and spokes, as one mesh (the kit turns them).
+    this.rig.add(new Mesh(shapes.spokeDisc, shapes.spokes));
 
     // The bike's lights: the rear lamp's glow rides with the bike; the pools of light lie on the road, so they
     // are kept level when the rider leans.
     if (lit && shapes.glow && shapes.lampGlow && shapes.roadGlow) {
       this.rig.add(new Mesh(shapes.lampGlow, shapes.glow));
-      this.road = new Mesh(shapes.roadGlow, shapes.glow);
-      this.group.add(this.road);
+      if (!simple) {
+        this.road = new Mesh(shapes.roadGlow, shapes.glow);
+        this.group.add(this.road);
+      }
     }
     // The legs are the rider's own: their skin, their socks, their shoes.
     const thigh = thighShape(colours);
@@ -749,12 +766,6 @@ class CourseCyclist implements RiderModel {
     fineness = 1;
   }
 
-  roll(metres: number): void {
-    // A wheel turns once in its own circumference; forwards is the top going ahead.
-    const turn = -(metres / (WHEEL * this.size)) % (Math.PI * 2);
-    for (const wheel of this.wheels) wheel.rotation.z = turn;
-  }
-
   pose(angle: number, standing = 0): void {
     // The bike rocks a little under each pedal stroke, about where the tyres meet the road; the rider's shoulders
     // sway the other way over it, about the line from the hips to the hands, and the back rises and falls a touch
@@ -762,7 +773,7 @@ class CourseCyclist implements RiderModel {
     const stroke = Math.sin(angle);
     // The head stays level while the bike leans and rocks under it, as a rider's does, and looks into the bend.
     const lean = this.group.rotation.z;
-    this.head.rotation.set(
+    this.head?.rotation.set(
       0,
       Math.min(Math.max(lean * HEAD_LOOKS, -0.5), 0.5),
       -(lean + stroke * (ROCK + ROCK_STANDING * standing)) * HEAD_LEVEL,
@@ -772,7 +783,13 @@ class CourseCyclist implements RiderModel {
     // Out of the saddle the bike is thrown from side to side under the rider, who stays over it.
     this.rig.rotation.z = stroke * (ROCK + ROCK_STANDING * standing);
     // Standing, the rider turns about their hands on the hoods: the hips lift off the saddle and the shoulders
-    // come forward over the bars.
+    // come forward over the bars. (The simple build's trunk is part of the bike's mesh: it stays in the saddle.)
+    if (!this.simple) this.sway(angle, stroke, standing);
+    this.legs.forEach((leg, i) => this.pedal(leg, angle + i * Math.PI));
+  }
+
+  /** The trunk's sway over the bike and its rise out of the saddle. */
+  private sway(angle: number, stroke: number, standing: number): void {
     this.rise.setFromAxisAngle(ACROSS, -STAND * standing);
     this.torso.quaternion
       .setFromAxisAngle(SPINE, -stroke * (SWAY + SWAY_STANDING * standing))
@@ -783,8 +800,11 @@ class CourseCyclist implements RiderModel {
       .applyQuaternion(this.rise)
       .add(HANDS)
       .setY(this.torso.position.y + Math.cos(angle * 2) * (BOB + BOB_STANDING * standing));
-    this.legs.forEach((leg, i) => {
-      const a = angle + i * Math.PI;
+  }
+
+  /** One leg, its crank and its pedal, with the crank at `a`. */
+  private pedal(leg: (typeof this.legs)[number], a: number): void {
+    {
       const pedal = this.pedalAt.set(
         leg.side * PEDAL_OUT,
         BB.y - Math.cos(a) * CRANK,
@@ -816,7 +836,7 @@ class CourseCyclist implements RiderModel {
       const knee = bend(hip, ankle, THIGH, SHIN, this.to.set(leg.side * 0.05, 0.25, -1), this.knee);
       between(hip, knee, leg.thigh.matrix);
       between(knee, ankle, leg.shin.matrix);
-    });
+    }
   }
 }
 
@@ -1623,6 +1643,19 @@ function roadGlowShape(): BufferGeometry {
   const both = mergeGeometries([rear, front], false)!;
   rear.dispose();
   front.dispose();
+  return both;
+}
+
+/** Both wheels' sides as one shape: a disc at each axle, standing in the bike's plane, each with the whole picture. */
+function wheelSides(): BufferGeometry {
+  const discs = [FRONT, REAR].map((axle) => {
+    const disc = new CircleGeometry(WHEEL - 0.024, 40);
+    disc.rotateY(Math.PI / 2);
+    disc.translate(axle.x, axle.y, axle.z);
+    return disc;
+  });
+  const both = mergeGeometries(discs, false)!;
+  for (const disc of discs) disc.dispose();
   return both;
 }
 
