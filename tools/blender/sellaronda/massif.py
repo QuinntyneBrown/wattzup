@@ -93,3 +93,20 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     chute_hi_r = (fc_x + px_perp * 16.0 - ux * 30.0, fc_y + py_perp * 16.0 - uy * 30.0, 515.0)
     chute_hi_l = (fc_x - px_perp * 16.0 - ux * 30.0, fc_y - py_perp * 16.0 - uy * 30.0, 515.0)
     quad_shaded(peaks, chute_lo_l, chute_lo_r, chute_hi_r, chute_hi_l, cfn, 340.0, snow=True)
+
+    # Torri del Sella I-IV (2,533 m - 2,696 m): stepped vertical towers directly above Passo Sella (at=7750 m)
+    sella_pt = road.s[road.index(7750.0)]
+    sdx, sdy = sella_pt["x"] - cx, sella_pt["y"] - cy
+    sdist = max(1.0, math.hypot(sdx, sdy))
+    sux, suy = sdx / sdist, sdy / sdist
+    spx, spy = -suy, sux
+    tower_specs = (
+        (-155.0, 815.0, 445.0, 58.0, 46.0, 0.4),   # First Sella Tower (2,533 m)
+        (-52.0,  785.0, 492.0, 64.0, 52.0, 1.1),   # Second Sella Tower (2,598 m)
+        (58.0,   760.0, 548.0, 74.0, 58.0, 2.0),   # Third Sella Tower (2,696 m)
+        (162.0,  790.0, 498.0, 56.0, 48.0, 2.9),   # Fourth Sella Tower (2,605 m)
+    )
+    for lat, rad_out, h_top, rx_t, ry_t, ph in tower_specs:
+        tx = cx + sux * rad_out + spx * lat
+        ty = cy + suy * rad_out + spy * lat
+        rock_tower(peaks, tx, ty, 130.0, h_top, rx_t, ry_t, 10, math.atan2(suy, sux), cfn, taper=0.68, flat_cap=True, seed_phase=ph)
