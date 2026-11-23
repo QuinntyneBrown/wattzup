@@ -403,6 +403,13 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         B["parasol-red"].box((cbx, cby_p, cbz + 0.85), (0.36, 0.42, 0.62), cby)
         B["gold"].box((cbx, cby_p + 0.35, cbz + 1.15), (0.24, 0.24, 0.30), cby)
 
+    # Sellaronda Bike Day souvenir jersey display tent at Passo Sella (at=7778 m)
+    jr_s = road.index(7778.0)
+    jrsy = s[jr_s]["h"]
+    jrx, jry, jrz = kit.P(jr_s, 0.0, -(kit.kerb + 4.2), 0.0)
+    B["paint"].box((jrx, jry, jrz), (2.8, 1.2, 0.92), jrsy)
+    kit.gable(B["accent-2"], (jrx, jry, jrz + 2.35), 3.2, 3.0, 0.78, jrsy)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
