@@ -288,4 +288,13 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
             bz_m = height_at(bx_m, by_m)
             B["larch-warm"].box((bx_m, by_m, bz_m), (4.6, 1.45, 0.68), myaw + bm_k * 0.4)
 
+    # 11. Twin-mast Piz Seteur gondola compression portal on the Passo Sella approach meadow (at=7360 m)
+    ps_idx = road.index(7360.0)
+    psyaw = s[ps_idx]["h"]
+    for tw_o in (16.0, 22.0):
+        tx_p, ty_p, _ = road.at(ps_idx, kit.kerb + tw_o)
+        tz_p = height_at(tx_p, ty_p)
+        B["steel"].box((tx_p, ty_p, tz_p), (0.55, 0.55, 10.5), psyaw)
+        B["steel"].box((tx_p, ty_p, tz_p + 10.5), (0.48, 3.8, 0.42), psyaw)
+
     return cableways_out
