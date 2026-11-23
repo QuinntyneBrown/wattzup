@@ -1,8 +1,8 @@
 // Acceptance test
 // Traces to: L2-006 AC3
 // Description: a deleted account's personal data is erased within 30 days. The erasure service runs once a day on the
-// API's clock: a day after the deletion the rider, its sessions and its rides are gone, and a second run finds
-// nothing more.
+// API's clock: a day after the deletion the rider, its sessions, its rides and its feedback are gone, and a second run
+// finds nothing more.
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -47,7 +47,7 @@ public sealed class AccountErasureTests(AccountErasureApi api) : IClassFixture<A
     private static CancellationToken Cancel => TestContext.Current.CancellationToken;
 
     [Fact]
-    public async Task A_day_after_deletion_the_rider_its_sessions_and_its_rides_are_erased()
+    public async Task A_day_after_deletion_the_rider_its_sessions_its_rides_and_its_feedback_are_erased()
     {
         using var device = api.CreateClient(new WebApplicationFactoryClientOptions
         {
@@ -74,6 +74,14 @@ public sealed class AccountErasureTests(AccountErasureApi api) : IClassFixture<A
             timeZoneId = "Europe/London",
         }, Cancel);
         Assert.Equal(HttpStatusCode.Created, ride.StatusCode);
+        using var feedback = await device.PostAsJsonAsync("/api/feedback", new
+        {
+            kind = "bug",
+            message = "Resistance stayed at L8.",
+            context = new[] { new { term = "Workout", value = "Power intervals" } },
+            diagnostics = new { appVersion = "2.0.0 · client dev", packetLog = "" },
+        }, Cancel);
+        Assert.Equal(HttpStatusCode.Created, feedback.StatusCode);
         using var deleted = await device.DeleteAsync("/api/riders/me", Cancel);
         Assert.Equal(HttpStatusCode.NoContent, deleted.StatusCode);
 
@@ -85,6 +93,7 @@ public sealed class AccountErasureTests(AccountErasureApi api) : IClassFixture<A
         Assert.False(await db.Riders.AnyAsync(rider => rider.Id == riderId, Cancel));
         Assert.False(await db.RiderSessions.AnyAsync(session => session.RiderId == riderId, Cancel));
         Assert.False(await db.Rides.AnyAsync(recorded => recorded.RiderId == riderId, Cancel));
+        Assert.False(await db.FeedbackReports.AnyAsync(report => report.RiderId == riderId, Cancel));
         Assert.Equal(0, await scope.ServiceProvider.GetRequiredService<ISender>().Send(new ErasePendingAccountsCommand(), Cancel));
     }
 }

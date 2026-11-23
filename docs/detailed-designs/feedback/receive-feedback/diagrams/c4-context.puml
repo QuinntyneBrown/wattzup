@@ -4,9 +4,9 @@ LAYOUT_WITH_LEGEND()
 title System Context — Receive feedback
 
 Person(rider, "Rider", "Rides a smart bike at home")
-Person_Ext(team, "Telo Ride team", "Reads bug reports, ideas and kudos; reading channel <TO SUPPLY>")
+Person_Ext(team, "Telo Ride team", "Reads bug reports, ideas and kudos")
 System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
 
 Rel(rider, telo, "Sends feedback to")
-Rel(team, telo, "Reads stored feedback from")
+Rel(team, telo, "Reads stored feedback with the feedback command")
 @enduml

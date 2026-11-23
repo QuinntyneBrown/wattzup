@@ -10,7 +10,7 @@ copy reads are in [`docs/deployment.md`](../docs/deployment.md).
 | `src/Telo.Ride.Domain` | Entities, value objects, `DomainRuleException` | nothing |
 | `src/Telo.Ride.Application` | MediatR handlers, validators, `ValidationBehavior`, `IAppDbContext` | Domain |
 | `src/Telo.Ride.Infrastructure` | `AppDbContext` (EF Core, Azure SQL), migrations, `TeloRideMetrics`, and the class catalogue `Catalogue/classes.json`, embedded and read through `IClassCatalogue` (ADR 0028) | Application |
-| `src/Telo.Ride.Api` | `Program.cs`, controllers, `RideHub`, authentication, ProblemDetails, health, telemetry, `migrate`, and the app's build from `wwwroot` with the L2-131 headers (ADR 0026) | Infrastructure |
+| `src/Telo.Ride.Api` | `Program.cs`, controllers, `RideHub`, authentication, ProblemDetails, health, telemetry, `migrate`, `feedback`, and the app's build from `wwwroot` with the L2-131 headers (ADR 0026) | Infrastructure |
 | `tests/Telo.Ride.Api.Tests` | Acceptance tests through the API, in memory, on EF Core InMemory | Api |
 
 Commands, from `backend/` (`node tools/verify/verify.mjs` runs the first two):
@@ -20,6 +20,7 @@ dotnet format Telo.Ride.slnx --verify-no-changes   # the backend's lint
 dotnet test --solution Telo.Ride.slnx              # build and every test
 dotnet run --project src/Telo.Ride.Api             # serve the API (needs ConnectionStrings:TeloRide for readiness)
 dotnet run --project src/Telo.Ride.Api -- migrate  # apply pending migrations and exit
+dotnet run --project src/Telo.Ride.Api -- feedback # write every feedback report as JSON Lines and exit
 dotnet ef migrations add <Name> --project src/Telo.Ride.Infrastructure --startup-project src/Telo.Ride.Api --output-dir Migrations
 ```
 

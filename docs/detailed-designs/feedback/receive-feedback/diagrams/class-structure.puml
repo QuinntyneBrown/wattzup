@@ -18,55 +18,68 @@ package "Telo.Ride.Api" {
   class FeedbackController {
     +Submit(request: SubmitFeedbackRequest): Task<IActionResult>
   }
+  class FeedbackCommand <<CLI>> {
+    +Name: string = "feedback"
+    +RunAsync(services, output: TextWriter, ct): Task<int>
+  }
 }
 package "Telo.Ride.Application" {
   class SubmitFeedbackCommand {
     +Guid RiderId
-    +FeedbackKind Kind
-    +string Message
-    +RideContextDto Context
-    +DiagnosticsDto? Diagnostics
+    +string? Kind
+    +string? Message
+    +IReadOnlyList<FeedbackFactDto>? Context
+    +FeedbackDiagnosticsDto? Diagnostics
   }
-  class SubmitFeedbackCommandValidator {
-    +MaxMessageLength: int = 2000
-    +MaxPacketLogBytes: int = 1048576
+  class FeedbackFactDto {
+    +string? Term
+    +string? Value
   }
+  class FeedbackDiagnosticsDto {
+    +string? AppVersion
+    +string? PacketLog
+  }
+  class SubmitFeedbackCommandValidator
   class SubmitFeedbackCommandHandler {
-    +Handle(cmd: SubmitFeedbackCommand): Task<Guid>
+    +ReportsPerHour: int = 10
+    +Handle(cmd: SubmitFeedbackCommand): Task<FeedbackReceivedDto>
   }
-  class DiagnosticsDto {
-    +string AppVersion
-    +string PacketLog
+  class ListFeedbackQueryHandler {
+    +Handle(query: ListFeedbackQuery): Task<IReadOnlyList<FeedbackReportDto>>
+  }
+  interface IFeedbackMetrics {
+    +FeedbackReceived(kind: string): void
   }
   interface IAppDbContext {
     +DbSet<FeedbackReport> FeedbackReports
     +SaveChangesAsync(): Task<int>
   }
 }
+package "Telo.Ride.Infrastructure" {
+  class TeloRideMetrics
+}
 package "Telo.Ride.Domain" {
   class FeedbackReport {
     +Guid Id
     +Guid RiderId
-    +FeedbackKind Kind
+    +string Kind
     +string Message
-    +string ContextJson
+    +string Context
     +string? AppVersion
     +string? PacketLog
     +DateTimeOffset ReceivedAt
-    +static Create(...): FeedbackReport
-  }
-  enum FeedbackKind {
-    Bug
-    Improvement
-    Kudos
   }
 }
 
 FeedbackController ..> SubmitFeedbackCommand : sends
+FeedbackCommand ..> ListFeedbackQueryHandler : ListFeedbackQuery
 SubmitFeedbackCommandValidator ..> SubmitFeedbackCommand : validates
 SubmitFeedbackCommandHandler ..> SubmitFeedbackCommand : handles
-SubmitFeedbackCommand *-- "0..1" DiagnosticsDto
+SubmitFeedbackCommand *-- "0..32" FeedbackFactDto
+SubmitFeedbackCommand *-- "0..1" FeedbackDiagnosticsDto
 SubmitFeedbackCommandHandler ..> FeedbackReport : creates
 SubmitFeedbackCommandHandler ..> IAppDbContext
-FeedbackReport --> FeedbackKind
+SubmitFeedbackCommandHandler ..> IFeedbackMetrics
+ListFeedbackQueryHandler ..> IAppDbContext
+TeloRideMetrics ..|> IFeedbackMetrics
 @enduml

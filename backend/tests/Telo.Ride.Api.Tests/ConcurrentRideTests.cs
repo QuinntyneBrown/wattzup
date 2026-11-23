@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Telo.Ride.Application;
 using Telo.Ride.Domain.Accounts;
+using Telo.Ride.Domain.Feedback;
 using Telo.Ride.Domain.Maps;
 using Telo.Ride.Domain.Results;
 using Telo.Ride.Domain.Rides;
@@ -45,6 +46,8 @@ public sealed class ConcurrentRideApi : SignInApi
 
         public DbSet<MapProgress> MapProgress => db.MapProgress;
         public DbSet<CustomWorkout> CustomWorkouts => db.CustomWorkouts;
+
+        public DbSet<FeedbackReport> FeedbackReports => db.FeedbackReports;
 
         public DbSet<SessionResult> SessionResults => db.SessionResults;
 

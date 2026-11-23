@@ -79,3 +79,7 @@ are:
    non-zero if one fails. The API never migrates on start-up.
 3. Deploy `out/` to the App Service, which starts the new version, and check `GET /health/ready`
    answers `Healthy`.
+
+To read the riders' feedback, run `dotnet out/Telo.Ride.Api.dll feedback` with
+`ConnectionStrings__TeloRide` set to the database: it writes every report, oldest first, as JSON
+Lines and exits. A report names its rider by id, never by email, and carries no setting of its own.

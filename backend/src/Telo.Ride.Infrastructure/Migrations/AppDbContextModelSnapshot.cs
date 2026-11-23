@@ -142,6 +142,46 @@ namespace Telo.Ride.Infrastructure.Migrations
                     b.ToTable("SignInCodes");
                 });
 
+            modelBuilder.Entity("Telo.Ride.Domain.Feedback.FeedbackReport", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AppVersion")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("Context")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("PacketLog")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("ReceivedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("RiderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RiderId", "ReceivedAt");
+
+                    b.ToTable("FeedbackReports");
+                });
+
             modelBuilder.Entity("Telo.Ride.Domain.Maps.MapProgress", b =>
                 {
                     b.Property<Guid>("RiderId")
@@ -305,6 +345,15 @@ namespace Telo.Ride.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("Telo.Ride.Domain.Accounts.RiderSession", b =>
+                {
+                    b.HasOne("Telo.Ride.Domain.Accounts.Rider", null)
+                        .WithMany()
+                        .HasForeignKey("RiderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Telo.Ride.Domain.Feedback.FeedbackReport", b =>
                 {
                     b.HasOne("Telo.Ride.Domain.Accounts.Rider", null)
                         .WithMany()
