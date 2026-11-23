@@ -105,3 +105,16 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         B["steel"].box(kit.P(e_idx, 0.0, -(kit.kerb + 1.8), 0.0), (0.10, 0.10, 2.35), e_yaw)
         B["paint"].box(kit.P(e_idx, 0.0, -(kit.kerb + 1.8), 1.65), (0.08, 1.65, 0.72), e_yaw)
         B["chalet-wood"].box(kit.P(e_idx, 0.0, -(kit.kerb + 1.8), 1.25), (0.08, 1.65, 0.34), e_yaw)
+
+    # Glacial valley streams & larch timber-truss pedestrian/roadside bridges in all 4 valley villages
+    for stream_m in (235.0, 3090.0, 6085.0, 8895.0):
+        st_idx = road.index(stream_m)
+        st_yaw = road.s[st_idx]["h"]
+        # Turquoise torrent channel crossing beneath the valley road + larch timber bridge parapets
+        for side in (-1.0, 1.0):
+            sx_t, sy_t, _ = road.at(st_idx, (kit.kerb + 14.0) * side)
+            sz_t = min(height_at(sx_t, sy_t), road.s[st_idx]["z"] - 1.4)
+            B["dolomite-pale"].box((sx_t, sy_t, sz_t - 0.3), (6.4, 24.0, 0.45), st_yaw)
+            B["lago-turquoise"].box((sx_t, sy_t, sz_t + 0.08), (4.2, 24.0, 0.18), st_yaw)
+            B["larch-warm"].box(kit.P(st_idx, 0.0, (kit.kerb + 0.95) * side, 0.0), (8.6, 0.32, 1.18), st_yaw)
+            B["larch-aged"].box(kit.P(st_idx, 0.0, (kit.kerb + 0.95) * side, 1.18), (9.0, 0.44, 0.16), st_yaw)
