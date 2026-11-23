@@ -100,6 +100,12 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["larch-warm"].box((base_x, base_y, st_z + 0.6), (12.2, 8.0, 3.8), yaw_l)
         B["dark"].box((base_x, base_y, st_z + 1.4), (12.4, 8.2, 1.8), yaw_l)
         kit.gable(B["copper-patina"], (base_x, base_y, st_z + 4.4), 12.8, 8.6, 1.35, yaw_l)
+        # Compact stone-and-steel electrical substation hut beside each lift terminal
+        sub_x, sub_y = base_x - clx * 9.5, base_y - cly * 9.5
+        sub_z = height_at(sub_x, sub_y)
+        B["chalet-plaster"].box((sub_x, sub_y, sub_z - 0.8), (3.2, 2.8, 3.1), yaw_l)
+        B["steel"].box((sub_x, sub_y, sub_z + 0.2), (1.4, 2.88, 1.95), yaw_l)
+        kit.gable(B["roof-slate"], (sub_x, sub_y, sub_z + 2.3), 3.6, 3.2, 0.75, yaw_l)
         # Hillside steel avalanche snow-retention bridges high on the flank
         for av_i in range(3):
             ax_b = base_x + clx * (95.0 + av_i * 22.0) - cly * 22.0
