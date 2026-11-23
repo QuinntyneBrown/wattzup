@@ -115,3 +115,16 @@ def build_four_passes(B, kit, road, height_at) -> None:
                 B["yellow"].box((px_s, py_s, pz_s), (0.09, 0.09, 2.85), sp_yaw)
                 B["dark"].box((px_s, py_s, pz_s + 0.95), (0.10, 0.10, 0.55), sp_yaw)
                 B["parasol-red"].box((px_s, py_s, pz_s + 2.35), (0.10, 0.10, 0.52), sp_yaw)
+
+    # High-altitude meteorological stations (mast, solar panel, sensor housing, anemometer cross) on Pordoi & Sella
+    for wx_at in (4998.0, 7798.0):
+        w_idx = road.index(wx_at)
+        w_yaw = s[w_idx]["h"]
+        wx0, wy0, _ = road.at(w_idx, kit.kerb + 7.5)
+        wz0 = height_at(wx0, wy0)
+        B["stone"].box((wx0, wy0, wz0 - 0.3), (1.4, 1.4, 0.5), w_yaw)
+        B["steel"].box((wx0, wy0, wz0 + 0.2), (0.14, 0.14, 5.6), w_yaw)
+        B["paint"].box((wx0, wy0, wz0 + 1.8), (0.55, 0.55, 0.68), w_yaw)
+        B["ladin-blue"].box((wx0, wy0, wz0 + 3.4), (0.12, 0.95, 0.65), w_yaw + 0.5)
+        B["steel"].box((wx0, wy0, wz0 + 5.55), (1.35, 0.08, 0.08), w_yaw)
+        B["steel"].box((wx0, wy0, wz0 + 5.55), (0.08, 1.35, 0.08), w_yaw)
