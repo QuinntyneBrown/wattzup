@@ -99,3 +99,9 @@ export const SELLA_SUBPEAKS: readonly SellaSubpeak[] = [
 export function sellaSubpeaksForPass(passId: SellaPass['id']): readonly SellaSubpeak[] {
   return SELLA_SUBPEAKS.filter((p) => p.facingPass === passId);
 }
+
+/** Returns the ramp length in metres of `passId` on the Sella Ronda course. */
+export function passClimbLengthMetres(passId: SellaPass['id']): number {
+  const p = SELLA_RONDA_PASSES.find((entry) => entry.id === passId) ?? SELLA_RONDA_PASSES[0]!;
+  return p.courseMetres - p.climbFromMetres;
+}
