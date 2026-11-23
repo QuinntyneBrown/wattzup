@@ -262,4 +262,10 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         gb_i = road.index(gb_m)
         B["stone"].box(kit.P(gb_i, 0.0, -(kit.kerb + 1.85), -0.1), (8.8, 1.15, 1.25), s[gb_i]["h"])
         B["steel"].box(kit.P(gb_i, 0.0, -(kit.kerb + 1.26), 0.52), (8.82, 0.06, 1.18), s[gb_i]["h"])
+    # Amber centreline reflective road studs through the sharpest tornanti
+    st_cnt = 0
+    for i in range(24, kit.n - 24, 9):
+        if abs(s[i]["k"]) > 1 / 52 and st_cnt < 24:
+            st_cnt += 1
+            B["bulb"].box(kit.P(i, 0.0, 0.0, 0.025), (0.14, 0.14, 0.03), s[i]["h"])
     # [ANCHOR:hairpins]
