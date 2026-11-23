@@ -24,11 +24,17 @@ import { GattWriteQueue } from './gatt-write-queue';
 /** FTMS (0x1826) and Heart Rate (0x180D), the standard services the chooser offers beside Echelon's. */
 const FTMS = 0x1826;
 const HEART_RATE = 0x180d;
+/**
+ * An Echelon advertises its name (`ECH-<model>-<serial>`) and may leave its service out of the advertisement, so the
+ * chooser also matches the name. `namePrefix` is case-sensitive, hence the 3 spellings (L2-012 AC1).
+ */
+const ECHELON_NAMES = [{ namePrefix: 'ECH' }, { namePrefix: 'Ech' }, { namePrefix: 'ech' }];
 
 /**
  * The link to a real bike over Web Bluetooth, the only code that touches `navigator.bluetooth` (AGENTS.md). It opens
- * the chooser filtered to the Echelon service and FTMS (L2-012), connects through the link the device's services
- * select, and serialises every write through one `GattWriteQueue` (docs/detailed-designs/bike/connect-a-bike).
+ * the chooser filtered to an Echelon's name, the Echelon service and FTMS (L2-012), connects through the link the
+ * device's services select, and serialises every write through one `GattWriteQueue`
+ * (docs/detailed-designs/bike/connect-a-bike).
  */
 @Injectable()
 export class WebBluetoothBikeConnection implements BikeConnection, OnDestroy {
@@ -70,7 +76,7 @@ export class WebBluetoothBikeConnection implements BikeConnection, OnDestroy {
   async requestBike(): Promise<BikeInfo | null> {
     try {
       this.device = await navigator.bluetooth.requestDevice({
-        filters: [{ services: [EchelonProtocol.service] }, { services: [FTMS] }],
+        filters: [...ECHELON_NAMES, { services: [EchelonProtocol.service] }, { services: [FTMS] }],
         optionalServices: [HEART_RATE],
       });
     } catch (error) {

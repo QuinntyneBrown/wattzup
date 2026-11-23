@@ -20,7 +20,7 @@ export interface RecordedWrite {
 
 /** The options the page passed to `requestDevice`, as JSON (numbers stay numbers, UUIDs strings). */
 export interface RecordedRequest {
-  filters: { services: (string | number)[] }[];
+  filters: { services?: (string | number)[]; namePrefix?: string }[];
   optionalServices?: (string | number)[];
 }
 

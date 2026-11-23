@@ -1,8 +1,8 @@
 // Acceptance test
 // Traces to: L2-011 AC3 to AC5; L2-012 AC1 to AC5; L2-013 AC1, AC2, AC4; L2-014 AC1
-// Description: Connect Bike opens the browser's chooser only when the rider presses Pair, asks for the Echelon
-// service and FTMS with Heart Rate optional, takes a cancelled chooser back to the start with no error, names a
-// blocked chooser in plain words with Try again, and hints at the Echelon app holding the bike.
+// Description: Connect Bike opens the browser's chooser only when the rider presses Pair, asks for a name starting
+// with ECH, the Echelon service and FTMS with Heart Rate optional, takes a cancelled chooser back to the start with
+// no error, names a blocked chooser in plain words with Try again, and hints at the Echelon app holding the bike.
 import { ECHELON_NOTIFY, ECHELON_SERVICE, ECHELON_WRITE, echelonBike } from './fixtures/echelon';
 import {
   CONTROL_POINT,
@@ -23,7 +23,7 @@ const WORKOUT_FRAME = [
 ];
 
 test.describe('Pair a bike', () => {
-  test('opens the chooser only from Pair, for the Echelon service and FTMS (L2-012 AC1, AC2, AC5)', async ({
+  test('opens the chooser only from Pair, for an ECH name, the Echelon service and FTMS (L2-012 AC1, AC2, AC5)', async ({
     page,
     bluetooth,
   }) => {
@@ -42,7 +42,13 @@ test.describe('Pair a bike', () => {
       .poll(() => bluetooth.requests())
       .toEqual([
         {
-          filters: [{ services: [ECHELON_SERVICE] }, { services: [FTMS] }],
+          filters: [
+            { namePrefix: 'ECH' },
+            { namePrefix: 'Ech' },
+            { namePrefix: 'ech' },
+            { services: [ECHELON_SERVICE] },
+            { services: [FTMS] },
+          ],
           optionalServices: [HEART_RATE],
         },
       ]);
