@@ -85,6 +85,7 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         _fbox(-0.15, 0.55 * (1.0 if bg_x > 0 else 1.0), 0.52, 0.28, 0xB8C2CE)
     _fbox(-0.95, 1.15, 0.68, 0.55, 0xC82834)
     _fbox(0.10, 0.08, 0.08, 0.85, 0xDCE2EA)
+    _fbox(0.95, 0.14, 0.14, 0.14, 0xE63228)
     _fbox(-6.35, 0.22, 3.08, 3.10, 0xF4F0E6)
     _fbox(-3.2, 0.35, 0.35, 3.2, 0x9AA2AC)
     _fbox(-6.62, 4.95, 3.12, 0.22, 0x1E222A)
