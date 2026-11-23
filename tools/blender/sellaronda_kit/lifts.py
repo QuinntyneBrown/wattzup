@@ -163,6 +163,8 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
                 B[piste_col].box((px_k - cly * 7.5, py_k + clx * 7.5, pz_k + 1.65), (0.08, 0.52, 0.52), yaw_l)
                 # Summer-rolled orange B-net bundle lashed to piste post
                 B["crowd-3"].box((px_k - cly * 8.2, py_k + clx * 8.2, pz_k), (0.36, 0.36, 2.05), yaw_l)
+                if k == 2:
+                    B["larch-aged"].box((px_k, py_k, pz_k + 0.04), (0.28, 9.5, 0.16), yaw_l + 0.35)
                 # Yellow TechnoAlpin snowmaking fan gun on tower mount beside the summer piste
                 if k % 2 == 1:
                     sx_g = px_k + cly * 9.0
