@@ -8,6 +8,7 @@ import {
   isInsideRockfallGallery,
   leanAngleDegrees,
   outerVsInnerHairpinGradeRatio,
+  recommendedHairpinLine,
   switchbackCadenceTargetRpm,
   tornanteRadiusMetres,
 } from './hairpin-pacing';
@@ -38,5 +39,7 @@ describe('classifyBendSeverity', () => {
     expect(isInsideRockfallGallery(4600)).toBe(true);
     expect(isInsideRockfallGallery(5000)).toBe(false);
     expect(centripetalGForce(12, 0.02)).toBeCloseTo(0.2936, 2);
+    expect(recommendedHairpinLine(7, 0.022)).toBe('wide-climbing-arc');
+    expect(recommendedHairpinLine(-7, 0.022)).toBe('late-apex-descent');
   });
 });

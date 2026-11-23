@@ -95,3 +95,12 @@ export function centripetalGForce(speedMps: number, curvaturePerMetre: number): 
   const v = Math.max(0, speedMps);
   return (v * v * Math.abs(curvaturePerMetre)) / 9.81;
 }
+
+/** Optimal road positioning strategy through a Dolomite switchback given `gradePercent`. */
+export function recommendedHairpinLine(
+  gradePercent: number,
+  curvaturePerMetre: number,
+): 'hold-lane' | 'wide-climbing-arc' | 'late-apex-descent' {
+  if (classifyBendSeverity(curvaturePerMetre) !== 'tornante') return 'hold-lane';
+  return gradePercent >= 0 ? 'wide-climbing-arc' : 'late-apex-descent';
+}
