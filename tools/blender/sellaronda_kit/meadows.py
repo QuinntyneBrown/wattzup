@@ -592,4 +592,11 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["larch-warm"].box((phx, phy, phz), (0.55, 0.38, 1.35), s[phi]["h"])
             kit.gable(B["chalet-wood"], (phx, phy, phz + 1.35), 0.72, 0.52, 0.24, s[phi]["h"])
 
+    # Pale calcareous spring-tufa stones edging high-pass snowmelt rivulets
+    for tf_m in (4825.0, 7565.0, 9985.0):
+        tfi = road.index(tf_m)
+        tfx, tfy, _ = road.at(tfi, -(kit.kerb + 5.8))
+        if road.clear_of_road(tfx, tfy, 4.0, tfi):
+            B["dolomite-pale"].box((tfx, tfy, height_at(tfx, tfy)), (1.25, 0.85, 0.34), tfi * 0.4)
+
     return trees
