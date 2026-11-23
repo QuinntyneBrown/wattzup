@@ -219,3 +219,10 @@ def build_four_passes(B, kit, road, height_at) -> None:
     mx_s, my_s, mz_s = kit.P(ms_idx, 0.0, kit.kerb + 3.4, -0.15)
     B["dolomite-pale"].box((mx_s, my_s, mz_s), (1.35, 1.35, 1.10), ms_yaw)
     B["larch-warm"].box((mx_s, my_s, mz_s + 1.10), (0.48, 0.44, 1.85), ms_yaw + 0.4)
+
+    # Historic small stone alpine border sentry hut on Passo Campolongo (at=2122 m)
+    dg_idx = road.index(2122.0)
+    dg_yaw = s[dg_idx]["h"]
+    dx_g, dy_g, dz_g = kit.P(dg_idx, 0.0, kit.kerb + 5.2, -0.4)
+    B["stone"].box((dx_g, dy_g, dz_g), (3.4, 2.9, 2.85), dg_yaw)
+    kit.gable(B["roof-slate"], (dx_g, dy_g, dz_g + 2.85), 3.9, 3.4, 1.15, dg_yaw)
