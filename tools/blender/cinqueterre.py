@@ -163,23 +163,23 @@ def village_sites(s: list[dict]) -> list[dict]:
     """Where the villages stand: on the headlands, the places the road swings furthest out to sea, spread along the
     coast. Each is the sample of the road above it and the middle of its spur."""
     step = s[1]["d"] - s[0]["d"]
-    span = int(360 / step)
     length = s[-1]["d"]
-    found = []
-    for i in range(span, len(s) - span):
-        p = s[i]
-        if not 500.0 < p["d"] < length - 900.0 or math.cos(p["h"]) < 0.8:
-            continue
-        window = s[i - span : i + span + 1]
-        if p["y"] < max(q["y"] for q in window) or any(abs(q["k"]) > 1 / 70 for q in s[i - 30 : i + 31]):
-            continue
-        found.append((p["y"] - sum(q["y"] for q in window) / len(window), i))
     chosen: list[int] = []
-    for _, i in sorted(found, reverse=True):
-        if all(abs(s[i]["d"] - s[j]["d"]) > 1500.0 for j in chosen):
-            chosen.append(i)
-        if len(chosen) == len(VILLAGES):
-            break
+    # The boldest headlands first, well apart; then, until there are five, lesser ones closer together.
+    for reach, apart in ((360.0, 1500.0), (240.0, 1150.0), (160.0, 850.0)):
+        span = int(reach / step)
+        found = []
+        for i in range(span, len(s) - span):
+            p = s[i]
+            if not 500.0 < p["d"] < length - 900.0 or math.cos(p["h"]) < 0.8:
+                continue
+            window = s[i - span : i + span + 1]
+            if p["y"] < max(q["y"] for q in window) or any(abs(q["k"]) > 1 / 70 for q in s[i - 30 : i + 31]):
+                continue
+            found.append((p["y"] - sum(q["y"] for q in window) / len(window), i))
+        for _, i in sorted(found, reverse=True):
+            if len(chosen) < len(VILLAGES) and all(abs(s[i]["d"] - s[j]["d"]) > apart for j in chosen):
+                chosen.append(i)
     return [{"name": VILLAGES[q], "i": i, "x": s[i]["x"], "y": s[i]["y"], "z": s[i]["z"]} for q, i in enumerate(sorted(chosen))]
 
 
