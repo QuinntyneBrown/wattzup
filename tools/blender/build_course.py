@@ -391,6 +391,10 @@ MATERIALS: dict[str, dict] = {
     "hair-0": {"color": 0x1E1612, "rough": 0.9},
     "hair-1": {"color": 0x5A3A22, "rough": 0.9},
     "hair-2": {"color": 0xD8B878, "rough": 0.9},
+    # The IBIZA letters: white, their faces dark, on a pale blue plinth.
+    "sign-white": {"color": 0xF2F0EA, "rough": 0.7},
+    "sign-face": {"color": 0x23262E, "rough": 0.5},
+    "sign-plinth": {"color": 0xA9CFE6, "rough": 0.8},
     # The island's white: linen shirts and summer dresses.
     "party-white": {"color": 0xF4EEE4, "rough": 0.9},
     # What is in the glass: it catches the light, so it glows a little.
@@ -1147,6 +1151,70 @@ def palm(B: dict, x: float, y: float, z: float, rng: random.Random, height: floa
             frond(B[kinds[j % len(kinds)]], a_, rise + rng.uniform(-0.12, 0.12), rng.uniform(*reach), sag * rng.uniform(0.8, 1.2), 0.62, rise == 0.45)
 
 
+# The letters of the IBIZA sign, each a few slabs: corners in (metres along, metres up), anticlockwise from the front.
+SIGN_TALL, SIGN_STROKE, SIGN_WIDE, SIGN_GAP, SIGN_DEEP = 2.4, 0.44, 1.55, 0.34, 0.55
+
+
+def _rect(u0: float, v0: float, u1: float, v1: float):
+    return ((u0, v0), (u1, v0), (u1, v1), (u0, v1))
+
+
+def sign_letter(letter: str) -> tuple[float, list]:
+    """A letter's width and its slabs."""
+    h, t, w = SIGN_TALL, SIGN_STROKE, SIGN_WIDE
+    mid = h / 2
+    if letter == "I":
+        return t, [_rect(0, 0, t, h)]
+    if letter == "B":
+        return w, [
+            _rect(0, 0, t, h),
+            _rect(t, 0, w - 0.22, t), _rect(t, mid - t / 2, w - 0.3, mid + t / 2), _rect(t, h - t, w - 0.22, h),
+            ((w - t, t * 0.55), (w, t * 0.9), (w, mid - t * 0.55), (w - t, mid - t * 0.2)),
+            ((w - t, mid + t * 0.2), (w, mid + t * 0.55), (w, h - t * 0.9), (w - t, h - t * 0.55)),
+            ((w - 0.22, 0), (w, t * 0.9), (w - t, t * 0.55), (w - 0.22, t)),
+            ((w - 0.22, h - t), (w - t, h - t * 0.55), (w, h - t * 0.9), (w - 0.22, h)),
+        ]
+    if letter == "Z":
+        return w, [_rect(0, 0, w, t), _rect(0, h - t, w, h), ((0, t), (t * 1.35, t), (w, h - t), (w - t * 1.35, h - t))]
+    if letter == "A":
+        top = t * 0.62
+        return w + 0.2, [
+            ((0, 0), (t * 1.05, 0), ((w + 0.2) / 2 + top / 2, h), ((w + 0.2) / 2 - top / 2, h)),
+            ((w + 0.2 - t * 1.05, 0), (w + 0.2, 0), ((w + 0.2) / 2 + top / 2, h), ((w + 0.2) / 2 - top / 2, h)),
+            _rect((w + 0.2) * 0.27, 0.62, (w + 0.2) * 0.73, 0.62 + t * 0.8),
+        ]
+    raise ValueError(letter)
+
+
+def ibiza_sign(B: dict, kit, at, facing: float) -> None:
+    """The letters IBIZA standing on a plinth: taller than a person, white with dark faces, lit from below once the
+    sun goes. `at` is the middle of the plinth's foot and `facing` the way the letters look."""
+    nx, ny = math.cos(facing), math.sin(facing)
+    ux, uy = -ny, nx
+    widths = [sign_letter(c)[0] for c in "IBIZA"]
+    total = sum(widths) + SIGN_GAP * 4
+    plinth_h = 0.5
+    B["sign-plinth"].box((at[0], at[1], at[2]), (1.5, total + 1.3, plinth_h), facing)
+    u = -total / 2
+    for c in "IBIZA":
+        width, slabs = sign_letter(c)
+        for slab in slabs:
+            front = [(at[0] + ux * (u + a) + nx * SIGN_DEEP / 2, at[1] + uy * (u + a) + ny * SIGN_DEEP / 2, at[2] + plinth_h + v) for a, v in slab]
+            back = [(q[0] - nx * SIGN_DEEP, q[1] - ny * SIGN_DEEP, q[2]) for q in front]
+            face, side = B["sign-face"], B["sign-white"]
+            face.faces.append(tuple(face.v(q) for q in front))
+            side.faces.append(tuple(side.v(q) for q in reversed(back)))
+            for k in range(len(front)):
+                j = (k + 1) % len(front)
+                side.quad(front[k], back[k], back[j], front[j])
+        u += width + SIGN_GAP
+    # Lamps in the plinth light the letters, and the paving before them.
+    for k in (-1, 0, 1):
+        spot = (at[0] + ux * k * total / 3 + nx * 1.0, at[1] + uy * k * total / 3 + ny * 1.0, at[2] + plinth_h + 0.1)
+        B["bulb"].box((spot[0] - nx * 0.45, spot[1] - ny * 0.45, at[2] + plinth_h), (0.16, 0.5, 0.07), facing)
+        kit.light((spot[0] + nx * 1.5, spot[1] + ny * 1.5, at[2]), "bulb", 7.0, 0.5)
+
+
 def palm_bunch(B: dict, x: float, y: float, z: float, rng: random.Random) -> None:
     """Palms as they are planted: more often two or three from one bed than one alone, of different heights,
     leaning away from each other."""
@@ -1201,7 +1269,8 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
     names = (
         "trunk leaf leaf-dark glint bush bougainvillea whitewash wall wood dark stone rock skin club-window awning awning-white arrow sail sail-pink "
         "glow-door lamp-red lamp-green gold confetti bulb paint sun island tower "
-        "skin-1 skin-2 hair-0 hair-1 hair-2 party-white drink-0 drink-1 drink-2 trunk-dark leaf-dry"
+        "skin-1 skin-2 hair-0 hair-1 hair-2 party-white drink-0 drink-1 drink-2 trunk-dark leaf-dry "
+        "sign-white sign-face sign-plinth"
     ).split() + NEONS + BEAMS + CROWD
     B = {name: Builder("".join(p.title() for p in name.split("-")), name) for name in names}
     B["whitewash"].name, B["dark"].name, B["paint"].name = "Clubs", "Dark", "GatePaint"
@@ -1477,6 +1546,18 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
     for i in range(2, n - 3):
         if i not in taken and i + 1 not in taken:
             kit.fence(i, -(kerb + TERRACE - 0.15), 1.1)
+    # The IBIZA letters, where the promenade is open and the road runs straight enough to read them coming: one in the
+    # first kilometre, one before the finish. They stand across the promenade, turned to face whoever rides up.
+    signs = 0
+    for lo, hi in ((road.index(220), road.index(1400)), (road.index(length - 1500), road.index(length - 420))):
+        for i in range(lo, hi):
+            free = all(j not in taken for j in range(i - 4, i + 5))
+            straight = abs(math.remainder(s[i + 6]["h"] - s[i - 10]["h"], math.tau)) < 0.12
+            if free and straight:
+                yaw = s[i]["h"]
+                ibiza_sign(B, kit, P(i, 0, -(kerb + 4.6), 0.12), yaw + math.pi - 0.62)
+                signs += 1
+                break
 
     # Arrow boards round the outside of every tight bend.
     for i in range(2, n - 2, 2):
@@ -1647,7 +1728,7 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
     B["island"].name = "Conillera"
     for b in B.values():
         b.build(col)
-    return {"sunAzimuth": az, "clubs": len(clubs), "efforts": efforts, "lights": kit.lights}
+    return {"sunAzimuth": az, "clubs": len(clubs), "efforts": efforts, "lights": kit.lights, "signs": signs}
 
 
 def build_themed_scenery(road: Road, st: list[dict], length: float, height_at, course: dict, theme: dict, col) -> dict:

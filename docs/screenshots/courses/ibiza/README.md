@@ -140,6 +140,8 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Sky 1 | A sky painted in Blender: a deck of broken cloud lit red and gold from below towards the sun, violet away from it | 60.1 fps, none over 20 ms, 98 draw calls, 112,078 triangles | 54.4, 53.2 / 52.6, 53.6 fps |
 | Party 1 | Partygoers with a drink in their hand: legs or a summer dress, a body, a head with hair, three skin tones, most in white | 60.0 fps, none over 20 ms, 88 draw calls, 133,050 triangles | 53.9, 54.1 fps after; Neon Docklands beside it 53.6 to 56.6 |
 | Palms 1 | Date palms in bunches of one to three: a banded, curving trunk, a thatch of dry fronds, a crown of feathered fronds in three tiers | 60.0 fps, none over 20 ms, 83 draw calls, 109,354 triangles | 56.5 fps after; Neon Docklands beside it 56.1 |
+| Sign 1 | The letters IBIZA on a plinth, at 388 m and at 7,420 m | 60.1 fps, none over 20 ms, 88 draw calls, 130,866 triangles | 57.0, 55.9 fps after; Neon Docklands beside it 55.1 |
+| Rider's shadow 2 | As long as the sun is low, dark and not black, crisp at the tyres and soft at the head | as Sign 1 | as Sign 1: no draw call more |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -201,3 +203,28 @@ The palms have their own dice, so nothing else moved.
 **Cost.** The file is 1.21 MB gzipped (it was 0.85): there are some seven hundred palms. Leaves are in chunks of
 one length of road again, so that a far bunch is not drawn; the finish's crowd fills four places in nine, and the
 sky's dome is 128 by 20 (5,000 triangles). The lowest tier's worst frame (the finish) is 119,185 triangles.
+
+### Sign 1: the IBIZA letters
+
+`sign-01.jpg`, `sign-01.mp4`. `ibiza_sign` in `build_course.py` stands the five letters on a pale blue plinth: 2.4 m
+tall, 0.55 m deep, white with dark faces as in the photograph, each letter a few slabs (the Z's diagonal and the A's
+legs are slanted ones). They stand across the open promenade, turned to face whoever rides up, with lamps in the
+plinth that light the paving before them. There are two: at the first place after 220 m where no club stands and
+the road runs straight enough to read them coming (388 m), and the same before the finish (7,420 m). About two
+hundred triangles a sign.
+
+### Rider's shadow 2 (asked for by the owner: "a little more realistic")
+
+`shadow-02.jpg` (three places). Before, a rider's shadow in the sun was 3.4 m long whatever the sun, near black, and
+evenly soft. Now:
+
+- **Its length is the sun's.** `shadowLength` in `rider-shadow-shape.ts`: the rider's height over the tangent of the
+  sun's angle, held between 1.4 m and 6.5 m. Ibiza's sun is six degrees up: 6.5 m.
+- **It is not black.** It darkens the road by two thirds and leaves the road's colour showing, with a breath of the
+  sky's colour from below.
+- **Crisp at the tyres, soft at the head.** `shadow-silhouette.ts` paints the figure twice, crisp and spread, and
+  joins them along the shadow; it thins towards its far end.
+- **It starts under the bike.** A dark patch where each tyre meets the road and a line between them; the wheels'
+  rims are heavier.
+
+Two textures made once, as before; nothing more is drawn a frame.
