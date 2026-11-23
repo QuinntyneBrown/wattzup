@@ -298,6 +298,11 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         hfi = road.index(hf_m)
         hfx, hfy, hfz = road.at(hfi, hf_o, 3.0)
         kit.light((hfx, hfy, hfz), "glow-window", 16.5, 0.50)
+    # Warm dusk glow outside Selva's artisan woodcarving shopfront vitrines
+    for wv_m in (8868.0, 8955.0):
+        wvi = road.index(wv_m)
+        wvx, wvy, wvz = road.at(wvi, -(kit.kerb + 4.8), 2.0)
+        kit.light((wvx, wvy, wvz), "bulb", 13.0, 0.48)
     # [ANCHOR:alpenglow-lights]
 
 
