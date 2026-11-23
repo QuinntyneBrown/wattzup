@@ -5,6 +5,7 @@ import {
   findLadinVillage,
   hasOnionDomeBelfry,
   LADIN_VILLAGES,
+  ladinDialectForVillage,
   ladinGreetingForVillage,
   lowestLadinVillage,
   nextClimbFromVillage,
@@ -51,5 +52,7 @@ describe('LADIN_VILLAGES', () => {
       'corvara',
       'arabba',
     ]);
+    expect(ladinDialectForVillage('arabba')).toBe('fodom');
+    expect(ladinDialectForVillage('selva')).toBe('gherdeina');
   });
 });

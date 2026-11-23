@@ -188,3 +188,19 @@ export function villagesAheadInOrder(metres: number): readonly LadinVillage[] {
   if (idx <= 0) return [...LADIN_VILLAGES];
   return [...LADIN_VILLAGES.slice(idx), ...LADIN_VILLAGES.slice(0, idx)];
 }
+
+export type LadinDialect = 'badiot' | 'fodom' | 'fascian' | 'gherdeina';
+
+/** Specific Dolomite Ladin language variety spoken in `villageId`. */
+export function ladinDialectForVillage(villageId: LadinVillage['id']): LadinDialect {
+  switch (villageId) {
+    case 'corvara':
+      return 'badiot';
+    case 'arabba':
+      return 'fodom';
+    case 'canazei':
+      return 'fascian';
+    case 'selva':
+      return 'gherdeina';
+  }
+}
