@@ -226,3 +226,12 @@ def build_four_passes(B, kit, road, height_at) -> None:
     dx_g, dy_g, dz_g = kit.P(dg_idx, 0.0, kit.kerb + 5.2, -0.4)
     B["stone"].box((dx_g, dy_g, dz_g), (3.4, 2.9, 2.85), dg_yaw)
     kit.gable(B["roof-slate"], (dx_g, dy_g, dz_g + 2.85), 3.9, 3.4, 1.15, dg_yaw)
+
+    # Alpine mountain-rescue SOS solar emergency call pillars on all 4 cols
+    for p in PASSES:
+        sos_idx = road.index(p["at"] - 8.5)
+        syaw = s[sos_idx]["h"]
+        sx_o, sy_o, sz_o = kit.P(sos_idx, 0.0, kit.kerb + 1.85, -0.1)
+        B["crowd-3"].box((sx_o, sy_o, sz_o), (0.26, 0.26, 2.15), syaw)
+        B["paint"].box((sx_o, sy_o, sz_o + 1.35), (0.28, 0.22, 0.36), syaw)
+        B["ladin-blue"].box((sx_o, sy_o, sz_o + 2.16), (0.48, 0.48, 0.06), syaw)
