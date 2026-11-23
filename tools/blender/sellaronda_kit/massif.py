@@ -451,4 +451,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     vml = max(1.0, math.hypot(vmx, vmy))
     vmx, vmy = vmx / vml, vmy / vml
     rock_tower(peaks, cx + vmx * 825.0 - (-vmy) * 62.0, cy + vmy * 825.0 - vmx * 62.0, 125.0, 488.0, 38.0, 32.0, 8, math.atan2(vmy, vmx), cfn, taper=0.34, flat_cap=False, seed_phase=5.4)
+    # Piz Miara eastern dihedral spur facing Passo Campolongo
+    rock_tower(peaks, cx + mux2 * 815.0 + mpx2 * 95.0, cy + muy2 * 815.0 + mpy2 * 95.0, 108.0, 492.0, 56.0, 46.0, 8, math.atan2(muy2, mux2), cfn, taper=0.58, flat_cap=True, seed_phase=2.2)
     # [ANCHOR:massif]
