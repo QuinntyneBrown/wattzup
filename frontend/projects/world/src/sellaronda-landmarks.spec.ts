@@ -5,6 +5,7 @@ import {
   nextSellaPass,
   passClimbLengthMetres,
   passClimbProgress,
+  passVerticalGainMetres,
   SELLA_RONDA_PASSES,
   sellaMassifBearing,
   sellaSubpeaksForPass,
@@ -50,5 +51,7 @@ describe('SELLA_RONDA_PASSES', () => {
     expect(isHighWallSector(3120)).toBe(false);
     expect(highestSellaPass().id).toBe('sella');
     expect(highestSellaPass().altitudeMetres).toBe(2240);
+    expect(passVerticalGainMetres('sella')).toBe(775);
+    expect(passVerticalGainMetres('campolongo')).toBe(307);
   });
 });
