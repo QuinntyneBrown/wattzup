@@ -66,6 +66,10 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
         (7785.0,  1.0, 15.0,  9.6, 2),  # Passo Sella — Rifugio Maria Flora
         (10130.0, -1.0, 17.5, 10.5, 2), # Passo Gardena — Rifugio Frara
         (10185.0,  1.0, 14.5,  9.4, 2), # Passo Gardena — Rifugio Cir
+        (1460.0,  -1.0, 13.0,  8.6, 2), # Campolongo flank — Rifugio Plan Boè
+        (7120.0,   1.0, 14.5,  9.2, 2), # Sella climb — Rifugio Salei / Lupo Bianco
+        (9420.0,   1.0, 15.0,  9.6, 2), # Gardena climb — Plan de Gralba / Chalet Gerard
+        (10420.0,  1.0, 12.8,  8.4, 2), # Gardena east — Jimmi Hütte under Cir
     )
     for r_i, (at_m, side, w, d, st_cnt) in enumerate(rifugi_sites):
         _rifugio_complex(B, kit, road, height_at, at_m, side, w, d, st_cnt)
