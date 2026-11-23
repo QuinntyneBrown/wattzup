@@ -469,4 +469,15 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     rock_tower(peaks, lat_pt["x"] + ltux * 2150.0, lat_pt["y"] + ltuy * 2150.0, 45.0, 775.0, 225.0, 155.0, 9, math.atan2(-ltuy, -ltux), cfn, taper=0.38, flat_cap=False, seed_phase=3.3)
     # Punta Dantersass northern spur projecting from Sassolungo toward Selva
     rock_tower(peaks, sl_x + ux * 95.0 - px * 245.0, sl_y + uy * 95.0 - py * 245.0, 95.0, 645.0, 72.0, 56.0, 8, yaw_sl - 0.3, cfn, taper=0.44, flat_cap=False, seed_phase=5.9)
+    # Snow-lined Forcella Marmolada (2,896 m) high saddle west of Punta Penia
+    quad_shaded(
+        peaks,
+        (pordoi_pt["x"] + mux * 1500.0 - mpx * 385.0, pordoi_pt["y"] + muy * 1500.0 - mpy * 385.0, 680.0),
+        (pordoi_pt["x"] + mux * 1500.0 - mpx * 355.0, pordoi_pt["y"] + muy * 1500.0 - mpy * 355.0, 680.0),
+        (pordoi_pt["x"] + mux * 1545.0 - mpx * 362.0, pordoi_pt["y"] + muy * 1545.0 - mpy * 362.0, 795.0),
+        (pordoi_pt["x"] + mux * 1545.0 - mpx * 378.0, pordoi_pt["y"] + muy * 1545.0 - mpy * 378.0, 795.0),
+        cfn,
+        735.0,
+        snow=True,
+    )
     # [ANCHOR:peaks]
