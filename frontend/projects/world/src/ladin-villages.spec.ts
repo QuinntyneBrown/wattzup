@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   currentValley,
   distanceToNextVillage,
+  findLadinVillage,
   hasOnionDomeBelfry,
   LADIN_VILLAGES,
   ladinGreetingForVillage,
@@ -38,5 +39,7 @@ describe('LADIN_VILLAGES', () => {
     expect(nextClimbFromVillage('arabba')).toBe('pordoi');
     expect(nextClimbFromVillage('selva')).toBe('gardena');
     expect(villageAltitudeSpreadMetres()).toBe(137);
+    expect(findLadinVillage('Wolkenstein')?.id).toBe('selva');
+    expect(findLadinVillage('Cianacei')?.id).toBe('canazei');
   });
 });

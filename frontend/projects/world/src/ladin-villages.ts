@@ -145,3 +145,22 @@ export function villageAltitudeSpreadMetres(): number {
   const alts = LADIN_VILLAGES.map((v) => v.altitudeMetres);
   return Math.max(...alts) - Math.min(...alts);
 }
+
+const GERMAN_ALIASES: Readonly<Record<string, LadinVillage['id']>> = {
+  kurfar: 'corvara',
+  buchenstein: 'arabba',
+  kanetschei: 'canazei',
+  wolkenstein: 'selva',
+};
+
+/** Finds a Sella Ronda valley town by Italian, Ladin, or historic Tyrolean/German name. */
+export function findLadinVillage(query: string): LadinVillage | null {
+  const q = query.trim().toLowerCase();
+  if (!q) return null;
+  const aliasId = GERMAN_ALIASES[q];
+  if (aliasId) return LADIN_VILLAGES.find((v) => v.id === aliasId) ?? null;
+  const hit = LADIN_VILLAGES.find(
+    (v) => v.id === q || v.name.toLowerCase().includes(q) || v.ladinName.toLowerCase().includes(q),
+  );
+  return hit ?? null;
+}
