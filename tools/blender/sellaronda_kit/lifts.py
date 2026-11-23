@@ -466,6 +466,7 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         rvz = height_at(rvx, rvy)
         B["stone"].box((rvx, rvy, rvz - 0.6), (16.0, 12.0, 0.85), 0.4)
         B["lago-turquoise"].box((rvx, rvy, rvz + 0.25), (14.2, 10.2, 0.14), 0.4)
+        B["larch-aged"].box((rvx, rvy, rvz + 0.25), (15.6, 0.14, 0.95), 0.4)
 
     # 21. Cabinovia Pradel-Rodella mid-climb station on the Canazei -> Sella ascent (at=6920 m)
     pr_l = road.index(6920.0)
