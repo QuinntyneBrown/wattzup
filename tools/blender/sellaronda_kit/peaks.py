@@ -247,3 +247,12 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     scul = max(1.0, math.hypot(scux, scuy))
     scux, scuy = scux / scul, scuy / scul
     rock_tower(peaks, sc_pt["x"] + scux * 1680.0, sc_pt["y"] + scuy * 1680.0, 45.0, 815.0, 410.0, 165.0, 12, math.atan2(-scuy, -scux), cfn, taper=0.82, flat_cap=True, seed_phase=1.9)
+
+    # 11. Cima Cunturines (3,064 m) & Piz Lavarella (3,055 m) northeast of Campolongo
+    fn_pt = road.s[road.index(1320.0)]
+    fnux, fnuy = fn_pt["x"] - cx, fn_pt["y"] - cy
+    fnul = max(1.0, math.hypot(fnux, fnuy))
+    fnux, fnuy = fnux / fnul, fnuy / fnul
+    fnpx, fnpy = -fnuy, fnux
+    for fn_lat, fn_top in ((-190.0, 845.0), (185.0, 835.0)):
+        rock_tower(peaks, fn_pt["x"] + fnux * 1850.0 + fnpx * fn_lat, fn_pt["y"] + fnuy * 1850.0 + fnpy * fn_lat, 45.0, fn_top, 235.0, 175.0, 10, math.atan2(-fnuy, -fnux), cfn, taper=0.52, flat_cap=False, seed_phase=3.1 + fn_lat * 0.01)
