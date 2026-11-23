@@ -31,6 +31,7 @@ def _onion_dome_church(B, kit, x: float, y: float, z: float, yaw: float, dome_ma
     # Tall square campanile bell tower rising beside the chancel
     tx = x + math.cos(yaw) * 6.4 - math.sin(yaw) * 3.8
     ty = y + math.sin(yaw) * 6.4 + math.cos(yaw) * 3.8
+    B["dolomite-pale"].box((tx, ty, z - 1.6), (4.65, 4.65, 3.2), yaw)
     B["chalet-plaster"].box((tx, ty, z - 1.5), (4.4, 4.4, 19.5), yaw)
     # Dark arched belfry openings & gold-rimmed clock faces on all 4 sides
     B["dark"].box((tx, ty, z + 14.8), (4.52, 1.45, 2.2), yaw)
