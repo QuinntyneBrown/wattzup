@@ -294,4 +294,15 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["larch-warm"].box((lx_f, ly_f, lz_f - 0.08), (0.48, 0.48, 0.55), 0.2)
             B["larch-aged"].box((lx_f + 1.6, ly_f - 0.6, lz_f - 0.05), (3.4, 0.38, 0.36), lg_i * 0.4)
 
+    # 19. Silver-white Stella Alpina / Edelweiss clusters on high rocky limestone turf (> 118 m)
+    for ed_i in range(25, kit.n - 25, 19):
+        if s[ed_i]["z"] < 118.0:
+            continue
+        side = -1.0 if ed_i % 2 == 0 else 1.0
+        ex_w, ey_w, _ = road.at(ed_i, (kit.kerb + 4.4) * side)
+        if road.clear_of_road(ex_w, ey_w, kit.kerb + 2.8, ed_i):
+            ez_w = height_at(ex_w, ey_w)
+            B["dolomite-pale"].box((ex_w, ey_w, ez_w - 0.1), (0.75, 0.62, 0.34), ed_i * 0.3)
+            B["paint"].box((ex_w, ey_w, ez_w + 0.24), (0.32, 0.32, 0.14), ed_i * 0.7)
+
     return trees
