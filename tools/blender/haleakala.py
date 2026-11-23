@@ -857,14 +857,25 @@ def crater(k) -> int:
         paint.face((at(x, reach, floor), at(x, reach + 260.0, top(x)), at(x1, reach + 260.0, top(x1)), at(x1, reach, floor)), (tone(x, reach), tone(x, reach + 260.0, 0.45), tone(x1, reach + 260.0, 0.45), tone(x1, reach)))
     # The far cones.
     cones = ((-1500.0, 900.0, 110.0, 300.0), (-500.0, 1300.0, 150.0, 380.0), (700.0, 1000.0, 120.0, 320.0), (1700.0, 1500.0, 140.0, 360.0), (200.0, 2100.0, 170.0, 420.0), (-2100.0, 1900.0, 130.0, 340.0), (2600.0, 800.0, 90.0, 260.0))
-    for cx, cs, ch, cr in cones:
+    # Each cone is its own cinder: brick red, black, ochre or ash, darker down in its vent, with a pale skirt of
+    # sand where it meets the floor.
+    tints = (0xA8432C, 0x2E2828, 0xC08A3C, 0x6E6068, 0x8A3A2A, 0x3A3030, 0xB0703A)
+    for n_cone, (cx, cs, ch, cr) in enumerate(cones):
+        tint = _lin(tints[n_cone % len(tints)])
+
+        def own(x: float, south: float, lift: float = 0.0, keep: float = 0.8, tint=tint):
+            t = tone(x, south, lift)
+            far = 0.3 * _smooth(900.0, 3400.0, south)
+            shade = 1 - 0.45 * lift
+            return (*(t[q] * (1 - keep) + (tint[q] * shade * (1 - far) + haze[q] * far) * keep for q in range(3)), 1.0)
+
         ring = [(x_mid + cx + math.cos(q * math.tau / 10) * cr, cs + math.sin(q * math.tau / 10) * cr) for q in range(10)]
         lip = [(x_mid + cx + math.cos(q * math.tau / 10) * cr * 0.28, cs + math.sin(q * math.tau / 10) * cr * 0.28) for q in range(10)]
         for q in range(10):
             n = (q + 1) % 10
             # Seen from the north: the ring runs clockwise from above as south grows away from the eye.
-            paint.face((at(*ring[n], floor), at(*ring[q], floor), at(*lip[q], floor + ch), at(*lip[n], floor + ch)), (tone(*ring[n]), tone(*ring[q]), tone(*lip[q], 0.3), tone(*lip[n], 0.3)))
-            paint.face((at(*lip[n], floor + ch), at(*lip[q], floor + ch), at(x_mid + cx, cs, floor + ch * 0.72)), (tone(*lip[n], 0.3), tone(*lip[q], 0.3), tone(x_mid + cx, cs, 0.7)))
+            paint.face((at(*ring[n], floor), at(*ring[q], floor), at(*lip[q], floor + ch), at(*lip[n], floor + ch)), (own(*ring[n], 0.0, 0.35), own(*ring[q], 0.0, 0.35), own(*lip[q], 0.15), own(*lip[n], 0.15)))
+            paint.face((at(*lip[n], floor + ch), at(*lip[q], floor + ch), at(x_mid + cx, cs, floor + ch * 0.72)), (own(*lip[n], 0.15), own(*lip[q], 0.15), own(x_mid + cx, cs, 0.9)))
     return len(CONES) + len(cones)
 
 
