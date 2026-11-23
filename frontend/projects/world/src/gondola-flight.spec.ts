@@ -3,6 +3,7 @@ import {
   cableLineLengthMetres,
   cableSagDropAtFraction,
   type CableSpan,
+  cablewayHorizontalSpanMetres,
   cablewayRoundTripSeconds,
   cablewaySlopeDegrees,
   cablewayVerticalSpeedMps,
@@ -66,5 +67,6 @@ describe('gondolaPosition', () => {
     const b = twinJigBackCounterpartPose(SASS_PORDOI, 2, 0);
     expect(b.y).toBeGreaterThan(a.y + 300);
     expect(reversibleFuniviaHourlyPax(SASS_PORDOI, 65)).toBeGreaterThan(800);
+    expect(cablewayHorizontalSpanMetres(SASS_PORDOI)).toBeGreaterThan(350);
   });
 });
