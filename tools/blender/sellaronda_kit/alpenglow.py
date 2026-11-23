@@ -49,7 +49,7 @@ def enrosadira_colour_fn(az_sun: float):
         seep = 1.0 - 0.10 * (1.0 - abs(nz)) * max(0.0, math.sin(az_face * 19.0) * math.cos(az_face * 7.0))
         strata = (0.925 + 0.06 * math.sin(z * 0.14) * math.cos(z * 0.037) + 0.015 * math.sin(z * 0.52)) * seep
         in_sun = smoothstep(-0.18, 0.72, dot)
-        high_glow = smoothstep(118.0, 425.0, z) * in_sun
+        high_glow = smoothstep(114.0, 420.0, z) * in_sun
         cassian_peach = srgb(0xFAD0A8)
         warm_band = mix(cassian_peach, apricot_gold, smoothstep(160.0, 310.0, z))
         warm_band = mix(warm_band, enrosadira_rose, smoothstep(290.0, 580.0, z))
