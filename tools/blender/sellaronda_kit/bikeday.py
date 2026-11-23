@@ -97,6 +97,31 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> None:
             B[wmat].box((px_s, py_s, gz_w - drop), (2.45, 2.25, 0.24), gyaw)
         B["dark"].box((gx_w, gy_w, gz_w - 6.2), (0.75, 0.55, 0.95), gyaw)
 
+    # 6. Summit-ramp cheering spectators in alpine jackets & Sellaronda Bike Day feed-station gazebos
+    for p_i, p in enumerate(PASSES):
+        # Pop-up Bike Day blue/white hydration gazebo 35 m before the summit sign
+        gz_idx = road.index(p["at"] - 35.0)
+        gz_yaw = s[gz_idx]["h"]
+        gx0, gy0, gz0 = kit.P(gz_idx, 0.0, -(kit.kerb + 3.4), 0.0)
+        for dx_l in (-1.6, 1.6):
+            for dy_l in (-1.6, 1.6):
+                B["steel"].box(
+                    (gx0 + math.cos(gz_yaw) * dx_l - math.sin(gz_yaw) * dy_l, gy0 + math.sin(gz_yaw) * dx_l + math.cos(gz_yaw) * dy_l, gz0),
+                    (0.08, 0.08, 2.35),
+                    gz_yaw,
+                )
+        kit.gable(B["ladin-blue"], (gx0, gy0, gz0 + 2.35), 3.6, 3.6, 0.85, gz_yaw)
+        B["paint"].box((gx0, gy0, gz0), (2.6, 0.95, 0.88), gz_yaw)
+
+        # Cheering hikers / tifosi lining the final 140 m to the pass
+        for sp_k in range(8):
+            sp_idx = road.index(p["at"] - 145.0 + sp_k * 16.0)
+            side = -1.0 if sp_k % 2 == 0 else 1.0
+            sx_p, sy_p, sz_p = kit.P(sp_idx, 0.0, (kit.kerb + 1.45) * side, 0.0)
+            B["dark"].box((sx_p, sy_p, sz_p), (0.32, 0.36, 0.88), s[sp_idx]["h"])
+            B[jerseys[(sp_k + p_i) % len(jerseys)]].box((sx_p, sy_p, sz_p + 0.88), (0.36, 0.44, 0.62), s[sp_idx]["h"])
+            B["skin"].box((sx_p, sy_p, sz_p + 1.50), (0.24, 0.24, 0.26), s[sp_idx]["h"])
+
 
 def _touring_motorbike(B, x: float, y: float, z: float, yaw: float, body_mat: str, with_rider: bool = False) -> None:
     ca, sa = math.cos(yaw), math.sin(yaw)
