@@ -188,6 +188,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Party 17 | Friends with an arm round each other's shoulders: four pairs in ten stand side by side facing the road, drinks in their outer hands; and a stroller's arm at their side swings against its leg | 60.0 to 60.1 fps, none over 20 ms (the start line, 2,050 m, the finish) | 43.6 and 50.9 fps after (the finish, 116,678 triangles); Neon Docklands beside it 51.0, 55.4 |
 | Party 18 | Feet and necks: each leg ends in a foot (bare in sandals, white trainers, dark shoes or espadrilles) and the head narrows to a neck where it meets the shoulders | 60.1 fps, none over 20 ms, 146,381 triangles (the finish) | 47.9 and 41.4 fps after (the finish, 117,749 triangles); Neon Docklands beside it 55.9, 59.5 |
 | Party 19 | The party is upstairs too: on every other club's roof terrace two or three stand at a white parapet with a drink, looking down at the road | 60.0 fps, none over 20 ms, 157,855 triangles (from 7,950 m) | 44.4, 47.9, 46.9 fps after (the finish, 119,897 triangles: 103 under the budget); Neon Docklands beside it 52.9, 48.4 |
+| Party 20 | No two alike: heights from a head under the middle to a head over, builds from slight to broad, a beach club's colours on most of those not in white, and auburn and grey hair among the rest | 60.1 fps, none over 20 ms, 148,981 triangles (the finish) | 45.5 and 49.8 fps after (the finish, 119,897 triangles: none more); Neon Docklands beside it 50.5, 48.2 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -550,6 +551,20 @@ hid them. They stand at it now. From the road they are small, and from close by 
 picture.
 
 **The low tier's budget is spent again**: 103 triangles under at the finish.
+
+### Party 20: no two alike
+
+`party-20.jpg` (the two sides of the finish, enlarged), `party-20.mp4` (the finish). The crowd was one figure in
+many poses: all within a hand's breadth of one height and all of one build.
+
+- **Height**: from 0.86 to 1.13 of the middle height (it was 0.92 to 1.08): a head shorter to a head taller.
+- **Build**: from slight to broad (0.84 to 1.22 across and deep), the taller a little broader.
+- **Colours**: seven in ten of those not in white wear a beach club's colours (coral, turquoise, lemon, fuchsia,
+  lime, tangerine, sky blue), where they wore the colours of any street's crowd.
+- **Hair**: two in ten are auburn or grey.
+
+All of it is dealt from dice of its own, so who stands where, what they do and what they hold is as it was, and
+the map has exactly the triangles it had: none more on any tier.
 
 ### Party 1: people with drinks
 

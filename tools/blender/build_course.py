@@ -396,6 +396,16 @@ MATERIALS: dict[str, dict] = {
     "hair-0": {"color": 0x1E1612, "rough": 0.9},
     "hair-1": {"color": 0x5A3A22, "rough": 0.9},
     "hair-2": {"color": 0xD8B878, "rough": 0.9},
+    "hair-3": {"color": 0x9A4A2A, "rough": 0.9},
+    "hair-4": {"color": 0xB8B4AE, "rough": 0.9},
+    # What people wear on the island when it is not white: the colours of a beach club.
+    "resort-0": {"color": 0xFF6F61, "rough": 0.9},
+    "resort-1": {"color": 0x1FB5B0, "rough": 0.9},
+    "resort-2": {"color": 0xF7D154, "rough": 0.9},
+    "resort-3": {"color": 0xE0409A, "rough": 0.9},
+    "resort-4": {"color": 0x8ED06A, "rough": 0.9},
+    "resort-5": {"color": 0xFF9A3C, "rough": 0.9},
+    "resort-6": {"color": 0x6FA8FF, "rough": 0.9},
     # The IBIZA letters: white, their faces dark, on a pale blue plinth.
     "sign-white": {"color": 0xF2F0EA, "rough": 0.7},
     "sign-face": {"color": 0x23262E, "rough": 0.5},
@@ -1823,6 +1833,7 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
     F = _Figures()
     furniture = random.Random(6021)
     upstairs = random.Random(1906)
+    looks = random.Random(2020)
 
     def person(c, yaw: float, rng=rng, there: bool = True, serve: bool = False, sit: bool = False, walk: bool = False, figures=None, dice=None, solo: bool = False) -> None:
         """Someone at the party, a drink in their hand: legs or a dress, a body that narrows to the waist, a head
@@ -1875,6 +1886,12 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
                 c0[2] + 1.4,
             )
         h = rng.uniform(0.92, 1.08)
+        # No two are one size: from a head shorter than the middle to a head taller, and from slight to broad. These
+        # are dealt from dice of their own (`looks`), so that who stands where, and what they are doing, is as it was.
+        build = 1.0
+        if not walk:
+            h = looks.uniform(0.86, 1.13)
+            build = looks.uniform(0.84, 1.22) * (0.94 + 0.06 * h)
         fx, fy = math.cos(yaw), math.sin(yaw)
         sx, sy = -fy, fx
 
@@ -1883,7 +1900,7 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
 
         def at(forward: float, side: float, up: float):
             lean_ = smoothstep(0.8, 1.45, up)
-            forward, side = forward + tilt[0] * lean_, side + tilt[1] * lean_
+            forward, side = (forward + tilt[0] * lean_) * build, (side + tilt[1] * lean_) * build
             # Someone sitting (`sit`) is built as someone standing and set down by the height of their hips: `c`
             # is where they sit.
             return (c[0] + fx * forward + sx * side, c[1] + fy * forward + sy * side, c[2] + (up - (0.88 if sit else 0.0)) * h)
@@ -1905,6 +1922,9 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
 
         white = rng.random() < 0.6 or serve
         top = FF["party-white"] if white else FF[rng.choice(CROWD)]
+        if not white and not serve and looks.random() < 0.7:
+            # Most of those not in white are in a beach club's colours, not the crowd's of any street.
+            top = FF[f"resort-{looks.randrange(7)}"]
         skin = FF[rng.choice(("skin", "skin", "skin-1", "skin-2"))]
         dress = rng.random() < 0.45 and not alone
         # How they stand: their weight on one leg, the other foot out to the side or a step forward, swaying.
@@ -1981,6 +2001,9 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         # The head narrows to a neck where it meets the shoulders: it sat on them like a block on a box.
         kit.prism(skin, at(0.022, sway, 1.42), 0.05, 0.24 * h, 4, 0.118, yaw + math.pi / 4)
         hair = FF[rng.choice(("hair-0", "hair-0", "hair-1", "hair-2"))]
+        if looks.random() < 0.22:
+            # Auburn, and grey: the party is not all twenty.
+            hair = FF[looks.choice(("hair-3", "hair-3", "hair-4"))]
         if rng.random() < 0.22:
             # A straw hat: a wide brim, tipped a little, and a low crown.
             brim = [at(math.cos(q * math.tau / 6) * 0.27, sway + math.sin(q * math.tau / 6) * 0.27, 1.63 + 0.03 * math.cos(q * math.tau / 6)) for q in range(6)]
