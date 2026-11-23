@@ -427,4 +427,7 @@ def build_four_passes(B, kit, road, height_at) -> None:
     # Badia & Fodom municipal heraldic shields on Passo Campolongo's summit sign
     cm_s = road.index(2100.0)
     B["ladin-blue"].box(kit.P(cm_s, 4.85, -(kit.kerb + 2.38), 2.38), (0.34, 0.06, 0.38), s[cm_s]["h"])
+    # Waist-high stone cyclists' gilet-change windbreak on Passo Sella crest (at=7768 m)
+    wb_s = road.index(7768.0)
+    B["stone"].box(kit.P(wb_s, 0.0, kit.kerb + 3.1, -0.1), (3.8, 0.55, 1.28), s[wb_s]["h"])
     # [ANCHOR:passes]
