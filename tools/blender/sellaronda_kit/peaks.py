@@ -413,4 +413,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         (pordoi_pt["x"] + mux * 1120.0 - mpx * 8.0, pordoi_pt["y"] + muy * 1120.0 - mpy * 8.0, 365.0),
         turquoise,
     )
+    # 17. Punta Sorapiss (3,205 m) eastern Dolomite cirque crown beyond Cortina (at=1450 m)
+    sor_pt = road.s[road.index(1450.0)]
+    srux, sruy = sor_pt["x"] - cx, sor_pt["y"] - cy
+    srul = max(1.0, math.hypot(srux, sruy))
+    srux, sruy = srux / srul, sruy / srul
+    rock_tower(peaks, sor_pt["x"] + srux * 2420.0, sor_pt["y"] + sruy * 2420.0, 45.0, 875.0, 295.0, 195.0, 10, math.atan2(-sruy, -srux), cfn, taper=0.58, flat_cap=True, seed_phase=2.8)
     # [ANCHOR:peaks]
