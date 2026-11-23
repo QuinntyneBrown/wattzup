@@ -171,3 +171,10 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
             byaw = s[br_idx]["h"]
             for b_row in range(4):
                 B["paint"].box(kit.P(br_idx, b_row * 2.2, -(kit.kerb * 0.48), 0.02), (0.32, kit.kerb * 0.78, 0.015), byaw)
+
+    # White & blue altitude-contour road threshold markers (1800 m, 2000 m, 2100 m, 2200 m)
+    for alt_d in (1650.0, 3950.0, 4450.0, 4810.0, 6950.0, 7450.0, 9580.0, 9980.0):
+        a_idx = road.index(alt_d)
+        ayaw = s[a_idx]["h"]
+        B["paint"].box(kit.P(a_idx, 0.0, -(kit.kerb * 0.45), 0.02), (0.28, kit.kerb * 0.85, 0.015), ayaw)
+        B["ladin-blue"].box(kit.P(a_idx, 0.45, -(kit.kerb * 0.45), 0.02), (0.22, kit.kerb * 0.55, 0.015), ayaw)
