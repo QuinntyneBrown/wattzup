@@ -574,4 +574,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     )
     # Southeastern rock spur descending from Piz Boè toward Arabba
     rock_tower(peaks, cx + 165.0, cy - 145.0, 640.0, 762.0, 62.0, 46.0, 8, -0.7, cfn, taper=0.44, flat_cap=False, seed_phase=1.1)
+    # Summit beacon needle crowning Capanna Piz Fassa atop Piz Boè (3,152 m)
+    rock_tower(peaks, apex[0], apex[1], 804.0, 818.0, 2.2, 2.2, 6, 0.0, cfn, taper=0.35, flat_cap=False, seed_phase=0.0)
     # [ANCHOR:massif]
