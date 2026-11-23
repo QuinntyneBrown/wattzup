@@ -136,6 +136,12 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         sx_l, sy_l, sz_l = road.at(s_idx, -(kit.kerb + 2.4), 2.4)
         kit.light((sx_l, sy_l, sz_l), "glow-window", 12.0, 0.45)
 
+    # Warm dusk shopfront & Konditorei glow in Corvara, Canazei & Selva
+    for sf_at, sf_off in ((295.0, 6.8), (6095.0, 5.8), (8865.0, -8.6), (8925.0, 8.6)):
+        sf_idx = road.index(sf_at)
+        vx_l, vy_l, vz_l = road.at(sf_idx, sf_off, 2.2)
+        kit.light((vx_l, vy_l, vz_l), "glow-window", 16.0, 0.50)
+
 
 def build_valley_mist(B, road, height_at) -> None:
     """Lays delicate dusk valley-mist ribbons down in the four deep valley hollows off the road."""
