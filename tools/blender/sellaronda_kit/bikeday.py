@@ -380,6 +380,14 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     B["crowd-3"].box((wx_s + 0.85, wy_s, wz_s + 4.45), (1.65, 0.34, 0.34), 0.15)
     B["paint"].box((wx_s + 0.85, wy_s, wz_s + 4.45), (0.65, 0.36, 0.36), 0.15)
 
+    # Cycling broadcast camera motorbike with pillion cameraman on upper Passo Pordoi (at=4815 m)
+    cm_i = road.index(4815.0)
+    cmy = s[cm_i]["h"]
+    cmx_m, cmy_m, cmz_m = road.at(cm_i, -(kit.kerb - 1.1))
+    _touring_motorbike(B, cmx_m, cmy_m, cmz_m, cmy, "yellow", with_rider=True)
+    B["crowd-3"].box((cmx_m - math.cos(cmy) * 0.48, cmy_m - math.sin(cmy) * 0.48, cmz_m + 0.98), (0.38, 0.40, 0.62), cmy)
+    B["dark"].box((cmx_m - math.cos(cmy) * 0.72, cmy_m - math.sin(cmy) * 0.72, cmz_m + 1.45), (0.36, 0.18, 0.20), cmy)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
