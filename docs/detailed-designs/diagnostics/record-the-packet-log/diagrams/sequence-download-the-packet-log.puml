@@ -19,8 +19,7 @@ box "Frontend — Ride app (ride application)" #E0F2FE
   participant "DiagnosticsDialog" as dialog
 end box
 box "Frontend — Ride app (domain library)" #E0F2FE
-  participant "PacketLogExporter" as exporter
-  database "PacketLogStore" as store
+  participant "MemoryPacketLog" as exporter
 end box
 box "Device — Browser" #F2F4F7
   participant "Downloads" as browser
@@ -28,10 +27,8 @@ end box
 dialog --> actor : "Saves telo-ride-packets-{date}.jsonl. Attach it to a bug report if we ask."
 actor -> dialog : Download packet log
 dialog -> exporter : download()
-exporter -> store : readAll()
-store --> exporter : entries, oldest first
-exporter -> exporter : One JSON object per line (L2-114 AC3)
+exporter -> exporter : The kept entries, oldest first, one JSON object per line (L2-114 AC3)
 exporter -> browser : Blob, object URL, a[download="telo-ride-packets-YYYY-MM-DD.jsonl"]
-exporter -> exporter : URL.revokeObjectURL after the click
+exporter -> exporter : URL.revokeObjectURL on the next task
 browser --> actor : File saved on the device only (L2-114 AC5)
 @enduml

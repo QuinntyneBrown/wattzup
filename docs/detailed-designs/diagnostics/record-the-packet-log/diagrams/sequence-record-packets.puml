@@ -20,29 +20,28 @@ box "Frontend — Ride app (ride application)" #E0F2FE
 end box
 box "Frontend — Ride app (domain library)" #E0F2FE
   participant "WebBluetoothBikeConnection" as conn
-  participant "PacketLog" as log
-  database "PacketLogStore" as store
+  participant "MemoryPacketLog" as log
   participant "ConsoleAppLogger" as logger
 end box
 box "Device — Smart bike" #F2F4F7
   participant "Bike GATT server" as bike
 end box
 alt Log every packet off (default)
-  conn -> log : record(ToBike, F0 B1 01 08 AA)
-  log -> store : append command entry
-  conn -> log : record(FromBike, D1 frame)
+  conn -> log : record(out, write, F0 B1 01 08 AA)
+  log -> log : keep {time, direction, frame type, hex} as a JSON line
+  conn -> log : record(in, notify, D1 frame)
   log -> log : not a command: not kept, no console line (L2-114 AC1, L2-115 AC2)
   log --> dialog : "212 commands · 20 KB"
 else rider turns the switch on
   actor -> dialog : Toggle "Log every packet" (role="switch")
-  dialog -> log : setMode(EveryPacket)
+  dialog -> log : setEveryPacket(true)
   bike -> conn : notification
-  conn -> log : record(FromBike, bytes)
-  log -> store : append {time, direction, frame type, hex} (L2-114 AC2)
-  log -> logger : info("bluetooth", hex line), console only
+  conn -> log : record(in, notify, bytes)
+  log -> log : keep {time, direction, frame type, hex} (L2-114 AC2)
+  log -> logger : packet(in, D1, hex): console.debug only
   log --> dialog : "1,284 packets · 186 KB" with "Recording" tag
 end
 opt log reaches 10 MB
-  store -> store : drop oldest entries (L2-114 AC4)
+  log -> log : drop the oldest entries (L2-114 AC4)
 end
 @enduml

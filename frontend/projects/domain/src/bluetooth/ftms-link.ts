@@ -1,7 +1,7 @@
 /// <reference types="web-bluetooth" />
 import { BikeConnectionError } from '@telo/api';
 import { FtmsProtocol, type ResistanceRange } from '../protocol/ftms-protocol';
-import type { BikeLink } from './bike-link';
+import { type BikeLink, NO_TAP, type PacketTap } from './bike-link';
 import type { GattWriteQueue } from './gatt-write-queue';
 
 /** How long a bike has to answer Request Control before it counts as refusing it. */
@@ -24,6 +24,7 @@ export class FtmsLink implements BikeLink {
   private awaiting: ((success: boolean) => void) | null = null;
   private readonly onResponse = (event: Event): void => {
     const value = (event.target as BluetoothRemoteGATTCharacteristic).value;
+    if (value) this.tap('in', FtmsProtocol.controlPoint, bytesOf(value));
     const response = value ? FtmsProtocol.decodeControlPointResponse(value) : null;
     if (response?.requestOpCode === FtmsProtocol.requestControl()[0])
       this.awaiting?.(response.success);
@@ -32,6 +33,7 @@ export class FtmsLink implements BikeLink {
   constructor(
     private readonly queue: GattWriteQueue,
     private readonly onValue: (event: Event) => void,
+    private readonly tap: PacketTap = NO_TAP,
   ) {}
 
   get control(): BikeControl {
@@ -73,7 +75,7 @@ export class FtmsLink implements BikeLink {
       );
     const raw = FtmsProtocol.mapLevel(level, this.range);
     return this.queue.enqueue(() =>
-      controlPoint.writeValueWithResponse(FtmsProtocol.setTargetResistanceLevel(raw)),
+      this.write(controlPoint, FtmsProtocol.setTargetResistanceLevel(raw)),
     );
   }
 
@@ -94,9 +96,7 @@ export class FtmsLink implements BikeLink {
       timer = setTimeout(() => resolve(false), CONTROL_TIMEOUT_MS);
     });
     try {
-      await this.queue.enqueue(() =>
-        controlPoint.writeValueWithResponse(FtmsProtocol.requestControl()),
-      );
+      await this.queue.enqueue(() => this.write(controlPoint, FtmsProtocol.requestControl()));
       return await answered;
     } catch {
       return false;
@@ -105,4 +105,17 @@ export class FtmsLink implements BikeLink {
       this.awaiting = null;
     }
   }
+
+  private write(
+    controlPoint: BluetoothRemoteGATTCharacteristic,
+    bytes: Uint8Array<ArrayBuffer>,
+  ): Promise<void> {
+    this.tap('out', FtmsProtocol.controlPoint, bytes);
+    return controlPoint.writeValueWithResponse(bytes);
+  }
+}
+
+/** A notification's bytes, copied out of its `DataView`. */
+export function bytesOf(value: DataView): Uint8Array {
+  return new Uint8Array(value.buffer.slice(value.byteOffset, value.byteOffset + value.byteLength));
 }

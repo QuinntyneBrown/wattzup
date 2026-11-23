@@ -1,6 +1,15 @@
 import type { Provider } from '@angular/core';
-import { BIKE_CONNECTION, BLUETOOTH_SUPPORT, REMEMBERED_BIKE, TICKER } from '@telo/api';
 import {
+  APP_LOGGER,
+  BIKE_CONNECTION,
+  BLUETOOTH_SUPPORT,
+  PACKET_LOG,
+  REMEMBERED_BIKE,
+  TICKER,
+} from '@telo/api';
+import {
+  ConsoleAppLogger,
+  MemoryPacketLog,
   RememberedBikeStore,
   SecondTicker,
   WebBluetoothBikeConnection,
@@ -19,6 +28,9 @@ export function provideBikeConnection(search: string = location.search): Provide
   return [
     { provide: TICKER, useClass: SecondTicker },
     { provide: REMEMBERED_BIKE, useClass: RememberedBikeStore },
+    // The console, and the packet log the Web Bluetooth link fills (L2-114, L2-115); the simulated bike sends none.
+    { provide: APP_LOGGER, useClass: ConsoleAppLogger },
+    { provide: PACKET_LOG, useClass: MemoryPacketLog },
     ...(simulate
       ? simulatedBike()
       : [

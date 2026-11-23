@@ -1,5 +1,5 @@
 // Block diagnostics (docs/design-system/assets/components.css, Area: diagnostics): the panel, its facts with the label
-// left and the mono value right, and the privacy note. The packet log below them is slice 25.2's.
+// left and the mono value right, the privacy note, and the packet log below them.
 :host {
   display: block;
   width: 100%;
@@ -111,4 +111,99 @@
     flex-shrink: 0;
     margin-top: var(--space-px);
   }
+}
+
+.diagnostics__log {
+  margin-top: var(--space-5);
+  border-top: var(--border-width-hairline) solid var(--color-line);
+  padding: var(--space-4) var(--space-5) 0;
+}
+
+.diagnostics__switch-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.diagnostics__switch-text {
+  min-width: 0;
+}
+
+.diagnostics__switch-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.diagnostics__switch-detail {
+  display: block;
+  margin-top: var(--space-0-5);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-snug);
+  color: var(--color-muted);
+}
+
+.diagnostics__switch {
+  flex-shrink: 0;
+  margin-top: var(--space-0-5);
+}
+
+.diagnostics__well {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--space-4);
+  row-gap: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--color-ink);
+  padding: var(--space-3) var(--space-3-5);
+}
+
+.diagnostics__count {
+  min-width: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.diagnostics__count-figure {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+}
+
+.diagnostics__count-unit {
+  color: var(--color-muted);
+}
+
+// The dot and the word together: the state is never colour alone.
+.diagnostics__recording {
+  margin-left: var(--space-2);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-volt-fg);
+
+  &::before {
+    content: '';
+    width: var(--space-1-5);
+    height: var(--space-1-5);
+    border-radius: var(--radius-full);
+    background: var(--color-volt);
+  }
+}
+
+.diagnostics__file {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-faint);
 }

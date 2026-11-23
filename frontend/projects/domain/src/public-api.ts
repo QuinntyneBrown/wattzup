@@ -144,3 +144,11 @@ export { restoreCustomWorkout } from './engine/restore-custom-workout';
 export { SENT_LOG_ROWS, bleLinkName, logSent } from './engine/sent-log';
 export { BikeConnectionHistory } from './diagnostics/bike-connection-history';
 export { BrowserDiagnostics } from './diagnostics/browser-diagnostics';
+export { ConsoleAppLogger, redact } from './diagnostics/console-app-logger';
+export { MemoryPacketLog, PACKET_LOG_LIMIT_BYTES } from './diagnostics/memory-packet-log';
+export {
+  type PacketLogSummary,
+  packetLogFileName,
+  packetLogSummary,
+  sizeLabel,
+} from './diagnostics/packet-log-summary';

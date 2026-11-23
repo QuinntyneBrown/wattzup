@@ -18,13 +18,13 @@ The switch, the count and the download sit in the lower half of the Diagnostics 
 
 The slice lives in the Ride app. No backend takes part.
 
-- **`PacketLog`** — service in `domain`'s `bluetooth/` folder, provided in `root` because the bike connection it taps lives for the whole app. `WebBluetoothBikeConnection` calls `record(direction, bytes)` for every write and every notification. In `CommandsOnly` mode, the default, it keeps commands and drops notifications. In `EveryPacket` mode it keeps every packet in both directions. Each kept packet becomes a `PacketEntry` with an ISO time, a direction, a frame type (`B1`, `D1`, or the FTMS characteristic) and the bytes as hex. It exposes `count` and `bytes` signals for the summary.
-- **`PacketLogStore`** — store in `domain`'s `storage/` folder over an IndexedDB object store. It appends entries and drops the oldest once the log reaches 10 MB, so the log is bounded on disk and none of it accumulates in memory during a ride. Whether the log survives a reload is `<TO SUPPLY>`.
-- **`packetLogSummary()`** — pure helper with unit tests. It formats the count line: "212 commands · 20 KB" in `CommandsOnly` mode and "1,284 packets · 186 KB" with a "Recording" tag in `EveryPacket` mode.
-- **`Switch`** — presentation component in `components` (design-system block `switch`, `role="switch"`) for "Log every packet", with the detail "Records each Bluetooth message, not just the commands we send. Turn on while reproducing a problem — it uses memory." from the mock. The chosen mode persists through `SettingsStore`.
-- **`PacketLogExporter`** — service in `domain`'s `storage/` folder. `download()` streams the entries, oldest first, into a JSON Lines `Blob`, triggers a download named `telo-ride-packets-{YYYY-MM-DD}.jsonl` through a temporary object URL, and revokes the URL afterwards. The dialog reads "Saves telo-ride-packets-{date}.jsonl. Attach it to a bug report if we ask." beside the button.
-- **`AppLogger`** — contract in `api` with token `APP_LOGGER`.
-- **`ConsoleAppLogger`** — implementation in `domain`, bound in `app.config.ts`. It writes to the browser console only; no remote logging service exists. Each error names the area and the error in plain text ("[bluetooth] NetworkError: GATT operation failed"). Before writing, it redacts any email address or session token. Per-packet lines go to the console only while "Log every packet" is on.
+- **`PacketLog`** — contract in `api` with token `PACKET_LOG`, bound with the bike connection on the app's lazy parent route (`provideBikeConnection()`), so one log serves every screen. It exposes `everyPacket`, `count`, `bytes` and `holdsIncoming` as signals, `setEveryPacket(on)`, `record(direction, characteristic, bytes)` and `download()`.
+- **`PacketTap`** — the Bluetooth links hand each message to the log: `EchelonLink` and `FtmsLink` call it as each write goes out (inside the write queue, so the log's order is the bike's), and `WebBluetoothBikeConnection` (with `FtmsLink` for Control Point indications) as each notification arrives. The simulated bike sends no packets, so its log stays empty.
+- **`MemoryPacketLog`** — implementation in `domain`'s `diagnostics/`. Each kept packet becomes one JSON line, `{"time","direction","frame","hex"}`: an ISO time; `out` to the bike or `in` from it; the frame type from `packetFrame()` in `protocol/` (an Echelon frame's command byte such as `B1` or `D1`, or the FTMS characteristic's name); the bytes as upper-case hex pairs (`toHex()`). With "Log every packet" off, the default, it keeps commands and drops the bike's messages; with it on, every packet both ways, each also sent to `AppLogger.packet()`. The lines sit in a window of at most 10 MB in memory that drops the oldest first, so a ride of any length holds a bounded log, and the log does not survive a reload. `download()` builds a JSON Lines `Blob` from the kept lines, clicks a temporary link named `telo-ride-packets-{YYYY-MM-DD}.jsonl` by the device's date, and revokes the object URL on the next task.
+- **`packetLogSummary()`, `packetLogFileName()`** — pure helpers in `domain`'s `diagnostics/`, with unit tests. The count line reads "212 commands · 20 KB" while only commands are kept, and "1,284 packets · 186 KB" once the bike's messages are among them, with a "Recording" tag (a dot and the word) while the switch is on. The size is whole kilobytes, rounded up, then megabytes.
+- **`DiagnosticsPanel`** gains the packet log under the facts (block `diagnostics`, elements `log`, `switch-row`, `well`, `count`, `recording`, `file`): "Log every packet" is the `Switch` (`button[wz-switch]`, `role="switch"`), labelled by the label and described by "Records each Bluetooth message, not just the commands we send. Turn on while reproducing a problem — it uses memory."; then the count, "Download packet log" (`wz-button`, raised, small), and "Saves telo-ride-packets-{date}.jsonl. Attach it to a bug report if we ask.". `DiagnosticsDialog` reads `PACKET_LOG` and passes the summary, the switch and the file name in.
+- **`AppLogger`** — contract in `api` with token `APP_LOGGER`: `error(area, error)` and `packet(direction, frame, hex)`.
+- **`ConsoleAppLogger`** — implementation in `domain`'s `diagnostics/`, bound on the parent route with the bike connection (not in `app.config.ts`, which would put it in the initial bundle). It writes to the browser console only; no remote logging service exists. An error reads "[bluetooth] NetworkError: GATT operation failed", and `redact()` takes out any email address, bearer token, JWT or token in a query before it is written. Packet lines go to `console.debug`, and only while "Log every packet" is on. The Web Bluetooth bike connection and heart rate strap log their errors through it.
 
 The packet log leaves the device only inside a feedback report the rider sends with diagnostics attached.
 
@@ -47,19 +47,19 @@ The rider records and downloads the packet log in Telo Ride, which captures the 
 
 ### Containers
 
-The Ride app appends packet entries to browser storage, capped at 10 MB. The downloaded file is saved on the device.
+The Ride app keeps the packet log in memory, capped at 10 MB. The downloaded file is saved on the device.
 
 ![C4 container view for recording the packet log](diagrams/c4-container.png)
 
 ### Components
 
-`WebBluetoothBikeConnection` passes every packet to `PacketLog`, which keeps it according to the mode and appends it to `PacketLogStore`. `PacketLogExporter` reads the store for the download. `ConsoleAppLogger` receives per-packet lines only in every-packet mode.
+The Bluetooth links pass every packet to `MemoryPacketLog`, which keeps it according to the mode in its 10 MB window and saves the file on download. `ConsoleAppLogger` receives per-packet lines only while "Log every packet" is on.
 
 ![C4 component view for recording the packet log](diagrams/c4-component.png)
 
 ### Class structure
 
-`PacketLog` creates `PacketEntry` values and appends them to `PacketLogStore`. `PacketLogExporter` reads the same store. `ConsoleAppLogger` realizes `AppLogger` and redacts before it writes.
+`MemoryPacketLog` realizes `PacketLog`, naming each frame with `packetFrame()`. `ConsoleAppLogger` realizes `AppLogger` and redacts before it writes.
 
 ![Class diagram for recording the packet log](diagrams/class-structure.png)
 
@@ -80,3 +80,9 @@ The exporter streams every entry into a JSON Lines file named for the day, trigg
 A service reports an error with its area. The logger writes it in plain text to the browser console, with any email address or session token redacted (`L2-115`).
 
 ![Sequence diagram for logging an error to the console](diagrams/sequence-log-an-error.png)
+
+## Open questions
+
+- **In memory, not IndexedDB.** The log is a bounded 10 MB window in memory rather than an IndexedDB store: AGENTS.md allows a fixed-size or windowed buffer, a rider's hour of every packet stays far below the cap (about 1.5 MB at four notifications a second), and nothing then needs a schema or a clean-up. It does not survive a reload; a log of a crash that reloads the page would need the store.
+- **The switch is not remembered.** "Log every packet" starts off each time the app starts, rather than persisting through the ride settings: it uses memory, and a rider who forgot it on would record every ride.
+- **The switch's off colour.** The design system draws the off switch in `--color-line` inside the dialog by styling the `switch` block from `diagnostics`; AGENTS.md forbids styling another component's block, so the off switch keeps the `switch` block's own `--color-raised`.

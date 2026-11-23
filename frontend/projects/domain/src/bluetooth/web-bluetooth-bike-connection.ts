@@ -1,19 +1,22 @@
 /// <reference types="web-bluetooth" />
 import { Injectable, type OnDestroy, inject, signal } from '@angular/core';
 import {
+  APP_LOGGER,
   type BikeConnection,
   BikeConnectionError,
   type BikeInfo,
   type BleState,
+  PACKET_LOG,
   TICKER,
 } from '@telo/api';
 import { Subject, firstValueFrom } from 'rxjs';
 import { EchelonProtocol } from '../protocol/echelon-protocol';
 import { FtmsProtocol } from '../protocol/ftms-protocol';
-import type { BikeLink } from './bike-link';
+import type { BikeLink, PacketTap } from './bike-link';
 import { bikeIdentity } from './bike-identity';
 import { EchelonLink } from './echelon-link';
-import { FtmsLink } from './ftms-link';
+import { FtmsLink, bytesOf } from './ftms-link';
+import { ConsoleAppLogger } from '../diagnostics/console-app-logger';
 import { describeError } from './describe-error';
 import { DeviceReconnector } from './device-reconnector';
 import { GattWriteQueue } from './gatt-write-queue';
@@ -33,6 +36,11 @@ export class WebBluetoothBikeConnection implements BikeConnection, OnDestroy {
   private readonly queue = new GattWriteQueue();
   private readonly ticker = inject(TICKER);
   private readonly reconnector = new DeviceReconnector();
+  private readonly logger = inject(APP_LOGGER, { optional: true }) ?? new ConsoleAppLogger();
+  private readonly packets = inject(PACKET_LOG, { optional: true });
+  /** Every message to and from the bike goes past the packet log (L2-114). */
+  private readonly tap: PacketTap = (direction, characteristic, bytes) =>
+    this.packets?.record(direction, characteristic, bytes);
   private device: BluetoothDevice | null = null;
   private watched: BluetoothDevice | null = null;
   private link: BikeLink | null = null;
@@ -40,11 +48,12 @@ export class WebBluetoothBikeConnection implements BikeConnection, OnDestroy {
   private target: number | null = null;
   private readonly onDisconnected = (): void => this.onDrop();
   private readonly onValue = (event: Event): void => {
-    const value = (event.target as BluetoothRemoteGATTCharacteristic).value;
-    if (value)
-      this.received.next(
-        new Uint8Array(value.buffer.slice(value.byteOffset, value.byteOffset + value.byteLength)),
-      );
+    const characteristic = event.target as BluetoothRemoteGATTCharacteristic;
+    const value = characteristic.value;
+    if (!value) return;
+    const bytes = bytesOf(value);
+    this.tap('in', characteristic.uuid, bytes);
+    this.received.next(bytes);
   };
 
   private readonly linkState = signal<BleState>('idle');
@@ -112,8 +121,14 @@ export class WebBluetoothBikeConnection implements BikeConnection, OnDestroy {
         'The bike offers neither the Echelon service nor FTMS',
       );
     const link: BikeLink = echelon
-      ? new EchelonLink(this.queue, this.onValue, this.ticker, (error) => this.onFailure(error))
-      : new FtmsLink(this.queue, this.onValue);
+      ? new EchelonLink(
+          this.queue,
+          this.onValue,
+          this.ticker,
+          (error) => this.onFailure(error),
+          this.tap,
+        )
+      : new FtmsLink(this.queue, this.onValue, this.tap);
     await link.open(service);
     this.link = link;
     await link.initialise();
@@ -205,11 +220,13 @@ export class WebBluetoothBikeConnection implements BikeConnection, OnDestroy {
     this.onDrop(error);
   }
 
-  /** A Web Bluetooth error's name and message go to the console and to `lastError`, as text (L2-017 AC5). */
+  /**
+   * A Web Bluetooth error's name and message go to `lastError` as text, and to the console with its area (L2-017 AC5,
+   * L2-115 AC3).
+   */
   private report(error: unknown): void {
-    const text = describeError(error);
-    this.failure.set(text);
-    console.error(text);
+    this.failure.set(describeError(error));
+    this.logger.error('bluetooth', error);
   }
 
   ngOnDestroy(): void {

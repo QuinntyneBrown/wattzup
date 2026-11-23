@@ -1,0 +1,55 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.824
+Some bike problems show only in the bytes. Now Diagnostics keeps a packet log, on
+
+00:00:07.824 --> 00:00:08.901
+this device.
+
+00:00:10.324 --> 00:00:15.057
+By default it keeps the commands sent to the bike: every resistance change and
+
+00:00:15.057 --> 00:00:18.087
+keepalive, counted in commands and kilobytes.
+
+00:00:23.228 --> 00:00:28.070
+Turn on Log every packet while you reproduce a problem, and the bike's messages are
+
+00:00:28.070 --> 00:00:30.179
+kept too, with a Recording tag.
+
+00:00:36.133 --> 00:00:41.494
+Download packet log saves a JSON Lines file for the day: one object per message,
+
+00:00:41.494 --> 00:00:44.943
+with its time, direction, frame type and bytes.
+
+00:00:49.038 --> 00:00:54.633
+Two acceptance tests failed first and pass now. The log holds ten megabytes at most,
+
+00:00:54.633 --> 00:00:58.796
+and errors reach only the console, with no email or token.
+
+00:01:01.942 --> 00:01:04.747
+The packet log, from a phone to the full screen.
+
+00:01:12.266 --> 00:01:16.869
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:17.214 --> 00:01:21.726
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:21.726 --> 00:01:23.397
+every hill and interval.
+
+00:01:23.742 --> 00:01:28.920
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:28.920 --> 00:01:34.368
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:34.368 --> 00:01:37.358
+XP, rider levels, stars and map unlocks.
+
+00:01:37.704 --> 00:01:40.196
+A custom workout lives under Profile.

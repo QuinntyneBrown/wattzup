@@ -165,7 +165,7 @@ describe('WebBluetoothHeartRateStrap', () => {
     await vi.advanceTimersByTimeAsync(RETRY_MS * 2);
     expect(service.state()).toBe('disconnected');
     expect(console.error).toHaveBeenCalledWith(
-      'NetworkError: Bluetooth Device is no longer in range.',
+      '[heart rate] NetworkError: Bluetooth Device is no longer in range.',
     );
 
     strap.switch(true);

@@ -144,13 +144,13 @@ describe('WebBluetoothBikeConnection', () => {
     expect(connection.ble()).toBe('connected');
   });
 
-  it('writes a Web Bluetooth error to the console as name: message, and keeps it as text (AC5)', async () => {
+  it('writes a Web Bluetooth error to the console as name: message with its area, and keeps it as text (AC5, L2-115 AC3)', async () => {
     bike.switch(false);
     bike.drop();
 
     await vi.advanceTimersByTimeAsync(RETRY_MS);
 
-    expect(errors).toEqual(['NetworkError: Bluetooth Device is no longer in range.']);
+    expect(errors).toEqual(['[bluetooth] NetworkError: Bluetooth Device is no longer in range.']);
     expect(connection.lastError()).toBe('NetworkError: Bluetooth Device is no longer in range.');
     expect(connection.ble()).toBe('disconnected');
   });

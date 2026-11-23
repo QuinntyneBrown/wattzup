@@ -31,5 +31,53 @@
       </svg>
       Everything here is read in your browser and stays on this device until you download it.
     </p>
+    <div class="diagnostics__log">
+      <div class="diagnostics__switch-row">
+        <span class="diagnostics__switch-text">
+          <span class="diagnostics__switch-label" id="log-every-packet-label"
+            >Log every packet</span
+          >
+          <span class="diagnostics__switch-detail" id="log-every-packet-detail"
+            >Records each Bluetooth message, not just the commands we send. Turn on while
+            reproducing a problem — it uses memory.</span
+          >
+        </span>
+        <button
+          wz-switch
+          class="diagnostics__switch"
+          aria-labelledby="log-every-packet-label"
+          aria-describedby="log-every-packet-detail"
+          [checked]="everyPacket()"
+          (click)="everyPacketToggled.emit(!everyPacket())"
+        >
+          <span class="visually-hidden">Log every packet</span>
+        </button>
+      </div>
+      <div class="diagnostics__well">
+        <span class="diagnostics__count"
+          ><span class="diagnostics__count-figure">{{ packets().figure }}</span
+          ><span class="diagnostics__count-unit">{{ packets().unit }}</span>
+          @if (packets().recording) {
+            <span class="diagnostics__recording">Recording</span>
+          }
+        </span>
+        <button
+          wz-button
+          variant="raised"
+          size="sm"
+          type="button"
+          class="diagnostics__download"
+          (click)="downloadRequested.emit()"
+        >
+          <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 15V3" />
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <path d="m7 10 5 5 5-5" />
+          </svg>
+          Download packet log
+        </button>
+      </div>
+      <p class="diagnostics__file">Saves {{ fileName() }}. Attach it to a bug report if we ask.</p>
+    </div>
   </div>
 </div>
