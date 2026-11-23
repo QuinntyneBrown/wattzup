@@ -263,6 +263,12 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         B["parasol-red"].box((ax_m, ay_m, az_m + 1.18), (5.00, 2.02, 0.34), amyaw)
         B["ladin-blue"].box((ax_m + math.cos(amyaw) * 1.4, ay_m + math.sin(amyaw) * 1.4, az_m + 2.30), (0.38, 1.25, 0.18), amyaw)
 
+    # Cyclists refilling water bidons beside the 4 summit spring fountains
+    for rf_i, p in enumerate(PASSES):
+        rf_idx = road.index(p["at"] + 11.8)
+        rx_f, ry_f, rz_f = kit.P(rf_idx, 0.0, -(kit.kerb + 2.15), 0.0)
+        _road_cyclist(B, rx_f, ry_f, rz_f, s[rf_idx]["h"] - 0.8, jerseys[(rf_i + 3) % len(jerseys)], standing=True)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
