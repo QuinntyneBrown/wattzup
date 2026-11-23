@@ -119,6 +119,12 @@ export function findDolomitePeak(query: string): DolomitePeak | null {
   return found ?? null;
 }
 
+/** Mean summit elevation (m) across all catalogued Dolomite massifs surrounding Sella Ronda. */
+export function meanDolomiteGiantAltitude(): number {
+  const sum = DOLOMITE_GIANTS.reduce((acc, p) => acc + p.altitudeMetres, 0);
+  return Math.round(sum / Math.max(1, DOLOMITE_GIANTS.length));
+}
+
 /** Sightline prominence (0..1) of Sassolungo (3,181 m) from `metres` along Sella Ronda. */
 export function sassolungoSightline(metres: number): number {
   const w = ((metres % 11650) + 11650) % 11650;

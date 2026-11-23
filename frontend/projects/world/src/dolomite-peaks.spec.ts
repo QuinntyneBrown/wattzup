@@ -8,6 +8,7 @@ import {
   isGlaciatedPeak,
   marmoladaGlacierElevationBand,
   marmoladaGlacierSightline,
+  meanDolomiteGiantAltitude,
   peaksAboveThreeThousand,
   sassolungoSightline,
 } from './dolomite-peaks';
@@ -33,5 +34,6 @@ describe('DOLOMITE_GIANTS', () => {
       'sassolungo',
     );
     expect(findDolomitePeak('')).toBeNull();
+    expect(meanDolomiteGiantAltitude()).toBeGreaterThan(2800);
   });
 });
