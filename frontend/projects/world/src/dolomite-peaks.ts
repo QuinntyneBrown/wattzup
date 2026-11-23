@@ -89,6 +89,16 @@ export function marmoladaGlacierElevationBand(): {
   return { snoutMetres: 2680, crestMetres: 3309 };
 }
 
+/** Apparent vertical skyline angle in degrees of a summit at `peakAltM` viewed from `riderAltM` at `horizontalDistM`. */
+export function angularElevationDegrees(
+  peakAltM: number,
+  riderAltM: number,
+  horizontalDistM: number,
+): number {
+  if (horizontalDistM <= 1) return peakAltM > riderAltM ? 90 : 0;
+  return (Math.atan2(peakAltM - riderAltM, horizontalDistM) * 180) / Math.PI;
+}
+
 /** Sightline prominence (0..1) of Sassolungo (3,181 m) from `metres` along Sella Ronda. */
 export function sassolungoSightline(metres: number): number {
   const w = ((metres % 11650) + 11650) % 11650;
