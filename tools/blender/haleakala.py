@@ -612,6 +612,43 @@ def ranch_steads(k) -> dict:
     return {"ranchHouses": steads, "horses": horses}
 
 
+AVENUES = (0.2, 0.33)  # the shares of the climb where the Kula road runs under jacarandas
+
+
+def jacaranda_avenues(k) -> dict:
+    """Detail 6, ranch land: Kula's jacarandas. In two places on the way up through the pastures the road runs
+    for a couple of hundred metres under an avenue of them, a tree every 20 m on both sides, all flower and no
+    leaf, and the verge under each lies purple with what has fallen."""
+    near, rng, s, B = Painted(k, "hk-detail"), k.rng, k.s, k.B
+    petal = (_lin(0x8E6CD8), _lin(0xA98AE6), _lin(0x7A58C4))
+    trees = 0
+    for share in AVENUES:
+        start = next((i for i in range(8, k.n - 70) if height_share(k, i) >= share and all(abs(s[q]["k"]) < 1 / 150 for q in range(i, i + 56, 4))), None)
+        if start is None:
+            continue
+        for i in range(start, start + 56, 5):
+            for side in (1, -1):
+                x, y, z = k.road.at(i, (k.kerb + 5.6) * side)
+                if not k.road.clear_of_road(x, y, 6.0, i):
+                    continue
+                z = k.ground(x, y, i, (k.kerb + 5.6) * side)
+                tall = rng.uniform(4.6, 6.2)
+                k.prism(B["trunk-dark"], (x, y, z - 0.5), 0.3, tall + 0.6, 5, 0.2)
+                for q in range(3):
+                    a = q * math.tau / 3 + rng.uniform(0, 1.0)
+                    lens(B["hk-jacaranda"], (x + math.cos(a) * 1.9, y + math.sin(a) * 1.9, z + tall + rng.uniform(-0.5, 0.6)), rng.uniform(2.6, 3.6), 2.1, rng)
+                trees += 1
+                # The fallen flower on the verge beneath it.
+                for q in range(-1, 2):
+                    a, b = k.road.at(i + q, (k.kerb + 0.5) * side, 0.04), k.road.at(i + q + 1, (k.kerb + 0.5) * side, 0.04)
+                    c, d = k.road.at(i + q + 1, (k.kerb + 3.4) * side, 0.04), k.road.at(i + q, (k.kerb + 3.4) * side, 0.04)
+                    quad = (a, b, c, d)
+                    if (b[0] - a[0]) * (d[1] - a[1]) - (b[1] - a[1]) * (d[0] - a[0]) < 0:
+                        quad = quad[::-1]
+                    near.face(quad, (petal[rng.randrange(3)],) * 4)
+    return {"jacarandaAvenueTrees": trees}
+
+
 def ranch_land(k) -> dict:
     """Detail 6, ranch land: on the middle slopes a post-and-wire fence runs along both sides of the road, cattle
     graze the pasture behind it, and eucalyptus stand in lines with a jacaranda in flower among them."""
@@ -1173,6 +1210,7 @@ def scenery(k) -> dict:
     ranch = ranch_land(k)
     steads = ranch_steads(k)
     ranch.update(steads)
+    ranch.update(jacaranda_avenues(k))
     coast = coastal_start(k)
     coast.update(plantation_town(k))
     coast.update(beach_park(k))
