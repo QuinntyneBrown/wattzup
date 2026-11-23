@@ -153,3 +153,11 @@ def build_four_passes(B, kit, road, height_at) -> None:
     for r_step, w_oct, h_oct in ((0.0, 14.0, 2.2), (2.2, 10.5, 4.8), (7.0, 7.6, 3.2)):
         B["dolomite-pale"].box((sx_m, sy_m, sz_m + r_step - 1.2), (w_oct, w_oct, h_oct), 0.0)
         B["dolomite-pale"].box((sx_m, sy_m, sz_m + r_step - 1.2), (w_oct * 0.94, w_oct * 0.94, h_oct), math.pi * 0.25)
+
+    # Passo Campolongo (1,875 m) carved Ladin timber totem & stone bench
+    cam_idx = road.index(2112.0)
+    cam_yaw = s[cam_idx]["h"]
+    cx_t, cy_t, cz_t = kit.P(cam_idx, 0.0, -(kit.kerb + 3.8), -0.1)
+    B["stone"].box((cx_t, cy_t, cz_t), (1.2, 1.2, 0.65), cam_yaw)
+    B["larch-aged"].box((cx_t, cy_t, cz_t + 0.65), (0.52, 0.52, 2.85), cam_yaw + 0.3)
+    B["gold"].box((cx_t, cy_t, cz_t + 3.50), (0.36, 0.36, 0.42), cam_yaw + 0.3)
