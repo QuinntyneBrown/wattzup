@@ -167,6 +167,7 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         B["larch-warm"].box(kit.P(l_idx, -1.8, kit.kerb + 3.4, 0.05), (2.2, 0.55, 0.52), lyaw)
         B["larch-aged"].box(kit.P(l_idx, 2.2, kit.kerb + 3.4, 0.05), (0.48, 0.48, 0.85), lyaw)
         B["chalet-wood"].box(kit.P(l_idx, 3.8, kit.kerb + 3.6, 0.05), (1.45, 0.14, 1.95), lyaw)
+        B["dolomite-pale"].box(kit.P(l_idx, -4.2, kit.kerb + 3.6, 0.05), (0.34, 0.34, 1.08), lyaw)
 
     # Transverse cast-iron alpine snowmelt drainage grates across steep ramps
     for p in PASSES:
