@@ -123,6 +123,8 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
                 sy_r = ry0 + math.sin(ryaw) * (seg_s * 9.5) + math.cos(ryaw) * (math.sin(seg_s * 0.6) * 4.5)
                 seg_yaw = ryaw + math.cos(seg_s * 0.6) * 0.25
                 B["stone"].box((sx_r, sy_r, rz0 - 3.6), (10.2, 6.8, 3.6), seg_yaw)
+                if seg_s % 2 == 0:
+                    B["dolomite-pale"].box((sx_r - math.sin(seg_yaw) * 3.45, sy_r + math.cos(seg_yaw) * 3.45, rz0 - 3.6), (1.1, 0.85, 3.65), seg_yaw)
                 B["asphalt"].box((sx_r, sy_r, rz0), (10.2, 6.4, 0.16), seg_yaw)
                 B["paint"].box((sx_r - math.sin(seg_yaw) * 2.85, sy_r + math.cos(seg_yaw) * 2.85, rz0 + 0.17), (10.2, 0.18, 0.02), seg_yaw)
 
