@@ -541,4 +541,12 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
     # Pale-dolomite churchyard steps ascending toward San Vigilio in Colfosco
     for st_k in (8.0, 12.0):
         B["dolomite-pale"].box(kit.P(cf_idx, 0.0, kit.kerb + st_k, -0.1), (3.4, 3.2, 0.45), road.s[cf_idx]["h"])
+    # Classic Posta Hotel chalet in central Corvara (at=298 m)
+    pt_h = road.index(298.0)
+    pthy = road.s[pt_h]["h"]
+    pthx, pthy_p, _ = road.at(pt_h, -(kit.kerb + 15.0))
+    if road.clear_of_road(pthx, pthy_p, 11.0, pt_h):
+        pthz = height_at(pthx, pthy_p)
+        B["chalet-plaster"].box((pthx, pthy_p, pthz - 1.0), (13.2, 9.6, 8.6), pthy)
+        kit.gable(B["parasol-red"], (pthx, pthy_p, pthz + 7.6), 14.0, 10.4, 2.8, pthy)
     # [ANCHOR:villages]
