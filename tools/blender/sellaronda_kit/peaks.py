@@ -36,6 +36,9 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         fy = sella_pt["y"] + uy * rad_f + py * lat_f
         rock_tower(peaks, fx, fy, 75.0, top_f, r_f, r_f * 0.78, 9, yaw_sl, cfn, taper=0.38, flat_cap=False, seed_phase=1.5 + f_idx)
 
+    # Il Pollice / Daumen (2,960 m) detached thumb pinnacle guarding the Forcella notch
+    rock_tower(peaks, sella_pt["x"] + ux * 855.0 + px * 62.0, sella_pt["y"] + uy * 855.0 + py * 62.0, 145.0, 688.0, 44.0, 38.0, 8, yaw_sl, cfn, taper=0.25, flat_cap=False, seed_phase=4.8)
+
     # Forcella del Sassolungo (2,681 m) steep snow couloir between Sassolungo and Cinque Dita
     nx0, ny0 = sella_pt["x"] + ux * 790.0 + px * 10.0, sella_pt["y"] + uy * 790.0 + py * 10.0
     quad_shaded(
