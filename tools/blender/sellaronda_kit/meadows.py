@@ -573,4 +573,12 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["larch-warm"].box((btx, bty, btz), (0.65, 0.45, 0.92), s[bti]["h"])
             B["paint"].box((btx, bty, btz + 0.92), (0.68, 0.48, 0.06), s[bti]["h"])
 
+    # Sun-bleached silver-grey timberline tree stumps among the mugo pines
+    for st_i in range(35, kit.n - 35, 65):
+        if not (102.0 <= s[st_i]["z"] <= 122.0):
+            continue
+        stx, sty, _ = road.at(st_i, kit.kerb + 9.5)
+        if road.clear_of_road(stx, sty, 6.0, st_i):
+            B["larch-aged"].box((stx, sty, height_at(stx, sty)), (0.48, 0.48, 0.65), st_i * 0.6)
+
     return trees
