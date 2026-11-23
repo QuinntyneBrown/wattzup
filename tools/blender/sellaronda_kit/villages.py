@@ -389,4 +389,14 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         spx, spy, spz = kit.P(sp_i, 0.0, (kit.kerb + 7.2) * sp_s, 0.0)
         B["ladin-blue"].box((spx, spy, spz + 2.45), (3.4, 1.35, 0.22), spyaw)
         B["parasol-red"].box((spx, spy, spz + 0.15), (2.4, 0.95, 0.72), spyaw)
+    # Historic Ladin timber watermill (Mulin) beside the Colfosco stream (at=10935 m)
+    ml_i = road.index(10935.0)
+    mlyaw = road.s[ml_i]["h"]
+    mlx, mly, _ = road.at(ml_i, kit.kerb + 16.5)
+    if road.clear_of_road(mlx, mly, 11.0, ml_i):
+        mlz = height_at(mlx, mly)
+        B["stone"].box((mlx, mly, mlz - 1.2), (5.8, 4.6, 2.0), mlyaw)
+        B["larch-aged"].box((mlx, mly, mlz + 0.8), (6.0, 4.8, 2.8), mlyaw)
+        kit.gable(B["chalet-wood"], (mlx, mly, mlz + 3.6), 6.6, 5.4, 1.6, mlyaw)
+        B["larch-warm"].box((mlx - math.sin(mlyaw) * 2.55, mly + math.cos(mlyaw) * 2.55, mlz + 0.2), (2.6, 0.28, 2.6), mlyaw)
     # [ANCHOR:villages]
