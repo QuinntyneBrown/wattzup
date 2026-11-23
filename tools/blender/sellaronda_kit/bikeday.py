@@ -206,6 +206,19 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         B["skin"].box((phx, phy, phz + 1.10), (0.22, 0.22, 0.24), phyaw)
         B["paint"].box((phx + math.cos(phyaw) * 0.34, phy + math.sin(phyaw) * 0.34, phz + 0.98), (0.42, 0.12, 0.12), phyaw)
 
+    # Two-rider long-wheelbase tandem road bikes joining Sellaronda Bike Day on Pordoi & Sella!
+    for td_at in (4760.0, 7580.0):
+        td_idx = road.index(td_at)
+        tdyaw = s[td_idx]["h"]
+        tx0, ty0, tz0 = road.at(td_idx, -(kit.kerb - 0.72))
+        ca_t, sa_t = math.cos(tdyaw), math.sin(tdyaw)
+        for w_o in (-0.88, 0.88):
+            B["dark"].box((tx0 + ca_t * w_o, ty0 + sa_t * w_o, tz0 + 0.02), (0.64, 0.08, 0.64), tdyaw)
+        B["parasol-red"].box((tx0, ty0, tz0 + 0.42), (1.68, 0.08, 0.46), tdyaw)
+        for r_o in (-0.36, 0.38):
+            B["crowd-2"].box((tx0 + ca_t * r_o, ty0 + sa_t * r_o, tz0 + 0.84), (0.46, 0.34, 0.42), tdyaw)
+            B["paint"].box((tx0 + ca_t * (r_o + 0.22), ty0 + sa_t * (r_o + 0.22), tz0 + 1.18), (0.24, 0.22, 0.22), tdyaw)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
