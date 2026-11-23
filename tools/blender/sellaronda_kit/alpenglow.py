@@ -92,3 +92,20 @@ def emit_dusk_lights(kit, road, height_at) -> None:
             lx, ly, lz = road.at(idx, off, 3.6)
             kit.light((lx, ly, lz), "glow-lamp", 24.0, 0.55)
             kit.halo((lx, ly, lz), "glow-lamp")
+
+
+def build_valley_mist(B, road, height_at) -> None:
+    """Lays delicate dusk valley-mist ribbons down in the four deep valley hollows off the road."""
+    for v in VILLAGES:
+        v_idx = road.index(v["at"] + 90.0)
+        v_yaw = road.s[v_idx]["h"]
+        for side in (-1.0, 1.0):
+            mx, my, _ = road.at(v_idx, 56.0 * side)
+            if road.clear_of_road(mx, my, 32.0, v_idx):
+                mz = height_at(mx, my) + 4.5
+                ca, sa = math.cos(v_yaw), math.sin(v_yaw)
+                p0 = (mx - ca * 55.0 - sa * 18.0, my - sa * 55.0 + ca * 18.0, mz)
+                p1 = (mx + ca * 55.0 - sa * 18.0, my + sa * 55.0 + ca * 18.0, mz)
+                p2 = (mx + ca * 55.0 + sa * 18.0, my + sa * 55.0 - ca * 18.0, mz + 0.6)
+                p3 = (mx - ca * 55.0 + sa * 18.0, my - sa * 55.0 - ca * 18.0, mz + 0.6)
+                B["beam-amber"].quad(p0, p1, p2, p3)
