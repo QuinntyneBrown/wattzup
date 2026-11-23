@@ -164,3 +164,19 @@ export function findLadinVillage(query: string): LadinVillage | null {
   );
   return hit ?? null;
 }
+
+const ARRIVING_FROM_PASS: Readonly<
+  Record<LadinVillage['id'], 'campolongo' | 'pordoi' | 'sella' | 'gardena'>
+> = {
+  arabba: 'campolongo',
+  canazei: 'pordoi',
+  selva: 'sella',
+  corvara: 'gardena',
+};
+
+/** Returns the clockwise Dolomite pass descent that leads into `villageId`. */
+export function precedingPassForVillage(
+  villageId: LadinVillage['id'],
+): 'campolongo' | 'pordoi' | 'sella' | 'gardena' {
+  return ARRIVING_FROM_PASS[villageId];
+}
