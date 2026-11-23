@@ -12,6 +12,7 @@ def _hay_barn(B, kit, x: float, y: float, z: float, yaw: float, scale: float = 1
     B["stone"].box((x, y, z - 1.6), (w * 0.96, d * 0.96, 2.05), yaw)
     # Sun-darkened horizontal larch log walls + wooden hay ladder hung under the side eave
     B["larch-aged"].box((x, y, z + 0.45), (w, d, h), yaw)
+    B["larch-warm"].box((x + math.sin(yaw) * (d * 0.51), y - math.cos(yaw) * (d * 0.51), z + 1.85), (1.85 * scale, 0.08, 0.12), yaw)
     B["larch-warm"].box((x + math.cos(yaw) * (w * 0.51), y + math.sin(yaw) * (w * 0.51), z + 1.55 * scale), (0.08, d * 0.78, 0.36 * scale), yaw)
     # Inclined timber hay-loft entry ramp (ponte da tabià) leading to the upper hay door
     B["larch-warm"].box(
