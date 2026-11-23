@@ -8,7 +8,7 @@ one and drawing it; the cadence score (L2-167) and a course's place in the catal
 
 ## Cinque Terre corniche
 
-Use the stages of GCN Training’s *3 Mins On, 2 Mins Off* to lay the SP370 corniche. The corniche winds above the Ligurian Sea with a low stone parapet on the seaward shoulder. Efforts gain height and recoveries descend. Use the course renderer’s chase camera, start and finish zoom, and cyclist kit that Ibiza uses. The road and wall follow the same sampled centre line through bends. The coastal palette and hillside profile come from the Cinque Terre reference photographs in `docs/worlds/cinqueterre`.
+Use the stages of GCN Training’s *3 Mins On, 2 Mins Off* to lay the SP370 corniche. The corniche winds above the Ligurian Sea with a low stone parapet on the seaward shoulder. Efforts gain height and recoveries descend. Use the course renderer’s chase camera, start and finish zoom, and cyclist kit that Ibiza uses. The road and wall follow the same sampled centre line through bends. The road is laid along a coast (`tools/blender/cinqueterre.py`): it runs east with the sea always on its left, swings out round headlands and in round ravines, and climbs the hillside by a pair of hairpins on each long effort. North of it the land falls to the water in a cliff; south of it a mountain climbs away inland. The coastal palette and hillside profile come from the Cinque Terre reference photographs in `docs/worlds/cinqueterre`.
 
 ## Building a course
 

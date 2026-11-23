@@ -107,7 +107,7 @@ climb for a col). All seven map worlds have one:
 | `prairie` | Open farmland at golden hour | Fenced verges, wheat and green fields in strips, red barns and silos, round bales, windbreaks, a wind farm and a grain elevator by the start |
 | `oldtown` | A cobbled old town on race day | Pastel houses door to door on both pavements, tiled roofs, shuttered windows, café umbrellas, bunting across the street, lamps, a cathedral with two spires, cypresses beyond the walls |
 | `coast` | A clifftop road at sunset | A guard rail over the drop to the sea, rocks at the edge, a stone wall inland, gorse and pines, white cottages with lit windows, a lighthouse on the point, sea stacks |
-| `cinqueterre` | The corniche above the Ligurian Sea (built from its class, 3 Mins On, 2 Mins Off, as Ibiza is from its own) | A low stone parapet over the drop to the sea on the seaward shoulder |
+| `cinqueterre` | The corniche above the Ligurian Sea, built from its class, 3 Mins On, 2 Mins Off (`cinqueterre.py`: its own road, along a coast with the sea always on its left and a pair of hairpins up the hillside on each long effort, and its own land, cliffs to the sea and a mountain inland) | A stone parapet under capstones on the seaward edge, dry-stone terraces of vines on the hillside |
 | `docklands` | A harbour city after dark | Lamps every 24 m, brick warehouses with lit windows and neon, cranes and container stacks on the quay, lit ships at anchor, a skyline of towers, steel bridges over the efforts |
 | `dolomites` | An alpine valley | Guard rails, spruce on the valley walls, chalets with flower boxes in the meadows, a chapel on the highest bend, pale limestone peaks with snow all round |
 | `vicecity` | A neon beachfront at a magenta sunset | Palms on both sides, art deco hotels in pastel with neon bands and signs, convertibles at the kerb, lifeguard towers and umbrellas on the beach, a neon skyline |
@@ -115,6 +115,9 @@ climb for a col). All seven map worlds have one:
 
 Every map has the start pylons and lights, the finish arch, barriers and crowds at both ends, an arch at the
 foot of every effort, flags where each recovery begins and arrow boards round every tight bend.
+
+A theme may lay its own road (`lay`) and build its own land (`land_builder`), as Cinque Terre's does: each is a function
+the script calls in place of its own, handed the script's module for its helpers.
 
 To add a map: write `courses/<id>.json` from the class's plan (`theme` names its theme), give the theme its
 data and scenery in `themes.py`, run the script, and name the world in
