@@ -138,6 +138,8 @@ const DISC_BRIGHT = 1.7;
 const PLANE_IN_SHADE = 0x4a3a44;
 /** How much of a leaf's colour is lost seen straight against the setting sun. */
 const LEAF_SILHOUETTE = 0.72;
+/** And of a figure's: less, their clothes being white. */
+const FIGURE_SILHOUETTE = 0.6;
 /** How often, in frames, the chunks to draw are chosen. */
 const CHUNK_SWEEP = 12;
 /** Riders further ahead than this are not drawn, and no more than this many of the nearest. */
@@ -951,6 +953,8 @@ export class CourseRenderer implements WorldRenderer {
         this.sunset = { pivot, out: Math.hypot(middle.x, middle.z), up: middle.y };
         // A map with a sun that sets has palms that stand dark against it (leaf-material.ts).
         leaves.against(this.course!.file.sun[0], this.course!.file.sun[2], LEAF_SILHOUETTE);
+        // And its people (dance-material.ts).
+        dancing.against(this.course!.file.sun[0], this.course!.file.sun[2], FIGURE_SILHOUETTE);
       }
       if (scud.length) {
         this.drift = new Group();

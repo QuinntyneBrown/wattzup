@@ -3,18 +3,23 @@
 // moves in the alpha of that corner's colour: 1 where it is planted (its feet, and everything on the map that is
 // not a figure), less the higher up a figure it is, and less still on a dancer than on someone standing
 // (`person` in build_course.py). The move is worked out in the vertex's place alone: nothing a pixel.
+// Where a map has a low sun to look into (L2-166 AC103), a figure seen against it is dark, the drink in their hand
+// still bright: only what moves is a figure, so a wall or a table is lit as it was.
 import {
   abs,
   smoothstep,
   vec2,
   attribute,
+  cameraPosition,
   cos,
   float,
+  materialColor,
   modelWorldMatrix,
   positionGeometry,
   positionLocal,
   sin,
   uniform,
+  varying,
   vec3,
   vec4,
 } from 'three/tsl';
@@ -44,12 +49,19 @@ export interface Dancing {
   rider(x: number, z: number): void;
   /** A map's positions are steps of each mesh's own box (pack_glb.py): how many metres its box is across. */
   across(metres: number): void;
+  /**
+   * The sun a figure stands dark against: the way to it over the ground (`x`, `z`, any length) and how much of a
+   * figure's colour is lost looking straight at it, from 0 (none, as a map without a low sun) to 1.
+   */
+  against(x: number, z: number, depth: number): void;
 }
 
 export function danceMaterials(): Dancing {
   const time = uniform(0);
   const unit = uniform(1);
   const rider = uniform(vec2(1e6, 1e6));
+  const sun = uniform(vec2(1, 0));
+  const depth = uniform(0);
   const move = (material: NodeMaterial): void => {
     const free = float(1).sub(attribute('color', 'vec4').a).div(FREE);
     // Where a figure stands, in the map's metres, sets where in the beat they are: a crowd, not a chorus line.
@@ -71,6 +83,12 @@ export function danceMaterials(): Dancing {
   const solid = new MeshLambertNodeMaterial({ vertexColors: true, flatShading: true });
   const glow = new MeshBasicNodeMaterial({ vertexColors: true, toneMapped: false });
   move(solid);
+  // A figure against the light: everything of them but their planted feet, the more squarely the eye looks towards
+  // the sun at them.
+  const stands = modelWorldMatrix.mul(vec4(positionGeometry, 1));
+  const figure = smoothstep(0, 0.08, float(1).sub(attribute('color', 'vec4').a));
+  const towards = smoothstep(0.35, 0.95, stands.xz.sub(cameraPosition.xz).normalize().dot(sun));
+  solid.colorNode = materialColor.mul(float(1).sub(varying(figure.mul(towards)).mul(depth)));
   move(glow);
   return {
     solid,
@@ -83,6 +101,11 @@ export function danceMaterials(): Dancing {
     },
     across: (metres) => {
       unit.value = metres;
+    },
+    against: (x, z, lost) => {
+      const length = Math.hypot(x, z) || 1;
+      sun.value.set(x / length, z / length);
+      depth.value = lost;
     },
   };
 }

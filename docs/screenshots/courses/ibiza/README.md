@@ -200,6 +200,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Plane 4 | The aeroplane is a dark shape against the sunset, its cabin windows and wingtip lights burning: it was lit white, as at noon | 60.4 and 60.2 fps (from 4,450 and 8,150 m) | 50.5 and 39.1 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 44.9, 57.3 |
 | Sky 20 | A clear band of gold between the sea and the cloud's burning edge, towards the sun: the deck came down almost to the horizon | 60.3, 60.2 and 60.2 fps (from 4,450, 8,150 and 3,250 m) | 57.0 and 40.0 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 55.8, 52.6 |
 | Sky 21 | The thunderheads have no edge: at its outline each is the sky behind it, and comes to its own colour a quarter of the way in | 59.8 and 60.3 fps (from 4,450 and 8,150 m) | 51.7 and 41.4 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 55.9, 45.9 |
+| Party 21 | Partygoers stand dark against the sunset, the drinks in their hands still bright: a figure seen towards the sun loses up to six tenths of its colour | 60.1 fps, none over 20 ms (the finish) | 40.0 and 52.7 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 54.1, 47.4 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -717,6 +718,17 @@ scenery out of Ibiza would not reach 60 here.
 **One thing taken out.** The stars were drawn, at no brightness, for the first third of the course. They are not
 drawn now until the first of them shows: one draw call fewer there (81 to 80 from 600 m). At the finish nothing
 changes (77 draw calls, 119,897 triangles; 49.4 fps on this run).
+
+### Party 21: dark against the sunset
+
+`party-21.jpg` (the two sides of the finish, enlarged; `party-20.jpg` is the same place before), `party-21.mp4`.
+As the palms (Palms 11) and the aeroplane (Plane 4): a partygoer between the rider and the setting sun is seen
+against the light. A figure loses its colour the more squarely the eye looks towards the sun at it, up to six
+tenths (`dance-material.ts`); the drink in its hand glows and loses none, and a figure seen away from the sun is
+lit as before. Only what moves is a figure: walls, tables and planters are as they were.
+
+**Modest where it was filmed.** At the finish the crowd stands to the sides of the road, some way off the line to
+the sun: they are greyer and darker than in `party-20.jpg`, not black shapes.
 
 ### Party 1: people with drinks
 
