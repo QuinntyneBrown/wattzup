@@ -2478,6 +2478,18 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
                 signs += 1
                 break
 
+    # Watching the sun go down: between the clubs, every few hundred metres, three or four stand at the seawall
+    # with their drinks, looking out to sea, their backs to the road. Not by the start, the letters or the finish,
+    # and not where a club's own crowd is. They have dice of their own.
+    watch = random.Random(5150)
+    i = road.index(420.0)
+    while i < road.index(length - 620.0):
+        if all(abs(i - c) > 7 for c in clubs):
+            for k in range(watch.choice((3, 3, 4))):
+                along = (k - 1.5) * watch.uniform(0.75, 1.0)
+                person(P(i, along, kerb + watch.uniform(1.9, 2.05), 0.12), s[i]["h"] + math.pi / 2 + watch.uniform(-0.35, 0.35), rng=watch, dice=watch)
+        i += int(watch.uniform(260, 340) / STEP)
+
     # Arrow boards round the outside of every tight bend.
     for i in range(2, n - 2, 2):
         k = s[i]["k"]

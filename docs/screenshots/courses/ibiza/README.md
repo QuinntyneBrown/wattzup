@@ -207,6 +207,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Sign 6 | The square is a place people stop: two sit on the ends of the plinth with their drinks, a friend stands back to take the picture of those posing, and a pair talk at the side | 60.2 and 60.3 fps (from 268 and 284 m) | 48.9 fps at the sign (87,010 triangles) and 48.1 at the finish (118,819); Neon Docklands beside it 52.4, 49.1 |
 | Sky 24 | The moon has a face: the grey seas across its upper left, one to the right and a small one low down | 59.5 fps (from 262 m) | 49.1 and 46.2 fps after (the finish, 118,879 triangles); Neon Docklands beside it 54.8, 53.3 |
 | Plane 5 | No two arrivals alike: after the first, each aeroplane is one of five sizes, from a small jet (0.78) to a wide-body (1.3), in a skipping order | 60.1 fps (from 5,200 m, the second arrival) | 50.5 and 37.7 fps after (the finish, 118,859 triangles: none more); Neon Docklands beside it 56.3, 44.9 |
+| Party 23 | Watching the sun go down: fifteen groups of three or four stand at the seawall between the clubs with their drinks, looking out to sea | 60.2 fps, none over 20 ms (from 4,900 m) | 49.6, 48.7, 42.1, 41.8 and 48.4 fps after (from 600, 3,250, 4,900, 7,950 and 8,100 m: 116,017, 77,004, 74,348, 91,797 and 119,201 triangles); Neon Docklands beside it 47.5 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -867,6 +868,22 @@ hand's breadth sideways in a tenth of a second).
 
 **Not seen.** The film from 950 m passes the first gate with no stroller at it: the step aside is tested by its
 numbers, not watched.
+
+### Party 23: watching the sun go down
+
+`party-23.jpg` (a group at the seawall from 4,900 m). The party was at the clubs, the letters and the finish, and
+between them the promenade had its strollers and its sitters and no one else. What the island's west coast is
+known for is people standing at the sea wall with a drink as the sun goes down. Fifteen groups of three or four
+do that now, every few hundred metres between the clubs: at the wall, their backs to the road, looking out to
+sea, some with a glass or a telephone raised. They stand close to the wall, the strollers passing behind them.
+None by the start, the letters or the finish, or where a club's own crowd is. Dice of their own.
+
+**Two cuts before this one.** The first stood them on the other pavement, facing inland: across the road from the
+sea, the offsets on this map being left for more. The second was looked for in the wrong places, sixty-six metres
+out. Both were found by having the build say where it had put them.
+
+**Budget.** 5,661 triangles in all, spread along eight kilometres: the most the low tier draws anywhere is still
+at the finish (119,201).
 
 ### Party 1: people with drinks
 
