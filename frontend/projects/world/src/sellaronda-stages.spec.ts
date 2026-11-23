@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { classifySellaRidingPhase, recommendedRiderPosture } from './sellaronda-stages';
+import {
+  classifySellaRidingPhase,
+  loopCompletionFraction,
+  recommendedRiderPosture,
+} from './sellaronda-stages';
 
 describe('sellaronda-stages', () => {
   it('distinguishes valley spins, switchback climbs, summit crests, and alpine descents', () => {
@@ -13,5 +17,6 @@ describe('sellaronda-stages', () => {
     expect(recommendedRiderPosture(8.0, 68)).toBe('out-of-saddle');
     expect(recommendedRiderPosture(-6.0, 95)).toBe('aero-tuck');
     expect(recommendedRiderPosture(4.5, 88)).toBe('seated-spin');
+    expect(loopCompletionFraction(5825)).toBeCloseTo(0.5, 3);
   });
 });
