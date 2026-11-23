@@ -71,6 +71,12 @@ def alpenglow_sky_colour(dx: float, dy: float, dz: float, az: float, haze):
     # Warm solar aureole just above the western pass horizon
     sun_ang = max(0.0, dx * math.cos(az) * 0.96 + dy * math.sin(az) * 0.96 + dz * 0.18)
     c = mix(c, srgb(0xFFE2B8), (sun_ang ** 18.0) * 0.42)
+    # Anti-solar Belt of Venus (Cintura di Venere) rose-lilac band above steel-blue earth shadow in the east!
+    anti = max(0.0, -toward) ** 1.6
+    venus = math.exp(-((h - 0.11) / 0.075) ** 2) * anti
+    earth_sh = smoothstep(0.09, 0.0, h) * anti
+    c = mix(c, srgb(0x465884), earth_sh * 0.42)
+    c = mix(c, srgb(0xEE9CB4), venus * 0.38)
     c = mix(c, haze, math.exp(-12.5 * h) * 0.46)
     return sky.grade(c)
 
