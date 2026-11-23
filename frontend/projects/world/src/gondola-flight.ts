@@ -170,3 +170,9 @@ export function cablewayHorizontalSpanMetres(span: CableSpan): number {
 export function cablewayElevationGainMetres(span: CableSpan): number {
   return Math.max(0, span.to[1] - span.from[1]);
 }
+
+/** Mean 3D haul-rope transit speed (m/s) during active flight between lower and upper terminals. */
+export function cablewayMeanSpeedMps(span: CableSpan): number {
+  const flightSec = Math.max(1, span.traverseSeconds);
+  return Number((cableLineLengthMetres(span) / flightSec).toFixed(2));
+}
