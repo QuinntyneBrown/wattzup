@@ -20,6 +20,9 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     px, py = -uy, ux
     yaw_sl = math.atan2(-uy, -ux)
 
+    # Punta Dantersass / Langkofelkarspitze (2,820 m) inside the northern amphitheatre
+    rock_tower(peaks, sella_pt["x"] + ux * 1085.0 + px * 85.0, sella_pt["y"] + uy * 1085.0 + py * 85.0, 95.0, 665.0, 95.0, 82.0, 9, yaw_sl, cfn, taper=0.42, flat_cap=False, seed_phase=5.7)
+
     # Main Sassolungo / Langkofel blade tower (3,181 m)
     sl_x = sella_pt["x"] + ux * 920.0 - px * 160.0
     sl_y = sella_pt["y"] + uy * 920.0 - py * 160.0
