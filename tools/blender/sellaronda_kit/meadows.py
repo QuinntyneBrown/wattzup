@@ -358,4 +358,12 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             kit.pine(px_c, py_c, height_at(px_c, py_c), 1.05, "pine")
             trees += 1
 
+    # Clustered white alpine haylage bales beside lower valley farm lanes
+    for bl_m, bl_s in ((940.0, 1.0), (3580.0, 1.0)):
+        bl_i = road.index(bl_m)
+        for bk in range(3):
+            bx_s, by_s, _ = road.at(bl_i, (kit.kerb + 18.0 + bk * 1.65) * bl_s)
+            if road.clear_of_road(bx_s, by_s, 12.0, bl_i):
+                B["paint"].box((bx_s, by_s, height_at(bx_s, by_s)), (1.28, 1.28, 1.22), bk * 0.4)
+
     return trees
