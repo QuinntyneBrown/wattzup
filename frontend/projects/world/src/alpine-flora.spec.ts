@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   characteristicFaunaAtAltitude,
   dolomiteFloraZone,
+  dominantConiferSpecies,
   edelweissHabitatScore,
   growingSeasonDays,
   hayHarvestMonth,
@@ -44,5 +45,8 @@ describe('dolomiteFloraZone', () => {
     expect(tabiaBarnDensityWeight(1860)).toBeCloseTo(1, 3);
     expect(tabiaBarnDensityWeight(2400)).toBe(0);
     expect(growingSeasonDays(1500)).toBeGreaterThan(growingSeasonDays(2240));
+    expect(dominantConiferSpecies(1600)).toBe('picea-abies-spruce');
+    expect(dominantConiferSpecies(2100)).toBe('pinus-cembra-arolla');
+    expect(dominantConiferSpecies(2700)).toBe('none');
   });
 });

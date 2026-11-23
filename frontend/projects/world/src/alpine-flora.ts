@@ -47,6 +47,22 @@ export function growingSeasonDays(altitudeMetres: number): number {
   return Math.max(30, Math.round(days));
 }
 
+export type DolomiteConifer =
+  | 'picea-abies-spruce'
+  | 'larix-decidua-larch'
+  | 'pinus-cembra-arolla'
+  | 'pinus-mugo-dwarf'
+  | 'none';
+
+/** Dominant Dolomite conifer species at `altitudeMetres`. */
+export function dominantConiferSpecies(altitudeMetres: number): DolomiteConifer {
+  if (altitudeMetres < 1780) return 'picea-abies-spruce';
+  if (altitudeMetres < 2020) return 'larix-decidua-larch';
+  if (altitudeMetres < 2190) return 'pinus-cembra-arolla';
+  if (altitudeMetres < 2450) return 'pinus-mugo-dwarf';
+  return 'none';
+}
+
 /** Relative alpine wildflower bloom density (0..1), peaking in sunny 1,750..2,100 m hay pastures. */
 export function wildflowerBloomIntensity(altitudeMetres: number): number {
   if (altitudeMetres <= 1350 || altitudeMetres >= 2550) return 0;
