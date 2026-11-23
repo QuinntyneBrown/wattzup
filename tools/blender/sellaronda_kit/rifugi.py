@@ -321,4 +321,9 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
         dgx, dgy, dgz = kit.P(dgi, 0.0, (kit.kerb + 7.8) * dg_s, 0.0)
         B["larch-warm"].box((dgx, dgy, dgz), (1.15, 0.92, 0.85), road.s[dgi]["h"])
         kit.gable(B["chalet-wood"], (dgx, dgy, dgz + 0.85), 1.35, 1.12, 0.42, road.s[dgi]["h"])
+    # Glazed emerald ceramic chimney cowls on the 4 flank huts
+    for kc_m, kc_s in ((1460.0, -1.0), (7120.0, 1.0), (9420.0, 1.0), (10420.0, 1.0)):
+        kci = road.index(kc_m)
+        kcx, kcy, _ = road.at(kci, (kit.kerb + 13.5) * kc_s)
+        B["copper-patina"].box((kcx, kcy, height_at(kcx, kcy) + 12.8), (0.65, 0.65, 0.45), 0.0)
     # [ANCHOR:rifugi-global]
