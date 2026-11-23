@@ -122,3 +122,15 @@ export function downhillTerminalCoastKmh(gradePercent: number, systemKg = 78, cd
   const vMps = Math.sqrt((2 * systemKg * 9.81 * netSlope) / (rho * Math.max(0.18, cda)));
   return Math.min(82, Number((vMps * 3.6).toFixed(1)));
 }
+
+/** Recommended 5-second out-of-the-saddle exit power target (W) accelerating out of a bend onto an uphill ramp. */
+export function hairpinApexExitWatts(
+  ftpWatts: number,
+  curvature: number,
+  gradePercent: number,
+): number {
+  if (ftpWatts <= 0 || gradePercent <= 0) return Math.max(0, Math.round(ftpWatts * 0.75));
+  const severity = classifyBendSeverity(curvature);
+  const boost = severity === 'tornante' ? 1.22 : severity === 'sweeper' ? 1.08 : 1.0;
+  return Math.round(ftpWatts * boost);
+}

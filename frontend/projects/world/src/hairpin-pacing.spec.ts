@@ -6,6 +6,7 @@ import {
   classifyBendSeverity,
   countTornantiInCurvatures,
   downhillTerminalCoastKmh,
+  hairpinApexExitWatts,
   isInsideRockfallGallery,
   leanAngleDegrees,
   maxSafeCornerSpeedKmh,
@@ -47,5 +48,6 @@ describe('classifyBendSeverity', () => {
     expect(maxSafeCornerSpeedKmh(0, 0.65)).toBe(75);
     expect(downhillTerminalCoastKmh(-7)).toBeGreaterThan(55);
     expect(downhillTerminalCoastKmh(4)).toBe(0);
+    expect(hairpinApexExitWatts(250, 0.04, 7)).toBeGreaterThan(290);
   });
 });
