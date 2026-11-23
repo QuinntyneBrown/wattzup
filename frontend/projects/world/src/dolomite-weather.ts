@@ -56,3 +56,8 @@ export function barometricHectopascals(altitudeMetres: number): number {
 export function airDensityDragSavingPercent(altitudeMetres: number): number {
   return Number(((1 - relativeAirDensity(altitudeMetres)) * 100).toFixed(1));
 }
+
+/** True when late-afternoon heat (`hour24 >= 15`) and high valley warmth (`corvaraTempC >= 25`) raise convective storm risk. */
+export function hasAfternoonCumulusRisk(hour24: number, corvaraTempC: number): boolean {
+  return hour24 >= 15 && hour24 <= 19.5 && corvaraTempC >= 25;
+}
