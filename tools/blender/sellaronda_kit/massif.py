@@ -57,7 +57,7 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         for k in range(sides):
             a = k * math.tau / sides
             rk = radii[k] * scale_r
-            jitter_z = z_lvl + (18.0 * math.sin(9 * a + z_lvl * 0.02) if z_lvl > 100 else 0.0)
+            jitter_z = z_lvl + ((16.5 * math.sin(9 * a + z_lvl * 0.02) + 4.5 * math.cos(17 * a)) if z_lvl > 100 else 0.0)
             ring.append((cx + math.cos(a) * rk, cy + math.sin(a) * rk, jitter_z))
         rings.append(ring)
 
