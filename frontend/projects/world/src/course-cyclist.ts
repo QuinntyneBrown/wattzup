@@ -9,6 +9,7 @@
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {
   AdditiveBlending,
+  Bone,
   BufferAttribute,
   BufferGeometry,
   CanvasTexture,
@@ -24,11 +25,14 @@ import {
   MeshStandardMaterial,
   PlaneGeometry,
   Quaternion,
+  Skeleton,
+  SkinnedMesh,
   SphereGeometry,
   SRGBColorSpace,
   TorusGeometry,
   Vector3,
 } from 'three/webgpu';
+import { bendLimb, limbSkin } from './rider-limb';
 import { type KitDesign, type RiderLook, riderLook } from './rider-look';
 import { occlusion } from './rider-shade';
 
@@ -68,7 +72,16 @@ const SHIN = 0.43;
 const UPPER_ARM = 0.29;
 const FOREARM = 0.265;
 
+/**
+ * How far either side of a knee or an elbow, in metres, the skin follows both of the limb's bones (rider-limb.ts):
+ * the bend is spread over it, so the limb is one surface with no seam at the joint.
+ */
+const KNEE_REACH = 0.07;
+const ELBOW_REACH = 0.05;
+
 const ACROSS = new Vector3(1, 0, 0);
+/** From where the shin's skin is made, `THIGH` down a straight leg, to the shin's own start. */
+const BELOW_KNEE = new Matrix4().makeTranslation(0, -THIGH, 0);
 // What `between` and `bend` work in: a pose is made every frame for every rider, and must allocate nothing.
 const SCRATCH_X = new Vector3();
 const SCRATCH_Y = new Vector3();
@@ -382,71 +395,117 @@ function bend(
   return into.copy(a).addScaledVector(dir, along).addScaledVector(side, out);
 }
 
+/**
+ * The sections of a limb made as one tube: those of its `upper` part (each `t` a share of `upperLength`) and then
+ * those of its `lower` part (of `lowerLength`), with `t` now the metres down the limb, for a loft of length 1. The
+ * two parts' sections at the joint become one, and the tube is given more sections within `reach` of the joint, where
+ * it bends.
+ */
+function chain(
+  upper: readonly Section[],
+  upperLength: number,
+  lower: readonly Section[],
+  lowerLength: number,
+  reach: number,
+): Section[] {
+  const laid = [
+    ...upper.slice(0, -1).map((section) => ({ ...section, t: section.t * upperLength })),
+    ...lower.map((section) => ({ ...section, t: upperLength + section.t * lowerLength })),
+  ];
+  const sections: Section[] = [];
+  laid.forEach((section, i) => {
+    const before = laid[i - 1];
+    // Halfway between two sections that are both where the limb bends, one more.
+    if (
+      before &&
+      Math.abs(before.t - upperLength) <= reach &&
+      Math.abs(section.t - upperLength) <= reach
+    ) {
+      sections.push({
+        t: (before.t + section.t) / 2,
+        rx: (before.rx + section.rx) / 2,
+        rz: (before.rz + section.rz) / 2,
+        x: ((before.x ?? 0) + (section.x ?? 0)) / 2,
+        z: ((before.z ?? 0) + (section.z ?? 0)) / 2,
+      });
+    }
+    sections.push(section);
+  });
+  return sections;
+}
+
 // The legs' parts, in a rider's own skin, socks and shoes.
 /** The thigh, hip to knee: thick with the quadriceps at the top, narrowing to the knee; shorts to above the knee. */
-const thighShape = (look: Palette) =>
-  loft(
-    [
-      // It begins above the hip joint, behind it: the glute, rounded over, which turns with the thigh. (Along a
-      // thigh +z is its front, the quadriceps; -z its back, the glute and the hamstrings.)
-      { t: -0.17, rx: 0.028, rz: 0.03, z: -0.034 },
-      { t: -0.13, rx: 0.06, rz: 0.06, z: -0.036 },
-      { t: -0.05, rx: 0.082, rz: 0.088, z: -0.03 },
-      { t: 0.08, rx: 0.09, rz: 0.102, z: -0.018 },
-      { t: 0.3, rx: 0.086, rz: 0.1, z: -0.004 },
-      { t: 0.55, rx: 0.074, rz: 0.086, z: 0.002 },
-      { t: 0.74, rx: 0.063, rz: 0.07 },
-      { t: 0.78, rx: 0.061, rz: 0.066 },
-      { t: 0.8, rx: 0.057, rz: 0.062 },
-      { t: 0.93, rx: 0.052, rz: 0.058 },
-      { t: 1, rx: 0.05, rz: 0.054 },
-    ],
-    THIGH,
-    // Below the shorts the back of the knee is in shade, its two tendons either side of the hollow.
-    (t, round) => {
-      if (t < 0.74) return SHORTS;
-      if (t < 0.8) return GRIPPER;
-      const back = Math.abs(round - 0.75);
-      return back < 0.05 ? look.skinShade : back < 0.13 ? look.skinLight : look.skin;
-    },
-    20,
-  );
+const THIGH_SECTIONS: readonly Section[] = [
+  // It begins above the hip joint, behind it: the glute, rounded over, which turns with the thigh. (Along a
+  // thigh +z is its front, the quadriceps; -z its back, the glute and the hamstrings.)
+  { t: -0.17, rx: 0.028, rz: 0.03, z: -0.034 },
+  { t: -0.13, rx: 0.06, rz: 0.06, z: -0.036 },
+  { t: -0.05, rx: 0.082, rz: 0.088, z: -0.03 },
+  { t: 0.08, rx: 0.09, rz: 0.102, z: -0.018 },
+  { t: 0.3, rx: 0.086, rz: 0.1, z: -0.004 },
+  { t: 0.55, rx: 0.074, rz: 0.086, z: 0.002 },
+  { t: 0.74, rx: 0.063, rz: 0.07 },
+  { t: 0.78, rx: 0.061, rz: 0.066 },
+  { t: 0.8, rx: 0.057, rz: 0.062 },
+  { t: 0.93, rx: 0.052, rz: 0.058 },
+  { t: 1, rx: 0.05, rz: 0.054 },
+];
+// Below the shorts the back of the knee is in shade, its two tendons either side of the hollow.
+const thighColour = (look: Palette, t: number, round: number): Color => {
+  if (t < 0.74) return SHORTS;
+  if (t < 0.8) return GRIPPER;
+  const back = Math.abs(round - 0.75);
+  return back < 0.05 ? look.skinShade : back < 0.13 ? look.skinLight : look.skin;
+};
 /** The shin, knee to ankle: the kneecap, the calf swelling behind, the thin ankle; a sock to mid-calf. */
-const shinShape = (look: Palette) =>
-  loft(
-    [
-      { t: 0, rx: 0.05, rz: 0.055 },
-      // The kneecap to the front (+z); the calf's two heads behind (-z), widest a third of the way down, drawn in
-      // to the tendon above the ankle.
-      { t: 0.06, rx: 0.054, rz: 0.058, z: 0.004 },
-      { t: 0.16, rx: 0.058, rz: 0.064, z: -0.012 },
-      { t: 0.3, rx: 0.061, rz: 0.068, z: -0.018 },
-      { t: 0.46, rx: 0.05, rz: 0.055, z: -0.012 },
-      { t: 0.62, rx: 0.039, rz: 0.042, z: -0.004 },
-      { t: 0.68, rx: 0.036, rz: 0.04 },
-      { t: 0.7, rx: 0.038, rz: 0.042 },
-      { t: 0.92, rx: 0.034, rz: 0.037 },
-      { t: 1, rx: 0.036, rz: 0.04 },
-    ],
-    SHIN,
-    // The calf's muscles are drawn on the skin, for the eye that follows: a groove down the back between its two
-    // heads, each head catching the light, the hollow behind the knee, and the tendon standing out above the heel
-    // with a hollow either side. (Round a shin, three quarters of the way is its back.)
-    (t, round) => {
-      if (t >= 0.69) return look.sock;
-      const back = Math.abs(round - 0.75);
-      if (t < 0.08) return back < 0.12 ? look.skinShade : look.skin;
-      if (t < 0.44) {
-        if (back < 0.03) return look.skinShade;
-        if (back < 0.12 && t > 0.12 && t < 0.38) return look.skinLight;
-        return look.skin;
-      }
-      if (back < 0.03) return look.skinLight;
-      if (back < 0.12) return look.skinShade;
-      return Math.abs(round - 0.25) < 0.06 ? look.skinLight : look.skin;
-    },
+const SHIN_SECTIONS: readonly Section[] = [
+  { t: 0, rx: 0.05, rz: 0.055 },
+  // The kneecap to the front (+z); the calf's two heads behind (-z), widest a third of the way down, drawn in
+  // to the tendon above the ankle.
+  { t: 0.06, rx: 0.054, rz: 0.058, z: 0.004 },
+  { t: 0.16, rx: 0.058, rz: 0.064, z: -0.012 },
+  { t: 0.3, rx: 0.061, rz: 0.068, z: -0.018 },
+  { t: 0.46, rx: 0.05, rz: 0.055, z: -0.012 },
+  { t: 0.62, rx: 0.039, rz: 0.042, z: -0.004 },
+  { t: 0.68, rx: 0.036, rz: 0.04 },
+  { t: 0.7, rx: 0.038, rz: 0.042 },
+  { t: 0.92, rx: 0.034, rz: 0.037 },
+  { t: 1, rx: 0.036, rz: 0.04 },
+];
+// The calf's muscles are drawn on the skin, for the eye that follows: a groove down the back between its two
+// heads, each head catching the light, the hollow behind the knee, and the tendon standing out above the heel
+// with a hollow either side. (Round a shin, three quarters of the way is its back.)
+const shinColour = (look: Palette, t: number, round: number): Color => {
+  if (t >= 0.69) return look.sock;
+  const back = Math.abs(round - 0.75);
+  if (t < 0.08) return back < 0.12 ? look.skinShade : look.skin;
+  if (t < 0.44) {
+    if (back < 0.03) return look.skinShade;
+    if (back < 0.12 && t > 0.12 && t < 0.38) return look.skinLight;
+    return look.skin;
+  }
+  if (back < 0.03) return look.skinLight;
+  if (back < 0.12) return look.skinShade;
+  return Math.abs(round - 0.25) < 0.06 ? look.skinLight : look.skin;
+};
+/**
+ * A leg, hip to ankle, as one skin: the thigh and the shin are one surface, made straight along +y with the knee
+ * `THIGH` down it, and hung on two bones (0 the thigh's, 1 the shin's) so it bends at the knee without a seam.
+ */
+function legShape(look: Palette): BufferGeometry {
+  const leg = loft(
+    chain(THIGH_SECTIONS, THIGH, SHIN_SECTIONS, SHIN, KNEE_REACH),
+    1,
+    (t, round) =>
+      t < THIGH ? thighColour(look, t / THIGH, round) : shinColour(look, (t - THIGH) / SHIN, round),
     20,
   );
+  const skin = limbSkin(leg.getAttribute('position').array, THIGH, KNEE_REACH);
+  leg.setAttribute('skinIndex', new BufferAttribute(skin.index, 4));
+  leg.setAttribute('skinWeight', new BufferAttribute(skin.weight, 4));
+  return leg;
+}
 /** A road shoe, heel to toe along +y, its sole dark: laid on the pedal by its ball. */
 function shoeShape(look: Palette): BufferGeometry {
   const upper = loft(
@@ -646,8 +705,9 @@ class CourseCyclist implements RiderModel {
   /** The rider from the hips up: it sways against the bike about the line from the hips to the hands. */
   private readonly torso = new Group();
   private readonly legs: {
-    thigh: Mesh;
-    shin: Mesh;
+    /** The leg's two bones: its one skin (legShape) hangs on them. */
+    thigh: Bone;
+    shin: Bone;
     foot: Mesh;
     crank: Mesh;
     pedal: Mesh;
@@ -740,10 +800,9 @@ class CourseCyclist implements RiderModel {
       }
     }
     // The legs are the rider's own: their skin, their socks, their shoes.
-    const thigh = thighShape(colours);
-    const shin = shinShape(colours);
+    const leg = legShape(colours);
     const shoe = shoeShape(colours);
-    this.owned.push(thigh, shin, shoe);
+    this.owned.push(leg, shoe);
     for (const side of [-1, 1]) {
       const part = (shape: BufferGeometry) => {
         const mesh = new Mesh(shape, plain);
@@ -753,9 +812,26 @@ class CourseCyclist implements RiderModel {
         this.rig.add(mesh);
         return mesh;
       };
+      const bone = () => {
+        const made = new Bone();
+        made.matrixAutoUpdate = false;
+        this.rig.add(made);
+        return made;
+      };
+      // The leg is one skin on two bones: the pedalling moves the bones, and the skin bends at the knee.
+      const thigh = bone();
+      const shin = bone();
+      const skin = new SkinnedMesh(leg, plain);
+      const skeleton = new Skeleton([thigh, shin], [new Matrix4(), new Matrix4()]);
+      skin.bind(skeleton, new Matrix4());
+      skin.userData['moving'] = true;
+      // It is wherever its bones are, which is not where it was made.
+      skin.frustumCulled = false;
+      this.rig.add(skin);
+      this.owned.push(skeleton);
       this.legs.push({
-        thigh: part(thigh),
-        shin: part(shin),
+        thigh,
+        shin,
         foot: part(shoe),
         crank: part(shapes.crank),
         pedal: part(shapes.pedal),
@@ -835,7 +911,8 @@ class CourseCyclist implements RiderModel {
       // The knee tracks over the pedal, a touch out at the top of the stroke.
       const knee = bend(hip, ankle, THIGH, SHIN, this.to.set(leg.side * 0.05, 0.25, -1), this.knee);
       between(hip, knee, leg.thigh.matrix);
-      between(knee, ankle, leg.shin.matrix);
+      // The shin's part of the skin is made `THIGH` down the leg: its bone takes it back to the knee.
+      between(knee, ankle, leg.shin.matrix).multiply(BELOW_KNEE);
     }
   }
 }
@@ -1148,7 +1225,8 @@ function body(
   placed(helmet, between(brow, stern));
 
   parts = still;
-  // Arms: the shoulder rounding over the joint, the upper arm in its sleeve, the forearm, a gloved hand on the hood.
+  // Arms: the shoulder rounding over the joint, the upper arm in its sleeve, the bare arm below it, a gloved hand
+  // on the hood.
   for (const side of [-1, 1]) {
     const shoulder = SHOULDER.clone().add(new Vector3(side * 0.158, -0.018, 0.004));
     const hand = HOOD.clone()
@@ -1175,31 +1253,41 @@ function body(
     );
     sleeve.applyMatrix4(between(shoulder, cuff));
     kit.push(sleeve);
-    // The bare arm: the triceps behind the upper arm, the forearm thick below the elbow and narrow at the wrist.
-    const upper = loft(
-      [
-        { t: 0, rx: 0.041, rz: 0.046 },
-        { t: 0.45, rx: 0.041, rz: 0.047 },
-        { t: 1, rx: 0.036, rz: 0.039 },
-      ],
-      cuff.distanceTo(elbow),
-      () => look.skin,
+    // The bare arm, from the sleeve to the wrist, as one skin bent at the elbow: the triceps behind the upper arm,
+    // the forearm thick below the elbow and narrow at the wrist, where the glove begins. It is made straight and
+    // bent once, here: an arm on the bars does not move.
+    const upperArm = cuff.distanceTo(elbow);
+    const arm = loft(
+      chain(
+        [
+          { t: 0, rx: 0.041, rz: 0.046 },
+          { t: 0.45, rx: 0.041, rz: 0.047 },
+          { t: 1, rx: 0.037, rz: 0.039 },
+        ],
+        upperArm,
+        [
+          { t: 0, rx: 0.037, rz: 0.039 },
+          { t: 0.2, rx: 0.042, rz: 0.047 },
+          { t: 0.55, rx: 0.035, rz: 0.038 },
+          { t: 0.84, rx: 0.027, rz: 0.03 },
+          { t: 1, rx: 0.028, rz: 0.03 },
+        ],
+        FOREARM,
+        ELBOW_REACH,
+      ),
+      1,
+      (t) => (t < upperArm + FOREARM * 0.86 ? look.skin : GLOVE),
       12,
     );
-    placed(upper, between(cuff, elbow));
-    const fore = loft(
-      [
-        { t: 0, rx: 0.037, rz: 0.039 },
-        { t: 0.2, rx: 0.042, rz: 0.047 },
-        { t: 0.55, rx: 0.035, rz: 0.038 },
-        { t: 0.84, rx: 0.027, rz: 0.03 },
-        { t: 1, rx: 0.028, rz: 0.03 },
-      ],
-      FOREARM,
-      (t) => (t < 0.86 ? look.skin : GLOVE),
-      10,
+    bendLimb(
+      arm.getAttribute('position').array as Float32Array,
+      arm.getAttribute('normal').array as Float32Array,
+      upperArm,
+      ELBOW_REACH,
+      between(cuff, elbow).elements,
+      between(elbow, hand).multiply(new Matrix4().makeTranslation(0, -upperArm, 0)).elements,
     );
-    placed(fore, between(elbow, hand));
+    parts.push(arm);
     // The hand on the hood, in a fingerless glove: the palm lying along it, the fingers curled down over its
     // front, the thumb round its inner side.
     const knuckles = hand.clone().add(new Vector3(0, -0.012, -0.076));
@@ -1240,7 +1328,7 @@ function body(
     placed(thumb, between(thumbFrom, thumbTo));
   }
   // The seat: the pelvis between the hips, in the shorts, that the trunk grows out of. The glutes are the thighs'
-  // own tops (thighShape), so they turn with the legs; this fills between them over the saddle.
+  // own tops (legShape), so they turn with the legs; this fills between them over the saddle.
   const pelvis = ball(
     HIP.clone().add(new Vector3(0, -0.02, 0.02)),
     new Vector3(0.122, 0.08, 0.098),
