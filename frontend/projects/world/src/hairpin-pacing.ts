@@ -16,3 +16,13 @@ export function apexSpeedFactor(curvaturePerMetre: number): number {
   const k = Math.abs(curvaturePerMetre);
   return Math.max(0.55, 1 / (1 + k * 24));
 }
+
+/** Suggested climbing/cornering cadence (rpm) given `gradePercent` and `curvaturePerMetre`. */
+export function switchbackCadenceTargetRpm(
+  gradePercent: number,
+  curvaturePerMetre: number,
+): number {
+  const base = gradePercent >= 7 ? 78 : gradePercent >= 4 ? 85 : 92;
+  const boost = classifyBendSeverity(curvaturePerMetre) === 'tornante' && gradePercent > 3 ? 6 : 0;
+  return base + boost;
+}
