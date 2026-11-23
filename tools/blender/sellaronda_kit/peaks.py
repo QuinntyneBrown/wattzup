@@ -84,6 +84,7 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     sp_x = sella_pt["x"] + ux * 1140.0 + px * 560.0
     sp_y = sella_pt["y"] + uy * 1140.0 + py * 560.0
     rock_tower(peaks, sp_x, sp_y, 60.0, 695.0, 280.0, 210.0, 12, yaw_sl - 0.35, cfn, taper=0.72, flat_cap=True, seed_phase=3.4)
+    rock_tower(peaks, sp_x - ux * 165.0 - px * 95.0, sp_y - uy * 165.0 - py * 95.0, 75.0, 565.0, 95.0, 78.0, 8, yaw_sl - 0.2, cfn, taper=0.48, flat_cap=False, seed_phase=4.0)
 
     # 2. Marmolada (3,343 m — Queen of the Dolomites) & Ghiacciaio della Marmolada south of Passo Pordoi (at=4950 m)
     pordoi_pt = road.s[road.index(4950.0)]
