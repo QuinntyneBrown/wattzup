@@ -146,3 +146,7 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
             B["steel"].box(kit.P(i, 2.0, moff, -0.1), (0.09, 0.09, 2.65), myaw)
             B["parasol-red"].box(kit.P(i, 2.0, moff, 2.15), (0.10, 0.88, 0.88), myaw)
             B["glacier-ice"].box(kit.P(i, 1.97, moff, 2.22), (0.12, 0.72, 0.72), myaw)
+            # Yellow alpine winter road-grit chest tucked on the hairpin shoulder
+            if mirror_count % 2 == 0:
+                B["yellow"].box(kit.P(i, -2.5, (kit.kerb + 1.85) * outside, -0.05), (1.25, 0.88, 0.82), s[i]["h"])
+                kit.gable(B["yellow"], kit.P(i, -2.5, (kit.kerb + 1.85) * outside, 0.77), 1.32, 0.94, 0.22, s[i]["h"])
