@@ -3,6 +3,7 @@ import {
   DOLOMITE_GIANTS,
   dominantPeakAt,
   marmoladaGlacierSightline,
+  peaksAboveThreeThousand,
   sassolungoSightline,
 } from './dolomite-peaks';
 
@@ -15,5 +16,6 @@ describe('DOLOMITE_GIANTS', () => {
     expect(marmoladaGlacierSightline(10150)).toBe(0);
     expect(sassolungoSightline(7750)).toBeCloseTo(1, 3);
     expect(sassolungoSightline(2100)).toBe(0);
+    expect(peaksAboveThreeThousand()[0]?.id).toBe('marmolada');
   });
 });

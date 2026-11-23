@@ -71,6 +71,16 @@ export function marmoladaGlacierSightline(metres: number): number {
   return u * u * (3 - 2 * u);
 }
 
+/** Alias of `DolomiteGiant` representing a catalogued Dolomite summit peak. */
+export type DolomitePeak = DolomiteGiant;
+
+/** Returns all surrounding Dolomite ranges whose main summit exceeds 3,000 m, sorted descending by altitude. */
+export function peaksAboveThreeThousand(): readonly DolomitePeak[] {
+  return [...DOLOMITE_GIANTS]
+    .filter((p) => p.altitudeMetres >= 3000)
+    .sort((a, b) => b.altitudeMetres - a.altitudeMetres);
+}
+
 /** Sightline prominence (0..1) of Sassolungo (3,181 m) from `metres` along Sella Ronda. */
 export function sassolungoSightline(metres: number): number {
   const w = ((metres % 11650) + 11650) % 11650;
