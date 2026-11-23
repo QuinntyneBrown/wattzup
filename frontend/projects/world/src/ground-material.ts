@@ -106,7 +106,7 @@ export function groundMaterial(
     .mul(grain.mul(1.1).add(0.45))
     .mul(patch)
     .mul(worn.mul(0.16).add(1))
-    .add(fine.a.mul(0.035))
+    .add(fine.a.mul(mix(float(0.035), float(0.055), worn)))
     .mul(cracks.mul(0.8).oneMinus());
   // Paint wears thin where the surface under it is rough, and breaks with the cracks.
   const chipped = smoothstep(0.5, 0.85, middle.g.mul(0.7).add(fine.r.mul(0.5)));
