@@ -296,4 +296,11 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
         apx, apy, _ = road.at(api, (kit.kerb + 4.8) * ap_s)
         apz = max(height_at(apx, apy), road.s[api]["z"] - 0.2)
         kit.gable(B["crowd-3"], (apx, apy, apz + 2.45), 3.1, 3.1, 0.58, 0.3)
+    # Larch Bike-Room & Ski-Depot annex at Rifugio Cir on Passo Gardena (at=10196 m)
+    cr_r = road.index(10196.0)
+    crry = road.s[cr_r]["h"]
+    crx_r, cry_r, _ = road.at(cr_r, kit.kerb + 12.5)
+    crz_r = max(height_at(crx_r, cry_r), road.s[cr_r]["z"] - 0.4)
+    B["larch-aged"].box((crx_r, cry_r, crz_r - 0.4), (5.8, 4.4, 2.95), crry)
+    kit.gable(B["roof-slate"], (crx_r, cry_r, crz_r + 2.55), 6.4, 5.0, 1.25, crry)
     # [ANCHOR:rifugi-global]
