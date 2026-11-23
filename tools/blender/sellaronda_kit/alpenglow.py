@@ -149,6 +149,12 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         vx_l, vy_l, vz_l = road.at(sf_idx, sf_off, 2.2)
         kit.light((vx_l, vy_l, vz_l), "glow-window", 16.0, 0.50)
 
+    # Warm village stream-bridge lantern pools
+    for br_at in (235.0, 3090.0, 6085.0, 8895.0):
+        b_idx = road.index(br_at)
+        bx_l, by_l, bz_l = road.at(b_idx, 0.0, 2.2)
+        kit.light((bx_l, by_l, bz_l), "bulb", 15.0, 0.48)
+
 
 def build_valley_mist(B, road, height_at) -> None:
     """Lays delicate dusk valley-mist ribbons down in the four deep valley hollows off the road."""
