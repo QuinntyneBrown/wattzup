@@ -172,3 +172,12 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
             0.5 * (z0 + z1),
             snow=True,
         )
+
+    # Murfrëit & Piz Miara eastern Sella cliffs towering over Corvara & Campolongo approach (at=1250 m)
+    mur_pt = road.s[road.index(1250.0)]
+    mdx2, mdy2 = mur_pt["x"] - cx, mur_pt["y"] - cy
+    md2 = max(1.0, math.hypot(mdx2, mdy2))
+    mux2, muy2 = mdx2 / md2, mdy2 / md2
+    mpx2, mpy2 = -muy2, mux2
+    for m_k, (lat_m, h_m, rx_m) in enumerate(((-135.0, 545.0, 105.0), (15.0, 580.0, 118.0), (155.0, 535.0, 96.0))):
+        rock_tower(peaks, cx + mux2 * 745.0 + mpx2 * lat_m, cy + muy2 * 745.0 + mpy2 * lat_m, 95.0, h_m, rx_m, 82.0, 10, math.atan2(muy2, mux2), cfn, taper=0.76, flat_cap=True, seed_phase=1.8 + m_k)
