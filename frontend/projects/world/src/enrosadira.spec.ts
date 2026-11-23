@@ -9,6 +9,7 @@ import {
   enrosadiraStageName,
   enrosadiraTint,
   enrosadiraWindowCurve,
+  horizonFogBlendFactor,
   snowfieldAlbedoTint,
   twilightZenithLuminance,
   valleyShadowDepth,
@@ -50,5 +51,7 @@ describe('enrosadiraTint', () => {
     expect(directBeamKelvin(0)).toBe(3800);
     expect(directBeamKelvin(0.75)).toBe(2150);
     expect(directBeamKelvin(1)).toBe(9000);
+    expect(horizonFogBlendFactor(2500, 'Peaks')).toBe(0);
+    expect(horizonFogBlendFactor(1200, 'Solid')).toBeGreaterThan(0.2);
   });
 });
