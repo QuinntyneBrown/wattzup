@@ -1,0 +1,71 @@
+{
+ "voice": "af_heart",
+ "bpm": 92.99,
+ "beatsPerBar": 4,
+ "gapBeats": 1,
+ "outroSeconds": 3,
+ "music": {
+  "file": "../assets/music/beautiful-boom-bap.mp3",
+  "offset": 0.009,
+  "duckDb": 16,
+  "betweenDb": 5,
+  "fadeSeconds": 2
+ },
+ "scenes": [
+  {
+   "id": "hook",
+   "bars": 4,
+   "lines": [
+    "Riders see problems and ideas first. Now Feedback sits in the custom ride's header, and the ride pauses while you write."
+   ]
+  },
+  {
+   "id": "kinds",
+   "bars": 5,
+   "lines": [
+    "Pick Bug, Improvement or Kudos. The question, its example and the button change with it, and a bug attaches diagnostics."
+   ]
+  },
+  {
+   "id": "context",
+   "bars": 5,
+   "lines": [
+    "Every note carries the ride as it stood: the workout, the segment, resistance, power, the bike and the last command, listed so you can see what goes."
+   ]
+  },
+  {
+   "id": "sending",
+   "bars": 5,
+   "lines": [
+    "Sending locks the form and says so. Once accepted, the thanks fits the kind, and Done leaves the ride paused. If it fails, your note is kept."
+   ]
+  },
+  {
+   "id": "proof",
+   "bars": 5,
+   "lines": [
+    "Seven acceptance tests failed first and pass now. A bug report carries the last megabyte of the packet log and the app version, never a token."
+   ]
+  },
+  {
+   "id": "widths",
+   "bars": 4,
+   "lines": [
+    "A bottom sheet on a phone, a popover under the button from tablet up."
+   ]
+  },
+  {
+   "id": "close",
+   "bars": 12,
+   "lines": [
+    "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+    "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+    {
+     "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+     "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+    },
+    "A custom workout lives under Profile."
+   ]
+  }
+ ]
+}
