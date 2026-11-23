@@ -33,6 +33,6 @@ Estimates are working days for one intermediate developer, using `docs/detailed-
 | 24 | Switch theme and full screen | Match device, dark or light; full screen on any ride screen. | 3 | 100% |
 | 25 | Check diagnostics | Bike and browser state, packet log to download. | 5 | 100% |
 | 26 | Send feedback | Report a bug, share an idea or send kudos. | 5 | 100% |
-| 27 | Install the app | Install as an app from Chrome or Edge. | 3 | 67% |
+| 27 | Install the app | Install as an app from Chrome or Edge. | 3 | 100% |
 
-**Total:** 238 days. **Complete:** 237 days (99%).
+**Total:** 238 days. **Complete:** 238 days (100%).
