@@ -108,3 +108,11 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         if abs(s[i]["k"]) > 1 / 72:
             inside = -1.0 if s[i]["k"] < 0 else 1.0
             B["brick"].box(kit.P(i, 0.0, (kit.kerb + 0.65) * inside, -0.06), (7.8, 1.35, 0.12), s[i]["h"])
+
+    # Uphill cut-dolomite cliff faces with steel rockfall anchor plates on steep Sella-side climbs
+    for cut_start, cut_end in ((1580.0, 1740.0), (4180.0, 4380.0), (7180.0, 7340.0), (9480.0, 9620.0)):
+        c0, c1 = road.index(cut_start), road.index(cut_end)
+        for idx in range(c0, c1, 3):
+            cyaw = s[idx]["h"] + (idx % 3 - 1) * 0.08
+            B["dolomite-pale"].box(kit.P(idx, 0.0, -(kit.kerb + 2.4), -0.5), (12.2, 2.2, 4.8 + (idx % 4) * 0.9), cyaw)
+            B["steel"].box(kit.P(idx, 0.0, -(kit.kerb + 1.28), 2.2), (0.34, 0.08, 0.34), cyaw)
