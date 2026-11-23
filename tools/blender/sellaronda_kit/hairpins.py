@@ -279,4 +279,10 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
             cnz = height_at(cnx, cny_p)
             B["parasol-red"].box((cnx, cny_p, cnz - 0.5), (4.6, 3.6, 3.1), cny)
             kit.gable(B["roof-slate"], (cnx, cny_p, cnz + 2.6), 5.1, 4.1, 1.15, cny)
+    # Blue 'KEEP RIGHT' Bike Day descent safety signs 380 m past each pass summit
+    for p in PASSES:
+        kr_i = road.index(p["at"] + 380.0)
+        kry = s[kr_i]["h"]
+        B["steel"].box(kit.P(kr_i, 0.0, -(kit.kerb + 1.45), -0.1), (0.08, 0.08, 2.05), kry)
+        B["ladin-blue"].box(kit.P(kr_i, 0.0, -(kit.kerb + 1.45), 1.58), (0.08, 0.58, 0.58), kry)
     # [ANCHOR:hairpins]
