@@ -194,6 +194,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Sky 18 | The sun goes down into open sea at the end of the finishing straight, the island beside it: the island's flank had stood in front of it | 60.3 and 60.1 fps (from 8,150 and 8,300 m) | 52.8 and 41.4 fps after (the finish, 119,897 triangles: none more); Neon Docklands beside it 53.5, 54.7 |
 | Sign 4 | The whole word reads on the approach: a festoon post stood in front of the first I, and the sign read BIZA | 60.3, 59.6 and 60.0 fps (from 235, 262 and 282 m) | 42.7 fps at the sign (87,915 triangles) and 48.5 at the finish (119,929); Neon Docklands beside it 48.4, 53.5 |
 | Sign 5 | The lamps in the plinth light the letters: a warm glow at the foot of each dark face, fading up it, strongest in front of each lamp | 59.9 and 60.2 fps (from 262 and 282 m) | 51.4 fps at the sign (87,915 triangles: none more) and 53.9 at the finish; Neon Docklands beside it 47.2, 43.2 |
+| Sky 19 | The sun is the brightest thing in its sky: its disc glows where it was a dull ball, darker than the sky round it | 60.1 and 60.3 fps (from 8,150 and 4,450 m) | 55.9 and 53.1 fps after (the finish, 119,899 triangles: none more); Neon Docklands beside it 57.3, 56.2 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -625,6 +626,14 @@ front of each of the three lamps. No triangles are added.
 **Two cuts before this one** were far too strong (the letters turned orange and were lost against the land
 behind them). The wash is seven parts in a hundred at its strongest: the faces are dark, as in the photograph.
 A letter's upright is one face from foot to head, so the glow fades evenly up it and cannot be kept to the foot.
+
+### Sky 19: the sun glows
+
+`sky-19.jpg` (above: the end of the finishing straight from 8,150 m; below: from 4,450 m, the sun to the right of
+the road with bars of cloud across it). Once the sun could be seen at the end of the last straight (Sky 18), it
+could be seen for what it was: a coral ball, darker than the yellow sky painted round it. A low sun is red, and it
+is still the brightest thing there is. Its disc is drawn 1.7 times as bright as the sky's own paint, at every
+height: white-gold while it stands clear, a glowing orange-pink with a lighter heart on the horizon.
 
 ### Low power: where the frames go (after Party 20)
 

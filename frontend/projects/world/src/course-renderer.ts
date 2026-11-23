@@ -132,6 +132,8 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
 const START_LIGHTS = 150;
 /** The lowest tier the sky towards the sun is drawn finely on. */
 const FINE_SKY_FROM = 2;
+/** How much brighter than the painted sky the sun's disc is drawn. */
+const DISC_BRIGHT = 1.7;
 /** How often, in frames, the chunks to draw are chosen. */
 const CHUNK_SWEEP = 12;
 /** Riders further ahead than this are not drawn, and no more than this many of the nearest. */
@@ -1152,7 +1154,12 @@ export class CourseRenderer implements WorldRenderer {
         const { tint, flat } = sunDisc(this.evening.sun, this.disc);
         pivot.scale.y = flat;
         pivot.position.y = out * Math.tan((this.evening.sun * Math.PI) / 180) - up * flat;
-        this.discPaint?.color.setRGB(sky[0] * tint[0], sky[1] * tint[1], sky[2] * tint[2]);
+        // The sun is the brightest thing in its sky, however red it goes: its paint is lit past the sky's own.
+        this.discPaint?.color.setRGB(
+          sky[0] * tint[0] * DISC_BRIGHT,
+          sky[1] * tint[1] * DISC_BRIGHT,
+          sky[2] * tint[2] * DISC_BRIGHT,
+        );
       }
       this.skyPaint.color.setRGB(sky[0], sky[1], sky[2]);
       (this.scene.fog as Fog).color.copy(this.hazeAt).multiply(this.skyPaint.color);
