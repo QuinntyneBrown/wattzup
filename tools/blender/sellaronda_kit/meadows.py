@@ -349,4 +349,13 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
                 B["chalet-wood"].box((cx_g, cy_g, cz_g + 0.45), (1.05, 0.34, 0.48), s[c_idx]["h"] + 0.5)
                 B["dark"].box((cx_g, cy_g, cz_g), (0.85, 0.28, 0.45), s[c_idx]["h"] + 0.5)
 
+    # High-altitude Swiss stone pine (Pinus cembra / Cirmolo) sentinels along the 106..118 m tree line
+    for pc_i in range(20, kit.n - 20, 29):
+        if not (106.0 <= s[pc_i]["z"] <= 118.0):
+            continue
+        px_c, py_c, _ = road.at(pc_i, (kit.kerb + 16.5) * (1.0 if pc_i % 2 == 0 else -1.0))
+        if road.clear_of_road(px_c, py_c, 12.0, pc_i):
+            kit.pine(px_c, py_c, height_at(px_c, py_c), 1.05, "pine")
+            trees += 1
+
     return trees
