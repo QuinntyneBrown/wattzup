@@ -393,9 +393,10 @@ def silverswords(k) -> int:
     return planted
 
 
-def dome(paint, c, r: float, drum: float, slit: float, sides: int = 12) -> None:
-    """An observatory: a white drum under a white dome, with the dark slit the telescope looks out of."""
-    white, shade, dark = _lin(0xF4F5F2), _lin(0xC8CED4), _lin(0x30343A)
+def dome(paint, c, r: float, drum: float, slit: float, sides: int = 12, skin: int = 0xF4F5F2) -> None:
+    """An observatory: a white drum under a white dome (or one of another `skin`), with the dark slit the telescope
+    looks out of."""
+    white, shade, dark = _lin(skin), tuple(v * 0.72 for v in _lin(skin)[:3]) + (1.0,), _lin(0x30343A)
 
     def ring(radius: float, up: float):
         return [(c[0] + math.cos(q * math.tau / sides) * radius, c[1] + math.sin(q * math.tau / sides) * radius, c[2] + up) for q in range(sides)]
@@ -423,7 +424,7 @@ def science_city(k) -> int:
     i, side = k.n - 1, 1
     silver = _lin(0xAEB6BC)
     stood = 0
-    plan = ((70, 0, 9.0, 7.0), (112, 36, 6.0, 5.0), (118, -34, 5.0, 4.0), (60, 52, 4.2, 3.6), (64, -56, 7.0, 6.0), (160, 8, 4.5, 4.0), (140, 74, 3.6, 3.2))
+    plan = ((112, 36, 8.0, 6.5), (118, -34, 6.5, 5.5), (60, 52, 5.5, 4.6), (64, -56, 9.0, 7.5), (160, 8, 6.0, 5.2), (140, 74, 4.8, 4.2))
     for along, out, r, drum in plan:
         x, y, _ = k.P(i, along + rng.uniform(-5.0, 5.0), (out + rng.uniform(-5.0, 5.0)) * side)
         z = k.height_at(x, y)
@@ -432,10 +433,25 @@ def science_city(k) -> int:
         yaw = rng.uniform(0, math.pi)
         paint.box((x + math.cos(yaw) * (r + 5.0), y + math.sin(yaw) * (r + 5.0), z - 1.5), (r * 1.6, r * 0.9, 5.0), yaw, _lin(0xECECE6))
         stood += 1
+    # The solar telescope, the tallest thing on the mountain: a white tower with its dome on top and a low wing.
+    x, y, _ = k.P(i, 74.0, 2.0 * side)
+    z = k.height_at(x, y)
+    white = _lin(0xF4F5F2)
+    paint.box((x, y, z - 1.5), (15.0, 15.0, 27.0), 0.2, white)
+    paint.box((x + 13.0, y + 4.0, z - 1.5), (14.0, 11.0, 9.5), 0.2, _lin(0xECECE6))
+    dome(paint, (x, y, z + 25.5), 8.2, 3.0, 2.4)
+    # The air force's telescope: a silver dome on a broad silver drum.
     x, y, _ = k.P(i, 168.0, -52.0 * side)
-    k_z = k.height_at(x, y)
-    paint.box((x, y, k_z - 1.5), (9.0, 9.0, 21.0), 0.4, silver)
-    return stood
+    z = k.height_at(x, y)
+    paint.box((x, y, z - 1.5), (17.0, 17.0, 9.0), 0.4, silver)
+    dome(paint, (x, y, z + 7.5), 7.6, 4.0, 0.7, 12, 0xC2CAD0)
+    # Two aerials on their masts.
+    for along, out in ((96.0, -70.0), (132.0, 44.0)):
+        x, y, _ = k.P(i, along, out * side)
+        z = k.height_at(x, y)
+        paint.box((x, y, z - 1.0), (0.5, 0.5, 19.0), 0.0, _lin(0xD8DADC), 0.5)
+        paint.box((x, y, z + 15.0), (3.2, 0.3, 0.3), 0.6, _lin(0xC8322C), 1.0)
+    return stood + 2
 
 
 RANCH = (0.1, 0.5)  # the share of the climb the ranch land lies between
