@@ -566,6 +566,14 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         B["crowd-2"].box(kit.P(kdi, 0.0, kit.kerb + 1.65, 0.0), (0.28, 0.32, 1.05), s[kdi]["h"])
         B["yellow"].box(kit.P(kdi, 0.0, kit.kerb + 1.65, 1.15), (0.06, 0.58, 0.42), s[kdi]["h"])
 
+    # Iconic bright-red Aiut Alpin Dolomites helicopter patrolling high off the Sella walls
+    hl_i = road.index(7650.0)
+    hlx, hly, hlz = road.at(hl_i, -165.0, 195.0)
+    B["parasol-red"].box((hlx, hly, hlz), (6.2, 1.85, 1.95), 0.8)
+    B["parasol-red"].box((hlx - 4.5, hly - 4.5, hlz + 0.35), (5.2, 0.55, 0.65), 0.8)
+    B["dark"].box((hlx, hly, hlz + 2.15), (10.5, 0.28, 0.08), 0.2)
+    B["dark"].box((hlx, hly, hlz + 2.15), (0.28, 10.5, 0.08), 0.2)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
