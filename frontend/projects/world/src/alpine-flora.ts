@@ -38,3 +38,9 @@ export function mugoPineCoverWeight(altitudeMetres: number): number {
   if (altitudeMetres <= 1850 || altitudeMetres >= 2550) return 0;
   return Math.exp(-(((altitudeMetres - 2200) / 180) ** 2));
 }
+
+/** Habitat suitability (0..1) for alpine Edelweiss on rocky Dolomite limestone at `altitudeMetres`. */
+export function edelweissHabitatScore(altitudeMetres: number): number {
+  if (altitudeMetres < 1950 || altitudeMetres > 2950) return 0;
+  return Math.exp(-(((altitudeMetres - 2420) / 260) ** 2));
+}
