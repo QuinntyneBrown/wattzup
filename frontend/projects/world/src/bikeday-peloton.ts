@@ -80,3 +80,16 @@ export function bidonsNeededForLoop(rideHours: number, airTempC: number): number
   const mlPerHour = airTempC >= 20 ? 750 : airTempC >= 12 ? 580 : 450;
   return Math.max(1, Math.ceil((rideHours * mlPerHour) / 500));
 }
+
+/** Recommended rear cassette sprocket tooth count (25..36T) paired with a 34T inner chainring at `climbSpeedKmh` and `targetRpm`. */
+export function recommendedRearCogTeeth(
+  climbSpeedKmh: number,
+  targetRpm = 80,
+  frontTeeth = 34,
+): number {
+  const wheelCircumferenceM = 2.105;
+  const speedMpm = Math.max(120, climbSpeedKmh * (1000 / 60));
+  const ratio = speedMpm / (Math.max(50, targetRpm) * wheelCircumferenceM);
+  const rawTeeth = Math.round(frontTeeth / Math.max(0.85, ratio));
+  return Math.max(11, Math.min(36, rawTeeth));
+}
