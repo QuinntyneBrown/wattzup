@@ -357,4 +357,8 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         pbi = road.index(pb_m)
         B["dolomite-pale"].box(kit.P(pbi, 0.0, kit.kerb + 1.55, -0.05), (0.42, 0.42, 1.12), s[pbi]["h"])
         B["parasol-red"].box(kit.P(pbi, 0.0, kit.kerb + 1.55, 0.92), (0.44, 0.44, 0.18), s[pbi]["h"])
+    # Winter road-grit spreader posts beside key switchback grit stations
+    for gs_m in (1520.0, 4120.0, 7080.0, 9620.0):
+        gsi2 = road.index(gs_m)
+        B["crowd-3"].box(kit.P(gsi2, 0.0, -(kit.kerb + 2.15), 0.0), (0.22, 0.22, 1.15), s[gsi2]["h"])
     # [ANCHOR:hairpins]
