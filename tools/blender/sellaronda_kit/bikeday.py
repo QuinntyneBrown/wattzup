@@ -149,6 +149,17 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> None:
             B["dark"].box((rx_b, ry_b, cz_car + 1.58), (1.42, 0.08, 0.58), cyaw)
             B["yellow"].box((rx_b, ry_b, cz_car + 1.88), (0.92, 0.07, 0.42), cyaw)
 
+    # 9. Fluttering Sellaronda Bike Day teardrop feather flags at climb foot & summit approaches
+    feather_mats = ("ladin-blue", "accent-2", "parasol-red", "yellow")
+    for f_i, p in enumerate(PASSES):
+        for base_d in (p["climb_from"] + 25.0, p["at"] - 85.0, p["at"] - 55.0):
+            f_idx = road.index(base_d)
+            fyaw = s[f_idx]["h"]
+            for side_k, side in enumerate((-1.0, 1.0)):
+                fx_f, fy_f, fz_f = kit.P(f_idx, 0.0, (kit.kerb + 1.65) * side, -0.1)
+                B["dark"].box((fx_f, fy_f, fz_f), (0.06, 0.06, 3.45), fyaw)
+                B[feather_mats[(f_i + side_k) % len(feather_mats)]].box((fx_f, fy_f, fz_f + 1.15), (0.68, 0.05, 2.15), fyaw + 0.22)
+
 
 def _touring_motorbike(B, x: float, y: float, z: float, yaw: float, body_mat: str, with_rider: bool = False) -> None:
     ca, sa = math.cos(yaw), math.sin(yaw)
