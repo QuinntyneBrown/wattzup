@@ -62,3 +62,13 @@ export function paragliderGroundSpeedMps(orbit: ThermalOrbit, seconds: number, p
   const vz = Math.cos(2 * t) * orbit.radiusZ * w;
   return Math.hypot(vx, vz);
 }
+
+/** Still-air horizontal glide range in km from `launchAltM` down to `landingAltM` at `glideRatio` (~9.5:1). */
+export function paragliderGlideRangeKm(
+  launchAltM: number,
+  landingAltM: number,
+  glideRatio = 9.5,
+): number {
+  const drop = Math.max(0, launchAltM - landingAltM);
+  return Number(((drop * glideRatio) / 1000).toFixed(2));
+}
