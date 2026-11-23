@@ -106,7 +106,7 @@ def alpenglow_sky_colour(dx: float, dy: float, dz: float, az: float, haze):
     earth_sh = smoothstep(0.09, 0.0, h) * anti
     c = mix(c, srgb(0x465884), earth_sh * 0.42)
     c = mix(c, srgb(0xF0A0B8), venus * 0.40)
-    c = mix(c, mix(haze, srgb(0xFFCEA4), sunward * 0.42), math.exp(-12.5 * h) * 0.46)
+    c = mix(c, mix(haze, srgb(0xFFCEA4), sunward * 0.42), math.exp(-12.1 * h) * 0.46)
     return sky.grade(c)
 
 
