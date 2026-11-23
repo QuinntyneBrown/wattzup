@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   dolomiteFloraZone,
+  edelweissHabitatScore,
   hayHarvestMonth,
   mugoPineCoverWeight,
   treeLineDensity,
@@ -27,5 +28,7 @@ describe('dolomiteFloraZone', () => {
     expect(hayHarvestMonth(2080)).toBe('august');
     expect(mugoPineCoverWeight(2200)).toBeCloseTo(1, 3);
     expect(mugoPineCoverWeight(1600)).toBe(0);
+    expect(edelweissHabitatScore(2420)).toBeCloseTo(1, 3);
+    expect(edelweissHabitatScore(1500)).toBe(0);
   });
 });
