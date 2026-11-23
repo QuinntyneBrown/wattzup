@@ -604,4 +604,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         148.0,
         snow=False,
     )
+    # Piz Lasties (2,897 m) eastern plateau peak overlooking upper Val Lasties
+    rock_tower(peaks, cx + lux * 595.0 - lpx * 125.0, cy + luy * 595.0 - lpy * 125.0, 520.0, 712.0, 72.0, 58.0, 8, math.atan2(luy, lux), cfn, taper=0.54, flat_cap=False, seed_phase=3.6)
     # [ANCHOR:massif]
