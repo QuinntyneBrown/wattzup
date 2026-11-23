@@ -458,4 +458,8 @@ def build_four_passes(B, kit, road, height_at) -> None:
     # Carved stone votive lantern pillar beside Cappella di San Maurizio
     B["dolomite-pale"].box((bx_t - math.cos(g_yaw) * 1.85, by_t - math.sin(g_yaw) * 1.85, cz_ch + 0.35), (0.34, 0.34, 1.45), g_yaw)
     B["bulb"].box((bx_t - math.cos(g_yaw) * 1.85, by_t - math.sin(g_yaw) * 1.85, cz_ch + 1.80), (0.24, 0.24, 0.28), g_yaw)
+    # Rose-pink 200 m summit-sprint pennants before Pordoi & Sella GPM arches
+    for sp_m in (4890.0, 7690.0):
+        spi = road.index(sp_m)
+        B["accent-2"].box(kit.P(spi, 0.0, -(kit.kerb + 1.45), 1.65), (0.08, 0.58, 0.58), s[spi]["h"])
     # [ANCHOR:passes]
