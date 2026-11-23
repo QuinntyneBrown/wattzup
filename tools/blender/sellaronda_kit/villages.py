@@ -500,4 +500,10 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         vmi = road.index(vm_m)
         vmx, vmy, vmz = kit.P(vmi, 0.0, (kit.kerb + 9.2) * vm_s, 0.0)
         B["dolomite-pale"].box((vmx, vmy, vmz), (0.95, 0.95, 3.45), 0.0)
+    # Shingled spring-water fountains in Plan de Gralba & Colfosco
+    for cf_f in (8612.0, 10972.0):
+        cfi = road.index(cf_f)
+        cfx_f, cfy_f, cfz_f = kit.P(cfi, 0.0, kit.kerb + 5.8, 0.0)
+        B["stone"].box((cfx_f, cfy_f, cfz_f), (1.85, 1.85, 0.85), 0.0)
+        kit.gable(B["larch-aged"], (cfx_f, cfy_f, cfz_f + 2.15), 2.35, 2.35, 0.75, 0.0)
     # [ANCHOR:villages]
