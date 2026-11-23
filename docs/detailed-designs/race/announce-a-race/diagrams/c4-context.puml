@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Announce a race (Arcade Race Energy)
+
+Person(rider, "Rider", "Rides an indoor smart bike in Race mode and configures optional voice commentary")
+System(teloride, "Telo Ride", "Browser cycling game running Web Bluetooth, 3D courses, and on-device race commentary")
+System_Ext(bike, "Smart bike", "Echelon or FTMS indoor bike sending live telemetry over Web Bluetooth")
+System_Ext(origin, "Telo Ride static origin", "Serves the application bundle and pinned ONNX voice-pack files over HTTPS")
+
+Rel(rider, teloride, "Configures announcer and hears/reads race callouts in", "Browser UI & Audio")
+Rel(teloride, bike, "Reads power, cadence, and resistance from", "Web Bluetooth")
+Rel(teloride, origin, "Downloads pinned voice-pack manifest and weights from", "HTTPS (same-origin)")
+@enduml

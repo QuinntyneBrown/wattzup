@@ -1,0 +1,41 @@
+<div wz-setting class="voice-pack-storage">
+  <dl class="voice-pack-storage__head">
+    <dt class="voice-pack-storage__label">Race announcer voice pack</dt>
+    <dd class="voice-pack-storage__value">{{ sizeLabel() }}</dd>
+  </dl>
+  @if (state().status === 'downloading') {
+    <progress
+      class="voice-pack-storage__bar"
+      max="100"
+      [value]="percent()"
+      aria-label="Downloading race announcer voice pack"
+    ></progress>
+    <div class="voice-pack-storage__actions">
+      <button wz-button variant="outline" size="sm" type="button" (click)="cancelRequested.emit()">
+        Cancel
+      </button>
+    </div>
+  } @else if (state().status === 'ready') {
+    <p class="voice-pack-storage__hint">
+      Stored on this device for offline race commentary. Nothing leaves your browser.
+    </p>
+    <div class="voice-pack-storage__actions">
+      <button wz-button variant="outline" size="sm" type="button" (click)="deleteRequested.emit()">
+        Delete voice pack
+      </button>
+    </div>
+  } @else {
+    @if (state().errorMessage; as error) {
+      <p class="voice-pack-storage__error" role="alert">{{ error }}</p>
+    } @else {
+      <p class="voice-pack-storage__hint">
+        Optional ~85 MB voice model stored on this device for offline race play-by-play.
+      </p>
+    }
+    <div class="voice-pack-storage__actions">
+      <button wz-button variant="raised" size="sm" type="button" (click)="downloadRequested.emit()">
+        Download voice pack
+      </button>
+    </div>
+  }
+</div>

@@ -24,21 +24,35 @@ It runs in Chrome or Edge, on a phone, a tablet or a desktop.
 
 Pair once, and it remembers your bike.
 
-**race** (5 bars)
+**race** (6 bars)
 
-Next comes Race. Ride a map against the ghost of your best time, a pack of bots, or other riders.
+Open Race, and step into a 3D course modelled after a real class.
 
-**classes** (4 bars)
+Chase your best-time ghost, a pack of bots, or live riders online.
 
-Then Classes. Ride along to a video, alone or with a group.
+**worlds** (8 bars)
+
+Every world has its own hills, turns and atmosphere: Ibiza Sunset Strip, Neon Docklands, Vice City, Cliffside Coast, Cinque Terre, and Haleakala.
+
+Built for smooth WebGPU riding, even on a tablet beside the bike.
+
+**classes** (5 bars)
+
+Or pick Classes. Ride along to a synced video, alone or on a live group board, while Telo Ride drives your resistance.
 
 **progress** (5 bars)
 
-Both feed one progression: XP, rider levels, stars, and map unlocks.
+Both doors feed one progression: XP, rider levels, daily streaks, stars, and map unlocks.
 
-**custom** (4 bars)
+**custom** (5 bars)
 
-And for your own intervals, a custom workout, under Profile.
+And for your own intervals, build, preview and ride a custom workout under Profile—even offline.
+
+**ai** (9 bars)
+
+Coming next: free local AI, running right inside your browser with Hugging Face models and Chrome built-in AI.
+
+Hands-free voice controls, a live kart-race announcer, cadence coaching, instant custom workouts, and optional saddle vision—zero cloud bills, and nothing ever leaves your device.
 
 **close** (14 bars)
 

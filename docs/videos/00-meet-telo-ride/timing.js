@@ -7,7 +7,7 @@ window.FILM_TIMING = {
  "beatsPerBar": 4,
  "beat": 0.645231,
  "bar": 2.580923,
- "duration": 139.3698,
+ "duration": 190.9883,
  "music": "beautiful-boom-bap.mp3",
  "scenes": [
   {
@@ -43,30 +43,42 @@ window.FILM_TIMING = {
   {
    "id": "race",
    "start": 56.7803,
+   "length": 15.4855,
+   "bars": 6
+  },
+  {
+   "id": "worlds",
+   "start": 72.2658,
+   "length": 20.6474,
+   "bars": 8
+  },
+  {
+   "id": "classes",
+   "start": 92.9132,
    "length": 12.9046,
    "bars": 5
   },
   {
-   "id": "classes",
-   "start": 69.6849,
-   "length": 10.3237,
-   "bars": 4
-  },
-  {
    "id": "progress",
-   "start": 80.0086,
+   "start": 105.8178,
    "length": 12.9046,
    "bars": 5
   },
   {
    "id": "custom",
-   "start": 92.9132,
-   "length": 10.3237,
-   "bars": 4
+   "start": 118.7224,
+   "length": 12.9046,
+   "bars": 5
+  },
+  {
+   "id": "ai",
+   "start": 131.6271,
+   "length": 23.2283,
+   "bars": 9
   },
   {
    "id": "close",
-   "start": 103.2369,
+   "start": 154.8554,
    "length": 36.1329,
    "bars": 14
   }
@@ -146,110 +158,170 @@ window.FILM_TIMING = {
   },
   {
    "scene": "race",
-   "text": "Next comes Race. Ride a map against the ghost of your best time, a pack of bots, or other riders.",
-   "caption": "Next comes Race. Ride a map against the ghost of your best time, a pack of bots, or other riders.",
+   "text": "Open Race, and step into a 3D course modelled after a real class.",
+   "caption": "Open Race, and step into a 3D course modelled after a real class.",
    "start": 56.78,
-   "end": 62.639,
+   "end": 61.077,
    "speed": 1.0,
    "window": [
     56.78,
-    69.04
+    71.621
    ]
   },
   {
-   "scene": "classes",
-   "text": "Then Classes. Ride along to a video, alone or with a group.",
-   "caption": "Then Classes. Ride along to a video, alone or with a group.",
-   "start": 69.685,
-   "end": 73.325,
+   "scene": "race",
+   "text": "Chase your best-time ghost, a pack of bots, or live riders online.",
+   "caption": "Chase your best-time ghost, a pack of bots, or live riders online.",
+   "start": 61.722,
+   "end": 65.593,
    "speed": 1.0,
    "window": [
-    69.685,
-    79.363
+    56.78,
+    71.621
    ]
   },
   {
-   "scene": "progress",
-   "text": "Both feed one progression: XP, rider levels, stars, and map unlocks.",
-   "caption": "Both feed one progression: XP, rider levels, stars, and map unlocks.",
-   "start": 80.009,
-   "end": 84.681,
+   "scene": "worlds",
+   "text": "Every world has its own hills, turns and atmosphere: Ibiza Sunset Strip, Neon Docklands, Vice City, Cliffside Coast, Cinque Terre, and Haleakala.",
+   "caption": "Every world has its own hills, turns and atmosphere: Ibiza Sunset Strip, Neon Docklands, Vice City, Cliffside Coast, Cinque Terre, and Haleakala.",
+   "start": 72.266,
+   "end": 81.776,
    "speed": 1.0,
    "window": [
-    80.009,
+    72.266,
     92.268
    ]
   },
   {
-   "scene": "custom",
-   "text": "And for your own intervals, a custom workout, under Profile.",
-   "caption": "And for your own intervals, a custom workout, under Profile.",
+   "scene": "worlds",
+   "text": "Built for smooth WebGPU riding, even on a tablet beside the bike.",
+   "caption": "Built for smooth WebGPU riding, even on a tablet beside the bike.",
+   "start": 82.421,
+   "end": 86.749,
+   "speed": 1.0,
+   "window": [
+    72.266,
+    92.268
+   ]
+  },
+  {
+   "scene": "classes",
+   "text": "Or pick Classes. Ride along to a synced video, alone or on a live group board, while Telo Ride drives your resistance.",
+   "caption": "Or pick Classes. Ride along to a synced video, alone or on a live group board, while Telo Ride drives your resistance.",
    "start": 92.913,
-   "end": 96.097,
+   "end": 100.516,
    "speed": 1.0,
    "window": [
     92.913,
-    102.592
+    105.173
+   ]
+  },
+  {
+   "scene": "progress",
+   "text": "Both doors feed one progression: XP, rider levels, daily streaks, stars, and map unlocks.",
+   "caption": "Both doors feed one progression: XP, rider levels, daily streaks, stars, and map unlocks.",
+   "start": 105.818,
+   "end": 111.936,
+   "speed": 1.0,
+   "window": [
+    105.818,
+    118.077
+   ]
+  },
+  {
+   "scene": "custom",
+   "text": "And for your own intervals, build, preview and ride a custom workout under Profile—even offline.",
+   "caption": "And for your own intervals, build, preview and ride a custom workout under Profile—even offline.",
+   "start": 118.722,
+   "end": 124.455,
+   "speed": 1.0,
+   "window": [
+    118.722,
+    130.982
+   ]
+  },
+  {
+   "scene": "ai",
+   "text": "Coming next: free local AI, running right inside your browser with Hugging Face models and Chrome built-in AI.",
+   "caption": "Coming next: free local AI, running right inside your browser with Hugging Face models and Chrome built-in AI.",
+   "start": 131.627,
+   "end": 138.652,
+   "speed": 1.0,
+   "window": [
+    131.627,
+    154.21
+   ]
+  },
+  {
+   "scene": "ai",
+   "text": "Hands-free voice controls, a live kart-race announcer, cadence coaching, instant custom workouts, and optional saddle vision—zero cloud bills, and nothing ever leaves your device.",
+   "caption": "Hands-free voice controls, a live kart-race announcer, cadence coaching, instant custom workouts, and optional saddle vision—zero cloud bills, and nothing ever leaves your device.",
+   "start": 139.297,
+   "end": 150.397,
+   "speed": 1.0,
+   "window": [
+    131.627,
+    154.21
    ]
   },
   {
    "scene": "close",
    "text": "Telo Ride. Your bike, now a game.",
    "caption": "Telo Ride. Your bike, now a game.",
-   "start": 103.237,
-   "end": 105.261,
+   "start": 154.855,
+   "end": 156.879,
    "speed": 1.0,
    "window": [
-    103.237,
-    136.37
+    154.855,
+    187.988
    ]
   },
   {
    "scene": "close",
    "text": "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
    "caption": "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
-   "start": 105.906,
-   "end": 110.209,
+   "start": 157.525,
+   "end": 161.828,
    "speed": 1.0,
    "window": [
-    103.237,
-    136.37
+    154.855,
+    187.988
    ]
   },
   {
    "scene": "close",
    "text": "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
    "caption": "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
-   "start": 110.855,
-   "end": 116.737,
+   "start": 162.473,
+   "end": 168.356,
    "speed": 1.0,
    "window": [
-    103.237,
-    136.37
+    154.855,
+    187.988
    ]
   },
   {
    "scene": "close",
    "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
    "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks.",
-   "start": 117.382,
-   "end": 130.698,
+   "start": 169.001,
+   "end": 182.317,
    "speed": 1.0,
    "window": [
-    103.237,
-    136.37
+    154.855,
+    187.988
    ]
   },
   {
    "scene": "close",
    "text": "A custom workout lives under Profile.",
    "caption": "A custom workout lives under Profile.",
-   "start": 131.343,
-   "end": 133.536,
+   "start": 182.962,
+   "end": 185.155,
    "speed": 1.0,
    "window": [
-    103.237,
-    136.37
+    154.855,
+    187.988
    ]
   }
  ],
@@ -291,67 +363,122 @@ window.FILM_TIMING = {
   },
   {
    "start": 56.78,
-   "end": 61.846,
-   "text": "Next comes Race. Ride a map against the ghost of your best time, a pack of bots, or"
+   "end": 61.377,
+   "text": "Open Race, and step into a 3D course modelled after a real class."
   },
   {
-   "start": 61.846,
-   "end": 62.939,
-   "text": "other riders."
+   "start": 61.722,
+   "end": 65.893,
+   "text": "Chase your best-time ghost, a pack of bots, or live riders online."
   },
   {
-   "start": 69.685,
-   "end": 73.625,
-   "text": "Then Classes. Ride along to a video, alone or with a group."
+   "start": 72.266,
+   "end": 77.351,
+   "text": "Every world has its own hills, turns and atmosphere: Ibiza Sunset Strip, Neon"
   },
   {
-   "start": 80.009,
-   "end": 84.981,
-   "text": "Both feed one progression: XP, rider levels, stars, and map unlocks."
+   "start": 77.351,
+   "end": 82.076,
+   "text": "Docklands, Vice City, Cliffside Coast, Cinque Terre, and Haleakala."
+  },
+  {
+   "start": 82.421,
+   "end": 87.049,
+   "text": "Built for smooth WebGPU riding, even on a tablet beside the bike."
   },
   {
    "start": 92.913,
-   "end": 96.397,
-   "text": "And for your own intervals, a custom workout, under Profile."
+   "end": 98.372,
+   "text": "Or pick Classes. Ride along to a synced video, alone or on a live group board, while"
   },
   {
-   "start": 103.237,
-   "end": 105.561,
+   "start": 98.372,
+   "end": 100.816,
+   "text": "Telo Ride drives your resistance."
+  },
+  {
+   "start": 105.818,
+   "end": 111.38,
+   "text": "Both doors feed one progression: XP, rider levels, daily streaks, stars, and map"
+  },
+  {
+   "start": 111.38,
+   "end": 112.236,
+   "text": "unlocks."
+  },
+  {
+   "start": 118.722,
+   "end": 123.188,
+   "text": "And for your own intervals, build, preview and ride a custom workout under"
+  },
+  {
+   "start": 123.188,
+   "end": 124.755,
+   "text": "Profile—even offline."
+  },
+  {
+   "start": 131.627,
+   "end": 136.719,
+   "text": "Coming next: free local AI, running right inside your browser with Hugging Face"
+  },
+  {
+   "start": 136.719,
+   "end": 138.952,
+   "text": "models and Chrome built-in AI."
+  },
+  {
+   "start": 139.297,
+   "end": 144.314,
+   "text": "Hands-free voice controls, a live kart-race announcer, cadence coaching, instant"
+  },
+  {
+   "start": 144.314,
+   "end": 149.205,
+   "text": "custom workouts, and optional saddle vision—zero cloud bills, and nothing ever"
+  },
+  {
+   "start": 149.205,
+   "end": 150.697,
+   "text": "leaves your device."
+  },
+  {
+   "start": 154.855,
+   "end": 157.179,
    "text": "Telo Ride. Your bike, now a game."
   },
   {
-   "start": 105.906,
-   "end": 110.509,
+   "start": 157.525,
+   "end": 162.128,
    "text": "Telo Ride, from the Telo family, turns a smart bike at home into a game."
   },
   {
-   "start": 110.855,
-   "end": 115.366,
+   "start": 162.473,
+   "end": 166.985,
    "text": "It pairs with the bike over Bluetooth, reads your power and sets resistance for"
   },
   {
-   "start": 115.366,
-   "end": 117.037,
+   "start": 166.985,
+   "end": 168.656,
    "text": "every hill and interval."
   },
   {
-   "start": 117.382,
-   "end": 122.56,
+   "start": 169.001,
+   "end": 174.179,
    "text": "Two doors: Race (ride a map against your best-time ghost, bots or people) and"
   },
   {
-   "start": 122.56,
-   "end": 128.008,
+   "start": 174.179,
+   "end": 179.627,
    "text": "Classes (ride along to a video, alone or with a group), fed by one progression of"
   },
   {
-   "start": 128.008,
-   "end": 130.998,
+   "start": 179.627,
+   "end": 182.617,
    "text": "XP, rider levels, stars and map unlocks."
   },
   {
-   "start": 131.343,
-   "end": 133.836,
+   "start": 182.962,
+   "end": 185.455,
    "text": "A custom workout lives under Profile."
   }
  ]

@@ -17,7 +17,8 @@
   font-weight: var(--font-weight-medium);
 }
 
-.sound-settings__value {
+.sound-settings__value,
+.sound-settings__announcer-value {
   flex-shrink: 0;
   font-family: var(--font-family-display);
   font-weight: var(--font-weight-bold);
@@ -25,7 +26,8 @@
   font-feature-settings: 'tnum' 1;
 }
 
-.sound-settings__scale {
+.sound-settings__scale,
+.sound-settings__announcer-scale {
   display: flex;
   justify-content: space-between;
   font-size: var(--font-size-xs);

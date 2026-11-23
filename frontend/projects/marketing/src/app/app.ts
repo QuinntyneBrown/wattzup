@@ -11,11 +11,12 @@ import {
   SiteNav,
 } from '@telo/components';
 import { APP_URL } from './app.config';
-import { FEATURES, FILM, FOOTER, HERO } from './content';
+import { AI_PLANNED, FEATURES, FILM, FOOTER, HERO, WORLDS } from './content';
 
 /**
- * The marketing site's one page (ADR 0027): the hero, the pitch film, Race and Classes, and how
- * pairing works. Every word is fixed copy; the page reads nothing.
+ * The marketing site's one page (ADR 0027): the hero, the pitch film, Race and Classes, the best
+ * 3D worlds created so far, planned free in-browser AI, and how pairing works. Every word is fixed
+ * copy; the page reads nothing.
  */
 @Component({
   selector: 'wz-root',
@@ -31,6 +32,8 @@ export class App {
   protected readonly hero = HERO;
   protected readonly film = FILM;
   protected readonly features = FEATURES;
+  protected readonly worlds = WORLDS;
+  protected readonly aiPlanned = AI_PLANNED;
   protected readonly footer = FOOTER;
 
   /** An address in the Telo Ride app, built from the one configured `APP_URL`. */

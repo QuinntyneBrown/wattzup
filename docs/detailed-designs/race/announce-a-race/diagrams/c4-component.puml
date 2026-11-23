@@ -1,0 +1,34 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Announce a race (Arcade Race Energy)
+
+Container_Boundary(rideApp, "Ride application (Main thread)") {
+  Component(settingsUi, "SoundSettings & VoicePackStorageRow", "Angular components", "Opt-in toggle, voice preset, volume, captions, and pack download controls")
+  Component(raceStore, "RaceStore", "Angular signal store", "Holds live countdown, standings, gaps, resistance, cadence, and ghost split")
+  Component(banner, "RaceCalloutBanner", "Angular component", "Renders plain-text responsive captions and polite ARIA live announcements")
+  Component(director, "RaceAnnouncerDirector", "TypeScript state machine", "Prioritizes events, enforces 20 s cooldown, drops stale cues, bounds history")
+  Component(sanitizer, "CalloutSanitizer", "TypeScript pure helper", "Strips HTML/SSML/control chars and clamps names to 24 chars")
+  Component(governor, "BrowserThermalGovernor", "PressureObserver adapter", "Pauses live synthesis under serious/critical pressure until 30 s recovery")
+  Component(mixer, "WebAudioAnnouncerMixer", "Web Audio adapter", "Plays PCM clips and ducks world music and ride sound by 6-10 dB")
+  Component(packStore, "OpfsVoicePackStore", "OPFS + Web Crypto client", "Downloads same-origin weights, checks SHA-256, persists or deletes pack")
+  Component(workerClient, "KokoroWorkerClient", "Worker RPC client", "Manages bounded 30-clip PCM cache and worker lifecycle")
+}
+
+Container_Boundary(aiWorker, "AI Web Worker") {
+  Component(onnxWorker, "ai.worker.ts", "ONNX Runtime Web", "Loads Kokoro-82M from OPFS and synthesizes PCM via WebNN/WASM/WebGPU")
+}
+
+ContainerDb(opfs, "OPFS", "Browser storage", "Verified voice-pack weights")
+
+Rel(settingsUi, packStore, "Downloads, cancels, or deletes pack")
+Rel(packStore, opfs, "Writes verified weights and deletes on clear")
+Rel(raceStore, director, "Streams live race telemetry and events")
+Rel(director, sanitizer, "Sanitizes rider and stage names")
+Rel(director, governor, "Checks live synthesis permission")
+Rel(director, workerClient, "Requests pre-cache or live synthesis")
+Rel(workerClient, onnxWorker, "Posts synthesis jobs", "postMessage")
+Rel(onnxWorker, opfs, "Reads ONNX model files", "SyncAccessHandle")
+Rel(director, mixer, "Plays synthesized PCM clip")
+Rel(director, banner, "Publishes activeCallout signal")
+@enduml

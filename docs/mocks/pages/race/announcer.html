@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Race · announcer — Telo Ride mocks</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="race">
+<meta name="mock:state" content="announcer">
+<meta name="mock:requirements" content="L2-170 L2-172">
+<meta name="description" content="Racing with the on-device race announcer callout banner active below the race bar (and docked above the bottom HUD on XS viewports).">
+<link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<main id="main" class="race">
+  <h1 class="visually-hidden">Race, Old Town Criterium</h1>
+  <div class="race-scene" role="img" aria-label="The Old Town Criterium world">
+    <img class="race-scene__photo" src="../../assets/images/worlds/oldtown.jpg" alt="">
+  </div>
+  <div class="race-callout-banner" role="status" aria-live="polite" aria-atomic="true">
+    <span class="race-callout-banner__badge">Overtake</span>
+    <span class="race-callout-banner__text">Closing on Pacer Vale — 12 m ahead! Hold 90 rpm to take 4th.</span>
+    <button class="race-callout-banner__mute" type="button" aria-label="Mute race announcer" aria-pressed="false">Mute</button>
+  </div>
+</main>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

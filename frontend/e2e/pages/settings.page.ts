@@ -70,6 +70,12 @@ export class SettingsPage {
       name: 'Mute ride sound under a class video',
     });
     this.muteUnderVideoText = sound.locator('#duck-desc');
+    this.raceAnnouncer = sound.getByRole('switch', { name: 'Race announcer' });
+    this.raceAnnouncerText = sound.locator('#race-announcer-desc');
+    this.announcerVoice = sound.getByRole('radiogroup', { name: 'Announcer voice' });
+    this.announcerVolume = sound.getByRole('slider', { name: 'Announcer volume' });
+    this.announcerVolumeValue = sound.locator('.sound-settings__announcer-value');
+    this.announcerCaptions = sound.getByRole('switch', { name: 'Announcer captions' });
     const display = this.section('Motion and display');
     this.displayText = display.locator('.settings-section__desc');
     this.reduceMotion = display.getByRole('radiogroup', { name: 'Reduce motion' });
@@ -89,6 +95,11 @@ export class SettingsPage {
     this.clearSavedWorlds = device.getByRole('button', { name: 'Clear saved worlds' });
     this.keepWorlds = device.getByRole('switch', { name: 'Keep worlds after a ride' });
     this.keepWorldsText = device.locator('#keep-worlds-desc');
+    this.voicePackValue = device.locator('.voice-pack-storage__value');
+    this.voicePackError = device.locator('.voice-pack-storage__error');
+    this.downloadVoicePack = device.getByRole('button', { name: 'Download voice pack' });
+    this.cancelVoicePack = device.getByRole('button', { name: 'Cancel' });
+    this.deleteVoicePack = device.getByRole('button', { name: 'Delete voice pack' });
     this.toast = page.locator('.toast-region').getByRole('status');
     this.toastTitle = this.toast.locator('.toast__title');
     this.toastText = this.toast.locator('.toast__text');
@@ -101,6 +112,11 @@ export class SettingsPage {
   readonly clearSavedWorlds: Locator;
   readonly keepWorlds: Locator;
   readonly keepWorldsText: Locator;
+  readonly voicePackValue: Locator;
+  readonly voicePackError: Locator;
+  readonly downloadVoicePack: Locator;
+  readonly cancelVoicePack: Locator;
+  readonly deleteVoicePack: Locator;
   /** The page's toast, in its polite region, with its title, text and × (L2-165 AC2). */
   readonly toast: Locator;
   readonly toastTitle: Locator;
@@ -118,6 +134,12 @@ export class SettingsPage {
   readonly volumeScale: Locator;
   readonly volumeHint: Locator;
   readonly worldMusic: Locator;
+  readonly raceAnnouncer: Locator;
+  readonly raceAnnouncerText: Locator;
+  readonly announcerVoice: Locator;
+  readonly announcerVolume: Locator;
+  readonly announcerVolumeValue: Locator;
+  readonly announcerCaptions: Locator;
   readonly worldMusicText: Locator;
   readonly muteUnderVideo: Locator;
   readonly muteUnderVideoText: Locator;

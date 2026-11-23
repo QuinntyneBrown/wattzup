@@ -78,6 +78,10 @@
           (volumeChanged)="store.set('rideSoundVolume', $event)"
           (worldMusicToggled)="store.set('worldMusic', $event)"
           (muteUnderVideoToggled)="store.set('muteUnderVideo', $event)"
+          (raceAnnouncerToggled)="store.set('raceAnnouncer', $event)"
+          (announcerVoiceChosen)="store.set('announcerVoice', $event)"
+          (announcerVolumeChanged)="store.set('announcerVolume', $event)"
+          (announcerCaptionsToggled)="store.set('announcerCaptions', $event)"
         />
       </section>
       <section
@@ -127,6 +131,12 @@
           (cleared)="savedWorlds.clear()"
           (keepWorldsToggled)="store.set('keepWorlds', $event)"
         />
+        <wz-voice-pack-storage
+          [state]="voicePack.state()"
+          (downloadRequested)="voicePack.download()"
+          (cancelRequested)="voicePack.cancel()"
+          (deleteRequested)="voicePack.remove()"
+        />
       </section>
       <wz-settings-reset (resetToRecommended)="reset()" />
       <p class="settings-page__announcement visually-hidden" role="status">{{ announcement() }}</p>
@@ -141,6 +151,15 @@
       [figure]="freed"
       [text]="'freed. ' + noneSaved"
       (dismissed)="savedWorlds.dismiss()"
+    />
+  }
+  @if (voicePack.freedMegabytes(); as freedMb) {
+    <wz-toast
+      tone="success"
+      title="Voice pack deleted"
+      [figure]="freedMb + ' MB'"
+      text="freed. Download it again any time in Settings."
+      (dismissed)="voicePack.dismissFreed()"
     />
   }
 </div>

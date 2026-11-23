@@ -38,3 +38,4 @@
 | [0034](0034-maps-built-in-blender.md) | Maps are built in Blender from the class they are modelled after, and ridden by the clock | Proposed |
 | [0035](0035-every-map-a-course.md) | Every map in the catalogue is a course, built to its listed distance and climbing | Proposed |
 | [0036](0036-the-courses-rider-built-in-blender.md) | The course's rider is one mesh built in Blender, rigged, and its pedalling baked | Proposed |
+| [0037](0037-opt-in-ai-library-for-race-announcer.md) | An opt-in `ai` library runs on-device race commentary in a Web Worker | Accepted |

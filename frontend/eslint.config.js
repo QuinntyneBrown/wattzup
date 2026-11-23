@@ -88,6 +88,10 @@ module.exports = defineConfig([
               name: '@telo/world',
               message: 'The api library depends on nothing in the workspace.',
             },
+            {
+              name: '@telo/ai',
+              message: 'The api library depends on nothing in the workspace.',
+            },
             { name: '@angular/router', message: 'The api library knows no route.' },
           ],
           patterns: [outside, noRide],
@@ -106,6 +110,7 @@ module.exports = defineConfig([
             { name: '@telo/components', message: 'The domain library depends on api only.' },
             { name: '@telo/video', message: 'The domain library depends on api only.' },
             { name: '@telo/world', message: 'The domain library depends on api only.' },
+            { name: '@telo/ai', message: 'The domain library depends on api only.' },
             { name: '@angular/router', message: 'The domain library knows no route.' },
           ],
           patterns: [outside, noRide],
@@ -133,6 +138,7 @@ module.exports = defineConfig([
             { name: '@telo/components', message: 'Import a sibling component by relative path.' },
             { name: '@telo/video', message: 'Presentation components inject no service.' },
             { name: '@telo/world', message: 'Presentation components inject no service.' },
+            { name: '@telo/ai', message: 'Presentation components inject no service.' },
             {
               name: '@angular/router',
               message: 'Presentation components know no route; emit an output.',
@@ -172,7 +178,27 @@ module.exports = defineConfig([
             { name: '@telo/domain', message: 'The world library depends on api only.' },
             { name: '@telo/components', message: 'The world library depends on api only.' },
             { name: '@telo/video', message: 'The world library depends on api only.' },
+            { name: '@telo/ai', message: 'The world library depends on api only.' },
             { name: '@angular/router', message: 'The world library knows no route.' },
+          ],
+          patterns: [outside, noRide],
+        },
+      ],
+    },
+  },
+  {
+    files: ['projects/ai/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            { name: '@telo/ai', message: 'Import within the library by relative path.' },
+            { name: '@telo/domain', message: 'The ai library depends on api only.' },
+            { name: '@telo/components', message: 'The ai library depends on api only.' },
+            { name: '@telo/video', message: 'The ai library depends on api only.' },
+            { name: '@telo/world', message: 'The ai library depends on api only.' },
+            { name: '@angular/router', message: 'The ai library knows no route.' },
           ],
           patterns: [outside, noRide],
         },

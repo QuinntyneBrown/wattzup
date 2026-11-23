@@ -6,7 +6,8 @@
       "@telo/domain": ["./projects/domain/src/public-api.ts"],
       "@telo/components": ["./projects/components/src/public-api.ts"],
       "@telo/video": ["./projects/video/src/public-api.ts"],
-      "@telo/world": ["./projects/world/src/public-api.ts"]
+      "@telo/world": ["./projects/world/src/public-api.ts"],
+      "@telo/ai": ["./projects/ai/src/public-api.ts"]
     },
     "strict": true,
     "noImplicitOverride": true,
