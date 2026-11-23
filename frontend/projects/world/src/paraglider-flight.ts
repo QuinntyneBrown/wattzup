@@ -52,3 +52,13 @@ export function paragliderPose(
   }
   return out;
 }
+
+/** Instantaneous horizontal ground speed (m/s) of a paraglider along `orbit` at `seconds`. */
+export function paragliderGroundSpeedMps(orbit: ThermalOrbit, seconds: number, phase = 0): number {
+  const period = Math.max(8, orbit.periodSeconds);
+  const w = (Math.PI * 2) / period;
+  const t = seconds * w + phase * Math.PI * 2;
+  const vx = -Math.sin(t) * orbit.radiusX * w;
+  const vz = Math.cos(2 * t) * orbit.radiusZ * w;
+  return Math.hypot(vx, vz);
+}
