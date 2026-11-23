@@ -352,4 +352,9 @@ def build_four_passes(B, kit, road, height_at) -> None:
     for av_s in (-1.15, 1.15):
         B["larch-aged"].box((avx + math.cos(avyaw) * av_s, avy + math.sin(avyaw) * av_s, avz), (0.18, 0.18, 2.75), avyaw)
     kit.gable(B["chalet-wood"], (avx, avy, avz + 2.75), 2.85, 0.65, 0.45, avyaw)
+    # Corten & amber-LED cyclist altitude/temperature totem on Passo Sella (at=7754 m)
+    tt_i = road.index(7754.0)
+    ttyaw = s[tt_i]["h"]
+    B["larch-aged"].box(kit.P(tt_i, 0.0, kit.kerb + 2.55, -0.1), (0.28, 0.68, 2.35), ttyaw)
+    B["bulb"].box(kit.P(tt_i, -0.02, kit.kerb + 2.55, 1.72), (0.30, 0.52, 0.24), ttyaw)
     # [ANCHOR:passes]
