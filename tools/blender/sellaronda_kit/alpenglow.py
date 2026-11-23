@@ -76,7 +76,7 @@ def alpenglow_sky_colour(dx: float, dy: float, dz: float, az: float, haze):
     k = 1.0 / (dz + 0.19)
     ux, uy = dx * k, dy * k
     # Elongated lenticular wave clouds + high cirrus streaks
-    wave = sky.fbm(ux * 2.2 + 1.7, uy * 0.85 - 0.6, 3, 19)
+    wave = 0.88 * sky.fbm(ux * 2.2 + 1.7, uy * 0.85 - 0.6, 3, 19) + 0.12 * math.sin(ux * 9.5 + uy * 3.2)
     cover = smoothstep(0.47, 0.73, wave) * smoothstep(0.03, 0.15, h) * (1.0 - smoothstep(0.52, 0.88, h))
     rim_edge = math.exp(-((wave - 0.52) / 0.06) ** 2) * sunward
     rim_edge = cover * (1.0 - cover) * 4.0
