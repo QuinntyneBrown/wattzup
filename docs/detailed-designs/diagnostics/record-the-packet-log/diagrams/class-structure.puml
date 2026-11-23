@@ -12,55 +12,43 @@ skinparam class {
 }
 ' --------------------------
 title Class structure — Record the packet log
-enum PacketDirection {
-  ToBike
-  FromBike
+class "PacketDirection" as PacketDirection <<api>> {
+  'out' | 'in'
 }
-enum PacketLogMode {
-  CommandsOnly
-  EveryPacket
-}
-class PacketEntry <<api>> {
-  +time: string
-  +direction: PacketDirection
-  +frameType: string
-  +hex: string
-}
-class PacketLog <<domain/bluetooth>> {
-  +mode: Signal<PacketLogMode>
+interface PacketLog <<api>> {
+  +everyPacket: Signal<boolean>
   +count: Signal<number>
   +bytes: Signal<number>
-  +setMode(mode: PacketLogMode): void
-  +record(direction: PacketDirection, data: Uint8Array): void
+  +holdsIncoming: Signal<boolean>
+  +setEveryPacket(on: boolean): void
+  +record(direction, characteristic: string, bytes: Uint8Array): void
+  +download(): void
 }
-class PacketLogStore <<domain/storage>> {
-  +{static} CAP_BYTES: number = 10485760
-  +append(entry: PacketEntry): Promise<void>
-  +readAll(): AsyncIterable<PacketEntry>
-  -dropOldestOver(cap: number): Promise<void>
-}
-class PacketLogExporter <<domain/storage>> {
-  +fileName(today: Date): string
-  +download(): Promise<void>
+class MemoryPacketLog <<domain/diagnostics>> {
+  -entries: Entry[]
+  -head: number
+  +{static} PACKET_LOG_LIMIT_BYTES = 10485760
 }
 interface AppLogger <<api>> {
-  +info(area: string, message: string): void
   +error(area: string, error: unknown): void
+  +packet(direction, frame: string, hex: string): void
 }
-class ConsoleAppLogger <<domain>> {
-  +info(area: string, message: string): void
+class ConsoleAppLogger <<domain/diagnostics>> {
   +error(area: string, error: unknown): void
-  -redact(text: string): string
+  +packet(direction, frame: string, hex: string): void
 }
-class "packetLogSummary()" as Summary <<domain/bluetooth>> {
-  +packetLogSummary(mode, count, bytes): string
+class "redact()" as Redact <<domain/diagnostics>>
+class "packetFrame()" as Frame <<domain/protocol>>
+class "packetLogSummary(), packetLogFileName()" as Summary <<domain/diagnostics>>
+class "PacketTap" as Tap <<domain/bluetooth>> {
+  (direction, characteristic, bytes) => void
 }
-PacketLog --> PacketLogMode
-PacketLog ..> PacketEntry : creates
-PacketEntry --> PacketDirection
-PacketLog --> PacketLogStore : appends
-PacketLog ..> AppLogger
-PacketLogExporter --> PacketLogStore : reads
+MemoryPacketLog ..|> PacketLog
 ConsoleAppLogger ..|> AppLogger
-PacketLog ..> Summary
+ConsoleAppLogger ..> Redact
+MemoryPacketLog ..> Frame
+MemoryPacketLog ..> AppLogger
+MemoryPacketLog ..> Summary : file name
+PacketLog --> PacketDirection
+Tap ..> PacketLog : record()
 @enduml
