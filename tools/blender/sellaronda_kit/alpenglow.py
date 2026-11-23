@@ -285,6 +285,10 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         mwi = road.index(mw_m)
         mwx, mwy, mwz = road.at(mwi, mw_o, 2.5)
         kit.light((mwx, mwy, mwz), "glow-window", 16.0, 0.50)
+    # Soft golden halo at Cappella di San Maurizio's stone votive lantern
+    ch_g = road.index(10162.0)
+    chgx, chgy, chgz = road.at(ch_g, -(kit.kerb + 6.5), 2.2)
+    kit.halo((chgx, chgy, chgz), "bulb")
     # [ANCHOR:alpenglow-lights]
 
 
