@@ -10,6 +10,7 @@ import {
   rifugiCountByPass,
   rifugioElevationDropToNextValley,
   rifugiOnPass,
+  rifugiOrderedAlongRide,
   rifugioSpecialtyDish,
   rifugioStopDurationMinutes,
   rifugiWithinMetres,
@@ -40,5 +41,6 @@ describe('SELLA_RIFUGI', () => {
     expect(findRifugioByName('Savoia')?.passId).toBe('pordoi');
     expect(findRifugioByName('')).toBeNull();
     expect(rifugioStopDurationMinutes('espresso-strudel')).toBe(15);
+    expect(rifugiOrderedAlongRide(4900)[0]?.passId).toBe('pordoi');
   });
 });

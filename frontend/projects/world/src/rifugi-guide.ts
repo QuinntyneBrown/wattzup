@@ -145,3 +145,13 @@ export function rifugioStopDurationMinutes(
       return 45;
   }
 }
+
+/** Returns all Sella Ronda rifugi sorted by forward clockwise distance ahead of `metres`. */
+export function rifugiOrderedAlongRide(metres: number): readonly SellaRifugio[] {
+  const w = ((metres % 11650) + 11650) % 11650;
+  return [...SELLA_RIFUGI].sort((a, b) => {
+    const da = (a.courseMetres - w + 11650) % 11650;
+    const db = (b.courseMetres - w + 11650) % 11650;
+    return da - db;
+  });
+}
