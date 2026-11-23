@@ -62,6 +62,7 @@ def build_four_passes(B, kit, road, height_at) -> None:
     bx_t = cx_ch - math.cos(g_yaw) * 2.6
     by_t = cy_ch - math.sin(g_yaw) * 2.6
     B["larch-warm"].box((bx_t, by_t, cz_ch + 6.4), (1.05, 1.05, 2.35), g_yaw)
+    B["dark"].box((bx_t, by_t, cz_ch + 7.25), (0.48, 0.48, 0.58), g_yaw)
     kit.gable(B["larch-aged"], (bx_t, by_t, cz_ch + 8.75), 1.35, 1.35, 0.95, g_yaw)
     B["gold"].box((bx_t, by_t, cz_ch + 9.65), (0.10, 0.48, 0.85), g_yaw)
     B["larch-aged"].box((bx_t - math.cos(g_yaw) * 1.02, by_t - math.sin(g_yaw) * 1.02, cz_ch + 0.4), (0.12, 1.25, 2.25), g_yaw)
