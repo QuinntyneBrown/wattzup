@@ -51,3 +51,8 @@ export function barometricHectopascals(altitudeMetres: number): number {
   const h = Math.max(0, altitudeMetres);
   return Math.round(1013.25 * Math.pow(1 - 2.25577e-5 * h, 5.25588));
 }
+
+/** Percentage aerodynamic drag reduction (0..100 %) at `altitudeMetres` relative to sea level. */
+export function airDensityDragSavingPercent(altitudeMetres: number): number {
+  return Number(((1 - relativeAirDensity(altitudeMetres)) * 100).toFixed(1));
+}
