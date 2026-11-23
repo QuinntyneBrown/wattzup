@@ -64,3 +64,11 @@ export function dolomiaCarbonateReflectance(): {
 } {
   return { r: 0.78, g: 0.69, b: 0.61 };
 }
+
+/** Normalized dusk light-pool falloff (0..1) at `distanceMetres` from a rifugio/village light of `reachMetres`. */
+export function duskLightPoolFalloff(distanceMetres: number, reachMetres: number): number {
+  if (reachMetres <= 0 || distanceMetres >= reachMetres) return 0;
+  if (distanceMetres <= 0) return 1;
+  const u = 1 - distanceMetres / reachMetres;
+  return u * u;
+}
