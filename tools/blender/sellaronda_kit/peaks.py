@@ -240,6 +240,7 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     # 9. Distant eastern Dolomite giants on the horizon: Tofana di Rozes (3,225 m), Civetta (3,220 m) & Monte Pelmo (3,168 m)
     for d_at, dist_h, top_h, rx_h, flat_h in (
         (1650.0, 2150.0, 885.0, 340.0, True),   # Tofana di Rozes
+        (2050.0, 1780.0, 685.0, 195.0, True),   # Monte Averau & Nuvolau
         (2450.0, 2350.0, 860.0, 290.0, True),   # Monte Pelmo ("Caregon del Padreterno")
         (3350.0, 2450.0, 895.0, 360.0, False),  # Monte Civetta northwest wall
     ):
