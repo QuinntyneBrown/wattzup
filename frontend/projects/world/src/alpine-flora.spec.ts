@@ -3,6 +3,7 @@ import {
   characteristicFaunaAtAltitude,
   dolomiteFloraZone,
   edelweissHabitatScore,
+  growingSeasonDays,
   hayHarvestMonth,
   isAlpenroseInBloom,
   larchAutumnGoldRatio,
@@ -42,5 +43,6 @@ describe('dolomiteFloraZone', () => {
     expect(isAlpenroseInBloom(300)).toBe(false);
     expect(tabiaBarnDensityWeight(1860)).toBeCloseTo(1, 3);
     expect(tabiaBarnDensityWeight(2400)).toBe(0);
+    expect(growingSeasonDays(1500)).toBeGreaterThan(growingSeasonDays(2240));
   });
 });

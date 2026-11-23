@@ -41,6 +41,12 @@ export function tabiaBarnDensityWeight(altitudeMetres: number): number {
   return Math.exp(-(((altitudeMetres - 1860) / 190) ** 2));
 }
 
+/** Approximate snow-free alpine growing season in days per year at `altitudeMetres`. */
+export function growingSeasonDays(altitudeMetres: number): number {
+  const days = 185 - Math.max(0, altitudeMetres - 1400) * 0.095;
+  return Math.max(30, Math.round(days));
+}
+
 /** Relative alpine wildflower bloom density (0..1), peaking in sunny 1,750..2,100 m hay pastures. */
 export function wildflowerBloomIntensity(altitudeMetres: number): number {
   if (altitudeMetres <= 1350 || altitudeMetres >= 2550) return 0;
