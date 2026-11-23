@@ -76,6 +76,7 @@ def _village_chalet(B, kit, road, idx: int, side: float, off_extra: float, w: fl
         B["chalet-plaster"].box((ox, oy, cz_v - 0.6), (1.85, 2.25, 2.15), yaw)
         kit.gable(B["larch-aged"], (ox, oy, cz_v + 1.55), 2.15, 2.55, 0.65, yaw)
     B["chalet-plaster"].box((cx_v, cy_v, cz_v + 0.6), (w + 0.2, d + 0.2, storeys * 2.95), yaw)
+    B["geranium-red"].box((cx_v - math.sin(yaw) * -(d * 0.5 + 0.35), cy_v + math.cos(yaw) * -(d * 0.5 + 0.35), cz_v + 3.65), (w * 0.72, 0.35, 0.26), yaw)
     B["larch-aged"].box((cx_v, cy_v, cz_v + 0.6 + (storeys - 0.35) * 2.95), (w + 0.35, d + 0.35, 1.15), yaw)
     kit.gable(B["chalet-wood"], (cx_v, cy_v, cz_v + 0.6 + storeys * 2.95), w + 1.2, d + 1.2, 2.6, yaw)
     B["chalet-plaster"].box((cx_v + math.cos(yaw) * (w * 0.25), cy_v + math.sin(yaw) * (w * 0.25), cz_v + 1.6 + storeys * 2.95), (0.78, 0.78, 2.1), yaw)
