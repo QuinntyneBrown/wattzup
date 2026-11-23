@@ -48,3 +48,10 @@ export function altitudeAlpenglowWeight(altitudeMetres: number): number {
   const u = (altitudeMetres - 1900) / (2750 - 1900);
   return u * u * (3 - 2 * u);
 }
+
+/** Anti-solar Belt of Venus intensity (0..1) for view azimuth `viewAz` and elevation `horizonElev` (0..1). */
+export function beltOfVenusWeight(viewAz: number, sunAz: number, horizonElev: number): number {
+  const anti = Math.max(0, -Math.cos(viewAz - sunAz));
+  const band = Math.exp(-(((horizonElev - 0.11) / 0.075) ** 2));
+  return Math.pow(anti, 1.6) * band;
+}

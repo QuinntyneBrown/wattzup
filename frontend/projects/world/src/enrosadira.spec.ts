@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { altitudeAlpenglowWeight, cliffAspectIllumination, enrosadiraTint } from './enrosadira';
+import {
+  altitudeAlpenglowWeight,
+  beltOfVenusWeight,
+  cliffAspectIllumination,
+  enrosadiraTint,
+} from './enrosadira';
 
 describe('enrosadiraTint', () => {
   it('progresses from pale dolomite through peak coral-rose (r > g > b) into violet twilight', () => {
@@ -17,5 +22,7 @@ describe('enrosadiraTint', () => {
     expect(cliffAspectIllumination(-Math.cos(az), -Math.sin(az), az)).toBe(0);
     expect(altitudeAlpenglowWeight(1600)).toBe(0);
     expect(altitudeAlpenglowWeight(3152)).toBe(1);
+    expect(beltOfVenusWeight(0, Math.PI, 0.11)).toBeCloseTo(1, 3);
+    expect(beltOfVenusWeight(Math.PI, Math.PI, 0.11)).toBe(0);
   });
 });
