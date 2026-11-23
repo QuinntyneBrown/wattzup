@@ -6,6 +6,7 @@ import {
   LADIN_VILLAGES,
   ladinGreetingForVillage,
   lowestLadinVillage,
+  nextClimbFromVillage,
   provinceForMetres,
   streamForVillage,
   villageAtMetres,
@@ -33,5 +34,7 @@ describe('LADIN_VILLAGES', () => {
     expect(ladinGreetingForVillage('selva')).toContain('Sëlva');
     expect(streamForVillage('canazei')).toBe('Torrente Avisio');
     expect(streamForVillage('arabba')).toBe('Torrente Cordevole');
+    expect(nextClimbFromVillage('arabba')).toBe('pordoi');
+    expect(nextClimbFromVillage('selva')).toBe('gardena');
   });
 });
