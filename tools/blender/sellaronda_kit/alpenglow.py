@@ -206,6 +206,11 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         sx_l, sy_l, sz_l = road.at(si, st_off, 3.8)
         kit.light((sx_l, sy_l, sz_l), "glow-window", 22.0, 0.56)
         kit.halo((sx_l, sy_l, sz_l), "glow-window")
+    # Warm amber interior light pools inside the 4 village bus shelters
+    for bs_m, bs_s in ((355.0, 1.0), (3210.0, -1.0), (6210.0, 1.0), (9015.0, -1.0)):
+        bsi = road.index(bs_m)
+        bsx, bsy, bsz = road.at(bsi, (kit.kerb + 2.9) * bs_s, 2.2)
+        kit.light((bsx, bsy, bsz), "bulb", 12.0, 0.45)
     # [ANCHOR:alpenglow-lights]
 
 
