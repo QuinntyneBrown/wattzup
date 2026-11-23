@@ -329,4 +329,13 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["dolomite-pale"].box((mx_m, my_m, mz_m - 0.2), (1.35, 1.05, 0.68), mm_m * 0.1)
             B["larch-warm"].box((mx_m, my_m, mz_m + 0.48), (0.22, 0.20, 0.44), s[m_idx]["h"])
 
+    # Stone-lined alpine spring capture wellheads with shingle hoods
+    for spw_m in (1520.0, 3960.0, 6890.0, 9460.0):
+        sp_i = road.index(spw_m)
+        spx, spy, _ = road.at(sp_i, kit.kerb + 9.5)
+        if road.clear_of_road(spx, spy, 7.0, sp_i):
+            spz = height_at(spx, spy)
+            B["stone"].box((spx, spy, spz - 0.2), (1.35, 1.35, 0.95), s[sp_i]["h"])
+            kit.gable(B["larch-aged"], (spx, spy, spz + 0.75), 1.65, 1.65, 0.48, s[sp_i]["h"])
+
     return trees
