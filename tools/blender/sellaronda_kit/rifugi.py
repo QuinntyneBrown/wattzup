@@ -173,6 +173,7 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
             fx = tx + math.cos(yaw) * (-w * 0.44 + f_k * 1.6) - math.sin(yaw) * (-1.8 * side)
             fy = ty + math.sin(yaw) * (-w * 0.44 + f_k * 1.6) + math.cos(yaw) * (-1.8 * side)
             B["paint"].box((fx, fy, tz + 0.1), (0.10, 0.10, 6.4), yaw)
+            B["gold"].box((fx, fy, tz + 6.50), (0.18, 0.18, 0.18), yaw)
             B[f_mat].box((fx + math.cos(yaw) * 0.72, fy + math.sin(yaw) * 0.72, tz + 5.15), (1.35, 0.06, 0.88), yaw + 0.18)
         # Wooden A-frame Bike Day wheel/saddle rack with parked road bikes beside each rifugio terrace!
         rk_x = tx + math.cos(yaw) * (w * 0.36)
