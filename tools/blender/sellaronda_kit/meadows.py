@@ -106,6 +106,8 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
         # Hollowed larch Brunnentrog spring trough + standpipe
         tz_h = height_at(cx_h, cy_h)
         B["larch-aged"].box((cx_h, cy_h, tz_h - 0.1), (2.6, 0.68, 0.62), s[h_idx]["h"])
+        B["larch-warm"].box((cx_h - 2.4, cy_h + 1.6, height_at(cx_h - 2.4, cy_h + 1.6)), (0.95, 0.45, 0.95), s[h_idx]["h"])
+        kit.gable(B["larch-aged"], (cx_h - 2.4, cy_h + 1.6, height_at(cx_h - 2.4, cy_h + 1.6) + 0.95), 1.25, 0.72, 0.34, s[h_idx]["h"])
         B["lago-turquoise"].box((cx_h, cy_h, tz_h + 0.42), (2.3, 0.46, 0.14), s[h_idx]["h"])
         for cg_i in range(4):
             B["paint"].box((cx_h + math.cos(cg_i * 1.6) * 1.9, cy_h + math.sin(cg_i * 1.6) * 1.2, tz_h + 0.02), (0.24, 0.24, 0.34), cg_i * 0.4)
