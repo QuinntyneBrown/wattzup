@@ -405,4 +405,16 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     rock_tower(peaks, cx_w + cux * 155.0 + cpx * 95.0, cy_w + cuy * 155.0 + cpy * 95.0, 132.0, 468.0, 32.0, 26.0, 7, math.atan2(cuy, cux), cfn, taper=0.28, flat_cap=False, seed_phase=4.9)
     # Western prow buttress of Sass Pordoi overlooking the Pordoi -> Canazei switchbacks
     rock_tower(peaks, sp_x - px_perp * 118.0 + ux * 45.0, sp_y - py_perp * 118.0 + uy * 45.0, 130.0, 562.0, 68.0, 56.0, 8, yaw_sp - 0.25, cfn, taper=0.72, flat_cap=True, seed_phase=2.7)
+    # Cima de Lech (2,936 m) & Lago del Pisciadù tarn in the upper Val Setus cirque
+    rock_tower(peaks, cx + pux * 615.0 + ppx * 92.0, cy + puy * 615.0 + ppy * 92.0, 508.0, 688.0, 74.0, 58.0, 8, math.atan2(puy, pux), cfn, taper=0.48, flat_cap=False, seed_phase=0.8)
+    quad_shaded(
+        peaks,
+        (cx + pux * 645.0 - ppx * 22.0, cy + puy * 645.0 - ppy * 22.0, 506.0),
+        (cx + pux * 645.0 + ppx * 18.0, cy + puy * 645.0 + ppy * 18.0, 506.0),
+        (cx + pux * 612.0 + ppx * 16.0, cy + puy * 612.0 + ppy * 16.0, 506.5),
+        (cx + pux * 612.0 - ppx * 20.0, cy + puy * 612.0 - ppy * 20.0, 506.5),
+        cfn,
+        506.0,
+        snow=True,
+    )
     # [ANCHOR:massif]
