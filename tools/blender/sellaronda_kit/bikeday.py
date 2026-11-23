@@ -473,6 +473,12 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         B["parasol-red"].box((fkx, fky_p, fkz + 0.85), (0.36, 0.42, 0.58), fky)
         B["dark"].box((fkx, fky_p, fkz + 1.65), (0.38, 0.38, 0.14), fky)
 
+    # Touring motorbike trio paused outside Rifugio Salei (at=7112 m)
+    sl_m = road.index(7112.0)
+    for sm_k in range(3):
+        smx, smy, smz = kit.P(sl_m, sm_k * 1.6, kit.kerb + 3.2, 0.0)
+        _touring_motorbike(B, smx, smy, smz, s[sl_m]["h"] + 0.9, moto_colours[sm_k], with_rider=False)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
