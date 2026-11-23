@@ -176,6 +176,23 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
             snow=True,
         )
 
+    # Vallon glacial cirque bowl & snow-floored hollow above Boè / Campolongo (at=1750 m)
+    val_pt = road.s[road.index(1750.0)]
+    vux, vuy = val_pt["x"] - cx, val_pt["y"] - cy
+    vul = max(1.0, math.hypot(vux, vuy))
+    vux, vuy = vux / vul, vuy / vul
+    vpx, vpy = -vuy, vux
+    quad_shaded(
+        peaks,
+        (cx + vux * 690.0 - vpx * 95.0, cy + vuy * 690.0 - vpy * 95.0, 415.0),
+        (cx + vux * 690.0 + vpx * 95.0, cy + vuy * 690.0 + vpy * 95.0, 415.0),
+        (cx + vux * 545.0 + vpx * 65.0, cy + vuy * 545.0 + vpy * 65.0, 520.0),
+        (cx + vux * 545.0 - vpx * 65.0, cy + vuy * 545.0 - vpy * 65.0, 520.0),
+        cfn,
+        465.0,
+        snow=True,
+    )
+
     # Murfrëit & Piz Miara eastern Sella cliffs towering over Corvara & Campolongo approach (at=1250 m)
     mur_pt = road.s[road.index(1250.0)]
     mdx2, mdy2 = mur_pt["x"] - cx, mur_pt["y"] - cy
