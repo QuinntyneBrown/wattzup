@@ -76,6 +76,7 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
             B["dolomite-pale"].box(kit.P(idx, 0.0, kit.kerb + 1.15, -0.3), (0.75, 0.75, 5.25), yaw)
             if idx in (i0, i1 - (i1 - i0) % 2):
                 B["parasol-red"].box(kit.P(idx, 0.0, kit.kerb + 1.15, 1.2), (0.80, 0.80, 0.55), yaw)
+                B["larch-warm"].box(kit.P(idx, 0.0, 0.0, 5.57), (0.85, (kit.kerb + 1.7) * 2.0, 0.34), yaw)
                 for hz_k in range(-3, 4):
                     mat_hz = "yellow" if hz_k % 2 == 0 else "dark"
                     B[mat_hz].box(kit.P(idx, -4.15 if idx == i0 else 4.15, hz_k * 1.45, 5.05), (0.16, 1.38, 0.52), yaw)
