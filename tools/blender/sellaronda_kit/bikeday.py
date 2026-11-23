@@ -158,7 +158,7 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         while d_desc < p["descent_to"] - 90.0:
             d_idx = road.index(d_desc)
             cx_d, cy_d, cz_d = road.at(d_idx, -(kit.kerb - 0.65))
-            _road_cyclist(B, cx_d, cy_d, cz_d, s[d_idx]["h"], jerseys[(p_i + k_d) % len(jerseys)], standing=False)
+            _road_cyclist(B, cx_d, cy_d, cz_d, s[d_idx]["h"], "yellow" if k_d % 3 == 0 else jerseys[(p_i + k_d) % len(jerseys)], standing=False)
             k_d += 1
             d_desc += 145.0
 
