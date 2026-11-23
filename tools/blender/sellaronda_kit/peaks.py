@@ -308,4 +308,6 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         (lake_cx - mux * 95.0 - mpx * 285.0, lake_cy - muy * 95.0 - mpy * 285.0, lake_z + 3.0),
         dam_grey,
     )
+    # Rifugio Sasso Piatto (2,300 m) at the southwestern foot of Sasso Piatto
+    rock_tower(peaks, sp_x - ux * 195.0 + px * 145.0, sp_y - uy * 195.0 + py * 145.0, 295.0, 310.0, 14.0, 10.5, 6, yaw_sl, cfn, taper=0.94, flat_cap=True, seed_phase=2.1)
     # [ANCHOR:peaks]
