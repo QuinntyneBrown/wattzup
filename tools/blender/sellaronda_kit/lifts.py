@@ -342,4 +342,14 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["larch-warm"].box((bx_b, by_b, bz_b + 1.0), (13.6, 10.6, 4.0), boeyaw)
         kit.gable(B["copper-patina"], (bx_b, by_b, bz_b + 5.0), 14.2, 11.2, 1.5, boeyaw)
 
+    # 15. Col dei Rossi / Belvedere cableway ridge station southwest of Passo Pordoi (at=5480 m)
+    cr_i = road.index(5480.0)
+    cryaw = s[cr_i]["h"]
+    crx, cry, _ = road.at(cr_i, kit.kerb + 36.0)
+    if road.clear_of_road(crx, cry, 18.0, cr_i):
+        crz = height_at(crx, cry) + 4.0
+        B["stone"].box((crx, cry, crz - 4.5), (14.0, 10.0, 5.5), cryaw)
+        B["chalet-plaster"].box((crx, cry, crz + 1.0), (14.4, 10.4, 4.2), cryaw)
+        B["ladin-blue"].box((crx, cry, crz + 5.2), (14.8, 10.8, 1.2), cryaw)
+
     return cableways_out
