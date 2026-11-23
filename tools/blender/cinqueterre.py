@@ -979,6 +979,66 @@ def piazza(k) -> int:
     return set_out
 
 
+APES = (0x8FC1D8, 0x6FA06A, 0xF2EEE2, 0xD9B46A, 0xC8553A)
+PRODUCE = (0xF2D23A, 0xE8742E, 0xC8322C, 0x6FA03A, 0x7A3A6A)
+
+
+def street_life(k) -> dict:
+    """Details 1 and 6, the villages: what goes on in the street. Between the boats on the inland pavement stand
+    an Ape here and there, the three-wheeled van of every Ligurian village, its bed loaded with crates; a
+    greengrocer's stall under a striped awning against a house wall; pots of flowers by the doors; and people,
+    in ones and twos."""
+    near, rng, s = Painted(k, "ct-detail"), k.rng, k.s
+    dark, wood, white, red, pot = _lin(0x1E1E22), _lin(0x7A5A3A), _lin(0xF4F2EA), _lin(0xC8322C), _lin(0xB5674A)
+    apes = stalls = people = 0
+    for site in village_sites(s):
+        for step in range(-8, 9):
+            i = site["i"] + step * 2 + 1
+            if not 4 < i < k.n - 4 or abs(s[i]["k"]) > 1 / 80:
+                continue
+            inland, yaw = -seaward(k, i), s[i]["h"]
+            cs, sn = math.cos(yaw), math.sin(yaw)
+            x, y, z = k.road.at(i, (k.kerb + 1.35) * inland)
+            pick = rng.random()
+            if pick < 0.16:
+                # An Ape: the cab, the bed and its load, three small wheels.
+                paint_c = _lin(APES[rng.randrange(len(APES))])
+                near.box((x + cs * 0.75, y + sn * 0.75, z + 0.28), (1.15, 1.2, 1.3), yaw, paint_c, 0.85)
+                near.box((x + cs * 0.9, y + sn * 0.9, z + 0.95), (0.7, 1.22, 0.5), yaw, _lin(0x2E3B44), 1.0)
+                near.box((x - cs * 0.65, y - sn * 0.65, z + 0.42), (1.6, 1.25, 0.42), yaw, paint_c, 0.9)
+                for q in range(3):
+                    near.box((x - cs * (0.15 + q * 0.5), y - sn * (0.15 + q * 0.5), z + 0.84), (0.44, 0.9, 0.3), yaw, _lin(PRODUCE[rng.randrange(len(PRODUCE))]), 0.9)
+                for fwd, left in ((1.1, 0.0), (-0.95, 0.52), (-0.95, -0.52)):
+                    near.box((x + cs * fwd - sn * left, y + sn * fwd + cs * left, z), (0.4, 0.14, 0.4), yaw, dark, 1.0)
+                apes += 1
+            elif pick < 0.28:
+                # The greengrocer's stall, against the wall behind the pavement.
+                bx, by, _ = k.road.at(i, (k.kerb + 1.75) * inland)
+                near.box((bx, by, z), (2.4, 0.85, 0.8), yaw, wood, 0.9)
+                for q in range(5):
+                    e = -0.96 + q * 0.48
+                    near.box((bx + cs * e, by + sn * e, z + 0.8), (0.42, 0.7, 0.22), yaw, _lin(PRODUCE[q % len(PRODUCE)]), 0.85)
+                for q in range(4):
+                    e = -1.05 + q * 0.7
+                    near.box((bx + cs * e, by + sn * e, z + 2.15), (0.7, 1.5, 0.07), yaw, red if q % 2 else white, 1.0)
+                for e in (-1.3, 1.3):
+                    fx, fy, _ = k.road.at(i, (k.kerb + 1.1) * inland)
+                    near.box((fx + cs * e, fy + sn * e, z), (0.06, 0.06, 2.15), yaw, white, 1.0)
+                stalls += 1
+            elif pick < 0.5:
+                for q in range(rng.randint(1, 2)):
+                    hiker(near, rng, (x + cs * q * 0.8, y + sn * q * 0.8, z + 0.02), yaw + rng.uniform(-1.6, 1.6))
+                    people += 1
+            elif pick < 0.75:
+                # Pots by a door: terracotta, and what grows in them.
+                bx, by, _ = k.road.at(i, (k.kerb + 1.95) * inland)
+                for q in range(rng.randint(2, 3)):
+                    e = (q - 1) * 0.7
+                    near.box((bx + cs * e, by + sn * e, z), (0.42, 0.42, 0.45), yaw, pot, 0.85)
+                    near.box((bx + cs * e, by + sn * e, z + 0.45), (0.6, 0.6, rng.uniform(0.35, 0.9)), yaw + 0.5, _lin(rng.choice((0x3F7A32, 0xD8342E, 0xE0527A, 0x5C8A38))), 0.75)
+    return {"apes": apes, "stalls": stalls, "villagers": people}
+
+
 def vineyard_works(k) -> dict:
     """Detail 4, terraced vineyards: what the growers built to work them. On the first terrace now and then stands
     a casotto, a tool hut of the same dry stone under a single pitch of tiles; and here and there a trenino, the
@@ -1313,8 +1373,9 @@ def scenery(k) -> dict:
     harbour = vernazza(k)
     parasols = piazza(k)
     churches = parishes(k)
+    street = street_life(k)
     works = vineyard_works(k)
     afloat = on_the_water(k)
     rocks = sea_rocks(k)
     furniture = road_furniture(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "lemonTrees": lemons, "houses": houses, "plants": plants, "boats": hauled, **path, "castle": harbour, "parasols": parasols, "parishChurches": churches, **works, "afloat": afloat, **rocks, **furniture}
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "lemonTrees": lemons, "houses": houses, "plants": plants, "boats": hauled, **path, "castle": harbour, "parasols": parasols, "parishChurches": churches, **street, **works, "afloat": afloat, **rocks, **furniture}
