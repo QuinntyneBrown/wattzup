@@ -99,6 +99,13 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     ppx, ppy = -puy, pux
     rock_tower(peaks, cx - 140.0, cy + 90.0, 658.0, 676.0, 13.0, 10.0, 6, 0.2, cfn, taper=0.95, flat_cap=True, seed_phase=0.5)
     rock_tower(peaks, cx + pux * 685.0 + ppx * 40.0, cy + puy * 685.0 + ppy * 40.0, 485.0, 502.0, 12.0, 9.5, 6, 0.8, cfn, taper=0.95, flat_cap=True, seed_phase=0.9)
+
+    # Piz Gralba (2,972 m) northwest corner fortress above Plan de Gralba (at=8320 m)
+    gr_pt = road.s[road.index(8320.0)]
+    grux, gruy = gr_pt["x"] - cx, gr_pt["y"] - cy
+    grul = max(1.0, math.hypot(grux, gruy))
+    grux, gruy = grux / grul, gruy / grul
+    rock_tower(peaks, cx + grux * 748.0, cy + gruy * 748.0, 118.0, 598.0, 138.0, 108.0, 11, math.atan2(gruy, grux), cfn, taper=0.78, flat_cap=True, seed_phase=2.9)
     top_ring = rings[-1]
     for k in range(sides):
         u = (k + 1) % sides
