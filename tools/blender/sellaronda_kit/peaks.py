@@ -435,4 +435,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     rock_tower(peaks, sl_x - ux * 125.0 - px * 195.0, sl_y - uy * 125.0 - py * 195.0, 140.0, 682.0, 46.0, 44.0, 9, yaw_sl, cfn, taper=0.74, flat_cap=True, seed_phase=3.8)
     # Sasso Vernale (3,058 m) pyramid on the Ombretta-Marmolada crest
     rock_tower(peaks, pordoi_pt["x"] + mux * 1580.0 - mpx * 515.0, pordoi_pt["y"] + muy * 1580.0 - mpy * 515.0, 95.0, 835.0, 130.0, 105.0, 8, yaw_mm, cfn, taper=0.38, flat_cap=False, seed_phase=1.4)
+    # Monte Stevia (2,555 m) flat-topped limestone wall directly above Selva di Val Gardena (at=9020 m)
+    stv_pt = road.s[road.index(9020.0)]
+    stux, stuy = stv_pt["x"] - cx, stv_pt["y"] - cy
+    stul = max(1.0, math.hypot(stux, stuy))
+    stux, stuy = stux / stul, stuy / stul
+    rock_tower(peaks, stv_pt["x"] + stux * 780.0, stv_pt["y"] + stuy * 780.0, 50.0, 585.0, 210.0, 135.0, 10, math.atan2(-stuy, -stux), cfn, taper=0.78, flat_cap=True, seed_phase=2.1)
     # [ANCHOR:peaks]
