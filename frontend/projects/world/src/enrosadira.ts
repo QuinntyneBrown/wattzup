@@ -72,3 +72,9 @@ export function duskLightPoolFalloff(distanceMetres: number, reachMetres: number
   const u = 1 - distanceMetres / reachMetres;
   return u * u;
 }
+
+/** Relative sky zenith luminance (0..1) across Enrosadira `progress` (0 = late afternoon, 1 = deep blue twilight). */
+export function twilightZenithLuminance(progress: number): number {
+  const p = Math.max(0, Math.min(1, progress));
+  return Number((0.88 - 0.72 * p * p).toFixed(4));
+}
