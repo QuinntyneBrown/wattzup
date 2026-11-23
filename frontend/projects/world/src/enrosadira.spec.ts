@@ -3,6 +3,7 @@ import {
   altitudeAlpenglowWeight,
   beltOfVenusWeight,
   cliffAspectIllumination,
+  directBeamKelvin,
   dolomiaCarbonateReflectance,
   duskLightPoolFalloff,
   enrosadiraStageName,
@@ -46,5 +47,8 @@ describe('enrosadiraTint', () => {
     expect(valleyShadowDepth(2950, 2)).toBe(0);
     expect(enrosadiraWindowCurve(4)).toBeCloseTo(1, 3);
     expect(enrosadiraWindowCurve(-40)).toBeLessThan(0.01);
+    expect(directBeamKelvin(0)).toBe(3800);
+    expect(directBeamKelvin(0.75)).toBe(2150);
+    expect(directBeamKelvin(1)).toBe(9000);
   });
 });
