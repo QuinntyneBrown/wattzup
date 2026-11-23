@@ -55,3 +55,31 @@ export function gondolaPosition(
   out.sway = reducedMotion ? 0 : Math.sin(t * Math.PI) * Math.sin(clock * 1.6) * 0.025;
   return out;
 }
+
+/** Places a carrier on a continuously circulating monocable loop with half-gauge separation between up & down ropes. */
+export function chairliftLoopPosition(
+  from: readonly [number, number, number],
+  to: readonly [number, number, number],
+  gaugeHalfMetres: number,
+  loopSeconds: number,
+  seconds: number,
+  phase = 0,
+  reducedMotion = false,
+): { x: number; y: number; z: number; ascending: boolean } {
+  const period = Math.max(4, loopSeconds);
+  const clock = reducedMotion ? 0 : Math.max(0, seconds);
+  const u = (((clock / period + phase) % 1) + 1) % 1;
+  const ascending = u < 0.5;
+  const t = ascending ? u * 2 : (1 - u) * 2;
+  const dx = to[0] - from[0];
+  const dz = to[2] - from[2];
+  const len = Math.max(1e-4, Math.hypot(dx, dz));
+  const px = (-dz / len) * gaugeHalfMetres * (ascending ? 1 : -1);
+  const pz = (dx / len) * gaugeHalfMetres * (ascending ? 1 : -1);
+  return {
+    x: from[0] + dx * t + px,
+    y: from[1] + (to[1] - from[1]) * t,
+    z: from[2] + dz * t + pz,
+    ascending,
+  };
+}
