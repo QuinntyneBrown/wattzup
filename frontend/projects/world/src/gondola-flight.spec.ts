@@ -5,6 +5,7 @@ import {
   type CableSpan,
   cablewayElevationGainMetres,
   cablewayHorizontalSpanMetres,
+  cablewayMeanSpeedMps,
   cablewayRoundTripSeconds,
   cablewaySlopeDegrees,
   cablewayVerticalSpeedMps,
@@ -70,5 +71,6 @@ describe('gondolaPosition', () => {
     expect(reversibleFuniviaHourlyPax(SASS_PORDOI, 65)).toBeGreaterThan(800);
     expect(cablewayHorizontalSpanMetres(SASS_PORDOI)).toBeGreaterThan(350);
     expect(cablewayElevationGainMetres(SASS_PORDOI)).toBeCloseTo(445, 1);
+    expect(cablewayMeanSpeedMps(SASS_PORDOI)).toBeGreaterThan(10);
   });
 });
