@@ -425,4 +425,10 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         gvx, gvy_p, gvz = kit.P(gv_i, 0.0, -(kit.kerb + 5.2), 0.0)
         B["accent-2"].box((gvx, gvy_p, gvz), (2.2, 0.95, 1.05), gvy)
         kit.gable(B["paint"], (gvx, gvy_p, gvz + 2.45), 2.8, 2.8, 0.55, gvy)
+    # Trilingual Ladin 'BËGNODÜS / A RIVEDERCI' farewell totems at village exits
+    for ex_m in (405.0, 3250.0, 6246.0, 9048.0):
+        ex_i = road.index(ex_m)
+        exy = road.s[ex_i]["h"]
+        B["larch-warm"].box(kit.P(ex_i, 0.0, kit.kerb + 2.05, 0.0), (0.28, 0.85, 2.45), exy)
+        B["ladin-blue"].box(kit.P(ex_i, 0.0, kit.kerb + 2.05, 1.85), (0.32, 0.72, 0.42), exy)
     # [ANCHOR:villages]
