@@ -143,3 +143,8 @@ export function passAverageGradientPercent(passId: SellaPass['id']): number {
     ((passVerticalGainMetres(passId) / (REAL_CLIMB_KM[passId] * 1000)) * 100).toFixed(1),
   );
 }
+
+/** Total real-world Dolomite vertical ascent (m) summed across all four clockwise Sella Ronda passes. */
+export function totalSellaRondaClimbingMetres(): number {
+  return SELLA_RONDA_PASSES.reduce((sum, p) => sum + passVerticalGainMetres(p.id), 0);
+}
