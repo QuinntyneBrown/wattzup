@@ -45,3 +45,14 @@ export function nextSellaPass(metres: number): SellaPass {
   const wrapped = ((metres % 11650) + 11650) % 11650;
   return SELLA_RONDA_PASSES.find((p) => p.courseMetres >= wrapped) ?? SELLA_RONDA_PASSES[0]!;
 }
+
+/**
+ * Nominal compass bearing (radians in XY, 0 = East, pi/2 = North) from thecentral Sella massif (Piz Boè)
+ * out to the rider at `metres` along the clockwise 11,650 m loop, and which side of the rider the massif stands on.
+ */
+export function sellaMassifBearing(metres: number): { radialAngle: number; side: 'right' } {
+  const u = Math.max(0, Math.min(1, metres / 11650));
+  const t = Math.max(0, Math.min(1, (u - 0.012) / (0.972 - 0.012)));
+  const smooth = t * t * (3 - 2 * t);
+  return { radialAngle: Math.PI / 2 - 5.68 * smooth, side: 'right' };
+}
