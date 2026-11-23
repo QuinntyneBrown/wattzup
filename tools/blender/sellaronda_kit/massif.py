@@ -417,4 +417,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         506.0,
         snow=True,
     )
+    # Rifugio Franz Kostner al Vallon (2,500 m) perched on the eastern Sella terrace above Campolongo
+    rock_tower(peaks, cx + vux * 712.0 - vpx * 52.0, cy + vuy * 712.0 - vpy * 52.0, 412.0, 425.0, 12.0, 9.0, 6, math.atan2(vuy, vux), cfn, taper=0.94, flat_cap=True, seed_phase=1.4)
     # [ANCHOR:massif]
