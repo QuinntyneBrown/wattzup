@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 import { ECHELON_INITIALISED, echelonBike, targetResistanceWrite } from './echelon';
 import { maps } from './maps';
-import type { ApiFixture } from './api';
+import { type ApiFixture, newRiderProgress } from './api';
 import type { FakeBluetooth } from './fake-bluetooth';
 import { expect } from './test';
 import { RacePage } from '../pages/race.page';
@@ -17,7 +17,8 @@ export const RACE_START = new Date('2026-11-21T18:00:00Z').getTime();
  * `offline`, the backend answers the catalogue with 503, as when it cannot be reached; `catalogue` serves other maps.
  * The world is drawn only with `world`: drawn in software, its scene slows every step of a spec about the HUD, so
  * otherwise the browser offers neither WebGPU nor WebGL 2 and the map's panorama stands in (L2-065 AC2), as `main`'s
- * HUD specs do.
+ * HUD specs do. A map the new rider's progress does not hold (a test-only map, or one still locked) is opened to the
+ * rider, so its race opens rather than Map Select (L2-047 AC5).
  */
 export async function startRace(
   page: Page,
@@ -33,6 +34,12 @@ export async function startRace(
     await held;
     return offline ? { status: 503 } : { body: catalogue };
   });
+  if (!newRiderProgress.openMapIds.includes(mapId)) {
+    api.answer('GET', '/api/progress', {
+      ...newRiderProgress,
+      openMapIds: [...newRiderProgress.openMapIds, mapId],
+    });
+  }
   if (!world) await new FakeWebGl(page).disable();
   await page.clock.install({ time: RACE_START });
   await bluetooth.remember(echelonBike);
