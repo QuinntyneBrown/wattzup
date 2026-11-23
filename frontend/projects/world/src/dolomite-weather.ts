@@ -18,3 +18,10 @@ export function windChillCelsius(airTempC: number, speedKmh: number): number {
   const v16 = Math.pow(speedKmh, 0.16);
   return Number((13.12 + 0.6215 * airTempC - 11.37 * v16 + 0.3965 * airTempC * v16).toFixed(1));
 }
+
+/** Relative sustainable aerobic threshold power factor (0..1 vs sea level) for acclimatized cyclists at `altitudeMetres`. */
+export function aerobicMaxPowerFactor(altitudeMetres: number): number {
+  const km = Math.max(0, altitudeMetres) / 1000;
+  // Bassett et al. acclimatized cycling power curve: ~91-93% at 2,240 m.
+  return Math.max(0.5, 1 - 0.018 * km - 0.0085 * km * km);
+}
