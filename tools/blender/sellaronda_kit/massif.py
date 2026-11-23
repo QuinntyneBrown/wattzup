@@ -132,6 +132,13 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         600.0,
         snow=True,
     )
+
+    # Col Turond lower terraced rock spurs directly above the eastern Passo Pordoi hairpins (at=4250 m)
+    ct_pt = road.s[road.index(4250.0)]
+    ctux, ctuy = ct_pt["x"] - cx, ct_pt["y"] - cy
+    ctul = max(1.0, math.hypot(ctux, ctuy))
+    ctux, ctuy = ctux / ctul, ctuy / ctul
+    rock_tower(peaks, cx + ctux * 870.0, cy + ctuy * 870.0, 95.0, 385.0, 92.0, 74.0, 9, math.atan2(ctuy, ctux), cfn, taper=0.68, flat_cap=True, seed_phase=3.3)
     top_ring = rings[-1]
     for k in range(sides):
         u = (k + 1) % sides
