@@ -13,6 +13,7 @@ import {
   peaksAboveThreeThousand,
   peaksVisibleNearMetres,
   sassolungoSightline,
+  unescoSystemNumberForPeak,
 } from './dolomite-peaks';
 
 describe('DOLOMITE_GIANTS', () => {
@@ -39,5 +40,6 @@ describe('DOLOMITE_GIANTS', () => {
     expect(meanDolomiteGiantAltitude()).toBeGreaterThan(2800);
     expect(highestDolomitePeak().altitudeMetres).toBe(3343);
     expect(peaksVisibleNearMetres(7750).length).toBeGreaterThanOrEqual(1);
+    expect(unescoSystemNumberForPeak('marmolada')).toBe(2);
   });
 });

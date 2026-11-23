@@ -145,6 +145,18 @@ export function peaksVisibleNearMetres(
   });
 }
 
+/** Official UNESCO Dolomites World Heritage serial system number (1..9) for `peakId`. */
+export function unescoSystemNumberForPeak(peakId: DolomitePeak['id']): number {
+  switch (peakId) {
+    case 'marmolada':
+      return 2; // Marmolada
+    case 'sassolungo':
+      return 8; // Puez-Odle / Sciliar-Catinaccio-Latemar neighbour
+    default:
+      return 5; // Northern Dolomites / Puez-Odle
+  }
+}
+
 /** Sightline prominence (0..1) of Sassolungo (3,181 m) from `metres` along Sella Ronda. */
 export function sassolungoSightline(metres: number): number {
   const w = ((metres % 11650) + 11650) % 11650;
