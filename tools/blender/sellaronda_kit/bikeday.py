@@ -225,6 +225,7 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         _gbox(0.0, rs_y, -3.4, 0.06, 0.06, 4.8, 0x2A2E38)
     _gbox(0.0, 0.0, -6.2, 0.85, 0.58, 0.98, 0x1E222A)
     _gbox(0.18, 0.0, -5.18, 0.28, 0.26, 0.28, 0xF4F0E6)
+    _gbox(1.18, 0.0, -0.45, 0.12, 6.8, 0.16, 0xF4F0E6)
 
     # Event sports photographers in yellow vests with white telephoto lenses at scenic switchback apexes
     for ph_at in (1920.0, 4480.0, 7240.0, 9880.0):
