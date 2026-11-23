@@ -188,4 +188,13 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
                 for lx_h in (-0.54, 0.54):
                     B["larch-warm"].box((px_h + math.cos(ang) * lx_h, py_h + math.sin(ang) * lx_h, pz_h), (0.16, 0.44, 0.62), ang)
 
+    # 11. Moss-capped limestone glacial erratics nestled in meadow clearings
+    for er_i in range(24, kit.n - 24, 42):
+        side = -1.0 if (er_i // 42) % 2 == 0 else 1.0
+        ex, ey, _ = road.at(er_i, (kit.kerb + 12.5) * side)
+        if road.clear_of_road(ex, ey, kit.kerb + 8.0, er_i):
+            ez = height_at(ex, ey)
+            B["dolomite-pale"].box((ex, ey, ez - 0.4), (2.2, 1.7, 1.45), er_i * 0.37)
+            B["foliage"].box((ex, ey, ez + 0.98), (1.75, 1.35, 0.18), er_i * 0.37)
+
     return trees
