@@ -252,4 +252,9 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         bwy = s[bwi]["h"]
         B["larch-warm"].box(kit.P(bwi, 0.0, kit.kerb + 1.95, -0.08), (7.6, 1.35, 0.18), bwy)
         B["larch-aged"].box(kit.P(bwi, 0.0, kit.kerb + 2.55, 0.10), (7.6, 0.12, 0.95), bwy)
+    # White optical entry bars 25 m ahead of both avalanche rockfall galleries
+    for gl_pre in (4535.0, 9635.0):
+        gi = road.index(gl_pre)
+        for r_k in range(3):
+            B["paint"].box(kit.P(gi, r_k * 1.9, 0.0, 0.02), (0.28, kit.kerb * 1.75, 0.015), s[gi]["h"])
     # [ANCHOR:hairpins]
