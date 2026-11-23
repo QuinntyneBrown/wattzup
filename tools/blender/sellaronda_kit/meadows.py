@@ -397,4 +397,11 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             if road.clear_of_road(gx_f, gy_f, 6.0, gi):
                 B["gold"].box((gx_f, gy_f, height_at(gx_f, gy_f)), (0.95, 0.95, 0.24), gl_m * 0.1)
 
+    # Pale gravel climbers' footpath weaving into the Città dei Sassi boulders off Passo Sella
+    for cs_t in range(4):
+        csi = road.index(7515.0 + cs_t * 6.0)
+        csx_t, csy_t, _ = road.at(csi, kit.kerb + 5.0 + cs_t * 4.5)
+        if road.clear_of_road(csx_t, csy_t, 4.0, csi):
+            B["gravel"].box((csx_t, csy_t, height_at(csx_t, csy_t) + 0.02), (4.8, 1.15, 0.06), s[csi]["h"] + 1.1)
+
     return trees
