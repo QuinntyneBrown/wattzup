@@ -40,6 +40,7 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
             # Low dressed-stone parapet coping & drainage weep-blocks along the apex rim
             if abs_k > 1 / 62 and i % 4 == 0:
                 B["dolomite-pale"].box((wx, wy, wz + 0.02), (3.4, 0.52, 0.62), yaw)
+                B["steel"].box((wx, wy, wz + 0.64), (0.14, 0.14, 0.18), yaw)
 
     # Detect switchback curvature peaks (Tornante 1..28+) along the four climbs & descents
     tornante_num = 0
