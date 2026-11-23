@@ -406,4 +406,11 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         B["steel"].box(kit.P(rd_i, 0.0, -(kit.kerb + 1.65), 0.0), (0.09, 0.09, 2.55), rdyaw)
         B["dark"].box(kit.P(rd_i, 0.0, -(kit.kerb + 1.65), 1.75), (0.10, 0.72, 0.88), rdyaw)
         B["neon-lime"].box(kit.P(rd_i, -0.02, -(kit.kerb + 1.65), 2.02), (0.12, 0.48, 0.34), rdyaw)
+    # Ladin Tourismusverein / Ufficio Turistico blue-'i' kiosks in the 4 valley villages
+    for ti_m, ti_s in ((312.0, 1.0), (3165.0, -1.0), (6165.0, -1.0), (8955.0, -1.0)):
+        ti_i = road.index(ti_m)
+        tiyaw = road.s[ti_i]["h"]
+        tix, tiy, tiz = kit.P(ti_i, 0.0, (kit.kerb + 3.2) * ti_s, 0.0)
+        B["ladin-blue"].box((tix, tiy, tiz), (0.42, 0.88, 2.15), tiyaw)
+        B["paint"].box((tix, tiy, tiz + 1.55), (0.45, 0.42, 0.42), tiyaw)
     # [ANCHOR:villages]
