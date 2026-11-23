@@ -160,6 +160,18 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> None:
                 B["dark"].box((fx_f, fy_f, fz_f), (0.06, 0.06, 3.45), fyaw)
                 B[feather_mats[(f_i + side_k) % len(feather_mats)]].box((fx_f, fy_f, fz_f + 1.15), (0.68, 0.05, 2.15), fyaw + 0.22)
 
+    # 10. Mountain hikers with coloured alpine backpacks strolling meadow footpaths off the passes
+    for hk_i, hk_at in enumerate((1980.0, 4860.0, 7440.0, 7660.0, 10060.0, 10280.0)):
+        h_idx = road.index(hk_at)
+        for pair_k in (0, 1):
+            hx, hy, _ = road.at(h_idx, (kit.kerb + 6.5 + pair_k * 1.8) * (1.0 if hk_i % 2 == 0 else -1.0))
+            hz = height_at(hx, hy)
+            hyaw = s[h_idx]["h"] + 0.4
+            B["dark"].box((hx, hy, hz), (0.28, 0.34, 0.86), hyaw)
+            B[jerseys[(hk_i + pair_k) % len(jerseys)]].box((hx, hy, hz + 0.86), (0.32, 0.40, 0.58), hyaw)
+            B["parasol-red"].box((hx - math.cos(hyaw) * 0.20, hy - math.sin(hyaw) * 0.20, hz + 0.92), (0.22, 0.32, 0.46), hyaw)
+            B["skin"].box((hx, hy, hz + 1.44), (0.22, 0.22, 0.24), hyaw)
+
 
 def _touring_motorbike(B, x: float, y: float, z: float, yaw: float, body_mat: str, with_rider: bool = False) -> None:
     ca, sa = math.cos(yaw), math.sin(yaw)
