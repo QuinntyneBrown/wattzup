@@ -128,3 +128,13 @@ def build_four_passes(B, kit, road, height_at) -> None:
         B["ladin-blue"].box((wx0, wy0, wz0 + 3.4), (0.12, 0.95, 0.65), w_yaw + 0.5)
         B["steel"].box((wx0, wy0, wz0 + 5.55), (1.35, 0.08, 0.08), w_yaw)
         B["steel"].box((wx0, wy0, wz0 + 5.55), (0.08, 1.35, 0.08), w_yaw)
+
+    # Giro d'Italia GPM summit timing gantries & white road crest lines at Passo Pordoi & Passo Sella
+    for gpm_at in (4950.0, 7750.0):
+        g_idx = road.index(gpm_at)
+        gyaw = s[g_idx]["h"]
+        span = (kit.kerb + 1.6) * 2.0
+        for side in (-1.0, 1.0):
+            B["steel"].box(kit.P(g_idx, 0.0, (kit.kerb + 1.6) * side, -0.2), (0.28, 0.28, 5.8), gyaw)
+        B["accent-2"].box(kit.P(g_idx, 0.0, 0.0, 5.15), (0.34, span + 0.28, 0.72), gyaw)
+        B["paint"].box(kit.P(g_idx, 0.0, 0.0, 0.02), (0.42, kit.kerb * 1.85, 0.015), gyaw)
