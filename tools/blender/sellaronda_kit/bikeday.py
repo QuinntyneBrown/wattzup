@@ -74,6 +74,29 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> None:
                 bx_p, by_p, bz_p = road.at(c_idx, lat_b, 0.025)
                 B[chalk_mat].box((bx_p, by_p, bz_p), (0.34, 0.78, 0.015), c_yaw)
 
+    # 5. Soaring thermal paragliders circling above Col Rodella / Passo Sella, Sass Pordoi & Passo Gardena!
+    wing_mats = ("parasol-red", "yellow", "ladin-blue", "accent-2", "crowd-1")
+    glider_spots = (
+        (4820.0,  65.0, 88.0),
+        (5120.0, -78.0, 112.0),
+        (7560.0,  58.0, 76.0),
+        (7860.0,  92.0, 98.0),
+        (10080.0, 64.0, 82.0),
+        (10290.0,-70.0, 96.0),
+    )
+    for g_i, (g_at, g_lat, g_up) in enumerate(glider_spots):
+        g_idx = road.index(g_at)
+        gx_w, gy_w, gz_w = road.at(g_idx, g_lat, g_up)
+        gyaw = s[g_idx]["h"] + g_i * 0.9
+        wmat = wing_mats[g_i % len(wing_mats)]
+        # 5-segment arched parafoil canopy + pilot harness pod
+        for seg_p in range(-2, 3):
+            drop = abs(seg_p) * 0.55
+            px_s = gx_w - math.sin(gyaw) * (seg_p * 2.15)
+            py_s = gy_w + math.cos(gyaw) * (seg_p * 2.15)
+            B[wmat].box((px_s, py_s, gz_w - drop), (2.45, 2.25, 0.24), gyaw)
+        B["dark"].box((gx_w, gy_w, gz_w - 6.2), (0.75, 0.55, 0.95), gyaw)
+
 
 def _touring_motorbike(B, x: float, y: float, z: float, yaw: float, body_mat: str, with_rider: bool = False) -> None:
     ca, sa = math.cos(yaw), math.sin(yaw)
