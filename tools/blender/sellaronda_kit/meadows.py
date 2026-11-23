@@ -180,6 +180,9 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
                 if seg_t == 0:
                     for gp_lat in (-1.6, 1.6):
                         B["larch-aged"].box((gx_t - math.sin(tyaw) * gp_lat, gy_t + math.cos(tyaw) * gp_lat, gz_t - 0.1), (0.18, 0.18, 1.35), tyaw)
+                    B["larch-warm"].box((gx_t - math.sin(tyaw) * 2.35, gy_t + math.cos(tyaw) * 2.35, gz_t), (0.85, 0.65, 0.42), tyaw)
+                    for mc_o in (-0.20, 0.20):
+                        B["steel"].box((gx_t - math.sin(tyaw) * 2.35 + math.cos(tyaw) * mc_o, gy_t + math.cos(tyaw) * 2.35 + math.sin(tyaw) * mc_o, gz_t + 0.42), (0.30, 0.30, 0.58), tyaw)
                     B["larch-warm"].box((gx_t - math.sin(tyaw) * 1.6 + math.cos(tyaw - 0.5) * 1.4, gy_t + math.cos(tyaw) * 1.6 + math.sin(tyaw - 0.5) * 1.4, gz_t + 0.35), (2.8, 0.08, 0.72), tyaw - 0.5)
 
     # 10. Native South Tyrolean Haflinger horses (chestnut coats with flaxen cream manes & tails)
