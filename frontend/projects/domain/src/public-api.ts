@@ -142,3 +142,5 @@ export {
 export { PowerTrace } from './engine/power-trace';
 export { restoreCustomWorkout } from './engine/restore-custom-workout';
 export { SENT_LOG_ROWS, bleLinkName, logSent } from './engine/sent-log';
+export { BikeConnectionHistory } from './diagnostics/bike-connection-history';
+export { BrowserDiagnostics } from './diagnostics/browser-diagnostics';

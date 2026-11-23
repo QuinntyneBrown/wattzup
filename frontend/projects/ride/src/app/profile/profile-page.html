@@ -19,13 +19,26 @@
     <h2 class="settings__title" id="settings">Settings</h2>
     <ul class="settings__list">
       <li>
-        <a
-          wz-setting-row
-          routerLink="/connect"
-          icon="bike"
-          [title]="bike().title"
-          [body]="bike().body"
-        ></a>
+        <!-- A paired bike's row opens Diagnostics; with none, it goes to Connect Bike to pair one (L2-113 AC1). -->
+        @if (bike().paired) {
+          <button
+            wz-setting-row
+            type="button"
+            aria-haspopup="dialog"
+            icon="bike"
+            [title]="bike().title"
+            [body]="bike().body"
+            (click)="openDiagnostics()"
+          ></button>
+        } @else {
+          <a
+            wz-setting-row
+            routerLink="/connect"
+            icon="bike"
+            [title]="bike().title"
+            [body]="bike().body"
+          ></a>
+        }
       </li>
       <li>
         <a

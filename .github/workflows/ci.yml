@@ -184,8 +184,8 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: backend/global.json
-      - name: Build the app
-        run: npm ci --no-audit --no-fund && npm run build
+      - name: Build the app, stamped with its commit for Diagnostics' App version
+        run: npm ci --no-audit --no-fund && npm run build -- --define "TELO_COMMIT='${GITHUB_SHA::7}'"
         working-directory: frontend
       - name: Publish the API with the app in its wwwroot
         run: |

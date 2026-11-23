@@ -8,6 +8,8 @@ export class CustomRidePage {
   readonly workout: Locator;
   readonly clock: Locator;
   readonly fullScreen: Locator;
+  /** The bike status, which opens Diagnostics (L2-113 AC1). */
+  readonly diagnostics: Locator;
   /** Library, which asks to leave the ride (L2-107). */
   readonly library: Locator;
   /** Start, Pause and Resume, one button whose label says what it does (L2-105, L2-106). */
@@ -62,6 +64,7 @@ export class CustomRidePage {
     const header = page.locator('.ride-header');
     this.lockup = header.getByRole('img', { name: 'Telo Ride' });
     this.bike = header.locator('.ride-header__status');
+    this.diagnostics = header.getByRole('button', { name: /^Diagnostics: /, includeHidden: true });
     this.workout = header.locator('a.ride-header__link').filter({ hasText: 'edit workout' });
     this.clock = header.getByRole('timer', { includeHidden: true });
     this.fullScreen = header.getByRole('button', { name: 'Full screen' });

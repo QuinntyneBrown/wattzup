@@ -5,7 +5,10 @@ import type { BikeInfo } from './bike-connection';
 export interface RememberedBike {
   /** The remembered bike, or `null` when there is none or its record cannot be read. */
   get(): BikeInfo | null;
+  /** Remembers the bike, as seen now: the app saves it again each time it connects. */
   save(bike: BikeInfo): void;
+  /** When the app last connected the remembered bike (Diagnostics, L2-113 AC4), or `null` when it does not know. */
+  lastSeen(): Date | null;
   forget(): void;
 }
 

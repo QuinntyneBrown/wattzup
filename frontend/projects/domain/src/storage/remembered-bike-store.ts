@@ -27,10 +27,26 @@ export class RememberedBikeStore implements RememberedBike {
     try {
       this.window?.localStorage.setItem(
         REMEMBERED_BIKE_KEY,
-        JSON.stringify({ id, name, identifier, kind, pairedAt: new Date().toISOString() }),
+        JSON.stringify({ id, name, identifier, kind, seenAt: new Date().toISOString() }),
       );
     } catch {
       // Storage refused (private mode, quota): the rider picks the bike again next time.
+    }
+  }
+
+  lastSeen(): Date | null {
+    try {
+      const raw = this.window?.localStorage.getItem(REMEMBERED_BIKE_KEY);
+      const record: unknown = raw ? JSON.parse(raw) : null;
+      if (typeof record !== 'object' || record === null) return null;
+      // A record saved before slice 25.1 has only when the bike was paired.
+      const { seenAt, pairedAt } = record as Record<string, unknown>;
+      const at =
+        typeof seenAt === 'string' ? seenAt : typeof pairedAt === 'string' ? pairedAt : null;
+      const date = at === null ? null : new Date(at);
+      return date === null || Number.isNaN(date.getTime()) ? null : date;
+    } catch {
+      return null;
     }
   }
 

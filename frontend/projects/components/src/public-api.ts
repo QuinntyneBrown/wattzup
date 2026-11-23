@@ -4,6 +4,7 @@ export { AppHeaderBrand } from './app-header/app-header-brand';
 export { AppHeaderLink } from './app-header/app-header-link';
 export { AppHeaderStreak } from './app-header/app-header-streak';
 export { AppHeaderLevel } from './app-header/app-header-level';
+export { DiagnosticsPanel } from './diagnostics/diagnostics-panel';
 export { FullscreenToggle } from './fullscreen-toggle/fullscreen-toggle';
 export { Banner } from './banner/banner';
 export { LoadCard } from './world-loading/load-card';

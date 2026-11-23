@@ -15,6 +15,7 @@ import { DeleteAccountDialog } from './delete-account-dialog';
 import { toLevelView } from '../progress/level-view';
 import { profileMeta, profileXpLabel } from '../progress/profile-meta';
 import { DisplayNameDialog } from './display-name-dialog';
+import { openDiagnostics } from '../diagnostics/open-diagnostics';
 import { bikeRow } from './bike-row';
 
 /**
@@ -85,6 +86,11 @@ export default class ProfilePage {
     return [this.name(), level === null ? null : `Level ${level}`].filter(Boolean).join(' · ');
   });
   protected readonly name = computed(() => this.currentRider.rider()?.displayName ?? null);
+
+  /** Diagnostics, from the bike row once a bike is paired (L2-113 AC1). */
+  protected openDiagnostics(): void {
+    void openDiagnostics(this.dialog, this.injector);
+  }
 
   protected changeName(): void {
     this.dialog.open(DisplayNameDialog, {

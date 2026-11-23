@@ -17,6 +17,14 @@ export type { ResistanceSource, SentCommand } from './bike/sent-command';
 export type { BikeSupportLevel, SupportedBike } from './bike/supported-bike';
 export type { TelemetrySample } from './bike/telemetry-sample';
 export type { ClassCatalogueDto, ShelfDto } from './classes/class-catalogue-dto';
+export { BUILD_INFO, type BuildInfo } from './diagnostics/build-info';
+export { CONNECTION_HISTORY, type ConnectionHistory } from './diagnostics/connection-history';
+export {
+  DIAGNOSTICS,
+  type Diagnostics,
+  type DiagnosticsFact,
+  type DiagnosticsTone,
+} from './diagnostics/diagnostics';
 export type { ClassDto } from './classes/class-dto';
 export type {
   ClassSessionDto,

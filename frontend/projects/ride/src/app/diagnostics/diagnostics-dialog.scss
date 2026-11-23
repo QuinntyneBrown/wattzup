@@ -1,0 +1,23 @@
+// Block diagnostics-dialog: the layer that centres the Diagnostics panel over a scrim (the mock's diagnostics-layer).
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+
+  @media (min-width: 40rem) {
+    padding: var(--space-8);
+  }
+}
+
+.diagnostics-dialog__scrim {
+  position: fixed;
+  inset: 0;
+  background: var(--color-scrim);
+}
+
+wz-diagnostics-panel {
+  position: relative;
+}

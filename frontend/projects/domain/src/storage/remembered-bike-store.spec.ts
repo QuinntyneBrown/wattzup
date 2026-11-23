@@ -1,7 +1,8 @@
 // Unit test
-// Traces to: L2-015 AC1
+// Traces to: L2-015 AC1, L2-113 AC4
 // Description: the remembered bike survives a reload as one localStorage record; a record it cannot read counts as
-// no bike, and forgetting removes it.
+// no bike, and forgetting removes it. It knows when the bike was last seen: when it was last saved, or for a record
+// from before, when it was paired.
 import { TestBed } from '@angular/core/testing';
 import type { BikeInfo } from '@telo/api';
 import { REMEMBERED_BIKE_KEY, RememberedBikeStore } from './remembered-bike-store';
@@ -42,6 +43,32 @@ describe('RememberedBikeStore', () => {
     localStorage.setItem(REMEMBERED_BIKE_KEY, raw);
 
     expect(store.get()).toBeNull();
+  });
+
+  it('knows when the bike was last seen: when it was last saved', () => {
+    vi.useFakeTimers({ now: Date.UTC(2026, 10, 20) });
+    store.save(BIKE);
+    vi.useRealTimers();
+
+    expect(store.lastSeen()).toEqual(new Date(Date.UTC(2026, 10, 20)));
+  });
+
+  it.each([
+    [
+      'a record from before slice 25.1, by when it was paired',
+      { pairedAt: '2026-11-01T08:00:00.000Z' },
+      new Date('2026-11-01T08:00:00.000Z'),
+    ],
+    ['no time', {}, null],
+    ['a time it cannot read', { seenAt: 'soon' }, null],
+  ])('reads %s', (_, extra, seen) => {
+    localStorage.setItem(REMEMBERED_BIKE_KEY, JSON.stringify({ ...BIKE, ...extra }));
+
+    expect(store.lastSeen()).toEqual(seen);
+  });
+
+  it('has no time without a bike', () => {
+    expect(store.lastSeen()).toBeNull();
   });
 
   it('forgets the bike', () => {

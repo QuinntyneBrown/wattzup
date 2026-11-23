@@ -2,6 +2,8 @@ import { inject, provideEnvironmentInitializer } from '@angular/core';
 import type { Routes } from '@angular/router';
 import {
   ANNOUNCER,
+  BUILD_INFO,
+  CONNECTION_HISTORY,
   DISPLAY_PREFERENCES,
   FULLSCREEN,
   HttpRiderProgressApi,
@@ -11,6 +13,7 @@ import {
   RIDER_PROGRESS_API,
 } from '@telo/api';
 import {
+  BikeConnectionHistory,
   BrowserDisplayPreferences,
   BrowserFullscreen,
   BrowserNetworkStatus,
@@ -24,6 +27,10 @@ import { reconnectRememberedBikeGuard } from './bike/reconnect-remembered-bike.g
 import { RiderProgressStore } from './progress/rider-progress-store';
 import { authGuard } from './session/auth.guard';
 import { provideSession } from './session/provide-session';
+
+// Set at build time by angular.json's `define` (and the deploy's --define for the commit); absent in unit tests.
+declare const TELO_VERSION: string | undefined;
+declare const TELO_COMMIT: string | undefined;
 
 /**
  * Every screen, under one parent that provides the bike connection: one instance shared from Connect Bike to the ride,
@@ -43,6 +50,17 @@ export const rideRoutes: Routes = [
       // Theme, motion and ride numbers on <html>, applied from the start and at once on each change (L2-164 AC2 to AC4).
       { provide: DISPLAY_PREFERENCES, useClass: BrowserDisplayPreferences },
       provideEnvironmentInitializer(() => void inject(DISPLAY_PREFERENCES)),
+      // The bike link's history from the first screen on, for Diagnostics' Connection and Reconnects (L2-113 AC2).
+      { provide: CONNECTION_HISTORY, useClass: BikeConnectionHistory },
+      provideEnvironmentInitializer(() => void inject(CONNECTION_HISTORY)),
+      // App version in Diagnostics, "2.0.0 · client 7f3c2a1" (L2-113 AC2); bound here, out of the initial bundle.
+      {
+        provide: BUILD_INFO,
+        useValue: {
+          version: typeof TELO_VERSION === 'undefined' ? '0.0.0' : TELO_VERSION,
+          commit: typeof TELO_COMMIT === 'undefined' ? 'dev' : TELO_COMMIT,
+        },
+      },
       // Full screen, which the header offers and a ride's start can enter (L2-144, L2-164 AC6).
       { provide: FULLSCREEN, useClass: BrowserFullscreen },
       // What a screen reader hears: a ride's steps and the result (L2-141 AC2).
