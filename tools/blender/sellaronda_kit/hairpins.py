@@ -21,6 +21,8 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
             # Südtirol timber-clad top beam on Val Badia & Val Gardena stretches
             if (s[i]["d"] < 2600.0 or s[i]["d"] > 8800.0) and i % 2 == 0:
                 B["larch-warm"].box(kit.P(i, 2.0, (kit.kerb + 0.88) * outside, 0.88), (8.05, 0.16, 0.12), s[i]["h"])
+            if abs_k > 1 / 52 and i % 2 == 0:
+                B["yellow"].box(kit.P(i, 2.0, (kit.kerb + 0.86) * outside, 0.12), (8.02, 0.08, 0.18), s[i]["h"])
 
         # Every 2 samples (~8 m) on tight switchback bends, build battered Dolomite masonry retaining wall below road!
         if abs_k > 1 / 88 and i % 2 == 0:
