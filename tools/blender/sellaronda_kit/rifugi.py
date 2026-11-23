@@ -200,3 +200,7 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
             B["larch-warm"].box((pg_x + math.cos(yaw) * (pr_i * 1.35), pg_y + math.sin(yaw) * (pr_i * 1.35), tz + 2.65), (0.14, 3.8, 0.18), yaw)
         B["stone"].box((pg_x, pg_y, tz + 0.12), (1.15, 1.15, 0.48), yaw)
         B["glow-door"].box((pg_x, pg_y, tz + 0.58), (0.72, 0.72, 0.14), yaw + 0.4)
+        bar_x = tx + math.cos(yaw) * (w * 0.18) - math.sin(yaw) * (1.5 * side)
+        bar_y = ty + math.sin(yaw) * (w * 0.18) + math.cos(yaw) * (1.5 * side)
+        B["larch-aged"].box((bar_x, bar_y, tz + 0.12), (2.6, 0.82, 1.12), yaw)
+        B["dolomite-pale"].box((bar_x, bar_y, tz + 1.24), (2.75, 0.94, 0.08), yaw)
