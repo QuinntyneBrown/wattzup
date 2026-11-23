@@ -425,4 +425,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     rock_tower(peaks, pordoi_pt["x"] + mux * 1490.0 - mpx * 675.0, pordoi_pt["y"] + muy * 1490.0 - mpy * 675.0, 85.0, 812.0, 135.0, 110.0, 9, yaw_mm, cfn, taper=0.36, flat_cap=False, seed_phase=4.2)
     # Sas Ciampac (2,672 m) northern crag towering above Colfosco & Edelweiss valley
     rock_tower(peaks, gar_pt["x"] + gux * 740.0 + gpx * 355.0, gar_pt["y"] + guy * 740.0 + gpy * 355.0, 55.0, 628.0, 140.0, 108.0, 9, math.atan2(-guy, -gux), cfn, taper=0.42, flat_cap=False, seed_phase=3.5)
+    # 18. Croda Rossa d'Ampezzo / Hohe Gaisl (3,146 m) northeastern skyline massif (at=620 m)
+    cr_pt = road.s[road.index(620.0)]
+    crux, cruy = cr_pt["x"] - cx, cr_pt["y"] - cy
+    crul = max(1.0, math.hypot(crux, cruy))
+    crux, cruy = crux / crul, cruy / crul
+    rock_tower(peaks, cr_pt["x"] + crux * 2280.0, cr_pt["y"] + cruy * 2280.0, 45.0, 845.0, 275.0, 185.0, 10, math.atan2(-cruy, -crux), cfn, taper=0.46, flat_cap=False, seed_phase=5.6)
     # [ANCHOR:peaks]
