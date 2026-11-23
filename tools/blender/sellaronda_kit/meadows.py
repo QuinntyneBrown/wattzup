@@ -477,4 +477,13 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
         if road.clear_of_road(fwx, fwy, 6.5, fw_i):
             B["bougainvillea"].box((fwx, fwy, height_at(fwx, fwy)), (0.95, 0.85, 0.38), fw_i * 0.3)
 
+    # Brushed-steel Alpine milk churns on wooden collection stands below the Malga huts
+    for mc_m in (4355.0, 6975.0):
+        mci = road.index(mc_m)
+        mcx, mcy, _ = road.at(mci, kit.kerb + 5.2)
+        if road.clear_of_road(mcx, mcy, 3.8, mci):
+            mcz = height_at(mcx, mcy)
+            B["larch-aged"].box((mcx, mcy, mcz), (1.45, 0.85, 0.55), s[mci]["h"])
+            B["steel"].box((mcx, mcy, mcz + 0.55), (0.85, 0.38, 0.62), s[mci]["h"])
+
     return trees
