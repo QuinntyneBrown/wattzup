@@ -238,6 +238,7 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
         B["foliage"].box((rk_x + math.cos(yaw) * 2.05, rk_y + math.sin(yaw) * 2.05, tz + 0.12), (0.34, 0.28, 1.35), yaw)
         B["yellow"].box((rk_x - math.cos(yaw) * 1.95, rk_y - math.sin(yaw) * 1.95, tz + 0.12), (0.18, 0.24, 0.72), yaw)
         B["larch-warm"].box(kit.P(idx, 0.0, (kit.kerb + 2.95) * side, 2.45), (2.2, 0.22, 0.22), yaw)
+        B["dolomite-pale"].box(kit.P(idx, w * 0.42, (kit.kerb + 1.85) * side, -0.05), (0.30, 0.30, 0.85), yaw)
         # [ANCHOR:rifugi-site]
 
     # Historic stone-and-larch annex wing beside Hotel Savoia on Passo Pordoi (at=4908 m)
