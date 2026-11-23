@@ -34,6 +34,8 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
             B["stone"].box((wx, wy, wz - 4.4), (8.4, 1.35, 4.45), yaw)
             if i % 8 == 0:
                 B["dolomite-pale"].box((wx - math.sin(yaw) * (0.65 * outside), wy + math.cos(yaw) * (0.65 * outside), wz - 4.6), (1.15, 0.95, 4.55), yaw)
+            if i % 24 == 0:
+                B["dark"].box((wx - math.sin(yaw) * (0.72 * outside), wy + math.cos(yaw) * (0.72 * outside), wz - 3.8), (0.95, 0.35, 1.35), yaw)
                 B["dark"].box((wx - math.sin(yaw) * (0.72 * outside), wy + math.cos(yaw) * (0.72 * outside), wz - 1.35), (0.28, 0.16, 0.42), yaw)
             # Low dressed-stone parapet coping & drainage weep-blocks along the apex rim
             if abs_k > 1 / 62 and i % 4 == 0:
