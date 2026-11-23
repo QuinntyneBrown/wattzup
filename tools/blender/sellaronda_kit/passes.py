@@ -397,4 +397,7 @@ def build_four_passes(B, kit, road, height_at) -> None:
     ar_p = road.index(4970.0)
     B["yellow"].box(kit.P(ar_p, 0.0, kit.kerb + 6.4, 0.0), (0.28, 0.45, 1.68), s[ar_p]["h"])
     B["dark"].box(kit.P(ar_p, 0.0, kit.kerb + 6.4, 1.25), (0.30, 0.38, 0.32), s[ar_p]["h"])
+    # Angled stone-and-bronze historical lectern at the Sacrario Militare turnoff on Pordoi
+    B["stone"].box(kit.P(sac_idx, 0.0, -(kit.kerb + 3.2), -0.1), (0.95, 0.65, 1.05), s[sac_idx]["h"])
+    B["larch-aged"].box(kit.P(sac_idx, 0.0, -(kit.kerb + 3.2), 0.95), (0.98, 0.68, 0.14), s[sac_idx]["h"])
     # [ANCHOR:passes]
