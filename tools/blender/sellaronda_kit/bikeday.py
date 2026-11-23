@@ -20,6 +20,20 @@ def _road_cyclist(B, x: float, y: float, z: float, yaw: float, jersey_mat: str, 
     hip_z = z + (0.94 if standing else 0.82)
     B["dark"].box((x - ca * 0.12, y - sa * 0.12, z + 0.48), (0.24, 0.28, 0.44), yaw)
     B[jersey_mat].box((x + ca * 0.08, y + sa * 0.08, hip_z), (0.52, 0.34, 0.42), yaw)
+    # Articulated crank-phased thighs, knees, shins, socks & hood-reaching arms matching tools/blender/rider.py (ADR 0036)
+    crank_a = ((x * 0.37 + y * 0.29) % 1.0) * math.tau
+    nx_r, ny_r = -sa, ca
+    for s_lr, ph_lr in ((-1.0, crank_a), (1.0, crank_a + math.pi)):
+        lat_p = s_lr * 0.115
+        ped_f = -0.09 + math.sin(ph_lr) * 0.1725
+        ped_z = 0.28 - math.cos(ph_lr) * 0.1725
+        kn_f = 0.06 + math.sin(ph_lr) * 0.11
+        kn_z = 0.56 - math.cos(ph_lr) * 0.08
+        B["dark"].box((x + ca * (-0.06 + kn_f * 0.5) + nx_r * lat_p, y + sa * (-0.06 + kn_f * 0.5) + ny_r * lat_p, z + (kn_z + (hip_z - z)) * 0.48), (0.28, 0.11, 0.13), yaw)
+        B["skin"].box((x + ca * ((kn_f + ped_f) * 0.5) + nx_r * lat_p, y + sa * ((kn_f + ped_f) * 0.5) + ny_r * lat_p, z + ped_z + 0.14), (0.10, 0.09, 0.28), yaw)
+        B["paint"].box((x + ca * ped_f + nx_r * lat_p, y + sa * ped_f + ny_r * lat_p, z + ped_z + 0.02), (0.16, 0.08, 0.09), yaw)
+        # Upper arm + skin forearm reaching brake hoods (HOOD = +/-0.20, +0.535 forward)
+        B["skin"].box((x + ca * 0.36 + nx_r * (s_lr * 0.18), y + sa * 0.36 + ny_r * (s_lr * 0.18), hip_z + 0.02), (0.34, 0.075, 0.08), yaw)
     B["paint"].box((x + ca * 0.34, y + sa * 0.34, hip_z + 0.34), (0.26, 0.22, 0.22), yaw)
 
 
@@ -441,6 +455,12 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     for fl_d, fl_m in ((7685.0, "ladin-blue"), (7698.0, "accent-2"), (7712.0, "foliage")):
         fi = road.index(fl_d)
         B[fl_m].box(kit.P(fi, 0.0, kit.kerb + 0.84, 0.25), (2.4, 0.09, 0.62), s[fi]["h"])
+
+    # Vintage celeste & merino-wool Eroica cyclists honouring Coppi on Passo Pordoi
+    for er_m in (4620.0, 4885.0):
+        eri = road.index(er_m)
+        ex_r, ey_r, ez_r = road.at(eri, -(kit.kerb - 0.62))
+        _road_cyclist(B, ex_r, ey_r, ez_r, s[eri]["h"], "lago-turquoise", standing=True)
 
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
