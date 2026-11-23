@@ -48,6 +48,11 @@ def _rifugio_complex(B, kit, road, height_at, at_m: float, side: float, main_w: 
         (0.95, 0.95, 2.8),
         yaw,
     )
+    B["copper-patina"].box(
+        (rx + math.cos(yaw) * (main_w * 0.28), ry + math.sin(yaw) * (main_w * 0.28), base_z + 3.2 + upper_h + 4.0),
+        (1.18, 1.18, 0.22),
+        yaw,
+    )
 
     # Dressed Dolomite corner quoin pilasters + traditional painted Tyrolean wall sundial (meridiana)
     for c_sign_x in (-1.0, 1.0):
