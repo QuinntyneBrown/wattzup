@@ -633,4 +633,15 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     rock_tower(peaks, cx + pux * 585.0 + ppx * 135.0, cy + puy * 585.0 + ppy * 135.0, 520.0, 738.0, 78.0, 62.0, 8, math.atan2(puy, pux), cfn, taper=0.58, flat_cap=True, seed_phase=3.9)
     # Detached Torre Exner climbing pinnacle beneath Le Mëisules
     rock_tower(peaks, cx + pux * 862.0 - ppx * 195.0, cy + puy * 862.0 - ppy * 195.0, 126.0, 442.0, 28.0, 24.0, 7, math.atan2(puy, pux) - 0.3, cfn, taper=0.32, flat_cap=False, seed_phase=5.6)
+    # Horizontal Raibl snow ribbon across the mid-wall of Piz Ciavazes
+    quad_shaded(
+        peaks,
+        (cx + sux * 782.0 - spx * 165.0, cy + suy * 782.0 - spy * 165.0, 342.0),
+        (cx + sux * 782.0 + spx * 55.0, cy + suy * 782.0 + spy * 55.0, 342.0),
+        (cx + sux * 768.0 + spx * 55.0, cy + suy * 768.0 + spy * 55.0, 356.0),
+        (cx + sux * 768.0 - spx * 165.0, cy + suy * 768.0 - spy * 165.0, 356.0),
+        cfn,
+        349.0,
+        snow=True,
+    )
     # [ANCHOR:massif]
