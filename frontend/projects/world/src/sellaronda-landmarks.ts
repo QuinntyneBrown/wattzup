@@ -77,3 +77,25 @@ export function passClimbProgress(
     remainingMetres: active.courseMetres - metres,
   };
 }
+
+export interface SellaSubpeak {
+  readonly name: string;
+  readonly altitudeMetres: number;
+  readonly facingPass: SellaPass['id'];
+}
+
+export const SELLA_SUBPEAKS: readonly SellaSubpeak[] = [
+  { name: 'Murfrëit', altitudeMetres: 2631, facingPass: 'campolongo' },
+  { name: 'Bec de Mezdì', altitudeMetres: 2967, facingPass: 'campolongo' },
+  { name: 'Piz Boè', altitudeMetres: 3152, facingPass: 'pordoi' },
+  { name: 'Sass Pordoi', altitudeMetres: 2950, facingPass: 'pordoi' },
+  { name: 'Torri del Sella (Terza Torre)', altitudeMetres: 2696, facingPass: 'sella' },
+  { name: 'Piz Ciavazes', altitudeMetres: 2828, facingPass: 'sella' },
+  { name: 'Le Mëisules', altitudeMetres: 2999, facingPass: 'gardena' },
+  { name: 'Cima Pisciadù', altitudeMetres: 2985, facingPass: 'gardena' },
+] as const;
+
+/** Lists the Sella massif cliffs and towers facing `passId`. */
+export function sellaSubpeaksForPass(passId: SellaPass['id']): readonly SellaSubpeak[] {
+  return SELLA_SUBPEAKS.filter((p) => p.facingPass === passId);
+}
