@@ -19,6 +19,17 @@ export function treeLineDensity(altitudeMetres: number): number {
   return u * u * (3 - 2 * u);
 }
 
+export type DolomiteFauna =
+  'simmental-cattle' | 'haflinger-horses' | 'bergschaf-sheep' | 'rupicapra-chamois';
+
+/** Characteristic grazing or wild herbivore encountered at `altitudeMetres` in the Sella Ronda Dolomites. */
+export function characteristicFaunaAtAltitude(altitudeMetres: number): DolomiteFauna {
+  if (altitudeMetres < 1720) return 'haflinger-horses';
+  if (altitudeMetres < 2080) return 'simmental-cattle';
+  if (altitudeMetres < 2320) return 'bergschaf-sheep';
+  return 'rupicapra-chamois';
+}
+
 /** Relative alpine wildflower bloom density (0..1), peaking in sunny 1,750..2,100 m hay pastures. */
 export function wildflowerBloomIntensity(altitudeMetres: number): number {
   if (altitudeMetres <= 1350 || altitudeMetres >= 2550) return 0;
