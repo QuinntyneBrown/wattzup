@@ -1081,6 +1081,28 @@ def footpath(k) -> dict:
             for step in range(10):
                 x, y, z = k.P(i, step * 0.5, (k.kerb + TERRACE_FOOT - 0.55) * inland)
                 paint.box((x, y, z - 0.2), (0.5, 1.1, 0.2 + (step + 1) * TERRACE_RISE / 10), yaw, tread if step % 2 else stone, 0.8)
+            # Above the steps the path runs on along the top of the wall behind a chestnut handrail, with the
+            # trail's red-and-white blaze painted on the wall, and walkers on it.
+            front = (k.kerb + TERRACE_FOOT + 0.3) * inland
+            run = 0
+            for q in range(i + 3, min(i + 29, k.n - 3)):
+                if not (terrace_levels(k, q) and terrace_levels(k, q + 1)) or abs(s[q]["k"]) > 1 / 90 or in_grove(k, q):
+                    break
+                a, b = k.road.at(q, front, TERRACE_RISE), k.road.at(q + 1, front, TERRACE_RISE)
+                paint.box((a[0], a[1], a[2] - 0.05), (0.1, 0.1, 1.1), s[q]["h"], wood, 1.0)
+                span, h = math.hypot(b[0] - a[0], b[1] - a[1]), math.atan2(b[1] - a[1], b[0] - a[0])
+                for up in (0.55, 0.98):
+                    paint.box(((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2 + up), (span, 0.07, 0.08), h, wood, 1.0)
+                run += 1
+            if run > 8:
+                for q in (i + 7, i + 8, i + 17):
+                    if q < i + 3 + run - 1:
+                        x, y, z = k.road.at(q, (k.kerb + TERRACE_FOOT + 1.1) * inland, TERRACE_RISE)
+                        hiker(paint, rng, (x, y, z + 0.02), s[q]["h"] + (math.pi if q % 2 else 0.0))
+                        walkers += 1
+            x, y, z = k.road.at(i - 1, (k.kerb + TERRACE_FOOT - 0.04) * inland, 1.25)
+            paint.box((x, y, z), (0.55, 0.06, 0.16), yaw, white, 1.0)
+            paint.box((x, y, z - 0.16), (0.55, 0.06, 0.16), yaw, red, 1.0)
         # The fingerpost, with a board each way.
         x, y, z = k.P(i, -1.2, (k.kerb + 1.7) * inland)
         paint.box((x, y, z - 0.2), (0.11, 0.11, 2.5), yaw, wood, 0.8)
