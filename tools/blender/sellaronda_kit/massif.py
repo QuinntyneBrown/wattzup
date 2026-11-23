@@ -499,4 +499,15 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     # Twin eastern ridge gendarmes on Cima Pisciadù above Val Setus
     for pg_o in (-28.0, 28.0):
         rock_tower(peaks, cx + pux * 755.0 + ppx * pg_o, cy + puy * 755.0 + ppy * pg_o, 420.0, 568.0, 34.0, 28.0, 7, math.atan2(puy, pux), cfn, taper=0.35, flat_cap=False, seed_phase=4.1 + pg_o * 0.02)
+    # Plunge-pool spray fan at the foot of Cascata del Pisciadù
+    quad_shaded(
+        peaks,
+        (wf_x + pux * 12.0 - ppx * 14.0, wf_y + puy * 12.0 - ppy * 14.0, 110.0),
+        (wf_x + pux * 12.0 + ppx * 14.0, wf_y + puy * 12.0 + ppy * 14.0, 110.0),
+        (wf_x - ppx * 8.0, wf_y - ppy * 8.0, 116.0),
+        (wf_x + ppx * 8.0, wf_y + ppy * 8.0, 116.0),
+        cfn,
+        113.0,
+        snow=True,
+    )
     # [ANCHOR:massif]
