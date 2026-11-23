@@ -302,3 +302,11 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         B["larch-warm"].box((ex_c, ey_c, ez_c), (3.2, 1.5, 1.55), eyaw)
         for lid_k, lid_c in enumerate(("ladin-blue", "yellow", "foliage")):
             B[lid_c].box(kit.P(e_idx, -0.9 + lid_k * 0.9, -(kit.kerb + 3.4), 1.46), (0.72, 1.15, 0.14), eyaw)
+
+    # Glowing green Farmacia / Apotheke projecting cross signs in Corvara, Arabba, Canazei & Selva
+    for fm_m, fm_s in ((248.0, 1.0), (3112.0, -1.0), (6108.0, -1.0), (8908.0, 1.0)):
+        f_idx = road.index(fm_m)
+        fyaw = road.s[f_idx]["h"]
+        fx_p, fy_p, fz_p = kit.P(f_idx, 0.0, (kit.kerb + 6.4) * fm_s, 3.65)
+        B["neon-lime"].box((fx_p, fy_p, fz_p), (0.14, 0.82, 0.26), fyaw)
+        B["neon-lime"].box((fx_p, fy_p, fz_p - 0.28), (0.14, 0.26, 0.82), fyaw)
