@@ -190,7 +190,7 @@ def build_terrain(road, col, Builder, cell: float = 28.0):
             inward = smoothstep(1450.0, 650.0, r_center)
             n1 = noise(x, y)
             slope_up = inward * 145.0 * smoothstep(22.0, 260.0, d)
-            outer_roll = (1.0 - inward) * (28.0 * n1 + 22.0) * smoothstep(26.0, 220.0, d)
+            outer_roll = (1.0 - inward) * (28.0 * n1 + 3.2 * noise(x * 2.1, y * 2.1) + 21.0) * smoothstep(26.0, 220.0, d)
             h = h_road - 1.2 + slope_up + outer_roll
             if d < 22.0:
                 h = min(h, h_road - 1.1)
