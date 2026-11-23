@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   highestSellaRifugio,
   isNearPassRifugio,
+  isSummitRifugioOpenAtHour,
   nearestRifugio,
   nextRifugioAhead,
   rifugiCountByPass,
@@ -28,5 +29,7 @@ describe('SELLA_RIFUGI', () => {
     expect(nextRifugioAhead(3500).rifugio.passId).toBe('pordoi');
     const pordoiHut = rifugiOnPass('pordoi')[0]!;
     expect(rifugioElevationDropToNextValley(pordoiHut)).toBeGreaterThan(750);
+    expect(isSummitRifugioOpenAtHour(18.5)).toBe(true);
+    expect(isSummitRifugioOpenAtHour(2)).toBe(false);
   });
 });
