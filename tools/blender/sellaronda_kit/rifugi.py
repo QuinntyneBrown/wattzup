@@ -235,4 +235,11 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
         hx_p, hy_p, hz_p = kit.P(ht_i, 0.0, -(kit.kerb + 5.0), 0.15)
         B["steel"].box((hx_p, hy_p, hz_p), (0.12, 0.12, 2.15), 0.0)
         B["steel"].box((hx_p, hy_p, hz_p + 2.15), (0.78, 0.78, 0.14), 0.0)
+    # Rifugio Frara semicircular stone lookout terrace facing Cascata del Pisciadù (at=10118 m)
+    fr_i = road.index(10118.0)
+    fryaw = road.s[fr_i]["h"]
+    frx, fry, _ = road.at(fr_i, -(kit.kerb + 7.2))
+    frz = max(height_at(frx, fry), road.s[fr_i]["z"] - 0.3)
+    B["stone"].box((frx, fry, frz - 1.4), (5.6, 4.4, 1.55), fryaw)
+    B["larch-warm"].box((frx, fry, frz + 0.15), (5.4, 0.16, 0.95), fryaw)
     # [ANCHOR:rifugi-global]
