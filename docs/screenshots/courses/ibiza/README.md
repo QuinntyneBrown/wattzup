@@ -190,6 +190,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Party 19 | The party is upstairs too: on every other club's roof terrace two or three stand at a white parapet with a drink, looking down at the road | 60.0 fps, none over 20 ms, 157,855 triangles (from 7,950 m) | 44.4, 47.9, 46.9 fps after (the finish, 119,897 triangles: 103 under the budget); Neon Docklands beside it 52.9, 48.4 |
 | Party 20 | No two alike: heights from a head under the middle to a head over, builds from slight to broad, a beach club's colours on most of those not in white, and auburn and grey hair among the rest | 60.1 fps, none over 20 ms, 148,981 triangles (the finish) | 45.5 and 49.8 fps after (the finish, 119,897 triangles: none more); Neon Docklands beside it 50.5, 48.2 |
 | Sky 16 | The sun reddens and flattens as it sinks: as painted and round from six degrees up, deep red and a fifth flatter on the horizon | 60.1 fps, one frame over 20 ms (from 3,250 m); 60.0 at the finish | 48.1 and 48.5 fps after (the finish, 119,897 triangles: none more); Neon Docklands beside it 53.9, 47.7 |
+| Sky 17 | The sunset shows down the finishing straight: the festoons' glow over the road no longer stands in one white glare in front of it | 60.3 fps (from 8,000, 8,150 and 8,300 m) | 42.6 and 45.9 fps after (the finish, 119,897 triangles: none more); Neon Docklands beside it 50.3, 54.4 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -579,6 +580,18 @@ draw call: the disc has a paint of its own.
 **What was not seen.** At the finish, where the sun is lowest and reddest, the glare down the finishing straight
 stands in front of it in every frame taken: the deep red disc is tested by its numbers and by the exaggerated
 frame, not seen as it will be.
+
+### Sky 17: the sunset shows down the finishing straight
+
+`sky-17.jpg` (the finishing straight from 8,000, 8,150 and 8,300 m). The
+whole ride is into the sunset, and on the last straight a white glare stood where the sunset should be. It was
+not the sun: each club's festoons glow in the air over the middle of the road, at a street lamp's strength, and
+down a straight the few of them in sight stand one behind another in the eye's line. They glow now as a string of
+small bulbs does (a third as strong), and the sky behind them, its bars of cloud and its beams are seen all the way
+down the straight. The road under each string is lit as it was.
+
+**Still not seen**: the sun's own disc from the finishing straight. With the glare gone it is not in the frames
+taken either; it stands low behind what is at the end of the road.
 
 ### Low power: where the frames go (after Party 20)
 

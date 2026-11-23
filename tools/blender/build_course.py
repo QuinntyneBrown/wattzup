@@ -442,6 +442,9 @@ MATERIALS: dict[str, dict] = {
     "gold": {"color": 0xFFB82A, "glow": 1.1},
     "confetti": {"color": 0xFFC83A, "glow": 1.0, "double": True},
     "bulb": {"color": 0xFFE0A0, "glow": 2.4},
+    # The glow in the air round a festoon over the road: a string of small bulbs, not a street lamp. At a lamp's
+    # strength the few of them down a straight stood in one white glare in front of the setting sun.
+    "bulb-air": {"color": 0x5A4A30, "glow": 2.4},
     "chevron": {"color": 0xFF5AA8, "glow": 0.9},
     "arrow": {"color": 0xF2C230, "rough": 0.6},
     "sail": {"color": 0xFFFFFF, "rough": 0.8, "double": True},
@@ -2357,7 +2360,7 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
             B["dark"].box(pole, (0.14, 0.14, 5.6), yaw)
             festoon(P(i, along, -(front - 3.8), 3.9), (pole[0], pole[1], pole[2] + 5.5))
             # The string's bulbs glow together over the road, and light it.
-            kit.halo(P(i, along, 0.0, 4.2), "bulb")
+            kit.halo(P(i, along, 0.0, 4.2), "bulb-air")
             kit.light(P(i, along, 0.0, 0), "bulb", 8.0, 0.4)
         clubs.append(i)
 
