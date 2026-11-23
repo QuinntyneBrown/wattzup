@@ -107,6 +107,8 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
         tz_h = height_at(cx_h, cy_h)
         B["larch-aged"].box((cx_h, cy_h, tz_h - 0.1), (2.6, 0.68, 0.62), s[h_idx]["h"])
         B["lago-turquoise"].box((cx_h, cy_h, tz_h + 0.42), (2.3, 0.46, 0.14), s[h_idx]["h"])
+        for cg_i in range(4):
+            B["paint"].box((cx_h + math.cos(cg_i * 1.6) * 1.9, cy_h + math.sin(cg_i * 1.6) * 1.2, tz_h + 0.02), (0.24, 0.24, 0.34), cg_i * 0.4)
         for cow_k in range(4):
             ang = cow_k * 1.65 + herd_m * 0.01
             kx = cx_h + math.cos(ang) * (4.2 + cow_k * 2.1)
