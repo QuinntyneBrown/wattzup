@@ -511,4 +511,10 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         sli = road.index(sl_v)
         B["dark"].box(kit.P(sli, 0.0, kit.kerb + 1.45, 0.0), (0.12, 0.12, 4.2), road.s[sli]["h"])
         B["bulb"].box(kit.P(sli, 0.0, kit.kerb + 1.15, 4.15), (0.28, 0.28, 0.26), road.s[sli]["h"])
+    # Historic Livinallongo stone heritage fort wall overlooking Arabba (at=2985 m)
+    ft_i = road.index(2985.0)
+    ftx, fty, _ = road.at(ft_i, kit.kerb + 38.0)
+    if road.clear_of_road(ftx, fty, 20.0, ft_i):
+        ftz = height_at(ftx, fty) + 6.0
+        B["stone"].box((ftx, fty, ftz - 8.0), (13.0, 6.5, 11.5), road.s[ft_i]["h"] + 0.2)
     # [ANCHOR:villages]
