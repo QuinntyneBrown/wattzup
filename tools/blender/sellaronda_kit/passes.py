@@ -46,3 +46,19 @@ def build_four_passes(B, kit, road, height_at) -> None:
     gz = height_at(gx, gy)
     B["dark"].box((gx, gy, gz - 0.2), (0.95, 0.65, 0.35), p_yaw)
     B["accent-2"].box((gx, gy, gz + 0.15), (0.62, 0.22, 2.65), p_yaw + 0.2)
+
+    # Cappella di San Maurizio on Passo Gardena (at=10162 m): whitewashed alpine pass chapel with bell-gable
+    gar_idx = road.index(10162.0)
+    g_yaw = s[gar_idx]["h"] - 0.3
+    cx_ch, cy_ch, _ = road.at(gar_idx, -(kit.kerb + 8.5))
+    cz_ch = max(height_at(cx_ch, cy_ch), s[gar_idx]["z"] - 0.3)
+    B["stone"].box((cx_ch, cy_ch, cz_ch - 1.2), (7.6, 5.2, 1.55), g_yaw)
+    B["chalet-plaster"].box((cx_ch, cy_ch, cz_ch + 0.35), (7.2, 4.8, 4.2), g_yaw)
+    kit.gable(B["larch-aged"], (cx_ch, cy_ch, cz_ch + 4.55), 7.8, 5.5, 2.85, g_yaw)
+    # Timber rooftop belfry turret + golden summit cross + arched oak portal
+    bx_t = cx_ch - math.cos(g_yaw) * 2.6
+    by_t = cy_ch - math.sin(g_yaw) * 2.6
+    B["larch-warm"].box((bx_t, by_t, cz_ch + 6.4), (1.05, 1.05, 2.35), g_yaw)
+    kit.gable(B["larch-aged"], (bx_t, by_t, cz_ch + 8.75), 1.35, 1.35, 0.95, g_yaw)
+    B["gold"].box((bx_t, by_t, cz_ch + 9.65), (0.10, 0.48, 0.85), g_yaw)
+    B["larch-aged"].box((bx_t - math.cos(g_yaw) * 1.02, by_t - math.sin(g_yaw) * 1.02, cz_ch + 0.4), (0.12, 1.25, 2.25), g_yaw)
