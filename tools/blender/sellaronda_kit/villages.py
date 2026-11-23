@@ -551,4 +551,8 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         pthz = height_at(pthx, pthy_p)
         B["chalet-plaster"].box((pthx, pthy_p, pthz - 1.0), (13.2, 9.6, 8.6), pthy)
         kit.gable(B["parasol-red"], (pthx, pthy_p, pthz + 7.6), 14.0, 10.4, 2.8, pthy)
+    # Green cast-iron sidewalk drinking fountains in Corvara, Arabba, Canazei & Selva
+    for fn_v in (218.0, 3075.0, 6072.0, 8878.0):
+        fni = road.index(fn_v)
+        B["copper-patina"].box(kit.P(fni, 0.0, kit.kerb + 1.85, 0.0), (0.22, 0.22, 1.12), 0.0)
     # [ANCHOR:villages]
