@@ -405,4 +405,12 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     ddul = max(1.0, math.hypot(ddux, dduy))
     ddux, dduy = ddux / ddul, dduy / ddul
     rock_tower(peaks, dod_pt["x"] + ddux * 1490.0, dod_pt["y"] + dduy * 1490.0, 48.0, 685.0, 175.0, 130.0, 9, math.atan2(-dduy, -ddux), cfn, taper=0.44, flat_cap=False, seed_phase=2.5)
+    # Gleaming proglacial meltwater ribbon feeding Lago Fedaia from Marmolada's ice snout
+    _flat_quad(
+        (lake_cx + mux * 120.0 - mpx * 12.0, lake_cy + muy * 120.0 - mpy * 12.0, lake_z + 2.0),
+        (lake_cx + mux * 120.0 + mpx * 12.0, lake_cy + muy * 120.0 + mpy * 12.0, lake_z + 2.0),
+        (pordoi_pt["x"] + mux * 1120.0 + mpx * 8.0, pordoi_pt["y"] + muy * 1120.0 + mpy * 8.0, 365.0),
+        (pordoi_pt["x"] + mux * 1120.0 - mpx * 8.0, pordoi_pt["y"] + muy * 1120.0 - mpy * 8.0, 365.0),
+        turquoise,
+    )
     # [ANCHOR:peaks]
