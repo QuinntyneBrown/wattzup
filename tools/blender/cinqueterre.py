@@ -837,6 +837,64 @@ def on_the_water(k) -> int:
     return afloat
 
 
+def road_furniture(k) -> dict:
+    """Detail 3, the corniche road: what stands along a Ligurian provincial road. A white kilometre stone with a
+    red cap every 500 m on the inland shoulder; a wayside shrine every couple of kilometres, a little stone house
+    with a blue niche and a tiled roof; and at each hairpin a round traffic mirror on a red-and-white pole,
+    looking back down the road."""
+    paint, s = Painted(k), k.s
+    white, red, stone, blue, tile, glass = _lin(0xF2F0E8), _lin(0xC8322C), _lin(0x9C9280), _lin(0x3F6FB8), _lin(0xB5674A), _lin(0xBFD4E2)
+    sites = [site["i"] for site in village_sites(s)]
+    stones = shrines = mirrors = 0
+
+    def quiet(i: int) -> bool:
+        return 8 < i < k.n - 8 and abs(s[i]["k"]) < 1 / 80 and all(abs(i - v) > 24 for v in sites)
+
+    for metres in range(500, int(s[-1]["d"]), 500):
+        i = min(range(k.n), key=lambda q: abs(s[q]["d"] - metres))
+        if not quiet(i):
+            continue
+        inland, yaw = -seaward(k, i), s[i]["h"]
+        x, y, z = k.road.at(i, (k.kerb + 0.75) * inland)
+        paint.box((x, y, z - 0.1), (0.3, 0.42, 0.72), yaw, white, 0.85)
+        paint.box((x, y, z + 0.62), (0.31, 0.43, 0.2), yaw, red, 1.0)
+        stones += 1
+        if metres % 2000 == 1000:
+            # The shrine, a few metres on, its niche open to the road.
+            j = i + 3
+            x, y, z = k.road.at(j, (k.kerb + 1.5) * inland)
+            yaw = s[j]["h"]
+            paint.box((x, y, z - 0.1), (1.1, 0.8, 1.9), yaw, stone, 0.8)
+            paint.roof((x, y, z + 1.8), 1.1, 0.8, 0.45, yaw, tile)
+            out = (math.sin(yaw) * inland, -math.cos(yaw) * inland)
+            along = (-out[1], out[0])
+            corner = (x + out[0] * 0.4 - along[0] * 0.3, y + out[1] * 0.4 - along[1] * 0.3, 0.0)
+            paint.panel(corner, along, out, 0.0, 0.6, z + 0.85, z + 1.6, 0.03, blue)
+            paint.panel(corner, along, out, 0.22, 0.38, z + 0.9, z + 1.35, 0.06, white)
+            shrines += 1
+    # A mirror where each hairpin begins, on the outside of the bend.
+    turning = False
+    for i in range(10, k.n - 10):
+        tight = abs(s[i]["k"]) > 1 / 40
+        if tight and not turning:
+            outside = -1 if s[i]["k"] > 0 else 1
+            j = i + 6
+            x, y, z = k.road.at(j, (k.kerb + 0.45) * outside)
+            h = s[i - 4]["h"]
+            for band in range(5):
+                paint.box((x, y, z - 0.1 + band * 0.5), (0.09, 0.09, 0.5), h, red if band % 2 else white, 1.0)
+            out, along = (-math.cos(h), -math.sin(h)), (math.sin(h), -math.cos(h))
+            ring = [(x + out[0] * 0.08 + along[0] * math.cos(q * math.tau / 10) * r, y + out[1] * 0.08 + along[1] * math.cos(q * math.tau / 10) * r, z + 2.75 + math.sin(q * math.tau / 10) * r) for r in (0.42, 0.34) for q in range(10)]
+            centre = (x + out[0] * 0.1, y + out[1] * 0.1, z + 2.75)
+            for q in range(10):
+                n = (q + 1) % 10
+                paint.face((ring[q], ring[n], ring[10 + n], ring[10 + q]), (red,) * 4)
+                paint.face((ring[10 + q], ring[10 + n], centre), (glass, glass, white))
+            mirrors += 1
+        turning = tight
+    return {"kmStones": stones, "shrines": shrines, "mirrors": mirrors}
+
+
 SHIRTS = (0xD9483A, 0x2F7FC4, 0xF0B429, 0x3E9A62, 0xF2EEE2, 0xE8762C, 0x7A4FB0, 0x25A0A0)
 SKIN = (0xE8B48C, 0xC88A5E, 0x8A5A3C, 0xF0C8A4)
 
@@ -921,4 +979,5 @@ def scenery(k) -> dict:
     harbour = vernazza(k)
     works = vineyard_works(k)
     afloat = on_the_water(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "houses": houses, "plants": plants, "boats": hauled, **path, "castle": harbour, **works, "afloat": afloat}
+    furniture = road_furniture(k)
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "houses": houses, "plants": plants, "boats": hauled, **path, "castle": harbour, **works, "afloat": afloat, **furniture}
