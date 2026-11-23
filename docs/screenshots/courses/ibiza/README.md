@@ -787,6 +787,15 @@ that tells one from another.
 
 **Seen once.** The film shows the second arrival, which is the largest; it was not measured against the first.
 
+### Tried after Party 23 and not kept: an avenue of palms
+
+Palms stand in every other planting place along the road (Palms 4 left the others open). Along the middle of the
+course the low tier has room: 72 to 92 thousand triangles of its 120. Planting every open place there put the
+map's file at 3.04 MB, over its three; planting half of them, at 2.71 MB (from 2.32), 0.39 MB more to fetch. In
+two frames from 3,250 m and 5,950 m the road looked no different for it: the bunches already stand forty metres
+apart, and a rider sees four or five at once either way. A sixth more to download for a change not seen is a
+poor exchange. The map is as it was.
+
 ### Low power: where the frames go (after Party 20)
 
 The low-power stand-in (the low tier with the processor slowed six times) has not held 60 fps on this machine on
