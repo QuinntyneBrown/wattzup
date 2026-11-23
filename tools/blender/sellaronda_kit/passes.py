@@ -15,6 +15,7 @@ def build_four_passes(B, kit, road, height_at) -> None:
         yaw = s[idx]["h"]
         # Right-hand summit photo pull-out apron & dressed stone plinth
         B["stone"].box(kit.P(idx, 6.0, -(kit.kerb + 2.6), -0.35), (4.6, 2.4, 0.55), yaw)
+        B["brick"].box(kit.P(idx, 6.0, -(kit.kerb + 2.6), 0.20), (4.3, 2.1, 0.04), yaw)
         # Twin aged-larch posts
         for along_off in (4.6, 7.4):
             B["larch-aged"].box(kit.P(idx, along_off, -(kit.kerb + 2.5), 0.2), (0.20, 0.20, 3.05), yaw)
