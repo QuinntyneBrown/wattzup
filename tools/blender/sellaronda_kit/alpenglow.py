@@ -276,6 +276,10 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         chi = road.index(ch_l)
         chx, chy, chz = road.at(chi, ch_o, 2.8)
         kit.light((chx, chy, chz), "glow-window", 18.0, 0.54)
+    # Warm ember halo over Rifugio Salei's stone hearth
+    sl_h = road.index(7128.0)
+    slhx, slhy, slhz = road.at(sl_h, kit.kerb + 6.4, 2.4)
+    kit.halo((slhx, slhy, slhz), "bulb")
     # [ANCHOR:alpenglow-lights]
 
 
