@@ -476,4 +476,8 @@ def build_four_passes(B, kit, road, height_at) -> None:
         tl_p = road.index(p["at"] + 12.2)
         B["ladin-blue"].box(kit.P(tl_p, 0.0, -(kit.kerb + 2.45), 0.0), (0.26, 0.26, 1.38), s[tl_p]["h"])
         B["steel"].box(kit.P(tl_p, 0.0, -(kit.kerb + 2.45), 1.25), (0.52, 0.14, 0.08), s[tl_p]["h"])
+    # Pale Dolomite Maratona dles Dolomites tribute stele on Passo Campolongo (at=2088 m)
+    md_c = road.index(2088.0)
+    B["dolomite-pale"].box(kit.P(md_c, 0.0, kit.kerb + 3.4, -0.1), (0.85, 0.42, 1.72), s[md_c]["h"])
+    B["ladin-blue"].box(kit.P(md_c, 0.0, kit.kerb + 3.16, 1.05), (0.62, 0.06, 0.42), s[md_c]["h"])
     # [ANCHOR:passes]
