@@ -88,6 +88,8 @@ def _rifugio_complex(B, kit, road, height_at, at_m: float, side: float, main_w: 
         by = ry - ny * front_dist
         B["larch-aged"].box((bx, by, bz), (main_w - 0.6, 1.15, 0.22), yaw)
         B["larch-warm"].box((bx - nx * 0.48, by - ny * 0.48, bz + 0.22), (main_w - 0.6, 0.14, 0.92), yaw)
+        for dv_o in (-0.18 * main_w, 0.18 * main_w):
+            B["larch-warm"].box((bx + math.cos(yaw) * dv_o, by + math.sin(yaw) * dv_o, bz + 0.22), (0.08, 1.05, 1.65), yaw)
         # Red pelargonium geranium window/balcony boxes
         for g_idx in range(4):
             along_g = (-0.36 + g_idx * 0.24) * main_w
