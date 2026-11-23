@@ -526,4 +526,13 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         mkx, mky, mkz = kit.P(mki, 0.0, -(kit.kerb + 10.2), 0.0)
         B["larch-warm"].box((mkx, mky, mkz), (2.8, 1.4, 0.95), road.s[mki]["h"])
         kit.gable(B["awning"], (mkx, mky, mkz + 2.15), 3.1, 1.8, 0.55, road.s[mki]["h"])
+    # Piazza Nives timber-and-stone village pavilion in Selva di Val Gardena (at=8902 m)
+    nv_i = road.index(8902.0)
+    nvy = road.s[nv_i]["h"]
+    nvx, nvy_p, _ = road.at(nv_i, -(kit.kerb + 14.5))
+    if road.clear_of_road(nvx, nvy_p, 10.5, nv_i):
+        nvz = height_at(nvx, nvy_p)
+        B["stone"].box((nvx, nvy_p, nvz - 0.8), (9.2, 6.8, 1.4), nvy)
+        B["larch-warm"].box((nvx, nvy_p, nvz + 0.6), (8.8, 6.4, 3.2), nvy)
+        kit.gable(B["copper-patina"], (nvx, nvy_p, nvz + 3.8), 9.6, 7.2, 1.85, nvy)
     # [ANCHOR:villages]
