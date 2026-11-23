@@ -94,6 +94,10 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
     # 4. Traditional Ladin split-larch pasture fences (Stangenzaun) bordering mid-elevation meadows
     for fence_start, fence_end, side in ((980.0, 1340.0, 1.0), (6420.0, 6740.0, 1.0), (9120.0, 9440.0, -1.0), (10520.0, 10840.0, 1.0)):
         i0, i1 = road.index(fence_start), road.index(fence_end)
+        mid_f = (i0 + i1) // 2
+        stx, sty, _ = road.at(mid_f, (kit.kerb + 5.8) * side)
+        if road.clear_of_road(stx, sty, kit.kerb + 4.5, mid_f):
+            B["larch-warm"].box((stx, sty, height_at(stx, sty)), (0.65, 1.45, 1.15), s[mid_f]["h"])
         for idx in range(i0, i1, 2):
             fx, fy, _ = road.at(idx, (kit.kerb + 5.8) * side)
             if not road.clear_of_road(fx, fy, kit.kerb + 4.5, idx):
