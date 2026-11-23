@@ -74,4 +74,35 @@ describe('people strolling along the seawall, a drink in hand (L2-166 AC80)', ()
   it('are where they were at the same second and the same place of every ride', () => {
     expect(at(77.5, 1234)).toEqual(at(77.5, 1234));
   });
+  it('step aside to the kerb to pass an effort gate, whose feet stand in their way (L2-166 AC105)', () => {
+    const blank = (): Promenader[] =>
+      Array.from({ length: STROLLERS }, () => ({
+        metres: 0,
+        lane: 0,
+        forward: true,
+        shown: false,
+        phase: 0,
+      }));
+    const own = at(40, 2000);
+    for (let i = 0; i < STROLLERS; i++) {
+      // A gate just where this one is: they are by the kerb, clear of its feet (which stand 0.6 m in and beyond).
+      const by = blank();
+      promenaders(40, 2000, course.end, course.half, by, [own[i]!.metres]);
+      expect(by[i]!.lane).toBeLessThan(-(course.half + 0.6 + 0.25));
+      expect(by[i]!.lane).toBeGreaterThan(-(course.half + 0.6 + 0.34));
+      // A gate ten metres off: they walk where they would with none.
+      const far = blank();
+      promenaders(40, 2000, course.end, course.half, far, [own[i]!.metres + 10]);
+      expect(far[i]!.lane).toBe(own[i]!.lane);
+    }
+    // And they step aside smoothly: never more than a hand's breadth sideways in a tenth of a second.
+    const gate = own[0]!.metres + 12;
+    let last: number | null = null;
+    for (let time = 40; time < 60; time += 0.1) {
+      const now = blank();
+      promenaders(time, 2000, course.end, course.half, now, [gate]);
+      if (last !== null) expect(Math.abs(now[0]!.lane - last)).toBeLessThan(0.1);
+      last = now[0]!.lane;
+    }
+  });
 });

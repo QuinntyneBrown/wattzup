@@ -251,6 +251,8 @@ export class CourseRenderer implements WorldRenderer {
   private readonly disc: SunDisc = { tint: [1, 1, 1], flat: 1 };
   /** The stars a map carries, brought out as the evening draws in. */
   private stars: MeshBasicMaterial | null = null;
+  /** Metres up the course at which an effort gate stands on the strollers' sidewalk. */
+  private gates: number[] = [];
   /** Their mesh: not drawn at all until the first of them shows. */
   private starField: Mesh | null = null;
   private readonly hazeAt = new Color();
@@ -975,6 +977,13 @@ export class CourseRenderer implements WorldRenderer {
       this.scene.add(this.sky);
       this.disposables.push(dome, sky.material);
     }
+    // Where the effort gates stand, for the strollers to step round (promenaders.ts): a gate is two arches, the
+    // second 0.9 m on from the first, at the foot of every effort but one at the start line.
+    this.gates = strolling.length
+      ? this.course!.file.stages.filter((stage) => stage.kind === 'work' && stage.from > 1).map(
+          (stage) => stage.from + 0.45,
+        )
+      : [];
     for (const [walker, mesh] of strolling) {
       walker.add(mesh);
       this.disposables.push(mesh.geometry);
@@ -1307,7 +1316,14 @@ export class CourseRenderer implements WorldRenderer {
     this.placeGlider(time, false);
     if (this.walkers.length) {
       const course = this.course!;
-      promenaders(time, this.ridden, course.end, course.file.roadHalfWidth, this.walking);
+      promenaders(
+        time,
+        this.ridden,
+        course.end,
+        course.file.roadHalfWidth,
+        this.walking,
+        this.gates,
+      );
       for (let which = 0; which < this.walkers.length; which++) {
         const one = this.walking[which]!;
         const walker = this.walkers[which]!;

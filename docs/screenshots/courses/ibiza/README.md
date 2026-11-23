@@ -202,6 +202,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Sky 21 | The thunderheads have no edge: at its outline each is the sky behind it, and comes to its own colour a quarter of the way in | 59.8 and 60.3 fps (from 4,450 and 8,150 m) | 51.7 and 41.4 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 55.9, 45.9 |
 | Party 21 | Partygoers stand dark against the sunset, the drinks in their hands still bright: a figure seen towards the sun loses up to six tenths of its colour | 60.1 fps, none over 20 ms (the finish) | 40.0 and 52.7 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 54.1, 47.4 |
 | Sky 22 | The sun's glow is round the sun: it was painted six degrees up, and hung over a sun that had gone down from under it | 59.9 and 60.4 fps (from 4,450 and 8,150 m) | 52.2 and 52.6 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 56.3, 54.4 |
+| Party 22 | Strollers step aside to the kerb to pass an effort gate: they walked through its feet | 60.1 fps, none over 20 ms (from 950 m) | 49.8 and 41.4 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 52.8, 52.1 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -739,6 +740,18 @@ lit as before. Only what moves is a figure: walls, tables and planters are as th
 
 **Modest where it was filmed.** At the finish the crowd stands to the sides of the road, some way off the line to
 the sun: they are greyer and darker than in `party-20.jpg`, not black shapes.
+
+### Party 22: strollers step round the effort gates
+
+No picture. A rough edge noted since the strollers were made (Party 13): the neon arch at the foot of every
+effort stands with its feet on the sidewalk, from 0.6 m in from the kerb to nearly 2 m, and the strollers walk
+0.85 to 1.35 m in: straight through a foot. From seven metres short of a gate a stroller now steps aside, is by
+the kerb (0.3 m in) within two and a half metres of it, and steps back the same way beyond it, eased both ways
+(`promenaders.ts`, unit tested: by the kerb at a gate, in their own lane ten metres off, never more than a
+hand's breadth sideways in a tenth of a second).
+
+**Not seen.** The film from 950 m passes the first gate with no stroller at it: the step aside is tested by its
+numbers, not watched.
 
 ### Party 1: people with drinks
 
