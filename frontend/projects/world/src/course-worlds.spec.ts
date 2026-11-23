@@ -11,6 +11,7 @@ describe('coursePath (L2-166 AC1)', () => {
     // Vice City is drawn under South Beach's id (map-world.ts).
     ['southbeach', 'courses/vicecity'],
     ['granite', 'courses/granite'],
+    ['sellaronda', 'courses/sellaronda'],
   ] as const)('serves the %s map as a course built in Blender', (world, path) => {
     expect(coursePath(world)).toBe(path);
   });

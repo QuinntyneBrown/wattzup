@@ -51,3 +51,33 @@ export const ibizaCourseMap = {
     roll: 0,
   },
 };
+
+export const sellaRondaPlan = [
+  seg('warm-up', 180, 13, 80),
+  seg('work', 120, 18, 90),
+  ...Array.from({ length: 7 }, () => [
+    seg('work', 30, 22, 100),
+    seg('recover', 140, 18, 80),
+  ]).flat(),
+  seg('cool-down', 190, 11, 80),
+];
+
+export const sellaRondaCourseMap = {
+  id: 'sella-ronda',
+  name: 'Sella Ronda',
+  routeName: 'Over/Under Intervals on the Passo Sella',
+  place: 'Four Dolomite passes circling the Sella massif',
+  distanceKm: 11.7,
+  climbingM: 357,
+  rating: 'Hard',
+  world: 'sellaronda',
+  thumbnailUrl: 'maps/sella-ronda.jpg',
+  photoUrl: 'maps/sella-ronda-photo.jpg',
+  unlockGoal: null,
+  unlockMapId: null,
+  plan: { segments: sellaRondaPlan },
+  terrain: {
+    grade: { 'warm-up': 3, work: 7, recover: 4, 'cool-down': 2, steady: 5 },
+    roll: 0.6,
+  },
+};

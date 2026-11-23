@@ -48,9 +48,13 @@ export async function startRace(
   await expect.poll(() => bluetooth.log()).toEqual(ECHELON_INITIALISED);
   await page.clock.pauseAt(RACE_START + 60_000);
   answer();
+  const warmUpLevel =
+    (
+      catalogue as readonly { id?: string; plan?: { segments?: readonly { level?: number }[] } }[]
+    ).find((entry) => entry.id === mapId)?.plan?.segments?.[0]?.level ?? 8;
   await expect
     .poll(() => bluetooth.writes().map((write) => write.hex))
-    .toContain(targetResistanceWrite(8));
+    .toContain(targetResistanceWrite(warmUpLevel));
   await page.clock.runFor(100);
   return race;
 }

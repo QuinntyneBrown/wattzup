@@ -26,6 +26,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Vice City", 24, 60, "Moderate", "Ocean Drive to the Causeway", "A neon beachfront city at a magenta sunset"),
                 new Listed("Col du Granit", 16.1, 1240, "Brutal", null, "A high mountain pass at first light"),
                 new Listed("Ibiza Sunset Strip", 8.4, 159, "Moderate", "Intervals to the Beat", "The waterfront strip of Sant Antoni at sunset"),
+                new Listed("Sella Ronda", 11.7, 357, "Hard", "Over/Under Intervals on the Passo Sella", "Four Dolomite passes circling the Sella massif"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -45,6 +46,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("vice-city", "Reach rider level 10"),
                 ("col-du-granit", "Earn 3★ on Dolomites"),
                 ("ibiza-sunset-strip", null),
+                ("sella-ronda", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -64,6 +66,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("vice-city", null),
                 ("col-du-granit", "dolomites"),
                 ("ibiza-sunset-strip", null),
+                ("sella-ronda", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -74,7 +77,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            [null, null, null, null, null, 10, null, null],
+            [null, null, null, null, null, 10, null, null, null],
             maps.Select(m => m.UnlockLevel));
     }
 
@@ -86,7 +89,9 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         // A course rides the plan of the class it is modelled after (L2-166); every other map rides 30:00.
         Assert.All(
             maps,
-            m => Assert.Equal(m.Id == "ibiza-sunset-strip" ? 1200 : 1800, m.Plan.Segments.Sum(s => s.Duration)));
+            m => Assert.Equal(
+                m.Id == "ibiza-sunset-strip" ? 1200 : m.Id == "sella-ronda" ? 1680 : 1800,
+                m.Plan.Segments.Sum(s => s.Duration)));
         var oldTown = maps.Single(m => m.Id == "old-town-criterium");
         Assert.Equal(
             [new Segment("warm-up", 300, 8, 80), new Segment("work", 30, 24, 98), new Segment("recover", 180, 6, 72)],
@@ -104,7 +109,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));
