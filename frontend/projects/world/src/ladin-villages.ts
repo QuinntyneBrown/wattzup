@@ -123,3 +123,19 @@ const VILLAGE_STREAMS: Readonly<Record<LadinVillage['id'], string>> = {
 export function streamForVillage(villageId: LadinVillage['id']): string {
   return VILLAGE_STREAMS[villageId];
 }
+
+const DEPARTING_PASS: Readonly<
+  Record<LadinVillage['id'], 'campolongo' | 'pordoi' | 'sella' | 'gardena'>
+> = {
+  corvara: 'campolongo',
+  arabba: 'pordoi',
+  canazei: 'sella',
+  selva: 'gardena',
+};
+
+/** Returns the clockwise Sella Ronda pass climb departing directly out of `villageId`. */
+export function nextClimbFromVillage(
+  villageId: LadinVillage['id'],
+): 'campolongo' | 'pordoi' | 'sella' | 'gardena' {
+  return DEPARTING_PASS[villageId];
+}
