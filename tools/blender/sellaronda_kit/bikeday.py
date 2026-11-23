@@ -388,6 +388,13 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     B["crowd-3"].box((cmx_m - math.cos(cmy) * 0.48, cmy_m - math.sin(cmy) * 0.48, cmz_m + 0.98), (0.38, 0.40, 0.62), cmy)
     B["dark"].box((cmx_m - math.cos(cmy) * 0.72, cmy_m - math.sin(cmy) * 0.72, cmz_m + 1.45), (0.36, 0.18, 0.20), cmy)
 
+    # Pre-launch paraglider canopies spread on the grassy Passo Sella launch slope
+    for lg_o, lg_m in ((0.0, "accent-2"), (12.0, "ladin-blue")):
+        lp_i = road.index(7532.0 + lg_o)
+        lpx_g, lpy_g, _ = road.at(lp_i, kit.kerb + 22.0)
+        lpz_g = height_at(lpx_g, lpy_g)
+        B[lg_m].box((lpx_g, lpy_g, lpz_g + 0.08), (2.2, 8.4, 0.18), s[lp_i]["h"] + 0.4)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
