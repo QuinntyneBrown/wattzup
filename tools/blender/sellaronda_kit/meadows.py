@@ -212,4 +212,15 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
                 hy_c = by_a + math.sin(byaw) * (-1.05 + hv_k * 0.7) + math.cos(byaw) * (-0.92 * bh_side)
                 B[hive_cols[hv_k]].box((hx_c, hy_c, bz_a + 0.65), (0.52, 0.08, 0.48), byaw)
 
+    # 13. Blooming alpine rose (Rhododendron ferrugineum) shrubs at the rocky timberline (95..128 m)
+    for rh_i in range(18, kit.n - 18, 13):
+        if not (95.0 <= s[rh_i]["z"] <= 128.0):
+            continue
+        side = 1.0 if rh_i % 2 == 0 else -1.0
+        rx_a, ry_a, _ = road.at(rh_i, (kit.kerb + 7.2) * side)
+        if road.clear_of_road(rx_a, ry_a, kit.kerb + 4.5, rh_i):
+            rz_a = height_at(rx_a, ry_a)
+            B["foliage"].box((rx_a, ry_a, rz_a - 0.1), (1.15, 0.95, 0.48), rh_i * 0.5)
+            B["bougainvillea"].box((rx_a, ry_a, rz_a + 0.32), (0.92, 0.78, 0.22), rh_i * 0.5)
+
     return trees
