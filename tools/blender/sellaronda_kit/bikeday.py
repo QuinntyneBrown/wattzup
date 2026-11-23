@@ -618,6 +618,12 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     B["steel"].box((wpx, wpy, wpz), (0.09, 0.09, 4.6), 0.0)
     B["crowd-3"].box((wpx + 0.8, wpy, wpz + 4.3), (1.55, 0.32, 0.32), 0.2)
 
+    # Celebrating Sellaronda Bike Day finisher trio rolling back into Corvara (at=11580 m)
+    for fn_k, fn_col in enumerate(("accent-2", "ladin-blue", "yellow")):
+        fni = road.index(11572.0 + fn_k * 7.0)
+        fnx, fny, fnz = road.at(fni, -(kit.kerb - 1.0 - (fn_k % 2) * 0.7))
+        _road_cyclist(B, fnx, fny, fnz, s[fni]["h"], fn_col, standing=(fn_k == 0))
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
