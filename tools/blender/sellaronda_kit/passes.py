@@ -199,3 +199,11 @@ def build_four_passes(B, kit, road, height_at) -> None:
         B["stone"].box((fx_s + math.cos(fn_yaw) * 0.45, fy_s + math.sin(fn_yaw) * 0.45, fz_s), (0.85, 0.62, 0.48), fn_yaw)
         B["lago-turquoise"].box((fx_s + math.cos(fn_yaw) * 0.45, fy_s + math.sin(fn_yaw) * 0.45, fz_s + 0.44), (0.68, 0.46, 0.08), fn_yaw)
         B["gold"].box((fx_s + math.cos(fn_yaw) * 0.28, fy_s + math.sin(fn_yaw) * 0.28, fz_s + 0.92), (0.24, 0.08, 0.08), fn_yaw)
+
+    # Historic 1909 Grande Strada delle Dolomiti red-porphyry & limestone obelisk on Passo Pordoi
+    ob_idx = road.index(4938.0)
+    ob_yaw = s[ob_idx]["h"]
+    ox, oy, oz = kit.P(ob_idx, 0.0, kit.kerb + 3.8, -0.2)
+    B["stone"].box((ox, oy, oz), (2.2, 2.2, 0.75), ob_yaw)
+    B["brick"].box((ox, oy, oz + 0.75), (1.15, 1.15, 3.85), ob_yaw)
+    kit.gable(B["dolomite-pale"], (ox, oy, oz + 4.60), 1.22, 1.22, 0.95, ob_yaw)
