@@ -387,4 +387,9 @@ def build_four_passes(B, kit, road, height_at) -> None:
          B["dolomite-pale"].box(kit.P(idx_s, 4.0, -(kit.kerb + 1.95), -0.05), (0.85, 0.34, 0.24), s[idx_s]["h"])
     # Gilded bronze devotional relief beside Cappella di San Maurizio's portal
     B["gold"].box((bx_t - math.cos(g_yaw) * 1.05, by_t - math.sin(g_yaw) * 1.05, cz_ch + 1.55), (0.08, 0.42, 0.55), g_yaw)
+    # Maratona dles Dolomites sculpted larch cycling totem on Passo Campolongo (at=2096 m)
+    md_i = road.index(2096.0)
+    mdy = s[md_i]["h"]
+    B["larch-warm"].box(kit.P(md_i, 0.0, -(kit.kerb + 4.4), -0.1), (0.45, 0.95, 2.65), mdy + 0.2)
+    B["parasol-red"].box(kit.P(md_i, 0.0, -(kit.kerb + 4.4), 2.15), (0.48, 0.62, 0.34), mdy + 0.2)
     # [ANCHOR:passes]
