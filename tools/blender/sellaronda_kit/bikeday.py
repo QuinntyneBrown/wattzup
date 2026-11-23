@@ -63,6 +63,17 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> None:
         mx, my, mz = road.at(idx, kit.kerb - 0.85)
         _touring_motorbike(B, mx, my, mz, yaw, moto_colours[int(open_d) % len(moto_colours)], with_rider=True)
 
+    # 4. Giro d'Italia & Sellaronda Bike Day painted road-chalk cheers across upper pass ramps
+    for p in PASSES:
+        for step_back in (420.0, 260.0, 115.0):
+            c_idx = road.index(p["at"] - step_back)
+            c_yaw = s[c_idx]["h"] + 0.28
+            chalk_mat = "accent-2" if int(step_back) == 260 else "paint"
+            for bar_k in range(5):
+                lat_b = -2.4 + bar_k * 1.15
+                bx_p, by_p, bz_p = road.at(c_idx, lat_b, 0.025)
+                B[chalk_mat].box((bx_p, by_p, bz_p), (0.34, 0.78, 0.015), c_yaw)
+
 
 def _touring_motorbike(B, x: float, y: float, z: float, yaw: float, body_mat: str, with_rider: bool = False) -> None:
     ca, sa = math.cos(yaw), math.sin(yaw)
