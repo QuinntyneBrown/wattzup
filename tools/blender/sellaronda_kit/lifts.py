@@ -356,4 +356,12 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["chalet-plaster"].box((crx, cry, crz + 1.0), (14.4, 10.4, 4.2), cryaw)
         B["ladin-blue"].box((crx, cry, crz + 5.2), (14.8, 10.8, 1.2), cryaw)
 
+    # Snowmaking pump house beside the Campolongo / Cherz summer piste (at=1850 m)
+    pm_i = road.index(1850.0)
+    pmx, pmy, _ = road.at(pm_i, kit.kerb + 22.0)
+    if road.clear_of_road(pmx, pmy, 12.0, pm_i):
+        pmz = height_at(pmx, pmy)
+        B["stone"].box((pmx, pmy, pmz - 0.8), (5.8, 4.6, 3.2), s[pm_i]["h"])
+        kit.gable(B["roof-slate"], (pmx, pmy, pmz + 2.4), 6.4, 5.2, 1.35, s[pm_i]["h"])
+
     return cableways_out
