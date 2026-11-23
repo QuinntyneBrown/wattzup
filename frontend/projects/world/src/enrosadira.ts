@@ -54,6 +54,15 @@ export function enrosadiraWindowCurve(minutesFromSunset: number): number {
   return Math.exp(-(((minutesFromSunset - 4) / 11) ** 2));
 }
 
+/** Correlated sunlight colour temperature in Kelvin across Enrosadira `progress` (0..0.75) before blue twilight. */
+export function directBeamKelvin(progress: number): number {
+  const p = Math.max(0, Math.min(1, progress));
+  if (p <= 0.75) {
+    return Math.round(3800 - (p / 0.75) * 1650);
+  }
+  return Math.round(2150 + ((p - 0.75) / 0.25) * 6850);
+}
+
 /** Anti-solar Belt of Venus intensity (0..1) for view azimuth `viewAz` and elevation `horizonElev` (0..1). */
 export function beltOfVenusWeight(viewAz: number, sunAz: number, horizonElev: number): number {
   const anti = Math.max(0, -Math.cos(viewAz - sunAz));
