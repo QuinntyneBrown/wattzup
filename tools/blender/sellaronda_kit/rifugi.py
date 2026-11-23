@@ -154,6 +154,7 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
             px_t = tx + math.cos(yaw) * (p_k * 4.4)
             py_t = ty + math.sin(yaw) * (p_k * 4.4)
             B["larch-aged"].box((px_t, py_t, tz + 0.15), (2.1, 1.25, 0.78), yaw)
+            B["parasol-red"].box((px_t, py_t, tz + 0.93), (2.05, 0.42, 0.03), yaw)
             B["steel"].box((px_t, py_t, tz + 0.15), (0.09, 0.09, 2.55), yaw)
             p_mat = "parasol-red" if (p_k + r_i) % 2 == 0 else "paint"
             kit.gable(B[p_mat], (px_t, py_t, tz + 2.45), 2.85, 2.85, 0.55, yaw + p_k * 0.4)
