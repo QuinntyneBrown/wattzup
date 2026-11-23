@@ -401,4 +401,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         616.0,
         snow=True,
     )
+    # Torre Berger (2,510 m) detached climbing needle beneath Piz Ciavazes
+    rock_tower(peaks, cx_w + cux * 155.0 + cpx * 95.0, cy_w + cuy * 155.0 + cpy * 95.0, 132.0, 468.0, 32.0, 26.0, 7, math.atan2(cuy, cux), cfn, taper=0.28, flat_cap=False, seed_phase=4.9)
     # [ANCHOR:massif]
