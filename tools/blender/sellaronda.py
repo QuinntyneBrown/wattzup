@@ -166,7 +166,7 @@ def build_terrain(road, col, Builder, cell: float = 28.0):
     meadow_low = srgb(0x477A32)
     meadow_lush = srgb(0x64983C)
     meadow_high = srgb(0x7E964C)
-    scree_c = srgb(0xC8BFAE)
+    scree_c = srgb(0xCABFB0)
     rock_c = srgb(0xCFC4B4)
 
     heights, dist = {}, {}
