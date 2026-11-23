@@ -480,4 +480,9 @@ def build_four_passes(B, kit, road, height_at) -> None:
     md_c = road.index(2088.0)
     B["dolomite-pale"].box(kit.P(md_c, 0.0, kit.kerb + 3.4, -0.1), (0.85, 0.42, 1.72), s[md_c]["h"])
     B["ladin-blue"].box(kit.P(md_c, 0.0, kit.kerb + 3.16, 1.05), (0.62, 0.06, 0.42), s[md_c]["h"])
+    # Orange 112 Alpine Rescue solar SOS call posts at all 4 pass crests
+    for p in PASSES:
+        so_p = road.index(p["at"] - 24.0)
+        B["crowd-3"].box(kit.P(so_p, 0.0, kit.kerb + 2.6, 0.0), (0.24, 0.24, 1.85), s[so_p]["h"])
+        B["ladin-blue"].box(kit.P(so_p, 0.0, kit.kerb + 2.6, 1.88), (0.42, 0.36, 0.06), s[so_p]["h"])
     # [ANCHOR:passes]
