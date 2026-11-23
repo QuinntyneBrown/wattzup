@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   aerobicMaxPowerFactor,
+  boilingPointCelsiusAtAltitude,
   passAirTemperatureCelsius,
   relativeAirDensity,
   windChillCelsius,
@@ -21,5 +22,6 @@ describe('dolomite-weather', () => {
     expect(aerobicMaxPowerFactor(0)).toBe(1);
     expect(aerobicMaxPowerFactor(2240)).toBeLessThan(0.94);
     expect(aerobicMaxPowerFactor(2240)).toBeGreaterThan(0.89);
+    expect(boilingPointCelsiusAtAltitude(2240)).toBeCloseTo(92.5, 1);
   });
 });
