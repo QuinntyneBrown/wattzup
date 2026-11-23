@@ -572,7 +572,8 @@ def crater(k) -> int:
         c = tuple(rust[q] * (1 - a) + ochre[q] * a for q in range(3))
         c = tuple(c[q] * (1 - b * 0.55) + grey[q] * b * 0.55 for q in range(3))
         c = tuple(c[q] * (1 - lift) + dark[q] * lift for q in range(3))
-        far = 0.62 * _smooth(500.0, 3200.0, south)
+        # Thin air hazes little: the far wall, three kilometres off, keeps most of its colour.
+        far = 0.3 * _smooth(900.0, 3400.0, south)
         return (*(c[q] * (1 - far) + haze[q] * far for q in range(3)), 1.0)
 
     def at(x: float, south: float, z: float):
