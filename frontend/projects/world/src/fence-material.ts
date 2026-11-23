@@ -22,8 +22,11 @@ export function fenceMaterial(light: Node<'vec3'> | null, strength: number): Mat
   let metal: Node<'float'> = post;
   for (const [middle, thick] of RAILS) metal = max(metal, step(abs(up.sub(middle)), thick / 2));
 
+  // Subtle corrugated W-beam rail contour & darker steel/timber post shading at zero extra triangles.
+  const flute = float(0.88).add(abs(fract(up.mul(7)).sub(0.5)).mul(0.28));
+  const shade = max(flute.mul(float(1).sub(post.mul(0.14))), float(0.72));
   const material = new MeshLambertNodeMaterial({ flatShading: true, side: DoubleSide });
-  const colour = vertexColor().rgb;
+  const colour = vertexColor().rgb.mul(shade);
   material.colorNode = colour;
   if (light) material.emissiveNode = colour.mul(light).mul(strength);
   material.opacityNode = metal;
