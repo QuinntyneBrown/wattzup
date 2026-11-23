@@ -709,6 +709,18 @@ heart of the thunderhead blue-white where it should. A first try, hunting for th
 film by the brightening of patches of sky, found nothing it could tell from the clubs' beams crossing the sky.
 The test is not left in the code.
 
+### Checked after Sky 22: the low cloud's drift and the gulls' wing beat are still not seen
+
+The same test as the lightning's, on the two other things never seen on screen: the low cloud drifting round the
+sky (Sky 13) turned seventy-five times too fast, and the gulls' wings (Party 10's flock) beating twelve times too
+far, in one frame from 8,150 m beside the frame as it is. **Neither could be told apart from the frame as it is.**
+The low cloud is faint against the deck behind it, and no gull was in either frame.
+
+That is not proof they are broken, and not proof they work. The gulls fly 95 m out towards the sun and 24 m up:
+looking at the sun they are near the top of the picture and in it for some twelve seconds in every eighty-five,
+each some fifteen pixels across. Both stay as "tested by their numbers, not seen". The test is not left in the
+code.
+
 ### Low power: where the frames go (after Party 20)
 
 The low-power stand-in (the low tier with the processor slowed six times) has not held 60 fps on this machine on
