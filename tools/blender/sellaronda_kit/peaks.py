@@ -443,4 +443,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     rock_tower(peaks, stv_pt["x"] + stux * 780.0, stv_pt["y"] + stuy * 780.0, 50.0, 585.0, 210.0, 135.0, 10, math.atan2(-stuy, -stux), cfn, taper=0.78, flat_cap=True, seed_phase=2.1)
     # Spillway gate house centered on the crest of Diga del Fedaia
     rock_tower(peaks, lake_cx + mux * 10.0 + mpx * 270.0, lake_cy + muy * 10.0 + mpy * 270.0, lake_z + 3.0, lake_z + 14.0, 12.0, 8.0, 6, yaw_mm, cfn, taper=0.96, flat_cap=True, seed_phase=0.2)
+    # 19. Monte Cristallo (3,221 m) twin-horned Cortina massif (at=1120 m)
+    crs_pt = road.s[road.index(1120.0)]
+    csux, csuy = crs_pt["x"] - cx, crs_pt["y"] - cy
+    csul = max(1.0, math.hypot(csux, csuy))
+    csux, csuy = csux / csul, csuy / csul
+    rock_tower(peaks, crs_pt["x"] + csux * 2360.0, crs_pt["y"] + csuy * 2360.0, 45.0, 868.0, 285.0, 185.0, 10, math.atan2(-csuy, -csux), cfn, taper=0.42, flat_cap=False, seed_phase=4.0)
     # [ANCHOR:peaks]
