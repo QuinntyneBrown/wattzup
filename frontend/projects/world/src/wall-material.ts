@@ -90,9 +90,41 @@ export function wallMaterial(
     .mul(mix(0.78, 1.1, broad.g))
     .mul(fine.b.mul(0.5).oneMinus());
 
+  // Dolomite coursed rubble & ashlar masonry (kind 5): larger irregular stone courses with pale lime mortar.
+  const stoneRow = floor(up.div(0.26));
+  const stoneRun = along.div(0.54).add(stoneRow.mul(0.37));
+  const stoneId = vec2(floor(stoneRun), stoneRow);
+  const stoneShade = fract(sin(stoneId.dot(vec2(27.13, 91.7))).mul(31415.926));
+  const stoneJoint = smoothstep(0.028, 0, toJoint(stoneRun))
+    .max(smoothstep(0.055, 0, toJoint(up.div(0.26))))
+    .mul(0.8);
+  const farStone = blur(0.26);
+  const stoneBlocks = base.mul(
+    mix(mix(float(0.74), float(1.22), stoneShade), float(0.98), farStone),
+  );
+  const stoneMortar = mix(base, vec3(0.56, 0.54, 0.5), 0.5);
+  const alpineStone = mix(stoneBlocks, stoneMortar, mix(stoneJoint, float(0.16), farStone)).mul(
+    fine.r.mul(0.38).add(0.8),
+  );
+
+  // Alpine larch horizontal log boarding (kind 6): rounded timber courses with shadow grooves and wood grain.
+  const logPitch = 0.22;
+  const logPhase = fract(up.div(logPitch));
+  const logRound = sin(logPhase.mul(Math.PI)).mul(0.26).add(0.82);
+  const logGrain = texture(detail, place.mul(vec2(0.14, 1.8)))
+    .r.mul(0.22)
+    .add(0.89);
+  const alpineTimber = base.mul(mix(logRound, float(0.96), blur(logPitch))).mul(logGrain);
+
   const isBrick = smoothstep(0.5, 0.6, kind).mul(smoothstep(1.5, 1.4, kind));
   const isSteel = smoothstep(1.5, 1.6, kind).mul(smoothstep(2.5, 2.4, kind));
-  const surface = mix(mix(plaster, brick, isBrick), steel, isSteel);
+  const isAlpineStone = smoothstep(4.5, 4.6, kind).mul(smoothstep(5.5, 5.4, kind));
+  const isAlpineTimber = smoothstep(5.5, 5.6, kind).mul(smoothstep(6.5, 6.4, kind));
+  const surface = mix(
+    mix(mix(mix(plaster, brick, isBrick), steel, isSteel), alpineStone, isAlpineStone),
+    alpineTimber,
+    isAlpineTimber,
+  );
   // Every wall: streaks the rain has run down it, and dirt splashed up its foot. Roofs and floors (kind 0) have none.
   const upright = smoothstep(0.4, 0.6, kind);
   const streaks = broad.g;
@@ -102,7 +134,7 @@ export function wallMaterial(
 
   // A tower of the skyline (kind 4): a grid of windows, some lit, warm or cool, each its own brightness. Far off,
   // where a window is less than a pixel, a tower glows with its windows' average.
-  const isTower = smoothstep(3.5, 3.6, kind);
+  const isTower = smoothstep(3.5, 3.6, kind).mul(smoothstep(4.5, 4.4, kind));
   const pane = place.div(vec2(WINDOW.wide, WINDOW.tall));
   const window = floor(pane);
   const within = fract(pane);
