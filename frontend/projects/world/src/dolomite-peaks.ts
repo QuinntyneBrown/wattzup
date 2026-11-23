@@ -104,6 +104,11 @@ export function isGlaciatedPeak(peakId: DolomitePeak['id']): boolean {
   return peakId === 'marmolada';
 }
 
+/** Vertical wall prominence (m) of `peak` above a viewing pass at `passAltitudeMetres`. */
+export function horizonReliefMetres(peak: DolomitePeak, passAltitudeMetres: number): number {
+  return Math.max(0, peak.altitudeMetres - passAltitudeMetres);
+}
+
 /** Sightline prominence (0..1) of Sassolungo (3,181 m) from `metres` along Sella Ronda. */
 export function sassolungoSightline(metres: number): number {
   const w = ((metres % 11650) + 11650) % 11650;
