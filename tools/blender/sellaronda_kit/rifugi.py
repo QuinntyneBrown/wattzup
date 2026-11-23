@@ -95,6 +95,11 @@ def _rifugio_complex(B, kit, road, height_at, at_m: float, side: float, main_w: 
         for w_i in range(4):
             along_w = (-0.34 + w_i * 0.23) * main_w
             kit.window(idx, along_w * (-1.0 if side > 0 else 1.0), off - side * (main_d * 0.5 + 0.18), wz_rel, 1.25, 1.55, (w_i + st_i) % 2 == 0, yaw)
+            sh_mat = "pine" if storeys == 2 else "parasol-red"
+            for sh_s in (-0.82, 0.82):
+                sh_x = rx - nx * (main_d * 0.5 + 0.19) + math.cos(yaw) * (along_w + sh_s)
+                sh_y = ry - ny * (main_d * 0.5 + 0.19) + math.sin(yaw) * (along_w + sh_s)
+                B[sh_mat].box((sh_x, sh_y, base_z + 4.05 + st_i * 3.1), (0.34, 0.06, 1.48), yaw)
 
 
 def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
