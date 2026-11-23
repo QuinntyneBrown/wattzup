@@ -329,4 +329,6 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         480.0,
         snow=True,
     )
+    # Summit memorial pinnacle crowning Col di Lana (2,452 m)
+    rock_tower(peaks, cdl_pt["x"] + lux2 * 780.0 - lpx2 * 140.0, cdl_pt["y"] + luy2 * 780.0 - lpy2 * 140.0, 518.0, 536.0, 6.5, 6.5, 6, 0.0, cfn, taper=0.45, flat_cap=False, seed_phase=0.1)
     # [ANCHOR:peaks]
