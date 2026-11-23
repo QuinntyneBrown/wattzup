@@ -330,4 +330,8 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     pb_i = road.index(1460.0)
     B["stone"].box(kit.P(pb_i, 0.0, -(kit.kerb + 2.8), -0.3), (9.5, 0.65, 0.85), road.s[pb_i]["h"])
     B["geranium-red"].box(kit.P(pb_i, 0.0, -(kit.kerb + 2.8), 0.55), (8.8, 0.45, 0.24), road.s[pb_i]["h"])
+    # Raised Dolomite-stone culinary herb beds at Passo Sella Resort
+    hb_s = road.index(7732.0)
+    B["stone"].box(kit.P(hb_s, 0.0, -(kit.kerb + 8.8), 0.0), (3.4, 1.35, 0.55), road.s[hb_s]["h"])
+    B["foliage"].box(kit.P(hb_s, 0.0, -(kit.kerb + 8.8), 0.55), (3.1, 1.10, 0.25), road.s[hb_s]["h"])
     # [ANCHOR:rifugi-global]
