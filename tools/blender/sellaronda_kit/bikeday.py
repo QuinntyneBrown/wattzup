@@ -36,6 +36,7 @@ def _road_cyclist(B, x: float, y: float, z: float, yaw: float, jersey_mat: str, 
         # Upper arm + skin forearm reaching brake hoods (HOOD = +/-0.20, +0.535 forward)
         B["skin"].box((x + ca * 0.36 + nx_r * (s_lr * 0.18), y + sa * 0.36 + ny_r * (s_lr * 0.18), hip_z + 0.02), (0.34, 0.075, 0.08), yaw)
     B["paint"].box((x + ca * 0.34, y + sa * 0.34, hip_z + 0.34), (0.26, 0.22, 0.22), yaw)
+    B["dark"].box((x + ca * 0.45, y + sa * 0.45, hip_z + 0.32), (0.06, 0.18, 0.07), yaw)
 
 
 def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
