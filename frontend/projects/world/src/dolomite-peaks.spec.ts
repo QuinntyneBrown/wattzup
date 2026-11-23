@@ -11,6 +11,7 @@ import {
   marmoladaGlacierSightline,
   meanDolomiteGiantAltitude,
   peaksAboveThreeThousand,
+  peaksVisibleNearMetres,
   sassolungoSightline,
 } from './dolomite-peaks';
 
@@ -37,5 +38,6 @@ describe('DOLOMITE_GIANTS', () => {
     expect(findDolomitePeak('')).toBeNull();
     expect(meanDolomiteGiantAltitude()).toBeGreaterThan(2800);
     expect(highestDolomitePeak().altitudeMetres).toBe(3343);
+    expect(peaksVisibleNearMetres(7750).length).toBeGreaterThanOrEqual(1);
   });
 });
