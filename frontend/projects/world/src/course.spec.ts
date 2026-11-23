@@ -1,6 +1,7 @@
 import {
   Course,
   courseCableways,
+  courseGliders,
   type CourseFile,
   courseLamps,
   courseLights,
@@ -262,5 +263,25 @@ describe('courseCableways', () => {
     });
     expect(valid).toHaveLength(1);
     expect(valid[0]!.sag).toBe(18);
+  });
+});
+
+describe('courseGliders', () => {
+  it('parses valid thermal paraglider orbits and rejects invalid entries', () => {
+    expect(courseGliders(courseFile())).toEqual([]);
+    const orbits = courseGliders({
+      ...courseFile(),
+      gliders: [
+        {
+          center: [100, 220, -300],
+          radiusX: 68,
+          radiusZ: 46,
+          liftAmplitude: 7.5,
+          periodSeconds: 46,
+        },
+      ],
+    });
+    expect(orbits).toHaveLength(1);
+    expect(orbits[0]!.radiusX).toBe(68);
   });
 });
