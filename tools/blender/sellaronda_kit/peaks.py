@@ -102,6 +102,12 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
             p11, p01 = gl_grid[r_i + 1][c_i + 1], gl_grid[r_i + 1][c_i]
             quad_shaded(peaks, p00, p10, p11, p01, cfn, 0.5 * (p00[2] + p11[2]), snow=True)
 
+    # Terminal moraine rubble ridge & protruding rocky nunatak ribs splitting Marmolada's northern icefield
+    for rib_lat in (-135.0, 145.0):
+        rx_n = pordoi_pt["x"] + mux * 1240.0 + mpx * rib_lat
+        ry_n = pordoi_pt["y"] + muy * 1240.0 + mpy * rib_lat
+        rock_tower(peaks, rx_n, ry_n, 360.0, 615.0, 42.0, 85.0, 7, yaw_mm, cfn, taper=0.45, flat_cap=False, seed_phase=7.1 + rib_lat * 0.01)
+
     # Dark volcanic-green Cresta di Padon / Porta Vescovo ridge in the foreground between Pordoi and Marmolada
     for pad_lat in (-220.0, 0.0, 220.0):
         px0 = pordoi_pt["x"] + mux * 690.0 + mpx * pad_lat
