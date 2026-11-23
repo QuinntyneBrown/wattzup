@@ -229,4 +229,10 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     svz = max(height_at(svx, svy), road.s[sv_idx]["z"] - 0.5)
     B["stone"].box((svx, svy, svz - 2.0), (8.2, 6.8, 4.8), svyaw)
     kit.gable(B["roof-slate"], (svx, svy, svz + 2.8), 8.8, 7.4, 2.2, svyaw)
+    # Mushroom-cap stainless patio heaters on the 2,240 m Pordoi & Sella resort decks
+    for ht_m in (4922.0, 7722.0):
+        ht_i = road.index(ht_m)
+        hx_p, hy_p, hz_p = kit.P(ht_i, 0.0, -(kit.kerb + 5.0), 0.15)
+        B["steel"].box((hx_p, hy_p, hz_p), (0.12, 0.12, 2.15), 0.0)
+        B["steel"].box((hx_p, hy_p, hz_p + 2.15), (0.78, 0.78, 0.14), 0.0)
     # [ANCHOR:rifugi-global]
