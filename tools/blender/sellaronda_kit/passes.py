@@ -291,3 +291,10 @@ def build_four_passes(B, kit, road, height_at) -> None:
         bx_g, by_g, bz_g = kit.P(gb_idx, b_seg * 1.6, -(kit.kerb + 3.4), -0.1)
         B["stone"].box((bx_g, by_g, bz_g), (1.55, 0.58, 0.48), ang_b)
         B["larch-warm"].box((bx_g, by_g, bz_g + 0.48), (1.60, 0.62, 0.08), ang_b)
+
+    # Timber alpine pass transit shelter on Passo Campolongo (at=2092 m)
+    cb_idx = road.index(2092.0)
+    cbyaw = s[cb_idx]["h"]
+    cbx, cby, cbz = kit.P(cb_idx, 0.0, kit.kerb + 3.4, -0.1)
+    B["larch-aged"].box((cbx, cby, cbz), (3.4, 1.65, 2.25), cbyaw)
+    kit.gable(B["chalet-wood"], (cbx, cby, cbz + 2.25), 3.9, 2.05, 0.65, cbyaw)
