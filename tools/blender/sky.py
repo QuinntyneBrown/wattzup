@@ -78,7 +78,9 @@ def sunset_sky_colour(dx: float, dy: float, dz: float, az: float, haze):
     thick = banks * 0.6 + rows * 0.4 + puffs * 0.14
     density = smoothstep(0.36, 0.62, thick)
     # No cloud in the haze on the horizon; towards the sun a clear slot is left under the deck, where the sky burns.
-    cover = density * smoothstep(0.012 + 0.018 * sunward, 0.04 + 0.04 * sunward, h)
+    # The slot is wide towards the sun, as under a deck that ends short of the horizon: a clear band of gold and
+    # peach between the sea and the cloud's burning edge, some five to nine degrees deep.
+    cover = density * smoothstep(0.012 + 0.068 * sunward, 0.04 + 0.12 * sunward, h)
     # Each puff's underside catches the sun and the gaps between them are in shade: the deck is mottled.
     belly = smoothstep(0.35, 0.7, puffs * 0.6 + rows * 0.5)
     # The sun reaches a bank's thin edges and not its heart: the banks are dark, rimmed with fire.

@@ -198,6 +198,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Palms 11 | Palms stand dark against the sunset: a crown seen towards the sun loses up to seven tenths of its colour, and one seen away from it is lit as it was | 60.3, 60.3 and 60.4 fps (from 8,150, 4,450 and 600 m) | 53.3 and 42.1 fps after (the finish, 119,899 triangles: none more); Neon Docklands beside it 45.5, 44.8 |
 | Palms 12 | A palm against the sun is dark from root to tip: its trunk is drawn with its leaves, and comes into sight with its crown, not before it | 60.3, 60.2 and 60.1 fps (from 8,150, 4,450 and 600 m) | 51.4 and 51.4 fps after (the finish, 118,759 triangles: 1,140 fewer); Neon Docklands beside it 57.4, 55.7 |
 | Plane 4 | The aeroplane is a dark shape against the sunset, its cabin windows and wingtip lights burning: it was lit white, as at noon | 60.4 and 60.2 fps (from 4,450 and 8,150 m) | 50.5 and 39.1 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 44.9, 57.3 |
+| Sky 20 | A clear band of gold between the sea and the cloud's burning edge, towards the sun: the deck came down almost to the horizon | 60.3, 60.2 and 60.2 fps (from 4,450, 8,150 and 3,250 m) | 57.0 and 40.0 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 55.8, 52.6 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -668,6 +669,14 @@ is a dark shape on the burning sky. Ours crosses in front of the sun, so the rid
 was lit a clean white and grey as at noon. Its painted colours are drawn at under a third of their brightness
 now, a deep plum, and what is lit of its own stands out against that: the row of cabin windows, the wingtip
 lights, the beacon and the strobes. Nothing is added.
+
+### Sky 20: a clear band under the deck
+
+`sky-20.jpg` (from 4,450 m, 8,150 m and 3,250 m). In the first photograph the cloud ends short of the horizon:
+between the sea and the deck's burning edge is a clear band of sky, pale gold by the sun. Ours had a slot there
+two to four degrees deep, which the land and the haze hid: the sky was red cloud to the ground. The slot is five
+to nine degrees deep towards the sun now, and narrows away from it to what it was. The sun sets through it, in the
+clear, with the deck above it.
 
 ### Low power: where the frames go (after Party 20)
 
