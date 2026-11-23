@@ -19,7 +19,9 @@ export interface Flapping {
 export function flapMaterial(): Flapping {
   const time = uniform(0);
   const unit = uniform(1);
+  // Birds crossing a sunset are dark against it: their painted greys are drawn at a quarter of their brightness.
   const material = new MeshBasicNodeMaterial({
+    color: 0x4a3d46,
     vertexColors: true,
     side: DoubleSide,
     fog: false,

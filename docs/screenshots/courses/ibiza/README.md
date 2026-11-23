@@ -203,6 +203,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Party 21 | Partygoers stand dark against the sunset, the drinks in their hands still bright: a figure seen towards the sun loses up to six tenths of its colour | 60.1 fps, none over 20 ms (the finish) | 40.0 and 52.7 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 54.1, 47.4 |
 | Sky 22 | The sun's glow is round the sun: it was painted six degrees up, and hung over a sun that had gone down from under it | 59.9 and 60.4 fps (from 4,450 and 8,150 m) | 52.2 and 52.6 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 56.3, 54.4 |
 | Party 22 | Strollers step aside to the kerb to pass an effort gate: they walked through its feet | 60.1 fps, none over 20 ms (from 950 m) | 49.8 and 41.4 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 52.8, 52.1 |
+| Sky 23 | The gulls are seen: dark against the sunset, two and a half times the size they looked, crossing the middle of the picture for some twenty seconds | 60.0 fps, none over 20 ms (from 7,700 m, 18 s) | 44.5 and 48.9 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 54.0, 50.1 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -720,6 +721,22 @@ That is not proof they are broken, and not proof they work. The gulls fly 95 m o
 looking at the sun they are near the top of the picture and in it for some twelve seconds in every eighty-five,
 each some fifteen pixels across. Both stay as "tested by their numbers, not seen". The test is not left in the
 code.
+
+### Sky 23: gulls that are seen
+
+`sky-23.jpg` (two frames three seconds apart, from 7,700 m: the flock is the line of small dark birds across the
+upper sky). The check before this found the flock of gulls (made in an earlier pass) in no frame. Drawn thirty
+times its size as a test, it was there: it drew, and at its own size nobody could see it. Three things were
+wrong, and each is changed:
+
+- **Where it flew.** 95 m out and 24 m up it crossed the sun twelve degrees up, at the top edge of the picture,
+  and was in the picture for twelve seconds in every eighty-five. It flies 190 m out now: seven degrees up where
+  it crosses the sun, and in the picture for over eighteen seconds (`flock-flight.ts`, unit tested).
+- **How big it looked.** Some fifteen pixels a bird. It is drawn two and a half times the size it looked.
+- **Its colour.** Pale grey on a red sky. Birds against a sunset are dark: its greys are drawn at a quarter of
+  their brightness.
+
+The wing beat is still not seen: the birds are small in a still frame.
 
 ### Low power: where the frames go (after Party 20)
 

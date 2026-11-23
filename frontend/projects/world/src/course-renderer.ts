@@ -85,7 +85,7 @@ import { wallMaterial } from './wall-material';
 import { cloudDrift } from './cloud-drift';
 import { danceMaterials } from './dance-material';
 import { flapMaterial } from './flap-material';
-import { type FlockPlace, flockFlight } from './flock-flight';
+import { FLOCK_SCALE, type FlockPlace, flockFlight } from './flock-flight';
 import { leafMaterial } from './leaf-material';
 import { walkMaterial } from './walk-material';
 import { type Promenader, promenaders, STROLLERS } from './promenaders';
@@ -995,6 +995,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.flock) {
       const flown = new Group();
       flown.visible = false;
+      flown.scale.setScalar(FLOCK_SCALE);
       this.flock.matrix.copy(this.flock.matrixWorld);
       this.flock.matrixAutoUpdate = false;
       flown.add(this.flock);

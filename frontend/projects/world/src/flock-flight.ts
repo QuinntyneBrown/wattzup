@@ -10,10 +10,12 @@ export interface FlockPlace {
 }
 
 /** Metres towards the sun its path lies, from the eye; and the metres either side of the sun it is flown. */
-const OUT = 95;
-const FAR = 430;
+// Far enough out that it is under ten degrees up where it crosses the sun, in the middle of the picture, and is in
+// the picture for some twenty seconds of its crossing: at 95 m it was at the picture's top edge for twelve.
+const OUT = 190;
+const FAR = 560;
 /** A gull's pace, in metres a second; the height it keeps, and how far it rises and falls about that. */
-const SPEED = 13;
+const SPEED = 15;
 const HIGH = 24;
 const RISE = 4;
 /** The metres at each end of its path over which it comes out of the distance and goes back into it. */
@@ -23,6 +25,11 @@ const LEAD = 60;
 
 /** Seconds from one flock to the next. */
 export const FLOCK_EVERY = 85;
+/**
+ * How many times its built size the flock is drawn. Twice as far off as it was built for, it would look the size it
+ * did at 2; and at that size, some fifteen pixels a gull, it was not seen at all.
+ */
+export const FLOCK_SCALE = 5;
 
 /**
  * Where the flock of gulls is at a second of the ride's clock: low over the sea, crossing in front of the sun the

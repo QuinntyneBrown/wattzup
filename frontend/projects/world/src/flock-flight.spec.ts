@@ -52,4 +52,20 @@ describe('a flock of gulls crossing the sunset on its way to roost (L2-166 AC79)
     expect(faint / seen).toBeLessThan(0.25);
     expect(at(FLOCK_EVERY + 20)!.z).toBeCloseTo(at(20)!.z);
   });
+  it('crosses the sun low enough to be in the picture, and is in it for a good while (L2-166 AC106)', () => {
+    // The eye looks at the sun and sees some forty degrees either side of it, and under fifteen degrees up.
+    let inSight = 0;
+    let highest = 0;
+    for (let t = 0; t < FLOCK_EVERY; t += 0.5) {
+      const place = at(t);
+      if (!place) continue;
+      const aside = (Math.atan2(Math.abs(place.z), place.x) * 180) / Math.PI;
+      const up = (Math.atan2(place.y, Math.hypot(place.x, place.z)) * 180) / Math.PI;
+      if (aside > 40) continue;
+      inSight += 0.5;
+      highest = Math.max(highest, up);
+    }
+    expect(highest).toBeLessThan(10);
+    expect(inSight).toBeGreaterThan(18);
+  });
 });
