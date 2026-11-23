@@ -316,6 +316,15 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         for pn_k in range(-4, 5):
             B["accent-2" if pn_k % 2 == 0 else "paint"].box(kit.P(bn_idx, 0.0, pn_k * 1.15, 4.75 - (1.0 - (pn_k / 5.0) ** 2) * 0.45), (0.06, 0.42, 0.48), bnyaw)
 
+    # Classic red Italian grand-touring open-top spiders parked outside Hotel Savoia on Pordoi
+    for sp_o in (-3.2, 0.8):
+        rd_idx = road.index(4920.0 + sp_o)
+        rdyaw = s[rd_idx]["h"] + 0.45
+        rx_c, ry_c, rz_c = kit.P(rd_idx, 0.0, -(kit.kerb + 8.4), 0.0)
+        B["dark"].box((rx_c, ry_c, rz_c), (3.95, 1.72, 0.42), rdyaw)
+        B["parasol-red"].box((rx_c, ry_c, rz_c + 0.28), (4.05, 1.68, 0.56), rdyaw)
+        B["glacier-ice"].box((rx_c + math.cos(rdyaw) * 0.45, ry_c + math.sin(rdyaw) * 0.45, rz_c + 0.84), (0.18, 1.42, 0.34), rdyaw)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
