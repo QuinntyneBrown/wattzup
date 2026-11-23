@@ -19,6 +19,21 @@ def smooth(a: float, b: float, v: float) -> float:
     return t * t * (3 - 2 * t)
 
 
+def lens(b, c, r: float, thick: float, rng, sides: int = 7) -> None:
+    """A domed mound of leaves, flat underneath and wider than it is tall: an umbrella pine's crown, an olive's."""
+    wob = [rng.uniform(0.82, 1.15) for _ in range(sides)]
+    def ring(scale: float, up: float):
+        return [(c[0] + math.cos(q * math.tau / sides) * r * wob[q] * scale, c[1] + math.sin(q * math.tau / sides) * r * wob[q] * scale, c[2] + up) for q in range(sides)]
+
+    rim, shoulder = ring(1.0, 0.0), ring(0.62, thick * 0.72)
+    top, bottom = (c[0], c[1], c[2] + thick), (c[0], c[1], c[2] - thick * 0.12)
+    for q in range(sides):
+        n = (q + 1) % sides
+        b.quad(rim[q], rim[n], shoulder[n], shoulder[q])
+        b.tri(top, shoulder[q], shoulder[n])
+        b.tri(bottom, rim[n], rim[q])
+
+
 class Painted:
     """Shapes coloured by vertex in the land's group, which is drawn from much further off than what stands by the
     road: a village is seen across its bay, an observatory from the switchbacks below."""
