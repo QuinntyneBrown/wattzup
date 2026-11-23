@@ -4,6 +4,7 @@ import {
   distanceToNextVillage,
   hasOnionDomeBelfry,
   LADIN_VILLAGES,
+  provinceForMetres,
   villageAtMetres,
 } from './ladin-villages';
 
@@ -22,5 +23,8 @@ describe('LADIN_VILLAGES', () => {
     expect(villageAtMetres(4950)).toBeNull();
     expect(hasOnionDomeBelfry('corvara')).toBe(true);
     expect(hasOnionDomeBelfry('arabba')).toBe(false);
+    expect(provinceForMetres(3120)).toBe('Belluno (Veneto)');
+    expect(provinceForMetres(6120)).toBe('Trento (Trentino)');
+    expect(provinceForMetres(8920)).toBe('Bolzano (Alto Adige / Südtirol)');
   });
 });

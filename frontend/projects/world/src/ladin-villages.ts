@@ -83,3 +83,14 @@ export function villageAtMetres(metres: number, radiusMetres = 220): LadinVillag
 export function hasOnionDomeBelfry(villageId: LadinVillage['id']): boolean {
   return villageId !== 'arabba';
 }
+
+export type DolomiteProvince =
+  'Bolzano (Alto Adige / Südtirol)' | 'Belluno (Veneto)' | 'Trento (Trentino)';
+
+/** Returns which of the three provinces surrounding the Sella massif contains `metres`. */
+export function provinceForMetres(metres: number): DolomiteProvince {
+  const w = ((metres % 11650) + 11650) % 11650;
+  if (w >= 2108 && w < 4958) return 'Belluno (Veneto)';
+  if (w >= 4958 && w < 7758) return 'Trento (Trentino)';
+  return 'Bolzano (Alto Adige / Südtirol)';
+}
