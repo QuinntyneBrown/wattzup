@@ -155,6 +155,12 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         bx_l, by_l, bz_l = road.at(b_idx, 0.0, 2.2)
         kit.light((bx_l, by_l, bz_l), "bulb", 15.0, 0.48)
 
+    # Dedicated golden memorial uplight on the Fausto Coppi obelisk at Passo Pordoi
+    cp_idx = road.index(4950.0)
+    cpx_l, cpy_l, cpz_l = road.at(cp_idx, -(kit.kerb + 6.8), 2.8)
+    kit.light((cpx_l, cpy_l, cpz_l), "gold", 16.0, 0.70)
+    kit.halo((cpx_l, cpy_l, cpz_l), "gold")
+
 
 def build_valley_mist(B, road, height_at) -> None:
     """Lays delicate dusk valley-mist ribbons down in the four deep valley hollows off the road."""
