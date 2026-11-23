@@ -69,6 +69,7 @@ import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
 import { type Rain, rain } from './rain';
 import { RiderBatch } from './rider-batch';
+import { RiderBody } from './rider-body';
 import { bendLean } from './rider-lean';
 import { type ShadowShape, shadowLength, shadowShape } from './rider-shadow-shape';
 import { outOfTheSaddle } from './rider-stance';
@@ -155,7 +156,7 @@ const DRAWN_FAR = [0.7, 0.8, 0.9, 1, 1] as const;
  */
 const RIDER_DETAIL = [0.6, 0.7, 0.8, 0.9, 1] as const;
 const OTHERS_DETAIL = 0.6;
-/** The tiers, from the lowest to this one, whose riders are the simple build: four draw calls a rider, not seven. */
+/** The tiers, from the lowest to this one, whose riders are the simple build: their lamps throw no pools on the road. */
 const SIMPLE_RIDERS = 1;
 
 /** How far up the road, in metres, a rider's lean into a bend is read from. */
@@ -264,6 +265,8 @@ export class CourseRenderer implements WorldRenderer {
   /** Draws everything of a rider that is coloured by vertex: the body and the bike (course-cyclist.ts). */
   private readonly plain = riderMaterial();
   private kit: CourseCyclistKit | null = null;
+  /** The riders' body, loaded with the course. */
+  private body: RiderBody | null = null;
   private canvas: HTMLCanvasElement | null = null;
   private you: Cyclist | null = null;
   private readonly riders = new Map<string, Cyclist>();
@@ -328,7 +331,7 @@ export class CourseRenderer implements WorldRenderer {
       renderer.toneMapping = AgXToneMapping;
       renderer.toneMappingExposure = 1.15;
 
-      const [file, gltf] = await Promise.all([
+      const [file, gltf, body] = await Promise.all([
         fetch(`${this.path}.course.json`).then((response) => {
           if (!response.ok) throw new Error(`The course file answered ${response.status}.`);
           return response.json() as Promise<unknown>;
@@ -336,8 +339,15 @@ export class CourseRenderer implements WorldRenderer {
         // A map's buffers are written with the meshopt codec (tools/blender/meshopt_glb.mjs); one written without
         // it loads as before.
         new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(`${this.path}.glb`),
+        // The riders' body, built in Blender as the map is (ADR 0036).
+        RiderBody.load(),
       ]);
-      if (this.disposed) return false;
+      if (this.disposed) {
+        body.dispose();
+        return false;
+      }
+      this.body = body;
+      this.disposables.push(body);
       this.course = new Course(parseCourse(file));
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
@@ -735,9 +745,10 @@ export class CourseRenderer implements WorldRenderer {
     this.scene.add(fill, this.sun, this.sun.target);
     this.disposables.push(fill, this.sun);
 
-    // At night the bikes' lights are on. On the two lowest tiers the riders are the simple build.
+    // At night the bikes' lights are on. On the two lowest tiers the bikes' lamps throw no pools on the road.
     const kit = new CourseCyclistKit(
       this.plain,
+      this.body!,
       this.course!.file.night === true,
       this.tier <= SIMPLE_RIDERS,
     );

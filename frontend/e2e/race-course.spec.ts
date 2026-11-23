@@ -1,5 +1,5 @@
 // Acceptance test
-// Traces to: L2-166 AC1, AC2, AC10
+// Traces to: L2-166 AC1, AC2, AC10, AC26
 // Description: a race on a map whose world is built as a course draws the course's map, loaded from the app's own
 // `courses/` folder, and moves along it as the rider rides: two pictures of the world a few seconds apart
 // differ. Comparing two pictures of the same canvas reads no pixel's colour (ADR 0021). The course draws in software
@@ -41,7 +41,7 @@ test.describe('a course', () => {
   // The map is drawn in software here.
   test.slow();
 
-  test("draws the course's map and moves along it as the rider rides (L2-166 AC1, AC2)", async ({
+  test("draws the course's map and its rider and moves along it as the rider rides (L2-166 AC1, AC2, AC26)", async ({
     page,
     bluetooth,
     api,
@@ -57,6 +57,8 @@ test.describe('a course', () => {
     await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
     expect(loaded).toContain('/courses/ibiza.glb');
     expect(loaded).toContain('/courses/ibiza.course.json');
+    // The rider is the one built in Blender, loaded with the course (L2-166 AC26, ADR 0036).
+    expect(loaded).toContain('/riders/rider.glb');
     await ride(page, bluetooth, 80);
     const first = await picture(page, race.world);
 

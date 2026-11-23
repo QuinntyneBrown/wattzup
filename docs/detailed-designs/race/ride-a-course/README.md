@@ -74,8 +74,9 @@ All of it is in the `world` library; nothing outside it changes.
 | `water-material.ts` | The `Sea` group's material where the file has `sea` (L2-166 AC22): ripples, and the sky, the far shore's lights and the glint mirrored by the angle of view. |
 | `rider-batch.ts` | `RiderBatch`: every rider's moving parts of a plain colour as one skinned mesh, a bone a part, so they are one draw call (L2-166 AC12). |
 | `rain.ts` | `rain(strength, light)`: the rain as one mesh, each streak falling, wrapping round the camera and facing the eye in the vertex shader, lit by the lamps' grid (L2-166 AC24). |
-| `course-cyclist.ts` | `CourseCyclistKit`: the course's own rider (L2-166 AC26), a body and a bike of lofted sections coloured by vertex, merged into one mesh but for the parts the pedalling moves. Each leg is one skin on two bones, bent at the knee by the pedalling; each bare arm is one skin, bent at the elbow once as it is made (`rider-limb.ts`). The class worlds' `world-cyclist.ts` is not used by a course. |
-| `rider-limb.ts` | A limb of one skin over two bones (L2-166 AC26): how much of the lower bone each place along the limb follows (eased over a reach either side of the joint), the bones and weights a skinned mesh takes for it, and the same bend worked out once for a limb that never moves. No Three.js. |
+| `course-cyclist.ts` | `CourseCyclistKit`: the course's own rider (L2-166 AC26). The body is the Blender-built mesh (`rider-body.ts`); the helmet, the shoes and the bike are lofted sections coloured by vertex, merged into one mesh but for the parts the pedalling moves. The class worlds' `world-cyclist.ts` is not used by a course. |
+| `rider-body.ts` | `RiderBody`: `public/riders/rider.glb` (ADR 0036, `tools/blender/rider.py`), loaded with the course. One watertight skinned mesh at two finenesses on an armature of 19 bones, and one baked clip holding a turn of the cranks seated and one out of the saddle. Gives each rider their own skeleton and their own copy of the mesh, painted in their colours. |
+| `rider-turn.ts` | Where in the baked clip a crank's angle is, and which of the body's regions a vertex's marker colour names. No Three.js. |
 | `rider-lean.ts` | `bendLean`: how far a rider leans for the turn the road makes over the next metres (L2-166 AC27). Pure, unit-tested. |
 | `rider-finish.ts` | `vertexFinish`, `sheen`: the gloss and metal a rider's vertices carry, as the material's roughness and metalness, and the edge light the lamps add (L2-166 AC28). |
 | `rider-stance.ts` | `outOfTheSaddle`: how far out of the saddle a gradient has a rider (L2-166 AC29). Pure, unit-tested. |
@@ -119,9 +120,10 @@ darker at its foot, baked into its colours. A mesh named for no group is drawn a
 **What a frame draws.** Every few frames, and at once when the camera has jumped, each chunk is shown or hidden by
 its distance from the camera, by group: the land to 950 m, solid scenery to 250 m, glow to 400 m, beams to 460 m,
 leaves to 210 m, confetti to 300 m; the haze (200 m to 1500 m) covers the rest. No more than the four nearest riders
-are drawn. A rider's still parts are merged into one mesh a material, and those of a plain colour into one
-vertex-coloured mesh and the kit's mesh (`course-cyclist.ts`), with the moving parts of all riders drawn as one
-(`rider-batch.ts`): some 5 draw calls a rider. Each rider's shadow is a dark blob
+are drawn. A rider's body is one skinned mesh in two draws (the kit's texture, and what is coloured by vertex:
+`rider-body.ts`); their bike's still parts are one vertex-coloured mesh (`course-cyclist.ts`), and the shoes, cranks
+and pedals of all riders are drawn as one (`rider-batch.ts`): some 6 draw calls a rider. The pedalling is a baked
+clip played from the crank's angle (ADR 0036): no kinematics are worked out in a frame. Each rider's shadow is a dark blob
 stretched away from the sun, or under street lamps the lamps' own shadows (`rider-shadows.ts`); there is no shadow map.
 
 **Tiers.** Cheapest first: 0.75, 1, 1.5 device pixels a CSS pixel, then 1.5 and 2 with bloom. The ride opens on 1

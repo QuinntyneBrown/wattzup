@@ -160,3 +160,16 @@ data and scenery in `themes.py`, run the script, and name the world in
 A hand-modelled change made in the `.blend` is lost the next time the script runs. Until the
 pipeline can keep one, change the script, or export the glb from Blender yourself and leave the
 script alone for that map.
+
+## The rider
+
+```
+python tools/blender/rider.py
+```
+
+builds the course's rider (ADR 0036, L2-166 AC26) and writes `frontend/projects/ride/public/riders/rider.glb`
+and `tools/blender/scenes/rider.blend`. The body is one watertight mesh on an armature of 19 bones; the feet are
+held to the pedals and the hands to the hoods by inverse kinematics, and a turn of the cranks, seated and out of
+the saddle, is baked to keyframes before the export. The bike's measurements at the top of the script are
+`course-cyclist.ts`'s: change both together and rebuild, or the feet leave the pedals (the script fails if they
+do).
