@@ -7,6 +7,24 @@
 const END_ON = 0.62;
 const SIDE_ON = 1.75;
 
+/** The height a shadow is thrown from: a rider's helmet, in metres. */
+const RIDER_TALL = 1.65;
+/** The shortest and the longest a shadow is drawn, in metres: a high sun still shows one, a setting sun's is held. */
+const SHORTEST = 1.4;
+const LONGEST = 6.5;
+
+/**
+ * How long a rider's shadow lies on the road, in metres, with the sun `altitude` up (the upward part of the unit
+ * vector towards it): the rider's height over the tangent of the sun's angle, so a low sun throws a long one. It is
+ * held to `LONGEST`: a sunset's true shadow would cross the whole road.
+ */
+export function shadowLength(altitude: number): number {
+  const up = Math.min(Math.max(altitude, 0), 1);
+  const flat = Math.sqrt(1 - up * up);
+  if (up * LONGEST <= RIDER_TALL * flat) return LONGEST;
+  return Math.max(SHORTEST, (RIDER_TALL * flat) / up);
+}
+
 export interface ShadowShape {
   /** Whether the shadow is the bike from its side; otherwise the rider end on. */
   side: boolean;

@@ -1,6 +1,7 @@
 // The pictures a rider's shadow in the sun is drawn with (L2-166 AC35): the bike and rider as the sun sees them,
-// from the side and end on, soft at the edges and softer the further from the rider's wheels. White with its
-// opacity, to be tinted by the shadow's material. Along a picture, its top is where the wheels meet the road and its
+// from the side and end on. A shadow is sharp where the thing that throws it meets the road and spreads the
+// further it falls: the picture is crisp by the wheels, soft by the head, and thins towards its far end. White with
+// its opacity, to be tinted by the shadow's material. Along a picture, its top is where the wheels meet the road and its
 // foot is the rider's head; across it lies what rider-shadow-shape.ts says the shadow's width is.
 import { CanvasTexture } from 'three/webgpu';
 
@@ -21,11 +22,18 @@ function figure(across: number, paint: (ink: Ink) => void): CanvasTexture {
   const canvas = document.createElement('canvas');
   canvas.width = WIDE;
   canvas.height = LONG;
-  const ctx = canvas.getContext('2d');
-  if (ctx) {
+  const out = canvas.getContext('2d');
+  // The figure is painted twice, crisp and spread, and the two are joined along the shadow: crisp at the wheels,
+  // spread at the head.
+  const layer = (blur: number, from: number, to: number): HTMLCanvasElement | null => {
+    const sheet = document.createElement('canvas');
+    sheet.width = WIDE;
+    sheet.height = LONG;
+    const ctx = sheet.getContext('2d');
+    if (!ctx) return null;
     const x = (metres: number) => WIDE / 2 + (metres / across) * WIDE;
     const y = (height: number) => (height / TALL) * LONG;
-    ctx.filter = 'blur(2.5px)';
+    ctx.filter = `blur(${blur}px)`;
     ctx.strokeStyle = '#fff';
     ctx.fillStyle = '#fff';
     ctx.lineCap = 'round';
@@ -51,16 +59,24 @@ function figure(across: number, paint: (ink: Ink) => void): CanvasTexture {
         ctx.fill();
       },
     });
-    // A shadow is sharp where the thing that throws it touches the ground and soft far from it: the picture fades
-    // towards the head.
+    // This layer's share of the shadow, along it: `from` at the wheels to `to` at the head.
     ctx.filter = 'none';
     ctx.globalCompositeOperation = 'destination-in';
-    const fade = ctx.createLinearGradient(0, 0, 0, LONG);
-    fade.addColorStop(0, 'rgba(0, 0, 0, 1)');
-    fade.addColorStop(0.55, 'rgba(0, 0, 0, 0.85)');
-    fade.addColorStop(1, 'rgba(0, 0, 0, 0.45)');
-    ctx.fillStyle = fade;
+    const share = ctx.createLinearGradient(0, 0, 0, LONG);
+    share.addColorStop(0, `rgba(0, 0, 0, ${from})`);
+    share.addColorStop(0.3, `rgba(0, 0, 0, ${from * 0.7 + to * 0.3})`);
+    share.addColorStop(1, `rgba(0, 0, 0, ${to})`);
+    ctx.fillStyle = share;
     ctx.fillRect(0, 0, WIDE, LONG);
+    return sheet;
+  };
+  if (out) {
+    // Crisp and full by the wheels, gone by the head; spread and thinner the further it falls.
+    const crisp = layer(1.2, 1, 0);
+    const spread = layer(6, 0.15, 0.55);
+    out.globalCompositeOperation = 'lighter';
+    if (spread) out.drawImage(spread, 0, 0);
+    if (crisp) out.drawImage(crisp, 0, 0);
   }
   return new CanvasTexture(canvas);
 }
@@ -69,9 +85,18 @@ function figure(across: number, paint: (ink: Ink) => void): CanvasTexture {
 export function sideShadow(): CanvasTexture {
   return figure(1.75, ({ line, ring, blob }) => {
     for (const axle of [0.5, -0.5]) {
-      ring(axle, 0.34, 0.32, 0.05);
+      ring(axle, 0.34, 0.32, 0.075);
       blob(axle, 0.34, 0.04, 0.04);
+      // Where the tyre meets the road the shadow is at its darkest: the shadow starts under the bike.
+      blob(axle, 0.03, 0.13, 0.035);
     }
+    line(
+      [
+        [-0.5, 0.02],
+        [0.5, 0.02],
+      ],
+      0.035,
+    );
     // The frame: the rear triangle, the top and down tubes, the fork, the stem and bars, the saddle.
     line(
       [
@@ -137,6 +162,8 @@ export function sideShadow(): CanvasTexture {
 /** The rider end on, 0.62 m across the picture: the edge of a wheel, the legs, the hips, the shoulders, the head. */
 export function endShadow(): CanvasTexture {
   return figure(0.62, ({ line, blob }) => {
+    // Where the tyres meet the road.
+    blob(0, 0.03, 0.07, 0.04);
     line(
       [
         [0, 0.02],

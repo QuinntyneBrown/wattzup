@@ -64,7 +64,7 @@ import { skyMaterial } from './sky-material';
 import { type Rain, rain } from './rain';
 import { RiderBatch } from './rider-batch';
 import { bendLean } from './rider-lean';
-import { type ShadowShape, shadowShape } from './rider-shadow-shape';
+import { type ShadowShape, shadowLength, shadowShape } from './rider-shadow-shape';
 import { outOfTheSaddle } from './rider-stance';
 import { endShadow, sideShadow } from './shadow-silhouette';
 import { SunGlow } from './sun-glow';
@@ -92,7 +92,6 @@ const CLOSE_UP = 1.65;
 const CLOSE_START = 45;
 const CLOSE_FINISH = 70;
 /** Each rider's shadow: a dark blob on the road, this long down-sun and this wide, in metres. */
-const SHADOW_LENGTH = 3.4;
 const SHADOW_WIDTH = 0.8;
 /**
  * How far from the camera, in metres, a chunk of each group of the map is drawn: the land keeps the island's shape to
@@ -198,6 +197,8 @@ export class CourseRenderer implements WorldRenderer {
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
   private readonly sun = new DirectionalLight(0xff9a5a, 2.6);
   private sky: Object3D | null = null;
+  /** How long the riders' shadows in the sun lie on the road, in metres. */
+  private shadowLong = 3.4;
   /** Moves the sky's cloud on to a second of the ride's clock. */
   private skyClock: ((seconds: number) => void) | null = null;
   /** Moves the sea's ripples on to a second of the ride's clock. */
@@ -661,13 +662,16 @@ export class CourseRenderer implements WorldRenderer {
     square.rotateX(-Math.PI / 2);
     const cast = (map: CanvasTexture) =>
       new MeshBasicMaterial({
-        color: 0x07050b,
+        // A shadow in the open is lit by the sky and not black: it darkens the road and leaves its colour showing,
+        // with a breath of the sky's own colour from below.
+        color: new Color(look.fill[1]).multiplyScalar(0.035),
         map,
         transparent: true,
-        opacity: 0.8,
+        opacity: 0.66,
         depthWrite: false,
         side: DoubleSide,
       });
+    this.shadowLong = shadowLength(this.course!.file.sun[1]);
     const side = cast(sideShadow());
     const end = cast(endShadow());
     this.blob = { geometry: square, side, end };
@@ -768,7 +772,8 @@ export class CourseRenderer implements WorldRenderer {
     const shadow = this.shadows.get(cyclist);
     if (shadow) {
       const [sx, , sz] = this.course!.file.sun;
-      const far = SHADOW_LENGTH * 0.42;
+      // As long as the sun is low (rider-shadow-shape.ts), from the wheels away from the sun.
+      const far = this.shadowLong * 0.46;
       shadow.position.set(at.x - sx * far, at.y + 0.05, at.z - sz * far);
       shadow.rotation.set(at.pitch, Math.atan2(-sx, -sz), 0, 'YXZ');
       // The rider as the sun sees them: from the side or end on, and as wide as that is.
@@ -951,7 +956,7 @@ export class CourseRenderer implements WorldRenderer {
     }
     if (!this.blob) return;
     const mesh = new Mesh(this.blob.geometry, this.blob.end);
-    mesh.scale.set(SHADOW_WIDTH, 1, SHADOW_LENGTH);
+    mesh.scale.set(SHADOW_WIDTH, 1, this.shadowLong);
     mesh.renderOrder = 1;
     this.shadows.set(cyclist, mesh);
     this.scene.add(mesh);

@@ -1,4 +1,4 @@
-import { shadowShape } from './rider-shadow-shape';
+import { shadowLength, shadowShape } from './rider-shadow-shape';
 
 describe("the shape of a rider's shadow in the sun (L2-166 AC35)", () => {
   // A heading of 0 points the bike along -z.
@@ -35,5 +35,28 @@ describe("the shape of a rider's shadow in the sun (L2-166 AC35)", () => {
 
   it("does not mind how long the sun's direction is", () => {
     expect(shadowShape(0, 5, 0)).toEqual(shadowShape(0, 1, 0));
+  });
+});
+
+describe('shadowLength (L2-166 AC41)', () => {
+  it('is the rider’s height over the tangent of the sun’s angle', () => {
+    // The sun 45 degrees up: a shadow as long as the rider is tall.
+    expect(shadowLength(Math.SQRT1_2)).toBeCloseTo(1.65, 2);
+    // 30 degrees up: longer by the square root of three.
+    expect(shadowLength(0.5)).toBeCloseTo(1.65 * Math.sqrt(3), 2);
+  });
+
+  it('is longer the lower the sun', () => {
+    expect(shadowLength(0.3)).toBeGreaterThan(shadowLength(0.5));
+  });
+
+  it('is held to 6.5 m at sunset and on the horizon', () => {
+    expect(shadowLength(0.11)).toBe(6.5);
+    expect(shadowLength(0)).toBe(6.5);
+  });
+
+  it('is never shorter than 1.4 m, however high the sun', () => {
+    expect(shadowLength(0.95)).toBe(1.4);
+    expect(shadowLength(1)).toBe(1.4);
   });
 });
