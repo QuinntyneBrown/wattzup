@@ -236,4 +236,14 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
                 B["hay"].box((sx_h, sy_h, sz_h + 0.15), (1.15, 1.15, 1.45), st_i * 0.5)
                 kit.gable(B["hay"], (sx_h, sy_h, sz_h + 1.60), 1.25, 1.25, 0.55, st_i * 0.5)
 
+    # 15. Low dry-stone pasture boundary walls (muretti a secco) dividing high grazing alms
+    for mw_m, mw_s in ((1880.0, -1.0), (7380.0, -1.0), (10340.0, 1.0)):
+        m_idx = road.index(mw_m)
+        myaw = s[m_idx]["h"] + 1.05 * mw_s
+        for seg_m in range(4):
+            wx_m, wy_m, _ = road.at(m_idx, (kit.kerb + 7.5 + seg_m * 4.6) * mw_s)
+            if road.clear_of_road(wx_m, wy_m, kit.kerb + 5.0, m_idx):
+                wz_m = height_at(wx_m, wy_m)
+                B["stone"].box((wx_m, wy_m, wz_m - 0.25), (4.8, 0.62, 0.92), myaw)
+
     return trees
