@@ -399,4 +399,11 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         B["larch-aged"].box((mlx, mly, mlz + 0.8), (6.0, 4.8, 2.8), mlyaw)
         kit.gable(B["chalet-wood"], (mlx, mly, mlz + 3.6), 6.6, 5.4, 1.6, mlyaw)
         B["larch-warm"].box((mlx - math.sin(mlyaw) * 2.55, mly + math.cos(mlyaw) * 2.55, mlz + 0.2), (2.6, 0.28, 2.6), mlyaw)
+    # Solar digital speed-feedback signs ("RILEVAMENTO VELOCITÀ") at the 4 village entries
+    for radar_m in (138.0, 2978.0, 5978.0, 8788.0):
+        rd_i = road.index(radar_m)
+        rdyaw = road.s[rd_i]["h"]
+        B["steel"].box(kit.P(rd_i, 0.0, -(kit.kerb + 1.65), 0.0), (0.09, 0.09, 2.55), rdyaw)
+        B["dark"].box(kit.P(rd_i, 0.0, -(kit.kerb + 1.65), 1.75), (0.10, 0.72, 0.88), rdyaw)
+        B["neon-lime"].box(kit.P(rd_i, -0.02, -(kit.kerb + 1.65), 2.02), (0.12, 0.48, 0.34), rdyaw)
     # [ANCHOR:villages]
