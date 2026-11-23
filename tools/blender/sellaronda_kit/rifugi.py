@@ -104,3 +104,9 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
             by_r = rk_y + math.sin(yaw) * (-1.2 + bk_i * 0.8)
             B["dark"].box((bx_r, by_r, tz + 0.15), (0.10, 1.45, 0.65), yaw)
             B[("parasol-red", "ladin-blue", "yellow", "paint")[bk_i]].box((bx_r, by_r, tz + 0.62), (0.09, 0.95, 0.42), yaw)
+        # Warm glowing festoon bulb garland strung along the front edge of the sun terrace
+        for fb_i in range(5):
+            fb_along = (-0.36 + fb_i * 0.18) * w
+            fb_x = tx + math.cos(yaw) * fb_along - math.sin(yaw) * (-2.0 * side)
+            fb_y = ty + math.sin(yaw) * fb_along + math.cos(yaw) * (-2.0 * side)
+            B["bulb"].box((fb_x, fb_y, tz + 2.85), (0.18, 0.18, 0.22), yaw)
