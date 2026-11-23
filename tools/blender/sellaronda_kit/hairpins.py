@@ -116,3 +116,11 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
             cyaw = s[idx]["h"] + (idx % 3 - 1) * 0.08
             B["dolomite-pale"].box(kit.P(idx, 0.0, -(kit.kerb + 2.4), -0.5), (12.2, 2.2, 4.8 + (idx % 4) * 0.9), cyaw)
             B["steel"].box(kit.P(idx, 0.0, -(kit.kerb + 1.28), 2.2), (0.34, 0.08, 0.34), cyaw)
+
+    # Scenic gravel pull-out lay-bys (piazzole di sosta) with larch benches overlooking the four climbs
+    for lay_m in (1720.0, 4420.0, 7040.0, 9820.0):
+        l_idx = road.index(lay_m)
+        lyaw = s[l_idx]["h"]
+        B["gravel"].box(kit.P(l_idx, 0.0, kit.kerb + 2.4, -0.45), (11.0, 3.8, 0.50), lyaw)
+        B["larch-warm"].box(kit.P(l_idx, -1.8, kit.kerb + 3.4, 0.05), (2.2, 0.55, 0.52), lyaw)
+        B["larch-aged"].box(kit.P(l_idx, 2.2, kit.kerb + 3.4, 0.05), (0.48, 0.48, 0.85), lyaw)
