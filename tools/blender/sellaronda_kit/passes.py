@@ -371,4 +371,8 @@ def build_four_passes(B, kit, road, height_at) -> None:
     geoy = s[geo_i]["h"]
     B["dolomite-pale"].box(kit.P(geo_i, 0.0, kit.kerb + 3.6, -0.15), (1.35, 1.05, 1.15), geoy + 0.35)
     B["gold"].box(kit.P(geo_i, -0.05, kit.kerb + 3.1, 0.55), (0.48, 0.12, 0.34), geoy)
+    # Slatted timber alpine snow-drift fences on the wind-scoured Passo Sella saddle
+    for sf_d in (7695.0, 7708.0, 7805.0, 7818.0):
+        sf_i = road.index(sf_d)
+        B["larch-aged"].box(kit.P(sf_i, 0.0, kit.kerb + 6.8, -0.1), (9.5, 0.14, 1.45), s[sf_i]["h"] + 0.18)
     # [ANCHOR:passes]
