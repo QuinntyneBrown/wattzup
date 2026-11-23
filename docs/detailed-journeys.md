@@ -100,7 +100,7 @@ slice is merged into `telo-ride`; each slice sets its own row, and the total, wh
 | 25.2 | Record the packet log | Bounded log of Bluetooth commands, or every message when switched on, downloadable as a file. | 2 | 25. Check diagnostics | 100% |
 | 26.1 | Send feedback | Bug, idea or kudos dialog with sending and sent states. | 3 | 26. Send feedback | 100% |
 | 26.2 | Receive feedback | Backend stores each feedback item, rate-limited, and the team can read it without seeing contact details in telemetry. | 2 | 26. Send feedback | 100% |
-| 27.1 | Installable app | Manifest, icons and install from Chrome or Edge. | 2 | 27. Install the app | 0% |
+| 27.1 | Installable app | Manifest, icons and install from Chrome or Edge. | 2 | 27. Install the app | 100% |
 | 27.2 | Update to a new version | Tell the rider a new version is ready; reload between rides. | 1 | 27. Install the app | 0% |
 
-**Total:** 95 slices, 238 days. **Complete:** 93 slices, 235 days (99%).
+**Total:** 95 slices, 238 days. **Complete:** 94 slices, 237 days (99%).
