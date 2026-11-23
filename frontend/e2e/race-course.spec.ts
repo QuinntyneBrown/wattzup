@@ -83,6 +83,8 @@ test.describe('a course', () => {
     await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
     expect(loaded).toContain('/courses/sellaronda.glb');
     expect(loaded).toContain('/courses/sellaronda.course.json');
+    // Sella Ronda loads the shared Blender one-skin rigged rider (L2-166 AC26, ADR 0036).
+    expect(loaded).toContain('/riders/rider.glb');
     await ride(page, bluetooth, 80);
     const first = await picture(page, race.world);
 
