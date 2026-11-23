@@ -582,6 +582,11 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         gdx, gdy, gdz = road.at(gdi, -(kit.kerb - 0.78))
         _road_cyclist(B, gdx, gdy, gdz, s[gdi]["h"], gd_j, standing=(gd_k == 0))
 
+    # Automatic Bike Day rider-photo camera tripod at Passo Pordoi GPM
+    cm_p = road.index(4948.0)
+    B["steel"].box(kit.P(cm_p, 0.0, kit.kerb + 1.85, 0.0), (0.14, 0.14, 1.65), s[cm_p]["h"])
+    B["yellow"].box(kit.P(cm_p, 0.0, kit.kerb + 1.85, 1.65), (0.32, 0.28, 0.28), s[cm_p]["h"])
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
