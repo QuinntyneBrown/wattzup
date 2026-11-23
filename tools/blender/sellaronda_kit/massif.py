@@ -576,4 +576,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     rock_tower(peaks, cx + 165.0, cy - 145.0, 640.0, 762.0, 62.0, 46.0, 8, -0.7, cfn, taper=0.44, flat_cap=False, seed_phase=1.1)
     # Summit beacon needle crowning Capanna Piz Fassa atop Piz Boè (3,152 m)
     rock_tower(peaks, apex[0], apex[1], 804.0, 818.0, 2.2, 2.2, 6, 0.0, cfn, taper=0.35, flat_cap=False, seed_phase=0.0)
+    # Piz Daiet (2,796 m) western Sella buttress overlooking Val Lasties
+    rock_tower(peaks, cx + lux * 785.0 + lpx * 185.0, cy + luy * 785.0 + lpy * 185.0, 118.0, 548.0, 74.0, 58.0, 8, math.atan2(luy, lux), cfn, taper=0.68, flat_cap=True, seed_phase=2.4)
     # [ANCHOR:massif]
