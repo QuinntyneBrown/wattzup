@@ -171,3 +171,13 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         B["larch-warm"].box((wx_s, wy_s, wz_s), (3.8, 1.4, 2.55), wyaw)
         B["glow-window"].box((wx_s, wy_s, wz_s + 0.65), (3.2, 1.46, 1.35), wyaw)
         B["gold"].box((wx_s, wy_s, wz_s + 2.35), (0.14, 1.85, 0.55), wyaw)
+
+    # Covered wooden SAD / Dolomiti Bus alpine transit shelters in Corvara, Arabba, Canazei & Selva
+    for bus_m, b_side in ((355.0, 1.0), (3210.0, -1.0), (6210.0, 1.0), (9015.0, -1.0)):
+        b_idx = road.index(bus_m)
+        byaw = road.s[b_idx]["h"]
+        bx_b, by_b, bz_b = kit.P(b_idx, 0.0, (kit.kerb + 2.9) * b_side, -0.1)
+        B["stone"].box((bx_b, by_b, bz_b), (3.8, 1.9, 0.18), byaw)
+        B["larch-aged"].box((bx_b, by_b, bz_b + 0.18), (3.6, 1.7, 2.25), byaw)
+        B["paint"].box((bx_b, by_b, bz_b + 0.95), (1.15, 1.76, 0.85), byaw)
+        kit.gable(B["chalet-wood"], (bx_b, by_b, bz_b + 2.43), 4.1, 2.2, 0.65, byaw)
