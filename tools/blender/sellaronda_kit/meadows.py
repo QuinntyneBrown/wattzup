@@ -548,4 +548,11 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["larch-aged"].box((nbx, nby, nbz), (0.14, 0.14, 2.45), 0.0)
             B["larch-warm"].box((nbx, nby, nbz + 2.15), (0.26, 0.24, 0.34), 0.0)
 
+    # Vivid orange Lilium bulbiferum (Giglio di San Giovanni) clusters on sunny banks
+    for fl_m in (1410.0, 3890.0, 6780.0, 9540.0):
+        fli = road.index(fl_m)
+        flx, fly, _ = road.at(fli, -(kit.kerb + 4.6))
+        if road.clear_of_road(flx, fly, 3.0, fli):
+            B["crowd-3"].box((flx, fly, height_at(flx, fly) - 0.02), (0.52, 0.52, 0.28), fl_m * 0.3)
+
     return trees
