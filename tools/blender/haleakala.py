@@ -31,6 +31,11 @@ MATERIALS: dict[str, dict] = {
     "hk-eucalyptus": {"color": 0x6E8E6A, "rough": 0.9},
     "hk-eucalyptus-dark": {"color": 0x4E7252, "rough": 0.9},
     "hk-jacaranda": {"color": 0x8E6CD8, "rough": 0.9},
+    # The subalpine shrubland: pūkiawe and ʻōhelo in dull greens, māmane in flower, tussocks of bleached grass.
+    "hk-shrub": {"color": 0x66784E, "rough": 1.0},
+    "hk-shrub-dark": {"color": 0x47583C, "rough": 1.0},
+    "hk-mamane": {"color": 0xD8C23E, "rough": 0.9},
+    "hk-tussock": {"color": 0xBFAE74, "rough": 1.0},
     "hk-wire": {"color": 0x8E8E8A, "rough": 0.6, "double": True},
 }
 
@@ -592,6 +597,52 @@ def crater(k) -> int:
     return len(CONES) + len(cones)
 
 
+SHRUBLAND = (0.4, 0.66)  # the share of the climb the shrubland lies between, thinning out at either end
+
+
+def shrubland(k) -> int:
+    """Between details 6 and 5, the ranch land and the cinder: where the pasture gives out and before the cinder is bare, the mountain wears
+    its subalpine shrubland. Low domed shrubs in dull greens stand a few metres apart, a māmane tree in yellow
+    flower among them now and then, with tussocks of bleached grass between."""
+    rng, s, B = k.rng, k.s, k.B
+    shares = [height_share(k, i) for i in range(0, k.n, 25)]
+    grown = 0
+    for i in range(6, k.n - 6):
+        share = shares[i // 25]
+        thick = _smooth(SHRUBLAND[0], SHRUBLAND[0] + 0.07, share) * (1 - _smooth(SHRUBLAND[1] - 0.1, SHRUBLAND[1], share))
+        if thick <= 0:
+            continue
+        for _ in range(3):
+            if rng.random() > 0.55 * thick:
+                continue
+            side = rng.choice((1, -1))
+            off = (k.kerb + rng.uniform(2.8, 34.0)) * side
+            x, y, _ = k.road.at(i, off)
+            x, y = x + rng.uniform(-2.0, 2.0), y + rng.uniform(-2.0, 2.0)
+            if not k.road.clear_of_road(x, y, 7.0, i):
+                continue
+            z = k.ground(x, y, i, off)
+            pick = rng.random()
+            if pick < 0.5:
+                lens(B["hk-shrub" if rng.random() < 0.6 else "hk-shrub-dark"], (x, y, z + 0.1), rng.uniform(0.7, 1.6), rng.uniform(0.6, 1.1), rng, 6)
+            elif pick < 0.86:
+                # A tussock: a few blades of dry grass.
+                for q in range(4):
+                    a = q * math.tau / 4 + rng.uniform(-0.4, 0.4)
+                    r = rng.uniform(0.3, 0.5)
+                    tip = (x + math.cos(a) * r, y + math.sin(a) * r, z + rng.uniform(0.5, 0.8))
+                    left, right = (x - math.sin(a) * 0.14, y + math.cos(a) * 0.14, z), (x + math.sin(a) * 0.14, y - math.cos(a) * 0.14, z)
+                    B["hk-tussock"].tri(left, right, tip)
+                    B["hk-tussock"].tri(right, left, tip)
+            else:
+                # A māmane: a small gnarled tree, its crown yellow with flower.
+                k.prism(B["trunk-dark"], (x, y, z - 0.3), 0.16, 2.2, 5, 0.1)
+                lens(B["hk-shrub"], (x, y, z + 2.0), rng.uniform(1.4, 2.1), 1.3, rng, 6)
+                lens(B["hk-mamane"], (x + rng.uniform(-0.5, 0.5), y + rng.uniform(-0.5, 0.5), z + 2.7), rng.uniform(0.8, 1.3), 0.8, rng, 6)
+            grown += 1
+    return grown
+
+
 def boulder(k, b, c, r: float) -> None:
     """A lump of lava: an irregular rock, wider than it is tall, sunk a little into the cinder."""
     rng = k.rng
@@ -637,4 +688,5 @@ def scenery(k) -> dict:
     coast = coastal_start(k)
     cones = crater(k)
     lava = lava_field(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords, "domes": domes, **ranch, **coast, "cinderCones": cones, "boulders": lava}
+    shrubs = shrubland(k)
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords, "domes": domes, **ranch, **coast, "cinderCones": cones, "boulders": lava, "shrubs": shrubs}
