@@ -81,6 +81,7 @@ def _village_chalet(B, kit, road, idx: int, side: float, off_extra: float, w: fl
     B["larch-aged"].box((cx_v, cy_v, cz_v + 0.6 + (storeys - 0.35) * 2.95), (w + 0.35, d + 0.35, 1.15), yaw)
     kit.gable(B["chalet-wood"], (cx_v, cy_v, cz_v + 0.6 + storeys * 2.95), w + 1.2, d + 1.2, 2.6, yaw)
     B["chalet-plaster"].box((cx_v + math.cos(yaw) * (w * 0.25), cy_v + math.sin(yaw) * (w * 0.25), cz_v + 1.6 + storeys * 2.95), (0.78, 0.78, 2.1), yaw)
+    B["larch-aged"].box((cx_v - math.sin(yaw) * -(d * 0.5 + 0.55), cy_v + math.cos(yaw) * -(d * 0.5 + 0.55), cz_v + 3.1 + storeys * 2.95), (0.14, 0.14, 0.72), yaw)
     B["paint"].box((cx_v - math.sin(yaw) * -(d * 0.5 + 0.14), cy_v + math.cos(yaw) * -(d * 0.5 + 0.14), cz_v + 2.65), (1.15, 0.08, 0.42), yaw)
     B["parasol-red"].box((cx_v - math.sin(yaw) * -(d * 0.5 + 0.12), cy_v + math.cos(yaw) * -(d * 0.5 + 0.12), cz_v + 0.65), (1.10, 0.08, 1.85), yaw)
     for st_i in range(storeys):
