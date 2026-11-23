@@ -82,3 +82,17 @@ class Painted:
             return (corner[0] + along[0] * a + out[0] * proud, corner[1] + along[1] * a + out[1] * proud, z)
 
         self.face((p(a0, z0), p(a1, z0), p(a1, z1), p(a0, z1)), (colour,) * 4)
+
+    def tube(self, c, r0: float, r1: float, h: float, low, high, sides: int = 10, cap=None) -> None:
+        """A round tower on its base centre: radius r0 at the foot and r1 at the top, `low` to `high` up its wall,
+        closed with a flat top in `cap` if one is given."""
+        ring = lambda r, up: [(c[0] + math.cos(q * math.tau / sides) * r, c[1] + math.sin(q * math.tau / sides) * r, c[2] + up) for q in range(sides)]  # noqa: E731
+        lo, hi = ring(r0, 0.0), ring(r1, h)
+        for q in range(sides):
+            n = (q + 1) % sides
+            self.face((lo[q], lo[n], hi[n], hi[q]), (low, low, high, high))
+        if cap is not None:
+            top = (c[0], c[1], c[2] + h)
+            for q in range(sides):
+                self.face((hi[q], hi[(q + 1) % sides], top), (cap,) * 3)
+
