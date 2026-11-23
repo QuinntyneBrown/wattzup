@@ -639,6 +639,11 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         B["skin"].box((tfcx, tfcy, tfcz + 1.38), (0.22, 0.22, 0.24), s[tf_c]["h"])
         B["gold"].box((tfcx, tfcy, tfcz + 1.15), (0.14, 0.14, 0.18), s[tf_c]["h"])
 
+    # Celebratory 'SELLARONDA' white road-chalk dashes on the Corvara departure ramp (at=385 m)
+    cv_c = road.index(385.0)
+    for ck_i in range(5):
+        B["paint"].box(road.at(cv_c, -2.0 + ck_i * 1.0, 0.025), (0.34, 0.78, 0.015), s[cv_c]["h"])
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
