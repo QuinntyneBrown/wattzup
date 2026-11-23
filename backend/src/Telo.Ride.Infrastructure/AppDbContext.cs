@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Telo.Ride.Application;
 using Telo.Ride.Domain.Accounts;
+using Telo.Ride.Domain.Feedback;
 using Telo.Ride.Domain.Maps;
 using Telo.Ride.Domain.Results;
 using Telo.Ride.Domain.Rides;
@@ -24,6 +25,8 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<MapProgress> MapProgress => Set<MapProgress>();
 
     public DbSet<CustomWorkout> CustomWorkouts => Set<CustomWorkout>();
+
+    public DbSet<FeedbackReport> FeedbackReports => Set<FeedbackReport>();
 
     public DbSet<SessionResult> SessionResults => Set<SessionResult>();
 
@@ -99,6 +102,17 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             workout.HasKey(w => w.RiderId);
             workout.Property(w => w.Settings).HasMaxLength(CustomWorkout.MaxSettingsLength);
             workout.HasOne<Rider>().WithMany().HasForeignKey(w => w.RiderId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<FeedbackReport>(report =>
+        {
+            // One row for each report: its message and context as they came, a bug report's diagnostics (L2-119 AC1).
+            report.HasKey(r => r.Id);
+            report.Property(r => r.Kind).HasMaxLength(16);
+            report.Property(r => r.Message).HasMaxLength(FeedbackReport.MaxMessageLength);
+            report.Property(r => r.AppVersion).HasMaxLength(FeedbackReport.MaxAppVersionLength);
+            report.HasIndex(r => new { r.RiderId, r.ReceivedAt });
+            report.HasOne<Rider>().WithMany().HasForeignKey(r => r.RiderId).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<SessionResult>(result =>

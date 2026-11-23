@@ -41,6 +41,11 @@ if (args is [MigrateCommand.Name])
     return await MigrateCommand.RunAsync(app.Services, CancellationToken.None);
 }
 
+if (args is [FeedbackCommand.Name])
+{
+    return await FeedbackCommand.RunAsync(app.Services, Console.Out, CancellationToken.None);
+}
+
 app.UseTransportSecurity();
 app.UseSecurityHeaders();
 app.UseExceptionHandler();

@@ -19,7 +19,6 @@ box "Frontend — Ride app (api library)" #E0F2FE
 end box
 box "Backend — Telo.Ride.Api" #D1FADF
   participant "Fallback authorization policy" as auth
-  participant "feedback rate limiter" as limiter
   participant "FeedbackController" as controller
 end box
 box "Backend — Telo.Ride.Application and Domain" #ECFDF3
@@ -34,22 +33,23 @@ client -> auth : POST /api/feedback with session cookie
 alt no valid session
   auth --> client : 401 (L2-119 AC2)
 else signed in
-  auth -> limiter : Partition by rider id
-  alt more than 10 in the last hour
-    limiter --> client : 429 ProblemDetails, code rate_limited, Retry-After (L2-119 AC3)
-  else within the limit
-    limiter -> controller : Submit(request)
-    controller -> validator : SubmitFeedbackCommand(riderId from claims, ...)
-    alt invalid kind, message or diagnostics
-      validator --> client : 400 ProblemDetails, code invalid_feedback
-    else valid
-      validator -> handler : Handle
-      handler -> entity : Create(kind, message, context, diagnostics, riderId, now)
+  auth -> controller : Submit(request)
+  controller -> validator : SubmitFeedbackCommand(riderId from the session, ...)
+  alt invalid kind, message, context or diagnostics
+    validator --> client : 400 ProblemDetails, code validation_failed, errors by field
+  else valid
+    validator -> handler : Handle
+    handler -> db : Reports from this rider in the past hour
+    alt 10 already
+      handler --> client : 429 ProblemDetails, code rate_limited, Retry-After (L2-119 AC3)
+    else within the limit
+      handler -> entity : new FeedbackReport(kind, message, context, diagnostics, riderId, now)
       entity --> handler : Report kept as data (L2-119 AC4)
       handler -> db : Insert and save in one unit of work
       db --> handler : Committed
+      handler -> handler : telo.ride.feedback +1, tagged kind
       handler --> controller : Report id
-      controller --> client : 201 Created (L2-119 AC1)
+      controller --> client : 201 Created, { id } (L2-119 AC1)
     end
   end
 end

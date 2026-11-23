@@ -11,5 +11,7 @@ System_Boundary(telo, "Telo Ride") {
 }
 Rel(rider, app, "Sends feedback from a ride")
 Rel(app, api, "POST /api/feedback", "JSON/HTTPS, session cookie")
-Rel(api, db, "Inserts FeedbackReport", "EF Core")
+Rel(api, db, "Inserts and reads FeedbackReport", "EF Core")
+Person_Ext(team, "Telo Ride team", "Reads feedback")
+Rel(team, api, "dotnet Telo.Ride.Api.dll feedback", "JSON Lines")
 @enduml

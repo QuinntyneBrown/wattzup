@@ -23,7 +23,10 @@ public sealed class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidat
         return errors.Count == 0 ? await next(cancellationToken) : throw new RequestValidationException(errors);
     }
 
-    // The client sends camelCase JSON, so a field is named as it sent it: PowerWatts → powerWatts.
-    private static string ClientName(string property) =>
-        property.Length == 0 ? property : string.Concat(char.ToLowerInvariant(property[0]).ToString(), property.AsSpan(1));
+    // The client sends camelCase JSON, so a field is named as it sent it, at every level: PowerWatts → powerWatts,
+    // Diagnostics.PacketLog → diagnostics.packetLog, Context[0].Value → context[0].value.
+    private static string ClientName(string property) => string.Join('.', property.Split('.').Select(Camel));
+
+    private static string Camel(string segment) =>
+        segment.Length == 0 ? segment : string.Concat(char.ToLowerInvariant(segment[0]).ToString(), segment.AsSpan(1));
 }

@@ -166,5 +166,6 @@ with an error; "Done" leaves the ride paused (`L2-117` AC4, `L2-118`).
   past 2,000 characters (`too-long.html`), so a rider writing a short note sees no counter.
 - **The context block.** The disclosure is its own block, `feedback-context`, so each component
   keeps within the 6 kB style budget; the mocks and the design system were renamed with it.
-- **Until `feedback/receive-feedback`.** Without `POST /api/feedback` on the backend the real app's
-  send fails and keeps the message; slice 26.2 adds the endpoint.
+- **The endpoint.** Slice 26.2 added `POST /api/feedback` (`feedback/receive-feedback`); it answers
+  201 with the report's id, and 429 `rate_limited` past 10 reports in an hour, which the dialog
+  shows as its failed state.

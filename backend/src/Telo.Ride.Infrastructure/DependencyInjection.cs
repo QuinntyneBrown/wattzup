@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Telo.Ride.Application;
 using Telo.Ride.Application.Accounts;
 using Telo.Ride.Application.Classes;
+using Telo.Ride.Application.Feedback;
 using Telo.Ride.Application.Maps;
 using Telo.Ride.Application.Races;
 using Telo.Ride.Infrastructure.Accounts;
@@ -27,6 +28,7 @@ public static class DependencyInjection
         services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
         services.AddScoped<IDatabaseMigrator, DatabaseMigrator>();
         services.AddSingleton<TeloRideMetrics>();
+        services.AddSingleton<IFeedbackMetrics>(provider => provider.GetRequiredService<TeloRideMetrics>());
         services.AddSingleton<IClassCatalogue, EmbeddedClassCatalogue>();
         services.AddSingleton<IMapCatalogue, EmbeddedMapCatalogue>();
         services.AddSingleton<IGroupSessionRegistry, InMemoryGroupSessionRegistry>();
