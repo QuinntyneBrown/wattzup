@@ -16,24 +16,26 @@ skinparam package {
 }
 actor "Rider" as actor
 box "Frontend — Ride app (ride application)" #E0F2FE
-  participant "ProfilePage or ride status link" as opener
-  participant "DiagnosticsLauncher" as launcher
+  participant "Profile row or custom ride status" as opener
+  participant "openDiagnostics()" as launcher
   participant "DiagnosticsDialog" as dialog
 end box
 box "Frontend — Ride app (domain library)" #E0F2FE
   participant "BrowserDiagnostics" as reporter
   participant "BikeConnection" as conn
-  database "RideOutbox" as outbox
+  participant "BikeConnectionHistory" as history
+  database "RidesWaiting" as outbox
 end box
 actor -> opener : Choose Diagnostics
-opener -> launcher : open(origin element)
+opener -> launcher : openDiagnostics(dialog, injector)
 launcher -> launcher : import() the dialog chunk
-launcher -> dialog : Dialog.open, modal, aria-label "Diagnostics", background inert (L2-113 AC1)
+launcher -> dialog : Dialog.open, modal, labelled "Diagnostics"; the app goes inert (L2-113 AC1)
 dialog -> reporter : facts()
-reporter -> conn : bike, state, connectedSince, rssi, reconnects
-reporter -> outbox : count()
+reporter -> conn : bike, ble
+reporter -> history : connectedSince, reconnects
+reporter -> outbox : oldestFirst().length
 alt connected bike
-  reporter --> dialog : Browser "Chrome 126 · macOS 14.5", Web Bluetooth "Available", Page,\nBike "Echelon EX-5s · 0bf669f1", Connection "Connected · 6m 52s", Signal dBm,\nLast command "RES 8 · plan · ack 41 ms", Reconnects "0 this ride",\nRides waiting to send, App version "2.0.0 · client 7f3c2a1" (L2-113 AC2)
+  reporter --> dialog : Browser "Chrome 126 · macOS 14.5", Web Bluetooth "Available", Page,\nBike "Echelon EX-5s · 0bf669f1", Connection "Connected · 6m 52s",\nLast command "RES 8 · plan · ack 41 ms", Reconnects "0 this ride",\nRides waiting to send, App version "2.0.0 · client 7f3c2a1" (L2-113 AC2)
 else no bike picked
   reporter --> dialog : Bike "None picked yet"; no Connection, Signal, Last command or Reconnects (L2-113 AC3)
 else Bluetooth off
@@ -41,6 +43,5 @@ else Bluetooth off
 end
 dialog --> actor : Facts and "Everything here is read in your browser and stays on this device until you download it." (L2-113 AC5)
 actor -> dialog : "Close diagnostics" or Escape
-dialog -> launcher : closed
-launcher -> opener : Focus returns to the opening control (L2-113 AC1)
+dialog --> opener : The focus returns to the opening control (L2-113 AC1)
 @enduml

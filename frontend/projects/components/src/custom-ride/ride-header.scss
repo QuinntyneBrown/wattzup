@@ -56,14 +56,29 @@
   }
 }
 
-// Diagnostics, which the status opens in the mock, is slice 25.1's: until then the status is text.
+// The status is the button that opens Diagnostics (L2-113 AC1); its hit area overhangs it to 44 px (L2-140 AC2).
 .ride-header__status {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-1) 0;
+  border-radius: var(--radius-md);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
+  color: inherit;
+  cursor: pointer;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset-block: min(0px, calc((100% - var(--target-comfortable)) / 2));
+    inset-inline: 0;
+  }
+
+  &:hover .ride-header__status-text {
+    color: var(--color-fg);
+  }
 }
 
 .ride-header__status-icon {

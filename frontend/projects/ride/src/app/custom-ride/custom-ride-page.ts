@@ -32,6 +32,7 @@ import {
 } from '@telo/domain';
 import { CustomRideStore } from './custom-ride-store';
 import { type LeaveChoice, LeaveRideDialog, type LeaveRideData } from './leave-ride-dialog';
+import { openDiagnostics } from '../diagnostics/open-diagnostics';
 
 /**
  * The custom ride (docs/mocks/pages/custom-ride/, L2-101 to L2-104) at `/profile/custom/ride`: the ride header, the
@@ -115,6 +116,11 @@ export default class CustomRidePage {
       this.leaveOpen.set(false);
       if (choice === 'save' || choice === 'discard') this.store.leave(choice === 'save');
     });
+  }
+
+  /** Diagnostics, from the bike status, with this ride's last command in reach (L2-113 AC1, AC2). */
+  protected openDiagnostics(): void {
+    void openDiagnostics(this.dialog, this.injector);
   }
 
   protected toggleFullscreen(): void {

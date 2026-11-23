@@ -87,12 +87,26 @@ export class FakeBluetooth {
 
   /**
    * A bike this browser paired earlier: Telo Ride's record of it (`telo-ride.bike` in localStorage) and the
-   * permission `getDevices()` returns it by, so the app can reconnect without the chooser (L2-015).
+   * permission `getDevices()` returns it by, so the app can reconnect without the chooser (L2-015). With
+   * `lastSeenDaysAgo`, the record says the app last connected it that many days ago (L2-113 AC4).
    */
-  async remember(bike: FakeBike): Promise<void> {
+  async remember(
+    bike: FakeBike,
+    { lastSeenDaysAgo }: { lastSeenDaysAgo?: number } = {},
+  ): Promise<void> {
     await this.offer(bike);
     const { name, identifier } = bike.card ?? { name: bike.name, identifier: null };
-    const record = JSON.stringify({ id: FAKE_DEVICE_ID, name, identifier, kind: 'echelon' });
+    const seenAt =
+      lastSeenDaysAgo === undefined
+        ? undefined
+        : new Date(Date.now() - lastSeenDaysAgo * 86_400_000).toISOString();
+    const record = JSON.stringify({
+      id: FAKE_DEVICE_ID,
+      name,
+      identifier,
+      kind: 'echelon',
+      seenAt,
+    });
     await this.page.addInitScript((value) => localStorage.setItem('telo-ride.bike', value), record);
   }
 

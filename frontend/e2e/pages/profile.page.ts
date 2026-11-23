@@ -41,7 +41,8 @@ export class ProfilePage {
     this.xpBar = page.locator('.profile-level').getByRole('img');
     this.mainColumn = page.locator('.profile__main');
     this.settings = page.getByRole('complementary', { name: 'Settings' });
-    this.bikeRow = this.settings.getByRole('listitem').first().getByRole('link');
+    // A link to Connect Bike with no bike paired; with one, a button that opens Diagnostics (L2-113 AC1).
+    this.bikeRow = this.settings.getByRole('listitem').first().locator('a, button');
     this.rideSettings = this.settings.getByRole('link', { name: /^Ride settings/ });
     this.customWorkout = this.settings.getByRole('link', { name: /^Custom workout/ });
     this.rows = this.settings.locator('.setting-row');

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { Button } from '../button/button';
 import { FullscreenToggle } from '../fullscreen-toggle/fullscreen-toggle';
 import { Lockup } from '../lockup/lockup';
@@ -39,6 +39,12 @@ export class RideHeader {
   /** Library, which asks to leave the ride in a popover under it (L2-107 AC1); emitted with the button, its anchor. */
   readonly libraryOpen = input(false);
   readonly library = output<HTMLElement>();
+  /** The bike status opens Diagnostics (L2-113 AC1). */
+  readonly diagnostics = output<void>();
+  /** "Diagnostics: Echelon EX-5s Connected", or "Diagnostics: No bike connected" without a named bike (L2-019). */
+  protected readonly diagnosticsLabel = computed(() =>
+    ['Diagnostics:', this.bikeName(), this.bikeState()].filter(Boolean).join(' '),
+  );
   /** Whether the browser has the Fullscreen API: without it there is no Full screen (L2-144 AC2). */
   readonly fullscreenAvailable = input.required<boolean>();
   readonly fullscreen = input.required<boolean>();

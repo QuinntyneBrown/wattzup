@@ -1,3 +1,4 @@
+import { Dialog } from '@angular/cdk/dialog';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -45,6 +46,7 @@ import { bikeRow } from '../profile/bike-row';
 import { DeviceCheckStore } from './device-check-store';
 import { SavedWorldsStore } from './saved-worlds-store';
 import { NONE_SAVED } from './saved-worlds-view';
+import { openDiagnostics } from '../diagnostics/open-diagnostics';
 
 /**
  * Settings at `/settings` (docs/mocks/pages/settings/, L2-158): its five sections and their nav, each control
@@ -88,6 +90,7 @@ export default class SettingsPage {
   protected readonly savedWorlds = inject(SavedWorldsStore);
   protected readonly noneSaved = NONE_SAVED;
   private readonly injector = inject(Injector);
+  private readonly dialog = inject(Dialog);
   private readonly connection = inject(BIKE_CONNECTION);
   private readonly support = inject(BLUETOOTH_SUPPORT);
   private readonly remembered = inject(REMEMBERED_BIKE).get();
@@ -128,7 +131,7 @@ export default class SettingsPage {
     { name: 'device', heading: 'This device', icon: 'device' },
   ];
 
-  /** The Bike section's row, as Profile's (L2-112 AC1, AC2); Diagnostics takes its place in slice 25.1. */
+  /** The Bike section's row, as Profile's (L2-112 AC1, AC2): with a bike paired, it opens Diagnostics (L2-113 AC1). */
   protected readonly bike = computed(() =>
     bikeRow(
       this.connection.ble(),
@@ -136,6 +139,10 @@ export default class SettingsPage {
       (this.connection.bike() ?? this.remembered)?.name ?? null,
     ),
   );
+
+  protected openDiagnostics(): void {
+    void openDiagnostics(this.dialog, this.injector);
+  }
 
   constructor() {
     const host: HTMLElement = inject(ElementRef).nativeElement;

@@ -31,7 +31,8 @@ export class SettingsPage {
     this.sections = page.locator('main').getByRole('region');
     this.notStored = page.locator('.settings-page__notice').getByRole('alert');
     this.keepAwake = page.getByRole('switch', { name: 'Keep the screen awake' });
-    this.bikeRow = this.section('Bike').getByRole('link');
+    // A link to Connect Bike with no bike paired; with one, the button that opens Diagnostics (L2-113 AC1).
+    this.bikeRow = this.section('Bike').locator('a, button').first();
     this.resetText = page.locator('.settings-reset__text');
     this.reset = page.getByRole('button', { name: 'Reset to recommended' });
     this.announcement = page.locator('.settings-page__announcement');

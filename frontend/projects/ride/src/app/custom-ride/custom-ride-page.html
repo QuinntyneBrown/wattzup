@@ -15,6 +15,7 @@
   [fullscreen]="fullscreen.active()"
   [fullscreenAvailable]="fullscreen.available()"
   (fullscreenToggled)="toggleFullscreen()"
+  (diagnostics)="openDiagnostics()"
 >
   <a wz-ride-workout-link slot="workout" routerLink="/profile/custom"
     >{{ store.workout }}<span class="visually-hidden"> — edit workout</span></a

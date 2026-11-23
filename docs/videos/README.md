@@ -99,6 +99,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 23.3 | [Screen readers and motion](23-3-screen-readers-and-motion/README.md) | 1:56 | What a screen reader hears as the custom ride's first work starts and as Results opens; the leave dialog keeping the focus with the app inert; the interval bar stilled under reduced motion; Results from 390 to 1440 px |
 | 24.1 | [Switch theme](24-1-switch-theme/README.md) | 1:40 | Home on dark and light phones; the light device's dark first paint failing and fixed; three 4.48:1 text pairs brought past 4.5; Settings' Theme; a ride in light; Home in light from 390 to 1440 px |
 | 24.2 | [Full screen](24-2-full-screen/README.md) | 1:40 | The race bar's Full screen and Exit full screen; a class ride, Results, Connect Bike and Class Start with it; the spec's failures without the API; Race Setup from 390 to 1440 px |
+| 25.1 | [Inspect diagnostics](25-1-inspect-diagnostics/README.md) | 1:45 | The custom ride's bike status and the connected bike's facts; no bike picked; Bluetooth off on Profile; the spec failing then passing; Diagnostics from 390 to 1440 px |
 
 ## What every video is
 
