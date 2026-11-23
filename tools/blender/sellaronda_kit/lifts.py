@@ -273,6 +273,7 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["crowd-3"].box((mx0 - math.cos(myaw) * 0.78, my0 - math.sin(myaw) * 0.78, mz0 + 2.45), (1.45, 0.16, 0.22), myaw)
         B["foliage"].box((mx0 + math.cos(myaw) * 0.78, my0 + math.sin(myaw) * 0.78, mz0 + 2.45), (1.45, 0.16, 0.22), myaw)
         kit.gable(B["larch-aged"], (mx0, my0, mz0 + 2.72), 3.6, 0.75, 0.36, myaw)
+        B["crowd-3"].box((mx0 + math.cos(myaw) * 2.35, my0 + math.sin(myaw) * 2.35, mz0 + 1.65), (0.95, 0.08, 0.22), myaw + 0.4)
 
     # 6. Colfosco Plans-Frara gondola mid-station angle hall on the Gardena -> Colfosco descent (at=10720 m)
     pf_idx = road.index(10720.0)
