@@ -44,3 +44,10 @@ export function edelweissHabitatScore(altitudeMetres: number): number {
   if (altitudeMetres < 1950 || altitudeMetres > 2950) return 0;
   return Math.exp(-(((altitudeMetres - 2420) / 260) ** 2));
 }
+
+/** Golden needle coloration (0..1) of European larch (Larix decidua) by `dayOfYear` (1..365) and `altitudeMetres`. */
+export function larchAutumnGoldRatio(dayOfYear: number, altitudeMetres: number): number {
+  const onsetDay = 285 - Math.max(0, altitudeMetres - 1500) * 0.025;
+  const u = Math.max(0, Math.min(1, (dayOfYear - onsetDay) / 22));
+  return u * u * (3 - 2 * u);
+}

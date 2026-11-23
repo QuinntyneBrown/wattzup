@@ -3,6 +3,7 @@ import {
   dolomiteFloraZone,
   edelweissHabitatScore,
   hayHarvestMonth,
+  larchAutumnGoldRatio,
   mugoPineCoverWeight,
   treeLineDensity,
   wildflowerBloomIntensity,
@@ -30,5 +31,7 @@ describe('dolomiteFloraZone', () => {
     expect(mugoPineCoverWeight(1600)).toBe(0);
     expect(edelweissHabitatScore(2420)).toBeCloseTo(1, 3);
     expect(edelweissHabitatScore(1500)).toBe(0);
+    expect(larchAutumnGoldRatio(180, 2000)).toBe(0);
+    expect(larchAutumnGoldRatio(305, 2050)).toBeGreaterThan(0.9);
   });
 });
