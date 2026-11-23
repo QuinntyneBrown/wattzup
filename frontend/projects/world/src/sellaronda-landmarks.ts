@@ -105,3 +105,9 @@ export function passClimbLengthMetres(passId: SellaPass['id']): number {
   const p = SELLA_RONDA_PASSES.find((entry) => entry.id === passId) ?? SELLA_RONDA_PASSES[0]!;
   return p.courseMetres - p.climbFromMetres;
 }
+
+/** True when `metres` lies within 450 m of any of the four high Sella Ronda pass saddles. */
+export function isHighWallSector(metres: number): boolean {
+  const w = ((metres % 11650) + 11650) % 11650;
+  return SELLA_RONDA_PASSES.some((p) => Math.abs(w - p.courseMetres) <= 450);
+}

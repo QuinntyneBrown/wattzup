@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  isHighWallSector,
   nextSellaPass,
   passClimbLengthMetres,
   passClimbProgress,
@@ -44,5 +45,7 @@ describe('SELLA_RONDA_PASSES', () => {
       'Torri del Sella (Terza Torre)',
     );
     expect(passClimbLengthMetres('pordoi')).toBe(1650);
+    expect(isHighWallSector(7750)).toBe(true);
+    expect(isHighWallSector(3120)).toBe(false);
   });
 });
