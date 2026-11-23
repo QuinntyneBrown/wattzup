@@ -143,4 +143,16 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
                 rad_m = rng.uniform(1.1, 2.3)
                 B["pine"].box((mx, my, mz - 0.15), (rad_m, rad_m * 0.85, rng.uniform(0.55, 1.05)), rng.uniform(0.0, math.pi))
 
+    # 8. CAI / AVS red-white-red alpine hiking trail fingerposts & waymarked boulders at footpath crossings
+    for cai_m, cai_side in ((1960.0, 1.0), (4840.0, -1.0), (5080.0, 1.0), (7640.0, 1.0), (10040.0, -1.0), (10260.0, 1.0)):
+        c_idx = road.index(cai_m)
+        cyaw = s[c_idx]["h"] + 0.45 * cai_side
+        cx_t, cy_t, _ = road.at(c_idx, (kit.kerb + 2.8) * cai_side)
+        cz_t = height_at(cx_t, cy_t)
+        B["larch-warm"].box((cx_t, cy_t, cz_t - 0.1), (0.12, 0.12, 2.35), cyaw)
+        for arm_z, arm_ang in ((2.05, 0.3), (1.72, -0.5)):
+            B["parasol-red"].box((cx_t, cy_t, cz_t + arm_z), (0.95, 0.06, 0.20), cyaw + arm_ang)
+            B["paint"].box((cx_t, cy_t, cz_t + arm_z + 0.01), (0.58, 0.07, 0.18), cyaw + arm_ang)
+        B["dolomite-pale"].box((cx_t + 1.2, cy_t - 0.8, cz_t - 0.2), (0.95, 0.78, 0.65), cyaw)
+
     return trees
