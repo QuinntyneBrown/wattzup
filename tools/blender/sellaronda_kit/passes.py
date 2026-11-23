@@ -451,4 +451,8 @@ def build_four_passes(B, kit, road, height_at) -> None:
         B["ladin-blue"].box(kit.P(fh_i, 0.0, -(kit.kerb + 1.48), 1.55), (0.08, 0.78, 0.42), fhy)
     # Bronze racing-wheel tribute sculpture on the Coppi plaza at Passo Pordoi
     B["gold"].box((mx - math.cos(p_yaw) * 1.65, my - math.sin(p_yaw) * 1.65, mz + 0.25), (0.85, 0.14, 0.85), p_yaw)
+    # Roofed Alta Badia / Cherz hiking map board on Passo Campolongo (at=2122 m)
+    ch_b = road.index(2122.0)
+    B["larch-aged"].box(kit.P(ch_b, 0.0, kit.kerb + 3.8, 0.0), (2.2, 0.18, 2.25), s[ch_b]["h"])
+    kit.gable(B["chalet-wood"], kit.P(ch_b, 0.0, kit.kerb + 3.8, 2.25), 2.6, 0.85, 0.42, s[ch_b]["h"])
     # [ANCHOR:passes]
