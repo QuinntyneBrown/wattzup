@@ -170,3 +170,11 @@ def build_four_passes(B, kit, road, height_at) -> None:
     B["larch-aged"].box(kit.P(sel_idx, 0.0, -(kit.kerb + 3.6), 2.95), (2.95, 0.48, 0.36), sel_yaw)
     kit.gable(B["larch-warm"], kit.P(sel_idx, 0.0, -(kit.kerb + 3.6), 3.31), 3.35, 0.92, 0.55, sel_yaw)
     B["gold"].box(kit.P(sel_idx, 0.0, -(kit.kerb + 3.6), 2.38), (0.38, 0.38, 0.48), sel_yaw)
+
+    # Passo Gardena / Ju de Frara UNESCO Dolomites World Heritage monolith & corten emblem
+    un_idx = road.index(10142.0)
+    un_yaw = s[un_idx]["h"]
+    ux_m, uy_m, uz_m = kit.P(un_idx, 0.0, kit.kerb + 3.5, -0.2)
+    B["dolomite-pale"].box((ux_m, uy_m, uz_m), (1.85, 1.35, 2.45), un_yaw + 0.22)
+    B["larch-aged"].box((ux_m, uy_m, uz_m + 1.15), (1.92, 0.65, 0.72), un_yaw + 0.22)
+    B["ladin-blue"].box((ux_m, uy_m, uz_m + 1.38), (1.96, 0.38, 0.28), un_yaw + 0.22)
