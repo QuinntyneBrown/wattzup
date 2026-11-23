@@ -78,3 +78,14 @@ export function countTornantiInCurvatures(
   }
   return count;
 }
+
+const GALLERIES: readonly (readonly [number, number])[] = [
+  [4560, 4648], // Pordoi cliffside galleria paramassi
+  [9660, 9740], // Gardena cliffside galleria paramassi
+];
+
+/** True when `metres` lies inside one of Sella Ronda's cliffside concrete rockfall galleries. */
+export function isInsideRockfallGallery(metres: number): boolean {
+  const w = ((metres % 11650) + 11650) % 11650;
+  return GALLERIES.some(([a, b]) => w >= a && w <= b);
+}
