@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   currentValley,
   distanceToNextVillage,
+  hasOnionDomeBelfry,
   LADIN_VILLAGES,
   villageAtMetres,
 } from './ladin-villages';
@@ -19,5 +20,7 @@ describe('LADIN_VILLAGES', () => {
     expect(fromPordoi.metresAhead).toBe(1170);
     expect(villageAtMetres(3100)?.id).toBe('arabba');
     expect(villageAtMetres(4950)).toBeNull();
+    expect(hasOnionDomeBelfry('corvara')).toBe(true);
+    expect(hasOnionDomeBelfry('arabba')).toBe(false);
   });
 });
