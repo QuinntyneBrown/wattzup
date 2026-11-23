@@ -180,3 +180,11 @@ export function precedingPassForVillage(
 ): 'campolongo' | 'pordoi' | 'sella' | 'gardena' {
   return ARRIVING_FROM_PASS[villageId];
 }
+
+/** Returns all four Ladin villages ordered forward along the clockwise loop starting from `metres`. */
+export function villagesAheadInOrder(metres: number): readonly LadinVillage[] {
+  const w = ((metres % 11650) + 11650) % 11650;
+  const idx = LADIN_VILLAGES.findIndex((v) => v.courseMetres >= w);
+  if (idx <= 0) return [...LADIN_VILLAGES];
+  return [...LADIN_VILLAGES.slice(idx), ...LADIN_VILLAGES.slice(0, idx)];
+}

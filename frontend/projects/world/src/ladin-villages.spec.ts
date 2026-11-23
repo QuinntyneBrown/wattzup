@@ -13,6 +13,7 @@ import {
   streamForVillage,
   villageAltitudeSpreadMetres,
   villageAtMetres,
+  villagesAheadInOrder,
 } from './ladin-villages';
 
 describe('LADIN_VILLAGES', () => {
@@ -44,5 +45,11 @@ describe('LADIN_VILLAGES', () => {
     expect(findLadinVillage('Cianacei')?.id).toBe('canazei');
     expect(precedingPassForVillage('corvara')).toBe('gardena');
     expect(precedingPassForVillage('canazei')).toBe('pordoi');
+    expect(villagesAheadInOrder(5000).map((v) => v.id)).toEqual([
+      'canazei',
+      'selva',
+      'corvara',
+      'arabba',
+    ]);
   });
 });
