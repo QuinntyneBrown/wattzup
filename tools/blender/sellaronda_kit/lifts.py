@@ -129,6 +129,7 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["chalet-plaster"].box((sub_x, sub_y, sub_z - 0.8), (3.2, 2.8, 3.1), yaw_l)
         B["steel"].box((sub_x, sub_y, sub_z + 0.2), (1.4, 2.88, 1.95), yaw_l)
         kit.gable(B["roof-slate"], (sub_x, sub_y, sub_z + 2.3), 3.6, 3.2, 0.75, yaw_l)
+        B["steel"].box((sub_x, sub_y, sub_z + 3.05), (0.06, 0.06, 1.45), yaw_l)
         B["paint"].box((base_x + cly * 6.5, base_y - clx * 6.5, st_z), (0.10, 0.10, 2.85), yaw_l)
         B["parasol-red"].box((base_x + cly * 6.5, base_y - clx * 6.5, st_z + 2.15), (1.35, 0.08, 0.65), yaw_l)
         for gt_o in (-1.2, 0.0, 1.2):
