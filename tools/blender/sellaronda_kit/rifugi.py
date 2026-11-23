@@ -388,4 +388,13 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     for sb_r in (4915.0, 10122.0):
         sbi = road.index(sb_r)
         B["ladin-blue"].box(kit.P(sbi, 0.0, -(kit.kerb + 2.2), 0.0), (0.14, 0.42, 2.25), road.s[sbi]["h"])
+    # Historic 1903 mountaineers' timber wing on Passo Sella (at=7768 m)
+    hs_i = road.index(7768.0)
+    hsy = road.s[hs_i]["h"]
+    hsx, hsy_p, _ = road.at(hs_i, kit.kerb + 16.5)
+    if road.clear_of_road(hsx, hsy_p, 11.0, hs_i):
+        hsz = max(height_at(hsx, hsy_p), road.s[hs_i]["z"] - 0.8)
+        B["stone"].box((hsx, hsy_p, hsz - 1.0), (8.4, 5.8, 2.2), hsy)
+        B["larch-aged"].box((hsx, hsy_p, hsz + 1.2), (8.8, 6.2, 3.2), hsy)
+        kit.gable(B["chalet-wood"], (hsx, hsy_p, hsz + 4.4), 9.4, 6.8, 1.6, hsy)
     # [ANCHOR:rifugi-global]
