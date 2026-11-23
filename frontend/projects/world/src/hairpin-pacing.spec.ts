@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   apexSpeedFactor,
   brakingDistanceMetres,
+  centripetalGForce,
   classifyBendSeverity,
   countTornantiInCurvatures,
   isInsideRockfallGallery,
@@ -36,5 +37,6 @@ describe('classifyBendSeverity', () => {
     expect(countTornantiInCurvatures(sampleK)).toBe(2);
     expect(isInsideRockfallGallery(4600)).toBe(true);
     expect(isInsideRockfallGallery(5000)).toBe(false);
+    expect(centripetalGForce(12, 0.02)).toBeCloseTo(0.2936, 2);
   });
 });
