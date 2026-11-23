@@ -93,6 +93,7 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
     _fbox(-4.8, 4.9, 3.1, 1.15, 0xF4F0E6)
     _fbox(-4.65, 4.96, 2.75, 0.85, 0x9CC4E4)
     _fbox(-3.60, 4.20, 1.80, 0.16, 0xFFE6B4)
+    _fbox(-4.72, 4.98, 2.78, 0.08, 0xDCE2EA)
     cableways_out = [{
         "from": [round(lx - px_p * 2.1, 2), round(lz + 6.8, 2), round(-(ly - py_p * 2.1), 2)],
         "to": [round(tx - px_p * 2.1, 2), round(tz + 6.5, 2), round(-(ty - py_p * 2.1), 2)],
