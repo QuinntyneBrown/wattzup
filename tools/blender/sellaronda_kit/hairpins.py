@@ -347,4 +347,8 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
     for cw_m in (1650.0, 4280.0, 7260.0, 9550.0):
         cwi = road.index(cw_m)
         B["stone"].box(kit.P(cwi, 0.0, -(kit.kerb + 3.6), 1.5), (2.4, 1.8, 1.4), s[cwi]["h"])
+    # Snowplow clearance wands at the portals of Pordoi & Gardena rockfall galleries
+    for gw_m in (4558.0, 4632.0, 9658.0, 9722.0):
+        gwi = road.index(gw_m)
+        B["yellow"].box(kit.P(gwi, 0.0, kit.kerb + 0.55, 0.0), (0.09, 0.09, 2.15), s[gwi]["h"])
     # [ANCHOR:hairpins]
