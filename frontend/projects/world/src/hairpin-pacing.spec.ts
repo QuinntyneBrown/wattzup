@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   apexSpeedFactor,
+  brakingDistanceMetres,
   classifyBendSeverity,
   leanAngleDegrees,
   switchbackCadenceTargetRpm,
@@ -23,5 +24,6 @@ describe('classifyBendSeverity', () => {
     expect(switchbackCadenceTargetRpm(8, 0.02)).toBeGreaterThan(switchbackCadenceTargetRpm(8, 0));
     expect(leanAngleDegrees(11, 0.02)).toBeGreaterThan(10);
     expect(leanAngleDegrees(0, 0.03)).toBe(0);
+    expect(brakingDistanceMetres(16, 8, -9)).toBeGreaterThan(brakingDistanceMetres(16, 8, 0));
   });
 });

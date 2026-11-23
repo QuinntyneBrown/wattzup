@@ -33,3 +33,14 @@ export function leanAngleDegrees(speedMps: number, curvaturePerMetre: number): n
   const raw = (Math.atan((v * v * curvaturePerMetre) / 9.81) * 180) / Math.PI;
   return Math.max(-28, Math.min(28, raw));
 }
+
+/** Stopping/slowing distance (m) from `entryMps` to `apexMps` on `gradePercent` (negative = downhill). */
+export function brakingDistanceMetres(
+  entryMps: number,
+  apexMps: number,
+  gradePercent: number,
+): number {
+  if (entryMps <= apexMps) return 0;
+  const decelG = Math.max(0.18, 0.55 + gradePercent * 0.01);
+  return (entryMps * entryMps - apexMps * apexMps) / (2 * 9.81 * decelG);
+}
