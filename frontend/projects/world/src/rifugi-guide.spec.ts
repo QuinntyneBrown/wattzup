@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  findRifugioByName,
   highestSellaRifugio,
   isNearPassRifugio,
   isSummitRifugioOpenAtHour,
@@ -35,5 +36,7 @@ describe('SELLA_RIFUGI', () => {
     expect(isSummitRifugioOpenAtHour(2)).toBe(false);
     expect(rifugiWithinMetres(7750, 120).length).toBeGreaterThanOrEqual(2);
     expect(meanRifugioAltitudeMetres()).toBeGreaterThan(2000);
+    expect(findRifugioByName('Savoia')?.passId).toBe('pordoi');
+    expect(findRifugioByName('')).toBeNull();
   });
 });
