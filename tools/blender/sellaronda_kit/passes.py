@@ -207,3 +207,10 @@ def build_four_passes(B, kit, road, height_at) -> None:
     B["stone"].box((ox, oy, oz), (2.2, 2.2, 0.75), ob_yaw)
     B["brick"].box((ox, oy, oz + 0.75), (1.15, 1.15, 3.85), ob_yaw)
     kit.gable(B["dolomite-pale"], (ox, oy, oz + 4.60), 1.22, 1.22, 0.95, ob_yaw)
+
+    # Carved larch Dolomite mountaineer sculpture on boulder pedestal at Passo Sella (at=7738 m)
+    ms_idx = road.index(7738.0)
+    ms_yaw = s[ms_idx]["h"]
+    mx_s, my_s, mz_s = kit.P(ms_idx, 0.0, kit.kerb + 3.4, -0.15)
+    B["dolomite-pale"].box((mx_s, my_s, mz_s), (1.35, 1.35, 1.10), ms_yaw)
+    B["larch-warm"].box((mx_s, my_s, mz_s + 1.10), (0.48, 0.44, 1.85), ms_yaw + 0.4)
