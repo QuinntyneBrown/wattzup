@@ -126,3 +126,24 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     shelf_in_r = (cx_w + cux * 95.0 + cpx * 125.0, cy_w + cuy * 95.0 + cpy * 125.0, 372.0)
     shelf_in_l = (cx_w + cux * 95.0 - cpx * 125.0, cy_w + cuy * 95.0 - cpy * 125.0, 372.0)
     quad_shaded(peaks, shelf_l, shelf_r, shelf_in_r, shelf_in_l, cfn, 362.0, snow=True)
+
+    # Val Lasties canyon jaws (at=6250 m) & Le Mëisules / Mesules (2,999 m) northern cliff rampart (at=9550 m)
+    last_pt = road.s[road.index(6250.0)]
+    ldx, ldy = last_pt["x"] - cx, last_pt["y"] - cy
+    ldist = max(1.0, math.hypot(ldx, ldy))
+    lux, luy = ldx / ldist, ldy / ldist
+    lpx, lpy = -luy, lux
+    for jaw_sign, jaw_h in ((-1.0, 495.0), (1.0, 520.0)):
+        jx = cx + lux * 720.0 + lpx * (125.0 * jaw_sign)
+        jy = cy + luy * 720.0 + lpy * (125.0 * jaw_sign)
+        rock_tower(peaks, jx, jy, 105.0, jaw_h, 92.0, 80.0, 10, math.atan2(luy, lux), cfn, taper=0.72, flat_cap=True, seed_phase=3.2 + jaw_sign)
+
+    mes_pt = road.s[road.index(9550.0)]
+    mdx, mdy = mes_pt["x"] - cx, mes_pt["y"] - cy
+    mdist = max(1.0, math.hypot(mdx, mdy))
+    mux, muy = mdx / mdist, mdy / mdist
+    mpx, mpy = -muy, mux
+    for b_idx, lat_b in enumerate((-180.0, -55.0, 75.0, 195.0)):
+        bx = cx + mux * 760.0 + mpx * lat_b
+        by = cy + muy * 760.0 + mpy * lat_b
+        rock_tower(peaks, bx, by, 120.0, 615.0 - b_idx * 16.0, 95.0, 76.0, 10, math.atan2(muy, mux), cfn, taper=0.80, flat_cap=True, seed_phase=0.9 + b_idx)
