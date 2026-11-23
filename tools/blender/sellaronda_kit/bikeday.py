@@ -560,6 +560,12 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     B["dark"].box((pcx_c, pcy_c, pcz_c), (4.55, 1.88, 1.38), pcy)
     B["neon-lime"].box((pcx_c, pcy_c, pcz_c + 1.38), (0.35, 1.25, 0.36), pcy)
 
+    # Young fans holding bright yellow cheering placards at village exits
+    for kd_m in (398.0, 3238.0, 6235.0, 9038.0):
+        kdi = road.index(kd_m)
+        B["crowd-2"].box(kit.P(kdi, 0.0, kit.kerb + 1.65, 0.0), (0.28, 0.32, 1.05), s[kdi]["h"])
+        B["yellow"].box(kit.P(kdi, 0.0, kit.kerb + 1.65, 1.15), (0.06, 0.58, 0.42), s[kdi]["h"])
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
