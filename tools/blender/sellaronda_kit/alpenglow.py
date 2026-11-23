@@ -130,6 +130,12 @@ def emit_dusk_lights(kit, road, height_at) -> None:
             kit.halo((gx_l, gy_l, gz_l), "bulb")
             d_g += 24.0
 
+    # Discreet warm uplight on the 4 trilingual pass summit photo signboards
+    for p in PASSES:
+        s_idx = road.index(p["at"] + 6.0)
+        sx_l, sy_l, sz_l = road.at(s_idx, -(kit.kerb + 2.4), 2.4)
+        kit.light((sx_l, sy_l, sz_l), "glow-window", 12.0, 0.45)
+
 
 def build_valley_mist(B, road, height_at) -> None:
     """Lays delicate dusk valley-mist ribbons down in the four deep valley hollows off the road."""
