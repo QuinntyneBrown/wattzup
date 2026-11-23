@@ -116,6 +116,7 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         st_z = height_at(base_x, base_y)
         B["stone"].box((base_x, base_y, st_z - 2.2), (11.5, 7.6, 2.8), yaw_l)
         B["larch-warm"].box((base_x, base_y, st_z + 0.6), (12.2, 8.0, 3.8), yaw_l)
+        B["neon-lime"].box((base_x - clx * 6.2, base_y - cly * 6.2, st_z + 3.6), (0.14, 2.8, 0.34), yaw_l)
         B["dark"].box((base_x, base_y, st_z + 1.4), (12.4, 8.2, 1.8), yaw_l)
         B["steel"].box((base_x + clx * 6.8, base_y + cly * 6.8, st_z + 3.2), (1.4, 4.6, 0.55), yaw_l)
         for ts_k in (-1.4, 0.0, 1.4):
