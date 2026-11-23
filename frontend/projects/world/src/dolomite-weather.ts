@@ -36,3 +36,12 @@ export function uvIndexAtAltitude(altitudeMetres: number, seaLevelUv = 7.0): num
   const factor = 1 + (Math.max(0, altitudeMetres) / 1000) * 0.11;
   return Number((seaLevelUv * factor).toFixed(1));
 }
+
+/** Recommended descent layering (`'summer-jersey' | 'wind-gilet' | 'thermal-jacket'`) for `summitTempC`. */
+export function recommendedDescentLayer(
+  summitTempC: number,
+): 'summer-jersey' | 'wind-gilet' | 'thermal-jacket' {
+  if (summitTempC < 8) return 'thermal-jacket';
+  if (summitTempC < 16) return 'wind-gilet';
+  return 'summer-jersey';
+}

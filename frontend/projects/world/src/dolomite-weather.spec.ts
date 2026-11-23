@@ -3,6 +3,7 @@ import {
   aerobicMaxPowerFactor,
   boilingPointCelsiusAtAltitude,
   passAirTemperatureCelsius,
+  recommendedDescentLayer,
   relativeAirDensity,
   uvIndexAtAltitude,
   windChillCelsius,
@@ -25,5 +26,7 @@ describe('dolomite-weather', () => {
     expect(aerobicMaxPowerFactor(2240)).toBeGreaterThan(0.89);
     expect(boilingPointCelsiusAtAltitude(2240)).toBeCloseTo(92.5, 1);
     expect(uvIndexAtAltitude(2240, 7)).toBeGreaterThan(8.5);
+    expect(recommendedDescentLayer(13)).toBe('wind-gilet');
+    expect(recommendedDescentLayer(5)).toBe('thermal-jacket');
   });
 });
