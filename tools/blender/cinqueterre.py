@@ -43,18 +43,25 @@ THEME: dict = {
 
 
 def parapet(k) -> None:
-    """Detail 3, the corniche road: a low stone wall follows the cliff edge through every bend."""
-    face = k.B["stone"]
-    inner = k.kerb + 0.8
-    outer = inner + 0.5
+    """Detail 3, the corniche road: a low wall of coursed stone follows the cliff edge through every bend, under
+    worn capstones, with a squat pier every 32 m and a slot at its foot now and then to let the rain off the road."""
+    face, cap = k.B["stone"], k.B["ct-cap"]
+    inner, outer, top = k.kerb + 0.8, k.kerb + 1.25, 0.78
+    at = k.road.at
     for i in range(k.n - 1):
-        a = k.road.at(i, inner, 0.72)
-        b = k.road.at(i + 1, inner, 0.72)
-        c = k.road.at(i + 1, outer, 0.72)
-        d = k.road.at(i, outer, 0.72)
-        face.quad(k.road.at(i, inner), k.road.at(i + 1, inner), b, a)
-        face.quad(a, b, c, d)
-        face.quad(d, c, k.road.at(i + 1, outer, -0.25), k.road.at(i, outer, -0.25))
+        j = i + 1
+        # A drain: for one sample in eleven the wall stands on a lintel, clear of the ground.
+        foot = 0.22 if i % 11 == 5 else 0.0
+        face.quad(at(i, inner, foot), at(j, inner, foot), at(j, inner, top), at(i, inner, top))
+        face.quad(at(i, outer, top), at(j, outer, top), at(j, outer, -0.4), at(i, outer, -0.4))
+        # The capstones overhang the wall a little either side.
+        lo, hi, a, b = top, top + 0.09, inner - 0.05, outer + 0.05
+        cap.quad(at(i, a, lo), at(j, a, lo), at(j, a, hi), at(i, a, hi))
+        cap.quad(at(i, a, hi), at(j, a, hi), at(j, b, hi), at(i, b, hi))
+        cap.quad(at(i, b, hi), at(j, b, hi), at(j, b, lo), at(i, b, lo))
+        if i % 8 == 0:
+            face.box(k.P(i, 0, (inner + outer) / 2, -0.2), (0.7, 0.7, 1.22), k.s[i]["h"])
+            cap.box(k.P(i, 0, (inner + outer) / 2, 1.02), (0.82, 0.82, 0.1), k.s[i]["h"])
 
 
 def scenery(k) -> dict:
