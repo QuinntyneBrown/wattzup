@@ -298,4 +298,6 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     odpx, odpy = -oduy, odux
     for od_i, od_lat in enumerate((-210.0, -70.0, 75.0, 215.0)):
         rock_tower(peaks, od_pt["x"] + odux * 1680.0 + odpx * od_lat, od_pt["y"] + oduy * 1680.0 + odpy * od_lat, 55.0, 815.0 - abs(od_i - 1.5) * 28.0, 105.0, 72.0, 8, math.atan2(-oduy, -odux), cfn, taper=0.26, flat_cap=False, seed_phase=3.7 + od_i)
+    # Rifugio Friedrich August (2,298 m) on the Col Rodella shoulder overlooking Val di Fassa
+    rock_tower(peaks, rod_pt["x"] + rux * 455.0 - (-ruy) * 85.0, rod_pt["y"] + ruy * 455.0 - rux * 85.0, 395.0, 412.0, 13.0, 9.5, 6, math.atan2(-ruy, -rux), cfn, taper=0.95, flat_cap=True, seed_phase=1.3)
     # [ANCHOR:peaks]
