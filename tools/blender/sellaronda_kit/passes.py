@@ -245,3 +245,9 @@ def build_four_passes(B, kit, road, height_at) -> None:
     B["larch-warm"].box((kx_p, ky_p, kz_p), (4.6, 3.2, 2.75), ks_yaw)
     B["glow-window"].box((kx_p, ky_p, kz_p + 0.95), (3.6, 3.26, 1.15), ks_yaw)
     kit.gable(B["larch-aged"], (kx_p, ky_p, kz_p + 2.75), 5.2, 3.8, 1.15, ks_yaw)
+
+    # Low Dolomite masonry panoramic terrace wall along Passo Sella facing Sassolungo
+    for pw_off in (-18.0, -10.0, -2.0):
+        pw_idx = road.index(7750.0 + pw_off)
+        B["stone"].box(kit.P(pw_idx, 0.0, kit.kerb + 3.2, -0.4), (7.6, 0.58, 1.15), s[pw_idx]["h"])
+        B["dolomite-pale"].box(kit.P(pw_idx, 0.0, kit.kerb + 3.2, 0.75), (7.8, 0.68, 0.14), s[pw_idx]["h"])
