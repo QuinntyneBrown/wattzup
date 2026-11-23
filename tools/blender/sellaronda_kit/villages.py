@@ -253,3 +253,13 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         B["dolomite-pale"].box((gx_g, gy_g, gz_g - 0.4), (3.4, 3.0, 1.15), gyaw)
         B["larch-aged"].box((gx_g, gy_g, gz_g + 0.75), (3.9, 3.5, 2.45), gyaw)
         kit.gable(B["chalet-wood"], (gx_g, gy_g, gz_g + 3.20), 4.4, 4.0, 1.25, gyaw)
+
+    # Alpine Noleggio Bici / Bike Service shopfronts with display bikes in Corvara & Canazei
+    for bs_m, bs_s in ((320.0, -1.0), (6095.0, 1.0)):
+        b_idx = road.index(bs_m)
+        byaw = road.s[b_idx]["h"]
+        bx_s, by_s, bz_s = kit.P(b_idx, 0.0, (kit.kerb + 5.8) * bs_s, 0.0)
+        B["ladin-blue"].box((bx_s, by_s, bz_s + 2.65), (5.8, 1.65, 0.36), byaw)
+        for db_o in (-1.6, 0.0, 1.6):
+            B["dark"].box(kit.P(b_idx, db_o, (kit.kerb + 5.2) * bs_s, 0.0), (1.35, 0.12, 0.62), byaw + 0.3)
+            B["yellow"].box(kit.P(b_idx, db_o, (kit.kerb + 5.2) * bs_s, 0.42), (0.92, 0.10, 0.42), byaw + 0.3)
