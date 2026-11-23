@@ -506,4 +506,13 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
         if road.clear_of_road(pax, pay, 3.8, pa_i):
             B["yellow"].box((pax, pay, height_at(pax, pay) - 0.04), (0.58, 0.58, 0.18), pa_i * 0.5)
 
+    # Quartz-veined pale limestone boulders on upper Sella & Gardena saddles
+    for qb_m in (7620.0, 7840.0, 10050.0, 10220.0):
+        qbi = road.index(qb_m)
+        qbx, qby, _ = road.at(qbi, -(kit.kerb + 8.5))
+        if road.clear_of_road(qbx, qby, 5.5, qbi):
+            qbz = height_at(qbx, qby)
+            B["dolomite-pale"].box((qbx, qby, qbz - 0.25), (1.75, 1.35, 0.95), qb_m * 0.2)
+            B["paint"].box((qbx, qby, qbz + 0.55), (1.65, 0.16, 0.18), qb_m * 0.2)
+
     return trees
