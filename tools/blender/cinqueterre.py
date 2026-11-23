@@ -780,6 +780,60 @@ def vineyard_works(k) -> dict:
     return {"huts": huts, "monorails": rails}
 
 
+def on_the_water(k) -> int:
+    """Detail 2, the Ligurian Sea below: the water a rider sees is the water far out, over the parapet, so that is
+    where the boats are. The ferries that run between the five villages, white with a blue band, trail long wakes
+    along the coast; yachts stand out to sea under white sails; and small fishing boats lie nearer in. They are
+    drawn whole from any distance, paler the further out."""
+    paint, rng, s = Painted(k, "peaks"), k.rng, k.s
+    xs, ys = [p["x"] for p in s], [p["y"] for p in s]
+    shore = max(ys) + SPUR_REACH
+    haze = _lin(THEME["haze"])
+    white, blue, foam, hull = _lin(0xF6F6F2), _lin(0x2F5FA8), _lin(0xDCEAF0), _lin(0x3A4A5A)
+
+    def far(colour, out: float):
+        t = 0.55 * _smooth(400.0, 2600.0, out)
+        return (*(colour[q] + (haze[q] - colour[q]) * t for q in range(3)), 1.0)
+
+    def slab(c, yaw: float, size, colour, out: float) -> None:
+        paint.box(c, size, yaw, far(colour, out), 0.85)
+
+    afloat = 0
+    for q in range(34):
+        x, out = rng.uniform(min(xs) - 400.0, max(xs) + 400.0), rng.uniform(260.0, 2400.0)
+        y = shore + out
+        kind = rng.random()
+        if kind < 0.24:
+            # A ferry along the coast, and its wake behind it.
+            yaw = 0.0 if rng.random() < 0.5 else math.pi
+            cs = math.cos(yaw)
+            slab((x, y, 0.0), yaw, (30.0, 7.5, 3.0), white, out)
+            slab((x, y, 3.0), yaw, (30.2, 7.7, 0.7), blue, out)
+            slab((x - cs * 2.0, y, 3.7), yaw, (20.0, 6.5, 2.6), white, out)
+            slab((x - cs * 5.0, y, 6.3), yaw, (7.0, 5.0, 2.2), white, out)
+            tail, wide = x - cs * 15.0, 3.0
+            end = (x - cs * rng.uniform(260.0, 420.0), 16.0)
+            wake = [(tail, y - wide, 0.25), (tail, y + wide, 0.25), (end[0], y + end[1], 0.25), (end[0], y - end[1], 0.25)]
+            paint.face(wake if cs < 0 else wake[::-1], (far(foam, out),) * 2 + (far(_lin(0x8FB4C8), out),) * 2)
+        elif kind < 0.62:
+            # A yacht: a slim hull, a mainsail and a jib.
+            yaw = rng.uniform(0, math.tau)
+            cs, sn = math.cos(yaw), math.sin(yaw)
+            long_, tall = rng.uniform(9.0, 15.0), rng.uniform(13.0, 20.0)
+            slab((x, y, 0.0), yaw, (long_, 3.0, 1.3), white, out)
+            mast = (x + cs * long_ * 0.1, y + sn * long_ * 0.1)
+            for sail in ([(mast[0], mast[1], 1.6), (mast[0] - cs * long_ * 0.5, mast[1] - sn * long_ * 0.5, 2.2), (mast[0], mast[1], tall)], [(mast[0] + cs * 0.3, mast[1] + sn * 0.3, 1.8), (mast[0] + cs * long_ * 0.42, mast[1] + sn * long_ * 0.42, 1.6), (mast[0] + cs * 0.3, mast[1] + sn * 0.3, tall * 0.86)]):
+                paint.face(sail, (far(white, out),) * 3)
+                paint.face([(p[0] + sn * 0.05, p[1] - cs * 0.05, p[2]) for p in sail][::-1], (far(_lin(0xDADAD4), out),) * 3)
+        else:
+            # A fishing boat: a dark hull and a small white wheelhouse.
+            yaw = rng.uniform(0, math.tau)
+            slab((x, y, 0.0), yaw, (8.0, 3.0, 1.4), rng.choice((hull, blue, _lin(0xA8322C))), out)
+            slab((x - math.cos(yaw) * 1.6, y - math.sin(yaw) * 1.6, 1.4), yaw, (2.4, 2.2, 1.8), white, out)
+        afloat += 1
+    return afloat
+
+
 SHIRTS = (0xD9483A, 0x2F7FC4, 0xF0B429, 0x3E9A62, 0xF2EEE2, 0xE8762C, 0x7A4FB0, 0x25A0A0)
 SKIN = (0xE8B48C, 0xC88A5E, 0x8A5A3C, 0xF0C8A4)
 
@@ -863,4 +917,5 @@ def scenery(k) -> dict:
     path = footpath(k)
     harbour = vernazza(k)
     works = vineyard_works(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "houses": houses, "plants": plants, "boats": hauled, **path, "castle": harbour, **works}
+    afloat = on_the_water(k)
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "houses": houses, "plants": plants, "boats": hauled, **path, "castle": harbour, **works, "afloat": afloat}
