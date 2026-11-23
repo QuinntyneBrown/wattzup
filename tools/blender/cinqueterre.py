@@ -13,6 +13,8 @@ from __future__ import annotations
 import math
 import random
 
+from worldkit import Painted, lin as _lin, smooth as _smooth
+
 CROWD = [f"crowd-{i}" for i in range(6)]
 
 # name -> colour, roughness, glow: added to themes.MATERIALS.
@@ -145,14 +147,6 @@ def lay_centre_line(course: dict, theme: dict, bc):
     return samples, st, length, mean, per_level
 
 
-def _lin(hex_: int) -> tuple[float, float, float, float]:
-    """A colour for a vertex: sRGB hex to linear, as build_course.srgb."""
-    def lin(c: float) -> float:
-        return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
-
-    return (lin((hex_ >> 16 & 255) / 255), lin((hex_ >> 8 & 255) / 255), lin((hex_ & 255) / 255), 1.0)
-
-
 # The five villages, in the order a rider heading east meets them.
 VILLAGES = ("Monterosso", "Vernazza", "Corniglia", "Manarola", "Riomaggiore")
 SPUR_REACH = 150.0  # how far a village's rock spur runs out from the road towards the sea, in metres
@@ -191,11 +185,6 @@ def spur_height(site: dict, x: float, y: float) -> float:
     ridge = top + (7.0 - top) * _smooth(36.0, SPUR_REACH - 30.0, out)
     side = 1 - _smooth(34.0, 84.0, abs(x - site["x"]) * (1.0 + 0.3 * math.sin(out * 0.05)))
     return -8.0 + (ridge + 8.0) * side * (1 - _smooth(SPUR_REACH - 22.0, SPUR_REACH, out)) * _smooth(-6.0, 6.0, out)
-
-
-def _smooth(a: float, b: float, v: float) -> float:
-    t = max(0.0, min(1.0, (v - a) / (b - a)))
-    return t * t * (3 - 2 * t)
 
 
 def seaward(k, i: int) -> int:
@@ -428,46 +417,6 @@ def terraces(k) -> int:
 # The houses' plaster: pinks, ochres, yellows and creams, a terracotta red and a pale green now and then.
 PASTELS = (0xE8A08C, 0xE9B384, 0xF0CF82, 0xF3DDA6, 0xE98F7C, 0xF2C7A0, 0xD9776A, 0xF6E6C4, 0xE7B8A8, 0xC9D3A6, 0xEBC27A, 0xDD8E6E)
 ROOFS = (0xB5674A, 0xA85C44, 0x8C8A86, 0x9A948C)
-
-
-class Painted:
-    """Shapes coloured by vertex in the land's group, which is drawn from much further off than what stands by the
-    road: a village is seen across its bay."""
-
-    def __init__(self, k):
-        self.b = k.B["terrain"]
-        if self.b.colours is None:
-            self.b.colours = []
-
-    def face(self, points, colours) -> None:
-        self.b.faces.append(tuple(self.b.v(p) for p in points))
-        self.b.colours.extend(colours)
-
-    def box(self, c, size, yaw: float, colour, foot: float = 0.72) -> None:
-        """A box on its base centre, darker towards its foot; no underside."""
-        hx, hy, h = size[0] / 2, size[1] / 2, size[2]
-        cs, sn = math.cos(yaw), math.sin(yaw)
-        lo = [(c[0] + dx * cs - dy * sn, c[1] + dx * sn + dy * cs, c[2]) for dx, dy in ((-hx, -hy), (hx, -hy), (hx, hy), (-hx, hy))]
-        hi = [(p[0], p[1], c[2] + h) for p in lo]
-        dark = (colour[0] * foot, colour[1] * foot, colour[2] * foot, 1.0)
-        for q in range(4):
-            r = (q + 1) % 4
-            self.face((lo[q], lo[r], hi[r], hi[q]), (dark, dark, colour, colour))
-        self.face(hi, (colour,) * 4)
-
-    def roof(self, c, along: float, across: float, rise: float, yaw: float, colour) -> None:
-        """A low pitched roof on a box's top, its ridge along `along`, overhanging the walls a little."""
-        cs, sn = math.cos(yaw), math.sin(yaw)
-
-        def p(u, v, w):
-            return (c[0] + u * cs - v * sn, c[1] + u * sn + v * cs, c[2] + w)
-
-        a, d = along / 2 + 0.35, across / 2 + 0.35
-        shade = (colour[0] * 0.82, colour[1] * 0.82, colour[2] * 0.82, 1.0)
-        self.face((p(-a, d, 0), p(a, d, 0), p(a, 0, rise), p(-a, 0, rise)), (colour,) * 4)
-        self.face((p(a, -d, 0), p(-a, -d, 0), p(-a, 0, rise), p(a, 0, rise)), (shade,) * 4)
-        self.face((p(-a, -d, 0), p(-a, d, 0), p(-a, 0, rise)), (shade,) * 3)
-        self.face((p(a, d, 0), p(a, -d, 0), p(a, 0, rise)), (colour,) * 3)
 
 
 def villages(k) -> int:

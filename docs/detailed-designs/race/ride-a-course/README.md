@@ -10,6 +10,10 @@ one and drawing it; the cadence score (L2-167) and a course's place in the catal
 
 Use the stages of GCN Training’s *3 Mins On, 2 Mins Off* to lay the SP370 corniche. The corniche winds above the Ligurian Sea with a low stone parapet on the seaward shoulder. Efforts gain height and recoveries descend. Use the course renderer’s chase camera, start and finish zoom, and cyclist kit that Ibiza uses. The road and wall follow the same sampled centre line through bends. The road is laid along a coast (`tools/blender/cinqueterre.py`): it runs east with the sea always on its left, swings out round headlands and in round ravines, and climbs the hillside by a pair of hairpins on each long effort. North of it the land falls to the water in a cliff; south of it a mountain climbs away inland. The coastal palette and hillside profile come from the Cinque Terre reference photographs in `docs/worlds/cinqueterre`.
 
+## Haleakalā summit road
+
+Use the stages of GCN Training's *Maximum Intensity Hill Climb Efforts* to lay the summit road (`tools/blender/haleakala.py`). The road never descends: every stage climbs, the efforts most steeply, on top of a steady 5.9 %. It sets out east along the coast and climbs the volcano's flank in switchbacks, each leg a traverse across the slope. The land is one long slope fitted to the road, coloured by height from the coast's cane through green ranch land and scrub to red, brown and black cinder. The edge has no barrier, only reflector posts, and the centre line is yellow. The palette and the zones come from the reference photographs in `docs/worlds/haleakala`.
+
 ## Building a course
 
 `tools/blender/build_course.py` (see `tools/blender/README.md`) turns `courses/<id>.json`, the

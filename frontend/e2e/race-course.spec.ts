@@ -5,7 +5,12 @@
 // differ. Comparing two pictures of the same canvas reads no pixel's colour (ADR 0021). The course draws in software
 // here, on WebGL2.
 import type { Locator, Page } from '@playwright/test';
-import { cinqueTerreCourseMap, ibizaCourseMap, sellaRondaCourseMap } from './fixtures/course';
+import {
+  cinqueTerreCourseMap,
+  haleakalaCourseMap,
+  ibizaCourseMap,
+  sellaRondaCourseMap,
+} from './fixtures/course';
 import { ECHELON_NOTIFY, resistanceFrame, workoutFrame } from './fixtures/echelon';
 import type { FakeBluetooth } from './fixtures/fake-bluetooth';
 import { startRace, stepUntil } from './fixtures/race';
@@ -85,11 +90,13 @@ test.describe('a course', () => {
   });
 
   // Every catalogue map is a course (ADR 0035); Vice City's world is drawn under South Beach's id.
-  // Cinque Terre, like Ibiza, is built from its class and served from a fixture of its own (L2-166 AC43).
+  // Cinque Terre and Haleakalā, like Ibiza, are built from their classes and served from fixtures of their own
+  // (L2-166 AC43, AC44).
   for (const [id, course, catalogue] of [
     ['prairie-paceline', 'prairie', undefined],
     ['vice-city', 'vicecity', undefined],
     [cinqueTerreCourseMap.id, 'cinqueterre', [cinqueTerreCourseMap]],
+    [haleakalaCourseMap.id, 'haleakala', [haleakalaCourseMap]],
   ] as const) {
     test(`draws ${id} as its own course built in Blender (L2-166 AC10)`, async ({
       page,

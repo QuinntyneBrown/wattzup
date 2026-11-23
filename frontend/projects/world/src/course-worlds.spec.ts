@@ -4,6 +4,7 @@ describe('coursePath (L2-166 AC1)', () => {
   it.each([
     ['ibiza', 'courses/ibiza'],
     ['cinqueterre', 'courses/cinqueterre'],
+    ['haleakala', 'courses/haleakala'],
     ['prairie', 'courses/prairie'],
     ['oldtown', 'courses/oldtown'],
     ['coast', 'courses/coast'],

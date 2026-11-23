@@ -17,3 +17,14 @@ Fixes to how the road bends and climbs here (L2-101 AC6, L2-110 AC9), from the s
 | Capture | Fix |
 | --- | --- |
 | [035 · The observatories stand on the summit](bend-035-observatories-stand.jpg) | Science City's white domes on the summit and the crater rim were bent vertex by vertex with the road's 50° bends, so the domes slewed and squeezed with each switchback up the cinder slopes. They now stand beyond the road unbent, as the panorama does, and the props behind the rider stand on the road there. |
+
+## The course
+
+Haleakalā as a map built in Blender (ADR 0034, `tools/blender/haleakala.py`), raced from the catalogue with the chase camera Ibiza Sunset
+Strip uses. Each capture is the course bench's picture (`tools/course-bench`), and each row names which of the ten critical details in
+`docs/worlds/haleakala/README.md` the change works on. The frame rate is the bench's at the Low tier with the processor slowed four
+times, its stand-in for a low-power tablet, on a 120 Hz display.
+
+| Capture | Detail | Change | Low tier, 4× slowed |
+| --- | --- | --- | --- |
+| [000 · The summit road](course-000-the-summit-road.jpg) | 1 Switchback road · 9 Road edge · 5 Volcanic cinder | The first build: the 15.8 km road of Maximum Intensity Hill Climb Efforts never descends. It sets out east along the Pacific coast and climbs 923 m up the volcano's flank in some twenty switchbacks, every stage climbing and the efforts most steeply. The land is one long slope fitted to the road, coloured by height from the coast's cane through green ranch land and scrub to red, brown and black cinder. The edge has no barrier, only a white reflector post on each shoulder every 20 m, and the centre line is yellow. | 120 fps, 87,465 triangles, 53 draw calls |
