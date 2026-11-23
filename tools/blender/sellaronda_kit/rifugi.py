@@ -304,4 +304,7 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     crz_r = max(height_at(crx_r, cry_r), road.s[cr_r]["z"] - 0.4)
     B["larch-aged"].box((crx_r, cry_r, crz_r - 0.4), (5.8, 4.4, 2.95), crry)
     kit.gable(B["roof-slate"], (crx_r, cry_r, crz_r + 2.55), 6.4, 5.0, 1.25, crry)
+    # Gilded Giro stage-host plaques on Hotel Savoia's stone facade on Passo Pordoi
+    hs_i = road.index(4925.0)
+    B["gold"].box(kit.P(hs_i, 0.0, -(kit.kerb + 7.6), 1.45), (2.2, 0.08, 0.45), road.s[hs_i]["h"])
     # [ANCHOR:rifugi-global]
