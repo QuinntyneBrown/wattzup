@@ -1,4 +1,11 @@
-import { PLANE_EVERY, PLANE_SEEN, planeFlight, planeLights, type PlanePlace } from './plane-flight';
+import {
+  PLANE_EVERY,
+  PLANE_SEEN,
+  planeFlight,
+  planeLights,
+  type PlanePlace,
+  planeSize,
+} from './plane-flight';
 
 describe('an aeroplane on its way in to land, across the sky (L2-166 AC45)', () => {
   // The sun stands along +x: the aeroplane crosses in front of it, along z.
@@ -119,5 +126,29 @@ describe('the aeroplane in the evening air (L2-166 AC55)', () => {
     // Slowly: no more than a third of a degree from one quarter second to the next.
     for (let i = 1; i < rolls.length; i++)
       expect(Math.abs(rolls[i]! - rolls[i - 1]!)).toBeLessThan(0.006);
+  });
+});
+
+describe('one aeroplane after another, no two arrivals alike (L2-166 AC109)', () => {
+  it('is the size it was built for the first that crosses, and the same size all the way across', () => {
+    expect(planeSize(0)).toBe(1);
+    expect(planeSize(PLANE_SEEN - 1)).toBe(1);
+  });
+
+  it('is a smaller jet or a bigger one for those that come after: from three quarters to a third as big again', () => {
+    const sizes = new Set<number>();
+    for (let arrival = 0; arrival < 10; arrival++) {
+      const early = planeSize(PLANE_SEEN + 5 + arrival * PLANE_EVERY);
+      const late = planeSize(PLANE_SEEN + 40 + arrival * PLANE_EVERY);
+      expect(early).toBe(late);
+      expect(early).toBeGreaterThanOrEqual(0.75);
+      expect(early).toBeLessThanOrEqual(1.34);
+      sizes.add(early);
+    }
+    expect(sizes.size).toBeGreaterThanOrEqual(3);
+  });
+
+  it('is the same at the same second of every ride', () => {
+    expect(planeSize(500)).toBe(planeSize(500));
   });
 });

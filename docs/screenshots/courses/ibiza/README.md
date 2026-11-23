@@ -206,6 +206,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Sky 23 | The gulls are seen: dark against the sunset, two and a half times the size they looked, crossing the middle of the picture for some twenty seconds | 60.0 fps, none over 20 ms (from 7,700 m, 18 s) | 44.5 and 48.9 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 54.0, 50.1 |
 | Sign 6 | The square is a place people stop: two sit on the ends of the plinth with their drinks, a friend stands back to take the picture of those posing, and a pair talk at the side | 60.2 and 60.3 fps (from 268 and 284 m) | 48.9 fps at the sign (87,010 triangles) and 48.1 at the finish (118,819); Neon Docklands beside it 52.4, 49.1 |
 | Sky 24 | The moon has a face: the grey seas across its upper left, one to the right and a small one low down | 59.5 fps (from 262 m) | 49.1 and 46.2 fps after (the finish, 118,879 triangles); Neon Docklands beside it 54.8, 53.3 |
+| Plane 5 | No two arrivals alike: after the first, each aeroplane is one of five sizes, from a small jet (0.78) to a wide-body (1.3), in a skipping order | 60.1 fps (from 5,200 m, the second arrival) | 50.5 and 37.7 fps after (the finish, 118,859 triangles: none more); Neon Docklands beside it 56.3, 44.9 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -773,6 +774,17 @@ the palm with its wings thrown up in a tall V). With the gulls seen at last (Sky
 movements never seen on screen could be tested as the lightning was. The wings move. Of what the sky does, the
 lightning, the low cloud's drift and the gulls' beat are each now seen to be wired; none is left in the code
 exaggerated.
+
+### Plane 5: no two arrivals alike
+
+`plane-05.jpg` (four frames from 5,200 m two minutes into the ride: the second arrival, the wide-body, comes into
+the last). An aeroplane crosses every 110 seconds, and every one was the same aeroplane at the same size. On an
+approach they are not: a small jet, an airliner, a wide-body. The first to cross is the size it was built; each
+after it is one of five sizes from 0.78 to 1.3, a big one after a small one, the same all the way across and on
+every ride (`planeSize` in `plane-flight.ts`, unit tested). Dark against the sunset (Plane 4), its size is all
+that tells one from another.
+
+**Seen once.** The film shows the second arrival, which is the largest; it was not measured against the first.
 
 ### Low power: where the frames go (after Party 20)
 

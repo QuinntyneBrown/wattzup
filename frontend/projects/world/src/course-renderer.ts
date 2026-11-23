@@ -67,7 +67,7 @@ import { colouredGlow, LampGlow } from './lamp-glow';
 import { colourLightMap, lampLightMap } from './lamp-light-map';
 import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
-import { type PlanePlace, planeFlight, planeLights } from './plane-flight';
+import { type PlanePlace, planeFlight, planeLights, planeSize } from './plane-flight';
 import { type Dusk, dusk } from './dusk';
 import { type SunDisc, sunDisc } from './sun-disc';
 import { lightning } from './lightning';
@@ -1359,6 +1359,8 @@ export class CourseRenderer implements WorldRenderer {
       const eye = this.camera.position;
       this.plane.position.set(eye.x + place.x, eye.y + place.y, eye.z + place.z);
       this.plane.rotation.set(place.roll, place.heading, place.pitch);
+      // No two arrivals alike: a smaller jet, the airliner, a wide-body (planeSize).
+      this.plane.scale.setScalar(planeSize(time));
       for (const skin of this.planeSkin) skin.opacity = place.shown;
       const lights = planeLights(time);
       if (this.planeStrobe) this.planeStrobe.visible = lights.strobe;

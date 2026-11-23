@@ -64,6 +64,22 @@ export function planeFlight(
   return true;
 }
 
+/** The sizes an arrival may be, of the size the aeroplane was built: a small jet, the airliner, a wide-body. */
+const SIZES = [0.78, 1, 1.3, 0.9, 1.15] as const;
+
+/**
+ * How big the aeroplane in the sky is at a second of the ride's clock, of the size it was built (L2-166 AC109): the
+ * first to cross is that size, and each that comes after is one of a few, a smaller jet or a bigger one, the same
+ * all the way across and the same on every ride. They are all one aeroplane's shape, and seen dark against the
+ * sunset that is all that tells them apart.
+ */
+export function planeSize(time: number): number {
+  const arrival = Math.floor((time + LEAD / SPEED) / PLANE_EVERY);
+  if (arrival <= 0) return 1;
+  // In a skipping order, so that a big one follows a small one: 1.3, 1.15, 0.78, 0.9, 1 and round again.
+  return SIZES[(arrival * 2) % SIZES.length]!;
+}
+
 /** Seconds from one pair of strobe flashes to the next, and how long a flash and the beacon's blink last. */
 const LIGHTS_EVERY = 1.1;
 const FLASH = 0.06;
