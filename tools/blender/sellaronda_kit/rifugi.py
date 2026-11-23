@@ -311,4 +311,7 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     # Cast-iron Kaiserschmarrn skillet signboard outside Jimmi Hütte (at=10416 m)
     jm_i = road.index(10416.0)
     B["dark"].box(kit.P(jm_i, 0.0, kit.kerb + 2.8, 0.95), (0.14, 0.95, 0.95), road.s[jm_i]["h"])
+    # Historic central clock-gable crowning Hotel Savoia on Passo Pordoi
+    B["chalet-plaster"].box(kit.P(hs_i, 0.0, -(kit.kerb + 8.2), 11.8), (3.2, 1.4, 2.2), road.s[hs_i]["h"])
+    B["gold"].box(kit.P(hs_i, 0.0, -(kit.kerb + 7.45), 12.6), (0.85, 0.12, 0.85), road.s[hs_i]["h"])
     # [ANCHOR:rifugi-global]
