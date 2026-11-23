@@ -134,3 +134,15 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
             gr_idx = road.index(p["at"] + gr_off)
             B["dark"].box(kit.P(gr_idx, 0.0, 0.0, 0.015), (0.42, kit.kerb * 1.92, 0.02), s[gr_idx]["h"])
             B["steel"].box(kit.P(gr_idx, 0.0, 0.0, 0.02), (0.16, kit.kerb * 1.90, 0.02), s[gr_idx]["h"])
+
+    # Orange-rimmed convex parabolic traffic mirrors on blind hairpin apexes
+    mirror_count = 0
+    for i in range(25, kit.n - 25, 14):
+        if abs(s[i]["k"]) > 1 / 58 and mirror_count < 16:
+            mirror_count += 1
+            outside = 1.0 if s[i]["k"] < 0 else -1.0
+            myaw = s[i]["h"] + (0.65 if outside > 0 else -0.65)
+            moff = (kit.kerb + 1.95) * outside
+            B["steel"].box(kit.P(i, 2.0, moff, -0.1), (0.09, 0.09, 2.65), myaw)
+            B["parasol-red"].box(kit.P(i, 2.0, moff, 2.15), (0.10, 0.88, 0.88), myaw)
+            B["glacier-ice"].box(kit.P(i, 1.97, moff, 2.22), (0.12, 0.72, 0.72), myaw)
