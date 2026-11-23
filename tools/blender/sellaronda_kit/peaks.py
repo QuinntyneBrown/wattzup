@@ -488,4 +488,12 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     czul = max(1.0, math.hypot(czux, czuy))
     czux, czuy = czux / czul, czuy / czul
     rock_tower(peaks, chz_pt["x"] + czux * 520.0, chz_pt["y"] + czuy * 520.0, 55.0, 325.0, 185.0, 145.0, 10, math.atan2(-czuy, -czux), cfn, taper=0.72, flat_cap=True, seed_phase=4.5)
+    # 21. Distant Tre Cime di Lavaredo (2,999 m) triple-battlement silhouette on the far NE horizon (Milestone 0900!)
+    tc_pt = road.s[road.index(960.0)]
+    tcux, tcuy = tc_pt["x"] - cx, tc_pt["y"] - cy
+    tcul = max(1.0, math.hypot(tcux, tcuy))
+    tcux, tcuy = tcux / tcul, tcuy / tcul
+    tcpx, tcpy = -tcuy, tcux
+    for tc_i, (tc_l, tc_h) in enumerate(((-95.0, 815.0), (0.0, 845.0), (92.0, 798.0))):
+        rock_tower(peaks, tc_pt["x"] + tcux * 2650.0 + tcpx * tc_l, tc_pt["y"] + tcuy * 2650.0 + tcpy * tc_l, 80.0, tc_h, 62.0, 44.0, 8, math.atan2(-tcuy, -tcux), cfn, taper=0.80, flat_cap=True, seed_phase=1.9 + tc_i)
     # [ANCHOR:peaks]
