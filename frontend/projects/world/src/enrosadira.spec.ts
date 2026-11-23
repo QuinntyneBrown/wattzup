@@ -9,6 +9,7 @@ import {
   enrosadiraTint,
   snowfieldAlbedoTint,
   twilightZenithLuminance,
+  valleyShadowDepth,
 } from './enrosadira';
 
 describe('enrosadiraTint', () => {
@@ -40,5 +41,7 @@ describe('enrosadiraTint', () => {
     expect(snowfieldAlbedoTint(1).r).toBeGreaterThan(snowfieldAlbedoTint(1).b);
     expect(enrosadiraStageName(0.4)).toBe('coral-rose');
     expect(enrosadiraStageName(0.95)).toBe('alpine-dusk');
+    expect(valleyShadowDepth(1550, 2)).toBe(1);
+    expect(valleyShadowDepth(2950, 2)).toBe(0);
   });
 });
