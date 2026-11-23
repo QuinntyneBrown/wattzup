@@ -518,4 +518,10 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
     if road.clear_of_road(ftx, fty, 20.0, ft_i):
         ftz = height_at(ftx, fty) + 6.0
         B["stone"].box((ftx, fty, ftz - 8.0), (13.0, 6.5, 11.5), road.s[ft_i]["h"] + 0.2)
+    # Striped Ladin farmers'-market Speck & mountain-cheese stalls in Corvara & Canazei
+    for mk_m in (282.0, 6136.0):
+        mki = road.index(mk_m)
+        mkx, mky, mkz = kit.P(mki, 0.0, -(kit.kerb + 10.2), 0.0)
+        B["larch-warm"].box((mkx, mky, mkz), (2.8, 1.4, 0.95), road.s[mki]["h"])
+        kit.gable(B["awning"], (mkx, mky, mkz + 2.15), 3.1, 1.8, 0.55, road.s[mki]["h"])
     # [ANCHOR:villages]
