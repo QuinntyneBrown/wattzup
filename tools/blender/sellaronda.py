@@ -205,6 +205,7 @@ def build_terrain(road, col, Builder, cell: float = 28.0):
             slope = math.hypot(hx, hy) / (2.0 * cell)
             swathe = 0.5 + 0.5 * math.sin((x * 0.085 + y * 0.062) + 1.8 * noise(x * 0.5, y * 0.5))
             c = mix(meadow_low, meadow_lush, 0.35 + 0.45 * noise(x * 1.4, y * 1.4) + 0.20 * swathe)
+            c = mix(srgb(0x467830), c, smoothstep(12.0, 48.0, h))
             c = mix(c, meadow_high, smoothstep(70.0, 145.0, h))
             enrosadira_scree = srgb(0xE6B09C)
             c = mix(c, scree_c, smoothstep(125.0, 195.0, h))
