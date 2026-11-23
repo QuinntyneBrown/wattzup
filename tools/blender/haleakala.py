@@ -186,6 +186,13 @@ def zone_colour(t: float, x: float, y: float, bc) -> tuple:
     c = bc.mix(cane, green, _smooth(0.03, 0.1, t))
     c = bc.mix(c, scrub, _smooth(0.4, 0.56, t + 0.04 * n2))
     cinder = bc.mix(bc.mix(red, brown, 0.5 + 0.5 * n1), black, _smooth(0.2, 0.75, n2))
+    # The painted cinder of the upper mountain: broad washes of ochre and of violet-grey ash run down the slope
+    # across the red, as they do over the crater's cones.
+    ochre, ash = _lin(0xB98548), _lin(0x6C6468)
+    wash = bc.noise(x * 0.22 + 31.0, y * 0.5 - 12.0)
+    drift = bc.noise(x * 0.3 - 57.0, y * 0.18 + 40.0)
+    cinder = bc.mix(cinder, ochre, 0.7 * _smooth(0.25, 0.6, wash))
+    cinder = bc.mix(cinder, ash, 0.75 * _smooth(0.3, 0.65, drift))
     return bc.mix(c, cinder, _smooth(0.52, 0.66, t + 0.05 * n1))
 
 
