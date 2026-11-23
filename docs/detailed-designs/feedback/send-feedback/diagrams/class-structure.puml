@@ -17,13 +17,24 @@ title Class structure — Send feedback
 package "ride application" {
   class CustomRidePage {
     -dialog: Dialog
-    -engine: WorkoutEngine
-    +openFeedback(anchor: ElementRef): void
+    -overlay: Overlay
+    #feedbackOpen: WritableSignal<boolean>
+    #openFeedback(anchor: HTMLElement): Promise<void>
+  }
+  class CustomRideStore {
+    +view: WritableSignal<'video' | 'chart'>
+    +openFeedback(): FeedbackContext
+  }
+  class "rideFeedbackContext()" as RideFeedbackContext <<function>> {
+    +(input: RideFeedbackInput): FeedbackContext
+  }
+  class "openFeedback()" as OpenFeedback <<function>> {
+    +(dialog, overlay, injector, anchor, context): Promise<FeedbackDialogHandle>
   }
   class FeedbackDialog {
-    -store: FeedbackStore
-    -ref: DialogRef
-    -data: RideContext
+    #store: FeedbackStore
+    #context: FeedbackContext
+    -dialogRef: DialogRef
   }
   class FeedbackStore {
     +kind: WritableSignal<FeedbackKind>
@@ -33,15 +44,16 @@ package "ride application" {
     +copy: Signal<FeedbackKindCopy>
     +tooLong: Signal<boolean>
     +canSend: Signal<boolean>
-    +send(context: RideContext): Promise<void>
+    +send(context: FeedbackContext): Promise<void>
     +sendAnother(): void
   }
   class FeedbackKindCopy {
-    +label: string
+    +name: string
+    +field: string
     +placeholder: string
-    +sendLabel: string
-    +thanksHeading: string
-    +thanksBody: string
+    +send: string
+    +thanks: string
+    +followUp: string
   }
   enum FeedbackStatus {
     editing
@@ -53,75 +65,74 @@ package "ride application" {
 package "components library" {
   class FeedbackForm {
     +kind: InputSignal<FeedbackKind>
-    +copy: InputSignal<FeedbackKindCopy>
+    +copy: InputSignal<FeedbackFormCopy>
     +message: InputSignal<string>
     +attachDiagnostics: InputSignal<boolean>
-    +context: InputSignal<RideContext>
-    +status: InputSignal<FeedbackStatus>
-    +maxLength: InputSignal<number> = 2000
-    +kindChange: OutputEmitterRef<FeedbackKind>
-    +messageChange: OutputEmitterRef<string>
-    +send: OutputEmitterRef<void>
-    +done: OutputEmitterRef<void>
+    +context: InputSignal<FeedbackContext>
+    +status: InputSignal<FeedbackFormStatus>
+    +canSend: InputSignal<boolean>
+    +maxLength: InputSignal<number>
+    +kindChanged: OutputEmitterRef<FeedbackKind>
+    +messageChanged: OutputEmitterRef<string>
+    +attachChanged: OutputEmitterRef<boolean>
+    +sendRequested: OutputEmitterRef<void>
+    +anotherRequested: OutputEmitterRef<void>
+    +dismissed: OutputEmitterRef<void>
+  }
+  class FeedbackContextDetails {
+    +context: InputSignal<FeedbackContext>
+    +disabled: InputSignal<boolean>
   }
 }
 package "api library" {
   interface FeedbackApi {
-    +send(request: FeedbackRequest): Promise<void>
+    +send(request: FeedbackRequest): Observable<void>
   }
   class HttpFeedbackApi
   class FeedbackRequest {
     +kind: FeedbackKind
     +message: string
-    +context: RideContext
-    +diagnostics?: Diagnostics
+    +context: FeedbackFact[]
+    +diagnostics: FeedbackDiagnostics | null
   }
-  class Diagnostics {
+  class FeedbackDiagnostics {
     +appVersion: string
     +packetLog: string
   }
-  class RideContext {
-    +workout: string
-    +elapsed: string
-    +segment: string
-    +resistance: number
-    +planLevel: number
-    +cadence: number
-    +power: number
-    +heartRate: number | null
-    +distance: number
-    +state: string
-    +view: string
-    +machine: string
-    +bluetooth: string
-    +lastCommand: string
+  class FeedbackContext {
+    +screen: string
+    +summary: string
+    +facts: FeedbackFact[]
+  }
+  class FeedbackFact {
+    +term: string
+    +value: string
   }
   enum FeedbackKind {
     bug
     improvement
     kudos
   }
-}
-package "domain library" {
-  class RideContextBuilder {
-    +build(): RideContext
-  }
   interface PacketLog {
-    +tail(bytes: number): Promise<string>
+    +tail(maxBytes: number): string
   }
 }
 
-CustomRidePage ..> FeedbackDialog : opens
-CustomRidePage ..> RideContextBuilder
+CustomRidePage ..> CustomRideStore : openFeedback()
+CustomRidePage ..> OpenFeedback
+CustomRideStore ..> RideFeedbackContext
+OpenFeedback ..> FeedbackDialog : imports, opens
 FeedbackDialog *-- FeedbackStore : provides
 FeedbackDialog ..> FeedbackForm : renders
+FeedbackForm ..> FeedbackContextDetails : renders
 FeedbackStore --> FeedbackStatus
 FeedbackStore ..> FeedbackKindCopy : FEEDBACK_KIND_COPY
 FeedbackStore ..> FeedbackApi : FEEDBACK_API
 FeedbackStore ..> PacketLog : PACKET_LOG
 HttpFeedbackApi ..|> FeedbackApi
 FeedbackApi ..> FeedbackRequest
-FeedbackRequest *-- RideContext
-FeedbackRequest *-- "0..1" Diagnostics
+FeedbackContext *-- FeedbackFact
+FeedbackRequest *-- FeedbackFact
+FeedbackRequest *-- "0..1" FeedbackDiagnostics
 FeedbackRequest --> FeedbackKind
 @enduml

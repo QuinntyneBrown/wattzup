@@ -17,29 +17,31 @@ skinparam package {
 actor "Rider" as actor
 box "Frontend — Ride app (ride application)" #E0F2FE
   participant "CustomRidePage" as page
+  participant "CustomRideStore" as rstore
   participant "FeedbackDialog" as dialog
   participant "FeedbackStore" as store
 end box
 box "Frontend — Ride app (components and domain libraries)" #E0F2FE
   participant "FeedbackForm" as form
-  participant "WorkoutEngine" as engine
-  participant "RideContextBuilder" as ctx
+  participant "rideFeedbackContext" as ctx
 end box
 actor -> page : Press "Feedback"
-page -> engine : pause() (L2-116 AC1)
-page -> ctx : build()
-ctx -> engine : Read workout, segment, resistance, power, ...
-ctx --> page : RideContext
-alt viewport below sm
-  page -> dialog : Dialog.open as bottom sheet (L2-116 AC4)
+page -> rstore : openFeedback()
+rstore -> ctx : Workout, clock, segment, resistance, power, view, bike, last command
+ctx --> rstore : FeedbackContext
+rstore -> rstore : pause() (L2-116 AC1)
+rstore --> page : FeedbackContext
+page -> page : openFeedback(): import FeedbackDialog
+alt below sm (40 rem)
+  page -> dialog : Dialog.open as a bottom sheet over a scrim (L2-116 AC4)
 else sm or wider
-  page -> dialog : Dialog.open as 400 px popover under the button (L2-116 AC4)
+  page -> dialog : Dialog.open as a 400 px popover under the button (L2-116 AC4)
 end
 dialog -> store : Provide; kind = bug, attachDiagnostics = true
 dialog -> form : kind, copy, context, status = editing
 form --> actor : "Send feedback", "What went wrong?", "Attach diagnostics", "Context is sent with your note." (L2-117 AC1, AC3)
 actor -> form : Choose "Improvement"
-form -> dialog : kindChange(improvement)
+form -> dialog : kindChanged(improvement)
 dialog -> store : kind.set(improvement)
 store --> form : "What could be better?", "Send idea"; no diagnostics check (L2-116 AC2, L2-117 AC1)
 actor -> form : Expand the context
@@ -49,7 +51,7 @@ form -> store : message.set(text)
 alt empty
   store --> form : canSend = false; button disabled (L2-116 AC3)
 else over 2,000 characters
-  store --> form : tooLong; count shown; refused (L2-116 AC3)
+  store --> form : tooLong; "2,001 / 2,000 characters", aria-invalid; refused (L2-116 AC3)
 else valid
   store --> form : canSend = true
 end
