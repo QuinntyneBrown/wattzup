@@ -201,3 +201,12 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         B["larch-aged"].box((nb_x, nb_y, nb_z), (1.85, 0.22, 2.25), byaw)
         B["paint"].box((nb_x, nb_y, nb_z + 0.95), (1.55, 0.26, 0.95), byaw)
         kit.gable(B["larch-warm"], (nb_x, nb_y, nb_z + 2.25), 2.25, 0.72, 0.42, byaw)
+
+    # Village Konditorei / Caffè striped awnings & sidewalk tables in Corvara & Selva
+    for cf_m, cf_s in ((295.0, 1.0), (8910.0, -1.0)):
+        k_idx = road.index(cf_m)
+        kyaw = road.s[k_idx]["h"]
+        kx_c, ky_c, kz_c = kit.P(k_idx, 0.0, (kit.kerb + 6.8) * cf_s, 0.0)
+        B["awning"].box((kx_c, ky_c, kz_c + 2.85), (7.6, 2.4, 0.28), kyaw)
+        for tb_o in (-2.2, 0.0, 2.2):
+            B["paint"].box(kit.P(k_idx, tb_o, (kit.kerb + 6.2) * cf_s, 0.0), (0.85, 0.85, 0.76), kyaw)
