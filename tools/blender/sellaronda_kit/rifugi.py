@@ -132,3 +132,9 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
             ly_s = ty + math.sin(yaw) * (lg_k * 2.2) + math.cos(yaw) * (1.25 * side)
             B["larch-aged"].box((lx_s, ly_s, tz + 0.14), (0.72, 1.65, 0.36), yaw + 0.25)
             B["parasol-red"].box((lx_s, ly_s, tz + 0.48), (0.64, 1.42, 0.12), yaw + 0.25)
+        # Carved timber hotel roadside welcome totem & warm entry lantern
+        ent_x, ent_y, ent_z = kit.P(idx, -w * 0.48, (kit.kerb + 2.15) * side, -0.1)
+        B["stone"].box((ent_x, ent_y, ent_z), (0.85, 0.65, 0.55), yaw)
+        B["larch-aged"].box((ent_x, ent_y, ent_z + 0.55), (0.36, 0.92, 2.15), yaw)
+        B["paint"].box((ent_x, ent_y, ent_z + 1.55), (0.40, 0.72, 0.68), yaw)
+        B["bulb"].box((ent_x, ent_y, ent_z + 2.72), (0.24, 0.24, 0.28), yaw)
