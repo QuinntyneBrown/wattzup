@@ -315,4 +315,11 @@ def build_four_passes(B, kit, road, height_at) -> None:
         tz_b = max(height_at(tx_b, ty_b), s[tl_idx]["z"] - 0.1)
         B["steel"].box((tx_b, ty_b, tz_b + 0.15), (0.14, 0.14, 1.32), tlyaw)
         B["gold"].box((tx_b, ty_b, tz_b + 1.47), (0.58, 0.18, 0.18), tlyaw)
+    # Roadside cyclists' votive niche (Capitello alpino) on Passo Pordoi (at=4964 m)
+    vt_idx = road.index(4964.0)
+    vtyaw = s[vt_idx]["h"]
+    vx_p, vy_p, vz_p = kit.P(vt_idx, 0.0, -(kit.kerb + 3.2), -0.1)
+    B["stone"].box((vx_p, vy_p, vz_p), (1.05, 0.85, 0.65), vtyaw)
+    B["chalet-plaster"].box((vx_p, vy_p, vz_p + 0.65), (0.92, 0.72, 1.35), vtyaw)
+    kit.gable(B["larch-aged"], (vx_p, vy_p, vz_p + 2.00), 1.22, 1.02, 0.45, vtyaw)
     # [ANCHOR:passes]
