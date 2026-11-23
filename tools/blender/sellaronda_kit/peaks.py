@@ -339,4 +339,6 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     rock_tower(peaks, cdl2["x"] + cdux * 2240.0, cdl2["y"] + cduy * 2240.0, 45.0, 765.0, 210.0, 145.0, 9, math.atan2(-cduy, -cdux), cfn, taper=0.38, flat_cap=False, seed_phase=3.2)
     # Southern Val di Fassa rib of Punta Grohmann (3,126 m) in the Sassolungo group
     rock_tower(peaks, sella_pt["x"] + ux * 1010.0 + px * 285.0, sella_pt["y"] + uy * 1010.0 + py * 285.0, 75.0, 742.0, 76.0, 62.0, 8, yaw_sl + 0.3, cfn, taper=0.40, flat_cap=False, seed_phase=5.0)
+    # Pian dei Fiacconi (2,626 m) moraine-bench refuge below Marmolada's northern icefield
+    rock_tower(peaks, pordoi_pt["x"] + mux * 1105.0 - mpx * 165.0, pordoi_pt["y"] + muy * 1105.0 - mpy * 165.0, 352.0, 368.0, 14.0, 10.5, 6, yaw_mm, cfn, taper=0.95, flat_cap=True, seed_phase=1.8)
     # [ANCHOR:peaks]
