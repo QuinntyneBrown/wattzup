@@ -324,4 +324,11 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["parasol-red"].box((cmx, cmy, cmz + 1.0), (14.2, 9.8, 3.8), cmyaw)
         kit.gable(B["roof-slate"], (cmx, cmy, cmz + 4.8), 14.8, 10.4, 1.6, cmyaw)
 
+    # High-visibility orange helicopter cable-crossing spheres on the Sass Pordoi aerial span
+    for sp_t in (0.25, 0.50, 0.75):
+        spx_c = lx + (tx - lx) * sp_t
+        spy_c = ly + (ty - ly) * sp_t
+        spz_c = (lz + 6.8) + ((tz + 6.5) - (lz + 6.8)) * sp_t - 18.0 * 4.0 * sp_t * (1.0 - sp_t)
+        B["crowd-3"].box((spx_c, spy_c, spz_c - 0.35), (0.72, 0.72, 0.72), 0.0)
+
     return cableways_out
