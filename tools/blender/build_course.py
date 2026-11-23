@@ -778,6 +778,8 @@ def mix(a, b, t):
 def build_road(road: Road, st: list[dict], length: float, col, theme: dict | None = None) -> None:
     edge = (theme or {}).get("edge", "seawall")
     white_centre = (theme or {}).get("centre") == "white"
+    # A racing circuit's red-and-white kerbs round a bend; a theme whose road is a public one turns them off.
+    kerbs = (theme or {}).get("kerbs", True)
     s = road.s
     n = len(s)
     asphalt, paint, red = Builder("Road", "asphalt"), Builder("RoadPaint", "paint"), Builder("Kerbs", "kerb-red")
@@ -850,7 +852,7 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
             strip(yellow, i, -0.14, 0.02, -0.30, 0.02)
         strip(paint, i, ROAD_HALF - 0.3, 0.02, ROAD_HALF - 0.46, 0.02)
         strip(paint, i, -ROAD_HALF + 0.46, 0.02, -ROAD_HALF + 0.3, 0.02)
-        bend = abs(s[i]["k"]) > 1 / 170
+        bend = kerbs and abs(s[i]["k"]) > 1 / 170
         for side in (1, -1):
             block = red if bend and i % 2 else (paint if bend else prom)
             if side > 0:

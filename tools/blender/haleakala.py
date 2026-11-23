@@ -41,12 +41,14 @@ THEME: dict = {
     "fill": [0xCFE0F5, 0x7A6A5A],
     "sun_altitude": 0.62,
     # The shoulders are cinder, the sun a white disc and the chevrons road paint.
-    "palette": {"asphalt": 0x38383C, "sand": 0x6E5448, "sea": 0x0E5E9A, "sun": 0xFFFBEA, "chevron": 0xF2EEE2},
+    "palette": {"asphalt": 0x38383C, "sand": 0x6E5448, "promenade": 0x5A4C46, "sea": 0x0E5E9A, "sun": 0xFFFBEA, "chevron": 0xF2EEE2},
     "land": {"low": 0x9DB45A, "mid": 0x5E9A3C, "high": 0x8A4A36, "rock": 0x3A3230},
     "terrain": {"sea": True},
     # Detail 9, the road edge: narrow tarmac, a yellow centre line and no barrier, only the shoulder.
     "edge": "corniche",
     "centre": "yellow",
+    # A national park's road: no racing kerbs round its hairpins, and a shoulder of rolled cinder, not concrete.
+    "kerbs": False,
     # Every stage climbs: a level's share of the gradient, on top of the summit road's own steady climb.
     "grade": {"perLevel": 0.8, "climb": 5.9},
     "sea_clearance": 6.0,
