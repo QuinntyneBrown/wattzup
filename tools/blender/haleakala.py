@@ -134,6 +134,38 @@ def lay_centre_line(course: dict, theme: dict, bc):
     return samples, st, length, mean, grade["perLevel"]
 
 
+CRATER_FLOOR = 176.0  # the basin's floor, in metres below the road's top
+RIM_RIDE = 520.0  # the road's last stretch runs along the crater's rim for this far, in metres
+
+
+def crater_rim(s: list[dict]):
+    """Where the crater begins: a function of a place giving how far south of the rim it is (negative: not in the
+    crater) and the rim's height there. Along the road's last stretch the rim is the road's own southern shoulder,
+    so the rider looks down into the basin; before it the rim stands back, and beyond the road's end it swings
+    south round the summit's knob, where the observatories stand."""
+    end = max(q for q, p in enumerate(s) if p["d"] <= s[-1]["d"] - 80.0)
+    last = [p for p in s[: end + 1] if p["d"] >= s[end]["d"] - RIM_RIDE]
+    a, b = last[0], last[-1]
+    span = b["x"] - a["x"]
+    by_x = sorted(last, key=lambda p: p["x"])
+    z_hi = max(p["z"] for p in s)
+
+    def rim(x: float, y: float) -> tuple[float, float]:
+        u = (x - a["x"]) / span
+        if u < 0:
+            back = _smooth(0.0, 260.0, -u * abs(span))
+            return a["y"] - 14.0 - 150.0 * back - y, a["z"] - 1.5 + 27.5 * back
+        if u > 0.9:
+            out = _smooth(0.9, 1.2, u)
+            return b["y"] - 14.0 - 190.0 * out - y, b["z"] - 1.5 + 27.5 * out
+        near = min(by_x, key=lambda p: abs(p["x"] - x))
+        return near["y"] - 14.0 - y, near["z"] - 1.5
+
+    return rim
+# The cinder cones near the rim: across from the road's middle, south of the rim, height and radius, in metres.
+CONES = ((-360.0, 250.0, 62.0, 150.0), (140.0, 310.0, 78.0, 170.0), (520.0, 220.0, 50.0, 130.0), (-760.0, 300.0, 55.0, 140.0))
+
+
 def zone_colour(t: float, x: float, y: float, bc) -> tuple:
     """The land's colour by how far up the mountain it is (0 the shore, 1 the summit): the cane and palms of the
     coast, the green ranch land, the scrub where the cloud sits, and above it cinder in red, brown and black."""
@@ -163,6 +195,8 @@ def build_land(road, col, theme: dict, bc):
     fall = sum((y - my) * (z - mz) for y, z in zip(ys, zs)) / sum((y - my) ** 2 for y in ys)
     z_lo, z_hi = min(zs), max(zs)
     shore = max(ys)
+    rim_y, x_mid = min(ys) - 46.0, (min(xs) + max(xs)) / 2
+    rim = crater_rim(s)
 
     def plane(y: float) -> float:
         return mz + fall * (y - my)
@@ -184,6 +218,16 @@ def build_land(road, col, theme: dict, bc):
             h += (n1 * 16.0 + n2 * 5.0) * bc.smoothstep(26.0, 150.0, d)
             # Above the road's top the mountain levels off into the summit; north of the coast it meets the sea.
             h = min(h, z_hi + 26.0 + 8.0 * n1)
+            # Detail 3, the summit crater: south of the road's top the rim breaks and the land falls into the basin,
+            # with cinder cones standing on its floor.
+            south, lip = rim(x, y)
+            if south > 0:
+                basin = lip + (z_hi - CRATER_FLOOR - lip) * bc.smoothstep(0.0, 300.0, south) + 6.0 * n2 * bc.smoothstep(0.0, 60.0, south)
+                for cx, cs, ch, cr in CONES:
+                    r = math.hypot(x - (x_mid + cx), (rim_y - y) - cs)
+                    # A cone, with the dimple of its vent.
+                    basin += ch * max(0.0, 1 - r / cr) - ch * 0.28 * max(0.0, 1 - r / (cr * 0.3))
+                h = min(h, basin)
             h = h * (1 - bc.smoothstep(24.0, 110.0, y - shore)) - 8.0 * bc.smoothstep(24.0, 110.0, y - shore)
             if d < 9.0:
                 h = s[near[0][1]]["z"] - 1.4
@@ -361,13 +405,12 @@ def dome(paint, c, r: float, drum: float, slit: float, sides: int = 12) -> None:
 def science_city(k) -> int:
     """Detail 8, the summit observatories: Science City's white domes stand in a cluster on the summit above the
     road's end, with their low white buildings and one silver tower, seen from the switchbacks below."""
-    paint, rng, s = Painted(k), k.rng, k.s
-    i = min(range(k.n), key=lambda q: abs(s[q]["d"] - (s[-1]["d"] - 330.0)))
-    # On the uphill side of the road, where the summit is.
-    side = 1 if k.height_at(*k.road.at(i, 90.0)[:2]) > k.height_at(*k.road.at(i, -90.0)[:2]) else -1
+    paint, rng = Painted(k), k.rng
+    # On the summit's knob, beyond the road's end.
+    i, side = k.n - 1, 1
     silver = _lin(0xAEB6BC)
     stood = 0
-    plan = ((0, 62, 9.0, 7.0), (34, 88, 6.0, 5.0), (-30, 96, 5.0, 4.0), (58, 60, 4.2, 3.6), (-62, 66, 7.0, 6.0), (10, 122, 4.5, 4.0), (86, 96, 3.6, 3.2))
+    plan = ((70, 0, 9.0, 7.0), (112, 36, 6.0, 5.0), (118, -34, 5.0, 4.0), (60, 52, 4.2, 3.6), (64, -56, 7.0, 6.0), (160, 8, 4.5, 4.0), (140, 74, 3.6, 3.2))
     for along, out, r, drum in plan:
         x, y, _ = k.P(i, along + rng.uniform(-5.0, 5.0), (out + rng.uniform(-5.0, 5.0)) * side)
         z = k.height_at(x, y)
@@ -376,7 +419,7 @@ def science_city(k) -> int:
         yaw = rng.uniform(0, math.pi)
         paint.box((x + math.cos(yaw) * (r + 5.0), y + math.sin(yaw) * (r + 5.0), z - 1.5), (r * 1.6, r * 0.9, 5.0), yaw, _lin(0xECECE6))
         stood += 1
-    x, y, _ = k.P(i, -92.0, 104.0 * side)
+    x, y, _ = k.P(i, 168.0, -52.0 * side)
     k_z = k.height_at(x, y)
     paint.box((x, y, k_z - 1.5), (9.0, 9.0, 21.0), 0.4, silver)
     return stood
@@ -500,6 +543,52 @@ def coastal_start(k) -> dict:
     return {"palms": palms, "caneFields": fields}
 
 
+def crater(k) -> int:
+    """Detail 3, the summit crater: beyond what the land holds, the basin runs on for kilometres, a floor of rust,
+    ochre and grey cinder with cones on it, to the far rim wall. It is drawn whole, hazed by its distance."""
+    paint, s = Painted(k, "peaks"), k.s
+    xs, ys, zs = [p["x"] for p in s], [p["y"] for p in s], [p["z"] for p in s]
+    rim_y, x_mid, z_hi = min(ys) - 46.0, (min(xs) + max(xs)) / 2, max(zs)
+    floor = z_hi - CRATER_FLOOR - 6.0
+    haze = _lin(THEME["haze"])
+    rust, ochre, grey, dark = _lin(0x8E4A34), _lin(0xB07A48), _lin(0x6A605C), _lin(0x3A3230)
+
+    def tone(x: float, south: float, lift: float = 0.0):
+        a = 0.5 + 0.5 * math.sin(x * 0.0031 + south * 0.0022)
+        b = 0.5 + 0.5 * math.sin(x * 0.0013 - south * 0.0041 + 1.7)
+        c = tuple(rust[q] * (1 - a) + ochre[q] * a for q in range(3))
+        c = tuple(c[q] * (1 - b * 0.55) + grey[q] * b * 0.55 for q in range(3))
+        c = tuple(c[q] * (1 - lift) + dark[q] * lift for q in range(3))
+        far = 0.62 * _smooth(500.0, 3200.0, south)
+        return (*(c[q] * (1 - far) + haze[q] * far for q in range(3)), 1.0)
+
+    def at(x: float, south: float, z: float):
+        return (x, rim_y - south, z)
+
+    # The floor, from under the land's edge to the far wall, and the wall round it.
+    cell, x_lo, reach = 400.0, x_mid - 3600.0, 3200.0
+    for ix in range(18):
+        for iy in range(8):
+            x, south = x_lo + ix * cell, 330.0 + iy * (reach - 330.0) / 8
+            x1, south1 = x + cell, south + (reach - 330.0) / 8
+            paint.face((at(x, south, floor), at(x, south1, floor), at(x1, south1, floor), at(x1, south, floor)), (tone(x, south), tone(x, south1), tone(x1, south1), tone(x1, south)))
+    for ix in range(36):
+        x, x1 = x_lo + ix * 200.0, x_lo + (ix + 1) * 200.0
+        top = lambda v: z_hi + 30.0 + 46.0 * math.sin(v * 0.0037) + 22.0 * math.sin(v * 0.0113 + 1.0)  # noqa: E731
+        paint.face((at(x, reach, floor), at(x, reach + 260.0, top(x)), at(x1, reach + 260.0, top(x1)), at(x1, reach, floor)), (tone(x, reach), tone(x, reach + 260.0, 0.45), tone(x1, reach + 260.0, 0.45), tone(x1, reach)))
+    # The far cones.
+    cones = ((-1500.0, 900.0, 110.0, 300.0), (-500.0, 1300.0, 150.0, 380.0), (700.0, 1000.0, 120.0, 320.0), (1700.0, 1500.0, 140.0, 360.0), (200.0, 2100.0, 170.0, 420.0), (-2100.0, 1900.0, 130.0, 340.0), (2600.0, 800.0, 90.0, 260.0))
+    for cx, cs, ch, cr in cones:
+        ring = [(x_mid + cx + math.cos(q * math.tau / 10) * cr, cs + math.sin(q * math.tau / 10) * cr) for q in range(10)]
+        lip = [(x_mid + cx + math.cos(q * math.tau / 10) * cr * 0.28, cs + math.sin(q * math.tau / 10) * cr * 0.28) for q in range(10)]
+        for q in range(10):
+            n = (q + 1) % 10
+            # Seen from the north: the ring runs clockwise from above as south grows away from the eye.
+            paint.face((at(*ring[n], floor), at(*ring[q], floor), at(*lip[q], floor + ch), at(*lip[n], floor + ch)), (tone(*ring[n]), tone(*ring[q]), tone(*lip[q], 0.3), tone(*lip[n], 0.3)))
+            paint.face((at(*lip[n], floor + ch), at(*lip[q], floor + ch), at(x_mid + cx, cs, floor + ch * 0.72)), (tone(*lip[n], 0.3), tone(*lip[q], 0.3), tone(x_mid + cx, cs, 0.7)))
+    return len(CONES) + len(cones)
+
+
 def scenery(k) -> dict:
     posts = reflector_posts(k)
     cloud = cloud_sea(k)
@@ -507,4 +596,5 @@ def scenery(k) -> dict:
     domes = science_city(k)
     ranch = ranch_land(k)
     coast = coastal_start(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords, "domes": domes, **ranch, **coast}
+    cones = crater(k)
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords, "domes": domes, **ranch, **coast, "cinderCones": cones}
