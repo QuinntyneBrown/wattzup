@@ -15,7 +15,7 @@ ALPENGLOW_SUNWARD = (
     (1.0, 0x1E3876),
 )
 ALPENGLOW_AWAY = (
-    (0.0, 0xE2B0BC),
+    (0.0, 0xE4B2BE),
     (0.22, 0xB296C2),
     (0.52, 0x5E78B6),
     (1.0, 0x1E3876),
