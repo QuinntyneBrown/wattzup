@@ -306,3 +306,13 @@ def build_four_passes(B, kit, road, height_at) -> None:
         ix_m, iy_m, iz_m = kit.P(ic_idx, 0.0, kit.kerb + 1.65, -0.1)
         B["steel"].box((ix_m, iy_m, iz_m), (0.09, 0.09, 3.35), icyaw)
         B["ladin-blue"].box((ix_m, iy_m, iz_m + 2.95), (0.45, 0.55, 0.06), icyaw + 0.3)
+
+    # Swivelling panoramic summit telescopes on the 4 pass belvedere platforms
+    for p in PASSES:
+        tl_idx = road.index(p["at"] + 18.2)
+        tlyaw = s[tl_idx]["h"] + 1.45
+        tx_b, ty_b, _ = road.at(tl_idx, kit.kerb + 4.8)
+        tz_b = max(height_at(tx_b, ty_b), s[tl_idx]["z"] - 0.1)
+        B["steel"].box((tx_b, ty_b, tz_b + 0.15), (0.14, 0.14, 1.32), tlyaw)
+        B["gold"].box((tx_b, ty_b, tz_b + 1.47), (0.58, 0.18, 0.18), tlyaw)
+    # [ANCHOR:passes]
