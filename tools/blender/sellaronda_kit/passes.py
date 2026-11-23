@@ -345,4 +345,11 @@ def build_four_passes(B, kit, road, height_at) -> None:
         B["larch-aged"].box((lx_p, ly_p, mz + 1.60), (0.42, 0.36, 0.38), p_yaw)
     # Low dry-stone enclosure wall around Cappella di San Maurizio on Passo Gardena
     B["stone"].box((cx_ch, cy_ch, cz_ch - 0.55), (10.4, 7.6, 0.92), g_yaw)
+    # Alta Via delle Dolomiti n. 2 timber trailhead portal on Passo Pordoi (at=4968 m)
+    av_i = road.index(4968.0)
+    avyaw = s[av_i]["h"] + 1.57
+    avx, avy, avz = kit.P(av_i, 0.0, kit.kerb + 5.8, -0.1)
+    for av_s in (-1.15, 1.15):
+        B["larch-aged"].box((avx + math.cos(avyaw) * av_s, avy + math.sin(avyaw) * av_s, avz), (0.18, 0.18, 2.75), avyaw)
+    kit.gable(B["chalet-wood"], (avx, avy, avz + 2.75), 2.85, 0.65, 0.45, avyaw)
     # [ANCHOR:passes]
