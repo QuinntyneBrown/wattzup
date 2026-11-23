@@ -290,4 +290,12 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
 
     # Rifugio Emilio Comici (2,154 m) on the green-and-scree bench beneath Sassolungo's northeast wall
     rock_tower(peaks, sl_x - ux * 245.0 - px * 85.0, sl_y - uy * 245.0 - py * 85.0, 155.0, 170.0, 14.0, 10.0, 6, yaw_sl, cfn, taper=0.95, flat_cap=True, seed_phase=0.6)
+    # 13. Odle / Geisler needles (Sass Rigais & Furchetta, 3,025 m) on the northern Val Gardena horizon
+    od_pt = road.s[road.index(9150.0)]
+    odux, oduy = od_pt["x"] - cx, od_pt["y"] - cy
+    odul = max(1.0, math.hypot(odux, oduy))
+    odux, oduy = odux / odul, oduy / odul
+    odpx, odpy = -oduy, odux
+    for od_i, od_lat in enumerate((-210.0, -70.0, 75.0, 215.0)):
+        rock_tower(peaks, od_pt["x"] + odux * 1680.0 + odpx * od_lat, od_pt["y"] + oduy * 1680.0 + odpy * od_lat, 55.0, 815.0 - abs(od_i - 1.5) * 28.0, 105.0, 72.0, 8, math.atan2(-oduy, -odux), cfn, taper=0.26, flat_cap=False, seed_phase=3.7 + od_i)
     # [ANCHOR:peaks]
