@@ -516,4 +516,11 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["dolomite-pale"].box((qbx, qby, qbz - 0.25), (1.75, 1.35, 0.95), qb_m * 0.2)
             B["paint"].box((qbx, qby, qbz + 0.55), (1.65, 0.16, 0.18), qb_m * 0.2)
 
+    # Deep-cobalt Gentiana acaulis cushions on the sunny Pordoi & Gardena turf
+    for gn_m in (4895.0, 5015.0, 10110.0, 10205.0):
+        gni = road.index(gn_m)
+        gnx, gny, _ = road.at(gni, kit.kerb + 5.2)
+        if road.clear_of_road(gnx, gny, 3.5, gni):
+            B["ladin-blue"].box((gnx, gny, height_at(gnx, gny) - 0.04), (0.65, 0.65, 0.16), gn_m * 0.2)
+
     return trees
