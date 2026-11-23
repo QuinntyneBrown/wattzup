@@ -23,8 +23,9 @@ class Painted:
     """Shapes coloured by vertex in the land's group, which is drawn from much further off than what stands by the
     road: a village is seen across its bay, an observatory from the switchbacks below."""
 
-    def __init__(self, k):
-        self.b = k.B["terrain"]
+    def __init__(self, k, mat: str = "terrain"):
+        # "peaks" is the group drawn whole, from any distance and without haze: what is always far off.
+        self.b = k.B[mat]
         if self.b.colours is None:
             self.b.colours = []
 

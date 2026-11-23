@@ -13,7 +13,7 @@ from __future__ import annotations
 import math
 import random
 
-from worldkit import lin as _lin, smooth as _smooth
+from worldkit import Painted, lin as _lin, smooth as _smooth
 
 CROWD = [f"crowd-{i}" for i in range(6)]
 
@@ -142,7 +142,8 @@ def build_land(road, col, theme: dict, bc):
     """The volcano's flank, as build_course.build_land returns it (the mesh and the land's height at a place): one
     long slope from the sea to the summit, fitted to the road, cut by gullies, and holding the road's height beside
     it."""
-    cell = 20.0
+    # Coarser than a coast's: the legs of the switchbacks lie close, so much of the flank is in view at once.
+    cell = 26.0
     s = road.s
     xs, ys, zs = [p["x"] for p in s], [p["y"] for p in s], [p["z"] for p in s]
     x0, x1 = min(xs) - 660.0, max(xs) + 660.0
@@ -241,6 +242,42 @@ def reflector_posts(k) -> int:
     return stood
 
 
+CLOUD_LEVEL = 0.58  # how far up the climb the top of the cloud lies, 0 the shore and 1 the summit
+
+
+def cloud_sea(k) -> float:
+    """Detail 2, above the clouds: a sea of cloud lies round the mountain a little over half way up, out to the
+    horizon. Its billows are seen only from above: a rider below it rides under an open sky, and one above it looks
+    down on it from every switchback. It stands off the slope, so the road never passes through its sheet."""
+    paint, s = Painted(k, "peaks"), k.s
+    zs, xs = [p["z"] for p in s], [p["x"] for p in s]
+    level = min(zs) + CLOUD_LEVEL * (max(zs) - min(zs))
+    edge = min(s, key=lambda p: abs(p["z"] - level))["y"] + 210.0
+    x_lo, x_hi, cx = min(xs) - 1100.0, max(xs) + 1100.0, (min(xs) + max(xs)) / 2
+    white, shadow, haze = _lin(0xFAFBFC), _lin(0xA9BACF), _lin(THEME["haze"])
+    cell = 420.0
+
+    def top(x: float, y: float) -> float:
+        return level + 34.0 * math.sin(x * 0.0041 + 0.7) * math.cos(y * 0.0052 - 0.4) + 18.0 * math.sin(x * 0.0113 + y * 0.0091)
+
+    def colour(x: float, y: float):
+        lift = _smooth(-0.7, 0.7, (top(x, y) - level) / 52.0)
+        c = tuple(shadow[q] + (white[q] - shadow[q]) * lift for q in range(3))
+        far = _smooth(5200.0, 9800.0, math.hypot(x - cx, y - edge))
+        return (*(c[q] + (haze[q] - c[q]) * far for q in range(3)), 1.0)
+
+    for iy in range(int(16500 / cell)):
+        for ix in range(int(19200 / cell)):
+            x, y = cx - 9600.0 + ix * cell, edge - 6000.0 + iy * cell
+            # The mountain stands up through it.
+            if x_lo < x + cell / 2 < x_hi and y + cell / 2 < edge:
+                continue
+            corners = ((x, y), (x + cell, y), (x + cell, y + cell), (x, y + cell))
+            paint.face([(px, py, top(px, py)) for px, py in corners], [colour(px, py) for px, py in corners])
+    return level
+
+
 def scenery(k) -> dict:
     posts = reflector_posts(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts}
+    cloud = cloud_sea(k)
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud)}
