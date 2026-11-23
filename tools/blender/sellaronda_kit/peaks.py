@@ -550,4 +550,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     scul = max(1.0, math.hypot(scux, scuy))
     scux, scuy = scux / scul, scuy / scul
     rock_tower(peaks, sc_pt["x"] + scux * 1420.0, sc_pt["y"] + scuy * 1420.0, 52.0, 565.0, 215.0, 138.0, 9, math.atan2(-scuy, -scux), cfn, taper=0.66, flat_cap=True, seed_phase=5.5)
+    # Rolling Pralongià (2,157 m) high meadow ridge east of Passo Campolongo (at=1420 m)
+    pr_pt = road.s[road.index(1420.0)]
+    prux, pruy = pr_pt["x"] - cx, pr_pt["y"] - cy
+    prul = max(1.0, math.hypot(prux, pruy))
+    prux, pruy = prux / prul, pruy / prul
+    rock_tower(peaks, pr_pt["x"] + prux * 840.0, pr_pt["y"] + pruy * 840.0, 44.0, 342.0, 210.0, 148.0, 10, math.atan2(-pruy, -prux), cfn, taper=0.76, flat_cap=True, seed_phase=1.6)
     # [ANCHOR:peaks]
