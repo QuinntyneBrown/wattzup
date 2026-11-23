@@ -133,6 +133,22 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> None:
             k_d += 1
             d_desc += 145.0
 
+    # 8. Cycling team support cars with roof-mounted spare road bikes at the 4 pass summit pull-outs
+    car_mats = ("ladin-blue", "parasol-red", "yellow", "paint")
+    for c_i, p in enumerate(PASSES):
+        c_idx = road.index(p["at"] + 28.0)
+        cyaw = s[c_idx]["h"] + 0.35
+        cx_car, cy_car, cz_car = kit.P(c_idx, 0.0, -(kit.kerb + 4.4), 0.0)
+        B["dark"].box((cx_car, cy_car, cz_car), (4.35, 1.82, 0.52), cyaw)
+        B[car_mats[c_i]].box((cx_car, cy_car, cz_car + 0.38), (4.45, 1.78, 0.68), cyaw)
+        B["dark"].box((cx_car - math.cos(cyaw) * 0.25, cy_car - math.sin(cyaw) * 0.25, cz_car + 1.06), (2.55, 1.62, 0.52), cyaw)
+        # Three spare team road bikes upright on the roof rack!
+        for rb_lat in (-0.48, 0.0, 0.48):
+            rx_b = cx_car - math.sin(cyaw) * rb_lat
+            ry_b = cy_car + math.cos(cyaw) * rb_lat
+            B["dark"].box((rx_b, ry_b, cz_car + 1.58), (1.42, 0.08, 0.58), cyaw)
+            B["yellow"].box((rx_b, ry_b, cz_car + 1.88), (0.92, 0.07, 0.42), cyaw)
+
 
 def _touring_motorbike(B, x: float, y: float, z: float, yaw: float, body_mat: str, with_rider: bool = False) -> None:
     ca, sa = math.cos(yaw), math.sin(yaw)
