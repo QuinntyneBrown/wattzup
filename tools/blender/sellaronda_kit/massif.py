@@ -182,3 +182,17 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     mpx2, mpy2 = -muy2, mux2
     for m_k, (lat_m, h_m, rx_m) in enumerate(((-135.0, 545.0, 105.0), (15.0, 580.0, 118.0), (155.0, 535.0, 96.0))):
         rock_tower(peaks, cx + mux2 * 745.0 + mpx2 * lat_m, cy + muy2 * 745.0 + mpy2 * lat_m, 95.0, h_m, rx_m, 82.0, 10, math.atan2(muy2, mux2), cfn, taper=0.76, flat_cap=True, seed_phase=1.8 + m_k)
+
+    # Basal Dolomite talus & scree cones fanning down from the major cliff couloirs
+    for cone_at in (1950.0, 4720.0, 5180.0, 6320.0, 7620.0, 9620.0, 10680.0):
+        cpt = road.s[road.index(cone_at)]
+        ux_c, uy_c = cpt["x"] - cx, cpt["y"] - cy
+        ul_c = max(1.0, math.hypot(ux_c, uy_c))
+        ux_c, uy_c = ux_c / ul_c, uy_c / ul_c
+        px_c, py_c = -uy_c, ux_c
+        top_cone = (cx + ux_c * 795.0, cy + uy_c * 795.0, 225.0)
+        foot_l = (cx + ux_c * 975.0 - px_c * 88.0, cy + uy_c * 975.0 - py_c * 88.0, 72.0)
+        foot_m = (cx + ux_c * 1005.0, cy + uy_c * 1005.0, 66.0)
+        foot_r = (cx + ux_c * 975.0 + px_c * 88.0, cy + uy_c * 975.0 + py_c * 88.0, 72.0)
+        tri_shaded(peaks, foot_l, foot_m, top_cone, cfn, 145.0, snow=False)
+        tri_shaded(peaks, foot_m, foot_r, top_cone, cfn, 145.0, snow=False)
