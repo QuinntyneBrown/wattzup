@@ -442,4 +442,10 @@ def build_four_passes(B, kit, road, height_at) -> None:
     # Ceremonial memorial flagpoles flanking Sacrario Militare del Pordoi
     for fp_s in (-7.5, 7.5):
         B["steel"].box((sx_m + fp_s, sy_m, sz_m - 0.5), (0.12, 0.12, 8.5), 0.0)
+    # Blue '500 m AL PASSO' summit-sprint markers on all 4 climbs
+    for p in PASSES:
+        fh_i = road.index(p["at"] - 125.0)
+        fhy = s[fh_i]["h"]
+        B["steel"].box(kit.P(fh_i, 0.0, -(kit.kerb + 1.48), -0.1), (0.08, 0.08, 2.05), fhy)
+        B["ladin-blue"].box(kit.P(fh_i, 0.0, -(kit.kerb + 1.48), 1.55), (0.08, 0.78, 0.42), fhy)
     # [ANCHOR:passes]
