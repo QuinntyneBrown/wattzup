@@ -223,6 +223,7 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
     abz = height_at(abx, aby)
     B["stone"].box((abx, aby, abz - 2.0), (15.0, 11.0, 5.4), ar_yaw)
     B["chalet-plaster"].box((abx, aby, abz + 3.4), (15.4, 11.4, 4.6), ar_yaw)
+    B["dolomite-pale"].box((abx - acx * 9.5, aby - acy * 9.5, abz - 1.5), (3.6, 8.8, 6.2), ar_yaw)
     atx, aty, atz = abx + acx * 460.0, aby + acy * 460.0, abz + 225.0
     for w_lat in (-3.2, 3.2):
         _cable_segment(
