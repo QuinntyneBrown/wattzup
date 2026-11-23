@@ -313,6 +313,11 @@ def emit_dusk_lights(kit, road, height_at) -> None:
     sd_a = road.index(11180.0)
     sdax, sday, _ = road.at(sd_a, -(kit.kerb + 24.0))
     kit.halo((sdax, sday, height_at(sdax, sday) + 4.2), "glow-window")
+    # Subtle locator halos atop all 4 pass-summit 112 SOS pillars
+    for so_m in (2076.0, 4926.0, 7716.0, 10116.0):
+        soi = road.index(so_m)
+        sox, soy, soz = road.at(soi, kit.kerb + 2.6, 2.0)
+        kit.halo((sox, soy, soz), "bulb")
     # [ANCHOR:alpenglow-lights]
 
 
