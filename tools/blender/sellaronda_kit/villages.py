@@ -310,3 +310,16 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         fx_p, fy_p, fz_p = kit.P(f_idx, 0.0, (kit.kerb + 6.4) * fm_s, 3.65)
         B["neon-lime"].box((fx_p, fy_p, fz_p), (0.14, 0.82, 0.26), fyaw)
         B["neon-lime"].box((fx_p, fy_p, fz_p - 0.28), (0.14, 0.26, 0.82), fyaw)
+
+    # Comun / Municipio civic halls with triple municipal flags in Corvara & Canazei
+    for mu_m, mu_s in ((225.0, -1.0), (6152.0, 1.0)):
+        m_idx = road.index(mu_m)
+        myaw = road.s[m_idx]["h"]
+        mx_c, my_c, _ = road.at(m_idx, (kit.kerb + 14.2) * mu_s)
+        if road.clear_of_road(mx_c, my_c, 10.0, m_idx):
+            mz_c = max(height_at(mx_c, my_c), road.s[m_idx]["z"] - 0.4)
+            B["stone"].box((mx_c, my_c, mz_c - 1.8), (13.0, 9.2, 2.8), myaw)
+            B["chalet-plaster"].box((mx_c, my_c, mz_c + 1.0), (13.2, 9.4, 6.4), myaw)
+            kit.gable(B["roof-slate"], (mx_c, my_c, mz_c + 7.4), 13.8, 10.0, 2.8, myaw)
+            for fl_i, fl_m in enumerate(("ladin-blue", "foliage", "parasol-red")):
+                B[fl_m].box((mx_c + math.cos(myaw) * (-1.4 + fl_i * 1.4), my_c + math.sin(myaw) * (-1.4 + fl_i * 1.4), mz_c + 4.4), (0.95, 9.6, 0.62), myaw)
