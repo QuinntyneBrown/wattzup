@@ -250,4 +250,14 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
                 wz_m = height_at(wx_m, wy_m)
                 B["stone"].box((wx_m, wy_m, wz_m - 0.25), (4.8, 0.62, 0.92), myaw)
 
+    # 16. Split-larch hiker plank footbridges spanning alpine meadow meltwater rills
+    for fb_m, fb_s in ((1995.0, 1.0), (4875.0, -1.0), (7675.0, 1.0), (10075.0, -1.0)):
+        f_idx = road.index(fb_m)
+        fyaw = s[f_idx]["h"] + 0.35
+        fx_b, fy_b, _ = road.at(f_idx, (kit.kerb + 8.5) * fb_s)
+        fz_b = height_at(fx_b, fy_b)
+        B["lago-turquoise"].box((fx_b, fy_b, fz_b - 0.12), (1.4, 4.8, 0.16), fyaw)
+        B["larch-warm"].box((fx_b, fy_b, fz_b + 0.08), (3.4, 1.15, 0.14), fyaw)
+        B["larch-aged"].box((fx_b - math.sin(fyaw) * 0.52, fy_b + math.cos(fyaw) * 0.52, fz_b + 0.22), (3.4, 0.08, 0.88), fyaw)
+
     return trees
