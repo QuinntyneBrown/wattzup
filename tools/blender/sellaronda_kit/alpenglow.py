@@ -24,7 +24,7 @@ ALPENGLOW_AWAY = (
 
 def enrosadira_colour_fn(az_sun: float):
     """Computes authentic Dolomite Enrosadira vertex colours from surface normal, elevation & horizontal strata."""
-    sun_dx, sun_dy, sun_dz = math.cos(az_sun) * 0.94, math.sin(az_sun) * 0.94, 0.34
+    sun_dx, sun_dy, sun_dz = math.cos(az_sun) * 0.946, math.sin(az_sun) * 0.946, 0.325
     pale_dolomite = srgb(0xCEC4B4)
     shadow_indigo = srgb(0x425272)
     apricot_gold = srgb(0xF8B482)
