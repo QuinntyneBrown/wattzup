@@ -431,4 +431,9 @@ def build_four_passes(B, kit, road, height_at) -> None:
     # Waist-high stone cyclists' gilet-change windbreak on Passo Sella crest (at=7768 m)
     wb_s = road.index(7768.0)
     B["stone"].box(kit.P(wb_s, 0.0, kit.kerb + 3.1, -0.1), (3.8, 0.55, 1.28), s[wb_s]["h"])
+    # Three-sided Dolomite stone & shingle hikers' shelter at the Cir trailhead on Gardena (at=10136 m)
+    cr_s = road.index(10136.0)
+    crsy = s[cr_s]["h"]
+    B["stone"].box(kit.P(cr_s, 0.0, kit.kerb + 5.8, -0.1), (2.8, 2.2, 2.05), crsy)
+    kit.gable(B["larch-aged"], kit.P(cr_s, 0.0, kit.kerb + 5.8, 1.95), 3.2, 2.6, 0.65, crsy)
     # [ANCHOR:passes]
