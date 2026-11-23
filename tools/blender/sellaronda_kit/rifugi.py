@@ -126,3 +126,9 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
         wd_y = ty - math.sin(yaw) * (w * 0.42)
         B["larch-warm"].box((wd_x, wd_y, tz + 0.10), (2.4, 0.85, 1.45), yaw)
         kit.gable(B["larch-aged"], (wd_x, wd_y, tz + 1.55), 2.7, 1.15, 0.35, yaw)
+        # Pairs of reclined alpine sun loungers facing the Dolomite peaks
+        for lg_k in (-1, 1):
+            lx_s = tx + math.cos(yaw) * (lg_k * 2.2) - math.sin(yaw) * (1.25 * side)
+            ly_s = ty + math.sin(yaw) * (lg_k * 2.2) + math.cos(yaw) * (1.25 * side)
+            B["larch-aged"].box((lx_s, ly_s, tz + 0.14), (0.72, 1.65, 0.36), yaw + 0.25)
+            B["parasol-red"].box((lx_s, ly_s, tz + 0.48), (0.64, 1.42, 0.12), yaw + 0.25)
