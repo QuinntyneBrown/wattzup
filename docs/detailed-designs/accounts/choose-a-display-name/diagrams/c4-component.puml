@@ -1,0 +1,29 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Choose a display name
+Container_Boundary(app, "Ride app") {
+  Component(prompt, "DisplayNamePromptPage", "Angular page · ride", "What should other riders call you?")
+  Component(dialog, "DisplayNameDialog", "CDK Dialog · ride", "Change the name from Profile Settings")
+  Component(form, "DisplayNameForm", "Presentation component · components", "Field, rule hint, Continue or Save")
+  Component(rule, "DisplayNamePolicy", "Contract constants · api", "2 to 24 characters, allowed characters")
+  Component(client, "HttpRidersApi", "HTTP client · api", "Implements RidersApi behind RIDERS_API")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(ctrl, "RidersController", "ASP.NET Core controller · Telo.Ride.Api", "PUT /api/riders/me/display-name")
+  Component(handler, "SetDisplayNameCommandHandler", "MediatR handler · Telo.Ride.Application", "Renames the current rider")
+  Component(rider, "Rider / DisplayName", "Domain entity and value object · Telo.Ride.Domain", "Owns the name rule")
+  Component(card, "RiderCard", "Read model · Telo.Ride.Application", "Name, country code, level; never the email")
+  ComponentDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Riders")
+}
+Rel(prompt, form, "Hosts")
+Rel(dialog, form, "Hosts")
+Rel(prompt, rule, "Checks input against, through DisplayNameStore")
+Rel(prompt, client, "Saves through DisplayNameStore")
+Rel(dialog, client, "Saves through DisplayNameStore")
+Rel(client, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, handler, "Sends SetDisplayNameCommand")
+Rel(handler, rider, "Renames")
+Rel(handler, db, "Persists", "EF Core")
+Rel(card, rider, "Projects")
+@enduml

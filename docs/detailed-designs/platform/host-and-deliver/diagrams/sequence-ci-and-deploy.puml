@@ -1,0 +1,45 @@
+@startuml
+title UML sequence behaviour — Check and deploy a change
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Developer" as dev
+participant "GitHub Actions (ci.yml)" as ci
+participant "lint job" as lint
+participant "build job" as build
+participant "acceptance job" as acc
+participant "deploy job" as deploy
+participant "Static host" as host
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "Telo Ride API host" as api
+end box
+dev -> ci : git push
+par
+  ci -> lint : ESLint, prettier --check, dotnet format
+  ci -> build : ng build (budgets, gzipped size), dotnet build -c Release
+  ci -> acc : Playwright @critical and backend critical acceptance tests
+end
+lint --> ci : pass
+build --> ci : pass
+acc --> ci : pass
+alt Any job fails
+  ci --> dev : Red; nothing deploys (L2-149 AC3)
+else All pass on main
+  ci -> deploy : Start
+  deploy -> host : Upload the ride build
+  deploy -> api : Run dotnet Telo.Ride.Api.dll migrate
+  deploy -> api : Release the new API version
+  deploy --> ci : Done in under 5 minutes in total
+end
+@enduml

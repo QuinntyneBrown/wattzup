@@ -1,0 +1,61 @@
+// Block level-slider (docs/design-system/assets/components.css).
+:host {
+  display: block;
+}
+
+.level-slider__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.level-slider__label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.level-slider__value {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-3xl);
+}
+
+:host(.level-slider--large) .level-slider__value {
+  font-size: var(--font-size-6xl);
+  line-height: var(--line-height-none);
+}
+
+.level-slider__max {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-faint);
+}
+
+// 44 px tall for touch, the track drawn in its middle; the negative margins keep the layout of a 24 px range.
+.range {
+  display: block;
+  width: 100%;
+  height: var(--target-comfortable);
+  margin-top: calc(var(--space-3) + (var(--target-min) - var(--target-comfortable)) / 2);
+  margin-bottom: calc((var(--target-min) - var(--target-comfortable)) / 2);
+  accent-color: var(--color-volt);
+  cursor: pointer;
+}
+
+:host(.level-slider--rest) .range {
+  accent-color: var(--color-rest);
+}
+
+.level-slider__scale {
+  margin-top: var(--space-1);
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-2xs);
+  line-height: var(--line-height-normal);
+  color: var(--color-faint);
+}

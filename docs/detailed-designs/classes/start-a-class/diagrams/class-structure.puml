@@ -1,0 +1,113 @@
+@startuml
+set separator none
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Start a class
+
+package "api library" {
+  class ClassSessionDto {
+    +sessionId: string
+    +startsAt: string
+    +seatsTaken: number
+    +capacity: number
+    +full: boolean
+    +riders: SessionRiderDto[]
+  }
+  class SessionRiderDto {
+    +displayName: string
+    +jersey: string
+  }
+  interface RideHubClient {
+    +joinClassSession(sessionId: string): Promise<JoinResult>
+  }
+  interface VideoPlayer {
+    +state: Signal<PlayerState>
+    +load(host: HTMLElement, videoId: string, options: PlayerOptions): Promise<void>
+    +seekTo(seconds: number): void
+    +destroy(): void
+  }
+}
+package "domain library" {
+  class PlanSummary {
+    +structure(plan: Plan): string
+    +expectedAveragePower(plan: Plan): number
+  }
+}
+package "ride application" {
+  enum RideMode {
+    Solo
+    Group
+  }
+  class ClassStartStore {
+    +classDto: Signal<ClassDto>
+    +mode: Signal<RideMode>
+    +sessions: Signal<ClassSessionDto[]>
+    +group: Signal<GroupSessionView | null>
+    +choose(mode: RideMode): void
+    +refreshSessions(): void
+  }
+  class GroupSessionView {
+    +optionBody: string
+    +joinLabel: string
+    +sessionId: string
+    +full: boolean
+    +riders: SessionRiderDto[]
+    +next: string | null
+  }
+  class "groupSessionView()" as view <<helper>> {
+    +groupSessionView(sessions: ClassSessionDto[], now: number): GroupSessionView | null
+  }
+  class ClassStartPage {
+    +join(): Promise<void>
+  }
+}
+package "Telo.Ride.Domain" {
+  class GroupSessionSchedule {
+    +TimeSpan Interval = 15 min
+    +int Capacity = 10
+    +Next(now: DateTimeOffset, count: int): IReadOnlyList<DateTimeOffset>
+    +SessionId(classId: string, start: DateTimeOffset): string
+  }
+  class GroupClassSession {
+    +Guid Id
+    +string ClassId
+    +DateTimeOffset StartsAt
+    +IReadOnlyList<Seat> Seats
+    +bool IsFull
+    +bool HasStarted(now: DateTimeOffset)
+  }
+  class Seat {
+    +Guid RiderId
+    +string DisplayName
+    +string Jersey
+    +bool IsBot
+  }
+}
+package "Telo.Ride.Application" {
+  class GetClassSessionsQueryHandler {
+    +Handle(query: GetClassSessionsQuery): Task<IReadOnlyList<ClassSessionDto>>
+  }
+}
+ClassSessionDto "1" *-- "*" SessionRiderDto
+ClassStartStore --> RideMode
+ClassStartStore "1" o-- "*" ClassSessionDto
+ClassStartStore *-- GroupSessionView
+ClassStartStore ..> PlanSummary
+ClassStartStore ..> view
+ClassStartPage --> ClassStartStore
+ClassStartPage ..> RideHubClient : joins
+ClassStartPage ..> VideoPlayer : parks video
+GetClassSessionsQueryHandler ..> GroupSessionSchedule
+GetClassSessionsQueryHandler ..> GroupClassSession : reads
+GroupClassSession "1" *-- "0..10" Seat
+@enduml

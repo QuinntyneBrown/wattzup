@@ -1,0 +1,20 @@
+// Block xp-bar (docs/design-system/): the fill's width comes from --value (0%–100%).
+:host {
+  display: block;
+  height: var(--space-1-5);
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: var(--color-raised);
+}
+
+:host(.xp-bar--lg) {
+  height: var(--space-2);
+}
+
+.xp-bar__fill {
+  display: block;
+  height: 100%;
+  width: var(--value, 0%);
+  border-radius: var(--radius-full);
+  background: var(--color-gold-fg);
+}

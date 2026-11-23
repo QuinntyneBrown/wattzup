@@ -1,0 +1,31 @@
+<aside class="class-board" aria-label="Group board">
+  <div class="class-board__head">
+    <h2 class="class-board__title">Output</h2>
+    @if (place(); as place) {
+      <span class="class-board__place"
+        >{{ place }}<span class="class-board__of"> / {{ total() }}</span></span
+      >
+    }
+  </div>
+  <div class="class-board__status" role="status">
+    @if (notice(); as notice) {
+      <wz-inline-message size="sm">{{ notice }}</wz-inline-message>
+    }
+  </div>
+  <ol class="class-board__list">
+    @for (row of rows(); track row.jersey) {
+      <li
+        class="class-board-row"
+        [class.class-board-row--you]="row.you"
+        [attr.aria-current]="row.you ? 'true' : null"
+        [attr.data-jersey]="row.jersey"
+      >
+        <span class="class-board-row__pos">{{ row.position }}</span>
+        <span class="class-dot" [class]="'class-dot--' + row.jersey"></span>
+        <span class="class-board-row__name">{{ row.name }}</span>
+        <span class="class-board-row__kj">{{ row.kj }}</span>
+        <span class="class-board-row__unit">kJ</span>
+      </li>
+    }
+  </ol>
+</aside>

@@ -1,0 +1,99 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Telo Ride now has a home on the web, and every push is checked before it gets there."
+      ]
+    },
+    {
+      "id": "origin",
+      "bars": 4,
+      "lines": [
+        "One App Service runs the API, and the API serves the app. One site, one origin, so the session cookie is same-site."
+      ]
+    },
+    {
+      "id": "deeplink",
+      "bars": 4,
+      "lines": [
+        "Open any route directly and the app answers, never cached stale, with the security headers riders need."
+      ]
+    },
+    {
+      "id": "guarded",
+      "bars": 4,
+      "lines": [
+        "Addresses under API, hubs and health stay the backend's. Without a session, a 401, never the app."
+      ]
+    },
+    {
+      "id": "pipeline",
+      "bars": 4,
+      "lines": [
+        "On every push, three jobs run side by side: lint, the production builds, and the critical acceptance paths."
+      ]
+    },
+    {
+      "id": "run",
+      "bars": 4,
+      "lines": [
+        "The first run, on cold caches, went green in one minute twenty-four, well inside the five-minute limit."
+      ]
+    },
+    {
+      "id": "critical",
+      "bars": 4,
+      "lines": [
+        "One critical path per feature: two Playwright specs and five backend cases. Unit tests stay on the developer's machine."
+      ]
+    },
+    {
+      "id": "deploy",
+      "bars": 4,
+      "lines": [
+        "On main, the deploy publishes the API with the app inside, migrates the database, and only then ships."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "Riders get the same app, served by its own backend, on a phone, a tablet, a laptop or a desktop."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: twenty-six backend tests, eight of them on hosting, and twelve behaviour specs, all green."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Cross the line and Results opens: where you finished, and what to ride next."
+      ]
+    },
+    {
+      "id": "place",
+      "bars": 6,
+      "lines": [
+        "Against bots it reads your place out of ten, in volt on the podium, with your time. Below, the final standings: every rider with a time, bots marked, your row current."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 5,
+      "lines": [
+        "On a phone it's one column, the actions below the standings. From a tablet in landscape, what you earned sits beside them."
+      ]
+    },
+    {
+      "id": "off",
+      "bars": 5,
+      "lines": [
+        "Finish sixth and it says how far off: twenty-seven thirty-two, eighteen seconds off the podium."
+      ]
+    },
+    {
+      "id": "solo",
+      "bars": 5,
+      "lines": [
+        "Against your best it shows the time. A class shows thirty minutes, three hundred forty-two kilojoules and eighty-four percent on target."
+      ]
+    },
+    {
+      "id": "next",
+      "bars": 4,
+      "lines": [
+        "Done goes home. Race it again opens Race Setup with the same mode and pack; Ride it again, the class."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: a real race and class end on Results, every line of the view, and the way back."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

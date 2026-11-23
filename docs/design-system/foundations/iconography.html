@@ -3,17 +3,45 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Iconography — Wattzup design system</title>
-<meta name="description" content="The icon set, sizes and labelling.">
+<title>Iconography — Telo Ride design system</title>
+<meta name="description" content="Lucide 0.577 icons inlined as SVG: 24-unit grid, 2px round stroke, currentColor, seven sizes, labelling rules and a sheet of every icon the mocks use.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Shared by the foundations-b pages: wide reference tables keep a readable width and scroll
+   inside .ds-table-wrap on phones instead of crushing their columns. */
+.ds-table-wrap { --doc-table-min: 40rem; }
+.ds-table-wrap > .ds-table { min-width: var(--doc-table-min); }
+.ds-themes + ul, .ds-themes + p, .ds-example + ul { margin-top: var(--space-4); }
+/* Iconography page only */
+.ds-section > .ic-sheet { max-width: none; padding-left: 0; }
+.ic-sheet { list-style: none; margin: var(--space-4) 0; padding: 0; display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--space-44)), 1fr)); }
+.ic-cell { display: grid; gap: var(--space-1); align-content: start; padding: var(--space-4); border: var(--border-width-hairline) solid var(--color-border-default); border-radius: var(--radius-lg); background: var(--color-bg-surface); }
+.ic-cell .icon { margin-bottom: var(--space-2); color: var(--color-fg-default); }
+.ic-cell b { font: var(--text-label); font-family: var(--font-family-mono); font-size: var(--font-size-xs); }
+.ic-cell small { font: var(--text-caption); color: var(--color-fg-muted); }
+.ic-cell .ic-src { color: var(--color-fg-subtle); }
+.ic-cell .ic-src a { color: inherit; }
+.ic-grid { display: flex; flex-wrap: wrap; gap: var(--space-8); align-items: center; }
+.ic-grid figure { display: grid; gap: var(--space-2); justify-items: center; }
+.ic-grid figcaption { font: var(--text-caption); color: var(--color-fg-muted); text-align: center; }
+.ic-keyline { width: var(--space-48); height: var(--space-48); color: var(--color-fg-default); }
+.ic-keyline .ic-keyline__grid { stroke: var(--color-border-default); stroke-width: 0.05; fill: none; }
+.ic-keyline .ic-keyline__safe { stroke: var(--color-accent); stroke-width: 0.08; stroke-dasharray: 0.3 0.3; fill: none; }
+.ic-keyline .ic-keyline__icon { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ic-sizes { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-6); }
+.ic-sizes figure { display: grid; justify-items: center; gap: var(--space-2); }
+.ic-sizes figcaption { font: var(--text-caption); color: var(--color-fg-muted); font-family: var(--font-family-mono); }
+.ic-tones { display: flex; flex-wrap: wrap; gap: var(--space-5); align-items: center; font: var(--text-label); }
+.ic-tones span { display: inline-flex; align-items: center; gap: var(--space-1-5); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +56,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,39 +110,229 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Foundation</p>
       <h1>Iconography</h1>
-      <p class="ds-lead">Lucide-style 24px stroke icons at 2px, drawn inline as SVG and coloured by <code>currentColor</code>.</p>
-      
-      <ul class="ds-toc"><li><a href="#set">Icon set</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#labels">Labelling</a></li><li><a href="#tokens">All tokens</a></li></ul>
+      <p class="ds-lead">Every icon is a Lucide outline drawn inline, so it inherits the text colour and needs no network. Icons support a label; they rarely replace one.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#style">Grid and stroke</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#colour">Colour</a></li><li><a href="#labelling">Labelling</a></li><li><a href="#sheet">Icon sheet</a></li><li><a href="#usage">Usage</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#tokens">Tokens</a></li></ul>
     </header>
-    <section class="ds-section" id="set"><h2><a href="#set">Icon set</a></h2>
-<div class="ds-swatches"><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">activity</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">alert</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">bell</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="M2 2l20 20M8.7 4.7A6 6 0 0 1 18 11v3M18 18H4l2-2v-5a6 6 0 0 1 .6-2.6M10 20a2 2 0 0 0 4 0"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">bell-off</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">bluetooth</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="m17 17-5 5V12l-5 5M2 2l20 20M14.5 9.5 17 7l-5-5v4.5"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">bluetooth-off</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">check</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">copy</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/><path d="M9 9h6v6H9zM9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">cpu</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">error</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 22V4a1 1 0 0 1 1-1h12l-2 4 2 4H5"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">flag</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">info</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="4.5"/><path d="m10.7 12.3 9.3-9.3M16 7l3 3M18 5l2 2"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">key</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">minus</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">pause</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">play</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">plus</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">refresh</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">search</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 7h-9M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">settings</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">square</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="M2 2l20 20M8.5 16.5a5 5 0 0 1 7 0M2 8.8a15 15 0 0 1 4.2-2.7M10.7 5.1A15 15 0 0 1 22 8.8M5 12.9a10 10 0 0 1 5.2-2.8M17.3 12.4a10 10 0 0 1 1.7.9M12 20h.01"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">wifi-off</span></div></div><div class="ds-swatch"><div class="ds-swatch__chip"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></div><div class="ds-swatch__body"><span class="ds-swatch__name">x</span></div></div></div>
-    </section>
-    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
-<ul><li>sm 16px in buttons and status</li><li>md 20px default</li><li>lg 24px in toasts and empty states</li><li>xl 32px in overlay panels</li></ul>
-    </section>
-    <section class="ds-section" id="labels"><h2><a href="#labels">Labelling</a></h2>
-<ul><li>Icons next to text are <code>aria-hidden</code>.</li><li>Icon-only buttons carry <code>aria-label</code> and a tooltip.</li><li>State icons change shape, not only colour (bluetooth / bluetooth-off).</li></ul>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">All tokens</a></h2>
-<p>4 tokens. Values resolve live for each theme.</p><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td><code>--icon-size-sm</code></td><td colspan="2"><span data-token="--icon-size-sm"></span></td></tr><tr><td><code>--icon-size-md</code></td><td colspan="2"><span data-token="--icon-size-md"></span></td></tr><tr><td><code>--icon-size-lg</code></td><td colspan="2"><span data-token="--icon-size-lg"></span></td></tr><tr><td><code>--icon-size-xl</code></td><td colspan="2"><span data-token="--icon-size-xl"></span></td></tr></tbody></table></div>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+      <p>Telo Ride uses <a href="https://lucide.dev">Lucide</a> 0.577, the set the design's React code imports. Each icon is copied into the markup as inline SVG: there is no icon font, no sprite and no network request, and the icon picks up the colour of the text around it.</p>
+      <ul>
+        <li><b>One style.</b> Outline, 2px stroke, round caps and joins, drawn on a 24-unit grid. The <code>.icon</code> class sets all of it, so the SVG carries only its paths.</li>
+        <li><b>Icons mean one thing.</b> <code>bluetooth</code> is always the bike connection, <code>flame</code> is always the streak, <code>star</code> is always earned progress (WCAG 3.2.4).</li>
+        <li><b>Beside words, not instead of them.</b> Most icons sit next to a visible label and are hidden from assistive technology. Icon-only controls are rare and always named.</li>
+        <li><b>The logo mark is not an icon.</b> It has its own stroke, colours and rules: see <a href="../components/lockup.html">Lockup</a>.</li>
+      </ul>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="style"><h2><a href="#style">Grid and stroke</a></h2>
+      <div class="ds-example">
+        <div class="ds-example__canvas ic-grid">
+          <figure>
+            <svg class="ic-keyline" viewBox="0 0 24 24" aria-hidden="true"><path class="ic-keyline__grid" d="M0 0V24M0 0H24M1 0V24M0 1H24M2 0V24M0 2H24M3 0V24M0 3H24M4 0V24M0 4H24M5 0V24M0 5H24M6 0V24M0 6H24M7 0V24M0 7H24M8 0V24M0 8H24M9 0V24M0 9H24M10 0V24M0 10H24M11 0V24M0 11H24M12 0V24M0 12H24M13 0V24M0 13H24M14 0V24M0 14H24M15 0V24M0 15H24M16 0V24M0 16H24M17 0V24M0 17H24M18 0V24M0 18H24M19 0V24M0 19H24M20 0V24M0 20H24M21 0V24M0 21H24M22 0V24M0 22H24M23 0V24M0 23H24M24 0V24M0 24H24"/><rect class="ic-keyline__safe" x="1" y="1" width="22" height="22"/><path class="ic-keyline__icon" d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>
+            <figcaption><code>bluetooth</code> on the 24-unit grid; dashed: the 1-unit safe edge</figcaption>
+          </figure>
+          <figure>
+            <svg class="ic-keyline" viewBox="0 0 24 24" aria-hidden="true"><path class="ic-keyline__grid" d="M0 0V24M0 0H24M1 0V24M0 1H24M2 0V24M0 2H24M3 0V24M0 3H24M4 0V24M0 4H24M5 0V24M0 5H24M6 0V24M0 6H24M7 0V24M0 7H24M8 0V24M0 8H24M9 0V24M0 9H24M10 0V24M0 10H24M11 0V24M0 11H24M12 0V24M0 12H24M13 0V24M0 13H24M14 0V24M0 14H24M15 0V24M0 15H24M16 0V24M0 16H24M17 0V24M0 17H24M18 0V24M0 18H24M19 0V24M0 19H24M20 0V24M0 20H24M21 0V24M0 21H24M22 0V24M0 22H24M23 0V24M0 23H24M24 0V24M0 24H24"/><rect class="ic-keyline__safe" x="1" y="1" width="22" height="22"/><g class="ic-keyline__icon"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></svg>
+            <figcaption><code>lock</code>: 2-unit corner radius, 2-unit stroke</figcaption>
+          </figure>
+        </div>
+      </div>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Property</th><th scope="col">Rule</th></tr></thead>
+        <tbody>
+          <tr><td>Canvas</td><td><code>viewBox="0 0 24 24"</code> on every icon; artwork keeps at least 1 unit from the edge.</td></tr>
+          <tr><td>Stroke</td><td><code>stroke-width: 2</code>, <code>stroke-linecap: round</code>, <code>stroke-linejoin: round</code>, <code>fill: none</code>. Set by <code>.icon</code>; never set on the SVG.</td></tr>
+          <tr><td>Colour</td><td><code>stroke: currentColor</code>. The icon takes the text colour of its parent; tint it by colouring the parent or adding a <code>.text-*</code> helper.</td></tr>
+          <tr><td>Fill</td><td>Only stars fill, and only when earned (<code>.stars .icon.is-earned</code> fills gold). A filled shape means “yours”.</td></tr>
+          <tr><td>Scaling</td><td>The stroke scales with the icon (2 units of 24). At 12px it draws 1px; at 40px about 3.3px. That is why 12px icons appear only beside 12px text.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+      <p>Seven sizes, each the line height of the text it sits beside. <code>.icon</code> alone is 24px.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas ic-sizes">
+          <figure><svg class="icon icon--xs" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg><figcaption>xs · 12</figcaption></figure>
+          <figure><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg><figcaption>sm · 14</figcaption></figure>
+          <figure><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg><figcaption>md · 16</figcaption></figure>
+          <figure><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg><figcaption>lg · 20</figcaption></figure>
+          <figure><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg><figcaption>xl · 24</figcaption></figure>
+          <figure><svg class="icon icon--2xl" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg><figcaption>2xl · 32</figcaption></figure>
+          <figure><svg class="icon icon--3xl" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg><figcaption>3xl · 40</figcaption></figure>
+        </div>
+      </div>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Class</th><th scope="col">Size</th><th scope="col">Size token</th><th scope="col">Where the mocks use it</th></tr></thead>
+        <tbody>
+          <tr><td><code>.icon--xs</code></td><td>12px</td><td><code>--space-3</code></td><td>Inside 12px captions and photo tags.</td></tr>
+          <tr><td><code>.icon--sm</code></td><td>14px</td><td><code>--space-3-5</code></td><td>Bot marks on boards, the Open over HTTPS arrow, seat counts on class cards, End's stop square.</td></tr>
+          <tr><td><code>.icon--md</code></td><td>16px</td><td><code>--space-4</code></td><td>The default beside 14px labels: header status, buttons, links, rows, icon buttons.</td></tr>
+          <tr><td><code>.icon--lg</code></td><td>20px</td><td><code>--space-5</code></td><td>Ride steppers, the busy spinner, notices, map-row locks and chevrons, mode options.</td></tr>
+          <tr><td><code>.icon--xl</code></td><td>24px</td><td><code>--space-6</code></td><td>Paired check on the device card; the same as plain <code>.icon</code>.</td></tr>
+          <tr><td><code>.icon--2xl</code></td><td>32px</td><td><code>--space-8</code></td><td>“Lost the bike” overlays in the race and the class.</td></tr>
+          <tr><td><code>.icon--3xl</code></td><td>40px</td><td><code>--space-10</code></td><td>Reserved for full-screen notices; the stars on Results use the same size through <code>.stars--xl</code>.</td></tr>
+          <tr><td><code>.icon--spin</code></td><td>any</td><td><code>--duration-loop</code></td><td>Turns <code>loader-circle</code> while searching or pairing. See <a href="motion.html">Motion</a>.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="colour"><h2><a href="#colour">Colour</a></h2>
+      <p>An icon is the colour of its text unless it carries a status. The status colours come from the <code>-fg</code> tokens on <a href="color.html">Color</a>, so they pass 3:1 in both themes.</p>
+      <div class="ds-themes">
+        <div data-theme="light"><div class="ic-tones">
+          <span class="app-header__bike"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>Echelon EX-5s</span>
+          <span class="app-header__streak"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg>4</span>
+          <span class="text-heart"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg>Bluetooth is off</span>
+          <span class="text-gold"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>Neon Docklands is open</span>
+        </div></div>
+        <div data-theme="dark"><div class="ic-tones">
+          <span class="app-header__bike"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>Echelon EX-5s</span>
+          <span class="app-header__streak"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg>4</span>
+          <span class="text-heart"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg>Bluetooth is off</span>
+          <span class="text-gold"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>Neon Docklands is open</span>
+        </div></div>
+      </div>
+      <ul>
+        <li><b>Volt</b> (<code>--color-volt-fg</code>): the bike is connected, you are ready. Volt marks “you” and “go”.</li>
+        <li><b>Heart</b> (<code>--color-heart-fg</code>): the bike is gone, Bluetooth is off. Always with words.</li>
+        <li><b>Warn</b> (<code>--color-warn-fg</code>): the streak flame, browser notices.</li>
+        <li><b>Gold</b> (<code>--color-gold-fg</code>, fills <code>--color-gold</code>): earned things only. Stars, unlocks.</li>
+        <li><b>Faint</b> (<code>--color-faint</code>): bots, unearned stars, chevrons. Decorative or secondary.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="labelling"><h2><a href="#labelling">Labelling</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Case</th><th scope="col">Markup</th><th scope="col">Example from the mocks</th></tr></thead>
+        <tbody>
+          <tr><td>Icon beside a visible label</td><td><code>aria-hidden="true"</code> on the SVG; the text is the name.</td><td>Play icon + “Resume”; flag + “Finish”.</td></tr>
+          <tr><td>Icon-only button or link</td><td><code>aria-label</code> on the control, <code>aria-hidden="true"</code> on the SVG. A tooltip shows the same words on hover and focus.</td><td><code>&lt;button class="icon-btn" aria-label="Full screen"&gt;</code>; resistance steppers “Lower resistance” / “Raise resistance”.</td></tr>
+          <tr><td>Icon that carries information alone</td><td><code>role="img"</code> and <code>aria-label</code> on the SVG.</td><td>The bot mark on the standings: <code>role="img" aria-label="Bot"</code>.</td></tr>
+          <tr><td>A group of icons that reads as one value</td><td>Label the group; hide every icon.</td><td>Stars: <code>&lt;span class="stars" aria-label="1 of 3 stars"&gt;</code>.</td></tr>
+          <tr><td>Status shown by an icon's colour</td><td>Add the status in text, visible or <code>.visually-hidden</code>.</td><td>Header: bluetooth icon + “Echelon EX-5s” + hidden “ connected”.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="sheet"><h2><a href="#sheet">Icon sheet</a></h2>
+      <p>Every distinct icon in <code>docs/mocks</code>, harvested from the markup by its paths: 47 icons, most used first. Each links to the first mock that uses it. Copy the SVG from here or from the mock, keep <code>viewBox="0 0 24 24"</code> and <code>aria-hidden="true"</code>, and add a size class.</p>
+      <ul class="ic-sheet"><li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><b>star</b><small>Stars on a map: outline when open, gold fill (<code>.is-earned</code>) when earned</small><small class="ic-src"><a href="../../mocks/pages/home/default.html">pages/home/default</a> · 26 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg><b>maximize</b><small>Full screen (header icon button)</small><small class="ic-src"><a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a> · 79 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg><b>plus</b><small>Raise resistance, add a round, longer effort</small><small class="ic-src"><a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a> · 27 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg><b>bot</b><small>A bot on boards and the start grid (<code>role="img"</code>, labelled “Bot”)</small><small class="ic-src"><a href="../../mocks/pages/profile/default.html">pages/profile/default</a> · 23 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg><b>minus</b><small>Lower resistance, shorter recovery</small><small class="ic-src"><a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a> · 27 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><b>lock</b><small>Locked map, class tier or race mode; also the needs-HTTPS notice</small><small class="ic-src"><a href="../../mocks/pages/class-library/default.html">pages/class-library/default</a> · 20 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><b>check</b><small>Paired, ready on the grid, feedback sent</small><small class="ic-src"><a href="../../mocks/dialogs/feedback/default.html">dialogs/feedback/default</a> · 9 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg><b>users</b><small>Group class seats (“Group in 6 min · 5/10”)</small><small class="ic-src"><a href="../../mocks/pages/class-library/default.html">pages/class-library/default</a> · 28 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg><b>bluetooth</b><small>The bike is connected; opens Diagnostics from the custom ride header</small><small class="ic-src"><a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a> · 31 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg><b>x</b><small>Close a dialog, remove a round</small><small class="ic-src"><a href="../../mocks/dialogs/diagnostics/bluetooth-off.html">dialogs/diagnostics/bluetooth-off</a> · 13 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg><b>play</b><small>Start, Resume</small><small class="ic-src"><a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a> · 18 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg><b>layout-grid</b><small>Library (custom ride header)</small><small class="ic-src"><a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a> · 14 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 17H5"/><path d="M19 7h-9"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg><b>settings-2</b><small>The workout summary in the custom ride header</small><small class="ic-src"><a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a> · 14 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/><path d="M12 8v6"/><path d="M9 11h6"/></svg><b>message-square-plus</b><small>Feedback</small><small class="ic-src"><a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a> · 14 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/></svg><b>square</b><small>End (stop) a custom ride</small><small class="ic-src"><a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a> · 14 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg><b>arrow-left</b><small>Back links (Classes, Maps)</small><small class="ic-src"><a href="../../mocks/pages/class-start/default.html">pages/class-start/default</a> · 17 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><b>chevron-right</b><small>Row disclosure on map rows and setting rows</small><small class="ic-src"><a href="../../mocks/pages/map-select/default.html">pages/map-select/default</a> · 6 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><b>arrow-right</b><small>Forward links and the primary race action (“All maps”, “Race Old Town Criterium”)</small><small class="ic-src"><a href="../../mocks/pages/home/default.html">pages/home/default</a> · 5 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg><b>flame</b><small>Streak in the header (warn colour)</small><small class="ic-src"><a href="../../mocks/pages/class-library/default.html">pages/class-library/default</a> · 14 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg><b>log-out</b><small>Leave race, Leave class</small><small class="ic-src"><a href="../../mocks/pages/class-ride/default.html">pages/class-ride/default</a> · 14 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg><b>ghost</b><small>Racing your best time (the gold ghost)</small><small class="ic-src"><a href="../../mocks/pages/profile/default.html">pages/profile/default</a> · 12 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg><b>bluetooth-off</b><small>Bluetooth is off, Lost the bike</small><small class="ic-src"><a href="../../mocks/pages/class-ride/disconnected.html">pages/class-ride/disconnected</a> · 8 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg><b>chevron-down</b><small>Expand a disclosure (Feedback’s “Attached from”)</small><small class="ic-src"><a href="../../mocks/dialogs/feedback/default.html">dialogs/feedback/default</a> · 10 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg><b>rotate-ccw</b><small>Race it again, Ride it again</small><small class="ic-src"><a href="../../mocks/pages/results/class-group.html">pages/results/class-group</a> · 7 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><b>user</b><small>Ride alone</small><small class="ic-src"><a href="../../mocks/pages/class-start/default.html">pages/class-start/default</a> · 6 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528"/></svg><b>flag</b><small>Finish</small><small class="ic-src"><a href="../../mocks/pages/race/default.html">pages/race/default</a> · 5 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.54 15H17a2 2 0 0 0-2 2v4.54"/><path d="M7 3.34V5a3 3 0 0 0 3 3a2 2 0 0 1 2 2c0 1.1.9 2 2 2a2 2 0 0 0 2-2c0-1.1.9-2 2-2h3.17"/><path d="M11 21.95V18a2 2 0 0 0-2-2a2 2 0 0 1-2-2v-1a2 2 0 0 0-2-2H2.05"/><circle cx="12" cy="12" r="10"/></svg><b>earth</b><small>Real-world scenery: “Ride the real Bruges”</small><small class="ic-src"><a href="../../mocks/pages/race/default.html">pages/race/default</a> · 5 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg><b>key-round</b><small>Google Maps Platform key field</small><small class="ic-src"><a href="../../mocks/pages/race/default.html">pages/race/default</a> · 5 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg><b>mountain</b><small>Metres climbed in the race HUD</small><small class="ic-src"><a href="../../mocks/pages/race/default.html">pages/race/default</a> · 5 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 16h.01"/><path d="M2.212 11.577a2 2 0 0 0-.212.896V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5.527a2 2 0 0 0-.212-.896L18.55 5.11A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><path d="M21.946 12.013H2.054"/><path d="M6 16h.01"/></svg><b>hard-drive</b><small>“Stays on this device” line in Diagnostics</small><small class="ic-src"><a href="../../mocks/dialogs/diagnostics/bluetooth-off.html">dialogs/diagnostics/bluetooth-off</a> · 4 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg><b>download</b><small>Download packet log</small><small class="ic-src"><a href="../../mocks/dialogs/diagnostics/bluetooth-off.html">dialogs/diagnostics/bluetooth-off</a> · 4 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20v-9"/><path d="M14 7a4 4 0 0 1 4 4v3a6 6 0 0 1-12 0v-3a4 4 0 0 1 4-4z"/><path d="M14.12 3.88 16 2"/><path d="M21 21a4 4 0 0 0-3.81-4"/><path d="M21 5a4 4 0 0 1-3.55 3.97"/><path d="M22 13h-4"/><path d="M3 21a4 4 0 0 1 3.81-4"/><path d="M3 5a4 4 0 0 0 3.55 3.97"/><path d="M6 13H2"/><path d="m8 2 1.88 1.88"/><path d="M9 7.13V6a3 3 0 1 1 6 0v1.13"/></svg><b>bug</b><small>Feedback kind: Bug</small><small class="ic-src"><a href="../../mocks/dialogs/feedback/default.html">dialogs/feedback/default</a> · 4 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg><b>lightbulb</b><small>Feedback kind: Improvement</small><small class="ic-src"><a href="../../mocks/dialogs/feedback/default.html">dialogs/feedback/default</a> · 4 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/><path d="M7 10v12"/></svg><b>thumbs-up</b><small>Feedback kind: Kudos</small><small class="ic-src"><a href="../../mocks/dialogs/feedback/default.html">dialogs/feedback/default</a> · 4 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><rect x="14" y="3" width="5" height="18" rx="1"/><rect x="5" y="3" width="5" height="18" rx="1"/></svg><b>pause</b><small>Pause (solo rides only)</small><small class="ic-src"><a href="../../mocks/pages/class-ride/solo.html">pages/class-ride/solo</a> · 4 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="22" x2="18" y1="12" y2="12"/><line x1="6" x2="2" y1="12" y2="12"/><line x1="12" x2="12" y1="6" y2="2"/><line x1="12" x2="12" y1="22" y2="18"/></svg><b>crosshair</b><small>Use video’s current time</small><small class="ic-src"><a href="../../mocks/pages/custom-setup/default.html">pages/custom-setup/default</a> · 4 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 12.5-5-5"/><path d="m9.5 12.5 5-5"/><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M12 17v4"/><path d="M8 21h8"/></svg><b>monitor-x</b><small>Needs Chrome or Edge</small><small class="ic-src"><a href="../../mocks/pages/class-start/needs-chromium.html">pages/class-start/needs-chromium</a> · 3 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><b>copy</b><small>Copy link</small><small class="ic-src"><a href="../../mocks/pages/class-start/needs-chromium.html">pages/class-start/needs-chromium</a> · 3 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg><b>external-link</b><small>Open over HTTPS</small><small class="ic-src"><a href="../../mocks/pages/class-start/needs-https.html">pages/class-start/needs-https</a> · 3 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20h.01"/><path d="M7 20v-4"/><path d="M12 20v-8"/><path d="M17 20V8"/><path d="M22 4v16"/></svg><b>signal</b><small>Signal strength of a found bike</small><small class="ic-src"><a href="../../mocks/pages/connect-bike/default.html">pages/connect-bike/default</a> · 3 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"/></svg><b>wrench</b><small>Bike diagnostics row on Profile</small><small class="ic-src"><a href="../../mocks/pages/profile/default.html">pages/profile/default</a> · 3 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5H3"/><path d="M12 19H3"/><path d="M14 3v4"/><path d="M16 17v4"/><path d="M21 12h-9"/><path d="M21 19h-5"/><path d="M21 5h-7"/><path d="M8 10v4"/><path d="M8 12H3"/></svg><b>sliders-horizontal</b><small>Custom workout row on Profile</small><small class="ic-src"><a href="../../mocks/pages/profile/default.html">pages/profile/default</a> · 3 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg><b>loader-circle</b><small>Spinner while searching and pairing (<code>.icon--spin</code>)</small><small class="ic-src"><a href="../../mocks/pages/connect-bike/pairing.html">pages/connect-bike/pairing</a> · 2 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg><b>lock-open</b><small>A map just opened (gold unlock banner and card)</small><small class="ic-src"><a href="../../mocks/pages/home/unlocked.html">pages/home/unlocked</a> · 2 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg><b>video</b><small>A class ride in Recent rides</small><small class="ic-src"><a href="../../mocks/pages/profile/default.html">pages/profile/default</a> · 2 mocks</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg><b>globe</b><small>This browser can’t reach the bike</small><small class="ic-src"><a href="../../mocks/pages/connect-bike/unsupported-browser.html">pages/connect-bike/unsupported-browser</a> · 1 mock</small></li>
+<li class="ic-cell"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" x2="16" y1="11" y2="11"/></svg><b>user-minus</b><small>A rider left the lobby</small><small class="ic-src"><a href="../../mocks/pages/race-lobby/someone-left.html">pages/race-lobby/someone-left</a> · 1 mock</small></li></ul>
+      <p>Need one that is not here? Take it from Lucide 0.577, check it reads at 16px beside 14px text, and add it to this sheet with the place it is used.</p>
+    </section>
+
+    <section class="ds-section" id="usage"><h2><a href="#usage">Usage</a></h2>
+      <pre><code>&lt;button class="btn btn--raised" type="button"&gt;
+  &lt;svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"&gt;&lt;path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/&gt;&lt;/svg&gt;
+  Resume
+&lt;/button&gt;</code></pre>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><button class="btn btn--raised" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect x="14" y="3" width="5" height="18" rx="1"/><rect x="5" y="3" width="5" height="18" rx="1"/></svg>Pause</button><button class="icon-btn" type="button" aria-label="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></div><figcaption>Pair ride controls with a word; keep icon-only buttons to universal actions like Full screen, and name them.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><button class="icon-btn" type="button" aria-label="Pause"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect x="14" y="3" width="5" height="18" rx="1"/><rect x="5" y="3" width="5" height="18" rx="1"/></svg></button><button class="icon-btn" type="button" aria-label="End"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/></svg></button></div><figcaption>Strip the labels off Pause and End mid-ride: two 36px squares a sweaty rider must tell apart by shape.</figcaption></figure>
+      </div>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><span class="stars stars--md" aria-label="1 of 3 stars"><svg class="icon is-earned" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span><span class="text-muted">Old Town Criterium</span></div><figcaption>Fill gold only what was earned and label the set once: “1 of 3 stars”.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><span class="text-gold"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg></span><span class="text-muted">140 m climbing</span></div><figcaption>Tint a plain fact gold. Gold means earned; a climb is not a reward.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <ul>
+        <li><b>Non-text contrast (1.4.11).</b> An icon that carries meaning on its own (the bot mark, status icons, steppers) needs 3:1 against its background. The <code>-fg</code> status tokens and <code>--color-faint</code> meet it in both themes; see the pairs on <a href="color.html">Color</a>.</li>
+        <li><b>Use of colour (1.4.1).</b> A red bluetooth icon never stands alone: “Bluetooth is off” or “Lost the bike” is always in text.</li>
+        <li><b>Target size (2.5.8).</b> The icon is not the target. An icon-only button is at least <code>--control-height-sm</code> (36px) square, and 48px (<code>--target-ride</code>) when pressed mid-ride. See <a href="responsive.html">Responsive</a>.</li>
+        <li><b>Forced colours.</b> <code>currentColor</code> strokes follow the system text colour automatically; never hard-code a stroke.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <p>Icons introduce no tokens of their own. Sizes read the spacing scale (<code>--space-3</code> to <code>--space-10</code>, documented on <a href="spacing.html">Spacing</a>), colours read the text and status tokens on <a href="color.html">Color</a>, and the spinner reads <code>--duration-loop</code> on <a href="motion.html">Motion</a>.</p>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

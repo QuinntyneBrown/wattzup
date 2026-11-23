@@ -1,0 +1,84 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+set separator none
+' --------------------------
+title Class structure — Share progress and standings
+
+package "Telo.Ride.Domain" {
+  abstract class LiveSession {
+    +RecordProgress(riderId: Guid, sample: ProgressSample): bool
+    +AdvanceBots(model: BotPaceModel, second: int): void
+  }
+  class RiderProgress {
+    +ProgressSample? Last
+    +TimeSpan? FinishTime
+    +RiderStatus Status
+    -trace: RingBuffer<DistancePoint>(600)
+    +TimeAt(distance: double): TimeSpan?
+  }
+  class ProgressSample {
+    +double DistanceMetres
+    +double OutputKj
+    +int PowerWatts
+    +DateTimeOffset ReceivedAt
+  }
+  class BotPaceModel {
+    +PowerAt(bot: BotOccupant, second: int, seed: int): int
+  }
+  interface RankingPolicy {
+    +Rank(session: LiveSession): Standings
+  }
+  class RaceRanking
+  class ClassRanking
+  class Standings {
+    +Guid SessionId
+    +IReadOnlyList<StandingRow> Rows
+  }
+  class StandingRow {
+    +string Name
+    +string Jersey
+    +int Level
+    +OccupantKind Kind
+    +int Position
+    +double GapToLeader
+    +RiderStatus Status
+  }
+  enum OccupantKind {
+    Person
+    Bot
+  }
+  enum RiderStatus {
+    Riding
+    Finished
+    Dnf
+    Left
+  }
+}
+package "ride application" {
+  class LiveSessionStore {
+    +standings: Signal<StandingsDto | null>
+    +report(totals, powerWatts): void
+    +relativeGaps: Signal<number[]>
+  }
+}
+
+LiveSession "1" *-- "10" RiderProgress
+RiderProgress --> ProgressSample : last
+RaceRanking ..|> RankingPolicy
+ClassRanking ..|> RankingPolicy
+RankingPolicy ..> Standings : builds
+Standings "1" *-- "10" StandingRow
+StandingRow --> OccupantKind
+StandingRow --> RiderStatus
+LiveSession ..> BotPaceModel
+@enduml

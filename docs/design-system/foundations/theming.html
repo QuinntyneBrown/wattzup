@@ -3,17 +3,36 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Theming — Wattzup design system</title>
-<meta name="description" content="How the light and dark themes work and how to add one.">
+<title>Theming — Telo Ride design system</title>
+<meta name="description" content="How Telo Ride's dark-first themes work: data-theme, the token tiers in tokens.css, design names and role names, adding a theme, contrast preferences and tokens.json.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Shared by the foundations-b pages: wide reference tables keep a readable width and scroll
+   inside .ds-table-wrap on phones instead of crushing their columns. */
+.ds-table-wrap { --doc-table-min: 40rem; }
+.ds-table-wrap > .ds-table { min-width: var(--doc-table-min); }
+.ds-themes + ul, .ds-themes + p, .ds-example + ul { margin-top: var(--space-4); }
+/* Theming page only */
+.th-chip { display: inline-block; width: var(--space-4); height: var(--space-4); border-radius: var(--radius-xs); border: var(--border-width-hairline) solid var(--color-border-strong); vertical-align: middle; background: var(--chip); }
+.th-pair { display: inline-flex; gap: var(--space-1); }
+.th-tiers { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--space-48)), 1fr)); margin-block: var(--space-4); }
+.th-tier { padding: var(--space-4); border-radius: var(--radius-lg); border: var(--border-width-hairline) solid var(--color-border-default); background: var(--color-bg-surface); }
+.th-tier b { display: block; font: var(--text-label); }
+.th-tier code { display: inline-block; margin-top: var(--space-2); }
+.th-tier p { margin-top: var(--space-2); font: var(--text-body-sm); color: var(--color-fg-muted); }
+.th-nest { padding: var(--space-5); border-radius: var(--radius-xl); background: var(--color-bg-canvas); color: var(--color-fg-default); border: var(--border-width-hairline) solid var(--color-border-default); }
+.th-nest + .th-nest, .th-nest .th-nest { margin-top: var(--space-4); }
+.th-nest__label { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--letter-spacing-wide); color: var(--color-fg-subtle); }
+.th-nest__row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; margin-top: var(--space-3); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +47,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,42 +101,225 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Foundation</p>
       <h1>Theming</h1>
-      <p class="ds-lead">Tokens have three tiers: primitives, semantic roles and component aliases. Themes redefine only semantic roles.</p>
-      
-      <ul class="ds-toc"><li><a href="#how">How themes work</a></li><li><a href="#artwork">Artwork per theme</a></li><li><a href="#adding">Adding a theme</a></li><li><a href="#json">tokens.json</a></li><li><a href="#tokens">All tokens</a></li></ul>
+      <p class="ds-lead">Telo Ride is drawn dark. Every product page ships data-theme="dark"; light is an addition that re-points the same semantic tokens at paper instead of ink.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#selection">How a theme is chosen</a></li><li><a href="#layers">How tokens.css is layered</a></li><li><a href="#names">Two names for one decision</a></li><li><a href="#adding">Adding a theme</a></li><li><a href="#preferences">Contrast and colour preferences</a></li><li><a href="#json">Consuming tokens.json</a></li><li><a href="#usage">Do and don't</a></li><li><a href="#tokens">Tokens</a></li></ul>
     </header>
-    <section class="ds-section" id="how"><h2><a href="#how">How themes work</a></h2>
-<p>Light is defined on <code>:root</code> and <code>[data-theme="light"]</code>; dark on <code>[data-theme="dark"]</code> and under <code>prefers-color-scheme: dark</code>. The app sets <code>data-theme="dark"</code> by default because Wattzup is dark first; the mocks do the same. Press <kbd>t</kbd> or the nav toggle to switch.</p>
-    </section>
-    <section class="ds-section" id="artwork"><h2><a href="#artwork">Artwork per theme</a></h2>
-<p>When a picture is drawn for one theme (the class world previews have a light and a dark capture), ship both images and show one with <code>display: var(--theme-display-light)</code> or <code>var(--theme-display-dark)</code>. Component CSS never branches on <code>[data-theme]</code>; the tokens flip with the theme, including under <code>prefers-color-scheme</code>.</p>
-    </section>
-    <section class="ds-section" id="adding"><h2><a href="#adding">Adding a theme</a></h2>
-<ul><li>Copy the dark block to <code>[data-theme="name"]</code>.</li><li>Change only <code>--color-*</code> roles.</li><li>Add the theme to <code>check_contrast.py</code>'s run and fix every failing pair.</li></ul>
-    </section>
-    <section class="ds-section" id="json"><h2><a href="#json">tokens.json</a></h2>
-<p><code>tokens/tokens.json</code> is a DTCG export generated from <code>tokens.css</code> by <code>tokens_to_json.py</code>; never edit it by hand.</p>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">All tokens</a></h2>
-<p>2 tokens. Values resolve live for each theme.</p><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td><code>--theme-display-light</code></td><td><span data-theme="light"><span data-token="--theme-display-light"></span></span></td><td><span data-theme="dark"><span data-token="--theme-display-light"></span></span></td></tr><tr><td><code>--theme-display-dark</code></td><td><span data-theme="light"><span data-token="--theme-display-dark"></span></span></td><td><span data-theme="dark"><span data-token="--theme-display-dark"></span></span></td></tr></tbody></table></div>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+      <p>The design draws Telo Ride dark only: ink canvas, charcoal panels, bone text, signal orange for “you”. The system keeps that as the product's theme and adds a light theme (paper canvas, paper panels, deeper accent text) so the same components also work on a bright screen and in documents. Both themes are the same semantic tokens pointed at different primitives; no component knows which theme it is in.</p>
+      <ul>
+        <li><b>Dark first.</b> Every product page ships <code>&lt;html lang="en" data-theme="dark"&gt;</code>. The mocks and this site do the same.</li>
+        <li><b>Light is an addition.</b> It exists for riders and tools that ask for it (<code>data-theme="light"</code>), and it passes the same contrast checks. The design never drew it; see open question 5 in the <a href="../../mocks/README.md">mocks README</a>.</li>
+        <li><b>Themes override one tier.</b> A theme block changes semantic tokens only. Primitives never change; component tokens follow automatically.</li>
+      </ul>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="selection"><h2><a href="#selection">How a theme is chosen</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Situation</th><th scope="col">What applies</th><th scope="col">Selector in <code>tokens.css</code></th></tr></thead>
+        <tbody>
+          <tr><td>Product page (always)</td><td>Dark</td><td><code>[data-theme="dark"]</code></td></tr>
+          <tr><td>Page or wrapper asks for light</td><td>Light</td><td><code>:root, [data-theme="light"]</code></td></tr>
+          <tr><td>No attribute, OS set to dark</td><td>Dark</td><td><code>@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) }</code></td></tr>
+          <tr><td>No attribute, OS set to light, or a tool that reads <code>:root</code></td><td>Light</td><td><code>:root</code></td></tr>
+        </tbody>
+      </table></div>
+      <p>The dark block and its <code>prefers-color-scheme</code> twin are byte-identical; edit one, copy it into the other. The contrast checker reads both. Each theme sets <code>color-scheme</code> too, so scrollbars, form controls and the caret follow it.</p>
+      <p>A rider-facing theme switch, if the product adds one, writes the attribute on <code>&lt;html&gt;</code> and remembers it. This site's toggle (top of the navigation, or press <kbd>t</kbd>) does exactly that.</p>
+    </section>
+
+    <section class="ds-section" id="layers"><h2><a href="#layers">How tokens.css is layered</a></h2>
+      <div class="th-tiers">
+        <div class="th-tier"><b>1 · Primitives</b><code>--palette-ink</code><p>Raw values on <code>:root</code>: the design's palette, the paper palette for light, the jersey colours. Only semantic tokens read them.</p></div>
+        <div class="th-tier"><b>2 · Theme blocks</b><code>--color-panel</code><p>The design's own names (ink, panel, raised, line, fg, muted, faint, the <code>-fg</code> text variants, status tokens, shadows), declared on each theme selector.</p></div>
+        <div class="th-tier"><b>3 · Role aliases</b><code>--color-bg-surface</code><p>Role names that point at the design names, declared on <code>:root, [data-theme]</code> so every theme wrapper re-resolves them.</p></div>
+        <div class="th-tier"><b>4 · Component tokens</b><code>--btn-bg</code><p>Declared on each block in <code>components.css</code>; alias tier 2 or 3. Re-theme one component by overriding these.</p></div>
+      </div>
+      <pre><code>/* 2. Primitives (never change with the theme) */
+:root { --palette-ink: …; --palette-panel: …; --palette-paper: …; --palette-paper-panel: …; }
+
+/* 3. Light: an addition */
+:root, [data-theme="light"] { color-scheme: light; --color-ink: var(--palette-paper); --color-panel: var(--palette-paper-panel); … }
+
+/* 4. Dark: the design (and its prefers-color-scheme twin, identical) */
+[data-theme="dark"] { color-scheme: dark; --color-ink: var(--palette-ink); --color-panel: var(--palette-panel); … }
+
+/* 5. Role aliases, resolved again on every theme wrapper */
+:root, [data-theme] { --color-bg-canvas: var(--color-ink); --color-bg-surface: var(--color-panel); … }</code></pre>
+      <h3>Why the aliases sit on <code>[data-theme]</code></h3>
+      <p>A custom property that refers to another is resolved where it is declared. If <code>--color-bg-surface: var(--color-panel)</code> lived only on <code>:root</code>, a <code>&lt;div data-theme="light"&gt;</code> inside a dark page would inherit the already-resolved dark value. Declaring the aliases on every <code>[data-theme]</code> element makes each wrapper resolve them again against its own theme, which is how the side-by-side examples on every component page work.</p>
+      <div class="th-nest" data-theme="dark">
+        <span class="th-nest__label">data-theme="dark"</span>
+        <div class="th-nest__row"><button class="btn btn--primary" type="button">Race Old Town Criterium</button><span class="pill pill--gold">Level 7</span><span class="text-muted">Evening, Sam.</span></div>
+        <div class="th-nest" data-theme="light">
+          <span class="th-nest__label">data-theme="light", nested</span>
+          <div class="th-nest__row"><button class="btn btn--primary" type="button">Race Old Town Criterium</button><span class="pill pill--gold">Level 7</span><span class="text-muted">Evening, Sam.</span></div>
+          <div class="th-nest" data-theme="dark">
+            <span class="th-nest__label">data-theme="dark", nested again</span>
+            <div class="th-nest__row"><button class="btn btn--primary" type="button">Race Old Town Criterium</button><span class="pill pill--gold">Level 7</span><span class="text-muted">Evening, Sam.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="names"><h2><a href="#names">Two names for one decision</a></h2>
+      <p>The design's code says <code>bg-ink</code>, <code>text-muted</code>, <code>text-volt</code>. The canonical semantic tokens keep those names, so anyone reading the design or the mocks finds the same words here. Role names alias them, so tooling and people new to the product can read the system by purpose. Use either; they are the same value in every theme. Values and contrast for each live on <a href="color.html">Color</a>.</p>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Design name</th><th scope="col">Role name(s)</th><th scope="col">Light</th><th scope="col">Dark</th><th scope="col">Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>--color-ink</code></td><td><code>--color-bg-canvas</code>, <code>--color-bg-surface-sunken</code>, <code>--color-fg-inverse</code>, <code>--color-border-inverse</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-ink)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-ink)"></span></td><td>The page; text on bone</td></tr>
+          <tr><td><code>--color-panel</code></td><td><code>--color-bg-surface</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-panel)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-panel)"></span></td><td>Cards, panels, dialogs</td></tr>
+          <tr><td><code>--color-raised</code></td><td><code>--color-bg-surface-raised</code>, <code>--color-bg-subtle</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-raised)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-raised)"></span></td><td>Wells, secondary buttons, tracks</td></tr>
+          <tr><td><code>--color-raised-hover</code></td><td><code>--color-bg-subtle-hover</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-raised-hover)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-raised-hover)"></span></td><td>Raised, pointed at</td></tr>
+          <tr><td><code>--color-line</code></td><td><code>--color-border-default</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-line)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-line)"></span></td><td>Hairlines (decorative)</td></tr>
+          <tr><td><code>--color-line-strong</code></td><td><code>--color-border-strong</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-line-strong)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-line-strong)"></span></td><td>Input borders (3:1)</td></tr>
+          <tr><td><code>--color-fg</code></td><td><code>--color-fg-default</code>, <code>--color-bg-inverse</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-fg)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-fg)"></span></td><td>Text; the light button fill</td></tr>
+          <tr><td><code>--color-muted</code></td><td><code>--color-fg-muted</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-muted)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-muted)"></span></td><td>Secondary text</td></tr>
+          <tr><td><code>--color-faint</code></td><td><code>--color-fg-subtle</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-faint)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-faint)"></span></td><td>Tertiary text, units</td></tr>
+          <tr><td><code>--color-disabled</code></td><td><code>--color-fg-disabled</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-disabled)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-disabled)"></span></td><td>Disabled text</td></tr>
+          <tr><td><code>--color-scrim</code></td><td><code>--color-bg-backdrop</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-scrim)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-scrim)"></span></td><td>Behind dialogs</td></tr>
+          <tr><td><code>--color-volt</code></td><td><code>--color-accent</code>, <code>--color-accent-active</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-volt)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-volt)"></span></td><td>You; the primary action (fills)</td></tr>
+          <tr><td><code>--color-volt-hover</code></td><td><code>--color-accent-hover</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-volt-hover)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-volt-hover)"></span></td><td>Primary, pointed at</td></tr>
+          <tr><td><code>--color-volt-subtle</code></td><td><code>--color-accent-subtle</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-volt-subtle)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-volt-subtle)"></span></td><td>Selected backgrounds</td></tr>
+          <tr><td><code>--color-volt-subtle-hover</code></td><td><code>--color-accent-subtle-hover</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-volt-subtle-hover)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-volt-subtle-hover)"></span></td><td>Selected, pointed at</td></tr>
+          <tr><td><code>--color-volt-fg</code></td><td><code>--color-fg-accent</code>, <code>--color-fg-link</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-volt-fg)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-volt-fg)"></span></td><td>Volt as text (deeper on paper)</td></tr>
+          <tr><td><code>--color-volt-fg-hover</code></td><td><code>--color-fg-link-hover</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-volt-fg-hover)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-volt-fg-hover)"></span></td><td>Links, pointed at</td></tr>
+          <tr><td><code>--color-on-fill</code></td><td><code>--color-fg-on-accent</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-on-fill)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-on-fill)"></span></td><td>Text on volt and gold fills</td></tr>
+          <tr><td><code>--color-on-photo</code></td><td><code>--color-fg-on-photo</code></td><td><span class="th-chip" data-theme="light" style="--chip: var(--color-on-photo)"></span></td><td><span class="th-chip" data-theme="dark" style="--chip: var(--color-on-photo)"></span></td><td>Text on photos and video</td></tr>
+        </tbody>
+      </table></div>
+      <p>Status colours come in two sets: <code>--color-heart</code>, <code>--color-warn</code>, <code>--color-rest</code>, <code>--color-ok</code> and <code>--color-gold</code> are the design's fills; <code>--color-{danger,warning,info,success}-{bg,fg,border,icon,solid}</code> are the role tokens banners, alerts and badges read. Both sets are on <a href="color.html">Color</a>.</p>
+    </section>
+
+    <section class="ds-section" id="adding"><h2><a href="#adding">Adding a theme</a></h2>
+      <ol>
+        <li><b>Add primitives</b> for any new raw colours to the primitives block (<code>--palette-…</code>). Never put a raw value in a theme block when a primitive can hold it.</li>
+        <li><b>Copy the dark block</b> (section 4 of <code>tokens.css</code>) to a new selector, <code>[data-theme="&lt;name&gt;"]</code>, and re-point every token in it. Declare every token the dark block declares, so nothing leaks through from <code>:root</code>.</li>
+        <li><b>Set <code>color-scheme</code></b> to <code>light</code> or <code>dark</code> to match the canvas.</li>
+        <li><b>Leave the role aliases alone.</b> They already sit on <code>[data-theme]</code> and re-resolve for the new block.</li>
+        <li><b>Add the theme to the contrast check</b> and run <code>check_contrast.py</code> until every pair in <code>contrast-pairs.json</code> passes.</li>
+        <li><b>Regenerate <code>tokens.json</code></b> with <code>tokens_to_json.py</code> and screenshot the component pages in the new theme.</li>
+      </ol>
+      <pre><code>[data-theme="night"] {               /* example name */
+  color-scheme: dark;
+  --color-ink: var(--palette-night);        /* new primitives added in step 1 */
+  --color-panel: var(--palette-night-panel);
+  /* … every other token the dark block declares … */
+}</code></pre>
+      <p>Re-theming a single component is a smaller job: override its component tokens on a wrapper, never its properties.</p>
+      <pre><code>.unlock-card .btn { --btn-bg: var(--color-gold); --btn-fg: var(--color-on-fill); }</code></pre>
+    </section>
+
+    <section class="ds-section" id="preferences"><h2><a href="#preferences">Contrast and colour preferences</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Preference</th><th scope="col">What <code>tokens.css</code> does</th></tr></thead>
+        <tbody>
+          <tr><td><code>prefers-contrast: more</code></td><td>Hairlines become strong borders (<code>--color-border-default</code> → <code>--color-line-strong</code>) and tertiary text becomes secondary (<code>--color-fg-subtle</code> → <code>--color-muted</code>), in both themes.</td></tr>
+          <tr><td><code>forced-colors: active</code></td><td>The focus ring becomes <code>Highlight</code>; default and strong borders become <code>CanvasText</code>. The browser replaces the rest; icons follow because they stroke with <code>currentColor</code>.</td></tr>
+          <tr><td><code>prefers-reduced-motion: reduce</code></td><td>Interface durations drop to 0 ms; timers keep their pace. See <a href="motion.html">Motion</a>.</td></tr>
+          <tr><td><code>prefers-color-scheme</code></td><td>Only used when a page sets no <code>data-theme</code>. Product pages always set dark.</td></tr>
+        </tbody>
+      </table></div>
+      <p>In forced-colours mode, components must not rely on a background colour alone to show a state: selected options keep <code>aria-pressed</code> or <code>aria-current</code>, and the board's “You” row keeps its bold name.</p>
+    </section>
+
+    <section class="ds-section" id="json"><h2><a href="#json">Consuming tokens.json</a></h2>
+      <p><code>tokens/tokens.json</code> is generated from <code>tokens.css</code> by <code>tokens_to_json.py</code> in the <a href="https://www.designtokens.org/tr/drafts/format/">W3C Design Tokens (DTCG)</a> format. Never edit it by hand; change <code>tokens.css</code> and regenerate.</p>
+      <ul>
+        <li>Groups follow the CSS name: <code>--color-ink</code> is <code>color.ink</code>, <code>--duration-fast</code> is <code>duration.fast</code>.</li>
+        <li>Each token has <code>$type</code> and <code>$value</code>; aliases are written <code>{palette.ink}</code>.</li>
+        <li><code>$value</code> is the light (<code>:root</code>) value. The dark value, the CSS name and resolved hex values sit under <code>$extensions["com.agent-toolkit"]</code>.</li>
+      </ul>
+      <pre><code>"ink": {
+  "$type": "color",
+  "$value": "{palette.paper}",
+  "$extensions": {
+    "com.agent-toolkit": {
+      "css": "--color-ink",
+      "resolved": "#f6f4ef",
+      "themes": { "dark": { "$value": "{palette.ink}", "resolved": "#0a0b0d" } }
+    }
+  }
+}</code></pre>
+      <p>To build platform constants (Swift, Kotlin, a TypeScript theme object), read the dark values first, since dark is the product, and fall back to <code>$value</code> for tokens that do not change with the theme:</p>
+      <pre><code>import tokens from './tokens.json' assert { type: 'json' };
+const ext = (t) =&gt; t.$extensions?.['com.agent-toolkit'] ?? {};
+const dark = (t) =&gt; ext(t).themes?.dark?.resolved ?? ext(t).resolved ?? t.$value;
+export const ink = dark(tokens.color.ink);          // "#0a0b0d"
+export const durationFast = tokens.duration.fast.$value; // "150ms"</code></pre>
+    </section>
+
+    <section class="ds-section" id="usage"><h2><a href="#usage">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><code>color: var(--color-volt-fg);</code></div><figcaption>Use the <code>-fg</code> variant for volt, gold and status text. It deepens on paper so it passes 4.5:1.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><code>color: var(--color-volt);</code></div><figcaption>Set text in the fill colour. Signal orange on paper reads 2.7:1.</figcaption></figure>
+      </div>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><code>background: var(--color-panel);</code></div><figcaption>Read a semantic token, design name or role name, so the panel follows the theme.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><code>background: var(--palette-panel);</code></div><figcaption>Read a primitive in a component. It stays charcoal on a light page.</figcaption></figure>
+      </div>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><code>&lt;div data-theme="light"&gt;…&lt;/div&gt;</code></div><figcaption>Switch a region with the attribute; everything inside re-resolves.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><code>.light .panel { background: …; }</code></div><figcaption>Write theme overrides per component. They drift from the tokens and skip the contrast check.</figcaption></figure>
+      </div>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><code>color: var(--color-on-photo);</code></div><figcaption>Use <code>--color-on-photo</code> for text over the world and class covers. Photos stay dark in both themes.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><code>color: var(--color-fg);</code></div><figcaption>Set photo captions in <code>--color-fg</code>. It turns ink on a light page and disappears into the Old Town night.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <p>Theming adds no tokens of its own: it re-points the colour and shadow tokens documented on <a href="color.html">Color</a> and <a href="elevation.html">Elevation</a>. The theme hooks are attributes and media features:</p>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Hook</th><th scope="col">Values</th><th scope="col">Effect</th></tr></thead>
+        <tbody>
+          <tr><td><code>data-theme</code></td><td><code>dark</code>, <code>light</code></td><td>Sets the theme for the element and everything inside it.</td></tr>
+          <tr><td><code>color-scheme</code></td><td>set by each theme</td><td>Native controls, scrollbars and the caret follow the theme.</td></tr>
+          <tr><td><code>prefers-color-scheme</code></td><td><code>dark</code></td><td>Dark when no <code>data-theme</code> is set.</td></tr>
+          <tr><td><code>prefers-contrast</code></td><td><code>more</code></td><td>Stronger borders and tertiary text.</td></tr>
+          <tr><td><code>forced-colors</code></td><td><code>active</code></td><td>System colours for focus ring and borders.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

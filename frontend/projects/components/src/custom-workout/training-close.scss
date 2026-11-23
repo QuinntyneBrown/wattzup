@@ -1,0 +1,22 @@
+// Element training-header__close (docs/design-system/assets/components.css): muted, raised on hover, 44 px tall.
+:host {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  min-height: var(--target-comfortable);
+  border-radius: var(--radius-md);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+  text-decoration: none;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+:host(:hover) {
+  background: var(--color-raised);
+  color: var(--color-fg);
+}

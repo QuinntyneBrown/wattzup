@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Ride with a group
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Class ride with the output board")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Ride hub: progress and standings")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Group class sessions and seats")
+}
+Rel(rider, app, "Uses")
+Rel(app, api, "ReportProgress up to 2 per second", "SignalR /hubs/ride")
+Rel_Back(app, api, "StandingsUpdated once a second", "SignalR /hubs/ride")
+Rel(api, db, "Reads and writes sessions", "EF Core")
+@enduml

@@ -1,0 +1,35 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Ride with a group
+
+Container_Boundary(app, "Ride app") {
+  Component(page, "ClassRidePage", "Angular page · ride", "Places the board")
+  Component(ride, "ClassRideStore", "Signal store · ride", "Output, power, board view")
+  Component(view, "groupBoardView", "Pure helper · ride", "Own row, place, whole kJ")
+  Component(live, "LiveSessionStore", "Signal store · ride", "Latest standings, reports ≤ 2/s")
+  Component(board, "ClassBoard", "Presentation component · components", "Output board, rows slide")
+  Component(hub, "SignalRRideHubClient", "Hub client · api", "RIDE_HUB_CLIENT")
+}
+Container_Boundary(backend, "Telo Ride API") {
+  Component(rhub, "RideHub", "SignalR hub · Telo.Ride.Api", "/hubs/ride")
+  Component(notifier, "RideHubNotifier", "ISessionNotifier · Telo.Ride.Api", "Session groups")
+  Component(report, "ReportProgressCommandHandler", "MediatR handler · Telo.Ride.Application", "Keeps the report")
+  Component(tick, "TickLiveSessionsCommandHandler", "MediatR handler · Telo.Ride.Application", "Bots, rank, send")
+  Component(registry, "IGroupSessionRegistry", "In memory · Telo.Ride.Infrastructure", "Live sessions")
+  Component(session, "GroupClassSession", "Domain · Telo.Ride.Domain", "Seats, reports, bots, standings")
+  Component(ticker, "SessionTicker", "Hosted service · Telo.Ride.Infrastructure", "One tick a second")
+}
+Rel(page, ride, "board, mode")
+Rel(page, board, "Renders")
+Rel(ride, view, "standings + seat jersey")
+Rel(ride, live, "report(outputKj, power) each second")
+Rel(live, hub, "reportProgress / onStandings")
+Rel(hub, rhub, "ReportProgress / StandingsUpdated", "SignalR")
+Rel(rhub, report, "Sends ReportProgressCommand")
+Rel(report, registry, "Finds the session")
+Rel(ticker, tick, "Sends TickLiveSessionsCommand")
+Rel(tick, registry, "Started sessions")
+Rel(tick, session, "Tick(now)")
+Rel(tick, notifier, "StandingsUpdated to the session group")
+@enduml

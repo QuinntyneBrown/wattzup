@@ -1,0 +1,44 @@
+@startuml
+title UML sequence behaviour — Report the rider's output
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ClassRideStore" as store
+  participant "LiveSessionStore" as live
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "SignalRRideHubClient" as hub
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RideHub" as rhub
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "ReportProgressCommandHandler" as handler
+  participant "GroupClassSession" as session
+end box
+loop each second of the ride clock (L2-123 AC1)
+  store -> store : outputKj += power ÷ 1000 each running second (L2-023 AC5)
+  store -> live : report(61.4 kJ, 108 W)
+  alt seated, and 500 ms or more since the last report
+    live -> hub : reportProgress(sessionId, 61.4, 108)
+    hub -> rhub : ReportProgress (no answer awaited)
+    rhub -> handler : Send ReportProgressCommand
+    handler -> session : RecordProgress(rider, 61.4, 108, now)
+    session -> session : Drop it if under 500 ms since the rider's last
+  else
+    live -> live : Drop the report
+  end
+end
+@enduml

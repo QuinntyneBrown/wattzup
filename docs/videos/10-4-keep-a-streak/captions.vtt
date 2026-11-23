@@ -1,0 +1,49 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.420
+Ride on consecutive days and your streak grows. The backend keeps it, so every
+
+00:00:07.420 --> 00:00:08.589
+screen agrees.
+
+00:00:10.324 --> 00:00:15.164
+Each calendar day with a finished ride adds one, in your own time zone. A second
+
+00:00:15.164 --> 00:00:19.941
+ride that day doesn't count twice. Miss a whole day and it's back to zero.
+
+00:00:25.809 --> 00:00:31.041
+The streak pays: ten XP a day on every ride, in the same number the header shows.
+
+00:00:36.133 --> 00:00:41.364
+The flame and the count sit in the header, and Profile reads seven hundred sixty XP
+
+00:00:41.364 --> 00:00:45.005
+to level eight, four-day streak. No streak, no flame.
+
+00:00:49.038 --> 00:00:53.537
+What the tests prove: every case of the rule, the streak through the API across
+
+00:00:53.537 --> 00:00:55.944
+midnight, and the header and Profile.
+
+00:00:59.361 --> 00:01:03.965
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:04.310 --> 00:01:08.821
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:08.821 --> 00:01:10.492
+every hill and interval.
+
+00:01:10.838 --> 00:01:16.016
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:16.016 --> 00:01:21.464
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:21.464 --> 00:01:24.454
+XP, rider levels, stars and map unlocks.
+
+00:01:24.799 --> 00:01:27.291
+A custom workout lives under Profile.

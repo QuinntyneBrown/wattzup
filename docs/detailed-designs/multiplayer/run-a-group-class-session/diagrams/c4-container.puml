@@ -1,0 +1,17 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Run a group class session
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(youtube, "YouTube", "Class and custom-ride videos (IFrame Player API)")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Sign-in, progress, catalogues, ride hub, feedback")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Riders, sessions, rides, progress, feedback")
+}
+Rel(rider, app, "Joins the next group session in", "HTTPS")
+Rel(app, api, "JoinClassSession; receives seats and start", "SignalR")
+Rel(app, youtube, "Starts the video at the shared time", "IFrame Player API")
+Rel(api, db, "Reads class catalogue and rider level", "EF Core")
+@enduml

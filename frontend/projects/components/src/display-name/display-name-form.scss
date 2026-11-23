@@ -1,0 +1,45 @@
+@use '../field/field';
+
+// Block display-name-form (docs/design-system/assets/components.css, Display name form): one field, the rule under
+// it and the actions; on a page the action fills the width, in a dialog the actions sit at the end of a row.
+:host {
+  display: block;
+}
+
+.display-name-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.display-name-form__actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.display-name-form--dialog .display-name-form__actions {
+  justify-content: flex-end;
+  padding-bottom: var(--space-5);
+}
+
+.display-name-form__spinner {
+  width: var(--space-5);
+  height: var(--space-5);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  animation: display-name-form-spin var(--duration-loop, 1s) linear infinite;
+}
+
+@keyframes display-name-form-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .display-name-form__spinner {
+    animation: none;
+  }
+}

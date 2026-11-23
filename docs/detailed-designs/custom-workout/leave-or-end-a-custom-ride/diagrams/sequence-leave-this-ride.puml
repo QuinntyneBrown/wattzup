@@ -1,0 +1,48 @@
+@startuml
+title UML sequence behaviour — Leave a custom ride
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "RideHeader" as header
+  participant "CustomRideStore" as store
+  participant "LeaveRideDialog" as dialog
+  participant "Router" as router
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "RideClock" as clock
+  participant "RideRecorder" as recorder
+  participant "RideOutbox" as outbox
+end box
+rider -> header : Press "Library"
+header -> store : openLeave()
+store -> clock : pause()
+store -> dialog : Open via CDK Dialog under "Library" (aria-expanded="true")
+dialog --> rider : "Leave this ride?" "You’re 6:52 in with 2.24 km ridden. …"; focus on "Save ride and open library" L2-107 AC1–2
+alt "Save ride and open library"
+  dialog --> store : SaveAndOpenLibrary
+  store -> recorder : toSubmission(custom)
+  recorder --> store : RideSubmission
+  store -> outbox : enqueue(submission) (submitted, see end a custom ride)
+  store -> router : Navigate to /classes L2-107 AC3
+else "Discard and open library"
+  dialog --> store : DiscardAndOpenLibrary
+  store -> store : Discard totals
+  store -> router : Navigate to /classes
+else "Keep riding" or Escape
+  dialog --> store : KeepRiding
+  store --> header : Popover closes; ride still paused
+end
+@enduml

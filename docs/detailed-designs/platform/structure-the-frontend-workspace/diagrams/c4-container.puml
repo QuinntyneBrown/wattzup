@@ -1,0 +1,15 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Structure the frontend workspace
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Bluetooth LE")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Built from the frontend workspace: api, domain, components, world, video, ride")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Sign-in, progress, catalogues, ride hub, feedback")
+}
+Rel(rider, app, "Uses")
+Rel(app, bike, "Reads and controls", "Web Bluetooth")
+Rel(app, api, "Calls", "JSON/HTTPS, WebSocket")
+@enduml

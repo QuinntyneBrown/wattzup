@@ -1,0 +1,56 @@
+// Element race-bar__btn of block race-bar (docs/design-system/assets/components.css, Race), on the consumer's control.
+:host {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--control-height-sm);
+  border-radius: var(--radius-lg);
+  background: var(--color-raised);
+  padding-inline: var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-fg);
+  white-space: nowrap;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+
+  // Anything pressed mid-ride is 48 px on a phone (L2-072 AC3).
+  @media (max-width: 39.99rem) {
+    justify-content: center;
+    height: var(--target-ride);
+    min-width: var(--target-ride);
+  }
+}
+
+:host(:hover:not(:disabled)) {
+  background: var(--color-line);
+}
+
+:host(:active:not(:disabled)) {
+  transform: scale(0.98);
+}
+
+:host(:disabled) {
+  opacity: 0.4;
+}
+
+:host(.race-bar__btn--quiet) {
+  background: none;
+  padding-inline: var(--space-2);
+  color: var(--color-muted);
+}
+
+:host(.race-bar__btn--quiet:hover:not(:disabled)) {
+  background: none;
+  color: var(--color-heart-fg);
+}
+
+.race-bar__btn-label {
+  display: none;
+
+  @media (min-width: 40rem) {
+    display: inline;
+  }
+}

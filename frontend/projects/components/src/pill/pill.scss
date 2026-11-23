@@ -1,0 +1,29 @@
+// Block pill (docs/design-system/assets/components.css).
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  border-radius: var(--radius-full);
+  padding: var(--space-0-5) var(--space-2);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-medium);
+  background: var(--color-raised);
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+:host(.pill--ok) {
+  background: var(--color-success-bg);
+  color: var(--color-success-fg);
+}
+
+:host(.pill--heart) {
+  background: var(--color-danger-bg);
+  color: var(--color-danger-fg);
+}
+
+:host(.pill--volt) {
+  background: var(--color-accent-subtle);
+  color: var(--color-fg-accent);
+}

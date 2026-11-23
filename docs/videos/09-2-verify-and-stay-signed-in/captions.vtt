@@ -1,0 +1,70 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:06.902
+Six digits, then you're riding, and Telo Ride remembers you for a year.
+
+00:00:10.324 --> 00:00:15.478
+Type the code, paste it, or take the one your phone offers. Anything that isn't a
+
+00:00:15.478 --> 00:00:18.896
+digit drops away, and six digits confirm at once.
+
+00:00:20.647 --> 00:00:25.173
+A code that doesn't match clears the field, marks it, and says so out loud. The
+
+00:00:25.173 --> 00:00:26.905
+focus goes straight back.
+
+00:00:30.971 --> 00:00:36.042
+A code works for ten minutes, once. After five wrong ones, even the right code waits
+
+00:00:36.042 --> 00:00:37.187
+for a new one.
+
+00:00:41.295 --> 00:00:45.888
+The backend checks only a keyed hash, finds or makes your account, and starts a
+
+00:00:45.888 --> 00:00:48.456
+session in a cookie scripts can't read.
+
+00:00:51.618 --> 00:00:55.988
+Open any screen without a session, and sign-in opens first. Confirm the code, and
+
+00:00:55.988 --> 00:00:58.069
+you're back where you were going.
+
+00:01:01.942 --> 00:01:06.675
+Each ride moves the session forward a year. If the backend can't be reached, the
+
+00:01:06.675 --> 00:01:08.513
+screen opens all the same.
+
+00:01:12.266 --> 00:01:15.679
+Phone to desktop, the six cells keep one calm row.
+
+00:01:22.590 --> 00:01:27.194
+What the tests prove: the right code signs you in, a wrong one is counted, and a
+
+00:01:27.194 --> 00:01:29.738
+session lasts a year from its last use.
+
+00:01:32.913 --> 00:01:37.517
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:37.862 --> 00:01:42.373
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:42.373 --> 00:01:44.044
+every hill and interval.
+
+00:01:44.390 --> 00:01:49.568
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:49.568 --> 00:01:55.016
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:55.016 --> 00:01:58.006
+XP, rider levels, stars and map unlocks.
+
+00:01:58.351 --> 00:02:00.843
+A custom workout lives under Profile.

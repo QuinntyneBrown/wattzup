@@ -1,0 +1,23 @@
+// Block setup-goal (docs/design-system/assets/components.css, Race Setup).
+:host {
+  display: block;
+}
+
+.setup-goal {
+  margin-bottom: var(--space-5);
+  border: var(--border-width-hairline) solid color-mix(in srgb, var(--color-gold) 40%, transparent);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--color-gold) 10%, transparent);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.setup-goal__goal {
+  color: var(--color-gold-fg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.setup-goal__rest {
+  color: var(--color-muted);
+}

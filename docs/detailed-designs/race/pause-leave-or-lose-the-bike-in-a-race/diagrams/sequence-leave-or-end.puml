@@ -1,0 +1,53 @@
+@startuml
+title UML sequence behaviour — Leave or end a race
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "RacePage" as page
+  participant "RaceStore" as store
+  participant "RaceSessionStore" as session
+  participant "Router" as router
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "RideHubClient" as hub
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RideHub" as ridehub
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "RaceSession" as rs
+end box
+alt bots race: Leave (L2-069 AC1)
+  actor -> page : Press Leave
+  page -> store : leave()
+  store -> store : DNF, no ride submitted, no XP
+else riders-online race: Leave (L2-069 AC1, AC3)
+  actor -> page : Press Leave
+  page -> store : leave()
+  store -> session : leave()
+  session -> hub : LeaveSession()
+  hub -> ridehub : LeaveSession
+  ridehub -> rs : Mark DNF
+  ridehub -> ridehub : StandingsUpdated with DNF to every other rider
+  session -> hub : disconnect()
+else solo race: End (L2-069 AC2)
+  actor -> page : Press End
+  page -> store : end()
+  store -> store : Discard the race
+end
+store -> router : Navigate /race/:mapId?mode=<same mode>, no confirmation
+router --> actor : Race Setup opens
+@enduml

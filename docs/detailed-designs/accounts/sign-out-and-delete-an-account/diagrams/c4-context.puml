@@ -1,0 +1,8 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Sign out and delete an account
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+Rel(rider, telo, "Signs out of, or deletes the account in")
+@enduml

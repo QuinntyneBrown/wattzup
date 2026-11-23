@@ -1,0 +1,45 @@
+@startuml
+title UML sequence behaviour — Segment change and manual resistance
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "RacePage" as page
+  participant "RaceStore" as store
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "RaceEngine" as engine
+  participant "ResistanceController" as res
+  participant "BikeConnection" as conn
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "Smart bike" as bike
+end box
+store -> engine : tick(...)
+engine -> engine : New segment starts
+engine -> res : setTarget(segment.level) (L2-027, L2-063 AC2)
+res -> conn : writeResistance(level)
+conn -> bike : Set resistance command
+bike --> conn : Resistance notification
+conn --> store : resistance
+store --> page : "24" with "Resistance / 32" (L2-063 AC1)
+actor -> page : Press "Raise resistance"
+page -> store : raise()
+store -> engine : nudge(+1)
+engine -> res : setTarget(target + 1) (L2-028)
+res -> conn : writeResistance(level)
+conn -> bike : Set resistance command
+page --> actor : Readout follows the bike's reported resistance
+@enduml

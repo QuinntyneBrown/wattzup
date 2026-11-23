@@ -1,0 +1,223 @@
+// Settings' World controls (docs/mocks/pages/settings/): blocks quality-options (with the selectable card and its
+// radio), range and select, which have no component of their own yet.
+:host {
+  display: block;
+}
+
+.world-settings__label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.world-settings__hint {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-snug);
+  color: var(--color-muted);
+}
+
+.world-settings__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.setting__value {
+  flex-shrink: 0;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+}
+
+.world-settings__scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-faint);
+}
+
+// Quality: five selectable cards; the chosen one is a checked real radio, so it is not marked by colour alone (1.4.1).
+.quality-options legend {
+  margin-bottom: var(--space-3);
+  padding: 0;
+}
+
+.quality-options__cards {
+  display: grid;
+  gap: var(--space-2);
+
+  @media (min-width: 48rem) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    > :first-child {
+      grid-column: 1 / -1;
+    }
+  }
+}
+
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  min-width: 0;
+  border-radius: var(--radius-xl);
+  border: var(--border-width-hairline) solid var(--color-line);
+  padding: var(--space-4);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+
+  &:hover {
+    border-color: var(--color-faint);
+  }
+
+  &:has(.radio__input:checked) {
+    border-color: var(--color-volt);
+    background: var(--color-volt-subtle);
+  }
+
+  &:has(.radio__input:focus-visible) {
+    outline: var(--focus-ring-width) solid var(--color-focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  &:has(.radio__input:disabled) {
+    opacity: 0.5;
+    cursor: default;
+    border-color: var(--color-line);
+
+    .card__meta {
+      color: var(--color-disabled);
+    }
+  }
+}
+
+.card__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+  min-width: 0;
+}
+
+.card__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+.card__meta {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.radio__input {
+  appearance: none;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--space-4);
+  height: var(--space-4);
+  margin: var(--space-1) 0 0;
+  border-radius: var(--radius-full);
+  border: var(--border-width-hairline) solid var(--color-line-strong);
+  background: var(--color-ink);
+  cursor: pointer;
+
+  &::before {
+    content: '';
+    width: var(--space-2);
+    height: var(--space-2);
+    border-radius: var(--radius-full);
+    background: var(--color-volt);
+    scale: 0;
+    transition: scale var(--duration-fast) var(--ease-out);
+  }
+
+  &:checked {
+    border-color: var(--color-volt);
+
+    &::before {
+      scale: 1;
+    }
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+// Resolution: the native range. 44 px tall for touch, the track drawn in its middle; the negative margins keep the layout of a 24 px range.
+.range {
+  width: 100%;
+  height: var(--target-comfortable);
+  margin-block: calc((var(--target-min) - var(--target-comfortable)) / 2);
+  accent-color: var(--color-volt);
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+// Graphics: the native select with a drawn chevron, 44 px tall for touch.
+.select {
+  position: relative;
+  display: block;
+  width: 100%;
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: calc(var(--space-3) + var(--space-1));
+    top: 50%;
+    width: var(--space-2);
+    height: var(--space-2);
+    translate: 0 -70%;
+    rotate: 45deg;
+    border-right: var(--border-width-thick) solid var(--color-muted);
+    border-bottom: var(--border-width-thick) solid var(--color-muted);
+    pointer-events: none;
+  }
+
+  &:has(.select__control:disabled)::after {
+    opacity: 0.4;
+  }
+}
+
+.select__control {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: var(--target-comfortable);
+  padding: 0 calc(var(--space-3) + var(--space-6)) 0 var(--space-3);
+  border-radius: var(--radius-lg);
+  border: var(--border-width-hairline) solid var(--color-line-strong);
+  background: var(--color-ink);
+  color: var(--color-fg);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-muted);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  option {
+    background: var(--color-panel);
+    color: var(--color-fg);
+  }
+}

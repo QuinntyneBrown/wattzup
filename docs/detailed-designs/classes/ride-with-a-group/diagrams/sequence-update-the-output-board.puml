@@ -1,0 +1,36 @@
+@startuml
+title UML sequence behaviour — Update the output board
+
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "ClassBoard" as board
+  participant "ClassRideStore" as store
+  participant "LiveSessionStore" as live
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "SignalRRideHubClient" as hub
+end box
+box "Backend — Telo.Ride.Api and Infrastructure" #D1FADF
+  participant "SessionTicker" as ticker
+  participant "RideHubNotifier" as notifier
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "TickLiveSessionsCommandHandler" as tick
+  participant "GroupClassSession" as session
+end box
+loop once a second
+  ticker -> tick : TickLiveSessionsCommand
+  tick -> session : Tick(now)
+  session -> session : Bots fill to 10 at the first tick when fewer than 8 seated (L2-083)
+  session -> session : Ride the bots, rank by output, gaps (L2-123 AC2)
+  session --> tick : Standings
+  tick -> notifier : StandingsUpdated to the session group (L2-123 AC3)
+  notifier -> hub : StandingsUpdated(standings)
+  hub --> live : onStandings: replace the latest
+  live --> store : standings signal
+  store -> store : groupBoardView: own row "You" by seat jersey, place "5th / 9"
+  store --> board : rows, place, total
+  board -> board : Slide moved rows over 150 ms (none with reduced motion)
+  board --> rider : "Output" board, own row aria-current="true" (L2-090 AC1, AC2)
+end
+@enduml

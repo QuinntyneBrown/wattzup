@@ -1,0 +1,166 @@
+@startuml
+set separator none
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Sign in with an email code
+package "api library" {
+  interface AuthApi {
+    +sendCode(email: string): Observable<void>
+    +confirmCode(email: string, code: string): Observable<ConfirmCodeResult>
+  }
+  class ConfirmCodeResult {
+    +riderId: string
+    +displayName: string | null
+    +isNewAccount: boolean
+  }
+  class AuthApiError {
+    +code: AuthApiErrorCode
+    +retryAfterSeconds: number | null
+  }
+  class HttpAuthApi
+  AuthApi <|.. HttpAuthApi
+  AuthApi ..> ConfirmCodeResult : returns
+  HttpAuthApi ..> AuthApiError : throws
+}
+package "ride application" {
+  class SignInStore {
+    +email: Signal<string>
+    +sending: Signal<boolean>
+    +error: Signal<SignInError | null>
+    +resendSecondsLeft: Signal<number>
+    +resent: Signal<boolean>
+    +send(email: string): void
+    +resend(): void
+    +confirm(code: string): void
+  }
+  enum SignInOutcome {
+    NameNeeded
+    ConnectBike
+    ReturnUrl
+    Refused
+  }
+  class SignInPage
+  class SignInCodePage
+  SignInPage --> SignInStore
+  SignInCodePage --> SignInStore
+  SignInStore --> AuthApi : AUTH_API
+  SignInStore ..> SignInOutcome
+}
+package "components library" {
+  class SignInForm {
+    +email: input<string>
+    +sending: input<boolean>
+    +error: input<SignInError | null>
+    +send: output<string>
+  }
+  class SignInCodeForm {
+    +email: input<string>
+    +resendSecondsLeft: input<number>
+    +resent: input<boolean>
+    +error: input<SignInError | null>
+    +resend: output<void>
+    +changeEmail: output<void>
+  }
+  class CodeEntry {
+    +error: input<string | null>
+    +disabled: input<boolean>
+    +refusals: input<number>
+    +completed: output<string>
+  }
+}
+SignInPage --> SignInForm
+SignInCodePage --> SignInCodeForm
+SignInCodeForm --> CodeEntry
+package "Telo.Ride.Api" {
+  class AuthController {
+    +SendCode(request: SendCodeRequest): Task<IActionResult>
+    +ConfirmCode(request: ConfirmCodeRequest): Task<IActionResult>
+  }
+}
+package "Telo.Ride.Application" {
+  class SendSignInCodeCommand {
+    +string? Email
+    +string? NetworkAddress
+  }
+  class SendSignInCodeCommandHandler {
+    +Handle(command: SendSignInCodeCommand): Task
+  }
+  class ConfirmSignInCodeCommand {
+    +string Email
+    +string Code
+  }
+  class ConfirmSignInCodeCommandHandler {
+    +Handle(command: ConfirmSignInCodeCommand): Task<Result<ConfirmCodeResult>>
+  }
+  interface IEmailSender {
+    +SendSignInCodeAsync(email: string, code: string): Task
+  }
+  interface ISignInCodeHasher {
+    +HashCode(code: string): string
+    +HashNetwork(address: string): string
+  }
+  interface IAppDbContext
+}
+package "Telo.Ride.Domain" {
+  class EmailAddress <<value object>> {
+    +string Value
+    +{static} Parse(raw: string): EmailAddress
+  }
+  class SignInCode {
+    +Guid Id
+    +string Email
+    +string CodeHash
+    +string NetworkHash
+    +DateTimeOffset IssuedAt
+    +int FailedAttempts
+    +DateTimeOffset? UsedAt
+    +DateTimeOffset? SupersededAt
+    +Verify(matches: bool, now: DateTimeOffset): CodeCheck
+    +ResendWait(now: DateTimeOffset): TimeSpan
+    +Supersede(now: DateTimeOffset): void
+  }
+  enum CodeCheck {
+    Matched
+    Mismatch
+    Expired
+    Locked
+    Used
+  }
+  class Rider {
+    +Guid Id
+    +EmailAddress Email
+    +DisplayName? DisplayName
+    +DateTimeOffset CreatedAt
+  }
+}
+AuthController ..> SendSignInCodeCommand : sends
+AuthController ..> ConfirmSignInCodeCommand : sends
+SendSignInCodeCommandHandler ..> SendSignInCodeCommand : handles
+ConfirmSignInCodeCommandHandler ..> ConfirmSignInCodeCommand : handles
+SendSignInCodeCommandHandler --> IEmailSender
+SendSignInCodeCommandHandler --> ISignInCodeHasher
+ConfirmSignInCodeCommandHandler --> ISignInCodeHasher
+SendSignInCodeCommandHandler --> IAppDbContext
+ConfirmSignInCodeCommandHandler --> IAppDbContext
+SendSignInCodeCommandHandler ..> SignInCode : creates
+ConfirmSignInCodeCommandHandler ..> Rider : finds or creates
+SignInCode --> EmailAddress
+SignInCode ..> CodeCheck
+Rider --> EmailAddress
+package "Telo.Ride.Infrastructure" {
+  class SmtpEmailSender
+  class HmacSignInCodeHasher
+}
+IEmailSender <|.. SmtpEmailSender
+ISignInCodeHasher <|.. HmacSignInCodeHasher
+@enduml

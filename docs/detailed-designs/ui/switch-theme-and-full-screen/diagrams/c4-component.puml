@@ -1,0 +1,22 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Switch theme and full screen
+
+System_Ext(device, "Rider's device and browser", "prefers-color-scheme; Fullscreen API")
+Container_Boundary(app, "Ride app") {
+  Component(index, "index.html", "Document · ride", "color-scheme meta, data-theme=dark first paint")
+  Component(theme, "BrowserDisplayPreferences", "Service · domain", "Sets data-theme from the choice and the device")
+  Component(tokens, "tokens.css", "Global foundations · ride", "Role tokens for dark and light")
+  Component(header, "Page header", "Angular component · ride", "Hosts the toggle where available")
+  Component(toggle, "FullscreenToggle", "Presentation component · components", "Full screen or Exit full screen")
+  Component(fs, "BrowserFullscreen", "Browser service · domain", "Implements Fullscreen")
+}
+Rel(theme, device, "matchMedia('(prefers-color-scheme: light)')")
+Rel(theme, index, "Sets data-theme on html")
+Rel(tokens, index, "Resolves against data-theme")
+Rel(header, fs, "Reads available and active")
+Rel(header, toggle, "Renders with active input")
+Rel(toggle, header, "Emits toggled")
+Rel(fs, device, "requestFullscreen / exitFullscreen")
+@enduml

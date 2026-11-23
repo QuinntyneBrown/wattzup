@@ -1,0 +1,43 @@
+@startuml
+title UML sequence behaviour — Record a ride day
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RidesController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "SubmitRideCommandHandler" as handler
+  participant "RiderDay" as day
+  participant "Streak" as streak
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+ctrl -> handler : SubmitRideCommand (finishedAt, timeZoneId)
+handler -> day : LocalDay(finishedAt, rider time zone)
+day --> handler : 2026-11-20
+handler -> db : Load Streak
+handler -> streak : Record(2026-11-20)
+alt LastRideDay = same day
+  streak -> streak : No change; two rides on one day grow it once (L2-042 AC3)
+else LastRideDay = previous day
+  streak -> streak : Days + 1 (AC1)
+else Older or none
+  streak -> streak : Days = 1
+end
+streak --> handler : Days
+handler -> db : Save
+handler --> ctrl : RideRecordedDto with streakDays; the same value feeds the XP line (AC4)
+@enduml

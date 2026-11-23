@@ -1,0 +1,78 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Keep the bike connected
+enum BleState {
+  idle
+  connecting
+  connected
+  disconnected
+}
+enum BikeStatusTone {
+  ok
+  alert
+}
+class BikeStatusView {
+  +label: string
+  +hiddenText: string
+  +title: string | null
+  +tone: BikeStatusTone
+  +rideLabel: string
+  +diagnosticsLabel: string
+}
+class "bikeStatus()" as BikeStatusFn <<domain/bluetooth>> {
+  +bikeStatus(ble: BleState, support: BluetoothSupportState, bikeName: string | null): BikeStatusView
+}
+class KeepaliveScheduler <<domain/bluetooth>> {
+  -lastSentAt: number
+  +start(): void
+  +stop(): void
+}
+class DeviceReconnector <<domain/bluetooth>> {
+  +intervalMs: number = 3000
+  -timer: Timeout | undefined
+  +start(attempt: () => Promise<boolean>): void
+  +retryNow(): void
+  +stop(): void
+}
+class WebBluetoothSupport <<domain/bluetooth>> {
+  +state: Signal<BluetoothSupportState>
+  +recheck(): Promise<void>
+}
+interface Ticker <<api>> {
+  +seconds: Observable<number>
+}
+class SecondTicker <<domain/engine>> {
+  +seconds: Observable<number>
+}
+class WebBluetoothBikeConnection <<domain/bluetooth>> {
+  +ble: Signal<BleState>
+  +bike: Signal<BikeInfo | null>
+  +lastError: Signal<string | null>
+  -target: number | null
+  +connect(): Promise<void>
+  +reconnectNow(): void
+  -onDrop(error?: unknown): void
+}
+class EchelonLink <<domain/bluetooth>>
+KeepaliveScheduler ..> Ticker : subscribes
+SecondTicker ..|> Ticker
+KeepaliveScheduler --> EchelonLink : writes through the queue
+WebBluetoothBikeConnection *-- DeviceReconnector
+EchelonLink *-- KeepaliveScheduler
+WebBluetoothBikeConnection *-- EchelonLink
+BikeStatusFn ..> BleState
+BikeStatusFn ..> WebBluetoothSupport : support state
+BikeStatusFn ..> BikeStatusView : returns
+BikeStatusView --> BikeStatusTone
+@enduml

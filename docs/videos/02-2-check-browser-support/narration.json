@@ -1,0 +1,106 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "The browser decides whether Telo Ride can reach the bike. Now Connect Bike says when it can't, and why."
+      ]
+    },
+    {
+      "id": "works",
+      "bars": 4,
+      "lines": [
+        "Connect Bike lists what it works with: four Echelon models with full control, and other FTMS smart bikes in beta."
+      ]
+    },
+    {
+      "id": "unsupported",
+      "bars": 4,
+      "lines": [
+        "In Safari or Firefox, an alert replaces the device card and says to open Telo Ride in Chrome or Edge."
+      ]
+    },
+    {
+      "id": "retry",
+      "bars": 4,
+      "lines": [
+        "Try again reads the browser once more, and as soon as Bluetooth is there, the pair button comes back."
+      ]
+    },
+    {
+      "id": "order",
+      "bars": 4,
+      "lines": [
+        "The secure page is checked first. On plain http, Chrome hides Bluetooth too, and the fix is the HTTPS page, not another browser."
+      ]
+    },
+    {
+      "id": "https",
+      "bars": 4,
+      "lines": [
+        "So on a plain http page, the alert offers one link: the same address, over HTTPS."
+      ]
+    },
+    {
+      "id": "redirect",
+      "bars": 4,
+      "lines": [
+        "In production, the API sends every plain http request on to the same address over HTTPS."
+      ]
+    },
+    {
+      "id": "hsts",
+      "bars": 4,
+      "lines": [
+        "And every secure response tells the browser to use HTTPS for a year, so it never asks over http again."
+      ]
+    },
+    {
+      "id": "deferred",
+      "bars": 4,
+      "lines": [
+        "Class Start, Custom workout and Custom ride bring their own notices and disabled start buttons when they are built."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "Connect Bike shows the same list on a phone, a tablet, a laptop or a desktop."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: seventeen behaviour specs and twenty-eight backend tests, all green."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 @startuml
+' --- shared skin header ---
 skinparam backgroundColor #FFFFFF
 skinparam shadowing false
 skinparam roundcorner 8
@@ -9,94 +10,112 @@ skinparam class {
   FontColor #101828
   BackgroundColor #F9FAFB
 }
+' --------------------------
 title Class structure — Ride a class
 
-class ClassEntry <<generated>> {
-  +id: string
-  +title: string
-  +channel: string
-  +focus: string
-  +description: string
-  +shelf: ShelfRef
-  +plan: WorkoutPlan
+package "domain library" {
+  class RideClock {
+    +elapsed: Signal<number>
+    +running: Signal<boolean>
+    +start(): void
+    +startAt(serverTimeMs: number, clock: ServerClock): void
+    +pause(): void
+    +resume(): void
+  }
+  class WorkoutEngine {
+    +state: Signal<PlanState | null>
+    +follow(plan: Plan): void
+  }
+  class PlanState {
+    +index: number
+    +segment: Segment
+    +remainingMs: number
+    +progress: number
+    +targetPower: number
+  }
+  class Plan {
+    +segments: Segment[]
+  }
+  class Segment {
+    +kind: SegmentKind
+    +duration: number
+    +level: number
+    +cadenceAim: number
+  }
+  enum SegmentKind {
+    warm-up
+    work
+    recover
+    steady
+    cool-down
+  }
+  class PowerModel {
+    +estimate(cadence: number, resistance: number): number
+    +target(cadenceAim: number, level: number): number
+    +onTarget(power: number, target: number): boolean
+  }
+  class VideoClockSync {
+    +driftLimitSeconds = 1.5
+    +check(videoTime: number, elapsed: number, offset: number): number | null
+  }
+  class ResistanceController {
+    +applyPlanLevel(level: number): Promise<void>
+    +nudge(delta: 1 | -1): Promise<void>
+  }
 }
-class ClassDraft {
-  +plan: WorkoutPlan
-  +url: string
-  +start: number
+package "api library" {
+  interface VideoPlayer {
+    +state: Signal<PlayerState>
+    +load(host: HTMLElement, videoId: string, options: PlayerOptions): Promise<void>
+    +currentTime(): number
+    +play(): void
+    +pause(): void
+    +seekTo(seconds: number): void
+    +destroy(): void
+  }
+  interface ClassesApi {
+    +get(id: string): Observable<ClassDto>
+  }
+  class ClassDto {
+    +id: string
+    +title: string
+    +lengthSeconds: number
+    +plan: Plan
+    +video: VideoDto
+  }
+  class VideoDto {
+    +videoId: string
+    +syncOffsetSeconds: number
+  }
+  interface BikeConnection {
+    +ble: Signal<BleState>
+    +telemetry: Signal<Telemetry>
+  }
 }
-class LevelRowView {
-  +name: 'Work' | 'Recover' | 'Steady'
-  +level: number
-  +canLower: boolean
-  +canRaise: boolean
+package "ride application" {
+  class ClassRideStore {
+    +mode: Signal<RideMode>
+    +sessionStartsAt: Signal<number>
+    +header: Signal<ClassHeaderView>
+    +segmentCard: Signal<SegmentCardView>
+    +power: Signal<StatView>
+    +cadence: Signal<StatView>
+    +video: Signal<VideoView>
+    +raise(): void
+    +lower(): void
+  }
 }
-class "class-draft.ts" as cd <<pure>> {
-  +draftOf(entry): ClassDraft
-  +levelRows(plan): LevelRowView[]
-  +shiftLevels(plan, row, dir): WorkoutPlan
-  +isEdited(draft, entry): boolean
-  +structureLine(plan): string
-  +cadenceLine(plan): string
-  +stretchLine(plan): string
-  +toStartRequest(draft): StartPlan
-  +toSetupDrafts(draft): SetupDrafts
-}
-class SetupDrafts {
-  +plan: PlanDraft
-  +intervals: IntervalsDraft | null
-  +video: VideoDraft
-}
-class ClassPage {
-  -entry: Signal<ClassEntry | 'not-found' | null>
-  -draft: Signal<ClassDraft>
-  -phase: Signal<'idle' | 'starting' | 'failed'>
-  +step(row, dir): void
-  +reset(): void
-  +start(): Promise<void>
-  +openFullSetup(): void
-}
-class LevelRow <<component>> {
-  +name: input
-  +level: input
-  +canLower: input
-  +canRaise: input
-  +step: output<-1 | 1>
-}
-interface ClassApi {
-  +get(id): Promise<ClassEntry | 'not-found'>
-}
-interface WorkoutApi {
-  +start(plan: StartPlan): Promise<void>
-}
-class PlanDraftStore {
-  +save(draft: PlanDraft): void
-  +saveIntervals(draft: IntervalsDraft): void
-  +saveVideo(draft: VideoDraft): void
-}
-interface YouTubePlayer {
-  +create(host, videoId, startSeconds): Promise<PlayerHandle>
-}
-class "video-link.ts" as vl <<pure>> {
-  +videoIdOf(url): string | null
-  +stepStart(seconds, dir): number
-  +formatStart(seconds): string
-}
-class "ride-preview.ts" as rp <<pure>> {
-  +previewOf(plan): BikeRidePreview
-}
-
-cd ..> ClassDraft : builds and changes
-cd ..> LevelRowView : returns
-cd ..> SetupDrafts : returns
-cd ..> vl : validates links with
-ClassDraft ..> ClassEntry : built from
-ClassPage --> ClassDraft : holds
-ClassPage ..> cd : applies
-ClassPage ..> rp : plan card
-ClassPage "1" *-- "1..2" LevelRow : renders
-ClassPage ..> ClassApi : CLASS_API
-ClassPage ..> WorkoutApi : WORKOUT_API
-ClassPage ..> PlanDraftStore : full setup
-ClassPage ..> YouTubePlayer : YOUTUBE_PLAYER
+ClassRideStore *-- WorkoutEngine
+ClassRideStore *-- RideClock
+ClassRideStore *-- VideoClockSync
+ClassRideStore ..> VideoPlayer
+ClassRideStore ..> BikeConnection
+ClassRideStore ..> ClassesApi : get(id)
+WorkoutEngine --> Plan
+WorkoutEngine ..> PlanState
+WorkoutEngine ..> RideClock
+WorkoutEngine ..> PowerModel
+WorkoutEngine ..> ResistanceController
+Plan "1" *-- "*" Segment
+Segment --> SegmentKind
 @enduml

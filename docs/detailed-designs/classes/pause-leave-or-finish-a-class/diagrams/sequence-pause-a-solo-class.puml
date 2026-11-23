@@ -1,0 +1,38 @@
+@startuml
+title UML sequence behaviour — Pause a solo class
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "ClassHeader" as header
+  participant "ClassRideStore" as store
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "RideClock" as clock
+  participant "WorkoutEngine" as engine
+  participant "YouTubeVideoPlayer" as player
+end box
+rider -> header : Press Pause (solo only, L2-091 AC3)
+header -> store : pause()
+store -> clock : pause()
+store -> engine : Hold: no segment change, no command (L2-027 AC3)
+store -> player : pause() L2-088 AC3
+store --> header : Pause becomes Resume; overlay "Paused"; resistance enabled L2-091 AC1
+rider -> header : Press Resume
+header -> store : resume()
+store -> clock : resume()
+store -> player : seekTo(offset + elapsed), play()
+store --> header : Ride continues from the same place L2-091 AC2
+@enduml

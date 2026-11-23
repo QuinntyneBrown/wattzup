@@ -1,0 +1,26 @@
+// Block class-start-video (docs/design-system/assets/components.css, Class Start): the cover under the player's frame.
+:host {
+  display: block;
+}
+
+.class-start-video {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-2xl);
+  background: var(--color-raised);
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.class-start-video__player {
+  position: absolute;
+  inset: 0;
+}

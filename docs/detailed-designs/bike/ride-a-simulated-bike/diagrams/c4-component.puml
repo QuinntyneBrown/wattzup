@@ -1,0 +1,22 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Ride a simulated bike
+Person(dev, "Developer or test author", "Exercises features without hardware")
+Container_Boundary(app, "Ride app") {
+  Component(config, "app.config.ts + provideBikeConnection()", "Composition root · ride", "Chooses the BIKE_CONNECTION binding")
+  Component(flag, "SIMULATOR_ENABLED", "Build-time constant · ride environments", "true only in development builds")
+  Component(sim, "SimulatedBikeConnection", "BikeConnection · domain/bluetooth", "Simulated Echelon EX-5s, no chooser")
+  Component(proto, "EchelonProtocol", "Codec · domain/protocol", "Encodes D1/D2 frames, parses B1 commands")
+  Component(dec, "EchelonFrameDecoder", "Codec · domain/protocol", "Same decoder as the real bike")
+  Component(ticker, "Ticker", "Contract · api", "Once-a-second tick; a fake clock in tests")
+  Component(feature, "Any page and store", "ride", "Uses BIKE_CONNECTION unchanged")
+}
+Rel(dev, feature, "Connects and rides")
+Rel(config, flag, "Reads")
+Rel(config, sim, "Binds when SIMULATOR_ENABLED and ?simulate")
+Rel(feature, sim, "Calls via BIKE_CONNECTION")
+Rel(sim, ticker, "Emits frames on")
+Rel(sim, proto, "Encodes and parses with")
+Rel(sim, dec, "Frames decoded by")
+@enduml

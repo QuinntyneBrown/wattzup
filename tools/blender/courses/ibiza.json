@@ -1,0 +1,52 @@
+{
+  "id": "ibiza",
+  "name": "Ibiza Sunset Strip",
+  "world": "ibiza",
+  "theme": "ibiza",
+  "seed": 46,
+  "layout": 48,
+  "class": {
+    "id": "intervals-to-the-beat",
+    "title": "Intervals to the Beat",
+    "channel": "GCN Training",
+    "videoId": "il_OFz6o42I",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      { "kind": "warm-up", "duration": 150, "level": 14, "cadenceAim": 80 },
+      { "kind": "work", "duration": 45, "level": 19, "cadenceAim": 70 },
+      { "kind": "recover", "duration": 30, "level": 14, "cadenceAim": 90 },
+      { "kind": "work", "duration": 75, "level": 21, "cadenceAim": 80 },
+      { "kind": "recover", "duration": 60, "level": 13, "cadenceAim": 90 },
+      { "kind": "work", "duration": 30, "level": 21, "cadenceAim": 74 },
+      { "kind": "recover", "duration": 30, "level": 13, "cadenceAim": 90 },
+      { "kind": "work", "duration": 30, "level": 21, "cadenceAim": 74 },
+      { "kind": "recover", "duration": 30, "level": 13, "cadenceAim": 90 },
+      { "kind": "work", "duration": 30, "level": 21, "cadenceAim": 74 },
+      { "kind": "recover", "duration": 30, "level": 13, "cadenceAim": 90 },
+      { "kind": "work", "duration": 30, "level": 22, "cadenceAim": 65 },
+      { "kind": "recover", "duration": 30, "level": 11, "cadenceAim": 90 },
+      { "kind": "work", "duration": 30, "level": 22, "cadenceAim": 65 },
+      { "kind": "recover", "duration": 30, "level": 11, "cadenceAim": 90 },
+      { "kind": "work", "duration": 30, "level": 22, "cadenceAim": 65 },
+      { "kind": "recover", "duration": 30, "level": 11, "cadenceAim": 90 },
+      { "kind": "work", "duration": 15, "level": 24, "cadenceAim": 70 },
+      { "kind": "work", "duration": 30, "level": 21, "cadenceAim": 90 },
+      { "kind": "recover", "duration": 30, "level": 11, "cadenceAim": 90 },
+      { "kind": "work", "duration": 15, "level": 24, "cadenceAim": 70 },
+      { "kind": "work", "duration": 30, "level": 21, "cadenceAim": 90 },
+      { "kind": "recover", "duration": 30, "level": 11, "cadenceAim": 90 },
+      { "kind": "work", "duration": 20, "level": 22, "cadenceAim": 110 },
+      { "kind": "recover", "duration": 20, "level": 11, "cadenceAim": 90 },
+      { "kind": "work", "duration": 20, "level": 22, "cadenceAim": 110 },
+      { "kind": "recover", "duration": 20, "level": 11, "cadenceAim": 90 },
+      { "kind": "work", "duration": 20, "level": 22, "cadenceAim": 110 },
+      { "kind": "recover", "duration": 20, "level": 11, "cadenceAim": 90 },
+      { "kind": "work", "duration": 20, "level": 22, "cadenceAim": 110 },
+      { "kind": "recover", "duration": 20, "level": 11, "cadenceAim": 90 },
+      { "kind": "work", "duration": 20, "level": 22, "cadenceAim": 110 },
+      { "kind": "cool-down", "duration": 150, "level": 11, "cadenceAim": 81 }
+    ]
+  }
+}

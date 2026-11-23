@@ -1,20 +1,20 @@
-/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
-/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "@wattzup/api": ["./projects/api/src/public-api.ts"],
-      "@wattzup/browser": ["./projects/browser/src/public-api.ts"],
-      "@wattzup/components": ["./projects/components/src/public-api.ts"]
+      "@telo/api": ["./projects/api/src/public-api.ts"],
+      "@telo/domain": ["./projects/domain/src/public-api.ts"],
+      "@telo/components": ["./projects/components/src/public-api.ts"],
+      "@telo/video": ["./projects/video/src/public-api.ts"],
+      "@telo/world": ["./projects/world/src/public-api.ts"]
     },
+    "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "isolatedModules": true,
-    "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve"
@@ -22,24 +22,20 @@
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true,
+    "strictStandalone": true
   },
   "files": [],
   "references": [
     {
-      "path": "./projects/wattzup/tsconfig.app.json"
+      "path": "./projects/ride/tsconfig.app.json"
     },
     {
-      "path": "./projects/wattzup/tsconfig.spec.json"
+      "path": "./projects/ride/tsconfig.spec.json"
     },
     {
-      "path": "./projects/api/tsconfig.lib.json"
-    },
-    {
-      "path": "./projects/components/tsconfig.lib.json"
-    },
-    {
-      "path": "./projects/components/tsconfig.spec.json"
+      "path": "./projects/marketing/tsconfig.app.json"
     }
   ]
 }

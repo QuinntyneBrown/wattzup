@@ -3,17 +3,47 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Feedback and loading — Wattzup design system</title>
-<meta name="description" content="How Wattzup shows that it is working, done or stuck.">
+<title>Feedback and loading — Telo Ride design system</title>
+<meta name="description" content="Which answer Telo Ride gives to which action: a busy button, an inline status, a banner, an overlay or a dialog; spinner, skeleton or progress bar; and why the mocks draw no page loading states.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Pattern page layout helpers: tokens only. Product components come from components.css. */
+.ds-section > ul { list-style: disc; }
+.ds-section > ol { list-style: decimal; }
+.pt-frame { width: 100%; border: var(--border-width-hairline) solid var(--color-border-default); border-radius: var(--radius-lg); overflow: hidden; background: var(--color-ink); color: var(--color-fg); }
+.pt-frame .app { height: auto; min-height: 0; }
+.pt-pad { padding: var(--space-6) var(--space-5); }
+.pt-stack { display: flex; flex-direction: column; gap: var(--space-4); width: 100%; min-width: 0; }
+.pt-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.pt-grid { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); width: 100%; align-items: start; }
+.pt-tag { display: block; font: var(--text-overline); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-fg-subtle); margin-bottom: var(--space-2); }
+.pt-flow { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); font: var(--text-body-sm); }
+.pt-flow li { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0; }
+.pt-flow li + li::before { content: "→"; color: var(--color-fg-subtle); }
+.pt-flow b { padding: var(--space-1) var(--space-2-5); border-radius: var(--radius-md); background: var(--color-raised); color: var(--color-fg); font-weight: var(--font-weight-medium); }
+.pt-flow b[aria-current] { background: var(--color-accent-subtle); color: var(--color-fg-accent); }
+.pt-panel { width: 100%; max-width: 25rem; }
+.pt-stage-xl { min-height: 40rem; }
+.pt-note { font: var(--text-caption); color: var(--color-fg-muted); }
+.pt-stage-leave { min-height: 24rem; }
+/* Links inside product compositions keep the component's own colour, not the docs link style */
+:where(.pt-frame, .ds-stage, .pt-reset) a { color: inherit; text-decoration: none; }
+:where(.pt-frame, .ds-stage, .pt-reset) a:hover { color: inherit; }
+
+/* absolutely positioned visually-hidden text must stay inside the matrix scroller */
+.ds-matrix { position: relative; }
+.pt-list { list-style: decimal; padding-left: var(--space-6); }
+.pt-list > li + li { margin-top: var(--space-2); }
+.pt-list { margin-bottom: var(--space-4); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +58,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,61 +112,326 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Pattern</p>
       <h1>Feedback and loading</h1>
-      <p class="ds-lead">Every action gets an answer: a busy button, a confirmed level, a toast, or a skeleton while the first status arrives.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span></div>
-      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#when">When to use</a></li><li><a href="#structure">Structure</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#sources">Sources</a></li></ul>
+      <p class="ds-lead">Every press gets an answer, sized to what happened. A button that waits for the bike changes its own label; a search says what it is looking for; a dropped bike covers the part of the screen that stopped working. Telo Ride never shows a loading state for data that cannot be slow.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#when">When to use</a></li><li><a href="#structure">Structure</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive behaviour</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>Pick the lightest feedback that fits: the control itself (busy button, Setting 22…), then inline text, then a toast, then an alert. Skeletons for known layouts, the spinner only when the layout is unknown.</p>
-    </section>
-    <section class="ds-section" id="when"><h2><a href="#when">When to use</a></h2>
-<ul><li>Busy buttons for actions the rider started (Start, End).</li><li>Pending target resistance under the level until the bike confirms.</li><li>Toasts for results that happen away from the control (slow to confirm, couldn't set).</li><li>Skeletons on first load of ride and setup.</li></ul>
-    </section>
-    <section class="ds-section" id="structure"><h2><a href="#structure">Structure</a></h2>
-<div class="ds-example"><div class="ds-example__canvas "><button class="btn btn--primary" type="button" aria-busy="true" disabled>Starting…</button><span class="inline-status inline-status--warning"><span class="dot" aria-hidden="true"></span>Setting 22…</span><span class="spinner" aria-hidden="true"></span><span class="skeleton skeleton--text" style="width: 8rem;" aria-hidden="true"></span></div><div class="ds-example__caption"><span>Busy, pending, spinner, skeleton.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;button class="btn btn--primary" type="button" aria-busy="true" disabled&gt;Starting…&lt;/button&gt;
-&lt;span class="inline-status inline-status--warning"&gt;
-&lt;span class="dot" aria-hidden="true"&gt;
-&lt;/span&gt;Setting 22…&lt;/span&gt;
-&lt;span class="spinner" aria-hidden="true"&gt;
-&lt;/span&gt;
-&lt;span class="skeleton skeleton--text" style="width: 8rem;" aria-hidden="true"&gt;
-&lt;/span&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<ul><li><b>Waiting</b> under 1 s: nothing extra.</li><li><b>Waiting</b> 1–5 s: busy state on the control.</li><li><b>Slow</b> over 5 s: warning toast saying what Wattzup is doing (resending every 5 s).</li><li><b>Failed</b>: danger toast or alert with Retry.</li></ul>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive</a></h2>
-<ul><li>Skeletons match the layout at each breakpoint so nothing shifts on load.</li><li>Toasts move to full width at the bottom below 640px.</li></ul>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<ul><li>Busy controls set <code>aria-busy</code> and stay in place.</li><li>Toasts announce through a polite live region; failures use <code>role="alert"</code>.</li><li>Skeleton regions are <code>aria-busy="true"</code> with the skeleton hidden.</li><li>Spinners keep turning under reduced motion; shimmer stops.</li></ul>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Busy labels end in an ellipsis.</li><li>Results name the value: "Resistance set to 20".</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><button class="btn btn--primary" type="button" aria-busy="true" disabled>Starting…</button></div><figcaption>Busy in place.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><span class="spinner spinner--lg" aria-hidden="true"></span></div><figcaption>Full-screen spinner for a short request.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from:</p><ul><li><a href="../../mocks/pages/ride/loading.html">pages/ride/loading</a></li><li><a href="../../mocks/pages/setup/submitting.html">pages/setup/submitting</a></li><li><a href="../../mocks/notifications/ride-toast/warning.html">notifications/ride-toast/warning</a></li><li><a href="../../mocks/pages/ride/manual.html">pages/ride/manual</a></li></ul>
+      <p>Telo Ride runs on the rider's own machine. Rides, levels, maps and classes are read from local data at once, so pages open whole. Waits only happen where the outside world is involved: a Bluetooth scan, pairing with the bike, the bike going quiet, a feedback note leaving the device, a YouTube player loading. Feedback design is about those moments.</p>
+      <p>The answers, from smallest to largest:</p>
+      <ol>
+        <li><b>In place</b>: the control itself changes. <em>Pair Echelon EX-5s</em> → <em>Pairing…</em> → <em>Paired</em>; <em>I'm ready</em> → <em>You're ready</em>.</li>
+        <li><b>Inline status</b>: a sentence where the result will appear. “Looking for bikes nearby…”, “MarcoVelo left. Their seat is open again.”</li>
+        <li><b>Banner</b>: news about the whole page. “Neon Docklands is open.”, “Open Telo Ride in Chrome or Edge.”</li>
+        <li><b>Overlay</b>: the part of the screen that stopped working is covered, with one way to recover. “Lost the bike”, “Connect your bike”, “Turn on Bluetooth”.</li>
+        <li><b>Dialog or panel</b>: the rider has to decide, or the result replaces a form. “Leave this ride?”, “Feedback sent”.</li>
+      </ol>
+      <p>Components used: <a href="../components/button.html">Button</a>, <a href="../components/spinner.html">Spinner</a>, <a href="../components/skeleton.html">Skeleton</a>, <a href="../components/progress-bar.html">Progress bar</a>, <a href="../components/inline-message.html">Inline message</a>, <a href="../components/alert.html">Alert and banner</a>, <a href="../components/toast.html">Toast</a>, <a href="../components/dialog.html">Dialog</a> and <a href="../components/device-list.html">Device list</a>.</p>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="when"><h2><a href="#when">When to use</a></h2>
+      <h3>Which answer for which action</h3>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">What happened</th><th scope="col">Answer</th><th scope="col">In the mocks</th></tr></thead>
+        <tbody>
+          <tr><td>The rider pressed something that waits on the bike or the network for up to a few seconds</td><td>Busy button: the label becomes the verb in progress, with a spinner, and the button stops taking presses.</td><td>Pairing… (connect-bike/pairing), Sending… (feedback/sending)</td></tr>
+          <tr><td>A wait of unknown length with nothing to show yet</td><td>Inline spinner and a sentence, in the box where the result will land. The action it leads to waits, greyed, with a label that says why.</td><td>Looking for bikes nearby… and Searching… (connect-bike/searching)</td></tr>
+          <tr><td>Something with a known length is under way</td><td>Determinate progress bar.</td><td>The interval bar, the ride progress strip, the XP bar</td></tr>
+          <tr><td>Content from the network whose shape is known</td><td>Skeleton in the exact box, with its aspect ratio reserved, so nothing jumps.</td><td>The YouTube player's 16:9 box (drawn as its cover)</td></tr>
+          <tr><td>A local change that can't fail</td><td>Optimistic: apply it at once, no spinner.</td><td>I'm ready, preset chips, the video switch, resistance steps</td></tr>
+          <tr><td>The rider's action worked and they stay here</td><td>Replace the control or the form with the result.</td><td>Paired ✓, Feedback sent</td></tr>
+          <tr><td>News about the page the rider didn't ask for</td><td>Banner at the top of the content.</td><td>Unlock banner, browser notice</td></tr>
+          <tr><td>Something stopped the current task</td><td>Overlay over that region only, one recovery action.</td><td>Lost the bike (race, class ride, custom ride)</td></tr>
+          <tr><td>The rider must choose before going on</td><td>Popover or dialog.</td><td>Leave this ride?</td></tr>
+          <tr><td>A background action finished and its control has gone</td><td>Toast. No mock needs one yet; see <a href="notifications.html">Notifications</a>.</td><td>None</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Why the mocks have no loading states</h3>
+      <p>Every screen's manifest entry marks <code>loading</code> as not applicable with the same reason: <em>“every screen reads local, synchronous data (shared/game.ts, shared/videoWorkouts.ts), so there is nothing to wait for.”</em> That is the rule, not a gap:</p>
+      <ul>
+        <li><b>Never draw a loading state for data that cannot be slow.</b> A page reading IndexedDB or a bundled catalogue renders complete on the first frame. A spinner there would only flash.</li>
+        <li><b>Draw one wherever the outside world answers</b>: Bluetooth, the network, a video player, a GPU warming up a 3D world.</li>
+        <li><b>Match error states to the same rule.</b> The manifest also says <em>“nothing on it is fetched, so nothing can fail to load”</em>. The errors Telo Ride draws are the outside world's: Bluetooth off, the wrong browser, plain http, the bike going quiet. See <a href="empty-and-error-states.html">Empty and error states</a>.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="structure"><h2><a href="#structure">Structure</a></h2>
+      <h3>In place: the pairing sequence</h3>
+      <p>Connect Bike shows the whole ladder in one card and one button. The card says what is happening; the button says what pressing it will do, or why it can't be pressed yet.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--canvas">
+          <div class="pt-grid">
+            <div><span class="pt-tag">1 · Searching</span>
+              <div class="connect-device"><div class="connect-device__searching" role="status"><svg class="icon icon--lg icon--spin connect-device__spinner" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Looking for bikes nearby…</div></div>
+              <button class="btn btn--primary btn--xl btn--block connect__pair-btn" type="button" disabled>Searching…</button>
+            </div>
+            <div><span class="pt-tag">2 · Found</span>
+              <div class="connect-device"><div class="connect-device__row"><div class="connect-device__info"><p class="connect-device__name">Echelon EX-5s</p><p class="connect-device__signal"><svg class="icon icon--md connect-device__signal-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20h.01"/><path d="M7 20v-4"/><path d="M12 20v-8"/><path d="M17 20V8"/><path d="M22 4v16"/></svg>Strong signal · EX5S-0bf669f1</p></div></div></div>
+              <button class="btn btn--primary btn--xl btn--block connect__pair-btn" type="button">Pair Echelon EX-5s</button>
+            </div>
+            <div><span class="pt-tag">3 · Pairing</span>
+              <div class="connect-device"><div class="connect-device__row"><div class="connect-device__info"><p class="connect-device__name">Echelon EX-5s</p><p class="connect-device__signal"><svg class="icon icon--md connect-device__signal-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20h.01"/><path d="M7 20v-4"/><path d="M12 20v-8"/><path d="M17 20V8"/><path d="M22 4v16"/></svg>Strong signal · EX5S-0bf669f1</p></div></div></div>
+              <button class="btn btn--primary btn--xl btn--block connect__pair-btn" type="button" aria-disabled="true" aria-busy="true"><svg class="icon icon--lg icon--spin" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Pairing…</button>
+            </div>
+            <div><span class="pt-tag">4 · Paired</span>
+              <div class="connect-device"><div class="connect-device__row"><div class="connect-device__info"><p class="connect-device__name">Echelon EX-5s</p><p class="connect-device__signal"><svg class="icon icon--md connect-device__signal-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 20h.01"/><path d="M7 20v-4"/><path d="M12 20v-8"/><path d="M17 20V8"/><path d="M22 4v16"/></svg>Strong signal · EX5S-0bf669f1</p></div><svg class="icon icon--xl connect-device__check" viewBox="0 0 24 24" role="img" aria-label="Paired"><path d="M20 6 9 17l-5-5"/></svg></div></div>
+              <button class="btn btn--primary btn--xl btn--block connect__pair-btn" type="button" disabled>Paired</button>
+            </div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Searching → found → pairing (about 0.9 s) → paired, held half a second before Home opens.</span><span>pages/connect-bike/searching, default, pairing, paired</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="connect-device"&gt;
+  &lt;div class="connect-device__searching" role="status"&gt;
+    &lt;svg class="icon icon--lg icon--spin connect-device__spinner" aria-hidden="true"&gt;…&lt;/svg&gt;
+    Looking for bikes nearby…
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;button class="btn btn--primary btn--xl btn--block connect__pair-btn" type="button" disabled&gt;Searching…&lt;/button&gt;
+
+&lt;!-- busy: keep focus on the pressed button --&gt;
+&lt;button class="btn btn--primary btn--xl btn--block connect__pair-btn" type="button"
+        aria-disabled="true" aria-busy="true"&gt;&lt;svg class="icon icon--lg icon--spin" aria-hidden="true"&gt;…&lt;/svg&gt;Pairing…&lt;/button&gt;</code></pre></details>
+      </div>
+
+      <h3>Escalation: inline, banner, overlay, dialog</h3>
+      <div class="pt-grid">
+        <div class="ds-example"><div class="ds-example__canvas ds-example__canvas--stack">
+          <p class="race-lobby__notice" role="status" style="margin-top: 0;"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" x2="16" y1="11" y2="11"/></svg>MarcoVelo left. Their seat is open again.</p>
+          <button class="race-lobby__ready" type="button" aria-pressed="false">I'm ready</button>
+        </div><div class="ds-example__caption"><span>Inline status: next to the thing it changed (the start grid).</span><span>race-lobby/someone-left</span></div></div>
+        <div class="ds-example"><div class="ds-example__canvas ds-example__canvas--stack">
+          <div class="banner banner--gold" role="status">
+            <svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+            <p class="banner__body"><span class="banner__title">Neon Docklands is open.</span> <span class="text-muted">A harbour city after dark, 21.6 km.</span></p>
+            <a class="btn btn--gold btn--sm" href="../../mocks/pages/race-setup/docklands.html">Ride it</a>
+          </div>
+        </div><div class="ds-example__caption"><span>Banner: page-level news with its one action.</span><span>home/unlocked</span></div></div>
+      </div>
+      <div class="pt-grid">
+        <div>
+          <div class="ds-stage">
+            <div class="ds-stage__page"><p>30 Minute HIIT Cardio · Group · 9 riders</p></div>
+            <div class="class-lost" role="alert" aria-labelledby="ex-lost">
+              <div class="class-lost__card">
+                <svg class="icon icon--2xl class-lost__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg>
+                <h4 class="class-lost__title" id="ex-lost">Lost the bike</h4>
+                <p class="class-lost__body">The class keeps going. Pedal to wake the bike and you’ll rejoin where everyone is.</p>
+                <button class="btn btn--primary class-lost__action" type="button">Reconnect</button>
+              </div>
+            </div>
+          </div>
+          <p class="pt-note">Overlay: covers what stopped working, keeps the clock running behind it. class-ride/disconnected.</p>
+        </div>
+        <div>
+          <div class="ds-stage">
+            <div class="ride-header">
+              <div class="ride-header__menu">
+                <button class="ride-header__link ride-header__link--strong" type="button" aria-haspopup="dialog" aria-expanded="true" aria-controls="ex-leave2"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</button>
+                <div class="ride-leave" id="ex-leave2" role="dialog" aria-labelledby="ex-leave2-title">
+                  <h4 class="ride-leave__title" id="ex-leave2-title">Leave this ride?</h4>
+                  <p class="ride-leave__body">You’re <span class="ride-leave__figure">6:52</span> in with <span class="ride-leave__figure">2.24 km</span> ridden. The ride is paused while you decide.</p>
+                  <div class="ride-leave__actions"><button class="btn btn--primary" type="button">Save ride and open library</button><button class="btn btn--raised" type="button">Discard and open library</button><button class="btn ride-leave__keep" type="button">Keep riding</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="pt-note">Dialog: the rider must choose. end-ride/default.</p>
+        </div>
+      </div>
+
+      <h3>Spinner, skeleton or progress</h3>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Indicator</th><th scope="col">Use when</th><th scope="col">Never</th></tr></thead>
+        <tbody>
+          <tr><td>Spinner (<code>.icon--spin</code>, 1 s a turn)</td><td>The wait has no known length and nothing can be drawn yet. Always beside words that say what is happening.</td><td>Alone, full-page, or for local data.</td></tr>
+          <tr><td>Skeleton (<code>.skeleton</code>, 1.6 s breath)</td><td>The shape of what is coming is known (a 16:9 video box, a class cover). Reserve the box so the layout doesn't jump.</td><td>For text the app already has, or for longer than the content would take.</td></tr>
+          <tr><td>Progress bar</td><td>The length is known: an interval's seconds, the ride's minutes, XP to the next level.</td><td>Faked: a bar that fills on a timer and stalls at 90%.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--canvas">
+          <div class="pt-grid">
+            <div><span class="pt-tag">Spinner</span><div class="connect-device"><div class="connect-device__searching"><svg class="icon icon--lg icon--spin connect-device__spinner" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Looking for bikes nearby…</div></div></div>
+            <div aria-busy="true" aria-label="Loading the class video"><span class="pt-tag">Skeleton</span><span class="skeleton" style="aspect-ratio: 16 / 9; border-radius: var(--radius-lg);" aria-hidden="true"></span><span class="skeleton" style="margin-top: var(--space-3); height: var(--space-4); width: 70%;" aria-hidden="true"></span></div>
+            <div class="ride-kind--rest"><span class="pt-tag">Progress</span><p class="pt-note" style="color: var(--color-fg);">Recover · 1:38 left</p><div class="ride-interval__bar" role="progressbar" aria-label="Interval progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="46"><div class="ride-interval__fill" style="--value: 45.556%"></div></div></div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Spinner with words; skeleton in the video's 16:9 box; the interval bar from the custom ride.</span><span>connect-bike/searching · custom-ride/default</span></div>
+      </div>
+
+      <h3>Optimistic updates</h3>
+      <p>Anything that only changes local state takes effect on the press, with no wait drawn: <em>I'm ready</em> flips to <em>You're ready</em>, a preset chip loads its plan into the ladder, a resistance step moves the level. If a command to the bike then fails, the bike's reported level wins and the readout corrects itself; the <em>Sent to bike</em> log shows what was acknowledged. Don't use optimistic updates for anything that leaves the device (feedback) or ends something (End, Leave).</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas">
+          <button class="race-lobby__ready" type="button" aria-pressed="false">I'm ready</button>
+          <button class="race-lobby__ready" type="button" aria-pressed="true"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>You're ready</button>
+        </div>
+        <div class="ds-example__caption"><span>A toggle (<code>aria-pressed</code>) that flips on the press.</span><span>race-lobby/default · race-lobby/bots</span></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <h3>Busy actions</h3>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Action</th><th scope="col">Waiting</th><th scope="col">Ready</th><th scope="col">Busy</th><th scope="col">Done</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Pair</th>
+            <td><button class="btn btn--primary connect__pair-btn" type="button" disabled style="margin: 0;">Searching…</button></td>
+            <td><button class="btn btn--primary" type="button">Pair Echelon EX-5s</button></td>
+            <td><button class="btn btn--primary" type="button" aria-disabled="true" aria-busy="true"><svg class="icon icon--md icon--spin" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Pairing…</button></td>
+            <td><button class="btn btn--primary connect__pair-btn" type="button" disabled style="margin: 0;">Paired</button></td></tr>
+          <tr><th scope="row">Send feedback</th>
+            <td><button class="btn feedback__send feedback__send--idle" type="button" disabled>Report bug</button></td>
+            <td><button class="btn btn--primary feedback__send" type="button">Report bug</button></td>
+            <td><button class="btn feedback__send feedback__send--sending" type="button" aria-disabled="true" aria-busy="true">Sending…</button></td>
+            <td><span class="pt-note">Panel shows “Thanks — we’re on it.”</span></td></tr>
+          <tr><th scope="row">Reconnect</th>
+            <td><span class="pt-note">—</span></td>
+            <td><button class="btn btn--primary" type="button">Reconnect</button></td>
+            <td><button class="btn btn--primary" type="button" aria-disabled="true" aria-busy="true"><svg class="icon icon--md icon--spin" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Reconnecting…</button></td>
+            <td><span class="pt-note">Overlay lifts; the ride resumes paused</span></td></tr>
+        </tbody>
+      </table></div>
+      <h3>Timing</h3>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Expected wait</th><th scope="col">Show</th></tr></thead>
+        <tbody>
+          <tr><td>Under 100 ms</td><td>Nothing but the result.</td></tr>
+          <tr><td>100 ms to 1 s</td><td>Busy state on the pressed control (Sending… takes about 700 ms, Pairing… about 0.9 s).</td></tr>
+          <tr><td>1 to 10 s, unknown</td><td>Inline spinner and a sentence naming the wait.</td></tr>
+          <tr><td>Known length</td><td>A determinate progress bar and the time left.</td></tr>
+          <tr><td>After success</td><td>Hold the done state about half a second before moving on (Paired, then Home), so the rider sees it worked.</td></tr>
+          <tr><td>Bike silent</td><td>Overlay at once; in a race the rider coasts 15 s before a DNF, and the copy says so.</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Loading states that are not drawn</h3>
+      <p>Home, Map Select, Race Setup, the lobby, Results, Class Library, Class Start, Profile and Custom Setup have no loading or fetch-error state, by the rule above. If a screen ever reads from the network (a live peer list, a group session count), it gets a skeleton in the region that waits, never a page spinner, and the rest of the page renders.</p>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Answer</th><th scope="col">360</th><th scope="col">640</th><th scope="col">1024</th></tr></thead>
+        <tbody>
+          <tr><td>Busy button</td><td>Full width (<code>.btn--block</code>), the label never wraps.</td><td>As 360.</td><td>Keeps its column width.</td></tr>
+          <tr><td>Inline status</td><td>Wraps under its icon.</td><td colspan="2">One line where it fits.</td></tr>
+          <tr><td>Banner</td><td>The action drops under the text (<code>flex-wrap</code>); the browser notice hides its icon.</td><td colspan="2">Icon, text and action on one row.</td></tr>
+          <tr><td>Overlay</td><td>Covers the screen or the telemetry column, card centred with 24px side padding.</td><td colspan="2">As 360; the custom ride's overlay covers only the telemetry column, so the Resistance panel stays in view (disabled).</td></tr>
+          <tr><td>Panel result</td><td>Bottom sheet (Feedback).</td><td colspan="2">Popover under its button.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Announcements</h3>
+      <ul>
+        <li>Waits and results the rider asked for are polite: <code>role="status"</code> on “Looking for bikes nearby…”, on the lobby notice, on the unlock banner and on the sent panel. Sending adds a visually hidden status, “Sending your feedback…”.</li>
+        <li>Things that stop the ride are assertive: <code>role="alert"</code> on Lost the bike and on the browser notice and panel.</li>
+        <li>The spinner icon is <code>aria-hidden</code>; the words beside it carry the meaning.</li>
+        <li>A region filling with a skeleton gets <code>aria-busy="true"</code> and a label; the skeleton blocks themselves are hidden.</li>
+        <li>Progress bars are <code>role="progressbar"</code> with <code>aria-valuenow</code>, min, max and a label (“Interval progress”).</li>
+      </ul>
+      <h3>Focus</h3>
+      <p>Pressing a button must not lose focus. A <code>disabled</code> button drops focus to the page in most browsers, so the pressed button goes busy with <code>aria-disabled="true"</code> and ignores further presses, as the examples above do. When an overlay appears, focus moves to its one action (Reconnect); when it lifts, focus returns to where it was.</p>
+      <h3>Keyboard</h3>
+      <table class="ds-table ds-keys">
+        <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>Enter</kbd> / <kbd>Space</kbd></td><td>Press the action; while busy, presses are ignored and announced as unavailable.</td></tr>
+          <tr><td><kbd>Tab</kbd></td><td>Inside an overlay, cycles between its action and the controls left usable (full screen).</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td>Closes a dialog or popover. Does not dismiss an overlay: the problem is still there.</td></tr>
+        </tbody>
+      </table>
+      <h3>Contrast</h3>
+      <div class="pt-stack" style="gap: var(--space-2);">
+        <div class="ds-pair" style="--pair-fg: var(--color-on-fill); --pair-bg: var(--color-volt);"><span>Sending… label on the volt fill (busy buttons keep their fill)</span><span class="ds-pair__ratio" data-contrast="--color-on-fill|--color-volt" data-min="4.5"></span></div>
+        <div class="ds-pair" style="--pair-fg: var(--color-muted); --pair-bg: var(--color-panel);"><span>Status sentence on the device card</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+        <div class="ds-pair" style="--pair-fg: var(--color-gold-fg); --pair-bg: var(--color-gold-subtle);"><span>Unlock banner title</span><span class="ds-pair__ratio" data-contrast="--color-gold-fg|--color-gold-subtle" data-min="4.5"></span></div>
+      </div>
+      <h3>Motion</h3>
+      <p>Spinners and skeletons read <code>--duration-loop</code> and <code>--duration-pulse</code>, which drop to 0 under <code>prefers-reduced-motion</code>: the spinner holds still as an icon and the skeleton as a flat block. The words still say what is happening, so nothing is lost.</p>
+      <h3>Touch</h3>
+      <p>Recovery actions in overlays are 44px tall (<code>--target-comfortable</code>), larger than page buttons, because they are pressed mid-ride.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li><b>Say what is happening</b>, with a verb in progress and one ellipsis character: “Looking for bikes nearby…”, “Pairing…”, “Sending…”. Never “Loading…” alone, never “Please wait”.</li>
+        <li><b>A waiting button says why it waits</b>: <em>Searching…</em> rather than a greyed <em>Pair</em>.</li>
+        <li><b>Done is short and past tense</b>: Paired, Feedback sent, You're ready.</li>
+        <li><b>Overlays name the problem, then the way out</b>: “Lost the bike” / “Pedal to wake the bike and you’ll rejoin where everyone is.” / Reconnect.</li>
+        <li><b>Say what keeps going</b>: “The class keeps going.”, “your ride is saved at 6:52”, “The ride is paused while you decide.”</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas ds-example__canvas--stack"><div class="connect-device"><div class="connect-device__searching"><svg class="icon icon--lg icon--spin connect-device__spinner" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Looking for bikes nearby…</div></div></div><figcaption>A spinner with a sentence, in the card where the bike will appear.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas" style="justify-content: center;"><svg class="icon icon--3xl icon--spin" viewBox="0 0 24 24" role="img" aria-label="Loading"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></div><figcaption>A bare spinner in the middle of the page. What is it waiting for, and for how long?</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><button class="btn btn--primary" type="button" aria-disabled="true" aria-busy="true"><svg class="icon icon--md icon--spin" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Pairing…</button></div><figcaption>The button keeps a label and its width, and keeps focus.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><button class="btn btn--primary" type="button" disabled aria-label="Pairing"><svg class="icon icon--md icon--spin" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></button></div><figcaption>The label swapped for a spinner: the button shrinks, the meaning goes, and <code>disabled</code> throws focus away.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><button class="race-lobby__ready" type="button" aria-pressed="true"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>You're ready</button></div><figcaption>A local toggle flips at once.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas ds-example__canvas--stack"><span class="skeleton" style="height: var(--space-8); width: 60%;" aria-hidden="true"></span><span class="skeleton" style="height: var(--space-24);" aria-hidden="true"></span><p class="pt-note">Home, loading…</p></div><figcaption>A skeleton for Home, whose data is local and ready on the first frame. It only flashes.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <p>Mocks this pattern was extracted from:</p>
+      <ul>
+        <li><a href="../../mocks/pages/connect-bike/searching.html">pages/connect-bike/searching</a>, <a href="../../mocks/pages/connect-bike/default.html">default</a>, <a href="../../mocks/pages/connect-bike/pairing.html">pairing</a>, <a href="../../mocks/pages/connect-bike/paired.html">paired</a></li>
+        <li><a href="../../mocks/dialogs/feedback/sending.html">dialogs/feedback/sending</a>, <a href="../../mocks/dialogs/feedback/sent.html">sent</a></li>
+        <li><a href="../../mocks/pages/race-lobby/someone-left.html">pages/race-lobby/someone-left</a>, <a href="../../mocks/pages/race-lobby/bots.html">bots</a></li>
+        <li><a href="../../mocks/pages/home/unlocked.html">pages/home/unlocked</a></li>
+        <li><a href="../../mocks/pages/class-ride/disconnected.html">pages/class-ride/disconnected</a>, <a href="../../mocks/pages/race/disconnected.html">pages/race/disconnected</a>, <a href="../../mocks/pages/custom-ride/disconnected.html">pages/custom-ride/disconnected</a></li>
+        <li><a href="../../mocks/pages/custom-ride/default.html">pages/custom-ride/default</a> (interval bar)</li>
+        <li><a href="../../mocks/manifest.json">manifest.json</a> (the not-applicable reasons for loading and error)</li>
+      </ul>
+      <p>Drift found while extracting:</p>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Mock</th><th scope="col">Issue</th><th scope="col">Resolution</th></tr></thead>
+        <tbody>
+          <tr><td>pages/connect-bike/pairing, dialogs/feedback/sending</td><td>The pressed button turns <code>disabled</code> while busy, which drops keyboard focus to the page.</td><td>Busy buttons use <code>aria-disabled="true"</code> + <code>aria-busy="true"</code> (already styled by <code>.btn[aria-disabled="true"]</code>) and ignore presses in script.</td></tr>
+          <tr><td>pages/race/disconnected</td><td>Reconnect has no busy state; pressing it shows nothing until the bike answers.</td><td>Reconnecting… with a spinner, as Pairing…</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

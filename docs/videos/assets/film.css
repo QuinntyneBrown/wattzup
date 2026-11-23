@@ -1,100 +1,126 @@
-/* The stage of a Wattzup film (docs/videos/README.md), used with film-runtime.js.
-   Colours and faces are the tokens of docs/design-system/tokens/tokens.css, which slides.html
-   links first; the faces are the app's own bundled fonts. Sizes are film pixels on a 1920×1080
-   stage, not the app's rem scale. No rule here animates: no transition, no animation. film.js
-   moves things through S.ref. */
+/* The stage of a Telo Ride film (docs/videos/README.md), used with film-runtime.js and film-kit.js.
+   Colours and faces are the tokens of docs/design-system/tokens/tokens.css, which slides.html links
+   first; its @font-face rules load Barlow Condensed, Inter Tight and JetBrains Mono from
+   docs/design-system/assets/fonts/, the faces the app bundles. Sizes are film pixels on a 1920×1080
+   stage, not the app's rem scale. No rule here animates: no transition, no animation. film.js moves
+   things through S.ref. */
 
-@font-face { font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: block;
-  src: url("../../../frontend/public/fonts/inter-latin-wght.woff2") format("woff2"); }
-@font-face { font-family: "Archivo"; font-style: normal; font-weight: 100 900; font-stretch: 62% 125%; font-display: block;
-  src: url("../../../frontend/public/fonts/archivo-latin-wdth-wght.woff2") format("woff2"); }
-@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 100 800; font-display: block;
-  src: url("../../../frontend/public/fonts/jetbrains-mono-latin-wght.woff2") format("woff2"); }
-
-html, body { margin: 0; height: 100%; overflow: hidden; background: var(--palette-neutral-950); }
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--palette-ink); }
 #frame { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; overflow: hidden;
-  background: var(--palette-neutral-950); color: var(--palette-neutral-50); font: 500 34px/1.35 var(--font-family-sans); }
+  background: var(--palette-ink); color: var(--palette-bone); font: 500 34px/1.35 var(--font-family-sans); }
 #stage, .scene, .fill { position: absolute; inset: 0; }
 .scene { overflow: hidden; display: none; }
 .fill { width: 100%; height: 100%; }
 img { display: block; }
 
-/* Type: a headline of two to six words, one of them in the accent colour. Archivo, the face of the
-   app's numerals and wordmark, set expanded and heavy as the lockup is. */
-.headline { margin: 0; font: 800 132px/1 var(--font-family-numeral); font-stretch: 112%; letter-spacing: -0.035em; }
-.headline--md { font-size: 100px; }
+/* Type: a headline of two to six words, one of them in the accent colour, set in the wide italic of
+   the wordmark (Barlow Condensed 800 italic, upper case). Words in Inter Tight; numbers in Barlow. */
+.headline { margin: 0; font: italic 800 150px/0.92 var(--font-family-display); letter-spacing: var(--letter-spacing-display); text-transform: uppercase; }
+.headline--md { font-size: 116px; }
 .kicker { margin: 0; font: 700 26px/1.2 var(--font-family-sans); letter-spacing: 0.14em; text-transform: uppercase; }
 .lede { margin: 0; font: 500 40px/1.3 var(--font-family-sans); }
-.figure { margin: 0; font: 700 300px/0.9 var(--font-family-numeral); font-stretch: 75%; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-.wordmark { display: inline-flex; align-items: center; gap: 36px; font: 800 150px/1 var(--font-family-numeral); font-stretch: 125%; letter-spacing: var(--letter-spacing-brand); }
-.wordmark svg { width: 150px; height: 150px; flex: none; }
-.accent { color: var(--palette-volt-300); }
+.figure { margin: 0; font: 700 300px/0.9 var(--font-family-display); letter-spacing: var(--letter-spacing-display); font-variant-numeric: tabular-nums; }
+.mono { font-family: var(--font-family-mono); }
+.accent { color: var(--palette-signal); }
 .word { display: inline-block; overflow: hidden; padding-bottom: 0.12em; margin-bottom: -0.12em; vertical-align: top; }
 .word__in { display: inline-block; }
 
-/* Fields: the ground of a scene. Acts change colour. Ink and volt are the brand; rest blue,
-   heart red and the chalk of the light theme are the app's own roles. */
-.field--ink { background: var(--palette-neutral-950); color: var(--palette-neutral-50); }
-.field--panel { background: var(--palette-neutral-900); color: var(--palette-neutral-50); }
-.field--volt { background: var(--palette-volt-300); color: var(--palette-neutral-950); }
-.field--volt .accent { color: var(--palette-rest-850); }
-.field--chalk { background: var(--palette-neutral-25); color: var(--palette-neutral-950); }
-.field--chalk .accent { color: var(--palette-volt-800); }
-.field--rest { background: var(--palette-rest-850); color: var(--palette-neutral-0); }
-.field--rest .accent { color: var(--palette-volt-300); }
-.field--heart { background: var(--palette-heart-400); color: var(--palette-neutral-950); }
-.field--heart .accent { color: var(--palette-neutral-0); }
-/* A photograph of the machine bleeding to every edge, darkened so the type reads. */
-.field--photo { background: var(--palette-neutral-950) center / cover no-repeat; color: var(--palette-neutral-50); }
-.field--photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgb(11 12 14 / 0.92) 0%, rgb(11 12 14 / 0.7) 45%, rgb(11 12 14 / 0.25) 100%); }
+/* The TELO Ride lockup of the app header: the logo mark (bone ring, signal crank and hub) and the
+   wordmark, TELO in bone and Ride in signal. --s is the wordmark's size in film pixels. */
+.lockup { display: inline-flex; align-items: center; gap: calc(var(--s, 150px) * 0.33); }
+.lockup svg { width: calc(var(--s, 150px) * 1.08); height: calc(var(--s, 150px) * 1.08); flex: none; fill: none; stroke-width: 6; stroke-linecap: round; }
+.lockup .logo-mark__ring { stroke: var(--palette-bone); }
+.lockup .logo-mark__crank { stroke: var(--palette-signal); }
+.lockup .logo-mark__hub { fill: var(--palette-signal); stroke: none; }
+.wordmark { font: italic 800 var(--s, 150px)/1 var(--font-family-display); letter-spacing: var(--letter-spacing-display); text-transform: uppercase; white-space: nowrap; color: var(--palette-bone); }
+.wordmark__product { margin-left: 0.18em; color: var(--palette-signal); }
+.field--signal .lockup .logo-mark__ring, .field--bone .lockup .logo-mark__ring { stroke: var(--palette-ink); }
+.field--signal .wordmark, .field--bone .wordmark { color: var(--palette-ink); }
+.field--signal .wordmark__product, .field--signal .lockup .logo-mark__crank { color: var(--palette-bone); stroke: var(--palette-bone); }
+.field--signal .lockup .logo-mark__hub { fill: var(--palette-bone); }
+
+/* Fields: the ground of a scene. Acts change colour. Ink and signal are the brand; panel, bone, blue
+   and gold are the app's own roles (panels, the light theme's paper, rest, level). */
+.field--ink { background: var(--palette-ink); color: var(--palette-bone); }
+.field--panel { background: var(--palette-panel); color: var(--palette-bone); }
+.field--signal { background: var(--palette-signal); color: var(--palette-ink); }
+.field--signal .accent { color: var(--palette-bone); }
+.field--bone { background: var(--palette-paper); color: var(--palette-ink); }
+.field--bone .accent { color: var(--palette-signal-deep); }
+.field--blue { background: var(--palette-blue-deep); color: var(--palette-white); }
+.field--blue .accent { color: var(--palette-gold); }
+.field--gold { background: var(--palette-gold); color: var(--palette-ink); }
+.field--gold .accent { color: var(--palette-signal-deeper); }
+/* A photograph of the bike or a world bleeding to every edge, darkened so the type reads. */
+.field--photo { background: var(--palette-ink) center / cover no-repeat; color: var(--palette-bone); }
+.field--photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgb(10 11 13 / 0.92) 0%, rgb(10 11 13 / 0.7) 45%, rgb(10 11 13 / 0.25) 100%); }
 .field--photo > * { position: relative; z-index: 1; }
-/* A grid of fine lines in volt, the texture of the power trace, for the ink field. */
+/* A grid of fine signal lines, the texture of the ride trace, for the ink field. */
 .grid-lines { position: absolute; inset: 0; background-image:
-  linear-gradient(rgb(215 255 58 / 0.06) 1px, transparent 1px), linear-gradient(90deg, rgb(215 255 58 / 0.06) 1px, transparent 1px);
+  linear-gradient(rgb(255 69 33 / 0.07) 1px, transparent 1px), linear-gradient(90deg, rgb(255 69 33 / 0.07) 1px, transparent 1px);
   background-size: 96px 96px; }
 
 /* Devices drawn around a screenshot. --w is the frame's width, --ratio the window's width / height. */
 .device { position: relative; flex: none; box-sizing: border-box; width: var(--w); box-shadow: 0 4px 8px rgb(0 0 0 / 0.12), 0 40px 80px -24px rgb(0 0 0 / 0.6); }
-.device__screen { width: 100%; aspect-ratio: var(--ratio); object-fit: cover; object-position: top left; background: var(--palette-neutral-950); }
-.device--phone { padding: 14px; border-radius: 60px; background: var(--palette-neutral-800); outline: 2px solid var(--palette-neutral-650); }
+.device__screen { width: 100%; aspect-ratio: var(--ratio); object-fit: cover; object-position: top left; background: var(--palette-ink); }
+.device--phone { padding: 14px; border-radius: 60px; background: var(--palette-raised); outline: 2px solid var(--palette-steel); }
 .device--phone .device__screen { border-radius: 46px; }
-.device--tablet { padding: 24px; border-radius: 44px; background: var(--palette-neutral-800); outline: 2px solid var(--palette-neutral-650); }
+.device--tablet { padding: 24px; border-radius: 44px; background: var(--palette-raised); outline: 2px solid var(--palette-steel); }
 .device--tablet .device__screen { border-radius: 20px; }
-.device--browser { border-radius: 18px; overflow: hidden; background: var(--palette-neutral-900); outline: 1px solid var(--palette-neutral-700); }
-.device__bar { display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 20px; background: var(--palette-neutral-850); border-bottom: 1px solid var(--palette-neutral-800); }
-.device__bar i { width: 14px; height: 14px; border-radius: 50%; background: var(--palette-heart-400); }
-.device__bar i:nth-child(2) { background: var(--palette-warn-400); }
-.device__bar i:nth-child(3) { background: var(--palette-volt-300); }
-.device__url { flex: 0 1 46%; margin: 0 auto; padding: 6px 20px; border-radius: var(--radius-full); background: var(--palette-neutral-950); color: var(--palette-neutral-400);
+.device--browser { border-radius: 18px; overflow: hidden; background: var(--palette-panel); outline: 1px solid var(--palette-line); }
+.device__bar { display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 20px; background: var(--palette-raised); border-bottom: 1px solid var(--palette-line); }
+.device__bar i { width: 14px; height: 14px; border-radius: 50%; background: var(--palette-red); }
+.device__bar i:nth-child(2) { background: var(--palette-amber); }
+.device__bar i:nth-child(3) { background: var(--palette-green); }
+.device__url { flex: 0 1 46%; margin: 0 auto; padding: 6px 20px; border-radius: 9999px; background: var(--palette-ink); color: var(--palette-muted);
   font: 500 18px/1.2 var(--font-family-mono); text-align: center; }
 .device--grow { width: auto; display: flex; justify-content: center; box-shadow: none; }
-.device__grow { position: relative; height: 100%; box-sizing: border-box; border: 12px solid var(--palette-neutral-800); overflow: hidden; background: var(--palette-neutral-950);
+.device__grow { position: relative; height: 100%; box-sizing: border-box; border: 12px solid var(--palette-raised); overflow: hidden; background: var(--palette-ink);
   box-shadow: 0 4px 8px rgb(0 0 0 / 0.12), 0 40px 80px -24px rgb(0 0 0 / 0.6); }
 .device__grow img { position: absolute; left: 0; top: 0; width: 100%; height: auto; min-height: 100%; object-fit: cover; object-position: top left; }
 
-/* A close-up: the region a line is about, enlarged, with a ring in volt. */
-.closeup { border-radius: var(--radius-lg); outline: 6px solid var(--palette-volt-300); outline-offset: 6px; box-shadow: 0 40px 80px -24px rgb(0 0 0 / 0.6); }
-.field--volt .closeup, .field--chalk .closeup { outline-color: var(--palette-neutral-950); }
+/* A close-up: the region a line is about, enlarged, with a ring in signal. */
+.closeup { border-radius: 12px; outline: 6px solid var(--palette-signal); outline-offset: 6px; box-shadow: 0 40px 80px -24px rgb(0 0 0 / 0.6); }
+.field--signal .closeup, .field--bone .closeup, .field--gold .closeup { outline-color: var(--palette-ink); }
 
 /* A card of the film's own: a short line on a surface, on any field. */
-.card { box-sizing: border-box; display: flex; align-items: center; gap: 28px; margin-bottom: 26px; padding: 30px 40px; border-radius: var(--radius-lg);
-  background: var(--palette-neutral-900); color: var(--palette-neutral-50); outline: 2px solid var(--palette-neutral-800); font: 700 38px/1.2 var(--font-family-sans);
+.card { box-sizing: border-box; display: flex; align-items: center; gap: 28px; margin-bottom: 26px; padding: 30px 40px; border-radius: 12px;
+  background: var(--palette-panel); color: var(--palette-bone); outline: 2px solid var(--palette-line); font: 700 38px/1.2 var(--font-family-sans);
   box-shadow: 0 30px 60px -24px rgb(0 0 0 / 0.5); }
-.card__n { flex: none; width: 64px; height: 64px; border-radius: var(--radius-md); background: var(--palette-volt-300); color: var(--palette-neutral-950);
-  font: 800 34px/64px var(--font-family-numeral); text-align: center; }
-.field--volt .card, .field--chalk .card { background: var(--palette-neutral-0); color: var(--palette-neutral-950); outline-color: var(--palette-neutral-200); }
-.field--volt .card__n, .field--chalk .card__n { background: var(--palette-neutral-950); color: var(--palette-volt-300); }
+.card__n { flex: none; width: 64px; height: 64px; border-radius: 8px; background: var(--palette-signal); color: var(--palette-ink);
+  font: 800 38px/64px var(--font-family-display); text-align: center; }
+.field--signal .card, .field--bone .card, .field--gold .card { background: var(--palette-white); color: var(--palette-ink); outline-color: var(--palette-paper-line); }
+.field--signal .card__n, .field--bone .card__n, .field--gold .card__n { background: var(--palette-ink); color: var(--palette-signal); }
+
+/* A terminal of the film's own, for a check that runs where no screen shows it: real output, typed
+   in JetBrains Mono. Lines rise in one by one through S.rise. */
+.terminal { box-sizing: border-box; border-radius: 18px; overflow: hidden; background: var(--palette-ink); outline: 2px solid var(--palette-line);
+  box-shadow: 0 40px 80px -24px rgb(0 0 0 / 0.6); font: 500 26px/1.5 var(--font-family-mono); color: var(--palette-bone); }
+.terminal__bar { display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 20px; background: var(--palette-raised); color: var(--palette-muted); font-size: 18px; }
+.terminal__bar i { width: 14px; height: 14px; border-radius: 50%; background: var(--palette-steel); }
+.terminal__body { padding: 28px 36px; white-space: pre; }
+.terminal__prompt { color: var(--palette-muted); }
+.terminal__error { color: var(--palette-red-light); }
+.terminal__ok { color: var(--palette-green); }
+.terminal__dim { color: var(--palette-faint); }
+
+/* A drawn diagram: boxes and arrows in the palette, where no screenshot exists. */
+.node { position: absolute; box-sizing: border-box; display: grid; place-items: center; border-radius: 16px; background: var(--palette-panel);
+  outline: 3px solid var(--palette-line); font: italic 800 64px/1 var(--font-family-display); text-transform: uppercase; text-align: center; color: var(--palette-bone); }
+.node small { display: block; margin-top: 10px; font: 500 24px/1.2 var(--font-family-sans); font-style: normal; text-transform: none; color: var(--palette-muted); text-align: center; }
+.node--app { background: var(--palette-signal); outline-color: var(--palette-signal); color: var(--palette-ink); }
+.node--app small { color: var(--palette-ink); }
 
 .wipe { position: absolute; top: -10%; left: -180px; width: calc(100% + 360px); height: 120%; display: none; }
 
 /* Captions are off unless the build is given --captions (or C is pressed while it plays). */
 #captions { position: absolute; left: 0; right: 0; bottom: 56px; display: flex; justify-content: center; z-index: 2000; }
 #captions[hidden] { display: none; }
-#captions span { max-width: 1500px; padding: 12px 28px; border-radius: var(--radius-md); background: rgb(0 0 0 / 0.78); color: var(--palette-neutral-0);
+#captions span { max-width: 1500px; padding: 12px 28px; border-radius: 8px; background: rgb(0 0 0 / 0.78); color: var(--palette-white);
   font: 600 38px/1.3 var(--font-family-sans); text-align: center; }
 
 /* Only when a person opens the page. */
-#play { position: fixed; left: 50%; bottom: 32px; transform: translateX(-50%); padding: 14px 36px; border: 0; border-radius: var(--radius-lg);
-  background: var(--palette-volt-300); color: var(--palette-neutral-950); font: 800 20px/1 var(--font-family-numeral); cursor: pointer; }
+#play { position: fixed; left: 50%; bottom: 32px; transform: translateX(-50%); padding: 14px 36px; border: 0; border-radius: 8px;
+  background: var(--palette-signal); color: var(--palette-ink); font: italic 800 24px/1 var(--font-family-display); text-transform: uppercase; cursor: pointer; }
 #play[hidden] { display: none; }
-#errors { position: fixed; inset: 16px auto auto 16px; margin: 0; padding: 16px; background: var(--palette-heart-600); color: var(--palette-neutral-0); font: 16px/1.4 var(--font-family-mono); z-index: 3000; }
+#errors { position: fixed; inset: 16px auto auto 16px; margin: 0; padding: 16px; background: var(--palette-red); color: var(--palette-white); font: 16px/1.4 var(--font-family-mono); z-index: 3000; }

@@ -1,0 +1,12 @@
+<div class="class-teaser">
+  <div class="class-teaser__cover">
+    <img class="class-teaser__image" [src]="coverUrl()" alt="" />
+    <span class="photo-tag">{{ length() }}</span>
+  </div>
+  <div class="class-teaser__body">
+    <h3 class="class-teaser__title">{{ title() }}</h3>
+    <div class="class-teaser__actions">
+      <ng-content select="[slot=actions]" />
+    </div>
+  </div>
+</div>

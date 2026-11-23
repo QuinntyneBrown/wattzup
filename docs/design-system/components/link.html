@@ -3,17 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Link — Wattzup design system</title>
-<meta name="description" content="Links go somewhere: setup, the dashboard, diagnostics, a field with an error.">
+<title>Link — Telo Ride design system</title>
+<meta name="description" content="Links take the rider somewhere: "All maps →", "← Maps", links inside text and links that leave Telo Ride.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+  .ds-pairs-stack { display: flex; flex-direction: column; gap: var(--space-2); }
+  .ds-matrix td { min-width: var(--space-28); }
+  .ds-demo-col { display: flex; flex-direction: column; gap: var(--space-4); width: 100%; max-width: calc(var(--space-48) * 2); }
+  .ds-demo-wide { width: 100%; max-width: calc(var(--space-36) * 4); }
+  .ds-demo-panel { background: var(--color-panel); border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-2xl); padding: var(--space-5); width: 100%; }
+  .ds-menu-stage { min-height: calc(var(--space-44) * 2); align-items: flex-start; }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +36,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,70 +90,235 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Component · Actions</p>
       <h1>Link</h1>
-      <p class="ds-lead">Links take the rider somewhere — to setup, back to the dashboard, or to the field an error summary names. They are underlined in running text.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span></div>
+      <p class="ds-lead">Links go somewhere; they never change anything. Telo Ride has three: the muted standalone link with an arrow ("All maps →"), the back link ("← Maps") and the underlined link inside a sentence.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
       <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>Use a link for navigation. Volt in dark, olive in light, always underlined inside text so colour is not the only cue. A link that looks like a button (Set up a ride) is still <code>&lt;a href&gt;</code>; see <a href="button.html">button</a>.</p>
-    </section>
-    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
-<div class="ds-anatomy"><figure class="ds-anatomy__figure"><p>Fix <a href="#overview">Rounds — enter 1 to 30</a> to start.</p><span class="ds-callout" style="left: 30%; top: 10%;" aria-hidden="true">1</span><span class="ds-callout" style="left: 52%; top: 82%;" aria-hidden="true">2</span></figure><ol class="ds-anatomy__list"><li><div><b>Label</b><small>Says where it goes.</small></div></li><li><div><b>Underline</b><small>1px, 2px on hover; offset 0.15em.</small></div></li></ol></div>
-    </section>
-    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
-<div class="ds-example"><div class="ds-example__canvas "><p>Find it in <a href="#overview">appsettings.json</a>.</p><a class="btn" href="#overview">Set up a ride</a><a class="lockup" href="#overview" aria-label="Wattzup dashboard"><span class="lockup__word">wattzup</span></a></div><div class="ds-example__caption"><span>Inline, button-styled, and the lockup as the home link.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;p&gt;Find it in &lt;a href="#overview"&gt;appsettings.json&lt;/a&gt;.&lt;/p&gt;
-&lt;a class="btn" href="#overview"&gt;Set up a ride&lt;/a&gt;
-&lt;a class="lockup" href="#overview" aria-label="Wattzup dashboard"&gt;
-&lt;span class="lockup__word"&gt;wattzup&lt;/span&gt;
-&lt;/a&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="sizes" data-na="Links take the size of the text around them."><h2><a href="#sizes">Sizes</a></h2>
-      <p class="ds-na">Links take the size of the text around them.</p>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<div class="ds-matrix"><table><thead><tr><th scope="col">Variant</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th></tr></thead><tbody><tr><th scope="row">Inline</th><td><a href="#overview">Paste a youtube.com or youtu.be link</a></td><td><a href="#overview" data-state="hover">Paste a youtube.com or youtu.be link</a></td><td><a href="#overview" data-state="focus">Paste a youtube.com or youtu.be link</a></td></tr></tbody></table></div><h3>Both themes</h3><div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas"><p>Fix <a href="#overview">Recover — at least 0:05</a>.</p></div></div><div data-theme="dark"><div class="ds-example__canvas"><p>Fix <a href="#overview">Recover — at least 0:05</a>.</p></div></div></div>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
-<ul><li>Links wrap with their sentence; a link in an error summary is a list item with a 24px-high hit area.</li></ul>
-    </section>
-    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
-<p>Reads <code>--color-fg-link</code> and <code>--color-fg-link-hover</code>.</p>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<h3>Role and pattern</h3><p>Native <code>&lt;a href&gt;</code>.</p><h3>Keyboard</h3><div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody><tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Moves focus to and from the control in DOM order.</td></tr><tr><td><kbd>Enter</kbd></td><td>Follows the link.</td></tr></tbody></table></div><h3>Focus</h3><p>Shared focus ring.</p><h3>Labelling</h3><p>Link text names the destination: "Recover — at least 0:05", "Back to the dashboard".</p><h3>Contrast</h3><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-pair"><span>Link on canvas</span><span class="ds-pair__ratio" data-contrast="--color-fg-link|--color-bg-canvas" data-min="4.5"></span></div><div class="ds-pair"><span>Link on surface</span><span class="ds-pair__ratio" data-contrast="--color-fg-link|--color-bg-surface" data-min="4.5"></span></div><div class="ds-pair"><span>Hover on surface</span><span class="ds-pair__ratio" data-contrast="--color-fg-link-hover|--color-bg-surface" data-min="4.5"></span></div></div><h3>Motion</h3><p>None.</p><h3>Touch</h3><p>Standalone links meet 24px; inline links rely on line height and spacing.</p>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Name the destination, never "click here".</li><li>Error-summary links repeat the field and the fix.</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><p>Fix <a href="#overview">Rounds — enter 1 to 30</a>.</p></div><figcaption>Link text names field and fix.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><p>To fix the error <a href="#overview">click here</a>.</p></div><figcaption>The link text means nothing alone.</figcaption></figure><figure class="ds-do"><div class="ds-example__canvas"><a class="btn" href="#overview">Set up a ride</a></div><figcaption>Navigation styled as a button stays a link.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><button class="btn" type="button">Open setup page</button></div><figcaption>A button that only navigates.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
-<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Link</td><td><code>--color-fg-link</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-link" data-swatch></i><span data-token="--color-fg-link"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-link" data-swatch></i><span data-token="--color-fg-link"></span></span></td></tr><tr><td>Link hover</td><td><code>--color-fg-link-hover</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-link-hover" data-swatch></i><span data-token="--color-fg-link-hover"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-link-hover" data-swatch></i><span data-token="--color-fg-link-hover"></span></span></td></tr><tr><td>Underline</td><td><code>--border-width-hairline</code> <code>--border-width-thick</code></td><td colspan="2"><span data-token="--border-width-hairline"></span> / <span data-token="--border-width-thick"></span></td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
-<pre><code>&lt;a href="#rounds"&gt;Rounds — enter 1 to 30&lt;/a&gt;</code></pre><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>a</code></td><td>Underlined link.</td></tr><tr><td><code>data-state="hover"</code></td><td>Documentation only.</td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from these mocks:</p><ul><li><a href="../../mocks/pages/setup/invalid.html">pages/setup/invalid</a> (error summary links)</li><li><a href="../../mocks/pages/not-found/default.html">pages/not-found/default</a> (button-styled links)</li></ul><p>Drift fixed during extraction: none.</p>
+      <p>Use a link when activating it opens another page or another site. Use a <a class="link" href="button.html">button</a> when it does something (starts, saves, pairs, opens a dialog), even if a page change follows.</p>
+      <ul>
+        <li><b>More link</b> (<code>.more-link</code>): at the end of a section head, leading to the full list: "All maps →", "All classes →".</li>
+        <li><b>Back link</b> (<code>.back-link</code>): up one level from a focused screen: Race Setup's "← Maps". Kit name for <code>.setup-header__back</code>.</li>
+        <li><b>Inline link</b> (<code>.link</code>): inside running text, always underlined: "Half a second later Telo Ride moves on to <a class="link" href="../../mocks/pages/home/new-rider.html">Home</a>."</li>
+        <li><b>External link</b>: any of the above with <code>.link__external</code> after the label when it leaves Telo Ride (YouTube, help).</li>
+      </ul>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+      <div class="ds-anatomy">
+        <figure class="ds-anatomy__figure">
+          <div class="section-head" style="width: 100%; max-width: calc(var(--space-48) * 2 + var(--space-8));"><h3 class="section-head__title">Race</h3><a class="more-link" href="../../mocks/pages/map-select/default.html">All maps <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></div>
+          <span class="ds-callout" style="left: 64%; top: 24%;" aria-hidden="true">1</span>
+          <span class="ds-callout" style="left: 84%; top: 24%;" aria-hidden="true">2</span>
+        </figure>
+        <ol class="ds-anatomy__list">
+          <li><div><b>Label</b><small>14px regular, <code>--color-muted</code>, turns <code>--color-fg</code> on hover. Names the destination.</small></div></li>
+          <li><div><b>Direction icon</b><small>16px arrow, 4px gap (6px on the back link), <code>aria-hidden</code>: → forward, ← back, ↗ external.</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+      <div class="ds-example">
+        <div class="ds-example__canvas">
+          <a class="more-link" href="../../mocks/pages/map-select/default.html">All maps <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+          <a class="more-link" href="../../mocks/pages/class-library/default.html">All classes <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+          <a class="back-link" href="../../mocks/pages/map-select/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Maps</a>
+        </div>
+        <div class="ds-example__caption"><span>Standalone: more link and back link. Muted until hovered; the arrow carries the direction.</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;a class="more-link" href="/maps"&gt;All maps &lt;svg class="icon icon--md" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;/a&gt;
+&lt;a class="back-link" href="/maps"&gt;&lt;svg class="icon icon--md" aria-hidden="true"&gt;…&lt;/svg&gt;Maps&lt;/a&gt;</code></pre></details>
+      </div>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <p class="text-muted" style="max-width: calc(var(--space-36) * 4);">Scrub the preview past the intro to the moment the warm-up begins, then use that time. The video plays from <a class="link" href="https://www.youtube.com/watch?v=QUoToFsMNig" target="_blank" rel="noopener">YouTube<span class="visually-hidden"> (opens in a new tab)</span><svg class="icon link__external" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a> with its own controls.</p>
+          <p class="text-muted" style="max-width: calc(var(--space-36) * 4);">The link may be old, or the address has a typo. Your rides and progress are safe. <a class="link link--quiet" href="../../mocks/pages/home/default.html">Back to Home</a>.</p>
+          <p class="field__hint">Bike connection log and app version, so we can reproduce it. <a class="link link--muted" href="../../mocks/dialogs/diagnostics/default.html">See what's attached</a></p>
+        </div>
+        <div class="ds-example__caption"><span>Inline: volt (default), <code>--quiet</code> (fg, volt on hover) and <code>--muted</code> (inside hints). All underlined; external adds the ↗ icon and a hidden "(opens in a new tab)".</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;a class="link" href="https://www.youtube.com/watch?v=QUoToFsMNig" target="_blank" rel="noopener"&gt;
+  YouTube&lt;span class="visually-hidden"&gt; (opens in a new tab)&lt;/span&gt;
+  &lt;svg class="icon link__external" aria-hidden="true"&gt;…&lt;/svg&gt;
+&lt;/a&gt;</code></pre></details>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sizes" data-na="Links take the size of the text they sit in; standalone links are 14px."><h2><a href="#sizes">Sizes</a></h2>
+      <p class="ds-na">Links take the size of the text they sit in; standalone links are 14px.</p>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Variant</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Visited</th><th scope="col">Current</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">More link</th><td><a class="more-link" href="#states">All maps <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></td><td><a class="more-link" href="#states" data-state="hover">All maps <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></td><td><a class="more-link" href="#states" data-state="focus">All maps <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></td><td><a class="more-link" href="#states" data-state="active">All maps <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></td><td><a class="more-link" href="#states">All maps <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></td><td><span class="text-faint">n/a</span></td></tr>
+          <tr><th scope="row">Back link</th><td><a class="back-link" href="#states"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Maps</a></td><td><a class="back-link" href="#states" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Maps</a></td><td><a class="back-link" href="#states" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Maps</a></td><td><a class="back-link" href="#states" data-state="active"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Maps</a></td><td><a class="back-link" href="#states"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Maps</a></td><td><span class="text-faint">n/a</span></td></tr>
+          <tr><th scope="row">Inline</th><td><a class="link" href="#states">Home</a></td><td><a class="link" href="#states" data-state="hover">Home</a></td><td><a class="link" href="#states" data-state="focus">Home</a></td><td><a class="link" href="#states" data-state="active">Home</a></td><td><a class="link" href="#states">Home</a></td><td><a class="link" href="#states" aria-current="page">Home</a></td></tr>
+          <tr><th scope="row">Inline quiet</th><td><a class="link link--quiet" href="#states">Back to Home</a></td><td><a class="link link--quiet" href="#states" data-state="hover">Back to Home</a></td><td><a class="link link--quiet" href="#states" data-state="focus">Back to Home</a></td><td><a class="link link--quiet" href="#states" data-state="active">Back to Home</a></td><td><a class="link link--quiet" href="#states">Back to Home</a></td><td><span class="text-faint">n/a</span></td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li><b>Visited</b> looks the same as default: rides are revisited daily, and a different colour for "seen" carries no meaning here.</li>
+        <li><b>Disabled</b> does not exist. A destination that is not available yet (a locked map) is not a link; it is text or a disabled button with the reason ("Opens at level 10").</li>
+        <li><b>Current</b> only matters in navigation: <code>aria-current="page"</code> (see <a class="link" href="app-header.html">app header</a>).</li>
+      </ul>
+      <h3>Both themes</h3>
+      <div class="ds-themes">
+        <div data-theme="light"><div class="ds-example__canvas" style="padding: 0;"><a class="more-link" href="#states">All maps <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a><a class="back-link" href="#states"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Maps</a><span>Moves on to <a class="link" href="#states">Home</a>.</span></div></div>
+        <div data-theme="dark"><div class="ds-example__canvas" style="padding: 0;"><a class="more-link" href="#states">All maps <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a><a class="back-link" href="#states"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Maps</a><span>Moves on to <a class="link" href="#states">Home</a>.</span></div></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Width</th><th scope="col">Rule</th></tr></thead><tbody>
+        <tr><td>360 (base)</td><td>More links stay on the section head's baseline (they never wrap: <code>white-space: nowrap</code>); a long section title wraps instead. Inline links wrap with their sentence.</td></tr>
+        <tr><td>640 (sm)</td><td>No change.</td></tr>
+        <tr><td>1024 (lg)</td><td>No change; the back link sits in the setup header beside the lockup at every width.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+      <p>Standalone links read <code>--color-muted</code> and <code>--color-fg</code>. Inline links read two component tokens, <code>--link-fg</code> and <code>--link-fg-hover</code>, which default to <code>--color-volt-fg</code> and <code>--color-volt-fg-hover</code>; the quiet and muted variants re-point them. In light, volt text deepens to <code>--palette-signal-deep</code> (5.1:1 on paper) because signal orange itself reads only 2.9:1 on paper.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <p>Native <code>&lt;a href&gt;</code>; see the <a class="link" href="https://www.w3.org/WAI/ARIA/apg/patterns/link/">APG Link pattern</a>. Never a <code>&lt;span&gt;</code> with a click handler, and never <code>role="tab"</code> or <code>role="radio"</code> on a link.</p>
+      <h3>Keyboard</h3>
+      <div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+        <tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Moves to and from the link.</td></tr>
+        <tr><td><kbd>Enter</kbd></td><td>Follows the link. (<kbd>Space</kbd> scrolls the page; links do not respond to it.)</td></tr>
+      </tbody></table></div>
+      <h3>Focus</h3>
+      <p>The shared 2px ring at a 2px offset around the label and icon; <code>.more-link</code> and <code>.link</code> have a small radius so the ring follows the text.</p>
+      <h3>Labelling</h3>
+      <p>The text names the destination and makes sense alone: "All maps", "All classes", "Maps". Arrows are <code>aria-hidden</code>. External links add a visually hidden "(opens in a new tab)" when they use <code>target="_blank"</code>.</p>
+      <h3>Contrast</h3>
+      <div class="ds-themes">
+<div data-theme="light"><div class="ds-pairs-stack">
+<div class="ds-pair"><span>Standalone link on page</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Standalone link hover</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Inline link on page</span><span class="ds-pair__ratio" data-contrast="--color-volt-fg|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Inline link on panel</span><span class="ds-pair__ratio" data-contrast="--color-volt-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Inline link hover on panel</span><span class="ds-pair__ratio" data-contrast="--color-volt-fg-hover|--color-panel" data-min="4.5"></span></div>
+</div></div>
+<div data-theme="dark"><div class="ds-pairs-stack">
+<div class="ds-pair"><span>Standalone link on page</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Standalone link hover</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Inline link on page</span><span class="ds-pair__ratio" data-contrast="--color-volt-fg|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Inline link on panel</span><span class="ds-pair__ratio" data-contrast="--color-volt-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Inline link hover on panel</span><span class="ds-pair__ratio" data-contrast="--color-volt-fg-hover|--color-panel" data-min="4.5"></span></div>
+</div></div>
+</div>
+      <p>Inline links are underlined, so they are found without colour (1.4.1). Standalone links are set apart by position and arrow, not colour.</p>
+      <h3>Motion</h3>
+      <p>Colour eases over <code>--duration-fast</code>; instant under reduced motion.</p>
+      <h3>Touch</h3>
+      <p>Standalone links are 20px of text; give them 24px of row height (the section head does) and keep 8px from any neighbour. The back link adds 4px × 8px padding in the setup header.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li>Name the place, not the act: "All maps", "Maps", "Home". Never "Click here" or "Learn more".</li>
+        <li>Forward links use "All …" for the full list of what the section previews.</li>
+        <li>Back links name the parent screen exactly as its title or nav label reads ("Maps", not "Back").</li>
+        <li>Inline links are the few words that name the destination, not the whole sentence.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><a class="btn btn--primary" href="../../mocks/pages/race-lobby/bots.html">Go to the start line</a></div><figcaption>A button-styled link for a primary that navigates: it is still an <code>&lt;a href&gt;</code>, so middle-click and "open in new tab" work.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><a class="ride-option" role="radio" aria-checked="true" href="#do-dont" style="max-width: calc(var(--space-40) * 2);"><span class="ride-option__text"><span class="ride-option__title">Ride with a group</span><span class="ride-option__body">7:39 PM · starts in 9 min</span></span></a></div><figcaption>A link with <code>role="radio"</code> (Class Start's ride choice): announced as a radio, behaves as a link. Pick with a radio; navigate with the start button.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><p>Moves on to <a class="link" href="#do-dont">Home</a>.</p></div><figcaption>Underline inline links.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><p>Moves on to <a href="#do-dont" style="color: var(--color-volt-fg); text-decoration: none;">Home</a>.</p></div><figcaption>A link shown by colour alone fails 1.4.1 and disappears for riders who cannot tell orange from bone.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+        <tbody>
+          <tr><td>Standalone label</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+          <tr><td>Standalone hover; quiet inline</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+          <tr><td>Inline (--link-fg)</td><td><code>--color-volt-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-volt-fg" data-swatch></i><span data-token="--color-volt-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-volt-fg" data-swatch></i><span data-token="--color-volt-fg"></span></span></td></tr>
+          <tr><td>Inline hover (--link-fg-hover)</td><td><code>--color-volt-fg-hover</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-volt-fg-hover" data-swatch></i><span data-token="--color-volt-fg-hover"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-volt-fg-hover" data-swatch></i><span data-token="--color-volt-fg-hover"></span></span></td></tr>
+          <tr><td>Focus ring</td><td><code>--color-focus-ring</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-focus-ring" data-swatch></i><span data-token="--color-focus-ring"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-focus-ring" data-swatch></i><span data-token="--color-focus-ring"></span></span></td></tr>
+          <tr><td>Underline thickness, hover</td><td><code>--border-width-hairline</code> <code>--border-width-thick</code></td><td colspan="2"><span data-token="--border-width-hairline"></span> / <span data-token="--border-width-thick"></span></td></tr>
+          <tr><td>Icon gap more / back</td><td><code>--space-1</code> <code>--space-1-5</code></td><td colspan="2"><span data-token="--space-1"></span> / <span data-token="--space-1-5"></span></td></tr>
+          <tr><td>Label</td><td><code>--font-size-sm</code> <code>--line-height-sm</code></td><td colspan="2"><span data-token="--font-size-sm"></span><span data-token="--line-height-sm"></span></td></tr>
+          <tr><td>Transition</td><td><code>--duration-fast</code> <code>--ease-standard</code></td><td colspan="2"><span data-token="--duration-fast"></span><span data-token="--ease-standard"></span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+      <pre><code>&lt;a class="more-link" href="/maps"&gt;All maps &lt;svg class="icon icon--md" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;/a&gt;
+&lt;a class="back-link" href="/maps"&gt;&lt;svg class="icon icon--md" aria-hidden="true"&gt;…&lt;/svg&gt;Maps&lt;/a&gt;
+&lt;p&gt;Telo Ride moves on to &lt;a class="link" href="/home"&gt;Home&lt;/a&gt;.&lt;/p&gt;</code></pre>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+        <tr><td><code>.more-link</code></td><td>Muted standalone link with trailing arrow (kit).</td></tr>
+        <tr><td><code>.back-link</code></td><td>Muted back link with leading arrow (kit).</td></tr>
+        <tr><td><code>.link</code></td><td>Underlined inline link, volt text.</td></tr>
+        <tr><td><code>.link--quiet</code> / <code>.link--muted</code></td><td>Inline link in fg / muted text.</td></tr>
+        <tr><td><code>.link__external</code></td><td>The ↗ icon after an external label.</td></tr>
+        <tr><td><code>target="_blank" rel="noopener"</code></td><td>Only for external links; pair with the hidden "(opens in a new tab)".</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <ul>
+        <li><a href="../../mocks/pages/home/default.html">pages/home/default</a> — "All maps →", "All classes →"</li>
+        <li><a href="../../mocks/pages/race-setup/default.html">pages/race-setup/default</a> — "← Maps" (<code>.setup-header__back</code>)</li>
+        <li><a href="../../mocks/pages/connect-bike/paired.html">pages/connect-bike/paired</a> — inline link in a note</li>
+        <li><a href="../../mocks/pages/class-start/default.html">pages/class-start/default</a> — ride choice links with <code>role="radio"</code></li>
+      </ul>
+      <p>Drift fixed during extraction:</p>
+      <ul>
+        <li>The kit had no inline link style (the reset makes every <code>&lt;a&gt;</code> inherit colour with no underline); <code>.link</code> adds an underlined, accessible one.</li>
+        <li><code>class-start/*</code>: <code>.ride-option</code> links carry <code>role="radio"</code>; see <a class="link" href="radio-group.html">radio group</a> for the fix.</li>
+        <li><code>race-setup/*</code>: the back link is an area class (<code>.setup-header__back</code>) with its own hover fill; the kit's <code>.back-link</code> is the one to use.</li>
+      </ul>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

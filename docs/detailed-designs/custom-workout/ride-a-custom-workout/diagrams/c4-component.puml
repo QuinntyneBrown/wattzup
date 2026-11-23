@@ -1,0 +1,42 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Ride a custom workout
+
+Container_Boundary(app, "Ride app") {
+  Component(draft, "CustomWorkoutStore", "Signal store · ride", "Plan, provided on /profile/custom")
+  Component(page, "CustomRidePage", "Angular page · ride", "Route /profile/custom/ride")
+  Component(store, "CustomRideStore", "Signal store · ride", "Dashboard view models")
+  Component(header, "RideHeader", "Presentation component · components", "Library, status, workout, clock")
+  Component(readouts, "RideReadouts", "Presentation component · components", "Power and cadence")
+  Component(interval, "RideInterval", "Presentation component · components", "Interval card")
+  Component(view, "RideView", "Presentation component · components", "Video or Power vs. plan")
+  Component(trace, "RideTrace", "Presentation component · components", "Canvas chart")
+  Component(metrics, "RideMetrics", "Presentation component · components", "Five metrics")
+  Component(control, "RideControl", "Presentation component · components", "Level bars, − and +")
+  Component(engine, "WorkoutEngine", "Service · domain/engine", "Segment and targets")
+  Component(clock, "RideClock", "Service · domain/engine", "Elapsed")
+  Component(ptrace, "PowerTrace", "Buffer · domain/engine", "Fixed-size, one slot per second")
+  Component(recorder, "RideRecorder", "Service · domain/engine", "Totals")
+  Component(resist, "ResistanceController", "Service · domain/engine", "Target resistance")
+  Component(conn, "WebBluetoothBikeConnection", "Service · domain/bluetooth", "BIKE_CONNECTION")
+  Component(player, "YouTubeVideoPlayer", "Service · video", "VIDEO_PLAYER_FACTORY")
+}
+Rel(page, draft, "Reads plan")
+Rel(page, store, "Reads signals")
+Rel(page, header, "Renders")
+Rel(page, readouts, "Renders")
+Rel(page, interval, "Renders")
+Rel(page, view, "Renders")
+Rel(view, trace, "Renders")
+Rel(page, metrics, "Renders")
+Rel(page, control, "Renders")
+Rel(store, engine, "Follows plan")
+Rel(engine, clock, "Reads elapsed")
+Rel(engine, resist, "Segment level")
+Rel(store, ptrace, "Writes power each second")
+Rel(store, recorder, "Totals")
+Rel(store, conn, "Reads telemetry")
+Rel(store, resist, "Manual level")
+Rel(store, player, "Locked to the clock")
+@enduml

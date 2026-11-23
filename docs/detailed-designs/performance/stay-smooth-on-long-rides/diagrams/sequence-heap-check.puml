@@ -1,0 +1,36 @@
+@startuml
+title UML sequence behaviour — Check the heap over a long ride
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Person" as dev
+participant "Playwright (npm run heap)" as pw
+participant "Chromium (DevTools Protocol)" as cdp
+box "Frontend — Ride app (production build)" #E0F2FE
+  participant "Class ride page" as page
+end box
+participant "Fake bike (e2e fixture)" as sim
+dev -> pw : Run e2e/heap/long-ride.heap.ts (on request only)
+pw -> page : page.clock.install(); open the three-hour class; Start riding
+loop each second for 3 hours
+  pw -> sim : notify a workout frame
+  sim -> page : Bike notification
+  pw -> page : page.clock.runFor(1 s)
+end
+note over pw : At minute 1 and at minute 180
+pw -> cdp : HeapProfiler.collectGarbage; Runtime.getHeapUsage
+cdp --> pw : usedSize
+pw -> pw : Assert growth at most 50 MB (L2-138 AC1)
+pw --> dev : Result naming both readings
+@enduml

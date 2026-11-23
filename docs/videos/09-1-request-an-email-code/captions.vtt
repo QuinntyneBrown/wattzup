@@ -1,0 +1,64 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.445
+One email, one code, never a password: that's how Telo Ride knows it's you.
+
+00:00:10.324 --> 00:00:15.339
+Type your email and choose Send my code. Until the backend answers, the button reads
+
+00:00:15.339 --> 00:00:17.371
+Sending your code, and waits.
+
+00:00:20.647 --> 00:00:25.239
+An address that isn't one sends nothing. The field is marked, and the error under it
+
+00:00:25.239 --> 00:00:26.195
+is read out.
+
+00:00:30.971 --> 00:00:35.619
+Then the code screen names the address the code went to, and Send a new code counts
+
+00:00:35.619 --> 00:00:37.039
+down thirty seconds.
+
+00:00:41.295 --> 00:00:46.507
+The backend answers the same whether or not you have an account, keeps only a keyed
+
+00:00:46.507 --> 00:00:49.445
+hash of the code, and emails it over SMTP.
+
+00:00:51.618 --> 00:00:56.618
+Codes are limited: five an hour for an address, twenty for a network. Ask too often,
+
+00:00:56.618 --> 00:00:59.180
+and the screen says when to try again.
+
+00:01:01.942 --> 00:01:05.349
+From a phone to a desktop, sign-in is one calm panel.
+
+00:01:12.266 --> 00:01:16.883
+What the tests prove: the code goes to the address as you typed it, a bad address
+
+00:01:16.883 --> 00:01:20.660
+goes nowhere, and every limit answers with when to come back.
+
+00:01:22.590 --> 00:01:27.193
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:27.538 --> 00:01:32.050
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:32.050 --> 00:01:33.721
+every hill and interval.
+
+00:01:34.066 --> 00:01:39.244
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:39.244 --> 00:01:44.692
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:44.692 --> 00:01:47.682
+XP, rider levels, stars and map unlocks.
+
+00:01:48.027 --> 00:01:50.520
+A custom workout lives under Profile.

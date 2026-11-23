@@ -1,0 +1,13 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Keep the bike connected
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Echelon or FTMS; Bluetooth LE")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine")
+}
+Rel(rider, app, "Reads bike status and recovers the link in")
+Rel(app, bike, "Keepalive frames, reconnect attempts", "Web Bluetooth GATT")
+Rel(bike, app, "gattserverdisconnected, notifications", "GATT")
+@enduml

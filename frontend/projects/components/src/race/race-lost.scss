@@ -1,0 +1,47 @@
+// Block race-lost (docs/design-system/assets/components.css, Race): ink at 85 % over the whole race.
+.race-lost {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: grid;
+  place-items: center;
+  padding-inline: var(--space-6);
+  background: color-mix(in srgb, var(--color-ink) 85%, transparent);
+}
+
+.race-lost__inner {
+  max-width: var(--race-lost-width);
+  text-align: center;
+}
+
+.race-lost__icon {
+  display: block;
+  width: var(--space-8);
+  height: var(--space-8);
+  margin-inline: auto;
+  fill: none;
+  stroke: var(--color-heart-fg);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.race-lost__title {
+  margin-top: var(--space-4);
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.race-lost__body {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.race-lost__action {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-6);
+}

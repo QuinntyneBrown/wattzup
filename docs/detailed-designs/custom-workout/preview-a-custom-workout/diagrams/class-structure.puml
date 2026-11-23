@@ -1,0 +1,98 @@
+@startuml
+set separator none
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Preview a custom workout
+
+package "domain library" {
+  class PlanExpander {
+    +expand(draft: CustomWorkoutDraft): Plan
+  }
+  class Plan {
+    +segments: Segment[]
+    +totalSeconds: number
+    +segmentAt(elapsed: number): SegmentPosition
+  }
+  class Segment {
+    +kind: SegmentKind
+    +start: number
+    +duration: number
+    +level: number
+    +cadenceAim: number
+    +round: number
+  }
+  class SegmentPosition {
+    +index: number
+    +count: number
+    +timeLeft: number
+  }
+  class PlanValidator {
+    +minSegmentSeconds = 5
+    +maxTotalMinutes = 180
+    +validate(plan: Plan): PlanValidation
+  }
+  class PlanSummary {
+    +summarise(plan: Plan, video: VideoSetting): PlanFacts
+  }
+  class PlanFacts {
+    +totalSeconds: number
+    +structure: string
+    +timeUnderLoadSeconds: number
+    +video: string
+    +peakLevel: number
+    +expectedPowerW: number
+    +expectedEnergyKcal: number
+  }
+  class PowerModel {
+    +targetPower(level: number, cadenceAim: number): number
+    +energyKcal(averagePowerW: number, seconds: number): number
+  }
+}
+package "ride application" {
+  class CustomWorkoutStore {
+    +plan: Signal<Plan>
+    +validation: Signal<PlanValidation>
+    +preview: Signal<PlanFacts>
+    +start(): Promise<void>
+  }
+}
+package "Telo.Ride.Application" {
+  class SaveCustomWorkoutCommand {
+    +CustomWorkoutDto Workout
+  }
+  class SaveCustomWorkoutCommandValidator
+  class SaveCustomWorkoutCommandHandler {
+    +Handle(command: SaveCustomWorkoutCommand): Task
+  }
+}
+package "Telo.Ride.Domain" {
+  class WorkoutPlanRules {
+    +Expand(workout: CustomWorkout): IReadOnlyList<PlanSegment>
+    +Validate(segments: IReadOnlyList<PlanSegment>): ValidationResult
+  }
+  class CustomWorkout
+}
+PlanExpander ..> Plan : creates
+Plan "1" *-- "1..*" Segment
+Plan ..> SegmentPosition
+PlanValidator ..> Plan
+PlanSummary ..> Plan
+PlanSummary ..> PowerModel
+PlanSummary ..> PlanFacts : creates
+CustomWorkoutStore ..> PlanExpander
+CustomWorkoutStore ..> PlanValidator
+CustomWorkoutStore ..> PlanSummary
+SaveCustomWorkoutCommandValidator ..> WorkoutPlanRules
+SaveCustomWorkoutCommandHandler ..> SaveCustomWorkoutCommand : handles
+SaveCustomWorkoutCommandHandler --> CustomWorkout : upserts
+@enduml

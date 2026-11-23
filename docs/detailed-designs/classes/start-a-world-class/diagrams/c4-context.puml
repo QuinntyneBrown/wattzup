@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Start a world class
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(bike, "Smart bike", "Echelon or FTMS bike over Bluetooth LE")
+Rel(rider, telo, "Starts the class in")
+Rel(telo, bike, "Sends target resistance to", "Bluetooth LE")
+@enduml

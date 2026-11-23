@@ -1,0 +1,15 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Stay smooth on long rides
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Bluetooth LE")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Records one sample a second in a fixed buffer")
+  ContainerDb(idb, "Browser storage", "IndexedDB", "Rides waiting to send")
+}
+Rel(rider, app, "Rides with")
+Rel(bike, app, "Notifies", "Web Bluetooth GATT")
+Rel(app, idb, "Persists finished rides in")
+@enduml

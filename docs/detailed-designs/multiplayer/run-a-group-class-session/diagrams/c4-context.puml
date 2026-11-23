@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Run a group class session
+
+Person(rider, "Rider", "Rides a smart bike at home")
+Person(others, "Riders online", "Other riders in the same group session")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(youtube, "YouTube", "Class and custom-ride videos (IFrame Player API)")
+
+Rel(rider, telo, "Joins a group class in")
+Rel(others, telo, "Join the same session in")
+Rel(telo, youtube, "Plays the class video from", "IFrame Player API")
+@enduml

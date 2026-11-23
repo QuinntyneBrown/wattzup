@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Pause, leave or finish a class
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Bluetooth LE")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Class ride, recorder, outbox")
+  ContainerDb(idb, "Browser storage", "IndexedDB", "Rides waiting to send")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Ride submission and ride hub")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Rides and progress")
+}
+Rel(rider, app, "Uses")
+Rel(app, bike, "Reconnect, set resistance", "Web Bluetooth")
+Rel(app, idb, "Keeps the ride until recorded")
+Rel(app, api, "POST /api/rides", "JSON/HTTPS")
+Rel(app, api, "LeaveSession (group)", "SignalR /hubs/ride")
+Rel(api, db, "Records the ride", "EF Core")
+@enduml

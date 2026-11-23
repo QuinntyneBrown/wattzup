@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Tune world quality
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular; Three.js in a lazy chunk", "Settings page; draws worlds at the chosen level")
+  ContainerDb(ls, "Browser storage", "localStorage", "Ride settings and the device check result")
+}
+System_Ext(gpu, "Device graphics", "WebGPU or WebGL 2 in the browser", "Draws the world")
+Rel(rider, app, "Chooses settings")
+Rel(app, ls, "Reads and writes")
+Rel(app, gpu, "Builds programs, draws frames")
+@enduml

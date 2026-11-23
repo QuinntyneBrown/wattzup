@@ -1,0 +1,20 @@
+// Element app-header__streak: the flame in warn and a Barlow numeral.
+:host {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  white-space: nowrap;
+}
+
+.icon {
+  color: var(--color-warn-fg);
+}
+
+.app-header__streak-count {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+}

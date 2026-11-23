@@ -3,17 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Form layout — Wattzup design system</title>
-<meta name="description" content="How setup and its dialogs arrange fields, the error summary and the submit action.">
+<title>Form layout — Telo Ride design system</title>
+<meta name="description" content="How fields, sections and actions are arranged: the Custom Setup and Send feedback forms, one column, an actions bar, an error summary with links and the submitting state.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+  .ds-pairs-stack { display: flex; flex-direction: column; gap: var(--space-2); }
+  .ds-matrix td { min-width: var(--space-28); }
+  .ds-demo-col { display: flex; flex-direction: column; gap: var(--space-4); width: 100%; max-width: calc(var(--space-48) * 2); }
+  .ds-demo-wide { width: 100%; max-width: calc(var(--space-36) * 4); }
+  .ds-demo-panel { background: var(--color-panel); border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-2xl); padding: var(--space-5); width: 100%; }
+  .ds-menu-stage { min-height: calc(var(--space-44) * 2); align-items: flex-start; }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +36,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,80 +90,347 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Component · Inputs</p>
       <h1>Form layout</h1>
-      <p class="ds-lead">Form layout arranges fields into columns, puts the error summary at the top and the one submit action last.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span></div>
+      <p class="ds-lead">Every Telo Ride form is one column of labelled fields, grouped into short sections, with its actions at the end. When a submit fails, an error summary at the top links to each field; while it sends, the fields lock and the button says what is happening.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
       <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p><code>.field-grid</code> lays fields in one column on phones and three (or two with <code>--2</code>) from 640px. On submit with errors, an alert with <code>.form-summary</code> appears above the fields, lists each error as a link to its field, takes focus, and Start ride stays disabled with its reason below it.</p>
-    </section>
-    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
-<div class="ds-anatomy"><figure class="ds-anatomy__figure"><div class="alert alert--danger form-summary" role="alert"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><div class="alert__body"><span class="alert__title">2 things to fix before you start</span><ul><li><a href="#overview">Rounds — enter 1 to 30</a></li><li><a href="#overview">Recover — at least 0:05</a></li></ul></div></div><span class="ds-callout" style="left: 4%; top: 10%;" aria-hidden="true">1</span><span class="ds-callout" style="left: 30%; top: 60%;" aria-hidden="true">2</span></figure><ol class="ds-anatomy__list"><li><div><b>Summary</b><small>Danger alert with a 4px edge, focused on submit.</small></div></li><li><div><b>Links</b><small>One per error; each focuses its field.</small></div></li></ol></div>
-    </section>
-    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
-<div class="ds-example"><div class="ds-example__canvas "><div class="field-grid"><div class="field"><span class="field__label">Rounds</span><span class="numeral">8</span></div><div class="field"><span class="field__label">Work</span><span class="numeral">0:40</span></div><div class="field"><span class="field__label">Recover</span><span class="numeral">0:20</span></div></div></div><div class="ds-example__caption"><span>Three columns from 640px.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="field-grid"&gt;
-&lt;div class="field"&gt;
-&lt;span class="field__label"&gt;Rounds&lt;/span&gt;
-&lt;span class="numeral"&gt;8&lt;/span&gt;
-&lt;/div&gt;
-&lt;div class="field"&gt;
-&lt;span class="field__label"&gt;Work&lt;/span&gt;
-&lt;span class="numeral"&gt;0:40&lt;/span&gt;
-&lt;/div&gt;
-&lt;div class="field"&gt;
-&lt;span class="field__label"&gt;Recover&lt;/span&gt;
-&lt;span class="numeral"&gt;0:20&lt;/span&gt;
-&lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="sizes" data-na="Layout has no sizes; columns change with the breakpoint."><h2><a href="#sizes">Sizes</a></h2>
-      <p class="ds-na">Layout has no sizes; columns change with the breakpoint.</p>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<div class="ds-matrix"><table><thead><tr><th scope="col">Variant</th><th scope="col">Ready</th><th scope="col">Submitting</th><th scope="col">Invalid</th></tr></thead><tbody><tr><th scope="row">Submit</th><td><button class="btn btn--primary" type="button">Start ride</button></td><td><button class="btn btn--primary" type="button" aria-busy="true" disabled>Start ride</button></td><td><button class="btn btn--primary" type="button" disabled>Start ride</button></td></tr></tbody></table></div><h3>Both themes</h3><div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas"><div class="alert alert--danger form-summary"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><div class="alert__body"><span class="alert__title">2 things to fix before you start</span></div></div></div></div><div data-theme="dark"><div class="ds-example__canvas"><div class="alert alert--danger form-summary"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><div class="alert__body"><span class="alert__title">2 things to fix before you start</span></div></div></div></div></div><ul><li><b>Submitting</b>: every control read-only, the button busy, nothing shifts.</li><li><b>Failed start</b>: a danger alert beside the button; values kept.</li></ul>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
-<ul><li>One column below 640px; steppers in three (or two) columns from 640px.</li><li>The submit button sits in the side panel from 1024px and below the form on smaller screens.</li></ul>
-    </section>
-    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
-<p>Uses alert tokens; <code>--border-width-accent</code> for the summary edge.</p>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<h3>Role and pattern</h3><p>A <code>&lt;form&gt;</code> (or the setup region) with an error summary that is <code>role="alert"</code> and <code>tabindex="-1"</code>.</p><h3>Keyboard</h3><div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody><tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Moves focus to and from the control in DOM order.</td></tr><tr><td><kbd>Enter</kbd></td><td>On a summary link: focuses the field.</td></tr></tbody></table></div><h3>Focus</h3><p>On a failed submit focus moves to the summary.</p><h3>Labelling</h3><p>The summary title counts the errors.</p><h3>Contrast</h3><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-pair"><span>Summary text</span><span class="ds-pair__ratio" data-contrast="--color-danger-fg|--color-danger-bg" data-min="4.5"></span></div></div><h3>Motion</h3><p>None.</p><h3>Touch</h3><p>Links are list items with padding.</p>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Summary title: "{n} things to fix before you start".</li><li>Hint under a disabled Start: "Fix the 2 fields marked in red to start."</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><button class="btn btn--primary" type="button" disabled>Start ride</button><p class="text-muted text-sm">Fix the 2 fields marked in red to start.</p></div><figcaption>Disabled with its reason.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><button class="btn btn--primary" type="button" disabled>Start ride</button></div><figcaption>Disabled with no reason.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
-<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Summary edge</td><td><code>--border-width-accent</code></td><td colspan="2"><span data-token="--border-width-accent"></span></td></tr><tr><td>Column gap</td><td><code>--space-6</code> <code>--space-8</code></td><td colspan="2"><span data-token="--space-6"></span> / <span data-token="--space-8"></span></td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
-<pre><code>&lt;div class="field-grid"&gt;…&lt;/div&gt;
-&lt;div class="alert alert--danger form-summary" role="alert" tabindex="-1"&gt;…&lt;/div&gt;</code></pre><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.field-grid</code></td><td>1 → 3 columns.</td></tr><tr><td><code>.field-grid--2</code></td><td>1 → 2 columns.</td></tr><tr><td><code>.form-summary</code></td><td>Error summary alert.</td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from these mocks:</p><ul><li><a href="../../mocks/pages/setup/invalid.html">pages/setup/invalid</a> (summary)</li><li><a href="../../mocks/pages/setup/submitting.html">pages/setup/submitting</a> (busy)</li><li><a href="../../mocks/pages/setup/error.html">pages/setup/error</a> (failed start)</li></ul><p>Drift fixed during extraction: the summary list used an inline <code>style</code> for its indent; it is now <code>.form-summary ul</code>.</p>
+      <p>Use <code>.form</code> for any set of fields the rider fills and then confirms: Custom Setup ("Set up your ride", confirmed by "Start ride"), Send feedback (confirmed by "Report bug"). A form is a real <code>&lt;form&gt;</code> so Enter submits and the browser can validate.</p>
+      <ul>
+        <li><b>One column.</b> Fields stack in reading order, capped at 36rem (<code>--form-max-width</code>). Two short related fields may share a <code>.form__row</code> from 768px.</li>
+        <li><b>Sections</b> (<code>.form__section</code>) group three to five fields under a title, ruled from each other.</li>
+        <li><b>Actions last</b> (<code>.form__actions</code>): the primary at the end of the row on desktop, on top of the stack on phones; one primary per form.</li>
+        <li><b>Errors</b>: on submit, an <code>.error-summary</code> at the top takes focus and links to each invalid field, and each field shows its own <code>.field__error</code>.</li>
+        <li><b>Submitting</b>: fields go into a disabled <code>&lt;fieldset&gt;</code> and the submit button carries <code>aria-busy</code> with its label kept.</li>
+      </ul>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+      <div class="ds-anatomy">
+        <figure class="ds-anatomy__figure">
+          <form class="form form--compact ds-demo-panel" action="#anatomy" style="max-width: calc(var(--space-48) * 2 + var(--space-8));" onsubmit="return false">
+            <div class="form__section">
+              <h3 class="form__title">Send feedback</h3>
+              <div class="field"><label class="field__label" for="an-msg">What went wrong?</label><textarea class="input" id="an-msg" rows="2">Resistance stayed at L8 after the sprint ended.</textarea></div>
+            </div>
+            <div class="form__actions form__actions--split form__actions--bar"><p class="form__note">Context is sent with your note.</p><button class="btn btn--primary" type="submit">Report bug</button></div>
+          </form>
+          <span class="ds-callout" style="left: 8%; top: 14%;" aria-hidden="true">1</span>
+          <span class="ds-callout" style="left: 8%; top: 44%;" aria-hidden="true">2</span>
+          <span class="ds-callout" style="left: 8%; top: 86%;" aria-hidden="true">3</span>
+          <span class="ds-callout" style="left: 88%; top: 86%;" aria-hidden="true">4</span>
+        </figure>
+        <ol class="ds-anatomy__list">
+          <li><div><b>Title</b><small><code>.form__title</code> (or the page h1), optional <code>.form__lead</code> under it.</small></div></li>
+          <li><div><b>Fields</b><small><a class="link" href="form-field.html"><code>.field</code></a>s, 24px apart (<code>--form-gap</code>; 16px in <code>--compact</code>).</small></div></li>
+          <li><div><b>Note</b><small><code>.form__note</code>, 12px faint: what happens on submit.</small></div></li>
+          <li><div><b>Actions</b><small><code>.form__actions</code>; <code>--bar</code> rules it off at the bottom of a panel, <code>--split</code> puts the note at the start.</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+      <h3>Custom Setup: sectioned page form</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <form class="form" action="#variants" onsubmit="return false" aria-labelledby="cs-title" style="width: 100%;">
+            <div class="form__section">
+              <h3 class="form__title" id="cs-title">Set up your ride</h3>
+              <p class="form__lead">Telo Ride drives the bike's resistance for you. Pick how.</p>
+              <div class="training-modes" role="radiogroup" aria-label="Training mode" style="margin-top: 0;">
+                <button class="training-mode" type="button" role="radio" aria-checked="false" tabindex="-1"><span class="training-mode__head"><span class="training-mode__radio" aria-hidden="true"></span><span class="training-mode__title">HIIT intervals</span></span><span class="training-mode__body">Hard and easy efforts on repeat. Resistance switches at every interval.</span></button>
+                <button class="training-mode" type="button" role="radio" aria-checked="true" tabindex="0"><span class="training-mode__head"><span class="training-mode__radio" aria-hidden="true"></span><span class="training-mode__title">Flat resistance</span></span><span class="training-mode__body">One level, held the whole ride. You set the pace with your legs.</span></button>
+              </div>
+            </div>
+            <div class="form__section">
+              <div class="level-slider level-slider--large">
+                <div class="level-slider__head"><label class="level-slider__label" for="cs-level">Resistance level</label><span class="level-slider__value" aria-hidden="true">12<span class="level-slider__max"> / 32</span></span></div>
+                <input class="range" id="cs-level" type="range" min="1" max="32" value="12" aria-valuetext="Level 12 of 32">
+                <div class="level-slider__scale" aria-hidden="true"><span>Light</span><span>Max</span></div>
+              </div>
+              <div class="training-steppers" style="margin-top: 0;">
+                <div class="training-stepper" role="group" aria-labelledby="cs-dur"><div class="training-stepper__label" id="cs-dur">Duration</div><div class="training-stepper__row"><button class="training-stepper__btn" type="button" aria-label="Shorter duration"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><output class="training-stepper__value" aria-live="polite">30 min</output><button class="training-stepper__btn" type="button" aria-label="Longer duration"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div></div>
+                <div class="training-stepper" role="group" aria-labelledby="cs-cad"><div class="training-stepper__label" id="cs-cad">Cadence goal</div><div class="training-stepper__row"><button class="training-stepper__btn" type="button" aria-label="Lower cadence goal"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><output class="training-stepper__value" aria-live="polite">85 rpm</output><button class="training-stepper__btn" type="button" aria-label="Higher cadence goal"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div></div>
+              </div>
+              <p class="form__note">You can still nudge the level mid-ride from the dashboard.</p>
+            </div>
+            <div class="form__section">
+              <div class="switch-row"><span class="switch-row__text"><span class="switch-row__label" id="cs-video">Ride along to a video</span><span class="switch-row__desc">Plays in sync on the dashboard</span></span><button class="switch" type="button" role="switch" aria-checked="true" aria-labelledby="cs-video"></button></div>
+              <div class="field"><label class="field__label" for="cs-url">YouTube link</label><input class="input" id="cs-url" type="url" value="https://www.youtube.com/watch?v=QUoToFsMNig"></div>
+            </div>
+            <div class="form__actions"><button class="btn btn--primary btn--xl btn--block" type="submit">Start ride</button></div>
+          </form>
+        </div>
+        <div class="ds-example__caption"><span>Three ruled sections in one column: mode, the ride's numbers, the video. "Start ride" is the form's submit, at the end (on desktop the mock shows it in the plan preview beside the form; it stays the form's submit via <code>form="…"</code>).</span></div>
+      </div>
+      <h3>Send feedback: compact panel form with an actions bar</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <form class="form form--compact ds-demo-panel" action="#variants" onsubmit="return false" aria-labelledby="fb-title" style="max-width: calc(var(--space-48) * 2 + var(--space-4));">
+            <h3 class="form__title" id="fb-title">Send feedback</h3>
+            <div class="segmented segmented--block" role="radiogroup" aria-label="Type of feedback" data-static><button class="segmented__option" type="button" role="radio" aria-checked="true" tabindex="0">Bug</button><button class="segmented__option" type="button" role="radio" aria-checked="false" tabindex="-1">Improvement</button><button class="segmented__option" type="button" role="radio" aria-checked="false" tabindex="-1">Kudos</button></div>
+            <div class="field"><label class="field__label" for="fb-msg">What went wrong?</label><textarea class="input" id="fb-msg" rows="4" placeholder="e.g. Resistance stayed at L8 when the video dropped to recovery.">Resistance stayed at L8 after the sprint ended — it only dropped when I tapped minus.</textarea></div>
+            <label class="checkbox"><input class="checkbox__input" type="checkbox" checked><span class="checkbox__text"><span class="checkbox__label">Attach diagnostics</span><span class="checkbox__hint">Bike connection log and app version, so we can reproduce it.</span></span></label>
+            <div class="form__actions form__actions--split form__actions--bar"><p class="form__note">Context is sent with your note.</p><button class="btn btn--primary" type="submit">Report bug</button></div>
+          </form>
+        </div>
+        <div class="ds-example__caption"><span><code>.form--compact</code> (16px gap) in a 25rem panel. The actions bar keeps the note beside the button at every width (<code>--split</code>), because there is only one action.</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;form class="form form--compact" aria-labelledby="feedback-title"&gt;
+  &lt;h2 class="form__title" id="feedback-title"&gt;Send feedback&lt;/h2&gt;
+  …fields
+  &lt;div class="form__actions form__actions--split form__actions--bar"&gt;
+    &lt;p class="form__note"&gt;Context is sent with your note.&lt;/p&gt;
+    &lt;button class="btn btn--primary" type="submit"&gt;Report bug&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/form&gt;</code></pre></details>
+      </div>
+      <h3>Two actions</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <div class="form ds-demo-panel" style="max-width: calc(var(--space-32) * 4);">
+            <div class="form__section"><h3 class="form__title">Leave this ride?</h3><p class="form__lead" style="margin-top: 0;">You're 6:52 in with 2.24 km ridden. The ride is paused while you decide.</p></div>
+            <div class="form__actions"><button class="btn btn--quiet" type="button">Keep riding</button><button class="btn btn--raised" type="button">Discard and open library</button><button class="btn btn--primary" type="button">Save ride and open library</button></div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Default <code>.form__actions</code>: a row ending with the primary from 640px, a full-width stack with the primary on top below it (resize to 360 to see). The order in the DOM is the reading order on desktop.</span></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sizes" data-na="Forms have no sizes: width comes from --form-max-width (36rem, or none with --full) and density from --form-gap (24px, or 16px with --compact). Field sizes are set on the fields."><h2><a href="#sizes">Sizes</a></h2>
+      <p class="ds-na">Forms have no sizes: width comes from <code>--form-max-width</code> (36rem, or none with <code>--full</code>) and density from <code>--form-gap</code> (24px, or 16px with <code>--compact</code>). Field sizes are set on the fields.</p>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <h3>Invalid: error summary after a failed submit</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <form class="form form--compact ds-demo-panel" action="#states" onsubmit="return false" style="max-width: calc(var(--space-28) * 4);" novalidate>
+            <div class="error-summary" role="alert" tabindex="-1" aria-labelledby="es-title">
+              <svg class="icon error-summary__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+              <div class="error-summary__body">
+                <p class="error-summary__title" id="es-title">Fix 2 things to start your ride</p>
+                <ul class="error-summary__list">
+                  <li><a class="error-summary__link" href="#es-url">That isn't a YouTube link</a></li>
+                  <li><a class="error-summary__link" href="#es-offset">Ride 0:00 needs a time like 0:12.0</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="field"><label class="field__label" for="es-url">YouTube link</label><input class="input" id="es-url" type="url" value="youtube QUoToFsMNig" aria-invalid="true" aria-describedby="es-url-e"><p class="field__error" id="es-url-e"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>That isn't a YouTube link. Paste a link that starts with youtube.com or youtu.be.</p></div>
+            <div class="field"><label class="field__label" for="es-offset">Ride 0:00 starts at</label><input class="input" id="es-offset" type="text" inputmode="decimal" value="12 s" aria-invalid="true" aria-describedby="es-off-e"><p class="field__error" id="es-off-e"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>Enter a time like 0:12.0.</p></div>
+            <div class="form__actions"><button class="btn btn--primary btn--block" type="submit">Start ride</button></div>
+          </form>
+        </div>
+        <div class="ds-example__caption"><span>The summary counts the problems, names each in a few words, and each link moves focus to its field. Per-field errors repeat the fix in full.</span></div>
+      </div>
+      <h3>Submitting</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <form class="form form--compact ds-demo-panel" action="#states" onsubmit="return false" style="max-width: calc(var(--space-48) * 2 + var(--space-4));" aria-busy="true">
+            <fieldset class="form__fieldset" disabled>
+              <legend class="form__title">Send feedback</legend>
+              <div class="field"><label class="field__label" for="sb-msg">What went wrong?</label><textarea class="input" id="sb-msg" rows="3">Resistance stayed at L8 after the sprint ended — it only dropped when I tapped minus.</textarea></div>
+              <label class="checkbox"><input class="checkbox__input" type="checkbox" checked><span class="checkbox__text">Attach diagnostics</span></label>
+            </fieldset>
+            <div class="form__actions form__actions--split form__actions--bar"><p class="form__status" role="status">Sending your report…</p><button class="btn btn--primary" type="submit" disabled aria-busy="true"><span class="btn__label">Report bug</span><svg class="icon btn__spinner" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></button></div>
+          </form>
+        </div>
+        <div class="ds-example__caption"><span>The fieldset's <code>disabled</code> locks every control inside at once; the button keeps its width with a spinner over its hidden label, and a polite status line says what is happening.</span></div>
+      </div>
+      <h3>State matrix</h3>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Part</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Disabled</th><th scope="col">Invalid</th><th scope="col">Loading</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Summary link</th>
+            <td><a class="error-summary__link" href="#es-url">That isn't a YouTube link</a></td>
+            <td><a class="error-summary__link" href="#es-url" data-state="hover">That isn't a YouTube link</a></td>
+            <td><a class="error-summary__link" href="#es-url" data-state="focus">That isn't a YouTube link</a></td>
+            <td><span class="text-faint">n/a</span></td><td><span class="text-faint">n/a</span></td><td><span class="text-faint">n/a</span></td></tr>
+          <tr><th scope="row">Field</th>
+            <td><input class="input" type="url" aria-label="Field default" value="https://www.youtube.com/watch?v=QUoToFsMNig"></td>
+            <td><input class="input" type="url" aria-label="Field hover" value="https://www.youtube.com/watch?v=QUoToFsMNig" data-state="hover"></td>
+            <td><input class="input" type="url" aria-label="Field focus" value="https://www.youtube.com/watch?v=QUoToFsMNig" data-state="focus"></td>
+            <td><input class="input" type="url" aria-label="Field while sending" value="https://www.youtube.com/watch?v=QUoToFsMNig" disabled></td>
+            <td><input class="input" type="url" aria-label="Field invalid" value="youtube QUoToFsMNig" aria-invalid="true"></td>
+            <td><span class="text-faint">see Disabled</span></td></tr>
+          <tr><th scope="row">Submit</th>
+            <td><button class="btn btn--primary" type="button">Report bug</button></td>
+            <td><button class="btn btn--primary" type="button" data-state="hover">Report bug</button></td>
+            <td><button class="btn btn--primary" type="button" data-state="focus">Report bug</button></td>
+            <td><button class="btn btn--primary" type="button" disabled>Report bug</button></td>
+            <td><button class="btn btn--primary" type="button">Report bug</button></td>
+            <td><button class="btn btn--primary" type="button" disabled aria-busy="true"><span class="btn__label">Report bug</span><svg class="icon btn__spinner" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></button></td></tr>
+        </tbody>
+      </table></div>
+      <p>The submit stays enabled while the form is invalid: pressing it is how the rider finds out what is missing. It disables only while sending. After a successful send, the panel closes and a toast confirms ("Thanks — we're on it.").</p>
+      <h3>Both themes</h3>
+      <div class="ds-themes">
+        <div data-theme="light"><div class="form form--compact"><div class="error-summary" aria-labelledby="th-l-es"><svg class="icon error-summary__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg><div class="error-summary__body"><p class="error-summary__title" id="th-l-es">Fix 1 thing to send</p><ul class="error-summary__list"><li><a class="error-summary__link" href="#th-l-msg">Write a line about what went wrong</a></li></ul></div></div><div class="field"><label class="field__label" for="th-l-msg">What went wrong?</label><textarea class="input" id="th-l-msg" rows="2" aria-invalid="true"></textarea><p class="field__error"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>Write a line about what went wrong, then send.</p></div><div class="form__actions form__actions--split"><p class="form__note">Context is sent with your note.</p><button class="btn btn--primary" type="button">Report bug</button></div></div></div>
+        <div data-theme="dark"><div class="form form--compact"><div class="error-summary" aria-labelledby="th-d-es"><svg class="icon error-summary__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg><div class="error-summary__body"><p class="error-summary__title" id="th-d-es">Fix 1 thing to send</p><ul class="error-summary__list"><li><a class="error-summary__link" href="#th-d-msg">Write a line about what went wrong</a></li></ul></div></div><div class="field"><label class="field__label" for="th-d-msg">What went wrong?</label><textarea class="input" id="th-d-msg" rows="2" aria-invalid="true"></textarea><p class="field__error"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>Write a line about what went wrong, then send.</p></div><div class="form__actions form__actions--split"><p class="form__note">Context is sent with your note.</p><button class="btn btn--primary" type="button">Report bug</button></div></div></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Width</th><th scope="col">Rule</th></tr></thead><tbody>
+        <tr><td>360 (base)</td><td>One column at full width with a 16px gutter. Actions stack full width, primary on top (<code>column-reverse</code>). Long forms may use <code>--sticky</code> so the primary stays above the keyboard. <code>--split</code> keeps a note and one button on one row.</td></tr>
+        <tr><td>640 (sm)</td><td>Actions become a row aligned to the end, primary last. Steppers and training modes go two-up inside their sections.</td></tr>
+        <tr><td>768 (md)</td><td><code>.form__row</code> puts two short related fields side by side.</td></tr>
+        <tr><td>1024 (lg)</td><td>The form stays at 36rem; the extra width goes to an aside (Custom Setup's plan preview), never to longer fields.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+      <p><code>.form</code> declares <code>--form-max-width</code> and <code>--form-gap</code>; sections rule off with <code>--color-line</code>. <code>.error-summary</code> declares <code>--error-summary-bg</code>, <code>--error-summary-border</code> and <code>--error-summary-accent</code> from the danger status tokens, which are tuned per theme (a pale tint on paper, a deep tint on ink).</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <p>A <code>&lt;form&gt;</code> named by its title (<code>aria-labelledby</code>). Sections that group one question use <code>&lt;fieldset&gt;</code> + <code>&lt;legend&gt;</code>. The error summary follows the <a class="link" href="https://www.w3.org/WAI/ARIA/apg/patterns/alert/">APG Alert pattern</a>: <code>role="alert"</code>, <code>tabindex="-1"</code>, and focus moves to it after a failed submit. Errors meet 3.3.1 (identified in text) and 3.3.3 (each says how to fix it).</p>
+      <h3>Keyboard</h3>
+      <div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+        <tr><td><kbd>Tab</kbd></td><td>Through the fields in visual order, then the actions.</td></tr>
+        <tr><td><kbd>Enter</kbd></td><td>In a single-line field: submits. In a textarea: new line.</td></tr>
+        <tr><td><kbd>Enter</kbd> on a summary link</td><td>Moves focus to that field (the link targets the field's <code>id</code>).</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>In a panel form (Send feedback): closes the panel and keeps the draft.</td></tr>
+      </tbody></table></div>
+      <h3>Focus</h3>
+      <p>After a failed submit, focus goes to the summary; after success, to whatever opened the form (the Feedback button). While sending, focus stays on the busy button. Never move focus on blur.</p>
+      <h3>Labelling</h3>
+      <p>Every field has a visible label (see <a class="link" href="form-field.html">form field</a>). The submit names the result ("Report bug", "Start ride"), never "Submit". The status line uses <code>role="status"</code> so "Sending your report…" is read without stealing focus.</p>
+      <h3>Contrast</h3>
+      <div class="ds-themes">
+<div data-theme="light"><div class="ds-pairs-stack">
+<div class="ds-pair"><span>Summary text on danger tint</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-danger-bg" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Summary title on danger tint</span><span class="ds-pair__ratio" data-contrast="--color-danger-fg|--color-danger-bg" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Summary border (decorative: the tint, icon and title carry it)</span><span class="ds-pair__ratio" data-contrast="--color-danger-border|--color-panel" data-min="1"></span></div>
+<div class="ds-pair"><span>Field error</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Form note</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-panel" data-min="4.5"></span></div>
+</div></div>
+<div data-theme="dark"><div class="ds-pairs-stack">
+<div class="ds-pair"><span>Summary text on danger tint</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-danger-bg" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Summary title on danger tint</span><span class="ds-pair__ratio" data-contrast="--color-danger-fg|--color-danger-bg" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Summary border (decorative: the tint, icon and title carry it)</span><span class="ds-pair__ratio" data-contrast="--color-danger-border|--color-panel" data-min="1"></span></div>
+<div class="ds-pair"><span>Field error</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Form note</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-panel" data-min="4.5"></span></div>
+</div></div>
+</div>
+      <h3>Motion</h3>
+      <p>No movement of its own. Scroll to the summary uses smooth scroll only without reduced motion.</p>
+      <h3>Touch</h3>
+      <p>Full-width stacked actions on phones; 8px between them. The xl "Start ride" (56px) is the one big target on Custom Setup.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li>Summary titles count and point at the goal: "Fix 2 things to start your ride".</li>
+        <li>Summary links name the problem in a few words; the field error says how to fix it: "That isn't a YouTube link. Paste a link that starts with youtube.com or youtu.be."</li>
+        <li>Notes say what happens on submit: "Context is sent with your note."</li>
+        <li>Status while sending: "Sending your report…"; the button keeps its label.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><div class="form__actions form__actions--split" style="width: 100%;"><p class="form__status" role="status">Sending your report…</p><button class="btn btn--primary" type="button" disabled aria-busy="true"><span class="btn__label">Report bug</span><svg class="icon btn__spinner" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></button></div></div><figcaption>The button keeps its size and colour while busy; the status line says what is happening.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><button class="btn btn--primary" type="button" disabled style="opacity: 0.4;">Sending…</button></div><figcaption>Swapping the label to "Sending…" and fading the button (the feedback mock): it shrinks, and reads as broken.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><div class="error-summary" style="width: 100%;" aria-labelledby="dd-es"><svg class="icon error-summary__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg><div class="error-summary__body"><p class="error-summary__title" id="dd-es">Fix 1 thing to start your ride</p><ul class="error-summary__list"><li><a class="error-summary__link" href="#es-url">That isn't a YouTube link</a></li></ul></div></div></div><figcaption>A summary that links to the field.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><button class="btn btn--primary btn--block" type="button" disabled>Start ride</button></div><figcaption>A disabled "Start ride" with no reason: the rider cannot tell which of a dozen settings is wrong.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+        <tbody>
+          <tr><td>Section rule; actions bar rule</td><td><code>--color-line</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td></tr>
+          <tr><td>Summary fill (--error-summary-bg)</td><td><code>--color-danger-bg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-danger-bg" data-swatch></i><span data-token="--color-danger-bg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-danger-bg" data-swatch></i><span data-token="--color-danger-bg"></span></span></td></tr>
+          <tr><td>Summary border (--error-summary-border)</td><td><code>--color-danger-border</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-danger-border" data-swatch></i><span data-token="--color-danger-border"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-danger-border" data-swatch></i><span data-token="--color-danger-border"></span></span></td></tr>
+          <tr><td>Summary title, icon (--error-summary-accent)</td><td><code>--color-danger-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-danger-fg" data-swatch></i><span data-token="--color-danger-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-danger-fg" data-swatch></i><span data-token="--color-danger-fg"></span></span></td></tr>
+          <tr><td>Summary link</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+          <tr><td>Note</td><td><code>--color-faint</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td></tr>
+          <tr><td>Status</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+          <tr><td>Sticky actions fill</td><td><code>--color-panel</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-panel" data-swatch></i><span data-token="--color-panel"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-panel" data-swatch></i><span data-token="--color-panel"></span></span></td></tr>
+          <tr><td>Field gap (--form-gap) default / compact</td><td><code>--space-6</code> <code>--space-4</code></td><td colspan="2"><span data-token="--space-6"></span> / <span data-token="--space-4"></span></td></tr>
+          <tr><td>Section inner gap</td><td><code>--space-4</code></td><td colspan="2"><span data-token="--space-4"></span></td></tr>
+          <tr><td>Actions gap; bar padding</td><td><code>--space-2</code> <code>--space-3</code></td><td colspan="2"><span data-token="--space-2"></span> / <span data-token="--space-3"></span></td></tr>
+          <tr><td>Summary padding / radius</td><td><code>--space-4</code> <code>--radius-xl</code></td><td colspan="2"><span data-token="--space-4"></span> / <span data-token="--radius-xl"></span></td></tr>
+        </tbody>
+      </table></div>
+      <p><code>--form-max-width</code> is 36rem, a component token: no spacing step is that wide.</p>
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+      <pre><code>form.addEventListener('submit', async (e) =&gt; {
+  e.preventDefault();
+  const errors = validate(form);
+  if (errors.length) { renderSummary(errors); summary.focus(); return; }
+  fieldset.disabled = true; submit.disabled = true; submit.setAttribute('aria-busy', 'true');
+  status.textContent = 'Sending your report…';
+  await send(form);
+});</code></pre>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class</th><th scope="col">Effect</th></tr></thead><tbody>
+        <tr><td><code>.form</code> (<code>--full</code>, <code>--compact</code>)</td><td>Column of fields, 36rem max, 24px gap.</td></tr>
+        <tr><td><code>.form__section</code> <code>__title</code> <code>__lead</code></td><td>Ruled group with a title and lead.</td></tr>
+        <tr><td><code>.form__row</code></td><td>Two-up from 768px.</td></tr>
+        <tr><td><code>.form__actions</code> (<code>--bar</code>, <code>--split</code>, <code>--sticky</code>)</td><td>Action row/stack; ruled bar; note at start; sticks to the bottom.</td></tr>
+        <tr><td><code>.form__note</code> / <code>.form__status</code></td><td>Submit note / live status.</td></tr>
+        <tr><td><code>.form__fieldset</code></td><td>The fieldset disabled while submitting.</td></tr>
+        <tr><td><code>.error-summary</code> <code>__icon __body __title __list __link</code></td><td>Error summary.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <ul>
+        <li><a href="../../mocks/pages/custom-setup/default.html">pages/custom-setup/default</a> and <a href="../../mocks/pages/custom-setup/flat.html">flat</a> — "Set up your ride"</li>
+        <li><a href="../../mocks/dialogs/feedback/default.html">dialogs/feedback/default</a>, <a href="../../mocks/dialogs/feedback/sending.html">sending</a> and <a href="../../mocks/dialogs/feedback/sent.html">sent</a> — Send feedback</li>
+        <li><a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a> — three actions, primary first in the stack</li>
+      </ul>
+      <p>Drift fixed during extraction:</p>
+      <ul>
+        <li><code>custom-setup/*</code>, <code>dialogs/feedback/*</code>: neither form is a <code>&lt;form&gt;</code> (a section and a div), so Enter does nothing and nothing validates; both become <code>.form</code> on a <code>&lt;form&gt;</code>.</li>
+        <li><code>dialogs/feedback/sending</code>: each control is disabled one by one and the button changes to "Sending…" with its own faded style; the system wraps fields in one disabled fieldset and uses the shared busy button.</li>
+        <li>No mock shows a failed submit; the error summary and per-field errors are added so a bad YouTube link or offset is caught before "Start ride".</li>
+        <li><code>setup__section</code> spaces itself with a 40px top margin and <code>feedback__*</code> children with per-element margins; both become the <code>--form-gap</code> flex gap, and <code>.feedback__footer</code> becomes <code>.form__actions--split.form__actions--bar</code>.</li>
+      </ul>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

@@ -1,0 +1,47 @@
+// Element map-path__item of block map-path (docs/design-system/assets/components.css, Map Select): the line and dot
+// are drawn for sight only; the row says the state in words.
+:host {
+  position: relative;
+  display: block;
+  padding-bottom: var(--space-4);
+  padding-left: var(--space-8);
+}
+
+:host(:last-child) {
+  padding-bottom: 0;
+}
+
+.map-path__line {
+  position: absolute;
+  top: var(--space-6);
+  bottom: 0;
+  left: calc(var(--space-2) + var(--space-px));
+  width: var(--space-0-5);
+  background: color-mix(in srgb, var(--color-volt) 50%, transparent);
+}
+
+.map-path__line--locked {
+  background: var(--color-line);
+}
+
+.map-path__dot {
+  position: absolute;
+  top: var(--space-4);
+  left: 0;
+  width: var(--space-5);
+  height: var(--space-5);
+  border-radius: var(--radius-full);
+}
+
+.map-path__dot--open {
+  background: var(--color-volt);
+}
+
+.map-path__dot--next {
+  background: var(--color-gold);
+}
+
+.map-path__dot--locked {
+  border: var(--border-width-thick) solid var(--color-line);
+  background: var(--color-ink);
+}

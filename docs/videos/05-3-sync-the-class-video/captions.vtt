@@ -1,0 +1,76 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.042
+The class video now rides with you: YouTube, locked to the ride clock.
+
+00:00:10.324 --> 00:00:15.197
+At seven minutes, with a twelve-second offset, the video is at seven twelve. The
+
+00:00:15.197 --> 00:00:17.385
+clock leads; the video follows.
+
+00:00:20.647 --> 00:00:25.539
+The player comes from YouTube's privacy-enhanced domain, with no controls, out of
+
+00:00:25.539 --> 00:00:28.013
+the tab order. The ride controls it.
+
+00:00:30.971 --> 00:00:35.272
+Every tick, the drift is checked. More than one and a half seconds either way, and
+
+00:00:35.272 --> 00:00:36.673
+the video seeks back.
+
+00:00:41.295 --> 00:00:46.223
+If YouTube is blocked, or the video fails, the cover stays, and a notice says so.
+
+00:00:51.618 --> 00:00:55.706
+The bike still follows the class: the clock reaches seven minutes, and the
+
+00:00:55.706 --> 00:00:57.885
+recovery's level goes to the bike.
+
+00:01:01.942 --> 00:01:07.208
+The player lives in its own video library, loaded only when a ride plays its video.
+
+00:01:12.266 --> 00:01:16.410
+A first view query would have added a kilobyte to the first load, so the frame is
+
+00:01:16.410 --> 00:01:17.631
+found another way.
+
+00:01:22.590 --> 00:01:27.395
+In the tests, a fake YouTube player runs on the page's clock, so no request leaves
+
+00:01:27.395 --> 00:01:28.398
+the machine.
+
+00:01:32.913 --> 00:01:37.907
+On a phone the video sits above the panel. From laptop width, it fills the column.
+
+00:01:43.237 --> 00:01:48.034
+What the tests prove: four new specs and a table of drift cases, and every check is
+
+00:01:48.034 --> 00:01:48.681
+green.
+
+00:01:53.561 --> 00:01:58.164
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:58.509 --> 00:02:03.021
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:02:03.021 --> 00:02:04.692
+every hill and interval.
+
+00:02:05.037 --> 00:02:10.215
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:02:10.215 --> 00:02:15.663
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:02:15.663 --> 00:02:18.653
+XP, rider levels, stars and map unlocks.
+
+00:02:18.998 --> 00:02:21.491
+A custom workout lives under Profile.

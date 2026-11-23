@@ -1,0 +1,48 @@
+@startuml
+title UML sequence behaviour — Motion, theme, wake lock and full screen
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "DisplaySettings" as view
+  participant "Start press" as start
+  participant "RaceStore / ClassRideStore" as ride
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "LocalRideSettingsStore" as store
+  participant "BrowserDisplayPreferences" as display
+  participant "BrowserScreenWakeLock" as wake
+end box
+participant "Browser" as browser
+actor -> view : Reduce motion: On
+view -> store : set('reduceMotion', 'on')
+store --> display : reducedMotion = true
+display -> browser : html[data-motion="reduced"]: the duration tokens zero (L2-164 AC2)
+display --> ride : the world's scene draws still (WorldScene.reducedMotion)
+actor -> view : Theme: Match device
+view -> store : set('theme', 'device')
+display -> browser : matchMedia('(prefers-color-scheme: light)'); html[data-theme] light if it matches, else dark (L2-164 AC3)
+actor -> view : Ride numbers: Large
+view -> store : set('rideNumbers', 'large')
+display -> browser : html[data-ride-numbers="large"]: --ride-number-scale 1.25 (L2-164 AC4)
+actor -> start : Start riding, Join or the race's start (fullScreenOnStart on)
+start -> browser : enterFullScreenOnStart: FULLSCREEN.enter() inside the press (L2-164 AC6)
+ride -> wake : hold() when the ride starts
+wake -> browser : navigator.wakeLock.request('screen') (L2-164 AC5)
+browser --> wake : released when the tab is hidden
+wake -> browser : request again on visibilitychange to visible
+ride -> wake : release() when the ride ends or the rider leaves
+wake -> browser : sentinel.release()
+@enduml

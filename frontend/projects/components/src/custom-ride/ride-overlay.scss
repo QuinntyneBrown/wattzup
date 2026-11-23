@@ -1,0 +1,79 @@
+// Block ride-overlay (docs/design-system/assets/components.css): over the telemetry, why the ride cannot run.
+:host {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding-inline: var(--space-6);
+  background: color-mix(in srgb, var(--color-ink) 90%, transparent);
+}
+
+:host(.ride-overlay--lost) {
+  background: color-mix(in srgb, var(--color-ink) 85%, transparent);
+}
+
+.ride-overlay__card {
+  max-width: var(--layout-text-sm);
+  text-align: center;
+}
+
+.ride-overlay__icon {
+  margin-inline: auto;
+  width: var(--space-8);
+  height: var(--space-8);
+}
+
+.ride-overlay__icon--alert {
+  color: var(--color-heart-fg);
+}
+
+.ride-overlay__icon--warn {
+  color: var(--color-warn-fg);
+}
+
+.ride-overlay__title {
+  margin-top: var(--space-4);
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.ride-overlay__title--connect {
+  margin-top: 0;
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.ride-overlay__body {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.ride-overlay__body--relaxed {
+  line-height: var(--line-height-relaxed);
+}
+
+.ride-overlay__action {
+  margin-top: var(--space-6);
+  height: var(--target-comfortable);
+  padding-inline: var(--space-5);
+}
+
+.ride-overlay__connect {
+  margin-top: var(--space-6);
+  height: var(--control-height-lg);
+  padding-inline: var(--space-6);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+}
+
+.ride-overlay__hint {
+  margin-top: var(--space-5);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-faint);
+}

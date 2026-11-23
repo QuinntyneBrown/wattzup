@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign-in code · locked — Telo Ride mocks</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="sign-in-code">
+<meta name="mock:state" content="locked">
+<meta name="mock:requirements" content="L2-002 L2-003">
+<meta name="description" content="Five wrong codes for one email: even a correct sixth is refused until a new code is sent (L2-003 AC3).">
+<link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<main id="main" class="sign-in">
+  <div class="sign-in__panel">
+    <span class="sign-in__brand"><span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span></span>
+    <h1 class="sign-in__title">Check your email</h1>
+    <p class="sign-in__lead">We sent a six-digit code to <strong class="sign-in__email">rider@example.com</strong>. It works for 10 minutes.</p>
+    <div class="sign-in__form">
+      <div class="code-entry">
+        <input class="code-entry__input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" aria-label="Six-digit code" spellcheck="false" aria-invalid="true" aria-describedby="code-entry-error">
+        <span class="code-entry__cells" aria-hidden="true"><span class="code-entry__cell"></span><span class="code-entry__cell"></span><span class="code-entry__cell"></span><span class="code-entry__cell"></span><span class="code-entry__cell"></span><span class="code-entry__cell"></span></span>
+        <p class="field__error code-entry__error" id="code-entry-error" role="alert"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>Too many wrong codes. Send a new code to try again.</p>
+      </div>
+      <button class="btn btn--raised btn--block sign-in__resend" type="button">Send a new code</button>
+    </div>
+    <p class="sign-in__note"><button class="link sign-in__change" type="button" onclick="location.href='../sign-in/default.html'">Use a different email</button></p>
+  </div>
+</main>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="All mocks">⌂</a>
+  <span class="mock-bar__screen">Sign-in code</span>
+  <ul class="mock-bar__states">
+    <li><a href="default.html">default</a></li>
+    <li><a href="ready.html">ready</a></li>
+    <li><a href="resent.html">resent</a></li>
+    <li><a href="mismatch.html">mismatch</a></li>
+    <li><a href="expired.html">expired</a></li>
+    <li><a href="locked.html" aria-current="page">locked</a></li>
+  </ul>
+  <button type="button" data-theme-toggle aria-pressed="true">☀ Light</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

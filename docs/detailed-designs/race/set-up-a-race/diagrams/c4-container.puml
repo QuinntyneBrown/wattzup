@@ -1,0 +1,15 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Set up a race
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Sign-in, progress, catalogues, ride hub, feedback")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Rider progress")
+}
+Rel(rider, app, "Sets up a race in", "HTTPS")
+Rel(app, api, "GET /api/progress, GET /api/maps/{mapId}/queue", "JSON/HTTPS")
+Rel(app, api, "FindRace on /hubs/ride", "SignalR")
+Rel(api, db, "Reads", "EF Core")
+@enduml

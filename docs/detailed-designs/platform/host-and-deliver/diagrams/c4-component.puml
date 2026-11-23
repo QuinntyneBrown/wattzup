@@ -1,0 +1,23 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Host and deliver
+
+Person(dev, "Developer", "Pushes changes")
+Container(host, "Static host", "HTTPS", "Ride app build")
+Container(api, "Telo Ride API", "ASP.NET Core", "Backend")
+Container_Boundary(gh, "GitHub Actions — ci.yml") {
+  Component(lint, "lint job", "ESLint, Prettier, dotnet format", "Formatting and lint")
+  Component(build, "build job", "Angular CLI, dotnet build", "Production builds and bundle budget")
+  Component(acc, "acceptance job", "Playwright, .NET tests", "One critical path per feature")
+  Component(deploy, "deploy job", "main only", "Deploys frontend and backend, runs migrate")
+}
+Rel(dev, lint, "Push triggers")
+Rel(dev, build, "Push triggers")
+Rel(dev, acc, "Push triggers")
+Rel(deploy, lint, "Needs")
+Rel(deploy, build, "Needs")
+Rel(deploy, acc, "Needs")
+Rel(deploy, host, "Uploads build to")
+Rel(deploy, api, "Releases and migrates")
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Set up a custom workout
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(youtube, "YouTube", "Class and custom-ride videos (IFrame Player API)")
+Rel(rider, telo, "Builds a custom workout in")
+Rel(telo, youtube, "Previews the ride-along video from", "youtube-nocookie.com")
+@enduml

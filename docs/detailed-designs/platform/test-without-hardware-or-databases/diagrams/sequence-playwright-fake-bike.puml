@@ -1,0 +1,42 @@
+@startuml
+title UML sequence behaviour — A Playwright spec with a fake bike
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "connect.spec.ts" as spec
+participant "e2e fixture" as fx
+participant "ConnectBikePage (page object)" as po
+box "Frontend — Ride app (in Chromium)" #E0F2FE
+  participant "Connect Bike page" as page
+  participant "WebBluetoothBikeConnection" as conn
+end box
+participant "FakeBluetooth (init script)" as ble
+participant "ApiFixture" as apifx
+spec -> fx : test({ page, bluetooth, api })
+fx -> ble : page.addInitScript installs fake navigator.bluetooth
+fx -> apifx : page.route('**/api/**') with the spec's handlers
+spec -> po : connect()
+po -> page : Press "Connect bike"
+page -> conn : connect()
+conn -> ble : requestDevice, gatt.connect, startNotifications
+ble --> conn : Fake device "ECH-EX5S" (records each call)
+conn -> ble : writeValue(initialisation bytes)
+spec -> ble : notify(telemetry characteristic, bytes)
+ble -> conn : characteristicvaluechanged
+spec -> po : status()
+po --> spec : "Connected"
+spec -> ble : writes()
+ble --> spec : Recorded writes; the spec asserts the bytes (L2-148 AC1)
+note over fx : An unexpected Bluetooth call, unanswered request, off-localhost request or page error fails the spec
+@enduml

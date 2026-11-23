@@ -1,0 +1,43 @@
+@startuml
+title UML sequence behaviour — Expand and preview a plan
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "PlanPreview" as preview
+  participant "CustomWorkoutStore" as store
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "PlanExpander" as expander
+  participant "PlanValidator" as validator
+  participant "PlanSummary" as summary
+  participant "PowerModel" as power
+end box
+rider -> store : Any change to the draft (L2-095 AC6)
+store -> expander : expand(draft)
+expander -> expander : Warm-up (level 8, 80 rpm), 8 work + 7 recover, cool-down (recover level)
+expander --> store : Plan, 17 segments, 30:00 L2-100 AC1
+store -> validator : validate(plan)
+validator --> store : Valid (≥ 5 s, levels 1–32, 1–180 min) L2-100 AC3
+store -> summary : summarise(plan, video)
+loop each segment
+  summary -> power : targetPower(level, cadenceAim)
+  power --> summary : Watts
+end
+summary -> summary : Duration-weighted average → ~154 W; energy → ~276 kcal (L2-023 AC4)
+summary --> store : "8 × 0:30 · 3:00 → 1:30 recover", 4:00, "Synced from 0:12.0", Level 24
+store --> preview : PlanFacts and profile 0:00–30:00 L2-099 AC1
+preview --> rider : "Your ride" updated at once
+@enduml

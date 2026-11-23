@@ -1,0 +1,5 @@
+# The design system's photographs are copied here by `npm run media:sync` (ADR 0027).
+# meet-telo-ride.jpg, the film's still, is a frame of the film at 0:24 and is kept.
+classes/
+machines/
+worlds/

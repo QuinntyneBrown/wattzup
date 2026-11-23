@@ -1,0 +1,33 @@
+// Element app-header__level: the badge, and from sm (640 px) the XP bar and its label. It takes touches across 44 px.
+:host {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2-5);
+  border-radius: var(--radius-full);
+}
+
+:host::after {
+  content: '';
+  position: absolute;
+  inset: min(0px, calc((100% - var(--target-comfortable)) / 2));
+}
+
+.app-header__xp {
+  display: none;
+  width: var(--space-24);
+
+  @media (min-width: 40rem) {
+    display: block;
+  }
+}
+
+.app-header__xp-label {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: var(--font-size-2xs);
+  line-height: var(--line-height-2xs);
+  white-space: nowrap;
+  color: var(--color-muted);
+  text-align: left;
+}

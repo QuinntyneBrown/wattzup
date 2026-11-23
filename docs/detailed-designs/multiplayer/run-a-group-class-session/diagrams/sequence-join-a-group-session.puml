@@ -1,0 +1,79 @@
+@startuml
+title UML sequence behaviour — Join a group session
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ClassRideStore" as ride
+  participant "LiveSessionStore" as store
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "SignalRRideHubClient" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RideHub" as hub
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "JoinClassSessionCommandHandler" as handler
+  participant "GroupSessionSchedule" as schedule
+  participant "GroupClassSession" as session
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "InMemoryGroupSessionRegistry" as registry
+  database "Telo Ride database" as db
+end box
+actor -> ride : Open /classes/:id/ride?session={sessionId}
+ride -> store : join({ kind: class, classId, sessionId })
+store -> client : start(), ServerTime ×5
+store -> client : joinClassSession(classId, sessionId)
+client -> hub : JoinClassSession(classId, sessionId)
+hub -> handler : Send JoinClassSessionCommand(riderId, classId, sessionId)
+handler -> schedule : TryParse(sessionId); within Next(now, 2)?
+alt not one of the class's next slots
+  handler --> hub : Code session_not_found
+else a slot of the class
+  handler -> db : Load rider (level, display name)
+  alt rider level below OpensAtLevel
+    handler --> hub : Code class_locked (L2-082)
+  else level allows
+    handler -> registry : GetOrCreate(classId, start) or Find(sessionId) once started
+    registry --> handler : Session
+    handler -> session : TrySeat(rider, name, now)
+    alt already seated
+      session --> handler : The same seat (L2-120 AC3)
+      handler --> hub : Seat, jersey
+    else before StartsAt and fewer than 10 seated
+      session --> handler : New seat, next jersey (L2-122 AC1)
+      handler --> hub : Seat, jersey
+    else 10 seated
+      session --> handler : Full
+      handler --> hub : Code session_full + the session 15 min later (L2-122 AC2)
+    else start has passed
+      session --> handler : Started
+      handler --> hub : Code session_started + the next session (L2-086 AC3)
+    end
+  end
+end
+hub --> client : JoinClassSessionResult
+alt seated
+  client --> store : SeatAssignment
+  store --> ride : seated
+  ride --> actor : The group ride carries on (waiting for the start, slice 14.4)
+else refused
+  client --> store : RideHubError(code, next)
+  store --> ride : refused(code)
+  ride --> actor : Back to Class Start, which reads the sessions again and offers the next one
+end
+@enduml

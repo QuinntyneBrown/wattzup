@@ -1,0 +1,9 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Show page not found
+
+Person(rider, "Rider", "Follows an old link or mistypes an address")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+Rel(rider, telo, "Opens an unknown address in")
+@enduml

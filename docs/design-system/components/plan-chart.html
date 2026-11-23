@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plan chart — Telo Ride design system</title>
+<meta name="description" content="The workout plan drawn as bars: one bar per segment, width is time, height is resistance. Warm-up slate, work volt, recover blue, in cards, Class Start, the class ride and the custom workout preview.">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/components.css">
+<link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Page-only layout for the ride pages (tokens only). */
+/* HUD pieces shown on their own: the product pins them over the world with position: absolute;
+   in a specimen they sit in normal flow, and the breakpoint that hides them on small screens is lifted. */
+.ds-hud-loose { align-items: flex-start; }
+.ds-hud-loose > .race-power, .ds-hud-loose > .race-board, .ds-hud-loose > .race-hud, .ds-hud-loose > .race-scenery,
+.ds-hud-loose > .race-paused, .ds-hud-loose > .race-lost { position: static; inset: auto; translate: none; }
+.ds-hud-loose .race-board { display: block; }
+.ds-hud-loose .race-route { display: block; flex: 1 1 20rem; }
+.ds-hud-loose .race-resist { display: flex; flex: 0 1 var(--race-hud-resistance-width); }
+.ds-hud-loose .race-interval { flex: 0 1 var(--race-hud-interval-width); }
+.ds-hud-loose > .race-scenery { width: min(var(--race-scenery-width), 100%); }
+.ds-hud-loose > .race-paused, .ds-hud-loose > .race-lost { position: relative; flex: 1 1 18rem; min-height: 14rem; }
+/* A specimen box with a fixed width, so a stretchy chart has something to stretch into */
+.ds-fill { flex: 1 1 18rem; min-width: 0; }
+.ds-fill--narrow { flex: 0 1 20rem; }
+.ds-fill > .class-plan, .ds-fill > .class-sync { margin-top: 0; }
+/* A light/dark pair of contrast chips */
+.ds-themes--pairs > [data-theme] { padding: var(--space-3); }
+.ds-themes--pairs > [data-theme]::before { margin-bottom: var(--space-2); }
+/* Matrix cells hold wide things */
+.ds-matrix td .class-profile { min-width: 10rem; }
+.ds-matrix td .ride-levels { min-width: 12rem; }
+.ds-matrix td .ride-trace__svg { min-height: 5rem; }
+.ds-na-cell { color: var(--color-fg-subtle); font: var(--text-caption); }
+/* Stage: the world fills it; on phones the stage is as tall as the stacked HUD needs */
+.ride-stage { min-height: 38rem; }
+/* Standings show from 768px: leave room for all ten rows above the bottom HUD */
+@media (min-width: 48rem) { .ride-stage { min-height: 46rem; } }
+/* A stage is narrower than the viewport its breakpoints answer to; drop the route line so the bar stays one row */
+@media (min-width: 48rem) { .ride-stage .race-bar__route { display: none; } }
+.ride-stage--short { min-height: 20rem; }
+.ride-stage .race-countdown, .ride-stage .race-lobby__body { position: absolute; }
+/* Lobby clock specimen */
+.ds-lobby { padding: var(--space-6); }
+/* Absolutely positioned descendants (visually hidden words, glass layers) must not escape the matrix's scroller */
+.ds-matrix, .ds-table-wrap { position: relative; }
+/* A stage inside an anatomy figure fills it (the figure centres its content) */
+.ds-anatomy__figure > .ds-stage { width: 100%; margin: 0; border: 0; }
+/* Callouts for parts the viewport hides */
+@media (max-width: 39.99rem) { .ds-only-sm { display: none; } }
+@media (max-width: 47.99rem) { .ds-only-md { display: none; } }
+@media (max-width: 63.99rem) { .ds-only-lg { display: none; } }
+/* Dashboard specimens: the view needs a height to fill, the video a ratio */
+.ds-view { min-height: 16rem; margin-top: 0; }
+.ds-view .ride-video { aspect-ratio: 16 / 9; flex: none; }
+.ds-view .ride-trace__svg { min-height: 12rem; }
+.ds-trace-fixed .ride-trace__svg { min-height: 0; }
+.ds-matrix td .ride-log__list, .ds-matrix td .ride-trace, .ds-matrix td .ride-progress { min-width: 12rem; }
+</style>
+</head>
+<body id="top">
+<a class="ds-skip" href="#main">Skip to content</a>
+<div class="ds-shell">
+  <nav class="ds-nav" aria-label="Design system">
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <details open><summary>Foundations</summary><ul>
+      <li><a href="../foundations/color.html">Color</a></li>
+      <li><a href="../foundations/typography.html">Typography</a></li>
+      <li><a href="../foundations/spacing.html">Spacing</a></li>
+      <li><a href="../foundations/layout.html">Layout</a></li>
+      <li><a href="../foundations/elevation.html">Elevation</a></li>
+      <li><a href="../foundations/shape.html">Shape</a></li>
+      <li><a href="../foundations/motion.html">Motion</a></li>
+      <li><a href="../foundations/iconography.html">Iconography</a></li>
+      <li><a href="../foundations/theming.html">Theming</a></li>
+      <li><a href="../foundations/responsive.html">Responsive</a></li>
+      <li><a href="../foundations/accessibility.html">Accessibility</a></li>
+      <li><a href="../foundations/content.html">Content</a></li>
+    </ul></details>
+    <details open><summary>Actions</summary><ul>
+      <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
+      <li><a href="../components/link.html">Link</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
+      <li><a href="../components/form-field.html">Form field</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
+      <li><a href="../components/slider.html">Slider</a></li>
+      <li><a href="../components/number-stepper.html">Number stepper</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
+      <li><a href="../components/skip-link.html">Skip link</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
+      <li><a href="../components/dialog.html">Dialog</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
+      <li><a href="../components/tooltip.html">Tooltip</a></li>
+      <li><a href="../components/divider.html">Divider</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
+      <li><a href="../components/description-list.html">Description list</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
+      <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
+      <li><a href="../components/toast.html">Toast</a></li>
+      <li><a href="../components/alert.html">Alert and banner</a></li>
+      <li><a href="../components/inline-message.html">Inline message</a></li>
+      <li><a href="../components/progress-bar.html">Progress bar</a></li>
+      <li><a href="../components/spinner.html">Spinner</a></li>
+      <li><a href="../components/skeleton.html">Skeleton</a></li>
+      <li><a href="../components/empty-state.html">Empty state</a></li>
+      <li><a href="../components/error-page.html">Error page</a></li>
+    </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
+    <details open><summary>Patterns</summary><ul>
+      <li><a href="../patterns/forms.html">Forms</a></li>
+      <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
+      <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
+      <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
+      <li><a href="../patterns/notifications.html">Notifications</a></li>
+      <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
+    </ul></details>
+  </nav>
+  <main id="main" class="ds-main">
+    <header class="ds-header">
+      <p class="ds-kicker">Component · Ride</p>
+      <h1>Plan chart</h1>
+      <p class="ds-lead">A plan chart shows what the bike will do before and during a ride: one bar per segment, as wide as the segment is long and as tall as its resistance level. Slate for warm-up and cool-down, volt for work, blue for recovery.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive behaviour</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
+    </header>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+      <p>Every structured ride in Telo Ride has a plan: a list of segments, each with a kind, a length and a resistance level (<code>shared/workout.ts</code>). The plan chart draws that list. It answers "how hard, and when?" at a glance and is the same drawing everywhere the plan appears:</p>
+      <ul>
+        <li><b>Class card</b> (<code>.class-profile</code>, 20px): under every cover in the Class Library, so riders can tell a pyramid from an endurance ride before opening it. See <a href="class-card.html">Class card</a>.</li>
+        <li><b>Class Start</b> (<code>.class-plan</code> + <code>.class-profile--lg</code>, 80px): "What the bike will do", with the total and a one-line summary.</li>
+        <li><b>Class ride</b> (<code>.class-segment</code>): the current segment's kind, countdown and fill bar above the profile, so the rider sees where they are in the whole plan.</li>
+        <li><b>Custom workout</b> (<code>.plan-preview</code>, 144px): "Your ride", the live preview beside the settings, with facts and a legend. The <code>.interval-ladder</code> that edits it uses the same kind swatches.</li>
+      </ul>
+      <p>Use a <a href="ride-trace.html">ride trace</a> to compare live power with the plan, and a <a href="route-profile.html">route profile</a> for elevation on a map. Do not use a plan chart for anything that is not a plan: it has no y-axis values, only relative levels.</p>
+    </section>
+
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+      <div class="ds-anatomy">
+        <figure class="ds-anatomy__figure">
+          <div class="ds-fill" style="width: 100%;">
+            <div class="class-plan" style="margin-top: 0;">
+              <div class="class-plan__head"><h3 class="class-plan__label">What the bike will do</h3><span class="class-plan__total">30:00</span></div>
+              <svg class="class-profile class-profile--lg" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img" aria-label="Resistance profile: 5 minute warm-up, eight 30-second efforts at level 24 with recoveries at level 6 shrinking from 3:00 to 1:30, 6 minute cool-down"><rect x="3.6" width="292.8" y="24" height="8" class="class-profile__warmup"/><rect x="303.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="333.6" width="172.8" y="26" height="6" class="class-profile__rest"/><rect x="513.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="543.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="693.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="723.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="873.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="903.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1023.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1053.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1173.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1203.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1293.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1323.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1413.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1443.6" width="352.8" y="26" height="6" class="class-profile__cooldown"/></svg>
+              <p class="class-plan__summary">8 × 0:30 · 3:00 → 1:30 recover · ~154 W average</p>
+            </div>
+          </div>
+          <span class="ds-callout" style="left: 1%; top: 31%;" aria-hidden="true">1</span>
+          <span class="ds-callout" style="left: 95%; top: 31%;" aria-hidden="true">2</span>
+          <span class="ds-callout" style="left: 9%; top: 58%;" aria-hidden="true">3</span>
+          <span class="ds-callout" style="left: 21%; top: 44%;" aria-hidden="true">4</span>
+          <span class="ds-callout" style="left: 31%; top: 63%;" aria-hidden="true">5</span>
+          <span class="ds-callout" style="left: 1%; top: 83%;" aria-hidden="true">6</span>
+        </figure>
+        <ol class="ds-anatomy__list">
+          <li><div><b>Label</b><small>14px medium, muted: "What the bike will do", "Your ride".</small></div></li>
+          <li><div><b>Total</b><small>Barlow Condensed 24px (60px in the preview), tabular figures, <code>m:ss</code>.</small></div></li>
+          <li><div><b>Warm-up and cool-down bars</b><small><code>--color-plan-easy</code> (slate) at 50% opacity, so they read as "not the work".</small></div></li>
+          <li><div><b>Work bars</b><small><code>--color-volt</code>; steady segments in a flat plan use the same colour.</small></div></li>
+          <li><div><b>Recover bars</b><small><code>--color-rest</code>. Height is the level out of 32; width is the length in seconds in a <code>0 0 &lt;total&gt; 32</code> viewBox stretched to the box (<code>preserveAspectRatio="none"</code>). Bars are inset 3.6 units each side so neighbours never touch.</small></div></li>
+          <li><div><b>Text alternative</b><small>The visible summary line, the SVG's <code>aria-label</code>, and an optional <code>.ride-data</code> table with every segment.</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+      <p>One drawing, four settings. Pick by what the rider is deciding: browsing (card), committing (Class Start), riding (segment) or building (preview).</p>
+      <h3>Card profile and Class Start plan</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas">
+          <div class="ds-fill--narrow ds-fill">
+            <div class="class-card__title" style="margin-top: 0;">30 Minute HIIT Cardio</div>
+            <svg class="class-profile" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img" aria-label="Resistance profile: 5 minute warm-up, eight 30-second efforts at level 24 with recoveries at level 6 shrinking from 3:00 to 1:30, 6 minute cool-down"><rect x="3.6" width="292.8" y="24" height="8" class="class-profile__warmup"/><rect x="303.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="333.6" width="172.8" y="26" height="6" class="class-profile__rest"/><rect x="513.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="543.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="693.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="723.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="873.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="903.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1023.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1053.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1173.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1203.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1293.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1323.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1413.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1443.6" width="352.8" y="26" height="6" class="class-profile__cooldown"/></svg>
+            <span class="class-card__meta">GCN Training · HIIT</span>
+          </div>
+          <div class="ds-fill">
+            <div class="class-plan">
+              <div class="class-plan__head"><h3 class="class-plan__label">What the bike will do</h3><span class="class-plan__total">30:00</span></div>
+              <svg class="class-profile class-profile--lg" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img" aria-label="Resistance profile: 5 minute warm-up, eight 30-second efforts at level 24 with recoveries at level 6 shrinking from 3:00 to 1:30, 6 minute cool-down"><rect x="3.6" width="292.8" y="24" height="8" class="class-profile__warmup"/><rect x="303.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="333.6" width="172.8" y="26" height="6" class="class-profile__rest"/><rect x="513.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="543.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="693.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="723.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="873.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="903.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1023.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1053.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1173.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1203.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1293.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1323.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1413.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1443.6" width="352.8" y="26" height="6" class="class-profile__cooldown"/></svg>
+              <p class="class-plan__summary">8 × 0:30 · 3:00 → 1:30 recover · ~154 W average</p>
+            </div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Left: the 20px profile under a class card. Right: <code>.class-plan</code> on Class Start with the 80px <code>.class-profile--lg</code>.</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="class-plan"&gt;
+  &lt;div class="class-plan__head"&gt;
+    &lt;h2 class="class-plan__label"&gt;What the bike will do&lt;/h2&gt;
+    &lt;span class="class-plan__total"&gt;30:00&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;svg class="class-profile class-profile--lg" viewBox="0 0 1800 32" preserveAspectRatio="none"
+       role="img" aria-label="Resistance profile: 5 minute warm-up, eight 30-second efforts …"&gt;
+    &lt;rect x="3.6" width="292.8" y="24" height="8" class="class-profile__warmup"/&gt;
+    &lt;rect x="303.6" width="22.8" y="8" height="24" class="class-profile__work"/&gt;
+    &lt;rect x="333.6" width="172.8" y="26" height="6" class="class-profile__rest"/&gt;
+    …
+  &lt;/svg&gt;
+  &lt;p class="class-plan__summary"&gt;8 × 0:30 · 3:00 → 1:30 recover · ~154 W average&lt;/p&gt;
+&lt;/div&gt;</code></pre></details>
+      </div>
+
+      <h3>Current segment (class ride)</h3>
+      <p>During a class the plan sits under the current segment: kind and swatch, the time left in Barlow, a fill bar in the segment's colour (<code>--segment</code>), then the whole profile with the segments already ridden dimmed (<code>.is-past</code>, added by <code>ride.css</code>).</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--canvas">
+          <div class="ds-fill">
+            <div class="class-stat class-stat--wide class-segment" style="--segment: var(--color-rest)">
+              <div class="class-segment__head">
+                <span class="class-segment__kind"><span class="class-segment__swatch"></span>Recover</span>
+                <span class="class-segment__left" role="timer" aria-label="Recover: 1:30 left">1:30</span>
+              </div>
+              <div class="class-segment__bar"><span class="class-segment__fill" style="--value: 50%"></span></div>
+              <svg class="class-profile" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img" aria-label="Resistance profile: 5 minute warm-up, eight 30-second efforts at level 24 with recoveries at level 6 shrinking from 3:00 to 1:30, 6 minute cool-down"><rect x="3.6" width="292.8" y="24" height="8" class="class-profile__warmup is-past"/><rect x="303.6" width="22.8" y="8" height="24" class="class-profile__work is-past"/><rect x="333.6" width="172.8" y="26" height="6" class="class-profile__rest"/><rect x="513.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="543.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="693.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="723.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="873.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="903.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1023.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1053.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1173.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1203.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1293.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1323.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1413.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1443.6" width="352.8" y="26" height="6" class="class-profile__cooldown"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>30 Minute HIIT Cardio at 7:00, from <code>class-ride/default</code>: Recover 1 of 7, 1:30 left, warm-up and the first effort dimmed.</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="class-stat class-stat--wide class-segment" style="--segment: var(--color-rest)"&gt;
+  &lt;div class="class-segment__head"&gt;
+    &lt;span class="class-segment__kind"&gt;&lt;span class="class-segment__swatch"&gt;&lt;/span&gt;Recover&lt;/span&gt;
+    &lt;span class="class-segment__left" role="timer" aria-label="Recover: 1:30 left"&gt;1:30&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="class-segment__bar"&gt;&lt;span class="class-segment__fill" style="--value: 50%"&gt;&lt;/span&gt;&lt;/div&gt;
+  &lt;svg class="class-profile" …&gt;&lt;rect class="class-profile__warmup is-past" …/&gt;…&lt;/svg&gt;
+&lt;/div&gt;</code></pre></details>
+      </div>
+
+      <h3>Custom workout preview</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas" style="padding: 0;">
+          <aside class="plan-preview ds-fill" aria-labelledby="pv-title">
+            <h3 class="plan-preview__label" id="pv-title">Your ride</h3>
+            <p class="plan-preview__total">30:00</p>
+            <svg class="plan-preview__chart" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img" aria-label="Resistance profile, 30 minutes: warm-up, 8 efforts at level 24, recoveries at level 6, cool-down"><rect x="3.6" width="292.8" y="24" height="8" class="plan-preview__bar--warmup"/><rect x="303.6" width="22.8" y="8" height="24" class="plan-preview__bar--work"/><rect x="333.6" width="172.8" y="26" height="6" class="plan-preview__bar--rest"/><rect x="513.6" width="22.8" y="8" height="24" class="plan-preview__bar--work"/><rect x="543.6" width="142.8" y="26" height="6" class="plan-preview__bar--rest"/><rect x="693.6" width="22.8" y="8" height="24" class="plan-preview__bar--work"/><rect x="723.6" width="142.8" y="26" height="6" class="plan-preview__bar--rest"/><rect x="873.6" width="22.8" y="8" height="24" class="plan-preview__bar--work"/><rect x="903.6" width="112.8" y="26" height="6" class="plan-preview__bar--rest"/><rect x="1023.6" width="22.8" y="8" height="24" class="plan-preview__bar--work"/><rect x="1053.6" width="112.8" y="26" height="6" class="plan-preview__bar--rest"/><rect x="1173.6" width="22.8" y="8" height="24" class="plan-preview__bar--work"/><rect x="1203.6" width="82.8" y="26" height="6" class="plan-preview__bar--rest"/><rect x="1293.6" width="22.8" y="8" height="24" class="plan-preview__bar--work"/><rect x="1323.6" width="82.8" y="26" height="6" class="plan-preview__bar--rest"/><rect x="1413.6" width="22.8" y="8" height="24" class="plan-preview__bar--work"/><rect x="1443.6" width="352.8" y="26" height="6" class="plan-preview__bar--cooldown"/></svg>
+            <div class="plan-preview__axis" aria-hidden="true"><span>0:00</span><span>30:00</span></div>
+            <dl class="plan-preview__facts">
+              <div class="plan-preview__fact"><dt>Structure</dt><dd>8 × 0:30 · 3:00 → 1:30 recover</dd></div>
+              <div class="plan-preview__fact"><dt>Time under load</dt><dd>4:00</dd></div>
+              <div class="plan-preview__fact"><dt>Peak resistance</dt><dd>Level 24</dd></div>
+              <div class="plan-preview__fact"><dt>Expected avg power</dt><dd>~154 W</dd></div>
+            </dl>
+            <div class="plan-preview__foot">
+              <div class="plan-preview__legend" aria-hidden="true">
+                <span class="plan-preview__legend-item"><span class="kind-swatch kind-swatch--easy"></span>Warm-up · cool-down</span>
+                <span class="plan-preview__legend-item"><span class="kind-swatch"></span>Work</span>
+                <span class="plan-preview__legend-item"><span class="kind-swatch kind-swatch--rest"></span>Recover</span>
+              </div>
+              <button class="btn btn--primary btn--xl btn--block plan-preview__start" type="button">Start ride</button>
+            </div>
+          </aside>
+          <aside class="plan-preview ds-fill" aria-labelledby="pv-flat-title">
+            <h3 class="plan-preview__label" id="pv-flat-title">Your ride</h3>
+            <p class="plan-preview__total">30:00</p>
+            <svg class="plan-preview__chart" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img" aria-label="Resistance profile, 30 minutes at level 12 throughout"><rect class="plan-preview__bar--steady" x="3.6" width="1792.8" y="20" height="12"/></svg>
+            <div class="plan-preview__axis" aria-hidden="true"><span>0:00</span><span>30:00</span></div>
+            <dl class="plan-preview__facts">
+              <div class="plan-preview__fact"><dt>Structure</dt><dd>Level 12 throughout</dd></div>
+              <div class="plan-preview__fact"><dt>Expected avg power</dt><dd>~205 W</dd></div>
+            </dl>
+            <div class="plan-preview__foot">
+              <div class="plan-preview__legend" aria-hidden="true"><span class="plan-preview__legend-item"><span class="kind-swatch"></span>Steady</span></div>
+              <button class="btn btn--primary btn--xl btn--block plan-preview__start" type="button" disabled aria-describedby="start-blocked">Start ride</button>
+              <p class="plan-preview__blocked" id="start-blocked">Needs Chrome or Edge to reach the bike.</p>
+            </div>
+          </aside>
+        </div>
+        <div class="ds-example__caption"><span>HIIT and flat plans from <code>custom-setup/default</code> and <code>custom-setup/flat</code>; the second shows the blocked Start (unsupported browser).</span></div>
+      </div>
+
+      <h3>Interval ladder key and the kind swatches</h3>
+      <p>The ladder that edits a HIIT plan keys its columns with the same <code>.kind-swatch</code> colours, so Effort and Recover read as the bars they produce. The <code>.ride-kind--*</code> classes set <code>--kind</code> on any element (the trace, the progress strip, the interval panel) so a part never hard-codes a segment colour.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <section class="ladder-block" style="margin-top: 0;" aria-labelledby="ladder-title">
+            <div class="ladder-block__head"><h3 class="ladder-block__title" id="ladder-title">GCN 30-min HIIT · GCN Training</h3><button class="ladder-block__same" type="button">Make every round the same</button></div>
+            <div class="interval-ladder">
+              <div class="interval-ladder__head" aria-hidden="true"><span>#</span><span class="interval-ladder__key"><span class="kind-swatch"></span>Effort</span><span class="interval-ladder__key"><span class="kind-swatch kind-swatch--rest"></span>Recover</span><span></span></div>
+              <ol class="interval-ladder__rows" aria-label="Rounds">
+                <li class="interval-ladder__row"><span class="interval-ladder__num">1</span>
+                  <div class="mini-stepper"><button class="mini-stepper__btn" type="button" aria-label="Shorter effort 1"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><span class="mini-stepper__value">0:30</span><button class="mini-stepper__btn" type="button" aria-label="Longer effort 1"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div>
+                  <div class="mini-stepper"><button class="mini-stepper__btn" type="button" aria-label="Shorter recovery 1"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><span class="mini-stepper__value">3:00</span><button class="mini-stepper__btn" type="button" aria-label="Longer recovery 1"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div>
+                  <button class="interval-ladder__remove" type="button" aria-label="Remove round 1"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></li>
+                <li class="interval-ladder__row"><span class="interval-ladder__num">2</span>
+                  <div class="mini-stepper"><button class="mini-stepper__btn" type="button" aria-label="Shorter effort 2"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><span class="mini-stepper__value">0:30</span><button class="mini-stepper__btn" type="button" aria-label="Longer effort 2"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div>
+                  <div class="mini-stepper"><button class="mini-stepper__btn" type="button" aria-label="Shorter recovery 2"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><span class="mini-stepper__value">2:30</span><button class="mini-stepper__btn" type="button" aria-label="Longer recovery 2"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div>
+                  <button class="interval-ladder__remove" type="button" aria-label="Remove round 2"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></li>
+              </ol>
+            </div>
+          </section>
+          <div style="display: flex; flex-wrap: wrap; gap: var(--space-4); font-size: var(--font-size-sm);">
+            <span class="ride-interval__name"><span class="ride-interval__swatch ride-kind--warmup"></span>Warm-up / Cool-down</span>
+            <span class="ride-interval__name"><span class="ride-interval__swatch ride-kind--work"></span>Work / Steady</span>
+            <span class="ride-interval__name"><span class="ride-interval__swatch ride-kind--rest"></span>Recover</span>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>The steppers are documented on <a href="number-stepper.html">Number stepper</a>; the swatches here are 10px (<code>.ride-interval__swatch</code>) and 8px (<code>.kind-swatch</code>).</span></div>
+      </div>
+
+      <h3>Time axis</h3>
+      <p>A plan chart shows no axis of its own on cards and Class Start (the total is the scale). The preview shows its ends (<code>.plan-preview__axis</code>); a chart that spans the ride screen carries <code>.ride-ticks</code>, labels positioned by <code>--at</code>.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack ds-example__canvas--canvas"><svg class="class-profile class-profile--lg" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img" aria-label="Resistance profile: 5 minute warm-up, eight 30-second efforts at level 24 with recoveries at level 6 shrinking from 3:00 to 1:30, 6 minute cool-down"><rect x="3.6" width="292.8" y="24" height="8" class="class-profile__warmup"/><rect x="303.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="333.6" width="172.8" y="26" height="6" class="class-profile__rest"/><rect x="513.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="543.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="693.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="723.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="873.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="903.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1023.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1053.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1173.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1203.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1293.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1323.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1413.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1443.6" width="352.8" y="26" height="6" class="class-profile__cooldown"/></svg><div class="ride-ticks" aria-hidden="true"><span class="ride-ticks__tick" style="--at: 0%">0:00</span><span class="ride-ticks__tick" style="--at: 16.6667%">5:00</span><span class="ride-ticks__tick" style="--at: 33.3333%">10:00</span><span class="ride-ticks__tick" style="--at: 50%">15:00</span><span class="ride-ticks__tick" style="--at: 66.6667%">20:00</span><span class="ride-ticks__tick" style="--at: 83.3333%">25:00</span><span class="ride-ticks__tick" style="--at: 100%">30:00</span></div></div>
+        <div class="ds-example__caption"><span><code>.ride-ticks</code> every 5 minutes under an 80px profile; ticks are <code>aria-hidden</code> because the table carries the times.</span></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+      <p>Width always follows the container; height is fixed per setting so plans of different lengths compare by shape.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <div><small class="text-muted">Card · <code>.class-profile</code> · 20px (<code>--space-5</code>)</small><svg class="class-profile" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img" aria-label="Resistance profile: 5 minute warm-up, eight 30-second efforts at level 24 with recoveries at level 6 shrinking from 3:00 to 1:30, 6 minute cool-down"><rect x="3.6" width="292.8" y="24" height="8" class="class-profile__warmup"/><rect x="303.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="333.6" width="172.8" y="26" height="6" class="class-profile__rest"/><rect x="513.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="543.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="693.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="723.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="873.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="903.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1023.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1053.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1173.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1203.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1293.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1323.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1413.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1443.6" width="352.8" y="26" height="6" class="class-profile__cooldown"/></svg></div>
+          <div><small class="text-muted">Class Start · <code>.class-profile--lg</code> · 80px (<code>--space-20</code>)</small><svg class="class-profile class-profile--lg" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img" aria-label="Resistance profile: 5 minute warm-up, eight 30-second efforts at level 24 with recoveries at level 6 shrinking from 3:00 to 1:30, 6 minute cool-down"><rect x="3.6" width="292.8" y="24" height="8" class="class-profile__warmup"/><rect x="303.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="333.6" width="172.8" y="26" height="6" class="class-profile__rest"/><rect x="513.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="543.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="693.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="723.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="873.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="903.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1023.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1053.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1173.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1203.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1293.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1323.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1413.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1443.6" width="352.8" y="26" height="6" class="class-profile__cooldown"/></svg></div>
+          <div><small class="text-muted">Preview · <code>.plan-preview__chart</code> · 144px (<code>--space-36</code>)</small><svg class="plan-preview__chart" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img" aria-label="Resistance profile, 30 minutes: warm-up, 8 efforts at level 24, recoveries at level 6, cool-down"><rect x="3.6" width="292.8" y="24" height="8" class="plan-preview__bar--warmup"/><rect x="303.6" width="22.8" y="8" height="24" class="plan-preview__bar--work"/><rect x="333.6" width="172.8" y="26" height="6" class="plan-preview__bar--rest"/><rect x="513.6" width="22.8" y="8" height="24" class="plan-preview__bar--work"/><rect x="543.6" width="142.8" y="26" height="6" class="plan-preview__bar--rest"/><rect x="693.6" width="22.8" y="8" height="24" class="plan-preview__bar--work"/><rect x="723.6" width="142.8" y="26" height="6" class="plan-preview__bar--rest"/><rect x="873.6" width="22.8" y="8" height="24" class="plan-preview__bar--work"/><rect x="903.6" width="112.8" y="26" height="6" class="plan-preview__bar--rest"/><rect x="1023.6" width="22.8" y="8" height="24" class="plan-preview__bar--work"/><rect x="1053.6" width="112.8" y="26" height="6" class="plan-preview__bar--rest"/><rect x="1173.6" width="22.8" y="8" height="24" class="plan-preview__bar--work"/><rect x="1203.6" width="82.8" y="26" height="6" class="plan-preview__bar--rest"/><rect x="1293.6" width="22.8" y="8" height="24" class="plan-preview__bar--work"/><rect x="1323.6" width="82.8" y="26" height="6" class="plan-preview__bar--rest"/><rect x="1413.6" width="22.8" y="8" height="24" class="plan-preview__bar--work"/><rect x="1443.6" width="352.8" y="26" height="6" class="plan-preview__bar--cooldown"/></svg></div>
+        </div>
+        <div class="ds-example__caption"><span>The same 30-minute plan at each height. Swatches: 8px <code>.kind-swatch</code>, 10px segment swatches.</span></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <p>The chart itself is a picture and takes no pointer or focus states; the states it has are about the ride (current, past), the class (locked) and the setup (blocked). The interactive parts around it, the table disclosure and the ladder's remove button, carry the usual five.</p>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Part</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Disabled</th><th scope="col">Current</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Profile</th><td><svg class="class-profile" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img" aria-label="Resistance profile: 5 minute warm-up, eight 30-second efforts at level 24 with recoveries at level 6 shrinking from 3:00 to 1:30, 6 minute cool-down"><rect x="3.6" width="292.8" y="24" height="8" class="class-profile__warmup"/><rect x="303.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="333.6" width="172.8" y="26" height="6" class="class-profile__rest"/><rect x="513.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="543.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="693.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="723.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="873.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="903.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1023.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1053.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1173.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1203.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1293.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1323.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1413.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1443.6" width="352.8" y="26" height="6" class="class-profile__cooldown"/></svg></td><td class="ds-na-cell">No hover: not interactive (the class card around it lifts its cover).</td><td class="ds-na-cell">Not focusable; the card or the table summary takes focus.</td><td class="ds-na-cell">—</td><td><div class="class-card--locked"><svg class="class-profile" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img" aria-label="Resistance profile: 5 minute warm-up, eight 30-second efforts at level 24 with recoveries at level 6 shrinking from 3:00 to 1:30, 6 minute cool-down"><rect x="3.6" width="292.8" y="24" height="8" class="class-profile__warmup"/><rect x="303.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="333.6" width="172.8" y="26" height="6" class="class-profile__rest"/><rect x="513.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="543.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="693.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="723.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="873.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="903.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1023.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1053.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1173.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1203.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1293.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1323.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1413.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1443.6" width="352.8" y="26" height="6" class="class-profile__cooldown"/></svg></div><span class="ds-na-cell">Locked class: 40% (<code>.class-card--locked</code>)</span></td><td><svg class="class-profile" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img" aria-label="Resistance profile: 5 minute warm-up, eight 30-second efforts at level 24 with recoveries at level 6 shrinking from 3:00 to 1:30, 6 minute cool-down"><rect x="3.6" width="292.8" y="24" height="8" class="class-profile__warmup is-past"/><rect x="303.6" width="22.8" y="8" height="24" class="class-profile__work is-past"/><rect x="333.6" width="172.8" y="26" height="6" class="class-profile__rest"/><rect x="513.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="543.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="693.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="723.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="873.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="903.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1023.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1053.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1173.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1203.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1293.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1323.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1413.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1443.6" width="352.8" y="26" height="6" class="class-profile__cooldown"/></svg><span class="ds-na-cell">7:00 in: ridden segments <code>.is-past</code></span></td></tr>
+          <tr><th scope="row">Table disclosure</th><td><details class="ride-data"><summary class="ride-data__summary"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>Show the plan as a table</summary></details></td><td><details class="ride-data"><summary class="ride-data__summary" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>Show the plan as a table</summary></details></td><td><details class="ride-data"><summary class="ride-data__summary" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>Show the plan as a table</summary></details></td><td class="ds-na-cell">Opens on click; open state below.</td><td class="ds-na-cell">Never disabled: the data always exists.</td><td><details class="ride-data"><summary class="ride-data__summary"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>Show the plan as a table</summary><div class="ride-data__wrap"><table class="ride-data__table"><caption>30 Minute HIIT Cardio, 30:00 in 17 parts</caption><thead><tr><th scope="col">Part</th><th scope="col" class="ride-data__num">Starts</th><th scope="col" class="ride-data__num">Length</th><th scope="col" class="ride-data__num">Level</th></tr></thead><tbody><tr><th scope="row">Warm-up</th><td class="ride-data__num">0:00</td><td class="ride-data__num">5:00</td><td class="ride-data__num">8</td></tr><tr><th scope="row">Work 1</th><td class="ride-data__num">5:00</td><td class="ride-data__num">0:30</td><td class="ride-data__num">24</td></tr><tr aria-current="step"><th scope="row">Recover 1</th><td class="ride-data__num">5:30</td><td class="ride-data__num">3:00</td><td class="ride-data__num">6</td></tr><tr><th scope="row">Work 2</th><td class="ride-data__num">8:30</td><td class="ride-data__num">0:30</td><td class="ride-data__num">24</td></tr><tr><th scope="row">Recover 2</th><td class="ride-data__num">9:00</td><td class="ride-data__num">2:30</td><td class="ride-data__num">6</td></tr><tr><th scope="row">Work 3</th><td class="ride-data__num">11:30</td><td class="ride-data__num">0:30</td><td class="ride-data__num">24</td></tr><tr><th scope="row">Recover 3</th><td class="ride-data__num">12:00</td><td class="ride-data__num">2:30</td><td class="ride-data__num">6</td></tr><tr><th scope="row">Work 4</th><td class="ride-data__num">14:30</td><td class="ride-data__num">0:30</td><td class="ride-data__num">24</td></tr><tr><th scope="row">Recover 4</th><td class="ride-data__num">15:00</td><td class="ride-data__num">2:00</td><td class="ride-data__num">6</td></tr><tr><th scope="row">Work 5</th><td class="ride-data__num">17:00</td><td class="ride-data__num">0:30</td><td class="ride-data__num">24</td></tr><tr><th scope="row">Recover 5</th><td class="ride-data__num">17:30</td><td class="ride-data__num">2:00</td><td class="ride-data__num">6</td></tr><tr><th scope="row">Work 6</th><td class="ride-data__num">19:30</td><td class="ride-data__num">0:30</td><td class="ride-data__num">24</td></tr><tr><th scope="row">Recover 6</th><td class="ride-data__num">20:00</td><td class="ride-data__num">1:30</td><td class="ride-data__num">6</td></tr><tr><th scope="row">Work 7</th><td class="ride-data__num">21:30</td><td class="ride-data__num">0:30</td><td class="ride-data__num">24</td></tr><tr><th scope="row">Recover 7</th><td class="ride-data__num">22:00</td><td class="ride-data__num">1:30</td><td class="ride-data__num">6</td></tr><tr><th scope="row">Work 8</th><td class="ride-data__num">23:30</td><td class="ride-data__num">0:30</td><td class="ride-data__num">24</td></tr><tr><th scope="row">Cool-down</th><td class="ride-data__num">24:00</td><td class="ride-data__num">6:00</td><td class="ride-data__num">6</td></tr></tbody></table></div></details></td></tr>
+          <tr><th scope="row">Ladder remove</th><td><button class="interval-ladder__remove" type="button" aria-label="Remove round 3"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></td><td><button class="interval-ladder__remove" type="button" aria-label="Remove round 3" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></td><td><button class="interval-ladder__remove" type="button" aria-label="Remove round 3" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></td><td><button class="interval-ladder__remove" type="button" aria-label="Remove round 3" data-state="active"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></td><td><button class="interval-ladder__remove" type="button" aria-label="Remove round 1" disabled><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button><span class="ds-na-cell">Last round left</span></td><td class="ds-na-cell">—</td></tr>
+          <tr><th scope="row">Preview start</th><td><button class="btn btn--primary plan-preview__start" type="button">Start ride</button></td><td><button class="btn btn--primary plan-preview__start" type="button" data-state="hover">Start ride</button></td><td><button class="btn btn--primary plan-preview__start" type="button" data-state="focus">Start ride</button></td><td><button class="btn btn--primary plan-preview__start" type="button" data-state="active">Start ride</button></td><td><button class="btn btn--primary plan-preview__start" type="button" disabled>Start ride</button></td><td class="ds-na-cell">—</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Both themes</h3>
+      <div class="ds-themes">
+        <div data-theme="light"><div class="class-plan" style="margin-top: 0;"><div class="class-plan__head"><span class="class-plan__label">What the bike will do</span><span class="class-plan__total">30:00</span></div><svg class="class-profile class-profile--lg" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img" aria-label="Resistance profile: 5 minute warm-up, eight 30-second efforts at level 24 with recoveries at level 6 shrinking from 3:00 to 1:30, 6 minute cool-down"><rect x="3.6" width="292.8" y="24" height="8" class="class-profile__warmup"/><rect x="303.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="333.6" width="172.8" y="26" height="6" class="class-profile__rest"/><rect x="513.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="543.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="693.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="723.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="873.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="903.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1023.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1053.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1173.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1203.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1293.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1323.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1413.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1443.6" width="352.8" y="26" height="6" class="class-profile__cooldown"/></svg><p class="class-plan__summary">8 × 0:30 · 3:00 → 1:30 recover · ~154 W average</p></div></div>
+        <div data-theme="dark"><div class="class-plan" style="margin-top: 0;"><div class="class-plan__head"><span class="class-plan__label">What the bike will do</span><span class="class-plan__total">30:00</span></div><svg class="class-profile class-profile--lg" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img" aria-label="Resistance profile: 5 minute warm-up, eight 30-second efforts at level 24 with recoveries at level 6 shrinking from 3:00 to 1:30, 6 minute cool-down"><rect x="3.6" width="292.8" y="24" height="8" class="class-profile__warmup"/><rect x="303.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="333.6" width="172.8" y="26" height="6" class="class-profile__rest"/><rect x="513.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="543.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="693.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="723.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="873.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="903.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1023.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1053.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1173.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1203.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1293.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1323.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1413.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1443.6" width="352.8" y="26" height="6" class="class-profile__cooldown"/></svg><p class="class-plan__summary">8 × 0:30 · 3:00 → 1:30 recover · ~154 W average</p></div></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <ul>
+        <li><b>360px:</b> every profile is the full width of its column; the 30-second efforts are about 5px wide and still read because of their height. The class ride's segment panel spans both columns of the bike grid (<code>.class-stat--wide</code>). The preview sits under the settings with a hairline on top; its legend wraps.</li>
+        <li><b>640px:</b> class cards go two up, so card profiles halve in width with no change in height. Ladder rows keep their four columns (24px · 1fr · 1fr · 32px).</li>
+        <li><b>1024px:</b> Class Start puts the plan in the left column (max 42rem); the preview becomes a 420px aside with a hairline on the left (<code>--setup-preview-width</code>) and pins its legend and Start to the bottom (<code>mt-auto</code>). Class cards go three up.</li>
+        <li>Heights never change with width. Tick labels thin out below 480px: keep the first, middle and last.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+      <p>The chart reads three colour decisions and nothing else: <code>--color-volt</code> (work, steady), <code>--color-rest</code> (recover) and <code>--color-plan-easy</code> (warm-up and cool-down). They are theme-independent: the same orange, blue and slate sit on ink and on paper, so a plan looks the same in both themes. The area tokens <code>--classes-segment-easy</code>, <code>--dashboard-segment-easy</code> and <code>--race-segment-easy</code> all alias <code>--color-plan-easy</code>; new code reads the semantic name.</p>
+      <pre><code>/* Any part that draws a segment reads --kind; set it with a class, never a raw colour */
+.ride-kind--warmup, .ride-kind--cooldown { --kind: var(--dashboard-segment-easy); }
+.ride-kind--work, .ride-kind--steady { --kind: var(--color-volt); }
+.ride-kind--rest { --kind: var(--color-rest); }</code></pre>
+      <p>On paper, volt on a white panel is 3.4:1 and blue 3.4:1, just over the 3:1 a graphical object needs; slate at 50% is lighter still and is treated as decoration (the kind is in the summary text and table).</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <p>The SVG is one image: <code>role="img"</code> with an <code>aria-label</code> that describes the shape ("5 minute warm-up, eight 30-second efforts at level 24 …"), not just "Resistance profile". Its long description is the visible summary line plus a <code>.ride-data</code> table in a native <code>&lt;details&gt;</code>, following the W3C <a href="https://www.w3.org/WAI/tutorials/images/complex/">complex images</a> tutorial and the APG <a href="https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/">disclosure pattern</a>. Individual bars are not focusable.</p>
+      <h3>Keyboard</h3>
+      <div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+        <tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Skips the chart; reaches the table summary, then the ladder's steppers and remove buttons, then Start ride.</td></tr>
+        <tr><td><kbd>Enter</kbd>, <kbd>Space</kbd></td><td>Opens or closes the table; activates a stepper or remove button.</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>No effect.</td></tr>
+      </tbody></table></div>
+      <h3>Focus</h3>
+      <p>The table summary and ladder buttons take the shared ring (2px <code>--color-focus-ring</code>, 2px offset). When a round is removed, focus moves to the next round's remove button, or to "Add round" when the last one goes.</p>
+      <h3>Labelling</h3>
+      <p>The table has a caption naming the plan and its length; rows are segments with a row header ("Recover 3"), columns Starts, Length, Level. During a ride the current row has <code>aria-current="step"</code>. Legends are <code>aria-hidden</code>: the table and the label already say which colour is which. Ladder buttons name the round ("Shorter recovery 2", "Remove round 3").</p>
+      <h3>Contrast</h3>
+      <div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+        <div class="ds-themes ds-themes--pairs"><div data-theme="light"><div class="ds-pair"><span>Work bar on panel</span><span class="ds-pair__ratio" data-contrast="--color-volt|--color-panel" data-min="3"></span></div></div><div data-theme="dark"><div class="ds-pair"><span>Work bar on panel</span><span class="ds-pair__ratio" data-contrast="--color-volt|--color-panel" data-min="3"></span></div></div></div>
+        <div class="ds-themes ds-themes--pairs"><div data-theme="light"><div class="ds-pair"><span>Recover bar on panel</span><span class="ds-pair__ratio" data-contrast="--color-rest|--color-panel" data-min="3"></span></div></div><div data-theme="dark"><div class="ds-pair"><span>Recover bar on panel</span><span class="ds-pair__ratio" data-contrast="--color-rest|--color-panel" data-min="3"></span></div></div></div>
+        <div class="ds-themes ds-themes--pairs"><div data-theme="light"><div class="ds-pair"><span>Warm-up bar (decorative, 50%)</span><span class="ds-pair__ratio" data-contrast="--color-plan-easy|--color-panel" data-min="1"></span></div></div><div data-theme="dark"><div class="ds-pair"><span>Warm-up bar (decorative, 50%)</span><span class="ds-pair__ratio" data-contrast="--color-plan-easy|--color-panel" data-min="1"></span></div></div></div>
+        <div class="ds-themes ds-themes--pairs"><div data-theme="light"><div class="ds-pair"><span>Label and summary on panel</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div></div><div data-theme="dark"><div class="ds-pair"><span>Label and summary on panel</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div></div></div>
+        <div class="ds-themes ds-themes--pairs"><div data-theme="light"><div class="ds-pair"><span>Legend and axis text</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-panel" data-min="4.5"></span></div></div><div data-theme="dark"><div class="ds-pair"><span>Legend and axis text</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-panel" data-min="4.5"></span></div></div></div>
+      </div>
+      <h3>Motion</h3>
+      <p>Nothing in the chart moves. The current segment's fill grows linearly over each second (<code>--duration-countdown</code>); under <code>prefers-reduced-motion</code> it steps once a second instead of easing.</p>
+      <h3>Touch</h3>
+      <p>The chart is not a target. Ladder mini-steppers are 28px with 6px between them: above the 24px minimum, below the 44px comfortable size, acceptable because the ladder is edited before a ride, never during one. Colour is never the only cue: work bars are also tall, recover bars short, warm-up and cool-down sit at the ends.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li>Kinds are named <b>Warm-up</b>, <b>Work</b>, <b>Recover</b>, <b>Cool-down</b> and <b>Steady</b> in every label, legend and table. The CSS says <code>rest</code>; the copy never does.</li>
+        <li>The summary line follows one formula: <i>rounds × effort · first recovery → last recovery recover · ~average W average</i>: "8 × 0:30 · 3:00 → 1:30 recover · ~154 W average". A flat plan says "Level 12 throughout".</li>
+        <li>Times are <code>m:ss</code> (<code>0:30</code>, <code>30:00</code>), never "30 sec". Estimates carry a tilde: "~154 W", "~276 kcal".</li>
+        <li>Levels are "Level 24" in facts and "of 32" beside a stepper; never a percentage.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><div class="plan-preview__legend" style="margin: 0;"><span class="plan-preview__legend-item"><span class="kind-swatch kind-swatch--easy"></span>Warm-up · cool-down</span><span class="plan-preview__legend-item"><span class="kind-swatch"></span>Work</span><span class="plan-preview__legend-item"><span class="kind-swatch kind-swatch--rest"></span>Recover</span></div></div><figcaption>List every kind the chart draws, including the slate ends.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><div class="plan-preview__legend" style="margin: 0;"><span class="plan-preview__legend-item"><span class="kind-swatch"></span>Work</span><span class="plan-preview__legend-item"><span class="kind-swatch kind-swatch--rest"></span>Recover</span></div></div><figcaption>The preview's legend in <code>custom-setup/default</code>: a third of the chart (the warm-up and cool-down) is left unexplained.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas ds-example__canvas--stack"><svg class="class-profile" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img" aria-label="Resistance profile: 5 minute warm-up, eight 30-second efforts at level 24 with recoveries at level 6 shrinking from 3:00 to 1:30, 6 minute cool-down"><rect x="3.6" width="292.8" y="24" height="8" class="class-profile__warmup"/><rect x="303.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="333.6" width="172.8" y="26" height="6" class="class-profile__rest"/><rect x="513.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="543.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="693.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="723.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="873.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="903.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1023.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1053.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1173.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1203.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1293.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1323.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1413.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1443.6" width="352.8" y="26" height="6" class="class-profile__cooldown"/></svg><p class="class-plan__summary" style="margin: 0;">8 × 0:30 · 3:00 → 1:30 recover · ~154 W average</p></div><figcaption>Pair the chart with its summary in words and a label that describes the shape.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas ds-example__canvas--stack"><svg class="class-profile class-profile--lg" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img" aria-label="Resistance profile"><rect x="3.6" width="292.8" y="24" height="8" class="class-profile__warmup"/><rect x="303.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="333.6" width="172.8" y="26" height="6" class="class-profile__rest"/><rect x="513.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="543.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="693.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="723.6" width="142.8" y="26" height="6" class="class-profile__rest"/><rect x="873.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="903.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1023.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1053.6" width="112.8" y="26" height="6" class="class-profile__rest"/><rect x="1173.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1203.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1293.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1323.6" width="82.8" y="26" height="6" class="class-profile__rest"/><rect x="1413.6" width="22.8" y="8" height="24" class="class-profile__work"/><rect x="1443.6" width="352.8" y="26" height="6" class="class-profile__cooldown"/></svg></div><figcaption>A chart whose only name is "Resistance profile", as every mock has it: a screen reader learns nothing about the plan.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><span class="ride-interval__name"><span class="ride-interval__swatch ride-kind--work"></span>Work</span><span class="ride-interval__name"><span class="ride-interval__swatch ride-kind--rest"></span>Recover</span></div><figcaption>Set segment colours with <code>.ride-kind--*</code> (or <code>--kind: var(--color-rest)</code>).</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><span class="ride-interval__name"><span class="ride-interval__swatch" style="--kind: var(--color-gold)"></span>Work</span></div><figcaption>Gold is for earned things (XP, stars, unlocks), never a segment.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+        <tbody>
+          <tr><td>Work and steady bars</td><td><code>--color-volt</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-volt" data-swatch></i><span data-token="--color-volt"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-volt" data-swatch></i><span data-token="--color-volt"></span></span></td></tr>
+          <tr><td>Recover bars</td><td><code>--color-rest</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-rest" data-swatch></i><span data-token="--color-rest"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-rest" data-swatch></i><span data-token="--color-rest"></span></span></td></tr>
+          <tr><td>Warm-up and cool-down bars (at 50%)</td><td><code>--color-plan-easy</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-plan-easy" data-swatch></i><span data-token="--color-plan-easy"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-plan-easy" data-swatch></i><span data-token="--color-plan-easy"></span></span></td></tr>
+          <tr><td>Same, area aliases</td><td><code>--classes-segment-easy</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--classes-segment-easy" data-swatch></i><span data-token="--classes-segment-easy"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--classes-segment-easy" data-swatch></i><span data-token="--classes-segment-easy"></span></span></td></tr>
+          <tr><td>Chart surface (preview, stat)</td><td><code>--color-panel</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-panel" data-swatch></i><span data-token="--color-panel"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-panel" data-swatch></i><span data-token="--color-panel"></span></span></td></tr>
+          <tr><td>Fill-bar track</td><td><code>--color-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td></tr>
+          <tr><td>Label, facts, summary</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+          <tr><td>Legend, axis, ticks</td><td><code>--color-faint</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td></tr>
+          <tr><td>Current row in the table</td><td><code>--color-volt-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-volt-fg" data-swatch></i><span data-token="--color-volt-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-volt-fg" data-swatch></i><span data-token="--color-volt-fg"></span></span></td></tr>
+          <tr><td>Height card / Class Start / preview</td><td><code>--space-5</code> <code>--space-20</code> <code>--space-36</code></td><td colspan="2"><span data-token="--space-5"></span> / <span data-token="--space-20"></span> / <span data-token="--space-36"></span></td></tr>
+          <tr><td>Swatch 8px / 10px</td><td><code>--space-2</code> <code>--space-2-5</code></td><td colspan="2"><span data-token="--space-2"></span> / <span data-token="--space-2-5"></span></td></tr>
+          <tr><td>Bar and swatch corners</td><td><code>--radius-xs</code> <code>--radius-sm</code></td><td colspan="2"><span data-token="--radius-xs"></span> / <span data-token="--radius-sm"></span></td></tr>
+          <tr><td>Total (Barlow) Class Start / preview</td><td><code>--font-size-2xl</code> <code>--font-size-6xl</code></td><td colspan="2"><span data-token="--font-size-2xl"></span> / <span data-token="--font-size-6xl"></span></td></tr>
+          <tr><td>Axis and tick text</td><td><code>--font-size-2xs</code></td><td colspan="2"><span data-token="--font-size-2xs"></span></td></tr>
+          <tr><td>Preview aside width (lg)</td><td><code>--setup-preview-width</code></td><td colspan="2"><span data-token="--setup-preview-width"></span></td></tr>
+          <tr><td>Segment fill transition</td><td><code>--duration-countdown</code></td><td colspan="2"><span data-token="--duration-countdown"></span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+      <pre><code>&lt;svg class="class-profile" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img"
+     aria-label="Resistance profile: 5 minute warm-up, eight 30-second efforts at level 24 …"&gt;
+  &lt;!-- one rect per segment: x = start + 3.6, width = length − 7.2, y = 32 − level, height = level --&gt;
+  &lt;rect x="3.6" width="292.8" y="24" height="8" class="class-profile__warmup is-past"/&gt;
+  &lt;rect x="303.6" width="22.8" y="8" height="24" class="class-profile__work"/&gt;
+&lt;/svg&gt;
+&lt;details class="ride-data"&gt;
+  &lt;summary class="ride-data__summary"&gt;&lt;svg class="icon icon--md" …&gt;…&lt;/svg&gt;Show the plan as a table&lt;/summary&gt;
+  &lt;div class="ride-data__wrap"&gt;&lt;table class="ride-data__table"&gt;
+    &lt;caption&gt;30 Minute HIIT Cardio, 30:00 in 17 parts&lt;/caption&gt;
+    &lt;thead&gt;…&lt;/thead&gt;
+    &lt;tbody&gt;&lt;tr aria-current="step"&gt;&lt;th scope="row"&gt;Recover 1&lt;/th&gt;&lt;td class="ride-data__num"&gt;5:30&lt;/td&gt;…&lt;/tr&gt;&lt;/tbody&gt;
+  &lt;/table&gt;&lt;/div&gt;
+&lt;/details&gt;</code></pre>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+        <tr><td><code>.class-profile</code> <code>.class-profile--lg</code></td><td>The profile SVG at 20px or 80px tall.</td></tr>
+        <tr><td><code>.class-profile__warmup</code> <code>__work</code> <code>__steady</code> <code>__rest</code> <code>__cooldown</code></td><td>Bar colour by kind (warm-up and cool-down at 50%).</td></tr>
+        <tr><td><code>.plan-preview__chart</code>, <code>.plan-preview__bar--*</code></td><td>The 144px preview chart and its bars.</td></tr>
+        <tr><td><code>.is-past</code></td><td>Dims a ridden segment to 35% (<code>ride.css</code>).</td></tr>
+        <tr><td><code>.class-plan</code>, <code>__head</code>, <code>__label</code>, <code>__total</code>, <code>__summary</code></td><td>Class Start's plan block.</td></tr>
+        <tr><td><code>.class-segment</code>, <code>__head</code>, <code>__kind</code>, <code>__swatch</code>, <code>__left</code>, <code>__bar</code>, <code>__fill</code></td><td>The class ride's current segment; colour from <code>--segment</code>, fill from <code>--value</code>.</td></tr>
+        <tr><td><code>.kind-swatch</code> <code>--rest</code> <code>--easy</code></td><td>8px legend swatch; <code>--easy</code> added in <code>ride.css</code>.</td></tr>
+        <tr><td><code>.ride-kind--warmup|work|steady|rest|cooldown</code></td><td>Sets <code>--kind</code> for anything that draws a segment.</td></tr>
+        <tr><td><code>.interval-ladder</code>, <code>.ladder-block</code></td><td>The ladder that edits a HIIT plan (rows, key, add, remove).</td></tr>
+        <tr><td><code>.ride-ticks</code>, <code>.ride-ticks__tick</code> + <code>--at</code></td><td>Time labels under a full-width chart.</td></tr>
+        <tr><td><code>.ride-data</code>, <code>__summary</code>, <code>__wrap</code>, <code>__table</code>, <code>__num</code></td><td>The text alternative (<code>ride.css</code>).</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <p>Extracted from these mocks:</p>
+      <ul>
+        <li><a href="../../mocks/pages/class-start/default.html">pages/class-start/default</a> (What the bike will do, <code>.class-profile--lg</code>)</li>
+        <li><a href="../../mocks/pages/class-ride/default.html">pages/class-ride/default</a> (current segment, 7:00 in)</li>
+        <li><a href="../../mocks/pages/class-library/default.html">pages/class-library/default</a> (card profiles)</li>
+        <li><a href="../../mocks/pages/custom-setup/default.html">pages/custom-setup/default</a> and <a href="../../mocks/pages/custom-setup/flat.html">flat</a> (Your ride, interval ladder, legend)</li>
+        <li><a href="../../mocks/pages/custom-setup/needs-chromium.html">pages/custom-setup/needs-chromium</a> (blocked Start)</li>
+        <li><a href="../../mocks/pages/custom-ride/default.html">pages/custom-ride/default</a> (<code>.ride-kind--*</code>, <code>.ride-ticks</code>)</li>
+      </ul>
+      <p>Drift fixed during extraction:</p>
+      <ul>
+        <li>The preview legend listed Work and Recover only; the slate warm-up and cool-down had no key. Added <code>.kind-swatch--easy</code>.</li>
+        <li>Every profile was labelled just "Resistance profile". Pages now describe the shape in <code>aria-label</code> and add the <code>.ride-data</code> table.</li>
+        <li>One slate was declared four times (<code>--race-segment-easy</code>, <code>--classes-segment-easy</code>, <code>--dashboard-segment-easy</code>, <code>KIND_COLOR</code>); all alias <code>--color-plan-easy</code>.</li>
+        <li>No way to show progress through a plan on the profile itself; added <code>.is-past</code> (the trace and progress strip already used it).</li>
+      </ul>
+    </section>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
+  </main>
+</div>
+<script src="../assets/ds.js"></script>
+</body>
+</html>

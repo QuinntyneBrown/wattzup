@@ -1,0 +1,11 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Stay smooth on long rides
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(bike, "Smart bike", "Echelon or FTMS bike; Bluetooth LE")
+Rel(rider, telo, "Rides for up to 3 hours with")
+Rel(bike, telo, "Sends telemetry about once a second to", "Bluetooth LE")
+@enduml

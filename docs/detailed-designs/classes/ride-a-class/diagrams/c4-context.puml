@@ -3,12 +3,12 @@
 LAYOUT_WITH_LEGEND()
 title System Context — Ride a class
 
-Person(rider, "Rider", "Rides the bike and watches Wattzup")
-System(wattzup, "Wattzup", "Angular app running in Chrome or Edge; no server")
-System_Ext(bike, "Echelon bike", "Indoor bike exposing a proprietary BLE GATT service")
-System_Ext(youtube, "YouTube", "Player and thumbnails")
-
-Rel(rider, wattzup, "Uses", "Browser")
-Rel(wattzup, bike, "Notifications and commands", "Web Bluetooth GATT")
-Rel(wattzup, youtube, "Embeds the player; loads covers", "HTTPS")
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(bike, "Smart bike", "Echelon EX-5s, EX-3, EX-8s, Connect Sport, or an FTMS bike; Bluetooth LE")
+System_Ext(youtube, "YouTube", "Class and custom-ride videos (IFrame Player API)")
+Rel(rider, telo, "Rides along to a class in")
+Rel(rider, bike, "Pedals")
+Rel(telo, bike, "Reads telemetry and sets resistance", "Bluetooth LE")
+Rel(telo, youtube, "Plays the class video from", "youtube-nocookie.com")
 @enduml

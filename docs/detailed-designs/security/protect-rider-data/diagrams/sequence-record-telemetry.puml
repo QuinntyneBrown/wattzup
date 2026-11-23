@@ -1,0 +1,38 @@
+@startuml
+title UML sequence behaviour — Record telemetry without personal data
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app" #E0F2FE
+  participant "HttpRidersApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "ASP.NET Core instrumentation" as inst
+  participant "RidersController" as ctrl
+end box
+box "Backend — Telo.Ride.Api logging and OpenTelemetry" #FFF4E5
+  participant "Logger" as log
+  participant "OpenTelemetry SDK" as proc
+end box
+participant "Telemetry backend" as otel
+client -> inst : PUT /api/riders/me/display-name?x=1
+inst -> inst : Start span; http.route = "api/riders/me/display-name";\nquery values redacted, url.query cleared
+inst -> ctrl : Invoke
+ctrl -> log : Nothing at Information from Microsoft.AspNetCore;\nthe API's own events name a rider by id only
+ctrl --> inst : 200
+inst -> proc : OnEnd(span)
+proc -> proc : No body, email, code or token was recorded (L2-132 AC3)
+proc -> otel : Export span with route template, status, duration
+log -> otel : Export log record without contact details
+@enduml

@@ -3,17 +3,40 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Typography — Wattzup design system</title>
-<meta name="description" content="Type families, the UI and numeral scales, roles and measure.">
+<title>Typography — Telo Ride design system</title>
+<meta name="description" content="Telo Ride type: Inter Tight for the UI, Barlow Condensed for numerals and the wide italic wordmark, JetBrains Mono for diagnostics; the 14-step scale with paired line heights, weights, tracking, role shorthands and responsive rules.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+.ds-val { font: var(--text-code); overflow-wrap: anywhere; }
+.ds-token-table td:nth-child(3), .ds-token-table td:nth-child(4) { min-width: calc(var(--space-32) + var(--space-8)); }
+
+.ds-specimens { padding: 0; }
+.ds-specimens .ds-specimen:last-child { border-bottom: 0; }
+.ds-specimen > p { min-width: 0; overflow-wrap: anywhere; }
+.ds-specimen__meta b { color: var(--color-fg-default); font-weight: var(--font-weight-medium); }
+.ds-type-row { display: flex; align-items: baseline; gap: var(--space-2); }
+.ds-type-big { font-size: var(--font-size-6xl); line-height: var(--line-height-none); }
+.ds-type-unit { font-size: var(--font-size-2xl); color: var(--color-muted); }
+.ds-type-mid { font-size: var(--font-size-2xl); line-height: var(--line-height-none); }
+.ds-type-mono { font-size: var(--font-size-xs); color: var(--color-muted); }
+.ds-family-grid { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--space-48)), 1fr)); margin-block: var(--space-4); }
+.ds-family { padding: var(--space-5); border-radius: var(--radius-2xl); background: var(--color-bg-surface); border: var(--border-width-hairline) solid var(--color-border-default); display: flex; flex-direction: column; gap: var(--space-3); }
+.ds-family__name { font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--letter-spacing-widest); color: var(--color-fg-muted); }
+.ds-family__sample { font-size: var(--font-size-xl); line-height: var(--line-height-tight); }
+.ds-family__meta { font: var(--text-body-sm); color: var(--color-fg-muted); }
+.ds-leading-grid { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--space-48)), 1fr)); margin-block: var(--space-4); }
+.ds-leading { padding: var(--space-4); border-radius: var(--radius-lg); background: var(--color-bg-surface); border: var(--border-width-hairline) solid var(--color-border-default); display: flex; flex-direction: column; gap: var(--space-3); }
+.ds-leading__text { background: var(--color-accent-subtle); font-size: var(--font-size-md); }
+.ds-measure { max-width: var(--layout-measure); outline: var(--border-width-hairline) dashed var(--color-border-strong); outline-offset: var(--space-2); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +51,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,42 +105,217 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Foundation</p>
       <h1>Typography</h1>
-      <p class="ds-lead">Three families: Inter for words, Archivo condensed for numbers (tabular, so they don't jump at 1 Hz), and JetBrains Mono for raw packets. Fonts are bundled and self-hosted: <code>components.css</code> declares the same <code>@font-face</code> rules as the app, from <code>frontend/public/fonts/</code>, so the docs and mocks render the real faces.</p>
-      
-      <ul class="ds-toc"><li><a href="#families">Families</a></li><li><a href="#roles">Roles</a></li><li><a href="#numerals">Numeral scale</a></li><li><a href="#measure">Measure and rules</a></li><li><a href="#tokens">All tokens</a></li></ul>
+      <p class="ds-lead">Inter Tight for what you read, Barlow Condensed for what you watch change, JetBrains Mono for machine output. Tailwind’s scale, each step with its line height.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#families">Families</a></li><li><a href="#scale">Scale</a></li><li><a href="#weights">Weights</a></li><li><a href="#line-height">Line heights</a></li><li><a href="#letter-spacing">Letter spacing</a></li><li><a href="#roles">Roles</a></li><li><a href="#measure">Measure</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#usage">Usage</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#tokens">Tokens</a></li></ul>
     </header>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+
+      <p>Three families, each with one job. <strong>Inter Tight</strong> sets everything you read: titles, labels, body. <strong>Barlow Condensed</strong> sets everything you watch change: watts, cadence, times, positions, and in black italic capitals the wordmark. <strong>JetBrains Mono</strong> appears only where a rider reads machine output: the diagnostics panel, the packet log and the render backend tag. The scale is Tailwind's, which is what the design was drawn with, and every step below 5xl carries its paired line height.</p>
+      <div class="ds-example"><div class="ds-example__canvas ds-example__canvas--stack ds-example__canvas--canvas">
+        <span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span>
+        <p class="page__title">Evening, Sam.</p>
+        <p class="ds-type-row"><span class="numeral ds-type-big">371</span><span class="numeral ds-type-unit">W</span><span class="text-muted">Target 418 W</span></p>
+        <p class="text-muted">Your best here: <span class="figure">27:10</span> · <span class="figure">3</span> of 7 maps open</p>
+        <p class="mono ds-type-mono">RES 8 · plan · ack 41 ms</p>
+      </div><div class="ds-example__caption"><span>Wordmark, page title, live numeral, inline figures and a diagnostics line, as they appear on Home, Race and Diagnostics.</span></div></div>
+
+    </section>
     <section class="ds-section" id="families"><h2><a href="#families">Families</a></h2>
-<ul><li><b>Sans</b> <code>--font-family-sans</code>: Inter, system fallback.</li><li><b>Numeral</b> <code>--font-family-numeral</code>: Archivo at <code>wdth 72</code>, tabular figures.</li><li><b>Mono</b> <code>--font-family-mono</code>: JetBrains Mono.</li></ul><p>The mocks fall back to system stacks; the app bundles the WOFF2 files (CSP allows same-origin only).</p>
+
+      <div class="ds-family-grid">
+        <div class="ds-family"><p class="ds-family__name">Inter Tight</p><p class="ds-family__sample" style="font-family: var(--font-family-sans)">Finish top 3 vs Bots on Old Town Criterium</p>
+          <p class="ds-family__meta"><code>--font-family-sans</code> · 400–800 variable · UI, titles, body. Bundled with a symbols subset for arrows, ≈, ★ and ✓.</p></div>
+        <div class="ds-family"><p class="ds-family__name">Barlow Condensed</p><p class="ds-family__sample numeral" style="font-size: var(--font-size-4xl); line-height: var(--line-height-none)">27:10 · 5th · 87 rpm</p>
+          <p class="ds-family__meta"><code>--font-family-display</code> · 600, 700, 800 and 700/800 italic · numerals with tabular figures (<code>.numeral</code>, <code>.figure</code>) and the wide italic (<code>.wide</code>, <code>.wordmark</code>).</p></div>
+        <div class="ds-family"><p class="ds-family__name">JetBrains Mono</p><p class="ds-family__sample mono" style="font-size: var(--font-size-sm)">Echelon EX-5s · 0bf669f1<br>−61 dBm · client 7f3c2a1</p>
+          <p class="ds-family__meta"><code>--font-family-mono</code> · 400–500 · diagnostics values, packet log, the URL in the browser notice, the backend tag on the race bar.</p></div>
+      </div>
+      <h3>The type helpers</h3>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Class</th><th scope="col">Sets</th><th scope="col">Example</th></tr></thead>
+        <tbody>
+          <tr><td><code>.numeral</code></td><td>Barlow 700, tabular figures, display tracking. Size comes from the component.</td><td><span class="numeral ds-type-mid">371</span></td></tr>
+          <tr><td><code>.figure</code></td><td>A numeral inside running text, at 16px in <code>--color-fg</code>; <code>.figure--gold</code> for earned counts.</td><td><span class="text-muted">5 of 21 stars</span> → <span class="text-muted"><span class="figure figure--gold">5</span> of 21 stars</span></td></tr>
+          <tr><td><code>.wide</code></td><td>Barlow 800 italic, uppercase, display tracking.</td><td><span class="wide ds-type-mid">Telo</span></td></tr>
+          <tr><td><code>.wordmark</code></td><td><code>.wide</code> for the logo; <code>.wordmark__product</code> in volt.</td><td><span class="wordmark ds-type-mid">TELO<span class="wordmark__product">Ride</span></span></td></tr>
+          <tr><td><code>.mono</code></td><td>JetBrains Mono, size from the component.</td><td><span class="mono">ack 41 ms</span></td></tr>
+        </tbody></table></div>
+
     </section>
-    <section class="ds-section" id="roles"><h2><a href="#roles">Roles</a></h2>
-<div class="ds-specimen"><span style="font: var(--text-display);">wattzup</span><span class="ds-specimen__meta">Display · <code>--text-display</code></span></div><div class="ds-specimen"><span style="font: var(--text-h1);">Set up your ride</span><span class="ds-specimen__meta">H1 · <code>--text-h1</code></span></div><div class="ds-specimen"><span style="font: var(--text-h2);">Your ride</span><span class="ds-specimen__meta">H2 · <code>--text-h2</code></span></div><div class="ds-specimen"><span style="font: var(--text-h3);">End this ride?</span><span class="ds-specimen__meta">H3 · <code>--text-h3</code></span></div><div class="ds-specimen"><span style="font: var(--text-h4);">Lost the bike</span><span class="ds-specimen__meta">H4 · <code>--text-h4</code></span></div><div class="ds-specimen"><span style="font: var(--text-body-lg);">Hard and easy efforts on repeat.</span><span class="ds-specimen__meta">Body large · <code>--text-body-lg</code></span></div><div class="ds-specimen"><span style="font: var(--text-body);">Resistance switches at every interval.</span><span class="ds-specimen__meta">Body · <code>--text-body</code></span></div><div class="ds-specimen"><span style="font: var(--text-body-sm);">Next: Recover 0:20 at level 6</span><span class="ds-specimen__meta">Body small · <code>--text-body-sm</code></span></div><div class="ds-specimen"><span style="font: var(--text-label);">Work resistance</span><span class="ds-specimen__meta">Label · <code>--text-label</code></span></div><div class="ds-specimen"><span style="font: var(--text-caption);">km/h · 15.6 mph</span><span class="ds-specimen__meta">Caption · <code>--text-caption</code></span></div><div class="ds-specimen"><span style="font: var(--text-overline);">ROUND 5 OF 8</span><span class="ds-specimen__meta">Overline · <code>--text-overline</code></span></div><div class="ds-specimen"><span style="font: var(--text-code);">f0 d1 09 00 1b</span><span class="ds-specimen__meta">Code · <code>--text-code</code></span></div><div class="ds-specimen"><span style="font: var(--text-numeral);" class=numeral>317</span><span class="ds-specimen__meta">Numeral · <code>--text-numeral</code></span></div>
+    <section class="ds-section" id="scale"><h2><a href="#scale">Scale</a></h2>
+
+      <p>Fourteen steps from Tailwind's scale. Inter Tight runs 2xs to 3xl; 4xl and up are numerals in Barlow Condensed, and from 5xl the line height is 1 because a numeral sits in a box sized by its component. Every specimen below is set with the tokens.</p>
+      <div class="ds-example ds-specimens"><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-size-2xs</b><br><span data-token="--font-size-2xs"></span> · 11px / <span data-token="--line-height-2xs"></span><br>XP label, chart axes, HUD captions only</div><p class="ds-specimen__text" style="font-family: var(--font-family-sans); font-weight: var(--font-weight-regular); font-size: var(--font-size-2xs); line-height: var(--line-height-2xs);">1,840 / 2,600 XP</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-size-xs</b><br><span data-token="--font-size-xs"></span> · 12px / <span data-token="--line-height-xs"></span><br>Pills, hints, photo tags, captions</div><p class="ds-specimen__text" style="font-family: var(--font-family-sans); font-weight: var(--font-weight-regular); font-size: var(--font-size-xs); line-height: var(--line-height-xs);">Old Town Criterium · 14.2 km · Easy</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-size-sm</b><br><span data-token="--font-size-sm"></span> · 14px / <span data-token="--line-height-sm"></span><br>The UI's working size: labels, buttons, nav, body on cards</div><p class="ds-specimen__text" style="font-family: var(--font-family-sans); font-weight: var(--font-weight-regular); font-size: var(--font-size-sm); line-height: var(--line-height-sm);">Next group class starts in 9 min</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-size-md</b><br><span data-token="--font-size-md"></span> · 16px / <span data-token="--line-height-md"></span><br>Body text; large buttons</div><p class="ds-specimen__text" style="font-family: var(--font-family-sans); font-weight: var(--font-weight-regular); font-size: var(--font-size-md); line-height: var(--line-height-md);">Pedal once to wake it up. Telo Ride reads your power and sets resistance for every hill and interval.</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-size-lg</b><br><span data-token="--font-size-lg"></span> · 18px / <span data-token="--line-height-lg"></span><br>Lead paragraphs</div><p class="ds-specimen__text" style="font-family: var(--font-family-sans); font-weight: var(--font-weight-regular); font-size: var(--font-size-lg); line-height: var(--line-height-lg);">Turn on Bluetooth on this computer, then try again.</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-size-xl</b><br><span data-token="--font-size-xl"></span> · 20px / <span data-token="--line-height-xl"></span><br>Section titles (Race, Classes)</div><p class="ds-specimen__text" style="font-family: var(--font-family-sans); font-weight: var(--font-weight-semibold); font-size: var(--font-size-xl); line-height: var(--line-height-xl);">Race</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-size-2xl</b><br><span data-token="--font-size-2xl"></span> · 24px / <span data-token="--line-height-2xl"></span><br>Page titles on phones; the next-ride goal</div><p class="ds-specimen__text" style="font-family: var(--font-family-sans); font-weight: var(--font-weight-semibold); font-size: var(--font-size-2xl); line-height: var(--line-height-2xl);">Evening, Sam.</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-size-3xl</b><br><span data-token="--font-size-3xl"></span> · 30px / <span data-token="--line-height-3xl"></span><br>Page titles from 640px</div><p class="ds-specimen__text" style="font-family: var(--font-family-sans); font-weight: var(--font-weight-semibold); font-size: var(--font-size-3xl); line-height: var(--line-height-3xl);">Evening, Sam.</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-size-4xl</b><br><span data-token="--font-size-4xl"></span> · 36px / <span data-token="--line-height-4xl"></span><br>Interval countdown, route grade, Connect title</div><p class="ds-specimen__text" style="font-family: var(--font-family-display); font-weight: var(--font-weight-bold); font-size: var(--font-size-4xl); line-height: var(--line-height-4xl); font-feature-settings: 'tnum' 1; letter-spacing: var(--letter-spacing-display);">1:48</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-size-5xl</b><br><span data-token="--font-size-5xl"></span> · 48px / 1 (<code>--line-height-none</code>)<br>Position on the HUD, class stats, resistance</div><p class="ds-specimen__text" style="font-family: var(--font-family-display); font-weight: var(--font-weight-bold); font-size: var(--font-size-5xl); line-height: var(--line-height-none); font-feature-settings: 'tnum' 1; letter-spacing: var(--letter-spacing-display);">5th</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-size-6xl</b><br><span data-token="--font-size-6xl"></span> · 60px / 1 (<code>--line-height-none</code>)<br>Plan total, cadence, level slider value</div><p class="ds-specimen__text" style="font-family: var(--font-family-display); font-weight: var(--font-weight-bold); font-size: var(--font-size-6xl); line-height: var(--line-height-none); font-feature-settings: 'tnum' 1; letter-spacing: var(--letter-spacing-display);">87</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-size-7xl</b><br><span data-token="--font-size-7xl"></span> · 72px / 1 (<code>--line-height-none</code>)<br>Reserved step of the scale; no mock uses it yet</div><p class="ds-specimen__text" style="font-family: var(--font-family-display); font-weight: var(--font-weight-bold); font-size: var(--font-size-7xl); line-height: var(--line-height-none); font-feature-settings: 'tnum' 1; letter-spacing: var(--letter-spacing-display);">418</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-size-8xl</b><br><span data-token="--font-size-8xl"></span> · 96px / 1 (<code>--line-height-none</code>)<br>Results position and live watts on phones; lobby clock</div><p class="ds-specimen__text" style="font-family: var(--font-family-display); font-weight: var(--font-weight-bold); font-size: var(--font-size-8xl); line-height: var(--line-height-none); font-feature-settings: 'tnum' 1; letter-spacing: var(--letter-spacing-display);">2nd</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-size-9xl</b><br><span data-token="--font-size-9xl"></span> · 128px / 1 (<code>--line-height-none</code>)<br>Results position and live watts from 640px</div><p class="ds-specimen__text" style="font-family: var(--font-family-display); font-weight: var(--font-weight-bold); font-size: var(--font-size-9xl); line-height: var(--line-height-none); font-feature-settings: 'tnum' 1; letter-spacing: var(--letter-spacing-display);">107</p></div></div>
+
     </section>
-    <section class="ds-section" id="numerals"><h2><a href="#numerals">Numeral scale</a></h2>
-<div class="ds-specimen"><span class="numeral" style="font-size: var(--font-size-numeral-sm); line-height: var(--line-height-numeral);">317</span><span class="ds-specimen__meta"><code>--font-size-numeral-sm</code></span></div><div class="ds-specimen"><span class="numeral" style="font-size: var(--font-size-numeral-md); line-height: var(--line-height-numeral);">317</span><span class="ds-specimen__meta"><code>--font-size-numeral-md</code></span></div><div class="ds-specimen"><span class="numeral" style="font-size: var(--font-size-numeral-lg); line-height: var(--line-height-numeral);">317</span><span class="ds-specimen__meta"><code>--font-size-numeral-lg</code></span></div><div class="ds-specimen"><span class="numeral" style="font-size: var(--font-size-numeral-xl); line-height: var(--line-height-numeral);">317</span><span class="ds-specimen__meta"><code>--font-size-numeral-xl</code></span></div><div class="ds-specimen"><span class="numeral" style="font-size: var(--font-size-numeral-2xl); line-height: var(--line-height-numeral);">317</span><span class="ds-specimen__meta"><code>--font-size-numeral-2xl</code></span></div><div class="ds-specimen"><span class="numeral" style="font-size: var(--font-size-numeral-hero); line-height: var(--line-height-numeral);">317</span><span class="ds-specimen__meta"><code>--font-size-numeral-hero</code></span></div><p>Hero grows to <code>--font-size-numeral-hero-lg</code> from 640px.</p>
+    <section class="ds-section" id="weights"><h2><a href="#weights">Weights</a></h2>
+
+      <div class="ds-example ds-specimens"><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-weight-regular</b> · <span data-token="--font-weight-regular"></span><br>Body text</div><p style="font-weight: var(--font-weight-regular); font-size: var(--font-size-xl); line-height: var(--line-height-xl);">Prairie Paceline</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-weight-medium</b> · <span data-token="--font-weight-medium"></span><br>Labels, nav links, pills, quiet buttons</div><p style="font-weight: var(--font-weight-medium); font-size: var(--font-size-xl); line-height: var(--line-height-xl);">Prairie Paceline</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-weight-semibold</b> · <span data-token="--font-weight-semibold"></span><br>Titles, buttons, banner titles</div><p style="font-weight: var(--font-weight-semibold); font-size: var(--font-size-xl); line-height: var(--line-height-xl);">Prairie Paceline</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-weight-bold</b> · <span data-token="--font-weight-bold"></span><br>Numerals (Barlow Condensed)</div><p style="font-weight: var(--font-weight-bold); font-size: var(--font-size-xl); line-height: var(--line-height-xl); font-family: var(--font-family-display);">2:41:07</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--font-weight-black</b> · <span data-token="--font-weight-black"></span><br>The wide italic: wordmark and .wide</div><p style="font-weight: var(--font-weight-black); font-size: var(--font-size-xl); line-height: var(--line-height-xl); font-family: var(--font-family-display); font-style: italic; text-transform: uppercase;">Telo Ride</p></div></div>
+
     </section>
-    <section class="ds-section" id="measure"><h2><a href="#measure">Measure and rules</a></h2>
-<ul><li>Body text max <code>--layout-measure</code> (65ch).</li><li>Headings never all caps except the overline role and the step-change banner.</li><li>Text scales to 200% without loss: sizes are rem, no fixed heights on text.</li></ul>
+    <section class="ds-section" id="line-height"><h2><a href="#line-height">Line heights</a></h2>
+
+      <p>Each size step has its own paired line height (<code>--line-height-sm</code> with <code>--font-size-sm</code>); use those first. The five unitless ratios below are for the few places that set leading independently of size.</p>
+      <div class="ds-leading-grid"><div class="ds-leading"><p class="ds-leading__text" style="line-height: var(--line-height-none)">Pedal to wake the bike and you’ll rejoin where everyone is.</p><p class="ds-specimen__meta">--line-height-none · <span data-token="--line-height-none"></span><br>Numerals 5xl and up, the wordmark</p></div><div class="ds-leading"><p class="ds-leading__text" style="line-height: var(--line-height-tight)">Pedal to wake the bike and you’ll rejoin where everyone is.</p><p class="ds-specimen__meta">--line-height-tight · <span data-token="--line-height-tight"></span><br>The next-ride goal (two lines at 30px)</p></div><div class="ds-leading"><p class="ds-leading__text" style="line-height: var(--line-height-snug)">Pedal to wake the bike and you’ll rejoin where everyone is.</p><p class="ds-specimen__meta">--line-height-snug · <span data-token="--line-height-snug"></span><br>Card titles that wrap</p></div><div class="ds-leading"><p class="ds-leading__text" style="line-height: var(--line-height-normal)">Pedal to wake the bike and you’ll rejoin where everyone is.</p><p class="ds-specimen__meta">--line-height-normal · <span data-token="--line-height-normal"></span><br>Body text; chart scales at 11px</p></div><div class="ds-leading"><p class="ds-leading__text" style="line-height: var(--line-height-relaxed)">Pedal to wake the bike and you’ll rejoin where everyone is.</p><p class="ds-specimen__meta">--line-height-relaxed · <span data-token="--line-height-relaxed"></span><br>Long help text in dialogs</p></div></div>
+
     </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">All tokens</a></h2>
-<p>49 tokens. Values resolve live for each theme.</p><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td><code>--font-family-sans</code></td><td colspan="2"><span data-token="--font-family-sans"></span></td></tr><tr><td><code>--font-family-numeral</code></td><td colspan="2"><span data-token="--font-family-numeral"></span></td></tr><tr><td><code>--font-family-mono</code></td><td colspan="2"><span data-token="--font-family-mono"></span></td></tr><tr><td><code>--font-size-xs</code></td><td colspan="2"><span data-token="--font-size-xs"></span></td></tr><tr><td><code>--font-size-sm</code></td><td colspan="2"><span data-token="--font-size-sm"></span></td></tr><tr><td><code>--font-size-md</code></td><td colspan="2"><span data-token="--font-size-md"></span></td></tr><tr><td><code>--font-size-lg</code></td><td colspan="2"><span data-token="--font-size-lg"></span></td></tr><tr><td><code>--font-size-xl</code></td><td colspan="2"><span data-token="--font-size-xl"></span></td></tr><tr><td><code>--font-size-2xl</code></td><td colspan="2"><span data-token="--font-size-2xl"></span></td></tr><tr><td><code>--font-size-3xl</code></td><td colspan="2"><span data-token="--font-size-3xl"></span></td></tr><tr><td><code>--font-size-4xl</code></td><td colspan="2"><span data-token="--font-size-4xl"></span></td></tr><tr><td><code>--font-size-5xl</code></td><td colspan="2"><span data-token="--font-size-5xl"></span></td></tr><tr><td><code>--font-size-numeral-sm</code></td><td colspan="2"><span data-token="--font-size-numeral-sm"></span></td></tr><tr><td><code>--font-size-numeral-md</code></td><td colspan="2"><span data-token="--font-size-numeral-md"></span></td></tr><tr><td><code>--font-size-numeral-lg</code></td><td colspan="2"><span data-token="--font-size-numeral-lg"></span></td></tr><tr><td><code>--font-size-numeral-xl</code></td><td colspan="2"><span data-token="--font-size-numeral-xl"></span></td></tr><tr><td><code>--font-size-numeral-2xl</code></td><td colspan="2"><span data-token="--font-size-numeral-2xl"></span></td></tr><tr><td><code>--font-size-numeral-hero</code></td><td colspan="2"><span data-token="--font-size-numeral-hero"></span></td></tr><tr><td><code>--font-size-numeral-hero-lg</code></td><td colspan="2"><span data-token="--font-size-numeral-hero-lg"></span></td></tr><tr><td><code>--font-size-banner</code></td><td colspan="2"><span data-token="--font-size-banner"></span></td></tr><tr><td><code>--font-weight-regular</code></td><td colspan="2"><span data-token="--font-weight-regular"></span></td></tr><tr><td><code>--font-weight-medium</code></td><td colspan="2"><span data-token="--font-weight-medium"></span></td></tr><tr><td><code>--font-weight-semibold</code></td><td colspan="2"><span data-token="--font-weight-semibold"></span></td></tr><tr><td><code>--font-weight-bold</code></td><td colspan="2"><span data-token="--font-weight-bold"></span></td></tr><tr><td><code>--font-weight-heavy</code></td><td colspan="2"><span data-token="--font-weight-heavy"></span></td></tr><tr><td><code>--line-height-none</code></td><td colspan="2"><span data-token="--line-height-none"></span></td></tr><tr><td><code>--line-height-numeral</code></td><td colspan="2"><span data-token="--line-height-numeral"></span></td></tr><tr><td><code>--line-height-tight</code></td><td colspan="2"><span data-token="--line-height-tight"></span></td></tr><tr><td><code>--line-height-snug</code></td><td colspan="2"><span data-token="--line-height-snug"></span></td></tr><tr><td><code>--line-height-normal</code></td><td colspan="2"><span data-token="--line-height-normal"></span></td></tr><tr><td><code>--line-height-relaxed</code></td><td colspan="2"><span data-token="--line-height-relaxed"></span></td></tr><tr><td><code>--letter-spacing-brand</code></td><td colspan="2"><span data-token="--letter-spacing-brand"></span></td></tr><tr><td><code>--letter-spacing-numeral</code></td><td colspan="2"><span data-token="--letter-spacing-numeral"></span></td></tr><tr><td><code>--letter-spacing-tight</code></td><td colspan="2"><span data-token="--letter-spacing-tight"></span></td></tr><tr><td><code>--letter-spacing-normal</code></td><td colspan="2"><span data-token="--letter-spacing-normal"></span></td></tr><tr><td><code>--letter-spacing-wide</code></td><td colspan="2"><span data-token="--letter-spacing-wide"></span></td></tr><tr><td><code>--text-display</code></td><td colspan="2"><span data-token="--text-display"></span></td></tr><tr><td><code>--text-h1</code></td><td colspan="2"><span data-token="--text-h1"></span></td></tr><tr><td><code>--text-h2</code></td><td colspan="2"><span data-token="--text-h2"></span></td></tr><tr><td><code>--text-h3</code></td><td colspan="2"><span data-token="--text-h3"></span></td></tr><tr><td><code>--text-h4</code></td><td colspan="2"><span data-token="--text-h4"></span></td></tr><tr><td><code>--text-body-lg</code></td><td colspan="2"><span data-token="--text-body-lg"></span></td></tr><tr><td><code>--text-body</code></td><td colspan="2"><span data-token="--text-body"></span></td></tr><tr><td><code>--text-body-sm</code></td><td colspan="2"><span data-token="--text-body-sm"></span></td></tr><tr><td><code>--text-caption</code></td><td colspan="2"><span data-token="--text-caption"></span></td></tr><tr><td><code>--text-label</code></td><td colspan="2"><span data-token="--text-label"></span></td></tr><tr><td><code>--text-overline</code></td><td colspan="2"><span data-token="--text-overline"></span></td></tr><tr><td><code>--text-code</code></td><td colspan="2"><span data-token="--text-code"></span></td></tr><tr><td><code>--text-numeral</code></td><td colspan="2"><span data-token="--text-numeral"></span></td></tr></tbody></table></div>
+    <section class="ds-section" id="letter-spacing"><h2><a href="#letter-spacing">Letter spacing</a></h2>
+
+      <div class="ds-example ds-specimens"><div class="ds-specimen"><div class="ds-specimen__meta"><b>--letter-spacing-tight</b> · <span data-token="--letter-spacing-tight"></span><br>Page titles (tracking-tight)</div><p style="letter-spacing: var(--letter-spacing-tight); font-size: var(--font-size-lg);">Standings · 10 riders</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--letter-spacing-display</b> · <span data-token="--letter-spacing-display"></span><br>Numerals and the wide italic</div><p style="letter-spacing: var(--letter-spacing-display); font-size: var(--font-size-lg); font-family: var(--font-family-display); font-weight: var(--font-weight-bold); font-size: var(--font-size-3xl);">+0:02 −0:01</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--letter-spacing-wide</b> · <span data-token="--letter-spacing-wide"></span><br>Overlines in the docs, small caps labels</div><p style="letter-spacing: var(--letter-spacing-wide); font-size: var(--font-size-lg); text-transform: uppercase; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold);">Standings · 10 riders</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--letter-spacing-wider</b> · <span data-token="--letter-spacing-wider"></span><br>HUD captions in capitals</div><p style="letter-spacing: var(--letter-spacing-wider); font-size: var(--font-size-lg); text-transform: uppercase; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold);">Standings · 10 riders</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--letter-spacing-widest</b> · <span data-token="--letter-spacing-widest"></span><br>Overlines (uppercase eyebrow text)</div><p style="letter-spacing: var(--letter-spacing-widest); font-size: var(--font-size-lg); text-transform: uppercase; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold);">Standings · 10 riders</p></div></div>
+
+    </section>
+    <section class="ds-section" id="roles"><h2><a href="#roles">Role shorthands</a></h2>
+
+      <p>Thirteen <code>font</code> shorthands bundle weight, size, line height and family. Write <code>font: var(--text-label)</code> and you get the whole decision; components that need to change one part (a button growing to 16px) use the separate tokens instead.</p>
+      <div class="ds-example ds-specimens"><div class="ds-specimen"><div class="ds-specimen__meta"><b>--text-display</b><br>The wide italic at 60px</div><p style="font: var(--text-display); text-transform: uppercase; letter-spacing: var(--letter-spacing-display);">TELO RIDE</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--text-numeral</b><br>Barlow numerals at 48px</div><p style="font: var(--text-numeral); font-feature-settings: 'tnum' 1; letter-spacing: var(--letter-spacing-display);">371 W</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--text-h1</b><br>Page title</div><p style="font: var(--text-h1);">Evening, Sam.</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--text-h2</b><br>Page title on phones; dialog title</div><p style="font: var(--text-h2);">End this ride?</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--text-h3</b><br>Section title</div><p style="font: var(--text-h3);">Race</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--text-h4</b><br>Card title</div><p style="font: var(--text-h4);">30 Minute HIIT Cardio</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--text-body-lg</b><br>Lead paragraph</div><p style="font: var(--text-body-lg);">Pedal once to wake it up.</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--text-body</b><br>Body text</div><p style="font: var(--text-body);">The class keeps going. Pedal to wake the bike and you’ll rejoin where everyone is.</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--text-body-sm</b><br>Body on cards</div><p style="font: var(--text-body-sm);">A harbour city after dark</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--text-caption</b><br>Captions, hints</div><p style="font: var(--text-caption);">Strong signal · EX5S-0bf669f1</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--text-label</b><br>Labels, buttons, nav</div><p style="font: var(--text-label);">Ride alone</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--text-overline</b><br>Eyebrows</div><p style="font: var(--text-overline); text-transform: uppercase; letter-spacing: var(--letter-spacing-widest); color: var(--color-fg-muted);">Your next unlock</p></div><div class="ds-specimen"><div class="ds-specimen__meta"><b>--text-code</b><br>Diagnostics values</div><p style="font: var(--text-code);">RES 8 · plan · ack 41 ms</p></div></div>
+
+    </section>
+    <section class="ds-section" id="measure"><h2><a href="#measure">Measure</a></h2>
+
+      <p>Prose stops at <code>--layout-measure</code> (65ch), documented on <a href="layout.html#containers">Layout</a>. In the product most text is short; the places that run long are the Connect lead, the lost-bike notice, dialog bodies and the diagnostics privacy note. Cards narrower than the measure simply wrap. Long names (maps, classes, riders) truncate with an ellipsis on one line inside tiles and boards and wrap everywhere else.</p>
+      <div class="ds-example"><div class="ds-example__canvas ds-example__canvas--stack"><p class="ds-measure">Pedal once to wake it up. Telo Ride reads your power and sets resistance for every hill and interval. Everything here is read in your browser and stays on this device until you download it.</p></div><div class="ds-example__caption"><span>65ch at 16px is about 600px of Inter Tight.</span></div></div>
+
+    </section>
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive type</a></h2>
+
+      <p>Type steps up at a breakpoint by swapping tokens, never with viewport units, so it respects zoom. The rules in the mocks:</p>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Element</th><th scope="col">Below 640px</th><th scope="col">From 640px</th><th scope="col">Class</th></tr></thead>
+        <tbody>
+          <tr><td>Page title</td><td>2xl, 24/32</td><td>3xl, 30/36</td><td><code>.page__title</code></td></tr>
+          <tr><td>Next-ride goal</td><td>2xl, tight</td><td>3xl, tight</td><td><code>.next-ride__goal</code></td></tr>
+          <tr><td>Connect, class start and setup titles</td><td>3xl</td><td>4xl</td><td><code>.connect__title</code>, <code>.class-start__title</code>, <code>.setup-map__title</code></td></tr>
+          <tr><td>Race clock</td><td>xl</td><td>2xl</td><td><code>.race-bar__clock</code></td></tr>
+          <tr><td>Results position, live watts</td><td>8xl (96px)</td><td>9xl (128px)</td><td><code>.results__big</code>, <code>.ride-readout__number--power</code></td></tr>
+        </tbody></table></div>
+      <div class="ds-example"><div class="ds-example__canvas ds-example__canvas--stack"><p class="page__title">Evening, Sam.</p></div><div class="ds-example__caption"><span><code>.page__title</code>, live: resize the window across 640px.</span></div></div>
+
+    </section>
+    <section class="ds-section" id="usage"><h2><a href="#usage">Usage</a></h2>
+
+      <ul class="ds-checklist">
+        <li><span>Anything that changes during a ride or is a measured value (watts, rpm, bpm, km/h, times, positions, XP counts) is Barlow with tabular figures, so digits do not jump as they tick.</span></li>
+        <li><span>Units sit beside the numeral in Inter Tight at a smaller size and muted colour ("87 rpm"), never inside the numeral.</span></li>
+        <li><span>Inter Tight 14px medium is the UI's working size for labels and buttons; 16px is body.</span></li>
+        <li><span>Sentence case everywhere. Uppercase only for the wordmark, <code>.wide</code> and overlines.</span></li>
+        <li><span>Mono only for machine output a rider might read back to support (IDs, URLs, timings).</span></li>
+        <li><span>Use a role shorthand when the whole decision fits; never mix a shorthand with a hand-set family.</span></li>
+      </ul>
+
+    </section>
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+
+      <h3>The 11px exception</h3>
+      <p>Body text is never below 16px and interface text never below 12px, with one exception: <code>--font-size-2xs</code> (11px) for text that repeats information available another way or that labels a chart. It is used for the XP label under the header bar (the link's accessible name already says "Level 7, 1840 of 2600 XP"), chart axes and scales (<code>.plan-preview__axis</code>, <code>.level-slider__scale</code>, <code>.ride-ticks</code>), the race bar's backend tag and the ride log link. Never use it for anything a rider must read to act.</p>
+      <ul>
+        <li>All sizes are in <code>rem</code>, so the whole scale follows the browser's font size; layouts are tested at 200% zoom.</li>
+        <li>Text spacing overrides (1.4.12) do not clip: line heights are set, heights are not, except on numerals whose box is sized to them.</li>
+        <li>Numerals that update live are announced through the component's live region at a sensible rate, never every tick; the type itself carries no semantics.</li>
+        <li>Fonts are bundled with <code>font-display: swap</code>; the fallbacks (<code>ui-sans-serif</code>, <code>ui-monospace</code>) keep the layout readable if a file fails.</li>
+      </ul>
+
+    </section>
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+
+      <p>Every type token in <code>tokens/tokens.css</code>. None change with the theme.</p>
+      <div class="ds-table-wrap"><table class="ds-table ds-token-table"><thead><tr><th scope="col">Token</th><th scope="col">Use</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody>
+<tr><td><code>--font-family-sans</code></td><td>UI, titles, body</td><td><span class="ds-val" data-theme="light" data-token="--font-family-sans"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-family-sans"></span></td></tr>
+<tr><td><code>--font-family-display</code></td><td>Numerals and the wide italic</td><td><span class="ds-val" data-theme="light" data-token="--font-family-display"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-family-display"></span></td></tr>
+<tr><td><code>--font-family-mono</code></td><td>Diagnostics</td><td><span class="ds-val" data-theme="light" data-token="--font-family-mono"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-family-mono"></span></td></tr>
+<tr><td><code>--font-size-2xs</code></td><td>11px · XP label, chart axes, HUD captions only</td><td><span class="ds-val" data-theme="light" data-token="--font-size-2xs"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-size-2xs"></span></td></tr>
+<tr><td><code>--font-size-xs</code></td><td>12px · Pills, hints, photo tags, captions</td><td><span class="ds-val" data-theme="light" data-token="--font-size-xs"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-size-xs"></span></td></tr>
+<tr><td><code>--font-size-sm</code></td><td>14px · The UI's working size: labels, buttons, nav, body on cards</td><td><span class="ds-val" data-theme="light" data-token="--font-size-sm"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-size-sm"></span></td></tr>
+<tr><td><code>--font-size-md</code></td><td>16px · Body text; large buttons</td><td><span class="ds-val" data-theme="light" data-token="--font-size-md"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-size-md"></span></td></tr>
+<tr><td><code>--font-size-lg</code></td><td>18px · Lead paragraphs</td><td><span class="ds-val" data-theme="light" data-token="--font-size-lg"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-size-lg"></span></td></tr>
+<tr><td><code>--font-size-xl</code></td><td>20px · Section titles (Race, Classes)</td><td><span class="ds-val" data-theme="light" data-token="--font-size-xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-size-xl"></span></td></tr>
+<tr><td><code>--font-size-2xl</code></td><td>24px · Page titles on phones; the next-ride goal</td><td><span class="ds-val" data-theme="light" data-token="--font-size-2xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-size-2xl"></span></td></tr>
+<tr><td><code>--font-size-3xl</code></td><td>30px · Page titles from 640px</td><td><span class="ds-val" data-theme="light" data-token="--font-size-3xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-size-3xl"></span></td></tr>
+<tr><td><code>--font-size-4xl</code></td><td>36px · Interval countdown, route grade, Connect title</td><td><span class="ds-val" data-theme="light" data-token="--font-size-4xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-size-4xl"></span></td></tr>
+<tr><td><code>--font-size-5xl</code></td><td>48px · Position on the HUD, class stats, resistance</td><td><span class="ds-val" data-theme="light" data-token="--font-size-5xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-size-5xl"></span></td></tr>
+<tr><td><code>--font-size-6xl</code></td><td>60px · Plan total, cadence, level slider value</td><td><span class="ds-val" data-theme="light" data-token="--font-size-6xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-size-6xl"></span></td></tr>
+<tr><td><code>--font-size-7xl</code></td><td>72px · Reserved step of the scale; no mock uses it yet</td><td><span class="ds-val" data-theme="light" data-token="--font-size-7xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-size-7xl"></span></td></tr>
+<tr><td><code>--font-size-8xl</code></td><td>96px · Results position and live watts on phones; lobby clock</td><td><span class="ds-val" data-theme="light" data-token="--font-size-8xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-size-8xl"></span></td></tr>
+<tr><td><code>--font-size-9xl</code></td><td>128px · Results position and live watts from 640px</td><td><span class="ds-val" data-theme="light" data-token="--font-size-9xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-size-9xl"></span></td></tr>
+<tr><td><code>--font-weight-regular</code></td><td>Body text</td><td><span class="ds-val" data-theme="light" data-token="--font-weight-regular"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-weight-regular"></span></td></tr>
+<tr><td><code>--font-weight-medium</code></td><td>Labels, nav links, pills, quiet buttons</td><td><span class="ds-val" data-theme="light" data-token="--font-weight-medium"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-weight-medium"></span></td></tr>
+<tr><td><code>--font-weight-semibold</code></td><td>Titles, buttons, banner titles</td><td><span class="ds-val" data-theme="light" data-token="--font-weight-semibold"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-weight-semibold"></span></td></tr>
+<tr><td><code>--font-weight-bold</code></td><td>Numerals (Barlow Condensed)</td><td><span class="ds-val" data-theme="light" data-token="--font-weight-bold"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-weight-bold"></span></td></tr>
+<tr><td><code>--font-weight-black</code></td><td>The wide italic: wordmark and .wide</td><td><span class="ds-val" data-theme="light" data-token="--font-weight-black"></span></td><td><span class="ds-val" data-theme="dark" data-token="--font-weight-black"></span></td></tr>
+<tr><td><code>--line-height-2xs</code></td><td>Paired with --font-size-2xs</td><td><span class="ds-val" data-theme="light" data-token="--line-height-2xs"></span></td><td><span class="ds-val" data-theme="dark" data-token="--line-height-2xs"></span></td></tr>
+<tr><td><code>--line-height-xs</code></td><td>Paired with --font-size-xs</td><td><span class="ds-val" data-theme="light" data-token="--line-height-xs"></span></td><td><span class="ds-val" data-theme="dark" data-token="--line-height-xs"></span></td></tr>
+<tr><td><code>--line-height-sm</code></td><td>Paired with --font-size-sm</td><td><span class="ds-val" data-theme="light" data-token="--line-height-sm"></span></td><td><span class="ds-val" data-theme="dark" data-token="--line-height-sm"></span></td></tr>
+<tr><td><code>--line-height-md</code></td><td>Paired with --font-size-md</td><td><span class="ds-val" data-theme="light" data-token="--line-height-md"></span></td><td><span class="ds-val" data-theme="dark" data-token="--line-height-md"></span></td></tr>
+<tr><td><code>--line-height-lg</code></td><td>Paired with --font-size-lg</td><td><span class="ds-val" data-theme="light" data-token="--line-height-lg"></span></td><td><span class="ds-val" data-theme="dark" data-token="--line-height-lg"></span></td></tr>
+<tr><td><code>--line-height-xl</code></td><td>Paired with --font-size-xl</td><td><span class="ds-val" data-theme="light" data-token="--line-height-xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--line-height-xl"></span></td></tr>
+<tr><td><code>--line-height-2xl</code></td><td>Paired with --font-size-2xl</td><td><span class="ds-val" data-theme="light" data-token="--line-height-2xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--line-height-2xl"></span></td></tr>
+<tr><td><code>--line-height-3xl</code></td><td>Paired with --font-size-3xl</td><td><span class="ds-val" data-theme="light" data-token="--line-height-3xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--line-height-3xl"></span></td></tr>
+<tr><td><code>--line-height-4xl</code></td><td>Paired with --font-size-4xl</td><td><span class="ds-val" data-theme="light" data-token="--line-height-4xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--line-height-4xl"></span></td></tr>
+<tr><td><code>--line-height-none</code></td><td>Numerals 5xl and up, the wordmark</td><td><span class="ds-val" data-theme="light" data-token="--line-height-none"></span></td><td><span class="ds-val" data-theme="dark" data-token="--line-height-none"></span></td></tr>
+<tr><td><code>--line-height-tight</code></td><td>The next-ride goal (two lines at 30px)</td><td><span class="ds-val" data-theme="light" data-token="--line-height-tight"></span></td><td><span class="ds-val" data-theme="dark" data-token="--line-height-tight"></span></td></tr>
+<tr><td><code>--line-height-snug</code></td><td>Card titles that wrap</td><td><span class="ds-val" data-theme="light" data-token="--line-height-snug"></span></td><td><span class="ds-val" data-theme="dark" data-token="--line-height-snug"></span></td></tr>
+<tr><td><code>--line-height-normal</code></td><td>Body text; chart scales at 11px</td><td><span class="ds-val" data-theme="light" data-token="--line-height-normal"></span></td><td><span class="ds-val" data-theme="dark" data-token="--line-height-normal"></span></td></tr>
+<tr><td><code>--line-height-relaxed</code></td><td>Long help text in dialogs</td><td><span class="ds-val" data-theme="light" data-token="--line-height-relaxed"></span></td><td><span class="ds-val" data-theme="dark" data-token="--line-height-relaxed"></span></td></tr>
+<tr><td><code>--letter-spacing-tight</code></td><td>Page titles (tracking-tight)</td><td><span class="ds-val" data-theme="light" data-token="--letter-spacing-tight"></span></td><td><span class="ds-val" data-theme="dark" data-token="--letter-spacing-tight"></span></td></tr>
+<tr><td><code>--letter-spacing-display</code></td><td>Numerals and the wide italic</td><td><span class="ds-val" data-theme="light" data-token="--letter-spacing-display"></span></td><td><span class="ds-val" data-theme="dark" data-token="--letter-spacing-display"></span></td></tr>
+<tr><td><code>--letter-spacing-wide</code></td><td>Overlines in the docs, small caps labels</td><td><span class="ds-val" data-theme="light" data-token="--letter-spacing-wide"></span></td><td><span class="ds-val" data-theme="dark" data-token="--letter-spacing-wide"></span></td></tr>
+<tr><td><code>--letter-spacing-wider</code></td><td>HUD captions in capitals</td><td><span class="ds-val" data-theme="light" data-token="--letter-spacing-wider"></span></td><td><span class="ds-val" data-theme="dark" data-token="--letter-spacing-wider"></span></td></tr>
+<tr><td><code>--letter-spacing-widest</code></td><td>Overlines (uppercase eyebrow text)</td><td><span class="ds-val" data-theme="light" data-token="--letter-spacing-widest"></span></td><td><span class="ds-val" data-theme="dark" data-token="--letter-spacing-widest"></span></td></tr>
+<tr><td><code>--text-display</code></td><td>The wide italic at 60px</td><td><span class="ds-val" data-theme="light" data-token="--text-display"></span></td><td><span class="ds-val" data-theme="dark" data-token="--text-display"></span></td></tr>
+<tr><td><code>--text-numeral</code></td><td>Barlow numerals at 48px</td><td><span class="ds-val" data-theme="light" data-token="--text-numeral"></span></td><td><span class="ds-val" data-theme="dark" data-token="--text-numeral"></span></td></tr>
+<tr><td><code>--text-h1</code></td><td>Page title</td><td><span class="ds-val" data-theme="light" data-token="--text-h1"></span></td><td><span class="ds-val" data-theme="dark" data-token="--text-h1"></span></td></tr>
+<tr><td><code>--text-h2</code></td><td>Page title on phones; dialog title</td><td><span class="ds-val" data-theme="light" data-token="--text-h2"></span></td><td><span class="ds-val" data-theme="dark" data-token="--text-h2"></span></td></tr>
+<tr><td><code>--text-h3</code></td><td>Section title</td><td><span class="ds-val" data-theme="light" data-token="--text-h3"></span></td><td><span class="ds-val" data-theme="dark" data-token="--text-h3"></span></td></tr>
+<tr><td><code>--text-h4</code></td><td>Card title</td><td><span class="ds-val" data-theme="light" data-token="--text-h4"></span></td><td><span class="ds-val" data-theme="dark" data-token="--text-h4"></span></td></tr>
+<tr><td><code>--text-body-lg</code></td><td>Lead paragraph</td><td><span class="ds-val" data-theme="light" data-token="--text-body-lg"></span></td><td><span class="ds-val" data-theme="dark" data-token="--text-body-lg"></span></td></tr>
+<tr><td><code>--text-body</code></td><td>Body text</td><td><span class="ds-val" data-theme="light" data-token="--text-body"></span></td><td><span class="ds-val" data-theme="dark" data-token="--text-body"></span></td></tr>
+<tr><td><code>--text-body-sm</code></td><td>Body on cards</td><td><span class="ds-val" data-theme="light" data-token="--text-body-sm"></span></td><td><span class="ds-val" data-theme="dark" data-token="--text-body-sm"></span></td></tr>
+<tr><td><code>--text-caption</code></td><td>Captions, hints</td><td><span class="ds-val" data-theme="light" data-token="--text-caption"></span></td><td><span class="ds-val" data-theme="dark" data-token="--text-caption"></span></td></tr>
+<tr><td><code>--text-label</code></td><td>Labels, buttons, nav</td><td><span class="ds-val" data-theme="light" data-token="--text-label"></span></td><td><span class="ds-val" data-theme="dark" data-token="--text-label"></span></td></tr>
+<tr><td><code>--text-overline</code></td><td>Eyebrows</td><td><span class="ds-val" data-theme="light" data-token="--text-overline"></span></td><td><span class="ds-val" data-theme="dark" data-token="--text-overline"></span></td></tr>
+<tr><td><code>--text-code</code></td><td>Diagnostics values</td><td><span class="ds-val" data-theme="light" data-token="--text-code"></span></td><td><span class="ds-val" data-theme="dark" data-token="--text-code"></span></td></tr>
+</tbody></table></div>
+
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

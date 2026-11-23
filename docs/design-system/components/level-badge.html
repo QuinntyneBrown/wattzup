@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Level badge — Telo Ride design system</title>
+<meta name="description" content="The gold level disc with its XP bar: header, Profile headline and the level-up moment on Results.">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/components.css">
+<link rel="stylesheet" href="../assets/ds.css">
+<style>
+  /* Page-only layout for the brand-cards pages (tokens only) */
+  .ds-pairs { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); margin-block: var(--space-4); }
+  .ds-pairs-col { display: flex; flex-direction: column; gap: var(--space-2); background: var(--color-bg-canvas); border: 1px solid var(--color-border-default); border-radius: var(--radius-lg); padding: var(--space-4); }
+  .ds-pairs-col__title { font: var(--text-overline); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-fg-subtle); }
+  /* ds.css styles every <a> as a prose link; product components inside examples keep their own link styles */
+  :where(.ds-example__canvas, .ds-anatomy__figure, .ds-matrix td, .ds-themes, .ds-stage) a { color: inherit; text-decoration: none; }
+  :where(.ds-example__canvas, .ds-anatomy__figure, .ds-matrix td, .ds-themes, .ds-stage) a:hover { color: inherit; }
+  /* visually hidden text inside a scrolling matrix must be contained by it, or it widens the page */
+  .ds-matrix, .ds-table-wrap { position: relative; }
+  @media (max-width: 40rem) { .ds-example__canvas { padding: var(--space-4) var(--space-3); } .ds-anatomy__figure { padding: var(--space-8) var(--space-4); } }
+  .ds-fill { width: 100%; }
+  .ds-anat-wide { width: 100%; }
+  .ds-anatomy__target { position: relative; display: inline-block; max-width: 100%; }
+  .ds-anatomy__target--wide { display: block; width: 100%; }
+  .ds-anatomy__figure { padding-inline: var(--space-6); }
+  .ds-anat-photo { width: min(20rem, 64vw); }
+  .ds-w-sm { width: 100%; max-width: 14rem; }
+  .ds-w-md { width: 100%; max-width: 24rem; }
+  .ds-w-lg { width: 100%; max-width: 36rem; }
+  .ds-note { font: var(--text-caption); color: var(--color-fg-muted); }
+  .ds-matrix td .ds-note { display: block; max-width: 12rem; }
+
+</style>
+</head>
+<body id="top">
+<a class="ds-skip" href="#main">Skip to content</a>
+<div class="ds-shell">
+  <nav class="ds-nav" aria-label="Design system">
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <details open><summary>Foundations</summary><ul>
+      <li><a href="../foundations/color.html">Color</a></li>
+      <li><a href="../foundations/typography.html">Typography</a></li>
+      <li><a href="../foundations/spacing.html">Spacing</a></li>
+      <li><a href="../foundations/layout.html">Layout</a></li>
+      <li><a href="../foundations/elevation.html">Elevation</a></li>
+      <li><a href="../foundations/shape.html">Shape</a></li>
+      <li><a href="../foundations/motion.html">Motion</a></li>
+      <li><a href="../foundations/iconography.html">Iconography</a></li>
+      <li><a href="../foundations/theming.html">Theming</a></li>
+      <li><a href="../foundations/responsive.html">Responsive</a></li>
+      <li><a href="../foundations/accessibility.html">Accessibility</a></li>
+      <li><a href="../foundations/content.html">Content</a></li>
+    </ul></details>
+    <details open><summary>Actions</summary><ul>
+      <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
+      <li><a href="../components/link.html">Link</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
+      <li><a href="../components/form-field.html">Form field</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
+      <li><a href="../components/slider.html">Slider</a></li>
+      <li><a href="../components/number-stepper.html">Number stepper</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
+      <li><a href="../components/skip-link.html">Skip link</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
+      <li><a href="../components/dialog.html">Dialog</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
+      <li><a href="../components/tooltip.html">Tooltip</a></li>
+      <li><a href="../components/divider.html">Divider</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
+      <li><a href="../components/description-list.html">Description list</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
+      <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
+      <li><a href="../components/toast.html">Toast</a></li>
+      <li><a href="../components/alert.html">Alert and banner</a></li>
+      <li><a href="../components/inline-message.html">Inline message</a></li>
+      <li><a href="../components/progress-bar.html">Progress bar</a></li>
+      <li><a href="../components/spinner.html">Spinner</a></li>
+      <li><a href="../components/skeleton.html">Skeleton</a></li>
+      <li><a href="../components/empty-state.html">Empty state</a></li>
+      <li><a href="../components/error-page.html">Error page</a></li>
+    </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
+    <details open><summary>Patterns</summary><ul>
+      <li><a href="../patterns/forms.html">Forms</a></li>
+      <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
+      <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
+      <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
+      <li><a href="../patterns/notifications.html">Notifications</a></li>
+      <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
+    </ul></details>
+  </nav>
+  <main id="main" class="ds-main">
+    <header class="ds-header">
+      <p class="ds-kicker">Component · Brand and progress</p>
+      <h1>Level badge</h1>
+      <p class="ds-lead">The rider’s level, drawn in gold because it was earned, always beside the XP that leads to the next one.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
+    </header>
+<section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+<p>The level badge is the gold disc with the rider’s level. Gold in Telo Ride means <em>earned</em>, so the badge appears only where a level is shown as an achievement: the app header, the Profile headline and the level-up moment on Results. It always travels with an <b>XP bar</b> (or the XP numbers) so the rider can see how far the next level is.</p><ul><li><b>Header</b>: 32px badge plus a 96px XP bar and “1,840 / 2,600 XP”, all inside one link to Profile. The bar hides under 640px.</li><li><b>Profile headline</b> (<code>.profile-level</code>): 96px badge, the title “Sam · Level 7”, a large XP bar and the meta line.</li><li><b>Level up</b> (<code>.level-up</code>): the large badge in a gold card at the top of “What you earned” on Results.</li><li>For a level <em>requirement</em> (“Opens at level 10”, “Lv 4” on the start grid) use text, not the badge: the rider has not earned it.</li></ul>
+</section>
+<section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+<div class="ds-anatomy"><figure class="ds-anatomy__figure"><div class="ds-anatomy__target"><div style="display:flex; gap: var(--space-8); align-items:center;"><a class="app-header__level" href="#top" aria-label="Level 7, 1840 of 2600 XP"><span class="level-badge" aria-hidden="true">7</span><span class="app-header__xp" aria-hidden="true" style="display: block;"><span class="xp-bar"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><span class="app-header__xp-label">1,840 / 2,600 XP</span></span></a></div><span class="ds-callout" style="left: -15%; top: -70%;" aria-hidden="true">1</span><span class="ds-callout" style="left: 5%; top: 120%;" aria-hidden="true">2</span><span class="ds-callout" style="left: 88%; top: -70%;" aria-hidden="true">3</span><span class="ds-callout" style="left: 50%; top: -70%;" aria-hidden="true">4</span><span class="ds-callout" style="left: 75%; top: 120%;" aria-hidden="true">5</span></div></figure><ol class="ds-anatomy__list"><li><div><b>Disc</b><small><code>--color-gold</code> circle, 32px (<code>--space-8</code>), full radius.</small></div></li><li><div><b>Numeral</b><small>Barlow Condensed 700, tabular, <code>--color-on-fill</code> (ink) in both themes.</small></div></li><li><div><b>XP track</b><small><code>.xp-bar</code>: 6px raised track, full radius.</small></div></li><li><div><b>XP fill</b><small><code>.xp-bar__fill</code>: gold, width from <code>--value</code> (0–100%).</small></div></li><li><div><b>XP label</b><small>11px muted “1,840 / 2,600 XP”, thousands separators, no spaces around the slash.</small></div></li></ol></div>
+</section>
+<section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+<p>Three compositions share the disc and the bar.</p><div class="ds-example"><div class="ds-example__canvas"><a class="app-header__level" href="#top" aria-label="Level 7, 1840 of 2600 XP"><span class="level-badge" aria-hidden="true">7</span><span class="app-header__xp" aria-hidden="true" style="display: block;"><span class="xp-bar"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><span class="app-header__xp-label">1,840 / 2,600 XP</span></span></a></div><div class="ds-example__caption"><span>Header: badge and bar in one link named “Level 7, 1840 of 2600 XP”; both parts are aria-hidden.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;a class="app-header__level" href="#top" aria-label="Level 7, 1840 of 2600 XP"&gt;&lt;span class="level-badge" aria-hidden="true"&gt;7&lt;/span&gt;&lt;span class="app-header__xp" aria-hidden="true" style="display: block;"&gt;&lt;span class="xp-bar"&gt;&lt;span class="xp-bar__fill" style="--value: 70.8%"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="app-header__xp-label"&gt;1,840 / 2,600 XP&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;</code></pre></details></div><div class="ds-example"><div class="ds-example__canvas ds-example__canvas--stack"><section class="profile-level ds-fill"><span class="level-badge profile-level__badge" aria-hidden="true">7</span><div class="profile-level__body"><h2 class="page__title">Sam · Level 7</h2><span class="xp-bar xp-bar--lg profile-level__bar" role="img" aria-label="1,840 of 2,600 XP"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><p class="profile-level__meta">760 XP to level 8 · 23 rides · 412 km · 4-day streak</p></div></section></div><div class="ds-example__caption"><span>Profile headline: the 96px badge is decorative; the h1 says the level and the bar is <code>role="img"</code>.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;section class="profile-level ds-fill"&gt;&lt;span class="level-badge profile-level__badge" aria-hidden="true"&gt;7&lt;/span&gt;&lt;div class="profile-level__body"&gt;&lt;h2 class="page__title"&gt;Sam · Level 7&lt;/h2&gt;&lt;span class="xp-bar xp-bar--lg profile-level__bar" role="img" aria-label="1,840 of 2,600 XP"&gt;&lt;span class="xp-bar__fill" style="--value: 70.8%"&gt;&lt;/span&gt;&lt;/span&gt;&lt;p class="profile-level__meta"&gt;760 XP to level 8 · 23 rides · 412 km · 4-day streak&lt;/p&gt;&lt;/div&gt;&lt;/section&gt;</code></pre></details></div><div class="ds-example"><div class="ds-example__canvas"><div class="level-up ds-w-md" role="status"><span class="level-badge level-badge--lg" aria-hidden="true">2</span><div class="level-up__body"><p class="level-up__title">You reached level 2</p><p class="level-up__meta">This race took you past 400 XP.</p><span class="xp-bar" role="img" aria-label="62 XP into level 2"><span class="xp-bar__fill" style="--value: 8%"></span></span></div></div></div><div class="ds-example__caption"><span>Level up on Results (an addition: the mocks never draw a ride that crosses a level). A new rider’s first top-3 finish takes them past 400 XP.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="level-up ds-w-md" role="status"&gt;&lt;span class="level-badge level-badge--lg" aria-hidden="true"&gt;2&lt;/span&gt;&lt;div class="level-up__body"&gt;&lt;p class="level-up__title"&gt;You reached level 2&lt;/p&gt;&lt;p class="level-up__meta"&gt;This race took you past 400 XP.&lt;/p&gt;&lt;span class="xp-bar" role="img" aria-label="62 XP into level 2"&gt;&lt;span class="xp-bar__fill" style="--value: 8%"&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details></div><p>The level-up card is new: the design has XP, levels and an unlock card on Results but no frame for crossing a level. It reuses the unlock card’s gold idiom and timing so the two moments feel like one family; when both happen, the unlock card comes first and the level-up card sits under it.</p>
+</section>
+<section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+<div class="ds-example"><div class="ds-example__canvas"><span class="level-badge" aria-hidden="true">7</span><span class="level-badge level-badge--lg" aria-hidden="true">7</span><span class="level-badge profile-level__badge" aria-hidden="true">7</span></div><div class="ds-example__caption"><span>Default 32px (header) · <code>--lg</code> 64px (level up) · <code>.profile-level__badge</code> 96px (Profile)</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;span class="level-badge" aria-hidden="true"&gt;7&lt;/span&gt;&lt;span class="level-badge level-badge--lg" aria-hidden="true"&gt;7&lt;/span&gt;&lt;span class="level-badge profile-level__badge" aria-hidden="true"&gt;7&lt;/span&gt;</code></pre></details></div><div class="ds-example"><div class="ds-example__canvas"><span class="xp-bar ds-w-sm"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><span class="xp-bar xp-bar--lg ds-w-md"><span class="xp-bar__fill" style="--value: 70.8%"></span></span></div><div class="ds-example__caption"><span>XP bar 6px (header, level up) and <code>--lg</code> 8px (Profile)</span></div></div><p>Numerals: 16px in the default badge, 30px at <code>--lg</code>, 48px on Profile. Two-digit levels (18 for the veteran) fit every size; three digits are not reachable in the design.</p>
+</section>
+<section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+<div class="ds-matrix"><table><caption class="visually-hidden">Level badge states</caption><thead><tr><th scope="col">Use</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Disabled</th></tr></thead><tbody><tr><th scope="row">Header link</th><td><a class="app-header__level" href="#top" aria-label="Level 7, 1840 of 2600 XP"><span class="level-badge" aria-hidden="true">7</span><span class="app-header__xp" aria-hidden="true" style="display: block;"><span class="xp-bar"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><span class="app-header__xp-label">1,840 / 2,600 XP</span></span></a></td><td><a class="app-header__level" href="#top" aria-label="Level 7, 1840 of 2600 XP" data-state="hover"><span class="level-badge" aria-hidden="true">7</span><span class="app-header__xp" aria-hidden="true" style="display: block;"><span class="xp-bar"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><span class="app-header__xp-label">1,840 / 2,600 XP</span></span></a></td><td><a class="app-header__level" href="#top" aria-label="Level 7, 1840 of 2600 XP" data-state="focus"><span class="level-badge" aria-hidden="true">7</span><span class="app-header__xp" aria-hidden="true" style="display: block;"><span class="xp-bar"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><span class="app-header__xp-label">1,840 / 2,600 XP</span></span></a></td><td><a class="app-header__level" href="#top" aria-label="Level 7, 1840 of 2600 XP" data-state="active"><span class="level-badge" aria-hidden="true">7</span><span class="app-header__xp" aria-hidden="true" style="display: block;"><span class="xp-bar"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><span class="app-header__xp-label">1,840 / 2,600 XP</span></span></a></td><td><span class="ds-note">Never disabled</span></td></tr><tr><th scope="row">Profile badge</th><td><span class="level-badge profile-level__badge" aria-hidden="true">7</span></td><td><span class="ds-note">Not interactive</span></td><td><span class="ds-note">Not interactive</span></td><td><span class="ds-note">Not interactive</span></td><td><span class="ds-note">Not interactive</span></td></tr></tbody></table></div><h3>Progress states</h3><div class="ds-matrix"><table><caption class="visually-hidden">Progress states</caption><thead><tr><th scope="col">Rider</th><th scope="col">Badge and bar</th><th scope="col">Meta</th></tr></thead><tbody><tr><th scope="row">New (level 1)</th><td><span style="display:flex; gap: var(--space-2); align-items:center;"><span class="level-badge" aria-hidden="true">1</span><span class="xp-bar ds-w-sm" role="img" aria-label="0 of 400 XP"><span class="xp-bar__fill" style="--value: 0%"></span></span></span></td><td>400 XP to level 2 · 0 rides · 0 km</td></tr><tr><th scope="row">Mid (level 7)</th><td><span style="display:flex; gap: var(--space-2); align-items:center;"><span class="level-badge" aria-hidden="true">7</span><span class="xp-bar ds-w-sm" role="img" aria-label="1,840 of 2,600 XP"><span class="xp-bar__fill" style="--value: 70.8%"></span></span></span></td><td>760 XP to level 8 · 23 rides · 412 km · 4-day streak</td></tr><tr><th scope="row">Veteran (level 18)</th><td><span style="display:flex; gap: var(--space-2); align-items:center;"><span class="level-badge" aria-hidden="true">18</span><span class="xp-bar ds-w-sm" role="img" aria-label="9,120 of 10,400 XP"><span class="xp-bar__fill" style="--value: 87.7%"></span></span></span></td><td>1,280 XP to level 19 · 146 rides · 3,870 km · 21-day streak</td></tr><tr><th scope="row">Level up</th><td><div class="level-up " role="status"><span class="level-badge level-badge--lg" aria-hidden="true">2</span><div class="level-up__body"><p class="level-up__title">You reached level 2</p><p class="level-up__meta">This race took you past 400 XP.</p><span class="xp-bar" role="img" aria-label="62 XP into level 2"><span class="xp-bar__fill" style="--value: 8%"></span></span></div></div></td><td>Announced once through <code>role="status"</code></td></tr></tbody></table></div><p>The header link has no visual hover of its own; focus draws the ring around the whole pill (<code>--radius-full</code>). An empty bar (0 XP) still shows its track so the rider sees there is something to fill.</p><h3>Both themes</h3><div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0;"><a class="app-header__level" href="#top" aria-label="Level 7, 1840 of 2600 XP"><span class="level-badge" aria-hidden="true">7</span><span class="app-header__xp" aria-hidden="true" style="display: block;"><span class="xp-bar"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><span class="app-header__xp-label">1,840 / 2,600 XP</span></span></a><section class="profile-level ds-fill"><span class="level-badge profile-level__badge" aria-hidden="true">7</span><div class="profile-level__body"><p class="page__title">Sam · Level 7</p><span class="xp-bar xp-bar--lg profile-level__bar" role="img" aria-label="1,840 of 2,600 XP"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><p class="profile-level__meta">760 XP to level 8 · 23 rides · 412 km · 4-day streak</p></div></section></div></div><div data-theme="dark"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0;"><a class="app-header__level" href="#top" aria-label="Level 7, 1840 of 2600 XP"><span class="level-badge" aria-hidden="true">7</span><span class="app-header__xp" aria-hidden="true" style="display: block;"><span class="xp-bar"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><span class="app-header__xp-label">1,840 / 2,600 XP</span></span></a><section class="profile-level ds-fill"><span class="level-badge profile-level__badge" aria-hidden="true">7</span><div class="profile-level__body"><p class="page__title">Sam · Level 7</p><span class="xp-bar xp-bar--lg profile-level__bar" role="img" aria-label="1,840 of 2,600 XP"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><p class="profile-level__meta">760 XP to level 8 · 23 rides · 412 km · 4-day streak</p></div></section></div></div></div>
+</section>
+<section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Width</th><th scope="col">Behaviour</th></tr></thead><tbody><tr><th scope="row">360px</th><td>Header: the badge alone (the XP bar and label hide under 640px); the link keeps its full name. Profile: the 96px badge wraps above the title when the row is narrower than badge + 12rem. Level up: badge left, text right, the bar fills the text column.</td></tr><tr><th scope="row">640px</th><td>Header shows the 96px XP bar and label beside the badge.</td></tr><tr><th scope="row">1024px</th><td>No further change. On Results the level-up card sits in the 400px aside under the unlock card.</td></tr></tbody></table></div>
+</section>
+<section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+<p>The disc is <code>--color-gold</code> and the numeral <code>--color-on-fill</code> (ink) in both themes; the pair passes in both because gold is a light fill everywhere. The XP track is <code>--color-raised</code> (paper-raised in light). The level-up card uses the gold status tokens (<code>--color-gold-subtle</code>, <code>--color-gold-border</code>, <code>--color-gold-fg</code>) through <code>--level-up-bg</code>, <code>--level-up-border</code> and <code>--level-up-title</code>.</p><p>On paper the gold fill against its raised track is only 1.5:1; the bar is decorative there because the numbers beside it (and the bar’s <code>aria-label</code>) carry the value. Never show an XP bar without its numbers.</p>
+</section>
+<section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+<h3>Role and pattern</h3><p>In the header, one <code>&lt;a&gt;</code> to Profile named “Level 7, 1840 of 2600 XP”; the badge and the bar inside are <code>aria-hidden</code> (<a href="https://www.w3.org/WAI/ARIA/apg/patterns/link/">APG Link pattern</a>). On Profile the level is in the <code>&lt;h1&gt;</code> and the bar is <code>role="img"</code> with “1,840 of 2,600 XP”. The level-up card is <code>role="status"</code> so it is announced once, politely, after the page title.</p><h3>Keyboard</h3><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody><tr><td><kbd>Tab</kbd></td><td>Reaches the header level link after the nav links and the streak.</td></tr><tr><td><kbd>Enter</kbd></td><td>Opens Profile.</td></tr></tbody></table><h3>Focus</h3><p>The ring follows the pill shape of <code>.app-header__level</code> (<code>--radius-full</code>). The Profile badge and the level-up card are not focusable.</p><h3>Labelling</h3><p>Write the numbers in the name, not “XP progress”. Keep the bar’s role="img" label identical to the visible text so speech and sight agree. Do not give the badge itself a name: it would repeat the level.</p><h3>Contrast</h3><div class="ds-pairs"><div data-theme="light" class="ds-pairs-col"><p class="ds-pairs-col__title">Light theme</p><div class="ds-pair"><span>Numeral on gold</span><span class="ds-pair__ratio" data-contrast="--color-on-fill|--color-gold" data-min="4.5"></span></div><div class="ds-pair"><span>Level-up title on its card</span><span class="ds-pair__ratio" data-contrast="--color-gold-fg|--color-gold-subtle" data-min="4.5"></span></div><div class="ds-pair"><span>XP label on canvas</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-ink" data-min="4.5"></span></div><div class="ds-pair"><span>Focus ring on canvas</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-ink" data-min="3"></span></div></div><div data-theme="dark" class="ds-pairs-col"><p class="ds-pairs-col__title">Dark theme</p><div class="ds-pair"><span>Numeral on gold</span><span class="ds-pair__ratio" data-contrast="--color-on-fill|--color-gold" data-min="4.5"></span></div><div class="ds-pair"><span>Level-up title on its card</span><span class="ds-pair__ratio" data-contrast="--color-gold-fg|--color-gold-subtle" data-min="4.5"></span></div><div class="ds-pair"><span>XP label on canvas</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-ink" data-min="4.5"></span></div><div class="ds-pair"><span>Focus ring on canvas</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-ink" data-min="3"></span></div></div></div><h3>Motion</h3><p>Only the level-up card moves: it fades and scales from 0.96 over <code>--duration-unlock</code> (250ms) after 200ms, and the badge settles from 0.6 with <code>--ease-spring</code>. Under reduced motion the durations are zero, so it simply appears.</p><h3>Touch</h3><p>The header link is 32px tall at its smallest (badge only) and about 140px wide with the bar.</p>
+</section>
+<section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+<ul><li>Level: “Level 7” in titles, “Lv 7” only in the dense start grid. Never “Lvl”.</li><li>XP: thousands separators and no spaces around the slash, “1,840 / 2,600 XP”; remaining XP as “760 XP to level 8”.</li><li>Level up: “You reached level 2”, then one line on why (“This race took you past 400 XP.”). No exclamation marks; gold already celebrates.</li><li>Leave out a zero streak: “0 rides · 0 km”, not “0-day streak” (the new-rider Profile mock prints it; see Sources).</li></ul>
+</section>
+<section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><a class="app-header__level" href="#top" aria-label="Level 7, 1840 of 2600 XP"><span class="level-badge" aria-hidden="true">7</span><span class="app-header__xp" aria-hidden="true" style="display: block;"><span class="xp-bar"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><span class="app-header__xp-label">1,840 / 2,600 XP</span></span></a></div><figcaption>One link holds the badge and the bar, with the numbers in its name.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><span class="level-badge" aria-hidden="true">10</span><span>30 Min Vice City Pyramid</span></div><figcaption>Use the gold badge for a requirement (“Opens at level 10”); the rider has not earned it.</figcaption></figure><figure class="ds-do"><div class="ds-example__canvas"><p class="profile-level__meta">400 XP to level 2 · 0 rides · 0 km</p></div><figcaption>Drop facts that are zero and mean nothing yet.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><p class="profile-level__meta">400 XP to level 2 · 0 rides · 0 km · 0-day streak</p></div><figcaption>Print a “0-day streak” to a rider who has never ridden (pages/profile/new-rider).</figcaption></figure></div>
+</section>
+<section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Disc</td><td><code>--color-gold</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-gold" data-swatch></i><span data-token="--color-gold"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-gold" data-swatch></i><span data-token="--color-gold"></span></span></td></tr><tr><td>Numeral</td><td><code>--color-on-fill</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-on-fill" data-swatch></i><span data-token="--color-on-fill"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-on-fill" data-swatch></i><span data-token="--color-on-fill"></span></span></td></tr><tr><td>XP track</td><td><code>--color-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td></tr><tr><td>XP label</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr><tr><td>Level-up background</td><td><code>--color-gold-subtle</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-gold-subtle" data-swatch></i><span data-token="--color-gold-subtle"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-gold-subtle" data-swatch></i><span data-token="--color-gold-subtle"></span></span></td></tr><tr><td>Level-up border</td><td><code>--color-gold-border</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-gold-border" data-swatch></i><span data-token="--color-gold-border"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-gold-border" data-swatch></i><span data-token="--color-gold-border"></span></span></td></tr><tr><td>Level-up title</td><td><code>--color-gold-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-gold-fg" data-swatch></i><span data-token="--color-gold-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-gold-fg" data-swatch></i><span data-token="--color-gold-fg"></span></span></td></tr><tr><td>Badge size default / lg / profile</td><td><code>--space-8/16/24</code></td><td colspan="2"><span data-token="--space-8"></span> / <span data-token="--space-16"></span> / <span data-token="--space-24"></span></td></tr><tr><td>Numeral size</td><td><code>--font-size-md/3xl/5xl</code></td><td colspan="2"><span data-token="--font-size-md"></span> / <span data-token="--font-size-3xl"></span> / <span data-token="--font-size-5xl"></span></td></tr><tr><td>XP bar height / lg</td><td><code>--space-1-5/2</code></td><td colspan="2"><span data-token="--space-1-5"></span> / <span data-token="--space-2"></span></td></tr><tr><td>Level-up motion</td><td><code>--duration-unlock</code>, <code>--ease-enter</code>, <code>--ease-spring</code></td><td colspan="2"><span data-token="--duration-unlock"></span> / <span data-token="--ease-enter"></span> / <span data-token="--ease-spring"></span></td></tr></tbody></table></div>
+</section>
+<section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+<pre><code>&lt;a class="app-header__level" href="#top" aria-label="Level 7, 1840 of 2600 XP"&gt;&lt;span class="level-badge" aria-hidden="true"&gt;7&lt;/span&gt;&lt;span class="app-header__xp" aria-hidden="true"&gt;&lt;span class="xp-bar"&gt;&lt;span class="xp-bar__fill" style="--value: 70.8%"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="app-header__xp-label"&gt;1,840 / 2,600 XP&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;
+&lt;section class="profile-level"&gt;&lt;span class="level-badge profile-level__badge" aria-hidden="true"&gt;7&lt;/span&gt;&lt;div class="profile-level__body"&gt;&lt;h1 class="page__title"&gt;Sam · Level 7&lt;/h1&gt;&lt;span class="xp-bar xp-bar--lg profile-level__bar" role="img" aria-label="1,840 of 2,600 XP"&gt;&lt;span class="xp-bar__fill" style="--value: 70.8%"&gt;&lt;/span&gt;&lt;/span&gt;&lt;p class="profile-level__meta"&gt;760 XP to level 8 · 23 rides · 412 km · 4-day streak&lt;/p&gt;&lt;/div&gt;&lt;/section&gt;
+&lt;div class="level-up" role="status"&gt;&lt;span class="level-badge level-badge--lg" aria-hidden="true"&gt;2&lt;/span&gt;&lt;div class="level-up__body"&gt;&lt;p class="level-up__title"&gt;You reached level 2&lt;/p&gt;&lt;p class="level-up__meta"&gt;This race took you past 400 XP.&lt;/p&gt;&lt;span class="xp-bar" role="img" aria-label="62 XP into level 2"&gt;&lt;span class="xp-bar__fill" style="--value: 8%"&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;</code></pre><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.level-badge</code> <code>.level-badge--lg</code></td><td>Gold disc; 32px or 64px.</td></tr><tr><td><code>.profile-level</code> + <code>__badge</code> <code>__body</code> <code>__bar</code> <code>__meta</code></td><td>Profile headline; the badge grows to 96px.</td></tr><tr><td><code>.xp-bar</code> <code>.xp-bar--lg</code> + <code>.xp-bar__fill</code></td><td>Track and fill; set <code>style="--value: 70.8%"</code>.</td></tr><tr><td><code>.level-up</code> + <code>__body</code> <code>__title</code> <code>__meta</code></td><td>Level-up card on Results (game.css).</td></tr><tr><td><code>.app-header__level</code> <code>.app-header__xp</code> <code>.app-header__xp-label</code></td><td>The header link.</td></tr></tbody></table></div>
+</section>
+<section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+<p>Extracted from these mocks:</p><ul><li><a href="../../mocks/pages/home/default.html">pages/home/default</a> (header badge and XP bar)</li><li><a href="../../mocks/pages/profile/default.html">pages/profile/default</a> (profile headline, level 7)</li><li><a href="../../mocks/pages/profile/new-rider.html">pages/profile/new-rider</a> (level 1, empty bar)</li><li><a href="../../mocks/pages/profile/veteran.html">pages/profile/veteran</a> (level 18)</li><li><a href="../../mocks/pages/results/default.html">pages/results/default</a> (XP earned and the unlock card the level-up card is modelled on)</li></ul><h3>Drift fixed during extraction</h3><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Mock</th><th scope="col">Issue</th><th scope="col">Resolution</th></tr></thead><tbody><tr><td>pages/profile/new-rider</td><td>Meta line prints “0-day streak”.</td><td>Content rule: leave out zero facts.</td></tr><tr><td>pages/results/*</td><td>No state shows a ride crossing a level, though XP and levels are the core of progression.</td><td><code>.level-up</code> added in game.css, in the unlock card’s idiom and timing.</td></tr><tr><td>(tokens)</td><td>Gold fill on the raised track is 1.5:1 on paper.</td><td>The bar is decorative in light; numbers always accompany it (pair kept dark-only in contrast-pairs.json).</td></tr></tbody></table></div>
+</section>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
+  </main>
+</div>
+<script src="../assets/ds.js"></script>
+</body>
+</html>

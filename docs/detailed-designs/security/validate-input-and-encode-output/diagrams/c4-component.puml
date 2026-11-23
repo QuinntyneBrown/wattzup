@@ -1,0 +1,26 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Validate input and encode output
+Container_Boundary(app, "Ride app") {
+  Component(tmpl, "Angular templates", "Interpolation and property binding · components, ride", "Text bindings only; no [innerHTML], no bypassSecurityTrust")
+  Component(err, "toApiError", "Helper · api", "Maps ProblemDetails to ApiError(code, fieldErrors)")
+  Component(page, "Screens", "Angular pages and dialogs · ride", "Branch on code; show a generic message")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(ctrl, "Controllers and RideHub", "ASP.NET Core · Telo.Ride.Api", "Bind input and send one MediatR request")
+  Component(vb, "ValidationBehavior", "MediatR pipeline behaviour · Telo.Ride.Application", "Runs every IValidator<TRequest>")
+  Component(val, "Request validators", "FluentValidation · Telo.Ride.Application", "Type, length, range, allowed values per field")
+  Component(eh, "ProblemDetailsExceptionHandler", "IExceptionHandler · Telo.Ride.Api", "400 with field and code; 500 with code only")
+  Component(hf, "ValidationHubFilter", "IHubFilter · Telo.Ride.Api", "Turns a refused hub message into a HubException with code")
+  Component(ef, "AppDbContext", "EF Core · Telo.Ride.Infrastructure", "LINQ and FromSql interpolation become parameters")
+}
+Rel(ctrl, vb, "Sends requests through")
+Rel(vb, val, "Runs")
+Rel(vb, eh, "Throws ValidationException to")
+Rel(hf, vb, "Wraps hub invocations that reach")
+Rel(ctrl, ef, "Reaches data through handlers on")
+Rel(eh, err, "Returns ProblemDetails read by", "JSON/HTTPS")
+Rel(err, page, "Gives ApiError to")
+Rel(page, tmpl, "Renders untrusted text through")
+@enduml

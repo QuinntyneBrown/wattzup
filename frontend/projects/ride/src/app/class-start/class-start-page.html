@@ -1,0 +1,63 @@
+<div class="class-start-page">
+  <wz-class-start-header>
+    <a wz-back-link slot="back" routerLink="/classes">Classes</a>
+    <wz-fullscreen-button slot="end" />
+  </wz-class-start-header>
+  <div class="class-start-page__scroll">
+    @if (store.dto(); as dto) {
+      <main id="main" class="container class-start" tabindex="-1">
+        <section class="class-start__main" aria-labelledby="class-title">
+          <wz-class-start-video
+            [videoId]="dto.video.videoId"
+            [title]="dto.title"
+            (frame)="store.parkVideo($event)"
+          />
+          <p class="class-start__meta">{{ store.meta() }}</p>
+          <h1 class="class-start__title" id="class-title">{{ dto.title }}</h1>
+          <p class="class-start__summary">{{ dto.summary }}</p>
+          <wz-class-plan
+            [lengthSeconds]="dto.lengthSeconds"
+            [segments]="dto.plan.segments"
+            [summary]="store.planSummary()"
+          />
+          <wz-class-sync
+            [videoId]="dto.video.videoId"
+            [syncOffsetSeconds]="dto.video.syncOffsetSeconds"
+          />
+        </section>
+        <wz-ride-choice
+          [options]="store.options()"
+          [selected]="store.mode()"
+          (choose)="store.choose($event)"
+        >
+          @if (store.mode() === 'group' && store.group(); as group) {
+            <wz-class-session slot="session" [riders]="group.riders" [next]="group.next" />
+          }
+          @if (store.mode() === 'group' && store.group(); as group) {
+            <button
+              wz-button
+              variant="primary"
+              size="xl"
+              [block]="true"
+              type="button"
+              (click)="join(dto.id, group.sessionId)"
+            >
+              {{ group.joinLabel }}
+            </button>
+          } @else {
+            <button
+              wz-button
+              variant="primary"
+              size="xl"
+              [block]="true"
+              type="button"
+              (click)="start(dto.id)"
+            >
+              Start class
+            </button>
+          }
+        </wz-ride-choice>
+      </main>
+    }
+  </div>
+</div>

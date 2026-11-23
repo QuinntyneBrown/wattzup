@@ -1,0 +1,13 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Ride with a group
+
+Person(rider, "Rider", "Rides a smart bike at home")
+Person(others, "Other riders", "Riders in the same group session")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(youtube, "YouTube", "Class videos")
+Rel(rider, telo, "Rides a group class in")
+Rel(others, telo, "Ride the same session in")
+Rel(telo, youtube, "Plays the class video from")
+@enduml

@@ -1,0 +1,40 @@
+@startuml
+title UML sequence behaviour — Accumulate ride totals
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "RideTicker (slice 5.1)" as clock
+  participant "RideTotals" as totals
+  participant "BikeTelemetry" as tele
+  participant "EnergyModel" as energy
+end box
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "Ride page readouts" as page
+end box
+loop each running second
+  clock -> totals : onRunningSecond()
+  totals -> tele : speedKmh(), powerW()
+  tele --> totals : current values
+  totals -> totals : distanceKm += speedKmh ÷ 3600 (L2-022 AC2)
+  totals -> totals : outputKj += powerW ÷ 1000 (L2-023 AC5)
+  totals -> energy : kcal(avgPowerW, runningSeconds)
+  energy --> totals : round(208 × 760 ÷ 1000 ÷ 0.24 ÷ 4.184) = 157 kcal (L2-023 AC4)
+  totals --> page : distanceKm, outputKj, energyKcal
+  page -> page : formatDistance() = "2.24 km", two decimals (L2-022 AC4)
+end
+opt ride paused
+  clock -> clock : No running second, so distance does not grow (L2-022 AC3)
+end
+@enduml

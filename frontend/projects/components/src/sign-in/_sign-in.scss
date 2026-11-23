@@ -1,0 +1,82 @@
+// Block sign-in (docs/design-system/assets/components.css, Sign-in): one centred panel on the page's background, the
+// lockup above a heading, a lead, the form and a quiet note. Shared by the email and the code screens, which each
+// draw the whole block in their own encapsulated stylesheet.
+:host {
+  display: block;
+}
+
+.sign-in {
+  display: grid;
+  min-height: 100dvh;
+  place-items: center;
+  padding: var(--space-6) var(--space-4);
+  background: var(--color-bg-canvas);
+}
+
+.sign-in__panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 26rem;
+}
+
+.sign-in__brand {
+  align-self: flex-start;
+}
+
+.sign-in__title {
+  margin: var(--space-10) 0 0;
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.sign-in__lead {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.sign-in__email {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-fg);
+  overflow-wrap: anywhere;
+}
+
+.sign-in__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+}
+
+.sign-in__note {
+  margin: var(--space-6) 0 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-faint);
+}
+
+.sign-in__spinner {
+  width: var(--space-5);
+  height: var(--space-5);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  animation: sign-in-spin var(--duration-loop, 1s) linear infinite;
+}
+
+@keyframes sign-in-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sign-in__spinner {
+    animation: none;
+  }
+}

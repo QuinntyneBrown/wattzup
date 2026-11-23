@@ -1,0 +1,55 @@
+@startuml
+title UML sequence behaviour — Open Race Setup
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "openMapGuard" as guard
+  participant "RaceSetupPage" as page
+  participant "RaceSetupStore" as store
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "ProgressApi" as prog
+  participant "RaceQueueApi" as queue
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "MapsController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "GetRaceQueueCountQueryHandler" as qh
+end box
+actor -> guard : Open /race/old-town-criterium
+guard -> prog : getProgress()
+prog --> guard : ProgressDto
+alt map not open
+  guard --> actor : Redirect to /race (L2-047 AC5)
+else map open
+  guard -> page : Activate route
+  page -> store : init(mapId)
+  store -> store : Facts, stars with " (earned)", Your best only if a best exists (L2-047 AC1, AC2, AC4)
+  store -> store : Goal line only when this map holds the next unlock (L2-047 AC3)
+  store -> store : mode = bots, pack = medium (L2-048 AC1, L2-049 AC1)
+  opt rider level >= 3
+    store -> queue : getQueueCount(mapId)
+    queue -> ctrl : GET /api/maps/{mapId}/queue
+    ctrl -> qh : Send GetRaceQueueCountQuery
+    qh --> ctrl : Riders seated in open sessions (L2-121 AC4)
+    ctrl --> queue : 200 count
+    queue --> store : queueCount
+  end
+  store --> page : view state
+  page --> actor : Map column and ride column; Riders online locked below level 3 (L2-048 AC2)
+end
+@enduml

@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../out-tsc/marketing",
+    "types": []
+  },
+  "include": ["src/**/*.ts", "../api/src/**/*.ts", "../components/src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts", "../*/src/**/*.spec.ts"]
+}

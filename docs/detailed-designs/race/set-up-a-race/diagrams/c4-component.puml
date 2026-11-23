@@ -1,0 +1,32 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Set up a race
+Person(rider, "Rider", "Rides a smart bike at home")
+Container_Boundary(app, "Ride app") {
+  Component(guard, "openMapGuard", "Route guard · ride", "Locked map goes to /race")
+  Component(page, "RaceSetupPage", "Angular page · ride", "Route /race/:mapId")
+  Component(store, "RaceSetupStore", "Route-scoped signal store · ride", "Map, progress, mode, pack, queue count")
+  Component(ui, "SetupFacts / SetupStars / SetupGoal / ModeOptions / PackStrength", "Presentation components · components", "Map column and ride column")
+  Component(planner, "RaceStartPlanner", "Service · domain/engine", "Mode and pack to RaceStart")
+  Component(session, "RaceSessionStore", "Route-scoped signal store · ride", "Riders-online session")
+  Component(queue, "RaceQueueApi", "HTTP client · api", "GET /api/maps/{mapId}/queue")
+  Component(hub, "RideHubClient", "SignalR client · api", "Single hub connection")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(ctrl, "MapsController", "ASP.NET Core controller · Telo.Ride.Api", "GET /api/maps/{mapId}/queue")
+  Component(qh, "GetRaceQueueCountQueryHandler", "MediatR handler · Telo.Ride.Application", "Counts seated riders")
+  Component(ridehub, "RideHub", "SignalR hub · Telo.Ride.Api", "FindRace")
+}
+Rel(rider, page, "Chooses mode, presses start")
+Rel(guard, page, "Admits open maps to")
+Rel(page, store, "Reads and calls start()")
+Rel(page, ui, "Renders")
+Rel(store, planner, "Plans start")
+Rel(store, queue, "Reads queue count")
+Rel(store, session, "findRace(mapId)")
+Rel(session, hub, "Sends FindRace")
+Rel(queue, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, qh, "Sends GetRaceQueueCountQuery")
+Rel(hub, ridehub, "Invokes", "SignalR")
+@enduml

@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Show heart rate
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Echelon or FTMS; Bluetooth LE")
+System_Ext(strap, "Heart-rate strap", "Bluetooth Heart Rate Service")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine")
+  ContainerDb(idb, "Browser storage", "localStorage and IndexedDB", "Remembered strap in localStorage; rides waiting to send in IndexedDB")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Sign-in, progress, catalogues, ride hub, feedback")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Riders, sessions, rides, progress, feedback")
+}
+Rel(rider, app, "Connects a strap and reads heart rate in")
+Rel(bike, app, "Indoor Bike Data with heart rate", "Web Bluetooth")
+Rel(strap, app, "0x2A37 notifications", "Web Bluetooth")
+Rel(app, idb, "Remembers the strap in")
+Rel(app, api, "POST /api/rides with avg and peak heart rate", "JSON/HTTPS")
+Rel(api, db, "Stores the ride", "EF Core")
+@enduml

@@ -1,0 +1,86 @@
+@startuml
+set separator none
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Authenticate every request
+package "Telo.Ride.Api" {
+  class AuthorizationSetup <<configuration>> {
+    +FallbackPolicy = RequireAuthenticatedUser
+    +AnonymousEndpoints = [POST /api/auth/code, POST /api/auth/code/confirm, POST /api/auth/sign-out,\n GET /api/classes, GET /api/classes/{id}, GET /api/maps, GET /api/maps/{mapId}/queue,\n /health/live, /health/ready, the app's files]
+  }
+  class SameOriginRequests {
+    +Code = "cross_origin"
+    +InvokeAsync(context: HttpContext): Task
+    -IsSameOrigin(request: HttpRequest): bool
+  }
+  class HealthEndpoints <<configuration>> {
+    +Live = "/health/live" (no checks)
+    +Ready = "/health/ready" (DatabaseHealthCheck)
+    +ResponseWriter = status text only
+  }
+}
+package "Telo.Ride.Application" {
+  interface ICurrentRider {
+    +Guid Id
+  }
+  interface IRiderOwned {
+    +Guid RiderId
+  }
+  class GetRideQueryHandler {
+    +Handle(query: GetRideQuery): Task<Result<RideDto>>
+  }
+  class RosterEntry {
+    +string DisplayName
+    +string Jersey
+    +string? CountryCode
+    +int Level
+    +RiderKind Kind
+  }
+  enum RiderKind {
+    Person
+    Bot
+  }
+}
+package "Telo.Ride.Infrastructure" {
+  class AppDbContext {
+    -ICurrentRider currentRider
+    #OnModelCreating(builder): void
+  }
+  class HttpCurrentRider
+  class DatabaseHealthCheck {
+    +CheckHealthAsync(context): Task<HealthCheckResult>
+  }
+  class RandomIds <<static>> {
+    +{static} NewId(): Guid
+    +{static} NewSessionKey(): byte[32]
+  }
+}
+package "Telo.Ride.Domain" {
+  class Ride {
+    +Guid Id
+    +Guid RiderId
+  }
+  class RaceSession {
+    +Guid Id
+  }
+}
+ICurrentRider <|.. HttpCurrentRider
+AppDbContext --> ICurrentRider
+AppDbContext ..> IRiderOwned : applies HasQueryFilter to
+Ride ..|> IRiderOwned
+GetRideQueryHandler --> AppDbContext : IAppDbContext
+GetRideQueryHandler ..> Ride
+RosterEntry --> RiderKind
+RandomIds ..> Ride : issues Id
+RandomIds ..> RaceSession : issues Id
+@enduml

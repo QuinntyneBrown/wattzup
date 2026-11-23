@@ -1,0 +1,13 @@
+// Element app-header__brand: the lockup as a link, with a hit area of at least 44 px tall.
+:host {
+  position: relative;
+  display: inline-flex;
+  border-radius: var(--radius-md);
+}
+
+:host::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block: min(0px, calc((100% - var(--target-comfortable)) / 2));
+}

@@ -1,0 +1,78 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "A group class now holds one live link to the ride hub, and only while you ride it."
+      ]
+    },
+    {
+      "id": "connect",
+      "bars": 5,
+      "lines": [
+        "Join a group session and the app opens one connection to the hub, signed in with your session."
+      ]
+    },
+    {
+      "id": "offset",
+      "bars": 5,
+      "lines": [
+        "It asks the hub for its time five times and keeps the quickest answer, so every rider's clock agrees."
+      ]
+    },
+    {
+      "id": "reconnect",
+      "bars": 5,
+      "lines": [
+        "If the link drops, it tries again at once, then after two, five and ten seconds, then every thirty, and checks the clock again."
+      ]
+    },
+    {
+      "id": "solo",
+      "bars": 4,
+      "lines": [
+        "Ride alone, or just browse, and there is no connection at all."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 5,
+      "lines": [
+        "The ride looks the same on every screen, with the link held quietly underneath."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: one connection, a measured clock, a quick return, and nothing left open."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

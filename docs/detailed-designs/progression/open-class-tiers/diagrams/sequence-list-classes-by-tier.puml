@@ -1,0 +1,53 @@
+@startuml
+title UML sequence behaviour — List classes by tier
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ClassLibraryStore" as page
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "HttpClassesApi" as client
+  participant "HttpProgressApi" as progress
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "ClassesController" as ctrl
+  participant "ProgressController" as pctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "GetClassesQueryHandler" as handler
+  participant "ClassPlanRules" as plan
+  participant "GetProgressQueryHandler" as phandler
+end box
+actor -> page : Open the Class Library
+page -> client : catalogue()
+client -> ctrl : GET /api/classes
+ctrl -> handler : Send GetClassesQuery
+loop Each class
+  handler -> plan : BrokenRule(class)
+  plan --> handler : null, or "the tier is not 1, 5, 10 or 20" (L2-043 AC1)
+end
+handler --> ctrl : The classes that pass, with opensAtLevel
+ctrl --> client : 200 ClassCatalogueDto
+page -> progress : level()
+progress -> pctrl : GET /api/progress
+pctrl -> phandler : Send GetProgressQuery
+phandler --> pctrl : New rider: level 1
+pctrl --> progress : 200 ProgressDto
+loop Each class
+  page -> page : open when opensAtLevel <= level (L2-043 AC3)
+end
+page --> actor : 3 open: 20 Minute Power Intervals, 20 Min Threshold Builder, 30 Minute HIIT Cardio (AC2); locked classes say the level they need (L2-082)
+@enduml

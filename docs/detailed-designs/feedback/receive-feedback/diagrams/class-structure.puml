@@ -1,0 +1,85 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+set separator none
+' --------------------------
+title Class structure — Receive feedback
+
+package "Telo.Ride.Api" {
+  class FeedbackController {
+    +Submit(request: SubmitFeedbackRequest): Task<IActionResult>
+  }
+  class FeedbackCommand <<CLI>> {
+    +Name: string = "feedback"
+    +RunAsync(services, output: TextWriter, ct): Task<int>
+  }
+}
+package "Telo.Ride.Application" {
+  class SubmitFeedbackCommand {
+    +Guid RiderId
+    +string? Kind
+    +string? Message
+    +IReadOnlyList<FeedbackFactDto>? Context
+    +FeedbackDiagnosticsDto? Diagnostics
+  }
+  class FeedbackFactDto {
+    +string? Term
+    +string? Value
+  }
+  class FeedbackDiagnosticsDto {
+    +string? AppVersion
+    +string? PacketLog
+  }
+  class SubmitFeedbackCommandValidator
+  class SubmitFeedbackCommandHandler {
+    +ReportsPerHour: int = 10
+    +Handle(cmd: SubmitFeedbackCommand): Task<FeedbackReceivedDto>
+  }
+  class ListFeedbackQueryHandler {
+    +Handle(query: ListFeedbackQuery): Task<IReadOnlyList<FeedbackReportDto>>
+  }
+  interface IFeedbackMetrics {
+    +FeedbackReceived(kind: string): void
+  }
+  interface IAppDbContext {
+    +DbSet<FeedbackReport> FeedbackReports
+    +SaveChangesAsync(): Task<int>
+  }
+}
+package "Telo.Ride.Infrastructure" {
+  class TeloRideMetrics
+}
+package "Telo.Ride.Domain" {
+  class FeedbackReport {
+    +Guid Id
+    +Guid RiderId
+    +string Kind
+    +string Message
+    +string Context
+    +string? AppVersion
+    +string? PacketLog
+    +DateTimeOffset ReceivedAt
+  }
+}
+
+FeedbackController ..> SubmitFeedbackCommand : sends
+FeedbackCommand ..> ListFeedbackQueryHandler : ListFeedbackQuery
+SubmitFeedbackCommandValidator ..> SubmitFeedbackCommand : validates
+SubmitFeedbackCommandHandler ..> SubmitFeedbackCommand : handles
+SubmitFeedbackCommand *-- "0..32" FeedbackFactDto
+SubmitFeedbackCommand *-- "0..1" FeedbackDiagnosticsDto
+SubmitFeedbackCommandHandler ..> FeedbackReport : creates
+SubmitFeedbackCommandHandler ..> IAppDbContext
+SubmitFeedbackCommandHandler ..> IFeedbackMetrics
+ListFeedbackQueryHandler ..> IAppDbContext
+TeloRideMetrics ..|> IFeedbackMetrics
+@enduml

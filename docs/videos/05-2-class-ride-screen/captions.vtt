@@ -1,0 +1,85 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.567
+Pick a class and ride it. Telo Ride now has the class ride screen, driving the bike
+
+00:00:07.567 --> 00:00:08.888
+through the plan.
+
+00:00:10.324 --> 00:00:14.771
+The header names the class and the mode, with the clock as a timer: seven minutes of
+
+00:00:14.771 --> 00:00:15.442
+thirty.
+
+00:00:20.647 --> 00:00:25.120
+The segment card counts down the part you're in: its kind, its time left, its
+
+00:00:25.120 --> 00:00:27.105
+progress, and the whole plan.
+
+00:00:30.971 --> 00:00:35.450
+Power reads against the segment's target. Within ten percent it's on target;
+
+00:00:35.450 --> 00:00:37.341
+otherwise it shows the gap.
+
+00:00:41.295 --> 00:00:46.024
+The stepper shows the resistance the bike reports, or a dash. Plus and minus nudge
+
+00:00:46.024 --> 00:00:48.689
+it, and switch off when the bike is away.
+
+00:00:51.618 --> 00:00:56.503
+At each boundary the next level goes to the bike. After a long gap, only the current
+
+00:00:56.503 --> 00:00:57.617
+level is sent.
+
+00:01:01.942 --> 00:01:06.551
+The class comes from the catalogue: one request, and the ride starts the moment it
+
+00:01:06.551 --> 00:01:07.301
+arrives.
+
+00:01:12.266 --> 00:01:17.489
+The first HTTP client costs about five kilobytes on the wire, so the bundle budget
+
+00:01:17.489 --> 00:01:18.936
+makes room for it.
+
+00:01:22.590 --> 00:01:29.651
+Still to come: the video in sync in 5.3, pause, leave or finish in 5.4, and the
+
+00:01:29.651 --> 00:01:31.828
+catalogue API in 6.1.
+
+00:01:32.913 --> 00:01:38.116
+On a phone the panel stacks in two columns. From tablet width, it's one row of four.
+
+00:01:43.237 --> 00:01:47.656
+What the tests prove: four new specs drive the screen on a fake clock and a fake
+
+00:01:47.656 --> 00:01:49.668
+bike, and every check is green.
+
+00:01:53.561 --> 00:01:58.164
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:58.509 --> 00:02:03.021
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:02:03.021 --> 00:02:04.692
+every hill and interval.
+
+00:02:05.037 --> 00:02:10.215
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:02:10.215 --> 00:02:15.663
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:02:15.663 --> 00:02:18.653
+XP, rider levels, stars and map unlocks.
+
+00:02:18.998 --> 00:02:21.491
+A custom workout lives under Profile.

@@ -1,0 +1,61 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:06.967
+When the world can't keep up, it gives up detail, never the ride's smoothness.
+
+00:00:10.324 --> 00:00:15.368
+As the world starts, it measures your display's frame period: sixteen point seven
+
+00:00:15.368 --> 00:00:17.411
+milliseconds at sixty hertz.
+
+00:00:20.647 --> 00:00:25.590
+Every two seconds it takes the median frame. Two slow windows in a row, over one
+
+00:00:25.590 --> 00:00:29.041
+point two times the period, and it drops one level.
+
+00:00:30.971 --> 00:00:35.637
+When frames run three times the period or more, it drops straight to Low, so you see
+
+00:00:35.637 --> 00:00:37.603
+one change of look, not three.
+
+00:00:41.295 --> 00:00:46.323
+The frame budget is main's, and it never raises the level again during the race. The
+
+00:00:46.323 --> 00:00:49.975
+performance design and the requirement now say the same.
+
+00:00:51.618 --> 00:00:56.098
+From a phone to a desktop, a dropped world still fills the screen, in the drawn
+
+00:00:56.098 --> 00:00:56.682
+look.
+
+00:01:01.942 --> 00:01:07.279
+What the tests prove: slow frames drop one level, very slow frames drop to Low, and
+
+00:01:07.279 --> 00:01:09.637
+fast frames never raise it back.
+
+00:01:12.266 --> 00:01:16.869
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:17.214 --> 00:01:21.726
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:21.726 --> 00:01:23.397
+every hill and interval.
+
+00:01:23.742 --> 00:01:28.920
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:28.920 --> 00:01:34.368
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:34.368 --> 00:01:37.358
+XP, rider levels, stars and map unlocks.
+
+00:01:37.704 --> 00:01:40.196
+A custom workout lives under Profile.

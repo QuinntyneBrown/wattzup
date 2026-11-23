@@ -1,0 +1,29 @@
+@startuml
+title UML sequence behaviour — Choose a length tab
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "TierTabs" as tabs
+  participant "ClassLibraryPage" as page
+  participant "ClassLibraryStore" as store
+end box
+rider -> tabs : Press "30 min" or arrow key
+tabs -> tabs : Move focus and set aria-selected="true" L2-081 AC2
+tabs -> page : tabChange(Min30)
+page -> store : selectTab(Min30)
+store --> page : Shelves filtered to "30 min"
+page --> rider : Only the "30 min" shelf shows
+@enduml

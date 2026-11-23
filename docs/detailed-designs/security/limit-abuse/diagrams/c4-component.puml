@@ -1,0 +1,26 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Limit abuse
+Container_Boundary(api, "Telo Ride API") {
+  Component(rides, "RidesController", "ASP.NET Core controller · Telo.Ride.Api", "POST /api/rides")
+  Component(submit, "SubmitRideCommandHandler", "MediatR handler · Telo.Ride.Application", "60 rides recorded per rider an hour")
+  Component(code, "SendSignInCodeCommandHandler", "MediatR handler · Telo.Ride.Application", "5 codes per email and 20 per network an hour")
+  Component(errors, "ProblemDetailsExceptionHandler", "IExceptionHandler · Telo.Ride.Api", "429 ProblemDetails code rate_limited with Retry-After")
+  Component(gate, "ProgressRateHubFilter", "IHubFilter · Telo.Ride.Api", "Drops progress above 2 a second; aborts after 10 s over")
+  Component(hub, "RideHub", "SignalR hub · Telo.Ride.Api", "ReportProgress, ReportRaceProgress")
+  ComponentDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Recorded rides, sign-in codes")
+}
+Container_Boundary(app, "Ride app") {
+  Component(store, "LiveSessionStore", "Store · ride", "Sends progress at most every 500 ms")
+  Component(outbox, "DeviceRideOutbox", "Service · domain", "Sends a ride again when Retry-After has passed")
+}
+Rel(outbox, rides, "POST /api/rides", "HTTPS")
+Rel(rides, submit, "Sends SubmitRideCommand")
+Rel(submit, db, "Counts the hour's rides in", "EF Core")
+Rel(code, db, "Counts the hour's codes in", "EF Core")
+Rel(submit, errors, "Refuses through")
+Rel(code, errors, "Refuses through")
+Rel(store, gate, "ReportProgress, ReportRaceProgress", "WebSocket")
+Rel(gate, hub, "Passes admitted messages to")
+@enduml

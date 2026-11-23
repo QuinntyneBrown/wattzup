@@ -1,28 +1,53 @@
-// Acceptance Test
-// Traces to: L2-098
-// Description: Wattzup can be installed as an app: its page links a web app manifest
-// with the name, a standalone display and 192 px and 512 px icons, one of them maskable.
-import { expect, test } from './fixtures/wz-test';
-import { RidePage } from './pages/ride.page';
+import { expect, test } from './fixtures/test';
+import { AppInstall } from './pages/app-install';
+import { HomePage } from './pages/home.page';
 
-test('links a manifest with the name, standalone display and icons (L2-098 AC2)', async ({
+// Slice 27.1, Installable app (L2-150 AC1).
+//
+// Given Chrome or Edge, when the rider opens Telo Ride, then the browser finds it installable: the page links a web app
+//   manifest named "Telo Ride", opening at / in its own window (standalone), in the dark theme colour #0a0b0d, with
+//   192 px and 512 px icons and a maskable one; and the page's theme colour is the same dark ink.
+// Given the manifest's icons, when the browser loads them, then each is a PNG of the size it declares.
+
+const INK = '#0a0b0d';
+
+test('Chrome finds Telo Ride installable from its manifest, with its name, icons and dark theme colour (L2-150 AC1) @critical', async ({
   page,
 }) => {
-  const ride = new RidePage(page);
-  await ride.open();
-  const manifest = await ride.manifest();
+  await new HomePage(page).open();
+  const install = new AppInstall(page);
+
+  const { url, errors, manifest } = await install.manifest();
+  expect(new URL(url).pathname).toBe('/manifest.webmanifest');
+  expect(errors).toEqual([]);
   expect(manifest).toMatchObject({
-    name: 'Wattzup',
-    short_name: 'Wattzup',
+    name: 'Telo Ride',
+    short_name: 'Telo Ride',
+    id: '/',
     start_url: '/',
+    scope: '/',
     display: 'standalone',
-    theme_color: '#0b0c0e',
-    background_color: '#0b0c0e',
+    theme_color: INK,
+    background_color: INK,
   });
-  const icons = manifest.icons as { src: string; sizes: string; type: string; purpose?: string }[];
-  expect(icons.map((i) => i.sizes).sort()).toEqual(['192x192', '512x512', '512x512']);
-  expect(icons.some((i) => i.purpose === 'maskable')).toBe(true);
-  for (const icon of icons) {
-    expect(await ride.imageSize(icon.src), icon.src).toBe(icon.sizes);
+  expect(manifest.icons.map((icon) => `${icon.sizes} ${icon.purpose ?? 'any'}`)).toEqual([
+    '192x192 any',
+    '512x512 any',
+    '512x512 maskable',
+  ]);
+  await expect(install.themeColor).toHaveAttribute('content', INK);
+  expect(await install.installabilityErrors()).toEqual([]);
+});
+
+test('each icon in the manifest is a PNG of the size it declares (L2-150 AC1)', async ({
+  page,
+}) => {
+  await new HomePage(page).open();
+  const install = new AppInstall(page);
+  const { manifest } = await install.manifest();
+
+  for (const icon of manifest.icons) {
+    expect(icon.type).toBe('image/png');
+    expect(await install.iconSize(icon.src)).toBe(icon.sizes);
   }
 });

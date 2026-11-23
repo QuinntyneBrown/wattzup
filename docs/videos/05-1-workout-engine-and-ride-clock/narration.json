@@ -1,0 +1,106 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "A class is a plan on a clock. Telo Ride now steps through the plan, and sends each segment's level to the bike."
+      ]
+    },
+    {
+      "id": "clock",
+      "bars": 4,
+      "lines": [
+        "The ride clock is performance dot now since the start, less the time paused. It never counts timer ticks."
+      ]
+    },
+    {
+      "id": "ticker",
+      "bars": 4,
+      "lines": [
+        "A ticker wakes at each whole second of that clock, and publishes it once. Every countdown moves together."
+      ]
+    },
+    {
+      "id": "plan",
+      "bars": 4,
+      "lines": [
+        "The plan is a list of segments: warm-up, work, recover. Each has a duration, a level and a cadence aim."
+      ]
+    },
+    {
+      "id": "state",
+      "bars": 4,
+      "lines": [
+        "At any moment of the clock, the plan says where it stands: the segment, its time left, and its target power."
+      ]
+    },
+    {
+      "id": "boundary",
+      "bars": 4,
+      "lines": [
+        "When a segment starts, its level goes to the bike as the target resistance, within half a second."
+      ]
+    },
+    {
+      "id": "paused",
+      "bars": 4,
+      "lines": [
+        "While the ride is paused, the clock stands still. No segment changes, and nothing is sent."
+      ]
+    },
+    {
+      "id": "hidden",
+      "bars": 4,
+      "lines": [
+        "Hide the tab for ten minutes, and the browser slows its timers. On return, the ticker catches up at once."
+      ]
+    },
+    {
+      "id": "deferred",
+      "bars": 4,
+      "lines": [
+        "Still to come: the class ride screen in 5.2, the video in 5.3, and pause, leave or finish in 5.4."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "Home doesn't change yet, at any width. The engine waits for the class ride screen."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: twenty-four new unit tests, one per row of the requirements, and every spec still green."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

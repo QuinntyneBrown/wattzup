@@ -1,0 +1,54 @@
+@startuml
+title UML sequence behaviour — Resend a sign-in code
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app" #E0F2FE
+  participant "SignInCodePage" as page
+  participant "SignInStore" as store
+  participant "HttpAuthApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "AuthController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "SendSignInCodeCommandHandler" as handler
+  participant "SignInCode" as code
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+store -> store : Start 30 s resend clock from the send time
+loop each second while under 30 s
+  store --> page : "Send a new code" disabled, seconds left shown (L2-003 AC1)
+end
+store --> page : Enable "Send a new code"
+actor -> page : Choose "Send a new code"
+page -> store : resend()
+store -> client : sendCode(email)
+client -> ctrl : POST /api/auth/code
+ctrl -> handler : Send SendSignInCodeCommand
+handler -> db : Load the active code and the hour's counts
+alt sent less than 30 s ago
+  handler --> ctrl : Refused: resend_too_soon
+  ctrl --> client : 429 ProblemDetails, Retry-After
+else
+  handler -> code : Supersede the earlier code so it stops working (L2-003 AC2)
+  handler -> db : Save the new code hash
+  ctrl --> client : 202 Accepted
+  client --> store : Sent
+  store --> page : Confirm the new code was sent, restart the clock
+end
+@enduml

@@ -1,0 +1,82 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Show XP, stars and personal best
+class RideSyncState <<api, union>> {
+  sending
+  recorded(answer: RideRecordedDto)
+  waitingOffline
+  notRecorded
+}
+interface RideOutbox <<api contract>> {
+  +submit(ride: SubmitRideRequest): void
+  +status(rideId: string): Signal<RideSyncState>
+}
+class SessionRideOutbox <<domain/storage>> {
+  -rides: last 10 by ride id
+  +submit(ride): void
+  +status(rideId): Signal<RideSyncState>
+}
+class RideRecordedDto <<api>> {
+  +xpLines: XpLineDto[]
+  +xpTotal: number
+  +level: number
+  +levelUp: boolean
+  +stars: MapStarsDto | null
+  +best: PersonalBestDto | null
+}
+class MapStarsDto <<api>> {
+  +held: number
+  +earned: number
+}
+class PersonalBestDto <<api>> {
+  +bestSeconds: number
+  +previousBestSeconds: number | null
+  +isNewBest: boolean
+}
+class XpLineDto <<api>> {
+  +kind: string
+  +label: string
+  +xp: number
+}
+class XpEarnedView {
+  +state: 'waiting' | 'offline' | 'notRecorded' | 'ready'
+  +total: string
+  +lines: XpLineDto[]
+}
+class MapStarsView {
+  +mapName: string
+  +held: number
+  +newLine: string | null
+}
+class "resultsView()" as rv <<ride helper>> {
+  +resultsView(result, sync: RideSyncState): ResultsView
+}
+class XpEarned <<components>> {
+  +view: input<XpEarnedView>
+}
+class MapStars <<components>> {
+  +view: input<MapStarsView>
+}
+SessionRideOutbox ..|> RideOutbox
+RideOutbox ..> RideSyncState
+rv ..> RideSyncState : reads
+RideSyncState --> RideRecordedDto
+RideRecordedDto "1" *-- "*" XpLineDto
+RideRecordedDto *-- MapStarsDto
+RideRecordedDto *-- PersonalBestDto
+rv ..> XpEarnedView : computes
+rv ..> MapStarsView : computes
+XpEarned --> XpEarnedView
+MapStars --> MapStarsView
+@enduml

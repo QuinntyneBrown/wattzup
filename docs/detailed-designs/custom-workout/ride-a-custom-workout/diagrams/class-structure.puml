@@ -1,0 +1,90 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Ride a custom workout
+
+package "domain library" {
+  class PowerTrace {
+    -samples: Float32Array
+    +capacitySeconds: number
+    +write(second: number, watts: number): void
+    +slice(): Float32Array
+  }
+  class RideRecorder {
+    +averagePowerW: number
+    +distanceMeters: number
+    +energyKcal: number
+    +outputKj: number
+    +onTargetShare: number
+    +second(telemetry: Telemetry, targetW: number): void
+  }
+  class WorkoutEngine {
+    +segment: Signal<Segment>
+    +position: Signal<SegmentPosition>
+    +next: Signal<Segment>
+    +targetPower: Signal<number>
+  }
+  class RideClock {
+    +elapsed: Signal<number>
+  }
+  class ResistanceController {
+    +target: Signal<number>
+    +applyPlanLevel(level: number): Promise<void>
+    +setManual(level: number): Promise<void>
+    +raise(): void
+    +lower(): void
+  }
+}
+package "ride application" {
+  class CustomRideStore {
+    +header: Signal<RideHeaderView>
+    +readouts: Signal<ReadoutsView>
+    +interval: Signal<IntervalCardView>
+    +mainView: Signal<MainViewTab>
+    +progress: Signal<ProgressView>
+    +metrics: Signal<MetricsView>
+    +levels: Signal<LevelsView>
+    +selectView(tab: MainViewTab): void
+    +setLevel(level: number): void
+    +raise(): void
+    +lower(): void
+    +editWorkout(): void
+  }
+  enum MainViewTab {
+    Video
+    PowerVsPlan
+  }
+  class IntervalCardView {
+    +kind: string
+    +round: string
+    +timeLeft: string
+    +barPercent: number
+    +nextLine: string
+  }
+  class RideHeaderView {
+    +workout: string
+    +clockLabel: string
+    +clock: string
+  }
+}
+CustomRideStore *-- WorkoutEngine
+CustomRideStore *-- RideClock
+CustomRideStore *-- RideRecorder
+CustomRideStore *-- PowerTrace
+CustomRideStore ..> ResistanceController
+CustomRideStore --> MainViewTab
+CustomRideStore ..> IntervalCardView : derives
+CustomRideStore ..> RideHeaderView : derives
+WorkoutEngine ..> RideClock
+WorkoutEngine ..> ResistanceController
+@enduml

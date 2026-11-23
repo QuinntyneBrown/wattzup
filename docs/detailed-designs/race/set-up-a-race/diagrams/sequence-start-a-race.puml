@@ -1,0 +1,56 @@
+@startuml
+title UML sequence behaviour — Start a race from Race Setup
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "RaceSetupPage" as page
+  participant "RaceSetupStore" as store
+  participant "RaceSessionStore" as session
+  participant "Router" as router
+end box
+box "Frontend — Ride app (api and domain libraries)" #E0F2FE
+  participant "RaceStartPlanner" as planner
+  participant "RideHubClient" as hub
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RideHub" as ridehub
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "FindRaceCommandHandler" as handler
+end box
+actor -> page : Press start
+page -> store : start()
+store -> planner : plan(mapId, mode, pack, hasBest)
+planner --> store : RaceStart
+alt Your best time (L2-050 AC2)
+  store -> router : Navigate /race/:mapId/ride?mode=solo
+  note right of store : No best: ghost rides the medium pace (L2-050 AC4)
+else Bots (L2-050 AC1)
+  store -> router : Navigate /race/:mapId/lobby?mode=bots&pack=medium
+  note right of store : Until the lobby (slice 15.1): /race/:mapId/ride?mode=bots&pack=medium
+else Riders online (L2-050 AC3)
+  store -> session : findRace(mapId)
+  session -> hub : connect() with session cookie
+  hub -> ridehub : FindRace(mapId)
+  ridehub -> handler : Send FindRaceCommand
+  handler --> ridehub : Seat in fullest open session, or a new one 30 s out (L2-121 AC1)
+  ridehub --> hub : SeatDto
+  hub --> session : seat
+  session --> store : seated
+  store -> router : Navigate /race/:mapId/lobby?mode=online
+end
+router --> actor : Lobby or race opens
+@enduml

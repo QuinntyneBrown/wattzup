@@ -1,0 +1,29 @@
+@startuml
+title UML sequence behaviour — Start a class alone
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "ClassStartPage" as page
+  participant "ClassStartStore" as store
+  participant "Router" as router
+end box
+rider -> page : Choose "Ride alone"
+page -> store : choose(Solo)
+store --> page : Button "Start class" L2-085 AC4
+rider -> page : Press "Start class"
+page -> router : Navigate to /classes/:id/ride?mode=solo
+router --> rider : Class ride starts at once (see ride a class)
+@enduml

@@ -1,0 +1,39 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Browse the class library
+
+Container_Boundary(app, "Ride app") {
+  Component(page, "ClassLibraryPage", "Angular page · ride", "Route /classes")
+  Component(store, "ClassLibraryStore", "Signal store · ride", "Cards, locks, selected tab")
+  Component(guard, "classUnlockedGuard", "CanActivateFn · ride", "Redirects a locked Class Start")
+  Component(tabs, "TierTabs", "Presentation component · components", "Class length tab list")
+  Component(shelf, "ClassShelf", "Presentation component · components", "Shelf of cards")
+  Component(card, "ClassCard", "Presentation component · components", "Open link or locked button")
+  Component(cached, "CachedClassesApi", "Service · domain/storage", "CLASSES_API")
+  Component(classesApi, "HttpClassesApi", "HTTP client · api", "GET /api/classes")
+  Component(progressApi, "HttpProgressApi", "HTTP client · api", "PROGRESS_API")
+  Component(cache, "CatalogueCache", "Service · domain/storage", "localStorage copy of the catalogue")
+}
+Container_Boundary(backend, "Telo Ride API") {
+  Component(ctrl, "ClassesController", "ASP.NET Core controller · Telo.Ride.Api", "GET /api/classes, public")
+  Component(handler, "GetClassesQueryHandler", "MediatR handler · Telo.Ride.Application", "Lists valid classes")
+  Component(rules, "ClassPlanRules", "Domain service · Telo.Ride.Domain", "Levels 1–32, total = length")
+  Component(catalogue, "EmbeddedClassCatalogue", "Reader · Telo.Ride.Infrastructure", "IClassCatalogue")
+}
+ComponentDb(file, "Catalogue/classes.json", "Embedded resource", "Shelves and classes")
+Rel(page, store, "Reads signals")
+Rel(page, tabs, "Renders")
+Rel(page, shelf, "Renders")
+Rel(shelf, card, "Renders")
+Rel(store, cached, "Loads catalogue")
+Rel(cached, classesApi, "Asks for the catalogue")
+Rel(store, progressApi, "Loads rider level")
+Rel(cached, cache, "Writes and falls back to")
+Rel(guard, store, "Checks class lock")
+Rel(classesApi, ctrl, "GET /api/classes", "JSON/HTTPS")
+Rel(ctrl, handler, "Sends GetClassesQuery")
+Rel(handler, rules, "Validates each plan")
+Rel(handler, catalogue, "Reads ClassDefinitions")
+Rel(catalogue, file, "Reads once")
+@enduml

@@ -1,0 +1,116 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Ride a race
+class RaceEngine {
+  +mode: RaceMode
+  +tick(telemetry: Telemetry, elapsedS: number): RaceSnapshot
+  +nudge(step: 1 | -1): void
+}
+class RaceSnapshot {
+  +clockS: number
+  +planLengthS: number
+  +powerW: number
+  +targetW: number
+  +delta: TargetDeltaView
+  +cadenceRpm: number
+  +heartBpm?: number
+  +speedKmh: number
+  +distanceM: number
+  +gradePct: number
+  +climbedM: number
+  +place?: number
+  +fieldSize: number
+  +gapAheadS?: number
+  +gapBehindS?: number
+  +standings: StandingRow[]
+  +interval: IntervalView
+  +resistance: number
+  +targetResistance: number
+}
+class StandingRow {
+  +name: string
+  +jersey: string
+  +isBot: boolean
+  +isGhost: boolean
+  +isYou: boolean
+  +gapS: number
+}
+class IntervalView {
+  +kind: SegmentKind
+  +index: number
+  +count: number
+  +remainingS: number
+  +fraction: number
+  +next?: Segment
+}
+class WorkoutEngine {
+  +current(elapsedS: number): Segment
+  +next(elapsedS: number): Segment | undefined
+}
+class Segment {
+  +kind: SegmentKind
+  +durationS: number
+  +level: number
+  +cadenceAim: number
+}
+class VirtualSpeedModel {
+  +speedMs(powerW: number, gradePct: number, previousMs: number): number
+}
+class RouteProfile {
+  +gradeAt(distanceM: number): number
+  +climbedTo(distanceM: number): number
+  +totalElevationM: number
+}
+class StandingsRanker {
+  +rank(field: FieldPosition[], nowS: number): FieldPosition[]
+}
+class GapCalculator {
+  +{static} MIN_SPEED_MS: 4
+  +gapS(distanceGapM: number, riderSpeedMs: number): number
+}
+class TargetDelta {
+  +{static} ON_TARGET_BAND: 0.1
+  +of(powerW: number, targetW: number): TargetDeltaView
+}
+interface RaceField {
+  +advance(elapsedS: number): FieldPosition[]
+}
+class RaceStore {
+  +snapshot: Signal<RaceSnapshot>
+  +raise(): void
+  +lower(): void
+}
+class RacePage
+class RacePower {
+  +snapshot: InputSignal<RaceSnapshot>
+}
+class RaceBoard {
+  +rows: InputSignal<StandingRow[]>
+}
+RacePage ..> RaceStore : reads
+RacePage ..> RacePower : renders
+RacePage ..> RaceBoard : renders
+RaceStore *-- RaceEngine : owns
+RaceEngine *-- WorkoutEngine
+RaceEngine *-- VirtualSpeedModel
+RaceEngine *-- RouteProfile
+RaceEngine *-- StandingsRanker
+RaceEngine *-- GapCalculator
+RaceEngine *-- TargetDelta
+RaceEngine --> RaceField : reads opponents
+WorkoutEngine "1" o-- "*" Segment
+RaceEngine ..> RaceSnapshot : creates
+RaceSnapshot "1" *-- "*" StandingRow
+RaceSnapshot *-- IntervalView
+@enduml

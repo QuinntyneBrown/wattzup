@@ -1,0 +1,118 @@
+{
+  "id": "coast",
+  "name": "Cliffside Coast",
+  "world": "coast",
+  "theme": "coast",
+  "seed": 37,
+  "layout": 2,
+  "map": "cliffside-coast",
+  "route": "Headland Road",
+  "distanceKm": 32,
+  "climbingMetres": 410,
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 300,
+        "level": 8,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 150,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 150,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "cool-down",
+        "duration": 360,
+        "level": 6,
+        "cadenceAim": 70
+      }
+    ]
+  }
+}

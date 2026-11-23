@@ -1,0 +1,44 @@
+@startuml
+title UML sequence behaviour — Record a session result
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "Riders' Ride apps" as apps
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RideHubNotifier" as notifier
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "TickLiveSessionsCommandHandler" as tick
+  participant "RaceSession" as session
+  participant "SessionResultRecorder" as recorder
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "SessionTicker" as ticker
+  database "Telo Ride database" as db
+end box
+ticker -> tick : Send TickLiveSessionsCommand(now)
+tick -> session : End(now)
+alt every person finished or DNF, or 2 min after the first finished (L2-071 AC3)
+  session --> tick : Final standings from received progress only; State = Ended
+  tick -> recorder : Record(session, standings)
+  recorder -> recorder : SessionResult.From(session, standings) (L2-125 AC1)
+  recorder -> db : Save SessionResult and entries
+  db --> recorder : Committed
+  recorder --> tick : SessionResult
+  tick -> notifier : SessionEnded(sessionId)
+  notifier --> apps : SessionEnded
+else not due
+  session --> tick : Keep running
+end
+@enduml

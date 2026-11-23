@@ -1,0 +1,102 @@
+<main id="main" class="container page profile" tabindex="-1">
+  <div class="profile__main">
+    @if (rideTooShort) {
+      <wz-banner
+        class="profile__notice"
+        tone="info"
+        title="That ride was under a minute, too short to save."
+      />
+    }
+    <wz-profile-level
+      [headline]="headline()"
+      [level]="level()"
+      [xpLabel]="xp()?.label ?? null"
+      [fillPercent]="xp()?.fillPercent ?? 0"
+      [meta]="meta()"
+    />
+  </div>
+  <aside class="settings" aria-labelledby="settings">
+    <h2 class="settings__title" id="settings">Settings</h2>
+    <ul class="settings__list">
+      <li>
+        <!-- A paired bike's row opens Diagnostics; with none, it goes to Connect Bike to pair one (L2-113 AC1). -->
+        @if (bike().paired) {
+          <button
+            wz-setting-row
+            type="button"
+            aria-haspopup="dialog"
+            icon="bike"
+            [title]="bike().title"
+            [body]="bike().body"
+            (click)="openDiagnostics()"
+          ></button>
+        } @else {
+          <a
+            wz-setting-row
+            routerLink="/connect"
+            icon="bike"
+            [title]="bike().title"
+            [body]="bike().body"
+          ></a>
+        }
+      </li>
+      <li>
+        <a
+          wz-setting-row
+          routerLink="/settings"
+          icon="settings"
+          title="Ride settings"
+          body="Quality, sound and display"
+        ></a>
+      </li>
+      <li>
+        <a
+          wz-setting-row
+          routerLink="/profile/custom"
+          icon="workout"
+          title="Custom workout"
+          body="Build your own intervals"
+        ></a>
+      </li>
+      <li>
+        <button
+          wz-setting-row
+          type="button"
+          icon="person"
+          title="Display name"
+          [body]="name() ?? ''"
+          aria-haspopup="dialog"
+          (click)="changeName()"
+        ></button>
+      </li>
+      <li>
+        <button
+          wz-setting-row
+          type="button"
+          icon="sign-out"
+          title="Sign out"
+          body="On this device"
+          [disabled]="account.signingOut()"
+          (click)="account.signOut()"
+        ></button>
+      </li>
+      <li>
+        <button
+          wz-setting-row
+          type="button"
+          icon="trash"
+          title="Delete my account"
+          body="Email, name, progress and rides"
+          [danger]="true"
+          aria-haspopup="dialog"
+          (click)="deleteAccount()"
+        ></button>
+      </li>
+    </ul>
+    @if (account.signOutFailed()) {
+      <wz-inline-message class="settings__message" tone="error" role="alert"
+        >We couldn’t sign you out. Check your connection and try again.</wz-inline-message
+      >
+    }
+  </aside>
+</main>

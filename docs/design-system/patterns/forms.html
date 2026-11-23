@@ -3,17 +3,47 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Forms — Wattzup design system</title>
-<meta name="description" content="How setup and its dialogs collect, validate and submit values.">
+<title>Forms — Telo Ride design system</title>
+<meta name="description" content="How Telo Ride asks for input: Custom Setup and the Feedback panel. Layout, labels, validation timing, error summary, submit states and the Leave this ride confirmation.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Pattern page layout helpers: tokens only. Product components come from components.css. */
+.ds-section > ul { list-style: disc; }
+.ds-section > ol { list-style: decimal; }
+.pt-frame { width: 100%; border: var(--border-width-hairline) solid var(--color-border-default); border-radius: var(--radius-lg); overflow: hidden; background: var(--color-ink); color: var(--color-fg); }
+.pt-frame .app { height: auto; min-height: 0; }
+.pt-pad { padding: var(--space-6) var(--space-5); }
+.pt-stack { display: flex; flex-direction: column; gap: var(--space-4); width: 100%; min-width: 0; }
+.pt-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.pt-grid { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); width: 100%; align-items: start; }
+.pt-tag { display: block; font: var(--text-overline); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-fg-subtle); margin-bottom: var(--space-2); }
+.pt-flow { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); font: var(--text-body-sm); }
+.pt-flow li { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0; }
+.pt-flow li + li::before { content: "→"; color: var(--color-fg-subtle); }
+.pt-flow b { padding: var(--space-1) var(--space-2-5); border-radius: var(--radius-md); background: var(--color-raised); color: var(--color-fg); font-weight: var(--font-weight-medium); }
+.pt-flow b[aria-current] { background: var(--color-accent-subtle); color: var(--color-fg-accent); }
+.pt-panel { width: 100%; max-width: 25rem; }
+.pt-stage-xl { min-height: 40rem; }
+.pt-note { font: var(--text-caption); color: var(--color-fg-muted); }
+.pt-stage-leave { min-height: 24rem; }
+/* Links inside product compositions keep the component's own colour, not the docs link style */
+:where(.pt-frame, .ds-stage, .pt-reset) a { color: inherit; text-decoration: none; }
+:where(.pt-frame, .ds-stage, .pt-reset) a:hover { color: inherit; }
+
+/* absolutely positioned visually-hidden text must stay inside the matrix scroller */
+.ds-matrix { position: relative; }
+.pt-list { list-style: decimal; padding-left: var(--space-6); }
+.pt-list > li + li { margin-top: var(--space-2); }
+.pt-list { margin-bottom: var(--space-4); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +58,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,81 +112,443 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Pattern</p>
       <h1>Forms</h1>
-      <p class="ds-lead">Wattzup has one form, ride setup, with its set and warm-up dialogs. They validate on submit, keep what the rider typed, and explain every error next to its field and in a summary.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span></div>
-      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#when">When to use</a></li><li><a href="#structure">Structure</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#sources">Sources</a></li></ul>
+      <p class="ds-lead">Telo Ride has two forms and one confirmation. Custom Setup builds a ride from choices that are never wrong; the Feedback panel takes one note and sends it; Leave this ride asks before anything is lost. This page is the rule book for all three and for any form added later.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#when">When to use</a></li><li><a href="#structure">Structure</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive behaviour</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>Forms use <a href="../components/form-field.html">form fields</a>, <a href="../components/number-stepper.html">number steppers</a>, <a href="../components/slider.html">sliders</a>, <a href="../components/switch.html">switches</a> and <a href="../components/radio-group.html">mode cards</a>, arranged by <a href="../components/form-layout.html">form layout</a>. Button-triggered editing never happens inline: setup is its own screen (AGENTS.md).</p>
-    </section>
-    <section class="ds-section" id="when"><h2><a href="#when">When to use</a></h2>
-<ul><li>Changing the plan before a ride: setup (<code>/setup</code>).</li><li>Editing one set, the warm-up or the cool-down: a dialog over setup.</li><li>Never for a single value the rider nudges mid-ride — that is the level control.</li></ul>
-    </section>
-    <section class="ds-section" id="structure"><h2><a href="#structure">Structure</a></h2>
-<ol><li>Heading and one-line intro.</li><li>Error summary (only after a failed submit).</li><li>Fields in reading order: mode, presets, values, toggles.</li><li>Preview (setup) and the single submit action, with its disabled reason underneath.</li></ol><div class="ds-example"><div class="ds-example__canvas ds-example__canvas--stack"><div class="alert alert--danger form-summary" role="alert" tabindex="-1"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><div class="alert__body"><span class="alert__title">2 things to fix before you start</span><ul><li><a href="#structure">Rounds — enter 1 to 30</a></li><li><a href="#structure">Recover — at least 0:05</a></li></ul></div></div><div class="field-grid"><div class="num-stepper"><label class="num-stepper__label" for="pf-r">Rounds</label><div class="num-stepper__row"><input class="num-stepper__input" id="pf-r" value="0" aria-invalid="true" aria-describedby="pf-re"></div><p class="field__error" id="pf-re">Enter 1 to 30 rounds.</p></div></div><button class="btn btn--primary" type="button" disabled aria-describedby="pf-h">Start ride</button><p class="text-muted text-sm" id="pf-h">Fix the 2 fields marked in red to start.</p></div><div class="ds-example__caption"><span>Invalid setup, composed.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="alert alert--danger form-summary" role="alert" tabindex="-1"&gt;
-&lt;svg class="icon" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;circle cx="12" cy="12" r="9"/&gt;
-&lt;path d="M12 8v4M12 16h.01"/&gt;
-&lt;/svg&gt;
-&lt;div class="alert__body"&gt;
-&lt;span class="alert__title"&gt;2 things to fix before you start&lt;/span&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;a href="#structure"&gt;Rounds — enter 1 to 30&lt;/a&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;a href="#structure"&gt;Recover — at least 0:05&lt;/a&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="field-grid"&gt;
-&lt;div class="num-stepper"&gt;
-&lt;label class="num-stepper__label" for="pf-r"&gt;Rounds&lt;/label&gt;
-&lt;div class="num-stepper__row"&gt;
-&lt;input class="num-stepper__input" id="pf-r" value="0" aria-invalid="true" aria-describedby="pf-re"&gt;
-&lt;/div&gt;
-&lt;p class="field__error" id="pf-re"&gt;Enter 1 to 30 rounds.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;button class="btn btn--primary" type="button" disabled aria-describedby="pf-h"&gt;Start ride&lt;/button&gt;
-&lt;p class="text-muted text-sm" id="pf-h"&gt;Fix the 2 fields marked in red to start.&lt;/p&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<ul><li><b>Default</b> — defaults or the saved draft; Start enabled.</li><li><b>Invalid</b> — inline errors, summary focused, Start disabled with the reason.</li><li><b>Submitting</b> — inputs read-only, button busy (Starting…).</li><li><b>Failed start</b> — danger alert beside the button; values kept.</li><li><b>Loading</b> — skeleton of the same layout.</li></ul>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive</a></h2>
-<ul><li>Fields stack in one column below 640px; steppers sit in three columns from 640px.</li><li>From 1024px the setup preview is a side panel; below that it follows the form.</li></ul>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<ul><li>Every control has a visible label; errors are in <code>aria-describedby</code> and set <code>aria-invalid</code>.</li><li>On a failed submit focus moves to the summary; each summary link focuses its field.</li><li>Nothing validates while typing, so the rider is never told off mid-entry (WCAG 3.3.1, 3.3.3).</li><li>The YouTube link keeps what was typed across reloads, so it is never asked twice (WCAG 3.3.7).</li></ul>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Errors give the rule and the fix: "Enter 1 to 30 rounds."</li><li>Summary title counts: "2 things to fix before you start".</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><p class="field__error">Recover must be at least 0:05.</p></div><figcaption>Say how to fix it.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><p class="field__error">Invalid input.</p></div><figcaption>A generic error.</figcaption></figure><figure class="ds-do"><div class="ds-example__canvas"><button class="btn btn--primary" type="button" disabled>Start ride</button><p class="text-muted text-sm">Fix the 2 fields marked in red to start.</p></div><figcaption>Disabled with a reason.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><button class="btn btn--primary" type="button" disabled>Start ride</button></div><figcaption>Disabled silently.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from:</p><ul><li><a href="../../mocks/pages/setup/default.html">pages/setup/default</a></li><li><a href="../../mocks/pages/setup/invalid.html">pages/setup/invalid</a></li><li><a href="../../mocks/pages/setup/submitting.html">pages/setup/submitting</a></li><li><a href="../../mocks/pages/setup/error.html">pages/setup/error</a></li><li><a href="../../mocks/pages/setup/video-invalid.html">pages/setup/video-invalid</a></li></ul>
+      <p>A form in Telo Ride is short, starts from a sensible value and says what pressing its button will do. There are two shapes:</p>
+      <ul>
+        <li><b>Configuration form</b> (Custom Setup, <code>/profile/custom</code>). Every control already holds a valid value: the page opens on the GCN 30-min HIIT ladder, never blank. Each change redraws the <em>Your ride</em> preview at once, so there is nothing to save and nothing to validate. The only action is <b>Start ride</b>.</li>
+        <li><b>Submission form</b> (Send feedback, opened from the custom ride header). One choice of kind, one message, one optional checkbox, one button named for what happens: <b>Report bug</b>, <b>Send idea</b> or <b>Send kudos</b>. It then shows <em>Sending…</em> and <em>Feedback sent</em>.</li>
+      </ul>
+      <p>The third piece is the <b>destructive confirmation</b>: <em>Leave this ride?</em> stands between the rider and a ride they would lose.</p>
+      <p>Components used: <a href="../components/form-field.html">Form field</a>, <a href="../components/text-field.html">Text field</a>, <a href="../components/textarea.html">Textarea</a>, <a href="../components/checkbox.html">Checkbox</a>, <a href="../components/radio-group.html">Radio group</a>, <a href="../components/switch.html">Switch</a>, <a href="../components/slider.html">Slider</a>, <a href="../components/number-stepper.html">Number stepper</a>, <a href="../components/chip.html">Chip</a>, <a href="../components/button.html">Button</a>, <a href="../components/form-layout.html">Form layout</a>, <a href="../components/popover.html">Popover</a> and <a href="../components/inline-message.html">Inline message</a>.</p>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="when"><h2><a href="#when">When to use</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">The rider needs to…</th><th scope="col">Use</th><th scope="col">In the mocks</th></tr></thead>
+        <tbody>
+          <tr><td>Shape something that always has a valid value</td><td>A configuration form: radio cards, chips, steppers, sliders, a live summary, one start action. No Save button, no validation.</td><td>Custom Setup</td></tr>
+          <tr><td>Send something once</td><td>A submission form: label above each field, a button named for the result, then sending and sent states.</td><td>Send feedback</td></tr>
+          <tr><td>Change one setting</td><td>A switch row that applies at once. No form, no button.</td><td>Log every packet (Diagnostics), Ride along to a video</td></tr>
+          <tr><td>Confirm losing work</td><td>A confirmation popover or dialog that names what is at stake and offers the safe way out first.</td><td>Leave this ride?</td></tr>
+          <tr><td>Pick one of a few options</td><td>A segmented control or radio cards, not a select. A select only past about seven options.</td><td>Pack strength, Training mode, Type of feedback</td></tr>
+        </tbody>
+      </table></div>
+      <p><b>Don't ask for what the app can read.</b> The bike comes from Bluetooth, the ride snapshot is attached to feedback for the rider, and the YouTube link fills in from the plan. Every field you add is one more thing to get wrong mid-ride.</p>
+    </section>
+
+    <section class="ds-section" id="structure"><h2><a href="#structure">Structure</a></h2>
+      <h3>Configuration form: Custom Setup</h3>
+      <p>The title and one line on what the page does come first, then the choices from biggest to smallest: mode, plan, fine-tuning, extras. The summary comes last, with the single primary action at its foot. On large screens the summary is a right-hand column that stays in view while the settings scroll.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0;">
+          <div class="pt-frame">
+            <header class="training-header">
+              <span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span>
+              <div class="training-header__divider" aria-hidden="true"></div>
+              <span class="training-header__bike">Echelon EX-5s</span>
+              <a class="training-header__close" href="#structure"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>Close</a>
+            </header>
+            <div class="setup">
+              <section class="setup__settings" aria-labelledby="ex-setup-title">
+                <div class="setup__form">
+                  <h4 class="setup__title" id="ex-setup-title">Set up your ride</h4>
+                  <p class="setup__lead">Telo Ride drives the bike's resistance for you. Pick how.</p>
+                  <div class="training-modes" role="radiogroup" aria-label="Training mode">
+                    <button class="training-mode" type="button" role="radio" aria-checked="true">
+                      <span class="training-mode__head"><span class="training-mode__radio" aria-hidden="true"></span><span class="training-mode__title">HIIT intervals</span></span>
+                      <span class="training-mode__body">Hard and easy efforts on repeat. Resistance switches at every interval.</span>
+                    </button>
+                    <button class="training-mode" type="button" role="radio" aria-checked="false" tabindex="-1">
+                      <span class="training-mode__head"><span class="training-mode__radio" aria-hidden="true"></span><span class="training-mode__title">Flat resistance</span></span>
+                      <span class="training-mode__body">One level, held the whole ride. You set the pace with your legs.</span>
+                    </button>
+                  </div>
+                  <div class="setup__section">
+                    <div class="preset-chips" role="group" aria-label="Plans">
+                      <button class="preset-chip" type="button" aria-pressed="true">GCN 30-min HIIT</button>
+                      <button class="preset-chip" type="button" aria-pressed="false">Tabata</button>
+                      <button class="preset-chip" type="button" aria-pressed="false">40 / 20</button>
+                      <button class="preset-chip" type="button" aria-pressed="false">Minute on</button>
+                      <button class="preset-chip" type="button" aria-pressed="false">Long climbs</button>
+                    </div>
+                    <div class="level-sliders">
+                      <div class="level-slider">
+                        <div class="level-slider__head">
+                          <label class="level-slider__label" for="ex-work-resistance">Work resistance</label>
+                          <span class="level-slider__value" aria-hidden="true">24<span class="level-slider__max"> / 32</span></span>
+                        </div>
+                        <input class="range" id="ex-work-resistance" type="range" min="1" max="32" value="24">
+                        <div class="level-slider__scale" aria-hidden="true"><span>Light</span><span>Max</span></div>
+                      </div>
+                    </div>
+                    <div class="training-steppers training-steppers--ruled">
+                      <div class="training-stepper" role="group" aria-labelledby="ex-stepper-warm-up">
+                        <div class="training-stepper__label" id="ex-stepper-warm-up">Warm-up</div>
+                        <div class="training-stepper__row">
+                          <button class="training-stepper__btn" type="button" aria-label="Less Warm-up"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                          <span class="training-stepper__value">5:00</span>
+                          <button class="training-stepper__btn" type="button" aria-label="More Warm-up"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                        </div>
+                      </div>
+                      <div class="training-stepper" role="group" aria-labelledby="ex-stepper-cool-down">
+                        <div class="training-stepper__label" id="ex-stepper-cool-down">Cool-down</div>
+                        <div class="training-stepper__row">
+                          <button class="training-stepper__btn" type="button" aria-label="Less Cool-down"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                          <span class="training-stepper__value">6:00</span>
+                          <button class="training-stepper__btn" type="button" aria-label="More Cool-down"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="setup__video">
+                    <div class="setup-toggle">
+                      <span id="ex-video-toggle"><span class="setup-toggle__label">Ride along to a video</span><span class="setup-toggle__detail">Plays in sync on the dashboard</span></span>
+                      <button class="switch" type="button" role="switch" aria-checked="true" aria-labelledby="ex-video-toggle"></button>
+                    </div>
+                    <div class="video-sync">
+                      <label class="video-sync__label" for="ex-video-url">YouTube link</label>
+                      <input class="input video-sync__url" id="ex-video-url" type="url" value="https://www.youtube.com/watch?v=QUoToFsMNig" placeholder="https://www.youtube.com/watch?v=…">
+                      <p class="video-sync__help">Scrub the preview past the intro to the moment the warm-up begins, then use that time.</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <aside class="plan-preview" aria-labelledby="ex-preview-title">
+                <h4 class="plan-preview__label" id="ex-preview-title">Your ride</h4>
+                <p class="plan-preview__total">30:00</p>
+                <dl class="plan-preview__facts">
+                  <div class="plan-preview__fact"><dt>Structure</dt><dd>8 × 0:30 · 3:00 → 1:30 recover</dd></div>
+                  <div class="plan-preview__fact"><dt>Time under load</dt><dd>4:00</dd></div>
+                  <div class="plan-preview__fact"><dt>Peak resistance</dt><dd>Level 24</dd></div>
+                  <div class="plan-preview__fact"><dt>Expected avg power</dt><dd>~154 W</dd></div>
+                </dl>
+                <div class="plan-preview__foot">
+                  <button class="btn btn--primary btn--xl btn--block plan-preview__start" type="button">Start ride</button>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Custom Setup, shortened (the interval ladder and video player are left out). Choices from big to small; the summary and its one action last.</span><span>pages/custom-setup/default</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;main class="setup"&gt;
+  &lt;section class="setup__settings" aria-labelledby="setup-title"&gt;
+    &lt;div class="setup__form"&gt;
+      &lt;h1 class="setup__title" id="setup-title"&gt;Set up your ride&lt;/h1&gt;
+      &lt;div class="training-modes" role="radiogroup" aria-label="Training mode"&gt;…&lt;/div&gt;
+      &lt;div class="preset-chips" role="group" aria-label="Plans"&gt;…&lt;/div&gt;
+      &lt;div class="level-slider"&gt;&lt;label for="work"&gt;Work resistance&lt;/label&gt;&lt;input class="range" id="work" type="range"&gt;&lt;/div&gt;
+      &lt;div class="training-stepper" role="group" aria-labelledby="warm-up"&gt;…&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+  &lt;aside class="plan-preview" aria-labelledby="preview-title"&gt;
+    … &lt;button class="btn btn--primary btn--xl btn--block plan-preview__start"&gt;Start ride&lt;/button&gt;
+  &lt;/aside&gt;
+&lt;/main&gt;</code></pre></details>
+      </div>
+      <ol class="ds-anatomy__list">
+        <li><div><b>Title and lead</b><small>A heading that says what the page makes (“Set up your ride”) and one sentence on how it works.</small></div></li>
+        <li><div><b>The big choice</b><small>Radio cards for the mode. Each card has a title and one line of consequence.</small></div></li>
+        <li><div><b>Starting points</b><small>Preset chips (aria-pressed) load a whole plan at once. Fine-tuning below edits it.</small></div></li>
+        <li><div><b>Fine-tuning</b><small>Sliders for levels, steppers for durations. Values in large numerals, labels muted above.</small></div></li>
+        <li><div><b>Optional extras</b><small>Behind a switch, collapsed when off: “Ride along to a video” reveals the YouTube link and sync.</small></div></li>
+        <li><div><b>Summary and the one action</b><small>“Your ride” restates the result in the rider's terms, then Start ride (xl, primary, full width).</small></div></li>
+      </ol>
+
+      <h3>Submission form: Send feedback</h3>
+      <p>A form in a panel has a title bar with a close button, the fields, and a footer that holds a short note on the left and the primary action on the right. Labels sit above their fields; a hint sits under the label it explains.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--canvas">
+          <section class="feedback pt-panel" aria-labelledby="ex-fb-title">
+            <header class="feedback__head">
+              <h4 class="feedback__title" id="ex-fb-title">Send feedback</h4>
+              <button class="feedback__close" type="button" aria-label="Close feedback"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+            </header>
+            <div class="feedback__form">
+              <div class="feedback__kinds" role="radiogroup" aria-label="Type of feedback">
+                <button class="feedback__kind feedback__kind--bug" type="button" role="radio" aria-checked="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20v-9"/><path d="M14 7a4 4 0 0 1 4 4v3a6 6 0 0 1-12 0v-3a4 4 0 0 1 4-4z"/><path d="M14.12 3.88 16 2"/><path d="M21 21a4 4 0 0 0-3.81-4"/><path d="M21 5a4 4 0 0 1-3.55 3.97"/><path d="M22 13h-4"/><path d="M3 21a4 4 0 0 1 3.81-4"/><path d="M3 5a4 4 0 0 0 3.55 3.97"/><path d="M6 13H2"/><path d="m8 2 1.88 1.88"/><path d="M9 7.13V6a3 3 0 1 1 6 0v1.13"/></svg>Bug</button>
+                <button class="feedback__kind feedback__kind--idea" type="button" role="radio" aria-checked="false" tabindex="-1"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>Improvement</button>
+                <button class="feedback__kind feedback__kind--kudos" type="button" role="radio" aria-checked="false" tabindex="-1"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/><path d="M7 10v12"/></svg>Kudos</button>
+              </div>
+              <label class="feedback__label" for="ex-fb-message">What went wrong?</label>
+              <textarea class="feedback__message" id="ex-fb-message" rows="4" placeholder="e.g. Resistance stayed at L8 when the video dropped to recovery.">Resistance stayed at L8 after the sprint ended — it only dropped when I tapped minus.</textarea>
+              <label class="feedback__check">
+                <input class="visually-hidden" type="checkbox" checked>
+                <span class="feedback__box" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+                <span class="feedback__check-text">Attach diagnostics<span class="feedback__check-hint">Bike connection log and app version, so we can reproduce it.</span></span>
+              </label>
+              <div class="feedback-context">
+                <button class="feedback-context__toggle" type="button" aria-expanded="false" aria-controls="ex-fb-details">
+                  <span class="feedback-context__text">
+                    <span class="feedback-context__from">Attached from <span class="feedback-context__screen">Ride</span></span>
+                    <span class="feedback-context__summary">HIIT · 8 × 0:30 · 3:00 → 1:30 recover · Recover · 6:52 in</span>
+                  </span>
+                  <svg class="icon feedback-context__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <dl class="feedback-context__details" id="ex-fb-details" hidden><dt>Elapsed</dt><dd>6:52 / 30:00</dd></dl>
+              </div>
+            </div>
+            <footer class="feedback__footer">
+              <p class="feedback__note">Context is sent with your note.</p>
+              <button class="btn btn--primary feedback__send" type="button">Report bug</button>
+            </footer>
+          </section>
+        </div>
+        <div class="ds-example__caption"><span>Kind first (it changes the question and the button), then the message, then what goes with it. The button names the result.</span><span>dialogs/feedback/default</span></div>
+      </div>
+
+      <h3>Layout rules</h3>
+      <ul>
+        <li>One column. A form never sets fields side by side unless they are one value split in two (Work and Recover in a ladder row). Width: <code>--setup-form-max</code> for page forms, <code>25rem</code> for panels.</li>
+        <li>Label above the control, in <code>.field__label</code> (14px medium, muted). Hint text under the label or field in <code>.field__hint</code>. Error text directly under the field in <code>.field__error</code>.</li>
+        <li>Group related controls with <code>role="group"</code> (or <code>radiogroup</code>) and <code>aria-labelledby</code> pointing at their visible label: steppers, chip sets, the kind picker.</li>
+        <li>Space between groups is <code>--space-8</code> to <code>--space-10</code>; inside a group, <code>--space-2</code> to <code>--space-4</code>. Hairline rules (<code>--color-line</code>) split sections that change topic, like the video block.</li>
+        <li>The primary action comes last in reading order: the foot of the summary, the right of the panel footer. One primary per form.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <h3>Form states</h3>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">State</th><th scope="col">What the rider sees</th><th scope="col">Markup</th></tr></thead>
+        <tbody>
+          <tr><td>Idle (nothing to send)</td><td>Send is greyed until there is a message (single-field forms only, see below).</td><td><code>.btn.feedback__send--idle</code> + <code>disabled</code></td></tr>
+          <tr><td>Ready</td><td>Primary button, named for the result.</td><td><code>.btn--primary</code></td></tr>
+          <tr><td>Invalid</td><td>Red border, an error under the field, and a summary on submit if more than one field is wrong.</td><td><code>aria-invalid="true"</code>, <code>aria-describedby</code></td></tr>
+          <tr><td>Sending</td><td>Every control locks; the button reads <em>Sending…</em> in dim volt (about 700 ms).</td><td><code>disabled</code> on controls, <code>aria-busy="true"</code> on the button, a hidden <code>role="status"</code></td></tr>
+          <tr><td>Sent</td><td>The form is replaced by a thank-you that says what happens next, with <em>Send another</em> and <em>Done</em>.</td><td><code>.feedback__sent</code> with <code>role="status"</code></td></tr>
+          <tr><td>Failed</td><td>Not drawn in the mocks. The message stays, a danger banner above the footer says what happened, and the button reads <em>Try again</em>.</td><td><code>.banner--danger</code> with <code>role="alert"</code></td></tr>
+          <tr><td>Blocked</td><td>The action is disabled, with the reason printed under it. A browser notice above the page says how to fix it.</td><td><code>disabled</code> + <code>aria-describedby</code> to the reason</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Field states</h3>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Field</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Invalid</th><th scope="col">Disabled</th></tr></thead>
+        <tbody><tr><th scope="row">Text field</th>
+          <td><div class="field"><label class="field__label" for="fs-1">YouTube link</label><input class="input" id="fs-1" type="url" value="https://youtu.be/QUoToFsMNig"></div></td>
+          <td><div class="field"><label class="field__label" for="fs-2">YouTube link</label><input class="input" id="fs-2" type="url" value="https://youtu.be/QUoToFsMNig" data-state="hover"></div></td>
+          <td><div class="field"><label class="field__label" for="fs-3">YouTube link</label><input class="input" id="fs-3" type="url" value="https://youtu.be/QUoToFsMNig" data-state="focus"></div></td>
+          <td><div class="field"><label class="field__label" for="fs-4">YouTube link</label><input class="input" id="fs-4" type="url" value="youtube QUoToFsMNig" aria-invalid="true" aria-describedby="fs-4-err"><p class="field__error" id="fs-4-err"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>Paste the whole link, starting https://</p></div></td>
+          <td><div class="field"><label class="field__label" for="fs-5">YouTube link</label><input class="input" id="fs-5" type="url" value="https://youtu.be/QUoToFsMNig" disabled></div></td>
+        </tr></tbody>
+      </table></div>
+
+      <h3>Validation timing</h3>
+      <p>The mocks draw no invalid state: Custom Setup cannot hold a wrong value, and the Feedback panel keeps Send disabled until there is a message. When a field <em>can</em> be wrong (a pasted link, a typed offset), validate like this:</p>
+      <ol>
+        <li><b>On blur, not on keystroke.</b> Check a field when the rider leaves it, and only if they changed it. Never flag a field while it is being typed into, and never flag an empty field the rider has only tabbed through.</li>
+        <li><b>Re-validate on input once it has failed.</b> After an error shows, check on every keystroke so the error disappears the moment the value is fixed.</li>
+        <li><b>Validate everything on submit.</b> One error: move focus to that field. Two or more: show an error summary at the top of the form, focus it, and link each line to its field.</li>
+        <li><b>Keep what was typed.</b> A failed send never clears the message.</li>
+        <li><b>Disable the button only for a single, visible requirement.</b> Feedback's one required field sits right above Send, so a greyed Send explains itself. Any longer form keeps the button enabled and explains errors on submit instead.</li>
+      </ol>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <div class="banner banner--danger" role="alert" tabindex="-1" aria-labelledby="sum-title">
+            <svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+            <div class="banner__body">
+              <p class="banner__title" id="sum-title">2 things to fix before you start</p>
+              <ul>
+                <li><a href="#fs-4">YouTube link: paste the whole link, starting https://</a></li>
+                <li><a href="#fs-4">Ride 0:00 starts at: use minutes and seconds, like 0:12.0</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Error summary: a danger banner, focused on submit, one link per error. Title states the count and the goal.</span><span>System addition (no mock draws it)</span></div>
+      </div>
+
+      <h3>Sending and sent</h3>
+      <div class="pt-grid">
+        <section class="feedback" aria-labelledby="ex-fb2-title">
+          <header class="feedback__head"><h4 class="feedback__title" id="ex-fb2-title">Send feedback</h4><button class="feedback__close" type="button" aria-label="Close feedback"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
+          <div class="feedback__form">
+            <label class="feedback__label" for="ex-fb2-message">What went wrong?</label>
+            <textarea class="feedback__message" id="ex-fb2-message" rows="3" disabled>Resistance stayed at L8 after the sprint ended — it only dropped when I tapped minus.</textarea>
+          </div>
+          <footer class="feedback__footer">
+            <p class="feedback__note">Context is sent with your note.</p>
+            <button class="btn feedback__send feedback__send--sending" type="button" disabled aria-busy="true">Sending…</button>
+          </footer>
+        </section>
+        <section class="feedback" aria-labelledby="ex-fb3-title">
+          <header class="feedback__head"><h4 class="feedback__title" id="ex-fb3-title">Feedback sent</h4><button class="feedback__close" type="button" aria-label="Close feedback"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
+          <div class="feedback__sent">
+            <div class="feedback__sent-row">
+              <span class="feedback__badge feedback__badge--bug" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <div><p class="feedback__thanks">Thanks — we’re on it.</p><p class="feedback__follow-up">Bug reports go straight to the team. If we need more detail, we’ll email you.</p></div>
+            </div>
+            <div class="feedback__sent-actions"><button class="btn btn--quiet feedback__another" type="button">Send another</button><button class="btn btn--raised btn--sm" type="button">Done</button></div>
+          </div>
+        </section>
+      </div>
+      <p class="pt-note">Left: dialogs/feedback/sending (form locked, <code>aria-busy</code>, a hidden status says “Sending your feedback…”). Right: dialogs/feedback/sent (the status region replaces the form).</p>
+
+      <h3>Destructive confirmation: Leave this ride?</h3>
+      <p>Pressing <b>Library</b> mid-ride pauses the ride and opens a confirmation under the button. It states what is at stake in the rider's numbers, says the ride is paused, and offers three ways out, safest first. <b>End</b>, by contrast, saves and leaves without asking, because nothing is lost.</p>
+      <div class="ds-stage pt-stage-leave">
+        <div class="ride-header">
+          <span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span>
+          <div class="ride-header__menu">
+            <button class="ride-header__link ride-header__link--strong" type="button" aria-haspopup="dialog" aria-expanded="true" aria-controls="ex-leave"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</button>
+            <div class="ride-leave" id="ex-leave" role="dialog" aria-labelledby="ex-leave-title">
+              <h4 class="ride-leave__title" id="ex-leave-title">Leave this ride?</h4>
+              <p class="ride-leave__body">You’re <span class="ride-leave__figure">6:52</span> in with <span class="ride-leave__figure">2.24 km</span> ridden. The ride is paused while you decide.</p>
+              <div class="ride-leave__actions">
+                <button class="btn btn--primary" type="button">Save ride and open library</button>
+                <button class="btn btn--raised" type="button">Discard and open library</button>
+                <button class="btn ride-leave__keep" type="button">Keep riding</button>
+              </div>
+            </div>
+          </div>
+          <div class="ride-header__end">
+            <span class="ride-header__clock" role="timer" aria-label="Elapsed 6:52 of 30:00">6:52<span class="ride-header__clock-total"> / 30:00</span></span>
+          </div>
+        </div>
+      </div>
+      <p class="pt-note">dialogs/end-ride/default. Focus starts on <em>Save ride and open library</em>; <kbd>Esc</kbd> means Keep riding.</p>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Width</th><th scope="col">Custom Setup</th><th scope="col">Send feedback</th><th scope="col">Leave this ride?</th></tr></thead>
+        <tbody>
+          <tr><td>360 (below 640)</td><td>One column. Mode cards stack. The summary follows the settings, so Start ride is at the end of the page. Steppers stack one per row.</td><td>A bottom sheet over a dim scrim, full width, top corners rounded.</td><td>Pinned inside the 20px gutters just under the header, at most 20rem wide (the design's popover ran off the right edge).</td></tr>
+          <tr><td>640</td><td>Mode cards and steppers go two across. Still one column with the summary below.</td><td>A 25rem popover under the Feedback button, right-aligned. The scrim turns transparent.</td><td>A 20rem popover under Library.</td></tr>
+          <tr><td>1024 and up</td><td>Two columns: settings left (each column scrolls on its own), summary right at <code>--setup-preview-width</code>, Start ride stays at its foot.</td><td>As at 640.</td><td>As at 640.</td></tr>
+        </tbody>
+      </table></div>
+      <p>Under 640px, controls pressed while riding grow to <code>--target-ride</code> (48px). Setup is used before the ride, so its controls keep their drawn sizes (stepper buttons are 40px and ladder buttons 28px, both above the 24px minimum).</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Labelling</h3>
+      <ul>
+        <li>Every control has a visible label tied to it: <code>&lt;label for&gt;</code> for inputs, <code>aria-labelledby</code> for groups. Placeholders are examples, never labels.</li>
+        <li>Icon buttons name their action and their target: “Less Warm-up”, “Longer effort 3”, “Remove round 8”, “Close feedback”.</li>
+        <li>A value shown twice is read once. The large “24 / 32” beside a slider is <code>aria-hidden</code> because the range input reports its own value.</li>
+        <li>A disabled action points at its reason: <code>aria-describedby="start-blocked"</code> → “Needs the HTTPS page to reach the bike.”</li>
+      </ul>
+      <h3>Errors and status</h3>
+      <ul>
+        <li>Invalid fields get <code>aria-invalid="true"</code> and <code>aria-describedby</code> pointing at the error text. Colour is never the only signal: the error has an icon and words.</li>
+        <li>The error summary is <code>role="alert"</code> with <code>tabindex="-1"</code> and takes focus on submit.</li>
+        <li>Sending is announced through a visually hidden <code>role="status"</code> (“Sending your feedback…”); the sent panel is itself a status region.</li>
+      </ul>
+      <h3>Keyboard</h3>
+      <table class="ds-table ds-keys">
+        <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Move between groups and fields in reading order. A radio group is one stop.</td></tr>
+          <tr><td><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td><td>Move the choice inside a radio group (Training mode, Type of feedback); change a slider by one level.</td></tr>
+          <tr><td><kbd>Space</kbd></td><td>Toggle a preset chip, the switch or the Attach diagnostics checkbox.</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td>Press the focused button. In the message box it adds a line; it never submits.</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td>Close Send feedback (the note is kept until the ride ends); in Leave this ride? it means Keep riding.</td></tr>
+        </tbody>
+      </table>
+      <h3>Focus</h3>
+      <p>Opening Send feedback moves focus to the message box; opening Leave this ride? moves it to <em>Save ride and open library</em> (the mock's <code>autofocus</code>), never to Discard. Closing either returns focus to the button that opened it. The page behind is <code>inert</code>.</p>
+      <h3>Contrast</h3>
+      <div class="pt-stack" style="gap: var(--space-2);">
+        <div class="ds-pair" style="--pair-fg: var(--color-muted); --pair-bg: var(--color-panel);"><span>Field label on panel</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+        <div class="ds-pair" style="--pair-fg: var(--color-heart-fg); --pair-bg: var(--color-panel);"><span>Error text on panel</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-panel" data-min="4.5"></span></div>
+        <div class="ds-pair" style="--pair-fg: var(--color-faint); --pair-bg: var(--color-ink);"><span>Placeholder and hint on the field well</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-ink" data-min="4.5"></span></div>
+        <div class="ds-pair" style="--pair-fg: var(--color-fg); --pair-bg: var(--color-panel);"><span>Field border (<code>--color-line-strong</code>) on panel</span><span class="ds-pair__ratio" data-contrast="--color-line-strong|--color-panel" data-min="3"></span></div>
+      </div>
+      <h3>Motion</h3>
+      <p>The sending state has no spinner, only a colour change, so it needs no reduced-motion variant. The context disclosure's chevron turns over <code>--duration-base</code>, which is 0 under reduced motion.</p>
+      <h3>Touch</h3>
+      <p>All form controls are at least 24px (2.5.8); text inputs are 40px tall and the YouTube link 44px. The kind picker's cells are about 60px tall.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li><b>Labels are nouns</b>, short and in sentence case: “Work resistance”, “Warm-up”, “YouTube link”, “Ride 0:00 starts at”.</li>
+        <li><b>The one open question follows the kind</b>: “What went wrong?” (Bug), “What could be better?” (Improvement), “What’s working for you?” (Kudos).</li>
+        <li><b>Placeholders are examples</b> and start with “e.g.”: “e.g. Resistance stayed at L8 when the video dropped to recovery.”</li>
+        <li><b>Buttons say what happens</b>: Report bug, Send idea, Send kudos, Start ride, Save ride and open library. Never Submit, OK or Yes.</li>
+        <li><b>Progress ends in an ellipsis</b> (one character, …): Sending…, Pairing…, Searching….</li>
+        <li><b>Success says what happens next</b>: “Thanks — we’re on it. Bug reports go straight to the team. If we need more detail, we’ll email you.”</li>
+        <li><b>Errors name the field and the fix</b>: “Paste the whole link, starting https://”. No blame, no codes.</li>
+        <li><b>Confirmations put the stakes in numbers</b>: “You’re 6:52 in with 2.24 km ridden.”</li>
+      </ul>
+      <p>The full microcopy library lives in <a href="../foundations/content.html">Content</a>; <a href="content-and-tone.html">Content and tone</a> shows it applied.</p>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas ds-example__canvas--stack"><div><label class="feedback__label" for="dd-1" style="margin-top: 0;">What went wrong?</label><textarea class="feedback__message" id="dd-1" rows="2" placeholder="e.g. Resistance stayed at L8 when the video dropped to recovery."></textarea></div></div><figcaption>A visible question above the box, and an example as placeholder.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas ds-example__canvas--stack"><textarea class="feedback__message" rows="2" aria-label="Feedback" placeholder="Describe your feedback"></textarea></div><figcaption>The placeholder as the only label. It disappears on the first keystroke and says nothing useful.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas ds-example__canvas--stack"><button class="btn btn--primary btn--xl btn--block plan-preview__start" type="button" disabled aria-describedby="dd-blocked">Start ride</button><p class="plan-preview__blocked" id="dd-blocked">Needs the HTTPS page to reach the bike.</p></div><figcaption>A disabled action says why, right under it (custom-setup/needs-https).</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas ds-example__canvas--stack"><button class="btn btn--primary btn--xl btn--block" type="button" disabled>Join · starts in 9 min</button></div><figcaption>A disabled Join with no reason beside it (class-start/needs-chromium). The rider has to find the notice at the top.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas ds-example__canvas--stack"><button class="btn btn--primary" type="button">Save ride and open library</button><button class="btn btn--raised" type="button">Discard and open library</button><button class="btn ride-leave__keep" type="button">Keep riding</button></div><figcaption>The safe choice is primary and focused first; the destructive one is secondary and says exactly what it throws away.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><button class="btn btn--danger" type="button">Discard</button><button class="btn btn--quiet" type="button">Cancel</button></div><figcaption>A red, focused Discard as the main action, and a vague Cancel that could mean either thing.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas ds-example__canvas--stack"><div class="field"><label class="field__label" for="dd-4">YouTube link</label><input class="input" id="dd-4" type="url" value="youtube QUoToFsMNig" aria-invalid="true" aria-describedby="dd-4-err"><p class="field__error" id="dd-4-err"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>Paste the whole link, starting https://</p></div></div><figcaption>Checked when the rider leaves the field; the error names the fix.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas ds-example__canvas--stack"><div class="field"><label class="field__label" for="dd-5">YouTube link</label><input class="input" id="dd-5" type="url" value="https://yout" aria-invalid="true" aria-describedby="dd-5-err"><p class="field__error" id="dd-5-err">Invalid URL</p></div></div><figcaption>An error while the rider is still typing, in words that don't help.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <p>Mocks this pattern was extracted from:</p>
+      <ul>
+        <li><a href="../../mocks/pages/custom-setup/default.html">pages/custom-setup/default</a>, <a href="../../mocks/pages/custom-setup/flat.html">flat</a>, <a href="../../mocks/pages/custom-setup/needs-chromium.html">needs-chromium</a>, <a href="../../mocks/pages/custom-setup/needs-https.html">needs-https</a></li>
+        <li><a href="../../mocks/dialogs/feedback/default.html">dialogs/feedback/default</a>, <a href="../../mocks/dialogs/feedback/idea.html">idea</a>, <a href="../../mocks/dialogs/feedback/kudos.html">kudos</a>, <a href="../../mocks/dialogs/feedback/sending.html">sending</a>, <a href="../../mocks/dialogs/feedback/sent.html">sent</a></li>
+        <li><a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a></li>
+        <li><a href="../../mocks/pages/class-start/needs-chromium.html">pages/class-start/needs-chromium</a> (the disabled Join)</li>
+      </ul>
+      <p>Drift found while extracting:</p>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Mock</th><th scope="col">Issue</th><th scope="col">Resolution</th></tr></thead>
+        <tbody>
+          <tr><td>dialogs/feedback/*</td><td>The message box border is <code>--color-line</code> (1.3:1 on the panel), below the 3:1 that 1.4.11 asks of a field edge.</td><td>Read <code>--field-border</code> (<code>--color-line-strong</code>, 3.2:1) as <code>.input</code> does. Needs a change to <code>.feedback__message</code> in components.css.</td></tr>
+          <tr><td>pages/class-start/needs-chromium, needs-https</td><td>Join is disabled with no reason next to it.</td><td>Print the reason under the button and point <code>aria-describedby</code> at it, as Custom Setup's Start ride does.</td></tr>
+          <tr><td>dialogs/feedback/*</td><td>No failure state: a send that fails has nowhere to go.</td><td>System rule: keep the note, show a danger banner above the footer, relabel the button Try again.</td></tr>
+          <tr><td>manifest (feedback, invalid)</td><td>No invalid state is drawn; Send stays disabled until there is a message.</td><td>Allowed for single-field forms only. Validation timing and the error summary above cover any longer form.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

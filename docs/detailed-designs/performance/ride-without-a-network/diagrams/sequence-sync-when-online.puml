@@ -1,0 +1,52 @@
+@startuml
+title UML sequence behaviour — Send waiting rides when the network returns
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "Browser" as browser
+box "Frontend — Ride app (domain and api libraries)" #E0F2FE
+  participant "DeviceRideOutbox" as sync
+  participant "IndexedDbRidesWaiting" as outbox
+  participant "HttpRidesApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RidesController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "SubmitRideCommandHandler" as handler
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+browser -> sync : App start, online event or retry timer
+sync -> outbox : oldestFirst() (L2-135 AC2)
+outbox --> sync : [ride A, ride B]
+loop each waiting ride, oldest first
+  sync -> client : submitRide(ride)
+  client -> ctrl : POST /api/rides (rideId is the idempotency key)
+  ctrl -> handler : Send SubmitRideCommand
+  handler -> db : Record once by rideId (L2-125 AC3)
+  db --> handler : Recorded or already recorded
+  handler --> ctrl : RideResult
+  ctrl --> client : 200 RideResult
+  client --> sync : RideResult
+  sync -> outbox : remove(rideId)
+end
+alt No answer, 5xx, 429 or 401
+  sync -> outbox : put(attempts + 1), and stop
+  sync -> sync : Try again in 30 s, doubling up to 1 hour
+else Refused for good (422 ride_not_plausible, other 4xx)
+  sync -> outbox : remove(rideId), and go on to the next
+end
+@enduml

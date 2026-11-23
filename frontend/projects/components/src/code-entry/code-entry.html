@@ -1,0 +1,31 @@
+<div class="code-entry">
+  <input
+    #field
+    class="code-entry__input"
+    type="text"
+    inputmode="numeric"
+    autocomplete="one-time-code"
+    aria-label="Six-digit code"
+    spellcheck="false"
+    [value]="value()"
+    [disabled]="disabled()"
+    [attr.aria-invalid]="error() !== null ? 'true' : null"
+    [attr.aria-describedby]="error() !== null ? 'code-entry-error' : null"
+    (input)="onInput($event)"
+  />
+  <span class="code-entry__cells" aria-hidden="true">
+    @for (digit of cells(); track $index) {
+      <span class="code-entry__cell">{{ digit }}</span>
+    }
+  </span>
+  @if (error(); as error) {
+    <p class="code-entry__error" id="code-entry-error" role="alert">
+      <svg class="code-entry__error-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" x2="12" y1="8" y2="12" />
+        <line x1="12" x2="12.01" y1="16" y2="16" />
+      </svg>
+      {{ error }}
+    </p>
+  }
+</div>

@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Show page not found
+
+Person(rider, "Rider", "Follows an old link")
+Container_Boundary(app, "Ride app") {
+  Component(router, "Router (app.routes.ts)", "Angular router · ride", "Wildcard route ** last, under MainShell")
+  Component(shell, "MainShell", "Layout route · ride", "Header links with routerLinkActive")
+  Component(page, "NotFoundPage", "Angular page · ride", "Message and Back to Home")
+  Component(header, "AppHeader", "Presentation component · components", "Brand, nav and end slots")
+  Component(home, "HomePage", "Angular page · ride", "Home")
+}
+Rel(rider, router, "Navigates to an unknown path")
+Rel(router, shell, "loadComponent")
+Rel(router, page, "loadComponent, into the shell's outlet")
+Rel(shell, header, "Fills the slots; no link is active, so none is current")
+Rel(page, router, "Back to Home: routerLink /")
+Rel(router, home, "Opens")
+@enduml

@@ -1,0 +1,106 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Pairing is one press now. The browser's list opens, the rider picks the bike, and Telo Ride connects to it."
+      ]
+    },
+    {
+      "id": "press",
+      "bars": 4,
+      "lines": [
+        "Only the press opens the list, and it asks for Echelon's service or FTMS. Under the button, a hint about the Echelon app."
+      ]
+    },
+    {
+      "id": "blocked",
+      "bars": 4,
+      "lines": [
+        "If the rider closes the list, nothing goes wrong. If a policy blocks it, an alert says so, with Try again."
+      ]
+    },
+    {
+      "id": "identity",
+      "bars": 4,
+      "lines": [
+        "The card reads the name the bike advertises, so an Echelon EX-5s shows its model and its own identifier."
+      ]
+    },
+    {
+      "id": "init",
+      "bars": 4,
+      "lines": [
+        "Pairing subscribes first, then writes three commands to start the bike, one at a time, at least three hundred milliseconds apart."
+      ]
+    },
+    {
+      "id": "pairing",
+      "bars": 4,
+      "lines": [
+        "The button turns busy with a spinner. On the bike's first notification, the card gets its check, and Home opens."
+      ]
+    },
+    {
+      "id": "ftms",
+      "bars": 4,
+      "lines": [
+        "Other smart bikes speak FTMS. Telo Ride reads their data and range, and sets resistance only once the bike grants control."
+      ]
+    },
+    {
+      "id": "remember",
+      "bars": 4,
+      "lines": [
+        "The bike is remembered. Next time, Telo Ride opens on Home and reconnects to it, without the list."
+      ]
+    },
+    {
+      "id": "deferred",
+      "bars": 4,
+      "lines": [
+        "Still to come: keepalive and automatic reconnects in the next slice, then the read only status and the signal strength."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "Pairing looks the same on a phone, a tablet, a laptop or a desktop."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: twenty-five behaviour specs and sixty-two unit tests, all green."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

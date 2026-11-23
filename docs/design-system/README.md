@@ -1,229 +1,237 @@
-# Wattzup design system
+# Telo Ride design system
 
-The visual and interaction language of Wattzup, extracted on 2026-11-15 from the HTML mocks in [`docs/mocks/`](../mocks/index.html). Open [`index.html`](index.html) from disk; press `t` to switch theme.
+Extracted from [docs/mocks](../mocks/README.md) on 21 November 2026. Open [index.html](index.html) locally (from disk; no server needed). Press `t` on any page to switch between dark and light, or add `?theme=light`.
 
-Dark is the default theme (`<html data-theme="dark">`); light is fully supported. Both pass WCAG 2.2 AA for every pair in `tokens/contrast-pairs.json`.
-
-## Files
-
-| File | Purpose |
-|---|---|
-| [`tokens/tokens.css`](tokens/tokens.css) | Single source of truth: primitives, semantic roles, themes, reduced motion. |
-| [`tokens/tokens.json`](tokens/tokens.json) | DTCG export generated from `tokens.css` (`tokens_to_json.py`). Never edit by hand. |
-| [`tokens/contrast-pairs.json`](tokens/contrast-pairs.json) | Every foreground/background pair components rely on; checked in both themes. |
-| [`assets/components.css`](assets/components.css) | The component CSS, token-driven, with `data-state` hooks for documentation. |
-| `assets/ds.css`, `assets/ds.js` | Documentation-site chrome only. |
+Telo Ride is dark first: every product page ships `<html data-theme="dark">`, and light is an addition the Magic Patterns design never drew. The system has 12 foundation pages, 59 component pages and 9 pattern pages; the mocks in `docs/mocks` now load its tokens and components.
 
 ## Foundations
 
-| Page | |
+| Page | Covers |
 |---|---|
-| [Color](foundations/color.html) | |
-| [Typography](foundations/typography.html) | |
-| [Spacing](foundations/spacing.html) | |
-| [Layout](foundations/layout.html) | |
-| [Elevation](foundations/elevation.html) | |
-| [Shape](foundations/shape.html) | |
-| [Motion](foundations/motion.html) | |
-| [Iconography](foundations/iconography.html) | |
-| [Theming](foundations/theming.html) | |
-| [Responsive](foundations/responsive.html) | |
-| [Accessibility](foundations/accessibility.html) | |
-| [Content](foundations/content.html) | |
+| [Color](foundations/color.html) | Ink, panel, raised; volt for you, gold for earned. Both themes and every checked pair. |
+| [Typography](foundations/typography.html) | Inter Tight for the UI, Barlow Condensed for numerals and the wide italic. |
+| [Spacing](foundations/spacing.html) | Tailwind's 4px scale with the design's half steps for tight insides. |
+| [Layout](foundations/layout.html) | Breakpoints, columns, gutters, margins, containers and the app shell. |
+| [Elevation](foundations/elevation.html) | Surfaces that lighten as they rise, four shadows, HUD glass and z-order. |
+| [Shape](foundations/shape.html) | Six radii from chart marks to cards, and two border widths. |
+| [Motion](foundations/motion.html) | Four durations, four easings, one unlock moment, reduced motion. |
+| [Iconography](foundations/iconography.html) | Lucide on a 24-unit grid, 2px stroke, every icon the product uses. |
+| [Theming](foundations/theming.html) | Dark first, light as an addition, two names for one decision. |
+| [Responsive](foundations/responsive.html) | Mobile first at 640 and 1024, ride targets, the test matrix. |
+| [Accessibility](foundations/accessibility.html) | The WCAG 2.2 AA commitments and how the system meets them. |
+| [Content](foundations/content.html) | Voice, verbs, units, numbers and the microcopy library. |
 
 ## Components
 
-### Actions
+Variants and states are the rows and columns of each page's state matrix; every page also shows both themes, the responsive rules, the keyboard map and the token table. Components with no source mocks belong to the core set every product needs and are designed in the Telo idiom from the tokens.
 
-| Component | Summary |
-|---|---|
-| [Button](components/button.html) | Buttons trigger actions: start a ride, end it, retry, set resistance. |
-| [Link](components/link.html) | Links go somewhere: setup, the dashboard, diagnostics, a field with an error. |
-| [Chip](components/chip.html) | Chips pick a preset: Tabata, 40 / 20, Minute on, Long climbs. |
-
-### Inputs
-
-| Component | Summary |
-|---|---|
-| [Text field](components/text-field.html) | Single-line text input, used for the YouTube link. |
-| [Form field](components/form-field.html) | Label, control, help and error stacked as one unit. |
-| [Form layout](components/form-layout.html) | How setup and its dialogs arrange fields, the error summary and the submit action. |
-| [Radio group (mode cards)](components/radio-group.html) | Card-style radio group that picks the training mode. |
-| [Switch](components/switch.html) | On/off setting: warm-up and cool-down. |
-| [Set list](components/set-list.html) | The warm-up, sets and cool-down of an intervals plan, edited in a dialog. |
-| [Video ride-along](components/video.html) | Video frame, start point and Video / Power vs. plan switch (proposed). |
-| [Level row](components/level-row.html) | Compact − level + for one level of a plan before the ride: work, recover or steady (proposed). |
-| [Slider](components/slider.html) | Level slider for work, recover and flat resistance. |
-| [Number stepper](components/number-stepper.html) | − value + control for rounds, work, recover, duration and cadence. |
-| [Level control](components/level-control.html) | − level + for the bike's resistance, with the requested level shown until the bike confirms it. |
-| [Level picker](components/level-picker.html) | 32 bars, one slider, that jump straight to a resistance level. |
-
-### Shell
-
-| Component | Summary |
-|---|---|
-| [App bar](components/app-bar.html) | The ride's top bar: brand, bike status, workout, clock and ride actions. |
-| [Lockup](components/lockup.html) | The Wattzup mark and wordmark. |
-| [Status line](components/status-line.html) | Bike connection status: name plus Connected, Connecting…, Disconnected, Off or Unavailable in this browser. |
-| [Ride clock](components/ride-clock.html) | Elapsed and total ride time. |
-| [Skip link](components/skip-link.html) | Jump past the header to the main content. |
-| [Page layout](components/page-layout.html) | Shells for the ride, setup and centred single-card pages, plus stack and cluster. |
-
-### Containers and overlays
-
-| Component | Summary |
-|---|---|
-| [Dialog](components/dialog.html) | Modal confirmation and read-only panels: end ride, replace ride, diagnostics. |
-| [Overlay panel](components/overlay-panel.html) | In-page overlay over the ride for bike states: lost, scanning, Bluetooth off, ended. |
-| [Tooltip](components/tooltip.html) | Short label shown on hover and focus for icon-only buttons. |
-| [Divider](components/divider.html) | Hairline separating regions. |
-
-### Ride data
-
-| Component | Summary |
-|---|---|
-| [Class card and shelf](components/class-card.html) | One video of the library with its length, plan strip and peak, on a shelf the catalogue defines (proposed). |
-| [Class worlds](components/class-worlds.html) | Each class's world side by side, with a preview per theme; a design canvas (proposed). |
-| [World Ride HUD](components/world-ride.html) | Live metrics, riders nearby, segment, route profile and resistance on translucent panels over a scene (proposed). |
-| [Session traces](components/session-traces.html) | Cadence against its aim with each dip marked, and power beneath, over a saved ride. |
-| [Dip list](components/dip-list.html) | Every cadence dip of a ride as a row that highlights it on the traces. |
-| [Week strip](components/week-strip.html) | This week, Monday to Sunday, filled where the rider rode. |
-| [Stat strip](components/stat-strip.html) | A session's totals as labelled numerals. |
-| [Personal-best chip and delta](components/best-chip.html) | A best the session set, and the signed change since last time. |
-| [Trend chart](components/trend-chart.html) | One measure across the finished attempts at a class. |
-| [Session list](components/session-list.html) | Saved sessions, newest first, each opening its summary. |
-| [Streak calendar](components/streak-calendar.html) | Current and best streak, six weeks of ridden days and the weekly goal. |
-| [Achievement badge](components/achievement.html) | A goal over all rides: unlocked, or how close it is. |
-| [Readout](components/readout.html) | The big live numbers: power and cadence with target and delta. |
-| [Interval](components/interval.html) | Current interval: kind, round, time left, progress and what comes next. |
-| [Power trace](components/power-trace.html) | Rider's power drawn against the plan's target blocks for the whole ride. |
-| [Metric list](components/metric-list.html) | Secondary ride metrics under the trace. |
-| [Ride profile](components/ride-profile.html) | Setup preview: total time and the resistance profile of the plan. |
-| [Command log](components/command-log.html) | The last resistance commands sent to the bike, with source and acknowledgement. |
-| [Description list](components/description-list.html) | Key–value pairs: ride summary and diagnostics. |
-| [Code block](components/code-block.html) | Scrollable monospace block for raw packets. |
-| [Badge](components/badge.html) | Small status label: Paused. |
-
-### Feedback
-
-| Component | Summary |
-|---|---|
-| [Toast](components/toast.html) | Transient messages about resistance commands and beeps. |
-| [Alert and banner](components/alert.html) | Inline alerts and full-width connection banners. |
-| [Step-change banner](components/phase-banner.html) | Big transient cue when the workout steps into work or recovery. |
-| [Inline message](components/inline-message.html) | Short status next to a control: field errors and pending states. |
-| [Progress bar](components/progress-bar.html) | Determinate and indeterminate progress. |
-| [Spinner](components/spinner.html) | Indeterminate wait indicator. |
-| [Skeleton](components/skeleton.html) | Placeholders shaped like the content while it loads. |
-| [Empty state](components/empty-state.html) | What to show when there is nothing yet, or loading failed. |
-| [Error page](components/error-page.html) | Full-page 404 for unknown client routes. |
+| Component | Family | Variants | States | Source mocks |
+|---|---|---|---|---|
+| [Button](components/button.html) | Actions | Primary, Light, Gold, Raised, Outline (+3) | Default, Hover, Focus, Active, Disabled, Loading | [race-setup](../mocks/pages/race-setup/default.html), [home](../mocks/pages/home/default.html), [connect-bike](../mocks/pages/connect-bike/pairing.html) (+4) |
+| [Button group](components/button-group.html) | Actions | Default, Raised + strong, Toolbar button | Default, Hover, Focus, Active, Selected, Disabled | [class-library](../mocks/pages/class-library/default.html), [race-setup](../mocks/pages/race-setup/default.html), [dialog feedback](../mocks/dialogs/feedback/default.html) (+1) |
+| [Link](components/link.html) | Actions | More link, Back link, Inline, Inline quiet | Default, Hover, Focus, Active, Visited, Current | [home](../mocks/pages/home/default.html), [race-setup](../mocks/pages/race-setup/default.html), [connect-bike](../mocks/pages/connect-bike/paired.html) (+1) |
+| [Menu](components/menu.html) | Actions | Item, Danger item, Trigger, Text trigger | Default, Hover, Focus, Active, Disabled, Checked | [custom-ride](../mocks/pages/custom-ride/default.html), [dialog end-ride](../mocks/dialogs/end-ride/default.html), [home](../mocks/pages/home/default.html) (+1) |
+| [Form field](components/form-field.html) | Inputs | Field | Default, Hover, Focus, Disabled, Read-only, Invalid | [dialog feedback](../mocks/dialogs/feedback/default.html), [custom-setup](../mocks/pages/custom-setup/default.html) |
+| [Text field](components/text-field.html) | Inputs | Empty, Filled, With addon | Default, Hover, Focus, Disabled, Read-only, Invalid | [custom-setup](../mocks/pages/custom-setup/default.html) |
+| [Textarea](components/textarea.html) | Inputs | Textarea, Counter | Default, Hover, Focus, Disabled, Read-only, Invalid | [dialog feedback](../mocks/dialogs/feedback/default.html) |
+| [Select](components/select.html) | Inputs | Select, Raised | Default, Hover, Focus, Disabled, Placeholder, Invalid | [class-start](../mocks/pages/class-start/default.html), [connect-bike](../mocks/pages/connect-bike/default.html), [race-setup](../mocks/pages/race-setup/default.html) |
+| [Checkbox](components/checkbox.html) | Inputs | Unchecked, Checked, Indeterminate | Default, Hover, Focus, Active, Disabled, Invalid | [dialog feedback](../mocks/dialogs/feedback/default.html) |
+| [Radio group](components/radio-group.html) | Inputs | Mode option, Training mode, Plain radio | Default, Hover, Focus, Checked, Disabled, Invalid | [race-setup](../mocks/pages/race-setup/default.html), [custom-setup](../mocks/pages/custom-setup/default.html), [class-start](../mocks/pages/class-start/default.html) |
+| [Switch](components/switch.html) | Inputs | Off, On | Default, Hover, Focus, Active, Disabled | [custom-setup](../mocks/pages/custom-setup/default.html), [dialog diagnostics](../mocks/dialogs/diagnostics/default.html), [profile](../mocks/pages/profile/default.html) |
+| [Slider](components/slider.html) | Inputs | Work, Recover, Step button | Default, Hover, Focus, Active, Disabled | [custom-setup](../mocks/pages/custom-setup/default.html) |
+| [Number stepper](components/number-stepper.html) | Inputs | Mini, Default, Ride | Default, Hover, Focus, Active, Disabled, At limit | [custom-setup](../mocks/pages/custom-setup/default.html) |
+| [Form layout](components/form-layout.html) | Inputs | Summary link, Field, Submit | Default, Hover, Focus, Disabled, Invalid, Loading | [custom-setup](../mocks/pages/custom-setup/default.html), [dialog feedback](../mocks/dialogs/feedback/default.html), [dialog end-ride](../mocks/dialogs/end-ride/default.html) |
+| [App header](components/app-header.html) | Navigation | Nav link, Level link, Full screen, Back link, Leave (lobby) (+2) | Default, Hover, Focus, Active, Current / pressed, Disabled | [home](../mocks/pages/home/default.html), [map-select](../mocks/pages/map-select/default.html), [class-library](../mocks/pages/class-library/default.html) (+10) |
+| [Sidebar navigation](components/sidebar-nav.html) | Navigation | Link, Group heading | Default, Hover, Focus, Active, Current, Disabled | [home](../mocks/pages/home/default.html), [profile](../mocks/pages/profile/default.html), [race-setup](../mocks/pages/race-setup/default.html) |
+| [Tabs](components/tabs.html) | Navigation | Pill, Underline | Default, Hover, Focus, Active, Selected, Disabled | [class-library](../mocks/pages/class-library/default.html) |
+| [Breadcrumb](components/breadcrumb.html) | Navigation | Link, Ellipsis | Default, Hover, Focus, Active, Current, Disabled | [race-setup](../mocks/pages/race-setup/default.html), [class-start](../mocks/pages/class-start/default.html), [home](../mocks/pages/home/default.html) |
+| [Pagination](components/pagination.html) | Navigation | Page, Step | Default, Hover, Focus, Active, Current, Disabled | [profile](../mocks/pages/profile/veteran.html), [class-library](../mocks/pages/class-library/default.html) |
+| [Skip link](components/skip-link.html) | Navigation | Skip link | Default (hidden), Focus, Hover (while focused), Active, Disabled | [home](../mocks/pages/home/default.html), [race](../mocks/pages/race/default.html), [custom-ride](../mocks/pages/custom-ride/default.html) (+2) |
+| [Container and grid](components/container.html) | Containers and overlays | Columns, Gutter, Margin, Page padding, Split (+1) | Base (0–639), sm (640), md (768), lg (1024+) | [home](../mocks/pages/home/default.html), [class-library](../mocks/pages/class-library/default.html), [profile](../mocks/pages/profile/default.html) (+4) |
+| [Card](components/card.html) | Containers and overlays | Interactive, Selectable | Default, Hover, Focus, Active, Selected, Disabled | [connect-bike](../mocks/pages/connect-bike/paired.html), [home](../mocks/pages/home/default.html), [dialog diagnostics](../mocks/dialogs/diagnostics/packets.html) (+4) |
+| [Dialog](components/dialog.html) | Containers and overlays | Close, Kind | Default, Hover, Focus, Active, Selected, Disabled | [dialog diagnostics](../mocks/dialogs/diagnostics/default.html), [dialog feedback](../mocks/dialogs/feedback/default.html), [dialog end-ride](../mocks/dialogs/end-ride/default.html) |
+| [Popover](components/popover.html) | Containers and overlays | Library | Default, Hover, Focus, Active, Open, Disabled | [dialog end-ride](../mocks/dialogs/end-ride/default.html), [dialog feedback](../mocks/dialogs/feedback/default.html), [custom-ride](../mocks/pages/custom-ride/default.html) |
+| [Tooltip](components/tooltip.html) | Containers and overlays | Icon button | Default, Hover (after 300ms), Focus (after 300ms), Active, Dismissed (Esc), Disabled | [custom-ride](../mocks/pages/custom-ride/default.html), [class-ride](../mocks/pages/class-ride/default.html), [dialog end-ride](../mocks/dialogs/end-ride/default.html) |
+| [Divider](components/divider.html) | Containers and overlays | — | — | [home](../mocks/pages/home/default.html), [class-library](../mocks/pages/class-library/default.html), [profile](../mocks/pages/profile/default.html) (+6) |
+| [Table](components/table.html) | Data display | Row, Old Town Criterium | Default, Hover, Focus, Active, Disabled, Current / sorted, Loading | [profile](../mocks/pages/profile/default.html), [map-select](../mocks/pages/map-select/default.html), [results](../mocks/pages/results/default.html) |
+| [List](components/list.html) | Data display | .list__action, .map-row | Default, Hover, Focus, Active, Disabled, Current | [profile](../mocks/pages/profile/default.html), [map-select](../mocks/pages/map-select/default.html), [race-lobby](../mocks/pages/race-lobby/default.html) |
+| [Description list](components/description-list.html) | Data display | Text value, Value with a link | Default, Hover, Focus, Active, Disabled, Tone, Loading | [race-setup](../mocks/pages/race-setup/default.html), [results](../mocks/pages/results/default.html), [dialog diagnostics](../mocks/dialogs/diagnostics/default.html) (+1) |
+| [Avatar](components/avatar.html) | Data display | Avatar, Avatar as link, Dot | Default, Hover, Focus, Active, Disabled, You / current, Loading | [race-lobby](../mocks/pages/race-lobby/default.html), [race-setup](../mocks/pages/race-setup/peers.html), [class-start](../mocks/pages/class-start/default.html) (+2) |
+| [Badge](components/badge.html) | Data display | Neutral, Gold, Volt, Heart, Rest (+2) | Default (on panel), With dot, On raised, On ink, In a disabled card | [connect-bike](../mocks/pages/connect-bike/default.html), [results](../mocks/pages/results/default.html), [dialog diagnostics](../mocks/dialogs/diagnostics/packets.html) |
+| [Chip](components/chip.html) | Data display | .preset-chip, .preset-chip (pressed), .chip__remove | Default, Hover, Focus, Active, Disabled, Pressed | [custom-setup](../mocks/pages/custom-setup/default.html), [class-library](../mocks/pages/class-library/default.html) |
+| [Stat](components/stat.html) | Data display | .stat--panel, .class-stat | Default, Hover, Focus, Active, Disabled, On target, Loading | [class-ride](../mocks/pages/class-ride/default.html), [race-setup](../mocks/pages/race-setup/default.html), [profile](../mocks/pages/profile/default.html) (+1) |
+| [Code block](components/code-block.html) | Data display | Copy button, Code area | Default, Hover, Focus, Active, Disabled, Copied | [dialog diagnostics](../mocks/dialogs/diagnostics/packets.html), [custom-ride](../mocks/pages/custom-ride/needs-chromium.html) |
+| [Toast](components/toast.html) | Feedback | Dismiss, Toast | Default, Hover, Focus, Active, Leaving, Disabled | [dialog end-ride](../mocks/dialogs/end-ride/default.html), [dialog diagnostics](../mocks/dialogs/diagnostics/default.html), [class-start](../mocks/pages/class-start/needs-chromium.html) (+1) |
+| [Alert and banner](components/alert.html) | Feedback | Copy link, Dismiss | Default, Hover, Focus, Active, Done, Disabled | [home](../mocks/pages/home/unlocked.html), [class-start](../mocks/pages/class-start/needs-chromium.html), [custom-setup](../mocks/pages/custom-setup/needs-chromium.html) (+3) |
+| [Inline message](components/inline-message.html) | Feedback | Field message | Default, Hover, Focus, Active, Disabled, Invalid, Success | [race-setup](../mocks/pages/race-setup/default.html), [race-lobby](../mocks/pages/race-lobby/someone-left.html), [custom-setup](../mocks/pages/custom-setup/needs-https.html) (+1) |
+| [Progress bar](components/progress-bar.html) | Feedback | .progress, .xp-bar | Default, Hover, Focus, Active, Disabled, Loading, Complete (+1) | [home](../mocks/pages/home/default.html), [profile](../mocks/pages/profile/default.html), [custom-ride](../mocks/pages/custom-ride/default.html) (+1) |
+| [Spinner](components/spinner.html) | Feedback | Button, Row | Default, Hover, Focus, Active, Disabled, Loading | [connect-bike](../mocks/pages/connect-bike/searching.html) |
+| [Skeleton](components/skeleton.html) | Feedback | Class card, Recent row | Loading, Loaded, Reduced motion, Empty, Error | [class-library](../mocks/pages/class-library/default.html), [profile](../mocks/pages/profile/default.html) |
+| [Empty state](components/empty-state.html) | Feedback | — | — | [custom-ride](../mocks/pages/custom-ride/no-bike.html), [profile](../mocks/pages/profile/new-rider.html), [class-library](../mocks/pages/class-library/new-rider.html) (+2) |
+| [Error page](components/error-page.html) | Feedback | Back to Home, Copy link | Default, Hover, Focus, Active, Disabled, Done | [not-found](../mocks/pages/not-found/default.html), [custom-ride](../mocks/pages/custom-ride/needs-chromium.html), [connect-bike](../mocks/pages/connect-bike/unsupported-browser.html) (+1) |
+| [Logo lockup](components/lockup.html) | Brand and progress | Home link, Static | Default, Hover, Focus, Active, Disabled | [home](../mocks/pages/home/default.html), [race-setup](../mocks/pages/race-setup/default.html), [race-lobby](../mocks/pages/race-lobby/default.html) (+4) |
+| [Level badge](components/level-badge.html) | Brand and progress | Header link, Profile badge | Default, Hover, Focus, Active, Disabled | [home](../mocks/pages/home/default.html), [profile](../mocks/pages/profile/default.html), [results](../mocks/pages/results/default.html) |
+| [Stars](components/stars.html) | Brand and progress | Default, md, lg | 0 of 3, 1 of 3, 2 of 3, 3 of 3 | [home](../mocks/pages/home/default.html), [map-select](../mocks/pages/map-select/default.html), [race-setup](../mocks/pages/race-setup/default.html) (+2) |
+| [Photo tag](components/photo-tag.html) | Brand and progress | Label, Time | Bright photo, Dark photo, Locked photo, Default / hover / focus / active / disabled | [home](../mocks/pages/home/default.html), [class-library](../mocks/pages/class-library/default.html), [class-ride](../mocks/pages/class-ride/default.html) |
+| [Section head](components/section-head.html) | Brand and progress | More link | Default, Hover, Focus, Active, Disabled | [home](../mocks/pages/home/default.html), [profile](../mocks/pages/profile/default.html) |
+| [Map card](components/map-card.html) | Ride | Map tile, Map row, open, Map row, next, Map row, locked | Default, Hover, Focus, Active, Locked | [home](../mocks/pages/home/default.html), [map-select](../mocks/pages/map-select/default.html) |
+| [Class card](components/class-card.html) | Ride | Class card, Locked card | Default, Hover, Focus, Active, Locked | [class-library](../mocks/pages/class-library/default.html), [home](../mocks/pages/home/default.html) |
+| [Next ride](components/next-ride.html) | Ride | Call to action, Ride it (banner) | Default, Hover, Focus, Active, Disabled | [home](../mocks/pages/home/default.html), [results](../mocks/pages/results/default.html) |
+| [Leaderboard](components/leaderboard.html) | Ride | Start grid, Race board, Class board, Standings | Row, You row, Bot, Open / ready | [race-lobby](../mocks/pages/race-lobby/default.html), [race](../mocks/pages/race/default.html), [class-ride](../mocks/pages/class-ride/default.html) (+1) |
+| [Device list](components/device-list.html) | Ride | — | — | [connect-bike](../mocks/pages/connect-bike/default.html) |
+| [Video](components/video.html) | Ride | Class Ride, Class Start | Loading (cover), Playing, Paused, Unavailable | [class-start](../mocks/pages/class-start/default.html), [class-ride](../mocks/pages/class-ride/default.html), [custom-ride](../mocks/pages/custom-ride/default.html) (+1) |
+| [Plan chart](components/plan-chart.html) | Ride | Profile, Table disclosure, Warm-up, Work 1, Recover 1 (+14) | Default, Hover, Focus, Active, Disabled, Current | [class-start](../mocks/pages/class-start/default.html), [class-ride](../mocks/pages/class-ride/default.html), [class-library](../mocks/pages/class-library/default.html) (+2) |
+| [Route profile](components/route-profile.html) | Ride | Bar button, Bar quiet (Leave), Bike, Profile | Default, Hover, Focus, Active, Disabled, Current | [race](../mocks/pages/race/default.html) |
+| [Ride readout](components/ride-readout.html) | Ride | Dashboard power, Race delta, Class hint, Metric | Default, Hover, Focus, Active, Disabled (no data), On target, Under (+1) | [race](../mocks/pages/race/default.html), [custom-ride](../mocks/pages/custom-ride/default.html), [class-ride](../mocks/pages/class-ride/default.html) (+1) |
+| [HUD panel](components/hud-panel.html) | Ride | Glass step, Class step, Dashboard step, Level bar, Sync toggle (+2) | Default, Hover, Focus, Active, Disabled, Current / open | [race](../mocks/pages/race/default.html), [class-ride](../mocks/pages/class-ride/default.html), [class-start](../mocks/pages/class-start/default.html) (+1) |
+| [Countdown](components/countdown.html) | Ride | Ready toggle, Lobby clock, 3-2-1 step, Join button | Default, Hover, Focus, Active, Disabled, Pressed / current | [race-lobby](../mocks/pages/race-lobby/default.html), [class-start](../mocks/pages/class-start/default.html) |
+| [Ride trace](components/ride-trace.html) | Ride | View tab | Default, Hover, Focus, Active, Disabled, Selected | [custom-ride](../mocks/pages/custom-ride/default.html) |
 
 ## Patterns
 
-| Pattern |
-|---|
-| [Forms](patterns/forms.html) |
-| [Feedback and loading](patterns/feedback-and-loading.html) |
-| [Empty and error states](patterns/empty-and-error-states.html) |
-| [Page structure](patterns/page-structure.html) |
-| [Dialogs and overlays](patterns/dialogs-and-overlays.html) |
-| [Live data](patterns/live-data.html) |
-| [Notifications](patterns/notifications.html) |
-| [Content and tone](patterns/content-and-tone.html) |
+| Pattern | Covers |
+|---|---|
+| [Forms](patterns/forms.html) | Layout, validation timing, error summary, sending and sent. |
+| [Feedback and loading](patterns/feedback-and-loading.html) | Which feedback for which action; spinner, skeleton or progress. |
+| [Empty and error states](patterns/empty-and-error-states.html) | Copy formulas for Bluetooth, browsers, no bike and 404. |
+| [Navigation and page structure](patterns/navigation.html) | The shell, the header and the three ride flows. |
+| [Dialogs and overlays](patterns/dialogs-and-overlays.html) | Dialog, sheet, popover or page: and how they stack. |
+| [Data tables and lists](patterns/data-tables-and-lists.html) | Density, sorting and responsive tables and lists. |
+| [Notifications](patterns/notifications.html) | Toast, banner or inline; priority and dismissal. |
+| [Content and tone](patterns/content-and-tone.html) | Applying the voice in real compositions. |
+| [Live ride](patterns/live-ride.html) | Composing a ride: world, HUD, readouts, board and controls. |
 
-## Scope decisions
+## Tokens
 
-- Light theme lives on `:root` (the skill's standard); the app and the mocks set `data-theme="dark"` by default.
-- Starred kit components Wattzup does not use were left out: sidebar, breadcrumb, pagination, tabs, table, avatar, menu, select, textarea, checkbox, card, drawer, accordion. Add them from the kit when a requirement needs one.
-- The *data tables* pattern is replaced by *live data*: Wattzup shows no tables.
-- Tooltip is added (core component); the mocks' icon-only buttons had none.
+- [`tokens/tokens.css`](tokens/tokens.css) — the source of truth: fonts, primitives (`--palette-*`), the light theme on `:root, [data-theme="light"]`, the dark theme on `[data-theme="dark"]` and its `prefers-color-scheme` twin (keep the two identical), role aliases on `:root, [data-theme]` so nested theme wrappers re-resolve, then reduced motion, `prefers-contrast` and `forced-colors`.
+- [`tokens/tokens.json`](tokens/tokens.json) — W3C DTCG export generated from `tokens.css` (`$type`, `$value`, aliases as `{group.token}`, theme overrides under `$extensions`). Regenerate it after every token change.
+- [`tokens/contrast-pairs.json`](tokens/contrast-pairs.json) — every foreground/background pairing the components rely on, checked in both themes.
+- [`assets/components.css`](assets/components.css) — the component stylesheet: core kit, the components added during extraction, then one block per product area. Component tokens (`--btn-*`, `--field-*`, `--dialog-*`, `--toast-*`, `--banner-*`, `--menu-*`…) alias semantic tokens.
+- [`assets/ds.css`](assets/ds.css) and [`assets/ds.js`](assets/ds.js) — documentation chrome only (navigation, swatches, live token values and contrast ratios, theme toggle).
 
-## Changelog
+Two names for one decision: the design's own theme names (`--color-ink`, `--color-panel`, `--color-raised`, `--color-line`, `--color-fg`, `--color-muted`, `--color-faint`, `--color-volt`, `--color-gold`, `--color-heart`, `--color-rest`, `--color-warn`, `--color-ok`, the `-fg` text variants) are the canonical semantic tokens, matching the Tailwind theme in Magic Patterns (`bg-ink`, `text-volt`). The role names (`--color-bg-canvas`, `--color-fg-muted`, `--color-danger-bg`, `--color-accent`…) alias them. See [Theming](foundations/theming.html).
 
-- **2026-11-19, World Ride (proposed; no requirement yet, see the mocks' open questions).** From the World Ride mocks and the *Class Worlds* canvas. New component pages [World Ride HUD](components/world-ride.html) and [Class worlds](components/class-worlds.html). The separate `assets/world-ride.css` is merged into `components.css` and deleted; the mocks link only the system's two stylesheets.
-  - New tokens: `--color-bg-hud` (canvas at 0.9 in both themes), `--color-rider-1` to `--color-rider-7` (jerseys, the same in both themes) on two new primitives `--palette-cyan-300` and `--palette-violet-400`, and `--theme-display-light` / `--theme-display-dark` for artwork drawn per theme. Three contrast pairs added (default, muted and accent text on the HUD).
-  - New blocks `.world-ride` (with `__scene`, `__hud`, `__bar`, `__class`, `__title`, `__bike`, `__actions`, `__clock`, `__total`, `__muted`, `__accent`, `__top`, `__bottom`, `__panel`, `__power`, `__stats`, `__board`, `__board-title`, `__riders`, `__rider--1…7`, `__interval`, `__row`, `__metric`, `__profile`, `__route`, `__resistance`, `__source`, `__source-title`, `__form`, `__credit`, `__overlay`, `__overlay--lost`, `__overlay-title`) and `.class-worlds` (with `__lead`, `__grid`, `__card`, `__link`, `__title`, `__blurb`, `__preview`, `__image--light`, `__image--dark`).
-  - `components.css` now declares the bundled Inter, Archivo and JetBrains Mono faces (`frontend/public/fonts/`) under the family names the tokens use, so every docs page and mock renders the real type. Before, only World Ride loaded them, under its own family names.
-- **2026-11-19, bike only (ADR 0016).** The components and variants added for the treadmill on 2026-11-16 are removed: the pages Machine choice, Machine card, Speed and incline control and Effort row, their blocks (`.machine-choice`, `.machine-card`, `.signal-bars`, `.speed-control`, `.incline-control`, `.effort-row`, `.quick-speeds`), and the variants `.readout--speed`, `.readout--incline`, `.metrics--treadmill` and `.overlay-panel--belt`. Their three contrast pairs are removed. No token changed.
-- **2026-11-19, Library link on the ride app bar (L2-079 criterion 15).** From the updated Magic Patterns *Ride Dashboard* frame. [App bar](components/app-bar.html) documents the bike-only `Library` link after the lockup (`.app-bar__library`, a `.btn--quiet.btn--sm` link with the grid icon), its place in the Tab order and on phones, and its accessible name. No token, contrast pair or `components.css` rule changed.
-- **2026-11-18, ride history (L2-081 to L2-087, ADR 0015).** From the Magic Patterns *Session Summary* and *Progress* frames. New token `--color-series-dip` (heart 600 light, heart 400 dark) with contrast pairs; new component pages [Session traces](components/session-traces.html), [Dip list](components/dip-list.html), [Week strip](components/week-strip.html), [Stat strip](components/stat-strip.html), [Personal-best chip and delta](components/best-chip.html), [Trend chart](components/trend-chart.html), [Session list](components/session-list.html), [Streak calendar](components/streak-calendar.html) and [Achievement badge](components/achievement.html); layout `.history` (with `__inner`, `__grid`, `--progress`, `__aside`), `.session-head`, `.streak-panel`, `.progress-head`, `.compare`, `.measure-tabs` and `.streak-badge` in `components.css`. Heart rate was dropped from the totals (ADR 0003).
-- **2026-11-17, class library (L2-077 to L2-080; was proposed with no requirement yet, see the mocks' open question 17).** From the Magic Patterns *Video Library* and *Video Workout* frames. New component pages [Class card and shelf](components/class-card.html) and [Level row](components/level-row.html); [Page layout](components/page-layout.html) gains the library and class-page layouts and [Video ride-along](components/video.html) the cover variant and the length filter:
-  - `.library` (with `__inner`, `__head`), `.shelf` (with `__head`, `__title`, `__blurb`, `__count`, `__grid`) and `.class-card` (with `__cover`, `__poster`, `__length`, `__title`, `__meta`, `__note`), a link whose strip is a `.profile`;
-  - the video page: `.class-page` (with `__meta`, `__link`, `__back`), `.video-frame__cover`, `.plan-head`, `.setup-aside__group` and `.legend__aside`;
-  - `.level-row`, a compact − level + for the plan's work, recover or steady level, with 44 px buttons;
-  - the shelf filter reuses `.view-switch` as a tablist. No token was added or changed.
-- **2026-11-17, video ride-along (L2-029 criteria 17–21, L2-076, ADR 0012).** The new component page [Video ride-along](components/video.html) covers:
-  - `.video-frame` (with `--fill`, `__poster`, `__title`, `__meta`, `__scrim`) and `.video-sync`;
-  - `.view-switch`, a two-tab switch. It is the system's first tabs pattern, scoped to the dashboard's main view, not the kit's general Tabs;
-  - `.profile--strip` with `rect.is-playhead`.
+## Drift found in the mocks
 
-  New tokens `--color-video-bg`, `--color-video-fg` and `--color-video-scrim` are the same in both themes, because they frame a picture rather than the UI. Two contrast pairs were added (video text on the frame and on the scrim).
+Every value in the system traces to a mock or to one of these corrections. "Fixed in the system" means `tokens.css` or `components.css` changed, so the mocks pick the fix up now that they load the system. "Rule for the product" means the mocks still show the old behaviour; the component or pattern page states the rule to build.
 
-## Drift log
+### Fixed in the system
 
 | Mock | Issue | Resolution |
 |---|---|---|
-| all | Raw weight 800, letter spacings −0.02/−0.04/0.04em, line heights 1/0.9 | `--font-weight-heavy`, `--letter-spacing-*`, `--line-height-none/numeral` |
-| all | Raw durations 0.8s / 1.4s / 1.6s | `--duration-spin`, `--duration-shimmer`, `--duration-banner` |
-| ride/offline (removed with ADR 0019) | Inline `opacity: 0.45` on stale values | `.is-stale` with `--opacity-stale` |
-| ride, setup | Component CSS branching on `[data-theme="light"]` (playhead, lit bars, chosen mode card) | Roles `--color-playhead`, `--color-level-lit`, `--color-selected-*` |
-| ride, setup | `max-width` media queries (39.99rem, 47.99rem) | Mobile-first `min-width` queries |
-| setup | `.presets .chip`, `.plan-note .btn`, `.num-stepper__row .btn--icon` restyled other blocks | `chip--solid`, `btn--link btn--sm`, `btn--subtle` |
-| ride | `.btn--volt` duplicated `.btn--primary`; `.btn--end` | Merged into `btn--primary`; `btn--quiet-danger` |
-| setup, diagnostics | `.summary`, `.diag`, `.dl` three styles for one thing; `.diag-log` | `.dl--split`, `.dl--mono`; `.code-block` |
-| setup | Inline stepper input styles | `.num-stepper__input` |
-| ride | `.overlay-panel` background declared twice | One veil token |
-| ride | Fallback `--control-height-lg, 2.75rem` disagreed with the token | Fallback removed |
-| all | Unused starter palettes gray, blue, green, amber, red | Dropped |
-| all | Near-duplicate colours (#e6e8e1/#e3e6de, #b8bdc3, #6b717a, #7b8189, #9cc400, #1a1f0c, #b5d63a, #b3bdff, #f5a39c, #8a2c25, #f2c27a) | Collapsed into the nearest ramp step |
-| ride (light) | Volt primary button on white is 1.1:1 | Olive edge `--color-accent-edge` |
-| ride (light) | Lit level bars failed 3:1 | `--color-level-lit` = volt-600 |
-| ride | Dark veil let numerals show through overlay text | Veil raised to 0.9 |
-| ride | Disabled step button 0.3 opacity | `--opacity-disabled` |
-| notifications | Toast auto-dismiss 5 s | 8 s, pause on hover/focus (WCAG 2.2.1) |
-| Magic Patterns *Ride Dashboard* (video) | Video background `bg-black` and scrim `bg-black/60`, raw | `--color-video-bg`, `--color-video-scrim` |
-| ride/video, ride/video-blocked | Level-picker bar heights recomputed (34.7 % instead of 34.8 %, …) | Copied from the other ride mocks |
-| setup/video, setup/intervals* | Mock notes pinned 40rem from the left scrolled the page sideways at 360 px | Anchored to the right edge |
-| Magic Patterns *Training Setup* (video) | Start-point stepper buttons 40 px | `btn--icon` at `--target-comfortable` (44 px) |
-| world-ride/* | A second stylesheet, `design-system/assets/world-ride.css`, outside `components.css` | Merged into `components.css`; file deleted |
-| world-ride/* | Jersey colours inline (`style="--jersey:#3ff0ff"`), two hues not in the palette | `__rider--1…7` on `--color-rider-*`; `--palette-cyan-300`, `--palette-violet-400` |
-| world-ride/* | Route profile fills raw (`#d7ff3a`, `#8fa3ff`, `#5b616a`, `rgba(242,243,239,…)`), the same in both themes | `is-work` / `is-rest` / `is-easy` / `is-done` / `is-playhead` on the series and playhead roles |
-| world-ride/* (light) | HUD panel at 0.88 opacity: olive accent text 4.44:1 over a black photo | `--color-bg-hud` at 0.9 (4.65:1 worst case) |
-| world-ride/* | `.world-ride .btn { min-height: var(--target-min) }` restyled the Button block and shrank HUD buttons to 24 px | Rule removed; Class, Pause and End are `btn--collapsible`, − and + are `btn--lg btn--icon` (48 px) |
-| world-ride/* | Resistance − / + hidden below 1024 px: no way to change resistance on a phone or tablet | Shown at every width; spans the bottom row below 1024 px |
-| world-ride/* | Native `<progress>` and a hand-styled key input | `.progress` (`--thin`, coloured by segment kind) and `.input` |
-| world-ride/* | Desktop-first `max-width` queries; mock-chrome rule (`[data-chrome]`) in component CSS | Mobile-first `min-width` queries; chrome rule moved to `mocks/assets/mock.css` |
-| world-ride/* | Generic selectors (`.world-ride strong`, `.world-ride__board h2`, `.world-ride__source form`) | BEM elements (`__board-title`, `__source-title`, `__form`); numerals scoped to `__panel` |
-| world-ride/* | Raw sizes and weights (`font-weight: bold`, `line-height: .95`, `4rem` power floor) | Weight and line-height tokens; power floor snapped to `--font-size-numeral-xl` (3.75rem); remaining sizes are named component tokens |
-| world-ride/*, class-worlds | Duplicate font families *World Ride Inter* / *World Ride Archivo* | The system's own `@font-face` for *Inter* and *Archivo* |
-| class-worlds | Component CSS branching on `[data-theme]` to swap previews; element selectors (`article`, `h2`, `p`) | `--theme-display-light/-dark`; BEM elements |
+| all pages (`--color-faint`) | Tertiary text #636873 read 3.2:1 on panels (dark); #7d828c read 3.5:1 on paper (light) | Raised to #878d97 (dark) and #63686f (light); the old dark value is now `--color-line-strong` / `--color-disabled` |
+| all pages (`--color-heart-fg`) | Error and heart-rate text #e5194b read 3.9:1 on panels in dark | Text uses #ff5a78 (`--palette-red-light`); the fill stays #e5194b |
+| inputs, Feedback textarea, Custom Setup fields | Borders in `--color-line` read 1.3:1 (fails 1.4.11) | `--field-border: var(--color-line-strong)` (3.2:1 on panels); `.feedback__message` too |
+| kit `.switch`, `.setup-toggle` | Off track read 1.2–1.3:1 against its surface | Off switch gets a `--color-line-strong` edge |
+| `.banner--*`, `.browser-notice` | Hand-mixed 7–10% tints, unchecked | Status tokens `--color-{info,success,warning,danger}-{bg,border,fg}` and `--color-gold-subtle/-border`, all in `contrast-pairs.json` |
+| `.pill--*` | 15% tints: volt 4.47:1 and rest 4.41:1 on panels in dark, four tones fail on raised in light | Pills read the checked status pairs (`--color-accent-subtle` + `--color-fg-accent`, `--color-info-*`…) |
+| `.btn--danger` | Label used the primitive `--palette-white` | `--color-fg-on-danger`, with a checked `--color-danger-solid-hover` |
+| Diagnostics, Feedback | Popover shadow 0 24px 60px -12px beside shadow-2xl 0 25px 50px -12px | Folded into `--shadow-4`: four shadows |
+| light theme | Signal orange focus ring read 2.7:1 on paper-raised | `--color-focus-ring` is `--palette-signal-deep` in light |
+| custom-ride/default | Lit level bars 2.8:1 on the light panel; log "ack" text 3.1:1 in dark | `--color-volt-fg` and `--color-muted` |
+| progress fills (light) | Volt and green fills 2.8:1 and 1.6:1 against the track | Fills use the `-fg` tokens (≥ 3:1 both themes) |
+| race/* | Light-theme terrain fill only applied at the page root | Follows any light-theme container |
+| race/*, class-ride/* | Mid-ride buttons 36–40px (mocks open question 9) | 48px (`--target-ride`) under 640px; `.race-bar__btn` gains a press state |
+| race-lobby/countdown | 3-2-1 words sat in an `aria-label` over a hidden numeral; the step entrance existed only as a note | Words inside the live region; the entrance animation is in `components.css` |
+| components.css | Blanket `* { transition-duration: 0.01ms !important }` under reduced motion overrode the tokens, including the 1 s countdown timer | Reduced motion lives in the tokens (`--duration-fast/base/slow/loop/pulse` → 0); `--duration-deliberate` keeps the timer |
+| components.css | Raw sizes (96px, 176px, 280px, 420px, 9px, 3px, 1.75rem; spinner 1s; skeleton 1.6s) | Space tokens, `--maps-aside-width`, `--setup-preview-width`, `--duration-loop`, `--duration-pulse` |
+| all pages (logo) | Logo colours fixed, so the lockup could not sit on a photo; small lockup built from a `width` attribute; the wordmark hidden with `display: none` under 384px | Lockup tokens, `.lockup--sm`, `.lockup--on-photo`, `.lockup--mark` (keeps the name for screen readers) |
+| home/*, map-select/* (light) | Locked tile name full colour while a locked row is muted; lock icon disappears on a greyed photo | `.map-tile--locked`; the lock sits on a glass disc |
+| kit | Three hand-made segmented controls (`tier-tabs`, `pack__options`, `feedback__kinds`); three copies of a quiet danger button | `.segmented` with modifiers; `.btn--quiet-danger` |
+| app-header (light) | XP bar fill `--color-gold` on `--color-raised` read 1.3:1 | Fill is `--color-gold-fg` (4.5:1 light, 9.4:1 dark) |
+| class-library | `.tier-tabs` had no disabled or overflow behaviour | `aria-disabled`, horizontal scroll, state hooks |
+| home (Next ride card) | The card's text column overflowed its grid track at 360px | `minmax(0, …)` columns; layout primitives `.grid`, `.stack`, `.cluster`, `.split` replace five hand-written aside grids |
+| race-setup, custom-setup | `.mode-option` and `.ride-option` were two copies of one selectable card; the map, class and tile hover was written three times | `.card--select` with a real radio; `.card--interactive` |
+| end-ride, feedback, diagnostics | Three panel shells, each with its own shadow; close buttons re-drew `.icon-btn` | One `.dialog` / `.popover` shell on `--shadow-4`; close is `.icon-btn` |
+| dialogs/end-ride | `.ride-leave` sat on `--z-sticky`, its layer implied by the header | `--z-popover` |
+| profile, home (rules) | Hand-mixed 60% row rules and duplicated 1px vertical rules | `.divider--subtle`, `.divider--vertical` |
+| race-lobby | `.race-lobby__notice` and four "Lost the bike" / "Bluetooth is off" shells were hand-made | Banner tones (`.banner--rest`, `.banner--danger`) |
+| components.css | Raw sizes left in area rules (28rem, 36rem, 42rem, 32rem, 24rem leads and cards; 16.25rem, 10rem, 13.75rem, 5.5rem on the dashboard) | Text-width scale `--layout-text-sm…2xl` (Tailwind max-w) and `--dashboard-*` area tokens |
+| tooltip delay | 300ms delay was `--duration-fast × 2`, so reduced motion removed the wait | `--duration-delay-tooltip`, kept under reduced motion |
+| docs chrome | `ds.css` restyled `.skip-link` and underlined every bare link, including specimens | The docs use `.ds-skip`; underlines are for prose only |
+| race/*, class-ride/* (360) | Seen after the mocks were pointed at the system: the page moves down 12px | Expected: mid-ride header buttons are 48px under 640px |
+| pages/not-found | The mocks' `ui.css` imported the area partials before the core kit, so `.container` silently overrode `.not-found`'s 36rem; in the system's order the 36rem won and centred the page | `.not-found` limits its children's measure (`--layout-text-xl`), keeping the page aligned with the header as the mock drew it |
+| connect-bike/searching, pairing | The busy button faded to 40% like a disabled one | Busy buttons stay at full opacity: they are working, not off |
+| dialogs/feedback/sending | Busy send repainted in `--color-volt-dim`: the label read under 4.5:1 | Keeps its volt fill |
+| stars (light) | Earned stars in `--color-gold` read 1.6:1 on paper | `--color-gold-fg` (the deep gold on paper, unchanged in dark) |
 
-Remaining differences between the mocks and this system are listed after the mocks were pointed at it (see *Verification*).
+### Rule for the product (mocks unchanged)
+
+| Mock | Issue | Resolution |
+|---|---|---|
+| pages/*/* (lockup) | `aria-label` on a plain `<span>` | Standalone lockups get `role="img"`; inside the Home link the lockup is hidden and the link is named "Home" |
+| map-select/*, class-library/* | Locked rows and cards are `<button disabled>`, so the unlock goal cannot be reached by keyboard | `aria-disabled="true"` with the goal in the accessible name |
+| class-library | Tier filter is links with `role="tab"` | Buttons with `aria-pressed` ([Button group](components/button-group.html)) |
+| class-start | `<a role="radio">` that navigates | A radio plus a separate start button |
+| race-setup, custom-setup, feedback | Radio groups without roving tabindex; lowercase options capitalised by CSS | Roving tabindex; sentence-case copy |
+| custom-ride | Library and Feedback triggers are links with `aria-haspopup` | Buttons |
+| diagnostics | `<a role="switch">` | A button with `role="switch"` |
+| feedback | Checkbox is a hidden input with a drawn box | Native `.checkbox` |
+| custom-setup | Sliders can only be dragged (2.5.7) and have no value text; stepper values are silent spans, buttons named "Less Warm-up" | Step buttons and `aria-valuetext`; `<output aria-live>`, sentence-case names |
+| custom-setup | YouTube field swaps the focus ring for a 1px border; offset input has no border | Shared focus ring; a labelled `.input` |
+| custom-setup, feedback | Neither is a real `<form>` | `.form` ([Form layout](components/form-layout.html)) |
+| dialogs/feedback/sending, connect-bike/pairing | Busy button uses `disabled` and drops focus; Feedback repaints it dim | `aria-disabled` + `aria-busy`; label "Sending…", opacity kept |
+| dialogs/feedback/* | No failure state; the bug text stays under the kudos label | Danger banner and "Try again"; the field empties to the kind's placeholder |
+| race/disconnected | Reconnect has no busy state; Lost the bike moves no focus and leaves the HUD usable | "Reconnecting…"; HUD `inert`, focus on Reconnect |
+| race/*, class-ride/* | Leave exits mid-ride without asking; "Finish (prototype only)" in the header | Confirm first, as "Leave this ride?" does; Finish is not product |
+| race/*, class-ride/* | No Diagnostics entry point in the ride headers (only Custom Ride has one) | Recorded on [Accessibility](foundations/accessibility.html) (consistent help) |
+| end-ride, feedback | Popover placed with an invisible copy of the header; Close is an `<a>` | Anchor to the real trigger; Close is a `<button>` |
+| custom-ride/no-bike, bluetooth-off | Overlay cards have no role; no-bike has no icon | Bluetooth off is `role="alert"`; the empty-state formula adds the bike icon |
+| custom-ride/bluetooth-off vs connect-bike/bluetooth-off | Different title and verb | "Bluetooth is off" / "Try again" |
+| connect-bike/unsupported-browser | "Try again" cannot fix a browser without Bluetooth | "Copy link" |
+| connect-bike/paired | Pairing succeeds silently | `role="status"`: "Echelon EX-5s paired." |
+| class-start/needs-chromium, needs-https | Join disabled with no reason | Reason linked with `aria-describedby` |
+| custom-ride/needs-* | Panel buttons carry the banner class `.browser-notice__action` | Plain `.btn` |
+| race/default, class-ride/default | No rule for what live boards announce | One throttled `role="status"` for your place; boards are never live regions; readouts never announced |
+| race-lobby/countdown | `role="timer" aria-live="assertive"` changes only `aria-label` | Step text inside the live region |
+| race-lobby/default | Your own seat has no Ready tick | Tick appears after "I'm ready" |
+| race-lobby/someone-left | Notice names MarcoVelo, but Ollie R. leaves the grid | Notice and grid read the same event |
+| results/class-group | Riders ranked above you have less output; 10 seats where Class Ride shows 9 | Boards sort by the value they show; one seat count per session |
+| results/* | No state shows a ride crossing into a new level | `.level-up` ([Level badge](components/level-badge.html)) |
+| profile/default | `.map-table` has no accessible name; hidden header cells have no `scope` | `aria-labelledby`; `scope="col"` |
+| profile/default, custom-ride/default | XP bar and ride progress are `role="img"` | `role="progressbar"` with value text |
+| profile/new-rider | "0-day streak"; "Nothing yet." has no action | Leave out zero facts; the first race is the action |
+| map-select/default | "1 of 1 stars" | "1 star", "2 stars", "3 stars" |
+| class-ride/*, class-start/* | No state for a video that fails to load | Keep the cover, add an inline warning |
+| class-ride/paused | Overlay is ink at 70%, between the two scrim tokens | Kept; scrim tokens to review |
+| dialogs/diagnostics/* | `dd[data-tone="ok"]` unstyled; packet file dated 2024-06-14 | Styled in `.dl`; examples use 2026 dates |
+| race/default | Muted text on 70% glass drops to 2.9:1 over a bright patch of photo | Anything a rider must read on glass is `--color-fg`; `--color-glass` (ink 80%) documented on [Elevation](foundations/elevation.html) |
+| race-setup, race-lobby, custom-setup, connect-bike | Straight apostrophes where the rest use ’ | Curly apostrophes ([Content](foundations/content.html)) |
+| race/*, custom-ride/* | Watt gaps use a hyphen ("-47 W"); no-bike shows a delta against no reading | True minus (U+2212); show only the target until a reading arrives |
+| class-ride vs custom-ride | "Aim 72" vs "Aim for 72" | "Aim for 72" |
+| results/default, race-lobby/countdown | Notes say "opacity only" under reduced motion, but the tokens zero the fade | Documented as an instant cut on [Motion](foundations/motion.html) |
+| class-library/default | Tempo Paceline shows 36:00 in the 30 min tier | Kept as data; flagged for the class catalogue |
+| app-header streak (home, map-select, class-library, profile) | `aria-label` on a plain span is never read | Visually hidden text beside the flame |
+| app-header and task headers | Four copies of one header rule set | Noted: candidate for one base header class |
+| all ride headers | 34 Full screen buttons, 20 bike-status links and the bike-off icon rely on `title` | `.tooltip` on hover and focus ([Tooltip](components/tooltip.html)) |
+| dialogs/* | Dialog titles are `h1` | `h2`; the page keeps its `h1` |
+| home (unlock banner) | Carries a layout margin and has no dismiss | Spacing from the parent stack; `.banner__dismiss` |
+
+### Deliberate deviations from the skill's defaults
+
+| Area | Default | Telo Ride | Why |
+|---|---|---|---|
+| Radii | At most 5 + full | 6 + full (`xs` 2px … `2xl` 16px) | The design's Tailwind scale; `xs` is for chart marks only |
+| Spacing | 4px grid | 4px grid plus half steps (`0-5`, `1-5`, `2-5`, `3-5`) | The design's tight insides (gap-1.5, py-2.5); inside components only |
+| Theme default | Light on `:root`, OS preference | Dark on every product page | The design is dark; light is an addition |
+| Type | Nothing below 12px | 11px (`--font-size-2xs`) for the XP label and HUD captions | The design's `text-[11px]`, never for body copy |
+| Controls | sm 32 / md 40 / lg 48 | sm 36 / md 40 / lg 48 / xl 56 | The design's h-9 … h-14 |
 
 ## Verification
 
-```sh
-python3 .claude/skills/extracting-design-systems/scripts/check_design_system.py docs/design-system
-python3 .claude/skills/extracting-design-systems/scripts/check_contrast.py docs/design-system/tokens/tokens.css
-python3 .claude/skills/writing-html-mocks/scripts/screenshot_mocks.py docs/design-system --out docs/design-system/.cache/shots
-```
+Run on 21 November 2026 from the repository root.
 
-Run on 2026-11-15, again on 2026-11-17 for the video ride-along and the class library, on 2026-11-19 after the treadmill was removed (ADR 0016), and on 2026-11-19 for World Ride:
+| Check | Command | Result |
+|---|---|---|
+| Structure | `python .claude/skills/extracting-design-systems/scripts/check_design_system.py docs/design-system` | 81 pages (12 foundations, 59 components, 9 patterns, index), 0 errors, 0 warnings |
+| Contrast | `python .claude/skills/extracting-design-systems/scripts/check_contrast.py docs/design-system/tokens/tokens.css` | 102 pairs, 201 checks across both themes (three gold-fill pairs are dark-only; light uses `--color-gold-fg`): 201 passed, 0 failed |
+| DTCG export | `python .claude/skills/extracting-design-systems/scripts/tokens_to_json.py docs/design-system/tokens/tokens.css` | `tokens.json`, 395 entries |
+| Token coverage | every custom property in `tokens.css` has a `data-token` cell | 310 tokens, each on exactly one foundation page |
+| Live ratios and overflow | every page at 360 px in both themes (Playwright, Chromium) | no horizontal page scroll; no `data-contrast` pair below its minimum |
+| Mocks | `python .claude/skills/writing-html-mocks/scripts/check_mocks.py docs/mocks --write` | 17 screens, 83 mocks, 0 errors, 0 warnings, all linking `../design-system/tokens/tokens.css` and `assets/components.css` |
 
-| Check | Result |
-|---|---|
-| `check_design_system.py` | 76 pages (55 components, 8 patterns), 0 errors, 0 warnings (2026-11-19, World Ride) |
-| `check_contrast.py` | 160 passed, 0 failed, 0 unresolved (2026-11-19, World Ride) |
-| `tokens_to_json.py` | `tokens.json` written, 354 tokens (2026-11-19, World Ride) |
-| `check_mocks.py docs/mocks --write` with the mocks reading this system | 18 screens, 103 mocks, 0 errors, 0 warnings (2026-11-19, World Ride) |
-| Horizontal overflow at 360px, all 103 mocks and 76 pages, both themes | none (2026-11-19, with the real fonts now loaded everywhere) |
-| Screenshots reviewed | index, button, dialog, readout, color (360 and 1280, both themes); ride and setup mocks at 360 and 1280; class card and level row pages and every class-library and class mock at 360, 768 and 1280, both themes (2026-11-17); World Ride default (before and after the merge), loading and disconnected at 360, 768 and 1280, the Class Worlds canvas, and the World Ride HUD and Class worlds pages, both themes (2026-11-19) |
+**Screenshots reviewed** (Playwright CLI, full page, 360 and 1280 px, dark and light): `index.html`, `foundations/color.html`, `components/button.html`, `components/hud-panel.html`, `components/tabs.html`, plus every page by the agent that wrote it. Fixed from the review: the docs' prose-link rule outranked the nav brand link; ramp labels were unreadable on mid-tone chips (now a label chip); earned stars failed on paper.
 
-### Closing the loop with the mocks
+**Mocks before and after the switch** (all 83 at 1280 dark and 360 light, pixel-diffed): 129 of 166 captures changed by more than 0.05 %, none by more than 1.1 % except the ride screens at 360 px (the 48 px header buttons push the page down 12 px). The changes reviewed are the logged fixes: tertiary text, field and switch edges, banner and pill tints, the light XP bar and stars, the lock disc on locked tiles, busy buttons at full opacity. One regression was found and fixed (Not found, see the drift log). The mocks' own `ui.css`, `ui/` partials and `fonts/` are removed; `assets/tokens.css` is a shim for the gallery.
 
-The mocks now link `../../../design-system/tokens/tokens.css` and `assets/components.css`; their own `ui.css` is gone and `docs/mocks/assets/tokens.css` only `@import`s this system's tokens so the generated gallery stays styled. Every renamed class in the drift log is used by the mocks. Remaining differences:
-
-- Components no longer set their own outer margins; the ride and setup layouts space their children instead (`.ride-main > * + *`, `.setup-main__inner > * + *`, side-panel rules). The spacing matches the mocks.
-- Paused and edge states at 360px: the app-bar end group wraps onto a second row (badge + clock + four actions do not fit in one).
-- At 360px the trace axis labels 10:00 and 12:00 sit close together; the product's WebGL trace should drop alternate ticks below 640px.
-- A few layout-only inline styles remain in the mocks (skeleton sizes, section margins in setup alerts); they read tokens and do not affect the system.
+Re-run the commands above after any change; the screenshot sweep is `python .claude/skills/writing-html-mocks/scripts/screenshot_mocks.py docs/design-system --out docs/design-system/.cache/shots`.

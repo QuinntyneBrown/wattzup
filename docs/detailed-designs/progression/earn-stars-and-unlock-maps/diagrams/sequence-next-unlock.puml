@@ -1,0 +1,47 @@
+@startuml
+title UML sequence behaviour — Compute the next unlock
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "MapSelectPage or RaceSetupPage" as page
+  participant "HttpProgressApi" as store
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "ProgressController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "GetProgressQueryHandler" as handler
+  participant "UnlockRules" as unlocks
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+actor -> page : Open the screen
+page -> store : maps()
+store -> ctrl : GET /api/progress
+ctrl -> handler : Send GetProgressQuery
+handler -> db : Rider, MapProgress
+handler -> unlocks : NextUnlock(catalogue in unlock order, open maps)
+loop Locked maps in unlock order
+  unlocks -> unlocks : Workable now if its prerequisite map is open or its goal is a level (L2-041 AC1)
+end
+unlocks --> handler : Mid rider: Neon Docklands by "Finish top 3 vs Bots on Old Town Criterium" (AC2)
+handler --> ctrl : ProgressDto with openMapIds, nextUnlockId, stars and bestTimeSeconds
+ctrl --> store : 200 ProgressDto
+store --> page : MapProgressDto; the goal text is the catalogue's unlockGoal (L2-040 AC6)
+page -> page : One source for Map Select and Race Setup, and Home from 13.2 (L2-041 AC4)
+page --> actor : Same map and goal on every screen
+@enduml

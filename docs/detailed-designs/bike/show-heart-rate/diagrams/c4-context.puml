@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Show heart rate
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression; keeps each ride's average and peak heart rate")
+System_Ext(bike, "Smart bike", "An FTMS bike may report heart rate in Indoor Bike Data")
+System_Ext(strap, "Heart-rate strap", "Bluetooth Heart Rate Service")
+Rel(rider, telo, "Connects a strap from Settings in")
+Rel(bike, telo, "Heart rate, when reported", "GATT")
+Rel(strap, telo, "Heart Rate Measurement", "GATT")
+@enduml

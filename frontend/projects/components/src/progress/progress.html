@@ -1,0 +1,18 @@
+@if (caption(); as caption) {
+  <span class="progress__head"
+    ><span class="progress__label">{{ caption }}</span
+    ><span class="progress__value">{{ value() }}%</span></span
+  >
+}
+<span
+  class="progress__track"
+  role="progressbar"
+  [attr.aria-label]="label()"
+  aria-valuemin="0"
+  aria-valuemax="100"
+  [attr.aria-valuenow]="value()"
+  ><span class="progress__fill"></span
+></span>
+@if (foot(); as foot) {
+  <span class="progress__foot">{{ foot }}</span>
+}

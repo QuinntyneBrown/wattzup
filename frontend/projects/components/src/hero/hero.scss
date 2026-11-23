@@ -1,0 +1,73 @@
+// Block hero (ADR 0027).
+:host {
+  display: block;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 80% 20%, var(--color-volt-subtle), transparent 60%);
+}
+
+.hero__inner {
+  display: grid;
+  align-items: center;
+  gap: var(--space-12);
+  max-width: var(--layout-container-max);
+  margin-inline: auto;
+  padding: var(--space-12) var(--layout-margin) var(--space-20);
+
+  @media (min-width: 62rem) {
+    grid-template-columns: 1.1fr 1fr;
+    padding-block: var(--space-20) var(--space-28);
+  }
+}
+
+.hero__kicker {
+  font: var(--text-overline);
+  letter-spacing: var(--letter-spacing-widest);
+  text-transform: uppercase;
+  color: var(--color-volt-fg);
+}
+
+.hero__heading {
+  margin-top: var(--space-4);
+  font: var(--text-display);
+  letter-spacing: var(--letter-spacing-display);
+  text-transform: uppercase;
+
+  @media (min-width: 40rem) {
+    font-size: var(--font-size-8xl);
+  }
+}
+
+.hero__lead {
+  margin-top: var(--space-6);
+  max-width: var(--layout-measure);
+  font: var(--text-body-lg);
+  color: var(--color-fg-muted);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+}
+
+.hero__note {
+  margin-top: var(--space-4);
+  font: var(--text-body-sm);
+  color: var(--color-fg-subtle);
+}
+
+.hero__art {
+  overflow: hidden;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-3);
+}
+
+.hero__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}

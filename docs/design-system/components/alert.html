@@ -3,17 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Alert and banner — Wattzup design system</title>
-<meta name="description" content="Inline alerts and full-width connection banners.">
+<title>Alert — Telo Ride design system</title>
+<meta name="description" content="An inline banner in the page flow: gold for an unlock, and warning, danger, info and success on the status tokens; the full-width browser notice when Bluetooth cannot work; optional action and dismiss.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Page-only: ds.css underlines every link; components in examples set their own decoration. */
+:where(.ds-example__canvas, .ds-stage, .ds-themes, .ds-matrix, .ds-anatomy__figure, .ds-do, .ds-dont) a { text-decoration: none; color: inherit; }
+.ds-matrix td { min-width: 7rem; }
+.ds-matrix td > :is(a, button, span):not(.visually-hidden) { display: inline-flex; vertical-align: middle; }
+.ds-keys td:first-child { white-space: nowrap; }
+.ds-matrix td { white-space: nowrap; }
+.ds-matrix td > :is(.tier-tabs, .tabs) { display: inline-flex; }
+.ds-stage .demo-relative { position: relative; }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +38,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,114 +92,267 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Component · Feedback</p>
-      <h1>Alert and banner</h1>
-      <p class="ds-lead">Alerts explain a condition in place: a failed start beside Start ride, a browser that cannot reach Bluetooth, or as a full-width banner, the connection state.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span></div>
+      <h1>Alert</h1>
+      <p class="ds-lead">A banner that sits in the page and says something about the whole screen: a map just opened, Bluetooth cannot work in this browser, the bike stopped answering. It stays until the situation changes or the rider dismisses it.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
       <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>Four tones. As <code>.banner</code> it spans the page under the app bar: simulated bike (info), reconnected (success), a browser without Web Bluetooth or an insecure page (warning), Bluetooth off (danger).</p>
-    </section>
-    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
-<div class="ds-anatomy"><figure class="ds-anatomy__figure"><div class="alert alert--danger" role="status"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><div class="alert__body"><span class="alert__title">Couldn&rsquo;t start the ride</span><span>The ride didn&rsquo;t start. Your settings are kept.</span></div></div><span class="ds-callout" style="left: 1%; top: 50%;" aria-hidden="true">1</span><span class="ds-callout" style="left: 6%; top: 30%;" aria-hidden="true">2</span><span class="ds-callout" style="left: 40%; top: 25%;" aria-hidden="true">3</span><span class="ds-callout" style="left: 40%; top: 70%;" aria-hidden="true">4</span></figure><ol class="ds-anatomy__list"><li><div><b>Edge</b><small>4px tone edge.</small></div></li><li><div><b>Icon</b><small>Tone icon.</small></div></li><li><div><b>Title</b><small>Label.</small></div></li><li><div><b>Text</b><small>Cause and next step.</small></div></li></ol></div>
-    </section>
-    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
-<div class="ds-example"><div class="ds-example__canvas "><div class="alert" role="status"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg><div class="alert__body"><span class="alert__title">Simulated bike</span><span>No hardware connected.</span></div></div><div class="alert alert--success" role="status"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg><div class="alert__body"><span class="alert__title">Reconnected</span><span>The plan picked up at 7:12.</span></div></div><div class="alert alert--warning" role="status"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div class="alert__body"><span class="alert__title">Open Wattzup in Chrome or Edge.</span><span>This browser can&rsquo;t reach the bike. Classes and past rides still open.</span></div></div><div class="alert alert--danger" role="status"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m17 17-5 5V12l-5 5M2 2l20 20M14.5 9.5 17 7l-5-5v4.5"/></svg><div class="alert__body"><span class="alert__title">Bluetooth is off</span><span>Turn Bluetooth on to reach the bike.</span></div></div></div><div class="ds-example__caption"><span>Four tones.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="alert" role="status"&gt;
-&lt;svg class="icon" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;circle cx="12" cy="12" r="9"/&gt;
-&lt;path d="M12 16v-4M12 8h.01"/&gt;
-&lt;/svg&gt;
-&lt;div class="alert__body"&gt;
-&lt;span class="alert__title"&gt;Simulated bike&lt;/span&gt;
-&lt;span&gt;No hardware connected.&lt;/span&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="alert alert--success" role="status"&gt;
-&lt;svg class="icon" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;circle cx="12" cy="12" r="9"/&gt;
-&lt;path d="m8 12 3 3 5-6"/&gt;
-&lt;/svg&gt;
-&lt;div class="alert__body"&gt;
-&lt;span class="alert__title"&gt;Reconnected&lt;/span&gt;
-&lt;span&gt;The plan picked up at 7:12.&lt;/span&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="alert alert--warning" role="status"&gt;
-&lt;svg class="icon" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/&gt;
-&lt;/svg&gt;
-&lt;div class="alert__body"&gt;
-&lt;span class="alert__title"&gt;Open Wattzup in Chrome or Edge.&lt;/span&gt;
-&lt;span&gt;This browser can&amp;rsquo;t reach the bike. Classes and past rides still open.&lt;/span&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="alert alert--danger" role="status"&gt;
-&lt;svg class="icon" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;path d="m17 17-5 5V12l-5 5M2 2l20 20M14.5 9.5 17 7l-5-5v4.5"/&gt;
-&lt;/svg&gt;
-&lt;div class="alert__body"&gt;
-&lt;span class="alert__title"&gt;Bluetooth is off&lt;/span&gt;
-&lt;span&gt;Turn Bluetooth on to reach the bike.&lt;/span&gt;
-&lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div><h3>Banner</h3><div class="ds-example"><div class="ds-example__canvas "><div class="alert alert--warning banner" role="status"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div class="alert__body"><span class="alert__title">Open Wattzup in Chrome or Edge.</span><span>This browser can&rsquo;t reach the bike. Classes and past rides still open.</span><div class="alert__actions"><button type="button">Copy link</button></div></div></div></div><div class="ds-example__caption"><span>Full width.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="alert alert--warning banner" role="status"&gt;
-&lt;svg class="icon" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/&gt;
-&lt;/svg&gt;
-&lt;div class="alert__body"&gt;
-&lt;span class="alert__title"&gt;Open Wattzup in Chrome or Edge.&lt;/span&gt;
-&lt;span&gt;This browser can&amp;rsquo;t reach the bike. Classes and past rides still open.&lt;/span&gt;
-&lt;div class="alert__actions"&gt;
-&lt;button type="button"&gt;Copy link&lt;/button&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="sizes" data-na="One size."><h2><a href="#sizes">Sizes</a></h2>
-      <p class="ds-na">One size.</p>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<div class="ds-matrix"><table><thead><tr><th scope="col">Variant</th><th scope="col">Example</th></tr></thead><tbody><tr><th scope="row">With action</th><td><div class="alert alert--danger" role="status"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m17 17-5 5V12l-5 5M2 2l20 20M14.5 9.5 17 7l-5-5v4.5"/></svg><div class="alert__body"><span class="alert__title">Bluetooth is off</span><span>Wattzup retries every 3 seconds.</span><div class="alert__actions"><button type="button">Open diagnostics</button></div></div></div></td></tr></tbody></table></div><h3>Both themes</h3><div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas"><div class="alert alert--warning" role="status"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div class="alert__body"><span class="alert__title">Bike is slow</span><span>Still setting 22.</span></div></div></div></div><div data-theme="dark"><div class="ds-example__canvas"><div class="alert alert--warning" role="status"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div class="alert__body"><span class="alert__title">Bike is slow</span><span>Still setting 22.</span></div></div></div></div></div>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
-<ul><li>Banners wrap their text under the title below 640px.</li></ul>
-    </section>
-    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
-<p><code>--alert-*</code> component tokens alias status tokens.</p>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<h3>Role and pattern</h3><p><code>role="alert"</code> for new problems (warning, danger); <code>role="status"</code> otherwise.</p><h3>Keyboard</h3><div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody><tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Moves focus in DOM order.</td></tr></tbody></table></div><h3>Focus</h3><p>Actions are buttons in reading order.</p><h3>Labelling</h3><p>Title + text read together.</p><h3>Contrast</h3><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-pair"><span>Info</span><span class="ds-pair__ratio" data-contrast="--color-info-fg|--color-info-bg" data-min="4.5"></span></div><div class="ds-pair"><span>Success</span><span class="ds-pair__ratio" data-contrast="--color-success-fg|--color-success-bg" data-min="4.5"></span></div><div class="ds-pair"><span>Warning</span><span class="ds-pair__ratio" data-contrast="--color-warning-fg|--color-warning-bg" data-min="4.5"></span></div><div class="ds-pair"><span>Danger</span><span class="ds-pair__ratio" data-contrast="--color-danger-fg|--color-danger-bg" data-min="4.5"></span></div><div class="ds-pair"><span>Danger icon</span><span class="ds-pair__ratio" data-contrast="--color-danger-icon|--color-danger-bg" data-min="3"></span></div></div><h3>Motion</h3><p>None.</p><h3>Touch</h3><p>Not interactive.</p>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Title: what happened. Text: what Wattzup is doing and what the rider can do.</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><div class="alert alert--warning" role="status"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div class="alert__body"><span class="alert__title">Open Wattzup in Chrome or Edge.</span><span>This browser can&rsquo;t reach the bike. Classes and past rides still open.</span></div></div></div><figcaption>Says what is happening next.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><div class="alert alert--warning" role="status"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div class="alert__body"><span class="alert__title">Network error</span><span></span></div></div></div><figcaption>No next step.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
-<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Info</td><td><code>--color-info-bg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-info-bg" data-swatch></i><span data-token="--color-info-bg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-info-bg" data-swatch></i><span data-token="--color-info-bg"></span></span></td></tr><tr><td>Success</td><td><code>--color-success-bg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-success-bg" data-swatch></i><span data-token="--color-success-bg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-success-bg" data-swatch></i><span data-token="--color-success-bg"></span></span></td></tr><tr><td>Warning</td><td><code>--color-warning-bg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-warning-bg" data-swatch></i><span data-token="--color-warning-bg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-warning-bg" data-swatch></i><span data-token="--color-warning-bg"></span></span></td></tr><tr><td>Danger</td><td><code>--color-danger-bg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-danger-bg" data-swatch></i><span data-token="--color-danger-bg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-danger-bg" data-swatch></i><span data-token="--color-danger-bg"></span></span></td></tr><tr><td>Edge</td><td><code>--border-width-accent</code></td><td colspan="2"><span data-token="--border-width-accent"></span></td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
-<pre><code>&lt;div class="alert alert--danger" role="alert"&gt;…&lt;div class="alert__body"&gt;&lt;span class="alert__title"&gt;…&lt;/span&gt;&lt;span&gt;…&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;</code></pre><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.alert--success/--warning/--danger</code></td><td>Tone.</td></tr><tr><td><code>.banner</code></td><td>Full width.</td></tr><tr><td><code>.alert__actions</code></td><td>Actions.</td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from these mocks:</p><ul><li><a href="../../mocks/notifications/connection-banner/danger.html">notifications/connection-banner/danger</a> (banner)</li><li><a href="../../mocks/pages/setup/error.html">pages/setup/error</a> (failed start)</li><li><a href="../../mocks/pages/setup/unsupported.html">pages/setup/unsupported</a> (warning banner)</li></ul><p>Drift fixed during extraction: the banner's border shorthand fought itself (three declarations); simplified to one.</p>
+      <ul>
+        <li><b>Banner</b> (<code>.banner</code> + tone): inside the content column. The product's one is the gold <b>unlock banner</b> on Home ("Neon Docklands is open.").</li>
+        <li><b>Browser notice</b> (<code>.browser-notice</code>): full width under the header, the page still usable, when Bluetooth to the bike cannot work here (not Chrome or Edge, or plain http).</li>
+        <li><b>Browser panel</b> (<code>.browser-panel</code>): stands in for a whole screen that cannot work at all (the custom ride in Safari).</li>
+      </ul>
+      <p>Use an alert for a condition that affects the screen and lasts. Use a <a href="toast.html">toast</a> for a passing confirmation, an <a href="inline-message.html">inline message</a> for one field or block, a <a href="dialog.html">dialog</a> only when the rider must decide before going on.</p>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+      <div class="ds-anatomy">
+        <figure class="ds-anatomy__figure">
+          <div class="banner banner--gold" role="status" style="width: 100%;">
+            <svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+            <p class="banner__body"><span class="banner__title">Neon Docklands is open.</span> <span class="text-muted">A harbour city after dark, 21.6 km.</span></p>
+            <div class="banner__actions"><a class="btn btn--gold btn--sm" href="../../mocks/pages/race-setup/docklands.html">Ride it</a><button class="icon-btn banner__dismiss" type="button" aria-label="Dismiss: Neon Docklands is open"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+          </div>
+          <span class="ds-callout" style="left: 3%; top: 26%;" aria-hidden="true">1</span>
+          <span class="ds-callout" style="left: 13%; top: 26%;" aria-hidden="true">2</span>
+          <span class="ds-callout" style="left: 40%; top: 66%;" aria-hidden="true">3</span>
+          <span class="ds-callout" style="left: 72%; top: 66%;" aria-hidden="true">4</span>
+          <span class="ds-callout" style="left: 88%; top: 66%;" aria-hidden="true">5</span>
+        </figure>
+        <ol class="ds-anatomy__list">
+          <li><div><b>Icon</b><small>20px in the tone's accent; a shape that matches the message (unlock, alert, monitor-x).</small></div></li>
+          <li><div><b>Title</b><small>14px semibold in the accent: the fact.</small></div></li>
+          <li><div><b>Detail</b><small>14px muted on the same line, wrapping under it.</small></div></li>
+          <li><div><b>Action (optional)</b><small>One 36px button in the tone (<code>.btn--gold</code>) or raised.</small></div></li>
+          <li><div><b>Dismiss (optional)</b><small>32px <code>.icon-btn</code>, only when the condition is not still true. Panel: 16px radius, tinted fill, tone border, 12px × 16px padding.</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+      <h3>Banner tones</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <div class="banner banner--gold" role="status"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg><p class="banner__body"><span class="banner__title">Neon Docklands is open.</span> <span class="text-muted">A harbour city after dark, 21.6 km.</span></p><a class="btn btn--gold btn--sm" href="../../mocks/pages/race-setup/docklands.html">Ride it</a></div>
+          <div class="banner banner--warn" role="alert"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg><p class="banner__body"><span class="banner__title">Bluetooth is off.</span> <span class="text-muted">Turn on Bluetooth on this computer, then try again.</span></p><button class="btn btn--raised btn--sm" type="button">Try again</button></div>
+          <div class="banner banner--heart" role="alert"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><p class="banner__body"><span class="banner__title">Lost the bike.</span> <span class="text-muted">Echelon EX-5s stopped answering. Wake it with a pedal stroke, then reconnect — your ride is saved at 6:52.</span></p><button class="btn btn--raised btn--sm" type="button">Reconnect</button></div>
+          <div class="banner banner--rest" role="status"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" x2="16" y1="11" y2="11"/></svg><p class="banner__body"><span class="banner__title">MarcoVelo left.</span> <span class="text-muted">Their seat is open again.</span></p></div>
+          <div class="banner banner--ok" role="status"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><p class="banner__body"><span class="banner__title">Paired with Echelon EX-5s.</span> <span class="text-muted">It reconnects on its own next time.</span></p><div class="banner__actions"><button class="icon-btn banner__dismiss" type="button" aria-label="Dismiss: Paired with Echelon EX-5s"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>
+        </div>
+        <div class="ds-example__caption"><span><code>.banner--gold</code> (an unlock or reward; the product's one) · <code>--warn</code> / <code>--warning</code> · <code>--heart</code> / <code>--danger</code> · <code>--rest</code> / <code>--info</code> · <code>--ok</code> / <code>--success</code>. Each tone sets three tokens from the status set: fill, border, accent.</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="banner banner--gold unlock-banner" role="status"&gt;
+  &lt;svg class="icon banner__icon" aria-hidden="true"&gt;…&lt;/svg&gt;
+  &lt;p class="banner__body"&gt;&lt;span class="banner__title"&gt;Neon Docklands is open.&lt;/span&gt; &lt;span class="text-muted"&gt;A harbour city after dark, 21.6 km.&lt;/span&gt;&lt;/p&gt;
+  &lt;div class="banner__actions"&gt;
+    &lt;a class="btn btn--gold btn--sm" href="/race/docklands"&gt;Ride it&lt;/a&gt;
+    &lt;button class="icon-btn banner__dismiss" type="button" aria-label="Dismiss: Neon Docklands is open"&gt;…&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></details>
+      </div>
+      <h3>Browser notice (full width, under the header)</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: 0;">
+          <div class="browser-notice" role="alert"><svg class="icon browser-notice__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 12.5-5-5"/><path d="m9.5 12.5 5-5"/><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M12 17v4"/><path d="M8 21h8"/></svg><p class="browser-notice__text"><span class="browser-notice__title">Open Telo Ride in Chrome or Edge.</span> <span class="browser-notice__body">Bluetooth to the bike only works there — you can look around, but not ride.</span></p><button class="btn btn--raised browser-notice__action" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy link</button></div>
+          <div class="browser-notice" role="alert" style="border-top: 0;"><svg class="icon browser-notice__icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><p class="browser-notice__text"><span class="browser-notice__title">Open the secure version of this page.</span> <span class="browser-notice__body">Bluetooth is blocked on plain http, so the bike can’t connect.</span></p><a class="btn btn--primary browser-notice__action" href="https://ride.telo.app/class/gcn-30-hiit">Open over HTTPS<svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></div>
+        </div>
+        <div class="ds-example__caption"><span>Needs Chromium (Copy link, raised; the icon turns volt once copied) · needs HTTPS (Open over HTTPS, primary). Not dismissible: the condition stays true on this page.</span></div>
+      </div>
+      <h3>Browser panel (instead of a screen)</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas">
+          <div class="browser-panel" role="alert"><svg class="icon browser-panel__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 12.5-5-5"/><path d="m9.5 12.5 5-5"/><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M12 17v4"/><path d="M8 21h8"/></svg><p class="browser-panel__title">Open Telo Ride in Chrome or Edge</p><p class="browser-panel__body">The custom ride talks to the bike over Bluetooth, which only Chrome and Edge allow. Copy the link and open it there.</p><div class="browser-panel__actions"><button class="btn btn--raised" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy link</button></div><p class="browser-panel__url">https://ride.telo.app/ride</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sizes" data-na="One size: 14px text, 12px × 16px padding (banner) or 12px × 20px, 32px from 1024px (browser notice). Width comes from the column it sits in."><h2><a href="#sizes">Sizes</a></h2><p class="ds-na">One size: 14px text, 12px × 16px padding (banner) or 12px × 20px, 32px from 1024px (browser notice). Width comes from the column it sits in.</p></section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Part</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Done</th><th scope="col">Disabled</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Copy link</th>
+            <td><button class="btn btn--raised browser-notice__action" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy link</button></td>
+            <td><button class="btn btn--raised browser-notice__action" type="button" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy link</button></td>
+            <td><button class="btn btn--raised browser-notice__action" type="button" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy link</button></td>
+            <td><button class="btn btn--raised browser-notice__action" type="button" data-state="active"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy link</button></td>
+            <td><button class="btn btn--raised browser-notice__action" type="button" data-copied><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Copied</button></td>
+            <td><button class="btn btn--raised browser-notice__action" type="button" disabled><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy link</button></td></tr>
+          <tr><th scope="row">Dismiss</th>
+            <td><button class="icon-btn banner__dismiss" type="button" aria-label="Dismiss"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></td>
+            <td><button class="icon-btn banner__dismiss" type="button" aria-label="Dismiss" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></td>
+            <td><button class="icon-btn banner__dismiss" type="button" aria-label="Dismiss" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></td>
+            <td><button class="icon-btn banner__dismiss" type="button" aria-label="Dismiss" data-state="active"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></td>
+            <td><small class="text-muted">removed</small></td>
+            <td>never</td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li><b>Done</b>: Copy link swaps to "Copied" with a volt check (<code>data-copied</code>) for two seconds, the in-place confirmation the product uses instead of a toast.</li>
+        <li><b>Dismissed</b>: the banner is removed and stays gone for that unlock (remember it per map); focus moves to the next heading.</li>
+        <li><b>Resolved</b>: a warning or danger banner disappears on its own when the condition clears (Bluetooth turned on, bike reconnected), announced politely: "Echelon EX-5s reconnected."</li>
+        <li>Disabled: a banner action is never disabled; if it cannot work, say why in the banner.</li>
+      </ul>
+      <h3>Both themes</h3>
+      <div class="ds-themes">
+        <div data-theme="light"><div class="stack stack--sm"><div class="banner banner--gold"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg><p class="banner__body"><span class="banner__title">Neon Docklands is open.</span></p><a class="btn btn--gold btn--sm" href="../../mocks/pages/race-setup/docklands.html">Ride it</a></div><div class="banner banner--warn"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg><p class="banner__body"><span class="banner__title">Bluetooth is off.</span></p></div><div class="banner banner--heart"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><p class="banner__body"><span class="banner__title">Lost the bike.</span></p></div><div class="banner banner--rest"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" x2="16" y1="11" y2="11"/></svg><p class="banner__body"><span class="banner__title">MarcoVelo left.</span></p></div><div class="banner banner--ok"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><p class="banner__body"><span class="banner__title">Paired with Echelon EX-5s.</span></p></div></div></div>
+        <div data-theme="dark"><div class="stack stack--sm"><div class="banner banner--gold"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg><p class="banner__body"><span class="banner__title">Neon Docklands is open.</span></p><a class="btn btn--gold btn--sm" href="../../mocks/pages/race-setup/docklands.html">Ride it</a></div><div class="banner banner--warn"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg><p class="banner__body"><span class="banner__title">Bluetooth is off.</span></p></div><div class="banner banner--heart"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><p class="banner__body"><span class="banner__title">Lost the bike.</span></p></div><div class="banner banner--rest"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" x2="16" y1="11" y2="11"/></svg><p class="banner__body"><span class="banner__title">MarcoVelo left.</span></p></div><div class="banner banner--ok"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><p class="banner__body"><span class="banner__title">Paired with Echelon EX-5s.</span></p></div></div></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <ul>
+        <li><b>Banner</b>: wraps. Below about 480px the action drops under the text (<code>flex-wrap</code>, 12px row gap); it never shrinks the text to one word per line.</li>
+        <li><b>Browser notice</b>: stacked below 640px (no icon, action under the text, left-aligned); one row with the icon from 640px; 32px side padding from 1024px to match the header.</li>
+      </ul>
+      <div class="ds-table-wrap" style="display: flex; gap: var(--space-4); padding-bottom: var(--space-2);">
+        <iframe class="ds-frame" src="../../mocks/pages/class-start/needs-chromium.html?chrome=0" width="362" height="420" title="Class start at 360px: the browser notice stacked" style="flex: none; max-width: none; border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-lg);"></iframe>
+        <iframe class="ds-frame" src="../../mocks/pages/home/unlocked.html?chrome=0" width="362" height="420" title="Home at 360px: the unlock banner wraps" style="flex: none; max-width: none; border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-lg);"></iframe>
+        <iframe class="ds-frame" src="../../mocks/pages/class-start/needs-https.html?chrome=0" width="1026" height="420" title="Class start at 1024px: the browser notice in one row" style="flex: none; max-width: none; border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-lg);"></iframe>
+      </div>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+      <p>A tone sets <code>--banner-bg</code>, <code>--banner-border</code> and <code>--banner-accent</code> from the status tokens (<code>--color-{warning,danger,info,success}-{bg,border,fg}</code>, and <code>--color-gold-subtle</code> / <code>--color-gold-border</code> / <code>--color-gold-fg</code> for gold). Title and icon read the accent; detail stays <code>--color-muted</code>. In dark the fills are deep tints, in light pale ones; both keep the accent at 4.5:1 or more.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <p><a href="https://www.w3.org/WAI/ARIA/apg/patterns/alert/">APG Alert</a> for conditions that block riding (<code>role="alert"</code>: browser notice, Lost the bike, Bluetooth is off); <code>role="status"</code> for news that can wait (the unlock banner, "MarcoVelo left."). An alert present when the page loads is not announced by every screen reader, so put it first after the header, where reading starts.</p>
+      <h3>Keyboard</h3>
+      <div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+        <tr><td><kbd>Tab</kbd></td><td>To the action, then Dismiss, in reading order.</td></tr>
+        <tr><td><kbd>Enter</kbd> / <kbd>Space</kbd></td><td>Activates the action or dismisses.</td></tr>
+      </tbody></table></div>
+      <h3>Focus</h3>
+      <p>A banner never takes focus when it appears. After Dismiss, focus moves to the next heading or the main region, never to the top of the page.</p>
+      <h3>Labelling</h3>
+      <p>The title is a full sentence, so it reads alone. Dismiss names what it dismisses ("Dismiss: Neon Docklands is open"). Copy link announces "Link copied" in a polite region when pressed.</p>
+      <h3>Contrast</h3>
+      <div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+        <div class="ds-pair"><span>Gold title</span><span class="ds-pair__ratio" data-contrast="--color-gold-fg|--color-gold-subtle" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Warning title</span><span class="ds-pair__ratio" data-contrast="--color-warning-fg|--color-warning-bg" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Danger title</span><span class="ds-pair__ratio" data-contrast="--color-danger-fg|--color-danger-bg" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Info title</span><span class="ds-pair__ratio" data-contrast="--color-info-fg|--color-info-bg" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Success title</span><span class="ds-pair__ratio" data-contrast="--color-success-fg|--color-success-bg" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Detail on a warning fill</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-warning-bg" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Detail on a danger fill</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-danger-bg" data-min="4.5"></span></div>
+      </div>
+      <h3>Motion</h3>
+      <p>None. Banners appear in place; a dismissed one is removed without animation so the page below does not slide.</p>
+      <h3>Touch</h3>
+      <p>Actions are 36px; Dismiss is 32px with 8px from the action. The browser notice's action is full width under the text on phones.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li>Title: the fact, as a sentence with a full stop: "Neon Docklands is open.", "Lost the bike."</li>
+        <li>Detail: why it matters or what to do, with figures: "A harbour city after dark, 21.6 km."</li>
+        <li>Blocking notices name the fix, not the error: "Open Telo Ride in Chrome or Edge.", "Open the secure version of this page."</li>
+        <li>The action is the fix: "Copy link", "Open over HTTPS", "Reconnect", "Ride it".</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><div class="banner banner--warn" role="alert" style="width: 100%;"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg><p class="banner__body"><span class="banner__title">Bluetooth is off.</span> <span class="text-muted">Turn on Bluetooth on this computer, then try again.</span></p></div></div><figcaption>Say what is wrong and the one thing that fixes it.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><div class="banner banner--heart" role="alert" style="width: 100%;"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><p class="banner__body"><span class="banner__title">Error: NotFoundError (Bluetooth adapter not available).</span></p></div></div><figcaption>Show the browser's error: it is not the rider's language, and danger red overstates a switch being off.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><div class="browser-notice" role="alert" style="width: 100%;"><p class="browser-notice__text"><span class="browser-notice__title">Open Telo Ride in Chrome or Edge.</span></p><button class="btn btn--raised browser-notice__action" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy link</button></div></div><figcaption>No dismiss on a notice whose condition is still true.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><div class="banner banner--gold" style="width: 100%;"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg><p class="banner__body"><span class="banner__title">Neon Docklands is open.</span></p><a class="btn btn--gold btn--sm" href="../../mocks/pages/race-setup/docklands.html">Ride it</a><a class="btn btn--gold btn--sm" href="../../mocks/pages/map-select/default.html">See maps</a></div></div><figcaption>Two gold actions: neither is the one to press.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+        <tbody>
+          <tr><td>Gold fill</td><td><code>--color-gold-subtle</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-gold-subtle" data-swatch></i><span data-token="--color-gold-subtle"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-gold-subtle" data-swatch></i><span data-token="--color-gold-subtle"></span></span></td></tr>
+          <tr><td>Gold border</td><td><code>--color-gold-border</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-gold-border" data-swatch></i><span data-token="--color-gold-border"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-gold-border" data-swatch></i><span data-token="--color-gold-border"></span></span></td></tr>
+          <tr><td>Gold accent</td><td><code>--color-gold-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-gold-fg" data-swatch></i><span data-token="--color-gold-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-gold-fg" data-swatch></i><span data-token="--color-gold-fg"></span></span></td></tr>
+          <tr><td>Warning fill</td><td><code>--color-warning-bg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-warning-bg" data-swatch></i><span data-token="--color-warning-bg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-warning-bg" data-swatch></i><span data-token="--color-warning-bg"></span></span></td></tr>
+          <tr><td>Warning border</td><td><code>--color-warning-border</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-warning-border" data-swatch></i><span data-token="--color-warning-border"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-warning-border" data-swatch></i><span data-token="--color-warning-border"></span></span></td></tr>
+          <tr><td>Warning accent</td><td><code>--color-warning-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-warning-fg" data-swatch></i><span data-token="--color-warning-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-warning-fg" data-swatch></i><span data-token="--color-warning-fg"></span></span></td></tr>
+          <tr><td>Danger fill</td><td><code>--color-danger-bg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-danger-bg" data-swatch></i><span data-token="--color-danger-bg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-danger-bg" data-swatch></i><span data-token="--color-danger-bg"></span></span></td></tr>
+          <tr><td>Danger border</td><td><code>--color-danger-border</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-danger-border" data-swatch></i><span data-token="--color-danger-border"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-danger-border" data-swatch></i><span data-token="--color-danger-border"></span></span></td></tr>
+          <tr><td>Danger accent</td><td><code>--color-danger-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-danger-fg" data-swatch></i><span data-token="--color-danger-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-danger-fg" data-swatch></i><span data-token="--color-danger-fg"></span></span></td></tr>
+          <tr><td>Info fill</td><td><code>--color-info-bg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-info-bg" data-swatch></i><span data-token="--color-info-bg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-info-bg" data-swatch></i><span data-token="--color-info-bg"></span></span></td></tr>
+          <tr><td>Info border</td><td><code>--color-info-border</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-info-border" data-swatch></i><span data-token="--color-info-border"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-info-border" data-swatch></i><span data-token="--color-info-border"></span></span></td></tr>
+          <tr><td>Info accent</td><td><code>--color-info-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-info-fg" data-swatch></i><span data-token="--color-info-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-info-fg" data-swatch></i><span data-token="--color-info-fg"></span></span></td></tr>
+          <tr><td>Success fill</td><td><code>--color-success-bg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-success-bg" data-swatch></i><span data-token="--color-success-bg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-success-bg" data-swatch></i><span data-token="--color-success-bg"></span></span></td></tr>
+          <tr><td>Success border</td><td><code>--color-success-border</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-success-border" data-swatch></i><span data-token="--color-success-border"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-success-border" data-swatch></i><span data-token="--color-success-border"></span></span></td></tr>
+          <tr><td>Success accent</td><td><code>--color-success-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-success-fg" data-swatch></i><span data-token="--color-success-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-success-fg" data-swatch></i><span data-token="--color-success-fg"></span></span></td></tr>
+          <tr><td>Browser notice icon</td><td><code>--color-warn-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-warn-fg" data-swatch></i><span data-token="--color-warn-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-warn-fg" data-swatch></i><span data-token="--color-warn-fg"></span></span></td></tr>
+          <tr><td>Detail</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+          <tr><td>Banner radius</td><td><code>--radius-xl</code></td><td colspan="2"><span data-token="--radius-xl"></span></td></tr>
+          <tr><td>Padding</td><td><code>--space-3</code> <code>--space-4</code></td><td colspan="2"><span data-token="--space-3"></span> / <span data-token="--space-4"></span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+        <tr><td><code>.banner</code> + <code>--gold</code> <code>--warn</code> <code>--heart</code> <code>--rest</code> <code>--ok</code> (aliases <code>--warning</code> <code>--danger</code> <code>--info</code> <code>--success</code>)</td><td>Core banner and tones.</td></tr>
+        <tr><td><code>.banner__icon</code> <code>__body</code> <code>__title</code></td><td>Core parts.</td></tr>
+        <tr><td><code>.banner__actions</code> <code>.banner__dismiss</code></td><td>Added: action group; edge-aligned dismiss.</td></tr>
+        <tr><td><code>.unlock-banner</code></td><td>The Home unlock (a gold banner with top margin).</td></tr>
+        <tr><td><code>.browser-notice</code> <code>__icon</code> <code>__text</code> <code>__title</code> <code>__body</code> <code>__action</code> (<code>data-copied</code>)</td><td>Full-width notice.</td></tr>
+        <tr><td><code>.browser-panel</code> <code>__icon</code> <code>__title</code> <code>__body</code> <code>__actions</code> <code>__url</code></td><td>Stand-in for a screen.</td></tr>
+        <tr><td><code>role="alert"</code> / <code>role="status"</code></td><td>Blocking / can wait.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <ul>
+        <li>Unlock banner: <a href="../../mocks/pages/home/unlocked.html">pages/home/unlocked</a>.</li>
+        <li>Browser notice: <a href="../../mocks/pages/class-start/needs-chromium.html">pages/class-start/needs-chromium</a>, <a href="../../mocks/pages/class-start/needs-https.html">needs-https</a>, <a href="../../mocks/pages/custom-setup/needs-chromium.html">pages/custom-setup/needs-chromium</a>, <a href="../../mocks/pages/custom-setup/needs-https.html">needs-https</a>.</li>
+        <li>Browser panel: <a href="../../mocks/pages/custom-ride/needs-chromium.html">pages/custom-ride/needs-chromium</a>, <a href="../../mocks/pages/custom-ride/needs-https.html">needs-https</a>.</li>
+        <li>Copy for other tones: <a href="../../mocks/pages/connect-bike/bluetooth-off.html">pages/connect-bike/bluetooth-off</a>, <a href="../../mocks/pages/custom-ride/disconnected.html">pages/custom-ride/disconnected</a>, <a href="../../mocks/pages/race-lobby/someone-left.html">pages/race-lobby/someone-left</a>, <a href="../../mocks/pages/connect-bike/paired.html">pages/connect-bike/paired</a>.</li>
+      </ul>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Mock</th><th scope="col">Drift</th><th scope="col">Resolution</th></tr></thead><tbody>
+        <tr><td>class-start/needs-*, custom-setup/needs-*</td><td><code>.browser-notice</code> hand-mixes its fill and border (<code>color-mix</code> of warn at 7% and 25%) instead of the warning tokens.</td><td>Fixed: reads <code>--color-warning-bg</code> / <code>--color-warning-border</code>.</td></tr>
+        <tr><td>custom-ride/disconnected, class-ride/disconnected, race/disconnected, connect-bike/bluetooth-off</td><td>Four separate "Lost the bike" / "Bluetooth is off" shells (<code>.ride-overlay__card</code>, <code>.class-lost</code>, <code>.race-lost</code>, <code>.connect-blocker</code>), each with its own fill, icon colour and role.</td><td>In-page conditions use <code>.banner--warn</code> / <code>--heart</code>; full-screen ride overlays keep their HUD layout but take the same tone tokens and <code>role="alert"</code>.</td></tr>
+        <tr><td>race-lobby/someone-left</td><td><code>.race-lobby__notice</code> is a hand-made info line.</td><td><code>.banner--rest</code> with <code>role="status"</code>.</td></tr>
+        <tr><td>home/unlocked</td><td><code>.unlock-banner</code> carries a layout margin and has no dismiss, so it shows on every visit.</td><td>Spacing from the page stack; dismiss remembered per map.</td></tr>
+      </tbody></table></div>
+    </section>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

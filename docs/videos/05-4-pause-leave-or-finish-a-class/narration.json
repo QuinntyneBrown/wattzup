@@ -1,0 +1,106 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "A solo class can now pause, leave or finish, and the clock, the plan and the video move together."
+      ]
+    },
+    {
+      "id": "pause",
+      "bars": 4,
+      "lines": [
+        "Pause holds the clock, the plan and the video at the same second. The picture says Paused, and the stepper stays on."
+      ]
+    },
+    {
+      "id": "resume",
+      "bars": 4,
+      "lines": [
+        "Resume carries on from that second, with the video sought back onto the clock."
+      ]
+    },
+    {
+      "id": "lost",
+      "bars": 4,
+      "lines": [
+        "If the bike stops answering in a solo class, the ride waits for it, and an alert says so, with Reconnect."
+      ]
+    },
+    {
+      "id": "back",
+      "bars": 4,
+      "lines": [
+        "Reconnect tries the bike at once. When it is back, the last level goes first, and the ride carries on."
+      ]
+    },
+    {
+      "id": "beat",
+      "bars": 4,
+      "lines": [
+        "The ride's own ticks stop while it is held, so the bike is watched on the app's second beat."
+      ]
+    },
+    {
+      "id": "leave",
+      "bars": 4,
+      "lines": [
+        "Leave goes straight to Class Start, with no confirmation, and nothing more goes to the bike."
+      ]
+    },
+    {
+      "id": "finish",
+      "bars": 4,
+      "lines": [
+        "At thirty minutes the clock stops, the video pauses, and Results opens."
+      ]
+    },
+    {
+      "id": "awake",
+      "bars": 4,
+      "lines": [
+        "The screen stays awake for the whole ride, and closing the tab mid-ride asks first."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "On a phone, Pause is a forty-eight pixel icon. From tablet width, it has its label."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: six new specs and seven wake-lock cases, and every check is green."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

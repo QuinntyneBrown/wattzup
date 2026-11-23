@@ -1,0 +1,155 @@
+// Block race-power (docs/design-system/assets/components.css, Race): glass over the scene, top left under the bar.
+:host {
+  display: contents;
+}
+
+.race-power {
+  position: absolute;
+  z-index: var(--z-hud);
+  top: var(--race-hud-top);
+  left: var(--space-3);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--color-ink) 70%, transparent);
+  backdrop-filter: blur(12px);
+  padding: var(--space-3) var(--space-4);
+
+  @media (min-width: 40rem) {
+    left: var(--space-5);
+  }
+
+  @media (min-width: 64rem) {
+    top: var(--race-hud-top-lg);
+    padding: var(--space-4) var(--space-5);
+  }
+}
+
+.race-power__place {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-4);
+  margin-bottom: var(--space-3);
+  border-bottom: var(--border-width-hairline) solid
+    color-mix(in srgb, var(--color-fg) 10%, transparent);
+  padding-bottom: var(--space-3);
+}
+
+.race-power__rank {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+}
+
+.race-power__pos {
+  font-size: var(--font-size-5xl);
+  line-height: var(--line-height-none);
+  color: var(--color-volt-fg);
+}
+
+.race-power__of {
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
+  color: var(--color-muted);
+}
+
+.race-power__gaps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+  padding-bottom: var(--space-0-5);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  white-space: nowrap;
+  color: var(--color-muted);
+}
+
+.race-power__gap {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-fg);
+}
+
+.race-power__watts {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1-5);
+}
+
+.race-power__watts-value {
+  // Large ride numbers scale power, the clock and the target (L2-164 AC4).
+  font-size: calc(var(--race-watts-size) * var(--ride-number-scale));
+  line-height: 0.9;
+
+  @media (min-width: 40rem) {
+    font-size: calc(var(--race-watts-size-sm) * var(--ride-number-scale));
+  }
+}
+
+.race-power__watts-unit {
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+  color: var(--color-muted);
+}
+
+.race-power__target {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+  font-size: calc(var(--font-size-sm) * var(--ride-number-scale));
+  line-height: calc(var(--line-height-sm) * var(--ride-number-scale));
+  white-space: nowrap;
+}
+
+.race-power__target-label {
+  color: var(--color-muted);
+}
+
+.race-power__delta {
+  font-weight: var(--font-weight-medium);
+}
+
+.race-power__delta--on {
+  color: var(--color-volt-fg);
+}
+
+.race-power__delta--under {
+  color: var(--color-warn-fg);
+}
+
+.race-power__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: var(--space-5);
+  margin-top: var(--space-3);
+  border-top: var(--border-width-hairline) solid
+    color-mix(in srgb, var(--color-fg) 10%, transparent);
+  padding-top: var(--space-3);
+}
+
+.race-power__stat-label {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-muted);
+}
+
+.race-power__stat {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  white-space: nowrap;
+}
+
+.race-power__stat-value {
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+}
+
+.race-power__stat-value--heart {
+  color: var(--color-heart-fg);
+}
+
+.race-power__stat-unit {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-faint);
+}

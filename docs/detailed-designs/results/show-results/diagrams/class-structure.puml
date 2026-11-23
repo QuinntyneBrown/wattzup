@@ -1,0 +1,84 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Show results
+class ResultsPage <<ride>> {
+  -result: RaceResult | ClassResult
+  +view: ResultsView
+}
+class "resultsView()" as rv <<ride helper>> {
+  +resultsView(r: RaceResult | ClassResult): ResultsView
+}
+class RaceResult <<api>> {
+  +mapId: string
+  +mapName: string
+  +mode: RaceMode
+  +pack: PackStrengthId | null
+  +finishTimeS: number
+  +place: number
+  +field: number
+  +standings: ResultStanding[]
+}
+class ClassResult <<api>> {
+  +classId: string
+  +title: string
+  +elapsedSeconds: number
+  +outputKj: number
+  +onTargetShare: number
+}
+class ResultStanding <<api>> {
+  +name: string
+  +jersey: string
+  +bot: boolean
+  +you: boolean
+  +finishTimeS: number
+}
+class StandingRow <<api>> {
+  +position: number
+  +name: string
+  +isBot: boolean
+  +isYou: boolean
+  +value: string
+}
+class ResultsView {
+  +headerTitle: string
+  +headerContext: string
+  +lead: string
+  +big: string
+  +sub: string
+  +podium: boolean
+  +standings: StandingRow[]
+  +againLabel: string
+}
+class "resultLine()" as rl <<ride helper>> {
+  +resultLine(time: number, place: number, podiumTime: number): string
+  +ordinal(n: number): string
+}
+class ResultsHeader <<components>> {
+  +title: input<string>
+  +context: input<string>
+}
+class Standings <<components>> {
+  +rows: input<StandingRow[]>
+  +label: input<string>
+}
+ResultsPage ..> rv : uses
+ResultsPage ..> ResultsHeader
+ResultsPage ..> Standings
+rv ..> rl
+rv ..> ResultsView : computes
+rv ..> RaceResult
+rv ..> ClassResult
+RaceResult "1" *-- "*" ResultStanding
+ResultsView "1" *-- "*" StandingRow
+@enduml

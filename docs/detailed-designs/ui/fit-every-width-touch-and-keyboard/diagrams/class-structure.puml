@@ -1,0 +1,45 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Fit every width, by touch and keyboard
+hide empty members
+
+class AppShell <<ride>> {
+  -main: Signal<ElementRef<HTMLElement>>
+  +focusMain(): void
+}
+class SkipLink <<components>> {
+  +label: InputSignal<string> = "Skip to content"
+  +skip: OutputEmitterRef<void>
+}
+class Container <<components>> {
+  +width: InputSignal<'default' | 'narrow' | 'form'>
+}
+class "Any page" as Page <<ride>> {
+  -isLg: Signal<boolean>
+}
+class BreakpointObserver <<Angular CDK>> {
+  +observe(queries: string[]): Observable<BreakpointState>
+}
+class Breakpoints <<ride>> {
+  +sm: "(min-width: 40rem)"
+  +md: "(min-width: 48rem)"
+  +lg: "(min-width: 64rem)"
+  +xl: "(min-width: 80rem)"
+}
+AppShell *-- SkipLink
+AppShell o-- Page : hosts via router outlet
+Page *-- Container
+Page ..> BreakpointObserver : toSignal(observe)
+Page ..> Breakpoints : uses queries
+@enduml

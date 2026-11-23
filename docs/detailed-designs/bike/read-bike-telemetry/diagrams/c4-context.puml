@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Read bike telemetry
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(bike, "Smart bike", "Echelon EX-5s, EX-3, EX-8s, Connect Sport, or an FTMS bike; Bluetooth LE")
+Rel(bike, telo, "Notifies cadence, resistance and, on FTMS, speed, power and heart rate", "GATT notifications")
+Rel(telo, rider, "Shows power, cadence, speed, resistance, distance and energy each second")
+@enduml

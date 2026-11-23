@@ -1,0 +1,54 @@
+@startuml
+title UML sequence behaviour — Connect an FTMS bike and request control
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "WebBluetoothBikeConnection" as conn
+  participant "FtmsLink" as link
+  participant "FtmsProtocol" as proto
+  participant "GattWriteQueue" as queue
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "FTMS GATT server" as bike
+end box
+actor -> conn : Pair a bike advertising only 0x1826
+conn -> link : open(server)
+link -> bike : startNotifications on Indoor Bike Data 0x2AD2 (L2-014 AC1)
+alt control point 0x2AD9 present
+  link -> bike : startNotifications (indications) on 0x2AD9
+end
+link -> bike : readValue Supported Resistance Level Range 0x2AD6
+bike --> link : minimum, maximum, increment
+link -> proto : decodeResistanceRange
+proto --> link : ResistanceRange
+== First target resistance ==
+conn -> link : setResistance(level)
+link -> queue : Request Control, op code 0x00 (L2-014 AC2)
+queue -> bike : write to 0x2AD9
+bike --> link : Indication
+alt response is 0x80 0x00 0x01 (Success)
+  link -> proto : mapLevel(level, range) (L2-014 AC4)
+  proto --> link : raw level, linear from minimum to maximum, rounded to increment
+  link -> queue : Set Target Resistance Level, op code 0x04
+  queue -> bike : write to 0x2AD9
+  bike --> link : Acknowledged
+  link --> conn : ack ms
+else refused, or no control point
+  link -> link : control = ReadOnly
+  link --> conn : Read only
+  conn --> actor : Telemetry continues; resistance controls disabled; status "Read only" (L2-014 AC3)
+end
+@enduml

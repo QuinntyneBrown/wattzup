@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Set up a custom workout
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(youtube, "YouTube", "Video preview")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Custom workout setup")
+  ContainerDb(idb, "Browser storage", "IndexedDB", "Last saved custom workout")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Rider's saved custom workout")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "CustomWorkout rows")
+}
+Rel(rider, app, "Uses", "HTTPS")
+Rel(app, api, "GET /api/riders/me/custom-workout", "JSON/HTTPS")
+Rel(app, idb, "Reads the offline copy")
+Rel(app, youtube, "Embeds preview player", "HTTPS")
+Rel(api, db, "Reads", "EF Core")
+@enduml

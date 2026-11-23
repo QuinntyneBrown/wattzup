@@ -1,0 +1,59 @@
+<div class="race-scenery">
+  <div class="race-scenery__panel">
+    <div class="race-scenery__head">
+      <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M21.54 15H17a2 2 0 0 0-2 2v4.54" />
+        <path
+          d="M7 3.34V5a3 3 0 0 0 3 3a2 2 0 0 1 2 2c0 1.1.9 2 2 2a2 2 0 0 0 2-2c0-1.1.9-2 2-2h3.17"
+        />
+        <path d="M11 21.95V18a2 2 0 0 0-2-2a2 2 0 0 1-2-2v-1a2 2 0 0 0-2-2H2.05" />
+        <circle cx="12" cy="12" r="10" />
+      </svg>
+      <p class="race-scenery__title">
+        {{ credit() === null ? 'Ride' : 'Streaming' }} the real {{ place().name }} ·
+        {{ place().route }}
+      </p>
+    </div>
+    @if (credit(); as credit) {
+      <p class="race-scenery__credit">{{ credit }}</p>
+    } @else {
+      <p class="race-scenery__body">
+        Paste a Google Maps Platform key to stream it as photorealistic 3D Tiles. It stays on this
+        device.
+      </p>
+      <form class="race-scenery__form" (submit)="submit($event)">
+        <label class="race-scenery__field">
+          <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"
+            />
+            <circle cx="16.5" cy="7.5" r=".5" fill="currentColor" />
+          </svg>
+          <input
+            class="race-scenery__input"
+            type="text"
+            placeholder="AIza…"
+            aria-label="Google Maps Platform API key"
+            autocomplete="off"
+            spellcheck="false"
+            [value]="value()"
+            [attr.aria-invalid]="refused() ? 'true' : null"
+            [attr.aria-describedby]="refused() ? 'race-scenery-error' : null"
+            (input)="onInput($event)"
+          />
+        </label>
+        <button class="race-scenery__submit" type="submit" [disabled]="empty()">Stream it</button>
+      </form>
+      @if (refused()) {
+        <p class="race-scenery__error" id="race-scenery-error" role="alert">
+          <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" x2="12" y1="8" y2="12" />
+            <line x1="12" x2="12.01" y1="16" y2="16" />
+          </svg>
+          Google refused that key. The built-in world stays.
+        </p>
+      }
+    }
+  </div>
+</div>

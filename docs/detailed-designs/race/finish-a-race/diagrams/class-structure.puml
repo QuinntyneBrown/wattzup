@@ -1,0 +1,84 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Finish a race
+class RaceEngine {
+  +finished: Signal<RaceFinish | undefined>
+  +tick(telemetry: Telemetry, elapsedS: number): RaceSnapshot
+}
+class RaceFinish {
+  +finishTimeS: number
+  +distanceM: number
+}
+class RaceRideRecorder {
+  +capacityS: number
+  +record(second: RideSecond): void
+  +trace(): RideSecond[]
+}
+class RideSecond {
+  +distanceM: number
+  +powerW: number
+  +cadenceRpm: number
+  +speedKmh: number
+  +heartBpm?: number
+}
+class RaceRideSubmission {
+  +rideId: string
+  +kind: 'race'
+  +mapId: string
+  +mode: RaceMode
+  +pack?: PackStrength
+  +sessionId?: string
+  +startedAt: string
+  +finishTimeS: number
+  +distanceM: number
+  +trace: RideSecond[]
+}
+class RaceStore {
+  +onFinished(finish: RaceFinish): Promise<void>
+}
+class RideOutbox {
+  +enqueue(submission: RideSubmission): Promise<void>
+  +flush(): Promise<void>
+}
+interface RidesApi {
+  +submitRide(submission: RideSubmission): Promise<RideResultDto>
+}
+class RideResultDto {
+  +rideId: string
+  +xp: XpLineDto[]
+  +stars: number
+  +isPersonalBest: boolean
+  +unlockedMapId?: string
+}
+class SubmitRideCommandHandler {
+  +Handle(command: SubmitRideCommand): Task<RideResultDto>
+}
+class Ride {
+  +Guid Id
+  +Guid RiderId
+  +string MapId
+  +int FinishTimeS
+  +IReadOnlyList<RideSecond> Trace
+}
+RaceStore ..> RaceEngine : observes
+RaceEngine ..> RaceFinish : emits
+RaceStore ..> RaceRideRecorder : reads
+RaceRideRecorder "1" *-- "*" RideSecond
+RaceStore ..> RaceRideSubmission : builds
+RaceRideSubmission "1" *-- "*" RideSecond
+RaceStore ..> RideOutbox : enqueues
+RideOutbox ..> RidesApi : sends
+RidesApi ..> RideResultDto : returns
+SubmitRideCommandHandler ..> Ride : creates once per ride id
+@enduml

@@ -1,0 +1,48 @@
+@startuml
+title UML sequence behaviour — Keep a ride when the session ends during it
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app" #E0F2FE
+  participant "Ride page" as page
+  participant "CurrentRiderStore" as current
+  participant "HttpRidesApi" as client
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "RideOutbox" as outbox
+  database "Browser storage (IndexedDB)" as idb
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RidesController" as ctrl
+end box
+actor -> page : Finish the ride
+page -> outbox : keep(ride with its id)
+outbox -> idb : Store the ride
+outbox -> client : submit(ride)
+client -> ctrl : POST /api/rides
+ctrl --> client : 401 (session ended during the ride)
+client --> outbox : Not recorded; keep it (L2-004 AC4, L2-135)
+outbox --> page : XP pending
+page --> actor : Results with XP pending
+client -> current : signedOut()
+... rider signs in again ...
+current -> outbox : flush() after signedIn()
+loop oldest first
+  outbox -> client : submit(ride)
+  client -> ctrl : POST /api/rides (idempotency key = ride id)
+  ctrl --> client : 201 or the first result
+  outbox -> idb : Remove the recorded ride
+end
+@enduml

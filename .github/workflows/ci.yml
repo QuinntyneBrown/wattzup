@@ -1,16 +1,16 @@
-# Builds and tests the app. No job touches Bluetooth hardware: every test runs against a fake
-# navigator.bluetooth or the simulated bike (AGENTS.md). Visual, responsive and
-# accessibility sweeps are not run here; a person runs them on request.
-# A push to main that passes every check is then deployed to https://wattzup.telo.to.
+# Telo Ride's pipeline (L2-149 AC3, ADR 0026). On every push and pull request it runs lint, the production
+# builds and one critical acceptance path per feature, in three parallel jobs, and fails on any of them. It
+# runs no unit tests and no visual, responsive, accessibility or heap sweep: `node tools/verify/verify.mjs`
+# runs everything locally. No job touches Bluetooth hardware, a real backend or a database: the Playwright
+# specs answer them from fixtures and the backend tests run on EF Core InMemory (AGENTS.md).
 #
-# Kept fast: the checkout leaves out docs/ (the films alone are 170 MB), node_modules and the Playwright
-# browser are cached, and the behaviour specs run in two shards beside the other
-# checks. `node tools/verify/verify.mjs` runs the same checks locally.
+# Kept under 5 minutes: the checkout leaves out docs/ (the films), node_modules, NuGet packages and the
+# Playwright browser are cached, and nothing is retried. A push to main that passes is deployed, once the
+# repository variables of docs/deployment.md name the host.
 name: CI
 
 on:
   push:
-    branches: [main]
   pull_request:
 
 permissions:
@@ -20,57 +20,21 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-jobs:
-  frontend:
-    name: Dashboard
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: frontend
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-      - id: modules
-        uses: actions/cache@v4
-        with:
-          path: frontend/node_modules
-          key: node-modules-${{ runner.os }}-node24-${{ hashFiles('frontend/package-lock.json') }}
-      - if: steps.modules.outputs.cache-hit != 'true'
-        run: npm ci --no-audit --no-fund
-      - name: Format
-        run: npm run format:check
-      - name: Lint
-        run: npm run lint
-      - name: Unit tests
-        run: npm test
-      - name: Production build and 300 KB gzipped budget
-        run: npm run build
-      - name: Keep the build for the deploy job
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@v4
-        with:
-          name: wattzup-browser
-          path: frontend/dist/wattzup/browser/
-          retention-days: 7
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
 
-  e2e:
-    name: Behaviour specs (${{ matrix.shard }}/2)
+jobs:
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2]
-    defaults:
-      run:
-        working-directory: frontend
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: frontend
+          sparse-checkout: |
+            frontend
+            backend
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -81,72 +45,164 @@ jobs:
           key: node-modules-${{ runner.os }}-node24-${{ hashFiles('frontend/package-lock.json') }}
       - if: steps.modules.outputs.cache-hit != 'true'
         run: npm ci --no-audit --no-fund
+        working-directory: frontend
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: backend/global.json
+      - uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('backend/Directory.Packages.props', 'backend/**/*.csproj') }}
+      - name: Prettier
+        run: npm run format:check
+        working-directory: frontend
+      - name: ESLint and the e2e type check
+        run: npm run lint
+        working-directory: frontend
+      - name: dotnet format
+        run: dotnet format Telo.Ride.slnx --verify-no-changes
+        working-directory: backend
+
+  build:
+    name: Production builds
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            frontend
+            backend
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - id: modules
+        uses: actions/cache@v4
+        with:
+          path: frontend/node_modules
+          key: node-modules-${{ runner.os }}-node24-${{ hashFiles('frontend/package-lock.json') }}
+      - if: steps.modules.outputs.cache-hit != 'true'
+        run: npm ci --no-audit --no-fund
+        working-directory: frontend
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: backend/global.json
+      - uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('backend/Directory.Packages.props', 'backend/**/*.csproj') }}
+      - name: The ride app, within its budgets
+        run: npm run build
+        working-directory: frontend
+      - name: The ride app's initial bundle, at most 300 KB gzipped
+        run: npm run bundle:size
+        working-directory: frontend
+      - name: The marketing site, within its budgets
+        run: npm run build:marketing
+        working-directory: frontend
+      - name: The API, warnings as errors
+        run: dotnet build Telo.Ride.slnx -c Release
+        working-directory: backend
+
+  acceptance:
+    name: Critical acceptance paths
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            frontend
+            backend
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - id: modules
+        uses: actions/cache@v4
+        with:
+          path: frontend/node_modules
+          key: node-modules-${{ runner.os }}-node24-${{ hashFiles('frontend/package-lock.json') }}
+      - if: steps.modules.outputs.cache-hit != 'true'
+        run: npm ci --no-audit --no-fund
+        working-directory: frontend
       - id: browsers
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('frontend/package-lock.json') }}
-      # The runner image already carries Chromium's system libraries (it ships Google Chrome), so only the
-      # browser is fetched, and only when it is not cached; apt alone took up to 90 s.
+      # The runner image already carries Chromium's system libraries, so only the browser is fetched,
+      # and only when it is not cached.
       - name: Install Chromium
         if: steps.browsers.outputs.cache-hit != 'true'
         run: npx playwright install chromium
-      - name: Behaviour specs (Chromium)
-        run: npx playwright test --shard=${{ matrix.shard }}/2
+        working-directory: frontend
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: backend/global.json
+      - uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('backend/Directory.Packages.props', 'backend/**/*.csproj') }}
+      - name: Playwright specs tagged @critical (Chromium)
+        run: npx playwright test --grep @critical
+        working-directory: frontend
+      - name: Backend acceptance tests marked Critical
+        run: dotnet test --solution Telo.Ride.slnx --filter-trait "Category=Critical"
+        working-directory: backend
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: playwright-traces-${{ matrix.shard }}
+          name: playwright-traces
           path: frontend/test-results/
           retention-days: 7
 
-  # Every push to main that passes the checks above is published to Azure Static Web Apps and
-  # served at https://wattzup.telo.to. The job signs in to Azure with GitHub's OIDC token (no stored
-  # secret), reads the app's deployment token at run time, and uploads the build the Dashboard job
-  # made. The IDs below name the Azure identity and subscription; they are not secrets.
+  # A push to main that passes is published to the App Service, which serves the app and its backend
+  # as one origin (ADR 0026). The job signs in with GitHub's OIDC token (no stored credential), migrates
+  # the database with the new build, and only then deploys it, so the new version starts on a migrated
+  # schema. Skipped until TELO_RIDE_WEBAPP names the host (docs/deployment.md).
   deploy:
-    name: Deploy to wattzup.telo.to
-    needs: [frontend, e2e]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    name: Deploy
+    needs: [lint, build, acceptance]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.TELO_RIDE_WEBAPP != ''
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       id-token: write
     concurrency:
       group: deploy-production
       cancel-in-progress: false
-    env:
-      AZURE_CLIENT_ID: 909f512a-bee0-436c-ab2b-4e1a3a6f4c6d
-      AZURE_TENANT_ID: c68758f6-70fb-41fe-8fb3-b3e35624a2a3
-      AZURE_SUBSCRIPTION_ID: 4a1b5113-89f9-4d27-acfe-581493385536
-      RESOURCE_GROUP: rg-wattzup
-      STATIC_WEB_APP: swa-wattzup
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4
         with:
-          name: wattzup-browser
-          path: site
-      # A browser reinstalls a service worker only when its file changes, and a header change alone
-      # (its Content-Security-Policy, say) never reaches a worker already installed. Stamping the
-      # worker with the commit makes every deploy install a fresh one under the current headers.
-      - name: Stamp the service worker with the commit
-        run: echo "// ${GITHUB_SHA}" >> site/ngsw-worker.js
+          sparse-checkout: |
+            frontend
+            backend
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: backend/global.json
+      - name: Build the app, stamped with its commit for Diagnostics' App version
+        run: npm ci --no-audit --no-fund && npm run build -- --define "TELO_COMMIT='${GITHUB_SHA::7}'"
+        working-directory: frontend
+      - name: Publish the API with the app in its wwwroot
+        run: |
+          dotnet publish backend/src/Telo.Ride.Api -c Release -o out
+          cp -R frontend/dist/ride/browser out/wwwroot
       - uses: azure/login@v2
         with:
-          client-id: ${{ env.AZURE_CLIENT_ID }}
-          tenant-id: ${{ env.AZURE_TENANT_ID }}
-          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
-      - id: token
-        name: Read the deployment token
-        run: |
-          token=$(az staticwebapp secrets list --name "$STATIC_WEB_APP" --resource-group "$RESOURCE_GROUP" --query properties.apiKey -o tsv)
-          echo "::add-mask::$token"
-          echo "value=$token" >> "$GITHUB_OUTPUT"
-      - name: Upload to Azure Static Web Apps
-        uses: Azure/static-web-apps-deploy@v1
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Migrate the database before the new version starts
+        run: dotnet out/Telo.Ride.Api.dll migrate
+        env:
+          ConnectionStrings__TeloRide: ${{ secrets.TELO_RIDE_DATABASE }}
+      - name: Deploy to the App Service
+        uses: azure/webapps-deploy@v3
         with:
-          azure_static_web_apps_api_token: ${{ steps.token.outputs.value }}
-          action: upload
-          app_location: site
-          output_location: ''
-          skip_app_build: true
+          app-name: ${{ vars.TELO_RIDE_WEBAPP }}
+          resource-group-name: ${{ vars.TELO_RIDE_RESOURCE_GROUP }}
+          package: out

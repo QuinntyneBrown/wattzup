@@ -1,0 +1,42 @@
+@startuml
+title UML sequence behaviour — Announce a state change
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider (screen reader)" as actor
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "WebBluetoothBikeConnection" as conn
+end box
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "Ride page" as page
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "LiveRegionAnnouncer" as announcer
+end box
+box "Frontend — Ride app (components library)" #E0F2FE
+  participant "RideReadout (role=timer)" as timer
+end box
+loop every second
+  page -> timer : Elapsed time input
+  timer -> timer : Re-render without a live region (L2-141 AC2)
+end
+conn -> page : ble = disconnected
+page -> page : Show the lost-bike state with icon and text (L2-141 AC4)
+page -> announcer : announce(lost-bike message from the mock)
+announcer --> actor : Announced once (L2-141 AC2)
+page -> page : The plan's step index changes
+page -> announcer : announce("Work, round 1 of 8: 0:30 at level 24")
+announcer -> announcer : Empty the region, write the words 100 ms later
+announcer --> actor : Heard once, as the step starts (L2-141 AC2)
+@enduml

@@ -1,0 +1,146 @@
+<main id="main" class="container settings-page" tabindex="-1">
+  <div class="settings-page__head">
+    <a wz-back-link class="settings-page__back" routerLink="/profile">Profile</a>
+    <h1 class="page__title">Settings</h1>
+    <p class="settings-page__lead">
+      How Telo Ride looks, sounds and moves on this device. Changes apply at once, even mid-ride,
+      and stay on this device.
+    </p>
+  </div>
+  @if (!persisted()) {
+    <div class="settings-page__notice">
+      <wz-banner
+        tone="warning"
+        [alert]="true"
+        title="This browser isn’t keeping your settings."
+        detail="Changes work until you close this tab. Private windows and blocked site data do this; open Telo Ride in a normal window to keep them."
+      />
+    </div>
+  }
+  <div class="settings-page__layout">
+    <nav wz-side-nav class="settings-page__nav" aria-label="Settings sections">
+      @for (section of sections; track section.name) {
+        <li>
+          <a wz-side-nav-link [icon]="section.icon" routerLink="." [fragment]="section.name">{{
+            section.heading
+          }}</a>
+        </li>
+      }
+    </nav>
+    <div class="settings-page__sections">
+      <section
+        wz-settings-section
+        name="world"
+        heading="World"
+        description="How the 3D world is drawn in races and world classes. Smoothness comes first: power and the clock never wait for the picture."
+      >
+        @if (graphicsApi(); as api) {
+          <span wz-pill slot="head">{{ apiName[api] }}</span>
+        }
+        @if (graphicsApi() === 'none') {
+          <wz-banner
+            slot="notice"
+            tone="info"
+            title="This browser can’t draw 3D worlds."
+            detail="Races and world classes use each map’s panorama. Turn on graphics acceleration in Chrome or Edge to bring the worlds back."
+          />
+        }
+        @if (graphicsApi(); as api) {
+          <wz-world-settings
+            [settings]="settings()"
+            [api]="api"
+            (qualityChosen)="store.set('quality', $event)"
+            (stepDownToggled)="store.set('stepDown', $event)"
+            (frameRateChosen)="store.set('frameRate', $event)"
+            (resolutionChanged)="store.set('resolution', $event)"
+            (graphicsChosen)="store.set('graphics', $event)"
+          />
+          <div wz-setting>
+            <wz-device-check
+              [running]="checkRunning()"
+              [result]="checkResult()"
+              [disabled]="api === 'none'"
+              (checkStarted)="deviceCheck.start()"
+              (checkStopped)="deviceCheck.stop()"
+            />
+          </div>
+        }
+      </section>
+      <section
+        wz-settings-section
+        name="sound"
+        heading="Sound"
+        description="Made in the browser as you ride; nothing is downloaded."
+      >
+        <wz-sound-settings
+          [settings]="settings()"
+          (rideSoundToggled)="store.set('rideSound', $event)"
+          (volumeChanged)="store.set('rideSoundVolume', $event)"
+          (worldMusicToggled)="store.set('worldMusic', $event)"
+          (muteUnderVideoToggled)="store.set('muteUnderVideo', $event)"
+        />
+      </section>
+      <section
+        wz-settings-section
+        name="display"
+        heading="Motion and display"
+        description="For reading from the saddle and riding for an hour."
+      >
+        <wz-display-settings
+          [settings]="settings()"
+          [deviceReducesMotion]="display.deviceReducesMotion()"
+          (reduceMotionChosen)="store.set('reduceMotion', $event)"
+          (themeChosen)="store.set('theme', $event)"
+          (rideNumbersChosen)="store.set('rideNumbers', $event)"
+          (keepAwakeToggled)="store.set('keepAwake', $event)"
+          (fullScreenOnStartToggled)="store.set('fullScreenOnStart', $event)"
+        />
+      </section>
+      <section wz-settings-section name="bike" heading="Bike">
+        <div wz-setting>
+          <!-- A paired bike's row opens Diagnostics; with none, it goes to Connect Bike to pair one (L2-113 AC1). -->
+          @if (bike().paired) {
+            <button
+              wz-setting-row
+              type="button"
+              aria-haspopup="dialog"
+              icon="bike"
+              [title]="bike().title"
+              [body]="bike().body"
+              (click)="openDiagnostics()"
+            ></button>
+          } @else {
+            <a
+              wz-setting-row
+              routerLink="/connect"
+              icon="bike"
+              [title]="bike().title"
+              [body]="bike().body"
+            ></a>
+          }
+        </div>
+      </section>
+      <section wz-settings-section name="device" heading="This device">
+        <wz-device-settings
+          [savedWorlds]="savedWorlds.view()"
+          [keepWorlds]="store.settings().keepWorlds"
+          (cleared)="savedWorlds.clear()"
+          (keepWorldsToggled)="store.set('keepWorlds', $event)"
+        />
+      </section>
+      <wz-settings-reset (resetToRecommended)="reset()" />
+      <p class="settings-page__announcement visually-hidden" role="status">{{ announcement() }}</p>
+    </div>
+  </div>
+</main>
+<div wz-toast-region>
+  @if (savedWorlds.freed(); as freed) {
+    <wz-toast
+      tone="success"
+      title="Saved worlds cleared"
+      [figure]="freed"
+      [text]="'freed. ' + noneSaved"
+      (dismissed)="savedWorlds.dismiss()"
+    />
+  }
+</div>

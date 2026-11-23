@@ -3,17 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Toast — Wattzup design system</title>
-<meta name="description" content="Transient messages about resistance commands and beeps.">
+<title>Toast — Telo Ride design system</title>
+<meta name="description" content="A brief message confirming something that just happened away from where the rider is looking: four tones, an optional action, stacked in a live region at the bottom. Never during a ride interval.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Page-only: ds.css underlines every link; components in examples set their own decoration. */
+:where(.ds-example__canvas, .ds-stage, .ds-themes, .ds-matrix, .ds-anatomy__figure, .ds-do, .ds-dont) a { text-decoration: none; color: inherit; }
+.ds-matrix td { min-width: 7rem; }
+.ds-matrix td > :is(a, button, span):not(.visually-hidden) { display: inline-flex; vertical-align: middle; }
+.ds-keys td:first-child { white-space: nowrap; }
+.ds-matrix td { white-space: nowrap; }
+.ds-matrix td > :is(.tier-tabs, .tabs) { display: inline-flex; }
+.ds-stage .demo-relative { position: relative; }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +38,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,130 +92,257 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Component · Feedback</p>
       <h1>Toast</h1>
-      <p class="ds-lead">Toasts report the result of an action: Resistance set to 20, Bike is slow to confirm, Couldn't set resistance.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span></div>
+      <p class="ds-lead">A short message that confirms an action or reports a background result, then gets out of the way. Toasts stack at the bottom of the screen and never block the ride.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
       <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>Bottom-right stack, newest at the bottom, at most three. Info and success dismiss after 8 s (pausing on hover and focus); warning stays until resolved; danger never auto-dismisses.</p>
-    </section>
-    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
-<div class="ds-anatomy"><figure class="ds-anatomy__figure"><div class="toast toast--danger"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><div class="toast__body"><div class="toast__title">Couldn&rsquo;t set resistance</div><div class="toast__text">Level 22 was not sent.</div><button class="toast__action" type="button">Retry</button></div><button class="close" type="button" aria-label="Dismiss"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><span class="ds-callout" style="left: 5%; top: 15%;" aria-hidden="true">1</span><span class="ds-callout" style="left: 30%; top: 15%;" aria-hidden="true">2</span><span class="ds-callout" style="left: 40%; top: 50%;" aria-hidden="true">3</span><span class="ds-callout" style="left: 20%; top: 80%;" aria-hidden="true">4</span><span class="ds-callout" style="left: 95%; top: 15%;" aria-hidden="true">5</span></figure><ol class="ds-anatomy__list"><li><div><b>Icon</b><small>Tone colour.</small></div></li><li><div><b>Title</b><small>Label.</small></div></li><li><div><b>Text</b><small>Muted body-sm.</small></div></li><li><div><b>Action</b><small>Optional link-styled button.</small></div></li><li><div><b>Close</b><small>44px target.</small></div></li></ol></div>
-    </section>
-    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
-<div class="ds-example"><div class="ds-example__canvas "><div class="toast-region toast-region--static" role="status" aria-live="polite"><div class="toast toast--info"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg><div class="toast__body"><div class="toast__title">Beeps on</div><div class="toast__text">You'll hear a tone at each interval change.</div></div><button class="close" type="button" aria-label="Dismiss"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="toast toast--success"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg><div class="toast__body"><div class="toast__title">Resistance set to 20</div><div class="toast__text">Echelon EX-5s confirmed level 20 in 38 ms.</div></div><button class="close" type="button" aria-label="Dismiss"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="toast toast--warning"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div class="toast__body"><div class="toast__title">Bike is slow to confirm</div><div class="toast__text">Still setting level 22 — Wattzup resends every 5 seconds.</div></div><button class="close" type="button" aria-label="Dismiss"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="toast toast--danger" role="alert"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><div class="toast__body"><div class="toast__title">Couldn&rsquo;t set resistance</div><div class="toast__text">The bike didn&rsquo;t take it. Level 22 was not set.</div><button class="toast__action" type="button">Retry</button></div><button class="close" type="button" aria-label="Dismiss"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div></div><div class="ds-example__caption"><span>Info, success, warning, danger with action.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="toast-region toast-region--static" role="status" aria-live="polite"&gt;
-&lt;div class="toast toast--info"&gt;
-&lt;svg class="icon" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;circle cx="12" cy="12" r="9"/&gt;
-&lt;path d="M12 16v-4M12 8h.01"/&gt;
-&lt;/svg&gt;
-&lt;div class="toast__body"&gt;
-&lt;div class="toast__title"&gt;Beeps on&lt;/div&gt;
-&lt;div class="toast__text"&gt;You'll hear a tone at each interval change.&lt;/div&gt;
-&lt;/div&gt;
-&lt;button class="close" type="button" aria-label="Dismiss"&gt;
-&lt;svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;path d="M6 6l12 12M18 6 6 18"/&gt;
-&lt;/svg&gt;
-&lt;/button&gt;
-&lt;/div&gt;
-&lt;div class="toast toast--success"&gt;
-&lt;svg class="icon" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;circle cx="12" cy="12" r="9"/&gt;
-&lt;path d="m8 12 3 3 5-6"/&gt;
-&lt;/svg&gt;
-&lt;div class="toast__body"&gt;
-&lt;div class="toast__title"&gt;Resistance set to 20&lt;/div&gt;
-&lt;div class="toast__text"&gt;Echelon EX-5s confirmed level 20 in 38 ms.&lt;/div&gt;
-&lt;/div&gt;
-&lt;button class="close" type="button" aria-label="Dismiss"&gt;
-&lt;svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;path d="M6 6l12 12M18 6 6 18"/&gt;
-&lt;/svg&gt;
-&lt;/button&gt;
-&lt;/div&gt;
-&lt;div class="toast toast--warning"&gt;
-&lt;svg class="icon" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;path d="M12 9v4M12 17h.01"/&gt;
-&lt;path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/&gt;
-&lt;/svg&gt;
-&lt;div class="toast__body"&gt;
-&lt;div class="toast__title"&gt;Bike is slow to confirm&lt;/div&gt;
-&lt;div class="toast__text"&gt;Still setting level 22 — Wattzup resends every 5 seconds.&lt;/div&gt;
-&lt;/div&gt;
-&lt;button class="close" type="button" aria-label="Dismiss"&gt;
-&lt;svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;path d="M6 6l12 12M18 6 6 18"/&gt;
-&lt;/svg&gt;
-&lt;/button&gt;
-&lt;/div&gt;
-&lt;div class="toast toast--danger" role="alert"&gt;
-&lt;svg class="icon" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;circle cx="12" cy="12" r="9"/&gt;
-&lt;path d="M12 8v4M12 16h.01"/&gt;
-&lt;/svg&gt;
-&lt;div class="toast__body"&gt;
-&lt;div class="toast__title"&gt;Couldn&amp;rsquo;t set resistance&lt;/div&gt;
-&lt;div class="toast__text"&gt;The bike didn&amp;rsquo;t take it. Level 22 was not set.&lt;/div&gt;
-&lt;button class="toast__action" type="button"&gt;Retry&lt;/button&gt;
-&lt;/div&gt;
-&lt;button class="close" type="button" aria-label="Dismiss"&gt;
-&lt;svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;path d="M6 6l12 12M18 6 6 18"/&gt;
-&lt;/svg&gt;
-&lt;/button&gt;
-&lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="sizes" data-na="One size (24rem from 640px)."><h2><a href="#sizes">Sizes</a></h2>
-      <p class="ds-na">One size (24rem from 640px).</p>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<div class="ds-matrix"><table><thead><tr><th scope="col">Variant</th><th scope="col">Example</th></tr></thead><tbody><tr><th scope="row">Leaving</th><td><div class="toast toast--info" data-state="leaving"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg><div class="toast__body"><div class="toast__title">Beeps on</div><div class="toast__text">You'll hear a tone at each interval change.</div></div><button class="close" type="button" aria-label="Dismiss"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></td></tr></tbody></table></div><h3>Both themes</h3><div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas"><div class="toast toast--success"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg><div class="toast__body"><div class="toast__title">Resistance set to 20</div><div class="toast__text">Confirmed in 38 ms.</div></div><button class="close" type="button" aria-label="Dismiss"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div></div><div data-theme="dark"><div class="ds-example__canvas"><div class="toast toast--success"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg><div class="toast__body"><div class="toast__title">Resistance set to 20</div><div class="toast__text">Confirmed in 38 ms.</div></div><button class="close" type="button" aria-label="Dismiss"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div></div></div>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
-<ul><li>Full width at the bottom below 640px (above the home indicator); 24rem bottom-right from 640px.</li></ul>
-    </section>
-    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
-<p>Raised surface; icon reads <code>--toast-icon</code>.</p>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<h3>Role and pattern</h3><p>Region <code>role="status" aria-live="polite"</code>; danger toasts add <code>role="alert"</code>.</p><h3>Keyboard</h3><div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody><tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Moves focus in DOM order.</td></tr><tr><td><kbd>Enter</kbd></td><td>Retry / Dismiss.</td></tr></tbody></table></div><h3>Focus</h3><p>Toasts never take focus.</p><h3>Labelling</h3><p>Close: "Dismiss".</p><h3>Contrast</h3><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-pair"><span>Title</span><span class="ds-pair__ratio" data-contrast="--color-fg-default|--color-bg-surface-raised" data-min="4.5"></span></div><div class="ds-pair"><span>Text</span><span class="ds-pair__ratio" data-contrast="--color-fg-muted|--color-bg-surface-raised" data-min="4.5"></span></div></div><h3>Motion</h3><p>Slides up over <code>--duration-base</code>; no motion when reduced.</p><h3>Touch</h3><p>Close and action are 44px / 24px targets.</p>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Title states the result; text gives the cause and next step.</li><li>Errors say what was not done: "Level 22 was not sent."</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><div class="toast toast--danger"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><div class="toast__body"><div class="toast__title">Couldn&rsquo;t set resistance</div><div class="toast__text">The bike isn&rsquo;t connected.</div></div><button class="close" type="button" aria-label="Dismiss"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div><figcaption>Cause and outcome.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><div class="toast toast--danger"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><div class="toast__body"><div class="toast__title">Error</div><div class="toast__text">Something went wrong.</div></div><button class="close" type="button" aria-label="Dismiss"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div><figcaption>Generic error.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
-<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Surface</td><td><code>--color-bg-surface-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-bg-surface-raised" data-swatch></i><span data-token="--color-bg-surface-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-bg-surface-raised" data-swatch></i><span data-token="--color-bg-surface-raised"></span></span></td></tr><tr><td>Layer</td><td><code>--z-toast</code></td><td colspan="2"><span data-token="--z-toast"></span></td></tr><tr><td>Motion</td><td><code>--duration-base</code></td><td colspan="2"><span data-token="--duration-base"></span></td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
-<pre><code>&lt;div class="toast-region" role="status" aria-live="polite"&gt;
-  &lt;div class="toast toast--danger" role="alert"&gt;…&lt;button class="toast__action" type="button"&gt;Retry&lt;/button&gt;…&lt;/div&gt;
-&lt;/div&gt;</code></pre><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.toast-region</code></td><td>Fixed stack.</td></tr><tr><td><code>.toast--info/--success/--warning/--danger</code></td><td>Tone.</td></tr><tr><td><code>.toast__progress</code></td><td>Auto-dismiss timer.</td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from these mocks:</p><ul><li><a href="../../mocks/notifications/ride-toast/info.html">notifications/ride-toast/info</a> (info)</li><li><a href="../../mocks/notifications/ride-toast/danger.html">notifications/ride-toast/danger</a> (danger)</li><li><a href="../../mocks/notifications/ride-toast/stacked.html">notifications/ride-toast/stacked</a> (stack)</li></ul><p>Drift fixed during extraction: toasts were inverse (light) in dark; now raised surface. Auto-dismiss raised from 5 s to 8 s for WCAG 2.2.1.</p>
+      <p>The mocks show no toasts: every result in Telo Ride is shown in place (the Copy link button turns its icon volt, Feedback shows "Feedback sent" in its own panel). That is the right default. A toast is for the few results that land somewhere else or after the rider has moved on:</p>
+      <ul>
+        <li>"Ride saved" after Leave this ride → Save ride and open library (the rider is now in the library).</li>
+        <li>"Packet log downloaded" after the browser saves the file from Diagnostics.</li>
+        <li>"Couldn’t send feedback" when sending fails after the panel has closed.</li>
+      </ul>
+      <p>Do not use a toast for errors the rider must fix (use an <a href="alert.html">alert</a> or <a href="inline-message.html">inline message</a> where the problem is), for anything during a ride interval (the HUD owns the screen), or as the only confirmation of something they will look for later.</p>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+      <div class="ds-anatomy">
+        <figure class="ds-anatomy__figure">
+          <div class="toast toast--success" style="animation: none;">
+            <svg class="icon toast__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+            <div class="toast__body"><p class="toast__title">Ride saved</p><p class="toast__text"><span class="toast__figure">6:52</span> · <span class="toast__figure">2.24 km</span> added to your rides.</p><div class="toast__actions"><a class="btn btn--raised btn--sm" href="../../mocks/pages/profile/default.html">View ride</a></div></div>
+            <button class="icon-btn toast__close" type="button" aria-label="Dismiss"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+          </div>
+          <span class="ds-callout" style="left: 12%; top: 16%;" aria-hidden="true">1</span>
+          <span class="ds-callout" style="left: 46%; top: 16%;" aria-hidden="true">2</span>
+          <span class="ds-callout" style="left: 46%; top: 42%;" aria-hidden="true">3</span>
+          <span class="ds-callout" style="left: 34%; top: 72%;" aria-hidden="true">4</span>
+          <span class="ds-callout" style="left: 84%; top: 16%;" aria-hidden="true">5</span>
+        </figure>
+        <ol class="ds-anatomy__list">
+          <li><div><b>Icon</b><small>20px, the tone's icon colour (<code>--toast-accent</code>); a shape per tone so colour is not the only signal.</small></div></li>
+          <li><div><b>Title</b><small>14px semibold fg: what happened.</small></div></li>
+          <li><div><b>Text (optional)</b><small>14px muted, figures in Barlow.</small></div></li>
+          <li><div><b>Action (optional)</b><small>One small button: View ride, Retry, Open.</small></div></li>
+          <li><div><b>Dismiss</b><small>32px <code>.icon-btn</code>. Panel: 384px max, 16px radius, line border (tone border for warning and danger), <code>--shadow-3</code>.</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+      <h3>Four tones</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack" style="align-items: center;">
+          <div class="toast toast--info" role="status"><svg class="icon toast__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><div class="toast__body"><p class="toast__title">Link copied</p><p class="toast__text">Paste it into Chrome or Edge to ride.</p></div><button class="icon-btn toast__close" type="button" aria-label="Dismiss"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+          <div class="toast toast--success" role="status"><svg class="icon toast__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><div class="toast__body"><p class="toast__title">Packet log downloaded</p><p class="toast__text">telo-ride-packets-2024-06-14.jsonl · <span class="toast__figure">20 KB</span></p></div><button class="icon-btn toast__close" type="button" aria-label="Dismiss"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+          <div class="toast toast--warning" role="status"><svg class="icon toast__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><div class="toast__body"><p class="toast__title">Reconnected to Echelon EX-5s</p><p class="toast__text">The bike dropped for <span class="toast__figure">4 s</span>. Resistance is back on the plan.</p></div><button class="icon-btn toast__close" type="button" aria-label="Dismiss"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+          <div class="toast toast--danger" role="alert"><svg class="icon toast__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg><div class="toast__body"><p class="toast__title">Couldn’t send feedback</p><p class="toast__text">Your note is kept. Check your connection and try again.</p><div class="toast__actions"><button class="btn btn--raised btn--sm" type="button">Retry</button></div></div><button class="icon-btn toast__close" type="button" aria-label="Dismiss"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+        </div>
+        <div class="ds-example__caption"><span>Info (<code>--color-info-icon</code>) · success · warning (with the warning border) · danger (with the danger border and an action; it does not time out).</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;!-- once per app, empty, before anything is announced --&gt;
+&lt;div class="toast-region" role="region" aria-label="Notifications"&gt;
+  &lt;div role="status" aria-live="polite"&gt;
+    &lt;div class="toast toast--success"&gt;
+      &lt;svg class="icon toast__icon" aria-hidden="true"&gt;…&lt;/svg&gt;
+      &lt;div class="toast__body"&gt;
+        &lt;p class="toast__title"&gt;Ride saved&lt;/p&gt;
+        &lt;p class="toast__text"&gt;&lt;span class="toast__figure"&gt;6:52&lt;/span&gt; · &lt;span class="toast__figure"&gt;2.24 km&lt;/span&gt; added to your rides.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;button class="icon-btn toast__close" type="button" aria-label="Dismiss"&gt;…&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></details>
+      </div>
+      <h3>Stacked, in the region</h3>
+      <div class="ds-stage">
+        <div class="ds-stage__page"><p>Class Library · All · 7 classes</p></div>
+        <div class="toast-region" role="region" aria-label="Notifications (example)">
+          <div class="toast toast--success" role="status"><svg class="icon toast__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><div class="toast__body"><p class="toast__title">Ride saved</p><p class="toast__text"><span class="toast__figure">6:52</span> · <span class="toast__figure">2.24 km</span> added to your rides.</p><div class="toast__actions"><a class="btn btn--raised btn--sm" href="../../mocks/pages/profile/default.html">View ride</a></div></div><button class="icon-btn toast__close" type="button" aria-label="Dismiss"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+          <div class="toast toast--info" role="status"><svg class="icon toast__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><div class="toast__body"><p class="toast__title">Link copied</p></div><button class="icon-btn toast__close" type="button" aria-label="Dismiss"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+        </div>
+      </div>
+      <p>Newest at the bottom, nearest the thumb; at most three at once (the oldest leaves first). The region is in the DOM from page load, empty, so screen readers pick up what is added.</p>
+    </section>
+
+    <section class="ds-section" id="sizes" data-na="One size: up to 384px wide (--toast-width), full width less the 16px gutters on a phone."><h2><a href="#sizes">Sizes</a></h2><p class="ds-na">One size: up to 384px wide (--toast-width), full width less the 16px gutters on a phone.</p></section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Part</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Leaving</th><th scope="col">Disabled</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Dismiss</th>
+            <td><button class="icon-btn toast__close" type="button" aria-label="Dismiss"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></td>
+            <td><button class="icon-btn toast__close" type="button" aria-label="Dismiss" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></td>
+            <td><button class="icon-btn toast__close" type="button" aria-label="Dismiss" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></td>
+            <td><button class="icon-btn toast__close" type="button" aria-label="Dismiss" data-state="active"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></td>
+            <td>—</td>
+            <td>never</td></tr>
+          <tr><th scope="row">Toast</th>
+            <td colspan="2"><div class="toast toast--info" style="animation: none;"><svg class="icon toast__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><div class="toast__body"><p class="toast__title">Link copied</p><p class="toast__text">Timer running; hover or focus pauses it.</p></div></div></td>
+            <td colspan="2"><div class="toast toast--info" style="animation: none;" data-state="focus"><svg class="icon toast__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><div class="toast__body"><p class="toast__title">Link copied</p><p class="toast__text">Focus inside: timer paused.</p></div></div></td>
+            <td colspan="2"><div class="toast toast--info" data-state="leaving" style="animation: none; opacity: 0.5;"><svg class="icon toast__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><div class="toast__body"><p class="toast__title">Link copied</p><p class="toast__text">Leaving (shown at half way).</p></div></div></td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li><b>Timing</b>: info and success leave after 6 s; warning after 10 s; danger, and any toast with an action, stays until dismissed (WCAG 2.2.1).</li>
+        <li><b>Paused</b>: hovering the toast or focusing anything inside it pauses the timer; leaving restarts it from the full time.</li>
+        <li><b>Leaving</b>: <code>data-state="leaving"</code> fades and drops 8px over <code>--duration-fast</code>, then the node is removed.</li>
+      </ul>
+      <h3>Both themes</h3>
+      <div class="ds-themes">
+        <div data-theme="light"><div class="stack stack--sm"><div class="toast toast--success" style="animation: none;"><svg class="icon toast__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><div class="toast__body"><p class="toast__title">Ride saved</p><p class="toast__text"><span class="toast__figure">6:52</span> · <span class="toast__figure">2.24 km</span></p></div></div><div class="toast toast--danger" style="animation: none;"><svg class="icon toast__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg><div class="toast__body"><p class="toast__title">Couldn’t send feedback</p><div class="toast__actions"><button class="btn btn--raised btn--sm" type="button">Retry</button></div></div></div></div></div>
+        <div data-theme="dark"><div class="stack stack--sm"><div class="toast toast--success" style="animation: none;"><svg class="icon toast__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><div class="toast__body"><p class="toast__title">Ride saved</p><p class="toast__text"><span class="toast__figure">6:52</span> · <span class="toast__figure">2.24 km</span></p></div></div><div class="toast toast--danger" style="animation: none;"><svg class="icon toast__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg><div class="toast__body"><p class="toast__title">Couldn’t send feedback</p><div class="toast__actions"><button class="btn btn--raised btn--sm" type="button">Retry</button></div></div></div></div></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <ul>
+        <li><b>Under 640px</b>: the region spans the screen less 16px gutters, toasts centred and full width, 16px above the bottom (plus the safe area).</li>
+        <li><b>From 640px</b>: bottom right, 24px in, toasts 384px max and right-aligned.</li>
+        <li>On ride screens the region moves above the controls bar, and toasts wait for a recovery segment or the end of the ride.</li>
+      </ul>
+      <div class="ds-table-wrap" style="display: flex; gap: var(--space-4); padding-bottom: var(--space-2);">
+        <iframe class="ds-frame" width="362" height="360" title="Toasts at 360px: full width at the bottom" srcdoc="&lt;!doctype html&gt;&lt;html lang=&quot;en&quot; data-theme=&quot;dark&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../tokens/tokens.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../assets/components.css&quot;&gt;&lt;/head&gt;&lt;body style=&quot;height: auto; min-height: 100%; background: var(--color-ink);&quot;&gt;&lt;div style=&quot;padding: 16px; color: var(--color-muted);&quot;&gt;Class Library · All · 7 classes&lt;/div&gt;&lt;div class=&quot;toast-region&quot; role=&quot;region&quot; aria-label=&quot;Notifications&quot;&gt;&lt;div class=&quot;toast toast--success&quot;&gt;&lt;svg class=&quot;icon toast__icon&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot;/&gt;&lt;path d=&quot;m9 12 2 2 4-4&quot;/&gt;&lt;/svg&gt;&lt;div class=&quot;toast__body&quot;&gt;&lt;p class=&quot;toast__title&quot;&gt;Ride saved&lt;/p&gt;&lt;p class=&quot;toast__text&quot;&gt;&lt;span class=&quot;toast__figure&quot;&gt;6:52&lt;/span&gt; · &lt;span class=&quot;toast__figure&quot;&gt;2.24 km&lt;/span&gt; added to your rides.&lt;/p&gt;&lt;/div&gt;&lt;button class=&quot;icon-btn toast__close&quot; type=&quot;button&quot; aria-label=&quot;Dismiss&quot;&gt;&lt;svg class=&quot;icon icon--md&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M18 6 6 18&quot;/&gt;&lt;path d=&quot;m6 6 12 12&quot;/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;&lt;script&gt;try{var r=parent.document.documentElement,s=function(){document.documentElement.dataset.theme=r.dataset.theme||&quot;dark&quot;};s();new MutationObserver(s).observe(r,{attributes:true,attributeFilter:[&quot;data-theme&quot;]})}catch(e){}&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;" style="flex: none; max-width: none; border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-lg); background: var(--color-ink);"></iframe>
+        <iframe class="ds-frame" width="1026" height="360" title="Toasts at 1024px: bottom right" srcdoc="&lt;!doctype html&gt;&lt;html lang=&quot;en&quot; data-theme=&quot;dark&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../tokens/tokens.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../assets/components.css&quot;&gt;&lt;/head&gt;&lt;body style=&quot;height: auto; min-height: 100%; background: var(--color-ink);&quot;&gt;&lt;div style=&quot;padding: 16px; color: var(--color-muted);&quot;&gt;Class Library · All · 7 classes&lt;/div&gt;&lt;div class=&quot;toast-region&quot; role=&quot;region&quot; aria-label=&quot;Notifications&quot;&gt;&lt;div class=&quot;toast toast--success&quot;&gt;&lt;svg class=&quot;icon toast__icon&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot;/&gt;&lt;path d=&quot;m9 12 2 2 4-4&quot;/&gt;&lt;/svg&gt;&lt;div class=&quot;toast__body&quot;&gt;&lt;p class=&quot;toast__title&quot;&gt;Ride saved&lt;/p&gt;&lt;p class=&quot;toast__text&quot;&gt;&lt;span class=&quot;toast__figure&quot;&gt;6:52&lt;/span&gt; · &lt;span class=&quot;toast__figure&quot;&gt;2.24 km&lt;/span&gt; added to your rides.&lt;/p&gt;&lt;/div&gt;&lt;button class=&quot;icon-btn toast__close&quot; type=&quot;button&quot; aria-label=&quot;Dismiss&quot;&gt;&lt;svg class=&quot;icon icon--md&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M18 6 6 18&quot;/&gt;&lt;path d=&quot;m6 6 12 12&quot;/&gt;&lt;/svg&gt;&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;&lt;script&gt;try{var r=parent.document.documentElement,s=function(){document.documentElement.dataset.theme=r.dataset.theme||&quot;dark&quot;};s();new MutationObserver(s).observe(r,{attributes:true,attributeFilter:[&quot;data-theme&quot;]})}catch(e){}&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;" style="flex: none; max-width: none; border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-lg); background: var(--color-ink);"></iframe>
+      </div>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+      <p>The tone sets two tokens on the toast: <code>--toast-accent</code> (the icon, from <code>--color-{info,success,warning,danger}-icon</code>) and <code>--toast-border</code> (line, or the tone's border for warning and danger). The fill stays <code>--color-panel</code> in every tone so a stack reads as one family; the tone is carried by the icon shape and colour.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <p>A live region (<a href="https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA22">ARIA22 status messages</a>, WCAG 4.1.3): the region holds a <code>role="status"</code> (polite) container; a danger toast goes into a <code>role="alert"</code> container. The live containers exist before content is added. Toasts are not dialogs and never take focus.</p>
+      <h3>Keyboard</h3>
+      <div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+        <tr><td><kbd>F6</kbd></td><td>Moves focus to the notifications region (and back), so a toast's action can be reached without hunting.</td></tr>
+        <tr><td><kbd>Tab</kbd></td><td>Inside the region: action, then Dismiss.</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>With focus in a toast: dismisses it and returns focus to where it was.</td></tr>
+      </tbody></table></div>
+      <h3>Focus</h3>
+      <p>Showing a toast never moves focus. If the rider tabs into it, the timer pauses; dismissing it returns focus to the previous element, or to <code>main</code>.</p>
+      <h3>Labelling</h3>
+      <p>The title is the announcement; keep it complete on its own ("Couldn’t send feedback"). The dismiss button is "Dismiss"; an action names its result ("Retry", "View ride").</p>
+      <h3>Contrast</h3>
+      <div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+        <div class="ds-pair"><span>Title</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-panel" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Text</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Info icon</span><span class="ds-pair__ratio" data-contrast="--color-info-icon|--color-panel" data-min="3"></span></div>
+        <div class="ds-pair"><span>Success icon</span><span class="ds-pair__ratio" data-contrast="--color-success-icon|--color-panel" data-min="3"></span></div>
+        <div class="ds-pair"><span>Warning icon</span><span class="ds-pair__ratio" data-contrast="--color-warning-icon|--color-panel" data-min="3"></span></div>
+        <div class="ds-pair"><span>Danger icon</span><span class="ds-pair__ratio" data-contrast="--color-danger-icon|--color-panel" data-min="3"></span></div>
+      </div>
+      <h3>Motion</h3>
+      <p>Enters with a fade and an 8px rise over <code>--duration-base</code>, <code>--ease-panel</code>; leaves over <code>--duration-fast</code>. Reduced motion: appears and disappears without movement.</p>
+      <h3>Touch</h3>
+      <p>Dismiss and the action are 32–36px with 8px between; toasts never sit over the ride controls or the bottom sheet's buttons.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li>Title: what happened, past tense, no full stop: "Ride saved", "Link copied", "Packet log downloaded".</li>
+        <li>Failure: "Couldn’t …" plus what is kept and what to do: "Your note is kept. Check your connection and try again."</li>
+        <li>Figures as figures: "6:52 · 2.24 km".</li>
+        <li>No "Success!", no exclamation marks, no emoji.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><button class="btn btn--raised btn--sm" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Copied</button></div><figcaption>Confirm in place when the rider is looking at the control, as Copy link does in the browser notice.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><div class="toast toast--info" style="animation: none;"><svg class="icon toast__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><div class="toast__body"><p class="toast__title">Copied</p></div></div></div><figcaption>Toast "Copied" at the far corner for a button the rider just pressed.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><div class="toast toast--danger" style="animation: none;"><svg class="icon toast__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg><div class="toast__body"><p class="toast__title">Couldn’t send feedback</p><div class="toast__actions"><button class="btn btn--raised btn--sm" type="button">Retry</button></div></div></div></div><figcaption>A failure with a way forward that stays until dismissed.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><div class="toast toast--danger" style="animation: none;"><svg class="icon toast__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg><div class="toast__body"><p class="toast__title">Lost the bike</p></div></div></div><figcaption>Report "Lost the bike" in a toast that fades mid-interval: the custom ride shows it in place with Reconnect.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+        <tbody>
+          <tr><td>Fill</td><td><code>--color-panel</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-panel" data-swatch></i><span data-token="--color-panel"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-panel" data-swatch></i><span data-token="--color-panel"></span></span></td></tr>
+          <tr><td>Border</td><td><code>--color-line</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td></tr>
+          <tr><td>Title</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+          <tr><td>Text, default icon</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+          <tr><td>Info icon</td><td><code>--color-info-icon</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-info-icon" data-swatch></i><span data-token="--color-info-icon"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-info-icon" data-swatch></i><span data-token="--color-info-icon"></span></span></td></tr>
+          <tr><td>Success icon</td><td><code>--color-success-icon</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-success-icon" data-swatch></i><span data-token="--color-success-icon"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-success-icon" data-swatch></i><span data-token="--color-success-icon"></span></span></td></tr>
+          <tr><td>Warning icon</td><td><code>--color-warning-icon</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-warning-icon" data-swatch></i><span data-token="--color-warning-icon"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-warning-icon" data-swatch></i><span data-token="--color-warning-icon"></span></span></td></tr>
+          <tr><td>Warning border</td><td><code>--color-warning-border</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-warning-border" data-swatch></i><span data-token="--color-warning-border"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-warning-border" data-swatch></i><span data-token="--color-warning-border"></span></span></td></tr>
+          <tr><td>Danger icon</td><td><code>--color-danger-icon</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-danger-icon" data-swatch></i><span data-token="--color-danger-icon"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-danger-icon" data-swatch></i><span data-token="--color-danger-icon"></span></span></td></tr>
+          <tr><td>Danger border</td><td><code>--color-danger-border</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-danger-border" data-swatch></i><span data-token="--color-danger-border"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-danger-border" data-swatch></i><span data-token="--color-danger-border"></span></span></td></tr>
+          <tr><td>Radius</td><td><code>--radius-xl</code></td><td colspan="2"><span data-token="--radius-xl"></span></td></tr>
+          <tr><td>Elevation</td><td><code>--shadow-3</code></td><td colspan="2"><span data-token="--shadow-3"></span></td></tr>
+          <tr><td>Layer (above dialogs, below tooltips)</td><td><code>--z-toast</code></td><td colspan="2"><span data-token="--z-toast"></span></td></tr>
+          <tr><td>Enter / leave</td><td><code>--duration-base</code> <code>--duration-fast</code></td><td colspan="2"><span data-token="--duration-base"></span> / <span data-token="--duration-fast"></span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+        <tr><td><code>.toast-region</code></td><td>Core: fixed bottom region; centred under 640px, bottom right above.</td></tr>
+        <tr><td><code>.toast</code> + <code>.toast--info</code> <code>--success</code> <code>--warning</code> <code>--danger</code></td><td>Core panel; tones set <code>--toast-accent</code> / <code>--toast-border</code>.</td></tr>
+        <tr><td><code>.toast__icon</code> <code>__body</code> <code>__title</code> <code>__text</code> <code>__figure</code> <code>__actions</code> <code>__close</code></td><td>Parts.</td></tr>
+        <tr><td><code>data-state="leaving"</code></td><td>Exit transition before removal.</td></tr>
+        <tr><td><code>role="status"</code> / <code>role="alert"</code></td><td>Live containers inside the region.</td></tr>
+      </tbody></table></div>
+      <p>In the app: <code>&lt;wz-toast tone="info" title="A new version is ready" text="Reload to use it now, or it opens next time." action="Reload" (actionChosen)="reload()" (dismissed)="dismiss()" /&gt;</code> inside <code>&lt;div wz-toast-region&gt;</code>. <code>action</code> renders the one small raised button in <code>.toast__actions</code>; a toast with one stays until the rider closes it.</p>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <p><b>Not in the mocks.</b> No mock shows a toast; the kit's core has an unstyled <code>.toast-region</code> and <code>.toast</code> without tones or parts. Tones and parts are added in <code>overlays.css</code> from the status tokens. Copy comes from flows the mocks do show:</p>
+      <ul>
+        <li>"Ride saved": <a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a> (Save ride and open library).</li>
+        <li>"Packet log downloaded": <a href="../../mocks/dialogs/diagnostics/default.html">dialogs/diagnostics/default</a>.</li>
+        <li>"A new version is ready", with Reload: <a href="../../mocks/pages/home/update-ready.html">pages/home/update-ready</a>.</li>
+        <li>"Link copied": the Copy link action on <a href="../../mocks/pages/class-start/needs-chromium.html">pages/class-start/needs-chromium</a>.</li>
+        <li>"Couldn’t send feedback": <a href="../../mocks/dialogs/feedback/sending.html">dialogs/feedback/sending</a>, which has no failure state.</li>
+      </ul>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Mock</th><th scope="col">Drift</th><th scope="col">Resolution</th></tr></thead><tbody>
+        <tr><td>dialogs/feedback/sending</td><td>No failure state after "Sending…".</td><td>Danger toast with Retry, note kept (or an inline alert if the panel is still open).</td></tr>
+        <tr><td>(core kit)</td><td><code>.toast</code> had no tones, icon, title or action parts.</td><td>Added with compound selectors so the core rule cannot override them.</td></tr>
+      </tbody></table></div>
+    </section>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

@@ -1,0 +1,60 @@
+@startuml
+title UML sequence behaviour — Handle a request
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app" #E0F2FE
+  participant "HttpRidesApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "Authentication and fallback policy" as auth
+  participant "RidesController" as ctrl
+  participant "ProblemDetailsExceptionHandler" as errors
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "ValidationBehavior" as validation
+  participant "SubmitRideCommandHandler" as handler
+  participant "Ride" as entity
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "AppDbContext" as dbctx
+  database "Telo Ride database" as db
+end box
+actor -> client : Finish a ride
+client -> auth : POST /api/rides with session cookie
+auth -> ctrl : Authenticated
+ctrl -> validation : ISender.Send(SubmitRideCommand) (one request, L2-147 AC2)
+validation -> validation : Run SubmitRideCommandValidator
+alt Invalid
+  validation -> errors : RequestValidationException
+  errors --> client : 400 ProblemDetails with field errors
+else Valid
+  validation -> handler : Handle(command)
+  handler -> dbctx : Load by RideId through IAppDbContext
+  dbctx -> db : Query
+  db --> dbctx : Rows
+  handler -> entity : Apply domain rules
+  alt Rule refused
+    entity --> handler : DomainRuleException(code)
+    handler -> errors : DomainRuleException
+    errors --> client : 4xx ProblemDetails with code (L2-147 AC3)
+  else Accepted
+    handler -> dbctx : SaveChangesAsync()
+    dbctx -> db : Commit
+    handler --> ctrl : RideResult
+    ctrl --> client : 200 RideResult
+  end
+end
+@enduml

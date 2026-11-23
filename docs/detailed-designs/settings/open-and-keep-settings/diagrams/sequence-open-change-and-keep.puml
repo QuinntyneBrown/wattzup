@@ -1,0 +1,51 @@
+@startuml
+title UML sequence behaviour — Open, change and keep a setting
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "SettingsPage" as page
+  participant "Ride screens" as consumers
+end box
+box "Frontend — Ride app (components library)" #E0F2FE
+  participant "SwitchRow" as control
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "LocalRideSettingsStore" as store
+end box
+participant "localStorage" as ls
+store -> ls : getItem('telo-ride.settings.v1') at start
+alt Storage available
+  ls --> store : JSON or null
+  store -> store : parseRideSettings(raw): bad fields take recommended values (L2-158 AC5)
+else Storage refused (throws)
+  store -> store : persisted = false; RECOMMENDED_SETTINGS in memory
+end
+actor -> page : Open /settings (from Profile or "Quality settings")
+page -> store : settings(), persisted()
+page -> control : Render five sections and the section nav (L2-158 AC1, AC2)
+opt persisted is false
+  page --> actor : warning "This browser isn’t keeping your settings." (L2-158 AC7)
+end
+actor -> control : Turn "Keep the screen awake" off
+control -> page : toggled(false)
+page -> store : set('keepAwake', false)
+store -> store : current.set; signal changes
+store --> consumers : computed settings change at once, mid-ride too (L2-158 AC3)
+store -> ls : setItem(key, JSON); this device only, never sent (L2-158 AC4)
+alt Refused (throws)
+  store -> store : persisted = false; the value lasts for this tab
+end
+@enduml

@@ -1,0 +1,130 @@
+// Block btn (docs/design-system/components/button.html). Every variant only sets the --btn-* tokens; the block reads
+// them. Variants and sizes join as a screen first needs them.
+:host {
+  --btn-bg: transparent;
+  --btn-bg-hover: var(--btn-bg);
+  --btn-fg: var(--color-fg);
+  --btn-fg-hover: var(--btn-fg);
+  --btn-border: transparent;
+  --btn-height: var(--control-height-md);
+  --btn-pad: var(--space-4);
+  --btn-radius: var(--radius-lg);
+  --btn-font-size: var(--font-size-sm);
+  --btn-line-height: var(--line-height-sm);
+  --btn-weight: var(--font-weight-semibold);
+  --btn-hover-opacity: 1;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--btn-height);
+  padding-inline: var(--btn-pad);
+  border-radius: var(--btn-radius);
+  border: var(--border-width-hairline) solid var(--btn-border);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-size: var(--btn-font-size);
+  line-height: var(--btn-line-height);
+  font-weight: var(--btn-weight);
+  white-space: nowrap;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+:host::after {
+  content: ''; // takes touches across at least 44 px, however tall the button draws
+  position: absolute;
+  inset-inline: 0;
+  inset-block: min(0px, calc((100% - var(--target-comfortable)) / 2));
+}
+
+:host(:hover:not(:disabled):not([aria-disabled='true'])) {
+  background: var(--btn-bg-hover);
+  color: var(--btn-fg-hover);
+  opacity: var(--btn-hover-opacity);
+}
+
+:host(:active:not(:disabled):not([aria-disabled='true'])) {
+  transform: scale(0.98);
+}
+
+:host(:disabled),
+:host([aria-disabled='true']) {
+  opacity: 0.4;
+  cursor: default;
+}
+
+:host(.btn--primary) {
+  --btn-bg: var(--color-accent);
+  --btn-bg-hover: var(--color-accent-hover);
+  --btn-fg: var(--color-fg-on-accent);
+}
+
+:host(.btn--outline) {
+  --btn-border: var(--color-line);
+  --btn-bg-hover: var(--color-raised);
+}
+
+:host(.btn--sm) {
+  --btn-height: var(--control-height-sm);
+  --btn-pad: var(--space-3);
+}
+
+:host(.btn--lg) {
+  --btn-height: var(--control-height-lg);
+  --btn-radius: var(--radius-xl);
+  --btn-font-size: var(--font-size-md);
+  --btn-line-height: var(--line-height-md);
+}
+
+:host(.btn--xl) {
+  --btn-height: var(--control-height-xl);
+  --btn-radius: var(--radius-xl);
+  --btn-font-size: var(--font-size-md);
+  --btn-line-height: var(--line-height-md);
+}
+
+:host(.btn--block) {
+  display: flex;
+  width: 100%;
+}
+
+// The one reward action, on the unlock card (Ride Neon Docklands).
+:host(.btn--gold) {
+  --btn-bg: var(--color-gold);
+  --btn-fg: var(--color-on-fill);
+  --btn-hover-opacity: 0.9;
+}
+
+// The inverse of the page, for a teaser's one action (Ride alone on Home).
+:host(.btn--light) {
+  --btn-bg: var(--color-bg-inverse);
+  --btn-fg: var(--color-fg-inverse);
+  --btn-hover-opacity: 0.9;
+}
+
+// Muted text that fills on hover, beside a stronger choice (Send another).
+:host(.btn--quiet) {
+  --btn-pad: var(--space-3);
+  --btn-weight: var(--font-weight-medium);
+  --btn-fg: var(--color-muted);
+  --btn-bg-hover: var(--color-raised);
+  --btn-fg-hover: var(--color-fg);
+}
+
+:host(.btn--raised) {
+  --btn-bg: var(--color-raised);
+  --btn-bg-hover: var(--color-raised-hover);
+}
+
+// An action that cannot be undone (Delete my account); its words say so too.
+:host(.btn--danger) {
+  --btn-bg: var(--color-danger-solid);
+  --btn-bg-hover: var(--color-danger-solid-hover);
+  --btn-fg: var(--color-fg-on-danger);
+}

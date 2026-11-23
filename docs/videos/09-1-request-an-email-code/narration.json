@@ -1,0 +1,85 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "One email, one code, never a password: that's how Telo Ride knows it's you."
+      ]
+    },
+    {
+      "id": "send",
+      "bars": 4,
+      "lines": [
+        "Type your email and choose Send my code. Until the backend answers, the button reads Sending your code, and waits."
+      ]
+    },
+    {
+      "id": "invalid",
+      "bars": 4,
+      "lines": [
+        "An address that isn't one sends nothing. The field is marked, and the error under it is read out."
+      ]
+    },
+    {
+      "id": "code",
+      "bars": 4,
+      "lines": [
+        "Then the code screen names the address the code went to, and Send a new code counts down thirty seconds."
+      ]
+    },
+    {
+      "id": "backend",
+      "bars": 4,
+      "lines": [
+        "The backend answers the same whether or not you have an account, keeps only a keyed hash of the code, and emails it over SMTP."
+      ]
+    },
+    {
+      "id": "limited",
+      "bars": 4,
+      "lines": [
+        "Codes are limited: five an hour for an address, twenty for a network. Ask too often, and the screen says when to try again."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "From a phone to a desktop, sign-in is one calm panel."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: the code goes to the address as you typed it, a bad address goes nowhere, and every limit answers with when to come back."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

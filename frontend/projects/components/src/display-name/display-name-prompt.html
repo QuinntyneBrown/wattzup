@@ -1,0 +1,17 @@
+<div class="sign-in">
+  <div class="sign-in__panel">
+    <wz-lockup class="sign-in__brand" />
+    <h1 class="sign-in__title">What should other riders call you?</h1>
+    <p class="sign-in__lead">
+      Other riders see this name on start grids and boards, never your email.
+    </p>
+    <wz-display-name-form
+      class="sign-in__form"
+      action="Continue"
+      [saving]="saving()"
+      [refusals]="refusals()"
+      [failed]="failed()"
+      (submitted)="submitted.emit($event)"
+    />
+  </div>
+</div>

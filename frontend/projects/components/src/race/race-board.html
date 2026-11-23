@@ -1,0 +1,39 @@
+<aside class="race-board" aria-labelledby="race-board-title">
+  <h2 class="race-board__title" id="race-board-title">{{ heading() }}</h2>
+  <div class="race-board__status" role="status">
+    @if (notice(); as notice) {
+      <wz-inline-message size="sm">{{ notice }}</wz-inline-message>
+    }
+  </div>
+  <ol class="race-board__list">
+    @for (row of rows(); track row.id) {
+      <li
+        class="race-board__row"
+        [class.race-board__row--you]="row.you"
+        [class.race-board__row--dnf]="row.dnf"
+        [attr.aria-current]="row.you ? 'true' : null"
+        [attr.data-id]="row.id"
+      >
+        <span class="numeral race-board__pos">{{ row.place }}</span>
+        <span class="race-board__dot" [class]="'race-board__dot--' + row.jersey"></span>
+        <span class="race-board__name">{{ row.name }}</span>
+        @if (row.bot) {
+          <svg
+            class="icon icon--sm race-board__bot"
+            viewBox="0 0 24 24"
+            role="img"
+            aria-label="Bot"
+          >
+            <path d="M12 8V4H8" />
+            <rect width="16" height="12" x="4" y="8" rx="2" />
+            <path d="M2 14h2" />
+            <path d="M20 14h2" />
+            <path d="M15 13v2" />
+            <path d="M9 13v2" />
+          </svg>
+        }
+        <span class="numeral race-board__gap">{{ row.gap }}</span>
+      </li>
+    }
+  </ol>
+</aside>

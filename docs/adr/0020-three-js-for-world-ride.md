@@ -1,6 +1,6 @@
 # 0020. Three.js draws the World Ride scene, in its own lazy chunk
 
-- **Status:** Accepted, amended by [0021](0021-webgpu-renderer-with-webgl2-fallback.md)
+- **Status:** Accepted, amended by [0021](0021-webgpu-renderer-with-webgl2-fallback.md) and [0030](0030-world-library-carried-from-main.md)
 - **Date:** 2026-11-19
 
 ## Context

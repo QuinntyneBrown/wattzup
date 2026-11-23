@@ -1,0 +1,56 @@
+@startuml
+title UML sequence behaviour — Receive a report
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "HttpFeedbackApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "Fallback authorization policy" as auth
+  participant "FeedbackController" as controller
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "SubmitFeedbackCommandValidator" as validator
+  participant "SubmitFeedbackCommandHandler" as handler
+  participant "FeedbackReport" as entity
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+client -> auth : POST /api/feedback with session cookie
+alt no valid session
+  auth --> client : 401 (L2-119 AC2)
+else signed in
+  auth -> controller : Submit(request)
+  controller -> validator : SubmitFeedbackCommand(riderId from the session, ...)
+  alt invalid kind, message, context or diagnostics
+    validator --> client : 400 ProblemDetails, code validation_failed, errors by field
+  else valid
+    validator -> handler : Handle
+    handler -> db : Reports from this rider in the past hour
+    alt 10 already
+      handler --> client : 429 ProblemDetails, code rate_limited, Retry-After (L2-119 AC3)
+    else within the limit
+      handler -> entity : new FeedbackReport(kind, message, context, diagnostics, riderId, now)
+      entity --> handler : Report kept as data (L2-119 AC4)
+      handler -> db : Insert and save in one unit of work
+      db --> handler : Committed
+      handler -> handler : telo.ride.feedback +1, tagged kind
+      handler --> controller : Report id
+      controller --> client : 201 Created, { id } (L2-119 AC1)
+    end
+  end
+end
+@enduml

@@ -1,0 +1,13 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Open and keep settings
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Settings page; every ride screen reads the settings")
+  ContainerDb(ls, "Browser storage", "localStorage", "telo-ride.settings.v1, this device only")
+  Container(api, "Telo Ride API", "ASP.NET Core", "Not involved: settings are never sent")
+}
+Rel(rider, app, "Changes settings")
+Rel(app, ls, "Reads once, writes on change")
+@enduml

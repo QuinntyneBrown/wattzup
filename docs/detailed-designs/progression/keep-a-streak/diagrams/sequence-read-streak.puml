@@ -1,0 +1,42 @@
+@startuml
+title UML sequence behaviour — Read the streak after a missed day
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "MainShell or ProfilePage" as page
+  participant "RiderProgressStore" as store
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "ProgressController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "GetProgressQueryHandler" as handler
+  participant "Streak" as streak
+end box
+actor -> page : Open the app on 2026-11-22 after no ride on 2026-11-21
+page -> store : refresh()
+store -> ctrl : GET /api/progress
+ctrl -> handler : Send GetProgressQuery
+handler -> streak : DaysOn(today in rider time zone)
+alt LastRideDay is today or yesterday
+  streak --> handler : Days
+else A full calendar day passed with no ride
+  streak --> handler : 0 (L2-042 AC2)
+end
+handler --> ctrl : ProgressDto.streakDays
+ctrl --> store : 200
+store --> page : Header omits the streak at 0; Profile reads "0-day streak"
+@enduml

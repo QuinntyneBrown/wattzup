@@ -1,0 +1,88 @@
+// Block ride-readouts (docs/design-system/assets/components.css): Power, Cadence and the interval card in a row.
+:host {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  column-gap: var(--space-12);
+  row-gap: var(--space-6);
+}
+
+.ride-readout__label {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-muted);
+}
+
+.ride-readout__value {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.ride-readout__number,
+.ride-readout__unit {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: var(--letter-spacing-display);
+}
+
+.ride-readout__number {
+  line-height: 0.9;
+}
+
+// Ride numbers: power and the target a quarter larger when Settings asks (L2-164 AC4).
+.ride-readout__number--power {
+  font-size: calc(var(--font-size-8xl) * var(--ride-number-scale));
+}
+
+@media (min-width: 40rem) {
+  .ride-readout__number--power {
+    font-size: calc(var(--font-size-9xl) * var(--ride-number-scale));
+  }
+}
+
+.ride-readout__number--cadence {
+  font-size: var(--font-size-6xl);
+}
+
+.ride-readout__unit {
+  color: var(--color-muted);
+}
+
+.ride-readout__unit--power {
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-3xl);
+}
+
+.ride-readout__unit--cadence {
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
+}
+
+.ride-readout__foot {
+  margin: var(--space-2) 0 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--line-height-sm);
+  font-size: calc(var(--font-size-sm) * var(--ride-number-scale));
+  line-height: calc(var(--line-height-sm) * var(--ride-number-scale));
+  color: var(--color-muted);
+}
+
+.ride-readout__delta {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-fg);
+}
+
+.ride-readout__delta--on {
+  color: var(--color-volt-fg);
+}
+
+.ride-readout__delta--under {
+  color: var(--color-warn-fg);
+}

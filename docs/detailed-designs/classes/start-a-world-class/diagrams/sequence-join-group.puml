@@ -1,0 +1,49 @@
+@startuml
+title UML sequence behaviour — Join a group world class
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "WorldLoadStore" as store
+  participant "GroupStartWatcher" as watch
+  participant "ClassRideStore" as ride
+end box
+box "Frontend — Ride app (components library)" #E0F2FE
+  participant "WorldLoading" as view
+  participant "WorldScene" as scene
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RideHub" as hub
+end box
+hub --> watch : session starts 7:39 PM (server time)
+watch -> watch : ServerClock to device time
+loop once a second
+  watch --> view : "The group starts in 1:12." (timer); action disabled "Starts with the group at 7:39 PM" (L2-154 AC1, AC2)
+end
+watch -> store : start time reached
+store -> store : begin() whatever the phase (L2-154 AC3)
+alt World ready
+  store -> ride : adoptWorld(handOver()); start()
+  ride -> scene : live = true; fade in
+else Still loading
+  store -> ride : start() on the panorama
+  store -> store : keep loading behind the class ride
+  store -> ride : adoptWorld(renderer) when ready
+  ride -> scene : live = true; fade in; clock and bike untouched (L2-154 AC4)
+end
+opt No bike at the start time
+  ride -> ride : lost-bike alert of L2-092 (L2-157 AC4)
+end
+@enduml

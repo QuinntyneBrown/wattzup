@@ -1,0 +1,65 @@
+<a class="skip-link" href="#main">Skip to content</a>
+<header wz-site-nav homeHref="/">
+  <a wz-site-link href="#film" (click)="jumpTo($event, 'film')">Film</a>
+  <a wz-site-link href="#rides" (click)="jumpTo($event, 'rides')">Rides</a>
+  <a wz-button variant="primary" [href]="app('/')">Open Telo Ride</a>
+</header>
+<main id="main" class="page__main" tabindex="-1">
+  <section
+    wz-hero
+    [kicker]="hero.kicker"
+    [heading]="hero.heading"
+    [lead]="hero.lead"
+    [note]="hero.note"
+    [image]="hero.image"
+  >
+    <a wz-button slot="action" variant="primary" size="lg" [href]="app('/connect')"
+      >Pair your bike</a
+    >
+    <a wz-button slot="action" size="lg" href="#film" (click)="jumpTo($event, 'film')"
+      >Watch the film</a
+    >
+  </section>
+  <section
+    wz-band
+    anchor="film"
+    surface="panel"
+    kicker="The film"
+    heading="Meet Telo Ride."
+    lead="Two minutes on why another evening on the bike can be the best one of the week."
+  >
+    <wz-film
+      [src]="film.src"
+      [captions]="film.captions"
+      [still]="film.still"
+      [label]="film.label"
+      [playLabel]="film.playLabel"
+      [length]="film.length"
+      [chapters]="film.chapters"
+    />
+  </section>
+  <section
+    wz-band
+    anchor="rides"
+    kicker="Two doors"
+    heading="Race or ride along."
+    lead="Two doors, Race and Classes, fed by one progression of XP, rider levels, stars and map unlocks."
+  >
+    <ul wz-features [features]="features"></ul>
+  </section>
+  <section
+    wz-band
+    anchor="pair"
+    surface="panel"
+    kicker="One press"
+    heading="Paired in one press."
+    lead="Telo Ride pairs with your smart bike over Bluetooth in Chrome or Edge, remembers it, and finishes every ride on the device, with or without a network."
+  >
+    <a wz-button variant="primary" size="xl" [href]="app('/connect')">Pair your bike</a>
+  </section>
+</main>
+<footer wz-site-footer [blurb]="footer.blurb" [legal]="footer.legal">
+  <a wz-site-link href="#film" (click)="jumpTo($event, 'film')">Watch the film</a>
+  <a wz-site-link href="#rides" (click)="jumpTo($event, 'rides')">Race and Classes</a>
+  <a wz-site-link [href]="app('/')">Open Telo Ride</a>
+</footer>

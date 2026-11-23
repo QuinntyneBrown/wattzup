@@ -3,17 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Radio group (mode cards) — Wattzup design system</title>
-<meta name="description" content="Card-style radio group that picks the training mode.">
+<title>Radio group — Telo Ride design system</title>
+<meta name="description" content="Pick exactly one: card choices ("Race against", training mode, alone or with a group) and plain vertical or horizontal radios.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
-</head>
+<style>
+  .ds-pairs-stack { display: flex; flex-direction: column; gap: var(--space-2); }
+  .ds-matrix td { min-width: var(--space-28); }
+  .ds-demo-col { display: flex; flex-direction: column; gap: var(--space-4); width: 100%; max-width: calc(var(--space-48) * 2); }
+  .ds-demo-wide { width: 100%; max-width: calc(var(--space-36) * 4); }
+  .ds-demo-panel { background: var(--color-panel); border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-2xl); padding: var(--space-5); width: 100%; }
+  .ds-menu-stage { min-height: calc(var(--space-44) * 2); align-items: flex-start; }
+</style>
+<style>.ds-matrix .mode-option, .ds-matrix .training-mode { min-width: var(--space-40); }</style></head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +36,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,84 +90,331 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Component · Inputs</p>
-      <h1>Radio group (mode cards)</h1>
-      <p class="ds-lead">Mode cards are a radio group drawn as cards: HIIT intervals or Flat resistance. The choice changes the whole setup form.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span></div>
+      <h1>Radio group</h1>
+      <p class="ds-lead">A radio group asks for exactly one answer from a short set. Telo Ride's are mostly cards, each with a title and a sentence ("Bots — 9 computer riders. Starts the moment you're ready."); plain radios cover compact forms.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
       <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>Use for a one-of-few choice that reshapes what follows. Real radio inputs inside labels; the card styles itself with <code>:has(input:checked)</code>.</p>
-    </section>
-    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
-<div class="ds-anatomy"><figure class="ds-anatomy__figure"><label class="mode-card"><span class="mode-card__title"><input type="radio" name="m0" checked>HIIT intervals</span><p class="mode-card__text">Hard and easy efforts on repeat.</p></label><span class="ds-callout" style="left: 3%; top: 8%;" aria-hidden="true">1</span><span class="ds-callout" style="left: 8%; top: 30%;" aria-hidden="true">2</span><span class="ds-callout" style="left: 50%; top: 75%;" aria-hidden="true">3</span></figure><ol class="ds-anatomy__list"><li><div><b>Card</b><small>1px edge, <code>--radius-lg</code>; selected: volt edge.</small></div></li><li><div><b>Radio</b><small>16px native radio, restyled.</small></div></li><li><div><b>Title and description</b><small>Semibold title, muted body-sm.</small></div></li></ol></div>
-    </section>
-    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
-<div class="ds-example"><div class="ds-example__canvas "><fieldset class="mode-cards"><legend class="visually-hidden">Training mode</legend><label class="mode-card"><span class="mode-card__title"><input type="radio" name="mode" checked>HIIT intervals</span><p class="mode-card__text">Hard and easy efforts on repeat. Resistance switches at every interval.</p></label><label class="mode-card"><span class="mode-card__title"><input type="radio" name="mode">Flat resistance</span><p class="mode-card__text">One level, held the whole ride. You set the pace with your legs.</p></label></fieldset></div><div class="ds-example__caption"><span>The setup mode choice.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;fieldset class="mode-cards"&gt;
-&lt;legend class="visually-hidden"&gt;Training mode&lt;/legend&gt;
-&lt;label class="mode-card"&gt;
-&lt;span class="mode-card__title"&gt;
-&lt;input type="radio" name="mode" checked&gt;HIIT intervals&lt;/span&gt;
-&lt;p class="mode-card__text"&gt;Hard and easy efforts on repeat. Resistance switches at every interval.&lt;/p&gt;
-&lt;/label&gt;
-&lt;label class="mode-card"&gt;
-&lt;span class="mode-card__title"&gt;
-&lt;input type="radio" name="mode"&gt;Flat resistance&lt;/span&gt;
-&lt;p class="mode-card__text"&gt;One level, held the whole ride. You set the pace with your legs.&lt;/p&gt;
-&lt;/label&gt;
-&lt;/fieldset&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="sizes" data-na="One size; the card grows with its text."><h2><a href="#sizes">Sizes</a></h2>
-      <p class="ds-na">One size; the card grows with its text.</p>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<div class="ds-matrix"><table><thead><tr><th scope="col">Variant</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th></tr></thead><tbody><tr><th scope="row">Unselected</th><td><label class="mode-card"><span class="mode-card__title"><input type="radio" name="u">Flat resistance</span></label></td><td><label class="mode-card" data-state="hover"><span class="mode-card__title"><input type="radio" name="u">Flat resistance</span></label></td><td><label class="mode-card" data-state="focus"><span class="mode-card__title"><input type="radio" name="u">Flat resistance</span></label></td></tr><tr><th scope="row">Selected</th><td><label class="mode-card"><span class="mode-card__title"><input type="radio" checked name="v">HIIT intervals</span></label></td><td><label class="mode-card" data-state="hover"><span class="mode-card__title"><input type="radio" checked name="v">HIIT intervals</span></label></td><td><label class="mode-card" data-state="focus"><span class="mode-card__title"><input type="radio" checked name="v">HIIT intervals</span></label></td></tr><tr><th scope="row">Disabled (submitting)</th><td><label class="mode-card"><span class="mode-card__title"><input type="radio" disabled name="w">Flat resistance</span></label></td><td><label class="mode-card" data-state="hover"><span class="mode-card__title"><input type="radio" disabled name="w">Flat resistance</span></label></td><td><label class="mode-card" data-state="focus"><span class="mode-card__title"><input type="radio" disabled name="w">Flat resistance</span></label></td></tr></tbody></table></div><h3>Both themes</h3><div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas"><label class="mode-card"><span class="mode-card__title"><input type="radio" checked name="t1">HIIT intervals</span></label></div></div><div data-theme="dark"><div class="ds-example__canvas"><label class="mode-card"><span class="mode-card__title"><input type="radio" checked name="t1">HIIT intervals</span></label></div></div></div>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
-<ul><li>One column below 640px, two from 640px.</li></ul>
-    </section>
-    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
-<p>Selected uses <code>--color-selected-border</code> and <code>--color-selected-bg</code>: volt edge on raised in dark, olive edge on volt wash in light.</p>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<h3>Role and pattern</h3><p>Native radios in a <code>&lt;fieldset&gt;</code> with a (visually hidden) <code>&lt;legend&gt;</code> "Training mode". <a href="https://www.w3.org/WAI/ARIA/apg/patterns/radio/">APG Radio Group</a> behaviour comes free.</p><h3>Keyboard</h3><div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody><tr><td><kbd>Tab</kbd></td><td>Into the group, onto the checked card.</td></tr><tr><td><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td><td>Move and select.</td></tr></tbody></table></div><h3>Focus</h3><p>The card shows <code>--shadow-focus</code> when its radio has focus.</p><h3>Labelling</h3><p>Card title is the radio's label; the description is part of the label text.</p><h3>Contrast</h3><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-pair"><span>Selected edge</span><span class="ds-pair__ratio" data-contrast="--color-selected-border|--color-bg-canvas" data-min="3"></span></div><div class="ds-pair"><span>Text on selected</span><span class="ds-pair__ratio" data-contrast="--color-fg-default|--color-selected-bg" data-min="4.5"></span></div><div class="ds-pair"><span>Description on selected</span><span class="ds-pair__ratio" data-contrast="--color-fg-muted|--color-selected-bg" data-min="4.5"></span></div></div><h3>Motion</h3><p>Edge colour over <code>--duration-fast</code>.</p><h3>Touch</h3><p>The whole card is the hit area.</p>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Title names the mode; description says what it does to resistance.</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><label class="mode-card"><span class="mode-card__title"><input type="radio" checked name="d1">HIIT intervals</span></label></div><figcaption>Selection shown by edge, fill and the radio dot.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><div class="mode-card">HIIT intervals</div></div><figcaption>A clickable div with no radio: no keyboard, no state.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
-<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Edge</td><td><code>--color-border-default</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-border-default" data-swatch></i><span data-token="--color-border-default"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-border-default" data-swatch></i><span data-token="--color-border-default"></span></span></td></tr><tr><td>Selected edge</td><td><code>--color-selected-border</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-selected-border" data-swatch></i><span data-token="--color-selected-border"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-selected-border" data-swatch></i><span data-token="--color-selected-border"></span></span></td></tr><tr><td>Selected fill</td><td><code>--color-selected-bg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-selected-bg" data-swatch></i><span data-token="--color-selected-bg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-selected-bg" data-swatch></i><span data-token="--color-selected-bg"></span></span></td></tr><tr><td>Radius</td><td><code>--radius-lg</code></td><td colspan="2"><span data-token="--radius-lg"></span></td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
-<pre><code>&lt;fieldset class="mode-cards"&gt;
-  &lt;legend class="visually-hidden"&gt;Training mode&lt;/legend&gt;
-  &lt;label class="mode-card"&gt;&lt;span class="mode-card__title"&gt;&lt;input type="radio" name="mode" checked&gt;HIIT intervals&lt;/span&gt;
-    &lt;p class="mode-card__text"&gt;…&lt;/p&gt;&lt;/label&gt;
-&lt;/fieldset&gt;</code></pre><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.mode-cards</code></td><td>Grid of cards.</td></tr><tr><td><code>.mode-card</code></td><td>Card label.</td></tr><tr><td><code>.mode-card__text</code></td><td>Description.</td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from these mocks:</p><ul><li><a href="../../mocks/pages/setup/default.html">pages/setup/default</a> (mode)</li><li><a href="../../mocks/pages/setup/flat.html">pages/setup/flat</a> (flat chosen)</li></ul><p>Drift fixed during extraction: light-theme selection was a <code>[data-theme="light"]</code> rule inside the component; it is now the <code>--color-selected-*</code> tokens. <code>.mode-card p</code> became <code>.mode-card__text</code>.</p>
+      <p>Use a radio group when the rider must pick one of two to five options and needs to see them all to choose. Use <b>cards</b> when each option needs a sentence of explanation: Race Setup's "Race against" (<code>.mode-option</code>), Custom Setup's training mode (<code>.training-mode</code>), Class Start's "How do you want to ride?" (<code>.ride-option</code>). Use <b>plain radios</b> (<code>.radio</code>) in compact forms. Short labels with no explanation read better as a <a class="link" href="button-group.html">segmented control</a>; long lists as a <a class="link" href="select.html">select</a>.</p>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+      <div class="ds-anatomy">
+        <figure class="ds-anatomy__figure">
+          <div class="mode-options" role="radiogroup" aria-label="Race mode (anatomy)" data-static style="width: 100%; max-width: calc(var(--space-48) * 2 + var(--space-8)); margin: 0;">
+            <button class="mode-option" type="button" role="radio" aria-checked="true" tabindex="0">
+              <span class="mode-option__icon"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></span>
+              <span class="mode-option__text"><span class="mode-option__title">Bots</span><span class="mode-option__body">9 computer riders. Starts the moment you're ready.</span></span>
+            </button>
+          </div>
+          <span class="ds-callout" style="left: 10%; top: 28%;" aria-hidden="true">1</span>
+          <span class="ds-callout" style="left: 40%; top: 28%;" aria-hidden="true">2</span>
+          <span class="ds-callout" style="left: 60%; top: 66%;" aria-hidden="true">3</span>
+          <span class="ds-callout" style="left: 92%; top: 50%;" aria-hidden="true">4</span>
+        </figure>
+        <ol class="ds-anatomy__list">
+          <li><div><b>Icon</b><small>20px, muted; volt when checked.</small></div></li>
+          <li><div><b>Title</b><small>16px semibold: the option's name.</small></div></li>
+          <li><div><b>Body</b><small>14px muted: what picking it means.</small></div></li>
+          <li><div><b>Card</b><small><code>--radius-xl</code>, 1px <code>--color-line</code>, 16px padding; checked: volt border and a 10% volt tint. <code>role="radio"</code> + <code>aria-checked</code>.</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+      <h3>Card with icon: Race against (live)</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <div class="ds-demo-wide">
+            <h3 class="setup-ride__title" id="race-against">Race against</h3>
+            <div class="mode-options" role="radiogroup" aria-labelledby="race-against">
+              <button class="mode-option" type="button" role="radio" aria-checked="false" tabindex="-1"><span class="mode-option__icon"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg></span><span class="mode-option__text"><span class="mode-option__title">Your best time</span><span class="mode-option__body">Solo. A ghost of your fastest ride sets the pace.</span></span></button>
+              <button class="mode-option" type="button" role="radio" aria-checked="true" tabindex="0"><span class="mode-option__icon"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></span><span class="mode-option__text"><span class="mode-option__title">Bots</span><span class="mode-option__body">9 computer riders. Starts the moment you're ready.</span></span></button>
+              <button class="mode-option" type="button" role="radio" aria-checked="false" tabindex="-1"><span class="mode-option__icon"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg></span><span class="mode-option__text"><span class="mode-option__title">Riders online</span><span class="mode-option__body">14 riders queuing now. 8–10 per race, empty seats go to bots.</span></span></button>
+            </div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>One tab stop; arrow keys move and check. The live group uses roving <code>tabindex</code>, which the mock lacked.</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;h2 class="setup-ride__title" id="race-against"&gt;Race against&lt;/h2&gt;
+&lt;div class="mode-options" role="radiogroup" aria-labelledby="race-against"&gt;
+  &lt;button class="mode-option" type="button" role="radio" aria-checked="true" tabindex="0"&gt;
+    &lt;span class="mode-option__icon"&gt;&lt;svg class="icon icon--lg" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;/span&gt;
+    &lt;span class="mode-option__text"&gt;&lt;span class="mode-option__title"&gt;Bots&lt;/span&gt;
+      &lt;span class="mode-option__body"&gt;9 computer riders. Starts the moment you're ready.&lt;/span&gt;&lt;/span&gt;
+  &lt;/button&gt;
+  …other options with tabindex="-1"
+&lt;/div&gt;</code></pre></details>
+      </div>
+      <h3>Card with radio dot: training mode (live)</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <div class="training-modes ds-demo-wide" role="radiogroup" aria-label="Training mode" style="margin-top: 0;">
+            <button class="training-mode" type="button" role="radio" aria-checked="true" tabindex="0"><span class="training-mode__head"><span class="training-mode__radio" aria-hidden="true"></span><span class="training-mode__title">HIIT intervals</span></span><span class="training-mode__body">Hard and easy efforts on repeat. Resistance switches at every interval.</span></button>
+            <button class="training-mode" type="button" role="radio" aria-checked="false" tabindex="-1"><span class="training-mode__head"><span class="training-mode__radio" aria-hidden="true"></span><span class="training-mode__title">Flat resistance</span></span><span class="training-mode__body">One level, held the whole ride. You set the pace with your legs.</span></button>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Two columns from 640px. The drawn dot gives the checked card a shape cue as well as a colour one.</span></div>
+      </div>
+      <h3>Plain radios</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <fieldset class="choice-group">
+            <legend class="choice-group__legend">Race against</legend>
+            <div class="choice-group__options">
+              <label class="radio"><input class="radio__input" type="radio" name="race-mode"><span class="radio__text"><span class="radio__label">Your best time</span><span class="radio__hint">Solo. A ghost of your fastest ride sets the pace.</span></span></label>
+              <label class="radio"><input class="radio__input" type="radio" name="race-mode" checked><span class="radio__text"><span class="radio__label">Bots</span><span class="radio__hint">9 computer riders. Starts the moment you're ready.</span></span></label>
+              <label class="radio"><input class="radio__input" type="radio" name="race-mode"><span class="radio__text"><span class="radio__label">Riders online</span><span class="radio__hint">14 riders queuing now.</span></span></label>
+            </div>
+          </fieldset>
+          <fieldset class="choice-group choice-group--horizontal">
+            <legend class="choice-group__legend">Type of feedback</legend>
+            <div class="choice-group__options">
+              <label class="radio"><input class="radio__input" type="radio" name="kind" checked><span class="radio__text">Bug</span></label>
+              <label class="radio"><input class="radio__input" type="radio" name="kind"><span class="radio__text">Improvement</span></label>
+              <label class="radio"><input class="radio__input" type="radio" name="kind"><span class="radio__text">Kudos</span></label>
+            </div>
+          </fieldset>
+        </div>
+        <div class="ds-example__caption"><span>Vertical with hints; horizontal. Native inputs: the browser gives arrow keys and one tab stop for free.</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;fieldset class="choice-group choice-group--horizontal"&gt;
+  &lt;legend class="choice-group__legend"&gt;Type of feedback&lt;/legend&gt;
+  &lt;div class="choice-group__options"&gt;
+    &lt;label class="radio"&gt;&lt;input class="radio__input" type="radio" name="kind" checked&gt;&lt;span class="radio__text"&gt;Bug&lt;/span&gt;&lt;/label&gt; …
+  &lt;/div&gt;
+&lt;/fieldset&gt;</code></pre></details>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sizes" data-na="One size for each: cards fill their column (16px padding), plain radios are a 16px circle with a 14px label."><h2><a href="#sizes">Sizes</a></h2>
+      <p class="ds-na">One size for each: cards fill their column (16px padding), plain radios are a 16px circle with a 14px label.</p>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Variant</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Checked</th><th scope="col">Disabled</th><th scope="col">Invalid</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Mode option</th>
+            <td><div role="radiogroup" aria-label="m1" data-static><button class="mode-option" type="button" role="radio" aria-checked="false"><span class="mode-option__icon"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg></span><span class="mode-option__text"><span class="mode-option__title">Your best time</span></span></button></div></td>
+            <td><div role="radiogroup" aria-label="m2" data-static><button class="mode-option" type="button" role="radio" aria-checked="false" data-state="hover"><span class="mode-option__icon"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg></span><span class="mode-option__text"><span class="mode-option__title">Your best time</span></span></button></div></td>
+            <td><div role="radiogroup" aria-label="m3" data-static><button class="mode-option" type="button" role="radio" aria-checked="true" data-state="focus"><span class="mode-option__icon"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg></span><span class="mode-option__text"><span class="mode-option__title">Your best time</span></span></button></div></td>
+            <td><div role="radiogroup" aria-label="m4" data-static><button class="mode-option" type="button" role="radio" aria-checked="true"><span class="mode-option__icon"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg></span><span class="mode-option__text"><span class="mode-option__title">Your best time</span></span></button></div></td>
+            <td><div role="radiogroup" aria-label="m5" data-static><button class="mode-option" type="button" role="radio" aria-checked="false" disabled><span class="mode-option__icon"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg></span><span class="mode-option__text"><span class="mode-option__title">Riders online</span><span class="mode-option__body">Opens at level 3</span></span><svg class="icon icon--md mode-option__lock" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button></div></td>
+            <td><span class="text-faint">n/a: one is always checked</span></td></tr>
+          <tr><th scope="row">Training mode</th>
+            <td><div role="radiogroup" aria-label="t1" data-static><button class="training-mode" type="button" role="radio" aria-checked="false"><span class="training-mode__head"><span class="training-mode__radio" aria-hidden="true"></span><span class="training-mode__title">Flat resistance</span></span></button></div></td>
+            <td><div role="radiogroup" aria-label="t2" data-static><button class="training-mode" type="button" role="radio" aria-checked="false" data-state="hover"><span class="training-mode__head"><span class="training-mode__radio" aria-hidden="true"></span><span class="training-mode__title">Flat resistance</span></span></button></div></td>
+            <td><div role="radiogroup" aria-label="t3" data-static><button class="training-mode" type="button" role="radio" aria-checked="true" data-state="focus"><span class="training-mode__head"><span class="training-mode__radio" aria-hidden="true"></span><span class="training-mode__title">Flat resistance</span></span></button></div></td>
+            <td><div role="radiogroup" aria-label="t4" data-static><button class="training-mode" type="button" role="radio" aria-checked="true"><span class="training-mode__head"><span class="training-mode__radio" aria-hidden="true"></span><span class="training-mode__title">Flat resistance</span></span></button></div></td>
+            <td><div role="radiogroup" aria-label="t5" data-static><button class="training-mode" type="button" role="radio" aria-checked="false" disabled><span class="training-mode__head"><span class="training-mode__radio" aria-hidden="true"></span><span class="training-mode__title">Flat resistance</span></span></button></div></td>
+            <td><span class="text-faint">n/a</span></td></tr>
+          <tr><th scope="row">Plain radio</th>
+            <td><label class="radio"><input class="radio__input" type="radio" name="s-a"><span class="radio__text">Kudos</span></label></td>
+            <td><label class="radio"><input class="radio__input" type="radio" name="s-b" data-state="hover"><span class="radio__text">Kudos</span></label></td>
+            <td><label class="radio"><input class="radio__input" type="radio" name="s-c" checked data-state="focus"><span class="radio__text">Kudos</span></label></td>
+            <td><label class="radio"><input class="radio__input" type="radio" name="s-d" checked><span class="radio__text">Kudos</span></label></td>
+            <td><label class="radio"><input class="radio__input" type="radio" name="s-e" disabled><span class="radio__text">Kudos</span></label></td>
+            <td><label class="radio"><input class="radio__input" type="radio" name="s-f" aria-invalid="true"><span class="radio__text">Kudos</span></label></td></tr>
+        </tbody>
+      </table></div>
+      <p><b>Active</b> on a radio checks it on press, so it looks like Checked. <b>Disabled</b> cards say why ("Opens at level 3") and show a lock, as Race Setup does for a new rider. <b>Invalid</b> only happens in a plain group with no default (rare: pre-pick the safest option instead).</p>
+      <h3>Both themes</h3>
+      <div class="ds-themes">
+        <div data-theme="light"><div class="mode-options" role="radiogroup" aria-label="Race mode (light)" data-static style="margin: 0;"><button class="mode-option" type="button" role="radio" aria-checked="false"><span class="mode-option__icon"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg></span><span class="mode-option__text"><span class="mode-option__title">Your best time</span><span class="mode-option__body">Solo. A ghost of your fastest ride sets the pace.</span></span></button><button class="mode-option" type="button" role="radio" aria-checked="true"><span class="mode-option__icon"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></span><span class="mode-option__text"><span class="mode-option__title">Bots</span><span class="mode-option__body">9 computer riders.</span></span></button></div><div class="choice-group choice-group--horizontal" style="margin-top: var(--space-4);"><div class="choice-group__options"><label class="radio"><input class="radio__input" type="radio" name="th-l" checked><span class="radio__text">Bug</span></label><label class="radio"><input class="radio__input" type="radio" name="th-l"><span class="radio__text">Kudos</span></label></div></div></div>
+        <div data-theme="dark"><div class="mode-options" role="radiogroup" aria-label="Race mode (dark)" data-static style="margin: 0;"><button class="mode-option" type="button" role="radio" aria-checked="false"><span class="mode-option__icon"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg></span><span class="mode-option__text"><span class="mode-option__title">Your best time</span><span class="mode-option__body">Solo. A ghost of your fastest ride sets the pace.</span></span></button><button class="mode-option" type="button" role="radio" aria-checked="true"><span class="mode-option__icon"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></span><span class="mode-option__text"><span class="mode-option__title">Bots</span><span class="mode-option__body">9 computer riders.</span></span></button></div><div class="choice-group choice-group--horizontal" style="margin-top: var(--space-4);"><div class="choice-group__options"><label class="radio"><input class="radio__input" type="radio" name="th-d" checked><span class="radio__text">Bug</span></label><label class="radio"><input class="radio__input" type="radio" name="th-d"><span class="radio__text">Kudos</span></label></div></div></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Width</th><th scope="col">Rule</th></tr></thead><tbody>
+        <tr><td>360 (base)</td><td>Cards stack full width, 8px apart (12px for training modes). Body text wraps; the icon stays top-aligned. Horizontal plain groups wrap.</td></tr>
+        <tr><td>640 (sm)</td><td>Training modes go two-up (<code>.training-modes</code>). Mode and ride options stay stacked: their sentences need the width.</td></tr>
+        <tr><td>1024 (lg)</td><td>Cards sit in the 420px setup aside.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+      <p>Cards read <code>--color-line</code> (border), <code>--color-faint</code> (hover border), <code>--color-volt</code> (checked border and dot) and a 10% volt mix for the checked fill (<code>.training-mode</code> uses <code>--color-raised</code> instead). Plain radios share the checkbox's <code>--choice-*</code> tokens: an ink circle with a 3:1 border and an 8px volt dot. Volt is identical in both themes; the tint lands on paper or ink.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <p>Plain radios: native <code>&lt;input type="radio"&gt;</code> sharing a <code>name</code>, in a <code>&lt;fieldset&gt;</code> with a <code>&lt;legend&gt;</code>. Cards: <code>role="radiogroup"</code> labelled by its heading, buttons with <code>role="radio"</code> and <code>aria-checked</code>, roving <code>tabindex</code>, per the <a class="link" href="https://www.w3.org/WAI/ARIA/apg/patterns/radio/">APG Radio Group pattern</a>. A card is never a link with <code>role="radio"</code>.</p>
+      <h3>Keyboard</h3>
+      <div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+        <tr><td><kbd>Tab</kbd></td><td>Enters the group on the checked option; the next <kbd>Tab</kbd> leaves the group.</td></tr>
+        <tr><td><kbd>↓</kbd> <kbd>→</kbd> / <kbd>↑</kbd> <kbd>←</kbd></td><td>Moves to and checks the next / previous option, wrapping; disabled options are skipped.</td></tr>
+        <tr><td><kbd>Space</kbd></td><td>Checks the focused option if it is not checked.</td></tr>
+      </tbody></table></div>
+      <h3>Focus</h3>
+      <p>Cards take the shared ring at a 2px offset outside the rounded card; plain radios ring the 16px circle.</p>
+      <h3>Labelling</h3>
+      <p>The group is named by its visible heading ("Race against") through <code>aria-labelledby</code>. Each card's name is its title; its body is read as part of the name (title + sentence), so keep bodies to one sentence. Icons and the drawn dot are <code>aria-hidden</code>. A locked card adds its reason to the visible text.</p>
+      <h3>Contrast</h3>
+      <div class="ds-themes">
+<div data-theme="light"><div class="ds-pairs-stack">
+<div class="ds-pair"><span>Card title</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Card body</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Checked border vs page (1.4.11)</span><span class="ds-pair__ratio" data-contrast="--color-volt|--color-ink" data-min="3"></span></div>
+<div class="ds-pair"><span>Body on checked tint</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-accent-subtle" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Radio circle border (1.4.11)</span><span class="ds-pair__ratio" data-contrast="--color-line-strong|--color-panel" data-min="3"></span></div>
+<div class="ds-pair"><span>Radio dot vs panel</span><span class="ds-pair__ratio" data-contrast="--color-volt|--color-panel" data-min="3"></span></div>
+</div></div>
+<div data-theme="dark"><div class="ds-pairs-stack">
+<div class="ds-pair"><span>Card title</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Card body</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Checked border vs page (1.4.11)</span><span class="ds-pair__ratio" data-contrast="--color-volt|--color-ink" data-min="3"></span></div>
+<div class="ds-pair"><span>Body on checked tint</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-accent-subtle" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Radio circle border (1.4.11)</span><span class="ds-pair__ratio" data-contrast="--color-line-strong|--color-panel" data-min="3"></span></div>
+<div class="ds-pair"><span>Radio dot vs panel</span><span class="ds-pair__ratio" data-contrast="--color-volt|--color-panel" data-min="3"></span></div>
+</div></div>
+</div>
+      <p>The unchecked card border (<code>--color-line</code>) is decorative: the title and body identify the card. The checked state is the volt border plus the tint plus the volt icon (or dot), announced as "checked".</p>
+      <h3>Motion</h3>
+      <p>Border and fill ease over <code>--duration-fast</code>; the dot scales in. All instant under reduced motion.</p>
+      <h3>Touch</h3>
+      <p>Whole cards are targets (at least 72px tall). Plain radios: the label row is the target.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li>Titles are the option's name, two or three words: "Your best time", "Bots", "Riders online".</li>
+        <li>Bodies are one sentence on what happens: "Solo. A ghost of your fastest ride sets the pace."</li>
+        <li>Live numbers belong in the body ("14 riders queuing now"); update them politely, never by re-rendering the group.</li>
+        <li>Pre-select the option most riders want (Bots on Race Setup; "Ride with a group" when a session is open).</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><div class="training-modes" role="radiogroup" aria-label="Do example" data-static style="margin: 0; width: 100%;"><button class="training-mode" type="button" role="radio" aria-checked="true"><span class="training-mode__head"><span class="training-mode__radio" aria-hidden="true"></span><span class="training-mode__title">HIIT intervals</span></span></button></div></div><figcaption>A dot as well as a colour change marks the checked card.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><div class="ride-choice__options" style="margin: 0; width: 100%;"><a class="ride-option" role="radio" aria-checked="true" href="#do-dont"><span class="ride-option__icon"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg></span><span class="ride-option__text"><span class="ride-option__title">Ride with a group</span><span class="ride-option__body">7:39 PM · starts in 9 min · 6 of 10 riders</span></span></a></div></div><figcaption>A link with <code>role="radio"</code> that loads a page (Class Start): it is announced as a radio, but arrows do nothing and Enter navigates.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><div role="radiogroup" aria-label="Locked example" data-static style="width: 100%;"><button class="mode-option" type="button" role="radio" aria-checked="false" disabled><span class="mode-option__icon"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg></span><span class="mode-option__text"><span class="mode-option__title">Riders online</span><span class="mode-option__body">Opens at level 3</span></span><svg class="icon icon--md mode-option__lock" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button></div></div><figcaption>A locked option stays visible with its reason and a lock.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><div class="segmented segmented--raised" role="group" aria-label="Ride choice (don't)"><button class="segmented__option" type="button" aria-pressed="true">Alone</button><button class="segmented__option" type="button" aria-pressed="false">Group</button></div></div><figcaption>Squeezing the group option into a segmented control drops "7:39 PM · starts in 9 min · 6 of 10 riders", the thing that decides it.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+        <tbody>
+          <tr><td>Card border</td><td><code>--color-line</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td></tr>
+          <tr><td>Card border, hover</td><td><code>--color-faint</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td></tr>
+          <tr><td>Checked border, dot, icon</td><td><code>--color-volt</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-volt" data-swatch></i><span data-token="--color-volt"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-volt" data-swatch></i><span data-token="--color-volt"></span></span></td></tr>
+          <tr><td>Checked fill (mode, ride option; 10% volt)</td><td><code>--color-accent-subtle</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-accent-subtle" data-swatch></i><span data-token="--color-accent-subtle"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-accent-subtle" data-swatch></i><span data-token="--color-accent-subtle"></span></span></td></tr>
+          <tr><td>Checked fill (training mode)</td><td><code>--color-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td></tr>
+          <tr><td>Body; icon</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+          <tr><td>Radio circle border (--choice-border)</td><td><code>--color-line-strong</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-line-strong" data-swatch></i><span data-token="--color-line-strong"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-line-strong" data-swatch></i><span data-token="--color-line-strong"></span></span></td></tr>
+          <tr><td>Card radius / padding / gap</td><td><code>--radius-xl</code> <code>--space-4</code> <code>--space-2</code></td><td colspan="2"><span data-token="--radius-xl"></span> / <span data-token="--space-4"></span> / <span data-token="--space-2"></span></td></tr>
+          <tr><td>Radio size / dot</td><td><code>--space-4</code> <code>--space-2</code></td><td colspan="2"><span data-token="--space-4"></span> / <span data-token="--space-2"></span></td></tr>
+          <tr><td>Transition</td><td><code>--duration-fast</code> <code>--ease-standard</code></td><td colspan="2"><span data-token="--duration-fast"></span><span data-token="--ease-standard"></span></td></tr>
+        </tbody>
+      </table></div>
+      <p>The cards mix their checked fill as <code>color-mix(in srgb, var(--color-volt) 10%, transparent)</code>; <code>--color-accent-subtle</code> is the solid equivalent to use where a mix is not available.</p>
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+      <pre><code>&lt;div class="training-modes" role="radiogroup" aria-label="Training mode"&gt;
+  &lt;button class="training-mode" type="button" role="radio" aria-checked="true" tabindex="0"&gt;
+    &lt;span class="training-mode__head"&gt;&lt;span class="training-mode__radio" aria-hidden="true"&gt;&lt;/span&gt;&lt;span class="training-mode__title"&gt;HIIT intervals&lt;/span&gt;&lt;/span&gt;
+    &lt;span class="training-mode__body"&gt;Hard and easy efforts on repeat. …&lt;/span&gt;
+  &lt;/button&gt; …
+&lt;/div&gt;</code></pre>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+        <tr><td><code>.mode-options</code> / <code>.mode-option</code> (<code>__icon __text __title __body __lock</code>)</td><td>Icon card list (Race Setup).</td></tr>
+        <tr><td><code>.ride-choice__options</code> / <code>.ride-option</code></td><td>Same card, Class Start.</td></tr>
+        <tr><td><code>.training-modes</code> / <code>.training-mode</code> (<code>__head __radio __title __body</code>)</td><td>Dot card, two-up from 640px (Custom Setup).</td></tr>
+        <tr><td><code>.radio</code> <code>__input __text __label __hint</code></td><td>Plain native radio.</td></tr>
+        <tr><td><code>.choice-group</code> <code>--horizontal</code></td><td>Fieldset and layout for plain radios.</td></tr>
+        <tr><td><code>aria-checked</code> / <code>tabindex</code></td><td>Checked card / roving focus.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <ul>
+        <li><a href="../../mocks/pages/race-setup/default.html">pages/race-setup/default</a> — "Race against" mode cards</li>
+        <li><a href="../../mocks/pages/race-setup/new-rider.html">pages/race-setup/new-rider</a> — the locked "Riders online" card</li>
+        <li><a href="../../mocks/pages/custom-setup/default.html">pages/custom-setup/default</a> and <a href="../../mocks/pages/custom-setup/flat.html">flat</a> — training mode cards</li>
+        <li><a href="../../mocks/pages/class-start/default.html">pages/class-start/default</a> — "How do you want to ride?" cards</li>
+      </ul>
+      <p>Drift fixed during extraction:</p>
+      <ul>
+        <li><code>race-setup/*</code>, <code>custom-setup/*</code>: radio buttons are all tab stops with no arrow keys; the system adds roving <code>tabindex</code> and arrow handling.</li>
+        <li><code>class-start/*</code>: <code>.ride-option</code> is an <code>&lt;a role="radio"&gt;</code> that navigates; it becomes a <code>&lt;button role="radio"&gt;</code> and "Join · starts in 9 min" does the navigating.</li>
+        <li><code>.mode-option</code>, <code>.ride-option</code> and <code>.training-mode</code> are three copies of one card with two checked fills; kept as area classes for now, recommended to merge into one block with the training-mode dot.</li>
+      </ul>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>
+<script>
+/* Roving tabindex for the live examples: [role=radiogroup] of [role=radio] buttons (arrows move and
+   check, APG Radio Group) and [role=toolbar] (arrows, Home and End move focus, APG Toolbar). Groups
+   marked data-static (state matrices) are left alone. */
+(function () {
+  function wire(group, selector, check) {
+    var items = Array.prototype.slice.call(group.querySelectorAll(selector)).filter(function (el) { return !el.disabled; });
+    if (!items.length) return;
+    group.addEventListener('keydown', function (e) {
+      var i = items.indexOf(document.activeElement);
+      if (i < 0) return;
+      var next = null;
+      if (e.key === 'ArrowRight' || (check && e.key === 'ArrowDown')) next = items[(i + 1) % items.length];
+      if (e.key === 'ArrowLeft' || (check && e.key === 'ArrowUp')) next = items[(i - 1 + items.length) % items.length];
+      if (!check && e.key === 'Home') next = items[0];
+      if (!check && e.key === 'End') next = items[items.length - 1];
+      if (!next) return;
+      e.preventDefault();
+      items.forEach(function (el) { el.tabIndex = el === next ? 0 : -1; });
+      next.focus();
+      if (check) select(next);
+    });
+    function select(item) {
+      items.forEach(function (el) { el.setAttribute('aria-checked', el === item ? 'true' : 'false'); el.tabIndex = el === item ? 0 : -1; });
+    }
+    if (check) items.forEach(function (el) { el.addEventListener('click', function () { select(el); }); });
+  }
+  document.querySelectorAll('[role="radiogroup"]:not([data-static])').forEach(function (g) { wire(g, '[role="radio"]', true); });
+  document.querySelectorAll('[role="toolbar"]:not([data-static])').forEach(function (g) { wire(g, 'button, a[href]', false); });
+})();
+</script>
 </body>
 </html>

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="../Telo.Ride.Infrastructure/Telo.Ride.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- dotnet ef needs it in the startup project; it never ships. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Telo.Ride.Api.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The headers of L2-131, which frontend/scripts/serve-dist.mjs sends too. -->
+    <Content Remove="Hosting/security-headers.json" />
+    <EmbeddedResource Include="Hosting/security-headers.json" LogicalName="security-headers.json" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="MailKit" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Telo.Ride.Application/Telo.Ride.Application.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The class catalogue ships inside the assembly and is read through IClassCatalogue (ADR 0028). -->
+    <EmbeddedResource Include="Catalogue/classes.json" />
+    <!-- So does the map catalogue, through IMapCatalogue (ADR 0029). -->
+    <EmbeddedResource Include="Catalogue/maps.json" />
+  </ItemGroup>
+</Project>

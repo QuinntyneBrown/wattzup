@@ -1,0 +1,9 @@
+<wz-lockup size="sm" />
+@if (bike(); as name) {
+  <div class="training-header__divider" aria-hidden="true"></div>
+  <span class="training-header__bike">{{ name }}</span>
+}
+<ng-content />
+@if (fullscreenAvailable()) {
+  <wz-fullscreen-toggle [active]="fullscreen()" (toggled)="fullscreenToggled.emit()" />
+}

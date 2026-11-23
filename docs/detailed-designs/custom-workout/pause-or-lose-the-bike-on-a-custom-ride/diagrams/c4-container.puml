@@ -1,0 +1,13 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Pause or lose the bike on a custom ride
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Bluetooth LE")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Custom ride run states and overlays")
+}
+Rel(rider, app, "Uses")
+Rel(app, bike, "Chooser, GATT connect, keepalive", "Web Bluetooth")
+@enduml

@@ -1,0 +1,56 @@
+@startuml
+title UML sequence behaviour — Finish a class
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "ClassRideStore" as store
+  participant "Router" as router
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "RideClock" as clock
+  participant "RideRecorder" as recorder
+  participant "RideOutbox" as outbox
+  participant "HttpRidesApi" as rapi
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RidesController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "SubmitRideCommandHandler" as handler
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+clock --> store : elapsed = class length (30:00)
+store -> recorder : toSubmission(class, mode, session)
+recorder --> store : RideSubmission (ride id, 342 kJ, 84 % on target)
+store -> outbox : enqueue(submission) (IndexedDB)
+outbox -> rapi : submit(submission)
+rapi -> ctrl : POST /api/rides
+ctrl -> handler : Send SubmitRideCommand
+handler -> db : Record once per ride id; compute XP and progress
+db --> handler : Saved
+handler --> ctrl : RideResultDto
+ctrl --> rapi : 200 OK
+rapi --> outbox : Recorded
+outbox -> outbox : Remove from IndexedDB
+alt network down
+  rapi --> outbox : Failure
+  outbox -> outbox : Keep; retry later (L2-135)
+end
+store -> router : Navigate to Results for the ride id L2-093 AC2
+router --> rider : Results (L2-078)
+@enduml

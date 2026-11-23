@@ -1,0 +1,65 @@
+@startuml
+title UML sequence behaviour — Slow, failed and panorama loads
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "WorldLoadStore" as store
+end box
+box "Frontend — Ride app (components library)" #E0F2FE
+  participant "WorldLoading" as view
+end box
+box "Frontend — Ride app (world library, lazy chunk)" #E0F2FE
+  participant "RendererBackendProbe" as probe
+  participant "WorldAssetLoader" as loader
+  participant "WorldRenderer" as renderer
+end box
+participant "Static host" as host
+group Slow load (L2-155)
+  store -> store : slow timer fires at 20 s, world not ready
+  store --> view : warning "This is taking longer than usual."; "· 24 s" on the shader step (AC1)
+  alt "Start at Low quality"
+    actor -> view : Start at Low quality
+    view -> store : startAtLow()
+    store -> renderer : prepare(.., Low) and warmUp(); Settings unchanged (AC3)
+  else "Ride with the panorama"
+    actor -> view : Ride with the panorama
+    view -> store : usePanorama()
+    store -> loader : abort.abort()
+    store -> renderer : dispose()
+    store -> store : phase riding on the panorama (AC4)
+  end
+end
+group Download fails (L2-156 AC1, AC2)
+  host --> loader : connection lost at 7.6 MB
+  loader --> store : failed(7.6 of 18.9 MB)
+  store --> view : "Couldn’t load Neon Docklands"; alert; Try again, Ride with the panorama
+  actor -> view : Try again
+  view -> store : retry()
+  store -> loader : resume(from 7.6 MB)
+  loader -> host : GET with Range: bytes=7600000-
+end
+group A program fails to build (L2-156 AC3)
+  renderer --> store : batch failed at Ultra
+  store -> renderer : prepare(.., High)
+  note right of store : Below Low the class rides the panorama
+end
+group No WebGPU and no WebGL 2 (L2-156 AC4)
+  store -> probe : probe()
+  probe --> store : none
+  store -> loader : load panorama only (0.4 MB)
+  store --> view : "Neon Docklands is ready as a panorama"; two steps not needed; Start riding enabled
+end
+@enduml

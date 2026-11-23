@@ -1,0 +1,78 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Every class now has a group ride starting every fifteen minutes, and the app shows you the next one."
+      ]
+    },
+    {
+      "id": "schedule",
+      "bars": 5,
+      "lines": [
+        "Sessions start on the quarter hours with ten seats each, and the app asks for the next two every thirty seconds."
+      ]
+    },
+    {
+      "id": "roster",
+      "bars": 5,
+      "lines": [
+        "Class Start offers the next session: when it starts, how many have joined, and who is riding."
+      ]
+    },
+    {
+      "id": "full",
+      "bars": 5,
+      "lines": [
+        "When it is full, Join offers the one fifteen minutes later. In its last minute, Join now says it is starting."
+      ]
+    },
+    {
+      "id": "library",
+      "bars": 4,
+      "lines": [
+        "In the library, each open class shows its next group, counting down."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 5,
+      "lines": [
+        "The plan and the riders stay together on every screen, from a phone to a desktop."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: the schedule, the countdown, a full session and the chips, read again every thirty seconds."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

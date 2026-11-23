@@ -1,0 +1,15 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Install the app
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(host, "Static host", "HTTPS static hosting; provider <TO SUPPLY>", "Serves manifest, ngsw-worker.js and each build")
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Installed app with the Angular service worker")
+  ContainerDb(idb, "Browser storage", "Cache Storage", "Service worker caches of each version")
+}
+Rel(rider, app, "Opens")
+Rel(app, host, "Checks for a new version on", "HTTPS")
+Rel(app, idb, "Caches versions in")
+@enduml

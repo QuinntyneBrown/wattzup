@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Countdown — Telo Ride design system</title>
+<meta name="description" content="Time until the start: the race lobby clock, the full-screen 3-2-1 and the starts-in times on Class Start, with reduced-motion and announcement rules.">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/components.css">
+<link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Page-only layout for the ride pages (tokens only). */
+/* HUD pieces shown on their own: the product pins them over the world with position: absolute;
+   in a specimen they sit in normal flow, and the breakpoint that hides them on small screens is lifted. */
+.ds-hud-loose { align-items: flex-start; }
+.ds-hud-loose > .race-power, .ds-hud-loose > .race-board, .ds-hud-loose > .race-hud, .ds-hud-loose > .race-scenery,
+.ds-hud-loose > .race-paused, .ds-hud-loose > .race-lost { position: static; inset: auto; translate: none; }
+.ds-hud-loose .race-board { display: block; }
+.ds-hud-loose .race-route { display: block; flex: 1 1 20rem; }
+.ds-hud-loose .race-resist { display: flex; flex: 0 1 var(--race-hud-resistance-width); }
+.ds-hud-loose .race-interval { flex: 0 1 var(--race-hud-interval-width); }
+.ds-hud-loose > .race-scenery { width: min(var(--race-scenery-width), 100%); }
+.ds-hud-loose > .race-paused, .ds-hud-loose > .race-lost { position: relative; flex: 1 1 18rem; min-height: 14rem; }
+/* A specimen box with a fixed width, so a stretchy chart has something to stretch into */
+.ds-fill { flex: 1 1 18rem; min-width: 0; }
+.ds-fill--narrow { flex: 0 1 20rem; }
+.ds-fill > .class-plan, .ds-fill > .class-sync { margin-top: 0; }
+/* A light/dark pair of contrast chips */
+.ds-themes--pairs > [data-theme] { padding: var(--space-3); }
+.ds-themes--pairs > [data-theme]::before { margin-bottom: var(--space-2); }
+/* Matrix cells hold wide things */
+.ds-matrix td .class-profile { min-width: 10rem; }
+.ds-matrix td .ride-levels { min-width: 12rem; }
+.ds-matrix td .ride-trace__svg { min-height: 5rem; }
+.ds-na-cell { color: var(--color-fg-subtle); font: var(--text-caption); }
+/* Stage: the world fills it; on phones the stage is as tall as the stacked HUD needs */
+.ride-stage { min-height: 38rem; }
+/* Standings show from 768px: leave room for all ten rows above the bottom HUD */
+@media (min-width: 48rem) { .ride-stage { min-height: 46rem; } }
+/* A stage is narrower than the viewport its breakpoints answer to; drop the route line so the bar stays one row */
+@media (min-width: 48rem) { .ride-stage .race-bar__route { display: none; } }
+.ride-stage--short { min-height: 20rem; }
+.ride-stage .race-countdown, .ride-stage .race-lobby__body { position: absolute; }
+/* Lobby clock specimen */
+.ds-lobby { padding: var(--space-6); }
+/* Absolutely positioned descendants (visually hidden words, glass layers) must not escape the matrix's scroller */
+.ds-matrix, .ds-table-wrap { position: relative; }
+/* A stage inside an anatomy figure fills it (the figure centres its content) */
+.ds-anatomy__figure > .ds-stage { width: 100%; margin: 0; border: 0; }
+/* Callouts for parts the viewport hides */
+@media (max-width: 39.99rem) { .ds-only-sm { display: none; } }
+@media (max-width: 47.99rem) { .ds-only-md { display: none; } }
+@media (max-width: 63.99rem) { .ds-only-lg { display: none; } }
+/* Dashboard specimens: the view needs a height to fill, the video a ratio */
+.ds-view { min-height: 16rem; margin-top: 0; }
+.ds-view .ride-video { aspect-ratio: 16 / 9; flex: none; }
+.ds-view .ride-trace__svg { min-height: 12rem; }
+.ds-trace-fixed .ride-trace__svg { min-height: 0; }
+.ds-matrix td .ride-log__list, .ds-matrix td .ride-trace, .ds-matrix td .ride-progress { min-width: 12rem; }
+</style>
+</head>
+<body id="top">
+<a class="ds-skip" href="#main">Skip to content</a>
+<div class="ds-shell">
+  <nav class="ds-nav" aria-label="Design system">
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <details open><summary>Foundations</summary><ul>
+      <li><a href="../foundations/color.html">Color</a></li>
+      <li><a href="../foundations/typography.html">Typography</a></li>
+      <li><a href="../foundations/spacing.html">Spacing</a></li>
+      <li><a href="../foundations/layout.html">Layout</a></li>
+      <li><a href="../foundations/elevation.html">Elevation</a></li>
+      <li><a href="../foundations/shape.html">Shape</a></li>
+      <li><a href="../foundations/motion.html">Motion</a></li>
+      <li><a href="../foundations/iconography.html">Iconography</a></li>
+      <li><a href="../foundations/theming.html">Theming</a></li>
+      <li><a href="../foundations/responsive.html">Responsive</a></li>
+      <li><a href="../foundations/accessibility.html">Accessibility</a></li>
+      <li><a href="../foundations/content.html">Content</a></li>
+    </ul></details>
+    <details open><summary>Actions</summary><ul>
+      <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
+      <li><a href="../components/link.html">Link</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
+      <li><a href="../components/form-field.html">Form field</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
+      <li><a href="../components/slider.html">Slider</a></li>
+      <li><a href="../components/number-stepper.html">Number stepper</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
+      <li><a href="../components/skip-link.html">Skip link</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
+      <li><a href="../components/dialog.html">Dialog</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
+      <li><a href="../components/tooltip.html">Tooltip</a></li>
+      <li><a href="../components/divider.html">Divider</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
+      <li><a href="../components/description-list.html">Description list</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
+      <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
+      <li><a href="../components/toast.html">Toast</a></li>
+      <li><a href="../components/alert.html">Alert and banner</a></li>
+      <li><a href="../components/inline-message.html">Inline message</a></li>
+      <li><a href="../components/progress-bar.html">Progress bar</a></li>
+      <li><a href="../components/spinner.html">Spinner</a></li>
+      <li><a href="../components/skeleton.html">Skeleton</a></li>
+      <li><a href="../components/empty-state.html">Empty state</a></li>
+      <li><a href="../components/error-page.html">Error page</a></li>
+    </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
+    <details open><summary>Patterns</summary><ul>
+      <li><a href="../patterns/forms.html">Forms</a></li>
+      <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
+      <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
+      <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
+      <li><a href="../patterns/notifications.html">Notifications</a></li>
+      <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
+    </ul></details>
+  </nav>
+  <main id="main" class="ds-main">
+    <header class="ds-header">
+      <p class="ds-kicker">Component · Ride</p>
+      <h1>Countdown</h1>
+      <p class="ds-lead">Countdowns tell a rider how long until they ride: the lobby clock while the grid fills, a full-screen 3-2-1 in volt at the line, and a plain "starts in 9 min" for group classes. Each speaks at the moments that matter and stays quiet in between.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive behaviour</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
+    </header>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+      <ul>
+        <li><b>Lobby clock</b> (<code>.race-lobby__clock</code>): the race lobby's big <code>m:ss</code> clock with a status line above ("Waiting for riders", "On the start line"), a hint below and the I'm ready toggle. 96px on phones, 120px from 640px (<code>--race-lobby-clock-size</code>).</li>
+        <li><b>3-2-1</b> (<code>.race-countdown</code>): at 0:03 the lobby is covered by ink at 85% and one 200px volt numeral (<code>--race-countdown-size</code>) ticks 3, 2, 1, Go. On Go the race opens.</li>
+        <li><b>Starts in</b>: Class Start's group option and its button say when the next session begins, to the minute: "7:39 PM · starts in 9 min · 6 of 10 riders", "Join · starts in 9 min".</li>
+      </ul>
+      <p>Time left inside a ride (an interval's "0:29") is a countdown too, but it lives in the <a href="hud-panel.html">HUD panel</a>; elapsed time is the clock in the bar headers. Never use a countdown to create urgency that is not real: there is no "offer ends in".</p>
+    </section>
+
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+      <div class="ds-anatomy">
+        <figure class="ds-anatomy__figure">
+          <section aria-label="Start clock" style="width: 100%;">
+            <p class="race-lobby__status">Waiting for riders</p>
+            <div class="numeral race-lobby__clock" role="timer" aria-label="Starts in 24 seconds">0:24</div>
+            <p class="race-lobby__hint">6 of 10 seats taken. At 0:10 bots fill the rest so the race starts full.</p>
+            <button class="race-lobby__ready" type="button" aria-pressed="false">I'm ready</button>
+          </section>
+          <span class="ds-callout" style="left: 46%; top: 14%;" aria-hidden="true">1</span>
+          <span class="ds-callout" style="left: 46%; top: 34%;" aria-hidden="true">2</span>
+          <span class="ds-callout" style="left: 86%; top: 60%;" aria-hidden="true">3</span>
+          <span class="ds-callout" style="left: 86%; top: 80%;" aria-hidden="true">4</span>
+        </figure>
+        <ol class="ds-anatomy__list">
+          <li><div><b>Status</b><small>14px muted: "Waiting for riders", then "On the start line" once bots have filled the grid.</small></div></li>
+          <li><div><b>Clock</b><small>Barlow bold, tabular, <code>m:ss</code>; <code>role="timer"</code> with a sentence label ("Starts in 24 seconds").</small></div></li>
+          <li><div><b>Hint</b><small>What happens next, max 20rem: "At 0:10 bots fill the rest so the race starts full."</small></div></li>
+          <li><div><b>Ready toggle</b><small><code>aria-pressed</code>: volt "I'm ready", then raised "You're ready" with a volt tick. 56px tall, full width.</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+      <h3>Lobby clock</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--canvas" style="align-items: flex-start;">
+          <section aria-label="Start clock, filling" class="ds-fill">
+            <p class="race-lobby__status">Waiting for riders</p>
+            <div class="numeral race-lobby__clock" role="timer" aria-label="Starts in 24 seconds">0:24</div>
+            <p class="race-lobby__hint">5 of 10 seats taken. At 0:10 bots fill the rest so the race starts full.</p>
+            <p class="race-lobby__notice" role="status"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" x2="16" y1="11" y2="11"/></svg>MarcoVelo left. Their seat is open again.</p>
+            <button class="race-lobby__ready" type="button" aria-pressed="false">I'm ready</button>
+          </section>
+          <section aria-label="Start clock, on the line" class="ds-fill">
+            <p class="race-lobby__status">On the start line</p>
+            <div class="numeral race-lobby__clock" role="timer" aria-label="Starts in 5 seconds">0:05</div>
+            <p class="race-lobby__hint">Keep pedalling easy. Resistance is set for the first stretch.</p>
+            <button class="race-lobby__ready" type="button" aria-pressed="true"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>You're ready</button>
+          </section>
+        </div>
+        <div class="ds-example__caption"><span>Someone left at 0:24 (notice in <code>role="status"</code>); on the line at 0:05 with You're ready pressed.</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;section aria-label="Start clock"&gt;
+  &lt;p class="race-lobby__status"&gt;Waiting for riders&lt;/p&gt;
+  &lt;div class="numeral race-lobby__clock" role="timer" aria-label="Starts in 24 seconds"&gt;0:24&lt;/div&gt;
+  &lt;p class="race-lobby__hint"&gt;6 of 10 seats taken. At 0:10 bots fill the rest so the race starts full.&lt;/p&gt;
+  &lt;button class="race-lobby__ready" type="button" aria-pressed="false"&gt;I'm ready&lt;/button&gt;
+&lt;/section&gt;</code></pre></details>
+      </div>
+
+      <h3>3-2-1</h3>
+      <p>The steps are separate renders of <code>.race-countdown__num</code>, so each one replays its entrance: a 200ms fade and settle from 125% (<code>ride.css</code>). The overlay makes the lobby behind it <code>inert</code>.</p>
+      <div class="ds-stage ride-stage--short">
+        <div class="ds-lobby"><p class="race-lobby__status">On the start line</p><div class="numeral race-lobby__clock">0:03</div><p class="race-lobby__hint">Keep pedalling easy. Resistance is set for the first stretch.</p></div>
+        <div class="race-countdown" role="timer" aria-live="assertive" aria-atomic="true"><span class="visually-hidden">Race starts in </span><span class="numeral race-countdown__num">3</span></div>
+      </div>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--canvas" style="justify-content: space-around;">
+          <span class="numeral race-countdown__num" style="font-size: var(--font-size-9xl);">2</span>
+          <span class="numeral race-countdown__num" style="font-size: var(--font-size-9xl);">1</span>
+          <span class="numeral race-countdown__num" style="font-size: var(--font-size-9xl);">Go</span>
+        </div>
+        <div class="ds-example__caption"><span>The later steps (shown at 128px here). "Go" uses the same numeral face.</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="race-countdown" role="timer" aria-live="assertive" aria-atomic="true"&gt;
+  &lt;span class="visually-hidden"&gt;Race starts in &lt;/span&gt;&lt;span class="numeral race-countdown__num"&gt;3&lt;/span&gt;
+&lt;/div&gt;</code></pre></details>
+      </div>
+
+      <h3>Starts in (Class Start)</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <div class="ride-choice__options" role="radiogroup" aria-label="Ride alone or with a group" style="margin-top: 0;">
+            <a class="ride-option" role="radio" aria-checked="true" href="#variants"><span class="ride-option__icon"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg></span><span class="ride-option__text"><span class="ride-option__title">Ride with a group</span><span class="ride-option__body">7:39 PM · starts in 9 min · 6 of 10 riders</span></span></a>
+          </div>
+          <a class="btn btn--primary btn--xl btn--block" href="#variants">Join · starts in 9 min</a>
+          <a class="btn btn--primary btn--xl btn--block" href="#variants">Join now · starting</a>
+          <a class="btn btn--primary btn--xl btn--block" href="#variants">Join the next session</a>
+        </div>
+        <div class="ds-example__caption"><span>Nine minutes out, one minute out ("Join now · starting"), and a full session ("This session is full. Next one starts 15 minutes later.").</span></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--canvas" style="align-items: flex-end;">
+          <div><small class="text-muted">3-2-1 · 200px</small><div class="numeral race-countdown__num">3</div></div>
+          <div><small class="text-muted">Lobby · 120px from 640px</small><div class="numeral race-lobby__clock">0:24</div></div>
+          <div><small class="text-muted">Interval · 36px</small><div class="numeral race-interval__left">0:29</div></div>
+        </div>
+        <div class="ds-example__caption"><span><code>--race-countdown-size</code>, <code>--race-lobby-clock-size</code> (96px, <code>--font-size-8xl</code>, on phones), <code>--font-size-4xl</code>.</span></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Part</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Disabled</th><th scope="col">Pressed / current</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Ready toggle</th>
+            <td><button class="race-lobby__ready" type="button" aria-pressed="false" style="width: 10rem;">I'm ready</button></td>
+            <td><button class="race-lobby__ready" type="button" aria-pressed="false" data-state="hover" style="width: 10rem;">I'm ready</button></td>
+            <td><button class="race-lobby__ready" type="button" aria-pressed="false" data-state="focus" style="width: 10rem;">I'm ready</button></td>
+            <td><button class="race-lobby__ready" type="button" aria-pressed="false" data-state="active" style="width: 10rem;">I'm ready</button></td>
+            <td class="ds-na-cell">Never disabled; during the 3-2-1 the whole lobby is <code>inert</code>.</td>
+            <td><button class="race-lobby__ready" type="button" aria-pressed="true" style="width: 10rem;"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>You're ready</button></td></tr>
+          <tr><th scope="row">Lobby clock</th>
+            <td><div class="numeral race-lobby__clock" style="font-size: var(--font-size-5xl);">0:24</div><span class="ds-na-cell">Waiting for riders</span></td>
+            <td class="ds-na-cell">Not interactive</td><td class="ds-na-cell">Not focusable</td><td class="ds-na-cell">—</td>
+            <td class="ds-na-cell">—</td>
+            <td><div class="numeral race-lobby__clock" style="font-size: var(--font-size-5xl);">0:08</div><span class="ds-na-cell">On the start line (bots filled)</span></td></tr>
+          <tr><th scope="row">3-2-1 step</th>
+            <td style="background: var(--color-ink);"><span class="numeral race-countdown__num" style="font-size: var(--font-size-6xl);">3</span></td>
+            <td class="ds-na-cell">—</td><td class="ds-na-cell">—</td><td class="ds-na-cell">—</td><td class="ds-na-cell">—</td>
+            <td style="background: var(--color-ink);"><span class="numeral race-countdown__num" style="font-size: var(--font-size-6xl);">Go</span><span class="ds-na-cell"> race opens</span></td></tr>
+          <tr><th scope="row">Join button</th>
+            <td><a class="btn btn--primary" href="#states">Join · starts in 9 min</a></td>
+            <td><a class="btn btn--primary" href="#states" data-state="hover">Join · starts in 9 min</a></td>
+            <td><a class="btn btn--primary" href="#states" data-state="focus">Join · starts in 9 min</a></td>
+            <td><a class="btn btn--primary" href="#states" data-state="active">Join · starts in 9 min</a></td>
+            <td><button class="btn btn--primary ride-choice__go" type="button" disabled style="margin-top: 0;">Join · starts in 9 min</button><span class="ds-na-cell">Blocked browser</span></td>
+            <td><a class="btn btn--primary" href="#states">Join now · starting</a></td></tr>
+        </tbody>
+      </table></div>
+      <h3>Both themes</h3>
+      <div class="ds-themes">
+        <div data-theme="light"><p class="race-lobby__status">On the start line</p><div class="numeral race-lobby__clock">0:05</div><button class="race-lobby__ready" type="button" aria-pressed="true"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>You're ready</button></div>
+        <div data-theme="dark"><p class="race-lobby__status">On the start line</p><div class="numeral race-lobby__clock">0:05</div><button class="race-lobby__ready" type="button" aria-pressed="true"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>You're ready</button></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <ul>
+        <li><b>360px:</b> the clock section stacks above the start grid; the clock is 96px, the ready toggle full width. The 3-2-1 numeral stays 200px: it is the only thing on screen.</li>
+        <li><b>640px:</b> the clock grows to 120px; the start grid goes two columns.</li>
+        <li><b>1024px:</b> the clock section becomes a 320px column left of the grid (<code>--race-lobby-aside-width</code>). Class Start's Join button pins to the bottom of its column.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+      <p>The 3-2-1 reads <code>--color-volt-fg</code> on <code>--color-ink</code> at 85%; the lobby clock is <code>--color-fg</code>; the ready toggle swaps <code>--color-volt</code> for <code>--color-raised</code> when pressed. In light theme the overlay is paper at 85% and the numeral turns the deep signal orange (5:1 on paper).</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <p>Clocks are <code>role="timer"</code>: a live region whose default is <code>aria-live="off"</code>, so the per-second tick is never read. The 3-2-1 is the one countdown that is announced: <code>aria-live="assertive"</code>, <code>aria-atomic="true"</code>, with the words in the region ("Race starts in 3", then "2", "1", "Go"). The ready button is an APG <a href="https://www.w3.org/WAI/ARIA/apg/patterns/button/">toggle button</a>. See WCAG <a href="https://www.w3.org/WAI/WCAG22/Understanding/timing-adjustable.html">2.2.1 Timing adjustable</a>: the lobby clock is a real-time event, an allowed exception.</p>
+      <h3>What is announced</h3>
+      <ul>
+        <li>Each 3-2-1 step, assertively.</li>
+        <li>Lobby changes politely through the page's <code>role="status"</code>: someone joining or leaving ("MarcoVelo left. Their seat is open again."), bots filling the seats at 0:10, and 10 seconds to go.</li>
+        <li>Never the clock's seconds. A rider can read the clock at any time: its accessible name is a sentence ("Starts in 24 seconds").</li>
+      </ul>
+      <h3>Keyboard</h3>
+      <div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+        <tr><td><kbd>Tab</kbd></td><td>Reaches I'm ready, then the start grid's controls. During the 3-2-1 nothing behind the overlay is reachable.</td></tr>
+        <tr><td><kbd>Enter</kbd>, <kbd>Space</kbd></td><td>Toggles ready.</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>Does not cancel the countdown; Leave in the lobby header does, until 0:03.</td></tr>
+      </tbody></table></div>
+      <h3>Focus</h3>
+      <p>Focus stays on I'm ready when it is pressed (the label changes, the button does not move). When the race opens, focus goes to the race's first control, not the page top.</p>
+      <h3>Labelling</h3>
+      <p>The toggle's label changes with its state ("I'm ready" / "You're ready") and <code>aria-pressed</code> carries the state, so a screen reader says "You're ready, toggle button, pressed". The tick icon is <code>aria-hidden</code>.</p>
+      <h3>Contrast</h3>
+      <div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+        <div class="ds-themes ds-themes--pairs"><div data-theme="light"><div class="ds-pair"><span>3-2-1 numeral on ink</span><span class="ds-pair__ratio" data-contrast="--color-volt-fg|--color-ink" data-min="3"></span></div></div><div data-theme="dark"><div class="ds-pair"><span>3-2-1 numeral on ink</span><span class="ds-pair__ratio" data-contrast="--color-volt-fg|--color-ink" data-min="3"></span></div></div></div>
+        <div class="ds-themes ds-themes--pairs"><div data-theme="light"><div class="ds-pair"><span>Lobby clock</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-ink" data-min="4.5"></span></div></div><div data-theme="dark"><div class="ds-pair"><span>Lobby clock</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-ink" data-min="4.5"></span></div></div></div>
+        <div class="ds-themes ds-themes--pairs"><div data-theme="light"><div class="ds-pair"><span>Status and hint</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-ink" data-min="4.5"></span></div></div><div data-theme="dark"><div class="ds-pair"><span>Status and hint</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-ink" data-min="4.5"></span></div></div></div>
+        <div class="ds-themes ds-themes--pairs"><div data-theme="light"><div class="ds-pair"><span>I'm ready label</span><span class="ds-pair__ratio" data-contrast="--color-on-fill|--color-volt" data-min="4.5"></span></div></div><div data-theme="dark"><div class="ds-pair"><span>I'm ready label</span><span class="ds-pair__ratio" data-contrast="--color-on-fill|--color-volt" data-min="4.5"></span></div></div></div>
+        <div class="ds-themes ds-themes--pairs"><div data-theme="light"><div class="ds-pair"><span>You're ready label</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-raised" data-min="4.5"></span></div></div><div data-theme="dark"><div class="ds-pair"><span>You're ready label</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-raised" data-min="4.5"></span></div></div></div>
+      </div>
+      <h3>Motion</h3>
+      <p>Each step fades and settles over 200ms (<code>--duration-base</code>, <code>--ease-enter</code>). Under <code>prefers-reduced-motion</code> the scale is dropped and the zeroed duration makes the step a cut; the one-second tick (<code>--duration-countdown</code>) is a timer and keeps its pace. Nothing pulses or flashes.</p>
+      <h3>Touch</h3>
+      <p>The ready toggle is 56px tall and full width. Nothing in the 3-2-1 is a target.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li>Clocks are <code>m:ss</code> ("0:24"), never "24s".</li>
+        <li>Steps are "3", "2", "1", "Go": no exclamation mark.</li>
+        <li>Starts-in times round to the minute and pair with the clock time: "7:39 PM · starts in 9 min". Under a minute: "Join now · starting".</li>
+        <li>Hints say what happens next in a sentence: "At 0:10 bots fill the rest so the race starts full." "Keep pedalling easy. Resistance is set for the first stretch."</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><code>&lt;div role="timer" aria-live="assertive" aria-atomic="true"&gt;&lt;span class="visually-hidden"&gt;Race starts in &lt;/span&gt;3&lt;/div&gt;</code></div><figcaption>Put the words inside the live region; screen readers announce content changes.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><code>&lt;div role="timer" aria-live="assertive" aria-label="Race starts in 3"&gt;&lt;span aria-hidden="true"&gt;3&lt;/span&gt;&lt;/div&gt;</code></div><figcaption>As in <code>race-lobby/countdown</code>: a changing <code>aria-label</code> over hidden content is not reliably announced.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><div class="numeral race-lobby__clock" style="font-size: var(--font-size-6xl);">0:24</div></div><figcaption>A quiet <code>role="timer"</code> clock; milestones go to the status region.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><div class="numeral race-lobby__clock" style="font-size: var(--font-size-6xl);" aria-live="polite">0:24</div></div><figcaption><code>aria-live="polite"</code> on the lobby clock reads every second for 30 seconds.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+        <tbody>
+          <tr><td>3-2-1 numeral</td><td><code>--color-volt-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-volt-fg" data-swatch></i><span data-token="--color-volt-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-volt-fg" data-swatch></i><span data-token="--color-volt-fg"></span></span></td></tr>
+          <tr><td>Overlay (85%)</td><td><code>--color-ink</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td></tr>
+          <tr><td>Lobby clock</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+          <tr><td>Status, hint</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+          <tr><td>Ready fill</td><td><code>--color-volt</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-volt" data-swatch></i><span data-token="--color-volt"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-volt" data-swatch></i><span data-token="--color-volt"></span></span></td></tr>
+          <tr><td>Ready fill, hover</td><td><code>--color-volt-hover</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-volt-hover" data-swatch></i><span data-token="--color-volt-hover"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-volt-hover" data-swatch></i><span data-token="--color-volt-hover"></span></span></td></tr>
+          <tr><td>Pressed fill</td><td><code>--color-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td></tr>
+          <tr><td>Ready label</td><td><code>--color-on-fill</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-on-fill" data-swatch></i><span data-token="--color-on-fill"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-on-fill" data-swatch></i><span data-token="--color-on-fill"></span></span></td></tr>
+          <tr><td>3-2-1 size</td><td><code>--race-countdown-size</code></td><td colspan="2"><span data-token="--race-countdown-size"></span></td></tr>
+          <tr><td>Lobby clock phone / 640px</td><td><code>--font-size-8xl</code> <code>--race-lobby-clock-size</code></td><td colspan="2"><span data-token="--font-size-8xl"></span> / <span data-token="--race-lobby-clock-size"></span></td></tr>
+          <tr><td>Ready height</td><td><code>--control-height-xl</code></td><td colspan="2"><span data-token="--control-height-xl"></span></td></tr>
+          <tr><td>Step entrance</td><td><code>--duration-base</code> <code>--ease-enter</code></td><td colspan="2"><span data-token="--duration-base"></span> / <span data-token="--ease-enter"></span></td></tr>
+          <tr><td>Tick</td><td><code>--duration-countdown</code></td><td colspan="2"><span data-token="--duration-countdown"></span></td></tr>
+          <tr><td>Layer</td><td><code>--z-overlay</code></td><td colspan="2"><span data-token="--z-overlay"></span></td></tr>
+          <tr><td>Lobby aside, hint width</td><td><code>--race-lobby-aside-width</code> <code>--race-lobby-hint-width</code></td><td colspan="2"><span data-token="--race-lobby-aside-width"></span> / <span data-token="--race-lobby-hint-width"></span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+        <tr><td><code>.race-countdown</code>, <code>.race-countdown__num</code></td><td>Full overlay and its numeral; the step animation is in <code>ride.css</code>.</td></tr>
+        <tr><td><code>.race-lobby__status</code>, <code>__clock</code>, <code>__hint</code>, <code>__notice</code></td><td>The lobby clock column.</td></tr>
+        <tr><td><code>.race-lobby__ready[aria-pressed]</code></td><td>Ready toggle.</td></tr>
+        <tr><td><code>.ride-option__body</code>, <code>.ride-choice__go</code></td><td>Starts-in copy and the Join button on Class Start.</td></tr>
+        <tr><td><code>role="timer"</code></td><td>On every clock; quiet by default.</td></tr>
+        <tr><td><code>aria-live="assertive" aria-atomic="true"</code></td><td>The 3-2-1 only.</td></tr>
+        <tr><td><code>inert</code></td><td>On the lobby while the 3-2-1 covers it.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <ul>
+        <li><a href="../../mocks/pages/race-lobby/default.html">pages/race-lobby/default</a>, <a href="../../mocks/pages/race-lobby/filling.html">filling</a>, <a href="../../mocks/pages/race-lobby/bots.html">bots</a>, <a href="../../mocks/pages/race-lobby/someone-left.html">someone-left</a>, <a href="../../mocks/pages/race-lobby/countdown.html">countdown</a></li>
+        <li><a href="../../mocks/pages/class-start/default.html">pages/class-start/default</a>, <a href="../../mocks/pages/class-start/starting-soon.html">starting-soon</a>, <a href="../../mocks/pages/class-start/full.html">full</a></li>
+      </ul>
+      <p>Drift fixed during extraction:</p>
+      <ul>
+        <li>The 3-2-1 live region put its words in <code>aria-label</code> over an <code>aria-hidden</code> numeral; the words now live in the region (visually hidden prefix).</li>
+        <li>The step entrance ("fades and scales in over 200 ms") existed only as a mock note; <code>ride.css</code> now carries it.</li>
+        <li>The mock note asks for a fade under reduced motion, but the tokens zero <code>--duration-base</code> there. The system keeps the instant cut: the step text still changes and is announced, which is what the timer needs (see <a href="../foundations/motion.html">Motion</a>).</li>
+        <li>In <code>race-lobby/someone-left</code> the notice names MarcoVelo while the last joiner (Ollie R.) is the one dropped (copied from the design, README).</li>
+      </ul>
+    </section>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
+  </main>
+</div>
+<script src="../assets/ds.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+@switch (kind()) {
+  @case ('connect') {
+    <div class="ride-overlay__card">
+      <h2 class="ride-overlay__title ride-overlay__title--connect">Connect your bike</h2>
+      <p class="ride-overlay__body ride-overlay__body--relaxed">
+        Wake the {{ bike() }} with a few pedal strokes, then pick it from the list your browser
+        shows. We’ll remember it next time.
+      </p>
+      <button
+        wz-button
+        variant="primary"
+        type="button"
+        class="ride-overlay__connect"
+        (click)="acted.emit()"
+      >
+        <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m7 7 10 10-5 5V2l5 5L7 17" />
+        </svg>
+        Connect bike
+      </button>
+      <p class="ride-overlay__hint">
+        Not in the list? Close the Echelon app on your phone — the bike talks to one device at a
+        time.
+      </p>
+    </div>
+  }
+  @case ('lost') {
+    <div class="ride-overlay__card" role="alert">
+      <svg
+        class="icon ride-overlay__icon ride-overlay__icon--alert"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path d="m17 17-5 5V12l-5 5" />
+        <path d="m2 2 20 20" />
+        <path d="M14.5 9.5 17 7l-5-5v4.5" />
+      </svg>
+      <h2 class="ride-overlay__title">Lost the bike</h2>
+      <p class="ride-overlay__body">
+        {{ lostBike() }} stopped answering. Wake it with a pedal stroke, then reconnect — your ride
+        is saved at {{ savedAt() }}.
+      </p>
+      <button
+        wz-button
+        variant="primary"
+        type="button"
+        class="ride-overlay__action"
+        (click)="acted.emit()"
+      >
+        Reconnect
+      </button>
+    </div>
+  }
+  @case ('bluetooth-off') {
+    <div class="ride-overlay__card" role="alert">
+      <svg
+        class="icon ride-overlay__icon ride-overlay__icon--warn"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path d="m17 17-5 5V12l-5 5" />
+        <path d="m2 2 20 20" />
+        <path d="M14.5 9.5 17 7l-5-5v4.5" />
+      </svg>
+      <h2 class="ride-overlay__title">Turn on Bluetooth</h2>
+      <p class="ride-overlay__body ride-overlay__body--relaxed">
+        Your browser can’t see a Bluetooth radio. Switch it on in your computer’s settings — or, if
+        this machine has none, plug in a USB Bluetooth adapter.
+      </p>
+      <button
+        wz-button
+        variant="raised"
+        type="button"
+        class="ride-overlay__action"
+        (click)="acted.emit()"
+      >
+        Check again
+      </button>
+    </div>
+  }
+}

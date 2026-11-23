@@ -1,0 +1,20 @@
+<div class="class-lost" role="alert" aria-labelledby="class-lost-title">
+  <div class="class-lost__card">
+    <svg class="class-lost__icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="m17 17-5 5V12l-5 5" />
+      <path d="m2 2 20 20" />
+      <path d="M14.5 9.5 17 7l-5-5v4.5" />
+    </svg>
+    <h2 class="class-lost__title" id="class-lost-title">Lost the bike</h2>
+    <p class="class-lost__body">{{ body() }}</p>
+    <button
+      wz-button
+      variant="primary"
+      type="button"
+      class="class-lost__action"
+      (click)="reconnect.emit()"
+    >
+      Reconnect
+    </button>
+  </div>
+</div>

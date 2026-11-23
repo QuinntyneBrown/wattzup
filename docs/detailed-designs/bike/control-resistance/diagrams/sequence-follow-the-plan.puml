@@ -1,0 +1,52 @@
+@startuml
+title UML sequence behaviour — Follow the plan
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "RideClock" as clock
+  participant "WorkoutEngine" as engine
+  participant "ResistanceController" as ctrl
+  participant "SentToBikeLog" as sent
+  participant "WebBluetoothBikeConnection" as conn
+  participant "EchelonProtocol" as proto
+  participant "BikeTelemetry" as tele
+end box
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "CustomRidePage" as page
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "Bike GATT server" as bike
+end box
+clock -> engine : running second crosses a segment boundary
+engine -> ctrl : segmentStarted(level 12)
+ctrl -> ctrl : clamp to 1..32, source = Plan; any manual level ends (L2-028 AC3)
+ctrl -> conn : setResistance(12) within 500 ms of the boundary (L2-027 AC1)
+alt Echelon
+  conn -> proto : setResistance(12)
+  proto --> conn : F0 B1 01 0C AE (L2-025 AC1)
+  conn -> bike : writeValueWithResponse on 0bf669f2-…
+else FTMS with control
+  conn -> bike : Set Target Resistance Level, mapped by L2-014 AC4 (L2-025 AC3)
+end
+bike --> conn : Acknowledged
+conn --> ctrl : ack 34 ms (L2-025 AC4)
+ctrl -> sent : add({5:30, 12, plan, 34})
+sent --> page : New row at the top of "Sent to bike"; beyond 50, oldest dropped from view (L2-029)
+bike -> tele : D2 resistance 6
+tele --> page : Readout "6 / of 32" within one second; target stays the plan's level (L2-026)
+opt ride paused
+  clock -> clock : no running seconds: no segment change, no command (L2-027 AC3)
+end
+@enduml

@@ -1,0 +1,67 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+hide empty members
+title Class structure — Check this device
+interface DeviceCheck <<api>> {
+  +run(options: DeviceCheckOptions): Promise<DeviceCheckOutcome | null>
+}
+class DeviceCheckOptions <<api>> {
+  +levels: WorldTier[]
+  +forceWebGL: boolean
+  +progress(p: DeviceCheckProgress): void
+  +signal: AbortSignal
+}
+class DeviceCheckProgress <<api>> {
+  +level: WorldTier
+  +secondsLeft: number
+  +percent: number
+  +tried: DeviceCheckTrial[]
+}
+class DeviceCheckOutcome <<api>> {
+  +level: WorldTier
+  +displayFps: number
+  +tried: DeviceCheckTrial[]
+}
+class DeviceCheckResult <<api>> {
+  +checkedAt: string
+}
+class DeviceCheckTrial <<api>> {
+  +level: WorldTier
+  +fps: number
+}
+class WorldDeviceCheck <<world>> {
+  -trial: number
+  +run(options): Promise<DeviceCheckOutcome | null>
+}
+class DeviceCheckStore <<ride>> {
+  +progress: Signal<DeviceCheckProgress | null>
+  +running: Signal<boolean>
+  +start(): Promise<void>
+  +stop(): void
+}
+class "DeviceCheck (component)" as DeviceCheckView <<components>> {
+  +running: InputSignal<DeviceCheckRunningView | null>
+  +result: InputSignal<DeviceCheckResultView | null>
+  +disabled: InputSignal<boolean>
+  +checkStarted, checkStopped
+}
+DeviceCheck <|.. WorldDeviceCheck
+DeviceCheckOutcome <|-- DeviceCheckResult
+DeviceCheckOutcome *-- DeviceCheckTrial
+DeviceCheckStore ..> DeviceCheck : DEVICE_CHECK loader
+DeviceCheckStore ..> DeviceCheckResult : RIDE_SETTINGS.set('deviceCheck')
+DeviceCheck ..> DeviceCheckOptions
+DeviceCheckOptions ..> DeviceCheckProgress
+DeviceCheckView ..> DeviceCheckStore : via SettingsPage
+@enduml

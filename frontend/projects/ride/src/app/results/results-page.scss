@@ -1,0 +1,106 @@
+@use '../../styles/page';
+
+// Block results (docs/design-system/assets/components.css, Results): the header over the scrolling page; one column on
+// a phone and, from lg, the result beside what was earned, with the actions at the bottom.
+.results-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--color-ink);
+  color: var(--color-fg);
+}
+
+.results-page__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.results {
+  display: grid;
+  gap: var(--space-10);
+  padding-block: var(--space-6);
+
+  &:focus {
+    outline: none; // focused by the skip link, never by a pointer
+  }
+
+  @media (min-width: 64rem) {
+    grid-template-columns: minmax(0, 1fr) var(--results-aside-width);
+    gap: var(--space-14);
+    padding-block: var(--space-10);
+  }
+}
+
+.results__lead {
+  color: var(--color-muted);
+}
+
+.results__place {
+  margin-top: var(--space-1);
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.results__big {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-8xl);
+  line-height: var(--line-height-none);
+
+  @media (min-width: 40rem) {
+    font-size: var(--font-size-9xl);
+  }
+}
+
+.results__big--podium {
+  color: var(--color-volt-fg);
+}
+
+.results__of {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-3xl);
+  color: var(--color-muted);
+}
+
+.results__sub {
+  margin-top: var(--space-2);
+  color: var(--color-muted);
+}
+
+.earned {
+  display: flex;
+  flex-direction: column;
+}
+
+.results__actions {
+  margin-top: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  // From lg at the bottom of the column, 32 px from the panels when the column is short.
+  @media (min-width: 64rem) {
+    margin-top: auto;
+    padding-top: var(--space-8);
+  }
+}
+
+.results__again {
+  height: var(--control-height-lg);
+  border-radius: var(--radius-xl);
+  color: var(--color-muted);
+
+  &:hover {
+    background: var(--color-raised);
+    color: var(--color-fg);
+  }
+}

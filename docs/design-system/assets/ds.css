@@ -8,16 +8,17 @@ html { scroll-behavior: smooth; scroll-padding-top: var(--space-8); }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body { margin: 0; font: var(--text-body); color: var(--color-fg-default); background: var(--color-bg-canvas); -webkit-font-smoothing: antialiased; }
 h1, h2, h3, h4, p, ul, ol, figure, dl { margin: 0; }
-a { color: var(--color-fg-link); text-decoration: underline; text-underline-offset: 0.15em; }
-a:hover { color: var(--color-fg-link-hover); }
+/* Prose links only: component links (.btn, .more-link, .app-header__nav-link…) keep their own styling */
+a:not([class]):where(:not(:is(.ds-example, .ds-themes, .ds-matrix, .ds-stage) a)) { color: var(--color-fg-link); text-decoration: underline; text-underline-offset: 0.15em; }
+a:not([class]):where(:not(:is(.ds-example, .ds-themes, .ds-matrix, .ds-stage) a)):hover { color: var(--color-fg-link-hover); }
 code, pre, kbd { font: var(--text-code); }
 code { background: var(--color-bg-subtle); padding: 0.1em 0.35em; border-radius: var(--radius-sm); }
 pre { background: var(--color-bg-surface-sunken); border: 1px solid var(--color-border-default); border-radius: var(--radius-md); padding: var(--space-4); overflow: auto; }
 pre code { background: none; padding: 0; }
 :focus-visible { outline: var(--focus-ring-width) solid var(--color-focus-ring); outline-offset: var(--focus-ring-offset); }
 .visually-hidden { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-.skip-link { position: absolute; left: var(--space-4); top: -100px; z-index: var(--z-tooltip); padding: var(--space-2) var(--space-4); background: var(--color-bg-surface-raised); border-radius: var(--radius-md); box-shadow: var(--shadow-3); }
-.skip-link:focus-visible { top: var(--space-4); }
+.ds-skip { position: absolute; left: var(--space-4); top: -100px; z-index: var(--z-tooltip); padding: var(--space-2) var(--space-4); background: var(--color-bg-surface-raised); border-radius: var(--radius-md); box-shadow: var(--shadow-3); }
+.ds-skip:focus-visible { top: var(--space-4); }
 
 /* Shell: sidebar + content */
 .ds-shell { display: grid; grid-template-columns: minmax(0, 1fr); min-height: 100dvh; }
@@ -53,6 +54,9 @@ pre code { background: none; padding: 0; }
 .ds-section > h2 a:hover::after { content: " #"; color: var(--color-fg-subtle); }
 .ds-section > p, .ds-section > ul, .ds-section > ol { max-width: var(--layout-measure); margin-bottom: var(--space-4); }
 .ds-section > ul, .ds-section > ol { padding-left: var(--space-6); }
+/* components.css resets list-style for product lists; documentation prose keeps its markers */
+.ds-section > ul, .ds-section li > ul { list-style: disc; }
+.ds-section > ol, .ds-section li > ol { list-style: decimal; }
 .ds-section li + li { margin-top: var(--space-1); }
 .ds-section h3 { font: var(--text-h4); margin: var(--space-6) 0 var(--space-3); }
 .ds-section[data-na] > *:not(h2):not(.ds-na) { display: none; }
@@ -75,7 +79,7 @@ pre code { background: none; padding: 0; }
 .ds-themes > [data-theme]::before { content: attr(data-theme) " theme"; display: block; font: var(--text-overline); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-fg-subtle); margin-bottom: var(--space-4); }
 
 /* State matrix: variants down, states across */
-.ds-matrix { overflow-x: auto; margin-block: var(--space-4); }
+.ds-matrix { position: relative; overflow-x: auto; margin-block: var(--space-4); }
 .ds-matrix table { border-collapse: collapse; min-width: 100%; }
 .ds-matrix th { font: var(--text-overline); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-fg-subtle); text-align: left; padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--color-border-default); white-space: nowrap; }
 .ds-matrix th[scope="row"] { font: var(--text-label); text-transform: none; letter-spacing: 0; color: var(--color-fg-default); border-bottom: 0; border-right: 1px solid var(--color-border-default); }
@@ -85,7 +89,7 @@ pre code { background: none; padding: 0; }
 /* Anatomy */
 .ds-anatomy { display: grid; gap: var(--space-6); grid-template-columns: minmax(0, 1fr); margin-block: var(--space-4); }
 @media (min-width: 48rem) { .ds-anatomy { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: start; } }
-.ds-anatomy__figure { position: relative; min-width: 0; overflow-x: auto; padding: var(--space-10) var(--space-8); background: var(--color-bg-surface); border: 1px dashed var(--color-border-strong); border-radius: var(--radius-lg); display: grid; place-items: center; }
+.ds-anatomy__figure { position: relative; padding: var(--space-10) var(--space-8); background: var(--color-bg-surface); border: 1px dashed var(--color-border-strong); border-radius: var(--radius-lg); display: grid; place-items: center; }
 .ds-callout { position: absolute; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--color-accent); color: var(--color-fg-on-accent); font: var(--text-overline); display: grid; place-items: center; box-shadow: 0 0 0 2px var(--color-bg-surface); }
 .ds-anatomy__list { counter-reset: part; list-style: none; padding: 0; margin: 0; }
 .ds-anatomy__list li { display: flex; gap: var(--space-3); padding-block: var(--space-2); border-bottom: 1px solid var(--color-border-default); }
@@ -99,7 +103,7 @@ pre code { background: none; padding: 0; }
 .ds-table th { background: var(--color-bg-surface-sunken); font: var(--text-label); color: var(--color-fg-muted); }
 .ds-table tr:last-child td { border-bottom: 0; }
 .ds-table code { white-space: nowrap; }
-.ds-table-wrap { overflow-x: auto; }
+.ds-table-wrap { position: relative; overflow-x: auto; }
 .ds-swatch-cell { display: inline-flex; align-items: center; gap: var(--space-2); }
 .ds-swatch-cell i { width: 1rem; height: 1rem; border-radius: var(--radius-xs); border: 1px solid var(--color-border-default); background: var(--swatch, transparent); flex: none; }
 .ds-copy { font: var(--text-caption); border: 1px solid var(--color-border-default); background: var(--color-bg-surface); color: var(--color-fg-muted); border-radius: var(--radius-sm); padding: 0 var(--space-1); cursor: pointer; min-height: var(--target-min); }
@@ -114,7 +118,7 @@ pre code { background: none; padding: 0; }
 .ds-swatch__value { color: var(--color-fg-muted); font-family: var(--font-family-mono); }
 .ds-ramp { display: flex; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--color-border-default); margin-block: var(--space-3); }
 .ds-ramp span { flex: 1; height: 3rem; background: var(--swatch); position: relative; }
-.ds-ramp span::after { content: attr(data-step); position: absolute; left: 0; right: 0; bottom: 2px; text-align: center; font: var(--text-caption); font-size: 10px; mix-blend-mode: difference; color: var(--color-fg-inverse); }
+.ds-ramp span::after { content: attr(data-step); position: absolute; left: 50%; bottom: var(--space-1); translate: -50% 0; max-width: calc(100% - var(--space-1)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 var(--space-1); border-radius: var(--radius-sm); font: var(--text-caption); font-size: 10px; background: var(--palette-ink); color: var(--palette-white); }
 .ds-pair { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); border-radius: var(--radius-md); border: 1px solid var(--color-border-default); background: var(--pair-bg); color: var(--pair-fg); }
 .ds-pair__ratio { margin-left: auto; font: var(--text-label); padding: 0 var(--space-2); border-radius: var(--radius-full); background: var(--color-bg-surface); color: var(--color-fg-default); }
 .ds-pair__ratio[data-pass="false"] { background: var(--color-danger-bg); color: var(--color-danger-fg); }
@@ -135,7 +139,7 @@ pre code { background: none; padding: 0; }
 .ds-motion-demo { display: flex; gap: var(--space-4); flex-wrap: wrap; }
 .ds-motion-demo button { min-height: var(--target-comfortable); }
 .ds-motion-demo .dot { width: 2rem; height: 2rem; border-radius: 50%; background: var(--color-accent); transition: translate var(--demo-duration, var(--duration-base)) var(--demo-ease, var(--ease-standard)); }
-.ds-motion-demo [data-run="true"] .dot { translate: 6rem 0; }
+.ds-motion-demo[data-run="true"] .dot { translate: 6rem 0; }
 
 /* Do / Don't */
 .ds-dodont { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); margin-block: var(--space-4); }
@@ -151,8 +155,8 @@ pre code { background: none; padding: 0; }
 
 /* Checklist */
 .ds-checklist { list-style: none; padding: 0; }
-.ds-checklist li { display: flex; gap: var(--space-2); align-items: flex-start; padding-block: var(--space-1); }
-.ds-checklist li::before { content: "✓"; color: var(--color-success-fg); font-weight: var(--font-weight-bold); flex: none; }
+.ds-checklist li { position: relative; padding-block: var(--space-1); padding-left: var(--space-6); }
+.ds-checklist li::before { content: "✓"; position: absolute; left: 0; color: var(--color-success-fg); font-weight: var(--font-weight-bold); }
 
 /* Theme toggle in nav */
 .ds-theme-toggle { font: var(--text-label); padding: var(--space-1) var(--space-3); min-height: var(--target-min); border-radius: var(--radius-full); border: 1px solid var(--color-border-strong); background: var(--color-bg-surface); color: var(--color-fg-default); cursor: pointer; }
@@ -168,3 +172,13 @@ pre code { background: none; padding: 0; }
 .ds-card span { color: var(--color-fg-muted); font: var(--text-body-sm); }
 .ds-card__preview { height: 4.5rem; display: grid; place-items: center; background: var(--color-bg-canvas); border-radius: var(--radius-md); margin-bottom: var(--space-3); overflow: hidden; }
 @media print { .ds-nav, .ds-theme-toggle, .ds-copy { display: none !important; } .ds-shell { display: block; } }
+
+/* Stage: a frame that contains fixed-position components (dialog, scrim, toast region, HUD)
+   so they render inside the example instead of over the docs page. transform makes it the
+   containing block for position: fixed descendants. */
+.ds-stage { position: relative; transform: translateZ(0); overflow: hidden; min-height: 22rem; background: var(--color-bg-canvas); border: 1px solid var(--color-border-default); border-radius: var(--radius-lg); margin-block: var(--space-4); }
+.ds-stage--tall { min-height: 32rem; }
+.ds-stage--phone { max-width: 22.5rem; margin-inline: auto; }
+.ds-stage__page { padding: var(--space-6); color: var(--color-fg-muted); }
+/* Photo canvas: shows components meant to sit on photos and video */
+.ds-example__canvas--photo { background: var(--color-video) center / cover no-repeat; background-image: var(--photo); min-height: 12rem; }

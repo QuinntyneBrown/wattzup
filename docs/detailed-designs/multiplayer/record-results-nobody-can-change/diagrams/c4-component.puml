@@ -1,0 +1,27 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Record results nobody can change
+
+Container_Boundary(app, "Ride app") {
+  Component(outbox, "RideOutbox", "Service · domain/storage", "Rides waiting to send")
+  Component(rides, "HttpRidesApi", "HTTP client · api", "RidesApi")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(ctrl, "RidesController", "Controller · Telo.Ride.Api", "POST /api/rides")
+  Component(submit, "SubmitRideCommandHandler", "MediatR handler · Telo.Ride.Application", "Idempotency, plausibility, authority")
+  Component(rule, "RidePlausibilityRule", "Domain service · Telo.Ride.Domain", "2,000 W, 100 km/h, 5 %, minimum finish time")
+  Component(tick, "TickLiveSessionsCommandHandler", "MediatR handler · Telo.Ride.Application", "Ends sessions when due")
+  Component(recorder, "SessionResultRecorder", "Application service · Telo.Ride.Application", "Builds results from live progress")
+  Component(result, "SessionResult", "Domain entity · Telo.Ride.Domain", "Place, time, output per rider")
+  ComponentDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Rides and session results")
+}
+Rel(outbox, rides, "submit(ride)")
+Rel(rides, ctrl, "POST /api/rides", "JSON/HTTPS")
+Rel(ctrl, submit, "Sends SubmitRideCommand")
+Rel(submit, rule, "Check(ride, map)")
+Rel(submit, db, "Reads ride by id and session entry; saves ride", "IAppDbContext")
+Rel(tick, recorder, "Record(session)")
+Rel(recorder, result, "Creates")
+Rel(recorder, db, "Saves", "IAppDbContext")
+@enduml

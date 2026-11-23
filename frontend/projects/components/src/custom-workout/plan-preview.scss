@@ -1,0 +1,129 @@
+// Block plan-preview (docs/design-system/assets/components.css): "Your ride" under the settings, beside them from lg.
+:host {
+  display: flex;
+  flex-direction: column;
+  border-top: var(--border-width-hairline) solid var(--color-line);
+  background: var(--color-panel);
+  padding: var(--space-8) var(--space-5);
+}
+
+@media (min-width: 64rem) {
+  :host {
+    overflow-y: auto;
+    border-top: 0;
+    border-left: var(--border-width-hairline) solid var(--color-line);
+    padding-inline: var(--space-8);
+  }
+}
+
+.plan-preview__label {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-muted);
+}
+
+.plan-preview__total {
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-6xl);
+  line-height: var(--line-height-none);
+}
+
+.plan-preview__chart {
+  margin-top: var(--space-6);
+}
+
+.plan-preview__axis {
+  margin-top: var(--space-2);
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-2xs);
+  line-height: var(--line-height-normal);
+  color: var(--color-faint);
+}
+
+.plan-preview__facts {
+  margin: var(--space-8) 0 0;
+  display: grid;
+  row-gap: var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.plan-preview__fact {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+
+  dt {
+    color: var(--color-muted);
+  }
+
+  dd {
+    margin: 0;
+    font-weight: var(--font-weight-medium);
+    white-space: nowrap;
+  }
+}
+
+.plan-preview__foot {
+  margin-top: var(--space-8);
+}
+
+@media (min-width: 64rem) {
+  .plan-preview__foot {
+    margin-top: auto;
+    padding-top: var(--space-8);
+  }
+}
+
+.plan-preview__legend {
+  margin-bottom: var(--space-3);
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--space-4);
+  row-gap: var(--space-1);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-faint);
+}
+
+.plan-preview__legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+}
+
+.kind-swatch {
+  display: inline-block;
+  flex-shrink: 0;
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-volt);
+}
+
+.kind-swatch--rest {
+  background: var(--color-rest);
+}
+
+// Start ride (h-14 rounded-xl bg-volt); off, raised and faint rather than faded.
+.plan-preview__start:disabled {
+  opacity: 1;
+  background: var(--color-raised);
+  color: var(--color-faint);
+}
+
+.plan-preview__blocked {
+  margin: var(--space-2) 0 0;
+  text-align: center;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-muted);
+}

@@ -1,0 +1,95 @@
+// Block race-interval (docs/design-system/assets/components.css, Race). The segment's kind sets its colour, which the
+// swatch and the bar share; the name carries the kind, so colour is never alone.
+:host {
+  display: block;
+}
+
+.race-interval {
+  --kind: var(--race-segment-easy);
+
+  height: 100%;
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--color-ink) 70%, transparent);
+  backdrop-filter: blur(12px);
+  padding: var(--space-3) var(--space-4);
+}
+
+.race-interval--work,
+.race-interval--steady {
+  --kind: var(--color-volt);
+}
+
+.race-interval--recover {
+  --kind: var(--color-rest);
+}
+
+.race-interval__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.race-interval__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+}
+
+.race-interval__swatch {
+  width: var(--space-2-5);
+  height: var(--space-2-5);
+  border-radius: var(--radius-xs);
+  background: var(--kind);
+}
+
+.race-interval__round {
+  font-weight: var(--font-weight-regular);
+  color: var(--color-muted);
+}
+
+.race-interval__left {
+  font-size: var(--font-size-4xl);
+  line-height: var(--line-height-4xl);
+}
+
+.race-interval__track {
+  display: block;
+  width: 100%;
+  margin-top: var(--space-2);
+  height: var(--space-1-5);
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-fg) 10%, transparent);
+}
+
+.race-interval__fill {
+  fill: var(--kind);
+  // The bar eases to each second's place in four steps, not continuously. It moves less than a pixel a second
+  // (an interval is 30 seconds to five minutes across some 300 px), so the eye sees the same bar; but a continuous
+  // transition of a width is worked out, laid out and painted on every frame the display shows, which on a slow
+  // processor cost a fifth of each frame of the race (docs/screenshots/courses/low-power/README.md).
+  transition: width var(--duration-countdown) steps(4, end);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.race-interval__next {
+  margin-top: var(--space-2);
+  overflow: hidden;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-muted);
+}
+
+.race-interval__next-name {
+  color: var(--color-fg);
+}

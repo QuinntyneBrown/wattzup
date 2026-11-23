@@ -1,0 +1,30 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Pause, leave or lose the bike in a race
+Person(rider, "Rider", "Rides a smart bike at home")
+Container_Boundary(app, "Ride app") {
+  Component(page, "RacePage", "Angular page · ride", "Top bar actions")
+  Component(store, "RaceStore", "Route-scoped signal store · ride", "pause, resume, end, leave; watches ble")
+  Component(overlays, "RacePaused / RaceLost / RaceBar / RaceResist", "Presentation components · components", "Overlay, alert and disabled controls")
+  Component(engine, "RaceEngine", "Service · domain/engine", "Holds or coasts the race")
+  Component(coast, "CoastPolicy", "Service · domain/engine", "15 s decay, DNF or park")
+  Component(clock, "RideClock", "Service · domain/engine", "Pause and resume")
+  Component(conn, "BikeConnection", "Service · domain/bluetooth", "ble state, reconnect()")
+  Component(session, "RaceSessionStore", "Route-scoped store · ride", "LeaveSession")
+  Component(wstore, "RaceWorldStore", "Route-scoped store · ride", "Holds the frame still")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(ridehub, "RideHub", "SignalR hub · Telo.Ride.Api", "Marks DNF for everyone")
+}
+Rel(rider, page, "Presses")
+Rel(page, store, "Calls")
+Rel(page, overlays, "Renders")
+Rel(store, engine, "pause, resume, bikeLost, bikeBack")
+Rel(store, clock, "pause, resume")
+Rel(engine, coast, "Uses")
+Rel(store, conn, "Watches ble, reconnect()")
+Rel(store, session, "leave()")
+Rel(store, wstore, "Freeze or continue")
+Rel(session, ridehub, "LeaveSession", "SignalR")
+@enduml

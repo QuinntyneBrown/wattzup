@@ -1,0 +1,138 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+set separator none
+' --------------------------
+title Class structure — Send feedback
+
+package "ride application" {
+  class CustomRidePage {
+    -dialog: Dialog
+    -overlay: Overlay
+    #feedbackOpen: WritableSignal<boolean>
+    #openFeedback(anchor: HTMLElement): Promise<void>
+  }
+  class CustomRideStore {
+    +view: WritableSignal<'video' | 'chart'>
+    +openFeedback(): FeedbackContext
+  }
+  class "rideFeedbackContext()" as RideFeedbackContext <<function>> {
+    +(input: RideFeedbackInput): FeedbackContext
+  }
+  class "openFeedback()" as OpenFeedback <<function>> {
+    +(dialog, overlay, injector, anchor, context): Promise<FeedbackDialogHandle>
+  }
+  class FeedbackDialog {
+    #store: FeedbackStore
+    #context: FeedbackContext
+    -dialogRef: DialogRef
+  }
+  class FeedbackStore {
+    +kind: WritableSignal<FeedbackKind>
+    +message: WritableSignal<string>
+    +attachDiagnostics: WritableSignal<boolean>
+    +status: WritableSignal<FeedbackStatus>
+    +copy: Signal<FeedbackKindCopy>
+    +tooLong: Signal<boolean>
+    +canSend: Signal<boolean>
+    +send(context: FeedbackContext): Promise<void>
+    +sendAnother(): void
+  }
+  class FeedbackKindCopy {
+    +name: string
+    +field: string
+    +placeholder: string
+    +send: string
+    +thanks: string
+    +followUp: string
+  }
+  enum FeedbackStatus {
+    editing
+    sending
+    sent
+    failed
+  }
+}
+package "components library" {
+  class FeedbackForm {
+    +kind: InputSignal<FeedbackKind>
+    +copy: InputSignal<FeedbackFormCopy>
+    +message: InputSignal<string>
+    +attachDiagnostics: InputSignal<boolean>
+    +context: InputSignal<FeedbackContext>
+    +status: InputSignal<FeedbackFormStatus>
+    +canSend: InputSignal<boolean>
+    +maxLength: InputSignal<number>
+    +kindChanged: OutputEmitterRef<FeedbackKind>
+    +messageChanged: OutputEmitterRef<string>
+    +attachChanged: OutputEmitterRef<boolean>
+    +sendRequested: OutputEmitterRef<void>
+    +anotherRequested: OutputEmitterRef<void>
+    +dismissed: OutputEmitterRef<void>
+  }
+  class FeedbackContextDetails {
+    +context: InputSignal<FeedbackContext>
+    +disabled: InputSignal<boolean>
+  }
+}
+package "api library" {
+  interface FeedbackApi {
+    +send(request: FeedbackRequest): Observable<void>
+  }
+  class HttpFeedbackApi
+  class FeedbackRequest {
+    +kind: FeedbackKind
+    +message: string
+    +context: FeedbackFact[]
+    +diagnostics: FeedbackDiagnostics | null
+  }
+  class FeedbackDiagnostics {
+    +appVersion: string
+    +packetLog: string
+  }
+  class FeedbackContext {
+    +screen: string
+    +summary: string
+    +facts: FeedbackFact[]
+  }
+  class FeedbackFact {
+    +term: string
+    +value: string
+  }
+  enum FeedbackKind {
+    bug
+    improvement
+    kudos
+  }
+  interface PacketLog {
+    +tail(maxBytes: number): string
+  }
+}
+
+CustomRidePage ..> CustomRideStore : openFeedback()
+CustomRidePage ..> OpenFeedback
+CustomRideStore ..> RideFeedbackContext
+OpenFeedback ..> FeedbackDialog : imports, opens
+FeedbackDialog *-- FeedbackStore : provides
+FeedbackDialog ..> FeedbackForm : renders
+FeedbackForm ..> FeedbackContextDetails : renders
+FeedbackStore --> FeedbackStatus
+FeedbackStore ..> FeedbackKindCopy : FEEDBACK_KIND_COPY
+FeedbackStore ..> FeedbackApi : FEEDBACK_API
+FeedbackStore ..> PacketLog : PACKET_LOG
+HttpFeedbackApi ..|> FeedbackApi
+FeedbackApi ..> FeedbackRequest
+FeedbackContext *-- FeedbackFact
+FeedbackRequest *-- FeedbackFact
+FeedbackRequest *-- "0..1" FeedbackDiagnostics
+FeedbackRequest --> FeedbackKind
+@enduml

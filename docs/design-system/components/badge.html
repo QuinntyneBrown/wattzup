@@ -3,17 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Badge — Wattzup design system</title>
-<meta name="description" content="Small status label: Paused.">
+<title>Badge — Telo Ride design system</title>
+<meta name="description" content="Badges are short status labels in a capsule: neutral, gold, volt, heart, rest, ok and warn tones, counts and live dots.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Page-only: docs chrome links (ds.css a) must not restyle product links inside specimens */
+:where(.ds-example__canvas, .ds-themes, .ds-matrix, .ds-anatomy__figure) a { color: inherit; text-decoration: none; }
+:where(.ds-example__canvas, .ds-themes, .ds-matrix, .ds-anatomy__figure) a:hover { color: inherit; }
+/* Visually hidden text inside a scrolling matrix must not widen the page */
+.ds-matrix { position: relative; }
+.ds-themes + p, .ds-themes + ul { margin-top: var(--space-4); }
+/* Product tables shown inside the state matrix keep their own cell styles */
+.ds-matrix td :is(.table, .map-table) :is(th, td) { padding: var(--table-cell-py, var(--space-2-5)) var(--table-cell-px, 0); background: transparent; border-right: 0; border-top: 0; font: inherit; text-transform: none; letter-spacing: normal; color: inherit; white-space: nowrap; }
+.ds-matrix td :is(.table) thead th { font-size: var(--font-size-xs); line-height: var(--line-height-xs); font-weight: var(--font-weight-semibold); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-muted); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +39,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,70 +93,271 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
-      <p class="ds-kicker">Component · Ride data</p>
+      <p class="ds-kicker">Component · Data display</p>
       <h1>Badge</h1>
-      <p class="ds-lead">Badges label a status in a few letters: Paused in the app bar.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span></div>
+      <p class="ds-lead">A word or two of status in a capsule: New best, Connected, Beta. Colour follows Telo Ride's meanings, and the words always carry them.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
       <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>Dot + uppercase overline. Not interactive. Four tones plus neutral.</p>
-    </section>
-    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
-<div class="ds-anatomy"><figure class="ds-anatomy__figure"><span class="badge badge--warning">Paused</span><span class="ds-callout" style="left: 15%; top: 50%;" aria-hidden="true">1</span><span class="ds-callout" style="left: 60%; top: 50%;" aria-hidden="true">2</span></figure><ol class="ds-anatomy__list"><li><div><b>Dot</b><small>6px, current colour.</small></div></li><li><div><b>Text</b><small>Overline, wide tracking.</small></div></li></ol></div>
-    </section>
-    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
-<div class="ds-example"><div class="ds-example__canvas "><span class="badge">Idle</span><span class="badge badge--info">Simulated</span><span class="badge badge--success">Live</span><span class="badge badge--warning">Paused</span><span class="badge badge--danger">Off</span></div><div class="ds-example__caption"><span>Neutral, info, success, warning, danger.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;span class="badge"&gt;Idle&lt;/span&gt;
-&lt;span class="badge badge--info"&gt;Simulated&lt;/span&gt;
-&lt;span class="badge badge--success"&gt;Live&lt;/span&gt;
-&lt;span class="badge badge--warning"&gt;Paused&lt;/span&gt;
-&lt;span class="badge badge--danger"&gt;Off&lt;/span&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="sizes" data-na="One size (22px)."><h2><a href="#sizes">Sizes</a></h2>
-      <p class="ds-na">One size (22px).</p>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<div class="ds-matrix"><table><thead><tr><th scope="col">Variant</th><th scope="col">Example</th></tr></thead><tbody><tr><th scope="row">Tones</th><td><span class="badge badge--warning">Paused</span></td></tr></tbody></table></div><h3>Both themes</h3><div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas"><span class="badge badge--warning">Paused</span><span class="badge badge--success">Live</span></div></div><div data-theme="dark"><div class="ds-example__canvas"><span class="badge badge--warning">Paused</span><span class="badge badge--success">Live</span></div></div></div>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
-<ul><li>Never wraps.</li></ul>
-    </section>
-    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
-<p><code>--badge-bg</code>/<code>--badge-fg</code> alias status tokens.</p>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<h3>Role and pattern</h3><p>Text in a <code>&lt;span&gt;</code>.</p><h3>Keyboard</h3><div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody><tr><td>—</td><td>Not focusable; read in document order.</td></tr></tbody></table></div><h3>Focus</h3><p>Not focusable.</p><h3>Labelling</h3><p>The word carries the meaning.</p><h3>Contrast</h3><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-pair"><span>Warning</span><span class="ds-pair__ratio" data-contrast="--color-warning-fg|--color-warning-bg" data-min="4.5"></span></div><div class="ds-pair"><span>Success</span><span class="ds-pair__ratio" data-contrast="--color-success-fg|--color-success-bg" data-min="4.5"></span></div><div class="ds-pair"><span>Info</span><span class="ds-pair__ratio" data-contrast="--color-info-fg|--color-info-bg" data-min="4.5"></span></div><div class="ds-pair"><span>Danger</span><span class="ds-pair__ratio" data-contrast="--color-danger-fg|--color-danger-bg" data-min="4.5"></span></div></div><h3>Motion</h3><p>None.</p><h3>Touch</h3><p>Not interactive.</p>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>One word.</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><span class="badge badge--warning">Paused</span></div><figcaption>One word.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><span class="badge badge--warning">The ride is paused right now</span></div><figcaption>A sentence in a badge.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
-<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Warning</td><td><code>--color-warning-bg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-warning-bg" data-swatch></i><span data-token="--color-warning-bg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-warning-bg" data-swatch></i><span data-token="--color-warning-bg"></span></span></td></tr><tr><td>Height</td><td><code>--font-size-xs</code></td><td colspan="2"><span data-token="--font-size-xs"></span></td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
-<pre><code>&lt;span class="badge badge--warning"&gt;Paused&lt;/span&gt;</code></pre><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.badge--info/--success/--warning/--danger</code></td><td>Tone.</td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from these mocks:</p><ul><li><a href="../../mocks/pages/ride/paused.html">pages/ride/paused</a> (Paused)</li></ul><p>Drift fixed during extraction: none.</p>
+<p>A badge is a short status label in a capsule: "New best", "Connected", "Beta". It is the kit's <code>.pill</code> (from <code>docs/mocks/assets/ui.css</code>) with five tones (gold, volt, heart, rest, ok) plus neutral; this page adds a warn tone, a count style and a leading dot. The mocks do not place a pill on any screen yet; the places that say the same things today are plain coloured text (Connect Bike's "Beta" in warn, Results' "+1 new star" in gold, Diagnostics' volt "Recording" with a dot), and those are what a badge replaces when a status needs to stand out in a row or card.</p>
+<ul>
+<li>Badges are not buttons; for something to press, use a <a href="chip.html">chip</a>.</li>
+<li>Tone follows Telo Ride's colour meanings: gold only for earned things, volt only for you, heart for lost or danger, rest for recoveries, ok for connected and done.</li>
+<li>For a sentence of status use an <a href="inline-message.html">inline message</a> or an <a href="alert.html">alert</a>.</li>
+</ul>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+<div class="ds-anatomy">
+<figure class="ds-anatomy__figure">
+<div style="position: relative; display: inline-block; padding: var(--space-6) var(--space-8);"><span style="zoom: 2.5;"><span class="pill pill--ok"><span class="pill__dot" aria-hidden="true"></span>Connected</span></span><span class="ds-callout" style="left: var(--space-6); top: 0;" aria-hidden="true">1</span><span class="ds-callout" style="left: 50%; top: 0;" aria-hidden="true">2</span><span class="ds-callout" style="left: calc(100% - var(--space-6)); top: 70%;" aria-hidden="true">3</span></div>
+</figure>
+<ol class="ds-anatomy__list">
+<li><div><b>Dot (optional)</b><small>6px, <code>currentColor</code>; for live states (connected, recording).</small></div></li>
+<li><div><b>Label</b><small>12px medium, one or two words, sentence case.</small></div></li>
+<li><div><b>Capsule</b><small><code>--radius-full</code>, 2 × 8px padding, a 15% tint of the tone over its surface (neutral: <code>--color-raised</code>).</small></div></li>
+</ol>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+<h3>Tones</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<span class="pill">Bot</span> <span class="pill pill--gold">New best</span> <span class="pill pill--volt">You</span> <span class="pill pill--heart">Lost the bike</span> <span class="pill pill--rest">Recover</span> <span class="pill pill--ok">Connected</span> <span class="pill pill--warn">Beta</span>
+</div>
+<div class="ds-example__caption"><span>Neutral, gold, volt, heart, rest, ok, warn.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;span class="pill"&gt;Bot&lt;/span&gt; &lt;span class="pill pill--gold"&gt;New best&lt;/span&gt; &lt;span class="pill pill--volt"&gt;You&lt;/span&gt; &lt;span class="pill pill--heart"&gt;Lost the bike&lt;/span&gt; &lt;span class="pill pill--rest"&gt;Recover&lt;/span&gt; &lt;span class="pill pill--ok"&gt;Connected&lt;/span&gt; &lt;span class="pill pill--warn"&gt;Beta&lt;/span&gt;</code></pre></details>
+</div>
+
+<h3>Count and dot</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<span class="pill pill--count" aria-label="6 of 10 seats taken">6 / 10</span> <span class="pill pill--gold pill--count" aria-label="5 of 21 stars">5 / 21</span> <span class="pill pill--volt"><span class="pill__dot" aria-hidden="true"></span>Recording</span> <span class="pill pill--ok"><span class="pill__dot" aria-hidden="true"></span>Connected</span>
+</div>
+<div class="ds-example__caption"><span>Counts use Barlow tabular numerals and an <code>aria-label</code> that says what is counted.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;span class="pill pill--count" aria-label="6 of 10 seats taken"&gt;6 / 10&lt;/span&gt; &lt;span class="pill pill--gold pill--count" aria-label="5 of 21 stars"&gt;5 / 21&lt;/span&gt; &lt;span class="pill pill--volt"&gt;&lt;span class="pill__dot" aria-hidden="true"&gt;&lt;/span&gt;Recording&lt;/span&gt; &lt;span class="pill pill--ok"&gt;&lt;span class="pill__dot" aria-hidden="true"&gt;&lt;/span&gt;Connected&lt;/span&gt;</code></pre></details>
+</div>
+
+<h3>Solid</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<span class="pill pill--solid-gold">Podium</span> <span class="pill pill--solid-volt">You</span>
+</div>
+<div class="ds-example__caption"><span>Solid gold and volt for a badge on a photo or a busy card; ink text on the fill (5.7:1 and 12.1:1).</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;span class="pill pill--solid-gold"&gt;Podium&lt;/span&gt; &lt;span class="pill pill--solid-volt"&gt;You&lt;/span&gt;</code></pre></details>
+</div>
+
+<h3>In context</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<ul class="list list--divided" style="width: 100%;"><li class="list__item"><span class="list__body"><span class="list__title">Echelon EX-5s</span></span><span class="pill">Full control</span></li><li class="list__item"><span class="list__body"><span class="list__title">Other FTMS smart bikes</span></span><span class="pill pill--warn">Beta</span></li></ul>
+</div>
+<div class="ds-example__caption"><span>Connect Bike’s "Works with" list, with the status as a badge.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;ul class="list list--divided" style="width: 100%;"&gt;&lt;li class="list__item"&gt;&lt;span class="list__body"&gt;&lt;span class="list__title"&gt;Echelon EX-5s&lt;/span&gt;&lt;/span&gt;&lt;span class="pill"&gt;Full control&lt;/span&gt;&lt;/li&gt;&lt;li class="list__item"&gt;&lt;span class="list__body"&gt;&lt;span class="list__title"&gt;Other FTMS smart bikes&lt;/span&gt;&lt;/span&gt;&lt;span class="pill pill--warn"&gt;Beta&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt;</code></pre></details>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="sizes" data-na="Badges have one size (12px label, 20px tall); the count style uses a 14px numeral inside the same height."><h2><a href="#sizes">Sizes</a></h2>
+<p class="ds-na">Badges have one size (12px label, 20px tall); the count style uses a 14px numeral inside the same height.</p>
+</section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+<p>Badges are not interactive, so they have no hover, focus, active or disabled state of their own; they fade with a disabled parent. What changes is the surface under them, and the tint is mixed over that surface, so contrast moves with it.</p>
+<div class="ds-matrix"><table>
+<thead><tr><th scope="col">Tone</th><th scope="col">Default (on panel)</th><th scope="col">With dot</th><th scope="col">On raised</th><th scope="col">On ink</th><th scope="col">In a disabled card</th></tr></thead>
+<tbody>
+<tr><th scope="row">Neutral</th><td><span class="pill">Bot</span></td><td><span class="pill"><span class="pill__dot" aria-hidden="true"></span>Bot</span></td><td><span class="well" style="display: inline-flex; padding: var(--space-2);"><span class="pill">Bot</span></span></td><td><span style="display: inline-flex; padding: var(--space-2); background: var(--color-ink); border-radius: var(--radius-md);"><span class="pill">Bot</span></span></td><td><span style="opacity: 0.4;"><span class="pill">Bot</span></span></td></tr>
+<tr><th scope="row">Gold</th><td><span class="pill pill--gold">New best</span></td><td><span class="pill pill--gold"><span class="pill__dot" aria-hidden="true"></span>New best</span></td><td><span class="well" style="display: inline-flex; padding: var(--space-2);"><span class="pill pill--gold">New best</span></span></td><td><span style="display: inline-flex; padding: var(--space-2); background: var(--color-ink); border-radius: var(--radius-md);"><span class="pill pill--gold">New best</span></span></td><td><span style="opacity: 0.4;"><span class="pill pill--gold">New best</span></span></td></tr>
+<tr><th scope="row">Volt</th><td><span class="pill pill--volt">You</span></td><td><span class="pill pill--volt"><span class="pill__dot" aria-hidden="true"></span>You</span></td><td><span class="well" style="display: inline-flex; padding: var(--space-2);"><span class="pill pill--volt">You</span></span></td><td><span style="display: inline-flex; padding: var(--space-2); background: var(--color-ink); border-radius: var(--radius-md);"><span class="pill pill--volt">You</span></span></td><td><span style="opacity: 0.4;"><span class="pill pill--volt">You</span></span></td></tr>
+<tr><th scope="row">Heart</th><td><span class="pill pill--heart">Lost the bike</span></td><td><span class="pill pill--heart"><span class="pill__dot" aria-hidden="true"></span>Lost the bike</span></td><td><span class="well" style="display: inline-flex; padding: var(--space-2);"><span class="pill pill--heart">Lost the bike</span></span></td><td><span style="display: inline-flex; padding: var(--space-2); background: var(--color-ink); border-radius: var(--radius-md);"><span class="pill pill--heart">Lost the bike</span></span></td><td><span style="opacity: 0.4;"><span class="pill pill--heart">Lost the bike</span></span></td></tr>
+<tr><th scope="row">Rest</th><td><span class="pill pill--rest">Recover</span></td><td><span class="pill pill--rest"><span class="pill__dot" aria-hidden="true"></span>Recover</span></td><td><span class="well" style="display: inline-flex; padding: var(--space-2);"><span class="pill pill--rest">Recover</span></span></td><td><span style="display: inline-flex; padding: var(--space-2); background: var(--color-ink); border-radius: var(--radius-md);"><span class="pill pill--rest">Recover</span></span></td><td><span style="opacity: 0.4;"><span class="pill pill--rest">Recover</span></span></td></tr>
+<tr><th scope="row">OK</th><td><span class="pill pill--ok">Connected</span></td><td><span class="pill pill--ok"><span class="pill__dot" aria-hidden="true"></span>Connected</span></td><td><span class="well" style="display: inline-flex; padding: var(--space-2);"><span class="pill pill--ok">Connected</span></span></td><td><span style="display: inline-flex; padding: var(--space-2); background: var(--color-ink); border-radius: var(--radius-md);"><span class="pill pill--ok">Connected</span></span></td><td><span style="opacity: 0.4;"><span class="pill pill--ok">Connected</span></span></td></tr>
+<tr><th scope="row">Warn</th><td><span class="pill pill--warn">Beta</span></td><td><span class="pill pill--warn"><span class="pill__dot" aria-hidden="true"></span>Beta</span></td><td><span class="well" style="display: inline-flex; padding: var(--space-2);"><span class="pill pill--warn">Beta</span></span></td><td><span style="display: inline-flex; padding: var(--space-2); background: var(--color-ink); border-radius: var(--radius-md);"><span class="pill pill--warn">Beta</span></span></td><td><span style="opacity: 0.4;"><span class="pill pill--warn">Beta</span></span></td></tr>
+</tbody>
+</table></div>
+
+<h3>Both themes</h3>
+<div class="ds-themes">
+<div data-theme="light"><div class="ds-example__canvas " style="padding: 0;"><span class="pill">Bot</span> <span class="pill pill--gold">New best</span> <span class="pill pill--volt">You</span> <span class="pill pill--heart">Lost the bike</span> <span class="pill pill--rest">Recover</span> <span class="pill pill--ok">Connected</span> <span class="pill pill--warn">Beta</span> <span class="pill pill--count" aria-label="6 of 10 seats taken">6 / 10</span> <span class="pill pill--gold pill--count" aria-label="5 of 21 stars">5 / 21</span></div></div>
+<div data-theme="dark"><div class="ds-example__canvas " style="padding: 0;"><span class="pill">Bot</span> <span class="pill pill--gold">New best</span> <span class="pill pill--volt">You</span> <span class="pill pill--heart">Lost the bike</span> <span class="pill pill--rest">Recover</span> <span class="pill pill--ok">Connected</span> <span class="pill pill--warn">Beta</span> <span class="pill pill--count" aria-label="6 of 10 seats taken">6 / 10</span> <span class="pill pill--gold pill--count" aria-label="5 of 21 stars">5 / 21</span></div></div>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+<ul><li>Badges never wrap (<code>white-space: nowrap</code>) and never truncate; at 360px a row with a badge truncates its title instead.</li>
+<li>No breakpoint changes them.</li></ul>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+<p>Today the tones mix 15% of the tone colour into transparent: <code>background: color-mix(in srgb, var(--color-gold) 15%, transparent)</code>, with the <code>-fg</code> text variant on top. That reads differently on every surface, and three tones miss 4.5:1 (table below). The fix is to read the status tokens the banners already use, which are checked in both themes:</p>
+<pre><code>.pill--gold  { background: var(--color-gold-subtle);   color: var(--color-gold-fg); }
+.pill--volt  { background: var(--color-accent-subtle); color: var(--color-fg-accent); }
+.pill--heart { background: var(--color-danger-bg);     color: var(--color-danger-fg); }
+.pill--rest  { background: var(--color-info-bg);       color: var(--color-info-fg); }
+.pill--ok    { background: var(--color-success-bg);    color: var(--color-success-fg); }
+.pill--warn  { background: var(--color-warning-bg);    color: var(--color-warning-fg); }  /* added here */</code></pre>
+<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Tone (15% mix)</th><th scope="col">Light on paper</th><th scope="col">Light on raised</th><th scope="col">Dark on panel</th><th scope="col">Dark on raised</th></tr></thead><tbody>
+<tr><td>Gold</td><td>4.75</td><td>4.32 ✗</td><td>7.95</td><td>6.66</td></tr>
+<tr><td>Volt</td><td>4.19 ✗</td><td>3.80 ✗</td><td>4.47 ✗</td><td>3.83 ✗</td></tr>
+<tr><td>Heart</td><td>4.88</td><td>4.42 ✗</td><td>5.39</td><td>4.66</td></tr>
+<tr><td>Rest</td><td>4.43 ✗</td><td>4.02 ✗</td><td>4.41 ✗</td><td>3.74 ✗</td></tr>
+<tr><td>OK</td><td>4.54</td><td>4.13 ✗</td><td>7.01</td><td>5.89</td></tr>
+</tbody></table></div>
+<p>Ratios computed from <code>tokens.css</code> with the tint composited over the surface. <code>components.css</code> uses the token mapping above.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+<h3>Role and pattern</h3>
+<p>A <code>&lt;span&gt;</code> with text. No role. A count badge sets <code>aria-label</code> with its meaning ("6 of 10 seats taken"). A badge that appears because something changed ("Connected") is announced by the live region that reports the change, not by the badge.</p>
+<h3>Keyboard</h3>
+<table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+<tr><td><kbd>Tab</kbd></td><td>Skips badges; they are not focusable.</td></tr>
+</tbody></table>
+<h3>Focus</h3>
+<p>None; badges never take focus.</p>
+<h3>Labelling</h3>
+<p>The label is the text. Dots are <code>aria-hidden</code>. Never use a badge without words (a coloured dot alone).</p>
+<h3>Contrast</h3>
+<div class="ds-themes">
+<div data-theme="light"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+<div class="ds-pair"><span>Neutral on raised</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Warn (status tokens)</span><span class="ds-pair__ratio" data-contrast="--color-warning-fg|--color-warning-bg" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Gold (proposed)</span><span class="ds-pair__ratio" data-contrast="--color-gold-fg|--color-gold-subtle" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Volt (proposed)</span><span class="ds-pair__ratio" data-contrast="--color-fg-accent|--color-accent-subtle" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Heart (proposed)</span><span class="ds-pair__ratio" data-contrast="--color-danger-fg|--color-danger-bg" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Rest (proposed)</span><span class="ds-pair__ratio" data-contrast="--color-info-fg|--color-info-bg" data-min="4.5"></span></div>
+<div class="ds-pair"><span>OK (proposed)</span><span class="ds-pair__ratio" data-contrast="--color-success-fg|--color-success-bg" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Solid volt</span><span class="ds-pair__ratio" data-contrast="--color-on-fill|--color-volt" data-min="4.5"></span></div>
+</div></div>
+<div data-theme="dark"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+<div class="ds-pair"><span>Neutral on raised</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Warn (status tokens)</span><span class="ds-pair__ratio" data-contrast="--color-warning-fg|--color-warning-bg" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Gold (proposed)</span><span class="ds-pair__ratio" data-contrast="--color-gold-fg|--color-gold-subtle" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Volt (proposed)</span><span class="ds-pair__ratio" data-contrast="--color-fg-accent|--color-accent-subtle" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Heart (proposed)</span><span class="ds-pair__ratio" data-contrast="--color-danger-fg|--color-danger-bg" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Rest (proposed)</span><span class="ds-pair__ratio" data-contrast="--color-info-fg|--color-info-bg" data-min="4.5"></span></div>
+<div class="ds-pair"><span>OK (proposed)</span><span class="ds-pair__ratio" data-contrast="--color-success-fg|--color-success-bg" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Solid volt</span><span class="ds-pair__ratio" data-contrast="--color-on-fill|--color-volt" data-min="4.5"></span></div>
+</div></div>
+</div>
+<h3>Motion</h3>
+<p>None. A badge that appears mid-ride appears without animation.</p>
+<h3>Touch</h3>
+<p>Not a target.</p>
+
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+<ul><li>One or two words, sentence case: "New best", "Lost the bike", "Beta".</li>
+<li>Counts as "6 / 10" (seats) or "5 / 21" (stars), with a spoken label.</li>
+<li>Say the state, not the colour: "Connected", never "Green".</li>
+<li>Gold badges only for earned things: a new best, a star, a level.</li></ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+<div class="ds-dodont">
+<figure class="ds-do"><div class="ds-example__canvas"><span class="pill pill--gold">New best</span> <span class="pill pill--ok"><span class="pill__dot" aria-hidden="true"></span>Connected</span></div><figcaption>Gold for something earned; ok with a dot for a live connection.</figcaption></figure>
+<figure class="ds-dont"><div class="ds-example__canvas"><span class="pill pill--gold">Connected</span> <span class="pill pill--volt">New best</span></div><figcaption>Gold for a connection and volt for an achievement: the colours stop meaning anything.</figcaption></figure>
+<figure class="ds-do"><div class="ds-example__canvas"><span class="pill pill--count" aria-label="6 of 10 seats taken">6 / 10</span></div><figcaption>A count with a label that says what it counts.</figcaption></figure>
+<figure class="ds-dont"><div class="ds-example__canvas"><span class="pill pill--heart" aria-hidden="true"><span class="pill__dot"></span></span></div><figcaption>A dot with no words: colour alone carries the status (1.4.1).</figcaption></figure>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+<div class="ds-table-wrap"><table class="ds-table">
+<thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+<tbody>
+<tr><td>Neutral fill / text</td><td><code>--color-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td></tr>
+<tr><td>Neutral fill / text</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+<tr><td>Gold text / tint source</td><td><code>--color-gold-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-gold-fg" data-swatch></i><span data-token="--color-gold-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-gold-fg" data-swatch></i><span data-token="--color-gold-fg"></span></span></td></tr>
+<tr><td>Gold text / tint source</td><td><code>--color-gold</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-gold" data-swatch></i><span data-token="--color-gold"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-gold" data-swatch></i><span data-token="--color-gold"></span></span></td></tr>
+<tr><td>Volt text / tint source</td><td><code>--color-volt-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-volt-fg" data-swatch></i><span data-token="--color-volt-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-volt-fg" data-swatch></i><span data-token="--color-volt-fg"></span></span></td></tr>
+<tr><td>Volt text / tint source</td><td><code>--color-volt</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-volt" data-swatch></i><span data-token="--color-volt"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-volt" data-swatch></i><span data-token="--color-volt"></span></span></td></tr>
+<tr><td>Heart text</td><td><code>--color-heart-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-heart-fg" data-swatch></i><span data-token="--color-heart-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-heart-fg" data-swatch></i><span data-token="--color-heart-fg"></span></span></td></tr>
+<tr><td>Rest text</td><td><code>--color-rest-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-rest-fg" data-swatch></i><span data-token="--color-rest-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-rest-fg" data-swatch></i><span data-token="--color-rest-fg"></span></span></td></tr>
+<tr><td>OK text</td><td><code>--color-ok-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-ok-fg" data-swatch></i><span data-token="--color-ok-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-ok-fg" data-swatch></i><span data-token="--color-ok-fg"></span></span></td></tr>
+<tr><td>Warn fill / text</td><td><code>--color-warning-bg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-warning-bg" data-swatch></i><span data-token="--color-warning-bg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-warning-bg" data-swatch></i><span data-token="--color-warning-bg"></span></span></td></tr>
+<tr><td>Warn fill / text</td><td><code>--color-warning-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-warning-fg" data-swatch></i><span data-token="--color-warning-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-warning-fg" data-swatch></i><span data-token="--color-warning-fg"></span></span></td></tr>
+<tr><td>Solid label</td><td><code>--color-on-fill</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-on-fill" data-swatch></i><span data-token="--color-on-fill"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-on-fill" data-swatch></i><span data-token="--color-on-fill"></span></span></td></tr>
+<tr><td>Padding</td><td><code>--space-0-5</code> × <code>--space-2</code></td><td colspan="2"><span data-token="--space-0-5"></span> / <span data-token="--space-2"></span></td></tr>
+<tr><td>Radius</td><td><code>--radius-full</code></td><td colspan="2"><span data-token="--radius-full"></span></td></tr>
+<tr><td>Label</td><td><code>--font-size-xs</code> <code>--font-weight-medium</code></td><td colspan="2"><span data-token="--font-size-xs"></span> / <span data-token="--font-weight-medium"></span></td></tr>
+</tbody>
+</table></div>
+
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+<pre><code>&lt;span class="pill pill--gold"&gt;New best&lt;/span&gt;
+&lt;span class="pill pill--ok"&gt;&lt;span class="pill__dot" aria-hidden="true"&gt;&lt;/span&gt;Connected&lt;/span&gt;
+&lt;span class="pill pill--count" aria-label="6 of 10 seats taken"&gt;6 / 10&lt;/span&gt;</code></pre>
+<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+<tr><td><code>.pill</code></td><td>Neutral badge (core kit).</td></tr>
+<tr><td><code>.pill--gold/volt/heart/rest/ok</code></td><td>Tones (core kit).</td></tr>
+<tr><td><code>.pill--warn</code></td><td>Warn tone (added, status tokens).</td></tr>
+<tr><td><code>.pill--count</code></td><td>Barlow tabular numeral.</td></tr>
+<tr><td><code>.pill__dot</code></td><td>Leading status dot.</td></tr>
+<tr><td><code>.pill--solid-gold</code> <code>.pill--solid-volt</code></td><td>Solid fills for photos.</td></tr>
+</tbody></table></div>
+
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+<p>Extracted from these mocks:</p>
+<ul>
+<li><a href="../../mocks/pages/connect-bike/default.html">pages/connect-bike/default</a> ("Full control" and "Beta" statuses)</li>
+<li><a href="../../mocks/pages/results/default.html">pages/results/default</a> ("+1 new star" in gold)</li>
+<li><a href="../../mocks/pages/results/solo.html">pages/results/solo</a> ("New personal best")</li>
+<li><a href="../../mocks/dialogs/diagnostics/packets.html">dialogs/diagnostics/packets</a> (the volt "Recording" dot label)</li>
+</ul>
+<h3>Drift fixed during extraction</h3>
+<ul><li>No mock places a <code>.pill</code>; the class comes from the kit (<code>docs/mocks/assets/ui.css</code>). Documented as the badge for the statuses the mocks set as coloured text.</li>
+<li>Pill tones tint with a 15% <code>color-mix</code>; volt and rest fall under 4.5:1 on panel (dark 4.47, 4.41) and four tones fail on raised in light. Resolution: tones read the status tokens (Theming).</li>
+<li>No warn tone existed though Connect Bike uses warn for "Beta"; <code>.pill--warn</code> added.</li></ul>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

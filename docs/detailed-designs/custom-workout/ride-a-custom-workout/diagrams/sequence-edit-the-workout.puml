@@ -1,0 +1,34 @@
+@startuml
+title UML sequence behaviour — Edit the workout mid-ride
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "RideHeader" as header
+  participant "CustomRideStore" as store
+  participant "Router" as router
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "RideClock" as clock
+  participant "WorkoutEngine" as engine
+end box
+rider -> header : Choose "HIIT · 8 × 0:30 · 3:00 → 1:30 recover — edit workout"
+header -> store : editWorkout()
+store -> clock : pause()
+store -> engine : Hold (no segment change, no command)
+store -> router : Navigate to /profile/custom with this plan L2-101 AC3
+router --> rider : Custom workout setup showing the current plan
+note over store : What happens to the paused ride after editing is <TO SUPPLY>
+@enduml

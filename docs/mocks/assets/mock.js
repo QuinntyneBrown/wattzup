@@ -11,8 +11,8 @@
   function store(key, value) { try { localStorage.setItem(key, value); } catch (e) { /* private mode */ } }
 
   function currentTheme() {
-    if (root.dataset.theme === 'dark' || root.dataset.theme === 'light') return root.dataset.theme;
-    return 'dark'; // Wattzup defaults to the dark theme regardless of OS preference
+    // Telo Ride is drawn dark; light is an addition, chosen explicitly.
+    return root.dataset.theme === 'light' ? 'light' : 'dark';
   }
   function applyTheme(theme, persist) {
     root.dataset.theme = theme;
@@ -27,7 +27,7 @@
   var requested = params.get('theme');
   if (requested === 'light' || requested === 'dark') applyTheme(requested, false);
   else if (readStored('mock-theme')) applyTheme(readStored('mock-theme'), false);
-  else applyTheme(currentTheme(), false);
+  else applyTheme('dark', false);
 
   if (params.get('chrome') === '0') root.dataset.chrome = 'off';
 
@@ -41,21 +41,6 @@
       var target = document.querySelector(setter.getAttribute('data-target') || 'body');
       if (target) target.dataset.state = setter.getAttribute('data-set-state');
     }
-  });
-
-  // Keep Tab inside an open modal dialog, as the product's CDK dialog does.
-  document.addEventListener('keydown', function (event) {
-    if (event.key !== 'Tab') return;
-    var dialog = document.querySelector('[role="dialog"][aria-modal="true"]:not([hidden])');
-    if (!dialog) return;
-    var items = Array.prototype.filter.call(
-      dialog.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'),
-      function (el) { return el.offsetParent !== null; });
-    if (!items.length) { event.preventDefault(); dialog.focus(); return; }
-    var first = items[0], last = items[items.length - 1];
-    if (!dialog.contains(document.activeElement)) { event.preventDefault(); first.focus(); }
-    else if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
   });
 
   document.addEventListener('keydown', function (event) {

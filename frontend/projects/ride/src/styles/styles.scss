@@ -1,0 +1,255 @@
+/* Global foundations only (AGENTS.md): reset, focus, skip link and utilities, from
+   docs/design-system/assets/components.css. Component styles live with their components. */
+
+/* ---------- Reset and base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  border: 0 solid var(--color-border-default);
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  tab-size: 4;
+}
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+body {
+  background: var(--color-ink);
+  color: var(--color-fg);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-normal);
+  -webkit-font-smoothing: antialiased;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+figure,
+blockquote,
+dl,
+dd,
+ol,
+ul {
+  margin: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+ol,
+ul {
+  padding: 0;
+  list-style: none;
+}
+img,
+svg,
+video,
+canvas,
+iframe {
+  display: block;
+}
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+  margin: 0;
+  letter-spacing: inherit;
+}
+button,
+[role='button'] {
+  cursor: pointer;
+  background: none;
+  padding: 0;
+  text-align: inherit;
+}
+button:disabled {
+  cursor: default;
+}
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+table {
+  border-collapse: collapse;
+}
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+[data-state='focus'] {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Reduced motion lives in the tokens: tokens.css zeroes --duration-fast/base/slow/loop/pulse under
+   prefers-reduced-motion, so every transition and animation here (all of which read those tokens)
+   stops without a blanket override. --duration-deliberate (the 3-2-1 timer) is kept on purpose. */
+
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: var(--space-2);
+  z-index: var(--z-tooltip);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--color-volt);
+  color: var(--color-on-fill);
+  font-weight: var(--font-weight-semibold);
+  translate: 0 -200%;
+}
+.skip-link:focus,
+.skip-link[data-state] {
+  translate: 0 0;
+}
+.skip-link:hover,
+.skip-link[data-state='hover'] {
+  background: var(--color-volt-hover);
+}
+.skip-link:active,
+.skip-link[data-state='active'] {
+  scale: 0.98;
+}
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Type helpers (the design's .font-numeral and .font-wide) ---------- */
+.numeral {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: var(--letter-spacing-display);
+}
+.wide {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-black);
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-display);
+}
+.mono {
+  font-family: var(--font-family-mono);
+}
+.text-muted {
+  color: var(--color-muted);
+}
+.text-faint {
+  color: var(--color-faint);
+}
+.text-fg {
+  color: var(--color-fg);
+}
+.text-gold {
+  color: var(--color-gold-fg);
+}
+.text-volt {
+  color: var(--color-volt-fg);
+}
+.text-heart {
+  color: var(--color-heart-fg);
+}
+.text-warn {
+  color: var(--color-warn-fg);
+}
+.text-rest {
+  color: var(--color-rest-fg);
+}
+.text-ok {
+  color: var(--color-ok-fg);
+}
+.strong {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-fg);
+}
+/* A numeral set inline in running text: "3 of 7 maps open" */
+.figure {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+}
+.figure--gold {
+  color: var(--color-gold-fg);
+}
+
+/* ---------- Icons (lucide 0.577, inlined) ---------- */
+.icon {
+  width: var(--space-6);
+  height: var(--space-6);
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.icon--xs {
+  width: var(--space-3);
+  height: var(--space-3);
+} /* h-3 */
+.icon--sm {
+  width: var(--space-3-5);
+  height: var(--space-3-5);
+} /* h-3.5 */
+.icon--md {
+  width: var(--space-4);
+  height: var(--space-4);
+} /* h-4 */
+.icon--lg {
+  width: var(--space-5);
+  height: var(--space-5);
+} /* h-5 */
+.icon--xl {
+  width: var(--space-6);
+  height: var(--space-6);
+} /* h-6 */
+.icon--2xl {
+  width: var(--space-8);
+  height: var(--space-8);
+} /* h-8 */
+.icon--3xl {
+  width: var(--space-10);
+  height: var(--space-10);
+} /* h-10 */
+.icon--spin {
+  animation: icon-spin var(--duration-loop) linear infinite;
+}
+@keyframes icon-spin {
+  to {
+    rotate: 360deg;
+  }
+}

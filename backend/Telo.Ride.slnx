@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Telo.Ride.Api/Telo.Ride.Api.csproj" />
+    <Project Path="src/Telo.Ride.Application/Telo.Ride.Application.csproj" />
+    <Project Path="src/Telo.Ride.Domain/Telo.Ride.Domain.csproj" />
+    <Project Path="src/Telo.Ride.Infrastructure/Telo.Ride.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Telo.Ride.Api.Tests/Telo.Ride.Api.Tests.csproj" />
+  </Folder>
+</Solution>

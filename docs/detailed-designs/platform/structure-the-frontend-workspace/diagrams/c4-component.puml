@@ -1,0 +1,27 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Structure the frontend workspace
+
+System_Ext(bike, "Smart bike", "Bluetooth LE")
+Container(backend, "Telo Ride API", "ASP.NET Core, SignalR", "REST and ride hub")
+Container_Boundary(app, "Ride app") {
+  Component(ride, "ride", "Angular application", "Pages, dialogs, route stores, app.config.ts composition root")
+  Component(components, "components", "Angular library", "Presentation components (wz-*)")
+  Component(domain, "domain", "Angular library", "protocol/, bluetooth/, engine/, storage/")
+  Component(apiLib, "api", "Angular library", "Contracts, tokens, HTTP and SignalR clients")
+  Component(world, "world", "Angular library", "World Ride rendering: Three.js, WebGPU or WebGL 2")
+  Component(video, "video", "Angular library", "YouTubeVideoPlayer behind VIDEO_PLAYER_FACTORY")
+}
+Rel(ride, world, "Imports dynamically (race page only)", "import()")
+Rel(world, apiLib, "Imports types only")
+Rel(ride, video, "Imports dynamically (class and custom ride pages)", "import()")
+Rel(video, apiLib, "Imports")
+Rel(ride, components, "Imports")
+Rel(ride, domain, "Imports")
+Rel(ride, apiLib, "Imports")
+Rel(domain, apiLib, "Imports")
+Rel(components, apiLib, "Imports types only")
+Rel(domain, bike, "navigator.bluetooth (bluetooth/ only)", "Web Bluetooth")
+Rel(apiLib, backend, "HTTP and SignalR", "JSON/HTTPS, WebSocket")
+@enduml

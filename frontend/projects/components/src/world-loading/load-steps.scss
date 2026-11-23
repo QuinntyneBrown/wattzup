@@ -1,0 +1,85 @@
+// Block load-steps and its load-step items (docs/design-system/assets/components.css, World loading).
+.load-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.load-step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.load-step__mark {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--space-6);
+  height: var(--space-6);
+  border-radius: var(--radius-full);
+  border: var(--border-width-hairline) solid var(--color-line-strong);
+  color: var(--color-faint);
+}
+
+.load-step__icon {
+  width: var(--space-3-5);
+  height: var(--space-3-5);
+}
+
+.load-step__text {
+  min-width: 0;
+  flex: 1;
+  padding-top: var(--space-0-5);
+}
+
+.load-step__label {
+  display: block;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-muted);
+}
+
+.load-step__detail {
+  display: block;
+  margin-top: var(--space-0-5);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-feature-settings: 'tnum' 1;
+  color: var(--color-faint);
+}
+
+.load-step[aria-current='step'] .load-step__label,
+.load-step--done .load-step__label {
+  color: var(--color-fg);
+}
+
+.load-step[aria-current='step'] .load-step__mark {
+  border-color: var(--color-volt-fg);
+  color: var(--color-volt-fg);
+}
+
+.load-step[aria-current='step'] .load-step__detail {
+  color: var(--color-muted);
+}
+
+.load-step--done .load-step__mark {
+  border-color: var(--color-success-border);
+  background: var(--color-success-bg);
+  color: var(--color-success-icon);
+}
+
+.load-step--failed .load-step__mark {
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-bg);
+  color: var(--color-danger-icon);
+}
+
+.load-step--failed .load-step__label {
+  color: var(--color-danger-fg);
+}
+
+.load-step--skipped .load-step__label {
+  text-decoration: line-through;
+}

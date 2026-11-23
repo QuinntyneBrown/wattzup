@@ -1,0 +1,36 @@
+// Block results-header (docs/design-system/): the lockup and what was ridden, with no navigation.
+:host {
+  display: block;
+  flex-shrink: 0;
+}
+
+.results-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  border-bottom: var(--border-width-hairline) solid var(--color-line);
+  padding: var(--space-2-5) var(--space-4);
+
+  @media (min-width: 40rem) {
+    padding-inline: var(--space-6);
+  }
+
+  @media (min-width: 64rem) {
+    padding-inline: var(--space-8);
+  }
+}
+
+.results-header__context {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.results-header__end {
+  display: flex;
+  margin-left: auto;
+}

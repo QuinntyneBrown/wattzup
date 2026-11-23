@@ -1,0 +1,79 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:06.984
+Pick an open map, and Race Setup shows it, then asks whom you want to race.
+
+00:00:10.324 --> 00:00:15.284
+The map's photo, its name and route, and three facts: distance, climbing and rating.
+
+00:00:15.284 --> 00:00:17.887
+Your best joins them once you have one.
+
+00:00:20.647 --> 00:00:24.714
+Stars here lists the three rules. An earned one is struck through, and a screen
+
+00:00:24.714 --> 00:00:26.043
+reader hears earned.
+
+00:00:30.971 --> 00:00:36.117
+On the map that holds your next unlock, a gold line names the goal: finish top three
+
+00:00:36.117 --> 00:00:39.052
+against bots here, to open Cliffside Coast.
+
+00:00:41.295 --> 00:00:46.770
+Race against: your best time, bots, chosen by default, or riders online, locked
+
+00:00:46.770 --> 00:00:48.733
+until rider level three.
+
+00:00:51.618 --> 00:00:56.565
+It's one radio group. The arrow keys move the choice, and pass over the locked one.
+
+00:01:01.942 --> 00:01:06.955
+Against bots, pack strength sets their pace: easy, around a hundred and thirty
+
+00:01:06.955 --> 00:01:10.018
+watts; medium, one ninety; hard, two fifty.
+
+00:01:12.266 --> 00:01:17.469
+Go to the start line opens the race with that pack. Your best time reads Start ride,
+
+00:01:17.469 --> 00:01:19.132
+and goes solo at once.
+
+00:01:22.590 --> 00:01:27.261
+A locked map's address never shows its setup. It opens Map Select instead.
+
+00:01:32.913 --> 00:01:37.646
+From a phone to a desktop, where the ride panel sits beside the map, with Start at
+
+00:01:37.646 --> 00:01:38.466
+its foot.
+
+00:01:43.237 --> 00:01:48.034
+What the tests prove: nine behaviour specs, the planner's table and the catalogue
+
+00:01:48.034 --> 00:01:52.005
+through the API, all green, and the first bundle under budget.
+
+00:01:53.561 --> 00:01:58.164
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:58.509 --> 00:02:03.021
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:02:03.021 --> 00:02:04.692
+every hill and interval.
+
+00:02:05.037 --> 00:02:10.215
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:02:10.215 --> 00:02:15.663
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:02:15.663 --> 00:02:18.653
+XP, rider levels, stars and map unlocks.
+
+00:02:18.998 --> 00:02:21.491
+A custom workout lives under Profile.

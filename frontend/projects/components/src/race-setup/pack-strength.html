@@ -1,0 +1,18 @@
+<div class="pack">
+  <h3 class="pack__title" id="pack-title">Pack strength</h3>
+  <div class="pack__options" role="radiogroup" aria-labelledby="pack-title">
+    @for (strength of strengths; track strength; let index = $index) {
+      <!-- prettier-ignore -->
+      <button
+        class="pack__option"
+        type="button"
+        role="radio"
+        [attr.aria-checked]="strength === selected()"
+        [tabIndex]="strength === selected() ? 0 : -1"
+        (click)="choose.emit(strength)"
+        (keydown)="move($event, index)"
+      >{{ strength }}</button>
+    }
+  </div>
+  <p class="pack__note">{{ note() }}</p>
+</div>

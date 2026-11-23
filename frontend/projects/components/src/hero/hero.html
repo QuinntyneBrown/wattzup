@@ -1,0 +1,18 @@
+<div class="hero__inner">
+  <div class="hero__text">
+    @if (kicker()) {
+      <p class="hero__kicker">{{ kicker() }}</p>
+    }
+    <h1 class="hero__heading">{{ heading() }}</h1>
+    <p class="hero__lead">{{ lead() }}</p>
+    <div class="hero__actions">
+      <ng-content select="[slot=action]" />
+    </div>
+    @if (note()) {
+      <p class="hero__note">{{ note() }}</p>
+    }
+  </div>
+  <div class="hero__art">
+    <img class="hero__image" [src]="image()" alt="" width="1200" height="900" />
+  </div>
+</div>

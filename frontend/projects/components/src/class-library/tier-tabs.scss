@@ -1,0 +1,57 @@
+// Block tier-tabs (docs/design-system/assets/components.css, Class Library): the chosen tab is filled, and named by
+// aria-selected, so colour never carries the choice alone. A tab is at least 44 px tall for touch.
+:host {
+  display: block;
+  max-width: 100%;
+}
+
+.tier-tabs {
+  display: flex;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-radius: var(--radius-lg);
+  background: var(--color-raised);
+  padding: var(--space-1);
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.tier-tabs__tab {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--target-comfortable);
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  padding: var(--space-1-5) var(--space-3-5);
+  color: var(--color-muted);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+
+  &:hover {
+    color: var(--color-fg);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  &[aria-selected='true'] {
+    background: var(--color-fg);
+    color: var(--color-ink);
+  }
+}

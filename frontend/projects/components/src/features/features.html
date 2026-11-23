@@ -1,0 +1,17 @@
+@for (feature of features(); track feature.heading) {
+  <li class="features__item">
+    <img
+      class="features__image"
+      [src]="feature.image"
+      alt=""
+      loading="lazy"
+      width="640"
+      height="400"
+    />
+    <div class="features__body">
+      <p class="features__kicker">{{ feature.kicker }}</p>
+      <h3 class="features__heading">{{ feature.heading }}</h3>
+      <p class="features__text">{{ feature.text }}</p>
+    </div>
+  </li>
+}

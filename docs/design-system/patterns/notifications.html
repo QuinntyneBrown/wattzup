@@ -3,17 +3,47 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Notifications — Wattzup design system</title>
-<meta name="description" content="Toasts, connection banners and the step-change cue.">
+<title>Notifications — Telo Ride design system</title>
+<meta name="description" content="Toast, banner or inline status: the unlock banner, the browser notice, the lobby notice and the rules for toasts. Priority, live regions, and auto-dismiss (at least 8 seconds; errors persist).">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Pattern page layout helpers: tokens only. Product components come from components.css. */
+.ds-section > ul { list-style: disc; }
+.ds-section > ol { list-style: decimal; }
+.pt-frame { width: 100%; border: var(--border-width-hairline) solid var(--color-border-default); border-radius: var(--radius-lg); overflow: hidden; background: var(--color-ink); color: var(--color-fg); }
+.pt-frame .app { height: auto; min-height: 0; }
+.pt-pad { padding: var(--space-6) var(--space-5); }
+.pt-stack { display: flex; flex-direction: column; gap: var(--space-4); width: 100%; min-width: 0; }
+.pt-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.pt-grid { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); width: 100%; align-items: start; }
+.pt-tag { display: block; font: var(--text-overline); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-fg-subtle); margin-bottom: var(--space-2); }
+.pt-flow { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); font: var(--text-body-sm); }
+.pt-flow li { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0; }
+.pt-flow li + li::before { content: "→"; color: var(--color-fg-subtle); }
+.pt-flow b { padding: var(--space-1) var(--space-2-5); border-radius: var(--radius-md); background: var(--color-raised); color: var(--color-fg); font-weight: var(--font-weight-medium); }
+.pt-flow b[aria-current] { background: var(--color-accent-subtle); color: var(--color-fg-accent); }
+.pt-panel { width: 100%; max-width: 25rem; }
+.pt-stage-xl { min-height: 40rem; }
+.pt-note { font: var(--text-caption); color: var(--color-fg-muted); }
+.pt-stage-leave { min-height: 24rem; }
+/* Links inside product compositions keep the component's own colour, not the docs link style */
+:where(.pt-frame, .ds-stage, .pt-reset) a { color: inherit; text-decoration: none; }
+:where(.pt-frame, .ds-stage, .pt-reset) a:hover { color: inherit; }
+
+/* absolutely positioned visually-hidden text must stay inside the matrix scroller */
+.ds-matrix { position: relative; }
+.pt-list { list-style: decimal; padding-left: var(--space-6); }
+.pt-list > li + li { margin-top: var(--space-2); }
+.pt-list { margin-bottom: var(--space-4); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +58,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,68 +112,259 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Pattern</p>
       <h1>Notifications</h1>
-      <p class="ds-lead">Wattzup notifies three ways: toasts for command results, banners for connection state, and the step-change banner when the plan steps.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span></div>
-      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#when">When to use</a></li><li><a href="#structure">Structure</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#sources">Sources</a></li></ul>
+      <p class="ds-lead">Telo Ride tells the rider things in three ways. A banner carries page-level news: a map just opened, or this browser can't reach the bike. An inline status sits beside what changed: a seat opened in the lobby. A toast confirms something that happened out of view. The mocks need no toast yet; the rules below are for when one does.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#when">When to use</a></li><li><a href="#structure">Structure</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive behaviour</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>See <a href="../components/toast.html">toast</a>, <a href="../components/alert.html">alert and banner</a> and <a href="../components/phase-banner.html">step-change banner</a>. There is no notification centre: the app is single-user and live.</p>
-    </section>
-    <section class="ds-section" id="when"><h2><a href="#when">When to use</a></h2>
-<ul><li>Toast: result of a resistance command or a toggle.</li><li>Banner: Bluetooth off, simulated bike, reconnected, a browser that cannot reach Bluetooth.</li><li>Step-change banner: each step change, with an optional tone.</li></ul>
-    </section>
-    <section class="ds-section" id="structure"><h2><a href="#structure">Structure</a></h2>
-<div class="ds-example"><div class="ds-example__canvas "><div class="toast toast--warning"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div class="toast__body"><div class="toast__title">Bike is slow to confirm</div><div class="toast__text">Still setting level 22 — Wattzup resends every 5 seconds.</div></div><button class="close" type="button" aria-label="Dismiss"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div><div class="ds-example__caption"><span>Warning toast.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="toast toast--warning"&gt;
-&lt;svg class="icon" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;path d="M12 9v4M12 17h.01"/&gt;
-&lt;path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/&gt;
-&lt;/svg&gt;
-&lt;div class="toast__body"&gt;
-&lt;div class="toast__title"&gt;Bike is slow to confirm&lt;/div&gt;
-&lt;div class="toast__text"&gt;Still setting level 22 — Wattzup resends every 5 seconds.&lt;/div&gt;
-&lt;/div&gt;
-&lt;button class="close" type="button" aria-label="Dismiss"&gt;
-&lt;svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;path d="M6 6l12 12M18 6 6 18"/&gt;
-&lt;/svg&gt;
-&lt;/button&gt;
-&lt;/div&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<ul><li>Info and success toasts dismiss after 8 s, pausing on hover and focus.</li><li>Warning stays until resolved; danger stays until dismissed.</li><li>Banners stay while the condition lasts; Reconnected clears after 4 s.</li></ul>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive</a></h2>
-<ul><li>Toasts bottom-right from 640px, full-width bottom below.</li><li>Banners full width under the app bar.</li></ul>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<ul><li>One polite live region for toasts; danger adds <code>role="alert"</code>.</li><li>Notifications never take focus.</li><li>Auto-dismiss times are long enough to read (WCAG 2.2.1).</li></ul>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Title: what happened. Text: what Wattzup is doing about it.</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><div class="toast toast--danger"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><div class="toast__body"><div class="toast__title">Couldn&rsquo;t set resistance</div><div class="toast__text">The bike isn&rsquo;t connected.</div></div><button class="close" type="button" aria-label="Dismiss"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div><figcaption>Cause and outcome.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><div class="toast toast--danger"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><div class="toast__body"><div class="toast__title">Error</div><div class="toast__text">Something went wrong.</div></div><button class="close" type="button" aria-label="Dismiss"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div><figcaption>Generic.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from:</p><ul><li><a href="../../mocks/notifications/ride-toast/stacked.html">notifications/ride-toast/stacked</a></li><li><a href="../../mocks/notifications/connection-banner/danger.html">notifications/connection-banner/danger</a></li><li><a href="../../mocks/notifications/phase-banner/effort.html">notifications/phase-banner/effort</a></li></ul>
+      <p>Telo Ride has no accounts, no inbox and no notification centre: everything happens on the rider's machine, in the moment. So a notification is always about <em>this</em> screen, and it lives as long as it is true. The unlock banner greets the rider on Home right after a map opens; the browser notice stays under the header for as long as the browser can't do Bluetooth; the lobby notice sits by the start grid while the seat is open.</p>
+      <p>Components used: <a href="../components/alert.html">Alert and banner</a>, <a href="../components/toast.html">Toast</a>, <a href="../components/inline-message.html">Inline message</a>, <a href="../components/button.html">Button</a> and <a href="../components/badge.html">Badge</a>.</p>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="when"><h2><a href="#when">When to use</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Use</th><th scope="col">When</th><th scope="col">Lifetime</th><th scope="col">In Telo Ride</th></tr></thead>
+        <tbody>
+          <tr><td><b>Banner</b>, gold</td><td>Good news about progress, with something to do about it</td><td>Until the rider acts or leaves the page; shown once</td><td>“Neon Docklands is open.” · Ride it (home/unlocked)</td></tr>
+          <tr><td><b>Banner</b>, warning</td><td>A condition that limits the whole page and has a fix</td><td>As long as the condition holds; no close button</td><td>Browser notice: Chrome or Edge, or HTTPS (custom-setup, class-start)</td></tr>
+          <tr><td><b>Inline status</b></td><td>A change to one part of the screen</td><td>While it is true</td><td>“MarcoVelo left. Their seat is open again.” (race-lobby/someone-left)</td></tr>
+          <tr><td><b>In place</b></td><td>The result of pressing a control</td><td>Briefly, on the control</td><td>Copy link → a volt check (<code>data-copied</code>), Paired</td></tr>
+          <tr><td><b>Toast</b></td><td>Something finished out of view, after its control has gone</td><td>At least 8 s, paused on hover and focus; errors stay until dismissed</td><td>None drawn. The kit keeps an empty <code>.toast-region</code> in every page.</td></tr>
+          <tr><td><b>Overlay</b></td><td>The ride can't go on</td><td>Until fixed</td><td>Lost the bike (see <a href="feedback-and-loading.html">Feedback and loading</a>)</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Priority</h3>
+      <ol>
+        <li><b>Blocking</b> (the bike is gone): an overlay, <code>role="alert"</code>, focus moves to its action.</li>
+        <li><b>Limiting</b> (can browse, can't ride): a warning banner under the header, <code>role="alert"</code>, persistent.</li>
+        <li><b>Celebrating</b> (a map opened): a gold banner at the top of the content, <code>role="status"</code>.</li>
+        <li><b>Contextual</b> (a seat opened): inline status beside the thing, <code>role="status"</code>.</li>
+        <li><b>Confirming</b> (done out of view): a toast, <code>role="status"</code>.</li>
+      </ol>
+      <p>Higher priority wins the space: while the bike is lost, nothing else is announced. Two notices of the same level stack in arrival order; never more than two toasts at once.</p>
+    </section>
+
+    <section class="ds-section" id="structure"><h2><a href="#structure">Structure</a></h2>
+      <h3>Banner: the unlock</h3>
+      <p>Icon, a one-sentence title, a muted detail and one action, under the page title and above the content it changes. Gold is reserved for earned things, so this is the only gold banner.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0;">
+          <div class="pt-frame">
+            <div class="container page">
+              <h4 class="page__title">Evening, Sam.</h4>
+              <div class="banner banner--gold unlock-banner" role="status">
+                <svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+                <p class="banner__body"><span class="banner__title">Neon Docklands is open.</span> <span class="text-muted">A harbour city after dark, 21.6 km.</span></p>
+                <a class="btn btn--gold btn--sm" href="../../mocks/pages/race-setup/docklands.html">Ride it</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Home right after the unlock. The Next ride card below has already moved on to the next goal.</span><span>pages/home/unlocked</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="banner banner--gold unlock-banner" role="status"&gt;
+  &lt;svg class="icon banner__icon" aria-hidden="true"&gt;…&lt;/svg&gt;
+  &lt;p class="banner__body"&gt;&lt;span class="banner__title"&gt;Neon Docklands is open.&lt;/span&gt;
+    &lt;span class="text-muted"&gt;A harbour city after dark, 21.6 km.&lt;/span&gt;&lt;/p&gt;
+  &lt;a class="btn btn--gold btn--sm" href="/race/docklands"&gt;Ride it&lt;/a&gt;
+&lt;/div&gt;</code></pre></details>
+      </div>
+
+      <h3>Banner: the browser notice</h3>
+      <p>A full-width strip directly under the header, before <code>main</code>. It names the fix, says why and what still works, and offers the fix as its button. It has no close: it goes away when the problem does.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0;">
+          <div class="pt-frame">
+            <header class="training-header">
+              <span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span>
+              <div class="training-header__divider" aria-hidden="true"></div>
+              <span class="training-header__bike">Echelon EX-5s</span>
+              <a class="training-header__close" href="../../mocks/pages/profile/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>Close</a>
+            </header>
+            <div class="browser-notice" role="alert">
+              <svg class="icon icon--lg browser-notice__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 12.5-5-5"/><path d="m9.5 12.5 5-5"/><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M12 17v4"/><path d="M8 21h8"/></svg>
+              <p class="browser-notice__text"><span class="browser-notice__title">Open Telo Ride in Chrome or Edge.</span> <span class="browser-notice__body">Bluetooth to the bike only works there — you can look around, but not ride.</span></p>
+              <button class="btn btn--raised browser-notice__action" type="button" data-copied><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Link copied</button>
+            </div>
+            <div class="pt-pad"><p class="setup__lead">Set up your ride · Telo Ride drives the bike's resistance for you. Pick how.</p></div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Shown right after Copy link was pressed: the answer is in place, on the button (volt check), not a toast.</span><span>pages/custom-setup/needs-chromium</span></div>
+      </div>
+
+      <h3>Inline status: the lobby</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <section aria-label="Start clock (example)">
+            <p class="race-lobby__status">Waiting for riders</p>
+            <div class="numeral race-lobby__clock" role="timer" aria-label="Starts in 24 seconds">0:24</div>
+            <p class="race-lobby__hint">5 of 10 seats taken. At 0:10 bots fill the rest so the race starts full.</p>
+            <p class="race-lobby__notice" role="status"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" x2="16" y1="11" y2="11"/></svg>MarcoVelo left. Their seat is open again.</p>
+          </section>
+        </div>
+        <div class="ds-example__caption"><span>Under the clock and the seat count it changes. An amber icon, raised fill, one sentence.</span><span>pages/race-lobby/someone-left</span></div>
+      </div>
+
+      <h3>Toast</h3>
+      <p>The region is always in the page (<code>.toast-region</code>, empty), so screen readers already know it when a toast arrives. A toast holds an icon, one or two lines, at most one action, and a close button.</p>
+      <div class="ds-stage">
+        <div class="ds-stage__page"><p>Profile · Recent rides</p></div>
+        <div class="toast-region" role="status">
+          <div class="toast">
+            <svg class="icon icon--lg text-volt" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            <p style="flex: 1; min-width: 0;"><span class="strong">Ride saved.</span> <span class="text-muted">6:52 and 2.24 km added to your rides.</span></p>
+            <button class="icon-btn" type="button" aria-label="Dismiss"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <p class="pt-note">System addition: no mock draws a toast. The case shown is the one the flow implies: End saves the ride and opens Profile, where nothing else confirms it.</p>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <h3>Lifecycles</h3>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Kind</th><th scope="col">Appears</th><th scope="col">Stays</th><th scope="col">Goes</th></tr></thead>
+        <tbody>
+          <tr><td>Unlock banner</td><td>First visit to Home after the unlock</td><td>For that visit</td><td>When the rider presses Ride it or leaves Home; not shown again</td></tr>
+          <tr><td>Browser notice</td><td>On load, when Web Bluetooth is missing or the page is http</td><td>While true</td><td>When the rider opens the right browser or the HTTPS page</td></tr>
+          <tr><td>Lobby notice</td><td>When a rider leaves</td><td>Until the seat fills or the next change replaces it</td><td>Replaced, never stacked</td></tr>
+          <tr><td>Toast</td><td>When a background action finishes</td><td>At least 8 s; the timer pauses while hovered or focused</td><td>Timer, or Dismiss</td></tr>
+          <tr><td>Error toast</td><td>When a background action fails</td><td>Until dismissed</td><td>Dismiss, or the retry succeeding</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Banner tones</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <div class="banner banner--gold"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg><p class="banner__body"><span class="banner__title">Neon Docklands is open.</span> <span class="text-muted">A harbour city after dark, 21.6 km.</span></p></div>
+          <div class="banner banner--warning"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><p class="banner__body"><span class="banner__title">Open the secure version of this page.</span> <span class="text-muted">Bluetooth is blocked on plain http, so the bike can’t connect.</span></p></div>
+          <div class="banner banner--danger"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg><p class="banner__body"><span class="banner__title">Bluetooth is off.</span> <span class="text-muted">Turn on Bluetooth on this computer, then try again.</span></p></div>
+          <div class="banner banner--info"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" x2="16" y1="11" y2="11"/></svg><p class="banner__body"><span class="banner__title">MarcoVelo left.</span> <span class="text-muted">Their seat is open again.</span></p></div>
+        </div>
+        <div class="ds-example__caption"><span>Gold for earned, warning for a limit with a fix, danger for a failure, info for neutral news. Each tone pairs a colour with an icon.</span><span><code>.banner--gold/--warning/--danger/--info</code></span></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Kind</th><th scope="col">360</th><th scope="col">640 and up</th></tr></thead>
+        <tbody>
+          <tr><td>Banner</td><td>The action wraps under the text.</td><td>Icon, text and action on one row.</td></tr>
+          <tr><td>Browser notice</td><td>Text over action; the icon is hidden; 20px side padding.</td><td>One row with the icon; 32px padding from 1024.</td></tr>
+          <tr><td>Toast</td><td>Bottom of the screen, 16px from each edge, centred, full width.</td><td>Bottom right, 24px in, at most 24rem wide.</td></tr>
+        </tbody>
+      </table></div>
+      <p><b>Mid-ride, hold toasts.</b> The bottom of a ride screen is the interval, the route profile and resistance. Anything that can wait shows on Results instead; anything that can't is an overlay.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Live regions</h3>
+      <ul>
+        <li>The toast region and every status container exist when the page loads; content is injected into them. A live region created at the same moment as its message is often not announced.</li>
+        <li>Polite (<code>role="status"</code>): the unlock banner, the lobby notice, toasts. Assertive (<code>role="alert"</code>): the browser notice, error toasts, Lost the bike.</li>
+        <li>Notifications never take focus. The browser notice's button is the first control after the header, so it is one Tab away.</li>
+        <li>A toast's action must also exist somewhere permanent; a toast is never the only way to do something.</li>
+      </ul>
+      <h3>Timing</h3>
+      <p>Auto-dismissing toasts stay at least 8 seconds and pause while hovered or focused (2.2.1). Errors never auto-dismiss. Banners don't time out at all.</p>
+      <h3>Keyboard</h3>
+      <table class="ds-table ds-keys">
+        <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>Tab</kbd></td><td>Reach a banner's action in reading order; reach a toast's Dismiss (the toast pauses while focused).</td></tr>
+          <tr><td><kbd>Enter</kbd> / <kbd>Space</kbd></td><td>Run the action or dismiss.</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td>Dismiss the focused toast.</td></tr>
+        </tbody>
+      </table>
+      <h3>Contrast</h3>
+      <div class="pt-stack" style="gap: var(--space-2);">
+        <div class="ds-pair" style="--pair-fg: var(--color-gold-fg); --pair-bg: var(--color-gold-subtle);"><span>Unlock title on gold tint</span><span class="ds-pair__ratio" data-contrast="--color-gold-fg|--color-gold-subtle" data-min="4.5"></span></div>
+        <div class="ds-pair" style="--pair-fg: var(--color-warning-fg); --pair-bg: var(--color-warning-bg);"><span>Warning title on warning tint</span><span class="ds-pair__ratio" data-contrast="--color-warning-fg|--color-warning-bg" data-min="4.5"></span></div>
+        <div class="ds-pair" style="--pair-fg: var(--color-danger-fg); --pair-bg: var(--color-danger-bg);"><span>Danger title on danger tint</span><span class="ds-pair__ratio" data-contrast="--color-danger-fg|--color-danger-bg" data-min="4.5"></span></div>
+        <div class="ds-pair" style="--pair-fg: var(--color-fg); --pair-bg: var(--color-raised);"><span>Lobby notice on raised</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-raised" data-min="4.5"></span></div>
+      </div>
+      <h3>Motion</h3>
+      <p>Toasts slide up over <code>--duration-base</code> and fade out; under reduced motion they only fade. Banners appear without motion.</p>
+      <h3>Touch</h3>
+      <p>Toast Dismiss is 36px (<code>.icon-btn</code>); banner actions are 36px small buttons.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li><b>Banners are sentences with a full stop</b>: “Neon Docklands is open.” Detail follows in muted text: “A harbour city after dark, 21.6 km.”</li>
+        <li><b>A warning names the fix first</b>: “Open Telo Ride in Chrome or Edge.”, then why, then what still works: “you can look around, but not ride.”</li>
+        <li><b>Inline status says who and what</b>: “MarcoVelo left. Their seat is open again.”</li>
+        <li><b>Toasts are past tense</b> and say what changed, in the rider's numbers: “Ride saved.”</li>
+        <li><b>Actions are two or three words</b>: Ride it, Copy link, Open over HTTPS.</li>
+        <li><b>No exclamation marks, no “Success”, no “Congratulations”.</b> The unlock is news, stated plainly; gold does the celebrating.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas ds-example__canvas--stack"><div class="banner banner--gold"><svg class="icon banner__icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg><p class="banner__body"><span class="banner__title">Neon Docklands is open.</span></p><button class="btn btn--gold btn--sm" type="button">Ride it</button></div></div><figcaption>News in a banner, with the thing to do about it.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas ds-example__canvas--stack"><p class="pt-note">A modal “Congratulations!” over Home that must be closed before anything else.</p></div><figcaption>A celebration that blocks the page and asks for a click to get rid of it.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas ds-example__canvas--stack"><p class="pt-note">The browser notice stays under the header for as long as the browser can't reach the bike.</p></div><figcaption>A condition that lasts gets a notice that lasts.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas ds-example__canvas--stack"><div class="toast" style="max-width: none;"><p>This browser can't reach the bike.</p></div></div><figcaption>A lasting problem in a toast that disappears, leaving a disabled Start ride and no reason.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas ds-example__canvas--stack"><p class="race-lobby__notice" style="margin-top: 0;"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" x2="16" y1="11" y2="11"/></svg>MarcoVelo left. Their seat is open again.</p></div><figcaption>A change to the grid, shown by the grid.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas ds-example__canvas--stack"><p class="pt-note">An error toast that fades after 3 seconds.</p></div><figcaption>Too fast to read and gone before the rider can act; errors stay until dismissed.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <p>Mocks this pattern was extracted from:</p>
+      <ul>
+        <li><a href="../../mocks/pages/home/unlocked.html">pages/home/unlocked</a></li>
+        <li><a href="../../mocks/pages/custom-setup/needs-chromium.html">pages/custom-setup/needs-chromium</a>, <a href="../../mocks/pages/custom-setup/needs-https.html">needs-https</a>, <a href="../../mocks/pages/class-start/needs-chromium.html">pages/class-start/needs-chromium</a>, <a href="../../mocks/pages/class-start/needs-https.html">needs-https</a></li>
+        <li><a href="../../mocks/pages/race-lobby/someone-left.html">pages/race-lobby/someone-left</a></li>
+        <li><a href="../../mocks/pages/results/default.html">pages/results/default</a> (the unlock card that precedes the banner)</li>
+      </ul>
+      <p>Drift found while extracting:</p>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Mock</th><th scope="col">Issue</th><th scope="col">Resolution</th></tr></thead>
+        <tbody>
+          <tr><td>pages/race-lobby/someone-left</td><td>The notice names MarcoVelo, but the last joiner (Ollie R.) is the one dropped from the grid (flagged in the mocks README).</td><td>The notice and the grid read the same event.</td></tr>
+          <tr><td>assets (browser notice)</td><td>The notice's tint is a hand-mixed 7% of <code>--color-warn</code> with a 25% border, not the status tokens.</td><td>Read <code>--color-warning-bg</code> / <code>--color-warning-border</code> like <code>.banner--warning</code>. Needs a change to <code>.browser-notice</code> in components.css.</td></tr>
+          <tr><td>assets (toast)</td><td><code>.toast</code> exists with no parts and no mock uses it.</td><td>Composed here from the kit (icon, text, <code>.icon-btn</code>); the <a href="../components/toast.html">Toast</a> page owns its anatomy.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

@@ -1,0 +1,604 @@
+{
+  "shelves": [
+    {
+      "id": "20-min",
+      "title": "20 min",
+      "tagline": "Short and sharp — fits a lunch break."
+    },
+    {
+      "id": "30-min",
+      "title": "30 min",
+      "tagline": "Structured intervals with a proper warm-up."
+    },
+    {
+      "id": "60-min",
+      "title": "60 min endurance",
+      "tagline": "Long aerobic rides. Steady legs, steady heart."
+    }
+  ],
+  "classes": [
+    {
+      "id": "power-intervals-20",
+      "title": "20 Minute Power Intervals",
+      "channel": "Telo Ride Studio",
+      "focus": "VO₂ max",
+      "lengthSeconds": 1200,
+      "opensAtLevel": 1,
+      "shelfId": "20-min",
+      "summary": "Six one-minute VO₂ max efforts, each with a minute to recover.",
+      "world": "docklands",
+      "video": {
+        "videoId": "wI2_ym9ig1I",
+        "syncOffsetSeconds": 0
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 300,
+            "level": 8,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 60,
+            "level": 20,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 6,
+            "cadenceAim": 75
+          },
+          {
+            "kind": "work",
+            "duration": 60,
+            "level": 20,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 6,
+            "cadenceAim": 75
+          },
+          {
+            "kind": "work",
+            "duration": 60,
+            "level": 20,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 6,
+            "cadenceAim": 75
+          },
+          {
+            "kind": "work",
+            "duration": 60,
+            "level": 20,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 6,
+            "cadenceAim": 75
+          },
+          {
+            "kind": "work",
+            "duration": 60,
+            "level": 20,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 6,
+            "cadenceAim": 75
+          },
+          {
+            "kind": "work",
+            "duration": 60,
+            "level": 20,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "cool-down",
+            "duration": 240,
+            "level": 6,
+            "cadenceAim": 70
+          }
+        ]
+      }
+    },
+    {
+      "id": "threshold-builder-20",
+      "title": "20 Min Threshold Builder",
+      "channel": "Telo Ride Studio",
+      "focus": "Threshold",
+      "lengthSeconds": 1200,
+      "opensAtLevel": 1,
+      "shelfId": "20-min",
+      "summary": "Four two-minute threshold blocks with a minute between them.",
+      "world": "granite",
+      "video": {
+        "videoId": "3ZjSObWjUr8",
+        "syncOffsetSeconds": 0
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 300,
+            "level": 8,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 120,
+            "level": 15,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 6,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 120,
+            "level": 15,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 6,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 120,
+            "level": 15,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 6,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 120,
+            "level": 15,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "cool-down",
+            "duration": 240,
+            "level": 6,
+            "cadenceAim": 70
+          }
+        ]
+      }
+    },
+    {
+      "id": "hiit-cardio-30",
+      "title": "30 Minute HIIT Cardio",
+      "channel": "GCN Training",
+      "focus": "HIIT",
+      "lengthSeconds": 1800,
+      "opensAtLevel": 1,
+      "shelfId": "30-min",
+      "summary": "Eight 30-second maximal efforts with a recovery that shrinks each round. The classic.",
+      "world": "oldtown",
+      "video": {
+        "videoId": "QUoToFsMNig",
+        "syncOffsetSeconds": 12
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 300,
+            "level": 8,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 180,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 150,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 150,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "cool-down",
+            "duration": 360,
+            "level": 6,
+            "cadenceAim": 68
+          }
+        ]
+      }
+    },
+    {
+      "id": "tempo-paceline-30",
+      "title": "30 Min Tempo Paceline",
+      "channel": "Telo Ride Studio",
+      "focus": "Tempo",
+      "lengthSeconds": 2160,
+      "opensAtLevel": 5,
+      "shelfId": "30-min",
+      "summary": "Four six-minute turns on the front at tempo, with two minutes in the wheels between them.",
+      "world": "prairie",
+      "video": {
+        "videoId": "W60jdR6ylRc",
+        "syncOffsetSeconds": 0
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 240,
+            "level": 8,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 360,
+            "level": 12,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 7,
+            "cadenceAim": 85
+          },
+          {
+            "kind": "work",
+            "duration": 360,
+            "level": 12,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 7,
+            "cadenceAim": 85
+          },
+          {
+            "kind": "work",
+            "duration": 360,
+            "level": 12,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 7,
+            "cadenceAim": 85
+          },
+          {
+            "kind": "work",
+            "duration": 360,
+            "level": 12,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "cool-down",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 70
+          }
+        ]
+      }
+    },
+    {
+      "id": "vice-city-pyramid-30",
+      "title": "30 Min Vice City Pyramid",
+      "channel": "Telo Ride Studio",
+      "focus": "Pyramid",
+      "lengthSeconds": 1710,
+      "opensAtLevel": 10,
+      "shelfId": "30-min",
+      "summary": "Efforts climb from 30 seconds to 90 and come back down, with a recovery after each.",
+      "world": "vicecity",
+      "video": {
+        "videoId": "eNyVyngn0l8",
+        "syncOffsetSeconds": 0
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 300,
+            "level": 8,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 16,
+            "cadenceAim": 95
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 75
+          },
+          {
+            "kind": "work",
+            "duration": 45,
+            "level": 17,
+            "cadenceAim": 95
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 75
+          },
+          {
+            "kind": "work",
+            "duration": 60,
+            "level": 18,
+            "cadenceAim": 95
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 75
+          },
+          {
+            "kind": "work",
+            "duration": 90,
+            "level": 19,
+            "cadenceAim": 95
+          },
+          {
+            "kind": "recover",
+            "duration": 150,
+            "level": 6,
+            "cadenceAim": 75
+          },
+          {
+            "kind": "work",
+            "duration": 60,
+            "level": 18,
+            "cadenceAim": 95
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 75
+          },
+          {
+            "kind": "work",
+            "duration": 45,
+            "level": 17,
+            "cadenceAim": 95
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 75
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 16,
+            "cadenceAim": 95
+          },
+          {
+            "kind": "cool-down",
+            "duration": 300,
+            "level": 6,
+            "cadenceAim": 70
+          }
+        ]
+      }
+    },
+    {
+      "id": "dolomites-endurance-60",
+      "title": "60 Min Dolomites Endurance",
+      "channel": "Telo Ride Scenic",
+      "focus": "Zone 2",
+      "lengthSeconds": 3600,
+      "opensAtLevel": 10,
+      "shelfId": "60-min",
+      "summary": "One steady hour in zone 2: one level, soft rollers and long views.",
+      "world": "dolomites",
+      "video": {
+        "videoId": "QB69Pwl6GI8",
+        "syncOffsetSeconds": 3
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "steady",
+            "duration": 3600,
+            "level": 9,
+            "cadenceAim": 85
+          }
+        ]
+      }
+    },
+    {
+      "id": "coastal-endurance-surges-60",
+      "title": "60 Min Coastal Endurance + Surges",
+      "channel": "Telo Ride Scenic",
+      "focus": "Endurance",
+      "lengthSeconds": 3600,
+      "opensAtLevel": 20,
+      "shelfId": "60-min",
+      "summary": "An hour of endurance riding with five six-minute tempo surges, one up each headland.",
+      "world": "coast",
+      "video": {
+        "videoId": "cTs2fwpqBbg",
+        "syncOffsetSeconds": 3
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 300,
+            "level": 8,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 360,
+            "level": 13,
+            "cadenceAim": 88
+          },
+          {
+            "kind": "recover",
+            "duration": 300,
+            "level": 8,
+            "cadenceAim": 85
+          },
+          {
+            "kind": "work",
+            "duration": 360,
+            "level": 13,
+            "cadenceAim": 88
+          },
+          {
+            "kind": "recover",
+            "duration": 300,
+            "level": 8,
+            "cadenceAim": 85
+          },
+          {
+            "kind": "work",
+            "duration": 360,
+            "level": 13,
+            "cadenceAim": 88
+          },
+          {
+            "kind": "recover",
+            "duration": 300,
+            "level": 8,
+            "cadenceAim": 85
+          },
+          {
+            "kind": "work",
+            "duration": 360,
+            "level": 13,
+            "cadenceAim": 88
+          },
+          {
+            "kind": "recover",
+            "duration": 300,
+            "level": 8,
+            "cadenceAim": 85
+          },
+          {
+            "kind": "work",
+            "duration": 360,
+            "level": 13,
+            "cadenceAim": 88
+          },
+          {
+            "kind": "cool-down",
+            "duration": 300,
+            "level": 6,
+            "cadenceAim": 70
+          }
+        ]
+      }
+    }
+  ]
+}

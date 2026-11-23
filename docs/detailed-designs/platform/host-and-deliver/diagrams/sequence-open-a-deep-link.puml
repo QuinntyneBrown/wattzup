@@ -1,0 +1,36 @@
+@startuml
+title UML sequence behaviour — Open a deep link
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+participant "Browser" as browser
+participant "Site routing" as edge
+participant "Static host" as host
+box "Frontend — Ride app" #E0F2FE
+  participant "Router and HomePage" as app
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "ProgressController" as ctrl
+end box
+actor -> browser : Open https://<site>/race/prairie-paceline
+browser -> edge : GET /race/prairie-paceline
+edge -> host : Not /api, /hubs or /health
+host --> browser : index.html with CSP, nosniff, Referrer-Policy, frame-ancestors 'none' (L2-149 AC1)
+browser -> app : Boot; router opens the race route
+app -> edge : GET /api/progress with the session cookie (same site)
+edge -> ctrl : Forward over HTTPS (L2-149 AC2)
+ctrl --> app : 200 progress
+app --> actor : Screen rendered
+@enduml

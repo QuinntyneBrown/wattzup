@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnostics · no-bike — Telo Ride mocks</title>
+<meta name="mock:kind" content="dialog">
+<meta name="mock:screen" content="diagnostics">
+<meta name="mock:state" content="no-bike">
+<meta name="mock:requirements" content="L2-113 L2-114">
+<meta name="description" content="Diagnostics before a bike is picked: Web Bluetooth is available, the Bike row warns “None picked yet”.">
+<link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div inert aria-hidden="true">
+  <div class="app"></div>
+</div>
+<div class="scrim"></div>
+<div class="diagnostics-layer">
+  <main id="main" class="diagnostics" role="dialog" aria-modal="true" aria-labelledby="diagnostics-title">
+    <header class="diagnostics__header">
+      <h1 class="diagnostics__title" id="diagnostics-title">Diagnostics</h1>
+      <a class="diagnostics__close" href="../../pages/profile/default.html" aria-label="Close diagnostics"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></a>
+    </header>
+    <div class="diagnostics__body">
+      <dl class="diagnostics__facts">
+          <dt>Browser</dt><dd>Chrome 126 · macOS 14.5</dd>
+          <dt>Web Bluetooth</dt><dd data-tone="ok">Available</dd>
+          <dt>Page</dt><dd>https://ride.telo.app/ride</dd>
+          <dt>Bike</dt><dd data-tone="warn">None picked yet</dd>
+          <dt>Rides waiting to send</dt><dd>0</dd>
+          <dt>App version</dt><dd>2.0.0 · client 7f3c2a1</dd>
+      </dl>
+      <p class="diagnostics__privacy"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 16h.01"/><path d="M2.212 11.577a2 2 0 0 0-.212.896V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5.527a2 2 0 0 0-.212-.896L18.55 5.11A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><path d="M21.946 12.013H2.054"/><path d="M6 16h.01"/></svg>Everything here is read in your browser and stays on this device until you download it.</p>
+
+      <div class="diagnostics__log">
+        <div class="diagnostics__switch-row">
+          <span class="diagnostics__switch-text">
+            <span class="diagnostics__switch-label" id="log-every-packet-label">Log every packet</span>
+            <span class="diagnostics__switch-detail" id="log-every-packet-detail">Records each Bluetooth message, not just the commands we send. Turn on while reproducing a problem — it uses memory.</span>
+          </span>
+          <a class="switch" href="packets.html" role="switch" aria-checked="false" aria-labelledby="log-every-packet-label" aria-describedby="log-every-packet-detail"></a>
+        </div>
+        <div class="diagnostics__well">
+          <span class="diagnostics__count"><span class="diagnostics__count-figure">212</span><span class="diagnostics__count-unit"> commands · 20 KB</span></span>
+          <button class="btn btn--raised btn--sm diagnostics__download" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>Download packet log</button>
+        </div>
+        <p class="diagnostics__file">Saves telo-ride-packets-2024-06-14.jsonl. Attach it to a bug report if we ask.</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="All mocks">⌂</a>
+  <span class="mock-bar__screen">Diagnostics</span>
+  <ul class="mock-bar__states">
+    <li><a href="default.html">default</a></li>
+    <li><a href="packets.html">packets</a></li>
+    <li><a href="no-bike.html" aria-current="page">no-bike</a></li>
+    <li><a href="bluetooth-off.html">bluetooth-off</a></li>
+  </ul>
+  <button type="button" data-theme-toggle aria-pressed="true">☀ Light</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

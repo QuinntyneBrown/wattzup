@@ -1,0 +1,37 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Keep progress on the backend
+
+Container_Boundary(app, "Ride app") {
+  Component(outbox, "RideOutbox", "Service · domain/storage", "Keeps finished rides in IndexedDB until recorded")
+  Component(ridesapi, "HttpRidesApi", "HTTP client · api (RIDES_API)", "POST /api/rides")
+  Component(store, "RiderProgressStore", "Signal store · ride (PROGRESS_STORE)", "Progress from the backend only")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(rides, "RidesController", "ASP.NET Core controller", "POST /api/rides")
+  Component(progress, "ProgressController", "ASP.NET Core controller", "GET /api/progress")
+  Component(validator, "SubmitRideCommandValidator", "FluentValidation", "Request shape")
+  Component(plaus, "RidePlausibilityRule", "Domain rule · multiplayer", "422 ride_not_plausible (L2-125)")
+  Component(rec, "SessionResultRecorder", "Application service · multiplayer", "Server-side result of a session; 409 result_pending")
+  Component(submit, "SubmitRideCommandHandler", "MediatR handler", "Records once; computes XP, stars, best, streak, unlocks")
+  Component(query, "GetProgressQueryHandler", "MediatR handler", "Builds ProgressDto")
+  Component(rules, "XpCalculator, LevelTable, StarRules, UnlockRules, Streak", "Domain", "Progress rules")
+  Component(ctx, "IAppDbContext", "EF Core abstraction", "Rides, MapProgress, Streak, Rider")
+}
+ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Rides and progress")
+
+Rel(outbox, ridesapi, "submitRide(ride)")
+Rel(ridesapi, rides, "POST /api/rides", "JSON/HTTPS")
+Rel(store, progress, "GET /api/progress", "JSON/HTTPS")
+Rel(rides, submit, "Sends SubmitRideCommand")
+Rel(validator, submit, "Guards")
+Rel(progress, query, "Sends GetProgressQuery")
+Rel(submit, rules, "Applies")
+Rel(submit, plaus, "Checks")
+Rel(submit, rec, "Reads multiplayer result")
+Rel(query, rules, "Reads level and next unlock")
+Rel(submit, ctx, "Writes")
+Rel(query, ctx, "Reads")
+Rel(ctx, db, "Persists", "EF Core")
+@enduml

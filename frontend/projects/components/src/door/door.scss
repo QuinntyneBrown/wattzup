@@ -1,0 +1,32 @@
+// Block door (docs/design-system/assets/components.css, Home: section-head and door__summary): the door's heading and
+// its link to the full list over a hairline, then its summary.
+:host {
+  display: block;
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-width-hairline) solid var(--color-line);
+}
+
+.section-head__title {
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.door__summary {
+  margin-top: var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+
+  // A door with no summary (Classes with no group session, L2-035) keeps no gap for one.
+  &:empty {
+    display: none;
+  }
+}

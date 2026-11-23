@@ -1,0 +1,8 @@
+// The page is the display name prompt (wz-display-name-prompt), full height.
+:host {
+  display: block;
+}
+
+.display-name-prompt-page:focus {
+  outline: none;
+}

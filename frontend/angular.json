@@ -8,57 +8,54 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "wattzup": {
+    "ride": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
         }
       },
-      "root": "projects/wattzup",
-      "sourceRoot": "projects/wattzup/src",
+      "root": "projects/ride",
+      "sourceRoot": "projects/ride/src",
       "prefix": "wz",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/wattzup",
-            "browser": "projects/wattzup/src/main.ts",
-            "tsConfig": "projects/wattzup/tsconfig.app.json",
+            "outputPath": "dist/ride",
+            "browser": "projects/ride/src/main.ts",
+            "tsConfig": "projects/ride/tsconfig.app.json",
+            "define": { "require": "undefined", "TELO_VERSION": "'2.0.0'", "TELO_COMMIT": "'dev'" },
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "projects/ride/public"
               },
               {
-                "glob": "manifest.webmanifest",
-                "input": "projects/wattzup/src",
-                "output": "/"
+                "glob": "draco_*",
+                "input": "node_modules/three/examples/jsm/libs/draco/gltf",
+                "output": "draco"
               }
             ],
             "styles": [
-              "node_modules/@angular/cdk/overlay-prebuilt.css",
-              "projects/wattzup/src/tokens.css",
-              "projects/wattzup/src/styles.scss"
-            ],
-            "stylePreprocessorOptions": {
-              "includePaths": ["projects/components/src/styles"]
-            },
-            "serviceWorker": "ngsw-config.json"
+              "projects/ride/src/styles/tokens.css",
+              "projects/ride/src/styles/fonts.css",
+              "projects/ride/src/styles/styles.scss"
+            ]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "350kB",
-                  "maximumError": "600kB"
+                  "maximumWarning": "302kB",
+                  "maximumError": "305kB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "12kB",
-                  "maximumError": "20kB"
+                  "maximumWarning": "6kB",
+                  "maximumError": "10kB"
                 }
               ],
               "outputHashing": "all",
@@ -69,7 +66,14 @@
                   "inlineCritical": false
                 },
                 "fonts": false
-              }
+              },
+              "fileReplacements": [
+                {
+                  "replace": "projects/ride/src/app/bike/simulated-bike.provider.ts",
+                  "with": "projects/ride/src/app/bike/simulated-bike.provider.production.ts"
+                }
+              ],
+              "serviceWorker": "projects/ride/ngsw-config.json"
             },
             "development": {
               "optimization": false,
@@ -83,10 +87,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "wattzup:build:production"
+              "buildTarget": "ride:build:production"
             },
             "development": {
-              "buildTarget": "wattzup:build:development"
+              "buildTarget": "ride:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -94,13 +98,14 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/wattzup/tsconfig.spec.json"
+            "tsConfig": "projects/ride/tsconfig.spec.json",
+            "include": ["**/*.spec.ts", "../../*/src/**/*.spec.ts"]
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["projects/wattzup/src/**/*.ts", "projects/wattzup/src/**/*.html"]
+            "lintFilePatterns": ["projects/ride/src/**/*.ts", "projects/ride/src/**/*.html"]
           }
         }
       }
@@ -119,23 +124,16 @@
         }
       }
     },
-    "browser": {
+    "domain": {
       "projectType": "library",
-      "root": "projects/browser",
-      "sourceRoot": "projects/browser/src",
+      "root": "projects/domain",
+      "sourceRoot": "projects/domain/src",
       "prefix": "wz",
       "architect": {
-        "test": {
-          "builder": "@angular/build:unit-test",
-          "options": {
-            "buildTarget": "wattzup:build:development",
-            "tsConfig": "projects/browser/tsconfig.spec.json"
-          }
-        },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["projects/browser/**/*.ts", "projects/browser/**/*.html"]
+            "lintFilePatterns": ["projects/domain/**/*.ts", "projects/domain/**/*.html"]
           }
         }
       }
@@ -146,17 +144,136 @@
       "sourceRoot": "projects/components/src",
       "prefix": "wz",
       "architect": {
-        "test": {
-          "builder": "@angular/build:unit-test",
-          "options": {
-            "buildTarget": "wattzup:build:development",
-            "tsConfig": "projects/components/tsconfig.spec.json"
-          }
-        },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": ["projects/components/**/*.ts", "projects/components/**/*.html"]
+          }
+        }
+      }
+    },
+    "video": {
+      "projectType": "library",
+      "root": "projects/video",
+      "sourceRoot": "projects/video/src",
+      "prefix": "wz",
+      "architect": {
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["projects/video/**/*.ts", "projects/video/**/*.html"]
+          }
+        }
+      }
+    },
+    "world": {
+      "projectType": "library",
+      "root": "projects/world",
+      "sourceRoot": "projects/world/src",
+      "prefix": "wz",
+      "architect": {
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["projects/world/**/*.ts", "projects/world/**/*.html"]
+          }
+        }
+      }
+    },
+    "marketing": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/marketing",
+      "sourceRoot": "projects/marketing/src",
+      "prefix": "wz",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "outputPath": "dist/marketing",
+            "browser": "projects/marketing/src/main.ts",
+            "tsConfig": "projects/marketing/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/marketing/public"
+              },
+              {
+                "glob": "fonts/**/*",
+                "input": "projects/ride/public"
+              }
+            ],
+            "styles": [
+              "projects/ride/src/styles/tokens.css",
+              "projects/ride/src/styles/fonts.css",
+              "projects/ride/src/styles/styles.scss"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "190kB",
+                  "maximumError": "200kB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "6kB"
+                }
+              ],
+              "outputHashing": "all",
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": false
+              }
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "projects/marketing/src/environments/environment.ts",
+                  "with": "projects/marketing/src/environments/environment.development.ts"
+                }
+              ]
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "options": {
+            "port": 4201
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "marketing:build:production"
+            },
+            "development": {
+              "buildTarget": "marketing:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/marketing/src/**/*.ts",
+              "projects/marketing/src/**/*.html"
+            ]
           }
         }
       }

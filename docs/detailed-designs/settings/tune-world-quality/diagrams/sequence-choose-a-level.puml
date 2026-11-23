@@ -1,0 +1,46 @@
+@startuml
+title UML sequence behaviour — Choose a quality level
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "SettingsPage / WorldSettings" as page
+  participant "RaceWorld / ClassWorldScene" as host
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "LocalRideSettingsStore" as store
+  participant "worldQuality()" as policy
+end box
+box "Frontend — Ride app (world library, lazy)" #E0F2FE
+  participant "WorldScene" as scene
+  participant "WorldRenderer" as renderer
+end box
+actor -> page : Open Settings
+page --> actor : Graphics API in use; Quality: Auto chosen (L2-159 AC1, AC3)
+actor -> page : Choose Medium; turn step-down off; 30 fps; 50 %
+page -> store : set('quality', 'medium') … each change kept at once (L2-158 AC3)
+actor -> host : Open a race or a world class
+host -> store : settings()
+host -> policy : worldQuality(settings)
+policy --> host : tier medium, stepDown false, cap 30, scale 0.5
+host -> scene : quality input
+scene -> renderer : start(…, { tier: 'medium', stepDown: false, forceWebGL })
+renderer --> scene : opens at Medium; ultra draws at High on WebGL 2 (L2-159 AC5)
+scene -> renderer : setFramePeriod(33.3) (L2-160 AC4)
+scene -> renderer : resize(w, h, devicePixelRatio × 0.5); the HUD stays sharp (L2-160 AC5)
+loop each display frame
+  scene -> renderer : draw, at most 30 a second (L2-160 AC4)
+end
+@enduml

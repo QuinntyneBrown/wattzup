@@ -1,0 +1,7 @@
+<section class="class-shelf" [attr.aria-labelledby]="'shelf-' + shelfId()">
+  <div class="class-shelf__head">
+    <h2 class="class-shelf__title" [id]="'shelf-' + shelfId()">{{ title() }}</h2>
+    <p class="class-shelf__blurb">{{ tagline() }}</p>
+  </div>
+  <div class="class-shelf__grid"><ng-content /></div>
+</section>

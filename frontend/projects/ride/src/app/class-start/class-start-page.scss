@@ -1,0 +1,64 @@
+@use '../../styles/page';
+
+// Block class-start (docs/design-system/assets/components.css, Class Start): the header over the scrolling page, one
+// column on a phone and, from lg, the class beside the aside with the ride choice.
+.class-start-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--color-ink);
+  color: var(--color-fg);
+}
+
+.class-start-page__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.class-start {
+  display: grid;
+  gap: var(--space-8);
+  padding-block: var(--space-6);
+
+  &:focus {
+    outline: none; // focused by the skip link, never by a pointer
+  }
+
+  @media (min-width: 64rem) {
+    grid-template-columns: minmax(0, 1fr) var(--classes-start-aside-width);
+    gap: var(--space-12);
+    padding-block: var(--space-10);
+  }
+}
+
+.class-start__main {
+  min-width: 0;
+}
+
+.class-start__meta {
+  margin-top: var(--space-6);
+  color: var(--color-muted);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.class-start__title {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-3xl);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
+
+  @media (min-width: 40rem) {
+    font-size: var(--font-size-4xl);
+    line-height: var(--line-height-4xl);
+  }
+}
+
+.class-start__summary {
+  max-width: var(--layout-text-2xl);
+  margin-top: var(--space-3);
+  color: var(--color-muted);
+}

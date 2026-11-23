@@ -3,17 +3,79 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Motion — Wattzup design system</title>
-<meta name="description" content="Durations, easings, the 1 Hz tick and reduced motion.">
+<title>Motion — Telo Ride design system</title>
+<meta name="description" content="Telo Ride's durations and easings, what moves in the product, choreography rules and reduced motion, with replayable demos.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Shared by the foundations-b pages: wide reference tables keep a readable width and scroll
+   inside .ds-table-wrap on phones instead of crushing their columns. */
+.ds-table-wrap { --doc-table-min: 40rem; }
+.ds-table-wrap > .ds-table { min-width: var(--doc-table-min); }
+.ds-themes + ul, .ds-themes + p, .ds-example + ul { margin-top: var(--space-4); }
+/* Motion page only: replayable demos. ds.js toggles data-run on .ds-motion-demo; every demo is a
+   keyframe animation that only exists while data-run="true", so pressing the button again restarts it. */
+.mo-tracks { flex: 1 1 100%; display: grid; gap: var(--space-3); }
+.mo-row { display: grid; grid-template-columns: var(--space-28) minmax(0, 1fr); gap: var(--space-3); align-items: center; font: var(--text-body-sm); }
+.mo-row code { justify-self: start; }
+.mo-track { position: relative; height: var(--space-6); border-radius: var(--radius-full); background: var(--color-bg-subtle); }
+.mo-dot { position: absolute; top: 0; left: 0; width: var(--space-6); height: var(--space-6); border-radius: var(--radius-full); background: var(--color-accent); }
+.ds-motion-demo[data-run="true"] .mo-dot { animation: mo-slide var(--mo-d, var(--duration-base)) var(--mo-e, var(--ease-standard)) both; }
+@keyframes mo-slide { to { left: calc(100% - var(--space-6)); } }
+.mo-curve { width: var(--space-10); height: var(--space-10); flex: none; color: var(--color-fg-accent); overflow: visible; }
+.mo-curve path { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.mo-curve .mo-curve__axis { stroke: var(--color-border-strong); stroke-width: 1; }
+.mo-row--curve { grid-template-columns: var(--space-10) var(--space-28) minmax(0, 1fr); }
+
+/* Standings rows trading places: positions stay, rows slide (--duration-fast, --ease-out) */
+.mo-board { flex: 1 1 var(--space-48); max-width: var(--race-board-width); background: var(--color-bg-surface-raised); border-radius: var(--radius-xl); padding-block: var(--space-2); overflow: hidden; }
+.mo-board__pos { display: grid; padding-left: var(--space-3); }
+.mo-board__pos li { display: flex; align-items: center; height: var(--space-8); font-family: var(--font-family-display); font-weight: var(--font-weight-bold); color: var(--color-fg-subtle); }
+.mo-board__rows li { height: var(--space-8); }
+.ds-motion-demo[data-run="true"] .mo-board__down { animation: mo-down var(--duration-fast) var(--ease-out) both; }
+.ds-motion-demo[data-run="true"] .mo-board__up { animation: mo-up var(--duration-fast) var(--ease-out) both; }
+@keyframes mo-down { to { translate: 0 100%; } }
+@keyframes mo-up { to { translate: 0 -100%; } }
+
+/* Panel opening: --duration-base on --ease-spring, from 96% and transparent */
+.mo-panel { flex: 1 1 var(--space-48); max-width: var(--layout-panel-narrow); padding: var(--space-5); border-radius: var(--radius-2xl); background: var(--color-bg-surface-raised); box-shadow: var(--shadow-4); transform-origin: top right; }
+.mo-panel h3 { margin: 0; font: var(--text-h4); }
+.mo-panel p { margin-top: var(--space-1); font: var(--text-body-sm); color: var(--color-fg-muted); }
+.ds-motion-demo[data-run="true"] .mo-panel { animation: mo-open var(--duration-base) var(--ease-spring) both; }
+@keyframes mo-open { from { opacity: 0; scale: 0.96; } }
+
+/* The unlock: card fades and scales in after 200 ms, then the photo sweeps from grey after 350 ms */
+.mo-unlock { flex: 1 1 var(--space-48); max-width: var(--layout-panel-narrow); }
+.ds-motion-demo[data-run="true"] .mo-unlock { animation: mo-open var(--duration-unlock) var(--ease-enter) var(--duration-base) both; }
+.ds-motion-demo[data-run="true"] .mo-unlock .unlock-card__photo { animation: mo-colour var(--duration-unlock) var(--ease-standard) calc(var(--duration-base) + var(--duration-fast)) both; }
+@keyframes mo-colour { from { filter: grayscale(1) brightness(0.5); } }
+
+/* 3-2-1-Go: the timer swaps the digit every --duration-countdown; each step fades and scales in over --duration-base */
+.mo-count { position: relative; flex: none; width: var(--space-40); height: var(--space-32); border-radius: var(--radius-xl); background: var(--color-scrim-strong); }
+.mo-count span { position: absolute; inset: 0; display: grid; place-items: center; font: var(--text-numeral); font-size: var(--font-size-7xl); color: var(--color-volt-fg); opacity: 0; }
+.mo-count span:first-child { opacity: 1; }
+.ds-motion-demo[data-run="true"] .mo-count span { opacity: 0; animation: mo-step var(--duration-countdown) linear calc(var(--duration-countdown) * var(--i)) both; }
+.ds-motion-demo[data-run="true"] .mo-count span:last-child { animation-name: mo-step-go; }
+@keyframes mo-step { 0% { opacity: 0; scale: 0.9; } 20% { opacity: 1; scale: 1; } 99.9% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes mo-step-go { 0% { opacity: 0; scale: 0.9; } 20%, 100% { opacity: 1; scale: 1; } }
+
+.mo-specimens { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-6); }
+.mo-specimens figure { display: grid; justify-items: start; gap: var(--space-2); }
+.mo-specimens figcaption { font: var(--text-caption); color: var(--color-fg-muted); }
+.mo-skeleton { display: grid; gap: var(--space-2); width: var(--space-48); }
+.mo-skeleton .skeleton { height: var(--space-3); }
+.mo-skeleton .skeleton:last-child { width: 60%; }
+.mo-world { align-items: flex-end; min-height: var(--space-48); }
+
+.app-header__nav-link { text-decoration: none; }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +90,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,39 +144,310 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Foundation</p>
       <h1>Motion</h1>
-      <p class="ds-lead">Motion explains change: a toast arriving, a level confirming, the interval bar easing between ticks. It never decorates.</p>
-      
-      <ul class="ds-toc"><li><a href="#demos">Durations and easings</a></li><li><a href="#rules">Rules</a></li><li><a href="#reduced">Reduced motion</a></li><li><a href="#tokens">All tokens</a></li></ul>
+      <p class="ds-lead">The 3D world is the motion. The interface around it stays quiet: colour changes on hover, standings rows slide, panels open, and one gold moment celebrates an unlock.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#duration">Duration</a></li><li><a href="#easing">Easing</a></li><li><a href="#product">What moves in the product</a></li><li><a href="#choreography">Choreography</a></li><li><a href="#usage">Usage</a></li><li><a href="#accessibility">Accessibility: reduced motion</a></li><li><a href="#tokens">Tokens</a></li></ul>
     </header>
-    <section class="ds-section" id="demos"><h2><a href="#demos">Durations and easings</a></h2>
-<p>Press to replay.</p><div class="ds-motion-demo"><div class="ds-motion-demo" style="--demo-duration: var(--duration-fast); --demo-ease: var(--ease-standard);"><button class="btn btn--sm" type="button" data-motion-run>Play fast</button><span class="dot" aria-hidden="true"></span></div><div class="ds-motion-demo" style="--demo-duration: var(--duration-base); --demo-ease: var(--ease-standard);"><button class="btn btn--sm" type="button" data-motion-run>Play base</button><span class="dot" aria-hidden="true"></span></div><div class="ds-motion-demo" style="--demo-duration: var(--duration-slow); --demo-ease: var(--ease-enter);"><button class="btn btn--sm" type="button" data-motion-run>Play slow</button><span class="dot" aria-hidden="true"></span></div><div class="ds-motion-demo" style="--demo-duration: var(--duration-deliberate); --demo-ease: var(--ease-spring);"><button class="btn btn--sm" type="button" data-motion-run>Play spring</button><span class="dot" aria-hidden="true"></span></div></div>
-    </section>
-    <section class="ds-section" id="rules"><h2><a href="#rules">Rules</a></h2>
-<ul><li>The interval bar eases over <code>--duration-tick</code> (linear) so 1 Hz updates look continuous.</li><li>Step-change banner springs in over <code>--duration-banner</code>.</li><li>Spinners use <code>--duration-spin</code>; skeleton shimmer <code>--duration-shimmer</code>.</li></ul>
-    </section>
-    <section class="ds-section" id="reduced"><h2><a href="#reduced">Reduced motion</a></h2>
-<p>Under <code>prefers-reduced-motion: reduce</code> every duration is zeroed except the spinner, which is status. The WebGL trace loop pauses when the tab is hidden and draws without easing.</p>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">All tokens</a></h2>
-<p>14 tokens. Values resolve live for each theme.</p><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td><code>--duration-instant</code></td><td colspan="2"><span data-token="--duration-instant"></span></td></tr><tr><td><code>--duration-fast</code></td><td colspan="2"><span data-token="--duration-fast"></span></td></tr><tr><td><code>--duration-base</code></td><td colspan="2"><span data-token="--duration-base"></span></td></tr><tr><td><code>--duration-slow</code></td><td colspan="2"><span data-token="--duration-slow"></span></td></tr><tr><td><code>--duration-deliberate</code></td><td colspan="2"><span data-token="--duration-deliberate"></span></td></tr><tr><td><code>--duration-spin</code></td><td colspan="2"><span data-token="--duration-spin"></span></td></tr><tr><td><code>--duration-tick</code></td><td colspan="2"><span data-token="--duration-tick"></span></td></tr><tr><td><code>--duration-shimmer</code></td><td colspan="2"><span data-token="--duration-shimmer"></span></td></tr><tr><td><code>--duration-banner</code></td><td colspan="2"><span data-token="--duration-banner"></span></td></tr><tr><td><code>--ease-standard</code></td><td colspan="2"><span data-token="--ease-standard"></span></td></tr><tr><td><code>--ease-enter</code></td><td colspan="2"><span data-token="--ease-enter"></span></td></tr><tr><td><code>--ease-exit</code></td><td colspan="2"><span data-token="--ease-exit"></span></td></tr><tr><td><code>--ease-spring</code></td><td colspan="2"><span data-token="--ease-spring"></span></td></tr><tr><td><code>--ease-linear</code></td><td colspan="2"><span data-token="--ease-linear"></span></td></tr></tbody></table></div>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+      <p>During a ride the rider watches a photo-real world roll past at their own speed. Anything else that moves competes with it, so interface motion in Telo Ride is short, small and functional. It confirms that something happened (a hover, a place gained, a panel opened), and it celebrates exactly one thing: a map unlocking.</p>
+      <ul>
+        <li><b>Confirm, never decorate.</b> Nothing loops or bounces for attention. The spinner and the skeleton pulse are the only repeating motion, and both mean “waiting”.</li>
+        <li><b>Under a quarter of a second.</b> Interface motion uses 150, 200 or 250 ms. Longer durations belong to timers (the 3-2-1, the interval bar), not to animation.</li>
+        <li><b>Timers are not motion.</b> A clock that ticks once a second keeps ticking with reduced motion. The transitions around it stop.</li>
+        <li><b>Tokens only.</b> Every transition reads <code>--duration-*</code> and <code>--ease-*</code>, so <code>prefers-reduced-motion</code> switches the whole product off in one place (see <a href="#accessibility">Accessibility</a>).</li>
+      </ul>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="duration"><h2><a href="#duration">Duration</a></h2>
+      <p>Five interface durations and two loop lengths. Press <b>Play</b> to run every interface duration side by side on the same easing.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-motion-demo">
+          <button class="btn btn--primary" type="button" data-motion-run><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg>Play durations</button>
+          <div class="mo-tracks">
+            <div class="mo-row"><code>instant</code><div class="mo-track"><span class="mo-dot" style="--mo-d: var(--duration-instant)"></span></div></div>
+            <div class="mo-row"><code>fast</code><div class="mo-track"><span class="mo-dot" style="--mo-d: var(--duration-fast)"></span></div></div>
+            <div class="mo-row"><code>base</code><div class="mo-track"><span class="mo-dot" style="--mo-d: var(--duration-base)"></span></div></div>
+            <div class="mo-row"><code>slow</code><div class="mo-track"><span class="mo-dot" style="--mo-d: var(--duration-slow)"></span></div></div>
+            <div class="mo-row"><code>deliberate</code><div class="mo-track"><span class="mo-dot" style="--mo-d: var(--duration-deliberate)"></span></div></div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>All five on <code>--ease-standard</code>. With reduced motion on, every dot jumps except <code>deliberate</code>, which is a timer step.</span></div>
+      </div>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Token</th><th scope="col">Value</th><th scope="col">Used for</th><th scope="col">Reduced motion</th></tr></thead>
+        <tbody>
+          <tr><td><code>--duration-instant</code></td><td data-token="--duration-instant"></td><td>State changes that must not animate: focus rings, <code>aria-pressed</code> fills, the HUD numbers changing.</td><td>0 ms</td></tr>
+          <tr><td><code>--duration-fast</code></td><td data-token="--duration-fast"></td><td>Hover and press colour, the 0.98 press scale, switches, standings rows trading places.</td><td>0 ms</td></tr>
+          <tr><td><code>--duration-base</code></td><td data-token="--duration-base"></td><td>Panels and popovers opening, a disclosure chevron turning, a countdown step fading in, a class cover zooming on hover.</td><td>0 ms</td></tr>
+          <tr><td><code>--duration-slow</code></td><td data-token="--duration-slow"></td><td>The unlock card and its photo, nothing else. Read it through <code>--duration-unlock</code>.</td><td>0 ms</td></tr>
+          <tr><td><code>--duration-deliberate</code></td><td data-token="--duration-deliberate"></td><td>One step of a timer: a 3-2-1 digit, one second of interval-bar fill. Read it through <code>--duration-countdown</code>.</td><td>Kept: it is a timer</td></tr>
+          <tr><td><code>--duration-loop</code></td><td data-token="--duration-loop"></td><td>One turn of a spinner (<code>.icon--spin</code>, <code>.spinner</code>).</td><td>0 ms: the arc stands still and the label carries the meaning</td></tr>
+          <tr><td><code>--duration-pulse</code></td><td data-token="--duration-pulse"></td><td>One breath of a <code>.skeleton</code>.</td><td>0 ms: a flat raised block</td></tr>
+          <tr><td><code>--duration-delay-tooltip</code></td><td data-token="--duration-delay-tooltip"></td><td>Hover intent before a <a href="../components/tooltip.html">tooltip</a> shows. A wait, not a movement.</td><td>Kept: 300 ms, so a passing pointer does not flash tooltips</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Aliases: name the moment, not the number</h3>
+      <p>Two durations carry a product meaning. Use the alias so a later change to the unlock or the countdown touches one line.</p>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Alias</th><th scope="col">Points at</th><th scope="col">Value</th></tr></thead>
+        <tbody>
+          <tr><td><code>--duration-unlock</code></td><td><code>--duration-slow</code></td><td data-token="--duration-unlock"></td></tr>
+          <tr><td><code>--duration-countdown</code></td><td><code>--duration-deliberate</code></td><td data-token="--duration-countdown"></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="easing"><h2><a href="#easing">Easing</a></h2>
+      <p>Four curves. Press <b>Play</b> to see them over one second, slow enough to tell apart; in the product they run at 150 to 250 ms.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-motion-demo">
+          <button class="btn btn--primary" type="button" data-motion-run><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg>Play easings</button>
+          <div class="mo-tracks">
+            <div class="mo-row mo-row--curve"><svg class="mo-curve" viewBox="0 0 40 40" aria-hidden="true"><path class="mo-curve__axis" d="M0 40H40M0 40V0"/><path d="M0 40C16 40 8 0 40 0"/></svg><code>standard</code><div class="mo-track"><span class="mo-dot" style="--mo-d: var(--duration-deliberate); --mo-e: var(--ease-standard)"></span></div></div>
+            <div class="mo-row mo-row--curve"><svg class="mo-curve" viewBox="0 0 40 40" aria-hidden="true"><path class="mo-curve__axis" d="M0 40H40M0 40V0"/><path d="M0 40C0 40 8 0 40 0"/></svg><code>enter</code><div class="mo-track"><span class="mo-dot" style="--mo-d: var(--duration-deliberate); --mo-e: var(--ease-enter)"></span></div></div>
+            <div class="mo-row mo-row--curve"><svg class="mo-curve" viewBox="0 0 40 40" aria-hidden="true"><path class="mo-curve__axis" d="M0 40H40M0 40V0"/><path d="M0 40C16 40 40 0 40 0"/></svg><code>exit</code><div class="mo-track"><span class="mo-dot" style="--mo-d: var(--duration-deliberate); --mo-e: var(--ease-exit)"></span></div></div>
+            <div class="mo-row mo-row--curve"><svg class="mo-curve" viewBox="0 0 40 40" aria-hidden="true"><path class="mo-curve__axis" d="M0 40H40M0 40V0"/><path d="M0 40C9.2 0 12.8 0 40 0"/></svg><code>spring</code><div class="mo-track"><span class="mo-dot" style="--mo-d: var(--duration-deliberate); --mo-e: var(--ease-spring)"></span></div></div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Curves plotted progress (up) against time (across).</span></div>
+      </div>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Token</th><th scope="col">Value</th><th scope="col">Used for</th></tr></thead>
+        <tbody>
+          <tr><td><code>--ease-standard</code></td><td data-token="--ease-standard"></td><td>Anything that changes in place: hover colour, switches, the skeleton breath, the photo colour sweep.</td></tr>
+          <tr><td><code>--ease-enter</code></td><td data-token="--ease-enter"></td><td>Things arriving or responding to a press: button fills and the press scale, standings rows, the unlock card. Fast start, gentle stop.</td></tr>
+          <tr><td><code>--ease-exit</code></td><td data-token="--ease-exit"></td><td>Things leaving: a popover closing, a toast going. Gentle start, quick finish, so the exit never lingers.</td></tr>
+          <tr><td><code>--ease-spring</code></td><td data-token="--ease-spring"></td><td>Panels and covers: a popover opening, a class cover zooming, the Feedback chevron turning. Fast out, long settle.</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Aliases from the design</h3>
+      <p>The design's code calls two of these curves by other names; <code>components.css</code> keeps them, so both are tokens.</p>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Alias</th><th scope="col">Points at</th><th scope="col">Value</th></tr></thead>
+        <tbody>
+          <tr><td><code>--ease-out</code></td><td><code>--ease-enter</code></td><td data-token="--ease-out"></td></tr>
+          <tr><td><code>--ease-panel</code></td><td><code>--ease-spring</code></td><td data-token="--ease-panel"></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="product"><h2><a href="#product">What moves in the product</a></h2>
+      <p>This is the complete list. A screen that wants motion not on it needs a reason, and it gets a row here.</p>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Moment</th><th scope="col">Where</th><th scope="col">What changes</th><th scope="col">Tokens</th></tr></thead>
+        <tbody>
+          <tr><td>Hover and press</td><td>Buttons, nav links, rows, tiles, icon buttons</td><td>Colour or fill; buttons also scale to 0.98 while pressed, ride steppers to 0.96</td><td><code>--duration-fast</code>, <code>--ease-standard</code> or <code>--ease-out</code></td></tr>
+          <tr><td>Standings rows trading places</td><td>Race standings, class output board</td><td>Rows slide one row height when places swap</td><td><code>--duration-fast</code>, <code>--ease-out</code></td></tr>
+          <tr><td>Panels opening</td><td>“Leave this ride?”, Feedback, Diagnostics, class covers on hover</td><td>Opacity and a 96% → 100% scale; covers zoom; chevrons turn</td><td><code>--duration-base</code>, <code>--ease-panel</code></td></tr>
+          <tr><td>The unlock</td><td>Results unlock card, Home unlock banner</td><td>The card fades and scales in after 200 ms; the photo sweeps from grey at half brightness to colour after 350 ms</td><td><code>--duration-unlock</code>, <code>--ease-enter</code></td></tr>
+          <tr><td>The 3-2-1</td><td>Race lobby countdown</td><td>The digit changes once a second (a timer); each step fades and scales in</td><td><code>--duration-countdown</code> for the step, <code>--duration-base</code> for the fade</td></tr>
+          <tr><td>Interval progress</td><td>Race HUD, class segment, custom ride interval bar</td><td>The fill grows linearly over each second, in step with the clock</td><td><code>--duration-countdown</code>, <code>linear</code></td></tr>
+          <tr><td>Waiting</td><td>Searching for bikes, Pairing…, loading lists</td><td>Spinner turns; skeleton breathes</td><td><code>--duration-loop</code>, <code>--duration-pulse</code></td></tr>
+          <tr><td>The world</td><td>Race, Class Ride (video), custom ride (video)</td><td>The 3D scene or the class video. The mocks show a still panorama or cover</td><td>Not tokenised: it is content, driven by the rider's speed</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Hover colour</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas">
+          <nav class="app-header__nav" aria-label="Hover demo" style="width: auto; margin: 0;">
+            <a class="app-header__nav-link" href="#product">Home</a>
+            <a class="app-header__nav-link" href="#product" data-state="hover">Race</a>
+            <a class="app-header__nav-link" href="#product">Classes</a>
+          </nav>
+          <button class="btn btn--primary" type="button">Race Old Town Criterium</button>
+          <button class="btn btn--quiet" type="button">Ride alone</button>
+        </div>
+        <div class="ds-example__caption"><span>Point at them. “Race” is pinned to its hover colour. 150 ms, colour only; the primary button also scales to 0.98 while held.</span></div>
+      </div>
+
+      <h3>Standings rows trading places</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-motion-demo">
+          <button class="btn btn--raised" type="button" data-motion-run>Pass Pacer Vale</button>
+          <div class="mo-board">
+            <ol class="mo-board__rows">
+              <li class="race-board__row mo-board__down"><span class="race-board__dot" style="--jersey: var(--jersey-vale)"></span><span class="race-board__name">Pacer Vale</span><span class="numeral race-board__gap">+0:02</span></li>
+              <li class="race-board__row race-board__row--you mo-board__up" aria-current="true"><span class="race-board__dot" style="--jersey: var(--jersey-you)"></span><span class="race-board__name">You</span></li>
+            </ol>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Old Town Criterium, 5:01 in: you pass Pacer Vale for 4th. The rows slide past each other in 150 ms, then the list re-renders with the new positions.</span></div>
+      </div>
+
+      <h3>Panels opening</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-motion-demo">
+          <button class="btn btn--raised" type="button" data-motion-run>Open “Leave this ride?”</button>
+          <div class="mo-panel">
+            <h3>Leave this ride?</h3>
+            <p>You’re 6:52 in with 2.24 km ridden. The ride is paused while you decide.</p>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>200 ms on the spring curve, from 96% and transparent. It closes faster, on <code>--ease-exit</code>.</span></div>
+      </div>
+
+      <h3>The unlock</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-motion-demo">
+          <button class="btn btn--raised" type="button" data-motion-run>Finish the race</button>
+          <div class="unlock-card mo-unlock">
+            <img class="unlock-card__photo" src="../assets/images/worlds/docklands.jpg" alt="">
+            <div class="unlock-card__body">
+              <p class="unlock-card__title"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>Neon Docklands is open</p>
+              <p class="unlock-card__place">A harbour city after dark.</p>
+            </div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>The only celebration in the product. Card: 250 ms after 200 ms. Photo: 250 ms after 350 ms.</span></div>
+      </div>
+
+      <h3>The 3-2-1</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-motion-demo">
+          <button class="btn btn--raised" type="button" data-motion-run>Start the countdown</button>
+          <div class="mo-count" aria-hidden="true"><span style="--i: 0">3</span><span style="--i: 1">2</span><span style="--i: 2">1</span><span style="--i: 3">Go</span></div>
+        </div>
+        <div class="ds-example__caption"><span>One step per <code>--duration-countdown</code>. Only the 200 ms fade and scale on each step is motion.</span></div>
+      </div>
+
+      <h3>Waiting</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas mo-specimens">
+          <figure><svg class="icon icon--lg icon--spin text-volt" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg><figcaption>Spinner · <code>--duration-loop</code>, linear</figcaption></figure>
+          <figure><span class="mo-skeleton" aria-hidden="true"><span class="skeleton"></span><span class="skeleton"></span></span><figcaption>Skeleton · <code>--duration-pulse</code></figcaption></figure>
+          <figure><button class="btn btn--primary" type="button" disabled aria-busy="true"><svg class="icon icon--lg icon--spin" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Pairing…</button><figcaption>Busy button: the label says what is happening</figcaption></figure>
+        </div>
+      </div>
+
+      <h3>The world</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--photo mo-world" style="--photo: url(../assets/images/worlds/oldtown.jpg)">
+          <span class="photo-tag">Old Town Criterium · frozen at 5:01</span>
+        </div>
+        <div class="ds-example__caption"><span>The mocks draw the live 3D world as the map's panorama at the camera's horizon. In the product it moves with the rider's speed; with reduced motion the camera holds still and the HUD keeps counting.</span></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="choreography"><h2><a href="#choreography">Choreography</a></h2>
+      <ul>
+        <li><b>One thing at a time.</b> Only the unlock staggers (card, then photo). Everything else moves as a single piece.</li>
+        <li><b>Exits are faster than entrances.</b> Open on <code>--ease-spring</code> or <code>--ease-enter</code>; close on <code>--ease-exit</code>, a step shorter (<code>base</code> in, <code>fast</code> out).</li>
+        <li><b>Small distances.</b> Panels scale from 96%, buttons press to 98%, steppers to 96%. Nothing flies in from off screen; dialogs on phones rise as a sheet from the bottom edge they are anchored to.</li>
+        <li><b>Numbers do not tween.</b> Watts, cadence, heart rate, speed, gaps and the clock change once a second with the bike's notifications. Counting animations would lie about the reading in between.</li>
+        <li><b>Layout never animates mid-ride.</b> The HUD panels stay where they are; only their contents change. A slide in the standings is a row trading places, not the list resizing.</li>
+        <li><b>Gold motion is rare.</b> The unlock is the one moment that animates in gold. XP and stars on Results appear with the page, without their own animation.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="usage"><h2><a href="#usage">Usage</a></h2>
+      <p>Write every transition from the tokens. List the properties you animate; never <code>transition: all</code>.</p>
+      <pre><code>/* hover colour */
+.app-header__nav-link { transition: color var(--duration-fast) var(--ease-standard); }
+
+/* rows trading places */
+.race-board__row { transition: translate var(--duration-fast) var(--ease-out); }
+
+/* a panel opening */
+.feedback-context__chevron { transition: rotate var(--duration-base) var(--ease-panel); }
+
+/* a timer: linear, one second per step, survives reduced motion */
+.race-interval__fill { transition: width var(--duration-countdown) linear; }</code></pre>
+      <ul>
+        <li>Animate <code>opacity</code>, <code>transform</code>, <code>translate</code>, <code>scale</code>, <code>rotate</code> and colours. Avoid animating <code>width</code>, <code>height</code> or <code>top</code>, except the interval fill, which is a timer.</li>
+        <li>No raw milliseconds in <code>components.css</code> or on a page; the checker and review reject them.</li>
+        <li>No motion longer than <code>--duration-slow</code> unless it is a timer step.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility: reduced motion</a></h2>
+      <p>When the rider asks for reduced motion (<code>prefers-reduced-motion: reduce</code>, WCAG 2.3.3), <code>tokens.css</code> sets <code>--duration-fast</code>, <code>--duration-base</code>, <code>--duration-slow</code>, <code>--duration-loop</code> and <code>--duration-pulse</code> to <code>0ms</code>. Components need no media queries of their own. <code>--duration-deliberate</code> (and so <code>--duration-countdown</code>) is left alone, because the 3-2-1 and the interval bar are timers: their pace is information, not decoration.</p>
+      <pre><code>@media (prefers-reduced-motion: reduce) {
+  :root { --duration-loop: 0ms; --duration-pulse: 0ms; --duration-fast: 0ms; --duration-base: 0ms; --duration-slow: 0ms; }
+}</code></pre>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Moment</th><th scope="col">With reduced motion</th></tr></thead>
+        <tbody>
+          <tr><td>Hover, press, switches</td><td>The new colour or position appears at once; there is no press scale.</td></tr>
+          <tr><td>Standings rows</td><td>The list re-renders in its new order without sliding.</td></tr>
+          <tr><td>Panels, popovers, chevrons</td><td>They appear and disappear at once, already in place.</td></tr>
+          <tr><td>The unlock</td><td>The card appears at its end state, in colour, with no scale.</td></tr>
+          <tr><td>The 3-2-1</td><td>Still one digit per second (a timer). Each digit appears without fading or scaling.</td></tr>
+          <tr><td>Interval bar</td><td>Still fills once a second; the fill jumps rather than glides.</td></tr>
+          <tr><td>Spinner, skeleton</td><td>They stand still. The visible label (“Searching…”, “Pairing…”) or the empty block carries the meaning.</td></tr>
+          <tr><td>The 3D world</td><td>Frozen: the camera holds the frame the mocks show, and distance, clock and standings keep updating. Class and custom-ride videos keep playing, because the video is the class.</td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li><b>Nothing flashes</b> more than three times a second (2.3.1). The 3-2-1 changes once a second.</li>
+        <li><b>Pause, stop, hide</b> (2.2.2): the spinner and skeleton stop as soon as the wait ends. The world and the class video are the activity itself; a solo ride can be paused, a race or a group class cannot (see <a href="accessibility.html">Accessibility</a>).</li>
+        <li><code>components.css</code> also carries a blanket <code>prefers-reduced-motion</code> rule that shortens every animation and transition to 0.01 ms as a safety net. That rule also flattens the timer transitions; the timers themselves keep ticking because the clock, not CSS, drives them.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <p>Every motion token. Motion does not change with the theme; both columns resolve live from <code>tokens.css</code>, so with reduced motion on they show the zeroed values.</p>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th><th scope="col">Use</th></tr></thead>
+        <tbody>
+          <tr><td><code>--duration-instant</code></td><td><span data-theme="light"><span data-token="--duration-instant"></span></span></td><td><span data-theme="dark"><span data-token="--duration-instant"></span></span></td><td>Changes that never animate</td></tr>
+          <tr><td><code>--duration-fast</code></td><td><span data-theme="light"><span data-token="--duration-fast"></span></span></td><td><span data-theme="dark"><span data-token="--duration-fast"></span></span></td><td>Hover, press, switches, standings rows</td></tr>
+          <tr><td><code>--duration-base</code></td><td><span data-theme="light"><span data-token="--duration-base"></span></span></td><td><span data-theme="dark"><span data-token="--duration-base"></span></span></td><td>Panels opening, chevrons, countdown step fade</td></tr>
+          <tr><td><code>--duration-slow</code></td><td><span data-theme="light"><span data-token="--duration-slow"></span></span></td><td><span data-theme="dark"><span data-token="--duration-slow"></span></span></td><td>The unlock</td></tr>
+          <tr><td><code>--duration-deliberate</code></td><td><span data-theme="light"><span data-token="--duration-deliberate"></span></span></td><td><span data-theme="dark"><span data-token="--duration-deliberate"></span></span></td><td>One timer step (kept with reduced motion)</td></tr>
+          <tr><td><code>--duration-loop</code></td><td><span data-theme="light"><span data-token="--duration-loop"></span></span></td><td><span data-theme="dark"><span data-token="--duration-loop"></span></span></td><td>One turn of a spinner</td></tr>
+          <tr><td><code>--duration-pulse</code></td><td><span data-theme="light"><span data-token="--duration-pulse"></span></span></td><td><span data-theme="dark"><span data-token="--duration-pulse"></span></span></td><td>One breath of a skeleton</td></tr>
+          <tr><td><code>--duration-delay-tooltip</code></td><td><span data-theme="light"><span data-token="--duration-delay-tooltip"></span></span></td><td><span data-theme="dark"><span data-token="--duration-delay-tooltip"></span></span></td><td>Tooltip hover delay</td></tr>
+          <tr><td><code>--duration-unlock</code></td><td><span data-theme="light"><span data-token="--duration-unlock"></span></span></td><td><span data-theme="dark"><span data-token="--duration-unlock"></span></span></td><td>Alias of <code>--duration-slow</code></td></tr>
+          <tr><td><code>--duration-countdown</code></td><td><span data-theme="light"><span data-token="--duration-countdown"></span></span></td><td><span data-theme="dark"><span data-token="--duration-countdown"></span></span></td><td>Alias of <code>--duration-deliberate</code></td></tr>
+          <tr><td><code>--ease-standard</code></td><td><span data-theme="light"><span data-token="--ease-standard"></span></span></td><td><span data-theme="dark"><span data-token="--ease-standard"></span></span></td><td>In-place changes</td></tr>
+          <tr><td><code>--ease-enter</code></td><td><span data-theme="light"><span data-token="--ease-enter"></span></span></td><td><span data-theme="dark"><span data-token="--ease-enter"></span></span></td><td>Arrivals and presses</td></tr>
+          <tr><td><code>--ease-exit</code></td><td><span data-theme="light"><span data-token="--ease-exit"></span></span></td><td><span data-theme="dark"><span data-token="--ease-exit"></span></span></td><td>Departures</td></tr>
+          <tr><td><code>--ease-spring</code></td><td><span data-theme="light"><span data-token="--ease-spring"></span></span></td><td><span data-theme="dark"><span data-token="--ease-spring"></span></span></td><td>Panels and covers</td></tr>
+          <tr><td><code>--ease-out</code></td><td><span data-theme="light"><span data-token="--ease-out"></span></span></td><td><span data-theme="dark"><span data-token="--ease-out"></span></span></td><td>Alias of <code>--ease-enter</code> (the design's name)</td></tr>
+          <tr><td><code>--ease-panel</code></td><td><span data-theme="light"><span data-token="--ease-panel"></span></span></td><td><span data-theme="dark"><span data-token="--ease-panel"></span></span></td><td>Alias of <code>--ease-spring</code> (the design's name)</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

@@ -1,0 +1,32 @@
+@startuml
+title UML sequence behaviour — Navigate from the app header
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (components library)" #E0F2FE
+  participant "AppHeader" as apphdr
+end box
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "Router" as router
+  participant "MainShell" as shell
+  participant "ProfilePage" as page
+end box
+actor -> apphdr : Choose the level link
+apphdr -> router : routerLink /profile
+router -> page : loadComponent ProfilePage
+router --> shell : NavigationEnd /profile
+router -> shell : RouterLinkActive matches /profile on the level and Profile links
+apphdr --> actor : Profile item carries aria-current="page" (L2-032 AC1)
+@enduml

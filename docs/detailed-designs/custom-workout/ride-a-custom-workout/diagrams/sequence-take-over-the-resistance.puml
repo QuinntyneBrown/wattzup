@@ -1,0 +1,43 @@
+@startuml
+title UML sequence behaviour — Take over the resistance
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "RideControl" as control
+  participant "CustomRideStore" as store
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "ResistanceController" as resist
+  participant "WorkoutEngine" as engine
+  participant "WebBluetoothBikeConnection" as conn
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "Smart bike" as bike
+end box
+rider -> control : Press "Level 10" bar
+control -> store : setLevel(10)
+store -> resist : setManual(10) (L2-028 AC2)
+resist -> conn : Set resistance 10
+conn -> bike : Resistance command
+store --> control : Bar 10 aria-current="true", bars below on
+rider -> control : Press "Raise resistance"
+control -> store : raise()
+store -> resist : raise() → 11, clamped 1–32 (L2-028 AC1)
+resist -> conn : Set resistance 11
+engine -> engine : Next segment starts
+engine -> resist : applyPlanLevel(24) — plan level applies again (L2-028 AC3)
+resist -> conn : Set resistance 24
+@enduml

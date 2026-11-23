@@ -1,0 +1,106 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "The plan sets the hill, but the legs are yours. Telo Ride now lets the rider take over the resistance."
+      ]
+    },
+    {
+      "id": "raise",
+      "bars": 4,
+      "lines": [
+        "Raise resistance moves the target up one level and sends it. Lower resistance moves it down one."
+      ]
+    },
+    {
+      "id": "limits",
+      "bars": 4,
+      "lines": [
+        "At thirty-two it stays thirty-two, and at one it stays one. Every change is clamped before it's sent."
+      ]
+    },
+    {
+      "id": "frombike",
+      "bars": 4,
+      "lines": [
+        "Before any target, a nudge starts from the resistance the bike reports. Eight becomes nine."
+      ]
+    },
+    {
+      "id": "pick",
+      "bars": 4,
+      "lines": [
+        "Picking a level sets it outright. Level twenty is sent as twenty, marked as the rider's own."
+      ]
+    },
+    {
+      "id": "plan",
+      "bars": 4,
+      "lines": [
+        "A change by hand lasts until the segment ends. When the next one starts, the plan's level applies again."
+      ]
+    },
+    {
+      "id": "away",
+      "bars": 4,
+      "lines": [
+        "With the bike away, or refusing control, nothing is sent by hand, and the target stays where it was."
+      ]
+    },
+    {
+      "id": "source",
+      "bars": 4,
+      "lines": [
+        "Each command remembers where it came from, the plan or the rider, with its acknowledgement time."
+      ]
+    },
+    {
+      "id": "deferred",
+      "bars": 4,
+      "lines": [
+        "Still to come: the steppers and level bars on the ride screens, switched off with no bike."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "Home doesn't change yet, at any width. The rider's changes wait in the engine for the ride screens."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: seven new unit tests, one per row of the requirement, and every spec still green."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

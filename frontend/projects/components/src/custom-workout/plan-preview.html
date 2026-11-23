@@ -1,0 +1,43 @@
+<h2 class="plan-preview__label" id="preview-title">Your ride</h2>
+<p class="plan-preview__total">{{ total() }}</p>
+<wz-class-profile
+  class="plan-preview__chart"
+  size="xl"
+  label="Resistance profile"
+  [segments]="segments()"
+/>
+<div class="plan-preview__axis" aria-hidden="true">
+  <span>0:00</span><span>{{ total() }}</span>
+</div>
+<dl class="plan-preview__facts">
+  @for (fact of facts(); track fact.name) {
+    <div class="plan-preview__fact">
+      <dt>{{ fact.name }}</dt>
+      <dd>{{ fact.value }}</dd>
+    </div>
+  }
+</dl>
+<div class="plan-preview__foot">
+  <div class="plan-preview__legend" aria-hidden="true">
+    <span class="plan-preview__legend-item"><span class="kind-swatch"></span>Work</span>
+    <span class="plan-preview__legend-item"
+      ><span class="kind-swatch kind-swatch--rest"></span>Recover</span
+    >
+  </div>
+  <button
+    wz-button
+    variant="primary"
+    size="xl"
+    class="plan-preview__start"
+    type="button"
+    [block]="true"
+    [disabled]="blocked() !== null"
+    [attr.aria-describedby]="blocked() === null ? null : 'start-blocked'"
+    (click)="started.emit()"
+  >
+    Start ride
+  </button>
+  @if (blocked(); as reason) {
+    <p class="plan-preview__blocked" id="start-blocked">{{ reason }}</p>
+  }
+</div>

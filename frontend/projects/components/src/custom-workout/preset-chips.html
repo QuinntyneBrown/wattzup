@@ -1,0 +1,13 @@
+@for (preset of presets(); track preset.id) {
+  <button
+    class="preset-chip"
+    type="button"
+    [attr.aria-pressed]="preset.id === chosen()"
+    (click)="picked.emit(preset.id)"
+  >
+    {{ preset.name }}
+    @if (edited() && preset.id === chosen()) {
+      <span class="preset-chip__edited"> · edited</span>
+    }
+  </button>
+}

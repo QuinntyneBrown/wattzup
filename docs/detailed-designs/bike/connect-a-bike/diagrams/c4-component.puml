@@ -1,0 +1,34 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Connect a bike
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Echelon or FTMS; Bluetooth LE")
+Container_Boundary(app, "Ride app") {
+  Component(guard, "rememberedBikeGuard", "Route guard · ride", "Sends a first-run rider to /connect")
+  Component(page, "ConnectBikePage", "Angular page · ride", "First-run pairing screen")
+  Component(store, "ConnectBikeStore", "Signal store · ride (route-scoped)", "Searching, pairing, paired and failed states")
+  Component(device, "ConnectDevice", "Presentation component · components", "The device card")
+  Component(conn, "WebBluetoothBikeConnection", "Service · domain/bluetooth", "BikeConnection over navigator.bluetooth")
+  Component(echelon, "EchelonLink", "BikeLink · domain/bluetooth", "Echelon subscribe and init")
+  Component(ftms, "FtmsLink", "BikeLink · domain/bluetooth", "FTMS subscribe, range and control")
+  Component(queue, "GattWriteQueue", "Service · domain/bluetooth", "One write at a time, in order")
+  Component(eproto, "EchelonProtocol", "Codec · domain/protocol", "Init commands and checksums")
+  Component(fproto, "FtmsProtocol", "Codec · domain/protocol", "Control point op codes and range")
+  ComponentDb(remembered, "RememberedBikeStore", "Store · domain/storage", "Remembered bike in localStorage")
+}
+Rel(rider, page, "Presses search and Pair")
+Rel(guard, remembered, "Reads")
+Rel(page, store, "Drives")
+Rel(page, device, "Renders")
+Rel(store, conn, "Calls via BIKE_CONNECTION")
+Rel(conn, echelon, "Chooses for the Echelon service")
+Rel(conn, ftms, "Chooses for FTMS only")
+Rel(echelon, queue, "Writes through")
+Rel(ftms, queue, "Writes through")
+Rel(echelon, eproto, "Encodes with")
+Rel(ftms, fproto, "Encodes and decodes with")
+Rel(conn, remembered, "Saves the paired bike to")
+Rel(queue, bike, "Writes with response", "GATT")
+Rel(bike, conn, "Notifies", "GATT")
+@enduml

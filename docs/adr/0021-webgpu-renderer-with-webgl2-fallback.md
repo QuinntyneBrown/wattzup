@@ -1,6 +1,6 @@
 # 0021. World Ride draws with Three.js's WebGPU renderer, falling back to WebGL2
 
-- **Status:** Accepted, amended by [0023](0023-bend-the-road-in-the-vertex-stage.md)
+- **Status:** Accepted, amended by [0023](0023-bend-the-road-in-the-vertex-stage.md) and [0030](0030-world-library-carried-from-main.md)
 - **Date:** 2026-11-19
 - **Amends:** [0020](0020-three-js-for-world-ride.md)
 
@@ -39,6 +39,19 @@ Three Shading Language, and compiled for either backend.
 - Captured and baked assets (photogrammetry, scans, lightmaps, probes, impostor atlases, splats,
   virtual-texture pages) are made offline, bundled under `frontend/public/worlds/<id>/`, and
   served from the same origin (ADR 0020). The scene never fetches one from elsewhere.
+
+## Amendment: the 3D Tiles loader (2026-11-21, slice 8.7)
+
+Real-world scenery (L2-066) streams Google's photorealistic 3D Tiles, which no renderer file can
+reasonably parse alone: a 3D Tiles tileset, its level-of-detail traversal and the session the
+Map Tiles API hands out. The renderer takes **`3d-tiles-renderer` 0.5.4** (NASA-AMMOS, Apache
+2.0), pinned exactly in `package.json`, with its `TilesRenderer`, `GoogleCloudAuthPlugin`,
+`GLTFExtensionsPlugin` and `ReorientationPlugin`. It is imported dynamically only when a rider
+presses "Stream it", so neither the initial bundle nor the world chunk carries it. Its tiles are
+Draco-compressed glTF, so Three.js's own `DRACOLoader` decodes them with the decoder files of the
+pinned `three` package, copied to the app's own origin (`/draco/`) at build time; nothing is
+fetched from a CDN. The tiles come from Google with the rider's key (ADR 0020's same-origin rule
+does not cover them: they are the one foreign asset, admitted by L2-131).
 
 ## Consequences
 

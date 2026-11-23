@@ -1,0 +1,28 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Read bike telemetry
+System_Ext(bike, "Smart bike", "Echelon or FTMS; Bluetooth LE")
+Person(rider, "Rider", "Rides a smart bike at home")
+Container_Boundary(app, "Ride app") {
+  Component(conn, "WebBluetoothBikeConnection", "Service · domain/bluetooth", "Emits raw frames")
+  Component(edec, "EchelonFrameDecoder", "Codec · domain/protocol", "D1 cadence, D2 resistance; ignores the rest")
+  Component(fdec, "IndoorBikeDataDecoder", "Codec · domain/protocol", "FTMS flags and fields")
+  Component(tele, "BikeTelemetry", "Service · domain/engine", "Current reading as signals; stale guard")
+  Component(models, "SpeedModel / PowerModel / EnergyModel", "Pure helpers · domain/engine", "Documented formulas")
+  Component(totals, "RideTotals", "Service · domain/engine", "Distance, output and energy per running second")
+  Component(clock, "RideTicker", "Service · domain/engine (slice 5.1)", "Running seconds, none while paused (L2-133)")
+  Component(readout, "formatMetric", "Pure helper · components", "One metric, or a dash; distance as 2.24 km")
+}
+Rel(bike, conn, "Notifications", "GATT")
+Rel(conn, edec, "Echelon frames")
+Rel(conn, fdec, "Indoor Bike Data")
+Rel(edec, tele, "TelemetrySample")
+Rel(fdec, tele, "TelemetrySample")
+Rel(tele, models, "Derives speed and power with")
+Rel(clock, totals, "Running second")
+Rel(totals, tele, "Reads speed and power from")
+Rel(totals, models, "Energy with")
+Rel(readout, tele, "Rendered from (via page)")
+Rel(rider, readout, "Reads")
+@enduml

@@ -1,0 +1,77 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+hide empty members
+title Class structure — Adjust sound, motion and display
+interface RideSettingsStore <<api>> {
+  +settings: Signal<RideSettings>
+  +set(key, value): void
+}
+interface RideSound <<api>> {
+  +play(source: RideSoundSource): void
+  +stop(): void
+}
+interface RideSoundSource <<api>> {
+  +cadence: Signal<number | null>
+  +speedKmh: Signal<number | null>
+  +resistance: Signal<number | null>
+  +running: Signal<boolean>
+  +videoPlaying: Signal<boolean>
+}
+class WebAudioRideSound <<domain/browser>> {
+  -voices: Voices | null
+  -level(): number
+  -open(): void
+  -close(): void
+  -schedule(): void
+}
+class "ride-sound rules" as rules <<domain/engine>> {
+  +rideSoundParams(input): RideSoundParams
+  +nextFreewheel(previous, step): FreewheelState | null
+}
+interface DisplayPreferences <<api>> {
+  +deviceReducesMotion: Signal<boolean>
+  +reducedMotion: Signal<boolean>
+  +theme: Signal<'dark' | 'light'>
+}
+class BrowserDisplayPreferences <<domain/browser>> {
+  -media(query): Signal<boolean>
+}
+class "enterFullScreenOnStart" as full <<domain/engine>> {
+  +enterFullScreenOnStart(settings, fullscreen): void
+}
+interface ScreenWakeLock <<api>> {
+  +hold(): void
+  +release(): void
+}
+class BrowserScreenWakeLock <<domain/browser>>
+class "RaceStore / ClassRideStore" as stores <<ride>>
+class "WorldScene" as scene <<world>> {
+  +reducedMotion: input<boolean | null>
+}
+class "SoundSettings / DisplaySettings" as views <<components>>
+RideSound <|.. WebAudioRideSound
+DisplayPreferences <|.. BrowserDisplayPreferences
+ScreenWakeLock <|.. BrowserScreenWakeLock
+WebAudioRideSound ..> rules
+WebAudioRideSound ..> RideSettingsStore : reads
+BrowserDisplayPreferences ..> RideSettingsStore : reads
+BrowserScreenWakeLock ..> RideSettingsStore : reads
+stores ..> RideSound : play / stop
+stores ..> RideSoundSource : gives
+stores ..> ScreenWakeLock : hold / release
+stores ..> scene : reducedMotion
+stores ..> DisplayPreferences : reads reducedMotion
+full ..> RideSettingsStore
+views ..> RideSettingsStore : (through SettingsPage)
+@enduml

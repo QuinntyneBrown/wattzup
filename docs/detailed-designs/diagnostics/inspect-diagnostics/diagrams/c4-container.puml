@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Inspect diagnostics
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Echelon or FTMS; Bluetooth LE")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine")
+  ContainerDb(idb, "Browser storage", "IndexedDB", "Rides waiting to send; remembered bike")
+}
+Rel(rider, app, "Reads Bluetooth, bike and app facts in")
+Rel(app, bike, "Link state, RSSI", "Web Bluetooth")
+Rel(app, idb, "Counts rides waiting to send in")
+@enduml

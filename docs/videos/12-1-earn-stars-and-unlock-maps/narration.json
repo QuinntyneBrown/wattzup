@@ -1,0 +1,78 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Your stars, your best times and your open maps now come from your own rides."
+      ]
+    },
+    {
+      "id": "stars",
+      "bars": 5,
+      "lines": [
+        "Every map has three stars: finish, a top three against the medium pack, and beat your best. Once earned, never lost."
+      ]
+    },
+    {
+      "id": "next",
+      "bars": 6,
+      "lines": [
+        "The next unlock is the first locked map you can work on now. For the mid rider it is Neon Docklands, and Race Setup on Old Town Criterium names the same goal."
+      ]
+    },
+    {
+      "id": "veteran",
+      "bars": 5,
+      "lines": [
+        "For the veteran it is Col du Granit: earn three stars on Dolomites. A best of over an hour reads in minutes."
+      ]
+    },
+    {
+      "id": "opened",
+      "bars": 4,
+      "lines": [
+        "A map a ride opened is open everywhere, and Race Setup is ready for it."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 5,
+      "lines": [
+        "On a phone the path is one column. From a laptop, the star rules sit beside it."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: the next unlock case by case, your maps through the API, and every screen that shows them."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

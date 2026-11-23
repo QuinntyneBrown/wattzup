@@ -1,0 +1,16 @@
+<section class="connect-works" aria-labelledby="works-with">
+  <h2 class="connect-works__title" id="works-with">Works with</h2>
+  <ul class="connect-works__list">
+    @for (bike of bikes(); track bike.label) {
+      <li class="connect-works__item">
+        <span>{{ bike.label }}</span>
+        <span
+          class="connect-works__status"
+          [class.connect-works__status--beta]="bike.level === 'beta'"
+        >
+          {{ bike.level === 'beta' ? 'Beta' : 'Full control' }}
+        </span>
+      </li>
+    }
+  </ul>
+</section>

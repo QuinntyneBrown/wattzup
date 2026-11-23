@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Manage saved worlds
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Saves, lists and clears worlds")
+  Container(host, "Static host", "Azure Static Web Apps", "World bundles")
+  ContainerDb(cs, "Browser storage", "Cache Storage telo-worlds; localStorage", "Saved worlds; keepWorlds")
+}
+Rel(rider, app, "Clears worlds, turns saving off")
+Rel(app, host, "Downloads a world", "HTTPS")
+Rel(app, cs, "Puts, lists, deletes")
+@enduml

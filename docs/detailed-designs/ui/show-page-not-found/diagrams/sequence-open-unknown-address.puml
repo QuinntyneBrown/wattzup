@@ -1,0 +1,42 @@
+@startuml
+title UML sequence behaviour — Open an unknown address
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+participant "Browser" as browser
+participant "Static host" as host
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "Router" as router
+  participant "MainShell" as shell
+  participant "NotFoundPage" as page
+  participant "HomePage" as home
+end box
+box "Frontend — Ride app (components library)" #E0F2FE
+  participant "AppHeader" as header
+end box
+actor -> browser : Open https://<host>/old-link
+browser -> host : GET /old-link
+host --> browser : index.html (no file matches)
+browser -> router : Initial navigation to /old-link
+router -> router : No route matches; wildcard ** matches; no auth guard
+router -> shell : loadComponent MainShell (layout route)
+shell -> header : Brand and nav links in the slots
+router -> page : loadComponent NotFoundPage into the shell's outlet
+router --> header : No routerLinkActive matches; no aria-current (L2-145 AC1)
+page --> actor : "This page doesn’t exist." with "← Back to Home"
+actor -> page : Choose "← Back to Home"
+page -> router : navigate to /
+router -> home : Open Home (L2-145 AC2)
+@enduml

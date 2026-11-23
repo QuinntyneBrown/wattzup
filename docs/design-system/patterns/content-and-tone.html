@@ -3,17 +3,47 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Content and tone — Wattzup design system</title>
-<meta name="description" content="How Wattzup talks: short, plain, numeric.">
+<title>Content and tone — Telo Ride design system</title>
+<meta name="description" content="Applying Telo Ride's voice to whole compositions: how a card, an overlay, a notice, a confirmation and a results screen are written, with button verbs, numbers and units, and the error and empty formulas in place.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Pattern page layout helpers: tokens only. Product components come from components.css. */
+.ds-section > ul { list-style: disc; }
+.ds-section > ol { list-style: decimal; }
+.pt-frame { width: 100%; border: var(--border-width-hairline) solid var(--color-border-default); border-radius: var(--radius-lg); overflow: hidden; background: var(--color-ink); color: var(--color-fg); }
+.pt-frame .app { height: auto; min-height: 0; }
+.pt-pad { padding: var(--space-6) var(--space-5); }
+.pt-stack { display: flex; flex-direction: column; gap: var(--space-4); width: 100%; min-width: 0; }
+.pt-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.pt-grid { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); width: 100%; align-items: start; }
+.pt-tag { display: block; font: var(--text-overline); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-fg-subtle); margin-bottom: var(--space-2); }
+.pt-flow { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); font: var(--text-body-sm); }
+.pt-flow li { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0; }
+.pt-flow li + li::before { content: "→"; color: var(--color-fg-subtle); }
+.pt-flow b { padding: var(--space-1) var(--space-2-5); border-radius: var(--radius-md); background: var(--color-raised); color: var(--color-fg); font-weight: var(--font-weight-medium); }
+.pt-flow b[aria-current] { background: var(--color-accent-subtle); color: var(--color-fg-accent); }
+.pt-panel { width: 100%; max-width: 25rem; }
+.pt-stage-xl { min-height: 40rem; }
+.pt-note { font: var(--text-caption); color: var(--color-fg-muted); }
+.pt-stage-leave { min-height: 24rem; }
+/* Links inside product compositions keep the component's own colour, not the docs link style */
+:where(.pt-frame, .ds-stage, .pt-reset) a { color: inherit; text-decoration: none; }
+:where(.pt-frame, .ds-stage, .pt-reset) a:hover { color: inherit; }
+
+/* absolutely positioned visually-hidden text must stay inside the matrix scroller */
+.ds-matrix { position: relative; }
+.pt-list { list-style: decimal; padding-left: var(--space-6); }
+.pt-list > li + li { margin-top: var(--space-2); }
+.pt-list { margin-bottom: var(--space-4); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +58,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,54 +112,268 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Pattern</p>
       <h1>Content and tone</h1>
-      <p class="ds-lead">Wattzup speaks to someone mid-effort: few words, numbers first, the spec's terms, no blame.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span></div>
-      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#when">When to use</a></li><li><a href="#structure">Structure</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#sources">Sources</a></li></ul>
+      <p class="ds-lead">The Content foundation holds the rules and the full microcopy library. This page shows them working together on real screens: what each line of a card is for, how copy changes as the rider moves from choosing to riding to finishing, and how to check a new screen before it ships.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#when">When to use</a></li><li><a href="#structure">Structure</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive behaviour</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>See the <a href="../foundations/content.html">content foundation</a> for the full microcopy library.</p>
-    </section>
-    <section class="ds-section" id="when"><h2><a href="#when">When to use</a></h2>
-<ul><li>Every label, message, error and empty state.</li></ul>
-    </section>
-    <section class="ds-section" id="structure"><h2><a href="#structure">Structure</a></h2>
-<ul><li>Use the spec's words: step, cycle, resistance, target resistance, <code>ble</code>.</li><li>Sentence case; verbs on buttons.</li><li>Numbers with units; m:ss times.</li></ul>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<ul><li>Same copy in every state; only the facts change.</li></ul>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive</a></h2>
-<ul><li>Shorter labels on phones come from icon-only buttons, never from different words.</li></ul>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<ul><li>Link text and button labels make sense alone.</li><li>Errors name the field.</li></ul>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>"Lost the bike", not "Device disconnected (0x13)".</li><li>"Your ride is saved at 7:07."</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><p>Lost the bike. Wake it with a pedal stroke, then reconnect.</p></div><figcaption>Plain words and a next step.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><p>BLE GATT error 0x13: remote user terminated connection.</p></div><figcaption>Raw error in the UI.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from:</p><ul><li><a href="../../mocks/pages/ride/disconnected.html">pages/ride/disconnected</a></li><li><a href="../../mocks/pages/setup/invalid.html">pages/setup/invalid</a></li></ul>
+      <p>Telo Ride talks like a coach standing next to the bike: short, second person, specific, calm when something breaks. Rules for single strings (sentence case, curly apostrophes, units, dates) live in <a href="../foundations/content.html">Content</a>. A screen adds a second layer: <b>each line has one job</b>, the lines are read in order, and the rider's state (choosing, riding, broken, finished) decides how many words they can take.</p>
+      <p>Components used: <a href="../components/next-ride.html">Next ride</a>, <a href="../components/photo-tag.html">Photo tag</a>, <a href="../components/button.html">Button</a>, <a href="../components/hud-panel.html">HUD panel</a>, <a href="../components/alert.html">Alert and banner</a>, <a href="../components/dialog.html">Dialog</a>, <a href="../components/leaderboard.html">Leaderboard</a> and <a href="../components/empty-state.html">Empty state</a>.</p>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="when"><h2><a href="#when">When to use</a></h2>
+      <p>Use this page whenever a screen, card, overlay or notice is written or reworded; use the foundation for a single label. Words per moment:</p>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Rider is</th><th scope="col">Budget</th><th scope="col">Shape</th><th scope="col">From the mocks</th></tr></thead>
+        <tbody>
+          <tr><td>Arriving</td><td>A greeting and one goal</td><td>Name, time of day; then the next thing to do</td><td>“Evening, Sam.” · “Finish top 3 vs Bots on Old Town Criterium”</td></tr>
+          <tr><td>Choosing</td><td>A sentence per option</td><td>What it is · who's in it · when it starts</td><td>“9 computer riders. Starts the moment you’re ready.”</td></tr>
+          <tr><td>Waiting</td><td>One coaching line</td><td>What to do now and why</td><td>“Keep pedalling easy. Resistance is set for the first stretch.”</td></tr>
+          <tr><td>Riding</td><td>Labels and numbers only</td><td>Label, value, unit; “Next:” for what comes</td><td>“Target 418 W” · “Next: Recover · 3:00 at level 6”</td></tr>
+          <tr><td>Stopped by a fault</td><td>Title, two sentences, one action</td><td>What happened · what's safe · what to do</td><td>“Lost the bike” · Reconnect</td></tr>
+          <tr><td>Finished</td><td>A headline and the facts behind it</td><td>Result first, then how it was earned</td><td>“You finished 2nd of 10” · “26:38 · on the podium”</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="structure"><h2><a href="#structure">Structure</a></h2>
+      <h3>A card, line by line: Next ride</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack pt-reset">
+          <section class="next-ride" aria-labelledby="ex-next" style="max-width: 44rem;">
+            <div class="next-ride__photo">
+              <img class="photo" src="../assets/images/worlds/oldtown.jpg" alt="">
+              <span class="photo-tag">Old Town Criterium · 14.2 km · Easy</span>
+            </div>
+            <div class="next-ride__body">
+              <p class="next-ride__eyebrow">Your next unlock</p>
+              <h4 class="next-ride__goal" id="ex-next">Finish top 3 vs Bots on Old Town Criterium</h4>
+              <div class="reward">
+                <img class="reward__thumb" src="../assets/images/worlds/docklands.jpg" alt="">
+                <div class="reward__text">
+                  <p class="reward__title"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Opens Neon Docklands</p>
+                  <p class="reward__place">A harbour city after dark</p>
+                </div>
+              </div>
+              <p class="next-ride__best">Your best here: <span class="figure">27:10</span></p>
+              <a class="btn btn--primary btn--xl btn--block next-ride__cta" href="../../mocks/pages/race-setup/default.html">Race Old Town Criterium<svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+            </div>
+          </section>
+        </div>
+        <div class="ds-example__caption"><span>pages/home/default</span><span>Six lines, six jobs</span></div>
+      </div>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Line</th><th scope="col">Job</th><th scope="col">Rule applied</th></tr></thead>
+        <tbody>
+          <tr><td>Old Town Criterium · 14.2 km · Easy</td><td>Facts about the place</td><td>Middle dots; one decimal for map distance; difficulty as a word</td></tr>
+          <tr><td>Your next unlock</td><td>Why this card is here</td><td>Second person; an overline written in sentence case, uppercased by CSS</td></tr>
+          <tr><td>Finish top 3 vs Bots on Old Town Criterium</td><td>The goal, as an instruction</td><td>Starts with a verb; names the map; no full stop on a heading</td></tr>
+          <tr><td>Opens Neon Docklands · A harbour city after dark</td><td>The reward, and why it is worth it</td><td>A proper name, then a six-word picture</td></tr>
+          <tr><td>Your best here: 27:10</td><td>The rider's own number to beat</td><td>Tabular figure; m:ss</td></tr>
+          <tr><td>Race Old Town Criterium</td><td>The one thing to do</td><td>Verb + the thing; the same map named again, so the button reads alone</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>A fault: what happened, what's safe, what to do</h3>
+      <div class="pt-grid">
+        <div>
+          <div class="ds-stage">
+            <img class="photo" src="../assets/images/worlds/oldtown.jpg" alt="" style="position: absolute; inset: 0;">
+            <div class="race-lost" role="alert">
+              <div class="race-lost__inner">
+                <svg class="icon icon--2xl race-lost__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg>
+                <h4 class="race-lost__title">Lost the bike</h4>
+                <p class="race-lost__body">Echelon EX-5s stopped answering. Your rider coasts for 15 seconds while we reconnect; after that the race counts as a DNF.</p>
+                <button class="race-lost__action" type="button">Reconnect</button>
+              </div>
+            </div>
+          </div>
+          <p class="pt-note">pages/race/disconnected</p>
+        </div>
+        <div>
+          <ol class="pt-list">
+            <li><b>Title: the fact, in plain words.</b> “Lost the bike”, not “Connection error”.</li>
+            <li><b>First sentence: which thing.</b> Names the bike (Echelon EX-5s), so a rider with two bikes knows.</li>
+            <li><b>Second: what is safe and for how long.</b> “Your rider coasts for 15 seconds” and the honest cost after that.</li>
+            <li><b>Action: one verb.</b> Reconnect. No Cancel; leaving is in the header.</li>
+          </ol>
+          <p>The same formula writes “Bluetooth is off” (Turn on Bluetooth on this computer, then try again · Try again) and the unsupported-browser notice. See <a href="empty-and-error-states.html">Empty and error states</a> for every case.</p>
+        </div>
+      </div>
+
+      <h3>A confirmation: the question, the stakes, the outcomes</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <div class="ride-leave" role="group" aria-labelledby="ex-leave-t" style="position: static; width: 100%; max-width: 20rem;">
+            <h4 class="ride-leave__title" id="ex-leave-t">Leave this ride?</h4>
+            <p class="ride-leave__body">You’re <span class="ride-leave__figure">6:52</span> in with <span class="ride-leave__figure">2.24 km</span> ridden. The ride is paused while you decide.</p>
+            <div class="ride-leave__actions">
+              <button class="btn btn--primary btn--block" type="button">Save ride and open library</button>
+              <button class="btn btn--quiet-danger btn--block" type="button">Discard and open library</button>
+              <button class="btn btn--quiet btn--block ride-leave__keep" type="button">Keep riding</button>
+            </div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>The title asks; the body gives the rider's own numbers and says the ride is paused; every button says what happens.</span><span>dialogs/end-ride/default</span></div>
+      </div>
+
+      <h3>A result: headline first</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <div>
+            <p class="results__lead">You finished</p>
+            <p class="results__place"><span class="results__big results__big--podium">2nd</span> <span class="results__of">of 10</span></p>
+            <p class="results__sub">26:38 · on the podium</p>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Place, field size, time, and what it means. No “Great job!”: the gold numeral does the celebrating.</span><span>pages/results/default</span></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <p>The same control's words change with its state. Write all of them together, so they read as one voice:</p>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Flow</th><th scope="col">Idle</th><th scope="col">Busy</th><th scope="col">Done</th><th scope="col">Failed</th></tr></thead>
+        <tbody>
+          <tr><td>Pair the bike</td><td>Pair Echelon EX-5s</td><td>Pairing…</td><td>Paired · Ride now</td><td>Couldn’t pair. Pedal once to wake it up · Try again</td></tr>
+          <tr><td>Send feedback</td><td>Send bug report / Send idea / Send kudos</td><td>Sending…</td><td>Thanks — we’re on it. · Done</td><td>Not sent. Your note is still here. · Try again <span class="text-faint">(system addition)</span></td></tr>
+          <tr><td>Copy link</td><td>Copy link</td><td>—</td><td>Link copied</td><td>—</td></tr>
+          <tr><td>Reconnect</td><td>Reconnect</td><td>Reconnecting… <span class="text-faint">(system addition)</span></td><td>The overlay lifts; nothing to say</td><td>The race counts as a DNF</td></tr>
+          <tr><td>Lobby</td><td>I’m ready</td><td>—</td><td>Ready · Waiting for riders</td><td>—</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Buttons in a composition</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas">
+          <button class="btn btn--primary" type="button">Race it again</button>
+          <button class="btn btn--raised" type="button">Back to Home</button>
+          <button class="btn btn--primary" type="button" aria-disabled="true" aria-busy="true"><svg class="icon icon--md icon--spin" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Pairing…</button>
+          <button class="btn btn--gold btn--sm" type="button">Ride it</button>
+        </div>
+        <div class="ds-example__caption"><span>One primary per view; a busy label says what is happening, with a true ellipsis.</span><span>results · connect-bike · home</span></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <ul>
+        <li><b>Copy is written for 360 first.</b> Button labels fit one line at 360 with <code>btn--block</code>; “Save ride and open library” is the longest and it fits.</li>
+        <li><b>Truncate facts, never instructions.</b> Map facts and goals may end in an ellipsis at 360 (“Finish top 3 vs Bots on Old To…”) because the full goal is one tap away; a button label, title or error never truncates.</li>
+        <li><b>Hide the extra sentence, not the action.</b> Below 640px the browser notice drops its icon, not its words.</li>
+        <li><b>Compact forms only where width is short</b>: “5/10” on cards and the start grid, “6 of 10 riders” in sentences; “5th / 10” only in the HUD.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <ul>
+        <li><b>Labels read alone.</b> Every button and link makes sense out of context in a screen reader's list: “Race Old Town Criterium”, not “Go”; “Close diagnostics”, not “Close”.</li>
+        <li><b>Hidden words complete visual shorthand.</b> A dash becomes “No best yet”; a lock becomes “, locked”; stars become “1 of 3 stars”.</li>
+        <li><b>Uppercase is CSS</b>, so overlines and TELO are not spelled out letter by letter.</li>
+        <li><b>Plain language</b>: short sentences, common words, no jargon (“reconnect”, not “re-establish GATT session”). Device ids and dBm live in Diagnostics, for people who ask.</li>
+        <li><b>Announced copy is short.</b> Text in <code>role="status"</code> and <code>role="alert"</code> regions is read in full on every change, so it stays to one or two sentences.</li>
+        <li><b>Numbers carry units in text</b>, not only in a visually separate span, so “73 kJ” is read as one thing.</li>
+      </ul>
+      <h3>Contrast</h3>
+      <div class="pt-stack" style="gap: var(--space-2);">
+        <div class="ds-pair" style="--pair-fg: var(--color-muted); --pair-bg: var(--color-ink);"><span>Secondary sentences on ink</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-ink" data-min="4.5"></span></div>
+        <div class="ds-pair" style="--pair-fg: var(--color-gold-fg); --pair-bg: var(--color-ink);"><span>Rewards and XP on ink</span><span class="ds-pair__ratio" data-contrast="--color-gold-fg|--color-ink" data-min="4.5"></span></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <h3>Checklist for a new screen</h3>
+      <ol>
+        <li>Can each line's job be named in three words? Cut lines that can't.</li>
+        <li>Is the rider “you”, and is every map, bike and class named?</li>
+        <li>Does the primary button start with a verb and read alone?</li>
+        <li>Are numbers in the foundation's formats (27:10, 14.2 km, +0:07, 2nd of 10)?</li>
+        <li>For a fault: what happened, what's safe, what to do, one action?</li>
+        <li>For an empty space: what will appear here, and what puts it there?</li>
+        <li>Sentence case, curly apostrophes, no exclamation marks, no “OK” or “Submit”?</li>
+        <li>Is it real copy, about something the product does today? Never placeholder text, never a promise of a later feature.</li>
+      </ol>
+      <h3>Microcopy in its place</h3>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Place</th><th scope="col">Copy</th></tr></thead>
+        <tbody>
+          <tr><td>Home greeting</td><td>Evening, Sam. · Welcome, Sam. Your first race opens a new map.</td></tr>
+          <tr><td>Map Select lead</td><td>Each map opens the next. Race well on the ones you have to unlock the rest.</td></tr>
+          <tr><td>Lobby hint</td><td>5 of 10 seats taken. At 0:10 bots fill the rest so the race starts full.</td></tr>
+          <tr><td>Paused card</td><td>Paused on Cathedral Circuit · The world holds still until you pedal again.</td></tr>
+          <tr><td>Recent rides, empty</td><td>Nothing yet. Your first race shows up here, with the XP it earned.</td></tr>
+          <tr><td>Unlock banner</td><td>Neon Docklands is open. A harbour city after dark, 21.6 km. · Ride it</td></tr>
+          <tr><td>Diagnostics privacy</td><td>Everything here is read in your browser and stays on this device until you download it.</td></tr>
+        </tbody>
+      </table></div>
+      <p>The full library, grouped by moment, is in <a href="../foundations/content.html#microcopy">Content · Microcopy library</a>.</p>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas ds-example__canvas--stack"><div><p class="results__lead">You finished</p><p class="results__place"><span class="results__big results__big--podium">2nd</span> <span class="results__of">of 10</span></p><p class="results__sub">26:38 · on the podium</p></div></div><figcaption>The result, the field, the time, what it means.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas ds-example__canvas--stack"><div><p class="results__lead">Great job!!</p><p class="results__sub">That was amazing!</p></div></div><figcaption>Praise without facts, and exclamation marks.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><button class="btn btn--primary" type="button">Save ride and open library</button><button class="btn btn--quiet" type="button">Keep riding</button></div><figcaption>Each choice names its outcome.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><button class="btn btn--primary" type="button">OK</button><button class="btn btn--quiet" type="button">Cancel</button></div><figcaption>OK to what? Cancel the ride or the dialog?</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><p class="pt-note">Lost the bike · Echelon EX-5s stopped answering. Your rider coasts for 15 seconds while we reconnect.</p></div><figcaption>Calm: the fact, the bike, what is safe.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><p class="pt-note">CONNECTION LOST! GATT server disconnected (code 19).</p></div><figcaption>Shouting, jargon and a code the rider can't act on.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <p>Mocks this pattern was extracted from:</p>
+      <ul>
+        <li><a href="../../mocks/pages/home/default.html">pages/home/default</a>, <a href="../../mocks/pages/home/new-rider.html">new-rider</a>, <a href="../../mocks/pages/home/unlocked.html">unlocked</a></li>
+        <li><a href="../../mocks/pages/race/disconnected.html">pages/race/disconnected</a>, <a href="../../mocks/pages/connect-bike/bluetooth-off.html">pages/connect-bike/bluetooth-off</a>, <a href="../../mocks/pages/connect-bike/unsupported-browser.html">unsupported-browser</a></li>
+        <li><a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a>, <a href="../../mocks/dialogs/feedback/sent.html">dialogs/feedback/sent</a></li>
+        <li><a href="../../mocks/pages/results/default.html">pages/results/default</a>, <a href="../../mocks/pages/race-lobby/default.html">pages/race-lobby/default</a></li>
+      </ul>
+      <p>Drift found while extracting:</p>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Mock</th><th scope="col">Issue</th><th scope="col">Resolution</th></tr></thead>
+        <tbody>
+          <tr><td>pages/connect-bike/unsupported-browser</td><td>Straight apostrophes: “can't”, “don't”.</td><td>Curly (can’t, don’t), as everywhere else; the examples here use curly.</td></tr>
+          <tr><td>pages/custom-ride/bluetooth-off vs connect-bike/bluetooth-off</td><td>“Turn on Bluetooth” · Check again vs “Bluetooth is off” · Try again.</td><td>One title and one verb: “Bluetooth is off” · Try again.</td></tr>
+          <tr><td>foundations/content (busy buttons)</td><td>Says a busy button is <code>disabled</code> with <code>aria-busy</code>.</td><td>The patterns use <code>aria-disabled="true"</code> + <code>aria-busy="true"</code> so focus stays on the button (see <a href="forms.html">Forms</a>). Flagged to the foundations owner.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

@@ -1,0 +1,82 @@
+// Blocks race and race-scene (docs/design-system/assets/components.css, Race): full screen, the scene behind the HUD.
+.race {
+  position: relative;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--color-ink);
+  color: var(--color-fg);
+
+  &:focus {
+    outline: none; // focused by the skip link, never by a pointer
+  }
+}
+
+.race-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: linear-gradient(
+    to bottom,
+    var(--race-sky) 0 45.5%,
+    var(--race-ground-far) 45.5%,
+    var(--race-ground-near) 100%
+  );
+}
+
+// The HUD along the bottom: interval, route and resistance (three columns from lg).
+.race-hud {
+  position: absolute;
+  z-index: var(--z-hud);
+  inset: auto var(--space-3) var(--space-4);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+
+  @media (min-width: 40rem) {
+    inset: auto var(--space-5) var(--space-6);
+  }
+
+  @media (min-width: 64rem) {
+    grid-template-columns:
+      var(--race-hud-interval-width) minmax(0, 1fr)
+      var(--race-hud-resistance-width);
+  }
+}
+
+// The photo is framed where the camera puts the world (the design system's race-scene): 75.6 % of the screen tall
+// from the top, centred, fading in under the bar, with the ground below the horizon (60.1 % on a portrait screen).
+.race-scene__photo {
+  position: absolute;
+  top: 0.14%;
+  left: 50%;
+  width: auto;
+  max-width: none;
+  height: 75.6%;
+  translate: -50% 0;
+  mask-image: linear-gradient(to bottom, transparent 0, currentColor 14%);
+
+  @media (max-aspect-ratio: 1/1) {
+    top: 10.4%;
+    height: 60.1%;
+  }
+}
+
+@media (max-aspect-ratio: 1/1) {
+  .race-scene {
+    background: linear-gradient(
+      to bottom,
+      var(--race-sky) 0 46.4%,
+      var(--race-ground-far) 46.4%,
+      var(--race-ground-near) 100%
+    );
+  }
+}
+
+// On a phone, mid-ride, every tap area that reads the comfortable target takes the ride target instead: 48 px
+// (L2-140 AC2).
+@media (max-width: 39.99rem) {
+  :host {
+    --target-comfortable: var(--target-ride);
+  }
+}

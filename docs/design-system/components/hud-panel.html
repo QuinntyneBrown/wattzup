@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HUD panel — Telo Ride design system</title>
+<meta name="description" content="The glass panels over the 3D world and their solid twins on the class and custom ride: interval, resistance, scenery prompt, composition and z-order, 48px ride targets, and the paused and lost-bike overlays.">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/components.css">
+<link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Page-only layout for the ride pages (tokens only). */
+/* HUD pieces shown on their own: the product pins them over the world with position: absolute;
+   in a specimen they sit in normal flow, and the breakpoint that hides them on small screens is lifted. */
+.ds-hud-loose { align-items: flex-start; }
+.ds-hud-loose > .race-power, .ds-hud-loose > .race-board, .ds-hud-loose > .race-hud, .ds-hud-loose > .race-scenery,
+.ds-hud-loose > .race-paused, .ds-hud-loose > .race-lost { position: static; inset: auto; translate: none; }
+.ds-hud-loose .race-board { display: block; }
+.ds-hud-loose .race-route { display: block; flex: 1 1 20rem; }
+.ds-hud-loose .race-resist { display: flex; flex: 0 1 var(--race-hud-resistance-width); }
+.ds-hud-loose .race-interval { flex: 0 1 var(--race-hud-interval-width); }
+.ds-hud-loose > .race-scenery { width: min(var(--race-scenery-width), 100%); }
+.ds-hud-loose > .race-paused, .ds-hud-loose > .race-lost { position: relative; flex: 1 1 18rem; min-height: 14rem; }
+/* A specimen box with a fixed width, so a stretchy chart has something to stretch into */
+.ds-fill { flex: 1 1 18rem; min-width: 0; }
+.ds-fill--narrow { flex: 0 1 20rem; }
+.ds-fill > .class-plan, .ds-fill > .class-sync { margin-top: 0; }
+/* A light/dark pair of contrast chips */
+.ds-themes--pairs > [data-theme] { padding: var(--space-3); }
+.ds-themes--pairs > [data-theme]::before { margin-bottom: var(--space-2); }
+/* Matrix cells hold wide things */
+.ds-matrix td .class-profile { min-width: 10rem; }
+.ds-matrix td .ride-levels { min-width: 12rem; }
+.ds-matrix td .ride-trace__svg { min-height: 5rem; }
+.ds-na-cell { color: var(--color-fg-subtle); font: var(--text-caption); }
+/* Stage: the world fills it; on phones the stage is as tall as the stacked HUD needs */
+.ride-stage { min-height: 38rem; }
+/* Standings show from 768px: leave room for all ten rows above the bottom HUD */
+@media (min-width: 48rem) { .ride-stage { min-height: 46rem; } }
+/* A stage is narrower than the viewport its breakpoints answer to; drop the route line so the bar stays one row */
+@media (min-width: 48rem) { .ride-stage .race-bar__route { display: none; } }
+.ride-stage--short { min-height: 20rem; }
+.ride-stage .race-countdown, .ride-stage .race-lobby__body { position: absolute; }
+/* Lobby clock specimen */
+.ds-lobby { padding: var(--space-6); }
+/* Absolutely positioned descendants (visually hidden words, glass layers) must not escape the matrix's scroller */
+.ds-matrix, .ds-table-wrap { position: relative; }
+/* A stage inside an anatomy figure fills it (the figure centres its content) */
+.ds-anatomy__figure > .ds-stage { width: 100%; margin: 0; border: 0; }
+/* Callouts for parts the viewport hides */
+@media (max-width: 39.99rem) { .ds-only-sm { display: none; } }
+@media (max-width: 47.99rem) { .ds-only-md { display: none; } }
+@media (max-width: 63.99rem) { .ds-only-lg { display: none; } }
+/* Dashboard specimens: the view needs a height to fill, the video a ratio */
+.ds-view { min-height: 16rem; margin-top: 0; }
+.ds-view .ride-video { aspect-ratio: 16 / 9; flex: none; }
+.ds-view .ride-trace__svg { min-height: 12rem; }
+.ds-trace-fixed .ride-trace__svg { min-height: 0; }
+.ds-matrix td .ride-log__list, .ds-matrix td .ride-trace, .ds-matrix td .ride-progress { min-width: 12rem; }
+</style>
+</head>
+<body id="top">
+<a class="ds-skip" href="#main">Skip to content</a>
+<div class="ds-shell">
+  <nav class="ds-nav" aria-label="Design system">
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <details open><summary>Foundations</summary><ul>
+      <li><a href="../foundations/color.html">Color</a></li>
+      <li><a href="../foundations/typography.html">Typography</a></li>
+      <li><a href="../foundations/spacing.html">Spacing</a></li>
+      <li><a href="../foundations/layout.html">Layout</a></li>
+      <li><a href="../foundations/elevation.html">Elevation</a></li>
+      <li><a href="../foundations/shape.html">Shape</a></li>
+      <li><a href="../foundations/motion.html">Motion</a></li>
+      <li><a href="../foundations/iconography.html">Iconography</a></li>
+      <li><a href="../foundations/theming.html">Theming</a></li>
+      <li><a href="../foundations/responsive.html">Responsive</a></li>
+      <li><a href="../foundations/accessibility.html">Accessibility</a></li>
+      <li><a href="../foundations/content.html">Content</a></li>
+    </ul></details>
+    <details open><summary>Actions</summary><ul>
+      <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
+      <li><a href="../components/link.html">Link</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
+      <li><a href="../components/form-field.html">Form field</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
+      <li><a href="../components/slider.html">Slider</a></li>
+      <li><a href="../components/number-stepper.html">Number stepper</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
+      <li><a href="../components/skip-link.html">Skip link</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
+      <li><a href="../components/dialog.html">Dialog</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
+      <li><a href="../components/tooltip.html">Tooltip</a></li>
+      <li><a href="../components/divider.html">Divider</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
+      <li><a href="../components/description-list.html">Description list</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
+      <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
+      <li><a href="../components/toast.html">Toast</a></li>
+      <li><a href="../components/alert.html">Alert and banner</a></li>
+      <li><a href="../components/inline-message.html">Inline message</a></li>
+      <li><a href="../components/progress-bar.html">Progress bar</a></li>
+      <li><a href="../components/spinner.html">Spinner</a></li>
+      <li><a href="../components/skeleton.html">Skeleton</a></li>
+      <li><a href="../components/empty-state.html">Empty state</a></li>
+      <li><a href="../components/error-page.html">Error page</a></li>
+    </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
+    <details open><summary>Patterns</summary><ul>
+      <li><a href="../patterns/forms.html">Forms</a></li>
+      <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
+      <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
+      <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
+      <li><a href="../patterns/notifications.html">Notifications</a></li>
+      <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
+    </ul></details>
+  </nav>
+  <main id="main" class="ds-main">
+    <header class="ds-header">
+      <p class="ds-kicker">Component · Ride</p>
+      <h1>HUD panel</h1>
+      <p class="ds-lead">HUD panels are what sits between the rider and the world: dark glass that keeps numbers readable over any photo, controls big enough to hit mid-sprint, and overlays that say plainly when the ride is paused or the bike is gone.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive behaviour</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
+    </header>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+      <p>A world ride is a WebGL scene with panels floating over it. The panels share one surface, <code>.race-glass</code> (ink at 70%, 12px blur, 12px corners), and one layer, <code>--z-hud</code>. The class ride and the custom ride have no world, so the same parts render on solid panels (<code>--color-panel</code>) in a page grid. This page covers the panels and how they compose; the numbers inside are on <a href="ride-readout.html">Ride readout</a>, the elevation on <a href="route-profile.html">Route profile</a>, standings on <a href="leaderboard.html">Leaderboard</a>.</p>
+      <ul>
+        <li><b>Interval</b>: <code>.race-interval</code> (glass) and <code>.ride-interval</code> (dashboard): the current segment, time left, a fill bar and what comes next.</li>
+        <li><b>Resistance</b>: <code>.race-resist</code> (glass), <code>.class-resist</code> (panel) and <code>.ride-control</code> (the custom ride's aside, with <code>.ride-step</code> and the 32 <code>.ride-levels</code> bars).</li>
+        <li><b>Scenery prompt</b>: <code>.race-scenery</code>, the optional Google 3D Tiles key form.</li>
+        <li><b>Video sync</b>: <code>.class-sync</code>, the Class Start disclosure for the video link and offset.</li>
+        <li><b>Overlays</b>: <code>.race-paused</code>, <code>.race-lost</code>, <code>.ride-overlay</code> (<code>--lost</code>), <code>.class-lost</code>, <code>.class-video__paused</code>.</li>
+      </ul>
+      <p>Use glass only over the world or video. On a plain page use a <a href="card.html">card</a> or panel; glass on ink is just a darker panel with a blur that costs GPU time.</p>
+    </section>
+
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+      <p>The race screen at 5:01 against bots. Everything on it is one of six panels on <code>--z-hud</code> over the scene on <code>--z-base</code>.</p>
+      <div class="ds-anatomy" style="grid-template-columns: minmax(0, 1fr);">
+        <figure class="ds-anatomy__figure" style="padding: 0; overflow: hidden;">
+          <div class="ds-stage ds-stage--tall ride-stage"><div class="race-scene" role="img" aria-label="The Old Town Criterium world: a cobbled old town under a blue sky, its cathedral spire on the horizon"><img class="race-scene__photo" src="../assets/images/worlds/oldtown.jpg" alt=""></div><header class="race-bar"><span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="24" height="24" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span><div class="race-bar__where"><span class="race-bar__map">Old Town Criterium</span><span class="race-bar__route">Cathedral Circuit · vs Bots, medium</span><span class="race-bar__backend" title="The GPU API drawing this world">WebGL 2</span></div><div class="race-bar__bike"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg><span class="race-bar__bike-name">Echelon EX-5s<span class="visually-hidden"> connected</span></span></div><div class="race-bar__end"><span class="numeral race-bar__clock" role="timer" aria-label="5:01 of 30:00">5:01<span class="race-bar__total"> / 30:00</span></span><button class="race-bar__btn" type="button" aria-label="Finish"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528"/></svg><span class="race-bar__btn-label" aria-hidden="true">Finish</span></button><button class="race-bar__btn race-bar__btn--quiet" type="button" aria-label="Leave race"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg><span class="race-bar__btn-label" aria-hidden="true">Leave</span></button></div><button class="icon-btn" type="button" aria-label="Full screen" title="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></header><section class="race-glass race-power" aria-label="Power and position"><div class="race-power__place"><div class="race-power__rank"><span class="numeral race-power__pos">5th</span><span class="numeral race-power__of">/ 10</span></div><div class="race-power__gaps"><div>Ahead <span class="numeral race-power__gap">+0:02</span></div><div>Behind <span class="numeral race-power__gap">−0:01</span></div></div></div><div class="race-power__watts"><span class="numeral race-power__watts-value">371</span><span class="numeral race-power__watts-unit">W</span></div><div class="race-power__target"><span class="race-power__target-label">Target 418 W</span><span class="race-power__delta race-power__delta--under">−47 W</span></div><dl class="race-power__stats"><div><dt class="race-power__stat-label">Cadence</dt><dd class="race-power__stat"><span class="numeral race-power__stat-value">87</span><span class="race-power__stat-unit">rpm</span></dd></div><div><dt class="race-power__stat-label">Heart</dt><dd class="race-power__stat"><span class="numeral race-power__stat-value race-power__stat-value--heart">140</span><span class="race-power__stat-unit">bpm</span></dd></div><div><dt class="race-power__stat-label">Speed</dt><dd class="race-power__stat"><span class="numeral race-power__stat-value">26.5</span><span class="race-power__stat-unit">km/h</span></dd></div></dl></section><aside class="race-glass race-board" aria-labelledby="board-title-1"><h2 class="race-board__title" id="board-title-1">Standings · 10 riders</h2><ol class="race-board__list"><li class="race-board__row"><span class="numeral race-board__pos">1</span><span class="race-board__dot" style="--jersey: var(--jersey-flint)"></span><span class="race-board__name">Pacer Flint</span><svg class="icon icon--sm race-board__bot" viewBox="0 0 24 24" role="img" aria-label="Bot"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg><span class="numeral race-board__gap">+0:07</span></li><li class="race-board__row"><span class="numeral race-board__pos">2</span><span class="race-board__dot" style="--jersey: var(--jersey-echo)"></span><span class="race-board__name">Pacer Echo</span><svg class="icon icon--sm race-board__bot" viewBox="0 0 24 24" role="img" aria-label="Bot"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg><span class="numeral race-board__gap">+0:06</span></li><li class="race-board__row"><span class="numeral race-board__pos">3</span><span class="race-board__dot" style="--jersey: var(--jersey-moss)"></span><span class="race-board__name">Pacer Moss</span><svg class="icon icon--sm race-board__bot" viewBox="0 0 24 24" role="img" aria-label="Bot"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg><span class="numeral race-board__gap">+0:03</span></li><li class="race-board__row"><span class="numeral race-board__pos">4</span><span class="race-board__dot" style="--jersey: var(--jersey-vale)"></span><span class="race-board__name">Pacer Vale</span><svg class="icon icon--sm race-board__bot" viewBox="0 0 24 24" role="img" aria-label="Bot"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg><span class="numeral race-board__gap">+0:02</span></li><li class="race-board__row race-board__row--you" aria-current="true"><span class="numeral race-board__pos">5</span><span class="race-board__dot" style="--jersey: var(--jersey-you)"></span><span class="race-board__name">You</span><span class="numeral race-board__gap"></span></li><li class="race-board__row"><span class="numeral race-board__pos">6</span><span class="race-board__dot" style="--jersey: var(--jersey-kite)"></span><span class="race-board__name">Pacer Kite</span><svg class="icon icon--sm race-board__bot" viewBox="0 0 24 24" role="img" aria-label="Bot"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg><span class="numeral race-board__gap">−0:01</span></li><li class="race-board__row"><span class="numeral race-board__pos">7</span><span class="race-board__dot" style="--jersey: var(--jersey-juno)"></span><span class="race-board__name">Pacer Juno</span><svg class="icon icon--sm race-board__bot" viewBox="0 0 24 24" role="img" aria-label="Bot"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg><span class="numeral race-board__gap">−0:04</span></li><li class="race-board__row"><span class="numeral race-board__pos">8</span><span class="race-board__dot" style="--jersey: var(--jersey-rook)"></span><span class="race-board__name">Pacer Rook</span><svg class="icon icon--sm race-board__bot" viewBox="0 0 24 24" role="img" aria-label="Bot"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg><span class="numeral race-board__gap">−0:05</span></li><li class="race-board__row"><span class="numeral race-board__pos">9</span><span class="race-board__dot" style="--jersey: var(--jersey-atlas)"></span><span class="race-board__name">Pacer Atlas</span><svg class="icon icon--sm race-board__bot" viewBox="0 0 24 24" role="img" aria-label="Bot"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg><span class="numeral race-board__gap">−0:05</span></li><li class="race-board__row"><span class="numeral race-board__pos">10</span><span class="race-board__dot" style="--jersey: var(--jersey-nova)"></span><span class="race-board__name">Pacer Nova</span><svg class="icon icon--sm race-board__bot" viewBox="0 0 24 24" role="img" aria-label="Bot"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg><span class="numeral race-board__gap">−0:05</span></li></ol></aside><section class="race-hud" aria-label="Interval, route and resistance"><div class="race-glass race-interval"><div class="race-interval__head"><span class="race-interval__label"><span class="race-interval__swatch" style="--kind: var(--color-volt)"></span>Work<span class="race-interval__round">1 of 8</span></span><span class="numeral race-interval__left" role="timer" aria-label="29 seconds left in this effort">0:29</span></div><div class="race-interval__track"><div class="race-interval__fill" style="--value: 3.333%; --kind: var(--color-volt)"></div></div><p class="race-interval__next">Next: <span class="race-interval__next-name">Recover</span> · 3:00 at level 6</p></div><div class="race-glass race-route"><div class="race-route__stats"><span class="numeral race-route__grade">+0.5<span class="race-route__unit">%</span></span><span class="race-route__climb"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg><span class="numeral race-route__figure">10</span> m climbed</span><span class="race-route__km"><span class="numeral race-route__figure">1.62</span> km</span></div><svg class="race-route__profile" viewBox="0 0 1800 100" preserveAspectRatio="none" role="img" aria-label="Route profile, 43 m of elevation"><defs><clipPath id="done-oldtown-1"><rect x="0" y="0" width="301" height="100"/></clipPath></defs><path class="race-route__terrain" d="M0 92 L0 87.95 L24 86.73 L48 85.38 L72 84.02 L96 82.77 L120 81.67 L144 80.70 L168 79.75 L192 78.67 L216 77.33 L240 75.67 L264 73.70 L288 71.55 L312 63.58 L336 47.74 L360 48.84 L384 52.08 L408 55.73 L432 59.62 L456 63.60 L480 67.52 L504 71.26 L528 63.67 L552 53.11 L576 55.34 L600 58.37 L624 61.54 L648 64.84 L672 68.27 L696 69.59 L720 53.51 L744 52.65 L768 55.23 L792 57.69 L816 59.92 L840 62.06 L864 64.25 L888 55.13 L912 44.16 L936 46.65 L960 50.25 L984 54.05 L1008 57.89 L1032 55.52 L1056 41.44 L1080 42.87 L1104 45.94 L1128 49.08 L1152 52.31 L1176 53.52 L1200 37.73 L1224 37.44 L1248 40.80 L1272 44.12 L1296 44.88 L1320 27.60 L1344 25.89 L1368 27.81 L1392 29.97 L1416 30.02 L1440 13.00 L1464 10.01 L1488 10.25 L1512 10.76 L1536 11.30 L1560 11.75 L1584 12.04 L1608 12.18 L1632 12.21 L1656 12.22 L1680 12.30 L1704 12.54 L1728 12.96 L1752 13.55 L1776 14.20 L1799 14.80 L1800 92 Z"/><path class="race-route__done" d="M0 92 L0 87.95 L24 86.73 L48 85.38 L72 84.02 L96 82.77 L120 81.67 L144 80.70 L168 79.75 L192 78.67 L216 77.33 L240 75.67 L264 73.70 L288 71.55 L312 63.58 L336 47.74 L360 48.84 L384 52.08 L408 55.73 L432 59.62 L456 63.60 L480 67.52 L504 71.26 L528 63.67 L552 53.11 L576 55.34 L600 58.37 L624 61.54 L648 64.84 L672 68.27 L696 69.59 L720 53.51 L744 52.65 L768 55.23 L792 57.69 L816 59.92 L840 62.06 L864 64.25 L888 55.13 L912 44.16 L936 46.65 L960 50.25 L984 54.05 L1008 57.89 L1032 55.52 L1056 41.44 L1080 42.87 L1104 45.94 L1128 49.08 L1152 52.31 L1176 53.52 L1200 37.73 L1224 37.44 L1248 40.80 L1272 44.12 L1296 44.88 L1320 27.60 L1344 25.89 L1368 27.81 L1392 29.97 L1416 30.02 L1440 13.00 L1464 10.01 L1488 10.25 L1512 10.76 L1536 11.30 L1560 11.75 L1584 12.04 L1608 12.18 L1632 12.21 L1656 12.22 L1680 12.30 L1704 12.54 L1728 12.96 L1752 13.55 L1776 14.20 L1799 14.80 L1800 92 Z" clip-path="url(#done-oldtown-1)"/><rect class="race-route__seg" style="--kind: var(--race-segment-easy)" x="0" width="300" y="94" height="6"/><rect class="race-route__seg race-route__seg--effort" style="--kind: var(--color-volt)" x="300" width="30" y="94" height="6"/><rect class="race-route__seg" style="--kind: var(--color-rest)" x="330" width="180" y="94" height="6"/><rect class="race-route__seg race-route__seg--effort" style="--kind: var(--color-volt)" x="510" width="30" y="94" height="6"/><rect class="race-route__seg" style="--kind: var(--color-rest)" x="540" width="150" y="94" height="6"/><rect class="race-route__seg race-route__seg--effort" style="--kind: var(--color-volt)" x="690" width="30" y="94" height="6"/><rect class="race-route__seg" style="--kind: var(--color-rest)" x="720" width="150" y="94" height="6"/><rect class="race-route__seg race-route__seg--effort" style="--kind: var(--color-volt)" x="870" width="30" y="94" height="6"/><rect class="race-route__seg" style="--kind: var(--color-rest)" x="900" width="120" y="94" height="6"/><rect class="race-route__seg race-route__seg--effort" style="--kind: var(--color-volt)" x="1020" width="30" y="94" height="6"/><rect class="race-route__seg" style="--kind: var(--color-rest)" x="1050" width="120" y="94" height="6"/><rect class="race-route__seg race-route__seg--effort" style="--kind: var(--color-volt)" x="1170" width="30" y="94" height="6"/><rect class="race-route__seg" style="--kind: var(--color-rest)" x="1200" width="90" y="94" height="6"/><rect class="race-route__seg race-route__seg--effort" style="--kind: var(--color-volt)" x="1290" width="30" y="94" height="6"/><rect class="race-route__seg" style="--kind: var(--color-rest)" x="1320" width="90" y="94" height="6"/><rect class="race-route__seg race-route__seg--effort" style="--kind: var(--color-volt)" x="1410" width="30" y="94" height="6"/><rect class="race-route__seg" style="--kind: var(--race-segment-easy)" x="1440" width="360" y="94" height="6"/><line class="race-route__here" x1="301" x2="301" y1="64.03" y2="100" vector-effect="non-scaling-stroke"/></svg></div><div class="race-glass race-resist"><button class="race-resist__step" type="button" aria-label="Lower resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><div class="race-resist__readout"><div class="numeral race-resist__value">24</div><div class="race-resist__label">Resistance / 32</div></div><button class="race-resist__step" type="button" aria-label="Raise resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div></section></div>
+          <span class="ds-callout" style="left: 24%; top: 2%; z-index: 30;" aria-hidden="true">1</span>
+          <span class="ds-callout" style="left: 2%; top: 14%; z-index: 30;" aria-hidden="true">2</span>
+          <span class="ds-callout ds-only-md" style="left: 94%; top: 14%; z-index: 30;" aria-hidden="true">3</span>
+          <span class="ds-callout" style="left: 2%; top: 74%; z-index: 30;" aria-hidden="true">4</span>
+          <span class="ds-callout ds-only-sm" style="left: 50%; top: 74%; z-index: 30;" aria-hidden="true">5</span>
+          <span class="ds-callout ds-only-lg" style="left: 94%; top: 74%; z-index: 30;" aria-hidden="true">6</span>
+          <span class="ds-callout" style="left: 50%; top: 40%; z-index: 30;" aria-hidden="true">7</span>
+        </figure>
+        <ol class="ds-anatomy__list">
+          <li><div><b>Race bar</b><small><code>.race-bar</code>: ink at 75%, full width, top. Map, clock, actions.</small></div></li>
+          <li><div><b>Power panel</b><small><code>.race-power</code>, top left under the bar (<code>--race-hud-top</code>).</small></div></li>
+          <li><div><b>Standings</b><small><code>.race-board</code>, top right, 260px; hidden below 768px.</small></div></li>
+          <li><div><b>Interval</b><small><code>.race-interval</code> in the bottom <code>.race-hud</code> grid, 300px column on desktop.</small></div></li>
+          <li><div><b>Route</b><small><code>.race-route</code>, the flexible middle column; hidden below 640px.</small></div></li>
+          <li><div><b>Resistance</b><small><code>.race-resist</code>, 220px column; two 48px steps around the level; desktop only.</small></div></li>
+          <li><div><b>The world</b><small><code>.race-scene</code>: WebGL in the product, the map's panorama here. Nothing interactive lives in it.</small></div></li>
+        </ol>
+      </div>
+      <h3>Z-order</h3>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Layer</th><th scope="col">Token</th><th scope="col">What sits there</th></tr></thead>
+        <tbody>
+          <tr><td>World</td><td><code>--z-base</code> (<span data-token="--z-base"></span>)</td><td><code>.race-scene</code>, the class video, the dashboard trace</td></tr>
+          <tr><td>HUD</td><td><code>--z-hud</code> (<span data-token="--z-hud"></span>)</td><td>Race bar, power, standings, scenery prompt, bottom HUD</td></tr>
+          <tr><td>Overlays</td><td><code>--z-overlay</code> (<span data-token="--z-overlay"></span>)</td><td>Paused card, Lost the bike, the 3-2-1</td></tr>
+          <tr><td>Dialogs</td><td><code>--z-modal</code> (<span data-token="--z-modal"></span>)</td><td>Leave this ride?, Diagnostics, Feedback</td></tr>
+          <tr><td>Toasts</td><td><code>--z-toast</code> (<span data-token="--z-toast"></span>)</td><td>Unlock and saved notices</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+      <h3>Interval</h3>
+      <p>Glass over the world, plain on the dashboard. Both show kind with a 10px swatch, the round, the time left in Barlow 36px, a 6px fill bar in the kind colour and the next segment.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--photo ds-hud-loose" style="--photo: url(../assets/images/worlds/oldtown.jpg);"><div class="race-glass race-interval"><div class="race-interval__head"><span class="race-interval__label"><span class="race-interval__swatch" style="--kind: var(--color-volt)"></span>Work<span class="race-interval__round">1 of 8</span></span><span class="numeral race-interval__left" role="timer" aria-label="29 seconds left in this effort">0:29</span></div><div class="race-interval__track"><div class="race-interval__fill" style="--value: 3.333%; --kind: var(--color-volt)"></div></div><p class="race-interval__next">Next: <span class="race-interval__next-name">Recover</span> · 3:00 at level 6</p></div><div class="race-glass race-interval"><div class="race-interval__head"><span class="race-interval__label"><span class="race-interval__swatch" style="--kind: var(--color-rest)"></span>Recover<span class="race-interval__round">1 of 8</span></span><span class="numeral race-interval__left" role="timer" aria-label="2:31 left in this recovery">2:31</span></div><div class="race-interval__track"><div class="race-interval__fill" style="--value: 16%; --kind: var(--color-rest)"></div></div><p class="race-interval__next">Next: <span class="race-interval__next-name">Work</span> · 0:30 at level 24</p></div></div>
+        <div class="ds-example__caption"><span><code>.race-interval</code>: Work 1 of 8 with 0:29 left; Recover with 2:31 left.</span></div>
+      </div>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--canvas">
+          <div class="ride-interval ride-kind--rest" style="margin-left: 0;">
+            <div class="ride-interval__head"><h4 class="ride-interval__name"><span class="ride-interval__swatch" aria-hidden="true"></span>Recover <span class="ride-interval__round">Round 1 of 8</span></h4><span class="ride-interval__countdown" role="timer" aria-label="1:38 left in this interval">1:38</span></div>
+            <div class="ride-interval__bar" role="progressbar" aria-label="Interval progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="46"><div class="ride-interval__fill" style="--value: 45.556%"></div></div>
+            <p class="ride-interval__next">Next: <span class="ride-interval__next-kind">Work</span> 0:30 at level 24</p>
+          </div>
+          <div class="ride-interval ride-kind--steady" style="margin-left: 0;">
+            <div class="ride-interval__head"><h4 class="ride-interval__name"><span class="ride-interval__swatch" aria-hidden="true"></span>Steady</h4><span class="ride-interval__countdown" role="timer" aria-label="23:08 left in this interval">23:08</span></div>
+            <div class="ride-interval__bar" role="progressbar" aria-label="Interval progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="23"><div class="ride-interval__fill" style="--value: 22.889%"></div></div>
+            <p class="ride-interval__next">Last stretch</p>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span><code>.ride-interval</code> with <code>.ride-kind--rest</code> and <code>--steady</code> (custom-ride default and flat).</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="race-glass race-interval"&gt;
+  &lt;div class="race-interval__head"&gt;
+    &lt;span class="race-interval__label"&gt;&lt;span class="race-interval__swatch" style="--kind: var(--color-volt)"&gt;&lt;/span&gt;Work&lt;span class="race-interval__round"&gt;1 of 8&lt;/span&gt;&lt;/span&gt;
+    &lt;span class="numeral race-interval__left" role="timer" aria-label="29 seconds left in this effort"&gt;0:29&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="race-interval__track"&gt;&lt;div class="race-interval__fill" style="--value: 3.333%; --kind: var(--color-volt)"&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;p class="race-interval__next"&gt;Next: &lt;span class="race-interval__next-name"&gt;Recover&lt;/span&gt; · 3:00 at level 6&lt;/p&gt;
+&lt;/div&gt;</code></pre></details>
+      </div>
+
+      <h3>Resistance</h3>
+      <p>Three settings, one rule: the two step buttons are at least 48px (<code>--target-ride</code>) and the level sits between them in Barlow with "of 32".</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--photo ds-hud-loose" style="--photo: url(../assets/images/worlds/oldtown.jpg);"><div class="race-glass race-resist"><button class="race-resist__step" type="button" aria-label="Lower resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><div class="race-resist__readout"><div class="numeral race-resist__value">24</div><div class="race-resist__label">Resistance / 32</div></div><button class="race-resist__step" type="button" aria-label="Raise resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div></div>
+        <div class="ds-example__canvas ds-example__canvas--canvas"><div class="ds-fill--narrow ds-fill"><div class="class-resist"><button class="class-resist__btn" type="button" aria-label="Lower resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><div class="class-resist__value" aria-label="Resistance 6 of 32"><div class="class-resist__level">6</div><div class="class-resist__of">of 32</div></div><button class="class-resist__btn" type="button" aria-label="Raise resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div></div></div>
+        <div class="ds-example__canvas" style="padding: 0;"><div class="ds-fill"><aside class="ride-control" aria-labelledby="resistance-title-6"><h2 class="ride-control__title" id="resistance-title-6">Resistance</h2><div class="ride-control__stepper"><button class="ride-step" type="button" aria-label="Lower resistance"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><div class="ride-control__level"><p class="ride-control__level-number">6</p><p class="ride-control__level-of">of 32</p></div><button class="ride-step" type="button" aria-label="Raise resistance"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div><div class="ride-levels" role="group" aria-label="Pick a resistance level"><button class="ride-levels__bar is-on" type="button" aria-label="Level 1" style="--h: 30.25%"></button><button class="ride-levels__bar is-on" type="button" aria-label="Level 2" style="--h: 32.5%"></button><button class="ride-levels__bar is-on" type="button" aria-label="Level 3" style="--h: 34.75%"></button><button class="ride-levels__bar is-on" type="button" aria-label="Level 4" style="--h: 37%"></button><button class="ride-levels__bar is-on" type="button" aria-label="Level 5" style="--h: 39.25%"></button><button class="ride-levels__bar is-on" type="button" aria-label="Level 6" aria-current="true" style="--h: 41.5%"></button><button class="ride-levels__bar" type="button" aria-label="Level 7" style="--h: 43.75%"></button><button class="ride-levels__bar" type="button" aria-label="Level 8" style="--h: 46%"></button><button class="ride-levels__bar" type="button" aria-label="Level 9" style="--h: 48.25%"></button><button class="ride-levels__bar" type="button" aria-label="Level 10" style="--h: 50.5%"></button><button class="ride-levels__bar" type="button" aria-label="Level 11" style="--h: 52.75%"></button><button class="ride-levels__bar" type="button" aria-label="Level 12" style="--h: 55%"></button><button class="ride-levels__bar" type="button" aria-label="Level 13" style="--h: 57.25%"></button><button class="ride-levels__bar" type="button" aria-label="Level 14" style="--h: 59.5%"></button><button class="ride-levels__bar" type="button" aria-label="Level 15" style="--h: 61.75%"></button><button class="ride-levels__bar" type="button" aria-label="Level 16" style="--h: 64%"></button><button class="ride-levels__bar" type="button" aria-label="Level 17" style="--h: 66.25%"></button><button class="ride-levels__bar" type="button" aria-label="Level 18" style="--h: 68.5%"></button><button class="ride-levels__bar" type="button" aria-label="Level 19" style="--h: 70.75%"></button><button class="ride-levels__bar" type="button" aria-label="Level 20" style="--h: 73%"></button><button class="ride-levels__bar" type="button" aria-label="Level 21" style="--h: 75.25%"></button><button class="ride-levels__bar" type="button" aria-label="Level 22" style="--h: 77.5%"></button><button class="ride-levels__bar" type="button" aria-label="Level 23" style="--h: 79.75%"></button><button class="ride-levels__bar" type="button" aria-label="Level 24" style="--h: 82%"></button><button class="ride-levels__bar" type="button" aria-label="Level 25" style="--h: 84.25%"></button><button class="ride-levels__bar" type="button" aria-label="Level 26" style="--h: 86.5%"></button><button class="ride-levels__bar" type="button" aria-label="Level 27" style="--h: 88.75%"></button><button class="ride-levels__bar" type="button" aria-label="Level 28" style="--h: 91%"></button><button class="ride-levels__bar" type="button" aria-label="Level 29" style="--h: 93.25%"></button><button class="ride-levels__bar" type="button" aria-label="Level 30" style="--h: 95.5%"></button><button class="ride-levels__bar" type="button" aria-label="Level 31" style="--h: 97.75%"></button><button class="ride-levels__bar" type="button" aria-label="Level 32" style="--h: 100%"></button></div><p class="ride-control__mode">Following the plan — levels change with each interval.</p></aside></div></div>
+        <div class="ds-example__caption"><span><code>.race-resist</code> on glass (24 / 32), <code>.class-resist</code> on a panel (6 of 32), <code>.ride-control</code> with 64px <code>.ride-step</code>s and the 32 level bars (current level 6).</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="race-glass race-resist"&gt;
+  &lt;button class="race-resist__step" type="button" aria-label="Lower resistance"&gt;…&lt;/button&gt;
+  &lt;div class="race-resist__readout"&gt;&lt;div class="numeral race-resist__value"&gt;24&lt;/div&gt;&lt;div class="race-resist__label"&gt;Resistance / 32&lt;/div&gt;&lt;/div&gt;
+  &lt;button class="race-resist__step" type="button" aria-label="Raise resistance"&gt;…&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;div class="ride-levels" role="group" aria-label="Pick a resistance level"&gt;
+  &lt;button class="ride-levels__bar is-on" type="button" aria-label="Level 6" aria-current="true" style="--h: 41.5%"&gt;&lt;/button&gt;
+  …
+&lt;/div&gt;</code></pre></details>
+      </div>
+
+      <h3>Scenery prompt</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--photo ds-hud-loose" style="--photo: url(../assets/images/worlds/oldtown.jpg); justify-content: center;">
+          <div class="race-scenery"><div class="race-scenery__panel">
+            <div class="race-scenery__head"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.54 15H17a2 2 0 0 0-2 2v4.54"/><path d="M7 3.34V5a3 3 0 0 0 3 3a2 2 0 0 1 2 2c0 1.1.9 2 2 2a2 2 0 0 0 2-2c0-1.1.9-2 2-2h3.17"/><path d="M11 21.95V18a2 2 0 0 0-2-2a2 2 0 0 1-2-2v-1a2 2 0 0 0-2-2H2.05"/><circle cx="12" cy="12" r="10"/></svg><p class="race-scenery__title">Ride the real Bruges · Steenstraat to the Markt</p></div>
+            <p class="race-scenery__body">Paste a Google Maps Platform key to stream it as photorealistic 3D Tiles. It stays on this device.</p>
+            <form class="race-scenery__form" action="#"><label class="race-scenery__field"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg><input class="race-scenery__input" type="text" placeholder="AIza…" aria-label="Google Maps Platform API key" autocomplete="off" spellcheck="false"></label><button class="race-scenery__submit" type="submit" disabled>Stream it</button></form>
+          </div></div>
+        </div>
+        <div class="ds-example__caption"><span><code>.race-scenery</code>: centred 150px above the bottom, 420px wide; ink at 80% for the longer copy. "Stream it" stays disabled until there is a key.</span></div>
+      </div>
+
+      <h3>Video sync (Class Start)</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas"><div class="class-sync" style="margin-top: 0;"><button class="class-sync__toggle" type="button" aria-expanded="false"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>Video link and sync</button></div><div class="class-sync" style="margin-top: 0;"><button class="class-sync__toggle" type="button" aria-expanded="true"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>Video link and sync</button></div></div>
+        <div class="ds-example__caption"><span><code>.class-sync__toggle</code> closed and open (the chevron turns); the panel it opens is the <a href="video.html">Video</a> sync form.</span></div>
+      </div>
+
+      <h3>Overlays</h3>
+      <p>Two kinds. <b>Paused</b> keeps the world visible: a small glass card in the middle (<code>.race-paused</code>, <code>pointer-events: none</code>), or a 70% ink veil over the class video (<code>.class-video__paused</code>). <b>Lost the bike</b> covers the HUD with ink at 85% and one primary action, Reconnect (<code>.race-lost</code>, <code>.class-lost</code>, <code>.ride-overlay--lost</code>). The custom ride's other overlays (<code>.ride-overlay</code>, ink at 90%) ask for a bike before the ride can start.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--photo ds-hud-loose" style="--photo: url(../assets/images/worlds/oldtown.jpg);"><div class="race-paused" role="status"><div class="race-paused__card"><div class="race-paused__title">Paused on Cathedral Circuit</div><div class="race-paused__body">The world holds still until you pedal again.</div></div></div><div class="race-lost" role="alert"><div class="race-lost__inner"><svg class="icon icon--2xl race-lost__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg><h2 class="race-lost__title">Lost the bike</h2><p class="race-lost__body">Echelon EX-5s stopped answering. Your rider coasts for 15 seconds while we reconnect; after that the race counts as a DNF.</p><button class="race-lost__action" type="button">Reconnect</button></div></div></div>
+        <div class="ds-example__caption"><span>Race: paused (solo only) and Lost the bike (vs Bots copy: coast 15 seconds, then DNF).</span></div>
+      </div>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-hud-loose" style="padding: 0;">
+          <div style="position: relative; flex: 1 1 18rem; min-height: 18rem;"><div class="ride-overlay"><div class="ride-overlay__card"><h4 class="ride-overlay__title ride-overlay__title--connect">Connect your bike</h4><p class="ride-overlay__body ride-overlay__body--relaxed">Wake the Echelon EX-5s with a few pedal strokes, then pick it from the list your browser shows. We’ll remember it next time.</p><button class="btn btn--primary ride-overlay__connect" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>Connect bike</button><p class="ride-overlay__hint">Not in the list? Close the Echelon app on your phone — the bike talks to one device at a time.</p></div></div></div>
+          <div style="position: relative; flex: 1 1 18rem; min-height: 18rem;"><div class="ride-overlay"><div class="ride-overlay__card"><svg class="icon ride-overlay__icon text-warn" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg><h4 class="ride-overlay__title">Turn on Bluetooth</h4><p class="ride-overlay__body ride-overlay__body--relaxed">Your browser can’t see a Bluetooth radio. Switch it on in your computer’s settings — or, if this machine has none, plug in a USB Bluetooth adapter.</p><button class="btn btn--raised ride-overlay__action" type="button">Check again</button></div></div></div>
+          <div style="position: relative; flex: 1 1 18rem; min-height: 18rem;"><div class="ride-overlay ride-overlay--lost"><div class="ride-overlay__card" role="alert"><svg class="icon ride-overlay__icon text-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg><h4 class="ride-overlay__title">Lost the bike</h4><p class="ride-overlay__body">Echelon EX-5s stopped answering. Wake it with a pedal stroke, then reconnect — your ride is saved at 6:52.</p><button class="btn btn--primary ride-overlay__action" type="button">Reconnect</button></div></div></div>
+        </div>
+        <div class="ds-example__caption"><span>Custom ride: no bike, Bluetooth off, lost (<code>.ride-overlay</code>, <code>.ride-overlay--lost</code>).</span></div>
+      </div>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-hud-loose" style="padding: 0;">
+          <div class="class-video" style="flex: 1 1 18rem; aspect-ratio: 16 / 9;"><img class="photo photo--yt" src="../assets/images/classes/gcn-30-hiit.jpg" alt="Video: 30 Minute HIIT Cardio, GCN Training"><div class="class-video__paused"><p class="class-video__paused-label">Paused</p></div></div>
+          <div style="position: relative; flex: 1 1 18rem; min-height: 16rem;"><div class="class-lost" role="alert" aria-labelledby="bike-lost-c"><div class="class-lost__card"><svg class="icon icon--2xl class-lost__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg><h4 class="class-lost__title" id="bike-lost-c">Lost the bike</h4><p class="class-lost__body">The class keeps going. Pedal to wake the bike and you’ll rejoin where everyone is.</p><button class="btn btn--primary class-lost__action" type="button">Reconnect</button></div></div></div>
+        </div>
+        <div class="ds-example__caption"><span>Class ride: the paused video (solo) and Lost the bike (group: the class keeps going).</span></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+      <ul>
+        <li><b>Ride targets:</b> resistance steps 48px (<code>--target-ride</code>) on glass and class panels, 64px (<code>--space-16</code>) on the custom ride's aside. Level bars are 56px tall and as wide as 32 fit (about 6px at 340px), which is why they are a shortcut, not the only way: the steppers are the target.</li>
+        <li><b>Panels:</b> interval 300px and resistance 220px on desktop (<code>--race-hud-interval-width</code>, <code>--race-hud-resistance-width</code>); standings 260px; scenery 420px; the dashboard aside 340px (<code>--dashboard-aside-width</code>). Lost cards max 24rem (<code>--race-lost-width</code>).</li>
+        <li><b>Padding:</b> 12px 16px on glass panels, 16px 20px for the power panel on desktop, 12px on resistance.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Control</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Disabled</th><th scope="col">Current / open</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Glass step</th>
+            <td style="background: var(--color-ink);"><button class="race-resist__step" type="button" aria-label="Raise resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>
+            <td style="background: var(--color-ink);"><button class="race-resist__step" type="button" aria-label="Raise resistance" data-state="hover"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>
+            <td style="background: var(--color-ink);"><button class="race-resist__step" type="button" aria-label="Raise resistance" data-state="focus"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>
+            <td style="background: var(--color-ink);"><button class="race-resist__step" type="button" aria-label="Raise resistance" data-state="active"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>
+            <td style="background: var(--color-ink);"><button class="race-resist__step" type="button" aria-label="Raise resistance" disabled><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>
+            <td class="ds-na-cell">—</td></tr>
+          <tr><th scope="row">Class step</th>
+            <td><button class="class-resist__btn" type="button" aria-label="Raise resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>
+            <td><button class="class-resist__btn" type="button" aria-label="Raise resistance" data-state="hover"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>
+            <td><button class="class-resist__btn" type="button" aria-label="Raise resistance" data-state="focus"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>
+            <td><button class="class-resist__btn" type="button" aria-label="Raise resistance" data-state="active"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>
+            <td><button class="class-resist__btn" type="button" aria-label="Raise resistance" disabled><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>
+            <td class="ds-na-cell">—</td></tr>
+          <tr><th scope="row">Dashboard step</th>
+            <td><button class="ride-step" type="button" aria-label="Raise resistance"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>
+            <td><button class="ride-step" type="button" aria-label="Raise resistance" data-state="hover"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>
+            <td><button class="ride-step" type="button" aria-label="Raise resistance" data-state="focus"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>
+            <td><button class="ride-step" type="button" aria-label="Raise resistance" data-state="active"><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>
+            <td><button class="ride-step" type="button" aria-label="Raise resistance" disabled><svg class="icon icon--xl" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></td>
+            <td class="ds-na-cell">—</td></tr>
+          <tr><th scope="row">Level bar</th>
+            <td><div class="ride-levels" style="width: 4rem; min-width: 0; margin: 0;"><button class="ride-levels__bar" type="button" aria-label="Level 7" style="--h: 60%"></button><button class="ride-levels__bar" type="button" aria-label="Level 8" style="--h: 70%"></button></div></td>
+            <td><div class="ride-levels" style="width: 4rem; min-width: 0; margin: 0;"><button class="ride-levels__bar" type="button" aria-label="Level 7" data-state="hover" style="--h: 60%"></button><button class="ride-levels__bar" type="button" aria-label="Level 8" style="--h: 70%"></button></div></td>
+            <td><div class="ride-levels" style="width: 4rem; min-width: 0; margin: 0;"><button class="ride-levels__bar" type="button" aria-label="Level 7" data-state="focus" style="--h: 60%"></button><button class="ride-levels__bar" type="button" aria-label="Level 8" style="--h: 70%"></button></div></td>
+            <td><div class="ride-levels" style="width: 4rem; min-width: 0; margin: 0;"><button class="ride-levels__bar is-on" type="button" aria-label="Level 7" data-state="hover" style="--h: 60%"></button><button class="ride-levels__bar" type="button" aria-label="Level 8" style="--h: 70%"></button></div></td>
+            <td><div class="ride-levels" style="width: 4rem; min-width: 0; margin: 0;"><button class="ride-levels__bar is-on" type="button" aria-label="Level 7" disabled style="--h: 60%"></button><button class="ride-levels__bar" type="button" aria-label="Level 8" disabled style="--h: 70%"></button></div></td>
+            <td><div class="ride-levels" style="width: 4rem; min-width: 0; margin: 0;"><button class="ride-levels__bar is-on" type="button" aria-label="Level 7" aria-current="true" style="--h: 60%"></button><button class="ride-levels__bar" type="button" aria-label="Level 8" style="--h: 70%"></button></div></td></tr>
+          <tr><th scope="row">Sync toggle</th>
+            <td><button class="class-sync__toggle" type="button" aria-expanded="false"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>Video link and sync</button></td>
+            <td><button class="class-sync__toggle" type="button" aria-expanded="false" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>Video link and sync</button></td>
+            <td><button class="class-sync__toggle" type="button" aria-expanded="false" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>Video link and sync</button></td>
+            <td><button class="class-sync__toggle" type="button" aria-expanded="false" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>Video link and sync</button></td>
+            <td class="ds-na-cell">Never disabled.</td>
+            <td><button class="class-sync__toggle" type="button" aria-expanded="true"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>Video link and sync</button></td></tr>
+          <tr><th scope="row">Reconnect</th>
+            <td style="background: var(--color-ink);"><button class="race-lost__action" type="button">Reconnect</button></td>
+            <td style="background: var(--color-ink);"><button class="race-lost__action" type="button" data-state="hover">Reconnect</button></td>
+            <td style="background: var(--color-ink);"><button class="race-lost__action" type="button" data-state="focus">Reconnect</button></td>
+            <td style="background: var(--color-ink);"><button class="race-lost__action" type="button" data-state="active">Reconnect</button></td>
+            <td class="ds-na-cell">Never disabled; while reconnecting it shows a spinner and <code>aria-busy</code>.</td>
+            <td class="ds-na-cell">—</td></tr>
+          <tr><th scope="row">Stream it</th>
+            <td style="background: var(--color-ink);"><button class="race-scenery__submit" type="button">Stream it</button></td>
+            <td style="background: var(--color-ink);"><button class="race-scenery__submit" type="button" data-state="hover">Stream it</button></td>
+            <td style="background: var(--color-ink);"><button class="race-scenery__submit" type="button" data-state="focus">Stream it</button></td>
+            <td class="ds-na-cell">No press state in the design.</td>
+            <td style="background: var(--color-ink);"><button class="race-scenery__submit" type="button" disabled>Stream it</button></td>
+            <td class="ds-na-cell">—</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Ride states</h3>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">State</th><th scope="col">Race</th><th scope="col">Class ride</th><th scope="col">Custom ride</th></tr></thead>
+        <tbody>
+          <tr><td>Riding</td><td>All panels live</td><td>Video plays, tiles live</td><td>Readouts and trace live</td></tr>
+          <tr><td>Paused</td><td>Solo only: card over the world, Resume in the bar</td><td>Solo only: video veiled, Resume in the header</td><td>Resume replaces Pause; readouts hold</td></tr>
+          <tr><td>Lost the bike</td><td>Ink 85% over the HUD; steps disabled; coast 15 s, then DNF</td><td>Ink 85% over the screen; group class keeps going</td><td>Ink 85% over telemetry; ride saved; steps and levels disabled</td></tr>
+          <tr><td>No bike / Bluetooth off</td><td>Not reachable (the lobby needs a bike)</td><td>Not reachable</td><td>Ink 90% overlay with Connect bike or Check again</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Both themes</h3>
+      <div class="ds-themes">
+        <div data-theme="light"><div class="ds-hud-loose" style="display: flex; flex-wrap: wrap; gap: var(--space-3);"><div class="race-glass race-interval"><div class="race-interval__head"><span class="race-interval__label"><span class="race-interval__swatch" style="--kind: var(--color-volt)"></span>Work<span class="race-interval__round">1 of 8</span></span><span class="numeral race-interval__left" role="timer" aria-label="29 seconds left in this effort">0:29</span></div><div class="race-interval__track"><div class="race-interval__fill" style="--value: 3.333%; --kind: var(--color-volt)"></div></div><p class="race-interval__next">Next: <span class="race-interval__next-name">Recover</span> · 3:00 at level 6</p></div><div class="race-glass race-resist"><button class="race-resist__step" type="button" aria-label="Lower resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><div class="race-resist__readout"><div class="numeral race-resist__value">24</div><div class="race-resist__label">Resistance / 32</div></div><button class="race-resist__step" type="button" aria-label="Raise resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div></div></div>
+        <div data-theme="dark"><div class="ds-hud-loose" style="display: flex; flex-wrap: wrap; gap: var(--space-3);"><div class="race-glass race-interval"><div class="race-interval__head"><span class="race-interval__label"><span class="race-interval__swatch" style="--kind: var(--color-volt)"></span>Work<span class="race-interval__round">1 of 8</span></span><span class="numeral race-interval__left" role="timer" aria-label="29 seconds left in this effort">0:29</span></div><div class="race-interval__track"><div class="race-interval__fill" style="--value: 3.333%; --kind: var(--color-volt)"></div></div><p class="race-interval__next">Next: <span class="race-interval__next-name">Recover</span> · 3:00 at level 6</p></div><div class="race-glass race-resist"><button class="race-resist__step" type="button" aria-label="Lower resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><div class="race-resist__readout"><div class="numeral race-resist__value">24</div><div class="race-resist__label">Resistance / 32</div></div><button class="race-resist__step" type="button" aria-label="Raise resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div></div></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <p>The race on a phone, solo against your best: the stage below follows the viewport, so open this page at 360px to see the phone HUD.</p>
+      <div class="ds-stage ds-stage--tall ride-stage"><div class="race-scene" role="img" aria-label="The Prairie Paceline world: open prairie with farm buildings and wind turbines under an evening sky"><img class="race-scene__photo" src="../assets/images/worlds/prairie.jpg" alt=""></div><header class="race-bar"><span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="24" height="24" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span><div class="race-bar__where"><span class="race-bar__map">Old Town Criterium</span><span class="race-bar__route">Cathedral Circuit · vs your best</span><span class="race-bar__backend" title="The GPU API drawing this world">WebGL 2</span></div><div class="race-bar__bike"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg><span class="race-bar__bike-name">Echelon EX-5s<span class="visually-hidden"> connected</span></span></div><div class="race-bar__end"><span class="numeral race-bar__clock" role="timer" aria-label="5:01 of 30:00">5:01<span class="race-bar__total"> / 30:00</span></span><button class="race-bar__btn" type="button" aria-label="Pause"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect x="14" y="3" width="5" height="18" rx="1"/><rect x="5" y="3" width="5" height="18" rx="1"/></svg><span class="race-bar__btn-label" aria-hidden="true">Pause</span></button><button class="race-bar__btn" type="button" aria-label="Finish"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528"/></svg><span class="race-bar__btn-label" aria-hidden="true">Finish</span></button><button class="race-bar__btn race-bar__btn--quiet" type="button" aria-label="End ride"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg><span class="race-bar__btn-label" aria-hidden="true">End</span></button></div><button class="icon-btn" type="button" aria-label="Full screen" title="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></header><section class="race-glass race-power" aria-label="Power and position"><div class="race-power__place"><div class="race-power__rank"><span class="numeral race-power__pos">Behind</span></div><div class="race-power__gaps"><div>Best <span class="numeral race-power__gap">+0:01</span></div></div></div><div class="race-power__watts"><span class="numeral race-power__watts-value">371</span><span class="numeral race-power__watts-unit">W</span></div><div class="race-power__target"><span class="race-power__target-label">Target 418 W</span><span class="race-power__delta race-power__delta--under">−47 W</span></div><dl class="race-power__stats"><div><dt class="race-power__stat-label">Cadence</dt><dd class="race-power__stat"><span class="numeral race-power__stat-value">87</span><span class="race-power__stat-unit">rpm</span></dd></div><div><dt class="race-power__stat-label">Heart</dt><dd class="race-power__stat"><span class="numeral race-power__stat-value race-power__stat-value--heart">140</span><span class="race-power__stat-unit">bpm</span></dd></div><div><dt class="race-power__stat-label">Speed</dt><dd class="race-power__stat"><span class="numeral race-power__stat-value">26.5</span><span class="race-power__stat-unit">km/h</span></dd></div></dl></section><aside class="race-glass race-board" aria-labelledby="board-title-2"><h2 class="race-board__title" id="board-title-2">You vs your best</h2><ol class="race-board__list"><li class="race-board__row"><span class="numeral race-board__pos">1</span><span class="race-board__dot" style="--jersey: var(--jersey-ghost)"></span><span class="race-board__name">Your best</span><span class="numeral race-board__gap">+0:01</span></li><li class="race-board__row race-board__row--you" aria-current="true"><span class="numeral race-board__pos">2</span><span class="race-board__dot" style="--jersey: var(--jersey-you)"></span><span class="race-board__name">You</span><span class="numeral race-board__gap"></span></li></ol></aside><section class="race-hud" aria-label="Interval, route and resistance"><div class="race-glass race-interval"><div class="race-interval__head"><span class="race-interval__label"><span class="race-interval__swatch" style="--kind: var(--color-volt)"></span>Work<span class="race-interval__round">1 of 8</span></span><span class="numeral race-interval__left" role="timer" aria-label="29 seconds left in this effort">0:29</span></div><div class="race-interval__track"><div class="race-interval__fill" style="--value: 3.333%; --kind: var(--color-volt)"></div></div><p class="race-interval__next">Next: <span class="race-interval__next-name">Recover</span> · 3:00 at level 6</p></div><div class="race-glass race-route"><div class="race-route__stats"><span class="numeral race-route__grade">+0.5<span class="race-route__unit">%</span></span><span class="race-route__climb"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg><span class="numeral race-route__figure">10</span> m climbed</span><span class="race-route__km"><span class="numeral race-route__figure">1.62</span> km</span></div><svg class="race-route__profile" viewBox="0 0 1800 100" preserveAspectRatio="none" role="img" aria-label="Route profile, 43 m of elevation"><defs><clipPath id="done-oldtown-2"><rect x="0" y="0" width="301" height="100"/></clipPath></defs><path class="race-route__terrain" d="M0 92 L0 87.95 L24 86.73 L48 85.38 L72 84.02 L96 82.77 L120 81.67 L144 80.70 L168 79.75 L192 78.67 L216 77.33 L240 75.67 L264 73.70 L288 71.55 L312 63.58 L336 47.74 L360 48.84 L384 52.08 L408 55.73 L432 59.62 L456 63.60 L480 67.52 L504 71.26 L528 63.67 L552 53.11 L576 55.34 L600 58.37 L624 61.54 L648 64.84 L672 68.27 L696 69.59 L720 53.51 L744 52.65 L768 55.23 L792 57.69 L816 59.92 L840 62.06 L864 64.25 L888 55.13 L912 44.16 L936 46.65 L960 50.25 L984 54.05 L1008 57.89 L1032 55.52 L1056 41.44 L1080 42.87 L1104 45.94 L1128 49.08 L1152 52.31 L1176 53.52 L1200 37.73 L1224 37.44 L1248 40.80 L1272 44.12 L1296 44.88 L1320 27.60 L1344 25.89 L1368 27.81 L1392 29.97 L1416 30.02 L1440 13.00 L1464 10.01 L1488 10.25 L1512 10.76 L1536 11.30 L1560 11.75 L1584 12.04 L1608 12.18 L1632 12.21 L1656 12.22 L1680 12.30 L1704 12.54 L1728 12.96 L1752 13.55 L1776 14.20 L1799 14.80 L1800 92 Z"/><path class="race-route__done" d="M0 92 L0 87.95 L24 86.73 L48 85.38 L72 84.02 L96 82.77 L120 81.67 L144 80.70 L168 79.75 L192 78.67 L216 77.33 L240 75.67 L264 73.70 L288 71.55 L312 63.58 L336 47.74 L360 48.84 L384 52.08 L408 55.73 L432 59.62 L456 63.60 L480 67.52 L504 71.26 L528 63.67 L552 53.11 L576 55.34 L600 58.37 L624 61.54 L648 64.84 L672 68.27 L696 69.59 L720 53.51 L744 52.65 L768 55.23 L792 57.69 L816 59.92 L840 62.06 L864 64.25 L888 55.13 L912 44.16 L936 46.65 L960 50.25 L984 54.05 L1008 57.89 L1032 55.52 L1056 41.44 L1080 42.87 L1104 45.94 L1128 49.08 L1152 52.31 L1176 53.52 L1200 37.73 L1224 37.44 L1248 40.80 L1272 44.12 L1296 44.88 L1320 27.60 L1344 25.89 L1368 27.81 L1392 29.97 L1416 30.02 L1440 13.00 L1464 10.01 L1488 10.25 L1512 10.76 L1536 11.30 L1560 11.75 L1584 12.04 L1608 12.18 L1632 12.21 L1656 12.22 L1680 12.30 L1704 12.54 L1728 12.96 L1752 13.55 L1776 14.20 L1799 14.80 L1800 92 Z" clip-path="url(#done-oldtown-2)"/><rect class="race-route__seg" style="--kind: var(--race-segment-easy)" x="0" width="300" y="94" height="6"/><rect class="race-route__seg race-route__seg--effort" style="--kind: var(--color-volt)" x="300" width="30" y="94" height="6"/><rect class="race-route__seg" style="--kind: var(--color-rest)" x="330" width="180" y="94" height="6"/><rect class="race-route__seg race-route__seg--effort" style="--kind: var(--color-volt)" x="510" width="30" y="94" height="6"/><rect class="race-route__seg" style="--kind: var(--color-rest)" x="540" width="150" y="94" height="6"/><rect class="race-route__seg race-route__seg--effort" style="--kind: var(--color-volt)" x="690" width="30" y="94" height="6"/><rect class="race-route__seg" style="--kind: var(--color-rest)" x="720" width="150" y="94" height="6"/><rect class="race-route__seg race-route__seg--effort" style="--kind: var(--color-volt)" x="870" width="30" y="94" height="6"/><rect class="race-route__seg" style="--kind: var(--color-rest)" x="900" width="120" y="94" height="6"/><rect class="race-route__seg race-route__seg--effort" style="--kind: var(--color-volt)" x="1020" width="30" y="94" height="6"/><rect class="race-route__seg" style="--kind: var(--color-rest)" x="1050" width="120" y="94" height="6"/><rect class="race-route__seg race-route__seg--effort" style="--kind: var(--color-volt)" x="1170" width="30" y="94" height="6"/><rect class="race-route__seg" style="--kind: var(--color-rest)" x="1200" width="90" y="94" height="6"/><rect class="race-route__seg race-route__seg--effort" style="--kind: var(--color-volt)" x="1290" width="30" y="94" height="6"/><rect class="race-route__seg" style="--kind: var(--color-rest)" x="1320" width="90" y="94" height="6"/><rect class="race-route__seg race-route__seg--effort" style="--kind: var(--color-volt)" x="1410" width="30" y="94" height="6"/><rect class="race-route__seg" style="--kind: var(--race-segment-easy)" x="1440" width="360" y="94" height="6"/><line class="race-route__here" x1="301" x2="301" y1="64.03" y2="100" vector-effect="non-scaling-stroke"/></svg></div><div class="race-glass race-resist"><button class="race-resist__step" type="button" aria-label="Lower resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><div class="race-resist__readout"><div class="numeral race-resist__value">24</div><div class="race-resist__label">Resistance / 32</div></div><button class="race-resist__step" type="button" aria-label="Raise resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div></section></div>
+      <ul>
+        <li><b>360px:</b> power top left, interval at the bottom, inset 12px. Standings, route and resistance are hidden: on a phone the plan drives resistance and the rider watches power. Bar buttons go to 48px (<code>ride.css</code>). The class ride stacks video, then a 2-column grid of tiles; the custom ride stacks telemetry over the control aside.</li>
+        <li><b>640px:</b> the route panel joins the interval (stacked); insets grow to 20px.</li>
+        <li><b>768px:</b> standings appear top right.</li>
+        <li><b>1024px:</b> the bottom HUD becomes three columns (300 · 1fr · 220) and resistance appears; the class ride puts the board in a 280px column; the custom ride puts the control in a 340px aside.</li>
+        <li>Between 640 and 1023px the scenery prompt sits behind the stacked bottom panels (copied from the design, noted in the mocks README); place it above <code>.race-hud</code>'s height when both show.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+      <p>Glass is <code>color-mix(in srgb, var(--color-ink) 70%, transparent)</code> plus <code>backdrop-filter: blur(12px)</code>; the bar uses 75%, the scenery and paused cards 80%, overlays 85% (lost) and 90% (connect). In light theme ink is paper, so the glass turns pale and text turns dark without any extra rule. Wells and tracks on glass are <code>--color-fg</code> at 10% (20% on hover), never a fixed tint, so they read on both.</p>
+      <pre><code>/* Heavier glass for a bright map (Cliffside Coast at noon) */
+.race-glass { background: color-mix(in srgb, var(--color-ink) 80%, transparent); }</code></pre>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <p>Panels are labelled regions (<code>&lt;section aria-label="Interval, route and resistance"&gt;</code>, <code>&lt;aside aria-labelledby&gt;</code>). Steps are native buttons. The level bars are a <code>role="group"</code> of buttons with <code>aria-current="true"</code> on the level; give the group a roving tabindex as in the APG <a href="https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/">toolbar pattern</a> so it is one Tab stop. The sync toggle is an APG <a href="https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/">disclosure</a>. Paused is <code>role="status"</code>; Lost the bike is <code>role="alert"</code> and follows the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/alertdialog/">alert dialog</a> focus rules.</p>
+      <h3>Keyboard</h3>
+      <div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+        <tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Bar actions, then (desktop) Lower and Raise resistance, then the level group as one stop.</td></tr>
+        <tr><td><kbd>Enter</kbd>, <kbd>Space</kbd></td><td>Press a step; pick the focused level; open or close the sync panel.</td></tr>
+        <tr><td><kbd>←</kbd> / <kbd>→</kbd> in the level group</td><td>Move to the previous or next level; <kbd>Home</kbd> / <kbd>End</kbd> go to level 1 or 32.</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>Leaves full screen. On Lost the bike it does nothing: the only ways out are Reconnect and the bar's Leave.</td></tr>
+      </tbody></table></div>
+      <h3>Focus</h3>
+      <p>When Lost the bike appears, focus moves to Reconnect and the HUD under it is <code>inert</code>; when the bike returns, focus goes back to the control that had it. The paused card never takes focus (it is <code>pointer-events: none</code>); focus stays on Resume. Rings on glass show against the glass, not the photo.</p>
+      <h3>Labelling</h3>
+      <p>Steps say what they do ("Lower resistance", "Raise resistance"); after a press, the announcer says the new level ("Resistance 25 of 32"). Level bars are named "Level 1" to "Level 32". The class resistance value carries <code>aria-label="Resistance 6 of 32"</code>. Interval bars on the dashboard are <code>role="progressbar"</code> with a label and value; on glass the time left is a <code>role="timer"</code> with a sentence label ("29 seconds left in this effort").</p>
+      <h3>Contrast</h3>
+      <div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+        <div class="ds-themes ds-themes--pairs"><div data-theme="light"><div class="ds-pair"><span>Text on glass floor</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-ink" data-min="4.5"></span></div></div><div data-theme="dark"><div class="ds-pair"><span>Text on glass floor</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-ink" data-min="4.5"></span></div></div></div>
+        <div class="ds-themes ds-themes--pairs"><div data-theme="light"><div class="ds-pair"><span>Secondary on glass floor</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-ink" data-min="4.5"></span></div></div><div data-theme="dark"><div class="ds-pair"><span>Secondary on glass floor</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-ink" data-min="4.5"></span></div></div></div>
+        <div class="ds-themes ds-themes--pairs"><div data-theme="light"><div class="ds-pair"><span>On level bar against off bars</span><span class="ds-pair__ratio" data-contrast="--color-volt-fg|--color-raised" data-min="3"></span></div></div><div data-theme="dark"><div class="ds-pair"><span>On level bar against off bars</span><span class="ds-pair__ratio" data-contrast="--color-volt-fg|--color-raised" data-min="3"></span></div></div></div>
+        <div class="ds-themes ds-themes--pairs"><div data-theme="light"><div class="ds-pair"><span>Lost icon and copy</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-ink" data-min="4.5"></span></div></div><div data-theme="dark"><div class="ds-pair"><span>Lost icon and copy</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-ink" data-min="4.5"></span></div></div></div>
+        <div class="ds-themes ds-themes--pairs"><div data-theme="light"><div class="ds-pair"><span>Reconnect label</span><span class="ds-pair__ratio" data-contrast="--color-on-fill|--color-volt" data-min="4.5"></span></div></div><div data-theme="dark"><div class="ds-pair"><span>Reconnect label</span><span class="ds-pair__ratio" data-contrast="--color-on-fill|--color-volt" data-min="4.5"></span></div></div></div>
+        <div class="ds-themes ds-themes--pairs"><div data-theme="light"><div class="ds-pair"><span>Focus ring next to glass</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-ink" data-min="3"></span></div></div><div data-theme="dark"><div class="ds-pair"><span>Focus ring next to glass</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-ink" data-min="3"></span></div></div></div>
+      </div>
+      <h3>Motion</h3>
+      <p>Steps press to 96% over <code>--duration-fast</code>; interval fills move linearly over each second; standings rows slide 150ms. All are removed under <code>prefers-reduced-motion</code>. The backdrop blur is static.</p>
+      <h3>Touch</h3>
+      <p>Everything pressed mid-ride is at least 48px: resistance steps, Reconnect (44px plus a 24px gap), and, on phones, the bar buttons. The level bars are below 24px wide and rely on the 2.5.8 equivalent-control exception: the steppers beside them do the same job.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li>Overlay titles say what happened in three words or fewer: "Paused on Cathedral Circuit", "Lost the bike", "Connect your bike", "Turn on Bluetooth".</li>
+        <li>The body says what happens next and what is safe: "Your rider coasts for 15 seconds while we reconnect; after that the race counts as a DNF." "Your ride is saved at 6:52." "The class keeps going."</li>
+        <li>One action per overlay, a verb: Reconnect, Connect bike, Check again.</li>
+        <li>Interval copy: kind, round ("1 of 8", "Round 1 of 8"), time left, then "Next: Recover · 3:00 at level 6"; the last segment says "Last stretch".</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas" style="background: var(--color-ink);"><button class="race-resist__step" type="button" aria-label="Lower resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><button class="race-resist__step" type="button" aria-label="Raise resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div><figcaption>48px steps with a gap: hittable with a sweaty thumb mid-sprint.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas" style="background: var(--color-ink);"><button class="btn btn--raised btn--sm" type="button">Pause</button><button class="btn btn--raised btn--sm" type="button">Finish</button></div><figcaption>The class ride header's 36px Pause and Finish (mocks open question 9); raised to 48px on phones.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas ds-example__canvas--photo ds-hud-loose" style="--photo: url(../assets/images/worlds/oldtown.jpg); min-height: 10rem;"><div class="race-paused" role="status"><div class="race-paused__card"><div class="race-paused__title">Paused on Cathedral Circuit</div><div class="race-paused__body">The world holds still until you pedal again.</div></div></div></div><figcaption>Paused keeps the world visible and says where you stopped.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas ds-example__canvas--photo" style="--photo: url(../assets/images/worlds/oldtown.jpg); min-height: 10rem;"><div class="race-paused__card" style="background: var(--color-ink);"><div class="race-paused__title">Paused</div></div></div><figcaption>A pause in a race against people or bots: the plan says a race cannot be paused (open question 8). Pause is solo only.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+        <tbody>
+          <tr><td>Glass, bar, overlays (70–90%)</td><td><code>--color-ink</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td></tr>
+          <tr><td>Solid panels (class, dashboard)</td><td><code>--color-panel</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-panel" data-swatch></i><span data-token="--color-panel"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-panel" data-swatch></i><span data-token="--color-panel"></span></span></td></tr>
+          <tr><td>Step fill (panel)</td><td><code>--color-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td></tr>
+          <tr><td>Step hover (panel)</td><td><code>--color-line</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td></tr>
+          <tr><td>On level bars</td><td><code>--color-volt-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-volt-fg" data-swatch></i><span data-token="--color-volt-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-volt-fg" data-swatch></i><span data-token="--color-volt-fg"></span></span></td></tr>
+          <tr><td>Lost icon</td><td><code>--color-heart-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-heart-fg" data-swatch></i><span data-token="--color-heart-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-heart-fg" data-swatch></i><span data-token="--color-heart-fg"></span></span></td></tr>
+          <tr><td>Reconnect, Stream it, Connect bike</td><td><code>--color-volt</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-volt" data-swatch></i><span data-token="--color-volt"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-volt" data-swatch></i><span data-token="--color-volt"></span></span></td></tr>
+          <tr><td>Their label</td><td><code>--color-on-fill</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-on-fill" data-swatch></i><span data-token="--color-on-fill"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-on-fill" data-swatch></i><span data-token="--color-on-fill"></span></span></td></tr>
+          <tr><td>Panel text</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+          <tr><td>Labels</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+          <tr><td>Ride target</td><td><code>--target-ride</code></td><td colspan="2"><span data-token="--target-ride"></span></td></tr>
+          <tr><td>Dashboard step</td><td><code>--space-16</code></td><td colspan="2"><span data-token="--space-16"></span></td></tr>
+          <tr><td>Glass radius</td><td><code>--radius-xl</code></td><td colspan="2"><span data-token="--radius-xl"></span></td></tr>
+          <tr><td>Layers HUD / overlay / modal</td><td><code>--z-hud</code> <code>--z-overlay</code> <code>--z-modal</code></td><td colspan="2"><span data-token="--z-hud"></span> / <span data-token="--z-overlay"></span> / <span data-token="--z-modal"></span></td></tr>
+          <tr><td>HUD top (phone / desktop)</td><td><code>--race-hud-top</code> <code>--race-hud-top-lg</code></td><td colspan="2"><span data-token="--race-hud-top"></span> / <span data-token="--race-hud-top-lg"></span></td></tr>
+          <tr><td>Columns interval / resistance / board</td><td><code>--race-hud-interval-width</code> <code>--race-hud-resistance-width</code> <code>--race-board-width</code></td><td colspan="2"><span data-token="--race-hud-interval-width"></span> / <span data-token="--race-hud-resistance-width"></span> / <span data-token="--race-board-width"></span></td></tr>
+          <tr><td>Scenery width / bottom</td><td><code>--race-scenery-width</code> <code>--race-scenery-bottom</code></td><td colspan="2"><span data-token="--race-scenery-width"></span> / <span data-token="--race-scenery-bottom"></span></td></tr>
+          <tr><td>Lost card width</td><td><code>--race-lost-width</code></td><td colspan="2"><span data-token="--race-lost-width"></span></td></tr>
+          <tr><td>Press and fill</td><td><code>--duration-fast</code> <code>--duration-countdown</code></td><td colspan="2"><span data-token="--duration-fast"></span> / <span data-token="--duration-countdown"></span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+      <pre><code>&lt;main class="race"&gt;
+  &lt;div class="race-scene" role="img" aria-label="The Old Town Criterium world …"&gt;&lt;img class="race-scene__photo" src="…/oldtown.jpg" alt=""&gt;&lt;/div&gt;
+  &lt;header class="race-bar"&gt;…&lt;/header&gt;
+  &lt;section class="race-glass race-power" aria-label="Power and position"&gt;…&lt;/section&gt;
+  &lt;aside class="race-glass race-board" aria-labelledby="board-title"&gt;…&lt;/aside&gt;
+  &lt;section class="race-hud" aria-label="Interval, route and resistance"&gt;
+    &lt;div class="race-glass race-interval"&gt;…&lt;/div&gt;
+    &lt;div class="race-glass race-route"&gt;…&lt;/div&gt;
+    &lt;div class="race-glass race-resist"&gt;…&lt;/div&gt;
+  &lt;/section&gt;
+  &lt;p class="ride-announcer" role="status"&gt;&lt;/p&gt;
+  &lt;div class="race-lost" role="alert"&gt;…&lt;button class="race-lost__action" type="button"&gt;Reconnect&lt;/button&gt;&lt;/div&gt;
+&lt;/main&gt;</code></pre>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+        <tr><td><code>.race-glass</code></td><td>Glass surface for any HUD panel.</td></tr>
+        <tr><td><code>.race-hud</code></td><td>Bottom HUD grid: one column, three from 1024px.</td></tr>
+        <tr><td><code>.race-interval</code>, <code>.ride-interval</code> (+ <code>.ride-kind--*</code>)</td><td>Interval panel on glass, on the dashboard.</td></tr>
+        <tr><td><code>.race-resist</code>, <code>.class-resist</code>, <code>.ride-control</code>, <code>.ride-step</code>, <code>.ride-levels</code></td><td>Resistance controls.</td></tr>
+        <tr><td><code>.race-scenery</code></td><td>3D Tiles key prompt.</td></tr>
+        <tr><td><code>.class-sync</code>, <code>.class-sync__toggle[aria-expanded]</code></td><td>Video link and sync disclosure.</td></tr>
+        <tr><td><code>.race-paused</code>, <code>.class-video__paused</code></td><td>Paused overlays.</td></tr>
+        <tr><td><code>.race-lost</code>, <code>.class-lost</code>, <code>.ride-overlay</code>, <code>.ride-overlay--lost</code></td><td>Lost-bike and connect overlays.</td></tr>
+        <tr><td><code>disabled</code></td><td>Steps and levels while the bike is gone.</td></tr>
+        <tr><td><code>aria-current="true"</code></td><td>The current level bar.</td></tr>
+        <tr><td><code>data-state="hover|focus|active"</code></td><td>Documentation only; hooks for steps, levels, Reconnect and Stream it added in <code>ride.css</code>.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <ul>
+        <li><a href="../../mocks/pages/race/default.html">pages/race/default</a>, <a href="../../mocks/pages/race/solo.html">solo</a>, <a href="../../mocks/pages/race/paused.html">paused</a>, <a href="../../mocks/pages/race/disconnected.html">disconnected</a></li>
+        <li><a href="../../mocks/pages/class-ride/default.html">pages/class-ride/default</a>, <a href="../../mocks/pages/class-ride/paused.html">paused</a>, <a href="../../mocks/pages/class-ride/disconnected.html">disconnected</a></li>
+        <li><a href="../../mocks/pages/class-start/default.html">pages/class-start/default</a> (video link and sync)</li>
+        <li><a href="../../mocks/pages/custom-ride/default.html">pages/custom-ride/default</a>, <a href="../../mocks/pages/custom-ride/no-bike.html">no-bike</a>, <a href="../../mocks/pages/custom-ride/bluetooth-off.html">bluetooth-off</a>, <a href="../../mocks/pages/custom-ride/disconnected.html">disconnected</a>, <a href="../../mocks/pages/custom-ride/flat.html">flat</a></li>
+      </ul>
+      <p>Drift fixed during extraction:</p>
+      <ul>
+        <li>On level bars used <code>--color-volt</code>: 2.8:1 on paper-raised. Now <code>--color-volt-fg</code>.</li>
+        <li>Mid-ride buttons were 36–40px (open question 9): bar buttons and the class header go to 48px under 640px.</li>
+        <li>Steps, levels, Reconnect and Stream it had no <code>data-state</code> hooks; added. Reconnect and bar buttons had no press state; added (98%).</li>
+        <li>Lost the bike was <code>role="alert"</code> with no focus move and live controls under it; the HUD should be <code>inert</code> and focus should land on Reconnect (product change, not CSS).</li>
+        <li>The 32 level buttons were 32 Tab stops; use a roving tabindex.</li>
+        <li><code>.ride-levels</code> uses a raw <code>gap: 3px</code> and <code>.ride-control__level-number</code> a raw <code>5.5rem</code> in <code>components.css</code>; they want tokens (<code>--ride-levels-gap</code>, <code>--ride-level-size</code>).</li>
+      </ul>
+    </section>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
+  </main>
+</div>
+<script src="../assets/ds.js"></script>
+</body>
+</html>

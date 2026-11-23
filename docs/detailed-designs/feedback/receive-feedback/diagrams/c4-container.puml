@@ -1,0 +1,17 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Receive feedback
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Sign-in, progress, catalogues, ride hub, feedback")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Riders, sessions, rides, progress, feedback")
+}
+Rel(rider, app, "Sends feedback from a ride")
+Rel(app, api, "POST /api/feedback", "JSON/HTTPS, session cookie")
+Rel(api, db, "Inserts and reads FeedbackReport", "EF Core")
+Person_Ext(team, "Telo Ride team", "Reads feedback")
+Rel(team, api, "dotnet Telo.Ride.Api.dll feedback", "JSON Lines")
+@enduml

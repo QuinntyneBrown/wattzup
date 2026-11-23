@@ -1,0 +1,67 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+hide empty members
+title Class structure — Open and keep settings
+class RideSettings <<api>> {
+  .. slice 20.1 ..
+  +keepAwake: boolean
+  .. slices 20.2 to 20.5 ..
+  +quality: 'auto' | 'ultra' | 'high' | 'medium' | 'low'
+  +stepDown: boolean
+  +frameRate: 'display' | '30'
+  +resolution: number
+  +graphics: 'auto' | 'webgl2'
+  +rideSound: boolean
+  +rideVolume: number
+  +worldMusic: boolean
+  +muteUnderVideo: boolean
+  +reduceMotion: 'device' | 'on' | 'off'
+  +theme: 'device' | 'dark' | 'light'
+  +rideNumbers: 'standard' | 'large'
+  +fullScreenOnStart: boolean
+  +keepWorlds: boolean
+  +deviceCheck?: DeviceCheckResult
+}
+interface RideSettingsStore <<api>> {
+  +settings: Signal<RideSettings>
+  +persisted: Signal<boolean>
+  +set<K>(key: K, value: RideSettings[K]): void
+  +reset(): void
+}
+class LocalRideSettingsStore <<domain/storage>> {
+  -key = 'telo-ride.settings.v1'
+  -current: WritableSignal<RideSettings>
+  -kept: WritableSignal<boolean>
+  -keep(settings: RideSettings): void
+}
+class "parseRideSettings()" as parse <<domain/storage>> {
+  +parseRideSettings(raw: string | null): RideSettings
+  +RECOMMENDED_SETTINGS: RideSettings
+}
+class SettingsPage <<ride>> {
+  -settings: RideSettingsStore
+  +persisted: Signal<boolean>
+  +reset(): void
+}
+class SettingsSection <<components>> {
+  +name: InputSignal<string>
+  +heading: InputSignal<string>
+  +description: InputSignal<string>
+}
+RideSettingsStore <|.. LocalRideSettingsStore
+LocalRideSettingsStore --> RideSettings : holds
+LocalRideSettingsStore ..> parse : parses
+SettingsPage ..> RideSettingsStore : RIDE_SETTINGS
+SettingsPage ..> SettingsSection : renders 5
+@enduml

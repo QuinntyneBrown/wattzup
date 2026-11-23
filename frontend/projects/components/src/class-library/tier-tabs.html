@@ -1,0 +1,17 @@
+<div class="tier-tabs" role="tablist" aria-label="Class length">
+  @for (tab of tabs(); track tab.id; let index = $index) {
+    <button
+      class="tier-tabs__tab"
+      type="button"
+      role="tab"
+      [id]="'tier-tab-' + tab.id"
+      [attr.aria-selected]="tab.id === selected()"
+      [attr.aria-controls]="controls()"
+      [tabIndex]="tab.id === selected() ? 0 : -1"
+      (click)="choose.emit(tab.id)"
+      (keydown)="move($event, index)"
+    >
+      {{ tab.label }}
+    </button>
+  }
+</div>

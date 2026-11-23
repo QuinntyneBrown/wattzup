@@ -1,0 +1,78 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Old Town Criterium follows a real place: the streets of Bruges."
+      ]
+    },
+    {
+      "id": "offer",
+      "bars": 4,
+      "lines": [
+        "While the world draws, the race offers to stream the real Bruges, from Steenstraat to the Markt, as Google's photorealistic 3D Tiles."
+      ]
+    },
+    {
+      "id": "key",
+      "bars": 4,
+      "lines": [
+        "Paste your own Google Maps Platform key. It stays on this device, and goes only to Google's Map Tiles API, never to Telo Ride's backend."
+      ]
+    },
+    {
+      "id": "refused",
+      "bars": 4,
+      "lines": [
+        "If Google refuses the key, the panel says so, and the built-in world stays."
+      ]
+    },
+    {
+      "id": "streaming",
+      "bars": 4,
+      "lines": [
+        "Accepted, the tiles stream beside the world, and the panel credits Google for what's in view."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "From a phone to a desktop, the offer sits above the race, clear of every panel."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: the key reaches Google and nowhere else, a refusal keeps the world, and a stored key waits for you to press Stream it."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

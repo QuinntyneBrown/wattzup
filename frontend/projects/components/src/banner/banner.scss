@@ -1,0 +1,75 @@
+// Block banner (docs/design-system/assets/components.css): icon, body and action in a row that wraps on a phone.
+:host {
+  --banner-bg: var(--color-panel);
+  --banner-border: var(--color-line);
+  --banner-accent: var(--color-fg);
+
+  margin-top: var(--banner-margin-top, var(--space-6));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--space-4);
+  row-gap: var(--space-3);
+  border-radius: var(--radius-xl);
+  border: var(--border-width-hairline) solid var(--banner-border);
+  background: var(--banner-bg);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+:host(.banner--gold) {
+  --banner-bg: var(--color-gold-subtle);
+  --banner-border: var(--color-gold-border);
+  --banner-accent: var(--color-gold-fg);
+}
+
+:host(.banner--danger) {
+  --banner-bg: var(--color-danger-bg);
+  --banner-border: var(--color-danger-border);
+  --banner-accent: var(--color-danger-fg);
+}
+
+:host(.banner--info) {
+  --banner-bg: var(--color-info-bg);
+  --banner-border: var(--color-info-border);
+  --banner-accent: var(--color-info-fg);
+}
+
+:host(.banner--warning) {
+  --banner-bg: var(--color-warning-bg);
+  --banner-border: var(--color-warning-border);
+  --banner-accent: var(--color-warning-fg);
+}
+
+:host(.banner--danger),
+:host(.banner--info),
+:host(.banner--warning) {
+  align-items: flex-start;
+}
+
+:host(.banner--danger) .banner__title,
+:host(.banner--info) .banner__title,
+:host(.banner--warning) .banner__title {
+  color: var(--banner-accent);
+}
+
+.banner__icon {
+  flex-shrink: 0;
+  width: var(--space-5);
+  height: var(--space-5);
+  color: var(--banner-accent);
+}
+
+.banner__body {
+  flex: 1 1 10rem;
+  min-width: 0;
+}
+
+.banner__title {
+  font-weight: var(--font-weight-semibold);
+}
+
+.banner__detail {
+  color: var(--color-muted);
+}

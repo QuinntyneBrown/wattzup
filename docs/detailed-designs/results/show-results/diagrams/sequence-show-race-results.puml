@@ -1,0 +1,43 @@
+@startuml
+title UML sequence behaviour — Show race results
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "Race page" as race
+  participant "ResultsPage" as page
+  participant "resultsView()" as store
+end box
+box "Browser" #E0F2FE
+  participant "History state" as outbox
+end box
+actor -> race : Cross the finish line, 2nd of 10 vs Bots
+race -> outbox : RaceResult with the final standings, and submit the ride
+race -> page : navigate /results (loadComponent)
+page -> outbox : getState()
+outbox --> page : RaceResult
+page -> store : resultsView(result)
+store -> store : lead "You finished", big "2nd of 10" with podium style, sub "26:38 · on the podium" (L2-073 AC1)
+alt 6th of 10
+  store -> store : sub "27:32 · 18 s off the podium" (AC2)
+end
+alt Riders-online race
+  store -> store : header "Old Town Criterium · Live race" (AC4)
+else Bots race
+  store -> store : header "Old Town Criterium · vs Bots"
+end
+store --> page : ResultsView
+page --> actor : "Final standings" ordered list, own row aria-current="true", bots marked (AC3)
+@enduml

@@ -1,0 +1,65 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Change settings
+class SettingRow <<components>> {
+  selector: a[wz-setting-row], button[wz-setting-row]
+  +icon: input<SettingRowIcon>
+  +title: input<string>
+  +body: input<string>
+  +danger: input<boolean>
+}
+class ProfilePage <<ride>> {
+  -connection: BikeConnection
+  -support: BluetoothSupport
+  -remembered: RememberedBike
+  -dialog: Dialog
+  #bike: Signal<BikeRowView>
+  #changeName(): void
+  #deleteAccount(): void
+}
+class "bikeRow()" as rows <<ride helper>> {
+  +bikeRow(ble, support, name): BikeRowView
+}
+class BikeRowView {
+  +title: string
+  +body: string
+  +paired: boolean
+}
+interface BikeConnection <<api>> {
+  +bike: Signal<BikeIdentity | null>
+  +ble: Signal<BleState>
+}
+interface BluetoothSupport <<api>> {
+  +state: Signal<BluetoothSupportState>
+}
+interface HeartRateStrap <<api>> {
+  +connect(): Promise<void>
+}
+class AccountStore <<ride>> {
+  +signOut(): void
+}
+class DiagnosticsDialog <<ride, slice 25.1>>
+class DisplayNameDialog <<ride>>
+class DeleteAccountDialog <<ride>>
+ProfilePage ..> rows
+rows ..> BikeRowView
+ProfilePage ..> SettingRow
+ProfilePage --> BikeConnection : BIKE_CONNECTION
+ProfilePage --> BluetoothSupport : BLUETOOTH_SUPPORT
+ProfilePage --> HeartRateStrap : HEART_RATE_STRAP
+ProfilePage --> AccountStore : Sign out
+ProfilePage ..> DiagnosticsDialog : opens (slice 25.1)
+ProfilePage ..> DisplayNameDialog : opens
+ProfilePage ..> DeleteAccountDialog : opens
+@enduml

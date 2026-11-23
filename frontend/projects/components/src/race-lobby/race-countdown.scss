@@ -1,0 +1,43 @@
+// The 3-2-1: full screen over the lobby (ink at 85%), one big volt numeral (docs/mocks/pages/race-lobby/countdown.html).
+.race-countdown {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--color-ink) 85%, transparent);
+}
+
+.race-countdown__num {
+  display: block;
+  font-size: var(--race-countdown-size);
+  line-height: var(--line-height-none);
+  color: var(--color-volt-fg);
+  animation: race-countdown-step var(--duration-base) var(--ease-enter) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .race-countdown__num {
+    animation-name: race-countdown-fade;
+  }
+}
+
+@keyframes race-countdown-step {
+  from {
+    opacity: 0;
+    scale: 1.25;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes race-countdown-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

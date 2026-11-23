@@ -1,0 +1,30 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Keep the ride clock true
+
+System_Ext(bike, "Smart bike", "Bluetooth LE")
+Container_Boundary(app, "Ride app") {
+  Component(page, "Ride page (race, class or custom)", "Angular page · ride", "Renders readouts, countdown and trace")
+  Component(store, "RaceStore / ClassRideStore", "Screen-scoped stores · ride", "Own one ride's timing parts")
+  Component(wake, "ScreenWakeLock", "Browser service · ride", "navigator.wakeLock")
+  Component(guard, "RacePage / ClassRideSession", "Ride screens · ride", "beforeunload confirmation while riding")
+  Component(clock, "RideClock", "Service · domain/engine", "Elapsed time from a monotonic clock")
+  Component(ticker, "RideTicker", "Service · domain/engine", "One tick a second; catches up on visibility")
+  Component(engine, "WorkoutEngine", "Service · domain/engine", "Segment and target resistance at an elapsed time")
+  Component(sampler, "ReadoutSampler", "Helper · domain/engine", "Publishes readouts once a second")
+  Component(conn, "WebBluetoothBikeConnection", "Service · domain/bluetooth", "Decoded bike samples")
+  Component(time, "MonotonicTime", "Contract · api", "now() = performance.now()")
+}
+Rel(bike, conn, "Notifies", "GATT")
+Rel(page, store, "Reads signals from")
+Rel(store, clock, "Starts, pauses, resumes")
+Rel(store, ticker, "Starts and stops")
+Rel(store, wake, "Requests and releases")
+Rel(store, guard, "Arms and disarms")
+Rel(clock, time, "Reads")
+Rel(ticker, clock, "Reads elapsedMs")
+Rel(ticker, engine, "Ticks each second")
+Rel(conn, sampler, "Pushes samples")
+Rel(sampler, page, "Publishes readout signal")
+@enduml

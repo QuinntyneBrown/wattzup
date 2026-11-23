@@ -1,0 +1,26 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Keep a streak
+
+Container(app, "Ride app", "Angular", "Header, Profile and Results show the streak")
+Container_Boundary(api, "Telo Ride API") {
+  Component(rides, "RidesController", "ASP.NET Core controller", "POST /api/rides")
+  Component(progress, "ProgressController", "ASP.NET Core controller", "GET /api/progress")
+  Component(submit, "SubmitRideCommandHandler", "MediatR handler", "Records the ride day")
+  Component(query, "GetProgressQueryHandler", "MediatR handler", "Reports today's streak")
+  Component(streak, "Streak", "Domain entity", "Current days and last ride day")
+  Component(clock, "TimeProvider", ".NET abstraction", "Current instant; FakeTimeProvider in tests")
+}
+ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Streaks")
+
+Rel(app, rides, "Submits ride with finishedAt and time zone", "JSON/HTTPS")
+Rel(app, progress, "Reads streak", "JSON/HTTPS")
+Rel(rides, submit, "Sends SubmitRideCommand")
+Rel(progress, query, "Sends GetProgressQuery")
+Rel(submit, streak, "Record(localDay)")
+Rel(query, streak, "DaysOn(today)")
+Rel(query, clock, "Reads now")
+Rel(submit, db, "Saves", "EF Core")
+Rel(query, db, "Reads", "EF Core")
+@enduml

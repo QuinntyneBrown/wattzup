@@ -1,0 +1,61 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.349
+World loading now counts the shaders it builds, and says how smoothly the world will
+
+00:00:07.349 --> 00:00:07.876
+run.
+
+00:00:10.324 --> 00:00:15.184
+The programs are built in batches, each one counted, through the same pass the ride
+
+00:00:15.184 --> 00:00:17.709
+draws with, so nothing is built twice.
+
+00:00:23.228 --> 00:00:27.431
+Then the first frames warm up at the starting quality, and the card says the frame
+
+00:00:27.431 --> 00:00:28.859
+rate they held at Low.
+
+00:00:36.133 --> 00:00:40.561
+After twenty seconds without the world, the card says it is taking longer than
+
+00:00:40.561 --> 00:00:41.713
+usual, and why.
+
+00:00:49.038 --> 00:00:53.969
+Start at Low quality, ride with the panorama, or keep waiting; a build that fails
+
+00:00:53.969 --> 00:00:55.426
+steps down a level.
+
+00:01:01.942 --> 00:01:05.379
+The warning and its choices, from a phone to the full screen.
+
+00:01:14.847 --> 00:01:19.506
+What the tests prove: the programs are counted, the frame rate is held, and a slow
+
+00:01:19.506 --> 00:01:21.056
+load offers a way out.
+
+00:01:25.170 --> 00:01:29.774
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:30.119 --> 00:01:34.631
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:34.631 --> 00:01:36.302
+every hill and interval.
+
+00:01:36.647 --> 00:01:41.825
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:41.825 --> 00:01:47.273
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:47.273 --> 00:01:50.263
+XP, rider levels, stars and map unlocks.
+
+00:01:50.608 --> 00:01:53.101
+A custom workout lives under Profile.

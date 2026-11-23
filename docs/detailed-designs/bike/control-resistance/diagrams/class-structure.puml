@@ -1,0 +1,84 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Control resistance
+enum ResistanceSource {
+  plan
+  manual
+}
+class SentCommand <<api>> {
+  +rideTime: number | null
+  +level: number
+  +source: ResistanceSource
+  +ackMs: number | null
+}
+class ResistanceController <<domain/engine>> {
+  +{static} MIN: number = 1
+  +{static} MAX: number = 32
+  +target: Signal<number | null>
+  +source: Signal<ResistanceSource>
+  +canControl: Signal<boolean>
+  +last: Signal<SentCommand | null>
+  +applyPlanLevel(level: number): Promise<void>
+  +nudge(delta: 1 | -1): Promise<void>
+  +setManual(level: number): Promise<void>
+  -clamp(level: number): number
+  -send(level: number, source: ResistanceSource): Promise<void>
+}
+class SentToBikeLog <<domain/engine>> {
+  +{static} CAPACITY: number = 50
+  +rows: Signal<SentCommand[]>
+  +last: Signal<SentCommand | null>
+  +add(cmd: SentCommand): void
+}
+class WorkoutEngine <<domain/engine>> {
+  +segment: Signal<Segment | null>
+  +segmentStarted: Observable<Segment>
+}
+class Segment {
+  +kind: SegmentKind
+  +durationS: number
+  +level: number
+  +cadenceAim: number
+}
+interface BikeConnection <<api>> {
+  +setResistance(level: number): Promise<number>
+}
+class EchelonProtocol <<domain/protocol>> {
+  +setResistance(level: number): Uint8Array
+}
+class RideLevels <<components>> {
+  +level: input<number | null>
+  +disabled: input<boolean>
+  +pick: output<number>
+}
+class RideStep <<components>> {
+  +resistance: input<number | null>
+  +disabled: input<boolean>
+  +raise: output<void>
+  +lower: output<void>
+}
+class RideLog <<components>> {
+  +rows: input<SentCommand[]>
+  +link: input<string>
+  +connected: input<boolean>
+}
+ResistanceController ..> BikeConnection : injects BIKE_CONNECTION
+ResistanceController --> SentToBikeLog : records
+ResistanceController --> ResistanceSource
+SentToBikeLog "1" *-- "0..50" SentCommand
+WorkoutEngine --> Segment
+ResistanceController ..> WorkoutEngine : subscribes segmentStarted
+BikeConnection ..> EchelonProtocol : WebBluetoothBikeConnection encodes
+RideLog ..> SentCommand
+@enduml

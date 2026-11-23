@@ -1,18 +1,21 @@
 import type { Locator, Page } from '@playwright/test';
+import { AppHeader } from './app-header';
 
-/** The not-found page for any unknown route (L2-056). */
+/** Page not found (L2-145): any address that matches no screen. */
 export class NotFoundPage {
-  readonly code: Locator;
+  readonly header: AppHeader;
   readonly heading: Locator;
-  readonly text: Locator;
-  readonly dashboardLink: Locator;
-  readonly setupLink: Locator;
+  readonly lead: Locator;
+  readonly backHome: Locator;
 
-  constructor(readonly page: Page) {
-    this.code = page.locator('.not-found__code');
+  constructor(private readonly page: Page) {
+    this.header = new AppHeader(page);
     this.heading = page.getByRole('heading', { level: 1 });
-    this.text = page.locator('.auth-card .text-muted');
-    this.dashboardLink = page.getByRole('link', { name: 'Back to the dashboard' });
-    this.setupLink = page.getByRole('link', { name: 'Set up a ride' });
+    this.lead = page.locator('.not-found .page__lead');
+    this.backHome = page.getByRole('link', { name: 'Back to Home' });
+  }
+
+  async open(path: string): Promise<void> {
+    await this.page.goto(path);
   }
 }

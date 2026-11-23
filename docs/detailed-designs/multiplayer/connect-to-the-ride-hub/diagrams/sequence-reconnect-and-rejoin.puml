@@ -1,0 +1,64 @@
+@startuml
+title UML sequence behaviour — Reconnect and rejoin
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "LiveSessionStore" as store
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "SignalRRideHubClient" as client
+  participant "RideHubRetryPolicy" as retry
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RideHub" as hub
+  participant "RideHubNotifier" as notifier
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "FindRaceCommandHandler" as handler
+  participant "RaceSession" as session
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "InMemorySessionRegistry" as registry
+end box
+client -> client : Connection lost
+client --> store : state = reconnecting
+loop until connected (L2-120 AC3)
+  client -> retry : nextRetryDelayInMilliseconds(n)
+  retry --> client : 0, 2000, 5000, 10000, then 30000 ms
+  client -> hub : Reconnect with session cookie
+end
+hub --> client : Connected (new connection id)
+client --> store : onreconnected
+store -> client : serverTime() × 5, offsetMs measured again
+store -> client : findRace(mapId) with the same SessionRef
+client -> hub : FindRace(mapId)
+hub -> handler : Send FindRaceCommand
+handler -> registry : Find session holding this rider
+registry --> handler : RaceSession
+handler -> session : SeatOf(riderId)
+alt session still open or running
+  session --> handler : Same seat
+  handler -> notifier : AddToSessionAsync(connectionId, sessionId)
+  handler --> hub : SeatAssignment (same seat)
+  hub --> client : SeatAssignmentDto
+  client --> store : Seat confirmed
+else rider removed or session ended
+  session --> handler : None
+  handler --> hub : Refusal, code session_closed
+  hub --> client : HubException session_closed
+  client --> store : Rejoin refused
+  store -> store : Ride carries on with the bike (L2-126)
+end
+@enduml

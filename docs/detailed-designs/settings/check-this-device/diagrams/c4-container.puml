@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Check this device
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular; Three.js in a lazy chunk", "Runs trials off screen")
+  ContainerDb(ls, "Browser storage", "localStorage", "Device check result")
+}
+System_Ext(gpu, "Device graphics", "WebGPU or WebGL 2", "Draws the test world")
+Rel(rider, app, "Starts or stops the check")
+Rel(app, gpu, "Draws trials off screen")
+Rel(app, ls, "Keeps the result")
+@enduml

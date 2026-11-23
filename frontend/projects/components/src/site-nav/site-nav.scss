@@ -1,0 +1,34 @@
+// Block site-nav (ADR 0027). Sticky over the page, on glass.
+:host {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  display: block;
+  border-bottom: var(--border-width-hairline) solid var(--color-line);
+  background: var(--color-glass);
+  backdrop-filter: blur(12px);
+}
+
+.site-nav__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: var(--layout-container-max);
+  min-height: var(--layout-header-height);
+  margin-inline: auto;
+  padding-inline: var(--layout-margin);
+}
+
+.site-nav__home {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-comfortable);
+  border-radius: var(--radius-md);
+}
+
+.site-nav__links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}

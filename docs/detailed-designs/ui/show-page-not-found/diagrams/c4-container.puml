@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Show page not found
+
+Person(rider, "Rider", "Follows an old link")
+System_Boundary(telo, "Telo Ride") {
+  Container(host, "Static host", "HTTPS static hosting; provider <TO SUPPLY>", "Serves index.html for any path that is not a file")
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine")
+}
+Rel(rider, host, "Requests /old-link", "HTTPS")
+Rel(host, app, "Returns index.html and chunks of")
+Rel(rider, app, "Reads the not-found page in")
+@enduml

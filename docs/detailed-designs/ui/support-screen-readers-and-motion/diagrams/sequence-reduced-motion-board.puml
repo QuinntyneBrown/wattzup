@@ -1,0 +1,35 @@
+@startuml
+title UML sequence behaviour — Reorder a board with reduced motion
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "Browser" as browser
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "MotionPreference" as motion
+  participant "Race page" as page
+end box
+box "Frontend — Ride app (components library)" #E0F2FE
+  participant "Leaderboard" as board
+  participant "BoardReorderAnimator" as anim
+end box
+browser -> motion : matchMedia('(prefers-reduced-motion: reduce)')
+motion --> page : reduced signal
+page -> board : rows input, reordered once a second at most
+board -> anim : reorder(rows, reduced)
+alt reduced = false
+  anim -> browser : FLIP transform transition over --duration-fast (150 ms) (L2-142 AC1)
+else reduced = true
+  anim -> browser : Place rows at once (L2-142 AC2)
+end
+@enduml

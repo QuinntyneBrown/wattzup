@@ -1,0 +1,31 @@
+// Block stars (docs/design-system/assets/components.css): earned stars are gold-filled, the rest faint outlines.
+:host {
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--space-0-5);
+}
+
+.icon {
+  width: var(--space-3-5);
+  height: var(--space-3-5);
+  color: var(--color-faint);
+}
+
+:host(.stars--md) .icon {
+  width: var(--space-4);
+  height: var(--space-4);
+}
+
+:host(.stars--lg) {
+  gap: var(--space-1-5);
+}
+
+:host(.stars--lg) .icon {
+  width: var(--space-7);
+  height: var(--space-7);
+}
+
+.icon.is-earned {
+  fill: var(--color-gold-fg);
+  color: var(--color-gold-fg);
+}

@@ -1,0 +1,42 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Choose the next ride
+
+Container_Boundary(app, "Ride app") {
+  Component(page, "HomePage", "Angular page · ride", "Greeting, unlocked banner, Next ride card, Race and Classes doors")
+  Component(store, "HomeStore", "Page-scoped signal store · ride", "Joins progress, the rider's name and the catalogues into the greeting, banner, card and doors")
+  Component(greet, "homeGreeting()", "Pure helper · ride", "Morning, Afternoon, Evening or Welcome heading")
+  Component(prog, "RiderProgressStore", "Signal store · ride (PROGRESS_STORE)", "Progress, next ride, unseen unlock")
+  Component(cat, "HttpMapsApi and HttpClassesApi", "HTTP clients · api (MAPS_API, CLASSES_API)", "The map and class catalogues")
+  Component(rpa, "HttpRiderProgressApi", "HTTP client · api (RIDER_PROGRESS_API)", "Reads progress, marks an unlock seen")
+  Component(card, "NextRideCard", "Presentation component · components", "Block next-ride")
+  Component(banner, "Banner", "Presentation component · components", "Gold role=status banner")
+  Component(tile, "MapTile", "Presentation component · components", "Map photo, name and stars")
+  Component(teaser, "ClassTeaser", "Presentation component · components", "Featured class; its next group session with slice 14.2")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(ctrl, "ProgressController", "ASP.NET Core controller", "GET /api/progress, POST /api/progress/unlocks/{mapId}/seen")
+  Component(qh, "GetProgressQueryHandler", "MediatR handler", "Builds ProgressDto with nextRideMapId and unseenUnlockId")
+  Component(ch, "MarkUnlockSeenCommandHandler", "MediatR handler", "Records that the banner was seen")
+  Component(rules, "UnlockRules", "Domain service", "Next unlock and the map the card offers")
+}
+ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Map progress, rides")
+
+Rel(page, store, "Reads the greeting, banner, card and doors")
+Rel(store, greet, "Uses")
+Rel(store, prog, "Reads progress")
+Rel(store, cat, "Reads maps and classes")
+Rel(store, rpa, "Marks the unlock seen")
+Rel(page, card, "Renders")
+Rel(page, banner, "Renders when an unlock is unseen")
+Rel(page, tile, "Renders four tiles")
+Rel(page, teaser, "Renders")
+Rel(prog, ctrl, "GET /api/progress", "JSON/HTTPS")
+Rel(rpa, ctrl, "POST unlock seen", "JSON/HTTPS")
+Rel(ctrl, qh, "Sends GetProgressQuery")
+Rel(ctrl, ch, "Sends MarkUnlockSeenCommand")
+Rel(qh, rules, "Computes next ride")
+Rel(qh, db, "Reads", "EF Core")
+Rel(ch, db, "Writes UnlockSeenAt", "EF Core")
+@enduml

@@ -1,0 +1,86 @@
+// Block setting-row (docs/design-system/assets/components.css, Settings): a full-width row with an icon, a title, a
+// line under it and a chevron; at least 44 px tall.
+:host {
+  display: flex;
+  width: 100%;
+  min-height: var(--target-comfortable);
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--color-fg);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-standard);
+
+  &:hover {
+    color: var(--color-volt-fg);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-focus-ring);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-md);
+  }
+}
+
+.setting-row__icon {
+  display: flex;
+  color: var(--color-muted);
+}
+
+.setting-row__glyph,
+.setting-row__chevron {
+  width: var(--space-5);
+  height: var(--space-5);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.setting-row__text {
+  min-width: 0;
+  flex: 1;
+}
+
+.setting-row__title {
+  display: block;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.setting-row__body {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-muted);
+}
+
+.setting-row__chevron {
+  flex-shrink: 0;
+  color: var(--color-faint);
+}
+
+// Modifier danger: an action that cannot be undone (Delete my account).
+:host(.setting-row--danger) {
+  &:hover {
+    color: var(--color-heart-fg);
+  }
+
+  .setting-row__icon,
+  .setting-row__title {
+    color: var(--color-heart-fg);
+  }
+}

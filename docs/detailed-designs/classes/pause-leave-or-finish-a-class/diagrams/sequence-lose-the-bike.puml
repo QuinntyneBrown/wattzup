@@ -1,0 +1,51 @@
+@startuml
+title UML sequence behaviour — Lose the bike in a class
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "ClassRidePage" as page
+  participant "ClassRideStore" as store
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "WebBluetoothBikeConnection" as conn
+  participant "RideClock" as clock
+  participant "WorkoutEngine" as engine
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "Smart bike" as bike
+end box
+conn -> conn : Keepalive gets no answer (L2-017)
+conn --> store : ble = Disconnected
+alt group class ride
+  store --> page : Alert "Lost the bike", Reconnect; resistance disabled L2-092 AC1
+  note over clock, engine : Clock, video and board keep moving; Leave stays active (L2-092 AC2)
+  rider -> page : Press Reconnect
+  page -> store : reconnect()
+  store -> conn : reconnectNow()
+  conn -> bike : Connect GATT
+  bike --> conn : Connected
+  conn --> store : ble = Connected
+  store -> engine : Resend current segment level (L2-027 AC4)
+  store --> page : Rider rejoins at the class's current time L2-092 AC3
+else solo class ride
+  store -> clock : pause(); video paused
+  store --> page : Alert "Lost the bike", "Your ride is paused…", Reconnect L2-092 AC4
+  conn -> conn : Retry the same bike every 3 s, or Reconnect now
+  conn --> store : ble = Connected
+  store -> engine : Resend current segment level
+  store -> clock : resume(), unless the rider paused; video plays on
+end
+@enduml

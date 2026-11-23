@@ -1,0 +1,52 @@
+@startuml
+title UML sequence behaviour — Show the unlocked banner
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "HomePage" as page
+  participant "HomeStore" as store
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "HttpProgressApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "ProgressController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "MarkUnlockSeenCommandHandler" as handler
+  participant "MapProgress" as mp
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+actor -> page : Done on Results after Neon Docklands opened (L2-079 AC2)
+page -> store : view
+store --> page : banner = Neon Docklands, nextRide = Cliffside Coast "Earn 2★ on Cliffside Coast", opens Dolomites (L2-036 AC2)
+page --> actor : Gold banner role="status": "Neon Docklands is open." "A harbour city after dark, 21.6 km." "Ride it" (L2-036 AC1)
+store -> client : markUnlockSeen("neon-docklands")
+client -> ctrl : POST /api/progress/unlocks/neon-docklands/seen
+ctrl -> handler : Send MarkUnlockSeenCommand
+handler -> db : Load MapProgress of the rider
+handler -> mp : MarkSeen(now)
+handler -> db : Save
+ctrl --> client : 204
+opt Rider chooses "Ride it"
+  actor -> page : Ride it
+  page --> actor : Race Setup for Neon Docklands
+end
+actor -> page : Open Home again
+page --> actor : No banner (L2-036 AC3)
+@enduml

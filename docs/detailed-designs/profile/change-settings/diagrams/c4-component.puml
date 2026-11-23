@@ -1,0 +1,24 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Change settings
+
+Container_Boundary(app, "Ride app") {
+  Component(page, "ProfilePage", "Angular page · ride", "Settings aside, 340 px at lg or wider")
+  Component(row, "SettingRow", "Presentation component · components", "Block setting-row: icon, title, text")
+  Component(dialog, "Dialog (CDK)", "Angular CDK", "Opens DiagnosticsDialog, DisplayNameDialog, DeleteAccountDialog")
+  Component(bikeconn, "WebBluetoothBikeConnection", "Service · domain/bluetooth (BIKE_CONNECTION)", "Paired bike name and ble")
+  Component(strapconn, "HeartRateStrap", "Service · domain/bluetooth (HEART_RATE_STRAP)", "Strap connection (L2-031)")
+  Component(auth, "HttpAuthApi", "HTTP client · api (AUTH_API)", "POST /api/auth/sign-out")
+  Component(router, "Router", "Angular Router", "Settings, Custom workout, Connect Bike")
+}
+Container(api, "Telo Ride API", "ASP.NET Core", "Accounts endpoints (accounts subsystem)")
+
+Rel(page, row, "Renders one per setting")
+Rel(page, bikeconn, "Reads paired bike")
+Rel(page, dialog, "Opens dialogs")
+Rel(page, strapconn, "Connects strap")
+Rel(page, auth, "Signs out")
+Rel(page, router, "Navigates")
+Rel(auth, api, "JSON/HTTPS")
+@enduml

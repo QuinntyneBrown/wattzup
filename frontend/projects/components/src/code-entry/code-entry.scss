@@ -1,0 +1,77 @@
+// Block code-entry (docs/design-system/assets/components.css, Code entry): six digits in one field, drawn as six cells;
+// the field lies over the cells, unseen, so typing, pasting and the device's offer all go to it.
+:host {
+  display: block;
+}
+
+.code-entry {
+  position: relative;
+}
+
+.code-entry__input {
+  position: absolute;
+  inset: 0 0 auto;
+  width: 100%;
+  height: var(--control-height-xl);
+  opacity: 0;
+  font-size: var(--font-size-md);
+  caret-color: transparent;
+
+  &:disabled {
+    cursor: progress;
+  }
+}
+
+.code-entry__cells {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-2);
+  height: var(--control-height-xl);
+  pointer-events: none;
+}
+
+.code-entry__cell {
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-lg);
+  background: var(--color-raised);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+// Focus is drawn on the cells, since the field itself is unseen.
+.code-entry:focus-within .code-entry__cell {
+  box-shadow: 0 0 0 1px var(--color-line-strong);
+}
+
+.code-entry:has(.code-entry__input:focus-visible) .code-entry__cells {
+  outline: var(--focus-ring-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-lg);
+}
+
+.code-entry__input[aria-invalid='true'] + .code-entry__cells .code-entry__cell {
+  box-shadow: 0 0 0 1px var(--color-heart);
+}
+
+.code-entry__error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-heart-fg);
+}
+
+.code-entry__error-icon {
+  flex-shrink: 0;
+  width: var(--space-3-5);
+  height: var(--space-3-5);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}

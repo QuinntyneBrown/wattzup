@@ -3,17 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Code block — Wattzup design system</title>
-<meta name="description" content="Scrollable monospace block for raw packets.">
+<title>Code block — Telo Ride design system</title>
+<meta name="description" content="Code blocks show machine text to read or copy: the Diagnostics packet log and summary in mono, with a Copy button; inline code.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Page-only: docs chrome links (ds.css a) must not restyle product links inside specimens */
+:where(.ds-example__canvas, .ds-themes, .ds-matrix, .ds-anatomy__figure) a { color: inherit; text-decoration: none; }
+:where(.ds-example__canvas, .ds-themes, .ds-matrix, .ds-anatomy__figure) a:hover { color: inherit; }
+/* Visually hidden text inside a scrolling matrix must not widen the page */
+.ds-matrix { position: relative; }
+.ds-themes + p, .ds-themes + ul { margin-top: var(--space-4); }
+/* Product tables shown inside the state matrix keep their own cell styles */
+.ds-matrix td :is(.table, .map-table) :is(th, td) { padding: var(--table-cell-py, var(--space-2-5)) var(--table-cell-px, 0); background: transparent; border-right: 0; border-top: 0; font: inherit; text-transform: none; letter-spacing: normal; color: inherit; white-space: nowrap; }
+.ds-matrix td :is(.table) thead th { font-size: var(--font-size-xs); line-height: var(--line-height-xs); font-weight: var(--font-weight-semibold); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-muted); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +39,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,78 +93,259 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
-      <p class="ds-kicker">Component · Ride data</p>
+      <p class="ds-kicker">Component · Data display</p>
       <h1>Code block</h1>
-      <p class="ds-lead">The code block shows raw text that must not wrap, such as packet log lines. No screen shows one today: the packet log is downloaded from Diagnostics rather than listed (ADR 0019).</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span></div>
+      <p class="ds-lead">Machine text, shown exactly so it can be read or copied into a bug report: the packet log, the diagnostics summary, a file name.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
       <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>Scrolls in both directions within 12rem; focusable so keyboard users can scroll it.</p>
-    </section>
-    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
-<div class="ds-anatomy"><figure class="ds-anatomy__figure"><pre class="code-block" tabindex="0" aria-label="Latest raw packets">1794787812.127 f0 d1 09 00 1b 00 00 00 00 00 5f 00 ee
-1794787811.120 f0 d1 09 00 1a 00 00 00 00 00 5e 00 ec
-1794787810.902 f0 d2 01 12 d5</pre><span class="ds-callout" style="left: 50%; top: 50%;" aria-hidden="true">1</span></figure><ol class="ds-anatomy__list"><li><div><b>Block</b><small>Sunken surface, caption mono.</small></div></li></ol></div>
-    </section>
-    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
-<div class="ds-example"><div class="ds-example__canvas "><pre class="code-block" tabindex="0" aria-label="Latest raw packets">1794787812.127 f0 d1 09 00 1b 00 00 00 00 00 5f 00 ee
-1794787811.120 f0 d1 09 00 1a 00 00 00 00 00 5e 00 ec
-1794787810.902 f0 d2 01 12 d5</pre></div><div class="ds-example__caption"><span>Raw packets.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;pre class="code-block" tabindex="0" aria-label="Latest raw packets"&gt;1794787812.127 f0 d1 09 00 1b 00 00 00 00 00 5f 00 ee
-1794787811.120 f0 d1 09 00 1a 00 00 00 00 00 5e 00 ec
-1794787810.902 f0 d2 01 12 d5&lt;/pre&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="sizes" data-na="One size."><h2><a href="#sizes">Sizes</a></h2>
-      <p class="ds-na">One size.</p>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<div class="ds-matrix"><table><thead><tr><th scope="col">Variant</th><th scope="col">Default</th><th scope="col">Focus</th></tr></thead><tbody><tr><th scope="row">Block</th><td><pre class="code-block" tabindex="0" aria-label="Packets">f0 d2 01 12 d5</pre></td><td><pre class="code-block" tabindex="0" aria-label="Packets" data-state="focus">f0 d2 01 12 d5</pre></td></tr></tbody></table></div><h3>Both themes</h3><div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas"><pre class="code-block" tabindex="0" aria-label="Latest raw packets">1794787812.127 f0 d1 09 00 1b 00 00 00 00 00 5f 00 ee
-1794787811.120 f0 d1 09 00 1a 00 00 00 00 00 5e 00 ec
-1794787810.902 f0 d2 01 12 d5</pre></div></div><div data-theme="dark"><div class="ds-example__canvas"><pre class="code-block" tabindex="0" aria-label="Latest raw packets">1794787812.127 f0 d1 09 00 1b 00 00 00 00 00 5f 00 ee
-1794787811.120 f0 d1 09 00 1a 00 00 00 00 00 5e 00 ec
-1794787810.902 f0 d2 01 12 d5</pre></div></div></div>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
-<ul><li>Scrolls inside itself; never widens the page.</li></ul>
-    </section>
-    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
-<p><code>--color-bg-surface-sunken</code>.</p>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<h3>Role and pattern</h3><p><code>&lt;pre tabindex="0" aria-label&gt;</code>.</p><h3>Keyboard</h3><div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody><tr><td><kbd>Tab</kbd></td><td>Focus the block.</td></tr><tr><td>Arrows</td><td>Scroll.</td></tr></tbody></table></div><h3>Focus</h3><p>Ring on the block.</p><h3>Labelling</h3><p>"Latest raw packets".</p><h3>Contrast</h3><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-pair"><span>Text on sunken</span><span class="ds-pair__ratio" data-contrast="--color-fg-muted|--color-bg-surface-sunken" data-min="4.5"></span></div></div><h3>Motion</h3><p>None.</p><h3>Touch</h3><p>Swipe to scroll.</p>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Show raw data as written; no reformatting.</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><pre class="code-block" tabindex="0" aria-label="Latest raw packets">1794787812.127 f0 d1 09 00 1b 00 00 00 00 00 5f 00 ee
-1794787811.120 f0 d1 09 00 1a 00 00 00 00 00 5e 00 ec
-1794787810.902 f0 d2 01 12 d5</pre></div><figcaption>Scrolls in place.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><p>1794787812.127 f0 d1 09 00 1b 00 00 00 00 00 5f 00 ee</p></div><figcaption>Wrapped raw data.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
-<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Fill</td><td><code>--color-bg-surface-sunken</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-bg-surface-sunken" data-swatch></i><span data-token="--color-bg-surface-sunken"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-bg-surface-sunken" data-swatch></i><span data-token="--color-bg-surface-sunken"></span></span></td></tr><tr><td>Text</td><td><code>--color-fg-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-muted" data-swatch></i><span data-token="--color-fg-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-muted" data-swatch></i><span data-token="--color-fg-muted"></span></span></td></tr><tr><td>Font</td><td><code>--font-family-mono</code></td><td colspan="2"><span data-token="--font-family-mono"></span></td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
-<pre><code>&lt;pre class="code-block" tabindex="0" aria-label="Latest raw packets"&gt;1794787812.…&lt;/pre&gt;</code></pre><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.code-block</code></td><td>Scrollable block.</td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from these mocks:</p><ul><li>The former server Diagnostics mocks (<code>dialogs/diagnostics/default</code> and <code>scroll</code>, removed with ADR 0019)</li></ul><p>Drift fixed during extraction: <code>.diag-log</code> renamed <code>.code-block</code>.</p>
+<p>Code is machine text shown so someone can read or copy it exactly. Telo Ride shows it in one place, Diagnostics: the facts list sets its values in JetBrains Mono, and the packet log (<code>.diagnostics__well</code>) counts packets and downloads them as a <code>.jsonl</code> file. <code>.code-block</code> is the mono well that shows that log, or the diagnostics summary, with its file name and a Copy button; <code>.code</code> is inline code inside a sentence.</p>
+<ul><li>Use a code block for text people paste into a bug report: packet lines, a diagnostics summary.</li><li>Use inline <code>.code</code> for a file name, a URL or a command inside a sentence.</li>
+<li>Do not use code styling for numbers people read (use <a href="stat.html">stat</a>) or for key-value facts (use a <a href="description-list.html">description list</a> with <code>.dl--mono</code>).</li></ul>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+<div class="ds-anatomy">
+<figure class="ds-anatomy__figure" style="padding: var(--space-8); display: block; place-items: normal; min-width: 0;">
+<div class="code-block" style="width: 100%;"><div class="code-block__head"><span class="code-block__title">telo-ride-packets-2026-11-20.jsonl</span><button class="btn btn--raised btn--sm code-block__copy" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy</button></div><pre class="code-block__pre" tabindex="0" aria-label="Packet log excerpt"><code><span class="code-block__line"><span class="code-block__time">06:51.962</span>  <span class="code-block__dir--out">→</span> {"dir":"out","cmd":"RES","level":8,"src":"plan"}</span><span class="code-block__line"><span class="code-block__time">06:52.003</span>  <span class="code-block__dir--in">←</span> {"dir":"in","ack":"RES","level":8,"ms":41}</span><span class="code-block__line"><span class="code-block__time">06:52.250</span>  <span class="code-block__dir--in">←</span> {"dir":"in","rpm":73,"watts":156,"level":8}</span><span class="code-block__line"><span class="code-block__time">06:52.500</span>  <span class="code-block__dir--in">←</span> {"dir":"in","rpm":74,"watts":158,"level":8}</span></code></pre><div class="code-block__foot">1,284 packets · 186 KB · showing the last 4</div><span class="visually-hidden" role="status"></span></div><span class="ds-callout" style="left: var(--space-2); top: var(--space-4);" aria-hidden="true">1</span><span class="ds-callout" style="left: calc(100% - var(--space-8)); top: var(--space-4);" aria-hidden="true">2</span><span class="ds-callout" style="left: var(--space-2); top: 45%;" aria-hidden="true">3</span><span class="ds-callout" style="left: var(--space-2); top: 86%;" aria-hidden="true">4</span>
+</figure>
+<ol class="ds-anatomy__list">
+<li><div><b>Head</b><small>File name in 12px mono <code>--color-muted</code>, truncated; hairline under.</small></div></li>
+<li><div><b>Copy button</b><small><code>.btn.btn--raised.btn--sm</code> with copy icon; turns to a green check and "Copied" for 2 s.</small></div></li>
+<li><div><b>Code</b><small><code>&lt;pre&gt;&lt;code&gt;</code> on <code>--color-ink</code>, 12px JetBrains Mono, 1.625 line height; scrolls both ways inside its 18rem cap and is focusable so the keyboard can scroll it.</small></div></li>
+<li><div><b>Foot (optional)</b><small>What is shown versus what exists ("showing the last 4").</small></div></li>
+</ol>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+<h3>Packet log</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<div class="code-block" style="width: 100%;"><div class="code-block__head"><span class="code-block__title">telo-ride-packets-2026-11-20.jsonl</span><button class="btn btn--raised btn--sm code-block__copy" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy</button></div><pre class="code-block__pre" tabindex="0" aria-label="Packet log excerpt"><code><span class="code-block__line"><span class="code-block__time">06:51.962</span>  <span class="code-block__dir--out">→</span> {"dir":"out","cmd":"RES","level":8,"src":"plan"}</span><span class="code-block__line"><span class="code-block__time">06:52.003</span>  <span class="code-block__dir--in">←</span> {"dir":"in","ack":"RES","level":8,"ms":41}</span><span class="code-block__line"><span class="code-block__time">06:52.250</span>  <span class="code-block__dir--in">←</span> {"dir":"in","rpm":73,"watts":156,"level":8}</span><span class="code-block__line"><span class="code-block__time">06:52.500</span>  <span class="code-block__dir--in">←</span> {"dir":"in","rpm":74,"watts":158,"level":8}</span></code></pre><div class="code-block__foot">1,284 packets · 186 KB · showing the last 4</div><span class="visually-hidden" role="status"></span></div>
+</div>
+<div class="ds-example__caption"><span>Time, direction (→ sent in volt, ← received in rest blue) and the JSON line. The file format follows the Download packet log action; the lines are an excerpt for illustration.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="code-block" style="width: 100%;"&gt;&lt;div class="code-block__head"&gt;&lt;span class="code-block__title"&gt;telo-ride-packets-2026-11-20.jsonl&lt;/span&gt;&lt;button class="btn btn--raised btn--sm code-block__copy" type="button"&gt;&lt;svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;Copy&lt;/button&gt;&lt;/div&gt;&lt;pre class="code-block__pre" tabindex="0" aria-label="Packet log excerpt"&gt;&lt;code&gt;&lt;span class="code-block__line"&gt;&lt;span class="code-block__time"&gt;06:51.962&lt;/span&gt;  &lt;span class="code-block__dir--out"&gt;→&lt;/span&gt; {"dir":"out","cmd":"RES","level":8,"src":"plan"}&lt;/span&gt;&lt;span class="code-block__line"&gt;&lt;span class="code-block__time"&gt;06:52.003&lt;/span&gt;  &lt;span class="code-block__dir--in"&gt;←&lt;/span&gt; {"dir":"in","ack":"RES","level":8,"ms":41}&lt;/span&gt;&lt;span class="code-block__line"&gt;&lt;span class="code-block__time"&gt;06:52.250&lt;/span&gt;  &lt;span class="code-block__dir--in"&gt;←&lt;/span&gt; {"dir":"in","rpm":73,"watts":156,"level":8}&lt;/span&gt;&lt;span class="code-block__line"&gt;&lt;span class="code-block__time"&gt;06:52.500&lt;/span&gt;  &lt;span class="code-block__dir--in"&gt;←&lt;/span&gt; {"dir":"in","rpm":74,"watts":158,"level":8}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div class="code-block__foot"&gt;1,284 packets · 186 KB · showing the last 4&lt;/div&gt;&lt;span class="visually-hidden" role="status"&gt;&lt;/span&gt;&lt;/div&gt;</code></pre></details>
+</div>
+
+<h3>Diagnostics summary (wrapping)</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<div class="code-block code-block--wrap" style="width: 100%;"><div class="code-block__head"><span class="code-block__title">Diagnostics</span><button class="btn btn--raised btn--sm code-block__copy" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy</button></div><pre class="code-block__pre" tabindex="0" aria-label="Packet log excerpt"><code>Browser        Chrome 126 · macOS 14.5
+Web Bluetooth  Available
+Page           https://ride.telo.app/ride
+Bike           Echelon EX-5s · 0bf669f1
+Connection     Connected · 6m 52s
+Last command   RES 8 · plan · ack 41 ms
+App version    2.0.0 · client 7f3c2a1</code></pre><span class="visually-hidden" role="status"></span></div>
+</div>
+<div class="ds-example__caption"><span><code>.code-block--wrap</code> wraps long lines (URLs) instead of scrolling; use it for prose-like text.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="code-block code-block--wrap" style="width: 100%;"&gt;&lt;div class="code-block__head"&gt;&lt;span class="code-block__title"&gt;Diagnostics&lt;/span&gt;&lt;button class="btn btn--raised btn--sm code-block__copy" type="button"&gt;&lt;svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;Copy&lt;/button&gt;&lt;/div&gt;&lt;pre class="code-block__pre" tabindex="0" aria-label="Packet log excerpt"&gt;&lt;code&gt;Browser        Chrome 126 · macOS 14.5
+Web Bluetooth  Available
+Page           https://ride.telo.app/ride
+Bike           Echelon EX-5s · 0bf669f1
+Connection     Connected · 6m 52s
+Last command   RES 8 · plan · ack 41 ms
+App version    2.0.0 · client 7f3c2a1&lt;/code&gt;&lt;/pre&gt;&lt;span class="visually-hidden" role="status"&gt;&lt;/span&gt;&lt;/div&gt;</code></pre></details>
+</div>
+
+<h3>Inline</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<p style="font-size: var(--font-size-sm); max-width: 32rem;">Saves <code class="code">telo-ride-packets-2026-11-20.jsonl</code>. Attach it to a bug report if we ask.</p>
+</div>
+<div class="ds-example__caption"><span>Inline code on a raised fill, 0.875em, breaking anywhere so a long file name cannot overflow.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;p style="font-size: var(--font-size-sm); max-width: 32rem;"&gt;Saves &lt;code class="code"&gt;telo-ride-packets-2026-11-20.jsonl&lt;/code&gt;. Attach it to a bug report if we ask.&lt;/p&gt;</code></pre></details>
+</div>
+
+<h3>The Diagnostics well, as drawn</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<div class="diagnostics__well" style="margin-top: 0; width: 100%;"><span class="diagnostics__count"><span class="diagnostics__count-figure">1,284</span><span class="diagnostics__count-unit"> packets · 186 KB</span><span class="diagnostics__recording">Recording</span></span><button class="btn btn--raised btn--sm diagnostics__download" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>Download packet log</button></div>
+</div>
+<div class="ds-example__caption"><span>The packet well never shows the lines; the code block is what a "Show last packets" view would use.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="diagnostics__well" style="margin-top: 0; width: 100%;"&gt;&lt;span class="diagnostics__count"&gt;&lt;span class="diagnostics__count-figure"&gt;1,284&lt;/span&gt;&lt;span class="diagnostics__count-unit"&gt; packets · 186 KB&lt;/span&gt;&lt;span class="diagnostics__recording"&gt;Recording&lt;/span&gt;&lt;/span&gt;&lt;button class="btn btn--raised btn--sm diagnostics__download" type="button"&gt;&lt;svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;Download packet log&lt;/button&gt;&lt;/div&gt;</code></pre></details>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="sizes" data-na="One size: 12px mono with a 1.625 line height; long logs cap at 18rem tall (--code-max-height) and scroll."><h2><a href="#sizes">Sizes</a></h2>
+<p class="ds-na">One size: 12px mono with a 1.625 line height; long logs cap at 18rem tall (--code-max-height) and scroll.</p>
+</section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+<div class="ds-matrix"><table>
+<thead><tr><th scope="col">Part</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Disabled</th><th scope="col">Copied</th></tr></thead>
+<tbody>
+<tr><th scope="row">Copy button</th><td><button class="btn btn--raised btn--sm code-block__copy" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy</button></td><td><button class="btn btn--raised btn--sm code-block__copy" type="button" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy</button></td><td><button class="btn btn--raised btn--sm code-block__copy" type="button" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy</button></td><td><button class="btn btn--raised btn--sm code-block__copy" type="button" data-state="active"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy</button></td><td><button class="btn btn--raised btn--sm code-block__copy" type="button" disabled><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy</button></td><td><button class="btn btn--raised btn--sm code-block__copy" type="button" data-copied><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Copied</button></td></tr>
+<tr><th scope="row">Code area</th><td><pre class="code-block__pre" style="background: var(--color-ink); border-radius: var(--radius-md);"><code>RES 8 · plan</code></pre></td><td>—</td><td><pre class="code-block__pre" data-state="focus" style="background: var(--color-ink); border-radius: var(--radius-md);"><code>RES 8 · plan</code></pre></td><td>—</td><td>—</td><td>—</td></tr>
+</tbody>
+</table></div>
+
+<h3>Both themes</h3>
+<div class="ds-themes">
+<div data-theme="light"><div class="ds-example__canvas " style="padding: 0; display: block;"><div class="code-block" style="width: 100%;"><div class="code-block__head"><span class="code-block__title">telo-ride-packets-2026-11-20.jsonl</span><button class="btn btn--raised btn--sm code-block__copy" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy</button></div><pre class="code-block__pre" tabindex="0" aria-label="Packet log excerpt"><code><span class="code-block__line"><span class="code-block__time">06:51.962</span>  <span class="code-block__dir--out">→</span> {"dir":"out","cmd":"RES","level":8,"src":"plan"}</span><span class="code-block__line"><span class="code-block__time">06:52.003</span>  <span class="code-block__dir--in">←</span> {"dir":"in","ack":"RES","level":8,"ms":41}</span><span class="code-block__line"><span class="code-block__time">06:52.250</span>  <span class="code-block__dir--in">←</span> {"dir":"in","rpm":73,"watts":156,"level":8}</span><span class="code-block__line"><span class="code-block__time">06:52.500</span>  <span class="code-block__dir--in">←</span> {"dir":"in","rpm":74,"watts":158,"level":8}</span></code></pre><div class="code-block__foot">1,284 packets · 186 KB · showing the last 4</div><span class="visually-hidden" role="status"></span></div></div></div>
+<div data-theme="dark"><div class="ds-example__canvas " style="padding: 0; display: block;"><div class="code-block" style="width: 100%;"><div class="code-block__head"><span class="code-block__title">telo-ride-packets-2026-11-20.jsonl</span><button class="btn btn--raised btn--sm code-block__copy" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy</button></div><pre class="code-block__pre" tabindex="0" aria-label="Packet log excerpt"><code><span class="code-block__line"><span class="code-block__time">06:51.962</span>  <span class="code-block__dir--out">→</span> {"dir":"out","cmd":"RES","level":8,"src":"plan"}</span><span class="code-block__line"><span class="code-block__time">06:52.003</span>  <span class="code-block__dir--in">←</span> {"dir":"in","ack":"RES","level":8,"ms":41}</span><span class="code-block__line"><span class="code-block__time">06:52.250</span>  <span class="code-block__dir--in">←</span> {"dir":"in","rpm":73,"watts":156,"level":8}</span><span class="code-block__line"><span class="code-block__time">06:52.500</span>  <span class="code-block__dir--in">←</span> {"dir":"in","rpm":74,"watts":158,"level":8}</span></code></pre><div class="code-block__foot">1,284 packets · 186 KB · showing the last 4</div><span class="visually-hidden" role="status"></span></div></div></div>
+</div>
+
+<ul><li><b>Copied</b>: <code>data-copied</code> on the button swaps the icon to a check in <code>--color-ok-fg</code> and the label to "Copied"; the hidden <code>role="status"</code> says "Copied to clipboard". After 2 s it returns to Copy.</li>
+<li><b>Disabled</b>: nothing to copy yet (log empty, "Log every packet" off).</li></ul>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+<ul><li><b>360px</b>: the block is full width; lines do not wrap (except <code>--wrap</code>), the code area scrolls sideways inside itself; the file name truncates before the Copy button does.</li>
+<li><b>640px and up</b>: no change; inside Diagnostics the block is capped by the dialog's 460px.</li></ul>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+<pre><code>.code-block { --code-bg: var(--color-ink); --code-fg: var(--color-fg); --code-border: var(--color-line); --code-max-height: 18rem; }</code></pre>
+<p>The well is always the canvas colour, one step below the panel it sits in (ink in dark, paper in light), like the Diagnostics packet well.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+<h3>Role and pattern</h3>
+<p><code>&lt;pre&gt;&lt;code&gt;</code>. The <code>&lt;pre&gt;</code> has <code>tabindex="0"</code> and an <code>aria-label</code> when it scrolls, so keyboard users can reach and scroll it. The copy button is a native <code>&lt;button&gt;</code>; the result is announced through a polite <code>role="status"</code>.</p>
+<h3>Keyboard</h3>
+<table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+<tr><td><kbd>Tab</kbd></td><td>Copy button, then the code area.</td></tr>
+<tr><td><kbd>Enter</kbd>, <kbd>Space</kbd></td><td>Copies.</td></tr>
+<tr><td><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td><td>Scroll the focused code area.</td></tr>
+</tbody></table>
+<h3>Focus</h3>
+<p>The code area draws its ring inset (offset −2px) so the block's rounded clip does not hide it.</p>
+<h3>Labelling</h3>
+<p>The head names the file; the copy button's name is "Copy" (add the file when there are several: "Copy packet log"). Arrows in the log are characters screen readers announce as "right arrow"; the JSON also says <code>"dir":"out"</code>.</p>
+<h3>Contrast</h3>
+<div class="ds-themes">
+<div data-theme="light"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+<div class="ds-pair"><span>Code on well</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Timestamp</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Sent (→)</span><span class="ds-pair__ratio" data-contrast="--color-volt-fg|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Received (←)</span><span class="ds-pair__ratio" data-contrast="--color-rest-fg|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>File name</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Inline code</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-raised" data-min="4.5"></span></div>
+</div></div>
+<div data-theme="dark"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+<div class="ds-pair"><span>Code on well</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Timestamp</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Sent (→)</span><span class="ds-pair__ratio" data-contrast="--color-volt-fg|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Received (←)</span><span class="ds-pair__ratio" data-contrast="--color-rest-fg|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>File name</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Inline code</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-raised" data-min="4.5"></span></div>
+</div></div>
+</div>
+<h3>Motion</h3>
+<p>None. The copied state swaps instantly.</p>
+<h3>Touch</h3>
+<p>The copy button is 36px tall.</p>
+
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+<ul><li>Show machine text exactly; never prettify values people paste into a report.</li><li>File names carry the date as the download does (<code>telo-ride-packets-YYYY-MM-DD.jsonl</code>).</li>
+<li>The copy label is "Copy", then "Copied"; never "Copied!".</li><li>Say what is shown when it is an excerpt ("showing the last 4").</li></ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+<div class="ds-dodont">
+<figure class="ds-do"><div class="ds-example__canvas"><div class="code-block" style="width: 100%;"><div class="code-block__head"><span class="code-block__title">telo-ride-packets-2026-11-20.jsonl</span><button class="btn btn--raised btn--sm code-block__copy" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy</button></div><pre class="code-block__pre" tabindex="0" aria-label="Packet log excerpt"><code><span class="code-block__line"><span class="code-block__time">06:51.962</span>  <span class="code-block__dir--out">→</span> {"dir":"out","cmd":"RES","level":8,"src":"plan"}</span><span class="code-block__line"><span class="code-block__time">06:52.003</span>  <span class="code-block__dir--in">←</span> {"dir":"in","ack":"RES","level":8,"ms":41}</span><span class="code-block__line"><span class="code-block__time">06:52.250</span>  <span class="code-block__dir--in">←</span> {"dir":"in","rpm":73,"watts":156,"level":8}</span><span class="code-block__line"><span class="code-block__time">06:52.500</span>  <span class="code-block__dir--in">←</span> {"dir":"in","rpm":74,"watts":158,"level":8}</span></code></pre><div class="code-block__foot">1,284 packets · 186 KB · showing the last 4</div><span class="visually-hidden" role="status"></span></div></div><figcaption>Mono well with a file name, a Copy button and a note that this is an excerpt.</figcaption></figure>
+<figure class="ds-dont"><div class="ds-example__canvas"><p style="font-family: var(--font-family-mono); font-size: var(--font-size-2xs); color: var(--color-faint);">{"dir":"in","ack":"RES","level":8,"ms":41} {"dir":"in","rpm":73,"watts":156,"level":8}</p></div><figcaption>Log lines run together as faint 11px text in a paragraph: unreadable and hard to copy.</figcaption></figure>
+<figure class="ds-do"><div class="ds-example__canvas"><p style="font-size: var(--font-size-sm); max-width: 32rem;">Saves <code class="code">telo-ride-packets-2026-11-20.jsonl</code>. Attach it to a bug report if we ask.</p></div><figcaption>A file name as inline code inside the sentence.</figcaption></figure>
+<figure class="ds-dont"><div class="ds-example__canvas"><p style="font-size: var(--font-size-sm);">Your ride is saved at <code class="code">6:52</code>.</p></div><figcaption>Inline code for a number people read; that is plain text.</figcaption></figure>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+<div class="ds-table-wrap"><table class="ds-table">
+<thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+<tbody>
+<tr><td>Well</td><td><code>--color-ink</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td></tr>
+<tr><td>Code</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+<tr><td>Border</td><td><code>--color-line</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td></tr>
+<tr><td>File name</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+<tr><td>Timestamp, foot</td><td><code>--color-faint</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td></tr>
+<tr><td>Sent / received</td><td><code>--color-volt-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-volt-fg" data-swatch></i><span data-token="--color-volt-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-volt-fg" data-swatch></i><span data-token="--color-volt-fg"></span></span></td></tr>
+<tr><td>Sent / received</td><td><code>--color-rest-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-rest-fg" data-swatch></i><span data-token="--color-rest-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-rest-fg" data-swatch></i><span data-token="--color-rest-fg"></span></span></td></tr>
+<tr><td>Copied check</td><td><code>--color-ok-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-ok-fg" data-swatch></i><span data-token="--color-ok-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-ok-fg" data-swatch></i><span data-token="--color-ok-fg"></span></span></td></tr>
+<tr><td>Inline fill</td><td><code>--color-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td></tr>
+<tr><td>Font</td><td><code>--font-family-mono</code> <code>--font-size-xs</code></td><td colspan="2"><span data-token="--font-family-mono"></span> / <span data-token="--font-size-xs"></span></td></tr>
+<tr><td>Radius</td><td><code>--radius-lg</code></td><td colspan="2"><span data-token="--radius-lg"></span></td></tr>
+</tbody>
+</table></div>
+
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+<pre><code>&lt;div class="code-block"&gt;
+  &lt;div class="code-block__head"&gt;
+    &lt;span class="code-block__title"&gt;telo-ride-packets-2026-11-20.jsonl&lt;/span&gt;
+    &lt;button class="btn btn--raised btn--sm code-block__copy" type="button"&gt;&lt;svg class="icon icon--md" aria-hidden="true"&gt;…&lt;/svg&gt;Copy&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;pre class="code-block__pre" tabindex="0" aria-label="Packet log excerpt"&gt;&lt;code&gt;…&lt;/code&gt;&lt;/pre&gt;
+  &lt;span class="visually-hidden" role="status"&gt;&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+<tr><td><code>.code</code></td><td>Inline code.</td></tr>
+<tr><td><code>.code-block</code> <code>--wrap</code></td><td>Block / wrapping block.</td></tr>
+<tr><td><code>.code-block__head/title/copy/pre/foot</code></td><td>Parts.</td></tr>
+<tr><td><code>.code-block__line/time/dir--out/dir--in</code></td><td>Log line parts.</td></tr>
+<tr><td><code>data-copied</code></td><td>Copied state.</td></tr>
+<tr><td><code>.diagnostics__well</code>, <code>.diagnostics__facts dd</code></td><td>Diagnostics (area).</td></tr>
+</tbody></table></div>
+
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+<p>Extracted from these mocks:</p>
+<ul>
+<li><a href="../../mocks/dialogs/diagnostics/packets.html">dialogs/diagnostics/packets</a> (packet count, Recording, Download packet log, file name)</li>
+<li><a href="../../mocks/dialogs/diagnostics/default.html">dialogs/diagnostics/default</a> (mono facts)</li>
+<li><a href="../../mocks/pages/custom-ride/needs-chromium.html">pages/custom-ride/needs-chromium</a> (mono URL under the browser panel)</li>
+</ul>
+<h3>Drift fixed during extraction</h3>
+<ul><li>The download file is named <code>telo-ride-packets-2024-06-14.jsonl</code> while the cast's today is 2026-11-20 (and Diagnostics reports Chrome 126). Resolution: examples here use the cast date; the mock copy should follow.</li>
+<li>No mock renders packet lines; the code block and its line format are additions.</li></ul>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

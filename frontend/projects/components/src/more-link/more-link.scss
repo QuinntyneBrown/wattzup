@@ -1,0 +1,26 @@
+// Block more-link (docs/design-system/assets/components.css): muted, brightening on hover. Its 44 px touch target reaches
+// past its text without moving it.
+:host {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  white-space: nowrap;
+  color: var(--color-muted);
+  transition: color var(--duration-fast) var(--ease-standard);
+  border-radius: var(--radius-sm);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 auto;
+    min-height: 2.75rem;
+    transform: translateY(-50%);
+  }
+}
+
+:host(:hover) {
+  color: var(--color-fg);
+}

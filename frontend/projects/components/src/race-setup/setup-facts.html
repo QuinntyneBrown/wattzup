@@ -1,0 +1,14 @@
+<dl class="setup-facts">
+  @for (fact of facts(); track fact.label) {
+    <div class="setup-fact">
+      <dt class="setup-fact__label">{{ fact.label }}</dt>
+      <dd class="setup-fact__value">
+        <span class="setup-fact__number">{{ fact.number }}</span>
+        @if (fact.unit) {
+          <!-- The space keeps "14.2 km" two words for a screen reader; flex hides it. -->
+          <span class="setup-fact__unit">{{ ' ' + fact.unit }}</span>
+        }
+      </dd>
+    </div>
+  }
+</dl>

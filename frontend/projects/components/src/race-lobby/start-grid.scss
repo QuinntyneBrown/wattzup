@@ -1,0 +1,140 @@
+// Block start-grid (docs/design-system/assets/components.css, Race lobby): ten seats in two columns from sm
+// (L2-051 AC6), each with a dot in its occupant's jersey.
+:host {
+  display: block;
+}
+
+.start-grid__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  border-bottom: var(--border-width-hairline) solid var(--color-line);
+  padding-bottom: var(--space-3);
+}
+
+.start-grid__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.start-grid__count {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.start-grid__list {
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: var(--space-8);
+
+  @media (min-width: 40rem) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.start-grid__seat {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  border-bottom: var(--border-width-hairline) solid
+    color-mix(in srgb, var(--color-line) 60%, transparent);
+  padding-block: var(--space-3);
+}
+
+.start-grid__seat--you {
+  color: var(--color-volt-fg);
+}
+
+.start-grid__seat--open {
+  color: var(--color-faint);
+}
+
+.start-grid__num {
+  width: var(--space-5);
+  text-align: right;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  color: var(--color-faint);
+}
+
+.start-grid__dot {
+  flex-shrink: 0;
+  width: var(--space-3);
+  height: var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--jersey, var(--color-muted));
+}
+
+.start-grid__seat--open .start-grid__dot {
+  background: none;
+  border: var(--border-width-hairline) dashed var(--color-faint);
+}
+
+.start-grid__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.start-grid__seat--you .start-grid__name {
+  font-weight: var(--font-weight-semibold);
+}
+
+.start-grid__open {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.start-grid__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  white-space: nowrap;
+  color: var(--color-muted);
+}
+
+.start-grid__check {
+  color: var(--color-faint);
+}
+
+.start-grid__seat--you .start-grid__check {
+  color: var(--color-volt-fg);
+}
+
+// Each occupant's jersey, from the design system's jersey tokens.
+@each $jersey
+  in (
+    you,
+    lena,
+    marco,
+    priya,
+    jwatts,
+    ollie,
+    kenji,
+    ana,
+    nova,
+    rook,
+    juno,
+    atlas,
+    kite,
+    vale,
+    moss,
+    flint,
+    echo
+  )
+{
+  .start-grid__dot--#{$jersey} {
+    --jersey: var(--jersey-#{$jersey});
+  }
+}

@@ -1,0 +1,42 @@
+@startuml
+title UML sequence behaviour — Refuse a request without a valid session
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Visitor" as actor
+box "Frontend — Ride app" #E0F2FE
+  participant "HttpProgressApi" as client
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "Cookie authentication" as authn
+  database "Telo Ride database" as db
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "Authorization middleware" as authz
+  participant "ProgressController" as ctrl
+end box
+actor -> client : Open Home
+client -> authn : GET /api/progress (no cookie, or an ended session)
+opt cookie present
+  authn -> db : Load RiderSession by key hash
+  db --> authn : Ended or expired (L2-127 AC3)
+end
+authn --> authz : Anonymous principal
+authz -> authz : Endpoint has no [AllowAnonymous]: apply fallback policy (L2-127 AC1)
+authz --> client : 401 ProblemDetails, no body detail
+note over ctrl : Never reached
+alt endpoint is listed anonymous: sign-in and sign-out, the class and map catalogues, /health/*
+  authz -> ctrl : [AllowAnonymous] endpoint runs without a session
+end
+@enduml

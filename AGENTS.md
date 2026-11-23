@@ -1,222 +1,216 @@
 ## Purpose
 
-> Wattzup turns an Echelon bike into a live training display. It connects to the bike over
-> Bluetooth, shows its live metrics in real time (cadence, speed and resistance), and runs interval
-> workouts that set the bike's resistance for the rider.
+> Telo Ride, from the Telo family, turns a smart bike at home into a game. It pairs with the bike
+> over Bluetooth, reads your power and sets resistance for every hill and interval. Two doors:
+> **Race** (ride a map against your best-time ghost, bots or people) and **Classes** (ride along
+> to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map
+> unlocks. A custom workout lives under Profile.
 
-Wattzup is an Angular app served as static files. It talks to the bike over Web Bluetooth and
-keeps everything in the browser; it needs Chrome or Edge. There is no backend (ADR 0019).
+**Direction.** Telo Ride is mainly a kart-racing-style game (in the spirit of Mario Kart, never a
+recreation of its characters, art, music or courses). The characters are cyclists, driven by
+riders on their Echelon indoor bikes over Bluetooth. Each map is modelled after a GCN online
+class, which gives the course its structure (resistance, rpm and stages). The map's size is
+relative to the class's length, and its resistance settings drive the map's elevation (lower
+resistance is downhill, higher is uphill). Riders score highly for holding the cadence (rpm)
+each stage of the course specifies.
 
 Before adding or changing anything, ask how it serves that purpose; if it does not, do not build
 it, and if a request works against it, say so.
 
-The mission, Wattzup's single L0 requirement, is not written yet. When it is, it goes in
+The mission, Telo Ride's single L0 requirement, is not written yet. When it is, it goes in
 `docs/specs/L0.md` and this section quotes it word for word; everything then points back to it.
 Do not invent a mission in its place.
 
 ## Where things are
 
-- The working prototype, `echelon_server.py` (Python, aiohttp, bleak) with its single-page UI
-  `index.html`, lives outside this repository in `../wattzup-prototype/`. Read it there; do not
-  copy it back in. It is the reference for behaviour, not the product: the rewrite is an Angular
-  app (`frontend/`), laid out in `docs/detailed-designs/platform/host-and-structure/`. All code
-  (the Angular workspace and its Playwright specs) lives under `frontend/`, and nothing but
-  guidance, docs and repository tooling sits at the root. Behaviour from the prototype is
-  preserved unless a requirement says otherwise.
-- Before building a feature, read its requirement (`docs/specs/L1.md`, `L2.md`), its detailed
-  design (`docs/detailed-designs/`) and its mocks (`docs/mocks/`, the source of truth for the UI;
-  `docs/design-system/` is extracted from them). `docs/detailed-designs/README.md` indexes the
-  designs by subsystem.
+- **The frontend is the product.** `frontend/` is an Angular workspace and holds most of the
+  implementation: Web Bluetooth connectivity, the protocol, the workout engine, sessions and
+  every screen. It runs in Chrome or Edge; a ride finishes on the device without a network.
+- **The backend is thin.** `backend/` is a .NET service only for what one browser cannot do
+  alone: email sign-in, rider progress (XP, stars, unlocks, rides), SignalR for live races and
+  group classes, and feedback. It never talks to the bike. ADR 0025 superseded ADR 0019
+  (no backend) when the backend landed; `backend/README.md` has its commands.
+- Before building a feature, read its requirement (`docs/specs/`, `docs/journeys.md`), its
+  detailed design (`docs/detailed-designs/`) and its mocks (`docs/mocks/`, the source of truth
+  for the UI; `docs/design-system/` is extracted from them).
 - Read the relevant ADRs in `docs/adr/` before changing the areas they cover.
-- Where a rule below names something that does not exist yet (a project, a command, a fixture, a
-  helper, a folder), the first change that needs it adds it.
+- Where a rule below names something that does not exist yet (a project, a command, a fixture,
+  a helper, a folder), the first change that needs it adds it.
+- Run npm commands from `frontend/`. `npm start` serves the app; `?simulate` connects to a
+  simulated bike. `node tools/verify/verify.mjs` runs every CI check and the unit tests
+  locally; run it before pushing.
 
-### Folder structure
-
-The repository is expected to have the layout below. Some folders do not exist yet; the first
-change that needs one creates it in the place shown here. Put a new folder somewhere else only
-after updating this tree in the same change.
-
-```
-wattzup/
-├── AGENTS.md, CLAUDE.md, README.md        # guidance; README documents hosting and the one option
-├── frontend/                              # ALL code: one Angular workspace
-│   ├── projects/
-│   │   ├── api/                           # library @wattzup/api: contracts, types, tokens
-│   │   │   └── src/
-│   │   │       ├── contract/              # the data types (schema.d.ts), hand-maintained
-│   │   │       ├── lib/                   # contracts, tokens, ContractError
-│   │   │       └── public-api.ts
-│   │   ├── browser/                       # library @wattzup/browser: the in-browser
-│   │   │   └── src/                       # implementations of the api contracts (L2-088 to L2-099)
-│   │   │       ├── lib/protocol/          # frames, commands, checksum, decoder
-│   │   │       ├── lib/bluetooth/         # Web Bluetooth connection, keepalive, recovery, simulated bike
-│   │   │       ├── lib/engine/            # workout engine, estimates, session rules
-│   │   │       ├── lib/storage/           # IndexedDB sessions, export and import
-│   │   │       ├── lib/contracts/         # each api contract implemented in the browser
-│   │   │       └── public-api.ts
-│   │   ├── components/                    # library @wattzup/components: presentation components
-│   │   │   └── src/
-│   │   │       ├── lib/                   # one folder per component, named as in the design system
-│   │   │       ├── styles/design-system/  # SCSS partials (`@use 'design-system/btn'`)
-│   │   │       └── public-api.ts
-│   │   └── wattzup/                       # the application
-│   │       └── src/app/
-│   │           ├── core/                  # services and pure helpers, with unit tests
-│   │           ├── dashboard/             # pages, dialogs, orchestrating components
-│   │           └── app.config.ts          # the composition root
-│   ├── public/                            # fonts, images and classes.json, copied into the build
-│   │   └── music/                         # one background track per world, <world id>.ogg (L2-128)
-│   ├── e2e/                               # Playwright: fixtures/ (fake navigator.bluetooth), pages/, specs, sweeps/
-│   └── scripts/                           # bundle-size check, e2e static server
-├── docs/
-│   ├── journeys.md                        # the user journeys, by value add
-│   ├── world-music.md                     # each world's track: title, artist, Pixabay page
-│   ├── videos/                            # a narrated film per journey (docs/videos/README.md)
-│   ├── specs/                             # L0.md (mission, when written), L1.md, L2.md
-│   ├── detailed-designs/                  # {subsystem}/{feature}/README.md + diagrams/
-│   ├── mocks/                             # HTML mocks, UI source of truth
-│   ├── design-system/                     # extracted from the mocks
-│   ├── screenshots/                       # World Ride captures, one folder per world (never docs/worlds/)
-│   ├── adr/                               # architecture decision records
-│   └── protocol/                          # Echelon BLE frame reference (echelon-ble-frames.md)
-├── tools/                                 # verify (every CI check, locally); video-record, video-audio, video-build (the films)
-├── .github/                               # issue and PR templates, CI workflows
-└── .agents/skills/, .claude/skills/       # agent skills
-```
-
-Run npm commands from `frontend/` (`cd frontend && npm …`). `npm run build` builds the app into
-`dist/wattzup/browser`, a folder of static files; `npm start` serves it in development, and
-`?simulate` there connects to a simulated bike.
-`node tools/verify/verify.mjs` runs every check CI runs (install, format, lint, unit tests, the
-production build and the behaviour specs) side by side; run it before pushing.
-
-Use the words the specs use in code, docs and UI; no synonyms. A workout follows a plan (`hiit`,
-`intervals` or `flat`; an `intervals` plan is a warm-up, ordered sets and a cool-down) expanded into segments (kind, start, duration, level, cadence aim, round); the bike's reported level is "resistance",
-the requested one is "target resistance"; the Bluetooth link state is `ble`. A class is a catalogue entry (ADR 0014): a bike plan with the YouTube video it follows, on a shelf; the rider picks one in the class library (`/classes`) and opens its class page (`/classes/:id`). A session is a saved bike ride (ADR 0015): what was ridden, its totals, its traces and its cadence dips, kept in IndexedDB; the rider reads one on its Session Summary (`/sessions/:id`) and all of them on Progress (`/progress`), with the streak, the weekly goal, personal bests and achievements. Wattzup supports the
-bike only (ADR 0016); there is no machine choice. The in-browser implementation of an `api`
-contract is called by the contract's name.
+Use the words the specs use in code, docs and UI; no synonyms. The bike's reported level is
+"resistance", the requested one "target resistance"; the Bluetooth link state is `ble`.
 
 ## Prefer best practice
 
-Choose the platform's established best practice (Angular, Playwright, WCAG) over the
+Choose the platform's established best practice (Angular, .NET, Playwright, WCAG) over the
 expedient way. A departure needs an ADR giving its reason. If a rule here or in an ADR conflicts
 with best practice, say so and propose the correction; do not work around it silently.
 
-## Rules of the app
-
-- Protocol rules (framing, decoding, checksums, command bytes) live in `@wattzup/browser`'s
-  `lib/protocol/` and nowhere else. Business rules (workout stepping, target vs. actual
-  resistance, displayed time, sessions and progress) live in `lib/engine/`. A rule with a table of
-  cases is proven by a unit test with one case per row.
-- Nothing outside `lib/bluetooth/` touches `navigator.bluetooth`. Every feature runs end to end
-  against the simulated bike (`?simulate` in a development build).
-- `BikeStateStore` is the only writer of the bike state; each change replaces it whole. Workout
-  run state is touched only by the engine.
-- The state and session shapes keep the prototype's snake_case field names, and nulls are
-  written, never omitted, so exported histories keep importing. A change to them changes
-  `projects/api/src/contract/schema.d.ts` in the same change.
-- A contract refuses with a `ContractError` whose `code` a screen branches on; the rider sees a
-  generic message, and the detail goes only to the console.
-- Logging goes to the console only (L2-095 AC4); per-packet lines only while Log every packet is
-  on. Bluetooth device names and error strings are data, rendered as text, never as HTML.
-- A new option is documented in the README in the same change.
-
 ## Frontend
 
-`frontend/` is one Angular workspace of four projects under `projects/` (ADR 0013, L2-088): the
-`components` library (presentation components, imported as `@wattzup/components`), the `api`
-library (the contracts, their types and tokens, `@wattzup/api`), the `browser` library (the
-in-browser implementations of those contracts, `@wattzup/browser`) and the `wattzup` application
-(everything else). `wattzup` is the only application; a further one needs its own ADR. Its
-production build (`dist/wattzup/browser`) is served by any static host over HTTPS.
+A multi-project workspace under `frontend/projects/`. The baseline is three libraries, `api`
+(contracts, types, injection tokens, and the HTTP and SignalR clients for the backend), `domain`
+(the bike and its rules: `protocol/`, `bluetooth/`, `engine/`, `storage/`) and `components`
+(presentation), and one application, `ride`. A `video` library (the YouTube player, imported
+dynamically) and a `world` library (World Ride's rendering from `main`, imported dynamically, ADR
+0030) have joined them.
 
-- **Dependency direction.** `wattzup` → `components`, `api` and `browser`; `components` → `api`
-  for types only; `browser` → `api`; `api` → nothing in the workspace. No library imports the app.
-  Only the composition root, `app.config.ts`, imports `@wattzup/browser`. ESLint
-  (`no-restricted-imports`) enforces it. The libraries are compiled from source through the path
-  aliases in `frontend/tsconfig.json`, never built or published on their own.
-- **Presentation components live in `components`**, each named as the design-system component it
-  renders (a part keeps its own name, filed under its component in the host-and-structure
-  design). A presentation component takes inputs and emits outputs and injects no app service,
-  API token or router; its parent computes what it shows. A component that orchestrates (pages,
-  dialogs that call services, anything that injects a store, a token or the router) stays in the
-  app under `src/app/dashboard/`.
+That baseline is where the organisation starts, not a limit on it. When a concern earns its own
+library (a `browser` project for browser-only implementations, a `world` project for World Ride
+rendering, and so on), add it. A smaller, focused library that can be lazy-loaded on its own is
+better than one that keeps growing. A further application still needs its own ADR; the
+`marketing` application (ADR 0027), the one-page site with the pitch film, is the first.
 
+- **Dependency direction.** `ride` → `components`, `api`, `domain`, `video`, `world`; `domain` →
+  `api`; `components` → `api` for types only; `video` → `api`; `world` → `api`; `api` → nothing;
+  `marketing` → `components`, `api`. No library imports an app. `ride`'s
+  `app.config.ts` is the composition root and binds every token, except those the first screen
+  brings, which the lazy parent route in `ride.routes.ts` binds so their code stays out of the
+  initial bundle. ESLint enforces it. A new library takes its place in this direction, and the
+  same change adds it to this rule and to the ESLint boundaries; it never depends on `ride`,
+  and `api` still depends on nothing.
+- Protocol rules (framing, checksums, command bytes) live in `domain`'s `protocol/` only;
+  business rules (workout stepping, target vs. actual resistance, sessions) in `engine/`.
+  Nothing outside `bluetooth/` touches `navigator.bluetooth`. Every feature runs end to end
+  against the simulated bike.
 - Prettier and angular-eslint own formatting and lint; CI fails on either.
-- Current Angular: standalone components, signals for state, `ChangeDetectionStrategy.OnPush`
-  everywhere, zoneless where supported.
-- Selectors are `wz-*` in every project (`prefix: "wz"`); class, file and folder names omit the
-  prefix.
+- Current Angular: standalone components, signals for state, `OnPush` everywhere, zoneless.
+- **Lazy loading and memory management come first.** They outrank convenience and any other
+  frontend rule they conflict with; see *Lazy loading and memory* below.
+- Selectors are `wz-*`; class, file and folder names omit the prefix.
+- **Presentation lives in `components`.** A presentation component takes inputs, emits outputs
+  and injects no app service, token or router. Pages and dialogs that orchestrate stay in the
+  app.
 - **File per type.** A component is `name.ts` + `name.html` + `name.scss` with
-  `templateUrl`/`styleUrl`, never inline `template`/`styles`.
+  `templateUrl`/`styleUrl`, never inline `template`/`styles`. No inline `style` in templates.
 - **One encapsulated BEM stylesheet per component.** Default encapsulation, never
   `ViewEncapsulation.None`. The component is the block, named as in the design system;
   `block__element`, `block--modifier`; a state assistive technology must know is an attribute
   (`aria-current`, `aria-invalid`, `aria-pressed`, `disabled`) and is styled through it. Never
-  style another component's block. Keep the mocks' BEM classes: e2e locators depend on them. No
-  inline `style` in templates.
+  style another component's block. Keep the mocks' BEM classes: e2e locators depend on them.
 - Global styles are foundations only (tokens, `@font-face`, reset, utilities). Read tokens by
-  role, never hex. Fonts are bundled and self-hosted, never loaded from a CDN (the CSP allows
-  same-origin only, except YouTube: the player for a ride-along video and the thumbnails shown as class covers, ADRs 0012 and 0014).
+  role, never hex. Fonts are bundled and self-hosted, never loaded from a CDN.
 - **Declare each `ng-content` slot once.** A component rendering `<a>` or `<button>` by
   condition puts its slots in one `<ng-template>` rendered with `ngTemplateOutlet` in both
   branches. A consumer `@if` wrapping several `[slot=…]` nodes loses the slot (NG8011): one `@if`
   per node.
-- One injectable service, `LiveStateService`, owns the live state, exposed as a read-only signal,
-  read from the in-browser bike connection and workout engine. No component opens its own
-  connection, polls, or touches `navigator.bluetooth`; only `lib/bluetooth/` does.
-- Logic with many cases (metric history, the countdown and phase, cues, the workout draft) lives
-  in a service or pure helper with its unit tests, never in a component: in the app under
-  `projects/wattzup/src/app/core/`, or beside the library code it serves. Each project has its own
-  `test` target; `npm test` runs them all.
-- The data types live in `projects/api/src/contract/schema.d.ts` and are named only through
-  `api-types.ts`; never redeclare one elsewhere. Each service has a contract and an injection
-  token in `api`; app components depend on the token. The app has one composition root,
-  `app.config.ts`, which binds every token to its `@wattzup/browser` implementation.
-- Nothing the app does leaves the device except loading YouTube videos and covers (L2-097): no
-  analytics, no remote logging, no other origin. Workout time comes from a monotonic clock, never
-  from counting ticks, because the browser throttles hidden tabs. Sessions live in IndexedDB in
-  the session record's shape, so an exported history imports anywhere.
-- **No inline forms.** Button-triggered editing (e.g. the workout editor) opens a CDK Dialog or
-  navigates to a screen. Never hand-roll modals.
-- World Ride never draws a generic oval shadow: no round, disc or ellipse blob under a figure,
-  vehicle or prop, in any world at any tier. A shadow takes the shape of what casts it, or comes
-  from the shadow map (#937).
-- The animation loop pauses when the tab is hidden and respects `prefers-reduced-motion`. The
-  initial bundle stays within the 300 KB gzipped budget.
-- Every interaction works by touch on a phone and by keyboard on a desktop; touch targets are at
-  least 44 × 44 px; colour is never the only carrier of a state.
+- Logic with many cases (a store, a tracker, a pure helper) lives in a service or helper with
+  its unit tests, never in a component.
+- Each service has a contract and an injection token in `api`; components depend on the token.
+  The SignalR client is one of those services; no component opens its own connection.
+- **No inline forms.** Button-triggered editing opens a CDK Dialog or navigates to a screen.
+  Never hand-roll modals.
+- A contract refuses with an error whose `code` a screen branches on; the rider sees a generic
+  message. Device names and error strings are data, rendered as text, never as HTML.
+- Every interaction works by touch on a phone and by keyboard on a desktop; touch targets are
+  at least 44 × 44 px; colour is never the only carrier of a state.
+
+## Backend
+
+Clean architecture, strict dependency direction: `Telo.Ride.Domain` (entities, zero deps) ←
+`Telo.Ride.Application` (MediatR handlers, validators, DTOs, `IAppDbContext`) ←
+`Telo.Ride.Infrastructure` (EF Core, migrations, auth) ← `Telo.Ride.Api` (controllers, SignalR
+hubs).
+
+- Business rules live in handlers and domain services. A controller or hub method checks nothing
+  itself and sends one MediatR request.
+- The API does not apply migrations on startup; a CLI command does. Seed data is idempotent.
+- Endpoints require authentication by default (fallback policy); keep intentional
+  `[AllowAnonymous]` access explicit.
+- Errors are ProblemDetails with a `code` extension where a client branches on them.
+- Telemetry is OpenTelemetry. No log, metric or span carries a contact detail, a token, message
+  text, a query string or a body; a route is recorded as its template.
+- A person sees and changes only their own data and the groups they belong to.
+- A setting a deployed system needs is documented in the same change.
+
+### Backend tests
+
+- **No real database.** Every test runs on EF Core InMemory (one store per fixture); never
+  SQLite, LocalDB, SQL Server or a file. Inject database faults through `IAppDbContext`.
+- **Never sleep.** Await an event with a timeout that fails naming what did arrive, or advance
+  `FakeTimeProvider`; no `Task.Delay`, no `Thread.Sleep`. Hub tests connect a real SignalR client
+  to the in-memory test server.
+- The acceptance test through the API proves each slice. A rule with a table of cases also gets a
+  direct test of the domain type or handler, one case per row.
 
 ## E2E (Playwright)
 
-- **No real bike or Bluetooth.** Specs run against the production build with a fixture
-  (`e2e/fixtures/wz-test.ts`) that installs a fake `navigator.bluetooth`: it records every write
-  and pushes notifications on demand, and an unexpected Bluetooth call fails the spec. A request
-  off localhost fails the spec, and so does an error in the page. Hardware smoke tests are run by
-  a person, never by an agent or CI.
+- **No real bike, Bluetooth, backend or database.** A fixture installs a fake
+  `navigator.bluetooth` that records every write and pushes notifications on demand; API and hub
+  requests are answered by fixtures. An unexpected Bluetooth call, an unanswered request, a
+  request off localhost or a page error fails the spec. Hardware smoke tests are run by a
+  person, never by an agent or CI.
 - Page Object Model: one page object per screen or dialog owns the selectors. Never put a
   selector in a test. Specs import `test`/`expect` from the shared fixture.
 - Only behaviour specs run by default. Visual, responsive and accessibility sweeps are written
-  and kept current but run only when a person asks; no agent runs them or updates visual
-  baselines unprompted. Update baselines only for intentional design changes, after changing the
-  mock first.
+  and kept current but run only when a person asks; no agent runs them or updates baselines
+  unprompted. Update baselines only for intentional design changes, after changing the mock.
 - Chromium only; never configure or run another browser.
-- In unit tests, time-driven rules (keepalive, init spacing, workout ticks,
-  retries) advance a fake clock; never sleep.
+- In unit tests, time-driven rules (keepalive, retries, workout ticks) advance a fake clock;
+  never sleep.
 
-## Incremental implementation and ATDD (mandatory)
+## CI (GitHub Actions)
 
-Every new feature or change to production behaviour needs a requirement, a detailed design and a
-mock before implementation. Documentation-, design-system-, mock- and test-only changes are
-exempt, and mocks and the design system get no tests.
+- The pipeline is always green and finishes in under 5 minutes in total. A flaky or slow check is
+  fixed or removed, never retried.
+- It runs only the few highest-value tests per feature: lint, build and one critical acceptance
+  path each. Unit tests run locally, never in CI.
 
-Before writing any code, invoke and follow the `implementing-incrementally` skill, with ATDD:
+## Lazy loading and memory (the top frontend priority)
+
+The rider runs Telo Ride for an hour or more on a tablet or low-power laptop beside the bike, and
+it has to stay as smooth at the end of the ride as at the start. A change that grows the initial
+bundle or leaks memory is not done, whatever else it achieves.
+
+- **Load only what is needed now.** Every route uses `loadComponent`/`loadChildren`; heavy or
+  below-the-fold UI uses `@defer`; large libraries (Three.js, World Ride, video, charts) and
+  whole feature libraries are imported dynamically, never from the initial chunk. Keep the
+  initial bundle small and the `angular.json` budgets tight; raising a budget needs a reason in
+  the change.
+- **Release everything you acquire.** Whatever a component, service or scene creates, it tears
+  down when its owner is destroyed: subscriptions (`takeUntilDestroyed`/`DestroyRef`), timers,
+  intervals and `requestAnimationFrame` loops, event and Bluetooth notification listeners,
+  observers, `AbortController`s, object URLs, media elements, SignalR handlers, and every
+  Three.js geometry, material, texture, render target and renderer (`dispose()`).
+- **Bound what grows.** Live data held during a ride (power and cadence traces, command logs,
+  leaderboards) uses a fixed-size or windowed buffer, or is persisted and dropped from memory.
+  Nothing accumulates without a limit for the length of a ride.
+- **Scope state to its use.** Provide services at the route or component that needs them, not
+  in `root`, unless the whole app shares them. A screen's state goes when the rider leaves it.
+- **Prove it.** Leaving a screen returns its memory: a feature that allocates heavily (World
+  Ride, video, live races) is checked for a stable heap across repeated enter and leave, and
+  like the visual and accessibility sweeps, these heap checks run only when a person asks.
+
+## Low-power rendering
+
+The frontend, World rendering (Three.js, WebGPU, TSL) and their detail are scaled back to run
+smoothly on low-power devices, while still using every technique the reference projects teach
+for a beautiful, realistic, high-quality picture. Choose the cheap form of a technique (baked,
+lower resolution, fewer samples, LOD) before dropping it.
+
+## Incremental implementation and ATDD (mandatory for product code)
+
+Every change to user-impacting product code (the app, its libraries and the backend) needs a
+requirement, a detailed design and a mock before implementation, and is built incrementally.
+Mocks, designs, the design system, docs, test-only changes and a marketing site are exempt and
+get no tests.
+
+Before writing product code, invoke and follow the `implementing-incrementally` skill, with ATDD:
 plan small slices and finish one at a time. For each, write Given-When-Then criteria, write the
-acceptance test (Playwright with page objects), run it to
+acceptance test (backend: through the API; frontend: Playwright with page objects), run it to
 prove it fails for the expected reason, then implement only that slice, refactor green and run
 the regression checks before the next. No bulk implementation, no tests added afterwards, no
 weakening tests to pass. Keep requirement, design, mock, tests and code aligned throughout.
 
 Never write architecture tests: no structure, layout, naming, banned-API or spec-traceability
 tests. A test suite proves behaviour.
+
+## Lessons learned and progress
+
+Before a slice of `docs/detailed-journeys.md`, read `docs/lessons-learned.md` and apply the lessons
+that fit. When the slice finishes, before it merges, add its entry there (what slowed it, new
+lessons, and how each earlier lesson it applied worked) and update **% complete** in
+`docs/detailed-journeys.md` and `docs/journeys.md`.

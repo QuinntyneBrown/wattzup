@@ -1,0 +1,27 @@
+@use '../../styles/page';
+
+// Block maps (docs/design-system/assets/components.css, Map Select): the path beside a 280 px aside from lg.
+.maps-layout {
+  display: grid;
+  gap: var(--space-10);
+
+  @media (min-width: 64rem) {
+    grid-template-columns: minmax(0, 1fr) var(--maps-aside-width);
+  }
+}
+
+.maps__lead {
+  max-width: var(--layout-text-xl);
+  margin-top: var(--space-2);
+  color: var(--color-muted);
+}
+
+// Block maps-error: the warning and Try again, under the lead, at the text measure (L2-046 AC7).
+.maps-error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  max-width: var(--layout-text-lg);
+  margin-top: var(--space-8);
+}

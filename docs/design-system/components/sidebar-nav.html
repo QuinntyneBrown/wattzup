@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sidebar navigation — Telo Ride design system</title>
+<meta name="description" content="A side column of links for wide, settings-like screens, designed in the Telo idiom. Grouped, collapsible, with badges and an icon-only mode; a scrolling row below 1024px. Not used by the product yet.">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/components.css">
+<link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Page-only: ds.css underlines every link; components in examples set their own decoration. */
+:where(.ds-example__canvas, .ds-stage, .ds-themes, .ds-matrix, .ds-anatomy__figure, .ds-do, .ds-dont) a { text-decoration: none; color: inherit; }
+.ds-matrix td { min-width: 7rem; }
+.ds-matrix td > :is(a, button, span):not(.visually-hidden) { display: inline-flex; vertical-align: middle; }
+.ds-keys td:first-child { white-space: nowrap; }
+.ds-matrix td { white-space: nowrap; }
+.ds-matrix td > :is(.tier-tabs, .tabs) { display: inline-flex; }
+.ds-stage .demo-relative { position: relative; }
+</style>
+</head>
+<body id="top">
+<a class="ds-skip" href="#main">Skip to content</a>
+<div class="ds-shell">
+  <nav class="ds-nav" aria-label="Design system">
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <details open><summary>Foundations</summary><ul>
+      <li><a href="../foundations/color.html">Color</a></li>
+      <li><a href="../foundations/typography.html">Typography</a></li>
+      <li><a href="../foundations/spacing.html">Spacing</a></li>
+      <li><a href="../foundations/layout.html">Layout</a></li>
+      <li><a href="../foundations/elevation.html">Elevation</a></li>
+      <li><a href="../foundations/shape.html">Shape</a></li>
+      <li><a href="../foundations/motion.html">Motion</a></li>
+      <li><a href="../foundations/iconography.html">Iconography</a></li>
+      <li><a href="../foundations/theming.html">Theming</a></li>
+      <li><a href="../foundations/responsive.html">Responsive</a></li>
+      <li><a href="../foundations/accessibility.html">Accessibility</a></li>
+      <li><a href="../foundations/content.html">Content</a></li>
+    </ul></details>
+    <details open><summary>Actions</summary><ul>
+      <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
+      <li><a href="../components/link.html">Link</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
+      <li><a href="../components/form-field.html">Form field</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
+      <li><a href="../components/slider.html">Slider</a></li>
+      <li><a href="../components/number-stepper.html">Number stepper</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
+      <li><a href="../components/skip-link.html">Skip link</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
+      <li><a href="../components/dialog.html">Dialog</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
+      <li><a href="../components/tooltip.html">Tooltip</a></li>
+      <li><a href="../components/divider.html">Divider</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
+      <li><a href="../components/description-list.html">Description list</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
+      <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
+      <li><a href="../components/toast.html">Toast</a></li>
+      <li><a href="../components/alert.html">Alert and banner</a></li>
+      <li><a href="../components/inline-message.html">Inline message</a></li>
+      <li><a href="../components/progress-bar.html">Progress bar</a></li>
+      <li><a href="../components/spinner.html">Spinner</a></li>
+      <li><a href="../components/skeleton.html">Skeleton</a></li>
+      <li><a href="../components/empty-state.html">Empty state</a></li>
+      <li><a href="../components/error-page.html">Error page</a></li>
+    </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
+    <details open><summary>Patterns</summary><ul>
+      <li><a href="../patterns/forms.html">Forms</a></li>
+      <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
+      <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
+      <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
+      <li><a href="../patterns/notifications.html">Notifications</a></li>
+      <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
+    </ul></details>
+  </nav>
+  <main id="main" class="ds-main">
+    <header class="ds-header">
+      <p class="ds-kicker">Component · Navigation</p>
+      <h1>Sidebar navigation</h1>
+      <p class="ds-lead">A column of links beside the content for screens with many sections, such as a future settings or profile area. The product does not use it yet; it is designed here so the first screen that needs it looks like Telo Ride.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
+    </header>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+      <p>Telo Ride navigates with one top bar and has no sidebar today. A sidebar earns its place only when a single area grows more sections than a row of <a href="tabs.html">tabs</a> holds (about five) and people move between them often: Profile with settings for the bike, the account, data and privacy, for example. It never replaces the <a href="app-header.html">app header</a>; it sits under it, inside the page.</p>
+      <ul>
+        <li>Use it for sibling pages of one area that a rider revisits (Profile → Recent rides → Bike → Diagnostics).</li>
+        <li>Do not use it for the main destinations (Home, Race, Classes, Profile stay in the header), for steps of a flow, or on ride screens, where it would take width from the video and the readouts.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+      <div class="ds-anatomy">
+        <figure class="ds-anatomy__figure" style="place-items: start;">
+          <nav class="side-nav" aria-label="Profile (anatomy)" style="width: var(--layout-sidebar-width);">
+            <div class="side-nav__groups">
+              <div class="side-nav__group">
+                <p class="side-nav__heading" id="an-you"><span class="side-nav__heading-text">You</span></p>
+                <ul class="side-nav__list" aria-labelledby="an-you">
+                  <li><a class="side-nav__link" href="../../mocks/pages/profile/default.html" aria-current="page"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="side-nav__label">Level and maps</span></a></li>
+                  <li><a class="side-nav__link" href="../../mocks/pages/profile/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span class="side-nav__label">Recent rides</span><span class="pill side-nav__badge">23</span></a></li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+          <span class="ds-callout" style="left: 18%; top: 20%;" aria-hidden="true">1</span>
+          <span class="ds-callout" style="left: 1%; top: 30%;" aria-hidden="true">2</span>
+          <span class="ds-callout" style="left: 54%; top: 40%;" aria-hidden="true">3</span>
+          <span class="ds-callout" style="left: 54%; top: 64%;" aria-hidden="true">4</span>
+        </figure>
+        <ol class="ds-anatomy__list">
+          <li><div><b>Group heading</b><small>12px semibold uppercase overline in <code>--color-faint</code>, widest tracking; names the list (<code>aria-labelledby</code>). Optional <code>&lt;summary&gt;</code> to collapse.</small></div></li>
+          <li><div><b>Current marker</b><small>2px volt bar on the left edge plus the raised fill; <code>aria-current="page"</code>.</small></div></li>
+          <li><div><b>Link</b><small>36px row, 12px padding, 16px icon and 14px medium label in <code>--color-muted</code>; <code>--radius-lg</code>, raised on hover.</small></div></li>
+          <li><div><b>Badge (optional)</b><small>A <code>.pill</code> pushed to the end: a count or a short status.</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+      <h3>Grouped, with badges, beside its content</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--canvas" style="align-items: flex-start;">
+          <div class="side-nav-layout" style="width: 100%;">
+            <nav class="side-nav" aria-label="Profile">
+              <div class="side-nav__groups">
+                <div class="side-nav__group">
+                  <p class="side-nav__heading" id="v1-you"><span class="side-nav__heading-text">You</span></p>
+                  <ul class="side-nav__list" aria-labelledby="v1-you">
+                    <li><a class="side-nav__link" href="../../mocks/pages/profile/default.html" aria-current="page"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="side-nav__label">Level and maps</span></a></li>
+                    <li><a class="side-nav__link" href="../../mocks/pages/profile/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span class="side-nav__label">Recent rides</span><span class="pill side-nav__badge">23</span></a></li>
+                  </ul>
+                </div>
+                <div class="side-nav__group">
+                  <p class="side-nav__heading" id="v1-bike"><span class="side-nav__heading-text">Bike</span></p>
+                  <ul class="side-nav__list" aria-labelledby="v1-bike">
+                    <li><a class="side-nav__link" href="../../mocks/pages/connect-bike/paired.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg><span class="side-nav__label">Echelon EX-5s</span><span class="pill pill--ok side-nav__badge">Connected</span></a></li>
+                    <li><a class="side-nav__link" href="../../mocks/dialogs/diagnostics/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"/></svg><span class="side-nav__label">Diagnostics</span></a></li>
+                  </ul>
+                </div>
+                <div class="side-nav__group">
+                  <p class="side-nav__heading" id="v1-ride"><span class="side-nav__heading-text">Ride</span></p>
+                  <ul class="side-nav__list" aria-labelledby="v1-ride">
+                    <li><a class="side-nav__link" href="../../mocks/pages/custom-setup/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5H3"/><path d="M12 19H3"/><path d="M14 3v4"/><path d="M16 17v4"/><path d="M21 12h-9"/><path d="M21 19h-5"/><path d="M21 5h-7"/><path d="M8 10v4"/><path d="M8 12H3"/></svg><span class="side-nav__label">Custom workout</span></a></li>
+                  </ul>
+                </div>
+              </div>
+            </nav>
+            <div class="stack stack--sm"><p class="page__title">Level 7</p><p class="page__lead">1,840 / 2,600 XP · 23 rides · 412 km · 4-day streak</p></div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Profile split into sections. From 1024px the nav is a 256px column (<code>--layout-sidebar-width</code>); below, a scrolling row (see Responsive).</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="side-nav-layout"&gt;
+  &lt;nav class="side-nav" aria-label="Profile"&gt;
+    &lt;div class="side-nav__groups"&gt;
+      &lt;div class="side-nav__group"&gt;
+        &lt;h2 class="side-nav__heading" id="nav-you"&gt;&lt;span class="side-nav__heading-text"&gt;You&lt;/span&gt;&lt;/h2&gt;
+        &lt;ul class="side-nav__list" aria-labelledby="nav-you"&gt;
+          &lt;li&gt;&lt;a class="side-nav__link" href="/profile" aria-current="page"&gt;&lt;svg class="icon" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;span class="side-nav__label"&gt;Level and maps&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a class="side-nav__link" href="/profile/rides"&gt;…&lt;span class="side-nav__label"&gt;Recent rides&lt;/span&gt;&lt;span class="pill side-nav__badge"&gt;23&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/nav&gt;
+  &lt;main id="main"&gt;…&lt;/main&gt;
+&lt;/div&gt;</code></pre></details>
+      </div>
+      <h3>Collapsible groups and icon-only</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--canvas" style="align-items: flex-start; gap: var(--space-12);">
+          <nav class="side-nav" aria-label="Profile, collapsible groups">
+            <div class="side-nav__groups">
+              <details class="side-nav__group" open>
+                <summary class="side-nav__heading"><span class="side-nav__heading-text">Bike</span><svg class="icon side-nav__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+                <ul class="side-nav__list">
+                  <li><a class="side-nav__link" href="../../mocks/pages/connect-bike/paired.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg><span class="side-nav__label">Echelon EX-5s</span></a></li>
+                  <li><a class="side-nav__link" href="../../mocks/dialogs/diagnostics/default.html" aria-current="page"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"/></svg><span class="side-nav__label">Diagnostics</span></a></li>
+                </ul>
+              </details>
+              <details class="side-nav__group">
+                <summary class="side-nav__heading"><span class="side-nav__heading-text">Ride</span><svg class="icon side-nav__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+                <ul class="side-nav__list">
+                  <li><a class="side-nav__link" href="../../mocks/pages/custom-setup/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5H3"/><path d="M12 19H3"/><path d="M14 3v4"/><path d="M16 17v4"/><path d="M21 12h-9"/><path d="M21 19h-5"/><path d="M21 5h-7"/><path d="M8 10v4"/><path d="M8 12H3"/></svg><span class="side-nav__label">Custom workout</span></a></li>
+                </ul>
+              </details>
+            </div>
+          </nav>
+          <nav class="side-nav side-nav--collapsed" aria-label="Profile, icons only">
+            <div class="side-nav__groups">
+              <div class="side-nav__group">
+                <ul class="side-nav__list">
+                  <li class="tooltip-anchor"><a class="side-nav__link" href="../../mocks/pages/profile/default.html" aria-current="page"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="side-nav__label">Level and maps</span></a><span class="tooltip tooltip--right" aria-hidden="true">Level and maps</span></li>
+                  <li class="tooltip-anchor"><a class="side-nav__link" href="../../mocks/pages/profile/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span class="side-nav__label">Recent rides</span></a><span class="tooltip tooltip--right" aria-hidden="true">Recent rides</span></li>
+                  <li class="tooltip-anchor"><a class="side-nav__link" href="../../mocks/dialogs/diagnostics/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"/></svg><span class="side-nav__label">Diagnostics</span></a><span class="tooltip tooltip--right" aria-hidden="true">Diagnostics</span></li>
+                </ul>
+              </div>
+              <button class="icon-btn side-nav__toggle" type="button" aria-label="Show labels" aria-pressed="true"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m11 17-5-5 5-5"/><path d="m18 17-5-5 5-5"/></svg></button>
+            </div>
+          </nav>
+        </div>
+        <div class="ds-example__caption"><span>Collapsible groups use <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code> (the chevron turns −90° when closed). Icon-only keeps each label as the link's accessible name and shows it as a tooltip on hover and focus.</span></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+      <p>One size: 36px rows (<code>--control-height-sm</code>, the header's link height), 256px column (<code>--layout-sidebar-width</code>), 56px when collapsed to icons (<code>--side-nav-collapsed-width</code>). Rows grow with their label when it wraps on a narrow column; they never truncate a label mid-word.</p>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Part</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Current</th><th scope="col">Disabled</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Link</th>
+            <td><a class="side-nav__link" href="../../mocks/pages/profile/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span class="side-nav__label">Recent rides</span></a></td>
+            <td><a class="side-nav__link" href="../../mocks/pages/profile/default.html" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span class="side-nav__label">Recent rides</span></a></td>
+            <td><a class="side-nav__link" href="../../mocks/pages/profile/default.html" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span class="side-nav__label">Recent rides</span></a></td>
+            <td><a class="side-nav__link" href="../../mocks/pages/profile/default.html" data-state="active"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span class="side-nav__label">Recent rides</span></a></td>
+            <td><a class="side-nav__link" href="../../mocks/pages/profile/default.html" aria-current="page"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span class="side-nav__label">Recent rides</span></a></td>
+            <td><a class="side-nav__link" aria-disabled="true"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span class="side-nav__label">Recent rides</span></a></td></tr>
+          <tr><th scope="row">Group heading</th>
+            <td colspan="3"><details class="side-nav__group" open><summary class="side-nav__heading" style="display: flex;"><span class="side-nav__heading-text">Bike</span><svg class="icon side-nav__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary></details> <small class="text-muted">expanded</small></td>
+            <td colspan="3"><details class="side-nav__group"><summary class="side-nav__heading" style="display: flex;"><span class="side-nav__heading-text">Bike</span><svg class="icon side-nav__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary></details> <small class="text-muted">collapsed</small></td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li><b>Current</b> is one link per nav, <code>aria-current="page"</code>: raised fill, fg text and the 2px volt bar. The bar is there because the fill alone is a subtle step on ink (1.4.1); below 1024px it moves under the link.</li>
+        <li><b>Disabled</b> (<code>aria-disabled="true"</code>, no <code>href</code>) is for a section that needs a paired bike first; prefer leaving it enabled and explaining inside.</li>
+        <li><b>Expanded / collapsed</b> is the native <code>&lt;details open&gt;</code> state, announced by the summary.</li>
+      </ul>
+      <h3>Both themes</h3>
+      <div class="ds-themes">
+        <div data-theme="light"><nav class="side-nav" aria-label="Light theme example"><div class="side-nav__groups"><div class="side-nav__group"><p class="side-nav__heading" id="lt-you"><span class="side-nav__heading-text">You</span></p><ul class="side-nav__list" aria-labelledby="lt-you"><li><a class="side-nav__link" href="../../mocks/pages/profile/default.html" aria-current="page"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="side-nav__label">Level and maps</span></a></li><li><a class="side-nav__link" href="../../mocks/pages/profile/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span class="side-nav__label">Recent rides</span><span class="pill side-nav__badge">23</span></a></li></ul></div></div></nav></div>
+        <div data-theme="dark"><nav class="side-nav" aria-label="Dark theme example"><div class="side-nav__groups"><div class="side-nav__group"><p class="side-nav__heading" id="dk-you"><span class="side-nav__heading-text">You</span></p><ul class="side-nav__list" aria-labelledby="dk-you"><li><a class="side-nav__link" href="../../mocks/pages/profile/default.html" aria-current="page"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="side-nav__label">Level and maps</span></a></li><li><a class="side-nav__link" href="../../mocks/pages/profile/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span class="side-nav__label">Recent rides</span><span class="pill side-nav__badge">23</span></a></li></ul></div></div></nav></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <ul>
+        <li><b>Under 1024px</b> the sidebar becomes a single scrolling row of links under the page title, like the app header's nav row under 640px: headings hidden, groups run together, current link marked by the fill and a 2px volt bar underneath. No drawer and no menu button; Telo Ride has neither.</li>
+        <li><b>From 1024px</b> (<code>--layout-breakpoint-lg</code>) it is a 256px column beside the content (<code>.side-nav-layout</code>, 48px gap), with group headings, and can collapse to icons.</li>
+        <li>The column does not scroll on its own unless it is taller than the viewport; then make it <code>position: sticky; top: 0</code> inside <code>.app__scroll</code>.</li>
+      </ul>
+      <div class="ds-table-wrap" style="display: flex; gap: var(--space-4); padding-bottom: var(--space-2);">
+        <iframe class="ds-frame" width="362" height="150" title="Sidebar navigation at 360px: a scrolling row" srcdoc="&lt;!doctype html&gt;&lt;html lang=&quot;en&quot; data-theme=&quot;dark&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../tokens/tokens.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../assets/components.css&quot;&gt;&lt;/head&gt;&lt;body style=&quot;height: auto; min-height: 100%; background: var(--color-ink);&quot;&gt;&lt;div style=&quot;padding: 16px;&quot;&gt;&lt;nav class=&quot;side-nav&quot; aria-label=&quot;Profile&quot;&gt;&lt;div class=&quot;side-nav__groups&quot;&gt;&lt;div class=&quot;side-nav__group&quot;&gt;&lt;ul class=&quot;side-nav__list&quot;&gt;&lt;li&gt;&lt;a class=&quot;side-nav__link&quot; href=&quot;#&quot; aria-current=&quot;page&quot;&gt;&lt;svg class=&quot;icon icon--md&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;7&quot; r=&quot;4&quot;/&gt;&lt;/svg&gt;&lt;span class=&quot;side-nav__label&quot;&gt;Level and maps&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a class=&quot;side-nav__link&quot; href=&quot;#&quot;&gt;&lt;svg class=&quot;icon icon--md&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8&quot;/&gt;&lt;path d=&quot;M3 3v5h5&quot;/&gt;&lt;path d=&quot;M12 7v5l4 2&quot;/&gt;&lt;/svg&gt;&lt;span class=&quot;side-nav__label&quot;&gt;Recent rides&lt;/span&gt;&lt;span class=&quot;pill side-nav__badge&quot;&gt;23&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&lt;div class=&quot;side-nav__group&quot;&gt;&lt;ul class=&quot;side-nav__list&quot;&gt;&lt;li&gt;&lt;a class=&quot;side-nav__link&quot; href=&quot;#&quot;&gt;&lt;svg class=&quot;icon icon--md&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;m7 7 10 10-5 5V2l5 5L7 17&quot;/&gt;&lt;/svg&gt;&lt;span class=&quot;side-nav__label&quot;&gt;Echelon EX-5s&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a class=&quot;side-nav__link&quot; href=&quot;#&quot;&gt;&lt;svg class=&quot;icon icon--md&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z&quot;/&gt;&lt;/svg&gt;&lt;span class=&quot;side-nav__label&quot;&gt;Diagnostics&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&lt;/div&gt;&lt;/nav&gt;&lt;p class=&quot;page__lead&quot;&gt;1,840 / 2,600 XP · 23 rides · 412 km&lt;/p&gt;&lt;/div&gt;&lt;script&gt;try{var r=parent.document.documentElement,s=function(){document.documentElement.dataset.theme=r.dataset.theme||&quot;dark&quot;};s();new MutationObserver(s).observe(r,{attributes:true,attributeFilter:[&quot;data-theme&quot;]})}catch(e){}&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;" style="flex: none; max-width: none; border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-lg); background: var(--color-ink);"></iframe>
+      </div>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+      <p>Transparent on the page; links read <code>--side-nav-fg</code> (<code>--color-muted</code>), hover and current fill <code>--color-raised</code>, the current bar <code>--side-nav-indicator</code> (<code>--color-volt-fg</code>, which holds 3:1 against the raised fill in both themes). Override the <code>--side-nav-*</code> tokens on <code>.side-nav</code> to re-theme; for example a sidebar on a panel sets <code>--side-nav-bg-current: var(--color-raised-hover)</code> so the fill still steps up.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <p>A <code>&lt;nav&gt;</code> landmark named for its area (<code>aria-label="Profile"</code>), lists of links, the current one with <code>aria-current="page"</code>; collapsible groups are native <code>&lt;details&gt;</code>. This is the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation/">APG disclosure navigation</a> pattern; it is <em>not</em> a menu or tree, so no arrow-key roving.</p>
+      <h3>Keyboard</h3>
+      <div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+        <tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Through group summaries and links in order.</td></tr>
+        <tr><td><kbd>Enter</kbd></td><td>Follows a link.</td></tr>
+        <tr><td><kbd>Enter</kbd>, <kbd>Space</kbd></td><td>Opens or closes a group (on its summary); toggles icon-only mode (on the collapse button).</td></tr>
+      </tbody></table></div>
+      <h3>Focus</h3>
+      <p>Shared ring around the link's rounded row. On arrival at a new section, focus goes to that page's <code>h1</code> or <code>main</code>, not back to the sidebar.</p>
+      <h3>Labelling</h3>
+      <p>Each list is labelled by its heading (<code>aria-labelledby</code>); in icon-only mode the label stays in the DOM, visually hidden, as the accessible name, and the tooltip repeating it is <code>aria-hidden</code>. Badges are read with the link ("Recent rides 23"); give a status badge words ("Connected"), never a bare dot.</p>
+      <h3>Contrast</h3>
+      <div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+        <div class="ds-pair"><span>Link text on the page</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-ink" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Current and hovered link</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-raised" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Group heading</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-ink" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Current bar against the fill</span><span class="ds-pair__ratio" data-contrast="--color-volt-fg|--color-raised" data-min="3"></span></div>
+      </div>
+      <h3>Motion</h3>
+      <p>Fill and text colour over <code>--duration-fast</code>; the group chevron turns over <code>--duration-base</code> with <code>--ease-panel</code>. Both instant with reduced motion.</p>
+      <h3>Touch</h3>
+      <p>36px rows; the scrolling row below 1024px is swipeable and each link is at least 44px wide.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li>Links are nouns for places, sentence case: "Recent rides", "Diagnostics", "Custom workout".</li>
+        <li>Group headings are one word: "You", "Bike", "Ride".</li>
+        <li>Badges hold a count or a one-word status; never "New!".</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><a class="side-nav__link" href="../../mocks/pages/profile/default.html" aria-current="page"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span class="side-nav__label">Recent rides</span></a></div><figcaption>Mark the current section with <code>aria-current</code>, fill and the volt bar.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><a class="side-nav__link" href="../../mocks/pages/profile/default.html" style="color: var(--color-volt-fg);"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span class="side-nav__label">Recent rides</span></a></div><figcaption>Colour the current link volt with no fill and no attribute: colour alone, and volt text reads as a link to somewhere else.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><span class="text-muted" style="font-size: var(--font-size-sm);">Home · Race · Classes · Profile stay in the header</span></div><figcaption>Keep the four main destinations in the app header; the sidebar lists one area's sections.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><ul class="side-nav__list" style="flex-direction: column;"><li><a class="side-nav__link" href="../../mocks/pages/home/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="side-nav__label">Home</span></a></li><li><a class="side-nav__link" href="../../mocks/pages/map-select/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg><span class="side-nav__label">Race</span></a></li></ul></div><figcaption>Move the main nav into a sidebar: it costs the ride screens their width and duplicates the header.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+        <tbody>
+          <tr><td>Link text (<code>--side-nav-fg</code>)</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+          <tr><td>Hover and current text</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+          <tr><td>Hover and current fill</td><td><code>--color-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td></tr>
+          <tr><td>Pressed fill</td><td><code>--color-raised-hover</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised-hover" data-swatch></i><span data-token="--color-raised-hover"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised-hover" data-swatch></i><span data-token="--color-raised-hover"></span></span></td></tr>
+          <tr><td>Current bar (<code>--side-nav-indicator</code>; volt-fg so it holds 3:1 on the raised fill in light)</td><td><code>--color-volt-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-volt-fg" data-swatch></i><span data-token="--color-volt-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-volt-fg" data-swatch></i><span data-token="--color-volt-fg"></span></span></td></tr>
+          <tr><td>Group heading</td><td><code>--color-faint</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td></tr>
+          <tr><td>Column width (<code>--side-nav-width</code>)</td><td><code>--layout-sidebar-width</code></td><td colspan="2"><span data-token="--layout-sidebar-width"></span></td></tr>
+          <tr><td>Row height</td><td><code>--control-height-sm</code></td><td colspan="2"><span data-token="--control-height-sm"></span></td></tr>
+          <tr><td>Row padding / gap between groups</td><td><code>--space-3</code> <code>--space-5</code></td><td colspan="2"><span data-token="--space-3"></span> / <span data-token="--space-5"></span></td></tr>
+          <tr><td>Row radius</td><td><code>--radius-lg</code></td><td colspan="2"><span data-token="--radius-lg"></span></td></tr>
+          <tr><td>Current bar</td><td><code>--border-width-thick</code></td><td colspan="2"><span data-token="--border-width-thick"></span></td></tr>
+          <tr><td>Colour / chevron</td><td><code>--duration-fast</code> <code>--duration-base</code></td><td colspan="2"><span data-token="--duration-fast"></span> / <span data-token="--duration-base"></span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+        <tr><td><code>.side-nav-layout</code></td><td>Nav + content: stacked, then <code>auto 1fr</code> from 1024px.</td></tr>
+        <tr><td><code>.side-nav</code> <code>__groups</code> <code>__group</code> <code>__heading</code> <code>__list</code></td><td>Block (tokens); group container; one group; its heading (or <code>&lt;summary&gt;</code>); its list.</td></tr>
+        <tr><td><code>.side-nav__link</code> <code>__label</code> <code>__badge</code></td><td>Row; label (kept for the name when collapsed); end badge (a <code>.pill</code>).</td></tr>
+        <tr><td><code>aria-current="page"</code></td><td>Current: fill and volt bar.</td></tr>
+        <tr><td><code>aria-disabled="true"</code></td><td>Disabled row (omit <code>href</code>).</td></tr>
+        <tr><td><code>.side-nav--collapsed</code> + <code>.side-nav__toggle</code></td><td>Icon-only column from 1024px; the toggle's <code>aria-pressed</code> tracks it.</td></tr>
+        <tr><td><code>.side-nav__chevron</code></td><td>Group chevron inside a summary.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <p><b>Not in the mocks.</b> Telo Ride uses a top bar only; no screen in <code>docs/mocks</code> has a sidebar, and the product does not use this component yet. It is designed from the kit's own decisions so the first screen that needs one stays in the family:</p>
+      <ul>
+        <li>Row height, radius, muted → fg text and the raised current fill from the app header's nav links (<a href="../../mocks/pages/home/default.html">pages/home/default</a>).</li>
+        <li>Icon, title and chevron rows from Profile's settings list (<a href="../../mocks/pages/profile/default.html">pages/profile/default</a>).</li>
+        <li>The volt "selected" marker from the mode cards and ride options (<a href="../../mocks/pages/race-setup/default.html">pages/race-setup/default</a>).</li>
+      </ul>
+      <p>Drift fixed: none (new component).</p>
+    </section>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
+  </main>
+</div>
+<script src="../assets/ds.js"></script>
+</body>
+</html>

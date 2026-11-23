@@ -1,0 +1,40 @@
+@startuml
+title UML sequence behaviour — Deliver standings within budget
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "StandingsTicker" as ticker
+  participant "RideHub group" as hub
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "PublishStandingsCommandHandler" as handler
+  participant "RaceSession or GroupClassSession" as session
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "TeloRideMetrics" as metrics
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "SignalRRideHubClient (10 riders)" as client
+end box
+loop once a second
+  ticker -> handler : Send PublishStandingsCommand(sessionId, tickAt)
+  handler -> session : Rank riders from latest progress (in memory)
+  session --> handler : Standings
+  handler -> hub : Clients.Group(sessionId).StandingsUpdated(standings)
+  hub -> client : StandingsUpdated
+  handler --> ticker : Sent
+  ticker -> metrics : StandingsDelivery.Record(now - tickAt) (L2-137 AC2: p95 at most 100 ms)
+end
+@enduml

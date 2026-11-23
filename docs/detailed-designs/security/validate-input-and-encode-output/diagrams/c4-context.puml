@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Validate input and encode output
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(bike, "Smart bike", "Echelon EX-5s, EX-3, EX-8s, Connect Sport, or an FTMS bike; Bluetooth LE")
+Rel(rider, telo, "Sends names, messages and ride data to")
+Rel(bike, telo, "Sends a device name and notifications to", "Bluetooth LE")
+@enduml

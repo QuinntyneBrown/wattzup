@@ -1,0 +1,62 @@
+@startuml
+title UML sequence behaviour — Fill the XP and stars panels
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ResultsPage" as page
+  participant "resultsView()" as store
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "SessionRideOutbox" as outbox
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "HttpRidesApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RidesController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "SubmitRideCommandHandler" as handler
+end box
+actor -> page : Results opens with the result and the ride in the navigation's state
+page -> outbox : submit(ride), once per ride id
+page -> outbox : status(rideId)
+outbox --> page : sending
+page -> store : resultsView(result, sending)
+store --> page : XP panel shows it is waiting (L2-074 AC2)
+alt Network available
+  outbox -> client : submitRide(ride)
+  client -> ctrl : POST /api/rides
+  ctrl -> handler : Send SubmitRideCommand
+  handler --> ctrl : RideRecordedDto
+  ctrl --> client : 201
+  client --> outbox : recorded(answer)
+  outbox --> page : recorded
+  page -> store : resultsView(result, recorded)
+  store -> store : "+442" and each line in the order returned (L2-074 AC1)
+  store -> store : "Stars on Old Town Criterium" "2 of 3", "+1 new star" when newStars > 0 (L2-075 AC1, AC2)
+  store --> page : Panels filled
+else No network: the request never reaches the backend
+  outbox --> page : waitingOffline
+  page -> store : resultsView(result, waitingOffline)
+  store --> page : XP panel says it will be added when back online (L2-074 AC3, L2-135)
+  outbox -> outbox : sends it again when the browser is back online
+else Refused (422) or failed
+  outbox --> page : notRecorded
+  store --> page : XP panel says the ride wasn't recorded, no stars panel (AC4)
+end
+page --> actor : XP earned and stars
+@enduml

@@ -1,0 +1,136 @@
+@startuml
+set separator none
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Browse the class library
+
+package "api library" {
+  interface ClassesApi {
+    +list(): Observable<ClassCatalogueDto>
+    +get(id: string): Observable<ClassDto>
+  }
+  class ClassCatalogueDto {
+    +shelves: ShelfDto[]
+    +classes: ClassDto[]
+  }
+  class ShelfDto {
+    +id: string
+    +title: string
+    +tagline: string
+  }
+  class ClassDto {
+    +id: string
+    +title: string
+    +channel: string
+    +focus: string
+    +lengthSeconds: number
+    +opensAtLevel: number
+    +shelfId: string
+    +summary: string
+    +world: string
+    +video: VideoDto
+    +plan: PlanDto
+  }
+  class VideoDto {
+    +videoId: string
+    +syncOffsetSeconds: number
+  }
+}
+package "domain library" {
+  class CachedClassesApi {
+    +list(): Observable<ClassCatalogueDto>
+    +get(id: string): Observable<ClassDto>
+  }
+  class CatalogueCache {
+    +save(catalogue: ClassCatalogueDto): void
+    +read(): ClassCatalogueDto | null
+  }
+}
+package "ride application" {
+  class ClassLibraryStore {
+    +tab: Signal<LengthTab>
+    +shelves: Signal<ShelfView[]>
+    +riderLevel: Signal<number>
+    +selectTab(tab: LengthTab): void
+    +isLocked(classId: string): boolean
+  }
+  class ClassCardView {
+    +classId: string
+    +locked: boolean
+    +lockLabel: string
+    +groupChip: string
+    +coverUrl: string
+  }
+  enum LengthTab {
+    All
+    Min20
+    Min30
+    Min60
+  }
+}
+package "Telo.Ride.Domain" {
+  class ClassDefinition {
+    +string Id
+    +string Title
+    +string Channel
+    +string Focus
+    +TimeSpan Length
+    +int OpensAtLevel
+    +string ShelfId
+    +string Summary
+    +string World
+    +string VideoId
+    +decimal SyncOffsetSeconds
+    +ClassPlan Plan
+  }
+  class ClassPlan {
+    +IReadOnlyList<ClassSegment> Segments
+    +TimeSpan Total
+  }
+  class ClassSegment {
+    +SegmentKind Kind
+    +TimeSpan Duration
+    +int Level
+    +int CadenceAim
+  }
+  class ClassPlanRules {
+    +Validate(definition: ClassDefinition): ValidationResult
+  }
+}
+package "Telo.Ride.Application" {
+  interface IClassCatalogue {
+    +Shelves: IReadOnlyList<Shelf>
+    +Classes: IReadOnlyList<ClassDefinition>
+  }
+  class GetClassesQuery
+  class GetClassQuery {
+    +string Id
+  }
+  class GetClassesQueryHandler {
+    +Handle(query: GetClassesQuery): Task<ClassCatalogueDto>
+  }
+}
+ClassCatalogueDto "1" *-- "*" ShelfDto
+ClassCatalogueDto "1" *-- "*" ClassDto
+ClassDto --> VideoDto
+ClassLibraryStore ..> ClassesApi : loads
+ClassLibraryStore "1" *-- "*" ClassCardView : derives
+ClassLibraryStore --> LengthTab
+ClassDefinition "1" *-- "1" ClassPlan
+ClassPlan "1" *-- "*" ClassSegment
+GetClassesQueryHandler ..> GetClassesQuery : handles
+GetClassesQueryHandler ..> ClassPlanRules : filters with
+GetClassesQueryHandler ..> IClassCatalogue : reads
+CachedClassesApi ..|> ClassesApi
+CachedClassesApi --> CatalogueCache : saves, falls back to
+@enduml

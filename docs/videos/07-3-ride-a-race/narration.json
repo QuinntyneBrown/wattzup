@@ -1,0 +1,99 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Choose Go to the start line, and the race opens full screen: your bike, a map, and thirty minutes on the clock."
+      ]
+    },
+    {
+      "id": "bar",
+      "bars": 4,
+      "lines": [
+        "Along the top: the map and its route, whom you race, your bike, and the clock, out of thirty minutes."
+      ]
+    },
+    {
+      "id": "power",
+      "bars": 4,
+      "lines": [
+        "Power is the biggest number. Three hundred and seventy-one watts against a target of four eighteen: forty-seven under."
+      ]
+    },
+    {
+      "id": "interval",
+      "bars": 4,
+      "lines": [
+        "The interval panel: work, one of eight, twenty-nine seconds left, and what comes next. A screen reader hears the time in words."
+      ]
+    },
+    {
+      "id": "level",
+      "bars": 4,
+      "lines": [
+        "Each segment's level goes to the bike as it starts: eight for the warm-up, twenty-four for the effort, six to recover."
+      ]
+    },
+    {
+      "id": "route",
+      "bars": 4,
+      "lines": [
+        "The route profile comes from the main branch, copied as it is. The road eases towards the world's grade, giving the climb and the metres climbed."
+      ]
+    },
+    {
+      "id": "speed",
+      "bars": 4,
+      "lines": [
+        "Speed comes from your power, ten times the cube root of watts over twenty. Its sum is the distance you have ridden."
+      ]
+    },
+    {
+      "id": "resist",
+      "bars": 4,
+      "lines": [
+        "Lower and Raise send the next level as your own, and switch off while the bike is away."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "A phone keeps the world, power and the interval. From a laptop, every panel, the bottom row in three columns."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: eighty-two behaviour specs, the route profile and the speed in unit tests, all green, and the first bundle unchanged."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

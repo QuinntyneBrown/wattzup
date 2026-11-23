@@ -1,0 +1,106 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Pick a class and ride it. Telo Ride now has the class ride screen, driving the bike through the plan."
+      ]
+    },
+    {
+      "id": "header",
+      "bars": 4,
+      "lines": [
+        "The header names the class and the mode, with the clock as a timer: seven minutes of thirty."
+      ]
+    },
+    {
+      "id": "segment",
+      "bars": 4,
+      "lines": [
+        "The segment card counts down the part you're in: its kind, its time left, its progress, and the whole plan."
+      ]
+    },
+    {
+      "id": "power",
+      "bars": 4,
+      "lines": [
+        "Power reads against the segment's target. Within ten percent it's on target; otherwise it shows the gap."
+      ]
+    },
+    {
+      "id": "stepper",
+      "bars": 4,
+      "lines": [
+        "The stepper shows the resistance the bike reports, or a dash. Plus and minus nudge it, and switch off when the bike is away."
+      ]
+    },
+    {
+      "id": "sent",
+      "bars": 4,
+      "lines": [
+        "At each boundary the next level goes to the bike. After a long gap, only the current level is sent."
+      ]
+    },
+    {
+      "id": "source",
+      "bars": 4,
+      "lines": [
+        "The class comes from the catalogue: one request, and the ride starts the moment it arrives."
+      ]
+    },
+    {
+      "id": "bundle",
+      "bars": 4,
+      "lines": [
+        "The first HTTP client costs about five kilobytes on the wire, so the bundle budget makes room for it."
+      ]
+    },
+    {
+      "id": "deferred",
+      "bars": 4,
+      "lines": [
+        "Still to come: the video in sync in 5.3, pause, leave or finish in 5.4, and the catalogue API in 6.1."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "On a phone the panel stacks in two columns. From tablet width, it's one row of four."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: four new specs drive the screen on a fake clock and a fake bike, and every check is green."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

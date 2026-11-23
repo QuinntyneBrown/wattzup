@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Celebrate an unlock
+
+Container_Boundary(app, "Ride app") {
+  Component(page, "ResultsPage", "Angular page · ride", "Places the unlock card when a map opened")
+  Component(store, "resultsView()", "Pure helper · ride", "unlock: UnlockCardView or null")
+  Component(catalogue, "MapsApi", "HTTP client · api (MAPS_API)", "Map name, place and photo")
+  Component(card, "UnlockCard", "Presentation component · components", "Gold card with entrance motion")
+  Component(outbox, "RideOutbox", "Service · domain/storage (RIDE_OUTBOX)", "Recorded answer with openedMapId")
+}
+Container(api, "Telo Ride API", "ASP.NET Core", "POST /api/rides returns openedMapId")
+
+Rel(page, store, "Computes the view")
+Rel(page, outbox, "status(rideId)")
+Rel(page, catalogue, "Map details for openedMapId")
+Rel(page, card, "Renders")
+Rel(outbox, api, "Submits", "JSON/HTTPS")
+@enduml

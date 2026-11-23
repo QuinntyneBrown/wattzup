@@ -1,0 +1,45 @@
+@startuml
+title UML sequence behaviour — Start a solo ride offline
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+participant "Browser" as browser
+box "Frontend — Ride app (service worker)" #E0F2FE
+  participant "Angular service worker" as sw
+end box
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ClassStartStore" as page
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "BrowserNetworkStatus" as net
+  participant "CachedClassesApi" as classes
+  participant "multiplayerAvailability" as avail
+end box
+actor -> browser : Open Telo Ride with no network
+browser -> sw : GET /classes/… and app chunks
+sw --> browser : index.html and chunks from the app cache (L2-135 AC3)
+browser -> page : Open Class Start
+page -> classes : get(classId)
+classes -> sw : GET /api/classes
+sw --> classes : No network
+classes --> page : The class from the catalogue kept on the device (ADR 0028)
+page -> net : online()
+net --> page : false, so the group sessions are not asked for
+page -> avail : multiplayerAvailability(false, …)
+avail --> page : offline
+page --> actor : "Ride alone" chosen; "Ride with a group" disabled: "You’re offline. Group classes need a network." (L2-135 AC4)
+actor -> page : Ride alone
+page --> actor : Class ride starts without a network
+@enduml

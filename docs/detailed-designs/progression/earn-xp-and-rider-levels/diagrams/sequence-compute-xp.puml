@@ -1,0 +1,62 @@
+@startuml
+title UML sequence behaviour — Compute XP and level for a ride
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ResultsStore" as results
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "HttpRidesApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RidesController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "SubmitRideCommandHandler" as handler
+  participant "XpCalculator" as xp
+  participant "LevelTable" as levels
+  participant "Rider" as rider
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+actor -> results : Finish 2nd of 10 vs Bots, 84 % on target
+results -> client : submitRide(ride)
+client -> ctrl : POST /api/rides
+ctrl -> handler : Send SubmitRideCommand
+handler -> db : Load Rider and streak
+db --> handler : TotalXp 1840, streak after ride 4
+alt Outcome is Dnf or Discarded
+  handler -> handler : No XP lines (L2-037 AC7)
+else Finished
+  handler -> xp : Compute(result, 4)
+  xp -> xp : "Finished" +100 (AC1)
+  xp -> xp : FieldSize > 2: "2nd of 10" +(10 − 2) × 20 = +160; "Podium" +75 (AC2)
+  xp -> xp : "84% on target" +round(84 × 0.8) = +67 (AC3)
+  xp -> xp : "4-day streak" +4 × 10 = +40 (AC4)
+  xp --> handler : 5 lines, total +442 (AC5)
+end
+handler -> levels : LevelFor(1840)
+levels --> handler : 7
+handler -> rider : AddXp(442)
+handler -> levels : Progress(2282)
+levels --> handler : Level 7, next threshold 2600, 318 to go
+handler -> db : Save ride and rider in one unit of work
+handler --> ctrl : RideRecordedDto (LevelUp = level after > level before, L2-038 AC3)
+ctrl --> client : 201 RideRecordedDto
+client --> results : XP lines and level
+results --> actor : "XP earned +442" with each line (L2-074)
+@enduml

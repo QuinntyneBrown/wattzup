@@ -1,0 +1,104 @@
+// Blocks class-segment and class-profile (docs/design-system/assets/components.css, Class Ride). The segment's kind
+// sets its colour; its name is in the card's words too, so colour never carries it alone.
+:host {
+  display: block;
+  grid-column: span 2;
+  min-width: 0;
+
+  @media (min-width: 48rem) {
+    grid-column: span 1;
+  }
+}
+
+.class-segment {
+  --segment: var(--classes-segment-easy);
+
+  height: 100%;
+  border-radius: var(--radius-xl);
+  background: var(--color-panel);
+  padding: var(--space-3) var(--space-4);
+}
+
+.class-segment--work,
+.class-segment--steady {
+  --segment: var(--color-volt);
+}
+
+.class-segment--recover {
+  --segment: var(--color-rest);
+}
+
+.class-segment__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.class-segment__kind {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+}
+
+.class-segment__swatch {
+  display: block;
+  width: var(--space-2-5);
+  height: var(--space-2-5);
+  border-radius: var(--radius-xs);
+  background: var(--segment);
+}
+
+.class-segment__left {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-4xl);
+  line-height: var(--line-height-4xl);
+}
+
+.class-segment__bar {
+  display: block;
+  width: 100%;
+  margin-top: var(--space-2);
+  height: var(--space-1-5);
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-fg) 10%, transparent);
+}
+
+.class-segment__fill {
+  fill: var(--segment);
+  transition: width var(--duration-countdown) linear;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.class-profile {
+  display: block;
+  width: 100%;
+  height: var(--space-5);
+  margin-top: var(--space-2);
+}
+
+.class-profile__work,
+.class-profile__steady {
+  fill: var(--color-volt);
+}
+
+.class-profile__rest {
+  fill: var(--color-rest);
+}
+
+.class-profile__warmup,
+.class-profile__cooldown {
+  fill: var(--classes-segment-easy);
+  opacity: 0.5;
+}

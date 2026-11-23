@@ -1,0 +1,15 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Ride a custom workout
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Bluetooth LE")
+System_Ext(youtube, "YouTube", "Ride-along video")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Custom ride dashboard and workout engine")
+}
+Rel(rider, app, "Uses")
+Rel(app, bike, "Telemetry and target resistance", "Web Bluetooth")
+Rel(app, youtube, "Embeds player when the workout has a video", "HTTPS")
+@enduml

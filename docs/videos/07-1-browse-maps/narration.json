@@ -1,0 +1,106 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Behind the Race door, Map Select now draws the whole unlock path."
+      ]
+    },
+    {
+      "id": "head",
+      "bars": 4,
+      "lines": [
+        "It reads Maps: each map opens the next. A new rider starts with two open, Prairie Paceline and Old Town Criterium."
+      ]
+    },
+    {
+      "id": "catalogue",
+      "bars": 4,
+      "lines": [
+        "The backend serves the seven maps from a catalogue file, in unlock order, and anyone can read it before signing in."
+      ]
+    },
+    {
+      "id": "open",
+      "bars": 4,
+      "lines": [
+        "An open map links to Race Setup, with its photo, distance, climbing and rating, and its stars. A best time shows once it's ridden."
+      ]
+    },
+    {
+      "id": "next",
+      "bars": 4,
+      "lines": [
+        "The next unlock is ringed in gold, with its facts and its goal: finish top three against bots on Prairie Paceline."
+      ]
+    },
+    {
+      "id": "locked",
+      "bars": 4,
+      "lines": [
+        "Every other locked map is greyed, with a lock, and names its one goal: a race, a star count, or a rider level."
+      ]
+    },
+    {
+      "id": "heard",
+      "bars": 4,
+      "lines": [
+        "Colour is never the only sign. A screen reader hears locked, or locked, your next unlock."
+      ]
+    },
+    {
+      "id": "aside",
+      "bars": 4,
+      "lines": [
+        "Beside the path, stars on every map: finish, top three against the medium pack, and beat your best."
+      ]
+    },
+    {
+      "id": "offline",
+      "bars": 4,
+      "lines": [
+        "Once read, the catalogue stays on the device. With none kept and no network, Map Select says so, and Try again asks again."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "The same path, from a phone to a desktop, where the star rules sit beside it."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: seven behaviour specs and the backend's catalogue tests, all green, and the first bundle still under budget."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

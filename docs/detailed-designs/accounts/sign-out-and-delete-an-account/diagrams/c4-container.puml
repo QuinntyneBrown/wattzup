@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Sign out and delete an account
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Settings rows, delete dialog")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Ends sessions, detaches and erases accounts")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Riders, sessions, progress, rides")
+}
+Rel(rider, app, "Uses", "HTTPS")
+Rel(app, api, "POST /api/auth/sign-out, DELETE /api/riders/me", "JSON/HTTPS")
+Rel(api, db, "Ends sessions, erases personal data", "EF Core")
+@enduml

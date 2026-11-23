@@ -3,17 +3,47 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dialogs and overlays — Wattzup design system</title>
-<meta name="description" content="When to interrupt with a dialog and when to veil the ride instead.">
+<title>Dialogs and overlays — Telo Ride design system</title>
+<meta name="description" content="When Telo Ride uses a dialog, an anchored popover, a bottom sheet, a page or a non-modal overlay (Diagnostics, Send feedback, Leave this ride?, Lost the bike), with stacking order, scrims, inert backgrounds and mobile sheets.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Pattern page layout helpers: tokens only. Product components come from components.css. */
+.ds-section > ul { list-style: disc; }
+.ds-section > ol { list-style: decimal; }
+.pt-frame { width: 100%; border: var(--border-width-hairline) solid var(--color-border-default); border-radius: var(--radius-lg); overflow: hidden; background: var(--color-ink); color: var(--color-fg); }
+.pt-frame .app { height: auto; min-height: 0; }
+.pt-pad { padding: var(--space-6) var(--space-5); }
+.pt-stack { display: flex; flex-direction: column; gap: var(--space-4); width: 100%; min-width: 0; }
+.pt-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.pt-grid { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); width: 100%; align-items: start; }
+.pt-tag { display: block; font: var(--text-overline); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-fg-subtle); margin-bottom: var(--space-2); }
+.pt-flow { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); font: var(--text-body-sm); }
+.pt-flow li { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0; }
+.pt-flow li + li::before { content: "→"; color: var(--color-fg-subtle); }
+.pt-flow b { padding: var(--space-1) var(--space-2-5); border-radius: var(--radius-md); background: var(--color-raised); color: var(--color-fg); font-weight: var(--font-weight-medium); }
+.pt-flow b[aria-current] { background: var(--color-accent-subtle); color: var(--color-fg-accent); }
+.pt-panel { width: 100%; max-width: 25rem; }
+.pt-stage-xl { min-height: 40rem; }
+.pt-note { font: var(--text-caption); color: var(--color-fg-muted); }
+.pt-stage-leave { min-height: 24rem; }
+/* Links inside product compositions keep the component's own colour, not the docs link style */
+:where(.pt-frame, .ds-stage, .pt-reset) a { color: inherit; text-decoration: none; }
+:where(.pt-frame, .ds-stage, .pt-reset) a:hover { color: inherit; }
+
+/* absolutely positioned visually-hidden text must stay inside the matrix scroller */
+.ds-matrix { position: relative; }
+.pt-list { list-style: decimal; padding-left: var(--space-6); }
+.pt-list > li + li { margin-top: var(--space-2); }
+.pt-list { margin-bottom: var(--space-4); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +58,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,79 +112,318 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Pattern</p>
       <h1>Dialogs and overlays</h1>
-      <p class="ds-lead">Dialogs confirm consequential actions; the overlay panel covers the ride while the bike cannot be reached.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span></div>
-      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#when">When to use</a></li><li><a href="#structure">Structure</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#sources">Sources</a></li></ul>
+      <p class="ds-lead">Three things in Telo Ride open on top of a screen. Diagnostics is a centred dialog; Send feedback is a popover under its button that becomes a bottom sheet on phones; Leave this ride? is a confirmation anchored to Library. Lost the bike, Paused and the 3-2-1 are overlays, not dialogs: they cover the ride but ask nothing.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#when">When to use</a></li><li><a href="#structure">Structure</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive behaviour</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>Confirm with a <a href="../components/dialog.html">dialog</a> only when an action loses the ride (End, Replace). Show read-only detail (Diagnostics) in a dialog opened on request. When the bike state stops the ride use the <a href="../components/overlay-panel.html">overlay panel</a>, which keeps the bar and panel reachable. In Angular, dialogs are CDK Dialog; never hand-rolled.</p>
-    </section>
-    <section class="ds-section" id="when"><h2><a href="#when">When to use</a></h2>
-<ul><li>End ride, Replace ride: dialog.</li><li>Diagnostics: read-only dialog.</li><li>Lost the bike, connect your bike, Bluetooth off, ended: overlay panel.</li><li>Editing anything: never a dialog with inline fields — navigate to setup.</li></ul>
-    </section>
-    <section class="ds-section" id="structure"><h2><a href="#structure">Structure</a></h2>
-<div class="ds-example"><div class="ds-example__canvas "><div class="dialog dialog--static" role="dialog" aria-modal="false" aria-label="End this ride?"><div class="dialog__panel dialog__panel--sm"><div class="dialog__header"><div class="dialog__icon dialog__icon--danger" aria-hidden="true"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></div><div class="dialog__heading"><h3 class="dialog__title">End this ride?</h3><p class="dialog__desc">You're 7:07 into 12:40. Wattzup leaves the bike at level 18.</p></div><button class="btn btn--ghost btn--icon" type="button" aria-label="Close"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="dialog__body"></div><div class="dialog__footer"><button class="btn" type="button">Keep riding</button><button class="btn btn--danger" type="button">End ride</button></div></div></div></div><div class="ds-example__caption"><span>End this ride?</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="dialog dialog--static" role="dialog" aria-modal="false" aria-label="End this ride?"&gt;
-&lt;div class="dialog__panel dialog__panel--sm"&gt;
-&lt;div class="dialog__header"&gt;
-&lt;div class="dialog__icon dialog__icon--danger" aria-hidden="true"&gt;
-&lt;svg class="icon" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;rect x="5" y="5" width="14" height="14" rx="2"/&gt;
-&lt;/svg&gt;
-&lt;/div&gt;
-&lt;div class="dialog__heading"&gt;
-&lt;h3 class="dialog__title"&gt;End this ride?&lt;/h3&gt;
-&lt;p class="dialog__desc"&gt;You're 7:07 into 12:40. Wattzup leaves the bike at level 18.&lt;/p&gt;
-&lt;/div&gt;
-&lt;button class="btn btn--ghost btn--icon" type="button" aria-label="Close"&gt;
-&lt;svg class="icon" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;path d="M6 6l12 12M18 6 6 18"/&gt;
-&lt;/svg&gt;
-&lt;/button&gt;
-&lt;/div&gt;
-&lt;div class="dialog__body"&gt;
-&lt;/div&gt;
-&lt;div class="dialog__footer"&gt;
-&lt;button class="btn" type="button"&gt;Keep riding&lt;/button&gt;
-&lt;button class="btn btn--danger" type="button"&gt;End ride&lt;/button&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<ul><li><b>Default</b> — safe button focused.</li><li><b>Busy</b> — every button disabled, focus on the dialog.</li><li><b>Failed</b> — danger alert at the top of the body, Try again.</li></ul>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive</a></h2>
-<ul><li>Bottom sheet below 640px, centred from 640px.</li></ul>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<ul><li>APG modal dialog: focus trapped, <code>Esc</code> closes as the safe action, focus returns to the trigger, page behind is <code>inert</code>.</li><li>Overlay panel: <code>role="alert"</code> or <code>status</code>; not modal.</li></ul>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Title is the question; buttons name outcomes.</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><div class="dialog dialog--static" role="dialog" aria-modal="false" aria-label="End this ride?"><div class="dialog__panel dialog__panel--sm"><div class="dialog__header"><div class="dialog__icon dialog__icon--danger" aria-hidden="true"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></div><div class="dialog__heading"><h3 class="dialog__title">End this ride?</h3><p class="dialog__desc">You're 7:07 into 12:40. Wattzup leaves the bike at level 18.</p></div><button class="btn btn--ghost btn--icon" type="button" aria-label="Close"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="dialog__body"></div><div class="dialog__footer"><button class="btn" type="button">Keep riding</button><button class="btn btn--danger" type="button">End ride</button></div></div></div></div><figcaption>Named outcomes.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><div class="dialog dialog--static" role="dialog" aria-modal="false" aria-label="Are you sure?"><div class="dialog__panel dialog__panel--sm"><div class="dialog__header"><div class="dialog__icon dialog__icon--danger" aria-hidden="true"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></svg></div><div class="dialog__heading"><h3 class="dialog__title">Are you sure?</h3><p class="dialog__desc">This cannot be undone.</p></div><button class="btn btn--ghost btn--icon" type="button" aria-label="Close"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="dialog__body"></div><div class="dialog__footer"><button class="btn" type="button">No</button><button class="btn btn--danger" type="button">Yes</button></div></div></div></div><figcaption>Yes / No.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from:</p><ul><li><a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a></li><li><a href="../../mocks/dialogs/replace-ride/default.html">dialogs/replace-ride/default</a></li><li><a href="../../mocks/dialogs/diagnostics/default.html">dialogs/diagnostics/default</a></li><li><a href="../../mocks/pages/ride/disconnected.html">pages/ride/disconnected</a></li></ul>
+      <p>A layer interrupts. Telo Ride keeps interruptions small and close to what caused them: a popover opens under the button that opened it, so the rider's eyes don't travel and the ride stays visible around it. Only Diagnostics, which has nothing to do with any spot on the screen, opens in the middle. Any modal layer opened mid-ride pauses the ride first, and the copy says so.</p>
+      <p>Components used: <a href="../components/dialog.html">Dialog</a>, <a href="../components/popover.html">Popover</a>, <a href="../components/hud-panel.html">HUD panel</a>, <a href="../components/countdown.html">Countdown</a>, <a href="../components/switch.html">Switch</a>, <a href="../components/description-list.html">Description list</a>, <a href="../components/button.html">Button</a> and <a href="../components/tooltip.html">Tooltip</a>.</p>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="when"><h2><a href="#when">When to use</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Use</th><th scope="col">When</th><th scope="col">In Telo Ride</th></tr></thead>
+        <tbody>
+          <tr><td><b>Dialog</b> (centred, modal)</td><td>Content about the app as a whole, not one spot on the screen; something to read or inspect, possibly scrolling.</td><td>Diagnostics (from Profile's bike row and the ride header's status)</td></tr>
+          <tr><td><b>Anchored popover</b> (modal)</td><td>A short task or decision started by a header button. The rider keeps the screen in view.</td><td>Leave this ride? (under Library), Send feedback (under Feedback, from 640px)</td></tr>
+          <tr><td><b>Bottom sheet</b></td><td>The popover's form on phones, where an anchored panel would not fit beside its button.</td><td>Send feedback below 640px</td></tr>
+          <tr><td><b>Page</b></td><td>Anything with its own address, several sections, or a long scroll; anything the rider might come back to.</td><td>Custom Setup, Results, Class Start (all pages, never dialogs)</td></tr>
+          <tr><td><b>Overlay</b> (non-modal layer)</td><td>A state of the screen underneath: it stopped, paused, or is about to start. No decision, no Esc.</td><td>Lost the bike, Paused on Cathedral Circuit, the 3-2-1 countdown, Connect your bike</td></tr>
+          <tr><td><b>Tooltip</b> (<code>title</code>)</td><td>A name for an icon-only control, never information the rider needs.</td><td>Full screen, Diagnostics</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="structure"><h2><a href="#structure">Structure</a></h2>
+      <h3>Dialog: Diagnostics</h3>
+      <p>A scrim, a centring layer with padding, and the panel: a title bar with a close button, a body that scrolls inside the panel when the screen is short, and sections split by hairlines.</p>
+      <div class="ds-stage pt-stage-xl">
+        <div class="ds-stage__page"><p>Profile · Settings</p></div>
+        <div class="scrim"></div>
+        <div class="diagnostics-layer">
+          <div class="diagnostics" role="dialog" aria-labelledby="ex-diag-title">
+            <header class="diagnostics__header">
+              <h4 class="diagnostics__title" id="ex-diag-title">Diagnostics</h4>
+              <button class="diagnostics__close" type="button" aria-label="Close diagnostics"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+            </header>
+            <div class="diagnostics__body">
+              <dl class="diagnostics__facts">
+                <dt>Browser</dt><dd>Chrome 126 · macOS 14.5</dd>
+                <dt>Web Bluetooth</dt><dd data-tone="ok">Available</dd>
+                <dt>Page</dt><dd>https://ride.telo.app/ride</dd>
+                <dt>Bike</dt><dd>Echelon EX-5s · 0bf669f1</dd>
+                <dt>Connection</dt><dd>Connected · 6m 52s</dd>
+                <dt>Last command</dt><dd>RES 8 · plan · ack 41 ms</dd>
+                <dt>App version</dt><dd>2.0.0 · client 7f3c2a1</dd>
+              </dl>
+              <p class="diagnostics__privacy"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 16h.01"/><path d="M2.212 11.577a2 2 0 0 0-.212.896V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5.527a2 2 0 0 0-.212-.896L18.55 5.11A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><path d="M21.946 12.013H2.054"/><path d="M6 16h.01"/></svg>Everything here is read in your browser and stays on this device until you download it.</p>
+              <div class="diagnostics__log">
+                <div class="diagnostics__switch-row">
+                  <span class="diagnostics__switch-text"><span class="diagnostics__switch-label" id="ex-log-label">Log every packet</span><span class="diagnostics__switch-detail" id="ex-log-detail">Records each Bluetooth message, not just the commands we send. Turn on while reproducing a problem — it uses memory.</span></span>
+                  <button class="switch" type="button" role="switch" aria-checked="false" aria-labelledby="ex-log-label" aria-describedby="ex-log-detail"></button>
+                </div>
+                <div class="diagnostics__well">
+                  <span class="diagnostics__count"><span class="diagnostics__count-figure">212</span><span class="diagnostics__count-unit"> commands · 20 KB</span></span>
+                  <button class="btn btn--raised btn--sm diagnostics__download" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>Download packet log</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="pt-note">dialogs/diagnostics/default, shortened. The background is <code>inert</code> and dimmed by <code>--color-scrim</code>.</p>
+
+      <h3>Anchored popover: Send feedback</h3>
+      <p>The popover hangs under its trigger, right-aligned, 25rem wide. From 640px its scrim is transparent: it still catches a click outside, but the ride stays fully visible. The trigger shows <code>aria-expanded="true"</code> and its raised fill while the popover is open.</p>
+      <div class="ds-stage pt-stage-xl">
+        <div class="scrim feedback-scrim"></div>
+        <div class="ride-header" style="position: relative; z-index: var(--z-modal);">
+          <span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span>
+          <div class="ride-header__menu" style="margin-left: auto;">
+            <button class="ride-header__link ride-header__link--feedback" type="button" aria-haspopup="dialog" aria-expanded="true" aria-controls="ex-fb-pop"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/><path d="M12 8v6"/><path d="M9 11h6"/></svg>Feedback</button>
+            <div class="feedback-popover" id="ex-fb-pop">
+              <section class="feedback" role="dialog" aria-labelledby="ex-fbp-title">
+                <header class="feedback__head"><h4 class="feedback__title" id="ex-fbp-title">Send feedback</h4><button class="feedback__close" type="button" aria-label="Close feedback"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></header>
+                <div class="feedback__form">
+                  <div class="feedback__kinds" role="radiogroup" aria-label="Type of feedback">
+                    <button class="feedback__kind feedback__kind--bug" type="button" role="radio" aria-checked="false" tabindex="-1"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20v-9"/><path d="M14 7a4 4 0 0 1 4 4v3a6 6 0 0 1-12 0v-3a4 4 0 0 1 4-4z"/><path d="M14.12 3.88 16 2"/><path d="M21 21a4 4 0 0 0-3.81-4"/><path d="M21 5a4 4 0 0 1-3.55 3.97"/><path d="M22 13h-4"/><path d="M3 21a4 4 0 0 1 3.81-4"/><path d="M3 5a4 4 0 0 0 3.55 3.97"/><path d="M6 13H2"/><path d="m8 2 1.88 1.88"/><path d="M9 7.13V6a3 3 0 1 1 6 0v1.13"/></svg>Bug</button>
+                    <button class="feedback__kind feedback__kind--idea" type="button" role="radio" aria-checked="false" tabindex="-1"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>Improvement</button>
+                    <button class="feedback__kind feedback__kind--kudos" type="button" role="radio" aria-checked="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/><path d="M7 10v12"/></svg>Kudos</button>
+                  </div>
+                  <label class="feedback__label" for="ex-fbp-message">What’s working for you?</label>
+                  <textarea class="feedback__message" id="ex-fbp-message" rows="3" placeholder="e.g. The resistance landing on the beat makes the HIIT videos so much better."></textarea>
+                </div>
+                <footer class="feedback__footer"><p class="feedback__note">Context is sent with your note.</p><button class="btn btn--primary feedback__send" type="button">Send kudos</button></footer>
+              </section>
+            </div>
+          </div>
+        </div>
+        <div class="ds-stage__page"><p>Power 107 W · Cadence 73 rpm · Recover, round 1 of 8</p></div>
+      </div>
+      <p class="pt-note">dialogs/feedback/kudos. Below 640px the same panel is a bottom sheet over a dim scrim (see Responsive).</p>
+
+      <h3>Overlay: a state, not a question</h3>
+      <div class="pt-grid">
+        <div>
+          <div class="ds-stage">
+            <img class="photo" src="../assets/images/worlds/oldtown.jpg" alt="" style="position: absolute; inset: 0;">
+            <div class="race-paused" role="status">
+              <div class="race-paused__card">
+                <div class="race-paused__title">Paused on Cathedral Circuit</div>
+                <div class="race-paused__body">The world holds still until you pedal again.</div>
+              </div>
+            </div>
+          </div>
+          <p class="pt-note">Paused: a glass card, no buttons (Resume is in the header), no scrim. race/paused.</p>
+        </div>
+        <div>
+          <div class="ds-stage">
+            <div class="ds-stage__page"><p>30 Minute HIIT Cardio · Group · 9 riders</p></div>
+            <div class="class-lost" role="alert" aria-labelledby="ex-lost2">
+              <div class="class-lost__card">
+                <svg class="icon icon--2xl class-lost__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg>
+                <h4 class="class-lost__title" id="ex-lost2">Lost the bike</h4>
+                <p class="class-lost__body">The class keeps going. Pedal to wake the bike and you’ll rejoin where everyone is.</p>
+                <button class="btn btn--primary class-lost__action" type="button">Reconnect</button>
+              </div>
+            </div>
+          </div>
+          <p class="pt-note">Lost the bike: ink at 85% over the region, one action. class-ride/disconnected.</p>
+        </div>
+      </div>
+
+      <h3>Stacking</h3>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Layer</th><th scope="col">Token</th><th scope="col">What sits there</th></tr></thead>
+        <tbody>
+          <tr><td>HUD</td><td><code>--z-hud</code> (20)</td><td>Race HUD panels over the 3D world; the transparent catch-all under a header popover</td></tr>
+          <tr><td>Sticky</td><td><code>--z-sticky</code> (30)</td><td>Headers; Leave this ride? inside its header</td></tr>
+          <tr><td>Dropdown</td><td><code>--z-dropdown</code> (35)</td><td>Menus</td></tr>
+          <tr><td>Overlay</td><td><code>--z-overlay</code> (40)</td><td>Scrims; Lost the bike; Paused</td></tr>
+          <tr><td>Modal</td><td><code>--z-modal</code> (50)</td><td>Diagnostics, Send feedback, the layer that anchors Leave this ride?</td></tr>
+          <tr><td>Popover</td><td><code>--z-popover</code> (55)</td><td>A popover opened from inside a modal</td></tr>
+          <tr><td>Toast</td><td><code>--z-toast</code> (60)</td><td>Toasts stay readable above anything</td></tr>
+          <tr><td>Tooltip</td><td><code>--z-tooltip</code> (70)</td><td>Tooltips, the skip link</td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li><b>One modal at a time.</b> Opening Library while Feedback is open closes Feedback first; Diagnostics never opens over another dialog.</li>
+        <li><b>A modal beats an overlay.</b> If the bike drops while Feedback is open, Feedback stays on top and Lost the bike waits underneath; closing Feedback reveals it.</li>
+        <li><b>Toasts float above modals</b> but never cover the dialog's primary action.</li>
+      </ul>
+      <h3>Scrims and inert</h3>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Scrim</th><th scope="col">Token</th><th scope="col">Used for</th></tr></thead>
+        <tbody>
+          <tr><td>Dim</td><td><code>--color-scrim</code></td><td>Centred dialogs; bottom sheets</td></tr>
+          <tr><td>Transparent</td><td><code>transparent</code> (still a <code>.scrim</code>)</td><td>Anchored popovers from 640px: catches outside clicks, keeps the ride visible</td></tr>
+          <tr><td>Heavy</td><td><code>--color-scrim-strong</code>, ink at 85–90%</td><td>Overlays: the content behind stays visible as shapes but can't be read or used</td></tr>
+        </tbody>
+      </table></div>
+      <p>Behind any modal layer, the rest of the app is wrapped in <code>inert</code> (the mocks also add <code>aria-hidden="true"</code>). A native <code>&lt;dialog&gt;</code> opened with <code>showModal()</code> does this for you; use it where the anchoring allows.</p>
+      <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div inert aria-hidden="true"&gt;…the app…&lt;/div&gt;
+&lt;div class="scrim"&gt;&lt;/div&gt;
+&lt;div class="diagnostics-layer"&gt;
+  &lt;main id="main" class="diagnostics" role="dialog" aria-modal="true" aria-labelledby="diagnostics-title"&gt;
+    &lt;header class="diagnostics__header"&gt;
+      &lt;h1 class="diagnostics__title" id="diagnostics-title"&gt;Diagnostics&lt;/h1&gt;
+      &lt;button class="diagnostics__close" type="button" aria-label="Close diagnostics"&gt;…&lt;/button&gt;
+    &lt;/header&gt;
+    &lt;div class="diagnostics__body"&gt;…&lt;/div&gt;
+  &lt;/main&gt;
+&lt;/div&gt;</code></pre></details>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Layer</th><th scope="col">Opens with</th><th scope="col">Closes with</th><th scope="col">States drawn</th></tr></thead>
+        <tbody>
+          <tr><td>Diagnostics</td><td>Profile's bike row; the ride header's bike status</td><td>×, <kbd>Esc</kbd>, a click on the scrim</td><td>default, packets (Log every packet on), no-bike, bluetooth-off</td></tr>
+          <tr><td>Send feedback</td><td>Feedback in the custom ride header (the ride pauses)</td><td>×, <kbd>Esc</kbd>, a click outside, Done. The note is kept until the ride ends.</td><td>default (bug), idea, kudos, sending, sent</td></tr>
+          <tr><td>Leave this ride?</td><td>Library in the custom ride header (the ride pauses)</td><td>Save ride and open library, Discard and open library, Keep riding; <kbd>Esc</kbd> and a click outside both mean Keep riding</td><td>default</td></tr>
+          <tr><td>Lost the bike</td><td>The bike stops answering</td><td>Only by reconnecting</td><td>race, class ride, custom ride</td></tr>
+          <tr><td>Paused</td><td>Pause (solo only)</td><td>Resume, or pedalling</td><td>race/paused, class-ride/paused, custom-ride/paused</td></tr>
+          <tr><td>3-2-1</td><td>Everyone ready, or the lobby clock runs out</td><td>Go: the race opens</td><td>race-lobby/countdown</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Trigger states</h3>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Trigger</th><th scope="col">Closed</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Open</th></tr></thead>
+        <tbody><tr><th scope="row">Header popover</th>
+          <td><button class="ride-header__link ride-header__link--strong" type="button" aria-haspopup="dialog" aria-expanded="false"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</button></td>
+          <td><button class="ride-header__link ride-header__link--strong" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="hover" style="background: var(--color-raised); color: var(--color-fg);"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</button></td>
+          <td><button class="ride-header__link ride-header__link--strong" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</button></td>
+          <td><button class="ride-header__link ride-header__link--strong" type="button" aria-haspopup="dialog" aria-expanded="true"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</button></td>
+        </tr></tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Layer</th><th scope="col">360</th><th scope="col">640 and up</th></tr></thead>
+        <tbody>
+          <tr><td>Generic <code>.dialog</code></td><td>Bottom sheet: full width, top corners rounded, at most 90vh, scrolls inside.</td><td>Centred, <code>min(--dialog-width, 100vw − 2rem)</code> wide, all corners rounded.</td></tr>
+          <tr><td>Diagnostics</td><td>Centred with 16px around it; the body scrolls inside when the screen is short.</td><td>32px around it; at most <code>--diagnostics-max-width</code> (460px).</td></tr>
+          <tr><td>Send feedback</td><td>Bottom sheet over a dim scrim, top corners <code>--radius-2xl</code>.</td><td>A 25rem popover under the Feedback button, right-aligned, transparent scrim.</td></tr>
+          <tr><td>Leave this ride?</td><td>Fixed just under the header, inside the 20px gutters, at most 20rem.</td><td>A 20rem popover under Library, left-aligned to it.</td></tr>
+          <tr><td>Overlays</td><td colspan="2">Cover their region at every width; the card is centred, at most 24rem, with 24px side padding.</td></tr>
+        </tbody>
+      </table></div>
+      <p>A sheet keeps its primary action in view: the footer sits at the bottom of the sheet, inside the thumb's reach. Heights use <code>dvh</code> so mobile browser bars don't hide it.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <p>Diagnostics, Send feedback and Leave this ride? follow the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/">WAI-ARIA dialog (modal) pattern</a>: <code>role="dialog"</code>, <code>aria-modal="true"</code>, <code>aria-labelledby</code> pointing at the visible title, a trigger with <code>aria-haspopup="dialog"</code> and <code>aria-expanded</code>. Overlays are not dialogs: Lost the bike is <code>role="alert"</code>, Paused is <code>role="status"</code>, the 3-2-1 is <code>role="timer"</code> with <code>aria-live="assertive"</code>.</p>
+      <h3>Keyboard</h3>
+      <table class="ds-table ds-keys">
+        <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Cycle through the dialog's controls only; focus can't reach the inert page.</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td>Close Diagnostics or Send feedback; in Leave this ride? it means Keep riding. Does nothing on an overlay.</td></tr>
+          <tr><td><kbd>Enter</kbd> / <kbd>Space</kbd></td><td>Press the focused button.</td></tr>
+        </tbody>
+      </table>
+      <h3>Focus</h3>
+      <ul>
+        <li>On open, focus goes to the first thing the rider will want: Send feedback → the message box; Leave this ride? → <em>Save ride and open library</em> (never the destructive choice); Diagnostics → its close button.</li>
+        <li>On close, focus returns to the trigger (Feedback, Library, the bike status).</li>
+        <li>When an overlay appears mid-ride, focus moves to its action if it has one (Reconnect) and returns when it lifts.</li>
+      </ul>
+      <h3>Labelling</h3>
+      <p>Close buttons name their dialog: “Close diagnostics”, “Close feedback”. Each dialog has exactly one visible title, which is its accessible name.</p>
+      <h3>Contrast</h3>
+      <div class="pt-stack" style="gap: var(--space-2);">
+        <div class="ds-pair" style="--pair-fg: var(--color-fg); --pair-bg: var(--color-panel);"><span>Dialog title on panel</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-panel" data-min="4.5"></span></div>
+        <div class="ds-pair" style="--pair-fg: var(--color-muted); --pair-bg: var(--color-panel);"><span>Fact labels and body on panel</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+        <div class="ds-pair" style="--pair-fg: var(--color-faint); --pair-bg: var(--color-panel);"><span>Privacy note and file name on panel</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-panel" data-min="4.5"></span></div>
+      </div>
+      <p>Panels are told apart from the page by their border and <code>--shadow-4</code>, not by colour alone, so they hold up in forced colours.</p>
+      <h3>Motion</h3>
+      <p>Panels open over <code>--duration-base</code> (200ms) with <code>--ease-panel</code>; under reduced motion they appear at once. Overlays never animate in. The 3-2-1 keeps its one-second steps under reduced motion (it is a timer) but drops the scale.</p>
+      <h3>Touch</h3>
+      <p>Close buttons are 32px (above the 24px minimum). The sheet's footer button is 36px; Leave this ride?'s actions are 40px and stack full width.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li><b>Titles name the thing or ask the question</b>: “Diagnostics”, “Send feedback”, “Leave this ride?”. A confirmation title is a question ending in “?”.</li>
+        <li><b>The body states the stakes and what is happening meanwhile</b>: “You’re 6:52 in with 2.24 km ridden. The ride is paused while you decide.”</li>
+        <li><b>Actions name outcomes</b>: “Save ride and open library”, “Discard and open library”, “Keep riding”. Never OK and Cancel.</li>
+        <li><b>A switch row explains its cost</b>: “Turn on while reproducing a problem — it uses memory.”</li>
+        <li><b>Privacy is stated where data is shown</b>: “Everything here is read in your browser and stays on this device until you download it.”</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><p class="pt-note">Leave this ride? hangs under Library; the ride's numbers stay visible around it.</p></div><figcaption>A small decision opens next to the button that asked for it.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><p class="pt-note">A centred modal with a dark scrim over the whole dashboard for three buttons.</p></div><figcaption>Hides the ride and moves the rider's eyes for a decision that fits in a popover.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><p class="pt-note">Custom Setup is a page at /profile/custom with Close in its header.</p></div><figcaption>Long, sectioned work gets a page: an address, a scroll, a way back.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><p class="pt-note">Custom Setup squeezed into a dialog over Profile.</p></div><figcaption>A scrolling dialog with steppers, sliders and a video player: no address, no room, and easy to lose by tapping outside.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><p class="pt-note">Library pressed while Feedback is open: Feedback closes, Leave this ride? opens.</p></div><figcaption>One modal layer at a time.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><p class="pt-note">Diagnostics stacked over Send feedback, opened from its “Attached from Ride” link.</p></div><figcaption>Dialogs on dialogs: two focus traps, two Esc presses, one confused rider.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <p>Mocks this pattern was extracted from:</p>
+      <ul>
+        <li><a href="../../mocks/dialogs/diagnostics/default.html">dialogs/diagnostics/default</a>, <a href="../../mocks/dialogs/diagnostics/packets.html">packets</a>, <a href="../../mocks/dialogs/diagnostics/no-bike.html">no-bike</a>, <a href="../../mocks/dialogs/diagnostics/bluetooth-off.html">bluetooth-off</a></li>
+        <li><a href="../../mocks/dialogs/feedback/default.html">dialogs/feedback/default</a>, <a href="../../mocks/dialogs/feedback/kudos.html">kudos</a>, <a href="../../mocks/dialogs/feedback/sent.html">sent</a></li>
+        <li><a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a></li>
+        <li><a href="../../mocks/pages/race/paused.html">pages/race/paused</a>, <a href="../../mocks/pages/race-lobby/countdown.html">pages/race-lobby/countdown</a>, <a href="../../mocks/pages/class-ride/disconnected.html">pages/class-ride/disconnected</a></li>
+      </ul>
+      <p>Drift found while extracting:</p>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Mock</th><th scope="col">Issue</th><th scope="col">Resolution</th></tr></thead>
+        <tbody>
+          <tr><td>dialogs/end-ride, dialogs/feedback</td><td>The popover is placed by laying the header out a second time, invisibly (<code>.ride-header--ghost</code>), because a static page can't anchor to the real button.</td><td>A mock device only. The product renders the popover inside the real <code>.ride-header__menu</code> and makes the page behind <code>inert</code>.</td></tr>
+          <tr><td>dialogs/diagnostics, dialogs/feedback</td><td>Close is an <code>&lt;a&gt;</code> back to the page underneath.</td><td>A <code>&lt;button&gt;</code> that closes the layer and returns focus.</td></tr>
+          <tr><td>dialogs/feedback/idea, kudos</td><td>The message keeps the bug text (“Resistance stayed at L8…”) after switching to Improvement or Kudos, under a kudos label.</td><td>Switching kind keeps the rider's own text; the example shows the empty kudos field with its placeholder.</td></tr>
+          <tr><td>dialogs/*</td><td><code>--shadow-diagnostics</code> and <code>--feedback-shadow</code> were separate values.</td><td>Both alias <code>--shadow-4</code> (already in tokens.css).</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

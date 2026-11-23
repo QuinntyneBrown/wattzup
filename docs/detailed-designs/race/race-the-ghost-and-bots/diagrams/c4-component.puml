@@ -1,0 +1,32 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Race the ghost and bots
+Container_Boundary(app, "Ride app") {
+  Component(engine, "RaceEngine", "Service · domain/engine", "Advances the field each second")
+  Component(factory, "RaceFieldFactory", "Service · domain/engine", "Field for the race mode")
+  Component(bots, "BotPack", "RaceField · domain/engine", "Nine bots")
+  Component(pace, "BotPaceModel / SeededRandom", "Services · domain/engine", "Base + drift + swing; deterministic")
+  Component(ghost, "GhostReplay", "RaceField · domain/engine", "Best ride, second by second")
+  Component(remote, "RemoteField", "RaceField · domain/engine", "Positions from the service")
+  Component(gapi, "GhostApi", "HTTP client · api", "GET /api/maps/{mapId}/best-ride")
+  Component(gcache, "GhostCache", "Service · domain/storage", "Ghost traces in IndexedDB")
+  Component(session, "RaceSessionStore", "Route-scoped store · ride", "StandingsUpdated")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(ctrl, "MapsController", "ASP.NET Core controller · Telo.Ride.Api", "GET best-ride")
+  Component(qh, "GetBestRideQueryHandler", "MediatR handler · Telo.Ride.Application", "Caller's fastest ride trace")
+  Component(space, "BotPaceModel", "Domain service · Telo.Ride.Domain", "Same model for service bots")
+}
+Rel(engine, factory, "Builds field")
+Rel(factory, bots, "Bots race")
+Rel(factory, ghost, "Solo race")
+Rel(factory, remote, "Riders online")
+Rel(bots, pace, "Uses")
+Rel(ghost, pace, "Medium pace with no best")
+Rel(ghost, gapi, "Reads trace")
+Rel(ghost, gcache, "Caches, offline fallback")
+Rel(remote, session, "Reads positions")
+Rel(gapi, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, qh, "Sends GetBestRideQuery")
+@enduml

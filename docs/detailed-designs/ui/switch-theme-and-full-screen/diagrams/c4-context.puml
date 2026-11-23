@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Switch theme and full screen
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(device, "Rider's device and browser", "Colour-scheme preference; Fullscreen API")
+Rel(rider, device, "Sets the colour scheme of")
+Rel(telo, device, "Reads prefers-color-scheme and requests full screen from")
+Rel(rider, telo, "Presses Full screen in")
+@enduml

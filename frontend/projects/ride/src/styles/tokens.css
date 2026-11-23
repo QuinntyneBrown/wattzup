@@ -1,0 +1,633 @@
+/* tokens.css — copied from docs/design-system/tokens/tokens.css; the @font-face rules live in fonts.css.
+   Change the design system first, then copy it here. */
+/* tokens.css — Telo Ride design system. The single source of truth for every colour, size,
+   weight, radius, shadow, duration and layer. Extracted from docs/mocks (Magic Patterns OS
+   vnjsCrjBAfcZGnW9rHMoch, prototype "Ride") on 2026-11-21.
+
+   Tiers
+     Primitive  --palette-*                      raw values; only semantic tokens read them
+     Semantic   --color-*, --text-*, --space-*…   what components and pages read; themes override these
+     Component  --btn-*, --field-*, --dialog-*…   declared in assets/components.css, alias semantic tokens
+
+   Two names for one decision. The design's own theme names (--color-ink, --color-panel,
+   --color-volt…, the Tailwind theme in Magic Patterns: bg-ink, text-volt) are the canonical
+   semantic tokens. The role names (--color-bg-canvas, --color-fg-muted, --color-danger-fg…)
+   alias them, so documentation, tooling and anyone new can read the system by role.
+
+   Themes
+     Telo Ride is dark unless the device asks for light (L2-143): the served page carries no
+     data-theme, so its first paint follows prefers-color-scheme, and the app then sets the
+     rider's choice. Light is an addition (the design draws dark only). :root carries the light values so tooling that
+     reads :root as light keeps working; [data-theme="dark"] and its prefers-color-scheme twin
+     (byte-identical, keep them so) carry dark. Every token that changes with the theme is
+     declared on the theme selectors themselves, and the role aliases on ':root, [data-theme]',
+     so a nested <div data-theme="light"> re-resolves everything inside it. */
+
+/* 1. Fonts (bundled under assets/fonts; no network) ------------------------------------------ */
+
+/* 2. Primitives and theme-independent scales ------------------------------------------------- */
+:root {
+  /* Dark primitives: the design's palette */
+  --palette-ink: #0a0b0d;
+  --palette-panel: #15171b;
+  --palette-raised: #22252b;
+  --palette-line: #2a2e35;
+  --palette-steel: #636873; /* the design's "faint" (#636873): now strong borders and disabled text */
+  --palette-bone: #f3f0ea;
+  --palette-muted: #9ba1ab;
+  --palette-faint: #878d97; /* tertiary text, raised from #636873 (3.2:1) to pass 4.5:1 on raised */
+  --palette-signal: #ff4521; /* Telo signal orange; the design calls it "volt" */
+  --palette-signal-hover: #ff6a4b;
+  --palette-signal-bright: #ff5233; /* signal text on dark surfaces: 4.76:1 on raised, where #ff4521 gives 4.48 */
+  --palette-signal-dim: #b8361c;
+  --palette-blue: #2e8bff;
+  --palette-red: #e5194b;
+  --palette-red-light: #ff5a78; /* danger text on dark; #e5194b reads 3.9:1 on panels */
+  --palette-amber: #f5a524;
+  --palette-gold: #f5c451;
+  --palette-green: #34d399; /* Tailwind emerald-400: success ticks and "connected" dots */
+  --palette-lime: #d6ff3b; /* RideTrace playhead */
+  --palette-slate: #5b616a; /* warm-up and cool-down segments (KIND_COLOR in shared/workout.ts) */
+  --palette-white: #ffffff;
+  --palette-black: #000000;
+
+  /* Light primitives (an addition; the design draws dark only) */
+  --palette-paper: #f6f4ef;
+  --palette-paper-panel: #ffffff;
+  --palette-paper-raised: #ebe8e1;
+  --palette-paper-line: #d9d5cc;
+  --palette-paper-steel: #7d828c;
+  --palette-paper-muted: #575c66;
+  --palette-paper-faint: #63686f; /* raised from #7d828c (3.5:1) to pass 4.5:1 on paper */
+  --palette-signal-deep: #c4310f;
+  --palette-signal-deeper: #a3290c;
+  --palette-gold-deep: #8a6100;
+  --palette-blue-deep: #1263cc;
+  --palette-red-deep: #b5103a;
+  --palette-amber-deep: #8f5a00;
+  --palette-green-deep: #04704f;
+
+  /* Theme-independent colour roles */
+  --color-volt: var(--palette-signal); /* "you" and the primary action, both themes */
+  --color-volt-hover: var(--palette-signal-hover);
+  --color-volt-dim: var(--palette-signal-dim);
+  --color-rest: var(--palette-blue); /* recoveries, rest segments */
+  --color-heart: var(--palette-red); /* heart rate, danger, disconnected (fills) */
+  --color-warn: var(--palette-amber); /* warnings, streak flame */
+  --color-gold: var(--palette-gold); /* earned things only: XP, levels, stars, unlocks */
+  --color-ok: var(--palette-green); /* success ticks */
+  --color-plan-easy: var(--palette-slate); /* warm-up and cool-down in every plan chart */
+  --color-video: var(--palette-black); /* behind a video player */
+  --color-glass: rgb(
+    10 11 13 / 0.8
+  ); /* HUD glass over the world: ink at 80%, both themes (bone text passes 6.6:1 worst case) */
+  --color-on-photo: var(--palette-bone); /* text on photos and video, both themes */
+
+  /* Rider jerseys: content data from shared/game.ts (a racer's dot and avatar ring) */
+  --jersey-you: var(--palette-signal);
+  --jersey-ghost: var(--palette-gold);
+  --jersey-lena: #ff7a59;
+  --jersey-marco: #59c3ff;
+  --jersey-priya: #ff5ac8;
+  --jersey-jwatts: #7cf2b5;
+  --jersey-ollie: #ffd166;
+  --jersey-kenji: #b28dff;
+  --jersey-ana: #4ee0d0;
+  --jersey-nova: #2e8bff;
+  --jersey-rook: #ff9f6b;
+  --jersey-juno: #6be3ff;
+  --jersey-atlas: #f78fb3;
+  --jersey-kite: #a8e06b;
+  --jersey-vale: #ffcf5c;
+  --jersey-moss: #c3a6ff;
+  --jersey-flint: #7ee0c3;
+  --jersey-echo: #ff7b7b;
+
+  /* Type ------------------------------------------------------------------------------------ */
+  --font-family-sans: 'Inter Tight', ui-sans-serif, system-ui, sans-serif;
+  --font-family-display:
+    'Barlow Condensed', 'Inter Tight', ui-sans-serif, sans-serif; /* numerals and the wide italic */
+  --font-family-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Tailwind's scale (the design's), each step with its paired line height */
+  --font-size-2xs: 0.6875rem;
+  --line-height-2xs: 1rem; /* 11px: XP label, HUD captions only */
+  --font-size-xs: 0.75rem;
+  --line-height-xs: 1rem; /* 12px */
+  --font-size-sm: 0.875rem;
+  --line-height-sm: 1.25rem; /* 14px: the UI's working size */
+  --font-size-md: 1rem;
+  --line-height-md: 1.5rem; /* 16px: body */
+  --font-size-lg: 1.125rem;
+  --line-height-lg: 1.75rem; /* 18px */
+  --font-size-xl: 1.25rem;
+  --line-height-xl: 1.75rem; /* 20px: section titles */
+  --font-size-2xl: 1.5rem;
+  --line-height-2xl: 2rem; /* 24px: page titles on phones */
+  --font-size-3xl: 1.875rem;
+  --line-height-3xl: 2.25rem; /* 30px: page titles */
+  --font-size-4xl: 2.25rem;
+  --line-height-4xl: 2.5rem; /* 36px */
+  --font-size-5xl: 3rem; /* 48px numerals, line height 1 */
+  --font-size-6xl: 3.75rem; /* 60px */
+  --font-size-7xl: 4.5rem; /* 72px: reserved step; no component uses it yet */
+  --font-size-8xl: 6rem; /* 96px: the position on Results, live watts */
+  --font-size-9xl: 8rem; /* 128px: the Results position and live watts from 640px */
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700; /* numerals */
+  --font-weight-black: 800; /* the wide italic */
+
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+
+  --letter-spacing-tight: -0.025em; /* titles (tracking-tight) */
+  --letter-spacing-display: -0.01em; /* numerals and the wide italic */
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em; /* overlines */
+
+  /* Role shorthands (font: var(--text-…)) */
+  --text-display: italic var(--font-weight-black) var(--font-size-6xl) / var(--line-height-none)
+    var(--font-family-display);
+  --text-numeral: var(--font-weight-bold) var(--font-size-5xl) / var(--line-height-none)
+    var(--font-family-display);
+  --text-h1: var(--font-weight-semibold) var(--font-size-3xl) / var(--line-height-3xl)
+    var(--font-family-sans);
+  --text-h2: var(--font-weight-semibold) var(--font-size-2xl) / var(--line-height-2xl)
+    var(--font-family-sans);
+  --text-h3: var(--font-weight-semibold) var(--font-size-xl) / var(--line-height-xl)
+    var(--font-family-sans);
+  --text-h4: var(--font-weight-semibold) var(--font-size-md) / var(--line-height-md)
+    var(--font-family-sans);
+  --text-body-lg: var(--font-weight-regular) var(--font-size-lg) / var(--line-height-lg)
+    var(--font-family-sans);
+  --text-body: var(--font-weight-regular) var(--font-size-md) / var(--line-height-md)
+    var(--font-family-sans);
+  --text-body-sm: var(--font-weight-regular) var(--font-size-sm) / var(--line-height-sm)
+    var(--font-family-sans);
+  --text-caption: var(--font-weight-regular) var(--font-size-xs) / var(--line-height-xs)
+    var(--font-family-sans);
+  --text-label: var(--font-weight-medium) var(--font-size-sm) / var(--line-height-sm)
+    var(--font-family-sans);
+  --text-overline: var(--font-weight-semibold) var(--font-size-xs) / var(--line-height-xs)
+    var(--font-family-sans);
+  --text-code: var(--font-weight-regular) var(--font-size-xs) / var(--line-height-xs)
+    var(--font-family-mono);
+
+  /* Space: Tailwind's scale, 1 unit = 4px. Half steps (0-5, 1-5, 2-5, 3-5) are the design's
+     tight insides (gap-1.5, py-2.5); they sit on a 2px grid and are for inside components only. */
+  --space-0: 0;
+  --space-px: 1px;
+  --space-0-5: 0.125rem;
+  --space-1: 0.25rem;
+  --space-1-5: 0.375rem;
+  --space-2: 0.5rem;
+  --space-2-5: 0.625rem;
+  --space-3: 0.75rem;
+  --space-3-5: 0.875rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 1.75rem;
+  --space-8: 2rem;
+  --space-9: 2.25rem;
+  --space-10: 2.5rem;
+  --space-11: 2.75rem;
+  --space-12: 3rem;
+  --space-14: 3.5rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-28: 7rem;
+  --space-32: 8rem;
+  --space-36: 9rem;
+  --space-40: 10rem;
+  --space-44: 11rem;
+  --space-48: 12rem;
+
+  /* Layout ---------------------------------------------------------------------------------- */
+  --layout-breakpoint-sm: 40rem; /* 640px  Tailwind sm: header nav moves inline */
+  --layout-breakpoint-md: 48rem; /* 768px  md */
+  --layout-breakpoint-lg: 64rem; /* 1024px lg: two-column pages */
+  --layout-breakpoint-xl: 80rem; /* 1280px xl: container max */
+  --layout-breakpoint-2xl: 96rem; /* 1536px: content stays at container max */
+  --layout-columns: 4;
+  --layout-gutter: var(--space-4);
+  --layout-margin: var(--space-4); /* px-4, sm:px-6, lg:px-8 */
+  --layout-container-max: 80rem; /* max-w-7xl */
+  --layout-container-narrow: 64rem; /* max-w-5xl */
+  --layout-container-form: 48rem; /* max-w-3xl */
+  --layout-measure: 65ch;
+  --layout-text-sm: 24rem; /* max-w-sm: a centred overlay card */
+  --layout-text-md: 28rem; /* max-w-md: a lead paragraph beside a photo */
+  --layout-text-lg: 32rem; /* max-w-lg */
+  --layout-text-xl: 36rem; /* max-w-xl: a page lead, a form column */
+  --layout-text-2xl: 42rem; /* max-w-2xl: standings and class plans */
+  --layout-panel-narrow: var(
+    --layout-text-md
+  ); /* notices and empty states that stand in for a screen */
+  --layout-sidebar-width: 16rem;
+  --layout-topbar-height: 3.5rem; /* app header: 36px controls + 2 × 10px */
+  --layout-header-height: var(--layout-topbar-height);
+
+  /* Shape ----------------------------------------------------------------------------------- */
+  --radius-xs: 0.125rem; /* chart marks and ticks only */
+  --radius-sm: 0.25rem; /* rounded-sm / rounded: time tags, small tiles */
+  --radius-md: 0.375rem; /* photo tags, icon buttons, segmented options */
+  --radius-lg: 0.5rem; /* buttons, inputs, tiles */
+  --radius-xl: 0.75rem; /* wells, banners, toasts, large buttons */
+  --radius-2xl: 1rem; /* cards, panels, dialogs */
+  --radius-full: 9999px;
+
+  --border-width-hairline: 1px;
+  --border-width-thick: 2px;
+
+  /* Motion (Interaction and Motion in the redesign plan) ------------------------------------ */
+  --duration-instant: 0ms;
+  --duration-fast: 150ms; /* hover colour, board rows sliding */
+  --duration-base: 200ms; /* panels opening */
+  --duration-slow: 250ms; /* the one unlock moment */
+  --duration-deliberate: 1000ms; /* one step of 3-2-1 (a timer, so reduced motion keeps it) */
+  --duration-loop: 1000ms; /* one turn of a spinner */
+  --duration-pulse: 1600ms; /* one breath of a skeleton */
+  --duration-delay-tooltip: 300ms; /* hover intent before a tooltip shows (a wait, so reduced motion keeps it) */
+  --duration-fade: 250ms; /* an opacity fade, which reduced motion keeps (L2-142 AC2) */
+  --duration-unlock: var(--duration-slow);
+  --duration-countdown: var(--duration-deliberate);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-enter: cubic-bezier(0, 0, 0.2, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.23, 1, 0.32, 1); /* panels: fast out, long settle */
+  --ease-out: var(--ease-enter);
+  --ease-panel: var(--ease-spring);
+
+  /* Z order --------------------------------------------------------------------------------- */
+  --z-base: 0;
+  --z-raised: 10;
+  --z-hud: 20; /* ride HUD over the 3D world */
+  --z-sticky: 30;
+  --z-dropdown: 35;
+  --z-overlay: 40; /* scrims */
+  --z-modal: 50;
+  --z-popover: 55;
+  --z-toast: 60;
+  --z-tooltip: 70;
+
+  /* Interaction ----------------------------------------------------------------------------- */
+  --target-min: 1.5rem; /* 24px WCAG 2.2 AA (2.5.8) */
+  --target-comfortable: 2.75rem; /* 44px */
+  --target-ride: 3rem; /* 48px: anything pressed mid-ride (plan: Visual Direction) */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --control-height-sm: 2.25rem; /* h-9: header links, icon buttons, segmented options */
+  --control-height-md: 2.5rem; /* h-10: buttons and inputs */
+  --control-height-lg: 3rem; /* h-12: page actions */
+  --control-height-xl: 3.5rem; /* h-14: the one big start action */
+
+  /* Area tokens: values only one area of the product uses ----------------------------------- */
+  /* area: maps */
+  --maps-aside-width: 17.5rem; /* lg:grid-cols-[minmax(0,1fr)_280px] */
+  /* area: race */
+  --race-segment-easy: var(--color-plan-easy);
+  --race-terrain: rgb(242 243 239);
+  --race-sky: #52a2da;
+  --race-ground-far: #8c8a80;
+  --race-ground-near: #5d5a54;
+  --race-lobby-aside-width: 20rem;
+  --race-lobby-hint-width: 20rem;
+  --race-lobby-clock-size: 7.5rem;
+  --race-countdown-size: 12.5rem;
+  --race-watts-size: 4rem;
+  --race-watts-size-sm: 5.5rem;
+  --race-hud-top: 4rem;
+  --race-hud-top-lg: 4.5rem;
+  --race-board-width: 16.25rem;
+  --race-scenery-bottom: 9.375rem;
+  --race-scenery-width: 26.25rem;
+  --race-hud-interval-width: 18.75rem;
+  --race-hud-resistance-width: 13.75rem;
+  --race-lost-width: 24rem;
+  /* area: results */
+  --results-aside-width: 25rem;
+  /* area: classes */
+  --classes-segment-easy: var(--color-plan-easy);
+  --classes-start-aside-width: 26.25rem;
+  --classes-board-width: 17.5rem;
+  /* area: profile */
+  --profile-aside-width: 21.25rem;
+  /* area: setup */
+  --setup-preview-width: 26.25rem;
+  --setup-form-max: 36rem;
+  /* area: dashboard */
+  --dashboard-aside-width: 21.25rem;
+  --dashboard-view-min: 16.25rem; /* min-h-[260px]: the trace view */
+  --dashboard-trace-min: 10rem;
+  --dashboard-interval-min: 13.75rem;
+  --dashboard-level-size: 5.5rem; /* text-[88px]: the level numeral */
+  --dashboard-segment-easy: var(--color-plan-easy);
+  --dashboard-progress-head: var(--palette-white);
+  --dashboard-video-bg: var(--color-video);
+  /* area: diagnostics */
+  --diagnostics-max-width: 28.75rem;
+  --shadow-diagnostics: var(--shadow-4);
+  /* area: feedback */
+  --feedback-shadow: var(--shadow-4);
+}
+
+@media (min-width: 40rem) {
+  :root {
+    --layout-margin: var(--space-6);
+  }
+}
+@media (min-width: 48rem) {
+  :root {
+    --layout-columns: 8;
+    --layout-gutter: var(--space-6);
+  }
+}
+@media (min-width: 64rem) {
+  :root {
+    --layout-columns: 12;
+    --layout-gutter: var(--space-8);
+    --layout-margin: var(--space-8);
+  }
+}
+
+/* 3. Light theme (an addition; paper instead of ink) ------------------------------------------ */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+  --color-ink: var(--palette-paper);
+  --color-panel: var(--palette-paper-panel);
+  --color-raised: var(--palette-paper-raised);
+  --color-line: var(--palette-paper-line);
+  --color-line-strong: var(--palette-paper-steel);
+  --color-fg: var(--palette-ink);
+  --color-muted: var(--palette-paper-muted);
+  --color-faint: var(--palette-paper-faint);
+  --color-disabled: var(--palette-paper-steel);
+  --color-on-fill: var(--palette-ink);
+  --color-volt-fg: var(--palette-signal-deep);
+  --color-volt-fg-hover: var(--palette-signal-deeper);
+  --color-gold-fg: var(--palette-gold-deep);
+  --color-rest-fg: var(--palette-blue-deep);
+  --color-heart-fg: var(--palette-red-deep);
+  --color-warn-fg: var(--palette-amber-deep);
+  --color-ok-fg: var(--palette-green-deep);
+  --color-scrim: rgb(10 11 13 / 0.45);
+  --color-scrim-strong: rgb(10 11 13 / 0.85);
+  --color-volt-subtle: #ffe9e4;
+  --color-volt-subtle-hover: #ffdad3;
+  --color-raised-hover: #e0ddd4;
+  --color-gold-subtle: #fef7e7;
+  --color-gold-border: #f9dc97;
+  --color-focus-ring: var(--palette-signal-deep);
+  --color-info-bg: #e6f1ff;
+  --color-info-fg: var(--palette-blue-deep);
+  --color-info-border: #abd1ff;
+  --color-info-icon: var(--palette-blue-deep);
+  --color-info-solid: #1263cc;
+  --color-info-solid-hover: #0f55af;
+  --color-fg-on-info: var(--palette-white);
+  --color-success-bg: #e7faf3;
+  --color-success-fg: var(--palette-green-deep);
+  --color-success-border: #aeedd6;
+  --color-success-icon: var(--palette-green-deep);
+  --color-success-solid: #047857;
+  --color-success-solid-hover: #03674b;
+  --color-fg-on-success: var(--palette-white);
+  --color-warning-bg: #fef4e5;
+  --color-warning-fg: var(--palette-amber-deep);
+  --color-warning-border: #fbdba7;
+  --color-warning-icon: var(--palette-amber-deep);
+  --color-warning-solid: #8f5a00;
+  --color-warning-solid-hover: #7b4d00;
+  --color-fg-on-warning: var(--palette-white);
+  --color-danger-bg: #fce3e9;
+  --color-danger-fg: var(--palette-red-deep);
+  --color-danger-border: #f5a3b7;
+  --color-danger-icon: var(--palette-red-deep);
+  --color-danger-solid: #b5103a;
+  --color-danger-solid-hover: #9c0e32;
+  --color-fg-on-danger: var(--palette-white);
+  --shadow-color: 20 25 35;
+  --shadow-1: 0 1px 2px rgb(var(--shadow-color) / 0.08);
+  --shadow-2: 0 2px 6px rgb(var(--shadow-color) / 0.1), 0 1px 2px rgb(var(--shadow-color) / 0.06);
+  --shadow-3:
+    0 10px 15px -3px rgb(var(--shadow-color) / 0.12), 0 4px 6px -4px rgb(var(--shadow-color) / 0.1);
+  --shadow-4: 0 25px 50px -12px rgb(var(--shadow-color) / 0.25);
+  --dashboard-playhead: var(--palette-ink);
+}
+
+/* 4. Dark theme (the design). Keep the two blocks below identical. ----------------------------- */
+[data-theme='dark'] {
+  color-scheme: dark;
+  --color-ink: var(--palette-ink);
+  --color-panel: var(--palette-panel);
+  --color-raised: var(--palette-raised);
+  --color-line: var(--palette-line);
+  --color-line-strong: var(--palette-steel);
+  --color-fg: var(--palette-bone);
+  --color-muted: var(--palette-muted);
+  --color-faint: var(--palette-faint);
+  --color-disabled: var(--palette-steel);
+  --color-on-fill: var(--palette-ink);
+  --color-volt-fg: var(--palette-signal-bright);
+  --color-volt-fg-hover: var(--palette-signal-hover);
+  --color-gold-fg: var(--palette-gold);
+  --color-rest-fg: var(--palette-blue);
+  --color-heart-fg: var(--palette-red-light);
+  --color-warn-fg: var(--palette-amber);
+  --color-ok-fg: var(--palette-green);
+  --color-scrim: rgb(10 11 13 / 0.6);
+  --color-scrim-strong: rgb(10 11 13 / 0.85);
+  --color-volt-subtle: #2c1310;
+  --color-volt-subtle-hover: #451912;
+  --color-raised-hover: var(--palette-line);
+  --color-gold-subtle: #221e14;
+  --color-gold-border: #685528;
+  --color-focus-ring: var(--palette-signal);
+  --color-info-bg: #0e1a2a;
+  --color-info-fg: var(--palette-blue);
+  --color-info-border: #183e6e;
+  --color-info-icon: var(--palette-blue);
+  --color-info-solid: #2e8bff;
+  --color-info-solid-hover: #4b9bff;
+  --color-fg-on-info: var(--palette-ink);
+  --color-success-bg: #0f231e;
+  --color-success-fg: var(--palette-green);
+  --color-success-border: #1b5b45;
+  --color-success-icon: var(--palette-green);
+  --color-success-solid: #34d399;
+  --color-success-solid-hover: #50d9a7;
+  --color-fg-on-success: var(--palette-ink);
+  --color-warning-bg: #261d10;
+  --color-warning-fg: var(--palette-amber);
+  --color-warning-border: #684916;
+  --color-warning-icon: var(--palette-amber);
+  --color-warning-solid: #f5a524;
+  --color-warning-solid-hover: #f6b243;
+  --color-fg-on-warning: var(--palette-ink);
+  --color-danger-bg: #240d14;
+  --color-danger-fg: var(--palette-red-light);
+  --color-danger-border: #621126;
+  --color-danger-icon: var(--palette-red-light);
+  --color-danger-solid: #e5194b;
+  --color-danger-solid-hover: #c51640;
+  --color-fg-on-danger: var(--palette-white);
+  --shadow-color: 0 0 0;
+  --shadow-1: 0 1px 2px rgb(var(--shadow-color) / 0.4);
+  --shadow-2: 0 2px 6px rgb(var(--shadow-color) / 0.45), 0 1px 2px rgb(var(--shadow-color) / 0.3);
+  --shadow-3:
+    0 10px 15px -3px rgb(var(--shadow-color) / 0.5), 0 4px 6px -4px rgb(var(--shadow-color) / 0.4);
+  --shadow-4: 0 25px 50px -12px rgb(var(--shadow-color) / 0.65);
+  --dashboard-playhead: var(--palette-lime);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --color-ink: var(--palette-ink);
+    --color-panel: var(--palette-panel);
+    --color-raised: var(--palette-raised);
+    --color-line: var(--palette-line);
+    --color-line-strong: var(--palette-steel);
+    --color-fg: var(--palette-bone);
+    --color-muted: var(--palette-muted);
+    --color-faint: var(--palette-faint);
+    --color-disabled: var(--palette-steel);
+    --color-on-fill: var(--palette-ink);
+    --color-volt-fg: var(--palette-signal-bright);
+    --color-volt-fg-hover: var(--palette-signal-hover);
+    --color-gold-fg: var(--palette-gold);
+    --color-rest-fg: var(--palette-blue);
+    --color-heart-fg: var(--palette-red-light);
+    --color-warn-fg: var(--palette-amber);
+    --color-ok-fg: var(--palette-green);
+    --color-scrim: rgb(10 11 13 / 0.6);
+    --color-scrim-strong: rgb(10 11 13 / 0.85);
+    --color-volt-subtle: #2c1310;
+    --color-volt-subtle-hover: #451912;
+    --color-raised-hover: var(--palette-line);
+    --color-gold-subtle: #221e14;
+    --color-gold-border: #685528;
+    --color-focus-ring: var(--palette-signal);
+    --color-info-bg: #0e1a2a;
+    --color-info-fg: var(--palette-blue);
+    --color-info-border: #183e6e;
+    --color-info-icon: var(--palette-blue);
+    --color-info-solid: #2e8bff;
+    --color-info-solid-hover: #4b9bff;
+    --color-fg-on-info: var(--palette-ink);
+    --color-success-bg: #0f231e;
+    --color-success-fg: var(--palette-green);
+    --color-success-border: #1b5b45;
+    --color-success-icon: var(--palette-green);
+    --color-success-solid: #34d399;
+    --color-success-solid-hover: #50d9a7;
+    --color-fg-on-success: var(--palette-ink);
+    --color-warning-bg: #261d10;
+    --color-warning-fg: var(--palette-amber);
+    --color-warning-border: #684916;
+    --color-warning-icon: var(--palette-amber);
+    --color-warning-solid: #f5a524;
+    --color-warning-solid-hover: #f6b243;
+    --color-fg-on-warning: var(--palette-ink);
+    --color-danger-bg: #240d14;
+    --color-danger-fg: var(--palette-red-light);
+    --color-danger-border: #621126;
+    --color-danger-icon: var(--palette-red-light);
+    --color-danger-solid: #e5194b;
+    --color-danger-solid-hover: #c51640;
+    --color-fg-on-danger: var(--palette-white);
+    --shadow-color: 0 0 0;
+    --shadow-1: 0 1px 2px rgb(var(--shadow-color) / 0.4);
+    --shadow-2: 0 2px 6px rgb(var(--shadow-color) / 0.45), 0 1px 2px rgb(var(--shadow-color) / 0.3);
+    --shadow-3:
+      0 10px 15px -3px rgb(var(--shadow-color) / 0.5), 0 4px 6px -4px rgb(var(--shadow-color) / 0.4);
+    --shadow-4: 0 25px 50px -12px rgb(var(--shadow-color) / 0.65);
+    --dashboard-playhead: var(--palette-lime);
+  }
+}
+
+/* 5. Role aliases: resolved again on every theme wrapper ------------------------------------- */
+:root,
+[data-theme] {
+  --color-bg-canvas: var(--color-ink);
+  --color-bg-surface: var(--color-panel);
+  --color-bg-surface-raised: var(--color-raised);
+  --color-bg-surface-sunken: var(--color-ink);
+  --color-bg-subtle: var(--color-raised);
+  --color-bg-subtle-hover: var(--color-raised-hover);
+  --color-bg-inverse: var(--color-fg);
+  --color-bg-backdrop: var(--color-scrim);
+  --color-fg-default: var(--color-fg);
+  --color-fg-muted: var(--color-muted);
+  --color-fg-subtle: var(--color-faint);
+  --color-fg-disabled: var(--color-disabled);
+  --color-fg-inverse: var(--color-ink);
+  --color-fg-link: var(--color-volt-fg);
+  --color-fg-link-hover: var(--color-volt-fg-hover);
+  --color-fg-accent: var(--color-volt-fg);
+  --color-fg-on-accent: var(--color-on-fill);
+  --color-fg-on-photo: var(--color-on-photo);
+  --color-border-default: var(--color-line);
+  --color-border-strong: var(--color-line-strong);
+  --color-border-inverse: var(--color-ink);
+  --color-accent: var(--color-volt);
+  --color-accent-hover: var(--color-volt-hover);
+  --color-accent-active: var(--color-volt); /* pressing scales to 0.98; the colour holds */
+  --color-accent-subtle: var(--color-volt-subtle);
+  --color-accent-subtle-hover: var(--color-volt-subtle-hover);
+  --shadow-focus: 0 0 0 var(--focus-ring-width) var(--color-focus-ring);
+}
+
+/* 6. Preferences ----------------------------------------------------------------------------- */
+/* Reduce motion: the device's wish until the app marks <html data-motion>, then the rider's choice
+   (Settings, L2-164 AC2): "reduced" zeroes the durations, "full" keeps them. */
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion]) {
+    --duration-countdown: 0ms;
+    --duration-loop: 0ms;
+    --duration-pulse: 0ms;
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+  }
+}
+:root[data-motion='reduced'] {
+  --duration-countdown: 0ms;
+  --duration-loop: 0ms;
+  --duration-pulse: 0ms;
+  --duration-fast: 0ms;
+  --duration-base: 0ms;
+  --duration-slow: 0ms;
+}
+/* Ride numbers: power, the clock and the target on every ride screen, a quarter larger with
+   <html data-ride-numbers="large"> (Settings, L2-164 AC4). */
+:root {
+  --ride-number-scale: 1;
+}
+:root[data-ride-numbers='large'] {
+  --ride-number-scale: 1.25;
+}
+@media (prefers-contrast: more) {
+  :root,
+  [data-theme] {
+    --color-border-default: var(--color-line-strong);
+    --color-fg-subtle: var(--color-muted);
+  }
+}
+@media (forced-colors: active) {
+  :root,
+  [data-theme] {
+    --color-focus-ring: Highlight;
+    --color-border-default: CanvasText;
+    --color-border-strong: CanvasText;
+  }
+}

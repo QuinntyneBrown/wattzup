@@ -1,0 +1,15 @@
+<aside class="maps-aside" aria-labelledby="stars-title">
+  <h2 class="maps-aside__title" id="stars-title">Stars on every map</h2>
+  <ol class="star-rules">
+    @for (rule of rules; track rule.stars) {
+      <li class="star-rules__item">
+        <wz-stars [earned]="rule.stars" [count]="rule.stars" size="md" /><span>{{
+          rule.text
+        }}</span>
+      </li>
+    }
+  </ol>
+  <p class="maps-aside__note">
+    Racing against people opens at level 3. Until then, the bots are good practice.
+  </p>
+</aside>

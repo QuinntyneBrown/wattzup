@@ -1,0 +1,100 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Every later slice is proven without a bike, a backend or a database. This slice builds what stands in for them."
+      ]
+    },
+    {
+      "id": "doubles",
+      "bars": 4,
+      "lines": [
+        "One shared fixture surrounds the app: a fake Bluetooth stack, answers for the API, and a ride hub that speaks SignalR."
+      ]
+    },
+    {
+      "id": "bike",
+      "bars": 4,
+      "lines": [
+        "A spec offers a fake bike. Every write the page makes is recorded as hex, and the spec pushes notifications on demand."
+      ]
+    },
+    {
+      "id": "strict",
+      "bars": 4,
+      "lines": [
+        "Nothing happens unasked. A Bluetooth call the spec did not expect fails it, and the failure names the call."
+      ]
+    },
+    {
+      "id": "api",
+      "bars": 4,
+      "lines": [
+        "Requests to the API get the answers the spec declared.",
+        "A request nobody answered fails the spec."
+      ]
+    },
+    {
+      "id": "hub",
+      "bars": 4,
+      "lines": [
+        "The ride hub plays SignalR's JSON protocol: the handshake, then invocations both ways, once the spec opens it."
+      ]
+    },
+    {
+      "id": "server",
+      "bars": 4,
+      "lines": [
+        "On the backend, a real SignalR client connects to the API hosted in memory. Without a session, negotiation is refused."
+      ]
+    },
+    {
+      "id": "clock",
+      "bars": 4,
+      "lines": [
+        "Time moves only when a test moves it: a fake clock in every fixture, and an event probe that waits without sleeping."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "Riders see nothing new. Every spec now opens Home inside the doubles, from a phone to a desktop."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: twelve behaviour specs, three proving the guard fails a spec, and eighteen backend tests, all on this machine."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

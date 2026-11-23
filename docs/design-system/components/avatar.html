@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Avatar — Telo Ride design system</title>
+<meta name="description" content="Avatars mark riders by jersey colour: dots in rows, rings with initials, icons for bots and your ghost, images, status and groups with overflow.">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/components.css">
+<link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Page-only: docs chrome links (ds.css a) must not restyle product links inside specimens */
+:where(.ds-example__canvas, .ds-themes, .ds-matrix, .ds-anatomy__figure) a { color: inherit; text-decoration: none; }
+:where(.ds-example__canvas, .ds-themes, .ds-matrix, .ds-anatomy__figure) a:hover { color: inherit; }
+/* Visually hidden text inside a scrolling matrix must not widen the page */
+.ds-matrix { position: relative; }
+.ds-themes + p, .ds-themes + ul { margin-top: var(--space-4); }
+/* Product tables shown inside the state matrix keep their own cell styles */
+.ds-matrix td :is(.table, .map-table) :is(th, td) { padding: var(--table-cell-py, var(--space-2-5)) var(--table-cell-px, 0); background: transparent; border-right: 0; border-top: 0; font: inherit; text-transform: none; letter-spacing: normal; color: inherit; white-space: nowrap; }
+.ds-matrix td :is(.table) thead th { font-size: var(--font-size-xs); line-height: var(--line-height-xs); font-weight: var(--font-weight-semibold); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-muted); }
+</style>
+</head>
+<body id="top">
+<a class="ds-skip" href="#main">Skip to content</a>
+<div class="ds-shell">
+  <nav class="ds-nav" aria-label="Design system">
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <details open><summary>Foundations</summary><ul>
+      <li><a href="../foundations/color.html">Color</a></li>
+      <li><a href="../foundations/typography.html">Typography</a></li>
+      <li><a href="../foundations/spacing.html">Spacing</a></li>
+      <li><a href="../foundations/layout.html">Layout</a></li>
+      <li><a href="../foundations/elevation.html">Elevation</a></li>
+      <li><a href="../foundations/shape.html">Shape</a></li>
+      <li><a href="../foundations/motion.html">Motion</a></li>
+      <li><a href="../foundations/iconography.html">Iconography</a></li>
+      <li><a href="../foundations/theming.html">Theming</a></li>
+      <li><a href="../foundations/responsive.html">Responsive</a></li>
+      <li><a href="../foundations/accessibility.html">Accessibility</a></li>
+      <li><a href="../foundations/content.html">Content</a></li>
+    </ul></details>
+    <details open><summary>Actions</summary><ul>
+      <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
+      <li><a href="../components/link.html">Link</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
+      <li><a href="../components/form-field.html">Form field</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
+      <li><a href="../components/slider.html">Slider</a></li>
+      <li><a href="../components/number-stepper.html">Number stepper</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
+      <li><a href="../components/skip-link.html">Skip link</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
+      <li><a href="../components/dialog.html">Dialog</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
+      <li><a href="../components/tooltip.html">Tooltip</a></li>
+      <li><a href="../components/divider.html">Divider</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
+      <li><a href="../components/description-list.html">Description list</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
+      <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
+      <li><a href="../components/toast.html">Toast</a></li>
+      <li><a href="../components/alert.html">Alert and banner</a></li>
+      <li><a href="../components/inline-message.html">Inline message</a></li>
+      <li><a href="../components/progress-bar.html">Progress bar</a></li>
+      <li><a href="../components/spinner.html">Spinner</a></li>
+      <li><a href="../components/skeleton.html">Skeleton</a></li>
+      <li><a href="../components/empty-state.html">Empty state</a></li>
+      <li><a href="../components/error-page.html">Error page</a></li>
+    </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
+    <details open><summary>Patterns</summary><ul>
+      <li><a href="../patterns/forms.html">Forms</a></li>
+      <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
+      <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
+      <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
+      <li><a href="../patterns/notifications.html">Notifications</a></li>
+      <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
+    </ul></details>
+  </nav>
+  <main id="main" class="ds-main">
+    <header class="ds-header">
+      <p class="ds-kicker">Component · Data display</p>
+      <h1>Avatar</h1>
+      <p class="ds-lead">A rider is a jersey colour: a dot beside the name in every grid and board, a ring around initials where there is room.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
+    </header>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+<p>In Telo Ride a rider is a jersey colour. Every board, grid and session marks a rider with a dot in their <code>--jersey-*</code> colour (the lobby's <code>.start-grid__dot</code>, Class Start's <code>.class-dot</code>, Results' <code>.standings__dot</code>), and the same colour is the rider's dot in the 3D world. <code>.avatar</code> extends that idea to places with room for more: initials or a picture inside a jersey ring, an icon for bots and your ghost, a status dot, and a group that overlaps with a +N count.</p>
+<ul>
+<li><b>Dot</b> (<code>.avatar-dot</code>, and the area dots): in rows next to the name. Always the default.</li>
+<li><b>Ring with initials</b>: where riders appear without a row (a session summary, a group stack).</li>
+<li><b>Icon</b>: bots (Pacer Nova … Pacer Echo) and the gold "Your best" ghost.</li>
+<li><b>Image</b>: a channel or coach picture when one exists; riders have no photos in Telo Ride.</li>
+</ul>
+<p>Your own colour is always <code>--jersey-you</code> (signal orange, the volt) and the ghost is always <code>--jersey-ghost</code> (gold), matching "volt is you, gold is earned".</p>
+    </section>
+
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+<div class="ds-anatomy">
+<figure class="ds-anatomy__figure">
+<div style="display: flex; align-items: center; gap: var(--space-6);"><span class="avatar avatar--xl" style="--jersey: var(--jersey-lena)" aria-hidden="true">LK<span class="avatar__status"></span></span></div><span class="ds-callout" style="left: 38%; top: 24%;" aria-hidden="true">1</span><span class="ds-callout" style="left: 56%; top: 18%;" aria-hidden="true">2</span><span class="ds-callout" style="left: 58%; top: 66%;" aria-hidden="true">3</span>
+</figure>
+<ol class="ds-anatomy__list">
+<li><div><b>Content</b><small>Initials (two letters, uppercase, 12px semibold), an icon at 55%, or an <code>&lt;img&gt;</code> cropped to the circle.</small></div></li>
+<li><div><b>Jersey ring</b><small>2px ring in <code>var(--jersey)</code>, separated from the fill by a 2px gap in the surface colour (<code>--avatar-surface</code>).</small></div></li>
+<li><div><b>Status dot (optional)</b><small>30% of the size, bottom right, ringed in the surface colour: ok connected, heart lost, steel idle.</small></div></li>
+</ol>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+<h3>Jersey dots (as drawn)</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<ol class="start-grid__list" style="margin-top: 0; width: 100%;"><li class="start-grid__seat start-grid__seat--you"><span class="numeral start-grid__num">1</span><span class="start-grid__dot" style="--jersey: var(--jersey-you)"></span><span class="start-grid__name">You</span><span class="start-grid__meta">Lv 7</span></li><li class="start-grid__seat"><span class="numeral start-grid__num">2</span><span class="start-grid__dot" style="--jersey: var(--jersey-lena)"></span><span class="start-grid__name">lena.k</span><span class="start-grid__meta">DE · Lv 4</span><svg class="icon icon--md start-grid__check" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></li><li class="start-grid__seat start-grid__seat--open"><span class="numeral start-grid__num">7</span><span class="start-grid__dot"></span><span class="start-grid__open">Open seat</span></li></ol>
+</div>
+<div class="ds-example__caption"><span>Race lobby start grid: 12px dots; you in volt; an open seat is a dashed hollow dot.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;ol class="start-grid__list" style="margin-top: 0; width: 100%;"&gt;&lt;li class="start-grid__seat start-grid__seat--you"&gt;&lt;span class="numeral start-grid__num"&gt;1&lt;/span&gt;&lt;span class="start-grid__dot" style="--jersey: var(--jersey-you)"&gt;&lt;/span&gt;&lt;span class="start-grid__name"&gt;You&lt;/span&gt;&lt;span class="start-grid__meta"&gt;Lv 7&lt;/span&gt;&lt;/li&gt;&lt;li class="start-grid__seat"&gt;&lt;span class="numeral start-grid__num"&gt;2&lt;/span&gt;&lt;span class="start-grid__dot" style="--jersey: var(--jersey-lena)"&gt;&lt;/span&gt;&lt;span class="start-grid__name"&gt;lena.k&lt;/span&gt;&lt;span class="start-grid__meta"&gt;DE · Lv 4&lt;/span&gt;&lt;svg class="icon icon--md start-grid__check" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;/li&gt;&lt;li class="start-grid__seat start-grid__seat--open"&gt;&lt;span class="numeral start-grid__num"&gt;7&lt;/span&gt;&lt;span class="start-grid__dot"&gt;&lt;/span&gt;&lt;span class="start-grid__open"&gt;Open seat&lt;/span&gt;&lt;/li&gt;&lt;/ol&gt;</code></pre></details>
+</div>
+
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<ul class="class-session__riders" aria-label="6 riders" style="margin-top: 0;"><li class="class-session__rider"><span class="class-dot" style="--jersey: var(--jersey-lena)"></span>lena.k</li><li class="class-session__rider"><span class="class-dot" style="--jersey: var(--jersey-marco)"></span>MarcoVelo</li><li class="class-session__rider"><span class="class-dot" style="--jersey: var(--jersey-priya)"></span>priya_spins</li><li class="class-session__rider"><span class="class-dot" style="--jersey: var(--jersey-jwatts)"></span>jwatts</li><li class="class-session__rider"><span class="class-dot" style="--jersey: var(--jersey-ollie)"></span>Ollie R.</li><li class="class-session__rider"><span class="class-dot" style="--jersey: var(--jersey-kenji)"></span>kenji.cyc</li></ul>
+</div>
+<div class="ds-example__caption"><span>Class Start: 10px dots beside each name.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;ul class="class-session__riders" aria-label="6 riders" style="margin-top: 0;"&gt;&lt;li class="class-session__rider"&gt;&lt;span class="class-dot" style="--jersey: var(--jersey-lena)"&gt;&lt;/span&gt;lena.k&lt;/li&gt;&lt;li class="class-session__rider"&gt;&lt;span class="class-dot" style="--jersey: var(--jersey-marco)"&gt;&lt;/span&gt;MarcoVelo&lt;/li&gt;&lt;li class="class-session__rider"&gt;&lt;span class="class-dot" style="--jersey: var(--jersey-priya)"&gt;&lt;/span&gt;priya_spins&lt;/li&gt;&lt;li class="class-session__rider"&gt;&lt;span class="class-dot" style="--jersey: var(--jersey-jwatts)"&gt;&lt;/span&gt;jwatts&lt;/li&gt;&lt;li class="class-session__rider"&gt;&lt;span class="class-dot" style="--jersey: var(--jersey-ollie)"&gt;&lt;/span&gt;Ollie R.&lt;/li&gt;&lt;li class="class-session__rider"&gt;&lt;span class="class-dot" style="--jersey: var(--jersey-kenji)"&gt;&lt;/span&gt;kenji.cyc&lt;/li&gt;&lt;/ul&gt;</code></pre></details>
+</div>
+
+<h3>Ring with initials, icon and image</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<span class="avatar avatar--lg" style="--jersey: var(--jersey-lena)" aria-hidden="true">LK</span><span class="avatar avatar--lg" style="--jersey: var(--jersey-marco)" aria-hidden="true">MV</span><span class="avatar avatar--you avatar--lg" aria-hidden="true">S</span><span class="avatar avatar--ghost avatar--lg" aria-hidden="true"><svg class="icon avatar__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg></span><span class="avatar avatar--bot avatar--lg" style="--jersey: var(--jersey-nova)" aria-hidden="true"><svg class="icon avatar__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></span><span class="avatar avatar--open avatar--lg" aria-hidden="true"><svg class="icon avatar__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span class="avatar avatar--lg" style="--jersey: var(--color-line-strong)"><img class="avatar__img" src="../assets/images/classes/gcn-30-hiit.jpg" alt="GCN Training"></span>
+</div>
+<div class="ds-example__caption"><span>lena.k, MarcoVelo, you, your best (ghost), a bot, an open seat, a channel picture.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;span class="avatar avatar--lg" style="--jersey: var(--jersey-lena)" aria-hidden="true"&gt;LK&lt;/span&gt;&lt;span class="avatar avatar--lg" style="--jersey: var(--jersey-marco)" aria-hidden="true"&gt;MV&lt;/span&gt;&lt;span class="avatar avatar--you avatar--lg" aria-hidden="true"&gt;S&lt;/span&gt;&lt;span class="avatar avatar--ghost avatar--lg" aria-hidden="true"&gt;&lt;svg class="icon avatar__icon" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;/span&gt;&lt;span class="avatar avatar--bot avatar--lg" style="--jersey: var(--jersey-nova)" aria-hidden="true"&gt;&lt;svg class="icon avatar__icon" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;/span&gt;&lt;span class="avatar avatar--open avatar--lg" aria-hidden="true"&gt;&lt;svg class="icon avatar__icon" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;/span&gt;&lt;span class="avatar avatar--lg" style="--jersey: var(--color-line-strong)"&gt;&lt;img class="avatar__img" src="../assets/images/classes/gcn-30-hiit.jpg" alt="GCN Training"&gt;&lt;/span&gt;</code></pre></details>
+</div>
+
+<h3>In a row</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<ul class="list list--dense" style="width: 100%;"><li class="list__item" style="padding-block: var(--space-2);"><span class="avatar avatar--you" aria-hidden="true">S</span><span class="list__body"><span class="list__title">You</span></span><span class="list__trail">Lv 7</span></li><li class="list__item" style="padding-block: var(--space-2);"><span class="avatar" style="--jersey: var(--jersey-priya)" aria-hidden="true">PS</span><span class="list__body"><span class="list__title">priya_spins</span></span><span class="list__trail">IN · Lv 18</span></li><li class="list__item" style="padding-block: var(--space-2);"><span class="avatar avatar--bot" style="--jersey: var(--jersey-nova)" aria-hidden="true"><svg class="icon avatar__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></span><span class="list__body"><span class="list__title">Pacer Nova</span></span><span class="list__trail">Bot</span></li><li class="list__item" style="padding-block: var(--space-2);"><span class="avatar avatar--ghost" aria-hidden="true"><svg class="icon avatar__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg></span><span class="list__body"><span class="list__title">Your best</span></span><span class="list__trail">27:10</span></li></ul>
+</div>
+<div class="ds-example__caption"><span>The name is always beside the avatar, so the avatar is <code>aria-hidden</code>.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;ul class="list list--dense" style="width: 100%;"&gt;&lt;li class="list__item" style="padding-block: var(--space-2);"&gt;&lt;span class="avatar avatar--you" aria-hidden="true"&gt;S&lt;/span&gt;&lt;span class="list__body"&gt;&lt;span class="list__title"&gt;You&lt;/span&gt;&lt;/span&gt;&lt;span class="list__trail"&gt;Lv 7&lt;/span&gt;&lt;/li&gt;&lt;li class="list__item" style="padding-block: var(--space-2);"&gt;&lt;span class="avatar" style="--jersey: var(--jersey-priya)" aria-hidden="true"&gt;PS&lt;/span&gt;&lt;span class="list__body"&gt;&lt;span class="list__title"&gt;priya_spins&lt;/span&gt;&lt;/span&gt;&lt;span class="list__trail"&gt;IN · Lv 18&lt;/span&gt;&lt;/li&gt;&lt;li class="list__item" style="padding-block: var(--space-2);"&gt;&lt;span class="avatar avatar--bot" style="--jersey: var(--jersey-nova)" aria-hidden="true"&gt;&lt;svg class="icon avatar__icon" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;/span&gt;&lt;span class="list__body"&gt;&lt;span class="list__title"&gt;Pacer Nova&lt;/span&gt;&lt;/span&gt;&lt;span class="list__trail"&gt;Bot&lt;/span&gt;&lt;/li&gt;&lt;li class="list__item" style="padding-block: var(--space-2);"&gt;&lt;span class="avatar avatar--ghost" aria-hidden="true"&gt;&lt;svg class="icon avatar__icon" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;/span&gt;&lt;span class="list__body"&gt;&lt;span class="list__title"&gt;Your best&lt;/span&gt;&lt;/span&gt;&lt;span class="list__trail"&gt;27:10&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt;</code></pre></details>
+</div>
+
+<h3>Group with overflow</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<span class="avatar-group" role="group" aria-label="6 riders in this session: lena.k, MarcoVelo, priya_spins, jwatts, Ollie R., kenji.cyc"><span class="avatar" style="--jersey: var(--jersey-lena)" aria-hidden="true">LK</span><span class="avatar" style="--jersey: var(--jersey-marco)" aria-hidden="true">MV</span><span class="avatar" style="--jersey: var(--jersey-priya)" aria-hidden="true">PS</span><span class="avatar" style="--jersey: var(--jersey-jwatts)" aria-hidden="true">JW</span><span class="avatar avatar-group__more" aria-hidden="true">+2</span></span>
+</div>
+<div class="ds-example__caption"><span>Four avatars and +2; the group carries the full list as its label.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;span class="avatar-group" role="group" aria-label="6 riders in this session: lena.k, MarcoVelo, priya_spins, jwatts, Ollie R., kenji.cyc"&gt;&lt;span class="avatar" style="--jersey: var(--jersey-lena)" aria-hidden="true"&gt;LK&lt;/span&gt;&lt;span class="avatar" style="--jersey: var(--jersey-marco)" aria-hidden="true"&gt;MV&lt;/span&gt;&lt;span class="avatar" style="--jersey: var(--jersey-priya)" aria-hidden="true"&gt;PS&lt;/span&gt;&lt;span class="avatar" style="--jersey: var(--jersey-jwatts)" aria-hidden="true"&gt;JW&lt;/span&gt;&lt;span class="avatar avatar-group__more" aria-hidden="true"&gt;+2&lt;/span&gt;&lt;/span&gt;</code></pre></details>
+</div>
+
+<h3>With status</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<span class="avatar avatar--lg" style="--jersey: var(--jersey-lena)" aria-hidden="true">LK<span class="avatar__status"></span></span><span class="avatar avatar--lg" style="--jersey: var(--jersey-kenji)" aria-hidden="true">KC<span class="avatar__status avatar__status--off"></span></span><span class="avatar avatar--lg" style="--jersey: var(--jersey-ana)" aria-hidden="true">AR<span class="avatar__status avatar__status--idle"></span></span>
+</div>
+<div class="ds-example__caption"><span>Connected (ok), lost the bike (heart), not riding yet (steel). Say the status in text too.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;span class="avatar avatar--lg" style="--jersey: var(--jersey-lena)" aria-hidden="true"&gt;LK&lt;span class="avatar__status"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="avatar avatar--lg" style="--jersey: var(--jersey-kenji)" aria-hidden="true"&gt;KC&lt;span class="avatar__status avatar__status--off"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="avatar avatar--lg" style="--jersey: var(--jersey-ana)" aria-hidden="true"&gt;AR&lt;span class="avatar__status avatar__status--idle"&gt;&lt;/span&gt;&lt;/span&gt;</code></pre></details>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<span class="avatar-dot" style="--jersey: var(--jersey-lena)" aria-hidden="true"></span><span class="avatar-dot avatar-dot--md" style="--jersey: var(--jersey-lena)" aria-hidden="true"></span><span class="avatar avatar--sm" style="--jersey: var(--jersey-lena)" aria-hidden="true">LK</span><span class="avatar" style="--jersey: var(--jersey-lena)" aria-hidden="true">LK</span><span class="avatar avatar--lg" style="--jersey: var(--jersey-lena)" aria-hidden="true">LK</span><span class="avatar avatar--xl" style="--jersey: var(--jersey-lena)" aria-hidden="true">LK</span>
+</div>
+<div class="ds-example__caption"><span>Dot 10px / 12px; avatar sm 24px, md 32px, lg 48px, xl 64px.</span></div>
+</div>
+
+<p>Dots in rows; <b>sm</b> in dense boards and groups; <b>md</b> (default) in lists; <b>lg</b> in session summaries; <b>xl</b> for a rider's own headline. The ring is 1px on sm, 2px on md and lg, 4px on xl.</p>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+<p>Avatars are pictures, not controls. When one links somewhere the link carries the states (ring on focus); the avatar does not change on hover. "Disabled" is an open seat; "current" is you.</p>
+<div class="ds-matrix"><table>
+<thead><tr><th scope="col">Variant</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Disabled</th><th scope="col">You / current</th><th scope="col">Loading</th></tr></thead>
+<tbody>
+<tr><th scope="row">Avatar</th><td><span class="avatar" style="--jersey: var(--jersey-lena)" aria-hidden="true">LK</span></td><td>—</td><td>—</td><td>—</td><td><span class="avatar avatar--open" aria-hidden="true"><svg class="icon avatar__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span></td><td><span class="avatar avatar--you" aria-hidden="true">S</span></td><td><span class="skeleton skeleton--circle" aria-hidden="true"></span></td></tr>
+<tr><th scope="row">Avatar as link</th><td><a href="../../mocks/pages/profile/default.html" style="display: inline-flex; border-radius: var(--radius-full);" aria-label="lena.k"><span class="avatar" style="--jersey: var(--jersey-lena)" aria-hidden="true">LK</span></a></td><td><a href="../../mocks/pages/profile/default.html" style="display: inline-flex; border-radius: var(--radius-full);" aria-label="lena.k" data-state="hover"><span class="avatar" style="--jersey: var(--jersey-lena)" aria-hidden="true">LK</span></a></td><td><a href="../../mocks/pages/profile/default.html" style="display: inline-flex; border-radius: var(--radius-full);" aria-label="lena.k" data-state="focus"><span class="avatar" style="--jersey: var(--jersey-lena)" aria-hidden="true">LK</span></a></td><td><a href="../../mocks/pages/profile/default.html" style="display: inline-flex; border-radius: var(--radius-full);" aria-label="lena.k" data-state="active"><span class="avatar" style="--jersey: var(--jersey-lena)" aria-hidden="true">LK</span></a></td><td>—</td><td><a href="../../mocks/pages/profile/default.html" style="display: inline-flex; border-radius: var(--radius-full);" aria-label="lena.k"><span class="avatar avatar--you" aria-hidden="true">S</span></a></td><td>—</td></tr>
+<tr><th scope="row">Dot</th><td><span class="avatar-dot avatar-dot--md" style="--jersey: var(--jersey-lena)"></span></td><td>—</td><td>—</td><td>—</td><td><span class="avatar-dot avatar-dot--md avatar-dot--open"></span></td><td><span class="avatar-dot avatar-dot--md" style="--jersey: var(--jersey-you)"></span></td><td>—</td></tr>
+</tbody>
+</table></div>
+
+<h3>Both themes</h3>
+<div class="ds-themes">
+<div data-theme="light"><div class="ds-example__canvas " style="padding: 0;"><span class="avatar avatar--lg" style="--jersey: var(--jersey-lena)" aria-hidden="true">LK</span><span class="avatar avatar--lg" style="--jersey: var(--jersey-ollie)" aria-hidden="true">OR</span><span class="avatar avatar--you avatar--lg" aria-hidden="true">S</span><span class="avatar avatar--ghost avatar--lg" aria-hidden="true"><svg class="icon avatar__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg></span><span class="avatar-group" role="group" aria-label="6 riders in this session: lena.k, MarcoVelo, priya_spins, jwatts, Ollie R., kenji.cyc"><span class="avatar" style="--jersey: var(--jersey-lena)" aria-hidden="true">LK</span><span class="avatar" style="--jersey: var(--jersey-marco)" aria-hidden="true">MV</span><span class="avatar" style="--jersey: var(--jersey-priya)" aria-hidden="true">PS</span><span class="avatar" style="--jersey: var(--jersey-jwatts)" aria-hidden="true">JW</span><span class="avatar avatar-group__more" aria-hidden="true">+2</span></span></div></div>
+<div data-theme="dark"><div class="ds-example__canvas " style="padding: 0;"><span class="avatar avatar--lg" style="--jersey: var(--jersey-lena)" aria-hidden="true">LK</span><span class="avatar avatar--lg" style="--jersey: var(--jersey-ollie)" aria-hidden="true">OR</span><span class="avatar avatar--you avatar--lg" aria-hidden="true">S</span><span class="avatar avatar--ghost avatar--lg" aria-hidden="true"><svg class="icon avatar__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg></span><span class="avatar-group" role="group" aria-label="6 riders in this session: lena.k, MarcoVelo, priya_spins, jwatts, Ollie R., kenji.cyc"><span class="avatar" style="--jersey: var(--jersey-lena)" aria-hidden="true">LK</span><span class="avatar" style="--jersey: var(--jersey-marco)" aria-hidden="true">MV</span><span class="avatar" style="--jersey: var(--jersey-priya)" aria-hidden="true">PS</span><span class="avatar" style="--jersey: var(--jersey-jwatts)" aria-hidden="true">JW</span><span class="avatar avatar-group__more" aria-hidden="true">+2</span></span></div></div>
+</div>
+
+<p>Light colours (Ollie's #ffd166, Juno's #6be3ff) read faintly on paper; that is acceptable because the ring is decoration and the name is beside it.</p>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+<ul>
+<li><b>360px</b>: groups show at most four avatars plus +N; rows keep the dot at the start and truncate the name.</li>
+<li><b>640px</b>: the start grid goes to two columns; dots do not change size.</li>
+<li><b>1024px</b>: session summaries may show up to six before +N.</li>
+<li>Avatars never scale with the viewport; pick a size per placement.</li>
+</ul>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+<pre><code>.avatar {
+  --avatar-size: var(--space-8);
+  --avatar-ring: var(--border-width-thick);
+  --avatar-surface: var(--color-panel);   /* set to the surface it sits on */
+  --avatar-bg: var(--color-raised);
+}
+/* On the page canvas */
+.app__scroll .avatar { --avatar-surface: var(--color-ink); }</code></pre>
+<p>Jersey colours are content data (<code>shared/game.ts</code>), not theme tokens: they are the same in both themes and in the 3D world. Only the fill, initials and surface gap change with the theme.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+<h3>Role and pattern</h3>
+<p>A <code>&lt;span&gt;</code>. Beside a visible name it is <code>aria-hidden="true"</code>. Alone it is <code>role="img"</code> with the rider's name as <code>aria-label</code>; an <code>&lt;img&gt;</code> avatar uses <code>alt</code>. A group is <code>role="group"</code> labelled with the count and names. No APG widget applies.</p>
+<h3>Keyboard</h3>
+<table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+<tr><td><kbd>Tab</kbd></td><td>Skips avatars; only reaches one wrapped in a link.</td></tr>
+<tr><td><kbd>Enter</kbd></td><td>Follows an avatar link.</td></tr>
+</tbody></table>
+<h3>Focus</h3>
+<p>A linked avatar shows the shared ring on the link, which is rounded to a circle.</p>
+<h3>Labelling</h3>
+<p>Name, not initials: <code>aria-label="lena.k"</code>, never "LK". The +N count reads as part of the group label ("6 riders in this session: …"). Status dots need words elsewhere ("Lost the bike").</p>
+<h3>Contrast</h3>
+<div class="ds-themes">
+<div data-theme="light"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+<div class="ds-pair"><span>Initials on fill</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Ghost icon on gold fill</span><span class="ds-pair__ratio" data-contrast="--color-gold-fg|--color-gold-subtle" data-min="4.5"></span></div>
+<div class="ds-pair"><span>+N count</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>You ring on panel</span><span class="ds-pair__ratio" data-contrast="--color-volt|--color-panel" data-min="3"></span></div>
+</div></div>
+<div data-theme="dark"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+<div class="ds-pair"><span>Initials on fill</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Ghost icon on gold fill</span><span class="ds-pair__ratio" data-contrast="--color-gold-fg|--color-gold-subtle" data-min="4.5"></span></div>
+<div class="ds-pair"><span>+N count</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>You ring on panel</span><span class="ds-pair__ratio" data-contrast="--color-volt|--color-panel" data-min="3"></span></div>
+</div></div>
+</div>
+<h3>Motion</h3>
+<p>None. Avatars do not animate.</p>
+<h3>Touch</h3>
+<p>Not a target unless linked; a linked avatar smaller than 24px (sm) needs the link to include the name.</p>
+
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+<ul>
+<li>Initials: first letters of the two parts of the display name ("Ollie R." → OR, "kenji.cyc" → KC); one part gives two letters ("jwatts" → JW).</li>
+<li>Bots use the bot icon and their name ("Pacer Nova"); never initials, so they are never mistaken for people.</li>
+<li>Your own avatar is labelled "You" in lists, the way every board does.</li>
+<li>Overflow is "+N", never "N more".</li>
+</ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+<div class="ds-dodont">
+<figure class="ds-do"><div class="ds-example__canvas"><ul class="list list--dense" style="width: 100%;"><li class="list__item" style="padding-block: var(--space-2);"><span class="avatar" style="--jersey: var(--jersey-marco)" aria-hidden="true">MV</span><span class="list__body"><span class="list__title">MarcoVelo</span></span></li></ul></div><figcaption>The jersey colour beside the name; the colour matches the rider's dot in the race.</figcaption></figure>
+<figure class="ds-dont"><div class="ds-example__canvas"><span class="avatar avatar--lg" style="--jersey: var(--jersey-marco)" aria-hidden="true">MV</span></div><figcaption>An avatar alone with no name or label: the colour carries identity by itself.</figcaption></figure>
+<figure class="ds-do"><div class="ds-example__canvas"><span class="avatar avatar--bot avatar--lg" style="--jersey: var(--jersey-nova)" aria-hidden="true"><svg class="icon avatar__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg></span><span class="avatar avatar--ghost avatar--lg" aria-hidden="true"><svg class="icon avatar__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg></span></div><figcaption>Bots and your ghost get icons, so they never look like people.</figcaption></figure>
+<figure class="ds-dont"><div class="ds-example__canvas"><span class="avatar avatar--lg" style="--jersey: var(--jersey-nova)" aria-hidden="true">PN</span></div><figcaption>Initials for a bot ("PN" for Pacer Nova) pass it off as a rider.</figcaption></figure>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+<div class="ds-table-wrap"><table class="ds-table">
+<thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+<tbody>
+<tr><td>Fill</td><td><code>--color-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td></tr>
+<tr><td>Initials</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+<tr><td>Surface gap (on panel)</td><td><code>--color-panel</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-panel" data-swatch></i><span data-token="--color-panel"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-panel" data-swatch></i><span data-token="--color-panel"></span></span></td></tr>
+<tr><td>You</td><td><code>--jersey-you</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--jersey-you" data-swatch></i><span data-token="--jersey-you"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--jersey-you" data-swatch></i><span data-token="--jersey-you"></span></span></td></tr>
+<tr><td>Ghost</td><td><code>--jersey-ghost</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--jersey-ghost" data-swatch></i><span data-token="--jersey-ghost"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--jersey-ghost" data-swatch></i><span data-token="--jersey-ghost"></span></span></td></tr>
+<tr><td>Ghost fill / icon</td><td><code>--color-gold-subtle</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-gold-subtle" data-swatch></i><span data-token="--color-gold-subtle"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-gold-subtle" data-swatch></i><span data-token="--color-gold-subtle"></span></span></td></tr>
+<tr><td>Ghost fill / icon</td><td><code>--color-gold-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-gold-fg" data-swatch></i><span data-token="--color-gold-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-gold-fg" data-swatch></i><span data-token="--color-gold-fg"></span></span></td></tr>
+<tr><td>Status ok / off / idle</td><td><code>--color-ok</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-ok" data-swatch></i><span data-token="--color-ok"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-ok" data-swatch></i><span data-token="--color-ok"></span></span></td></tr>
+<tr><td>Status ok / off / idle</td><td><code>--color-heart</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-heart" data-swatch></i><span data-token="--color-heart"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-heart" data-swatch></i><span data-token="--color-heart"></span></span></td></tr>
+<tr><td>Status ok / off / idle</td><td><code>--color-line-strong</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-line-strong" data-swatch></i><span data-token="--color-line-strong"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-line-strong" data-swatch></i><span data-token="--color-line-strong"></span></span></td></tr>
+<tr><td>Jersey · lena.k</td><td><code>--jersey-lena</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--jersey-lena" data-swatch></i><span data-token="--jersey-lena"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--jersey-lena" data-swatch></i><span data-token="--jersey-lena"></span></span></td></tr>
+<tr><td>Jersey · MarcoVelo</td><td><code>--jersey-marco</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--jersey-marco" data-swatch></i><span data-token="--jersey-marco"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--jersey-marco" data-swatch></i><span data-token="--jersey-marco"></span></span></td></tr>
+<tr><td>Jersey · priya_spins</td><td><code>--jersey-priya</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--jersey-priya" data-swatch></i><span data-token="--jersey-priya"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--jersey-priya" data-swatch></i><span data-token="--jersey-priya"></span></span></td></tr>
+<tr><td>Jersey · jwatts</td><td><code>--jersey-jwatts</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--jersey-jwatts" data-swatch></i><span data-token="--jersey-jwatts"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--jersey-jwatts" data-swatch></i><span data-token="--jersey-jwatts"></span></span></td></tr>
+<tr><td>Jersey · Ollie R.</td><td><code>--jersey-ollie</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--jersey-ollie" data-swatch></i><span data-token="--jersey-ollie"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--jersey-ollie" data-swatch></i><span data-token="--jersey-ollie"></span></span></td></tr>
+<tr><td>Jersey · kenji.cyc</td><td><code>--jersey-kenji</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--jersey-kenji" data-swatch></i><span data-token="--jersey-kenji"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--jersey-kenji" data-swatch></i><span data-token="--jersey-kenji"></span></span></td></tr>
+<tr><td>Jersey · ana_rides</td><td><code>--jersey-ana</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--jersey-ana" data-swatch></i><span data-token="--jersey-ana"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--jersey-ana" data-swatch></i><span data-token="--jersey-ana"></span></span></td></tr>
+<tr><td>Jersey · bots (Nova … Echo)</td><td><code>--jersey-nova</code> … <code>--jersey-echo</code></td><td colspan="2"><span data-token="--jersey-nova"></span> / <span data-token="--jersey-echo"></span></td></tr>
+<tr><td>Sizes sm / md / lg / xl</td><td><code>--space-6/8/12/16</code></td><td colspan="2"><span data-token="--space-6"></span> / <span data-token="--space-8"></span> / <span data-token="--space-12"></span> / <span data-token="--space-16"></span></td></tr>
+<tr><td>Dot</td><td><code>--space-2-5</code> / <code>--space-3</code></td><td colspan="2"><span data-token="--space-2-5"></span> / <span data-token="--space-3"></span></td></tr>
+</tbody>
+</table></div>
+
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+<pre><code>&lt;!-- Beside a name --&gt;
+&lt;span class="avatar-dot" style="--jersey: var(--jersey-lena)"&gt;&lt;/span&gt; lena.k
+
+&lt;!-- Alone --&gt;
+&lt;span class="avatar avatar--lg" style="--jersey: var(--jersey-lena)" role="img" aria-label="lena.k"&gt;LK&lt;/span&gt;
+
+&lt;!-- Group --&gt;
+&lt;span class="avatar-group" role="group" aria-label="6 riders in this session: lena.k, MarcoVelo, …"&gt;
+  &lt;span class="avatar" style="--jersey: var(--jersey-lena)" aria-hidden="true"&gt;LK&lt;/span&gt;
+  …
+  &lt;span class="avatar avatar-group__more" aria-hidden="true"&gt;+2&lt;/span&gt;
+&lt;/span&gt;</code></pre>
+<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+<tr><td><code>.avatar</code> + <code>--jersey</code></td><td>Circle with a jersey ring; initials inside.</td></tr>
+<tr><td><code>.avatar--sm/lg/xl</code></td><td>Size; omit for md.</td></tr>
+<tr><td><code>.avatar--you</code> <code>.avatar--ghost</code> <code>.avatar--bot</code> <code>.avatar--open</code></td><td>You / your best / bot / open seat.</td></tr>
+<tr><td><code>.avatar__img</code> <code>.avatar__icon</code></td><td>Picture / icon content.</td></tr>
+<tr><td><code>.avatar__status</code> <code>--off</code> <code>--idle</code></td><td>Status dot.</td></tr>
+<tr><td><code>.avatar-dot</code> <code>--md</code> <code>--open</code></td><td>The jersey dot.</td></tr>
+<tr><td><code>.avatar-group</code> <code>.avatar-group__more</code></td><td>Overlapping group and +N.</td></tr>
+<tr><td><code>.start-grid__dot</code> <code>.class-dot</code> <code>.standings__dot</code> <code>.race-board__dot</code></td><td>Area dots (unchanged).</td></tr>
+</tbody></table></div>
+
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+<p>Extracted from these mocks:</p>
+<ul>
+<li><a href="../../mocks/pages/race-lobby/default.html">pages/race-lobby/default</a> (start grid dots, open seats)</li>
+<li><a href="../../mocks/pages/race-setup/peers.html">pages/race-setup/peers</a> (start grid on Race Setup)</li>
+<li><a href="../../mocks/pages/class-start/default.html">pages/class-start/default</a> (session riders with class dots)</li>
+<li><a href="../../mocks/pages/results/default.html">pages/results/default</a> (standings dots)</li>
+<li><a href="../../mocks/pages/class-ride/default.html">pages/class-ride/default</a> (group board dots)</li>
+</ul>
+<h3>Drift fixed during extraction</h3>
+<ul><li>Four area classes draw the same jersey dot at two sizes (<code>.start-grid__dot</code> 12px, <code>.class-dot</code>, <code>.standings__dot</code>, <code>.race-board__dot</code> 10px); <code>.avatar-dot</code> is the one block.</li>
+<li>The ring, initials, icon, image, status and group variants are additions (the mocks never show a rider without a row).</li></ul>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
+  </main>
+</div>
+<script src="../assets/ds.js"></script>
+</body>
+</html>

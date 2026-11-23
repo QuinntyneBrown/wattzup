@@ -1,0 +1,43 @@
+@use '../field/field';
+
+// Block delete-account-form (docs/design-system/assets/components.css, Delete account form): the field for "delete",
+// any message, and Cancel and Delete my account at the end of a row.
+:host {
+  display: block;
+}
+
+.delete-account-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-bottom: var(--space-5);
+}
+
+.delete-account-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.delete-account-form__spinner {
+  width: var(--space-5);
+  height: var(--space-5);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  animation: delete-account-form-spin var(--duration-loop, 1s) linear infinite;
+}
+
+@keyframes delete-account-form-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .delete-account-form__spinner {
+    animation: none;
+  }
+}

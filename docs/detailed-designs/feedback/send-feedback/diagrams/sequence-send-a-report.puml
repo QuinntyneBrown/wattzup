@@ -1,0 +1,56 @@
+@startuml
+title UML sequence behaviour — Send a report
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "FeedbackDialog" as dialog
+  participant "FeedbackStore" as store
+end box
+box "Frontend — Ride app (components, domain and api libraries)" #E0F2FE
+  participant "FeedbackForm" as form
+  participant "PacketLog" as log
+  participant "HttpFeedbackApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "FeedbackController" as controller
+end box
+actor -> form : Press "Report bug"
+form -> dialog : sendRequested
+dialog -> store : send(context)
+store --> form : status = sending; controls disabled; "Sending…", aria-busy; "Sending your feedback…" (L2-118 AC1)
+opt kind is bug and attachDiagnostics
+  store -> log : tail(1 MB)
+  log --> store : Last 1 MB of the packet log
+  store -> store : FeedbackDiagnostics(BUILD_INFO "2.0.0 · client a1b2c3d", packetLog); no session token (L2-117 AC4)
+end
+store -> client : send(FeedbackRequest)
+client -> controller : POST /api/feedback (HttpOnly session cookie)
+alt 201 Created
+  controller --> client : 201
+  client --> store : Accepted
+  store --> form : status = sent
+  form --> actor : "Feedback sent": the kind's thanks and follow-up, "Send another", "Done" (L2-118 AC2, AC3)
+else failure (network, 4xx or 5xx)
+  controller --> client : Error or no answer
+  client --> store : Rejected
+  store --> form : status = failed; message kept
+  form --> actor : role=alert "Your feedback didn’t send. Check your connection and try again."; button enabled again (L2-118 AC4)
+end
+actor -> form : Press "Done"
+form -> dialog : dismissed
+dialog -> dialog : DialogRef.close(); store destroyed
+dialog --> actor : Custom ride, still paused (L2-118 AC5)
+@enduml

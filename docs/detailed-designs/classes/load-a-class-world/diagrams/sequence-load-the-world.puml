@@ -1,0 +1,68 @@
+@startuml
+title UML sequence behaviour — Load the world
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ClassRidePage" as page
+  participant "WorldLoadStore" as store
+end box
+box "Frontend — Ride app (components, domain and api libraries)" #E0F2FE
+  participant "WorldLoading" as view
+  participant "RideSettingsStore" as settings
+  participant "WorldCache" as cache
+  participant "Announcer" as ann
+end box
+box "Frontend — Ride app (world library, lazy chunk)" #E0F2FE
+  participant "RendererBackendProbe" as probe
+  participant "WorldAssetLoader" as loader
+  participant "WorldRenderer" as renderer
+end box
+participant "Static host" as host
+actor -> page : Start or Join on Class Start (world class) (L2-151 AC1)
+page -> view : Class, plan, panorama with its alt text (L2-151 AC2, AC3)
+page -> store : start(class)
+store -> renderer : import('world') in its own chunk (L2-151 AC6)
+store -> settings : quality and graphics choices
+store -> probe : probe(graphics choice)
+probe --> store : webgpu
+store -> store : qualityPolicy(): starting level Low; facts "Auto quality · Low", "WebGPU" (L2-152 AC7)
+store -> ann : "Downloading the world" (L2-152 AC6)
+store -> loader : load(world, abort.signal)
+loader -> cache : get(worldId)
+alt Saved on this device
+  cache --> loader : bundle
+  loader --> store : bundle; step done at once (L2-152 AC3)
+else Not saved
+  loader -> host : GET /worlds/docklands/
+  loop as bytes arrive
+    host --> loader : chunk
+    loader --> store : "7.6 of 18.9 MB" (L2-152 AC2)
+  end
+  loader -> cache : put(worldId, bundle) when the rider keeps worlds
+  loader --> store : bundle; "18.9 MB · saved on this device for next time"
+end
+store -> ann : "Building the shaders"
+store -> renderer : prepare(canvas, bundle, Ultra, onProgress)
+loop each batch of programs
+  renderer --> store : "41 of 64 programs for WebGPU" (L2-152 AC4)
+end
+store -> ann : "Warming up the first frames"
+store -> renderer : warmUp(frames) off screen
+renderer --> store : held 60 fps; "Holding 60 fps at Low" (L2-152 AC5)
+store -> store : loadPercent() = 100; phase ready
+store -> ann : "Neon Docklands is ready."
+store --> view : steps, percent, phase (start: classes/start-a-world-class)
+@enduml

@@ -1,0 +1,60 @@
+<main id="main" class="container page" tabindex="-1">
+  <div class="library-head">
+    <div>
+      <h1 class="page__title">Classes</h1>
+      <p class="library-head__lead">
+        Ride a video alone whenever you like, or join a group of 8–10 riders. The bike follows the
+        class either way.
+      </p>
+    </div>
+    <wz-tier-tabs
+      [tabs]="tabs"
+      [selected]="library.tab()"
+      controls="library-shelves"
+      (choose)="library.tab.set($event)"
+    />
+  </div>
+
+  @if (library.unavailable()) {
+    <div class="library-error">
+      <wz-inline-message tone="warn" role="alert"
+        >The classes can’t be loaded. Check your connection and try again.</wz-inline-message
+      >
+      <button wz-button variant="raised" type="button" (click)="library.retry()">Try again</button>
+    </div>
+  }
+
+  <div id="library-shelves" role="tabpanel" [attr.aria-labelledby]="'tier-tab-' + library.tab()">
+    @for (shelf of library.shown(); track shelf.id) {
+      <wz-class-shelf [shelfId]="shelf.id" [title]="shelf.title" [tagline]="shelf.tagline">
+        @for (card of shelf.cards; track card.id) {
+          @if (card.opensAtLevel === null) {
+            <a
+              wz-class-card
+              [routerLink]="['/classes', card.id]"
+              [title]="card.title"
+              [channel]="card.channel"
+              [focus]="card.focus"
+              [cover]="card.cover"
+              [lengthSeconds]="card.lengthSeconds"
+              [segments]="card.segments"
+              [group]="card.group"
+            ></a>
+          } @else {
+            <button
+              wz-class-card
+              type="button"
+              [title]="card.title"
+              [channel]="card.channel"
+              [focus]="card.focus"
+              [cover]="card.cover"
+              [lengthSeconds]="card.lengthSeconds"
+              [segments]="card.segments"
+              [opensAtLevel]="card.opensAtLevel"
+            ></button>
+          }
+        }
+      </wz-class-shelf>
+    }
+  </div>
+</main>

@@ -1,0 +1,22 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Fit every width, by touch and keyboard
+
+Person(rider, "Rider", "Touch or keyboard")
+Container_Boundary(app, "Ride app") {
+  Component(shell, "AppShell", "Root component · ride", "Skip link, header slot, main, router outlet")
+  Component(skip, "SkipLink", "Presentation component · components", "Skip to content")
+  Component(page, "Any page", "Angular page · ride", "Lays out its content")
+  Component(container, "Container", "Presentation component · components", "Page margin and 80 rem cap")
+  Component(bp, "BreakpointObserver", "Angular CDK layout", "Breakpoint signals for structural changes")
+  Component(tokens, "tokens.css and _breakpoints.scss", "Global foundations · ride", "Margins, targets, focus ring, breakpoints")
+}
+Rel(rider, skip, "Tabs to and activates")
+Rel(shell, skip, "Renders first")
+Rel(shell, page, "Hosts in main")
+Rel(page, container, "Wraps content in")
+Rel(page, bp, "Reads, where structure changes")
+Rel(container, tokens, "Reads layout tokens")
+Rel(skip, tokens, "Reads focus tokens")
+@enduml

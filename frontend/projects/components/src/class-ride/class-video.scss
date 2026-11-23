@@ -1,0 +1,121 @@
+// Block class-video (docs/design-system/assets/components.css, Class Ride; components/video.html): 16:9 on a phone,
+// filling the column above the bike panel from lg.
+:host {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  gap: var(--space-3);
+
+  @media (min-width: 64rem) {
+    flex: 1;
+  }
+}
+
+.class-video {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: var(--color-raised);
+
+  @media (min-width: 64rem) {
+    min-height: 0;
+    flex: 1;
+    aspect-ratio: auto;
+  }
+}
+
+// Inset in the corner of the class's world (class-ride/world, L2-153 AC3): 16:9 at every width, edged and raised.
+:host(.class-video--inset) {
+  flex: none;
+}
+
+:host(.class-video--inset) .class-video {
+  flex: none;
+  aspect-ratio: 16 / 9;
+  border: var(--border-width-hairline) solid var(--color-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-3);
+}
+
+// Under the inset the notice sits over the world, so it takes the panel's surface to stay readable.
+:host(.class-video--inset) .class-video__notice {
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-panel);
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+// The cover is YouTube's 4:3 hqdefault thumbnail, letterboxed: show only its 16:9 picture, as the player would.
+.photo--yt {
+  object-view-box: inset(12.5% 0);
+}
+
+.class-video__player {
+  position: absolute;
+  inset: 0;
+}
+
+// Ink at 70 % over the picture, "Paused" centred (components/video.html).
+// Waiting for a group session's start (L2-087 AC4): the parked picture under the time left.
+.class-video__wait {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  text-align: center;
+  background: color-mix(in srgb, var(--color-ink) 70%, transparent);
+}
+
+.class-video__wait-label {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-muted);
+}
+
+.class-video__wait-time {
+  margin: 0;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-4xl);
+  line-height: var(--line-height-none);
+  color: var(--color-volt-fg);
+}
+
+.class-video__wait-note {
+  margin: 0;
+  max-width: 32ch;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.class-video__paused {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--color-ink) 70%, transparent);
+}
+
+.class-video__paused-label {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+  font-weight: var(--font-weight-semibold);
+}

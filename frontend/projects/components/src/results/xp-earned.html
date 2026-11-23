@@ -1,0 +1,25 @@
+<section
+  class="xp-earned"
+  aria-labelledby="xp-earned-title"
+  aria-live="polite"
+  [attr.aria-busy]="view().state === 'waiting'"
+>
+  <div class="xp-earned__head">
+    <h2 class="xp-earned__title" id="xp-earned-title">XP earned</h2>
+    @if (view().total; as total) {
+      <span class="xp-earned__total">{{ total }}</span>
+    }
+  </div>
+  @if (note(); as note) {
+    <p class="xp-earned__note" role="status">{{ note }}</p>
+  } @else {
+    <dl class="xp-earned__lines">
+      @for (line of view().lines; track $index) {
+        <div class="xp-earned__line">
+          <dt>{{ line.label }}</dt>
+          <dd>{{ line.xp }}</dd>
+        </div>
+      }
+    </dl>
+  }
+</section>

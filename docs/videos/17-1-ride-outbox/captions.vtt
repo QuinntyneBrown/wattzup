@@ -1,0 +1,58 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.667
+A finished ride now waits on the device until the backend has it, network or not.
+
+00:00:10.324 --> 00:00:15.710
+Without a network, Results shows the ride with its XP pending, and the ride is kept
+
+00:00:15.710 --> 00:00:16.854
+in IndexedDB.
+
+00:00:23.228 --> 00:00:28.196
+When the app is next open online, waiting rides are sent one at a time, the oldest
+
+00:00:28.196 --> 00:00:28.860
+first.
+
+00:00:36.133 --> 00:00:40.750
+While the backend stays out of reach, the ride is tried again after thirty seconds,
+
+00:00:40.750 --> 00:00:42.663
+then a minute, up to an hour.
+
+00:00:49.038 --> 00:00:53.871
+Once the backend records it, the XP fills in and the ride is removed from the
+
+00:00:53.871 --> 00:00:54.610
+device.
+
+00:01:01.942 --> 00:01:04.833
+The pending ride, from a phone to the full screen.
+
+00:01:14.847 --> 00:01:19.834
+What the tests prove: kept on the device, sent oldest first, retried with growing
+
+00:01:19.834 --> 00:01:21.365
+delays, and removed.
+
+00:01:25.170 --> 00:01:29.774
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:30.119 --> 00:01:34.631
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:34.631 --> 00:01:36.302
+every hill and interval.
+
+00:01:36.647 --> 00:01:41.825
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:41.825 --> 00:01:47.273
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:47.273 --> 00:01:50.263
+XP, rider levels, stars and map unlocks.
+
+00:01:50.608 --> 00:01:53.101
+A custom workout lives under Profile.

@@ -1,0 +1,49 @@
+<section class="start-grid" aria-labelledby="start-grid-title">
+  <div class="start-grid__head">
+    <h2 class="start-grid__title" id="start-grid-title">Start grid</h2>
+    <span class="start-grid__count">{{ taken() }} / {{ seats().length }}</span>
+  </div>
+  <ol class="start-grid__list">
+    @for (seat of seats(); track $index) {
+      <li
+        class="start-grid__seat"
+        [class.start-grid__seat--you]="seat.kind === 'you'"
+        [class.start-grid__seat--open]="seat.kind === 'open'"
+      >
+        <span class="numeral start-grid__num">{{ $index + 1 }}</span>
+        <span
+          class="start-grid__dot"
+          [class]="seat.jersey ? 'start-grid__dot--' + seat.jersey : ''"
+        ></span>
+        @if (seat.kind === 'open') {
+          <span class="start-grid__open">Open seat</span>
+        } @else {
+          <span class="start-grid__name">{{ seat.name }}</span>
+          <span class="start-grid__meta">
+            @if (seat.kind === 'bot') {
+              <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 8V4H8" />
+                <rect width="16" height="12" x="4" y="8" rx="2" />
+                <path d="M2 14h2" />
+                <path d="M20 14h2" />
+                <path d="M15 13v2" />
+                <path d="M9 13v2" />
+              </svg>
+            }
+            {{ seat.meta }}
+          </span>
+          @if (seat.ready) {
+            <svg
+              class="icon icon--md start-grid__check"
+              viewBox="0 0 24 24"
+              role="img"
+              aria-label="Ready"
+            >
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+          }
+        }
+      </li>
+    }
+  </ol>
+</section>

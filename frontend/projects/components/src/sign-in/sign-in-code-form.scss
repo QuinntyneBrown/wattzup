@@ -1,0 +1,19 @@
+@use 'sign-in';
+
+// "Use a different email": a button drawn as the design system's link, with a 44 px target.
+.sign-in__change {
+  min-height: var(--target-comfortable);
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--color-volt-fg);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-volt-fg-hover);
+    text-decoration-thickness: var(--border-width-thick);
+  }
+}

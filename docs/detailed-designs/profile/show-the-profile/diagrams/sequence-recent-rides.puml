@@ -1,0 +1,53 @@
+@startuml
+title UML sequence behaviour — List recent rides
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ProfileStore" as store
+  participant "RecentRides" as recent
+end box
+box "Frontend — Ride app (domain and api libraries)" #E0F2FE
+  participant "RideOutbox" as outbox
+  participant "HttpRidesApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RidesController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "GetRecentRidesQueryHandler" as handler
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+store -> client : listRecent(10)
+client -> ctrl : GET /api/rides?take=10
+ctrl -> handler : Send GetRecentRidesQuery for the signed-in rider
+handler -> db : Rides by FinishedAt descending, take 10
+db --> handler : Rides
+handler --> ctrl : RecentRideDto[]
+ctrl --> client : 200
+client --> store : Recorded rides
+store -> outbox : pending()
+outbox --> store : Rides waiting to send
+store -> store : Merge, newest first, keep 10 (L2-111 AC1)
+store -> store : rideDayLabel: "Today", "Yesterday", weekday within six days, else the date (AC2)
+alt No rides
+  store --> recent : Empty state "Nothing yet. Your first race shows up here, with the XP it earned." (AC3)
+else Rides
+  store --> recent : "Old Town Criterium", "Yesterday · 5th of 10 · 27:10", "+262"; waiting rides read "Waiting to sync" (AC4)
+end
+recent --> actor : Rows with a kind icon, title, detail and XP
+@enduml

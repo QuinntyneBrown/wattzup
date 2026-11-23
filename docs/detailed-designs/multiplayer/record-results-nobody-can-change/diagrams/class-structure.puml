@@ -1,0 +1,87 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+set separator none
+' --------------------------
+title Class structure — Record results nobody can change
+
+package "Telo.Ride.Domain" {
+  class SessionResult {
+    +Guid SessionId
+    +SessionKind Kind
+    +DateTimeOffset EndedAt
+    +IReadOnlyList<SessionResultEntry> Entries
+    +static From(session: LiveSession, ranking: Standings): SessionResult
+  }
+  class SessionResultEntry {
+    +Guid? RiderId
+    +string Name
+    +int Place
+    +TimeSpan? Time
+    +double OutputKj
+    +RiderStatus Status
+  }
+  class RecordedRide {
+    +Guid RiderId
+    +Guid Id
+    +Guid? SessionId
+    +int? Place
+    +TimeSpan Time
+    +double OutputKj
+    +string ResultJson
+  }
+  class RidePlausibilityRule {
+    +MaxPowerWatts: int = 2000
+    +MaxSpeedKmh: double = 100
+    +DistanceTolerance: double = 0.05
+    +IsPlausible(ride: RideFacts, raceMeters: double?): bool
+  }
+  class RideFacts {
+    +int ElapsedSeconds
+    +double DistanceMeters
+    +int MaxPowerWatts
+    +double MaxSpeedKmh
+    +IReadOnlyList<double> SpeedSamplesKmh
+  }
+  enum SessionKind {
+    Race
+    GroupClass
+  }
+}
+package "Telo.Ride.Application" {
+  class SubmitRideCommand {
+    +Guid RiderId
+    +SubmitRideRequest Ride
+  }
+  class SubmitRideCommandHandler {
+    +Handle(cmd: SubmitRideCommand): Task<RideSubmission>
+  }
+  class SessionResultRecorder {
+    +RecordAsync(session: LiveSession): Task<SessionResult>
+  }
+  interface IAppDbContext {
+    +DbSet<RecordedRide> Rides
+    +DbSet<SessionResult> SessionResults
+    +SaveChangesAsync(): Task<int>
+  }
+}
+
+SessionResult "1" *-- "10" SessionResultEntry
+SessionResult --> SessionKind
+RecordedRide ..> SessionResult : SessionId
+RidePlausibilityRule ..> RideFacts : checks
+SubmitRideCommandHandler ..> SubmitRideCommand : handles
+SubmitRideCommandHandler ..> RidePlausibilityRule
+SubmitRideCommandHandler ..> IAppDbContext
+SessionResultRecorder ..> SessionResult : creates
+SessionResultRecorder ..> IAppDbContext
+@enduml

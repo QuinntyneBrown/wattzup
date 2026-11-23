@@ -1,0 +1,78 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Every page of the app now shares one header, with full screen at its end."
+      ]
+    },
+    {
+      "id": "fullscreen",
+      "bars": 5,
+      "lines": [
+        "Press Full screen and the ride fills the display. The button then reads Exit full screen. Where the browser cannot do it, there is no button."
+      ]
+    },
+    {
+      "id": "current",
+      "bars": 5,
+      "lines": [
+        "Race, Classes and Profile each mark their own item, so you always know where you are."
+      ]
+    },
+    {
+      "id": "level",
+      "bars": 4,
+      "lines": [
+        "Your streak, your level and your XP sit at the end, and the level goes to Profile."
+      ]
+    },
+    {
+      "id": "phone",
+      "bars": 4,
+      "lines": [
+        "On a phone the navigation takes its own row, and the level shows just its badge."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 5,
+      "lines": [
+        "From a phone to a laptop, the same header grows to fit."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: full screen in and out, no button without the API, and every page's own item."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

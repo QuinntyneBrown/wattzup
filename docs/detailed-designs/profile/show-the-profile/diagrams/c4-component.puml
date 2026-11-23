@@ -1,0 +1,38 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Show the profile
+
+Container_Boundary(app, "Ride app") {
+  Component(page, "ProfilePage", "Angular page · ride", "Headline, Maps, Recent rides, Settings aside")
+  Component(store, "ProfileStore", "Route-scoped signal store · ride", "ProfileView from progress, maps and rides")
+  Component(day, "rideDayLabel()", "Pure helper · ride", "Today, Yesterday, weekday or date")
+  Component(prog, "RiderProgressStore", "Signal store · ride (PROGRESS_STORE)", "Level, XP, rides, km, streak, stars, bests")
+  Component(ridesapi, "HttpRidesApi", "HTTP client · api (RIDES_API)", "GET /api/rides?take=10")
+  Component(cat, "CatalogueApi", "HTTP client · api (CATALOGUE_API)", "Maps in unlock order")
+  Component(outbox, "RideOutbox", "Service · domain/storage (RIDE_OUTBOX)", "Rides waiting to send")
+  Component(level, "ProfileLevel", "Presentation component · components", "Block profile-level")
+  Component(table, "MapTable", "Presentation component · components", "Block map-table")
+  Component(recent, "RecentRides", "Presentation component · components", "Block recent")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(rctl, "RidesController", "ASP.NET Core controller", "GET /api/rides")
+  Component(rq, "GetRecentRidesQueryHandler", "MediatR handler", "Newest rides of the rider")
+  Component(pctl, "ProgressController", "ASP.NET Core controller", "GET /api/progress")
+}
+ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Rides and progress")
+
+Rel(page, store, "Reads ProfileView")
+Rel(store, prog, "Reads progress")
+Rel(store, ridesapi, "listRecent(10)")
+Rel(store, cat, "getMaps()")
+Rel(store, outbox, "pending()")
+Rel(store, day, "Uses")
+Rel(page, level, "Renders")
+Rel(page, table, "Renders")
+Rel(page, recent, "Renders")
+Rel(prog, pctl, "GET /api/progress", "JSON/HTTPS")
+Rel(ridesapi, rctl, "GET /api/rides?take=10", "JSON/HTTPS")
+Rel(rctl, rq, "Sends GetRecentRidesQuery")
+Rel(rq, db, "Reads", "EF Core")
+@enduml

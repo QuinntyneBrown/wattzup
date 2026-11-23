@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Manage saved worlds
+Person(rider, "Rider", "Rides a smart bike at home")
+ContainerDb(cs, "Cache Storage", "telo-worlds", "World files, each with its name and size")
+Container_Boundary(app, "Ride app") {
+  Component(view, "DeviceSettings / Toast", "Presentation · components", "Saved worlds, clear, keep switch, toast")
+  Component(sstore, "SavedWorldsStore", "Page-scoped store · ride", "List, words, clear, toast")
+  Component(saved, "CacheStorageSavedWorlds", "Service · domain/storage (SAVED_WORLDS)", "list, clear")
+  Component(settings, "LocalRideSettingsStore", "Service · domain/storage (RIDE_SETTINGS)", "keepWorlds")
+  Component(loader, "FetchWorldDownloader", "Service · domain/storage (WORLD_DOWNLOADER)", "Downloads, saves while keeping worlds")
+}
+Rel(rider, view, "Clear saved worlds")
+Rel(view, sstore, "clear (via SettingsPage)")
+Rel(sstore, saved, "list, clear")
+Rel(loader, settings, "Reads keepWorlds")
+Rel(loader, cs, "match, put")
+Rel(saved, cs, "has, keys, match, delete")
+@enduml

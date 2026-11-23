@@ -1,0 +1,46 @@
+@startuml
+title UML sequence behaviour — Change sound mid-ride
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "SoundSettings" as view
+  participant "RaceStore / ClassRideStore" as ride
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "LocalRideSettingsStore" as store
+  participant "WebAudioRideSound" as engine
+end box
+participant "Web Audio" as audio
+actor -> view : Ride sound volume 70 % to 40 %
+view -> store : set('rideSoundVolume', 40)
+note over view, store : Settings and a ride never show together today; a ride\nopened later plays at the new volume (open question 1)
+actor -> ride : Start riding
+ride -> engine : play({cadence, speedKmh, resistance, running, videoPlaying})
+alt Ride sound on
+  engine -> audio : new AudioContext(); master gain, chain, freewheel, wind, tyre
+  engine -> audio : master.gain.setTargetAtTime(0.4, now, 0.03 s); past 95 % within 100 ms (L2-163 AC2)
+else Ride sound off
+  note right of engine : no audio context is made (L2-163 AC3)
+end
+loop every 50 ms while open
+  engine -> audio : ticks ahead on the audio clock; filters and gains follow the pedalling
+end
+opt Class video plays and "Mute ride sound under a class video" is on
+  engine -> audio : master to 0; back to the volume when the video pauses
+end
+ride -> engine : stop() when the ride finishes or the rider leaves
+engine -> audio : close()
+@enduml

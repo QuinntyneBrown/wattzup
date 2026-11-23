@@ -1,0 +1,53 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Switch theme and full screen
+hide empty members
+
+class BrowserDisplayPreferences <<domain>> {
+  -deviceAsksLight: Signal<boolean>
+  +theme: Signal<'dark' | 'light'>
+  +reducedMotion: Signal<boolean>
+}
+interface Fullscreen <<api>> {
+  +available: Signal<boolean>
+  +active: Signal<boolean>
+  +enter(): void
+  +exit(): void
+}
+class BrowserFullscreen <<domain/browser>> {
+  -onChange(): void
+}
+class FullscreenToggle <<components>> {
+  +active: InputSignal<boolean>
+  +toggled: OutputEmitterRef<void>
+  name: "Full screen" | "Exit full screen"
+}
+class "Page header" as Header <<ride>> {
+  -fullscreen: Fullscreen
+  +toggleFullscreen(): void
+}
+class FullscreenButton <<ride>> {
+  -fullscreen: Fullscreen
+  -toggle(): void
+}
+class "Slotted header" as Slotted <<components>> {
+  slot="end"
+}
+BrowserFullscreen ..|> Fullscreen
+Header --> Fullscreen : injects FULLSCREEN
+Header *-- FullscreenToggle
+FullscreenButton --> Fullscreen : injects FULLSCREEN
+FullscreenButton *-- FullscreenToggle : only where available
+Slotted o-- FullscreenButton : projected by the page
+@enduml

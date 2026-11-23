@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Validate input and encode output
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Bluetooth LE")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Renders untrusted text as text; branches on error codes")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Validates every request and hub message; returns ProblemDetails")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Parameterised queries only")
+}
+Rel(rider, app, "Uses", "HTTPS")
+Rel(bike, app, "Device name, notifications", "Web Bluetooth")
+Rel(app, api, "Requests and hub messages", "JSON/HTTPS, WebSocket")
+Rel(api, db, "Parameterised queries", "EF Core")
+@enduml

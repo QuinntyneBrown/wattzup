@@ -1,0 +1,7 @@
+<div class="map-stars">
+  <h2 class="map-stars__title">{{ view().title }}</h2>
+  <wz-stars class="map-stars__stars" [earned]="view().held" size="lg" />
+  @if (view().newLine; as newLine) {
+    <p class="map-stars__new">{{ newLine }}</p>
+  }
+</div>

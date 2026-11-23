@@ -1,0 +1,18 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Start a class
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(youtube, "YouTube", "Class videos")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Class Start screen")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Session schedule and ride hub")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Group class sessions and seats")
+}
+Rel(rider, app, "Uses", "HTTPS")
+Rel(app, api, "GET /api/classes/{classId}/sessions", "JSON/HTTPS")
+Rel(app, api, "JoinClassSession", "SignalR /hubs/ride")
+Rel(app, youtube, "Embeds player", "HTTPS")
+Rel(api, db, "Reads and writes seats", "EF Core")
+@enduml

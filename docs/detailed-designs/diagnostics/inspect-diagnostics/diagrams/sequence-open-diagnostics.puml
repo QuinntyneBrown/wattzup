@@ -1,0 +1,47 @@
+@startuml
+title UML sequence behaviour — Open diagnostics
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "Profile row or custom ride status" as opener
+  participant "openDiagnostics()" as launcher
+  participant "DiagnosticsDialog" as dialog
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "BrowserDiagnostics" as reporter
+  participant "BikeConnection" as conn
+  participant "BikeConnectionHistory" as history
+  database "RidesWaiting" as outbox
+end box
+actor -> opener : Choose Diagnostics
+opener -> launcher : openDiagnostics(dialog, injector)
+launcher -> launcher : import() the dialog chunk
+launcher -> dialog : Dialog.open, modal, labelled "Diagnostics"; the app goes inert (L2-113 AC1)
+dialog -> reporter : facts()
+reporter -> conn : bike, ble
+reporter -> history : connectedSince, reconnects
+reporter -> outbox : oldestFirst().length
+alt connected bike
+  reporter --> dialog : Browser "Chrome 126 · macOS 14.5", Web Bluetooth "Available", Page,\nBike "Echelon EX-5s · 0bf669f1", Connection "Connected · 6m 52s",\nLast command "RES 8 · plan · ack 41 ms", Reconnects "0 this ride",\nRides waiting to send, App version "2.0.0 · client 7f3c2a1" (L2-113 AC2)
+else no bike picked
+  reporter --> dialog : Bike "None picked yet"; no Connection, Signal, Last command or Reconnects (L2-113 AC3)
+else Bluetooth off
+  reporter --> dialog : Web Bluetooth "Supported · adapter off", Bike "Echelon EX-5s · last seen 2 days ago" (L2-113 AC4)
+end
+dialog --> actor : Facts and "Everything here is read in your browser and stays on this device until you download it." (L2-113 AC5)
+actor -> dialog : "Close diagnostics" or Escape
+dialog --> opener : The focus returns to the opening control (L2-113 AC1)
+@enduml

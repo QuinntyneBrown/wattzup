@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Custom workout · needs-https — Telo Ride mocks</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="custom-setup">
+<meta name="mock:state" content="needs-https">
+<meta name="mock:requirements" content="L2-008 L2-009 L2-010 L2-094 L2-095 L2-096 L2-097 L2-098 L2-099 L2-100">
+<meta name="description" content="The GCN ladder set up on plain http: the browser notice offers the HTTPS page, and Start ride is disabled.">
+<link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="app">
+  <header class="training-header">
+    <span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span>
+    <div class="training-header__divider" aria-hidden="true"></div>
+    <span class="training-header__bike">Echelon EX-5s</span>
+    <a class="training-header__close" href="../profile/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>Close</a>
+    <button class="icon-btn" type="button" aria-label="Full screen" title="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+  </header>
+  <div class="browser-notice" role="alert">
+    <svg class="icon icon--lg browser-notice__icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    <p class="browser-notice__text"><span class="browser-notice__title">Open the secure version of this page.</span> <span class="browser-notice__body">Bluetooth is blocked on plain http, so the bike can’t connect.</span></p>
+    <a class="btn btn--primary browser-notice__action" href="default.html">Open over HTTPS<svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a>
+  </div>
+
+  <main id="main" class="setup">
+    <section class="setup__settings" aria-labelledby="setup-title">
+      <div class="setup__form">
+        <h1 class="setup__title" id="setup-title">Set up your ride</h1>
+        <p class="setup__lead">Telo Ride drives the bike's resistance for you. Pick how.</p>
+
+        <div class="training-modes" role="radiogroup" aria-label="Training mode">
+          <button class="training-mode" type="button" role="radio" aria-checked="true">
+            <span class="training-mode__head"><span class="training-mode__radio" aria-hidden="true"></span><span class="training-mode__title">HIIT intervals</span></span>
+            <span class="training-mode__body">Hard and easy efforts on repeat. Resistance switches at every interval.</span>
+          </button>
+          <button class="training-mode" type="button" role="radio" aria-checked="false">
+            <span class="training-mode__head"><span class="training-mode__radio" aria-hidden="true"></span><span class="training-mode__title">Flat resistance</span></span>
+            <span class="training-mode__body">One level, held the whole ride. You set the pace with your legs.</span>
+          </button>
+        </div>
+
+        <div class="setup__section">
+          <div class="preset-chips" role="group" aria-label="Plans">
+          <button class="preset-chip" type="button" aria-pressed="true">GCN 30-min HIIT</button>
+          <button class="preset-chip" type="button" aria-pressed="false">Tabata</button>
+          <button class="preset-chip" type="button" aria-pressed="false">40 / 20</button>
+          <button class="preset-chip" type="button" aria-pressed="false">Minute on</button>
+          <button class="preset-chip" type="button" aria-pressed="false">Long climbs</button>
+          </div>
+
+          <section class="ladder-block" aria-labelledby="ladder-title">
+            <div class="ladder-block__head">
+              <h2 class="ladder-block__title" id="ladder-title">GCN 30-min HIIT · GCN Training</h2>
+              <button class="ladder-block__same" type="button">Make every round the same</button>
+            </div>
+        <div class="interval-ladder">
+              <div class="interval-ladder__head" aria-hidden="true">
+                <span>#</span>
+                <span class="interval-ladder__key"><span class="kind-swatch"></span>Effort</span>
+                <span class="interval-ladder__key"><span class="kind-swatch kind-swatch--rest"></span>Recover</span>
+                <span></span>
+              </div>
+              <ol class="interval-ladder__rows" aria-label="Rounds">
+                <li class="interval-ladder__row">
+                  <span class="interval-ladder__num">1</span>
+                  <div class="mini-stepper">
+                    <button class="mini-stepper__btn" type="button" aria-label="Shorter effort 1"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                    <span class="mini-stepper__value">0:30</span>
+                    <button class="mini-stepper__btn" type="button" aria-label="Longer effort 1"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                  </div>
+                  <div class="mini-stepper">
+                    <button class="mini-stepper__btn" type="button" aria-label="Shorter recovery 1"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                    <span class="mini-stepper__value">3:00</span>
+                    <button class="mini-stepper__btn" type="button" aria-label="Longer recovery 1"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                  </div>
+                  <button class="interval-ladder__remove" type="button" aria-label="Remove round 1"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+                </li>
+                <li class="interval-ladder__row">
+                  <span class="interval-ladder__num">2</span>
+                  <div class="mini-stepper">
+                    <button class="mini-stepper__btn" type="button" aria-label="Shorter effort 2"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                    <span class="mini-stepper__value">0:30</span>
+                    <button class="mini-stepper__btn" type="button" aria-label="Longer effort 2"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                  </div>
+                  <div class="mini-stepper">
+                    <button class="mini-stepper__btn" type="button" aria-label="Shorter recovery 2"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                    <span class="mini-stepper__value">2:30</span>
+                    <button class="mini-stepper__btn" type="button" aria-label="Longer recovery 2"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                  </div>
+                  <button class="interval-ladder__remove" type="button" aria-label="Remove round 2"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+                </li>
+                <li class="interval-ladder__row">
+                  <span class="interval-ladder__num">3</span>
+                  <div class="mini-stepper">
+                    <button class="mini-stepper__btn" type="button" aria-label="Shorter effort 3"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                    <span class="mini-stepper__value">0:30</span>
+                    <button class="mini-stepper__btn" type="button" aria-label="Longer effort 3"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                  </div>
+                  <div class="mini-stepper">
+                    <button class="mini-stepper__btn" type="button" aria-label="Shorter recovery 3"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                    <span class="mini-stepper__value">2:30</span>
+                    <button class="mini-stepper__btn" type="button" aria-label="Longer recovery 3"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                  </div>
+                  <button class="interval-ladder__remove" type="button" aria-label="Remove round 3"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+                </li>
+                <li class="interval-ladder__row">
+                  <span class="interval-ladder__num">4</span>
+                  <div class="mini-stepper">
+                    <button class="mini-stepper__btn" type="button" aria-label="Shorter effort 4"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                    <span class="mini-stepper__value">0:30</span>
+                    <button class="mini-stepper__btn" type="button" aria-label="Longer effort 4"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                  </div>
+                  <div class="mini-stepper">
+                    <button class="mini-stepper__btn" type="button" aria-label="Shorter recovery 4"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                    <span class="mini-stepper__value">2:00</span>
+                    <button class="mini-stepper__btn" type="button" aria-label="Longer recovery 4"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                  </div>
+                  <button class="interval-ladder__remove" type="button" aria-label="Remove round 4"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+                </li>
+                <li class="interval-ladder__row">
+                  <span class="interval-ladder__num">5</span>
+                  <div class="mini-stepper">
+                    <button class="mini-stepper__btn" type="button" aria-label="Shorter effort 5"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                    <span class="mini-stepper__value">0:30</span>
+                    <button class="mini-stepper__btn" type="button" aria-label="Longer effort 5"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                  </div>
+                  <div class="mini-stepper">
+                    <button class="mini-stepper__btn" type="button" aria-label="Shorter recovery 5"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                    <span class="mini-stepper__value">2:00</span>
+                    <button class="mini-stepper__btn" type="button" aria-label="Longer recovery 5"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                  </div>
+                  <button class="interval-ladder__remove" type="button" aria-label="Remove round 5"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+                </li>
+                <li class="interval-ladder__row">
+                  <span class="interval-ladder__num">6</span>
+                  <div class="mini-stepper">
+                    <button class="mini-stepper__btn" type="button" aria-label="Shorter effort 6"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                    <span class="mini-stepper__value">0:30</span>
+                    <button class="mini-stepper__btn" type="button" aria-label="Longer effort 6"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                  </div>
+                  <div class="mini-stepper">
+                    <button class="mini-stepper__btn" type="button" aria-label="Shorter recovery 6"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                    <span class="mini-stepper__value">1:30</span>
+                    <button class="mini-stepper__btn" type="button" aria-label="Longer recovery 6"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                  </div>
+                  <button class="interval-ladder__remove" type="button" aria-label="Remove round 6"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+                </li>
+                <li class="interval-ladder__row">
+                  <span class="interval-ladder__num">7</span>
+                  <div class="mini-stepper">
+                    <button class="mini-stepper__btn" type="button" aria-label="Shorter effort 7"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                    <span class="mini-stepper__value">0:30</span>
+                    <button class="mini-stepper__btn" type="button" aria-label="Longer effort 7"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                  </div>
+                  <div class="mini-stepper">
+                    <button class="mini-stepper__btn" type="button" aria-label="Shorter recovery 7"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                    <span class="mini-stepper__value">1:30</span>
+                    <button class="mini-stepper__btn" type="button" aria-label="Longer recovery 7"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                  </div>
+                  <button class="interval-ladder__remove" type="button" aria-label="Remove round 7"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+                </li>
+                <li class="interval-ladder__row">
+                  <span class="interval-ladder__num">8</span>
+                  <div class="mini-stepper">
+                    <button class="mini-stepper__btn" type="button" aria-label="Shorter effort 8"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                    <span class="mini-stepper__value">0:30</span>
+                    <button class="mini-stepper__btn" type="button" aria-label="Longer effort 8"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                  </div>
+                  <span class="interval-ladder__into">Into cool-down</span>
+                  <button class="interval-ladder__remove" type="button" aria-label="Remove round 8"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+                </li>
+              </ol>
+              <button class="interval-ladder__add" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add round</button>
+            </div>
+          </section>
+
+          <div class="level-sliders">
+            <div class="level-slider">
+              <div class="level-slider__head">
+                <label class="level-slider__label" for="level-work-resistance">Work resistance</label>
+                <span class="level-slider__value" aria-hidden="true">24<span class="level-slider__max"> / 32</span></span>
+              </div>
+              <input class="range" id="level-work-resistance" type="range" min="1" max="32" value="24">
+              <div class="level-slider__scale" aria-hidden="true"><span>Light</span><span>Max</span></div>
+            </div>
+            <div class="level-slider level-slider--rest">
+              <div class="level-slider__head">
+                <label class="level-slider__label" for="level-recover-resistance">Recover resistance</label>
+                <span class="level-slider__value" aria-hidden="true">6<span class="level-slider__max"> / 32</span></span>
+              </div>
+              <input class="range" id="level-recover-resistance" type="range" min="1" max="32" value="6">
+              <div class="level-slider__scale" aria-hidden="true"><span>Light</span><span>Max</span></div>
+            </div>
+          </div>
+
+          <div class="training-steppers training-steppers--ruled">
+            <div class="training-stepper" role="group" aria-labelledby="stepper-warm-up">
+              <div class="training-stepper__label" id="stepper-warm-up">Warm-up</div>
+              <div class="training-stepper__row">
+                <button class="training-stepper__btn" type="button" aria-label="Less Warm-up"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                <span class="training-stepper__value">5:00</span>
+                <button class="training-stepper__btn" type="button" aria-label="More Warm-up"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+            <div class="training-stepper" role="group" aria-labelledby="stepper-cool-down">
+              <div class="training-stepper__label" id="stepper-cool-down">Cool-down</div>
+              <div class="training-stepper__row">
+                <button class="training-stepper__btn" type="button" aria-label="Less Cool-down"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                <span class="training-stepper__value">6:00</span>
+                <button class="training-stepper__btn" type="button" aria-label="More Cool-down"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="setup__video">
+          <div class="setup-toggle">
+            <span id="video-toggle"><span class="setup-toggle__label">Ride along to a video</span><span class="setup-toggle__detail">Plays in sync on the dashboard</span></span>
+            <button class="switch" type="button" role="switch" aria-checked="true" aria-labelledby="video-toggle"></button>
+          </div>
+          <div class="video-sync">
+            <label class="video-sync__label" for="video-url">YouTube link</label>
+            <input class="input video-sync__url" id="video-url" type="url" value="https://www.youtube.com/watch?v=QUoToFsMNig" placeholder="https://www.youtube.com/watch?v=…">
+            <div class="video-sync__player">
+              <img class="photo" src="../../assets/images/classes/gcn-30-hiit.jpg" alt="GCN Training: 30 Minute HIIT Cardio, video preview">
+              <p class="mock-note">The YouTube player loads here, parked at 0:12.0 with its own controls; the mock shows the video's thumbnail.</p>
+            </div>
+            <div class="video-sync__controls">
+              <div>
+                <label class="video-sync__offset-label" for="video-offset">Ride 0:00 starts at</label>
+                <div class="video-sync__offset">
+                  <button class="training-stepper__btn" type="button" aria-label="Half a second earlier"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                  <input class="video-sync__offset-input" id="video-offset" type="text" inputmode="decimal" value="0:12.0">
+                  <button class="training-stepper__btn" type="button" aria-label="Half a second later"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                </div>
+              </div>
+              <div class="video-sync__actions">
+                <button class="btn btn--light video-sync__action" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="22" x2="18" y1="12" y2="12"/><line x1="6" x2="2" y1="12" y2="12"/><line x1="12" x2="12" y1="6" y2="2"/><line x1="12" x2="12" y1="22" y2="18"/></svg>Use video's current time</button>
+                <button class="btn btn--raised video-sync__action video-sync__action--quiet" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg>Check</button>
+              </div>
+            </div>
+            <p class="video-sync__help">Scrub the preview past the intro to the moment the warm-up begins, then use that time. The video skips to it when you start, and pauses and resumes with the ride.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="plan-preview" aria-labelledby="preview-title">
+      <h2 class="plan-preview__label" id="preview-title">Your ride</h2>
+      <p class="plan-preview__total">30:00</p>
+      <svg class="plan-preview__chart" viewBox="0 0 1800 32" preserveAspectRatio="none" role="img" aria-label="Resistance profile">
+        <rect class="plan-preview__bar--warmup" x="3.6" width="292.8" y="24" height="8"/>
+        <rect class="plan-preview__bar--work" x="303.6" width="22.8" y="8" height="24"/>
+        <rect class="plan-preview__bar--rest" x="333.6" width="172.8" y="26" height="6"/>
+        <rect class="plan-preview__bar--work" x="513.6" width="22.8" y="8" height="24"/>
+        <rect class="plan-preview__bar--rest" x="543.6" width="142.8" y="26" height="6"/>
+        <rect class="plan-preview__bar--work" x="693.6" width="22.8" y="8" height="24"/>
+        <rect class="plan-preview__bar--rest" x="723.6" width="142.8" y="26" height="6"/>
+        <rect class="plan-preview__bar--work" x="873.6" width="22.8" y="8" height="24"/>
+        <rect class="plan-preview__bar--rest" x="903.6" width="112.8" y="26" height="6"/>
+        <rect class="plan-preview__bar--work" x="1023.6" width="22.8" y="8" height="24"/>
+        <rect class="plan-preview__bar--rest" x="1053.6" width="112.8" y="26" height="6"/>
+        <rect class="plan-preview__bar--work" x="1173.6" width="22.8" y="8" height="24"/>
+        <rect class="plan-preview__bar--rest" x="1203.6" width="82.8" y="26" height="6"/>
+        <rect class="plan-preview__bar--work" x="1293.6" width="22.8" y="8" height="24"/>
+        <rect class="plan-preview__bar--rest" x="1323.6" width="82.8" y="26" height="6"/>
+        <rect class="plan-preview__bar--work" x="1413.6" width="22.8" y="8" height="24"/>
+        <rect class="plan-preview__bar--cooldown" x="1443.6" width="352.8" y="26" height="6"/>
+      </svg>
+      <div class="plan-preview__axis" aria-hidden="true"><span>0:00</span><span>30:00</span></div>
+      <dl class="plan-preview__facts">
+      <div class="plan-preview__fact"><dt>Structure</dt><dd>8 × 0:30 · 3:00 → 1:30 recover</dd></div>
+      <div class="plan-preview__fact"><dt>Time under load</dt><dd>4:00</dd></div>
+      <div class="plan-preview__fact"><dt>Video</dt><dd>Synced from 0:12.0</dd></div>
+      <div class="plan-preview__fact"><dt>Peak resistance</dt><dd>Level 24</dd></div>
+      <div class="plan-preview__fact"><dt>Expected avg power</dt><dd>~154 W</dd></div>
+      <div class="plan-preview__fact"><dt>Expected energy</dt><dd>~276 kcal</dd></div>
+      </dl>
+      <div class="plan-preview__foot">
+        <div class="plan-preview__legend" aria-hidden="true">
+          <span class="plan-preview__legend-item"><span class="kind-swatch"></span>Work</span>
+          <span class="plan-preview__legend-item"><span class="kind-swatch kind-swatch--rest"></span>Recover</span>
+        </div>
+        <button class="btn btn--primary btn--xl btn--block plan-preview__start" type="button" disabled aria-describedby="start-blocked">Start ride</button>
+        <p class="plan-preview__blocked" id="start-blocked">Needs the HTTPS page to reach the bike.</p>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="All mocks">⌂</a>
+  <span class="mock-bar__screen">Custom workout</span>
+  <ul class="mock-bar__states">
+    <li><a href="default.html">default</a></li>
+    <li><a href="flat.html">flat</a></li>
+    <li><a href="needs-chromium.html">needs-chromium</a></li>
+    <li><a href="needs-https.html" aria-current="page">needs-https</a></li>
+    <li><a href="edited.html">edited</a></li>
+    <li><a href="video-off.html">video-off</a></li>
+    <li><a href="invalid-link.html">invalid-link</a></li>
+  </ul>
+  <button type="button" data-theme-toggle aria-pressed="true">☀ Light</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

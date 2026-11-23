@@ -1,0 +1,77 @@
+// Block field and its input (docs/design-system/assets/components.css, Text field): a label, a large input, and the
+// hint or the error under it. Shared by the forms that draw a field in their own encapsulated stylesheet.
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+}
+
+.field__label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-muted);
+}
+
+.input {
+  --field-bg: var(--color-ink);
+  --field-border: var(--color-line-strong);
+
+  width: 100%;
+  height: var(--control-height-lg);
+  border-radius: var(--radius-lg);
+  border: var(--border-width-hairline) solid var(--field-border);
+  background: var(--field-bg);
+  padding-inline: var(--space-4);
+  font: inherit;
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+
+  &::placeholder {
+    color: var(--color-faint);
+  }
+
+  &:hover:not(:disabled) {
+    --field-border: var(--color-muted);
+  }
+
+  &:focus-visible {
+    outline-offset: 0;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &[aria-invalid='true'] {
+    --field-border: var(--color-heart);
+  }
+}
+
+.field__error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-heart-fg);
+}
+
+.field__error-icon {
+  flex-shrink: 0;
+  width: var(--space-3-5);
+  height: var(--space-3-5);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.field__hint {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-faint);
+}

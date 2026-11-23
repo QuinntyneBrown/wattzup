@@ -1,0 +1,15 @@
+// Block app: the full-height column of the header over the scrolling page.
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--color-ink);
+  color: var(--color-fg);
+}
+
+.app__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}

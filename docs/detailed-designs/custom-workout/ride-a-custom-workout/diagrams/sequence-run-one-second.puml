@@ -1,0 +1,47 @@
+@startuml
+title UML sequence behaviour — Run one second of a custom ride
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "CustomRidePage" as page
+  participant "CustomRideStore" as store
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "RideClock" as clock
+  participant "WorkoutEngine" as engine
+  participant "WebBluetoothBikeConnection" as conn
+  participant "PowerModel" as power
+  participant "PowerTrace" as ptrace
+  participant "RideRecorder" as recorder
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "Smart bike" as bike
+end box
+bike -> conn : Telemetry notification
+conn --> store : cadence 73, resistance 6, speed, heart rate
+store -> clock : elapsed()
+clock --> store : 412 s (6:52)
+store -> engine : position()
+engine --> store : Segment 3 of 17, Recover, round 1, 1:38 left; next Work 0:30 at level 24
+store -> power : estimate(73, 6); targetPower(6, 72)
+power --> store : 107 W, target 107 W, On target
+store -> ptrace : write(412, 107)
+store -> recorder : second(telemetry, 107)
+recorder --> store : Avg 156 W, 2.24 km, 64 kcal
+store --> page : Header "Elapsed 6:52 of 30:00"; readouts; card bar 46 %; metrics L2-102, L2-104
+page -> page : Bar eases over 1000 ms (none with reduced motion) L2-102 AC3
+page --> rider : Dashboard updated
+@enduml

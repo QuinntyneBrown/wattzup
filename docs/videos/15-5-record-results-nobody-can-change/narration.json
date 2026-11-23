@@ -1,0 +1,71 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "A live race's result now belongs to the service: places, times and output nobody's browser can change."
+      ]
+    },
+    {
+      "id": "end",
+      "bars": 5,
+      "lines": [
+        "The race ends when every rider has finished or dropped out, or two minutes after the first one finished."
+      ]
+    },
+    {
+      "id": "locked",
+      "bars": 5,
+      "lines": [
+        "The service records each place, time and output from the progress it saw, and a submitted ride takes them from there."
+      ]
+    },
+    {
+      "id": "pending",
+      "bars": 5,
+      "lines": [
+        "Finish before the result is in, and Results says it is recording; the app asks again every five seconds."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 5,
+      "lines": [
+        "Once the service has it, the XP arrives, from a phone to the full screen."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: the service's place wins, the race ends on time, and the app waits for it."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

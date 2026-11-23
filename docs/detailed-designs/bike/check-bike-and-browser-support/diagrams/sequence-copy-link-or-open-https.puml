@@ -1,0 +1,45 @@
+@startuml
+title UML sequence behaviour — Copy the link or open over HTTPS
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "CustomRidePage" as page
+  participant "BrowserPanel" as panel
+  participant "Clipboard (CDK)" as clip
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "WebBluetoothSupport" as support
+end box
+box "Hosting — Azure App Service (ADR 0026)" #F2F4F7
+  participant "Telo.Ride.Api" as host
+end box
+alt unsupported browser
+  actor -> panel : Press Copy link
+  panel -> page : copyLink
+  page -> clip : copy(location.href) (L2-008 AC3)
+  clip --> page : true
+  page -> panel : copied = true
+  panel --> actor : Button shows its copied state
+else insecure page
+  actor -> panel : Press Open over HTTPS
+  panel -> page : openSecure
+  page -> support : secureUrl()
+  support --> page : https:// + host + same path (L2-009 AC1)
+  page -> host : Navigate to the https address
+  host --> page : Page over HTTPS with Strict-Transport-Security (L2-009 AC2)
+  page --> actor : No HTTPS notice (L2-009 AC3)
+end
+@enduml

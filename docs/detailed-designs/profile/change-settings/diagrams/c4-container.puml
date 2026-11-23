@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Change settings
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Bluetooth LE")
+System_Ext(strap, "Heart-rate strap", "Bluetooth LE")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Sign-in, progress, catalogues, ride hub, feedback")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Riders, sessions, rides, progress, feedback")
+}
+Rel(rider, app, "Uses the Settings aside on Profile", "HTTPS")
+Rel(app, bike, "Reads paired bike and ble state", "Web Bluetooth")
+Rel(app, strap, "Connects", "Web Bluetooth")
+Rel(app, api, "Display name, sign out, delete account", "JSON/HTTPS")
+Rel(api, db, "Updates the rider and sessions", "EF Core")
+@enduml

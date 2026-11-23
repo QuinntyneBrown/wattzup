@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Structure the backend
+
+Container(app, "Ride app", "Angular", "Client")
+ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Schema by migrations")
+Container_Boundary(api, "Telo Ride API") {
+  Component(web, "Telo.Ride.Api", ".NET project", "Controllers, RideHub, ProblemDetailsExceptionHandler, fallback policy, migrate command")
+  Component(infra, "Telo.Ride.Infrastructure", ".NET project", "AppDbContext, migrations, cookie auth, IEmailSender, TeloRideMetrics")
+  Component(appl, "Telo.Ride.Application", ".NET project", "MediatR handlers, validators, DTOs, IAppDbContext, ValidationBehavior")
+  Component(dom, "Telo.Ride.Domain", ".NET project", "Entities, value objects, domain services")
+}
+Rel(app, web, "HTTPS and SignalR")
+Rel(web, infra, "References")
+Rel(infra, appl, "References; implements IAppDbContext")
+Rel(appl, dom, "References")
+Rel(infra, db, "Reads and writes", "EF Core")
+@enduml

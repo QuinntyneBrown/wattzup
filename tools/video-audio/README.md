@@ -5,8 +5,8 @@ under it, and writes the MP3, `captions.vtt` and `timing.js`. Standard: `docs/vi
 "Narration" and "Music".
 
 ```
-.cache/video-venv/bin/python tools/video-audio/film_audio.py docs/videos/NN-journey-JJ-topic          # everything
-.cache/video-venv/bin/python tools/video-audio/film_audio.py docs/videos/NN-journey-JJ-topic --grid   # timing.js only, nothing spoken
+.cache/video-venv/bin/python tools/video-audio/film_audio.py docs/videos/S-s-slice-name          # everything
+.cache/video-venv/bin/python tools/video-audio/film_audio.py docs/videos/S-s-slice-name --grid   # timing.js only, nothing spoken
 .cache/video-venv/bin/python tools/video-audio/tempo.py docs/videos/assets/music/<slug>.mp3           # the track's BPM and first beat
 ```
 
@@ -36,7 +36,7 @@ and write the voice out of `voices-v1.0.bin` as raw float32,
   "outroSeconds": 3,
   "music": { "file": "../assets/music/<slug>.mp3", "offset": 0.29, "duckDb": 16, "betweenDb": 5, "fadeSeconds": 2 },
   "scenes": [
-    { "id": "hook", "bars": 4, "lines": ["Pick a plan, press Start ride.", "Wattzup drives the bike."] },
+    { "id": "hook", "bars": 4, "lines": ["Pick a plan, press Start ride.", "Telo Ride sets the resistance."] },
     { "id": "sizes", "bars": 5, "lines": [{ "text": "The same screen fits a phone and a desktop.", "at": 2, "caption": "…" }] },
     { "id": "close", "seconds": 6 }
   ]

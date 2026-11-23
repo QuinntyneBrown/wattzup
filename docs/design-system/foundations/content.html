@@ -3,17 +3,41 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Content — Wattzup design system</title>
-<meta name="description" content="Voice, casing, numbers and the microcopy library.">
+<title>Content — Telo Ride design system</title>
+<meta name="description" content="Telo Ride's voice and tone, sentence case, button verbs, numbers and units, times, error and empty-state formulas and a microcopy library, all from the mocks.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Shared by the foundations-b pages: wide reference tables keep a readable width and scroll
+   inside .ds-table-wrap on phones instead of crushing their columns. */
+.ds-table-wrap { --doc-table-min: 40rem; }
+.ds-table-wrap > .ds-table { min-width: var(--doc-table-min); }
+.ds-themes + ul, .ds-themes + p, .ds-example + ul { margin-top: var(--space-4); }
+/* Content page only */
+.ct-voice { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--space-48)), 1fr)); margin-block: var(--space-4); }
+.ct-voice > div { padding: var(--space-4); border-radius: var(--radius-lg); border: var(--border-width-hairline) solid var(--color-border-default); background: var(--color-bg-surface); }
+.ct-voice b { display: block; font: var(--text-label); }
+.ct-voice p { margin-top: var(--space-2); font: var(--text-body-sm); color: var(--color-fg-muted); }
+.ct-voice q { display: block; margin-top: var(--space-3); font: var(--text-body-sm); color: var(--color-fg-default); }
+.ct-greeting { font: var(--text-h1); letter-spacing: var(--letter-spacing-tight); }
+.ct-formula { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; margin-block: var(--space-4); font: var(--text-label); }
+.ct-formula span { padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); background: var(--color-bg-subtle); }
+.ct-formula i { font-style: normal; color: var(--color-fg-subtle); }
+.ct-stack { flex: 1 1 100%; display: grid; gap: var(--space-4); }
+.ct-stack .connect-blocker { margin-top: 0; }
+.ct-empty { max-width: var(--layout-panel-narrow); }
+.ct-empty h3 { margin: 0; font: var(--text-h3); }
+.ct-empty p { margin-top: var(--space-2); font: var(--text-body-sm); color: var(--color-fg-muted); }
+.ct-empty .btn { margin-top: var(--space-4); }
+.app-header a, a.btn { text-decoration: none; }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +52,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,39 +106,284 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Foundation</p>
       <h1>Content</h1>
-      <p class="ds-lead">Short, plain, numeric. The rider is mid-effort: say the number, say what happens next.</p>
-      
-      <ul class="ds-toc"><li><a href="#voice">Voice</a></li><li><a href="#numbers">Numbers</a></li><li><a href="#library">Microcopy library</a></li><li><a href="#tokens">All tokens</a></li></ul>
+      <p class="ds-lead">Telo Ride talks like a coach standing next to the bike: short, second person, specific. “Evening, Sam.” “Finish top 3 vs Bots on Old Town Criterium.” “Pedal once to wake it up.”</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#voice">Voice and tone</a></li><li><a href="#casing">Capitalisation and punctuation</a></li><li><a href="#buttons">Buttons and links</a></li><li><a href="#numbers">Numbers and units</a></li><li><a href="#dates">Dates and times</a></li><li><a href="#errors">Error messages</a></li><li><a href="#empty">Empty states</a></li><li><a href="#microcopy">Microcopy library</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#tokens">Tokens</a></li></ul>
     </header>
-    <section class="ds-section" id="voice"><h2><a href="#voice">Voice</a></h2>
-<ul><li>Plain words; no jargon in the UI (packets and BLE live in diagnostics).</li><li>Spec terms: step, cycle, resistance, target resistance.</li><li>Sentence case.</li></ul>
-    </section>
-    <section class="ds-section" id="numbers"><h2><a href="#numbers">Numbers</a></h2>
-<ul><li>Times m:ss, h:mm:ss over an hour.</li><li>Units always: W, rpm, km/h · mph, kcal.</li><li>Real minus for deltas: −185 W.</li></ul>
-    </section>
-    <section class="ds-section" id="library"><h2><a href="#library">Microcopy library</a></h2>
-<table class="ds-table"><thead><tr><th scope="col">Situation</th><th scope="col">Copy</th></tr></thead><tbody><tr><td>Start</td><td>Start ride</td></tr><tr><td>Confirm end</td><td>End this ride? / Keep riding / End ride</td></tr><tr><td>Lost bike</td><td>Lost the bike — wake it with a pedal stroke, then reconnect.</td></tr><tr><td>Scanning</td><td>Looking for your bike</td></tr><tr><td>Pending level</td><td>Setting 22…</td></tr><tr><td>Confirmed</td><td>Resistance set to 20</td></tr><tr><td>No Bluetooth</td><td>Open Wattzup in Chrome or Edge.</td></tr><tr><td>Empty</td><td>No ride yet / Set up a ride</td></tr><tr><td>404</td><td>This page isn’t part of your ride</td></tr></tbody></table>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">All tokens</a></h2>
-<p>0 tokens. Values resolve live for each theme.</p><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody></tbody></table></div>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+      <p>Every word on this page comes from the mocks. Telo Ride's copy is short because the rider is reading it between efforts, second person because it is about them, and specific because a coach who says “nice work” is less use than one who says “Finish top 3 vs Bots on Old Town Criterium”.</p>
+      <p>Use this page to write new screens, notices and labels. The <a href="../patterns/content-and-tone.html">Content and tone pattern</a> shows the same rules applied to whole screens.</p>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="voice"><h2><a href="#voice">Voice and tone</a></h2>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--canvas"><p class="ct-greeting">Evening, Sam.</p><span class="text-muted">Old Town Criterium · 14.2 km · Easy</span></div>
+        <div class="ds-example__caption"><span>Home greets the rider by name and time of day, then gets straight to the next ride.</span></div>
+      </div>
+      <div class="ct-voice">
+        <div><b>Short</b><p>One idea per sentence; fragments are fine where a label would be.</p><q>Pedal once to wake it up.</q></div>
+        <div><b>Second person</b><p>Talk to the rider about their ride. “You”, “your best”, never “the user”.</p><q>Your best here: 27:10</q></div>
+        <div><b>Coach-like</b><p>Say what to do next and why it matters. Encourage with facts, not exclamation marks.</p><q>Keep pedalling easy. Resistance is set for the first stretch.</q></div>
+        <div><b>Specific</b><p>Name the map, the bike, the number. Vague praise is noise.</p><q>A top 3 here earns the second star.</q></div>
+        <div><b>Honest about limits</b><p>Say what will not work and what will, without blame.</p><q>Safari and Firefox don’t support Web Bluetooth yet.</q></div>
+        <div><b>Calm under failure</b><p>When something breaks mid-ride, lead with what is safe.</p><q>Your ride is saved at 6:52.</q></div>
+      </div>
+      <h3>Tone by moment</h3>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Moment</th><th scope="col">Tone</th><th scope="col">From the mocks</th></tr></thead>
+        <tbody>
+          <tr><td>Arriving</td><td>Warm, brief</td><td>“Evening, Sam.” · “Welcome, Sam. Your first race opens a new map.”</td></tr>
+          <tr><td>Choosing a ride</td><td>Plain, factual</td><td>“Solo. A ghost of your fastest ride sets the pace.” · “9 computer riders. Starts the moment you’re ready.”</td></tr>
+          <tr><td>Waiting to start</td><td>Coaching</td><td>“Keep pedalling easy. Resistance is set for the first stretch.”</td></tr>
+          <tr><td>Riding</td><td>Almost silent: numbers and labels</td><td>“Target 418 W” · “Aim for 80” · “Next: Recover · 3:00 at level 6”</td></tr>
+          <tr><td>Something broke</td><td>Calm, direct, one action</td><td>“Lost the bike. Echelon EX-5s stopped answering. Wake it with a pedal stroke, then reconnect.”</td></tr>
+          <tr><td>Finishing</td><td>Proud, still factual</td><td>“You finished 2nd of 10 · 26:38 · on the podium” · “Neon Docklands is open”</td></tr>
+          <tr><td>Thanks</td><td>Human, short</td><td>“Thanks — we’re on it.”</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="casing"><h2><a href="#casing">Capitalisation and punctuation</a></h2>
+      <ul>
+        <li><b>Sentence case everywhere:</b> titles, buttons, labels, tabs, notices. “Connect your bike”, “Send feedback”, “Recent rides”, “Go to the start line”.</li>
+        <li><b>Proper names keep their capitals:</b> maps (Old Town Criterium, Neon Docklands), the bike (Echelon EX-5s), classes (30 Minute HIIT Cardio), Bluetooth, Chrome, Edge, HTTPS.</li>
+        <li><b>Uppercase is styling, not text.</b> The wordmark TELO and overlines are written in sentence case and uppercased by CSS (<code>.wide</code>, <code>text-transform</code>), so screen readers do not spell them out.</li>
+        <li><b>Rider handles stay as typed:</b> <i>lena.k</i>, <i>MarcoVelo</i>, <i>priya_spins</i>.</li>
+        <li><b>Full stops</b> end sentences in body text and notices (“Open Telo Ride in Chrome or Edge.”) but not single-line labels, buttons or titles (“Lost the bike”).</li>
+        <li><b>Curly apostrophes and quotes:</b> can’t, you’re, “Leave this ride?”. Never straight <code>'</code> in copy.</li>
+        <li><b>Spaced em dash</b> for an aside: “Thanks — we’re on it.” · “Following the plan — levels change with each interval.”</li>
+        <li><b>Middle dot</b> separates facts on one line: “Old Town Criterium · 14.2 km · Easy”.</li>
+        <li><b>Ellipsis</b> only for something in progress: “Pairing…”, “Looking for bikes nearby…”. One character (…), not three dots.</li>
+        <li><b>No exclamation marks.</b> Not even for a podium.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="buttons"><h2><a href="#buttons">Buttons and links</a></h2>
+      <p>A button starts with a verb and, where it helps, names the thing it acts on. The rider should know what happens before pressing.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas">
+          <button class="btn btn--primary btn--lg" type="button">Race Old Town Criterium</button>
+          <button class="btn btn--light" type="button">Join group</button>
+          <button class="btn btn--quiet" type="button">Ride alone</button>
+          <button class="btn btn--primary" type="button">Pair Echelon EX-5s</button>
+          <button class="btn btn--gold" type="button">Ride Neon Docklands</button>
+        </div>
+      </div>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Pattern</th><th scope="col">Examples from the mocks</th></tr></thead>
+        <tbody>
+          <tr><td>Verb + the thing</td><td>Race Old Town Criterium · Pair Echelon EX-5s · Ride Neon Docklands · Download packet log · Copy link · Open over HTTPS</td></tr>
+          <tr><td>Verb + where</td><td>Go to the start line · Back to Home · Join the next session</td></tr>
+          <tr><td>Verb alone, when context is the thing</td><td>Reconnect · Pause · Resume · Finish · Leave · End · Done · Check again · Try again</td></tr>
+          <tr><td>Two outcomes, both explicit</td><td>Save ride and open library · Discard and open library · Keep riding</td></tr>
+          <tr><td>Again</td><td>Race it again · Ride it again · Send another</td></tr>
+          <tr><td>Commitment in first person</td><td>I’m ready (the start line, where the rider is declaring something)</td></tr>
+          <tr><td>Links that navigate</td><td>All maps · All classes · edit workout</td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li>Never “OK”, “Submit”, “Click here” or “Yes / No”. “Leave this ride?” is answered by what each choice does.</li>
+        <li>In a busy state the label says what is happening: “Pairing…”, with the button marked <code>aria-disabled="true"</code> and <code>aria-busy="true"</code> so focus stays on it (never <code>disabled</code>, which drops focus).</li>
+        <li>A countdown inside a button keeps the verb first: “Join · starts in 9 min”.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="numbers"><h2><a href="#numbers">Numbers and units</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Kind</th><th scope="col">Write it</th><th scope="col">Rule</th></tr></thead>
+        <tbody>
+          <tr><td>Power</td><td>371 W · Target 418 W · ~154 W average</td><td>Space before the unit; capital W. “~” for an estimate.</td></tr>
+          <tr><td>Cadence</td><td>87 rpm · Aim for 80</td><td>Lowercase rpm.</td></tr>
+          <tr><td>Heart rate</td><td>140 bpm</td><td>Lowercase bpm.</td></tr>
+          <tr><td>Speed</td><td>26.5 km/h</td><td>One decimal.</td></tr>
+          <tr><td>Distance</td><td>14.2 km · 2.24 km · 412 km</td><td>One decimal for maps, two for a ride in progress, none for totals.</td></tr>
+          <tr><td>Climbing</td><td>140 m climbing · 10 m climbed · +0.5 %</td><td>Metres; gradient with a sign.</td></tr>
+          <tr><td>Energy and output</td><td>64 kcal · 73 kJ</td><td>kcal for the rider, kJ for the group board.</td></tr>
+          <tr><td>Durations and times</td><td>27:10 · 0:29 · 1:00:00 · 5:01 / 30:00</td><td>Minutes and seconds, no leading zero on minutes; hours only past 59:59. A ride's progress is “elapsed / total”.</td></tr>
+          <tr><td>Short spans in prose</td><td>9 min · 15 seconds · 0.9 s</td><td>Words or units, never a clock face, when it is not a timer.</td></tr>
+          <tr><td>Gaps</td><td>+0:02 · −0:01</td><td>Always signed; a true minus (−), not a hyphen.</td></tr>
+          <tr><td>Positions</td><td>2nd of 10 · 5th / 10 · 3rd of 9 by output</td><td>Ordinal, then the field size. “/” only inside the HUD.</td></tr>
+          <tr><td>XP</td><td>+442 · 1,840 / 2,600 XP · 400 XP to level 2</td><td>Earned XP is signed; totals use a thousands comma.</td></tr>
+          <tr><td>Levels and stars</td><td>Level 7 · Lv 7 · 2★ · 5 of 21 stars</td><td>“Lv” only on the start grid; ★ only in goals (“Earn 2★ on Cliffside Coast”).</td></tr>
+          <tr><td>Resistance</td><td>6 of 32 · level 24 · L6</td><td>“of 32” where there is room; L6 in dense tables (Feedback attachments).</td></tr>
+          <tr><td>Intervals</td><td>8 × 0:30 · 3:00 → 1:30 recover</td><td>Multiplication sign (×) and arrow (→), with spaces.</td></tr>
+          <tr><td>Seats</td><td>6 of 10 riders · 5/10 · 10 / 10</td><td>Words in sentences, compact on cards and the grid.</td></tr>
+          <tr><td>Percentages</td><td>84% on target</td><td>No space before %, except a gradient (+0.5 %), which follows the HUD's unit spacing.</td></tr>
+        </tbody>
+      </table></div>
+      <p>Numerals in the HUD and on results use <code>.numeral</code> (tabular figures) so a changing number does not shift its neighbours.</p>
+    </section>
+
+    <section class="ds-section" id="dates"><h2><a href="#dates">Dates and times</a></h2>
+      <ul>
+        <li><b>Clock times</b> in 12-hour with a space and capital PM: “7:39 PM”, “7:54 PM”. Follow the rider's locale when the product localises.</li>
+        <li><b>Recent days</b> are relative or a short weekday: “Yesterday”, “Mon”, “Sun”. Older rides use the date in the rider's locale.</li>
+        <li><b>Countdowns to a start</b> are words: “starts in 9 min”, “Group in 6 min”, “Next one starts 15 minutes later”.</li>
+        <li><b>Machine dates</b> (file names, logs) are ISO 8601: <code>telo-ride-packets-2024-06-14.jsonl</code>.</li>
+        <li><b>Greetings</b> follow the clock: “Evening, Sam.” at 7:30 PM.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="errors"><h2><a href="#errors">Error messages</a></h2>
+      <div class="ct-formula"><span>What happened</span><i>+</i><span>What to do (and why, if it helps)</span><i>+</i><span>One action</span></div>
+      <p>Lead with the plain fact in the title, put the fix in the body, and offer one button that does the fix. Never blame the rider, never show a code, and say what is still safe when a ride is involved.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas ct-stack">
+          <section class="connect-blocker" aria-labelledby="ct-bt-title">
+            <div class="connect-blocker__head">
+              <svg class="icon icon--lg connect-blocker__icon connect-blocker__icon--heart" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg>
+              <h3 class="connect-blocker__title" id="ct-bt-title">Bluetooth is off</h3>
+            </div>
+            <p class="connect-blocker__body">Turn on Bluetooth on this computer, then try again.</p>
+            <button class="btn btn--raised connect-blocker__retry" type="button">Try again</button>
+          </section>
+          <div class="browser-notice">
+            <svg class="icon icon--lg browser-notice__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 12.5-5-5"/><path d="m9.5 12.5 5-5"/><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M12 17v4"/><path d="M8 21h8"/></svg>
+            <p class="browser-notice__text"><span class="browser-notice__title">Open Telo Ride in Chrome or Edge.</span> <span class="browser-notice__body">Bluetooth to the bike only works there — you can look around, but not ride.</span></p>
+            <button class="btn btn--raised browser-notice__action" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy link</button>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Connect Bike “Bluetooth is off” and the custom workout's needs-Chromium notice. In the product both are <code>role="alert"</code>.</span></div>
+      </div>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Situation</th><th scope="col">What happened</th><th scope="col">What to do</th><th scope="col">Action</th></tr></thead>
+        <tbody>
+          <tr><td>Bluetooth off (Connect Bike)</td><td>Bluetooth is off</td><td>Turn on Bluetooth on this computer, then try again.</td><td>Try again</td></tr>
+          <tr><td>Bluetooth off (custom ride)</td><td>Turn on Bluetooth</td><td>Your browser can’t see a Bluetooth radio. Switch it on in your computer’s settings — or, if this machine has none, plug in a USB Bluetooth adapter.</td><td>Check again</td></tr>
+          <tr><td>Needs Chromium (a page that still works)</td><td>Open Telo Ride in Chrome or Edge.</td><td>Bluetooth to the bike only works there — you can look around, but not ride.</td><td>Copy link</td></tr>
+          <tr><td>Needs Chromium (Connect Bike)</td><td>This browser can’t reach the bike</td><td>Open Telo Ride in Chrome or Edge on a laptop or Android tablet. Safari and Firefox don’t support Web Bluetooth yet.</td><td>Try again</td></tr>
+          <tr><td>Needs HTTPS</td><td>Open the secure version of this page.</td><td>Bluetooth is blocked on plain http, so the bike can’t connect.</td><td>Open over HTTPS</td></tr>
+          <tr><td>No bike yet</td><td>Connect your bike</td><td>Wake the Echelon EX-5s with a few pedal strokes, then pick it from the list your browser shows. We’ll remember it next time.</td><td>Connect bike</td></tr>
+          <tr><td>Lost the bike (custom ride)</td><td>Lost the bike</td><td>Echelon EX-5s stopped answering. Wake it with a pedal stroke, then reconnect — your ride is saved at 6:52.</td><td>Reconnect</td></tr>
+          <tr><td>Lost the bike (race)</td><td>Lost the bike</td><td>Echelon EX-5s stopped answering. Your rider coasts for 15 seconds while we reconnect; after that the race counts as a DNF.</td><td>Reconnect</td></tr>
+          <tr><td>Lost the bike (group class)</td><td>Lost the bike</td><td>The class keeps going. Pedal to wake the bike and you’ll rejoin where everyone is.</td><td>Reconnect</td></tr>
+        </tbody>
+      </table></div>
+      <p>A hint under the action handles the most likely next problem: “Not in the list? Close the Echelon app on your phone — the bike talks to one device at a time.”</p>
+    </section>
+
+    <section class="ds-section" id="empty"><h2><a href="#empty">Empty states</a></h2>
+      <div class="ct-formula"><span>What is empty, plainly</span><i>+</i><span>What will fill it</span><i>+</i><span>The way forward (if there is one)</span></div>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--canvas">
+          <div class="ct-empty">
+            <h3>This page doesn’t exist.</h3>
+            <p>The link may be old, or the address has a typo. Your rides and progress are safe.</p>
+            <a class="btn btn--primary" href="#empty">Back to Home</a>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Page not found: the fact, the likely cause, the reassurance, one way out.</span></div>
+      </div>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Where</th><th scope="col">Copy</th><th scope="col">Action</th></tr></thead>
+        <tbody>
+          <tr><td>Profile, Recent rides, new rider</td><td>Nothing yet. Your first race shows up here, with the XP it earned.</td><td>(none: Race is in the nav)</td></tr>
+          <tr><td>Profile, map table</td><td>No best yet</td><td>(none)</td></tr>
+          <tr><td>Home, new rider</td><td>Welcome, Sam. Your first race opens a new map.</td><td>Race Prairie Paceline</td></tr>
+          <tr><td>Class Start, full session</td><td>This session is full. Next one starts 15 minutes later.</td><td>Join the next session</td></tr>
+          <tr><td>Race lobby, unfilled seat</td><td>Open seat</td><td>(bots fill it at 0:10)</td></tr>
+          <tr><td>Custom ride, before a bike</td><td>— (in place of each reading) · Nothing sent — no bike connected.</td><td>Connect bike</td></tr>
+          <tr><td>Diagnostics, no bike</td><td>None picked yet</td><td>(none)</td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li>An empty reading is an em dash (—), never 0: zero watts is a real reading.</li>
+        <li>Never “No data”, “N/A” or “Coming soon”.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="microcopy"><h2><a href="#microcopy">Microcopy library</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Use</th><th scope="col">Say</th><th scope="col">Not</th></tr></thead>
+        <tbody>
+          <tr><td>Main navigation</td><td>Home · Race · Classes · Profile</td><td>Dashboard, Explore, Me</td></tr>
+          <tr><td>Bike connected / not</td><td>Echelon EX-5s connected · Connected · Disconnected · No bike connected</td><td>Device paired, Offline</td></tr>
+          <tr><td>Connect flow</td><td>Connect your bike · Looking for bikes nearby… · Strong signal · Pairing… · Paired</td><td>Scan, Discover devices</td></tr>
+          <tr><td>Bike support</td><td>Works with · Full control · Beta</td><td>Compatible devices</td></tr>
+          <tr><td>Choosing how to race</td><td>Race against · Your best time · Bots · Riders online · Pack strength: easy, medium, hard</td><td>Opponent, AI, Difficulty</td></tr>
+          <tr><td>Choosing how to ride a class</td><td>How do you want to ride? · Ride alone · Ride with a group</td><td>Solo mode, Multiplayer</td></tr>
+          <tr><td>The lobby</td><td>Waiting for riders · On the start line · Start grid · I’m ready · Leave</td><td>Matchmaking, Queue</td></tr>
+          <tr><td>During a ride</td><td>Power · Cadence · Heart · Speed · Resistance · Target · Aim for · Next: · On target · Ahead · Behind</td><td>Wattage, RPM (as a label)</td></tr>
+          <tr><td>Ride controls</td><td>Pause · Resume · Finish · Leave · End · Keep riding</td><td>Stop, Quit, Exit</td></tr>
+          <tr><td>Results</td><td>You finished · on the podium · New personal best · XP earned · Stars on Old Town Criterium · +1 new star</td><td>Score, Victory</td></tr>
+          <tr><td>Unlocks</td><td>Your next unlock · Opens Neon Docklands · Neon Docklands is open · Opens at level 10 · locked</td><td>Unlocked!, Achievement</td></tr>
+          <tr><td>Streak and level</td><td>4-day streak · Level 7 · 400 XP to level 2</td><td>Combo, Rank</td></tr>
+          <tr><td>Feedback</td><td>Send feedback · Bug · Improvement · Kudos · What went wrong? · Attach diagnostics · Feedback sent · Send another</td><td>Report a problem, Submit</td></tr>
+          <tr><td>Diagnostics</td><td>Diagnostics · Log every packet · Download packet log · Everything here is read in your browser and stays on this device until you download it.</td><td>Debug, Telemetry export</td></tr>
+          <tr><td>Privacy reassurance</td><td>It stays on this device.</td><td>We value your privacy</td></tr>
+          <tr><td>Bots on boards</td><td>Pacer Nova … Pacer Echo, with the bot icon labelled “Bot”</td><td>CPU 1, AI rider</td></tr>
+          <tr><td>The ghost</td><td>Your best</td><td>Ghost, Replay</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><span><b>Lost the bike</b><br><span class="text-muted">Echelon EX-5s stopped answering. Wake it with a pedal stroke, then reconnect — your ride is saved at 6:52.</span></span></div><figcaption>Name the bike, say how to fix it, say what is safe.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><span><b>Connection error</b><br><span class="text-muted">GATT server disconnected (code 19). Please retry.</span></span></div><figcaption>Show a protocol error and a code. The rider cannot act on it.</figcaption></figure>
+      </div>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><button class="btn btn--primary" type="button">Race Old Town Criterium</button></div><figcaption>Name the ride on the button that starts it.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><button class="btn btn--primary" type="button">Start</button></div><figcaption>Use a bare “Start” on Home, where three different rides are on screen.</figcaption></figure>
+      </div>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><span>Finish top 3 vs Bots on Old Town Criterium</span></div><figcaption>State a goal as the thing to do.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><span>Unlock requirement: Podium (Bots, Map 2)</span></div><figcaption>State it as a system rule with internal names.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <ul>
+        <li><b>Labels for icons and numbers</b> are full words: “Lower resistance”, “Level 7, 1840 of 2600 XP”, “Elapsed 6:52 of 30:00”, “29 seconds left in this effort”, “1 of 3 stars”.</li>
+        <li><b>Link and button text stands alone</b> (2.4.4): “Ride Neon Docklands”, not “Go”.</li>
+        <li><b>Hidden status words</b> complete what colour shows: the header's bike name carries a visually hidden “connected”.</li>
+        <li><b>Symbols are read aloud</b> by screen readers: write “2 stars” in labels, keep ★ for visible goals only, and avoid → in names.</li>
+        <li><b>Plain language:</b> no jargon in notices (“Bluetooth is blocked on plain http”, not “Insecure context”).</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <p>Content has no tokens. Type for copy is on <a href="typography.html">Typography</a>; the numeral style (<code>.numeral</code>, tabular figures) is there too.</p>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

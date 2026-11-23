@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Run a race session
+
+Person(rider, "Rider", "Rides a smart bike at home")
+Person(others, "Riders online", "Other riders racing the same map")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+
+Rel(rider, telo, "Finds a riders-online race in")
+Rel(others, telo, "Find the same race in")
+@enduml

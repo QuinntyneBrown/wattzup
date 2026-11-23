@@ -1,0 +1,63 @@
+// Block race-resist (docs/design-system/assets/components.css, Race): glass, shown from lg, 48 px steps.
+:host {
+  display: none;
+
+  @media (min-width: 64rem) {
+    display: block;
+  }
+}
+
+.race-resist {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--color-ink) 70%, transparent);
+  backdrop-filter: blur(12px);
+  padding: var(--space-3);
+}
+
+.race-resist__step {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: var(--target-ride);
+  height: var(--target-ride);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-fg) 10%, transparent);
+  color: var(--color-fg);
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--color-fg) 20%, transparent);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+  }
+}
+
+.race-resist__readout {
+  text-align: center;
+}
+
+.race-resist__value {
+  font-size: var(--font-size-5xl);
+  line-height: var(--line-height-none);
+}
+
+.race-resist__label {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  white-space: nowrap;
+  color: var(--color-muted);
+}

@@ -1,0 +1,106 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "A ride lasts an hour. Telo Ride now keeps the bike talking, brings it back after a drop, and says how it is."
+      ]
+    },
+    {
+      "id": "status",
+      "bars": 4,
+      "lines": [
+        "From a laptop's width up, the header names the bike, and a screen reader hears that it's connected."
+      ]
+    },
+    {
+      "id": "offline",
+      "bars": 4,
+      "lines": [
+        "Until the bike connects, the status turns red, with its own icon and the title Bike not connected."
+      ]
+    },
+    {
+      "id": "keepalive",
+      "bars": 4,
+      "lines": [
+        "Once the bike is paired, Telo Ride writes a keepalive about once a second, timed from the clock, not by counting ticks."
+      ]
+    },
+    {
+      "id": "drop",
+      "bars": 4,
+      "lines": [
+        "If the bike drops, the keepalives stop, and every three seconds Telo Ride tries the same bike again, without the list."
+      ]
+    },
+    {
+      "id": "back",
+      "bars": 4,
+      "lines": [
+        "When the bike comes back, it starts again, and the last target resistance goes before anything else."
+      ]
+    },
+    {
+      "id": "retry",
+      "bars": 4,
+      "lines": [
+        "Reconnect tries at once, and every Bluetooth error goes to the console as its name and message, as plain text."
+      ]
+    },
+    {
+      "id": "radio",
+      "bars": 4,
+      "lines": [
+        "If the computer's Bluetooth is off, Connect Bike says so, and Try again finds it once it's back on."
+      ]
+    },
+    {
+      "id": "deferred",
+      "bars": 4,
+      "lines": [
+        "Still to come: the ride screens bring their Reconnect banners, and a worker ticker keeps the clock true in a hidden tab."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "The status shows from a laptop's width up. On a phone or a tablet, the header leaves it out."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: thirty behaviour specs and ninety-one unit tests, all green."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

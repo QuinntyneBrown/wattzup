@@ -1,0 +1,100 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Show the app header
+class MainShell <<ride>> {
+  -progress: ProgressStore
+  -bike: BikeConnection
+  +items: Home, Race, Classes, Profile
+  +level: Signal<LevelView | null>
+  -fullscreen: Fullscreen
+}
+interface ProgressStore <<api>> {
+  +progress: Signal<ProgressDto | null>
+  +refresh(): void
+}
+class RiderProgressStore <<ride>> {
+  -progressApi: RiderProgressApi
+  +refresh(): void
+}
+interface RiderProgressApi <<api>> {
+  +progress(): Observable<ProgressDto>
+}
+class HttpRiderProgressApi <<api>> {
+  +progress(): Observable<ProgressDto>
+}
+class AppHeaderLink <<components>> {
+  selector: a[wz-app-header-link]
+}
+class AppHeaderLevel <<components>> {
+  selector: a[wz-app-header-level]
+  +level: input<LevelView>
+}
+class RouterLinkActive <<Angular router>> {
+  +ariaCurrentWhenActive: "page"
+}
+class AppHeader <<components>> {
+  slots: brand, nav, end
+}
+class FullscreenToggle <<components>> {
+  +active: input<boolean>
+  +toggled: output<void>
+}
+interface Fullscreen <<api>> {
+  +available: Signal<boolean>
+  +active: Signal<boolean>
+  +enter(): void
+  +exit(): void
+}
+class BrowserFullscreen <<ride>>
+class LevelView <<api>> {
+  +level: number
+  +totalXp: number
+  +nextThresholdXp: number | null
+  +fillPercent: number
+  +ariaLabel: string
+  +label: string
+}
+class ProgressDto <<api>> {
+  +level: number
+  +totalXp: number
+  +nextLevelXp: number | null
+  +streakDays: number
+}
+class LevelBadge <<components>> {
+  +level: input<number>
+}
+class XpBar <<components>> {
+  +fillPercent: input<number>
+}
+class "toLevelView()" as toLevelView <<ride helper>> {
+  +toLevelView(p: ProgressDto): LevelView
+}
+MainShell ..> ProgressStore : injects PROGRESS_STORE
+MainShell ..> AppHeader : renders
+MainShell ..> toLevelView : uses
+RiderProgressStore ..|> ProgressStore
+HttpRiderProgressApi ..|> RiderProgressApi
+RiderProgressStore --> RiderProgressApi : RIDER_PROGRESS_API
+ProgressStore --> ProgressDto
+MainShell *-- AppHeaderLink : nav slot
+MainShell *-- AppHeaderLevel : end slot
+MainShell *-- FullscreenToggle : end slot, when available
+MainShell ..> Fullscreen : injects FULLSCREEN
+BrowserFullscreen ..|> Fullscreen
+AppHeaderLink ..> RouterLinkActive : current item
+AppHeaderLevel *-- LevelBadge
+AppHeaderLevel *-- XpBar
+AppHeaderLevel --> LevelView
+toLevelView ..> LevelView : creates
+@enduml

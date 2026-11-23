@@ -1,0 +1,51 @@
+<main id="main" class="container page maps-layout" tabindex="-1">
+  <section aria-labelledby="maps-title">
+    <h1 class="page__title" id="maps-title">Maps</h1>
+    <p class="maps__lead">
+      Each map opens the next. Race well on the ones you have to unlock the rest.
+    </p>
+    @if (store.unavailable()) {
+      <div class="maps-error">
+        <wz-inline-message tone="warn" role="alert"
+          >The maps can’t be loaded. Check your connection and try again.</wz-inline-message
+        >
+        <button wz-button variant="raised" type="button" (click)="store.retry()">Try again</button>
+      </div>
+    }
+    <wz-map-path>
+      @for (row of store.rows(); track row.map.id; let last = $last) {
+        <li wz-map-path-item [state]="row.state" [last]="last">
+          @if (row.state === 'open') {
+            <a
+              wz-map-row
+              [routerLink]="['/race', row.map.id]"
+              [status]="row.state"
+              [thumbnail]="row.map.thumbnailUrl"
+              [distanceKm]="row.map.distanceKm"
+              [climbingM]="row.map.climbingM"
+              [rating]="row.map.rating"
+              [stars]="row.stars"
+              [bestSeconds]="row.bestSeconds"
+              >{{ row.map.name }}</a
+            >
+          } @else {
+            <!-- The name is the button's whole text: spaces around it would join its accessible name. -->
+            <!-- prettier-ignore -->
+            <button
+              wz-map-row
+              type="button"
+              disabled
+              [status]="row.state"
+              [thumbnail]="row.map.thumbnailUrl"
+              [distanceKm]="row.map.distanceKm"
+              [climbingM]="row.map.climbingM"
+              [rating]="row.map.rating"
+              [goal]="row.map.unlockGoal"
+            >{{ row.map.name }}</button>
+          }
+        </li>
+      }
+    </wz-map-path>
+  </section>
+  <wz-maps-aside />
+</main>

@@ -1,0 +1,42 @@
+@startuml
+title UML sequence behaviour — Store a sign-in code as a hash
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app" #E0F2FE
+  participant "HttpAuthApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "HTTPS redirection and HSTS" as hsts
+  participant "AuthController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "SendSignInCodeCommandHandler" as handler
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "HmacSignInCodeHasher" as hasher
+  participant "IEmailSender adapter" as sender
+  database "Telo Ride database (encrypted at rest)" as db
+end box
+client -> hsts : POST /api/auth/code over TLS 1.2+ (L2-132 AC1)
+hsts -> ctrl : Strict-Transport-Security on the response
+ctrl -> handler : Send SendSignInCodeCommand
+handler -> handler : Generate six digits from the cryptographic generator
+handler -> hasher : Hash(code)
+hasher --> handler : HMAC-SHA256(key, code)
+handler -> db : Save SignInCode with CodeHash only (L2-132 AC4)
+note over db : Database and backups encrypted at rest (L2-132 AC2)
+handler -> sender : Send the plain code once, never stored or logged
+ctrl --> client : 202
+@enduml

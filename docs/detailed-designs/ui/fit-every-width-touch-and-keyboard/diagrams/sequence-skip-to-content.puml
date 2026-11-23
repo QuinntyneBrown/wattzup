@@ -1,0 +1,33 @@
+@startuml
+title UML sequence behaviour — Skip to content
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider (keyboard)" as actor
+participant "Browser" as browser
+box "Frontend — Ride app (components library)" #E0F2FE
+  participant "SkipLink" as skip
+end box
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "AppShell" as shell
+  participant "main#main" as main
+end box
+actor -> browser : Open any page and press Tab
+browser -> skip : Focus the first focusable element (L2-140 AC4)
+skip --> actor : "Skip to content" with a visible focus ring (L2-140 AC1)
+actor -> skip : Enter
+skip -> shell : skip output
+shell -> main : focus() on tabindex -1
+main --> actor : Next Tab moves through the page's content
+@enduml

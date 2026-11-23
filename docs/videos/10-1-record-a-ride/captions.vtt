@@ -1,0 +1,55 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:05.906
+Cross the line, and your ride is on its way to the backend.
+
+00:00:10.324 --> 00:00:15.533
+The race gave the ride an id when it started. At the line it sends the facts: map,
+
+00:00:15.533 --> 00:00:19.899
+place, seconds, distance, output, and the speed of every second.
+
+00:00:20.647 --> 00:00:25.017
+A class does the same when it ends, with the bike's own speed for the distance.
+
+00:00:30.971 --> 00:00:35.763
+The backend records each ride once. Send it again, and you get the first answer
+
+00:00:35.763 --> 00:00:38.854
+back, even when two copies race each other in.
+
+00:00:41.295 --> 00:00:45.874
+And it checks the ride could be ridden: over two thousand watts, over a hundred
+
+00:00:45.874 --> 00:00:50.753
+kilometres an hour, or a distance its speeds don't add up to, and it's refused.
+
+00:00:51.618 --> 00:00:56.963
+The app sends facts only. XP, stars and unlocks are the backend's to work out.
+
+00:01:01.942 --> 00:01:07.076
+What the tests prove: once per ride id, refused when it can't be true, and sent the
+
+00:01:07.076 --> 00:01:08.551
+moment a ride ends.
+
+00:01:12.266 --> 00:01:16.869
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:17.214 --> 00:01:21.726
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:21.726 --> 00:01:23.397
+every hill and interval.
+
+00:01:23.742 --> 00:01:28.920
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:28.920 --> 00:01:34.368
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:34.368 --> 00:01:37.358
+XP, rider levels, stars and map unlocks.
+
+00:01:37.704 --> 00:01:40.196
+A custom workout lives under Profile.

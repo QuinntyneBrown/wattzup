@@ -1,0 +1,58 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+hide empty members
+title Class structure — Tune world quality
+class WorldQuality <<api>> {
+  +tier: WorldTier | null
+  +stepDown: boolean
+  +frameCapFps: number | null
+  +renderScale: number
+  +forceWebGL: boolean
+}
+class "worldQuality()" as wq <<domain/engine>> {
+  +worldQuality(settings: RideSettings): WorldQuality
+}
+interface GraphicsSupport <<api>> {
+  +api: Signal<'webgpu' | 'webgl2' | 'none' | null>
+}
+class BrowserGraphicsSupport <<domain/browser>>
+class WorldSettings <<components>> {
+  +settings: InputSignal<RideSettings>
+  +api: InputSignal<GraphicsApi>
+  +qualityChosen, stepDownToggled, frameRateChosen,
+   resolutionChanged, graphicsChosen
+}
+class WorldScene <<world>> {
+  +quality: InputSignal<WorldQuality>
+}
+class WorldRenderer <<world>> {
+  +start(canvas, world, nextFrame, segments, options: WorldStartOptions): Promise<boolean>
+  +setFramePeriod(ms: number): void
+  +resize(width, height, pixelRatio): void
+}
+class WorldStartOptions <<api>> {
+  +tier?: WorldTier
+  +stepDown?: boolean
+  +forceWebGL?: boolean
+}
+class FrameBudget <<world>> {
+  +sample(now, frameMs): 'keep' | 'drop'
+}
+GraphicsSupport <|.. BrowserGraphicsSupport
+wq ..> WorldQuality : returns
+WorldScene ..> WorldQuality
+WorldScene --> WorldRenderer : start, setFramePeriod(max(period, 1000 / cap)), resize(dpr × scale)
+WorldRenderer ..> WorldStartOptions
+WorldRenderer *-- FrameBudget : pinned when stepDown is false
+@enduml

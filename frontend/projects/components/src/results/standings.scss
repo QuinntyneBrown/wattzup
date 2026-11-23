@@ -1,0 +1,101 @@
+// Block standings (docs/design-system/): the final standings on Results.
+:host {
+  display: block;
+}
+
+.standings {
+  margin-top: var(--space-8);
+  max-width: var(--layout-text-2xl);
+  border-top: var(--border-width-hairline) solid var(--color-line);
+}
+
+.standings__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  border-bottom: var(--border-width-hairline) solid
+    color-mix(in srgb, var(--color-line) 60%, transparent);
+  padding: var(--space-2-5) var(--space-2);
+}
+
+.standings__row--you {
+  background: var(--color-volt);
+  color: var(--color-on-fill);
+}
+
+.standings__pos,
+.standings__value {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+}
+
+.standings__pos {
+  width: var(--space-6);
+  text-align: right;
+  color: var(--color-faint);
+}
+
+.standings__dot {
+  width: var(--space-2-5);
+  height: var(--space-2-5);
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background: var(--jersey);
+}
+
+// Each rider's jersey, from the design system's jersey tokens: the rider, the ghost, the bots and riders online.
+@each $jersey
+  in (
+    you,
+    ghost,
+    nova,
+    rook,
+    juno,
+    atlas,
+    kite,
+    vale,
+    moss,
+    flint,
+    echo,
+    lena,
+    marco,
+    priya,
+    jwatts,
+    ollie,
+    kenji,
+    ana
+  )
+{
+  .standings__dot--#{$jersey} {
+    --jersey: var(--jersey-#{$jersey});
+  }
+}
+
+.standings__name {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.standings__bot {
+  color: var(--color-faint);
+}
+
+.standings__value {
+  color: var(--color-muted);
+}
+
+.standings__row--you .standings__pos,
+.standings__row--you .standings__value {
+  color: inherit;
+}
+
+.standings__row--you .standings__name {
+  font-weight: var(--font-weight-semibold);
+}

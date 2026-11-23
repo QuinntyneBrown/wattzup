@@ -1,0 +1,66 @@
+@use '../../styles/page';
+
+// Block settings-page (docs/mocks/pages/settings/): the head, the warning, then the section nav beside the sections
+// from lg (1024 px), a scrolling row above them below it.
+.settings-page {
+  padding-block: var(--space-6);
+
+  @media (min-width: 64rem) {
+    padding-block: var(--space-10);
+  }
+
+  &:focus {
+    outline: none; // focused by the skip link, never by a pointer
+  }
+}
+
+.settings-page__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.settings-page__back {
+  align-self: flex-start;
+  margin-left: calc(var(--space-2) * -1);
+}
+
+.settings-page__lead {
+  max-width: var(--layout-text-xl);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.settings-page__notice {
+  margin-bottom: var(--space-6);
+  max-width: var(--layout-container-form);
+}
+
+.settings-page__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+
+  @media (min-width: 64rem) {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-12);
+    align-items: start;
+  }
+}
+
+.settings-page__nav {
+  @media (min-width: 64rem) {
+    position: sticky;
+    top: var(--space-6);
+  }
+}
+
+.settings-page__sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  min-width: 0;
+  max-width: var(--layout-container-form);
+}

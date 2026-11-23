@@ -1,0 +1,61 @@
+@startuml
+title UML sequence behaviour — Lose the bike in a race
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "RacePage" as page
+  participant "RaceStore" as store
+  participant "RaceSessionStore" as session
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "BikeConnection" as conn
+  participant "RaceEngine" as engine
+  participant "CoastPolicy" as coast
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "Smart bike" as bike
+end box
+bike -[#red]x conn : Stops answering
+conn --> store : ble = reconnecting
+alt solo race (L2-070 AC5)
+  store -> engine : pause()
+  store --> page : interruption = parked; alert says the ride is parked until the bike is back
+else bots or riders-online race
+  store -> engine : bikeLost(now)
+  store --> page : Alert "Lost the bike" with Reconnect; resistance buttons disabled (L2-070 AC1, AC2)
+  loop each second while lost
+    engine -> coast : speedAfter(initial, sinceLost)
+    coast --> engine : Decayed virtual speed
+  end
+  opt rider presses Reconnect
+    actor -> page : Press Reconnect
+    page -> store : reconnect()
+    store -> conn : reconnect()
+  end
+  alt bike back within 15 s (L2-070 AC3)
+    conn --> store : ble = connected
+    store -> engine : bikeBack()
+    store --> page : Alert closes; race carries on
+  else 15 s pass (L2-070 AC4)
+    engine -> coast : isDnf(mode, 15)
+    coast --> engine : true
+    store --> page : interruption = dnf; DNF message with a way to Race Setup
+    opt riders-online race
+      store -> session : leave(); service marks DNF (L2-124)
+    end
+  end
+end
+@enduml

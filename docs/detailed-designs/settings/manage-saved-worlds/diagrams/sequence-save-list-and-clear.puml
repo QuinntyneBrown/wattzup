@@ -1,0 +1,59 @@
+@startuml
+title UML sequence behaviour — Save, list and clear worlds
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "DeviceSettings / Toast" as view
+  participant "SavedWorldsStore" as sstore
+  participant "WorldLoadStore" as load
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "LocalRideSettingsStore" as settings
+  participant "FetchWorldDownloader" as loader
+  participant "CacheStorageSavedWorlds" as cache
+end box
+participant "Cache Storage" as cs
+group A world downloads in World loading
+  load -> loader : download({id: 'oldtown', name: 'Old Town Criterium'})
+  loader -> cs : match('/worlds/oldtown/panorama.webp')
+  alt Saved
+    cs --> loader : the file; done at once (L2-152 AC3)
+  else Not saved, or evicted by the browser
+    loader -> loader : fetch it with its progress; nothing fails (L2-165 AC4)
+    loader -> settings : keepWorlds?
+    alt On (default)
+      loader -> cs : put(file, x-telo-world-name, x-telo-world-bytes) (L2-165 AC3)
+    else Off
+      loader -> loader : nothing new is saved; the step reads "0.2 MB"
+    end
+  end
+end
+group Settings opens
+  sstore -> cache : list()
+  cache -> cs : has, keys, match: each file's headers
+  cache --> sstore : Prairie Paceline 18.9 MB, Old Town Criterium 24.3 MB, Cliffside Coast 17.8 MB
+  sstore --> view : "3 worlds · 61 MB"; the names (L2-165 AC1)
+end
+group Clear saved worlds
+  actor -> view : Clear saved worlds
+  view -> sstore : clear()
+  sstore -> cache : clear()
+  cache -> cs : caches.delete('telo-worlds')
+  sstore -> cache : list()
+  sstore --> view : "None saved"; toast "Saved worlds cleared", "61 MB freed." (L2-165 AC2)
+  sstore -> sstore : the toast closes after 6 s, or with ×
+end
+@enduml

@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // Save the screenshots of a video: run <folder>/shots.ts in Chromium against the running app.
 //
-//   node tools/video-record/record.mjs docs/videos/NN-journey-JJ-topic
+//   node tools/video-record/record.mjs docs/videos/S-s-slice-name
 //
 // Not a test and not a sweep (docs/videos/README.md): it compares nothing. The app on :4310 is
-// reused when it is running and started otherwise; every /api request is answered by the stubs of
-// frontend/e2e/fixtures/wz-test.ts, as in every spec. No backend and no bike are involved.
+// reused when it is running and started otherwise; shots.ts imports the shared fixture of
+// frontend/e2e/fixtures/test.ts, as every spec does. No backend and no bike are involved.
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';

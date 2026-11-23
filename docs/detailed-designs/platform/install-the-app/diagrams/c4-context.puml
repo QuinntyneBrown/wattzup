@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Install the app
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(browser, "Chrome or Edge", "Installs web apps from a manifest")
+Rel(rider, browser, "Installs Telo Ride with")
+Rel(browser, telo, "Reads the manifest and runs the service worker of")
+Rel(rider, telo, "Opens the installed app")
+@enduml

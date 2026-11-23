@@ -1,0 +1,31 @@
+@startuml
+title UML sequence behaviour — Set resistance on the simulated bike
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "ResistanceController" as res
+  participant "SimulatedBikeConnection" as sim
+  participant "EchelonProtocol" as proto
+  participant "BikeTelemetry" as tele
+end box
+res -> sim : setResistance(12)
+sim -> proto : parseSetResistance(F0 B1 01 0C AE)
+proto --> sim : 12
+sim -> sim : level = 12
+sim --> res : ack ms
+sim -> proto : resistanceFrame(12) on the next second
+proto --> sim : F0 D2 01 0C CF
+sim -> tele : next D2 reports 12 (L2-024 AC2)
+@enduml

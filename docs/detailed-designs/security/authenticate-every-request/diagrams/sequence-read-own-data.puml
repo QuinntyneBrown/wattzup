@@ -1,0 +1,48 @@
+@startuml
+title UML sequence behaviour — Read only the rider's own data
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app" #E0F2FE
+  participant "Results page" as page
+  participant "HttpRidesApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RidesController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "GetRideQueryHandler" as handler
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "AppDbContext (rider-owned filter)" as ctx
+  database "Telo Ride database" as db
+end box
+actor -> page : Open a ride by its id
+page -> client : getRide(rideId)
+client -> ctrl : GET /api/rides/{rideId}
+ctrl -> handler : Send GetRideQuery(rideId)
+handler -> ctx : Rides.Where(Id == rideId)
+ctx -> db : SELECT ... WHERE Id = @id AND RiderId = @currentRider (L2-128 AC1)
+alt the ride is the rider's
+  db --> ctx : Row
+  handler --> ctrl : RideDto
+  ctrl --> client : 200
+else another rider's ride, or no such ride
+  db --> ctx : No row
+  handler --> ctrl : NotFound
+  ctrl --> client : 404 code not_found (same answer in both cases)
+end
+note over handler : Ride and session ids are random v4 GUIDs (L2-128 AC3).\nRosters return only RosterEntry: name, jersey, country, level, kind (L2-128 AC2).
+@enduml

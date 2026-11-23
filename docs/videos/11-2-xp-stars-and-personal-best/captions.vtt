@@ -1,0 +1,61 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.518
+Results now shows what the ride earned: XP, stars and your personal best.
+
+00:00:10.324 --> 00:00:14.995
+XP earned shows the total, then every line in the order the backend returned it:
+
+00:00:14.995 --> 00:00:19.090
+finished, your place, the podium, time on target and your streak.
+
+00:00:25.809 --> 00:00:31.005
+Stars on the map shows how many of three you hold, and plus one new star when the
+
+00:00:31.005 --> 00:00:34.128
+ride earned one. A class has no stars panel.
+
+00:00:38.714 --> 00:00:43.233
+Beat your best time solo and it reads new personal best, with the best before.
+
+00:00:43.233 --> 00:00:46.198
+Slower, it reads you finished, with your best.
+
+00:00:51.618 --> 00:00:56.926
+While the ride is recorded the panel says so. With no network, your XP is added when
+
+00:00:56.926 --> 00:01:00.132
+you're back online. A refused ride earns none.
+
+00:01:07.104 --> 00:01:11.681
+On a phone the panels follow the standings. From a tablet in landscape, they sit
+
+00:01:11.681 --> 00:01:12.667
+beside them.
+
+00:01:20.009 --> 00:01:25.089
+What the tests prove: the star rules case by case, the answer through the API, and
+
+00:01:25.089 --> 00:01:26.504
+every panel state.
+
+00:01:30.332 --> 00:01:34.936
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:35.281 --> 00:01:39.793
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:39.793 --> 00:01:41.464
+every hill and interval.
+
+00:01:41.809 --> 00:01:46.987
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:46.987 --> 00:01:52.435
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:52.435 --> 00:01:55.425
+XP, rider levels, stars and map unlocks.
+
+00:01:55.770 --> 00:01:58.263
+A custom workout lives under Profile.

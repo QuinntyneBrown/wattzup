@@ -1,0 +1,33 @@
+@startuml
+title UML sequence behaviour — Lint rejects an import against the direction
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Developer" as dev
+participant "verify.mjs" as verify
+participant "ESLint (eslint.config.js)" as eslint
+participant "GitHub Actions CI" as ci
+dev -> dev : Add import { RideClock } from '@telo/domain' in projects/components
+dev -> verify : node tools/verify/verify.mjs
+verify -> eslint : eslint frontend
+eslint -> eslint : no-restricted-imports for projects/components/** (L2-146 AC2)
+eslint --> verify : Error: components may import @telo/api types only
+verify --> dev : Fails, naming the file and rule
+opt Pushed anyway
+  dev -> ci : git push
+  ci -> eslint : Lint job
+  eslint --> ci : Same error
+  ci --> dev : Pipeline red
+end
+@enduml

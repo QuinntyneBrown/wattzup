@@ -1,0 +1,50 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Structure the frontend workspace
+hide empty members
+
+class appConfig <<ride: app.config.ts>> {
+  +providers: Provider[]
+}
+class AppShell <<ride>>
+interface BikeConnection <<api>> {
+  +ble: Signal<BleState>
+  +samples: Signal<BikeSample | null>
+  +connect(): Promise<void>
+  +setTargetResistance(level: number): Promise<void>
+}
+class "BIKE_CONNECTION" as BIKE_CONNECTION <<api: InjectionToken>>
+class WebBluetoothBikeConnection <<domain/bluetooth>>
+class SimulatedBike <<domain/bluetooth>>
+interface RidesApi <<api>>
+class "RIDES_API" as RIDES_API <<api: InjectionToken>>
+class HttpRidesApi <<api>>
+class "Any page" as Page <<ride>> {
+  -bike = inject(BIKE_CONNECTION)
+}
+class "Presentation component" as Presentation <<components>> {
+  +input(): InputSignal
+  +output(): OutputEmitterRef
+}
+WebBluetoothBikeConnection ..|> BikeConnection
+SimulatedBike ..|> BikeConnection
+HttpRidesApi ..|> RidesApi
+appConfig ..> BIKE_CONNECTION : binds
+appConfig ..> RIDES_API : binds
+BIKE_CONNECTION ..> BikeConnection : typed as
+RIDES_API ..> RidesApi : typed as
+Page ..> BIKE_CONNECTION : injects
+Page *-- Presentation
+AppShell ..> appConfig : bootstrapped with
+@enduml

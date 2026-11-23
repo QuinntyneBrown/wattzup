@@ -1,0 +1,106 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Heart rate belongs beside power. Telo Ride now reads it, from a strap or from the bike."
+      ]
+    },
+    {
+      "id": "decode",
+      "bars": 4,
+      "lines": [
+        "A heart rate measurement starts with flags. Bit zero clear means one byte of beats per minute; set means two."
+      ]
+    },
+    {
+      "id": "chooser",
+      "bars": 4,
+      "lines": [
+        "Choosing a strap opens the browser's list, filtered to the heart rate service, then subscribes to its measurements."
+      ]
+    },
+    {
+      "id": "remembered",
+      "bars": 4,
+      "lines": [
+        "The strap is remembered. Next time, where the browser allows it, Telo Ride reconnects without the list."
+      ]
+    },
+    {
+      "id": "drop",
+      "bars": 4,
+      "lines": [
+        "If the strap drops, its reading goes blank, and Telo Ride tries it again every three seconds until it's back."
+      ]
+    },
+    {
+      "id": "source",
+      "bars": 4,
+      "lines": [
+        "The strap's reading comes first, then the bike's. With neither, the readout shows a dash and says no heart rate."
+      ]
+    },
+    {
+      "id": "quiet",
+      "bars": 4,
+      "lines": [
+        "A source that's quiet for five seconds stops counting, so a stale heartbeat never stays on screen."
+      ]
+    },
+    {
+      "id": "stats",
+      "bars": 4,
+      "lines": [
+        "Each running second adds to the ride's average and peak heart rate: two numbers and a count, never a trace."
+      ]
+    },
+    {
+      "id": "deferred",
+      "bars": 4,
+      "lines": [
+        "Still to come: Settings connects a strap in slice 20.1, the ride screens show it, and saved rides keep it."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "Home doesn't change yet, at any width. Heart rate waits in the engine for the ride screens."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: twenty-five new unit tests, one per row of the requirements, and every spec still green."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Sign out and delete an account
+Container_Boundary(app, "Ride app") {
+  Component(profile, "ProfilePage", "Angular page · ride", "Settings: Sign out, Delete my account")
+  Component(dialog, "DeleteAccountDialog", "CDK Dialog · ride", "Says what is removed, asks to type delete")
+  Component(store, "AccountStore", "Route store · ride", "Signs out, deletes, tells the current rider")
+  Component(form, "DeleteAccountForm", "Presentation · components", "Type delete, then Delete my account")
+  Component(auth, "HttpAuthApi / HttpRidersApi", "HTTP clients · api", "signOut(), deleteMe()")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(authctrl, "AuthController", "ASP.NET Core controller · Telo.Ride.Api", "POST /api/auth/sign-out")
+  Component(riderctrl, "RidersController", "ASP.NET Core controller · Telo.Ride.Api", "DELETE /api/riders/me")
+  Component(tickets, "RiderSessionTicketStore", "Cookie session store · Telo.Ride.Api", "Ends the current session")
+  Component(delete, "DeleteAccountCommandHandler", "MediatR handler · Telo.Ride.Application", "Ends every session, detaches the email")
+  Component(erase, "ErasePendingAccountsCommandHandler", "MediatR handler · Telo.Ride.Application", "Erases personal data within 30 days")
+  Component(job, "AccountErasureService", "BackgroundService · Telo.Ride.Infrastructure", "Sends the erase command once a day")
+  ComponentDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Riders, sessions, progress, rides")
+}
+Rel(profile, store, "Signs out through")
+Rel(profile, dialog, "Opens")
+Rel(dialog, form, "Hosts")
+Rel(dialog, store, "Deletes through")
+Rel(store, auth, "signOut(), deleteMe()")
+Rel(auth, authctrl, "Calls", "JSON/HTTPS")
+Rel(auth, riderctrl, "Calls", "JSON/HTTPS")
+Rel(authctrl, tickets, "SignOutAsync")
+Rel(riderctrl, delete, "Sends DeleteAccountCommand")
+Rel(job, erase, "Sends ErasePendingAccountsCommand")
+Rel(tickets, db, "Ends the session", "EF Core")
+Rel(delete, db, "Persists", "EF Core")
+Rel(erase, db, "Deletes personal data", "EF Core")
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Browse the class library
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(youtube, "YouTube", "Class video thumbnails (i.ytimg.com)")
+Rel(rider, telo, "Browses classes by length in")
+Rel(telo, youtube, "Loads class covers from", "HTTPS")
+@enduml

@@ -1,0 +1,39 @@
+// The page structure every screen's main shares (docs/design-system/patterns/navigation.html): the container that
+// lines up with the header, and the page block with its title and lead. A page's stylesheet @use-s this partial, so
+// the rules stay encapsulated in that page.
+.container {
+  margin-inline: auto;
+  max-width: var(--layout-container-max);
+  padding-inline: var(--layout-margin);
+}
+
+.page {
+  padding-block: var(--space-6);
+
+  @media (min-width: 64rem) {
+    padding-block: var(--space-10);
+  }
+
+  &:focus {
+    outline: none; // focused by the skip link, never by a pointer
+  }
+}
+
+.page__title {
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
+
+  @media (min-width: 40rem) {
+    font-size: var(--font-size-3xl);
+    line-height: var(--line-height-3xl);
+  }
+}
+
+.page__lead {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}

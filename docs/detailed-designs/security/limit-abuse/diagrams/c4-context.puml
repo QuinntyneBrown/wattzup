@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Limit abuse
+Person(rider, "Rider", "Rides a smart bike at home")
+Person_Ext(abuser, "Abusive client", "Floods code requests, submissions or hub messages")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(email, "Email delivery service", "Delivers sign-in codes; provider <TO SUPPLY>")
+Rel(rider, telo, "Uses within the limits")
+Rel(abuser, telo, "Is refused with 429 or disconnected by")
+Rel(telo, email, "Sends a bounded number of codes through")
+@enduml

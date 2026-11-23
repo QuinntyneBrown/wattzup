@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Inspect diagnostics
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(bike, "Smart bike", "Echelon EX-5s, EX-3, EX-8s, Connect Sport, or an FTMS bike; Bluetooth LE")
+Rel(rider, telo, "Opens Diagnostics in")
+Rel(telo, bike, "Reads link state and signal of", "Web Bluetooth")
+@enduml

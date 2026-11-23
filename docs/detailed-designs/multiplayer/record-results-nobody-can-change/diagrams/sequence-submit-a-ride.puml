@@ -1,0 +1,64 @@
+@startuml
+title UML sequence behaviour — Submit a ride
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app (domain and api libraries)" #E0F2FE
+  participant "RideOutbox" as outbox
+  participant "HttpRidesApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RidesController" as controller
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "SubmitRideCommandHandler" as handler
+  participant "RidePlausibilityRule" as rule
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+outbox -> client : submit(ride with rideId)
+client -> controller : POST /api/rides
+controller -> controller : Authenticate (fallback policy)
+controller -> handler : Send SubmitRideCommand
+handler -> db : Find Ride by rideId for this rider
+alt already recorded
+  db --> handler : Ride with stored result
+  handler --> controller : First result unchanged (L2-125 AC3)
+else new ride
+  db --> handler : None
+  handler -> rule : Check(ride, map)
+  alt power > 2,000 W, speed > 100 km/h, distance off by > 5 %, or finish too fast
+    rule --> handler : Breach
+    handler --> controller : 422 ride_not_plausible (L2-125 AC2)
+  else plausible
+    rule --> handler : Plausible
+    opt ride has a SessionId
+      handler -> db : SessionResultEntry for rider
+      alt entry exists
+        db --> handler : Place, time, output
+        handler -> handler : Replace client values (L2-125 AC1)
+      else not yet
+        handler --> controller : 409 result_pending; nothing saved
+      end
+    end
+    handler -> handler : Compute XP, stars, best, streak, unlocks (L2-044)
+    handler -> db : Save Ride with result (unique Id)
+    db --> handler : Committed
+    handler --> controller : RideResultDto
+  end
+end
+controller --> client : 201 / 200, or ProblemDetails with code
+client --> outbox : Remove when recorded; keep and retry on result_pending
+@enduml

@@ -1,0 +1,25 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Keep the bike connected
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Echelon or FTMS; Bluetooth LE")
+Container_Boundary(app, "Ride app") {
+  Component(header, "AppHeaderBike / RideHeader / race top bar", "Presentation components · components", "Show the bike status")
+  Component(statusFn, "bikeStatus()", "Pure helper · domain/bluetooth", "Maps link and Bluetooth state to label, tone and hidden text")
+  Component(conn, "WebBluetoothBikeConnection", "Service · domain/bluetooth", "Owns the GATT link and its state")
+  Component(keep, "KeepaliveScheduler", "Class · domain/bluetooth, in EchelonLink", "Writes F0 A0 01 01 92 about once a second")
+  Component(recon, "DeviceReconnector", "Class · domain/bluetooth", "Retries the same device every 3 s")
+  Component(avail, "WebBluetoothSupport", "Service · domain/bluetooth", "getAvailability() and availabilitychanged")
+  Component(ticker, "TICKER", "SecondTicker, then BackgroundTicker (18.2) · domain/engine", "One tick a second")
+}
+Rel(rider, header, "Reads; presses Reconnect")
+Rel(header, statusFn, "Rendered from")
+Rel(statusFn, conn, "Reads state of")
+Rel(statusFn, avail, "Reads availability from")
+Rel(keep, ticker, "Is timed by")
+Rel(keep, conn, "Writes through")
+Rel(conn, recon, "Starts on disconnect")
+Rel(recon, conn, "Calls connect()")
+Rel(conn, bike, "GATT", "Web Bluetooth")
+@enduml

@@ -1,0 +1,13 @@
+<main id="main" class="sign-in-code-page" tabindex="-1">
+  <wz-sign-in-code-form
+    [email]="store.sentTo() ?? ''"
+    [resendSecondsLeft]="store.resendSecondsLeft()"
+    [sending]="store.sending()"
+    [resent]="store.resent()"
+    [error]="store.error()"
+    [refusals]="store.refusals()"
+    (confirm)="confirm($event)"
+    (resend)="store.resend()"
+    (changeEmail)="changeEmail()"
+  />
+</main>

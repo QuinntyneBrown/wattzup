@@ -1,0 +1,31 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Share progress and standings
+
+Container_Boundary(app, "Ride app") {
+  Component(engine, "Ride store", "Signal store · ride (ClassRideStore)", "Distance or output, power")
+  Component(hubc, "SignalRRideHubClient", "SignalR client · api", "RideHubClient")
+  Component(store, "LiveSessionStore", "Signal store · ride", "Latest standings; reports never under 500 ms apart")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(hub, "RideHub", "SignalR hub · Telo.Ride.Api", "ReportProgress")
+  Component(report, "ReportProgressCommandHandler", "MediatR handler · Telo.Ride.Application", "Records the sample")
+  Component(tick, "TickLiveSessionsCommandHandler", "MediatR handler · Telo.Ride.Application", "Moves bots, ranks, sends")
+  Component(pace, "BotPaceModel", "Domain service · Telo.Ride.Domain", "Seeded bot power")
+  Component(rank, "RankingPolicy", "Domain service · Telo.Ride.Domain", "Race: distance, finish time; class: output")
+  Component(session, "LiveSession", "Domain entity · Telo.Ride.Domain", "RiderProgress per seat")
+  Component(notifier, "RideHubNotifier", "ISessionNotifier · Telo.Ride.Api", "StandingsUpdated to session:{id}")
+}
+Rel(engine, store, "report(totals, power) each second")
+Rel(store, hubc, "reportProgress")
+Rel(hubc, hub, "ReportProgress", "SignalR")
+Rel(hub, report, "Sends ReportProgressCommand")
+Rel(report, session, "RecordProgress")
+Rel(tick, pace, "PowerAt(bot, second)")
+Rel(tick, rank, "Rank(session)")
+Rel(tick, session, "Reads progress")
+Rel(tick, notifier, "StandingsUpdated")
+Rel(notifier, hubc, "Pushes", "SignalR")
+Rel(hubc, store, "Replaces standings")
+@enduml

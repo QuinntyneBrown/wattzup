@@ -1,0 +1,55 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.301
+The race's world can be drawn four ways: Low, Medium, High and Ultra.
+
+00:00:10.324 --> 00:00:15.426
+Low is the drawn look: toon shading, ink outlines and a flat sky. Every race opens
+
+00:00:15.426 --> 00:00:19.771
+here, so the picture never starts high and drops in front of you.
+
+00:00:20.647 --> 00:00:26.081
+Medium brings physically based materials and shadows. High adds reflections, ambient
+
+00:00:26.081 --> 00:00:28.775
+occlusion and temporal anti-aliasing.
+
+00:00:30.971 --> 00:00:37.058
+Ultra needs WebGPU. With WebGL 2, a world asked for at Ultra draws at High.
+
+00:00:41.295 --> 00:00:46.180
+The levels are main's, with its table of fifty-four techniques. main opens the world
+
+00:00:46.180 --> 00:00:51.075
+at Low, so the requirement, the settings and the loading card now say the same.
+
+00:00:51.618 --> 00:00:55.925
+From a phone to a desktop, the drawn look is the same world at every width.
+
+00:01:01.942 --> 00:01:07.033
+What the tests prove: each level draws its own techniques, and Ultra on WebGL 2
+
+00:01:07.033 --> 00:01:10.748
+draws at High. Break the cap, and the test turns red.
+
+00:01:12.266 --> 00:01:16.869
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:17.214 --> 00:01:21.726
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:21.726 --> 00:01:23.397
+every hill and interval.
+
+00:01:23.742 --> 00:01:28.920
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:28.920 --> 00:01:34.368
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:34.368 --> 00:01:37.358
+XP, rider levels, stars and map unlocks.
+
+00:01:37.704 --> 00:01:40.196
+A custom workout lives under Profile.

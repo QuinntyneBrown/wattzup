@@ -1,0 +1,56 @@
+@startuml
+title UML sequence behaviour — Line up a video
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "VideoSync" as vsync
+  participant "CustomWorkoutStore" as store
+  participant "CustomWorkoutPage" as page
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "YouTubeLink" as link
+  participant "CustomWorkoutLimits" as limits
+  participant "YouTubeVideoPlayer" as player
+end box
+box "Third party — YouTube" #F2F4F7
+  participant "YouTube embed" as yt
+end box
+rider -> vsync : Turn on "Ride along to a video"
+vsync -> store : enableVideo() (aria-checked="true")
+rider -> vsync : Paste link
+vsync -> store : setVideoLink(text)
+store -> link : parse(text)
+alt valid watch, youtu.be or shorts link with an 11-character id
+  link --> store : videoId
+  store --> page : Field valid, Start ride enabled
+  page -> player : load(host, videoId) (video library imported on demand)
+  player -> yt : Embed youtube-nocookie.com/embed/<videoId>
+else invalid
+  link --> store : Invalid
+  store --> vsync : aria-invalid="true", message, Start ride disabled L2-098 AC2
+end
+rider -> vsync : Press "Half a second later"
+vsync -> store : nudgeOffset(+0.5)
+store -> limits : offset(+0.5, 0.0)
+limits --> store : 0.5 s (never below 0) L2-098 AC3
+rider -> vsync : Scrub preview, press "Use video's current time"
+vsync -> player : currentTime()
+player --> vsync : 12.04 s
+vsync -> store : useCurrentTime(12.04)
+store --> vsync : Offset 12.0 s (tenth of a second) L2-098 AC4
+rider -> vsync : Press "Check"
+vsync -> player : seekTo(12.0)
+@enduml

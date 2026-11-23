@@ -1,0 +1,27 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Adjust sound, motion and display
+Person(rider, "Rider", "Rides a smart bike at home")
+Container_Boundary(app, "Ride app") {
+  Component(views, "SoundSettings / DisplaySettings", "Presentation · components", "Sound and display controls")
+  Component(page, "SettingsPage", "Page · ride", "Binds the controls to the store")
+  Component(store, "LocalRideSettingsStore", "Service · domain/storage (RIDE_SETTINGS)", "Ride settings in localStorage")
+  Component(display, "BrowserDisplayPreferences", "Service · domain/browser (DISPLAY_PREFERENCES)", "data-theme, data-motion, data-ride-numbers")
+  Component(sound, "WebAudioRideSound", "Service · domain/browser (RIDE_SOUND)", "Ride sound on Web Audio")
+  Component(rides, "RaceStore / ClassRideStore", "Stores · ride", "Play ride sound, hold the wake lock, start the world")
+  Component(wake, "BrowserScreenWakeLock", "Service · domain/browser (SCREEN_WAKE_LOCK)", "Held during a ride")
+  Component(full, "enterFullScreenOnStart", "Rule · domain/engine", "FULLSCREEN.enter on the start press")
+  Component(world, "WorldScene", "world", "Draws still with reduced motion")
+}
+Rel(rider, views, "Changes")
+Rel(views, page, "Outputs")
+Rel(page, store, "set")
+Rel(display, store, "Reads")
+Rel(sound, store, "Reads")
+Rel(wake, store, "Reads")
+Rel(full, store, "Reads")
+Rel(rides, sound, "play / stop")
+Rel(rides, wake, "hold / release")
+Rel(rides, world, "reducedMotion from DISPLAY_PREFERENCES")
+@enduml

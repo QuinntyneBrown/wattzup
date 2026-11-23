@@ -1,0 +1,47 @@
+<div class="race-setup-page">
+  <wz-setup-header>
+    <a wz-back-link slot="back" routerLink="/race">Maps</a>
+    <wz-fullscreen-button slot="end" />
+  </wz-setup-header>
+  <div class="race-setup-page__scroll">
+    <main id="main" class="container page setup-layout" tabindex="-1">
+      @if (store.map(); as map) {
+        <wz-setup-map
+          [photoUrl]="map.photoUrl"
+          [name]="map.name"
+          [routeLine]="store.routeLine()"
+          [distanceKm]="map.distanceKm"
+          [climbingM]="map.climbingM"
+          [rating]="map.rating"
+          [bestSeconds]="store.bestSeconds()"
+          [earned]="store.earned()"
+        />
+        <section class="setup-ride" aria-labelledby="race-against">
+          @if (store.goal(); as goal) {
+            <wz-setup-goal [goal]="goal.goal" [opens]="goal.opens" />
+          }
+          <h2 class="setup-ride__title" id="race-against">Race against</h2>
+          <wz-mode-options
+            [options]="store.modes()"
+            [selected]="store.mode()"
+            (choose)="store.choose($event)"
+          />
+          @if (store.mode() === 'bots') {
+            <wz-pack-strength [selected]="store.pack()" (choose)="store.pack.set($event)" />
+          }
+          <!-- The label is the button's whole text: spaces around it would join its accessible name. -->
+          <!-- prettier-ignore -->
+          <button
+            wz-button
+            class="setup-ride__start"
+            type="button"
+            variant="primary"
+            size="xl"
+            [block]="true"
+            (click)="store.start()"
+          >{{ store.raceStart().label }}</button>
+        </section>
+      }
+    </main>
+  </div>
+</div>

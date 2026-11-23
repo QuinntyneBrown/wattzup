@@ -1,0 +1,33 @@
+@startuml
+title UML sequence behaviour — Reset to recommended
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "SettingsPage" as page
+end box
+box "Frontend — Ride app (domain and api libraries)" #E0F2FE
+  participant "LocalRideSettingsStore" as store
+  participant "LiveAnnouncer (CDK)" as ann
+  participant "WorldCache" as cache
+end box
+participant "localStorage" as ls
+actor -> page : Reset to recommended
+page -> store : reset()
+store -> store : current.set(RECOMMENDED_SETTINGS)
+store -> ls : setItem(key, JSON)
+page -> ann : "Settings reset"
+note right of cache : Saved worlds, rides and progress are untouched (L2-158 AC6)
+@enduml

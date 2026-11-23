@@ -1,0 +1,22 @@
+<section class="load-card" aria-labelledby="load-title">
+  <div class="load-card__head">
+    <h2 class="load-card__title" id="load-title">{{ heading() }}</h2>
+    <span class="load-card__percent" aria-hidden="true">{{ percent() }}%</span>
+  </div>
+  <wz-progress
+    size="lg"
+    [tone]="done() ? 'ok' : null"
+    [value]="percent()"
+    [label]="progressLabel()"
+  />
+  <wz-load-steps [steps]="steps()" />
+  <p class="visually-hidden load-card__status" role="status">{{ status() }}</p>
+  <div class="load-card__facts"><ng-content select="[slot=facts]" /></div>
+  <div class="load-card__notice"><ng-content select="[slot=notice]" /></div>
+  <div class="load-card__actions">
+    <ng-content select="[slot=actions]" />
+    @if (hint()) {
+      <p class="load-card__hint">{{ hint() }}</p>
+    }
+  </div>
+</section>

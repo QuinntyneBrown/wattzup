@@ -1,0 +1,121 @@
+<div class="setup-toggle">
+  <span
+    ><span class="setup-toggle__label" aria-hidden="true">Ride along to a video</span
+    ><span class="setup-toggle__detail" [id]="id + '-detail'"
+      >Plays in sync on the dashboard</span
+    ></span
+  >
+  <button
+    wz-switch
+    [checked]="on()"
+    [attr.aria-describedby]="id + '-detail'"
+    (click)="toggled.emit(!on())"
+  >
+    <span class="visually-hidden">Ride along to a video</span>
+  </button>
+</div>
+@if (on()) {
+  <div class="video-sync">
+    <label class="video-sync__label" [for]="id + '-url'">YouTube link</label>
+    <input
+      class="input video-sync__url"
+      type="url"
+      placeholder="https://www.youtube.com/watch?v=…"
+      [id]="id + '-url'"
+      [value]="link()"
+      [attr.aria-invalid]="error() ? 'true' : null"
+      [attr.aria-describedby]="error() ? id + '-error' : null"
+      (input)="changed($event)"
+    />
+    @if (error(); as message) {
+      <p class="field__error video-sync__error" role="alert" [id]="id + '-error'">
+        <svg class="field__error-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" x2="12" y1="8" y2="12" />
+          <line x1="12" x2="12.01" y1="16" y2="16" />
+        </svg>
+        {{ message }}
+      </p>
+    }
+    <div class="video-sync__player">
+      @for (videoId of frames(); track videoId) {
+        <wz-video-frame (drawn)="frame.emit({ host: $event, videoId })" />
+      }
+    </div>
+    <div class="video-sync__controls">
+      <div>
+        <label class="video-sync__offset-label" [for]="id + '-offset'">Ride 0:00 starts at</label>
+        <div class="video-sync__offset">
+          <button
+            class="video-sync__nudge"
+            type="button"
+            aria-label="Half a second earlier"
+            [disabled]="atZero()"
+            (click)="earlier.emit()"
+          >
+            <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14" />
+            </svg>
+          </button>
+          <input
+            class="video-sync__offset-input"
+            type="text"
+            inputmode="decimal"
+            [id]="id + '-offset'"
+            [value]="offset()"
+            (change)="typed($event)"
+          />
+          <button
+            class="video-sync__nudge"
+            type="button"
+            aria-label="Half a second later"
+            (click)="later.emit()"
+          >
+            <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14" />
+              <path d="M12 5v14" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="video-sync__actions">
+        <button
+          wz-button
+          variant="light"
+          class="video-sync__action"
+          type="button"
+          [disabled]="videoId() === null"
+          (click)="useCurrentTime.emit()"
+        >
+          <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="22" x2="18" y1="12" y2="12" />
+            <line x1="6" x2="2" y1="12" y2="12" />
+            <line x1="12" x2="12" y1="6" y2="2" />
+            <line x1="12" x2="12" y1="22" y2="18" />
+          </svg>
+          Use video's current time
+        </button>
+        <button
+          wz-button
+          variant="raised"
+          class="video-sync__action video-sync__action--quiet"
+          type="button"
+          [disabled]="videoId() === null"
+          (click)="check.emit()"
+        >
+          <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"
+            />
+          </svg>
+          Check
+        </button>
+      </div>
+    </div>
+    <p class="video-sync__help">
+      Scrub the preview past the intro to the moment the warm-up begins, then use that time. The
+      video skips to it when you start, and pauses and resumes with the ride.
+    </p>
+  </div>
+}

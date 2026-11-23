@@ -1,0 +1,50 @@
+// Block segmented (docs/design-system/assets/components.css, raised and strong): the chosen option filled with the
+// foreground. Every option draws 24 px tall and takes touches across 44 px (L2-140 AC2); the options wrap, rather
+// than scroll, on the narrowest screens, so nothing clips that tap area.
+:host {
+  display: inline-flex;
+  align-self: flex-start;
+  max-width: 100%;
+  flex-wrap: wrap;
+  gap: var(--space-0-5);
+  border-radius: var(--radius-lg);
+  background: var(--color-raised);
+  padding: var(--space-0-5);
+}
+
+.segmented__option {
+  position: relative;
+  flex-shrink: 0;
+  height: var(--target-min);
+  padding-inline: var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  color: var(--color-muted);
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    inset-block: min(0px, calc((100% - var(--target-comfortable)) / 2));
+  }
+
+  &:hover:not(:disabled) {
+    color: var(--color-fg);
+  }
+
+  &[aria-checked='true'] {
+    background: var(--color-fg);
+    color: var(--color-ink);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}

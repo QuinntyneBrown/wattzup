@@ -1,0 +1,13 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Host and deliver
+
+Person(rider, "Rider", "Rides a smart bike at home")
+Person(dev, "Developer", "Pushes changes")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(gh, "GitHub Actions", "Runs the pipeline and deploys")
+Rel(rider, telo, "Opens over HTTPS")
+Rel(dev, gh, "Pushes to")
+Rel(gh, telo, "Deploys to")
+@enduml

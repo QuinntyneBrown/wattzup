@@ -1,0 +1,25 @@
+<div class="class-video">
+  <img class="photo photo--yt" [src]="cover()" [alt]="'Video: ' + title()" />
+  <div class="class-video__player"></div>
+  @if (left(); as left) {
+    <div class="class-video__wait">
+      <p class="class-video__wait-label">Starts in</p>
+      <p class="class-video__wait-time" role="timer" [attr.aria-label]="'Starts in ' + left">
+        {{ left }}
+      </p>
+      <p class="class-video__wait-note">
+        The video and the clock start with the group at {{ startsAt() }}.
+      </p>
+    </div>
+  }
+  @if (paused()) {
+    <div class="class-video__paused" aria-hidden="true">
+      <p class="class-video__paused-label">Paused</p>
+    </div>
+  }
+</div>
+@if (unavailable()) {
+  <wz-inline-message class="class-video__notice" tone="warn" role="status"
+    >The video can’t play. The bike will still follow the class.</wz-inline-message
+  >
+}

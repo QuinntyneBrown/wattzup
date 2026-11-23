@@ -1,0 +1,34 @@
+@startuml
+title UML sequence behaviour — Step down when frames drop
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app (world library, lazy)" #E0F2FE
+  participant "WorldScene" as scene
+  participant "WorldRenderer" as renderer
+  participant "FrameBudget" as budget
+end box
+scene -> renderer : start(…, { tier, stepDown })
+renderer -> budget : new FrameBudget(level, period, { pinned: stepDown is false })
+loop each drawn frame
+  renderer -> budget : sample(now, frame time)
+  alt two 2 s windows in a row over 1.2 × the period, and not pinned
+    budget --> renderer : drop: next lower level, or Low at 3 × (L2-159 AC4)
+    renderer -> renderer : applyTier() for the rest of the ride (L2-160 AC3)
+  else step-down off (pinned)
+    budget --> renderer : keep, however slow (L2-160 AC2)
+  end
+end
+note over scene : A new quality object with the same scale and cap restarts nothing:\nthe budget's windows are restarted only by a new frame period.
+@enduml

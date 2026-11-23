@@ -1,0 +1,49 @@
+@startuml
+title UML sequence behaviour — Open Profile
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ProfilePage" as page
+  participant "ProfileStore" as store
+  participant "RiderProgressStore" as prog
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "CatalogueApi" as cat
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "ProgressController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "GetProgressQueryHandler" as handler
+end box
+actor -> page : Open /profile
+page -> store : provided on the route
+par
+  store -> prog : refresh()
+  prog -> ctrl : GET /api/progress
+  ctrl -> handler : Send GetProgressQuery
+  handler --> ctrl : ProgressDto
+  ctrl --> prog : 200
+else
+  store -> cat : getMaps()
+  cat --> store : 7 maps in unlock order
+end
+store -> store : "Sam · Level 7", XP bar role="img" "1,840 of 2,600 XP" (L2-109 AC1)
+store -> store : "760 XP to level 8 · 23 rides · 412 km · 4-day streak"
+store -> store : "5 of 21 stars"; rows Prairie 3★ 31:42, Old Town 1★ 27:10, Coast 1★ 58:03, rest locked (L2-110 AC1)
+store --> page : ProfileView
+page --> actor : Open rows link to Race Setup; locked rows are disabled buttons with ", locked" and best "—" ("No best yet") (L2-110 AC2, AC3)
+@enduml

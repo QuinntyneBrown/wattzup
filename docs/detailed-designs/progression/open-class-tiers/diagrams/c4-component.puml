@@ -1,0 +1,24 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Open class tiers
+
+Container(app, "Ride app", "Angular", "Class Library, Class Start and HttpProgressApi; a class is open when its tier is at or below the level")
+Container_Boundary(api, "Telo Ride API") {
+  Component(ctrl, "ClassesController", "ASP.NET Core controller", "GET /api/classes")
+  Component(handler, "GetClassesQueryHandler", "MediatR handler", "Lists the classes that pass the rules")
+  Component(plan, "ClassPlanRules", "Domain rule", "Refuses a class that breaks a rule")
+  Component(tiers, "ClassTierRules", "Domain rule", "Tiers 1, 5, 10 and 20")
+  Component(progress, "GetProgressQueryHandler", "MediatR handler", "GET /api/progress: the rider's level")
+  Component(levels, "LevelTable", "Domain rule", "Rider level from total XP")
+}
+ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Riders and their XP")
+
+Rel(app, ctrl, "GET /api/classes", "JSON/HTTPS")
+Rel(app, progress, "GET /api/progress", "JSON/HTTPS")
+Rel(ctrl, handler, "Sends GetClassesQuery")
+Rel(handler, plan, "BrokenRule(class)")
+Rel(plan, tiers, "IsTier(OpensAtLevel)")
+Rel(progress, levels, "Level for the rider")
+Rel(progress, db, "Reads total XP", "EF Core")
+@enduml

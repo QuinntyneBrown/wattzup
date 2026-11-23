@@ -1,0 +1,89 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Set up a race
+enum RaceMode {
+  solo
+  bots
+  online
+}
+enum PackStrength {
+  easy
+  medium
+  hard
+}
+class RaceStart {
+  +mapId: string
+  +mode: RaceMode
+  +pack?: PackStrength
+  +route: string[]
+  +queryParams: Record<string, string>
+  +label: string
+  +ghost?: GhostSource
+}
+note right of RaceStart : ghost joins with the ghost and bots (slice 7.4)
+enum GhostSource {
+  bestRide
+  mediumPace
+}
+class RaceSetupStore {
+  +map: Signal<MapDto>
+  +progress: Signal<MapProgressDto | undefined>
+  +isNextUnlock: Signal<boolean>
+  +mode: WritableSignal<RaceMode>
+  +pack: WritableSignal<PackStrength>
+  +onlineOpen: Signal<boolean>
+  +queueCount: Signal<number | undefined>
+  +raceStart: Signal<RaceStart>
+  +start(): void
+}
+class RaceStartPlanner {
+  +plan(mapId: string, mode: RaceMode, pack: PackStrength, hasBest: boolean): RaceStart
+}
+class RaceSessionStore {
+  +seat: Signal<SeatDto | undefined>
+  +findRace(mapId: string): Promise<void>
+  +leave(): Promise<void>
+}
+interface RaceQueueApi {
+  +getQueueCount(mapId: string): Promise<number>
+}
+interface RideHubClient {
+  +connect(): Promise<void>
+  +findRace(mapId: string): Promise<SeatDto>
+  +disconnect(): Promise<void>
+}
+class RaceSetupPage
+class ModeOptions {
+  +mode: ModelSignal<RaceMode>
+  +onlineOpen: InputSignal<boolean>
+  +queueCount: InputSignal<number | undefined>
+}
+class PackStrengthOptions as "PackStrength (component)" {
+  +pack: ModelSignal<PackStrength>
+}
+class GetRaceQueueCountQueryHandler {
+  +Handle(query: GetRaceQueueCountQuery): Task<int>
+}
+RaceSetupPage ..> RaceSetupStore : reads
+RaceSetupPage ..> ModeOptions : renders
+RaceSetupPage ..> PackStrengthOptions : renders when bots
+RaceSetupStore --> RaceMode
+RaceSetupStore --> PackStrength
+RaceSetupStore ..> RaceStartPlanner : uses
+RaceSetupStore ..> RaceQueueApi : uses
+RaceSetupStore ..> RaceSessionStore : findRace when online
+RaceStartPlanner ..> RaceStart : creates
+RaceStart --> GhostSource
+RaceSessionStore ..> RideHubClient : uses
+@enduml

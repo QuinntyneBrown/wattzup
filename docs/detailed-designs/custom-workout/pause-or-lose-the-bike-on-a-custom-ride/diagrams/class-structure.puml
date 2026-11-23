@@ -1,0 +1,65 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Pause or lose the bike on a custom ride
+
+package "api library" {
+  enum BleState {
+    Disconnected
+    Connecting
+    Connected
+    Lost
+  }
+  interface BikeConnection {
+    +ble: Signal<BleState>
+    +bikeName: Signal<string>
+    +connect(): Promise<void>
+    +reconnect(): Promise<void>
+  }
+}
+package "ride application" {
+  enum RideRunState {
+    Waiting
+    Running
+    Paused
+    Lost
+  }
+  class CustomRideStore {
+    +runState: Signal<RideRunState>
+    +canStart: Signal<boolean>
+    +canResume: Signal<boolean>
+    +canEnd: Signal<boolean>
+    +controlsEnabled: Signal<boolean>
+    +start(): void
+    +pause(): void
+    +resume(): void
+    +connectBike(): Promise<void>
+    +reconnect(): Promise<void>
+  }
+}
+package "domain library" {
+  class RideClock {
+    +start(): void
+    +pause(): void
+    +resume(): void
+  }
+  class RideRecorder {
+    +totals(): RideTotals
+  }
+}
+CustomRideStore --> RideRunState
+CustomRideStore ..> BikeConnection : watches ble
+BikeConnection --> BleState
+CustomRideStore *-- RideClock
+CustomRideStore *-- RideRecorder
+@enduml

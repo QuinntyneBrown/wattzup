@@ -1,0 +1,63 @@
+@startuml
+title UML sequence behaviour — Pace the field
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "RaceStore" as store
+  participant "RaceSessionStore" as session
+end box
+box "Frontend — Ride app (domain and api libraries)" #E0F2FE
+  participant "RaceFieldFactory" as factory
+  participant "GhostApi" as gapi
+  participant "GhostCache" as gcache
+  participant "RaceEngine" as engine
+  participant "RaceField" as field
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "MapsController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "GetBestRideQueryHandler" as qh
+end box
+store -> factory : create(raceStart)
+alt bots race
+  factory -> factory : BotPack, seed from map id and pack strength (L2-067 AC1)
+else solo race
+  factory -> gapi : getBestRide(mapId)
+  gapi -> ctrl : GET /api/maps/{mapId}/best-ride
+  ctrl -> qh : Send GetBestRideQuery
+  qh --> ctrl : Caller's fastest trace, or none
+  ctrl --> gapi : 200 trace or 404
+  alt trace returned
+    gapi --> factory : GhostTrace
+    factory -> gcache : write(trace)
+  else network down
+    factory -> gcache : read(mapId) (L2-067 AC4)
+    gcache --> factory : cached trace
+  else no best
+    factory -> factory : Ghost rides the medium pace (L2-050 AC4)
+  end
+else riders-online race
+  factory -> factory : RemoteField; no bot runs in the browser (L2-067 AC3)
+  session -> field : update(standings) on each StandingsUpdated
+end
+factory --> store : RaceField
+loop once a second
+  engine -> field : advance(elapsedS)
+  field -> field : Bots: base + drift + swing, power to speed, distance (L2-067 AC1)
+  field -> field : Ghost: distance at this second of the best ride (L2-067 AC2)
+  field --> engine : FieldPosition[]
+end
+@enduml

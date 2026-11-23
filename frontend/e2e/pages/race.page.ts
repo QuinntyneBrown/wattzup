@@ -1,0 +1,145 @@
+import type { Locator, Page } from '@playwright/test';
+
+/** The race at `/race/:mapId/ride` (docs/mocks/pages/race/): the scene, the top bar and the HUD's panels. */
+export class RacePage {
+  readonly heading: Locator;
+  readonly scene: Locator;
+  readonly world: Locator;
+  readonly panorama: Locator;
+  readonly backend: Locator;
+  readonly bar: Locator;
+  readonly map: Locator;
+  readonly route: Locator;
+  readonly bike: Locator;
+  readonly clock: Locator;
+  readonly clockTotal: Locator;
+  readonly interval: Locator;
+  readonly routePanel: Locator;
+  readonly resistPanel: Locator;
+  readonly power: Locator;
+  readonly place: Locator;
+  readonly gaps: Locator;
+  readonly board: Locator;
+  readonly boardTitle: Locator;
+  readonly boardRows: Locator;
+  readonly boardNames: Locator;
+  readonly boardGaps: Locator;
+  /** The board's rows marked DNF (L2-124). */
+  readonly boardDnf: Locator;
+  /** The lost-service notice under the board's title, a status region always in the page (L2-126 AC1). */
+  readonly boardNotice: Locator;
+  readonly you: Locator;
+  readonly position: Locator;
+  readonly watts: Locator;
+  /** The watts number itself, without its unit. */
+  readonly wattsValue: Locator;
+  readonly target: Locator;
+  readonly scenery: Locator;
+  readonly sceneryTitle: Locator;
+  readonly sceneryBody: Locator;
+  readonly sceneryKey: Locator;
+  readonly streamIt: Locator;
+  readonly sceneryError: Locator;
+  readonly sceneryCredit: Locator;
+  readonly delta: Locator;
+  readonly statLabels: Locator;
+  readonly stats: Locator;
+  readonly grade: Locator;
+  readonly climbed: Locator;
+  readonly distance: Locator;
+  /** The speed readout in km/h, one decimal. */
+  readonly speed: Locator;
+  readonly profile: Locator;
+  readonly here: Locator;
+  readonly resistance: Locator;
+  readonly resistanceLabel: Locator;
+  readonly raise: Locator;
+  readonly lower: Locator;
+  readonly intervalLabel: Locator;
+  readonly intervalRound: Locator;
+  readonly intervalLeft: Locator;
+  readonly intervalFill: Locator;
+  readonly intervalNext: Locator;
+  readonly controls: Locator;
+  readonly pause: Locator;
+  readonly resume: Locator;
+  readonly leave: Locator;
+  readonly end: Locator;
+  readonly paused: Locator;
+  readonly lost: Locator;
+  readonly reconnect: Locator;
+  readonly backToSetup: Locator;
+
+  constructor(private readonly page: Page) {
+    this.heading = page.getByRole('heading', { level: 1 });
+    this.scene = page.locator('.race-scene');
+    this.world = this.scene.locator('canvas.world-scene');
+    this.panorama = this.scene.locator('.race-scene__photo');
+    this.backend = page.locator('.race-bar__backend');
+    this.bar = page.locator('.race-bar');
+    this.map = page.locator('.race-bar__map');
+    this.route = page.locator('.race-bar__route');
+    this.bike = page.locator('.race-bar__bike');
+    this.clock = page.locator('.race-bar__clock');
+    this.clockTotal = page.locator('.race-bar__total');
+    this.interval = page.locator('.race-interval');
+    this.routePanel = page.locator('.race-route');
+    this.resistPanel = page.locator('.race-resist');
+    this.power = page.getByRole('region', { name: 'Power and position' });
+    this.position = page.locator('.race-power__rank');
+    this.place = page.locator('.race-power__pos');
+    this.gaps = page.locator('.race-power__gaps > div');
+    this.board = page.getByRole('complementary', { name: /Standings|You vs your best/ });
+    this.boardTitle = page.locator('.race-board__title');
+    this.boardRows = page.locator('.race-board__row');
+    this.boardNames = page.locator('.race-board__name');
+    this.boardGaps = page.locator('.race-board__gap');
+    this.boardDnf = page.locator('.race-board__row--dnf');
+    this.boardNotice = page.locator('.race-board__status');
+    this.you = page.locator('.race-board__row[aria-current="true"]');
+    this.watts = page.locator('.race-power__watts');
+    this.wattsValue = page.locator('.race-power__watts-value');
+    this.target = page.locator('.race-power__target-label');
+    this.scenery = page.locator('.race-scenery');
+    this.sceneryTitle = this.scenery.locator('.race-scenery__title');
+    this.sceneryBody = this.scenery.locator('.race-scenery__body');
+    this.sceneryKey = this.scenery.getByRole('textbox', { name: 'Google Maps Platform API key' });
+    this.streamIt = this.scenery.getByRole('button', { name: 'Stream it' });
+    this.sceneryError = this.scenery.getByRole('alert');
+    this.sceneryCredit = this.scenery.locator('.race-scenery__credit');
+    this.delta = page.locator('.race-power__delta');
+    this.statLabels = page.locator('.race-power__stat-label');
+    this.stats = page.locator('.race-power__stat');
+    this.grade = page.locator('.race-route__grade');
+    this.climbed = page.locator('.race-route__climb');
+    this.distance = page.locator('.race-route__km');
+    this.speed = page
+      .locator('.race-power__stats > div')
+      .filter({ has: page.locator('.race-power__stat-label', { hasText: 'Speed' }) })
+      .locator('.race-power__stat-value');
+    this.profile = page.locator('.race-route__profile');
+    this.here = page.locator('.race-route__here');
+    this.resistance = page.locator('.race-resist__readout');
+    this.resistanceLabel = page.locator('.race-resist__label');
+    this.raise = page.getByRole('button', { name: 'Raise resistance' });
+    this.lower = page.getByRole('button', { name: 'Lower resistance' });
+    this.intervalLabel = page.locator('.race-interval__name');
+    this.intervalRound = page.locator('.race-interval__round');
+    this.intervalLeft = page.locator('.race-interval__left');
+    this.intervalFill = page.locator('.race-interval__fill');
+    this.intervalNext = page.locator('.race-interval__next');
+    this.controls = page.locator('.race-bar__end');
+    this.pause = this.bar.getByRole('button', { name: 'Pause', exact: true });
+    this.resume = this.bar.getByRole('button', { name: 'Resume', exact: true });
+    this.leave = this.bar.getByRole('link', { name: 'Leave race' });
+    this.end = this.bar.getByRole('link', { name: 'End ride' });
+    this.paused = page.locator('.race-paused');
+    this.lost = page.getByRole('alert').filter({ has: page.locator('.race-lost__title') });
+    this.reconnect = this.lost.getByRole('button', { name: 'Reconnect' });
+    this.backToSetup = this.lost.getByRole('link', { name: 'Back to Race Setup' });
+  }
+
+  async open(mapId: string, query: string): Promise<void> {
+    await this.page.goto(`/race/${mapId}/ride?${query}`);
+  }
+}

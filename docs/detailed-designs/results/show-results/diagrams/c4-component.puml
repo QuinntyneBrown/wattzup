@@ -1,0 +1,22 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Show results
+
+Container_Boundary(app, "Ride app") {
+  Component(page, "ResultsPage", "Angular page · ride", "Block results: result, earned panels, actions")
+  Component(store, "resultsView()", "Pure helper · ride", "RaceResult or ClassResult as a ResultsView")
+  Component(line, "resultLine(), ordinal()", "Pure helpers · ride", "Podium and gap lines, 2nd, 3rd")
+  Component(outbox, "History state", "Browser · Location.getState()", "The RaceResult or ClassResult the ride handed over, until RideOutbox (L2-135)")
+  Component(hdr, "ResultsHeader", "Presentation component · components", "Map or class and context")
+  Component(standings, "Standings", "Presentation component · components", "Ordered final standings")
+  Component(prog, "RiderProgressStore", "Signal store · ride (PROGRESS_STORE)", "Refreshed when Home's shell opens")
+}
+
+Rel(page, outbox, "Reads the result")
+Rel(page, store, "Computes the ResultsView")
+Rel(store, line, "Uses")
+Rel(page, hdr, "Renders")
+Rel(page, standings, "Renders")
+Rel(page, prog, "Done opens Home, which refreshes it")
+@enduml

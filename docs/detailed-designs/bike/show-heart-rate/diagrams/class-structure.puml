@@ -1,0 +1,75 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Show heart rate
+enum StrapState {
+  none
+  connecting
+  connected
+  disconnected
+}
+interface HeartRateStrap <<api>> {
+  +state: Signal<StrapState>
+  +name: Signal<string | null>
+  +bpm: Signal<number | null>
+  +choose(): Promise<boolean>
+  +reconnectRemembered(): Promise<boolean>
+  +disconnect(): void
+}
+class WebBluetoothHeartRateStrap <<domain/bluetooth>> {
+  -device: BluetoothDevice | null
+  -reconnector: DeviceReconnector
+  +choose(): Promise<boolean>
+  +reconnectRemembered(): Promise<boolean>
+}
+class HeartRateMeasurementDecoder <<domain/protocol>> {
+  +{static} SERVICE: number = 0x180D
+  +{static} MEASUREMENT: number = 0x2A37
+  +decode(bytes: Uint8Array): number | null
+}
+class DeviceReconnector <<domain/bluetooth>> {
+  +start(attempt): void
+  +stop(): void
+}
+class HeartRateSource <<domain/engine>> {
+  +{static} STALE_MS: number = 5000
+  +bpm: Signal<number | null>
+  +announcement: Signal<string>
+}
+class HeartRateStats <<domain/engine>> {
+  +average: Signal<number | null>
+  +peak: Signal<number | null>
+  +onRunningSecond(): void
+}
+class BikeTelemetry <<domain/engine>> {
+  +heartRate: Signal<number | null>
+}
+class RideSubmission <<api>> {
+  +rideId: string
+  +avgHeartRate: number | null
+  +peakHeartRate: number | null
+}
+class RememberedStrapStore <<domain/storage>> {
+  +get(): RememberedStrap | null
+  +save(strap: RememberedStrap): void
+}
+WebBluetoothHeartRateStrap ..|> HeartRateStrap
+WebBluetoothHeartRateStrap ..> HeartRateMeasurementDecoder
+WebBluetoothHeartRateStrap *-- DeviceReconnector
+WebBluetoothHeartRateStrap --> RememberedStrapStore
+HeartRateStrap --> StrapState
+HeartRateSource --> HeartRateStrap : prefers
+HeartRateSource --> BikeTelemetry : falls back to
+HeartRateStats --> HeartRateSource : reads
+RideSubmission ..> HeartRateStats : filled from
+@enduml

@@ -1,0 +1,30 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Check bike and browser support
+Person(rider, "Rider", "Rides a smart bike at home")
+Container_Boundary(app, "Ride app") {
+  Component(connect, "ConnectBikePage", "Angular page · ride", "First-run pairing screen at /connect")
+  Component(classStart, "ClassStartPage / CustomSetupPage", "Angular pages · ride", "Screens that start a ride")
+  Component(customRide, "CustomRidePage", "Angular page · ride", "Custom ride dashboard")
+  Component(works, "ConnectWorks", "Presentation component · components", "The Works with list")
+  Component(notice, "BrowserNotice", "Presentation component · components", "Notice under a header with one action")
+  Component(panel, "BrowserPanel", "Presentation component · components", "Full panel that replaces the ride view")
+  Component(support, "WebBluetoothSupport", "Service · domain/bluetooth", "Reads navigator.bluetooth and isSecureContext")
+  Component(block, "rideBlockReason", "Pure helper · domain/bluetooth", "Maps support state to a blocked-ride reason")
+  Component(list, "SUPPORTED_BIKES", "Constant · domain/bluetooth", "Bike models and their support level")
+  Component(token, "BLUETOOTH_SUPPORT", "Injection token · api", "BluetoothSupport contract")
+}
+Rel(rider, connect, "Opens")
+Rel(rider, classStart, "Opens")
+Rel(connect, works, "Renders with SUPPORTED_BIKES")
+Rel(connect, list, "Reads")
+Rel(connect, token, "Injects")
+Rel(classStart, token, "Injects")
+Rel(customRide, token, "Injects")
+Rel(token, support, "Bound to in app.config.ts")
+Rel(classStart, block, "Derives disabled Start from")
+Rel(customRide, block, "Derives panel from")
+Rel(classStart, notice, "Renders")
+Rel(customRide, panel, "Renders")
+@enduml

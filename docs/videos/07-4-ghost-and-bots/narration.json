@@ -1,0 +1,99 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Now you race someone. Nine bots, or the ghost of your best ride, and every second the board ranks the field."
+      ]
+    },
+    {
+      "id": "pack",
+      "bars": 4,
+      "lines": [
+        "Each bot rides the pack's pace, easy, medium or hard, with its own drift and swing, seeded from the map: the same race rides the same way."
+      ]
+    },
+    {
+      "id": "board",
+      "bars": 4,
+      "lines": [
+        "The standings board lists all ten by place, each bot's gap to you in seconds, and your row in orange."
+      ]
+    },
+    {
+      "id": "place",
+      "bars": 4,
+      "lines": [
+        "The power panel reads your place, fifth of ten, with the gaps either side: level with the rider ahead, a second clear of the one behind."
+      ]
+    },
+    {
+      "id": "slide",
+      "bars": 4,
+      "lines": [
+        "When places swap, the board reorders at most once a second, and each row slides over a hundred and fifty milliseconds. With reduced motion, it simply moves."
+      ]
+    },
+    {
+      "id": "ghost",
+      "bars": 4,
+      "lines": [
+        "Race solo, and it's you against your best. With no best ride yet, the ghost rides the medium pace, a hundred and ninety watts."
+      ]
+    },
+    {
+      "id": "behind",
+      "bars": 4,
+      "lines": [
+        "The panel reads Ahead or Behind, with the ghost's gap as Best. Level with your ghost counts as ahead."
+      ]
+    },
+    {
+      "id": "offline",
+      "bars": 4,
+      "lines": [
+        "Bots and the ghost run in the browser. With the maps kept on the device, a race starts and rides without a network."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "From a tablet up, the board sits beside the race. On a phone it steps aside for power and the interval."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: seven new behaviour specs, the pace, the ranking and the gaps in unit tests, all green, and the first bundle unchanged."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Limit abuse
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Sends progress at most twice a second; honours Retry-After")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Rate limiter, sign-in code limits, hub progress gate")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Sign-in codes counted for limits")
+}
+Rel(rider, app, "Uses", "HTTPS")
+Rel(app, api, "REST and ReportProgress", "JSON/HTTPS, WebSocket")
+Rel(api, db, "Counts codes per email and IP in the last hour", "EF Core")
+@enduml

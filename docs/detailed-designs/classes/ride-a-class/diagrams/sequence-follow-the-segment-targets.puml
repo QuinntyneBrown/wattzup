@@ -1,0 +1,47 @@
+@startuml
+title UML sequence behaviour — Follow the segment targets
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "ClassBike" as panel
+  participant "ClassRideStore" as store
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "WorkoutEngine" as engine
+  participant "PowerModel" as power
+  participant "ResistanceController" as resist
+  participant "WebBluetoothBikeConnection" as conn
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "Smart bike" as bike
+end box
+bike -> conn : Telemetry notification (cadence 73, resistance 6)
+conn --> store : telemetry
+store -> power : estimate(73, 6)
+power --> store : 108 W
+engine --> store : Segment Recover, 1:30 left, level 6, aim 72
+store -> power : targetPower(6, 72), onTarget(108, target)
+power --> store : On target (within 10 %)
+store --> panel : "Recover", "1:30" (aria-label "Recover: 1:30 left"), "108 W" On target, "73 rpm" Aim 72, "6 / of 32" L2-089
+panel --> rider : Bike panel updates once a second
+engine -> engine : Segment boundary reached
+engine -> resist : applyPlanLevel(next level) within 500 ms L2-027 AC1
+resist -> conn : Set resistance
+conn -> bike : Resistance command
+rider -> panel : Press + (48 px)
+panel -> store : raise()
+store -> resist : nudge(+1) (manual, L2-028)
+@enduml

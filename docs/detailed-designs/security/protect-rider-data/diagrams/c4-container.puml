@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Protect rider data
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(otel, "Telemetry backend", "Product <TO SUPPLY>")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Talks to the API over HTTPS only")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "HSTS, keyed code hashes, telemetry redaction")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Encrypted at rest with its backups")
+}
+Rel(rider, app, "Uses", "HTTPS")
+Rel(app, api, "Requests", "TLS 1.2+")
+Rel(api, db, "Reads and writes", "TLS; EF Core")
+Rel(api, otel, "Exports redacted signals", "OTLP")
+@enduml

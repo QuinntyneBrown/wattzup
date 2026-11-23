@@ -3,17 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Chip — Wattzup design system</title>
-<meta name="description" content="Chips pick a preset: Tabata, 40 / 20, Minute on, Long climbs.">
+<title>Chip — Telo Ride design system</title>
+<meta name="description" content="Chips pick, show or remove a value: Custom workout preset chips as filter toggles, removable filter chips and static chips.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Page-only: docs chrome links (ds.css a) must not restyle product links inside specimens */
+:where(.ds-example__canvas, .ds-themes, .ds-matrix, .ds-anatomy__figure) a { color: inherit; text-decoration: none; }
+:where(.ds-example__canvas, .ds-themes, .ds-matrix, .ds-anatomy__figure) a:hover { color: inherit; }
+/* Visually hidden text inside a scrolling matrix must not widen the page */
+.ds-matrix { position: relative; }
+.ds-themes + p, .ds-themes + ul { margin-top: var(--space-4); }
+/* Product tables shown inside the state matrix keep their own cell styles */
+.ds-matrix td :is(.table, .map-table) :is(th, td) { padding: var(--table-cell-py, var(--space-2-5)) var(--table-cell-px, 0); background: transparent; border-right: 0; border-top: 0; font: inherit; text-transform: none; letter-spacing: normal; color: inherit; white-space: nowrap; }
+.ds-matrix td :is(.table) thead th { font-size: var(--font-size-xs); line-height: var(--line-height-xs); font-weight: var(--font-weight-semibold); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-muted); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +39,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,73 +93,274 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
-      <p class="ds-kicker">Component · Actions</p>
+      <p class="ds-kicker">Component · Data display</p>
       <h1>Chip</h1>
-      <p class="ds-lead">Chips are compact toggles. In setup, preset chips fill Rounds, Work and Recover in one tap; the chosen one stays pressed until a value is edited.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span></div>
+      <p class="ds-lead">Small capsules that pick a plan, show a value or remove a filter.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
       <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>Use solid chips for presets that set several fields at once. They behave as a single-select toggle group (<code>aria-pressed</code>), not as radios, because no preset stays chosen once a field is edited. For one-of-two choices that change the whole form, use <a href="radio-group.html">mode cards</a>.</p>
-    </section>
-    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
-<div class="ds-anatomy"><figure class="ds-anatomy__figure"><div class="chip-group"><button class="chip chip--solid" type="button" aria-pressed="true">40 / 20</button></div><span class="ds-callout" style="left: 10%; top: 15%;" aria-hidden="true">1</span><span class="ds-callout" style="left: 50%; top: 80%;" aria-hidden="true">2</span></figure><ol class="ds-anatomy__list"><li><div><b>Container</b><small>44px tall, full radius, subtle fill.</small></div></li><li><div><b>Label</b><small>Preset name; ink-on-chalk when pressed.</small></div></li></ol></div>
-    </section>
-    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
-<div class="ds-example"><div class="ds-example__canvas "><div class="chip-group" role="group" aria-label="Presets"><button class="chip chip--solid" type="button" aria-pressed="false">Tabata</button><button class="chip chip--solid" type="button" aria-pressed="true">40 / 20</button><button class="chip chip--solid" type="button" aria-pressed="false">Minute on</button><button class="chip chip--solid" type="button" aria-pressed="false">Long climbs</button></div></div><div class="ds-example__caption"><span>Solid chips: the setup presets.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="chip-group" role="group" aria-label="Presets"&gt;
-&lt;button class="chip chip--solid" type="button" aria-pressed="false"&gt;Tabata&lt;/button&gt;
-&lt;button class="chip chip--solid" type="button" aria-pressed="true"&gt;40 / 20&lt;/button&gt;
-&lt;button class="chip chip--solid" type="button" aria-pressed="false"&gt;Minute on&lt;/button&gt;
-&lt;button class="chip chip--solid" type="button" aria-pressed="false"&gt;Long climbs&lt;/button&gt;
-&lt;/div&gt;</code></pre></details></div><h3>Outline</h3><p>The base chip has an edge and a volt-tinted pressed state; kept for filters.</p><div class="ds-example"><div class="ds-example__canvas "><div class="chip-group"><button class="chip " type="button" aria-pressed="true">Work</button><button class="chip " type="button" aria-pressed="false">Recover</button></div></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="chip-group"&gt;&lt;button class="chip " type="button" aria-pressed="true"&gt;Work&lt;/button&gt;&lt;button class="chip " type="button" aria-pressed="false"&gt;Recover&lt;/button&gt;&lt;/div&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="sizes" data-na="Chips come in one size: 44px solid (touch target) or 32px outline."><h2><a href="#sizes">Sizes</a></h2>
-      <p class="ds-na">Chips come in one size: 44px solid (touch target) or 32px outline.</p>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<div class="ds-matrix"><table><thead><tr><th scope="col">Variant</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Pressed</th><th scope="col">Disabled</th></tr></thead><tbody><tr><th scope="row">Solid</th><td><button class="chip chip--solid" type="button">Tabata</button></td><td><button class="chip chip--solid" type="button" data-state="hover">Tabata</button></td><td><button class="chip chip--solid" type="button" data-state="focus">Tabata</button></td><td><button class="chip chip--solid" type="button" aria-pressed="true">Tabata</button></td><td><button class="chip chip--solid" type="button" disabled>Tabata</button></td></tr><tr><th scope="row">Outline</th><td><button class="chip" type="button">Work</button></td><td><button class="chip" type="button" data-state="hover">Work</button></td><td><button class="chip" type="button" data-state="focus">Work</button></td><td><button class="chip" type="button" aria-pressed="true">Work</button></td><td><button class="chip" type="button" disabled>Work</button></td></tr></tbody></table></div><h3>Both themes</h3><div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas"><div class="chip-group"><button class="chip chip--solid" type="button" aria-pressed="false">Tabata</button><button class="chip chip--solid" type="button" aria-pressed="true">40 / 20</button></div></div></div><div data-theme="dark"><div class="ds-example__canvas"><div class="chip-group"><button class="chip chip--solid" type="button" aria-pressed="false">Tabata</button><button class="chip chip--solid" type="button" aria-pressed="true">40 / 20</button></div></div></div></div>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
-<ul><li>Chips wrap onto a second row at 360px; never scroll sideways.</li></ul>
-    </section>
-    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
-<p>Component tokens <code>--chip-bg</code>, <code>--chip-fg</code>, <code>--chip-border</code>. Pressed solid chips use <code>--color-chip-on-bg</code>/<code>--color-chip-on-fg</code> (chalk on ink in dark, ink on paper in light).</p>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<h3>Role and pattern</h3><p>Buttons with <code>aria-pressed</code> in a <code>role="group"</code> labelled "Presets".</p><h3>Keyboard</h3><div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody><tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Moves focus to and from the control in DOM order.</td></tr><tr><td><kbd>Enter</kbd>, <kbd>Space</kbd></td><td>Applies the preset and presses the chip.</td></tr></tbody></table></div><h3>Focus</h3><p>Each chip is a tab stop.</p><h3>Labelling</h3><p>The chip text is the name; the group has <code>aria-label</code>.</p><h3>Contrast</h3><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-pair"><span>Pressed label</span><span class="ds-pair__ratio" data-contrast="--color-chip-on-fg|--color-chip-on-bg" data-min="4.5"></span></div><div class="ds-pair"><span>Unpressed label</span><span class="ds-pair__ratio" data-contrast="--color-fg-muted|--color-bg-subtle" data-min="4.5"></span></div><div class="ds-pair"><span>Focus ring on canvas</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-bg-canvas" data-min="3"></span></div></div><h3>Motion</h3><p>Background fades over <code>--duration-fast</code>.</p><h3>Touch</h3><p>Solid chips are 44px tall with 8px gaps.</p>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Name presets by what riders call them: Tabata, Minute on, Long climbs.</li><li>Keep names to two words.</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><div class="chip-group"><button class="chip chip--solid" type="button" aria-pressed="false">Tabata</button><button class="chip chip--solid" type="button" aria-pressed="true">40 / 20</button></div></div><figcaption>Pressed chip shows the preset in force.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><div class="chip-group"><button class="chip chip--solid" type="button" aria-pressed="true">Tabata</button><button class="chip chip--solid" type="button" aria-pressed="true">40 / 20</button></div></div><figcaption>Two presets pressed at once.</figcaption></figure><figure class="ds-do"><div class="ds-example__canvas"><div class="chip-group"><button class="chip chip--solid" type="button" aria-pressed="false">Minute on</button></div></div><figcaption>Short names.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><div class="chip-group"><button class="chip chip--solid" type="button" aria-pressed="false">Ten rounds of one minute hard</button></div></div><figcaption>Long names that wrap.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
-<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Fill</td><td><code>--color-bg-subtle</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-bg-subtle" data-swatch></i><span data-token="--color-bg-subtle"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-bg-subtle" data-swatch></i><span data-token="--color-bg-subtle"></span></span></td></tr><tr><td>Pressed fill</td><td><code>--color-chip-on-bg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-chip-on-bg" data-swatch></i><span data-token="--color-chip-on-bg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-chip-on-bg" data-swatch></i><span data-token="--color-chip-on-bg"></span></span></td></tr><tr><td>Pressed label</td><td><code>--color-chip-on-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-chip-on-fg" data-swatch></i><span data-token="--color-chip-on-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-chip-on-fg" data-swatch></i><span data-token="--color-chip-on-fg"></span></span></td></tr><tr><td>Outline pressed edge</td><td><code>--color-selected-border</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-selected-border" data-swatch></i><span data-token="--color-selected-border"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-selected-border" data-swatch></i><span data-token="--color-selected-border"></span></span></td></tr><tr><td>Height</td><td><code>--control-height-sm</code> <code>--target-comfortable</code></td><td colspan="2"><span data-token="--control-height-sm"></span> / <span data-token="--target-comfortable"></span></td></tr><tr><td>Radius</td><td><code>--radius-full</code></td><td colspan="2"><span data-token="--radius-full"></span></td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
-<pre><code>&lt;div class="chip-group" role="group" aria-label="Presets"&gt;
-  &lt;button class="chip chip--solid" type="button" aria-pressed="true"&gt;40 / 20&lt;/button&gt;
-&lt;/div&gt;</code></pre><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.chip</code></td><td>Outline chip.</td></tr><tr><td><code>.chip--solid</code></td><td>Filled preset chip.</td></tr><tr><td><code>aria-pressed</code></td><td>Chosen.</td></tr><tr><td><code>.chip-group</code></td><td>Wrapping row.</td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from these mocks:</p><ul><li><a href="../../mocks/pages/setup/default.html">pages/setup/default</a> (presets)</li></ul><p>Drift fixed during extraction: <code>.presets .chip</code> restyled the chip block from outside; it is now the <code>.chip--solid</code> modifier inside <code>.chip-group</code>.</p>
+<p>Chips are small capsules that pick, show or remove a value. Custom workout's plan picker is the one in the mocks: <code>.preset-chips</code> of <code>.preset-chip</code> buttons ("GCN 30-min HIIT", "Tabata", "40 / 20", "Minute on", "Long climbs"), raised and muted, turning bone on ink when pressed. This page documents them as <b>filter chips</b> and adds <code>.chip</code> for <b>static</b> chips (a labelled value) and <b>removable</b> chips (an active filter with a remove button).</p>
+<ul><li>Filter chip: a toggle button with <code>aria-pressed</code>; one or many may be on.</li>
+<li>Removable chip: a value already applied; its only control is the 24px remove button.</li>
+<li>Static chip: a value with no action (a segment kind with its swatch). For status, use a <a href="badge.html">badge</a>.</li>
+<li>When exactly one of two to four options must be on, use a <a href="button-group.html">segmented control</a> instead.</li></ul>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+<div class="ds-anatomy">
+<figure class="ds-anatomy__figure">
+<div style="position: relative; display: inline-block; padding: var(--space-6) var(--space-8);"><span class="chip chip--removable">30 min<button class="chip__remove" type="button" aria-label="Remove 30 min filter"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span> <button class="preset-chip" type="button" aria-pressed="true">GCN 30-min HIIT</button><span class="ds-callout" style="left: 0; top: 30%;" aria-hidden="true">1</span><span class="ds-callout" style="left: var(--space-24); top: 0;" aria-hidden="true">2</span><span class="ds-callout" style="left: calc(100% - var(--space-6)); top: 30%;" aria-hidden="true">3</span></div>
+</figure>
+<ol class="ds-anatomy__list">
+<li><div><b>Label</b><small>14px medium (12px small), sentence case, one line.</small></div></li>
+<li><div><b>Remove button (removable)</b><small>24px circular <code>.chip__remove</code> with an × icon and "Remove … filter" as its name.</small></div></li>
+<li><div><b>Capsule</b><small>36px tall (<code>--control-height-sm</code>), <code>--radius-full</code>, 16px padding (filter) or 14px (chip); raised fill; pressed filter chips fill bone with ink text.</small></div></li>
+</ol>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+<h3>Filter chips (Custom workout presets)</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<div class="preset-chips" role="group" aria-label="Plans">
+<button class="preset-chip" type="button" aria-pressed="true">GCN 30-min HIIT</button>
+<button class="preset-chip" type="button" aria-pressed="false">Tabata</button>
+<button class="preset-chip" type="button" aria-pressed="false">40 / 20</button>
+<button class="preset-chip" type="button" aria-pressed="false">Minute on</button>
+<button class="preset-chip" type="button" aria-pressed="false">Long climbs</button>
+</div>
+</div>
+<div class="ds-example__caption"><span>The plan picker: one preset on at a time; picking another turns the first off.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="preset-chips" role="group" aria-label="Plans"&gt;
+&lt;button class="preset-chip" type="button" aria-pressed="true"&gt;GCN 30-min HIIT&lt;/button&gt;
+&lt;button class="preset-chip" type="button" aria-pressed="false"&gt;Tabata&lt;/button&gt;
+&lt;button class="preset-chip" type="button" aria-pressed="false"&gt;40 / 20&lt;/button&gt;
+&lt;button class="preset-chip" type="button" aria-pressed="false"&gt;Minute on&lt;/button&gt;
+&lt;button class="preset-chip" type="button" aria-pressed="false"&gt;Long climbs&lt;/button&gt;
+&lt;/div&gt;</code></pre></details>
+</div>
+
+<h3>Removable chips</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<div class="preset-chips" role="group" aria-label="Active filters"><span class="chip chip--removable">30 min<button class="chip__remove" type="button" aria-label="Remove 30 min filter"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span><span class="chip chip--removable">HIIT<button class="chip__remove" type="button" aria-label="Remove HIIT filter"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span></div>
+</div>
+<div class="ds-example__caption"><span>Active filters on a class list ("30 min", "HIIT"); each removes itself and moves focus to the next chip.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="preset-chips" role="group" aria-label="Active filters"&gt;&lt;span class="chip chip--removable"&gt;30 min&lt;button class="chip__remove" type="button" aria-label="Remove 30 min filter"&gt;&lt;svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;/button&gt;&lt;/span&gt;&lt;span class="chip chip--removable"&gt;HIIT&lt;button class="chip__remove" type="button" aria-label="Remove HIIT filter"&gt;&lt;svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;/button&gt;&lt;/span&gt;&lt;/div&gt;</code></pre></details>
+</div>
+
+<h3>Static chips</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<span class="chip chip--sm"><span class="chip__swatch" style="--kind: var(--color-volt)" aria-hidden="true"></span>Effort</span><span class="chip chip--sm"><span class="chip__swatch" style="--kind: var(--color-rest)" aria-hidden="true"></span>Recover</span><span class="chip chip--sm"><span class="chip__swatch" style="--kind: var(--color-plan-easy)" aria-hidden="true"></span>Warm-up</span>
+</div>
+<div class="ds-example__caption"><span>Segment kinds with their plan colours, as in the interval ladder key.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;span class="chip chip--sm"&gt;&lt;span class="chip__swatch" style="--kind: var(--color-volt)" aria-hidden="true"&gt;&lt;/span&gt;Effort&lt;/span&gt;&lt;span class="chip chip--sm"&gt;&lt;span class="chip__swatch" style="--kind: var(--color-rest)" aria-hidden="true"&gt;&lt;/span&gt;Recover&lt;/span&gt;&lt;span class="chip chip--sm"&gt;&lt;span class="chip__swatch" style="--kind: var(--color-plan-easy)" aria-hidden="true"&gt;&lt;/span&gt;Warm-up&lt;/span&gt;</code></pre></details>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<button class="preset-chip" type="button" aria-pressed="false">Tabata</button><button class="preset-chip preset-chip--sm" type="button" aria-pressed="false">Tabata</button><span class="chip chip--removable">HIIT<button class="chip__remove" type="button" aria-label="Remove HIIT filter"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span><span class="chip chip--removable chip--sm">HIIT<button class="chip__remove" type="button" aria-label="Remove HIIT filter"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>
+</div>
+<div class="ds-example__caption"><span>Medium 36px (the design's h-9) and small 32px / 28px for dense rows. Small chips still give a 24px remove target.</span></div>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+<div class="ds-matrix"><table>
+<thead><tr><th scope="col">Chip</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Disabled</th><th scope="col">Pressed</th></tr></thead>
+<tbody>
+<tr><th scope="row">.preset-chip</th><td><button class="preset-chip" type="button" aria-pressed="false">Tabata</button></td><td><button class="preset-chip" type="button" aria-pressed="false" data-state="hover">Tabata</button></td><td><button class="preset-chip" type="button" aria-pressed="false" data-state="focus">Tabata</button></td><td><button class="preset-chip" type="button" aria-pressed="false" data-state="active">Tabata</button></td><td><button class="preset-chip" type="button" aria-pressed="false" disabled>Tabata</button></td><td><button class="preset-chip" type="button" aria-pressed="true">GCN 30-min HIIT</button></td></tr>
+<tr><th scope="row">.preset-chip (pressed)</th><td><button class="preset-chip" type="button" aria-pressed="true">GCN 30-min HIIT</button></td><td><button class="preset-chip" type="button" aria-pressed="true" data-state="hover">GCN 30-min HIIT</button></td><td><button class="preset-chip" type="button" aria-pressed="true" data-state="focus">GCN 30-min HIIT</button></td><td><button class="preset-chip" type="button" aria-pressed="true" data-state="active">GCN 30-min HIIT</button></td><td><button class="preset-chip" type="button" aria-pressed="true" disabled>GCN 30-min HIIT</button></td><td>—</td></tr>
+<tr><th scope="row">.chip__remove</th><td><span class="chip chip--removable">HIIT<button class="chip__remove" type="button" aria-label="Remove HIIT filter"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span></td><td><span class="chip chip--removable">HIIT<button class="chip__remove" type="button" aria-label="Remove HIIT filter" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span></td><td><span class="chip chip--removable">HIIT<button class="chip__remove" type="button" aria-label="Remove HIIT filter" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span></td><td><span class="chip chip--removable">HIIT<button class="chip__remove" type="button" aria-label="Remove HIIT filter" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span></td><td><span class="chip chip--removable">HIIT<button class="chip__remove" type="button" aria-label="Remove HIIT filter" disabled><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span></td><td>—</td></tr>
+</tbody>
+</table></div>
+
+<h3>Both themes</h3>
+<div class="ds-themes">
+<div data-theme="light"><div class="ds-example__canvas " style="padding: 0; flex-direction: column; align-items: flex-start;"><div class="preset-chips" role="group" aria-label="Plans">
+<button class="preset-chip" type="button" aria-pressed="true">GCN 30-min HIIT</button>
+<button class="preset-chip" type="button" aria-pressed="false">Tabata</button>
+<button class="preset-chip" type="button" aria-pressed="false">40 / 20</button>
+<button class="preset-chip" type="button" aria-pressed="false">Minute on</button>
+<button class="preset-chip" type="button" aria-pressed="false">Long climbs</button>
+</div><div class="preset-chips" role="group" aria-label="Active filters"><span class="chip chip--removable">30 min<button class="chip__remove" type="button" aria-label="Remove 30 min filter"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span><span class="chip chip--removable">HIIT<button class="chip__remove" type="button" aria-label="Remove HIIT filter"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span></div></div></div>
+<div data-theme="dark"><div class="ds-example__canvas " style="padding: 0; flex-direction: column; align-items: flex-start;"><div class="preset-chips" role="group" aria-label="Plans">
+<button class="preset-chip" type="button" aria-pressed="true">GCN 30-min HIIT</button>
+<button class="preset-chip" type="button" aria-pressed="false">Tabata</button>
+<button class="preset-chip" type="button" aria-pressed="false">40 / 20</button>
+<button class="preset-chip" type="button" aria-pressed="false">Minute on</button>
+<button class="preset-chip" type="button" aria-pressed="false">Long climbs</button>
+</div><div class="preset-chips" role="group" aria-label="Active filters"><span class="chip chip--removable">30 min<button class="chip__remove" type="button" aria-label="Remove 30 min filter"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span><span class="chip chip--removable">HIIT<button class="chip__remove" type="button" aria-label="Remove HIIT filter"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span></div></div></div>
+</div>
+
+<ul><li><b>Pressed</b>: <code>aria-pressed="true"</code>, bone fill (<code>--color-fg</code>) and ink label: the strongest contrast on the panel, so the choice reads at a glance.</li>
+<li><b>Hover</b>: the muted label brightens to <code>--color-fg</code>; the fill stays.</li>
+<li><b>Disabled</b>: 40% opacity, used while the ride is starting; prefer hiding presets that do not apply.</li></ul>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+<ul><li>Chip groups wrap onto more lines (<code>flex-wrap</code>, 8px gaps); they never scroll sideways and never truncate a label.</li>
+<li>At 360px the five presets take two lines; no change at 640 or 1024px.</li></ul>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+<pre><code>.chip { --chip-bg: var(--color-raised); --chip-fg: var(--color-fg); --chip-height: var(--control-height-sm); }
+.preset-chip[aria-pressed="true"] { background: var(--color-fg); color: var(--color-ink); }</code></pre>
+<p>Pressed is an inversion (bone on ink in dark, ink on paper in light), so it needs no extra token and always passes.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+<h3>Role and pattern</h3>
+<p>Filter chips are toggle buttons (<code>&lt;button aria-pressed&gt;</code>) inside <code>role="group"</code> with a label, following the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/button/">APG button pattern</a>. Removable chips are text plus a real <code>&lt;button&gt;</code>. Static chips are spans.</p>
+<h3>Keyboard</h3>
+<table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+<tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Moves chip to chip (each is its own tab stop).</td></tr>
+<tr><td><kbd>Enter</kbd>, <kbd>Space</kbd></td><td>Toggles a filter chip; activates a remove button.</td></tr>
+<tr><td><kbd>Backspace</kbd>, <kbd>Delete</kbd></td><td>On a remove button: removes that chip (same as activating it).</td></tr>
+</tbody></table>
+<h3>Focus</h3>
+<p>Shared ring on the chip (filter) or the remove button (removable). After a removal, focus moves to the next chip, or the previous one, or the group's heading when none are left.</p>
+<h3>Labelling</h3>
+<p>The chip label names a filter chip; the group label says what they choose ("Plans"). Remove buttons say the whole action ("Remove HIIT filter"). Announce removals politely ("HIIT filter removed").</p>
+<h3>Contrast</h3>
+<div class="ds-themes">
+<div data-theme="light"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+<div class="ds-pair"><span>Chip label on raised</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Hovered label</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Pressed label</span><span class="ds-pair__ratio" data-contrast="--color-ink|--color-fg" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Focus ring on panel</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-panel" data-min="3"></span></div>
+</div></div>
+<div data-theme="dark"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+<div class="ds-pair"><span>Chip label on raised</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Hovered label</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Pressed label</span><span class="ds-pair__ratio" data-contrast="--color-ink|--color-fg" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Focus ring on panel</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-panel" data-min="3"></span></div>
+</div></div>
+</div>
+<h3>Motion</h3>
+<p>Colour transitions over <code>--duration-fast</code>; active scales to 0.98. Both stop under reduced motion.</p>
+<h3>Touch</h3>
+<p>Chips are 36px tall with 8px between them; remove buttons are 24px with the chip's padding around them.</p>
+
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+<ul><li>Labels are names, not verbs ("Tabata", "Long climbs"), and stay one to three words.</li>
+<li>Numbers keep their spacing ("40 / 20").</li><li>Remove buttons are labelled "Remove {label} filter".</li></ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+<div class="ds-dodont">
+<figure class="ds-do"><div class="ds-example__canvas"><div class="preset-chips" role="group" aria-label="Plans">
+<button class="preset-chip" type="button" aria-pressed="true">GCN 30-min HIIT</button>
+<button class="preset-chip" type="button" aria-pressed="false">Tabata</button>
+<button class="preset-chip" type="button" aria-pressed="false">40 / 20</button>
+<button class="preset-chip" type="button" aria-pressed="false">Minute on</button>
+<button class="preset-chip" type="button" aria-pressed="false">Long climbs</button>
+</div></div><figcaption>Presets as pressed toggles in a labelled group.</figcaption></figure>
+<figure class="ds-dont"><div class="ds-example__canvas"><div class="preset-chips"><span class="preset-chip" style="display: inline-flex; align-items: center;">GCN 30-min HIIT</span><span class="preset-chip" style="display: inline-flex; align-items: center;">Tabata</span><span class="preset-chip" style="display: inline-flex; align-items: center;">40 / 20</span></div></div><figcaption>Clickable spans: no role, no state, no keyboard.</figcaption></figure>
+<figure class="ds-do"><div class="ds-example__canvas"><span class="chip chip--removable">HIIT<button class="chip__remove" type="button" aria-label="Remove HIIT filter"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span></div><figcaption>A 24px remove button with a full name.</figcaption></figure>
+<figure class="ds-dont"><div class="ds-example__canvas"><span class="chip">HIIT ×</span></div><figcaption>An × typed into the label: no target and nothing to name it.</figcaption></figure>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+<div class="ds-table-wrap"><table class="ds-table">
+<thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+<tbody>
+<tr><td>Fill</td><td><code>--color-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td></tr>
+<tr><td>Label</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+<tr><td>Label hover / chip text</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+<tr><td>Pressed fill</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+<tr><td>Pressed label</td><td><code>--color-ink</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td></tr>
+<tr><td>Remove hover fill</td><td><code>--color-raised-hover</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised-hover" data-swatch></i><span data-token="--color-raised-hover"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised-hover" data-swatch></i><span data-token="--color-raised-hover"></span></span></td></tr>
+<tr><td>Height md / sm</td><td><code>--control-height-sm</code> / <code>--space-8</code></td><td colspan="2"><span data-token="--control-height-sm"></span> / <span data-token="--space-8"></span></td></tr>
+<tr><td>Padding</td><td><code>--space-4</code> (filter), <code>--space-3-5</code> (chip)</td><td colspan="2"><span data-token="--space-4"></span> / <span data-token="--space-3-5"></span></td></tr>
+<tr><td>Gap in a group</td><td><code>--space-2</code></td><td colspan="2"><span data-token="--space-2"></span></td></tr>
+<tr><td>Transition</td><td><code>--duration-fast</code></td><td colspan="2"><span data-token="--duration-fast"></span></td></tr>
+</tbody>
+</table></div>
+
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+<pre><code>&lt;div class="preset-chips" role="group" aria-label="Plans"&gt;
+  &lt;button class="preset-chip" type="button" aria-pressed="true"&gt;GCN 30-min HIIT&lt;/button&gt;
+  &lt;button class="preset-chip" type="button" aria-pressed="false"&gt;Tabata&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;span class="chip chip--removable"&gt;HIIT
+  &lt;button class="chip__remove" type="button" aria-label="Remove HIIT filter"&gt;&lt;svg class="icon icon--md" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;/button&gt;
+&lt;/span&gt;</code></pre>
+<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+<tr><td><code>.preset-chips</code> <code>.preset-chip</code></td><td>Filter chip group and chip (area class).</td></tr>
+<tr><td><code>aria-pressed</code></td><td>On / off.</td></tr>
+<tr><td><code>.preset-chip--sm</code></td><td>Small filter chip (added).</td></tr>
+<tr><td><code>.chip</code> <code>.chip--sm</code></td><td>Static chip.</td></tr>
+<tr><td><code>.chip--removable</code> <code>.chip__remove</code></td><td>Removable chip and its button.</td></tr>
+<tr><td><code>.chip__swatch</code> + <code>--kind</code></td><td>Colour swatch for a segment kind.</td></tr>
+<tr><td><code>data-state</code></td><td>Documentation only.</td></tr>
+</tbody></table></div>
+
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+<p>Extracted from these mocks:</p>
+<ul>
+<li><a href="../../mocks/pages/custom-setup/default.html">pages/custom-setup/default</a> (preset chips)</li>
+<li><a href="../../mocks/pages/custom-setup/flat.html">pages/custom-setup/flat</a> (presets in flat mode)</li>
+<li><a href="../../mocks/pages/class-library/default.html">pages/class-library/default</a> (class lengths and focuses used as filter values)</li>
+</ul>
+<h3>Drift fixed during extraction</h3>
+<ul><li>Preset chips are mutually exclusive but use <code>aria-pressed</code>. Kept (it matches the design and is announced correctly per chip); the group label says one plan is active. If presets ever allow none, the toggles already fit.</li>
+<li><code>.preset-chip</code> has no disabled or active rule; added in <code>data.css</code>.</li><li>Removable and static chips are additions.</li></ul>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

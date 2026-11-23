@@ -1,0 +1,78 @@
+// Block lockup, with the logo-mark and wordmark it draws (docs/design-system/components/lockup.html).
+:host {
+  display: inline-flex;
+}
+
+.lockup {
+  --lockup-mark-size: 1.625rem; // 26px
+  --lockup-wordmark-size: var(--font-size-2xl);
+  --lockup-gap: var(--space-2);
+  --lockup-ring: var(--color-fg);
+  --lockup-accent: var(--color-volt);
+  --lockup-wordmark: var(--color-fg);
+  --lockup-product: var(--color-volt-fg);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lockup-gap);
+}
+
+.logo-mark {
+  flex-shrink: 0;
+  width: var(--lockup-mark-size);
+  height: var(--lockup-mark-size);
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.logo-mark__ring {
+  stroke: var(--lockup-ring);
+}
+
+.logo-mark__crank {
+  stroke: var(--lockup-accent);
+}
+
+.logo-mark__hub {
+  fill: var(--lockup-accent);
+  stroke: none;
+}
+
+.wordmark {
+  font-family: var(--font-family-display);
+  font-size: var(--lockup-wordmark-size);
+  font-weight: var(--font-weight-black);
+  font-style: italic;
+  line-height: var(--line-height-none);
+  letter-spacing: var(--letter-spacing-display);
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--lockup-wordmark);
+}
+
+.wordmark__product {
+  margin-left: 0.18em;
+  color: var(--lockup-product);
+}
+
+// The ride headers' lockup (docs/mocks/pages/class-ride/): smaller, and the mark alone below 384 px (L2-087 AC2).
+.lockup--sm {
+  --lockup-mark-size: 1.5rem; // 24px
+  --lockup-wordmark-size: var(--font-size-xl);
+
+  .wordmark {
+    @media (max-width: 23.99rem) {
+      display: none;
+    }
+  }
+}
+
+@media (forced-colors: active) {
+  .lockup {
+    --lockup-ring: CanvasText;
+    --lockup-accent: CanvasText;
+    --lockup-wordmark: CanvasText;
+    --lockup-product: CanvasText;
+  }
+}

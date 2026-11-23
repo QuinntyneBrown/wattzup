@@ -1,0 +1,64 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Ride on consecutive days and your streak grows. The backend keeps it, so every screen agrees."
+      ]
+    },
+    {
+      "id": "days",
+      "bars": 6,
+      "lines": [
+        "Each calendar day with a finished ride adds one, in your own time zone. A second ride that day doesn't count twice. Miss a whole day and it's back to zero."
+      ]
+    },
+    {
+      "id": "xp",
+      "bars": 4,
+      "lines": [
+        "The streak pays: ten XP a day on every ride, in the same number the header shows."
+      ]
+    },
+    {
+      "id": "shows",
+      "bars": 5,
+      "lines": [
+        "The flame and the count sit in the header, and Profile reads seven hundred sixty XP to level eight, four-day streak. No streak, no flame."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: every case of the rule, the streak through the API across midnight, and the header and Profile."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

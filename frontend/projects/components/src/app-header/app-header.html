@@ -1,0 +1,9 @@
+<header class="app-header">
+  <ng-content select="[slot=brand]" />
+  <nav class="app-header__nav" aria-label="Main">
+    <ng-content select="[slot=nav]" />
+  </nav>
+  <div class="app-header__end">
+    <ng-content select="[slot=end]" />
+  </div>
+</header>

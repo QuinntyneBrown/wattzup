@@ -1,0 +1,108 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Browse maps
+enum MapRating {
+  Easy
+  Moderate
+  Hard
+  Brutal
+}
+enum MapRowState {
+  Open
+  Next
+  Locked
+}
+class MapDto {
+  +id: string
+  +name: string
+  +routeName: string
+  +place: string
+  +distanceKm: number
+  +climbingM: number
+  +rating: MapRating
+  +world: string
+  +thumbnailUrl: string
+  +unlockGoal: string | null
+}
+class MapProgressDto {
+  +openMapIds: string[]
+  +nextUnlockId: string | null
+  +stars: Record<string, number>
+  +bestTimeSeconds: Record<string, number>
+}
+class MapPathRow {
+  +map: MapDto
+  +state: MapRowState
+  +stars: number
+  +best: string | null
+}
+class MapPathStore {
+  +rows: Signal<MapPathRow[]>
+  +unavailable: Signal<boolean>
+  +retry(): void
+}
+interface MapsApi {
+  +list(): Observable<MapDto[]>
+}
+interface ProgressApi {
+  +level(): Observable<number>
+  +maps(): Observable<MapProgressDto>
+}
+class CachedMapsApi
+class MapCatalogueCache {
+  +read(): MapDto[] | null
+  +save(maps: MapDto[]): void
+}
+class NewRiderProgress
+class MapSelectPage
+class MapRow {
+  +name: InputSignal<string>
+  +state: InputSignal<MapRowState>
+}
+class MapDefinition {
+  +string Id
+  +string Name
+  +string RouteName
+  +string Place
+  +double DistanceKm
+  +int ClimbingM
+  +string Rating
+  +string World
+  +string ThumbnailUrl
+  +MapUnlock Unlock
+}
+class MapUnlock {
+  +string Kind
+  +string? MapId
+  +int? Stars
+  +int? Level
+  +Goal(names): string?
+}
+class GetMapsQueryHandler {
+  +Handle(query: GetMapsQuery): Task<IReadOnlyList<MapDto>>
+}
+MapSelectPage ..> MapPathStore : reads
+MapSelectPage ..> MapRow : renders
+MapPathStore ..> MapsApi : uses
+MapPathStore ..> ProgressApi : uses
+CachedMapsApi ..|> MapsApi
+CachedMapsApi ..> MapCatalogueCache : falls back to
+NewRiderProgress ..|> ProgressApi
+MapPathStore "1" *-- "*" MapPathRow : builds
+MapPathRow --> MapDto
+MapPathRow --> MapRowState
+MapDto --> MapRating
+GetMapsQueryHandler ..> MapDefinition : reads
+MapDefinition *-- MapUnlock
+@enduml

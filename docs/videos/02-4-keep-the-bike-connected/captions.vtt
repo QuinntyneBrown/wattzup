@@ -1,0 +1,85 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.864
+A ride lasts an hour. Telo Ride now keeps the bike talking, brings it back after a
+
+00:00:07.864 --> 00:00:09.775
+drop, and says how it is.
+
+00:00:10.324 --> 00:00:14.693
+From a laptop's width up, the header names the bike, and a screen reader hears that
+
+00:00:14.693 --> 00:00:15.783
+it's connected.
+
+00:00:20.647 --> 00:00:25.683
+Until the bike connects, the status turns red, with its own icon and the title Bike
+
+00:00:25.683 --> 00:00:26.832
+not connected.
+
+00:00:30.971 --> 00:00:35.734
+Once the bike is paired, Telo Ride writes a keepalive about once a second, timed
+
+00:00:35.734 --> 00:00:38.296
+from the clock, not by counting ticks.
+
+00:00:41.295 --> 00:00:46.144
+If the bike drops, the keepalives stop, and every three seconds Telo Ride tries the
+
+00:00:46.144 --> 00:00:48.431
+same bike again, without the list.
+
+00:00:51.618 --> 00:00:55.968
+When the bike comes back, it starts again, and the last target resistance goes
+
+00:00:55.968 --> 00:00:57.439
+before anything else.
+
+00:01:01.942 --> 00:01:06.947
+Reconnect tries at once, and every Bluetooth error goes to the console as its name
+
+00:01:06.947 --> 00:01:08.895
+and message, as plain text.
+
+00:01:12.266 --> 00:01:16.758
+If the computer's Bluetooth is off, Connect Bike says so, and Try again finds it
+
+00:01:16.758 --> 00:01:18.069
+once it's back on.
+
+00:01:22.590 --> 00:01:27.293
+Still to come: the ride screens bring their Reconnect banners, and a worker ticker
+
+00:01:27.293 --> 00:01:29.715
+keeps the clock true in a hidden tab.
+
+00:01:32.913 --> 00:01:37.672
+The status shows from a laptop's width up. On a phone or a tablet, the header leaves
+
+00:01:37.672 --> 00:01:38.369
+it out.
+
+00:01:43.237 --> 00:01:48.212
+What the tests prove: thirty behaviour specs and ninety-one unit tests, all green.
+
+00:01:53.561 --> 00:01:58.164
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:58.509 --> 00:02:03.021
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:02:03.021 --> 00:02:04.692
+every hill and interval.
+
+00:02:05.037 --> 00:02:10.215
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:02:10.215 --> 00:02:15.663
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:02:15.663 --> 00:02:18.653
+XP, rider levels, stars and map unlocks.
+
+00:02:18.998 --> 00:02:21.491
+A custom workout lives under Profile.

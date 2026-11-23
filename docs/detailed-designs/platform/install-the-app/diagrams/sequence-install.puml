@@ -1,0 +1,32 @@
+@startuml
+title UML sequence behaviour — Install the app
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+participant "Chrome or Edge" as browser
+participant "Static host" as host
+box "Frontend — Ride app" #E0F2FE
+  participant "index.html" as index
+  participant "Angular service worker" as sw
+end box
+actor -> browser : Open Telo Ride
+browser -> host : GET / and manifest.webmanifest
+host --> browser : index.html, manifest (name "Telo Ride", icons, theme_color)
+browser -> sw : Register ngsw-worker.js once the first screen settles (provideAppCache)
+sw -> host : Prefetch the app shell, the manifest and icons/*.png
+browser --> actor : Install offered from the address bar (L2-150 AC1)
+actor -> browser : Install
+browser --> actor : Telo Ride opens in its own window with the dark theme colour
+@enduml

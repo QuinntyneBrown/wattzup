@@ -1,0 +1,18 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Ride through a lost service
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Echelon or FTMS; Bluetooth LE")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine")
+  ContainerDb(idb, "Browser storage", "IndexedDB", "Rides waiting to send, cached catalogues, settings, packet log")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Sign-in, progress, catalogues, ride hub, feedback")
+}
+Rel(rider, app, "Rides on; sees the status notice")
+Rel(app, bike, "Telemetry and resistance continue", "Web Bluetooth")
+Rel(app, api, "Hub connection retrying; rejoins", "SignalR")
+Rel(app, idb, "Keeps the finished ride", "IndexedDB")
+Rel(app, api, "Submits the ride when reachable", "JSON/HTTPS")
+@enduml

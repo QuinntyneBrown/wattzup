@@ -1,0 +1,44 @@
+@startuml
+title UML sequence behaviour — Toggle full screen
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+participant "Browser" as browser
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "Page header" as header
+  participant "BrowserFullscreen (domain)" as fs
+end box
+box "Frontend — Ride app (components library)" #E0F2FE
+  participant "FullscreenToggle" as toggle
+end box
+header -> fs : available()
+fs -> browser : document.fullscreenEnabled
+alt API not available (L2-144 AC2)
+  header -> header : Render no toggle
+else API available
+  header -> toggle : Render with active = false, label "Full screen"
+  actor -> toggle : Press "Full screen"
+  toggle -> header : toggled
+  header -> fs : enter()
+  fs -> browser : documentElement.requestFullscreen()
+  browser -> fs : fullscreenchange
+  fs --> header : active = true
+  header -> toggle : active = true, label "Exit full screen" (L2-144 AC1)
+  actor -> toggle : Press "Exit full screen"
+  toggle -> header : toggled
+  header -> fs : exit()
+  fs -> browser : document.exitFullscreen()
+end
+@enduml

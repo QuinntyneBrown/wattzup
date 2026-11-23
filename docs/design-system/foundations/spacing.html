@@ -3,17 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Spacing — Wattzup design system</title>
-<meta name="description" content="The 4px spacing scale and control heights.">
+<title>Spacing — Telo Ride design system</title>
+<meta name="description" content="Telo Ride spacing: Tailwind’s 4px scale with 2px half steps for component insides, inside and between rules, and the real paddings and gaps from the mocks.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+.ds-val { font: var(--text-code); overflow-wrap: anywhere; }
+.ds-token-table td:nth-child(3), .ds-token-table td:nth-child(4) { min-width: calc(var(--space-32) + var(--space-8)); }
+
+.ds-scale__row { grid-template-columns: var(--space-24) var(--space-20) minmax(0, 1fr); }
+.ds-scale__row > :last-child { max-width: 100%; }
+.ds-scale__row code { background: none; padding: 0; }
+.ds-half { font: var(--text-caption); color: var(--color-fg-accent); }
+.ds-pad-demo { max-width: var(--layout-panel-narrow); outline: var(--border-width-hairline) dashed var(--color-border-strong); background: var(--color-accent-subtle); }
+.ds-pad-demo__content { background: var(--color-panel); display: flex; flex-direction: column; }
+.ds-header-demo .app-header { background: var(--color-ink); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +40,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,39 +94,171 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Foundation</p>
       <h1>Spacing</h1>
-      <p class="ds-lead">Spacing is a 4px grid. Inside a component use 1–4; between components 4–8; between regions 8–16.</p>
-      
-      <ul class="ds-toc"><li><a href="#scale">Scale</a></li><li><a href="#rules">Inside and between</a></li><li><a href="#controls">Control heights</a></li><li><a href="#tokens">All tokens</a></li></ul>
+      <p class="ds-lead">Tailwind’s 4px scale, with four half steps for the tight insides of components. Insides stay small and fixed; space between grows with what it separates.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#scale">Scale</a></li><li><a href="#half-steps">Half steps</a></li><li><a href="#inside-between">Inside and between</a></li><li><a href="#usage">Usage</a></li><li><a href="#tokens">Tokens</a></li></ul>
     </header>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+
+      <p>Spacing is Tailwind's scale, the one the design was drawn with: one unit is 4px and the token number is the Tailwind number (<code>--space-4</code> is <code>p-4</code>, 16px). Four half steps sit on a 2px grid for the tight insides of components. Spacing never scales with the viewport; a breakpoint swaps one token for a larger one.</p>
+      <p>Two kinds of space: <strong>inside</strong> a component (padding, the gap between an icon and its label) and <strong>between</strong> components (the gap between cards, sections and the page edge). Insides stay at or below <code>--space-7</code>; betweens start at <code>--space-3</code> for tiles in a grid and reach <code>--space-14</code> between page columns.</p>
+
+    </section>
     <section class="ds-section" id="scale"><h2><a href="#scale">Scale</a></h2>
-<div class="ds-scale"><div class="ds-scale__row"><code>--space-0</code><span data-token="--space-0"></span><span class="ds-scale__bar" style="--size: var(--space-0);"></span></div><div class="ds-scale__row"><code>--space-0-5</code><span data-token="--space-0-5"></span><span class="ds-scale__bar" style="--size: var(--space-0-5);"></span></div><div class="ds-scale__row"><code>--space-1</code><span data-token="--space-1"></span><span class="ds-scale__bar" style="--size: var(--space-1);"></span></div><div class="ds-scale__row"><code>--space-2</code><span data-token="--space-2"></span><span class="ds-scale__bar" style="--size: var(--space-2);"></span></div><div class="ds-scale__row"><code>--space-3</code><span data-token="--space-3"></span><span class="ds-scale__bar" style="--size: var(--space-3);"></span></div><div class="ds-scale__row"><code>--space-4</code><span data-token="--space-4"></span><span class="ds-scale__bar" style="--size: var(--space-4);"></span></div><div class="ds-scale__row"><code>--space-5</code><span data-token="--space-5"></span><span class="ds-scale__bar" style="--size: var(--space-5);"></span></div><div class="ds-scale__row"><code>--space-6</code><span data-token="--space-6"></span><span class="ds-scale__bar" style="--size: var(--space-6);"></span></div><div class="ds-scale__row"><code>--space-8</code><span data-token="--space-8"></span><span class="ds-scale__bar" style="--size: var(--space-8);"></span></div><div class="ds-scale__row"><code>--space-10</code><span data-token="--space-10"></span><span class="ds-scale__bar" style="--size: var(--space-10);"></span></div><div class="ds-scale__row"><code>--space-12</code><span data-token="--space-12"></span><span class="ds-scale__bar" style="--size: var(--space-12);"></span></div><div class="ds-scale__row"><code>--space-16</code><span data-token="--space-16"></span><span class="ds-scale__bar" style="--size: var(--space-16);"></span></div><div class="ds-scale__row"><code>--space-20</code><span data-token="--space-20"></span><span class="ds-scale__bar" style="--size: var(--space-20);"></span></div><div class="ds-scale__row"><code>--space-24</code><span data-token="--space-24"></span><span class="ds-scale__bar" style="--size: var(--space-24);"></span></div></div>
+
+      <p>Twenty-eight steps. The bars are drawn at true size (wide steps are clipped on narrow screens).</p>
+      <div class="ds-scale"><div class="ds-scale__row"><code>--space-0</code><span><span data-token="--space-0"></span></span><span class="ds-scale__bar" style="--size: var(--space-0)"></span></div><div class="ds-scale__row"><code>--space-px</code><span><span data-token="--space-px"></span></span><span class="ds-scale__bar" style="--size: var(--space-px)"></span></div><div class="ds-scale__row"><code>--space-0-5</code><span><span data-token="--space-0-5"></span> <span class="ds-half">half</span></span><span class="ds-scale__bar" style="--size: var(--space-0-5)"></span></div><div class="ds-scale__row"><code>--space-1</code><span><span data-token="--space-1"></span></span><span class="ds-scale__bar" style="--size: var(--space-1)"></span></div><div class="ds-scale__row"><code>--space-1-5</code><span><span data-token="--space-1-5"></span> <span class="ds-half">half</span></span><span class="ds-scale__bar" style="--size: var(--space-1-5)"></span></div><div class="ds-scale__row"><code>--space-2</code><span><span data-token="--space-2"></span></span><span class="ds-scale__bar" style="--size: var(--space-2)"></span></div><div class="ds-scale__row"><code>--space-2-5</code><span><span data-token="--space-2-5"></span> <span class="ds-half">half</span></span><span class="ds-scale__bar" style="--size: var(--space-2-5)"></span></div><div class="ds-scale__row"><code>--space-3</code><span><span data-token="--space-3"></span></span><span class="ds-scale__bar" style="--size: var(--space-3)"></span></div><div class="ds-scale__row"><code>--space-3-5</code><span><span data-token="--space-3-5"></span> <span class="ds-half">half</span></span><span class="ds-scale__bar" style="--size: var(--space-3-5)"></span></div><div class="ds-scale__row"><code>--space-4</code><span><span data-token="--space-4"></span></span><span class="ds-scale__bar" style="--size: var(--space-4)"></span></div><div class="ds-scale__row"><code>--space-5</code><span><span data-token="--space-5"></span></span><span class="ds-scale__bar" style="--size: var(--space-5)"></span></div><div class="ds-scale__row"><code>--space-6</code><span><span data-token="--space-6"></span></span><span class="ds-scale__bar" style="--size: var(--space-6)"></span></div><div class="ds-scale__row"><code>--space-7</code><span><span data-token="--space-7"></span></span><span class="ds-scale__bar" style="--size: var(--space-7)"></span></div><div class="ds-scale__row"><code>--space-8</code><span><span data-token="--space-8"></span></span><span class="ds-scale__bar" style="--size: var(--space-8)"></span></div><div class="ds-scale__row"><code>--space-9</code><span><span data-token="--space-9"></span></span><span class="ds-scale__bar" style="--size: var(--space-9)"></span></div><div class="ds-scale__row"><code>--space-10</code><span><span data-token="--space-10"></span></span><span class="ds-scale__bar" style="--size: var(--space-10)"></span></div><div class="ds-scale__row"><code>--space-11</code><span><span data-token="--space-11"></span></span><span class="ds-scale__bar" style="--size: var(--space-11)"></span></div><div class="ds-scale__row"><code>--space-12</code><span><span data-token="--space-12"></span></span><span class="ds-scale__bar" style="--size: var(--space-12)"></span></div><div class="ds-scale__row"><code>--space-14</code><span><span data-token="--space-14"></span></span><span class="ds-scale__bar" style="--size: var(--space-14)"></span></div><div class="ds-scale__row"><code>--space-16</code><span><span data-token="--space-16"></span></span><span class="ds-scale__bar" style="--size: var(--space-16)"></span></div><div class="ds-scale__row"><code>--space-20</code><span><span data-token="--space-20"></span></span><span class="ds-scale__bar" style="--size: var(--space-20)"></span></div><div class="ds-scale__row"><code>--space-24</code><span><span data-token="--space-24"></span></span><span class="ds-scale__bar" style="--size: var(--space-24)"></span></div><div class="ds-scale__row"><code>--space-28</code><span><span data-token="--space-28"></span></span><span class="ds-scale__bar" style="--size: var(--space-28)"></span></div><div class="ds-scale__row"><code>--space-32</code><span><span data-token="--space-32"></span></span><span class="ds-scale__bar" style="--size: var(--space-32)"></span></div><div class="ds-scale__row"><code>--space-36</code><span><span data-token="--space-36"></span></span><span class="ds-scale__bar" style="--size: var(--space-36)"></span></div><div class="ds-scale__row"><code>--space-40</code><span><span data-token="--space-40"></span></span><span class="ds-scale__bar" style="--size: var(--space-40)"></span></div><div class="ds-scale__row"><code>--space-44</code><span><span data-token="--space-44"></span></span><span class="ds-scale__bar" style="--size: var(--space-44)"></span></div><div class="ds-scale__row"><code>--space-48</code><span><span data-token="--space-48"></span></span><span class="ds-scale__bar" style="--size: var(--space-48)"></span></div></div>
+
     </section>
-    <section class="ds-section" id="rules"><h2><a href="#rules">Inside and between</a></h2>
-<ul><li>Inside controls: <code>--space-2</code> to <code>--space-4</code>.</li><li>Between fields: <code>--space-4</code>; between groups: <code>--space-6</code>.</li><li>Panel padding: <code>--space-5</code> phone, <code>--space-6</code> from 1024px.</li></ul>
+    <section class="ds-section" id="half-steps"><h2><a href="#half-steps">Half steps</a></h2>
+
+      <p><code>--space-0-5</code> (2px), <code>--space-1-5</code> (6px), <code>--space-2-5</code> (10px) and <code>--space-3-5</code> (14px) are the design's <code>gap-1.5</code>, <code>py-2.5</code> and <code>h-3.5</code>. They exist because a 14px label inside a 36px control needs finer steps than 4px to centre and to sit close to its icon.</p>
+      <ul class="ds-checklist">
+        <li><span>Half steps sit on a 2px grid and are for the <strong>inside</strong> of a component only: pill padding, the icon-to-label gap in back links and banners, the header's 10px block padding, the 14px small icon.</span></li>
+        <li><span>Never use a half step between components, sections or columns. Those use whole steps from <code>--space-3</code> up.</span></li>
+        <li><span>If a new component seems to need 18px or 22px, it needs a whole step and a rethink, not a new half step.</span></li>
+      </ul>
+      <div class="ds-example"><div class="ds-example__canvas">
+        <span class="pill pill--gold">+207 XP</span>
+        <a class="back-link" href="../../mocks/pages/map-select/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>All maps</a>
+        <span class="photo-tag">Old Town Criterium · 14.2 km · Easy</span>
+      </div><div class="ds-example__caption"><span>Pill: 2px × 8px. Back link: 6px icon gap. Photo tag: 4px × 8px. All insides.</span></div></div>
+
     </section>
-    <section class="ds-section" id="controls"><h2><a href="#controls">Control heights</a></h2>
-<div class="cluster"><button class="btn btn--sm" type="button">32</button><button class="btn" type="button">40</button><button class="btn btn--lg" type="button">48</button><button class="btn btn--xl" type="button">56</button></div>
+    <section class="ds-section" id="inside-between"><h2><a href="#inside-between">Inside and between</a></h2>
+
+      <h3>Inside: card padding</h3>
+      <p>Cards and panels pad <code>--space-5</code> (20px) on phones and <code>--space-7</code> (28px) from 640px: <code>.panel--pad</code> and <code>.next-ride__body</code> (the design's <code>p-5 sm:p-7</code>). Wells inside a card pad <code>--space-3</code>.</p>
+      <div class="ds-example"><div class="ds-example__canvas ds-example__canvas--canvas">
+        <div class="panel panel--pad ds-pad-demo"><div class="ds-pad-demo__content">
+          <p class="next-ride__eyebrow">Your next unlock</p>
+          <p class="next-ride__goal">Finish top 3 vs Bots on Old Town Criterium</p>
+          <div class="reward"><img class="reward__thumb" src="../assets/images/worlds/docklands.jpg" alt=""><div class="reward__text"><p class="reward__title">Opens Neon Docklands</p><p class="reward__place">A harbour city after dark</p></div></div>
+        </div></div>
+      </div><div class="ds-example__caption"><span>Tinted area is content; the band around it is the card's padding. Resize across 640px to see 20px become 28px.</span></div></div>
+      <h3>Inside: the app header</h3>
+      <p><code>.app-header</code> pads <code>--space-2-5</code> (10px) top and bottom around 36px controls, which makes the 56px <code>--layout-topbar-height</code>. Inline padding follows the page margin: <code>--space-4</code> (16px), <code>--space-6</code> (24px) from 640px, <code>--space-8</code> (32px) from 1024px. Groups sit <code>--space-6</code> apart; nav links <code>--space-1</code>.</p>
+      <div class="ds-example ds-header-demo"><header class="app-header">
+    <a class="app-header__brand" href="../../mocks/pages/home/default.html" aria-label="Home"><span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span></a>
+    <nav class="app-header__nav" aria-label="Main (example)">
+      <a class="app-header__nav-link" href="../../mocks/pages/home/default.html" aria-current="page">Home</a>
+      <a class="app-header__nav-link" href="../../mocks/pages/map-select/default.html">Race</a>
+      <a class="app-header__nav-link" href="../../mocks/pages/class-library/default.html">Classes</a>
+      <a class="app-header__nav-link" href="../../mocks/pages/profile/default.html">Profile</a>
+    </nav>
+    <div class="app-header__end">
+      <span class="app-header__streak"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg><span class="app-header__streak-count" aria-hidden="true">4</span><span class="visually-hidden">4-day streak</span></span>
+      <a class="app-header__level" href="../../mocks/pages/profile/default.html" aria-label="Level 7, 1840 of 2600 XP"><span class="level-badge" aria-hidden="true">7</span><span class="app-header__xp" aria-hidden="true"><span class="xp-bar"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><span class="app-header__xp-label">1,840 / 2,600 XP</span></span></a>
+    </div>
+  </header><div class="ds-example__caption"><span>The real header, live: resize to see 16 → 24 → 32px inline padding and the nav move inline at 640px.</span></div></div>
+      <h3>Between: sections and columns</h3>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Where</th><th scope="col">Space</th><th scope="col">Token</th><th scope="col">Class</th></tr></thead>
+        <tbody>
+          <tr><td>Page title to first card</td><td>24px</td><td><code>--space-6</code></td><td><code>.next-ride</code>, <code>.unlock-banner</code></td></tr>
+          <tr><td>Between page sections (Home's two doors)</td><td>40px</td><td><code>--space-10</code></td><td><code>.doors</code></td></tr>
+          <tr><td>Section head to its content</td><td>12–16px</td><td><code>--space-3</code>, <code>--space-4</code></td><td><code>.door__summary</code>, <code>.map-tiles</code></td></tr>
+          <tr><td>Tiles in a grid</td><td>12px</td><td><code>--space-3</code></td><td><code>.map-tiles</code></td></tr>
+          <tr><td>Page block padding</td><td>24px, 40px from 1024px</td><td><code>--space-6</code> → <code>--space-10</code></td><td><code>.page</code></td></tr>
+          <tr><td>Main column to aside</td><td>40px, 56px from 1024px</td><td><code>--space-10</code> → <code>--space-14</code></td><td><code>.results</code>, <code>.profile</code></td></tr>
+          <tr><td>Page edge to content</td><td>16 / 24 / 32px</td><td><code>--layout-margin</code></td><td><code>.container</code></td></tr>
+        </tbody></table></div>
+      <h3>Inside: components</h3>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Component</th><th scope="col">Padding</th><th scope="col">Gap</th></tr></thead>
+        <tbody>
+          <tr><td>Button <code>.btn</code></td><td>0 × 16px (<code>--space-4</code>), quiet 12px</td><td>8px icon gap (<code>--space-2</code>)</td></tr>
+          <tr><td>Banner <code>.banner</code></td><td>12 × 16px (<code>--space-3</code> × <code>--space-4</code>)</td><td>16px column, 12px row</td></tr>
+          <tr><td>Toast <code>.toast</code></td><td>12 × 16px</td><td>12px</td></tr>
+          <tr><td>Field <code>.field</code></td><td>Input 0 × 12px</td><td>6px label to input (<code>--space-1-5</code>)</td></tr>
+          <tr><td>Segmented <code>.segmented</code></td><td>4px track (<code>--space-1</code>), 12px options</td><td>4px</td></tr>
+          <tr><td>Reward well <code>.reward</code></td><td>12px</td><td>12px</td></tr>
+          <tr><td>Pill <code>.pill</code></td><td>2 × 8px</td><td>4px</td></tr>
+        </tbody></table></div>
+
     </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">All tokens</a></h2>
-<p>19 tokens. Values resolve live for each theme.</p><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td><code>--space-0</code></td><td colspan="2"><span data-token="--space-0"></span></td></tr><tr><td><code>--space-0-5</code></td><td colspan="2"><span data-token="--space-0-5"></span></td></tr><tr><td><code>--space-1</code></td><td colspan="2"><span data-token="--space-1"></span></td></tr><tr><td><code>--space-2</code></td><td colspan="2"><span data-token="--space-2"></span></td></tr><tr><td><code>--space-3</code></td><td colspan="2"><span data-token="--space-3"></span></td></tr><tr><td><code>--space-4</code></td><td colspan="2"><span data-token="--space-4"></span></td></tr><tr><td><code>--space-5</code></td><td colspan="2"><span data-token="--space-5"></span></td></tr><tr><td><code>--space-6</code></td><td colspan="2"><span data-token="--space-6"></span></td></tr><tr><td><code>--space-8</code></td><td colspan="2"><span data-token="--space-8"></span></td></tr><tr><td><code>--space-10</code></td><td colspan="2"><span data-token="--space-10"></span></td></tr><tr><td><code>--space-12</code></td><td colspan="2"><span data-token="--space-12"></span></td></tr><tr><td><code>--space-16</code></td><td colspan="2"><span data-token="--space-16"></span></td></tr><tr><td><code>--space-20</code></td><td colspan="2"><span data-token="--space-20"></span></td></tr><tr><td><code>--space-24</code></td><td colspan="2"><span data-token="--space-24"></span></td></tr><tr><td><code>--control-height-sm</code></td><td colspan="2"><span data-token="--control-height-sm"></span></td></tr><tr><td><code>--control-height-md</code></td><td colspan="2"><span data-token="--control-height-md"></span></td></tr><tr><td><code>--control-height-lg</code></td><td colspan="2"><span data-token="--control-height-lg"></span></td></tr><tr><td><code>--control-height-xl</code></td><td colspan="2"><span data-token="--control-height-xl"></span></td></tr><tr><td><code>--control-step</code></td><td colspan="2"><span data-token="--control-step"></span></td></tr></tbody></table></div>
+    <section class="ds-section" id="usage"><h2><a href="#usage">Usage</a></h2>
+
+      <ul class="ds-checklist">
+        <li><span>Pick from the scale; if a value is not on it, it is not a spacing decision (a width or a size belongs to a layout or component token).</span></li>
+        <li><span>Space between grows with the size of what it separates: 12px between tiles, 40px between sections, 56px between columns.</span></li>
+        <li><span>Change spacing at a breakpoint by swapping tokens in a <code>min-width</code> query (<code>--space-5</code> → <code>--space-7</code>), never with <code>vw</code>.</span></li>
+        <li><span>Use <code>gap</code> on the parent rather than margins on children; the mocks' <code>mt-*</code> on a section's first child is the exception for one-off rhythm.</span></li>
+        <li><span>Negative margins only to optically align an edge control (<code>.icon-btn--edge</code>, the header nav's -4px).</span></li>
+      </ul>
+
+    </section>
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+<div class="ds-table-wrap"><table class="ds-table ds-token-table"><thead><tr><th scope="col">Token</th><th scope="col">Use</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody>
+<tr><td><code>--space-0</code></td><td>Reset</td><td><span class="ds-val" data-theme="light" data-token="--space-0"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-0"></span></td></tr>
+<tr><td><code>--space-px</code></td><td>Hairline offsets</td><td><span class="ds-val" data-theme="light" data-token="--space-px"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-px"></span></td></tr>
+<tr><td><code>--space-0-5</code></td><td>Pill block padding, star gap (inside only)</td><td><span class="ds-val" data-theme="light" data-token="--space-0-5"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-0-5"></span></td></tr>
+<tr><td><code>--space-1</code></td><td>Segmented track padding, icon-to-label in pills</td><td><span class="ds-val" data-theme="light" data-token="--space-1"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-1"></span></td></tr>
+<tr><td><code>--space-1-5</code></td><td>Label-to-field gap, icon gap in back links (inside only)</td><td><span class="ds-val" data-theme="light" data-token="--space-1-5"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-1-5"></span></td></tr>
+<tr><td><code>--space-2</code></td><td>Button icon gap, related controls</td><td><span class="ds-val" data-theme="light" data-token="--space-2"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-2"></span></td></tr>
+<tr><td><code>--space-2-5</code></td><td>App header block padding (inside only)</td><td><span class="ds-val" data-theme="light" data-token="--space-2-5"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-2-5"></span></td></tr>
+<tr><td><code>--space-3</code></td><td>Banner block padding, tile gaps, well padding</td><td><span class="ds-val" data-theme="light" data-token="--space-3"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-3"></span></td></tr>
+<tr><td><code>--space-3-5</code></td><td>Small icon size (inside only)</td><td><span class="ds-val" data-theme="light" data-token="--space-3-5"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-3-5"></span></td></tr>
+<tr><td><code>--space-4</code></td><td>Button and banner inline padding; phone margin and gutter</td><td><span class="ds-val" data-theme="light" data-token="--space-4"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-4"></span></td></tr>
+<tr><td><code>--space-5</code></td><td>Card padding on phones</td><td><span class="ds-val" data-theme="light" data-token="--space-5"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-5"></span></td></tr>
+<tr><td><code>--space-6</code></td><td>Header column gap; page block padding; margin from 640px</td><td><span class="ds-val" data-theme="light" data-token="--space-6"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-6"></span></td></tr>
+<tr><td><code>--space-7</code></td><td>Card padding from 640px</td><td><span class="ds-val" data-theme="light" data-token="--space-7"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-7"></span></td></tr>
+<tr><td><code>--space-8</code></td><td>Margin and gutter from 1024px; level badge</td><td><span class="ds-val" data-theme="light" data-token="--space-8"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-8"></span></td></tr>
+<tr><td><code>--space-9</code></td><td>Control height sm (via --control-height-sm)</td><td><span class="ds-val" data-theme="light" data-token="--space-9"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-9"></span></td></tr>
+<tr><td><code>--space-10</code></td><td>Section gap; page block padding from 1024px</td><td><span class="ds-val" data-theme="light" data-token="--space-10"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-10"></span></td></tr>
+<tr><td><code>--space-11</code></td><td>Comfortable target (via --target-comfortable)</td><td><span class="ds-val" data-theme="light" data-token="--space-11"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-11"></span></td></tr>
+<tr><td><code>--space-12</code></td><td>Class start column gap</td><td><span class="ds-val" data-theme="light" data-token="--space-12"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-12"></span></td></tr>
+<tr><td><code>--space-14</code></td><td>Two-column gap on Results and Profile from 1024px</td><td><span class="ds-val" data-theme="light" data-token="--space-14"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-14"></span></td></tr>
+<tr><td><code>--space-16</code></td><td>Large level badge; docs footer gap</td><td><span class="ds-val" data-theme="light" data-token="--space-16"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-16"></span></td></tr>
+<tr><td><code>--space-20</code></td><td>Reward thumbnail width</td><td><span class="ds-val" data-theme="light" data-token="--space-20"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-20"></span></td></tr>
+<tr><td><code>--space-24</code></td><td>XP bar width in the header; profile badge</td><td><span class="ds-val" data-theme="light" data-token="--space-24"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-24"></span></td></tr>
+<tr><td><code>--space-28</code></td><td>Large step for sizes, never padding</td><td><span class="ds-val" data-theme="light" data-token="--space-28"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-28"></span></td></tr>
+<tr><td><code>--space-32</code></td><td>Large step for sizes, never padding</td><td><span class="ds-val" data-theme="light" data-token="--space-32"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-32"></span></td></tr>
+<tr><td><code>--space-36</code></td><td>Large step for sizes, never padding</td><td><span class="ds-val" data-theme="light" data-token="--space-36"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-36"></span></td></tr>
+<tr><td><code>--space-40</code></td><td>Large step for sizes, never padding</td><td><span class="ds-val" data-theme="light" data-token="--space-40"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-40"></span></td></tr>
+<tr><td><code>--space-44</code></td><td>Large step for sizes, never padding</td><td><span class="ds-val" data-theme="light" data-token="--space-44"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-44"></span></td></tr>
+<tr><td><code>--space-48</code></td><td>Next-ride photo minimum height</td><td><span class="ds-val" data-theme="light" data-token="--space-48"></span></td><td><span class="ds-val" data-theme="dark" data-token="--space-48"></span></td></tr>
+</tbody></table></div>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

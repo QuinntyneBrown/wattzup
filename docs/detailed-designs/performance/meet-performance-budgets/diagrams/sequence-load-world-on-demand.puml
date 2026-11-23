@@ -1,0 +1,39 @@
+@startuml
+title UML sequence behaviour — Open a race and load the world on demand
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+participant "Browser" as browser
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "Router" as router
+  participant "RacePage" as race
+end box
+box "Frontend — Ride app (world library)" #E0F2FE
+  participant "WorldRenderer" as world
+end box
+actor -> browser : Open Telo Ride
+browser -> browser : Load the initial bundle (at most 300 KB gzipped, L2-136 AC1)
+actor -> router : Start a race
+router -> browser : loadComponent RacePage chunk
+browser --> router : RacePage
+router -> race : Create
+race -> browser : import('world library') (L2-136 AC1)
+browser --> race : World chunk
+race -> world : create(canvas, map)
+world --> race : Ready
+actor -> router : Leave the race
+router -> race : Destroy
+race -> world : dispose() geometries, materials, textures, renderer
+@enduml

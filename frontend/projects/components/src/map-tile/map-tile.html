@@ -1,0 +1,16 @@
+<span class="map-tile__photo">
+  <img
+    class="map-tile__image"
+    [class.map-tile__image--locked]="locked()"
+    [src]="photoUrl()"
+    alt=""
+  />
+  @if (locked()) {
+    <svg class="icon icon--md map-tile__lock" viewBox="0 0 24 24" aria-hidden="true">
+      <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </svg>
+  }
+</span>
+<span class="map-tile__name"><ng-content /></span>
+<wz-stars class="map-tile__stars" size="sm" [earned]="stars()" />

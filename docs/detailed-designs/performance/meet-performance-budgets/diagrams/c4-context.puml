@@ -1,0 +1,11 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Meet performance budgets
+
+Person(rider, "Rider", "Rides a smart bike at home")
+Person(dev, "Developer", "Runs budget checks and, on request, the vitals, frame and load measurements")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+Rel(rider, telo, "Loads screens and races in")
+Rel(dev, telo, "Measures against its budgets")
+@enduml

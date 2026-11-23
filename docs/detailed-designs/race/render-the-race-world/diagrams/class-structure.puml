@@ -1,0 +1,145 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Render the race world
+enum Backend {
+  webgpu
+  webgl2
+}
+enum Tier {
+  low
+  medium
+  high
+  ultra
+}
+class SceneFrame {
+  +s: number
+  +crank: number
+  +segments: Segment[]
+  +elapsed: number
+  +time: number
+  +speedKmh: number
+  +reducedMotion: boolean
+}
+class FigurePosition {
+  +distanceM: number
+  +jersey: string
+}
+interface WorldRenderer <<api>> {
+  +backend: Backend
+  +start(canvas, world: World, nextFrame: () => Promise<void>, segments): Promise<boolean>
+  +resize(width: number, height: number, pixelRatio: number): void
+  +draw(frame: SceneFrame): void
+  +setFramePeriod(ms: number): void
+  +pauseBudget(): void
+  +stream(place: RealPlace, key: string, report: (state: SceneryState) => void): void
+  +dispose(): void
+}
+class ThreeWorldRenderer <<world, lazy>> {
+  -renderer: WebGPURenderer
+  -budget: FrameBudget
+}
+class WorldScene <<world>> {
+  +worldId: InputSignal<string>
+  +segments: InputSignal<Segment[]>
+  +elapsed: InputSignal<number>
+  +speedKmh: InputSignal<number | null>
+  +running: InputSignal<boolean>
+  +started: OutputRef<Backend>
+  +unavailable: OutputRef<void>
+}
+class FrameScheduler <<world>> {
+  +startLoop(): () => void
+  +measurePeriod(frames): Promise<number>
+  +nextFrame(): Promise<void>
+}
+class SceneDriver <<world>> {
+  +frame(now: number, input: SceneInput): void
+}
+class FrameBudget <<world>> {
+  +tier: Tier
+  +setPeriod(ms: number): void
+  +pause(): void
+}
+class World <<api>> {
+  +id: WorldId
+  +name: string
+  +route: string
+  +grade: Record<SegmentKind, number>
+  +roll: number
+  +bend
+}
+class RaceWorldScene {
+  +load(worldId: string): Promise<void>
+  +placeCamera(distanceM: number, aspect: number): void
+  +dispose(): void
+}
+class RiderFigures {
+  +update(riders: FigurePosition[], ghost?: FigurePosition): void
+  +dispose(): void
+}
+class PhotorealTilesLayer <<world, own chunk>> {
+  +group: Group
+  +update(camera, renderer): void
+  +dispose(): void
+}
+class SceneryState <<api>> {
+  +status: 'streaming' | 'refused'
+  +credit: string
+}
+class RealPlace <<api>> {
+  +name: string
+  +route: string
+  +latitude: number
+  +longitude: number
+}
+class RaceWorld <<ride>> {
+  +wzRaceWorld: InputSignal<MapDto>
+  +started: OutputRef<Backend>
+  +unavailable: OutputRef<void>
+}
+class RaceStore <<ride>> {
+  +backend: WritableSignal<Backend | null>
+  +worldUnavailable: WritableSignal<boolean>
+  +running: Signal<boolean>
+  +speedKmh: Signal<number | null>
+}
+class MapsKeyStore <<domain>> {
+  +get(): string | null
+  +save(key: string): void
+}
+class RaceScenery <<components>> {
+  +place: InputSignal<RealPlace>
+  +key: InputSignal<string>
+  +state: InputSignal<SceneryState | null>
+  +streamKey: OutputEmitterRef<string>
+}
+ThreeWorldRenderer ..|> WorldRenderer
+ThreeWorldRenderer *-- FrameBudget
+FrameBudget --> Tier
+ThreeWorldRenderer *-- RaceWorldScene
+ThreeWorldRenderer *-- RiderFigures
+ThreeWorldRenderer *-- "0..1" PhotorealTilesLayer
+WorldRenderer ..> SceneFrame : draws
+WorldRenderer --> Backend
+WorldScene --> WorldRenderer : loads through WORLD_RENDERER
+WorldScene ..> FrameScheduler : frames
+WorldScene *-- SceneDriver
+SceneDriver ..> WorldRenderer : draw(frame)
+WorldScene ..> World : worldForMap(worldId)
+RaceWorld ..> WorldScene : import('@telo/world'), createComponent
+RaceWorld ..> RaceStore : started, unavailable via RacePage
+RaceWorld ..> MapsKeyStore : RacePage reads and saves the key
+PhotorealTilesLayer ..> SceneryState
+RaceScenery ..> RaceWorld : streamKey(key) via RacePage
+@enduml

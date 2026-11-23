@@ -1,0 +1,47 @@
+@startuml
+title UML sequence behaviour — Start the group session
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ClassRideStore" as ride
+  participant "LiveSessionStore" as store
+  participant "Class video player" as video
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "RideClock" as rideclock
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RideHubNotifier" as notifier
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "TickLiveSessionsCommandHandler" as tick
+  participant "GroupClassSession" as session
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "SessionTicker" as ticker
+end box
+store --> ride : Seat (startsAt, server time) and offsetMs
+ride -> ride : deadline = startsAt - offsetMs (monotonic)
+note over ride : Holds at 0:00, "Starts in m:ss" on whole seconds (L2-087 AC4)
+par same server time on every client (L2-121 AC3)
+  ride -> rideclock : start(deadline)
+  ride -> video : Seek to sync offset + elapsed and play
+end
+ticker -> tick : Send TickLiveSessionsCommand(now) (slice 14.5)
+tick -> session : now >= StartsAt
+tick -> session : FillWithBots(roster) up to 10
+session --> tick : 10 seats, bots ready (L2-122 AC3)
+tick -> notifier : SeatsChanged, then StandingsUpdated each second
+@enduml

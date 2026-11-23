@@ -1,5 +1,0 @@
-<div class="toast-region" role="status" aria-live="polite">
-  @for (t of toasts.visible(); track t.id) {
-    <wz-toast [toast]="t" (dismiss)="toasts.dismiss(t.id)" (hold)="hold(t.id, $event)" />
-  }
-</div>

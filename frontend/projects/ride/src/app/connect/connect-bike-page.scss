@@ -1,0 +1,143 @@
+// Block connect: Connect Bike's layout (docs/mocks/pages/connect-bike/). Two columns from lg with the photo first;
+// below lg the photo follows the content.
+.connect {
+  display: block;
+  min-height: 100dvh;
+  overflow-y: auto;
+
+  &:focus {
+    outline: none; // focused by the skip link, never by a pointer
+  }
+}
+
+// The lockup and Full screen above the content (L2-144 AC1).
+.connect__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+
+  @media (min-width: 40rem) {
+    padding-inline: var(--space-6);
+  }
+
+  @media (min-width: 64rem) {
+    padding-inline: var(--space-8);
+  }
+}
+
+.connect__body {
+  display: grid;
+  gap: var(--space-8);
+  margin-inline: auto;
+  max-width: var(--layout-container-max);
+  padding: var(--space-2) var(--space-4) var(--space-8);
+
+  @media (min-width: 40rem) {
+    padding-inline: var(--space-6);
+  }
+
+  @media (min-width: 64rem) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-16);
+    padding-inline: var(--space-8);
+  }
+}
+
+.connect__media {
+  order: 99;
+
+  @media (min-width: 64rem) {
+    order: 0;
+  }
+}
+
+.connect__photo {
+  display: block;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  height: auto;
+  max-width: var(--layout-text-md);
+  border-radius: var(--radius-2xl);
+  object-fit: cover;
+
+  @media (min-width: 64rem) {
+    max-width: none;
+  }
+}
+
+.connect__title {
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-3xl);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
+
+  @media (min-width: 40rem) {
+    font-size: var(--font-size-4xl);
+    line-height: var(--line-height-4xl);
+  }
+}
+
+.connect__lead {
+  margin-top: var(--space-3);
+  max-width: var(--layout-text-md);
+  color: var(--color-muted);
+}
+
+.connect__pair {
+  margin-top: var(--space-8);
+}
+
+.connect__hint {
+  margin-top: var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.connect__pair-btn {
+  margin-top: var(--space-4);
+
+  &:disabled {
+    opacity: 1;
+    background: var(--color-raised);
+    color: var(--color-muted);
+  }
+}
+
+// Block connect-blocker: the alert in place of the device card when the bike cannot be reached (L2-008, L2-009).
+.connect-blocker {
+  margin-top: var(--space-8);
+  border-radius: var(--radius-xl);
+  background: var(--color-panel);
+  padding: var(--space-5);
+}
+
+.connect-blocker__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.connect-blocker__icon {
+  color: var(--color-warn-fg);
+}
+
+.connect-blocker__icon--heart {
+  color: var(--color-heart-fg);
+}
+
+.connect-blocker__title {
+  font-weight: var(--font-weight-semibold);
+}
+
+.connect-blocker__body {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.connect-blocker__retry {
+  margin-top: var(--space-4);
+}

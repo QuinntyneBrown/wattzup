@@ -1,0 +1,46 @@
+@startuml
+title UML sequence behaviour — Change the display name from Profile
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app" #E0F2FE
+  participant "ProfilePage" as profile
+  participant "DisplayNameDialog" as dialog
+  participant "HttpRidersApi" as client
+  participant "CurrentRiderStore" as current
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RidersController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "SetDisplayNameCommandHandler" as handler
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+profile --> actor : Headline "Sam · Level 1" (L2-005 AC3)
+actor -> profile : Choose the display-name row in Settings
+profile -> dialog : Open (CDK Dialog, focus in the field)
+actor -> dialog : Enter "Sam R." and Save
+dialog -> client : setDisplayName("Sam R.")
+client -> ctrl : PUT /api/riders/me/display-name
+ctrl -> handler : SetDisplayNameCommand
+handler -> db : Save the new name
+ctrl --> client : 200 RiderDto
+client --> dialog : Saved
+dialog -> current : Update rider
+dialog --> profile : Close, focus back on the row
+profile --> actor : Headline "Sam R. · Level 1", rendered as text (L2-005 AC4)
+@enduml

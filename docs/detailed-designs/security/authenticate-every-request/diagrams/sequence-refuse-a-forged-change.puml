@@ -1,0 +1,53 @@
+@startuml
+title UML sequence behaviour — Refuse a change from another origin
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app" #E0F2FE
+  participant "Profile dialog" as page
+  participant "Browser (Chrome or Edge)" as http
+end box
+participant "Another site" as other
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "SameOriginRequests" as origin
+  participant "Authentication and authorization" as auth
+  participant "RidersController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "SetDisplayNameCommandHandler" as handler
+end box
+note over http : The browser adds Sec-Fetch-Site and Origin;\na page cannot set or remove them (ADR 0033)
+actor -> page : Save a new display name
+page -> http : PUT /api/riders/me/display-name
+http -> origin : Session cookie, Sec-Fetch-Site: same-origin
+origin -> origin : Unsafe method from the app's origin
+origin -> auth : Continue
+auth -> ctrl : Signed-in rider
+ctrl -> handler : Send SetDisplayNameCommand
+handler --> ctrl : Result
+ctrl --> http : 200
+== A forged change ==
+other -> http : Script or form posts to /api/riders/me/display-name
+http -> origin : Sec-Fetch-Site: cross-site, Origin: the other site
+origin --> http : 403 ProblemDetails code cross_origin (L2-127 AC2)
+note over auth, ctrl : Never reached
+== Ride hub ==
+http -> origin : POST /hubs/ride/negotiate, then the WebSocket upgrade
+alt marked same-site or cross-site, or Origin is another host
+  origin --> http : 403 code cross_origin, no connection
+else same origin
+  origin -> auth : Continue to authentication and the hub
+end
+@enduml

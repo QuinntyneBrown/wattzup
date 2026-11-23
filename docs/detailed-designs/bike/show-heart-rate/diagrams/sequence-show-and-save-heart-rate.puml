@@ -1,0 +1,50 @@
+@startuml
+title UML sequence behaviour — Show and save heart rate
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "WebBluetoothHeartRateStrap" as strapConn
+  participant "BikeTelemetry" as tele
+  participant "HeartRateSource" as source
+  participant "HeartRateStats" as stats
+  participant "DeviceReconnector" as recon
+end box
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "Ride page heart readout" as page
+  participant "RideOutbox / ProgressApi" as submit
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RidesController" as ctrl
+end box
+alt strap reports bpm
+  strapConn -> source : bpm
+  source -> source : strap value wins over the bike's (L2-030 AC2)
+else only an FTMS bike reports heart rate
+  tele -> source : heartRate from Indoor Bike Data (L2-030 AC1)
+else no source
+  source --> page : "—", announced "No heart rate" (L2-030 AC3)
+end
+source --> page : bpm
+source -> stats : onRunningSecond(bpm)
+opt strap drops
+  strapConn -> recon : start, retry every 3 s (L2-031 AC4)
+  source -> source : no strap value for 5 s: fall back or null
+  source --> page : "—" within 5 s; the ride carries on
+end
+== Ride ends ==
+stats --> submit : average and peak heart rate (L2-031 AC5)
+submit -> ctrl : POST /api/rides with avgHeartRate and peakHeartRate
+ctrl --> submit : Ride recorded
+@enduml

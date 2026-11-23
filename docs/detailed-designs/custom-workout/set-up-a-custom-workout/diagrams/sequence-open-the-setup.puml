@@ -1,0 +1,61 @@
+@startuml
+title UML sequence behaviour — Open the custom workout setup
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "CustomWorkoutPage" as page
+  participant "CustomWorkoutStore" as store
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "HttpCustomWorkoutApi" as capi
+  participant "SettingsStore" as settings
+  participant "HiitPresets" as presets
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "CustomWorkoutController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "GetCustomWorkoutQueryHandler" as handler
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+rider -> page : Press "Custom workout" in Profile Settings
+page -> store : load()
+store -> capi : get()
+capi -> ctrl : GET /api/riders/me/custom-workout
+ctrl -> handler : Send GetCustomWorkoutQuery
+handler -> db : CustomWorkout for the signed-in rider (L2-128)
+alt rider has a saved workout
+  db --> handler : CustomWorkout
+  handler --> ctrl : CustomWorkoutDto
+  ctrl --> capi : 200 OK
+  capi --> store : Last saved workout
+  store -> settings : Keep offline copy
+else none saved
+  db --> handler : None
+  handler --> ctrl : None
+  ctrl --> capi : 204 No Content
+  capi --> store : None
+  store -> presets : gcn30
+  presets --> store : GCN 30-min HIIT, warm-up 5:00, cool-down 6:00, levels 24 and 6
+else request failed (offline)
+  capi --> store : Error
+  store -> settings : Read offline copy, else gcn30
+end
+store --> page : Draft (never blank) L2-094 AC3
+page --> rider : "Set up your ride", training mode, settings and preview
+@enduml

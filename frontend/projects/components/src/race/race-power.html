@@ -1,0 +1,62 @@
+<section class="race-power" aria-label="Power and position">
+  <div class="race-power__place">
+    <div class="race-power__rank">
+      <span class="numeral race-power__pos">{{ place() }}</span>
+      @if (field(); as field) {
+        <span class="numeral race-power__of">/ {{ field }}</span>
+      }
+    </div>
+    @if (gaps().length > 0) {
+      <div class="race-power__gaps">
+        @for (gap of gaps(); track gap.label) {
+          <!-- prettier-ignore -->
+          <div>{{ gap.label }} <span class="numeral race-power__gap">{{ gap.value }}</span></div>
+        }
+      </div>
+    }
+  </div>
+  <div class="race-power__watts">
+    <span class="numeral race-power__watts-value">{{ watts() }}</span><span
+      class="numeral race-power__watts-unit"
+      >W</span
+    >
+  </div>
+  @if (target(); as target) {
+    <div class="race-power__target">
+      <span class="race-power__target-label">Target {{ target }} W</span>
+      @if (delta(); as delta) {
+        <span class="race-power__delta" [class]="'race-power__delta--' + delta.tone">{{
+          delta.text
+        }}</span>
+      }
+    </div>
+  }
+  <dl class="race-power__stats">
+    <div>
+      <dt class="race-power__stat-label">Cadence</dt>
+      <dd class="race-power__stat">
+        <span class="numeral race-power__stat-value">{{ cadence() }}</span><span
+          class="race-power__stat-unit"
+          >rpm</span
+        >
+      </dd>
+    </div>
+    <div>
+      <dt class="race-power__stat-label">Heart</dt>
+      <dd class="race-power__stat">
+        <span class="numeral race-power__stat-value race-power__stat-value--heart">{{
+          heart()
+        }}</span><span class="race-power__stat-unit">bpm</span>
+      </dd>
+    </div>
+    <div>
+      <dt class="race-power__stat-label">Speed</dt>
+      <dd class="race-power__stat">
+        <span class="numeral race-power__stat-value">{{ speed() }}</span><span
+          class="race-power__stat-unit"
+          >km/h</span
+        >
+      </dd>
+    </div>
+  </dl>
+</section>

@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Adjust sound, motion and display
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Settings; ride sound, motion, theme, wake lock")
+  ContainerDb(ls, "Browser storage", "localStorage", "Ride settings")
+}
+System_Ext(browser, "Browser platform", "Web Audio, Screen Wake Lock, Fullscreen, media queries", "Sound, awake screen, full screen")
+Rel(rider, app, "Changes settings, rides")
+Rel(app, ls, "Reads and writes")
+Rel(app, browser, "Plays sound, holds the wake lock, enters full screen")
+@enduml

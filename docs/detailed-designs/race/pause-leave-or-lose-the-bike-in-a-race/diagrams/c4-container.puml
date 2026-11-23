@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Pause, leave or lose the bike in a race
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Echelon or FTMS; Bluetooth LE")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Pause, leave, coast and DNF rules")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Ride hub records riders-online DNF")
+}
+Rel(rider, app, "Presses Pause, Resume, Leave, End, Reconnect")
+Rel(app, bike, "Reconnects", "Web Bluetooth")
+Rel(app, api, "LeaveSession (riders online)", "SignalR")
+@enduml

@@ -1,6 +1,6 @@
 # 0022. Hosted on Azure Static Web Apps, deployed from main
 
-- **Status:** Accepted
+- **Status:** Superseded by [0026](0026-api-serves-the-app.md)
 - **Date:** 2026-11-20
 
 ## Context

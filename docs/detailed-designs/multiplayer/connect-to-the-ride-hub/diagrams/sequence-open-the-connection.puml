@@ -1,0 +1,65 @@
+@startuml
+title UML sequence behaviour — Open the hub connection
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "Group class ride or race lobby route" as route
+  participant "LiveSessionStore" as store
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "SignalRRideHubClient" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "Fallback authorization policy" as auth
+  participant "RideHub" as hub
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "FindRaceCommandHandler" as handler
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+actor -> route : Join a group class or choose "Find a race" (riders online)
+route -> store : Provide store on the route
+store -> client : start()
+client -> auth : Negotiate /hubs/ride with session cookie
+auth -> db : Validate session
+alt valid session
+  db --> auth : Rider id
+  auth --> client : Connection accepted (L2-120 AC1)
+  loop five samples
+    store -> client : serverTime()
+    client -> hub : ServerTime()
+    hub --> client : Unix ms (TimeProvider)
+  end
+  store -> store : offsetMs from the shortest round trip (L2-121 AC3)
+  store -> client : findRace(mapId)
+  client -> hub : FindRace(mapId)
+  hub -> handler : Send FindRaceCommand
+  handler --> hub : SeatAssignment
+  hub --> client : SeatAssignmentDto
+  client --> store : Seat held
+else no valid session
+  db --> auth : None
+  auth --> client : 401 (L2-120 AC2)
+  client --> store : start() rejects, state = disconnected
+  store --> actor : The ride carries on with the bike, without the session (L2-126)
+end
+actor -> route : Leave the lobby or finish the race
+route -> store : DestroyRef.onDestroy
+store -> client : stop() and remove handlers (L2-120 AC4)
+client -> hub : Close connection
+@enduml

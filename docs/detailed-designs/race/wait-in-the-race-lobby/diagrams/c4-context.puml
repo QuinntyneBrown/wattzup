@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Wait in the race lobby
+Person(rider, "Rider", "Rides a smart bike at home")
+Person(others, "Riders online", "Other riders seated in the same session")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(bike, "Smart bike", "Echelon EX-5s, EX-3, EX-8s, Connect Sport, or an FTMS bike; Bluetooth LE")
+Rel(rider, telo, "Waits, readies and starts in")
+Rel(others, telo, "Join the same lobby in")
+Rel(telo, bike, "Sets the first segment's resistance on", "Bluetooth LE")
+@enduml

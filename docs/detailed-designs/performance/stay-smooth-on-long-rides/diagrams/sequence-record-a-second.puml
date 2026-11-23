@@ -1,0 +1,36 @@
+@startuml
+title UML sequence behaviour — Record one second
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app" #E0F2FE
+  participant "RideTicker" as ticker
+  participant "RaceStore / ClassRideStore" as store
+  participant "RideRecorder" as recorder
+  participant "RideOutbox" as outbox
+end box
+ticker -> store : second n
+store -> recorder : record(power, speed, n − last second)
+note right of recorder
+  Writes one speed per second into the fixed
+  Float64Array(14400): a hidden tab's skipped
+  seconds at the speed of the moment (L2-138 AC2).
+  Totals are running sums; nothing grows (AC1).
+end note
+...the ride finishes...
+store -> recorder : facts(finishedAt)
+recorder --> store : RideFacts, speedSamplesKmh one a second
+store -> outbox : submit(ride)
+note over store, recorder : Leaving the screen releases the store and its recorder
+@enduml

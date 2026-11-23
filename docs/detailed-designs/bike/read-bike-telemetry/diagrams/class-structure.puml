@@ -1,0 +1,78 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Read bike telemetry
+class TelemetrySample <<api>> {
+  +at: number
+  +cadence?: number
+  +resistance?: number
+  +speedKmh?: number
+  +powerW?: number
+  +heartRate?: number
+}
+class EchelonFrameDecoder <<domain/protocol>> {
+  +decode(bytes: Uint8Array, at: number): TelemetrySample | null
+}
+class IndoorBikeDataDecoder <<domain/protocol>> {
+  +decode(bytes: Uint8Array, at: number): TelemetrySample | null
+}
+class BikeTelemetry <<domain/engine>> {
+  +cadence: Signal<number | null>
+  +resistance: Signal<number | null>
+  +speedKmh: Signal<number | null>
+  +powerW: Signal<number | null>
+  +powerIsEstimate: Signal<boolean>
+  +accept(sample: TelemetrySample): void
+  -expireCadence(): void
+}
+class SpeedModel <<domain/engine>> {
+  +{static} KMH_PER_RPM: number = 0.37497622
+  +speedKmh(cadence: number): number
+}
+class PowerModel <<domain/engine>> {
+  +estimate(cadence: number | null, level: number | null): number | null
+  +target(cadenceAim: number, level: number): number
+}
+class EnergyModel <<domain/engine>> {
+  +kcal(avgPowerW: number, runningSeconds: number): number
+}
+class "bankersRound()" as Round <<domain/engine>> {
+  +bankersRound(value: number, digits: number): number
+}
+class RideTotals <<domain/engine>> {
+  +distanceKm: Signal<number>
+  +outputKj: Signal<number>
+  +avgPowerW: Signal<number | null>
+  +energyKcal: Signal<number>
+  +onRunningSecond(): void
+}
+class RideTicker <<domain/engine, slice 5.1>> {
+  +second: Signal<number>
+}
+class "formatMetric()" as Format <<components>> {
+  +formatMetric(value: number | null, digits: number): string
+  +formatDistance(km: number | null): string
+}
+EchelonFrameDecoder ..> TelemetrySample : creates
+IndoorBikeDataDecoder ..> TelemetrySample : creates
+BikeTelemetry ..> TelemetrySample : accepts
+BikeTelemetry ..> EchelonFrameDecoder : bike().kind = echelon
+BikeTelemetry ..> IndoorBikeDataDecoder : bike().kind = ftms
+BikeTelemetry ..> SpeedModel
+BikeTelemetry ..> PowerModel
+SpeedModel ..> Round
+PowerModel ..> Round
+RideTotals --> BikeTelemetry : reads
+RideTicker --> RideTotals : onRunningSecond()
+RideTotals ..> EnergyModel
+@enduml

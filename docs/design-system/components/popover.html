@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Popover — Telo Ride design system</title>
+<meta name="description" content="A panel anchored to the button that opened it: Leave this ride under Library, Send feedback under Feedback, and a generic popover for short facts and actions. Focus moves in, Esc and click-away close, focus returns.">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/components.css">
+<link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Page-only: ds.css underlines every link; components in examples set their own decoration. */
+:where(.ds-example__canvas, .ds-stage, .ds-themes, .ds-matrix, .ds-anatomy__figure, .ds-do, .ds-dont) a { text-decoration: none; color: inherit; }
+.ds-matrix td { min-width: 7rem; }
+.ds-matrix td > :is(a, button, span):not(.visually-hidden) { display: inline-flex; vertical-align: middle; }
+.ds-keys td:first-child { white-space: nowrap; }
+.ds-matrix td { white-space: nowrap; }
+.ds-matrix td > :is(.tier-tabs, .tabs) { display: inline-flex; }
+.ds-stage .demo-relative { position: relative; }
+</style>
+</head>
+<body id="top">
+<a class="ds-skip" href="#main">Skip to content</a>
+<div class="ds-shell">
+  <nav class="ds-nav" aria-label="Design system">
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <details open><summary>Foundations</summary><ul>
+      <li><a href="../foundations/color.html">Color</a></li>
+      <li><a href="../foundations/typography.html">Typography</a></li>
+      <li><a href="../foundations/spacing.html">Spacing</a></li>
+      <li><a href="../foundations/layout.html">Layout</a></li>
+      <li><a href="../foundations/elevation.html">Elevation</a></li>
+      <li><a href="../foundations/shape.html">Shape</a></li>
+      <li><a href="../foundations/motion.html">Motion</a></li>
+      <li><a href="../foundations/iconography.html">Iconography</a></li>
+      <li><a href="../foundations/theming.html">Theming</a></li>
+      <li><a href="../foundations/responsive.html">Responsive</a></li>
+      <li><a href="../foundations/accessibility.html">Accessibility</a></li>
+      <li><a href="../foundations/content.html">Content</a></li>
+    </ul></details>
+    <details open><summary>Actions</summary><ul>
+      <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
+      <li><a href="../components/link.html">Link</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
+      <li><a href="../components/form-field.html">Form field</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
+      <li><a href="../components/slider.html">Slider</a></li>
+      <li><a href="../components/number-stepper.html">Number stepper</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
+      <li><a href="../components/skip-link.html">Skip link</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
+      <li><a href="../components/dialog.html">Dialog</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
+      <li><a href="../components/tooltip.html">Tooltip</a></li>
+      <li><a href="../components/divider.html">Divider</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
+      <li><a href="../components/description-list.html">Description list</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
+      <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
+      <li><a href="../components/toast.html">Toast</a></li>
+      <li><a href="../components/alert.html">Alert and banner</a></li>
+      <li><a href="../components/inline-message.html">Inline message</a></li>
+      <li><a href="../components/progress-bar.html">Progress bar</a></li>
+      <li><a href="../components/spinner.html">Spinner</a></li>
+      <li><a href="../components/skeleton.html">Skeleton</a></li>
+      <li><a href="../components/empty-state.html">Empty state</a></li>
+      <li><a href="../components/error-page.html">Error page</a></li>
+    </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
+    <details open><summary>Patterns</summary><ul>
+      <li><a href="../patterns/forms.html">Forms</a></li>
+      <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
+      <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
+      <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
+      <li><a href="../patterns/notifications.html">Notifications</a></li>
+      <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
+    </ul></details>
+  </nav>
+  <main id="main" class="ds-main">
+    <header class="ds-header">
+      <p class="ds-kicker">Component · Containers and overlays</p>
+      <h1>Popover</h1>
+      <p class="ds-lead">A small panel attached to its button, for a choice or a few facts that belong to that button. The page stays visible around it; Telo Ride uses two, Leave this ride and Send feedback.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
+    </header>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+      <ul>
+        <li><b>Leave this ride?</b> (<code>.ride-leave</code>): under Library in the ride header; three choices, the ride paused while it is open.</li>
+        <li><b>Send feedback</b> (<code>.feedback-popover</code>): under Feedback in the ride header from 640px; a <a href="dialog.html">bottom sheet</a> below.</li>
+        <li><b>Generic</b> (<code>.popover</code>): the same surface for new uses, such as the bike status in the ride header opening its connection facts instead of a full Diagnostics dialog.</li>
+      </ul>
+      <p>Use a popover when the content is short (one title, a sentence, up to three actions or a small form) and clearly belongs to the button. Use a <a href="tooltip.html">tooltip</a> for a label with nothing to act on, a <a href="menu.html">menu</a> for a list of commands, a <a href="dialog.html">dialog</a> when it needs the whole screen's attention.</p>
+    </section>
+
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+      <div class="ds-anatomy">
+        <figure class="ds-anatomy__figure" style="place-items: start; min-height: 27rem;">
+          <div class="popover-anchor">
+            <button class="ride-header__link ride-header__link--strong" type="button" aria-haspopup="dialog" aria-expanded="true" aria-controls="an-pop"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</button>
+            <div class="popover" id="an-pop" role="dialog" aria-labelledby="an-pop-title" style="max-width: calc(100vw - var(--space-24));">
+              <h4 class="popover__title" id="an-pop-title">Leave this ride?</h4>
+              <p class="popover__body">You’re <span class="dialog__figure">6:52</span> in with <span class="dialog__figure">2.24 km</span> ridden. The ride is paused while you decide.</p>
+              <div class="popover__actions"><button class="btn btn--primary" type="button">Save ride and open library</button><button class="btn btn--raised" type="button">Discard and open library</button><button class="btn ride-leave__keep" type="button">Keep riding</button></div>
+            </div>
+          </div>
+          <span class="ds-callout" style="left: 1%; top: 2%;" aria-hidden="true">1</span>
+          <span class="ds-callout" style="left: 47%; top: 18%;" aria-hidden="true">2</span>
+          <span class="ds-callout" style="left: 47%; top: 30%;" aria-hidden="true">3</span>
+          <span class="ds-callout" style="left: 47%; top: 56%;" aria-hidden="true">4</span>
+        </figure>
+        <ol class="ds-anatomy__list">
+          <li><div><b>Trigger</b><small>The button it belongs to; <code>aria-expanded</code> and <code>aria-haspopup="dialog"</code>, raised while open.</small></div></li>
+          <li><div><b>Title</b><small>16px semibold; names the panel (<code>aria-labelledby</code>).</small></div></li>
+          <li><div><b>Body</b><small>14px muted with Barlow figures.</small></div></li>
+          <li><div><b>Actions</b><small>Stacked full width, primary first, the way back last and quiet. Panel: 320px, 16px radius, line border, <code>--shadow-4</code>, 8px below the trigger.</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--canvas ds-example__canvas--stack" style="align-items: stretch;">
+          <div style="min-height: 15rem;"><div class="popover-anchor">
+            <button class="ride-header__status" type="button" aria-haspopup="dialog" aria-expanded="true" aria-controls="v-pop1"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg><span class="ride-header__status-name">Echelon EX-5s</span><span class="ride-header__status-text text-muted">Connected</span></button>
+            <div class="popover" id="v-pop1" role="dialog" aria-labelledby="v-pop1-title" style="max-width: calc(100vw - var(--space-24));">
+              <h4 class="popover__title" id="v-pop1-title">Echelon EX-5s</h4>
+              <p class="popover__body">Connected for <span class="dialog__figure">6m 52s</span> · signal <span class="dialog__figure">−61 dBm</span>. Last command RES 8, acknowledged in 41 ms.</p>
+              <div class="popover__actions"><a class="btn btn--raised btn--sm" href="../../mocks/dialogs/diagnostics/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"/></svg>Open diagnostics</a></div>
+            </div>
+          </div></div>
+          <div style="min-height: 17rem; display: flex; justify-content: flex-end; align-items: flex-start;"><div class="popover-anchor">
+            <button class="ride-header__link ride-header__link--feedback" type="button" aria-haspopup="dialog" aria-expanded="true" aria-controls="v-pop2"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/><path d="M12 8v6"/><path d="M9 11h6"/></svg>Feedback</button>
+            <div class="popover popover--end popover--wide" id="v-pop2" role="dialog" aria-labelledby="v-pop2-title" style="max-width: calc(100vw - var(--space-24));">
+              <h4 class="popover__title" id="v-pop2-title">Send feedback</h4>
+              <div class="field" style="margin-top: var(--space-3);"><label class="field__label" for="v-pop2-msg">What could be better?</label><textarea class="feedback__message" id="v-pop2-msg" rows="3" placeholder="e.g. Let me save a custom ride so I don’t rebuild it every week."></textarea></div>
+              <div class="popover__actions" style="flex-direction: row; justify-content: flex-end;"><button class="btn btn--primary btn--sm" type="button">Send idea</button></div>
+            </div>
+          </div></div>
+        </div>
+        <div class="ds-example__caption"><span>Start-aligned (default, the bike status opening its facts) · end-aligned and wide (<code>.popover--end.popover--wide</code>, 400px, the Feedback form near the right edge).</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="popover-anchor"&gt;
+  &lt;button class="ride-header__link" type="button" aria-haspopup="dialog" aria-expanded="true" aria-controls="leave"&gt;…Library&lt;/button&gt;
+  &lt;div class="popover" id="leave" role="dialog" aria-labelledby="leave-title"&gt;
+    &lt;h2 class="popover__title" id="leave-title"&gt;Leave this ride?&lt;/h2&gt;
+    &lt;p class="popover__body"&gt;You’re &lt;span class="dialog__figure"&gt;6:52&lt;/span&gt; in …&lt;/p&gt;
+    &lt;div class="popover__actions"&gt;
+      &lt;button class="btn btn--primary" type="button"&gt;Save ride and open library&lt;/button&gt;
+      &lt;button class="btn btn--raised" type="button"&gt;Discard and open library&lt;/button&gt;
+      &lt;button class="btn ride-leave__keep" type="button"&gt;Keep riding&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></details>
+      </div>
+      <h3>The product's two, as mocked</h3>
+      <div class="ds-table-wrap" style="display: flex; gap: var(--space-4); padding-bottom: var(--space-2);">
+        <iframe class="ds-frame" src="../../mocks/dialogs/end-ride/default.html?chrome=0" width="1026" height="560" title="Leave this ride at 1024px: a popover under Library" style="flex: none; max-width: none; border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-lg);"></iframe>
+        <iframe class="ds-frame" src="../../mocks/dialogs/feedback/default.html?chrome=0" width="1026" height="760" title="Send feedback at 1024px: a popover under Feedback, right-aligned" style="flex: none; max-width: none; border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-lg);"></iframe>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Size</th><th scope="col">Width</th><th scope="col">Use</th></tr></thead><tbody>
+        <tr><td>default</td><td>320px (<code>--popover-width</code>)</td><td>A choice or a few facts: Leave this ride, the bike status.</td></tr>
+        <tr><td><code>.popover--wide</code></td><td>400px</td><td>A small form: Send feedback.</td></tr>
+      </tbody></table></div>
+      <p>Both cap at the viewport less 40px. Never taller than about half the screen; past that it is a dialog.</p>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Trigger</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Open</th><th scope="col">Disabled</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Library</th>
+            <td><button class="ride-header__link ride-header__link--strong" type="button" aria-haspopup="dialog" aria-expanded="false"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</button></td>
+            <td><button class="ride-header__link ride-header__link--strong" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</button></td>
+            <td><button class="ride-header__link ride-header__link--strong" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</button></td>
+            <td><button class="ride-header__link ride-header__link--strong" type="button" aria-haspopup="dialog" aria-expanded="false" data-state="active"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</button></td>
+            <td><button class="ride-header__link ride-header__link--strong" type="button" aria-haspopup="dialog" aria-expanded="true"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</button></td>
+            <td><button class="ride-header__link ride-header__link--strong" type="button" aria-haspopup="dialog" aria-expanded="false" disabled><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</button></td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li><b>Open</b>: <code>aria-expanded="true"</code> raises the trigger (the same fill as hover) so the popover visibly hangs from it.</li>
+        <li><b>Disabled</b>: Library is never disabled mid-ride; a trigger that cannot open hides instead.</li>
+        <li><b>Busy</b> (Send feedback sending) and <b>done</b> (Feedback sent) follow <a href="dialog.html#states">Dialog states</a>; the popover stays open until Done.</li>
+      </ul>
+      <h3>Both themes</h3>
+      <div class="ds-themes">
+        <div data-theme="light"><div style="min-height: 13rem;"><div class="popover-anchor"><button class="ride-header__status" type="button" aria-haspopup="dialog" aria-expanded="true"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg><span class="ride-header__status-name">Echelon EX-5s</span></button><div class="popover" role="dialog" aria-label="Echelon EX-5s, light"><p class="popover__title">Echelon EX-5s</p><p class="popover__body">Connected for <span class="dialog__figure">6m 52s</span>.</p><div class="popover__actions"><a class="btn btn--raised btn--sm" href="../../mocks/dialogs/diagnostics/default.html">Open diagnostics</a></div></div></div></div></div>
+        <div data-theme="dark"><div style="min-height: 13rem;"><div class="popover-anchor"><button class="ride-header__status" type="button" aria-haspopup="dialog" aria-expanded="true"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg><span class="ride-header__status-name">Echelon EX-5s</span></button><div class="popover" role="dialog" aria-label="Echelon EX-5s, dark"><p class="popover__title">Echelon EX-5s</p><p class="popover__body">Connected for <span class="dialog__figure">6m 52s</span>.</p><div class="popover__actions"><a class="btn btn--raised btn--sm" href="../../mocks/dialogs/diagnostics/default.html">Open diagnostics</a></div></div></div></div></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <ul>
+        <li><b>From 640px</b>: anchored under its trigger, start- or end-aligned so it stays on screen.</li>
+        <li><b>Under 640px</b>: Leave this ride pins inside the 20px gutters just under the header (it would run off the right edge from Library's position); Send feedback becomes a bottom sheet over a scrim. A new popover picks one of these two; it never floats half off-screen.</li>
+      </ul>
+      <div class="ds-table-wrap" style="display: flex; gap: var(--space-4); padding-bottom: var(--space-2);">
+        <iframe class="ds-frame" src="../../mocks/dialogs/end-ride/default.html?chrome=0" width="362" height="560" title="Leave this ride at 360px: pinned inside the gutters" style="flex: none; max-width: none; border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-lg);"></iframe>
+        <iframe class="ds-frame" src="../../mocks/dialogs/feedback/default.html?chrome=0" width="362" height="720" title="Send feedback at 360px: a bottom sheet" style="flex: none; max-width: none; border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-lg);"></iframe>
+        <iframe class="ds-frame" src="../../mocks/dialogs/end-ride/default.html?chrome=0" width="642" height="560" title="Leave this ride at 640px: anchored under Library" style="flex: none; max-width: none; border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-lg);"></iframe>
+      </div>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+      <p>Block tokens on <code>.popover</code>: <code>--popover-width</code>, <code>--popover-bg</code> (<code>--color-panel</code>), <code>--popover-border</code> (<code>--color-line</code>). It sits on <code>--z-popover</code>, above sticky headers and below toasts. In light the border and <code>--shadow-4</code> do the separating, since the panel and page are both pale.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <p>A disclosure that opens a non-modal <code>role="dialog"</code> (<a href="https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/">APG Dialog</a>, with the trigger as an <a href="https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/">APG Disclosure</a> button: <code>aria-expanded</code>, <code>aria-controls</code>, <code>aria-haspopup="dialog"</code>). Leave this ride and Send feedback are modal in the mocks (<code>aria-modal="true"</code>, the page <code>inert</code>) because the ride is paused or a form is open; a facts popover is not modal.</p>
+      <h3>Keyboard</h3>
+      <div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+        <tr><td><kbd>Enter</kbd> / <kbd>Space</kbd></td><td>On the trigger: opens and moves focus in; again: closes.</td></tr>
+        <tr><td><kbd>Tab</kbd></td><td>Through the popover's controls. Modal: wraps inside. Non-modal: leaving the popover closes it.</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>Closes and returns focus to the trigger (Leave: the same as Keep riding).</td></tr>
+      </tbody></table></div>
+      <h3>Focus</h3>
+      <ul>
+        <li>On open: the first action (Save ride and open library has <code>autofocus</code> in the mock), or the form's field (the feedback message).</li>
+        <li>On close by any means (Esc, the quiet action, click-away on the transparent scrim): back to the trigger.</li>
+        <li>The trigger keeps its raised fill while open, so the origin of the panel stays visible to sighted keyboard users.</li>
+      </ul>
+      <h3>Labelling</h3>
+      <p>The popover is named by its title. The trigger's own name stays the same open or closed ("Library"); <code>aria-expanded</code> carries the state.</p>
+      <h3>Contrast</h3>
+      <div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+        <div class="ds-pair"><span>Title and figures</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-panel" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Body and quiet action</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Open trigger</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-raised" data-min="4.5"></span></div>
+      </div>
+      <h3>Motion</h3>
+      <p>Fades in with a 2% scale over <code>--duration-base</code>, <code>--ease-panel</code>; closes instantly. None with reduced motion.</p>
+      <h3>Touch</h3>
+      <p>Stacked 40px actions; the quiet "Keep riding" is 36px. Tapping outside closes only a popover where nothing would be lost (Leave this ride keeps the ride paused and is closed by Keep riding or the transparent scrim, which resumes nothing on its own).</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li>Title states the question or the thing: "Leave this ride?", "Echelon EX-5s".</li>
+        <li>One sentence of facts with figures; then actions named for their result.</li>
+        <li>The way back is the last, quiet action and says what it keeps: "Keep riding".</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><div class="stack stack--sm" style="width: 16rem;"><button class="btn btn--primary" type="button">Save ride and open library</button><button class="btn btn--raised" type="button">Discard and open library</button><button class="btn ride-leave__keep" type="button">Keep riding</button></div></div><figcaption>Three outcomes, stacked, primary first, the way back last.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><div class="cluster cluster--sm"><button class="btn btn--raised btn--sm" type="button">Keep riding</button><button class="btn btn--raised btn--sm" type="button">Discard</button><button class="btn btn--primary btn--sm" type="button">Save</button></div></div><figcaption>Squeeze three side by side in 320px: "Discard" lands next to "Keep riding" under the thumb.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><span class="text-muted" style="font-size: var(--font-size-sm);">Under 640px: Send feedback becomes a bottom sheet</span></div><figcaption>Switch to a sheet when the anchor is near an edge on a phone.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><span class="text-muted" style="font-size: var(--font-size-sm);">A 400px popover hanging from a button at the right of a 360px screen</span></div><figcaption>Keep the desktop anchoring on a phone: the panel runs off the edge, as the Leave popover did before it was pinned.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+        <tbody>
+          <tr><td>Fill (<code>--popover-bg</code>)</td><td><code>--color-panel</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-panel" data-swatch></i><span data-token="--color-panel"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-panel" data-swatch></i><span data-token="--color-panel"></span></span></td></tr>
+          <tr><td>Border (<code>--popover-border</code>)</td><td><code>--color-line</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td></tr>
+          <tr><td>Title</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+          <tr><td>Body</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+          <tr><td>Open trigger</td><td><code>--color-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td></tr>
+          <tr><td>Radius</td><td><code>--radius-xl</code></td><td colspan="2"><span data-token="--radius-xl"></span></td></tr>
+          <tr><td>Elevation</td><td><code>--shadow-4</code></td><td colspan="2"><span data-token="--shadow-4"></span></td></tr>
+          <tr><td>Padding / gap below trigger</td><td><code>--space-5</code> <code>--space-2</code></td><td colspan="2"><span data-token="--space-5"></span> / <span data-token="--space-2"></span></td></tr>
+          <tr><td>Layer</td><td><code>--z-popover</code></td><td colspan="2"><span data-token="--z-popover"></span></td></tr>
+          <tr><td>Entrance</td><td><code>--duration-base</code> <code>--ease-panel</code></td><td colspan="2"><span data-token="--duration-base"></span> / <span data-token="--ease-panel"></span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+        <tr><td><code>.popover-anchor</code></td><td>Positioning context around trigger and popover.</td></tr>
+        <tr><td><code>.popover</code> <code>--end</code> <code>--wide</code></td><td>Panel; end-aligned; 400px.</td></tr>
+        <tr><td><code>.popover__title</code> <code>__body</code> <code>__actions</code></td><td>Parts.</td></tr>
+        <tr><td><code>.ride-leave</code>, <code>.feedback-popover</code></td><td>The product's two (core; area CSS), with their phone placements.</td></tr>
+        <tr><td><code>aria-expanded</code> <code>aria-controls</code> <code>aria-haspopup="dialog"</code></td><td>On the trigger.</td></tr>
+        <tr><td><code>role="dialog"</code> (+ <code>aria-modal="true"</code> when the page is inert)</td><td>On the popover.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <ul>
+        <li><a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a> (Leave this ride under Library).</li>
+        <li><a href="../../mocks/dialogs/feedback/default.html">dialogs/feedback/default</a> and its states (Send feedback under Feedback).</li>
+        <li>Triggers: <code>.ride-header__link</code> on <a href="../../mocks/pages/custom-ride/default.html">pages/custom-ride/default</a>.</li>
+      </ul>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Mock</th><th scope="col">Drift</th><th scope="col">Resolution</th></tr></thead><tbody>
+        <tr><td>dialogs/end-ride/default</td><td>From Library's position the 320px popover ran off the right edge below 640px.</td><td>Pinned inside the gutters (core already does this); new popovers switch to a pinned panel or a sheet below 640px.</td></tr>
+        <tr><td>dialogs/end-ride, dialogs/feedback</td><td><code>.ride-leave</code> and <code>.feedback</code> each restate the popover surface (fill, border, radius, padding, shadow) with different shadows.</td><td>Generic <code>.popover</code> with <code>--shadow-4</code>; area classes keep only their contents.</td></tr>
+        <tr><td>dialogs/end-ride/default</td><td><code>.ride-leave</code> uses <code>--z-sticky</code> inside a ghost header on <code>--z-modal</code>; the layer is implied by its parent.</td><td>Popovers use <code>--z-popover</code>.</td></tr>
+        <tr><td>dialogs/end-ride/default</td><td>Triggers and actions are links (<code>&lt;a&gt;</code>) because each state is its own page.</td><td>Buttons in the build; only "open library" outcomes navigate.</td></tr>
+      </tbody></table></div>
+    </section>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
+  </main>
+</div>
+<script src="../assets/ds.js"></script>
+</body>
+</html>

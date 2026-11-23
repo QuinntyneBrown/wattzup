@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Mark leavers and DNF
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Sign-in, progress, catalogues, ride hub, feedback")
+}
+Rel(rider, app, "Presses Leave or closes the tab")
+Rel(app, api, "LeaveSession, or the connection drops", "SignalR")
+Rel_Back(app, api, "RiderLeft and StandingsUpdated to the others", "SignalR")
+@enduml

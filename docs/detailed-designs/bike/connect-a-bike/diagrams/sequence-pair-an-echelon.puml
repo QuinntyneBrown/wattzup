@@ -1,0 +1,66 @@
+@startuml
+title UML sequence behaviour — Pair an Echelon bike
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ConnectBikePage" as page
+  participant "ConnectBikeStore" as store
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "WebBluetoothBikeConnection" as conn
+  participant "EchelonLink" as link
+  participant "GattWriteQueue" as queue
+  database "RememberedBikeStore" as remembered
+end box
+box "Device — Browser chooser" #F2F4F7
+  participant "navigator.bluetooth" as bt
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "Echelon GATT server" as bike
+end box
+actor -> page : Press "Pair Echelon EX-5s" (user gesture, L2-012 AC2)
+page -> store : pair()
+store -> store : Searching: spinner, "Looking for bikes nearby…", disabled "Searching…" (L2-011 AC2)
+store -> conn : requestBike()
+conn -> bt : requestDevice(filters: Echelon 0bf669f1-…, FTMS 0x1826; optional 0x180D) (L2-012 AC1)
+alt rider cancels the chooser
+  bt --> conn : NotFoundError
+  conn --> store : null
+  store --> page : Default state, no error (L2-012 AC3)
+else chooser blocked by a policy
+  bt --> conn : SecurityError
+  conn --> store : BikeConnectionError code blocked
+  store --> page : Reason in plain words and "Try again" (L2-012 AC4)
+else bike picked
+  bt --> conn : BluetoothDevice
+  conn --> store : BikeInfo
+  store --> page : Card: "Echelon EX-5s", identifier "EX5S-141844" (L2-011 AC3)
+  store -> store : Pairing: aria-busy="true", spinner, "Pairing…" (L2-011 AC4)
+  store -> conn : connect()
+  conn -> bike : gatt.connect(), getPrimaryService(0bf669f1-…)
+  conn -> link : open(server)
+  link -> bike : startNotifications on 0bf669f4-… before any write (L2-013 AC1)
+  link -> queue : F0 A1 00 91, F0 A3 00 93, F0 B0 01 01 A2, ≥ 300 ms apart (L2-013 AC2)
+  queue -> bike : writeValueWithResponse on 0bf669f2-…, one at a time (L2-013 AC3)
+  bike --> queue : Acknowledged
+  bike -> conn : First notification
+  conn --> store : connect() resolves: connected (L2-013 AC4)
+  store -> remembered : save(bike)
+  store --> page : Check (aria-label="Paired") and disabled "Paired" (L2-011 AC5)
+  page -> page : After about 500 ms, navigate to Home
+  page --> actor : Home
+end
+@enduml

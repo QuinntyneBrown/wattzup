@@ -1,0 +1,32 @@
+<section class="next-ride" aria-labelledby="next-ride-goal">
+  <div class="next-ride__photo">
+    <img class="photo" [src]="view().photoUrl" alt="" />
+    <span class="photo-tag">{{ view().tag }}</span>
+  </div>
+  <div class="next-ride__body">
+    <p class="next-ride__eyebrow">Your next unlock</p>
+    <h2 class="next-ride__goal" id="next-ride-goal">{{ view().goal }}</h2>
+    @if (view().opens; as opens) {
+      <div class="reward">
+        <img class="reward__thumb" [src]="opens.thumbnailUrl" alt="" />
+        <div class="reward__text">
+          <p class="reward__title">
+            <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+              <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg
+            >Opens {{ opens.name }}
+          </p>
+          <p class="reward__place">{{ opens.place }}</p>
+        </div>
+      </div>
+    }
+    @if (view().best; as best) {
+      <p class="next-ride__best">
+        Your best here: <span class="figure">{{ best }}</span>
+      </p>
+    }
+    <div class="next-ride__cta">
+      <ng-content select="[slot=action]" />
+    </div>
+  </div>
+</section>

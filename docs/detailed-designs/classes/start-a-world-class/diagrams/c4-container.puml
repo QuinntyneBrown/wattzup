@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Start a world class
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Bluetooth LE")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Gates the start; hands the world to the class ride")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR ride hub", "Group session start time")
+}
+Rel(rider, app, "Presses Start riding, or waits for the group")
+Rel(app, bike, "Connects, sends the first segment's level", "Web Bluetooth")
+Rel(app, api, "SessionStarted, server time", "WebSocket")
+@enduml

@@ -1,0 +1,5 @@
+<div class="race-countdown" role="timer" aria-live="assertive" [attr.aria-label]="label()">
+  @for (each of steps(); track each) {
+    <span class="numeral race-countdown__num" aria-hidden="true">{{ each }}</span>
+  }
+</div>

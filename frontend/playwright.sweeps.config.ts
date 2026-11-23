@@ -1,11 +1,13 @@
 import { defineConfig } from '@playwright/test';
 import base from './playwright.config';
 
-// Accessibility, responsive and performance sweeps (AGENTS.md): written and kept current, run only when a
-// person asks, with `npm run e2e:sweeps`. Chromium only, like the behaviour specs.
+// The sweeps (AGENTS.md, E2E): written and kept current, but run only when a person asks, never by verify, CI or an
+// agent. `npm run sweep:responsive` checks every screen at every breakpoint (L2-139 AC1) against the production build.
+const [production] = Array.isArray(base.webServer) ? base.webServer : [base.webServer];
+
 export default defineConfig({
   ...base,
-  testMatch: 'sweeps/**/*.sweep.ts',
-  // The performance sweep's numbers go to performance-reports/ as JSON and Markdown (#676).
-  reporter: [[base.reporter as 'list' | 'github'], ['./e2e/sweeps/performance-reporter.ts']],
+  testMatch: '**/*.sweep.ts',
+  projects: [{ name: 'sweeps' }],
+  webServer: production,
 });

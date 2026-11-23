@@ -1,0 +1,49 @@
+@startuml
+title UML sequence behaviour — Connect a bike before the start
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "CustomRidePage" as page
+  participant "RideOverlay" as overlay
+  participant "CustomRideStore" as store
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "WebBluetoothBikeConnection" as conn
+  participant "RideClock" as clock
+  participant "WorkoutEngine" as engine
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "Smart bike" as bike
+end box
+rider -> page : Open /profile/custom/ride
+page -> store : init(plan)
+store -> conn : ble()
+conn --> store : Disconnected
+store --> page : Waiting: clock "0:00", Start and End disabled, Power "—" Target 143 W, Cadence "—" Aim for 80, "Warm-up" 5:00, level "—" L2-106 AC1
+page --> rider : Overlay "Connect your bike", Connect bike and the L2-012 AC5 hint L2-106 AC2
+rider -> overlay : Press Connect bike
+overlay -> store : connectBike()
+store -> conn : connect() (opens the browser's chooser from the press)
+conn -> bike : requestDevice, GATT connect
+bike --> conn : Connected
+conn --> store : ble = Connected
+store --> page : Overlay closes; Start enabled L2-106 AC3
+rider -> page : Press Start
+page -> store : start()
+store -> engine : follow(plan, clock)
+store -> clock : start()
+store --> page : Waiting → Running
+@enduml

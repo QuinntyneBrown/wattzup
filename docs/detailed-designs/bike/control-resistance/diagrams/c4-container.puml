@@ -1,0 +1,13 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Control resistance
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Echelon or FTMS; Bluetooth LE")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine")
+}
+Rel(rider, app, "Raises, lowers or picks a level in")
+Rel(app, bike, "B1 set resistance or FTMS 0x04", "Web Bluetooth GATT")
+Rel(bike, app, "D2 resistance or Indoor Bike Data", "GATT")
+@enduml

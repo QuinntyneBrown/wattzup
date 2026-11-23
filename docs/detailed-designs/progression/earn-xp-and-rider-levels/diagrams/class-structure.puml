@@ -1,0 +1,93 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Earn XP and rider levels
+enum RideKind {
+  Race
+  Class
+}
+enum RideOutcome {
+  Finished
+  Dnf
+  Discarded
+}
+class RideResult <<value object>> {
+  +Kind: RideKind
+  +Mode: string?
+  +Outcome: RideOutcome
+  +Place: int?
+  +FieldSize: int?
+  +OnTargetShare: double
+  +HasPlaces: bool
+}
+enum XpLineKind {
+  Finished
+  Place
+  Podium
+  OnTarget
+  Streak
+}
+class XpLine <<value object>> {
+  +Kind: XpLineKind
+  +Label: string
+  +Amount: int
+}
+class XpCalculator <<domain service>> {
+  +Compute(result: RideResult, streakDays: int): IReadOnlyList<XpLine>
+}
+class LevelTable <<domain service>> {
+  -thresholds: int[30]
+  +LevelFor(totalXp: int): int
+  +NextThreshold(level: int): int?
+  +Progress(totalXp: int): LevelProgress
+}
+class LevelProgress <<value object>> {
+  +Level: int
+  +TotalXp: int
+  +NextThresholdXp: int?
+  +XpToNext: int?
+}
+class Rider <<entity>> {
+  +Id: Guid
+  +TotalXp: int
+  +AddXp(amount: int): void
+}
+class SubmitRideCommandHandler <<application>> {
+  +Handle(cmd: SubmitRideCommand): Task<RideRecordedDto>
+}
+class RecordedRide <<entity>> {
+  +XpLines: XpLine[]
+}
+class RideRecordedDto <<DTO>> {
+  +RideId: Guid
+  +RecordedAt: DateTimeOffset
+  +XpLines: XpLineDto[]
+  +XpTotal: int
+  +TotalXp: int
+  +Level: int
+  +LevelUp: bool
+  +XpToNextLevel: int?
+}
+XpCalculator ..> RideResult : reads
+XpCalculator ..> XpLine : creates
+XpLine --> XpLineKind
+RideResult --> RideKind
+RideResult --> RideOutcome
+LevelTable ..> LevelProgress : creates
+SubmitRideCommandHandler ..> XpCalculator
+SubmitRideCommandHandler ..> LevelTable
+SubmitRideCommandHandler --> Rider : loads / mutates
+SubmitRideCommandHandler ..> RideRecordedDto : returns
+SubmitRideCommandHandler ..> RecordedRide : keeps its lines
+note bottom of RideRecordedDto : Level, LevelUp and XpToNextLevel\narrive with slice 10.3
+@enduml

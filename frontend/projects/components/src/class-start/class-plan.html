@@ -1,0 +1,8 @@
+<div class="class-plan">
+  <div class="class-plan__head">
+    <h2 class="class-plan__label">What the bike will do</h2>
+    <span class="class-plan__total">{{ total() }}</span>
+  </div>
+  <wz-class-profile [segments]="segments()" size="lg" label="Resistance profile" />
+  <p class="class-plan__summary">{{ summary() }}</p>
+</div>

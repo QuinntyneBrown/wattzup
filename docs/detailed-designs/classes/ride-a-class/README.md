@@ -2,185 +2,197 @@
 
 ## Overview
 
-A class from the library (`classes/browse-classes`) is a plan with the YouTube video it follows. This feature is the class page at `/classes/:id`: it shows the class, previews its video at the start point, and starts a ride with the class's configuration (L2-080, L1-014). Before starting, the rider may change the levels, the link or the start point for this ride. The catalogue is never written.
+The class ride is where the rider pedals along to a class video while Telo Ride drives the bike
+through the class plan. It lives at `/classes/:id/ride`, solo (`?mode=solo`) or in a group
+session (`?session={sessionId}`).
 
-**class page** — page at `/classes/:id` that shows one class and starts a ride with its plan and video
+> **ride clock** — monotonic elapsed time of the ride, from 0:00 to the class length, that leads the plan and the video
 
-**class draft** — the class's plan, link and start point as the page holds them, including the rider's changes; it lives only in the page
+> **segment** — one timed part of the plan with a kind (warm-up, work, recover, steady, cool-down), a duration, a level and a cadence aim
 
-**edited** — state of a class draft whose levels, link or start point differ from the class in the catalogue
+> **target power** — power the segment asks for, computed from its level and cadence aim by the formula of `L2-023` AC3
 
-**effort level** / **recover level** — on the class page, the highest `work_level` or `rest_level` of the plan; one step of its stepper moves every effort's (recover's) level by 1, which keeps the plan's shape
+> **drift** — difference between the video's time and the ride clock plus the sync offset
 
-Starting a class adds no new contract. The page calls the ordinary `WORKOUT_API.start` (`workouts/start-and-stop-workout`) with the plan as shown and `video` `{url, start_seconds}` or `null`. The dashboard then plays the video as `workouts/ride-along-video` describes. The state contract is unchanged.
+Three things run in step. The ride clock counts the class. The workout engine finds the current
+segment and sends its level to the bike as the target resistance. The video follows the clock:
+it never leads it, and when it drifts more than 1.5 seconds it seeks back (`L2-088`). If the
+video cannot play, the plan and the clock carry on without it.
 
-The feature reuses four existing parts:
-- the L2-029 link and start-point rules (`core/video-link.ts`);
-- the preview figures of L2-059 (`core/ride-preview.ts`);
-- the replace-ride dialog of L2-052 (`dashboard/replace-ride-dialog`);
-- the setup drafts (`core/plan-draft.store.ts`), which `Change intervals in full setup` fills.
+In a group session, the clock and the video hold at 0:00 until the session's start, which the
+service sends as a server time (`L2-121` AC3). The output board of a group ride is the
+*ride with a group* feature; pausing, losing the bike, leaving and finishing are the
+*pause, leave or finish a class* feature.
 
 ## Description
 
-### Contracts
+**Frontend — `ride` application**
 
-None new. `CLASS_API.get(id)` belongs to `classes/browse-classes` and `classes/load-class-catalogue` (L2-078 criteria 3 and 4). `WORKOUT_API.start` validates the plan exactly as on setup (L2-010) and accepts the class's `class_id` (L2-081 criterion 7).
+- **`ClassRidePage`** (`wz-class-ride-page`, route `/classes/:id/ride`, `loadComponent`) —
+  routed page. It provides the route-scoped `ClassRideStore`, `WorkoutEngine`, `RideClock` and
+  `VideoClockSync`, renders the header, the video and the bike panel, and tears every one of
+  them down when the rider leaves.
+- **`LiveSessionStore`** — route-scoped live session state, owned by the multiplayer subsystem
+  and provided on this route only in group mode. It wraps `RIDE_HUB_CLIENT` for the session and
+  exposes the seat, whose `startsAt` is the session's start in server time, and the measured clock
+  offset (`offsetMs`).
+- **`ClassRideStore`** — signal store. It holds the class, the mode (solo or group), the
+  session start (from `LiveSessionStore`), the current segment view, the power and cadence readouts with their targets,
+  and the video state (`ready`, `unavailable`). It exposes the actions the header and the
+  stepper raise. It loads the class with `CLASSES_API.get(id)` (`GET /api/classes/{id}`, ADR
+  0014), bound with `HttpClient` on the class ride route, and starts the ride once it has it.
+  The route also binds `MONOTONIC_TIME` to `performance.now()` and reconnects a remembered bike
+  as Home does; a rider with none goes to Connect Bike.
+- In a production build the header has no "Finish" shortcut (`L2-087` AC3). The shortcut exists
+  only behind a development build flag replaced at compile time, so its code is not in the
+  production bundle.
 
-### Frontend (`frontend/projects/wattzup/src/app/`, with presentation components in `frontend/projects/components/`)
+**Frontend — `components` library**
 
-**Pure rules.**
-- **`class-draft.ts`** (`core/`, new, with `class-draft.spec.ts`):
-  - `ClassDraft` = `{ plan: WorkoutPlan, url: string, start: number }`. `draftOf(entry)` builds it from the class. The `url` is `https://www.youtube.com/watch?v=<video_id>` when the plan has a video, else empty. The `start` is the class's `start_seconds`, else 0 (L2-080 criteria 2 and 3).
-  - `levelRows(plan)` returns `[{name: 'Work', level, canLower, canRaise}, {name: 'Recover', …}]` for `hiit` and `intervals`, with each level the highest of its kind and `canLower` / `canRaise` false once the lowest (highest) level of the kind is at 1 (32). For `flat` it returns `[{name: 'Steady', …}]` (criteria 7 and 8).
-  - `shiftLevels(plan, row, dir)` moves every effort's level (`work_level` of the plan, or of each set), or every recover's (`rest_level`), or the flat `level`, by `dir`. Each level stays within 1 to 32. It returns the plan unchanged at the limit, so the button is disabled. Warm-up and cool-down levels never move (criterion 7).
-  - `isEdited(draft, entry)` is true when the plan, the link or the start point differs from `draftOf(entry)` (criterion 9).
-  - `structureLine(plan)` returns:
-    - `<rounds> × <work> / <recover>` for `hiit`;
-    - `<efforts> × <work> · <first recover> → <last non-zero recover> recover` for an `intervals` plan whose recovers differ;
-    - `<efforts> × <work> / <recover>` when they are all equal;
-    - `Level <n> throughout` for `flat`.
+The header's lockup is the small one (`size="sm"`), whose wordmark hides below 384 px.
 
-    Times use `formatDuration` (criterion 6).
-  - `cadenceLine(plan)` returns `<work> / <recover> rpm`, or `<n> rpm` for `flat`. A plan whose sets differ reads the first set's cadences (criterion 6).
-  - `stretchLine(plan)` returns `<m:ss> warm-up · <m:ss> cool-down`, with each part only when present (criterion 6).
-  - `toStartRequest(draft)` returns the plan with `video` `{url, start_seconds}` when `videoIdOf(url)` accepts the link, else `null` (criteria 4 and 10).
-  - `toSetupDrafts(draft)` returns a `PlanDraft` whose `mode` is the class's kind (`hiit`, `intervals` or `flat`), with the HIIT or flat fields filled from the plan. For `intervals` it also returns an `IntervalsDraft` with the class's warm-up, sets and cool-down. It also returns the `VideoDraft` `{on: true, url, start}`, or `{on: false}` without a link (criterion 12).
+- **`ClassHeader`** (`wz-class-header`) — "{class} · Group · 9 riders" or "{class} · Solo", the
+  clock (`role="timer"`, "7:00 / 30:00"), Leave (`aria-label="Leave class"`), Pause in solo, and
+  Full screen. Below md it hides the class name and the total; below 384 px it hides the
+  wordmark.
+- **`ClassVideo`** (`wz-class-video`) — the 16:9 frame with the class cover
+  (`https://i.ytimg.com/vi/<videoId>/hqdefault.jpg`, cropped by `.photo--yt`), the element the
+  player takes over, and, when the video cannot play, the warning under it: "The video can't
+  play. The bike will still follow the class." (`role="status"`, `L2-088` AC4), drawn by
+  **`InlineMessage`** (`wz-inline-message`, tone `warn`). From lg the frame fills the column above
+  the bike panel. It emits the player's element (`frame`) once drawn, for the page to hand to the
+  store; it finds it from its host rather than with `viewChild`, whose query runtime would be the
+  app's first and land in the initial bundle.
+- **`ClassBike`** (`wz-class-bike`) — bike panel; one row of four at md or wider. It holds
+  **`ClassSegment`** (kind, time left with `aria-label="Recover: 1:30 left"`, progress bar, plan
+  profile), two **`ClassStat`**s (Power "108 W" with "On target" or the delta; Cadence "73 rpm"
+  with "Aim 72") and **`ClassResist`** (stepper "6 / of 32", 48 px − and + buttons,
+  `aria-label` "Resistance 6 of 32"). The stepper shows the bike's reported resistance, or a
+  dash before any (`L2-026`); its buttons raise `ResistanceController.nudge` and are disabled
+  while it cannot control the bike. Power is "On target" within 10 % of the segment's target
+  power, otherwise the signed delta ("+12 W", "-47 W") styled over or under (`L2-059` AC2). Before
+  the bike reports power, Power reads a dash with the target ("Target 107 W"); the countdown
+  rounds the time left up, so it agrees with the clock after a late tick.
 
-**Presentation components (`frontend/projects/components/`).** These follow `docs/mocks/pages/class/*` and keep the mocks' BEM blocks.
-- **`LevelRow`** (`level-row/`, `wz-level-row`, new):
-  - `level-row__name` with a `swatch` (`work`, `rest` or `steady`);
-  - `Lower <name> resistance` and `Raise <name> resistance` icon buttons, each at least 44 × 44 px;
-  - `level-row__value` `<n> / 32`, with `aria-live="polite"` and `aria-label` `<Work|Recover|Steady> level <n> of 32` (criterion 15).
+**Frontend — `domain`, `api` and `video` libraries**
 
-  Inputs: `name`, `level`, `canLower`, `canRaise`. Output: `step` (`-1` or `1`).
-- The plan card's strip is the profile `previewOf` draws for setup (`svg.profile`), labelled `Resistance profile: <structure>, peak level <n>`, with the legend `Work` / `Recover`.
+- **`RideClock`** (`domain/engine`) — elapsed time from `performance.now()` (`L2-133`). It can
+  start at once or at a server time corrected by `ServerClock`.
+- **`WorkoutEngine`** (`domain/engine`) — follows a `Plan` against the `RideClock` on each of
+  `RideTicker`'s ticks. Its `state` is the current `PlanState` from `planStateAt` (the segment and
+  its index, time left, segment progress and the target power), and on each segment boundary it
+  asks `ResistanceController` to send the segment level within 500 ms (`L2-027`). A paused clock
+  changes no segment and sends nothing. Slice 5.1 builds it with `RideClock` and `RideTicker`
+  (*keep the ride clock true*); `startAt` for a group start comes with the group class.
+- **`PowerModel`** (`domain/engine`) — `target(cadenceAim, level)` and
+  `onTarget(power, target)` (within 10 %), shared with the race HUD (`L2-059` AC2).
+- **`ResistanceController`** (`domain/engine`) — owned by the bike subsystem's *control
+  resistance* feature. It sends target resistance through `BIKE_CONNECTION` and handles the
+  manual stepper (`L2-028`).
+- **`VideoClockSync`** (`domain/engine`) — pure rule. `check(videoTime, elapsed, offset)` compares
+  the player's time with `offset + elapsed` and returns the time to seek to when they are more than
+  1.5 s apart, otherwise `null` (`L2-088` AC2). The store asks it on each tick while the video
+  plays; mirroring pause comes with Pause (5.4).
+- **`VideoPlayer`** / `VIDEO_PLAYER_FACTORY` (`api`) — the contract: `load(host, videoId,
+  {startSeconds, controls, title})`, a `state` signal (`loading`, `playing`, `paused`, `error`),
+  `currentTime()`, `play()`, `pause()`, `seekTo(seconds)` and `destroy()`. The token holds a
+  function resolving a new player; the class ride route binds it to a dynamic import of the
+  `video` library, so the player's code loads only when a ride starts.
+- **`YouTubeVideoPlayer`** (`video` library, depends on `api` only) — loads the YouTube IFrame
+  API (`https://www.youtube.com/iframe_api`) once and embeds the video from
+  `https://www.youtube-nocookie.com` (`L2-088` AC5), without controls and out of the tab order
+  in the class ride. A blocked script, a player error or a removed video turn its state to
+  `error`; the store then shows the notice and the clock and the plan carry on (AC4). Unit
+  tests give the store a fake player; Playwright answers the IFrame API's script with a fake
+  `YT.Player`, and the covers with a local picture, so no request leaves localhost (ADR 0012).
+- **`BikeConnection`** / `BIKE_CONNECTION` — live telemetry (power, cadence, resistance) and the
+  `ble` state, owned by the bike subsystem.
 
-**Page.**
-- **`ClassPage`** (`dashboard/class-page/`, new, route `classes/:id`; title `<class title> · Wattzup`):
-  - **Loading.** On entry it calls `CLASS_API.get(id)` and shows a skeleton until the class arrives (criterion 13).
-  - **Not found.** `'not-found'` shows `ClassNotFound` (`dashboard/class-not-found/`, new), the error page block `We can't find that class` / `It isn't in the class library. Pick another, or build your own ride.`, with `All classes` and `Build your own ride` (criterion 13).
-  - **Header.** `All classes` (link to `/classes`), the bike's name, the chips `<channel>`, `<shelf title>` and `<focus>`, the `h1` title and the description, all rendered as text (criterion 1).
-  - **Video.**
-    - The `video-frame` preview goes through `YOUTUBE_PLAYER` (`workouts/ride-along-video`), cued at `start`. Its caption is `<channel> · <title>` / `Cued at <m:ss.s>, the ride's 0:00` (criterion 2).
-    - Without a valid link, the poster reads `Paste this ride's YouTube link below to play it in sync on the dashboard.` (criterion 3).
-    - The `YouTube link` field and its error follow L2-029 criteria 18 and 19 through `videoIdOf` (criterion 4).
-    - `Ride starts at` uses `stepStart` and `formatStart` (`core/video-link.ts`): − and + are `Half a second earlier` / `Half a second later`, with the hint below. The preview cues to each new point (criterion 5).
-  - **The plan card.**
-    - It shows the total time, the profile strip, the stretch line, `Structure`, `Cadence` and `Expected avg power` (`~<w> W`). The figures come from `previewOf` (`core/ride-preview.ts`) and the helpers above, and update on every change (criteria 6 and 7).
-    - `Resistance` shows one `wz-level-row` per `levelRows` entry (criteria 7 and 8).
-    - `Reset to class` appears while `isEdited`, and puts back `draftOf(entry)` (criterion 9).
-  - **Start ride.**
-    - It reads `LiveStateService.state().workout`. With an active workout, it opens the replace-ride dialog (L2-052) first.
-    - With none, or once the dialog confirms, it calls `WORKOUT_API.start(toStartRequest(draft))`. The button reads `Starting…` and is disabled while the call runs.
-    - Success navigates to `/` (criterion 10).
-    - A failure shows the `alert` `Couldn't start the ride` / `Wattzup couldn't start the plan. Your settings are kept — try again.` above the start button, which then reads `Try again` (`class/error`), and keeps every value (criterion 11).
-  - **Full setup.** `Change intervals in full setup` is a link to `/setup`; a plain click calls `toSetupDrafts(draft)`. It saves the drafts through `PlanDraftStore`: `save`, `saveIntervals` for an `intervals` class, and `saveVideo`. These replace what was there, and then it navigates to `/setup`. Setup restores its mode from `PlanDraft.mode` as it does on any load, so it opens in the class's mode with the class's plan and video (criterion 12).
-- **Layout.** Under 1024 px the preview keeps 16:9 at full width above the plan card. Under 576 px nothing scrolls sideways. Every button has a visible focus ring (criterion 15).
+**Slices.** Slice 5.1 built the engine and the clock. Slice 5.2 builds the solo route, the
+store, the header's lockup, name and clock, and the bike panel, proved by Playwright on the fake
+Bluetooth with a fake clock; the backend's `GET /api/classes/{id}` comes with the catalogue API
+(6.1). Slice 5.3 adds the `video` library, `VideoClockSync`, the video with its notice and the
+class's `video` (`VideoDto { videoId, syncOffsetSeconds }`, as the catalogue serves it). Pause,
+Leave, the wake lock and the leave guard are 5.4; Full screen
+is journey 24; the group header and board come with the group class: slice 14.4 reads "· Group"
+in the header, drops Pause from a group ride and holds it at 0:00 under "Starts in m:ss" until the
+session's start; the board is 14.5. A class that cannot load
+is a mock gap, for the class start (6.3).
 
-### Screen states
-
-| Mock | State |
-|---|---|
-| `pages/class/default` | *30 Minute HIIT Cardio*: the GCN preview cued at 0:03.0, 30:00, `8 × 0:30 · 3:00 → 1:30 recover`, `98 / 72 rpm`, `~197 W`, warm-up 18, Work 24 and Recover 10 |
-| `pages/class/edited` | Work raised to 26 and Recover to 12 (`~212 W`), with `Reset to class` shown |
-| `pages/class/no-link` | *20 Minute Power Intervals* with no link: the poster prompt and an empty `YouTube link` field |
-| `pages/class/invalid-link` | A Vimeo link: the field error, no preview; Start ride still enabled |
-| `pages/class/flat` | *60 Min Dolomites Endurance*: `Level 12 throughout`, `85 rpm` and one `Steady` row |
-| `pages/class/loading` | The skeleton |
-| `pages/class/submitting` | `Starting…`, disabled |
-| `pages/class/error` | `Couldn't start the ride`, with `Try again` and every value kept |
-| `pages/class/not-found` | `We can't find that class` |
-| `pages/ride/class-workout` | The dashboard after Start ride: the video playing in sync at 11:42, at the class's levels |
-
-### Acceptance tests
-
-The contracts are covered by `classes/load-class-catalogue` (`CLASS_API.get`) and `workouts/start-and-stop-workout` (`WORKOUT_API.start`). This feature adds no contract test.
-
-Playwright (`frontend/e2e/`, Chromium only):
-- **Fixtures.** The spec serves a test `classes.json` beside `index.html`, drives the bike through the fake `navigator.bluetooth`, and serves YouTube through `FakeYouTube` (`workouts/ride-along-video`).
-- **Page object.** `e2e/pages/class.page.ts`.
-- **Spec `e2e/class.spec.ts`:**
-  - `shows the class header, chips and description, with All classes back to the library` (L2-080 AC1)
-  - `previews the video cued at the start point with its caption and link` (L2-080 AC2)
-  - `shows the paste prompt and an empty link for a class without a video` (L2-080 AC3)
-  - `names a link that is not YouTube and still starts without a video` (L2-080 AC4)
-  - `steps the start point by half a second and not below 0:00.0` (L2-080 AC5)
-  - `shows the plan card's total, structure, cadence and expected power` (L2-080 AC6)
-  - `raises every effort with Work and recomputes the plan card` (L2-080 AC7)
-  - `shows one Steady row for a flat class` (L2-080 AC8)
-  - `shows Reset to class after a change and puts every value back` (L2-080 AC9)
-  - `starts the ride with the shown plan and video and opens the dashboard` (L2-080 AC10)
-  - `asks to replace a ride in progress before starting` (L2-080 AC10, L2-052)
-  - `keeps every value and offers Try again when the start fails` (L2-080 AC11)
-  - `opens full setup in the class's mode with its plan and video` (L2-080 AC12)
-  - `shows We can't find that class for an unknown id` (L2-080 AC13)
-
-Unit tests: `class-draft.spec.ts` covers each row of `structureLine` (hiit, intervals with differing and equal recovers, flat); `cadenceLine`; `shiftLevels` at 1 and 32 and on a plan whose sets differ; `isEdited` for each kind of change; `toStartRequest` with a valid, an invalid and an empty link; `toSetupDrafts` for each kind. The responsive criterion (L2-080 AC15) is covered by the responsive sweep, which runs only when a person asks.
-
-### Open questions
-
-- **Sets with different levels.** L2-080 criterion 7 shows the highest effort level and moves every effort by 1, which keeps the plan's shape. A class whose sets differ shows its peak, not each set. Editing sets one by one belongs to full setup.
-- **Cadence of mixed sets.** `cadenceLine` reads the first set when sets differ. <TO SUPPLY> if the spec should show a range instead.
-- **Replaced drafts.** Opening full setup from a class replaces the rider's saved setup drafts for that mode, as L2-080 criterion 12 states. No confirmation is asked.
+**Backend.** A solo class ride makes no backend request until it loads its class, and none
+again until it ends. A group ride learns its start from the seat `JoinClassSession` returns, so it
+needs no start message: the schedule is fixed, and every client converts the same server time
+through its own measured offset.
 
 ## Requirements
 
 | L2 ID | Refines (L1) | Requirement |
 |-------|--------------|-------------|
-| `L2-080` | `L1-014` | Class page. `/classes/:id` shows one class (L2-078) and starts a ride with its plan and video. Changes made here apply to this ride only; the catalogue is never written. |
-| `L2-078` | `L1-005` | Class contract. Criteria 3 and 4: `CLASS_API.get(id)` answers the class, or not found for an id not in the catalogue. |
-| `L2-010` | `L1-004` | Workout plan definition and validation. The class page starts the plan and `video` `{url, start_seconds}` through `WORKOUT_API.start`, which validates them as on setup. |
-| `L2-029` | `L1-007` | Ride setup screen. Criteria 18 and 19: the link preview, the start point and the invalid-link message, reused on the class page; criterion 12 of L2-080 opens setup prefilled. |
-| `L2-052` | `L1-007` | Replace-ride dialog. Given an active workout when Start ride is pressed, the dialog opens first. |
-| `L2-059` | `L1-007` | Ride preview on setup. The class page's plan card computes total time, structure, time under load and expected power as the setup preview does. |
-| `L2-076` | `L1-007` | Video ride-along. A ride started from a class plays its video on the dashboard as specified (mock `ride/class-workout`). |
+| `L2-087` | `L1-015` | The class ride at `/classes/:id/ride` in a group shall show the header "30 Minute HIIT Cardio · Group · 9 riders" with the clock (`role="timer"`, "7:00 / 30:00"), Leave (`aria-label="Leave class"`) and Full screen; in solo it shall read "· Solo" and add Pause. On a phone the class name shall be hidden below md, the total "/ 30:00" hidden, and the wordmark hidden below 384 px. A production build shall have no "Finish" shortcut. In a group session that has not started, the clock and video shall hold at 0:00 with the time left to the start and both shall begin at the session's start. |
+| `L2-088` | `L1-015` | At 7:00 of a running class ride with a 0:12 offset, the video shall play at 7:12 without player controls. When the video drifts more than 1.5 seconds from the ride clock plus the offset, it shall seek back into sync. When a solo ride pauses, the video shall pause, and Resume shall play it from the same place. When the video cannot load or is blocked, the plan and clock shall carry on and a notice shall say the video is unavailable. The YouTube player shall use the privacy-enhanced domain (`youtube-nocookie.com`). |
+| `L2-089` | `L1-015` | The segment card shall show the kind ("Recover"), the time left ("1:30", `aria-label="Recover: 1:30 left"`), a progress bar and the plan profile. Power shall read "108 W" with "On target" or the delta (`L2-059` AC2). Cadence shall read "73 rpm" with "Aim 72". The resistance stepper shall read "6 / of 32" with 48 px − and + buttons (`L2-028`). At md or wider the bike panel shall be one row of four. |
 
 ## Diagrams
 
 ### System context
 
-The rider opens a class in Wattzup and starts the ride, and Wattzup drives the bike. The browser loads the video preview from YouTube's player.
+The rider rides a class in Telo Ride. Telo Ride sets the smart bike's resistance and plays the
+class video from YouTube.
 
 ![C4 system context for riding a class](diagrams/c4-context.png)
 
 ### Containers
 
-Wattzup Web reads the class through `CLASS_API` and starts the ride through `WORKOUT_API`, both in the page. The YouTube player runs in the browser beside Wattzup Web.
+The Ride app talks to the bike over Web Bluetooth and embeds the YouTube player. In a group it
+keeps the ride hub connection that the join opened.
 
 ![C4 container view for riding a class](diagrams/c4-container.png)
 
 ### Components
 
-`ClassPage` holds the class draft and applies the rules in `class-draft.ts`. It previews through `YOUTUBE_PLAYER`, and starts through `WORKOUT_API`, with `ReplaceRideDialog` first when a ride is running. `Change intervals in full setup` writes the setup drafts through `PlanDraftStore`.
+`ClassRidePage` owns the route-scoped engine parts. `WorkoutEngine` and `VideoClockSync` both
+read `RideClock`; the engine drives `ResistanceController`, and the sync drives the player.
 
 ![C4 component view for riding a class](diagrams/c4-component.png)
 
 ### Class structure
 
-`ClassDraft` is built from a `ClassEntry` and changed only through the pure functions of `class-draft.ts`. `ClassPage` renders `LevelRow` per level row, and turns the draft into a start request or into setup drafts.
+`ClassRideStore` composes `WorkoutEngine`, `RideClock` and `VideoClockSync`. The engine walks a
+`Plan` of `Segment`s and uses `PowerModel` for target power.
 
 ![Class diagram for riding a class](diagrams/class-structure.png)
 
-### Behaviour — open a class
+### Behaviour — start a solo class ride
 
-The page asks for the class by id and shows a skeleton. A class gives the header, the preview and the plan card. Not found gives `We can't find that class` (L2-080 criteria 1 to 3 and 13).
+The clock starts at once, the engine sends the first segment's level, and the video plays from
+the sync offset (`L2-087` AC1, `L2-088` AC1).
 
-![Sequence diagram for opening a class](diagrams/sequence-open-class.png)
+![Sequence diagram for starting a solo class ride](diagrams/sequence-start-a-solo-class-ride.png)
 
-### Behaviour — adjust the levels, then reset
+### Behaviour — wait for the group start
 
-A press of `Raise work resistance` moves every effort's level by 1 and recomputes the plan card. `Reset to class` appears while anything differs from the class and puts the class back (L2-080 criteria 5, 7 and 9).
+The clock and video hold at 0:00 with the time left; both begin at the server start time,
+corrected for the device's clock offset (`L2-087` AC4). The seat carries the start
+(`SeatAssignment.startsAt`); the store converts it to the monotonic clock once (`startsAt` less
+`offsetMs`) and counts down on whole seconds before it, so "Starts in" flips as the start draws a
+second closer. The video loads parked at its sync offset (`autoplay` off) and plays from the
+offset plus the time ridden when the clock starts. A rider who arrives after the start (a reload,
+a rejoin) starts the `RideClock` from the session's start, so the clock reads the session's time.
+Without a seat or an offset (the hub cannot be reached) the ride starts at once with the bike, as
+a ride alone does (`L2-126`); a refused join leaves the ride.
 
-![Sequence diagram for adjusting and resetting a class](diagrams/sequence-adjust-and-reset.png)
+![Sequence diagram for waiting for the group start](diagrams/sequence-wait-for-the-group-start.png)
 
-### Behaviour — start the ride
+### Behaviour — keep the video in sync
 
-With a ride in progress, the replace-ride dialog asks first. The page starts the plan as shown with the video, and opens the dashboard on success. A failure keeps every value and offers `Try again` (L2-080 criteria 10 and 11, L2-052).
+On each tick `VideoClockSync` measures drift and seeks above 1.5 s. A player error turns the
+video off and leaves the ride running (`L2-088` AC2, AC4).
 
-![Sequence diagram for starting a class ride](diagrams/sequence-start-class-ride.png)
+![Sequence diagram for keeping the video in sync](diagrams/sequence-keep-the-video-in-sync.png)
 
-### Behaviour — open in full setup
+### Behaviour — follow the segment targets
 
-`Change intervals in full setup` writes the class draft into the matching setup draft and the video draft, then opens `/setup` in that mode (L2-080 criterion 12).
+Each second the engine updates the segment card and the targets; at a boundary it sends the next
+level (`L2-089`, `L2-027`).
 
-![Sequence diagram for opening a class in full setup](diagrams/sequence-open-in-full-setup.png)
+![Sequence diagram for following the segment targets](diagrams/sequence-follow-the-segment-targets.png)

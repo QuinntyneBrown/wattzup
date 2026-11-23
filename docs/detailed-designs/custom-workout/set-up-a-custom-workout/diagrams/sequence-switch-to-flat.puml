@@ -1,0 +1,38 @@
+@startuml
+title UML sequence behaviour — Switch to flat resistance
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "TrainingModes" as modes
+  participant "CustomWorkoutStore" as store
+  participant "CustomWorkoutPage" as page
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "CustomWorkoutLimits" as limits
+end box
+rider -> modes : Choose "Flat resistance"
+modes -> store : chooseMode(Flat)
+store --> page : Plans and ladder removed; "12 / 32", "30 min", "85 rpm" L2-097 AC1
+rider -> page : Press "More" on Duration
+page -> store : setFlatDuration(+5)
+store -> limits : flatDuration(+5 min, 30)
+limits --> store : 35 min (bounded 5–120) L2-097 AC2
+rider -> page : Press "Less" on Cadence goal
+page -> store : setCadenceGoal(-5)
+store -> limits : cadenceGoal(-5 rpm, 85)
+limits --> store : 80 rpm (bounded 40–120)
+store --> page : Flat settings and preview
+@enduml

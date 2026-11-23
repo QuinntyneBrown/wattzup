@@ -1,0 +1,25 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Meet performance budgets
+
+Container_Boundary(app, "Ride app") {
+  Component(routes, "app.routes.ts", "Lazy routes · ride", "loadComponent for every route")
+  Component(race, "RacePage", "Angular page · ride", "Imports the world library dynamically")
+  Component(world, "World library", "Three.js, WebGPU or WebGL 2", "Draws the race world")
+  Component(budget, "FrameBudget", "Class · world, main's", "Two slow 2-second windows drop a level")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(ticker, "StandingsTicker", "Hosted service · Telo.Ride.Api", "Once-a-second tick")
+  Component(handler, "PublishStandingsCommandHandler", "MediatR handler · Telo.Ride.Application", "Ranks one session")
+  Component(hub, "RideHub", "SignalR hub · Telo.Ride.Api", "Session groups")
+  Component(metrics, "TeloRideMetrics", "OpenTelemetry · Telo.Ride.Infrastructure", "Meter Telo.Ride")
+}
+Rel(routes, race, "Loads lazily")
+Rel(race, world, "import()")
+Rel(world, budget, "Samples each frame's time")
+Rel(budget, world, "Drops a level")
+Rel(ticker, handler, "Sends PublishStandingsCommand")
+Rel(handler, hub, "Sends StandingsUpdated to group")
+Rel(ticker, metrics, "Records delivery time")
+@enduml

@@ -1,0 +1,56 @@
+@startuml
+title UML sequence behaviour — Load the world, building and warming up, as built in slice 16.2
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ClassRidePage" as page
+  participant "WorldLoadStore" as store
+  participant "startStepping" as ladder
+end box
+box "Frontend — Ride app (world library, lazy chunk)" #E0F2FE
+  participant "WorldRenderer\n(main's, with the batched build)" as renderer
+  participant "three\nWebGPURenderer" as three
+end box
+store -> store : the download is done (slice 16.1); the slow timer has run since World loading opened
+store -> ladder : startStepping(startTier(), attempt)
+ladder -> renderer : start(unseen canvas, world, nextFrame, segments, { tier, progress })
+renderer -> renderer : build the scene at the tier (main's buildScene, applyTier)
+renderer -> three : compileAsync(scene, camera, onProgress) through the scene pass's target and MRT
+loop three compiles in batches, yielding to each frame
+  three --> renderer : loaded of total
+  renderer --> store : { step: 'shaders', built, total }
+  store -> page : "41 of 64 programs for WebGPU" (L2-152 AC4)
+end
+renderer --> store : { step: 'warm-up', tier }
+renderer -> renderer : main's warm-up and rehearsal, each frame awaited through nextFrame
+renderer --> store : { step: 'warmed', fps, tier }
+store -> page : "Holding 60 fps at Low" (L2-152 AC5)
+alt A program fails to build at the tier
+  renderer --> ladder : start rejects
+  ladder -> renderer : dispose; a new renderer at the tier below (L2-156 AC3)
+  ladder --> store : below Low: the panorama
+else Started
+  ladder --> store : started at the tier
+  store -> page : "… is ready", Start riding takes focus
+end
+group 20 seconds without the world being ready (L2-155 AC1)
+  store -> page : "This is taking longer than usual.", "· 24 s" on the shader step
+  actor -> page : Start at Low quality (AC3)
+  page -> store : startAtLow(): the warning goes; a build above Low starts again at Low
+  actor -> page : Ride with the panorama (AC4)
+  page -> store : ride(): the build stops, the renderer is disposed, the class ride opens
+end
+@enduml

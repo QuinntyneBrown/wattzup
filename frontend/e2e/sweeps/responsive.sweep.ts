@@ -1,65 +1,19 @@
-// Responsive sweep (L2-040). Runs only when a person asks: `npm run e2e:sweeps`.
-import type { Locator, Page } from '@playwright/test';
-import { expect, test } from '../fixtures/wz-test';
-import { RidePage } from '../pages/ride.page';
-import { SetupPage } from '../pages/setup.page';
+// Responsive sweep
+// Traces to: L2-139 AC1
+// Description: every screen at each breakpoint from 320 to 2560 px (320, 640, 768, 1024, 1280 and 2560) does not
+// scroll sideways. Run only when a person asks, with `npm run sweep:responsive`, never by verify, CI or an agent; the
+// behaviour spec e2e/fit-every-width.spec.ts holds the narrowest and the widest.
+import { screens } from '../fixtures/screens';
+import { expect, test } from '../fixtures/test';
+import { AppDocument } from '../pages/app-document';
 
-const box = async (l: Locator) => {
-  const b = await l.boundingBox();
-  if (!b) throw new Error('not visible');
-  return b;
-};
+for (const [screen, open] of Object.entries(screens)) {
+  for (const width of [320, 640, 768, 1024, 1280, 2560]) {
+    test(`${screen} at ${width} px`, async ({ page, bluetooth, api }) => {
+      await page.setViewportSize({ width, height: width < 768 ? 800 : 1000 });
+      await expect(await open({ page, bluetooth, api })).toBeAttached();
 
-/** The ride dashboard with the fake bike connected. */
-async function connected(page: Page): Promise<RidePage> {
-  const ride = new RidePage(page);
-  await ride.open();
-  await ride.connect();
-  await expect(ride.statusState).toHaveText('Connected');
-  return ride;
+      expect(await new AppDocument(page).scrollsSideways()).toBe(false);
+    });
+  }
 }
-
-test('320 px: one column, the panel below, no horizontal scroll', async ({ page }) => {
-  await page.setViewportSize({ width: 320, height: 800 });
-  const ride = await connected(page);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
-  expect((await box(ride.aside)).y).toBeGreaterThan((await box(ride.main)).y);
-});
-
-test('40–48 rem: readouts two across', async ({ page }) => {
-  await page.setViewportSize({ width: 700, height: 900 });
-  const ride = await connected(page);
-  // Two across: cadence sits to the right of power, bottom-aligned with it as in the mocks.
-  const power = await box(ride.power);
-  const cadence = await box(page.locator('.readout--cadence'));
-  expect(cadence.x).toBeGreaterThanOrEqual(power.x + power.width);
-  expect(Math.abs(cadence.y + cadence.height - (power.y + power.height))).toBeLessThan(8);
-});
-
-test('48–64 rem: the five metrics in one row', async ({ page }) => {
-  await page.setViewportSize({ width: 900, height: 900 });
-  const ride = await connected(page);
-  const ys = await ride.metrics
-    .locator('dt')
-    .evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().y)));
-  expect(new Set(ys).size).toBe(1);
-});
-
-test('64 rem: the 340 px panel and the 420 px preview sit beside the content', async ({ page }) => {
-  await page.setViewportSize({ width: 1024, height: 800 });
-  const ride = await connected(page);
-  expect(Math.round((await box(ride.aside)).width)).toBe(340);
-  const setup = new SetupPage(page);
-  await setup.open();
-  expect(Math.round((await box(setup.preview)).width)).toBe(420);
-});
-
-test('rotating re-sizes the trace canvas without a reload', async ({ page }) => {
-  await page.setViewportSize({ width: 844, height: 390 });
-  const ride = await connected(page);
-  const before = await ride.traceCanvas.evaluate((c: HTMLCanvasElement) => c.width);
-  await page.setViewportSize({ width: 390, height: 844 });
-  await expect
-    .poll(() => ride.traceCanvas.evaluate((c: HTMLCanvasElement) => c.width))
-    .not.toBe(before);
-});

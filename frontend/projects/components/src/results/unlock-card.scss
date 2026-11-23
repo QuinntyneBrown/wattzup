@@ -1,0 +1,78 @@
+// Block unlock-card (docs/design-system/assets/components.css, Results): the map a ride opened, with its entrance.
+:host {
+  display: block;
+}
+
+.unlock-card {
+  position: relative;
+  margin-bottom: var(--space-6);
+  overflow: hidden;
+  border-radius: var(--radius-2xl);
+  border: var(--border-width-hairline) solid color-mix(in srgb, var(--color-gold) 50%, transparent);
+  background: color-mix(in srgb, var(--color-gold) 10%, transparent);
+  // The one unlock moment (L2-076 AC2): in and up from 0.96 over 250 ms after 200 ms.
+  animation: unlock-card-in var(--duration-unlock) var(--ease-enter) var(--duration-base) both;
+}
+
+.unlock-card__photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 21 / 9;
+  object-fit: cover;
+  // Then the photo from grey at half brightness to full colour over 250 ms after 350 ms.
+  animation: unlock-card-photo-in var(--duration-unlock) var(--ease-enter)
+    calc(var(--duration-base) + var(--duration-fast)) both;
+}
+
+// Reduced motion keeps the card's fade alone, over the one duration it does not zero (L2-142 AC2).
+@media (prefers-reduced-motion: reduce) {
+  .unlock-card {
+    animation: unlock-card-fade var(--duration-fade) var(--ease-enter) both;
+  }
+
+  .unlock-card__photo {
+    animation: none;
+  }
+}
+
+.unlock-card__body {
+  padding: var(--space-4);
+}
+
+.unlock-card__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-gold-fg);
+}
+
+.unlock-card__place {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.unlock-card__action {
+  margin-top: var(--space-4);
+}
+
+@keyframes unlock-card-in {
+  from {
+    opacity: 0;
+    scale: 0.96;
+  }
+}
+
+@keyframes unlock-card-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes unlock-card-photo-in {
+  from {
+    filter: grayscale(1) brightness(0.5);
+  }
+}

@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Button group — Telo Ride design system</title>
+<meta name="description" content="Segmented controls pick one option from a short set (class length, pack strength, feedback kind); toolbars group the ride controls.">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/components.css">
+<link rel="stylesheet" href="../assets/ds.css">
+<style>
+  .ds-pairs-stack { display: flex; flex-direction: column; gap: var(--space-2); }
+  .ds-matrix td { min-width: var(--space-28); }
+  .ds-demo-col { display: flex; flex-direction: column; gap: var(--space-4); width: 100%; max-width: calc(var(--space-48) * 2); }
+  .ds-demo-wide { width: 100%; max-width: calc(var(--space-36) * 4); }
+  .ds-demo-panel { background: var(--color-panel); border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-2xl); padding: var(--space-5); width: 100%; }
+  .ds-menu-stage { min-height: calc(var(--space-44) * 2); align-items: flex-start; }
+</style>
+</head>
+<body id="top">
+<a class="ds-skip" href="#main">Skip to content</a>
+<div class="ds-shell">
+  <nav class="ds-nav" aria-label="Design system">
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <details open><summary>Foundations</summary><ul>
+      <li><a href="../foundations/color.html">Color</a></li>
+      <li><a href="../foundations/typography.html">Typography</a></li>
+      <li><a href="../foundations/spacing.html">Spacing</a></li>
+      <li><a href="../foundations/layout.html">Layout</a></li>
+      <li><a href="../foundations/elevation.html">Elevation</a></li>
+      <li><a href="../foundations/shape.html">Shape</a></li>
+      <li><a href="../foundations/motion.html">Motion</a></li>
+      <li><a href="../foundations/iconography.html">Iconography</a></li>
+      <li><a href="../foundations/theming.html">Theming</a></li>
+      <li><a href="../foundations/responsive.html">Responsive</a></li>
+      <li><a href="../foundations/accessibility.html">Accessibility</a></li>
+      <li><a href="../foundations/content.html">Content</a></li>
+    </ul></details>
+    <details open><summary>Actions</summary><ul>
+      <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
+      <li><a href="../components/link.html">Link</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
+      <li><a href="../components/form-field.html">Form field</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
+      <li><a href="../components/slider.html">Slider</a></li>
+      <li><a href="../components/number-stepper.html">Number stepper</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
+      <li><a href="../components/skip-link.html">Skip link</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
+      <li><a href="../components/dialog.html">Dialog</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
+      <li><a href="../components/tooltip.html">Tooltip</a></li>
+      <li><a href="../components/divider.html">Divider</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
+      <li><a href="../components/description-list.html">Description list</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
+      <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
+      <li><a href="../components/toast.html">Toast</a></li>
+      <li><a href="../components/alert.html">Alert and banner</a></li>
+      <li><a href="../components/inline-message.html">Inline message</a></li>
+      <li><a href="../components/progress-bar.html">Progress bar</a></li>
+      <li><a href="../components/spinner.html">Spinner</a></li>
+      <li><a href="../components/skeleton.html">Skeleton</a></li>
+      <li><a href="../components/empty-state.html">Empty state</a></li>
+      <li><a href="../components/error-page.html">Error page</a></li>
+    </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
+    <details open><summary>Patterns</summary><ul>
+      <li><a href="../patterns/forms.html">Forms</a></li>
+      <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
+      <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
+      <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
+      <li><a href="../patterns/notifications.html">Notifications</a></li>
+      <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
+    </ul></details>
+  </nav>
+  <main id="main" class="ds-main">
+    <header class="ds-header">
+      <p class="ds-kicker">Component · Actions</p>
+      <h1>Button group</h1>
+      <p class="ds-lead">A button group joins related buttons into one control. The segmented control picks one of two to four options on a shared track; the toolbar keeps the ride controls together and lets arrow keys move between them.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
+    </header>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+      <p>Use a <b>segmented control</b> (<code>.segmented</code>) when the rider picks exactly one of two to four short, mutually exclusive options and the choice applies at once: class length on Class Library (All, 20 min, 30 min, 60 min), pack strength on Race Setup (easy, medium, hard), feedback kind (Bug, Improvement, Kudos). Use a <b>toolbar</b> (<code>.toolbar</code>) for a row of separate actions that belong together, like the ride controls (Pause, End, Full screen).</p>
+      <ul>
+        <li>More than four options, or options with a sentence of explanation: use a <a href="radio-group.html">radio group</a> of cards ("Race against").</li>
+        <li>Options that toggle independently: use <a href="chip.html">filter chips</a> (Custom Setup's plan presets).</li>
+        <li>Options that show different content in place: use <a href="tabs.html">tabs</a> (the ride view's Video / Power vs. plan).</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+      <div class="ds-anatomy">
+        <figure class="ds-anatomy__figure">
+          <div class="segmented segmented--raised segmented--strong" role="group" aria-label="Class length">
+            <button class="segmented__option" type="button" aria-pressed="true">All</button>
+            <button class="segmented__option" type="button" aria-pressed="false">20 min</button>
+            <button class="segmented__option" type="button" aria-pressed="false">30 min</button>
+            <button class="segmented__option" type="button" aria-pressed="false">60 min</button>
+          </div>
+          <span class="ds-callout" style="left: 14%; top: 18%;" aria-hidden="true">1</span>
+          <span class="ds-callout" style="left: 36%; top: 18%;" aria-hidden="true">2</span>
+          <span class="ds-callout" style="left: 86%; top: 72%;" aria-hidden="true">3</span>
+        </figure>
+        <ol class="ds-anatomy__list">
+          <li><div><b>Selected option</b><small>Raised fill (or bone with <code>--strong</code>), fg label; <code>aria-pressed="true"</code> or <code>aria-checked="true"</code>.</small></div></li>
+          <li><div><b>Option</b><small>36px tall (40px with <code>--md</code>), 12px padding, <code>--radius-md</code>, Inter Tight 14px medium, muted label.</small></div></li>
+          <li><div><b>Track</b><small><code>--color-panel</code> on the page or <code>--color-raised</code> on a panel, 4px padding and gap, <code>--radius-lg</code>.</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+      <h3>Segmented: filter (aria-pressed)</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--canvas">
+          <div class="segmented" role="group" aria-label="Class length">
+            <button class="segmented__option" type="button" aria-pressed="true">All</button>
+            <button class="segmented__option" type="button" aria-pressed="false">20 min</button>
+            <button class="segmented__option" type="button" aria-pressed="false">30 min</button>
+            <button class="segmented__option" type="button" aria-pressed="false">60 min</button>
+          </div>
+          <div class="segmented segmented--strong" role="group" aria-label="Class length, strong">
+            <button class="segmented__option" type="button" aria-pressed="true">All</button>
+            <button class="segmented__option" type="button" aria-pressed="false">20 min</button>
+            <button class="segmented__option" type="button" aria-pressed="false">30 min</button>
+            <button class="segmented__option" type="button" aria-pressed="false">60 min</button>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>On the page (ink): panel track. Default selected is raised; <code>--strong</code> paints it bone, as Class Library's tier filter does.</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="segmented segmented--strong" role="group" aria-label="Class length"&gt;
+  &lt;button class="segmented__option" type="button" aria-pressed="true"&gt;All&lt;/button&gt;
+  &lt;button class="segmented__option" type="button" aria-pressed="false"&gt;20 min&lt;/button&gt;
+  …
+&lt;/div&gt;</code></pre></details>
+      </div>
+      <h3>Segmented: single choice (radiogroup), block and on a panel</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <div class="ds-demo-col">
+            <p class="pack__title" id="pack-title">Pack strength</p>
+            <div class="segmented segmented--raised segmented--strong segmented--block segmented--md" role="radiogroup" aria-labelledby="pack-title">
+              <button class="segmented__option" type="button" role="radio" aria-checked="false" tabindex="-1">Easy</button>
+              <button class="segmented__option" type="button" role="radio" aria-checked="true" tabindex="0">Medium</button>
+              <button class="segmented__option" type="button" role="radio" aria-checked="false" tabindex="-1">Hard</button>
+            </div>
+            <p class="pack__note" style="margin-top: 0;">Around 190 W. A top 3 here earns the second star.</p>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Race Setup's pack strength: <code>--raised --strong --block --md</code>, one tab stop, arrows move the choice.</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="segmented segmented--raised segmented--strong segmented--block segmented--md" role="radiogroup" aria-labelledby="pack-title"&gt;
+  &lt;button class="segmented__option" type="button" role="radio" aria-checked="false" tabindex="-1"&gt;Easy&lt;/button&gt;
+  &lt;button class="segmented__option" type="button" role="radio" aria-checked="true" tabindex="0"&gt;Medium&lt;/button&gt;
+  &lt;button class="segmented__option" type="button" role="radio" aria-checked="false" tabindex="-1"&gt;Hard&lt;/button&gt;
+&lt;/div&gt;</code></pre></details>
+      </div>
+      <h3>Segmented: stacked icon and label</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas">
+          <div class="ds-demo-col">
+            <div class="segmented segmented--block" role="radiogroup" aria-label="Type of feedback" style="background: var(--color-ink);">
+              <button class="segmented__option segmented__option--stacked" type="button" role="radio" aria-checked="true" tabindex="0"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20v-9"/><path d="M14 7a4 4 0 0 1 4 4v3a6 6 0 0 1-12 0v-3a4 4 0 0 1 4-4z"/><path d="M14.12 3.88 16 2"/><path d="M21 21a4 4 0 0 0-3.81-4"/><path d="M21 5a4 4 0 0 1-3.55 3.97"/><path d="M22 13h-4"/><path d="M3 21a4 4 0 0 1 3.81-4"/><path d="M3 5a4 4 0 0 0 3.55 3.97"/><path d="M6 13H2"/><path d="m8 2 1.88 1.88"/><path d="M9 7.13V6a3 3 0 1 1 6 0v1.13"/></svg>Bug</button>
+              <button class="segmented__option segmented__option--stacked" type="button" role="radio" aria-checked="false" tabindex="-1"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>Improvement</button>
+              <button class="segmented__option segmented__option--stacked" type="button" role="radio" aria-checked="false" tabindex="-1"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/><path d="M7 10v12"/></svg>Kudos</button>
+            </div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>The feedback kind picker (an ink well inside the feedback panel). The icon repeats the label; it never replaces it.</span></div>
+      </div>
+      <h3>Toolbar: ride controls</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas">
+          <div class="toolbar" role="toolbar" aria-label="Ride controls">
+            <span class="ride-header__clock" role="timer" aria-label="Elapsed 6:52 of 30:00">6:52<span class="ride-header__clock-total"> / 30:00</span></span>
+            <button class="btn btn--raised" type="button" tabindex="0"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect x="14" y="3" width="5" height="18" rx="1"/><rect x="5" y="3" width="5" height="18" rx="1"/></svg>Pause</button>
+            <button class="btn btn--quiet-danger" type="button" tabindex="-1"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>End</button>
+            <span class="toolbar__divider" aria-hidden="true"></span>
+            <button class="icon-btn" type="button" aria-label="Full screen" title="Full screen" tabindex="-1"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>The custom ride header's end group as a toolbar: one tab stop, arrows move between Pause, End and Full screen.</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="toolbar" role="toolbar" aria-label="Ride controls"&gt;
+  &lt;button class="btn btn--raised" type="button" tabindex="0"&gt;…Pause&lt;/button&gt;
+  &lt;button class="btn btn--quiet-danger" type="button" tabindex="-1"&gt;…End&lt;/button&gt;
+  &lt;span class="toolbar__divider" aria-hidden="true"&gt;&lt;/span&gt;
+  &lt;button class="icon-btn" type="button" aria-label="Full screen" tabindex="-1"&gt;…&lt;/button&gt;
+&lt;/div&gt;</code></pre></details>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+      <div class="ds-example">
+        <div class="ds-example__canvas">
+          <div class="segmented segmented--raised" role="group" aria-label="Small"><button class="segmented__option" type="button" aria-pressed="true">Easy</button><button class="segmented__option" type="button" aria-pressed="false">Medium</button><button class="segmented__option" type="button" aria-pressed="false">Hard</button></div>
+          <div class="segmented segmented--raised segmented--md" role="group" aria-label="Medium"><button class="segmented__option" type="button" aria-pressed="true">Easy</button><button class="segmented__option" type="button" aria-pressed="false">Medium</button><button class="segmented__option" type="button" aria-pressed="false">Hard</button></div>
+        </div>
+        <div class="ds-example__caption"><span>Small: options 36px (<code>--control-height-sm</code>), track 44px. Medium (<code>--md</code>): options 40px, track 48px. Toolbars take the size of the buttons inside.</span></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Variant</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Selected</th><th scope="col">Disabled</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Default</th>
+            <td><div class="segmented"><button class="segmented__option" type="button" aria-pressed="false">20 min</button></div></td>
+            <td><div class="segmented"><button class="segmented__option" type="button" aria-pressed="false" data-state="hover">20 min</button></div></td>
+            <td><div class="segmented"><button class="segmented__option" type="button" aria-pressed="false" data-state="focus">20 min</button></div></td>
+            <td><div class="segmented"><button class="segmented__option" type="button" aria-pressed="true" data-state="active">20 min</button></div></td>
+            <td><div class="segmented"><button class="segmented__option" type="button" aria-pressed="true">20 min</button></div></td>
+            <td><div class="segmented"><button class="segmented__option" type="button" aria-pressed="false" disabled>20 min</button></div></td></tr>
+          <tr><th scope="row">Raised + strong</th>
+            <td><div class="segmented segmented--raised segmented--strong"><button class="segmented__option" type="button" role="radio" aria-checked="false">Hard</button></div></td>
+            <td><div class="segmented segmented--raised segmented--strong"><button class="segmented__option" type="button" role="radio" aria-checked="false" data-state="hover">Hard</button></div></td>
+            <td><div class="segmented segmented--raised segmented--strong"><button class="segmented__option" type="button" role="radio" aria-checked="true" data-state="focus">Hard</button></div></td>
+            <td><div class="segmented segmented--raised segmented--strong"><button class="segmented__option" type="button" role="radio" aria-checked="true" data-state="active">Hard</button></div></td>
+            <td><div class="segmented segmented--raised segmented--strong"><button class="segmented__option" type="button" role="radio" aria-checked="true">Hard</button></div></td>
+            <td><div class="segmented segmented--raised segmented--strong"><button class="segmented__option" type="button" role="radio" aria-checked="false" disabled>Hard</button></div></td></tr>
+          <tr><th scope="row">Toolbar button</th>
+            <td><button class="btn btn--raised btn--sm" type="button">Pause</button></td>
+            <td><button class="btn btn--raised btn--sm" type="button" data-state="hover">Pause</button></td>
+            <td><button class="btn btn--raised btn--sm" type="button" data-state="focus">Pause</button></td>
+            <td><button class="btn btn--raised btn--sm" type="button" data-state="active">Pause</button></td>
+            <td><button class="btn btn--raised btn--sm" type="button" aria-pressed="true"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg>Resume</button></td>
+            <td><button class="btn btn--raised btn--sm" type="button" disabled>Pause</button></td></tr>
+        </tbody>
+      </table></div>
+      <p>A segmented option has no separate pressed look: selection applies on press, so <em>active</em> shows the new selection. Focus on a selected option keeps both the fill and the ring.</p>
+      <h3>Both themes</h3>
+      <div class="ds-themes">
+        <div data-theme="light"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0;">
+          <div class="segmented" role="group" aria-label="Class length (light)"><button class="segmented__option" type="button" aria-pressed="true">All</button><button class="segmented__option" type="button" aria-pressed="false">20 min</button><button class="segmented__option" type="button" aria-pressed="false">30 min</button></div>
+          <div class="segmented segmented--raised segmented--strong segmented--block" role="radiogroup" aria-label="Pack strength (light)"><button class="segmented__option" type="button" role="radio" aria-checked="false">Easy</button><button class="segmented__option" type="button" role="radio" aria-checked="true">Medium</button><button class="segmented__option" type="button" role="radio" aria-checked="false">Hard</button></div>
+        </div></div>
+        <div data-theme="dark"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0;">
+          <div class="segmented" role="group" aria-label="Class length (dark)"><button class="segmented__option" type="button" aria-pressed="true">All</button><button class="segmented__option" type="button" aria-pressed="false">20 min</button><button class="segmented__option" type="button" aria-pressed="false">30 min</button></div>
+          <div class="segmented segmented--raised segmented--strong segmented--block" role="radiogroup" aria-label="Pack strength (dark)"><button class="segmented__option" type="button" role="radio" aria-checked="false">Easy</button><button class="segmented__option" type="button" role="radio" aria-checked="true">Medium</button><button class="segmented__option" type="button" role="radio" aria-checked="false">Hard</button></div>
+        </div></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Width</th><th scope="col">Rule</th></tr></thead><tbody>
+        <tr><td>360 (base)</td><td>A segmented control never wraps. Four short options (All, 20 min, 30 min, 60 min) fit 328px; in a narrow column use <code>--block</code> so options share the width. The toolbar wraps as a unit with the ride header; its buttons grow to 48px under 640px.</td></tr>
+        <tr><td>640 (sm)</td><td>Class Library's header puts the filter beside the title (<code>.library-head</code> wraps it under the lead below this).</td></tr>
+        <tr><td>1024 (lg)</td><td>No change; block controls are capped by their 420px aside.</td></tr>
+      </tbody></table></div>
+      <p>If the labels do not fit at 360px, there are too many options: switch to a <a href="select.html">select</a> or a radio group.</p>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+      <p>The track reads <code>--color-panel</code> (raised with <code>--raised</code>), options read <code>--color-muted</code> and turn <code>--color-fg</code> on hover; the selected option reads <code>--color-raised</code> (panel on a raised track; bone <code>--color-fg</code> with an ink label under <code>--strong</code>). In light, bone becomes ink and ink becomes paper, so the strong selection inverts cleanly.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <ul>
+        <li><b>Single choice</b> (pack strength, feedback kind): <code>role="radiogroup"</code> with a label, options <code>role="radio"</code> + <code>aria-checked</code>, roving <code>tabindex</code> per the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/radio/">APG Radio Group pattern</a>.</li>
+        <li><b>Filter</b> (class length): <code>role="group"</code> with <code>aria-label</code>, toggle buttons with <code>aria-pressed</code> per the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/button/">APG Button pattern</a>; every option is a tab stop.</li>
+        <li><b>Toolbar</b>: <code>role="toolbar"</code> with <code>aria-label</code>, roving <code>tabindex</code> per the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/">APG Toolbar pattern</a>.</li>
+      </ul>
+      <h3>Keyboard</h3>
+      <div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+        <tr><td><kbd>Tab</kbd></td><td>Radiogroup and toolbar: one stop (the checked option or the last focused button). Filter: each option.</td></tr>
+        <tr><td><kbd>→</kbd> <kbd>↓</kbd> / <kbd>←</kbd> <kbd>↑</kbd></td><td>Radiogroup: moves focus and checks the next / previous option, wrapping. Toolbar: moves focus only (<kbd>←</kbd> <kbd>→</kbd>).</td></tr>
+        <tr><td><kbd>Home</kbd> / <kbd>End</kbd></td><td>Toolbar: first / last control.</td></tr>
+        <tr><td><kbd>Space</kbd> / <kbd>Enter</kbd></td><td>Filter: toggles the pressed option. Radiogroup: checks the focused option. Toolbar: activates the focused button.</td></tr>
+      </tbody></table></div>
+      <h3>Focus</h3>
+      <p>The shared 2px ring sits inside the track's 4px padding, so it is never clipped. The selected option keeps its fill under focus.</p>
+      <h3>Labelling</h3>
+      <p>The group needs a name: a visible heading via <code>aria-labelledby</code> ("Pack strength") or <code>aria-label</code> ("Class length"). Option labels are their text; stacked icons are <code>aria-hidden</code>.</p>
+      <h3>Contrast</h3>
+      <div class="ds-themes">
+<div data-theme="light"><div class="ds-pairs-stack">
+<div class="ds-pair"><span>Option label on panel track</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Option label on raised track</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Selected label, default</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Selected label, strong</span><span class="ds-pair__ratio" data-contrast="--color-ink|--color-fg" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Focus ring on raised</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-raised" data-min="3"></span></div>
+</div></div>
+<div data-theme="dark"><div class="ds-pairs-stack">
+<div class="ds-pair"><span>Option label on panel track</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Option label on raised track</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Selected label, default</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Selected label, strong</span><span class="ds-pair__ratio" data-contrast="--color-ink|--color-fg" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Focus ring on raised</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-raised" data-min="3"></span></div>
+</div></div>
+</div>
+      <p>The selected option differs from the rest by fill <em>and</em> label colour (muted to fg) and is announced as pressed or checked; colour is not the only cue.</p>
+      <h3>Motion</h3>
+      <p>Colour and fill ease over <code>--duration-fast</code>; nothing slides. Reduced motion makes the change instant.</p>
+      <h3>Touch</h3>
+      <p>Options are 36px tall and at least 44px wide in every product use; the 4px track padding sits between neighbours.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li>One or two words per option, parallel in form: "20 min / 30 min / 60 min", "Easy / Medium / Hard".</li>
+        <li>Sentence case; the mock's lowercase "easy / medium / hard" (CSS <code>capitalize</code>) is written as text instead.</li>
+        <li>Put what the choice means beneath the control, not inside it: "Around 190 W. A top 3 here earns the second star."</li>
+        <li>"All" comes first in a filter.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><div class="segmented segmented--raised segmented--strong" role="radiogroup" aria-label="Pack strength example"><button class="segmented__option" type="button" role="radio" aria-checked="false" tabindex="-1">Easy</button><button class="segmented__option" type="button" role="radio" aria-checked="true" tabindex="0">Medium</button><button class="segmented__option" type="button" role="radio" aria-checked="false" tabindex="-1">Hard</button></div></div><figcaption>Three short options, one choice, its meaning written underneath (pack strength).</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><div class="segmented segmented--raised" role="group" aria-label="Race mode example"><button class="segmented__option" type="button" aria-pressed="false">Your best time</button><button class="segmented__option" type="button" aria-pressed="true">Bots</button><button class="segmented__option" type="button" aria-pressed="false">Riders online</button></div></div><figcaption>Options that need a sentence each ("9 computer riders. Starts the moment you're ready.") squeezed into a segmented control. Use the card radio group.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><div class="segmented segmented--strong" role="group" aria-label="Class length example"><button class="segmented__option" type="button" aria-pressed="true">All</button><button class="segmented__option" type="button" aria-pressed="false">20 min</button><button class="segmented__option" type="button" aria-pressed="false">30 min</button><button class="segmented__option" type="button" aria-pressed="false">60 min</button></div></div><figcaption>A filter that changes the list on the same page uses buttons with <code>aria-pressed</code>.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><div class="tier-tabs" aria-label="Class length links"><a class="tier-tabs__tab" href="#do-dont" aria-current="page">All</a><a class="tier-tabs__tab" href="#do-dont">20 min</a><a class="tier-tabs__tab" href="#do-dont">30 min</a></div></div><figcaption>Links with <code>role="tab"</code> that load another page (the Class Library mock): neither tabs nor links behave as announced.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+        <tbody>
+          <tr><td>Track</td><td><code>--color-panel</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-panel" data-swatch></i><span data-token="--color-panel"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-panel" data-swatch></i><span data-token="--color-panel"></span></span></td></tr>
+          <tr><td>Track (--raised); selected (default)</td><td><code>--color-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td></tr>
+          <tr><td>Option label</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+          <tr><td>Option label hover; selected label</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+          <tr><td>Selected label (--strong)</td><td><code>--color-ink</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td></tr>
+          <tr><td>Toolbar divider</td><td><code>--color-line</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td></tr>
+          <tr><td>Focus ring</td><td><code>--color-focus-ring</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-focus-ring" data-swatch></i><span data-token="--color-focus-ring"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-focus-ring" data-swatch></i><span data-token="--color-focus-ring"></span></span></td></tr>
+          <tr><td>Option height sm / md</td><td><code>--control-height-sm</code> <code>--control-height-md</code></td><td colspan="2"><span data-token="--control-height-sm"></span> / <span data-token="--control-height-md"></span></td></tr>
+          <tr><td>Track padding and gap</td><td><code>--space-1</code></td><td colspan="2"><span data-token="--space-1"></span></td></tr>
+          <tr><td>Option padding (block)</td><td><code>--space-3</code> <code>--space-2</code></td><td colspan="2"><span data-token="--space-3"></span> / <span data-token="--space-2"></span></td></tr>
+          <tr><td>Radius track / option</td><td><code>--radius-lg</code> <code>--radius-md</code></td><td colspan="2"><span data-token="--radius-lg"></span> / <span data-token="--radius-md"></span></td></tr>
+          <tr><td>Label</td><td><code>--font-size-sm</code> <code>--font-weight-medium</code></td><td colspan="2"><span data-token="--font-size-sm"></span><span data-token="--font-weight-medium"></span></td></tr>
+          <tr><td>Transition</td><td><code>--duration-fast</code> <code>--ease-standard</code></td><td colspan="2"><span data-token="--duration-fast"></span><span data-token="--ease-standard"></span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+      <pre><code>&lt;div class="segmented segmented--raised segmented--strong segmented--block" role="radiogroup" aria-labelledby="pack-title"&gt;
+  &lt;button class="segmented__option" type="button" role="radio" aria-checked="true" tabindex="0"&gt;Medium&lt;/button&gt; …
+&lt;/div&gt;
+&lt;div class="toolbar" role="toolbar" aria-label="Ride controls"&gt;…&lt;/div&gt;</code></pre>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+        <tr><td><code>.segmented</code> / <code>.segmented__option</code></td><td>Track and options (kit).</td></tr>
+        <tr><td><code>.segmented--raised</code></td><td>Raised track for use on a panel; selected becomes panel.</td></tr>
+        <tr><td><code>.segmented--strong</code></td><td>Selected option in bone with an ink label.</td></tr>
+        <tr><td><code>.segmented--block</code></td><td>Options share the full width.</td></tr>
+        <tr><td><code>.segmented--md</code></td><td>40px options.</td></tr>
+        <tr><td><code>.segmented__option--stacked</code></td><td>Icon above label.</td></tr>
+        <tr><td><code>aria-pressed</code> / <code>aria-checked</code> / <code>aria-selected</code></td><td>Selected look (any of the three, matching the role).</td></tr>
+        <tr><td><code>.toolbar</code> <code>.toolbar--tight</code> <code>.toolbar__divider</code></td><td>Row of controls, 8px (4px) gap, hairline divider.</td></tr>
+        <tr><td><code>data-state="hover|focus|active"</code></td><td>Documentation only.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <ul>
+        <li><a href="../../mocks/pages/class-library/default.html">pages/class-library/default</a> — tier filter (<code>.tier-tabs</code>)</li>
+        <li><a href="../../mocks/pages/race-setup/default.html">pages/race-setup/default</a> — pack strength (<code>.pack__options</code>)</li>
+        <li><a href="../../mocks/dialogs/feedback/default.html">dialogs/feedback/default</a> — feedback kind (<code>.feedback__kinds</code>)</li>
+        <li><a href="../../mocks/pages/custom-ride/default.html">pages/custom-ride/default</a> — ride controls in <code>.ride-header__end</code></li>
+      </ul>
+      <p>Drift fixed during extraction:</p>
+      <ul>
+        <li>Three area copies of one control (<code>.tier-tabs</code>, <code>.pack__options</code>, <code>.feedback__kinds</code>) with two different selected looks; all three are <code>.segmented</code> plus modifiers.</li>
+        <li><code>class-library/*</code>: the tier filter is links with <code>role="tab"</code> and <code>aria-selected</code> that load another page; it becomes a <code>role="group"</code> of <code>aria-pressed</code> buttons filtering in place (or plain links with <code>aria-current="page"</code> if it stays as pages).</li>
+        <li><code>race-setup/*</code>, <code>dialogs/feedback/*</code>: radiogroups made of buttons give every option a tab stop and no arrow keys; the system adds roving <code>tabindex</code>.</li>
+        <li><code>race-setup/*</code>: the options are lowercase text capitalised by CSS; the copy is written in sentence case.</li>
+      </ul>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
+  </main>
+</div>
+<script src="../assets/ds.js"></script>
+<script>
+/* Roving tabindex for the live examples: [role=radiogroup] of [role=radio] buttons (arrows move and
+   check, APG Radio Group) and [role=toolbar] (arrows, Home and End move focus, APG Toolbar). Groups
+   marked data-static (state matrices) are left alone. */
+(function () {
+  function wire(group, selector, check) {
+    var items = Array.prototype.slice.call(group.querySelectorAll(selector)).filter(function (el) { return !el.disabled; });
+    if (!items.length) return;
+    group.addEventListener('keydown', function (e) {
+      var i = items.indexOf(document.activeElement);
+      if (i < 0) return;
+      var next = null;
+      if (e.key === 'ArrowRight' || (check && e.key === 'ArrowDown')) next = items[(i + 1) % items.length];
+      if (e.key === 'ArrowLeft' || (check && e.key === 'ArrowUp')) next = items[(i - 1 + items.length) % items.length];
+      if (!check && e.key === 'Home') next = items[0];
+      if (!check && e.key === 'End') next = items[items.length - 1];
+      if (!next) return;
+      e.preventDefault();
+      items.forEach(function (el) { el.tabIndex = el === next ? 0 : -1; });
+      next.focus();
+      if (check) select(next);
+    });
+    function select(item) {
+      items.forEach(function (el) { el.setAttribute('aria-checked', el === item ? 'true' : 'false'); el.tabIndex = el === item ? 0 : -1; });
+    }
+    if (check) items.forEach(function (el) { el.addEventListener('click', function () { select(el); }); });
+  }
+  document.querySelectorAll('[role="radiogroup"]:not([data-static])').forEach(function (g) { wire(g, '[role="radio"]', true); });
+  document.querySelectorAll('[role="toolbar"]:not([data-static])').forEach(function (g) { wire(g, 'button, a[href]', false); });
+})();
+</script>
+</body>
+</html>

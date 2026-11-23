@@ -1,0 +1,15 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Structure the backend
+
+Person(rider, "Rider", "Rides a smart bike at home")
+Person(operator, "Operator", "Deploys Telo Ride and applies migrations")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(email, "Email delivery service", "Delivers sign-in codes; provider <TO SUPPLY>")
+System_Ext(otel, "OpenTelemetry collector", "Receives traces and metrics; backend <TO SUPPLY>")
+Rel(rider, telo, "Uses")
+Rel(operator, telo, "Runs the migrate command against")
+Rel(telo, email, "Sends codes via")
+Rel(telo, otel, "Exports telemetry to", "OTLP")
+@enduml

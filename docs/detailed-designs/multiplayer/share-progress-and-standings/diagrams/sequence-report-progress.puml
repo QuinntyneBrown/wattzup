@@ -1,0 +1,56 @@
+@startuml
+title UML sequence behaviour — Report progress
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app (ride application and api library)" #E0F2FE
+  participant "Ride store" as engine
+  participant "LiveSessionStore" as reporter
+  participant "SignalRRideHubClient" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RideHub" as hub
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "Report(Race)ProgressCommandHandler" as handler
+  participant "RaceSession | GroupClassSession" as session
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "Session registries" as registry
+end box
+loop every second of the ride
+  engine -> reporter : report(distance | outputKj, power)
+  alt at least 500 ms since the last report (L2-123 AC1)
+    alt race seat
+      reporter -> client : reportRaceProgress(sessionId, metres, power)
+      client -> hub : ReportRaceProgress(sessionId, metres, power)
+      hub -> handler : Send ReportRaceProgressCommand(riderId, ...)
+    else class seat
+      reporter -> client : reportProgress(sessionId, outputKj, power)
+      client -> hub : ReportProgress(sessionId, outputKj, power)
+      hub -> handler : Send ReportProgressCommand(riderId, ...)
+    end
+    handler -> registry : Find(sessionId)
+    registry --> handler : The session
+    handler -> session : RecordProgress(riderId, sample at server time)
+    alt under 500 ms since this rider's last sample
+      session --> handler : Ignored
+    else accepted
+      session --> handler : Recorded
+    end
+  else too soon
+    reporter -> reporter : Drop
+  end
+end
+@enduml

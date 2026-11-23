@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Support screen readers and motion preferences
+
+Person(rider, "Rider", "May use a screen reader or prefer reduced motion")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(at, "Assistive technology", "Screen reader on the rider's device")
+Rel(rider, at, "Listens through")
+Rel(at, telo, "Reads the accessibility tree of")
+Rel(rider, telo, "Rides with")
+@enduml

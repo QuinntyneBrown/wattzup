@@ -1,0 +1,49 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Open class tiers
+class ClassDefinition <<entity>> {
+  +Id: string
+  +Title: string
+  +LengthSeconds: int
+  +OpensAtLevel: int
+}
+class ClassTierRules <<domain rule>> {
+  +Tiers: int[] = 1, 5, 10, 20
+  +IsTier(level: int): bool
+}
+class ClassPlanRules <<domain rule>> {
+  +BrokenRule(def: ClassDefinition): string?
+}
+class GetClassesQueryHandler <<application>> {
+  +Handle(q: GetClassesQuery): Task<ClassCatalogueDto>
+}
+class ClassDto <<DTO>> {
+  +Id: string
+  +Title: string
+  +LengthSeconds: int
+  +OpensAtLevel: int
+}
+class ProgressDto <<DTO>> {
+  +Level: int
+}
+class ClassLibraryStore <<Ride app>> {
+  open when OpensAtLevel <= Level
+}
+ClassPlanRules ..> ClassDefinition
+ClassPlanRules ..> ClassTierRules : OpensAtLevel is a tier
+GetClassesQueryHandler ..> ClassPlanRules
+GetClassesQueryHandler ..> ClassDto : returns
+ClassLibraryStore ..> ClassDto
+ClassLibraryStore ..> ProgressDto
+@enduml

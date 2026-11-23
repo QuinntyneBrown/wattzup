@@ -1,0 +1,92 @@
+// Block setup (docs/design-system/assets/components.css): the settings column, and on lg the preview's column beside
+// it. The level sliders and steppers' layout follows the design system's level-sliders and
+// training-steppers.
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
+
+.setup {
+  display: grid;
+  flex: 1;
+  min-height: 0;
+  grid-template-columns: minmax(0, 1fr);
+  overflow-y: auto;
+}
+
+@media (min-width: 64rem) {
+  .setup {
+    grid-template-columns: minmax(0, 1fr) var(--setup-preview-width);
+    overflow: hidden;
+  }
+}
+
+.setup__settings {
+  min-width: 0;
+  padding: var(--space-8) var(--space-5);
+}
+
+@media (min-width: 64rem) {
+  .setup__settings {
+    overflow-y: auto;
+    padding-inline: var(--space-12);
+  }
+}
+
+.setup__form {
+  max-width: var(--setup-form-max);
+}
+
+.setup__title {
+  margin: 0;
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-3xl);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.setup__lead {
+  margin: var(--space-2) 0 0;
+  color: var(--color-muted);
+}
+
+.setup__section {
+  margin-top: var(--space-10);
+}
+
+.setup__note {
+  margin: var(--space-6) 0 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.setup__levels {
+  margin-top: var(--space-10);
+  display: grid;
+  row-gap: var(--space-8);
+}
+
+.setup__steppers {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: var(--space-8);
+  row-gap: var(--space-6);
+}
+
+@media (min-width: 40rem) {
+  .setup__steppers {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.setup__steppers--spaced {
+  margin-top: var(--space-10);
+}
+
+.setup__steppers--ruled {
+  margin-top: var(--space-10);
+  border-top: var(--border-width-hairline) solid var(--color-line);
+  padding-top: var(--space-6);
+}

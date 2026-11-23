@@ -1,0 +1,98 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+set separator none
+' --------------------------
+title Class structure — Run a race session
+
+package "Telo.Ride.Domain" {
+  class RaceSession {
+    +{static} Capacity = 10
+    +{static} LobbySeconds = 30
+    +{static} BotFillSeconds = 10
+    +{static} ConnectionGraceSeconds = 10
+    +string MapId
+    +DateTimeOffset StartsAt
+    +string Id  "mapId@startsAt"
+    +IReadOnlyList<RaceSeat?> Seats
+    +int RidersSeated
+    +IsOpen(now): bool
+    +SeatOf(riderId): int?
+    +TrySeat(riderId, name, level): int?
+    +SetReady(riderId, ready): bool
+    +Release(riderId): RaceLeave?
+    +ConnectionLost(riderId, now): void
+    +Tick(now): (Left, Changed)
+  }
+  class RaceSeat <<record>> {
+    +RaceSeatKind Kind
+    +Guid? RiderId
+    +string Name
+    +string Jersey
+    +int? Level
+    +bool Ready
+  }
+  enum RaceSeatKind {
+    Rider
+    Bot
+  }
+  class BotPaceModel {
+    +Names: Nova, Rook, Juno, Atlas, Kite, Vale, Moss, Flint, Echo
+  }
+}
+package "Telo.Ride.Application" {
+  class FindRaceCommandHandler {
+    +Handle(cmd: FindRaceCommand): Task<FindRaceResult>
+  }
+  class SetReadyCommandHandler
+  class LeaveRaceCommandHandler
+  class RaceConnectionLostCommandHandler
+  class TickLiveSessionsCommandHandler {
+    +Handle(cmd: TickLiveSessionsCommand): Task
+  }
+  class GetRaceQueueQueryHandler {
+    +Handle(q: GetRaceQueueQuery): Task<RaceQueueDto>
+  }
+  interface IRaceSessionRegistry {
+    +Waiting(mapId, now): RaceSession?
+    +Open(mapId, now): IEnumerable<RaceSession>
+    +Find(id, now): RaceSession?
+    +Lobbies(now): IEnumerable<RaceSession>
+  }
+  interface ISessionNotifier {
+    +AddToSession(connectionId, sessionId): Task
+    +SeatsChanged(SeatsChangedDto): Task
+  }
+}
+package "Telo.Ride.Infrastructure" {
+  class InMemoryRaceSessionRegistry
+  class SessionTicker {
+    -timer: PeriodicTimer (1 s, TimeProvider)
+    #ExecuteAsync(ct: CancellationToken): Task
+  }
+}
+
+RaceSession "1" *-- "0..10" RaceSeat
+RaceSeat --> RaceSeatKind
+RaceSession ..> BotPaceModel : fills at 0:10
+IRaceSessionRegistry <|.. InMemoryRaceSessionRegistry
+FindRaceCommandHandler ..> IRaceSessionRegistry
+FindRaceCommandHandler ..> ISessionNotifier
+SetReadyCommandHandler ..> IRaceSessionRegistry
+LeaveRaceCommandHandler ..> IRaceSessionRegistry
+RaceConnectionLostCommandHandler ..> IRaceSessionRegistry
+TickLiveSessionsCommandHandler ..> IRaceSessionRegistry
+TickLiveSessionsCommandHandler ..> ISessionNotifier
+GetRaceQueueQueryHandler ..> IRaceSessionRegistry
+InMemoryRaceSessionRegistry o-- "*" RaceSession
+SessionTicker ..> TickLiveSessionsCommandHandler : via IMediator
+@enduml

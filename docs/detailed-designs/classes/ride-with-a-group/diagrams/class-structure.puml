@@ -1,0 +1,75 @@
+@startuml
+set separator none
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Ride with a group
+
+package "api library" {
+  interface RideHubClient {
+    +reportProgress(sessionId, outputKj, powerWatts): Promise<void>
+    +onStandings(handler): () => void
+  }
+  class Standings {
+    +sessionId: string
+    +rows: StandingRow[]
+  }
+  class StandingRow {
+    +position: number
+    +name: string
+    +jersey: string
+    +level: number | null
+    +kind: 'person' | 'bot'
+    +outputKj: number
+    +gapKj: number
+  }
+}
+package "components library" {
+  class ClassBoard {
+    +place: string | null
+    +total: number
+    +rows: ClassBoardRow[]
+  }
+}
+package "ride application" {
+  class LiveSessionStore {
+    +standings: Signal<Standings | null>
+    +seat: Signal<SeatAssignment | null>
+    +report(outputKj, powerWatts): void
+  }
+  class ClassRideStore {
+    +board: Signal<GroupBoardView | null>
+    +mode: Signal<string>
+  }
+  class GroupBoardView {
+    +place: string | null
+    +total: number
+    +rows: GroupBoardRowView[]
+  }
+}
+package "Telo.Ride.Domain" {
+  class GroupClassSession {
+    +RecordProgress(riderId, outputKj, powerWatts, now): bool
+    +Tick(now): StandingRow[]?
+  }
+  class BotPaceModel {
+    +Paces(seed, pack): BotPace[]
+    +Watts(pace, second): double
+  }
+}
+Standings "1" *-- "1..10" StandingRow
+LiveSessionStore ..> RideHubClient : reports, listens
+ClassRideStore ..> LiveSessionStore : standings, report
+ClassRideStore ..> GroupBoardView : groupBoardView()
+ClassBoard ..> GroupBoardView : drawn from
+GroupClassSession ..> BotPaceModel : bots
+@enduml

@@ -1,0 +1,12 @@
+<header class="class-header">
+  <wz-lockup size="sm" />
+  <p class="class-ride__name">
+    <span class="class-ride__name-title">{{ title() }}</span><span class="class-ride__name-mode">
+      · {{ mode() }}</span
+    >
+  </p>
+  <span class="class-ride__clock" role="timer" [attr.aria-label]="clock() + ' of ' + length()"
+    >{{ clock() }}<span class="class-ride__clock-total"> / {{ length() }}</span></span
+  >
+  <ng-content select="[slot=end]" />
+</header>

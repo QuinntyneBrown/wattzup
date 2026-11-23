@@ -1,0 +1,43 @@
+@startuml
+title UML sequence behaviour — Pause and resume a custom ride
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "RideHeader" as header
+  participant "CustomRideStore" as store
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "RideClock" as clock
+  participant "WorkoutEngine" as engine
+  participant "YouTubeVideoPlayer" as player
+end box
+rider -> header : Press Pause
+header -> store : pause()
+store -> clock : pause()
+store -> engine : Hold: no segment change, no command (L2-027 AC3)
+opt workout has a video
+  store -> player : pause()
+end
+store --> header : Running → Paused; Pause becomes Resume; readouts hold; controls enabled L2-105 AC1
+rider -> header : Press Resume
+header -> store : resume()
+store -> clock : resume()
+store -> engine : Resume plan
+opt workout has a video
+  store -> player : seekTo(offset + elapsed), play()
+end
+store --> header : Paused → Running
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Authenticate every request
+Person(rider, "Rider", "Rides a smart bike at home")
+Person_Ext(other, "Another rider or a visitor", "Has no session, or a session for another account")
+System_Ext(probe, "Hosting platform health probe", "Checks liveness and readiness; host <TO SUPPLY>")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+Rel(rider, telo, "Reads and changes their own data in")
+Rel(other, telo, "Is refused another rider's data by")
+Rel(probe, telo, "Asks /health/live and /health/ready of", "HTTPS")
+@enduml

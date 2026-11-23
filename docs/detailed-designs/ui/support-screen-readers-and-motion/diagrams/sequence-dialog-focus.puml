@@ -1,0 +1,37 @@
+@startuml
+title UML sequence behaviour — Open and close a dialog
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider (keyboard or screen reader)" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "Ride page" as page
+  participant "provideInertBehindDialogs" as inert
+  participant "LeaveRideDialog" as dlg
+end box
+participant "CDK Dialog" as cdk
+actor -> page : Activate "Library"
+page -> cdk : open(LeaveRideDialog, autoFocus first-tabbable, restoreFocus true)
+cdk -> dlg : Create with role=dialog, aria-modal=true
+cdk -> cdk : Trap focus inside the dialog (L2-141 AC3)
+cdk -> inert : afterOpened
+inert -> inert : Note the focused opener; set inert on <wz-root> (L2-141 AC3)
+cdk --> actor : Focus on the first control in the dialog
+actor -> dlg : Escape or Cancel
+dlg -> cdk : close()
+cdk -> cdk : Restore focus (refused: the app is still inert)
+cdk -> inert : closed (the last open dialog)
+inert -> inert : Remove inert from <wz-root>
+inert --> actor : Focus returns to "Library" (L2-141 AC3)
+@enduml

@@ -1,0 +1,39 @@
+@startuml
+title UML sequence behaviour — Serve the app with its policy
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+participant "Chrome or Edge" as browser
+box "Frontend — Ride app" #E0F2FE
+  participant "Ride app" as app
+  participant "YouTubeVideoPlayer" as yt
+end box
+participant "YouTube" as youtube
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "SecurityHeaders" as headers
+end box
+actor -> browser : Open Telo Ride
+browser -> headers : GET /
+headers --> browser : index.html + Content-Security-Policy, nosniff, Referrer-Policy (L2-131 AC1, AC4)
+browser -> headers : Scripts, styles, fonts from 'self' (no analytics, no CDN fonts, L2-131 AC2)
+browser -> app : Bootstrap
+app -> headers : GET /api/progress (connect-src 'self')
+headers --> app : Response + the same headers
+actor -> app : Start a class
+app -> yt : load()
+yt -> youtube : GET https://www.youtube.com/iframe_api (script-src)
+yt -> youtube : iframe https://www.youtube-nocookie.com/embed/... (frame-src)
+youtube --> browser : Player and i.ytimg.com thumbnails (img-src)
+@enduml

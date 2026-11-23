@@ -1,0 +1,81 @@
+// Block ride-trace (docs/design-system/assets/components.css): power against the plan, drawn as SVG.
+:host {
+  position: relative;
+  display: block;
+  flex: 1;
+  min-height: 0;
+}
+
+.ride-trace__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: var(--dashboard-trace-min);
+  overflow: visible;
+}
+
+.ride-trace__segment--warmup,
+.ride-trace__segment--cooldown {
+  --kind: var(--dashboard-segment-easy);
+}
+
+.ride-trace__segment--work,
+.ride-trace__segment--steady {
+  --kind: var(--color-volt);
+}
+
+.ride-trace__segment--rest {
+  --kind: var(--color-rest);
+}
+
+.ride-trace__grid {
+  stroke: var(--color-raised);
+  stroke-width: 1;
+}
+
+.ride-trace__block {
+  fill: var(--kind);
+  fill-opacity: 0.13;
+}
+
+.ride-trace__block--past {
+  fill-opacity: 0.07;
+}
+
+.ride-trace__target {
+  stroke: var(--kind);
+  stroke-width: 2;
+  stroke-opacity: 0.8;
+}
+
+.ride-trace__target--past {
+  stroke-opacity: 0.35;
+}
+
+.ride-trace__area {
+  fill: var(--color-fg);
+  fill-opacity: 0.12;
+}
+
+.ride-trace__line {
+  fill: none;
+  stroke: var(--color-fg);
+  stroke-width: 2.5;
+  stroke-opacity: 0.95;
+  stroke-linejoin: round;
+}
+
+.ride-trace__playhead {
+  stroke: var(--dashboard-playhead);
+  stroke-width: 2;
+}
+
+.ride-trace__max {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: var(--font-size-2xs);
+  line-height: var(--line-height-2xs);
+  color: var(--color-faint);
+}

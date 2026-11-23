@@ -3,17 +3,42 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Responsive — Wattzup design system</title>
-<meta name="description" content="How each region adapts from 360px to wide screens.">
+<title>Responsive — Telo Ride design system</title>
+<meta name="description" content="Mobile-first rules for Telo Ride: what changes at 640 and 1024, what every component does at each breakpoint, control heights, touch targets and the testing matrix.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Shared by the foundations-b pages: wide reference tables keep a readable width and scroll
+   inside .ds-table-wrap on phones instead of crushing their columns. */
+.ds-table-wrap { --doc-table-min: 40rem; }
+.ds-table-wrap > .ds-table { min-width: var(--doc-table-min); }
+.ds-themes + ul, .ds-themes + p, .ds-example + ul { margin-top: var(--space-4); }
+/* Responsive page only */
+.rs-targets { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-8); }
+.rs-targets figure { display: grid; justify-items: center; gap: var(--space-2); }
+.rs-targets figcaption { font: var(--text-caption); color: var(--color-fg-muted); text-align: center; }
+.rs-target { display: grid; place-items: center; width: var(--size); height: var(--size); border-radius: var(--radius-md); border: var(--border-width-hairline) dashed var(--color-accent); background: var(--color-accent-subtle); color: var(--color-fg-accent); }
+.rs-heights { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-4); }
+.rs-heights figure { display: grid; justify-items: start; gap: var(--space-2); }
+.rs-heights figcaption { font: var(--text-caption); color: var(--color-fg-muted); font-family: var(--font-family-mono); }
+.rs-header { border: var(--border-width-hairline) solid var(--color-border-default); border-radius: var(--radius-lg); background: var(--color-bg-canvas); overflow: hidden; }
+.rs-resist { width: 100%; max-width: var(--dashboard-aside-width); }
+.rs-matrix td, .rs-matrix th { min-width: var(--space-40); }
+.rs-matrix td:first-child, .rs-matrix th:first-child { min-width: var(--space-32); }
+
+.app-header__nav-link { text-decoration: none; }
+.app-header a, a.btn { text-decoration: none; }
+.rs-matrix th { white-space: normal; }
+.rs-matrix th[scope="row"] { width: var(--space-40); vertical-align: top; }
+.rs-matrix td { vertical-align: top; font: var(--text-body-sm); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +53,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,36 +107,234 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Foundation</p>
       <h1>Responsive</h1>
-      <p class="ds-lead">Every screen works at 360px with no horizontal scroll, by touch, and gains its side panel at 1024px.</p>
-      
-      <ul class="ds-toc"><li><a href="#rules">Rules</a></li><li><a href="#targets">Touch</a></li><li><a href="#tokens">All tokens</a></li></ul>
+      <p class="ds-lead">Base styles fit a 360 px phone. At 640 px the header nav moves inline and the XP bar appears; at 1024 px pages split into two columns and the bike status joins the header.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#breakpoints">Breakpoints in the product</a></li><li><a href="#components">Component behaviour by width</a></li><li><a href="#control-height">Control heights</a></li><li><a href="#targets">Touch targets</a></li><li><a href="#touch">Touch and pointer rules</a></li><li><a href="#usage">Usage</a></li><li><a href="#testing">Testing matrix</a></li><li><a href="#tokens">Tokens</a></li></ul>
     </header>
-    <section class="ds-section" id="rules"><h2><a href="#rules">Rules</a></h2>
-<ul><li>Mobile-first min-width queries only.</li><li>App-bar actions become icon-only below 640px.</li><li>Dialogs are bottom sheets below 640px.</li><li>Toasts are full-width below 640px.</li><li>Side panels from 1024px; below, they follow main.</li><li>Numerals use fluid sizes so four-digit power fits at 360px.</li></ul>
-    </section>
-    <section class="ds-section" id="targets"><h2><a href="#targets">Touch</a></h2>
-<ul><li>Every target at least 44 × 44px (<code>--target-comfortable</code>) except dense rows that keep 24px with spacing (<code>--target-min</code>).</li></ul>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">All tokens</a></h2>
-<p>0 tokens. Values resolve live for each theme.</p><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody></tbody></table></div>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+      <p>Telo Ride runs on whatever screen sits in front of the bike: a laptop on the handlebars, a tablet on a stand, a phone, a TV-sized monitor. The system is mobile first: base styles fit a 360 px phone, and <code>min-width</code> queries add space, columns and status as the screen grows. Two breakpoints do almost all the work.</p>
+      <ul>
+        <li><b>640 px (<code>sm</code>)</b>: the header nav moves inline beside the logo and the XP bar appears; panels get roomier padding; dialogs stop being bottom sheets.</li>
+        <li><b>1024 px (<code>lg</code>)</b>: pages split into two columns (content and an aside), the bike's connection status joins the header, and the race HUD shows its resistance panel.</li>
+        <li>768 px (<code>md</code>) only reveals the race standings and a few secondary HUD details; 1280 px caps the container.</li>
+      </ul>
+      <p>Columns, gutters, margins and the breakpoint tokens themselves are on <a href="layout.html">Layout</a>. This page covers what each component does at each width, control heights, touch targets and how to test.</p>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="breakpoints"><h2><a href="#breakpoints">Breakpoints in the product</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Width</th><th scope="col">Query</th><th scope="col">What changes</th></tr></thead>
+        <tbody>
+          <tr><td>Base, 0–639</td><td>none</td><td>One column. Header nav is a full-width row under the logo; XP bar and bike status hidden (level badge and streak stay). Dialogs and popovers are bottom sheets. Asides stack under the main content. The race HUD shows power, position and the bar; the custom ride's Pause and End grow to 48 px.</td></tr>
+          <tr><td>640 (<code>sm</code>)</td><td><code>(min-width: 40rem)</code></td><td>Header nav inline; XP bar and label show; page margins and header padding 24 px; page titles 30 px; panels pad 28 px; dialogs centre; toasts move bottom-right; map tiles go to four across; button labels return in the race bar (“Leave”, “Finish”).</td></tr>
+          <tr><td>768 (<code>md</code>)</td><td><code>(min-width: 48rem)</code></td><td>Race standings board and the race bar's map name appear; class ride's bike panel goes to one row; the class name shows in the class header.</td></tr>
+          <tr><td>1024 (<code>lg</code>)</td><td><code>(min-width: 64rem)</code></td><td>Two columns everywhere they exist (Home's Next ride, Connect Bike, Map Select, Race Setup, Race Lobby, Results, Class Start, Class Ride with a group, Profile, Custom workout, the custom ride). Bike status in the header. Race resistance panel. Header and page padding 32 px; page padding 40 px top and bottom.</td></tr>
+          <tr><td>1280 (<code>xl</code>)</td><td><code>(min-width: 80rem)</code></td><td>The container stops growing (<code>--layout-container-max</code>); margins take the rest.</td></tr>
+        </tbody>
+      </table></div>
+      <p>Queries are written in <code>rem</code> so they move with the rider's font size. Custom properties cannot appear inside <code>@media</code>, so the numbers are repeated there; the source values are the <code>--layout-breakpoint-*</code> tokens on <a href="layout.html">Layout</a>.</p>
+      <h3>The header, live</h3>
+      <p>Resize the window: under 640 px the nav drops into its own full-width row, between 640 and 1023 px it sits inline with the XP bar showing, and from 1024 px “Echelon EX-5s” appears beside the streak.</p>
+      <div class="rs-header">
+        <header class="app-header">
+          <a class="app-header__brand" href="#breakpoints" aria-label="Home">
+            <span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span>
+          </a>
+          <nav class="app-header__nav" aria-label="Main (example)">
+            <a class="app-header__nav-link" href="#breakpoints" aria-current="page">Home</a>
+            <a class="app-header__nav-link" href="#breakpoints">Race</a>
+            <a class="app-header__nav-link" href="#breakpoints">Classes</a>
+            <a class="app-header__nav-link" href="#breakpoints">Profile</a>
+          </nav>
+          <div class="app-header__end">
+            <span class="app-header__bike"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>Echelon EX-5s<span class="visually-hidden"> connected</span></span>
+            <span class="app-header__streak"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg><span class="app-header__streak-count" aria-hidden="true">4</span><span class="visually-hidden">4-day streak</span></span>
+            <a class="app-header__level" href="#breakpoints" aria-label="Level 7, 1840 of 2600 XP">
+              <span class="level-badge" aria-hidden="true">7</span>
+              <span class="app-header__xp" aria-hidden="true"><span class="xp-bar"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><span class="app-header__xp-label">1,840 / 2,600 XP</span></span>
+            </a>
+            <button class="icon-btn icon-btn--edge" type="button" aria-label="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+          </div>
+        </header>
+      </div>
+    </section>
+
+    <section class="ds-section" id="components"><h2><a href="#components">Component behaviour by width</a></h2>
+      <p>What every responsive component does at the three widths that matter. Each component page repeats its own row under <em>Responsive behaviour</em>.</p>
+      <div class="ds-matrix rs-matrix"><table>
+        <thead><tr><th scope="col">Component</th><th scope="col">360 (base)</th><th scope="col">640 (sm)</th><th scope="col">1024 (lg)</th></tr></thead>
+        <tbody>
+          <tr><th scope="row"><a href="../components/app-header.html">App header</a></th><td>Logo and status on one row; nav a full-width row of four equal links below. Level badge and streak only.</td><td>Nav inline after the logo; XP bar and “1,840 / 2,600 XP” show.</td><td>“Echelon EX-5s” status appears; padding 32 px.</td></tr>
+          <tr><th scope="row"><a href="../components/dialog.html">Dialog</a></th><td>Bottom sheet: full width, rounded top corners, up to 90% of the height, scrolls inside.</td><td>Centred, up to 32rem wide, all corners rounded.</td><td>Same as 640.</td></tr>
+          <tr><th scope="row"><a href="../components/popover.html">Popover</a> (“Leave this ride?”)</th><td>Pinned under the ride header, inset 20 px from both edges, so it never runs off the right side.</td><td>Anchored to the Library button.</td><td>Same as 640.</td></tr>
+          <tr><th scope="row"><a href="../components/toast.html">Toast</a></th><td>Full width at the bottom, 16 px from the edges.</td><td>Bottom-right, 24rem wide, 24 px from the edges.</td><td>Same as 640.</td></tr>
+          <tr><th scope="row"><a href="../components/alert.html">Browser notice</a></th><td>Stacked: text, then the action under it; no icon.</td><td>One row: icon, text, action.</td><td>Padding 32 px.</td></tr>
+          <tr><th scope="row"><a href="../components/next-ride.html">Next ride</a></th><td>Photo above, body below.</td><td>Body pads 28 px; goal text grows.</td><td>Photo and body side by side (3 : 2); the Race button sits at the bottom.</td></tr>
+          <tr><th scope="row"><a href="../components/map-card.html">Map tiles and rows</a></th><td>Tiles two across; rows put a 96 px photo beside the text, no chevron.</td><td>Tiles four across; rows widen the photo to 176 px and add the chevron.</td><td>Map Select gets its star aside on the right.</td></tr>
+          <tr><th scope="row"><a href="../components/class-card.html">Class shelf</a></th><td>One card per row.</td><td>Two across.</td><td>Three across.</td></tr>
+          <tr><th scope="row">Asides (Race Setup, Results, Class Start, Profile, Custom workout preview)</th><td>Stack under the main content, full width.</td><td>Still stacked.</td><td>Fixed-width column on the right (20–26rem by area); the main column takes the rest.</td></tr>
+          <tr><th scope="row"><a href="../components/hud-panel.html">Race HUD</a></th><td>Compact: power and position panels, the bar with icon-only Leave and Finish, interval panel. No standings, no resistance panel.</td><td>Bar labels return; power panel moves in from the edge; the route strip shows.</td><td>Standings (from 768), resistance steppers, three-column bottom HUD.</td></tr>
+          <tr><th scope="row"><a href="../components/ride-readout.html">Custom ride</a></th><td>Telemetry, video, metrics and bike control stack in one scrolling column; Pause and End are 48 px.</td><td>Power number 128 px; metrics five across; Pause and End back to the design's 40 px.</td><td>Telemetry left, bike control in a 21.25rem column right; each scrolls on its own.</td></tr>
+          <tr><th scope="row"><a href="../components/leaderboard.html">Class ride board</a></th><td>Under the video and bike panel.</td><td>Same.</td><td>A 17.5rem column right of the video (group rides).</td></tr>
+          <tr><th scope="row"><a href="../components/countdown.html">Countdown</a></th><td>Digits at 200 px cover the screen.</td><td>Same.</td><td>Same: the 3-2-1 never changes size.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="control-height"><h2><a href="#control-height">Control heights</a></h2>
+      <p>Four heights for anything you press or type into. The design's working size is 36 px (<code>h-9</code>) for header links, icon buttons and segmented options, and 40 px (<code>h-10</code>) for buttons and inputs.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas rs-heights">
+          <figure><button class="btn btn--raised btn--sm" type="button">Leave</button><figcaption>sm · 36</figcaption></figure>
+          <figure><button class="btn btn--raised" type="button">Try again</button><figcaption>md · 40</figcaption></figure>
+          <figure><button class="btn btn--primary btn--lg" type="button">Race Old Town Criterium</button><figcaption>lg · 48</figcaption></figure>
+          <figure><button class="btn btn--primary btn--xl" type="button">Pair Echelon EX-5s</button><figcaption>xl · 56</figcaption></figure>
+        </div>
+        <div class="ds-example__caption"><span>The skill's default scale is 32 / 40 / 48; Telo Ride's small step is 36 because the design draws it.</span></div>
+      </div>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Token</th><th scope="col">Value</th><th scope="col">Used by</th></tr></thead>
+        <tbody>
+          <tr><td><code>--control-height-sm</code></td><td data-token="--control-height-sm"></td><td>Header nav links, <code>.icon-btn</code>, <code>.segmented__option</code>, <code>.btn--sm</code>, browser-notice actions.</td></tr>
+          <tr><td><code>--control-height-md</code></td><td data-token="--control-height-md"></td><td><code>.btn</code>, <code>.input</code>, ride header Pause and End on desktop.</td></tr>
+          <tr><td><code>--control-height-lg</code></td><td data-token="--control-height-lg"></td><td><code>.btn--lg</code> page actions (Race, Join group, Go to the start line), <code>.icon-btn--lg</code>.</td></tr>
+          <tr><td><code>--control-height-xl</code></td><td data-token="--control-height-xl"></td><td><code>.btn--xl</code>: the one big start action (Pair Echelon EX-5s, I’m ready).</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="targets"><h2><a href="#targets">Touch targets</a></h2>
+      <p>People press Telo Ride with sweaty fingers, at 90 rpm, from arm's length. Three target tokens set the floor.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas rs-targets">
+          <figure><span class="rs-target" style="--size: var(--target-min)" aria-hidden="true"></span><figcaption>min · 24<br>anything at all</figcaption></figure>
+          <figure><span class="rs-target" style="--size: var(--target-comfortable)" aria-hidden="true"></span><figcaption>comfortable · 44<br>primary actions on phones</figcaption></figure>
+          <figure><span class="rs-target" style="--size: var(--target-ride)" aria-hidden="true"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span><figcaption>ride · 48<br>pressed mid-ride</figcaption></figure>
+        </div>
+      </div>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Token</th><th scope="col">Value</th><th scope="col">Rule</th></tr></thead>
+        <tbody>
+          <tr><td><code>--target-min</code></td><td data-token="--target-min"></td><td>WCAG 2.5.8: every target at least 24 × 24, or 24 px clear of its neighbours. Range sliders are 24 px tall for this reason.</td></tr>
+          <tr><td><code>--target-comfortable</code></td><td data-token="--target-comfortable"></td><td>Primary actions on phones and in overlays: Reconnect, Ride Neon Docklands, the YouTube link field.</td></tr>
+          <tr><td><code>--target-ride</code></td><td data-token="--target-ride"></td><td>Anything pressed while riding: resistance steppers in the race and the class, and on phones the ride header's Pause and End.</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Ride controls, live</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas">
+          <div class="class-resist rs-resist">
+            <button class="class-resist__btn" type="button" aria-label="Lower resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+            <div class="class-resist__value" aria-label="Resistance 6 of 32"><div class="class-resist__level">6</div><div class="class-resist__of">of 32</div></div>
+            <button class="class-resist__btn" type="button" aria-label="Raise resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Class Ride resistance: two 48 px steppers with the level between them, the buttons a full value apart.</span></div>
+      </div>
+      <p><b>Open question 9.</b> The redesign plan asks for 48 px on everything pressed mid-ride, but the design draws the race, class and custom-ride headers (Finish, Pause, Leave, End) at 36–40 px. The system follows the mocks: those buttons are <code>--control-height-sm</code>/<code>-md</code> from 640 px and <code>--target-ride</code> below it on the custom ride. Until the question is settled, new mid-ride controls use <code>--target-ride</code> at every width.</p>
+    </section>
+
+    <section class="ds-section" id="touch"><h2><a href="#touch">Touch and pointer rules</a></h2>
+      <ul>
+        <li><b>No hover-only information.</b> Every hover change is decoration on top of something already visible: a colour, a zoom on a class cover. Locked maps say why in text, not in a hover card.</li>
+        <li><b>Do not grow targets on <code>(pointer: coarse)</code>.</b> They are already big enough everywhere; a laptop with a touchscreen should not get a different layout.</li>
+        <li><b>Spacing between small targets.</b> Adjacent 36 px controls (header nav, segmented options) keep at least 4 px between them; ride steppers sit a whole readout apart.</li>
+        <li><b>Full-height screens use <code>100dvh</code></b> (<code>.app</code>) so the phone's browser bar never covers the ride controls.</li>
+        <li><b>Fixed bottom elements</b> (toasts, bottom sheets) add <code>env(safe-area-inset-bottom)</code> on phones with a home indicator.</li>
+        <li><b>Nothing depends on orientation</b> (1.3.4). The race scene reframes its panorama when the screen is taller than it is wide, and every page works in both.</li>
+        <li><b>Reflow</b> (1.4.10): every page works at 320 px CSS width with no sideways scroll; only wide tables and the plan chart scroll inside their own wrapper.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="usage"><h2><a href="#usage">Usage</a></h2>
+      <pre><code>/* Mobile first: the base is the phone, queries only add */
+.results { display: grid; gap: var(--space-8); }
+@media (min-width: 64rem) {
+  .results { grid-template-columns: minmax(0, 1fr) var(--results-aside-width); gap: var(--space-14); }
+}
+
+/* Mid-ride controls: the ride target, at every width */
+.class-resist__btn { width: var(--target-ride); height: var(--target-ride); }</code></pre>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><code>@media (min-width: 40rem)</code></div><figcaption>Write <code>min-width</code> queries in <code>rem</code> at the system's breakpoints.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><code>@media (max-width: 1023px)</code></div><figcaption>Write desktop-first <code>max-width</code> queries in px. The two exceptions in <code>components.css</code> (ride buttons and the “Leave this ride?” popover under 640) undo a desktop size the design drew; they are not a pattern.</figcaption></figure>
+      </div>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><button class="class-resist__btn" type="button" aria-label="Raise resistance"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div><figcaption>Give a mid-ride control <code>--target-ride</code>.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><button class="mini-stepper__btn" type="button" aria-label="Raise resistance"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div><figcaption>Reuse the 28 px setup stepper during a ride. It suits a form at rest, not a rider at threshold.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="testing"><h2><a href="#testing">Testing matrix</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Viewport</th><th scope="col">Stands in for</th><th scope="col">Dark</th><th scope="col">Light</th><th scope="col">Check</th></tr></thead>
+        <tbody>
+          <tr><td>360 × 800</td><td>Phone on the handlebars</td><td>Required</td><td>Required</td><td>No sideways scroll; nav row under the logo; dialogs are sheets; ride buttons 48 px; nothing clipped in the HUD.</td></tr>
+          <tr><td>768 × 1024</td><td>Tablet on a stand</td><td>Required</td><td>Required</td><td>Header inline; standings appear; asides still stack; tables scroll in their wrapper.</td></tr>
+          <tr><td>1280 × 800</td><td>Laptop or monitor</td><td>Required</td><td>Required</td><td>Two columns; bike status in the header; resistance panel in the race; content capped at the container.</td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li>Screenshot every mock and every component page at the three sizes in both themes: <code>screenshot_mocks.py docs/mocks</code> for the mocks, and the Playwright CLI (<code>npx playwright screenshot --viewport-size 360,800 …?theme=light</code>) for this site.</li>
+        <li>Zoom to 200% and 400% at 1280: the layout must step down through the same breakpoints because the queries are in <code>rem</code>.</li>
+        <li>Tap through one ride on a real phone: Pause, End, resistance, Reconnect.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <p>Control heights and touch targets. They do not change with the theme; both columns resolve live.</p>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th><th scope="col">Use</th></tr></thead>
+        <tbody>
+          <tr><td><code>--control-height-sm</code></td><td><span data-theme="light"><span data-token="--control-height-sm"></span></span></td><td><span data-theme="dark"><span data-token="--control-height-sm"></span></span></td><td>36px: header links, icon buttons, segmented options</td></tr>
+          <tr><td><code>--control-height-md</code></td><td><span data-theme="light"><span data-token="--control-height-md"></span></span></td><td><span data-theme="dark"><span data-token="--control-height-md"></span></span></td><td>40px: buttons and inputs</td></tr>
+          <tr><td><code>--control-height-lg</code></td><td><span data-theme="light"><span data-token="--control-height-lg"></span></span></td><td><span data-theme="dark"><span data-token="--control-height-lg"></span></span></td><td>48px: page actions</td></tr>
+          <tr><td><code>--control-height-xl</code></td><td><span data-theme="light"><span data-token="--control-height-xl"></span></span></td><td><span data-theme="dark"><span data-token="--control-height-xl"></span></span></td><td>56px: the one big start action</td></tr>
+          <tr><td><code>--target-min</code></td><td><span data-theme="light"><span data-token="--target-min"></span></span></td><td><span data-theme="dark"><span data-token="--target-min"></span></span></td><td>24px floor for every target (WCAG 2.5.8)</td></tr>
+          <tr><td><code>--target-comfortable</code></td><td><span data-theme="light"><span data-token="--target-comfortable"></span></span></td><td><span data-theme="dark"><span data-token="--target-comfortable"></span></span></td><td>44px: primary actions on phones and overlays</td></tr>
+          <tr><td><code>--target-ride</code></td><td><span data-theme="light"><span data-token="--target-ride"></span></span></td><td><span data-theme="dark"><span data-token="--target-ride"></span></span></td><td>48px: anything pressed mid-ride</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

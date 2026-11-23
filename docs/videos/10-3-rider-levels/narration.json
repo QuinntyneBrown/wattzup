@@ -1,0 +1,64 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Your XP now adds up to a level, from one to thirty, and the header shows it on every screen."
+      ]
+    },
+    {
+      "id": "table",
+      "bars": 6,
+      "lines": [
+        "Each level has a threshold: level two at four hundred XP, level eight at two thousand six hundred, level nineteen at ten thousand four hundred. The rest are provisional until the table is settled."
+      ]
+    },
+    {
+      "id": "header",
+      "bars": 5,
+      "lines": [
+        "The mid rider reads level seven, eighteen forty of twenty-six hundred, the bar seventy point eight percent full. Tap it for Profile. On a phone, only the badge."
+      ]
+    },
+    {
+      "id": "ride",
+      "bars": 4,
+      "lines": [
+        "Every ride answers with the level it reaches and whether it went up. At level thirty, the XP keeps growing and the level stays put."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: every row of the table, the level through the API, and the header as the rider sees it."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

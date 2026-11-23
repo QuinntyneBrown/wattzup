@@ -1,0 +1,15 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Meet performance budgets
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Bundle, Web Vitals and frame budgets")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Request and standings budgets")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Riders, sessions, rides, progress, feedback")
+}
+Rel(rider, app, "Uses", "HTTPS")
+Rel(app, api, "Calls and holds a hub connection to", "JSON/HTTPS, WebSocket")
+Rel(api, db, "Reads and writes", "EF Core")
+@enduml

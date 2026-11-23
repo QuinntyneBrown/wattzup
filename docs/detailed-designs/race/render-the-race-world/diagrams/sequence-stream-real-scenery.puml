@@ -1,0 +1,58 @@
+@startuml
+title UML sequence behaviour — Stream real-world scenery
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "RacePage" as page
+  participant "RaceWorld" as rworld
+end box
+box "Frontend — Ride app (components and domain libraries)" #E0F2FE
+  participant "RaceScenery" as panel
+  participant "MapsKeyStore" as keys
+end box
+box "Frontend — Ride app (world library, lazy chunk)" #E0F2FE
+  participant "WorldScene" as scene
+  participant "WorldRenderer" as renderer
+  participant "PhotorealTilesLayer\n(3d-tiles-renderer, its own chunk)" as tiles
+end box
+participant "Google Map Tiles API" as google
+page -> panel : Render when the map has a real place and the world draws (L2-066 AC1, AC5, AC9)
+page -> keys : get(); the field holds a stored key (AC8)
+panel --> actor : "Ride the real Bruges · Steenstraat to the Markt"; "Stream it" disabled while empty (AC2)
+actor -> panel : Paste key, press "Stream it"
+panel --> page : streamKey(key)
+page -> keys : save(key); this browser's localStorage only (AC3)
+page -> rworld : scenery = { place, key }
+rworld -> scene : setInput('scenery')
+scene -> renderer : stream(place, key, report)
+renderer -> tiles : import on demand; load at the place's latitude and longitude
+tiles -> google : GET /v1/3dtiles/root.json?key=…; never to Telo Ride's backend
+alt key accepted
+  google --> tiles : Root tileset and its session
+  tiles --> renderer : group added to the scene; updated with the camera each frame
+  renderer --> scene : report(streaming, Google's attribution)
+  scene --> page : scenery state
+  page --> panel : "Streaming the real Bruges · Steenstraat to the Markt" over the attribution (AC7)
+else key refused
+  google --> tiles : 403
+  tiles --> renderer : load-error
+  renderer --> scene : report(refused); built-in world stays (AC4)
+  scene --> page : scenery state
+  page --> panel : field invalid; "Google refused that key. The built-in world stays."
+end
+actor -> page : Leave
+page -> rworld : destroyed with the race view; the renderer disposes the tiles with the scene
+@enduml

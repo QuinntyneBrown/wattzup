@@ -1,0 +1,92 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+set separator none
+' --------------------------
+title Class structure — Run a group class session
+
+package "Telo.Ride.Domain" {
+  class GroupClassSession {
+    +string ClassId
+    +DateTimeOffset StartsAt
+    +string Id
+    +IReadOnlyList<SessionSeat> Seats
+    +int SeatsTaken
+    +bool Full
+    +static Jerseys: string[10]
+    +TrySeat(riderId: Guid, displayName: string, now: DateTimeOffset): (JoinOutcome, SessionSeat?)
+  }
+  class SessionSeat <<record>> {
+    +Guid RiderId
+    +string DisplayName
+    +string Jersey
+  }
+  class GroupSessionSchedule <<static>> {
+    +Capacity: int = 10
+    +Interval: TimeSpan = 15 min
+    +Next(now: DateTimeOffset, count: int): IReadOnlyList<DateTimeOffset>
+    +SessionId(classId: string, start: DateTimeOffset): string
+    +TryParse(sessionId: string, out classId: string, out start: DateTimeOffset): bool
+  }
+  enum JoinOutcome {
+    Seated
+    Full
+    Started
+  }
+  class ClassDefinition {
+    +string Id
+    +int OpensAtLevel
+  }
+}
+package "Telo.Ride.Application" {
+  class JoinClassSessionCommand <<record>> {
+    +Guid RiderId
+    +string ClassId
+    +string SessionId
+  }
+  class JoinClassSessionCommandHandler {
+    +Handle(cmd: JoinClassSessionCommand): Task<JoinClassSessionResult>
+  }
+  class JoinClassSessionResult <<record>> {
+    +string? Code
+    +string SessionId
+    +DateTimeOffset? StartsAt
+    +string? Jersey
+    +OfferedSessionDto? Next
+  }
+  class OfferedSessionDto <<record>> {
+    +string Id
+    +DateTimeOffset StartsAt
+  }
+  interface IGroupSessionRegistry {
+    +GetOrCreate(classId, startsAt, now): GroupClassSession
+    +Find(sessionId, now): GroupClassSession?
+  }
+  interface IAppDbContext
+}
+package "Telo.Ride.Infrastructure" {
+  class InMemoryGroupSessionRegistry
+}
+
+GroupClassSession *-- SessionSeat
+GroupClassSession ..> JoinOutcome : returns
+GroupClassSession ..> GroupSessionSchedule : id
+JoinClassSessionCommandHandler ..> JoinClassSessionCommand : handles
+JoinClassSessionCommandHandler ..> GroupSessionSchedule
+JoinClassSessionCommandHandler ..> IGroupSessionRegistry
+JoinClassSessionCommandHandler ..> IAppDbContext : rider level and name
+JoinClassSessionCommandHandler ..> ClassDefinition : from the catalogue
+JoinClassSessionCommandHandler ..> JoinClassSessionResult : returns
+JoinClassSessionResult --> OfferedSessionDto
+InMemoryGroupSessionRegistry ..|> IGroupSessionRegistry
+IGroupSessionRegistry --> GroupClassSession : holds
+@enduml

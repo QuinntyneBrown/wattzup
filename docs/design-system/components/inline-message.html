@@ -3,17 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Inline message — Wattzup design system</title>
-<meta name="description" content="Short status next to a control: field errors and pending states.">
+<title>Inline message — Telo Ride design system</title>
+<meta name="description" content="Inline messages explain the thing next to them: field hints, errors and success, notes in a section, a disabled button's reason and the lobby notice.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Page-only: docs chrome links (ds.css a) must not restyle product links inside specimens */
+:where(.ds-example__canvas, .ds-themes, .ds-matrix, .ds-anatomy__figure) a { color: inherit; text-decoration: none; }
+:where(.ds-example__canvas, .ds-themes, .ds-matrix, .ds-anatomy__figure) a:hover { color: inherit; }
+/* Visually hidden text inside a scrolling matrix must not widen the page */
+.ds-matrix { position: relative; }
+.ds-themes + p, .ds-themes + ul { margin-top: var(--space-4); }
+/* Product tables shown inside the state matrix keep their own cell styles */
+.ds-matrix td :is(.table, .map-table) :is(th, td) { padding: var(--table-cell-py, var(--space-2-5)) var(--table-cell-px, 0); background: transparent; border-right: 0; border-top: 0; font: inherit; text-transform: none; letter-spacing: normal; color: inherit; white-space: nowrap; }
+.ds-matrix td :is(.table) thead th { font-size: var(--font-size-xs); line-height: var(--line-height-xs); font-weight: var(--font-weight-semibold); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-muted); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +39,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,72 +93,258 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Component · Feedback</p>
       <h1>Inline message</h1>
-      <p class="ds-lead">Inline messages sit next to what they describe: a field error, Setting 22…, or a short success.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span></div>
+      <p class="ds-lead">One line next to the thing it explains: a hint under a field, why Start ride is off, who just left the lobby.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
       <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p><code>.field__error</code> under fields; <code>.inline-status</code> for short states next to controls.</p>
-    </section>
-    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
-<div class="ds-anatomy"><figure class="ds-anatomy__figure"><p class="field__error">Enter 1 to 30 rounds.</p><span class="ds-callout" style="left: 3%; top: 50%;" aria-hidden="true">1</span><span class="ds-callout" style="left: 50%; top: 50%;" aria-hidden="true">2</span></figure><ol class="ds-anatomy__list"><li><div><b>Icon</b><small>⚠ for errors.</small></div></li><li><div><b>Text</b><small>Body-sm, tone colour.</small></div></li></ol></div>
-    </section>
-    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
-<div class="ds-example"><div class="ds-example__canvas "><p class="field__error">Recover must be at least 0:05.</p><span class="inline-status inline-status--warning"><span class="dot" aria-hidden="true"></span>Setting 22…</span><span class="inline-status inline-status--success"><span class="dot" aria-hidden="true"></span>Set to 20</span></div><div class="ds-example__caption"><span>Error, pending, success.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;p class="field__error"&gt;Recover must be at least 0:05.&lt;/p&gt;
-&lt;span class="inline-status inline-status--warning"&gt;
-&lt;span class="dot" aria-hidden="true"&gt;
-&lt;/span&gt;Setting 22…&lt;/span&gt;
-&lt;span class="inline-status inline-status--success"&gt;
-&lt;span class="dot" aria-hidden="true"&gt;
-&lt;/span&gt;Set to 20&lt;/span&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="sizes" data-na="Body-sm."><h2><a href="#sizes">Sizes</a></h2>
-      <p class="ds-na">Body-sm.</p>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<div class="ds-matrix"><table><thead><tr><th scope="col">Variant</th><th scope="col">Example</th></tr></thead><tbody><tr><th scope="row">Error</th><td><p class="field__error">Enter 1 to 30 rounds.</p></td></tr></tbody></table></div><h3>Both themes</h3><div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas"><p class="field__error">Enter 1 to 30 rounds.</p></div></div><div data-theme="dark"><div class="ds-example__canvas"><p class="field__error">Enter 1 to 30 rounds.</p></div></div></div>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
-<ul><li>Wraps under its control.</li></ul>
-    </section>
-    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
-<p>Tone tokens.</p>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<h3>Role and pattern</h3><p>Error ids in the control's <code>aria-describedby</code>; pending states in <code>role="status"</code>.</p><h3>Keyboard</h3><div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody><tr><td>—</td><td>Not focusable; read in document order.</td></tr></tbody></table></div><h3>Focus</h3><p>Not focusable.</p><h3>Labelling</h3><p>Errors are read with the field.</p><h3>Contrast</h3><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-pair"><span>Error</span><span class="ds-pair__ratio" data-contrast="--color-danger-fg|--color-bg-canvas" data-min="4.5"></span></div><div class="ds-pair"><span>Pending</span><span class="ds-pair__ratio" data-contrast="--color-fg-warn|--color-bg-canvas" data-min="4.5"></span></div></div><h3>Motion</h3><p>None.</p><h3>Touch</h3><p>Not interactive.</p>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Errors: rule and fix in one sentence.</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><p class="field__error">Enter 1 to 30 rounds.</p></div><figcaption>Specific.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><p class="field__error">Error.</p></div><figcaption>Vague.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
-<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Error</td><td><code>--color-danger-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-danger-fg" data-swatch></i><span data-token="--color-danger-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-danger-fg" data-swatch></i><span data-token="--color-danger-fg"></span></span></td></tr><tr><td>Warning</td><td><code>--color-fg-warn</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-warn" data-swatch></i><span data-token="--color-fg-warn"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-warn" data-swatch></i><span data-token="--color-fg-warn"></span></span></td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
-<pre><code>&lt;p class="field__error" id="rounds-err"&gt;Enter 1 to 30 rounds.&lt;/p&gt;</code></pre><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.field__error</code></td><td>Field error.</td></tr><tr><td><code>.inline-status--success/--warning/--danger</code></td><td>Short status.</td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from these mocks:</p><ul><li><a href="../../mocks/pages/setup/invalid.html">pages/setup/invalid</a> (errors)</li><li><a href="../../mocks/pages/ride/manual.html">pages/ride/manual</a> (Setting 22…)</li></ul><p>Drift fixed during extraction: none.</p>
+<p>An inline message is one line, or a short paragraph, that explains the thing right next to it: a hint under a field, why a button is off, what changed in the lobby. It sits in the flow of the page, never floats, and never needs dismissing. The mocks use it in many small forms: <code>.field__hint</code>, Race Setup's <code>.pack__note</code> ("Around 190 W. A top 3 here earns the second star."), Custom workout's <code>.plan-preview__blocked</code> under a disabled Start ride, and the lobby's <code>.race-lobby__notice</code> ("MarcoVelo left. Their seat is open again."). <code>.inline-message</code> is the generic block; <code>.field__error</code> and <code>.field__success</code> are its field-sized forms.</p>
+<ul><li>Use it when the message belongs to one control or one section.</li>
+<li>For a message about the whole page (a browser that cannot reach the bike), use the <a href="alert.html">alert</a> banner.</li>
+<li>For a passing confirmation after an action ("Feedback sent"), use a <a href="toast.html">toast</a>.</li></ul>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+<div class="ds-anatomy">
+<figure class="ds-anatomy__figure" style="padding: var(--space-8); display: block; place-items: normal; min-width: 0;">
+<div style="width: 100%; max-width: 24rem;"><div class="field" style="width: 100%; max-width: 24rem;"><label class="field__label" for="an">YouTube link</label><input class="input" id="an" type="url" placeholder="https://www.youtube.com/watch?v=…" value="youtube.com/GCN" aria-describedby="an-msg" aria-invalid="true"><p class="field__error" id="an-msg"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>That isn’t a YouTube link. Paste one that starts with youtube.com or youtu.be.</p></div></div><span class="ds-callout" style="left: 4%; top: 76%;" aria-hidden="true">1</span><span class="ds-callout" style="left: 16%; top: 76%;" aria-hidden="true">2</span>
+</figure>
+<ol class="ds-anatomy__list">
+<li><div><b>Icon (optional for hints, required for errors and success)</b><small>14px (field) or 16px (block), the tone colour; <code>aria-hidden</code>.</small></div></li>
+<li><div><b>Text</b><small>12px under fields, 14px in sections; the tone colour; tied to the control by <code>aria-describedby</code>.</small></div></li>
+</ol>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+<h3>Under a field</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<div style="display: grid; gap: var(--space-6); width: 100%;"><div class="field" style="width: 100%; max-width: 24rem;"><label class="field__label" for="v1">YouTube link</label><input class="input" id="v1" type="url" placeholder="https://www.youtube.com/watch?v=…" aria-describedby="v1-msg"><p class="field__hint" id="v1-msg">Paste a link to a class video; the plan follows its intervals.</p></div><div class="field" style="width: 100%; max-width: 24rem;"><label class="field__label" for="v2">YouTube link</label><input class="input" id="v2" type="url" placeholder="https://www.youtube.com/watch?v=…" value="youtube.com/GCN" aria-describedby="v2-msg" aria-invalid="true"><p class="field__error" id="v2-msg"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>That isn’t a YouTube link. Paste one that starts with youtube.com or youtu.be.</p></div><div class="field" style="width: 100%; max-width: 24rem;"><label class="field__label" for="v3">YouTube link</label><input class="input" id="v3" type="url" placeholder="https://www.youtube.com/watch?v=…" value="https://youtu.be/gcn30hiit" aria-describedby="v3-msg"><p class="field__success" id="v3-msg"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>GCN 30-min HIIT · 31:04 loaded.</p></div></div>
+</div>
+<div class="ds-example__caption"><span>Hint (faint), error (heart, circle-alert), success (ok, circle-check). The message replaces the hint; it does not stack under it.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div style="display: grid; gap: var(--space-6); width: 100%;"&gt;&lt;div class="field" style="width: 100%; max-width: 24rem;"&gt;&lt;label class="field__label" for="v1"&gt;YouTube link&lt;/label&gt;&lt;input class="input" id="v1" type="url" placeholder="https://www.youtube.com/watch?v=…" aria-describedby="v1-msg"&gt;&lt;p class="field__hint" id="v1-msg"&gt;Paste a link to a class video; the plan follows its intervals.&lt;/p&gt;&lt;/div&gt;&lt;div class="field" style="width: 100%; max-width: 24rem;"&gt;&lt;label class="field__label" for="v2"&gt;YouTube link&lt;/label&gt;&lt;input class="input" id="v2" type="url" placeholder="https://www.youtube.com/watch?v=…" value="youtube.com/GCN" aria-describedby="v2-msg" aria-invalid="true"&gt;&lt;p class="field__error" id="v2-msg"&gt;&lt;svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;That isn’t a YouTube link. Paste one that starts with youtube.com or youtu.be.&lt;/p&gt;&lt;/div&gt;&lt;div class="field" style="width: 100%; max-width: 24rem;"&gt;&lt;label class="field__label" for="v3"&gt;YouTube link&lt;/label&gt;&lt;input class="input" id="v3" type="url" placeholder="https://www.youtube.com/watch?v=…" value="https://youtu.be/gcn30hiit" aria-describedby="v3-msg"&gt;&lt;p class="field__success" id="v3-msg"&gt;&lt;svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;GCN 30-min HIIT · 31:04 loaded.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details>
+</div>
+
+<h3>Notes in a section (as drawn)</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<div style="display: grid; gap: var(--space-4); width: 100%; max-width: 28rem;"><p class="inline-message"><span class="inline-message__text">Around 190 W. A top 3 here earns the second star.</span></p><p class="inline-message"><span class="inline-message__text">You can still nudge the level mid-ride from the dashboard.</span></p><p class="inline-message inline-message--hint inline-message--sm inline-message--center" id="nb-blocked"><span class="inline-message__text">Needs the HTTPS page to reach the bike.</span></p></div>
+</div>
+<div class="ds-example__caption"><span>Race Setup pack note and setup note (muted, 14px) and the Start ride reason (12px, centred, under the button).</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div style="display: grid; gap: var(--space-4); width: 100%; max-width: 28rem;"&gt;&lt;p class="inline-message"&gt;&lt;span class="inline-message__text"&gt;Around 190 W. A top 3 here earns the second star.&lt;/span&gt;&lt;/p&gt;&lt;p class="inline-message"&gt;&lt;span class="inline-message__text"&gt;You can still nudge the level mid-ride from the dashboard.&lt;/span&gt;&lt;/p&gt;&lt;p class="inline-message inline-message--hint inline-message--sm inline-message--center" id="nb-blocked"&gt;&lt;span class="inline-message__text"&gt;Needs the HTTPS page to reach the bike.&lt;/span&gt;&lt;/p&gt;&lt;/div&gt;</code></pre></details>
+</div>
+
+<h3>Notice in a well</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<p class="inline-message inline-message--well inline-message--warn" role="status"><svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" x2="16" y1="11" y2="11"/></svg><span class="inline-message__text">MarcoVelo left. Their seat is open again.</span></p>
+</div>
+<div class="ds-example__caption"><span>The lobby notice: a raised well with a warn icon, announced by <code>role="status"</code>.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;p class="inline-message inline-message--well inline-message--warn" role="status"&gt;&lt;svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;span class="inline-message__text"&gt;MarcoVelo left. Their seat is open again.&lt;/span&gt;&lt;/p&gt;</code></pre></details>
+</div>
+
+<h3>Tones</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<div style="display: grid; gap: var(--space-3); width: 100%;"><p class="inline-message"><svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><span class="inline-message__text">Scrub the preview past the intro to the moment the warm-up begins, then use that time.</span></p><p class="inline-message inline-message--warn"><svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><span class="inline-message__text">Other FTMS smart bikes are in beta: resistance may land a level off.</span></p><p class="inline-message inline-message--error"><svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg><span class="inline-message__text">Lost the bike. Pedal to wake it, then reconnect.</span></p><p class="inline-message inline-message--success"><svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><span class="inline-message__text">Paired with Echelon EX-5s.</span></p><p class="inline-message inline-message--gold"><svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><span class="inline-message__text">+1 new star on Old Town Criterium.</span></p></div>
+</div>
+<div class="ds-example__caption"><span>Neutral, warn (icon only, the text stays muted), error, success, gold for earned things.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div style="display: grid; gap: var(--space-3); width: 100%;"&gt;&lt;p class="inline-message"&gt;&lt;svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;span class="inline-message__text"&gt;Scrub the preview past the intro to the moment the warm-up begins, then use that time.&lt;/span&gt;&lt;/p&gt;&lt;p class="inline-message inline-message--warn"&gt;&lt;svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;span class="inline-message__text"&gt;Other FTMS smart bikes are in beta: resistance may land a level off.&lt;/span&gt;&lt;/p&gt;&lt;p class="inline-message inline-message--error"&gt;&lt;svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;span class="inline-message__text"&gt;Lost the bike. Pedal to wake it, then reconnect.&lt;/span&gt;&lt;/p&gt;&lt;p class="inline-message inline-message--success"&gt;&lt;svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;span class="inline-message__text"&gt;Paired with Echelon EX-5s.&lt;/span&gt;&lt;/p&gt;&lt;p class="inline-message inline-message--gold"&gt;&lt;svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;span class="inline-message__text"&gt;+1 new star on Old Town Criterium.&lt;/span&gt;&lt;/p&gt;&lt;/div&gt;</code></pre></details>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<div style="display: grid; gap: var(--space-3);"><p class="inline-message inline-message--error inline-message--sm"><svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg><span class="inline-message__text">Lost the bike. Pedal to wake it, then reconnect.</span></p><p class="inline-message inline-message--error"><svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg><span class="inline-message__text">Lost the bike. Pedal to wake it, then reconnect.</span></p></div>
+</div>
+<div class="ds-example__caption"><span>Small (12px, 14px icon) under fields and buttons; default (14px, 16px icon) in sections.</span></div>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+<p>The message itself is not interactive; it follows the state of the control it describes. Focus and hover belong to the input; a disabled field keeps its hint (dimmed with it) so the reason stays readable.</p>
+<div class="ds-matrix"><table>
+<thead><tr><th scope="col">Message</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Disabled</th><th scope="col">Invalid</th><th scope="col">Success</th></tr></thead>
+<tbody>
+<tr><th scope="row">Field message</th><td><div class="field" style="width: 100%; max-width: 24rem;"><label class="field__label" for="m1">YouTube link</label><input class="input" id="m1" type="url" placeholder="https://www.youtube.com/watch?v=…" aria-describedby="m1-msg"><p class="field__hint" id="m1-msg">Paste a link to a class video; the plan follows its intervals.</p></div></td><td>—</td><td><div class="field" style="width: 100%; max-width: 24rem;"><label class="field__label" for="m2">YouTube link</label><input class="input" id="m2" type="url" placeholder="https://www.youtube.com/watch?v=…" aria-describedby="m2-msg" data-state="focus"><p class="field__hint" id="m2-msg">Paste a link to a class video; the plan follows its intervals.</p></div></td><td>—</td><td><div class="field" style="width: 100%; max-width: 24rem;"><label class="field__label" for="m3">YouTube link</label><input class="input" id="m3" type="url" placeholder="https://www.youtube.com/watch?v=…" aria-describedby="m3-msg" disabled><p class="field__hint" id="m3-msg">Paste a link to a class video; the plan follows its intervals.</p></div></td><td><div class="field" style="width: 100%; max-width: 24rem;"><label class="field__label" for="m4">YouTube link</label><input class="input" id="m4" type="url" placeholder="https://www.youtube.com/watch?v=…" value="youtube.com/GCN" aria-describedby="m4-msg" aria-invalid="true"><p class="field__error" id="m4-msg"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>That isn’t a YouTube link. Paste one that starts with youtube.com or youtu.be.</p></div></td><td><div class="field" style="width: 100%; max-width: 24rem;"><label class="field__label" for="m5">YouTube link</label><input class="input" id="m5" type="url" placeholder="https://www.youtube.com/watch?v=…" value="https://youtu.be/gcn30hiit" aria-describedby="m5-msg"><p class="field__success" id="m5-msg"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>GCN 30-min HIIT · 31:04 loaded.</p></div></td></tr>
+</tbody>
+</table></div>
+
+<h3>Both themes</h3>
+<div class="ds-themes">
+<div data-theme="light"><div class="ds-example__canvas " style="padding: 0; display: block;"><div style="display: grid; gap: var(--space-4); width: 100%;"><div class="field" style="width: 100%; max-width: 24rem;"><label class="field__label" for="t1-lt">YouTube link</label><input class="input" id="t1-lt" type="url" placeholder="https://www.youtube.com/watch?v=…" value="youtube.com/GCN" aria-describedby="t1-msg-lt" aria-invalid="true"><p class="field__error" id="t1-msg-lt"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>That isn’t a YouTube link. Paste one that starts with youtube.com or youtu.be.</p></div><p class="inline-message inline-message--well inline-message--warn" role="status"><svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" x2="16" y1="11" y2="11"/></svg><span class="inline-message__text">MarcoVelo left. Their seat is open again.</span></p><p class="inline-message inline-message--success"><svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><span class="inline-message__text">Paired with Echelon EX-5s.</span></p></div></div></div>
+<div data-theme="dark"><div class="ds-example__canvas " style="padding: 0; display: block;"><div style="display: grid; gap: var(--space-4); width: 100%;"><div class="field" style="width: 100%; max-width: 24rem;"><label class="field__label" for="t1">YouTube link</label><input class="input" id="t1" type="url" placeholder="https://www.youtube.com/watch?v=…" value="youtube.com/GCN" aria-describedby="t1-msg" aria-invalid="true"><p class="field__error" id="t1-msg"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>That isn’t a YouTube link. Paste one that starts with youtube.com or youtu.be.</p></div><p class="inline-message inline-message--well inline-message--warn" role="status"><svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" x2="16" y1="11" y2="11"/></svg><span class="inline-message__text">MarcoVelo left. Their seat is open again.</span></p><p class="inline-message inline-message--success"><svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg><span class="inline-message__text">Paired with Echelon EX-5s.</span></p></div></div></div>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+<ul><li>Messages wrap; they never truncate (the reason is the point).</li>
+<li><b>360px</b>: the field and its message take the full width; centred button reasons stay centred.</li>
+<li><b>640px and 1024px</b>: field messages stay at the field's width (setup forms cap at 36rem), so lines never run past about 70 characters.</li></ul>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+<pre><code>.inline-message { --inline-message-fg: var(--color-muted); --inline-message-icon: currentColor; }
+.inline-message--error { --inline-message-fg: var(--color-heart-fg); }
+.inline-message--warn  { --inline-message-icon: var(--color-warn-fg); }</code></pre>
+<p>Text uses the <code>-fg</code> tokens (deeper on paper), so every tone passes 4.5:1 on panel and canvas in both themes. Warn colours only the icon: amber text fails on paper.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+<h3>Role and pattern</h3>
+<p>A <code>&lt;p&gt;</code> tied to its control with <code>aria-describedby</code>; a field in error also sets <code>aria-invalid="true"</code>. Messages that appear without a user action (the lobby notice) sit in <code>role="status"</code>. An error after submit is also listed in the <a href="form-field.html">error summary</a>. No APG widget; follows the <a href="https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA21">ARIA21 technique</a>.</p>
+<h3>Keyboard</h3>
+<table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+<tr><td><kbd>Tab</kbd></td><td>Reaches the control; the message is read as its description.</td></tr>
+</tbody></table>
+<h3>Focus</h3>
+<p>Messages never take focus. On submit, focus moves to the first invalid field, which reads its message.</p>
+<h3>Labelling</h3>
+<p>Start with what happened, then what to do ("That isn’t a YouTube link. Paste one that starts with youtube.com or youtu.be."). Icons are decoration; the words carry the tone (WCAG 1.4.1). A disabled button names its reason through <code>aria-describedby</code> (Start ride → "Needs the HTTPS page to reach the bike.").</p>
+<h3>Contrast</h3>
+<div class="ds-themes">
+<div data-theme="light"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+<div class="ds-pair"><span>Hint on panel</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Note on panel</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Error on panel</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Success on panel</span><span class="ds-pair__ratio" data-contrast="--color-ok-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Gold on panel</span><span class="ds-pair__ratio" data-contrast="--color-gold-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Notice on raised</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Warn icon on raised</span><span class="ds-pair__ratio" data-contrast="--color-warn-fg|--color-raised" data-min="3"></span></div>
+</div></div>
+<div data-theme="dark"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+<div class="ds-pair"><span>Hint on panel</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Note on panel</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Error on panel</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Success on panel</span><span class="ds-pair__ratio" data-contrast="--color-ok-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Gold on panel</span><span class="ds-pair__ratio" data-contrast="--color-gold-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Notice on raised</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Warn icon on raised</span><span class="ds-pair__ratio" data-contrast="--color-warn-fg|--color-raised" data-min="3"></span></div>
+</div></div>
+</div>
+<h3>Motion</h3>
+<p>None. Messages appear and disappear without animation, so nothing moves under a rider mid-ride.</p>
+<h3>Touch</h3>
+<p>Not a target. Links inside a message keep the 24px minimum through line height.</p>
+
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+<ul><li>One or two short sentences, ending with a full stop.</li><li>Errors: what happened, then the fix. Never "Invalid input" or "Error".</li>
+<li>Name real things: the bike model, the rider, the page ("Needs the HTTPS page to reach the bike.").</li><li>No exclamation marks; success says what is now true ("Paired with Echelon EX-5s.").</li></ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+<div class="ds-dodont">
+<figure class="ds-do"><div class="ds-example__canvas"><div class="field" style="width: 100%; max-width: 24rem;"><label class="field__label" for="d1">YouTube link</label><input class="input" id="d1" type="url" placeholder="https://www.youtube.com/watch?v=…" value="youtube.com/GCN" aria-describedby="d1-msg" aria-invalid="true"><p class="field__error" id="d1-msg"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>That isn’t a YouTube link. Paste one that starts with youtube.com or youtu.be.</p></div></div><figcaption>Says what is wrong and how to fix it, replaces the hint, sets <code>aria-invalid</code>.</figcaption></figure>
+<figure class="ds-dont"><div class="ds-example__canvas"><div class="field" style="width: 100%; max-width: 24rem;"><label class="field__label" for="d2">YouTube link</label><input class="input" id="d2" type="url" value="youtube.com/GCN" style="border-color: var(--color-heart);"><p class="field__error">Invalid URL</p></div></div><figcaption>A red border and "Invalid URL" with no fix, not tied to the input.</figcaption></figure>
+<figure class="ds-do"><div class="ds-example__canvas"><div style="display: grid; gap: var(--space-2); width: 100%; max-width: 20rem;"><button class="btn btn--primary btn--block" type="button" disabled aria-describedby="dd-b">Start ride</button><p class="inline-message inline-message--hint inline-message--sm inline-message--center" id="dd-b"><span class="inline-message__text">Needs the HTTPS page to reach the bike.</span></p></div></div><figcaption>A disabled Start ride with its reason right under it, as Custom workout draws it.</figcaption></figure>
+<figure class="ds-dont"><div class="ds-example__canvas"><div style="display: grid; gap: var(--space-2); width: 100%; max-width: 20rem;"><button class="btn btn--primary btn--block" type="button" disabled>Start ride</button></div></div><figcaption>A disabled button with no reason: riders cannot tell what to fix.</figcaption></figure>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+<div class="ds-table-wrap"><table class="ds-table">
+<thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+<tbody>
+<tr><td>Hint</td><td><code>--color-faint</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td></tr>
+<tr><td>Note</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+<tr><td>Error</td><td><code>--color-heart-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-heart-fg" data-swatch></i><span data-token="--color-heart-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-heart-fg" data-swatch></i><span data-token="--color-heart-fg"></span></span></td></tr>
+<tr><td>Success</td><td><code>--color-ok-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-ok-fg" data-swatch></i><span data-token="--color-ok-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-ok-fg" data-swatch></i><span data-token="--color-ok-fg"></span></span></td></tr>
+<tr><td>Warn icon</td><td><code>--color-warn-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-warn-fg" data-swatch></i><span data-token="--color-warn-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-warn-fg" data-swatch></i><span data-token="--color-warn-fg"></span></span></td></tr>
+<tr><td>Gold</td><td><code>--color-gold-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-gold-fg" data-swatch></i><span data-token="--color-gold-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-gold-fg" data-swatch></i><span data-token="--color-gold-fg"></span></span></td></tr>
+<tr><td>Well</td><td><code>--color-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td></tr>
+<tr><td>Invalid border</td><td><code>--color-heart</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-heart" data-swatch></i><span data-token="--color-heart"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-heart" data-swatch></i><span data-token="--color-heart"></span></span></td></tr>
+<tr><td>Text sm / md</td><td><code>--font-size-xs</code> / <code>--font-size-sm</code></td><td colspan="2"><span data-token="--font-size-xs"></span> / <span data-token="--font-size-sm"></span></td></tr>
+<tr><td>Icon sm / md</td><td><code>--space-3-5</code> / <code>--space-4</code></td><td colspan="2"><span data-token="--space-3-5"></span> / <span data-token="--space-4"></span></td></tr>
+<tr><td>Gap</td><td><code>--space-1-5</code> / <code>--space-2</code></td><td colspan="2"><span data-token="--space-1-5"></span> / <span data-token="--space-2"></span></td></tr>
+</tbody>
+</table></div>
+
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+<pre><code>&lt;div class="field"&gt;
+  &lt;label class="field__label" for="video-url"&gt;YouTube link&lt;/label&gt;
+  &lt;input class="input" id="video-url" type="url" aria-invalid="true" aria-describedby="video-url-msg"&gt;
+  &lt;p class="field__error" id="video-url-msg"&gt;&lt;svg class="icon icon--md" aria-hidden="true"&gt;…&lt;/svg&gt;That isn’t a YouTube link. …&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p class="inline-message inline-message--well inline-message--warn" role="status"&gt;
+  &lt;svg class="icon inline-message__icon" aria-hidden="true"&gt;…&lt;/svg&gt;
+  &lt;span class="inline-message__text"&gt;MarcoVelo left. Their seat is open again.&lt;/span&gt;
+&lt;/p&gt;</code></pre>
+<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+<tr><td><code>.field__hint</code> <code>.field__error</code></td><td>Field hint and error (core kit).</td></tr>
+<tr><td><code>.field__success</code></td><td>Field success (added).</td></tr>
+<tr><td><code>.inline-message</code></td><td>Block with <code>__icon</code>, <code>__text</code>, <code>__title</code>.</td></tr>
+<tr><td><code>--hint/--error/--success/--warn/--gold</code></td><td>Tones.</td></tr>
+<tr><td><code>--sm</code> <code>--center</code> <code>--well</code></td><td>Size, centred, raised well.</td></tr>
+<tr><td><code>.pack__note</code> <code>.setup__note</code> <code>.plan-preview__blocked</code> <code>.video-sync__help</code> <code>.race-lobby__notice</code></td><td>Area instances (unchanged).</td></tr>
+</tbody></table></div>
+
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+<p>Extracted from these mocks:</p>
+<ul>
+<li><a href="../../mocks/pages/race-setup/default.html">pages/race-setup/default</a> (pack note)</li>
+<li><a href="../../mocks/pages/race-lobby/someone-left.html">pages/race-lobby/someone-left</a> (lobby notice with role="status")</li>
+<li><a href="../../mocks/pages/custom-setup/needs-https.html">pages/custom-setup/needs-https</a> (Start ride reason with aria-describedby)</li>
+<li><a href="../../mocks/pages/custom-setup/default.html">pages/custom-setup/default</a> (video sync help)</li>
+<li><a href="../../mocks/dialogs/feedback/default.html">dialogs/feedback/default</a> (field hint copy)</li>
+</ul>
+<h3>Drift fixed during extraction</h3>
+<ul><li>No mock shows a field in error or success; <code>.field__error</code> exists in the kit unused. The YouTube link error and success copy are written for this page in the product's voice.</li>
+<li>Five area classes (<code>.pack__note</code>, <code>.setup__note</code>, <code>.video-sync__help</code>, <code>.plan-preview__blocked</code>, <code>.race-lobby__notice</code>) restate the same muted-note styles; <code>.inline-message</code> is the one block.</li>
+<li><code>.field__error .icon</code> is also declared in <code>forms.css</code>; kept there, not repeated here.</li></ul>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

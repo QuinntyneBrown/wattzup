@@ -1,0 +1,37 @@
+// Block training-header (docs/design-system/assets/components.css): the lockup, the bike, Close and Full screen.
+:host {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--space-6);
+  row-gap: var(--space-3);
+  border-bottom: var(--border-width-hairline) solid var(--color-line);
+  padding: var(--space-3) var(--space-5);
+}
+
+@media (min-width: 64rem) {
+  :host {
+    padding-inline: var(--space-8);
+  }
+}
+
+.training-header__divider {
+  display: none;
+  width: var(--space-px);
+  height: var(--space-5);
+  background: var(--color-line);
+}
+
+@media (min-width: 40rem) {
+  .training-header__divider {
+    display: block;
+  }
+}
+
+.training-header__bike {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}

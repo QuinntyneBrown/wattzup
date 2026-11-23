@@ -1,0 +1,78 @@
+@startuml
+title UML sequence behaviour — Confirm the six-digit code
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app" #E0F2FE
+  participant "SignInCodePage" as page
+  participant "CodeEntry" as entry
+  participant "SignInStore" as store
+  participant "HttpAuthApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "AuthController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "ConfirmSignInCodeCommandHandler" as handler
+  participant "SignInCode" as code
+  participant "Rider" as rider
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "Cookie authentication" as auth
+  database "Telo Ride database" as db
+end box
+page --> actor : Name the email the code went to (L2-002 AC1)
+actor -> entry : Type, paste or autofill six digits
+entry -> entry : Ignore non-digits (L2-002 AC5)
+entry -> page : completed(code)
+page -> store : confirm(code)
+store -> client : confirmCode(email, code)
+client -> ctrl : POST /api/auth/code/confirm
+ctrl -> handler : Send ConfirmSignInCodeCommand
+handler -> db : Load the active code for the email
+handler -> code : Verify(hash matches, now)
+alt Matched
+  handler -> code : Mark used (L2-002 AC6)
+  handler -> db : Find rider by email
+  opt no account
+    handler -> rider : Create Rider with no display name (L2-001 AC4)
+  end
+  handler -> db : Save in one unit of work
+  handler -> auth : Start RiderSession, set session cookie (L2-004)
+  handler --> ctrl : ConfirmCodeResult
+  ctrl --> client : 200 isNewAccount, hasDisplayName
+  client --> store : Signed in
+  alt no display name
+    store --> page : Ask for a display name (L2-005 AC1)
+  else no paired bike in this browser
+    store --> page : Open Connect Bike (L2-002 AC2)
+  else
+    store --> page : Open the return URL or Home
+  end
+else Mismatch
+  handler -> db : Save the failed attempt count
+  handler --> ctrl : Refused: code_mismatch
+  ctrl --> client : 400 code_mismatch
+  store --> page : Clear and mark invalid, announce "That code doesn't match. Try again." (L2-002 AC3)
+else Expired: older than 10 minutes
+  handler --> ctrl : Refused: code_expired
+  ctrl --> client : 400 code_expired
+  store --> page : "That code has expired." with "Send a new code" (L2-002 AC4)
+else Locked: 5 wrong codes, or Used
+  handler --> ctrl : Refused: code_locked
+  ctrl --> client : 400 code_locked
+  store --> page : Refuse even a correct code, ask for a new code (L2-003 AC3)
+end
+@enduml

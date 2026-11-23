@@ -1,0 +1,42 @@
+@startuml
+title UML sequence behaviour — Edit the rounds
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "IntervalLadder" as ladder
+  participant "CustomWorkoutStore" as store
+  participant "PlanPreview" as preview
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "CustomWorkoutLimits" as limits
+end box
+rider -> ladder : Press "Longer effort 3"
+ladder -> store : longerEffort(3)
+store -> limits : effort(+5 s, 0:30)
+limits --> store : 0:35 (bounded 0:05–5:00) L2-095 AC3
+store -> store : Mark preset edited L2-095 AC6
+store --> preview : Draft changed (preview recomputes at once)
+rider -> ladder : Press "+ Add round"
+ladder -> store : addRound()
+store -> limits : Rounds below 30?
+limits --> store : Yes
+store -> store : Copy last round L2-095 AC4
+rider -> ladder : Press "Make every round the same"
+ladder -> store : makeRoundsSame()
+store -> store : Every round takes round 1's effort and recovery L2-095 AC5
+store --> ladder : Rounds, chip shows edited
+ladder --> rider : Updated ladder and preview
+@enduml

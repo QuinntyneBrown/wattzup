@@ -1,0 +1,175 @@
+// Block ride-header (docs/design-system/assets/components.css): the custom ride's top bar.
+:host {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--space-6);
+  row-gap: var(--space-3);
+  border-bottom: var(--border-width-hairline) solid var(--color-line);
+  padding: var(--space-3) var(--space-5);
+}
+
+@media (min-width: 64rem) {
+  :host {
+    padding-inline: var(--space-8);
+  }
+}
+
+// Library: muted until hovered or open, 44 px tall to touch.
+.ride-header__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--target-comfortable);
+  white-space: nowrap;
+  border-radius: var(--radius-md);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.ride-header__link:hover,
+.ride-header__link[aria-expanded='true'] {
+  background: var(--color-raised);
+  color: var(--color-fg);
+}
+
+.ride-header__link--strong {
+  font-weight: var(--font-weight-medium);
+}
+
+.ride-header__link--feedback {
+  gap: var(--space-1-5);
+}
+
+.ride-header__divider {
+  display: none;
+  width: var(--space-px);
+  height: var(--space-5);
+  background: var(--color-line);
+}
+
+@media (min-width: 40rem) {
+  .ride-header__divider {
+    display: block;
+  }
+}
+
+// The status is the button that opens Diagnostics (L2-113 AC1); its hit area overhangs it to 44 px (L2-140 AC2).
+.ride-header__status {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) 0;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: inherit;
+  cursor: pointer;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset-block: min(0px, calc((100% - var(--target-comfortable)) / 2));
+    inset-inline: 0;
+  }
+
+  &:hover .ride-header__status-text {
+    color: var(--color-fg);
+  }
+}
+
+.ride-header__status-icon {
+  color: var(--color-volt);
+}
+
+.ride-header__status-icon--alert {
+  color: var(--color-heart-fg);
+}
+
+.ride-header__status-name {
+  white-space: nowrap;
+  font-weight: var(--font-weight-medium);
+}
+
+.ride-header__status-text {
+  white-space: nowrap;
+  color: var(--color-muted);
+}
+
+.ride-header__status-text--alert {
+  color: var(--color-heart-fg);
+}
+
+// The clock and its buttons wrap at the narrowest widths, End under the clock, so 320 px never scrolls sideways
+// (L2-139 AC1).
+.ride-header__end {
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ride-header__clock {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: var(--letter-spacing-display);
+  // Ride numbers: a quarter larger when Settings asks (L2-164 AC4).
+  font-size: calc(var(--font-size-2xl) * var(--ride-number-scale));
+  line-height: calc(var(--line-height-2xl) * var(--ride-number-scale));
+  white-space: nowrap;
+}
+
+.ride-header__clock-total {
+  color: var(--color-faint);
+}
+
+// Start, Pause and Resume: 48 px to press mid-ride on a phone, the control height from sm (L2-101 AC4).
+.ride-header__run {
+  height: var(--target-ride);
+}
+
+@media (min-width: 40rem) {
+  .ride-header__run {
+    height: var(--control-height-md);
+  }
+}
+
+// End: muted, heart on hover; 48 px to press mid-ride on a phone, the control height from sm (L2-101 AC4).
+.ride-header__stop {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--target-ride);
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  color: var(--color-muted);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.ride-header__stop:hover:not(:disabled) {
+  color: var(--color-heart-fg);
+}
+
+.ride-header__stop:disabled {
+  opacity: 0.4;
+}
+
+@media (min-width: 40rem) {
+  .ride-header__stop {
+    height: var(--control-height-md);
+  }
+}

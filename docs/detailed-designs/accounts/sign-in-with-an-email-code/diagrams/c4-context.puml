@@ -1,0 +1,11 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Sign in with an email code
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(email, "Email delivery service", "Delivers sign-in codes; provider <TO SUPPLY>")
+Rel(rider, telo, "Enters an email and the six-digit code in")
+Rel(telo, email, "Sends the sign-in code through", "<TO SUPPLY>")
+Rel(email, rider, "Delivers the code to the inbox of")
+@enduml

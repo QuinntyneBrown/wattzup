@@ -1,0 +1,71 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Every ride you finish now earns XP, worked out by the backend."
+      ]
+    },
+    {
+      "id": "ontarget",
+      "bars": 4,
+      "lines": [
+        "Hold your power within ten percent of the target, in a race or a class, and those seconds count. The share goes with the ride."
+      ]
+    },
+    {
+      "id": "lines",
+      "bars": 4,
+      "lines": [
+        "Back comes the XP, line by line: a hundred for finishing, twenty for each rider you beat, seventy-five for the podium, and your time on target."
+      ]
+    },
+    {
+      "id": "example",
+      "bars": 4,
+      "lines": [
+        "Second of ten against bots, eighty-four percent on target: four hundred and two. When streaks arrive, a four-day streak makes it four forty-two."
+      ]
+    },
+    {
+      "id": "rules",
+      "bars": 4,
+      "lines": [
+        "A solo race or a class has no place to win. A ride that doesn't finish earns nothing. And sending a ride twice never pays twice."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: every line of the rule, through the API and in the calculator, and the share sent from the ride."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

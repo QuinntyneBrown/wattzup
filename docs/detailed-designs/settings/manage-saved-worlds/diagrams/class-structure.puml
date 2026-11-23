@@ -1,0 +1,64 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+hide empty members
+title Class structure — Manage saved worlds
+class SavedWorld <<api>> {
+  +id: WorldId
+  +name: string
+  +bytes: number
+}
+interface SavedWorlds <<api>> {
+  +list(): Promise<SavedWorld[]>
+  +clear(): Promise<void>
+}
+interface WorldDownloader <<api>> {
+  +download(world: {id, name}, progress, signal): Promise<number>
+}
+class CacheStorageSavedWorlds <<domain/storage>> {
+  cache 'telo-worlds'
+  reads x-telo-world-name, x-telo-world-bytes
+}
+class FetchWorldDownloader <<domain/storage>> {
+  -settings: Signal<RideSettings>
+  saves with x-telo-world-name, x-telo-world-bytes
+}
+class SavedWorldsStore <<ride>> {
+  +view: Signal<SavedWorldsView | null>
+  +freed: Signal<string | null>
+  +clear(): Promise<void>
+  +dismiss(): void
+}
+class "savedWorldsView / worldSize" as words <<ride>>
+interface RideSettingsStore <<api>> {
+  +settings: Signal<RideSettings>
+}
+class DeviceSettings <<components>> {
+  +savedWorlds: InputSignal<SavedWorldsRow | null>
+  +keepWorlds: InputSignal<boolean>
+  +cleared: OutputEmitterRef<void>
+  +keepWorldsToggled: OutputEmitterRef<boolean>
+}
+class "Toast / ToastRegion" as toast <<components>> {
+  +tone, title, figure, text
+  +dismissed: OutputEmitterRef<void>
+}
+SavedWorlds <|.. CacheStorageSavedWorlds
+WorldDownloader <|.. FetchWorldDownloader
+SavedWorlds ..> SavedWorld
+SavedWorldsStore ..> SavedWorlds : SAVED_WORLDS
+SavedWorldsStore ..> words
+FetchWorldDownloader ..> RideSettingsStore : keepWorlds
+DeviceSettings ..> SavedWorldsStore : bound by SettingsPage
+toast ..> SavedWorldsStore : bound by SettingsPage
+@enduml

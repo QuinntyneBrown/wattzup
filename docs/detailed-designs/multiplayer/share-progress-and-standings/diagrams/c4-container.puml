@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Share progress and standings
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Echelon or FTMS; Bluetooth LE")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Sign-in, progress, catalogues, ride hub, feedback")
+}
+Rel(rider, app, "Rides and watches the board in")
+Rel(app, bike, "Reads telemetry from", "Web Bluetooth")
+Rel(app, api, "ReportProgress, at most 2 per second", "SignalR")
+Rel_Back(app, api, "StandingsUpdated, once a second", "SignalR")
+@enduml

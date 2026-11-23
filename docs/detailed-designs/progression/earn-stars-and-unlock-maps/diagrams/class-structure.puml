@@ -1,0 +1,67 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Earn stars and unlock maps
+enum MapStar <<flags>> {
+  Finish
+  TopThree
+  BeatBest
+}
+class MapUnlock <<value object>> {
+  +Kind: start | top-three-vs-bots | stars | level
+  +MapId: string?
+  +Stars: int?
+  +Level: int?
+  +Goal(names): string?
+}
+class MapDefinition <<entity>> {
+  +Id: string
+  +Name: string
+  +Unlock: MapUnlock
+}
+class MapProgress <<entity>> {
+  +RiderId: Guid
+  +MapId: string
+  +Stars: MapStar
+  +BestSeconds: int?
+  +OpenedAt: DateTimeOffset?
+  +RecordFinish(finish: RaceFinish): FinishRecord
+  +Open(at: DateTimeOffset): void
+}
+class FinishRecord <<value object>> {
+  +Earned: MapStar
+  +BestSeconds: int
+  +PreviousBestSeconds: int?
+  +IsNewBest: bool
+}
+class RaceFinish <<value object>> {
+  +Mode: string
+  +Pack: string?
+  +Place: int
+  +Seconds: int
+}
+class StarRules <<domain service>> {
+  +Evaluate(finish: RaceFinish, previousBest: int?): MapStar
+}
+class UnlockRules <<domain service>> {
+  +Evaluate(order, raceMapId, finish, stars, level, opened): string[]
+  +NextUnlock(order, opened): string?
+}
+MapDefinition --> MapUnlock
+MapProgress --> MapStar
+MapProgress ..> FinishRecord : returns
+MapProgress ..> StarRules
+StarRules ..> RaceFinish
+UnlockRules ..> MapUnlock
+UnlockRules ..> RaceFinish
+@enduml

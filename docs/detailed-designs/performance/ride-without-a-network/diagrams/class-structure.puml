@@ -1,0 +1,71 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Ride without a network
+hide empty members
+
+class WaitingRide <<api>> {
+  +rideId: string
+  +finishedAt: string
+  +attempts: number
+  +ride: SubmitRideRequest
+}
+interface RidesWaiting <<api>> {
+  +oldestFirst(): Promise<WaitingRide[]>
+  +put(waiting: WaitingRide): Promise<void>
+  +remove(rideId: string): Promise<void>
+}
+class IndexedDbRidesWaiting <<domain/storage>> {
+  -dbName: "telo-ride"
+  -storeName: "rides-waiting"
+}
+interface RidesApi <<api>> {
+  +submitRide(ride: SubmitRideRequest): Observable<RideRecordedDto>
+}
+class HttpRidesApi <<api>> {
+  -http: HttpClient
+}
+interface RideOutbox <<api>> {
+  +submit(ride: SubmitRideRequest): void
+  +status(rideId: string): Signal<RideSyncState>
+}
+class DeviceRideOutbox <<domain/storage>> {
+  -retry: timer | null
+  +submit(ride: SubmitRideRequest): void
+  +status(rideId: string): Signal<RideSyncState>
+  -drain(): Promise<void>
+  -retryIn(attempts: number): void
+}
+interface NetworkStatus <<api>> {
+  +online: Signal<boolean>
+}
+class BrowserNetworkStatus <<domain/browser>> {
+  +online: Signal<boolean>
+}
+class multiplayerAvailability <<domain/engine>> {
+  +multiplayerAvailability(online: boolean, reached: boolean): "open" | "offline" | "unreachable"
+}
+class RaceSetupStore <<ride>>
+class ClassStartStore <<ride>>
+IndexedDbRidesWaiting ..|> RidesWaiting
+HttpRidesApi ..|> RidesApi
+DeviceRideOutbox ..|> RideOutbox
+DeviceRideOutbox --> RidesWaiting : keeps rides in
+DeviceRideOutbox --> RidesApi : submits with
+RidesWaiting "1" o-- "*" WaitingRide
+BrowserNetworkStatus ..|> NetworkStatus
+RaceSetupStore ..> NetworkStatus : reads online
+ClassStartStore ..> NetworkStatus : reads online
+RaceSetupStore ..> multiplayerAvailability : asks
+ClassStartStore ..> multiplayerAvailability : asks
+@enduml

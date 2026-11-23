@@ -1,0 +1,33 @@
+<div class="feedback-context">
+  <button
+    class="feedback-context__toggle"
+    type="button"
+    aria-controls="feedback-details"
+    [attr.aria-expanded]="expanded()"
+    [disabled]="disabled()"
+    (click)="expanded.set(!expanded())"
+  >
+    <span class="feedback-context__text">
+      <span class="feedback-context__from"
+        >Attached from <span class="feedback-context__screen">{{ context().screen }}</span></span
+      >
+      <span class="feedback-context__summary">{{ context().summary }}</span>
+    </span>
+    <svg class="icon feedback-context__chevron" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  </button>
+  @if (expanded()) {
+    <dl
+      class="feedback-context__details"
+      id="feedback-details"
+      tabindex="0"
+      aria-label="Attached details"
+    >
+      @for (fact of context().facts; track fact.term) {
+        <dt>{{ fact.term }}</dt>
+        <dd>{{ fact.value }}</dd>
+      }
+    </dl>
+  }
+</div>

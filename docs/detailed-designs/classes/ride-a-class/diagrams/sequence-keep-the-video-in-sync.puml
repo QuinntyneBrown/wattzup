@@ -1,0 +1,49 @@
+@startuml
+title UML sequence behaviour — Keep the video in sync
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "ClassRideStore" as store
+  participant "ClassVideo" as view
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "RideClock" as clock
+  participant "VideoClockSync" as sync
+  participant "YouTubeVideoPlayer" as player
+end box
+box "Third party — YouTube" #F2F4F7
+  participant "YouTube embed" as yt
+end box
+loop each tick of the ride clock
+  store -> clock : elapsed()
+  clock --> store : 420 s (7:00)
+  store -> player : currentTime()
+  player --> store : 434.1 s
+  store -> sync : check(434.1, 420, 12)
+  alt drift above 1.5 s L2-088 AC2
+    sync --> store : Seek to 432.0
+    store -> player : seekTo(432.0)
+    player -> yt : Seek
+  else within 1.5 s
+    sync --> store : No action
+  end
+end
+alt player reports error or is blocked
+  yt --> player : onError
+  player --> store : state = error
+  store -> store : Video unavailable; clock and plan carry on L2-088 AC4
+  store --> view : Show the notice "The video can't play. The bike will still follow the class."
+end
+@enduml

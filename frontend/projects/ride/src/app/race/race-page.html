@@ -1,0 +1,122 @@
+<main id="main" class="race" tabindex="-1">
+  @if (store.map(); as map) {
+    <h1 class="visually-hidden">Race, {{ map.name }}</h1>
+    <!-- The map's photo stays under the world, and alone where neither WebGPU nor WebGL 2 can draw (L2-065 AC2). -->
+    <div class="race-scene" role="img" [attr.aria-label]="store.sceneLabel()">
+      <img class="race-scene__photo" [src]="map.photoUrl" alt="" />
+      @if (!store.worldUnavailable()) {
+        <ng-container
+          [wzRaceWorld]="map"
+          [elapsed]="store.elapsed()"
+          [speedKmh]="store.speedKmh()"
+          [running]="store.running()"
+          [riders]="store.sceneRiders()"
+          [scenery]="store.scenery()"
+          (sceneryState)="store.sceneryState.set($event)"
+          (started)="store.backend.set($event)"
+          (unavailable)="store.worldUnavailable.set(true)"
+        />
+      }
+    </div>
+    <wz-race-bar
+      [map]="map.name"
+      [route]="store.routeLine()"
+      [backend]="store.backend()"
+      [bikeName]="store.bikeName()"
+      [connected]="store.connected()"
+      [elapsed]="store.elapsed()"
+      [total]="store.total()"
+      [solo]="store.mode === 'solo'"
+      [paused]="store.paused()"
+      [pauseDisabled]="store.bikeLost()"
+      (pauseRace)="store.pause()"
+      (resumeRace)="store.resume()"
+    >
+      <!-- Leave and End ask for no confirmation (L2-069 AC1, AC2); leaving the page stops the race. -->
+      <a
+        wz-race-bar-button
+        quiet
+        slot="end"
+        [label]="store.mode === 'solo' ? 'End' : 'Leave'"
+        [attr.aria-label]="store.mode === 'solo' ? 'End ride' : 'Leave race'"
+        [routerLink]="store.setup"
+        (click)="store.leave()"
+      >
+        <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m16 17 5-5-5-5" />
+          <path d="M21 12H9" />
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+        </svg>
+      </a>
+      <wz-fullscreen-button slot="end" />
+    </wz-race-bar>
+    <wz-race-power
+      [place]="store.place()"
+      [field]="store.fieldSize()"
+      [gaps]="store.gaps()"
+      [watts]="store.watts()"
+      [target]="store.target()"
+      [delta]="store.delta()"
+      [cadence]="store.cadence()"
+      [heart]="store.heart()"
+      [speed]="store.speed()"
+    />
+    <!-- Only while the world draws: the tiles join it, and the panorama has nothing to stream into (L2-066 AC9). -->
+    @if (map.realPlace && store.backend()) {
+      <wz-race-scenery
+        [place]="map.realPlace"
+        [key]="store.storedMapsKey"
+        [state]="store.sceneryState()"
+        (streamKey)="store.streamScenery(map.realPlace, $event)"
+      />
+    }
+    @if (store.boardRows().length > 0) {
+      <wz-race-board
+        [heading]="store.boardHeading()"
+        [rows]="store.boardRows()"
+        [notice]="store.boardNotice()"
+      />
+    }
+    <section class="race-hud" aria-label="Interval, route and resistance">
+      @if (store.plan(); as plan) {
+        <wz-race-interval
+          [segments]="map.plan.segments"
+          [index]="plan.index"
+          [remaining]="plan.remainingMs / 1000"
+          [progress]="plan.progress"
+        />
+      }
+      @if (store.routeView(); as route) {
+        <wz-race-route [view]="route" [distance]="store.distance()" />
+      }
+      <wz-race-resist
+        [level]="store.resistance()"
+        [disabled]="!store.canControl()"
+        (lower)="store.lower()"
+        (raise)="store.raise()"
+      />
+    </section>
+    @if (store.paused()) {
+      <wz-race-paused [route]="map.routeName ?? map.name" />
+    }
+    @if (store.lostAlert(); as alert) {
+      <wz-race-lost [heading]="alert.heading" [body]="alert.body">
+        @if (alert.dnf) {
+          <a wz-button variant="primary" slot="action" [routerLink]="store.setup"
+            >Back to Race Setup</a
+          >
+        } @else {
+          <button
+            wz-button
+            variant="primary"
+            slot="action"
+            type="button"
+            (click)="store.reconnect()"
+          >
+            Reconnect
+          </button>
+        }
+      </wz-race-lost>
+    }
+  }
+</main>

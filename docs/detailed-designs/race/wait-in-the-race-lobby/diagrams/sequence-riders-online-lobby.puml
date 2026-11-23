@@ -1,0 +1,66 @@
+@startuml
+title UML sequence behaviour — Riders-online lobby
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "RaceLobbyPage" as page
+  participant "LobbyStore" as store
+  participant "LiveSessionStore" as session
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "RideHubClient" as hub
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RideHub" as ridehub
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "RaceSession" as rs
+end box
+actor -> page : Open /race/:mapId/lobby?mode=online
+page -> store : init(online)
+store -> session : join({ kind: race, mapId })
+session -> hub : start(); ServerTime x5, measure the offset
+session -> hub : findRace(mapId)
+hub -> ridehub : FindRace(mapId)
+ridehub -> rs : Seat in the open session with the most riders, or a new one (L2-121 AC1)
+ridehub -> hub : SeatsChanged to the others in the session (L2-055 AC3)
+ridehub --> hub : sessionId, startsAt, seat, seats
+hub --> session : race seat and grid
+session --> store : race, seats
+store --> page : You first, the others by seat; "Waiting for riders", "{n} of 10 seats taken..." (L2-051 AC3, L2-052)
+loop on each whole second before startsAt (server time, by the offset)
+  store --> page : timer "Starts in {n} seconds" (L2-051 AC5)
+end
+actor -> page : Press "I'm ready"
+page -> store : toggleReady()
+store -> session : setReady(true)
+session -> hub : SetReady(sessionId, true)
+hub -> ridehub : SetReady
+ridehub -> rs : Mark seat ready
+ridehub -> hub : SeatsChanged to every rider (L2-053 AC1)
+opt a rider leaves before 0:10
+  ridehub -> hub : SeatsChanged(seats, left = "MarcoVelo")
+  hub --> session : seats, left
+  store --> page : Notice "MarcoVelo left. Their seat is open again." (L2-055 AC1)
+end
+rs -> rs : At 0:10 bots fill every open seat, ready (L2-054 AC1, AC2)
+ridehub -> hub : SeatsChanged (10 / 10)
+store --> page : "On the start line"; first segment level sent (L2-051 AC4)
+store --> page : From 0:03, countdownStep 3, 2, 1 over the inert lobby, ready or not (L2-053 AC4, L2-056)
+store --> page : At startsAt, Go
+store -> actor : Open /race/:mapId/ride?mode=online&session=<id>
+note right of store : The race joins its session again (JoinRace) and starts its clock\nat startsAt minus the offset (L2-121 AC3, run-a-race-session)
+@enduml

@@ -1,0 +1,59 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Meet performance budgets
+hide empty members
+
+class FrameBudget <<world>> {
+  -current: Tier
+  -periodMs: number
+  -frames: number[]
+  -overInARow: number
+  +tier: Tier
+  +setPeriod(ms: number): void
+  +pause(): void
+  +sample(now: number, frameMs: number): "keep" | "drop"
+}
+class WorldRenderer <<world>> {
+  -budget: FrameBudget
+  -applyTier(): void
+}
+class "render-quality" as rq <<world>> {
+  +techniquesAt(tier, backend, reducedMotion): Set<number>
+  +startTier(): Tier
+  +nextLower(tier): Tier | null
+}
+class StandingsTicker <<Telo.Ride.Api>> {
+  -timer: PeriodicTimer
+  -time: TimeProvider
+  #ExecuteAsync(token: CancellationToken): Task
+}
+class PublishStandingsCommand <<Telo.Ride.Application>> {
+  +SessionId: Guid
+  +TickAt: DateTimeOffset
+}
+class PublishStandingsCommandHandler <<Telo.Ride.Application>> {
+  +Handle(command: PublishStandingsCommand): Task
+}
+class TeloRideMetrics <<Telo.Ride.Infrastructure>> {
+  -meter: Meter "Telo.Ride"
+  +StandingsDelivery: Histogram<double>
+  +HubConnections: UpDownCounter<long>
+}
+WorldRenderer *-- FrameBudget
+WorldRenderer ..> rq : reads the level's techniques
+FrameBudget ..> rq : nextLower
+StandingsTicker ..> PublishStandingsCommand : sends
+PublishStandingsCommandHandler ..> PublishStandingsCommand : handles
+StandingsTicker --> TeloRideMetrics : records
+@enduml

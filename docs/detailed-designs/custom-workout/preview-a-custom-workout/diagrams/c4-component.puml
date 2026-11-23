@@ -1,0 +1,39 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Preview a custom workout
+
+Container_Boundary(app, "Ride app") {
+  Component(page, "CustomWorkoutPage", "Angular page · ride", "Route /profile/custom")
+  Component(store, "CustomWorkoutStore", "Signal store · ride", "plan, validation, preview")
+  Component(preview, "PlanPreview", "Presentation component · components", "Your ride")
+  Component(chart, "PlanChart", "Presentation component · components", "Resistance profile")
+  Component(expander, "PlanExpander", "Helper · domain/engine", "Draft → segments")
+  Component(validator, "PlanValidator", "Rule · domain/engine", "≥ 5 s, levels 1–32, 1–180 min")
+  Component(summary, "PlanSummary", "Helper · domain/engine", "Facts")
+  Component(power, "PowerModel", "Helper · domain/engine", "Target power")
+  Component(settings, "SettingsStore", "Service · domain/storage", "IndexedDB copy")
+  Component(cwApi, "HttpCustomWorkoutApi", "HTTP client · api", "CUSTOM_WORKOUT_API")
+}
+Container_Boundary(backend, "Telo Ride API") {
+  Component(ctrl, "CustomWorkoutController", "ASP.NET Core controller · Telo.Ride.Api", "PUT /api/riders/me/custom-workout")
+  Component(validatorB, "SaveCustomWorkoutCommandValidator", "FluentValidation · Telo.Ride.Application", "plan_invalid")
+  Component(handler, "SaveCustomWorkoutCommandHandler", "MediatR handler · Telo.Ride.Application", "Upsert")
+  Component(rules, "WorkoutPlanRules", "Domain service · Telo.Ride.Domain", "Same rules as PlanValidator")
+}
+ComponentDb(db, "Telo Ride database", "EF Core", "CustomWorkout")
+Rel(page, store, "Reads signals")
+Rel(page, preview, "Renders")
+Rel(preview, chart, "Renders")
+Rel(store, expander, "expand(draft)")
+Rel(store, validator, "validate(plan)")
+Rel(store, summary, "summarise(plan)")
+Rel(summary, power, "targetPower")
+Rel(store, settings, "Save copy")
+Rel(store, cwApi, "save")
+Rel(cwApi, ctrl, "PUT", "JSON/HTTPS")
+Rel(ctrl, validatorB, "Validates SaveCustomWorkoutCommand (MediatR pipeline)")
+Rel(validatorB, rules, "Expand and check")
+Rel(ctrl, handler, "Sends SaveCustomWorkoutCommand")
+Rel(handler, db, "Upserts", "EF Core")
+@enduml

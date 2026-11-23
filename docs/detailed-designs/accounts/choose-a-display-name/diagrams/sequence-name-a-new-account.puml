@@ -1,0 +1,57 @@
+@startuml
+title UML sequence behaviour — Name a new account
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app" #E0F2FE
+  participant "DisplayNamePromptPage" as page
+  participant "DisplayNameForm" as form
+  participant "HttpRidersApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RidersController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "SetDisplayNameCommandHandler" as handler
+  participant "DisplayName" as name
+  participant "Rider" as rider
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+note over page : The code screen opens /sign-in/name when the confirmed rider has no name;\nauthGuard keeps such a rider there from every other screen
+page --> actor : "What should other riders call you?" (L2-005 AC1)
+form --> actor : Continue disabled while the field is empty
+actor -> form : Type "Sam", choose Continue
+form -> page : submitted("Sam")
+page -> page : DisplayNameStore: isDisplayName (trimmed, 2 to 24, allowed characters);\na name that breaks it is refused here, with no request
+page -> client : setDisplayName("Sam")
+client -> ctrl : PUT /api/riders/me/display-name
+ctrl -> handler : SetDisplayNameCommand
+handler -> name : Parse("Sam")
+alt breaks the rule (L2-005 AC2)
+  name --> ctrl : DomainRuleException display_name_invalid
+  ctrl --> client : 400 ProblemDetails, code display_name_invalid
+  client --> page : error
+  page --> form : Field says what is allowed, aria-invalid="true"
+else valid
+  handler -> rider : Rename(DisplayName "Sam")
+  handler -> db : Save
+  handler --> ctrl : RiderDto
+  ctrl --> client : 200
+  client --> page : Saved; CURRENT_RIDER learns the name
+  page --> actor : Go on: the return URL, or Home (Connect Bike with no paired bike)
+end
+@enduml

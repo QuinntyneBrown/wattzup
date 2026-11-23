@@ -1,0 +1,85 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Every map is a route through a world. This slice loads that world behind the race."
+      ]
+    },
+    {
+      "id": "chunk",
+      "bars": 4,
+      "lines": [
+        "The world is the heaviest part of the app, so it loads in its own chunk, only once a race opens. Three.js never joins the first download."
+      ]
+    },
+    {
+      "id": "tag",
+      "bars": 4,
+      "lines": [
+        "Three.js draws with WebGPU where the browser grants an adapter, and WebGL 2 otherwise. A tag in the bar names the GPU API drawing this world."
+      ]
+    },
+    {
+      "id": "panorama",
+      "bars": 4,
+      "lines": [
+        "With neither, the map's panorama stays, and the race still runs on the numbers."
+      ]
+    },
+    {
+      "id": "leave",
+      "bars": 4,
+      "lines": [
+        "Leave, and the world goes with the race: the frame loop stops, its observer and listeners go, and the renderer is released."
+      ]
+    },
+    {
+      "id": "main",
+      "bars": 4,
+      "lines": [
+        "Its code is copied straight from main: the renderer's contract, the frame scheduler, the canvas host, and their unit tests."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "From a phone to a desktop, the race keeps its world behind the panels."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: three new behaviour specs, main's unit tests running here, all green, and the first download still small."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

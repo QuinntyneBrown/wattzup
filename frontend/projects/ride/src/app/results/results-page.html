@@ -1,0 +1,53 @@
+@if (view(); as view) {
+  <div class="results-page">
+    <wz-results-header [context]="view.context">
+      <wz-fullscreen-button slot="end" />
+    </wz-results-header>
+    <div class="results-page__scroll">
+      <main id="main" class="container results" tabindex="-1">
+        <section aria-labelledby="result-title">
+          <h1 class="visually-hidden" id="result-title">{{ view.heading }}</h1>
+          <p class="results__lead">{{ view.lead }}</p>
+          <p class="results__place">
+            <span class="results__big" [class.results__big--podium]="view.podium">{{
+              view.big
+            }}</span>
+            @if (view.of; as of) {
+              <span class="results__of">{{ of }}</span>
+            }
+          </p>
+          @if (view.sub; as sub) {
+            <p class="results__sub">{{ sub }}</p>
+          }
+          @if (view.standings; as standings) {
+            <wz-standings [rows]="standings" />
+          }
+        </section>
+        <aside class="earned" aria-label="What you earned">
+          @if (view.unlock; as unlock) {
+            <wz-unlock-card [view]="unlock">
+              <a slot="action" wz-button variant="gold" [block]="true" [routerLink]="unlock.path">{{
+                unlock.actionLabel
+              }}</a>
+            </wz-unlock-card>
+          }
+          <wz-xp-earned [view]="view.xp" />
+          @if (view.stars; as stars) {
+            <wz-map-stars [view]="stars" />
+          }
+          <div class="results__actions">
+            <a wz-button variant="primary" size="xl" [block]="true" routerLink="/">Done</a>
+            <!-- prettier-ignore -->
+            <a
+              wz-button
+              class="results__again"
+              [block]="true"
+              [routerLink]="view.again.path"
+              [queryParams]="view.again.query"
+            ><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></svg>{{ view.again.label }}</a>
+          </div>
+        </aside>
+      </main>
+    </div>
+  </div>
+}

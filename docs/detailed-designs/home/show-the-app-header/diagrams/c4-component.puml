@@ -1,0 +1,38 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Show the app header
+
+Container_Boundary(app, "Ride app") {
+  Component(shell, "MainShell", "Layout component · ride", "Hosts the header and the routed page for Home, Map Select, Class Library, Profile and not-found")
+  Component(store, "RiderProgressStore", "Signal store · ride (PROGRESS_STORE)", "Holds level, XP and streak from the backend")
+  Component(apphdr, "AppHeader", "Presentation component · components", "Slots for the lockup, Main navigation and the end items")
+  Component(toggle, "FullscreenToggle", "Presentation component · components", "Full screen or Exit full screen")
+  Component(fs, "BrowserFullscreen", "Service · ride/browser (FULLSCREEN)", "Fullscreen API: available, active, enter, exit")
+  Component(badge, "LevelBadge", "Presentation component · components", "Gold level badge")
+  Component(xpbar, "XpBar", "Presentation component · components", "XP fill and label")
+  Component(bikestatus, "BikeStatus", "Presentation component · components", "Bike status (L2-019)")
+  Component(conn, "WebBluetoothBikeConnection", "Service · domain/bluetooth (BIKE_CONNECTION)", "Exposes the ble state")
+  Component(client, "HttpRiderProgressApi", "HTTP client · api (RIDER_PROGRESS_API)", "Calls GET /api/progress")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(ctrl, "ProgressController", "ASP.NET Core controller", "Exposes GET /api/progress")
+  Component(handler, "GetProgressQueryHandler", "MediatR handler", "Builds the ProgressDto")
+  Component(levels, "LevelTable", "Domain service", "Maps total XP to a level and its next threshold")
+}
+ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Riders, rides, progress")
+
+Rel(shell, store, "Reads progress signals")
+Rel(shell, conn, "Reads ble signal")
+Rel(shell, apphdr, "Fills the slots")
+Rel(shell, toggle, "Renders when available, handles toggled")
+Rel(shell, fs, "enter() and exit()")
+Rel(apphdr, badge, "Renders")
+Rel(apphdr, xpbar, "Renders")
+Rel(apphdr, bikestatus, "Renders")
+Rel(store, client, "Loads progress through")
+Rel(client, ctrl, "GET /api/progress", "JSON/HTTPS")
+Rel(ctrl, handler, "Sends GetProgressQuery")
+Rel(handler, levels, "Resolves level and next threshold")
+Rel(handler, db, "Reads", "EF Core")
+@enduml

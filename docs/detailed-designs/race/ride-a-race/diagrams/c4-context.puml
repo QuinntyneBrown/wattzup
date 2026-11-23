@@ -1,0 +1,15 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Ride a race
+Person(rider, "Rider", "Rides a smart bike at home")
+Person(others, "Riders online", "Other riders in a live race")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(bike, "Smart bike", "Echelon EX-5s, EX-3, EX-8s, Connect Sport, or an FTMS bike; Bluetooth LE")
+System_Ext(strap, "Heart-rate strap", "Bluetooth Heart Rate Service")
+Rel(rider, telo, "Races on a map in")
+Rel(rider, bike, "Pedals")
+Rel(telo, bike, "Reads telemetry, sets resistance", "Bluetooth LE")
+Rel(telo, strap, "Reads heart rate when connected", "Bluetooth LE")
+Rel(others, telo, "Share live progress through")
+@enduml

@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Render the race world
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(gmaps, "Google Maps Platform", "Map Tiles API: photorealistic 3D Tiles")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge; Three.js in a lazy chunk", "Draws the world with WebGPU or WebGL 2")
+  ContainerDb(idb, "Browser storage", "IndexedDB", "Google Maps key, this browser only")
+}
+Rel(rider, app, "Watches the world, pastes a key")
+Rel(app, idb, "Stores and reads the key")
+Rel(app, gmaps, "Requests 3D Tiles with the key", "HTTPS")
+@enduml

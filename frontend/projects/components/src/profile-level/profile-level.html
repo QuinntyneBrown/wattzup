@@ -1,0 +1,19 @@
+<section class="profile-level">
+  @if (level(); as level) {
+    <span class="profile-level__badge" aria-hidden="true">{{ level }}</span>
+  }
+  <div class="profile-level__body">
+    <h1 class="page__title">{{ headline() }}</h1>
+    @if (xpLabel(); as label) {
+      <wz-xp-bar
+        class="profile-level__bar"
+        size="lg"
+        [fillPercent]="fillPercent()"
+        [label]="label"
+      />
+    }
+    @if (meta(); as meta) {
+      <p class="profile-level__meta">{{ meta }}</p>
+    }
+  </div>
+</section>

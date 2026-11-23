@@ -3,17 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Shape — Wattzup design system</title>
-<meta name="description" content="Corner radii and border widths.">
+<title>Shape — Telo Ride design system</title>
+<meta name="description" content="Telo Ride shape: seven radii from the design’s Tailwind scale, which radius for which size, border widths, and why xs is kept for chart marks only.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+.ds-val { font: var(--text-code); overflow-wrap: anywhere; }
+.ds-token-table td:nth-child(3), .ds-token-table td:nth-child(4) { min-width: calc(var(--space-32) + var(--space-8)); }
+
+.ds-radius-row { display: flex; flex-wrap: wrap; gap: var(--space-6); margin-block: var(--space-4); }
+.ds-radius { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); font: var(--text-caption); color: var(--color-fg-muted); }
+.ds-radius .ds-scale__box { width: var(--space-16); height: var(--space-16); }
+.ds-radius code { background: none; padding: 0; color: var(--color-fg-default); }
+.ds-nest { display: flex; flex-direction: column; gap: var(--space-4); max-width: var(--layout-panel-narrow); outline: var(--border-width-hairline) dashed var(--color-border-strong); }
+.ds-nest__label { font: var(--text-caption); color: var(--color-muted); }
+.ds-nest__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.ds-border-row { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-block: var(--space-4); }
+.ds-border { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-4); min-width: var(--space-48); border-style: solid; border-color: var(--color-border-strong); border-radius: var(--radius-lg); background: var(--color-bg-surface); font: var(--text-caption); color: var(--color-fg-muted); }
+.ds-border code { background: none; padding: 0; color: var(--color-fg-default); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +43,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,36 +97,136 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Foundation</p>
       <h1>Shape</h1>
-      <p class="ds-lead">Six radii; small for chips of data, medium for controls, large for cards and dialogs, full for chips and switches.</p>
-      
-      <ul class="ds-toc"><li><a href="#radii">Radii</a></li><li><a href="#borders">Borders</a></li><li><a href="#tokens">All tokens</a></li></ul>
+      <p class="ds-lead">Controls 8px, wells 12px, cards 16px, pills round. Radius grows with size and steps down as shapes nest; borders are a 1px hairline.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#radii">Radii</a></li><li><a href="#which">Which radius</a></li><li><a href="#borders">Borders</a></li><li><a href="#six-radii">Why six radii</a></li><li><a href="#usage">Usage</a></li><li><a href="#tokens">Tokens</a></li></ul>
     </header>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+
+      <p>Shape in Telo Ride is soft but not bubbly: controls at 8px, wells at 12px, cards at 16px, and pills fully round. Radius grows with the size of the thing, so a button inside a card is visibly tighter than the card around it. Borders are almost always a 1px hairline; colour and lightness do the separating, not line weight.</p>
+
+    </section>
     <section class="ds-section" id="radii"><h2><a href="#radii">Radii</a></h2>
-<div class="cluster"><div class="stack stack--sm"><span class="ds-scale__box" style="--size: var(--radius-xs);"></span><code>--radius-xs</code></div><div class="stack stack--sm"><span class="ds-scale__box" style="--size: var(--radius-sm);"></span><code>--radius-sm</code></div><div class="stack stack--sm"><span class="ds-scale__box" style="--size: var(--radius-md);"></span><code>--radius-md</code></div><div class="stack stack--sm"><span class="ds-scale__box" style="--size: var(--radius-lg);"></span><code>--radius-lg</code></div><div class="stack stack--sm"><span class="ds-scale__box" style="--size: var(--radius-xl);"></span><code>--radius-xl</code></div><div class="stack stack--sm"><span class="ds-scale__box" style="--size: var(--radius-full);"></span><code>--radius-full</code></div></div>
+
+      <p>Six radii plus full, the design's own Tailwind scale.</p>
+      <div class="ds-radius-row"><div class="ds-radius"><div class="ds-scale__box" style="--size: var(--radius-xs)"></div><code>--radius-xs</code><span>2px</span></div><div class="ds-radius"><div class="ds-scale__box" style="--size: var(--radius-sm)"></div><code>--radius-sm</code><span>4px</span></div><div class="ds-radius"><div class="ds-scale__box" style="--size: var(--radius-md)"></div><code>--radius-md</code><span>6px</span></div><div class="ds-radius"><div class="ds-scale__box" style="--size: var(--radius-lg)"></div><code>--radius-lg</code><span>8px</span></div><div class="ds-radius"><div class="ds-scale__box" style="--size: var(--radius-xl)"></div><code>--radius-xl</code><span>12px</span></div><div class="ds-radius"><div class="ds-scale__box" style="--size: var(--radius-2xl)"></div><code>--radius-2xl</code><span>16px</span></div><div class="ds-radius"><div class="ds-scale__box" style="--size: var(--radius-full)"></div><code>--radius-full</code><span>pill</span></div></div>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Token</th><th scope="col">Size</th><th scope="col">Tailwind</th><th scope="col">Used for</th></tr></thead><tbody>
+<tr><td><code>--radius-xs</code></td><td>2px</td><td><code>rounded-sm on chart marks</code></td><td>Chart marks only: interval and segment swatches, level bars, chip swatches</td></tr>
+<tr><td><code>--radius-sm</code></td><td>4px</td><td><code>rounded</code></td><td>Time tags on photos, small tiles, backend tag, code</td></tr>
+<tr><td><code>--radius-md</code></td><td>6px</td><td><code>rounded-md</code></td><td>Photo tags, icon buttons, segmented options, reward thumbnails, brand link focus</td></tr>
+<tr><td><code>--radius-lg</code></td><td>8px</td><td><code>rounded-lg</code></td><td>Controls: buttons, inputs, nav links, segmented track, map tiles</td></tr>
+<tr><td><code>--radius-xl</code></td><td>12px</td><td><code>rounded-xl</code></td><td>Wells, banners, toasts, HUD glass, large buttons, popovers</td></tr>
+<tr><td><code>--radius-2xl</code></td><td>16px</td><td><code>rounded-2xl</code></td><td>Cards, panels, dialogs, the next-ride card</td></tr>
+<tr><td><code>--radius-full</code></td><td>pill</td><td><code>rounded-full</code></td><td>Pills, the level badge, XP bar, avatars, status dots</td></tr>
+</tbody></table></div>
+
     </section>
-    <section class="ds-section" id="borders"><h2><a href="#borders">Borders</a></h2>
-<ul><li>Hairline 1px for edges.</li><li>Thick 2px for focus and hover underline.</li><li>Accent 4px for alert edges.</li></ul>
+    <section class="ds-section" id="which"><h2><a href="#which">Which radius for which size</a></h2>
+
+      <p>Pick by the element's size and role, not by taste. Nested shapes step down: a 16px card holds 12px wells, which hold 8px controls or 6px thumbnails, so the gaps between curves stay even.</p>
+      <div class="ds-example"><div class="ds-example__canvas ds-example__canvas--canvas">
+        <div class="panel panel--pad ds-nest">
+          <p class="ds-nest__label">Card · 2xl</p>
+          <div class="reward"><img class="reward__thumb" src="../assets/images/worlds/docklands.jpg" alt=""><div class="reward__text"><p class="reward__title">Opens Neon Docklands</p><p class="reward__place">Well · xl, thumbnail · md</p></div></div>
+          <div class="ds-nest__row"><a class="btn btn--primary" href="../../mocks/pages/race-setup/default.html">Race · lg</a><button class="icon-btn" type="button" aria-label="Full screen (icon button, radius md)"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button><span class="pill pill--gold">+207 XP · full</span><span class="photo-tag photo-tag--time">30:00</span></div>
+          <div class="banner banner--gold" role="status"><p class="banner__body"><span class="banner__title">Neon Docklands is open.</span> <span class="text-muted">Banner · xl</span></p></div>
+        </div>
+      </div><div class="ds-example__caption"><span>Card 16px, wells and banners 12px, controls 8px, icon button and thumbnail 6px, time tag 4px, pill full.</span></div></div>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Element size</th><th scope="col">Radius</th><th scope="col">Examples</th></tr></thead><tbody>
+<tr><td>Under 24px tall, inline</td><td><code>--radius-sm</code> / <code>--radius-md</code></td><td>Time tag, photo tag, backend tag</td></tr>
+<tr><td>Controls, 36–48px</td><td><code>--radius-lg</code> (<code>--radius-md</code> for 36px icon buttons and segmented options)</td><td>Buttons, inputs, nav links</td></tr>
+<tr><td>Controls, 48–56px</td><td><code>--radius-xl</code></td><td><code>.btn--lg</code>, <code>.btn--xl</code></td></tr>
+<tr><td>Wells and banners inside or beside a card</td><td><code>--radius-xl</code></td><td>Reward, banner, toast, HUD glass, popover</td></tr>
+<tr><td>Cards, dialogs, sheets</td><td><code>--radius-2xl</code></td><td>Next-ride card, panels, dialog (sheet: top corners only)</td></tr>
+<tr><td>Status and counts</td><td><code>--radius-full</code></td><td>Pills, level badge, XP bar, avatars, dots</td></tr>
+<tr><td>Chart marks</td><td><code>--radius-xs</code></td><td>Interval swatches, level bars</td></tr>
+</tbody></table></div>
+
     </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">All tokens</a></h2>
-<p>9 tokens. Values resolve live for each theme.</p><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td><code>--radius-xs</code></td><td colspan="2"><span data-token="--radius-xs"></span></td></tr><tr><td><code>--radius-sm</code></td><td colspan="2"><span data-token="--radius-sm"></span></td></tr><tr><td><code>--radius-md</code></td><td colspan="2"><span data-token="--radius-md"></span></td></tr><tr><td><code>--radius-lg</code></td><td colspan="2"><span data-token="--radius-lg"></span></td></tr><tr><td><code>--radius-xl</code></td><td colspan="2"><span data-token="--radius-xl"></span></td></tr><tr><td><code>--radius-full</code></td><td colspan="2"><span data-token="--radius-full"></span></td></tr><tr><td><code>--border-width-hairline</code></td><td colspan="2"><span data-token="--border-width-hairline"></span></td></tr><tr><td><code>--border-width-thick</code></td><td colspan="2"><span data-token="--border-width-thick"></span></td></tr><tr><td><code>--border-width-accent</code></td><td colspan="2"><span data-token="--border-width-accent"></span></td></tr></tbody></table></div>
+    <section class="ds-section" id="borders"><h2><a href="#borders">Border widths</a></h2>
+
+      <div class="ds-border-row"><div class="ds-border" style="border-width: var(--border-width-hairline)"><code>--border-width-hairline</code><span>1px</span></div><div class="ds-border" style="border-width: var(--border-width-thick)"><code>--border-width-thick</code><span>2px</span></div></div>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Token</th><th scope="col">Width</th><th scope="col">Used for</th></tr></thead><tbody>
+<tr><td><code>--border-width-hairline</code></td><td>1px</td><td>Every border: cards, dividers, inputs, banners, the header rule</td></tr>
+<tr><td><code>--border-width-thick</code></td><td>2px</td><td>Selection marks: the current tab and side-nav bar, current table row, avatar ring, checkbox tick; the focus ring is the same width (--focus-ring-width)</td></tr>
+</tbody></table></div>
+      <p>A hairline border's colour decides its job: <code>--color-line</code> for decoration (card edges, dividers, the header rule), <code>--color-line-strong</code> where the border is the only thing marking a control (inputs), which must reach 3:1.</p>
+
+    </section>
+    <section class="ds-section" id="six-radii"><h2><a href="#six-radii">Why six radii plus full</a></h2>
+
+      <p>The extraction method keeps at most five radii plus full. Telo Ride keeps six plus full, and this is a <strong>deliberate deviation</strong>, logged as such:</p>
+      <ul>
+        <li><span>The design is written in Tailwind and uses <code>rounded</code>, <code>rounded-md</code>, <code>rounded-lg</code>, <code>rounded-xl</code> and <code>rounded-2xl</code> each in many places with a clear size logic (above). Collapsing any two would change dozens of components the design draws deliberately differently (an 8px button inside a 12px well inside a 16px card).</span></li>
+        <li><span><code>--radius-xs</code> (2px) is the sixth. It exists only for chart marks and ticks, where 4px visibly blobs a 6px-wide bar. It is not a UI radius: never put it on a control, card or tag.</span></li>
+      </ul>
+      <p>So the UI itself uses five radii plus full (sm, md, lg, xl, 2xl); xs belongs to data visualisation.</p>
+
+    </section>
+    <section class="ds-section" id="usage"><h2><a href="#usage">Usage</a></h2>
+
+      <ul class="ds-checklist">
+        <li><span>Inner radius is smaller than outer: a control inside a well inside a card steps down lg → xl → 2xl from the inside out.</span></li>
+        <li><span>A bottom sheet rounds only its top corners (<code>--radius-2xl</code>); at 640px it becomes a centred dialog with all four.</span></li>
+        <li><span>Images in cards are clipped by the card (<code>overflow: hidden</code>), not rounded separately.</span></li>
+        <li><span>Never use <code>--radius-full</code> on a rectangular button: pill buttons are not part of Telo Ride.</span></li>
+        <li><span>Borders are 1px. A 2px border means "selected" or "ring", never emphasis on a resting card.</span></li>
+      </ul>
+
+    </section>
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+<p>Every shape token; none change with the theme.</p>
+<div class="ds-table-wrap"><table class="ds-table ds-token-table"><thead><tr><th scope="col">Token</th><th scope="col">Use</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody>
+<tr><td><code>--radius-xs</code></td><td>2px · Chart marks only: interval and segment swatches, level bars, chip swatches</td><td><span class="ds-val" data-theme="light" data-token="--radius-xs"></span></td><td><span class="ds-val" data-theme="dark" data-token="--radius-xs"></span></td></tr>
+<tr><td><code>--radius-sm</code></td><td>4px · Time tags on photos, small tiles, backend tag, code</td><td><span class="ds-val" data-theme="light" data-token="--radius-sm"></span></td><td><span class="ds-val" data-theme="dark" data-token="--radius-sm"></span></td></tr>
+<tr><td><code>--radius-md</code></td><td>6px · Photo tags, icon buttons, segmented options, reward thumbnails, brand link focus</td><td><span class="ds-val" data-theme="light" data-token="--radius-md"></span></td><td><span class="ds-val" data-theme="dark" data-token="--radius-md"></span></td></tr>
+<tr><td><code>--radius-lg</code></td><td>8px · Controls: buttons, inputs, nav links, segmented track, map tiles</td><td><span class="ds-val" data-theme="light" data-token="--radius-lg"></span></td><td><span class="ds-val" data-theme="dark" data-token="--radius-lg"></span></td></tr>
+<tr><td><code>--radius-xl</code></td><td>12px · Wells, banners, toasts, HUD glass, large buttons, popovers</td><td><span class="ds-val" data-theme="light" data-token="--radius-xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--radius-xl"></span></td></tr>
+<tr><td><code>--radius-2xl</code></td><td>16px · Cards, panels, dialogs, the next-ride card</td><td><span class="ds-val" data-theme="light" data-token="--radius-2xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--radius-2xl"></span></td></tr>
+<tr><td><code>--radius-full</code></td><td>pill · Pills, the level badge, XP bar, avatars, status dots</td><td><span class="ds-val" data-theme="light" data-token="--radius-full"></span></td><td><span class="ds-val" data-theme="dark" data-token="--radius-full"></span></td></tr>
+<tr><td><code>--border-width-hairline</code></td><td>Every border: cards, dividers, inputs, banners, the header rule</td><td><span class="ds-val" data-theme="light" data-token="--border-width-hairline"></span></td><td><span class="ds-val" data-theme="dark" data-token="--border-width-hairline"></span></td></tr>
+<tr><td><code>--border-width-thick</code></td><td>Selection marks: the current tab and side-nav bar, current table row, avatar ring, checkbox tick; the focus ring is the same width (--focus-ring-width)</td><td><span class="ds-val" data-theme="light" data-token="--border-width-thick"></span></td><td><span class="ds-val" data-theme="dark" data-token="--border-width-thick"></span></td></tr>
+</tbody></table></div>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

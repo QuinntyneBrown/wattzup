@@ -1,0 +1,17 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Show the profile
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine")
+  ContainerDb(idb, "Browser storage", "IndexedDB", "Rides waiting to send, cached map catalogue")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Sign-in, progress, catalogues, ride hub, feedback")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Riders, sessions, rides, progress, feedback")
+}
+Rel(rider, app, "Opens /profile", "HTTPS")
+Rel(app, idb, "Reads rides waiting to send")
+Rel(app, api, "GET /api/progress, GET /api/rides?take=10, GET /api/maps", "JSON/HTTPS")
+Rel(api, db, "Reads the rider's progress and rides", "EF Core")
+@enduml

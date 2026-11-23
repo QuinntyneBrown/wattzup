@@ -1,0 +1,139 @@
+// Block race-scenery (docs/design-system/assets/components.css, Race): a glass panel centred above the HUD that asks
+// for a Google Maps Platform key, says when Google refused it, and credits Google while the tiles stream.
+.race-scenery {
+  position: absolute;
+  z-index: var(--z-hud);
+  bottom: var(--race-scenery-bottom);
+  left: 50%;
+  width: min(var(--race-scenery-width), calc(100% - var(--space-6)));
+  translate: -50% 0;
+}
+
+.race-scenery__panel {
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--color-ink) 80%, transparent);
+  backdrop-filter: blur(12px);
+  padding: var(--space-3) var(--space-4);
+}
+
+.race-scenery__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  .icon {
+    flex-shrink: 0;
+    color: var(--color-volt-fg);
+  }
+}
+
+.race-scenery__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.race-scenery__body {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.race-scenery__form {
+  margin-top: var(--space-3);
+  display: flex;
+  gap: var(--space-2);
+}
+
+.race-scenery__field {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--target-comfortable);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-fg) 10%, transparent);
+  padding-inline: var(--space-3);
+
+  &:focus-within {
+    box-shadow: 0 0 0 1px var(--color-faint);
+  }
+
+  &:has(.race-scenery__input[aria-invalid='true']) {
+    box-shadow: 0 0 0 1px var(--color-heart-fg);
+  }
+
+  .icon {
+    flex-shrink: 0;
+    color: var(--color-faint);
+  }
+}
+
+.race-scenery__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-fg);
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &::placeholder {
+    color: var(--color-faint);
+  }
+}
+
+.race-scenery__submit {
+  flex-shrink: 0;
+  min-height: var(--target-comfortable);
+  border-radius: var(--radius-lg);
+  background: var(--color-volt);
+  padding-inline: var(--space-4);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  color: var(--color-on-fill);
+  transition: background-color var(--duration-fast) var(--ease-standard);
+
+  &:hover:not(:disabled) {
+    background: var(--color-volt-hover);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+  }
+}
+
+.race-scenery__error {
+  margin-top: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-heart-fg);
+}
+
+.race-scenery__credit {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-muted);
+}

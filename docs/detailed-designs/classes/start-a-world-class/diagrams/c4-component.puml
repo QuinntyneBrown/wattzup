@@ -1,0 +1,26 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Start a world class
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Bluetooth LE")
+Container(api, "Telo Ride API", "SignalR ride hub", "Session start")
+Container_Boundary(app, "Ride app") {
+  Component(store, "WorldLoadStore", "Route-scoped store · ride", "Gate, begin(), group start watcher")
+  Component(view, "WorldLoading / LoadCard", "Presentation · components", "Action, notice, timer")
+  Component(live, "LiveSessionStore / ServerClock", "Store · ride; helper · domain/engine", "Session start in device time")
+  Component(bikec, "BikeConnection", "Service · domain/bluetooth (BIKE_CONNECTION)", "ble")
+  Component(classride, "ClassRideStore", "Route-scoped store · ride", "adoptWorld, start; RideClock, WorkoutEngine")
+  Component(scene, "WorldScene", "Presentation · components", "Panorama, then the live canvas with a fade")
+  Component(motion, "MotionPreference", "Service · ride", "Reduced motion from the rider's choice")
+}
+Rel(rider, view, "Presses Start riding")
+Rel(view, store, "start")
+Rel(store, bikec, "Reads ble")
+Rel(store, live, "Reads session start")
+Rel(live, api, "SessionStarted", "WebSocket")
+Rel(store, classride, "Hands over the renderer, starts")
+Rel(classride, scene, "live = true")
+Rel(scene, motion, "Fade or instant")
+Rel(classride, bike, "First target resistance", "Web Bluetooth")
+@enduml

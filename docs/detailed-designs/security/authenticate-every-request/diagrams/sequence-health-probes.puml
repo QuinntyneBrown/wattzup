@@ -1,0 +1,37 @@
+@startuml
+title UML sequence behaviour — Answer health probes
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "Hosting platform probe" as actor
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "Health check endpoints" as health
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "DatabaseHealthCheck" as check
+  database "Telo Ride database" as db
+end box
+actor -> health : GET /health/live (anonymous)
+health --> actor : 200 "Healthy" (status only, L2-127 AC4)
+actor -> health : GET /health/ready (anonymous)
+health -> check : CheckHealthAsync
+check -> db : Open a connection
+alt reachable
+  db --> check : OK
+  health --> actor : 200 "Healthy"
+else unreachable
+  db --> check : Failure
+  health --> actor : 503 "Unhealthy" (no detail, no exception text)
+end
+@enduml

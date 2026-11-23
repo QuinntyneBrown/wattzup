@@ -1,0 +1,67 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Inspect diagnostics
+class DiagnosticsFact <<api>> {
+  +term: string
+  +value: string
+  +tone?: 'ok' | 'warn' | 'bad'
+}
+interface Diagnostics <<api>> {
+  +facts: Signal<readonly DiagnosticsFact[]>
+}
+interface ConnectionHistory <<api>> {
+  +connectedSince: Signal<number | null>
+  +reconnects: Signal<number>
+}
+class BuildInfo <<api>> {
+  +version: string
+  +commit: string
+}
+class BrowserDiagnostics <<domain/diagnostics>> {
+  -now: Signal<number>
+  -waiting: Signal<number | null>
+  -browser: Signal<BrowserSource>
+  +facts: Signal<readonly DiagnosticsFact[]>
+}
+class BikeConnectionHistory <<domain/diagnostics>> {
+  -follow(ble: BleState): void
+}
+class "diagnosticsFacts" as Format <<domain/diagnostics>> {
+  +diagnosticsFacts(input): DiagnosticsFact[]
+  +browserLabel(source): string
+  +durationLabel(ms): string
+  +agoLabel(ms): string
+  +commandLabel(command): string
+  +supportFact(state): DiagnosticsFact
+}
+class "openDiagnostics" as Launcher <<ride>> {
+  +openDiagnostics(dialog, injector): Promise<void>
+}
+class DiagnosticsDialog <<ride>> {
+  -close(): void
+}
+class DiagnosticsPanel <<components>> {
+  +facts: input<readonly DiagnosticsFact[]>
+  +dismissed: output<void>
+}
+BrowserDiagnostics ..|> Diagnostics
+BikeConnectionHistory ..|> ConnectionHistory
+BrowserDiagnostics ..> Format
+BrowserDiagnostics --> ConnectionHistory
+BrowserDiagnostics --> BuildInfo
+Diagnostics --> DiagnosticsFact
+Launcher ..> DiagnosticsDialog : lazy import, opens
+DiagnosticsDialog ..> Diagnostics : provides and injects DIAGNOSTICS
+DiagnosticsDialog ..> DiagnosticsPanel : renders
+@enduml

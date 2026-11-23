@@ -1,7 +1,0 @@
-@if (total(); as t) {
-  <span class="ride-clock" [attr.aria-label]="'Elapsed ' + elapsed() + ' of ' + t"
-    >{{ elapsed() }}<span class="ride-clock__total"> / {{ t }}</span></span
-  >
-} @else {
-  <span class="ride-clock">0:00</span>
-}

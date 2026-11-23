@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Textarea — Telo Ride design system</title>
+<meta name="description" content="Multi-line text for notes and reports, as in Send feedback: four rows, a counter, auto-grow, read-only, disabled while sending and invalid.">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/components.css">
+<link rel="stylesheet" href="../assets/ds.css">
+<style>
+  .ds-pairs-stack { display: flex; flex-direction: column; gap: var(--space-2); }
+  .ds-matrix td { min-width: var(--space-28); }
+  .ds-demo-col { display: flex; flex-direction: column; gap: var(--space-4); width: 100%; max-width: calc(var(--space-48) * 2); }
+  .ds-demo-wide { width: 100%; max-width: calc(var(--space-36) * 4); }
+  .ds-demo-panel { background: var(--color-panel); border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-2xl); padding: var(--space-5); width: 100%; }
+  .ds-menu-stage { min-height: calc(var(--space-44) * 2); align-items: flex-start; }
+</style>
+</head>
+<body id="top">
+<a class="ds-skip" href="#main">Skip to content</a>
+<div class="ds-shell">
+  <nav class="ds-nav" aria-label="Design system">
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <details open><summary>Foundations</summary><ul>
+      <li><a href="../foundations/color.html">Color</a></li>
+      <li><a href="../foundations/typography.html">Typography</a></li>
+      <li><a href="../foundations/spacing.html">Spacing</a></li>
+      <li><a href="../foundations/layout.html">Layout</a></li>
+      <li><a href="../foundations/elevation.html">Elevation</a></li>
+      <li><a href="../foundations/shape.html">Shape</a></li>
+      <li><a href="../foundations/motion.html">Motion</a></li>
+      <li><a href="../foundations/iconography.html">Iconography</a></li>
+      <li><a href="../foundations/theming.html">Theming</a></li>
+      <li><a href="../foundations/responsive.html">Responsive</a></li>
+      <li><a href="../foundations/accessibility.html">Accessibility</a></li>
+      <li><a href="../foundations/content.html">Content</a></li>
+    </ul></details>
+    <details open><summary>Actions</summary><ul>
+      <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
+      <li><a href="../components/link.html">Link</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
+      <li><a href="../components/form-field.html">Form field</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
+      <li><a href="../components/slider.html">Slider</a></li>
+      <li><a href="../components/number-stepper.html">Number stepper</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
+      <li><a href="../components/skip-link.html">Skip link</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
+      <li><a href="../components/dialog.html">Dialog</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
+      <li><a href="../components/tooltip.html">Tooltip</a></li>
+      <li><a href="../components/divider.html">Divider</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
+      <li><a href="../components/description-list.html">Description list</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
+      <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
+      <li><a href="../components/toast.html">Toast</a></li>
+      <li><a href="../components/alert.html">Alert and banner</a></li>
+      <li><a href="../components/inline-message.html">Inline message</a></li>
+      <li><a href="../components/progress-bar.html">Progress bar</a></li>
+      <li><a href="../components/spinner.html">Spinner</a></li>
+      <li><a href="../components/skeleton.html">Skeleton</a></li>
+      <li><a href="../components/empty-state.html">Empty state</a></li>
+      <li><a href="../components/error-page.html">Error page</a></li>
+    </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
+    <details open><summary>Patterns</summary><ul>
+      <li><a href="../patterns/forms.html">Forms</a></li>
+      <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
+      <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
+      <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
+      <li><a href="../patterns/notifications.html">Notifications</a></li>
+      <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
+    </ul></details>
+  </nav>
+  <main id="main" class="ds-main">
+    <header class="ds-header">
+      <p class="ds-kicker">Component · Inputs</p>
+      <h1>Textarea</h1>
+      <p class="ds-lead">The textarea takes a few sentences: what went wrong on the ride, an idea, a thank-you. It is the text field's ink well, taller, with a counter when there is a limit.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
+    </header>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+      <p>Use <code>textarea.input</code> when the answer may run past one line: the Send feedback message ("What went wrong?", "What could be better?", "What’s working for you?"). Use a <a class="link" href="text-field.html">text field</a> for anything that fits on one line. Always inside a <a class="link" href="form-field.html">form field</a>.</p>
+    </section>
+
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+      <div class="ds-anatomy">
+        <figure class="ds-anatomy__figure">
+          <div class="field" style="width: 100%; max-width: calc(var(--space-44) * 2);">
+            <label class="field__label" for="an-ta">What went wrong?</label>
+            <textarea class="input" id="an-ta" rows="4" maxlength="500" aria-describedby="an-ta-c">Resistance stayed at L8 after the sprint ended — it only dropped when I tapped minus.</textarea>
+            <div class="field__footer"><span></span><span class="field__counter" id="an-ta-c">85 / 500</span></div>
+          </div>
+          <span class="ds-callout" style="left: 12%; top: 12%;" aria-hidden="true">1</span>
+          <span class="ds-callout" style="left: 50%; top: 44%;" aria-hidden="true">2</span>
+          <span class="ds-callout" style="left: 88%; top: 64%;" aria-hidden="true">3</span>
+          <span class="ds-callout" style="left: 88%; top: 86%;" aria-hidden="true">4</span>
+        </figure>
+        <ol class="ds-anatomy__list">
+          <li><div><b>Label</b><small><code>.field__label</code>; a question works well for open text.</small></div></li>
+          <li><div><b>Text</b><small>14px, line height 20px, 10px × 12px padding.</small></div></li>
+          <li><div><b>Container</b><small>Same well and border as <code>.input</code>; at least 112px tall (<code>--space-28</code>), about four rows; vertical resize.</small></div></li>
+          <li><div><b>Counter</b><small>Optional; <code>.field__counter</code> under the right edge.</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <div class="ds-demo-wide" style="display: grid; gap: var(--space-6);">
+            <div class="field"><label class="field__label" for="ta-1">What could be better?</label><textarea class="input" id="ta-1" rows="4" placeholder="e.g. Let me save a custom ride so I don’t rebuild it every week."></textarea></div>
+            <div class="field"><label class="field__label" for="ta-2">What went wrong?</label><textarea class="input" id="ta-2" rows="4" maxlength="500" aria-describedby="ta-2-h ta-2-c">Resistance stayed at L8 after the sprint ended — it only dropped when I tapped minus.</textarea><div class="field__footer"><span class="field__hint" id="ta-2-h">Context is sent with your note.</span><span class="field__counter" id="ta-2-c">85 / 500</span></div></div>
+            <div class="field"><label class="field__label" for="ta-3">What’s working for you? <span class="field__optional">(grows as you type)</span></label><textarea class="input input--autogrow" id="ta-3" rows="2">The resistance landing on the beat makes the HIIT videos so much better.</textarea></div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Plain with an example placeholder; with hint and counter; auto-grow (<code>.input--autogrow</code>, uses <code>field-sizing: content</code> where supported, capped at 12rem).</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;textarea class="input" id="feedback-message" rows="4" maxlength="500"
+  aria-describedby="feedback-hint feedback-count"
+  placeholder="e.g. Resistance stayed at L8 when the video dropped to recovery."&gt;&lt;/textarea&gt;</code></pre></details>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+      <p>One size: the textarea sets its height with <code>rows</code> (minimum 2; 4 in Send feedback) and never shrinks below <code>--space-28</code> (112px) unless it auto-grows (minimum <code>--space-20</code>). Text is always 14px.</p>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">State</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Disabled</th><th scope="col">Read-only</th><th scope="col">Invalid</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Textarea</th>
+            <td><textarea class="input" rows="3" aria-label="Default" placeholder="e.g. Resistance stayed at L8…"></textarea></td>
+            <td><textarea class="input" rows="3" aria-label="Hover" data-state="hover" placeholder="e.g. Resistance stayed at L8…"></textarea></td>
+            <td><textarea class="input" rows="3" aria-label="Focus" data-state="focus">Resistance stayed at L8 after the sprint ended.</textarea></td>
+            <td><textarea class="input" rows="3" aria-label="Disabled while sending" disabled>Resistance stayed at L8 after the sprint ended.</textarea></td>
+            <td><textarea class="input" rows="3" aria-label="Read-only" readonly>Resistance stayed at L8 after the sprint ended.</textarea></td>
+            <td><textarea class="input" rows="3" aria-label="Invalid" aria-invalid="true"></textarea></td></tr>
+          <tr><th scope="row">Counter</th>
+            <td><span class="field__counter">85 / 500</span></td><td><span class="field__counter">85 / 500</span></td><td><span class="field__counter">85 / 500</span></td><td><span class="field__counter">85 / 500</span></td><td><span class="field__counter">85 / 500</span></td><td><span class="field__counter" data-over="true">512 / 500</span></td></tr>
+        </tbody>
+      </table></div>
+      <p><b>Disabled</b> is the "Sending…" moment: the message cannot change while it is on its way. <b>Invalid</b> follows an empty submit or a message over the limit, with an error line ("Write a line about what went wrong, then send." or "Shorten this to 500 characters.").</p>
+      <h3>Both themes</h3>
+      <div class="ds-themes">
+        <div data-theme="light"><div class="field"><label class="field__label" for="tt-l">What went wrong?</label><textarea class="input" id="tt-l" rows="4">Resistance stayed at L8 after the sprint ended — it only dropped when I tapped minus.</textarea><div class="field__footer"><span></span><span class="field__counter">85 / 500</span></div></div></div>
+        <div data-theme="dark"><div class="field"><label class="field__label" for="tt-d">What went wrong?</label><textarea class="input" id="tt-d" rows="4">Resistance stayed at L8 after the sprint ended — it only dropped when I tapped minus.</textarea><div class="field__footer"><span></span><span class="field__counter">85 / 500</span></div></div></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Width</th><th scope="col">Rule</th></tr></thead><tbody>
+        <tr><td>360 (base)</td><td>Full width inside the bottom sheet; four rows keep the footer and Send in view above the keyboard. Resize is vertical only.</td></tr>
+        <tr><td>640 (sm)</td><td>Inside the 25rem feedback popover; no change to the field.</td></tr>
+        <tr><td>1024 (lg)</td><td>No change; never wider than its form column.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+      <p>Reads the same <code>--field-*</code> tokens as <a class="link" href="text-field.html">text field</a>. The ink well inside a panel (dark) or on a white panel (light) reads as recessed in both themes.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <p>Native <code>&lt;textarea&gt;</code> with <code>&lt;label for&gt;</code>. Hint and counter via <code>aria-describedby</code>; <code>aria-invalid</code> with an error line when invalid. Use <code>maxlength</code> only if the extra text would be lost; otherwise let it run over and show the counter in heart so pasted text is not silently cut.</p>
+      <h3>Keyboard</h3>
+      <div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+        <tr><td><kbd>Tab</kbd></td><td>Into and out of the textarea (Tab does not insert a tab character).</td></tr>
+        <tr><td><kbd>Enter</kbd></td><td>New line. It never submits the form.</td></tr>
+        <tr><td><kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>Enter</kbd></td><td>Optional shortcut to send, offered only alongside the visible Send button.</td></tr>
+      </tbody></table></div>
+      <h3>Focus</h3>
+      <p>Same flush 2px ring as the text field. When the feedback panel opens, focus starts on the kind picker, not in the textarea, so the keyboard does not cover the panel on phones.</p>
+      <h3>Labelling</h3>
+      <p>The label changes with the feedback kind ("What went wrong?" / "What could be better?" / "What’s working for you?"); keep the <code>id</code> stable so the association holds. Announce the counter politely only in the last 50 characters.</p>
+      <h3>Contrast</h3>
+      <div class="ds-themes">
+<div data-theme="light"><div class="ds-pairs-stack">
+<div class="ds-pair"><span>Border on panel (1.4.11)</span><span class="ds-pair__ratio" data-contrast="--color-line-strong|--color-panel" data-min="3"></span></div>
+<div class="ds-pair"><span>Text in well</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Placeholder in well</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Counter on panel</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Counter over limit</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-panel" data-min="4.5"></span></div>
+</div></div>
+<div data-theme="dark"><div class="ds-pairs-stack">
+<div class="ds-pair"><span>Border on panel (1.4.11)</span><span class="ds-pair__ratio" data-contrast="--color-line-strong|--color-panel" data-min="3"></span></div>
+<div class="ds-pair"><span>Text in well</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Placeholder in well</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Counter on panel</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Counter over limit</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-panel" data-min="4.5"></span></div>
+</div></div>
+</div>
+      <h3>Motion</h3>
+      <p>Auto-grow resizes with the text, without animation.</p>
+      <h3>Touch</h3>
+      <p>The whole well is the target (at least 112px tall). The resize handle is a pointer nicety; touch users get auto-grow instead.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li>Ask a question as the label when the answer is open: "What went wrong?".</li>
+        <li>The placeholder is one concrete example that starts with "e.g.": "e.g. Resistance stayed at L8 when the video dropped to recovery."</li>
+        <li>Counters read "85 / 500"; near the limit, the hint can say "16 characters left".</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><textarea class="input" rows="3" aria-label="Do: strong border example">Resistance stayed at L8 after the sprint ended.</textarea></div><figcaption>The shared <code>.input</code> well and 3:1 border.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><textarea class="feedback__message" rows="3" aria-label="Don't: hairline example">Resistance stayed at L8 after the sprint ended.</textarea></div><figcaption>The feedback mock's own textarea with a 1.3:1 <code>--color-line</code> border: the edge vanishes on the panel.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><div class="field" style="width: 100%;"><label class="field__label" for="dd-ta">What went wrong?</label><textarea class="input" id="dd-ta" rows="2" placeholder="e.g. Resistance stayed at L8 when the video dropped to recovery."></textarea></div></div><figcaption>Question label plus an example placeholder.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><textarea class="input" rows="2" aria-label="Message example" placeholder="Message"></textarea></div><figcaption>"Message" as the only label, in the placeholder: gone once typing starts, and it does not say what to write.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+        <tbody>
+          <tr><td>Well (--field-bg)</td><td><code>--color-ink</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td></tr>
+          <tr><td>Border (--field-border)</td><td><code>--color-line-strong</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-line-strong" data-swatch></i><span data-token="--color-line-strong"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-line-strong" data-swatch></i><span data-token="--color-line-strong"></span></span></td></tr>
+          <tr><td>Border, invalid</td><td><code>--color-heart</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-heart" data-swatch></i><span data-token="--color-heart"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-heart" data-swatch></i><span data-token="--color-heart"></span></span></td></tr>
+          <tr><td>Placeholder; counter</td><td><code>--color-faint</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td></tr>
+          <tr><td>Minimum height / auto-grow min and max</td><td><code>--space-28</code> <code>--space-20</code> <code>--space-48</code></td><td colspan="2"><span data-token="--space-28"></span> / <span data-token="--space-20"></span> / <span data-token="--space-48"></span></td></tr>
+          <tr><td>Padding block / inline</td><td><code>--space-2-5</code> <code>--space-3</code></td><td colspan="2"><span data-token="--space-2-5"></span> / <span data-token="--space-3"></span></td></tr>
+          <tr><td>Radius</td><td><code>--radius-lg</code></td><td colspan="2"><span data-token="--radius-lg"></span></td></tr>
+          <tr><td>Text</td><td><code>--font-size-sm</code> <code>--line-height-sm</code></td><td colspan="2"><span data-token="--font-size-sm"></span><span data-token="--line-height-sm"></span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+      <pre><code>&lt;div class="field"&gt;
+  &lt;label class="field__label" for="feedback-message"&gt;What went wrong?&lt;/label&gt;
+  &lt;textarea class="input" id="feedback-message" rows="4" aria-describedby="feedback-count"&gt;&lt;/textarea&gt;
+  &lt;div class="field__footer"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="field__counter" id="feedback-count"&gt;0 / 500&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+        <tr><td><code>textarea.input</code></td><td>Multi-line field, 112px minimum, vertical resize (kit).</td></tr>
+        <tr><td><code>.input--autogrow</code></td><td>Grows with content between 80px and 192px.</td></tr>
+        <tr><td><code>rows</code></td><td>Visible rows; 2 minimum.</td></tr>
+        <tr><td><code>.field__counter[data-over="true"]</code></td><td>Counter over the limit.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <ul>
+        <li><a href="../../mocks/dialogs/feedback/default.html">dialogs/feedback/default</a> — "What went wrong?" textarea, rows 4</li>
+        <li><a href="../../mocks/dialogs/feedback/idea.html">dialogs/feedback/idea</a> and <a href="../../mocks/dialogs/feedback/kudos.html">kudos</a> — the same field under the other kinds</li>
+        <li><a href="../../mocks/dialogs/feedback/sending.html">dialogs/feedback/sending</a> — disabled while sending</li>
+      </ul>
+      <p>Drift fixed during extraction:</p>
+      <ul>
+        <li><code>dialogs/feedback/*</code>: <code>.feedback__message</code> uses a <code>--color-line</code> border (1.3:1) and <code>resize: none</code>; it becomes <code>textarea.input</code> (3:1 border, vertical resize).</li>
+        <li><code>dialogs/feedback/*</code>: the textarea's line height is relaxed (1.625) where every other field is 20px; normalised to <code>--line-height-sm</code>.</li>
+        <li><code>dialogs/feedback/idea</code>, <code>kudos</code>: the label and placeholder change with the kind but the message keeps the bug text (README open question 12); a kind change keeps what the rider typed, so this is expected, not drift.</li>
+      </ul>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
+  </main>
+</div>
+<script src="../assets/ds.js"></script>
+</body>
+</html>

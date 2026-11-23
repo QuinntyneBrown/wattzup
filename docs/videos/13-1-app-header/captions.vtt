@@ -1,0 +1,52 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:06.861
+Every page of the app now shares one header, with full screen at its end.
+
+00:00:10.324 --> 00:00:15.088
+Press Full screen and the ride fills the display. The button then reads Exit full
+
+00:00:15.088 --> 00:00:18.858
+screen. Where the browser cannot do it, there is no button.
+
+00:00:23.228 --> 00:00:27.941
+Race, Classes and Profile each mark their own item, so you always know where you
+
+00:00:27.941 --> 00:00:28.477
+are.
+
+00:00:36.133 --> 00:00:40.972
+Your streak, your level and your XP sit at the end, and the level goes to Profile.
+
+00:00:46.457 --> 00:00:51.307
+On a phone the navigation takes its own row, and the level shows just its badge.
+
+00:00:56.780 --> 00:01:00.077
+From a phone to a laptop, the same header grows to fit.
+
+00:01:09.685 --> 00:01:14.767
+What the tests prove: full screen in and out, no button without the API, and every
+
+00:01:14.767 --> 00:01:16.059
+page's own item.
+
+00:01:20.009 --> 00:01:24.612
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:24.957 --> 00:01:29.469
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:29.469 --> 00:01:31.140
+every hill and interval.
+
+00:01:31.485 --> 00:01:36.663
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:36.663 --> 00:01:42.111
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:42.111 --> 00:01:45.101
+XP, rider levels, stars and map unlocks.
+
+00:01:45.446 --> 00:01:47.939
+A custom workout lives under Profile.

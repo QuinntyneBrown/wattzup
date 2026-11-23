@@ -1,0 +1,46 @@
+@startuml
+title UML sequence behaviour — A hub test with a fake clock
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "Race session hub test" as test
+participant "TeloRideApiFactory" as factory
+participant "HubConnection (real client)" as client
+participant "EventProbe<SessionStarted>" as probe
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RideHub" as hub
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "FindRaceCommandHandler" as handler
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "EF Core InMemory store (this fixture)" as mem
+end box
+test -> factory : Create with a unique InMemory database name (L2-148 AC2)
+test -> factory : SignInAsync(email) via FakeEmailSender code
+test -> client : StartAsync to /hubs/ride over server.CreateHandler() (L2-148 AC3)
+test -> client : InvokeAsync("FindRace", mapId)
+client -> hub : FindRace
+hub -> handler : Send FindRaceCommand
+handler -> mem : Seat the rider in a session starting in 30 s
+hub --> client : SeatsChanged
+test -> factory : Time.Advance(30 s) (L2-148 AC4)
+hub -> client : SessionStarted
+test -> probe : WaitAsync(timeout 5 s)
+alt Arrived
+  probe --> test : SessionStarted
+else Timeout
+  probe --> test : Fail naming the events that did arrive
+end
+@enduml

@@ -1,0 +1,24 @@
+@use '../../styles/page';
+
+// Home's layout (docs/design-system/assets/components.css, Home): the two doors side by side at lg, stacked below, and
+// the Race door's tiles four across from sm, two on a phone.
+.doors {
+  margin-top: var(--space-10);
+  display: grid;
+  gap: var(--space-10);
+
+  @media (min-width: 64rem) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.map-tiles {
+  margin-top: var(--space-4);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+
+  @media (min-width: 40rem) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

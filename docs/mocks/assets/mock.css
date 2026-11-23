@@ -35,6 +35,3 @@
 .mock-note::before { content: "Note"; display: block; font-weight: var(--font-weight-semibold); text-transform: uppercase; letter-spacing: var(--letter-spacing-wide); }
 [data-chrome="off"] .mock-note { display: none; }
 @media (max-width: 39.99rem) { .mock-bar__states { max-width: 40vw; } }
-
-/* World Ride fills the window under the mock bar while the chrome is on. */
-html:not([data-chrome="off"]) .world-ride { min-height: max(var(--world-ride-min-height), calc(100svh - 4.5rem)); }

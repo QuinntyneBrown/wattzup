@@ -1,0 +1,26 @@
+// Block setup-header (docs/design-system/assets/components.css, Race Setup).
+:host {
+  display: block;
+  flex-shrink: 0;
+}
+
+.setup-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  border-bottom: var(--border-width-hairline) solid var(--color-line);
+  padding: var(--space-2-5) var(--space-4);
+
+  @media (min-width: 40rem) {
+    padding-inline: var(--space-6);
+  }
+
+  @media (min-width: 64rem) {
+    padding-inline: var(--space-8);
+  }
+}
+
+.setup-header__end {
+  display: flex;
+  margin-left: auto;
+}

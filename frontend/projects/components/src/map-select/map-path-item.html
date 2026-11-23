@@ -1,0 +1,9 @@
+@if (!last()) {
+  <span
+    class="map-path__line"
+    [class.map-path__line--locked]="state() !== 'open'"
+    aria-hidden="true"
+  ></span>
+}
+<span class="map-path__dot" [class]="'map-path__dot--' + state()" aria-hidden="true"></span>
+<ng-content />

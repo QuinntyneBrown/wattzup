@@ -4,10 +4,10 @@ Opens a video folder's `slides.html` in headless Chromium, seeks it frame by fra
 MP4 with ffmpeg. Standard: `docs/videos/README.md`, "Slides and motion".
 
 ```
-node tools/video-build/build.mjs docs/videos/NN-journey-JJ-topic --check                # the schedule and how each line fits
-node tools/video-build/build.mjs docs/videos/NN-journey-JJ-topic --frame 12.5 out.png   # one frame, at film seconds
-node tools/video-build/build.mjs docs/videos/NN-journey-JJ-topic                        # NN-journey-JJ-topic.mp4
-node tools/video-build/build.mjs docs/videos/NN-journey-JJ-topic --captions             # the same, captions burned in
+node tools/video-build/build.mjs docs/videos/S-s-slice-name --check                # the schedule and how each line fits
+node tools/video-build/build.mjs docs/videos/S-s-slice-name --frame 12.5 out.png   # one frame, at film seconds
+node tools/video-build/build.mjs docs/videos/S-s-slice-name                        # S-s-slice-name.mp4
+node tools/video-build/build.mjs docs/videos/S-s-slice-name --captions             # the same, captions burned in
 ```
 
 `--crf <n>` sets the quality (default 21; 20 to 23). `FFMPEG_PATH` overrides ffmpeg, which needs

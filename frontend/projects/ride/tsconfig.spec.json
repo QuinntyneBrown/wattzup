@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../out-tsc/spec",
+    "types": ["vitest/globals"]
+  },
+  "include": [
+    "src/**/*.ts",
+    "../api/src/**/*.ts",
+    "../domain/src/**/*.ts",
+    "../components/src/**/*.ts",
+    "../video/src/**/*.ts",
+    "../world/src/**/*.ts"
+  ]
+}

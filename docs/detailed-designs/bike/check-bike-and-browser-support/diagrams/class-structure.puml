@@ -1,0 +1,88 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Check bike and browser support
+enum BluetoothSupportState {
+  ready
+  unsupported-browser
+  insecure-context
+  adapter-off
+}
+enum RideBlockReason {
+  unsupported-browser
+  insecure-context
+}
+enum BikeSupportLevel {
+  full-control
+  beta
+}
+class SupportedBike {
+  +label: string
+  +level: BikeSupportLevel
+}
+interface BluetoothSupport <<api>> {
+  +state: Signal<BluetoothSupportState>
+  +recheck(): Promise<BluetoothSupportState>
+  +secureUrl(): string
+}
+class WebBluetoothSupport <<domain/bluetooth>> {
+  -window: Window
+  +state: Signal<BluetoothSupportState>
+  +recheck(): Promise<BluetoothSupportState>
+  +secureUrl(): string
+}
+class "rideBlockReason()" as RideBlock <<domain/bluetooth>> {
+  +rideBlockReason(state: BluetoothSupportState): RideBlockReason | null
+  +startRideHint(reason: RideBlockReason): string
+}
+class ConnectWorks <<components>> {
+  +bikes: input<SupportedBike[]>
+}
+class BrowserNotice <<components>> {
+  +reason: input<RideBlockReason>
+  +copied: input<boolean>
+  +copyLink: output<void>
+  +openSecure: output<void>
+}
+class BrowserPanel <<components>> {
+  +reason: input<RideBlockReason>
+  +address: input<string>
+  +copied: input<boolean>
+  +copyLink: output<void>
+  +openSecure: output<void>
+}
+class ConnectBikePage <<ride>> {
+  -support: BluetoothSupport
+  +blocker: Signal<BluetoothSupportState>
+}
+class ClassStartPage <<ride>> {
+  -support: BluetoothSupport
+  -clipboard: Clipboard
+  +blockReason: Signal<RideBlockReason | null>
+  +onCopyLink(): void
+  +onOpenSecure(): void
+}
+WebBluetoothSupport ..|> BluetoothSupport
+WebBluetoothSupport --> BluetoothSupportState : reports
+RideBlock ..> BluetoothSupportState
+RideBlock ..> RideBlockReason : returns
+SupportedBike --> BikeSupportLevel
+ConnectWorks "1" o-- "*" SupportedBike
+ConnectBikePage ..> BluetoothSupport : injects BLUETOOTH_SUPPORT
+ConnectBikePage ..> ConnectWorks : renders
+ClassStartPage ..> BluetoothSupport : injects BLUETOOTH_SUPPORT
+ClassStartPage ..> RideBlock
+ClassStartPage ..> BrowserNotice : renders
+BrowserNotice --> RideBlockReason
+BrowserPanel --> RideBlockReason
+@enduml

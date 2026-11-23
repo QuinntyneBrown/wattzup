@@ -1,0 +1,12 @@
+<section class="setup-map" aria-labelledby="map-title">
+  <div class="setup-map__photo"><img class="setup-map__img" [src]="photoUrl()" alt="" /></div>
+  <h1 class="setup-map__title" id="map-title">{{ name() }}</h1>
+  <p class="setup-map__sub">{{ routeLine() }}</p>
+  <wz-setup-facts
+    [distanceKm]="distanceKm()"
+    [climbingM]="climbingM()"
+    [rating]="rating()"
+    [bestSeconds]="bestSeconds()"
+  />
+  <wz-setup-stars [earned]="earned()" />
+</section>

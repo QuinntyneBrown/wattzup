@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Browse maps
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine")
+  ContainerDb(store, "Browser storage", "localStorage", "Cached map catalogue")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Sign-in, progress, catalogues, ride hub, feedback; maps.json embedded")
+}
+Rel(rider, app, "Opens Map Select in", "HTTPS")
+Rel(app, api, "GET /api/maps", "JSON/HTTPS")
+Rel(app, store, "Caches and reads the catalogue")
+@enduml

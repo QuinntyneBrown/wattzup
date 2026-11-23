@@ -50,3 +50,5 @@ Thumbs.db
 /performance-reports
 /blob-report
 /playwright/.cache
+/test-results
+/playwright-report

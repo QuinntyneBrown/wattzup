@@ -1,0 +1,22 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Host and deliver
+
+Person(rider, "Rider", "Chrome or Edge")
+System_Ext(gh, "GitHub Actions", "Pipeline")
+System_Boundary(telo, "Telo Ride") {
+  Container(edge, "Site routing", "HTTPS; provider <TO SUPPLY>", "Routes /api, /hubs, /health to the API; the rest to the static host")
+  Container(host, "Static host", "HTTPS static hosting; provider <TO SUPPLY>", "Ride app build, headers, SPA fallback")
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Runs in the rider's browser")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Sign-in, progress, catalogues, ride hub, feedback")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Riders, sessions, rides, progress, feedback")
+}
+Rel(rider, edge, "Requests", "HTTPS")
+Rel(edge, host, "Forwards app paths to")
+Rel(edge, api, "Forwards /api, /hubs, /health to", "HTTPS, WebSocket")
+Rel(host, app, "Serves")
+Rel(api, db, "Reads and writes", "EF Core")
+Rel(gh, host, "Deploys build to")
+Rel(gh, api, "Deploys and migrates")
+@enduml

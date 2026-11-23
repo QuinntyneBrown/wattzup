@@ -1,0 +1,27 @@
+<p
+  class="inline-message"
+  [class.inline-message--warn]="tone() === 'warn'"
+  [class.inline-message--error]="tone() === 'error'"
+  [class.inline-message--success]="tone() === 'success'"
+  [class.inline-message--sm]="size() === 'sm'"
+>
+  <svg class="inline-message__icon" viewBox="0 0 24 24" aria-hidden="true">
+    @switch (tone()) {
+      @case ('error') {
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 8v4" />
+        <path d="M12 16h.01" />
+      }
+      @case ('success') {
+        <circle cx="12" cy="12" r="10" />
+        <path d="m9 12 2 2 4-4" />
+      }
+      @default {
+        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+        <path d="M12 9v4" />
+        <path d="M12 17h.01" />
+      }
+    }
+  </svg>
+  <span class="inline-message__text"><ng-content /></span>
+</p>

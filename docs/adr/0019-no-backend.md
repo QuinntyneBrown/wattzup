@@ -1,6 +1,6 @@
 # 0019. No backend: Wattzup runs in the browser only
 
-- **Status:** Accepted
+- **Status:** Superseded by [0025](0025-thin-dotnet-backend.md)
 - **Date:** 2026-11-19
 - **Supersedes:** [0004](0004-sse-and-single-process-in-memory-state.md), [0007](0007-corebluetooth-first.md), [0008](0008-corebluetooth-through-the-objective-c-runtime.md), [0015](0015-sessions-kept-in-a-file.md), [0017](0017-browser-edition.md)
 - **Amends:** [0013](0013-angular-workspace-with-libraries.md), [0014](0014-class-catalogue-as-a-file.md), [0018](0018-static-content-security-policy.md)

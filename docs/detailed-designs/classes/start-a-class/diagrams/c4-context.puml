@@ -1,0 +1,11 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Start a class
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(youtube, "YouTube", "Class videos (IFrame Player API)")
+Rel(rider, telo, "Chooses to ride alone or with a group in")
+Rel(telo, youtube, "Embeds the class video from", "youtube-nocookie.com")
+@enduml

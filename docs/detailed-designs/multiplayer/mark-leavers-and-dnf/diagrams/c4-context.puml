@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Mark leavers and DNF
+
+Person(rider, "Rider", "Rides a smart bike at home")
+Person(others, "Riders online", "Other riders in the same session")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+
+Rel(rider, telo, "Leaves, goes silent or drops out of a session in")
+Rel(others, telo, "See the rider marked DNF or removed in")
+@enduml

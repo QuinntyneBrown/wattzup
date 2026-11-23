@@ -1,0 +1,117 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Connect a bike
+enum BikeState {
+  Idle
+  Searching
+  Pairing
+  Connected
+  Disconnected
+}
+enum BikeKind {
+  Echelon
+  Ftms
+}
+enum BikeControl {
+  Full
+  ReadOnly
+}
+class BikeInfo <<api>> {
+  +id: string
+  +name: string
+  +identifier: string | null
+  +kind: BikeKind
+}
+interface BikeConnection <<api>> {
+  +frames: Observable<Uint8Array>
+  +requestBike(): Promise<BikeInfo | null>
+  +connect(): Promise<void>
+  +reconnectRemembered(bike: BikeInfo): Promise<boolean>
+  +setResistance(level: number): Promise<number>
+  +disconnect(): void
+}
+class WebBluetoothBikeConnection <<domain/bluetooth>> {
+  -device: BluetoothDevice | null
+  -link: BikeLink | null
+  -queue: GattWriteQueue
+  +requestBike(): Promise<BikeInfo | null>
+  +connect(): Promise<void>
+  +reconnectRemembered(bike: BikeInfo): Promise<boolean>
+}
+interface BikeLink <<domain/bluetooth>> {
+  +kind: BikeKind
+  +open(server: BluetoothRemoteGATTServer): Promise<void>
+  +initialise(): Promise<void>
+  +setResistance(level: number): Promise<number>
+}
+class EchelonLink {
+  +open(server): Promise<void>
+  +initialise(): Promise<void>
+}
+class FtmsLink {
+  -range: ResistanceRange
+  -control: BikeControl
+  +open(server): Promise<void>
+  -requestControl(): Promise<boolean>
+}
+class GattWriteQueue <<domain/bluetooth>> {
+  +enqueue(ch: BluetoothRemoteGATTCharacteristic, bytes: Uint8Array, minGapMs: number): Promise<number>
+}
+class EchelonProtocol <<domain/protocol>> {
+  +{static} SERVICE: string
+  +{static} WRITE: string
+  +{static} NOTIFY: string
+  +initCommands(): Uint8Array[]
+  +checksum(bytes: Uint8Array): number
+}
+class FtmsProtocol <<domain/protocol>> {
+  +requestControl(): Uint8Array
+  +setTargetResistanceLevel(raw: number): Uint8Array
+  +decodeControlPointResponse(v: DataView): ControlPointResponse
+  +decodeResistanceRange(v: DataView): ResistanceRange
+  +mapLevel(level: number, range: ResistanceRange): number
+}
+class ResistanceRange {
+  +minimum: number
+  +maximum: number
+  +increment: number
+}
+class RememberedBikeStore <<domain/storage>> {
+  +get(): BikeInfo | null
+  +save(bike: BikeInfo): void
+}
+class ConnectBikeStore <<ride>> {
+  +view: Signal<ConnectView>
+  +pair(): Promise<void>
+}
+class ConnectDevice <<components>> {
+  +name: input<string>
+  +identifier: input<string | null>
+  +state: input<ConnectDeviceState>
+}
+WebBluetoothBikeConnection ..|> BikeConnection
+WebBluetoothBikeConnection *-- "0..1" BikeLink
+WebBluetoothBikeConnection --> GattWriteQueue
+ConnectBikeStore --> RememberedBikeStore : save on paired
+EchelonLink ..|> BikeLink
+FtmsLink ..|> BikeLink
+EchelonLink ..> EchelonProtocol
+FtmsLink ..> FtmsProtocol
+FtmsLink --> ResistanceRange
+BikeConnection --> BikeInfo
+BikeInfo --> BikeKind
+FtmsLink --> BikeControl
+ConnectBikeStore ..> BikeConnection : injects BIKE_CONNECTION
+ConnectBikeStore ..> ConnectDevice : the page renders
+@enduml

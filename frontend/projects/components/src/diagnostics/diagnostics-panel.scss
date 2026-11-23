@@ -1,0 +1,209 @@
+// Block diagnostics (docs/design-system/assets/components.css, Area: diagnostics): the panel, its facts with the label
+// left and the mono value right, the privacy note, and the packet log below them.
+:host {
+  display: block;
+  width: 100%;
+  max-width: var(--diagnostics-max-width);
+}
+
+.diagnostics {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - var(--space-8));
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  border: var(--border-width-hairline) solid var(--color-line);
+  background: var(--color-panel);
+  color: var(--color-fg);
+  box-shadow: var(--shadow-diagnostics);
+}
+
+.diagnostics__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5) var(--space-3);
+}
+
+.diagnostics__title {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+.diagnostics__close {
+  position: relative;
+  margin-right: calc(var(--space-2) * -1);
+  display: grid;
+  place-items: center;
+  width: var(--space-8);
+  height: var(--space-8);
+  border-radius: var(--radius-md);
+  color: var(--color-muted);
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+
+  // The 32 px button takes touches across 44 px (L2-140 AC2).
+  &::after {
+    content: '';
+    position: absolute;
+    inset: min(0px, calc((100% - var(--target-comfortable)) / 2));
+  }
+
+  &:hover {
+    background: var(--color-raised);
+    color: var(--color-fg);
+  }
+}
+
+.diagnostics__body {
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: var(--space-5);
+}
+
+.diagnostics__facts {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: var(--space-6);
+  row-gap: var(--space-2);
+  padding-inline: var(--space-5);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+
+  dt {
+    white-space: nowrap;
+    color: var(--color-muted);
+  }
+
+  dd {
+    min-width: 0;
+    text-align: right;
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-xs);
+    line-height: var(--line-height-sm);
+    overflow-wrap: break-word;
+    color: var(--color-fg);
+  }
+
+  dd[data-tone='warn'] {
+    color: var(--color-warn-fg);
+  }
+
+  dd[data-tone='bad'] {
+    color: var(--color-heart-fg);
+  }
+}
+
+.diagnostics__privacy {
+  margin-top: var(--space-3);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding-inline: var(--space-5);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-faint);
+
+  .icon {
+    flex-shrink: 0;
+    margin-top: var(--space-px);
+  }
+}
+
+.diagnostics__log {
+  margin-top: var(--space-5);
+  border-top: var(--border-width-hairline) solid var(--color-line);
+  padding: var(--space-4) var(--space-5) 0;
+}
+
+.diagnostics__switch-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.diagnostics__switch-text {
+  min-width: 0;
+}
+
+.diagnostics__switch-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.diagnostics__switch-detail {
+  display: block;
+  margin-top: var(--space-0-5);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-snug);
+  color: var(--color-muted);
+}
+
+.diagnostics__switch {
+  flex-shrink: 0;
+  margin-top: var(--space-0-5);
+}
+
+.diagnostics__well {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--space-4);
+  row-gap: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--color-ink);
+  padding: var(--space-3) var(--space-3-5);
+}
+
+.diagnostics__count {
+  min-width: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.diagnostics__count-figure {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+}
+
+.diagnostics__count-unit {
+  color: var(--color-muted);
+}
+
+// The dot and the word together: the state is never colour alone.
+.diagnostics__recording {
+  margin-left: var(--space-2);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-volt-fg);
+
+  &::before {
+    content: '';
+    width: var(--space-1-5);
+    height: var(--space-1-5);
+    border-radius: var(--radius-full);
+    background: var(--color-volt);
+  }
+}
+
+.diagnostics__file {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-faint);
+}

@@ -1,0 +1,37 @@
+<div class="app">
+  <wz-app-header>
+    <a wz-app-header-brand slot="brand" routerLink="/" aria-label="Home"></a>
+    @for (item of items; track item.path) {
+      <a
+        wz-app-header-link
+        slot="nav"
+        [routerLink]="item.path"
+        [attr.aria-current]="current() === item.path ? 'page' : null"
+        >{{ item.label }}</a
+      >
+    }
+    <wz-app-header-bike slot="end" [status]="bike()" />
+    @if (streakDays() > 0) {
+      <wz-app-header-streak slot="end" [days]="streakDays()" />
+    }
+    @if (level(); as level) {
+      <a
+        wz-app-header-level
+        slot="end"
+        routerLink="/profile"
+        [attr.aria-label]="level.ariaLabel"
+        [level]="level"
+      ></a>
+    }
+    @if (fullscreen.available()) {
+      <wz-fullscreen-toggle
+        slot="end"
+        [active]="fullscreen.active()"
+        (toggled)="toggleFullscreen()"
+      />
+    }
+  </wz-app-header>
+  <div class="app__scroll">
+    <router-outlet />
+  </div>
+</div>

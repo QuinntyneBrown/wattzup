@@ -1,0 +1,137 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Choose the next ride
+class HomePage <<ride>> {
+  #home: HomeStore
+  providers: provideMaps(), provideClasses(), HomeStore
+}
+class HomeStore <<ride, page-scoped>> {
+  -progress: ProgressStore
+  -rider: CurrentRider
+  -maps: MapsApi
+  -classes: ClassesApi
+  -announced: linkedSignal<string | null>
+  +greeting: Signal<string>
+  +banner: Signal<UnlockBannerView | null>
+  +nextRide: Signal<NextRideView | null>
+  +raceDoor: Signal<RaceDoorView | null>
+  +classDoor: Signal<ClassDoorView | null>
+}
+class "homeGreeting()" as greet <<ride helper>> {
+  +homeGreeting(name, hour, isNewRider): string
+}
+class "nextRideView()" as nextRide <<ride helper>> {
+  +nextRideView(progress, maps): NextRideView | null
+}
+class "raceDoorView()" as raceDoor <<ride helper>> {
+  +raceDoorView(progress, maps): RaceDoorView
+}
+class "classDoorView()" as classDoor <<ride helper>> {
+  +classDoorView(catalogue, level): ClassDoorView | null
+}
+class "unlockBannerView()" as banner <<ride helper>> {
+  +unlockBannerView(mapId, maps): UnlockBannerView | null
+}
+class NextRideView <<api>> {
+  +mapId: string
+  +name: string
+  +photoUrl: string
+  +tag: string
+  +goal: string
+  +opens: NextRideReward | null
+  +best: string | null
+}
+class RaceDoorView {
+  +openMaps, maps: number
+  +stars, allStars: number
+  +tiles: RaceDoorTile[4]
+}
+class RaceDoorTile {
+  +mapId: string
+  +name: string
+  +photoUrl: string
+  +stars: 0..3
+  +locked: boolean
+}
+class ClassDoorView {
+  +classId: string
+  +title: string
+  +length: string
+  +coverUrl: string
+}
+class UnlockBannerView {
+  +mapId: string
+  +title: string
+  +detail: string
+}
+class ProgressDto <<api>> {
+  +level: number
+  +totalXp: number
+  +openMapIds: string[]
+  +nextUnlockId: string | null
+  +stars: Record<string, number>
+  +bestTimeSeconds: Record<string, number>
+  +nextRideMapId: string
+  +unseenUnlockId: string | null
+}
+interface RiderProgressApi <<api>> {
+  +progress(): Observable<ProgressDto>
+  +markUnlockSeen(mapId: string): Observable<void>
+}
+class NextRideCard <<components>> {
+  +view: input<NextRideView>
+  slot action
+}
+class Banner <<components>> {
+  +title: input<string>
+  +detail: input<string>
+  +tone: input<'gold'>
+  slot action
+}
+class Door <<components>> {
+  +heading: input<string>
+  +headingId: input<string>
+  slots link, summary
+}
+class MapTile <<components>> {
+  +name: input<string>
+  +photoUrl: input<string>
+  +stars: input<number>
+  +locked: input<boolean>
+}
+class ClassTeaser <<components>> {
+  +title: input<string>
+  +length: input<string>
+  +coverUrl: input<string>
+  slot actions
+}
+HomePage --> HomeStore
+HomePage ..> Banner
+HomePage ..> NextRideCard
+HomePage ..> Door
+HomePage ..> MapTile
+HomePage ..> ClassTeaser
+HomeStore ..> greet
+HomeStore ..> nextRide
+HomeStore ..> raceDoor
+HomeStore ..> classDoor
+HomeStore ..> banner
+HomeStore ..> ProgressDto : reads
+HomeStore ..> RiderProgressApi : markUnlockSeen once
+nextRide ..> NextRideView
+raceDoor ..> RaceDoorView
+classDoor ..> ClassDoorView
+banner ..> UnlockBannerView
+RaceDoorView "1" *-- "4" RaceDoorTile
+@enduml

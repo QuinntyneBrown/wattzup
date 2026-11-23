@@ -1,0 +1,45 @@
+// The custom ride (docs/mocks/pages/custom-ride/, design-system ride-body and ride-telemetry): full height, the
+// telemetry on the left and, from lg, the bike control on the right.
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
+
+.custom-ride__body {
+  display: grid;
+  flex: 1;
+  min-height: 0;
+  grid-template-columns: minmax(0, 1fr);
+  overflow-y: auto;
+}
+
+@media (min-width: 64rem) {
+  .custom-ride__body {
+    grid-template-columns: minmax(0, 1fr) var(--dashboard-aside-width);
+    overflow: hidden;
+  }
+}
+
+.custom-ride__telemetry {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--space-6) var(--space-5) var(--space-5);
+}
+
+@media (min-width: 64rem) {
+  .custom-ride__telemetry {
+    min-height: 0;
+    padding-inline: var(--space-8);
+  }
+}
+
+// On a phone, mid-ride, every tap area that reads the comfortable target takes the ride target instead: 48 px
+// (L2-140 AC2).
+@media (max-width: 39.99rem) {
+  :host {
+    --target-comfortable: var(--target-ride);
+  }
+}

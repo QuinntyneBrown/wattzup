@@ -1,0 +1,55 @@
+// Element side-nav__link. Below lg it draws 24 px tall in a row and takes touches across 44 px (L2-140 AC2); from lg,
+// in a column, it draws at the target minimum.
+:host {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--target-min);
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-lg);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  color: var(--color-muted);
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+
+  @media (min-width: 64rem) {
+    flex-shrink: 1;
+    white-space: normal;
+  }
+}
+
+:host::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block: min(0px, calc((100% - var(--target-comfortable)) / 2));
+
+  @media (min-width: 64rem) {
+    content: none;
+  }
+}
+
+:host(:hover) {
+  background: var(--color-raised);
+  color: var(--color-fg);
+}
+
+:host(:active) {
+  background: var(--color-raised-hover);
+}
+
+.side-nav__icon {
+  flex-shrink: 0;
+  width: var(--space-4);
+  height: var(--space-4);
+}
+
+.side-nav__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

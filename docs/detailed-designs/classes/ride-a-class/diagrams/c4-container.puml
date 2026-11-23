@@ -3,16 +3,15 @@
 LAYOUT_WITH_LEGEND()
 title Containers — Ride a class
 
-Person(rider, "Rider", "Rides and watches")
-System_Boundary(browser, "Rider's browser (Chrome or Edge)") {
-  Container(app, "Wattzup Web", "Angular + @wattzup/browser", "Class page; starts the class's ride")
-  Container(webbt, "Web Bluetooth stack", "navigator.bluetooth", "GATT client")
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Bluetooth LE")
+System_Ext(youtube, "YouTube", "Class videos")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Class ride, workout engine, video sync")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Ride hub for group sessions")
 }
-System_Ext(bike, "Echelon bike", "BLE GATT")
-System_Ext(youtube, "YouTube", "IFrame player and thumbnails")
-
 Rel(rider, app, "Uses")
-Rel(app, webbt, "connect, notify, write")
-Rel(webbt, bike, "GATT", "BLE")
-Rel(app, youtube, "Embeds", "HTTPS, CSP-limited")
+Rel(app, bike, "Telemetry and target resistance", "Web Bluetooth")
+Rel(app, youtube, "Embeds player", "HTTPS")
+Rel(app, api, "ServerTime, JoinClassSession (group only)", "SignalR /hubs/ride")
 @enduml

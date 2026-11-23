@@ -1,0 +1,40 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Start a class
+
+Container_Boundary(app, "Ride app") {
+  Component(page, "ClassStartPage", "Angular page · ride", "Route /classes/:id")
+  Component(store, "ClassStartStore", "Signal store · ride", "Mode, sessions, button text")
+  Component(choice, "RideChoice", "Presentation component · components", "Alone or group radio group")
+  Component(session, "ClassSession", "Presentation component · components", "Riders in this session")
+  Component(plan, "ClassPlan", "Presentation component · components", "What the bike will do")
+  Component(summary, "PlanSummary", "Helper · domain/engine", "Structure line and expected power")
+  Component(classesApi, "HttpClassesApi", "HTTP client · api", "CLASSES_API")
+  Component(hub, "SignalRRideHubClient", "Hub client · api", "RIDE_HUB_CLIENT")
+  Component(player, "YouTubeVideoPlayer", "Service · video", "VIDEO_PLAYER_FACTORY, lazily imported")
+}
+Container_Boundary(backend, "Telo Ride API") {
+  Component(ctrl, "ClassSessionsController", "ASP.NET Core controller · Telo.Ride.Api", "GET /api/classes/{classId}/sessions")
+  Component(rhub, "RideHub", "SignalR hub · Telo.Ride.Api", "/hubs/ride")
+  Component(query, "GetClassSessionsQueryHandler", "MediatR handler · Telo.Ride.Application", "Next two sessions")
+  Component(join, "JoinClassSessionCommandHandler", "MediatR handler · Telo.Ride.Application", "Seats a rider; session_full, session_started, class_locked (multiplayer)")
+  Component(schedule, "GroupSessionSchedule", "Domain service · Telo.Ride.Domain", "Every 15 minutes, 10 seats")
+}
+ComponentDb(db, "Telo Ride database", "EF Core", "GroupClassSession, Seat")
+Rel(page, store, "Reads signals")
+Rel(page, choice, "Renders")
+Rel(page, session, "Renders")
+Rel(page, plan, "Renders")
+Rel(page, player, "Parks video at sync offset")
+Rel(store, summary, "Summarises plan")
+Rel(store, classesApi, "Polls every 30 s")
+Rel(page, hub, "joinClassSession")
+Rel(classesApi, ctrl, "GET", "JSON/HTTPS")
+Rel(hub, rhub, "JoinClassSession", "SignalR")
+Rel(ctrl, query, "Sends GetClassSessionsQuery")
+Rel(rhub, join, "Sends JoinClassSessionCommand")
+Rel(query, schedule, "Next start times")
+Rel(query, db, "Reads seats")
+Rel(join, db, "Writes seat")
+@enduml

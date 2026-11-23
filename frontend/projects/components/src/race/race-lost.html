@@ -1,0 +1,14 @@
+<div class="race-lost" role="alert" aria-labelledby="race-lost-title">
+  <div class="race-lost__inner">
+    <svg class="race-lost__icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="m17 17-5 5V12l-5 5" />
+      <path d="m2 2 20 20" />
+      <path d="M14.5 9.5 17 7l-5-5v4.5" />
+    </svg>
+    <h2 class="race-lost__title" id="race-lost-title">{{ heading() }}</h2>
+    <p class="race-lost__body">{{ body() }}</p>
+    <div class="race-lost__action">
+      <ng-content select="[slot=action]" />
+    </div>
+  </div>
+</div>

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home · no-groups — Telo Ride mocks</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="home">
+<meta name="mock:state" content="no-groups">
+<meta name="mock:requirements" content="L2-019 L2-032 L2-033 L2-034 L2-035 L2-036 L2-041">
+<meta name="description" content="Mid-progress rider (level 7) before group sessions can be read (no network, or no ride hub yet): the Classes door shows the featured class with no next session and no seats, and offers Ride alone only.">
+<link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="app">
+  <header class="app-header">
+    <a class="app-header__brand" href="default.html" aria-label="Home">
+      <span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span>
+    </a>
+    <nav class="app-header__nav" aria-label="Main">
+      <a class="app-header__nav-link" href="default.html" aria-current="page">Home</a>
+      <a class="app-header__nav-link" href="../map-select/default.html">Race</a>
+      <a class="app-header__nav-link" href="../class-library/default.html">Classes</a>
+      <a class="app-header__nav-link" href="../profile/default.html">Profile</a>
+    </nav>
+    <div class="app-header__end">
+      <span class="app-header__bike"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>Echelon EX-5s<span class="visually-hidden"> connected</span></span>
+      <span class="app-header__streak"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg><span class="app-header__streak-count" aria-hidden="true">4</span><span class="visually-hidden">4-day streak</span></span>
+      <a class="app-header__level" href="../profile/default.html" aria-label="Level 7, 1840 of 2600 XP">
+        <span class="level-badge" aria-hidden="true">7</span>
+        <span class="app-header__xp" aria-hidden="true">
+          <span class="xp-bar"><span class="xp-bar__fill" style="--value: 70.8%"></span></span>
+          <span class="app-header__xp-label">1,840 / 2,600 XP</span>
+        </span>
+      </a>
+      <button class="icon-btn icon-btn--edge" type="button" aria-label="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+    </div>
+  </header>
+
+  <div class="app__scroll">
+    <main id="main" class="container page">
+      <h1 class="page__title">Evening, Sam.</h1>
+
+      <section class="next-ride" aria-labelledby="next-ride">
+        <div class="next-ride__photo">
+          <img class="photo" src="../../assets/images/worlds/oldtown.jpg" alt="">
+          <span class="photo-tag">Old Town Criterium · 14.2 km · Easy</span>
+        </div>
+        <div class="next-ride__body">
+          <p class="next-ride__eyebrow">Your next unlock</p>
+          <h2 class="next-ride__goal" id="next-ride">Finish top 3 vs Bots on Old Town Criterium</h2>
+          <div class="reward">
+            <img class="reward__thumb" src="../../assets/images/worlds/docklands.jpg" alt="">
+            <div class="reward__text">
+              <p class="reward__title"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Opens Neon Docklands</p>
+              <p class="reward__place">A harbour city after dark</p>
+            </div>
+          </div>
+          <p class="next-ride__best">Your best here: <span class="figure">27:10</span></p>
+          <a class="btn btn--primary btn--xl btn--block next-ride__cta" href="../race-setup/default.html">Race Old Town Criterium<svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+        </div>
+      </section>
+
+      <div class="doors">
+        <section aria-labelledby="race-door">
+          <div class="section-head">
+            <h2 class="section-head__title" id="race-door">Race</h2>
+            <a class="more-link" href="../map-select/default.html">All maps <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+          </div>
+          <p class="door__summary"><span class="figure">3</span> of 7 maps open · <span class="figure figure--gold">5</span> of 21 stars</p>
+          <ul class="map-tiles">
+            <li>
+              <a class="map-tile" href="../race-setup/prairie.html">
+                <span class="map-tile__photo"><img class="photo" src="../../assets/images/worlds/prairie.jpg" alt=""></span>
+                <span class="map-tile__name">Prairie Paceline</span>
+                <span class="stars" role="img" aria-label="3 of 3 stars"><svg class="icon is-earned" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><svg class="icon is-earned" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><svg class="icon is-earned" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+              </a>
+            </li>
+            <li>
+              <a class="map-tile" href="../race-setup/default.html">
+                <span class="map-tile__photo"><img class="photo" src="../../assets/images/worlds/oldtown.jpg" alt=""></span>
+                <span class="map-tile__name">Old Town Criterium</span>
+                <span class="stars" role="img" aria-label="1 of 3 stars"><svg class="icon is-earned" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+              </a>
+            </li>
+            <li>
+              <a class="map-tile" href="../race-setup/coast.html">
+                <span class="map-tile__photo"><img class="photo" src="../../assets/images/worlds/coast.jpg" alt=""></span>
+                <span class="map-tile__name">Cliffside Coast</span>
+                <span class="stars" role="img" aria-label="1 of 3 stars"><svg class="icon is-earned" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+              </a>
+            </li>
+            <li>
+              <a class="map-tile" href="../map-select/default.html" aria-label="Neon Docklands, locked: see how to open it">
+                <span class="map-tile__photo"><img class="photo photo--locked" src="../../assets/images/worlds/docklands.jpg" alt=""><svg class="icon icon--md map-tile__lock" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+                <span class="map-tile__name">Neon Docklands</span>
+                <span class="stars" role="img" aria-label="0 of 3 stars"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span>
+              </a>
+            </li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="class-door">
+          <div class="section-head">
+            <h2 class="section-head__title" id="class-door">Classes</h2>
+            <a class="more-link" href="../class-library/default.html">All classes <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+          </div>
+          <div class="class-teaser">
+            <div class="class-teaser__cover">
+              <img class="photo" src="../../assets/images/classes/gcn-30-hiit.jpg" alt="">
+              <span class="photo-tag photo-tag--time">30:00</span>
+            </div>
+            <div class="class-teaser__body">
+              <h3 class="class-teaser__title">30 Minute HIIT Cardio</h3>
+              <div class="class-teaser__actions">
+                <a class="btn btn--light" href="../class-start/no-groups.html">Ride alone</a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="All mocks">⌂</a>
+  <span class="mock-bar__screen">Home</span>
+  <ul class="mock-bar__states">
+    <li><a href="default.html" aria-current="page">default</a></li>
+    <li><a href="new-rider.html">new-rider</a></li>
+    <li><a href="veteran.html">veteran</a></li>
+    <li><a href="unlocked.html">unlocked</a></li>
+    <li><a href="disconnected.html">disconnected</a></li>
+  </ul>
+  <button type="button" data-theme-toggle aria-pressed="true">☀ Light</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

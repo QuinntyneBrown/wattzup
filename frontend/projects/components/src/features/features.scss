@@ -1,0 +1,52 @@
+// Block features (ADR 0027).
+:host {
+  display: grid;
+  gap: var(--space-6);
+
+  @media (min-width: 40rem) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 80rem) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.features__item {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: var(--border-width-hairline) solid var(--color-line);
+  border-radius: var(--radius-xl);
+  background: var(--color-raised);
+}
+
+.features__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.features__body {
+  padding: var(--space-5) var(--space-5) var(--space-6);
+}
+
+.features__kicker {
+  font: var(--text-overline);
+  letter-spacing: var(--letter-spacing-widest);
+  text-transform: uppercase;
+  color: var(--color-volt-fg);
+}
+
+.features__heading {
+  margin-top: var(--space-2);
+  font: var(--text-h3);
+}
+
+.features__text {
+  margin-top: var(--space-2);
+  font: var(--text-body);
+  color: var(--color-fg-muted);
+}

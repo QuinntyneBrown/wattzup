@@ -1,0 +1,44 @@
+@if (state() === 'searching') {
+  <div class="connect-device__searching" role="status">
+    <svg
+      class="icon icon--lg icon--spin connect-device__spinner"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+    </svg>
+    Looking for bikes nearby…
+  </div>
+} @else {
+  <div class="connect-device__row">
+    <div class="connect-device__info">
+      <p class="connect-device__name">{{ name() }}</p>
+      @if (identifier(); as id) {
+        <p class="connect-device__signal">
+          <svg
+            class="icon icon--md connect-device__signal-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path d="M2 20h.01" />
+            <path d="M7 20v-4" />
+            <path d="M12 20v-8" />
+            <path d="M17 20V8" />
+            <path d="M22 4v16" />
+          </svg>
+          {{ id }}
+        </p>
+      }
+    </div>
+    @if (state() === 'paired') {
+      <svg
+        class="icon icon--xl connect-device__check"
+        viewBox="0 0 24 24"
+        role="img"
+        aria-label="Paired"
+      >
+        <path d="M20 6 9 17l-5-5" />
+      </svg>
+    }
+  </div>
+}

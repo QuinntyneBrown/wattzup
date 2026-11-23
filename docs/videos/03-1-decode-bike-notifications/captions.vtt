@@ -1,0 +1,85 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.376
+Every number on a ride starts as a few bytes from the bike. Telo Ride now reads
+
+00:00:07.376 --> 00:00:07.979
+them.
+
+00:00:10.324 --> 00:00:17.880
+A D2 frame carries the resistance. F0, D2, 01, 0C, CF is level twelve.
+
+00:00:20.647 --> 00:00:26.697
+A D1 frame carries cadence, big-endian in bytes nine and ten. Zero, fifty hex is
+
+00:00:26.697 --> 00:00:27.829
+eighty rpm.
+
+00:00:30.971 --> 00:00:36.489
+A frame that's too short, doesn't start with F0, is of an unknown type, or is a D0,
+
+00:00:36.489 --> 00:00:38.584
+is ignored, never an error.
+
+00:00:41.295 --> 00:00:46.988
+An FTMS bike's flags say which fields follow. Speed, cadence, power and heart rate
+
+00:00:46.988 --> 00:00:49.995
+are read; the rest are skipped by size.
+
+00:00:51.618 --> 00:00:57.003
+An Echelon reports no speed or power, so they're estimated. Eighty rpm is thirty
+
+00:00:57.003 --> 00:00:58.582
+kilometres an hour.
+
+00:01:01.942 --> 00:01:07.421
+An FTMS bike's own power and speed are used as they are. A field it leaves out falls
+
+00:01:07.421 --> 00:01:09.808
+back to the estimate, or a dash.
+
+00:01:12.266 --> 00:01:17.042
+If cadence stops for five seconds, cadence and power go blank, rather than show a
+
+00:01:17.042 --> 00:01:19.052
+number that's no longer true.
+
+00:01:22.590 --> 00:01:28.063
+Still to come: slice 3.2 puts these numbers on screen, with distance and energy, and
+
+00:01:28.063 --> 00:01:29.861
+proves them end to end.
+
+00:01:32.913 --> 00:01:37.561
+Home doesn't change yet, at any width. The numbers wait in the engine for the ride
+
+00:01:37.561 --> 00:01:38.315
+screens.
+
+00:01:43.237 --> 00:01:47.928
+What the tests prove: forty-five new unit tests, one per row of the requirements,
+
+00:01:47.928 --> 00:01:49.792
+and every spec still green.
+
+00:01:53.561 --> 00:01:58.164
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:58.509 --> 00:02:03.021
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:02:03.021 --> 00:02:04.692
+every hill and interval.
+
+00:02:05.037 --> 00:02:10.215
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:02:10.215 --> 00:02:15.663
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:02:15.663 --> 00:02:18.653
+XP, rider levels, stars and map unlocks.
+
+00:02:18.998 --> 00:02:21.491
+A custom workout lives under Profile.

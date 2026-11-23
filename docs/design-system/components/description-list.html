@@ -3,17 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Description list — Wattzup design system</title>
-<meta name="description" content="Key–value pairs: ride summary and diagnostics.">
+<title>Description list — Telo Ride design system</title>
+<meta name="description" content="Description lists pair labels and values about one thing: Race Setup facts, Results XP breakdown, Diagnostics facts.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Page-only: docs chrome links (ds.css a) must not restyle product links inside specimens */
+:where(.ds-example__canvas, .ds-themes, .ds-matrix, .ds-anatomy__figure) a { color: inherit; text-decoration: none; }
+:where(.ds-example__canvas, .ds-themes, .ds-matrix, .ds-anatomy__figure) a:hover { color: inherit; }
+/* Visually hidden text inside a scrolling matrix must not widen the page */
+.ds-matrix { position: relative; }
+.ds-themes + p, .ds-themes + ul { margin-top: var(--space-4); }
+/* Product tables shown inside the state matrix keep their own cell styles */
+.ds-matrix td :is(.table, .map-table) :is(th, td) { padding: var(--table-cell-py, var(--space-2-5)) var(--table-cell-px, 0); background: transparent; border-right: 0; border-top: 0; font: inherit; text-transform: none; letter-spacing: normal; color: inherit; white-space: nowrap; }
+.ds-matrix td :is(.table) thead th { font-size: var(--font-size-xs); line-height: var(--line-height-xs); font-weight: var(--font-weight-semibold); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-muted); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +39,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,84 +93,418 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
-      <p class="ds-kicker">Component · Ride data</p>
+      <p class="ds-kicker">Component · Data display</p>
       <h1>Description list</h1>
-      <p class="ds-lead">Description lists show labelled values: the ride summary in setup and the diagnostics facts.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span></div>
+      <p class="ds-lead">Labels and values about one thing: how long this map is, where the XP came from, what the browser can see.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
       <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>One block with modifiers: <code>.dl</code> two-column grid, <code>--split</code> label left / value right rows, <code>--mono</code> monospace values.</p>
-    </section>
-    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
-<div class="ds-anatomy"><figure class="ds-anatomy__figure"><dl class="dl dl--split" style="width: 100%;"><div><dt>Structure</dt><dd>8 × 0:40 / 0:20</dd></div><div><dt>Time under load</dt><dd>5:20</dd></div><div><dt>Peak resistance</dt><dd>Level 18</dd></div></dl><span class="ds-callout" style="left: 5%; top: 20%;" aria-hidden="true">1</span><span class="ds-callout" style="left: 90%; top: 20%;" aria-hidden="true">2</span></figure><ol class="ds-anatomy__list"><li><div><b>Term</b><small>Muted.</small></div></li><li><div><b>Value</b><small>Medium weight, no wrap.</small></div></li></ol></div>
-    </section>
-    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
-<div class="ds-example"><div class="ds-example__canvas "><dl class="dl dl--split" style="width: 100%;"><div><dt>Structure</dt><dd>8 × 0:40 / 0:20</dd></div><div><dt>Time under load</dt><dd>5:20</dd></div><div><dt>Peak resistance</dt><dd>Level 18</dd></div></dl></div><div class="ds-example__caption"><span>Split (setup summary).</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;dl class="dl dl--split" style="width: 100%;"&gt;
-&lt;div&gt;
-&lt;dt&gt;Structure&lt;/dt&gt;
-&lt;dd&gt;8 × 0:40 / 0:20&lt;/dd&gt;
-&lt;/div&gt;
-&lt;div&gt;
-&lt;dt&gt;Time under load&lt;/dt&gt;
-&lt;dd&gt;5:20&lt;/dd&gt;
-&lt;/div&gt;
-&lt;div&gt;
-&lt;dt&gt;Peak resistance&lt;/dt&gt;
-&lt;dd&gt;Level 18&lt;/dd&gt;
-&lt;/div&gt;
-&lt;/dl&gt;</code></pre></details></div><h3>Mono</h3><div class="ds-example"><div class="ds-example__canvas "><dl class="dl dl--mono"><dt>Bluetooth</dt><dd>connected · ECHEX-3-141844</dd><dt>Packets</dt><dd>2,517</dd></dl></div><div class="ds-example__caption"><span>Diagnostics.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;dl class="dl dl--mono"&gt;
-&lt;dt&gt;Bluetooth&lt;/dt&gt;
-&lt;dd&gt;connected · ECHEX-3-141844&lt;/dd&gt;
-&lt;dt&gt;Packets&lt;/dt&gt;
-&lt;dd&gt;2,517&lt;/dd&gt;
-&lt;/dl&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="sizes" data-na="Body-sm."><h2><a href="#sizes">Sizes</a></h2>
-      <p class="ds-na">Body-sm.</p>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<div class="ds-matrix"><table><thead><tr><th scope="col">Variant</th><th scope="col">Example</th></tr></thead><tbody><tr><th scope="row">Grid</th><td><dl class="dl dl--mono"><dt>Bluetooth</dt><dd>connected · ECHEX-3-141844</dd><dt>Packets</dt><dd>2,517</dd></dl></td></tr></tbody></table></div><h3>Both themes</h3><div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas"><dl class="dl dl--split" style="width: 100%;"><div><dt>Structure</dt><dd>8 × 0:40 / 0:20</dd></div><div><dt>Time under load</dt><dd>5:20</dd></div><div><dt>Peak resistance</dt><dd>Level 18</dd></div></dl></div></div><div data-theme="dark"><div class="ds-example__canvas"><dl class="dl dl--split" style="width: 100%;"><div><dt>Structure</dt><dd>8 × 0:40 / 0:20</dd></div><div><dt>Time under load</dt><dd>5:20</dd></div><div><dt>Peak resistance</dt><dd>Level 18</dd></div></dl></div></div></div>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
-<ul><li>Split rows stay one line; mono values wrap anywhere.</li></ul>
-    </section>
-    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
-<p>Terms <code>--color-fg-muted</code>.</p>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<h3>Role and pattern</h3><p><code>&lt;dl&gt;</code>.</p><h3>Keyboard</h3><div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody><tr><td>—</td><td>Not focusable; read in document order.</td></tr></tbody></table></div><h3>Focus</h3><p>Not focusable.</p><h3>Labelling</h3><p>Terms are labels.</p><h3>Contrast</h3><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-pair"><span>Term on surface</span><span class="ds-pair__ratio" data-contrast="--color-fg-muted|--color-bg-surface" data-min="4.5"></span></div></div><h3>Motion</h3><p>None.</p><h3>Touch</h3><p>Not interactive.</p>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Approximate values carry ~: ~208 W.</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><dl class="dl dl--split" style="width: 100%;"><div><dt>Structure</dt><dd>8 × 0:40 / 0:20</dd></div><div><dt>Time under load</dt><dd>5:20</dd></div><div><dt>Peak resistance</dt><dd>Level 18</dd></div></dl></div><figcaption>Semantic list.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><div><span>Structure</span> <b>8 × 0:40</b></div></div><figcaption>Divs with no relationship.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
-<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Term</td><td><code>--color-fg-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-muted" data-swatch></i><span data-token="--color-fg-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-muted" data-swatch></i><span data-token="--color-fg-muted"></span></span></td></tr><tr><td>Gap</td><td><code>--space-2</code> <code>--space-6</code></td><td colspan="2"><span data-token="--space-2"></span> / <span data-token="--space-6"></span></td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
-<pre><code>&lt;dl class="dl dl--split"&gt;&lt;div&gt;&lt;dt&gt;Structure&lt;/dt&gt;&lt;dd&gt;8 × 0:40 / 0:20&lt;/dd&gt;&lt;/div&gt;&lt;/dl&gt;</code></pre><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.dl</code></td><td>Grid.</td></tr><tr><td><code>.dl--split</code></td><td>Rows.</td></tr><tr><td><code>.dl--mono</code></td><td>Monospace values.</td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from these mocks:</p><ul><li><a href="../../mocks/pages/setup/default.html">pages/setup/default</a> (summary)</li><li><a href="../../mocks/dialogs/diagnostics/default.html">dialogs/diagnostics/default</a> (facts)</li></ul><p>Drift fixed during extraction: <code>.summary</code>, <code>.diag</code> and <code>.dl</code> were three styles for one thing; merged into <code>.dl</code> with modifiers.</p>
+<p>A description list pairs a label with a value about one thing: this map, this ride's XP, this connection. The mocks have four: Race Setup's <b>facts</b> (<code>.setup-facts</code>: small label over a big numeral), Results' <b>XP earned</b> (<code>.xp-earned</code>: reason left, gold sum right), Diagnostics' <b>facts</b> (<code>.diagnostics__facts</code>: label left, mono value right) and Custom workout's <b>Your ride</b> summary (<code>.plan-preview__facts</code>). <code>.dl</code> is the generic block with the two layouts they use.</p>
+<ul>
+<li><b>Inline</b> (<code>.dl--inline</code>): label left, value right; for 3–10 facts read as a list.</li>
+<li><b>Stacked</b> (<code>.dl--stacked</code>): label above a numeral; for 2–5 headline facts. When the numeral is the point, see <a href="stat.html">Stat</a>.</li>
+<li>Comparing several things by the same facts is a <a href="table.html">table</a>.</li>
+</ul>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+<div class="ds-anatomy">
+<figure class="ds-anatomy__figure" style="padding: var(--space-8); display: block; place-items: normal; min-width: 0;">
+<dl class="dl dl--inline" style="width: 100%; max-width: 24rem;">
+<div><dt>Bike</dt><dd>Echelon EX-5s</dd></div>
+<div><dt>Connection</dt><dd>Connected · 6m 52s</dd></div>
+<div><dt>Web Bluetooth</dt><dd data-tone="ok">Available</dd></div>
+</dl><span class="ds-callout" style="left: var(--space-2); top: 30%;" aria-hidden="true">1</span><span class="ds-callout" style="left: calc(100% - var(--space-8)); top: 30%;" aria-hidden="true">2</span><span class="ds-callout" style="left: calc(100% - var(--space-8)); top: 72%;" aria-hidden="true">3</span>
+</figure>
+<ol class="ds-anatomy__list">
+<li><div><b>Term (<code>&lt;dt&gt;</code>)</b><small>14px (12px stacked) <code>--color-muted</code>, never wraps in the inline layout.</small></div></li>
+<li><div><b>Detail (<code>&lt;dd&gt;</code>)</b><small>14px <code>--color-fg</code>, right-aligned inline; Barlow numeral (<code>.dl__num</code>) for numbers, mono (<code>.dl--mono</code>) for machine text.</small></div></li>
+<li><div><b>Tone (optional)</b><small><code>data-tone="ok|warn|bad|gold"</code> colours the value; the words still say the state ("Available", "None picked yet").</small></div></li>
+</ol>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+<h3>Race Setup facts (stacked)</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<dl class="setup-facts" style="margin-top: 0;">
+<div class="setup-fact"><dt class="setup-fact__label">Distance</dt><dd class="setup-fact__value"><span class="setup-fact__number">14.2</span><span class="setup-fact__unit">km</span></dd></div>
+<div class="setup-fact"><dt class="setup-fact__label">Climbing</dt><dd class="setup-fact__value"><span class="setup-fact__number">140</span><span class="setup-fact__unit">m</span></dd></div>
+<div class="setup-fact"><dt class="setup-fact__label">Rated</dt><dd class="setup-fact__value"><span class="setup-fact__number">Easy</span></dd></div>
+<div class="setup-fact"><dt class="setup-fact__label">Your best</dt><dd class="setup-fact__value"><span class="setup-fact__number">27:10</span></dd></div>
+</dl>
+</div>
+<div class="ds-example__caption"><span>Old Town Criterium: four facts, 40px apart, wrapping as a row.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;dl class="setup-facts" style="margin-top: 0;"&gt;
+&lt;div class="setup-fact"&gt;&lt;dt class="setup-fact__label"&gt;Distance&lt;/dt&gt;&lt;dd class="setup-fact__value"&gt;&lt;span class="setup-fact__number"&gt;14.2&lt;/span&gt;&lt;span class="setup-fact__unit"&gt;km&lt;/span&gt;&lt;/dd&gt;&lt;/div&gt;
+&lt;div class="setup-fact"&gt;&lt;dt class="setup-fact__label"&gt;Climbing&lt;/dt&gt;&lt;dd class="setup-fact__value"&gt;&lt;span class="setup-fact__number"&gt;140&lt;/span&gt;&lt;span class="setup-fact__unit"&gt;m&lt;/span&gt;&lt;/dd&gt;&lt;/div&gt;
+&lt;div class="setup-fact"&gt;&lt;dt class="setup-fact__label"&gt;Rated&lt;/dt&gt;&lt;dd class="setup-fact__value"&gt;&lt;span class="setup-fact__number"&gt;Easy&lt;/span&gt;&lt;/dd&gt;&lt;/div&gt;
+&lt;div class="setup-fact"&gt;&lt;dt class="setup-fact__label"&gt;Your best&lt;/dt&gt;&lt;dd class="setup-fact__value"&gt;&lt;span class="setup-fact__number"&gt;27:10&lt;/span&gt;&lt;/dd&gt;&lt;/div&gt;
+&lt;/dl&gt;</code></pre></details>
+</div>
+
+<h3>XP earned (inline, numeric)</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<div style="width: 100%; max-width: 25rem;"><div class="xp-earned__head"><h3 class="xp-earned__title">XP earned</h3><span class="xp-earned__total">+442</span></div>
+<dl class="xp-earned__lines">
+<div class="xp-earned__line"><dt>Finished</dt><dd>+100</dd></div>
+<div class="xp-earned__line"><dt>2nd of 10</dt><dd>+160</dd></div>
+<div class="xp-earned__line"><dt>Podium</dt><dd>+75</dd></div>
+<div class="xp-earned__line"><dt>84% on target</dt><dd>+67</dd></div>
+<div class="xp-earned__line"><dt>4-day streak</dt><dd>+40</dd></div>
+</dl></div>
+</div>
+<div class="ds-example__caption"><span>Results: each reason and its XP; the total sits in the head in gold. The lines add up (100 + 160 + 75 + 67 + 40 = 442).</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div style="width: 100%; max-width: 25rem;"&gt;&lt;div class="xp-earned__head"&gt;&lt;h3 class="xp-earned__title"&gt;XP earned&lt;/h3&gt;&lt;span class="xp-earned__total"&gt;+442&lt;/span&gt;&lt;/div&gt;
+&lt;dl class="xp-earned__lines"&gt;
+&lt;div class="xp-earned__line"&gt;&lt;dt&gt;Finished&lt;/dt&gt;&lt;dd&gt;+100&lt;/dd&gt;&lt;/div&gt;
+&lt;div class="xp-earned__line"&gt;&lt;dt&gt;2nd of 10&lt;/dt&gt;&lt;dd&gt;+160&lt;/dd&gt;&lt;/div&gt;
+&lt;div class="xp-earned__line"&gt;&lt;dt&gt;Podium&lt;/dt&gt;&lt;dd&gt;+75&lt;/dd&gt;&lt;/div&gt;
+&lt;div class="xp-earned__line"&gt;&lt;dt&gt;84% on target&lt;/dt&gt;&lt;dd&gt;+67&lt;/dd&gt;&lt;/div&gt;
+&lt;div class="xp-earned__line"&gt;&lt;dt&gt;4-day streak&lt;/dt&gt;&lt;dd&gt;+40&lt;/dd&gt;&lt;/div&gt;
+&lt;/dl&gt;&lt;/div&gt;</code></pre></details>
+</div>
+
+<h3>Diagnostics facts (inline, mono)</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<dl class="diagnostics__facts" style="padding-inline: 0; width: 100%; max-width: 26rem;">
+<dt>Browser</dt><dd>Chrome 126 · macOS 14.5</dd>
+<dt>Web Bluetooth</dt><dd data-tone="ok">Available</dd>
+<dt>Page</dt><dd>https://ride.telo.app/ride</dd>
+<dt>Bike</dt><dd>Echelon EX-5s · 0bf669f1</dd>
+<dt>Connection</dt><dd>Connected · 6m 52s</dd>
+<dt>Signal</dt><dd>−61 dBm</dd>
+<dt>Last command</dt><dd>RES 8 · plan · ack 41 ms</dd>
+<dt>Reconnects</dt><dd>0 this ride</dd>
+</dl>
+</div>
+<div class="ds-example__caption"><span>Connection facts with mono values; tone marks a value that needs attention.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;dl class="diagnostics__facts" style="padding-inline: 0; width: 100%; max-width: 26rem;"&gt;
+&lt;dt&gt;Browser&lt;/dt&gt;&lt;dd&gt;Chrome 126 · macOS 14.5&lt;/dd&gt;
+&lt;dt&gt;Web Bluetooth&lt;/dt&gt;&lt;dd data-tone="ok"&gt;Available&lt;/dd&gt;
+&lt;dt&gt;Page&lt;/dt&gt;&lt;dd&gt;https://ride.telo.app/ride&lt;/dd&gt;
+&lt;dt&gt;Bike&lt;/dt&gt;&lt;dd&gt;Echelon EX-5s · 0bf669f1&lt;/dd&gt;
+&lt;dt&gt;Connection&lt;/dt&gt;&lt;dd&gt;Connected · 6m 52s&lt;/dd&gt;
+&lt;dt&gt;Signal&lt;/dt&gt;&lt;dd&gt;−61 dBm&lt;/dd&gt;
+&lt;dt&gt;Last command&lt;/dt&gt;&lt;dd&gt;RES 8 · plan · ack 41 ms&lt;/dd&gt;
+&lt;dt&gt;Reconnects&lt;/dt&gt;&lt;dd&gt;0 this ride&lt;/dd&gt;
+&lt;/dl&gt;</code></pre></details>
+</div>
+
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<dl class="diagnostics__facts" style="padding-inline: 0; width: 100%; max-width: 26rem;">
+<dt>Web Bluetooth</dt><dd data-tone="ok">Available</dd>
+<dt>Bike</dt><dd data-tone="warn">None picked yet</dd>
+</dl>
+</div>
+<div class="ds-example__caption"><span>No bike yet: the Bike value turns warn and says so.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;dl class="diagnostics__facts" style="padding-inline: 0; width: 100%; max-width: 26rem;"&gt;
+&lt;dt&gt;Web Bluetooth&lt;/dt&gt;&lt;dd data-tone="ok"&gt;Available&lt;/dd&gt;
+&lt;dt&gt;Bike&lt;/dt&gt;&lt;dd data-tone="warn"&gt;None picked yet&lt;/dd&gt;
+&lt;/dl&gt;</code></pre></details>
+</div>
+
+<h3>Your ride (inline)</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ">
+<dl class="plan-preview__facts" style="margin-top: 0; width: 100%; max-width: 22rem;">
+<div class="plan-preview__fact"><dt>Structure</dt><dd>8 × 0:30 · 3:00 → 1:30 recover</dd></div>
+<div class="plan-preview__fact"><dt>Time under load</dt><dd>4:00</dd></div>
+<div class="plan-preview__fact"><dt>Video</dt><dd>Synced from 0:12.0</dd></div>
+<div class="plan-preview__fact"><dt>Peak resistance</dt><dd>Level 24</dd></div>
+<div class="plan-preview__fact"><dt>Expected avg power</dt><dd>~154 W</dd></div>
+</dl>
+</div>
+<div class="ds-example__caption"><span>Custom workout preview: medium-weight values that never wrap.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;dl class="plan-preview__facts" style="margin-top: 0; width: 100%; max-width: 22rem;"&gt;
+&lt;div class="plan-preview__fact"&gt;&lt;dt&gt;Structure&lt;/dt&gt;&lt;dd&gt;8 × 0:30 · 3:00 → 1:30 recover&lt;/dd&gt;&lt;/div&gt;
+&lt;div class="plan-preview__fact"&gt;&lt;dt&gt;Time under load&lt;/dt&gt;&lt;dd&gt;4:00&lt;/dd&gt;&lt;/div&gt;
+&lt;div class="plan-preview__fact"&gt;&lt;dt&gt;Video&lt;/dt&gt;&lt;dd&gt;Synced from 0:12.0&lt;/dd&gt;&lt;/div&gt;
+&lt;div class="plan-preview__fact"&gt;&lt;dt&gt;Peak resistance&lt;/dt&gt;&lt;dd&gt;Level 24&lt;/dd&gt;&lt;/div&gt;
+&lt;div class="plan-preview__fact"&gt;&lt;dt&gt;Expected avg power&lt;/dt&gt;&lt;dd&gt;~154 W&lt;/dd&gt;&lt;/div&gt;
+&lt;/dl&gt;</code></pre></details>
+</div>
+
+<h3>Generic <code>.dl</code></h3>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<dl class="dl dl--inline" style="width: 100%; max-width: 24rem;">
+<div><dt>Bike</dt><dd>Echelon EX-5s</dd></div>
+<div><dt>Connection</dt><dd>Connected · 6m 52s</dd></div>
+<div><dt>Web Bluetooth</dt><dd data-tone="ok">Available</dd></div>
+</dl><dl class="dl dl--inline dl--divided" style="width: 100%; max-width: 24rem;">
+<div><dt>Distance</dt><dd>18.4 km</dd></div>
+<div><dt>Climbing</dt><dd>90 m</dd></div>
+<div><dt>Stars</dt><dd data-tone="gold">3 of 3</dd></div>
+</dl><dl class="dl dl--stacked">
+<div><dt>Distance</dt><dd class="stat__value" style="margin-top: var(--space-0-5);"><span class="dl__num" style="font-size: var(--font-size-2xl); line-height: var(--line-height-2xl);">18.4</span><span class="stat__unit">km</span></dd></div>
+<div><dt>Climbing</dt><dd class="stat__value" style="margin-top: var(--space-0-5);"><span class="dl__num" style="font-size: var(--font-size-2xl); line-height: var(--line-height-2xl);">90</span><span class="stat__unit">m</span></dd></div>
+<div><dt>Rated</dt><dd class="stat__value" style="margin-top: var(--space-0-5);"><span class="dl__num" style="font-size: var(--font-size-2xl); line-height: var(--line-height-2xl);">Easy</span></dd></div>
+<div><dt>Your best</dt><dd class="stat__value" style="margin-top: var(--space-0-5);"><span class="dl__num" style="font-size: var(--font-size-2xl); line-height: var(--line-height-2xl);">31:42</span></dd></div>
+</dl>
+</div>
+<div class="ds-example__caption"><span>Inline, inline divided (hairline per pair), stacked.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;dl class="dl dl--inline" style="width: 100%; max-width: 24rem;"&gt;
+&lt;div&gt;&lt;dt&gt;Bike&lt;/dt&gt;&lt;dd&gt;Echelon EX-5s&lt;/dd&gt;&lt;/div&gt;
+&lt;div&gt;&lt;dt&gt;Connection&lt;/dt&gt;&lt;dd&gt;Connected · 6m 52s&lt;/dd&gt;&lt;/div&gt;
+&lt;div&gt;&lt;dt&gt;Web Bluetooth&lt;/dt&gt;&lt;dd data-tone="ok"&gt;Available&lt;/dd&gt;&lt;/div&gt;
+&lt;/dl&gt;&lt;dl class="dl dl--inline dl--divided" style="width: 100%; max-width: 24rem;"&gt;
+&lt;div&gt;&lt;dt&gt;Distance&lt;/dt&gt;&lt;dd&gt;18.4 km&lt;/dd&gt;&lt;/div&gt;
+&lt;div&gt;&lt;dt&gt;Climbing&lt;/dt&gt;&lt;dd&gt;90 m&lt;/dd&gt;&lt;/div&gt;
+&lt;div&gt;&lt;dt&gt;Stars&lt;/dt&gt;&lt;dd data-tone="gold"&gt;3 of 3&lt;/dd&gt;&lt;/div&gt;
+&lt;/dl&gt;&lt;dl class="dl dl--stacked"&gt;
+&lt;div&gt;&lt;dt&gt;Distance&lt;/dt&gt;&lt;dd class="stat__value" style="margin-top: var(--space-0-5);"&gt;&lt;span class="dl__num" style="font-size: var(--font-size-2xl); line-height: var(--line-height-2xl);"&gt;18.4&lt;/span&gt;&lt;span class="stat__unit"&gt;km&lt;/span&gt;&lt;/dd&gt;&lt;/div&gt;
+&lt;div&gt;&lt;dt&gt;Climbing&lt;/dt&gt;&lt;dd class="stat__value" style="margin-top: var(--space-0-5);"&gt;&lt;span class="dl__num" style="font-size: var(--font-size-2xl); line-height: var(--line-height-2xl);"&gt;90&lt;/span&gt;&lt;span class="stat__unit"&gt;m&lt;/span&gt;&lt;/dd&gt;&lt;/div&gt;
+&lt;div&gt;&lt;dt&gt;Rated&lt;/dt&gt;&lt;dd class="stat__value" style="margin-top: var(--space-0-5);"&gt;&lt;span class="dl__num" style="font-size: var(--font-size-2xl); line-height: var(--line-height-2xl);"&gt;Easy&lt;/span&gt;&lt;/dd&gt;&lt;/div&gt;
+&lt;div&gt;&lt;dt&gt;Your best&lt;/dt&gt;&lt;dd class="stat__value" style="margin-top: var(--space-0-5);"&gt;&lt;span class="dl__num" style="font-size: var(--font-size-2xl); line-height: var(--line-height-2xl);"&gt;31:42&lt;/span&gt;&lt;/dd&gt;&lt;/div&gt;
+&lt;/dl&gt;</code></pre></details>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+<p>One text size (14px) with two value treatments: plain text, or a numeral at <code>--font-size-md</code> (XP lines) to <code>--font-size-2xl</code> (setup facts). Gaps: inline 24px between columns and 8px between rows; stacked 40px across and 16px down.</p>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<dl class="dl dl--inline" style="width: 100%; max-width: 24rem;">
+<div><dt>Finished</dt><dd><span class="dl__num">+100</span></dd></div>
+</dl><dl class="dl dl--stacked">
+<div><dt>Distance</dt><dd class="stat__value" style="margin-top: var(--space-0-5);"><span class="dl__num" style="font-size: var(--font-size-2xl); line-height: var(--line-height-2xl);">18.4</span><span class="stat__unit">km</span></dd></div>
+<div><dt>Climbing</dt><dd class="stat__value" style="margin-top: var(--space-0-5);"><span class="dl__num" style="font-size: var(--font-size-2xl); line-height: var(--line-height-2xl);">90</span><span class="stat__unit">m</span></dd></div>
+<div><dt>Rated</dt><dd class="stat__value" style="margin-top: var(--space-0-5);"><span class="dl__num" style="font-size: var(--font-size-2xl); line-height: var(--line-height-2xl);">Easy</span></dd></div>
+<div><dt>Your best</dt><dd class="stat__value" style="margin-top: var(--space-0-5);"><span class="dl__num" style="font-size: var(--font-size-2xl); line-height: var(--line-height-2xl);">31:42</span></dd></div>
+</dl>
+</div>
+<div class="ds-example__caption"><span>Numeral sizes come from the type scale; a bigger number is a <a href="stat.html">stat</a>.</span></div>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+<p>A description list is static: values change, the list does not respond. Interaction states only apply to a link inside a value. Tone is the one visual state, and it always comes with words.</p>
+<div class="ds-matrix"><table>
+<thead><tr><th scope="col">Row</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Disabled</th><th scope="col">Tone</th><th scope="col">Loading</th></tr></thead>
+<tbody>
+<tr><th scope="row">Text value</th><td><dl class="dl dl--inline" style="min-width: 14rem;"><div><dt>Connection</dt><dd>Connected · 6m 52s</dd></div></dl></td><td>—</td><td>—</td><td>—</td><td>—</td><td><dl class="dl dl--inline" style="min-width: 14rem;"><div><dt>Web Bluetooth</dt><dd data-tone="ok">Available</dd></div></dl><dl class="dl dl--inline" style="min-width: 14rem;"><div><dt>Bike</dt><dd data-tone="warn">None picked yet</dd></div></dl><dl class="dl dl--inline" style="min-width: 14rem;"><div><dt>Web Bluetooth</dt><dd data-tone="bad">Unavailable</dd></div></dl></td><td><dl class="dl dl--inline" style="min-width: 14rem;" aria-busy="true"><div><dt>Signal</dt><dd><span class="skeleton skeleton--text" style="--skeleton-width: 5rem; margin-left: auto;" aria-hidden="true"></span><span class="visually-hidden">Reading…</span></dd></div></dl></td></tr>
+<tr><th scope="row">Value with a link</th><td><dl class="dl dl--inline" style="min-width: 14rem;"><div><dt>Bike</dt><dd><a class="more-link" href="../../mocks/dialogs/diagnostics/default.html">Diagnostics<svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></dd></div></dl></td><td><dl class="dl dl--inline" style="min-width: 14rem;"><div><dt>Bike</dt><dd><a class="more-link" href="../../mocks/dialogs/diagnostics/default.html" data-state="hover">Diagnostics<svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></dd></div></dl></td><td><dl class="dl dl--inline" style="min-width: 14rem;"><div><dt>Bike</dt><dd><a class="more-link" href="../../mocks/dialogs/diagnostics/default.html" data-state="focus">Diagnostics<svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></dd></div></dl></td><td><dl class="dl dl--inline" style="min-width: 14rem;"><div><dt>Bike</dt><dd><a class="more-link" href="../../mocks/dialogs/diagnostics/default.html" data-state="hover">Diagnostics<svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></dd></div></dl></td><td>—</td><td>—</td><td>—</td></tr>
+</tbody>
+</table></div>
+
+<h3>Both themes</h3>
+<div class="ds-themes">
+<div data-theme="light"><div class="ds-example__canvas " style="padding: 0; display: block;"><dl class="dl dl--inline" style="width: 100%; max-width: 24rem;">
+<div><dt>Bike</dt><dd>Echelon EX-5s</dd></div>
+<div><dt>Connection</dt><dd>Connected · 6m 52s</dd></div>
+<div><dt>Web Bluetooth</dt><dd data-tone="ok">Available</dd></div>
+</dl><div style="width: 100%; max-width: 25rem;"><div class="xp-earned__head"><h3 class="xp-earned__title">XP earned</h3><span class="xp-earned__total">+442</span></div>
+<dl class="xp-earned__lines">
+<div class="xp-earned__line"><dt>Finished</dt><dd>+100</dd></div>
+<div class="xp-earned__line"><dt>2nd of 10</dt><dd>+160</dd></div>
+<div class="xp-earned__line"><dt>Podium</dt><dd>+75</dd></div>
+<div class="xp-earned__line"><dt>84% on target</dt><dd>+67</dd></div>
+<div class="xp-earned__line"><dt>4-day streak</dt><dd>+40</dd></div>
+</dl></div></div></div>
+<div data-theme="dark"><div class="ds-example__canvas " style="padding: 0; display: block;"><dl class="dl dl--inline" style="width: 100%; max-width: 24rem;">
+<div><dt>Bike</dt><dd>Echelon EX-5s</dd></div>
+<div><dt>Connection</dt><dd>Connected · 6m 52s</dd></div>
+<div><dt>Web Bluetooth</dt><dd data-tone="ok">Available</dd></div>
+</dl><div style="width: 100%; max-width: 25rem;"><div class="xp-earned__head"><h3 class="xp-earned__title">XP earned</h3><span class="xp-earned__total">+442</span></div>
+<dl class="xp-earned__lines">
+<div class="xp-earned__line"><dt>Finished</dt><dd>+100</dd></div>
+<div class="xp-earned__line"><dt>2nd of 10</dt><dd>+160</dd></div>
+<div class="xp-earned__line"><dt>Podium</dt><dd>+75</dd></div>
+<div class="xp-earned__line"><dt>84% on target</dt><dd>+67</dd></div>
+<div class="xp-earned__line"><dt>4-day streak</dt><dd>+40</dd></div>
+</dl></div></div></div>
+</div>
+
+<ul><li><b>Loading</b>: keep the term, put a text skeleton where the value goes, set <code>aria-busy="true"</code> on the list. The mocks never load (Diagnostics reads live browser state), so this is the rule for later.</li>
+<li><b>Unknown</b> values say why ("None picked yet", "0 this ride"), never a blank.</li></ul>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+<ul>
+<li><b>360px</b>: inline lists keep two columns; long values (URLs, device IDs) wrap with <code>overflow-wrap: break-word</code> while terms stay on one line. Stacked facts wrap into two per row.</li>
+<li><b>640px</b>: stacked facts fit four across (Race Setup).</li>
+<li><b>1024px</b>: lists live in asides of fixed width (Results 400px, Custom workout 420px, Diagnostics 460px max) and do not grow.</li>
+</ul>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+<pre><code>.dl { --dl-label: var(--color-muted); --dl-gap-x: var(--space-6); --dl-gap-y: var(--space-2); }
+.dl dd[data-tone="warn"] { color: var(--color-warn-fg); }</code></pre>
+<p>Tone colours use the <code>-fg</code> text variants, which deepen on paper (amber-deep, red-deep, green-deep) so a toned value passes 4.5:1 in both themes.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+<h3>Role and pattern</h3>
+<p>Native <code>&lt;dl&gt;</code> with <code>&lt;dt&gt;</code>/<code>&lt;dd&gt;</code>; groups may be wrapped in <code>&lt;div&gt;</code> (valid HTML). No ARIA role. Screen readers announce the list and its pairs.</p>
+<h3>Keyboard</h3>
+<table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+<tr><td><kbd>Tab</kbd></td><td>Skips the list unless a value contains a link.</td></tr>
+<tr><td><kbd>Enter</kbd></td><td>Follows a link inside a value.</td></tr>
+</tbody></table>
+<h3>Focus</h3>
+<p>Only links inside values take focus, with the shared ring.</p>
+<h3>Labelling</h3>
+<p>The term labels the value; do not repeat it inside the value. Units are words or symbols screen readers know ("km", "dBm", "ms"). A minus sign is U+2212 ("−61 dBm") so it is read as minus. Tone is never the only signal: "None picked yet" says what warn means.</p>
+<h3>Contrast</h3>
+<div class="ds-themes">
+<div data-theme="light"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+<div class="ds-pair"><span>Term on panel</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Value on panel</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>OK value</span><span class="ds-pair__ratio" data-contrast="--color-ok-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Warn value</span><span class="ds-pair__ratio" data-contrast="--color-warn-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Bad value</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>XP total</span><span class="ds-pair__ratio" data-contrast="--color-gold-fg|--color-ink" data-min="4.5"></span></div>
+</div></div>
+<div data-theme="dark"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+<div class="ds-pair"><span>Term on panel</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Value on panel</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>OK value</span><span class="ds-pair__ratio" data-contrast="--color-ok-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Warn value</span><span class="ds-pair__ratio" data-contrast="--color-warn-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Bad value</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>XP total</span><span class="ds-pair__ratio" data-contrast="--color-gold-fg|--color-ink" data-min="4.5"></span></div>
+</div></div>
+</div>
+<h3>Motion</h3>
+<p>None. Values that update live (Diagnostics connection time) change in place without animation and are not live regions; they would chatter.</p>
+<h3>Touch</h3>
+<p>Not interactive. Links inside values use the 24px minimum target.</p>
+
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+<ul>
+<li>Terms: short nouns in sentence case ("Last command", "Peak resistance"); no colons.</li>
+<li>Values lead with the answer, then detail after " · " ("Connected · 6m 52s").</li>
+<li>Numbers with units take a space ("14.2 km", "41 ms"); approximations use "~" ("~154 W").</li>
+<li>XP lines: the reason as the rider would say it ("84% on target", "4-day streak"), the value signed ("+67").</li>
+</ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+<div class="ds-dodont">
+<figure class="ds-do"><div class="ds-example__canvas"><dl class="dl dl--inline" style="width: 100%; max-width: 24rem;">
+<div><dt>Bike</dt><dd data-tone="warn">None picked yet</dd></div>
+</dl></div><figcaption>A toned value that also says what is wrong.</figcaption></figure>
+<figure class="ds-dont"><div class="ds-example__canvas"><dl class="dl dl--inline" style="width: 100%; max-width: 24rem;">
+<div><dt>Bike</dt><dd data-tone="warn">—</dd></div>
+</dl></div><figcaption>Colour alone: a warn dash tells nobody what to do.</figcaption></figure>
+<figure class="ds-do"><div class="ds-example__canvas"><div style="width: 100%; max-width: 25rem;"><div class="xp-earned__head"><h3 class="xp-earned__title">XP earned</h3><span class="xp-earned__total">+442</span></div>
+<dl class="xp-earned__lines">
+<div class="xp-earned__line"><dt>Finished</dt><dd>+100</dd></div>
+<div class="xp-earned__line"><dt>2nd of 10</dt><dd>+160</dd></div>
+<div class="xp-earned__line"><dt>Podium</dt><dd>+75</dd></div>
+<div class="xp-earned__line"><dt>84% on target</dt><dd>+67</dd></div>
+<div class="xp-earned__line"><dt>4-day streak</dt><dd>+40</dd></div>
+</dl></div></div><figcaption>XP lines that add up to the total shown.</figcaption></figure>
+<figure class="ds-dont"><div class="ds-example__canvas"><p style="font-size: var(--font-size-sm);">Finished +100, 2nd of 10 +160, Podium +75, 84% on target +67, 4-day streak +40</p></div><figcaption>Pairs run together in a sentence: hard to scan and nothing lines up.</figcaption></figure>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+<div class="ds-table-wrap"><table class="ds-table">
+<thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+<tbody>
+<tr><td>Term</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+<tr><td>Value</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+<tr><td>Unit (stacked)</td><td><code>--color-faint</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td></tr>
+<tr><td>Tone ok / warn / bad</td><td><code>--color-ok-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-ok-fg" data-swatch></i><span data-token="--color-ok-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-ok-fg" data-swatch></i><span data-token="--color-ok-fg"></span></span></td></tr>
+<tr><td>Tone ok / warn / bad</td><td><code>--color-warn-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-warn-fg" data-swatch></i><span data-token="--color-warn-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-warn-fg" data-swatch></i><span data-token="--color-warn-fg"></span></span></td></tr>
+<tr><td>Tone ok / warn / bad</td><td><code>--color-heart-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-heart-fg" data-swatch></i><span data-token="--color-heart-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-heart-fg" data-swatch></i><span data-token="--color-heart-fg"></span></span></td></tr>
+<tr><td>XP total and gold tone</td><td><code>--color-gold-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-gold-fg" data-swatch></i><span data-token="--color-gold-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-gold-fg" data-swatch></i><span data-token="--color-gold-fg"></span></span></td></tr>
+<tr><td>Divider (divided)</td><td><code>--color-line</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td></tr>
+<tr><td>Gaps inline</td><td><code>--space-6</code> × <code>--space-2</code></td><td colspan="2"><span data-token="--space-6"></span> / <span data-token="--space-2"></span></td></tr>
+<tr><td>Gaps stacked</td><td><code>--space-10</code> × <code>--space-4</code></td><td colspan="2"><span data-token="--space-10"></span> / <span data-token="--space-4"></span></td></tr>
+<tr><td>Mono values</td><td><code>--font-family-mono</code> at <code>--font-size-xs</code></td><td colspan="2"><span data-token="--font-family-mono"></span> / <span data-token="--font-size-xs"></span></td></tr>
+</tbody>
+</table></div>
+
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+<pre><code>&lt;dl class="dl dl--inline"&gt;
+  &lt;div&gt;&lt;dt&gt;Bike&lt;/dt&gt;&lt;dd&gt;Echelon EX-5s&lt;/dd&gt;&lt;/div&gt;
+  &lt;div&gt;&lt;dt&gt;Web Bluetooth&lt;/dt&gt;&lt;dd data-tone="ok"&gt;Available&lt;/dd&gt;&lt;/div&gt;
+&lt;/dl&gt;
+
+&lt;dl class="dl dl--stacked"&gt;
+  &lt;div&gt;&lt;dt&gt;Distance&lt;/dt&gt;&lt;dd&gt;&lt;span class="dl__num"&gt;14.2&lt;/span&gt; km&lt;/dd&gt;&lt;/div&gt;
+&lt;/dl&gt;</code></pre>
+<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+<tr><td><code>.dl--inline</code> <code>.dl--stacked</code></td><td>Label left / label above.</td></tr>
+<tr><td><code>.dl--divided</code> <code>.dl--mono</code></td><td>Hairline per pair / mono values.</td></tr>
+<tr><td><code>.dl__num</code></td><td>Barlow tabular numeral value.</td></tr>
+<tr><td><code>dd[data-tone="ok|warn|bad|gold"]</code></td><td>Value tone.</td></tr>
+<tr><td><code>.setup-facts</code>, <code>.setup-fact__*</code></td><td>Race Setup facts (area).</td></tr>
+<tr><td><code>.xp-earned__*</code></td><td>Results XP breakdown (area).</td></tr>
+<tr><td><code>.diagnostics__facts</code></td><td>Diagnostics facts (area).</td></tr>
+<tr><td><code>.plan-preview__facts</code></td><td>Custom workout summary (area).</td></tr>
+</tbody></table></div>
+
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+<p>Extracted from these mocks:</p>
+<ul>
+<li><a href="../../mocks/pages/race-setup/default.html">pages/race-setup/default</a> (map facts)</li>
+<li><a href="../../mocks/pages/results/default.html">pages/results/default</a> (XP earned)</li>
+<li><a href="../../mocks/pages/results/win.html">pages/results/win</a> (XP earned on a win)</li>
+<li><a href="../../mocks/dialogs/diagnostics/default.html">dialogs/diagnostics/default</a> (connection facts)</li>
+<li><a href="../../mocks/dialogs/diagnostics/no-bike.html">dialogs/diagnostics/no-bike</a> (warn tone)</li>
+<li><a href="../../mocks/pages/custom-setup/default.html">pages/custom-setup/default</a> (Your ride summary)</li>
+</ul>
+<h3>Drift fixed during extraction</h3>
+<ul>
+<li>Diagnostics marks "Available" with <code>data-tone="ok"</code>, but <code>components.css</code> styles only <code>warn</code> and <code>bad</code>, so it renders plain. Resolution: <code>.dl</code> styles <code>ok</code> (and <code>gold</code>); add <code>.diagnostics__facts dd[data-tone="ok"]</code> to the area rule when merging.</li>
+<li>Four blocks draw the same two layouts; <code>.dl</code> generalises them.</li>
+</ul>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

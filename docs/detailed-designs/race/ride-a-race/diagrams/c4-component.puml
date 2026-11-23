@@ -1,0 +1,27 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Ride a race
+Person(rider, "Rider", "Rides a smart bike at home")
+Container_Boundary(app, "Ride app") {
+  Component(page, "RacePage", "Angular page · ride", "Route /race/:mapId/ride, full screen")
+  Component(store, "RaceStore", "Route-scoped signal store · ride", "Owns RaceEngine; one snapshot a second")
+  Component(hud, "RaceBar / RacePower / RaceBoard / RaceInterval / RaceRoute / RaceResist", "Presentation components · components", "HUD panels")
+  Component(engine, "RaceEngine", "Service · domain/engine", "Per-second race model")
+  Component(rules, "WorkoutEngine / VirtualSpeedModel / RouteProfile / StandingsRanker / GapCalculator / TargetDelta", "Services · domain/engine", "Race rules")
+  Component(clock, "RideClock", "Service · domain/engine", "True second ticks")
+  Component(res, "ResistanceController", "Service · domain/engine", "Target resistance")
+  Component(conn, "BikeConnection", "Service · domain/bluetooth", "Telemetry and writes; token BIKE_CONNECTION")
+  Component(field, "RaceField", "Contract · domain/engine", "Bots, ghost or riders online")
+}
+Rel(rider, page, "Watches and presses")
+Rel(page, store, "Reads snapshot, sends nudges")
+Rel(page, hud, "Renders with snapshot")
+Rel(store, engine, "tick(telemetry)")
+Rel(store, clock, "Subscribes")
+Rel(store, conn, "Subscribes to telemetry")
+Rel(engine, rules, "Uses")
+Rel(engine, field, "Advances opponents")
+Rel(engine, res, "Segment level")
+Rel(res, conn, "Writes target resistance")
+@enduml

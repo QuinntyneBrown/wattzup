@@ -1,0 +1,41 @@
+@startuml
+title UML sequence behaviour — Read progress on a second device
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app on a second device (ride application)" #E0F2FE
+  participant "HomePage" as page
+  participant "RiderProgressStore" as store
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "ProgressController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "GetProgressQueryHandler" as handler
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+actor -> page : Sign in on a tablet and open Home
+page -> store : refresh()
+store -> ctrl : GET /api/progress (session cookie)
+ctrl -> handler : Send GetProgressQuery for the signed-in rider only
+handler -> db : Rider, Streak, MapProgress, ride count and distance
+db --> handler : Same rows the laptop wrote
+handler --> ctrl : ProgressDto
+ctrl --> store : 200 ProgressDto
+store --> page : Level, XP, streak, stars, bests, open maps (L2-044 AC1)
+page --> actor : Same progress as on the first device (AC3)
+@enduml

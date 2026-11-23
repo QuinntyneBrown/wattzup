@@ -1,0 +1,47 @@
+@startuml
+title UML sequence behaviour — Start a solo class ride
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "ClassRidePage" as page
+  participant "ClassRideStore" as store
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "RideClock" as clock
+  participant "WorkoutEngine" as engine
+  participant "ResistanceController" as resist
+  participant "WebBluetoothBikeConnection" as conn
+  participant "YouTubeVideoPlayer" as player
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "Smart bike" as bike
+end box
+box "Third party — YouTube" #F2F4F7
+  participant "YouTube embed" as yt
+end box
+rider -> page : Arrive from "Start class" (?mode=solo)
+page -> store : init(class, Solo)
+store --> page : Header "30 Minute HIIT Cardio · Solo" with Pause L2-087 AC1
+page -> player : load(host, videoId, controls off) (video library imported on demand)
+player -> yt : Embed youtube-nocookie.com L2-088 AC5
+store -> engine : follow(plan, clock)
+store -> clock : start()
+engine -> resist : applyPlanLevel(warm-up level) L2-027 AC1
+resist -> conn : Set resistance
+conn -> bike : Resistance command
+store -> player : seekTo(12.0), play() L2-088 AC1
+page --> rider : Clock "0:00 / 30:00", segment card, video playing
+@enduml

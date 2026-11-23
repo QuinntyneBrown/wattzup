@@ -1,0 +1,78 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Longer classes now open as you level up, by your own level from the backend."
+      ]
+    },
+    {
+      "id": "level1",
+      "bars": 5,
+      "lines": [
+        "At level one you have three classes open. Every other card says the level that opens it."
+      ]
+    },
+    {
+      "id": "level7",
+      "bars": 5,
+      "lines": [
+        "At level seven the level-five tier is open: thirty minute Tempo Paceline. Ten and twenty stay locked."
+      ]
+    },
+    {
+      "id": "level18",
+      "bars": 5,
+      "lines": [
+        "At level eighteen only one class is left: the sixty minute ride with surges, at level twenty."
+      ]
+    },
+    {
+      "id": "opened",
+      "bars": 4,
+      "lines": [
+        "A class your level opened goes straight to Class Start, on any device."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 5,
+      "lines": [
+        "On a phone the shelves stack in one column. From a tablet up, the cards sit side by side."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: only four tiers are allowed, and each opens at its level."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

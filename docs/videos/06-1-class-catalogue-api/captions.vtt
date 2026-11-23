@@ -1,0 +1,79 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.313
+The class catalogue now comes from the backend, and the app keeps it on the device.
+
+00:00:10.324 --> 00:00:15.481
+Seven classes, in order, each with its channel, focus, length and the rider level it
+
+00:00:15.481 --> 00:00:16.334
+opens at.
+
+00:00:20.647 --> 00:00:25.748
+Every class has a YouTube video, a sync offset, a summary, a world, and a plan
+
+00:00:25.748 --> 00:00:27.945
+exactly as long as the class.
+
+00:00:30.971 --> 00:00:36.205
+A class that breaks the rules is left out: a level outside one to thirty-two, a plan
+
+00:00:36.205 --> 00:00:40.119
+that does not add up, or a video id that is not YouTube's.
+
+00:00:41.295 --> 00:00:46.356
+One class can be asked for by its id. An id the catalogue does not hold is not
+
+00:00:46.356 --> 00:00:48.732
+found, with a code to branch on.
+
+00:00:51.618 --> 00:00:56.574
+The catalogue is public, so a rider can browse and start a solo class before signing
+
+00:00:56.574 --> 00:00:59.352
+in. Everything else still needs a session.
+
+00:01:01.942 --> 00:01:07.541
+The catalogue is a file shipped inside the backend and read once. No table, no seed,
+
+00:01:07.541 --> 00:01:09.508
+and no test reads a file.
+
+00:01:12.266 --> 00:01:16.516
+In the app, every catalogue the backend serves is kept on the device.
+
+00:01:22.590 --> 00:01:27.329
+So when the backend cannot be reached, the class ride still finds its class, and the
+
+00:01:27.329 --> 00:01:28.870
+bike follows the plan.
+
+00:01:32.913 --> 00:01:37.378
+The same ride, from a phone to a desktop, with no backend behind it.
+
+00:01:43.237 --> 00:01:48.722
+What the tests prove: eight API tests, twelve rule cases, a new spec and six unit
+
+00:01:48.722 --> 00:01:50.173
+cases, all green.
+
+00:01:53.561 --> 00:01:58.164
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:58.509 --> 00:02:03.021
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:02:03.021 --> 00:02:04.692
+every hill and interval.
+
+00:02:05.037 --> 00:02:10.215
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:02:10.215 --> 00:02:15.663
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:02:15.663 --> 00:02:18.653
+XP, rider levels, stars and map unlocks.
+
+00:02:18.998 --> 00:02:21.491
+A custom workout lives under Profile.

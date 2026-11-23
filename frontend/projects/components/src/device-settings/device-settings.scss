@@ -1,0 +1,43 @@
+// Settings' This device (docs/mocks/pages/settings/): the Saved worlds row in the setting block's parts, as the mock
+// draws them, and Keep worlds after a ride.
+:host {
+  display: block;
+}
+
+.setting__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.setting__label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.setting__value {
+  flex-shrink: 0;
+  margin: 0;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+}
+
+.setting__hint {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-snug);
+  color: var(--color-muted);
+}
+
+.setting__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}

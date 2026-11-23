@@ -1,0 +1,201 @@
+// Blocks ladder-block and interval-ladder (docs/design-system/assets/components.css). The mini-steppers and the remove
+// button keep their drawn 28 px and 32 px, and take touches across 44 px around them (design open question 4).
+:host {
+  display: block;
+  margin-top: var(--space-8);
+}
+
+.ladder-block__head {
+  margin-bottom: var(--space-3);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  column-gap: var(--space-4);
+  row-gap: var(--space-1);
+}
+
+.ladder-block__title {
+  margin: 0;
+  font-size: inherit;
+  font-weight: var(--font-weight-semibold);
+}
+
+.ladder-block__same {
+  min-height: var(--target-comfortable);
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  white-space: nowrap;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-standard);
+
+  &:hover {
+    color: var(--color-fg);
+  }
+}
+
+.interval-ladder__head,
+.interval-ladder__row {
+  display: grid;
+  grid-template-columns: var(--space-6) minmax(0, 1fr) minmax(0, 1fr) var(--space-8);
+  align-items: center;
+  column-gap: var(--space-3);
+  border-bottom: var(--border-width-hairline) solid var(--color-line);
+}
+
+.interval-ladder__head {
+  padding-bottom: var(--space-2);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-faint);
+}
+
+.interval-ladder__key {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+}
+
+.kind-swatch {
+  display: inline-block;
+  flex-shrink: 0;
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-volt);
+}
+
+.kind-swatch--rest {
+  background: var(--color-rest);
+}
+
+.interval-ladder__rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.interval-ladder__row {
+  padding-block: var(--space-2);
+}
+
+.interval-ladder__num {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-faint);
+}
+
+.interval-ladder__into {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.mini-stepper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+}
+
+// The 28 px button and the 32 px remove button reach 44 px for touch through a transparent ring.
+.mini-stepper__btn,
+.interval-ladder__remove {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  color: inherit;
+  cursor: pointer;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: var(--target-comfortable);
+    height: var(--target-comfortable);
+    transform: translate(-50%, -50%);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+}
+
+.mini-stepper__btn {
+  width: var(--space-7);
+  height: var(--space-7);
+  background: var(--color-raised);
+  transition: background-color var(--duration-fast) var(--ease-standard);
+
+  &:hover:not(:disabled) {
+    background: var(--color-line);
+  }
+}
+
+.mini-stepper__value {
+  width: var(--space-12);
+  text-align: center;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+}
+
+.interval-ladder__remove {
+  width: var(--space-8);
+  height: var(--space-8);
+  background: none;
+  color: var(--color-faint);
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+
+  &:hover:not(:disabled) {
+    background: var(--color-raised);
+    color: var(--color-fg);
+  }
+}
+
+.interval-ladder__add {
+  margin-top: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  min-height: var(--target-comfortable);
+  padding-inline: var(--space-2);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  font: inherit;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+
+  &:hover:not(:disabled) {
+    background: var(--color-raised);
+    color: var(--color-fg);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+}

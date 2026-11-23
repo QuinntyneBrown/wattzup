@@ -1,0 +1,35 @@
+@startuml
+title UML sequence behaviour — Cross a breakpoint
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+participant "Browser layout engine" as browser
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "Page" as page
+end box
+box "Frontend — Ride app (components library)" #E0F2FE
+  participant "Component stylesheets" as css
+end box
+participant "BreakpointObserver (Angular CDK)" as bp
+actor -> browser : Rotate the tablet from 600 px to 1024 px wide
+browser -> css : Re-evaluate @media (min-width: 40rem) and (min-width: 64rem)
+css --> browser : Margin 32 px; two-column grid (L2-139 AC2, AC3)
+browser -> bp : matchMedia change event
+bp -> page : isLg signal = true
+opt The page changes structure at lg
+  page -> page : Render the side panel instead of the drawer
+end
+browser --> actor : Layout without sideways scroll (L2-139 AC1)
+@enduml

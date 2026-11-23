@@ -1,0 +1,107 @@
+@startuml
+set separator none
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Set up a custom workout
+
+package "domain library" {
+  class CustomWorkoutDraft {
+    +mode: TrainingMode
+    +hiit: HiitSettings
+    +flat: FlatSettings
+    +video: VideoSetting
+  }
+  enum TrainingMode {
+    Hiit
+    Flat
+  }
+  class HiitSettings {
+    +preset: PresetId
+    +edited: boolean
+    +rounds: Round[]
+    +workLevel: number
+    +recoverLevel: number
+    +warmUpSeconds: number
+    +coolDownSeconds: number
+  }
+  class Round {
+    +effortSeconds: number
+    +recoverySeconds: number
+  }
+  class FlatSettings {
+    +level: number
+    +durationMinutes: number
+    +cadenceGoal: number
+  }
+  class VideoSetting {
+    +enabled: boolean
+    +link: string
+    +videoId: string
+    +syncOffsetSeconds: number
+  }
+  class HiitPresets {
+    +gcn30: HiitSettings
+    +get(id: PresetId): HiitSettings
+  }
+  class CustomWorkoutLimits {
+    +effort(step: number, value: number): number
+    +recovery(step: number, value: number): number
+    +maxRounds = 30
+    +level(value: number): number
+    +warmUp(step: number, value: number): number
+    +flatDuration(step: number, value: number): number
+    +cadenceGoal(step: number, value: number): number
+    +offset(step: number, value: number): number
+  }
+  class YouTubeLink {
+    +parse(text: string): LinkResult
+  }
+}
+package "ride application" {
+  class CustomWorkoutStore {
+    +draft: Signal<CustomWorkoutDraft>
+    +canStart: Signal<boolean>
+    +choosePreset(id: PresetId): void
+    +longerEffort(round: number): void
+    +shorterEffort(round: number): void
+    +longerRecovery(round: number): void
+    +shorterRecovery(round: number): void
+    +addRound(): void
+    +removeRound(round: number): void
+    +makeRoundsSame(): void
+    +chooseMode(mode: TrainingMode): void
+    +setVideoLink(text: string): void
+    +nudgeOffset(seconds: number): void
+    +useCurrentTime(seconds: number): void
+  }
+}
+package "Telo.Ride.Domain" {
+  class CustomWorkout {
+    +Guid RiderId
+    +string Mode
+    +string PlanJson
+    +string VideoId
+    +decimal SyncOffsetSeconds
+    +DateTimeOffset SavedAt
+  }
+}
+CustomWorkoutDraft --> TrainingMode
+CustomWorkoutDraft *-- HiitSettings
+CustomWorkoutDraft *-- FlatSettings
+CustomWorkoutDraft *-- VideoSetting
+HiitSettings "1" *-- "1..30" Round
+CustomWorkoutStore *-- CustomWorkoutDraft
+CustomWorkoutStore ..> HiitPresets
+CustomWorkoutStore ..> CustomWorkoutLimits
+CustomWorkoutStore ..> YouTubeLink
+@enduml

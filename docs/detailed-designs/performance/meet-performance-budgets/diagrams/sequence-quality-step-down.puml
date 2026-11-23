@@ -1,0 +1,44 @@
+@startuml
+title UML sequence behaviour — Step quality down to hold the frame rate
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "Browser" as browser
+box "Frontend — Ride app (world library)" #E0F2FE
+  participant "WorldRenderer" as renderer
+  participant "FrameBudget" as budget
+end box
+renderer -> renderer : measureFramePeriod(): P = 16.7 ms (60 Hz)
+loop every animation frame
+  browser -> renderer : requestAnimationFrame
+  renderer -> budget : sample(now, frame time)
+  alt A 2-second window closes
+    budget -> budget : median frame of the window
+    alt Second slow window in a row (median over 1.2 x P)
+      alt Median 3 x P or more
+        budget --> renderer : drop: Low
+      else
+        budget --> renderer : drop: one level lower (L2-159 AC4)
+      end
+      renderer -> renderer : applyTier(): the new level's techniques
+    else
+      budget --> renderer : keep
+    end
+  else
+    budget --> renderer : keep
+  end
+  renderer -> renderer : Draw the frame at the budget's level
+end
+note over budget : Never below Low; never raised during the ride
+@enduml

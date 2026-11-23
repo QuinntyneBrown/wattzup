@@ -1,0 +1,28 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Show heart rate
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(strap, "Heart-rate strap", "Bluetooth Heart Rate Service")
+Container_Boundary(app, "Ride app") {
+  Component(settings, "SettingsPage", "Angular page · ride", "Connect a heart-rate strap (mock gap)")
+  Component(strapConn, "WebBluetoothHeartRateStrap", "Service · domain/bluetooth", "HeartRateStrap over navigator.bluetooth")
+  Component(hrDec, "HeartRateMeasurementDecoder", "Codec · domain/protocol", "uint8 or uint16 bpm by flags bit 0")
+  Component(recon, "DeviceReconnector", "Service · domain/bluetooth", "Retries every 3 s")
+  Component(tele, "BikeTelemetry", "Service · domain/engine", "Bike-reported heart rate")
+  Component(source, "HeartRateSource", "Service · domain/engine", "Strap first, then bike; 5 s stale guard")
+  Component(stats, "HeartRateStats", "Service · domain/engine", "Average and peak for the ride")
+  Component(readout, "Heart readout", "On each ride screen (5.2, 7.3, 21.3)", "bpm, or a dash when none")
+  ComponentDb(remembered, "RememberedStrapStore", "Store · domain/storage", "Strap id and name in localStorage")
+}
+Rel(rider, settings, "Chooses to connect a strap")
+Rel(settings, strapConn, "Calls via HEART_RATE_STRAP")
+Rel(strapConn, strap, "Subscribes 0x2A37", "GATT")
+Rel(strapConn, hrDec, "Decodes with")
+Rel(strapConn, recon, "Retries with")
+Rel(strapConn, remembered, "Saves and reads")
+Rel(strapConn, source, "Strap bpm")
+Rel(tele, source, "Bike bpm")
+Rel(source, stats, "Each second's bpm")
+Rel(source, readout, "Rendered by")
+@enduml

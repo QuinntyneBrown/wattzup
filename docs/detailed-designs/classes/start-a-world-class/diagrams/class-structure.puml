@@ -1,0 +1,75 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+hide empty members
+title Class structure — Start a world class
+enum RideMode {
+  solo
+  group
+}
+class LoadAction {
+  +label: string
+  +enabled: boolean
+  +hint: string
+  +focus: boolean
+}
+class WorldLoadStore <<ride>> {
+  +mode: Signal<RideMode>
+  +action: Signal<LoadAction>
+  +groupCountdown: Signal<string | null>
+  +begin(): void
+  +handOver(): WorldRenderer
+}
+class GroupStartWatcher <<ride>> {
+  -tick: number
+  +startsAt: Signal<number>
+  +watch(session: LiveSessionStore, clock: ServerClock): void
+}
+class ClassRideStore <<ride>> {
+  +adoptWorld(renderer: WorldRenderer): void
+  +start(): void
+}
+class LiveSessionStore <<ride>> {
+  +startsAt: Signal<string>
+}
+class ServerClock <<domain/engine>> {
+  +toDeviceTime(serverTime: string): number
+}
+interface BikeConnection <<api>> {
+  +ble: Signal<BleState>
+}
+class RideClock <<domain/engine>> {
+  +start(atDeviceTime?: number): void
+}
+class WorkoutEngine <<domain/engine>> {
+  +begin(): void
+}
+class WorldScene <<components>> {
+  +live: InputSignal<boolean>
+  +panoramaUrl: InputSignal<string>
+}
+class MotionPreference <<ride>> {
+  +reduced: Signal<boolean>
+}
+WorldLoadStore --> RideMode
+WorldLoadStore --> LoadAction : computes
+WorldLoadStore *-- "0..1" GroupStartWatcher
+WorldLoadStore ..> BikeConnection : BIKE_CONNECTION
+GroupStartWatcher ..> LiveSessionStore
+GroupStartWatcher ..> ServerClock
+WorldLoadStore ..> ClassRideStore : hands over
+ClassRideStore *-- RideClock
+ClassRideStore *-- WorkoutEngine
+ClassRideStore ..> WorldScene : live
+WorldScene ..> MotionPreference
+@enduml

@@ -3,17 +3,33 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Accessibility — Wattzup design system</title>
-<meta name="description" content="The WCAG 2.2 AA commitments every component meets.">
+<title>Accessibility — Telo Ride design system</title>
+<meta name="description" content="Telo Ride's WCAG 2.2 AA commitments with the product's specifics: ride-time targets, quiet live regions, solo-only pause, alert notices, focus ring tokens and the testing procedure.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Shared by the foundations-b pages: wide reference tables keep a readable width and scroll
+   inside .ds-table-wrap on phones instead of crushing their columns. */
+.ds-table-wrap { --doc-table-min: 40rem; }
+.ds-table-wrap > .ds-table { min-width: var(--doc-table-min); }
+.ds-themes + ul, .ds-themes + p, .ds-example + ul { margin-top: var(--space-4); }
+/* Accessibility page only */
+.ax-focus { display: flex; flex-wrap: wrap; gap: var(--space-5); align-items: center; }
+.ax-pairs { display: grid; gap: var(--space-2); margin-top: var(--space-4); }
+.ax-anatomy { display: flex; flex-wrap: wrap; gap: var(--space-8); align-items: center; }
+.ax-ring { position: relative; display: inline-grid; place-items: center; }
+.ax-ring figcaption { margin-top: var(--space-3); font: var(--text-caption); color: var(--color-fg-muted); }
+.ax-live { display: grid; gap: var(--space-3); flex: 1 1 100%; }
+.ax-live .connect-blocker { margin-top: 0; }
+.app-header a, a.btn { text-decoration: none; }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +44,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,39 +98,255 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Foundation</p>
       <h1>Accessibility</h1>
-      <p class="ds-lead">WCAG 2.2 AA in both themes, by keyboard and by touch, with colour never the only cue.</p>
-      
-      <ul class="ds-toc"><li><a href="#commitments">Commitments</a></li><li><a href="#focus">Focus</a></li><li><a href="#testing">Testing</a></li><li><a href="#tokens">All tokens</a></li></ul>
+      <p class="ds-lead">Everything in the system meets WCAG 2.2 AA in both themes. Riding adds its own rules: big targets for sweaty hands, numbers that update without shouting, and notices that interrupt only when the ride is at risk.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#perceivable">Perceivable</a></li><li><a href="#operable">Operable</a></li><li><a href="#understandable">Understandable</a></li><li><a href="#robust">Robust</a></li><li><a href="#ride-time">Ride time</a></li><li><a href="#focus">Focus ring</a></li><li><a href="#fixes">AA fixes made during extraction</a></li><li><a href="#testing">Testing procedure</a></li><li><a href="#contract">Component page contract</a></li><li><a href="#tokens">Tokens</a></li></ul>
     </header>
-    <section class="ds-section" id="commitments"><h2><a href="#commitments">Commitments</a></h2>
-<ul><li>Text 4.5:1, large text and UI 3:1 — checked for every pair.</li><li>Visible focus ring on every control (2px, 2px offset).</li><li>Keyboard access to everything; dialogs trap focus and restore it.</li><li>Colour is never the only carrier: words, icons and shapes back it up.</li><li>Live values are not announced each second; step changes and failures are.</li><li>Reduced motion honoured.</li><li>Targets at least 24px, 44px for primary actions.</li><li>Auto-dismissing toasts last 8 s and pause on hover/focus.</li></ul>
-    </section>
-    <section class="ds-section" id="focus"><h2><a href="#focus">Focus</a></h2>
-<div class="cluster"><button class="btn" type="button" data-state="focus">Focused</button><button class="btn btn--primary" type="button" data-state="focus">Focused</button></div>
-    </section>
-    <section class="ds-section" id="testing"><h2><a href="#testing">Testing</a></h2>
-<ul><li>Axe sweeps in Playwright (run when asked).</li><li>Manual keyboard pass on ride, setup and each dialog.</li><li>Screen reader check on the step-change announcement.</li></ul>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">All tokens</a></h2>
-<p>4 tokens. Values resolve live for each theme.</p><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td><code>--target-min</code></td><td colspan="2"><span data-token="--target-min"></span></td></tr><tr><td><code>--target-comfortable</code></td><td colspan="2"><span data-token="--target-comfortable"></span></td></tr><tr><td><code>--focus-ring-width</code></td><td colspan="2"><span data-token="--focus-ring-width"></span></td></tr><tr><td><code>--focus-ring-offset</code></td><td colspan="2"><span data-token="--focus-ring-offset"></span></td></tr></tbody></table></div>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+      <p>Telo Ride commits to WCAG 2.2 level AA in both themes, on every screen, at every width from 320 px. The tables below are the system's commitments: each row names the success criterion, the rule every component follows, and what it means in this product. Component pages answer the same questions for themselves under <em>Accessibility</em>; the <a href="#contract">contract</a> at the end says what each must cover.</p>
+      <p>Riding changes the usual assumptions. The rider is moving, breathing hard, often a metre from the screen, with sweat on their fingers and music in their ears. So the system adds three rules of its own on top of AA:</p>
+      <ul>
+        <li><b>Big targets mid-ride.</b> Anything pressed while riding is 48 px (<code>--target-ride</code>).</li>
+        <li><b>Numbers stay quiet.</b> Watts, cadence, heart rate and clocks change every second; they are never announced on their own.</li>
+        <li><b>Interrupt only when the ride is at risk.</b> “Lost the bike”, “Bluetooth is off” and the browser notices are alerts. Everything else waits to be read.</li>
+      </ul>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="perceivable"><h2><a href="#perceivable">Perceivable</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Requirement</th><th scope="col">SC</th><th scope="col">Rule in this system</th><th scope="col">In Telo Ride</th></tr></thead>
+        <tbody>
+          <tr><td>Text contrast</td><td>1.4.3</td><td>Body, label and secondary text at least 4.5:1 on every surface; large text 3:1. Every pair is in <code>tokens/contrast-pairs.json</code> and checked in both themes.</td><td>Tertiary text (<code>--color-faint</code>) was raised to pass on panels and wells; volt, gold and status text use the <code>-fg</code> variants, which deepen on paper. See <a href="color.html">Color</a>.</td></tr>
+          <tr><td>Non-text contrast</td><td>1.4.11</td><td>Input borders, focus rings, meaningful icons, chart marks, switch tracks at least 3:1 against what is next to them. Decorative hairlines are exempt.</td><td>Inputs use <code>--color-line-strong</code>, not the 1.3:1 hairline. Plan-chart segments are labelled; the effort colour is never the only cue.</td></tr>
+          <tr><td>Use of colour</td><td>1.4.1</td><td>Status is colour plus icon plus text; links are underlined in prose; charts carry labels.</td><td>The header's red bluetooth icon comes with hidden text “disconnected”; “You” on the board is volt and bold; stars carry “1 of 3 stars”.</td></tr>
+          <tr><td>Resize and reflow</td><td>1.4.4, 1.4.10</td><td>Sizes in <code>rem</code>; pages reflow to 320 px with no sideways scroll except tables and charts in their own wrapper.</td><td>The design's phone overflows (Next ride card, class ride header, telemetry panels, “Leave this ride?”) were fixed in the mocks. See <a href="responsive.html">Responsive</a>.</td></tr>
+          <tr><td>Text spacing</td><td>1.4.12</td><td>Nothing clips at 1.5 line height, 2× paragraph spacing, 0.12em letter and 0.16em word spacing.</td><td>HUD panels size to their content; numerals are never in fixed-height boxes.</td></tr>
+          <tr><td>Images</td><td>1.1.1</td><td>Informative images have <code>alt</code>; decorative images <code>alt=""</code>; decorative SVG <code>aria-hidden</code>; icon-only controls <code>aria-label</code>.</td><td>World photos beside their map name are decorative (<code>alt=""</code>); the Echelon EX-5s photo on Connect Bike is described. See <a href="iconography.html">Iconography</a>.</td></tr>
+          <tr><td>Orientation and motion</td><td>1.3.4, 2.3.3</td><td>No orientation lock; reduced motion zeroes interface durations in the tokens.</td><td>The 3D world freezes with reduced motion; the 3-2-1 keeps its one-second step because it is a timer. See <a href="motion.html">Motion</a>.</td></tr>
+          <tr><td>Input purpose</td><td>1.3.5</td><td><code>autocomplete</code> on personal-data fields.</td><td>Telo Ride asks for none today; Feedback's message is free text. A future e-mail field gets <code>autocomplete="email"</code>.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="operable"><h2><a href="#operable">Operable</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Requirement</th><th scope="col">SC</th><th scope="col">Rule in this system</th><th scope="col">In Telo Ride</th></tr></thead>
+        <tbody>
+          <tr><td>Keyboard</td><td>2.1.1, 2.1.2</td><td>Everything works with Tab, Shift+Tab, Enter, Space and arrows where a pattern says so; only modal dialogs trap focus, and Escape releases them.</td><td>Resistance steppers are buttons, so a keyboard or a Bluetooth remote can ride. Mode pickers and tier filters are <code>aria-pressed</code> buttons.</td></tr>
+          <tr><td>Focus visible</td><td>2.4.7</td><td>One ring everywhere: <code>--focus-ring-width</code> solid <code>--color-focus-ring</code>, <code>--focus-ring-offset</code> outside, on <code>:focus-visible</code>.</td><td>See <a href="#focus">Focus ring</a>. Text inputs keep the ring the design's source removed.</td></tr>
+          <tr><td>Focus not obscured</td><td>2.4.11</td><td>Sticky headers, toasts and HUD panels never cover the focused element.</td><td>HUD panels sit at <code>--z-hud</code>, below dialogs and toasts; focus inside the race moves only through the bar and steppers, which no panel covers.</td></tr>
+          <tr><td>Focus order</td><td>2.4.3</td><td>DOM order is visual order; no positive <code>tabindex</code>; dialogs move focus in and restore it on close.</td><td>Closing “Leave this ride?” returns focus to Library; closing Feedback returns it to Feedback.</td></tr>
+          <tr><td>Target size</td><td>2.5.8</td><td>At least 24 × 24 for every target; 44 px for primary phone actions; 48 px mid-ride.</td><td><code>--target-min</code>, <code>--target-comfortable</code>, <code>--target-ride</code>. Range sliders are 24 px tall. See <a href="responsive.html">Responsive</a>.</td></tr>
+          <tr><td>Dragging</td><td>2.5.7</td><td>Every drag has a single-pointer alternative.</td><td>Level sliders sit beside steppers and typed values; the video sync point has “Use video’s current time”.</td></tr>
+          <tr><td>Timing adjustable</td><td>2.2.1</td><td>A time limit can be paused, extended or turned off, unless it is a real-time event or essential.</td><td>A solo ride (solo race, solo class, custom ride) can be paused. A race against bots or people and a group class cannot: they are real-time events, the exception 2.2.1 allows. See <a href="#ride-time">Ride time</a>.</td></tr>
+          <tr><td>Pause, stop, hide</td><td>2.2.2</td><td>Moving content that starts by itself and lasts over 5 seconds can be paused; toasts last at least 8 s and pause on hover and focus.</td><td>The world and the class video are the activity itself, paused with the ride. Spinners stop when the wait ends.</td></tr>
+          <tr><td>Bypass blocks</td><td>2.4.1</td><td>A skip link to <code>#main</code>; landmarks <code>header</code>, <code>nav</code>, <code>main</code>.</td><td>Every mock has “Skip to content”.</td></tr>
+          <tr><td>Titles and headings</td><td>2.4.2, 2.4.6</td><td>Unique <code>&lt;title&gt;</code>, one <code>&lt;h1&gt;</code>, headings in order.</td><td>Screens without a visible heading (Race, Race Lobby, Results) get a visually hidden <code>&lt;h1&gt;</code>: “Race, Old Town Criterium”.</td></tr>
+          <tr><td>Link purpose</td><td>2.4.4</td><td>Link text makes sense alone.</td><td>“Race Old Town Criterium”, “All maps”, “Ride Neon Docklands”, never “Click here”.</td></tr>
+          <tr><td>Pointer cancellation</td><td>2.5.2</td><td>Actions fire on click, not on press.</td><td>A resistance stepper changes one level per click, on release; pressing and sliding off cancels it.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="understandable"><h2><a href="#understandable">Understandable</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Requirement</th><th scope="col">SC</th><th scope="col">Rule in this system</th><th scope="col">In Telo Ride</th></tr></thead>
+        <tbody>
+          <tr><td>Labels</td><td>3.3.2</td><td>A visible label for every control; placeholders are hints.</td><td>“YouTube link”, “Ride 0:00 starts at”, “What went wrong?”.</td></tr>
+          <tr><td>Error identification</td><td>3.3.1, 3.3.3</td><td>Errors name the problem and the fix; <code>aria-invalid</code> and <code>aria-describedby</code> tie them to the field.</td><td>The error formula on <a href="content.html">Content</a>: “Bluetooth is off. Turn on Bluetooth on this computer, then try again.”</td></tr>
+          <tr><td>Error prevention</td><td>3.3.4</td><td>Destructive actions are confirmed or reversible.</td><td>Leaving a ride asks first and offers “Save ride and open library” before “Discard and open library”.</td></tr>
+          <tr><td>Redundant entry</td><td>3.3.7</td><td>Never ask twice for what the rider already gave.</td><td>The paired bike is remembered (“We’ll remember it next time”); Feedback attaches the ride's details instead of asking for them.</td></tr>
+          <tr><td>Accessible authentication</td><td>3.3.8</td><td>No cognitive tests; paste allowed.</td><td>No sign-in today. The Google Maps key field accepts paste.</td></tr>
+          <tr><td>Consistent navigation and identification</td><td>3.2.3, 3.2.4</td><td>Same components, order and names everywhere; one icon, one meaning.</td><td>Home, Race, Classes, Profile in that order on every page.</td></tr>
+          <tr><td>Language</td><td>3.1.1</td><td><code>&lt;html lang="en"&gt;</code> on every page.</td><td>Rider handles (<i>lena.k</i>, <i>kenji.cyc</i>) are names, not foreign phrases.</td></tr>
+          <tr><td>On input</td><td>3.2.2</td><td>Changing a control never navigates or submits by itself.</td><td>Picking a pack strength updates the hint; “Go to the start line” moves on.</td></tr>
+          <tr><td>Consistent help</td><td>3.2.6</td><td>Help in the same place on every page.</td><td>Diagnostics opens from the same two places every time: the bike status in the custom ride header and the Echelon EX-5s row under Profile → Settings.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="robust"><h2><a href="#robust">Robust</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Requirement</th><th scope="col">SC</th><th scope="col">Rule in this system</th><th scope="col">In Telo Ride</th></tr></thead>
+        <tbody>
+          <tr><td>Name, role, value</td><td>4.1.2</td><td>Native elements first; ARIA only to fill gaps, following the APG pattern named on each component page.</td><td>Feedback kind is a radio group; mode pickers are <code>aria-pressed</code> buttons; the board's own row is <code>aria-current="true"</code>.</td></tr>
+          <tr><td>Status messages</td><td>4.1.3</td><td>Toasts and confirmations in <code>role="status"</code>; errors that stop the ride in <code>role="alert"</code>.</td><td>See <a href="#ride-time">Ride time</a> for which is which.</td></tr>
+          <tr><td>Valid HTML</td><td>–</td><td>No duplicate ids; no interactive inside interactive.</td><td>Map tiles are one link each; the stars inside are decoration.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="ride-time"><h2><a href="#ride-time">Ride time</a></h2>
+      <h3>Live regions: what speaks and when</h3>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Content</th><th scope="col">Markup</th><th scope="col">Announced</th></tr></thead>
+        <tbody>
+          <tr><td>Ride clocks, interval countdowns, lobby clock</td><td><code>role="timer"</code> with an <code>aria-label</code> (“5:01 of 30:00”, “29 seconds left in this effort”)</td><td>Never by itself (a timer is <code>aria-live="off"</code>). Read when the rider moves to it.</td></tr>
+          <tr><td>Watts, cadence, heart rate, speed, gaps, standings</td><td>Plain text; no live region</td><td>Never by itself. Updating once a second, a live region would talk over the class.</td></tr>
+          <tr><td>The 3-2-1</td><td><code>role="timer"</code> with <code>aria-live="assertive"</code></td><td>Each step, once: it is the start signal.</td></tr>
+          <tr><td>Paused, someone left, searching, a map opened</td><td><code>role="status"</code> (polite)</td><td>After the current speech: “Paused on Cathedral Circuit”, “MarcoVelo left. Their seat is open again.”, “Neon Docklands is open.”</td></tr>
+          <tr><td>Lost the bike; Bluetooth is off; needs Chrome or Edge; needs HTTPS</td><td><code>role="alert"</code></td><td>Immediately. The ride or the connection is at risk and the rider must act.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="ds-example">
+        <div class="ds-example__canvas ax-live">
+          <section class="connect-blocker" role="alert" aria-labelledby="ax-blocker-title">
+            <div class="connect-blocker__head">
+              <svg class="icon icon--lg connect-blocker__icon connect-blocker__icon--heart" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg>
+              <h3 class="connect-blocker__title" id="ax-blocker-title">Bluetooth is off</h3>
+            </div>
+            <p class="connect-blocker__body">Turn on Bluetooth on this computer, then try again.</p>
+            <button class="btn btn--raised connect-blocker__retry" type="button">Try again</button>
+          </section>
+          <div class="browser-notice" role="alert">
+            <svg class="icon icon--lg browser-notice__icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <p class="browser-notice__text"><span class="browser-notice__title">Open the secure version of this page.</span> <span class="browser-notice__body">Bluetooth is blocked on plain http, so the bike can’t connect.</span></p>
+            <a class="btn btn--primary browser-notice__action" href="#ride-time">Open over HTTPS<svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Connect Bike “Bluetooth is off” and the needs-HTTPS notice: both <code>role="alert"</code>, both say what happened and the one thing that fixes it.</span></div>
+      </div>
+      <h3>Pause only in solo rides</h3>
+      <p>Open question 8 in the <a href="../../mocks/README.md">mocks README</a>: the redesign plan says a solo ride can be paused and a race cannot. The mocks follow it. Solo races, solo classes and the custom ride show Pause, and the paused state freezes the clock, the world and the video (“The world holds still until you pedal again.”). Races against bots or people and group classes have no Pause: everyone shares one clock, which makes them real-time events under the 2.2.1 exception. What they do instead:</p>
+      <ul>
+        <li><b>Leave</b> is always one press away, and a race shows how long the rider can coast before it counts as a DNF (“Your rider coasts for 15 seconds while we reconnect”).</li>
+        <li><b>Group classes keep going</b> and say so: “The class keeps going. Pedal to wake the bike and you’ll rejoin where everyone is.”</li>
+        <li><b>Every class is also offered solo</b> (“Ride alone · Start now. Pause whenever you like.”), so a rider who needs breaks always has a version they can pause.</li>
+      </ul>
+      <h3>Targets while riding</h3>
+      <p>Steppers in the race and the class are 48 px. The ride headers' Finish, Pause, Leave and End are the design's 36–40 px from 640 px up and 48 px below it on the custom ride (open question 9); new mid-ride controls take <code>--target-ride</code> at every width. See <a href="responsive.html">Responsive</a>.</p>
+    </section>
+
+    <section class="ds-section" id="focus"><h2><a href="#focus">Focus ring</a></h2>
+      <p>One ring, everywhere: a solid outline in <code>--color-focus-ring</code>, <code>--focus-ring-width</code> thick, drawn <code>--focus-ring-offset</code> outside the element so the canvas shows between the ring and a volt button. It appears on <code>:focus-visible</code> only, so a mouse click does not leave it behind. Text inputs draw it at offset 0, on their border. The ring colour is signal orange on ink and the deeper <code>--palette-signal-deep</code> on paper (orange read 2.7:1 there); its value lives on <a href="color.html">Color</a>, and the box-shadow form <code>--shadow-focus</code> on <a href="elevation.html">Elevation</a>.</p>
+      <pre><code>:focus-visible { outline: var(--focus-ring-width) solid var(--color-focus-ring); outline-offset: var(--focus-ring-offset); }</code></pre>
+      <div class="ds-themes">
+        <div data-theme="light">
+          <div class="ax-focus">
+            <button class="btn btn--primary" type="button" data-state="focus">Join group</button>
+            <button class="btn btn--raised" type="button" data-state="focus">Try again</button>
+            <button class="icon-btn" type="button" aria-label="Full screen" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+          </div>
+          <div class="ax-pairs">
+            <div class="ds-pair"><span>Ring next to ink</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-ink" data-min="3"></span></div>
+            <div class="ds-pair"><span>Ring next to panel</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-panel" data-min="3"></span></div>
+            <div class="ds-pair"><span>Ring next to raised</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-raised" data-min="3"></span></div>
+          </div>
+        </div>
+        <div data-theme="dark">
+          <div class="ax-focus">
+            <button class="btn btn--primary" type="button" data-state="focus">Join group</button>
+            <button class="btn btn--raised" type="button" data-state="focus">Try again</button>
+            <button class="icon-btn" type="button" aria-label="Full screen" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+          </div>
+          <div class="ax-pairs">
+            <div class="ds-pair"><span>Ring next to ink</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-ink" data-min="3"></span></div>
+            <div class="ds-pair"><span>Ring next to panel</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-panel" data-min="3"></span></div>
+            <div class="ds-pair"><span>Ring next to raised</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-raised" data-min="3"></span></div>
+          </div>
+        </div>
+      </div>
+      <ul>
+        <li>Never remove the outline without drawing the same ring another way.</li>
+        <li>In forced-colours mode the ring becomes the system <code>Highlight</code> colour.</li>
+        <li>On photos (map tiles, class covers) the ring sits outside the photo, on the page, where its contrast is known.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="fixes"><h2><a href="#fixes">AA fixes made during extraction</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Where</th><th scope="col">Problem in the design</th><th scope="col">Fix in the system</th></tr></thead>
+        <tbody>
+          <tr><td>Tertiary text, dark</td><td><code>--color-faint</code> #636873 read 3.2:1 on panels (1.4.3)</td><td>Raised to #878d97; the old value became <code>--color-line-strong</code> and <code>--color-disabled</code>.</td></tr>
+          <tr><td>Tertiary text, light</td><td>#7d828c read 3.5:1 on paper</td><td>Deepened to #63686f.</td></tr>
+          <tr><td>Error text, dark</td><td><code>--color-heart</code> #e5194b read 3.9:1 on panels</td><td>Text uses <code>--color-heart-fg</code> #ff5a78; the fill stays #e5194b.</td></tr>
+          <tr><td>Input borders</td><td><code>--color-line</code> read 1.3:1 (1.4.11)</td><td><code>--field-border: var(--color-line-strong)</code>, 3.2:1 on panel.</td></tr>
+          <tr><td>Focus ring, light</td><td>Signal orange read 2.7:1 on paper-raised (2.4.7)</td><td><code>--color-focus-ring</code> is <code>--palette-signal-deep</code> in light.</td></tr>
+          <tr><td>Text inputs</td><td>The source removed the focus outline</td><td>Inputs keep the shared ring at offset 0.</td></tr>
+          <tr><td>Banners</td><td>Hand-mixed 10% tints with unchecked text</td><td>Status tokens <code>--color-{info,success,warning,danger}-{bg,border,fg}</code>, every pair checked.</td></tr>
+          <tr><td>Danger button</td><td>Label read a raw palette value</td><td><code>--color-fg-on-danger</code>, checked in both themes.</td></tr>
+          <tr><td>Race, Race Lobby, Results</td><td>No heading (2.4.6)</td><td>A visually hidden <code>&lt;h1&gt;</code>.</td></tr>
+          <tr><td>Dialogs</td><td><code>aria-label</code> repeating the visible title</td><td><code>aria-labelledby</code> pointing at the title.</td></tr>
+          <tr><td>Range sliders</td><td>Thin tracks, hard to hit</td><td>24 px tall (<code>--target-min</code>).</td></tr>
+          <tr><td>Phone layouts</td><td>Four screens overflowed at 390 px (1.4.10)</td><td>Fixed in the mocks; nothing changes at the widths the design drew.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="testing"><h2><a href="#testing">Testing procedure</a></h2>
+      <ol>
+        <li><b>Contrast:</b> <code>python3 .claude/skills/extracting-design-systems/scripts/check_contrast.py docs/design-system/tokens/tokens.css</code> checks every pair in both themes; it must exit 0.</li>
+        <li><b>Structure:</b> <code>check_design_system.py docs/design-system</code> checks labels, names, alt text, landmarks, one <code>&lt;h1&gt;</code>, links and raw colours.</li>
+        <li><b>Keyboard:</b> Tab through every example on a component page and through one ride: Home → Race Setup → Lobby → Race → Results, using only the keyboard. The ring must always be visible and never hidden behind a HUD panel.</li>
+        <li><b>Screen reader:</b> VoiceOver with Safari or NVDA with Chrome on one dialog (“Leave this ride?”), one form (Custom workout) and one live screen (Race): check that the clock and watts stay quiet and “Lost the bike” is announced.</li>
+        <li><b>Zoom:</b> 200% and 400% at 1280 px; no sideways scroll, nothing clipped.</li>
+        <li><b>Preferences:</b> emulate <code>prefers-reduced-motion</code>, <code>prefers-contrast: more</code> and <code>forced-colors: active</code> in the browser's rendering tools; check both themes.</li>
+        <li><b>Touch:</b> ride one custom ride on a phone and press Pause, End and the steppers mid-effort.</li>
+      </ol>
+    </section>
+
+    <section class="ds-section" id="contract"><h2><a href="#contract">Component page contract</a></h2>
+      <p>Every component page's <em>Accessibility</em> section has these seven parts, in this order:</p>
+      <ol>
+        <li><b>Role and pattern:</b> the element or ARIA pattern, linked to the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/">WAI-ARIA Authoring Practices</a> pattern.</li>
+        <li><b>Keyboard:</b> a table of keys and what they do.</li>
+        <li><b>Focus:</b> where focus starts, where it goes on close, how the ring looks.</li>
+        <li><b>Labelling:</b> what must be labelled, how, and what is announced.</li>
+        <li><b>Contrast:</b> the token pairs with live ratios in both themes.</li>
+        <li><b>Motion:</b> what animates and what happens with reduced motion.</li>
+        <li><b>Touch:</b> target sizes, including the ride target if it is pressed mid-ride, and hover alternatives.</li>
+      </ol>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <p>The focus ring's geometry. Its colour (<code>--color-focus-ring</code>) is on <a href="color.html">Color</a>; target sizes are on <a href="responsive.html">Responsive</a>.</p>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th><th scope="col">Use</th></tr></thead>
+        <tbody>
+          <tr><td><code>--focus-ring-width</code></td><td><span data-theme="light"><span data-token="--focus-ring-width"></span></span></td><td><span data-theme="dark"><span data-token="--focus-ring-width"></span></span></td><td>Outline thickness on <code>:focus-visible</code>; also the spread of <code>--shadow-focus</code></td></tr>
+          <tr><td><code>--focus-ring-offset</code></td><td><span data-theme="light"><span data-token="--focus-ring-offset"></span></span></td><td><span data-theme="dark"><span data-token="--focus-ring-offset"></span></span></td><td>Gap between the element and its ring (0 on text inputs)</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

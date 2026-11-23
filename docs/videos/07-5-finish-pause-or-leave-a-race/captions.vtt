@@ -1,0 +1,82 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.353
+A race doesn't always run from Go to the line. You might pause, leave, lose the
+
+00:00:07.353 --> 00:00:08.438
+bike, or win.
+
+00:00:10.324 --> 00:00:15.820
+Against bots, the bar has Leave. Solo, it has Pause and End. Either way out opens
+
+00:00:15.820 --> 00:00:20.056
+Race Setup at once, with no confirmation, and earns no XP.
+
+00:00:20.647 --> 00:00:25.513
+Only a solo race pauses. The clock, the distance and the standings hold, and the
+
+00:00:25.513 --> 00:00:27.759
+card blocks none of the buttons.
+
+00:00:30.971 --> 00:00:35.610
+Resume carries the race on. So does pedalling again, once you have stopped, so the
+
+00:00:35.610 --> 00:00:38.173
+stroke under your press never undoes it.
+
+00:00:41.295 --> 00:00:46.331
+If the bike stops answering, an alert says so with Reconnect. You coast, your speed
+
+00:00:46.331 --> 00:00:50.697
+falling to a stop over fifteen seconds, the resistance buttons off.
+
+00:00:51.618 --> 00:00:56.742
+Back in time, the race carries on. Fifteen seconds without the bike, and the race
+
+00:00:56.742 --> 00:01:01.218
+ends as a DNF, never a silent stop, with a way back to Race Setup.
+
+00:01:01.942 --> 00:01:06.667
+Solo, nobody else is on your clock, so the race parks until the bike is back, then
+
+00:01:06.667 --> 00:01:08.869
+carries on from where it stopped.
+
+00:01:12.266 --> 00:01:16.843
+The line is the map's distance. Cross it, and your finish time is the race clock,
+
+00:01:16.843 --> 00:01:20.025
+your place is where you crossed, and Results opens.
+
+00:01:22.590 --> 00:01:27.279
+Pause works the same from a phone to a desktop, its button forty-eight pixels under
+
+00:01:27.279 --> 00:01:28.201
+your thumb.
+
+00:01:32.913 --> 00:01:37.779
+What the tests prove: eleven new behaviour specs, the coast and the finish line in
+
+00:01:37.779 --> 00:01:41.284
+unit tests, all green, and the first bundle unchanged.
+
+00:01:43.237 --> 00:01:47.840
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:48.185 --> 00:01:52.697
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:52.697 --> 00:01:54.368
+every hill and interval.
+
+00:01:54.713 --> 00:01:59.891
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:59.891 --> 00:02:05.339
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:02:05.339 --> 00:02:08.329
+XP, rider levels, stars and map unlocks.
+
+00:02:08.675 --> 00:02:11.167
+A custom workout lives under Profile.

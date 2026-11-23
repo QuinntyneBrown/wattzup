@@ -1,0 +1,52 @@
+<div class="race-route">
+  <div class="race-route__stats">
+    <span class="numeral race-route__grade" [class]="'race-route__grade--' + view().gradeTone"
+      >{{ grade() }}<span class="race-route__unit">%</span></span
+    >
+    <span class="race-route__climb">
+      <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m8 3 4 8 5-5 5 15H2L8 3z" /></svg
+      >{{ view().climbedText }}</span
+    >
+    <span class="race-route__km"
+      ><span class="numeral race-route__figure">{{ distance() }}</span> km</span
+    >
+  </div>
+  <svg
+    class="race-route__profile"
+    [attr.viewBox]="'0 0 ' + view().width + ' 100'"
+    preserveAspectRatio="none"
+    role="img"
+    [attr.aria-label]="view().label"
+  >
+    <defs>
+      <clipPath [attr.id]="clipId">
+        <rect x="0" y="0" [attr.width]="view().doneWidth" height="100" />
+      </clipPath>
+    </defs>
+    <path class="race-route__terrain" [attr.d]="view().area" />
+    <path
+      class="race-route__done"
+      [attr.d]="view().area"
+      [attr.clip-path]="'url(#' + clipId + ')'"
+    />
+    @for (bar of view().strip; track bar.x) {
+      <rect
+        class="race-route__seg"
+        [class]="'race-route__seg--' + bar.kind"
+        [attr.x]="bar.x"
+        [attr.width]="bar.width"
+        y="94"
+        height="6"
+      />
+    }
+    <line
+      class="race-route__here"
+      [attr.x1]="view().playhead.x"
+      [attr.x2]="view().playhead.x"
+      [attr.y1]="view().playhead.y.toFixed(2)"
+      y2="100"
+      vector-effect="non-scaling-stroke"
+    />
+  </svg>
+</div>

@@ -1,0 +1,39 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Pause, leave or finish a class
+
+Container_Boundary(app, "Ride app") {
+  Component(page, "ClassRidePage", "Angular page · ride", "Overlay, alert, navigation")
+  Component(store, "ClassRideStore", "Signal store · ride", "Pause, lost bike, leave, finish")
+  Component(lost, "ClassLost", "Presentation component · components", "Lost the bike alert")
+  Component(clock, "RideClock", "Service · domain/engine", "Pause and resume")
+  Component(engine, "WorkoutEngine", "Service · domain/engine", "Holds or resends segment level")
+  Component(recorder, "RideRecorder", "Service · domain/engine", "Ride totals")
+  Component(outbox, "RideOutbox", "Service · domain/storage", "IndexedDB queue")
+  Component(conn, "WebBluetoothBikeConnection", "Service · domain/bluetooth", "BIKE_CONNECTION, ble state")
+  Component(player, "YouTubeVideoPlayer", "Service · video", "VIDEO_PLAYER_FACTORY")
+  Component(rides, "HttpRidesApi", "HTTP client · api", "RIDES_API")
+  Component(live, "LiveSessionStore", "Signal store · ride", "Group only: leave()")
+  Component(hub, "SignalRRideHubClient", "Hub client · api", "RIDE_HUB_CLIENT")
+}
+Container_Boundary(backend, "Telo Ride API") {
+  Component(ridesCtrl, "RidesController", "ASP.NET Core controller · Telo.Ride.Api", "POST /api/rides")
+  Component(submit, "SubmitRideCommandHandler", "MediatR handler · Telo.Ride.Application", "Records once, computes progress")
+  Component(rhub, "RideHub", "SignalR hub · Telo.Ride.Api", "LeaveSession")
+}
+Rel(page, store, "Reads signals")
+Rel(page, lost, "Renders")
+Rel(store, clock, "pause / resume")
+Rel(store, engine, "hold / resend")
+Rel(store, conn, "Watches ble, reconnect")
+Rel(store, player, "pause / play")
+Rel(store, recorder, "Totals")
+Rel(store, outbox, "Enqueue submission")
+Rel(outbox, rides, "submit")
+Rel(store, live, "leave (group)")
+Rel(live, hub, "leaveSession")
+Rel(rides, ridesCtrl, "POST /api/rides", "JSON/HTTPS")
+Rel(ridesCtrl, submit, "Sends SubmitRideCommand")
+Rel(hub, rhub, "LeaveSession", "SignalR")
+@enduml

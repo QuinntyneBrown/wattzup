@@ -1,0 +1,78 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Anything a rider, a bike or a browser sends is data. Telo Ride checks it on the way in, and shows it as text on the way out."
+      ]
+    },
+    {
+      "id": "rules",
+      "bars": 5,
+      "lines": [
+        "Every request now has a validator. Ids keep the catalogue's shape, power stays between zero and two thousand watts, and nothing counts below zero."
+      ]
+    },
+    {
+      "id": "refused",
+      "bars": 5,
+      "lines": [
+        "Break a rule, or send text where a number belongs, and the answer is 400, validation failed, naming the field. No dot-net type name leaks out."
+      ]
+    },
+    {
+      "id": "hub",
+      "bars": 5,
+      "lines": [
+        "The ride hub refuses the same way: a power reading of minus five watts comes back as validation failed, power watts."
+      ]
+    },
+    {
+      "id": "text",
+      "bars": 5,
+      "lines": [
+        "A bike whose name holds markup pairs, and its name shows character for character. Nothing in it runs."
+      ]
+    },
+    {
+      "id": "lint",
+      "bars": 4,
+      "lines": [
+        "And lint now refuses every way round that: no inner HTML binding, and no bypassing Angular's sanitiser."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 4,
+      "lines": [
+        "Connect Bike, from a phone to the full screen."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

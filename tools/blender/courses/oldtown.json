@@ -1,0 +1,118 @@
+{
+  "id": "oldtown",
+  "name": "Old Town Criterium",
+  "world": "oldtown",
+  "theme": "oldtown",
+  "seed": 23,
+  "layout": 0,
+  "map": "old-town-criterium",
+  "route": "Cathedral Circuit",
+  "distanceKm": 14.2,
+  "climbingMetres": 140,
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 300,
+        "level": 8,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 150,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 150,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "cool-down",
+        "duration": 360,
+        "level": 6,
+        "cadenceAim": 70
+      }
+    ]
+  }
+}

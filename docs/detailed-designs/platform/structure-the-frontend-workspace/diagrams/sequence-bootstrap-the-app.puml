@@ -1,0 +1,41 @@
+@startuml
+title UML sequence behaviour — Bootstrap the app
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "Browser" as browser
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "main.ts" as main
+  participant "appConfig" as config
+  participant "AppShell" as shell
+  participant "Router" as router
+end box
+box "Frontend — Ride app (domain and api libraries)" #E0F2FE
+  participant "bikeConnectionFactory" as factory
+  participant "WebBluetoothBikeConnection or SimulatedBike" as bike
+end box
+browser -> main : Load the initial chunk
+main -> config : bootstrapApplication(AppShell, appConfig)
+config -> config : provideZonelessChangeDetection() (L2-146 AC4)
+config -> config : provideRouter, provideHttpClient(withFetch), provideServiceWorker
+config -> factory : Resolve BIKE_CONNECTION on first inject
+factory -> factory : URL has ?simulate
+alt ?simulate
+  factory -> bike : new SimulatedBike()
+else
+  factory -> bike : new WebBluetoothBikeConnection()
+end
+main -> shell : Create standalone OnPush root
+shell -> router : Initial navigation; loadComponent of the matched page
+@enduml

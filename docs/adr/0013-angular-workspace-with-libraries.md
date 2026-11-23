@@ -1,6 +1,6 @@
 # 0013. An Angular workspace with `components`, `api` and `wattzup` projects
 
-- **Status:** Accepted, amended by [0016](0016-bike-only.md) (no treadmill, so `incline-control`, `machine-card` and the `Machine` type are gone); amended by [0017](0017-browser-edition.md) (a fourth project, `@wattzup/browser`, and a second composition root); amended by [0019](0019-no-backend.md) (one composition root binding every contract to `@wattzup/browser`; `@wattzup/api` holds contracts and hand-maintained types, with no HTTP implementation)
+- **Status:** Accepted, amended by [0016](0016-bike-only.md) (no treadmill, so `incline-control`, `machine-card` and the `Machine` type are gone); amended by [0017](0017-browser-edition.md) (a fourth project, `@wattzup/browser`, and a second composition root); amended by [0019](0019-no-backend.md) (one composition root binding every contract to `@wattzup/browser`; `@wattzup/api` holds contracts and hand-maintained types, with no HTTP implementation); amended by [0024](0024-telo-ride-workspace.md) (the Telo Ride workspace: `api`, `domain`, `components` and `ride`, and attribute components for router links)
 - **Date:** 2026-11-17
 
 ## Context

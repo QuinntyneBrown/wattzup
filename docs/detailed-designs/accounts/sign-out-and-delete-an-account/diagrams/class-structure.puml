@@ -1,0 +1,93 @@
+@startuml
+set separator none
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Sign out and delete an account
+package "ride application" {
+  class DeleteAccountDialog {
+    +delete(): Promise<void>
+  }
+  class AccountStore {
+    +signingOut: Signal<boolean>
+    +signOutFailed: Signal<boolean>
+    +deleting: Signal<boolean>
+    +deleteFailed: Signal<boolean>
+    +signOut(): Promise<void>
+    +deleteAccount(): Promise<boolean>
+  }
+}
+package "components library" {
+  class DeleteAccountForm {
+    +deleting: input<boolean>
+    +failed: input<boolean>
+    +confirmed: output<void>
+    +cancelled: output<void>
+  }
+}
+package "api library" {
+  interface AuthApi {
+    +signOut(): Observable<void>
+  }
+  interface RidersApi {
+    +deleteMe(): Observable<void>
+  }
+  interface CurrentRider {
+    +signedOut(): void
+  }
+}
+DeleteAccountDialog --> DeleteAccountForm
+DeleteAccountDialog --> AccountStore
+AccountStore --> AuthApi : AUTH_API
+AccountStore --> RidersApi : RIDERS_API
+AccountStore --> CurrentRider : CURRENT_RIDER
+package "Telo.Ride.Application" {
+  class DeleteAccountCommand
+  class DeleteAccountCommandHandler {
+    +Handle(command: DeleteAccountCommand): Task
+  }
+  class ErasePendingAccountsCommand
+  class ErasePendingAccountsCommandHandler {
+    +Handle(command: ErasePendingAccountsCommand): Task<int>
+  }
+}
+package "Telo.Ride.Domain" {
+  class Rider {
+    +Guid Id
+    +string? Email
+    +string? DisplayName
+    +DateTimeOffset? DeletionRequestedAt
+    +RequestDeletion(now: DateTimeOffset): void
+  }
+  class RiderSession {
+    +Guid RiderId
+    +DateTimeOffset? EndedAt
+    +End(now: DateTimeOffset): void
+  }
+}
+package "Telo.Ride.Api" {
+  class RiderSessionTicketStore <<ITicketStore>> {
+    +RemoveAsync(key: string): Task
+  }
+}
+package "Telo.Ride.Infrastructure" {
+  class AccountErasureService <<BackgroundService>>
+}
+RiderSessionTicketStore --> RiderSession : ends current
+DeleteAccountCommandHandler ..> DeleteAccountCommand : handles
+ErasePendingAccountsCommandHandler ..> ErasePendingAccountsCommand : handles
+DeleteAccountCommandHandler --> Rider : RequestDeletion
+DeleteAccountCommandHandler --> RiderSession : ends all
+ErasePendingAccountsCommandHandler --> Rider : erases those requested
+AccountErasureService ..> ErasePendingAccountsCommand : sends
+Rider "1" --> "*" RiderSession
+@enduml

@@ -1,0 +1,51 @@
+@startuml
+title UML sequence behaviour — Connect a heart-rate strap
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "SettingsPage" as page
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "WebBluetoothHeartRateStrap" as strapConn
+  participant "HeartRateMeasurementDecoder" as dec
+  database "RememberedStrapStore" as remembered
+end box
+box "Device — Browser" #F2F4F7
+  participant "navigator.bluetooth" as bt
+end box
+box "Device — Heart-rate strap" #F2F4F7
+  participant "Strap GATT server" as strap
+end box
+alt rider connects from Settings
+  actor -> page : Connect a heart-rate strap
+  page -> strapConn : choose()
+  strapConn -> bt : requestDevice(filters: services [0x180D]) (L2-031 AC1)
+  bt --> strapConn : BluetoothDevice
+  strapConn -> remembered : save(device.id)
+else app opens with a remembered strap and getDevices() exists
+  strapConn -> remembered : get()
+  remembered --> strapConn : strap id
+  strapConn -> bt : getDevices(), watchAdvertisements() (L2-031 AC3)
+  bt --> strapConn : Permitted strap advertising
+end
+strapConn -> strap : gatt.connect(), startNotifications on 0x2A37 (L2-031 AC2)
+loop each notification
+  strap -> strapConn : Heart Rate Measurement
+  strapConn -> dec : decode(view)
+  dec --> strapConn : uint8 bpm if flags bit 0 is 0, else uint16
+end
+strapConn --> page : Strap connected
+@enduml

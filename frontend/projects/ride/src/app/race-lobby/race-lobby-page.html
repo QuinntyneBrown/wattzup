@@ -1,0 +1,46 @@
+<main id="main" class="race-lobby" tabindex="-1">
+  <h1 class="visually-hidden">Race lobby, {{ store.map()?.name }}</h1>
+  <header class="race-lobby__header">
+    <wz-lockup size="sm" />
+    <span class="race-lobby__title"
+      ><span class="race-lobby__map">{{ store.map()?.name }}</span
+      ><span class="race-lobby__meta"> · {{ store.meta() }}</span></span
+    >
+    <a
+      class="race-lobby__leave"
+      [routerLink]="['/race', store.mapId]"
+      [queryParams]="store.leaveQuery"
+      (click)="store.leave()"
+    >
+      <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m16 17 5-5-5-5" />
+        <path d="M21 12H9" />
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      </svg>
+      Leave
+    </a>
+    @if (fullscreen.available()) {
+      <wz-fullscreen-toggle [active]="fullscreen.active()" (toggled)="toggleFullscreen()" />
+    }
+  </header>
+  <div
+    class="race-lobby__scroll"
+    [inert]="store.countdownStep() !== null"
+    [attr.aria-hidden]="store.countdownStep() === null ? null : 'true'"
+  >
+    <div class="race-lobby__body">
+      <wz-start-clock
+        [status]="store.status()"
+        [seconds]="store.seconds()"
+        [hint]="store.hint()"
+        [ready]="store.ready()"
+        [notice]="store.notice()"
+        (readyToggled)="store.toggleReady()"
+      />
+      <wz-start-grid [seats]="store.seats()" />
+    </div>
+  </div>
+  @if (store.countdownStep(); as step) {
+    <wz-race-countdown [step]="step" />
+  }
+</main>

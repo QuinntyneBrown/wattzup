@@ -1,0 +1,50 @@
+<span class="map-row__thumb"
+  ><img
+    class="photo"
+    [class.map-row__photo--locked]="status() !== 'open'"
+    [src]="thumbnail()"
+    alt=""
+  />
+  @if (status() !== 'open') {
+    <svg class="icon icon--lg map-row__lock" viewBox="0 0 24 24" aria-hidden="true">
+      <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </svg>
+  }
+</span>
+<span class="map-row__text">
+  <span class="map-row__name"
+    ><ng-content />
+    @switch (status()) {
+      @case ('next') {
+        <span class="visually-hidden">, locked, your next unlock</span>
+      }
+      @case ('locked') {
+        <span class="visually-hidden">, locked</span>
+      }
+    }
+  </span>
+  <span class="map-row__facts">{{ facts() }}</span>
+  @if (status() === 'open') {
+    <span class="map-row__meta">
+      <wz-stars [earned]="stars()" size="md" />
+      @if (best(); as best) {
+        <span class="map-row__best"
+          >Best <span class="map-row__best-time">{{ best }}</span></span
+        >
+      }
+    </span>
+  } @else if (goal(); as goal) {
+    <span class="map-row__goal" [class.map-row__goal--next]="status() === 'next'"
+      ><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+        <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+        <path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg
+      ><span class="map-row__goal-text">{{ goal }}</span></span
+    >
+  }
+</span>
+@if (status() === 'open') {
+  <svg class="icon icon--lg map-row__chevron" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="m9 18 6-6-6-6" />
+  </svg>
+}

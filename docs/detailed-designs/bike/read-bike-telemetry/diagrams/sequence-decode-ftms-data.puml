@@ -1,0 +1,43 @@
+@startuml
+title UML sequence behaviour — Decode FTMS Indoor Bike Data
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "WebBluetoothBikeConnection" as conn
+  participant "BikeTelemetry" as tele
+  participant "IndoorBikeDataDecoder" as dec
+  participant "SpeedModel / PowerModel" as models
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "FTMS GATT server" as bike
+end box
+bike -> conn : Indoor Bike Data 0x2AD2 notification
+conn -> tele : frames: the raw bytes
+tele -> dec : decode(bytes, at), as bike().kind is ftms
+dec -> dec : Read flags; fields present in flag order, unused ones skipped by size (L2-021 AC1)
+dec -> dec : speed uint16 × 0.01 km/h, cadence uint16 × 0.5 rpm, power sint16 W, heart rate uint8 bpm
+dec --> tele : TelemetrySample; a field past the end stays undefined
+tele -> tele : accept(sample)
+alt power present
+  tele -> tele : powerW = reported, powerIsEstimate = false (L2-021 AC2)
+else power absent
+  tele -> models : estimate(cadence, resistance) or null (L2-021 AC4)
+end
+alt speed present
+  tele -> tele : speedKmh = reported (L2-021 AC3)
+else speed absent
+  tele -> models : speedKmh(cadence) or null
+end
+@enduml

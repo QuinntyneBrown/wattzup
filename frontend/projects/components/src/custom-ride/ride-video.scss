@@ -1,0 +1,42 @@
+// Block ride-video (docs/design-system/assets/components.css): aspect-video below lg, the whole column from lg.
+:host {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.ride-video__box {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  aspect-ratio: 16 / 9;
+  background: var(--dashboard-video-bg);
+}
+
+@media (min-width: 64rem) {
+  .ride-video__box {
+    aspect-ratio: auto;
+  }
+}
+
+// The cover is YouTube's 4:3 hqdefault thumbnail, letterboxed: show only its 16:9 picture, as the player would.
+.ride-video__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-view-box: inset(12.5% 0);
+}
+
+.ride-video__player {
+  position: absolute;
+  inset: 0;
+}
+
+.ride-video__notice {
+  margin-top: var(--space-2);
+}

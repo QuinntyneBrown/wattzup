@@ -1,0 +1,37 @@
+@startuml
+title UML sequence behaviour — Draw the trace
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "Browser" as browser
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "Ride page" as page
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "TraceSeries" as series
+  participant "decimate()" as decimate
+end box
+box "Frontend — Ride app (components library)" #E0F2FE
+  participant "RideTrace" as trace
+end box
+browser -> trace : ResizeObserver reports width 640 px
+trace -> page : widthChange(640)
+page -> series : resize(640)
+series -> decimate : decimate(points, 640) Largest-Triangle-Three-Buckets
+decimate --> series : At most 640 points (L2-138 AC2)
+series --> page : points signal
+page -> trace : points input
+trace -> browser : Draw one path on the canvas
+note over trace : Disconnects its ResizeObserver on destroy
+@enduml

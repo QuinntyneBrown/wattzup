@@ -1,0 +1,37 @@
+@startuml
+title UML sequence behaviour — Leave while the world loads
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ClassRidePage" as page
+  participant "WorldLoadStore" as store
+end box
+box "Frontend — Ride app (components library)" #E0F2FE
+  participant "WorldLoading" as view
+end box
+box "Frontend — Ride app (world library, lazy chunk)" #E0F2FE
+  participant "WorldAssetLoader" as loader
+  participant "WorldRenderer" as renderer
+end box
+actor -> view : Back to class
+view -> page : back
+page -> page : navigate to /classes/:id
+page -> store : destroyed (route scope ends)
+store -> loader : abort.abort(); fetch rejected and ignored
+store -> store : clear the slow timer
+store -> renderer : dispose(): programs, geometries, textures, render targets, renderer (L2-151 AC5)
+note right of store : A bundle already saved stays in the cache for next time
+@enduml

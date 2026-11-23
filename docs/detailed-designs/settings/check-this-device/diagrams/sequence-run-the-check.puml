@@ -1,0 +1,54 @@
+@startuml
+title UML sequence behaviour — Run the device check
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "SettingsPage / DeviceCheck" as page
+  participant "DeviceCheckStore" as store
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "LocalRideSettingsStore" as settings
+end box
+box "Frontend — Ride app (world library, lazy)" #E0F2FE
+  participant "WorldDeviceCheck" as runner
+  participant "FrameScheduler" as frames
+  participant "WorldRenderer" as renderer
+end box
+actor -> page : Check this device (L2-162 AC1)
+page -> store : start()
+store -> store : levels from the graphics API: Ultra with WebGPU, else High (AC2)
+store -> runner : run(levels, forceWebGL, progress, signal) — loaded on the press
+runner -> frames : measurePeriod(): 16.7 ms, 60 fps
+loop each level, from the top
+  runner -> renderer : start(off-screen canvas, Old Town, { tier, stepDown: false })
+  loop about 30 s of frames
+    runner -> frames : nextFrame()
+    runner -> renderer : draw (SceneDriver at 30 km/h)
+    runner --> page : "Trying High · 6 s left", 55 %, "Ultra held 41 fps." (AC2)
+  end
+  runner -> renderer : dispose()
+  alt median frame ≤ 1.2 × the display's period
+    runner --> store : { level, displayFps, tried }
+  else slower
+    runner -> runner : next level down; Low when none holds
+  end
+end
+store -> settings : set('deviceCheck', { …, checkedAt }) (AC3)
+page --> actor : "High holds 60 fps on this device." Auto now starts at High here … (AC3)
+alt Stop the check, the tab hidden, or Settings left
+  store -> runner : abort: the awaited frame ends, dispose(), nothing kept (AC6)
+end
+@enduml

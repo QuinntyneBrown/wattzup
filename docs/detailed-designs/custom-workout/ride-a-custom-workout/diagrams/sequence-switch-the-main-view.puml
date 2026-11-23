@@ -1,0 +1,38 @@
+@startuml
+title UML sequence behaviour — Switch the main view
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "RideView" as view
+  participant "CustomRideStore" as store
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "YouTubeVideoPlayer" as player
+  participant "VideoClockSync" as sync
+end box
+alt workout has a video
+  store --> view : Open on "Video", captioned "In sync · pauses with the ride" L2-103 AC2
+  loop each tick
+    store -> sync : check(player time, elapsed, offset)
+    sync --> store : Seek when drift above 1.5 s (L2-088 AC2)
+  end
+else no video
+  store --> view : Open on "Power vs. plan" L2-098 AC6
+end
+rider -> view : Choose "Power vs. plan" (arrow keys move between tabs)
+view -> store : selectView(PowerVsPlan)
+store --> view : Trace against target, max 600 W (300 W flat), accessible label L2-103 AC3
+@enduml

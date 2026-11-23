@@ -1,0 +1,18 @@
+<div class="class-stat">
+  <div class="class-stat__label">{{ label() }}</div>
+  <div class="class-stat__value">
+    <span class="class-stat__number">{{ value() }}</span><span class="class-stat__unit">{{
+      unit()
+    }}</span>
+  </div>
+  @if (hint(); as hint) {
+    <div
+      class="class-stat__hint"
+      [class.class-stat__hint--on]="tone() === 'on'"
+      [class.class-stat__hint--under]="tone() === 'under'"
+      [class.class-stat__hint--over]="tone() === 'over'"
+    >
+      {{ hint }}
+    </div>
+  }
+</div>

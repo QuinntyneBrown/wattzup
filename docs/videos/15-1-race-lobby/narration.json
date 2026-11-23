@@ -1,0 +1,78 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Riders online now has a lobby: it seats you in a live race and counts down with everyone in it."
+      ]
+    },
+    {
+      "id": "setup",
+      "bars": 5,
+      "lines": [
+        "From level three, Race Setup counts the riders queuing for the map, and Find a race opens the lobby."
+      ]
+    },
+    {
+      "id": "seat",
+      "bars": 5,
+      "lines": [
+        "The service seats you in the fullest open race on the map, or opens one that starts thirty seconds later."
+      ]
+    },
+    {
+      "id": "follow",
+      "bars": 5,
+      "lines": [
+        "Riders come and go as it happens; when one leaves, their seat opens again and the lobby says who."
+      ]
+    },
+    {
+      "id": "fill",
+      "bars": 5,
+      "lines": [
+        "At ten seconds, bots take every open seat so the race starts full, and the first stretch's resistance goes to the bike."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 5,
+      "lines": [
+        "On a laptop the clock sits beside the grid; on a phone the grid runs underneath."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: seated by the hub, the grid in step for everyone, bots at ten, and your seat freed when you go."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+@startuml
+title UML sequence behaviour — Refuse an invalid request or hub message
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app" #E0F2FE
+  participant "Screen" as page
+  participant "HTTP client / SignalRRideHubClient" as client
+  participant "toApiError" as map
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "Controller or RideHub" as ctrl
+  participant "ValidationHubFilter" as hf
+  participant "ProblemDetailsExceptionHandler" as eh
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "ValidationBehavior" as vb
+  participant "Request validator" as val
+  participant "Handler" as handler
+end box
+actor -> page : Submit input
+page -> client : Typed request
+alt REST request
+  client -> ctrl : POST /api/rides with a field out of range
+  ctrl -> vb : Send SubmitRideCommand
+  vb -> val : Validate
+  val --> vb : powerWatts above its allowed range
+  vb --> eh : RequestValidationException (handler never runs)
+  eh --> client : 400 ProblemDetails: errors.powerWatts, code validation_failed (L2-129 AC1)
+  client -> map : toApiError
+  map --> page : ApiError(code, fieldErrors)
+  page --> actor : Field marked invalid, or a generic message
+else hub message
+  client -> hf : ReportProgress with a malformed field
+  hf -> vb : Send ReportProgressCommand
+  vb -> val : Validate
+  val --> vb : Refused
+  vb --> hf : RequestValidationException
+  hf --> client : HubException carrying code validation_failed and the field
+else valid
+  vb -> handler : Handle
+  handler --> ctrl : Result
+  ctrl --> client : 2xx
+end
+@enduml

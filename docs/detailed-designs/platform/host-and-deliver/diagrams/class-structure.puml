@@ -1,0 +1,69 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Host and deliver
+hide empty members
+
+class CiWorkflow <<.github/workflows/ci.yml>> {
+  +on: push, pull_request
+  +timeLimit: "under 5 minutes"
+}
+class LintJob {
+  +eslint()
+  +prettierCheck()
+  +dotnetFormatVerify()
+}
+class BuildJob {
+  +ngBuildProduction()
+  +bundleSizeCheck()
+  +dotnetBuildRelease()
+}
+class AcceptanceJob {
+  +playwrightCritical()
+  +backendAcceptanceCritical()
+}
+class DeployJob {
+  +if: "branch == main"
+  +deployFrontend()
+  +deployBackend()
+  +runMigrate()
+}
+class SiteConfiguration <<host config>> {
+  +apiRoutes: "/api/*, /hubs/*, /health/*"
+  +spaFallback: "index.html"
+  +noCache: "index.html, ngsw files"
+}
+class SecurityHeaders <<host config>> {
+  +contentSecurityPolicy: string
+  +xContentTypeOptions: "nosniff"
+  +referrerPolicy: "strict-origin-when-cross-origin"
+  +frameAncestors: "'none'"
+}
+class DeploymentSettings <<docs/deployment.md>> {
+  +connectionString
+  +emailSender
+  +cookie
+  +otelEndpoint
+  +rateLimits
+}
+CiWorkflow *-- LintJob
+CiWorkflow *-- BuildJob
+CiWorkflow *-- AcceptanceJob
+CiWorkflow *-- DeployJob
+DeployJob ..> LintJob : needs
+DeployJob ..> BuildJob : needs
+DeployJob ..> AcceptanceJob : needs
+SiteConfiguration *-- SecurityHeaders
+DeployJob ..> SiteConfiguration : publishes with
+DeployJob ..> DeploymentSettings : reads names from
+@enduml

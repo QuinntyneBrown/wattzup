@@ -1,0 +1,17 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Race the ghost and bots
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Runs bots and the ghost in the browser")
+  ContainerDb(idb, "Browser storage", "IndexedDB", "Ghost traces per map")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Best-ride trace; service bots in riders-online sessions")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Rides with per-second traces")
+}
+Rel(rider, app, "Races in")
+Rel(app, api, "GET /api/maps/{mapId}/best-ride", "JSON/HTTPS")
+Rel(app, api, "Receives StandingsUpdated (riders online)", "SignalR")
+Rel(app, idb, "Caches and reads ghost traces")
+Rel(api, db, "Reads the rider's best ride", "EF Core")
+@enduml

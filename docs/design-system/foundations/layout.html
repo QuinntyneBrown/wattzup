@@ -3,17 +3,55 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Layout — Wattzup design system</title>
-<meta name="description" content="Breakpoints, the grid and the three page shells.">
+<title>Layout — Telo Ride design system</title>
+<meta name="description" content="Telo Ride layout: breakpoints, columns, gutters and margins with a live grid, containers, the app shell, aside and HUD widths, and the four page templates in the mocks.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+.ds-val { font: var(--text-code); overflow-wrap: anywhere; }
+.ds-token-table td:nth-child(3), .ds-token-table td:nth-child(4) { min-width: calc(var(--space-32) + var(--space-8)); }
+
+.ds-grid-demo span:nth-child(n+5) { display: none; }
+@media (min-width: 48rem) { .ds-grid-demo span:nth-child(-n+8) { display: grid; } }
+@media (min-width: 64rem) { .ds-grid-demo span:nth-child(n) { display: grid; } }
+.ds-containers { display: flex; flex-direction: column; gap: var(--space-2); margin-block: var(--space-4); padding: var(--space-4); background: var(--color-bg-surface-sunken); border: var(--border-width-hairline) solid var(--color-border-default); border-radius: var(--radius-lg); }
+.ds-containers div { width: min(100%, calc(var(--w) / 2)); margin-inline: auto; padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); background: var(--color-accent-subtle); border: var(--border-width-hairline) dashed var(--color-accent); font: var(--text-caption); color: var(--color-fg-accent); text-align: center; overflow-wrap: anywhere; }
+.ds-shell-demo { margin-block: var(--space-4); border: var(--border-width-hairline) solid var(--color-border-default); border-radius: var(--radius-lg); overflow: hidden; }
+.ds-shell-demo .app { height: calc(var(--space-48) + var(--space-36)); }
+.ds-shell-demo .page__title { margin-bottom: var(--space-4); }
+.ds-shell-demo__tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); margin-block: var(--space-4); }
+@media (min-width: 40rem) { .ds-shell-demo__tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.ds-shell-demo__tiles span { height: var(--space-20); }
+.ds-templates { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--space-40) * 2)), 1fr)); margin-block: var(--space-4); }
+.ds-template figcaption { margin-top: var(--space-3); font: var(--text-body-sm); color: var(--color-fg-muted); }
+.ds-template figcaption b { color: var(--color-fg-default); }
+.ds-wire { display: grid; gap: var(--space-2); padding: var(--space-2); aspect-ratio: 16 / 10; border-radius: var(--radius-lg); background: var(--color-ink); border: var(--border-width-hairline) solid var(--color-border-default); position: relative; overflow: hidden; }
+.ds-wire b { display: grid; place-items: center; text-align: center; padding: var(--space-1); border-radius: var(--radius-sm); background: var(--color-panel); border: var(--border-width-hairline) solid var(--color-line); font: var(--text-caption); font-weight: var(--font-weight-medium); color: var(--color-muted); }
+.ds-wire .ds-wire__bar { grid-column: 1 / -1; }
+.ds-wire--home { grid-template-columns: 3fr 2fr; grid-template-rows: auto auto 2fr 1fr; }
+.ds-wire--home .ds-wire__title { grid-column: 1 / -1; justify-items: start; background: none; border: 0; }
+.ds-wire--home .ds-wire__photo { background: var(--color-raised); }
+.ds-wire--home .ds-wire__door:first-of-type { grid-column: 1; }
+.ds-wire--two { grid-template-columns: minmax(0, 1fr) 30%; grid-template-rows: auto 1fr; }
+.ds-wire--two .ds-wire__aside { background: var(--color-raised); }
+.ds-wire--ride { display: block; background: linear-gradient(to bottom, var(--race-sky) 0 45%, var(--race-ground-far) 45%, var(--race-ground-near)); }
+.ds-wire--ride b { position: absolute; }
+.ds-wire__glass { background: color-mix(in srgb, var(--color-ink) 70%, transparent) !important; color: var(--color-on-photo) !important; border-color: transparent !important; }
+.ds-wire--ride .ds-wire__bar { inset: 0 0 auto; border-radius: 0; }
+.ds-wire--ride .ds-wire__power { top: 22%; left: var(--space-2); width: 22%; height: 34%; }
+.ds-wire--ride .ds-wire__board { top: 22%; right: var(--space-2); width: 24%; height: 50%; }
+.ds-wire--ride .ds-wire__hud { left: var(--space-2); right: var(--space-2); bottom: var(--space-2); height: 18%; }
+.ds-wire--form { grid-template-rows: auto 1fr; place-items: center; }
+.ds-wire--form .ds-wire__bar { justify-self: stretch; }
+.ds-wire--form .ds-wire__card { width: 50%; height: 60%; }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +66,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,39 +120,253 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Foundation</p>
       <h1>Layout</h1>
-      <p class="ds-lead">Mobile first. Five breakpoints, a fluid grid with gutters and margins that grow with the screen, and two layout changes that matter: 640px (one row app bar) and 1024px (side panel).</p>
-      
-      <ul class="ds-toc"><li><a href="#breakpoints">Breakpoints</a></li><li><a href="#grid">Grid</a></li><li><a href="#shells">Page shells</a></li><li><a href="#tokens">All tokens</a></li></ul>
+      <p class="ds-lead">Mobile first on Tailwind’s breakpoints: one shell, one centred container, an aside from 1024px, and full-bleed ride screens with the HUD floating over the world.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#breakpoints">Breakpoints</a></li><li><a href="#grid">Grid</a></li><li><a href="#containers">Containers</a></li><li><a href="#shell">App shell</a></li><li><a href="#asides">Area widths</a></li><li><a href="#templates">Templates</a></li><li><a href="#z-order">Layering</a></li><li><a href="#usage">Usage</a></li><li><a href="#tokens">Tokens</a></li></ul>
     </header>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+
+      <p>Telo Ride is laid out mobile first on Tailwind's breakpoints. Every screen is the same shell: a 56px header, a scrolling body, and inside it a centred container with a responsive margin. Pages are one column on phones and gain an aside at 1024px; ride screens drop the container and fill the viewport, with HUD panels floating over the world. Column count, gutter and margin are tokens that change at the breakpoints, so components read them instead of writing their own media queries.</p>
+
+    </section>
     <section class="ds-section" id="breakpoints"><h2><a href="#breakpoints">Breakpoints</a></h2>
-<table class="ds-table"><thead><tr><th scope="col">Name</th><th scope="col">Min width</th><th scope="col">What changes</th></tr></thead><tbody><tr><td>base</td><td>0</td><td>One column; app bar wraps; icon-only actions; dialogs as sheets.</td></tr><tr><td>sm</td><td>640px</td><td>Labels on app-bar actions; 3-column steppers; centred dialogs.</td></tr><tr><td>md</td><td>768px</td><td>Larger gutters and margins.</td></tr><tr><td>lg</td><td>1024px</td><td>Side panel (ride 340px, setup 420px); fixed shell.</td></tr><tr><td>xl / 2xl</td><td>1280 / 1536px</td><td>Container max; more breathing room.</td></tr></tbody></table>
+
+      <p>Five <code>min-width</code> breakpoints in <code>rem</code> so they follow the rider's font size. Custom properties cannot be used inside <code>@media</code>, so the values are repeated there (<code>@media (min-width: 40rem)</code>) by convention; the tokens document them.</p>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Token</th><th scope="col">Width</th><th scope="col">Tailwind</th><th scope="col">What changes in Telo Ride</th></tr></thead><tbody>
+<tr><td><code>--layout-breakpoint-sm</code></td><td>640px</td><td><code>sm:</code></td><td>Header nav moves inline beside the logo; XP bar shows; card padding 20 → 28px; page titles 24 → 30px; margin 16 → 24px</td></tr>
+<tr><td><code>--layout-breakpoint-md</code></td><td>768px</td><td><code>md:</code></td><td>Grid goes to 8 columns, 24px gutter; the race bar shows the map and route</td></tr>
+<tr><td><code>--layout-breakpoint-lg</code></td><td>1024px</td><td><code>lg:</code></td><td>Two-column pages (main + aside); 12 columns, 32px gutter and margin; header shows the bike; HUD panels spread out</td></tr>
+<tr><td><code>--layout-breakpoint-xl</code></td><td>1280px</td><td><code>xl:</code></td><td>Container reaches its maximum (max-w-7xl); margins grow beyond it</td></tr>
+<tr><td><code>--layout-breakpoint-2xl</code></td><td>1536px</td><td><code>2xl:</code></td><td>Nothing new: content stays at the container maximum, centred</td></tr>
+</tbody></table></div>
+
     </section>
-    <section class="ds-section" id="grid"><h2><a href="#grid">Grid</a></h2>
-<p>Columns, gutter and margin are tokens that change at md and lg.</p><div class="ds-grid-demo"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span></div>
+    <section class="ds-section" id="grid"><h2><a href="#grid">Columns, gutters and margins</a></h2>
+
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Viewport</th><th scope="col">Columns</th><th scope="col">Gutter</th><th scope="col">Margin</th><th scope="col">Devices</th></tr></thead><tbody>
+<tr><td>0–639px</td><td>4</td><td>16px</td><td>16px</td><td>Phones</td></tr>
+<tr><td>640–767px</td><td>4</td><td>16px</td><td>24px</td><td>Large phones, landscape</td></tr>
+<tr><td>768–1023px</td><td>8</td><td>24px</td><td>24px</td><td>Tablets</td></tr>
+<tr><td>1024–1279px</td><td>12</td><td>32px</td><td>32px</td><td>Laptops; two-column pages</td></tr>
+<tr><td>1280px and up</td><td>12</td><td>32px</td><td>32px, then auto</td><td>Desktops; the container stops at 1280px</td></tr>
+</tbody></table></div>
+      <p>The live grid below reads <code>--layout-columns</code>, <code>--layout-gutter</code> and <code>--layout-margin</code>; resize the window to watch it step from 4 to 8 to 12 columns.</p>
+      <div class="ds-grid-demo" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span></div>
+      <p>In practice the product rarely spans columns explicitly: page grids are two tracks (<code>minmax(0, 1fr) var(--results-aside-width)</code>) and tile grids are fixed counts (<code>.map-tiles</code>: 2, then 4 from 640px). The column grid is for new pages and for aligning those tracks.</p>
+
     </section>
-    <section class="ds-section" id="shells"><h2><a href="#shells">Page shells</a></h2>
-<p>Ride, setup and centred card. See <a href="../components/page-layout.html">page layout</a>.</p>
+    <section class="ds-section" id="containers"><h2><a href="#containers">Containers</a></h2>
+
+      <p>Content is capped and centred by <code>.container</code>; prose by the measure.</p>
+      <div class="ds-containers" aria-hidden="true">
+        <div style="--w: var(--layout-container-max)"><span>.container · max-w-7xl · 1280px</span></div>
+        <div style="--w: var(--layout-container-narrow)"><span>.container--narrow · max-w-5xl · 1024px</span></div>
+        <div style="--w: var(--layout-container-form)"><span>.container--form · max-w-3xl · 768px</span></div>
+        <div style="--w: var(--setup-form-max)"><span>setup form · 576px</span></div>
+        <div style="--w: var(--layout-panel-narrow)"><span>panel narrow · max-w-md · 448px</span></div>
+      </div>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Container</th><th scope="col">Max width</th><th scope="col">Used by</th></tr></thead><tbody>
+<tr><td><code>.container</code></td><td><code>--layout-container-max</code></td><td>Home, Results, Profile, Class start: every product page</td></tr>
+<tr><td><code>.container--narrow</code></td><td><code>--layout-container-narrow</code></td><td>Map select, Class library, Connect</td></tr>
+<tr><td><code>.container--form</code></td><td><code>--layout-container-form</code></td><td>Single-column settings and forms</td></tr>
+<tr><td><code>.browser-panel</code>, <code>.empty-state</code></td><td><code>--layout-panel-narrow</code></td><td>Wrong-browser notice, empty states standing in for a screen</td></tr>
+<tr><td>Prose</td><td><code>--layout-measure</code></td><td>Leads, notices, dialog bodies (65ch)</td></tr>
+</tbody></table></div>
+
     </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">All tokens</a></h2>
-<p>18 tokens. Values resolve live for each theme.</p><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td><code>--layout-breakpoint-sm</code></td><td colspan="2"><span data-token="--layout-breakpoint-sm"></span></td></tr><tr><td><code>--layout-breakpoint-md</code></td><td colspan="2"><span data-token="--layout-breakpoint-md"></span></td></tr><tr><td><code>--layout-breakpoint-lg</code></td><td colspan="2"><span data-token="--layout-breakpoint-lg"></span></td></tr><tr><td><code>--layout-breakpoint-xl</code></td><td colspan="2"><span data-token="--layout-breakpoint-xl"></span></td></tr><tr><td><code>--layout-breakpoint-2xl</code></td><td colspan="2"><span data-token="--layout-breakpoint-2xl"></span></td></tr><tr><td><code>--layout-columns</code></td><td colspan="2"><span data-token="--layout-columns"></span></td></tr><tr><td><code>--layout-gutter</code></td><td colspan="2"><span data-token="--layout-gutter"></span></td></tr><tr><td><code>--layout-margin</code></td><td colspan="2"><span data-token="--layout-margin"></span></td></tr><tr><td><code>--layout-container-max</code></td><td colspan="2"><span data-token="--layout-container-max"></span></td></tr><tr><td><code>--layout-measure</code></td><td colspan="2"><span data-token="--layout-measure"></span></td></tr><tr><td><code>--layout-sidebar-width</code></td><td colspan="2"><span data-token="--layout-sidebar-width"></span></td></tr><tr><td><code>--layout-topbar-height</code></td><td colspan="2"><span data-token="--layout-topbar-height"></span></td></tr><tr><td><code>--layout-ride-aside</code></td><td colspan="2"><span data-token="--layout-ride-aside"></span></td></tr><tr><td><code>--layout-setup-aside</code></td><td colspan="2"><span data-token="--layout-setup-aside"></span></td></tr><tr><td><code>--layout-trace-min</code></td><td colspan="2"><span data-token="--layout-trace-min"></span></td></tr><tr><td><code>--layout-dialog-sm</code></td><td colspan="2"><span data-token="--layout-dialog-sm"></span></td></tr><tr><td><code>--layout-dialog-md</code></td><td colspan="2"><span data-token="--layout-dialog-md"></span></td></tr><tr><td><code>--layout-dialog-lg</code></td><td colspan="2"><span data-token="--layout-dialog-lg"></span></td></tr></tbody></table></div>
+    <section class="ds-section" id="shell"><h2><a href="#shell">App shell</a></h2>
+
+      <p>Every non-ride screen is <code>.app</code> (a full-height column, <code>100dvh</code>), holding <code>.app-header</code> and <code>.app__scroll</code>, the only element that scrolls. The page inside is <code>main.container.page</code>: centred, margin from <code>--layout-margin</code>, 24px block padding (40px from 1024px). The header never scrolls away, so it needs no sticky z-index.</p>
+      <div class="ds-shell-demo">
+        <div class="app">
+          <header class="app-header">
+    <a class="app-header__brand" href="../../mocks/pages/home/default.html" aria-label="Home"><span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span></a>
+    <nav class="app-header__nav" aria-label="Main (example)">
+      <a class="app-header__nav-link" href="../../mocks/pages/home/default.html" aria-current="page">Home</a>
+      <a class="app-header__nav-link" href="../../mocks/pages/map-select/default.html">Race</a>
+      <a class="app-header__nav-link" href="../../mocks/pages/class-library/default.html">Classes</a>
+      <a class="app-header__nav-link" href="../../mocks/pages/profile/default.html">Profile</a>
+    </nav>
+    <div class="app-header__end">
+      <span class="app-header__streak"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg><span class="app-header__streak-count" aria-hidden="true">4</span><span class="visually-hidden">4-day streak</span></span>
+      <a class="app-header__level" href="../../mocks/pages/profile/default.html" aria-label="Level 7, 1840 of 2600 XP"><span class="level-badge" aria-hidden="true">7</span><span class="app-header__xp" aria-hidden="true"><span class="xp-bar"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><span class="app-header__xp-label">1,840 / 2,600 XP</span></span></a>
+    </div>
+  </header>
+          <div class="app__scroll"><div class="container page">
+            <p class="page__title">Evening, Sam.</p>
+            <div class="ds-shell-demo__tiles"><span class="well"></span><span class="well"></span><span class="well"></span><span class="well"></span></div>
+            <p class="page__lead">The header stays put; this body scrolls.</p>
+            <div class="ds-shell-demo__tiles"><span class="well"></span><span class="well"></span><span class="well"></span><span class="well"></span></div>
+          </div></div>
+        </div>
+      </div>
+<pre><code>&lt;div class="app"&gt;
+  &lt;header class="app-header"&gt;…&lt;/header&gt;
+  &lt;div class="app__scroll"&gt;
+    &lt;main id="main" class="container page"&gt;
+      &lt;h1 class="page__title"&gt;Evening, Sam.&lt;/h1&gt; …
+    &lt;/main&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+      <p>Ride screens (race lobby, race, class ride, custom ride) replace <code>.app-header</code> with their own bar (<code>.race-lobby__header</code>, <code>.race-bar</code>, <code>.ride-header</code>) but keep the same column: bar, then a body that fills the rest.</p>
+
+    </section>
+    <section class="ds-section" id="asides"><h2><a href="#asides">Aside and area widths</a></h2>
+
+      <p>From 1024px the two-column pages put a fixed-width aside beside a fluid main column. The widths are the design's arbitrary values (<code>w-[400px]</code>), kept as area tokens in <code>rem</code> so each page states its own.</p>
+      <div class="ds-table-wrap"><table class="ds-table ds-token-table"><thead><tr><th scope="col">Token</th><th scope="col">Use</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody>
+<tr><td><code>--results-aside-width</code></td><td>Results: standings and XP beside the big position · <a href="../../mocks/pages/results/default.html">results</a> · <code>.results</code></td><td><span class="ds-val" data-theme="light" data-token="--results-aside-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--results-aside-width"></span></td></tr>
+<tr><td><code>--classes-start-aside-width</code></td><td>Class start: the riders and Join panel · <a href="../../mocks/pages/class-start/default.html">class-start</a> · <code>.class-start</code></td><td><span class="ds-val" data-theme="light" data-token="--classes-start-aside-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--classes-start-aside-width"></span></td></tr>
+<tr><td><code>--classes-board-width</code></td><td>Class ride: the group board beside the video · <a href="../../mocks/pages/class-ride/default.html">class-ride</a> · <code>.class-ride__body--group</code></td><td><span class="ds-val" data-theme="light" data-token="--classes-board-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--classes-board-width"></span></td></tr>
+<tr><td><code>--profile-aside-width</code></td><td>Profile: level and stats beside recent rides · <a href="../../mocks/pages/profile/default.html">profile</a> · <code>.profile</code></td><td><span class="ds-val" data-theme="light" data-token="--profile-aside-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--profile-aside-width"></span></td></tr>
+<tr><td><code>--dashboard-aside-width</code></td><td>Custom ride: telemetry beside the video · <a href="../../mocks/pages/custom-ride/default.html">custom-ride</a> · <code>.ride-body</code></td><td><span class="ds-val" data-theme="light" data-token="--dashboard-aside-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--dashboard-aside-width"></span></td></tr>
+<tr><td><code>--setup-preview-width</code></td><td>Custom setup: plan preview beside the form · <a href="../../mocks/pages/custom-setup/default.html">custom-setup</a> · <code>.setup</code></td><td><span class="ds-val" data-theme="light" data-token="--setup-preview-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--setup-preview-width"></span></td></tr>
+<tr><td><code>--maps-aside-width</code></td><td>Map select: the selected map's detail column beside the list · <a href="../../mocks/pages/map-select/default.html">map-select</a> · <code>.maps</code></td><td><span class="ds-val" data-theme="light" data-token="--maps-aside-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--maps-aside-width"></span></td></tr>
+<tr><td><code>--race-lobby-aside-width</code></td><td>Race lobby: the clock and map card beside the grid · <a href="../../mocks/pages/race-lobby/default.html">race-lobby</a> · <code>.race-lobby__body</code></td><td><span class="ds-val" data-theme="light" data-token="--race-lobby-aside-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-lobby-aside-width"></span></td></tr>
+<tr><td><code>--setup-form-max</code></td><td>Custom setup form column; the 404 card · <a href="../../mocks/pages/custom-setup/default.html">custom-setup</a> · <code>.setup__form, .not-found</code></td><td><span class="ds-val" data-theme="light" data-token="--setup-form-max"></span></td><td><span class="ds-val" data-theme="dark" data-token="--setup-form-max"></span></td></tr>
+<tr><td><code>--race-lobby-hint-width</code></td><td>Race lobby: the hint under the clock · <a href="../../mocks/pages/race-lobby/default.html">race-lobby</a> · <code>.race-lobby__hint</code></td><td><span class="ds-val" data-theme="light" data-token="--race-lobby-hint-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-lobby-hint-width"></span></td></tr>
+<tr><td><code>--diagnostics-max-width</code></td><td>Diagnostics panel · <a href="../../mocks/dialogs/diagnostics/default.html">diagnostics</a> · <code>.diagnostics</code></td><td><span class="ds-val" data-theme="light" data-token="--diagnostics-max-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--diagnostics-max-width"></span></td></tr>
+</tbody></table></div>
+      <h3>Ride and HUD sizes</h3>
+      <p>The race places its HUD panels at fixed offsets and widths over the world, and sizes its big numerals to boxes. These are race-only tokens.</p>
+      <div class="ds-table-wrap"><table class="ds-table ds-token-table"><thead><tr><th scope="col">Token</th><th scope="col">Use</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody>
+<tr><td><code>--race-lobby-clock-size</code></td><td>Lobby clock box from 640px · <a href="../../mocks/pages/race-lobby/default.html">race-lobby</a> · <code>.race-lobby__clock</code></td><td><span class="ds-val" data-theme="light" data-token="--race-lobby-clock-size"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-lobby-clock-size"></span></td></tr>
+<tr><td><code>--race-countdown-size</code></td><td>The 3-2-1 numeral (200px) · <a href="../../mocks/pages/race-lobby/countdown.html">race-lobby</a> · <code>.race-countdown__num</code></td><td><span class="ds-val" data-theme="light" data-token="--race-countdown-size"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-countdown-size"></span></td></tr>
+<tr><td><code>--race-watts-size</code></td><td>Live watts on the HUD, phones · <a href="../../mocks/pages/race/default.html">race</a> · <code>.race-power__watts-value</code></td><td><span class="ds-val" data-theme="light" data-token="--race-watts-size"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-watts-size"></span></td></tr>
+<tr><td><code>--race-watts-size-sm</code></td><td>Live watts on the HUD from 640px · <a href="../../mocks/pages/race/default.html">race</a> · <code>.race-power__watts-value</code></td><td><span class="ds-val" data-theme="light" data-token="--race-watts-size-sm"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-watts-size-sm"></span></td></tr>
+<tr><td><code>--race-hud-top</code></td><td>HUD panels start under the race bar · <a href="../../mocks/pages/race/default.html">race</a> · <code>.race-power</code></td><td><span class="ds-val" data-theme="light" data-token="--race-hud-top"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-hud-top"></span></td></tr>
+<tr><td><code>--race-hud-top-lg</code></td><td>HUD panels start, from 1024px · <a href="../../mocks/pages/race/default.html">race</a> · <code>.race-power, .race-board</code></td><td><span class="ds-val" data-theme="light" data-token="--race-hud-top-lg"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-hud-top-lg"></span></td></tr>
+<tr><td><code>--race-board-width</code></td><td>Standings board on the right · <a href="../../mocks/pages/race/default.html">race</a> · <code>.race-board</code></td><td><span class="ds-val" data-theme="light" data-token="--race-board-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-board-width"></span></td></tr>
+<tr><td><code>--race-scenery-width</code></td><td>Map-key panel width · <a href="../../mocks/pages/race/default.html">race</a> · <code>.race-scenery</code></td><td><span class="ds-val" data-theme="light" data-token="--race-scenery-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-scenery-width"></span></td></tr>
+<tr><td><code>--race-scenery-bottom</code></td><td>Map-key panel above the HUD · <a href="../../mocks/pages/race/default.html">race</a> · <code>.race-scenery</code></td><td><span class="ds-val" data-theme="light" data-token="--race-scenery-bottom"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-scenery-bottom"></span></td></tr>
+<tr><td><code>--race-hud-interval-width</code></td><td>Interval panel from 1024px · <a href="../../mocks/pages/race/default.html">race</a> · <code>.race-hud</code></td><td><span class="ds-val" data-theme="light" data-token="--race-hud-interval-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-hud-interval-width"></span></td></tr>
+<tr><td><code>--race-hud-resistance-width</code></td><td>Resistance panel from 1024px · <a href="../../mocks/pages/race/default.html">race</a> · <code>.race-hud</code></td><td><span class="ds-val" data-theme="light" data-token="--race-hud-resistance-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-hud-resistance-width"></span></td></tr>
+<tr><td><code>--race-lost-width</code></td><td>Lost-the-bike card · <a href="../../mocks/pages/race/disconnected.html">race</a> · <code>.race-lost__inner</code></td><td><span class="ds-val" data-theme="light" data-token="--race-lost-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-lost-width"></span></td></tr>
+</tbody></table></div>
+
+    </section>
+    <section class="ds-section" id="templates"><h2><a href="#templates">Page templates</a></h2>
+
+      <p>Four layouts cover every screen in the mocks. The wireframes show the 1024px-and-up arrangement; below 1024px everything stacks in source order.</p>
+      <div class="ds-templates">
+        <figure class="ds-template"><div class="ds-wire ds-wire--home"><b class="ds-wire__bar">app-header</b><b class="ds-wire__title">page__title</b><b class="ds-wire__photo">next-ride photo 3fr</b><b class="ds-wire__body">goal 2fr</b><b class="ds-wire__door">Race door</b><b class="ds-wire__door">Classes door</b></div><figcaption><b>Home grid.</b> Title, then the next-ride card (photo 3fr, goal 2fr from 1024px, stacked below), then two doors side by side from 1024px, 40px apart. <a href="../../mocks/pages/home/default.html">home</a></figcaption></figure>
+        <figure class="ds-template"><div class="ds-wire ds-wire--two"><b class="ds-wire__bar">app-header</b><b class="ds-wire__main">main 1fr</b><b class="ds-wire__aside">aside 400px</b></div><figcaption><b>Two columns with an aside.</b> <code>grid-template-columns: minmax(0, 1fr) var(--results-aside-width)</code> from 1024px, gap 56px. Results, Profile, Class start, Race lobby; Custom setup and Custom ride use the same shape full height. <a href="../../mocks/pages/results/default.html">results</a></figcaption></figure>
+        <figure class="ds-template"><div class="ds-wire ds-wire--ride"><b class="ds-wire__bar ds-wire__glass">race-bar (glass)</b><b class="ds-wire__power ds-wire__glass">power</b><b class="ds-wire__board ds-wire__glass">board 260px</b><b class="ds-wire__hud ds-wire__glass">interval · route · resistance</b></div><figcaption><b>Full-bleed ride with HUD.</b> The world fills the viewport; the race bar and HUD panels are glass floating over it at <code>--z-hud</code>, placed by the race tokens. Below 1024px the HUD panels stack at the bottom. <a href="../../mocks/pages/race/default.html">race</a></figcaption></figure>
+        <figure class="ds-template"><div class="ds-wire ds-wire--form"><b class="ds-wire__bar">header</b><b class="ds-wire__card">centred card · max-w-md</b></div><figcaption><b>Centred form or notice.</b> A single card or form column centred in the scroll area: Not found, the wrong-browser panel, Connect bike's blockers. <a href="../../mocks/pages/not-found/default.html">not-found</a></figcaption></figure>
+      </div>
+
+    </section>
+    <section class="ds-section" id="z-order"><h2><a href="#z-order">Layering</a></h2>
+
+      <p>Layout decides where things sit on the page; <a href="elevation.html#z-order">Elevation</a> decides which sits on top. In layout terms: page content is <code>--z-base</code>, the ride HUD floats at <code>--z-hud</code> over the world, menus and popovers at <code>--z-dropdown</code> and <code>--z-popover</code>, scrims at <code>--z-overlay</code> under dialogs at <code>--z-modal</code>, toasts above everything but tooltips. The app header needs no layer because only <code>.app__scroll</code> scrolls.</p>
+
+    </section>
+    <section class="ds-section" id="usage"><h2><a href="#usage">Usage</a></h2>
+
+      <ul class="ds-checklist">
+        <li><span>Start every page from the shell: <code>.app</code> → header → <code>.app__scroll</code> → <code>main.container.page</code>.</span></li>
+        <li><span>Read <code>--layout-margin</code> and <code>--layout-gutter</code> rather than repeating 16/24/32px in media queries.</span></li>
+        <li><span>Two-column pages switch at 1024px, never earlier: at 768px a 400px aside leaves the main column too narrow for a 4-up tile grid.</span></li>
+        <li><span>Use <code>minmax(0, 1fr)</code>, not <code>1fr</code>, for fluid tracks. Home's next-ride card overflowed phones in the design because its implicit track took the photo's 439px minimum.</span></li>
+        <li><span>Full height uses <code>100dvh</code> so mobile browser chrome does not clip the bottom of a ride screen.</span></li>
+        <li><span>A new aside width is an area token in <code>rem</code>, named for its page (<code>--profile-aside-width</code>), not a raw value in the component.</span></li>
+      </ul>
+
+    </section>
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+
+      <p>Every layout token and area size token. <code>--layout-columns</code>, <code>--layout-gutter</code> and <code>--layout-margin</code> show the value at the current window width.</p>
+      <div class="ds-table-wrap"><table class="ds-table ds-token-table"><thead><tr><th scope="col">Token</th><th scope="col">Use</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody>
+<tr><td><code>--layout-breakpoint-sm</code></td><td>640px: header nav inline</td><td><span class="ds-val" data-theme="light" data-token="--layout-breakpoint-sm"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-breakpoint-sm"></span></td></tr>
+<tr><td><code>--layout-breakpoint-md</code></td><td>768px: 8 columns</td><td><span class="ds-val" data-theme="light" data-token="--layout-breakpoint-md"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-breakpoint-md"></span></td></tr>
+<tr><td><code>--layout-breakpoint-lg</code></td><td>1024px: two-column pages</td><td><span class="ds-val" data-theme="light" data-token="--layout-breakpoint-lg"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-breakpoint-lg"></span></td></tr>
+<tr><td><code>--layout-breakpoint-xl</code></td><td>1280px: container max</td><td><span class="ds-val" data-theme="light" data-token="--layout-breakpoint-xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-breakpoint-xl"></span></td></tr>
+<tr><td><code>--layout-breakpoint-2xl</code></td><td>1536px: content stays at max</td><td><span class="ds-val" data-theme="light" data-token="--layout-breakpoint-2xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-breakpoint-2xl"></span></td></tr>
+<tr><td><code>--layout-columns</code></td><td>Grid columns: 4, 8 at md, 12 at lg</td><td><span class="ds-val" data-theme="light" data-token="--layout-columns"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-columns"></span></td></tr>
+<tr><td><code>--layout-gutter</code></td><td>Gap between columns: 16, 24 at md, 32px at lg</td><td><span class="ds-val" data-theme="light" data-token="--layout-gutter"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-gutter"></span></td></tr>
+<tr><td><code>--layout-margin</code></td><td>Viewport edge to content: 16, 24 at sm, 32px at lg</td><td><span class="ds-val" data-theme="light" data-token="--layout-margin"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-margin"></span></td></tr>
+<tr><td><code>--layout-container-max</code></td><td>max-w-7xl: every product page (.container)</td><td><span class="ds-val" data-theme="light" data-token="--layout-container-max"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-container-max"></span></td></tr>
+<tr><td><code>--layout-container-narrow</code></td><td>max-w-5xl: Map select, Class library (.container--narrow)</td><td><span class="ds-val" data-theme="light" data-token="--layout-container-narrow"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-container-narrow"></span></td></tr>
+<tr><td><code>--layout-container-form</code></td><td>max-w-3xl: single-column forms (.container--form)</td><td><span class="ds-val" data-theme="light" data-token="--layout-container-form"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-container-form"></span></td></tr>
+<tr><td><code>--layout-measure</code></td><td>Longest line of prose</td><td><span class="ds-val" data-theme="light" data-token="--layout-measure"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-measure"></span></td></tr>
+<tr><td><code>--layout-text-sm</code></td><td>max-w-sm: a centred overlay card (Lost the bike, paused), a toast</td><td><span class="ds-val" data-theme="light" data-token="--layout-text-sm"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-text-sm"></span></td></tr>
+<tr><td><code>--layout-text-md</code></td><td>max-w-md: a lead paragraph beside a photo, the profile XP bar</td><td><span class="ds-val" data-theme="light" data-token="--layout-text-md"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-text-md"></span></td></tr>
+<tr><td><code>--layout-text-lg</code></td><td>max-w-lg: the Class library lead</td><td><span class="ds-val" data-theme="light" data-token="--layout-text-lg"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-text-lg"></span></td></tr>
+<tr><td><code>--layout-text-xl</code></td><td>max-w-xl: a page lead, a form column</td><td><span class="ds-val" data-theme="light" data-token="--layout-text-xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-text-xl"></span></td></tr>
+<tr><td><code>--layout-text-2xl</code></td><td>max-w-2xl: standings, class plans and sync notes</td><td><span class="ds-val" data-theme="light" data-token="--layout-text-2xl"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-text-2xl"></span></td></tr>
+<tr><td><code>--layout-panel-narrow</code></td><td>Alias of <code>--layout-text-md</code>: notices and empty states standing in for a screen</td><td><span class="ds-val" data-theme="light" data-token="--layout-panel-narrow"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-panel-narrow"></span></td></tr>
+<tr><td><code>--layout-sidebar-width</code></td><td>Side navigation column from 1024px (.side-nav; the docs nav)</td><td><span class="ds-val" data-theme="light" data-token="--layout-sidebar-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-sidebar-width"></span></td></tr>
+<tr><td><code>--layout-topbar-height</code></td><td>App header: 36px controls + 2 × 10px</td><td><span class="ds-val" data-theme="light" data-token="--layout-topbar-height"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-topbar-height"></span></td></tr>
+<tr><td><code>--layout-header-height</code></td><td>Alias of the top bar height</td><td><span class="ds-val" data-theme="light" data-token="--layout-header-height"></span></td><td><span class="ds-val" data-theme="dark" data-token="--layout-header-height"></span></td></tr>
+<tr><td><code>--results-aside-width</code></td><td>Results: standings and XP beside the big position</td><td><span class="ds-val" data-theme="light" data-token="--results-aside-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--results-aside-width"></span></td></tr>
+<tr><td><code>--classes-start-aside-width</code></td><td>Class start: the riders and Join panel</td><td><span class="ds-val" data-theme="light" data-token="--classes-start-aside-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--classes-start-aside-width"></span></td></tr>
+<tr><td><code>--classes-board-width</code></td><td>Class ride: the group board beside the video</td><td><span class="ds-val" data-theme="light" data-token="--classes-board-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--classes-board-width"></span></td></tr>
+<tr><td><code>--profile-aside-width</code></td><td>Profile: level and stats beside recent rides</td><td><span class="ds-val" data-theme="light" data-token="--profile-aside-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--profile-aside-width"></span></td></tr>
+<tr><td><code>--dashboard-aside-width</code></td><td>Custom ride: telemetry beside the video</td><td><span class="ds-val" data-theme="light" data-token="--dashboard-aside-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--dashboard-aside-width"></span></td></tr>
+<tr><td><code>--dashboard-view-min</code></td><td>Custom ride: minimum height of the trace view</td><td><span class="ds-val" data-theme="light" data-token="--dashboard-view-min"></span></td><td><span class="ds-val" data-theme="dark" data-token="--dashboard-view-min"></span></td></tr>
+<tr><td><code>--dashboard-trace-min</code></td><td>Custom ride: minimum height of the power trace</td><td><span class="ds-val" data-theme="light" data-token="--dashboard-trace-min"></span></td><td><span class="ds-val" data-theme="dark" data-token="--dashboard-trace-min"></span></td></tr>
+<tr><td><code>--dashboard-interval-min</code></td><td>Custom ride: minimum width of the interval card</td><td><span class="ds-val" data-theme="light" data-token="--dashboard-interval-min"></span></td><td><span class="ds-val" data-theme="dark" data-token="--dashboard-interval-min"></span></td></tr>
+<tr><td><code>--dashboard-level-size</code></td><td>Custom ride: the level numeral (88px)</td><td><span class="ds-val" data-theme="light" data-token="--dashboard-level-size"></span></td><td><span class="ds-val" data-theme="dark" data-token="--dashboard-level-size"></span></td></tr>
+<tr><td><code>--setup-preview-width</code></td><td>Custom setup: plan preview beside the form</td><td><span class="ds-val" data-theme="light" data-token="--setup-preview-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--setup-preview-width"></span></td></tr>
+<tr><td><code>--maps-aside-width</code></td><td>Map select: the selected map's detail column beside the list</td><td><span class="ds-val" data-theme="light" data-token="--maps-aside-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--maps-aside-width"></span></td></tr>
+<tr><td><code>--race-lobby-aside-width</code></td><td>Race lobby: the clock and map card beside the grid</td><td><span class="ds-val" data-theme="light" data-token="--race-lobby-aside-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-lobby-aside-width"></span></td></tr>
+<tr><td><code>--setup-form-max</code></td><td>Custom setup form column; the 404 card</td><td><span class="ds-val" data-theme="light" data-token="--setup-form-max"></span></td><td><span class="ds-val" data-theme="dark" data-token="--setup-form-max"></span></td></tr>
+<tr><td><code>--race-lobby-hint-width</code></td><td>Race lobby: the hint under the clock</td><td><span class="ds-val" data-theme="light" data-token="--race-lobby-hint-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-lobby-hint-width"></span></td></tr>
+<tr><td><code>--diagnostics-max-width</code></td><td>Diagnostics panel</td><td><span class="ds-val" data-theme="light" data-token="--diagnostics-max-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--diagnostics-max-width"></span></td></tr>
+<tr><td><code>--race-lobby-clock-size</code></td><td>Lobby clock box from 640px</td><td><span class="ds-val" data-theme="light" data-token="--race-lobby-clock-size"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-lobby-clock-size"></span></td></tr>
+<tr><td><code>--race-countdown-size</code></td><td>The 3-2-1 numeral (200px)</td><td><span class="ds-val" data-theme="light" data-token="--race-countdown-size"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-countdown-size"></span></td></tr>
+<tr><td><code>--race-watts-size</code></td><td>Live watts on the HUD, phones</td><td><span class="ds-val" data-theme="light" data-token="--race-watts-size"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-watts-size"></span></td></tr>
+<tr><td><code>--race-watts-size-sm</code></td><td>Live watts on the HUD from 640px</td><td><span class="ds-val" data-theme="light" data-token="--race-watts-size-sm"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-watts-size-sm"></span></td></tr>
+<tr><td><code>--race-hud-top</code></td><td>HUD panels start under the race bar</td><td><span class="ds-val" data-theme="light" data-token="--race-hud-top"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-hud-top"></span></td></tr>
+<tr><td><code>--race-hud-top-lg</code></td><td>HUD panels start, from 1024px</td><td><span class="ds-val" data-theme="light" data-token="--race-hud-top-lg"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-hud-top-lg"></span></td></tr>
+<tr><td><code>--race-board-width</code></td><td>Standings board on the right</td><td><span class="ds-val" data-theme="light" data-token="--race-board-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-board-width"></span></td></tr>
+<tr><td><code>--race-scenery-width</code></td><td>Map-key panel width</td><td><span class="ds-val" data-theme="light" data-token="--race-scenery-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-scenery-width"></span></td></tr>
+<tr><td><code>--race-scenery-bottom</code></td><td>Map-key panel above the HUD</td><td><span class="ds-val" data-theme="light" data-token="--race-scenery-bottom"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-scenery-bottom"></span></td></tr>
+<tr><td><code>--race-hud-interval-width</code></td><td>Interval panel from 1024px</td><td><span class="ds-val" data-theme="light" data-token="--race-hud-interval-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-hud-interval-width"></span></td></tr>
+<tr><td><code>--race-hud-resistance-width</code></td><td>Resistance panel from 1024px</td><td><span class="ds-val" data-theme="light" data-token="--race-hud-resistance-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-hud-resistance-width"></span></td></tr>
+<tr><td><code>--race-lost-width</code></td><td>Lost-the-bike card</td><td><span class="ds-val" data-theme="light" data-token="--race-lost-width"></span></td><td><span class="ds-val" data-theme="dark" data-token="--race-lost-width"></span></td></tr>
+</tbody></table></div>
+
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

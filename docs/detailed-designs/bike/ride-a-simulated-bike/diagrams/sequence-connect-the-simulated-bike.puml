@@ -1,0 +1,45 @@
+@startuml
+title UML sequence behaviour — Connect the simulated bike
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Developer" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "app.config.ts" as config
+  participant "ConnectBikePage" as page
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "SimulatedBikeConnection" as sim
+  participant "EchelonProtocol" as proto
+  participant "EchelonFrameDecoder" as dec
+  participant "BikeTelemetry" as tele
+end box
+actor -> config : Open a development build with ?simulate
+alt SIMULATOR_ENABLED and ?simulate present
+  config -> config : Bind BIKE_CONNECTION to SimulatedBikeConnection (L2-024 AC1)
+else production build
+  config -> config : ?simulate ignored; WebBluetoothBikeConnection bound (L2-024 AC3)
+end
+actor -> page : Press search
+page -> sim : requestBike()
+sim --> page : Echelon EX-5s, no chooser
+page -> sim : connect()
+sim --> page : Connected
+loop once a second
+  sim -> proto : workoutData(...) and resistanceFrame(level)
+  proto --> sim : D1 and D2 frames
+  sim -> dec : frames, through the same decoder as a real bike
+  dec -> tele : TelemetrySample
+end
+@enduml

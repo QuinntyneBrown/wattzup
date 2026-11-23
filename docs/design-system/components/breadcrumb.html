@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Breadcrumb — Telo Ride design system</title>
+<meta name="description" content="A restrained trail of where a page sits, for screens three levels deep or more. Full, collapsed with an ellipsis, and a back link to the parent below 768px. Not used by the product yet.">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/components.css">
+<link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Page-only: ds.css underlines every link; components in examples set their own decoration. */
+:where(.ds-example__canvas, .ds-stage, .ds-themes, .ds-matrix, .ds-anatomy__figure, .ds-do, .ds-dont) a { text-decoration: none; color: inherit; }
+.ds-matrix td { min-width: 7rem; }
+.ds-matrix td > :is(a, button, span):not(.visually-hidden) { display: inline-flex; vertical-align: middle; }
+.ds-keys td:first-child { white-space: nowrap; }
+.ds-matrix td { white-space: nowrap; }
+.ds-matrix td > :is(.tier-tabs, .tabs) { display: inline-flex; }
+.ds-stage .demo-relative { position: relative; }
+</style>
+</head>
+<body id="top">
+<a class="ds-skip" href="#main">Skip to content</a>
+<div class="ds-shell">
+  <nav class="ds-nav" aria-label="Design system">
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <details open><summary>Foundations</summary><ul>
+      <li><a href="../foundations/color.html">Color</a></li>
+      <li><a href="../foundations/typography.html">Typography</a></li>
+      <li><a href="../foundations/spacing.html">Spacing</a></li>
+      <li><a href="../foundations/layout.html">Layout</a></li>
+      <li><a href="../foundations/elevation.html">Elevation</a></li>
+      <li><a href="../foundations/shape.html">Shape</a></li>
+      <li><a href="../foundations/motion.html">Motion</a></li>
+      <li><a href="../foundations/iconography.html">Iconography</a></li>
+      <li><a href="../foundations/theming.html">Theming</a></li>
+      <li><a href="../foundations/responsive.html">Responsive</a></li>
+      <li><a href="../foundations/accessibility.html">Accessibility</a></li>
+      <li><a href="../foundations/content.html">Content</a></li>
+    </ul></details>
+    <details open><summary>Actions</summary><ul>
+      <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
+      <li><a href="../components/link.html">Link</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
+      <li><a href="../components/form-field.html">Form field</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
+      <li><a href="../components/slider.html">Slider</a></li>
+      <li><a href="../components/number-stepper.html">Number stepper</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
+      <li><a href="../components/skip-link.html">Skip link</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
+      <li><a href="../components/dialog.html">Dialog</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
+      <li><a href="../components/tooltip.html">Tooltip</a></li>
+      <li><a href="../components/divider.html">Divider</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
+      <li><a href="../components/description-list.html">Description list</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
+      <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
+      <li><a href="../components/toast.html">Toast</a></li>
+      <li><a href="../components/alert.html">Alert and banner</a></li>
+      <li><a href="../components/inline-message.html">Inline message</a></li>
+      <li><a href="../components/progress-bar.html">Progress bar</a></li>
+      <li><a href="../components/spinner.html">Spinner</a></li>
+      <li><a href="../components/skeleton.html">Skeleton</a></li>
+      <li><a href="../components/empty-state.html">Empty state</a></li>
+      <li><a href="../components/error-page.html">Error page</a></li>
+    </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
+    <details open><summary>Patterns</summary><ul>
+      <li><a href="../patterns/forms.html">Forms</a></li>
+      <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
+      <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
+      <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
+      <li><a href="../patterns/notifications.html">Notifications</a></li>
+      <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
+    </ul></details>
+  </nav>
+  <main id="main" class="ds-main">
+    <header class="ds-header">
+      <p class="ds-kicker">Component · Navigation</p>
+      <h1>Breadcrumb</h1>
+      <p class="ds-lead">A quiet trail that says where a page sits and lets the rider step back up. Telo Ride's flows are shallow and use a single back link today; the breadcrumb is ready for the first screen that is three levels deep.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
+    </header>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+      <p>Most Telo Ride screens are one step from the main nav, and their task header already carries one back link ("← Maps", "← Classes"). Add a breadcrumb only when a page is <b>three or more levels deep</b> and the rider may want any level in between: a class inside a length inside the library, or a diagnostics page inside a bike inside Profile.</p>
+      <ul>
+        <li>Never on ride screens (Race, Class Ride, the custom ride): they have one way out and it asks first.</li>
+        <li>Never as the only navigation: it complements the app header, it does not replace it.</li>
+        <li>Below 768px it collapses to the parent alone, which is exactly the product's back link.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+      <div class="ds-anatomy">
+        <figure class="ds-anatomy__figure">
+          <nav aria-label="Breadcrumb (anatomy)"><ol class="breadcrumb">
+            <li class="breadcrumb__item"><a class="breadcrumb__link" href="../../mocks/pages/class-library/default.html"><svg class="icon breadcrumb__back" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Classes</a></li>
+            <li class="breadcrumb__item"><svg class="icon breadcrumb__sep" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><a class="breadcrumb__link" href="../../mocks/pages/class-library/tier-30.html"><svg class="icon breadcrumb__back" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>30 min</a></li>
+            <li class="breadcrumb__item"><svg class="icon breadcrumb__sep" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="breadcrumb__current" aria-current="page">30 Minute HIIT Cardio</span></li>
+          </ol></nav>
+          <span class="ds-callout" style="left: 16%; top: 22%;" aria-hidden="true">1</span>
+          <span class="ds-callout" style="left: 33%; top: 70%;" aria-hidden="true">2</span>
+          <span class="ds-callout" style="left: 62%; top: 22%;" aria-hidden="true">3</span>
+        </figure>
+        <ol class="ds-anatomy__list">
+          <li><div><b>Ancestor link</b><small>14px muted, underlined on hover; 24px tall hit area.</small></div></li>
+          <li><div><b>Separator</b><small>14px chevron in <code>--color-faint</code>, <code>aria-hidden</code>; the list structure carries the order.</small></div></li>
+          <li><div><b>Current page</b><small>14px medium fg, not a link, <code>aria-current="page"</code>; truncates with an ellipsis if it must.</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack ds-example__canvas--canvas">
+          <nav aria-label="Breadcrumb"><ol class="breadcrumb">
+            <li class="breadcrumb__item"><a class="breadcrumb__link" href="../../mocks/pages/class-library/default.html"><svg class="icon breadcrumb__back" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Classes</a></li>
+            <li class="breadcrumb__item"><svg class="icon breadcrumb__sep" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><a class="breadcrumb__link" href="../../mocks/pages/class-library/tier-30.html"><svg class="icon breadcrumb__back" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>30 min</a></li>
+            <li class="breadcrumb__item"><svg class="icon breadcrumb__sep" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="breadcrumb__current" aria-current="page">30 Minute HIIT Cardio</span></li>
+          </ol></nav>
+          <nav aria-label="Breadcrumb, collapsed"><ol class="breadcrumb">
+            <li class="breadcrumb__item"><a class="breadcrumb__link" href="../../mocks/pages/profile/default.html"><svg class="icon breadcrumb__back" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Profile</a></li>
+            <li class="breadcrumb__item"><svg class="icon breadcrumb__sep" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><button class="icon-btn breadcrumb__more" type="button" aria-label="Show 1 more level: Settings" aria-expanded="false"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></li>
+            <li class="breadcrumb__item"><svg class="icon breadcrumb__sep" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><a class="breadcrumb__link" href="../../mocks/pages/connect-bike/paired.html"><svg class="icon breadcrumb__back" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Echelon EX-5s</a></li>
+            <li class="breadcrumb__item"><svg class="icon breadcrumb__sep" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="breadcrumb__current" aria-current="page">Diagnostics</span></li>
+          </ol></nav>
+        </div>
+        <div class="ds-example__caption"><span>Full trail (three levels) · collapsed (four or more: first, ellipsis, parent, current; the ellipsis opens a <a href="menu.html">menu</a> of the hidden levels).</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;nav aria-label="Breadcrumb"&gt;
+  &lt;ol class="breadcrumb"&gt;
+    &lt;li class="breadcrumb__item"&gt;&lt;a class="breadcrumb__link" href="/classes"&gt;&lt;svg class="icon breadcrumb__back" aria-hidden="true"&gt;…&lt;/svg&gt;Classes&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="breadcrumb__item"&gt;&lt;svg class="icon breadcrumb__sep" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;a class="breadcrumb__link" href="/classes?length=30"&gt;…30 min&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="breadcrumb__item"&gt;&lt;svg class="icon breadcrumb__sep" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;span class="breadcrumb__current" aria-current="page"&gt;30 Minute HIIT Cardio&lt;/span&gt;&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/nav&gt;</code></pre></details>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sizes" data-na="One size: 14px text, the size of the header's links and the back link it replaces on phones."><h2><a href="#sizes">Sizes</a></h2><p class="ds-na">One size: 14px text, the size of the header's links and the back link it replaces on phones.</p></section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Part</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Current</th><th scope="col">Disabled</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Link</th>
+            <td><a class="breadcrumb__link" href="../../mocks/pages/class-library/default.html">Classes</a></td>
+            <td><a class="breadcrumb__link" href="../../mocks/pages/class-library/default.html" data-state="hover">Classes</a></td>
+            <td><a class="breadcrumb__link" href="../../mocks/pages/class-library/default.html" data-state="focus">Classes</a></td>
+            <td><a class="breadcrumb__link" href="../../mocks/pages/class-library/default.html" data-state="active">Classes</a></td>
+            <td><span class="breadcrumb__current" aria-current="page">30 Minute HIIT Cardio</span></td>
+            <td>never</td></tr>
+          <tr><th scope="row">Ellipsis</th>
+            <td><button class="icon-btn breadcrumb__more" type="button" aria-label="Show 1 more level" aria-expanded="false"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            <td><button class="icon-btn breadcrumb__more" type="button" aria-label="Show 1 more level" aria-expanded="false" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            <td><button class="icon-btn breadcrumb__more" type="button" aria-label="Show 1 more level" aria-expanded="false" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            <td><button class="icon-btn breadcrumb__more" type="button" aria-label="Show 1 more level" aria-expanded="false" data-state="active"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+            <td><button class="icon-btn breadcrumb__more" type="button" aria-label="Show 1 more level" aria-expanded="true"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button> <small class="text-muted">open</small></td>
+            <td>never</td></tr>
+        </tbody>
+      </table></div>
+      <p>There is no disabled crumb: an ancestor with no page of its own is left out of the trail.</p>
+      <h3>Both themes</h3>
+      <div class="ds-themes">
+        <div data-theme="light"><nav aria-label="Breadcrumb, light"><ol class="breadcrumb"><li class="breadcrumb__item"><a class="breadcrumb__link" href="../../mocks/pages/class-library/default.html"><svg class="icon breadcrumb__back" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Classes</a></li><li class="breadcrumb__item"><svg class="icon breadcrumb__sep" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><a class="breadcrumb__link" href="../../mocks/pages/class-library/tier-30.html"><svg class="icon breadcrumb__back" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>30 min</a></li><li class="breadcrumb__item"><svg class="icon breadcrumb__sep" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="breadcrumb__current" aria-current="page">30 Minute HIIT Cardio</span></li></ol></nav></div>
+        <div data-theme="dark"><nav aria-label="Breadcrumb, dark"><ol class="breadcrumb"><li class="breadcrumb__item"><a class="breadcrumb__link" href="../../mocks/pages/class-library/default.html"><svg class="icon breadcrumb__back" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Classes</a></li><li class="breadcrumb__item"><svg class="icon breadcrumb__sep" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><a class="breadcrumb__link" href="../../mocks/pages/class-library/tier-30.html"><svg class="icon breadcrumb__back" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>30 min</a></li><li class="breadcrumb__item"><svg class="icon breadcrumb__sep" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="breadcrumb__current" aria-current="page">30 Minute HIIT Cardio</span></li></ol></nav></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <ul>
+        <li><b>Under 768px</b> only the parent shows, with a left arrow: "← 30 min". It is the same thing as the task header's back link, so a phone sees one consistent pattern.</li>
+        <li><b>From 768px</b> (<code>--layout-breakpoint-md</code>) the full trail shows with chevrons; it wraps between items if it must, never inside one.</li>
+        <li>Collapse to "first · … · parent · current" from four levels at any width.</li>
+      </ul>
+      <div class="ds-table-wrap" style="display: flex; gap: var(--space-4); padding-bottom: var(--space-2);">
+        <iframe class="ds-frame" width="362" height="72" title="Breadcrumb at 360px: the parent as a back link" srcdoc="&lt;!doctype html&gt;&lt;html lang=&quot;en&quot; data-theme=&quot;dark&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../tokens/tokens.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../assets/components.css&quot;&gt;&lt;/head&gt;&lt;body style=&quot;height: auto; min-height: 100%; background: var(--color-ink);&quot;&gt;&lt;div style=&quot;padding: 16px;&quot;&gt;&lt;nav aria-label=&quot;Breadcrumb&quot;&gt;&lt;ol class=&quot;breadcrumb&quot;&gt;&lt;li class=&quot;breadcrumb__item&quot;&gt;&lt;a class=&quot;breadcrumb__link&quot; href=&quot;#&quot;&gt;&lt;svg class=&quot;icon breadcrumb__back&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;m12 19-7-7 7-7&quot;/&gt;&lt;path d=&quot;M19 12H5&quot;/&gt;&lt;/svg&gt;Classes&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;breadcrumb__item&quot;&gt;&lt;svg class=&quot;icon breadcrumb__sep&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;m9 18 6-6-6-6&quot;/&gt;&lt;/svg&gt;&lt;a class=&quot;breadcrumb__link&quot; href=&quot;#&quot;&gt;&lt;svg class=&quot;icon breadcrumb__back&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;m12 19-7-7 7-7&quot;/&gt;&lt;path d=&quot;M19 12H5&quot;/&gt;&lt;/svg&gt;30 min&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;breadcrumb__item&quot;&gt;&lt;svg class=&quot;icon breadcrumb__sep&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;m9 18 6-6-6-6&quot;/&gt;&lt;/svg&gt;&lt;span class=&quot;breadcrumb__current&quot; aria-current=&quot;page&quot;&gt;30 Minute HIIT Cardio&lt;/span&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/nav&gt;&lt;/div&gt;&lt;script&gt;try{var r=parent.document.documentElement,s=function(){document.documentElement.dataset.theme=r.dataset.theme||&quot;dark&quot;};s();new MutationObserver(s).observe(r,{attributes:true,attributeFilter:[&quot;data-theme&quot;]})}catch(e){}&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;" style="flex: none; max-width: none; border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-lg); background: var(--color-ink);"></iframe>
+        <iframe class="ds-frame" width="770" height="72" title="Breadcrumb at 768px: the full trail" srcdoc="&lt;!doctype html&gt;&lt;html lang=&quot;en&quot; data-theme=&quot;dark&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../tokens/tokens.css&quot;&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;../assets/components.css&quot;&gt;&lt;/head&gt;&lt;body style=&quot;height: auto; min-height: 100%; background: var(--color-ink);&quot;&gt;&lt;div style=&quot;padding: 16px;&quot;&gt;&lt;nav aria-label=&quot;Breadcrumb&quot;&gt;&lt;ol class=&quot;breadcrumb&quot;&gt;&lt;li class=&quot;breadcrumb__item&quot;&gt;&lt;a class=&quot;breadcrumb__link&quot; href=&quot;#&quot;&gt;&lt;svg class=&quot;icon breadcrumb__back&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;m12 19-7-7 7-7&quot;/&gt;&lt;path d=&quot;M19 12H5&quot;/&gt;&lt;/svg&gt;Classes&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;breadcrumb__item&quot;&gt;&lt;svg class=&quot;icon breadcrumb__sep&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;m9 18 6-6-6-6&quot;/&gt;&lt;/svg&gt;&lt;a class=&quot;breadcrumb__link&quot; href=&quot;#&quot;&gt;&lt;svg class=&quot;icon breadcrumb__back&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;m12 19-7-7 7-7&quot;/&gt;&lt;path d=&quot;M19 12H5&quot;/&gt;&lt;/svg&gt;30 min&lt;/a&gt;&lt;/li&gt;&lt;li class=&quot;breadcrumb__item&quot;&gt;&lt;svg class=&quot;icon breadcrumb__sep&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;m9 18 6-6-6-6&quot;/&gt;&lt;/svg&gt;&lt;span class=&quot;breadcrumb__current&quot; aria-current=&quot;page&quot;&gt;30 Minute HIIT Cardio&lt;/span&gt;&lt;/li&gt;&lt;/ol&gt;&lt;/nav&gt;&lt;/div&gt;&lt;script&gt;try{var r=parent.document.documentElement,s=function(){document.documentElement.dataset.theme=r.dataset.theme||&quot;dark&quot;};s();new MutationObserver(s).observe(r,{attributes:true,attributeFilter:[&quot;data-theme&quot;]})}catch(e){}&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;" style="flex: none; max-width: none; border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-lg); background: var(--color-ink);"></iframe>
+      </div>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+      <p>Links read <code>--breadcrumb-fg</code> (<code>--color-muted</code>) and <code>--breadcrumb-fg-hover</code> (<code>--color-fg</code>); separators <code>--breadcrumb-sep</code> (<code>--color-faint</code>); the current page is <code>--color-fg</code>. No volt: a breadcrumb is orientation, not an action. Override the three tokens on <code>.breadcrumb</code>, for instance on a photo set all three to <code>--color-on-photo</code>.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <p><a href="https://www.w3.org/WAI/ARIA/apg/patterns/breadcrumb/">APG Breadcrumb</a>: <code>&lt;nav aria-label="Breadcrumb"&gt;</code> around an <code>&lt;ol&gt;</code>; the current page has <code>aria-current="page"</code>. Separators are <code>aria-hidden</code> SVGs, so a screen reader hears "Breadcrumb, navigation, list, 3 items".</p>
+      <h3>Keyboard</h3>
+      <div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+        <tr><td><kbd>Tab</kbd></td><td>Through ancestor links (and the ellipsis button); the current page is not focusable.</td></tr>
+        <tr><td><kbd>Enter</kbd></td><td>Follows a link; opens the ellipsis menu.</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>Closes the ellipsis menu and returns focus to it.</td></tr>
+      </tbody></table></div>
+      <h3>Focus</h3>
+      <p>Shared ring around each link (4px radius, 4px side padding so the ring clears the text).</p>
+      <h3>Labelling</h3>
+      <p>The landmark is "Breadcrumb"; when a page has more than one (rare), name them apart. The ellipsis button says how many levels it hides and which: "Show 1 more level: Settings".</p>
+      <h3>Contrast</h3>
+      <div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+        <div class="ds-pair"><span>Ancestor link</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-ink" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Current page</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-ink" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Separator chevron</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-ink" data-min="3"></span></div>
+      </div>
+      <h3>Motion</h3>
+      <p>Colour eases over <code>--duration-fast</code>; nothing moves.</p>
+      <h3>Touch</h3>
+      <p>Links are 24px tall (the minimum) with 4px between items; the phone version is a single back link, so no small targets sit side by side where fingers are used.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li>Use each page's own title, shortened only if it is long: "Classes", "30 min", "30 Minute HIIT Cardio".</li>
+        <li>Never include Home; the brand link is home.</li>
+        <li>No trailing separator, no "You are here".</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><nav aria-label="Breadcrumb, do"><ol class="breadcrumb"><li class="breadcrumb__item"><a class="breadcrumb__link" href="../../mocks/pages/class-library/default.html"><svg class="icon breadcrumb__back" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Classes</a></li><li class="breadcrumb__item"><svg class="icon breadcrumb__sep" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="breadcrumb__current" aria-current="page">30 Minute HIIT Cardio</span></li></ol></nav></div><figcaption>A shallow page gets the plain back link the product already uses ("← Classes").</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><span class="text-muted" style="font-size: var(--font-size-sm);">Home › Race › Maps › Old Town Criterium › Setup</span></div><figcaption>Pad a two-level flow into a five-crumb trail that repeats the header and the back link.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><span class="breadcrumb__current" aria-current="page">Diagnostics</span></div><figcaption>The current page is text with <code>aria-current</code>.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><a class="breadcrumb__link" href="../../mocks/dialogs/diagnostics/default.html" style="color: var(--color-volt-fg);">Diagnostics</a></div><figcaption>Link the current page to itself, in volt: it looks like the one thing to press.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+        <tbody>
+          <tr><td>Ancestor link (<code>--breadcrumb-fg</code>)</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+          <tr><td>Hover and current</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+          <tr><td>Separator (<code>--breadcrumb-sep</code>)</td><td><code>--color-faint</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td></tr>
+          <tr><td>Type</td><td><code>--font-size-sm</code> <code>--line-height-sm</code></td><td colspan="2"><span data-token="--font-size-sm"></span> / <span data-token="--line-height-sm"></span></td></tr>
+          <tr><td>Gap / separator size</td><td><code>--space-1</code> <code>--space-3-5</code></td><td colspan="2"><span data-token="--space-1"></span> / <span data-token="--space-3-5"></span></td></tr>
+          <tr><td>Link height</td><td><code>--target-min</code></td><td colspan="2"><span data-token="--target-min"></span></td></tr>
+          <tr><td>Full trail from</td><td><code>--layout-breakpoint-md</code></td><td colspan="2"><span data-token="--layout-breakpoint-md"></span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+        <tr><td><code>&lt;nav aria-label="Breadcrumb"&gt;</code> + <code>ol.breadcrumb</code></td><td>Landmark and trail.</td></tr>
+        <tr><td><code>.breadcrumb__item</code></td><td>One level; only the parent shows below 768px.</td></tr>
+        <tr><td><code>.breadcrumb__link</code> <code>.breadcrumb__current</code></td><td>Ancestor link; current page text.</td></tr>
+        <tr><td><code>.breadcrumb__sep</code> <code>.breadcrumb__back</code></td><td>Chevron (from 768px, not before the first item); back arrow (below 768px).</td></tr>
+        <tr><td><code>.icon-btn.breadcrumb__more</code></td><td>28px ellipsis button for hidden levels (<code>aria-expanded</code>).</td></tr>
+        <tr><td><code>aria-current="page"</code></td><td>Marks the current page.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <p><b>Not in the mocks.</b> No Telo Ride screen has a breadcrumb and the product does not use one yet; its flows are shallow and each task header carries one back link. This component is designed restrained so it can grow out of that link:</p>
+      <ul>
+        <li>The phone form is the back link of <a href="../../mocks/pages/race-setup/default.html">pages/race-setup/default</a> ("← Maps") and <a href="../../mocks/pages/class-start/default.html">pages/class-start/default</a> ("← Classes").</li>
+        <li>Type and colours follow the header's links (<a href="../../mocks/pages/home/default.html">pages/home/default</a>).</li>
+      </ul>
+      <p>Drift fixed: none (new component).</p>
+    </section>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
+  </main>
+</div>
+<script src="../assets/ds.js"></script>
+</body>
+</html>

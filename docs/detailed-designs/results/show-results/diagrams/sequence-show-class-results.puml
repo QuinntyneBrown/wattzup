@@ -1,0 +1,38 @@
+@startuml
+title UML sequence behaviour — Show class results
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ResultsPage" as page
+  participant "resultsView()" as store
+end box
+box "Browser" #E0F2FE
+  participant "History state" as outbox
+end box
+actor -> page : Class ends, ClassResult in the navigation state
+page -> outbox : getState()
+outbox --> page : ClassResult
+page -> store : resultsView(result)
+alt Solo class
+  store -> store : header "30 Minute HIIT Cardio · Solo", hidden heading "Class results"
+  store -> store : big "30:00", sub "342 kJ · 84% on target" (L2-078 AC1)
+else Group class
+  store -> store : lead "You placed, by output", big "3rd of 10"
+  store -> store : standings by output in kJ, highest first (AC2)
+end
+store --> page : ResultsView with no stars panel (L2-075 AC3)
+page --> actor : Class results; XP lines follow L2-037, place lines only in a group (AC3)
+@enduml

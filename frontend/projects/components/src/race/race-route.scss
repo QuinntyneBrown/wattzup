@@ -1,0 +1,120 @@
+// Block race-route (docs/design-system/assets/components.css, Race; components/route-profile.html). Only the grade
+// changes colour with the road, and its number says the same, so colour is never alone.
+:host {
+  display: none;
+  min-width: 0;
+
+  @media (min-width: 40rem) {
+    display: block;
+  }
+}
+
+.race-route {
+  height: 100%;
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--color-ink) 70%, transparent);
+  backdrop-filter: blur(12px);
+  padding: var(--space-3) var(--space-4);
+}
+
+.race-route__stats {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+}
+
+.race-route__grade {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  font-size: var(--font-size-4xl);
+  line-height: var(--line-height-4xl);
+}
+
+.race-route__grade--steep {
+  color: var(--color-heart-fg);
+}
+
+.race-route__grade--climb {
+  color: var(--color-warn-fg);
+}
+
+.race-route__grade--down {
+  color: var(--color-rest-fg);
+}
+
+.race-route__unit {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+  color: var(--color-muted);
+}
+
+.race-route__climb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  white-space: nowrap;
+  color: var(--color-muted);
+}
+
+.race-route__km {
+  margin-left: auto;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  white-space: nowrap;
+  color: var(--color-muted);
+}
+
+.race-route__figure {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  color: var(--color-fg);
+}
+
+.race-route__profile {
+  display: block;
+  width: 100%;
+  height: var(--space-14);
+  margin-top: var(--space-2);
+}
+
+.race-route__terrain {
+  fill: color-mix(in srgb, var(--race-terrain) 16%, transparent);
+
+  :host-context([data-theme='light']) & {
+    fill: color-mix(in srgb, var(--color-fg) 16%, transparent);
+  }
+}
+
+.race-route__done {
+  fill: color-mix(in srgb, var(--race-terrain) 42%, transparent);
+
+  :host-context([data-theme='light']) & {
+    fill: color-mix(in srgb, var(--color-fg) 42%, transparent);
+  }
+}
+
+.race-route__seg {
+  --kind: var(--race-segment-easy);
+
+  fill: var(--kind);
+  opacity: 0.55;
+}
+
+.race-route__seg--work,
+.race-route__seg--steady {
+  --kind: var(--color-volt);
+
+  opacity: 1;
+}
+
+.race-route__seg--recover {
+  --kind: var(--color-rest);
+}
+
+.race-route__here {
+  stroke: var(--color-volt);
+  stroke-width: 2;
+}

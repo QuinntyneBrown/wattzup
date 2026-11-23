@@ -1,0 +1,41 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Set up a custom workout
+
+Container_Boundary(app, "Ride app") {
+  Component(page, "CustomWorkoutPage", "Angular page · ride", "Route /profile/custom")
+  Component(store, "CustomWorkoutStore", "Signal store · ride", "Draft, provided on /profile/custom")
+  Component(modes, "TrainingModes", "Presentation component · components", "HIIT or flat")
+  Component(chips, "PresetChips", "Presentation component · components", "Plans group")
+  Component(ladder, "IntervalLadder", "Presentation component · components", "Rounds")
+  Component(sliders, "LevelSliders", "Presentation component · components", "Work and recover levels")
+  Component(steppers, "TrainingSteppers", "Presentation component · components", "Warm-up, cool-down, duration, cadence")
+  Component(vsync, "VideoSync", "Presentation component · components", "Link, preview, offset")
+  Component(presets, "HiitPresets", "Data · domain/engine", "Preset rounds")
+  Component(limits, "CustomWorkoutLimits", "Rule · domain/engine", "Steps and bounds")
+  Component(link, "YouTubeLink", "Rule · domain/engine", "Link → 11-character id")
+  Component(settings, "SettingsStore", "Service · domain/storage", "IndexedDB copy")
+  Component(cwApi, "HttpCustomWorkoutApi", "HTTP client · api", "CUSTOM_WORKOUT_API")
+  Component(player, "YouTubeVideoPlayer", "Service · video", "VIDEO_PLAYER_FACTORY")
+}
+Container_Boundary(backend, "Telo Ride API") {
+  Component(ctrl, "CustomWorkoutController", "ASP.NET Core controller · Telo.Ride.Api", "/api/riders/me/custom-workout")
+  Component(query, "GetCustomWorkoutQueryHandler", "MediatR handler · Telo.Ride.Application", "Own workout only")
+}
+Rel(page, store, "Reads signals, raises actions")
+Rel(page, modes, "Renders")
+Rel(page, chips, "Renders")
+Rel(page, ladder, "Renders")
+Rel(page, sliders, "Renders")
+Rel(page, steppers, "Renders")
+Rel(page, vsync, "Renders")
+Rel(page, player, "Preview player")
+Rel(store, presets, "Loads rounds")
+Rel(store, limits, "Clamps each change")
+Rel(store, link, "Parses link")
+Rel(store, cwApi, "Loads last saved")
+Rel(store, settings, "Falls back to")
+Rel(cwApi, ctrl, "GET", "JSON/HTTPS")
+Rel(ctrl, query, "Sends GetCustomWorkoutQuery")
+@enduml

@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tabs — Telo Ride design system</title>
+<meta name="description" content="Tabs switch between views of one thing in place: the Class Library's length tabs (pill) and underline tabs, with selected, disabled, counts and horizontal scroll.">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/components.css">
+<link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Page-only: ds.css underlines every link; components in examples set their own decoration. */
+:where(.ds-example__canvas, .ds-stage, .ds-themes, .ds-matrix, .ds-anatomy__figure, .ds-do, .ds-dont) a { text-decoration: none; color: inherit; }
+.ds-matrix td { min-width: 7rem; }
+.ds-matrix td > :is(a, button, span):not(.visually-hidden) { display: inline-flex; vertical-align: middle; }
+.ds-keys td:first-child { white-space: nowrap; }
+.ds-matrix td { white-space: nowrap; }
+.ds-matrix td > :is(.tier-tabs, .tabs) { display: inline-flex; }
+.ds-stage .demo-relative { position: relative; }
+</style>
+</head>
+<body id="top">
+<a class="ds-skip" href="#main">Skip to content</a>
+<div class="ds-shell">
+  <nav class="ds-nav" aria-label="Design system">
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <details open><summary>Foundations</summary><ul>
+      <li><a href="../foundations/color.html">Color</a></li>
+      <li><a href="../foundations/typography.html">Typography</a></li>
+      <li><a href="../foundations/spacing.html">Spacing</a></li>
+      <li><a href="../foundations/layout.html">Layout</a></li>
+      <li><a href="../foundations/elevation.html">Elevation</a></li>
+      <li><a href="../foundations/shape.html">Shape</a></li>
+      <li><a href="../foundations/motion.html">Motion</a></li>
+      <li><a href="../foundations/iconography.html">Iconography</a></li>
+      <li><a href="../foundations/theming.html">Theming</a></li>
+      <li><a href="../foundations/responsive.html">Responsive</a></li>
+      <li><a href="../foundations/accessibility.html">Accessibility</a></li>
+      <li><a href="../foundations/content.html">Content</a></li>
+    </ul></details>
+    <details open><summary>Actions</summary><ul>
+      <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
+      <li><a href="../components/link.html">Link</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
+      <li><a href="../components/form-field.html">Form field</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
+      <li><a href="../components/slider.html">Slider</a></li>
+      <li><a href="../components/number-stepper.html">Number stepper</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
+      <li><a href="../components/skip-link.html">Skip link</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
+      <li><a href="../components/dialog.html">Dialog</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
+      <li><a href="../components/tooltip.html">Tooltip</a></li>
+      <li><a href="../components/divider.html">Divider</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
+      <li><a href="../components/description-list.html">Description list</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
+      <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
+      <li><a href="../components/toast.html">Toast</a></li>
+      <li><a href="../components/alert.html">Alert and banner</a></li>
+      <li><a href="../components/inline-message.html">Inline message</a></li>
+      <li><a href="../components/progress-bar.html">Progress bar</a></li>
+      <li><a href="../components/spinner.html">Spinner</a></li>
+      <li><a href="../components/skeleton.html">Skeleton</a></li>
+      <li><a href="../components/empty-state.html">Empty state</a></li>
+      <li><a href="../components/error-page.html">Error page</a></li>
+    </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
+    <details open><summary>Patterns</summary><ul>
+      <li><a href="../patterns/forms.html">Forms</a></li>
+      <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
+      <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
+      <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
+      <li><a href="../patterns/notifications.html">Notifications</a></li>
+      <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
+    </ul></details>
+  </nav>
+  <main id="main" class="ds-main">
+    <header class="ds-header">
+      <p class="ds-kicker">Component · Navigation</p>
+      <h1>Tabs</h1>
+      <p class="ds-lead">Tabs switch between views of the same thing without leaving the page. The Class Library's length tabs are the product's one tab list; underline tabs are the quieter form for sections inside a page.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
+    </header>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+      <p>Use tabs when every view answers the same question in a different cut (all classes, or only the 20-minute ones) and the rider will flip between them. Do not use them:</p>
+      <ul>
+        <li>to go somewhere else: that is a link or the <a href="app-header.html">app header</a>;</li>
+        <li>to pick a setting that changes what happens next (pack strength, ride alone or together): that is a <a href="button-group.html">segmented control</a> or <a href="radio-group.html">radio cards</a>;</li>
+        <li>for steps in order: they would invite skipping.</li>
+      </ul>
+      <p><b>Pill tabs</b> (<code>.tier-tabs</code>) are the design's: a raised track with the selected tab in bone, used at the top of a page beside its title. <b>Underline tabs</b> (<code>.tabs</code>) are an addition for sections inside a page, where a filled track would shout; they share the APG behaviour.</p>
+    </section>
+
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+      <div class="ds-anatomy">
+        <figure class="ds-anatomy__figure">
+          <div class="tier-tabs" role="tablist" aria-label="Class length">
+            <button class="tier-tabs__tab" type="button" role="tab" aria-selected="true">All</button>
+            <button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">20 min</button>
+            <button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">30 min</button>
+            <button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">60 min</button>
+          </div>
+          <span class="ds-callout" style="left: 18%; top: 22%;" aria-hidden="true">1</span>
+          <span class="ds-callout" style="left: 34%; top: 22%;" aria-hidden="true">2</span>
+          <span class="ds-callout" style="left: 52%; top: 72%;" aria-hidden="true">3</span>
+        </figure>
+        <ol class="ds-anatomy__list">
+          <li><div><b>Track (tablist)</b><small><code>role="tablist"</code> with a name; raised fill, 8px radius, 4px padding. Scrolls sideways when it does not fit.</small></div></li>
+          <li><div><b>Selected tab</b><small>Bone fill (<code>--color-fg</code>) with ink text, 6px radius; <code>aria-selected="true"</code>, the only tab in the Tab order.</small></div></li>
+          <li><div><b>Tab</b><small>14px medium, muted; 6 × 14px padding, 32px tall. Underline tabs add a 2px volt bar under the selected one and an optional count.</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+      <h3>Pill (Class Library)</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--canvas" style="justify-content: space-between; align-items: flex-end;">
+          <div><p class="page__title">Classes</p><p class="page__lead" style="max-width: 30rem;">Ride a video alone whenever you like, or join a group of 8–10 riders. The bike follows the class either way.</p></div>
+          <div class="tier-tabs" role="tablist" aria-label="Class length">
+            <button class="tier-tabs__tab" type="button" role="tab" aria-selected="true">All</button>
+            <button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">20 min</button>
+            <button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">30 min</button>
+            <button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">60 min</button>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Beside the page title, bottom-aligned; below the title when the row is too narrow.</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="tier-tabs" role="tablist" aria-label="Class length"&gt;
+  &lt;button class="tier-tabs__tab" type="button" role="tab" id="tab-all" aria-selected="true" aria-controls="panel-classes"&gt;All&lt;/button&gt;
+  &lt;button class="tier-tabs__tab" type="button" role="tab" id="tab-20" aria-selected="false" aria-controls="panel-classes" tabindex="-1"&gt;20 min&lt;/button&gt;
+  …
+&lt;/div&gt;
+&lt;div role="tabpanel" id="panel-classes" aria-labelledby="tab-all" tabindex="0"&gt;…shelves…&lt;/div&gt;</code></pre></details>
+      </div>
+      <h3>Underline, with counts (live: click or use the arrow keys)</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <div class="tabs" data-demo-tabs>
+            <div class="tabs__list" role="tablist" aria-label="Classes by length">
+              <button class="tabs__tab" type="button" role="tab" id="demo-tab-all" aria-selected="true" aria-controls="demo-panel-all">All <span class="tabs__count">7</span></button>
+              <button class="tabs__tab" type="button" role="tab" id="demo-tab-20" aria-selected="false" aria-controls="demo-panel-20" tabindex="-1">20 min <span class="tabs__count">2</span></button>
+              <button class="tabs__tab" type="button" role="tab" id="demo-tab-30" aria-selected="false" aria-controls="demo-panel-30" tabindex="-1">30 min <span class="tabs__count">3</span></button>
+              <button class="tabs__tab" type="button" role="tab" id="demo-tab-60" aria-selected="false" aria-controls="demo-panel-60" tabindex="-1">60 min <span class="tabs__count">2</span></button>
+            </div>
+            <div class="tabs__panel" role="tabpanel" id="demo-panel-all" aria-labelledby="demo-tab-all" tabindex="0"><p class="text-muted">20 Minute Power Intervals · 20 Min Threshold Builder · 30 Minute HIIT Cardio · 30 Min Tempo Paceline · 30 Min Vice City Pyramid · 60 Min Dolomites Endurance · 60 Min Coastal Endurance + Surges</p></div>
+            <div class="tabs__panel" role="tabpanel" id="demo-panel-20" aria-labelledby="demo-tab-20" tabindex="0" hidden><p class="text-muted">Short and sharp — fits a lunch break. 20 Minute Power Intervals · 20 Min Threshold Builder</p></div>
+            <div class="tabs__panel" role="tabpanel" id="demo-panel-30" aria-labelledby="demo-tab-30" tabindex="0" hidden><p class="text-muted">30 Minute HIIT Cardio · 30 Min Tempo Paceline · 30 Min Vice City Pyramid</p></div>
+            <div class="tabs__panel" role="tabpanel" id="demo-panel-60" aria-labelledby="demo-tab-60" tabindex="0" hidden><p class="text-muted">60 Min Dolomites Endurance · 60 Min Coastal Endurance + Surges</p></div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Automatic activation: arrows move and select; the panel follows. Counts are Barlow numerals in a raised pill.</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="tabs"&gt;
+  &lt;div class="tabs__list" role="tablist" aria-label="Classes by length"&gt;
+    &lt;button class="tabs__tab" type="button" role="tab" id="tab-all" aria-selected="true" aria-controls="panel-all"&gt;All &lt;span class="tabs__count"&gt;7&lt;/span&gt;&lt;/button&gt;
+    &lt;button class="tabs__tab" type="button" role="tab" id="tab-20" aria-selected="false" aria-controls="panel-20" tabindex="-1"&gt;20 min &lt;span class="tabs__count"&gt;2&lt;/span&gt;&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class="tabs__panel" role="tabpanel" id="panel-all" aria-labelledby="tab-all" tabindex="0"&gt;…&lt;/div&gt;
+  &lt;div class="tabs__panel" role="tabpanel" id="panel-20" aria-labelledby="tab-20" tabindex="0" hidden&gt;…&lt;/div&gt;
+&lt;/div&gt;</code></pre></details>
+      </div>
+      <h3>Scrollable</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <div class="tabs tabs--scroll" style="max-width: 20rem;">
+            <div class="tabs__list" role="tablist" aria-label="Maps">
+              <button class="tabs__tab" type="button" role="tab" aria-selected="true">Prairie Paceline</button>
+              <button class="tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">Old Town Criterium</button>
+              <button class="tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">Cliffside Coast</button>
+              <button class="tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">Neon Docklands</button>
+            </div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span><code>.tabs--scroll</code> fades the trailing 32px; the list scrolls sideways (trackpad, touch, or the arrow keys, which scroll the selected tab into view). Tabs never wrap to a second row.</span></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <div class="tier-tabs" role="tablist" aria-label="Pill, 32px" style="align-self: flex-start;"><button class="tier-tabs__tab" type="button" role="tab" aria-selected="true">All</button><button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">20 min</button></div>
+          <div class="tabs tabs--sm"><div class="tabs__list" role="tablist" aria-label="Underline small, 36px"><button class="tabs__tab" type="button" role="tab" aria-selected="true">All</button><button class="tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">20 min</button></div></div>
+          <div class="tabs"><div class="tabs__list" role="tablist" aria-label="Underline medium, 40px"><button class="tabs__tab" type="button" role="tab" aria-selected="true">All</button><button class="tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">20 min</button></div></div>
+        </div>
+        <div class="ds-example__caption"><span>Pill 32px (6px padding + 20px line, inside a 40px track) · underline <code>.tabs--sm</code> 36px (<code>--control-height-sm</code>) · underline 40px (<code>--control-height-md</code>, default).</span></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Variant</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Selected</th><th scope="col">Disabled</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Pill</th>
+            <td><div class="tier-tabs" role="tablist" aria-label="Default"><button class="tier-tabs__tab" type="button" role="tab" aria-selected="false">20 min</button></div></td>
+            <td><div class="tier-tabs" role="tablist" aria-label="Hover"><button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" data-state="hover">20 min</button></div></td>
+            <td><div class="tier-tabs" role="tablist" aria-label="Focus"><button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" data-state="focus">20 min</button></div></td>
+            <td><div class="tier-tabs" role="tablist" aria-label="Active"><button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" data-state="active">20 min</button></div></td>
+            <td><div class="tier-tabs" role="tablist" aria-label="Selected"><button class="tier-tabs__tab" type="button" role="tab" aria-selected="true">20 min</button></div></td>
+            <td><div class="tier-tabs" role="tablist" aria-label="Disabled"><button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" aria-disabled="true">20 min</button></div></td></tr>
+          <tr><th scope="row">Underline</th>
+            <td><div class="tabs"><div class="tabs__list" role="tablist" aria-label="Default"><button class="tabs__tab" type="button" role="tab" aria-selected="false">30 min <span class="tabs__count">3</span></button></div></div></td>
+            <td><div class="tabs"><div class="tabs__list" role="tablist" aria-label="Hover"><button class="tabs__tab" type="button" role="tab" aria-selected="false" data-state="hover">30 min <span class="tabs__count">3</span></button></div></div></td>
+            <td><div class="tabs"><div class="tabs__list" role="tablist" aria-label="Focus"><button class="tabs__tab" type="button" role="tab" aria-selected="false" data-state="focus">30 min <span class="tabs__count">3</span></button></div></div></td>
+            <td><div class="tabs"><div class="tabs__list" role="tablist" aria-label="Active"><button class="tabs__tab" type="button" role="tab" aria-selected="false" data-state="active">30 min <span class="tabs__count">3</span></button></div></div></td>
+            <td><div class="tabs"><div class="tabs__list" role="tablist" aria-label="Selected"><button class="tabs__tab" type="button" role="tab" aria-selected="true">30 min <span class="tabs__count">3</span></button></div></div></td>
+            <td><div class="tabs"><div class="tabs__list" role="tablist" aria-label="Disabled"><button class="tabs__tab" type="button" role="tab" aria-selected="false" aria-disabled="true">30 min <span class="tabs__count">3</span></button></div></div></td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li><b>Selected</b> is <code>aria-selected="true"</code>: bone fill on the pill, fg text and a volt bar on the underline. Exactly one tab per list.</li>
+        <li><b>Disabled</b> uses <code>aria-disabled="true"</code>, not <code>disabled</code>, so the tab stays reachable with the arrow keys and its name is still read. Prefer an enabled tab with an empty panel ("No 60-minute classes open yet") over a disabled one.</li>
+        <li><b>Focus</b> draws the ring inside an underline tab (the list scrolls and would clip it) and outside a pill tab (the track's 4px padding leaves room).</li>
+      </ul>
+      <h3>Both themes</h3>
+      <div class="ds-themes">
+        <div data-theme="light"><div class="stack"><div class="tier-tabs" role="tablist" aria-label="Class length, light" style="align-self: flex-start;"><button class="tier-tabs__tab" type="button" role="tab" aria-selected="true">All</button><button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">20 min</button><button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">30 min</button></div><div class="tabs"><div class="tabs__list" role="tablist" aria-label="Underline, light"><button class="tabs__tab" type="button" role="tab" aria-selected="true">All <span class="tabs__count">7</span></button><button class="tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">20 min <span class="tabs__count">2</span></button></div></div></div></div>
+        <div data-theme="dark"><div class="stack"><div class="tier-tabs" role="tablist" aria-label="Class length, dark" style="align-self: flex-start;"><button class="tier-tabs__tab" type="button" role="tab" aria-selected="true">All</button><button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">20 min</button><button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">30 min</button></div><div class="tabs"><div class="tabs__list" role="tablist" aria-label="Underline, dark"><button class="tabs__tab" type="button" role="tab" aria-selected="true">All <span class="tabs__count">7</span></button><button class="tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">20 min <span class="tabs__count">2</span></button></div></div></div></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <ul>
+        <li><b>Under 640px</b>: the Class Library head wraps, so the pill tabs sit under the title and lead, left-aligned. Four length tabs fit in 360px; more than that scroll inside the track (<code>overflow-x: auto</code>, no scrollbar).</li>
+        <li><b>Underline tabs</b> scroll sideways at every width and never wrap; add <code>.tabs--scroll</code> to fade the trailing edge so a half-shown tab reads as "more this way". Selecting a tab scrolls it into view.</li>
+        <li><b>From 640px</b> the pill tabs sit beside the title, bottom-aligned with the lead (<code>.library-head</code>: <code>flex-wrap</code>, <code>align-items: flex-end</code>).</li>
+        <li>Tab labels do not truncate; shorten the label instead ("20 min", not "20-minute classes").</li>
+      </ul>
+      <div class="ds-stage ds-stage--phone" style="min-height: 0; padding: var(--space-4);">
+        <p class="page__title">Classes</p>
+        <p class="page__lead">Ride a video alone whenever you like, or join a group of 8–10 riders.</p>
+        <div class="tier-tabs" role="tablist" aria-label="Class length, phone" style="margin-top: var(--space-5); display: inline-flex;"><button class="tier-tabs__tab" type="button" role="tab" aria-selected="true">All</button><button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">20 min</button><button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">30 min</button><button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">60 min</button></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+      <p>Pill: track <code>--color-raised</code>, tab text <code>--color-muted</code> lifting to <code>--color-fg</code>, selected tab <code>--color-fg</code> fill with <code>--color-ink</code> text (the same inverse pair as the preset chips and pack-strength control). Underline: hairline <code>--tabs-border</code> (<code>--color-line</code>), selected bar <code>--tabs-indicator</code> (<code>--color-volt</code>, "selected" being one of volt's three jobs). Re-theme by overriding the <code>--tabs-*</code> tokens on <code>.tabs</code>.</p>
+      <pre><code>/* Gold indicator for an achievements page: earned things only */
+.tabs--earned { --tabs-indicator: var(--color-gold); }</code></pre>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <p><a href="https://www.w3.org/WAI/ARIA/apg/patterns/tabs/">APG Tabs</a> with <b>automatic activation</b>: moving to a tab selects it and shows its panel, because every panel here is already in the page (a filter of one list). <code>role="tablist"</code> with <code>aria-label</code>; each <code>&lt;button role="tab"&gt;</code> has <code>aria-selected</code> and <code>aria-controls</code>; each panel is <code>role="tabpanel"</code>, <code>aria-labelledby</code> its tab and <code>tabindex="0"</code> when it starts with text rather than a control.</p>
+      <h3>Keyboard</h3>
+      <div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+        <tr><td><kbd>Tab</kbd></td><td>Into the list, landing on the selected tab (roving <code>tabindex</code>: 0 on it, −1 on the rest); next <kbd>Tab</kbd> moves to the panel.</td></tr>
+        <tr><td><kbd>←</kbd> / <kbd>→</kbd></td><td>Previous / next tab, wrapping at the ends; selects it and shows its panel. Disabled tabs are focused but not selected.</td></tr>
+        <tr><td><kbd>Home</kbd> / <kbd>End</kbd></td><td>First / last tab.</td></tr>
+        <tr><td><kbd>Enter</kbd>, <kbd>Space</kbd></td><td>Selects the focused tab (needed only for a disabled-then-enabled tab; arrows already select).</td></tr>
+      </tbody></table></div>
+      <h3>Focus</h3>
+      <p>Shared ring on <code>:focus-visible</code>: outside the pill tab, inset on the underline tab. The panel shows the ring 4px outside itself when focused.</p>
+      <h3>Labelling</h3>
+      <p>The tablist is named for what the tabs cut by ("Class length"). A count inside a tab is part of its name ("30 min 3"); when that reads badly, give the count <code>aria-hidden="true"</code> and add it in words in visually hidden text ("30 min, 3 classes").</p>
+      <h3>Contrast</h3>
+      <div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+        <div class="ds-pair"><span>Pill tab text on the track</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-raised" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Selected pill tab</span><span class="ds-pair__ratio" data-contrast="--color-ink|--color-fg" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Underline tab text on a panel</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Selected bar on a panel</span><span class="ds-pair__ratio" data-contrast="--color-volt|--color-panel" data-min="3"></span></div>
+        <div class="ds-pair"><span>Focus ring on the track</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-raised" data-min="3"></span></div>
+      </div>
+      <h3>Motion</h3>
+      <p>Text and fill colours ease over <code>--duration-fast</code>; the bar appears in place, it does not slide. Reduced motion makes both instant.</p>
+      <h3>Touch</h3>
+      <p>Pill tabs are 32px tall and at least 46px wide ("All"), above the 24px minimum; underline tabs are 36–40px. Horizontal scroll works with a swipe; there are no hover-only affordances.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li>One to three words, sentence case, no verbs: "All", "20 min", "Recent rides".</li>
+        <li>"All" comes first when the tabs filter one list.</li>
+        <li>Counts are numerals for what the panel holds now, never "new" badges.</li>
+        <li>Do not repeat the list's name in every tab ("20 min classes", "30 min classes").</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><div class="tier-tabs" role="tablist" aria-label="Class length, do"><button class="tier-tabs__tab" type="button" role="tab" aria-selected="true">All</button><button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">20 min</button><button class="tier-tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">30 min</button></div></div><figcaption>Real tabs over one panel of shelves: buttons, <code>aria-controls</code>, arrows move.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><div class="tier-tabs"><a class="tier-tabs__tab" href="../../mocks/pages/class-library/default.html" aria-current="page" style="background: var(--color-fg); color: var(--color-ink);">All</a><a class="tier-tabs__tab" href="../../mocks/pages/class-library/tier-20.html">20 min</a><a class="tier-tabs__tab" href="../../mocks/pages/class-library/tier-30.html">30 min</a></div></div><figcaption>Put <code>role="tab"</code> on links that load another page (the mocks): a screen reader promises arrow keys that do nothing. If they must be pages, drop the tab roles and use <code>aria-current</code>.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><div class="tabs tabs--scroll" style="max-width: 16rem;"><div class="tabs__list" role="tablist" aria-label="Maps, do"><button class="tabs__tab" type="button" role="tab" aria-selected="true">Prairie Paceline</button><button class="tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">Old Town Criterium</button><button class="tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">Cliffside Coast</button></div></div></div><figcaption>Let a long list scroll on one row with a faded edge.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><div class="tabs" style="max-width: 16rem;"><div class="tabs__list" role="tablist" aria-label="Maps, don't" style="flex-wrap: wrap;"><button class="tabs__tab" type="button" role="tab" aria-selected="true">Prairie Paceline</button><button class="tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">Old Town Criterium</button><button class="tabs__tab" type="button" role="tab" aria-selected="false" tabindex="-1">Cliffside Coast</button></div></div></div><figcaption>Wrap tabs onto two rows: the selected bar no longer touches its panel and the order reads ambiguously.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+        <tbody>
+          <tr><td>Pill track</td><td><code>--color-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td></tr>
+          <tr><td>Tab text (both variants)</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+          <tr><td>Hover text; selected pill fill</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+          <tr><td>Selected pill text</td><td><code>--color-ink</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td></tr>
+          <tr><td>Underline hairline (<code>--tabs-border</code>)</td><td><code>--color-line</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td></tr>
+          <tr><td>Selected bar (<code>--tabs-indicator</code>)</td><td><code>--color-volt</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-volt" data-swatch></i><span data-token="--color-volt"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-volt" data-swatch></i><span data-token="--color-volt"></span></span></td></tr>
+          <tr><td>Disabled tab text</td><td><code>--color-disabled</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-disabled" data-swatch></i><span data-token="--color-disabled"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-disabled" data-swatch></i><span data-token="--color-disabled"></span></span></td></tr>
+          <tr><td>Underline height sm / md (<code>--tabs-height</code>)</td><td><code>--control-height-sm</code> <code>--control-height-md</code></td><td colspan="2"><span data-token="--control-height-sm"></span> / <span data-token="--control-height-md"></span></td></tr>
+          <tr><td>Pill tab padding (block / inline)</td><td><code>--space-1-5</code> <code>--space-3-5</code></td><td colspan="2"><span data-token="--space-1-5"></span> / <span data-token="--space-3-5"></span></td></tr>
+          <tr><td>Track padding and gap</td><td><code>--space-1</code></td><td colspan="2"><span data-token="--space-1"></span></td></tr>
+          <tr><td>Track / pill tab radius</td><td><code>--radius-lg</code> <code>--radius-md</code></td><td colspan="2"><span data-token="--radius-lg"></span> / <span data-token="--radius-md"></span></td></tr>
+          <tr><td>Selected bar height</td><td><code>--border-width-thick</code></td><td colspan="2"><span data-token="--border-width-thick"></span></td></tr>
+          <tr><td>Colour transition</td><td><code>--duration-fast</code> <code>--ease-standard</code></td><td colspan="2"><span data-token="--duration-fast"></span> / <span data-token="--ease-standard"></span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+      <pre><code>// Automatic activation with a roving tabindex (vanilla, ~15 lines)
+list.addEventListener('keydown', (e) =&gt; {
+  const tabs = [...list.querySelectorAll('[role="tab"]')];
+  const i = tabs.indexOf(document.activeElement);
+  const next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+  if (next === undefined) return;
+  e.preventDefault();
+  select(tabs[(next + tabs.length) % tabs.length]);
+});
+function select(tab) {
+  tab.focus(); tab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  if (tab.getAttribute('aria-disabled') === 'true') return;
+  for (const t of list.querySelectorAll('[role="tab"]')) {
+    const on = t === tab;
+    t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1;
+    document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+  }
+}</code></pre>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+        <tr><td><code>.tier-tabs</code> <code>.tier-tabs__tab</code></td><td>Pill tabs (Class Library); the track scrolls when it does not fit.</td></tr>
+        <tr><td><code>.tabs</code> <code>.tabs__list</code> <code>.tabs__tab</code> <code>.tabs__panel</code></td><td>Underline tabs: wrapper (tokens), tablist, tab, panel.</td></tr>
+        <tr><td><code>.tabs--sm</code></td><td>36px tabs.</td></tr>
+        <tr><td><code>.tabs--scroll</code></td><td>Fades the trailing edge of a scrolling list.</td></tr>
+        <tr><td><code>.tabs__count</code></td><td>Numeral pill inside a tab.</td></tr>
+        <tr><td><code>aria-selected="true"</code></td><td>Selected tab.</td></tr>
+        <tr><td><code>aria-disabled="true"</code></td><td>Disabled tab (focusable, not selectable).</td></tr>
+        <tr><td><code>data-state="hover|focus|active"</code></td><td>Documentation only.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <ul>
+        <li><a href="../../mocks/pages/class-library/default.html">pages/class-library/default</a>, <a href="../../mocks/pages/class-library/tier-20.html">tier-20</a>, <a href="../../mocks/pages/class-library/tier-30.html">tier-30</a>, <a href="../../mocks/pages/class-library/tier-60.html">tier-60</a>, <a href="../../mocks/pages/class-library/new-rider.html">new-rider</a> (the pill tabs and the library head)</li>
+      </ul>
+      <p>Underline tabs, counts, disabled and the scroll fade are additions in the Telo idiom; the product has no second tab list yet.</p>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Mock</th><th scope="col">Issue</th><th scope="col">Resolution</th></tr></thead><tbody>
+        <tr><td>pages/class-library/*</td><td><code>&lt;a role="tab" href="tier-20.html"&gt;</code>: tab roles on links that load another page; no <code>aria-controls</code>, no tabpanel, every tab in the Tab order.</td><td>The tier filter narrows one list in place, so the product builds it as a group of <code>aria-pressed</code> buttons in the <code>.tier-tabs</code> look (see <a href="button-group.html">Button group</a>). Real APG tabs (buttons, one panel each, roving tabindex) are for switching between panels; this page documents them with both looks.</td></tr>
+        <tr><td>pages/class-library/*</td><td><code>.tier-tabs</code> had no disabled, active or overflow behaviour; a fifth tier would push the page sideways at 360px.</td><td>Added in <code>navigation.css</code>: horizontal scroll inside the track, <code>aria-disabled</code> and pressed styles.</td></tr>
+      </tbody></table></div>
+    </section>
+<script>
+document.querySelectorAll('[data-demo-tabs]').forEach(function (root) {
+  var list = root.querySelector('[role="tablist"]');
+  function select(tab) {
+    tab.focus();
+    if (tab.getAttribute('aria-disabled') === 'true') return;
+    list.querySelectorAll('[role="tab"]').forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+  }
+  list.addEventListener('click', function (e) { var t = e.target.closest('[role="tab"]'); if (t) select(t); });
+  list.addEventListener('keydown', function (e) {
+    var tabs = Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
+    var i = tabs.indexOf(document.activeElement);
+    var next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+    if (next === undefined) return;
+    e.preventDefault();
+    select(tabs[(next + tabs.length) % tabs.length]);
+  });
+});
+</script>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
+  </main>
+</div>
+<script src="../assets/ds.js"></script>
+</body>
+</html>

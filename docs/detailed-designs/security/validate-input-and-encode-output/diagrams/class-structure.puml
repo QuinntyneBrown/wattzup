@@ -1,0 +1,80 @@
+@startuml
+set separator none
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Validate input and encode output
+package "Telo.Ride.Application" {
+  class "ValidationBehavior<TRequest, TResponse>" as VB {
+    -IEnumerable<IValidator<TRequest>> validators
+    +Handle(request, next, ct): Task<TResponse>
+  }
+  class "AbstractValidator<T>" as AV
+  class SubmitRideCommandValidator
+  class ReportProgressCommandValidator
+  class "Get/Join/Find/Set/Leave…Validator" as Ids
+  class InputRules <<static>> {
+    +CatalogueId(): 1-64 of a-z 0-9 -
+    +SessionId(): id@yyyyMMddTHHmm[ss]Z, at most 96
+    +Power(): 0 to 2,000 W
+    +NotNegative(): finite, 0 or more
+  }
+  class RequestValidationException {
+    +IReadOnlyList<FieldError> Errors
+  }
+  class FieldError {
+    +string Field
+    +string Message
+  }
+}
+AV <|-- SubmitRideCommandValidator
+AV <|-- ReportProgressCommandValidator
+AV <|-- Ids
+ReportProgressCommandValidator ..> InputRules : uses
+Ids ..> InputRules : uses
+VB --> AV : runs
+VB ..> RequestValidationException : throws
+RequestValidationException "1" *-- "*" FieldError
+package "Telo.Ride.Api" {
+  class ProblemDetailsExceptionHandler {
+    +TryHandleAsync(context, exception, ct): ValueTask<bool>
+  }
+  class InvalidBodyResponse <<ApiBehaviorOptions>> {
+    +InvalidModelStateResponseFactory: 400 validation_failed, errors by field
+  }
+  class ValidationHubFilter {
+    +InvokeMethodAsync(context, next): ValueTask<object?>
+  }
+  class TeloProblemDetails {
+    +int Status
+    +string Title
+    +string Code
+    +IDictionary<string, string[]> Errors
+    +string TraceId
+  }
+}
+ProblemDetailsExceptionHandler ..> RequestValidationException : maps
+ProblemDetailsExceptionHandler ..> TeloProblemDetails : writes
+ValidationHubFilter ..> RequestValidationException : maps to HubException
+package "api library" {
+  class ApiError {
+    +status: number
+    +code: string
+    +fieldErrors: Record<string, string[]>
+  }
+  class toApiError <<function>> {
+    +(response: HttpErrorResponse): ApiError
+  }
+}
+toApiError ..> ApiError
+toApiError ..> TeloProblemDetails : reads
+@enduml

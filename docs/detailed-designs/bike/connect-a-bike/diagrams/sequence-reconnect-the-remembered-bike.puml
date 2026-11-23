@@ -1,0 +1,57 @@
+@startuml
+title UML sequence behaviour — Reconnect the remembered bike
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "Router" as router
+  participant "rememberedBikeGuard" as guard
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  database "RememberedBikeStore" as remembered
+  participant "WebBluetoothBikeConnection" as conn
+end box
+box "Device — Browser" #F2F4F7
+  participant "navigator.bluetooth" as bt
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "Echelon GATT server" as bike
+end box
+actor -> router : Open Telo Ride
+router -> guard : canMatch
+guard -> remembered : get()
+alt no bike paired in this browser
+  remembered --> guard : null
+  guard --> router : Redirect to /connect
+else bike remembered
+  remembered --> guard : BikeInfo
+  guard --> router : Allow Home without Connect Bike (L2-015 AC1)
+  router -> conn : reconnectRemembered()
+  alt getDevices() exists
+    conn -> bt : getDevices()
+    bt --> conn : Permitted device with the remembered id
+    conn -> bt : device.watchAdvertisements()
+    bike -> bt : Advertises after a few pedal strokes
+    bt -> conn : advertisementreceived
+    conn -> bike : gatt.connect() and the link's init, no chooser
+    conn --> actor : Bike status connected
+  else getDevices() not available
+    conn --> actor : Bike not connected; Connect bike offered where a ride starts (L2-015 AC3)
+  end
+end
+opt remembered bike not advertising when a ride starts
+  conn --> actor : "Connect your bike" panel with Connect bike (L2-015 AC2, L2-106)
+end
+@enduml

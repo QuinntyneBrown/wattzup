@@ -1,0 +1,63 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Test without hardware or databases
+hide empty members
+
+class TestFixtures <<e2e/fixtures/test.ts>> {
+  +bluetooth: FakeBluetooth
+  +api: ApiFixture
+  +hub: HubFixture
+}
+class FakeBluetooth <<e2e>> {
+  +writes(): Promise<Uint8Array[]>
+  +notify(characteristic: string, bytes: number[]): Promise<void>
+  +advertise(name: string): Promise<void>
+}
+class ApiFixture <<e2e>> {
+  +on(method: string, path: string, handler: Handler): void
+  -failUnanswered(request: Request): void
+}
+class HubFixture <<e2e>> {
+  +send(target: string, args: unknown[]): Promise<void>
+  +received(target: string): Promise<unknown[]>
+}
+class ConnectBikePage <<e2e/pages>> {
+  +connect(): Promise<void>
+  +status(): Locator
+}
+class TeloRideApiFactory <<Telo.Ride.Api.Tests>> {
+  +Time: FakeTimeProvider
+  +Email: FakeEmailSender
+  +SignInAsync(email: string): Task<HttpClient>
+}
+class FakeTimeProvider <<Microsoft.Extensions.Time.Testing>> {
+  +Advance(delta: TimeSpan): void
+}
+class FakeEmailSender <<Telo.Ride.Api.Tests>> {
+  +LastCodeFor(email: string): string
+}
+class "EventProbe<T>" as EventProbe <<Telo.Ride.Api.Tests>> {
+  +WaitAsync(predicate, timeout: TimeSpan): Task<T>
+}
+class FaultyAppDbContext <<Telo.Ride.Api.Tests>>
+interface IAppDbContext <<Telo.Ride.Application>>
+TestFixtures *-- FakeBluetooth
+TestFixtures *-- ApiFixture
+TestFixtures *-- HubFixture
+ConnectBikePage ..> FakeBluetooth : used together in specs
+TeloRideApiFactory *-- FakeTimeProvider
+TeloRideApiFactory *-- FakeEmailSender
+FaultyAppDbContext ..|> IAppDbContext
+EventProbe ..> TeloRideApiFactory : used in hub tests
+@enduml

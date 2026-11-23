@@ -1,0 +1,39 @@
+@startuml
+title UML sequence behaviour — Show a live readout
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "Smart bike" as bike
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "WebBluetoothBikeConnection" as conn
+  participant "EchelonProtocol or FtmsProtocol" as proto
+  participant "ReadoutSampler" as sampler
+  participant "RideTicker" as ticker
+end box
+box "Frontend — Ride app (components library)" #E0F2FE
+  participant "RideReadout" as readout
+end box
+bike -> conn : GATT notification
+conn -> proto : decode(bytes)
+proto --> conn : BikeSample
+conn -> sampler : push(sample)
+alt 1 s or more since the last publish
+  sampler -> readout : readout signal = sample (within 250 ms, L2-134 AC1)
+else Sooner than 1 s
+  sampler -> sampler : hold latest sample
+  ticker -> sampler : flush() at the next whole second
+  sampler -> readout : readout signal = held sample (once a second, L2-134 AC2)
+end
+readout -> readout : OnPush re-render of the bound value
+@enduml

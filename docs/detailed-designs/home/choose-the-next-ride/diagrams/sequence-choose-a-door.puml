@@ -1,0 +1,45 @@
+@startuml
+title UML sequence behaviour — Choose a door
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (components library)" #E0F2FE
+  participant "MapTile" as tile
+  participant "ClassTeaser" as teaser
+end box
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "HomePage" as page
+  participant "Router" as router
+end box
+alt Open map tile
+  actor -> tile : Choose "Old Town Criterium"
+  tile -> router : routerLink to Race Setup for the map (L2-034 AC3)
+else Locked map tile
+  actor -> tile : Choose "Neon Docklands, locked: see how to open it"
+  tile -> router : routerLink to Map Select (L2-034 AC4)
+else All maps / All classes
+  actor -> page : "All maps" or "All classes"
+  page -> router : Map Select or Class Library
+else Join group
+  actor -> teaser : Join group
+  teaser -> page : joinGroup(classId)
+  page -> router : Class Start with the group chosen (L2-035 AC3)
+else Ride alone
+  actor -> teaser : Ride alone
+  teaser -> page : rideAlone(classId)
+  page -> router : Class Start with alone chosen (L2-035 AC3)
+end
+router --> actor : Lazily loaded target page
+@enduml

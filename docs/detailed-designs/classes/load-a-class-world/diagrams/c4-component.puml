@@ -1,0 +1,30 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Load a class world
+Person(rider, "Rider", "Rides a smart bike at home")
+Container(host, "Static host", "Azure Static Web Apps", "World bundles and panoramas")
+Container_Boundary(app, "Ride app") {
+  Component(page, "ClassRidePage", "Angular page · ride", "World loading, then the class ride, at one address")
+  Component(store, "WorldLoadStore", "Route-scoped store · ride", "Steps, percent, phase; abort and slow timer")
+  Component(view, "WorldLoading / LoadCard / LoadSteps", "Presentation · components", "Class, plan, panorama, steps, actions")
+  Component(announcer, "Announcer", "Service · api (ANNOUNCER)", "One message per step")
+  Component(settings, "RideSettingsStore", "Service · domain/storage (RIDE_SETTINGS)", "Quality and graphics choices")
+  Component(policy, "qualityPolicy()", "Pure helper · domain/engine", "Starting level")
+  Component(cache, "WorldCache", "Service · domain/storage (WORLD_CACHE)", "Saved world bundles")
+  Component(loader, "WorldAssetLoader", "Service · world (lazy)", "Download with progress and resume")
+  Component(probe, "RendererBackendProbe", "Service · world", "webgpu, webgl2 or none")
+  Component(renderer, "WorldRenderer / ProgramCompiler", "Boundary · world", "prepare, warmUp, dispose")
+}
+Rel(rider, view, "Watches, presses")
+Rel(page, store, "Provides on the route")
+Rel(page, view, "Renders while not riding")
+Rel(store, announcer, "Announces steps")
+Rel(store, settings, "Reads choices")
+Rel(store, policy, "Asks for starting level")
+Rel(store, probe, "Chooses backend")
+Rel(store, loader, "Downloads")
+Rel(loader, cache, "Reads and saves")
+Rel(loader, host, "GET, Range", "HTTPS")
+Rel(store, renderer, "Builds programs, warms up, disposes")
+@enduml

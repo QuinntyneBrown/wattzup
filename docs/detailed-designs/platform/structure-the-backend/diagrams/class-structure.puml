@@ -1,0 +1,67 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Structure the backend
+hide empty members
+
+class RidesController <<Telo.Ride.Api>> {
+  -sender: ISender
+  +Submit(body: SubmitRideRequest): Task<IActionResult>
+}
+interface ISender <<MediatR>> {
+  +Send(request: IRequest<T>): Task<T>
+}
+class "ValidationBehavior<TRequest, TResponse>" as ValidationBehavior <<Telo.Ride.Application>> {
+  -validators: IEnumerable<IValidator<TRequest>>
+  +Handle(request, next): Task<TResponse>
+}
+class SubmitRideCommand <<Telo.Ride.Application>> {
+  +RideId: Guid
+}
+class SubmitRideCommandValidator <<Telo.Ride.Application>>
+class SubmitRideCommandHandler <<Telo.Ride.Application>> {
+  -db: IAppDbContext
+  +Handle(command: SubmitRideCommand): Task<RideResult>
+}
+interface IAppDbContext <<Telo.Ride.Application>> {
+  +Rides: DbSet<Ride>
+  +SaveChangesAsync(): Task<int>
+}
+class AppDbContext <<Telo.Ride.Infrastructure>>
+class Ride <<Telo.Ride.Domain>>
+class DomainRuleException <<Telo.Ride.Domain>> {
+  +Code: string
+  +Status: int
+}
+class RequestValidationException <<Telo.Ride.Application>> {
+  +Errors: IDictionary<string, string[]>
+}
+class ProblemDetailsExceptionHandler <<Telo.Ride.Api>> {
+  +TryHandleAsync(context, exception): ValueTask<bool>
+}
+class TeloRideMetrics <<Telo.Ride.Infrastructure>> {
+  -meter: Meter "Telo.Ride"
+}
+RidesController --> ISender : sends one request
+ISender ..> ValidationBehavior : runs pipeline
+ValidationBehavior ..> SubmitRideCommandValidator : runs
+ValidationBehavior ..> SubmitRideCommandHandler : then calls
+SubmitRideCommandHandler ..> SubmitRideCommand : handles
+SubmitRideCommandHandler --> IAppDbContext
+AppDbContext ..|> IAppDbContext
+IAppDbContext --> Ride
+ValidationBehavior ..> RequestValidationException : throws
+SubmitRideCommandHandler ..> DomainRuleException : throws
+ProblemDetailsExceptionHandler ..> DomainRuleException : maps code
+ProblemDetailsExceptionHandler ..> RequestValidationException : maps 400
+@enduml

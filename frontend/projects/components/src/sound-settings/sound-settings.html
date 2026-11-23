@@ -1,0 +1,49 @@
+<div wz-setting>
+  <wz-switch-row
+    name="ride-sound"
+    label="Ride sound"
+    description="Chain, freewheel, tyres and wind that follow your pedalling."
+    [checked]="settings().rideSound"
+    (toggled)="rideSoundToggled.emit($event)"
+  />
+</div>
+<div wz-setting>
+  <div class="sound-settings__head">
+    <label class="sound-settings__label" for="ride-volume">Ride sound volume</label>
+    <span class="sound-settings__value" aria-hidden="true">{{ settings().rideSoundVolume }} %</span>
+  </div>
+  <input
+    class="range"
+    id="ride-volume"
+    type="range"
+    min="0"
+    max="100"
+    step="5"
+    [value]="settings().rideSoundVolume"
+    [attr.aria-valuetext]="settings().rideSoundVolume + ' percent'"
+    aria-describedby="ride-volume-hint"
+    (input)="changeVolume($event)"
+  />
+  <div class="sound-settings__scale" aria-hidden="true"><span>Quiet</span><span>Loud</span></div>
+  <p class="sound-settings__hint" id="ride-volume-hint">
+    Changes as you drag, so you can set it mid-ride.
+  </p>
+</div>
+<div wz-setting>
+  <wz-switch-row
+    name="world-music"
+    label="World music"
+    description="Each world’s own background track, under the ride sound."
+    [checked]="settings().worldMusic"
+    (toggled)="worldMusicToggled.emit($event)"
+  />
+</div>
+<div wz-setting>
+  <wz-switch-row
+    name="duck"
+    label="Mute ride sound under a class video"
+    description="A class video has its own sound. Ride sound comes back when the video pauses."
+    [checked]="settings().muteUnderVideo"
+    (toggled)="muteUnderVideoToggled.emit($event)"
+  />
+</div>

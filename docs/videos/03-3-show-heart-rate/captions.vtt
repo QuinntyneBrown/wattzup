@@ -1,0 +1,88 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.692
+Heart rate belongs beside power. Telo Ride now reads it, from a strap or from the
+
+00:00:07.692 --> 00:00:08.308
+bike.
+
+00:00:10.324 --> 00:00:15.144
+A heart rate measurement starts with flags. Bit zero clear means one byte of beats
+
+00:00:15.144 --> 00:00:16.972
+per minute; set means two.
+
+00:00:20.647 --> 00:00:25.343
+Choosing a strap opens the browser's list, filtered to the heart rate service, then
+
+00:00:25.343 --> 00:00:27.397
+subscribes to its measurements.
+
+00:00:30.971 --> 00:00:35.437
+The strap is remembered. Next time, where the browser allows it, Telo Ride
+
+00:00:35.437 --> 00:00:37.427
+reconnects without the list.
+
+00:00:41.295 --> 00:00:46.134
+If the strap drops, its reading goes blank, and Telo Ride tries it again every three
+
+00:00:46.134 --> 00:00:47.817
+seconds until it's back.
+
+00:00:51.618 --> 00:00:56.214
+The strap's reading comes first, then the bike's. With neither, the readout shows a
+
+00:00:56.214 --> 00:00:58.064
+dash and says no heart rate.
+
+00:01:01.942 --> 00:01:06.600
+A source that's quiet for five seconds stops counting, so a stale heartbeat never
+
+00:01:06.600 --> 00:01:07.820
+stays on screen.
+
+00:01:12.266 --> 00:01:17.116
+Each running second adds to the ride's average and peak heart rate: two numbers and
+
+00:01:17.116 --> 00:01:18.760
+a count, never a trace.
+
+00:01:22.590 --> 00:01:27.874
+Still to come: Settings connects a strap in slice 20.1, the ride screens show it,
+
+00:01:27.874 --> 00:01:29.740
+and saved rides keep it.
+
+00:01:32.913 --> 00:01:37.561
+Home doesn't change yet, at any width. Heart rate waits in the engine for the ride
+
+00:01:37.561 --> 00:01:38.315
+screens.
+
+00:01:43.237 --> 00:01:47.964
+What the tests prove: twenty-five new unit tests, one per row of the requirements,
+
+00:01:47.964 --> 00:01:49.821
+and every spec still green.
+
+00:01:53.561 --> 00:01:58.164
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:58.509 --> 00:02:03.021
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:02:03.021 --> 00:02:04.692
+every hill and interval.
+
+00:02:05.037 --> 00:02:10.215
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:02:10.215 --> 00:02:15.663
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:02:15.663 --> 00:02:18.653
+XP, rider levels, stars and map unlocks.
+
+00:02:18.998 --> 00:02:21.491
+A custom workout lives under Profile.

@@ -1,0 +1,47 @@
+@startuml
+title UML sequence behaviour — Gate hub progress messages
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app" #E0F2FE
+  participant "SignalRRideHubClient" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "ProgressRateHubFilter" as filter
+  participant "ProgressRateGate" as gate
+  participant "RideHub" as hub
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "ReportProgressCommandHandler" as handler
+end box
+client -> filter : ReportProgress or ReportRaceProgress
+filter -> gate : Admit()
+alt at most 2 this second
+  gate --> filter : Admit
+  filter -> hub : Invoke ReportProgress
+  hub -> handler : Send ReportProgressCommand
+else 3rd or later message this second
+  gate --> filter : Drop (L2-130 AC2)
+  filter --> client : Return without invoking, no error
+end
+loop the client stays over the limit
+  client -> filter : ReportProgress (over the limit)
+  filter -> gate : Admit()
+  alt over the limit for 10 s, with no second at or under it
+    gate --> filter : Disconnect
+    filter -> filter : Context.Abort() (L2-130 AC2)
+    filter --> client : Connection closed
+  end
+end
+@enduml

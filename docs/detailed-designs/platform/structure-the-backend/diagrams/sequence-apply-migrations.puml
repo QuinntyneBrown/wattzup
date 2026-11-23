@@ -1,0 +1,36 @@
+@startuml
+title UML sequence behaviour — Apply migrations
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Operator" as op
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "Program (migrate command)" as program
+  participant "Program (serve)" as serve
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "AppDbContext" as dbctx
+  participant "CatalogueSeeder" as seeder
+  database "Telo Ride database" as db
+end box
+op -> program : dotnet Telo.Ride.Api.dll migrate (L2-147 AC5)
+program -> dbctx : Database.MigrateAsync()
+dbctx -> db : Apply pending migrations in order
+db --> dbctx : Schema at the latest migration
+program -> seeder : SeedAsync()
+seeder -> db : Upsert maps and classes by key (idempotent)
+program --> op : Exit 0
+op -> serve : Start the new API version
+serve -> serve : Build the host; no migration on start-up
+@enduml

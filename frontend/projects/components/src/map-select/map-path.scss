@@ -1,0 +1,9 @@
+// Block map-path (docs/design-system/assets/components.css, Map Select).
+:host {
+  display: block;
+}
+
+.map-path {
+  position: relative;
+  margin-top: var(--space-8);
+}

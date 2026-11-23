@@ -1,0 +1,88 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Race the ghost and bots
+interface RaceField {
+  +advance(elapsedS: number): FieldPosition[]
+}
+class FieldPosition {
+  +id: string
+  +name: string
+  +jersey: string
+  +isBot: boolean
+  +isGhost: boolean
+  +distanceM: number
+  +speedMs: number
+  +finishedAtS?: number
+}
+class BotPack {
+  +bots: Bot[]
+  +advance(elapsedS: number): FieldPosition[]
+}
+class Bot {
+  +name: string
+  +jersey: string
+  +driftPhase: number
+  +swingPhase: number
+  +distanceM: number
+}
+class BotPaceModel {
+  +{static} BASE_W: Record<PackStrength, number>
+  +powerW(bot: Bot, pack: PackStrength, elapsedS: number): number
+}
+class SeededRandom {
+  +constructor(seed: number)
+  +next(): number
+}
+class GhostReplay {
+  +trace?: GhostTrace
+  +advance(elapsedS: number): FieldPosition[]
+}
+class GhostTrace {
+  +mapId: string
+  +finishTimeS: number
+  +distanceAtSecondM: number[]
+}
+class RemoteField {
+  +update(standings: StandingDto[]): void
+  +advance(elapsedS: number): FieldPosition[]
+}
+class RaceFieldFactory {
+  +create(start: RaceStart): Promise<RaceField>
+}
+interface GhostApi {
+  +getBestRide(mapId: string): Promise<GhostTrace | undefined>
+}
+class GhostCache {
+  +read(mapId: string): Promise<GhostTrace | undefined>
+  +write(trace: GhostTrace): Promise<void>
+}
+class VirtualSpeedModel {
+  +speedMs(powerW: number, gradePct: number, previousMs: number): number
+}
+RaceField <|.. BotPack
+RaceField <|.. GhostReplay
+RaceField <|.. RemoteField
+BotPack "1" *-- "9" Bot
+BotPack ..> BotPaceModel : uses
+BotPack ..> SeededRandom : seeded by map and pack
+BotPack ..> VirtualSpeedModel : power to speed
+GhostReplay o-- "0..1" GhostTrace
+GhostReplay ..> BotPaceModel : medium pace with no best
+RaceFieldFactory ..> BotPack : creates
+RaceFieldFactory ..> GhostReplay : creates
+RaceFieldFactory ..> RemoteField : creates
+RaceFieldFactory ..> GhostApi : reads trace
+RaceFieldFactory ..> GhostCache : caches trace
+RaceField ..> FieldPosition : yields
+@enduml

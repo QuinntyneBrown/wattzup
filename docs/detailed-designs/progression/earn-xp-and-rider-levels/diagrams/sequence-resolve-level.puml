@@ -1,0 +1,32 @@
+@startuml
+title UML sequence behaviour — Resolve a rider level
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "Caller (handler)" as caller
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "LevelTable" as levels
+end box
+caller -> levels : Progress(totalXp)
+levels -> levels : Highest level whose threshold totalXp reaches, 1 to 30 (L2-038 AC1)
+alt Level < 30
+  levels --> caller : Level, next threshold, XP to next ("760 XP to level 8" at 1840, AC4)
+else Level = 30
+  levels --> caller : Level 30, next threshold none; total keeps growing (AC2)
+end
+note over levels
+Known thresholds: level 2 = 400 XP, level 8 = 2,600, level 19 = 10,400.
+All other thresholds: <TO SUPPLY> (L2.md open question 1).
+end note
+@enduml

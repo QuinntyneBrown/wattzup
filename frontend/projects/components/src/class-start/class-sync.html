@@ -1,0 +1,30 @@
+<div class="class-sync">
+  <button
+    class="class-sync__toggle"
+    type="button"
+    aria-controls="class-sync"
+    [attr.aria-expanded]="expanded()"
+    (click)="expanded.set(!expanded())"
+  >
+    <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+    Video link and sync
+  </button>
+  @if (expanded()) {
+    <dl class="class-sync__facts" id="class-sync">
+      <div class="class-sync__fact">
+        <dt>Video</dt>
+        <dd>
+          <a class="class-sync__link" [href]="link()" target="_blank" rel="noopener noreferrer">{{
+            linkText()
+          }}</a>
+        </dd>
+      </div>
+      <div class="class-sync__fact">
+        <dt>Sync</dt>
+        <dd>Synced from {{ offset() }}</dd>
+      </div>
+    </dl>
+  }
+</div>

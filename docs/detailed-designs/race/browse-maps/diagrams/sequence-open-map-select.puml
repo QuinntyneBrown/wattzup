@@ -1,0 +1,59 @@
+@startuml
+title UML sequence behaviour — Open Map Select
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "MapSelectPage" as page
+  participant "MapPathStore" as store
+end box
+box "Frontend — Ride app (api and domain libraries)" #E0F2FE
+  participant "CachedMapsApi" as mapsapi
+  participant "MapCatalogueCache" as cache
+  participant "NewRiderProgress" as progress
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "MapsController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "GetMapsQueryHandler" as handler
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "EmbeddedMapCatalogue" as file
+end box
+actor -> page : Open /race
+page -> store : create (page providers)
+par catalogue
+  store -> mapsapi : list()
+  mapsapi -> ctrl : GET /api/maps
+  ctrl -> handler : Send GetMapsQuery
+  handler -> file : Maps in unlock order
+  file --> handler : Seven maps (L2-045 AC1)
+  handler --> ctrl : MapDto[] with goals (L2-040 AC6)
+  ctrl --> mapsapi : 200 MapDto[]
+  mapsapi -> cache : save(maps)
+  mapsapi --> store : maps
+else progress
+  store -> progress : maps()
+  progress --> store : MapProgressDto (a new account until journey 10, L2-040 AC1)
+end
+alt network or backend unreachable
+  mapsapi -> cache : read()
+  cache --> mapsapi : last catalogue, or none (maps_unavailable)
+end
+store -> store : Build MapPathRow per map: Open, Next or Locked (L2-046 AC2 to AC4)
+store --> page : rows, or unavailable
+page --> actor : Ordered path, next unlock ringed gold, aside with star rules
+@enduml

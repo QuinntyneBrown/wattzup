@@ -1,4 +1,4 @@
-// The shared scene kit of a Wattzup film (docs/videos/README.md): the moves every film uses, on
+// The shared scene kit of a Telo Ride film (docs/videos/README.md): the moves every film uses, on
 // top of film-runtime.js. slides.html loads it after the runtime and before the film's film.js.
 // Every helper returns markup or an S.ref attribute; every position is a pure function of the
 // scene's time, as the runtime requires. Nothing here uses a timer, a CSS animation or Math.random.
@@ -71,55 +71,99 @@
     el.style.transform = `scale(${1 + kick * 0.12})`;
   })}></p>`;
 
-  /** The Wattzup mark: the volt tile and the ink stroke of docs/design-system/assets/logo.svg. */
-  const mark = (size = 150) => `<svg viewBox="0 0 48 48" width="${size}" height="${size}" aria-hidden="true">
-    <rect width="48" height="48" rx="12" style="fill:var(--palette-volt-300)"/>
-    <path d="M8.5 16 L15.5 34 L23 21 L30.5 34 L39.5 10" style="fill:none;stroke:var(--palette-neutral-950)" stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  /** The Telo Ride logo mark of the app header: a bone ring broken by the signal crank, and the hub. */
+  const mark = (size = 150) => `<svg class="logo-mark" viewBox="0 0 48 48" width="${size}" height="${size}" aria-hidden="true">
+    <path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/>
+    <circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg>`;
 
-  /** The lockup, as the app bar draws it: the mark and the word, in lower case. */
-  const lockup = (size = 150) => `<span class="wordmark" style="font-size:${size}px;gap:${size * 0.24}px">${mark(size)}<span>wattzup</span></span>`;
+  /** The TELO Ride lockup, as the app header draws it: the mark and the wordmark, `size` film pixels tall. */
+  const lockup = (size = 150) =>
+    `<span class="lockup" style="--s:${size}px">${mark(size)}<span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span>`;
 
-  /** The machine photographs the app ships (frontend/public/machines/). */
-  const photo = (name) => `background-image:url('../../../frontend/public/machines/${name}.jpg')`;
+  /** A photograph the design system ships (docs/design-system/assets/images/): 'machines/echelon-ex5s', 'worlds/coast'. */
+  const photo = (name) => `background-image:url('../../design-system/assets/images/${name}.jpg')`;
+
+  /** Telo Ride's purpose, quoted from AGENTS.md word for word, one sentence a line of the close. */
+  const PURPOSE = [
+    'Telo Ride, from the Telo family, turns a smart bike at home into a game.',
+    'It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.',
+    'Two doors: <b>Race</b> (ride a map against your best-time ghost, bots or people) and <b>Classes</b> (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks.',
+    'A custom workout lives under Profile.',
+  ];
+
+  /** A terminal of the film's own: `lines` are [html, cls] pairs that rise in one by one from `from`, a beat apart. */
+  const terminal = (S, title, lines, from, style, { every = S.BEAT } = {}) => `<div class="terminal" style="${style}">
+    <div class="terminal__bar"><i></i><i></i><i></i><span style="margin-left:12px">${esc(title)}</span></div>
+    <div class="terminal__body">${lines.map(([html, cls = ''], i) => `<div class="${cls}" ${S.rise(from + i * every, { y: 12, dur: 0.2 })}>${html || '&nbsp;'}</div>`).join('')}</div></div>`;
 
   /**
-   * The opening scene: the aurora over ink, the lockup, the journey's number and its headline,
-   * and the journey's first screen arriving on a device.
+   * The opening scene: the aurora over ink, the lockup, the slice's kicker and its headline, and the
+   * slice's first screen arriving on a device.
    */
-  const opening = (id, { journey, words, accent, device }) => Film.scene(id, (S) => `
+  const opening = (id, { kicker, words, accent, device, width = 1100 }) => Film.scene(id, (S) => `
     <div class="fill field--ink">${S.aurora((t) => enter(t, 0, 1.2) * 0.6)}
-    <div style="${at(120, 150, 1100)}">
+    <div style="${at(120, 150, width)}">
       <div ${S.rise(0.2, { y: 30 })}>${lockup(64)}</div>
-      <p class="kicker accent" style="margin-top:120px" ${S.rise(S.beat(1))}>Journey ${journey}</p>
+      <p class="kicker accent" style="margin-top:110px" ${S.rise(S.beat(1))}>${esc(kicker)}</p>
       <h1 class="headline" style="margin-top:28px">${S.words(S.beat(2), words, { accent })}</h1>
     </div>
     ${device(S)}
     </div>`);
 
-  /** The close: the lockup over the aurora and the purpose of AGENTS.md, word for word. */
-  const closing = (id, { journey }) => Film.scene(id, (S) => `
+  /**
+   * The close: the lockup over the aurora and Telo Ride's purpose from AGENTS.md, word for word. Each
+   * sentence rises as the voice says it: narration.json gives the close one line a sentence.
+   */
+  const closing = (id, { kicker, after = 0 }) => Film.scene(id, (S) => `
     <div class="fill field--ink">${S.aurora((t) => 0.6 * (1 - exit(t, S.length - 2.5, 2.5) * 0.6))}
-    <div style="position:absolute;left:0;right:0;top:330px;text-align:center">
-      <div ${S.rise(S.beat(1), { y: 40 })}>${lockup(150)}</div>
-      <p class="lede" style="margin:56px auto 0;max-width:1300px" ${S.rise(S.bar(1))}>Wattzup turns an Echelon bike into a live training display.</p>
-      <p class="kicker accent" style="margin-top:40px" ${S.rise(S.bar(1) + S.BEAT * 2)}>Journey ${journey}</p>
+    <div style="position:absolute;left:0;right:0;top:150px;text-align:center">
+      <div ${S.rise(S.beat(1), { y: 40 })}>${lockup(110)}</div>
+      <p class="kicker" style="margin-top:40px" ${S.rise(S.beat(2))}>${esc(kicker)}</p>
+      <div class="lede" style="margin:44px auto 0;max-width:1440px;font-size:38px">${PURPOSE.map((sentence, n) =>
+        `<p style="margin:0 0 18px" ${S.rise(Math.max(S.beat(2), said(id, n + after) - 0.1), { y: 16 })}>${sentence}</p>`).join('')}</div>
     </div>
     </div>`);
 
   /** A change of act is a wipe in a brand colour; inside an act the cuts are hard. */
-  const wipeInto = (id, color = 'var(--palette-volt-300)') =>
+  const wipeInto = (id, color = 'var(--palette-signal)') =>
     Film.overlay((S) => S.wipe((T) => prog(T, Film.at(id) - 0.3, 0.6), color));
 
   /**
+   * A push between acts: the scene slides in from the right while the one before slides out to the
+   * left. Put `push(S)` on both scenes' root and give them `{ before: dur }` and `{ after: dur }`.
+   */
+  const push = (S, dur = 0.6) => S.ref((el, t) => {
+    const into = t < 0 ? ease.inOut(prog(t, -dur, dur)) : 1;
+    const out = t > S.length ? ease.inOut(prog(t, S.length, dur)) : 0;
+    el.style.transform = `translateX(${(1 - into) * Film.W - out * Film.W}px)`;
+  });
+
+  /**
+   * A zoom through a screenshot into the next act: the scene dives into the point (x, y) for `dur`
+   * seconds after its end while the next scene, with `zoomIn(S)` on its root and `{ before: dur }`,
+   * settles in over it. Give the diving scene `{ after: dur }`.
+   */
+  const zoomOut = (S, x, y, dur = 0.7) => S.ref((el, t) => {
+    const p = t > S.length ? ease.in(prog(t, S.length, dur)) : 0;
+    el.style.transformOrigin = `${x}px ${y}px`;
+    el.style.transform = `scale(${1 + p * 7})`;
+  });
+  const zoomIn = (S, dur = 0.7) => S.ref((el, t) => {
+    const p = t < 0 ? ease.out(prog(t, -dur * 0.6, dur * 0.6)) : 1;
+    el.style.opacity = p;
+    el.style.transform = `scale(${lerp(1.25, 1, p)})`;
+  });
+
+  /**
    * The brand bug: the mark in the top-right corner of every scene but the first and the last,
-   * so every frame of the film is a Wattzup frame. An ink ring keeps it apart from a volt field.
+   * so every frame of the film is a Telo Ride frame. An ink disc keeps it apart from a signal field.
    */
   const bug = (skip = [Film.timing.scenes[0].id, Film.timing.scenes.at(-1).id]) => Film.overlay((S) => {
     const spans = Film.timing.scenes.filter((s) => !skip.includes(s.id)).map((s) => [s.start, s.start + s.length]);
-    return `<div style="position:absolute;right:44px;top:40px;width:56px;height:56px;border-radius:14px;box-shadow:0 0 0 3px var(--palette-neutral-950)" ${S.ref((el, T) => {
+    return `<div class="lockup" style="--s:46px;position:absolute;right:40px;top:36px;width:68px;height:68px;display:grid;place-items:center;border-radius:50%;background:var(--palette-ink);box-shadow:0 0 0 3px var(--palette-line)" ${S.ref((el, T) => {
       el.style.opacity = spans.some(([a, b]) => T >= a && T < b) ? 1 : 0;
-    })}>${mark(56)}</div>`;
+    })}>${mark(52)}</div>`;
   });
 
-  Film.kit = { at, lineOf, said, part, onBeat, arrive, onPhone, onBrowser, onTablet, pop, closeup, during, fact, counter, mark, lockup, photo, opening, closing, wipeInto, bug };
+  Film.kit = { at, lineOf, said, part, onBeat, arrive, onPhone, onBrowser, onTablet, pop, closeup, during, fact, counter, mark, lockup, photo, PURPOSE, terminal, opening, closing, wipeInto, push, zoomOut, zoomIn, bug };
 })();

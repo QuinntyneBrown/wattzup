@@ -1,0 +1,64 @@
+@startuml
+title UML sequence behaviour — Open a setting
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "SettingRow" as row
+  participant "ProfilePage" as page
+  participant "Dialog (CDK)" as dialog
+  participant "Router" as router
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "BikeConnection" as bike
+  participant "HeartRateStrap" as strap
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "HttpAuthApi" as auth
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "AuthController" as ctrl
+end box
+page -> bike : pairedBikeName, ble
+alt A bike is paired
+  bike --> page : "Echelon EX-5s", connected
+  page -> row : "Echelon EX-5s" with "Connected · diagnostics" (L2-112 AC1)
+else No bike paired
+  bike --> page : null
+  page -> row : "No bike yet" (AC2)
+end
+actor -> row : Choose a setting
+row -> page : link or click
+alt Bike, paired
+  page -> dialog : open DiagnosticsDialog (L2-113; Connect Bike until slice 25.1)
+else Bike, none paired
+  page -> router : Connect Bike
+else Ride settings
+  page -> router : /settings ("Quality, sound and display", L2-158)
+else Custom workout
+  page -> router : Custom workout ("Build your own intervals")
+else Heart-rate strap
+  page -> strap : connect() (L2-031)
+else Display name
+  page -> dialog : open DisplayNameDialog (L2-005)
+else Sign out
+  page -> auth : signOut()
+  auth -> ctrl : POST /api/auth/sign-out
+  ctrl --> auth : 204, cookie cleared
+  page -> router : Sign-in screen (L2-006)
+else Delete my account
+  page -> dialog : open DeleteAccountDialog (L2-006)
+end
+@enduml

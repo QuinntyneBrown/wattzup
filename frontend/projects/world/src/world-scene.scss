@@ -1,0 +1,23 @@
+// The world's canvas fills the race scene, over the map's photo (the race mock's race-scene).
+:host {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.world-scene {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+// The load's warm-up frames are drawn but never seen (L2-111 AC12).
+.world-scene--busy {
+  opacity: 0;
+}
+
+// A world handed over warm from World loading fades in over 200 ms, at once with reduced motion, whose tokens make the
+// duration 0 (L2-153 AC3).
+.world-scene--handed {
+  transition: opacity var(--duration-base) var(--ease-out);
+}

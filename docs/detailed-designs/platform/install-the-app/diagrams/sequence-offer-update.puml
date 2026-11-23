@@ -1,0 +1,50 @@
+@startuml
+title UML sequence behaviour — Offer a new version
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+participant "Static host" as host
+box "Frontend — Ride app (service worker)" #E0F2FE
+  participant "Angular service worker" as sw
+end box
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "SwUpdate" as swupdate
+  participant "SwAppUpdates" as updates
+  participant "UpdatePrompt" as prompt
+  participant "RideInProgress" as activity
+end box
+box "Frontend — Ride app (components library)" #E0F2FE
+  participant "Toast" as toast
+end box
+actor -> sw : Open the installed app
+sw -> host : GET ngsw.json
+host --> sw : New version hash
+sw -> host : Download the new version's files
+sw -> swupdate : VERSION_READY
+swupdate -> updates : versionUpdates
+updates -> prompt : ready = true
+prompt -> activity : inProgress()
+alt A ride is in progress (L2-150 AC2)
+  prompt -> prompt : no toast; no reload
+  ...ride ends; Results (or Profile) opens; the store calls end()...
+  activity -> prompt : inProgress = false
+end
+prompt -> toast : "A new version is ready" with Reload
+actor -> toast : Reload
+toast -> prompt : actionChosen
+prompt -> updates : reload()
+updates -> swupdate : activateUpdate()
+updates -> updates : document.location.reload()
+@enduml

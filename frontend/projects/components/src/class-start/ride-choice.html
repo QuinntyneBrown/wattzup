@@ -1,0 +1,39 @@
+<section class="ride-choice" aria-labelledby="ride-choice">
+  <h2 class="ride-choice__title" id="ride-choice">How do you want to ride?</h2>
+  <div class="ride-choice__options" role="radiogroup" aria-label="Ride alone or with a group">
+    @for (option of options(); track option.id; let index = $index) {
+      <button
+        class="ride-option"
+        type="button"
+        role="radio"
+        [attr.aria-checked]="option.id === selected()"
+        [attr.aria-disabled]="option.disabled ? 'true' : null"
+        [tabIndex]="option.id === selected() ? 0 : -1"
+        (click)="pick(option)"
+        (keydown)="move($event, index)"
+      >
+        <span class="ride-option__icon">
+          @if (option.icon === 'alone') {
+            <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          } @else {
+            <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <path d="M16 3.128a4 4 0 0 1 0 7.744" />
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+              <circle cx="9" cy="7" r="4" />
+            </svg>
+          }
+        </span>
+        <span class="ride-option__text"
+          ><span class="ride-option__title">{{ option.title }}</span
+          ><span class="ride-option__body">{{ option.body }}</span></span
+        >
+      </button>
+    }
+  </div>
+  <ng-content select="[slot=session]" />
+  <div class="ride-choice__go"><ng-content /></div>
+</section>

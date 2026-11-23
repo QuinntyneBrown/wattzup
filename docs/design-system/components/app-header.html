@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App header — Telo Ride design system</title>
+<meta name="description" content="The top bar of every Telo Ride screen: the app header with brand, main nav, bike status, streak, level and full screen, and the slim task headers of the ride flow.">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/components.css">
+<link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Page-only: ds.css underlines every link; components in examples set their own decoration. */
+:where(.ds-example__canvas, .ds-stage, .ds-themes, .ds-matrix, .ds-anatomy__figure, .ds-do, .ds-dont) a { text-decoration: none; color: inherit; }
+.ds-matrix td { min-width: 7rem; }
+.ds-matrix td > :is(a, button, span):not(.visually-hidden) { display: inline-flex; vertical-align: middle; }
+.ds-keys td:first-child { white-space: nowrap; }
+.ds-matrix td { white-space: nowrap; }
+.ds-matrix td > :is(.tier-tabs, .tabs) { display: inline-flex; }
+.ds-stage .demo-relative { position: relative; }
+</style>
+</head>
+<body id="top">
+<a class="ds-skip" href="#main">Skip to content</a>
+<div class="ds-shell">
+  <nav class="ds-nav" aria-label="Design system">
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <details open><summary>Foundations</summary><ul>
+      <li><a href="../foundations/color.html">Color</a></li>
+      <li><a href="../foundations/typography.html">Typography</a></li>
+      <li><a href="../foundations/spacing.html">Spacing</a></li>
+      <li><a href="../foundations/layout.html">Layout</a></li>
+      <li><a href="../foundations/elevation.html">Elevation</a></li>
+      <li><a href="../foundations/shape.html">Shape</a></li>
+      <li><a href="../foundations/motion.html">Motion</a></li>
+      <li><a href="../foundations/iconography.html">Iconography</a></li>
+      <li><a href="../foundations/theming.html">Theming</a></li>
+      <li><a href="../foundations/responsive.html">Responsive</a></li>
+      <li><a href="../foundations/accessibility.html">Accessibility</a></li>
+      <li><a href="../foundations/content.html">Content</a></li>
+    </ul></details>
+    <details open><summary>Actions</summary><ul>
+      <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
+      <li><a href="../components/link.html">Link</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
+      <li><a href="../components/form-field.html">Form field</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
+      <li><a href="../components/slider.html">Slider</a></li>
+      <li><a href="../components/number-stepper.html">Number stepper</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
+      <li><a href="../components/skip-link.html">Skip link</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
+      <li><a href="../components/dialog.html">Dialog</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
+      <li><a href="../components/tooltip.html">Tooltip</a></li>
+      <li><a href="../components/divider.html">Divider</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
+      <li><a href="../components/description-list.html">Description list</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
+      <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
+      <li><a href="../components/toast.html">Toast</a></li>
+      <li><a href="../components/alert.html">Alert and banner</a></li>
+      <li><a href="../components/inline-message.html">Inline message</a></li>
+      <li><a href="../components/progress-bar.html">Progress bar</a></li>
+      <li><a href="../components/spinner.html">Spinner</a></li>
+      <li><a href="../components/skeleton.html">Skeleton</a></li>
+      <li><a href="../components/empty-state.html">Empty state</a></li>
+      <li><a href="../components/error-page.html">Error page</a></li>
+    </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
+    <details open><summary>Patterns</summary><ul>
+      <li><a href="../patterns/forms.html">Forms</a></li>
+      <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
+      <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
+      <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
+      <li><a href="../patterns/notifications.html">Notifications</a></li>
+      <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
+    </ul></details>
+  </nav>
+  <main id="main" class="ds-main">
+    <header class="ds-header">
+      <p class="ds-kicker">Component · Navigation</p>
+      <h1>App header</h1>
+      <p class="ds-lead">The bar across the top of every screen. On the four home screens it carries the brand, the main nav and who you are (bike, streak, level); inside a flow it slims down to the brand, where you came from and how to get out.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
+    </header>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+      <p>Telo Ride has no sidebar: navigation is one top bar. Which header a screen gets depends on whether the rider is <em>choosing</em> or <em>doing</em>.</p>
+      <ul>
+        <li><b>App header</b> (<code>.app-header</code>) on Home, Race (Map Select), Classes (Class Library), Profile and the 404. It holds the main nav and the rider's status. Use it on any screen reachable from the main nav.</li>
+        <li><b>Task headers</b> on screens that are a step in a flow: Race Setup (<code>.setup-header</code>, "← Maps"), Class Start and Class Ride (<code>.class-header</code>), Results (<code>.results-header</code>), the race lobby (<code>.race-lobby__header</code>, "Leave"), Custom workout (<code>.training-header</code>, "Close") and the custom ride (<code>.ride-header</code>). They drop the nav so the only ways out are the ones the flow allows.</li>
+        <li><b>Not a header:</b> the race's top bar over the 3D world is HUD glass; see <a href="hud-panel.html">HUD panel</a>. <code>.ride-header--ghost</code> is a placement helper for the ride's popovers; see <a href="popover.html">Popover</a>.</li>
+      </ul>
+      <p>Use <a href="tabs.html">tabs</a> for views inside a page, never a second row of header links. For deep settings-like screens the system has a <a href="sidebar-nav.html">sidebar navigation</a> the product does not use yet.</p>
+    </section>
+
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+      <div class="ds-anatomy">
+        <figure class="ds-anatomy__figure" style="padding: var(--space-10) var(--space-4); place-items: stretch;">
+          <header class="app-header" style="border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-lg); background: var(--color-ink);">
+            <a class="app-header__brand" href="../../mocks/pages/home/default.html" aria-label="Home"><span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span></a>
+            <nav class="app-header__nav" aria-label="Main">
+              <a class="app-header__nav-link" href="../../mocks/pages/home/default.html" aria-current="page">Home</a>
+              <a class="app-header__nav-link" href="../../mocks/pages/map-select/default.html">Race</a>
+              <a class="app-header__nav-link" href="../../mocks/pages/class-library/default.html">Classes</a>
+              <a class="app-header__nav-link" href="../../mocks/pages/profile/default.html">Profile</a>
+            </nav>
+            <div class="app-header__end">
+              <span class="app-header__bike"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>Echelon EX-5s<span class="visually-hidden"> connected</span></span>
+              <span class="app-header__streak"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg><span class="app-header__streak-count" aria-hidden="true">4</span><span class="visually-hidden">4-day streak</span></span>
+              <a class="app-header__level" href="../../mocks/pages/profile/default.html" aria-label="Level 7, 1840 of 2600 XP"><span class="level-badge" aria-hidden="true">7</span><span class="app-header__xp" aria-hidden="true"><span class="xp-bar"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><span class="app-header__xp-label">1,840 / 2,600 XP</span></span></a>
+              <button class="icon-btn icon-btn--edge" type="button" aria-label="Full screen" aria-pressed="false"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+            </div>
+          </header>
+          <span class="ds-callout" style="left: 5%; top: 18%;" aria-hidden="true">1</span>
+          <span class="ds-callout" style="left: 30%; top: 18%;" aria-hidden="true">2</span>
+          <span class="ds-callout" style="left: 55%; top: 18%;" aria-hidden="true">3</span>
+          <span class="ds-callout" style="left: 68%; top: 18%;" aria-hidden="true">4</span>
+          <span class="ds-callout" style="left: 80%; top: 18%;" aria-hidden="true">5</span>
+          <span class="ds-callout" style="left: 93%; top: 18%;" aria-hidden="true">6</span>
+          <span class="ds-callout" style="left: 50%; top: 82%;" aria-hidden="true">7</span>
+        </figure>
+        <ol class="ds-anatomy__list">
+          <li><div><b>Brand</b><small>The <a href="lockup.html">lockup</a> inside a link named "Home"; 26px mark, 24px wordmark.</small></div></li>
+          <li><div><b>Main nav</b><small><code>&lt;nav aria-label="Main"&gt;</code>, four links, the current one <code>aria-current="page"</code> on a raised fill. A full-width row of its own below 640px.</small></div></li>
+          <li><div><b>Bike status</b><small>Bluetooth icon in volt (connected) or heart (off) and the bike's name. Static text, from 1024px.</small></div></li>
+          <li><div><b>Streak</b><small>Flame in warn and a Barlow numeral. Absent until the rider has a streak.</small></div></li>
+          <li><div><b>Level</b><small>Gold <a href="level-badge.html">level badge</a> plus the XP bar and "1,840 / 2,600 XP" from 640px; one link to Profile.</small></div></li>
+          <li><div><b>Full screen</b><small>36px <code>.icon-btn</code>, pulled 8px into the right margin (<code>--edge</code>).</small></div></li>
+          <li><div><b>Bar</b><small>10px top and bottom, 16 / 24 / 32px sides, 24px between groups, hairline <code>--color-line</code> under it. 56px tall when it fits on one row.</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+      <p>One app header and six task headers. They share the bar (padding, hairline, 36px controls) and differ in what sits between the brand and the end.</p>
+      <h3>App header: connected, disconnected, new rider</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack ds-example__canvas--canvas" style="padding: 0; gap: 0;">
+          <header class="app-header">
+            <a class="app-header__brand" href="../../mocks/pages/home/default.html" aria-label="Home"><span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span></a>
+            <nav class="app-header__nav" aria-label="Main">
+              <a class="app-header__nav-link" href="../../mocks/pages/home/default.html" aria-current="page">Home</a>
+              <a class="app-header__nav-link" href="../../mocks/pages/map-select/default.html">Race</a>
+              <a class="app-header__nav-link" href="../../mocks/pages/class-library/default.html">Classes</a>
+              <a class="app-header__nav-link" href="../../mocks/pages/profile/default.html">Profile</a>
+            </nav>
+            <div class="app-header__end">
+              <span class="app-header__bike"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>Echelon EX-5s<span class="visually-hidden"> connected</span></span>
+              <span class="app-header__streak"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg><span class="app-header__streak-count" aria-hidden="true">4</span><span class="visually-hidden">4-day streak</span></span>
+              <a class="app-header__level" href="../../mocks/pages/profile/default.html" aria-label="Level 7, 1840 of 2600 XP"><span class="level-badge" aria-hidden="true">7</span><span class="app-header__xp" aria-hidden="true"><span class="xp-bar"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><span class="app-header__xp-label">1,840 / 2,600 XP</span></span></a>
+              <button class="icon-btn icon-btn--edge" type="button" aria-label="Full screen" aria-pressed="false"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+            </div>
+          </header>
+          <header class="app-header">
+            <a class="app-header__brand" href="../../mocks/pages/home/disconnected.html" aria-label="Home"><span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span></a>
+            <nav class="app-header__nav" aria-label="Main">
+              <a class="app-header__nav-link" href="../../mocks/pages/home/disconnected.html">Home</a>
+              <a class="app-header__nav-link" href="../../mocks/pages/map-select/default.html" aria-current="page">Race</a>
+              <a class="app-header__nav-link" href="../../mocks/pages/class-library/default.html">Classes</a>
+              <a class="app-header__nav-link" href="../../mocks/pages/profile/default.html">Profile</a>
+            </nav>
+            <div class="app-header__end">
+              <span class="app-header__bike app-header__bike--off" title="Bike not connected"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg>Echelon EX-5s<span class="visually-hidden"> not connected</span></span>
+              <span class="app-header__streak"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg><span class="app-header__streak-count" aria-hidden="true">4</span><span class="visually-hidden">4-day streak</span></span>
+              <a class="app-header__level" href="../../mocks/pages/profile/default.html" aria-label="Level 7, 1840 of 2600 XP"><span class="level-badge" aria-hidden="true">7</span><span class="app-header__xp" aria-hidden="true"><span class="xp-bar"><span class="xp-bar__fill" style="--value: 70.8%"></span></span><span class="app-header__xp-label">1,840 / 2,600 XP</span></span></a>
+              <button class="icon-btn icon-btn--edge" type="button" aria-label="Full screen" aria-pressed="false"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+            </div>
+          </header>
+          <header class="app-header">
+            <a class="app-header__brand" href="../../mocks/pages/home/new-rider.html" aria-label="Home"><span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span></a>
+            <nav class="app-header__nav" aria-label="Main">
+              <a class="app-header__nav-link" href="../../mocks/pages/home/new-rider.html">Home</a>
+              <a class="app-header__nav-link" href="../../mocks/pages/map-select/new-rider.html">Race</a>
+              <a class="app-header__nav-link" href="../../mocks/pages/class-library/new-rider.html" aria-current="page">Classes</a>
+              <a class="app-header__nav-link" href="../../mocks/pages/profile/new-rider.html">Profile</a>
+            </nav>
+            <div class="app-header__end">
+              <span class="app-header__bike"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>Echelon EX-5s<span class="visually-hidden"> connected</span></span>
+              <a class="app-header__level" href="../../mocks/pages/profile/new-rider.html" aria-label="Level 1, 0 of 400 XP"><span class="level-badge" aria-hidden="true">1</span><span class="app-header__xp" aria-hidden="true"><span class="xp-bar"><span class="xp-bar__fill" style="--value: 0%"></span></span><span class="app-header__xp-label">0 / 400 XP</span></span></a>
+              <button class="icon-btn icon-btn--edge" type="button" aria-label="Full screen" aria-pressed="false"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+            </div>
+          </header>
+        </div>
+        <div class="ds-example__caption"><span>Mid rider on Home (connected) · on Race with the bike off (heart icon, "not connected" for screen readers) · new rider on Classes (no streak yet, empty XP bar).</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;header class="app-header"&gt;
+  &lt;a class="app-header__brand" href="/" aria-label="Home"&gt;&lt;span class="lockup"&gt;…&lt;/span&gt;&lt;/a&gt;
+  &lt;nav class="app-header__nav" aria-label="Main"&gt;
+    &lt;a class="app-header__nav-link" href="/" aria-current="page"&gt;Home&lt;/a&gt;
+    &lt;a class="app-header__nav-link" href="/race"&gt;Race&lt;/a&gt;
+    &lt;a class="app-header__nav-link" href="/classes"&gt;Classes&lt;/a&gt;
+    &lt;a class="app-header__nav-link" href="/profile"&gt;Profile&lt;/a&gt;
+  &lt;/nav&gt;
+  &lt;div class="app-header__end"&gt;
+    &lt;span class="app-header__bike app-header__bike--off"&gt;&lt;svg class="icon icon--md" aria-hidden="true"&gt;…&lt;/svg&gt;Echelon EX-5s&lt;span class="visually-hidden"&gt; not connected&lt;/span&gt;&lt;/span&gt;
+    &lt;span class="app-header__streak"&gt;&lt;svg …&gt;&lt;/svg&gt;&lt;span class="app-header__streak-count" aria-hidden="true"&gt;4&lt;/span&gt;&lt;span class="visually-hidden"&gt;4-day streak&lt;/span&gt;&lt;/span&gt;
+    &lt;a class="app-header__level" href="/profile" aria-label="Level 7, 1840 of 2600 XP"&gt;
+      &lt;span class="level-badge" aria-hidden="true"&gt;7&lt;/span&gt;
+      &lt;span class="app-header__xp" aria-hidden="true"&gt;&lt;span class="xp-bar"&gt;&lt;span class="xp-bar__fill" style="--value: 70.8%"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="app-header__xp-label"&gt;1,840 / 2,600 XP&lt;/span&gt;&lt;/span&gt;
+    &lt;/a&gt;
+    &lt;button class="icon-btn icon-btn--edge" type="button" aria-label="Full screen" aria-pressed="false"&gt;…&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/header&gt;</code></pre></details>
+      </div>
+
+      <h3>Task headers</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack ds-example__canvas--canvas" style="padding: 0; gap: var(--space-4);">
+          <header class="setup-header">
+            <span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span>
+            <a class="setup-header__back" href="../../mocks/pages/map-select/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Maps</a>
+            <button class="icon-btn setup-header__fullscreen" type="button" aria-label="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+          </header>
+          <header class="class-header">
+            <span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span>
+            <a class="back-link class-header__back" href="../../mocks/pages/class-library/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Classes</a>
+            <button class="icon-btn class-header__end" type="button" aria-label="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+          </header>
+          <header class="results-header">
+            <span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span>
+            <span class="results-header__context">Old Town Criterium · vs Bots</span>
+            <button class="icon-btn" type="button" aria-label="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+          </header>
+          <header class="race-lobby__header">
+            <span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span>
+            <span class="race-lobby__title"><span class="race-lobby__map">Old Town Criterium</span><span class="race-lobby__meta"> · 14.2 km · Riders online</span></span>
+            <a class="race-lobby__leave" href="../../mocks/pages/race-setup/peers.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg>Leave</a>
+            <button class="icon-btn" type="button" aria-label="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+          </header>
+          <header class="training-header">
+            <span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span>
+            <div class="training-header__divider" aria-hidden="true"></div>
+            <span class="training-header__bike">Echelon EX-5s</span>
+            <a class="training-header__close" href="../../mocks/pages/profile/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>Close</a>
+            <button class="icon-btn" type="button" aria-label="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+          </header>
+          <header class="ride-header">
+            <span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span>
+            <div class="ride-header__menu"><a class="ride-header__link ride-header__link--strong" href="../../mocks/dialogs/end-ride/default.html" aria-haspopup="dialog" aria-expanded="false"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</a></div>
+            <span class="ride-header__divider" aria-hidden="true"></span>
+            <a class="ride-header__status" href="../../mocks/dialogs/diagnostics/default.html" aria-label="Diagnostics: Echelon EX-5s Connected"><svg class="icon icon--md text-volt" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg><span class="ride-header__status-name">Echelon EX-5s</span><span class="ride-header__status-text text-muted">Connected</span></a>
+            <div class="ride-header__menu"><a class="ride-header__link ride-header__link--feedback" href="../../mocks/dialogs/feedback/default.html" aria-haspopup="dialog" aria-expanded="false"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/><path d="M12 8v6"/><path d="M9 11h6"/></svg>Feedback</a></div>
+            <div class="ride-header__end">
+              <span class="ride-header__clock" role="timer" aria-label="Elapsed 6:52 of 30:00">6:52<span class="ride-header__clock-total"> / 30:00</span></span>
+              <button class="btn btn--raised" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect x="14" y="3" width="5" height="18" rx="1"/><rect x="5" y="3" width="5" height="18" rx="1"/></svg>Pause</button>
+              <a class="ride-header__stop" href="../../mocks/pages/profile/default.html"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>End</a>
+            </div>
+            <button class="icon-btn" type="button" aria-label="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+          </header>
+        </div>
+        <div class="ds-example__caption"><span>Race Setup (back to Maps) · Class Start (back to Classes) · Results (what you rode) · race lobby (Leave turns heart on hover) · Custom workout (Close) · custom ride (Library, bike status, Feedback, clock, Pause, End).</span></div>
+      </div>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Header</th><th scope="col">Between brand and end</th><th scope="col">Way out</th><th scope="col">Used on</th></tr></thead><tbody>
+        <tr><td><code>.app-header</code></td><td>Main nav</td><td>Nav links</td><td>Home, Race, Classes, Profile, 404</td></tr>
+        <tr><td><code>.setup-header</code></td><td>Back link</td><td>"← Maps"</td><td>Race Setup</td></tr>
+        <tr><td><code>.class-header</code></td><td>Back link; in Class Ride the class name, clock, Finish, Leave</td><td>"← Classes", Leave</td><td>Class Start, Class Ride</td></tr>
+        <tr><td><code>.results-header</code></td><td>What you rode (muted, truncates)</td><td>Done in the page</td><td>Results</td></tr>
+        <tr><td><code>.race-lobby__header</code></td><td>Map, distance, mode (truncates)</td><td>Leave</td><td>Race lobby</td></tr>
+        <tr><td><code>.training-header</code></td><td>Divider, bike name</td><td>Close</td><td>Custom workout</td></tr>
+        <tr><td><code>.ride-header</code></td><td>Library, bike status, workout, Feedback, clock, Pause, End</td><td>Library (asks first), End</td><td>Custom ride</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+      <p>Headers have one size; their height comes from 36px controls (<code>--control-height-sm</code>) plus vertical padding, so content never changes it.</p>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Header</th><th scope="col">Padding (block × inline)</th><th scope="col">One-row height</th></tr></thead><tbody>
+        <tr><td>App and task headers</td><td>10px × 16 / 24 / 32px (<code>--space-2-5</code> × <code>--layout-margin</code>-like steps)</td><td>56px (<code>--layout-topbar-height</code>)</td></tr>
+        <tr><td><code>.ride-header</code>, <code>.training-header</code></td><td>12px × 20 / 32px (<code>--space-3</code> × <code>--space-5</code>, <code>--space-8</code> from lg)</td><td>60px; End and Pause grow to 48px below 640px</td></tr>
+        <tr><td>Class Ride <code>.class-header</code></td><td>8px × 16 / 24px</td><td>52px</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <p>The header is a row of links and buttons; each keeps its own states. The bike status and streak are static text and have none.</p>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Part</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Current / pressed</th><th scope="col">Disabled</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Nav link</th><td><a class="app-header__nav-link" href="../../mocks/pages/map-select/default.html">Race</a></td><td><a class="app-header__nav-link" href="../../mocks/pages/map-select/default.html" data-state="hover">Race</a></td><td><a class="app-header__nav-link" href="../../mocks/pages/map-select/default.html" data-state="focus">Race</a></td><td><a class="app-header__nav-link" href="../../mocks/pages/map-select/default.html" data-state="active">Race</a></td><td><a class="app-header__nav-link" href="../../mocks/pages/home/default.html" aria-current="page">Home</a></td><td>never</td></tr>
+          <tr><th scope="row">Level link</th><td><a class="app-header__level" href="../../mocks/pages/profile/default.html" aria-label="Level 7, 1840 of 2600 XP"><span class="level-badge" aria-hidden="true">7</span></a></td><td><a class="app-header__level" href="../../mocks/pages/profile/default.html" aria-label="Level 7, 1840 of 2600 XP" data-state="hover"><span class="level-badge" aria-hidden="true">7</span></a></td><td><a class="app-header__level" href="../../mocks/pages/profile/default.html" aria-label="Level 7, 1840 of 2600 XP" data-state="focus"><span class="level-badge" aria-hidden="true">7</span></a></td><td><a class="app-header__level" href="../../mocks/pages/profile/default.html" aria-label="Level 7, 1840 of 2600 XP" data-state="active"><span class="level-badge" aria-hidden="true">7</span></a></td><td>—</td><td>never</td></tr>
+          <tr><th scope="row">Full screen</th><td><button class="icon-btn" type="button" aria-label="Full screen" aria-pressed="false"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></td><td><button class="icon-btn" type="button" aria-label="Full screen" aria-pressed="false" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></td><td><button class="icon-btn" type="button" aria-label="Full screen" aria-pressed="false" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></td><td><button class="icon-btn" type="button" aria-label="Full screen" aria-pressed="false" data-state="active"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></td><td><button class="icon-btn" type="button" aria-label="Full screen" aria-pressed="true"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></td><td><button class="icon-btn" type="button" aria-label="Full screen" disabled><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></td></tr>
+          <tr><th scope="row">Back link</th><td><a class="setup-header__back" href="../../mocks/pages/map-select/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Maps</a></td><td><a class="setup-header__back" href="../../mocks/pages/map-select/default.html" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Maps</a></td><td><a class="setup-header__back" href="../../mocks/pages/map-select/default.html" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Maps</a></td><td><a class="setup-header__back" href="../../mocks/pages/map-select/default.html" data-state="active"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Maps</a></td><td>—</td><td>never</td></tr>
+          <tr><th scope="row">Leave (lobby)</th><td><a class="race-lobby__leave" href="../../mocks/pages/race-setup/peers.html" style="margin: 0;"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg>Leave</a></td><td><a class="race-lobby__leave" href="../../mocks/pages/race-setup/peers.html" style="margin: 0;" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg>Leave</a></td><td><a class="race-lobby__leave" href="../../mocks/pages/race-setup/peers.html" style="margin: 0;" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg>Leave</a></td><td><a class="race-lobby__leave" href="../../mocks/pages/race-setup/peers.html" style="margin: 0;" data-state="active"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg>Leave</a></td><td>—</td><td>never</td></tr>
+          <tr><th scope="row">Ride menu link</th><td><a class="ride-header__link" href="../../mocks/dialogs/end-ride/default.html" aria-haspopup="dialog" aria-expanded="false"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</a></td><td><a class="ride-header__link" href="../../mocks/dialogs/end-ride/default.html" aria-haspopup="dialog" aria-expanded="true" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</a></td><td><a class="ride-header__link" href="../../mocks/dialogs/end-ride/default.html" aria-haspopup="dialog" aria-expanded="false" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</a></td><td><a class="ride-header__link" href="../../mocks/dialogs/end-ride/default.html" aria-haspopup="dialog" aria-expanded="false" data-state="active"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</a></td><td><a class="ride-header__link" href="../../mocks/dialogs/end-ride/default.html" aria-haspopup="dialog" aria-expanded="true"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Library</a> <small class="text-muted">open</small></td><td>never</td></tr>
+          <tr><th scope="row">End (ride)</th><td><button class="ride-header__stop" type="button"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>End</button></td><td><button class="ride-header__stop" type="button" style="color: var(--color-heart-fg);"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>End</button></td><td><button class="ride-header__stop" type="button" data-state="focus"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>End</button></td><td><button class="ride-header__stop" type="button" data-state="active"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>End</button></td><td>—</td><td><button class="ride-header__stop" type="button" disabled><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>End</button></td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li><b>Current</b> is the only nav state that changes the fill: raised behind fg text. Hover only lifts the text from muted to fg. Press adds nothing; the colour holds.</li>
+        <li><b>Pressed</b> on full screen: the button carries <code>aria-pressed="true"</code> while the document is full screen and shows the raised fill.</li>
+        <li><b>Open</b> on a ride menu link: <code>aria-expanded="true"</code> while its popover is up, and the raised fill stays.</li>
+        <li><b>Disabled</b> exists only for End before the ride starts (0:00) and for full screen where the browser refuses it.</li>
+      </ul>
+      <h3>Both themes</h3>
+      <div class="ds-themes">
+        <div data-theme="light"><header class="app-header" style="padding-inline: 0;"><a class="app-header__brand" href="../../mocks/pages/home/default.html" aria-label="Home"><span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span></a><div class="app-header__end"><span class="app-header__streak"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg><span class="app-header__streak-count" aria-hidden="true">4</span><span class="visually-hidden">4-day streak</span></span><a class="app-header__level" href="../../mocks/pages/profile/default.html" aria-label="Level 7, 1840 of 2600 XP"><span class="level-badge" aria-hidden="true">7</span></a></div><nav class="app-header__nav" aria-label="Main" style="order: 99; width: 100%; flex-basis: 100%;"><a class="app-header__nav-link" href="../../mocks/pages/home/default.html" aria-current="page" style="flex: 1;">Home</a><a class="app-header__nav-link" href="../../mocks/pages/map-select/default.html" style="flex: 1;">Race</a><a class="app-header__nav-link" href="../../mocks/pages/class-library/default.html" style="flex: 1;">Classes</a><a class="app-header__nav-link" href="../../mocks/pages/profile/default.html" style="flex: 1;">Profile</a></nav></header></div>
+        <div data-theme="dark"><header class="app-header" style="padding-inline: 0;"><a class="app-header__brand" href="../../mocks/pages/home/default.html" aria-label="Home"><span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span></a><div class="app-header__end"><span class="app-header__streak"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg><span class="app-header__streak-count" aria-hidden="true">4</span><span class="visually-hidden">4-day streak</span></span><a class="app-header__level" href="../../mocks/pages/profile/default.html" aria-label="Level 7, 1840 of 2600 XP"><span class="level-badge" aria-hidden="true">7</span></a></div><nav class="app-header__nav" aria-label="Main" style="order: 99; width: 100%; flex-basis: 100%;"><a class="app-header__nav-link" href="../../mocks/pages/home/default.html" aria-current="page" style="flex: 1;">Home</a><a class="app-header__nav-link" href="../../mocks/pages/map-select/default.html" style="flex: 1;">Race</a><a class="app-header__nav-link" href="../../mocks/pages/class-library/default.html" style="flex: 1;">Classes</a><a class="app-header__nav-link" href="../../mocks/pages/profile/default.html" style="flex: 1;">Profile</a></nav></header></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <p>The header is mobile first and changes at three widths. The frames below load the real mocks in their own viewport, so their media queries fire at the width shown (scroll sideways inside the strip).</p>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Width</th><th scope="col">App header</th><th scope="col">Task headers</th></tr></thead><tbody>
+        <tr><td>Under 640px</td><td>Brand left, streak + level badge + full screen right; the nav drops to its own full-width row underneath (<code>order: 99</code>), four equal links. No XP bar, no bike.</td><td>16px sides. Context text truncates with an ellipsis; the Class Ride header drops "/ 30:00" and Pause's label, and below 384px the wordmark (the mark stays). The custom ride's End and Pause grow to 48px.</td></tr>
+        <tr><td>640px (<code>--layout-breakpoint-sm</code>)</td><td>The nav moves inline after the brand; the XP bar and its label appear beside the badge; sides 24px.</td><td>24px sides; the ride header's divider appears.</td></tr>
+        <tr><td>1024px (<code>--layout-breakpoint-lg</code>)</td><td>The bike status appears; sides 32px.</td><td>32px sides.</td></tr>
+      </tbody></table></div>
+      <div class="ds-table-wrap" style="display: flex; gap: var(--space-4); padding-bottom: var(--space-2);">
+        <iframe src="../../mocks/pages/home/default.html?chrome=0" width="362" height="150" title="Home at 360px: nav on its own row" style="flex: none; border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-lg);"></iframe>
+        <iframe src="../../mocks/pages/home/default.html?chrome=0" width="642" height="150" title="Home at 640px: nav inline, XP bar shown" style="flex: none; border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-lg);"></iframe>
+        <iframe src="../../mocks/pages/home/default.html?chrome=0" width="1026" height="150" title="Home at 1024px: bike status shown" style="flex: none; border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-lg);"></iframe>
+      </div>
+      <ul>
+        <li>The header never scrolls with the page: <code>.app</code> is a full-height column and only <code>.app__scroll</code> scrolls, so nothing needs <code>position: sticky</code> and nothing is covered (2.4.11).</li>
+        <li>Labels never wrap inside a link (<code>white-space: nowrap</code>); if a row is too wide the bar wraps between groups instead.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+      <p>The bar has no fill of its own: it sits on the page's <code>--color-ink</code> with a <code>--color-line</code> hairline. Text is <code>--color-muted</code>, lifting to <code>--color-fg</code>; the current link is <code>--color-raised</code>. Status colours mean one thing each: volt for a connected bike, heart for one that is not, warn for the streak flame and gold only for level and XP (earned things). In light, the same roles resolve to paper, ink and the deeper <code>-fg</code> accents.</p>
+      <pre><code>/* A quieter header for a kiosk build: no hairline, current link outlined */
+.kiosk .app-header { border-bottom-color: transparent; }
+.kiosk .app-header__nav-link[aria-current="page"] { background: none; box-shadow: inset 0 0 0 1px var(--color-line-strong); }</code></pre>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <p>A <code>&lt;header&gt;</code> that is a direct child of the app, so it is the page's <code>banner</code> landmark, holding a <code>&lt;nav aria-label="Main"&gt;</code> (<a href="https://www.w3.org/WAI/ARIA/apg/practices/landmark-regions/">APG landmark regions</a>). Links are links, the full-screen control is a button. The custom ride's Library and Feedback open popovers and carry <code>aria-haspopup="dialog"</code> and <code>aria-expanded</code>.</p>
+      <h3>Keyboard</h3>
+      <div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+        <tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Brand → nav links → level → full screen, in DOM order (which is visual order at every width; the nav's <code>order: 99</code> below 640px puts it last visually but the DOM keeps it second, so the skip link and landmarks matter there).</td></tr>
+        <tr><td><kbd>Enter</kbd></td><td>Follows a link; opens a ride menu popover.</td></tr>
+        <tr><td><kbd>Enter</kbd>, <kbd>Space</kbd></td><td>Toggles full screen.</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>Leaves full screen (the browser's own key) and closes an open ride popover, returning focus to its link.</td></tr>
+      </tbody></table></div>
+      <h3>Focus</h3>
+      <p>The shared 2px <code>--color-focus-ring</code> at 2px offset on <code>:focus-visible</code>. Links in the bar have rounded corners (<code>--radius-lg</code>, <code>--radius-md</code>, <code>--radius-full</code> on the level link) so the ring follows the control. The skip link comes before the header on every page.</p>
+      <h3>Labelling</h3>
+      <ul>
+        <li>The brand link is named "Home"; its lockup is decoration inside it.</li>
+        <li>The level link's name says everything the badge and bar show: "Level 7, 1840 of 2600 XP"; its children are <code>aria-hidden</code>.</li>
+        <li>The bike status reads "Echelon EX-5s connected" / "not connected" through visually hidden text, never colour alone.</li>
+        <li>The streak reads "4-day streak" through visually hidden text; the numeral is <code>aria-hidden</code>. (The mocks put <code>aria-label</code> on a plain <code>&lt;span&gt;</code>, which screen readers ignore; see Sources.)</li>
+        <li>Icon-only buttons have <code>aria-label</code> ("Full screen", "Leave class") and a <a href="tooltip.html">tooltip</a>.</li>
+      </ul>
+      <h3>Contrast</h3>
+      <div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+        <div class="ds-pair"><span>Nav link and context text on ink</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-ink" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Current nav link</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-raised" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>Bike icon, connected</span><span class="ds-pair__ratio" data-contrast="--color-volt-fg|--color-ink" data-min="3"></span></div>
+        <div class="ds-pair"><span>Bike icon, not connected</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-ink" data-min="3"></span></div>
+        <div class="ds-pair"><span>Streak flame</span><span class="ds-pair__ratio" data-contrast="--color-warn-fg|--color-ink" data-min="3"></span></div>
+        <div class="ds-pair"><span>Level numeral on the gold badge</span><span class="ds-pair__ratio" data-contrast="--color-on-fill|--color-gold" data-min="4.5"></span></div>
+        <div class="ds-pair"><span>XP fill on its track (the "1,840 / 2,600 XP" label still carries the figure)</span><span class="ds-pair__ratio" data-contrast="--color-gold-fg|--color-raised" data-min="3"></span></div>
+        <div class="ds-pair"><span>Focus ring on the bar</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-ink" data-min="3"></span></div>
+      </div>
+      <h3>Motion</h3>
+      <p>Link and button colours ease over <code>--duration-fast</code> (150ms); nothing moves. Reduced motion zeroes the duration.</p>
+      <h3>Touch</h3>
+      <p>Nav links and icon buttons draw 36px tall, and the brand and nav links take touches across at least 44px through an invisible <code>::after</code> that overhangs them (<code>--target-comfortable</code>); below 640px each nav link takes a quarter of the row (at least 80px wide). The level link is a 32px disc plus the bar. Mid-ride controls in the custom ride header grow to 48px (<code>--target-ride</code>) below 640px; on desktop the design keeps 36–40px (open question 9 in the mocks).</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li>Nav labels are single nouns for places: Home, Race, Classes, Profile. Never verbs, never icons alone.</li>
+        <li>Back links name where they go: "← Maps", "← Classes". Never "Back".</li>
+        <li>Context lines put the thing first, then how: "Old Town Criterium · vs Bots", "Old Town Criterium · 14.2 km · Riders online". Separate with a middle dot.</li>
+        <li>Exits say what they do to the ride: Close (nothing started), Leave (a lobby or class you joined), End (saves the ride). Library asks first because it would abandon a ride.</li>
+        <li>Numbers use Barlow numerals and thousands separators: "1,840 / 2,600 XP", "6:52 / 30:00".</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas ds-example__canvas--canvas"><a class="setup-header__back" href="../../mocks/pages/map-select/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Maps</a></div><figcaption>Name the destination in a back link, as Race Setup does.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas ds-example__canvas--canvas"><a class="setup-header__back" href="../../mocks/pages/map-select/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Back</a></div><figcaption>"Back" says nothing when the rider arrived from Home, a map tile or Results.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas ds-example__canvas--canvas"><span class="app-header__streak"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg><span class="app-header__streak-count" aria-hidden="true">4</span><span class="visually-hidden">4-day streak</span></span></div><figcaption>Give the streak visually hidden text; the numeral alone means nothing out loud.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas ds-example__canvas--canvas"><span class="app-header__streak"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg><span class="app-header__streak-count">4</span></span></div><figcaption>Put <code>aria-label="4-day streak"</code> on a plain span (the mocks): it is dropped and a screen reader says "4".</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas ds-example__canvas--canvas"><nav class="app-header__nav" aria-label="Main" style="width: auto; order: 0;"><a class="app-header__nav-link" href="../../mocks/pages/home/default.html" aria-current="page" style="flex: none;">Home</a><a class="app-header__nav-link" href="../../mocks/pages/map-select/default.html" style="flex: none;">Race</a></nav></div><figcaption>Mark the current page with <code>aria-current="page"</code>; the raised fill follows from it.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas ds-example__canvas--canvas"><div class="cluster cluster--sm"><a class="app-header__nav-link" href="../../mocks/pages/home/default.html" style="flex: none;">Home</a><a class="app-header__nav-link" href="../../mocks/pages/map-select/default.html" style="flex: none;">Race</a><a class="app-header__nav-link" href="../../mocks/pages/class-library/default.html" style="flex: none;">Classes</a><a class="app-header__nav-link" href="../../mocks/pages/profile/default.html" style="flex: none;">Profile</a><a class="app-header__nav-link" href="../../mocks/pages/custom-setup/default.html" style="flex: none;">Custom</a></div></div><figcaption>Add a fifth header link. Custom workout lives under Profile; a fifth link no longer fits a 360px row.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+        <tbody>
+          <tr><td>Bar background (the page)</td><td><code>--color-ink</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td></tr>
+          <tr><td>Hairline under the bar</td><td><code>--color-line</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td></tr>
+          <tr><td>Nav link, context, XP label</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+          <tr><td>Hover and current link text</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+          <tr><td>Current link fill, icon-button hover, XP track</td><td><code>--color-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td></tr>
+          <tr><td>Bike icon, connected</td><td><code>--color-volt-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-volt-fg" data-swatch></i><span data-token="--color-volt-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-volt-fg" data-swatch></i><span data-token="--color-volt-fg"></span></span></td></tr>
+          <tr><td>Bike icon off; Leave and End on hover</td><td><code>--color-heart-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-heart-fg" data-swatch></i><span data-token="--color-heart-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-heart-fg" data-swatch></i><span data-token="--color-heart-fg"></span></span></td></tr>
+          <tr><td>Streak flame</td><td><code>--color-warn-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-warn-fg" data-swatch></i><span data-token="--color-warn-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-warn-fg" data-swatch></i><span data-token="--color-warn-fg"></span></span></td></tr>
+          <tr><td>Level badge, XP fill</td><td><code>--color-gold</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-gold" data-swatch></i><span data-token="--color-gold"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-gold" data-swatch></i><span data-token="--color-gold"></span></span></td></tr>
+          <tr><td>Level numeral</td><td><code>--color-on-fill</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-on-fill" data-swatch></i><span data-token="--color-on-fill"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-on-fill" data-swatch></i><span data-token="--color-on-fill"></span></span></td></tr>
+          <tr><td>Link and button height</td><td><code>--control-height-sm</code></td><td colspan="2"><span data-token="--control-height-sm"></span></td></tr>
+          <tr><td>Bar padding: block, inline (base / sm / lg)</td><td><code>--space-2-5</code> <code>--space-4</code> <code>--space-6</code> <code>--space-8</code></td><td colspan="2"><span data-token="--space-2-5"></span> / <span data-token="--space-4"></span> / <span data-token="--space-6"></span> / <span data-token="--space-8"></span></td></tr>
+          <tr><td>Gap between groups: column / row</td><td><code>--space-6</code> <code>--space-2</code></td><td colspan="2"><span data-token="--space-6"></span> / <span data-token="--space-2"></span></td></tr>
+          <tr><td>Nav link / icon button radius</td><td><code>--radius-lg</code> <code>--radius-md</code></td><td colspan="2"><span data-token="--radius-lg"></span> / <span data-token="--radius-md"></span></td></tr>
+          <tr><td>One-row height</td><td><code>--layout-topbar-height</code></td><td colspan="2"><span data-token="--layout-topbar-height"></span></td></tr>
+          <tr><td>Colour transition</td><td><code>--duration-fast</code> <code>--ease-standard</code></td><td colspan="2"><span data-token="--duration-fast"></span> / <span data-token="--ease-standard"></span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+      <pre><code>&lt;div class="app"&gt;
+  &lt;header class="app-header"&gt; … &lt;/header&gt;
+  &lt;div class="app__scroll"&gt;&lt;main id="main" class="container page"&gt; … &lt;/main&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- A task header --&gt;
+&lt;header class="setup-header"&gt;
+  &lt;span class="lockup" role="img" aria-label="Telo Ride"&gt;…&lt;/span&gt;
+  &lt;a class="setup-header__back" href="/race"&gt;&lt;svg class="icon icon--md" aria-hidden="true"&gt;…&lt;/svg&gt;Maps&lt;/a&gt;
+  &lt;button class="icon-btn setup-header__fullscreen" type="button" aria-label="Full screen" aria-pressed="false"&gt;…&lt;/button&gt;
+&lt;/header&gt;</code></pre>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+        <tr><td><code>.app-header</code></td><td>The bar: wraps, hairline under, responsive side padding.</td></tr>
+        <tr><td><code>.app-header__brand</code> <code>__nav</code> <code>__nav-link</code> <code>__end</code></td><td>Brand link; nav (own row under 640px); link; right-hand group (pushed right).</td></tr>
+        <tr><td><code>aria-current="page"</code></td><td>Current link: raised fill, fg text.</td></tr>
+        <tr><td><code>.app-header__bike</code> (+ <code>--off</code>)</td><td>Bike status from 1024px; heart icon when off.</td></tr>
+        <tr><td><code>.app-header__streak</code> <code>__streak-count</code></td><td>Flame and numeral.</td></tr>
+        <tr><td><code>.app-header__level</code> <code>__xp</code> <code>__xp-label</code></td><td>Level link; XP bar and label from 640px.</td></tr>
+        <tr><td><code>.icon-btn</code> <code>.icon-btn--edge</code></td><td>Full-screen button; <code>--edge</code> aligns its glyph with the margin.</td></tr>
+        <tr><td><code>.setup-header</code> <code>.class-header</code> <code>.results-header</code> <code>.race-lobby__header</code> <code>.training-header</code> <code>.ride-header</code></td><td>Task headers (see Variants); each has <code>__back</code>, <code>__context</code>, <code>__leave</code>, <code>__close</code> or <code>__end</code> parts.</td></tr>
+        <tr><td><code>.ride-header--ghost</code></td><td>Placement helper for ride popovers, not a header; see <a href="popover.html">Popover</a>.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <p>Extracted from these mocks:</p>
+      <ul>
+        <li><a href="../../mocks/pages/home/default.html">pages/home/default</a>, <a href="../../mocks/pages/home/disconnected.html">home/disconnected</a> (bike off), <a href="../../mocks/pages/home/new-rider.html">home/new-rider</a> (no streak), <a href="../../mocks/pages/home/veteran.html">home/veteran</a></li>
+        <li><a href="../../mocks/pages/map-select/default.html">pages/map-select/default</a>, <a href="../../mocks/pages/class-library/default.html">pages/class-library/default</a>, <a href="../../mocks/pages/profile/default.html">pages/profile/default</a>, <a href="../../mocks/pages/not-found/default.html">pages/not-found/default</a></li>
+        <li><a href="../../mocks/pages/race-setup/default.html">pages/race-setup/default</a>, <a href="../../mocks/pages/class-start/default.html">pages/class-start/default</a>, <a href="../../mocks/pages/class-ride/default.html">pages/class-ride/default</a>, <a href="../../mocks/pages/results/default.html">pages/results/default</a>, <a href="../../mocks/pages/race-lobby/default.html">pages/race-lobby/default</a>, <a href="../../mocks/pages/custom-setup/default.html">pages/custom-setup/default</a>, <a href="../../mocks/pages/custom-ride/default.html">pages/custom-ride/default</a>, <a href="../../mocks/pages/connect-bike/default.html">pages/connect-bike/default</a></li>
+      </ul>
+      <p>Drift found during extraction:</p>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Mock</th><th scope="col">Issue</th><th scope="col">Resolution</th></tr></thead><tbody>
+        <tr><td>pages/home/*, map-select/*, class-library/*, profile/*</td><td><code>aria-label="4-day streak"</code> on a plain <code>&lt;span&gt;</code>; ARIA prohibits naming the generic role, so it is not announced.</td><td>Fixed in the mocks in slice 10.4: visually hidden "4-day streak" text, numeral <code>aria-hidden</code>.</td></tr>
+        <tr><td>Every task header (race-setup, class-start, results, race-lobby, custom-setup, custom-ride, connect-bike)</td><td><code>&lt;span class="lockup" role="img" aria-label="Telo Ride"&gt;</code> outside a link: same problem, the brand is silent.</td><td>Add <code>role="img"</code> to an unlinked lockup (see Code); the linked one in the app header is named by its link.</td></tr>
+        <tr><td>All task headers</td><td><code>.setup-header</code>, <code>.class-header</code>, <code>.results-header</code> and <code>.race-lobby__header</code> repeat one rule set (flex, 20px gap, hairline, 10px × 16/24/32px).</td><td>Kept as the mocks name them; a shared base class is a candidate when the CSS is merged.</td></tr>
+        <tr><td>pages/custom-ride/default, class-ride/default</td><td>Mid-ride Pause, End, Finish and Leave are 36–40px; the redesign plan asks for 48px.</td><td>Kept (the design's size) on desktop, 48px under 640px; open question 9 in the mocks.</td></tr>
+        <tr><td>pages/home/*, map-select/*, class-library/*, profile/* (light theme)</td><td>The header's XP bar fills <code>--color-gold</code> on <code>--color-raised</code>: 1.3:1 in light (9.4:1 in dark).</td><td>Fixed: the fill is <code>--color-gold-fg</code> (4.5:1 in light, unchanged in dark).</td></tr>
+      </tbody></table></div>
+    </section>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
+  </main>
+</div>
+<script src="../assets/ds.js"></script>
+</body>
+</html>

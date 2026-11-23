@@ -1,0 +1,37 @@
+@startuml
+title UML sequence behaviour — Return to sign-in when a session has ended
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app" #E0F2FE
+  participant "Page" as page
+  participant "sessionInterceptor" as interceptor
+  participant "CurrentRiderStore" as current
+  participant "authGuard" as guard
+  participant "SignInPage" as signin
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "Telo Ride API" as api
+end box
+actor -> page : Open a screen that needs a session
+page -> interceptor : Any API request
+interceptor -> api : Request with an ended session cookie
+api --> interceptor : 401 ProblemDetails
+interceptor -> current : signedOut()
+current -> guard : Status signedOut
+guard --> signin : Navigate to /sign-in?returnUrl=<screen> (L2-004 AC3, L2-001 AC1)
+signin --> actor : Sign-in screen
+note over signin : After the code is confirmed, the return URL opens
+@enduml

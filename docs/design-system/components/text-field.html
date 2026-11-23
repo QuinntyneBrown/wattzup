@@ -3,17 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Text field — Wattzup design system</title>
-<meta name="description" content="Single-line text input, used for the YouTube link.">
+<title>Text field — Telo Ride design system</title>
+<meta name="description" content="Single-line text input on an ink well with a 3:1 border: sizes, icons, addons, a clear button, read-only, disabled and invalid.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+  .ds-pairs-stack { display: flex; flex-direction: column; gap: var(--space-2); }
+  .ds-matrix td { min-width: var(--space-28); }
+  .ds-demo-col { display: flex; flex-direction: column; gap: var(--space-4); width: 100%; max-width: calc(var(--space-48) * 2); }
+  .ds-demo-wide { width: 100%; max-width: calc(var(--space-36) * 4); }
+  .ds-demo-panel { background: var(--color-panel); border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-2xl); padding: var(--space-5); width: 100%; }
+  .ds-menu-stage { min-height: calc(var(--space-44) * 2); align-items: flex-start; }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +36,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,66 +90,247 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Component · Inputs</p>
       <h1>Text field</h1>
-      <p class="ds-lead">A text field takes one line of text. Wattzup uses it for the YouTube link on setup and on the class page.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span></div>
+      <p class="ds-lead">The text field takes a short typed answer: a YouTube link, a video offset, a cadence. It is an ink well with a strong hairline so it reads as a place to type on any surface.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
       <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>Always inside a <a href="form-field.html">form field</a> with a visible label. The YouTube link field is <code>type="url"</code>, so phones offer a keyboard with <kbd>/</kbd> and <kbd>.com</kbd>.</p>
-    </section>
-    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
-<div class="ds-anatomy"><figure class="ds-anatomy__figure"><input class="input input--lg" type="url" aria-label="YouTube link" value="https://youtu.be/QUoToFsMNig"><span class="ds-callout" style="left: 5%; top: 20%;" aria-hidden="true">1</span><span class="ds-callout" style="left: 40%; top: 50%;" aria-hidden="true">2</span></figure><ol class="ds-anatomy__list"><li><div><b>Container</b><small>48px (lg), 1px strong edge, <code>--radius-md</code>.</small></div></li><li><div><b>Value</b><small>Body text, as typed.</small></div></li></ol></div>
-    </section>
-    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
-<div class="ds-example"><div class="ds-example__canvas "><label class="field"><span class="field__label">YouTube link</span><input class="input input--lg" type="url" autocomplete="url"></label></div><div class="ds-example__caption"><span>Large: a field that stands alone on its screen.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;label class="field"&gt;&lt;span class="field__label"&gt;YouTube link&lt;/span&gt;&lt;input class="input input--lg" type="url" autocomplete="url"&gt;&lt;/label&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
-<div class="ds-example"><div class="ds-example__canvas ds-example__canvas--stack"><input class="input input--sm" aria-label="Small"><input class="input" aria-label="Medium"><input class="input input--lg" aria-label="Large"></div></div>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<div class="ds-matrix"><table><thead><tr><th scope="col">Variant</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Invalid</th><th scope="col">Read-only</th><th scope="col">Disabled</th></tr></thead><tbody><tr><th scope="row">Text field</th><td><input class="input" aria-label="YouTube link" value="youtu.be/QUoToFsMNig"></td><td><input class="input" aria-label="YouTube link" value="youtu.be/QUoToFsMNig" data-state="hover"></td><td><input class="input" aria-label="YouTube link" value="youtu.be/QUoToFsMNig" data-state="focus"></td><td><input class="input" aria-label="YouTube link" value="youtu.be/QUoToFsMNig" aria-invalid="true"></td><td><input class="input" aria-label="YouTube link" value="youtu.be/QUoToFsMNig" readonly></td><td><input class="input" aria-label="YouTube link" value="youtu.be/QUoToFsMNig" disabled></td></tr></tbody></table></div><h3>Both themes</h3><div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas"><input class="input" aria-label="YouTube link" value="youtu.be/QUoToFsMNig"></div></div><div data-theme="dark"><div class="ds-example__canvas"><input class="input" aria-label="YouTube link" value="youtu.be/QUoToFsMNig"></div></div></div>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
-<ul><li>Full width of its form at every breakpoint.</li></ul>
-    </section>
-    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
-<p><code>--field-border</code> aliases <code>--color-border-strong</code>, the focus ring or <code>--color-danger-solid</code> by state.</p>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<h3>Role and pattern</h3><p>Native <code>&lt;input&gt;</code> with <code>&lt;label&gt;</code>; help and error through <code>aria-describedby</code>; <code>aria-invalid</code> when rejected.</p><h3>Keyboard</h3><div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody><tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Moves focus to and from the control in DOM order.</td></tr><tr><td><kbd>Enter</kbd></td><td>Submits the form; on setup, Start ride.</td></tr></tbody></table></div><h3>Focus</h3><p>The ring replaces the edge colour (0 offset).</p><h3>Labelling</h3><p>Visible label "YouTube link"; the error says which links work.</p><h3>Contrast</h3><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-pair"><span>Edge on surface</span><span class="ds-pair__ratio" data-contrast="--color-border-strong|--color-bg-surface" data-min="3"></span></div><div class="ds-pair"><span>Placeholder</span><span class="ds-pair__ratio" data-contrast="--color-fg-subtle|--color-bg-surface" data-min="4.5"></span></div><div class="ds-pair"><span>Error edge</span><span class="ds-pair__ratio" data-contrast="--color-danger-solid|--color-bg-surface" data-min="3"></span></div></div><h3>Motion</h3><p>Edge colour over <code>--duration-fast</code>.</p><h3>Touch</h3><p>Large is 48px tall.</p>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Labels are nouns: YouTube link.</li><li>Placeholders never replace labels.</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><label class="field"><span class="field__label">YouTube link</span><input class="input" type="url"></label></div><figcaption>Visible label.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><input class="input" placeholder="YouTube link" aria-label="YouTube link"></div><figcaption>Placeholder as label: it disappears on typing.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
-<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Edge</td><td><code>--color-border-strong</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-border-strong" data-swatch></i><span data-token="--color-border-strong"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-border-strong" data-swatch></i><span data-token="--color-border-strong"></span></span></td></tr><tr><td>Fill</td><td><code>--color-bg-surface</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-bg-surface" data-swatch></i><span data-token="--color-bg-surface"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-bg-surface" data-swatch></i><span data-token="--color-bg-surface"></span></span></td></tr><tr><td>Invalid edge</td><td><code>--color-danger-solid</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-danger-solid" data-swatch></i><span data-token="--color-danger-solid"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-danger-solid" data-swatch></i><span data-token="--color-danger-solid"></span></span></td></tr><tr><td>Heights</td><td><code>--control-height-sm</code> <code>--control-height-md</code> <code>--control-height-lg</code></td><td colspan="2"><span data-token="--control-height-sm"></span> / <span data-token="--control-height-md"></span> / <span data-token="--control-height-lg"></span></td></tr><tr><td>Radius</td><td><code>--radius-md</code></td><td colspan="2"><span data-token="--radius-md"></span></td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
-<pre><code>&lt;input class="input input--lg" id="video-url" type="url" autocomplete="url" aria-describedby="video-url-error"&gt;</code></pre><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.input</code></td><td>Text field.</td></tr><tr><td><code>.input--sm .input--lg</code></td><td>Size.</td></tr><tr><td><code>aria-invalid="true"</code></td><td>Invalid look.</td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from these mocks:</p><ul><li><a href="../../mocks/pages/setup/video.html">pages/setup/video</a> (field)</li><li><a href="../../mocks/pages/setup/video-invalid.html">pages/setup/video-invalid</a> (invalid)</li></ul><p>Drift fixed during extraction: none.</p>
+      <p>Use <code>.input</code> for one line of free text or a number the rider types. Always inside a <a class="link" href="form-field.html">form field</a> with a visible label. For several lines use a <a class="link" href="textarea.html">textarea</a>; for a number nudged in steps (minutes, rpm, resistance) prefer a <a class="link" href="number-stepper.html">number stepper</a> or <a class="link" href="slider.html">slider</a>; for a fixed list use a <a class="link" href="select.html">select</a>.</p>
+      <p>Pick the right <code>type</code> and <code>inputmode</code> so phones show the right keyboard: <code>type="url"</code> for the YouTube link, <code>inputmode="decimal"</code> for "0:12.0", <code>inputmode="numeric"</code> for whole numbers.</p>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+      <div class="ds-anatomy">
+        <figure class="ds-anatomy__figure">
+          <div class="input-group" style="max-width: calc(var(--space-48) * 2);">
+            <svg class="icon icon--md input-group__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            <input class="input" type="url" aria-label="YouTube link (anatomy)" value="https://www.youtube.com/watch?v=QUoToFsMNig">
+            <button class="icon-btn input-group__action" type="button" aria-label="Clear YouTube link"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+          </div>
+          <span class="ds-callout" style="left: 12%; top: 26%;" aria-hidden="true">1</span>
+          <span class="ds-callout" style="left: 46%; top: 26%;" aria-hidden="true">2</span>
+          <span class="ds-callout" style="left: 84%; top: 26%;" aria-hidden="true">3</span>
+          <span class="ds-callout" style="left: 64%; top: 72%;" aria-hidden="true">4</span>
+        </figure>
+        <ol class="ds-anatomy__list">
+          <li><div><b>Leading icon (optional)</b><small>16px <code>--color-muted</code>, decorative, 12px from the edge.</small></div></li>
+          <li><div><b>Value / placeholder</b><small>14px <code>--color-fg</code>; placeholder in <code>--color-faint</code> as an example.</small></div></li>
+          <li><div><b>Action (optional)</b><small>A 36px <code>.icon-btn</code> inside the end: clear, show.</small></div></li>
+          <li><div><b>Container</b><small>40px tall, <code>--field-bg</code> ink well, 1px <code>--field-border</code> (3:1), <code>--field-radius</code> 8px, 12px padding.</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <div class="ds-demo-wide" style="display: grid; gap: var(--space-5);">
+            <div class="field"><label class="field__label" for="tf-url">YouTube link</label><input class="input" id="tf-url" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=…"></div>
+            <div class="field"><label class="field__label" for="tf-icon">YouTube link</label><div class="input-group"><svg class="icon icon--md input-group__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><input class="input" id="tf-icon" type="url" value="https://www.youtube.com/watch?v=QUoToFsMNig"><button class="icon-btn input-group__action" type="button" aria-label="Clear YouTube link"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div></div>
+            <div class="field"><label class="field__label" for="tf-prefix">Video ID</label><div class="input-group"><span class="input-group__addon">youtube.com/watch?v=</span><input class="input" id="tf-prefix" type="text" value="QUoToFsMNig" spellcheck="false"></div></div>
+            <div class="field"><label class="field__label" for="tf-suffix">Cadence goal</label><div class="input-group" style="max-width: var(--space-48);"><input class="input" id="tf-suffix" type="text" inputmode="numeric" value="85"><span class="input-group__addon">rpm</span></div></div>
+            <div class="field"><label class="field__label" for="tf-raised">YouTube link <span class="field__optional">(on a raised well)</span></label><input class="input input--raised" id="tf-raised" type="url" value="https://www.youtube.com/watch?v=QUoToFsMNig"></div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Plain; leading icon with clear action; prefix addon; suffix addon; raised (Custom Setup's link field sits on a raised fill).</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="input-group"&gt;
+  &lt;svg class="icon icon--md input-group__icon" aria-hidden="true"&gt;…&lt;/svg&gt;
+  &lt;input class="input" id="video-url" type="url"&gt;
+  &lt;button class="icon-btn input-group__action" type="button" aria-label="Clear YouTube link"&gt;…&lt;/button&gt;
+&lt;/div&gt;
+&lt;div class="input-group"&gt;&lt;input class="input" id="cadence" inputmode="numeric"&gt;&lt;span class="input-group__addon"&gt;rpm&lt;/span&gt;&lt;/div&gt;</code></pre></details>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <div class="ds-demo-col">
+            <input class="input input--sm" type="text" aria-label="Small field" value="Small · 36px">
+            <input class="input" type="text" aria-label="Medium field" value="Medium · 40px (default)">
+            <input class="input input--lg" type="text" aria-label="Large field" value="Large · 48px">
+          </div>
+        </div>
+        <div class="ds-example__caption"><span><code>--control-height-sm/md/lg</code>; large also steps the text to 16px and the padding to 16px. Custom Setup's YouTube link is 44px (<code>--target-comfortable</code>); new screens use md or lg.</span></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Variant</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Disabled</th><th scope="col">Read-only</th><th scope="col">Invalid</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Empty</th><td><input class="input" type="url" aria-label="Empty default" placeholder="https://…"></td><td><input class="input" type="url" aria-label="Empty hover" placeholder="https://…" data-state="hover"></td><td><input class="input" type="url" aria-label="Empty focus" placeholder="https://…" data-state="focus"></td><td><input class="input" type="url" aria-label="Empty disabled" placeholder="https://…" disabled></td><td><input class="input" type="url" aria-label="Empty read-only" placeholder="https://…" readonly></td><td><input class="input" type="url" aria-label="Empty invalid" placeholder="https://…" aria-invalid="true"></td></tr>
+          <tr><th scope="row">Filled</th><td><input class="input" type="text" aria-label="Filled default" value="0:12.0"></td><td><input class="input" type="text" aria-label="Filled hover" value="0:12.0" data-state="hover"></td><td><input class="input" type="text" aria-label="Filled focus" value="0:12.0" data-state="focus"></td><td><input class="input" type="text" aria-label="Filled disabled" value="0:12.0" disabled></td><td><input class="input" type="text" aria-label="Filled read-only" value="0:12.0" readonly></td><td><input class="input" type="text" aria-label="Filled invalid" value="12 s" aria-invalid="true"></td></tr>
+          <tr><th scope="row">With addon</th><td><div class="input-group"><input class="input" type="text" aria-label="Addon default" value="85"><span class="input-group__addon">rpm</span></div></td><td><div class="input-group"><input class="input" type="text" aria-label="Addon hover" value="85" data-state="hover"><span class="input-group__addon">rpm</span></div></td><td><div class="input-group"><input class="input" type="text" aria-label="Addon focus" value="85" data-state="focus"><span class="input-group__addon">rpm</span></div></td><td><div class="input-group"><input class="input" type="text" aria-label="Addon disabled" value="85" disabled><span class="input-group__addon">rpm</span></div></td><td><div class="input-group"><input class="input" type="text" aria-label="Addon read-only" value="85" readonly><span class="input-group__addon">rpm</span></div></td><td><div class="input-group"><input class="input" type="text" aria-label="Addon invalid" value="300" aria-invalid="true"><span class="input-group__addon">rpm</span></div></td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li><b>Hover</b> lifts the border from <code>--color-line-strong</code> to <code>--color-muted</code>.</li>
+        <li><b>Focus</b> draws the 2px ring flush with the border (offset 0).</li>
+        <li><b>Read-only</b> fills raised with a hairline border: it can be selected and copied but not changed; its focus ring is dashed.</li>
+        <li><b>Invalid</b> uses the heart border and always comes with an error line under the field.</li>
+        <li><b>Disabled</b> fades to 40%; prefer read-only when the value still matters to the rider.</li>
+      </ul>
+      <h3>Both themes</h3>
+      <div class="ds-themes">
+        <div data-theme="light"><div class="ds-demo-col"><input class="input" type="url" aria-label="Light empty" placeholder="https://www.youtube.com/watch?v=…"><input class="input" type="url" aria-label="Light filled" value="https://www.youtube.com/watch?v=QUoToFsMNig"><input class="input" type="text" aria-label="Light read-only" value="0:12.0" readonly><input class="input" type="text" aria-label="Light invalid" value="12 s" aria-invalid="true"></div></div>
+        <div data-theme="dark"><div class="ds-demo-col"><input class="input" type="url" aria-label="Dark empty" placeholder="https://www.youtube.com/watch?v=…"><input class="input" type="url" aria-label="Dark filled" value="https://www.youtube.com/watch?v=QUoToFsMNig"><input class="input" type="text" aria-label="Dark read-only" value="0:12.0" readonly><input class="input" type="text" aria-label="Dark invalid" value="12 s" aria-invalid="true"></div></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Width</th><th scope="col">Rule</th></tr></thead><tbody>
+        <tr><td>360 (base)</td><td>Full width of the form column. Long values (a YouTube URL) scroll inside the field; addons never shrink and keep their text on one line. Text stays at least 14px; iOS zooms inputs under 16px on focus, so pages that are mostly typing use <code>--lg</code>.</td></tr>
+        <tr><td>640 (sm)</td><td>Short values (rpm, an offset) get a max width that fits the expected value plus room, not the whole column.</td></tr>
+        <tr><td>1024 (lg)</td><td>Capped by the form column (36rem on Custom Setup).</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+      <p><code>.input</code> declares <code>--field-bg</code> (ink), <code>--field-border</code> (<code>--color-line-strong</code>), <code>--field-border-invalid</code> (<code>--color-heart</code>) and <code>--field-radius</code>; states and variants re-point them (<code>.input--raised</code> sets <code>--field-bg</code> to raised). The ink well sits one step below panels in dark and below white panels in light (paper), so it reads as recessed in both.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <p>Native <code>&lt;input&gt;</code> with a <code>&lt;label for&gt;</code>; no ARIA widget pattern. Use <code>autocomplete</code> where it applies (<code>url</code>), <code>spellcheck="false"</code> for IDs, <code>aria-invalid</code> plus <code>aria-describedby</code> for errors.</p>
+      <h3>Keyboard</h3>
+      <div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+        <tr><td><kbd>Tab</kbd></td><td>Into the field, then to its action button (clear), then on.</td></tr>
+        <tr><td><kbd>Enter</kbd></td><td>Submits the form the field is in (native).</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>Clears a search-type field (native); otherwise no effect.</td></tr>
+      </tbody></table></div>
+      <h3>Focus</h3>
+      <p>2px <code>--color-focus-ring</code> at offset 0, flush with the border; read-only fields use a dashed ring. The clear button returns focus to the field after clearing.</p>
+      <h3>Labelling</h3>
+      <p>Visible label via <code>for</code>. Addon text ("rpm") is visible but not part of the name: add it to the label or to <code>aria-describedby</code> ("Cadence goal, rpm"). The clear button is named for its field: "Clear YouTube link".</p>
+      <h3>Contrast</h3>
+      <div class="ds-themes">
+<div data-theme="light"><div class="ds-pairs-stack">
+<div class="ds-pair"><span>Border on page (1.4.11)</span><span class="ds-pair__ratio" data-contrast="--color-line-strong|--color-ink" data-min="3"></span></div>
+<div class="ds-pair"><span>Border on panel (1.4.11)</span><span class="ds-pair__ratio" data-contrast="--color-line-strong|--color-panel" data-min="3"></span></div>
+<div class="ds-pair"><span>Value text</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Placeholder</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Addon text</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Invalid border</span><span class="ds-pair__ratio" data-contrast="--color-heart|--color-ink" data-min="3"></span></div>
+</div></div>
+<div data-theme="dark"><div class="ds-pairs-stack">
+<div class="ds-pair"><span>Border on page (1.4.11)</span><span class="ds-pair__ratio" data-contrast="--color-line-strong|--color-ink" data-min="3"></span></div>
+<div class="ds-pair"><span>Border on panel (1.4.11)</span><span class="ds-pair__ratio" data-contrast="--color-line-strong|--color-panel" data-min="3"></span></div>
+<div class="ds-pair"><span>Value text</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Placeholder</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Addon text</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Invalid border</span><span class="ds-pair__ratio" data-contrast="--color-heart|--color-ink" data-min="3"></span></div>
+</div></div>
+</div>
+      <h3>Motion</h3>
+      <p>None; border colour changes are instant.</p>
+      <h3>Touch</h3>
+      <p>40px tall (48px with <code>--lg</code>); the inner clear button is 36px with 2px to the field edge.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li>Placeholders show the shape of a good answer: "https://www.youtube.com/watch?v=…". They are never the label and never instructions.</li>
+        <li>Units go in an addon or the label, not typed by the rider: "85" + "rpm".</li>
+        <li>Prefill what the app already knows (the class's YouTube link) instead of asking again (3.3.7).</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><input class="input" type="url" aria-label="Do: strong border" value="https://www.youtube.com/watch?v=QUoToFsMNig"></div><figcaption>A 3:1 border (<code>--color-line-strong</code>) so the field is findable on a panel.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><input type="text" aria-label="Don't: no boundary" value="0:12.0" class="video-sync__offset-input"></div><figcaption>A borderless field (Custom Setup's offset input, transparent until focus): there is nothing to show it can be typed in.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><input class="input" type="url" aria-label="Do: ring" data-state="focus" value="https://www.youtube.com/watch?v=QUoToFsMNig"></div><figcaption>Keep the focus ring.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><input class="input" type="url" aria-label="Don't: border only" value="https://www.youtube.com/watch?v=QUoToFsMNig" style="border-color: var(--color-volt); outline: none;"></div><figcaption>Replacing the ring with a 1px volt border (the mock's YouTube field) is too thin to see as focus.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+        <tbody>
+          <tr><td>Well (--field-bg)</td><td><code>--color-ink</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td></tr>
+          <tr><td>Well, read-only / raised</td><td><code>--color-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td></tr>
+          <tr><td>Border (--field-border)</td><td><code>--color-line-strong</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-line-strong" data-swatch></i><span data-token="--color-line-strong"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-line-strong" data-swatch></i><span data-token="--color-line-strong"></span></span></td></tr>
+          <tr><td>Border, hover</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+          <tr><td>Border, read-only</td><td><code>--color-line</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td></tr>
+          <tr><td>Border, invalid (--field-border-invalid)</td><td><code>--color-heart</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-heart" data-swatch></i><span data-token="--color-heart"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-heart" data-swatch></i><span data-token="--color-heart"></span></span></td></tr>
+          <tr><td>Value</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+          <tr><td>Placeholder</td><td><code>--color-faint</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td></tr>
+          <tr><td>Icon, addon text</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+          <tr><td>Focus ring</td><td><code>--color-focus-ring</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-focus-ring" data-swatch></i><span data-token="--color-focus-ring"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-focus-ring" data-swatch></i><span data-token="--color-focus-ring"></span></span></td></tr>
+          <tr><td>Height sm / md / lg</td><td><code>--control-height-sm</code> <code>--control-height-md</code> <code>--control-height-lg</code></td><td colspan="2"><span data-token="--control-height-sm"></span> / <span data-token="--control-height-md"></span> / <span data-token="--control-height-lg"></span></td></tr>
+          <tr><td>Radius (--field-radius)</td><td><code>--radius-lg</code></td><td colspan="2"><span data-token="--radius-lg"></span></td></tr>
+          <tr><td>Padding md / lg</td><td><code>--space-3</code> <code>--space-4</code></td><td colspan="2"><span data-token="--space-3"></span> / <span data-token="--space-4"></span></td></tr>
+          <tr><td>Text md / lg</td><td><code>--font-size-sm</code> <code>--font-size-md</code></td><td colspan="2"><span data-token="--font-size-sm"></span> / <span data-token="--font-size-md"></span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+      <pre><code>&lt;input class="input" id="video-url" type="url" inputmode="url" autocomplete="url" placeholder="https://www.youtube.com/watch?v=…"&gt;</code></pre>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+        <tr><td><code>.input</code></td><td>Base field, 40px (kit). Also styles <code>textarea.input</code>.</td></tr>
+        <tr><td><code>.input--sm</code> / <code>.input--lg</code></td><td>36px / 48px.</td></tr>
+        <tr><td><code>.input--raised</code></td><td>Raised well for use on a raised surface.</td></tr>
+        <tr><td><code>.input-group</code> <code>__icon</code> <code>__addon</code> <code>__action</code></td><td>Leading icon, prefix or suffix text, inner end button.</td></tr>
+        <tr><td><code>readonly</code> / <code>disabled</code> / <code>aria-invalid="true"</code></td><td>Read-only, disabled, invalid.</td></tr>
+        <tr><td><code>data-state="hover|focus"</code></td><td>Documentation only.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <ul>
+        <li><a href="../../mocks/pages/custom-setup/default.html">pages/custom-setup/default</a> — YouTube link (<code>.video-sync__url</code>), offset (<code>.video-sync__offset-input</code>)</li>
+        <li><a href="../../mocks/pages/custom-setup/flat.html">pages/custom-setup/flat</a> — cadence goal in rpm</li>
+      </ul>
+      <p>Drift fixed during extraction:</p>
+      <ul>
+        <li>Input borders used <code>--color-line</code> (1.3:1, fails 1.4.11); <code>--field-border</code> is <code>--color-line-strong</code> (3.2:1 on panel).</li>
+        <li><code>custom-setup/*</code>: <code>.video-sync__url:focus</code> swaps the ring for a 1px volt border; the system keeps the ring.</li>
+        <li><code>custom-setup/*</code>: <code>.video-sync__offset-input</code> has a transparent border and no fill until focused; it is an <code>.input</code> with a display-size value, or a <a class="link" href="number-stepper.html">stepper</a>.</li>
+        <li><code>custom-setup/*</code>: the YouTube field is 44px, between the md and lg steps; new screens use a step.</li>
+      </ul>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

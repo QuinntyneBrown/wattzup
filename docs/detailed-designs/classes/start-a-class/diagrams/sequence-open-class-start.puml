@@ -1,0 +1,65 @@
+@startuml
+title UML sequence behaviour — Open Class Start
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "ClassStartPage" as page
+  participant "ClassStartStore" as store
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "PlanSummary" as summary
+  participant "HttpClassesApi" as capi
+  participant "YouTubeVideoPlayer" as player
+end box
+box "Third party — YouTube" #F2F4F7
+  participant "YouTube embed" as yt
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "ClassSessionsController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "GetClassSessionsQueryHandler" as handler
+  participant "GroupSessionSchedule" as schedule
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+rider -> page : Open /classes/hiit-cardio-30
+page -> store : init(classId)
+store -> summary : structure(plan), expectedAveragePower(plan)
+summary --> store : "8 × 0:30 · 3:00 → 1:30 recover", ~154 W L2-084 AC2
+page -> player : load(host, videoId, controls on) (video library imported on demand)
+player -> yt : Embed youtube-nocookie.com/embed/<videoId>
+player -> player : seekTo(12.0) and hold L2-084 AC1
+loop every 30 s while the page is open L2-083 AC2
+  store -> capi : sessions(classId)
+  capi -> ctrl : GET /api/classes/{classId}/sessions
+  ctrl -> handler : Send GetClassSessionsQuery
+  handler -> schedule : Next two starts (every 15 min)
+  schedule --> handler : 7:39 PM, 7:54 PM
+  handler -> db : Seats for those sessions
+  db --> handler : 6 of 10, 0 of 10
+  handler --> ctrl : ClassSessionDto[]
+  ctrl --> capi : 200 OK
+  capi --> store : Sessions
+  store -> store : "7:39 PM · starts in 9 min · 6 of 10 riders"
+end
+store --> page : Option text and "Start class" (alone by default)
+page --> rider : Class Start with video parked at 0:12.0
+rider -> page : Leave the page
+page -> player : destroy()
+page -> store : Stop polling (DestroyRef)
+@enduml

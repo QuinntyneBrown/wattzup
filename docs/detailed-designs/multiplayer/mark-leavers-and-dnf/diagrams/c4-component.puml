@@ -1,0 +1,30 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Mark leavers and DNF
+
+Container_Boundary(app, "Ride app") {
+  Component(store, "LiveSessionStore", "Signal store · ride", "Applies RiderLeft")
+  Component(hubc, "SignalRRideHubClient", "SignalR client · api", "leaveSession()")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(hub, "RideHub", "SignalR hub · Telo.Ride.Api", "LeaveSession, OnDisconnectedAsync")
+  Component(leave, "LeaveSessionCommandHandler", "MediatR handler · Telo.Ride.Application", "DNF or Left")
+  Component(disc, "RiderDisconnectedCommandHandler", "MediatR handler · Telo.Ride.Application", "Records DisconnectedAt")
+  Component(tick, "TickLiveSessionsCommandHandler", "MediatR handler · Telo.Ride.Application", "Applies presence rules")
+  Component(rules, "PresenceRules", "Domain service · Telo.Ride.Domain", "15 s silence, 30 s disconnect, 10 s lobby")
+  Component(session, "LiveSession", "Domain entity · Telo.Ride.Domain", "RiderProgress per seat")
+  Component(notifier, "RideHubNotifier", "ISessionNotifier · Telo.Ride.Api", "RiderLeft to session:{id}")
+}
+Rel(store, hubc, "leaveSession()")
+Rel(hubc, hub, "LeaveSession / connection closed", "SignalR")
+Rel(hub, leave, "Sends LeaveSessionCommand")
+Rel(hub, disc, "Sends RiderDisconnectedCommand")
+Rel(leave, session, "Leave(riderId)")
+Rel(disc, session, "MarkDisconnected(riderId, at)")
+Rel(tick, rules, "Apply(session, now)")
+Rel(rules, session, "Sets RiderStatus")
+Rel(leave, notifier, "RiderLeft")
+Rel(tick, notifier, "RiderLeft")
+Rel(notifier, hubc, "Pushes", "SignalR")
+@enduml

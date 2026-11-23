@@ -1,0 +1,51 @@
+// Block connect-device: the card that offers, searches for and confirms the bike (docs/mocks/pages/connect-bike/).
+:host {
+  display: block;
+  border-radius: var(--radius-xl);
+  background: var(--color-panel);
+  padding: var(--space-4);
+}
+
+.connect-device__searching {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-block: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.connect-device__spinner,
+.connect-device__check {
+  color: var(--color-volt-fg);
+}
+
+.connect-device__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.connect-device__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.connect-device__name {
+  font-weight: var(--font-weight-semibold);
+}
+
+.connect-device__signal {
+  margin-top: var(--space-0-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.connect-device__signal-icon {
+  color: var(--color-volt-fg);
+}

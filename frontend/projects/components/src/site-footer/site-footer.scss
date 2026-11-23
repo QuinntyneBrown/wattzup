@@ -1,0 +1,41 @@
+// Block site-footer (ADR 0027).
+:host {
+  display: block;
+  border-top: var(--border-width-hairline) solid var(--color-line);
+}
+
+.site-footer__inner {
+  display: grid;
+  gap: var(--space-6);
+  max-width: var(--layout-container-max);
+  margin-inline: auto;
+  padding: var(--space-12) var(--layout-margin);
+
+  @media (min-width: 48rem) {
+    grid-template-columns: 1fr auto;
+    align-items: start;
+  }
+}
+
+.site-footer__blurb {
+  margin-top: var(--space-3);
+  max-width: var(--layout-measure);
+  font: var(--text-body-sm);
+  color: var(--color-fg-muted);
+}
+
+.site-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  margin-inline: calc(var(--space-2) * -1);
+}
+
+.site-footer__legal {
+  font: var(--text-caption);
+  color: var(--color-fg-subtle);
+
+  @media (min-width: 48rem) {
+    grid-column: 1 / -1;
+  }
+}

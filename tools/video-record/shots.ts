@@ -25,8 +25,9 @@ export type Size = keyof typeof SIZES;
 export type Theme = "light" | "dark";
 
 /**
- * Sets the window and the theme before a state is opened. Wattzup is dark-first (L2-061): the
- * app reads `wattzup.theme` from localStorage, so the light theme is stored before it loads.
+ * Sets the window and the device's colour scheme before a state is opened, with reduced motion.
+ * Telo Ride is dark first (every page ships `data-theme="dark"`); the slice that adds the light
+ * theme stores the rider's choice here before the app loads.
  */
 export async function frame(
   page: Page,
@@ -35,13 +36,6 @@ export async function frame(
 ): Promise<void> {
   await page.setViewportSize(SIZES[size]);
   await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
-  await page.addInitScript((t) => {
-    try {
-      localStorage.setItem("wattzup.theme", t);
-    } catch {
-      /* storage blocked: the app stays dark */
-    }
-  }, theme);
 }
 
 /** Waits until the bundled faces are drawn and stops whatever still moves. */

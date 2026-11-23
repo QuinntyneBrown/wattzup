@@ -1,0 +1,71 @@
+@startuml
+title UML sequence behaviour — Finish and submit a race
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "RaceStore" as store
+  participant "Router" as router
+end box
+box "Frontend — Ride app (domain and api libraries)" #E0F2FE
+  participant "RaceEngine" as engine
+  participant "RaceRideRecorder" as rec
+  participant "RideOutbox" as outbox
+  participant "RidesApi" as rapi
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RidesController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "SubmitRideCommandHandler" as handler
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+loop each second
+  engine -> rec : record(second)
+  opt plan has run out
+    engine -> engine : Hold the last segment's level (L2-071 AC2)
+  end
+end
+engine -> engine : distance >= map distance: finish time = race clock (L2-071 AC1)
+engine --> store : finished(finishTimeS)
+store -> rec : trace()
+store -> store : Build RaceRideSubmission with a new ride id; no XP, stars or unlocks
+store -> outbox : enqueue(submission)
+store -> router : Navigate to Results with the ride id (L2-071 AC3)
+router --> actor : Results; riders-online places still riding shown as riding up to 2 min
+outbox -> rapi : submitRide(submission)
+alt network up
+  rapi -> ctrl : POST /api/rides
+  ctrl -> handler : Send SubmitRideCommand
+  handler -> db : Ride id already recorded?
+  alt first time
+    handler -> handler : Plausibility check, else 422 ride_not_plausible (L2-125 AC2)
+    handler -> handler : Riders online: place and time from the session result (L2-125 AC1)
+    handler -> handler : Compute XP, stars, best, streak, unlocks (L2-044 AC2)
+    handler -> db : Save ride and progress in one unit of work
+  else already recorded
+    db --> handler : First result, returned again (L2-125 AC3)
+  end
+  handler --> ctrl : RideResultDto
+  ctrl --> rapi : 200 RideResultDto
+  rapi --> outbox : result
+  outbox -> outbox : Remove from IndexedDB
+else network down
+  rapi --> outbox : failure
+  outbox -> outbox : Keep for retry; Results shows XP pending (L2-135 AC1)
+end
+@enduml

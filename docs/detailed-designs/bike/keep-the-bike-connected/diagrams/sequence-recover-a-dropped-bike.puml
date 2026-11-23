@@ -1,0 +1,52 @@
+@startuml
+title UML sequence behaviour — Recover a dropped bike
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "Ride page header" as header
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "WebBluetoothBikeConnection" as conn
+  participant "DeviceReconnector" as recon
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "Bike GATT server" as bike
+end box
+alt gattserverdisconnected
+  bike -> conn : gattserverdisconnected
+else a Web Bluetooth call fails
+  conn -> conn : console.error(name: message); lastError as text (L2-017 AC5)
+end
+conn -> conn : state = Disconnected (L2-017 AC1)
+conn --> header : Status red, hidden text " disconnected" (L2-019 AC3)
+conn -> recon : start(connect same device, no chooser)
+loop every 3 s until connected or the ride ends
+  recon -> conn : attempt
+  conn -> bike : gatt.connect()
+  bike --> conn : fails while the bike sleeps
+end
+opt rider presses Reconnect
+  actor -> header : Reconnect
+  header -> recon : retryNow() cancels the pending retry and tries at once (L2-017 AC3)
+end
+recon -> conn : attempt after the bike is switched on and pedalled
+conn -> bike : gatt.connect(), link open and init
+bike --> conn : First notification
+conn -> conn : state = Connected, reconnects + 1 (L2-017 AC2)
+conn -> bike : the last target resistance, before anything else (L2-017 AC4)
+conn --> header : Status connected
+header --> actor : Ride carries on without a reload
+@enduml

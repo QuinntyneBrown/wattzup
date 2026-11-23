@@ -1,0 +1,33 @@
+<div class="class-segment" [class]="'class-segment--' + kind()">
+  <div class="class-segment__head">
+    <span class="class-segment__kind"
+      ><span class="class-segment__swatch"></span>{{ label() }}</span
+    >
+    <span
+      class="class-segment__left"
+      role="timer"
+      [attr.aria-label]="label() + ': ' + left() + ' left'"
+      >{{ left() }}</span
+    >
+  </div>
+  <svg class="class-segment__bar" viewBox="0 0 1 1" preserveAspectRatio="none" aria-hidden="true">
+    <rect class="class-segment__fill" [attr.width]="progress()" height="1" />
+  </svg>
+  <svg
+    class="class-profile"
+    [attr.viewBox]="'0 0 ' + length() + ' 32'"
+    preserveAspectRatio="none"
+    role="img"
+    aria-label="Resistance profile"
+  >
+    @for (bar of bars(); track $index) {
+      <rect
+        [attr.class]="bar.element"
+        [attr.x]="bar.x"
+        [attr.width]="bar.width"
+        [attr.y]="bar.y"
+        [attr.height]="bar.height"
+      />
+    }
+  </svg>
+</div>

@@ -1,0 +1,38 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Run a race session
+
+Container_Boundary(app, "Ride app") {
+  Component(store, "LiveSessionStore", "Signal store · ride", "Seats, start time, start deadline")
+  Component(clock, "measureClockOffset", "Function · domain/engine", "Offset from five ServerTime samples")
+  Component(hubc, "SignalRRideHubClient", "SignalR client · api", "RideHubClient")
+  Component(queue, "HttpRaceQueueApi", "HTTP client · api", "RaceQueueApi")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(hub, "RideHub", "SignalR hub · Telo.Ride.Api", "FindRace, SetReady")
+  Component(maps, "MapsController", "Controller · Telo.Ride.Api", "GET /api/maps/{mapId}/queue")
+  Component(find, "FindRaceCommandHandler", "MediatR handler · Telo.Ride.Application", "Seats the rider")
+  Component(tick, "TickLiveSessionsCommandHandler", "MediatR handler · Telo.Ride.Application", "Bot fill, countdown, start")
+  Component(count, "GetRaceQueueQueryHandler", "MediatR handler · Telo.Ride.Application", "Riders seated in open sessions")
+  Component(session, "RaceSession", "Domain entity · Telo.Ride.Domain", "Ten seats and a start time")
+  Component(ticker, "SessionTicker", "BackgroundService · Telo.Ride.Infrastructure", "One tick a second on TimeProvider")
+  Component(registry, "InMemoryRaceSessionRegistry", "IRaceSessionRegistry · Telo.Ride.Infrastructure", "Live sessions")
+  Component(notifier, "RideHubNotifier", "ISessionNotifier · Telo.Ride.Api", "Sends to session:{id}")
+}
+Rel(store, hubc, "findRace, setReady")
+Rel(store, clock, "Adds samples; converts start")
+Rel(hubc, hub, "Invokes", "SignalR")
+Rel(queue, maps, "GET queue count", "JSON/HTTPS")
+Rel(hub, find, "Sends FindRaceCommand")
+Rel(maps, count, "Sends GetRaceQueueQuery")
+Rel(ticker, tick, "Sends TickLiveSessionsCommand")
+Rel(find, registry, "Finds or opens a session")
+Rel(tick, registry, "Reads live sessions")
+Rel(count, registry, "Counts seated riders")
+Rel(find, session, "Seat(rider)")
+Rel(tick, session, "FillWithBots, Start")
+Rel(find, notifier, "SeatsChanged")
+Rel(tick, notifier, "SeatsChanged at the bot fill")
+Rel(notifier, hubc, "Pushes messages", "SignalR")
+@enduml

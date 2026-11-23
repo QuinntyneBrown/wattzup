@@ -3,17 +3,47 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Empty and error states — Wattzup design system</title>
-<meta name="description" content="What to show when there is no ride, nothing loaded, or the route is unknown.">
+<title>Empty and error states — Telo Ride design system</title>
+<meta name="description" content="Copy formulas and the real cases: first-run new rider, no best yet, no bike, Bluetooth off, the wrong browser, plain http, losing the bike mid-ride and the 404 page.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Pattern page layout helpers: tokens only. Product components come from components.css. */
+.ds-section > ul { list-style: disc; }
+.ds-section > ol { list-style: decimal; }
+.pt-frame { width: 100%; border: var(--border-width-hairline) solid var(--color-border-default); border-radius: var(--radius-lg); overflow: hidden; background: var(--color-ink); color: var(--color-fg); }
+.pt-frame .app { height: auto; min-height: 0; }
+.pt-pad { padding: var(--space-6) var(--space-5); }
+.pt-stack { display: flex; flex-direction: column; gap: var(--space-4); width: 100%; min-width: 0; }
+.pt-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.pt-grid { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); width: 100%; align-items: start; }
+.pt-tag { display: block; font: var(--text-overline); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-fg-subtle); margin-bottom: var(--space-2); }
+.pt-flow { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); font: var(--text-body-sm); }
+.pt-flow li { display: inline-flex; align-items: center; gap: var(--space-2); margin: 0; }
+.pt-flow li + li::before { content: "→"; color: var(--color-fg-subtle); }
+.pt-flow b { padding: var(--space-1) var(--space-2-5); border-radius: var(--radius-md); background: var(--color-raised); color: var(--color-fg); font-weight: var(--font-weight-medium); }
+.pt-flow b[aria-current] { background: var(--color-accent-subtle); color: var(--color-fg-accent); }
+.pt-panel { width: 100%; max-width: 25rem; }
+.pt-stage-xl { min-height: 40rem; }
+.pt-note { font: var(--text-caption); color: var(--color-fg-muted); }
+.pt-stage-leave { min-height: 24rem; }
+/* Links inside product compositions keep the component's own colour, not the docs link style */
+:where(.pt-frame, .ds-stage, .pt-reset) a { color: inherit; text-decoration: none; }
+:where(.pt-frame, .ds-stage, .pt-reset) a:hover { color: inherit; }
+
+/* absolutely positioned visually-hidden text must stay inside the matrix scroller */
+.ds-matrix { position: relative; }
+.pt-list { list-style: decimal; padding-left: var(--space-6); }
+.pt-list > li + li { margin-top: var(--space-2); }
+.pt-list { margin-bottom: var(--space-4); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +58,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,65 +112,347 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Pattern</p>
       <h1>Empty and error states</h1>
-      <p class="ds-lead">Empty and error states explain what is going on and offer one way forward, while keeping the app bar in place.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span></div>
-      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#when">When to use</a></li><li><a href="#structure">Structure</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#sources">Sources</a></li></ul>
+      <p class="ds-lead">Telo Ride is never blank: a new rider always has two maps to ride. What it does have are the gaps of a first run and the failures of the outside world (Bluetooth, the browser, the bike itself). Each one gets a sentence that says what is wrong in the rider's terms and one action that fixes it.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#when">When to use</a></li><li><a href="#structure">Structure</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive behaviour</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>Three cases: nothing yet (no ride — Set up a ride), loading failed (Try again, Open diagnostics), and unknown route (404 — Back to the dashboard). Bike-specific stops (lost, no bike, Bluetooth off, ended) use the <a href="../components/overlay-panel.html">overlay panel</a>.</p>
-    </section>
-    <section class="ds-section" id="when"><h2><a href="#when">When to use</a></h2>
-<ul><li>No workout running: <code>ride/empty</code>.</li><li>Rides failed to load: <code>progress/error</code>.</li><li>Unknown address: <code>not-found</code>.</li></ul>
-    </section>
-    <section class="ds-section" id="structure"><h2><a href="#structure">Structure</a></h2>
-<div class="ds-example"><div class="ds-example__canvas "><div class="empty empty--compact"><div class="empty__icon"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><p class="empty__title">No ride yet</p><p class="empty__text">Your power, drawn against the plan, appears here once a ride starts.</p><div class="empty__actions"><button class="btn btn--primary" type="button">Set up a ride</button></div></div></div><div class="ds-example__caption"><span>No ride yet.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="empty empty--compact"&gt;
-&lt;div class="empty__icon"&gt;
-&lt;svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;path d="M22 12h-4l-3 9L9 3l-3 9H2"/&gt;
-&lt;/svg&gt;
-&lt;/div&gt;
-&lt;p class="empty__title"&gt;No ride yet&lt;/p&gt;
-&lt;p class="empty__text"&gt;Your power, drawn against the plan, appears here once a ride starts.&lt;/p&gt;
-&lt;div class="empty__actions"&gt;
-&lt;button class="btn btn--primary" type="button"&gt;Set up a ride&lt;/button&gt;
-&lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<ul><li><b>Empty</b> — explains what will appear and the action to make it appear.</li><li><b>Error</b> — what failed, that the bike is unaffected, Retry.</li><li><b>404</b> — reassurance and two ways back.</li></ul>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive</a></h2>
-<ul><li>Centred in the region it replaces at every width.</li></ul>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<ul><li>Error variants are <code>role="alert"</code>; empty ones are plain content.</li><li>The action is the next tab stop.</li></ul>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Never blame the rider; say what is safe ("Your ride and the bike connection are unaffected").</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><div class="empty empty--compact empty--error"><div class="empty__icon"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg></div><p class="empty__title">Couldn&rsquo;t load your progress</p><p class="empty__text">Your rides couldn&rsquo;t be loaded. They are still saved.</p><div class="empty__actions"><button class="btn btn--primary" type="button">Try again</button></div></div></div><figcaption>Says what failed and what to do.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><div class="empty"><p class="empty__title">Error</p></div></div><figcaption>No explanation or action.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from:</p><ul><li><a href="../../mocks/pages/ride/empty.html">pages/ride/empty</a></li><li><a href="../../mocks/pages/progress/error.html">pages/progress/error</a></li><li><a href="../../mocks/pages/not-found/default.html">pages/not-found/default</a></li></ul>
+      <p><b>Empty</b> means nothing has happened yet. The mocks treat the <em>new rider</em> (level 1, no rides, no stars) as every screen's empty state, and keep each screen useful: Home shows the first unlock to chase, Map Select shows two open maps, Class Library shows the starter classes, Profile says where the first race will appear.</p>
+      <p><b>Error</b> means something outside Telo Ride is in the way. The app's own data is local and can't fail to load, so the errors the mocks draw are all about reaching the bike: Bluetooth is off, the browser can't do Web Bluetooth, the page is on plain http, no bike is picked, or the bike stopped answering. The one addition is the 404 page.</p>
+      <p>Components used: <a href="../components/empty-state.html">Empty state</a>, <a href="../components/error-page.html">Error page</a>, <a href="../components/alert.html">Alert and banner</a>, <a href="../components/hud-panel.html">HUD panel</a>, <a href="../components/button.html">Button</a>, <a href="../components/app-header.html">App header</a> and <a href="../components/table.html">Table</a>.</p>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="when"><h2><a href="#when">When to use</a></h2>
+      <p>Pick the form by how much of the screen stops working. Block only what can't work; leave the rest usable.</p>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Case</th><th scope="col">Scope</th><th scope="col">Form</th><th scope="col">One action</th><th scope="col">Mocks</th></tr></thead>
+        <tbody>
+          <tr><td>First run, nothing ridden</td><td>A section</td><td>One muted line in the section's place, starter content around it</td><td>The page's main action (Race Old Town Criterium)</td><td>home/new-rider, profile/new-rider, map-select/new-rider</td></tr>
+          <tr><td>No value yet (no best time)</td><td>A cell</td><td>A faint dash, with “No best yet” for screen readers</td><td>None</td><td>profile/new-rider</td></tr>
+          <tr><td>No bike picked yet</td><td>The telemetry region</td><td>Overlay with a large title, steps and a hint</td><td>Connect bike</td><td>custom-ride/no-bike</td></tr>
+          <tr><td>Bluetooth is off</td><td>The pairing card, or the telemetry region</td><td>Blocker card in place of the device card; overlay on the ride</td><td>Try again</td><td>connect-bike/bluetooth-off, custom-ride/bluetooth-off</td></tr>
+          <tr><td>Browser can't do Web Bluetooth</td><td>Riding only</td><td>Notice under the header when the page can still be browsed; panel in place of a screen that can't work at all</td><td>Copy link</td><td>custom-setup/needs-chromium, class-start/needs-chromium, custom-ride/needs-chromium, connect-bike/unsupported-browser</td></tr>
+          <tr><td>Page served over http</td><td>Riding only</td><td>Notice or panel, as above</td><td>Open over HTTPS</td><td>custom-setup/needs-https, class-start/needs-https, custom-ride/needs-https</td></tr>
+          <tr><td>Bike stopped answering mid-ride</td><td>The ride</td><td>Overlay over the ride; header status turns red; controls disabled</td><td>Reconnect</td><td>race/disconnected, class-ride/disconnected, custom-ride/disconnected, home/disconnected</td></tr>
+          <tr><td>The address doesn't exist</td><td>The page</td><td>Error page inside the normal shell</td><td>Back to Home</td><td>not-found/default</td></tr>
+        </tbody>
+      </table></div>
+      <p><b>Don't</b> draw an empty state for a collection that can't be empty (the start grid is filled by bots; the class catalogue ships with the app), or a fetch error for data that isn't fetched. The manifest records each of these as not applicable, with its reason.</p>
+    </section>
+
+    <section class="ds-section" id="structure"><h2><a href="#structure">Structure</a></h2>
+      <h3>The formulas</h3>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Kind</th><th scope="col">Formula</th><th scope="col">Real copy</th></tr></thead>
+        <tbody>
+          <tr><td>Empty</td><td>[What isn't here yet] + [what will put it here]</td><td>“Nothing yet. Your first race shows up here, with the XP it earned.”</td></tr>
+          <tr><td>Blocker</td><td>Title: [the problem, in the rider's world]. Body: [what to do], [where it works]. Action: [one verb].</td><td>“Bluetooth is off” / “Turn on Bluetooth on this computer, then try again.” / Try again</td></tr>
+          <tr><td>Notice</td><td>Title: [the fix, as an instruction]. Body: [why], [what still works]. Action: [the fix].</td><td>“Open Telo Ride in Chrome or Edge.” / “Bluetooth to the bike only works there — you can look around, but not ride.” / Copy link</td></tr>
+          <tr><td>Mid-ride loss</td><td>Title: [what was lost]. Body: [what is happening meanwhile], [what's safe]. Action: [recover].</td><td>“Lost the bike” / “Echelon EX-5s stopped answering. Wake it with a pedal stroke, then reconnect — your ride is saved at 6:52.” / Reconnect</td></tr>
+          <tr><td>Not found</td><td>Title: [it isn't here]. Body: [likely why], [what's safe]. Action: [go somewhere real].</td><td>“This page doesn’t exist.” / “The link may be old, or the address has a typo. Your rides and progress are safe.” / Back to Home</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>First run: empty sections</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack pt-reset">
+          <section class="profile-section" style="margin-top: 0;" aria-labelledby="ex-maps">
+            <div class="profile-section__head"><h4 class="profile-section__title" id="ex-maps">Maps</h4><span class="profile-section__count"><span class="figure">0</span> of 21 stars</span></div>
+            <table class="map-table">
+              <thead class="visually-hidden"><tr><th scope="col">Map</th><th scope="col">Stars</th><th scope="col">Best</th></tr></thead>
+              <tbody>
+                <tr><td><a class="map-table__map" href="../../mocks/pages/race-setup/prairie.html">Prairie Paceline</a></td><td><span class="stars map-table__stars" role="img" aria-label="0 of 3 stars"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span></td><td class="map-table__best"><span class="map-table__none" aria-hidden="true">—</span><span class="visually-hidden">No best yet</span></td></tr>
+              </tbody>
+            </table>
+          </section>
+          <section class="profile-section" style="margin-top: var(--space-6);" aria-labelledby="ex-recent">
+            <h4 class="profile-section__title profile-section__head" id="ex-recent">Recent rides</h4>
+            <p class="recent__empty">Nothing yet. Your first race shows up here, with the XP it earned.</p>
+          </section>
+        </div>
+        <div class="ds-example__caption"><span>A dash for a missing value; one line for an empty list that says what will fill it. The section keeps its heading.</span><span>pages/profile/new-rider</span></div>
+      </div>
+
+      <h3>Blockers: Bluetooth off and the wrong browser</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--canvas">
+          <div class="pt-grid">
+            <section class="connect-blocker" style="margin-top: 0;" role="alert" aria-labelledby="ex-bt-off">
+              <div class="connect-blocker__head"><svg class="icon icon--lg connect-blocker__icon connect-blocker__icon--heart" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg><h4 class="connect-blocker__title" id="ex-bt-off">Bluetooth is off</h4></div>
+              <p class="connect-blocker__body">Turn on Bluetooth on this computer, then try again.</p>
+              <button class="btn btn--raised connect-blocker__retry" type="button">Try again</button>
+            </section>
+            <section class="connect-blocker" style="margin-top: 0;" role="alert" aria-labelledby="ex-browser">
+              <div class="connect-blocker__head"><svg class="icon icon--lg connect-blocker__icon connect-blocker__icon--warn" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg><h4 class="connect-blocker__title" id="ex-browser">This browser can’t reach the bike</h4></div>
+              <p class="connect-blocker__body">Open Telo Ride in Chrome or Edge on a laptop or Android tablet. Safari and Firefox don’t support Web Bluetooth yet.</p>
+              <button class="btn btn--raised connect-blocker__retry" type="button">Try again</button>
+            </section>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>In place of the device card on Connect Bike. Red icon for a switch the rider can flip; amber for a browser they have to change.</span><span>connect-bike/bluetooth-off · unsupported-browser</span></div>
+      </div>
+
+      <h3>Notice or panel: the page still works, or it doesn't</h3>
+      <p>The <b>browser notice</b> sits under the header when the page is still worth browsing (Custom Setup, Class Start); its start action is disabled with a reason. The <b>browser panel</b> replaces a screen that can't do anything without the bike (the custom ride).</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0;">
+          <div class="browser-notice" role="alert">
+            <svg class="icon icon--lg browser-notice__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 12.5-5-5"/><path d="m9.5 12.5 5-5"/><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M12 17v4"/><path d="M8 21h8"/></svg>
+            <p class="browser-notice__text"><span class="browser-notice__title">Open Telo Ride in Chrome or Edge.</span> <span class="browser-notice__body">Bluetooth to the bike only works there — you can look around, but not ride.</span></p>
+            <button class="btn btn--raised browser-notice__action" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy link</button>
+          </div>
+          <div class="browser-notice" role="alert">
+            <svg class="icon icon--lg browser-notice__icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <p class="browser-notice__text"><span class="browser-notice__title">Open the secure version of this page.</span> <span class="browser-notice__body">Bluetooth is blocked on plain http, so the bike can’t connect.</span></p>
+            <a class="btn btn--primary browser-notice__action" href="#structure">Open over HTTPS<svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>Browser notices: the fix as the title, why and what still works as the body, the fix as the button.</span><span>custom-setup/needs-chromium · needs-https</span></div>
+      </div>
+      <div class="pt-grid">
+        <div>
+          <div class="ds-stage">
+            <div class="ride-overlay">
+              <div class="browser-panel" role="alert">
+                <svg class="icon browser-panel__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 12.5-5-5"/><path d="m9.5 12.5 5-5"/><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M12 17v4"/><path d="M8 21h8"/></svg>
+                <h4 class="browser-panel__title">Open Telo Ride in Chrome or Edge</h4>
+                <p class="browser-panel__body">Telo Ride talks to your bike over Web Bluetooth, which Safari and Firefox don’t support. Your rides and settings carry over — they’re saved per browser, so export them first if you have history here.</p>
+                <div class="browser-panel__actions"><button class="btn btn--raised btn--sm browser-notice__action" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy link</button></div>
+                <p class="browser-panel__url">https://ride.telo.app/ride</p>
+              </div>
+            </div>
+          </div>
+          <p class="pt-note">Browser panel over the custom ride. custom-ride/needs-chromium.</p>
+        </div>
+        <div>
+          <div class="ds-stage">
+            <div class="ride-overlay">
+              <div class="ride-overlay__card">
+                <h4 class="ride-overlay__title ride-overlay__title--connect">Connect your bike</h4>
+                <p class="ride-overlay__body ride-overlay__body--relaxed">Wake the Echelon EX-5s with a few pedal strokes, then pick it from the list your browser shows. We’ll remember it next time.</p>
+                <button class="btn btn--primary ride-overlay__connect" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>Connect bike</button>
+                <p class="ride-overlay__hint">Not in the list? Close the Echelon app on your phone — the bike talks to one device at a time.</p>
+              </div>
+            </div>
+          </div>
+          <p class="pt-note">No bike picked: the dashboard's empty state. custom-ride/no-bike.</p>
+        </div>
+      </div>
+
+      <h3>Mid-ride: lost the bike</h3>
+      <p>The overlay covers the ride, the header's bike status turns red (“Disconnected”), and every control that would talk to the bike is disabled. The body changes with what the ride does meanwhile.</p>
+      <div class="pt-grid">
+        <div>
+          <div class="ds-stage">
+            <img class="photo" src="../assets/images/worlds/oldtown.jpg" alt="" style="position: absolute; inset: 0;">
+            <div class="race-lost" role="alert">
+              <div class="race-lost__inner">
+                <svg class="icon icon--2xl race-lost__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg>
+                <h4 class="race-lost__title">Lost the bike</h4>
+                <p class="race-lost__body">Echelon EX-5s stopped answering. Your rider coasts for 15 seconds while we reconnect; after that the race counts as a DNF.</p>
+                <button class="race-lost__action" type="button">Reconnect</button>
+              </div>
+            </div>
+          </div>
+          <p class="pt-note">Race vs Bots: the clock is against you, and the copy says how long you have. race/disconnected.</p>
+        </div>
+        <div>
+          <div class="ds-stage">
+            <div class="ride-header">
+              <span class="ride-header__status"><svg class="icon icon--md text-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg><span class="ride-header__status-name">Echelon EX-5s</span><span class="ride-header__status-text text-heart">Disconnected</span></span>
+            </div>
+            <div class="ride-overlay ride-overlay--lost" style="top: var(--space-14);">
+              <div class="ride-overlay__card" role="alert">
+                <svg class="icon ride-overlay__icon text-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg>
+                <h4 class="ride-overlay__title">Lost the bike</h4>
+                <p class="ride-overlay__body">Echelon EX-5s stopped answering. Wake it with a pedal stroke, then reconnect — your ride is saved at 6:52.</p>
+                <button class="btn btn--primary ride-overlay__action" type="button">Reconnect</button>
+              </div>
+            </div>
+          </div>
+          <p class="pt-note">Custom ride: nothing is racing, so the copy reassures. custom-ride/disconnected.</p>
+        </div>
+      </div>
+
+      <h3>Not found</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0;">
+          <div class="pt-frame">
+            <header class="app-header">
+              <a class="app-header__brand" href="../../mocks/pages/home/default.html" aria-label="Home"><span class="lockup" aria-hidden="true"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span></a>
+              <nav class="app-header__nav" aria-label="Main (example)">
+                <a class="app-header__nav-link" href="../../mocks/pages/home/default.html">Home</a>
+                <a class="app-header__nav-link" href="../../mocks/pages/map-select/default.html">Race</a>
+                <a class="app-header__nav-link" href="../../mocks/pages/class-library/default.html">Classes</a>
+                <a class="app-header__nav-link" href="../../mocks/pages/profile/default.html">Profile</a>
+              </nav>
+            </header>
+            <div class="container page not-found">
+              <h4 class="page__title">This page doesn’t exist.</h4>
+              <p class="page__lead">The link may be old, or the address has a typo. Your rides and progress are safe.</p>
+              <a class="btn btn--primary btn--lg not-found__action" href="../../mocks/pages/home/default.html"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Back to Home</a>
+            </div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>The shell stays, no nav item is current, and one action goes somewhere real.</span><span>pages/not-found/default</span></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <h3>One problem, three places</h3>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Problem</th><th scope="col">Connect Bike</th><th scope="col">A page you can browse</th><th scope="col">A ride screen</th><th scope="col">Header and Diagnostics</th></tr></thead>
+        <tbody>
+          <tr><td>Bluetooth off</td><td>Blocker “Bluetooth is off”, Try again</td><td>—</td><td>Overlay “Turn on Bluetooth”, Check again</td><td>Diagnostics: “Supported · adapter off” in red</td></tr>
+          <tr><td>Wrong browser</td><td>Blocker “This browser can’t reach the bike”</td><td>Notice, Copy link; Start or Join disabled</td><td>Panel, Copy link and the page address</td><td>—</td></tr>
+          <tr><td>Plain http</td><td>—</td><td>Notice, Open over HTTPS; Start or Join disabled</td><td>Panel, Open over HTTPS</td><td>—</td></tr>
+          <tr><td>No bike picked</td><td>Searching…</td><td>—</td><td>Overlay “Connect your bike”; readouts show dashes</td><td>Diagnostics: “None picked yet” in amber</td></tr>
+          <tr><td>Bike lost</td><td>—</td><td>Header bike icon turns red, “not connected” for screen readers</td><td>Overlay “Lost the bike”, Reconnect; controls disabled</td><td>Status reads Disconnected in red</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Header indicator</h3>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Bike</th><th scope="col">Connected</th><th scope="col">Not connected</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">App header</th>
+            <td><span class="app-header__bike" style="display: flex;"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>Echelon EX-5s<span class="visually-hidden"> connected</span></span></td>
+            <td><span class="app-header__bike app-header__bike--off" style="display: flex;" title="Bike not connected"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg>Echelon EX-5s<span class="visually-hidden"> not connected</span></span></td></tr>
+          <tr><th scope="row">Ride header</th>
+            <td><span class="ride-header__status"><svg class="icon icon--md text-volt" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg><span class="ride-header__status-name">Echelon EX-5s</span><span class="ride-header__status-text text-muted">Connected</span></span></td>
+            <td><span class="ride-header__status"><svg class="icon icon--md text-heart" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg><span class="ride-header__status-name">Echelon EX-5s</span><span class="ride-header__status-text text-heart">Disconnected</span></span></td></tr>
+        </tbody>
+      </table></div>
+      <p>Every state also changes the icon (Bluetooth → Bluetooth off), never colour alone. The app header hides the bike indicator below 1024px; on phones the ride header's status is the one that matters.</p>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Form</th><th scope="col">360</th><th scope="col">640</th><th scope="col">1024</th></tr></thead>
+        <tbody>
+          <tr><td>Empty line</td><td colspan="3">Same everywhere: one line in the section's place, wrapping as text does.</td></tr>
+          <tr><td>Blocker card</td><td>Full width of the pairing column, under the lead.</td><td>As 360.</td><td>In the right-hand column beside the bike photo.</td></tr>
+          <tr><td>Browser notice</td><td>Text and action stack; the icon is hidden; action left-aligned.</td><td colspan="2">Icon, text and action in one row; padding grows to 32px at 1024.</td></tr>
+          <tr><td>Overlay and panel</td><td>Centred card, max 24rem, 24px side padding.</td><td colspan="2">As 360. On the custom ride from 1024 it covers only the telemetry column; Resistance stays visible and disabled.</td></tr>
+          <tr><td>404</td><td>The shell's nav drops under the brand, as on every page.</td><td colspan="2">Nav in the header row; the message stays within <code>--setup-form-max</code>.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <ul>
+        <li><b>Announce failures, not emptiness.</b> Blockers, notices, panels and Lost the bike are <code>role="alert"</code>. An empty line is ordinary text: there is nothing to announce.</li>
+        <li><b>Name the region.</b> A blocker is a <code>section</code> with an <code>h2</code> title and <code>aria-labelledby</code>, so it shows up in the headings list.</li>
+        <li><b>Say what a symbol means.</b> The dash is <code>aria-hidden</code> beside “No best yet”; the red bike icon sits beside “not connected”; locked map names add “, locked”.</li>
+        <li><b>Move focus only mid-task.</b> When Lost the bike appears during a ride, focus goes to Reconnect and comes back when the overlay lifts. A blocker present on page load doesn't take focus.</li>
+        <li><b>Leave everything else usable.</b> Disabled controls behind an overlay are <code>disabled</code>, not hidden; full screen and the header stay reachable.</li>
+      </ul>
+      <h3>Keyboard</h3>
+      <table class="ds-table ds-keys">
+        <thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>Tab</kbd></td><td>Reaches the one action in the blocker, notice or overlay before the disabled controls.</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td>Runs it: Try again, Copy link, Open over HTTPS, Reconnect, Back to Home.</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td>Does nothing on an overlay; the problem is still there.</td></tr>
+        </tbody>
+      </table>
+      <h3>Contrast</h3>
+      <div class="pt-stack" style="gap: var(--space-2);">
+        <div class="ds-pair" style="--pair-fg: var(--color-heart-fg); --pair-bg: var(--color-ink);"><span>Disconnected on the header</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-ink" data-min="4.5"></span></div>
+        <div class="ds-pair" style="--pair-fg: var(--color-muted); --pair-bg: var(--color-panel);"><span>Blocker body on panel</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+        <div class="ds-pair" style="--pair-fg: var(--color-faint); --pair-bg: var(--color-ink);"><span>Overlay hint and panel address</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-ink" data-min="4.5"></span></div>
+        <div class="ds-pair" style="--pair-fg: var(--color-warn-fg); --pair-bg: var(--color-panel);"><span>Amber icon (3:1 as a graphic)</span><span class="ds-pair__ratio" data-contrast="--color-warn-fg|--color-panel" data-min="3"></span></div>
+      </div>
+      <h3>Motion</h3>
+      <p>Overlays appear without animation. Nothing in an error state moves except the spinner of a retry in progress, which stops under reduced motion.</p>
+      <h3>Touch</h3>
+      <p>Recovery actions are 44px tall (Reconnect, Check again); Connect bike is 48px. They are often pressed with a hand off the bars.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li><b>Name the problem in the rider's world</b>: “Bluetooth is off”, “Lost the bike”, “This browser can’t reach the bike”. Never an exception name or a code.</li>
+        <li><b>Say where it works</b>: “Chrome or Edge on a laptop or Android tablet”.</li>
+        <li><b>Say what is safe</b>: “Your rides and progress are safe.”, “your ride is saved at 6:52”, “Your rides and settings carry over”.</li>
+        <li><b>Say what keeps going</b>: “The class keeps going.”, “Your rider coasts for 15 seconds”.</li>
+        <li><b>One action, a verb</b>: Try again, Reconnect, Copy link, Open over HTTPS, Connect bike, Back to Home.</li>
+        <li><b>Empty lines are hopeful and specific</b>: “Nothing yet. Your first race shows up here, with the XP it earned.” Not “No data”.</li>
+        <li><b>Hints answer the next question</b>: “Not in the list? Close the Echelon app on your phone — the bike talks to one device at a time.”</li>
+      </ul>
+      <p>See <a href="../foundations/content.html">Content</a> for the error and empty formulas in the microcopy library.</p>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><p class="recent__empty">Nothing yet. Your first race shows up here, with the XP it earned.</p></div><figcaption>Say what will appear and what puts it there.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><p class="recent__empty">No data</p></div><figcaption>A system word that tells the rider nothing.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas ds-example__canvas--stack"><section class="connect-blocker" style="margin-top: 0;" aria-labelledby="dd-bt"><div class="connect-blocker__head"><svg class="icon icon--lg connect-blocker__icon connect-blocker__icon--heart" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg><h4 class="connect-blocker__title" id="dd-bt">Bluetooth is off</h4></div><p class="connect-blocker__body">Turn on Bluetooth on this computer, then try again.</p></section></div><figcaption>The problem, what to do, one action.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas ds-example__canvas--stack"><section class="connect-blocker" style="margin-top: 0;" aria-labelledby="dd-bt2"><div class="connect-blocker__head"><h4 class="connect-blocker__title" id="dd-bt2">Error</h4></div><p class="connect-blocker__body">NotFoundError: Bluetooth adapter not available.</p></section></div><figcaption>The browser's exception, shown to a rider who has to guess what to do.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas ds-example__canvas--stack"><p class="pt-note">Class Start in Safari: the page stays, a notice says “Open Telo Ride in Chrome or Edge.”, and Join is disabled with a reason.</p></div><figcaption>Block only what can't work. The rider can still read the class and pick a time.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas ds-example__canvas--stack"><p class="pt-note">Class Library replaced by a full-screen “Unsupported browser” page.</p></div><figcaption>Blocking browsing because riding won't work. Save the panel for screens that can do nothing without the bike.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas ds-example__canvas--stack"><h4 class="page__title">This page doesn’t exist.</h4><p class="page__lead">The link may be old, or the address has a typo. Your rides and progress are safe.</p></div><figcaption>Inside the shell, with a likely cause and a reassurance.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas ds-example__canvas--stack"><h4 class="page__title">404</h4><p class="page__lead">Not Found</p></div><figcaption>A status code with no way back.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <p>Mocks this pattern was extracted from:</p>
+      <ul>
+        <li><a href="../../mocks/pages/profile/new-rider.html">pages/profile/new-rider</a>, <a href="../../mocks/pages/home/new-rider.html">pages/home/new-rider</a>, <a href="../../mocks/pages/map-select/new-rider.html">pages/map-select/new-rider</a>, <a href="../../mocks/pages/class-library/new-rider.html">pages/class-library/new-rider</a></li>
+        <li><a href="../../mocks/pages/connect-bike/bluetooth-off.html">pages/connect-bike/bluetooth-off</a>, <a href="../../mocks/pages/connect-bike/unsupported-browser.html">unsupported-browser</a></li>
+        <li><a href="../../mocks/pages/custom-setup/needs-chromium.html">pages/custom-setup/needs-chromium</a>, <a href="../../mocks/pages/custom-setup/needs-https.html">needs-https</a>, <a href="../../mocks/pages/class-start/needs-chromium.html">pages/class-start/needs-chromium</a>, <a href="../../mocks/pages/class-start/needs-https.html">needs-https</a></li>
+        <li><a href="../../mocks/pages/custom-ride/no-bike.html">pages/custom-ride/no-bike</a>, <a href="../../mocks/pages/custom-ride/bluetooth-off.html">bluetooth-off</a>, <a href="../../mocks/pages/custom-ride/needs-chromium.html">needs-chromium</a>, <a href="../../mocks/pages/custom-ride/needs-https.html">needs-https</a>, <a href="../../mocks/pages/custom-ride/disconnected.html">disconnected</a></li>
+        <li><a href="../../mocks/pages/race/disconnected.html">pages/race/disconnected</a>, <a href="../../mocks/pages/class-ride/disconnected.html">pages/class-ride/disconnected</a>, <a href="../../mocks/pages/home/disconnected.html">pages/home/disconnected</a></li>
+        <li><a href="../../mocks/dialogs/diagnostics/bluetooth-off.html">dialogs/diagnostics/bluetooth-off</a>, <a href="../../mocks/dialogs/diagnostics/no-bike.html">no-bike</a></li>
+        <li><a href="../../mocks/pages/not-found/default.html">pages/not-found/default</a></li>
+      </ul>
+      <p>Drift found while extracting:</p>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Mock</th><th scope="col">Issue</th><th scope="col">Resolution</th></tr></thead>
+        <tbody>
+          <tr><td>pages/custom-ride/bluetooth-off vs connect-bike/bluetooth-off</td><td>One problem, two titles and two verbs: “Turn on Bluetooth” / Check again against “Bluetooth is off” / Try again.</td><td>Blocker formula: the title states the problem (“Bluetooth is off”), the action is Try again.</td></tr>
+          <tr><td>pages/custom-ride/no-bike, bluetooth-off</td><td>The overlay card has no <code>role</code>, unlike Lost the bike.</td><td>Bluetooth off is a failure: <code>role="alert"</code>. No bike is a first-run empty state: no live region.</td></tr>
+          <tr><td>pages/race/disconnected</td><td>Reconnect is a bespoke <code>.race-lost__action</code> button rather than <code>.btn--primary</code>, unlike the class and custom ride overlays.</td><td>Documented as is; it reads the same tokens (volt, 44px, <code>--radius-lg</code>).</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

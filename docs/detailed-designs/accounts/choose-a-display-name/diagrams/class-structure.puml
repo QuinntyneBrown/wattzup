@@ -1,0 +1,107 @@
+@startuml
+set separator none
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Choose a display name
+package "api library" {
+  class DisplayNamePolicy <<const>> {
+    +minLength = 2
+    +maxLength = 24
+    +allowed = /^[\p{L}\p{N} ._-]+$/u
+    +isDisplayName(raw: string): boolean
+  }
+  interface RidersApi {
+    +me(): Observable<RiderMe>
+    +setDisplayName(name: string): Observable<RiderMe>
+  }
+  interface CurrentRider {
+    +rider: Signal<RiderMe | null>
+    +signedIn(rider: RiderMe): void
+  }
+  class HttpRidersApi
+  RidersApi <|.. HttpRidersApi
+}
+package "components library" {
+  class DisplayNameForm {
+    +name: input<string>
+    +action: input<string>
+    +cancel: input<string | null>
+    +saving: input<boolean>
+    +refusals: input<number>
+    +failed: input<boolean>
+    +submitted: output<string>
+    +cancelled: output<void>
+  }
+  class SettingRow <<a, button>> {
+    +title: input<string>
+    +body: input<string>
+  }
+}
+package "ride application" {
+  class DisplayNamePromptPage
+  class DisplayNameDialog
+  class ProfilePage
+  class DisplayNameStore {
+    +saving: Signal<boolean>
+    +error: Signal<"refused" | "failed" | null>
+    +refusals: Signal<number>
+    +save(name: string): Promise<boolean>
+  }
+}
+DisplayNamePromptPage --> DisplayNameForm
+DisplayNameDialog --> DisplayNameForm
+ProfilePage --> SettingRow
+ProfilePage ..> DisplayNameDialog : opens (CDK Dialog)
+DisplayNamePromptPage --> DisplayNameStore
+DisplayNameDialog --> DisplayNameStore
+DisplayNameStore --> RidersApi : RIDERS_API
+DisplayNameStore --> CurrentRider : CURRENT_RIDER
+DisplayNameStore ..> DisplayNamePolicy
+package "Telo.Ride.Api" {
+  class RidersController {
+    +SetDisplayName(request: SetDisplayNameRequest): Task<IActionResult>
+  }
+}
+package "Telo.Ride.Application" {
+  class SetDisplayNameCommand {
+    +Guid RiderId
+    +string? DisplayName
+  }
+  class SetDisplayNameCommandHandler {
+    +Handle(command: SetDisplayNameCommand): Task<RiderDto>
+  }
+  class RiderCard {
+    +string DisplayName
+    +string? CountryCode
+    +int Level
+  }
+}
+package "Telo.Ride.Domain" {
+  class DisplayName <<value object>> {
+    +string Value
+    +{static} Parse(raw: string?): DisplayName
+  }
+  class Rider {
+    +Guid Id
+    +string Email
+    +string? DisplayName
+    +Rename(name: DisplayName): void
+  }
+}
+RidersController ..> SetDisplayNameCommand : sends
+SetDisplayNameCommandHandler ..> SetDisplayNameCommand : handles
+SetDisplayNameCommandHandler --> DisplayName : parses
+SetDisplayNameCommandHandler --> Rider : loads / renames
+Rider --> DisplayName
+RiderCard ..> Rider : projects (no email)
+@enduml

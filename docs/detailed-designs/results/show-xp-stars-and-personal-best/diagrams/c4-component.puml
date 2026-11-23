@@ -1,0 +1,27 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Show XP, stars and personal best
+
+Container_Boundary(app, "Ride app") {
+  Component(page, "ResultsPage", "Angular page · ride", "Places the earned panels")
+  Component(store, "resultsView()", "Pure helper · ride", "Maps the result and RideSyncState to panel views")
+  Component(outbox, "SessionRideOutbox", "Service · domain/storage (RIDE_OUTBOX)", "Sending, recorded, waiting offline or not recorded")
+  Component(ridesapi, "HttpRidesApi", "HTTP client · api (RIDES_API)", "POST /api/rides")
+  Component(xp, "XpEarned", "Presentation component · components", "Total and XP lines, or a waiting state")
+  Component(stars, "MapStars", "Presentation component · components", "Stars held and new stars")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(ctrl, "RidesController", "ASP.NET Core controller", "POST /api/rides")
+  Component(handler, "SubmitRideCommandHandler", "MediatR handler", "XP lines, stars, best")
+  Component(rules, "MapProgress, StarRules", "Domain", "Best time and stars per rider and map")
+}
+Rel(page, outbox, "submit(ride), status(rideId)")
+Rel(page, store, "Computes views")
+Rel(outbox, ridesapi, "submitRide")
+Rel(ridesapi, ctrl, "POST /api/rides", "JSON/HTTPS")
+Rel(ctrl, handler, "Sends SubmitRideCommand")
+Rel(handler, rules, "RecordFinish, Evaluate, Award")
+Rel(page, xp, "Renders")
+Rel(page, stars, "Renders for races")
+@enduml

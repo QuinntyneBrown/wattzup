@@ -1,0 +1,81 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Pause, leave or lose the bike in a race
+enum RaceInterruption {
+  none
+  paused
+  coasting
+  parked
+  dnf
+}
+enum BleState {
+  connected
+  connecting
+  reconnecting
+  disconnected
+}
+class RaceStore {
+  +interruption: Signal<RaceInterruption>
+  +coastRemainingS: Signal<number>
+  +canPause: Signal<boolean>
+  +pause(): void
+  +resume(): void
+  +end(): void
+  +leave(): Promise<void>
+  +reconnect(): Promise<void>
+}
+class RaceEngine {
+  +pause(): void
+  +resume(): void
+  +bikeLost(atS: number): void
+  +bikeBack(): void
+  +isPaused(): boolean
+}
+class CoastPolicy {
+  +{static} COAST_S: 15
+  +speedAfter(initialMs: number, sinceLostS: number): number
+  +isDnf(mode: RaceMode, sinceLostS: number): boolean
+  +parks(mode: RaceMode): boolean
+}
+class RideClock {
+  +pause(): void
+  +resume(): void
+  +elapsedS(): number
+}
+interface BikeConnection {
+  +ble: Signal<BleState>
+  +reconnect(): Promise<void>
+}
+class RaceSessionStore {
+  +leave(): Promise<void>
+}
+class RacePaused {
+  +routeName: InputSignal<string>
+}
+class RaceLost {
+  +bikeName: InputSignal<string>
+  +mode: InputSignal<RaceMode>
+  +dnf: InputSignal<boolean>
+  +reconnect: OutputEmitterRef<void>
+}
+RaceStore --> RaceInterruption
+RaceStore ..> RaceEngine : drives
+RaceStore ..> RideClock : pause, resume
+RaceStore ..> BikeConnection : watches
+RaceStore ..> RaceSessionStore : leave (riders online)
+RaceEngine ..> CoastPolicy : uses
+BikeConnection --> BleState
+RacePaused ..> RaceInterruption : rendered when paused
+RaceLost ..> RaceInterruption : rendered when coasting, parked or dnf
+@enduml

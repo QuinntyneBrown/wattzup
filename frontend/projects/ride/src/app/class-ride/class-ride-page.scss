@@ -1,0 +1,134 @@
+@use '../../styles/page';
+
+// Block world-loading (docs/design-system/assets/components.css, World loading): the slim class header over the
+// world's panorama, the class on the left and the load card (26 rem) on the right from lg, stacked below. It never
+// scrolls sideways; below lg the body scrolls under the header (L2-151 AC4).
+.class-ride-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--color-ink);
+  color: var(--color-fg);
+}
+
+.world-loading {
+  --world-loading-card-width: 26rem;
+
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  overflow-y: auto;
+
+  &:focus {
+    outline: none; // focused by the skip link, never by a pointer
+  }
+}
+
+.world-loading__scene {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: var(--color-raised);
+
+  // The ink scrim keeps every word on the photo at 4.5:1: solid at the foot, a tint at the top (L2-151 AC3).
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      var(--color-ink) 0,
+      color-mix(in srgb, var(--color-ink) 92%, transparent) 50%,
+      color-mix(in srgb, var(--color-ink) 88%, transparent) 100%
+    );
+
+    // From lg the words sit at the foot, so the top of the world can show through.
+    @media (min-width: 64rem) {
+      background: linear-gradient(
+        to top,
+        var(--color-ink) 0,
+        color-mix(in srgb, var(--color-ink) 88%, transparent) 55%,
+        color-mix(in srgb, var(--color-ink) 35%, transparent) 100%
+      );
+    }
+  }
+}
+
+.world-loading__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.world-loading__body {
+  display: grid;
+  gap: var(--space-6);
+  margin-top: auto;
+  width: 100%;
+  padding-block: var(--space-10) var(--space-6);
+
+  @media (min-width: 64rem) {
+    grid-template-columns: minmax(0, 1fr) var(--world-loading-card-width);
+    align-items: end;
+    gap: var(--space-12);
+    padding-block: var(--space-16) var(--space-10);
+  }
+}
+
+.world-loading__intro {
+  min-width: 0;
+}
+
+.world-loading__eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}
+
+.world-loading__title {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-3xl);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
+
+  @media (min-width: 40rem) {
+    font-size: var(--font-size-4xl);
+    line-height: var(--line-height-4xl);
+  }
+}
+
+.world-loading__about {
+  margin-top: var(--space-3);
+  max-width: var(--layout-text-xl);
+  color: var(--color-muted);
+}
+
+// On a phone the load card comes first after the description: the plan was on Class Start already.
+.world-loading__plan {
+  display: block;
+  margin-top: var(--space-6);
+
+  @media (max-width: 39.99rem) {
+    display: none;
+  }
+}
+
+// On a phone, mid-ride, every tap area that reads the comfortable target takes the ride target instead: 48 px
+// (L2-140 AC2).
+@media (max-width: 39.99rem) {
+  :host {
+    --target-comfortable: var(--target-ride);
+  }
+}

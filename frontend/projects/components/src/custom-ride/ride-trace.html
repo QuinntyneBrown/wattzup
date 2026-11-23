@@ -1,0 +1,56 @@
+<svg
+  class="ride-trace__svg"
+  [attr.viewBox]="viewBox()"
+  preserveAspectRatio="none"
+  role="img"
+  [attr.aria-label]="label()"
+>
+  @for (y of grid; track y) {
+    <line
+      class="ride-trace__grid"
+      x1="0"
+      [attr.x2]="total()"
+      [attr.y1]="y"
+      [attr.y2]="y"
+      vector-effect="non-scaling-stroke"
+    />
+  }
+  @for (block of blocks(); track $index) {
+    <g [class]="'ride-trace__segment ride-trace__segment--' + block.modifier">
+      <rect
+        class="ride-trace__block"
+        [class.ride-trace__block--past]="block.past"
+        [attr.x]="block.x"
+        [attr.y]="block.y"
+        [attr.width]="block.width"
+        [attr.height]="height - block.y"
+      />
+      <line
+        class="ride-trace__target"
+        [class.ride-trace__target--past]="block.past"
+        [attr.x1]="block.x"
+        [attr.x2]="block.x + block.width"
+        [attr.y1]="block.y"
+        [attr.y2]="block.y"
+        vector-effect="non-scaling-stroke"
+      />
+    </g>
+  }
+  @if (area()) {
+    <path class="ride-trace__area" [attr.d]="area()" />
+    <polyline
+      class="ride-trace__line"
+      [attr.points]="points()"
+      vector-effect="non-scaling-stroke"
+    />
+  }
+  <line
+    class="ride-trace__playhead"
+    [attr.x1]="elapsed()"
+    [attr.x2]="elapsed()"
+    y1="0"
+    [attr.y2]="height"
+    vector-effect="non-scaling-stroke"
+  />
+</svg>
+<span class="ride-trace__max" aria-hidden="true">{{ max() }} W</span>

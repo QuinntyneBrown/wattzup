@@ -1,0 +1,13 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Ride without a network
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(bike, "Smart bike", "Echelon or FTMS bike; Bluetooth LE")
+System_Ext(youtube, "YouTube", "Class and custom-ride videos (IFrame Player API)")
+Rel(rider, telo, "Rides offline with")
+Rel(telo, bike, "Reads and controls", "Bluetooth LE")
+Rel(telo, youtube, "Plays class video from, when online", "HTTPS")
+@enduml

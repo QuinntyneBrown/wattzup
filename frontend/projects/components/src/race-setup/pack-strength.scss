@@ -1,0 +1,64 @@
+// Block pack (docs/design-system/assets/components.css, Race Setup). The chosen strength is filled and named by
+// aria-checked, and its note names it again in words.
+:host {
+  display: block;
+}
+
+.pack {
+  margin-top: var(--space-6);
+}
+
+.pack__title {
+  color: var(--color-muted);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.pack__options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: var(--space-2);
+  border-radius: var(--radius-lg);
+  background: var(--color-raised);
+  padding: var(--space-1);
+}
+
+.pack__option {
+  min-height: 2.75rem;
+  border: none;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-muted);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  text-align: center;
+  text-transform: capitalize;
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+
+  &:hover {
+    color: var(--color-fg);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  &[aria-checked='true'] {
+    background: var(--color-fg);
+    color: var(--color-ink);
+  }
+}
+
+.pack__note {
+  margin-top: var(--space-2);
+  color: var(--color-muted);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}

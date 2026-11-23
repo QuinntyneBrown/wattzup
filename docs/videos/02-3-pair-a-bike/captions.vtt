@@ -1,0 +1,85 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.507
+Pairing is one press now. The browser's list opens, the rider picks the bike, and
+
+00:00:07.507 --> 00:00:09.327
+Telo Ride connects to it.
+
+00:00:10.324 --> 00:00:15.652
+Only the press opens the list, and it asks for Echelon's service or FTMS. Under the
+
+00:00:15.652 --> 00:00:18.327
+button, a hint about the Echelon app.
+
+00:00:20.647 --> 00:00:25.547
+If the rider closes the list, nothing goes wrong. If a policy blocks it, an alert
+
+00:00:25.547 --> 00:00:27.299
+says so, with Try again.
+
+00:00:30.971 --> 00:00:36.715
+The card reads the name the bike advertises, so an Echelon EX-5s shows its model and
+
+00:00:36.715 --> 00:00:38.314
+its own identifier.
+
+00:00:41.295 --> 00:00:45.834
+Pairing subscribes first, then writes three commands to start the bike, one at a
+
+00:00:45.834 --> 00:00:48.858
+time, at least three hundred milliseconds apart.
+
+00:00:51.618 --> 00:00:56.410
+The button turns busy with a spinner. On the bike's first notification, the card
+
+00:00:56.410 --> 00:00:58.567
+gets its check, and Home opens.
+
+00:01:01.942 --> 00:01:07.180
+Other smart bikes speak FTMS. Telo Ride reads their data and range, and sets
+
+00:01:07.180 --> 00:01:10.582
+resistance only once the bike grants control.
+
+00:01:12.266 --> 00:01:17.241
+The bike is remembered. Next time, Telo Ride opens on Home and reconnects to it,
+
+00:01:17.241 --> 00:01:18.598
+without the list.
+
+00:01:22.590 --> 00:01:27.320
+Still to come: keepalive and automatic reconnects in the next slice, then the read
+
+00:01:27.320 --> 00:01:29.696
+only status and the signal strength.
+
+00:01:32.913 --> 00:01:37.290
+Pairing looks the same on a phone, a tablet, a laptop or a desktop.
+
+00:01:43.237 --> 00:01:47.957
+What the tests prove: twenty-five behaviour specs and sixty-two unit tests, all
+
+00:01:47.957 --> 00:01:48.615
+green.
+
+00:01:53.561 --> 00:01:58.164
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:58.509 --> 00:02:03.021
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:02:03.021 --> 00:02:04.692
+every hill and interval.
+
+00:02:05.037 --> 00:02:10.215
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:02:10.215 --> 00:02:15.663
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:02:15.663 --> 00:02:18.653
+XP, rider levels, stars and map unlocks.
+
+00:02:18.998 --> 00:02:21.491
+A custom workout lives under Profile.

@@ -1,0 +1,8 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Ride a simulated bike
+Person(dev, "Developer or test author", "Exercises features without hardware")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+Rel(dev, telo, "Opens a development build with ?simulate", "HTTPS or localhost")
+@enduml

@@ -1,0 +1,62 @@
+// Block device-check (docs/design-system/assets/components.css): Settings' "Check this device".
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.device-check {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  border-radius: var(--radius-xl);
+  background: var(--color-raised);
+  padding: var(--space-4);
+}
+
+.device-check__label {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.device-check__hint {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-snug);
+  color: var(--color-muted);
+}
+
+.device-check__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.device-check__result {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+
+  .icon {
+    flex-shrink: 0;
+    margin-top: var(--space-0-5);
+    color: var(--color-success-icon);
+  }
+}
+
+.device-check__title {
+  font-weight: var(--font-weight-semibold);
+}
+
+.device-check__figure {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+}
+
+.device-check__detail {
+  color: var(--color-muted);
+}

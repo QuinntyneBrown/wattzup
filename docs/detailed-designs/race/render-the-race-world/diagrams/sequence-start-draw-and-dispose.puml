@@ -1,0 +1,64 @@
+@startuml
+title UML sequence behaviour — Start, draw and dispose the world
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "RacePage" as page
+  participant "RaceWorld" as outlet
+  participant "RaceStore" as store
+end box
+box "Frontend — Ride app (world library, lazy chunk)" #E0F2FE
+  participant "WorldScene" as scene
+  participant "FrameScheduler" as frames
+  participant "ThreeWorldRenderer\n(Three.js chunk)" as renderer
+end box
+actor -> page : Race opens
+page -> outlet : map, elapsed, speed, running
+outlet -> scene : import('@telo/world'); createComponent(WorldScene) (ADR 0030)
+scene -> renderer : WORLD_RENDERER(): import Three.js (lazy chunk, ADR 0020)
+scene -> frames : measurePeriod(): 30 frames that draw nothing (L2-111 AC9)
+scene -> renderer : start(canvas, world, nextFrame, segments)
+renderer -> renderer : new WebGPURenderer({ canvas, forceWebGL }); await init()
+alt WebGPU adapter granted
+  renderer --> scene : true; backend webgpu
+  scene --> store : started(webgpu); tag "WebGPU" (L2-065 AC1)
+else WebGPU missing, WebGL 2 context available
+  renderer --> scene : true; backend webgl2
+  scene --> store : started(webgl2); tag "WebGL 2" (L2-065 AC1)
+else neither
+  renderer --> scene : false
+  scene -> renderer : dispose()
+  scene --> store : unavailable; the map's panorama stays, the race carries on (L2-065 AC2)
+end
+opt started
+  scene -> renderer : setFramePeriod(period); resize on ResizeObserver
+  loop each frame while the race runs
+    frames --> scene : now
+    scene -> renderer : draw(frame) through SceneDriver (L2-064 AC1, AC3)
+  end
+  opt tab hidden
+    frames -> frames : request no frame; the clock and telemetry carry on (L2-065 AC3)
+    scene -> scene : visible = false; draw no frame for a change of input either
+    scene -> renderer : pauseBudget(), then setFramePeriod(measured again) on return
+  end
+end
+actor -> page : Leave, End or finish
+page -> outlet : destroyed with the race view
+outlet -> scene : destroyed
+scene -> frames : stop the loop
+scene -> scene : disconnect ResizeObserver, remove visibility and screen listeners
+scene -> renderer : dispose(): every GPU resource and the renderer
+@enduml

@@ -1,0 +1,17 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Finish a race
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Detects the finish, queues and submits the ride")
+  ContainerDb(idb, "Browser storage", "IndexedDB", "Rides waiting to send")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Records rides, computes progress")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Rides and progress")
+}
+Rel(rider, app, "Finishes a race in")
+Rel(app, idb, "Writes the ride first")
+Rel(app, api, "POST /api/rides", "JSON/HTTPS")
+Rel(app, api, "ReportProgress to the line (riders online)", "SignalR")
+Rel(api, db, "Writes ride and progress once", "EF Core")
+@enduml

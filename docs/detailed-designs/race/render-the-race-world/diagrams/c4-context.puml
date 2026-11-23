@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Render the race world
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(gmaps, "Google Maps Platform", "Photorealistic 3D Tiles with the rider's own key")
+Rel(rider, telo, "Sees the map's 3D world in")
+Rel(telo, gmaps, "Streams 3D Tiles with the rider's key, when asked", "HTTPS")
+@enduml

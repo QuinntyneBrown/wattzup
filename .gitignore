@@ -13,3 +13,10 @@ node_modules/
 # Video build intermediates (docs/videos/README.md)
 docs/videos/**/narration.wav
 docs/videos/**/*.partial.mp4
+
+# .NET build output
+backend/**/bin/
+backend/**/obj/
+backend/**/TestResults/
+# The deploy copies the ride build here (ADR 0026); it is never committed.
+backend/src/Telo.Ride.Api/wwwroot/

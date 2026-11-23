@@ -1,0 +1,59 @@
+// Block profile-level (docs/design-system/assets/components.css, Profile): the level disc beside the headline, the XP
+// bar and the line under it.
+:host {
+  display: block;
+}
+
+.profile-level {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.profile-level__badge {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--space-24);
+  height: var(--space-24);
+  border-radius: var(--radius-full);
+  background: var(--color-gold);
+  color: var(--color-on-fill);
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-5xl);
+  line-height: var(--line-height-none);
+}
+
+.profile-level__body {
+  min-width: 0;
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+
+// The page's title, as every page draws it (page__title in the mocks).
+.page__title {
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-2xl);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
+
+  @media (min-width: 40rem) {
+    font-size: var(--font-size-3xl);
+    line-height: var(--line-height-3xl);
+  }
+}
+
+.profile-level__bar {
+  margin-top: var(--space-3);
+  max-width: var(--layout-text-md);
+}
+
+.profile-level__meta {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}

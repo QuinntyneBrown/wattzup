@@ -1,0 +1,44 @@
+<div class="film__frame">
+  <video
+    #video
+    class="film__video"
+    preload="none"
+    playsinline
+    tabindex="-1"
+    [attr.aria-label]="label()"
+    [src]="src()"
+    [poster]="still()"
+    [controls]="playing()"
+  >
+    <track kind="captions" srclang="en" label="English" default [src]="captions()" />
+  </video>
+  @if (!playing()) {
+    <button class="film__poster" type="button" [attr.aria-label]="playLabel()" (click)="play()">
+      <img class="film__still" [src]="still()" alt="" />
+      <span class="film__scrim"></span>
+      <span class="film__play">
+        <svg class="film__play-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5.5v13l10.5-6.5z" />
+        </svg>
+      </span>
+      <span class="film__length">{{ length() }}</span>
+    </button>
+  }
+</div>
+@if (chapters().length) {
+  <ol class="film__chapters" aria-label="Chapters">
+    @for (chapter of chapters(); track chapter.at; let index = $index) {
+      <li>
+        <button
+          class="film__chapter"
+          type="button"
+          [attr.aria-current]="playing() && current() === index ? 'true' : null"
+          (click)="play(index)"
+        >
+          <span class="film__time">{{ chapter.time }}</span>
+          <span class="film__title">{{ chapter.title }}</span>
+        </button>
+      </li>
+    }
+  </ol>
+}

@@ -1,0 +1,32 @@
+@startuml
+title UML sequence behaviour — Show untrusted text as text
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "Smart bike" as bike
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "WebBluetoothBikeConnection" as ble
+end box
+box "Frontend — Ride app" #E0F2FE
+  participant "ConnectBikePage" as page
+  participant "DeviceList template" as tmpl
+end box
+actor "Rider" as actor
+bike -> ble : Advertises name "<img src=x onerror=alert(1)>"
+ble -> page : BikeInfo.name as a string
+page -> tmpl : [name] input
+tmpl -> tmpl : {{ name }} interpolation sets textContent (L2-129 AC2)
+tmpl --> actor : The characters show literally; nothing runs
+note over tmpl : The same holds for display names, feedback messages,\nBluetooth error strings and ProblemDetails titles.\nNo template binds [innerHTML]; no code calls DomSanitizer bypass methods.
+@enduml

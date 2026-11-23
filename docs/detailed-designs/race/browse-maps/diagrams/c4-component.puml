@@ -1,0 +1,30 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Browse maps
+Person(rider, "Rider", "Rides a smart bike at home")
+Container_Boundary(app, "Ride app") {
+  Component(page, "MapSelectPage", "Angular page · ride", "Route /race")
+  Component(store, "MapPathStore", "Page-scoped signal store · ride", "Joins catalogue and progress into rows")
+  Component(path, "MapPath / MapRow / MapsAside", "Presentation components · components", "Path, rows and star rules")
+  Component(mapsapi, "CachedMapsApi", "MAPS_API · domain/storage", "GET /api/maps through HttpMapsApi")
+  Component(cache, "MapCatalogueCache", "Service · domain/storage", "Last catalogue in localStorage")
+  Component(progress, "NewRiderProgress", "PROGRESS_API · domain/engine", "A new account's maps until journey 10")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(ctrl, "MapsController", "ASP.NET Core controller · Telo.Ride.Api", "GET /api/maps, anonymous")
+  Component(handler, "GetMapsQueryHandler", "MediatR handler · Telo.Ride.Application", "Lists maps in unlock order with their goals")
+  Component(entity, "MapDefinition and MapUnlock", "Domain types · Telo.Ride.Domain", "Catalogue entry and its unlock rule")
+  Component(file, "EmbeddedMapCatalogue", "IMapCatalogue · Telo.Ride.Infrastructure", "Catalogue/maps.json")
+}
+Rel(rider, page, "Opens")
+Rel(page, store, "Reads rows")
+Rel(page, path, "Renders with rows")
+Rel(store, mapsapi, "Loads maps")
+Rel(store, progress, "Loads map progress")
+Rel(mapsapi, cache, "Writes and falls back to")
+Rel(mapsapi, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, handler, "Sends GetMapsQuery")
+Rel(handler, entity, "Maps to MapDto")
+Rel(handler, file, "Reads")
+@enduml

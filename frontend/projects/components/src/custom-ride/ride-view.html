@@ -1,0 +1,79 @@
+<div class="ride-view__bar">
+  <div
+    class="ride-view__tabs"
+    role="tablist"
+    aria-label="Main view"
+    tabindex="-1"
+    (keydown)="move($event)"
+  >
+    @for (each of tabs(); track each) {
+      <button
+        #tabButton
+        class="ride-view__tab"
+        type="button"
+        role="tab"
+        [id]="'ride-tab-' + each"
+        [attr.aria-controls]="'ride-panel-' + each"
+        [attr.aria-selected]="tab() === each"
+        [attr.tabindex]="tab() === each ? 0 : -1"
+        (click)="choose(each)"
+      >
+        {{ each === 'video' ? 'Video' : 'Power vs. plan' }}
+      </button>
+    }
+  </div>
+  @if (tab() === 'video') {
+    <span class="ride-view__sync">In sync · pauses with the ride</span>
+  } @else {
+    <span class="ride-view__legend">
+      <span class="ride-view__legend-item"><span class="ride-view__legend-line"></span>Actual</span>
+      <span class="ride-view__legend-item ride-view__legend-item--work"
+        ><span class="ride-view__legend-line"></span>Work target</span
+      >
+      <span class="ride-view__legend-item ride-view__legend-item--rest"
+        ><span class="ride-view__legend-line"></span>Recover</span
+      >
+    </span>
+  }
+</div>
+@if (hasVideo()) {
+  <div
+    class="ride-view__panel"
+    id="ride-panel-video"
+    role="tabpanel"
+    aria-labelledby="ride-tab-video"
+    [hidden]="tab() !== 'video'"
+  >
+    <ng-content select="[slot=video]" />
+    <wz-ride-progress
+      [segments]="segments()"
+      [elapsed]="elapsed()"
+      [total]="total()"
+      [label]="progressLabel()"
+    />
+  </div>
+}
+<div
+  class="ride-view__panel"
+  id="ride-panel-chart"
+  role="tabpanel"
+  aria-labelledby="ride-tab-chart"
+  [hidden]="tab() !== 'chart'"
+>
+  <wz-ride-trace
+    [segments]="segments()"
+    [averages]="averages()"
+    [bucket]="bucket()"
+    [elapsed]="elapsed()"
+    [total]="total()"
+    [max]="max()"
+    [label]="traceLabel()"
+  />
+</div>
+<svg class="ride-ticks" aria-hidden="true">
+  @for (tick of ticks(); track tick.text) {
+    <text class="ride-ticks__tick" [attr.x]="tick.at + '%'" y="12" [attr.text-anchor]="tick.anchor">
+      {{ tick.text }}
+    </text>
+  }
+</svg>

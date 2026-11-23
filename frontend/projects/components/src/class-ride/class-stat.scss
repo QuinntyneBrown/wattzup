@@ -1,0 +1,62 @@
+// Block class-stat (docs/design-system/assets/components.css, Class Ride).
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.class-stat {
+  height: 100%;
+  border-radius: var(--radius-xl);
+  background: var(--color-panel);
+  padding: var(--space-3) var(--space-4);
+}
+
+.class-stat__label {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  color: var(--color-muted);
+}
+
+.class-stat__value {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+}
+
+.class-stat__number {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-display);
+  font-feature-settings: 'tnum' 1;
+  // Large ride numbers scale power and the other readouts (L2-164 AC4).
+  font-size: calc(var(--font-size-5xl) * var(--ride-number-scale));
+  line-height: var(--line-height-none);
+}
+
+.class-stat__unit {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-faint);
+}
+
+.class-stat__hint {
+  margin-top: var(--space-1);
+  // Power's hint carries the target, which large ride numbers scale (L2-164 AC4).
+  font-size: calc(var(--font-size-xs) * var(--ride-number-scale));
+  line-height: calc(var(--line-height-xs) * var(--ride-number-scale));
+  color: var(--color-muted);
+}
+
+.class-stat__hint--on {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-volt-fg);
+}
+
+.class-stat__hint--under {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-warn-fg);
+}
+
+.class-stat__hint--over {
+  font-weight: var(--font-weight-medium);
+}

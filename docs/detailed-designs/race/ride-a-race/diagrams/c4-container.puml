@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Ride a race
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Echelon or FTMS; Bluetooth LE")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Ride hub for riders-online races")
+}
+Rel(rider, app, "Watches the HUD, nudges resistance")
+Rel(app, bike, "Telemetry notifications and resistance writes", "Web Bluetooth")
+Rel(app, api, "ReportProgress; receives StandingsUpdated (riders online only)", "SignalR")
+@enduml

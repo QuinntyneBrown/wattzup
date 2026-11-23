@@ -1,0 +1,8 @@
+<main id="main" class="display-name-prompt-page" tabindex="-1">
+  <wz-display-name-prompt
+    [saving]="store.saving()"
+    [refusals]="store.refusals()"
+    [failed]="store.error() === 'failed'"
+    (submitted)="save($event)"
+  />
+</main>

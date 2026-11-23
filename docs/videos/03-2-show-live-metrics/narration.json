@@ -1,0 +1,106 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "A live number is gone in a second. Telo Ride now keeps the ride's totals: distance, output and energy."
+      ]
+    },
+    {
+      "id": "distance",
+      "bars": 4,
+      "lines": [
+        "Each running second adds the speed over thirty-six hundred to distance. An hour at thirty is thirty kilometres."
+      ]
+    },
+    {
+      "id": "paused",
+      "bars": 4,
+      "lines": [
+        "A paused ride has no running seconds, so its distance and output hold, however long the pause."
+      ]
+    },
+    {
+      "id": "output",
+      "bars": 4,
+      "lines": [
+        "Each running second also adds its power over a thousand to the ride's output, in kilojoules."
+      ]
+    },
+    {
+      "id": "energy",
+      "bars": 4,
+      "lines": [
+        "Energy follows. Two hundred and eight watts for seven hundred and sixty seconds is a hundred and fifty-seven kilocalories."
+      ]
+    },
+    {
+      "id": "unknown",
+      "bars": 4,
+      "lines": [
+        "An unknown value shows as a dash, never a stale number, and distance always shows two decimals."
+      ]
+    },
+    {
+      "id": "shared",
+      "bars": 4,
+      "lines": [
+        "Three kinds of readouts share these helpers: the class ride's tiles, the race power panel and the custom ride's dashboard."
+      ]
+    },
+    {
+      "id": "simulated",
+      "bars": 4,
+      "lines": [
+        "On the simulated bike, a minute of frames turns into distance, output and energy, end to end."
+      ]
+    },
+    {
+      "id": "deferred",
+      "bars": 4,
+      "lines": [
+        "Still to come: the ride clock ticks the totals in slice 5.1, and Class Ride first shows them in 5.2."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "Home doesn't change yet, at any width. The totals wait in the engine for the ride screens."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: twenty new unit tests, one per row of the requirements, and every spec still green."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

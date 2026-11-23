@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Record the packet log
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Echelon or FTMS; Bluetooth LE")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine; the packet log in memory, capped at 10 MB")
+  ContainerDb(downloads, "Downloads", "The device's file system", "telo-ride-packets-{date}.jsonl, when the rider saves it")
+}
+Rel(rider, app, "Switches Log every packet; downloads the log in")
+BiRel(app, bike, "Bluetooth messages", "Web Bluetooth GATT")
+Rel(app, downloads, "Saves the JSON Lines file to")
+@enduml

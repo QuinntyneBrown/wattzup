@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photo tag — Telo Ride design system</title>
+<meta name="description" content="Short glass labels on photos and the photo classes they sit on: label, time, locked, dim and YouTube covers.">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/components.css">
+<link rel="stylesheet" href="../assets/ds.css">
+<style>
+  /* Page-only layout for the brand-cards pages (tokens only) */
+  .ds-pairs { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); margin-block: var(--space-4); }
+  .ds-pairs-col { display: flex; flex-direction: column; gap: var(--space-2); background: var(--color-bg-canvas); border: 1px solid var(--color-border-default); border-radius: var(--radius-lg); padding: var(--space-4); }
+  .ds-pairs-col__title { font: var(--text-overline); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-fg-subtle); }
+  /* ds.css styles every <a> as a prose link; product components inside examples keep their own link styles */
+  :where(.ds-example__canvas, .ds-anatomy__figure, .ds-matrix td, .ds-themes, .ds-stage) a { color: inherit; text-decoration: none; }
+  :where(.ds-example__canvas, .ds-anatomy__figure, .ds-matrix td, .ds-themes, .ds-stage) a:hover { color: inherit; }
+  /* visually hidden text inside a scrolling matrix must be contained by it, or it widens the page */
+  .ds-matrix, .ds-table-wrap { position: relative; }
+  @media (max-width: 40rem) { .ds-example__canvas { padding: var(--space-4) var(--space-3); } .ds-anatomy__figure { padding: var(--space-8) var(--space-4); } }
+  .ds-fill { width: 100%; }
+  .ds-anat-wide { width: 100%; }
+  .ds-anatomy__target { position: relative; display: inline-block; max-width: 100%; }
+  .ds-anatomy__target--wide { display: block; width: 100%; }
+  .ds-anatomy__figure { padding-inline: var(--space-6); }
+  .ds-anat-photo { width: min(20rem, 64vw); }
+  .ds-w-sm { width: 100%; max-width: 14rem; }
+  .ds-w-md { width: 100%; max-width: 24rem; }
+  .ds-w-lg { width: 100%; max-width: 36rem; }
+  .ds-note { font: var(--text-caption); color: var(--color-fg-muted); }
+  .ds-matrix td .ds-note { display: block; max-width: 12rem; }
+
+</style>
+</head>
+<body id="top">
+<a class="ds-skip" href="#main">Skip to content</a>
+<div class="ds-shell">
+  <nav class="ds-nav" aria-label="Design system">
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <details open><summary>Foundations</summary><ul>
+      <li><a href="../foundations/color.html">Color</a></li>
+      <li><a href="../foundations/typography.html">Typography</a></li>
+      <li><a href="../foundations/spacing.html">Spacing</a></li>
+      <li><a href="../foundations/layout.html">Layout</a></li>
+      <li><a href="../foundations/elevation.html">Elevation</a></li>
+      <li><a href="../foundations/shape.html">Shape</a></li>
+      <li><a href="../foundations/motion.html">Motion</a></li>
+      <li><a href="../foundations/iconography.html">Iconography</a></li>
+      <li><a href="../foundations/theming.html">Theming</a></li>
+      <li><a href="../foundations/responsive.html">Responsive</a></li>
+      <li><a href="../foundations/accessibility.html">Accessibility</a></li>
+      <li><a href="../foundations/content.html">Content</a></li>
+    </ul></details>
+    <details open><summary>Actions</summary><ul>
+      <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
+      <li><a href="../components/link.html">Link</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
+      <li><a href="../components/form-field.html">Form field</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
+      <li><a href="../components/slider.html">Slider</a></li>
+      <li><a href="../components/number-stepper.html">Number stepper</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
+      <li><a href="../components/skip-link.html">Skip link</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
+      <li><a href="../components/dialog.html">Dialog</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
+      <li><a href="../components/tooltip.html">Tooltip</a></li>
+      <li><a href="../components/divider.html">Divider</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
+      <li><a href="../components/description-list.html">Description list</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
+      <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
+      <li><a href="../components/toast.html">Toast</a></li>
+      <li><a href="../components/alert.html">Alert and banner</a></li>
+      <li><a href="../components/inline-message.html">Inline message</a></li>
+      <li><a href="../components/progress-bar.html">Progress bar</a></li>
+      <li><a href="../components/spinner.html">Spinner</a></li>
+      <li><a href="../components/skeleton.html">Skeleton</a></li>
+      <li><a href="../components/empty-state.html">Empty state</a></li>
+      <li><a href="../components/error-page.html">Error page</a></li>
+    </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
+    <details open><summary>Patterns</summary><ul>
+      <li><a href="../patterns/forms.html">Forms</a></li>
+      <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
+      <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
+      <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
+      <li><a href="../patterns/notifications.html">Notifications</a></li>
+      <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
+    </ul></details>
+  </nav>
+  <main id="main" class="ds-main">
+    <header class="ds-header">
+      <p class="ds-kicker">Component · Brand and progress</p>
+      <h1>Photo tag</h1>
+      <p class="ds-lead">A dark glass label that names a photo or gives a class its length, readable on any picture in either theme.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
+    </header>
+<section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+<p>A photo tag is a short label on a photo: dark glass (<code>--color-scrim-strong</code>) with bone text, so it reads on any picture in either theme. It names what the photo is (the map and its facts) or how long a class runs. It is not a button and not a status badge; for status use a <a href="badge.html">badge</a> or a <a href="chip.html">pill</a>.</p><p>The <code>.photo</code> classes that the tag sits on are documented here too: a photo always fills its box (<code>object-fit: cover</code>) and has a muted variant for locked content.</p>
+</section>
+<section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+<div class="ds-anatomy"><figure class="ds-anatomy__figure"><div class="ds-anatomy__target"><div class="ds-anat-photo" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"><img class="photo" src="../assets/images/worlds/oldtown.jpg" alt="" style="position:absolute; inset:0;"><span style="position:absolute; top: var(--space-3); left: var(--space-3);"><span class="photo-tag">Old Town Criterium · 14.2 km · Easy</span></span></div><span class="ds-callout" style="left: 70%; top: 60%;" aria-hidden="true">1</span><span class="ds-callout" style="left: -6%; top: 2%;" aria-hidden="true">2</span><span class="ds-callout" style="left: 58%; top: -14%;" aria-hidden="true">3</span></div></figure><ol class="ds-anatomy__list"><li><div><b>Photo</b><small><code>.photo</code>, 100% × 100%, cover; decorative (<code>alt=""</code>) when the tag or a heading names it.</small></div></li><li><div><b>Glass</b><small><code>--color-scrim-strong</code> (ink at 85%), <code>--radius-md</code>, 4px × 8px padding.</small></div></li><li><div><b>Text</b><small>12px medium, <code>--color-on-photo</code> (bone) in both themes, one line.</small></div></li></ol></div>
+</section>
+<section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+<div class="ds-example"><div class="ds-example__canvas"><div class="ds-w-md" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"><img class="photo" src="../assets/images/worlds/oldtown.jpg" alt="" style="position:absolute; inset:0;"><span style="position:absolute; top: var(--space-3); left: var(--space-3);"><span class="photo-tag">Old Town Criterium · 14.2 km · Easy</span></span></div></div><div class="ds-example__caption"><span>Label: map · distance · difficulty (Next ride card, top left, 12px in).</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="ds-w-md" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"&gt;&lt;img class="photo" src="../assets/images/worlds/oldtown.jpg" alt="" style="position:absolute; inset:0;"&gt;&lt;span style="position:absolute; top: var(--space-3); left: var(--space-3);"&gt;&lt;span class="photo-tag"&gt;Old Town Criterium · 14.2 km · Easy&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;</code></pre></details></div><div class="ds-example"><div class="ds-example__canvas"><div class="ds-w-sm" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"><img class="photo" src="../assets/images/classes/gcn-30-hiit.jpg" alt="" style="position:absolute; inset:0;"><span style="position:absolute; right: var(--space-1-5); bottom: var(--space-1-5);"><span class="photo-tag photo-tag--time">30:00</span></span></div></div><div class="ds-example__caption"><span>Time (<code>--time</code>): tabular numerals, smaller radius, bottom right (class teaser).</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="ds-w-sm" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"&gt;&lt;img class="photo" src="../assets/images/classes/gcn-30-hiit.jpg" alt="" style="position:absolute; inset:0;"&gt;&lt;span style="position:absolute; right: var(--space-1-5); bottom: var(--space-1-5);"&gt;&lt;span class="photo-tag photo-tag--time"&gt;30:00&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;</code></pre></details></div><div class="ds-example"><div class="ds-example__canvas"><div class="ds-w-sm" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"><img class="photo photo--locked" src="../assets/images/worlds/docklands.jpg" alt="" style="position:absolute; inset:0;"><span style="position:absolute; top: var(--space-3); left: var(--space-3);"></span></div><div class="ds-w-sm" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"><img class="photo photo--dim" src="../assets/images/worlds/dolomites.jpg" alt="" style="position:absolute; inset:0;"><span style="position:absolute; top: var(--space-3); left: var(--space-3);"></span></div><div class="ds-w-sm" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"><img class="photo photo--yt" src="../assets/images/classes/gcn-30-hiit.jpg" alt="" style="position:absolute; inset:0;"><span style="position:absolute; top: var(--space-3); left: var(--space-3);"></span></div></div><div class="ds-example__caption"><span>Photo variants: <code>--locked</code> (40%, grey: locked map tiles), <code>--dim</code> (50%, grey: available for a quieter reward thumb), <code>--yt</code> (crops a 4:3 YouTube cover to its 16:9 picture).</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="ds-w-sm" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"&gt;&lt;img class="photo photo--locked" src="../assets/images/worlds/docklands.jpg" alt="" style="position:absolute; inset:0;"&gt;&lt;span style="position:absolute; top: var(--space-3); left: var(--space-3);"&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class="ds-w-sm" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"&gt;&lt;img class="photo photo--dim" src="../assets/images/worlds/dolomites.jpg" alt="" style="position:absolute; inset:0;"&gt;&lt;span style="position:absolute; top: var(--space-3); left: var(--space-3);"&gt;&lt;/span&gt;&lt;/div&gt;&lt;div class="ds-w-sm" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"&gt;&lt;img class="photo photo--yt" src="../assets/images/classes/gcn-30-hiit.jpg" alt="" style="position:absolute; inset:0;"&gt;&lt;span style="position:absolute; top: var(--space-3); left: var(--space-3);"&gt;&lt;/span&gt;&lt;/div&gt;</code></pre></details></div><p><code>.photo--yt</code> is a photo modifier, not a tag: YouTube’s <code>hqdefault</code> cover is 4:3 with letterbox bars, and <code>object-view-box: inset(12.5% 0)</code> shows only the 16:9 picture, as the player will. See <a href="video.html">video</a>.</p>
+</section>
+<section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+<p>One size. The label is 12px/16px with 4px × 8px padding (24px tall); the time tag is 14px numerals with 0 × 6px padding (20px tall). Never scale a tag with the photo: on a 144px class cover and on a 640px hero it is the same size.</p><div class="ds-example"><div class="ds-example__canvas ds-example__canvas--photo" style="--photo: url(../assets/images/worlds/prairie.jpg); min-height: 6rem;"><span class="photo-tag">Old Town Criterium · 14.2 km · Easy</span><span class="photo-tag photo-tag--time">30:00</span></div><div class="ds-example__caption"><span>Label 24px tall · time 20px tall</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;span class="photo-tag"&gt;Old Town Criterium · 14.2 km · Easy&lt;/span&gt;&lt;span class="photo-tag photo-tag--time"&gt;30:00&lt;/span&gt;</code></pre></details></div>
+</section>
+<section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+<p>Tags are not interactive. Their “states” are the photos they sit on: the glass keeps them readable on the brightest and darkest pictures in the catalogue and on a locked (greyed) photo.</p><div class="ds-matrix"><table><caption class="visually-hidden">Photo tag on photos</caption><thead><tr><th scope="col">Tag</th><th scope="col">Bright photo</th><th scope="col">Dark photo</th><th scope="col">Locked photo</th><th scope="col">Default / hover / focus / active / disabled</th></tr></thead><tbody><tr><th scope="row">Label</th><td><div class="ds-w-sm" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"><img class="photo" src="../assets/images/worlds/prairie.jpg" alt="" style="position:absolute; inset:0;"><span style="position:absolute; top: var(--space-3); left: var(--space-3);"><span class="photo-tag">Prairie Paceline · 18.4 km · Easy</span></span></div></td><td><div class="ds-w-sm" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"><img class="photo" src="../assets/images/worlds/docklands.jpg" alt="" style="position:absolute; inset:0;"><span style="position:absolute; top: var(--space-3); left: var(--space-3);"><span class="photo-tag">Neon Docklands · 21.6 km · Moderate</span></span></div></td><td><div class="ds-w-sm" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"><img class="photo photo--locked" src="../assets/images/worlds/granite.jpg" alt="" style="position:absolute; inset:0;"><span style="position:absolute; top: var(--space-3); left: var(--space-3);"><span class="photo-tag">Col du Granit · 16.1 km · Brutal</span></span></div></td><td><span class="ds-note">Not interactive</span></td></tr><tr><th scope="row">Time</th><td><div class="ds-w-sm" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"><img class="photo" src="../assets/images/classes/power-20.jpg" alt="" style="position:absolute; inset:0;"><span style="position:absolute; right: var(--space-1-5); bottom: var(--space-1-5);"><span class="photo-tag photo-tag--time">20:00</span></span></div></td><td><div class="ds-w-sm" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"><img class="photo" src="../assets/images/classes/vice-30.jpg" alt="" style="position:absolute; inset:0;"><span style="position:absolute; right: var(--space-1-5); bottom: var(--space-1-5);"><span class="photo-tag photo-tag--time">28:30</span></span></div></td><td><div class="ds-w-sm" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"><img class="photo photo--locked" src="../assets/images/classes/coast-60.jpg" alt="" style="position:absolute; inset:0;"><span style="position:absolute; right: var(--space-1-5); bottom: var(--space-1-5);"><span class="photo-tag photo-tag--time">1:00:00</span></span></div></td><td><span class="ds-note">Not interactive</span></td></tr></tbody></table></div><h3>Both themes</h3><p>The tag is theme-independent: identical in both. Only the surface around the photo changes.</p><div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0;"><div class="ds-fill" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"><img class="photo" src="../assets/images/worlds/coast.jpg" alt="" style="position:absolute; inset:0;"><span style="position:absolute; top: var(--space-3); left: var(--space-3);"><span class="photo-tag">Cliffside Coast · 32 km · Moderate</span></span></div></div></div><div data-theme="dark"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0;"><div class="ds-fill" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"><img class="photo" src="../assets/images/worlds/coast.jpg" alt="" style="position:absolute; inset:0;"><span style="position:absolute; top: var(--space-3); left: var(--space-3);"><span class="photo-tag">Cliffside Coast · 32 km · Moderate</span></span></div></div></div></div>
+</section>
+<section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Width</th><th scope="col">Behaviour</th></tr></thead><tbody><tr><th scope="row">360px</th><td>Tags never wrap: a label longer than the photo minus 24px is too long. The Next ride photo is 16:7 and at least 192px tall; its label fits at 328px wide.</td></tr><tr><th scope="row">640px</th><td>Class teaser cover grows from 144px to 176px; the time tag stays 6px from the corner.</td></tr><tr><th scope="row">1024px</th><td>The Next ride photo becomes the left 3fr column and drops its ratio; the tag stays top left.</td></tr></tbody></table></div>
+</section>
+<section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+<p>Reads <code>--color-scrim-strong</code> and <code>--color-on-photo</code>, both theme-independent, because the photo does not change with the theme. Do not swap in <code>--color-panel</code>: in light that would be a white box on a photo.</p>
+</section>
+<section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+<h3>Role and pattern</h3><p>Plain text in a <code>&lt;span&gt;</code>. The photo beneath is decorative (<code>alt=""</code>) when the tag or a heading names it, and informative when it carries content, as a class cover in the player does (“Video: 30 Minute HIIT Cardio, GCN Training”). (<a href="https://www.w3.org/WAI/ARIA/apg/practices/names-and-descriptions/">APG Names and descriptions</a>)</p><h3>Keyboard</h3><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody><tr><td><kbd>Tab</kbd></td><td>Tags are skipped; they are read as part of the card in reading order.</td></tr></tbody></table><h3>Focus</h3><p>Never focusable. When the card around the photo is a link, the ring wraps the card, not the tag.</p><h3>Labelling</h3><p>A time tag reads “30:00” out loud as “thirty, zero zero” in some screen readers; inside a card whose name already says “30 Minute HIIT Cardio” this is acceptable. When the duration is the only place the length appears, add a visually hidden “30 minutes”.</p><h3>Contrast</h3><div class="ds-pairs"><div data-theme="light" class="ds-pairs-col"><p class="ds-pairs-col__title">Light theme</p><div class="ds-pair"><span>Tag text on glass (worst case: glass over a white photo)</span><span class="ds-pair__ratio" data-contrast="--color-on-photo|--color-scrim-strong" data-min="4.5"></span></div><div class="ds-pair"><span>Lock icon on a greyed photo</span><span class="ds-pair__ratio" data-contrast="--color-on-photo|--color-scrim-strong" data-min="3"></span></div></div><div data-theme="dark" class="ds-pairs-col"><p class="ds-pairs-col__title">Dark theme</p><div class="ds-pair"><span>Tag text on glass (worst case: glass over a white photo)</span><span class="ds-pair__ratio" data-contrast="--color-on-photo|--color-scrim-strong" data-min="4.5"></span></div><div class="ds-pair"><span>Lock icon on a greyed photo</span><span class="ds-pair__ratio" data-contrast="--color-on-photo|--color-scrim-strong" data-min="3"></span></div></div></div><h3>Motion</h3><p>None. A class card scales its photo 1.03 on hover; the tag does not move with it because it is positioned on the cover, not the image.</p><h3>Touch</h3><p>No targets.</p>
+</section>
+<section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+<ul><li>Label: name · distance · difficulty, separated by “ · ”: “Old Town Criterium · 14.2 km · Easy”.</li><li>Time: m:ss under an hour, h:mm:ss from an hour: “30:00”, “1:00:00”. No “min”.</li><li>One line, no full stop, sentence case (map names keep their capitals).</li><li>No more than one tag per corner, two per photo.</li></ul>
+</section>
+<section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><div class="ds-fill" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"><img class="photo" src="../assets/images/worlds/coast.jpg" alt="" style="position:absolute; inset:0;"><span style="position:absolute; top: var(--space-3); left: var(--space-3);"><span class="photo-tag">Cliffside Coast · 32 km · Moderate</span></span></div></div><figcaption>Glass tag, top left, facts in the house order.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><div class="ds-fill" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"><img class="photo" src="../assets/images/worlds/coast.jpg" alt="" style="position:absolute; inset:0;"><span style="position:absolute; top: var(--space-3); left: var(--space-3);"><span class="pill">Cliffside Coast · 32 km · Moderate</span></span></div></div><figcaption>Put a raised pill on a photo: in light it is a pale box with grey text on a sunset.</figcaption></figure><figure class="ds-do"><div class="ds-example__canvas"><div class="ds-fill" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"><img class="photo" src="../assets/images/classes/gcn-30-hiit.jpg" alt="" style="position:absolute; inset:0;"><span style="position:absolute; right: var(--space-1-5); bottom: var(--space-1-5);"><span class="photo-tag photo-tag--time">30:00</span></span></div></div><figcaption>One time tag in the bottom right corner.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><div class="ds-fill" style="position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-raised);"><img class="photo" src="../assets/images/classes/gcn-30-hiit.jpg" alt="" style="position:absolute; inset:0;"><span style="position:absolute; right: var(--space-1-5); bottom: var(--space-1-5);"><span class="photo-tag">30 Minute HIIT Cardio with GCN Training · 30 minutes</span></span></div></div><figcaption>Write the title in the tag; the title belongs under the cover.</figcaption></figure></div>
+</section>
+<section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Glass</td><td><code>--color-scrim-strong</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-scrim-strong" data-swatch></i><span data-token="--color-scrim-strong"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-scrim-strong" data-swatch></i><span data-token="--color-scrim-strong"></span></span></td></tr><tr><td>Text</td><td><code>--color-on-photo</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-on-photo" data-swatch></i><span data-token="--color-on-photo"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-on-photo" data-swatch></i><span data-token="--color-on-photo"></span></span></td></tr><tr><td>Photo well (before load)</td><td><code>--color-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td></tr><tr><td>Radius label / time</td><td><code>--radius-md</code> / <code>--radius-sm</code></td><td colspan="2"><span data-token="--radius-md"></span> / <span data-token="--radius-sm"></span></td></tr><tr><td>Padding label</td><td><code>--space-1</code> × <code>--space-2</code></td><td colspan="2"><span data-token="--space-1"></span> / <span data-token="--space-2"></span></td></tr><tr><td>Padding time</td><td>0 × <code>--space-1-5</code></td><td colspan="2"><span data-token="--space-1-5"></span></td></tr><tr><td>Type label / time</td><td><code>--font-size-xs</code> medium / <code>--font-size-sm</code> display bold</td><td colspan="2"><span data-token="--font-size-xs"></span> / <span data-token="--font-size-sm"></span></td></tr></tbody></table></div>
+</section>
+<section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+<pre><code>&lt;div class="next-ride__photo"&gt;
+  &lt;img class="photo" src="worlds/oldtown.jpg" alt=""&gt;
+  &lt;span class="photo-tag"&gt;Old Town Criterium · 14.2 km · Easy&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;span class="photo-tag photo-tag--time"&gt;30:00&lt;/span&gt;
+&lt;img class="photo photo--locked" src="worlds/docklands.jpg" alt=""&gt;
+&lt;img class="photo photo--yt" src="classes/gcn-30-hiit.jpg" alt="Video: 30 Minute HIIT Cardio, GCN Training"&gt;</code></pre><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.photo-tag</code></td><td>Glass label. Position it with the card’s own element rule (e.g. <code>.next-ride__photo .photo-tag</code>).</td></tr><tr><td><code>.photo-tag--time</code></td><td>Tabular duration.</td></tr><tr><td><code>.photo</code></td><td>Fills its box, cover.</td></tr><tr><td><code>.photo--locked</code> <code>.photo--dim</code></td><td>Greyed at 40% / 50%.</td></tr><tr><td><code>.photo--yt</code></td><td>Shows the 16:9 picture of a 4:3 YouTube cover.</td></tr></tbody></table></div>
+</section>
+<section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+<p>Extracted from these mocks:</p><ul><li><a href="../../mocks/pages/home/default.html">pages/home/default</a> (Next ride label, class teaser time, locked tile photo)</li><li><a href="../../mocks/pages/home/unlocked.html">pages/home/unlocked</a> (label on Cliffside Coast)</li><li><a href="../../mocks/pages/class-library/default.html">pages/class-library/default</a> (class card time (its own <code>.class-card__time</code>))</li><li><a href="../../mocks/pages/class-ride/default.html">pages/class-ride/default</a> (<code>.photo--yt</code>)</li></ul><h3>Drift fixed during extraction</h3><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Mock</th><th scope="col">Issue</th><th scope="col">Resolution</th></tr></thead><tbody><tr><td>pages/class-library/default</td><td><code>.class-card__time</code> and <code>.class-card__group</code> re-declare the photo tag’s glass, radius and type instead of using <code>.photo-tag--time</code>.</td><td>Documented as the same token set; a later merge can make them modifiers of <code>.photo-tag</code>.</td></tr><tr><td>pages/*/*</td><td><code>.photo--dim</code> is defined in the kit but no mock uses it (the reward thumb repeats its values in <code>.reward__thumb</code>).</td><td>Kept and documented as the quiet variant; <code>.reward__thumb</code> equals it.</td></tr></tbody></table></div>
+</section>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
+  </main>
+</div>
+<script src="../assets/ds.js"></script>
+</body>
+</html>

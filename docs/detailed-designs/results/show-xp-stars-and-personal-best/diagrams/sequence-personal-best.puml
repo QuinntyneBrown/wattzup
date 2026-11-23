@@ -1,0 +1,43 @@
+@startuml
+title UML sequence behaviour — Show a personal best
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ResultsPage" as page
+  participant "resultsView()" as store
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "SessionRideOutbox" as outbox
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "SubmitRideCommandHandler" as handler
+  participant "MapProgress" as mp
+end box
+actor -> page : Finish a solo race vs your best in 26:38
+handler -> mp : RecordFinish(26:38)
+mp --> handler : PreviousBest 27:10, IsNewBest
+handler -> handler : Award "Beat your best time" if not held (L2-077 AC2, L2-039)
+outbox --> page : recorded(best 26:38, previousBest 27:10, isNewBest)
+page -> store : resultsView(result, recorded)
+alt Faster than the previous best
+  store --> page : "New personal best", "26:38", "Best before: 27:10", no standings (L2-077 AC1)
+else Slower than the best
+  store --> page : "You finished", the time, "Best: {best}" (AC3)
+else First finish on the map, or still sending
+  store --> page : "You finished" and the time alone (AC4)
+end
+page --> actor : The lead and the line under the time
+@enduml

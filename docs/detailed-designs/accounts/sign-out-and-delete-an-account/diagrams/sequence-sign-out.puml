@@ -1,0 +1,52 @@
+@startuml
+title UML sequence behaviour — Sign out
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app" #E0F2FE
+  participant "ProfilePage" as page
+  participant "AccountStore" as current
+  participant "HttpAuthApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "AuthController" as ctrl
+end box
+box "Backend — cookie authentication" #ECFDF3
+  participant "Cookie authentication" as cookie
+  participant "RiderSessionTicketStore" as tickets
+  participant "RiderSession" as session
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+actor -> page : Choose "Sign out" in Settings
+page -> current : signOut()
+current -> client : signOut()
+client -> ctrl : POST /api/auth/sign-out (SameSite=Lax session cookie)
+ctrl -> cookie : SignOutAsync
+cookie -> tickets : RemoveAsync(key)
+tickets -> session : End(now) (L2-006 AC1)
+tickets -> db : Save
+cookie --> ctrl : Clear __Host-telo-session
+ctrl --> client : 204
+client --> current : Signed out
+current -> current : CURRENT_RIDER.signedOut()
+current --> page : Navigate to /sign-in
+alt The backend cannot be reached
+  client --> current : Error
+  current --> page : "We couldn't sign you out. Check your connection and try again."
+end
+note over db : The old session key is refused on its next use (L2-127 AC3)
+@enduml

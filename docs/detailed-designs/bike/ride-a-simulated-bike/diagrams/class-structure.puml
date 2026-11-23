@@ -1,0 +1,55 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Ride a simulated bike
+interface BikeConnection <<api>> {
+  +state: Signal<BikeState>
+  +bike: Signal<BikeInfo | null>
+  +frames: Observable<Uint8Array>
+  +requestBike(): Promise<BikeInfo | null>
+  +connect(): Promise<void>
+  +setResistance(level: number): Promise<number>
+  +disconnect(): void
+}
+class WebBluetoothBikeConnection <<domain/bluetooth>>
+class SimulatedBikeConnection <<domain/bluetooth>> {
+  -level: number
+  -cadence: number
+  -subscription: Subscription | null
+  +requestBike(): Promise<BikeInfo>
+  +connect(): Promise<void>
+  +setResistance(level: number): Promise<number>
+  -emitSecond(): void
+}
+class SimulatedRiderProfile <<domain/bluetooth>> {
+  +cadenceAt(second: number): number
+}
+class EchelonProtocol <<domain/protocol>> {
+  +workoutData(elapsed: number, revs: number, cadence: number): Uint8Array
+  +resistanceFrame(level: number): Uint8Array
+  +parseSetResistance(bytes: Uint8Array): number | null
+}
+class "provideBikeConnection()" as Provide <<ride>> {
+  +provideBikeConnection(search: string): Provider
+}
+interface Ticker <<api>> {
+  +ticks: Observable<number>
+}
+WebBluetoothBikeConnection ..|> BikeConnection
+SimulatedBikeConnection ..|> BikeConnection
+SimulatedBikeConnection --> SimulatedRiderProfile
+SimulatedBikeConnection ..> EchelonProtocol
+SimulatedBikeConnection ..> Ticker
+Provide ..> SimulatedBikeConnection : development builds only
+Provide ..> WebBluetoothBikeConnection : otherwise
+@enduml

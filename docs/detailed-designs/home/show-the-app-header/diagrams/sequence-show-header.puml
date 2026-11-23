@@ -1,0 +1,57 @@
+@startuml
+title UML sequence behaviour — Show the app header
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "MainShell" as shell
+  participant "AppHeader" as apphdr
+  participant "RiderProgressStore" as store
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "HttpRiderProgressApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "ProgressController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "GetProgressQueryHandler" as handler
+  participant "LevelTable" as levels
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+actor -> shell : Open Home, Map Select, Class Library, Profile or not-found
+shell -> store : refresh()
+store -> client : progress()
+client -> ctrl : GET /api/progress (session cookie)
+ctrl -> handler : Send GetProgressQuery
+handler -> db : Load rider progress
+db --> handler : Total XP 1840, streak 4
+handler -> levels : Level for 1840 XP
+levels --> handler : Level 7, next threshold 2600
+handler --> ctrl : ProgressDto
+ctrl --> client : 200 ProgressDto
+client --> store : ProgressDto
+store --> shell : progress signal updates
+shell -> shell : toLevelView: fill 1840 / 2600 = 70.8 %, aria-label "Level 7, 1840 of 2600 XP" (L2-032 AC2)
+shell -> apphdr : Bind streakDays, bikeStatus; level link in the end slot
+alt streakDays = 0
+  apphdr -> apphdr : Omit the streak (L2-032 AC3)
+else streakDays > 0
+  apphdr -> apphdr : Show streak with aria-label "4-day streak"
+end
+apphdr --> actor : Header with aria-current="page" on the current item, set by RouterLinkActive (L2-032 AC1)
+@enduml

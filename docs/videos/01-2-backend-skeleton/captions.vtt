@@ -1,0 +1,82 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:08.211
+Telo Ride gets a backend, kept thin: only what one browser cannot do alone. It never
+
+00:00:08.211 --> 00:00:09.717
+talks to the bike.
+
+00:00:10.324 --> 00:00:14.989
+Four projects: domain, application, infrastructure and the API.
+
+00:00:15.334 --> 00:00:20.051
+Each references only the layer before it, so the compiler holds the direction.
+
+00:00:20.647 --> 00:00:25.926
+Every request takes one path. A controller checks nothing: it sends one MediatR
+
+00:00:25.926 --> 00:00:29.300
+request, its validators run, then its handler.
+
+00:00:30.971 --> 00:00:35.830
+Two health endpoints answer without a session. Live says the API responds.
+
+00:00:36.176 --> 00:00:40.891
+Ready says Unhealthy, with a 503, while the database cannot be reached.
+
+00:00:41.295 --> 00:00:47.172
+Every other address needs a signed-in rider. Without a session, the answer is 401,
+
+00:00:47.172 --> 00:00:50.052
+as ProblemDetails, never a redirect.
+
+00:00:51.618 --> 00:00:56.948
+Every refusal carries a code a screen can branch on: validation failed, a domain
+
+00:00:56.948 --> 00:01:01.312
+rule like session full, or unexpected, which reveals nothing.
+
+00:01:01.942 --> 00:01:07.591
+Telemetry is OpenTelemetry, with Telo Ride's own counter on the Telo Ride meter.
+
+00:01:07.937 --> 00:01:11.583
+A span names its route by template, never the query string.
+
+00:01:12.266 --> 00:01:17.909
+The schema changes only through migrations, applied by the migrate command before a
+
+00:01:17.909 --> 00:01:21.948
+new version starts. The API never migrates on start-up.
+
+00:01:22.590 --> 00:01:27.862
+Riders see nothing new yet. The app still rides on its own, on a phone, a tablet, a
+
+00:01:27.862 --> 00:01:29.432
+laptop or a desktop.
+
+00:01:32.913 --> 00:01:38.416
+What the tests prove: sixteen acceptance tests through the API, on a real host in
+
+00:01:38.416 --> 00:01:42.248
+memory, with no real database, no file and no sleep.
+
+00:01:43.237 --> 00:01:47.840
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:48.185 --> 00:01:52.697
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:52.697 --> 00:01:54.368
+every hill and interval.
+
+00:01:54.713 --> 00:01:59.891
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:59.891 --> 00:02:05.339
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:02:05.339 --> 00:02:08.329
+XP, rider levels, stars and map unlocks.
+
+00:02:08.675 --> 00:02:11.167
+A custom workout lives under Profile.

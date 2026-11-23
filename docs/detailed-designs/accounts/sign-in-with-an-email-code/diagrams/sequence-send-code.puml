@@ -1,0 +1,71 @@
+@startuml
+title UML sequence behaviour — Send a sign-in code
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app" #E0F2FE
+  participant "authGuard" as guard
+  participant "SignInPage" as page
+  participant "SignInStore" as store
+  participant "HttpAuthApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "AuthController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "SendSignInCodeCommandHandler" as handler
+  participant "SignInCode" as code
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "IEmailSender adapter" as sender
+  database "Telo Ride database" as db
+end box
+actor -> guard : Open /race (no session)
+guard --> page : Redirect to /sign-in?returnUrl=/race (L2-001 AC1, slice 9.2)
+actor -> page : Enter email, choose "Send my code"
+alt email is not a valid address (L2-001 AC3)
+  page --> actor : Mark field aria-invalid="true", announce error, send nothing
+else valid email
+  page -> store : send(email)
+  store --> page : Button reads "Sending your code…", disabled
+  store -> client : sendCode(email)
+  client -> ctrl : POST /api/auth/code
+  ctrl -> handler : Send SendSignInCodeCommand
+  handler -> handler : EmailAddress.Parse: trim, lower-case domain (L2-001 AC6), or refuse invalid_email (400)
+  handler -> db : Count codes for this email and this network (keyed hash) in the last hour
+  alt 5 for the email or 20 for the network already (L2-003 AC4, AC5)
+    handler --> ctrl : Refused: rate_limited, retry when the oldest is an hour old
+    ctrl --> client : 429 ProblemDetails, Retry-After
+  else the email's active code is under 30 seconds old (L2-003 AC1)
+    handler --> ctrl : Refused: resend_too_soon, retry after the rest of the 30 seconds
+    ctrl --> client : 429 ProblemDetails, Retry-After
+  else within limits
+    handler -> code : Supersede any earlier active code (L2-003 AC2)
+    handler -> code : Create code: six random digits, keep only the hash
+    handler -> sender : SendSignInCodeAsync(email, code) over SMTP (ADR 0031)
+    handler -> db : Save in one unit of work (a failed send saves nothing)
+    handler --> ctrl : Accepted (same result with or without an account, L2-001 AC4)
+    ctrl --> client : 202 Accepted
+  end
+  client --> store : Result
+  alt accepted, or resend_too_soon (a code is already on its way)
+    store --> page : Open the code screen, "Send a new code" counting down
+  else rate_limited
+    store --> page : Keep email, "Too many codes asked for. Try again in N minutes." (L2-003 AC4)
+  else failed
+    store --> page : Keep email, "We couldn't send your code…", enable button (L2-001 AC5)
+  end
+end
+@enduml

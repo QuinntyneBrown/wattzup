@@ -1,0 +1,84 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Pause, leave or finish a class
+
+package "api library" {
+  enum BleState {
+    Idle
+    Connecting
+    Connected
+    Disconnected
+  }
+  interface ScreenWakeLock {
+    +hold(): void
+    +release(): void
+  }
+  class RideSubmission {
+    +rideId: string
+    +kind: RideKind
+    +classId: string
+    +sessionId: string
+    +startedAt: string
+    +durationSeconds: number
+    +distanceMeters: number
+    +outputKj: number
+    +averagePowerW: number
+    +maxPowerW: number
+    +maxSpeedKmh: number
+    +onTargetShare: number
+  }
+  enum RideKind {
+    Race
+    Class
+    Custom
+  }
+  interface RidesApi {
+    +submit(ride: RideSubmission): Observable<RideResultDto>
+  }
+}
+package "domain library" {
+  class RideRecorder {
+    +second(telemetry: Telemetry, target: number): void
+    +totals(): RideTotals
+    +toSubmission(meta: RideMeta): RideSubmission
+  }
+  class BrowserScreenWakeLock {
+    +hold(): void
+    +release(): void
+  }
+  class RideOutbox {
+    +enqueue(ride: RideSubmission): Promise<void>
+    +flush(): Promise<void>
+  }
+}
+package "ride application" {
+  class ClassRideStore {
+    +paused: Signal<boolean>
+    +bikeLost: Signal<boolean>
+    +controlsEnabled: Signal<boolean>
+    +pause(): void
+    +resume(): void
+    +reconnect(): void
+    -finish(): void
+  }
+}
+ClassRideStore ..> BleState : reacts to
+ClassRideStore ..> ScreenWakeLock : holds while riding
+BrowserScreenWakeLock ..|> ScreenWakeLock
+ClassRideStore *-- RideRecorder
+ClassRideStore ..> RideOutbox : enqueues
+RideRecorder ..> RideSubmission : builds
+RideSubmission --> RideKind
+RideOutbox ..> RidesApi : sends through
+@enduml

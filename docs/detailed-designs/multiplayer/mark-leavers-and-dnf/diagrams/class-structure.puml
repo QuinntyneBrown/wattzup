@@ -1,0 +1,75 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+set separator none
+' --------------------------
+title Class structure — Mark leavers and DNF
+
+package "Telo.Ride.Domain" {
+  abstract class LiveSession {
+    +SessionState State
+    +Leave(riderId: Guid): RiderStatus
+    +MarkDisconnected(riderId: Guid, at: DateTimeOffset): void
+    +ClearDisconnected(riderId: Guid): void
+  }
+  class RaceSession
+  class GroupClassSession
+  class RiderProgress {
+    +ProgressSample? Last
+    +DateTimeOffset? DisconnectedAt
+    +RiderStatus Status
+  }
+  class PresenceRules {
+    +RaceSilenceLimit: TimeSpan = 15 s
+    +DisconnectLimit: TimeSpan = 30 s
+    +LobbyDisconnectLimit: TimeSpan = 10 s
+    +Apply(session: LiveSession, now: DateTimeOffset): IReadOnlyList<PresenceChange>
+  }
+  class PresenceChange {
+    +int SeatNumber
+    +string DisplayName
+    +RiderStatus NewStatus
+  }
+  enum RiderStatus {
+    Riding
+    Finished
+    Dnf
+    Left
+    Removed
+  }
+}
+package "Telo.Ride.Application" {
+  class LeaveSessionCommandHandler {
+    +Handle(cmd: LeaveSessionCommand): Task
+  }
+  class RiderDisconnectedCommandHandler {
+    +Handle(cmd: RiderDisconnectedCommand): Task
+  }
+  class TickLiveSessionsCommandHandler
+  interface ISessionNotifier {
+    +RiderLeft(sessionId: Guid, change: PresenceChange): Task
+    +RemoveFromSessionAsync(connectionId: string, sessionId: Guid): Task
+  }
+}
+
+LiveSession <|-- RaceSession
+LiveSession <|-- GroupClassSession
+LiveSession "1" *-- "10" RiderProgress
+RiderProgress --> RiderStatus
+PresenceRules ..> LiveSession : reads
+PresenceRules ..> PresenceChange : returns
+LeaveSessionCommandHandler ..> LiveSession
+LeaveSessionCommandHandler ..> ISessionNotifier
+RiderDisconnectedCommandHandler ..> LiveSession
+TickLiveSessionsCommandHandler ..> PresenceRules
+TickLiveSessionsCommandHandler ..> ISessionNotifier
+@enduml

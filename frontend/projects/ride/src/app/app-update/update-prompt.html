@@ -1,0 +1,12 @@
+<div wz-toast-region>
+  @if (shown()) {
+    <wz-toast
+      tone="info"
+      title="A new version is ready"
+      text="Reload to use it now, or it opens next time."
+      action="Reload"
+      (actionChosen)="reload()"
+      (dismissed)="dismiss()"
+    />
+  }
+</div>

@@ -3,17 +3,37 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Elevation — Wattzup design system</title>
-<meta name="description" content="Shadows, surface hierarchy, opacity and z-order.">
+<title>Elevation — Telo Ride design system</title>
+<meta name="description" content="Telo Ride elevation: four shadows and focus, the ink &lt; panel &lt; raised surface hierarchy in both themes, HUD glass over the world, scrims and the ten z-order layers.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+.ds-val { font: var(--text-code); overflow-wrap: anywhere; }
+.ds-token-table td:nth-child(3), .ds-token-table td:nth-child(4) { min-width: calc(var(--space-32) + var(--space-8)); }
+
+.ds-themes .ds-shadow-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--space-28)), 1fr)); padding: var(--space-4); }
+.ds-surf { border-radius: var(--radius-2xl); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
+.ds-surf--ink { background: var(--color-ink); border: var(--border-width-hairline) solid var(--color-line); }
+.ds-surf--panel { background: var(--color-panel); }
+.ds-surf--raised { background: var(--color-raised); border-radius: var(--radius-xl); }
+.ds-surf__tag { font: var(--text-caption); color: var(--color-muted); }
+.ds-surf__copy { font: var(--text-label); }
+.ds-glass-demo { min-height: var(--space-48); align-items: flex-start; }
+.ds-glass { background: var(--color-glass); padding: var(--space-3) var(--space-4); color: var(--color-fg); display: flex; flex-direction: column; gap: var(--space-1); }
+.ds-glass__pos { font-size: var(--font-size-4xl); line-height: var(--line-height-none); color: var(--color-volt-fg); }
+.ds-glass__watts { font-size: var(--font-size-5xl); line-height: var(--line-height-none); }
+.ds-glass__small { font: var(--text-caption); color: var(--color-muted); }
+.ds-dialog-pad { padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); }
+.ds-dialog-title { font: var(--text-h3); margin: 0 !important; }
+.ds-dialog-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +48,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,42 +102,176 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Foundation</p>
       <h1>Elevation</h1>
-      <p class="ds-lead">In dark, elevation is mostly lighter surfaces (panel → raised) with shadows as support; in light, shadows carry it.</p>
-      
-      <ul class="ds-toc"><li><a href="#shadows">Shadows</a></li><li><a href="#surfaces">Surfaces</a></li><li><a href="#z">Z-order</a></li><li><a href="#opacity">Opacity</a></li><li><a href="#tokens">All tokens</a></li></ul>
+      <p class="ds-lead">On a dark product lightness does the lifting: ink, panel, raised. Shadows only for what floats, glass for the ride HUD, and ten named layers.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
+      <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#shadows">Shadows</a></li><li><a href="#surfaces">Surfaces</a></li><li><a href="#hud-glass">HUD glass</a></li><li><a href="#scrims">Scrims</a></li><li><a href="#z-order">Z-order</a></li><li><a href="#dark">Dark theme</a></li><li><a href="#usage">Usage</a></li><li><a href="#tokens">Tokens</a></li></ul>
     </header>
+    <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
+
+      <p>Telo Ride is dark, and shadows barely show on near-black, so elevation is carried mostly by <strong>surface lightness</strong>: ink, then panel, then raised, each a step lighter. Shadows are kept for things that truly float over other content (tooltips, toasts, dialogs, menus), and on the ride screens the HUD floats as <strong>glass</strong>: translucent ink with a blur, so the world stays visible behind the numbers. Every layer has a z-index token; no component writes a raw z-index.</p>
+
+    </section>
     <section class="ds-section" id="shadows"><h2><a href="#shadows">Shadows</a></h2>
-<div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas"><div class="ds-shadow-grid" style="width: 100%;"><div style="--shadow: var(--shadow-1);">shadow-1</div><div style="--shadow: var(--shadow-2);">shadow-2</div><div style="--shadow: var(--shadow-3);">shadow-3</div><div style="--shadow: var(--shadow-4);">shadow-4</div></div></div></div><div data-theme="dark"><div class="ds-example__canvas"><div class="ds-shadow-grid" style="width: 100%;"><div style="--shadow: var(--shadow-1);">shadow-1</div><div style="--shadow: var(--shadow-2);">shadow-2</div><div style="--shadow: var(--shadow-3);">shadow-3</div><div style="--shadow: var(--shadow-4);">shadow-4</div></div></div></div></div>
+
+      <p>Four levels plus focus. The light theme mixes them from a cool slate at low opacity; dark uses black at much higher opacity, because a soft shadow on ink is otherwise invisible. Both are needed: the shadow separates an overlay from what is under it, the panel lightness says it is a surface.</p>
+      <div class="ds-themes"><div data-theme="light"><div class="ds-shadow-grid"><div style="--shadow: var(--shadow-1)">shadow-1</div><div style="--shadow: var(--shadow-2)">shadow-2</div><div style="--shadow: var(--shadow-3)">shadow-3</div><div style="--shadow: var(--shadow-4)">shadow-4</div><div style="--shadow: var(--shadow-focus)">shadow-focus</div></div></div><div data-theme="dark"><div class="ds-shadow-grid"><div style="--shadow: var(--shadow-1)">shadow-1</div><div style="--shadow: var(--shadow-2)">shadow-2</div><div style="--shadow: var(--shadow-3)">shadow-3</div><div style="--shadow: var(--shadow-4)">shadow-4</div><div style="--shadow: var(--shadow-focus)">shadow-focus</div></div></div></div>
+      <p>The source used a fifth popover shadow (0 24px 60px -12px); it was folded into <code>--shadow-4</code> (0 25px 50px -12px), which is visually the same. <code>--shadow-diagnostics</code> and <code>--feedback-shadow</code> are area aliases of <code>--shadow-4</code>.</p>
+
     </section>
-    <section class="ds-section" id="surfaces"><h2><a href="#surfaces">Surfaces</a></h2>
-<ul><li>Canvas → surface (panels) → raised (dialogs, toasts, tooltip-like) → sunken (code blocks).</li><li>Veil over the ride for overlays and the step-change banner.</li></ul>
+    <section class="ds-section" id="surfaces"><h2><a href="#surfaces">Surface hierarchy</a></h2>
+
+      <p><strong>ink &lt; panel &lt; raised.</strong> On dark each step is lighter: the higher a surface, the more light it catches. On paper the canvas is warm off-white, panels are pure white and lift by contrast with the canvas, and raised wells are a warm grey that reads as recessed into the white card. The meaning is the same in both: a well sits inside a card, a card sits on the page.</p>
+      <div class="ds-themes"><div data-theme="light"><div class="ds-surf ds-surf--ink"><span class="ds-surf__tag">ink · canvas</span>
+      <div class="ds-surf ds-surf--panel"><span class="ds-surf__tag">panel · card</span>
+        <div class="ds-surf ds-surf--raised"><span class="ds-surf__tag">raised · well</span><span class="text-gold ds-surf__copy">Opens Neon Docklands</span></div>
+      </div></div></div><div data-theme="dark"><div class="ds-surf ds-surf--ink"><span class="ds-surf__tag">ink · canvas</span>
+      <div class="ds-surf ds-surf--panel"><span class="ds-surf__tag">panel · card</span>
+        <div class="ds-surf ds-surf--raised"><span class="ds-surf__tag">raised · well</span><span class="text-gold ds-surf__copy">Opens Neon Docklands</span></div>
+      </div></div></div></div>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Level</th><th scope="col">Surface</th><th scope="col">Shadow</th><th scope="col">Examples</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td><code>--color-ink</code></td><td>none</td><td>Page canvas, input fields (an input is a hole in the card)</td></tr>
+          <tr><td>1</td><td><code>--color-panel</code></td><td>none</td><td>Cards, next-ride, header, segmented track, banners</td></tr>
+          <tr><td>2</td><td><code>--color-raised</code></td><td>none</td><td>Wells, reward, chips, tracks, hover fills, selected nav link</td></tr>
+          <tr><td>Floating</td><td><code>--color-panel</code> + hairline</td><td><code>--shadow-2</code> to <code>--shadow-4</code></td><td>Tooltip, toast, menu, popover, dialog</td></tr>
+          <tr><td>HUD</td><td><code>--color-glass</code> + blur</td><td>none</td><td>Race bar, power, board, interval and resistance panels</td></tr>
+        </tbody></table></div>
+      <p>Surface colours are documented on <a href="color.html#roles">Color</a>.</p>
+
     </section>
-    <section class="ds-section" id="z"><h2><a href="#z">Z-order</a></h2>
-<ul><li><code>--z-base</code> <span data-token="--z-base"></span></li><li><code>--z-raised</code> <span data-token="--z-raised"></span></li><li><code>--z-sticky</code> <span data-token="--z-sticky"></span></li><li><code>--z-dropdown</code> <span data-token="--z-dropdown"></span></li><li><code>--z-overlay</code> <span data-token="--z-overlay"></span></li><li><code>--z-modal</code> <span data-token="--z-modal"></span></li><li><code>--z-popover</code> <span data-token="--z-popover"></span></li><li><code>--z-toast</code> <span data-token="--z-toast"></span></li><li><code>--z-tooltip</code> <span data-token="--z-tooltip"></span></li></ul>
+    <section class="ds-section" id="hud-glass"><h2><a href="#hud-glass">HUD glass over photos</a></h2>
+
+      <p>On the race the 3D world is the page, so panels cannot be opaque. HUD glass is <code>--color-glass</code>, ink at 80% (the design's <code>bg-ink/70 backdrop-blur-md</code>, deepened for contrast), with a 12px backdrop blur. It is the same in both themes: the world behind it does not change with the theme, so neither does the glass, and a HUD panel sets <code>data-theme="dark"</code> so its text, muted labels and accents resolve to their dark values on paper pages too.</p>
+      <div class="ds-themes">
+        <div data-theme="light"><div class="ds-example__canvas ds-example__canvas--photo ds-glass-demo" style="--photo: url(../assets/images/worlds/oldtown.jpg)">
+          <section class="race-glass ds-glass" data-theme="dark" aria-label="Power and position (example)"><p><span class="numeral ds-glass__pos">5th</span> <span class="numeral text-muted">/ 10</span></p><p><span class="numeral ds-glass__watts">371</span> <span class="numeral text-muted">W</span></p><p class="ds-glass__small">Target 418 W · <span class="text-heart">-47 W</span></p></section>
+        </div></div>
+        <div data-theme="dark"><div class="ds-example__canvas ds-example__canvas--photo ds-glass-demo" style="--photo: url(../assets/images/worlds/oldtown.jpg)">
+          <section class="race-glass ds-glass" data-theme="dark" aria-label="Power and position (example, dark page)"><p><span class="numeral ds-glass__pos">5th</span> <span class="numeral text-muted">/ 10</span></p><p><span class="numeral ds-glass__watts">371</span> <span class="numeral text-muted">W</span></p><p class="ds-glass__small">Target 418 W · <span class="text-heart">-47 W</span></p></section>
+        </div></div>
+      </div>
+      <p><strong>Contrast on glass.</strong> Measured on <code>--color-glass</code> with nothing but pure white behind it (the worst case), bone text (<code>--color-fg</code>, dark) reads 9.7:1 and muted 4.3:1. Over the race's own sky (<code>--race-sky</code>) muted reads 5.7:1. So values and anything a rider must read are <code>--color-fg</code>; muted is for units and captions that repeat what the number says. <code>.race-glass</code> in <code>components.css</code> still mixes 70% of the theme's ink (muted 2.9:1 worst case, and paper on light pages); it should read <code>--color-glass</code>.</p>
+      <p>Glass is for the ride HUD only. Off the ride, floating things are opaque panels with a shadow; never put glass over text, where the blur makes both layers unreadable. Where <code>backdrop-filter</code> is unsupported, the 80% ink alone still carries the contrast.</p>
+
     </section>
-    <section class="ds-section" id="opacity"><h2><a href="#opacity">Opacity</a></h2>
-<ul><li><code>--opacity-disabled</code> for every disabled control.</li><li><code>--opacity-stale</code> for values that are no longer live.</li><li><code>--opacity-plan</code> / <code>-plan-past</code> for target blocks in the trace.</li></ul>
+    <section class="ds-section" id="scrims"><h2><a href="#scrims">Scrims</a></h2>
+
+      <p>A scrim dims the page behind something modal and catches the outside click. <code>--color-scrim</code> is ink at 60% on dark (45% on paper) behind dialogs and sheets. <code>--color-scrim-strong</code> (ink 85%) sits behind text on photos (photo tags) and the full-screen covers that must hide the world: the 3-2-1 countdown, Lost the bike, paused. The "Leave this ride?" popover uses a transparent scrim at <code>--z-hud</code>: it catches the click but keeps the ride visible.</p>
+      <div class="ds-stage">
+        <div class="ds-stage__page"><p class="strong">HIIT · 8 × 0:30 · 3:00 → 1:30 recover</p><p>Power 107 W · Cadence 73 rpm</p></div>
+        <div class="scrim"></div>
+        <div class="dialog" role="dialog" aria-modal="false" aria-labelledby="leave-demo"><div class="ds-dialog-pad">
+          <h3 class="ds-dialog-title" id="leave-demo">Leave this ride?</h3>
+          <p class="text-muted">You’re <span class="figure">6:52</span> in with <span class="figure">2.24 km</span> ridden. The ride is paused while you decide.</p>
+          <div class="ds-dialog-actions"><button class="btn btn--primary" type="button">Save ride and open library</button><button class="btn btn--raised" type="button">Discard and open library</button><button class="btn btn--quiet" type="button">Keep riding</button></div>
+        </div></div>
+      </div>
+
     </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">All tokens</a></h2>
-<p>23 tokens. Values resolve live for each theme.</p><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td><code>--shadow-1</code></td><td colspan="2"><span data-token="--shadow-1"></span></td></tr><tr><td><code>--shadow-2</code></td><td colspan="2"><span data-token="--shadow-2"></span></td></tr><tr><td><code>--shadow-3</code></td><td colspan="2"><span data-token="--shadow-3"></span></td></tr><tr><td><code>--shadow-4</code></td><td colspan="2"><span data-token="--shadow-4"></span></td></tr><tr><td><code>--shadow-focus</code></td><td colspan="2"><span data-token="--shadow-focus"></span></td></tr><tr><td><code>--opacity-disabled</code></td><td colspan="2"><span data-token="--opacity-disabled"></span></td></tr><tr><td><code>--opacity-stale</code></td><td colspan="2"><span data-token="--opacity-stale"></span></td></tr><tr><td><code>--opacity-plan</code></td><td colspan="2"><span data-token="--opacity-plan"></span></td></tr><tr><td><code>--opacity-plan-past</code></td><td colspan="2"><span data-token="--opacity-plan-past"></span></td></tr><tr><td><code>--z-base</code></td><td colspan="2"><span data-token="--z-base"></span></td></tr><tr><td><code>--z-raised</code></td><td colspan="2"><span data-token="--z-raised"></span></td></tr><tr><td><code>--z-sticky</code></td><td colspan="2"><span data-token="--z-sticky"></span></td></tr><tr><td><code>--z-dropdown</code></td><td colspan="2"><span data-token="--z-dropdown"></span></td></tr><tr><td><code>--z-overlay</code></td><td colspan="2"><span data-token="--z-overlay"></span></td></tr><tr><td><code>--z-modal</code></td><td colspan="2"><span data-token="--z-modal"></span></td></tr><tr><td><code>--z-popover</code></td><td colspan="2"><span data-token="--z-popover"></span></td></tr><tr><td><code>--z-toast</code></td><td colspan="2"><span data-token="--z-toast"></span></td></tr><tr><td><code>--z-tooltip</code></td><td colspan="2"><span data-token="--z-tooltip"></span></td></tr><tr><td><code>--shadow-color</code></td><td colspan="2"><span data-token="--shadow-color"></span></td></tr><tr><td><code>--shadow-alpha-1</code></td><td colspan="2"><span data-token="--shadow-alpha-1"></span></td></tr><tr><td><code>--shadow-alpha-2</code></td><td colspan="2"><span data-token="--shadow-alpha-2"></span></td></tr><tr><td><code>--shadow-alpha-3</code></td><td colspan="2"><span data-token="--shadow-alpha-3"></span></td></tr><tr><td><code>--shadow-alpha-4</code></td><td colspan="2"><span data-token="--shadow-alpha-4"></span></td></tr></tbody></table></div>
+    <section class="ds-section" id="z-order"><h2><a href="#z-order">Z-order</a></h2>
+
+      <p>Ten layers, lowest first. Components set <code>z-index: var(--z-*)</code> and nothing else; a stacking problem is solved by choosing the right layer, never by a bigger number.</p>
+      <div class="ds-table-wrap"><table class="ds-table ds-token-table"><thead><tr><th scope="col">Token</th><th scope="col">Layer and users</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody>
+<tr><td><code>--z-base</code></td><td>Page content; a card's stretched link · <code>.card__link::after</code></td><td><span class="ds-val" data-theme="light" data-token="--z-base"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-base"></span></td></tr>
+<tr><td><code>--z-raised</code></td><td>Content lifted within its section: sticky table header, footer actions over a card link · <code>.table--sticky thead th</code></td><td><span class="ds-val" data-theme="light" data-token="--z-raised"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-raised"></span></td></tr>
+<tr><td><code>--z-hud</code></td><td>Ride HUD over the 3D world: race bar, power, board, scenery key, bottom HUD · <code>.race-bar, .race-power, .race-board, .race-hud</code></td><td><span class="ds-val" data-theme="light" data-token="--z-hud"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-hud"></span></td></tr>
+<tr><td><code>--z-sticky</code></td><td>Sticky form actions; the "Leave this ride?" popover under the ride header · <code>.form__actions--sticky, .ride-leave</code></td><td><span class="ds-val" data-theme="light" data-token="--z-sticky"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-sticky"></span></td></tr>
+<tr><td><code>--z-dropdown</code></td><td>Menus opened from a button · <code>.menu</code></td><td><span class="ds-val" data-theme="light" data-token="--z-dropdown"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-dropdown"></span></td></tr>
+<tr><td><code>--z-overlay</code></td><td>Scrims and full-screen covers: dialog scrim, 3-2-1, paused, lost the bike · <code>.scrim, .race-countdown, .race-lost, .class-lost</code></td><td><span class="ds-val" data-theme="light" data-token="--z-overlay"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-overlay"></span></td></tr>
+<tr><td><code>--z-modal</code></td><td>Dialogs and sheets; diagnostics; feedback · <code>.dialog, .diagnostics-layer, .feedback-popover</code></td><td><span class="ds-val" data-theme="light" data-token="--z-modal"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-modal"></span></td></tr>
+<tr><td><code>--z-popover</code></td><td>Popovers that can open from inside a dialog · <code>.popover</code></td><td><span class="ds-val" data-theme="light" data-token="--z-popover"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-popover"></span></td></tr>
+<tr><td><code>--z-toast</code></td><td>Toast region: above dialogs so a result is never hidden · <code>.toast-region</code></td><td><span class="ds-val" data-theme="light" data-token="--z-toast"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-toast"></span></td></tr>
+<tr><td><code>--z-tooltip</code></td><td>Tooltips and the skip link: always on top · <code>.tooltip, .skip-link</code></td><td><span class="ds-val" data-theme="light" data-token="--z-tooltip"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-tooltip"></span></td></tr>
+</tbody></table></div>
+      <p>Why toasts sit above modals: "Feedback sent" and reconnect results arrive while a dialog may be open and must not hide behind it. Why the HUD is low: everything the rider opens mid-ride (menus, dialogs, diagnostics) must cover it.</p>
+
+    </section>
+    <section class="ds-section" id="dark"><h2><a href="#dark">Elevation in the dark theme</a></h2>
+
+      <ul class="ds-checklist">
+        <li><span>Lightness, not shadow, separates levels: panel is a step above ink, raised a step above panel. Never put a raised well directly on ink without a panel between; the step is too small to read.</span></li>
+        <li><span>Floating surfaces add a hairline (<code>--color-line</code>) as well as the shadow, because a black shadow on near-black is a faint halo at best.</span></li>
+        <li><span>Dark shadows are 0.4–0.65 opacity against light's 0.08–0.25 so they still register at the edges of a dialog.</span></li>
+        <li><span>Hover on a raised fill moves one step up (<code>--color-raised-hover</code> = line on dark), never darker.</span></li>
+      </ul>
+
+    </section>
+    <section class="ds-section" id="usage"><h2><a href="#usage">Usage</a></h2>
+
+      <ul class="ds-checklist">
+        <li><span>Cards in the product carry no shadow: panel on ink is enough. Add <code>--shadow-1</code> only where a card sits on paper and needs to lift.</span></li>
+        <li><span>Pair each shadow with its layer: <code>--shadow-2</code> tooltip, <code>--shadow-3</code> toast, <code>--shadow-4</code> anything modal or anchored.</span></li>
+        <li><span>Glass only on the ride, only over the world.</span></li>
+        <li><span>Every modal layer has a scrim; every scrim closes its layer on click unless the layer is a confirmation that must be answered.</span></li>
+      </ul>
+
+    </section>
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+
+      <p>Every shadow, glass and layer token. Shadows change per theme; glass and layers do not.</p>
+      <div class="ds-table-wrap"><table class="ds-table ds-token-table"><thead><tr><th scope="col">Token</th><th scope="col">Use</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody>
+<tr><td><code>--shadow-1</code></td><td>Resting: a card that must lift off paper. No product component uses it today; the docs cards do.</td><td><span class="ds-val" data-theme="light" data-token="--shadow-1"></span></td><td><span class="ds-val" data-theme="dark" data-token="--shadow-1"></span></td></tr>
+<tr><td><code>--shadow-2</code></td><td>Small floating: tooltip</td><td><span class="ds-val" data-theme="light" data-token="--shadow-2"></span></td><td><span class="ds-val" data-theme="dark" data-token="--shadow-2"></span></td></tr>
+<tr><td><code>--shadow-3</code></td><td>Floating: toast</td><td><span class="ds-val" data-theme="light" data-token="--shadow-3"></span></td><td><span class="ds-val" data-theme="dark" data-token="--shadow-3"></span></td></tr>
+<tr><td><code>--shadow-4</code></td><td>Overlays: dialog, popover, menu, "Leave this ride?" (the source's shadow-2xl and 0 24px 60px -12px folded in)</td><td><span class="ds-val" data-theme="light" data-token="--shadow-4"></span></td><td><span class="ds-val" data-theme="dark" data-token="--shadow-4"></span></td></tr>
+<tr><td><code>--shadow-focus</code></td><td>Focus as a ring shadow where an outline would clip (2px in --color-focus-ring)</td><td><span class="ds-val" data-theme="light" data-token="--shadow-focus"></span></td><td><span class="ds-val" data-theme="dark" data-token="--shadow-focus"></span></td></tr>
+<tr><td><code>--shadow-color</code></td><td>The RGB triplet every shadow is mixed from: cool slate on paper, pure dark on ink</td><td><span class="ds-val" data-theme="light" data-token="--shadow-color"></span></td><td><span class="ds-val" data-theme="dark" data-token="--shadow-color"></span></td></tr>
+<tr><td><code>--shadow-diagnostics</code></td><td>Diagnostics panel (= --shadow-4)</td><td><span class="ds-val" data-theme="light" data-token="--shadow-diagnostics"></span></td><td><span class="ds-val" data-theme="dark" data-token="--shadow-diagnostics"></span></td></tr>
+<tr><td><code>--feedback-shadow</code></td><td>Feedback popover (= --shadow-4)</td><td><span class="ds-val" data-theme="light" data-token="--feedback-shadow"></span></td><td><span class="ds-val" data-theme="dark" data-token="--feedback-shadow"></span></td></tr>
+<tr><td><code>--color-glass</code></td><td>HUD glass over the world: ink at 80%, both themes</td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-glass" data-swatch></i><span class="ds-val" data-token="--color-glass"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-glass" data-swatch></i><span class="ds-val" data-token="--color-glass"></span></span></td></tr>
+<tr><td><code>--z-base</code></td><td>Page content; a card's stretched link</td><td><span class="ds-val" data-theme="light" data-token="--z-base"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-base"></span></td></tr>
+<tr><td><code>--z-raised</code></td><td>Content lifted within its section: sticky table header, footer actions over a card link</td><td><span class="ds-val" data-theme="light" data-token="--z-raised"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-raised"></span></td></tr>
+<tr><td><code>--z-hud</code></td><td>Ride HUD over the 3D world: race bar, power, board, scenery key, bottom HUD</td><td><span class="ds-val" data-theme="light" data-token="--z-hud"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-hud"></span></td></tr>
+<tr><td><code>--z-sticky</code></td><td>Sticky form actions; the "Leave this ride?" popover under the ride header</td><td><span class="ds-val" data-theme="light" data-token="--z-sticky"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-sticky"></span></td></tr>
+<tr><td><code>--z-dropdown</code></td><td>Menus opened from a button</td><td><span class="ds-val" data-theme="light" data-token="--z-dropdown"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-dropdown"></span></td></tr>
+<tr><td><code>--z-overlay</code></td><td>Scrims and full-screen covers: dialog scrim, 3-2-1, paused, lost the bike</td><td><span class="ds-val" data-theme="light" data-token="--z-overlay"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-overlay"></span></td></tr>
+<tr><td><code>--z-modal</code></td><td>Dialogs and sheets; diagnostics; feedback</td><td><span class="ds-val" data-theme="light" data-token="--z-modal"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-modal"></span></td></tr>
+<tr><td><code>--z-popover</code></td><td>Popovers that can open from inside a dialog</td><td><span class="ds-val" data-theme="light" data-token="--z-popover"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-popover"></span></td></tr>
+<tr><td><code>--z-toast</code></td><td>Toast region: above dialogs so a result is never hidden</td><td><span class="ds-val" data-theme="light" data-token="--z-toast"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-toast"></span></td></tr>
+<tr><td><code>--z-tooltip</code></td><td>Tooltips and the skip link: always on top</td><td><span class="ds-val" data-theme="light" data-token="--z-tooltip"></span></td><td><span class="ds-val" data-theme="dark" data-token="--z-tooltip"></span></td></tr>
+</tbody></table></div>
+
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

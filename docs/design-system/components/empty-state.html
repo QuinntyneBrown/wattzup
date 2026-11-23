@@ -3,17 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Empty state — Wattzup design system</title>
-<meta name="description" content="What to show when there is nothing yet, or loading failed.">
+<title>Empty state — Telo Ride design system</title>
+<meta name="description" content="Empty states fill the space where content will be: no bike, Bluetooth off, a new rider's first ride. Icon, title, one sentence, one action.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Page-only: docs chrome links (ds.css a) must not restyle product links inside specimens */
+:where(.ds-example__canvas, .ds-themes, .ds-matrix, .ds-anatomy__figure) a { color: inherit; text-decoration: none; }
+:where(.ds-example__canvas, .ds-themes, .ds-matrix, .ds-anatomy__figure) a:hover { color: inherit; }
+/* Visually hidden text inside a scrolling matrix must not widen the page */
+.ds-matrix { position: relative; }
+.ds-themes + p, .ds-themes + ul { margin-top: var(--space-4); }
+/* Product tables shown inside the state matrix keep their own cell styles */
+.ds-matrix td :is(.table, .map-table) :is(th, td) { padding: var(--table-cell-py, var(--space-2-5)) var(--table-cell-px, 0); background: transparent; border-right: 0; border-top: 0; font: inherit; text-transform: none; letter-spacing: normal; color: inherit; white-space: nowrap; }
+.ds-matrix td :is(.table) thead th { font-size: var(--font-size-xs); line-height: var(--line-height-xs); font-weight: var(--font-weight-semibold); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-muted); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +39,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,89 +93,265 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Component · Feedback</p>
       <h1>Empty state</h1>
-      <p class="ds-lead">Empty states explain why a region is empty and offer one way forward: No ride yet → Set up a ride.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span></div>
+      <p class="ds-lead">Where content will be, say how to get it: icon, title, one sentence, one action.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
       <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>Icon, title, one sentence, one primary action. The error variant keeps the chrome and offers retry plus diagnostics.</p>
-    </section>
-    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
-<div class="ds-anatomy"><figure class="ds-anatomy__figure"><div class="empty empty--compact"><div class="empty__icon"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><p class="empty__title">No ride yet</p><p class="empty__text">Your power, drawn against the plan, appears here once a ride starts.</p><div class="empty__actions"><button class="btn btn--primary" type="button">Set up a ride</button></div></div><span class="ds-callout" style="left: 50%; top: 15%;" aria-hidden="true">1</span><span class="ds-callout" style="left: 50%; top: 45%;" aria-hidden="true">2</span><span class="ds-callout" style="left: 50%; top: 65%;" aria-hidden="true">3</span><span class="ds-callout" style="left: 50%; top: 88%;" aria-hidden="true">4</span></figure><ol class="ds-anatomy__list"><li><div><b>Icon</b><small>64px circle.</small></div></li><li><div><b>Title</b><small>h3 (h4 compact).</small></div></li><li><div><b>Text</b><small>One sentence.</small></div></li><li><div><b>Action</b><small>One primary.</small></div></li></ol></div>
-    </section>
-    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
-<div class="ds-example"><div class="ds-example__canvas "><div class="empty empty--compact"><div class="empty__icon"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><p class="empty__title">No ride yet</p><p class="empty__text">Your power, drawn against the plan, appears here once a ride starts.</p><div class="empty__actions"><button class="btn btn--primary" type="button">Set up a ride</button></div></div></div><div class="ds-example__caption"><span>No ride yet.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="empty empty--compact"&gt;
-&lt;div class="empty__icon"&gt;
-&lt;svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;path d="M22 12h-4l-3 9L9 3l-3 9H2"/&gt;
-&lt;/svg&gt;
-&lt;/div&gt;
-&lt;p class="empty__title"&gt;No ride yet&lt;/p&gt;
-&lt;p class="empty__text"&gt;Your power, drawn against the plan, appears here once a ride starts.&lt;/p&gt;
-&lt;div class="empty__actions"&gt;
-&lt;button class="btn btn--primary" type="button"&gt;Set up a ride&lt;/button&gt;
-&lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div><h3>Error</h3><div class="ds-example"><div class="ds-example__canvas "><div class="empty empty--compact empty--error"><div class="empty__icon"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg></div><p class="empty__title">Couldn&rsquo;t load your progress</p><p class="empty__text">Your rides couldn&rsquo;t be loaded. They are still saved.</p><div class="empty__actions"><button class="btn btn--primary" type="button">Try again</button></div></div></div><div class="ds-example__caption"><span>Status failed.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="empty empty--compact empty--error"&gt;
-&lt;div class="empty__icon"&gt;
-&lt;svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;circle cx="12" cy="12" r="9"/&gt;
-&lt;path d="M12 8v4M12 16h.01"/&gt;
-&lt;/svg&gt;
-&lt;/div&gt;
-&lt;p class="empty__title"&gt;Couldn&amp;rsquo;t load your ride&lt;/p&gt;
-&lt;p class="empty__text"&gt;Your rides couldn&rsquo;t be loaded. They are still saved.&lt;/p&gt;
-&lt;div class="empty__actions"&gt;
-&lt;button class="btn btn--primary" type="button"&gt;Try again&lt;/button&gt;
-&lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
-<p>Full and compact (inside the trace).</p>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<div class="ds-matrix"><table><thead><tr><th scope="col">Variant</th><th scope="col">Example</th></tr></thead><tbody><tr><th scope="row">Error</th><td><div class="empty empty--compact empty--error"><div class="empty__icon"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg></div><p class="empty__title">Couldn&rsquo;t load your progress</p><p class="empty__text">Your rides couldn&rsquo;t be loaded. They are still saved.</p><div class="empty__actions"><button class="btn btn--primary" type="button">Try again</button></div></div></td></tr></tbody></table></div><h3>Both themes</h3><div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas"><div class="empty empty--compact"><div class="empty__icon"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><p class="empty__title">No ride yet</p><p class="empty__text">Your power, drawn against the plan, appears here once a ride starts.</p><div class="empty__actions"><button class="btn btn--primary" type="button">Set up a ride</button></div></div></div></div><div data-theme="dark"><div class="ds-example__canvas"><div class="empty empty--compact"><div class="empty__icon"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><p class="empty__title">No ride yet</p><p class="empty__text">Your power, drawn against the plan, appears here once a ride starts.</p><div class="empty__actions"><button class="btn btn--primary" type="button">Set up a ride</button></div></div></div></div></div>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
-<ul><li>Centred; text max 36ch.</li></ul>
-    </section>
-    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
-<p>Icon on accent subtle; danger subtle for errors.</p>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<h3>Role and pattern</h3><p>Heading + text + button; error variant is <code>role="alert"</code>.</p><h3>Keyboard</h3><div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody><tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Moves focus in DOM order.</td></tr></tbody></table></div><h3>Focus</h3><p>The action is reachable next.</p><h3>Labelling</h3><p>Title states the situation.</p><h3>Contrast</h3><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-pair"><span>Text</span><span class="ds-pair__ratio" data-contrast="--color-fg-muted|--color-bg-canvas" data-min="4.5"></span></div><div class="ds-pair"><span>Icon on wash</span><span class="ds-pair__ratio" data-contrast="--color-fg-accent|--color-accent-subtle" data-min="4.5"></span></div></div><h3>Motion</h3><p>None.</p><h3>Touch</h3><p>Not interactive.</p>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Title: the situation. Text: what will appear or what went wrong. Action: the verb.</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><div class="empty empty--compact"><div class="empty__icon"><svg class="icon icon--lg" aria-hidden="true" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><p class="empty__title">No ride yet</p><p class="empty__text">Your power, drawn against the plan, appears here once a ride starts.</p><div class="empty__actions"><button class="btn btn--primary" type="button">Set up a ride</button></div></div></div><figcaption>One clear action.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><div class="empty"><p class="empty__title">Nothing here</p></div></div><figcaption>No explanation or way forward.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
-<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Icon wash</td><td><code>--color-accent-subtle</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-accent-subtle" data-swatch></i><span data-token="--color-accent-subtle"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-accent-subtle" data-swatch></i><span data-token="--color-accent-subtle"></span></span></td></tr><tr><td>Error wash</td><td><code>--color-danger-bg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-danger-bg" data-swatch></i><span data-token="--color-danger-bg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-danger-bg" data-swatch></i><span data-token="--color-danger-bg"></span></span></td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
-<pre><code>&lt;div class="empty"&gt;&lt;div class="empty__icon"&gt;…&lt;/div&gt;&lt;p class="empty__title"&gt;No ride yet&lt;/p&gt;&lt;p class="empty__text"&gt;…&lt;/p&gt;&lt;div class="empty__actions"&gt;…&lt;/div&gt;&lt;/div&gt;</code></pre><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.empty--compact</code></td><td>Smaller.</td></tr><tr><td><code>.empty--error</code></td><td>Error tone.</td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from these mocks:</p><ul><li><a href="../../mocks/pages/ride/empty.html">pages/ride/empty</a> (no ride)</li><li><a href="../../mocks/pages/progress/error.html">pages/progress/error</a> (error)</li></ul><p>Drift fixed during extraction: none.</p>
+<p>An empty state fills the space where content will be, and says how to get it. Telo Ride has few true empties because most collections ship with the app (the manifest marks <code>empty</code> as not applicable on most screens: "The catalogue ships with the app; every shelf always holds classes."). The ones it has are first-run and setup moments:</p>
+<ul><li><b>No bike</b> on Custom ride: the dashboard asks for one ("Connect your bike").</li>
+<li><b>Bluetooth off</b>: the browser has no radio to ask with ("Turn on Bluetooth").</li>
+<li><b>New rider</b> on Profile: no rides yet ("Nothing yet. Your first race shows up here, with the XP it earned.").</li>
+<li><b>Nothing sent</b> in the custom ride's command log before a bike is connected.</li></ul>
+<p>The formula: <b>icon, title, one sentence, one action</b>. A hint may follow when riders often get stuck. The first-run Home and Class Library are not empties: Home shows two open maps and the next ride, and Class Library shows locked classes with "Opens at level 5". Show what there is, and what opens next, before an empty message.</p>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+<div class="ds-anatomy">
+<figure class="ds-anatomy__figure" style="padding: var(--space-8) var(--space-6) var(--space-8) var(--space-12); display: block; place-items: normal; min-width: 0;">
+<section class="empty-state empty-state--full empty-state--volt"><svg class="icon empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg><h3 class="empty-state__title">Connect your bike</h3><p class="empty-state__body">Wake the Echelon EX-5s with a few pedal strokes, then pick it from the list your browser shows. We’ll remember it next time.</p><div class="empty-state__action"><a class="btn btn--primary" href="../../mocks/pages/custom-ride/paused.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>Connect bike</a></div><p class="empty-state__hint">Not in the list? Close the Echelon app on your phone — the bike talks to one device at a time.</p></section><span class="ds-callout" style="left: var(--space-2); top: 14%;" aria-hidden="true">1</span><span class="ds-callout" style="left: var(--space-2); top: 28%;" aria-hidden="true">2</span><span class="ds-callout" style="left: var(--space-2); top: 44%;" aria-hidden="true">3</span><span class="ds-callout" style="left: var(--space-2); top: 62%;" aria-hidden="true">4</span><span class="ds-callout" style="left: var(--space-2); top: 80%;" aria-hidden="true">5</span>
+</figure>
+<ol class="ds-anatomy__list">
+<li><div><b>Icon</b><small>32px, the tone colour (volt for "connect yours", warn for a blocked device, muted otherwise); <code>aria-hidden</code>.</small></div></li>
+<li><div><b>Title</b><small>20px semibold (24px for the dashboard's "Connect your bike"); the state as a task.</small></div></li>
+<li><div><b>One sentence</b><small>14px muted, relaxed leading; what to do, with the real names.</small></div></li>
+<li><div><b>One action</b><small>One button: primary when it is the next step, raised when it re-checks.</small></div></li>
+<li><div><b>Hint (optional)</b><small>12px faint; the common snag.</small></div></li>
+</ol>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+<h3>Full (dashboard and panels)</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<div class="ds-stage" style="width: 100%; display: grid; place-items: center; border-radius: var(--radius-xl); background: var(--color-panel); "><section class="empty-state empty-state--full empty-state--volt"><svg class="icon empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg><h3 class="empty-state__title">Connect your bike</h3><p class="empty-state__body">Wake the Echelon EX-5s with a few pedal strokes, then pick it from the list your browser shows. We’ll remember it next time.</p><div class="empty-state__action"><a class="btn btn--primary" href="../../mocks/pages/custom-ride/paused.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>Connect bike</a></div><p class="empty-state__hint">Not in the list? Close the Echelon app on your phone — the bike talks to one device at a time.</p></section></div>
+</div>
+<div class="ds-example__caption"><span>Custom ride, no bike: the dashboard asks for one.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="ds-stage" style="width: 100%; display: grid; place-items: center; border-radius: var(--radius-xl); background: var(--color-panel); "&gt;&lt;section class="empty-state empty-state--full empty-state--volt"&gt;&lt;svg class="icon empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;h3 class="empty-state__title"&gt;Connect your bike&lt;/h3&gt;&lt;p class="empty-state__body"&gt;Wake the Echelon EX-5s with a few pedal strokes, then pick it from the list your browser shows. We’ll remember it next time.&lt;/p&gt;&lt;div class="empty-state__action"&gt;&lt;a class="btn btn--primary" href="../../mocks/pages/custom-ride/paused.html"&gt;&lt;svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;Connect bike&lt;/a&gt;&lt;/div&gt;&lt;p class="empty-state__hint"&gt;Not in the list? Close the Echelon app on your phone — the bike talks to one device at a time.&lt;/p&gt;&lt;/section&gt;&lt;/div&gt;</code></pre></details>
+</div>
+
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<div class="ds-stage" style="width: 100%; display: grid; place-items: center; border-radius: var(--radius-xl); background: var(--color-panel); "><section class="empty-state empty-state--full empty-state--warn"><svg class="icon empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg><h3 class="empty-state__title">Turn on Bluetooth</h3><p class="empty-state__body">Your browser can’t see a Bluetooth radio. Switch it on in your computer’s settings — or, if this machine has none, plug in a USB Bluetooth adapter.</p><div class="empty-state__action"><a class="btn btn--raised" href="../../mocks/pages/custom-ride/no-bike.html">Check again</a></div></section></div>
+</div>
+<div class="ds-example__caption"><span>Custom ride, Bluetooth off: warn icon, the fix, and a raised "Check again".</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="ds-stage" style="width: 100%; display: grid; place-items: center; border-radius: var(--radius-xl); background: var(--color-panel); "&gt;&lt;section class="empty-state empty-state--full empty-state--warn"&gt;&lt;svg class="icon empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;h3 class="empty-state__title"&gt;Turn on Bluetooth&lt;/h3&gt;&lt;p class="empty-state__body"&gt;Your browser can’t see a Bluetooth radio. Switch it on in your computer’s settings — or, if this machine has none, plug in a USB Bluetooth adapter.&lt;/p&gt;&lt;div class="empty-state__action"&gt;&lt;a class="btn btn--raised" href="../../mocks/pages/custom-ride/no-bike.html"&gt;Check again&lt;/a&gt;&lt;/div&gt;&lt;/section&gt;&lt;/div&gt;</code></pre></details>
+</div>
+
+<h3>Compact (inside a section)</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<div style="width: 100%; max-width: 32rem;"><h3 style="font-size: var(--font-size-md); margin: 0 0 var(--space-3);">Recent rides</h3><section class="empty-state empty-state--compact"><svg class="icon empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><h3 class="empty-state__title">No rides yet</h3><p class="empty-state__body">Nothing yet. Your first race shows up here, with the XP it earned.</p><div class="empty-state__action"><a class="btn btn--raised btn--sm" href="../../mocks/pages/race-setup/prairie.html">Race Prairie Paceline</a></div></section></div>
+</div>
+<div class="ds-example__caption"><span>Profile, new rider: one line inside the Recent rides section, with the first race as the action.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div style="width: 100%; max-width: 32rem;"&gt;&lt;h3 style="font-size: var(--font-size-md); margin: 0 0 var(--space-3);"&gt;Recent rides&lt;/h3&gt;&lt;section class="empty-state empty-state--compact"&gt;&lt;svg class="icon empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;h3 class="empty-state__title"&gt;No rides yet&lt;/h3&gt;&lt;p class="empty-state__body"&gt;Nothing yet. Your first race shows up here, with the XP it earned.&lt;/p&gt;&lt;div class="empty-state__action"&gt;&lt;a class="btn btn--raised btn--sm" href="../../mocks/pages/race-setup/prairie.html"&gt;Race Prairie Paceline&lt;/a&gt;&lt;/div&gt;&lt;/section&gt;&lt;/div&gt;</code></pre></details>
+</div>
+
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<div style="width: 100%; max-width: 32rem;"><section class="empty-state empty-state--compact"><svg class="icon empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg><h3 class="empty-state__title">Nothing sent</h3><p class="empty-state__body">Nothing sent — no bike connected.</p></section></div>
+</div>
+<div class="ds-example__caption"><span>Custom ride command log before a bike connects: no action, because the overlay above already offers it.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div style="width: 100%; max-width: 32rem;"&gt;&lt;section class="empty-state empty-state--compact"&gt;&lt;svg class="icon empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;h3 class="empty-state__title"&gt;Nothing sent&lt;/h3&gt;&lt;p class="empty-state__body"&gt;Nothing sent — no bike connected.&lt;/p&gt;&lt;/section&gt;&lt;/div&gt;</code></pre></details>
+</div>
+
+<h3>A wait is not an empty</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<div class="connect-device__searching" role="status" style="width: 100%;"><svg class="icon icon--lg icon--spin connect-device__spinner" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Looking for bikes nearby…</div>
+</div>
+<div class="ds-example__caption"><span>Connect Bike while searching: the manifest calls this its empty state, but it is a wait. Use a spinner and words, not an empty message.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="connect-device__searching" role="status" style="width: 100%;"&gt;&lt;svg class="icon icon--lg icon--spin connect-device__spinner" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;Looking for bikes nearby…&lt;/div&gt;</code></pre></details>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<div style="display: grid; gap: var(--space-6); width: 100%;"><div class="ds-stage" style="width: 100%; display: grid; place-items: center; border-radius: var(--radius-xl); background: var(--color-panel); "><section class="empty-state empty-state--full empty-state--warn"><svg class="icon empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 17-5 5V12l-5 5"/><path d="m2 2 20 20"/><path d="M14.5 9.5 17 7l-5-5v4.5"/></svg><h3 class="empty-state__title">Turn on Bluetooth</h3><p class="empty-state__body">Your browser can’t see a Bluetooth radio.</p><div class="empty-state__action"><button class="btn btn--raised" type="button">Check again</button></div></section></div><div style="max-width: 32rem;"><section class="empty-state empty-state--compact"><svg class="icon empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><h3 class="empty-state__title">No rides yet</h3><p class="empty-state__body">Nothing yet. Your first race shows up here, with the XP it earned.</p><div class="empty-state__action"><a class="btn btn--raised btn--sm" href="../../mocks/pages/race-setup/prairie.html">Race Prairie Paceline</a></div></section></div></div>
+</div>
+<div class="ds-example__caption"><span>Full (32px icon, 20px title, centred in up to 28rem) and compact (20px icon, 14px title, left-aligned in the section).</span></div>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+<p>The empty state itself is static; its one action carries the interactive states. "Disabled" is when the action cannot run (no Web Bluetooth): replace the empty with the browser <a href="error-page.html">error panel</a> rather than show a dead button.</p>
+<div class="ds-matrix"><table>
+<thead><tr><th scope="col">Part</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Disabled</th><th scope="col">Loading</th></tr></thead>
+<tbody>
+<tr><th scope="row">Action</th><td><a class="btn btn--primary" href="#overview">Connect bike</a></td><td><a class="btn btn--primary" href="#overview" data-state="hover">Connect bike</a></td><td><a class="btn btn--primary" href="#overview" data-state="focus">Connect bike</a></td><td><a class="btn btn--primary" href="#overview" data-state="active">Connect bike</a></td><td><button class="btn btn--primary" type="button" disabled>Connect bike</button></td><td><button class="btn btn--primary" type="button" disabled aria-busy="true"><svg class="icon icon--md icon--spin" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Connecting…</button></td></tr>
+<tr><th scope="row">Region</th><td><section class="empty-state empty-state--compact"><svg class="icon empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg><h3 class="empty-state__title">Nothing sent</h3><p class="empty-state__body">Nothing sent — no bike connected.</p></section></td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="skeleton skeleton--text" style="--skeleton-width: 10rem;"></span></td></tr>
+</tbody>
+</table></div>
+
+<h3>Both themes</h3>
+<div class="ds-themes">
+<div data-theme="light"><div class="ds-example__canvas " style="padding: var(--space-6) 0; display: block;"><section class="empty-state empty-state--full empty-state--volt"><svg class="icon empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg><h3 class="empty-state__title">Connect your bike</h3><p class="empty-state__body">Wake the Echelon EX-5s with a few pedal strokes, then pick it from the list your browser shows. We’ll remember it next time.</p><div class="empty-state__action"><a class="btn btn--primary" href="../../mocks/pages/custom-ride/paused.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>Connect bike</a></div><p class="empty-state__hint">Not in the list? Close the Echelon app on your phone — the bike talks to one device at a time.</p></section></div></div>
+<div data-theme="dark"><div class="ds-example__canvas " style="padding: var(--space-6) 0; display: block;"><section class="empty-state empty-state--full empty-state--volt"><svg class="icon empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg><h3 class="empty-state__title">Connect your bike</h3><p class="empty-state__body">Wake the Echelon EX-5s with a few pedal strokes, then pick it from the list your browser shows. We’ll remember it next time.</p><div class="empty-state__action"><a class="btn btn--primary" href="../../mocks/pages/custom-ride/paused.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>Connect bike</a></div><p class="empty-state__hint">Not in the list? Close the Echelon app on your phone — the bike talks to one device at a time.</p></section></div></div>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+<ul><li><b>360px</b>: full empties keep 24px side padding; the action button goes full width inside the card.</li>
+<li><b>640px</b>: the card caps at 28rem (<code>--layout-panel-narrow</code>) and centres.</li>
+<li><b>1024px</b>: on the custom ride the empty sits over the video area only; the resistance panel stays visible (disabled) beside it.</li>
+<li>Compact empties stay left-aligned at every width.</li></ul>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+<pre><code>.empty-state { --empty-state-icon: var(--color-muted); --empty-state-width: var(--layout-panel-narrow); }
+.empty-state--volt { --empty-state-icon: var(--color-volt-fg); }
+.empty-state--warn { --empty-state-icon: var(--color-warn-fg); }</code></pre>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+<h3>Role and pattern</h3>
+<p>A <code>&lt;section&gt;</code> with a heading at the right level for the page. When it replaces content after something changes (Bluetooth turned off mid-setup), put it in <code>role="status"</code>; a lost connection mid-ride is an error and uses <code>role="alert"</code>. No APG widget.</p>
+<h3>Keyboard</h3>
+<table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+<tr><td><kbd>Tab</kbd></td><td>Reaches the one action.</td></tr>
+<tr><td><kbd>Enter</kbd></td><td>Runs it.</td></tr>
+</tbody></table>
+<h3>Focus</h3>
+<p>When a screen opens empty, focus starts as normal (skip link, then header). When an empty appears in place of content the rider was using, move focus to its heading (<code>tabindex="-1"</code>).</p>
+<h3>Labelling</h3>
+<p>The title says the state as a task ("Connect your bike"), the sentence the next step. The icon is decoration. The action is named for what it does ("Connect bike", "Check again").</p>
+<h3>Contrast</h3>
+<div class="ds-themes">
+<div data-theme="light"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+<div class="ds-pair"><span>Title on panel</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Sentence on panel</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Hint on panel</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Volt icon on panel</span><span class="ds-pair__ratio" data-contrast="--color-volt-fg|--color-panel" data-min="3"></span></div>
+<div class="ds-pair"><span>Warn icon on panel</span><span class="ds-pair__ratio" data-contrast="--color-warn-fg|--color-panel" data-min="3"></span></div>
+</div></div>
+<div data-theme="dark"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+<div class="ds-pair"><span>Title on panel</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Sentence on panel</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Hint on panel</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Volt icon on panel</span><span class="ds-pair__ratio" data-contrast="--color-volt-fg|--color-panel" data-min="3"></span></div>
+<div class="ds-pair"><span>Warn icon on panel</span><span class="ds-pair__ratio" data-contrast="--color-warn-fg|--color-panel" data-min="3"></span></div>
+</div></div>
+</div>
+<h3>Motion</h3>
+<p>None. Empties appear without animation.</p>
+<h3>Touch</h3>
+<p>The action is a 40px button (36px small in compact).</p>
+
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+<ul><li>Title: the task, not the absence ("Connect your bike", not "No bike").</li><li>One sentence with real names: the bike model, the setting, the map.</li>
+<li>One action. Primary when it is the next step; raised when it re-checks.</li><li>Profile's "Nothing yet." is the one place an absence leads, because it then says what will fill it.</li><li>No illustrations; the photo and dashboard behind already carry the mood.</li></ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+<div class="ds-dodont">
+<figure class="ds-do"><div class="ds-example__canvas"><section class="empty-state empty-state--full empty-state--volt"><svg class="icon empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg><h3 class="empty-state__title">Connect your bike</h3><p class="empty-state__body">Wake the Echelon EX-5s with a few pedal strokes, then pick it from the list your browser shows. We’ll remember it next time.</p><div class="empty-state__action"><a class="btn btn--primary" href="../../mocks/pages/custom-ride/paused.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>Connect bike</a></div><p class="empty-state__hint">Not in the list? Close the Echelon app on your phone — the bike talks to one device at a time.</p></section></div><figcaption>Icon, task title, one sentence, one action, and the hint riders need.</figcaption></figure>
+<figure class="ds-dont"><div class="ds-example__canvas"><section class="empty-state empty-state--full"><h3 class="empty-state__title">No device</h3><p class="empty-state__body">No Bluetooth device is connected.</p><div class="empty-state__action" style="display: flex; gap: var(--space-2);"><button class="btn btn--primary" type="button">Connect</button><button class="btn btn--raised" type="button">Help</button><button class="btn btn--ghost" type="button">Skip</button></div></section></div><figcaption>States the absence, names nothing, offers three actions.</figcaption></figure>
+<figure class="ds-do"><div class="ds-example__canvas"><div style="width: 100%;"><section class="empty-state empty-state--compact"><svg class="icon empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><h3 class="empty-state__title">No rides yet</h3><p class="empty-state__body">Nothing yet. Your first race shows up here, with the XP it earned.</p><div class="empty-state__action"><a class="btn btn--raised btn--sm" href="../../mocks/pages/race-setup/prairie.html">Race Prairie Paceline</a></div></section></div></div><figcaption>Compact inside its section, saying what will fill it.</figcaption></figure>
+<figure class="ds-dont"><div class="ds-example__canvas"><div class="ds-stage" style="width: 100%; display: grid; place-items: center; border-radius: var(--radius-xl); background: var(--color-panel); min-height: 16rem;"><section class="empty-state empty-state--full"><svg class="icon empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><h3 class="empty-state__title">No rides yet</h3><p class="empty-state__body">You have not ridden yet.</p></section></div></div><figcaption>A full-height empty that pushes the rest of Profile off screen.</figcaption></figure>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+<div class="ds-table-wrap"><table class="ds-table">
+<thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+<tbody>
+<tr><td>Title</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+<tr><td>Sentence</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+<tr><td>Hint</td><td><code>--color-faint</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td></tr>
+<tr><td>Icon</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+<tr><td>Icon (volt / warn / heart)</td><td><code>--color-volt-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-volt-fg" data-swatch></i><span data-token="--color-volt-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-volt-fg" data-swatch></i><span data-token="--color-volt-fg"></span></span></td></tr>
+<tr><td>Icon (volt / warn / heart)</td><td><code>--color-warn-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-warn-fg" data-swatch></i><span data-token="--color-warn-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-warn-fg" data-swatch></i><span data-token="--color-warn-fg"></span></span></td></tr>
+<tr><td>Icon (volt / warn / heart)</td><td><code>--color-heart-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-heart-fg" data-swatch></i><span data-token="--color-heart-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-heart-fg" data-swatch></i><span data-token="--color-heart-fg"></span></span></td></tr>
+<tr><td>Width</td><td><code>--layout-panel-narrow</code></td><td colspan="2"><span data-token="--layout-panel-narrow"></span></td></tr>
+<tr><td>Icon size</td><td><code>--space-8</code> / <code>--space-5</code></td><td colspan="2"><span data-token="--space-8"></span> / <span data-token="--space-5"></span></td></tr>
+<tr><td>Gaps</td><td><code>--space-4</code>, <code>--space-2</code>, <code>--space-6</code></td><td colspan="2"><span data-token="--space-4"></span> / <span data-token="--space-2"></span> / <span data-token="--space-6"></span></td></tr>
+</tbody>
+</table></div>
+
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+<pre><code>&lt;section class="empty-state empty-state--full empty-state--volt" aria-labelledby="connect-title"&gt;
+  &lt;svg class="icon empty-state__icon" aria-hidden="true"&gt;…&lt;/svg&gt;
+  &lt;h2 class="empty-state__title" id="connect-title"&gt;Connect your bike&lt;/h2&gt;
+  &lt;p class="empty-state__body"&gt;Wake the Echelon EX-5s with a few pedal strokes, then pick it from the list your browser shows.&lt;/p&gt;
+  &lt;div class="empty-state__action"&gt;&lt;button class="btn btn--primary" type="button"&gt;Connect bike&lt;/button&gt;&lt;/div&gt;
+  &lt;p class="empty-state__hint"&gt;Not in the list? Close the Echelon app on your phone.&lt;/p&gt;
+&lt;/section&gt;</code></pre>
+<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+<tr><td><code>.empty-state</code></td><td>Block: <code>__icon</code>, <code>__title</code>, <code>__body</code>, <code>__action</code>, <code>__hint</code>.</td></tr>
+<tr><td><code>--full</code> <code>--compact</code> <code>--panel</code></td><td>Layouts.</td></tr>
+<tr><td><code>--volt</code> <code>--warn</code> <code>--heart</code></td><td>Icon tone.</td></tr>
+<tr><td><code>.ride-overlay__*</code></td><td>Custom ride overlay (area).</td></tr>
+<tr><td><code>.recent__empty</code> <code>.ride-log__empty</code></td><td>Area one-liners.</td></tr>
+</tbody></table></div>
+
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+<p>Extracted from these mocks:</p>
+<ul>
+<li><a href="../../mocks/pages/custom-ride/no-bike.html">pages/custom-ride/no-bike</a> (Connect your bike)</li>
+<li><a href="../../mocks/pages/custom-ride/bluetooth-off.html">pages/custom-ride/bluetooth-off</a> (Turn on Bluetooth)</li>
+<li><a href="../../mocks/pages/profile/new-rider.html">pages/profile/new-rider</a> (recent rides empty)</li>
+<li><a href="../../mocks/pages/class-library/new-rider.html">pages/class-library/new-rider</a> (locked classes instead of an empty)</li>
+<li><a href="../../mocks/pages/home/new-rider.html">pages/home/new-rider</a> (first-run Home, not an empty)</li>
+<li><a href="../../mocks/pages/connect-bike/searching.html">pages/connect-bike/searching</a> (searching named as the empty state)</li>
+</ul>
+<h3>Drift fixed during extraction</h3>
+<ul><li>The no-bike overlay has no icon while Bluetooth-off and Lost the bike have one; the formula adds one (bike, volt).</li>
+<li>Profile's new-rider empty is a bare sentence with no action; the formula adds the first race as the action.</li>
+<li>The manifest names Connect Bike's searching as its empty state; documented as a wait (spinner), not an empty.</li>
+<li>Three classes (<code>.ride-overlay__card</code>, <code>.browser-panel</code>, <code>.connect-blocker</code>) draw the same centred icon, title, body, action stack; <code>.empty-state</code> is the one block for empties.</li></ul>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

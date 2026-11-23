@@ -1,0 +1,786 @@
+# Neon Docklands: realism passes
+
+Each pass makes one significant change to how real Neon Docklands looks, towards the pictures the work aims at
+(MyWhoosh's worlds: textured roads, real light and shadow, dense scenery). Each is measured before and after in the
+real app with `tools/course-bench` and kept only if the frame rate holds. `docs/course-realism.md` describes each
+technique so it can be applied to the other maps.
+
+**How it is measured.** A race against the medium pack of bots in the production build, in a Chromium window of
+1920 x 1072 real pixels on this machine's GPU (Qualcomm Adreno X1-85, a Snapdragon X laptop), at the course's top
+tier (bloom on), over ten seconds from 0:12 of the ride. "Display" is the frame rate at the display's pace (this
+display switches between 60 and 120 Hz, so it reads one or the other); "uncapped" is with the frame rate limit off,
+the number that compares passes. The film and the picture of each pass are beside this file.
+
+**One run is not enough (found in pass 3).** The same build read 262 and 307 fps uncapped in two runs a minute
+apart: a laptop warms and slows, and other work on the machine shows. From pass 3 the bench takes three uncapped runs
+and the median is the number; a pass is compared with the pass before it measured the same way, in the same
+sitting. Passes 0 to 2 were single runs: read their uncapped numbers as within a tenth.
+
+**The rule.** A pass is kept only if the display's pace holds (60 fps or more, no run of slow frames) and uncapped
+stays above 240 fps, so a device a quarter as fast still draws 60.
+
+| Pass | Change | Display | Uncapped | Worst frame (uncapped) | Triangles | Draw calls | File, gzipped | Kept |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | Baseline: every surface one flat colour, shaded flat | 119.8 fps | 357 fps (2.80 ms) | 39 ms | 73,629 | 117 | 3.37 MB | |
+| 1 | The ground's surface and the lamps' light on it | 119.6 fps | 342 fps (2.92 ms) | 37 ms | 74,889 | 122 | 3.28 MB | Yes |
+| 2 | The lamps light what stands near the road: riders, posts, walls, land | 119.0 fps | 321 fps (3.11 ms); median of three 299 fps (3.34 ms) | 73 ms | 74,889 | 122 | 3.28 MB | Yes |
+| 3 | Walls of brick, steel and plaster | 117.9 fps | median of three 291 fps (3.43 ms): 322, 286, 291 | 74 ms | 75,005 | 131 | 3.42 MB | Yes |
+| 4 | The riders' shadows fall away from the lamps | 119.5 fps | median of three 306 fps (3.27 ms): 327, 299, 306 | | 74,955 | 127 | 3.42 MB | Yes |
+| 5 | A night sky and the city on the horizon | 60.1 fps (the display was at 60 Hz) | median of three 331 fps (3.02 ms): 331, 325, 331 | | 76,115 | 128 | 3.39 MB | Yes |
+| 6 | Windows with frames, panes and rooms behind them | 119.8 fps | median of three 328 fps (3.05 ms): 333, 328, 319 | | 74,869 | 129 | 3.38 MB | Yes |
+| 7 | A working quay: railing, bollards, drums, crates, lorries, masts, cranes | 60.0 fps (the display was at 60 Hz) | best of six 301 fps; medians 241 and 232 on a busy machine (see the pass) | | 79,834 | 134 | 3.99 MB | Yes |
+| 8 | Hills a rider can see: each effort a ramp up onto a bridge | 120.0 fps, no frame over 20 ms | median of three 308 fps (3.24 ms): 311, 308, 307, on the first ramp | | 66,997 | 123 | 3.92 MB | Yes |
+| 9 | Wet ground that mirrors the lamps and the sky | 119.8 fps, no frame over 20 ms | median of three 298 fps (3.36 ms): 326, 296, 298, on the first ramp | | 66,997 | 123 | 3.92 MB | Yes |
+| 10 | A glow in the air round every lamp | 119.3 fps, 2 frames over 20 ms | median of three 294 fps (3.40 ms): 304, 286, 294, on the first ramp | | 67,845 | 129 | 3.95 MB | Yes |
+| 11 | The file smaller: positions in whole centimetres | 119.4 fps, 1 frame over 20 ms | turn about with pass 10's map: 273 fps against 264 (277, 270, 273 and 267, 264, 254), on the first ramp | | 75,149 | 130 | 3.31 MB | Yes |
+| 12 | The lamps' light comes from above: riders and scenery have shape | 119.3 fps, 2 frames over 20 ms | median of three 269 fps (3.72 ms): 288, 269, 264; pass 11 read 270 in the same sitting | | 75,149 | 130 | 3.31 MB | Yes |
+| 13 | Harbour water that ripples and mirrors the city | 120.1 fps, no frame over 20 ms | median of three 278 fps (3.60 ms): 287, 278, 271; pass 12 read 269 | | 75,149 | 130 | 3.31 MB | Yes |
+| 14 | Street furniture: lamp columns with a lit head, and direction boards | 119.5 fps, 1 frame over 20 ms | median of three 288 fps (3.47 ms): 291, 280, 288; pass 13 read 278 | | 74,165 | 130 | 3.37 MB | Yes |
+| 15 | The climbs are bridges over the harbour | 120.0 fps, no frame over 20 ms | median of three 290 fps (3.45 ms): 290, 298, 289; pass 14 read 288 | | 72,083 | 126 | 3.14 MB | Yes |
+| 16 | Pylons and stay cables strung with light over each bridge | 119.0 fps, 2 frames over 20 ms | median of three 292 fps (3.43 ms): 294, 292, 289; pass 15 read 290 | | 72,151 | 126 | 3.17 MB | Yes |
+| 17 | The riders' moving parts in one draw call | 119.4 fps, 1 frame over 20 ms | median of three 315 fps (3.17 ms): 315, 326, 295; pass 16 read 292 | | 73,359 | 77 | 3.17 MB | Yes |
+| 18 | Neon and the bridges' cables throw their colour on the ground and the riders | 117.2 to 119.2 fps over three runs, 5, 2 and 2 frames over 20 ms | median of three 323 fps (3.10 ms): 321, 323, 323; pass 17 read 315 | | 73,359 | 77 | 3.17 MB, and 52 KB for the course file | Yes |
+| 19 | No stutter when a new stretch of the map comes into view | 120.0 fps, no frame over 20 ms, worst 16.7 ms (timed with no film being taken) | median of three 324 fps (3.09 ms): 327, 324, 304; pass 18 read 323 | | 73,359 | 77 | 3.17 MB | Yes |
+| 20 | Rain falling through the lamplight; and every rider made before the ride | 120.0 fps, no frame over 20 ms, worst 16.8 ms | median of three 321 fps (3.12 ms): 327, 321, 295; pass 19 read 324 | | 83,391 | 79 | 3.17 MB | Yes |
+| 21 | Warehouses with loading doors and things on their roofs | 119.7 fps, no frame over 20 ms, worst 16.8 ms | median of three 310 fps (3.23 ms): 299, 326, 310; pass 20 read 321 | | 83,391 | 79 | 3.30 MB | Yes |
+| 22 | Lit windows light the pavement; the water takes the bridges' colour | 120.1 fps, no frame over 20 ms, worst 16.7 ms | median of three 306 fps (3.27 ms): 306, 322, 305; pass 21 read 310 | | 83,391 | 79 | 3.30 MB, and 56 KB for the course file | Yes |
+| 23 | The file within its budget: the meshopt codec | 119.9 fps, 1 frame over 20 ms, worst 25 ms | six runs: 313, 273, 248, 261, 307, 315 fps on a busy machine; pass 22 read 306 | | 83,391 | 79 | **1.41 MB** | Yes |
+
+## Pass 1: the ground's surface and the lamps' light
+
+**Before** (`pass-00.jpg`, `pass-00.mp4`): the road is one flat dark colour with crisp paint; nothing on it says
+where the lamps are; the pavement is a flat grey.
+
+**After** (`pass-01.jpg`, `pass-01.mp4`): the asphalt has its aggregate's grain, patches of older and newer surface,
+paler polished wheel tracks, cracks where it is tired, and pale chips; the paint is worn and broken by the cracks;
+each street lamp throws a pool of warm light on the road and the pavement, brightest under it and dim between; the
+pavement is mottled and stained.
+
+**What changed.**
+
+- The Blender build puts what the road builds (asphalt, paint, kerbs, pavements, shoulders) in a new `Ground` group,
+  with each vertex's place on the road in its UV: metres left of the centre line, metres from the start line. The
+  course file names the lamps (`lamps`: every 24 m from -68 m, 5.1 m either side, 6.65 m up, `#ffe2a8`).
+- The app draws `Ground` with one material (`ground-material.ts`) that works the surface out from that place and a
+  256-texel detail texture made on the device (`surface-detail.ts`), read at three scales. The lamps' light is
+  arithmetic in that material, not lights: it costs the same for one lamp or nine hundred.
+- The ground is drawn to 420 m (it was drawn with the scenery, to 250 m), so the road no longer ends short of the
+  haze.
+
+**Cost.** 0.12 ms a frame on this GPU (357 to 342 fps uncapped); 5 more draw calls and 1,260 more triangles in the
+frame (the ground drawn further); the file is smaller gzipped though it carries the UVs, as the ground's vertices
+now sit together.
+
+**Learned.**
+
+- Light that falls off as the cube of the cosine (true for a bare lamp) merged the pools into an even wash: the
+  road looked floodlit and flat. A shaded lamp's faster fall-off (the fourth power) reads as lamps.
+- Detail read at one scale looks like wallpaper. The same texels at 1.2 m, 5.3 m and 37 m, each doing a different
+  job (grain, cracks, patches), do not repeat to the eye.
+- The first numbers were too timid: a grain of plus or minus 15 % vanishes under bloom and tone mapping. Plus or
+  minus 50 %, and patches from 0.6 to 1.3, is what reads as asphalt at riding distance.
+- The riders, the lamp posts and the walls are not lit by the lamps yet, so they sit dark on a lit road: the next
+  passes.
+- `e2e/race-course.spec.ts`: two of its three specs (Ibiza and Vice City) already failed before this pass, at the
+  race's start, before anything is drawn; Prairie Paceline's passes before and after.
+
+## Pass 2: the lamps light what stands near the road
+
+**Before** (`pass-01.jpg`, `pass-01.mp4`): the road is lit, but the riders, the lamp posts, the warehouses and the
+quay beside it are as dark as open night: they look cut out and pasted on.
+
+**After** (`pass-02.jpg`, `pass-02.mp4`): the riders ride through the pools and brighten under each lamp; the
+warehouses' brick is lit warm at street level and falls back to night above the lamps; the posts, the containers
+and the quay catch the same light. The picture reads as one place lit by its lamps.
+
+**What changed.**
+
+- `lamp-light-map.ts` works out, once when the map loads, a grid over the whole map seen from above (2.5 m a cell,
+  two bytes a cell): the lamps' light at ground level and the road's height there. No change to the map's file.
+- `lamp-glow.ts` gives that grid to the GPU as a texture and adds one node to what a material emits: the surface's
+  own colour times the lamps' light where it stands, fading from 1.5 m to 9 m above the road. The `Solid`, `Land`
+  and `Leaves` groups use it, and each rider's lit materials are swapped for copies that do (the ghost is not lit).
+- Strengths against the ground under a lamp (4.2): the land 4.2, walls and posts 1.5, leaves 1.8, riders 1.5.
+
+**Cost.** 0.19 ms a frame (342 to 321 fps uncapped): one more texture read for almost every pixel of the scene. No
+more triangles or draw calls; a 1,317 x 1,202 grid, 3.2 MB on the GPU while the course is open. One 67 ms hitch in
+the ten seconds at the display's pace in the last run and none in the run before it; uncapped has the same few
+either way (pass 0 has them too), so it is the machine, not the pass.
+
+**Learned.**
+
+- Light kept in the world's own axes, read by where a surface is, lights everything with one node: nothing has to
+  know which lamp is near it, and a rider is lit like a wall. It is the cheap form of hundreds of lights.
+- Lit to the lamps' full strength, vertical walls glowed orange to their tops: a wall catches a lamp's light side
+  on, and nothing above the lamp's head. A third of the ground's strength, faded out by 9 m up, reads as lamplight.
+- Pale jerseys bloom under a strong lamp. The riders take less of it than the ground does.
+- It lights without direction: a wall facing away from the lamp is lit as one facing it, and nothing casts a
+  shadow. The shape of things still comes only from the moon's light. Shadows are the next gap.
+
+## Pass 3: walls of brick, steel and plaster
+
+**Before** (`pass-02.jpg`, `pass-02.mp4`): a warehouse is a box of one flat red-brown; a container a box of one flat
+colour.
+
+**After** (`pass-03.jpg`, `pass-03.mp4`): the warehouses are brick, laid in courses half a brick out of step with
+mortar between, each brick a shade of its own, streaked where rain has run down and dark where the road has
+splashed their foot; the containers have their upright ribs and patches of rust; the lamps light all of it.
+
+**What changed.**
+
+- The Blender build puts what is built of brick, steel or plaster (`WALL_KINDS`) in a new `Walls` group. Each face
+  gets a UV in its wall's own axes: metres along the wall, metres above the road beside it, with 1,000 m added to
+  the height for each kind of wall (1 brick, 2 steel, 3 plaster; roofs are 0).
+- The app draws `Walls` with one material (`wall-material.ts`): brick courses, mortar and a shade a brick worked out
+  from the UV; a container's ribs from a sine along the wall; stains and streaks from the ground's detail texture.
+  Where a course of brick is less than a pixel tall, the pattern fades into its average.
+
+**Cost.** Nothing that three runs can tell apart: 299 fps before (330, 299, 295), 291 after (322, 286, 291). 9 more
+draw calls (the walls are their own group) and 0.14 MB more in the file gzipped (the walls' UVs, and corners no
+longer shared between a box's faces). At the display's pace the last run had 5 frames of 1,180 over 20 ms and the
+run before it 1; the mean is 118 to 120 fps either way.
+
+**Tried and dropped.** The kind of wall in the alpha of each vertex's colour: Blender's glTF exporter writes the
+alpha as 1 whatever the mesh holds. It rides in the UV instead.
+
+**Learned.**
+
+- The first measurement said this pass cost 0.6 ms (321 to 269 fps). Cutting the shader's texture reads from four
+  to two changed nothing, which gave it away: it was the machine, not the shader. Measure three times before
+  optimising anything.
+- A pattern finer than a pixel must fade out before it gets there (from 0.18 to 0.6 of a course a pixel): faded
+  later, the far walls crawled with bands.
+- A wall's kind and its place on the wall are all a material needs for brick, ribs or plaster. Windows, doors and
+  signs are still flat panels laid on the wall: a later pass.
+
+## Pass 4: the riders' shadows fall away from the lamps
+
+**Before** (`pass-03.jpg`, `pass-03.mp4`): each rider has one hard-edged dark oval, always pointing the same way
+(away from the moon), though the light on the road is the lamps'.
+
+**After** (`pass-04.jpg`, `pass-04.mp4`): each rider throws a soft shadow away from each lamp near them, the two
+behind and the two ahead, and has the dark of the bike under them. Passing a lamp, its shadow shortens, swings
+round from behind to ahead and fades as the next lamp's takes over. The riders sit on the road. It shows best in
+the film.
+
+**What changed.**
+
+- `lamp-shadows.ts` works out, for a rider's place on the road, the four shadows: each runs straight away from its
+  lamp, as long as similar triangles make it (the rider's 1.5 m over the lamp's 6.65 m), as dark as that lamp's
+  share of the light there. Unit-tested.
+- `rider-shadows.ts` draws them: one instanced mesh, a soft-edged shape for each shadow laid on the road along its
+  slope, all riders in one draw call. The four blob meshes are gone where a course has lamps; a course without
+  them keeps its blobs.
+
+**Cost.** None measurable: 291 fps before, 306 after (within the noise), and 4 fewer draw calls.
+
+**Tried and dropped.**
+
+- How dark each shadow is, as an instanced attribute of its own (`instancedDynamicBufferAttribute`, and as an
+  attribute of the geometry): on Three.js 0.187's WebGPU renderer the values it was made with reached the GPU, and
+  no later value did, so every shadow stayed at nothing. Three.js keeps an instanced mesh's own colours up to date,
+  so the darkness rides in each instance's colour instead (`vInstanceColor`).
+- Half an hour went on "the shadows are not drawn" when they were drawn at nothing. Logging the numbers the page
+  held would have shown it in a minute.
+
+**Learned.**
+
+- Shadows under lamps are short: a lamp 6.65 m up throws a 1.5 m rider's shadow only 0.29 m for every metre between
+  them. Honest shadows here are a dark pool under and beside the bike, not the long streaks of a low sun, and they
+  are what stops the riders floating.
+- A shape laid flat needs its three axes in a right-handed order, or it faces down and is not drawn.
+- Still nothing else casts a shadow: the posts, the warehouses, the containers.
+
+## Pass 5: a night sky and the city on the horizon
+
+**Before** (`pass-04.jpg`, `pass-04.mp4`): the sky is flat navy; nothing stands on the horizon (the skyline's towers
+were built into the map but stood beyond the scenery's draw distance, so they were never drawn).
+
+**After** (`pass-05.jpg`, `pass-05.mp4`): broken cloud drifts across a sky of stars, lit from below by the city;
+the moon has a glow; a band of haze lies along the horizon; and across the harbour stands a city of towers, their
+windows lit warm and cool, some dark.
+
+**What changed.**
+
+- `sky-material.ts` draws the sky a pixel: the course's own colours from the horizon up, cloud from the ground's
+  detail texture read at two scales that drift past each other, a glow round the moon, haze on the horizon, and,
+  because the top of this sky is dark, stars from a grid with one star in a few of its squares, hidden by cloud.
+  The dome is 24 x 12 faces now, not 48 x 24 with a colour a vertex.
+- The Blender build puts the skyline's towers in a `Skyline` group that is never cut into chunks and is always
+  drawn (5,300 triangles), as walls of a kind of their own (4). It builds more of them (209, was 133), taller and
+  nearer, some with a lower wing; the light strips that stood for their windows are gone.
+- `wall-material.ts` draws kind 4: a grid of windows 3.2 x 3.4 m, 36 % of them lit, each warm or cool and its own
+  brightness. The skyline's material stands in the haze's colour rather than being faded out by the fog, so the
+  windows shine through.
+
+**Cost.** None measurable: 306 fps before, 331 after (the display run and the bench ran cooler; read it as the
+same). 1,160 more triangles in the frame and one more draw call. The file is 0.03 MB smaller gzipped.
+
+**Learned.**
+
+- The towers had been in the map all along and never drawn: what is far has to be its own group, drawn always, or
+  the draw distances that keep the frame cheap cut it out. Check that what the build places is on screen.
+- Fog that fades a lit window as it fades a wall kills a skyline: the towers became faint grey blocks. Lights carry
+  through haze; walls do not. The wall's colour gives way to the haze, the window's light does not.
+- The far-off average of the windows, switched on as soon as a window was a few pixels, turned each tower into a
+  glowing beige slab. Windows this large stay crisp until they are well under a pixel (0.7 to 1.6 of a window a
+  pixel), and their average is a fifth of a lit window, not two fifths.
+- A sky worked out a pixel costs less than it looks: three texture reads and a hash over a third of the screen.
+
+## Pass 6: windows with frames, panes and rooms behind them
+
+**Before** (`pass-05.jpg`, `pass-05.mp4`): a window is a flat rectangle on the brick, dark grey or one glowing
+yellow.
+
+**After** (`pass-06.jpg`, `pass-06.mp4`): each window sits under a stone lintel and over a sill, in a dark frame
+with glazing bars, two panes across and three up. A lit one shows a room: its lamp warm or, one in five, cool,
+brighter towards the ceiling, a blind drawn part-way down, shapes against the light. A dark one is black glass
+holding a little of the sky, a pane here and there darker. No two alike.
+
+**What changed.**
+
+- `Kit.window` (themes.py) builds each window as one flat panel in a new `Windows` group, 0.18 m wider each side,
+  0.14 m lower and 0.24 m taller than the opening. Its UV is the place on the panel, with 2 added across if it is
+  lit and 2 added up for each step of the window's own number (0 to 499, from where it is, so every build gives the
+  same). Docklands' warehouses use it.
+- `window-material.ts` draws the panel: lintel and sill in stone, the frame and bars, and the glass by the window's
+  number. Beside the opening the panel is cut away (`alphaTest`), so the brick shows.
+
+**Cost.** None measurable: 331 fps before, 328 after. One more draw call; no more triangles than the flat
+rectangles were (two a window).
+
+**Tried and dropped.** Sills and lintels as boxes of their own: Docklands has some 18,000 windows, and two boxes
+each took the map from 308,000 to 676,000 triangles and its file from 3.4 to 9.1 MB gzipped. They are drawn on the
+panel instead, at no triangles.
+
+**Learned.**
+
+- Count what a small part is multiplied by before modelling it. Anything a window, a lamp or a metre of road has
+  must cost nothing in triangles: draw it in the material.
+- A number of its own for each thing (a window here, a brick in pass 3) is what stops a wall of them looking
+  stamped out. It rides in the UV for free.
+- The windows give no light to the pavement beneath them, and the ground-floor ones have no doors between them.
+
+## Pass 7: a working quay
+
+**Before** (`pass-06.jpg`, `pass-06.mp4`): left of the road is a bare stone apron 26 m wide to the water, with one
+stack of containers in sight. The cranes and most of the containers the theme deals were never placed: they were
+dropped wherever the land under the apron fell away, which is nearly everywhere.
+
+**After** (`pass-07.jpg`, `pass-07.mp4`; the climbs in `pass-07-climb-1.mp4` and `pass-07-climb-2.mp4`): a railing
+runs between the pavement and the apron, with gaps for gates; mooring bollards stand along the water's edge; drums,
+crates on pallets and parked lorries with containers on their trailers stand about the apron; floodlight masts
+rise over it; and the gantry cranes and container stacks now stand where they were meant to.
+
+**What changed.**
+
+- `themes.py`, `docklands`: the quay's clutter, dealt from numbers of its own so the rest of the map stands where
+  it stood. Cranes and containers are placed on the apron whatever the land beneath it does.
+- `Kit.fence` builds a railing as one flat panel a 4 m of road in a new `Fences` group, its UV the metres along it
+  and the share of its height. `fence-material.ts` draws a post every 2 m and three rails on it and cuts the rest
+  away.
+- `tools/course-bench` can start a ride any number of metres up the road (`WZ_BENCH_FROM`), to film and time a
+  climb or a bend rather than the start line.
+
+**Cost.** 4,965 more triangles in the frame (79,834, of a budget of 120,000) and 5 more draw calls (134 of 140).
+The frame rate could not be told apart from pass 6 once the machine's own noise was allowed for: the same build
+with pass 6's map and with this one, run turn about, read 199, 293, 297 fps and 232, 224, 301. The best runs are
+level; the medians are not, because another program was taking the processor through this sitting. **The file is
+the real cost: 3.99 MB gzipped, from 3.38**, and the budget is 3 MB. Docklands was over it before this pass; it is
+further over now.
+
+**Tried and dropped.**
+
+- The railing as posts and rails of their own (three boxes every 4 m), a bollard of two prisms every 12 m, and the
+  quay's yellow line and crane rails as strips of ground: 598,000 triangles for the map, from 308,000, and 6.3 MB.
+  The railing became panels (two triangles every 4 m), the bollards one prism every 24 m, and the strips went.
+
+**Learned.**
+
+- This is pass 6's lesson again, and it cost a rebuild to relearn: anything laid along every metre of a 21.6 km
+  road is thousands of copies. Decide how it is drawn before placing it.
+- When the machine is busy, the median of three runs moves by a third. Run the old and the new turn about and
+  compare the best of each: the best run is the one the machine left alone.
+- Every film so far showed the first 150 m of the course, which is straight and flat, and it read as a map with no
+  bends or hills. The course has them (7,000 degrees of turning, hills of 4 % on every effort), but the first is
+  3.8 km in. Film what the map is for, not where the ride happens to start.
+- The file's size is now the map's weakest number. Positions and UVs are 32-bit floats; quantising them, or Draco,
+  is the pass that would pay for the clutter.
+
+## Pass 8: hills a rider can see
+
+Asked for by the rider: "Where are the hills?" From this pass the bench films and times the first effort (3,760 m
+up the road, `WZ_BENCH_FROM`), where the map turns and climbs, not the start line.
+
+**Before** (`pass-07-climb-1.mp4`, `pass-07-climb-2.mp4`): each of the eight efforts climbed some 15 m at a steady
+4 % over its 460 m, and each recovery gave it back at 1.5 % over 2 km, on ground that also rolled a little
+everywhere. From behind a rider it looked level.
+
+**After** (`pass-08.jpg`, `pass-08.mp4`): each effort climbs a ramp at 8.3 % over the first two fifths of its
+stretch (184 m, 14 m up) onto a harbour bridge and runs level across it; each recovery comes down off it at 5.3 %
+in its first seventh, then the quays are flat. The road ahead stands up in front of the rider and the crest shows
+against the sky. The map still climbs the 120 m it lists.
+
+**What changed.** `build_course.py`: a theme's `grade` may name a `ramp`, the share of an effort's stretch that
+climbs and of a recovery's that descends; the stage's whole rise is put into that share and the rest runs level.
+Docklands' theme: `"ramp": {"work": 0.4, "recover": 0.15}`, and no rolling ground. Nothing in the app changed.
+
+**Cost.** None: 308 fps (311, 308, 307) with no frame over 20 ms, on a quiet machine, at the first ramp. The file is
+0.07 MB smaller gzipped.
+
+**Learned.**
+
+- A gradient has to pass about 6 % before the road ahead reads as a hill from a chase camera 2.25 m up. The same
+  metres climbed at 4 % are invisible.
+- Rolling ground spends a map's listed climbing where no one sees it. On a flat map, put all of it in the hills.
+- This departs from "1 % of gradient a level" (L2-166 AC3) for a theme that names a ramp: the resistance is still
+  highest where the road climbs, but the climb is the first part of the effort, not all of it.
+- The land and the quay still rise with the road, so the "bridge" has ground beside it. A bridge that leaves the
+  quay behind (piers, water beneath, a drop either side) is the next step for these hills.
+
+## Pass 9: wet ground that mirrors the lamps and the sky
+
+**Before** (`pass-08.jpg`, `pass-08.mp4`): the road is dry and matt everywhere: the lamps light it, and nothing
+shines.
+
+**After** (`pass-09.jpg` on the first ramp, `pass-09-start.jpg` at the start line, `pass-09.mp4`): it has rained.
+Water lies in patches and in the hollows of the wheel tracks, darker than the dry road, and in it each lamp ahead
+is mirrored as a streak of light running towards the rider, broken by the grain of the surface; at a glancing
+angle the water also holds the sky's glow. The streaks slide over the road as the rider moves, as reflections do.
+
+**What changed.**
+
+- The Docklands theme names how wet it is (`"wet": 0.55`), the course file carries it, and `courseWet` reads it (a
+  course that names none, or names it wrongly, is dry).
+- `ground-material.ts`: where the detail texture's patches are high, the ground is water: 0.55 as bright, almost
+  smooth (roughness 0.12), and it adds two reflections to what it emits. The lamps': worked out in the road's own
+  measure from where the eye is (three numbers the renderer sets a frame). A lamp mirrors at the point a share
+  `eye height / (eye height + lamp height)` of the way from the eye to it, so the one row of lamps that could be
+  mirrored at a pixel is known; that row and the row either side, on both kerbs, are given Blinn's highlight (six a
+  pixel). The sky's: the haze's colour, by Schlick's fifth power of the glancing angle.
+
+**Cost.** 0.11 ms a frame (308 to 298 fps), no frame over 20 ms. No triangles, no draw calls, nothing in the file
+but one number.
+
+**Tried and dropped.** The first reflections were 14 times a lamp's brightness with a broad highlight, from only
+two rows of lamps: white slabs with hard edges where one row gave way to the next. They are 2.6 times, with a
+highlight three times as tight, from three rows.
+
+**Learned.**
+
+- A reflection needs the eye, and a material that knows only the road's own measure (metres along, metres across)
+  can still have it: give it the eye in that measure. Near the rider the road is straight enough for it to hold.
+- Lamps that repeat need not be looped over: the mirror's geometry says which one a pixel can show.
+- The pavements and the quay are wet by the same rule and it suits them; the brick, the riders and the water of the
+  harbour are not, and the neon signs are not mirrored: only the lamps and the sky.
+
+## Pass 10: a glow in the air round every lamp
+
+**Before** (`pass-09.jpg`, `pass-09-start.jpg`, `pass-09.mp4`): a lamp's head is a small pale block. The road
+beneath it is lit and mirrors it, but the lamp itself does not look lit.
+
+**After** (`pass-10.jpg` on the first ramp, `pass-10-start.jpg` at the start line, `pass-10.mp4`): every lamp has a
+soft disc of light round it, bright at its heart and fading out, as a lamp has in damp air, and the floodlight
+masts have theirs. Down the road the lamps dwindle to a string of points of light, which is what tells the eye how
+far the road runs.
+
+**What changed.**
+
+- `Kit.halo` (themes.py) puts four corners at a light's own place in a new `Halos` group, the corner in their UV
+  and the light's colour in their vertices. `Kit.lamp` gives every lamp one; the floodlight masts have two each.
+- `halo-material.ts` spreads the four corners 2.4 m to each side in the eye's own axes, so the disc faces the eye
+  wherever it is, and draws the glow added to what is behind it. Halos are drawn to 420 m and fade out from 250 m.
+
+**Cost.** 0.05 ms a frame (298 to 294 fps, inside the noise); 6 more draw calls (129 of 140) and 850 more triangles
+in the frame; 0.03 MB in the file. Two frames of 1,190 over 20 ms at the display's pace in this run.
+
+**Tried and dropped.** The first build drew nothing: glTF keeps a UV's second number upside down, which turns the
+corners' order round, so every disc faced away and was culled. They are drawn from both sides.
+
+**Learned.**
+
+- A light source needs a glow of its own to look lit: the light it throws on the ground is not enough, and bloom
+  alone does not find a block a few pixels wide.
+- Corners that all sit at one place, spread in the vertex shader, are the cheapest thing that faces the eye: no
+  instancing, no sprites, one draw call a chunk like everything else.
+- Draw calls are now the nearest budget (129 of 140): the next new group should be joined to an old one.
+
+## Pass 11: the file smaller
+
+Not a change to the picture: it pays back what passes 3 to 10 added to the map's download, which is what a rider
+waits for before the first frame.
+
+**Before:** 3.95 MB gzipped (11.4 MB on disk), against a budget of 3 MB. **After:** 3.31 MB gzipped (9.8 MB on
+disk), a little less than the map was before any of these passes (3.37 MB) with everything they added in it. The
+picture is the same (`pass-11.jpg`, `pass-11.mp4`).
+
+**What changed.**
+
+- `pack_glb.py` holds each mesh's positions as 16-bit steps of the mesh's own box (KHR_mesh_quantization), a step a
+  centimetre or, for a mesh more than 655 m across, a little more, and gives the mesh's node the box's corner and
+  size to put them back. The confetti keeps its floats, because the app moves it by its node.
+- `course-renderer.ts` works out each chunk's middle and reach in the map's axes, not the mesh's own, now that the
+  two differ.
+- The ground's chunks are twice as long (480 m), and windows, railings, walls and halos are drawn a little nearer
+  (160, 120, 220 and 320 m), to take draw calls back.
+- The bench's report lists the chunks of each group in view, to see where draw calls come from.
+
+**Where the bytes are now (gzipped):** positions 1.52 MB, triangle indices 1.24 MB, UVs 0.64 MB, colours 0.06 MB,
+the file's index of meshes 0.05 MB.
+
+**Cost.** None. A first reading said 271 fps against pass 10's 294; run turn about with pass 10's map in the same
+sitting it is 273 against 264: the machine had slowed, not the map.
+
+**Draw calls: over budget in places.** Sampled along the course, the frame has 123 to 146 draw calls against a
+budget of 140: 146 at 15 km, where the road runs close beside another stretch of itself and both stretches' chunks
+are drawn, and 141 at 6.3 km. Some 60 of them are the five riders and the bloom; the map's own are about 65 to 85.
+Coarser chunks of land were tried and put back (13,000 more triangles in the frame for 8 fewer draw calls).
+
+**Learned.**
+
+- Whole centimetres compress; fine steps do not. Sixteen bits spread over a 240 m chunk are 4 mm steps whose low
+  bits are noise to gzip: holding every mesh to a centimetre took another 0.2 MB off.
+- A frame rate from an hour ago is not a baseline. The only fair comparison is turn about, now.
+- A group's count of chunks in view is cheap to report and says at once where draw calls go.
+- What is left in the file is mostly positions and indices, which only a mesh codec (meshopt, Draco) shrinks
+  further; and the riders, not the map, are the largest share of the draw calls.
+
+## Pass 12: the lamps' light comes from above
+
+**Before** (`pass-11.jpg`, `pass-10-start.jpg`): the lamps lit every face of a thing alike, whichever way it faced:
+a rider's back, the underside of their arms and the top of their shoulders were one brightness, so under the lamps
+the riders, the crates and the containers looked flat, like cut-outs.
+
+**After** (`pass-12.jpg` on the first ramp, `pass-12-start.jpg` at the start line, `pass-12.mp4`): a surface takes
+the lamps' light by how far it faces up: all of it facing up, about two thirds as a wall, a fifth facing down (what
+comes back off the ground). Shoulders, helmets and the tops of crates are bright; the undersides of arms, saddles
+and crane beams fall into shadow. The riders have shape.
+
+**What changed.** `lamp-glow.ts`: the lamps' light at a surface is multiplied by
+`mix(0.22, 1, clamp(normal.y x 0.5 + 0.5))`, the normal in the world's axes (a flat-shaded group's is its face's).
+The strengths were raised to match what a wall now takes (walls and posts 2.4, leaves 2.8, riders 2.3, the land
+still 4.2).
+
+**Cost.** None: 269 fps against 270 for pass 11 in the same sitting.
+
+**Learned.** Light with no direction flattens whatever it lights. A lamp's direction is nearly "down" for
+everything under it, and that one fact, with no lamp looked up, is enough to model a rider's shape.
+
+## Pass 13: harbour water that ripples and mirrors the city
+
+**Before** (`pass-12-start.jpg`): the harbour is a flat sheet of one dark blue, the same from every angle.
+
+**After** (`pass-13-start.jpg` at the start line, where the harbour is in view; `pass-13.jpg` and `pass-13.mp4` on
+the first ramp): the water ripples and moves; across it stand columns of warm light under the city's towers,
+broken by the ripples; towards the horizon it takes the sky's glow, and near the quay, looked down on, it is dark.
+The moon has a glint on it.
+
+**What changed.**
+
+- The course file says the sheet round the land is the sea (`sea`) and that it is night (`night`), from the theme.
+- `water-material.ts` draws the `Sea` group of such a course: two reads of the detail texture, running across each
+  other with the ride's clock, tip the surface; the eye's ray is mirrored in it; the mirrored ray's height gives
+  the sky's colour, its compass bearing (read into the detail texture) says whether a lit building stands there,
+  and its angle to the moon gives the glint; Schlick's term says how much of all that the water shows. A map
+  inland keeps its plain ground.
+
+**Cost.** None measurable: 278 fps against 269 for pass 12 an hour of the same sitting earlier (the sea is a small
+part of the frame on the ramp).
+
+**Learned.**
+
+- The reflected city need not be the city: where a mirrored ray runs low, columns of light at bearings that never
+  change read as towers in the water, because that is all a rider sees of them.
+- The first columns were as bright as the windows themselves and as regular as a comb. Reflections are dimmer than
+  what they reflect, and fewer.
+
+## Pass 14: street furniture
+
+**Before** (`pass-13.jpg`): a street lamp is a thick black slab with a pale wedge on its arm; round every tight bend
+stand blank yellow slabs on a stick, side on to the rider.
+
+**After** (`pass-14.jpg`, `pass-14.mp4`): a lamp is a slim steel column, thinner towards its top, with a thin arm
+and a dark housing whose underside is the lit glass. The boards round a bend face the rider coming, stand on two
+legs, and carry three black arrowheads pointing the way the road goes.
+
+**What changed.** `themes.py` only: `Kit.lamp` (a five-sided tapered column, an arm, a housing, a lit quad beneath
+it) and the boards in `Kit.gates` (a board across the road's direction, two legs, three triangles). Every themed map
+gets both on rebuilding.
+
+**Cost.** None: 288 fps against 278. The file is 0.06 MB larger (3.37 MB).
+
+**Tried and dropped.**
+
+- A lamp column in two prisms with a foot, and a glass box: 60,000 more triangles and 0.19 MB for 1,800 lamps. One
+  prism and a quad of glass look the same from a bike.
+- Arrowheads as one triangle drawn on both sides by listing it twice, wound each way: Blender keeps one face of two
+  on the same corners, and the one it kept faced away. The two are a hair apart now.
+
+**Learned.** The eye goes to what it knows the shape of. A lamp post and a road sign are small, but every rider has
+seen thousands, and a wrong one says "model" before anything else in the frame does.
+
+## Pass 15: the climbs are bridges over the harbour
+
+**Before** (`pass-14.jpg`): each effort's ramp climbs 14 m, and the quay, its railing and the land climb with it:
+a hill of paving, on a map called Harbour Bridges Loop.
+
+**After** (`pass-15.jpg` at the foot of the first bridge, `pass-15-deck.jpg` on it, `pass-15.mp4`): where the ramp
+leaves the quay, the quay stops. The road crosses the water on piers, between a walkway and a waist-high parapet
+each side, with the lamps on the walkways; beneath and beyond is the harbour, the city standing in it and the far
+shore's lights. It comes down to the quay again in the next recovery.
+
+**What changed.**
+
+- `build_course.py`: a theme with `bridges` marks the samples of road from the foot of each effort's ramp for as
+  long as the road stands 1.6 m above where the ramp began. Beside those samples `build_road` lays a bridge's edge
+  (walkway, parapet, the deck's side, a pier every 36 m) in place of the theme's own; `build_land` takes the land
+  under them to be the harbour's bed, 9 m down, so the sea's sheet shows.
+- `themes.py`, Docklands: `"bridges": True`; warehouses, cranes, containers, the railing and the quay's clutter
+  keep off the bridges.
+
+**Cost.** None: 290 fps against 288, no frame over 20 ms, 4 fewer draw calls and 2,000 fewer triangles in the frame
+at the bridge's foot. **The file is 0.23 MB smaller, 3.14 MB gzipped**: a bridge has less beside it than a quay.
+
+**Learned.**
+
+- A hill needs something level to be seen against. Pass 8 made the gradient steep enough to see; taking the
+  ground away from beside it is what makes it a climb.
+- The land's grid is 19 m a cell and was eased to the road's height everywhere. One number a sample of road
+  ("the land here is the sea's bed") was enough to open water under a bridge, with no holes at its ends.
+- Draw calls still pass 140 in places: 146 on this bridge's deck, where the frame takes in the quays on both
+  shores.
+
+## Pass 16: pylons and stay cables strung with light
+
+**Before** (`pass-15.jpg`): a bridge is a bare deck between parapets. Nothing stands above it, and from the quay a
+rider cannot see it coming. (A dark gantry across the road stood at every third effort; it is gone.)
+
+**After** (`pass-16.jpg`, `pass-16.mp4`): two pylons stand over each bridge, their legs outside the parapets from
+the sea's bed to 38 m above the deck, tied by a beam at the head and one under the deck. From each head, stay
+cables fan down to the deck's edge every 16 m out to 96 m each way, strung with light: cyan on the first bridge,
+then pink, amber and violet in turn, with a glow at each pylon's head. The bridge is seen from the quay long
+before it is climbed, and each one is told from the last by its colour.
+
+**What changed.** `themes.py`, Docklands only: the scenery finds each run of bridge samples and builds, at 0.3 and
+0.7 of its length, the pylons (boxes in the towers' material) and the stays (thin upright ribbons in a neon
+material, laid twice a hair apart and wound each way). About 280 triangles a bridge.
+
+**Cost.** None: 292 fps against 290. 0.03 MB in the file.
+
+**Learned.**
+
+- A map wants a landmark that can be seen from far off and names the place. Eight bridges in four colours do more
+  for "Neon Docklands" than every surface pass before them, for 2,200 triangles.
+- A line of light is two triangles. Cables, neon tubes, rails, a string of lamps along a pier: the cheapest thing
+  in the scene and the most visible at night.
+
+## Pass 17: the riders' moving parts in one draw call
+
+Not a change to the picture (`pass-17.jpg`, `pass-17.mp4`): it brings the frame back inside its budget of 140 draw
+calls, which passes 3 to 10 had taken it past in places.
+
+**Before:** 126 draw calls at the foot of the first bridge and 146 on its deck. A race against bots drew the same
+place with 89 draw calls for the rider and the ghost alone, and 146 with four bots beside them: 14 a rider, of which
+10 are the legs, the cranks and the pedals, each its own mesh because the pedalling moves it.
+
+**After:** 77 at the foot of the bridge and 97 on its deck. Every rider's moving parts of a plain colour are one
+skinned mesh: 60 parts for six riders, one draw call.
+
+**What changed.** `rider-batch.ts`: each such part gets a bone, its vertices hang on that bone alone, and the parts
+are merged into one `SkinnedMesh` in the material that draws the riders' still parts. Each frame, once the riders
+are placed and posed, each bone's matrix is copied from its part's; a hidden rider's bones are shrunk to nothing.
+The parts themselves stay in the scene (the cyclist kit still moves them) and are simply drawn no more. The mesh is
+made again when a rider first rides into view.
+
+**Cost.** Less than nothing: 315 fps against 292 (the draw calls it saves cost more than the skinning).
+
+**Tried and dropped.** Three.js's `BatchedMesh`: on WebGPU it is drawn as one draw for each part in it, so the count
+did not move at all (146 before, 146 after). It is a draw-call saving only where the GPU has multi-draw.
+
+**Learned.**
+
+- Count draw calls with and without the thing suspected (here, a solo race against a race with bots) before
+  cutting anything: the map was never the problem, the riders were.
+- A skinned mesh whose bones are simply copies of other objects' matrices is a general way to draw many rigid,
+  moving things at once: no rig, no weights to paint, no animation system.
+- The other riders' still parts (four or so draw calls each: jersey, bib, helmet, wheels) are what is left; one
+  texture atlas a rider would take them to one.
+
+## Pass 18: neon throws its colour
+
+**Before** (`pass-17.jpg`, `pass-13-start.jpg`): the neon signs on the warehouses and the lit stays over the bridges
+glow, and light nothing. The pavement under a pink sign is the same grey as anywhere.
+
+**After** (`pass-18-start.jpg` at the start line, `pass-18.jpg` and `pass-18.mp4` on the first bridge): each sign
+lays its colour on the pavement and the road before it, pink, cyan, amber or violet, and the riders take it as they
+pass; where the ground is wet the colour lies brighter in the water. On a bridge the deck and the riders are washed
+in the colour of its stays.
+
+**What changed.**
+
+- `Kit.light(at, glow, reach, strength)` (themes.py) records a coloured light that stands still; Docklands gives
+  two to each warehouse's sign and one every 16 m of deck under each pylon's stays (1,160 in all). The course file
+  carries them as `lights`, five numbers each: 52 KB gzipped for the file, from 46.
+- `courseLights` reads them (unit-tested; a malformed list is no lights). `colourLightMap` sums their pools into a
+  second grid seen from above, 4 m a cell, red, green and blue.
+- `lamp-glow.ts` reads that grid as it reads the lamps' and adds it to the light every lit surface takes; the
+  ground's material adds it too, and again, fainter, wherever water lies.
+
+**Cost.** None measurable: 323 fps against 315. One more texture, 0.8 MB on the GPU. At the display's pace the three
+runs had 5, 2 and 2 frames of some 1,190 over 20 ms, the worst 83 ms: these few hitches have been there since
+pass 3 and have not grown, but they are not gone either.
+
+**Learned.**
+
+- A second grid for coloured light costs one more texture read and makes every glowing thing in the map able to
+  light its surroundings. The lamps' grid of pass 2 was the right shape for it from the start.
+- Colour on the ground has to be several times stronger than seems right (7.5 times the ground's own colour) to
+  show at all on dark asphalt under tone mapping; on the pale pavement the same strength is plain.
+
+## Pass 19: no stutter when a new stretch of the map comes into view
+
+Not a change to a still picture, but to how real the ride is in motion: since pass 3 every ten seconds of riding
+has had a slow frame or two, the worst 75 to 85 ms, five to ten frames' worth at 120 Hz. A rider sees that as the
+world catching.
+
+**Before**, four runs of ten seconds on the first bridge, no film being taken: 3, 2, 2 and 2 frames over 20 ms,
+worst 83, 75, 83 and 75 ms. **After**, the same four runs: none over 20 ms; worst 8.6, 9.3, 9.5 and 9.5 ms.
+
+**What it was.** Two things, told apart by taking each away in turn:
+
+- **The map.** A chunk's geometry went to the GPU the first time the chunk was drawn. At 46 km/h a new chunk of some
+  group comes into view every few seconds, and each cost a frame of 75 ms or so. `course-renderer.ts` now draws
+  every chunk once while the map loads (`warm`), so all of it is on the GPU before the ride's first frame.
+- **The bench.** Taking the film off the screen with ffmpeg cost a slow frame or two in ten seconds by itself (0, 1,
+  0 and 4 over 20 ms with the map warmed and a film being taken). The bench now takes the film in one run and times
+  the display's pace in another with no film.
+
+**Cost.** One frame at load that draws the whole map (380,000 triangles, once), and the map's 9.8 MB of geometry
+held on the GPU from the start, not as it is reached. No change to the frame rate: 324 fps against 323.
+
+**Learned.**
+
+- A measurement that disturbs what it measures hides the thing looked for. For 16 passes the film's own hitches
+  and the map's were one number, and were written off as "the machine".
+- Take away one suspect at a time and count again. Two cheap experiments (no film; no warming) named both causes in
+  ten minutes.
+- An average frame rate says nothing about stutter: 118.7 fps with an 83 ms frame in it is a worse ride than a
+  steady 60. The worst frame is now in the bench's summary.
+
+## Pass 20: rain falling through the lamplight
+
+**Before** (`pass-19.jpg`, `pass-18-start.jpg`): the road is wet, and the air is perfectly clear and still.
+
+**After** (`pass-20.jpg` on the first bridge, `pass-20-start.jpg` at the start line, `pass-20.mp4`): it is still
+raining a little. Thin streaks fall and drift across the view, seen where they pass through a lamp's light or a
+neon sign's colour and all but lost in the dark between, as rain is at night. With reduced motion there is no rain.
+
+**What changed.**
+
+- The Docklands theme names how hard it rains (`"rain": 0.5`); the course file carries it and `courseRain` reads
+  it (unit-tested).
+- `rain.ts`: one mesh of 1,300 streaks, four corners each, every corner holding its streak's own place in a unit
+  cube. The vertex shader lets the place fall and drift with the ride's clock, wraps it round a box of air 34 x 16
+  x 34 m that rides with the camera, and spreads the corners into a streak 0.55 m long that faces the eye. Its
+  colour is the lamps' and the coloured lights' light where it is (the grids of passes 2 and 18), so nothing about
+  where the lamps are is known to the rain. One draw call; the app moves nothing.
+- **And a stutter found on the way.** With the rain in, a frame of 75 ms came back about three seconds into every
+  run. It was not the rain: logging when each rider was first made showed the fifth being built at that moment,
+  as it first rode into the nearest four. `course-renderer.ts` now makes every rider of the race on the ride's
+  first frame and draws them once (`makeField`), so each one's geometry, textures and programs are ready.
+
+**Cost.** 0.03 ms a frame (324 to 321 fps): 2,600 thin triangles and one draw call. No frame over 20 ms; worst
+16.8 ms.
+
+**Learned.**
+
+- "It came back when I added the rain" was true and the rain was not the cause: the rain changed nothing but the
+  timing of the test. Log when things are made, and when the slow frames fall, and lay the two side by side.
+- Anything made in the middle of a ride costs a frame: a chunk first drawn (pass 19), a rider first seen (this
+  pass). Make everything before the first frame.
+- Particles need no particle system: a place a particle in a unit cube, and a clock in the shader.
+
+## Pass 21: loading doors and roofs
+
+A health check came first: the whole end-to-end suite has the same 13 failures it had before any of this work (198
+pass), and `tools/verify/verify.mjs` stops at its formatting check on this Windows checkout (811 files with CRLF
+line endings, 807 of them before this work), so it cannot gate a pass here.
+
+**Before** (`pass-20-start.jpg`): a warehouse's ground floor is a row of the same windows as every floor above it,
+and its roof is the flat top of a box.
+
+**After** (`pass-21-start.jpg` at the start line, `pass-21.jpg` and `pass-21.mp4` on the first bridge): every third
+bay of the ground floor is a loading door, a steel frame round a roller shutter of slats; a dark one is shut, a lit
+one is part-way up with the bay behind it lit like a room. On each roof stands a water tank or a plant room, and a
+chimney, which is what a rider sees of the warehouses from a bridge.
+
+**What changed.** `Kit.door` (themes.py) adds a panel to the `Windows` group with 4 added across its UV;
+`window-material.ts` takes the door flag out with the lit flag and draws the shutter. The roof's pieces are a prism
+or a box and a box, in materials the map already has.
+
+**Cost.** 0.11 ms a frame by this reading (321 to 310 fps, inside the spread of the three runs: 299 to 326); no
+frame over 20 ms. **0.13 MB in the file (3.30 MB gzipped).**
+
+**Tried and dropped.** A parapet round every roof and a tank on four legs: 0.4 MB of download, for the tops of
+buildings seen from eight bridges. A tank is one prism now and the parapets are gone.
+
+**Learned.** Weigh a detail by how often it is seen as well as by its triangles. The doors are at eye level for
+half the ride and cost nothing; the roofs are seen for a few minutes and cost all of this pass's download.
+
+## Pass 22: light from the windows, and on the water
+
+**Before** (`pass-21-start.jpg`): a lit window or an open loading bay glows and lights nothing; under a bridge's lit
+stays the water is as dark as anywhere.
+
+**After** (`pass-22-start.jpg`, `pass-22.jpg`, `pass-22.mp4`): each lit ground-floor window and door lays a pool of
+warm light on the pavement before it, which the riders pass through; the harbour under a bridge takes the colour of
+its stays, broken by the ripples.
+
+**What changed.** Docklands' theme gives a coloured light (pass 18's `Kit.light`) to every other lit bay of a
+warehouse's ground floor: 1,950 lights in all now, 56 KB for the course file. `water-material.ts` takes the
+coloured lights' grid and adds it to the water, times the ripples.
+
+**Cost.** None measurable: 306 fps against 310, no frame over 20 ms.
+
+**Also in this pass: the techniques tried on two other maps.** Cliffside Coast and Prairie Paceline were rebuilt
+with the build as it now stands into a scratch folder and ridden in the app, with nothing about them changed and
+nothing of theirs committed (`../realism-on-coast.jpg`). Both build and both ride at 120 fps with no frame over
+20 ms (worst 9.8 and 8.8 ms; 76 and 73 draw calls; 70,604 and 103,762 triangles in the frame). They take the
+ground's surface, the worn paint, the sky worked out a pixel, the lamp columns and bend boards, the riders in one
+draw call and the smaller file with no work at all: the coast's file falls from 5.11 to 3.92 MB gzipped and the
+prairie's from 3.20 to 2.39 MB. What they do not get without work in their themes: walls and windows on their
+buildings (they place panels the old way), the sea's water on the coast (it has `sea` and gets the water),
+lamps, rain, bridges.
+
+## Pass 23: the file within its budget
+
+Not a change to the picture (`pass-23.jpg`, `pass-23.mp4`): the map's download, the last number over its budget.
+
+**Before:** 3.30 MB gzipped against a budget of 3 MB (and 3.37 MB before any of these passes). **After: 1.41 MB
+gzipped**, with every mesh, name, attribute and number in the file as it was.
+
+**What changed.**
+
+- `tools/blender/meshopt_glb.mjs`, which the build runs after `pack_glb.py`: it puts each mesh's triangles and
+  vertices in an order the meshopt codec packs well and writes each buffer with the codec
+  (EXT_meshopt_compression) in place of raw bytes. `meshoptimizer`, which the app's packages already brought in,
+  is now named among them.
+- `course-renderer.ts` gives its loader the decoder Three.js ships. A map written without the codec loads as
+  before (the other seven are).
+
+**Where the bytes went (gzipped):** positions 1.52 to about 0.5 MB, triangles 1.24 to about 0.3 MB, UVs 0.64 to
+about 0.4 MB.
+
+**Cost.** None at run time: the frame is the same 83,391 triangles in 79 draw calls. The six uncapped runs of this
+sitting spread from 248 to 315 fps with another program taking the processor; the best equals pass 22's.
+
+**Tried and dropped.** `gltfpack`, which does the same and more, and made the file 1.34 MB: it also removed every
+UV (no texture uses them, but the materials read them) and every lamp's glow (four corners at one place are
+triangles of no area). Its own compression is the same codec, so the codec is used directly.
+
+**Learned.**
+
+- A general tool optimises for the general case. These maps keep their meaning in attributes and in triangles that
+  a general tool is right to think unused; the codec underneath it had no such opinions.
+- The budget that looked like it needed the map cut back needed only its bytes written better: 60 % off, for
+  nothing in the picture.

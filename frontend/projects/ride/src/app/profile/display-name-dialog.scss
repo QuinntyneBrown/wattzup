@@ -1,0 +1,97 @@
+// Block dialog (docs/design-system/assets/components.css, Dialog), small: a bottom sheet on a phone and a centred panel
+// from sm (640 px), over a scrim that leaves the page behind it out of reach. The CDK places the panel and its
+// container carries the role, aria-modal and the label; this block draws it.
+:host {
+  display: block;
+}
+
+.dialog__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  background: var(--color-scrim);
+}
+
+.dialog {
+  position: relative;
+  z-index: var(--z-modal);
+  width: 100vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+  border: var(--border-width-hairline) solid var(--color-line);
+  background: var(--color-panel);
+  box-shadow: var(--shadow-4);
+  animation: dialog-in var(--duration-base) var(--ease-panel);
+
+  @media (min-width: 40rem) {
+    width: min(20rem, calc(100vw - var(--space-8)));
+    border-radius: var(--radius-2xl);
+  }
+
+  &[aria-busy='true'] .dialog__body {
+    opacity: 0.6;
+  }
+}
+
+.dialog__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5) var(--space-3);
+}
+
+.dialog__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dialog__close {
+  display: grid;
+  place-items: center;
+  width: var(--target-comfortable);
+  height: var(--target-comfortable);
+  margin-right: calc(var(--space-3) * -1);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-muted);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    color: var(--color-fg);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-focus-ring);
+    outline-offset: 0;
+  }
+}
+
+.dialog__close-icon {
+  width: var(--space-5);
+  height: var(--space-5);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.dialog__body {
+  padding-inline: var(--space-5);
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog {
+    animation: none;
+  }
+}

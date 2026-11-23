@@ -3,17 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wattzup design system — Wattzup design system</title>
-<meta name="description" content="Tokens, foundations, components and patterns for the Wattzup ride display.">
+<title>Telo Ride design system</title>
+<meta name="description" content="Tokens, foundations, 59 components and 9 patterns for Telo Ride, extracted from the HTML mocks.">
 <link rel="stylesheet" href="tokens/tokens.css">
 <link rel="stylesheet" href="assets/components.css">
 <link rel="stylesheet" href="assets/ds.css">
+<style>
+  .ds-hero { display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-4); }
+  .ds-hero .wordmark { font-size: var(--font-size-3xl); }
+  .ds-start .ds-card b { color: var(--color-fg-accent); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="foundations/color.html">Color</a></li>
       <li><a href="foundations/typography.html">Typography</a></li>
@@ -28,41 +33,53 @@
       <li><a href="foundations/accessibility.html">Accessibility</a></li>
       <li><a href="foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="components/button.html">Button</a></li>
+      <li><a href="components/button-group.html">Button group</a></li>
       <li><a href="components/link.html">Link</a></li>
-      <li><a href="components/chip.html">Chip</a></li>
-      <li><a href="components/text-field.html">Text field</a></li>
+      <li><a href="components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="components/form-field.html">Form field</a></li>
-      <li><a href="components/form-layout.html">Form layout</a></li>
-      <li><a href="components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="components/switch.html">Switch</a></li><li><a href="components/set-list.html">Set list</a></li><li><a href="components/video.html">Video ride-along</a></li><li><a href="components/class-card.html">Class card and shelf</a></li><li><a href="components/class-worlds.html">Class worlds</a></li><li><a href="components/world-ride.html">World Ride HUD</a></li><li><a href="components/level-row.html">Level row</a></li><li><a href="components/session-traces.html">Session traces</a></li><li><a href="components/dip-list.html">Dip list</a></li><li><a href="components/week-strip.html">Week strip</a></li><li><a href="components/stat-strip.html">Stat strip</a></li><li><a href="components/best-chip.html">Personal-best chip and delta</a></li><li><a href="components/trend-chart.html">Trend chart</a></li><li><a href="components/session-list.html">Session list</a></li><li><a href="components/streak-calendar.html">Streak calendar</a></li><li><a href="components/achievement.html">Achievement badge</a></li>
+      <li><a href="components/text-field.html">Text field</a></li>
+      <li><a href="components/textarea.html">Textarea</a></li>
+      <li><a href="components/select.html">Select</a></li>
+      <li><a href="components/checkbox.html">Checkbox</a></li>
+      <li><a href="components/radio-group.html">Radio group</a></li>
+      <li><a href="components/switch.html">Switch</a></li>
       <li><a href="components/slider.html">Slider</a></li>
       <li><a href="components/number-stepper.html">Number stepper</a></li>
-      <li><a href="components/level-control.html">Level control</a></li>
-      <li><a href="components/level-picker.html">Level picker</a></li>
-      <li><a href="components/app-bar.html">App bar</a></li>
-      <li><a href="components/lockup.html">Lockup</a></li>
-      <li><a href="components/status-line.html">Status line</a></li>
-      <li><a href="components/ride-clock.html">Ride clock</a></li>
+      <li><a href="components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="components/app-header.html">App header</a></li>
+      <li><a href="components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="components/tabs.html">Tabs</a></li>
+      <li><a href="components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="components/pagination.html">Pagination</a></li>
       <li><a href="components/skip-link.html">Skip link</a></li>
-      <li><a href="components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="components/container.html">Container and grid</a></li>
+      <li><a href="components/card.html">Card</a></li>
       <li><a href="components/dialog.html">Dialog</a></li>
-      <li><a href="components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="components/popover.html">Popover</a></li>
       <li><a href="components/tooltip.html">Tooltip</a></li>
       <li><a href="components/divider.html">Divider</a></li>
-      <li><a href="components/readout.html">Readout</a></li>
-      <li><a href="components/interval.html">Interval</a></li>
-      <li><a href="components/power-trace.html">Power trace</a></li>
-      <li><a href="components/metric-list.html">Metric list</a></li>
-      <li><a href="components/ride-profile.html">Ride profile</a></li>
-      <li><a href="components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="components/table.html">Table</a></li>
+      <li><a href="components/list.html">List</a></li>
       <li><a href="components/description-list.html">Description list</a></li>
-      <li><a href="components/code-block.html">Code block</a></li>
+      <li><a href="components/avatar.html">Avatar</a></li>
       <li><a href="components/badge.html">Badge</a></li>
+      <li><a href="components/chip.html">Chip</a></li>
+      <li><a href="components/stat.html">Stat</a></li>
+      <li><a href="components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="components/toast.html">Toast</a></li>
       <li><a href="components/alert.html">Alert and banner</a></li>
-      <li><a href="components/phase-banner.html">Step-change banner</a></li>
       <li><a href="components/inline-message.html">Inline message</a></li>
       <li><a href="components/progress-bar.html">Progress bar</a></li>
       <li><a href="components/spinner.html">Spinner</a></li>
@@ -70,45 +87,201 @@
       <li><a href="components/empty-state.html">Empty state</a></li>
       <li><a href="components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="components/lockup.html">Logo lockup</a></li>
+      <li><a href="components/level-badge.html">Level badge</a></li>
+      <li><a href="components/stars.html">Stars</a></li>
+      <li><a href="components/photo-tag.html">Photo tag</a></li>
+      <li><a href="components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="components/map-card.html">Map card</a></li>
+      <li><a href="components/class-card.html">Class card</a></li>
+      <li><a href="components/next-ride.html">Next ride</a></li>
+      <li><a href="components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="components/device-list.html">Device list</a></li>
+      <li><a href="components/video.html">Video</a></li>
+      <li><a href="components/plan-chart.html">Plan chart</a></li>
+      <li><a href="components/route-profile.html">Route profile</a></li>
+      <li><a href="components/ride-readout.html">Ride readout</a></li>
+      <li><a href="components/hud-panel.html">HUD panel</a></li>
+      <li><a href="components/countdown.html">Countdown</a></li>
+      <li><a href="components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="patterns/forms.html">Forms</a></li>
       <li><a href="patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="patterns/page-structure.html">Page structure</a></li>
+      <li><a href="patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="patterns/live-data.html">Live data</a></li>
+      <li><a href="patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="patterns/notifications.html">Notifications</a></li>
       <li><a href="patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
+      <div class="ds-hero">
+        <span class="lockup"><svg class="logo-mark" width="40" height="40" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">Telo<span class="wordmark__product">Ride</span></span></span>
+      </div>
       <p class="ds-kicker">Design system</p>
-      <h1>Wattzup design system</h1>
-      <p class="ds-lead">Everything needed to build Wattzup's screens consistently: 260 tokens, 12 foundations, 55 components and 8 patterns, light and dark, WCAG 2.2 AA.</p>
-      
-      <ul class="ds-toc"><li><a href="#start">Start here</a></li><li><a href="#foundations">Foundations</a></li><li><a href="#components">Components</a></li><li><a href="#patterns">Patterns</a></li><li><a href="#how">How to use</a></li><li><a href="#provenance">Provenance</a></li></ul>
+      <h1>Telo Ride design system</h1>
+      <p class="ds-lead">The product's visual and interaction language, written down once: the tokens, foundations, components and patterns behind every Telo Ride screen, in both themes, at every width, with a keyboard. Extracted from the HTML mocks, which follow the Magic Patterns prototype "Ride".</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">12 foundations</span><span class="ds-pill">59 components</span><span class="ds-pill">9 patterns</span><span class="ds-pill">Dark first</span></div>
+      <ul class="ds-toc"><li><a href="#start">Start here</a></li><li><a href="#foundations">Foundations</a></li><li><a href="#components">Components</a></li><li><a href="#patterns">Patterns</a></li><li><a href="#use">How to use</a></li><li><a href="#provenance">Provenance</a></li></ul>
     </header>
-    <section class="ds-section" id="start"><h2><a href="#start">Start here</a></h2>
-<div class="ds-cards"><a class="ds-card" href="foundations/color.html"><b>Color</b><span>Ramps, roles, contrast</span></a><a class="ds-card" href="foundations/typography.html"><b>Typography</b><span>Words and numerals</span></a><a class="ds-card" href="foundations/layout.html"><b>Layout</b><span>Breakpoints and shells</span></a><a class="ds-card" href="components/button.html"><b>Button</b><span>Every action</span></a><a class="ds-card" href="components/form-field.html"><b>Form field</b><span>Label, help, error</span></a><a class="ds-card" href="components/dialog.html"><b>Dialog</b><span>Confirmations</span></a></div>
-    </section>
-    <section class="ds-section" id="foundations"><h2><a href="#foundations">Foundations</a></h2>
-<ul><li><a href="foundations/color.html">Color</a></li><li><a href="foundations/typography.html">Typography</a></li><li><a href="foundations/spacing.html">Spacing</a></li><li><a href="foundations/layout.html">Layout</a></li><li><a href="foundations/elevation.html">Elevation</a></li><li><a href="foundations/shape.html">Shape</a></li><li><a href="foundations/motion.html">Motion</a></li><li><a href="foundations/iconography.html">Iconography</a></li><li><a href="foundations/theming.html">Theming</a></li><li><a href="foundations/responsive.html">Responsive</a></li><li><a href="foundations/accessibility.html">Accessibility</a></li><li><a href="foundations/content.html">Content</a></li></ul>
-    </section>
-    <section class="ds-section" id="components"><h2><a href="#components">Components</a></h2>
-<h3>Actions</h3><ul><li><a href="components/button.html">Button</a></li><li><a href="components/link.html">Link</a></li><li><a href="components/chip.html">Chip</a></li></ul><h3>Inputs</h3><ul><li><a href="components/text-field.html">Text field</a></li><li><a href="components/form-field.html">Form field</a></li><li><a href="components/form-layout.html">Form layout</a></li><li><a href="components/radio-group.html">Radio group (mode cards)</a></li><li><a href="components/switch.html">Switch</a></li><li><a href="components/set-list.html">Set list</a></li><li><a href="components/video.html">Video ride-along</a></li><li><a href="components/level-row.html">Level row</a></li><li><a href="components/slider.html">Slider</a></li><li><a href="components/number-stepper.html">Number stepper</a></li><li><a href="components/level-control.html">Level control</a></li><li><a href="components/level-picker.html">Level picker</a></li></ul><h3>Shell</h3><ul><li><a href="components/app-bar.html">App bar</a></li><li><a href="components/lockup.html">Lockup</a></li><li><a href="components/status-line.html">Status line</a></li><li><a href="components/ride-clock.html">Ride clock</a></li><li><a href="components/skip-link.html">Skip link</a></li><li><a href="components/page-layout.html">Page layout</a></li></ul><h3>Containers and overlays</h3><ul><li><a href="components/dialog.html">Dialog</a></li><li><a href="components/overlay-panel.html">Overlay panel</a></li><li><a href="components/tooltip.html">Tooltip</a></li><li><a href="components/divider.html">Divider</a></li></ul><h3>Ride data</h3><ul><li><a href="components/class-card.html">Class card and shelf</a></li><li><a href="components/class-worlds.html">Class worlds</a></li><li><a href="components/world-ride.html">World Ride HUD</a></li><li><a href="components/session-traces.html">Session traces</a></li><li><a href="components/dip-list.html">Dip list</a></li><li><a href="components/week-strip.html">Week strip</a></li><li><a href="components/stat-strip.html">Stat strip</a></li><li><a href="components/best-chip.html">Personal-best chip and delta</a></li><li><a href="components/trend-chart.html">Trend chart</a></li><li><a href="components/session-list.html">Session list</a></li><li><a href="components/streak-calendar.html">Streak calendar</a></li><li><a href="components/achievement.html">Achievement badge</a></li><li><a href="components/readout.html">Readout</a></li><li><a href="components/interval.html">Interval</a></li><li><a href="components/power-trace.html">Power trace</a></li><li><a href="components/metric-list.html">Metric list</a></li><li><a href="components/ride-profile.html">Ride profile</a></li><li><a href="components/command-log.html">Command log</a></li><li><a href="components/description-list.html">Description list</a></li><li><a href="components/code-block.html">Code block</a></li><li><a href="components/badge.html">Badge</a></li></ul><h3>Feedback</h3><ul><li><a href="components/toast.html">Toast</a></li><li><a href="components/alert.html">Alert and banner</a></li><li><a href="components/phase-banner.html">Step-change banner</a></li><li><a href="components/inline-message.html">Inline message</a></li><li><a href="components/progress-bar.html">Progress bar</a></li><li><a href="components/spinner.html">Spinner</a></li><li><a href="components/skeleton.html">Skeleton</a></li><li><a href="components/empty-state.html">Empty state</a></li><li><a href="components/error-page.html">Error page</a></li></ul>
-    </section>
-    <section class="ds-section" id="patterns"><h2><a href="#patterns">Patterns</a></h2>
-<ul><li><a href="patterns/forms.html">Forms</a></li><li><a href="patterns/feedback-and-loading.html">Feedback and loading</a></li><li><a href="patterns/empty-and-error-states.html">Empty and error states</a></li><li><a href="patterns/page-structure.html">Page structure</a></li><li><a href="patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li><li><a href="patterns/live-data.html">Live data</a></li><li><a href="patterns/notifications.html">Notifications</a></li><li><a href="patterns/content-and-tone.html">Content and tone</a></li></ul>
-    </section>
-    <section class="ds-section" id="how"><h2><a href="#how">How to use</a></h2>
-<ul><li>Link <code>tokens/tokens.css</code> then <code>assets/components.css</code>; set <code>data-theme</code> on <code>&lt;html&gt;</code>.</li><li>Copy class names from each component's Code section; in Angular each component owns its block in its own stylesheet.</li><li>Read tokens by role (<code>--color-fg-muted</code>), never primitives or hex.</li><li>Import <code>tokens/tokens.json</code> into design tools.</li></ul>
-    </section>
-    <section class="ds-section" id="provenance"><h2><a href="#provenance">Provenance</a></h2>
-<p>Extracted on 2026-11-15 from the <a href="../mocks/index.html">HTML mocks</a> (62 files, 10 screens; the treadmill components added 2026-11-16 were removed on 2026-11-19, ADR 0016; the World Ride HUD and Class worlds were added on 2026-11-19 from the World Ride mocks), which follow the Magic Patterns design. Every change from the mocks is in the README drift log.</p>
+
+    <section class="ds-section ds-start" id="start"><h2><a href="#start">Start here</a></h2>
+      <p>Six pages hold most of the decisions. Read them first, then use the full catalogue below.</p>
+      <div class="ds-cards">
+        <a class="ds-card" href="foundations/color.html"><b>Color</b><span>Ink, panel, raised; volt for you, gold for earned. Both themes and every checked pair.</span></a>
+        <a class="ds-card" href="foundations/typography.html"><b>Typography</b><span>Inter Tight for the UI, Barlow Condensed for numerals and the wide italic.</span></a>
+        <a class="ds-card" href="foundations/layout.html"><b>Layout</b><span>Breakpoints, columns, gutters, margins, containers and the app shell.</span></a>
+        <a class="ds-card" href="components/button.html"><b>Button</b><span>Primary, light, gold, raised, outline, quiet, danger; four sizes; icon buttons.</span></a>
+        <a class="ds-card" href="components/form-field.html"><b>Form field</b><span>Label, hint and error around every control.</span></a>
+        <a class="ds-card" href="components/dialog.html"><b>Dialog</b><span>Modal dialogs that become bottom sheets on phones.</span></a>
+      </div>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="foundations"><h2><a href="#foundations">Foundations</a></h2>
+      <p>The decisions every component inherits: colour, type, space, layout, depth, shape, motion, icons, themes, responsiveness, accessibility and words.</p>
+      <div class="ds-cards">
+        <a class="ds-card" href="foundations/color.html"><b>Color</b><span>Ink, panel, raised; volt for you, gold for earned. Both themes and every checked pair.</span></a>
+        <a class="ds-card" href="foundations/typography.html"><b>Typography</b><span>Inter Tight for the UI, Barlow Condensed for numerals and the wide italic.</span></a>
+        <a class="ds-card" href="foundations/spacing.html"><b>Spacing</b><span>Tailwind's 4px scale with the design's half steps for tight insides.</span></a>
+        <a class="ds-card" href="foundations/layout.html"><b>Layout</b><span>Breakpoints, columns, gutters, margins, containers and the app shell.</span></a>
+        <a class="ds-card" href="foundations/elevation.html"><b>Elevation</b><span>Surfaces that lighten as they rise, four shadows, HUD glass and z-order.</span></a>
+        <a class="ds-card" href="foundations/shape.html"><b>Shape</b><span>Six radii from chart marks to cards, and two border widths.</span></a>
+        <a class="ds-card" href="foundations/motion.html"><b>Motion</b><span>Four durations, four easings, one unlock moment, reduced motion.</span></a>
+        <a class="ds-card" href="foundations/iconography.html"><b>Iconography</b><span>Lucide on a 24-unit grid, 2px stroke, every icon the product uses.</span></a>
+        <a class="ds-card" href="foundations/theming.html"><b>Theming</b><span>Dark first, light as an addition, two names for one decision.</span></a>
+        <a class="ds-card" href="foundations/responsive.html"><b>Responsive</b><span>Mobile first at 640 and 1024, ride targets, the test matrix.</span></a>
+        <a class="ds-card" href="foundations/accessibility.html"><b>Accessibility</b><span>The WCAG 2.2 AA commitments and how the system meets them.</span></a>
+        <a class="ds-card" href="foundations/content.html"><b>Content</b><span>Voice, verbs, units, numbers and the microcopy library.</span></a>
+      </div>
+    </section>
+
+    <section class="ds-section" id="components"><h2><a href="#components">Components</a></h2>
+      <p>One page per component: anatomy, variants, sizes, every state, responsive behaviour, both themes, accessibility, content rules, do and don't, tokens and code. Components marked "not yet used" are in the core set every product needs; the mocks have not called for them yet.</p>
+      <h3>Actions</h3>
+      <div class="ds-cards">
+        <a class="ds-card" href="components/button.html"><b>Button</b><span>Primary, light, gold, raised, outline, quiet, danger; four sizes; icon buttons.</span></a>
+        <a class="ds-card" href="components/button-group.html"><b>Button group</b><span>Segmented choices with aria-pressed: tiers, difficulty, modes.</span></a>
+        <a class="ds-card" href="components/link.html"><b>Link</b><span>"All maps →", back links and links in running text.</span></a>
+        <a class="ds-card" href="components/menu.html"><b>Menu</b><span>A menu button for secondary actions, with sections and a danger item.</span></a>
+      </div>
+      <h3>Inputs</h3>
+      <div class="ds-cards">
+        <a class="ds-card" href="components/form-field.html"><b>Form field</b><span>Label, hint and error around every control.</span></a>
+        <a class="ds-card" href="components/text-field.html"><b>Text field</b><span>Single-line input with a 3:1 border, icons, read-only and invalid states.</span></a>
+        <a class="ds-card" href="components/textarea.html"><b>Textarea</b><span>Multi-line input with a counter (Feedback).</span></a>
+        <a class="ds-card" href="components/select.html"><b>Select</b><span>The native select, styled in the Telo idiom.</span></a>
+        <a class="ds-card" href="components/checkbox.html"><b>Checkbox</b><span>Native checkboxes, groups and indeterminate.</span></a>
+        <a class="ds-card" href="components/radio-group.html"><b>Radio group</b><span>Card-style choices (Race against, training mode) and plain radios.</span></a>
+        <a class="ds-card" href="components/switch.html"><b>Switch</b><span>On/off settings with role="switch".</span></a>
+        <a class="ds-card" href="components/slider.html"><b>Slider</b><span>Level pickers with a keyboard alternative.</span></a>
+        <a class="ds-card" href="components/number-stepper.html"><b>Number stepper</b><span>Minus/plus steppers for minutes, levels and intervals.</span></a>
+        <a class="ds-card" href="components/form-layout.html"><b>Form layout</b><span>Custom Setup and Feedback: columns, actions, error summary, sending.</span></a>
+      </div>
+      <h3>Navigation</h3>
+      <div class="ds-cards">
+        <a class="ds-card" href="components/app-header.html"><b>App header</b><span>Logo, sections, bike, streak, level and XP: and the ride headers.</span></a>
+        <a class="ds-card" href="components/sidebar-nav.html"><b>Sidebar navigation</b><span>Side navigation for wide, settings-like screens.</span></a>
+        <a class="ds-card" href="components/tabs.html"><b>Tabs</b><span>Tablists for switching views in place.</span></a>
+        <a class="ds-card" href="components/breadcrumb.html"><b>Breadcrumb</b><span>Where you are in a deep hierarchy.</span></a>
+        <a class="ds-card" href="components/pagination.html"><b>Pagination</b><span>Moving through long lists page by page.</span></a>
+        <a class="ds-card" href="components/skip-link.html"><b>Skip link</b><span>The first stop for keyboard users on every page.</span></a>
+      </div>
+      <h3>Containers and overlays</h3>
+      <div class="ds-cards">
+        <a class="ds-card" href="components/container.html"><b>Container and grid</b><span>Containers, page padding and the grid primitives.</span></a>
+        <a class="ds-card" href="components/card.html"><b>Card</b><span>Panels and wells: the surfaces everything sits on.</span></a>
+        <a class="ds-card" href="components/dialog.html"><b>Dialog</b><span>Modal dialogs that become bottom sheets on phones.</span></a>
+        <a class="ds-card" href="components/popover.html"><b>Popover</b><span>Non-modal panels anchored to their trigger: Leave, Feedback.</span></a>
+        <a class="ds-card" href="components/tooltip.html"><b>Tooltip</b><span>Short labels on hover and focus.</span></a>
+        <a class="ds-card" href="components/divider.html"><b>Divider</b><span>Hairlines between sections and inside panels.</span></a>
+      </div>
+      <h3>Data display</h3>
+      <div class="ds-cards">
+        <a class="ds-card" href="components/table.html"><b>Table</b><span>Tabular data: Map Select, sortable and dense tables.</span></a>
+        <a class="ds-card" href="components/list.html"><b>List</b><span>Recent rides, map rows and interactive lists.</span></a>
+        <a class="ds-card" href="components/description-list.html"><b>Description list</b><span>Key-value facts: race distance, XP earned, diagnostics.</span></a>
+        <a class="ds-card" href="components/avatar.html"><b>Avatar</b><span>Rider jersey dots and rings, initials and groups.</span></a>
+        <a class="ds-card" href="components/badge.html"><b>Badge</b><span>Pills in five tones and counts.</span></a>
+        <a class="ds-card" href="components/chip.html"><b>Chip</b><span>Preset chips that filter or toggle.</span></a>
+        <a class="ds-card" href="components/stat.html"><b>Stat</b><span>A number with its label: tabular numerals and deltas.</span></a>
+        <a class="ds-card" href="components/code-block.html"><b>Code block</b><span>The Diagnostics packet log and inline code.</span></a>
+      </div>
+      <h3>Feedback</h3>
+      <div class="ds-cards">
+        <a class="ds-card" href="components/toast.html"><b>Toast</b><span>Brief messages in a polite live region.</span></a>
+        <a class="ds-card" href="components/alert.html"><b>Alert and banner</b><span>Banners for unlocks, warnings and browser notices.</span></a>
+        <a class="ds-card" href="components/inline-message.html"><b>Inline message</b><span>Hints, errors and confirmations next to what they describe.</span></a>
+        <a class="ds-card" href="components/progress-bar.html"><b>Progress bar</b><span>XP, ride progress and determinate work.</span></a>
+        <a class="ds-card" href="components/spinner.html"><b>Spinner</b><span>Searching and pairing: short, unknown waits.</span></a>
+        <a class="ds-card" href="components/skeleton.html"><b>Skeleton</b><span>Layout-matching placeholders for loading.</span></a>
+        <a class="ds-card" href="components/empty-state.html"><b>Empty state</b><span>No bike, Bluetooth off, first ride: one sentence, one action.</span></a>
+        <a class="ds-card" href="components/error-page.html"><b>Error page</b><span>404, needs Chromium, needs HTTPS: keep the shell, offer a way on.</span></a>
+      </div>
+      <h3>Brand and progress</h3>
+      <div class="ds-cards">
+        <a class="ds-card" href="components/lockup.html"><b>Logo lockup</b><span>The ring-and-crank mark with the Telo Ride wordmark.</span></a>
+        <a class="ds-card" href="components/level-badge.html"><b>Level badge</b><span>The gold level disc and its XP bar.</span></a>
+        <a class="ds-card" href="components/stars.html"><b>Stars</b><span>Zero to three stars per map, and how they are earned.</span></a>
+        <a class="ds-card" href="components/photo-tag.html"><b>Photo tag</b><span>Labels set on photos and video covers.</span></a>
+        <a class="ds-card" href="components/section-head.html"><b>Section head</b><span>Section title with a link, over a hairline.</span></a>
+      </div>
+      <h3>Ride</h3>
+      <div class="ds-cards">
+        <a class="ds-card" href="components/map-card.html"><b>Map card</b><span>Map tiles and rows: open, next, locked, earned.</span></a>
+        <a class="ds-card" href="components/class-card.html"><b>Class card</b><span>Class covers with seats, start time and tier.</span></a>
+        <a class="ds-card" href="components/next-ride.html"><b>Next ride</b><span>The Home hero: the next goal and what it unlocks.</span></a>
+        <a class="ds-card" href="components/leaderboard.html"><b>Leaderboard</b><span>Live boards, standings and the start grid; you in volt.</span></a>
+        <a class="ds-card" href="components/device-list.html"><b>Device list</b><span>Finding and pairing a bike over Bluetooth.</span></a>
+        <a class="ds-card" href="components/video.html"><b>Video</b><span>Class video and its sync, behind the HUD.</span></a>
+        <a class="ds-card" href="components/plan-chart.html"><b>Plan chart</b><span>Workout plans: warm-up, work and rest blocks.</span></a>
+        <a class="ds-card" href="components/route-profile.html"><b>Route profile</b><span>The elevation of a route with riders on it.</span></a>
+        <a class="ds-card" href="components/ride-readout.html"><b>Ride readout</b><span>Big live numbers: watts against target, cadence, heart rate.</span></a>
+        <a class="ds-card" href="components/hud-panel.html"><b>HUD panel</b><span>Glass panels over the world: interval, resistance, controls.</span></a>
+        <a class="ds-card" href="components/countdown.html"><b>Countdown</b><span>The 3-2-1, the lobby clock and starts-in timers.</span></a>
+        <a class="ds-card" href="components/ride-trace.html"><b>Ride trace</b><span>Power against target over time, with the playhead.</span></a>
+      </div>
+    </section>
+
+    <section class="ds-section" id="patterns"><h2><a href="#patterns">Patterns</a></h2>
+      <p>How components combine for a job, and the rules that span them.</p>
+      <div class="ds-cards">
+        <a class="ds-card" href="patterns/forms.html"><b>Forms</b><span>Layout, validation timing, error summary, sending and sent.</span></a>
+        <a class="ds-card" href="patterns/feedback-and-loading.html"><b>Feedback and loading</b><span>Which feedback for which action; spinner, skeleton or progress.</span></a>
+        <a class="ds-card" href="patterns/empty-and-error-states.html"><b>Empty and error states</b><span>Copy formulas for Bluetooth, browsers, no bike and 404.</span></a>
+        <a class="ds-card" href="patterns/navigation.html"><b>Navigation and page structure</b><span>The shell, the header and the three ride flows.</span></a>
+        <a class="ds-card" href="patterns/dialogs-and-overlays.html"><b>Dialogs and overlays</b><span>Dialog, sheet, popover or page: and how they stack.</span></a>
+        <a class="ds-card" href="patterns/data-tables-and-lists.html"><b>Data tables and lists</b><span>Density, sorting and responsive tables and lists.</span></a>
+        <a class="ds-card" href="patterns/notifications.html"><b>Notifications</b><span>Toast, banner or inline; priority and dismissal.</span></a>
+        <a class="ds-card" href="patterns/content-and-tone.html"><b>Content and tone</b><span>Applying the voice in real compositions.</span></a>
+        <a class="ds-card" href="patterns/live-ride.html"><b>Live ride</b><span>Composing a ride: world, HUD, readouts, board and controls.</span></a>
+      </div>
+    </section>
+
+    <section class="ds-section" id="use"><h2><a href="#use">How to use</a></h2>
+      <ol>
+        <li>Link the tokens, then the components, on every page, and set the theme on the root: <code>&lt;html data-theme="dark"&gt;</code>. Dark is the product's default; <code>data-theme="light"</code> opts in to the light theme.</li>
+        <li>Use the classes exactly as each component page's Code section shows them. States assistive technology must know are attributes (<code>aria-pressed</code>, <code>aria-current</code>, <code>aria-invalid</code>, <code>aria-busy</code>, <code>disabled</code>); style through them, never through extra classes.</li>
+        <li>Re-theme a component by overriding its component tokens (<code>--btn-bg</code>, <code>--field-border</code>, <code>--dialog-width</code>…), never its properties. Change what a role means in <code>tokens.css</code>, never in a component.</li>
+        <li>Generate platform constants from <a href="tokens/tokens.json">tokens/tokens.json</a> (W3C DTCG: <code>$type</code>, <code>$value</code>, aliases as <code>{group.token}</code>, theme overrides under <code>$extensions</code>).</li>
+        <li>Add a colour pairing to <a href="tokens/contrast-pairs.json">tokens/contrast-pairs.json</a> and run the contrast check before using it.</li>
+      </ol>
+<pre><code>&lt;link rel="stylesheet" href="tokens/tokens.css"&gt;
+&lt;link rel="stylesheet" href="assets/components.css"&gt;</code></pre>
+      <p>Press <kbd>t</kbd> on any page to switch the documentation between dark and light; add <code>?theme=light</code> to a link to open it in light.</p>
+    </section>
+
+    <section class="ds-section" id="provenance"><h2><a href="#provenance">Provenance</a></h2>
+      <p>Extracted on 21 November 2026 from <a href="../mocks/index.html">docs/mocks</a> (83 mocks of 17 screens), which reproduce the Magic Patterns OS prototype "Ride". Every value traces to a mock or to a correction logged in the <a href="README.md">README</a>'s drift table; the mocks now load this system's tokens and components.</p>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="assets/ds.js"></script>

@@ -1,0 +1,112 @@
+<wz-lockup size="sm" />
+<button
+  type="button"
+  class="ride-header__link ride-header__link--strong"
+  aria-haspopup="dialog"
+  [attr.aria-expanded]="libraryOpen()"
+  (click)="library.emit($any($event.currentTarget))"
+>
+  <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+    <rect width="7" height="7" x="3" y="3" rx="1" />
+    <rect width="7" height="7" x="14" y="3" rx="1" />
+    <rect width="7" height="7" x="14" y="14" rx="1" />
+    <rect width="7" height="7" x="3" y="14" rx="1" />
+  </svg>
+  Library
+</button>
+<span class="ride-header__divider" aria-hidden="true"></span>
+<button
+  type="button"
+  class="ride-header__status"
+  title="Diagnostics"
+  aria-haspopup="dialog"
+  [attr.aria-label]="diagnosticsLabel()"
+  (click)="diagnostics.emit()"
+>
+  @if (bikeTone() === 'ok') {
+    <svg class="icon icon--md ride-header__status-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="m7 7 10 10-5 5V2l5 5L7 17" />
+    </svg>
+  } @else if (bikeTone() === 'alert') {
+    <svg
+      class="icon icon--md ride-header__status-icon ride-header__status-icon--alert"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path d="m17 17-5 5V12l-5 5" />
+      <path d="m2 2 20 20" />
+      <path d="M14.5 9.5 17 7l-5-5v4.5" />
+    </svg>
+  }
+  @if (bikeName(); as name) {
+    <span class="ride-header__status-name">{{ name }}</span>
+  }
+  <span
+    class="ride-header__status-text"
+    [class.ride-header__status-text--alert]="bikeTone() === 'alert'"
+    >{{ bikeState() }}</span
+  >
+</button>
+<ng-content select="[slot=workout]" />
+<button
+  type="button"
+  class="ride-header__link ride-header__link--feedback"
+  aria-haspopup="dialog"
+  [attr.aria-expanded]="feedbackOpen()"
+  (click)="feedback.emit($any($event.currentTarget))"
+>
+  <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+    <path
+      d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"
+    />
+    <path d="M12 8v6" />
+    <path d="M9 11h6" />
+  </svg>
+  Feedback
+</button>
+<div class="ride-header__end">
+  <span
+    class="ride-header__clock"
+    role="timer"
+    [attr.aria-label]="'Elapsed ' + clock() + ' of ' + total()"
+    >{{ clock() }}<span class="ride-header__clock-total"> / {{ total() }}</span></span
+  >
+  <button
+    wz-button
+    variant="raised"
+    type="button"
+    class="ride-header__run"
+    [disabled]="runDisabled()"
+    (click)="ran.emit()"
+  >
+    @if (run() === 'pause') {
+      <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="14" y="3" width="5" height="18" rx="1" />
+        <rect x="5" y="3" width="5" height="18" rx="1" />
+      </svg>
+      Pause
+    } @else {
+      <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"
+        />
+      </svg>
+      {{ run() === 'start' ? 'Start' : 'Resume' }}
+    }
+  </button>
+  <button
+    type="button"
+    class="ride-header__stop"
+    [disabled]="endDisabled()"
+    (click)="stopped.emit()"
+  >
+    <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+      <rect width="18" height="18" x="3" y="3" rx="2" />
+    </svg>
+    End
+  </button>
+  <ng-content select="[slot=end]" />
+</div>
+@if (fullscreenAvailable()) {
+  <wz-fullscreen-toggle [active]="fullscreen()" (toggled)="fullscreenToggled.emit()" />
+}

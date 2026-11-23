@@ -1,0 +1,8 @@
+<section class="door" [attr.aria-labelledby]="headingId()">
+  <div class="section-head">
+    <h2 class="section-head__title" [id]="headingId()">{{ heading() }}</h2>
+    <ng-content select="[slot=link]" />
+  </div>
+  <p class="door__summary"><ng-content select="[slot=summary]" /></p>
+  <ng-content />
+</section>

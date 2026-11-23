@@ -1,0 +1,56 @@
+@startuml
+title UML sequence behaviour — Lose and regain the service
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "RaceStore" as page
+  participant "LiveSessionStore" as store
+end box
+box "Frontend — Ride app (domain and api libraries)" #E0F2FE
+  participant "WorkoutEngine" as engine
+  participant "SignalRRideHubClient" as client
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "Smart bike" as bike
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RideHub" as hub
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "JoinRaceCommandHandler" as handler
+end box
+client -> client : Connection lost
+client --> store : state = reconnecting
+store --> page : serviceLost = true
+page --> actor : Board keeps its last standings; status notice "Reconnecting. The standings will catch up." (L2-126 AC1)
+loop while reconnecting
+  bike -> engine : Telemetry once a second
+  engine -> bike : Target resistance from the plan
+  page -> client : reportRaceProgress: not connected, sends nothing
+end
+client -> hub : Reconnect (retry policy: 0, 2, 5, 10 s, then every 30 s)
+hub --> client : Connected
+client --> store : onreconnected
+store -> client : serverTime ×5, then joinRace(sessionId)
+client -> hub : JoinRace(sessionId)
+hub -> handler : Send JoinRaceCommand
+handler --> hub : Same seat; current standings to the caller alone
+hub --> client : RaceSeatAssignment, RaceStandingsUpdated
+client --> store : raceStandings replaced
+store --> page : serviceLost = false
+page --> actor : Notice gone; board updated on the race's next second (L2-126 AC2)
+page -> client : reportRaceProgress(current distance)
+@enduml

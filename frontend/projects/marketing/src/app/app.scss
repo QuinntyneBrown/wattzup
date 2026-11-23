@@ -1,0 +1,8 @@
+// The page's root lays out nothing of its own; every section is a wz-* block (ADR 0027).
+:host {
+  display: block;
+}
+
+.page__main:focus {
+  outline: none;
+}

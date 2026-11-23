@@ -1,0 +1,63 @@
+@startuml
+set separator none
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Limit abuse
+package "Telo.Ride.Api" {
+  class ProgressRateHubFilter <<IHubFilter>> {
+    +InvokeMethodAsync(context, next): ValueTask<object?>
+  }
+  note right of ProgressRateHubFilter : The gate is kept in the\nconnection's Items and\ngoes with it.
+  class ProgressRateGate {
+    +PerSecond = 2
+    -Patience = 10 s
+    -DateTimeOffset? secondStart
+    -int count
+    -bool secondOver
+    -DateTimeOffset? overSince
+    +Admit(): GateDecision
+  }
+  enum GateDecision {
+    Admit
+    Drop
+    Disconnect
+  }
+  class ProblemDetailsExceptionHandler {
+    +TryHandleAsync(httpContext, exception, ct): ValueTask<bool>
+  }
+}
+package "Telo.Ride.Application" {
+  class SubmitRideCommandHandler {
+    +RidesPerHour = 60
+    +Handle(command, ct): Task<RideSubmission>
+    -KeepWithinTheHoursLimit(riderId, ct): Task
+  }
+  class SendSignInCodeCommandHandler {
+    +CodesPerAddressPerHour = 5
+    +CodesPerNetworkPerHour = 20
+    +Handle(command, ct): Task
+  }
+}
+package "Telo.Ride.Domain" {
+  class DomainRuleException {
+    +Code: string
+    +Kind: RuleKind
+    +RetryAfter: TimeSpan?
+  }
+}
+ProgressRateHubFilter "1" *-- "*" ProgressRateGate : one per connection
+ProgressRateGate ..> GateDecision
+SubmitRideCommandHandler ..> DomainRuleException : rate_limited
+SendSignInCodeCommandHandler ..> DomainRuleException : rate_limited
+ProblemDetailsExceptionHandler ..> DomainRuleException : 429 with Retry-After
+@enduml

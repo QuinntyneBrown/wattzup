@@ -1,0 +1,45 @@
+// Block app-header (docs/design-system/components/app-header.html). Its brand and nav links are the
+// app-header-brand and app-header-link components, which style themselves.
+:host {
+  display: block;
+  flex-shrink: 0;
+}
+
+.app-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--space-6);
+  row-gap: var(--space-2);
+  border-bottom: var(--border-width-hairline) solid var(--color-line);
+  padding: var(--space-2-5) var(--space-4);
+
+  @media (min-width: 40rem) {
+    padding-inline: var(--space-6);
+  }
+
+  @media (min-width: 64rem) {
+    padding-inline: var(--space-8);
+  }
+}
+
+// On a phone the nav takes its own full-width row of equal items.
+.app-header__nav {
+  order: 99;
+  display: flex;
+  gap: var(--space-1);
+  width: 100%;
+  margin-inline: calc(var(--space-1) * -1);
+
+  @media (min-width: 40rem) {
+    order: 0;
+    width: auto;
+  }
+}
+
+.app-header__end {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}

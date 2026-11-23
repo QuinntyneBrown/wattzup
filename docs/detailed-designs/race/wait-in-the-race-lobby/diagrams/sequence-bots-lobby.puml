@@ -1,0 +1,48 @@
+@startuml
+title UML sequence behaviour — Bots lobby
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "RaceLobbyPage" as page
+  participant "LobbyStore" as store
+  participant "Router" as router
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "LocalLobby" as local
+  participant "ResistanceController" as res
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "Smart bike" as bike
+end box
+actor -> page : Open /race/:mapId/lobby?mode=bots&pack=medium
+page -> store : init(mode = bots)
+store -> local : seats(level, ready = false)
+local --> store : You in seat 1, nine bots in list order, not ready (L2-050 AC1, L2-054 AC2)
+store -> res : setTarget(first segment level)
+res -> bike : Set resistance command
+store --> page : "10 / 10", "On the start line", resistance hint (L2-051 AC4)
+actor -> page : Press "I'm ready"
+page -> store : toggleReady()
+store -> local : seats(level, ready = true)
+local --> store : Every seat ready
+loop once a second from 0:05 (L2-053 AC3); pressing again holds it at 0:05
+  store --> page : timer "Starts in {n} seconds"
+end
+store --> page : From 0:03, countdownStep 3, 2, 1 over the inert lobby (L2-056 AC1, AC2)
+store --> page : At 0:00, Go
+store -> router : Navigate /race/:mapId/ride?mode=bots&pack=medium
+router --> actor : Race opens with its clock at 0:00 (L2-056 AC3)
+@enduml

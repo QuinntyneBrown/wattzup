@@ -1,0 +1,55 @@
+// Block map-tile (docs/design-system/assets/components.css, Home): a 4 : 3 photo, the map's name and its stars.
+:host {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  text-align: left;
+}
+
+.map-tile__photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--color-raised);
+}
+
+.map-tile__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+// Locked: grey and faint, with the lock beside it, so the state never rests on colour alone.
+.map-tile__image--locked {
+  opacity: 0.4;
+  filter: grayscale(1);
+}
+
+.map-tile__lock {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  color: var(--color-on-photo);
+}
+
+.map-tile__name {
+  display: block;
+  margin-top: var(--space-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+:host(:hover) .map-tile__name {
+  color: var(--color-volt-fg);
+}
+
+.map-tile__stars {
+  margin-top: var(--space-0-5);
+}

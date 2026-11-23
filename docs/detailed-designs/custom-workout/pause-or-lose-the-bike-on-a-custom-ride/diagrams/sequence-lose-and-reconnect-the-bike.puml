@@ -1,0 +1,46 @@
+@startuml
+title UML sequence behaviour — Lose and reconnect the bike
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "RideOverlay" as overlay
+  participant "CustomRideStore" as store
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "WebBluetoothBikeConnection" as conn
+  participant "RideClock" as clock
+  participant "WorkoutEngine" as engine
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "Smart bike" as bike
+end box
+conn -> conn : Keepalive gets no answer (L2-017)
+conn --> store : ble = Lost
+store -> clock : pause()
+store -> engine : Hold
+store --> overlay : Running → Lost; status "Disconnected" in red; Resume and controls disabled L2-105 AC2
+overlay --> rider : "Lost the bike" … "your ride is saved at 6:52." with Reconnect
+rider -> overlay : Press Reconnect
+overlay -> store : reconnect()
+store -> conn : reconnect() (user gesture)
+conn -> bike : GATT connect
+bike --> conn : Connected
+conn --> store : ble = Connected
+store --> overlay : Lost → Paused; alert closes; Resume and controls enabled L2-105 AC3
+rider -> store : Press Resume
+store -> engine : Resend current segment level, resume (L2-027 AC4)
+store -> clock : resume()
+@enduml

@@ -1,0 +1,56 @@
+// Block inline-message (docs/design-system/assets/components.css, Inline message).
+:host {
+  display: block;
+}
+
+.inline-message {
+  --inline-message-fg: var(--color-muted);
+  --inline-message-icon: currentColor;
+
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--inline-message-fg);
+}
+
+.inline-message--sm {
+  gap: var(--space-1-5);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-relaxed);
+}
+
+.inline-message--sm .inline-message__icon {
+  width: var(--space-3-5);
+  height: var(--space-3-5);
+}
+
+.inline-message--warn {
+  --inline-message-icon: var(--color-warn-fg);
+}
+
+.inline-message--error {
+  --inline-message-fg: var(--color-heart-fg);
+}
+
+.inline-message--success {
+  --inline-message-fg: var(--color-ok-fg);
+}
+
+.inline-message__icon {
+  flex-shrink: 0;
+  width: var(--space-4);
+  height: var(--space-4);
+  margin-top: var(--space-0-5);
+  fill: none;
+  stroke: var(--inline-message-icon);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.inline-message__text {
+  min-width: 0;
+}

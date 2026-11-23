@@ -1,23 +1,38 @@
 # User journeys
 
-The journeys Wattzup implements today, in the order of the value they add for a rider. Each has a
-narrated film in [`docs/videos/`](videos/README.md).
+Telo Ride's journeys still to build, ordered by value added to the product, scaffolding first.
+Estimates are working days for one intermediate developer, using `docs/detailed-designs/`.
+**% complete** is the days of a journey's finished slices in
+[`detailed-journeys.md`](detailed-journeys.md) over its days, updated as each slice finishes.
 
-| # | Journey | Description |
-|---|---------|-------------|
-| 1 | Ride a HIIT workout | Pick a preset, press Start ride; the plan sets your resistance. |
-| 2 | Connect your bike | Pick the bike once in the browser's chooser; Wattzup connects and keeps it connected, and the status line says how it's going. |
-| 3 | Read your live metrics | Power, cadence, speed and ride totals, live as you pedal. |
-| 4 | Take over the resistance | Raise, lower or pick a level, then go back to plan. |
-| 5 | Build an intervals plan | Warm-up, ordered sets and cool-down, previewed before you start. |
-| 7 | Pause, resume or end a ride | Pause the ride, pick it up again, or end it. |
-| 8 | Follow the countdown and cues | See time left and what's next; hear each change coming. |
-| 9 | Ride along to a video | Sync a YouTube video to your ride; it pauses with you. |
-| 10 | Recover a dropped connection | Banners and overlays say what dropped and how to reconnect. |
-| 12 | Check diagnostics | See what Wattzup knows about the browser and the bike; download the packet log. |
-| 13 | Switch light or dark | Ride in the dark theme by default, or switch to light. |
-| 14 | Review your rides | See each saved ride's summary and dips, then your progress and streak; export or import your history. |
+| # | Journey | Description | Days | % complete |
+|---|---------|-------------|------|-----------|
+| 1 | Scaffold the product | Angular workspace and libraries, .NET clean architecture, CI, test fixtures, hosting. | 10 | 100% |
+| 2 | Connect a bike | Pick the bike once; Telo Ride connects, reconnects and checks browser support. | 10 | 100% |
+| 3 | Read live telemetry | Power, cadence, speed and heart rate, live as the rider pedals. | 5 | 100% |
+| 4 | Control resistance | Plan sets target resistance; rider can raise, lower or take over. | 5 | 100% |
+| 5 | Ride a solo class | Video in sync, plan drives resistance, clock, pause, leave or finish. | 12 | 100% |
+| 6 | Browse and start a class | Class library by tier, class start with plan and ride choice. | 8 | 100% |
+| 7 | Race the ghost and bots | Browse maps, set up, ride the race HUD, finish against ghost and bots. | 15 | 100% |
+| 8 | See the race world | Three.js world with WebGPU or WebGL 2, quality tiers, panorama fallback. | 20 | 100% |
+| 9 | Sign in with an email code | Email code sign-in, stay signed in, display name, sign out, delete account. | 10 | 100% |
+| 10 | Earn XP, levels and streaks | Rides earn XP and rider levels; progress kept on the backend. | 10 | 100% |
+| 11 | See results | Results with XP, stars and personal best; unlocks celebrated. | 8 | 100% |
+| 12 | Unlock maps and class tiers | Stars unlock maps; rider levels open class tiers. | 5 | 100% |
+| 13 | Choose the next ride | Home suggests the next ride; app header and profile. | 5 | 100% |
+| 14 | Ride a class with a group | Join a session, start together, ride with a live board. | 15 | 100% |
+| 15 | Race people live | Lobby, live race session, standings, leavers marked DNF, tamper-proof results. | 15 | 100% |
+| 16 | Ride a world class | Load the class's world with progress, then start solo or with the group. | 10 | 100% |
+| 17 | Ride without a network | Finish offline; rides wait and send when back online. | 8 | 100% |
+| 18 | Ride through a lost service | Lost bike or multiplayer service mid-ride; the ride carries on. | 5 | 100% |
+| 19 | Stay smooth on long rides | Bundle and frame budgets, bounded buffers, stable heap across an hour. | 8 | 100% |
+| 20 | Tune ride settings | Quality, device check, sound, motion, display and saved worlds. | 12 | 100% |
+| 21 | Ride a custom workout | Set up, preview and ride your own intervals from Profile. | 10 | 100% |
+| 22 | Stay secure | Authenticated requests, rate limits, CSP, validated input, protected rider data. | 8 | 100% |
+| 23 | Use by touch, keyboard and screen reader | Every width, 44 px targets, keyboard paths, announcements, reduced motion. | 8 | 100% |
+| 24 | Switch theme and full screen | Match device, dark or light; full screen on any ride screen. | 3 | 100% |
+| 25 | Check diagnostics | Bike and browser state, packet log to download. | 5 | 100% |
+| 26 | Send feedback | Report a bug, share an idea or send kudos. | 5 | 100% |
+| 27 | Install the app | Install as an app from Chrome or Edge. | 3 | 100% |
 
-Journey 6 (Run on the treadmill) was removed with the treadmill ([ADR 0016](adr/0016-bike-only.md)), and
-journey 11 (Unlock a shared server) with the backend ([ADR 0019](adr/0019-no-backend.md)); the other
-journeys keep their numbers, which name their films.
+**Total:** 238 days. **Complete:** 238 days (100%).

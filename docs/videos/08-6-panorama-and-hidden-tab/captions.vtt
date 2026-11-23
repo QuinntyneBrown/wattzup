@@ -1,0 +1,52 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:05.531
+Whatever the browser can draw, the race goes on.
+
+00:00:10.324 --> 00:00:15.741
+Where neither WebGPU nor WebGL two can draw, the map's panorama takes the world's
+
+00:00:15.741 --> 00:00:18.114
+place, and the race still runs.
+
+00:00:20.647 --> 00:00:25.312
+Switch tabs, and the world stops drawing. The race clock and your power carry on.
+
+00:00:30.971 --> 00:00:35.803
+Main's loop already stopped, but the scene still drew a frame each time the clock
+
+00:00:35.803 --> 00:00:38.847
+ticked. Now a hidden tab draws nothing at all.
+
+00:00:41.295 --> 00:00:45.383
+Come back, and the world draws again, the race twenty seconds further on.
+
+00:00:51.618 --> 00:00:56.011
+From a phone to a desktop, the panorama fills the screen behind the race.
+
+00:01:01.942 --> 00:01:06.813
+What the tests prove: a hidden tab draws no frame while the race runs on, and shown
+
+00:01:06.813 --> 00:01:08.052
+again, it draws.
+
+00:01:12.266 --> 00:01:16.869
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:17.214 --> 00:01:21.726
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:21.726 --> 00:01:23.397
+every hill and interval.
+
+00:01:23.742 --> 00:01:28.920
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:28.920 --> 00:01:34.368
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:34.368 --> 00:01:37.358
+XP, rider levels, stars and map unlocks.
+
+00:01:37.704 --> 00:01:40.196
+A custom workout lives under Profile.

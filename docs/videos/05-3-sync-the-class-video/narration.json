@@ -1,0 +1,106 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "The class video now rides with you: YouTube, locked to the ride clock."
+      ]
+    },
+    {
+      "id": "offset",
+      "bars": 4,
+      "lines": [
+        "At seven minutes, with a twelve-second offset, the video is at seven twelve. The clock leads; the video follows."
+      ]
+    },
+    {
+      "id": "privacy",
+      "bars": 4,
+      "lines": [
+        "The player comes from YouTube's privacy-enhanced domain, with no controls, out of the tab order. The ride controls it."
+      ]
+    },
+    {
+      "id": "drift",
+      "bars": 4,
+      "lines": [
+        "Every tick, the drift is checked. More than one and a half seconds either way, and the video seeks back."
+      ]
+    },
+    {
+      "id": "unavailable",
+      "bars": 4,
+      "lines": [
+        "If YouTube is blocked, or the video fails, the cover stays, and a notice says so."
+      ]
+    },
+    {
+      "id": "carry",
+      "bars": 4,
+      "lines": [
+        "The bike still follows the class: the clock reaches seven minutes, and the recovery's level goes to the bike."
+      ]
+    },
+    {
+      "id": "library",
+      "bars": 4,
+      "lines": [
+        "The player lives in its own video library, loaded only when a ride plays its video."
+      ]
+    },
+    {
+      "id": "bundle",
+      "bars": 4,
+      "lines": [
+        "A first view query would have added a kilobyte to the first load, so the frame is found another way."
+      ]
+    },
+    {
+      "id": "fake",
+      "bars": 4,
+      "lines": [
+        "In the tests, a fake YouTube player runs on the page's clock, so no request leaves the machine."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "On a phone the video sits above the panel. From laptop width, it fills the column."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: four new specs and a table of drift cases, and every check is green."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

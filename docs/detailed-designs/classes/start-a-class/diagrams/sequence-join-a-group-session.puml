@@ -1,0 +1,56 @@
+@startuml
+title UML sequence behaviour — Join a group session
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "ClassStartPage" as page
+  participant "ClassStartStore" as store
+  participant "ClassRideStore" as ride
+  participant "LiveSessionStore" as live
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "SignalRRideHubClient" as hub
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RideHub" as rhub
+end box
+rider -> page : Press "Join · starts in 9 min"
+page -> page : Navigate to /classes/:id/ride?session={sessionId}
+page -> ride : The class ride opens with its session
+ride -> live : join({ kind: class, classId, sessionId })
+live -> hub : start() (opens /hubs/ride with the session cookie, L2-120 AC1), ServerTime ×5
+live -> hub : joinClassSession(classId, sessionId)
+hub -> rhub : JoinClassSession(classId, sessionId)
+alt seat free and not started
+  rhub --> hub : Seat, jersey L2-122 AC1
+  hub --> live : SeatAssignment
+  live --> rider : The group ride carries on
+else session full
+  rhub --> hub : session_full L2-122 AC2
+  hub --> live : RideHubError session_full
+  live --> ride : refused
+  ride -> page : Navigate back to /classes/:id (replacing the ride)
+  page -> store : Read the sessions
+  store --> page : "This session is full. Next one starts 15 minutes later." and "Join the next session" L2-086 AC2
+else session already started
+  rhub --> hub : session_started L2-086 AC3
+  hub --> live : RideHubError session_started
+  live --> ride : refused
+  ride -> page : Navigate back to /classes/:id (replacing the ride)
+  page -> store : Read the sessions
+  store --> page : The next session, "Join · starts in 14 min"
+end
+@enduml

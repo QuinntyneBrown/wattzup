@@ -1,0 +1,46 @@
+@startuml
+title UML sequence behaviour — Leave a class
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "ClassHeader" as header
+  participant "ClassRideStore" as store
+  participant "Router" as router
+  participant "LiveSessionStore" as live
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "SignalRRideHubClient" as hub
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RideHub" as rhub
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "LeaveSessionCommandHandler" as handler
+end box
+rider -> header : Press the Leave link (aria-label "Leave class")
+header -> router : Navigate to /classes/:id (no confirmation)
+router -> store : Destroy with the page
+store -> store : Stop the ride; discard recorder totals; nothing submitted, no XP L2-093 AC1
+opt group class ride
+  store -> live : leave()
+  live -> hub : leaveSession(sessionId)
+  hub -> rhub : LeaveSession
+  rhub -> handler : Send LeaveSessionCommand
+  handler --> rhub : Rider removed; others see the board without them
+  live -> hub : Close connection (no multiplayer ride, L2-120 AC4)
+end
+router --> rider : Class Start
+@enduml

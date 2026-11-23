@@ -1,0 +1,30 @@
+// Block race-paused (docs/design-system/assets/components.css, Race): a card over the held world that blocks nothing.
+.race-paused {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.race-paused__card {
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--color-ink) 80%, transparent);
+  backdrop-filter: blur(12px);
+  padding: var(--space-4) var(--space-6);
+  text-align: center;
+}
+
+.race-paused__title {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.race-paused__body {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-muted);
+}

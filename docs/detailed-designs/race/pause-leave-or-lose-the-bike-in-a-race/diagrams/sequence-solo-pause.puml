@@ -1,0 +1,47 @@
+@startuml
+title UML sequence behaviour — Pause and resume a solo race
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "RacePage" as page
+  participant "RaceStore" as store
+  participant "RaceWorldStore" as wstore
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "RideClock" as clock
+  participant "RaceEngine" as engine
+  participant "BikeConnection" as conn
+end box
+note over page : Pause is shown only for a solo race (L2-068 AC3)
+actor -> page : Press Pause
+page -> store : pause()
+store -> clock : pause()
+store -> engine : pause()
+store -> wstore : Hold the frame still
+store --> page : interruption = paused
+page --> actor : Resume button; overlay "Paused on Cathedral Circuit", buttons stay usable (L2-068 AC1)
+alt rider presses Resume
+  actor -> page : Press Resume
+  page -> store : resume()
+else rider pedals
+  conn --> store : Telemetry with cadence above zero
+  store -> store : resume()
+end
+store -> clock : resume()
+store -> engine : resume()
+store -> wstore : Continue drawing
+page --> actor : Race carries on from where it stopped (L2-068 AC2)
+@enduml

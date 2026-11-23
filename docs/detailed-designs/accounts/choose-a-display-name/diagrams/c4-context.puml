@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Choose a display name
+Person(rider, "Rider", "Rides a smart bike at home")
+Person(other, "Other rider", "Sees the name on start grids and boards")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+Rel(rider, telo, "Chooses and changes a display name in")
+Rel(telo, other, "Shows the name, country code and level to")
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Test without hardware or databases
+
+Person(dev, "Developer", "Runs tests locally; CI runs the critical paths")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System(tests, "Telo Ride test suites", "Playwright specs, unit tests, backend acceptance and hub tests")
+Rel(dev, tests, "Runs")
+Rel(tests, telo, "Proves the behaviour of, with doubles for bike, backend, database and time")
+@enduml

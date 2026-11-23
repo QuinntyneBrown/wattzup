@@ -1,0 +1,13 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Switch theme and full screen
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(device, "Rider's device and browser", "prefers-color-scheme; Fullscreen API")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine")
+}
+Rel(rider, app, "Uses")
+Rel(app, device, "Reads and requests", "matchMedia, Fullscreen API")
+@enduml

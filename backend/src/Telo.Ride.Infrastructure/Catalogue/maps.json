@@ -1,0 +1,1161 @@
+{
+  "maps": [
+    {
+      "id": "prairie-paceline",
+      "name": "Prairie Paceline",
+      "routeName": "Route 9 Wind Farm",
+      "place": "Open farmland at golden hour",
+      "distanceKm": 18.4,
+      "climbingM": 90,
+      "rating": "Easy",
+      "world": "prairie",
+      "thumbnailUrl": "maps/prairie-paceline.jpg",
+      "photoUrl": "maps/prairie-paceline-photo.jpg",
+      "unlock": {
+        "kind": "start"
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 300,
+            "level": 8,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 180,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 150,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 150,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "cool-down",
+            "duration": 360,
+            "level": 6,
+            "cadenceAim": 70
+          }
+        ]
+      },
+      "terrain": {
+        "grade": {
+          "warm-up": 0,
+          "work": 1.5,
+          "recover": -0.5,
+          "cool-down": 0,
+          "steady": 0.5
+        },
+        "roll": 1
+      }
+    },
+    {
+      "id": "old-town-criterium",
+      "name": "Old Town Criterium",
+      "routeName": "Cathedral Circuit",
+      "place": "A cobbled European old town on race day",
+      "distanceKm": 14.2,
+      "climbingM": 140,
+      "rating": "Easy",
+      "world": "oldtown",
+      "thumbnailUrl": "maps/old-town-criterium.jpg",
+      "photoUrl": "maps/old-town-criterium-photo.jpg",
+      "realPlace": {
+        "name": "Bruges",
+        "route": "Steenstraat to the Markt",
+        "latitude": 51.2078,
+        "longitude": 3.2236
+      },
+      "unlock": {
+        "kind": "start"
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 300,
+            "level": 8,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 180,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 150,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 150,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "cool-down",
+            "duration": 360,
+            "level": 6,
+            "cadenceAim": 70
+          }
+        ]
+      },
+      "terrain": {
+        "grade": {
+          "warm-up": 0.5,
+          "work": 6,
+          "recover": -1.5,
+          "cool-down": 0,
+          "steady": 0
+        },
+        "roll": 0.5
+      }
+    },
+    {
+      "id": "cliffside-coast",
+      "name": "Cliffside Coast",
+      "routeName": "Headland Road",
+      "place": "A clifftop road above the sea at sunset",
+      "distanceKm": 32,
+      "climbingM": 410,
+      "rating": "Moderate",
+      "world": "coast",
+      "thumbnailUrl": "maps/cliffside-coast.jpg",
+      "photoUrl": "maps/cliffside-coast-photo.jpg",
+      "unlock": {
+        "kind": "top-three-vs-bots",
+        "mapId": "prairie-paceline"
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 300,
+            "level": 8,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 180,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 150,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 150,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "cool-down",
+            "duration": 360,
+            "level": 6,
+            "cadenceAim": 70
+          }
+        ]
+      },
+      "terrain": {
+        "grade": {
+          "warm-up": 0.5,
+          "work": 4.5,
+          "recover": -1.5,
+          "cool-down": -0.5,
+          "steady": 0.5
+        },
+        "roll": 1.6
+      }
+    },
+    {
+      "id": "neon-docklands",
+      "name": "Neon Docklands",
+      "routeName": "Harbour Bridges Loop",
+      "place": "A harbour city after dark",
+      "distanceKm": 21.6,
+      "climbingM": 120,
+      "rating": "Moderate",
+      "world": "docklands",
+      "thumbnailUrl": "maps/neon-docklands.jpg",
+      "photoUrl": "maps/neon-docklands-photo.jpg",
+      "unlock": {
+        "kind": "top-three-vs-bots",
+        "mapId": "old-town-criterium"
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 300,
+            "level": 8,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 180,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 150,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 150,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "cool-down",
+            "duration": 360,
+            "level": 6,
+            "cadenceAim": 70
+          }
+        ]
+      },
+      "terrain": {
+        "grade": {
+          "warm-up": 0.5,
+          "work": 5.5,
+          "recover": -2,
+          "cool-down": 0,
+          "steady": 0
+        },
+        "roll": 0.6
+      }
+    },
+    {
+      "id": "dolomites",
+      "name": "Dolomites",
+      "routeName": "Val Gardena Valley Road",
+      "place": "An alpine valley under pale limestone peaks",
+      "distanceKm": 38.5,
+      "climbingM": 860,
+      "rating": "Hard",
+      "world": "dolomites",
+      "thumbnailUrl": "maps/dolomites.jpg",
+      "photoUrl": "maps/dolomites-photo.jpg",
+      "unlock": {
+        "kind": "stars",
+        "mapId": "cliffside-coast",
+        "stars": 2
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 300,
+            "level": 8,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 180,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 150,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 150,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "cool-down",
+            "duration": 360,
+            "level": 6,
+            "cadenceAim": 70
+          }
+        ]
+      },
+      "terrain": {
+        "grade": {
+          "warm-up": 1,
+          "work": 2,
+          "recover": 0,
+          "cool-down": -1,
+          "steady": 0.8
+        },
+        "roll": 2.4
+      }
+    },
+    {
+      "id": "vice-city",
+      "name": "Vice City",
+      "routeName": "Ocean Drive to the Causeway",
+      "place": "A neon beachfront city at a magenta sunset",
+      "distanceKm": 24,
+      "climbingM": 60,
+      "rating": "Moderate",
+      "world": "vicecity",
+      "thumbnailUrl": "maps/vice-city.jpg",
+      "photoUrl": "maps/vice-city-photo.jpg",
+      "unlock": {
+        "kind": "level",
+        "level": 10
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 300,
+            "level": 8,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 180,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 150,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 150,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "cool-down",
+            "duration": 360,
+            "level": 6,
+            "cadenceAim": 70
+          }
+        ]
+      },
+      "terrain": {
+        "grade": {
+          "warm-up": 0.5,
+          "work": 4,
+          "recover": -1,
+          "cool-down": 0,
+          "steady": 0.5
+        },
+        "roll": 0.5
+      }
+    },
+    {
+      "id": "col-du-granit",
+      "name": "Col du Granit",
+      "routeName": null,
+      "place": "A high mountain pass at first light",
+      "distanceKm": 16.1,
+      "climbingM": 1240,
+      "rating": "Brutal",
+      "world": "granite",
+      "thumbnailUrl": "maps/col-du-granit.jpg",
+      "photoUrl": "maps/col-du-granit-photo.jpg",
+      "unlock": {
+        "kind": "stars",
+        "mapId": "dolomites",
+        "stars": 3
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 300,
+            "level": 8,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 180,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 150,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 150,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 6,
+            "cadenceAim": 72
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 24,
+            "cadenceAim": 98
+          },
+          {
+            "kind": "cool-down",
+            "duration": 360,
+            "level": 6,
+            "cadenceAim": 70
+          }
+        ]
+      },
+      "terrain": {
+        "grade": {
+          "warm-up": 3,
+          "work": 8,
+          "recover": 3.5,
+          "cool-down": -5,
+          "steady": 5
+        },
+        "roll": 0.8
+      }
+    },
+    {
+      "id": "ibiza-sunset-strip",
+      "name": "Ibiza Sunset Strip",
+      "routeName": "Intervals to the Beat",
+      "place": "The waterfront strip of Sant Antoni at sunset",
+      "distanceKm": 8.4,
+      "climbingM": 159,
+      "rating": "Moderate",
+      "world": "ibiza",
+      "thumbnailUrl": "maps/ibiza-sunset-strip.jpg",
+      "photoUrl": "maps/ibiza-sunset-strip-photo.jpg",
+      "unlock": {
+        "kind": "start"
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 150,
+            "level": 14,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 45,
+            "level": 19,
+            "cadenceAim": 70
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 14,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 75,
+            "level": 21,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 13,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 21,
+            "cadenceAim": 74
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 13,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 21,
+            "cadenceAim": 74
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 13,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 21,
+            "cadenceAim": 74
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 13,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 22,
+            "cadenceAim": 65
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 22,
+            "cadenceAim": 65
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 22,
+            "cadenceAim": 65
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 15,
+            "level": 24,
+            "cadenceAim": 70
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 21,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 15,
+            "level": 24,
+            "cadenceAim": 70
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 21,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 20,
+            "level": 22,
+            "cadenceAim": 110
+          },
+          {
+            "kind": "recover",
+            "duration": 20,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 20,
+            "level": 22,
+            "cadenceAim": 110
+          },
+          {
+            "kind": "recover",
+            "duration": 20,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 20,
+            "level": 22,
+            "cadenceAim": 110
+          },
+          {
+            "kind": "recover",
+            "duration": 20,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 20,
+            "level": 22,
+            "cadenceAim": 110
+          },
+          {
+            "kind": "recover",
+            "duration": 20,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 20,
+            "level": 22,
+            "cadenceAim": 110
+          },
+          {
+            "kind": "cool-down",
+            "duration": 150,
+            "level": 11,
+            "cadenceAim": 81
+          }
+        ]
+      },
+      "terrain": {
+        "grade": {
+          "warm-up": -2,
+          "work": 5.5,
+          "recover": -3.5,
+          "cool-down": -5,
+          "steady": 0
+        },
+        "roll": 0
+      }
+    }
+  ]
+}

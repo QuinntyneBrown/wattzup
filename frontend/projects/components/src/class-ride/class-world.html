@@ -1,0 +1,11 @@
+<div class="class-world">
+  @if (panorama(); as panorama) {
+    <img class="class-world__panorama" [src]="panorama.url" [alt]="panorama.alt" />
+  }
+  <div class="class-world__scene">
+    <ng-content select="[slot=scene]" />
+  </div>
+  <div class="class-world__video">
+    <ng-content select="[slot=video]" />
+  </div>
+</div>

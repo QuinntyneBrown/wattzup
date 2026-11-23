@@ -1,0 +1,92 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Keep the ride clock true
+hide empty members
+
+interface MonotonicTime <<api>> {
+  +now(): number
+}
+class RideClock <<domain/engine>> {
+  -startedAt: number
+  -pausedAt: number | null
+  -pausedTotalMs: number
+  +start(): void
+  +pause(): void
+  +resume(): void
+  +elapsedMs(): number
+}
+class RideTicker <<domain/engine>> {
+  -timer: number | null
+  +second: Signal<number>
+  +ticks: Observable<number>
+  +start(): void
+  +stop(): void
+  -scheduleNext(): void
+  -onVisibilityChange(): void
+}
+class WorkoutEngine <<domain/engine>> {
+  +state: Signal<PlanState | null>
+  +follow(plan: Plan): void
+}
+class planStateAt <<domain/engine>> {
+  +planStateAt(plan: Plan, elapsedMs: number): PlanState | null
+}
+class PlanState <<domain/engine>> {
+  +index: number
+  +segment: Segment
+  +remainingMs: number
+  +progress: number
+  +targetPower: number
+}
+class DistanceIntegrator <<domain/engine>> {
+  -lastTimestampMs: number
+  +metres: number
+  +add(speedKmh: number, timestampMs: number): void
+}
+class ReadoutSampler <<domain/engine>> {
+  -lastPublishMs: number
+  -held: BikeSample | null
+  +readout: Signal<BikeSample | null>
+  +push(sample: BikeSample): void
+  +flush(): void
+}
+class BoardOrder <<domain/engine>> {
+  -lastAppliedMs: number
+  +order: Signal<RiderId[]>
+  +offer(ranking: RiderId[], nowMs: number): void
+}
+interface ScreenWakeLock <<api>> {
+  +hold(): void
+  +release(): void
+}
+class BrowserScreenWakeLock <<domain/browser>> {
+  -sentinel: WakeLockSentinel | null
+}
+class "RacePage / ClassRideSession" as Screen <<ride>> {
+  #confirmLeaving(event: BeforeUnloadEvent): void
+}
+class "RaceStore / ClassRideStore" as Store <<ride>> {
+  +ride(): boolean
+}
+RideClock ..> MonotonicTime : reads
+RideTicker --> RideClock : reads elapsedMs
+WorkoutEngine --> RideTicker : follows ticks
+WorkoutEngine ..> planStateAt : calls
+planStateAt ..> PlanState : returns
+BrowserScreenWakeLock ..|> ScreenWakeLock
+Store *-- RideClock
+Store *-- RideTicker
+Store --> ScreenWakeLock : holds while riding
+Screen --> Store : asks whether a ride runs
+@enduml

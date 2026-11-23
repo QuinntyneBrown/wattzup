@@ -1,0 +1,21 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Authenticate every request
+Container(app, "Ride app", "Angular in Chrome or Edge", "The browser marks each request with Sec-Fetch-Site and Origin")
+Container_Boundary(api, "Telo Ride API") {
+  Component(authn, "Cookie authentication", "Middleware · Telo.Ride.Infrastructure", "Validates the session on every request")
+  Component(authz, "Fallback authorization policy", "Authorization · Telo.Ride.Api", "RequireAuthenticatedUser unless [AllowAnonymous]")
+  Component(origin, "SameOriginRequests", "Middleware · Telo.Ride.Api", "Refuses an unsafe request or hub upgrade from another origin (ADR 0033)")
+  Component(current, "ICurrentRider", "Port · Telo.Ride.Application", "Rider id from the session claims")
+  Component(filter, "Rider-owned query filter", "EF Core global filter · Telo.Ride.Infrastructure", "Every IRiderOwned row filtered to the current rider")
+  Component(health, "Health checks", "MapHealthChecks · Telo.Ride.Api", "Live: responds; ready: database reachable")
+  ComponentDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Sessions and rider-owned data")
+}
+Rel(app, origin, "Sends REST requests and hub connections through", "HTTPS, WebSocket")
+Rel(origin, authn, "Passes same-origin requests to")
+Rel(authn, authz, "Supplies the principal to")
+Rel(filter, current, "Reads the rider id from")
+Rel(filter, db, "Adds WHERE RiderId = @current to queries on", "EF Core")
+Rel(health, db, "Checks the connection to")
+@enduml

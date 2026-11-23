@@ -1,0 +1,10 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Ride a simulated bike
+Person(dev, "Developer or test author", "Exercises features without hardware")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge; development build", "Binds BIKE_CONNECTION to the simulated Echelon EX-5s")
+}
+Rel(dev, app, "Rides against the simulated bike in")
+@enduml

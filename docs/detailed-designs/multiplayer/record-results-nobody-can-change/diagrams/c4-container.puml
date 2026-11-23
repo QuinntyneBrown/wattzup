@@ -1,0 +1,18 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Record results nobody can change
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine")
+  ContainerDb(idb, "Browser storage", "IndexedDB", "Rides waiting to send, cached catalogues, settings, packet log")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Sign-in, progress, catalogues, ride hub, feedback")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Riders, sessions, rides, progress, feedback")
+}
+Rel(rider, app, "Finishes a ride in")
+Rel(app, idb, "Keeps the ride until recorded", "IndexedDB")
+Rel(app, api, "POST /api/rides with ride id", "JSON/HTTPS")
+Rel(app, api, "ReportProgress during the session", "SignalR")
+Rel(api, db, "Writes session results and rides", "EF Core")
+@enduml

@@ -1,0 +1,37 @@
+// Block side-nav (docs/design-system/components/sidebar-nav.html): a scrolling row below lg, a column from lg.
+:host {
+  display: block;
+  min-width: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.side-nav__list {
+  display: flex;
+  gap: var(--space-1);
+  overflow-x: auto;
+  scrollbar-width: none;
+  // Room above and below the row for each link's 44 px tap area, which the scroller would otherwise clip; the
+  // negative margin keeps the row where it was.
+  margin-block: calc(var(--space-1) - (var(--target-comfortable) - var(--target-min)) / 2);
+  margin-inline: calc(var(--space-1) * -1);
+  padding: calc((var(--target-comfortable) - var(--target-min)) / 2) var(--space-1);
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (min-width: 64rem) {
+    flex-direction: column;
+    gap: var(--space-0-5);
+    overflow: visible;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@media (min-width: 64rem) {
+  :host {
+    width: var(--layout-sidebar-width);
+  }
+}

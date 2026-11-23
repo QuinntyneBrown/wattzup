@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connect Bike · unsupported-browser — Telo Ride mocks</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="connect-bike">
+<meta name="mock:state" content="unsupported-browser">
+<meta name="mock:requirements" content="L2-007 L2-008 L2-011 L2-012 L2-013 L2-014 L2-015 L2-018">
+<meta name="description" content="The browser cannot reach the bike: a notice says to open Telo Ride in Chrome or Edge, because Safari and Firefox do not support Web Bluetooth.">
+<link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="app connect">
+  <header class="connect__header">
+    <span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span>
+    <button class="icon-btn" type="button" aria-label="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+  </header>
+
+  <main id="main" class="connect__body">
+    <div class="connect__media">
+      <img class="connect__photo" src="../../assets/images/machines/echelon-ex5s.jpg" alt="An Echelon EX-5s bike">
+    </div>
+
+    <div class="connect__content">
+      <h1 class="connect__title">Connect your bike</h1>
+      <p class="connect__lead">Pedal once to wake it up. Telo Ride reads your power and sets resistance for every hill and interval.</p>
+
+        <section class="connect-blocker" role="alert" aria-labelledby="blocker-title">
+          <div class="connect-blocker__head">
+            <svg class="icon icon--lg connect-blocker__icon connect-blocker__icon--warn" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            <h2 class="connect-blocker__title" id="blocker-title">This browser can't reach the bike</h2>
+          </div>
+          <p class="connect-blocker__body">Open Telo Ride in Chrome or Edge on a laptop or Android tablet. Safari and Firefox don't support Web Bluetooth yet.</p>
+          <a class="btn btn--raised connect-blocker__retry" href="default.html">Try again</a>
+        </section>
+
+      <section class="connect-works" aria-labelledby="works-with">
+        <h2 class="connect-works__title" id="works-with">Works with</h2>
+        <ul class="connect-works__list">
+          <li class="connect-works__item"><span>Echelon EX-5s</span><span class="connect-works__status">Full control</span></li>
+          <li class="connect-works__item"><span>Echelon EX-3</span><span class="connect-works__status">Full control</span></li>
+          <li class="connect-works__item"><span>Echelon EX-8s</span><span class="connect-works__status">Full control</span></li>
+          <li class="connect-works__item"><span>Echelon Connect Sport</span><span class="connect-works__status">Full control</span></li>
+          <li class="connect-works__item"><span>Other FTMS smart bikes</span><span class="connect-works__status connect-works__status--beta">Beta</span></li>
+        </ul>
+      </section>
+    </div>
+  </main>
+</div>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="All mocks">⌂</a>
+  <span class="mock-bar__screen">Connect Bike</span>
+  <ul class="mock-bar__states">
+    <li><a href="default.html">default</a></li>
+    <li><a href="searching.html">searching</a></li>
+    <li><a href="pairing.html">pairing</a></li>
+    <li><a href="paired.html">paired</a></li>
+    <li><a href="bluetooth-off.html">bluetooth-off</a></li>
+    <li><a href="unsupported-browser.html" aria-current="page">unsupported-browser</a></li>
+    <li><a href="needs-https.html">needs-https</a></li>
+    <li><a href="chooser-blocked.html">chooser-blocked</a></li>
+  </ul>
+  <button type="button" data-theme-toggle aria-pressed="true">☀ Light</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

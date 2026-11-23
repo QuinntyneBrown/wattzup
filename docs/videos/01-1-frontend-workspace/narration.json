@@ -1,0 +1,26 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": { "file": "../assets/music/beautiful-boom-bap.mp3", "offset": 0.009, "duckDb": 16, "betweenDb": 5, "fadeSeconds": 2 },
+  "scenes": [
+    { "id": "hook", "bars": 4, "lines": ["Telo Ride starts here: one Angular workspace, and the ride app it builds."] },
+    { "id": "workspace", "bars": 4, "lines": ["The frontend holds three libraries, api, domain and components, and one application, ride.", "Ride uses all three. Domain uses api. Api uses nothing."] },
+    { "id": "lint", "bars": 4, "lines": ["Import against that direction and lint fails. And only domain's bluetooth folder may touch navigator dot bluetooth."] },
+    { "id": "home", "bars": 4, "lines": ["Start the app and Home opens in the app shell. The Telo Ride lockup links home, and the main navigation marks Home as the current page."] },
+    { "id": "tokens", "bars": 4, "lines": ["Every colour is a token from the design system. Barlow Condensed, Inter Tight and JetBrains Mono ship with the app, never from a CDN."] },
+    { "id": "notfound", "bars": 4, "lines": ["An address that matches no screen says so, with no current item in the header.", "Back to Home opens Home."] },
+    { "id": "keyboard", "bars": 4, "lines": ["On a keyboard, the first Tab reaches Skip to content, and Enter moves focus straight to the page."] },
+    { "id": "sizes", "bars": 4, "lines": ["The same shell fits a phone, a tablet, a laptop and a desktop. On a phone, the navigation takes its own row."] },
+    { "id": "budget", "bars": 4, "lines": ["Every screen is its own chunk, loaded on demand, and the build fails if the first download outgrows its budget."] },
+    { "id": "proof", "bars": 4, "lines": ["What the tests prove: six behaviour specs run against the production build, and any page error, or any request off this machine, fails them."] },
+    { "id": "close", "bars": 12, "lines": [
+      "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+      "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+      { "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.", "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks." },
+      "A custom workout lives under Profile."
+    ] }
+  ]
+}

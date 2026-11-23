@@ -1,0 +1,48 @@
+@use '../../styles/page';
+
+// Block setup-layout (docs/design-system/assets/components.css, Race Setup): the header over the scrolling page, one
+// column on a phone and, from lg, the map beside the 420 px ride panel.
+.race-setup-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--color-ink);
+  color: var(--color-fg);
+}
+
+.race-setup-page__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.setup-layout {
+  display: grid;
+  gap: var(--space-8);
+
+  @media (min-width: 64rem) {
+    grid-template-columns: minmax(0, 1fr) var(--setup-preview-width);
+    gap: var(--space-12);
+  }
+}
+
+// Block setup-ride: the ride column, Start pinned to its bottom from lg (L2-047 AC6).
+.setup-ride {
+  display: flex;
+  flex-direction: column;
+}
+
+.setup-ride__start {
+  margin-top: var(--space-8);
+
+  @media (min-width: 64rem) {
+    margin-top: auto;
+  }
+}
+
+.setup-ride__title {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+  font-weight: var(--font-weight-semibold);
+}

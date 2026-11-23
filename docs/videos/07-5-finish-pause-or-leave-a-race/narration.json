@@ -1,0 +1,99 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "A race doesn't always run from Go to the line. You might pause, leave, lose the bike, or win."
+      ]
+    },
+    {
+      "id": "bar",
+      "bars": 4,
+      "lines": [
+        "Against bots, the bar has Leave. Solo, it has Pause and End. Either way out opens Race Setup at once, with no confirmation, and earns no XP."
+      ]
+    },
+    {
+      "id": "pause",
+      "bars": 4,
+      "lines": [
+        "Only a solo race pauses. The clock, the distance and the standings hold, and the card blocks none of the buttons."
+      ]
+    },
+    {
+      "id": "pedal",
+      "bars": 4,
+      "lines": [
+        "Resume carries the race on. So does pedalling again, once you have stopped, so the stroke under your press never undoes it."
+      ]
+    },
+    {
+      "id": "lost",
+      "bars": 4,
+      "lines": [
+        "If the bike stops answering, an alert says so with Reconnect. You coast, your speed falling to a stop over fifteen seconds, the resistance buttons off."
+      ]
+    },
+    {
+      "id": "dnf",
+      "bars": 4,
+      "lines": [
+        "Back in time, the race carries on. Fifteen seconds without the bike, and the race ends as a DNF, never a silent stop, with a way back to Race Setup."
+      ]
+    },
+    {
+      "id": "parked",
+      "bars": 4,
+      "lines": [
+        "Solo, nobody else is on your clock, so the race parks until the bike is back, then carries on from where it stopped."
+      ]
+    },
+    {
+      "id": "finish",
+      "bars": 4,
+      "lines": [
+        "The line is the map's distance. Cross it, and your finish time is the race clock, your place is where you crossed, and Results opens."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "Pause works the same from a phone to a desktop, its button forty-eight pixels under your thumb."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: eleven new behaviour specs, the coast and the finish line in unit tests, all green, and the first bundle unchanged."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

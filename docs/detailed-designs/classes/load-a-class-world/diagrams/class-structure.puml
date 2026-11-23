@@ -1,0 +1,100 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+hide empty members
+title Class structure — Load a class world
+enum LoadPhase {
+  loading
+  slow
+  ready
+  failed
+  panorama
+  riding
+}
+enum StepStatus {
+  done
+  current
+  waiting
+  failed
+  skipped
+}
+class LoadStepView {
+  +id: 'download' | 'shaders' | 'warmup'
+  +label: string
+  +detail: string
+  +status: StepStatus
+  +fraction: number
+}
+class WorldLoadStore <<ride>> {
+  +steps: Signal<LoadStepView[]>
+  +percent: Signal<number>
+  +phase: Signal<LoadPhase>
+  +level: Signal<QualityLevel>
+  +backend: Signal<RendererBackend>
+  -abort: AbortController
+  -slowTimer: number
+  -renderer?: WorldRenderer
+  +start(cls: ClassView): Promise<void>
+  +retry(): Promise<void>
+  +startAtLow(): Promise<void>
+  +usePanorama(): void
+  +cancel(): void
+  +handOver(): WorldRenderer
+}
+class "loadPercent()" as lp <<ride helper>> {
+  +loadPercent(steps: LoadStepView[]): number
+}
+class WorldAssetLoader <<world>> {
+  +load(world: WorldDto, signal: AbortSignal, onBytes: (got: number, total: number) => void): Promise<WorldBundle>
+  +resume(from: number): Promise<WorldBundle>
+}
+class WorldRenderer <<world>> {
+  +prepare(canvas: HTMLCanvasElement, bundle: WorldBundle, level: QualityLevel, onProgress: (built: number, total: number) => void): Promise<void>
+  +warmUp(frames: number): Promise<number>
+  +dispose(): void
+}
+class ProgramCompiler <<world>> {
+  +compileInBatches(scene: Scene, onProgress: (built: number, total: number) => void): Promise<void>
+}
+interface WorldCache <<api>> {
+  +get(worldId: string): Promise<WorldBundle | undefined>
+  +put(worldId: string, bundle: WorldBundle): Promise<void>
+}
+interface RideSettingsStore <<api>> {
+  +settings: Signal<RideSettings>
+}
+interface Announcer <<api>> {
+  +announce(message: string, politeness: 'polite' | 'assertive'): void
+}
+class WorldLoading <<components>> {
+  +steps: InputSignal<LoadStepView[]>
+  +percent: InputSignal<number>
+  +action: InputSignal<LoadAction>
+  +start: OutputEmitterRef<void>
+  +retry: OutputEmitterRef<void>
+  +startAtLow: OutputEmitterRef<void>
+  +usePanorama: OutputEmitterRef<void>
+  +back: OutputEmitterRef<void>
+}
+WorldLoadStore "1" *-- "3" LoadStepView
+WorldLoadStore --> LoadPhase
+LoadStepView --> StepStatus
+WorldLoadStore ..> lp : uses
+WorldLoadStore ..> WorldAssetLoader : downloads (lazy)
+WorldLoadStore o-- "0..1" WorldRenderer : holds until hand-over
+WorldRenderer *-- ProgramCompiler
+WorldAssetLoader ..> WorldCache : WORLD_CACHE
+WorldLoadStore ..> RideSettingsStore : RIDE_SETTINGS
+WorldLoadStore ..> Announcer : ANNOUNCER
+WorldLoading ..> WorldLoadStore : bound by ClassRidePage
+@enduml

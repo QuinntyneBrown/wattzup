@@ -1,0 +1,53 @@
+@startuml
+set separator none
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Protect rider data
+package "Telo.Ride.Application" {
+  interface ISignInCodeHasher {
+    +Hash(code: string): byte[]
+    +Matches(code: string, hash: byte[]): bool
+  }
+}
+package "Telo.Ride.Infrastructure" {
+  class HmacSignInCodeHasher {
+    -byte[] key
+    +Hash(code: string): byte[]
+    +Matches(code: string, hash: byte[]): bool
+  }
+  class CodeHashOptions <<configuration>> {
+    +Key: Auth:CodeHashKey (secret store)
+  }
+}
+package "Telo.Ride.Api" {
+  class TelemetrySetup <<static>> {
+    +AddTeloRideTelemetry(services, configuration): IServiceCollection
+  }
+}
+package "Telo.Ride.Domain" {
+  class SignInCode {
+    +byte[] CodeHash
+  }
+  class RiderSession {
+    +byte[] KeyHash
+  }
+}
+ISignInCodeHasher <|.. HmacSignInCodeHasher
+HmacSignInCodeHasher --> CodeHashOptions
+HmacSignInCodeHasher ..> SignInCode : produces CodeHash
+note right of TelemetrySetup
+  Spans named by route template; query values
+  redacted and url.query cleared; no bodies;
+  Microsoft.AspNetCore logs at Warning
+end note
+@enduml

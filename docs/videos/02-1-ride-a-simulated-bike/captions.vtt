@@ -1,0 +1,82 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.168
+No bike beside the desk? Telo Ride can now ride a simulated one, so every feature
+
+00:00:07.168 --> 00:00:09.790
+can be built and tested without hardware.
+
+00:00:10.324 --> 00:00:15.723
+Open a development build with simulate, press Pair, and an Echelon EX-5s pairs at
+
+00:00:15.723 --> 00:00:18.022
+once, with no browser chooser.
+
+00:00:20.647 --> 00:00:25.345
+Connect Bike searches from the rider's click, pairs, shows a check, and moves on to
+
+00:00:25.345 --> 00:00:27.060
+Home half a second later.
+
+00:00:30.971 --> 00:00:36.146
+Once connected, the simulator sends a workout frame and a resistance frame every
+
+00:00:36.146 --> 00:00:39.098
+second, encoded exactly as a real bike's.
+
+00:00:41.295 --> 00:00:45.895
+A new target resistance is parsed back and reported by the next frame. Above
+
+00:00:45.895 --> 00:00:48.677
+thirty-two, it clamps, as the bike would.
+
+00:00:51.618 --> 00:00:56.466
+In a production build, the simulator provider is swapped for an empty one at build
+
+00:00:56.466 --> 00:00:58.894
+time, so simulate is simply ignored.
+
+00:01:01.942 --> 00:01:06.754
+Not one byte of the simulator reaches riders. Pairing goes through Web Bluetooth,
+
+00:01:06.754 --> 00:01:09.906
+and the card shows the bike the browser offered.
+
+00:01:12.266 --> 00:01:16.892
+The bike link loads with the first screen, not the first download, so the initial
+
+00:01:16.892 --> 00:01:19.933
+bundle stays at two hundred and sixty kilobytes.
+
+00:01:22.590 --> 00:01:27.596
+Connect Bike fits a phone, a tablet, a laptop or a desktop, with the bike's photo
+
+00:01:27.596 --> 00:01:29.318
+beside the pair button.
+
+00:01:32.913 --> 00:01:37.463
+What the tests prove: seventeen unit tests on the frames and resistance, and
+
+00:01:37.463 --> 00:01:39.918
+fourteen behaviour specs, all green.
+
+00:01:43.237 --> 00:01:47.840
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:48.185 --> 00:01:52.697
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:52.697 --> 00:01:54.368
+every hill and interval.
+
+00:01:54.713 --> 00:01:59.891
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:59.891 --> 00:02:05.339
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:02:05.339 --> 00:02:08.329
+XP, rider levels, stars and map unlocks.
+
+00:02:08.675 --> 00:02:11.167
+A custom workout lives under Profile.

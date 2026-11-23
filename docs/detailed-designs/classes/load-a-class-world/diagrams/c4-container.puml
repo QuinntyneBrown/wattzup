@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Load a class world
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge; Three.js in a lazy chunk", "World loading screen; builds the world on the GPU")
+  Container(host, "Static host", "Azure Static Web Apps (ADR 0022)", "App chunks, world bundles and panoramas")
+  ContainerDb(cache, "Browser storage", "Cache Storage and localStorage", "Saved world bundles; ride settings")
+  Container(api, "Telo Ride API", "ASP.NET Core", "Class catalogue with world ids (already loaded by Class Start)")
+}
+Rel(rider, app, "Watches the load, starts or leaves")
+Rel(app, host, "Downloads the world bundle, resumable", "HTTPS, Range")
+Rel(app, cache, "Reads and saves the bundle; reads settings")
+Rel(app, api, "Class catalogue", "JSON/HTTPS")
+@enduml

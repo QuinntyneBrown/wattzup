@@ -1,0 +1,68 @@
+@startuml
+title UML sequence behaviour — Open the class library
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as rider
+box "Frontend — Ride app (ride application and components library)" #E0F2FE
+  participant "ClassLibraryPage" as page
+  participant "ClassLibraryStore" as store
+end box
+box "Frontend — Ride app (api, domain and video libraries)" #E0F2FE
+  participant "CachedClassesApi" as cached
+  participant "HttpClassesApi" as capi
+  participant "CatalogueCache" as cache
+  participant "HttpProgressApi" as papi
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "ClassesController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "GetClassesQueryHandler" as handler
+  participant "ClassPlanRules" as rules
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "EmbeddedClassCatalogue" as db
+end box
+rider -> page : Open /classes
+page -> store : init()
+par catalogue
+  store -> cached : list()
+  cached -> capi : list()
+  capi -> ctrl : GET /api/classes (public)
+  ctrl -> handler : Send GetClassesQuery
+  handler -> db : Classes (classes.json, read once)
+  db --> handler : Seven definitions
+  loop each class
+    handler -> rules : Validate plan (levels 1–32, total = length) L2-080 AC4
+    rules --> handler : Valid or invalid
+  end
+  handler --> ctrl : ClassCatalogueDto (valid classes only)
+  ctrl --> capi : 200 OK
+  capi --> cached : Catalogue
+  cached -> cache : Save catalogue L2-080 AC3
+  cached --> store : Catalogue
+else progress
+  store -> papi : get()
+  papi --> store : Rider level 7
+end
+alt catalogue request failed
+  cached -> cache : Read last catalogue
+  cache --> cached : Cached catalogue
+  cached --> store : Cached catalogue (L2-135 AC3)
+end
+store -> store : Mark classes above level 7 locked ("Opens at level 10", "Opens at level 20") L2-082 AC1
+store --> page : Shelves with card views
+page --> rider : "Classes", three shelves, open cards and locked cards L2-081
+@enduml

@@ -1,0 +1,56 @@
+@startuml
+title UML sequence behaviour — Finish without the service
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "RacePage" as page
+end box
+box "Frontend — Ride app (domain and api libraries)" #E0F2FE
+  participant "RideOutbox" as outbox
+  participant "HttpRidesApi" as rides
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RidesController" as controller
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "RaceSession" as recorder
+  participant "SubmitRideCommandHandler" as handler
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+recorder -> recorder : No progress for 15 s: DNF at the distance last received (L2-124 AC2)
+recorder -> recorder : Race due; DNF placed after the riders still racing (L2-126 AC3)
+recorder -> db : Save SessionResult
+actor -> page : Cross the line, connection still down
+page -> outbox : submit(ride)
+outbox --> page : Kept in IndexedDB (L2-135)
+page --> actor : Results with XP pending
+loop until recorded, growing delays up to an hour (L2-135)
+  outbox -> rides : submit(ride)
+  alt backend reachable
+    rides -> controller : POST /api/rides
+    controller -> handler : Send SubmitRideCommand
+    handler -> db : SessionResultEntry for rider
+    db --> handler : Place by last progress
+    handler --> controller : RideResultDto
+    controller --> rides : 201
+    rides --> outbox : Recorded; remove from device
+  else unreachable
+    rides --> outbox : Network error; keep
+  end
+end
+@enduml

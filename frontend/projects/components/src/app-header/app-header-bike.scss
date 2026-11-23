@@ -1,0 +1,23 @@
+:host {
+  display: none;
+  align-items: center;
+  gap: var(--space-1-5);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  white-space: nowrap;
+  color: var(--color-muted);
+}
+
+@media (min-width: 64rem) {
+  :host {
+    display: flex;
+  }
+}
+
+.icon {
+  color: var(--color-volt-fg);
+}
+
+:host(.app-header__bike--off) .icon {
+  color: var(--color-heart-fg);
+}

@@ -1,0 +1,54 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Record the packet log
+class "PacketDirection" as PacketDirection <<api>> {
+  'out' | 'in'
+}
+interface PacketLog <<api>> {
+  +everyPacket: Signal<boolean>
+  +count: Signal<number>
+  +bytes: Signal<number>
+  +holdsIncoming: Signal<boolean>
+  +setEveryPacket(on: boolean): void
+  +record(direction, characteristic: string, bytes: Uint8Array): void
+  +download(): void
+}
+class MemoryPacketLog <<domain/diagnostics>> {
+  -entries: Entry[]
+  -head: number
+  +{static} PACKET_LOG_LIMIT_BYTES = 10485760
+}
+interface AppLogger <<api>> {
+  +error(area: string, error: unknown): void
+  +packet(direction, frame: string, hex: string): void
+}
+class ConsoleAppLogger <<domain/diagnostics>> {
+  +error(area: string, error: unknown): void
+  +packet(direction, frame: string, hex: string): void
+}
+class "redact()" as Redact <<domain/diagnostics>>
+class "packetFrame()" as Frame <<domain/protocol>>
+class "packetLogSummary(), packetLogFileName()" as Summary <<domain/diagnostics>>
+class "PacketTap" as Tap <<domain/bluetooth>> {
+  (direction, characteristic, bytes) => void
+}
+MemoryPacketLog ..|> PacketLog
+ConsoleAppLogger ..|> AppLogger
+ConsoleAppLogger ..> Redact
+MemoryPacketLog ..> Frame
+MemoryPacketLog ..> AppLogger
+MemoryPacketLog ..> Summary : file name
+PacketLog --> PacketDirection
+Tap ..> PacketLog : record()
+@enduml

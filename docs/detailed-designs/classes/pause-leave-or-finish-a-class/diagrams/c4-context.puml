@@ -1,0 +1,13 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Pause, leave or finish a class
+
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(bike, "Smart bike", "Echelon EX-5s, EX-3, EX-8s, Connect Sport, or an FTMS bike; Bluetooth LE")
+System_Ext(youtube, "YouTube", "Class videos")
+Rel(rider, telo, "Pauses, leaves or finishes a class in")
+Rel(telo, bike, "Reconnects and resends the segment level", "Bluetooth LE")
+Rel(telo, youtube, "Pauses and resumes the video")
+@enduml

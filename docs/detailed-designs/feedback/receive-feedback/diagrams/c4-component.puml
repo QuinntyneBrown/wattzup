@@ -1,0 +1,27 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Receive feedback
+
+Container(app, "Ride app", "Angular, Chrome or Edge", "HttpFeedbackApi")
+Container_Boundary(api, "Telo Ride API") {
+  Component(auth, "Fallback authorization policy", "ASP.NET Core authorization", "401 without a session")
+  Component(ctrl, "FeedbackController", "Controller · Telo.Ride.Api", "POST /api/feedback")
+  Component(validator, "SubmitFeedbackCommandValidator", "FluentValidation · Telo.Ride.Application", "Kind, 2,000 characters, 1 MB log")
+  Component(handler, "SubmitFeedbackCommandHandler", "MediatR handler · Telo.Ride.Application", "10 an hour per rider (429); creates and saves")
+  Component(metrics, "TeloRideMetrics", "IFeedbackMetrics · Telo.Ride.Infrastructure", "telo.ride.feedback by kind")
+  Component(cmd, "feedback command", "CLI · Telo.Ride.Api", "JSON Lines for the team")
+  Component(list, "ListFeedbackQueryHandler", "MediatR handler · Telo.Ride.Application", "Every report, oldest first")
+  Component(entity, "FeedbackReport", "Domain entity · Telo.Ride.Domain", "Stored as data")
+  ComponentDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Feedback reports")
+}
+Rel(app, auth, "POST /api/feedback", "JSON/HTTPS")
+Rel(auth, ctrl, "Authenticated request")
+Rel(ctrl, validator, "SubmitFeedbackCommand through the validation behaviour")
+Rel(validator, handler, "Valid command")
+Rel(handler, entity, "Creates")
+Rel(handler, db, "Counts the past hour; saves", "IAppDbContext")
+Rel(handler, metrics, "FeedbackReceived(kind)")
+Rel(cmd, list, "ListFeedbackQuery")
+Rel(list, db, "Reads", "IAppDbContext")
+@enduml

@@ -1,0 +1,22 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Earn XP and rider levels
+
+Container(app, "Ride app", "Angular", "Submits the finished ride; shows XP lines and level")
+Container_Boundary(api, "Telo Ride API") {
+  Component(ctrl, "RidesController", "ASP.NET Core controller", "POST /api/rides")
+  Component(handler, "SubmitRideCommandHandler", "MediatR handler", "Records the ride and its progress in one unit of work")
+  Component(xp, "XpCalculator", "Domain service", "XP lines of L2-037")
+  Component(levels, "LevelTable", "Domain service", "Level thresholds 1 to 30")
+  Component(rider, "Rider", "Domain entity", "Holds TotalXp")
+}
+ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Rides and riders")
+
+Rel(app, ctrl, "Submits ride", "JSON/HTTPS")
+Rel(ctrl, handler, "Sends SubmitRideCommand")
+Rel(handler, xp, "Computes XP lines")
+Rel(handler, rider, "AddXp(total)")
+Rel(handler, levels, "Level before and after")
+Rel(handler, db, "Saves", "EF Core")
+@enduml

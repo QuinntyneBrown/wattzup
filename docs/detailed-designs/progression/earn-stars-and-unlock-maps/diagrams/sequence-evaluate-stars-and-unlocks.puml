@@ -1,0 +1,51 @@
+@startuml
+title UML sequence behaviour — Evaluate stars and unlocks after a race
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RidesController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "SubmitRideCommandHandler" as handler
+  participant "MapProgress" as mp
+  participant "StarRules" as stars
+  participant "UnlockRules" as unlocks
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+ctrl -> handler : SubmitRideCommand (Old Town Criterium, Bots, medium, 2nd of 10, 26:38)
+handler -> db : Load MapDefinitions and the rider's MapProgress
+handler -> mp : RecordFinish(26:38)
+mp -> stars : Evaluate(finish, previous best)
+stars -> stars : Finished in any mode: Finish (L2-039 AC1)
+stars -> stars : Top 3 vs Bots at medium or hard: TopThreeMediumPack (AC2)
+stars -> stars : Faster than previous best: BeatBest; a first finish sets the best only (AC3)
+stars --> mp : Stars the finish earns
+mp --> handler : Earned (those not yet held; none is lost), best 26:38, previous 27:10, new best
+handler -> unlocks : Evaluate(catalogue order, map, finish, stars held, level, opened)
+alt Top 3 vs Bots on Old Town Criterium
+  unlocks --> handler : Neon Docklands (L2-040 AC2)
+else 2★ on Cliffside Coast or 3★ on Dolomites
+  unlocks --> handler : Dolomites or Col du Granit (AC3)
+else Level reaches 10
+  unlocks --> handler : Vice City (AC4)
+else No goal met
+  unlocks --> handler : None
+end
+handler -> mp : Open(now) on the opened map
+handler -> db : Save in one unit of work
+handler --> ctrl : RideRecordedDto with stars held, new stars, best and openedMap (L2-040 AC5)
+@enduml

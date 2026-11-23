@@ -1,0 +1,58 @@
+@startuml
+title UML sequence behaviour — Rank and send standings
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app (api library and ride application)" #E0F2FE
+  participant "SignalRRideHubClient" as client
+  participant "LiveSessionStore" as store
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RideHubNotifier" as notifier
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "TickLiveSessionsCommandHandler" as tick
+  participant "RaceSession | GroupClassSession" as session
+  participant "BotPaceModel" as pace
+  participant "VirtualSpeedModel" as speed
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "SessionTicker" as ticker
+end box
+ticker -> tick : Send TickLiveSessionsCommand(now) every 1 s
+alt race session
+  tick -> session : Ride(now, route metres)
+  loop each whole second since the last
+    session -> pace : Watts(bot, second), medium pack, seeded by session id
+    pace --> session : Power (L2-123 AC4)
+    session -> speed : SpeedMs(watts)
+    session -> session : Distances held at the route's length; trace point each (last 600)
+  end
+  session -> session : Furthest first, a tie to who reached it first (L2-123 AC2)
+  session -> session : Gap = seconds since the leader reached the distance
+  session --> tick : Race standings (position, seat, name, jersey, level, kind, metres, gap s)
+  tick -> notifier : RaceStandingsUpdated(sessionId, rows)
+  notifier --> client : RaceStandingsUpdated to every rider (L2-123 AC3)
+  client --> store : Replace race standings
+  store -> store : RaceStore: gap to the rider = your gap to the leader − the row's
+else group class session
+  tick -> session : Tick(now)
+  session -> pace : Watts(bot, second), easy pack
+  session -> session : Output in kJ, highest first (L2-123 AC2)
+  session --> tick : Standings (name, jersey, level, kind, position, kJ, gap kJ)
+  tick -> notifier : StandingsUpdated(sessionId, standings)
+  notifier --> client : StandingsUpdated to every rider (L2-123 AC3)
+  client --> store : Replace standings
+end
+@enduml

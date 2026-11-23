@@ -1,0 +1,41 @@
+@startuml
+title UML sequence behaviour — Hide internals in an unexpected error
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app" #E0F2FE
+  participant "HttpProgressApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "ProgressController" as ctrl
+  participant "ProblemDetailsExceptionHandler" as eh
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "GetProgressQueryHandler" as handler
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "AppDbContext" as ctx
+  database "Telo Ride database" as db
+end box
+client -> ctrl : GET /api/progress
+ctrl -> handler : Send GetProgressQuery
+handler -> ctx : LINQ query
+ctx -> db : SELECT ... WHERE RiderId = @p0 (parameters only, L2-129 AC3)
+db --> ctx : Timeout
+ctx --> handler : Exception
+handler --> eh : Exception escapes
+eh -> eh : Log type and trace id (no query text, no body)
+eh --> client : 500 ProblemDetails: title, code unexpected, traceId only (L2-129 AC4)
+note over client : No stack trace, SQL, table or type name in the response
+@enduml

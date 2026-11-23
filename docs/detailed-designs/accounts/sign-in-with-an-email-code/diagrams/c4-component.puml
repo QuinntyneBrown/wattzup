@@ -1,0 +1,34 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Sign in with an email code
+Container_Boundary(app, "Ride app") {
+  Component(guard, "authGuard", "Route guard · ride", "Sends a visitor with no session to sign-in with a return URL")
+  Component(signin, "SignInPage", "Angular page · ride", "Email field and Send my code")
+  Component(codepage, "SignInCodePage", "Angular page · ride", "Six-digit code, resend countdown")
+  Component(store, "SignInStore", "Route-scoped store · ride", "Email, busy state, error code, resend clock")
+  Component(entry, "CodeEntry", "Presentation component · components", "Six digit fields, paste and one-time-code autofill")
+  Component(client, "HttpAuthApi", "HTTP client · api", "Implements AuthApi behind AUTH_API")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(ctrl, "AuthController", "ASP.NET Core controller · Telo.Ride.Api", "Anonymous send-code and confirm-code endpoints")
+  Component(sendh, "SendSignInCodeCommandHandler", "MediatR handler · Telo.Ride.Application", "Limits, supersedes and issues a code")
+  Component(confh, "ConfirmSignInCodeCommandHandler", "MediatR handler · Telo.Ride.Application", "Verifies a code, creates the rider, starts a session")
+  Component(code, "SignInCode", "Domain entity · Telo.Ride.Domain", "Hash, issue time, attempts, use")
+  Component(sender, "IEmailSender", "Port · Telo.Ride.Application, adapter in Infrastructure", "Delivers the code email")
+  ComponentDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Riders, code hashes, sessions")
+}
+Rel(guard, signin, "Redirects to")
+Rel(signin, store, "Sends the email through")
+Rel(codepage, entry, "Hosts")
+Rel(codepage, store, "Confirms and resends through")
+Rel(store, client, "Calls")
+Rel(client, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, sendh, "Sends SendSignInCodeCommand")
+Rel(ctrl, confh, "Sends ConfirmSignInCodeCommand")
+Rel(sendh, code, "Creates and supersedes")
+Rel(confh, code, "Verifies")
+Rel(sendh, sender, "Sends the code with")
+Rel(sendh, db, "Persists", "EF Core")
+Rel(confh, db, "Persists", "EF Core")
+@enduml

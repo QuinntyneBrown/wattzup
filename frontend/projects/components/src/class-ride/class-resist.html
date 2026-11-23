@@ -1,0 +1,27 @@
+<div class="class-resist">
+  <button
+    class="class-resist__btn"
+    type="button"
+    aria-label="Lower resistance"
+    [disabled]="disabled()"
+    (click)="lower.emit()"
+  >
+    <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" /></svg>
+  </button>
+  <div class="class-resist__value" role="status" [attr.aria-label]="'Resistance ' + reads()">
+    <div class="class-resist__level">{{ level() ?? '—' }}</div>
+    <div class="class-resist__of">of {{ max() }}</div>
+  </div>
+  <button
+    class="class-resist__btn"
+    type="button"
+    aria-label="Raise resistance"
+    [disabled]="disabled()"
+    (click)="raise.emit()"
+  >
+    <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 12h14" />
+      <path d="M12 5v14" />
+    </svg>
+  </button>
+</div>

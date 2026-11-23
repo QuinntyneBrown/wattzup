@@ -1,0 +1,82 @@
+@startuml
+set separator none
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Stay signed in
+package "api library" {
+  interface RidersApi {
+    +me(): Observable<RiderMe>
+  }
+  interface CurrentRider {
+    +rider: Signal<RiderMe | null>
+    +status: Signal<RiderStatus>
+    +load(): Promise<RiderStatus>
+    +signedIn(rider: RiderMe): void
+    +signedOut(): void
+  }
+  class RiderMe {
+    +id: string
+    +displayName: string | null
+  }
+  class sessionInterceptor <<HttpInterceptorFn>>
+  sessionInterceptor ..> CurrentRider : CURRENT_RIDER, reports 401
+}
+package "ride application" {
+  class CurrentRiderStore {
+    +status: "unknown" | "signedIn" | "signedOut" | "unreachable"
+  }
+  class authGuard <<CanActivateChildFn>>
+}
+package "domain library (storage)" {
+  class RideOutbox {
+    +keep(ride: FinishedRide): Promise<void>
+    +flush(): Promise<void>
+    +pending(): Signal<number>
+  }
+}
+CurrentRider <|.. CurrentRiderStore
+CurrentRiderStore --> RidersApi : RIDERS_API
+CurrentRiderStore ..> RideOutbox : RIDE_OUTBOX (journey 10)
+authGuard ..> CurrentRider : CURRENT_RIDER, reads status
+package "Telo.Ride.Api" {
+  class RiderSessionTicketStore {
+    +StoreAsync(ticket): Task<string>
+    +RetrieveAsync(key: string): Task<AuthenticationTicket?>
+    +RenewAsync(key: string, ticket): Task
+    +RemoveAsync(key: string): Task
+  }
+  class SessionCookieOptions <<configuration>> {
+    +Name = "__Host-telo-session"
+    +HttpOnly = true
+    +SecurePolicy = Always
+    +SameSite = Lax
+    +ExpireTimeSpan = 365 days
+  }
+}
+package "Telo.Ride.Domain" {
+  class RiderSession {
+    +Guid Id
+    +Guid RiderId
+    +byte[] KeyHash
+    +DateTimeOffset CreatedAt
+    +DateTimeOffset LastUsedAt
+    +DateTimeOffset ExpiresAt
+    +DateTimeOffset? EndedAt
+    +IsActive(now: DateTimeOffset): bool
+    +Touch(now: DateTimeOffset): void
+    +End(now: DateTimeOffset): void
+  }
+}
+RiderSessionTicketStore ..> RiderSession : persists, touches on retrieve
+SessionCookieOptions ..> RiderSessionTicketStore : SessionStore, ShouldRenew on each use
+@enduml

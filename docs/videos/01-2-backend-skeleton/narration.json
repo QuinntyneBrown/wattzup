@@ -1,0 +1,26 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": { "file": "../assets/music/beautiful-boom-bap.mp3", "offset": 0.009, "duckDb": 16, "betweenDb": 5, "fadeSeconds": 2 },
+  "scenes": [
+    { "id": "hook", "bars": 4, "lines": ["Telo Ride gets a backend, kept thin: only what one browser cannot do alone. It never talks to the bike."] },
+    { "id": "layers", "bars": 4, "lines": ["Four projects: domain, application, infrastructure and the API.", "Each references only the layer before it, so the compiler holds the direction."] },
+    { "id": "path", "bars": 4, "lines": ["Every request takes one path. A controller checks nothing: it sends one MediatR request, its validators run, then its handler."] },
+    { "id": "health", "bars": 4, "lines": ["Two health endpoints answer without a session. Live says the API responds.", "Ready says Unhealthy, with a 503, while the database cannot be reached."] },
+    { "id": "auth", "bars": 4, "lines": ["Every other address needs a signed-in rider. Without a session, the answer is 401, as ProblemDetails, never a redirect."] },
+    { "id": "refusals", "bars": 4, "lines": ["Every refusal carries a code a screen can branch on: validation failed, a domain rule like session full, or unexpected, which reveals nothing."] },
+    { "id": "telemetry", "bars": 4, "lines": ["Telemetry is OpenTelemetry, with Telo Ride's own counter on the Telo Ride meter.", "A span names its route by template, never the query string."] },
+    { "id": "migrate", "bars": 4, "lines": ["The schema changes only through migrations, applied by the migrate command before a new version starts. The API never migrates on start-up."] },
+    { "id": "shell", "bars": 4, "lines": ["Riders see nothing new yet. The app still rides on its own, on a phone, a tablet, a laptop or a desktop."] },
+    { "id": "proof", "bars": 4, "lines": ["What the tests prove: sixteen acceptance tests through the API, on a real host in memory, with no real database, no file and no sleep."] },
+    { "id": "close", "bars": 12, "lines": [
+      "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+      "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+      { "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.", "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks." },
+      "A custom workout lives under Profile."
+    ] }
+  ]
+}

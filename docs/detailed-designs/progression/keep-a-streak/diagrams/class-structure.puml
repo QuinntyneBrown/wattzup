@@ -1,0 +1,47 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Keep a streak
+class Streak <<entity>> {
+  +RiderId: Guid
+  +Days: int
+  +LastRideDay: DateOnly?
+  +Record(day: DateOnly): void
+  +DaysOn(today: DateOnly): int
+}
+class Rider <<entity>> {
+  +Id: Guid
+  +TimeZoneId: string
+}
+class RiderDay <<domain service>> {
+  +LocalDay(instant: DateTimeOffset, timeZoneId: string): DateOnly
+}
+class SubmitRideCommand <<application>> {
+  +RideId: Guid
+  +FinishedAt: DateTimeOffset
+  +TimeZoneId: string
+}
+class SubmitRideCommandHandler <<application>> {
+  +Handle(cmd): Task<RideRecordedDto>
+}
+class GetProgressQueryHandler <<application>> {
+  -time: TimeProvider
+  +Handle(q): Task<ProgressDto>
+}
+Rider "1" *-- "1" Streak
+SubmitRideCommandHandler ..> SubmitRideCommand
+SubmitRideCommandHandler ..> RiderDay
+SubmitRideCommandHandler --> Streak : Record
+GetProgressQueryHandler ..> RiderDay
+GetProgressQueryHandler --> Streak : DaysOn
+@enduml

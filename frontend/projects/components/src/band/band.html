@@ -1,0 +1,12 @@
+<div class="band__inner">
+  <div class="band__head">
+    @if (kicker()) {
+      <p class="band__kicker">{{ kicker() }}</p>
+    }
+    <h2 class="band__heading" tabindex="-1" [id]="headingId()">{{ heading() }}</h2>
+    @if (lead()) {
+      <p class="band__lead">{{ lead() }}</p>
+    }
+  </div>
+  <ng-content />
+</div>

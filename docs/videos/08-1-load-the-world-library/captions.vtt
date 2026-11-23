@@ -1,0 +1,61 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.623
+Every map is a route through a world. This slice loads that world behind the race.
+
+00:00:10.324 --> 00:00:15.945
+The world is the heaviest part of the app, so it loads in its own chunk, only once a
+
+00:00:15.945 --> 00:00:19.725
+race opens. Three.js never joins the first download.
+
+00:00:20.647 --> 00:00:25.795
+Three.js draws with WebGPU where the browser grants an adapter, and WebGL 2
+
+00:00:25.795 --> 00:00:30.556
+otherwise. A tag in the bar names the GPU API drawing this world.
+
+00:00:30.971 --> 00:00:35.520
+With neither, the map's panorama stays, and the race still runs on the numbers.
+
+00:00:41.295 --> 00:00:45.904
+Leave, and the world goes with the race: the frame loop stops, its observer and
+
+00:00:45.904 --> 00:00:48.712
+listeners go, and the renderer is released.
+
+00:00:51.618 --> 00:00:56.454
+Its code is copied straight from main: the renderer's contract, the frame scheduler,
+
+00:00:56.454 --> 00:00:58.941
+the canvas host, and their unit tests.
+
+00:01:01.942 --> 00:01:06.080
+From a phone to a desktop, the race keeps its world behind the panels.
+
+00:01:12.266 --> 00:01:17.037
+What the tests prove: three new behaviour specs, main's unit tests running here, all
+
+00:01:17.037 --> 00:01:19.723
+green, and the first download still small.
+
+00:01:22.590 --> 00:01:27.193
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:27.538 --> 00:01:32.050
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:32.050 --> 00:01:33.721
+every hill and interval.
+
+00:01:34.066 --> 00:01:39.244
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:39.244 --> 00:01:44.692
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:44.692 --> 00:01:47.682
+XP, rider levels, stars and map unlocks.
+
+00:01:48.027 --> 00:01:50.520
+A custom workout lives under Profile.

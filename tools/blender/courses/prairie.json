@@ -1,0 +1,118 @@
+{
+  "id": "prairie",
+  "name": "Prairie Paceline",
+  "world": "prairie",
+  "theme": "prairie",
+  "seed": 11,
+  "layout": 0,
+  "map": "prairie-paceline",
+  "route": "Route 9 Wind Farm",
+  "distanceKm": 18.4,
+  "climbingMetres": 90,
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 300,
+        "level": 8,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 150,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 150,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 6,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 98
+      },
+      {
+        "kind": "cool-down",
+        "duration": 360,
+        "level": 6,
+        "cadenceAim": 70
+      }
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+<div class="race-resist">
+  <button
+    class="race-resist__step"
+    type="button"
+    aria-label="Lower resistance"
+    [disabled]="disabled()"
+    (click)="lower.emit()"
+  >
+    <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" /></svg>
+  </button>
+  <div class="race-resist__readout" role="status" [attr.aria-label]="'Resistance ' + reads()">
+    <div class="numeral race-resist__value">{{ level() ?? '—' }}</div>
+    <div class="race-resist__label">Resistance / {{ max() }}</div>
+  </div>
+  <button
+    class="race-resist__step"
+    type="button"
+    aria-label="Raise resistance"
+    [disabled]="disabled()"
+    (click)="raise.emit()"
+  >
+    <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 12h14" />
+      <path d="M12 5v14" />
+    </svg>
+  </button>
+</div>

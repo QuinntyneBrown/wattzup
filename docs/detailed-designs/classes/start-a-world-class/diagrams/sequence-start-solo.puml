@@ -1,0 +1,49 @@
+@startuml
+title UML sequence behaviour — Start a solo world class
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "WorldLoadStore" as store
+  participant "ClassRideStore" as ride
+end box
+box "Frontend — Ride app (components, domain and api libraries)" #E0F2FE
+  participant "WorldLoading" as view
+  participant "BikeConnection" as bike
+  participant "WorldScene" as scene
+end box
+participant "Smart bike" as dev
+store --> view : Start riding disabled, "Ready in a few seconds. Pedal easy while you wait." (L2-153 AC1)
+opt No bike
+  store -> bike : ble
+  bike --> store : disconnected
+  store --> view : "No bike"; alert "Your bike isn’t connected." with Connect bike (L2-157 AC1, AC2)
+  note right of store : Loading carries on (L2-157 AC3)
+end
+dev -> bike : cadence while waiting
+note right of store : Cadence never starts the class (L2-153 AC4)
+store -> store : phase ready, ble connected
+store --> view : "Neon Docklands is ready"; Start riding enabled and focused (L2-153 AC2)
+actor -> view : Start riding
+view -> store : start
+store -> store : begin(): phase riding (same address)
+store -> ride : adoptWorld(handOver())
+store -> ride : start()
+ride -> ride : RideClock starts at 0:00; WorkoutEngine first segment (L2-153 AC3)
+ride -> dev : target resistance for the warm-up
+ride -> scene : live = true
+scene -> scene : 200 ms fade from the panorama, at once with reduced motion
+note right of scene : First 10 s: no frame over 50 ms (L2-153 AC5)
+@enduml

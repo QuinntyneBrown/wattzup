@@ -1,0 +1,28 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Render the race world
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(gmaps, "Google Maps Platform", "Map Tiles API")
+Container_Boundary(app, "Ride app") {
+  Component(page, "RacePage", "Angular page · ride", "Hosts scene and scenery panel")
+  Component(wstore, "RaceWorld / RaceStore", "Directive and page store · ride", "Imports the world library, creates WorldScene; keeps the backend")
+  Component(scene, "RaceScenery", "Presentation component · components", "Key panel")
+  Component(host, "WorldScene / FrameScheduler", "Canvas host · world (lazy)", "Starts, sizes, draws each frame, disposes on leave")
+  Component(settings, "MapsKeyStore", "Service · domain/storage", "Maps key in localStorage")
+  Component(renderer, "WorldRenderer", "Boundary · world (lazy)", "Contract in api; ThreeWorldRenderer (Three.js chunk): start, resize, draw, dispose")
+  Component(quality, "RenderQuality", "Pure table · world", "Tier and technique forms")
+  Component(rscene, "RaceWorldScene / RiderFigures", "Three.js scene · world", "Route world, riders, ghost")
+  Component(tiles, "PhotorealTilesLayer", "Three.js layer · world", "Google 3D Tiles")
+}
+Rel(rider, page, "Watches")
+Rel(page, wstore, "Map, clock, speed, running")
+Rel(page, scene, "Renders")
+Rel(wstore, host, "Dynamic import, createComponent")
+Rel(host, renderer, "WORLD_RENDERER loads, then drives")
+Rel(page, settings, "Reads and writes key")
+Rel(renderer, quality, "Reads tier")
+Rel(renderer, rscene, "Draws")
+Rel(renderer, tiles, "Streams scenery")
+Rel(tiles, gmaps, "Requests tiles", "HTTPS")
+@enduml

@@ -1,0 +1,70 @@
+<main id="main" class="container page" tabindex="-1">
+  <h1 class="page__title">{{ home.greeting() }}</h1>
+
+  @if (home.banner(); as banner) {
+    <wz-banner tone="gold" [title]="banner.title" [detail]="banner.detail">
+      <a wz-button slot="action" variant="gold" size="sm" [routerLink]="['/race', banner.mapId]"
+        >Ride it</a
+      >
+    </wz-banner>
+  }
+
+  @if (home.nextRide(); as ride) {
+    <wz-next-ride-card [view]="ride">
+      <a
+        wz-button
+        slot="action"
+        variant="primary"
+        size="xl"
+        [block]="true"
+        [routerLink]="['/race', ride.mapId]"
+        >Race {{ ride.name
+        }}<svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12h14" />
+          <path d="m12 5 7 7-7 7" /></svg
+      ></a>
+    </wz-next-ride-card>
+  }
+
+  <div class="doors">
+    @if (home.raceDoor(); as door) {
+      <wz-door heading="Race" headingId="race-door">
+        <a wz-more-link slot="link" routerLink="/race">All maps</a>
+        <span slot="summary"
+          ><span class="figure">{{ door.openMaps }}</span> of {{ door.maps }} maps open ·
+          <span class="figure figure--gold">{{ door.stars }}</span> of
+          {{ door.allStars }} stars</span
+        >
+        <ul class="map-tiles">
+          @for (tile of door.tiles; track tile.mapId) {
+            <li>
+              <a
+                wz-map-tile
+                [routerLink]="tile.locked ? '/race' : ['/race', tile.mapId]"
+                [name]="tile.name"
+                [photoUrl]="tile.photoUrl"
+                [stars]="tile.stars"
+                [locked]="tile.locked"
+                >{{ tile.name }}</a
+              >
+            </li>
+          }
+        </ul>
+      </wz-door>
+    }
+    @if (home.classDoor(); as featured) {
+      <wz-door heading="Classes" headingId="class-door">
+        <a wz-more-link slot="link" routerLink="/classes">All classes</a>
+        <wz-class-teaser
+          [title]="featured.title"
+          [length]="featured.length"
+          [coverUrl]="featured.coverUrl"
+        >
+          <a wz-button slot="actions" variant="light" [routerLink]="['/classes', featured.classId]"
+            >Ride alone</a
+          >
+        </wz-class-teaser>
+      </wz-door>
+    }
+  </div>
+</main>

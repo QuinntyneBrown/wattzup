@@ -1,5 +1,5 @@
 {
-  "name": "@wattzup/api",
+  "name": "@telo/api",
   "version": "0.0.0",
   "private": true,
   "sideEffects": false

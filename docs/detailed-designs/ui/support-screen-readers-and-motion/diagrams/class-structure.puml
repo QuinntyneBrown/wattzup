@@ -1,0 +1,47 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Support screen readers and motion preferences
+hide empty members
+
+interface Announcer <<api>> {
+  +announce(message: string): void
+}
+class LiveRegionAnnouncer <<domain>> {
+  -region: HTMLElement | null
+  -timer
+  +ngOnDestroy(): void
+}
+class Dialog <<Angular CDK>> {
+  +open(component, config: DialogConfig): DialogRef
+  +afterOpened: Subject<DialogRef>
+  +afterAllClosed: Observable<void>
+}
+class provideInertBehindDialogs <<ride>> {
+  {static} +provideInertBehindDialogs(): EnvironmentProviders
+}
+class MotionPreference <<ride>> {
+  +reduced: Signal<boolean>
+}
+class BoardReorderAnimator <<components>> {
+  +reorder(rows: HTMLElement[], reduced: boolean): void
+}
+class RideTitleStrategy <<ride>> {
+  +updateTitle(snapshot: RouterStateSnapshot): void
+}
+class TitleStrategy <<Angular router>>
+LiveRegionAnnouncer ..|> Announcer
+provideInertBehindDialogs ..> Dialog : listens to
+BoardReorderAnimator ..> MotionPreference : reduced passed in by page
+TitleStrategy <|-- RideTitleStrategy
+@enduml

@@ -1,0 +1,16 @@
+// Block level-badge (docs/design-system/): the gold disc with the rider's level.
+:host {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--space-8);
+  height: var(--space-8);
+  border-radius: var(--radius-full);
+  background: var(--color-gold);
+  color: var(--color-on-fill);
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-bold);
+  font-feature-settings: 'tnum' 1;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-none);
+}

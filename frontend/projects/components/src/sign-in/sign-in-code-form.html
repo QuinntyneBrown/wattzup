@@ -1,0 +1,43 @@
+<div class="sign-in">
+  <div class="sign-in__panel">
+    <wz-lockup class="sign-in__brand" />
+    <h1 class="sign-in__title">Check your email</h1>
+    <p class="sign-in__lead">
+      We sent a six-digit code to <strong class="sign-in__email">{{ email() }}</strong>. It works
+      for 10 minutes.
+    </p>
+    <div class="sign-in__form">
+      <wz-code-entry
+        [error]="refusal()"
+        [disabled]="sending()"
+        [refusals]="refusals()"
+        (completed)="confirm.emit($event)"
+      />
+      @if (message(); as message) {
+        <wz-inline-message class="sign-in__message" tone="error" role="alert">{{
+          message
+        }}</wz-inline-message>
+      } @else if (resent()) {
+        <wz-inline-message class="sign-in__message" tone="success" role="status"
+          >We sent a new code. Only the newest one works.</wz-inline-message
+        >
+      }
+      <button
+        wz-button
+        class="sign-in__resend"
+        variant="raised"
+        [block]="true"
+        type="button"
+        [disabled]="waiting() || sending()"
+        (click)="resend.emit()"
+      >
+        {{ resendLabel() }}
+      </button>
+    </div>
+    <p class="sign-in__note">
+      <button class="sign-in__change" type="button" (click)="changeEmail.emit()">
+        Use a different email
+      </button>
+    </p>
+  </div>
+</div>

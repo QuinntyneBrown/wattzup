@@ -1,6 +1,6 @@
 # 0014. A class catalogue in a file, with YouTube thumbnails as covers
 
-- **Status:** Accepted, amended by [0017](0017-browser-edition.md) (the browser edition reads `classes.json` beside `index.html`); amended by [0019](0019-no-backend.md) (no backend: the catalogue is only ever read in the browser)
+- **Status:** Accepted, amended by [0017](0017-browser-edition.md) (the browser edition reads `classes.json` beside `index.html`); amended by [0019](0019-no-backend.md) (no backend: the catalogue is only ever read in the browser); amended by [0028](0028-class-catalogue-shipped-with-the-backend.md) (embedded in the backend, public, cached on the device; no file watch)
 - **Date:** 2026-11-17
 - **Amends:** [0012](0012-youtube-ride-along.md)
 

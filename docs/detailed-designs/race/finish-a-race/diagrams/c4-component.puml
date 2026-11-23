@@ -1,0 +1,26 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Finish a race
+Container_Boundary(app, "Ride app") {
+  Component(store, "RaceStore", "Route-scoped signal store · ride", "Builds submission, opens Results")
+  Component(engine, "RaceEngine", "Service · domain/engine", "Detects the finish")
+  Component(recorder, "RaceRideRecorder", "Service · domain/engine", "Bounded per-second buffer")
+  Component(outbox, "RideOutbox", "Service · domain/storage", "IndexedDB queue")
+  Component(rapi, "RidesApi", "HTTP client · api", "POST /api/rides")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(ctrl, "RidesController", "ASP.NET Core controller · Telo.Ride.Api", "POST /api/rides")
+  Component(handler, "SubmitRideCommandHandler", "MediatR handler · Telo.Ride.Application", "Once per ride id; plausibility; progress")
+  Component(ride, "Ride", "Domain entity · Telo.Ride.Domain", "Stored ride with trace")
+  ComponentDb(db, "Telo Ride database", "EF Core", "Rides")
+}
+Rel(engine, store, "Emits finished")
+Rel(store, recorder, "Reads trace")
+Rel(store, outbox, "Enqueues submission")
+Rel(outbox, rapi, "Sends")
+Rel(rapi, ctrl, "Calls", "JSON/HTTPS")
+Rel(ctrl, handler, "Sends SubmitRideCommand")
+Rel(handler, ride, "Creates")
+Rel(handler, db, "Saves once", "IAppDbContext")
+@enduml

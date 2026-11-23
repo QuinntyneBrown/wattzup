@@ -1,0 +1,106 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Between the library and the ride, every class now has its Class Start."
+      ]
+    },
+    {
+      "id": "head",
+      "bars": 4,
+      "lines": [
+        "From its card, the class opens with its channel, length and focus, its title and its summary. Classes leads back."
+      ]
+    },
+    {
+      "id": "plan",
+      "bars": 4,
+      "lines": [
+        "What the bike will do: thirty minutes, the resistance profile, and eight efforts with recoveries from three minutes down to ninety seconds."
+      ]
+    },
+    {
+      "id": "watts",
+      "bars": 4,
+      "lines": [
+        "The average is each segment's target power, weighted by how long it lasts. About one hundred and fifty four watts."
+      ]
+    },
+    {
+      "id": "video",
+      "bars": 4,
+      "lines": [
+        "The class video waits, parked at its sync point with its controls showing, and goes when you leave."
+      ]
+    },
+    {
+      "id": "sync",
+      "bars": 4,
+      "lines": [
+        "Video link and sync opens to the class on YouTube, and the moment the ride syncs from."
+      ]
+    },
+    {
+      "id": "choice",
+      "bars": 4,
+      "lines": [
+        "How do you want to ride? Ride alone is chosen. Group sessions can't be reached yet, and the group option says so."
+      ]
+    },
+    {
+      "id": "start",
+      "bars": 4,
+      "lines": [
+        "Start class goes straight into the class ride, alone, with the bike following the plan."
+      ]
+    },
+    {
+      "id": "locked",
+      "bars": 4,
+      "lines": [
+        "A locked class's address opens the library instead, as does a class the catalogue doesn't hold."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "The same page, from one column on a phone to two on a desktop."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: seven behaviour specs and nine unit tests, all green, and the first bundle still under budget."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

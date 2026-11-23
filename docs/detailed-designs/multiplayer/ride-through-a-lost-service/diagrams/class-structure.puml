@@ -1,0 +1,74 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+set separator none
+' --------------------------
+title Class structure — Ride through a lost service
+
+package "ride application" {
+  class LiveSessionStore {
+    +connection: Signal<RideHubState>
+    +serviceLost: Signal<boolean>
+    +standings: Signal<Standings | null>
+    +raceStandings: Signal<RaceStandings | null>
+    +report(amount: number, powerWatts: number): void
+  }
+  class RaceStore {
+    +boardNotice: Signal<string | null>
+  }
+  class ClassRideStore {
+    +boardNotice: Signal<string | null>
+  }
+}
+package "components library" {
+  class RaceBoard {
+    +notice: InputSignal<string | null>
+  }
+  class ClassBoard {
+    +notice: InputSignal<string | null>
+  }
+  class InlineMessage {
+    +tone: InputSignal<'warn' | 'error' | 'success'>
+  }
+}
+package "domain library" {
+  class RideOutbox {
+    +submit(ride: SubmitRideRequest): void
+  }
+  class WorkoutEngine
+  class RideClock
+}
+package "api library" {
+  interface RideHubClient {
+    +state: Signal<RideHubState>
+    +onReconnected(handler): () => void
+  }
+  enum RideHubState {
+    disconnected
+    connecting
+    connected
+    reconnecting
+  }
+}
+
+LiveSessionStore --> RideHubClient : RIDE_HUB_CLIENT
+RideHubClient --> RideHubState
+RaceStore --> LiveSessionStore : serviceLost
+ClassRideStore --> LiveSessionStore : serviceLost
+RaceBoard ..> InlineMessage : renders the notice
+ClassBoard ..> InlineMessage : renders the notice
+RaceStore ..> WorkoutEngine : runs on
+ClassRideStore ..> WorkoutEngine : runs on
+RaceStore ..> RideOutbox : on finish
+ClassRideStore ..> RideOutbox : on finish
+WorkoutEngine --> RideClock
+@enduml

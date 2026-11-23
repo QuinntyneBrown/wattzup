@@ -1,0 +1,20 @@
+<svg
+  class="class-profile"
+  [attr.viewBox]="'0 0 ' + length() + ' 32'"
+  preserveAspectRatio="none"
+  [class.class-profile--lg]="size() === 'lg'"
+  [class.class-profile--xl]="size() === 'xl'"
+  [attr.role]="label() ? 'img' : null"
+  [attr.aria-label]="label()"
+  [attr.aria-hidden]="label() ? null : 'true'"
+>
+  @for (bar of bars(); track $index) {
+    <rect
+      [attr.class]="bar.element"
+      [attr.x]="bar.x"
+      [attr.width]="bar.width"
+      [attr.y]="bar.y"
+      [attr.height]="bar.height"
+    />
+  }
+</svg>

@@ -1,0 +1,18 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Protect rider data
+System_Ext(otel, "Telemetry backend", "Product <TO SUPPLY>")
+Container_Boundary(api, "Telo Ride API") {
+  Component(hsts, "HTTPS redirection and HSTS", "Middleware · Telo.Ride.Api", "HTTPS only; Strict-Transport-Security")
+  Component(hasher, "HmacSignInCodeHasher", "ISignInCodeHasher · Telo.Ride.Infrastructure", "HMAC-SHA256 with a server key")
+  Component(send, "SendSignInCodeCommandHandler", "MediatR handler · Telo.Ride.Application", "Stores only the code hash")
+  Component(otelsdk, "OpenTelemetry SDK", "TelemetrySetup · Telo.Ride.Api", "ASP.NET Core and EF Core instrumentation, meter Telo.Ride; spans by route template")
+  Component(logs, "Logging", "Microsoft.Extensions.Logging · Telo.Ride.Api", "Microsoft.AspNetCore at Warning; riders named by id")
+  ComponentDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Encrypted at rest")
+}
+Rel(send, hasher, "Hashes the code with")
+Rel(send, db, "Stores the hash in", "EF Core")
+Rel(otelsdk, otel, "Exports spans and metrics to", "OTLP")
+Rel(logs, otel, "Exports log records to", "OTLP")
+@enduml

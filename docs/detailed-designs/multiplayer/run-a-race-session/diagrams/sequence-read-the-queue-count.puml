@@ -1,0 +1,46 @@
+@startuml
+title UML sequence behaviour — Read the queue count
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "RaceSetupPage" as page
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "HttpRaceQueueApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "MapsController" as controller
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "GetRaceQueueQueryHandler" as handler
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "InMemoryRaceSessionRegistry" as registry
+end box
+actor -> page : Open Race Setup for a map
+loop while "Riders online" shows (interval <TO SUPPLY>)
+  page -> client : getQueue(mapId)
+  client -> controller : GET /api/maps/{mapId}/queue
+  controller -> controller : Authenticate (fallback policy)
+  controller -> handler : Send GetRaceQueueQuery(mapId)
+  handler -> registry : OpenSessions(mapId)
+  registry --> handler : Open sessions
+  handler --> controller : Sum of riders seated (L2-121 AC4)
+  controller --> client : 200 { riders: n }
+  client --> page : n
+  page --> actor : "{n} riders queuing now."
+end
+@enduml

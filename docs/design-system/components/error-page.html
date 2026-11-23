@@ -3,17 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Error page — Wattzup design system</title>
-<meta name="description" content="Full-page 404 for unknown client routes.">
+<title>Error page — Telo Ride design system</title>
+<meta name="description" content="Error pages replace a screen that cannot work: not found, the Chrome or Edge and HTTPS browser panels, and rules for server errors and offline.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+/* Page-only: docs chrome links (ds.css a) must not restyle product links inside specimens */
+:where(.ds-example__canvas, .ds-themes, .ds-matrix, .ds-anatomy__figure) a { color: inherit; text-decoration: none; }
+:where(.ds-example__canvas, .ds-themes, .ds-matrix, .ds-anatomy__figure) a:hover { color: inherit; }
+/* Visually hidden text inside a scrolling matrix must not widen the page */
+.ds-matrix { position: relative; }
+.ds-themes + p, .ds-themes + ul { margin-top: var(--space-4); }
+/* Product tables shown inside the state matrix keep their own cell styles */
+.ds-matrix td :is(.table, .map-table) :is(th, td) { padding: var(--table-cell-py, var(--space-2-5)) var(--table-cell-px, 0); background: transparent; border-right: 0; border-top: 0; font: inherit; text-transform: none; letter-spacing: normal; color: inherit; white-space: nowrap; }
+.ds-matrix td :is(.table) thead th { font-size: var(--font-size-xs); line-height: var(--line-height-xs); font-weight: var(--font-weight-semibold); letter-spacing: var(--letter-spacing-wide); text-transform: uppercase; color: var(--color-muted); }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +39,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,83 +93,258 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Component · Feedback</p>
       <h1>Error page</h1>
-      <p class="ds-lead">The error page handles unknown routes: it says the ride is unaffected and goes back to the dashboard.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span></div>
+      <p class="ds-lead">When a screen cannot work: say what happened, what is safe, and the one way forward.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
       <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>Only 404 needs a page: failures show in place (setup error, class error, session error).</p>
-    </section>
-    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
-<div class="ds-anatomy"><figure class="ds-anatomy__figure"><div class="auth-card stack auth-card--center"><div class="auth-card__logo"><span class="lockup lockup--lg"><svg class="lockup__mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12"/><path d="M8.5 16 L15.5 34 L23 21 L30.5 34 L39.5 10"/></svg><span class="lockup__word">wattzup</span></span></div><p class="numeral error-code" aria-hidden="true">404</p><h2 class="auth-card__title">This page isn&rsquo;t part of your ride</h2><p class="text-muted">The address /workouts/history doesn&rsquo;t exist in Wattzup.</p><div class="cluster cluster--center"><a class="btn btn--primary" href="#overview">Back to the dashboard</a><a class="btn" href="#overview">Set up a ride</a></div></div><span class="ds-callout" style="left: 50%; top: 8%;" aria-hidden="true">1</span><span class="ds-callout" style="left: 50%; top: 25%;" aria-hidden="true">2</span><span class="ds-callout" style="left: 50%; top: 45%;" aria-hidden="true">3</span><span class="ds-callout" style="left: 50%; top: 88%;" aria-hidden="true">4</span></figure><ol class="ds-anatomy__list"><li><div><b>Lockup</b><small>Large.</small></div></li><li><div><b>Code</b><small>Numeral, subtle, hidden from AT.</small></div></li><li><div><b>Title</b><small>Plain words.</small></div></li><li><div><b>Actions</b><small>Primary back, secondary setup.</small></div></li></ol></div>
-    </section>
-    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
-<div class="ds-example"><div class="ds-example__canvas "><div class="auth-card stack auth-card--center"><div class="auth-card__logo"><span class="lockup lockup--lg"><svg class="lockup__mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12"/><path d="M8.5 16 L15.5 34 L23 21 L30.5 34 L39.5 10"/></svg><span class="lockup__word">wattzup</span></span></div><p class="numeral error-code" aria-hidden="true">404</p><h2 class="auth-card__title">This page isn&rsquo;t part of your ride</h2><p class="text-muted">The address /workouts/history doesn&rsquo;t exist in Wattzup.</p><div class="cluster cluster--center"><a class="btn btn--primary" href="#overview">Back to the dashboard</a><a class="btn" href="#overview">Set up a ride</a></div></div></div><div class="ds-example__caption"><span>404.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="auth-card stack auth-card--center"&gt;
-&lt;div class="auth-card__logo"&gt;
-&lt;span class="lockup lockup--lg"&gt;
-&lt;svg class="lockup__mark" viewBox="0 0 48 48" aria-hidden="true"&gt;
-&lt;rect width="48" height="48" rx="12"/&gt;
-&lt;path d="M8.5 16 L15.5 34 L23 21 L30.5 34 L39.5 10"/&gt;
-&lt;/svg&gt;
-&lt;span class="lockup__word"&gt;wattzup&lt;/span&gt;
-&lt;/span&gt;
-&lt;/div&gt;
-&lt;p class="numeral error-code" aria-hidden="true"&gt;404&lt;/p&gt;
-&lt;h2 class="auth-card__title"&gt;This page isn&amp;rsquo;t part of your ride&lt;/h2&gt;
-&lt;p class="text-muted"&gt;The address /workouts/history doesn&amp;rsquo;t exist in Wattzup.&lt;/p&gt;
-&lt;div class="cluster cluster--center"&gt;
-&lt;a class="btn btn--primary" href="#overview"&gt;Back to the dashboard&lt;/a&gt;
-&lt;a class="btn" href="#overview"&gt;Set up a ride&lt;/a&gt;
-&lt;/div&gt;
-&lt;/div&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="sizes" data-na="One layout."><h2><a href="#sizes">Sizes</a></h2>
-      <p class="ds-na">One layout.</p>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<div class="ds-matrix"><table><thead><tr><th scope="col">Variant</th><th scope="col">Example</th></tr></thead><tbody><tr><th scope="row">404</th><td><div class="auth-card stack auth-card--center"><div class="auth-card__logo"><span class="lockup lockup--lg"><svg class="lockup__mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12"/><path d="M8.5 16 L15.5 34 L23 21 L30.5 34 L39.5 10"/></svg><span class="lockup__word">wattzup</span></span></div><p class="numeral error-code" aria-hidden="true">404</p><h2 class="auth-card__title">This page isn&rsquo;t part of your ride</h2><p class="text-muted">The address /workouts/history doesn&rsquo;t exist in Wattzup.</p><div class="cluster cluster--center"><a class="btn btn--primary" href="#overview">Back to the dashboard</a><a class="btn" href="#overview">Set up a ride</a></div></div></td></tr></tbody></table></div><h3>Both themes</h3><div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas"><div class="auth-card stack auth-card--center"><div class="auth-card__logo"><span class="lockup lockup--lg"><svg class="lockup__mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12"/><path d="M8.5 16 L15.5 34 L23 21 L30.5 34 L39.5 10"/></svg><span class="lockup__word">wattzup</span></span></div><p class="numeral error-code" aria-hidden="true">404</p><h2 class="auth-card__title">This page isn&rsquo;t part of your ride</h2><p class="text-muted">The address /workouts/history doesn&rsquo;t exist in Wattzup.</p><div class="cluster cluster--center"><a class="btn btn--primary" href="#overview">Back to the dashboard</a><a class="btn" href="#overview">Set up a ride</a></div></div></div></div><div data-theme="dark"><div class="ds-example__canvas"><div class="auth-card stack auth-card--center"><div class="auth-card__logo"><span class="lockup lockup--lg"><svg class="lockup__mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12"/><path d="M8.5 16 L15.5 34 L23 21 L30.5 34 L39.5 10"/></svg><span class="lockup__word">wattzup</span></span></div><p class="numeral error-code" aria-hidden="true">404</p><h2 class="auth-card__title">This page isn&rsquo;t part of your ride</h2><p class="text-muted">The address /workouts/history doesn&rsquo;t exist in Wattzup.</p><div class="cluster cluster--center"><a class="btn btn--primary" href="#overview">Back to the dashboard</a><a class="btn" href="#overview">Set up a ride</a></div></div></div></div></div>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
-<ul><li>Centred card at every width.</li></ul>
-    </section>
-    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
-<p>Canvas only.</p>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<h3>Role and pattern</h3><p>Page with one h1; the code is decorative.</p><h3>Keyboard</h3><div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody><tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Moves focus in DOM order.</td></tr></tbody></table></div><h3>Focus</h3><p>Focus starts at the skip link.</p><h3>Labelling</h3><p>Title explains.</p><h3>Contrast</h3><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-pair"><span>Code</span><span class="ds-pair__ratio" data-contrast="--color-fg-subtle|--color-bg-canvas" data-min="4.5"></span></div></div><h3>Motion</h3><p>None.</p><h3>Touch</h3><p>Not interactive.</p>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Reassure: "Your ride and the bike connection are unaffected."</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><div class="auth-card stack auth-card--center"><div class="auth-card__logo"><span class="lockup lockup--lg"><svg class="lockup__mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12"/><path d="M8.5 16 L15.5 34 L23 21 L30.5 34 L39.5 10"/></svg><span class="lockup__word">wattzup</span></span></div><p class="numeral error-code" aria-hidden="true">404</p><h2 class="auth-card__title">This page isn&rsquo;t part of your ride</h2><p class="text-muted">The address /workouts/history doesn&rsquo;t exist in Wattzup.</p><div class="cluster cluster--center"><a class="btn btn--primary" href="#overview">Back to the dashboard</a><a class="btn" href="#overview">Set up a ride</a></div></div></div><figcaption>Explains and offers a way back.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><div class="auth-card"><h2>404 Not Found</h2></div></div><figcaption>Bare status code.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
-<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Code size</td><td><code>--font-size-numeral-2xl</code></td><td colspan="2"><span data-token="--font-size-numeral-2xl"></span></td></tr><tr><td>Code colour</td><td><code>--color-fg-subtle</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-subtle" data-swatch></i><span data-token="--color-fg-subtle"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-subtle" data-swatch></i><span data-token="--color-fg-subtle"></span></span></td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
-<pre><code>&lt;main class="auth-layout"&gt;&lt;div class="auth-card stack auth-card--center"&gt;…&lt;p class="numeral error-code" aria-hidden="true"&gt;404&lt;/p&gt;…&lt;/div&gt;&lt;/main&gt;</code></pre><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.error-code</code></td><td>Big code.</td></tr><tr><td><code>.auth-card--center</code></td><td>Centred card.</td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from these mocks:</p><ul><li><a href="../../mocks/pages/not-found/default.html">pages/not-found/default</a> (404)</li></ul><p>Drift fixed during extraction: inline font-size and colour on the code became <code>.error-code</code>.</p>
+<p>An error page replaces a screen that cannot work, says why in plain words, and offers one way forward. Telo Ride draws three in the mocks: <b>not found</b> (<code>.not-found</code>: "This page doesn’t exist." with Back to Home) and two <b>browser panels</b> (<code>.browser-panel</code>) over the custom ride, for a browser without Web Bluetooth ("Open Telo Ride in Chrome or Edge") and for plain http ("Open the secure version of this page"). <code>.error-page</code> is the not-found layout as a block, with an icon, a status line and a reference for failures we can trace; this page also sets the rules for offline and 500.</p>
+<ul><li>Full-screen error: the route cannot render (not found, a crash).</li><li>Panel error: one region cannot work in this browser (the ride dashboard without Bluetooth); the rest of the page stays.</li>
+<li>Recoverable problems inside a working screen are <a href="alert.html">alerts</a> or <a href="inline-message.html">inline messages</a>, not error pages.</li></ul>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+<div class="ds-anatomy">
+<figure class="ds-anatomy__figure" style="padding: var(--space-8) var(--space-6) var(--space-8) var(--space-12); display: block; place-items: normal; min-width: 0;">
+<section class="error-page" aria-labelledby="ea"><svg class="icon error-page__icon error-page__icon--heart" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg><span class="error-page__code">Error 500</span><h2 class="page__title" id="ea">Something broke on our side.</h2><p class="page__lead">Your rides and progress are saved on this device, so nothing is lost.</p><div class="error-page__actions"><button class="btn btn--primary btn--lg" type="button">Reload</button></div><p class="error-page__ref">Reference <code class="code">7f3c2a1 · 2026-11-20 18:42</code></p></section><span class="ds-callout" style="left: var(--space-2); top: 9%;" aria-hidden="true">1</span><span class="ds-callout" style="left: var(--space-2); top: 20%;" aria-hidden="true">2</span><span class="ds-callout" style="left: var(--space-2); top: 32%;" aria-hidden="true">3</span><span class="ds-callout" style="left: var(--space-2); top: 50%;" aria-hidden="true">4</span><span class="ds-callout" style="left: var(--space-2); top: 68%;" aria-hidden="true">5</span><span class="ds-callout" style="left: var(--space-2); top: 86%;" aria-hidden="true">6</span>
+</figure>
+<ol class="ds-anatomy__list">
+<li><div><b>Icon (optional)</b><small>32px, heart for our failures, warn for the browser's; <code>aria-hidden</code>.</small></div></li>
+<li><div><b>Status line (optional)</b><small>12px mono faint ("Error 500"); never on not found, which speaks for itself.</small></div></li>
+<li><div><b>Title</b><small><code>.page__title</code>: what happened, as a sentence with a full stop.</small></div></li>
+<li><div><b>Lead</b><small><code>.page__lead</code>: why, and that rides and progress are safe.</small></div></li>
+<li><div><b>Action</b><small>One primary button (<code>btn--lg</code>); a second ghost action at most.</small></div></li>
+<li><div><b>Reference (optional)</b><small>Build and time, so a bug report can find it.</small></div></li>
+</ol>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+<h3>Not found (as drawn)</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<div class="ds-stage" style="width: 100%; display: grid; place-items: center; padding: var(--space-8) var(--space-6); background: var(--color-ink); place-items: center start;"><div class="page not-found error-page" style="padding: 0;"><h2 class="page__title">This page doesn’t exist.</h2><p class="page__lead">The link may be old, or the address has a typo. Your rides and progress are safe.</p><a class="btn btn--primary btn--lg not-found__action" href="../../mocks/pages/home/default.html"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Back to Home</a></div></div>
+</div>
+<div class="ds-example__caption"><span>Left-aligned in the page container; one large primary action with a back arrow.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="ds-stage" style="width: 100%; display: grid; place-items: center; padding: var(--space-8) var(--space-6); background: var(--color-ink); place-items: center start;"&gt;&lt;div class="page not-found error-page" style="padding: 0;"&gt;&lt;h2 class="page__title"&gt;This page doesn’t exist.&lt;/h2&gt;&lt;p class="page__lead"&gt;The link may be old, or the address has a typo. Your rides and progress are safe.&lt;/p&gt;&lt;a class="btn btn--primary btn--lg not-found__action" href="../../mocks/pages/home/default.html"&gt;&lt;svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;Back to Home&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details>
+</div>
+
+<h3>Browser panels (as drawn)</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<div class="ds-stage" style="width: 100%; display: grid; place-items: center; padding: var(--space-8) var(--space-6); background: var(--color-ink); "><div class="browser-panel" role="alert"><svg class="icon browser-panel__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 12.5-5-5"/><path d="m9.5 12.5 5-5"/><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M12 17v4"/><path d="M8 21h8"/></svg><h3 class="browser-panel__title">Open Telo Ride in Chrome or Edge</h3><p class="browser-panel__body">Telo Ride talks to your bike over Web Bluetooth, which Safari and Firefox don’t support. Your rides and settings carry over — they’re saved per browser, so export them first if you have history here.</p><div class="browser-panel__actions"><button class="btn btn--raised btn--sm" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy link</button></div><p class="browser-panel__url">https://ride.telo.app/ride</p></div></div>
+</div>
+<div class="ds-example__caption"><span>Needs Chromium: monitor-x in warn, Copy link (raised, since there is nothing to open here) and the address in mono.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="ds-stage" style="width: 100%; display: grid; place-items: center; padding: var(--space-8) var(--space-6); background: var(--color-ink); "&gt;&lt;div class="browser-panel" role="alert"&gt;&lt;svg class="icon browser-panel__icon" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;h3 class="browser-panel__title"&gt;Open Telo Ride in Chrome or Edge&lt;/h3&gt;&lt;p class="browser-panel__body"&gt;Telo Ride talks to your bike over Web Bluetooth, which Safari and Firefox don’t support. Your rides and settings carry over — they’re saved per browser, so export them first if you have history here.&lt;/p&gt;&lt;div class="browser-panel__actions"&gt;&lt;button class="btn btn--raised btn--sm" type="button"&gt;&lt;svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;Copy link&lt;/button&gt;&lt;/div&gt;&lt;p class="browser-panel__url"&gt;https://ride.telo.app/ride&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details>
+</div>
+
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<div class="ds-stage" style="width: 100%; display: grid; place-items: center; padding: var(--space-8) var(--space-6); background: var(--color-ink); "><div class="browser-panel" role="alert"><svg class="icon browser-panel__icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><h3 class="browser-panel__title">Open the secure version of this page</h3><p class="browser-panel__body">Browsers only allow Bluetooth on pages served over HTTPS. You’re on http://ride.telo.app/ride.</p><div class="browser-panel__actions"><a class="btn btn--primary btn--sm" href="../../mocks/pages/custom-ride/default.html">Open over HTTPS<svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></div></div></div>
+</div>
+<div class="ds-example__caption"><span>Needs HTTPS: a lock in warn and "Open over HTTPS" as the primary action.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="ds-stage" style="width: 100%; display: grid; place-items: center; padding: var(--space-8) var(--space-6); background: var(--color-ink); "&gt;&lt;div class="browser-panel" role="alert"&gt;&lt;svg class="icon browser-panel__icon" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;h3 class="browser-panel__title"&gt;Open the secure version of this page&lt;/h3&gt;&lt;p class="browser-panel__body"&gt;Browsers only allow Bluetooth on pages served over HTTPS. You’re on http://ride.telo.app/ride.&lt;/p&gt;&lt;div class="browser-panel__actions"&gt;&lt;a class="btn btn--primary btn--sm" href="../../mocks/pages/custom-ride/default.html"&gt;Open over HTTPS&lt;svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</code></pre></details>
+</div>
+
+<h3>Server error (rule)</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<div class="ds-stage" style="width: 100%; display: grid; place-items: center; padding: var(--space-8) var(--space-6); background: var(--color-ink); place-items: center start;"><section class="error-page" aria-labelledby="e500"><svg class="icon error-page__icon error-page__icon--heart" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg><span class="error-page__code">Error 500</span><h2 class="page__title" id="e500">Something broke on our side.</h2><p class="page__lead">Your rides and progress are saved on this device, so nothing is lost. Reload to try again; if it keeps happening, send us the diagnostics.</p><div class="error-page__actions"><button class="btn btn--primary btn--lg" type="button"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Reload</button><a class="btn btn--ghost btn--lg" href="../../mocks/dialogs/diagnostics/default.html">Open diagnostics</a></div><p class="error-page__ref">Reference <code class="code">7f3c2a1 · 2026-11-20 18:42</code></p></section></div>
+</div>
+<div class="ds-example__caption"><span>For a crash or a failed app load: heart icon, a status line, Reload, and a reference.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="ds-stage" style="width: 100%; display: grid; place-items: center; padding: var(--space-8) var(--space-6); background: var(--color-ink); place-items: center start;"&gt;&lt;section class="error-page" aria-labelledby="e500"&gt;&lt;svg class="icon error-page__icon error-page__icon--heart" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;span class="error-page__code"&gt;Error 500&lt;/span&gt;&lt;h2 class="page__title" id="e500"&gt;Something broke on our side.&lt;/h2&gt;&lt;p class="page__lead"&gt;Your rides and progress are saved on this device, so nothing is lost. Reload to try again; if it keeps happening, send us the diagnostics.&lt;/p&gt;&lt;div class="error-page__actions"&gt;&lt;button class="btn btn--primary btn--lg" type="button"&gt;&lt;svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;Reload&lt;/button&gt;&lt;a class="btn btn--ghost btn--lg" href="../../mocks/dialogs/diagnostics/default.html"&gt;Open diagnostics&lt;/a&gt;&lt;/div&gt;&lt;p class="error-page__ref"&gt;Reference &lt;code class="code"&gt;7f3c2a1 · 2026-11-20 18:42&lt;/code&gt;&lt;/p&gt;&lt;/section&gt;&lt;/div&gt;</code></pre></details>
+</div>
+
+<h3>Offline (rule)</h3>
+<div class="ds-example">
+<div class="ds-example__canvas ds-example__canvas--stack">
+<div style="width: 100%; max-width: 32rem;"><p class="inline-message inline-message--warn" role="status"><svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h.01"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/><path d="M5 12.859a10 10 0 0 1 5.17-2.69"/><path d="M19 12.859a10 10 0 0 0-2.007-1.523"/><path d="M2 8.82a15 15 0 0 1 4.177-2.643"/><path d="M22 8.82a15 15 0 0 0-11.288-3.764"/><path d="m2 2 20 20"/></svg><span class="inline-message__text"><span class="inline-message__title">You’re offline.</span> Rides, maps and classes still work; your feedback sends when you’re back online.</span></p></div>
+</div>
+<div class="ds-example__caption"><span>Offline is not an error page in Telo Ride: everything except sending feedback works from the device. Say so once, inline, where it matters.</span></div>
+<details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div style="width: 100%; max-width: 32rem;"&gt;&lt;p class="inline-message inline-message--warn" role="status"&gt;&lt;svg class="icon inline-message__icon" viewBox="0 0 24 24" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;span class="inline-message__text"&gt;&lt;span class="inline-message__title"&gt;You’re offline.&lt;/span&gt; Rides, maps and classes still work; your feedback sends when you’re back online.&lt;/span&gt;&lt;/p&gt;&lt;/div&gt;</code></pre></details>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="sizes" data-na="Error pages take the page or panel they replace. Full pages use the container and .page__title; panels cap at 28rem (--layout-panel-narrow)."><h2><a href="#sizes">Sizes</a></h2>
+<p class="ds-na">Error pages take the page or panel they replace. Full pages use the container and .page__title; panels cap at 28rem (--layout-panel-narrow).</p>
+</section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+<p>The page is static; its actions carry the states. Copy link confirms in place ("Link copied") and announces it through a status region. Actions are never disabled on an error page: if there is nothing to do, say so and offer Home.</p>
+<div class="ds-matrix"><table>
+<thead><tr><th scope="col">Action</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Disabled</th><th scope="col">Done</th></tr></thead>
+<tbody>
+<tr><th scope="row">Back to Home</th><td><button class="btn btn--primary btn--lg" type="button"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Back to Home</button></td><td><button class="btn btn--primary btn--lg" type="button" data-state="hover"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Back to Home</button></td><td><button class="btn btn--primary btn--lg" type="button" data-state="focus"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Back to Home</button></td><td><button class="btn btn--primary btn--lg" type="button" data-state="active"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Back to Home</button></td><td><button class="btn btn--primary btn--lg" type="button" disabled><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Back to Home</button></td><td>—</td></tr>
+<tr><th scope="row">Copy link</th><td><button class="btn btn--raised btn--sm" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy link</button></td><td><button class="btn btn--raised btn--sm" type="button" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy link</button></td><td><button class="btn btn--raised btn--sm" type="button" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy link</button></td><td><button class="btn btn--raised btn--sm" type="button" data-state="active"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy link</button></td><td>—</td><td><button class="btn btn--raised btn--sm" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Link copied</button></td></tr>
+</tbody>
+</table></div>
+
+<h3>Both themes</h3>
+<div class="ds-themes">
+<div data-theme="light"><div class="ds-example__canvas " style="padding: var(--space-6); display: grid; place-items: center;"><div class="browser-panel" role="alert"><svg class="icon browser-panel__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 12.5-5-5"/><path d="m9.5 12.5 5-5"/><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M12 17v4"/><path d="M8 21h8"/></svg><h3 class="browser-panel__title">Open Telo Ride in Chrome or Edge</h3><p class="browser-panel__body">Telo Ride talks to your bike over Web Bluetooth, which Safari and Firefox don’t support. Your rides and settings carry over — they’re saved per browser, so export them first if you have history here.</p><div class="browser-panel__actions"><button class="btn btn--raised btn--sm" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy link</button></div><p class="browser-panel__url">https://ride.telo.app/ride</p></div></div></div>
+<div data-theme="dark"><div class="ds-example__canvas " style="padding: var(--space-6); display: grid; place-items: center;"><div class="browser-panel" role="alert"><svg class="icon browser-panel__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 12.5-5-5"/><path d="m9.5 12.5 5-5"/><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M12 17v4"/><path d="M8 21h8"/></svg><h3 class="browser-panel__title">Open Telo Ride in Chrome or Edge</h3><p class="browser-panel__body">Telo Ride talks to your bike over Web Bluetooth, which Safari and Firefox don’t support. Your rides and settings carry over — they’re saved per browser, so export them first if you have history here.</p><div class="browser-panel__actions"><button class="btn btn--raised btn--sm" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Copy link</button></div><p class="browser-panel__url">https://ride.telo.app/ride</p></div></div></div>
+</div>
+
+<div class="ds-themes">
+<div data-theme="light"><div class="ds-example__canvas " style="padding: var(--space-6);"><div class="page not-found error-page" style="padding: 0;"><h2 class="page__title">This page doesn’t exist.</h2><p class="page__lead">The link may be old, or the address has a typo. Your rides and progress are safe.</p><a class="btn btn--primary btn--lg not-found__action" href="../../mocks/pages/home/default.html"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Back to Home</a></div></div></div>
+<div data-theme="dark"><div class="ds-example__canvas " style="padding: var(--space-6);"><div class="page not-found error-page" style="padding: 0;"><h2 class="page__title">This page doesn’t exist.</h2><p class="page__lead">The link may be old, or the address has a typo. Your rides and progress are safe.</p><a class="btn btn--primary btn--lg not-found__action" href="../../mocks/pages/home/default.html"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Back to Home</a></div></div></div>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+<ul><li><b>360px</b>: not found keeps the 16px gutter; the title wraps; the button stays its natural width.</li>
+<li><b>640px</b>: content caps at 36rem (<code>--setup-form-max</code>), left-aligned in the container.</li>
+<li><b>1024px</b>: browser panels centre over the ride video; the resistance panel beside them stays visible but disabled.</li></ul>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+<pre><code>.error-page { max-width: var(--setup-form-max); }
+.error-page__icon--heart { color: var(--color-heart-fg); }
+.browser-panel__icon { color: var(--color-warn-fg); }</code></pre>
+<p>The browser panels sit on the ride overlay's 90% ink scrim, so their text reads against ink in both themes.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+<h3>Role and pattern</h3>
+<p>A full error page is the page: its <code>&lt;h1&gt;</code> is the title and the document <code>&lt;title&gt;</code> starts with it ("Page not found — Telo Ride"). A browser panel that blocks a region is <code>role="alert"</code> so it is announced when the dashboard loads. No APG widget.</p>
+<h3>Keyboard</h3>
+<table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+<tr><td><kbd>Tab</kbd></td><td>Skip link, header, then the one action.</td></tr>
+<tr><td><kbd>Enter</kbd></td><td>Runs the action.</td></tr>
+</tbody></table>
+<h3>Focus</h3>
+<p>On a full page, focus starts at the top as usual. When a panel replaces a region the rider was using, move focus to its heading.</p>
+<h3>Labelling</h3>
+<p>Title says what happened; the lead says why and what is safe. Copy link announces "Link copied". The URL under the panel is plain text that can be selected.</p>
+<h3>Contrast</h3>
+<div class="ds-themes">
+<div data-theme="light"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+<div class="ds-pair"><span>Title on page</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Lead on page</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Status line</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Warn icon on page</span><span class="ds-pair__ratio" data-contrast="--color-warn-fg|--color-ink" data-min="3"></span></div>
+<div class="ds-pair"><span>Heart icon on page</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-ink" data-min="3"></span></div>
+<div class="ds-pair"><span>URL on page</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-ink" data-min="4.5"></span></div>
+</div></div>
+<div data-theme="dark"><div class="ds-example__canvas ds-example__canvas--stack" style="padding: 0; gap: var(--space-2);">
+<div class="ds-pair"><span>Title on page</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Lead on page</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Status line</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-ink" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Warn icon on page</span><span class="ds-pair__ratio" data-contrast="--color-warn-fg|--color-ink" data-min="3"></span></div>
+<div class="ds-pair"><span>Heart icon on page</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-ink" data-min="3"></span></div>
+<div class="ds-pair"><span>URL on page</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-ink" data-min="4.5"></span></div>
+</div></div>
+</div>
+<h3>Motion</h3>
+<p>None.</p>
+<h3>Touch</h3>
+<p>Primary actions are 48px (<code>btn--lg</code>); panel actions 36px.</p>
+
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+<ul><li>Say what happened in one sentence ("This page doesn’t exist.").</li><li>Reassure about what riders care about: "Your rides and progress are safe."</li>
+<li>Name browsers and protocols exactly (Chrome, Edge, Safari, Firefox, HTTPS).</li><li>One way forward, named for where it goes ("Back to Home", "Open over HTTPS").</li><li>No blame, no jokes, no error codes in titles.</li></ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+<div class="ds-dodont">
+<figure class="ds-do"><div class="ds-example__canvas"><div class="page not-found error-page" style="padding: 0;"><h2 class="page__title">This page doesn’t exist.</h2><p class="page__lead">The link may be old, or the address has a typo. Your rides and progress are safe.</p><a class="btn btn--primary btn--lg not-found__action" href="../../mocks/pages/home/default.html"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>Back to Home</a></div></div><figcaption>What happened, what is safe, one way back.</figcaption></figure>
+<figure class="ds-dont"><div class="ds-example__canvas"><div class="error-page"><h2 class="page__title">404</h2><p class="page__lead">Oops! Something went wrong.</p></div></div><figcaption>A code as the title, a vague sentence, no action.</figcaption></figure>
+<figure class="ds-do"><div class="ds-example__canvas"><div class="browser-panel" role="alert"><svg class="icon browser-panel__icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><h3 class="browser-panel__title">Open the secure version of this page</h3><p class="browser-panel__body">Browsers only allow Bluetooth on pages served over HTTPS. You’re on http://ride.telo.app/ride.</p><div class="browser-panel__actions"><a class="btn btn--primary btn--sm" href="../../mocks/pages/custom-ride/default.html">Open over HTTPS<svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a></div></div></div><figcaption>Names the protocol and the fix, with a direct link to the secure page.</figcaption></figure>
+<figure class="ds-dont"><div class="ds-example__canvas"><div class="browser-panel"><h3 class="browser-panel__title">Unsupported browser</h3><p class="browser-panel__body">Please upgrade your browser.</p></div></div><figcaption>Blames the browser without saying which one works or why.</figcaption></figure>
+</div>
+
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+<div class="ds-table-wrap"><table class="ds-table">
+<thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+<tbody>
+<tr><td>Page</td><td><code>--color-ink</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-ink" data-swatch></i><span data-token="--color-ink"></span></span></td></tr>
+<tr><td>Title</td><td><code>--color-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg" data-swatch></i><span data-token="--color-fg"></span></span></td></tr>
+<tr><td>Lead</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+<tr><td>Status line, URL, reference</td><td><code>--color-faint</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td></tr>
+<tr><td>Browser icon</td><td><code>--color-warn-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-warn-fg" data-swatch></i><span data-token="--color-warn-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-warn-fg" data-swatch></i><span data-token="--color-warn-fg"></span></span></td></tr>
+<tr><td>Failure icon</td><td><code>--color-heart-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-heart-fg" data-swatch></i><span data-token="--color-heart-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-heart-fg" data-swatch></i><span data-token="--color-heart-fg"></span></span></td></tr>
+<tr><td>Width</td><td><code>--setup-form-max</code> / <code>--layout-panel-narrow</code></td><td colspan="2"><span data-token="--setup-form-max"></span> / <span data-token="--layout-panel-narrow"></span></td></tr>
+<tr><td>Action gap</td><td><code>--space-8</code></td><td colspan="2"><span data-token="--space-8"></span></td></tr>
+</tbody>
+</table></div>
+
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+<pre><code>&lt;main id="main" class="container page not-found"&gt;
+  &lt;h1 class="page__title"&gt;This page doesn’t exist.&lt;/h1&gt;
+  &lt;p class="page__lead"&gt;The link may be old, or the address has a typo. Your rides and progress are safe.&lt;/p&gt;
+  &lt;a class="btn btn--primary btn--lg not-found__action" href="/"&gt;&lt;svg class="icon icon--lg" aria-hidden="true"&gt;…&lt;/svg&gt;Back to Home&lt;/a&gt;
+&lt;/main&gt;</code></pre>
+<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+<tr><td><code>.not-found</code> <code>.not-found__action</code></td><td>Not found (area).</td></tr>
+<tr><td><code>.browser-panel</code> <code>__icon/title/body/actions/url</code></td><td>Browser panel (core kit).</td></tr>
+<tr><td><code>.error-page</code></td><td>Block: <code>__icon</code> (<code>--warn</code>, <code>--heart</code>), <code>__code</code>, <code>__actions</code>, <code>__ref</code>.</td></tr>
+<tr><td><code>.error-page--center</code></td><td>Centred, for panels.</td></tr>
+</tbody></table></div>
+
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+<p>Extracted from these mocks:</p>
+<ul>
+<li><a href="../../mocks/pages/not-found/default.html">pages/not-found/default</a> (not found)</li>
+<li><a href="../../mocks/pages/custom-ride/needs-chromium.html">pages/custom-ride/needs-chromium</a> (Chrome or Edge panel)</li>
+<li><a href="../../mocks/pages/custom-ride/needs-https.html">pages/custom-ride/needs-https</a> (HTTPS panel)</li>
+<li><a href="../../mocks/pages/connect-bike/unsupported-browser.html">pages/connect-bike/unsupported-browser</a> (the same block on Connect Bike)</li>
+<li><a href="../../mocks/pages/class-start/needs-chromium.html">pages/class-start/needs-chromium</a> (banner form on Class Start)</li>
+</ul>
+<h3>Drift fixed during extraction</h3>
+<ul><li>Browser panel buttons carry <code>.browser-notice__action</code>, a class from the banner block. Resolution: dropped here; panel actions need no extra class.</li>
+<li>The HTTPS panel's arrow icon (external) is <code>icon--sm</code> inside a small button while Copy link uses <code>icon--md</code>; examples here follow the button size.</li>
+<li>No mock draws a server error or offline; both are rules written for this page. Offline is inline because all ride data is on the device.</li></ul>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

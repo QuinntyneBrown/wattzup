@@ -1,0 +1,92 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Six digits, then you're riding, and Telo Ride remembers you for a year."
+      ]
+    },
+    {
+      "id": "code",
+      "bars": 4,
+      "lines": [
+        "Type the code, paste it, or take the one your phone offers. Anything that isn't a digit drops away, and six digits confirm at once."
+      ]
+    },
+    {
+      "id": "mismatch",
+      "bars": 4,
+      "lines": [
+        "A code that doesn't match clears the field, marks it, and says so out loud. The focus goes straight back."
+      ]
+    },
+    {
+      "id": "refused",
+      "bars": 4,
+      "lines": [
+        "A code works for ten minutes, once. After five wrong ones, even the right code waits for a new one."
+      ]
+    },
+    {
+      "id": "backend",
+      "bars": 4,
+      "lines": [
+        "The backend checks only a keyed hash, finds or makes your account, and starts a session in a cookie scripts can't read."
+      ]
+    },
+    {
+      "id": "guard",
+      "bars": 4,
+      "lines": [
+        "Open any screen without a session, and sign-in opens first. Confirm the code, and you're back where you were going."
+      ]
+    },
+    {
+      "id": "session",
+      "bars": 4,
+      "lines": [
+        "Each ride moves the session forward a year. If the backend can't be reached, the screen opens all the same."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "Phone to desktop, the six cells keep one calm row."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: the right code signs you in, a wrong one is counted, and a session lasts a year from its last use."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Race Lobby · bots — Telo Ride mocks</title>
+<meta name="mock:kind" content="page">
+<meta name="mock:screen" content="race-lobby">
+<meta name="mock:state" content="bots">
+<meta name="mock:requirements" content="L2-051 L2-052 L2-053 L2-054 L2-055 L2-056 L2-057">
+<meta name="description" content="Lobby vs Bots, medium, five seconds out: nine pacer bots fill the grid and you are already marked ready.">
+<link rel="stylesheet" href="../../../design-system/tokens/tokens.css">
+<link rel="stylesheet" href="../../../design-system/assets/components.css">
+<link rel="stylesheet" href="../../assets/mock.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<main id="main" class="race-lobby">
+  <h1 class="visually-hidden">Race lobby, Old Town Criterium</h1>
+  <header class="race-lobby__header">
+    <span class="lockup" role="img" aria-label="Telo Ride"><svg class="logo-mark" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true"><path class="logo-mark__ring" d="M37.79 21.57 A14 14 0 1 1 26.43 10.21"/><path class="logo-mark__crank" d="M24 24 L38 10"/><circle class="logo-mark__hub" cx="24" cy="24" r="4.6"/></svg><span class="wordmark">TELO<span class="wordmark__product">Ride</span></span></span>
+    <span class="race-lobby__title"><span class="race-lobby__map">Old Town Criterium</span><span class="race-lobby__meta"> · 14.2 km · Bots, medium</span></span>
+    <a class="race-lobby__leave" href="../race-setup/default.html"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg>Leave</a>
+    <button class="icon-btn" type="button" aria-label="Full screen" title="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+  </header>
+
+  <div class="race-lobby__scroll">
+    <div class="race-lobby__body">
+      <section aria-label="Start clock">
+        <p class="race-lobby__status">On the start line</p>
+        <div class="numeral race-lobby__clock" role="timer" aria-label="Starts in 5 seconds">0:05</div>
+        <p class="race-lobby__hint">Keep pedalling easy. Resistance is set for the first stretch.</p>
+        <button class="race-lobby__ready" type="button" aria-pressed="true"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>You're ready</button>
+      </section>
+
+      <section aria-labelledby="grid">
+        <div class="start-grid__head">
+          <h2 class="start-grid__title" id="grid">Start grid</h2>
+          <span class="start-grid__count">10 / 10</span>
+        </div>
+        <ol class="start-grid__list">
+          <li class="start-grid__seat start-grid__seat--you">
+            <span class="numeral start-grid__num">1</span>
+            <span class="start-grid__dot" style="--jersey: var(--jersey-you)"></span>
+            <span class="start-grid__name">You</span>
+            <span class="start-grid__meta">Lv 7</span>
+            <svg class="icon icon--md start-grid__check" viewBox="0 0 24 24" role="img" aria-label="Ready"><path d="M20 6 9 17l-5-5"/></svg>
+          </li>
+          <li class="start-grid__seat">
+            <span class="numeral start-grid__num">2</span>
+            <span class="start-grid__dot" style="--jersey: var(--jersey-nova)"></span>
+            <span class="start-grid__name">Pacer Nova</span>
+            <span class="start-grid__meta"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>Bot</span>
+            <svg class="icon icon--md start-grid__check" viewBox="0 0 24 24" role="img" aria-label="Ready"><path d="M20 6 9 17l-5-5"/></svg>
+          </li>
+          <li class="start-grid__seat">
+            <span class="numeral start-grid__num">3</span>
+            <span class="start-grid__dot" style="--jersey: var(--jersey-rook)"></span>
+            <span class="start-grid__name">Pacer Rook</span>
+            <span class="start-grid__meta"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>Bot</span>
+            <svg class="icon icon--md start-grid__check" viewBox="0 0 24 24" role="img" aria-label="Ready"><path d="M20 6 9 17l-5-5"/></svg>
+          </li>
+          <li class="start-grid__seat">
+            <span class="numeral start-grid__num">4</span>
+            <span class="start-grid__dot" style="--jersey: var(--jersey-juno)"></span>
+            <span class="start-grid__name">Pacer Juno</span>
+            <span class="start-grid__meta"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>Bot</span>
+            <svg class="icon icon--md start-grid__check" viewBox="0 0 24 24" role="img" aria-label="Ready"><path d="M20 6 9 17l-5-5"/></svg>
+          </li>
+          <li class="start-grid__seat">
+            <span class="numeral start-grid__num">5</span>
+            <span class="start-grid__dot" style="--jersey: var(--jersey-atlas)"></span>
+            <span class="start-grid__name">Pacer Atlas</span>
+            <span class="start-grid__meta"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>Bot</span>
+            <svg class="icon icon--md start-grid__check" viewBox="0 0 24 24" role="img" aria-label="Ready"><path d="M20 6 9 17l-5-5"/></svg>
+          </li>
+          <li class="start-grid__seat">
+            <span class="numeral start-grid__num">6</span>
+            <span class="start-grid__dot" style="--jersey: var(--jersey-kite)"></span>
+            <span class="start-grid__name">Pacer Kite</span>
+            <span class="start-grid__meta"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>Bot</span>
+            <svg class="icon icon--md start-grid__check" viewBox="0 0 24 24" role="img" aria-label="Ready"><path d="M20 6 9 17l-5-5"/></svg>
+          </li>
+          <li class="start-grid__seat">
+            <span class="numeral start-grid__num">7</span>
+            <span class="start-grid__dot" style="--jersey: var(--jersey-vale)"></span>
+            <span class="start-grid__name">Pacer Vale</span>
+            <span class="start-grid__meta"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>Bot</span>
+            <svg class="icon icon--md start-grid__check" viewBox="0 0 24 24" role="img" aria-label="Ready"><path d="M20 6 9 17l-5-5"/></svg>
+          </li>
+          <li class="start-grid__seat">
+            <span class="numeral start-grid__num">8</span>
+            <span class="start-grid__dot" style="--jersey: var(--jersey-moss)"></span>
+            <span class="start-grid__name">Pacer Moss</span>
+            <span class="start-grid__meta"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>Bot</span>
+            <svg class="icon icon--md start-grid__check" viewBox="0 0 24 24" role="img" aria-label="Ready"><path d="M20 6 9 17l-5-5"/></svg>
+          </li>
+          <li class="start-grid__seat">
+            <span class="numeral start-grid__num">9</span>
+            <span class="start-grid__dot" style="--jersey: var(--jersey-flint)"></span>
+            <span class="start-grid__name">Pacer Flint</span>
+            <span class="start-grid__meta"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>Bot</span>
+            <svg class="icon icon--md start-grid__check" viewBox="0 0 24 24" role="img" aria-label="Ready"><path d="M20 6 9 17l-5-5"/></svg>
+          </li>
+          <li class="start-grid__seat">
+            <span class="numeral start-grid__num">10</span>
+            <span class="start-grid__dot" style="--jersey: var(--jersey-echo)"></span>
+            <span class="start-grid__name">Pacer Echo</span>
+            <span class="start-grid__meta"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>Bot</span>
+            <svg class="icon icon--md start-grid__check" viewBox="0 0 24 24" role="img" aria-label="Ready"><path d="M20 6 9 17l-5-5"/></svg>
+          </li>
+        </ol>
+      </section>
+    </div>
+  </div>
+  <p class="mock-note race-note race-note--low">The clock ticks once a second; at 0:03 the 3-2-1 covers the screen, then the race opens.</p>
+</main>
+
+<nav class="mock-bar" aria-label="Mock navigation">
+  <a class="mock-bar__home" href="../../index.html" aria-label="All mocks">⌂</a>
+  <span class="mock-bar__screen">Race Lobby</span>
+  <ul class="mock-bar__states">
+    <li><a href="default.html">default</a></li>
+    <li><a href="bots.html" aria-current="page">bots</a></li>
+    <li><a href="waiting.html">waiting</a></li>
+    <li><a href="filling.html">filling</a></li>
+    <li><a href="someone-left.html">someone-left</a></li>
+    <li><a href="countdown.html">countdown</a></li>
+  </ul>
+  <button type="button" data-theme-toggle aria-pressed="true">☀ Light</button>
+  <button type="button" data-chrome-toggle aria-label="Hide mock chrome">×</button>
+</nav>
+<script src="../../assets/mock.js"></script>
+</body>
+</html>

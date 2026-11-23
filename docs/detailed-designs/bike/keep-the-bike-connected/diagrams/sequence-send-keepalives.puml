@@ -1,0 +1,38 @@
+@startuml
+title UML sequence behaviour — Send keepalives
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "TICKER" as ticker
+  participant "KeepaliveScheduler" as keep
+  participant "WebBluetoothBikeConnection" as conn
+  participant "GattWriteQueue" as queue
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "Echelon GATT server" as bike
+end box
+conn -> keep : start() after initialisation
+loop while Connected (visible or hidden tab)
+  ticker -> keep : tick; the scheduler reads the clock
+  keep -> keep : due when now - lastSentAt ≥ 1000 ms, timed from the clock (L2-016 AC2, L2-133)
+  keep -> queue : F0 A0 01 01 92
+  queue -> bike : writeValueWithResponse on 0bf669f2-…
+  bike --> queue : Acknowledged
+  queue --> keep : ack ms
+end
+note right of keep : 4 to 6 keepalives in any 5 s (L2-016 AC1)
+bike -> conn : gattserverdisconnected
+conn -> keep : stop() until reconnected (L2-016 AC3)
+@enduml

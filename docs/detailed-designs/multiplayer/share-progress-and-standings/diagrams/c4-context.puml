@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Share progress and standings
+
+Person(rider, "Rider", "Rides a smart bike at home")
+Person(others, "Riders online", "Other riders in the same session")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(bike, "Smart bike", "Echelon EX-5s, EX-3, EX-8s, Connect Sport, or an FTMS bike; Bluetooth LE")
+
+Rel(rider, telo, "Sees the shared standings in")
+Rel(others, telo, "See the same standings in")
+Rel(telo, bike, "Reads power and cadence from", "Bluetooth LE")
+@enduml

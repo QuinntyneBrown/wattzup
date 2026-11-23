@@ -1,0 +1,23 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Test without hardware or databases
+
+Person(dev, "Developer", "Runs tests")
+System_Boundary(tests, "Telo Ride test suites") {
+  Container(pw, "Playwright specs", "Playwright, Chromium", "Fixtures fake Bluetooth, API and hub")
+  Container(apitests, "Telo.Ride.Api.Tests", ".NET test project", "Acceptance and hub tests on TestServer")
+  Container(apptests, "Telo.Ride.Application.Tests", ".NET test project", "Table-driven handler and domain tests")
+}
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "App under test, served on localhost")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Hosted in memory")
+  ContainerDb(mem, "EF Core InMemory store", "One per fixture", "Replaces the Telo Ride database")
+}
+Rel(dev, pw, "Runs")
+Rel(dev, apitests, "Runs")
+Rel(pw, app, "Drives", "Chromium")
+Rel(apitests, api, "HTTP and SignalR", "TestServer")
+Rel(api, mem, "Reads and writes", "EF Core")
+Rel(apptests, mem, "Uses")
+@enduml

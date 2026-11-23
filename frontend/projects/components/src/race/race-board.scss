@@ -1,0 +1,137 @@
+// Block race-board (docs/design-system/assets/components.css, Race): glass at the top right, from md. The rider's row
+// is filled and named "You", so its highlight is never colour alone.
+:host {
+  display: none;
+
+  @media (min-width: 48rem) {
+    display: block;
+  }
+}
+
+.race-board {
+  position: absolute;
+  z-index: var(--z-hud);
+  top: var(--race-hud-top-lg);
+  right: var(--space-5);
+  width: var(--race-board-width);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--color-ink) 70%, transparent);
+  backdrop-filter: blur(12px);
+  padding-block: var(--space-3);
+}
+
+.race-board__title {
+  padding-inline: var(--space-4);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-muted);
+}
+
+.race-board__status:not(:empty) {
+  padding: var(--space-1) var(--space-4) 0;
+}
+
+.race-board__list {
+  margin-top: var(--space-2);
+}
+
+.race-board__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2-5);
+  padding: var(--space-1-5) var(--space-4);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+}
+
+.race-board__row--you {
+  background: var(--color-volt);
+  color: var(--color-on-fill);
+}
+
+.race-board__pos {
+  width: var(--space-4);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  text-align: right;
+  color: var(--color-faint);
+
+  .race-board__row--you & {
+    color: inherit;
+  }
+}
+
+.race-board__dot {
+  flex-shrink: 0;
+  width: var(--space-2-5);
+  height: var(--space-2-5);
+  border-radius: var(--radius-full);
+  background: var(--jersey);
+}
+
+// Each rider's jersey, from the design system's jersey tokens: the rider, the ghost, the bots and riders online.
+@each $jersey
+  in (
+    you,
+    ghost,
+    nova,
+    rook,
+    juno,
+    atlas,
+    kite,
+    vale,
+    moss,
+    flint,
+    echo,
+    lena,
+    marco,
+    priya,
+    jwatts,
+    ollie,
+    kenji,
+    ana
+  )
+{
+  .race-board__dot--#{$jersey} {
+    --jersey: var(--jersey-#{$jersey});
+  }
+}
+
+.race-board__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  .race-board__row--you & {
+    font-weight: var(--font-weight-semibold);
+  }
+}
+
+.race-board__bot {
+  color: var(--color-faint);
+}
+
+.race-board__gap {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+  color: var(--color-muted);
+
+  .race-board__row--you & {
+    color: inherit;
+  }
+
+  .race-board__row--dnf & {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-faint);
+  }
+}
+
+// A rider the service marked DNF (L2-124): faint, with "DNF" in place of the gap, so the text carries the state.
+.race-board__row--dnf {
+  color: var(--color-faint);
+}

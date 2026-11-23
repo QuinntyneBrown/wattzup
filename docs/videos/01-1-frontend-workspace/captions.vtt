@@ -1,0 +1,82 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.169
+Telo Ride starts here: one Angular workspace, and the ride app it builds.
+
+00:00:10.324 --> 00:00:14.933
+The frontend holds three libraries, api, domain and components, and one application,
+
+00:00:14.933 --> 00:00:15.507
+ride.
+
+00:00:15.852 --> 00:00:20.284
+Ride uses all three. Domain uses api. Api uses nothing.
+
+00:00:20.647 --> 00:00:25.725
+Import against that direction and lint fails. And only domain's bluetooth folder may
+
+00:00:25.725 --> 00:00:27.839
+touch navigator dot bluetooth.
+
+00:00:30.971 --> 00:00:36.025
+Start the app and Home opens in the app shell. The Telo Ride lockup links home, and
+
+00:00:36.025 --> 00:00:39.430
+the main navigation marks Home as the current page.
+
+00:00:41.295 --> 00:00:46.598
+Every colour is a token from the design system. Barlow Condensed, Inter Tight and
+
+00:00:46.598 --> 00:00:50.237
+JetBrains Mono ship with the app, never from a CDN.
+
+00:00:51.618 --> 00:00:56.159
+An address that matches no screen says so, with no current item in the header.
+
+00:00:56.504 --> 00:00:58.201
+Back to Home opens Home.
+
+00:01:01.942 --> 00:01:06.714
+On a keyboard, the first Tab reaches Skip to content, and Enter moves focus straight
+
+00:01:06.714 --> 00:01:07.696
+to the page.
+
+00:01:12.266 --> 00:01:17.363
+The same shell fits a phone, a tablet, a laptop and a desktop. On a phone, the
+
+00:01:17.363 --> 00:01:19.558
+navigation takes its own row.
+
+00:01:22.590 --> 00:01:27.407
+Every screen is its own chunk, loaded on demand, and the build fails if the first
+
+00:01:27.407 --> 00:01:29.431
+download outgrows its budget.
+
+00:01:32.913 --> 00:01:37.856
+What the tests prove: six behaviour specs run against the production build, and any
+
+00:01:37.856 --> 00:01:41.491
+page error, or any request off this machine, fails them.
+
+00:01:43.237 --> 00:01:47.840
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:48.185 --> 00:01:52.697
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:52.697 --> 00:01:54.368
+every hill and interval.
+
+00:01:54.713 --> 00:01:59.891
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:59.891 --> 00:02:05.339
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:02:05.339 --> 00:02:08.329
+XP, rider levels, stars and map unlocks.
+
+00:02:08.675 --> 00:02:11.167
+A custom workout lives under Profile.

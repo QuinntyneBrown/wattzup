@@ -1,0 +1,49 @@
+@startuml
+title UML sequence behaviour — Show the unlock card
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ResultsPage" as page
+  participant "resultsView()" as store
+end box
+box "Frontend — Ride app (components library)" #E0F2FE
+  participant "UnlockCard" as card
+end box
+box "Frontend — Ride app (domain and api libraries)" #E0F2FE
+  participant "RideOutbox" as outbox
+  participant "MapsApi" as cat
+end box
+outbox --> page : recorded(openedMapId = "neon-docklands")
+alt openedMapId present
+  page -> cat : list()
+  cat --> page : Neon Docklands, "A harbour city after dark"
+  page -> store : result, recorded answer, Neon Docklands
+  store --> page : UnlockCardView
+  page -> card : Render
+  card -> card : Fade in, scale 0.96 to 1 over 250 ms after 200 ms; photo grey at half brightness to full colour over 250 ms after 350 ms (L2-076 AC2)
+  opt prefers-reduced-motion: reduce
+    card -> card : Opacity only
+  end
+  card --> actor : Gold card "Neon Docklands is open", "A harbour city after dark.", "Ride Neon Docklands" (AC1)
+  opt Rider chooses "Ride Neon Docklands"
+    actor -> card : Ride Neon Docklands (the page's link)
+    card --> actor : Race Setup for Neon Docklands
+  end
+else No map opened
+  page -> store : result, recorded answer, no map
+  store --> page : unlock = null; no card (AC3)
+end
+@enduml

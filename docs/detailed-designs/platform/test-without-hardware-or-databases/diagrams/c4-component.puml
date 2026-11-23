@@ -1,0 +1,26 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Test without hardware or databases
+
+Container(app, "Ride app", "Angular", "App under test")
+Container_Boundary(pw, "Playwright specs") {
+  Component(fx, "e2e/fixtures/test.ts", "Playwright fixture", "Composes doubles and guards")
+  Component(ble, "FakeBluetooth", "Init script", "Fake navigator.bluetooth; records writes; notify()")
+  Component(apifx, "ApiFixture", "page.route", "Answers /api/**")
+  Component(hubfx, "HubFixture", "page.routeWebSocket", "Answers /hubs/ride")
+  Component(po, "Page objects", "e2e/pages/*.page.ts", "Own the selectors")
+}
+Container_Boundary(apitests, "Telo.Ride.Api.Tests") {
+  Component(factory, "TeloRideApiFactory", "WebApplicationFactory<Program>", "InMemory store, FakeTimeProvider, FakeEmailSender")
+  Component(hubclient, "HubConnection", "SignalR .NET client", "Real client over the test server")
+  Component(probe, "EventProbe<T>", "Test helper", "Await with timeout; names what arrived")
+}
+Rel(fx, ble, "Installs")
+Rel(fx, apifx, "Installs")
+Rel(fx, hubfx, "Installs")
+Rel(po, app, "Acts on")
+Rel(ble, app, "Stands in for the bike of")
+Rel(hubclient, factory, "Connects through server.CreateHandler()")
+Rel(probe, hubclient, "Awaits events from")
+@enduml

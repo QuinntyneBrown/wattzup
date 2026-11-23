@@ -3,17 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Form field — Wattzup design system</title>
-<meta name="description" content="Label, control, help and error stacked as one unit.">
+<title>Form field — Telo Ride design system</title>
+<meta name="description" content="The wrapper every input uses: label, control, hint, error and counter, with the spacing between them.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+  .ds-pairs-stack { display: flex; flex-direction: column; gap: var(--space-2); }
+  .ds-matrix td { min-width: var(--space-28); }
+  .ds-demo-col { display: flex; flex-direction: column; gap: var(--space-4); width: 100%; max-width: calc(var(--space-48) * 2); }
+  .ds-demo-wide { width: 100%; max-width: calc(var(--space-36) * 4); }
+  .ds-demo-panel { background: var(--color-panel); border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-2xl); padding: var(--space-5); width: 100%; }
+  .ds-menu-stage { min-height: calc(var(--space-44) * 2); align-items: flex-start; }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +36,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,75 +90,241 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Component · Inputs</p>
       <h1>Form field</h1>
-      <p class="ds-lead">A form field wraps one control with its label, help and error so every input in Wattzup reads the same way.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span></div>
+      <p class="ds-lead">A form field stacks a label, a control and the words that help with it. Every text field, textarea, select and slider in Telo Ride sits in one, so labels, hints and errors look and announce the same everywhere.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
       <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>The wrapper (<code>.field</code>) stacks label → control → help → error with 4px between. Number steppers and sliders use their own heads but the same help and error parts.</p>
-    </section>
-    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
-<div class="ds-anatomy"><figure class="ds-anatomy__figure"><label class="field"><span class="field__label">YouTube link</span><input class="input" type="url" aria-invalid="true" aria-describedby="a1 a2"><span class="field__help" id="a1">A youtube.com or youtu.be link.</span><span class="field__error" id="a2">That doesn&rsquo;t look like a YouTube link.</span></label><span class="ds-callout" style="left: 2%; top: 2%;" aria-hidden="true">1</span><span class="ds-callout" style="left: 2%; top: 22%;" aria-hidden="true">2</span><span class="ds-callout" style="left: 2%; top: 52%;" aria-hidden="true">3</span><span class="ds-callout" style="left: 2%; top: 78%;" aria-hidden="true">4</span></figure><ol class="ds-anatomy__list"><li><div><b>Label</b><small><code>--text-label</code>.</small></div></li><li><div><b>Control</b><small>Text field, stepper, slider.</small></div></li><li><div><b>Help</b><small>Muted, body-sm.</small></div></li><li><div><b>Error</b><small>Danger text with ⚠, names the fix.</small></div></li></ol></div>
-    </section>
-    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
-<div class="ds-example"><div class="ds-example__canvas "><label class="field"><span class="field__label">YouTube link</span><input class="input" type="url" aria-describedby="h1"><span class="field__help" id="h1">Paste a youtube.com or youtu.be link.</span></label></div><div class="ds-example__caption"><span>With help.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;label class="field"&gt;
-&lt;span class="field__label"&gt;YouTube link&lt;/span&gt;
-&lt;input class="input" type="url" aria-describedby="h1"&gt;
-&lt;span class="field__help" id="h1"&gt;Paste a youtube.com or youtu.be link.&lt;/span&gt;
-&lt;/label&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="sizes" data-na="The field takes the size of its control."><h2><a href="#sizes">Sizes</a></h2>
-      <p class="ds-na">The field takes the size of its control.</p>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<div class="ds-matrix"><table><thead><tr><th scope="col">Variant</th><th scope="col">Default</th><th scope="col">Invalid</th></tr></thead><tbody><tr><th scope="row">Field</th><td><input class="input" aria-label="YouTube link"></td><td><input class="input" aria-label="YouTube link" aria-invalid="true"></td></tr></tbody></table></div><h3>Both themes</h3><div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas"><div class="field"><span class="field__error">That doesn&rsquo;t look like a YouTube link.</span></div></div></div><div data-theme="dark"><div class="ds-example__canvas"><div class="field"><span class="field__error">That doesn&rsquo;t look like a YouTube link.</span></div></div></div></div>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
-<ul><li>Fields stack in one column below 640px; see <a href="form-layout.html">form layout</a>.</li></ul>
-    </section>
-    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
-<p>Help reads <code>--color-fg-muted</code>; error reads <code>--color-danger-fg</code>.</p>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<h3>Role and pattern</h3><p><code>&lt;label&gt;</code> wraps or points at the control; help and error ids go in <code>aria-describedby</code>.</p><h3>Keyboard</h3><div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody><tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Moves focus to and from the control in DOM order.</td></tr></tbody></table></div><h3>Focus</h3><p>Focus goes to the control, never the label.</p><h3>Labelling</h3><p>Error text is announced with the control because it is in <code>aria-describedby</code>.</p><h3>Contrast</h3><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-pair"><span>Error on canvas</span><span class="ds-pair__ratio" data-contrast="--color-danger-fg|--color-bg-canvas" data-min="4.5"></span></div><div class="ds-pair"><span>Help on canvas</span><span class="ds-pair__ratio" data-contrast="--color-fg-muted|--color-bg-canvas" data-min="4.5"></span></div></div><h3>Motion</h3><p>None.</p><h3>Touch</h3><p>Label is part of the hit area.</p>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Errors name the field's rule and the fix: "Enter 1 to 30 rounds."</li><li>Help says where to find things, not what the label already says.</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><div class="field"><span class="field__error">Recover must be at least 0:05.</span></div></div><figcaption>Error says how to fix it.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><div class="field"><span class="field__error">Invalid value.</span></div></div><figcaption>Error says nothing useful.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
-<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Label</td><td><code>--color-fg-default</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-default" data-swatch></i><span data-token="--color-fg-default"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-default" data-swatch></i><span data-token="--color-fg-default"></span></span></td></tr><tr><td>Help</td><td><code>--color-fg-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-muted" data-swatch></i><span data-token="--color-fg-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-muted" data-swatch></i><span data-token="--color-fg-muted"></span></span></td></tr><tr><td>Error</td><td><code>--color-danger-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-danger-fg" data-swatch></i><span data-token="--color-danger-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-danger-fg" data-swatch></i><span data-token="--color-danger-fg"></span></span></td></tr><tr><td>Gap</td><td><code>--space-1</code></td><td colspan="2"><span data-token="--space-1"></span></td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
-<pre><code>&lt;label class="field"&gt;
-  &lt;span class="field__label"&gt;YouTube link&lt;/span&gt;
-  &lt;input class="input" aria-describedby="key-help key-err" aria-invalid="true"&gt;
-  &lt;span class="field__help" id="key-help"&gt;…&lt;/span&gt;
-  &lt;span class="field__error" id="key-err"&gt;…&lt;/span&gt;
-&lt;/label&gt;</code></pre><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.field</code></td><td>Stack.</td></tr><tr><td><code>.field__label .field__help .field__error</code></td><td>Parts.</td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from these mocks:</p><ul><li><a href="../../mocks/pages/setup/video-invalid.html">pages/setup/video-invalid</a> (help and error)</li><li><a href="../../mocks/pages/setup/invalid.html">pages/setup/invalid</a> (stepper errors)</li></ul><p>Drift fixed during extraction: none.</p>
+      <p><code>.field</code> is a layout primitive, not a control. Wrap one control in it with its <code>.field__label</code>, then optionally a <code>.field__hint</code>, a <code>.field__error</code> and a <code>.field__counter</code>. Groups of checkboxes or radios use a <a class="link" href="checkbox.html">fieldset</a> (<code>.choice-group</code>) instead, because they need one label for many controls.</p>
+      <p>In the mocks the same parts appear under area names: the feedback panel's "What went wrong?" (<code>.feedback__label</code>), Custom Setup's "YouTube link" (<code>.video-sync__label</code>) and "Ride 0:00 starts at". New screens use <code>.field</code>.</p>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+      <div class="ds-anatomy">
+        <figure class="ds-anatomy__figure">
+          <div class="field" style="width: 100%; max-width: calc(var(--space-44) * 2);">
+            <label class="field__label" for="anat-msg">What went wrong?</label>
+            <textarea class="input" id="anat-msg" rows="3" maxlength="500" aria-describedby="anat-msg-hint anat-msg-count">Resistance stayed at L8 after the sprint ended — it only dropped when I tapped minus.</textarea>
+            <div class="field__footer"><span class="field__hint" id="anat-msg-hint">Context is sent with your note.</span><span class="field__counter" id="anat-msg-count">85 / 500</span></div>
+          </div>
+          <span class="ds-callout" style="left: 12%; top: 14%;" aria-hidden="true">1</span>
+          <span class="ds-callout" style="left: 12%; top: 46%;" aria-hidden="true">2</span>
+          <span class="ds-callout" style="left: 12%; top: 82%;" aria-hidden="true">3</span>
+          <span class="ds-callout" style="left: 88%; top: 82%;" aria-hidden="true">4</span>
+        </figure>
+        <ol class="ds-anatomy__list">
+          <li><div><b>Label</b><small><code>&lt;label for&gt;</code>, 14px medium <code>--color-muted</code>. Always visible; never a placeholder.</small></div></li>
+          <li><div><b>Control</b><small>Text field, textarea, select or slider; 6px below the label (<code>--space-1-5</code>).</small></div></li>
+          <li><div><b>Hint or error</b><small>12px; hint in <code>--color-faint</code>, error in <code>--color-heart-fg</code> with an alert icon; linked by <code>aria-describedby</code>.</small></div></li>
+          <li><div><b>Counter (optional)</b><small>12px tabular figures, right-aligned in <code>.field__footer</code>; turns heart when over.</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+      <div class="ds-example">
+        <div class="ds-example__canvas ds-example__canvas--stack">
+          <div class="ds-demo-wide" style="display: grid; gap: var(--space-6);">
+            <div class="field">
+              <label class="field__label" for="v-url">YouTube link</label>
+              <input class="input" id="v-url" type="url" inputmode="url" autocomplete="url" placeholder="https://www.youtube.com/watch?v=…" aria-describedby="v-url-hint">
+              <p class="field__hint" id="v-url-hint">Plays in sync on the dashboard.</p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="v-url-bad">YouTube link</label>
+              <input class="input" id="v-url-bad" type="url" value="youtube.com/QUoToFsMNig" aria-invalid="true" aria-describedby="v-url-bad-err">
+              <p class="field__error" id="v-url-bad-err"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>That isn't a full YouTube link. Paste the address that starts with https://www.youtube.com/watch?v=</p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="v-note">Note <span class="field__optional">(optional)</span></label>
+              <input class="input" id="v-note" type="text" maxlength="60" aria-describedby="v-note-count" value="Old Town, legs heavy">
+              <div class="field__footer"><span></span><span class="field__counter" id="v-note-count">20 / 60</span></div>
+            </div>
+            <div class="field field--inline">
+              <label class="field__label" for="v-offset">Ride 0:00 starts at</label>
+              <input class="input" id="v-offset" type="text" inputmode="decimal" value="0:12.0">
+            </div>
+          </div>
+        </div>
+        <div class="ds-example__caption"><span>With hint; with error; optional with counter; inline (label beside the control from 640px).</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;div class="field"&gt;
+  &lt;label class="field__label" for="video-url"&gt;YouTube link&lt;/label&gt;
+  &lt;input class="input" id="video-url" type="url" aria-invalid="true" aria-describedby="video-url-error"&gt;
+  &lt;p class="field__error" id="video-url-error"&gt;&lt;svg class="icon icon--sm" aria-hidden="true"&gt;…&lt;/svg&gt;That isn't a full YouTube link. …&lt;/p&gt;
+&lt;/div&gt;</code></pre></details>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sizes" data-na="The field has no sizes of its own; it takes the size of its control (see text field and select)."><h2><a href="#sizes">Sizes</a></h2>
+      <p class="ds-na">The field has no sizes of its own; it takes the size of its control (see text field and select).</p>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">State</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Disabled</th><th scope="col">Read-only</th><th scope="col">Invalid</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Field</th>
+            <td><div class="field"><label class="field__label" for="s1">YouTube link</label><input class="input" id="s1" type="url" placeholder="https://www.youtube.com/watch?v=…" aria-describedby="s1h"><p class="field__hint" id="s1h">Plays in sync.</p></div></td>
+            <td><div class="field"><label class="field__label" for="s2">YouTube link</label><input class="input" id="s2" type="url" data-state="hover" placeholder="https://www.youtube.com/watch?v=…" aria-describedby="s2h"><p class="field__hint" id="s2h">Plays in sync.</p></div></td>
+            <td><div class="field"><label class="field__label" for="s3">YouTube link</label><input class="input" id="s3" type="url" data-state="focus" value="https://www.youtube.com/watch?v=QUoToFsMNig" aria-describedby="s3h"><p class="field__hint" id="s3h">Plays in sync.</p></div></td>
+            <td><div class="field"><label class="field__label" for="s4">YouTube link</label><input class="input" id="s4" type="url" disabled placeholder="https://www.youtube.com/watch?v=…" aria-describedby="s4h"><p class="field__hint" id="s4h">Turn on "Ride along to a video" first.</p></div></td>
+            <td><div class="field"><label class="field__label" for="s5">YouTube link</label><input class="input" id="s5" type="url" readonly value="https://www.youtube.com/watch?v=QUoToFsMNig" aria-describedby="s5h"><p class="field__hint" id="s5h">Set by the class.</p></div></td>
+            <td><div class="field"><label class="field__label" for="s6">YouTube link</label><input class="input" id="s6" type="url" aria-invalid="true" value="youtube.com/QUoTo" aria-describedby="s6e"><p class="field__error" id="s6e"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>Paste a full YouTube link.</p></div></td></tr>
+        </tbody>
+      </table></div>
+      <p>The field itself has no hover or focus; its control does. The label never changes colour on focus (the ring is enough) and never turns red: the error line and the control's border carry the state, with an icon so colour is not the only cue.</p>
+      <h3>Both themes</h3>
+      <div class="ds-themes">
+        <div data-theme="light"><div class="ds-demo-col"><div class="field"><label class="field__label" for="tl1">YouTube link</label><input class="input" id="tl1" type="url" placeholder="https://www.youtube.com/watch?v=…" aria-describedby="tl1h"><p class="field__hint" id="tl1h">Plays in sync on the dashboard.</p></div><div class="field"><label class="field__label" for="tl2">YouTube link</label><input class="input" id="tl2" type="url" aria-invalid="true" value="youtube.com/QUoTo" aria-describedby="tl2e"><p class="field__error" id="tl2e"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>Paste a full YouTube link.</p></div></div></div>
+        <div data-theme="dark"><div class="ds-demo-col"><div class="field"><label class="field__label" for="td1">YouTube link</label><input class="input" id="td1" type="url" placeholder="https://www.youtube.com/watch?v=…" aria-describedby="td1h"><p class="field__hint" id="td1h">Plays in sync on the dashboard.</p></div><div class="field"><label class="field__label" for="td2">YouTube link</label><input class="input" id="td2" type="url" aria-invalid="true" value="youtube.com/QUoTo" aria-describedby="td2e"><p class="field__error" id="td2e"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>Paste a full YouTube link.</p></div></div></div>
+      </div>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Width</th><th scope="col">Rule</th></tr></thead><tbody>
+        <tr><td>360 (base)</td><td>Label above control, full width of the form column. Hints and errors wrap under the control; the counter stays on the right of the footer row.</td></tr>
+        <tr><td>640 (sm)</td><td><code>.field--inline</code> puts the label in a 1fr column beside a 1.5fr control. Use it only for short controls in settings-style lists.</td></tr>
+        <tr><td>1024 (lg)</td><td>No change; the form column is capped (Custom Setup: 36rem), so fields never stretch past a readable width.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+      <p>The field reads semantic tokens directly: <code>--color-muted</code> for the label, <code>--color-faint</code> for hints and counters, <code>--color-heart-fg</code> for errors. Its control owns the <code>--field-*</code> tokens (see <a class="link" href="text-field.html">text field</a>). The dark error text was raised from the fill red (#e5194b, 3.9:1 on panels) to <code>--palette-red-light</code>.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <p>Native labelling: <code>&lt;label for&gt;</code> pointing at the control's <code>id</code>. Hint, error and counter are linked with <code>aria-describedby</code> (error first when both show). Invalid controls set <code>aria-invalid="true"</code>. No ARIA widget pattern applies; see WAI's <a class="link" href="https://www.w3.org/WAI/tutorials/forms/labels/">Labeling controls</a> tutorial.</p>
+      <h3>Keyboard</h3>
+      <div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+        <tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Moves to and from the control; the label, hint and counter are not focusable.</td></tr>
+        <tr><td>Click on label</td><td>Focuses the control (pointer convenience that <code>for</code> gives for free).</td></tr>
+      </tbody></table></div>
+      <h3>Focus</h3>
+      <p>The control takes the ring (2px, offset 0 so it hugs the border). After a failed submit, focus goes to the <a class="link" href="form-layout.html">error summary</a>, whose links move focus to each field.</p>
+      <h3>Labelling</h3>
+      <p>Every control has a visible label that says what to enter ("YouTube link", "What went wrong?"). Optional fields say "(optional)" inside the label; required is the default and is not marked with an asterisk. The counter is announced as part of the description; announce it live only near the limit ("20 characters left") so it does not chatter on every key.</p>
+      <h3>Contrast</h3>
+      <div class="ds-themes">
+<div data-theme="light"><div class="ds-pairs-stack">
+<div class="ds-pair"><span>Label on panel</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Hint, counter on panel</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Error on panel</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Error on page</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-ink" data-min="4.5"></span></div>
+</div></div>
+<div data-theme="dark"><div class="ds-pairs-stack">
+<div class="ds-pair"><span>Label on panel</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Hint, counter on panel</span><span class="ds-pair__ratio" data-contrast="--color-faint|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Error on panel</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Error on page</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-ink" data-min="4.5"></span></div>
+</div></div>
+</div>
+      <h3>Motion</h3>
+      <p>Errors appear without animation; nothing moves the layout except the error line itself, which pushes content down by one line.</p>
+      <h3>Touch</h3>
+      <p>The label is part of the target (it focuses the control). Controls are 40px tall; keep 24px between fields (<code>--form-gap</code>).</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li>Labels are nouns or short questions in sentence case, no colon: "YouTube link", "What went wrong?".</li>
+        <li>Hints say what happens or what format works: "Plays in sync on the dashboard."</li>
+        <li>Errors say what is wrong and how to fix it, in one sentence: "That isn't a full YouTube link. Paste the address that starts with https://www.youtube.com/watch?v=". Never "Invalid input".</li>
+        <li>Placeholders show an example ("e.g. Resistance stayed at L8 when the video dropped to recovery."), never the label.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas"><div class="field" style="width: 100%;"><label class="field__label" for="dd1">What went wrong?</label><textarea class="input" id="dd1" rows="2" placeholder="e.g. Resistance stayed at L8 when the video dropped to recovery."></textarea></div></div><figcaption>A visible label and an example placeholder (the feedback panel).</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><input class="input" type="text" aria-label="Video link (example)" placeholder="YouTube link"></div><figcaption>The label inside the placeholder: it disappears on the first keystroke and reads at 4.5:1 at best.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><div class="field" style="width: 100%;"><label class="field__label" for="dd3">YouTube link</label><input class="input" id="dd3" type="url" aria-invalid="true" value="youtube.com/QUoTo" aria-describedby="dd3e"><p class="field__error" id="dd3e"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>Paste a full YouTube link.</p></div></div><figcaption>Error under the control, with an icon, linked by <code>aria-describedby</code>.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><div class="field" style="width: 100%;"><label class="field__label" for="dd4" style="color: var(--color-heart-fg);">YouTube link</label><input class="input" id="dd4" type="url" value="youtube.com/QUoTo" style="border-color: var(--color-heart);"></div></div><figcaption>Red label and border with no words: the rider is not told what is wrong, and colour is the only signal.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+        <tbody>
+          <tr><td>Label</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+          <tr><td>Hint, counter, optional</td><td><code>--color-faint</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-faint" data-swatch></i><span data-token="--color-faint"></span></span></td></tr>
+          <tr><td>Error, counter over</td><td><code>--color-heart-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-heart-fg" data-swatch></i><span data-token="--color-heart-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-heart-fg" data-swatch></i><span data-token="--color-heart-fg"></span></span></td></tr>
+          <tr><td>Gap label → control → hint</td><td><code>--space-1-5</code></td><td colspan="2"><span data-token="--space-1-5"></span></td></tr>
+          <tr><td>Label</td><td><code>--font-size-sm</code> <code>--font-weight-medium</code></td><td colspan="2"><span data-token="--font-size-sm"></span><span data-token="--font-weight-medium"></span></td></tr>
+          <tr><td>Hint, error, counter</td><td><code>--font-size-xs</code> <code>--line-height-xs</code></td><td colspan="2"><span data-token="--font-size-xs"></span><span data-token="--line-height-xs"></span></td></tr>
+          <tr><td>Inline columns gap (from 640px)</td><td><code>--space-6</code></td><td colspan="2"><span data-token="--space-6"></span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+      <pre><code>&lt;div class="field"&gt;
+  &lt;label class="field__label" for="feedback-message"&gt;What went wrong?&lt;/label&gt;
+  &lt;textarea class="input" id="feedback-message" rows="4" maxlength="500" aria-describedby="feedback-count"&gt;&lt;/textarea&gt;
+  &lt;div class="field__footer"&gt;&lt;span class="field__hint"&gt;Context is sent with your note.&lt;/span&gt;&lt;span class="field__counter" id="feedback-count"&gt;85 / 500&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+        <tr><td><code>.field</code></td><td>Column stack, 6px gaps (kit).</td></tr>
+        <tr><td><code>.field__label</code> <code>.field__hint</code> <code>.field__error</code></td><td>Label, hint, error line (kit).</td></tr>
+        <tr><td><code>.field__optional</code></td><td>"(optional)" inside the label, faint.</td></tr>
+        <tr><td><code>.field__footer</code> <code>.field__counter</code> <code>[data-over="true"]</code></td><td>Hint/counter row; counter; over the limit.</td></tr>
+        <tr><td><code>.field--inline</code></td><td>Label beside control from 640px.</td></tr>
+        <tr><td><code>aria-describedby</code> / <code>aria-invalid</code></td><td>Links hint and error; marks the control invalid.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <ul>
+        <li><a href="../../mocks/dialogs/feedback/default.html">dialogs/feedback/default</a> — "What went wrong?" label and textarea</li>
+        <li><a href="../../mocks/pages/custom-setup/default.html">pages/custom-setup/default</a> — "YouTube link", "Ride 0:00 starts at", level slider labels</li>
+      </ul>
+      <p>Drift fixed during extraction:</p>
+      <ul>
+        <li>Four area label styles (<code>.feedback__label</code> fg medium, <code>.video-sync__label</code> muted regular, <code>.video-sync__offset-label</code>, <code>.level-slider__label</code>) collapse into <code>.field__label</code> (muted medium).</li>
+        <li>No mock shows an error or hint under a field; the error and hint lines and their <code>aria-describedby</code> wiring come from the kit and the forms pattern.</li>
+        <li>Error text in dark was #e5194b (3.9:1 on panels); <code>--color-heart-fg</code> is #ff5a78.</li>
+      </ul>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

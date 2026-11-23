@@ -1,0 +1,25 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Connect to the ride hub
+
+Container_Boundary(app, "Ride app") {
+  Component(store, "LiveSessionStore", "Signal store · ride", "Starts and stops the connection; rejoins after reconnect")
+  Component(client, "SignalRRideHubClient", "SignalR client · api", "Implements RideHubClient over one HubConnection")
+  Component(retry, "RideHubRetryPolicy", "IRetryPolicy · api", "0, 2, 5, 10, then every 30 s")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(auth, "Fallback authorization policy", "ASP.NET Core authorization", "Refuses requests without a valid session cookie")
+  Component(hub, "RideHub", "SignalR hub · Telo.Ride.Api", "Sends one MediatR request per method")
+  Component(handlers, "FindRaceCommandHandler, JoinClassSessionCommandHandler", "MediatR handlers · Telo.Ride.Application", "Seat the rider or return the seat held")
+  Component(notifier, "RideHubNotifier", "ISessionNotifier · Telo.Ride.Api", "Adds connections to session groups")
+  Component(registry, "InMemorySessionRegistry", "ISessionRegistry · Telo.Ride.Infrastructure", "Live sessions in memory")
+}
+Rel(store, client, "start(), stop(), join calls")
+Rel(client, retry, "Asks for the next delay")
+Rel(client, auth, "Negotiates and connects", "SignalR, cookie")
+Rel(auth, hub, "Admits an authenticated connection")
+Rel(hub, handlers, "Sends FindRaceCommand / JoinClassSessionCommand")
+Rel(handlers, registry, "Finds or creates the seat")
+Rel(handlers, notifier, "Adds the connection to session:{id}")
+@enduml

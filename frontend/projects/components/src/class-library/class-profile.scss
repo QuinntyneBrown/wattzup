@@ -1,0 +1,34 @@
+// Block class-profile (docs/design-system/assets/components.css, Plan profile): one bar per segment in a
+// 0 0 <length> 32 box stretched to its own.
+:host {
+  display: block;
+}
+
+.class-profile {
+  display: block;
+  width: 100%;
+  height: var(--space-5);
+}
+
+.class-profile--lg {
+  height: var(--space-20);
+}
+
+.class-profile--xl {
+  height: var(--space-36);
+}
+
+.class-profile__work,
+.class-profile__steady {
+  fill: var(--color-volt);
+}
+
+.class-profile__rest {
+  fill: var(--color-rest);
+}
+
+.class-profile__warmup,
+.class-profile__cooldown {
+  fill: var(--classes-segment-easy);
+  opacity: 0.5;
+}

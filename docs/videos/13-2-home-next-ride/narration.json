@@ -1,0 +1,85 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Home now shows you what to ride next, and opens both doors."
+      ]
+    },
+    {
+      "id": "card",
+      "bars": 5,
+      "lines": [
+        "It greets you by the time of day. The Next ride card offers the race that opens your next map: top three on Old Town Criterium opens Neon Docklands, with your best there."
+      ]
+    },
+    {
+      "id": "newrider",
+      "bars": 5,
+      "lines": [
+        "A new rider is welcomed and sent to Prairie Paceline. A level goal counts the levels still to climb."
+      ]
+    },
+    {
+      "id": "race",
+      "bars": 5,
+      "lines": [
+        "The Race door counts your maps and stars. An open tile goes straight to Race Setup; a locked one shows how to open it."
+      ]
+    },
+    {
+      "id": "classes",
+      "bars": 4,
+      "lines": [
+        "The Classes door features 30 Minute HIIT Cardio, and Ride alone opens Class Start."
+      ]
+    },
+    {
+      "id": "banner",
+      "bars": 5,
+      "lines": [
+        "When a ride opens a map, Home says so once, in gold, and the card has already moved on."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 5,
+      "lines": [
+        "From a phone to a laptop, Home lays itself out to fit."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: the right map for every rider, both doors, and a banner that shows once."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

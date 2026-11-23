@@ -1,0 +1,51 @@
+// Block band (ADR 0027).
+:host {
+  display: block;
+  scroll-margin-top: var(--layout-header-height);
+}
+
+:host(.band--panel) {
+  border-block: var(--border-width-hairline) solid var(--color-line);
+  background: var(--color-panel);
+}
+
+.band__inner {
+  max-width: var(--layout-container-max);
+  margin-inline: auto;
+  padding: var(--space-16) var(--layout-margin);
+
+  @media (min-width: 62rem) {
+    padding-block: var(--space-24);
+  }
+}
+
+.band__head {
+  max-width: var(--layout-measure);
+  margin-bottom: var(--space-10);
+}
+
+.band__kicker {
+  margin-bottom: var(--space-3);
+  font: var(--text-overline);
+  letter-spacing: var(--letter-spacing-widest);
+  text-transform: uppercase;
+  color: var(--color-volt-fg);
+}
+
+.band__heading {
+  font: var(--text-display);
+  font-size: var(--font-size-5xl);
+  letter-spacing: var(--letter-spacing-display);
+  text-transform: uppercase;
+  scroll-margin-top: calc(var(--layout-header-height) + var(--space-4));
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.band__lead {
+  margin-top: var(--space-4);
+  font: var(--text-body-lg);
+  color: var(--color-fg-muted);
+}

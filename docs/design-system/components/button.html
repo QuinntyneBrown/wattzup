@@ -3,17 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Button — Wattzup design system</title>
-<meta name="description" content="Buttons trigger actions: start a ride, end it, retry, set resistance.">
+<title>Button — Telo Ride design system</title>
+<meta name="description" content="Buttons start, save, join and leave. Eight variants, four sizes, icon-only buttons and a width-keeping loading state, in both themes.">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="../assets/components.css">
 <link rel="stylesheet" href="../assets/ds.css">
+<style>
+  .ds-pairs-stack { display: flex; flex-direction: column; gap: var(--space-2); }
+  .ds-matrix td { min-width: var(--space-28); }
+  .ds-demo-col { display: flex; flex-direction: column; gap: var(--space-4); width: 100%; max-width: calc(var(--space-48) * 2); }
+  .ds-demo-wide { width: 100%; max-width: calc(var(--space-36) * 4); }
+  .ds-demo-panel { background: var(--color-panel); border: var(--border-width-hairline) solid var(--color-line); border-radius: var(--radius-2xl); padding: var(--space-5); width: 100%; }
+  .ds-menu-stage { min-height: calc(var(--space-44) * 2); align-items: flex-start; }
+</style>
 </head>
 <body id="top">
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="ds-skip" href="#main">Skip to content</a>
 <div class="ds-shell">
   <nav class="ds-nav" aria-label="Design system">
-    <div class="ds-nav__brand"><a href="../index.html">Wattzup DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
+    <div class="ds-nav__brand"><a href="../index.html">Telo Ride DS</a><button class="ds-theme-toggle" type="button" aria-pressed="true">☀ Light</button></div>
     <details open><summary>Foundations</summary><ul>
       <li><a href="../foundations/color.html">Color</a></li>
       <li><a href="../foundations/typography.html">Typography</a></li>
@@ -28,41 +36,53 @@
       <li><a href="../foundations/accessibility.html">Accessibility</a></li>
       <li><a href="../foundations/content.html">Content</a></li>
     </ul></details>
-    <details open><summary>Components</summary><ul>
+    <details open><summary>Actions</summary><ul>
       <li><a href="../components/button.html">Button</a></li>
+      <li><a href="../components/button-group.html">Button group</a></li>
       <li><a href="../components/link.html">Link</a></li>
-      <li><a href="../components/chip.html">Chip</a></li>
-      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/menu.html">Menu</a></li>
+    </ul></details>
+    <details open><summary>Inputs</summary><ul>
       <li><a href="../components/form-field.html">Form field</a></li>
-      <li><a href="../components/form-layout.html">Form layout</a></li>
-      <li><a href="../components/radio-group.html">Radio group (mode cards)</a></li>
-      <li><a href="../components/switch.html">Switch</a></li><li><a href="../components/set-list.html">Set list</a></li><li><a href="../components/video.html">Video ride-along</a></li><li><a href="../components/class-card.html">Class card and shelf</a></li><li><a href="../components/class-worlds.html">Class worlds</a></li><li><a href="../components/world-ride.html">World Ride HUD</a></li><li><a href="../components/level-row.html">Level row</a></li><li><a href="../components/session-traces.html">Session traces</a></li><li><a href="../components/dip-list.html">Dip list</a></li><li><a href="../components/week-strip.html">Week strip</a></li><li><a href="../components/stat-strip.html">Stat strip</a></li><li><a href="../components/best-chip.html">Personal-best chip and delta</a></li><li><a href="../components/trend-chart.html">Trend chart</a></li><li><a href="../components/session-list.html">Session list</a></li><li><a href="../components/streak-calendar.html">Streak calendar</a></li><li><a href="../components/achievement.html">Achievement badge</a></li>
+      <li><a href="../components/text-field.html">Text field</a></li>
+      <li><a href="../components/textarea.html">Textarea</a></li>
+      <li><a href="../components/select.html">Select</a></li>
+      <li><a href="../components/checkbox.html">Checkbox</a></li>
+      <li><a href="../components/radio-group.html">Radio group</a></li>
+      <li><a href="../components/switch.html">Switch</a></li>
       <li><a href="../components/slider.html">Slider</a></li>
       <li><a href="../components/number-stepper.html">Number stepper</a></li>
-      <li><a href="../components/level-control.html">Level control</a></li>
-      <li><a href="../components/level-picker.html">Level picker</a></li>
-      <li><a href="../components/app-bar.html">App bar</a></li>
-      <li><a href="../components/lockup.html">Lockup</a></li>
-      <li><a href="../components/status-line.html">Status line</a></li>
-      <li><a href="../components/ride-clock.html">Ride clock</a></li>
+      <li><a href="../components/form-layout.html">Form layout</a></li>
+    </ul></details>
+    <details open><summary>Navigation</summary><ul>
+      <li><a href="../components/app-header.html">App header</a></li>
+      <li><a href="../components/sidebar-nav.html">Sidebar navigation</a></li>
+      <li><a href="../components/tabs.html">Tabs</a></li>
+      <li><a href="../components/breadcrumb.html">Breadcrumb</a></li>
+      <li><a href="../components/pagination.html">Pagination</a></li>
       <li><a href="../components/skip-link.html">Skip link</a></li>
-      <li><a href="../components/page-layout.html">Page layout</a></li>
+    </ul></details>
+    <details open><summary>Containers and overlays</summary><ul>
+      <li><a href="../components/container.html">Container and grid</a></li>
+      <li><a href="../components/card.html">Card</a></li>
       <li><a href="../components/dialog.html">Dialog</a></li>
-      <li><a href="../components/overlay-panel.html">Overlay panel</a></li>
+      <li><a href="../components/popover.html">Popover</a></li>
       <li><a href="../components/tooltip.html">Tooltip</a></li>
       <li><a href="../components/divider.html">Divider</a></li>
-      <li><a href="../components/readout.html">Readout</a></li>
-      <li><a href="../components/interval.html">Interval</a></li>
-      <li><a href="../components/power-trace.html">Power trace</a></li>
-      <li><a href="../components/metric-list.html">Metric list</a></li>
-      <li><a href="../components/ride-profile.html">Ride profile</a></li>
-      <li><a href="../components/command-log.html">Command log</a></li>
+    </ul></details>
+    <details open><summary>Data display</summary><ul>
+      <li><a href="../components/table.html">Table</a></li>
+      <li><a href="../components/list.html">List</a></li>
       <li><a href="../components/description-list.html">Description list</a></li>
-      <li><a href="../components/code-block.html">Code block</a></li>
+      <li><a href="../components/avatar.html">Avatar</a></li>
       <li><a href="../components/badge.html">Badge</a></li>
+      <li><a href="../components/chip.html">Chip</a></li>
+      <li><a href="../components/stat.html">Stat</a></li>
+      <li><a href="../components/code-block.html">Code block</a></li>
+    </ul></details>
+    <details open><summary>Feedback</summary><ul>
       <li><a href="../components/toast.html">Toast</a></li>
       <li><a href="../components/alert.html">Alert and banner</a></li>
-      <li><a href="../components/phase-banner.html">Step-change banner</a></li>
       <li><a href="../components/inline-message.html">Inline message</a></li>
       <li><a href="../components/progress-bar.html">Progress bar</a></li>
       <li><a href="../components/spinner.html">Spinner</a></li>
@@ -70,98 +90,354 @@
       <li><a href="../components/empty-state.html">Empty state</a></li>
       <li><a href="../components/error-page.html">Error page</a></li>
     </ul></details>
+    <details open><summary>Brand and progress</summary><ul>
+      <li><a href="../components/lockup.html">Logo lockup</a></li>
+      <li><a href="../components/level-badge.html">Level badge</a></li>
+      <li><a href="../components/stars.html">Stars</a></li>
+      <li><a href="../components/photo-tag.html">Photo tag</a></li>
+      <li><a href="../components/section-head.html">Section head</a></li>
+    </ul></details>
+    <details open><summary>Ride</summary><ul>
+      <li><a href="../components/map-card.html">Map card</a></li>
+      <li><a href="../components/class-card.html">Class card</a></li>
+      <li><a href="../components/next-ride.html">Next ride</a></li>
+      <li><a href="../components/leaderboard.html">Leaderboard</a></li>
+      <li><a href="../components/device-list.html">Device list</a></li>
+      <li><a href="../components/video.html">Video</a></li>
+      <li><a href="../components/plan-chart.html">Plan chart</a></li>
+      <li><a href="../components/route-profile.html">Route profile</a></li>
+      <li><a href="../components/ride-readout.html">Ride readout</a></li>
+      <li><a href="../components/hud-panel.html">HUD panel</a></li>
+      <li><a href="../components/countdown.html">Countdown</a></li>
+      <li><a href="../components/ride-trace.html">Ride trace</a></li>
+    </ul></details>
     <details open><summary>Patterns</summary><ul>
       <li><a href="../patterns/forms.html">Forms</a></li>
       <li><a href="../patterns/feedback-and-loading.html">Feedback and loading</a></li>
       <li><a href="../patterns/empty-and-error-states.html">Empty and error states</a></li>
-      <li><a href="../patterns/page-structure.html">Page structure</a></li>
+      <li><a href="../patterns/navigation.html">Navigation and page structure</a></li>
       <li><a href="../patterns/dialogs-and-overlays.html">Dialogs and overlays</a></li>
-      <li><a href="../patterns/live-data.html">Live data</a></li>
+      <li><a href="../patterns/data-tables-and-lists.html">Data tables and lists</a></li>
       <li><a href="../patterns/notifications.html">Notifications</a></li>
       <li><a href="../patterns/content-and-tone.html">Content and tone</a></li>
+      <li><a href="../patterns/live-ride.html">Live ride</a></li>
     </ul></details>
   </nav>
   <main id="main" class="ds-main">
     <header class="ds-header">
       <p class="ds-kicker">Component · Actions</p>
       <h1>Button</h1>
-      <p class="ds-lead">Buttons start, stop and change things: Start ride, End, Reconnect, Retry. One primary (volt) button per view says what matters most.</p>
-      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Native <code>&lt;button&gt;</code></span></div>
+      <p class="ds-lead">Buttons make something happen: go to the start line, join a group, pause the ride, report a bug. One volt primary per view tells the rider what the screen is for; gold is kept for the moment a map unlocks.</p>
+      <div class="ds-meta"><span class="ds-pill ds-pill--ok">WCAG 2.2 AA</span><span class="ds-pill">Status: stable</span><span class="ds-pill">Since v1.0</span></div>
       <ul class="ds-toc"><li><a href="#overview">Overview</a></li><li><a href="#anatomy">Anatomy</a></li><li><a href="#variants">Variants</a></li><li><a href="#sizes">Sizes</a></li><li><a href="#states">States</a></li><li><a href="#responsive">Responsive</a></li><li><a href="#theming">Theming</a></li><li><a href="#accessibility">Accessibility</a></li><li><a href="#content">Content</a></li><li><a href="#do-dont">Do and don't</a></li><li><a href="#tokens">Tokens</a></li><li><a href="#code">Code</a></li><li><a href="#sources">Sources</a></li></ul>
     </header>
     <section class="ds-section" id="overview"><h2><a href="#overview">Overview</a></h2>
-<p>Use a button when activating it changes something on the bike, the ride or the screen. Use a <a href="link.html">link</a> when it only goes somewhere (the workout label in the app bar is a link to setup). Use the <a href="level-control.html">level control</a> for − / + on resistance.</p><ul><li><b>Primary</b> — volt fill, ink label. The one action the view exists for: Start ride, Reconnect, Set up a ride.</li><li><b>Secondary</b> (default) — surface with a strong edge: Keep riding, Copy details, Open diagnostics.</li><li><b>Subtle</b> — filled with the subtle surface and no edge: the − / + of number steppers.</li><li><b>Quiet</b> — no fill, muted label; brightens on hover. App-bar actions (Pause, the workout label, icon buttons).</li><li><b>Quiet danger</b> — quiet, turns heart red on hover: End in the app bar, which then confirms.</li><li><b>Link</b> — a button that reads as a link: Back to plan.</li><li><b>Danger</b> — heart fill: only the confirming End ride inside the end-ride dialog.</li></ul>
-    </section>
-    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
-<div class="ds-anatomy"><figure class="ds-anatomy__figure"><button class="btn btn--primary btn--lg" type="button"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg>Start ride</button><span class="ds-callout" style="left: 30%; top: 20%;" aria-hidden="true">1</span><span class="ds-callout" style="left: 55%; top: 20%;" aria-hidden="true">2</span><span class="ds-callout" style="left: 78%; top: 74%;" aria-hidden="true">3</span></figure><ol class="ds-anatomy__list"><li><div><b>Leading icon (optional)</b><small>1.25em, inherits the label colour, <code>aria-hidden</code>.</small></div></li><li><div><b>Label</b><small>Verb phrase, sentence case; the accessible name.</small></div></li><li><div><b>Container</b><small>Height from <code>--control-height-*</code>, <code>--radius-md</code>, 1px edge (olive in light on primary).</small></div></li></ol></div>
-    </section>
-    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
-<p>Variants change emphasis, not meaning.</p><div class="ds-example"><div class="ds-example__canvas "><button class="btn btn--primary" type="button">Start ride</button><button class="btn " type="button">Keep riding</button><button class="btn btn--subtle" type="button">Fewer rounds</button><button class="btn btn--quiet" type="button"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>Pause</button><button class="btn btn--quiet-danger" type="button"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>End</button><button class="btn btn--link" type="button">Back to plan</button><button class="btn btn--danger" type="button">End ride</button></div><div class="ds-example__caption"><span>Primary, secondary, subtle, quiet, quiet danger, link, danger.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;button class="btn btn--primary" type="button"&gt;Start ride&lt;/button&gt;
-&lt;button class="btn " type="button"&gt;Keep riding&lt;/button&gt;
-&lt;button class="btn btn--subtle" type="button"&gt;Fewer rounds&lt;/button&gt;
-&lt;button class="btn btn--quiet" type="button"&gt;
-&lt;svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;rect x="6" y="4" width="4" height="16" rx="1"/&gt;
-&lt;rect x="14" y="4" width="4" height="16" rx="1"/&gt;
-&lt;/svg&gt;Pause&lt;/button&gt;
-&lt;button class="btn btn--quiet-danger" type="button"&gt;
-&lt;svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;rect x="5" y="5" width="14" height="14" rx="2"/&gt;
-&lt;/svg&gt;End&lt;/button&gt;
-&lt;button class="btn btn--link" type="button"&gt;Back to plan&lt;/button&gt;
-&lt;button class="btn btn--danger" type="button"&gt;End ride&lt;/button&gt;</code></pre></details></div><h3>Icon-only and collapsible</h3><p>Icon-only buttons carry <code>aria-label</code> and a <a href="tooltip.html">tooltip</a>. Collapsible buttons show their label from 640px and only the icon below it, keeping the label as the accessible name.</p><div class="ds-example"><div class="ds-example__canvas "><button class="btn btn--quiet btn--icon" type="button" aria-label="Diagnostics"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></button><button class="btn btn--subtle btn--icon" type="button" aria-label="More rounds"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button><button class="btn btn--quiet btn--collapsible" type="button"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg><span class="btn__label">Pause</span></button></div><div class="ds-example__caption"><span>Resize below 640px to see the collapsible button lose its label.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;button class="btn btn--quiet btn--icon" type="button" aria-label="Diagnostics"&gt;
-&lt;svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;path d="M22 12h-4l-3 9L9 3l-3 9H2"/&gt;
-&lt;/svg&gt;
-&lt;/button&gt;
-&lt;button class="btn btn--subtle btn--icon" type="button" aria-label="More rounds"&gt;
-&lt;svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;path d="M12 5v14M5 12h14"/&gt;
-&lt;/svg&gt;
-&lt;/button&gt;
-&lt;button class="btn btn--quiet btn--collapsible" type="button"&gt;
-&lt;svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"&gt;
-&lt;rect x="6" y="4" width="4" height="16" rx="1"/&gt;
-&lt;rect x="14" y="4" width="4" height="16" rx="1"/&gt;
-&lt;/svg&gt;
-&lt;span class="btn__label"&gt;Pause&lt;/span&gt;
-&lt;/button&gt;</code></pre></details></div><h3>Block</h3><div class="ds-example"><div class="ds-example__canvas "><button class="btn btn--primary btn--xl btn--block" type="button">Start ride</button></div><div class="ds-example__caption"><span>Full width: the Start ride button at the foot of the ride preview.</span></div><details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;button class="btn btn--primary btn--xl btn--block" type="button"&gt;Start ride&lt;/button&gt;</code></pre></details></div>
-    </section>
-    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
-<p>Medium (40px) is the default. Small (32px) sits in dense rows (Back to plan). Large (48px) is for single-purpose screens. Extra large (56px, <code>--radius-lg</code>) is reserved for Start ride.</p><div class="ds-example"><div class="ds-example__canvas"><button class="btn btn--primary btn--sm" type="button">Small</button><button class="btn btn--primary" type="button">Medium</button><button class="btn btn--primary btn--lg" type="button">Large</button><button class="btn btn--primary btn--xl" type="button">Extra large</button></div></div>
-    </section>
-    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
-<p>Pointer and focus states are forced with <code>data-state</code>; real pages get them from <code>:hover</code>, <code>:focus-visible</code>, <code>:active</code>, <code>:disabled</code> and <code>aria-busy</code>.</p><div class="ds-matrix"><table><thead><tr><th scope="col">Variant</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Disabled</th><th scope="col">Loading</th></tr></thead><tbody><tr><th scope="row">Primary</th><td><button class="btn btn--primary" type="button">Start ride</button></td><td><button class="btn btn--primary" type="button" data-state="hover">Start ride</button></td><td><button class="btn btn--primary" type="button" data-state="focus">Start ride</button></td><td><button class="btn btn--primary" type="button" data-state="active">Start ride</button></td><td><button class="btn btn--primary" type="button" disabled>Start ride</button></td><td><button class="btn btn--primary" type="button" aria-busy="true">Start ride</button></td></tr><tr><th scope="row">Secondary</th><td><button class="btn" type="button">Keep riding</button></td><td><button class="btn" type="button" data-state="hover">Keep riding</button></td><td><button class="btn" type="button" data-state="focus">Keep riding</button></td><td><button class="btn" type="button" data-state="active">Keep riding</button></td><td><button class="btn" type="button" disabled>Keep riding</button></td><td><button class="btn" type="button" aria-busy="true">Keep riding</button></td></tr><tr><th scope="row">Subtle</th><td><button class="btn btn--subtle" type="button">Rounds</button></td><td><button class="btn btn--subtle" type="button" data-state="hover">Rounds</button></td><td><button class="btn btn--subtle" type="button" data-state="focus">Rounds</button></td><td><button class="btn btn--subtle" type="button" data-state="active">Rounds</button></td><td><button class="btn btn--subtle" type="button" disabled>Rounds</button></td><td><button class="btn btn--subtle" type="button" aria-busy="true">Rounds</button></td></tr><tr><th scope="row">Quiet</th><td><button class="btn btn--quiet" type="button">Pause</button></td><td><button class="btn btn--quiet" type="button" data-state="hover">Pause</button></td><td><button class="btn btn--quiet" type="button" data-state="focus">Pause</button></td><td><button class="btn btn--quiet" type="button" data-state="active">Pause</button></td><td><button class="btn btn--quiet" type="button" disabled>Pause</button></td><td><button class="btn btn--quiet" type="button" aria-busy="true">Pause</button></td></tr><tr><th scope="row">Quiet danger</th><td><button class="btn btn--quiet-danger" type="button">End</button></td><td><button class="btn btn--quiet-danger" type="button" data-state="hover">End</button></td><td><button class="btn btn--quiet-danger" type="button" data-state="focus">End</button></td><td><button class="btn btn--quiet-danger" type="button" data-state="active">End</button></td><td><button class="btn btn--quiet-danger" type="button" disabled>End</button></td><td><button class="btn btn--quiet-danger" type="button" aria-busy="true">End</button></td></tr><tr><th scope="row">Link</th><td><button class="btn btn--link" type="button">Back to plan</button></td><td><button class="btn btn--link" type="button" data-state="hover">Back to plan</button></td><td><button class="btn btn--link" type="button" data-state="focus">Back to plan</button></td><td><button class="btn btn--link" type="button" data-state="active">Back to plan</button></td><td><button class="btn btn--link" type="button" disabled>Back to plan</button></td><td><button class="btn btn--link" type="button" aria-busy="true">Back to plan</button></td></tr><tr><th scope="row">Danger</th><td><button class="btn btn--danger" type="button">End ride</button></td><td><button class="btn btn--danger" type="button" data-state="hover">End ride</button></td><td><button class="btn btn--danger" type="button" data-state="focus">End ride</button></td><td><button class="btn btn--danger" type="button" data-state="active">End ride</button></td><td><button class="btn btn--danger" type="button" disabled>End ride</button></td><td><button class="btn btn--danger" type="button" aria-busy="true">End ride</button></td></tr></tbody></table></div><h3>Both themes</h3><div class="ds-themes"><div data-theme="light"><div class="ds-example__canvas"><button class="btn btn--primary" type="button">Start ride</button><button class="btn " type="button">Keep riding</button><button class="btn btn--quiet" type="button">Pause</button><button class="btn btn--danger" type="button">End ride</button></div></div><div data-theme="dark"><div class="ds-example__canvas"><button class="btn btn--primary" type="button">Start ride</button><button class="btn " type="button">Keep riding</button><button class="btn btn--quiet" type="button">Pause</button><button class="btn btn--danger" type="button">End ride</button></div></div></div><ul><li><b>Loading</b> keeps the width, hides the label behind a spinner, sets <code>aria-busy</code> and ignores clicks: Starting…, Ending….</li><li><b>Disabled</b> is 50% opaque and not focusable. Start ride is disabled while the setup form has errors, with the reason written under it (<code>aria-describedby</code>).</li><li><b>Pressed</b> toggles (beeps) use <code>aria-pressed</code> and change their icon, never colour alone.</li></ul>
-    </section>
-    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
-<ul><li>Below 640px app-bar actions use <code>.btn--collapsible</code>: icon only, 40px square, label kept for assistive technology.</li><li>Start ride is full width (<code>.btn--block</code>) at every width inside the ride preview.</li><li>Dialog footers wrap; the primary stays last (rightmost, or bottom when wrapped).</li><li>Labels never truncate; a label that wraps at 360px is too long.</li></ul>
-    </section>
-    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
-<p>Variants set four component tokens — <code>--btn-bg</code>, <code>--btn-fg</code>, <code>--btn-border</code>, <code>--btn-bg-hover</code> (plus <code>--btn-fg-hover</code>, <code>--btn-bg-active</code>). Volt is a fill in both themes with an ink label; in light the primary edge is olive (<code>--color-accent-edge</code>) because volt on white is 1.1:1.</p>
-    </section>
-    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
-<h3>Role and pattern</h3><p>Native <code>&lt;button type="button"&gt;</code> (<code>type="submit"</code> in a form). A link styled as a button stays an <code>&lt;a href&gt;</code> (Set up a ride, Back to the dashboard).</p><h3>Keyboard</h3><div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody><tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Moves focus to and from the control in DOM order.</td></tr><tr><td><kbd>Enter</kbd>, <kbd>Space</kbd></td><td>Activates. Space fires on key up, so moving away cancels a mis-press.</td></tr></tbody></table></div><h3>Focus</h3><p>Shared ring: 2px <code>--color-focus-ring</code> (volt in dark, olive in light), 2px offset, on <code>:focus-visible</code> only. In dialogs the safe button (Keep riding) takes focus first.</p><h3>Labelling</h3><p>The visible label is the name. Icon-only buttons set <code>aria-label</code> ("Diagnostics", "Countdown beeps off"); collapsible buttons keep the label in <code>.btn__label</code>.</p><h3>Contrast</h3><div class="ds-example__canvas ds-example__canvas--stack"><div class="ds-pair"><span>Label on primary</span><span class="ds-pair__ratio" data-contrast="--color-fg-on-accent|--color-accent" data-min="4.5"></span></div><div class="ds-pair"><span>Primary edge on canvas</span><span class="ds-pair__ratio" data-contrast="--color-accent-edge|--color-bg-canvas" data-min="3"></span></div><div class="ds-pair"><span>Label on danger</span><span class="ds-pair__ratio" data-contrast="--color-fg-on-danger|--color-danger-solid" data-min="4.5"></span></div><div class="ds-pair"><span>Secondary edge on surface</span><span class="ds-pair__ratio" data-contrast="--color-border-strong|--color-bg-surface" data-min="3"></span></div><div class="ds-pair"><span>Focus ring on canvas</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-bg-canvas" data-min="3"></span></div></div><h3>Motion</h3><p>Colours change over <code>--duration-fast</code>; active nudges 1px. Durations are zeroed under reduced motion; the busy spinner keeps turning because it is status.</p><h3>Touch</h3><p>Medium is 40px with 8px between neighbours; app-bar and primary actions are 44px or more on phones. Small buttons only sit where the row around them is roomy.</p>
-    </section>
-    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
-<ul><li>Verb first, sentence case: Start ride, Reconnect, Try again, Copy details.</li><li>Destructive labels name the result: End ride, Replace ride — not Confirm or OK.</li><li>The safe choice says what continues: Keep riding, Keep current ride.</li><li>Busy labels end in an ellipsis: Starting…, Ending….</li></ul>
-    </section>
-    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
-<div class="ds-dodont"><figure class="ds-do"><div class="ds-example__canvas"><button class="btn " type="button">Keep riding</button><button class="btn btn--danger" type="button">End ride</button></div><figcaption>End confirms in a dialog; the safe action sits beside it and takes focus.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><button class="btn btn--danger" type="button">End ride</button><button class="btn btn--primary" type="button">Start ride</button></div><figcaption>Two filled buttons compete; only one emphasis per view.</figcaption></figure><figure class="ds-do"><div class="ds-example__canvas"><button class="btn btn--quiet btn--icon" type="button" aria-label="Diagnostics"><svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></button></div><figcaption>Icon-only buttons are named and have a tooltip.</figcaption></figure><figure class="ds-dont"><div class="ds-example__canvas"><button class="btn btn--primary btn--sm" type="button">Set 22</button></div><figcaption>Primary emphasis on a routine control in a dense panel.</figcaption></figure></div>
-    </section>
-    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
-<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead><tbody><tr><td>Primary fill</td><td><code>--color-accent</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-accent" data-swatch></i><span data-token="--color-accent"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-accent" data-swatch></i><span data-token="--color-accent"></span></span></td></tr><tr><td>Primary hover</td><td><code>--color-accent-hover</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-accent-hover" data-swatch></i><span data-token="--color-accent-hover"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-accent-hover" data-swatch></i><span data-token="--color-accent-hover"></span></span></td></tr><tr><td>Primary label</td><td><code>--color-fg-on-accent</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-on-accent" data-swatch></i><span data-token="--color-fg-on-accent"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-on-accent" data-swatch></i><span data-token="--color-fg-on-accent"></span></span></td></tr><tr><td>Primary edge</td><td><code>--color-accent-edge</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-accent-edge" data-swatch></i><span data-token="--color-accent-edge"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-accent-edge" data-swatch></i><span data-token="--color-accent-edge"></span></span></td></tr><tr><td>Secondary edge</td><td><code>--color-border-strong</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-border-strong" data-swatch></i><span data-token="--color-border-strong"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-border-strong" data-swatch></i><span data-token="--color-border-strong"></span></span></td></tr><tr><td>Subtle fill</td><td><code>--color-bg-subtle</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-bg-subtle" data-swatch></i><span data-token="--color-bg-subtle"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-bg-subtle" data-swatch></i><span data-token="--color-bg-subtle"></span></span></td></tr><tr><td>Quiet label</td><td><code>--color-fg-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-muted" data-swatch></i><span data-token="--color-fg-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-muted" data-swatch></i><span data-token="--color-fg-muted"></span></span></td></tr><tr><td>Quiet danger hover</td><td><code>--color-fg-heart</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-heart" data-swatch></i><span data-token="--color-fg-heart"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-heart" data-swatch></i><span data-token="--color-fg-heart"></span></span></td></tr><tr><td>Danger fill</td><td><code>--color-danger-solid</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-danger-solid" data-swatch></i><span data-token="--color-danger-solid"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-danger-solid" data-swatch></i><span data-token="--color-danger-solid"></span></span></td></tr><tr><td>Heights</td><td><code>--control-height-sm</code> <code>--control-height-md</code> <code>--control-height-lg</code> <code>--control-height-xl</code></td><td colspan="2"><span data-token="--control-height-sm"></span> / <span data-token="--control-height-md"></span> / <span data-token="--control-height-lg"></span> / <span data-token="--control-height-xl"></span></td></tr><tr><td>Radius</td><td><code>--radius-md</code> <code>--radius-lg</code></td><td colspan="2"><span data-token="--radius-md"></span> / <span data-token="--radius-lg"></span></td></tr><tr><td>Transition</td><td><code>--duration-fast</code> <code>--ease-standard</code></td><td colspan="2"><span data-token="--duration-fast"></span> / <span data-token="--ease-standard"></span></td></tr><tr><td>Busy spinner</td><td><code>--duration-spin</code></td><td colspan="2"><span data-token="--duration-spin"></span></td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
-<pre><code>&lt;button class="btn btn--primary btn--xl btn--block" type="button"&gt;Start ride&lt;/button&gt;
-&lt;button class="btn btn--quiet btn--collapsible" type="button"&gt;
-  &lt;svg class="icon icon--sm" aria-hidden="true" viewBox="0 0 24 24"&gt;…&lt;/svg&gt;&lt;span class="btn__label"&gt;Pause&lt;/span&gt;
-&lt;/button&gt;</code></pre><div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody><tr><td><code>.btn</code></td><td>Base: secondary look, medium size.</td></tr><tr><td><code>.btn--primary .btn--subtle .btn--quiet .btn--quiet-danger .btn--link .btn--danger</code></td><td>Variant.</td></tr><tr><td><code>.btn--sm .btn--lg .btn--xl</code></td><td>Size; omit for medium.</td></tr><tr><td><code>.btn--icon</code></td><td>Square, icon only; needs aria-label.</td></tr><tr><td><code>.btn--collapsible + .btn__label</code></td><td>Icon only below 640px.</td></tr><tr><td><code>.btn--block</code></td><td>Full width.</td></tr><tr><td><code>aria-busy="true"</code></td><td>Loading.</td></tr><tr><td><code>aria-pressed</code></td><td>Toggle state.</td></tr><tr><td><code>data-state="hover|focus|active"</code></td><td>Documentation only.</td></tr></tbody></table></div>
-    </section>
-    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
-<p>Extracted from these mocks:</p><ul><li><a href="../../mocks/pages/ride/default.html">pages/ride/default</a> (app bar, Back to plan)</li><li><a href="../../mocks/pages/setup/default.html">pages/setup/default</a> (Start ride, steppers)</li><li><a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a> (Keep riding, End ride)</li><li><a href="../../mocks/pages/ride/disconnected.html">pages/ride/disconnected</a> (Reconnect)</li></ul><p>Drift fixed during extraction: <code>.btn--volt</code> duplicated <code>.btn--primary</code> and is merged into it; <code>.btn--end</code> becomes <code>.btn--quiet-danger</code>; <code>.plan-note .btn</code> and <code>.num-stepper__row .btn--icon</code> restyled another block and become <code>.btn--link</code> and <code>.btn--subtle</code>; the phone-only label hiding moved from an app-bar <code>max-width</code> query to the mobile-first <code>.btn--collapsible</code>.</p>
+      <p>Use a button when pressing it changes something: it starts a ride, saves, pairs the bike, opens a dialog or ends a session. Use a <a href="link.html">link</a> when it only goes somewhere else (Home's "All maps →"). Use a <a href="menu.html">menu</a> when one trigger offers several actions, and a <a href="button-group.html">button group</a> when the buttons pick one option from a set.</p>
+      <ul>
+        <li><b>Primary</b> (volt fill, ink label) is the one action the view exists for: "Go to the start line", "Start ride", "Pair Echelon EX-5s". Never two per view.</li>
+        <li><b>Light</b> (bone fill) is the stronger of two equal choices sitting side by side, like Home's "Join group" next to a quiet "Ride alone".</li>
+        <li><b>Gold</b> is only for an earned unlock: "Ride it" on the unlock banner, "Ride Neon Docklands" on the results unlock card.</li>
+        <li><b>Raised</b> is the everyday secondary on panels and headers: "Pause", "Copy link", "Download packet log", "Discard and open library".</li>
+        <li><b>Outline</b> is a secondary on the bare page where a raised fill would look like a card.</li>
+        <li><b>Quiet</b> is the low-emphasis choice: "Ride alone", "Keep riding".</li>
+        <li><b>Danger</b> confirms a destructive action inside a confirmation. <b>Quiet danger</b> is the muted "End" and "Leave" that only turn red on hover.</li>
+        <li><b>Icon button</b> (<code>.icon-btn</code>) is the square, label-less control in headers: "Full screen", "Close feedback".</li>
+      </ul>
     </section>
 
-    <footer class="ds-footer"><span>Wattzup design system · extracted from <a href="../../mocks/index.html">docs/mocks</a> on 2026-11-15</span><a href="#top">Back to top</a></footer>
+    <section class="ds-section" id="anatomy"><h2><a href="#anatomy">Anatomy</a></h2>
+      <div class="ds-anatomy">
+        <figure class="ds-anatomy__figure">
+          <button class="btn btn--primary btn--lg" type="button">Race Old Town Criterium<svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+          <span class="ds-callout" style="left: 30%; top: 22%;" aria-hidden="true">1</span>
+          <span class="ds-callout" style="left: 72%; top: 22%;" aria-hidden="true">2</span>
+          <span class="ds-callout" style="left: 82%; top: 70%;" aria-hidden="true">3</span>
+        </figure>
+        <ol class="ds-anatomy__list">
+          <li><div><b>Label</b><small>Inter Tight 14px semibold (16px from <code>--lg</code>); a verb phrase in sentence case. It is the accessible name.</small></div></li>
+          <li><div><b>Icon (optional)</b><small>16px lucide, leading for a verb ("Copy link"), trailing for a direction ("Race Old Town Criterium →"); <code>aria-hidden</code>; 8px gap.</small></div></li>
+          <li><div><b>Container</b><small>Height <code>--btn-height</code> (40px), 16px side padding, <code>--radius-lg</code> (12px radius from <code>--lg</code>), 1px border that only outline uses.</small></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ds-section" id="variants"><h2><a href="#variants">Variants</a></h2>
+      <p>Variants change emphasis, not meaning. Every variant only sets the <code>--btn-*</code> tokens; <code>.btn</code> reads them.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas">
+          <button class="btn btn--primary" type="button">Go to the start line</button>
+          <button class="btn btn--light" type="button">Join group</button>
+          <button class="btn btn--gold" type="button">Ride it</button>
+          <button class="btn btn--raised" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect x="14" y="3" width="5" height="18" rx="1"/><rect x="5" y="3" width="5" height="18" rx="1"/></svg>Pause</button>
+          <button class="btn btn--outline" type="button"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Race it again</button>
+          <button class="btn btn--quiet" type="button">Ride alone</button>
+          <button class="btn btn--danger" type="button">Leave race</button>
+          <button class="btn btn--quiet-danger" type="button"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>End</button>
+        </div>
+        <div class="ds-example__caption"><span>Primary, light, gold, raised, outline, quiet, danger, quiet danger</span><span>Shown on a panel</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;button class="btn btn--primary" type="button"&gt;Go to the start line&lt;/button&gt;
+&lt;button class="btn btn--light" type="button"&gt;Join group&lt;/button&gt;
+&lt;button class="btn btn--gold" type="button"&gt;Ride it&lt;/button&gt;
+&lt;button class="btn btn--raised" type="button"&gt;&lt;svg class="icon icon--md" aria-hidden="true"&gt;…&lt;/svg&gt;Pause&lt;/button&gt;
+&lt;button class="btn btn--outline" type="button"&gt;…Race it again&lt;/button&gt;
+&lt;button class="btn btn--quiet" type="button"&gt;Ride alone&lt;/button&gt;
+&lt;button class="btn btn--danger" type="button"&gt;Leave race&lt;/button&gt;
+&lt;button class="btn btn--quiet-danger" type="button"&gt;…End&lt;/button&gt;</code></pre></details>
+      </div>
+      <h3>Choosing between two</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas">
+          <a class="btn btn--light" href="../../mocks/pages/class-start/default.html">Join group</a>
+          <a class="btn btn--quiet" href="../../mocks/pages/class-start/solo.html">Ride alone</a>
+        </div>
+        <div class="ds-example__caption"><span>Home's class teaser: two doors, neither is the page's primary, so bone + quiet instead of volt.</span></div>
+      </div>
+      <h3>Icon-only and block</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas">
+          <button class="icon-btn" type="button" aria-label="Full screen" title="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+          <button class="icon-btn" type="button" aria-label="Close feedback" title="Close feedback"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+          <button class="icon-btn icon-btn--lg" type="button" aria-label="Full screen" title="Full screen"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+          <button class="btn btn--raised btn--icon" type="button" aria-label="Pause" title="Pause"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><rect x="14" y="3" width="5" height="18" rx="1"/><rect x="5" y="3" width="5" height="18" rx="1"/></svg></button>
+          <a class="btn btn--primary btn--xl btn--block" href="../../mocks/pages/race-lobby/bots.html" style="max-width: calc(var(--space-48) * 2);">Go to the start line</a>
+        </div>
+        <div class="ds-example__caption"><span><code>.icon-btn</code> 36px (48px with <code>--lg</code>), <code>.btn--icon</code> makes any variant square, <code>.btn--block</code> fills its column.</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;button class="icon-btn" type="button" aria-label="Full screen" title="Full screen"&gt;&lt;svg class="icon icon--md" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;/button&gt;
+&lt;button class="btn btn--raised btn--icon" type="button" aria-label="Pause"&gt;…&lt;/button&gt;
+&lt;a class="btn btn--primary btn--xl btn--block" href="/race/lobby"&gt;Go to the start line&lt;/a&gt;</code></pre></details>
+      </div>
+    </section>
+
+    <section class="ds-section" id="sizes"><h2><a href="#sizes">Sizes</a></h2>
+      <p>Medium (40px) is the default. Small (36px) sits in headers and notices; large (48px) is a page's own action; extra large (56px) is the one big start action at the bottom of a setup column.</p>
+      <div class="ds-example">
+        <div class="ds-example__canvas">
+          <button class="btn btn--primary btn--sm" type="button">Small · 36</button>
+          <button class="btn btn--primary" type="button">Medium · 40</button>
+          <button class="btn btn--primary btn--lg" type="button">Large · 48</button>
+          <button class="btn btn--primary btn--xl" type="button">Extra large · 56</button>
+        </div>
+        <div class="ds-example__caption"><span>Heights <code>--control-height-sm/md/lg/xl</code>; <code>--lg</code> and <code>--xl</code> also step the label to 16px and the radius to <code>--radius-xl</code>.</span></div>
+      </div>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Size</th><th scope="col">Class</th><th scope="col">Height</th><th scope="col">Used for</th></tr></thead><tbody>
+        <tr><td>Small</td><td><code>.btn--sm</code></td><td>36px</td><td>Class ride header (Pause, Finish), browser notice action, diagnostics download, unlock banner "Ride it"</td></tr>
+        <tr><td>Medium</td><td>(none)</td><td>40px</td><td>Custom ride header (Pause), "Leave this ride?" actions, Custom Setup video actions</td></tr>
+        <tr><td>Large</td><td><code>.btn--lg</code></td><td>48px</td><td>"Back to Home" on the not-found page</td></tr>
+        <tr><td>Extra large</td><td><code>.btn--xl</code></td><td>56px</td><td>"Go to the start line", "Start ride", "Pair Echelon EX-5s", Home's "Race Old Town Criterium"</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="states"><h2><a href="#states">States</a></h2>
+      <p>Pointer and focus states are forced with <code>data-state</code> so they can be reviewed without a mouse; real pages get them from <code>:hover</code>, <code>:focus-visible</code> and <code>:active</code>. Disabled and loading use the real attributes.</p>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Variant</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Active</th><th scope="col">Disabled</th><th scope="col">Loading</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Primary</th><td><button class="btn btn--primary" type="button">Start ride</button></td><td><button class="btn btn--primary" type="button" data-state="hover">Start ride</button></td><td><button class="btn btn--primary" type="button" data-state="focus">Start ride</button></td><td><button class="btn btn--primary" type="button" data-state="active">Start ride</button></td><td><button class="btn btn--primary" type="button" disabled>Start ride</button></td><td><button class="btn btn--primary" type="button" disabled aria-busy="true"><span class="btn__label">Start ride</span><svg class="icon btn__spinner" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></button></td></tr>
+          <tr><th scope="row">Light</th><td><button class="btn btn--light" type="button">Join group</button></td><td><button class="btn btn--light" type="button" data-state="hover">Join group</button></td><td><button class="btn btn--light" type="button" data-state="focus">Join group</button></td><td><button class="btn btn--light" type="button" data-state="active">Join group</button></td><td><button class="btn btn--light" type="button" disabled>Join group</button></td><td><button class="btn btn--light" type="button" disabled aria-busy="true"><span class="btn__label">Join group</span><svg class="icon btn__spinner" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></button></td></tr>
+          <tr><th scope="row">Gold</th><td><button class="btn btn--gold" type="button">Ride it</button></td><td><button class="btn btn--gold" type="button" data-state="hover">Ride it</button></td><td><button class="btn btn--gold" type="button" data-state="focus">Ride it</button></td><td><button class="btn btn--gold" type="button" data-state="active">Ride it</button></td><td><button class="btn btn--gold" type="button" disabled>Ride it</button></td><td><button class="btn btn--gold" type="button" disabled aria-busy="true"><span class="btn__label">Ride it</span><svg class="icon btn__spinner" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></button></td></tr>
+          <tr><th scope="row">Raised</th><td><button class="btn btn--raised" type="button">Copy link</button></td><td><button class="btn btn--raised" type="button" data-state="hover">Copy link</button></td><td><button class="btn btn--raised" type="button" data-state="focus">Copy link</button></td><td><button class="btn btn--raised" type="button" data-state="active">Copy link</button></td><td><button class="btn btn--raised" type="button" disabled>Copy link</button></td><td><button class="btn btn--raised" type="button" disabled aria-busy="true"><span class="btn__label">Copy link</span><svg class="icon btn__spinner" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></button></td></tr>
+          <tr><th scope="row">Outline</th><td><button class="btn btn--outline" type="button">Race it again</button></td><td><button class="btn btn--outline" type="button" data-state="hover">Race it again</button></td><td><button class="btn btn--outline" type="button" data-state="focus">Race it again</button></td><td><button class="btn btn--outline" type="button" data-state="active">Race it again</button></td><td><button class="btn btn--outline" type="button" disabled>Race it again</button></td><td><button class="btn btn--outline" type="button" disabled aria-busy="true"><span class="btn__label">Race it again</span><svg class="icon btn__spinner" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></button></td></tr>
+          <tr><th scope="row">Quiet</th><td><button class="btn btn--quiet" type="button">Keep riding</button></td><td><button class="btn btn--quiet" type="button" data-state="hover">Keep riding</button></td><td><button class="btn btn--quiet" type="button" data-state="focus">Keep riding</button></td><td><button class="btn btn--quiet" type="button" data-state="active">Keep riding</button></td><td><button class="btn btn--quiet" type="button" disabled>Keep riding</button></td><td><button class="btn btn--quiet" type="button" disabled aria-busy="true"><span class="btn__label">Keep riding</span><svg class="icon btn__spinner" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></button></td></tr>
+          <tr><th scope="row">Danger</th><td><button class="btn btn--danger" type="button">Leave race</button></td><td><button class="btn btn--danger" type="button" data-state="hover">Leave race</button></td><td><button class="btn btn--danger" type="button" data-state="focus">Leave race</button></td><td><button class="btn btn--danger" type="button" data-state="active">Leave race</button></td><td><button class="btn btn--danger" type="button" disabled>Leave race</button></td><td><button class="btn btn--danger" type="button" disabled aria-busy="true"><span class="btn__label">Leave race</span><svg class="icon btn__spinner" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></button></td></tr>
+          <tr><th scope="row">Quiet danger</th><td><button class="btn btn--quiet-danger" type="button"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>End</button></td><td><button class="btn btn--quiet-danger" type="button" data-state="hover"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>End</button></td><td><button class="btn btn--quiet-danger" type="button" data-state="focus"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>End</button></td><td><button class="btn btn--quiet-danger" type="button" data-state="active"><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>End</button></td><td><button class="btn btn--quiet-danger" type="button" disabled><svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>End</button></td><td><button class="btn btn--quiet-danger" type="button" disabled aria-busy="true"><span class="btn__label">End</span><svg class="icon btn__spinner" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></button></td></tr>
+        </tbody>
+      </table></div>
+      <h3>Icon button</h3>
+      <div class="ds-matrix"><table>
+        <thead><tr><th scope="col">Variant</th><th scope="col">Default</th><th scope="col">Hover</th><th scope="col">Focus</th><th scope="col">Pressed</th><th scope="col">Expanded</th><th scope="col">Disabled</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">.icon-btn</th><td><button class="icon-btn" type="button" aria-label="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></td><td><button class="icon-btn" type="button" aria-label="Full screen" data-state="hover"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></td><td><button class="icon-btn" type="button" aria-label="Full screen" data-state="focus"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></td><td><button class="icon-btn" type="button" aria-label="Full screen" aria-pressed="true"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></td><td><button class="icon-btn" type="button" aria-label="More ride actions" aria-haspopup="menu" aria-expanded="true"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td><td><button class="icon-btn" type="button" aria-label="Full screen" disabled><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></td></tr>
+          <tr><th scope="row">.icon-btn--lg</th><td><button class="icon-btn icon-btn--lg" type="button" aria-label="Full screen"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></td><td><button class="icon-btn icon-btn--lg" type="button" aria-label="Full screen" data-state="hover"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></td><td><button class="icon-btn icon-btn--lg" type="button" aria-label="Full screen" data-state="focus"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></td><td><button class="icon-btn icon-btn--lg" type="button" aria-label="Full screen" aria-pressed="true"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></td><td><button class="icon-btn icon-btn--lg" type="button" aria-label="More ride actions" aria-haspopup="menu" aria-expanded="true"><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td><td><button class="icon-btn icon-btn--lg" type="button" aria-label="Full screen" disabled><svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></td></tr>
+        </tbody>
+      </table></div>
+      <h3>Both themes</h3>
+      <div class="ds-themes">
+        <div data-theme="light"><div class="ds-example__canvas" style="padding: 0;"><button class="btn btn--primary" type="button">Start ride</button><button class="btn btn--light" type="button">Join group</button><button class="btn btn--gold" type="button">Ride it</button><button class="btn btn--raised" type="button">Pause</button><button class="btn btn--outline" type="button">Race it again</button><button class="btn btn--quiet" type="button">Ride alone</button><button class="btn btn--danger" type="button">Leave race</button><button class="btn btn--quiet-danger" type="button">End</button><button class="icon-btn" type="button" aria-label="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></div></div>
+        <div data-theme="dark"><div class="ds-example__canvas" style="padding: 0;"><button class="btn btn--primary" type="button">Start ride</button><button class="btn btn--light" type="button">Join group</button><button class="btn btn--gold" type="button">Ride it</button><button class="btn btn--raised" type="button">Pause</button><button class="btn btn--outline" type="button">Race it again</button><button class="btn btn--quiet" type="button">Ride alone</button><button class="btn btn--danger" type="button">Leave race</button><button class="btn btn--quiet-danger" type="button">End</button><button class="icon-btn" type="button" aria-label="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></div></div>
+      </div>
+      <h3>Loading: two shapes</h3>
+      <div class="ds-example">
+        <div class="ds-example__canvas">
+          <button class="btn btn--primary btn--xl" type="button" disabled aria-busy="true" style="width: calc(var(--space-36) * 2);"><svg class="icon icon--lg icon--spin" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Pairing…</button>
+          <button class="btn btn--primary btn--sm" type="button" disabled aria-busy="true"><span class="btn__label">Report bug</span><svg class="icon btn__spinner" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></button>
+        </div>
+        <div class="ds-example__caption"><span>Block buttons change their label to the present progressive with a leading spinner (Connect Bike "Pairing…"). Inline buttons keep the idle label in flow, hidden, under the spinner, so the width holds.</span></div>
+        <details class="ds-example__code"><summary>HTML</summary><pre><code>&lt;button class="btn btn--primary btn--xl btn--block" type="button" disabled aria-busy="true"&gt;
+  &lt;svg class="icon icon--lg icon--spin" aria-hidden="true"&gt;…&lt;/svg&gt;Pairing…
+&lt;/button&gt;
+
+&lt;button class="btn btn--primary btn--sm" type="submit" disabled aria-busy="true"&gt;
+  &lt;span class="btn__label"&gt;Report bug&lt;/span&gt;
+  &lt;svg class="icon btn__spinner" aria-hidden="true"&gt;…&lt;/svg&gt;
+&lt;/button&gt;</code></pre></details>
+      </div>
+      <ul>
+        <li><b>Loading</b> sets <code>aria-busy="true"</code> and <code>disabled</code> together, so a second press does nothing; the button stays fully opaque (it is working, not off) and the status is announced by the surrounding live region ("Sending your report…"), not by the button.</li>
+        <li><b>Disabled</b> fades to 40%. Prefer an enabled button that explains the problem when pressed; disable only when the reason is on screen (Class Start's "Join" is disabled under the "Open Telo Ride in Chrome or Edge" notice).</li>
+        <li><b>Pressed and expanded</b> are for icon buttons that toggle (full screen) or open a menu; both share the raised fill.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="responsive"><h2><a href="#responsive">Responsive behaviour</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Width</th><th scope="col">Rule</th></tr></thead><tbody>
+        <tr><td>360 (base)</td><td>Setup columns end in an <code>.btn--xl .btn--block</code> start action. Pairs of actions in a popover stack full width ("Leave this ride?" stacks Save, Discard, Keep riding). Ride header buttons grow to 48px (<code>--target-ride</code>) because they are pressed mid-ride.</td></tr>
+        <tr><td>640 (sm)</td><td>Ride header buttons return to the design's 40px. Dialog footers put actions on one row, primary last.</td></tr>
+        <tr><td>1024 (lg)</td><td>The setup start action sits at the bottom of its column (<code>margin-top: auto</code>); block buttons are capped by their column (420px aside), never by the viewport.</td></tr>
+      </tbody></table></div>
+      <ul>
+        <li>Labels never truncate or wrap; a label that wraps at 360px is too long. "Save ride and open library" is the longest in the product and fits a 320px popover.</li>
+        <li>Icon-only buttons keep their 36px square at every width; on phones they sit in rows tall enough that the row is the 44px target.</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="theming"><h2><a href="#theming">Theming</a></h2>
+      <p>The button reads only component tokens declared on <code>.btn</code>: <code>--btn-bg</code>, <code>--btn-bg-hover</code>, <code>--btn-fg</code>, <code>--btn-fg-hover</code>, <code>--btn-border</code>, <code>--btn-height</code>, <code>--btn-pad</code>, <code>--btn-radius</code>, <code>--btn-font-size</code>, <code>--btn-line-height</code>, <code>--btn-weight</code> and <code>--btn-hover-opacity</code>. Each variant points them at semantic tokens; a theme changes the semantic tokens; a one-off re-skin overrides the component tokens and never the properties.</p>
+      <pre><code>/* The Library popover's quiet "Keep riding" (from .ride-leave__keep), as tokens */
+.btn.ride-leave__keep { --btn-height: var(--control-height-sm); --btn-weight: var(--font-weight-medium); --btn-fg: var(--color-muted); --btn-fg-hover: var(--color-fg); }</code></pre>
+      <p>Volt and gold are the same in both themes (orange and gold fills with an ink label read at 6:1 and 11:1 either way). The light theme flips raised to paper-raised, bone to ink for <code>.btn--light</code>, and deepens the danger fill to <code>--palette-red-deep</code> so its label stays above 4.5:1.</p>
+    </section>
+
+    <section class="ds-section" id="accessibility"><h2><a href="#accessibility">Accessibility</a></h2>
+      <h3>Role and pattern</h3>
+      <p>Native <code>&lt;button type="button"&gt;</code>, or <code>type="submit"</code> inside a form. When the action navigates ("Go to the start line" opens the lobby), it is an <code>&lt;a class="btn" href&gt;</code>: it looks like a button and behaves like a link. Toggles add <code>aria-pressed</code>; menu triggers add <code>aria-haspopup="menu"</code> and <code>aria-expanded</code>. See the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/button/">APG Button pattern</a>.</p>
+      <h3>Keyboard</h3>
+      <div class="ds-table-wrap"><table class="ds-table ds-keys"><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+        <tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Moves focus to and from the button in DOM order. Disabled buttons are skipped.</td></tr>
+        <tr><td><kbd>Enter</kbd></td><td>Activates a button or a button-styled link.</td></tr>
+        <tr><td><kbd>Space</kbd></td><td>Activates a <code>&lt;button&gt;</code> on key up (a link ignores Space, which is why navigation stays a link).</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>No effect on the button; in the Library popover it closes the popover and returns focus to "Library".</td></tr>
+      </tbody></table></div>
+      <h3>Focus</h3>
+      <p>The shared ring: 2px <code>--color-focus-ring</code> (signal orange in dark, <code>--palette-signal-deep</code> in light) at a 2px offset on <code>:focus-visible</code>. The offset gap shows the surface, so the ring stays visible around a volt primary. When a popover opens, focus lands on its first action ("Save ride and open library" has <code>autofocus</code>).</p>
+      <h3>Labelling</h3>
+      <p>The visible label is the name. Icon-only buttons carry <code>aria-label</code> and a matching <code>title</code> ("Full screen", "Close feedback", "Leave class"). A loading button keeps its name ("Report bug") and adds <code>aria-busy</code>; progress is announced by a <code>role="status"</code> region near it. A button whose label hides on phones (the class ride's "Pause") keeps an <code>aria-label</code>.</p>
+      <h3>Contrast</h3>
+      <div class="ds-themes">
+<div data-theme="light"><div class="ds-pairs-stack">
+<div class="ds-pair"><span>Label on primary</span><span class="ds-pair__ratio" data-contrast="--color-on-fill|--color-volt" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Label on primary, hover</span><span class="ds-pair__ratio" data-contrast="--color-on-fill|--color-volt-hover" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Label on light</span><span class="ds-pair__ratio" data-contrast="--color-fg-inverse|--color-bg-inverse" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Label on gold</span><span class="ds-pair__ratio" data-contrast="--color-on-fill|--color-gold" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Label on raised</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Quiet label on panel</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Label on danger</span><span class="ds-pair__ratio" data-contrast="--color-fg-on-danger|--color-danger-solid" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Quiet danger label on panel</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Quiet danger hover</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-danger-bg" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Focus ring on panel</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-panel" data-min="3"></span></div>
+</div></div>
+<div data-theme="dark"><div class="ds-pairs-stack">
+<div class="ds-pair"><span>Label on primary</span><span class="ds-pair__ratio" data-contrast="--color-on-fill|--color-volt" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Label on primary, hover</span><span class="ds-pair__ratio" data-contrast="--color-on-fill|--color-volt-hover" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Label on light</span><span class="ds-pair__ratio" data-contrast="--color-fg-inverse|--color-bg-inverse" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Label on gold</span><span class="ds-pair__ratio" data-contrast="--color-on-fill|--color-gold" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Label on raised</span><span class="ds-pair__ratio" data-contrast="--color-fg|--color-raised" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Quiet label on panel</span><span class="ds-pair__ratio" data-contrast="--color-muted|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Label on danger</span><span class="ds-pair__ratio" data-contrast="--color-fg-on-danger|--color-danger-solid" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Quiet danger label on panel</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-panel" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Quiet danger hover</span><span class="ds-pair__ratio" data-contrast="--color-heart-fg|--color-danger-bg" data-min="4.5"></span></div>
+<div class="ds-pair"><span>Focus ring on panel</span><span class="ds-pair__ratio" data-contrast="--color-focus-ring|--color-panel" data-min="3"></span></div>
+</div></div>
+</div>
+      <h3>Motion</h3>
+      <p>Fill and colour ease over <code>--duration-fast</code> (150ms); pressing scales to 0.98. Reduced motion zeroes the durations, so both are instant. The spinner is a status indicator; under reduced motion it stops on its arc and the label or live region still says what is happening.</p>
+      <h3>Touch</h3>
+      <p>Every size clears the 24px minimum; medium and up clear 40px. Mid-ride buttons are 48px on phones (<code>--target-ride</code>). Hover-only cues (quiet danger turning red) are never the only signal: "End" carries its stop icon and label.</p>
+    </section>
+
+    <section class="ds-section" id="content"><h2><a href="#content">Content</a></h2>
+      <ul>
+        <li>Verb first, sentence case, what happens next: "Go to the start line", "Pair Echelon EX-5s", "Use video's current time". Never "OK", "Submit" or "Click here".</li>
+        <li>Name the thing when the view holds several: "Race Old Town Criterium", "Ride Neon Docklands", "Report bug".</li>
+        <li>Destructive labels say what is lost: "Discard and open library", not "Confirm".</li>
+        <li>Loading labels use the present progressive with an ellipsis character: "Pairing…", "Sending…".</li>
+        <li>Times inside labels follow the content rules: "Join · starts in 9 min".</li>
+      </ul>
+    </section>
+
+    <section class="ds-section" id="do-dont"><h2><a href="#do-dont">Do and don't</a></h2>
+      <div class="ds-dodont">
+        <figure class="ds-do"><div class="ds-example__canvas ds-example__canvas--stack" style="max-width: calc(var(--space-40) * 2);"><button class="btn btn--primary" type="button">Save ride and open library</button><button class="btn btn--raised" type="button">Discard and open library</button><button class="btn btn--quiet" type="button">Keep riding</button></div><figcaption>One primary, the safe outcome; discard is raised, staying is quiet ("Leave this ride?").</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas ds-example__canvas--stack" style="max-width: calc(var(--space-40) * 2);"><button class="btn btn--primary" type="button">Save ride and open library</button><button class="btn btn--danger" type="button">Discard and open library</button></div><figcaption>A red discard beside the primary pulls the eye to the destructive choice. Danger is for a confirmation whose only question is the destructive action.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><a class="btn btn--gold btn--sm" href="../../mocks/pages/race-setup/docklands.html">Ride it</a></div><figcaption>Gold for the unlock moment only: the banner announcing "Neon Docklands is open."</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><button class="btn btn--gold" type="button">Start ride</button></div><figcaption>Gold for an ordinary start. Gold means "earned"; using it elsewhere spends it.</figcaption></figure>
+        <figure class="ds-do"><div class="ds-example__canvas"><button class="icon-btn" type="button" aria-label="Full screen" title="Full screen"><svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button></div><figcaption>Icon-only buttons have <code>aria-label</code> and a <code>title</code>.</figcaption></figure>
+        <figure class="ds-dont"><div class="ds-example__canvas"><button class="btn btn--primary btn--xl" type="button" disabled style="width: calc(var(--space-32) * 2);">Pair Echelon EX-5s</button></div><figcaption>A faded primary while busy reads as "off". Busy buttons stay opaque with a spinner and <code>aria-busy</code>.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="ds-section" id="tokens"><h2><a href="#tokens">Tokens</a></h2>
+      <div class="ds-table-wrap"><table class="ds-table">
+        <thead><tr><th scope="col">Part</th><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+        <tbody>
+          <tr><td>Primary fill (--btn-bg)</td><td><code>--color-accent</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-accent" data-swatch></i><span data-token="--color-accent"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-accent" data-swatch></i><span data-token="--color-accent"></span></span></td></tr>
+          <tr><td>Primary fill, hover</td><td><code>--color-accent-hover</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-accent-hover" data-swatch></i><span data-token="--color-accent-hover"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-accent-hover" data-swatch></i><span data-token="--color-accent-hover"></span></span></td></tr>
+          <tr><td>Primary, gold label</td><td><code>--color-on-fill</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-on-fill" data-swatch></i><span data-token="--color-on-fill"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-on-fill" data-swatch></i><span data-token="--color-on-fill"></span></span></td></tr>
+          <tr><td>Light fill</td><td><code>--color-bg-inverse</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-bg-inverse" data-swatch></i><span data-token="--color-bg-inverse"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-bg-inverse" data-swatch></i><span data-token="--color-bg-inverse"></span></span></td></tr>
+          <tr><td>Light label</td><td><code>--color-fg-inverse</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-inverse" data-swatch></i><span data-token="--color-fg-inverse"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-inverse" data-swatch></i><span data-token="--color-fg-inverse"></span></span></td></tr>
+          <tr><td>Gold fill</td><td><code>--color-gold</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-gold" data-swatch></i><span data-token="--color-gold"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-gold" data-swatch></i><span data-token="--color-gold"></span></span></td></tr>
+          <tr><td>Raised fill</td><td><code>--color-raised</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised" data-swatch></i><span data-token="--color-raised"></span></span></td></tr>
+          <tr><td>Raised fill, hover</td><td><code>--color-raised-hover</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-raised-hover" data-swatch></i><span data-token="--color-raised-hover"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-raised-hover" data-swatch></i><span data-token="--color-raised-hover"></span></span></td></tr>
+          <tr><td>Outline border</td><td><code>--color-line</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-line" data-swatch></i><span data-token="--color-line"></span></span></td></tr>
+          <tr><td>Quiet label</td><td><code>--color-muted</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-muted" data-swatch></i><span data-token="--color-muted"></span></span></td></tr>
+          <tr><td>Danger fill</td><td><code>--color-danger-solid</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-danger-solid" data-swatch></i><span data-token="--color-danger-solid"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-danger-solid" data-swatch></i><span data-token="--color-danger-solid"></span></span></td></tr>
+          <tr><td>Danger fill, hover</td><td><code>--color-danger-solid-hover</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-danger-solid-hover" data-swatch></i><span data-token="--color-danger-solid-hover"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-danger-solid-hover" data-swatch></i><span data-token="--color-danger-solid-hover"></span></span></td></tr>
+          <tr><td>Danger label</td><td><code>--color-fg-on-danger</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-fg-on-danger" data-swatch></i><span data-token="--color-fg-on-danger"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-fg-on-danger" data-swatch></i><span data-token="--color-fg-on-danger"></span></span></td></tr>
+          <tr><td>Quiet danger label</td><td><code>--color-heart-fg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-heart-fg" data-swatch></i><span data-token="--color-heart-fg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-heart-fg" data-swatch></i><span data-token="--color-heart-fg"></span></span></td></tr>
+          <tr><td>Quiet danger hover fill</td><td><code>--color-danger-bg</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-danger-bg" data-swatch></i><span data-token="--color-danger-bg"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-danger-bg" data-swatch></i><span data-token="--color-danger-bg"></span></span></td></tr>
+          <tr><td>Focus ring</td><td><code>--color-focus-ring</code></td><td><span class="ds-swatch-cell" data-theme="light"><i data-token="--color-focus-ring" data-swatch></i><span data-token="--color-focus-ring"></span></span></td><td><span class="ds-swatch-cell" data-theme="dark"><i data-token="--color-focus-ring" data-swatch></i><span data-token="--color-focus-ring"></span></span></td></tr>
+          <tr><td>Height sm / md / lg / xl (--btn-height)</td><td><code>--control-height-sm</code> <code>--control-height-md</code> <code>--control-height-lg</code> <code>--control-height-xl</code></td><td colspan="2"><span data-token="--control-height-sm"></span> / <span data-token="--control-height-md"></span> / <span data-token="--control-height-lg"></span> / <span data-token="--control-height-xl"></span></td></tr>
+          <tr><td>Padding (--btn-pad), quiet</td><td><code>--space-4</code> <code>--space-3</code></td><td colspan="2"><span data-token="--space-4"></span> / <span data-token="--space-3"></span></td></tr>
+          <tr><td>Radius (--btn-radius) md / lg and xl</td><td><code>--radius-lg</code> <code>--radius-xl</code></td><td colspan="2"><span data-token="--radius-lg"></span> / <span data-token="--radius-xl"></span></td></tr>
+          <tr><td>Label size md / lg</td><td><code>--font-size-sm</code> <code>--font-size-md</code></td><td colspan="2"><span data-token="--font-size-sm"></span> / <span data-token="--font-size-md"></span></td></tr>
+          <tr><td>Weight, quiet</td><td><code>--font-weight-semibold</code> <code>--font-weight-medium</code></td><td colspan="2"><span data-token="--font-weight-semibold"></span> / <span data-token="--font-weight-medium"></span></td></tr>
+          <tr><td>Ride target on phones</td><td><code>--target-ride</code></td><td colspan="2"><span data-token="--target-ride"></span></td></tr>
+          <tr><td>Transition</td><td><code>--duration-fast</code> <code>--ease-out</code></td><td colspan="2"><span data-token="--duration-fast"></span><span data-token="--ease-out"></span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ds-section" id="code"><h2><a href="#code">Code</a></h2>
+      <pre><code>&lt;a class="btn btn--primary btn--xl btn--block" href="/race/lobby"&gt;Go to the start line&lt;/a&gt;
+&lt;button class="btn btn--raised" type="button"&gt;&lt;svg class="icon icon--md" aria-hidden="true"&gt;…&lt;/svg&gt;Pause&lt;/button&gt;
+&lt;button class="btn btn--primary btn--sm" type="submit" disabled aria-busy="true"&gt;&lt;span class="btn__label"&gt;Report bug&lt;/span&gt;&lt;svg class="icon btn__spinner" aria-hidden="true"&gt;…&lt;/svg&gt;&lt;/button&gt;
+&lt;button class="icon-btn" type="button" aria-label="Full screen" title="Full screen"&gt;…&lt;/button&gt;</code></pre>
+      <div class="ds-table-wrap"><table class="ds-table"><thead><tr><th scope="col">Class / attribute</th><th scope="col">Effect</th></tr></thead><tbody>
+        <tr><td><code>.btn</code></td><td>Base: transparent, fg label, medium size. Declares the <code>--btn-*</code> tokens.</td></tr>
+        <tr><td><code>.btn--primary</code> <code>--light</code> <code>--gold</code> <code>--raised</code> <code>--outline</code> <code>--quiet</code> <code>--danger</code> <code>--quiet-danger</code></td><td>Variant (sets tokens only).</td></tr>
+        <tr><td><code>.btn--sm</code> <code>--lg</code> <code>--xl</code></td><td>Size; omit for medium.</td></tr>
+        <tr><td><code>.btn--block</code></td><td>Full width of its container.</td></tr>
+        <tr><td><code>.btn--icon</code></td><td>Square, no padding; needs <code>aria-label</code>.</td></tr>
+        <tr><td><code>.btn__label</code> + <code>.btn__spinner</code></td><td>Width-keeping loading: label hidden, spinner centred while <code>aria-busy="true"</code>.</td></tr>
+        <tr><td><code>.btn__chevron</code></td><td>Trailing chevron of a menu trigger; turns over while <code>aria-expanded="true"</code>.</td></tr>
+        <tr><td><code>.icon-btn</code> <code>.icon-btn--lg</code> <code>.icon-btn--edge</code></td><td>Square icon-only header button, 36px or 48px; <code>--edge</code> pulls it 8px into the header's right padding.</td></tr>
+        <tr><td><code>disabled</code> / <code>aria-disabled="true"</code></td><td>40% opacity, no hover or press.</td></tr>
+        <tr><td><code>aria-busy="true"</code></td><td>Loading: progress cursor, stays opaque, spinner runs.</td></tr>
+        <tr><td><code>aria-pressed</code> / <code>aria-expanded</code></td><td>Icon button toggled or its menu open: raised fill.</td></tr>
+        <tr><td><code>data-state="hover|focus|active"</code></td><td>Documentation only.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="ds-section" id="sources"><h2><a href="#sources">Sources</a></h2>
+      <ul>
+        <li><a href="../../mocks/pages/race-setup/default.html">pages/race-setup/default</a> — "Go to the start line" (<code>--xl --block</code>), full screen <code>.icon-btn</code></li>
+        <li><a href="../../mocks/pages/home/default.html">pages/home/default</a> — "Race Old Town Criterium →", "Join group" (light), "Ride alone" (quiet)</li>
+        <li><a href="../../mocks/pages/home/unlocked.html">pages/home/unlocked</a> — "Ride it" (gold, sm)</li>
+        <li><a href="../../mocks/pages/connect-bike/pairing.html">pages/connect-bike/pairing</a> — loading "Pairing…"</li>
+        <li><a href="../../mocks/pages/custom-ride/default.html">pages/custom-ride/default</a> — "Pause" (raised), "End" (quiet danger look)</li>
+        <li><a href="../../mocks/dialogs/end-ride/default.html">dialogs/end-ride/default</a> — primary, raised and quiet actions stacked</li>
+        <li><a href="../../mocks/dialogs/feedback/sending.html">dialogs/feedback/sending</a> — "Sending…" busy send</li>
+        <li><a href="../../mocks/pages/not-found/default.html">pages/not-found/default</a> — "Back to Home" (<code>--lg</code>)</li>
+      </ul>
+      <p>Drift fixed during extraction:</p>
+      <ul>
+        <li><code>dialogs/feedback/sending</code> paints the busy send with <code>--color-volt-dim</code> and forces <code>opacity: 1</code> on an area class; dim volt put the label under 4.5:1. The system keeps every busy button at full opacity on its own fill.</li>
+        <li>The kit's danger label read raw <code>--palette-white</code>; it now reads <code>--color-fg-on-danger</code>.</li>
+        <li>End (<code>.ride-header__stop</code>), Leave (<code>.race-lobby__leave</code>) and "Leave class" (<code>.class-ride__leave</code>) are three area copies of one quiet-danger button; new screens use <code>.btn--quiet-danger</code>.</li>
+        <li>The light-theme focus ring was signal orange (2.7:1 on paper-raised); it is <code>--palette-signal-deep</code>.</li>
+      </ul>
+    </section>
+
+    <footer class="ds-footer"><span>Telo Ride design system · extracted from <a href="../../mocks/index.html">docs/mocks</a></span><a href="#top">Back to top</a></footer>
   </main>
 </div>
 <script src="../assets/ds.js"></script>

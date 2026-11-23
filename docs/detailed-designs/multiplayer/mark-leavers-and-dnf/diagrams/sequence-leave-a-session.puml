@@ -1,0 +1,46 @@
+@startuml
+title UML sequence behaviour — Leave a session
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+participant "Other riders' Ride apps" as others
+box "Frontend — Ride app (ride application and api library)" #E0F2FE
+  participant "RacePage" as page
+  participant "SignalRRideHubClient" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RideHub" as hub
+  participant "RideHubNotifier" as notifier
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "LeaveRaceCommandHandler" as handler
+  participant "RaceSession" as session
+end box
+actor -> page : Leave the race
+page -> client : leaveRace(sessionId), sent without an answer
+page --> actor : Race Setup; the ride ends for the rider
+client -> hub : LeaveRace(sessionId)
+hub -> handler : Send LeaveRaceCommand(riderId, sessionId)
+handler -> session : Leave(riderId, now)
+alt running race
+  session --> handler : Seat kept, status DNF (L2-124 AC1)
+  handler -> session : Standings()
+  handler -> notifier : RaceStandingsUpdated(sessionId, rows)
+  notifier --> others : The rider DNF, last, at once
+else lobby, before the start
+  session --> handler : Seat opens, or goes to a bot after the fill (L2-055)
+  handler -> notifier : SeatsChanged(sessionId, seats, name)
+end
+@enduml

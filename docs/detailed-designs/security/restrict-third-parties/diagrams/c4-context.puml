@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Restrict third parties
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression; the API serves the app with its policy (ADR 0026)")
+System_Ext(youtube, "YouTube", "Class and custom-ride videos (IFrame Player API)")
+System_Ext(gmaps, "Google Maps Platform", "Photorealistic 3D Tiles with the rider's own key")
+Rel(rider, telo, "Rides with")
+Rel(telo, youtube, "Loads the player and thumbnails from", "HTTPS")
+Rel(telo, gmaps, "Streams tiles with the rider's key from (only when given)", "HTTPS")
+@enduml

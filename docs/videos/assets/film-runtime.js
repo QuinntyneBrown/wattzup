@@ -1,4 +1,4 @@
-// The runtime of a Wattzup film (docs/videos/README.md). A film is a list of scenes on the bar grid
+// The runtime of a Telo Ride film (docs/videos/README.md). A film is a list of scenes on the bar grid
 // that tools/video-audio/film_audio.py writes to timing.js. Every pixel is a pure function of film
 // time: the same page plays live against the mixed MP3 and is rendered frame by frame by
 // tools/video-build/build.mjs, which calls window.seek(seconds). Nothing here uses a CSS animation,
@@ -47,7 +47,7 @@
     };
   };
   const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-  /** A design token as #rrggbb, for a canvas or a shader: token('--palette-volt-300'). */
+  /** A design token as #rrggbb, for a canvas or a shader: token('--palette-signal'). */
   const probe = document.createElement('canvas').getContext('2d');
   const token = (name) => {
     const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -60,7 +60,7 @@
   // ── Device frames: the screenshot inside a phone, a tablet or a browser window ───────────────
   // Each returns markup. `width` is the frame's width in film pixels; `ratio` the window the shot
   // was taken in (width / height); `style` places the frame and `attrs` takes S.ref(...) to move it.
-  const device = (kind, bar) => (src, { width, ratio, theme = 'light', style = '', attrs = '', url = '127.0.0.1:8787' } = {}) =>
+  const device = (kind, bar) => (src, { width, ratio, theme = 'light', style = '', attrs = '', url = 'localhost:4200' } = {}) =>
     `<div class="device device--${kind}" data-theme="${theme}" style="--w:${width}px;--ratio:${ratio};${style}" ${attrs}>` +
     (bar ? `<div class="device__bar"><i></i><i></i><i></i><span class="device__url">${esc(url)}</span></div>` : '') +
     `<img class="device__screen" src="${esc(src)}" alt=""></div>`;
@@ -129,7 +129,7 @@
       },
 
       /** The aurora, a WebGL field of three token colours over a ground: intensity(t) is 0..1.5. */
-      aurora(intensity = () => 1, { horizon = 0.62, colors = ['--palette-neutral-950', '--palette-volt-300', '--palette-rest-500', '--palette-volt-550'] } = {}) {
+      aurora(intensity = () => 1, { horizon = 0.62, colors = ['--palette-ink', '--palette-signal', '--palette-blue', '--palette-gold'] } = {}) {
         let draw = null;
         return `<canvas width="960" height="540" class="fill" ${S.ref((el, t) => {
           draw ??= aurora(el, horizon, colors.map(token));
@@ -138,7 +138,7 @@
       },
 
       /** Confetti from both lower corners at each time in `bursts` (scene seconds). */
-      confetti(bursts, { count = 140, seed = 7, colors = ['--palette-volt-300', '--palette-rest-300', '--palette-heart-400', '--palette-warn-400', '--palette-neutral-0'] } = {}) {
+      confetti(bursts, { count = 140, seed = 7, colors = ['--palette-signal', '--palette-blue', '--palette-gold', '--palette-green', '--palette-bone'] } = {}) {
         let palette = null;
         return `<canvas width="${W}" height="${H}" class="fill" ${S.ref((el, t) => {
           palette ??= colors.map(token);
@@ -308,7 +308,7 @@ void main(){
       started = true;
       const missing = TIMING.scenes.filter((s) => !scenes.some((x) => x.id === s.id)).map((s) => s.id);
       if (missing.length) errors.push(`film.js draws no scene for: ${missing.join(', ')}`);
-      const faces = ['800 80px Archivo', '600 30px Inter', '500 30px "JetBrains Mono"'];
+      const faces = ['italic 800 80px "Barlow Condensed"', '700 80px "Barlow Condensed"', '600 30px "Inter Tight"', '500 30px "JetBrains Mono"'];
       window.filmReady = Promise.all([
         // Resolves with the faces it loaded: none means the family is not declared, and the film
         // would be drawn in a fallback face.

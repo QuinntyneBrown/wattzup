@@ -1,0 +1,93 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Show the profile
+class ProfilePage <<ride>> {
+  -store: ProfileStore
+  +view: Signal<ProfileView | undefined>
+}
+class ProfileStore <<ride, route-scoped>> {
+  -progress: ProgressStore
+  -rides: RidesApi
+  -catalogue: CatalogueApi
+  -outbox: RideOutbox
+  +view: Signal<ProfileView | undefined>
+}
+class ProfileView {
+  +headline: string
+  +level: LevelView
+  +meta: string
+  +starsSummary: string
+  +maps: MapRowView[]
+  +rides: RecentRideView[]
+}
+class MapRowView {
+  +mapId: string
+  +name: string
+  +stars: 0..3
+  +best: string | null
+  +locked: boolean
+}
+enum RecentRideKind {
+  BotsRace
+  Class
+  VsYourBest
+  LiveRace
+  CustomWorkout
+}
+class RecentRideView {
+  +kind: RecentRideKind
+  +title: string
+  +detail: string
+  +xp: string
+}
+class RecentRideDto <<api>> {
+  +rideId: string
+  +kind: RideKind
+  +title: string
+  +finishedAt: string
+  +place?: number
+  +fieldSize?: number
+  +elapsedSeconds: number
+  +xpTotal: number
+}
+class "rideDayLabel()" as dl <<ride helper>> {
+  +rideDayLabel(finishedAt: Date, now: Date): string
+}
+class ProfileLevel <<components>> {
+  +headline: input<string>
+  +level: input<LevelView>
+  +meta: input<string>
+}
+class MapTable <<components>> {
+  +rows: input<MapRowView[]>
+  +summary: input<string>
+}
+class RecentRides <<components>> {
+  +rides: input<RecentRideView[]>
+}
+class GetRecentRidesQueryHandler <<backend application>> {
+  +Handle(q: GetRecentRidesQuery): Task<RecentRideDto[]>
+}
+ProfilePage --> ProfileStore
+ProfilePage ..> ProfileLevel
+ProfilePage ..> MapTable
+ProfilePage ..> RecentRides
+ProfileStore ..> ProfileView : computes
+ProfileStore ..> dl
+ProfileStore ..> RecentRideDto
+ProfileView *-- MapRowView
+ProfileView *-- RecentRideView
+RecentRideView --> RecentRideKind
+GetRecentRidesQueryHandler ..> RecentRideDto : returns
+@enduml

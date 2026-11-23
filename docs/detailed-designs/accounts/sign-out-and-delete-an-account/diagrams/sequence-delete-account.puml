@@ -1,0 +1,57 @@
+@startuml
+title UML sequence behaviour — Delete an account
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app" #E0F2FE
+  participant "ProfilePage" as page
+  participant "DeleteAccountDialog" as dialog
+  participant "AccountStore" as current
+  participant "HttpRidersApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RidersController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "DeleteAccountCommandHandler" as handler
+  participant "Rider" as rider
+  participant "ErasePendingAccountsCommandHandler" as erase
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "AccountErasureService" as job
+  database "Telo Ride database" as db
+end box
+actor -> page : Choose "Delete my account"
+page -> dialog : Open
+dialog --> actor : Removes email, display name, progress and ride history; type "delete" (L2-006 AC2)
+dialog --> actor : "Delete my account" disabled until "delete" is typed
+actor -> dialog : Type "delete", confirm
+dialog -> current : deleteAccount()
+current -> client : deleteMe()
+client -> ctrl : DELETE /api/riders/me (SameSite=Lax session cookie)
+ctrl -> handler : Send DeleteAccountCommand
+handler -> rider : RequestDeletion(now): remove the email and the display name
+handler -> db : End every RiderSession, remove the email's sign-in codes,\nsave in one unit of work
+handler -> ctrl : Done
+ctrl --> client : 204, clear the session cookie
+client --> current : Deleted
+current -> current : CURRENT_RIDER.signedOut()
+current --> dialog : true
+dialog --> actor : Close; sign-in opens with "Your account was deleted.\nIts personal data is erased within 30 days." (L2-006 AC3)
+== Once a day, so within 30 days ==
+job -> erase : Send ErasePendingAccountsCommand
+erase -> db : Delete each rider whose deletion was requested, with its sessions
+note over rider : The same email signing in again finds no rider\nand gets a new, empty account (L2-006 AC4)
+@enduml

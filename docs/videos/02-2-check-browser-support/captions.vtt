@@ -1,0 +1,82 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.485
+The browser decides whether Telo Ride can reach the bike. Now Connect Bike says when
+
+00:00:07.485 --> 00:00:08.836
+it can't, and why.
+
+00:00:10.324 --> 00:00:15.468
+Connect Bike lists what it works with: four Echelon models with full control, and
+
+00:00:15.468 --> 00:00:17.737
+other FTMS smart bikes in beta.
+
+00:00:20.647 --> 00:00:26.651
+In Safari or Firefox, an alert replaces the device card and says to open Telo Ride
+
+00:00:26.651 --> 00:00:28.269
+in Chrome or Edge.
+
+00:00:30.971 --> 00:00:35.554
+Try again reads the browser once more, and as soon as Bluetooth is there, the pair
+
+00:00:35.554 --> 00:00:36.860
+button comes back.
+
+00:00:41.295 --> 00:00:47.663
+The secure page is checked first. On plain http, Chrome hides Bluetooth too, and the
+
+00:00:47.663 --> 00:00:51.223
+fix is the HTTPS page, not another browser.
+
+00:00:51.618 --> 00:00:58.420
+So on a plain http page, the alert offers one link: the same address, over HTTPS.
+
+00:01:01.942 --> 00:01:08.843
+In production, the API sends every plain http request on to the same address over
+
+00:01:08.843 --> 00:01:09.654
+HTTPS.
+
+00:01:12.266 --> 00:01:18.196
+And every secure response tells the browser to use HTTPS for a year, so it never
+
+00:01:18.196 --> 00:01:20.053
+asks over http again.
+
+00:01:22.590 --> 00:01:27.284
+Class Start, Custom workout and Custom ride bring their own notices and disabled
+
+00:01:27.284 --> 00:01:29.579
+start buttons when they are built.
+
+00:01:32.913 --> 00:01:38.085
+Connect Bike shows the same list on a phone, a tablet, a laptop or a desktop.
+
+00:01:43.237 --> 00:01:48.117
+What the tests prove: seventeen behaviour specs and twenty-eight backend tests, all
+
+00:01:48.117 --> 00:01:48.770
+green.
+
+00:01:53.561 --> 00:01:58.164
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:58.509 --> 00:02:03.021
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:02:03.021 --> 00:02:04.692
+every hill and interval.
+
+00:02:05.037 --> 00:02:10.215
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:02:10.215 --> 00:02:15.663
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:02:15.663 --> 00:02:18.653
+XP, rider levels, stars and map unlocks.
+
+00:02:18.998 --> 00:02:21.491
+A custom workout lives under Profile.

@@ -1,0 +1,100 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+set separator none
+' --------------------------
+title Class structure — Connect to the ride hub
+
+package "api library" {
+  interface RideHubClient {
+    +state: Signal<RideHubState>
+    +start(): Promise<void>
+    +stop(): Promise<void>
+    +serverTime(): Promise<number>
+    +findRace(mapId: string): Promise<SeatAssignmentDto>
+    +joinClassSession(classId: string, sessionId: string): Promise<SeatAssignmentDto>
+    +onReconnected(handler: () => void): void
+  }
+  class SignalRRideHubClient {
+    -connection: HubConnection
+    +state: Signal<RideHubState>
+    +start(): Promise<void>
+    +stop(): Promise<void>
+  }
+  class RideHubRetryPolicy {
+    -delays: number[] = [0, 2000, 5000, 10000]
+    -steady: number = 30000
+    +nextRetryDelayInMilliseconds(ctx: RetryContext): number
+  }
+  class "measureClockOffset()" as offset <<helper>> {
+    +measureClockOffset(samples: ClockSample[]): number
+  }
+  enum RideHubState {
+    disconnected
+    connecting
+    connected
+    reconnecting
+  }
+  class SeatAssignmentDto {
+    +sessionId: string
+    +seatNumber: number
+    +serverTime: number
+  }
+}
+package "ride application" {
+  class LiveSessionStore {
+    -ref: SessionRef | null
+    +connection: Signal<RideHubState>
+    +offsetMs: Signal<number | null>
+    +join(ref: SessionRef): Promise<void>
+    +serverNow(): number
+    -rejoin(): Promise<void>
+    -onDestroy(): void
+  }
+  class SessionRef {
+    +kind: 'race' | 'class'
+    +mapId?: string
+    +classId?: string
+    +sessionId: string
+  }
+}
+package "Telo.Ride.Api" {
+  class RideHub {
+    +ServerTime(): Task<long>
+    +FindRace(mapId: string): Task<SeatAssignmentDto>
+    +JoinClassSession(classId: string, sessionId: Guid): Task<SeatAssignmentDto>
+    +OnDisconnectedAsync(e: Exception?): Task
+  }
+  interface IRideHubClient
+  class RideHubNotifier
+}
+package "Telo.Ride.Application" {
+  interface ISessionNotifier {
+    +AddToSessionAsync(connectionId: string, sessionId: Guid): Task
+  }
+  interface ISessionRegistry
+  class GetServerTimeQueryHandler {
+    -time: TimeProvider
+  }
+}
+
+SignalRRideHubClient ..|> RideHubClient
+SignalRRideHubClient ..> RideHubRetryPolicy : uses
+RideHubClient --> RideHubState : exposes
+LiveSessionStore --> RideHubClient : RIDE_HUB_CLIENT
+LiveSessionStore *-- SessionRef
+LiveSessionStore ..> offset : measures
+RideHub ..> GetServerTimeQueryHandler : MediatR
+RideHub ..> IRideHubClient : typed by
+RideHubNotifier ..|> ISessionNotifier
+RideHubNotifier ..> RideHub : IHubContext
+@enduml

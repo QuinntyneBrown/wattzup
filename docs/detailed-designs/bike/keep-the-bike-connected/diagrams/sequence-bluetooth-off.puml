@@ -1,0 +1,46 @@
+@startuml
+title UML sequence behaviour — Bluetooth is off
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ConnectBikePage / CustomRidePage" as page
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "WebBluetoothSupport" as avail
+  participant "bikeStatus()" as status
+end box
+box "Device — Browser" #F2F4F7
+  participant "navigator.bluetooth" as bt
+end box
+actor -> page : Open the screen
+page -> avail : recheck()
+avail -> bt : getAvailability()
+bt --> avail : false
+avail --> page : state = adapter-off
+alt Connect Bike
+  page --> actor : Alert "Bluetooth is off", "Turn on Bluetooth on this computer, then try again.", "Try again" (L2-018 AC1)
+else Custom ride
+  page -> status : bikeStatus(..., AdapterOff)
+  status --> page : "Bluetooth is off", never "No bike connected" (L2-018 AC3)
+  page --> actor : Panel "Turn on Bluetooth" with Check again (L2-018 AC2)
+end
+actor -> page : Turn Bluetooth on, press "Try again" or Check again
+page -> avail : recheck()
+avail -> bt : getAvailability()
+bt --> avail : true
+avail --> page : state = ready
+page --> actor : Screen returns to its normal state (L2-018 AC4)
+@enduml

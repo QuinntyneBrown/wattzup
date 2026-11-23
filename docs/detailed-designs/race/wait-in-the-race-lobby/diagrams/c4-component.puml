@@ -1,0 +1,26 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Wait in the race lobby
+Person(rider, "Rider", "Rides a smart bike at home")
+Container_Boundary(app, "Ride app") {
+  Component(page, "RaceLobbyPage", "Angular page · ride", "Route /race/:mapId/lobby")
+  Component(store, "LobbyStore", "Route-scoped signal store · ride", "Seats, status, hint, clock, ready, notice")
+  Component(session, "LiveSessionStore", "Route-scoped signal store · ride", "Hub connection, clock offset, race seat and grid")
+  Component(local, "LocalLobby", "Service · domain/engine", "Bots lobby rules")
+  Component(res, "ResistanceController", "Service · domain/engine", "Target resistance")
+  Component(ui, "StartGrid / StartClock / RaceCountdown", "Presentation components · components", "Grid, clock and countdown overlay")
+  Component(hub, "RideHubClient", "SignalR client · api", "Single hub connection")
+}
+Container_Boundary(api, "Telo Ride API") {
+  Component(ridehub, "RideHub", "SignalR hub · Telo.Ride.Api", "Session messages")
+}
+Rel(rider, page, "Presses I'm ready, Leave")
+Rel(page, store, "Reads and calls")
+Rel(page, ui, "Renders")
+Rel(store, local, "Bots lobby")
+Rel(store, session, "Riders-online lobby")
+Rel(store, res, "Sends first segment level")
+Rel(session, hub, "Sends and receives")
+Rel(hub, ridehub, "Invokes and listens", "SignalR")
+@enduml

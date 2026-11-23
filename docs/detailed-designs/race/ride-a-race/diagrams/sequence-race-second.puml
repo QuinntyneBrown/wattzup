@@ -1,0 +1,46 @@
+@startuml
+title UML sequence behaviour — One race second
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "RacePage" as page
+  participant "RaceStore" as store
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "RideClock" as clock
+  participant "BikeConnection" as conn
+  participant "RaceEngine" as engine
+  participant "RaceField" as field
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "Smart bike" as bike
+end box
+bike -> conn : Telemetry notification
+conn --> store : Telemetry (power, cadence, resistance, heart rate)
+clock -> store : tick(elapsedS)
+store -> engine : tick(latest telemetry, elapsedS)
+engine -> engine : Segment at elapsedS; hold last level past the plan (L2-071 AC2)
+engine -> engine : VirtualSpeedModel: speed from power and grade
+engine -> engine : RouteProfile: grade, climbed, distance (L2-062 AC1)
+engine -> field : advance(elapsedS)
+field --> engine : Opponent positions
+engine -> engine : StandingsRanker: order at most once a second (L2-060 AC3)
+engine -> engine : GapCalculator: gap = metres / max(speed, 4 m/s) (L2-059 AC5)
+engine -> engine : TargetDelta: "On target" within 10 % (L2-059 AC2)
+engine --> store : RaceSnapshot
+store --> page : snapshot signal
+page --> actor : Clock "5:01 / 30:00", "5th / 10", "371 W", board, interval, route (L2-058 to L2-062)
+@enduml

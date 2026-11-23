@@ -1,0 +1,15 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Check bike and browser support
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Echelon or FTMS; Bluetooth LE")
+System_Boundary(telo, "Telo Ride") {
+  Container(host, "Telo.Ride.Api", "ASP.NET Core on Azure App Service (ADR 0026)", "Serves the app over HTTPS; redirects http and sends Strict-Transport-Security")
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Every screen, Web Bluetooth, protocol and workout engine")
+}
+Rel(rider, host, "Requests pages from", "HTTPS")
+Rel(host, app, "Delivers")
+Rel(rider, app, "Reads supported bikes and blocked-ride notices in")
+Rel(app, bike, "Connects to only in a supported, secure browser", "Web Bluetooth")
+@enduml

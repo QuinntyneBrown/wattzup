@@ -1,0 +1,32 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Control resistance
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(bike, "Smart bike", "Echelon or FTMS; Bluetooth LE")
+Container_Boundary(app, "Ride app") {
+  Component(page, "Ride pages (race, class, custom ride)", "Angular pages · ride", "Wire controls to the controller")
+  Component(levels, "RideLevels", "Presentation component · components", "32 Level N bars")
+  Component(step, "RideStep", "Presentation component · components", "Lower, readout, Raise")
+  Component(logc, "RideLog", "Presentation component · components", "Sent to bike rows")
+  Component(engine, "WorkoutEngine", "Service · domain/engine", "Segment boundaries of the plan")
+  Component(ctrl, "ResistanceController", "Service · domain/engine", "Target resistance, source, clamp, last command")
+  Component(sent, "SentToBikeLog", "Service · domain/engine", "Last 50 commands")
+  Component(tele, "BikeTelemetry", "Service · domain/engine", "Resistance the bike reports")
+  Component(conn, "BikeConnection", "Contract · api; WebBluetoothBikeConnection", "setResistance(level) → ack ms")
+  Component(proto, "EchelonProtocol / FtmsProtocol", "Codecs · domain/protocol", "B1 bytes, FTMS 0x04 mapping")
+}
+Rel(rider, levels, "Presses a bar")
+Rel(rider, step, "Presses + or −")
+Rel(page, levels, "Renders")
+Rel(page, step, "Renders")
+Rel(page, logc, "Renders")
+Rel(page, ctrl, "Sends manual changes to")
+Rel(engine, ctrl, "Segment started → level")
+Rel(ctrl, conn, "setResistance")
+Rel(ctrl, sent, "Records command")
+Rel(conn, proto, "Encodes with")
+Rel(conn, bike, "Writes", "GATT")
+Rel(bike, tele, "Reports resistance", "GATT, decoded")
+Rel(page, tele, "Reads resistance from")
+@enduml

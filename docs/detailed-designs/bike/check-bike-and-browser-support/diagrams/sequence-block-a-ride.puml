@@ -1,0 +1,46 @@
+@startuml
+title UML sequence behaviour — Block a ride the browser cannot reach
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "ClassStartPage" as page
+  participant "BrowserNotice" as notice
+end box
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "WebBluetoothSupport" as support
+  participant "rideBlockReason" as block
+end box
+actor -> page : Open Class Start
+page -> support : Read state
+support -> support : Check 'bluetooth' in navigator and isSecureContext
+alt navigator.bluetooth is absent
+  support --> page : UnsupportedBrowser
+  page -> block : rideBlockReason(UnsupportedBrowser)
+  block --> page : UnsupportedBrowser
+  page -> notice : Render "Open Telo Ride in Chrome or Edge." (L2-008 AC2)
+  page -> page : Disable Join and Start (L2-010 AC1)
+else plain http and not localhost
+  support --> page : InsecureContext
+  page -> block : rideBlockReason(InsecureContext)
+  block --> page : InsecureContext
+  page -> notice : Render "Open the secure version of this page." (L2-009 AC1)
+  page -> page : Disable Join and Start (L2-010 AC1)
+else supported and secure
+  support --> page : Ready
+  page -> page : Show no notice (L2-008 AC4, L2-009 AC3)
+end
+page --> actor : Class Start, readable in every state
+@enduml

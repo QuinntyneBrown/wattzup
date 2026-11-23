@@ -1,0 +1,56 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Stay smooth on long rides
+hide empty members
+
+class RideFacts <<api>> {
+  +rideId: string
+  +elapsedSeconds: number
+  +distanceMeters: number
+  +speedSamplesKmh: number[]
+}
+class RideRecorder <<domain/engine>> {
+  {static} +maxSeconds = 14400
+  -speedsKmh: Float64Array(14400)
+  -seconds: number
+  -joules: number
+  +record(powerW, speedKmh, seconds, onTarget): void
+  +facts(finishedAt: Date): RideFacts
+}
+class "RaceStore / ClassRideStore" as Store <<ride>> {
+  -recorder: RideRecorder
+}
+interface RideOutbox <<api>> {
+  +submit(ride: SubmitRideRequest): void
+}
+class TraceSeries <<domain/engine · slice 21.3>> {
+  -width: number
+  +points: Signal<Point[]>
+  +add(point: Point): void
+  +resize(width: number): void
+}
+class RideTrace <<components · slice 21.3>> {
+  +points: InputSignal<Point[]>
+}
+class RingBuffer<T> <<domain/engine · slice 25.2>> {
+  -capacity: number
+  -start: number
+  +push(value: T): void
+  +values(): T[]
+}
+Store *-- "1" RideRecorder : one per ride
+RideRecorder ..> RideFacts : gives
+Store --> RideOutbox : submits the facts to
+RideTrace ..> TraceSeries : draws points of
+@enduml

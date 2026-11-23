@@ -1,0 +1,44 @@
+@startuml
+title UML sequence behaviour — Catch up after a hidden tab
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+participant "Browser" as browser
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "RideTicker" as ticker
+  participant "RideClock" as clock
+  participant "WorkoutEngine" as engine
+end box
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "RaceStore / ClassRideStore" as store
+  participant "BrowserScreenWakeLock" as wake
+  participant "Ride page" as page
+end box
+actor -> browser : Switch to another tab
+browser -> ticker : visibilitychange (hidden)
+note over browser, ticker : Timers are throttled; ticks may run late or not at all
+...10 minutes later...
+actor -> browser : Return to the Telo Ride tab
+browser -> ticker : visibilitychange (visible)
+ticker -> clock : elapsedMs()
+clock --> ticker : now() - startedAt - pausedTotalMs
+ticker -> engine : tick; planStateAt(plan, elapsedMs) (L2-133 AC1)
+engine --> ticker : segment, time left, target resistance
+ticker -> store : publish second
+store -> page : elapsed, segment and distance within 1 s (L2-133 AC2)
+browser -> wake : visibilitychange (visible)
+wake -> browser : navigator.wakeLock.request('screen') again (L2-133 AC3)
+ticker -> browser : setTimeout(to next whole second)
+@enduml

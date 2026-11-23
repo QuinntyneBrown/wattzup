@@ -1,0 +1,13 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Structure the frontend workspace
+
+Person(dev, "Developer", "Builds and changes Telo Ride")
+Person(rider, "Rider", "Rides a smart bike at home")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(bike, "Smart bike", "Echelon or FTMS bike; Bluetooth LE")
+Rel(dev, telo, "Builds and lints the frontend of")
+Rel(rider, telo, "Uses")
+Rel(telo, bike, "Reads and controls", "Bluetooth LE")
+@enduml

@@ -1,0 +1,29 @@
+@startuml
+title UML sequence behaviour — Log an error to the console
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "Any service" as svc
+  participant "ConsoleAppLogger" as logger
+end box
+box "Device — Browser" #F2F4F7
+  participant "Browser console" as console
+end box
+svc -> logger : error("bluetooth", NetworkError)
+logger -> logger : Name the area and the error in plain text (L2-115 AC3)
+logger -> logger : Redact any email address or session token
+logger -> console : console.error("[bluetooth] NetworkError: GATT operation failed")
+note right of logger : No remote logging service (L2-115 AC1)
+@enduml

@@ -1,0 +1,61 @@
+WEBVTT
+
+00:00:02.581 --> 00:00:07.259
+The race now rides through its world: the road, the terrain and the sky of the map
+
+00:00:07.259 --> 00:00:08.130
+you chose.
+
+00:00:10.324 --> 00:00:15.134
+The camera sits at your place on the route and moves forward at your virtual speed.
+
+00:00:15.134 --> 00:00:18.448
+Three seconds on, Old Town's cobbles have rolled by.
+
+00:00:20.647 --> 00:00:25.901
+Each map draws its own world: Neon Docklands after dark, Vice City's beachfront, the
+
+00:00:25.901 --> 00:00:29.078
+prairie's wind farm and the Dolomites' valley.
+
+00:00:30.971 --> 00:00:35.185
+Pause a solo race, and the world holds still with it, frame for frame.
+
+00:00:41.295 --> 00:00:46.267
+Every scene is main's, copied as it is: the renderer, the road and its bends, the
+
+00:00:46.267 --> 00:00:50.434
+shared kit, and a module for each world, with their unit tests.
+
+00:00:51.618 --> 00:00:55.990
+From a phone to a desktop, the world fills the screen behind the panels, never
+
+00:00:55.990 --> 00:00:56.850
+stretched.
+
+00:01:01.942 --> 00:01:06.815
+What the tests prove: the world moves as you ride and holds when you pause, main's
+
+00:01:06.815 --> 00:01:10.562
+unit tests pass here, and the first download is unchanged.
+
+00:01:12.266 --> 00:01:16.869
+Telo Ride, from the Telo family, turns a smart bike at home into a game.
+
+00:01:17.214 --> 00:01:21.726
+It pairs with the bike over Bluetooth, reads your power and sets resistance for
+
+00:01:21.726 --> 00:01:23.397
+every hill and interval.
+
+00:01:23.742 --> 00:01:28.920
+Two doors: Race (ride a map against your best-time ghost, bots or people) and
+
+00:01:28.920 --> 00:01:34.368
+Classes (ride along to a video, alone or with a group), fed by one progression of
+
+00:01:34.368 --> 00:01:37.358
+XP, rider levels, stars and map unlocks.
+
+00:01:37.704 --> 00:01:40.196
+A custom workout lives under Profile.

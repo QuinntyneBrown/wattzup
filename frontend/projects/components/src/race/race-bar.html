@@ -1,0 +1,60 @@
+<header class="race-bar">
+  <wz-lockup size="sm" />
+  <div class="race-bar__where">
+    <span class="race-bar__map">{{ map() }}</span>
+    <span class="race-bar__route">{{ route() }}</span>
+    @if (backend(); as api) {
+      <span class="race-bar__backend" title="The GPU API drawing this world">{{
+        api === 'webgpu' ? 'WebGPU' : 'WebGL 2'
+      }}</span>
+    }
+  </div>
+  @if (bikeName(); as name) {
+    <div class="race-bar__bike" [class.race-bar__bike--off]="!connected()">
+      <svg class="icon icon--md race-bar__bike-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="18.5" cy="17.5" r="3.5" />
+        <circle cx="5.5" cy="17.5" r="3.5" />
+        <circle cx="15" cy="5" r="1" />
+        <path d="M12 17.5V14l-3-3 4-3 2 3h2" />
+      </svg>
+      <span class="race-bar__bike-name"
+        >{{ name
+        }}<span class="visually-hidden">{{
+          connected() ? ' connected' : ' not connected'
+        }}</span></span
+      >
+    </div>
+  }
+  <div class="race-bar__end">
+    <span
+      class="numeral race-bar__clock"
+      role="timer"
+      [attr.aria-label]="clock() + ' of ' + length()"
+      >{{ clock() }}<span class="race-bar__total"> / {{ length() }}</span></span
+    >
+    @if (solo()) {
+      <button
+        wz-race-bar-button
+        type="button"
+        [label]="paused() ? 'Resume' : 'Pause'"
+        [attr.aria-label]="paused() ? 'Resume' : 'Pause'"
+        [disabled]="pauseDisabled()"
+        (click)="paused() ? resumeRace.emit() : pauseRace.emit()"
+      >
+        @if (paused()) {
+          <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"
+            />
+          </svg>
+        } @else {
+          <svg class="icon icon--md" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="14" y="3" width="5" height="18" rx="1" />
+            <rect x="5" y="3" width="5" height="18" rx="1" />
+          </svg>
+        }
+      </button>
+    }
+    <ng-content select="[slot=end]" />
+  </div>
+</header>

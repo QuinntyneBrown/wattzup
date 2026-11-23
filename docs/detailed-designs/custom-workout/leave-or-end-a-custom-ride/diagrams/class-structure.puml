@@ -1,0 +1,75 @@
+@startuml
+' --- shared skin header ---
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam class {
+  BorderColor #344054
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+' --------------------------
+title Class structure — Leave or end a custom ride
+
+package "ride application" {
+  class LeaveRideDialog {
+    +data: LeaveRideData
+    +choose(choice: LeaveChoice): void
+  }
+  class LeaveRideData {
+    +elapsed: string
+    +distance: string
+  }
+  enum LeaveChoice {
+    SaveAndOpenLibrary
+    DiscardAndOpenLibrary
+    KeepRiding
+  }
+  class CustomRideStore {
+    +minimumSeconds = 60
+    +end(): Promise<void>
+    +openLeave(): void
+    +saveAndOpenLibrary(): Promise<void>
+    +discardAndOpenLibrary(): void
+    +keepRiding(): void
+  }
+  class ProfileNotice {
+    +kind: string
+  }
+}
+package "domain library" {
+  class RideRecorder {
+    +durationSeconds: number
+    +toSubmission(meta: RideMeta): RideSubmission
+  }
+  class RideOutbox {
+    +enqueue(ride: RideSubmission): Promise<void>
+    +flush(): Promise<void>
+  }
+}
+package "api library" {
+  class RideSubmission {
+    +rideId: string
+    +kind: RideKind
+    +startedAt: string
+    +durationSeconds: number
+    +distanceMeters: number
+    +outputKj: number
+    +averagePowerW: number
+    +onTargetShare: number
+  }
+  interface RidesApi {
+    +submit(ride: RideSubmission): Observable<RideResultDto>
+  }
+}
+LeaveRideDialog --> LeaveRideData
+LeaveRideDialog ..> LeaveChoice : returns
+CustomRideStore ..> LeaveRideDialog : opens
+CustomRideStore *-- RideRecorder
+CustomRideStore ..> RideOutbox
+CustomRideStore ..> ProfileNotice : too short
+RideRecorder ..> RideSubmission : builds
+RideOutbox ..> RidesApi
+@enduml

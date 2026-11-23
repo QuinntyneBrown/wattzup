@@ -1,0 +1,115 @@
+// Block race-bar (docs/design-system/assets/components.css, Race): over the scene, blurred, wrapping on a phone.
+:host {
+  display: contents;
+}
+
+.race-bar {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: var(--z-hud);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--space-5);
+  row-gap: var(--space-2);
+  background: color-mix(in srgb, var(--color-ink) 75%, transparent);
+  backdrop-filter: blur(12px);
+  padding: var(--space-2-5) var(--space-4);
+
+  @media (min-width: 64rem) {
+    padding-inline: var(--space-6);
+  }
+}
+
+.race-bar__where {
+  display: none;
+  min-width: 0;
+  align-items: baseline;
+  gap: var(--space-2);
+
+  @media (min-width: 48rem) {
+    display: flex;
+  }
+}
+
+.race-bar__map,
+.race-bar__route {
+  overflow: hidden;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.race-bar__backend {
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-fg) 10%, transparent);
+  padding: var(--space-0-5) var(--space-1-5);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xs);
+  line-height: var(--line-height-2xs);
+  white-space: nowrap;
+  color: var(--color-muted);
+}
+
+.race-bar__map {
+  font-weight: var(--font-weight-semibold);
+}
+
+.race-bar__route {
+  color: var(--color-muted);
+}
+
+.race-bar__bike {
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+
+  @media (min-width: 64rem) {
+    display: flex;
+  }
+}
+
+.race-bar__bike-icon {
+  color: var(--color-volt-fg);
+
+  .race-bar__bike--off & {
+    color: var(--color-heart-fg);
+  }
+}
+
+.race-bar__bike-name {
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+.race-bar__end {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+// Large ride numbers scale the clock (L2-164 AC4).
+.race-bar__clock {
+  font-size: calc(var(--font-size-xl) * var(--ride-number-scale));
+  line-height: calc(var(--line-height-xl) * var(--ride-number-scale));
+  white-space: nowrap;
+
+  @media (min-width: 40rem) {
+    font-size: calc(var(--font-size-2xl) * var(--ride-number-scale));
+    line-height: calc(var(--line-height-2xl) * var(--ride-number-scale));
+  }
+}
+
+.race-bar__total {
+  display: none;
+  color: var(--color-faint);
+
+  @media (min-width: 40rem) {
+    display: inline;
+  }
+}

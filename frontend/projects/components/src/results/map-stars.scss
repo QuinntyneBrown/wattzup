@@ -1,0 +1,28 @@
+// Block map-stars (docs/design-system/assets/components.css, Results): the stars held on the map and any new ones.
+:host {
+  display: block;
+}
+
+.map-stars {
+  margin-top: var(--space-6);
+  border-top: var(--border-width-hairline) solid var(--color-line);
+  padding-top: var(--space-4);
+}
+
+.map-stars__title {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-muted);
+}
+
+.map-stars__stars {
+  margin-top: var(--space-2);
+}
+
+.map-stars__new {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  color: var(--color-gold-fg);
+}

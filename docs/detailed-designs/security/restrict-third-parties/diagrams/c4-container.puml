@@ -1,0 +1,17 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Restrict third parties
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Ext(youtube, "YouTube", "www.youtube.com, www.youtube-nocookie.com, i.ytimg.com")
+System_Ext(gmaps, "Google Maps Platform", "tile.googleapis.com")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Runs under the policy; self-hosted fonts; no trackers")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Serves the app's files and its answers with the policy, nosniff and Referrer-Policy")
+}
+Rel(rider, app, "Uses", "HTTPS")
+Rel(api, app, "Serves files and headers", "HTTPS")
+Rel(app, api, "connect-src 'self'", "JSON/HTTPS, WebSocket")
+Rel(app, youtube, "script-src, frame-src, img-src", "HTTPS")
+Rel(app, gmaps, "connect-src, img-src", "HTTPS")
+@enduml

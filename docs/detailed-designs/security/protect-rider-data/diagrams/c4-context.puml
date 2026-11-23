@@ -1,0 +1,12 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Protect rider data
+Person(rider, "Rider", "Rides a smart bike at home")
+Person_Ext(operator, "Operator", "Reads logs, metrics and traces")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+System_Ext(otel, "Telemetry backend", "Receives OpenTelemetry signals; product <TO SUPPLY>")
+Rel(rider, telo, "Sends email, codes and rides over TLS 1.2+ to")
+Rel(telo, otel, "Exports redacted logs, metrics and traces to", "OTLP")
+Rel(operator, otel, "Investigates with")
+@enduml

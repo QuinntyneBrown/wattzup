@@ -1,0 +1,22 @@
+root = true
+
+# C# in backend/: dotnet format and the build's code-style analysers read this file.
+[*.cs]
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+charset = utf-8
+csharp_style_namespace_declarations = file_scoped:warning
+dotnet_sort_system_directives_first = true
+
+[*.{csproj,props,slnx,json}]
+indent_style = space
+indent_size = 2
+
+# Test names read as sentences (Liveness_answers_Healthy_without_a_session).
+[tests/**.cs]
+dotnet_diagnostic.CA1707.severity = none
+
+# EF Core writes these; they are regenerated, never hand-styled.
+[src/Telo.Ride.Infrastructure/Migrations/**.cs]
+generated_code = true

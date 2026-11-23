@@ -1,0 +1,22 @@
+<div class="race-interval" [class]="'race-interval--' + kind()">
+  <div class="race-interval__head">
+    <span class="race-interval__label"
+      ><span class="race-interval__swatch"></span
+      ><span class="race-interval__name">{{ label() }}</span>
+      @if (round(); as round) {
+        <span class="race-interval__round">{{ round }}</span>
+      }
+    </span>
+    <span class="numeral race-interval__left" role="timer" [attr.aria-label]="spokenLeft()">{{
+      left()
+    }}</span>
+  </div>
+  <svg class="race-interval__track" viewBox="0 0 1 1" preserveAspectRatio="none" aria-hidden="true">
+    <rect class="race-interval__fill" [attr.width]="progress()" height="1" />
+  </svg>
+  @if (next(); as next) {
+    <p class="race-interval__next">
+      Next: <span class="race-interval__next-name">{{ next.label }}</span>{{ next.rest }}
+    </p>
+  }
+</div>

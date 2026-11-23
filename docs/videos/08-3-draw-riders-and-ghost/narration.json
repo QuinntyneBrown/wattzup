@@ -1,0 +1,78 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "The race's world now has riders in it: everyone you race, drawn where they are on the route."
+      ]
+    },
+    {
+      "id": "bots",
+      "bars": 4,
+      "lines": [
+        "Race the bots, and each one rides in view in its own jersey colour, the same colour as its dot on the standings."
+      ]
+    },
+    {
+      "id": "ghost",
+      "bars": 4,
+      "lines": [
+        "Race solo, and your best ride comes back as a ghost: your shape on a bike, in translucent gold, beside you."
+      ]
+    },
+    {
+      "id": "places",
+      "bars": 4,
+      "lines": [
+        "Each rider keeps a line of its own across the road, cuts to the inside of a bend, and leans into it."
+      ]
+    },
+    {
+      "id": "main",
+      "bars": 4,
+      "lines": [
+        "Every rider is main's cyclist kit, the same bike and rider you ride. main had no ghost, so it is drawn new from the kit, in its style."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "From a phone to a desktop, the field rides ahead of you on the road."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: the renderer reports the riders it drew, in their jersey colours, at their places, and the ghost translucent gold. No pixel is read."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+@startuml
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title System Context — Fit every width, by touch and keyboard
+
+Person(rider, "Rider", "Rides a smart bike at home; phone, tablet, laptop or large screen")
+System(telo, "Telo Ride", "Smart-bike game: races, classes and progression")
+Rel(rider, telo, "Uses by touch, keyboard or screen reader")
+@enduml

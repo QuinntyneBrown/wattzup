@@ -1,0 +1,53 @@
+@startuml
+title UML sequence behaviour — Detect silence and lost connections
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+participant "Other riders' Ride apps" as others
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RideHub" as hub
+  participant "RideHubNotifier" as notifier
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "RiderDisconnectedCommandHandler" as disc
+  participant "TickLiveSessionsCommandHandler" as tick
+  participant "PresenceRules" as rules
+  participant "LiveSession" as session
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  participant "SessionTicker" as ticker
+end box
+hub -> hub : OnDisconnectedAsync (tab closed or network lost)
+hub -> disc : Send RiderDisconnectedCommand(riderId, now)
+disc -> session : MarkDisconnected(riderId, now)
+loop every 1 s
+  ticker -> tick : Send TickLiveSessionsCommand(now)
+  tick -> rules : Apply(session, now)
+  alt race and no sample for 15 s
+    rules -> session : Status = Dnf (L2-124 AC2)
+  else group class and no sample
+    rules -> rules : Keep row at last output (L2-124 AC3)
+  end
+  alt disconnected for 30 s while running
+    rules -> session : Remove rider (L2-124 AC4)
+  else before the start and disconnected for 10 s
+    rules -> session : Release seat (L2-057 AC2)
+  end
+  rules --> tick : Presence changes
+  opt any change
+    tick -> notifier : RiderLeft(sessionId, change)
+    notifier --> others : RiderLeft; next standings show DNF or drop the row
+  end
+end
+@enduml

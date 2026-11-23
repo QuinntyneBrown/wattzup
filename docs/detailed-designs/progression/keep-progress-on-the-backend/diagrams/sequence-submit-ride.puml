@@ -1,0 +1,70 @@
+@startuml
+title UML sequence behaviour — Submit a finished ride
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+actor "Rider" as actor
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "RideOutbox" as outbox
+end box
+box "Frontend — Ride app (api library)" #E0F2FE
+  participant "HttpRidesApi" as client
+end box
+box "Backend — Telo.Ride.Api" #D1FADF
+  participant "RidesController" as ctrl
+end box
+box "Backend — Telo.Ride.Application and Domain" #ECFDF3
+  participant "SubmitRideCommandValidator" as val
+  participant "SubmitRideCommandHandler" as handler
+  participant "RidePlausibilityRule" as plaus
+  participant "SessionResultRecorder" as rec
+  participant "Progress rules" as rules
+end box
+box "Backend — Telo.Ride.Infrastructure" #FFF4E5
+  database "Telo Ride database" as db
+end box
+actor -> outbox : Ride ends; keep ride with its id (L2-135)
+note over outbox : until RideOutbox is built, the race or class ride\nsubmits straight away and does not retry (slice 10.1)
+outbox -> client : submitRide(ride)
+client -> ctrl : POST /api/rides (rideId as idempotency key)
+ctrl -> handler : Send SubmitRideCommand
+handler -> val : Validate shape
+alt Malformed
+  val --> ctrl : 400 validation_failed
+end
+handler -> db : Find Ride by RiderId and RideId
+alt Already recorded
+  db --> handler : Stored RideRecordedDto
+  handler --> ctrl : 200, the first answer again (L2-044 AC2, L2-125 AC3)
+else New ride
+  handler -> plaus : Power, speed, distance against speed samples, finish time against the map
+  alt Not plausible
+    plaus --> ctrl : 422 ride_not_plausible (L2-125 AC2)
+  else Riders-online race or group class without a session result
+    handler -> rec : Result for session
+    rec --> ctrl : 409 result_pending; the outbox retries
+  else Plausible
+    opt Riders-online race or group class
+      handler -> rec : Server-side place, time and output (L2-125 AC1)
+    end
+    handler -> handler : Ignore any XP, stars or unlocks in the body (L2-044 AC4)
+    handler -> rules : Streak, XP lines, level, stars, best, unlocks
+    rules --> handler : Computed progress
+    handler -> db : Insert Ride with its answer; update Rider, MapProgress, Streak in one unit of work
+    handler --> ctrl : 201 RideRecordedDto
+  end
+end
+ctrl --> client : RideRecordedDto or ProblemDetails
+client --> outbox : Recorded: remove the ride from the device
+@enduml

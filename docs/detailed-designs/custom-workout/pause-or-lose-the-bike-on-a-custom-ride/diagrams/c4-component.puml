@@ -1,0 +1,27 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Pause or lose the bike on a custom ride
+
+Container_Boundary(app, "Ride app") {
+  Component(page, "CustomRidePage", "Angular page · ride", "Overlay per state")
+  Component(store, "CustomRideStore", "Signal store · ride", "RideRunState")
+  Component(header, "RideHeader", "Presentation component · components", "Start, Pause, Resume, End, status")
+  Component(overlay, "RideOverlay", "Presentation component · components", "Connect your bike / Lost the bike")
+  Component(control, "RideControl", "Presentation component · components", "Enabled or disabled")
+  Component(clock, "RideClock", "Service · domain/engine", "pause / resume")
+  Component(engine, "WorkoutEngine", "Service · domain/engine", "Holds while paused")
+  Component(recorder, "RideRecorder", "Service · domain/engine", "Totals so far")
+  Component(conn, "WebBluetoothBikeConnection", "Service · domain/bluetooth", "BIKE_CONNECTION, ble")
+}
+System_Ext(bike, "Smart bike", "Bluetooth LE")
+Rel(page, store, "Reads signals")
+Rel(page, header, "Renders")
+Rel(page, overlay, "Renders")
+Rel(page, control, "Renders")
+Rel(store, clock, "pause / resume / start")
+Rel(store, engine, "hold / resume")
+Rel(store, recorder, "Keeps totals")
+Rel(store, conn, "Watches ble; connect / reconnect")
+Rel(conn, bike, "GATT", "Web Bluetooth")
+@enduml

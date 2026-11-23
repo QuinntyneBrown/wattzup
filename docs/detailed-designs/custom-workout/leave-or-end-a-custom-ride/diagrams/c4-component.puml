@@ -1,0 +1,30 @@
+@startuml
+!include <C4/C4_Component>
+LAYOUT_WITH_LEGEND()
+title Components — Leave or end a custom ride
+
+Container_Boundary(app, "Ride app") {
+  Component(page, "CustomRidePage", "Angular page · ride", "Opens the popover")
+  Component(store, "CustomRideStore", "Signal store · ride", "end, leave choices")
+  Component(dialog, "LeaveRideDialog", "CDK Dialog · ride", "Leave this ride?")
+  Component(header, "RideHeader", "Presentation component · components", "Library, End")
+  Component(recorder, "RideRecorder", "Service · domain/engine", "Builds the submission")
+  Component(outbox, "RideOutbox", "Service · domain/storage", "IndexedDB queue")
+  Component(rides, "HttpRidesApi", "HTTP client · api", "RIDES_API")
+}
+Container_Boundary(backend, "Telo Ride API") {
+  Component(ctrl, "RidesController", "ASP.NET Core controller · Telo.Ride.Api", "POST /api/rides")
+  Component(handler, "SubmitRideCommandHandler", "MediatR handler · Telo.Ride.Application", "Record once, compute XP")
+}
+ComponentDb(db, "Telo Ride database", "EF Core", "Ride, progress")
+Rel(page, header, "Renders")
+Rel(page, dialog, "Opens via CDK Dialog")
+Rel(page, store, "Raises actions")
+Rel(dialog, store, "Returns LeaveChoice")
+Rel(store, recorder, "toSubmission")
+Rel(store, outbox, "enqueue")
+Rel(outbox, rides, "submit")
+Rel(rides, ctrl, "POST", "JSON/HTTPS")
+Rel(ctrl, handler, "Sends SubmitRideCommand")
+Rel(handler, db, "Records", "EF Core")
+@enduml

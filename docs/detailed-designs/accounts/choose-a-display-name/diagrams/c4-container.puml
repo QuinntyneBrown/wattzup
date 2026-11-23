@@ -1,0 +1,14 @@
+@startuml
+!include <C4/C4_Container>
+LAYOUT_WITH_LEGEND()
+title Containers — Choose a display name
+Person(rider, "Rider", "Rides a smart bike at home")
+System_Boundary(telo, "Telo Ride") {
+  Container(app, "Ride app", "Angular, Chrome or Edge", "Name prompt after sign-up; name dialog on Profile")
+  Container(api, "Telo Ride API", "ASP.NET Core, SignalR", "Validates and stores the name; projects public rider cards")
+  ContainerDb(db, "Telo Ride database", "EF Core; engine <TO SUPPLY>", "Riders")
+}
+Rel(rider, app, "Uses", "HTTPS")
+Rel(app, api, "PUT /api/riders/me/display-name", "JSON/HTTPS")
+Rel(api, db, "Reads and writes Rider", "EF Core")
+@enduml

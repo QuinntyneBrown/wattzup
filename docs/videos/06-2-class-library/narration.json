@@ -1,0 +1,106 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Behind the Classes door, the Class Library now lists every class."
+      ]
+    },
+    {
+      "id": "head",
+      "bars": 4,
+      "lines": [
+        "It opens with Classes, and the promise: ride a video alone, or join a group. The bike follows either way."
+      ]
+    },
+    {
+      "id": "shelves",
+      "bars": 4,
+      "lines": [
+        "Three shelves, by length: twenty minutes, thirty, and sixty for endurance, each with its tagline."
+      ]
+    },
+    {
+      "id": "card",
+      "bars": 4,
+      "lines": [
+        "Each open card shows its cover, its length, a resistance profile drawn from its plan, its title, its channel and focus."
+      ]
+    },
+    {
+      "id": "link",
+      "bars": 4,
+      "lines": [
+        "An open card leads to that class's Class Start."
+      ]
+    },
+    {
+      "id": "tabs",
+      "bars": 4,
+      "lines": [
+        "The Class length tabs show one shelf, or all of them. The arrow keys move between tabs, from the keyboard too."
+      ]
+    },
+    {
+      "id": "locked",
+      "bars": 4,
+      "lines": [
+        "A new rider starts at level one. A class above that is locked, and says the level that opens it."
+      ]
+    },
+    {
+      "id": "focus",
+      "bars": 4,
+      "lines": [
+        "A locked card stays in the tab order, so a screen reader announces the level, and it leads nowhere."
+      ]
+    },
+    {
+      "id": "unavailable",
+      "bars": 4,
+      "lines": [
+        "With no catalogue to read and none kept on the device, the library says so, and Try again asks again."
+      ]
+    },
+    {
+      "id": "shell",
+      "bars": 4,
+      "lines": [
+        "The same library, from one column on a phone to three on a desktop."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 4,
+      "lines": [
+        "What the tests prove: five behaviour specs through the page, all green, and the first bundle still under budget."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

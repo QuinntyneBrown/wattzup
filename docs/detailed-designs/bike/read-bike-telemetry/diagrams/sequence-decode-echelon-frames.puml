@@ -1,0 +1,48 @@
+@startuml
+title UML sequence behaviour — Decode Echelon frames
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Arial
+skinparam ArrowColor #344054
+skinparam rectangle {
+  BorderColor #344054
+  FontColor #101828
+}
+skinparam package {
+  BorderColor #667085
+  FontColor #101828
+  BackgroundColor #F9FAFB
+}
+box "Frontend — Ride app (domain library)" #E0F2FE
+  participant "WebBluetoothBikeConnection" as conn
+  participant "BikeTelemetry" as tele
+  participant "EchelonFrameDecoder" as dec
+  participant "SpeedModel / PowerModel" as models
+end box
+box "Frontend — Ride app (ride application)" #E0F2FE
+  participant "Ride page readouts" as page
+end box
+box "Device — Smart bike" #F2F4F7
+  participant "Echelon GATT server" as bike
+end box
+bike -> conn : characteristicvaluechanged on 0bf669f4-…
+conn -> tele : frames: the raw bytes
+tele -> dec : decode(bytes, at), as bike().kind is echelon
+alt F0 D2 01 0C CF
+  dec --> tele : resistance 12 (L2-020 AC1)
+else F0 D1 09 00 05 00 00 00 00 00 50 00 1F
+  dec --> tele : cadence 80 rpm; restarts the 5 s timer (L2-020 AC2)
+else shorter than 4 bytes, byte 0 not F0, unknown type, short D1, or D0
+  dec --> tele : null, no error; nothing changes (L2-020 AC3, AC4)
+end
+tele -> tele : accept(sample)
+tele -> models : speedKmh(80) = round(80 × 0.37497622, 1) = 30.0 km/h, banker's rounding (L2-022 AC1)
+tele -> models : estimate(95 rpm, level 18) = max(0, round(95 × (0.55 + 18 × 0.155))) = 317 W (L2-023 AC1)
+models --> tele : values, or null if cadence or resistance is unknown (L2-023 AC2)
+tele --> page : Signals update within the second
+opt no D1 frame for 5 s while connected
+  tele -> tele : cadence and power = null
+  tele --> page : Cadence and power show "—" (L2-020 AC5)
+end
+@enduml
