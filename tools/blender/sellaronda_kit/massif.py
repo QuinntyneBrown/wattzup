@@ -494,4 +494,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         595.0,
         snow=True,
     )
+    # La Locomotiva (2,460 m) climbing spur below First Sella Tower
+    rock_tower(peaks, cx + sux * 848.0 - spx * 195.0, cy + suy * 848.0 - spy * 195.0, 128.0, 412.0, 36.0, 26.0, 7, math.atan2(suy, sux) - 0.2, cfn, taper=0.72, flat_cap=True, seed_phase=3.5)
     # [ANCHOR:massif]
