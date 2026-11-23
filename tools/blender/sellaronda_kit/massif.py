@@ -162,6 +162,23 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     bdl = max(1.0, math.hypot(bdx, bdy))
     bux, buy = bdx / bdl, bdy / bdl
     rock_tower(peaks, cx + bux * 825.0, cy + buy * 825.0, 115.0, 465.0, 52.0, 42.0, 8, math.atan2(buy, bux), cfn, taper=0.36, flat_cap=False, seed_phase=5.8)
+
+    # Val de Mesdì (Mittagstal) deep snow-floored couloir slicing into the Sella rim above Colfosco (at=10920 m)
+    vm_pt = road.s[road.index(10920.0)]
+    vmux, vmuy = vm_pt["x"] - cx, vm_pt["y"] - cy
+    vmul = max(1.0, math.hypot(vmux, vmuy))
+    vmux, vmuy = vmux / vmul, vmuy / vmul
+    vmpx, vmpy = -vmuy, vmux
+    quad_shaded(
+        peaks,
+        (cx + vmux * 855.0 - vmpx * 24.0, cy + vmuy * 855.0 - vmpy * 24.0, 145.0),
+        (cx + vmux * 855.0 + vmpx * 24.0, cy + vmuy * 855.0 + vmpy * 24.0, 145.0),
+        (cx + vmux * 635.0 + vmpx * 12.0, cy + vmuy * 635.0 + vmpy * 12.0, 585.0),
+        (cx + vmux * 635.0 - vmpx * 12.0, cy + vmuy * 635.0 - vmpy * 12.0, 585.0),
+        cfn,
+        365.0,
+        snow=True,
+    )
     top_ring = rings[-1]
     for k in range(sides):
         u = (k + 1) % sides
