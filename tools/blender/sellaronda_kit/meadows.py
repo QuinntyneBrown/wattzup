@@ -496,4 +496,12 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["larch-aged"].box((hsx, hsy, hsz), (1.25, 1.25, 3.6), 0.2)
             B["larch-warm"].box((hsx, hsy, hsz + 3.6), (1.45, 1.45, 1.25), 0.2)
 
+    # Sulfur-yellow Pulsatilla alpina anemone patches on upper limestone saddles
+    for pa_i in range(28, kit.n - 28, 44):
+        if s[pa_i]["z"] < 115.0:
+            continue
+        pax, pay, _ = road.at(pa_i, -(kit.kerb + 5.6))
+        if road.clear_of_road(pax, pay, 3.8, pa_i):
+            B["yellow"].box((pax, pay, height_at(pax, pay) - 0.04), (0.58, 0.58, 0.18), pa_i * 0.5)
+
     return trees
