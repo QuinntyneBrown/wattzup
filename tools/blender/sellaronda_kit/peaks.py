@@ -544,4 +544,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         910.0,
         snow=True,
     )
+    # Tilted Seceda–Monte Pana ridge framing lower Val Gardena northwest of Selva (at=8620 m)
+    sc_pt = road.s[road.index(8620.0)]
+    scux, scuy = sc_pt["x"] - cx, sc_pt["y"] - cy
+    scul = max(1.0, math.hypot(scux, scuy))
+    scux, scuy = scux / scul, scuy / scul
+    rock_tower(peaks, sc_pt["x"] + scux * 1420.0, sc_pt["y"] + scuy * 1420.0, 52.0, 565.0, 215.0, 138.0, 9, math.atan2(-scuy, -scux), cfn, taper=0.66, flat_cap=True, seed_phase=5.5)
     # [ANCHOR:peaks]
