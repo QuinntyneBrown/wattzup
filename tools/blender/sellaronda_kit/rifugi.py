@@ -363,4 +363,8 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     sl_g = road.index(7128.0)
     B["stone"].box(kit.P(sl_g, 0.0, kit.kerb + 6.4, 0.0), (1.85, 1.35, 2.25), road.s[sl_g]["h"])
     B["glow-door"].box(kit.P(sl_g, 0.0, kit.kerb + 6.4, 1.05), (0.95, 0.85, 0.45), road.s[sl_g]["h"])
+    # Natural-larch garden seesaw beside Hotel Boè on Passo Campolongo (at=2068 m)
+    hb_g = road.index(2068.0)
+    B["larch-warm"].box(kit.P(hb_g, 0.0, -(kit.kerb + 8.5), 0.35), (3.2, 0.35, 0.14), road.s[hb_g]["h"] + 0.2)
+    B["larch-aged"].box(kit.P(hb_g, 0.0, -(kit.kerb + 8.5), 0.0), (0.35, 0.55, 0.38), road.s[hb_g]["h"])
     # [ANCHOR:rifugi-global]
