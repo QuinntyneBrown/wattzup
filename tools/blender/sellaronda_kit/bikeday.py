@@ -427,6 +427,15 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     B["parasol-red"].box((sax, say_p, saz + 0.48), (4.92, 1.88, 0.85), say)
     B["paint"].box((sax + math.cos(say) * 0.45, say_p + math.sin(say) * 0.45, saz + 1.33), (2.25, 1.78, 0.62), say)
 
+    # Sleek delta hang-gliders soaring ridge lift high off Sass Pordoi & Grande Cir
+    for hg_m, hg_l, hg_u in ((4960.0, -95.0, 128.0), (10160.0, 88.0, 118.0)):
+        hi = road.index(hg_m)
+        hx_d, hy_d, hz_d = road.at(hi, hg_l, hg_u)
+        hyw = s[hi]["h"] + 0.6
+        for sw_s in (-1.0, 1.0):
+            B["yellow"].box((hx_d - math.sin(hyw) * (sw_s * 2.4), hy_d + math.cos(hyw) * (sw_s * 2.4), hz_d), (2.2, 5.2, 0.14), hyw - sw_s * 0.42)
+        B["dark"].box((hx_d, hy_d, hz_d - 1.35), (1.65, 0.38, 0.42), hyw)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
