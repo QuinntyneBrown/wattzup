@@ -413,4 +413,11 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["larch-warm"].box((brx, bry_p, brz + 1.0), (13.0, 9.2, 3.6), bry)
         kit.gable(B["copper-patina"], (brx, bry_p, brz + 4.6), 13.6, 9.8, 1.35, bry)
 
+    # Summer storage rack of inclined aluminum snowmaking lances beside the Campolongo pump house
+    ln_i = road.index(1858.0)
+    lnx, lny, _ = road.at(ln_i, kit.kerb + 24.5)
+    if road.clear_of_road(lnx, lny, 12.0, ln_i):
+        lnz = height_at(lnx, lny)
+        B["steel"].box((lnx, lny, lnz), (4.8, 0.95, 1.35), s[ln_i]["h"])
+
     return cableways_out
