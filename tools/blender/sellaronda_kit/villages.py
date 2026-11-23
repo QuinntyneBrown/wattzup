@@ -432,4 +432,13 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         exy = road.s[ex_i]["h"]
         B["larch-warm"].box(kit.P(ex_i, 0.0, kit.kerb + 2.05, 0.0), (0.28, 0.85, 2.45), exy)
         B["ladin-blue"].box(kit.P(ex_i, 0.0, kit.kerb + 2.05, 1.85), (0.32, 0.72, 0.42), exy)
+    # Historic Fodom Ladin stone-and-larch Granà house in Arabba (at=3025 m)
+    gr_i = road.index(3025.0)
+    gry = road.s[gr_i]["h"]
+    grx, gry_p, _ = road.at(gr_i, -(kit.kerb + 15.0))
+    if road.clear_of_road(grx, gry_p, 11.0, gr_i):
+        grz = height_at(grx, gry_p)
+        B["stone"].box((grx, gry_p, grz - 1.4), (8.4, 6.8, 3.2), gry)
+        B["larch-aged"].box((grx, gry_p, grz + 1.8), (8.8, 7.2, 3.4), gry)
+        kit.gable(B["chalet-wood"], (grx, gry_p, grz + 5.2), 9.4, 7.8, 2.0, gry)
     # [ANCHOR:villages]
