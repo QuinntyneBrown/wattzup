@@ -53,3 +53,51 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     sp_x = sella_pt["x"] + ux * 1140.0 + px * 560.0
     sp_y = sella_pt["y"] + uy * 1140.0 + py * 560.0
     rock_tower(peaks, sp_x, sp_y, 60.0, 695.0, 280.0, 210.0, 12, yaw_sl - 0.35, cfn, taper=0.72, flat_cap=True, seed_phase=3.4)
+
+    # 2. Marmolada (3,343 m — Queen of the Dolomites) & Ghiacciaio della Marmolada south of Passo Pordoi (at=4950 m)
+    pordoi_pt = road.s[road.index(4950.0)]
+    mux, muy = pordoi_pt["x"] - cx, pordoi_pt["y"] - cy
+    mul = max(1.0, math.hypot(mux, muy))
+    mux, muy = mux / mul, muy / mul
+    mpx, mpy = -muy, mux
+    yaw_mm = math.atan2(-muy, -mux)
+
+    # Punta Penia (3,343 m), Punta Rocca (3,309 m) & Punta Serauta (2,962 m) summit wall
+    for lat_m, rad_m, top_m, rx_m, ry_m, ph_m in (
+        (-280.0, 1480.0, 940.0, 260.0, 180.0, 0.5),  # Punta Penia (3,343 m)
+        (40.0,   1450.0, 905.0, 250.0, 175.0, 1.7),  # Punta Rocca (3,309 m)
+        (350.0,  1490.0, 780.0, 220.0, 160.0, 2.8),  # Serauta (2,962 m)
+    ):
+        mx = pordoi_pt["x"] + mux * rad_m + mpx * lat_m
+        my = pordoi_pt["y"] + muy * rad_m + mpy * lat_m
+        rock_tower(peaks, mx, my, 85.0, top_m, rx_m, ry_m, 12, yaw_mm, cfn, taper=0.56, flat_cap=False, seed_phase=ph_m)
+
+    # Gleaming northern Ghiacciaio della Marmolada icefield draped across the north slope facing Pordoi!
+    gl_cols, gl_rows = 8, 5
+    gl_grid = []
+    for r_i in range(gl_rows + 1):
+        v_frac = r_i / gl_rows  # 0 at lower moraine snout, 1 near summit seracs
+        rad_g = 1120.0 + 295.0 * v_frac
+        z_g = 365.0 + 495.0 * (v_frac ** 1.08)
+        row_pts = []
+        for c_i in range(gl_cols + 1):
+            u_frac = (c_i / gl_cols) - 0.5
+            lat_g = u_frac * (680.0 - 150.0 * v_frac) + 20.0
+            undul = 14.0 * math.sin(c_i * 1.4 + r_i * 0.9)
+            row_pts.append((
+                pordoi_pt["x"] + mux * rad_g + mpx * lat_g,
+                pordoi_pt["y"] + muy * rad_g + mpy * lat_g,
+                z_g + undul,
+            ))
+        gl_grid.append(row_pts)
+    for r_i in range(gl_rows):
+        for c_i in range(gl_cols):
+            p00, p10 = gl_grid[r_i][c_i], gl_grid[r_i][c_i + 1]
+            p11, p01 = gl_grid[r_i + 1][c_i + 1], gl_grid[r_i + 1][c_i]
+            quad_shaded(peaks, p00, p10, p11, p01, cfn, 0.5 * (p00[2] + p11[2]), snow=True)
+
+    # Dark volcanic-green Cresta di Padon / Porta Vescovo ridge in the foreground between Pordoi and Marmolada
+    for pad_lat in (-220.0, 0.0, 220.0):
+        px0 = pordoi_pt["x"] + mux * 690.0 + mpx * pad_lat
+        py0 = pordoi_pt["y"] + muy * 690.0 + mpy * pad_lat
+        rock_tower(peaks, px0, py0, 60.0, 310.0, 175.0, 110.0, 9, yaw_mm, cfn, taper=0.65, flat_cap=False, seed_phase=4.1 + pad_lat * 0.01)
