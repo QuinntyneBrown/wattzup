@@ -4,6 +4,7 @@ import {
   isNearPassRifugio,
   nearestRifugio,
   rifugiOnPass,
+  rifugioSpecialtyDish,
   SELLA_RIFUGI,
 } from './rifugi-guide';
 
@@ -19,5 +20,6 @@ describe('SELLA_RIFUGI', () => {
     expect(highestSellaRifugio().name).toBe('Rifugio Maria Flora');
     expect(isNearPassRifugio(4930)).toBe(true);
     expect(isNearPassRifugio(3600)).toBe(false);
+    expect(rifugioSpecialtyDish('gardena')).toContain('Kaiserschmarrn');
   });
 });

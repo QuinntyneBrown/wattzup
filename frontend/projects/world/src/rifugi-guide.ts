@@ -54,3 +54,15 @@ export function isNearPassRifugio(metres: number, thresholdMetres = 95): boolean
     return d <= thresholdMetres;
   });
 }
+
+const PASS_SPECIALTIES: Readonly<Record<SellaRifugio['passId'], string>> = {
+  campolongo: 'Turres e Cajinci (Ladin spinach ravioli)',
+  pordoi: 'Polenta e Goulash con Funghi Porcini',
+  sella: 'Canederli allo Speck in Brodo',
+  gardena: 'Kaiserschmarrn con Confettura di Mirtilli Rossi',
+};
+
+/** Signature Ladin / Dolomite mountain dish served at rifugi on `passId`. */
+export function rifugioSpecialtyDish(passId: SellaRifugio['passId']): string {
+  return PASS_SPECIALTIES[passId];
+}
