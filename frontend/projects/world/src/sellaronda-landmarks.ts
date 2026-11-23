@@ -148,3 +148,14 @@ export function passAverageGradientPercent(passId: SellaPass['id']): number {
 export function totalSellaRondaClimbingMetres(): number {
   return SELLA_RONDA_PASSES.reduce((sum, p) => sum + passVerticalGainMetres(p.id), 0);
 }
+
+export type SellaRockStratum =
+  'wengen-cassian-beds' | 'lower-cassian-dolomite' | 'raibl-cengia-marl' | 'hauptdolomit-dachstein';
+
+/** Maps real Dolomite elevation (m) on the Sella massif to its classic Triassic geological stratum. */
+export function geologyStratumAtAltitude(altitudeMetres: number): SellaRockStratum {
+  if (altitudeMetres < 2150) return 'wengen-cassian-beds';
+  if (altitudeMetres < 2580) return 'lower-cassian-dolomite';
+  if (altitudeMetres < 2680) return 'raibl-cengia-marl';
+  return 'hauptdolomit-dachstein';
+}
