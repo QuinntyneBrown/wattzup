@@ -60,6 +60,19 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         zy = sella_pt["y"] + uy * rad_z + py * lat_z
         rock_tower(peaks, zx, zy, 68.0, top_z, 68.0, 56.0, 8, yaw_sl - 0.15, cfn, taper=0.28, flat_cap=False, seed_phase=6.2 + z_idx)
 
+    # Steep ice gully between Zahnkofel and Sasso Piatto
+    gx0, gy0 = sella_pt["x"] + ux * 1060.0 + px * 515.0, sella_pt["y"] + uy * 1060.0 + py * 515.0
+    quad_shaded(
+        peaks,
+        (gx0 - px * 26.0, gy0 - py * 26.0, 165.0),
+        (gx0 + px * 26.0, gy0 + py * 26.0, 165.0),
+        (gx0 + px * 10.0 + ux * 85.0, gy0 + py * 10.0 + uy * 85.0, 585.0),
+        (gx0 - px * 10.0 + ux * 85.0, gy0 - py * 10.0 + uy * 85.0, 585.0),
+        cfn,
+        375.0,
+        snow=True,
+    )
+
     # Sasso Piatto / Plattkofel (2,969 m): unmistakable broad tilted west-sloping table mountain beyond Cinque Dita
     sp_x = sella_pt["x"] + ux * 1140.0 + px * 560.0
     sp_y = sella_pt["y"] + uy * 1140.0 + py * 560.0
