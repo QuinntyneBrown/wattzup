@@ -20,6 +20,8 @@ def _onion_dome_church(B, kit, x: float, y: float, z: float, yaw: float, dome_ma
         B["dark"].box((x + math.cos(yaw) * cr_o - math.sin(yaw) * 5.6, y + math.sin(yaw) * cr_o + math.cos(yaw) * 5.6, z + 0.6), (0.14, 0.52, 1.15), yaw)
     # Whitewashed nave + pitched slate roof
     B["stone"].box((x, y, z - 2.0), (16.5, 9.2, 2.6), yaw)
+    for pl_o in (-5.5, 0.0, 5.5):
+        B["dolomite-pale"].box((x + math.cos(yaw) * pl_o, y + math.sin(yaw) * pl_o, z + 0.6), (0.55, 9.05, 7.1), yaw)
     B["chalet-plaster"].box((x, y, z + 0.6), (16.2, 8.8, 7.2), yaw)
     B["glow-window"].box((x - math.cos(yaw) * 8.15, y - math.sin(yaw) * 8.15, z + 5.1), (0.14, 1.85, 1.85), yaw)
     B["larch-aged"].box((x - math.cos(yaw) * 8.95, y - math.sin(yaw) * 8.95, z + 0.6), (1.65, 2.85, 2.65), yaw)
