@@ -149,6 +149,8 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
             ay_b = base_y + cly * (95.0 + av_i * 22.0) + clx * 22.0
             az_b = height_at(ax_b, ay_b)
             B["steel"].box((ax_b, ay_b, az_b - 0.2), (0.45, 9.5, 2.2), yaw_l + 0.25)
+            if av_i == 0:
+                B["yellow"].box((ax_b - 2.0, ay_b, az_b), (0.38, 0.38, 1.45), yaw_l)
 
         pylon_tops = []
         for k in range(n_pylons):
