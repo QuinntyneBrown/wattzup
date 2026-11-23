@@ -283,3 +283,11 @@ def build_four_passes(B, kit, road, height_at) -> None:
     B["larch-aged"].box((ux_s, uy_s, uz_s), (2.9, 0.24, 2.35), uns_yaw)
     B["paint"].box((ux_s, uy_s, uz_s + 0.95), (2.5, 0.28, 1.15), uns_yaw)
     kit.gable(B["larch-warm"], (ux_s, uy_s, uz_s + 2.35), 3.4, 1.15, 0.52, uns_yaw)
+
+    # Semicircular Dolomite stone & larch panoramic bench on Passo Gardena's eastern crest (at=10175 m)
+    gb_idx = road.index(10175.0)
+    for b_seg in (-1, 0, 1):
+        ang_b = s[gb_idx]["h"] + b_seg * 0.42
+        bx_g, by_g, bz_g = kit.P(gb_idx, b_seg * 1.6, -(kit.kerb + 3.4), -0.1)
+        B["stone"].box((bx_g, by_g, bz_g), (1.55, 0.58, 0.48), ang_b)
+        B["larch-warm"].box((bx_g, by_g, bz_g + 0.48), (1.60, 0.62, 0.08), ang_b)
