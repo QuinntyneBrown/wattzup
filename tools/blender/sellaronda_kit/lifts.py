@@ -381,4 +381,14 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["larch-warm"].box((csx, csy_p, csz + 0.7), (8.8, 6.0, 2.8), csy)
         kit.gable(B["roof-slate"], (csx, csy_p, csz + 3.5), 9.4, 6.6, 1.2, csy)
 
+    # 17. Seggiovia Burz lower drive station on the eastern edge of Arabba (at=2945 m)
+    bz_i = road.index(2945.0)
+    bzy = s[bz_i]["h"] + 0.8
+    bzx, bzy_p, _ = road.at(bz_i, -(kit.kerb + 22.0))
+    if road.clear_of_road(bzx, bzy_p, 12.0, bz_i):
+        bzz = height_at(bzx, bzy_p)
+        B["stone"].box((bzx, bzy_p, bzz - 1.5), (9.2, 6.2, 2.2), bzy)
+        B["ladin-blue"].box((bzx, bzy_p, bzz + 0.7), (9.6, 6.6, 2.8), bzy)
+        kit.gable(B["steel"], (bzx, bzy_p, bzz + 3.5), 10.2, 7.2, 1.1, bzy)
+
     return cableways_out
