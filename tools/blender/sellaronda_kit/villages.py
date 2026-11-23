@@ -283,3 +283,11 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
                 ca_p, sa_p = math.cos(col_a * math.pi * 0.5 + 0.4), math.sin(col_a * math.pi * 0.5 + 0.4)
                 B["larch-aged"].box((mx_p + ca_p * 2.6, my_p + sa_p * 2.6, mz_p + 0.55), (0.24, 0.24, 3.15), 0.0)
             kit.gable(B["copper-patina"], (mx_p, my_p, mz_p + 3.70), 7.2, 7.2, 2.15, 0.0)
+
+    # Ornate alpine village promenade street-clock pillars in Corvara & Canazei
+    for ck_m in (290.0, 6110.0):
+        c_idx = road.index(ck_m)
+        cx_k, cy_k, cz_k = kit.P(c_idx, 0.0, kit.kerb + 2.2, 0.0)
+        B["copper-patina"].box((cx_k, cy_k, cz_k), (0.24, 0.24, 3.65), 0.0)
+        B["paint"].box((cx_k, cy_k, cz_k + 3.65), (0.18, 0.78, 0.78), road.s[c_idx]["h"])
+        B["gold"].box((cx_k, cy_k, cz_k + 4.43), (0.22, 0.22, 0.32), 0.0)
