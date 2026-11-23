@@ -102,6 +102,7 @@ the same tools, effects, transitions and motion, in Telo Ride's own brand.
 | 25.1 | [Inspect diagnostics](25-1-inspect-diagnostics/README.md) | 1:45 | The custom ride's bike status and the connected bike's facts; no bike picked; Bluetooth off on Profile; the spec failing then passing; Diagnostics from 390 to 1440 px |
 | 25.2 | [Record the packet log](25-2-record-the-packet-log/README.md) | 1:43 | The packet log with Log every packet off, then recording; the saved JSON Lines file; the spec failing then passing; the log from 390 to 1440 px |
 | 26.1 | [Send feedback](26-1-send-feedback/README.md) | 1:43 | Feedback pausing the ride; a bug, an idea and kudos; the ride's context; sending and thanks; the spec failing then passing; a bottom sheet at 390 px up to a popover at 1440 px |
+| 26.2 | [Receive feedback](26-2-receive-feedback/README.md) | 1:43 | The thanks after a 201; the tests' names; an idea refused with 429; what the feedback command writes, markup kept as data; the tests failing then passing; the thanks from 390 to 1440 px |
 
 ## What every video is
 

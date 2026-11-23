@@ -169,3 +169,6 @@ with an error; "Done" leaves the ride paused (`L2-117` AC4, `L2-118`).
 - **The endpoint.** Slice 26.2 added `POST /api/feedback` (`feedback/receive-feedback`); it answers
   201 with the report's id, and 429 `rate_limited` past 10 reports in an hour, which the dialog
   shows as its failed state.
+- **A 429's words.** The failed state reads "Check your connection and try again." for every
+  refusal, a 429 `rate_limited` included, as the generic message `AGENTS.md` asks for. Words of
+  its own for the hourly limit would need a mock state and the requirement's say.
