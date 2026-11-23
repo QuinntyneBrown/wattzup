@@ -138,3 +138,9 @@ export function isCabinDocked(span: CableSpan, seconds: number, phaseOffset = 0)
 export function sellarondaSkiCircuitColour(clockwise: boolean): 'orange' | 'green' {
   return clockwise ? 'orange' : 'green';
 }
+
+/** Parabolic cable sag drop in metres below the straight chord at normalized span fraction `u` (0..1). */
+export function cableSagDropAtFraction(sagMetres: number, u: number): number {
+  const t = Math.max(0, Math.min(1, u));
+  return 4 * Math.max(0, sagMetres) * t * (1 - t);
+}
