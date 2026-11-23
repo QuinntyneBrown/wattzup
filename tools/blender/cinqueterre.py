@@ -723,6 +723,46 @@ def maquis(k) -> int:
 BOATS = ((0x2F6FB0, 0xF2EEE2), (0xF2EEE2, 0xC23A32), (0xC23A32, 0xF2EEE2), (0x2E8A6A, 0xF2C230), (0xF2EEE2, 0x2F6FB0), (0xE8B830, 0x2F6FB0))
 
 
+def roadside_garden(k) -> dict:
+    """Detail 8, Mediterranean scrub: what is planted rather than wild. On the open hillside between the vineyards
+    and the villages, cypresses stand by the road in twos and threes, slim and near black, and oleander grows
+    along the inland verge in mounds of dark leaf flowering pink, white or red."""
+    near, rng, s = Painted(k, "ct-detail"), k.rng, k.s
+    dark, tip = _lin(0x1F3A26), _lin(0x35583A)
+    leaf = _lin(0x3E6A3A)
+    flowers = (_lin(0xE8709A), _lin(0xF4EEF0), _lin(0xD0344A))
+    sites = [site["i"] for site in village_sites(s)]
+    cypresses = oleanders = 0
+    for i in range(8, k.n - 8):
+        if terrace_levels(k, i) or in_grove(k, i) or abs(s[i]["k"]) > 1 / 70 or any(abs(i - q) < 34 for q in sites):
+            continue
+        inland = -seaward(k, i)
+        if rng.random() < 0.045:
+            for q in range(rng.randint(2, 3)):
+                off = (k.kerb + rng.uniform(4.6, 5.6)) * inland
+                x, y, _ = k.P(i, q * 2.6, off)
+                if not k.road.clear_of_road(x, y, 7.0, i):
+                    continue
+                z = k.ground(x, y, i, off)
+                tall = rng.uniform(8.0, 12.5)
+                near.tube((x, y, z - 0.6), 0.16, 0.16, 1.6, _lin(0x4A3A2A), _lin(0x4A3A2A), 5)
+                near.tube((x, y, z + 0.8), 1.05, 0.55, tall * 0.55, dark, dark, 6)
+                near.tube((x, y, z + 0.8 + tall * 0.55), 0.55, 0.05, tall * 0.45, dark, tip, 6)
+                cypresses += 1
+        elif rng.random() < 0.11:
+            off = (k.kerb + rng.uniform(2.2, 3.2)) * inland
+            x, y, _ = k.road.at(i, off)
+            z = k.ground(x, y, i, off)
+            r, bloom = rng.uniform(1.0, 1.5), flowers[rng.randrange(3)]
+            near.tube((x, y, z - 0.3), r, r * 0.55, r * 1.5, leaf, leaf, 6, leaf)
+            for q in range(6):
+                a, up = q * math.tau / 6 + rng.uniform(0, 0.8), rng.uniform(0.5, 1.0)
+                rr = r * (1 - 0.45 * up) * 0.95
+                near.box((x + math.cos(a) * rr, y + math.sin(a) * rr, z - 0.3 + r * 1.5 * up - 0.15), (0.42, 0.42, 0.3), a, bloom, 0.8)
+            oleanders += 1
+    return {"cypresses": cypresses, "oleanders": oleanders}
+
+
 def gozzo(paint, rng, c, yaw: float) -> None:
     """A Ligurian gozzo hauled out: a double-ended wooden boat about 5 m long, bright below and with a strake of
     another colour under the gunwale, thwarts across it, standing on its keel between chocks."""
@@ -1412,6 +1452,7 @@ def scenery(k) -> dict:
     parasols = piazza(k)
     churches = parishes(k)
     street = street_life(k)
+    street.update(roadside_garden(k))
     works = vineyard_works(k)
     works.update(vendemmia(k))
     afloat = on_the_water(k)
