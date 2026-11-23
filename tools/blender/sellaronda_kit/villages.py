@@ -175,6 +175,7 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         B["dolomite-pale"].box((fx_v, fy_v, fz_v - 0.3), (2.6, 2.6, 1.05), 0.0)
         B["lago-turquoise"].box((fx_v, fy_v, fz_v + 0.68), (2.1, 2.1, 0.14), 0.0)
         B["stone"].box((fx_v, fy_v, fz_v + 0.75), (0.42, 0.42, 1.45), 0.0)
+        B["gold"].box((fx_v, fy_v, fz_v + 1.85), (0.78, 0.78, 0.08), 0.0)
 
     # Overhead Sellaronda Bike Day street welcome banners spanning Corvara, Arabba, Canazei & Selva!
     for ban_m in (195.0, 3040.0, 6045.0, 8850.0):
