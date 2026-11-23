@@ -168,3 +168,14 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> None:
     B["steel"].box((fcx, fcy, fcz - 2.8), (0.4, 2.8, 2.8), ar_yaw)
     B["dark"].box((fcx, fcy, fcz - 5.9), (5.2, 3.4, 3.1), ar_yaw)
     B["ladin-blue"].box((fcx, fcy, fcz - 4.4), (5.3, 3.5, 0.9), ar_yaw)
+
+    # 4. Summer-parked red PistenBully snowcat groomers beside Pordoi & Gardena lift stations
+    for cat_at, cat_side in ((5005.0, -1.0), (9945.0, -1.0)):
+        c_idx = road.index(cat_at)
+        cyaw = s[c_idx]["h"] + 0.6
+        cx_g, cy_g, _ = road.at(c_idx, (kit.kerb + 10.5) * cat_side)
+        cz_g = height_at(cx_g, cy_g)
+        B["dark"].box((cx_g, cy_g, cz_g - 0.1), (4.2, 3.4, 0.72), cyaw)
+        B["parasol-red"].box((cx_g, cy_g, cz_g + 0.62), (2.6, 2.2, 1.35), cyaw)
+        B["dark"].box((cx_g + math.cos(cyaw) * 0.35, cy_g + math.sin(cyaw) * 0.35, cz_g + 1.15), (1.45, 2.25, 0.72), cyaw)
+        B["steel"].box((cx_g + math.cos(cyaw) * 2.45, cy_g + math.sin(cyaw) * 2.45, cz_g + 0.05), (0.55, 3.9, 0.85), cyaw)
