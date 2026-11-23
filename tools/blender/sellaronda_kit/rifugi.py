@@ -283,4 +283,10 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     mfz = max(height_at(mfx, mfy_p), road.s[mf_i]["z"] - 0.3)
     B["larch-warm"].box((mfx, mfy_p, mfz - 0.8), (6.8, 3.8, 0.95), mfy)
     B["glacier-ice"].box((mfx, mfy_p, mfz + 0.15), (6.6, 0.10, 1.05), mfy)
+    # Stone outdoor wood-fired oven chimneys at Rifugio Salei & Chalet Gerard
+    for wo_m in (7126.0, 9426.0):
+        woi = road.index(wo_m)
+        wox, woy, _ = road.at(woi, kit.kerb + 9.2)
+        woz = max(height_at(wox, woy), road.s[woi]["z"] - 0.3)
+        B["stone"].box((wox, woy, woz), (1.45, 1.45, 2.85), road.s[woi]["h"])
     # [ANCHOR:rifugi-global]
