@@ -1,0 +1,71 @@
+{
+  "voice": "af_heart",
+  "bpm": 92.99,
+  "beatsPerBar": 4,
+  "gapBeats": 1,
+  "outroSeconds": 3,
+  "music": {
+    "file": "../assets/music/beautiful-boom-bap.mp3",
+    "offset": 0.009,
+    "duckDb": 16,
+    "betweenDb": 5,
+    "fadeSeconds": 2
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "bars": 4,
+      "lines": [
+        "Some bike problems show only in the bytes. Now Diagnostics keeps a packet log, on this device."
+      ]
+    },
+    {
+      "id": "commands",
+      "bars": 5,
+      "lines": [
+        "By default it keeps the commands sent to the bike: every resistance change and keepalive, counted in commands and kilobytes."
+      ]
+    },
+    {
+      "id": "recording",
+      "bars": 5,
+      "lines": [
+        "Turn on Log every packet while you reproduce a problem, and the bike's messages are kept too, with a Recording tag."
+      ]
+    },
+    {
+      "id": "file",
+      "bars": 5,
+      "lines": [
+        "Download packet log saves a JSON Lines file for the day: one object per message, with its time, direction, frame type and bytes."
+      ]
+    },
+    {
+      "id": "proof",
+      "bars": 5,
+      "lines": [
+        "Two acceptance tests failed first and pass now. The log holds ten megabytes at most, and errors reach only the console, with no email or token."
+      ]
+    },
+    {
+      "id": "widths",
+      "bars": 4,
+      "lines": [
+        "The packet log, from a phone to the full screen."
+      ]
+    },
+    {
+      "id": "close",
+      "bars": 12,
+      "lines": [
+        "Telo Ride, from the Telo family, turns a smart bike at home into a game.",
+        "It pairs with the bike over Bluetooth, reads your power and sets resistance for every hill and interval.",
+        {
+          "text": "Two doors: Race, ride a map against your best-time ghost, bots or people; and Classes, ride along to a video, alone or with a group; fed by one progression of XP, rider levels, stars and map unlocks.",
+          "caption": "Two doors: Race (ride a map against your best-time ghost, bots or people) and Classes (ride along to a video, alone or with a group), fed by one progression of XP, rider levels, stars and map unlocks."
+        },
+        "A custom workout lives under Profile."
+      ]
+    }
+  ]
+}

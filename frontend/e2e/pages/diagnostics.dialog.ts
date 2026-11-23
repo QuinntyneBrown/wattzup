@@ -12,6 +12,8 @@ export class DiagnosticsDialog {
   readonly close: Locator;
   readonly privacy: Locator;
   readonly terms: Locator;
+  /** The packet log's section, for a close-up. */
+  readonly log: Locator;
   /** "Log every packet" (L2-114). */
   readonly everyPacket: Locator;
   /** "212 commands · 20 KB", or "1,284 packets · 186 KB" and the Recording tag. */
@@ -28,6 +30,7 @@ export class DiagnosticsDialog {
     this.close = this.root.getByRole('button', { name: 'Close diagnostics' });
     this.privacy = this.root.locator('.diagnostics__privacy');
     this.terms = this.root.locator('.diagnostics__facts dt');
+    this.log = this.root.locator('.diagnostics__log');
     this.everyPacket = this.root.getByRole('switch', { name: 'Log every packet' });
     this.count = this.root.locator('.diagnostics__count');
     this.recording = this.root.locator('.diagnostics__recording');
