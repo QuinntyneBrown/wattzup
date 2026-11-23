@@ -328,4 +328,9 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         cy_s = road.index(p["climb_from"] + 12.0)
         B["steel"].box(kit.P(cy_s, 0.0, -(kit.kerb + 1.55), -0.1), (0.08, 0.08, 2.15), s[cy_s]["h"])
         B["yellow"].box(kit.P(cy_s, 0.0, -(kit.kerb + 1.55), 1.65), (0.08, 0.62, 0.62), s[cy_s]["h"])
+    # Triangular 'CADUTA MASSI' rockfall warning signs ahead of the 4 uphill cliff cuts
+    for cm_s in (1555.0, 4155.0, 7155.0, 9455.0):
+        cmi = road.index(cm_s)
+        B["steel"].box(kit.P(cmi, 0.0, -(kit.kerb + 1.45), -0.1), (0.08, 0.08, 2.15), s[cmi]["h"])
+        B["parasol-red"].box(kit.P(cmi, 0.0, -(kit.kerb + 1.45), 1.65), (0.07, 0.65, 0.60), s[cmi]["h"])
     # [ANCHOR:hairpins]
