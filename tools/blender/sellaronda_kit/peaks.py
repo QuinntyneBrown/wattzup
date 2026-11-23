@@ -92,6 +92,7 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         (-280.0, 1480.0, 940.0, 260.0, 180.0, 0.5),  # Punta Penia (3,343 m)
         (40.0,   1450.0, 905.0, 250.0, 175.0, 1.7),  # Punta Rocca (3,309 m)
         (350.0,  1490.0, 780.0, 220.0, 160.0, 2.8),  # Serauta (2,962 m)
+        (610.0,  1540.0, 810.0, 195.0, 145.0, 3.9),  # Cima Ombretta (3,011 m)
     ):
         mx = pordoi_pt["x"] + mux * rad_m + mpx * lat_m
         my = pordoi_pt["y"] + muy * rad_m + mpy * lat_m
