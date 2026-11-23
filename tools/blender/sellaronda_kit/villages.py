@@ -587,4 +587,8 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         fbz = height_at(fbx, fby_p)
         B["chalet-plaster"].box((fbx, fby_p, fbz - 1.2), (12.5, 9.6, 8.8), fby)
         B["parasol-red"].box((fbx + 5.2, fby_p + 3.8, fbz + 7.6), (3.4, 3.4, 2.8), fby)
+    # Val Gardena artisan woodcarving shopfront vitrines in Selva (at=8868 m & 8955 m)
+    for wc_v in (8868.0, 8955.0):
+        wci = road.index(wc_v)
+        B["glow-window"].box(kit.P(wci, 0.0, -(kit.kerb + 5.8), 1.05), (2.4, 0.35, 1.65), road.s[wci]["h"])
     # [ANCHOR:villages]
