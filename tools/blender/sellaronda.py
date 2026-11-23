@@ -69,7 +69,7 @@ def lay_centre_line(course: dict, theme: dict | None = None):
             )
             phase = (s_nom - p["climb_from"]) / max(1.0, p["at"] - p["climb_from"]) * p["hairpins"] * math.pi
             # Sharpened switchback waveform (fundamental + 3rd harmonic) for authentic straight ramps + tight 180-style tornanti!
-            zig += climb_env * (94.0 * math.sin(phase) + 6.5 * math.cos(2.0 * phase) + 14.0 * math.sin(3.0 * phase))
+            zig += climb_env * (94.0 * math.sin(phase) + 6.5 * math.cos(2.0 * phase) + 14.6 * math.sin(3.0 * phase))
             d_phase = (s_nom - p["at"]) / max(1.0, p["descent_to"] - p["at"]) * 4.5 * math.pi
             zig += desc_env * (52.0 * math.sin(d_phase) + 9.5 * math.sin(2.0 * d_phase))
         # Gentle valley stream-following S-bends between passes
