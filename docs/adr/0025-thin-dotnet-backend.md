@@ -42,8 +42,11 @@ database. It never talks to the bike.**
   endpoints until sign-in (slices 9.1 and 9.2) adds its own, each marked `[AllowAnonymous]`.
 - **Database.** Azure SQL Database (serverless), through EF Core's SQL Server provider. It sits
   in the same Azure subscription as the static web app (ADR 0022), its serverless tier pauses
-  when nobody rides, and EF Core's SQL Server provider is the most complete. Tests never use it:
-  every backend test runs on EF Core InMemory, one store per fixture.
+  when nobody rides, and EF Core's SQL Server provider is the most complete. A paused database
+  refuses connections for about a minute while it resumes, so the provider's retrying execution
+  strategy is on (`EnableRetryOnFailure`, up to about 70 seconds): the request that wakes the
+  database waits and succeeds instead of answering 500. Tests never use it: every backend test
+  runs on EF Core InMemory, one store per fixture.
 - **Schema changes.** EF Core migrations in `Telo.Ride.Infrastructure`, applied only by
   `dotnet Telo.Ride.Api.dll migrate`, which migrates and exits. Normal start-up never migrates.
 - **Telemetry.** OpenTelemetry tracing and metrics for ASP.NET Core and EF Core, with Telo Ride's

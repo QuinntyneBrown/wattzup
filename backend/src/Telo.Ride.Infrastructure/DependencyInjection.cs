@@ -16,15 +16,20 @@ namespace Telo.Ride.Infrastructure;
 public static class DependencyInjection
 {
     /// <summary>
-    /// The database (connection string <c>ConnectionStrings:TeloRide</c>, docs/deployment.md) and
-    /// <see cref="IAppDbContext"/> over it, <see cref="TeloRideMetrics"/>, and the class catalogue embedded in
-    /// this assembly (ADR 0028), sign-in's code hasher and email sender (ADR 0031), and the daily erasure of deleted
-    /// accounts (L2-006 AC3).
+    /// The database (connection string <c>ConnectionStrings:TeloRide</c>, docs/deployment.md), retried while it
+    /// resumes from a pause, and <see cref="IAppDbContext"/> over it, <see cref="TeloRideMetrics"/>, and the class
+    /// catalogue embedded in this assembly (ADR 0028), sign-in's code hasher and email sender (ADR 0031), and the
+    /// daily erasure of deleted accounts (L2-006 AC3).
     /// </summary>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        // The serverless database pauses when nobody rides (ADR 0025) and refuses connections for about a minute
+        // while it resumes. Retrying for that long lets the request that woke it succeed instead of answering 500.
         services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("TeloRide")));
+            options.UseSqlServer(
+                configuration.GetConnectionString("TeloRide"),
+                sqlServer => sqlServer.EnableRetryOnFailure(
+                    maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(10), errorNumbersToAdd: null)));
         services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
         services.AddScoped<IDatabaseMigrator, DatabaseMigrator>();
         services.AddSingleton<TeloRideMetrics>();
