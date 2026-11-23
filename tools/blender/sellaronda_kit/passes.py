@@ -268,3 +268,10 @@ def build_four_passes(B, kit, road, height_at) -> None:
         ws_yaw = s[ws_idx]["h"]
         B["stone"].box(kit.P(ws_idx, 0.0, -(kit.kerb + 1.95), -0.1), (0.72, 0.58, 0.78), ws_yaw)
         B["ladin-blue"].box(kit.P(ws_idx, 0.0, -(kit.kerb + 1.95), 0.68), (0.64, 0.48, 0.08), ws_yaw)
+
+    # Giro d'Italia Cima Coppi Winners Wall (Albo d'Oro del Pordoi) beside Coppi stele
+    ww_idx = road.index(4946.0)
+    ww_yaw = s[ww_idx]["h"] + 0.18
+    wx_w, wy_w, wz_w = kit.P(ww_idx, 0.0, -(kit.kerb + 7.2), -0.3)
+    B["stone"].box((wx_w, wy_w, wz_w), (4.8, 0.48, 1.85), ww_yaw)
+    B["accent-2"].box((wx_w, wy_w, wz_w + 1.55), (4.6, 0.52, 0.24), ww_yaw)
