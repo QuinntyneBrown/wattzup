@@ -202,6 +202,7 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
             B[jerseys[(hk_i + pair_k) % len(jerseys)]].box((hx, hy, hz + 0.86), (0.32, 0.40, 0.58), hyaw)
             B["parasol-red"].box((hx - math.cos(hyaw) * 0.20, hy - math.sin(hyaw) * 0.20, hz + 0.92), (0.22, 0.32, 0.46), hyaw)
             B["skin"].box((hx, hy, hz + 1.44), (0.22, 0.22, 0.24), hyaw)
+            B["steel"].box((hx + math.cos(hyaw) * 0.28, hy + math.sin(hyaw) * 0.28, hz), (0.03, 0.03, 1.15), hyaw)
 
     # Origin-centered animated lead thermal paraglider in WHOLE group "Glider" soaring over Passo Sella!
     from . import srgb as _srgb
