@@ -21,6 +21,7 @@ def _onion_dome_church(B, kit, x: float, y: float, z: float, yaw: float, dome_ma
     # Whitewashed nave + pitched slate roof
     B["stone"].box((x, y, z - 2.0), (16.5, 9.2, 2.6), yaw)
     B["chalet-plaster"].box((x, y, z + 0.6), (16.2, 8.8, 7.2), yaw)
+    B["glow-window"].box((x - math.cos(yaw) * 8.15, y - math.sin(yaw) * 8.15, z + 5.1), (0.14, 1.85, 1.85), yaw)
     kit.gable(B["roof-slate"], (x, y, z + 7.8), 16.8, 9.4, 3.8, yaw)
     ax_p = x + math.cos(yaw) * 9.4
     ay_p = y + math.sin(yaw) * 9.4
