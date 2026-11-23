@@ -147,6 +147,11 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     vux, vuy = vux / vul, vuy / vul
     vpx, vpy = -vuy, vux
     rock_tower(peaks, cx + vux * 515.0 + vpx * 55.0, cy + vuy * 515.0 + vpy * 55.0, 495.0, 705.0, 88.0, 68.0, 9, math.atan2(vuy, vux), cfn, taper=0.45, flat_cap=False, seed_phase=1.6)
+    bec_pt = road.s[road.index(2650.0)]
+    bdx, bdy = bec_pt["x"] - cx, bec_pt["y"] - cy
+    bdl = max(1.0, math.hypot(bdx, bdy))
+    bux, buy = bdx / bdl, bdy / bdl
+    rock_tower(peaks, cx + bux * 825.0, cy + buy * 825.0, 115.0, 465.0, 52.0, 42.0, 8, math.atan2(buy, bux), cfn, taper=0.36, flat_cap=False, seed_phase=5.8)
     top_ring = rings[-1]
     for k in range(sides):
         u = (k + 1) % sides
