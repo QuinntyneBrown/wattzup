@@ -93,3 +93,14 @@ def build_four_passes(B, kit, road, height_at) -> None:
             B["ladin-blue"].box(kit.P(m_idx, -0.02, m_off, 1.52), (0.08, 0.72, 0.18), m_yaw)
             B[steep_col].box(kit.P(m_idx, -0.02, m_off, 1.14), (0.08, 0.68, 0.14), m_yaw)
             d_mark -= 350.0
+
+    # Summit panoramic belvedere platforms with brass Dolomite peak-finder orientation tables
+    for p in PASSES:
+        bv_idx = road.index(p["at"] + 16.0)
+        bv_yaw = s[bv_idx]["h"]
+        bx_v, by_v, _ = road.at(bv_idx, kit.kerb + 4.2)
+        bz_v = max(height_at(bx_v, by_v), s[bv_idx]["z"] - 0.15)
+        B["dolomite-pale"].box((bx_v, by_v, bz_v - 1.2), (6.2, 3.6, 1.35), bv_yaw)
+        B["larch-warm"].box((bx_v - math.sin(bv_yaw) * 1.65, by_v + math.cos(bv_yaw) * 1.65, bz_v + 0.15), (6.0, 0.14, 0.98), bv_yaw)
+        B["stone"].box((bx_v, by_v, bz_v + 0.15), (0.62, 0.62, 1.02), bv_yaw)
+        B["gold"].box((bx_v, by_v, bz_v + 1.17), (0.88, 0.88, 0.08), bv_yaw + 0.4)
