@@ -351,6 +351,30 @@ def cloud_sea(k) -> float:
 CINDER_FROM = 0.64  # how far up the climb the bare cinder begins
 
 
+def island_peaks(k) -> int:
+    """Detail 2, above the clouds: what else stands up through them. Far across the cloud to one side are the two
+    great shield volcanoes of the next island, broad and blue with distance, the nearer one snow-capped; to the
+    other, lower and nearer, the ragged green ridge of the island's western mountains. Their feet are in the cloud."""
+    paint, s = Painted(k, "peaks"), k.s
+    zs, xs = [p["z"] for p in s], [p["x"] for p in s]
+    level = min(zs) + CLOUD_LEVEL * (max(zs) - min(zs))
+    edge = min(s, key=lambda p: abs(p["z"] - level))["y"] + 210.0
+    cx = (min(xs) + max(xs)) / 2
+    blue, pale, snow, green, ridge = _lin(0x6F92C0), _lin(0x8FAED2), _lin(0xF2F5F8), _lin(0x5E8A7E), _lin(0x7FA69A)
+    # The shields: wide and gently sloped, a stepped profile from foot to summit.
+    for x, y, r, tall, capped in ((cx + 7600.0, edge + 3400.0, 3300.0, 560.0, True), (cx + 8600.0, edge + 800.0, 3900.0, 500.0, False)):
+        paint.tube((x, y, level - 60.0), r, r * 0.55, tall * 0.5, blue, blue, 14)
+        paint.tube((x, y, level - 60.0 + tall * 0.5), r * 0.55, r * 0.2, tall * 0.35, blue, pale, 14)
+        top = snow if capped else pale
+        paint.tube((x, y, level - 60.0 + tall * 0.85), r * 0.2, r * 0.05, tall * 0.15, pale if not capped else snow, top, 14, top)
+    # The western mountains: a row of steep summits, cut by valleys.
+    for q, (dx, r, tall) in enumerate(((0.0, 1500.0, 330.0), (1300.0, 1100.0, 250.0), (-1200.0, 1250.0, 280.0), (2300.0, 800.0, 170.0), (-2300.0, 900.0, 190.0))):
+        x, y = cx - 6800.0 + dx, edge + 3600.0 + 500.0 * math.sin(q * 2.1)
+        paint.tube((x, y, level - 60.0), r, r * 0.3, tall * 0.7, green, ridge, 9)
+        paint.tube((x, y, level - 60.0 + tall * 0.7), r * 0.3, r * 0.04, tall * 0.3, ridge, ridge, 9, ridge)
+    return 3
+
+
 def height_share(k, i: int) -> float:
     """How far up the climb sample i is: 0 the shore, 1 the summit."""
     zs = [p["z"] for p in k.s]
@@ -1002,6 +1026,7 @@ def lava_field(k) -> int:
 def scenery(k) -> dict:
     posts = reflector_posts(k)
     cloud = cloud_sea(k)
+    islands = island_peaks(k)
     swords = silverswords(k)
     domes = science_city(k)
     ranch = ranch_land(k)
@@ -1015,4 +1040,4 @@ def scenery(k) -> dict:
     signs["hairpinSigns"] = hairpin_signs(k)
     garden = silversword_garden(k)
     shrubs = shrubland(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords, "domes": domes, **ranch, **coast, "cinderCones": cones, "boulders": lava, "shrubs": shrubs, **signs, "gardenSilverswords": garden}
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "peaksAboveCloud": islands, "silverswords": swords, "domes": domes, **ranch, **coast, "cinderCones": cones, "boulders": lava, "shrubs": shrubs, **signs, "gardenSilverswords": garden}
