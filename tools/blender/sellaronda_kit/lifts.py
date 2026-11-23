@@ -260,6 +260,7 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["dark"].box((cx_g, cy_g, cz_g - 0.1), (4.2, 3.4, 0.72), cyaw)
         B["parasol-red"].box((cx_g, cy_g, cz_g + 0.62), (2.6, 2.2, 1.35), cyaw)
         B["dark"].box((cx_g + math.cos(cyaw) * 0.35, cy_g + math.sin(cyaw) * 0.35, cz_g + 1.15), (1.45, 2.25, 0.72), cyaw)
+        B["bulb"].box((cx_g + math.cos(cyaw) * 0.35, cy_g + math.sin(cyaw) * 0.35, cz_g + 1.97), (0.24, 0.24, 0.22), cyaw)
         B["steel"].box((cx_g + math.cos(cyaw) * 2.45, cy_g + math.sin(cyaw) * 2.45, cz_g + 0.05), (0.55, 3.9, 0.85), cyaw)
         B["yellow"].box((cx_g - math.cos(cyaw) * 2.65, cy_g - math.sin(cyaw) * 2.65, cz_g + 0.05), (0.65, 4.1, 0.52), cyaw)
 
