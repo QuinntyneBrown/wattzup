@@ -618,6 +618,7 @@ def _touring_motorbike(B, x: float, y: float, z: float, yaw: float, body_mat: st
     B["paint"].box((x + ca * 0.58, y + sa * 0.58, z + 1.06), (0.12, 0.36, 0.38), yaw)
     B["dark"].box((x + ca * 0.44, y + sa * 0.44, z + 1.02), (0.10, 0.84, 0.10), yaw)
     B["bulb"].box((x + ca * 0.72, y + sa * 0.72, z + 0.88), (0.08, 0.28, 0.16), yaw)
+    B["yellow"].box((x + ca * 0.56, y + sa * 0.56, z + 0.62), (0.07, 0.46, 0.08), yaw)
     B["kerb-red"].box((x - ca * 0.81, y - sa * 0.81, z + 0.76), (0.06, 0.26, 0.10), yaw)
     if with_rider:
         B["dark"].box((x - ca * 0.05, y - sa * 0.05, z + 0.92), (0.44, 0.42, 0.58), yaw)
