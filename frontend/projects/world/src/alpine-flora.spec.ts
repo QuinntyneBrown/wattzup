@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   dolomiteFloraZone,
   hayHarvestMonth,
+  mugoPineCoverWeight,
   treeLineDensity,
   wildflowerBloomIntensity,
 } from './alpine-flora';
@@ -24,5 +25,7 @@ describe('dolomiteFloraZone', () => {
     expect(wildflowerBloomIntensity(2600)).toBe(0);
     expect(hayHarvestMonth(1550)).toBe('june');
     expect(hayHarvestMonth(2080)).toBe('august');
+    expect(mugoPineCoverWeight(2200)).toBeCloseTo(1, 3);
+    expect(mugoPineCoverWeight(1600)).toBe(0);
   });
 });
