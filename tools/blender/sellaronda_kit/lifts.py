@@ -19,7 +19,7 @@ def _cable_segment(B, p0: tuple[float, float, float], p1: tuple[float, float, fl
         B["dark"].quad(a, b, (b[0], b[1], b[2] + thickness), (a[0], a[1], a[2] + thickness))
 
 
-def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> None:
+def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]:
     """Builds the Funivia Sass Pordoi cliff cableway, chairlift pylons & summer-quiet pistes."""
     s = road.s
 
@@ -55,13 +55,31 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> None:
         a1 = (tx + px_p * off_lat, ty + py_p * off_lat, tz + 6.5)
         _cable_segment(B, a0, a1, thickness=0.16, sag=18.0, steps=10)
 
-    t_cab = 0.44
-    cx_cab = lx + (tx - lx) * t_cab - px_p * 2.1
-    cy_cab = ly + (ty - ly) * t_cab - py_p * 2.1
-    cz_cab = (lz + 6.8) + ((tz + 6.5) - (lz + 6.8)) * t_cab - 18.0 * 4.0 * t_cab * (1.0 - t_cab)
-    B["steel"].box((cx_cab, cy_cab, cz_cab - 3.2), (0.35, 0.35, 3.2), yaw_top)
-    B["parasol-red"].box((cx_cab, cy_cab, cz_cab - 6.2), (4.6, 2.8, 3.0), yaw_top)
-    B["paint"].box((cx_cab, cy_cab, cz_cab - 4.7), (4.7, 2.9, 1.1), yaw_top)
+    # Build origin-centered animated Funivia Sass Pordoi cabin in WHOLE group "Funivia"!
+    from . import srgb as _srgb
+    fun = B["funivia"]
+    fun.colours = []
+    def _fbox(cz0: float, sx: float, sy: float, sz: float, col_hex: int):
+        c_rgba = _srgb(col_hex)
+        base_i = len(fun.verts)
+        hx, hy = sx * 0.5, sy * 0.5
+        for z_v in (cz0, cz0 + sz):
+            for dx_v, dy_v in ((-hx, -hy), (hx, -hy), (hx, hy), (-hx, hy)):
+                fun.verts.append((dx_v, dy_v, z_v))
+                fun.colours.append(c_rgba)
+        for f_t in ((4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7), (0, 3, 2, 1)):
+            fun.faces.append(tuple(base_i + q for q in f_t))
+    _fbox(-3.2, 0.35, 0.35, 3.2, 0x9AA2AC)
+    _fbox(-6.4, 4.8, 3.0, 3.2, 0xC82834)
+    _fbox(-4.8, 4.9, 3.1, 1.15, 0xF4F0E6)
+    cableways_out = [{
+        "from": [round(lx - px_p * 2.1, 2), round(lz + 6.8, 2), round(-(ly - py_p * 2.1), 2)],
+        "to": [round(tx - px_p * 2.1, 2), round(tz + 6.5, 2), round(-(ty - py_p * 2.1), 2)],
+        "sag": 18.0,
+        "traverseSeconds": 42.0,
+        "dwellSeconds": 5.0,
+        "yaw": round(yaw_top, 4),
+    }]
 
     # 2. Four Sellaronda chairlift / gondola pylon lines crossing & flanking the passes
     lift_corridors = (
@@ -194,3 +212,5 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> None:
         B["crowd-3"].box((mx0 - math.cos(myaw) * 0.78, my0 - math.sin(myaw) * 0.78, mz0 + 2.45), (1.45, 0.16, 0.22), myaw)
         B["foliage"].box((mx0 + math.cos(myaw) * 0.78, my0 + math.sin(myaw) * 0.78, mz0 + 2.45), (1.45, 0.16, 0.22), myaw)
         kit.gable(B["larch-aged"], (mx0, my0, mz0 + 2.72), 3.6, 0.75, 0.36, myaw)
+
+    return cableways_out

@@ -333,9 +333,10 @@ def build_scenery(road, st: list[dict], length: float, height_at, course: dict, 
                     trees += 1
 
     # 6. Ski lifts, cable cars, pylons & summer-quiet pistes
+    cableways = []
     m_lifts = _try_module("lifts")
     if m_lifts:
-        m_lifts.build_ski_lifts(B, kit, road, height_at, cx, cy)
+        cableways = m_lifts.build_ski_lifts(B, kit, road, height_at, cx, cy) or []
 
     # 7. Valley villages (Corvara, Arabba, Canazei, Selva) with onion-dome churches
     m_villages = _try_module("villages")
@@ -378,6 +379,7 @@ def build_scenery(road, st: list[dict], length: float, height_at, course: dict, 
         "trees": trees,
         "clubs": 0,
         "lights": kit.lights,
+        "cableways": cableways,
     }
 
 
