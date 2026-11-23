@@ -439,4 +439,7 @@ def build_four_passes(B, kit, road, height_at) -> None:
     # Carved Ladin 'JËUF DE SELA' wooden beam below Passo Sella's summit board
     sl_b = road.index(7750.0)
     B["larch-warm"].box(kit.P(sl_b, 6.0, -(kit.kerb + 2.48), 1.35), (2.95, 0.14, 0.24), s[sl_b]["h"])
+    # Ceremonial memorial flagpoles flanking Sacrario Militare del Pordoi
+    for fp_s in (-7.5, 7.5):
+        B["steel"].box((sx_m + fp_s, sy_m, sz_m - 0.5), (0.12, 0.12, 8.5), 0.0)
     # [ANCHOR:passes]
