@@ -265,3 +265,12 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     fnpx, fnpy = -fnuy, fnux
     for fn_lat, fn_top in ((-190.0, 845.0), (185.0, 835.0)):
         rock_tower(peaks, fn_pt["x"] + fnux * 1850.0 + fnpx * fn_lat, fn_pt["y"] + fnuy * 1850.0 + fnpy * fn_lat, 45.0, fn_top, 235.0, 175.0, 10, math.atan2(-fnuy, -fnux), cfn, taper=0.52, flat_cap=False, seed_phase=3.1 + fn_lat * 0.01)
+
+    # 12. Catinaccio / Rosengarten (King Laurin's Rose Garden, 3,002 m) & Torri del Vajolet west of Canazei!
+    cat_pt = road.s[road.index(6120.0)]
+    ctux2, ctuy2 = cat_pt["x"] - cx, cat_pt["y"] - cy
+    ctul2 = max(1.0, math.hypot(ctux2, ctuy2))
+    ctux2, ctuy2 = ctux2 / ctul2, ctuy2 / ctul2
+    ctpx2, ctpy2 = -ctuy2, ctux2
+    for v_idx, (v_lat, v_top, v_rx) in enumerate(((-220.0, 795.0, 185.0), (0.0, 825.0, 140.0), (195.0, 775.0, 165.0))):
+        rock_tower(peaks, cat_pt["x"] + ctux2 * 1650.0 + ctpx2 * v_lat, cat_pt["y"] + ctuy2 * 1650.0 + ctpy2 * v_lat, 45.0, v_top, v_rx, v_rx * 0.68, 9, math.atan2(-ctuy2, -ctux2), cfn, taper=0.34, flat_cap=False, seed_phase=2.4 + v_idx)
