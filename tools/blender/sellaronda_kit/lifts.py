@@ -33,6 +33,8 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
     B["stone"].box((lx, ly, lz - 2.0), (14.0, 10.5, 5.2), yaw_p)
     B["chalet-plaster"].box((lx, ly, lz + 3.2), (14.4, 10.8, 4.4), yaw_p)
     kit.gable(B["roof-slate"], (lx, ly, lz + 7.6), 14.8, 11.2, 2.2, yaw_p)
+    B["ladin-blue"].box((lx - math.sin(yaw_p) * -5.45, ly + math.cos(yaw_p) * -5.45, lz + 5.8), (6.4, 0.16, 0.95), yaw_p)
+    B["yellow"].box((lx - math.sin(yaw_p) * -5.50, ly + math.cos(yaw_p) * -5.50, lz + 6.05), (0.85, 0.18, 0.85), yaw_p)
 
     # Upper cantilevered cliff-lip station + Rifugio Maria atop Sass Pordoi's 585 m rim!
     dx, dy = p_pt["x"] - cx, p_pt["y"] - cy
