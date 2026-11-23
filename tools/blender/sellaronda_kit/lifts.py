@@ -202,6 +202,7 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
                 # Modern 8-passenger rounded alpine gondola cabin
                 B["dark"].box((mx_c, my_c, mz_c - 3.35), (2.05, 1.55, 1.72), yaw_l)
                 B["parasol-red"].box((mx_c, my_c, mz_c - 3.35), (2.08, 1.58, 0.42), yaw_l)
+                B["steel"].box((mx_c - clx * 1.12, my_c - cly * 1.12, mz_c - 3.15), (0.22, 1.15, 0.95), yaw_l)
 
     # 3. Funifor Arabba - Porta Vescovo heavy twin-cable tramway climbing out of Arabba (at=3210 m) toward Padon!
     ar_idx = road.index(3210.0)
