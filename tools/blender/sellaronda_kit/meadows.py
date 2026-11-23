@@ -367,4 +367,15 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             if road.clear_of_road(bx_s, by_s, 12.0, bl_i):
                 B["paint"].box((bx_s, by_s, height_at(bx_s, by_s)), (1.28, 1.28, 1.22), bk * 0.4)
 
+    # Low-slung red Alpine slope hay tractors (Reform Metrac style) parked beside mown meadows
+    for trk_m, trk_s in ((1080.0, 1.0), (10660.0, 1.0)):
+        tk_i = road.index(trk_m)
+        tky = s[tk_i]["h"] + 0.6
+        tkx, tky_p, _ = road.at(tk_i, (kit.kerb + 16.0) * trk_s)
+        if road.clear_of_road(tkx, tky_p, 11.0, tk_i):
+            tkz = height_at(tkx, tky_p)
+            B["dark"].box((tkx, tky_p, tkz), (2.8, 1.75, 0.55), tky)
+            B["parasol-red"].box((tkx, tky_p, tkz + 0.55), (2.4, 1.45, 1.15), tky)
+            B["yellow"].box((tkx + math.cos(tky) * 1.55, tky_p + math.sin(tky) * 1.55, tkz + 0.08), (0.55, 2.15, 0.35), tky)
+
     return trees
