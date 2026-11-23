@@ -587,6 +587,13 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     B["steel"].box(kit.P(cm_p, 0.0, kit.kerb + 1.85, 0.0), (0.14, 0.14, 1.65), s[cm_p]["h"])
     B["yellow"].box(kit.P(cm_p, 0.0, kit.kerb + 1.85, 1.65), (0.32, 0.28, 0.28), s[cm_p]["h"])
 
+    # Classic Italian scooters parked outside the Canazei Gelateria (at=6120 m)
+    vs_i = road.index(6120.0)
+    for vs_o, vs_c in ((-0.8, "lago-turquoise"), (0.8, "parasol-red")):
+        vsx, vsy, vsz = kit.P(vs_i, vs_o, -(kit.kerb + 3.6), 0.0)
+        B[vs_c].box((vsx, vsy, vsz + 0.25), (1.35, 0.42, 0.62), s[vs_i]["h"] + 1.1)
+        B["dark"].box((vsx, vsy, vsz), (1.28, 0.18, 0.36), s[vs_i]["h"] + 1.1)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
