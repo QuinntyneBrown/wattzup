@@ -179,3 +179,13 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         ayaw = s[a_idx]["h"]
         B["paint"].box(kit.P(a_idx, 0.0, -(kit.kerb * 0.45), 0.02), (0.28, kit.kerb * 0.85, 0.015), ayaw)
         B["ladin-blue"].box(kit.P(a_idx, 0.45, -(kit.kerb * 0.45), 0.02), (0.22, kit.kerb * 0.55, 0.015), ayaw)
+
+    # South Tyrolean bio-engineered larch log-crib slope stabilization walls (Krainerwände)
+    for kw_start in (1380.0, 6460.0, 9220.0):
+        k0 = road.index(kw_start)
+        for step_k in range(5):
+            idx_k = k0 + step_k * 2
+            kyaw = s[idx_k]["h"]
+            for row_z in (0.2, 0.85, 1.50):
+                B["larch-aged"].box(kit.P(idx_k, 0.0, -(kit.kerb + 1.55 + row_z * 0.25), row_z), (7.8, 0.28, 0.24), kyaw)
+            B["foliage"].box(kit.P(idx_k, 0.0, -(kit.kerb + 1.75), 0.55), (7.6, 0.35, 0.95), kyaw)
