@@ -165,6 +165,7 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         l_idx = road.index(lay_m)
         lyaw = s[l_idx]["h"]
         B["gravel"].box(kit.P(l_idx, 0.0, kit.kerb + 2.4, -0.45), (11.0, 3.8, 0.50), lyaw)
+        B["stone"].box(kit.P(l_idx, 0.0, kit.kerb + 3.9, -3.2), (11.2, 0.85, 3.2), lyaw)
         B["larch-warm"].box(kit.P(l_idx, -1.8, kit.kerb + 3.4, 0.05), (2.2, 0.55, 0.52), lyaw)
         B["larch-aged"].box(kit.P(l_idx, 2.2, kit.kerb + 3.4, 0.05), (0.48, 0.48, 0.85), lyaw)
         B["chalet-wood"].box(kit.P(l_idx, 3.8, kit.kerb + 3.6, 0.05), (1.45, 0.14, 1.95), lyaw)
