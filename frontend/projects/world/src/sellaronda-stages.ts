@@ -57,3 +57,13 @@ export function passDifficultyMultiplier(
       return 1.55;
   }
 }
+
+/** Combined stage score multiplier (0..1.55) weighting cadence accuracy by Sella Ronda pass difficulty. */
+export function stagePointsMultiplier(
+  actualRpm: number,
+  targetRpm: number,
+  passId: 'campolongo' | 'pordoi' | 'sella' | 'gardena',
+): number {
+  const compliance = cadenceComplianceScore(actualRpm, targetRpm) / 100;
+  return Number((compliance * passDifficultyMultiplier(passId)).toFixed(3));
+}
