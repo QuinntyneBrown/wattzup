@@ -96,6 +96,8 @@ def _rifugio_complex(B, kit, road, height_at, at_m: float, side: float, main_w: 
         bx = rx - nx * front_dist
         by = ry - ny * front_dist
         B["larch-aged"].box((bx, by, bz), (main_w - 0.6, 1.15, 0.22), yaw)
+        for cb_o in (-0.32 * main_w, 0.32 * main_w):
+            B["larch-aged"].box((bx + math.cos(yaw) * cb_o, by + math.sin(yaw) * cb_o, bz - 0.42), (0.18, 0.85, 0.42), yaw)
         B["larch-warm"].box((bx - nx * 0.48, by - ny * 0.48, bz + 0.22), (main_w - 0.6, 0.14, 0.92), yaw)
         for dv_o in (-0.18 * main_w, 0.18 * main_w):
             B["larch-warm"].box((bx + math.cos(yaw) * dv_o, by + math.sin(yaw) * dv_o, bz + 0.22), (0.08, 1.05, 1.65), yaw)
