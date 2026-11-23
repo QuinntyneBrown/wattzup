@@ -295,4 +295,10 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         bci = road.index(bc_m)
         B["steel"].box(kit.P(bci, 0.0, -(kit.kerb + 1.45), 0.0), (0.09, 0.09, 2.85), s[bci]["h"])
         B["bulb"].box(kit.P(bci, 0.0, -(kit.kerb + 1.45), 2.85), (0.24, 0.24, 0.24), s[bci]["h"])
+    # Flexible orange-and-white descent verge delineator wands
+    dl_cnt = 0
+    for i in range(30, kit.n - 30, 22):
+        if s[i]["g"] < -3.8 and dl_cnt < 20:
+            dl_cnt += 1
+            B["crowd-3"].box(kit.P(i, 0.0, -(kit.kerb + 0.95), 0.0), (0.07, 0.07, 1.15), s[i]["h"])
     # [ANCHOR:hairpins]
