@@ -164,7 +164,7 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     lake_cx = pordoi_pt["x"] + mux * 970.0 + mpx * 15.0
     lake_cy = pordoi_pt["y"] + muy * 970.0 + mpy * 15.0
     lake_z = 268.0
-    turquoise = (0.06, 0.36, 0.44, 1.0)
+    turquoise = (0.14, 0.38, 0.48, 1.0)
     dam_grey = (0.62, 0.61, 0.58, 1.0)
 
     def _flat_quad(p0, p1, p2, p3, col_rgba):
