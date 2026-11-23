@@ -64,6 +64,8 @@ def _rifugio_complex(B, kit, road, height_at, at_m: float, side: float, main_w: 
             qx = rx + math.cos(yaw) * (c_sign_x * main_w * 0.5) - math.sin(yaw) * (c_sign_y * main_d * 0.5)
             qy = ry + math.sin(yaw) * (c_sign_x * main_w * 0.5) + math.cos(yaw) * (c_sign_y * main_d * 0.5)
             B["dolomite-pale"].box((qx, qy, base_z + 3.2), (0.55, 0.55, upper_h), yaw)
+            if c_sign_y < 0:
+                B["copper-patina"].box((qx, qy, base_z + 0.2), (0.12, 0.12, upper_h + 3.0), yaw)
     sx_d = rx - math.sin(yaw) * -(main_d * 0.5 + 0.18) + math.cos(yaw) * (main_w * 0.34)
     sy_d = ry + math.cos(yaw) * -(main_d * 0.5 + 0.18) + math.sin(yaw) * (main_w * 0.34)
     B["paint"].box((sx_d, sy_d, base_z + 3.2 + upper_h - 1.55), (1.15, 0.08, 1.15), yaw)
