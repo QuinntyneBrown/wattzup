@@ -606,6 +606,11 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     mdx_m, mdy_m, mdz_m = kit.P(md_m, 0.0, kit.kerb + 2.2, 0.0)
     _touring_motorbike(B, mdx_m, mdy_m, mdz_m, s[md_m]["h"] + 0.3, "paint", with_rider=True)
 
+    # Festive rose-pink Giro chalk bars on the final steep ramp to Passo Gardena (at=10095 m)
+    gd_c = road.index(10095.0)
+    for gk in range(4):
+        B["accent-2"].box(road.at(gd_c, -1.8 + gk * 1.2, 0.025), (0.36, 0.85, 0.015), s[gd_c]["h"] + 0.2)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
