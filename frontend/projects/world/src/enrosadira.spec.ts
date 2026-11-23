@@ -3,6 +3,7 @@ import {
   altitudeAlpenglowWeight,
   beltOfVenusWeight,
   cliffAspectIllumination,
+  dolomiaCarbonateReflectance,
   enrosadiraTint,
 } from './enrosadira';
 
@@ -24,5 +25,8 @@ describe('enrosadiraTint', () => {
     expect(altitudeAlpenglowWeight(3152)).toBe(1);
     expect(beltOfVenusWeight(0, Math.PI, 0.11)).toBeCloseTo(1, 3);
     expect(beltOfVenusWeight(Math.PI, Math.PI, 0.11)).toBe(0);
+    const refl = dolomiaCarbonateReflectance();
+    expect(refl.r).toBeGreaterThan(refl.g);
+    expect(refl.g).toBeGreaterThan(refl.b);
   });
 });

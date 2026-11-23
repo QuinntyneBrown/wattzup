@@ -55,3 +55,12 @@ export function beltOfVenusWeight(viewAz: number, sunAz: number, horizonElev: nu
   const band = Math.exp(-(((horizonElev - 0.11) / 0.075) ** 2));
   return Math.pow(anti, 1.6) * band;
 }
+
+/** Spectral reflectance RGB weights of pale Hauptdolomit CaMg(CO3)2 rock explaining its vivid rose-orange alpenglow. */
+export function dolomiaCarbonateReflectance(): {
+  readonly r: number;
+  readonly g: number;
+  readonly b: number;
+} {
+  return { r: 0.78, g: 0.69, b: 0.61 };
+}
