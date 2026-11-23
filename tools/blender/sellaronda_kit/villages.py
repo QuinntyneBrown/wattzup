@@ -466,4 +466,12 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
     B["larch-warm"].box((avx, avy_p, avz + 2.35), (8.5, 2.2, 0.22), avy)
     for ap_o in (-3.8, 0.0, 3.8):
         B["larch-aged"].box((avx + math.cos(avy) * ap_o, avy_p + math.sin(avy) * ap_o, avz), (0.18, 2.0, 2.35), avy)
+    # Pranives ice-arena timber hall in Selva di Val Gardena (at=9005 m)
+    pr_i = road.index(9005.0)
+    pry = road.s[pr_i]["h"]
+    prx, pry_p, _ = road.at(pr_i, kit.kerb + 27.0)
+    if road.clear_of_road(prx, pry_p, 15.0, pr_i):
+        prz = height_at(prx, pry_p)
+        B["chalet-plaster"].box((prx, pry_p, prz - 1.4), (19.5, 13.5, 4.8), pry)
+        kit.gable(B["roof-slate"], (prx, pry_p, prz + 3.4), 20.6, 14.6, 2.2, pry)
     # [ANCHOR:villages]
