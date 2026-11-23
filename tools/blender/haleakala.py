@@ -26,6 +26,7 @@ MATERIALS: dict[str, dict] = {
     "hk-silver": {"color": 0xC9D4D2, "rough": 0.45},
     "hk-bloom": {"color": 0x7A2F44, "rough": 0.9},
     "hk-lava": {"color": 0x2A2626, "rough": 1.0},
+    "hk-lava-red": {"color": 0x6E3A2C, "rough": 1.0},
     # Upcountry: eucalyptus in grey-green, and the jacarandas of Kula in flower.
     "hk-eucalyptus": {"color": 0x6E8E6A, "rough": 0.9},
     "hk-eucalyptus-dark": {"color": 0x4E7252, "rough": 0.9},
@@ -591,6 +592,42 @@ def crater(k) -> int:
     return len(CONES) + len(cones)
 
 
+def boulder(k, b, c, r: float) -> None:
+    """A lump of lava: an irregular rock, wider than it is tall, sunk a little into the cinder."""
+    rng = k.rng
+    ring = [(c[0] + math.cos(q * math.tau / 6) * r * rng.uniform(0.7, 1.2), c[1] + math.sin(q * math.tau / 6) * r * rng.uniform(0.7, 1.2), c[2] + r * rng.uniform(0.15, 0.45)) for q in range(6)]
+    foot = [(p[0] + (p[0] - c[0]) * 0.15, p[1] + (p[1] - c[1]) * 0.15, c[2] - 0.3) for p in ring]
+    top = (c[0] + rng.uniform(-0.3, 0.3) * r, c[1] + rng.uniform(-0.3, 0.3) * r, c[2] + r * rng.uniform(0.6, 0.95))
+    for q in range(6):
+        n = (q + 1) % 6
+        b.quad(foot[q], foot[n], ring[n], ring[q])
+        b.tri(ring[q], ring[n], top)
+
+
+def lava_field(k) -> int:
+    """Detail 5, volcanic cinder: above the scrub the slopes are strewn with lava, black and oxidised red, from
+    fist-sized clinker to boulders a rider could shelter behind, thickest in the outcrops of old flows."""
+    rng, s, B = k.rng, k.s, k.B
+    shares = [height_share(k, i) for i in range(0, k.n, 25)]
+    strewn = 0
+    for i in range(6, k.n - 6):
+        if shares[i // 25] < 0.54:
+            continue
+        outcrop = math.sin(s[i]["d"] * 0.021) > 0.55
+        if rng.random() > (0.5 if outcrop else 0.1):
+            continue
+        side = rng.choice((1, -1))
+        off = (k.kerb + rng.uniform(2.6, 30.0)) * side
+        cx, cy, _ = k.road.at(i, off)
+        for _ in range(rng.randint(2, 5) if outcrop else 1):
+            x, y = cx + rng.uniform(-4.0, 4.0), cy + rng.uniform(-4.0, 4.0)
+            if not k.road.clear_of_road(x, y, 7.2, i):
+                continue
+            boulder(k, B["hk-lava" if rng.random() < 0.7 else "hk-lava-red"], (x, y, k.ground(x, y, i, off)), rng.uniform(0.4, 1.1) * (1.9 if outcrop and rng.random() < 0.25 else 1.0))
+            strewn += 1
+    return strewn
+
+
 def scenery(k) -> dict:
     posts = reflector_posts(k)
     cloud = cloud_sea(k)
@@ -599,4 +636,5 @@ def scenery(k) -> dict:
     ranch = ranch_land(k)
     coast = coastal_start(k)
     cones = crater(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords, "domes": domes, **ranch, **coast, "cinderCones": cones}
+    lava = lava_field(k)
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords, "domes": domes, **ranch, **coast, "cinderCones": cones, "boulders": lava}
