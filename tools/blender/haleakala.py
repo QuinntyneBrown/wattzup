@@ -13,7 +13,7 @@ from __future__ import annotations
 import math
 import random
 
-from worldkit import Painted, lin as _lin, smooth as _smooth
+from worldkit import Painted, lens, lin as _lin, smooth as _smooth
 
 CROWD = [f"crowd-{i}" for i in range(6)]
 
@@ -26,6 +26,11 @@ MATERIALS: dict[str, dict] = {
     "hk-silver": {"color": 0xC9D4D2, "rough": 0.45},
     "hk-bloom": {"color": 0x7A2F44, "rough": 0.9},
     "hk-lava": {"color": 0x2A2626, "rough": 1.0},
+    # Upcountry: eucalyptus in grey-green, and the jacarandas of Kula in flower.
+    "hk-eucalyptus": {"color": 0x6E8E6A, "rough": 0.9},
+    "hk-eucalyptus-dark": {"color": 0x4E7252, "rough": 0.9},
+    "hk-jacaranda": {"color": 0x8E6CD8, "rough": 0.9},
+    "hk-wire": {"color": 0x8E8E8A, "rough": 0.6, "double": True},
 }
 
 THEME: dict = {
@@ -377,9 +382,81 @@ def science_city(k) -> int:
     return stood
 
 
+RANCH = (0.1, 0.5)  # the share of the climb the ranch land lies between
+CATTLE = (0x2A2420, 0x6A4028, 0x8A5A38, 0xE8E2D4, 0x3A2A22)
+
+
+def cow(paint, rng, c, yaw: float) -> None:
+    """One of the ranch's cattle: a barrel on four legs, head down to graze or up to watch the riders pass."""
+    hide = _lin(CATTLE[rng.randrange(len(CATTLE))])
+    cs, sn = math.cos(yaw), math.sin(yaw)
+
+    def at(fwd: float, left: float, up: float):
+        return (c[0] + fwd * cs - left * sn, c[1] + fwd * sn + left * cs, c[2] + up)
+
+    for fwd in (0.7, -0.7):
+        for left in (0.24, -0.24):
+            paint.box(at(fwd, left, -0.2), (0.16, 0.16, 0.95), yaw, hide, 0.6)
+    paint.box(at(0, 0, 0.72), (2.0, 0.72, 0.78), yaw, hide, 0.8)
+    grazing = rng.random() < 0.6
+    paint.box(at(1.25, 0, 0.25 if grazing else 1.15), (0.6, 0.34, 0.42), yaw, hide, 0.9)
+    paint.box(at(1.05, 0, 0.6 if grazing else 0.95), (0.34, 0.3, 0.5), yaw, hide, 0.9)
+
+
+def ranch_land(k) -> dict:
+    """Detail 6, ranch land: on the middle slopes a post-and-wire fence runs along both sides of the road, cattle
+    graze the pasture behind it, and eucalyptus stand in lines with a jacaranda in flower among them."""
+    paint, rng, s, B = Painted(k), k.rng, k.s, k.B
+    shares = [height_share(k, i) for i in range(0, k.n, 25)]
+    cattle = trees = 0
+    for i in range(6, k.n - 6):
+        if not RANCH[0] < shares[i // 25] < RANCH[1]:
+            continue
+        # A post every 8 m and three strands between: by the road only, so in the group drawn near.
+        if i % 2 == 0 and abs(s[i]["k"]) < 1 / 60:
+            for side in (1, -1):
+                off = (k.kerb + 4.2) * side
+                x, y, z = k.road.at(i, off)
+                x1, y1, z1 = k.road.at(i + 2, off)
+                B["wood"].box((x, y, z - 0.5), (0.12, 0.12, 1.75), s[i]["h"])
+                for up in (0.45, 0.8, 1.15):
+                    B["hk-wire"].quad((x, y, z + up - 0.02), (x1, y1, z1 + up - 0.02), (x1, y1, z1 + up + 0.02), (x, y, z + up + 0.02))
+        if rng.random() < 0.035:
+            side = rng.choice((1, -1))
+            off = (k.kerb + rng.uniform(9.0, 40.0)) * side
+            cx, cy, _ = k.road.at(i, off)
+            for _ in range(rng.randint(2, 6)):
+                x, y = cx + rng.uniform(-9.0, 9.0), cy + rng.uniform(-9.0, 9.0)
+                if k.road.clear_of_road(x, y, 11.0, i):
+                    cow(paint, rng, (x, y, k.ground(x, y, i, off)), rng.uniform(0, math.tau))
+                    cattle += 1
+        if rng.random() < 0.07:
+            side = rng.choice((1, -1))
+            off = (k.kerb + rng.uniform(7.0, 30.0)) * side
+            x, y, _ = k.road.at(i, off)
+            if not k.road.clear_of_road(x, y, 10.0, i):
+                continue
+            z = k.ground(x, y, i, off)
+            if rng.random() < 0.2:
+                # A jacaranda: a low spreading crown, all flower.
+                k.prism(B["trunk-dark"], (x, y, z - 0.5), 0.3, 4.2, 5, 0.2)
+                for _ in range(3):
+                    lens(B["hk-jacaranda"], (x + rng.uniform(-2.0, 2.0), y + rng.uniform(-2.0, 2.0), z + rng.uniform(3.6, 4.8)), rng.uniform(2.2, 3.2), 1.9, rng)
+            else:
+                # A eucalyptus: tall and pale-trunked, its leaves in loose clumps up the stem.
+                tall = rng.uniform(11.0, 18.0)
+                k.prism(B["trunk"], (x, y, z - 0.5), 0.36, tall * 0.85, 5, 0.14)
+                for q in range(3):
+                    up = tall * (0.46 + 0.2 * q)
+                    lens(B["hk-eucalyptus" if q % 2 else "hk-eucalyptus-dark"], (x + rng.uniform(-1.4, 1.4), y + rng.uniform(-1.4, 1.4), z + up), rng.uniform(2.0, 3.0) * (1 - q * 0.14), 2.6, rng, 6)
+            trees += 1
+    return {"cattle": cattle, "ranchTrees": trees}
+
+
 def scenery(k) -> dict:
     posts = reflector_posts(k)
     cloud = cloud_sea(k)
     swords = silverswords(k)
     domes = science_city(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords, "domes": domes}
+    ranch = ranch_land(k)
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords, "domes": domes, **ranch}

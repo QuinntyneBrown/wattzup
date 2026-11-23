@@ -13,7 +13,7 @@ from __future__ import annotations
 import math
 import random
 
-from worldkit import Painted, lin as _lin, smooth as _smooth
+from worldkit import Painted, lens, lin as _lin, smooth as _smooth
 
 CROWD = [f"crowd-{i}" for i in range(6)]
 
@@ -486,21 +486,6 @@ def villages(k) -> int:
             houses += 1
         print(f"{site['name']}: {len(placed)} houses below the road {site['z']:.0f} m up, {k.s[site['i']]['d']:.0f} m from the start", flush=True)
     return houses
-
-
-def lens(b, c, r: float, thick: float, rng, sides: int = 7) -> None:
-    """A domed mound of leaves, flat underneath and wider than it is tall: an umbrella pine's crown, an olive's."""
-    wob = [rng.uniform(0.82, 1.15) for _ in range(sides)]
-    def ring(scale: float, up: float):
-        return [(c[0] + math.cos(q * math.tau / sides) * r * wob[q] * scale, c[1] + math.sin(q * math.tau / sides) * r * wob[q] * scale, c[2] + up) for q in range(sides)]
-
-    rim, shoulder = ring(1.0, 0.0), ring(0.62, thick * 0.72)
-    top, bottom = (c[0], c[1], c[2] + thick), (c[0], c[1], c[2] - thick * 0.12)
-    for q in range(sides):
-        n = (q + 1) % sides
-        b.quad(rim[q], rim[n], shoulder[n], shoulder[q])
-        b.tri(top, shoulder[q], shoulder[n])
-        b.tri(bottom, rim[n], rim[q])
 
 
 def umbrella_pine(k, x: float, y: float, z: float, lean: float) -> None:
