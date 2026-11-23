@@ -47,3 +47,34 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> None:
         for k_c in range(4):
             px_c, py_c, pz_c = kit.P(s_idx, 3.2 + k_c * 1.45, -(kit.kerb + 1.85), 0.0)
             _road_cyclist(B, px_c, py_c, pz_c, s_yaw + k_c * 0.3, jerseys[(k_c + 2) % len(jerseys)], standing=True)
+
+    # 3. Alpine adventure-touring motorbikes (GS / Multistrada style with panniers & headlamp) at pass aprons & valleys
+    moto_colours = ("parasol-red", "ladin-blue", "yellow", "paint")
+    for m_idx, p in enumerate(PASSES):
+        idx = road.index(p["at"] - 18.0)
+        yaw = s[idx]["h"] + 1.15
+        for slot in range(4):
+            mx, my, mz = kit.P(idx, -2.0 + slot * 1.65, kit.kerb + 2.6, 0.0)
+            _touring_motorbike(B, mx, my, mz, yaw, moto_colours[(m_idx + slot) % len(moto_colours)], with_rider=(slot == 0))
+
+    for open_d in (520.0, 2850.0, 5820.0, 8680.0, 11180.0):
+        idx = road.index(open_d)
+        yaw = s[idx]["h"] + math.pi  # oncoming touring motorbike in opposite outer lane verge
+        mx, my, mz = road.at(idx, kit.kerb - 0.85)
+        _touring_motorbike(B, mx, my, mz, yaw, moto_colours[int(open_d) % len(moto_colours)], with_rider=True)
+
+
+def _touring_motorbike(B, x: float, y: float, z: float, yaw: float, body_mat: str, with_rider: bool = False) -> None:
+    ca, sa = math.cos(yaw), math.sin(yaw)
+    # Chunky adventure tyres + engine block + beak fairing
+    for w_off in (-0.74, 0.74):
+        B["dark"].box((x + ca * w_off, y + sa * w_off, z + 0.02), (0.68, 0.18, 0.66), yaw)
+    B["steel"].box((x, y, z + 0.34), (1.42, 0.34, 0.52), yaw)
+    B[body_mat].box((x + ca * 0.24, y + sa * 0.24, z + 0.78), (0.95, 0.42, 0.38), yaw)
+    # Aluminum side panniers + top case + tall touring screen + glowing twin headlamp
+    B["steel"].box((x - ca * 0.52, y - sa * 0.52, z + 0.58), (0.56, 0.86, 0.42), yaw)
+    B["paint"].box((x + ca * 0.58, y + sa * 0.58, z + 1.06), (0.12, 0.36, 0.38), yaw)
+    B["bulb"].box((x + ca * 0.72, y + sa * 0.72, z + 0.88), (0.08, 0.28, 0.16), yaw)
+    if with_rider:
+        B["dark"].box((x - ca * 0.05, y - sa * 0.05, z + 0.92), (0.44, 0.42, 0.58), yaw)
+        B["paint"].box((x + ca * 0.06, y + sa * 0.06, z + 1.50), (0.28, 0.26, 0.28), yaw)
