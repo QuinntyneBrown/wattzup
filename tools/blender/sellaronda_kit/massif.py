@@ -514,4 +514,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     rock_tower(peaks, cx - 135.0, cy - 88.0, 655.0, 758.0, 68.0, 54.0, 8, 1.2, cfn, taper=0.52, flat_cap=False, seed_phase=3.4)
     # Classic Maria-Kante vertical south arête on Sass Pordoi
     rock_tower(peaks, sp_x + ux * 142.0 + px_perp * 35.0, sp_y + uy * 142.0 + py_perp * 35.0, 138.0, 578.0, 38.0, 32.0, 7, yaw_sp, cfn, taper=0.84, flat_cap=True, seed_phase=1.9)
+    # Cima Bamberg (3,001 m) inner plateau summit overlooking Rifugio Boè
+    rock_tower(peaks, cx + 18.0, cy + 168.0, 652.0, 752.0, 64.0, 52.0, 8, 0.3, cfn, taper=0.46, flat_cap=False, seed_phase=4.6)
     # [ANCHOR:massif]
