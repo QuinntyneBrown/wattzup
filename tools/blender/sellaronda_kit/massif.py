@@ -134,6 +134,7 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         (-155.0, 815.0, 445.0, 58.0, 46.0, 0.4),   # First Sella Tower (2,533 m)
         (-52.0,  785.0, 492.0, 64.0, 52.0, 1.1),   # Second Sella Tower (2,598 m)
         (58.0,   760.0, 548.0, 74.0, 58.0, 2.0),   # Third Sella Tower (2,696 m)
+        (18.0,   792.0, 468.0, 42.0, 36.0, 2.5),   # Campanile / Locomotiva spur on Sella Towers
         (162.0,  790.0, 498.0, 56.0, 48.0, 2.9),   # Fourth Sella Tower (2,605 m)
     )
     for lat, rad_out, h_top, rx_t, ry_t, ph in tower_specs:
