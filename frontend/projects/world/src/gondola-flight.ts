@@ -160,3 +160,8 @@ export function reversibleFuniviaHourlyPax(span: CableSpan, cabinPax = 65): numb
   const halfCycle = Math.max(1, span.traverseSeconds) + Math.max(0, span.dwellSeconds);
   return Math.round((3600 / halfCycle) * cabinPax);
 }
+
+/** Horizontal map distance (m) between lower and upper stations of `span`. */
+export function cablewayHorizontalSpanMetres(span: CableSpan): number {
+  return Math.hypot(span.to[0] - span.from[0], span.to[2] - span.from[2]);
+}
