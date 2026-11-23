@@ -347,6 +347,8 @@ def build_scenery(road, st: list[dict], length: float, height_at, course: dict, 
     # 9. Dusk terrace/village warm light pools (Enrosadira twilight)
     if m_alpenglow and hasattr(m_alpenglow, "emit_dusk_lights"):
         m_alpenglow.emit_dusk_lights(kit, road, height_at)
+    if m_alpenglow and hasattr(m_alpenglow, "build_valley_mist"):
+        m_alpenglow.build_valley_mist(B, road, height_at)
 
     # 10. Start/finish gates, effort arches, sun disc & alpenglow sky
     efforts = kit.gates("accent-2", "flag-0", themes.CROWD)
