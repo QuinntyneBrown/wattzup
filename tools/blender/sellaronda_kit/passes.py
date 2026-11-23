@@ -100,6 +100,7 @@ def build_four_passes(B, kit, road, height_at) -> None:
             B["paint"].box(kit.P(m_idx, 0.0, m_off, 1.12), (0.07, 0.72, 0.58), m_yaw)
             B["ladin-blue"].box(kit.P(m_idx, -0.02, m_off, 1.52), (0.08, 0.72, 0.18), m_yaw)
             B[steep_col].box(kit.P(m_idx, -0.02, m_off, 1.14), (0.08, 0.68, 0.14), m_yaw)
+            B["dark"].box(kit.P(m_idx, -0.02, m_off, 1.34), (0.08, 0.52, 0.08), m_yaw)
             d_mark -= 350.0
 
     # Summit panoramic belvedere platforms with brass Dolomite peak-finder orientation tables
