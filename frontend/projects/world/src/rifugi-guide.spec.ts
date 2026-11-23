@@ -11,6 +11,7 @@ import {
   rifugioElevationDropToNextValley,
   rifugiOnPass,
   rifugioSpecialtyDish,
+  rifugioStopDurationMinutes,
   rifugiWithinMetres,
   SELLA_RIFUGI,
 } from './rifugi-guide';
@@ -38,5 +39,6 @@ describe('SELLA_RIFUGI', () => {
     expect(meanRifugioAltitudeMetres()).toBeGreaterThan(2000);
     expect(findRifugioByName('Savoia')?.passId).toBe('pordoi');
     expect(findRifugioByName('')).toBeNull();
+    expect(rifugioStopDurationMinutes('espresso-strudel')).toBe(15);
   });
 });

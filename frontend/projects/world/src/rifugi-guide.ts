@@ -131,3 +131,17 @@ export function findRifugioByName(query: string): SellaRifugio | null {
   const hit = SELLA_RIFUGI.find((r) => r.name.toLowerCase().includes(q));
   return hit ?? null;
 }
+
+/** Typical cyclist terrace stop duration in minutes by `stopKind`. */
+export function rifugioStopDurationMinutes(
+  stopKind: 'bidon-refill' | 'espresso-strudel' | 'ladin-lunch',
+): number {
+  switch (stopKind) {
+    case 'bidon-refill':
+      return 3;
+    case 'espresso-strudel':
+      return 15;
+    case 'ladin-lunch':
+      return 45;
+  }
+}
