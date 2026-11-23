@@ -229,6 +229,7 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             bz_a = height_at(bx_a, by_a)
             B["larch-warm"].box((bx_a, by_a, bz_a - 0.3), (3.1, 1.8, 2.15), byaw)
             kit.gable(B["larch-aged"], (bx_a, by_a, bz_a + 1.85), 3.5, 2.2, 0.68, byaw)
+            B["chalet-wood"].box((bx_a + math.cos(byaw) * 1.56, by_a + math.sin(byaw) * 1.56, bz_a + 0.1), (0.08, 0.78, 1.55), byaw)
             for hv_k in range(4):
                 hx_c = bx_a + math.cos(byaw) * (-1.05 + hv_k * 0.7) - math.sin(byaw) * (-0.92 * bh_side)
                 hy_c = by_a + math.sin(byaw) * (-1.05 + hv_k * 0.7) + math.cos(byaw) * (-0.92 * bh_side)
