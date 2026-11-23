@@ -300,4 +300,14 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["steel"].box((tx_p, ty_p, tz_p), (0.55, 0.55, 10.5), psyaw)
         B["steel"].box((tx_p, ty_p, tz_p + 10.5), (0.48, 3.8, 0.42), psyaw)
 
+    # 12. Summer lift-maintenance 4x4 utility ATVs parked beside Arabba & Gardena terminals
+    for atv_m in (3435.0, 9935.0):
+        a_idx = road.index(atv_m)
+        ayaw = s[a_idx]["h"] + 0.5
+        ax_u, ay_u, _ = road.at(a_idx, -(kit.kerb + 9.5))
+        az_u = height_at(ax_u, ay_u)
+        B["dark"].box((ax_u, ay_u, az_u), (2.35, 1.35, 0.48), ayaw)
+        B["foliage"].box((ax_u + math.cos(ayaw) * 0.45, ay_u + math.sin(ayaw) * 0.45, az_u + 0.48), (1.15, 1.25, 0.78), ayaw)
+        B["yellow"].box((ax_u - math.cos(ayaw) * 0.55, ay_u - math.sin(ayaw) * 0.55, az_u + 0.48), (1.05, 1.28, 0.42), ayaw)
+
     return cableways_out
