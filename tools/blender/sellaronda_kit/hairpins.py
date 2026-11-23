@@ -221,4 +221,9 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         rf_i = road.index(rf_m)
         rfyaw = s[rf_i]["h"]
         B["steel"].box(kit.P(rf_i, 0.0, -(kit.kerb + 3.2), 4.6), (9.5, 0.12, 1.85), rfyaw)
+    # White-foaming stepped stone mountain torrent chutes below the 4 climb bridges
+    for casc_m in (1280.0, 3840.0, 6820.0, 9380.0):
+        cs_i = road.index(casc_m)
+        csyaw = s[cs_i]["h"]
+        B["glacier-ice"].box(kit.P(cs_i, 0.0, -(kit.kerb + 4.5), -1.8), (2.4, 7.5, 0.35), csyaw)
     # [ANCHOR:hairpins]
