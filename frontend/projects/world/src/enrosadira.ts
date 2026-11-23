@@ -78,3 +78,16 @@ export function twilightZenithLuminance(progress: number): number {
   const p = Math.max(0, Math.min(1, progress));
   return Number((0.88 - 0.72 * p * p).toFixed(4));
 }
+
+/** Alias of `Rgb` representing a normalized linear/sRGB Enrosadira tint. */
+export type EnrosadiraRgb = Rgb;
+
+/** High-altitude Dolomite snow/glacier RGB tint for sun-incidence `sunLit` (0 = shadow, 1 = direct Enrosadira). */
+export function snowfieldAlbedoTint(sunLit: number): EnrosadiraRgb {
+  const s = Math.max(0, Math.min(1, sunLit));
+  return {
+    r: 0.56 + 0.42 * s,
+    g: 0.7 + 0.18 * s,
+    b: 0.86 + 0.04 * s,
+  };
+}
