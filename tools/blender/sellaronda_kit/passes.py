@@ -189,3 +189,13 @@ def build_four_passes(B, kit, road, height_at) -> None:
         B["dark"].box(kit.P(st_idx, -0.03, off, 2.05), (0.13, 1.62, 0.45), st_yaw)
         B["neon-lime"].box(kit.P(st_idx, -0.05, off, 2.18), (0.14, 1.15, 0.18), st_yaw)
         B["ladin-blue"].box(kit.P(st_idx, 0.0, off, 3.12), (0.55, 0.72, 0.08), st_yaw + 0.3)
+
+    # Cold alpine spring bottle-refill fountains beside all 4 pass summit signs
+    for p in PASSES:
+        fn_idx = road.index(p["at"] + 10.5)
+        fn_yaw = s[fn_idx]["h"]
+        fx_s, fy_s, fz_s = kit.P(fn_idx, 0.0, -(kit.kerb + 2.45), -0.1)
+        B["stone"].box((fx_s, fy_s, fz_s), (0.52, 0.52, 1.18), fn_yaw)
+        B["stone"].box((fx_s + math.cos(fn_yaw) * 0.45, fy_s + math.sin(fn_yaw) * 0.45, fz_s), (0.85, 0.62, 0.48), fn_yaw)
+        B["lago-turquoise"].box((fx_s + math.cos(fn_yaw) * 0.45, fy_s + math.sin(fn_yaw) * 0.45, fz_s + 0.44), (0.68, 0.46, 0.08), fn_yaw)
+        B["gold"].box((fx_s + math.cos(fn_yaw) * 0.28, fy_s + math.sin(fn_yaw) * 0.28, fz_s + 0.92), (0.24, 0.08, 0.08), fn_yaw)
