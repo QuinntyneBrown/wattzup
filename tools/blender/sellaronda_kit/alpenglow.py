@@ -177,6 +177,11 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         m_i = road.index(mn_at)
         mx_h, my_h, _ = road.at(m_i, mn_off)
         kit.halo((mx_h, my_h, height_at(mx_h, my_h) + mn_z), "gold")
+    # Warm dusk light pools beneath the 4 village Bike Day overhead banners
+    for bn_m in (195.0, 3040.0, 6045.0, 8850.0):
+        b_i = road.index(bn_m)
+        bx_u, by_u, bz_u = road.at(b_i, 0.0, 5.1)
+        kit.light((bx_u, by_u, bz_u), "glow-lamp", 20.0, 0.52)
     # [ANCHOR:alpenglow-lights]
 
 
