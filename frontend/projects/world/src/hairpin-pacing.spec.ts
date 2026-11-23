@@ -5,6 +5,7 @@ import {
   centripetalGForce,
   classifyBendSeverity,
   countTornantiInCurvatures,
+  downhillTerminalCoastKmh,
   isInsideRockfallGallery,
   leanAngleDegrees,
   maxSafeCornerSpeedKmh,
@@ -44,5 +45,7 @@ describe('classifyBendSeverity', () => {
     expect(recommendedHairpinLine(-7, 0.022)).toBe('late-apex-descent');
     expect(maxSafeCornerSpeedKmh(0.05, 0.65)).toBeLessThan(45);
     expect(maxSafeCornerSpeedKmh(0, 0.65)).toBe(75);
+    expect(downhillTerminalCoastKmh(-7)).toBeGreaterThan(55);
+    expect(downhillTerminalCoastKmh(4)).toBe(0);
   });
 });

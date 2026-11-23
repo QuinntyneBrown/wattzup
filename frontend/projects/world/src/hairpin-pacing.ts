@@ -112,3 +112,13 @@ export function maxSafeCornerSpeedKmh(curvaturePerMetre: number, mu = 0.65): num
   const vMps = Math.sqrt((Math.max(0.2, mu) * 9.81) / k);
   return Math.min(75, Number((vMps * 3.6).toFixed(1)));
 }
+
+/** Terminal aero-tuck coasting speed (km/h) on a negative `gradePercent` descent at 2,000 m air density. */
+export function downhillTerminalCoastKmh(gradePercent: number, systemKg = 78, cda = 0.28): number {
+  if (gradePercent >= -0.5) return 0;
+  const slope = Math.abs(gradePercent) / 100;
+  const netSlope = Math.max(0.002, slope - 0.0045);
+  const rho = 0.98; // ~2,000 m Dolomite air density kg/m^3
+  const vMps = Math.sqrt((2 * systemKg * 9.81 * netSlope) / (rho * Math.max(0.18, cda)));
+  return Math.min(82, Number((vMps * 3.6).toFixed(1)));
+}
