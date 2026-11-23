@@ -479,4 +479,14 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["larch-warm"].box((prlx, prly_p, prlz + 1.0), (12.8, 9.0, 3.6), prly)
         kit.gable(B["roof-slate"], (prlx, prly_p, prlz + 4.6), 13.4, 9.6, 1.35, prly)
 
+    # 22. Seggiovia Sasso Levante drive station on the western Passo Sella saddle (at=7615 m)
+    sl_l = road.index(7615.0)
+    slly = s[sl_l]["h"]
+    sllx, slly_p, _ = road.at(sl_l, kit.kerb + 25.0)
+    if road.clear_of_road(sllx, slly_p, 14.0, sl_l):
+        sllz = height_at(sllx, slly_p)
+        B["stone"].box((sllx, slly_p, sllz - 1.4), (9.0, 6.2, 2.1), slly)
+        B["ladin-blue"].box((sllx, slly_p, sllz + 0.7), (9.4, 6.6, 2.7), slly)
+        kit.gable(B["steel"], (sllx, slly_p, sllz + 3.4), 10.0, 7.2, 1.1, slly)
+
     return cableways_out
