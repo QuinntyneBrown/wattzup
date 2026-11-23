@@ -82,6 +82,14 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     eul = max(1.0, math.hypot(eux, euy))
     eux, euy = eux / eul, euy / eul
     rock_tower(peaks, cx + eux * 855.0, cy + euy * 855.0, 125.0, 445.0, 36.0, 32.0, 8, math.atan2(euy, eux), cfn, taper=0.38, flat_cap=True, seed_phase=4.9)
+
+    # Vinatzer-Castiglioni south-face pillar & Punta Ciavazes gendarmes (at=6820 m)
+    vc_pt = road.s[road.index(6820.0)]
+    vux2, vuy2 = vc_pt["x"] - cx, vc_pt["y"] - cy
+    vul2 = max(1.0, math.hypot(vux2, vuy2))
+    vux2, vuy2 = vux2 / vul2, vuy2 / vul2
+    for g_off, g_top in ((-55.0, 485.0), (52.0, 512.0)):
+        rock_tower(peaks, cx + vux2 * 830.0 - vuy2 * g_off, cy + vuy2 * 830.0 + vux2 * g_off, 120.0, g_top, 44.0, 38.0, 8, math.atan2(vuy2, vux2), cfn, taper=0.52, flat_cap=True, seed_phase=1.3 + g_off * 0.01)
     top_ring = rings[-1]
     for k in range(sides):
         u = (k + 1) % sides
