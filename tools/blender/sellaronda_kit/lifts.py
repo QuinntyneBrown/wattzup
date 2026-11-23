@@ -60,3 +60,48 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> None:
     B["steel"].box((cx_cab, cy_cab, cz_cab - 3.2), (0.35, 0.35, 3.2), yaw_top)
     B["parasol-red"].box((cx_cab, cy_cab, cz_cab - 6.2), (4.6, 2.8, 3.0), yaw_top)
     B["paint"].box((cx_cab, cy_cab, cz_cab - 4.7), (4.7, 2.9, 1.1), yaw_top)
+
+    # 2. Four Sellaronda chairlift / gondola pylon lines crossing & flanking the passes
+    lift_corridors = (
+        (1820.0, 1.0, 5),   # Campolongo / Cherz chairlift
+        (3420.0, 1.0, 6),   # Arabba / Fodom gondola line
+        (7480.0, 1.0, 6),   # Passo Sella / Forcella del Sassolungo telecabina line
+        (9920.0, 1.0, 6),   # Passo Gardena / Dantercepies gondola line
+    )
+    for at_m, side_dir, n_pylons in lift_corridors:
+        idx = road.index(at_m)
+        yaw_l = s[idx]["h"] + 1.38 * side_dir
+        clx, cly = math.cos(yaw_l), math.sin(yaw_l)
+        base_x, base_y, _ = road.at(idx, -(kit.kerb + 14.0) * side_dir)
+        pylon_tops = []
+        for k in range(n_pylons):
+            dist_k = k * 46.0
+            px_k = base_x + clx * dist_k
+            py_k = base_y + cly * dist_k
+            pz_k = height_at(px_k, py_k)
+            if not road.clear_of_road(px_k, py_k, kit.kerb + 3.5, idx):
+                pz_k = s[idx]["z"]
+            h_pylon = 12.5 + k * 1.4
+            # Concrete foundation pad + inclined tubular steel mast + T-head cross-arm & sheave beams
+            B["stone"].box((px_k, py_k, pz_k - 0.8), (1.8, 1.8, 1.1), yaw_l)
+            B["steel"].box((px_k, py_k, pz_k + 0.3), (0.62, 0.62, h_pylon), yaw_l)
+            B["steel"].box((px_k, py_k, pz_k + h_pylon), (0.55, 4.4, 0.48), yaw_l)
+            B["dark"].box((px_k, py_k, pz_k + h_pylon - 0.35), (1.85, 4.6, 0.28), yaw_l)
+            pylon_tops.append((px_k, py_k, pz_k + h_pylon + 0.15))
+            # Summer-quiet grassy piste marker lollipops along the cleared slope below
+            if k > 0:
+                B["parasol-red"].box((px_k - cly * 7.5, py_k + clx * 7.5, pz_k), (0.10, 0.10, 1.8), yaw_l)
+                B["parasol-red"].box((px_k - cly * 7.5, py_k + clx * 7.5, pz_k + 1.65), (0.08, 0.52, 0.52), yaw_l)
+
+        p_perp_x, p_perp_y = -cly, clx
+        for k in range(len(pylon_tops) - 1):
+            a, b = pylon_tops[k], pylon_tops[k + 1]
+            for lat_c in (-1.9, 1.9):
+                _cable_segment(
+                    B,
+                    (a[0] + p_perp_x * lat_c, a[1] + p_perp_y * lat_c, a[2]),
+                    (b[0] + p_perp_x * lat_c, b[1] + p_perp_y * lat_c, b[2]),
+                    thickness=0.10,
+                    sag=1.4,
+                    steps=5,
+                )
