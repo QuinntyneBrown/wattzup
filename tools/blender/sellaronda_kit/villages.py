@@ -270,3 +270,16 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         gx_a, gy_a, gz_a = kit.P(g_idx, 0.0, (kit.kerb + 6.4) * gd_s, -0.1)
         B["dolomite-pale"].box((gx_a, gy_a, gz_a), (0.95, 0.72, 2.25), road.s[g_idx]["h"])
         B["gold"].box((gx_a, gy_a, gz_a + 1.35), (0.99, 0.44, 0.44), road.s[g_idx]["h"])
+
+    # Traditional octagonal Tyrolean Musikpavillon village bandstands in Corvara & Selva
+    for mp_m, mp_s in ((380.0, -1.0), (8965.0, 1.0)):
+        m_idx = road.index(mp_m)
+        mx_p, my_p, _ = road.at(m_idx, (kit.kerb + 15.0) * mp_s)
+        if road.clear_of_road(mx_p, my_p, 11.0, m_idx):
+            mz_p = height_at(mx_p, my_p)
+            B["stone"].box((mx_p, my_p, mz_p - 0.8), (6.4, 6.4, 1.35), 0.0)
+            B["larch-warm"].box((mx_p, my_p, mz_p + 0.55), (5.8, 0.18, 0.95), 0.0)
+            for col_a in range(4):
+                ca_p, sa_p = math.cos(col_a * math.pi * 0.5 + 0.4), math.sin(col_a * math.pi * 0.5 + 0.4)
+                B["larch-aged"].box((mx_p + ca_p * 2.6, my_p + sa_p * 2.6, mz_p + 0.55), (0.24, 0.24, 3.15), 0.0)
+            kit.gable(B["copper-patina"], (mx_p, my_p, mz_p + 3.70), 7.2, 7.2, 2.15, 0.0)
