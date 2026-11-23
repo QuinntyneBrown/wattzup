@@ -1688,7 +1688,10 @@ def build_sky(col, az: float, haze_hex: int, colour_at=sky.sunset_sky_colour, tu
                 glow += -0.22 * smoothstep(0.7, 0.8, u) * (1 - smoothstep(0.84, 0.95, u)) + 0.16 * smoothstep(0.9, 1.0, u)
                 glow = max(0.0, min(1.0, glow))
                 cloud = sky.ramp(((0.0, 0x432A52), (0.4, 0x7A3550), (0.62, 0xD8603A), (0.82, 0xFF9A48), (1.0, 0xFFD89A)), glow * (0.55 + 0.45 * sunward))
-                line.append(on_sky(d, lit(d, sky.grade(cloud), 0.95 * smoothstep(0.02, 0.28, u)), 0.97))
+                # Cloud has no edge: at its outline (its two sides and its top) it is the sky behind it, and
+                # comes to its own colour a quarter of the way in. It was a shape cut out of card.
+                soft = min(1.0, (1.0 - abs(v)) * 4.0) * min(1.0, (1.0 - u) * rows)
+                line.append(on_sky(d, lit(d, sky.grade(cloud), 0.95 * smoothstep(0.02, 0.28, u) * soft), 0.97))
                 ways.append(d)
             grid.append(line)
         if k in SKY_FLASHES:

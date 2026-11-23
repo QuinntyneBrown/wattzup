@@ -199,6 +199,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Palms 12 | A palm against the sun is dark from root to tip: its trunk is drawn with its leaves, and comes into sight with its crown, not before it | 60.3, 60.2 and 60.1 fps (from 8,150, 4,450 and 600 m) | 51.4 and 51.4 fps after (the finish, 118,759 triangles: 1,140 fewer); Neon Docklands beside it 57.4, 55.7 |
 | Plane 4 | The aeroplane is a dark shape against the sunset, its cabin windows and wingtip lights burning: it was lit white, as at noon | 60.4 and 60.2 fps (from 4,450 and 8,150 m) | 50.5 and 39.1 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 44.9, 57.3 |
 | Sky 20 | A clear band of gold between the sea and the cloud's burning edge, towards the sun: the deck came down almost to the horizon | 60.3, 60.2 and 60.2 fps (from 4,450, 8,150 and 3,250 m) | 57.0 and 40.0 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 55.8, 52.6 |
+| Sky 21 | The thunderheads have no edge: at its outline each is the sky behind it, and comes to its own colour a quarter of the way in | 59.8 and 60.3 fps (from 4,450 and 8,150 m) | 51.7 and 41.4 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 55.9, 45.9 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -677,6 +678,15 @@ between the sea and the deck's burning edge is a clear band of sky, pale gold by
 two to four degrees deep, which the land and the haze hid: the sky was red cloud to the ground. The slot is five
 to nine degrees deep towards the sun now, and narrows away from it to what it was. The sun sets through it, in the
 clear, with the deck above it.
+
+### Sky 21: thunderheads with no edge
+
+`sky-21.jpg` (above: the thunderhead left of the island from 8,150 m; below: two of them from 4,450 m). The
+thunderheads on the horizon were shapes cut out of purple card: a hard outline, plum against the red sky, and in
+some views a flat wedge. Cloud has no edge. At its outline (its two sides and its top) each is painted the colour
+of the sky behind it, and comes to its own colour a quarter of the way in: its dark heart and its lit shoulder
+stand in the sky and fade into it. The sky has no way to draw a thing half seen through, so the fade is in the
+paint; no triangles are added.
 
 ### Low power: where the frames go (after Party 20)
 
