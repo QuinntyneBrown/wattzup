@@ -4,6 +4,7 @@ import {
   bikeDayRidersPerKm,
   passClimbMinutesEstimate,
   pelotonDraftSavingPercent,
+  vamMetresPerHour,
 } from './bikeday-peloton';
 
 describe('bikeDayClimbSpeedKmh', () => {
@@ -20,5 +21,7 @@ describe('bikeDayClimbSpeedKmh', () => {
     expect(passClimbMinutesEstimate(9.4, 6.8, 360)).toBeLessThan(
       passClimbMinutesEstimate(9.4, 6.8, 220),
     );
+    expect(vamMetresPerHour(7.5, 300)).toBeGreaterThan(950);
+    expect(vamMetresPerHour(-5, 250)).toBe(0);
   });
 });
