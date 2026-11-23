@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  aerobicMaxPowerFactor,
   passAirTemperatureCelsius,
   relativeAirDensity,
   windChillCelsius,
@@ -17,5 +18,8 @@ describe('dolomite-weather', () => {
     expect(rho).toBeLessThan(0.83);
     expect(windChillCelsius(10, 55)).toBeLessThan(8);
     expect(windChillCelsius(20, 40)).toBe(20);
+    expect(aerobicMaxPowerFactor(0)).toBe(1);
+    expect(aerobicMaxPowerFactor(2240)).toBeLessThan(0.94);
+    expect(aerobicMaxPowerFactor(2240)).toBeGreaterThan(0.89);
   });
 });
