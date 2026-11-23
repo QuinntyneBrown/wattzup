@@ -357,4 +357,6 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         460.0,
         snow=True,
     )
+    # Rifugio Viel dal Pan (2,432 m) on the panoramic Padon ridge facing Marmolada
+    rock_tower(peaks, pordoi_pt["x"] + mux * 675.0 - mpx * 145.0, pordoi_pt["y"] + muy * 675.0 - mpy * 145.0, 298.0, 314.0, 13.5, 9.5, 6, yaw_mm, cfn, taper=0.95, flat_cap=True, seed_phase=0.4)
     # [ANCHOR:peaks]
