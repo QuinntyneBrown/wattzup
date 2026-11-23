@@ -104,8 +104,11 @@ export function windowMaterial(
   const grain = texture(detail, panel.mul(vec2(1.1, 1.5)).add(pick(6)))
     .r.mul(0.5)
     .add(0.75);
-  const timber = vec3(0.09, 0.1, 0.1).mul(day);
-  const masonry = vec3(0.52, 0.5, 0.46).mul(grain).mul(day);
+  // Warm aged-larch / dark-stained timber muntin frames & pale Dolomite stone sills/lintels.
+  const timber = mix(vec3(0.14, 0.1, 0.075), vec3(0.09, 0.1, 0.11), step(0.5, pick(8)))
+    .mul(grain)
+    .mul(day);
+  const masonry = vec3(0.56, 0.53, 0.48).mul(grain).mul(day);
 
   // A loading door fills its panel: a steel frame and a roller shutter of slats. A dark one is shut; a lit one is
   // part-way up, and under it the bay shows, lit like a room.
