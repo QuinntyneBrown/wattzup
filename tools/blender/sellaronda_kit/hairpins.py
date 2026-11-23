@@ -351,4 +351,9 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
     for gw_m in (4558.0, 4632.0, 9658.0, 9722.0):
         gwi = road.index(gw_m)
         B["yellow"].box(kit.P(gwi, 0.0, kit.kerb + 0.55, 0.0), (0.09, 0.09, 2.15), s[gwi]["h"])
+    # Historic carved stone provincial road-district boundary plinths at Campolongo, Pordoi & Sella
+    for pb_m in (2102.0, 4952.0, 7742.0):
+        pbi = road.index(pb_m)
+        B["dolomite-pale"].box(kit.P(pbi, 0.0, kit.kerb + 1.55, -0.05), (0.42, 0.42, 1.12), s[pbi]["h"])
+        B["parasol-red"].box(kit.P(pbi, 0.0, kit.kerb + 1.55, 0.92), (0.44, 0.44, 0.18), s[pbi]["h"])
     # [ANCHOR:hairpins]
