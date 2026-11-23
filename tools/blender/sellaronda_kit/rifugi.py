@@ -28,6 +28,7 @@ def _rifugio_complex(B, kit, road, height_at, at_m: float, side: float, main_w: 
     B["chalet-plaster"].box((rx, ry, base_z + 3.2), (main_w + 0.3, main_d + 0.3, upper_h), yaw)
     # Top timber gable attic + steep slate roof + masonry chimney
     B["larch-aged"].box((rx, ry, base_z + 3.2 + upper_h - 0.6), (main_w + 0.4, main_d + 0.4, 0.7), yaw)
+    B["dark"].box((rx - math.sin(yaw) * -(main_d * 0.5 + 0.22), ry + math.cos(yaw) * -(main_d * 0.5 + 0.22), base_z + 3.0 + upper_h), (0.65, 0.12, 0.65), yaw)
     kit.gable(B["roof-slate"], (rx, ry, base_z + 3.2 + upper_h), main_w + 1.4, main_d + 1.4, 3.4, yaw)
     B["steel"].box((rx - math.sin(yaw) * -(main_d * 0.5 + 0.45), ry + math.cos(yaw) * -(main_d * 0.5 + 0.45), base_z + 3.35 + upper_h), (main_w + 0.8, 0.08, 0.18), yaw)
     # Traditional wooden alpine rooftop bell-turret (campaniletto) straddling the ridge
