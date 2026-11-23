@@ -399,4 +399,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     )
     # Eastern flanking buttress of Puez-Odle visible from Passo Gardena
     rock_tower(peaks, gar_pt["x"] + gux * 1360.0 + gpx * 310.0, gar_pt["y"] + guy * 1360.0 + gpy * 310.0, 55.0, 745.0, 165.0, 125.0, 9, math.atan2(-guy, -gux), cfn, taper=0.46, flat_cap=False, seed_phase=4.8)
+    # Sasso delle Dodici outlier peak framing lower Val di Fassa
+    dod_pt = road.s[road.index(5880.0)]
+    ddux, dduy = dod_pt["x"] - cx, dod_pt["y"] - cy
+    ddul = max(1.0, math.hypot(ddux, dduy))
+    ddux, dduy = ddux / ddul, dduy / ddul
+    rock_tower(peaks, dod_pt["x"] + ddux * 1490.0, dod_pt["y"] + dduy * 1490.0, 48.0, 685.0, 175.0, 130.0, 9, math.atan2(-dduy, -ddux), cfn, taper=0.44, flat_cap=False, seed_phase=2.5)
     # [ANCHOR:peaks]
