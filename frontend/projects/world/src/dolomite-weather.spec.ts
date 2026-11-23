@@ -5,6 +5,7 @@ import {
   barometricHectopascals,
   boilingPointCelsiusAtAltitude,
   hasAfternoonCumulusRisk,
+  oxygenPartialPressureKpa,
   passAirTemperatureCelsius,
   recommendedDescentLayer,
   relativeAirDensity,
@@ -36,5 +37,6 @@ describe('dolomite-weather', () => {
     expect(airDensityDragSavingPercent(2240)).toBeGreaterThan(18);
     expect(hasAfternoonCumulusRisk(16.5, 27)).toBe(true);
     expect(hasAfternoonCumulusRisk(9.0, 27)).toBe(false);
+    expect(oxygenPartialPressureKpa(2240)).toBeLessThan(oxygenPartialPressureKpa(0));
   });
 });
