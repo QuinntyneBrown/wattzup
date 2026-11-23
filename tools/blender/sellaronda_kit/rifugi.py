@@ -27,6 +27,12 @@ def _rifugio_complex(B, kit, road, height_at, at_m: float, side: float, main_w: 
     # Traditional wooden alpine rooftop bell-turret (campaniletto) straddling the ridge
     B["larch-warm"].box((rx, ry, base_z + 3.2 + upper_h + 3.1), (1.05, 1.05, 1.55), yaw)
     kit.gable(B["larch-aged"], (rx, ry, base_z + 3.2 + upper_h + 4.65), 1.35, 1.35, 0.72, yaw)
+    # Flush rooftop solar thermal collector array common on eco-certified Südtirol mountain hotels
+    B["ladin-blue"].box(
+        (rx - math.cos(yaw) * (main_w * 0.24) - math.sin(yaw) * (main_d * 0.24), ry - math.sin(yaw) * (main_w * 0.24) + math.cos(yaw) * (main_d * 0.24), base_z + 3.2 + upper_h + 1.45),
+        (4.2, 2.1, 0.18),
+        yaw,
+    )
     B["stone"].box(
         (rx + math.cos(yaw) * (main_w * 0.28), ry + math.sin(yaw) * (main_w * 0.28), base_z + 3.2 + upper_h + 1.2),
         (0.95, 0.95, 2.8),
