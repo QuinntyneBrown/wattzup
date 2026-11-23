@@ -56,6 +56,9 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         for slot in range(4):
             mx, my, mz = kit.P(idx, -2.0 + slot * 1.65, kit.kerb + 2.6, 0.0)
             _touring_motorbike(B, mx, my, mz, yaw, moto_colours[(m_idx + slot) % len(moto_colours)], with_rider=(slot == 0))
+            if slot == 2:
+                B["dark"].box((mx + 0.85, my - 0.55, mz), (0.34, 0.38, 1.48), yaw + 0.6)
+                B["parasol-red"].box((mx + 0.85, my - 0.55, mz + 1.48), (0.26, 0.26, 0.26), yaw + 0.6)
 
     for open_d in (520.0, 2850.0, 5820.0, 8680.0, 11180.0):
         idx = road.index(open_d)
