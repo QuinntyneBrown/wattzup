@@ -74,4 +74,17 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
                 fz = height_at(fx, fy)
                 B[fmat].box((fx, fy, fz - 0.05), (0.38, 0.38, 0.24), rng.uniform(0.0, math.pi))
 
+    # 4. Traditional Ladin split-larch pasture fences (Stangenzaun) bordering mid-elevation meadows
+    for fence_start, fence_end, side in ((980.0, 1340.0, 1.0), (6420.0, 6740.0, 1.0), (9120.0, 9440.0, -1.0), (10520.0, 10840.0, 1.0)):
+        i0, i1 = road.index(fence_start), road.index(fence_end)
+        for idx in range(i0, i1, 2):
+            fx, fy, _ = road.at(idx, (kit.kerb + 5.8) * side)
+            if not road.clear_of_road(fx, fy, kit.kerb + 4.5, idx):
+                continue
+            fz = height_at(fx, fy)
+            yaw = s[idx]["h"]
+            B["larch-aged"].box((fx, fy, fz - 0.15), (0.14, 0.14, 1.25), yaw)
+            B["larch-warm"].box((fx + math.cos(yaw) * 4.0, fy + math.sin(yaw) * 4.0, fz + 0.78), (8.2, 0.08, 0.10), yaw)
+            B["larch-warm"].box((fx + math.cos(yaw) * 4.0, fy + math.sin(yaw) * 4.0, fz + 0.42), (8.2, 0.08, 0.10), yaw)
+
     return trees
