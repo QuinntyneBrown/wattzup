@@ -378,4 +378,6 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         525.0,
         snow=True,
     )
+    # Col de Puez (2,725 m) high karst dome crowning the Puez plateau
+    rock_tower(peaks, gar_pt["x"] + gux * 1240.0 + gpx * 15.0, gar_pt["y"] + guy * 1240.0 + gpy * 15.0, 520.0, 778.0, 145.0, 115.0, 9, math.atan2(-guy, -gux), cfn, taper=0.58, flat_cap=False, seed_phase=1.1)
     # [ANCHOR:peaks]
