@@ -100,6 +100,9 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> None:
             B["steel"].box((px_k, py_k, pz_k + 0.3), (0.62, 0.62, h_pylon), yaw_l)
             B["steel"].box((px_k, py_k, pz_k + h_pylon), (0.55, 4.4, 0.48), yaw_l)
             B["dark"].box((px_k, py_k, pz_k + h_pylon - 0.35), (1.85, 4.6, 0.28), yaw_l)
+            # Maintenance steel ladder + yellow tower-number plate on each pylon mast
+            B["dark"].box((px_k - clx * 0.38, py_k - cly * 0.38, pz_k + 0.8), (0.08, 0.38, h_pylon - 1.0), yaw_l)
+            B["yellow"].box((px_k - clx * 0.36, py_k - cly * 0.36, pz_k + h_pylon * 0.62), (0.10, 0.52, 0.52), yaw_l)
             pylon_tops.append((px_k, py_k, pz_k + h_pylon + 0.15))
             # Summer-quiet grassy piste marker lollipops along the cleared slope below
             if k > 0:
