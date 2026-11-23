@@ -98,6 +98,7 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         b_yaw = s[b_idx]["h"]
         for side in (-1.0, 1.0):
             B["stone"].box(kit.P(b_idx, 0.0, (kit.kerb + 0.85) * side, -2.8), (12.0, 0.85, 3.85), b_yaw)
+            B["dolomite-pale"].box(kit.P(b_idx, 0.0, (kit.kerb + 0.92) * side, -0.85), (7.2, 0.92, 0.45), b_yaw)
             B["dolomite-pale"].box(kit.P(b_idx, 0.0, (kit.kerb + 0.85) * side, 1.05), (12.4, 0.96, 0.18), b_yaw)
             B["paint"].box(kit.P(b_idx, 0.0, (kit.kerb + 0.38) * side, 0.45), (1.35, 0.08, 0.48), b_yaw)
             for end_o in (-6.2, 6.2):
