@@ -57,3 +57,12 @@ class Painted:
         self.face((p(a, -d, 0), p(-a, -d, 0), p(-a, 0, rise), p(a, 0, rise)), (shade,) * 4)
         self.face((p(-a, -d, 0), p(-a, d, 0), p(-a, 0, rise)), (shade,) * 3)
         self.face((p(a, d, 0), p(a, -d, 0), p(a, 0, rise)), (colour,) * 3)
+
+    def panel(self, corner, along, out, a0: float, a1: float, z0: float, z1: float, proud: float, colour) -> None:
+        """A flat panel on a wall (a window, a shutter, a door): the wall runs from `corner` along the unit vector
+        `along` and faces the unit vector `out`; the panel spans a0..a1 metres along it and z0..z1 up, standing
+        `proud` of it."""
+        def p(a, z):
+            return (corner[0] + along[0] * a + out[0] * proud, corner[1] + along[1] * a + out[1] * proud, z)
+
+        self.face((p(a0, z0), p(a1, z0), p(a1, z1), p(a0, z1)), (colour,) * 4)

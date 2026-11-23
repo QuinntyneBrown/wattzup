@@ -417,6 +417,34 @@ def terraces(k) -> int:
 # The houses' plaster: pinks, ochres, yellows and creams, a terracotta red and a pale green now and then.
 PASTELS = (0xE8A08C, 0xE9B384, 0xF0CF82, 0xF3DDA6, 0xE98F7C, 0xF2C7A0, 0xD9776A, 0xF6E6C4, 0xE7B8A8, 0xC9D3A6, 0xEBC27A, 0xDD8E6E)
 ROOFS = (0xB5674A, 0xA85C44, 0x8C8A86, 0x9A948C)
+# Persiane, the louvred shutters: the dark Ligurian green on most houses, brown or grey-blue on a few.
+SHUTTERS = (0x2F6B4A, 0x2F6B4A, 0x2F6B4A, 0x35755A, 0x6A4A32, 0x4A6272)
+PANE = 0x27303A
+FLOOR = 3.05  # a storey's height, in metres
+
+
+def windows(paint, rng, c, size, yaw: float, floors: int) -> None:
+    """A house's windows, painted on its walls: on each storey a pane between a pair of open shutters, or the
+    shutters closed over it. The wall that looks out to sea, which no rider sees, has none."""
+    hx, hy = size[0] / 2, size[1] / 2
+    cs, sn = math.cos(yaw), math.sin(yaw)
+    corners = [(c[0] + dx * cs - dy * sn, c[1] + dx * sn + dy * cs) for dx, dy in ((-hx, -hy), (hx, -hy), (hx, hy), (-hx, hy))]
+    shutter, pane = _lin(SHUTTERS[rng.randrange(len(SHUTTERS))]), _lin(PANE)
+    for q in range(4):
+        a, b = corners[q], corners[(q + 1) % 4]
+        wide = math.hypot(b[0] - a[0], b[1] - a[1])
+        along = ((b[0] - a[0]) / wide, (b[1] - a[1]) / wide)
+        out = (along[1], -along[0])
+        if out[1] > 0.5:
+            continue
+        columns = max(1, int(wide / 3.1))
+        for storey in range(floors):
+            for column in range(columns):
+                mid = (column + 0.5) * wide / columns
+                z = c[2] + storey * FLOOR + 1.05
+                paint.panel(a, along, out, mid - 0.85, mid + 0.85, z, z + 1.5, 0.05, shutter)
+                if rng.random() < 0.72:
+                    paint.panel(a, along, out, mid - 0.42, mid + 0.42, z + 0.04, z + 1.46, 0.09, pane)
 
 
 def villages(k) -> int:
@@ -443,10 +471,11 @@ def villages(k) -> int:
             wide, deep = rng.uniform(5.6, 8.2), rng.uniform(6.0, 9.0)
             floors = rng.randint(3, 6)
             yaw = rng.uniform(-0.22, 0.22) + (math.pi / 2 if rng.random() < 0.35 else 0.0)
-            tall = floors * 3.05 + fall
+            tall = floors * FLOOR + fall
             wall = _lin(PASTELS[rng.randrange(len(PASTELS))])
             paint.box((x, y, z - fall - 1.5), (wide, deep, tall + 1.5), yaw, wall)
-            paint.roof((x, y, z + floors * 3.05), wide, deep, rng.uniform(0.9, 1.6), yaw, _lin(ROOFS[rng.randrange(len(ROOFS))]))
+            paint.roof((x, y, z + floors * FLOOR), wide, deep, rng.uniform(0.9, 1.6), yaw, _lin(ROOFS[rng.randrange(len(ROOFS))]))
+            windows(paint, rng, (x, y, z), (wide, deep), yaw, floors)
             houses += 1
         print(f"{site['name']}: {len(placed)} houses below the road {site['z']:.0f} m up, {k.s[site['i']]['d']:.0f} m from the start", flush=True)
     return houses
