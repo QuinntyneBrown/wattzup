@@ -239,6 +239,8 @@ export class CourseRenderer implements WorldRenderer {
   private sunset: { pivot: Group; out: number; up: number } | null = null;
   /** The stars a map carries, brought out as the evening draws in. */
   private stars: MeshBasicMaterial | null = null;
+  /** Their mesh: not drawn at all until the first of them shows. */
+  private starField: Mesh | null = null;
   private readonly hazeAt = new Color();
   private sunAt = 1;
   /** The aeroplane a map carries, flown across the sky from the eye (plane-flight.ts); and where it is. */
@@ -512,6 +514,7 @@ export class CourseRenderer implements WorldRenderer {
     this.skyFine = null;
     this.sunset = null;
     this.stars = null;
+    this.starField = null;
     this.walkers.length = 0;
     this.walking.length = 0;
     this.strides.length = 0;
@@ -769,6 +772,7 @@ export class CourseRenderer implements WorldRenderer {
         // Carried with the sky, over the dome and under the cloud that drifts.
         mesh.renderOrder = -0.85;
         this.stars = material as MeshBasicMaterial;
+        this.starField = mesh;
         painted.push(mesh);
         return;
       }
@@ -1133,6 +1137,7 @@ export class CourseRenderer implements WorldRenderer {
       // The evening draws in as the course is ridden: the painted sky, the haze under it and the sun's light.
       const { sky, light, stars } = dusk(metres / course.end, this.evening);
       if (this.stars) this.stars.opacity = stars;
+      if (this.starField) this.starField.visible = stars > 0.004;
       if (this.sunset) {
         const { pivot, out, up } = this.sunset;
         pivot.position.y = out * Math.tan((this.evening.sun * Math.PI) / 180) - up;

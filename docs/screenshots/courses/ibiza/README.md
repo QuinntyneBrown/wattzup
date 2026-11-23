@@ -566,6 +566,23 @@ many poses: all within a hand's breadth of one height and all of one build.
 All of it is dealt from dice of its own, so who stands where, what they do and what they hold is as it was, and
 the map has exactly the triangles it had: none more on any tier.
 
+### Low power: where the frames go (after Party 20)
+
+The low-power stand-in (the low tier with the processor slowed six times) has not held 60 fps on this machine on
+any pass, for Ibiza or for Neon Docklands beside it. A profile of the finish (`WZ_BENCH_PROFILE=1`) says why:
+
+- **It is the script, not the picture.** Of ten seconds, 7.8 are spent in script. A frame takes about 20 ms of it
+  where 16.7 would do, so every few frames one is missed: 40 to 50 fps, or 57 to 59 on a run that just fits.
+- **No one thing is slow.** The costliest function is 2.8% of the time. It is the cost of each thing drawn (77 draw
+  calls at Ibiza's finish, 58 in Neon Docklands), and Neon Docklands with a quarter fewer is no faster.
+- **Once a second, the ride's tick takes 30 to 90 ms** (a timer in the app's main bundle, on either map): two to
+  five frames lost each second, whatever the map draws. That is the ride's display, not this map, and is not
+  changed here.
+
+**One thing taken out.** The stars were drawn, at no brightness, for the first third of the course. They are not
+drawn now until the first of them shows: one draw call fewer there (81 to 80 from 600 m). At the finish nothing
+changes (77 draw calls, 119,897 triangles; 49.4 fps on this run).
+
 ### Party 1: people with drinks
 
 **Before** (`ibiza-01-strip.jpg`): each dancer was five boxes in one colour, both arms in the air. **After**
