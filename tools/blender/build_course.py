@@ -1754,6 +1754,8 @@ def build_themed_scenery(road: Road, st: list[dict], length: float, height_at, c
     s = road.s
     tail, fin = road.index(length - 220), road.index(length)
     az = math.atan2(s[fin]["y"] - s[tail]["y"], s[fin]["x"] - s[tail]["x"])
+    # The sun stands over the finish unless the theme says where it is (`sun_azimuth`, radians from Blender's +X).
+    az = theme.get("sun_azimuth", az)
     fx, fy = s[fin]["x"], s[fin]["y"]
     alt = theme.get("sun_altitude", 0.1)
     dist_, radius = 5200.0, 300.0 if theme.get("night") else 420.0

@@ -117,6 +117,8 @@ climb for a col). All seven map worlds have one:
 Every map has the start pylons and lights, the finish arch, barriers and crowds at both ends, an arch at the
 foot of every effort, flags where each recovery begins and arrow boards round every tight bend.
 
+The sun stands over the finish unless a theme sets `sun_azimuth` (radians from Blender's +X), as Cinque Terre does for its evening light from the west.
+
 A theme whose road is a public one, not a circuit, sets `kerbs` to false: no red-and-white kerbs round its bends, as on Haleakalā.
 
 A theme may lay its own road (`lay`) and build its own land (`land_builder`), as Cinque Terre's does: each is a function

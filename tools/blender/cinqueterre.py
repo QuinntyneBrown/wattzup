@@ -46,6 +46,9 @@ THEME: dict = {
     # The sun is a pale gold disc, not Ibiza's red one, and the chevrons at the foot of an effort are road paint.
     "palette": {"asphalt": 0x4C4A48, "sand": 0xA5997C, "sea": 0x0F5F8A, "stone": 0x978E79, "sun": 0xFFF2CC, "chevron": 0xF2EEE2},
     "land": {"low": 0xA39A6E, "mid": 0x6F8A48, "high": 0x55733C, "rock": 0x8A847A},
+    # Detail 10, golden light: evening. The sun is low in the west over the sea, behind a rider heading down the
+    # coast, so it lies gold on the facades, the terrace walls and the cliffs ahead, and the shadows run on in front.
+    "sun_azimuth": math.radians(162),
     # A provincial road, not a circuit: no red-and-white kerbs round its bends.
     "kerbs": False,
     "terrain": {"sea": True, "cliff": True, "rise": 48.0, "far": 8.0},
