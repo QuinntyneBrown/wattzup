@@ -494,4 +494,9 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         B["chalet-plaster"].box((lpx, lpy_p, lpz - 1.0), (14.5, 10.2, 9.2), lpy)
         B["gold"].box((lpx, lpy_p, lpz + 5.6), (14.7, 10.4, 0.85), lpy)
         kit.gable(B["roof-slate"], (lpx, lpy_p, lpz + 8.2), 15.4, 11.0, 3.0, lpy)
+    # Pale-dolomite village square memorial columns in Corvara & Arabba
+    for vm_m, vm_s in ((272.0, -1.0), (3132.0, 1.0)):
+        vmi = road.index(vm_m)
+        vmx, vmy, vmz = kit.P(vmi, 0.0, (kit.kerb + 9.2) * vm_s, 0.0)
+        B["dolomite-pale"].box((vmx, vmy, vmz), (0.95, 0.95, 3.45), 0.0)
     # [ANCHOR:villages]
