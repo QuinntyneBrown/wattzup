@@ -115,6 +115,23 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     lupx, lupy = -luuy, luux
     for lat_lu, top_lu in ((-85.0, 565.0), (88.0, 548.0)):
         rock_tower(peaks, cx + luux * 745.0 + lupx * lat_lu, cy + luuy * 745.0 + lupy * lat_lu, 105.0, top_lu, 96.0, 78.0, 10, math.atan2(luuy, luux), cfn, taper=0.70, flat_cap=True, seed_phase=4.2 + lat_lu * 0.01)
+
+    # Forcella Antersass (2,839 m) high northern snow-saddle notch
+    an_pt = road.s[road.index(9950.0)]
+    anux, anuy = an_pt["x"] - cx, an_pt["y"] - cy
+    anul = max(1.0, math.hypot(anux, anuy))
+    anux, anuy = anux / anul, anuy / anul
+    anpx, anpy = -anuy, anux
+    quad_shaded(
+        peaks,
+        (cx + anux * 695.0 - anpx * 45.0, cy + anuy * 695.0 - anpy * 45.0, 565.0),
+        (cx + anux * 695.0 + anpx * 45.0, cy + anuy * 695.0 + anpy * 45.0, 565.0),
+        (cx + anux * 545.0 + anpx * 32.0, cy + anuy * 545.0 + anpy * 32.0, 635.0),
+        (cx + anux * 545.0 - anpx * 32.0, cy + anuy * 545.0 - anpy * 32.0, 635.0),
+        cfn,
+        600.0,
+        snow=True,
+    )
     top_ring = rings[-1]
     for k in range(sides):
         u = (k + 1) % sides
