@@ -422,4 +422,14 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         lnz = height_at(lnx, lny)
         B["steel"].box((lnx, lny, lnz), (4.8, 0.95, 1.35), s[ln_i]["h"])
 
+    # 19. Seggiovia Sodlisia drive terminal on the Colfosco meadow slope (at=10840 m)
+    sd_i = road.index(10840.0)
+    sdy = s[sd_i]["h"] + 0.4
+    sdx, sdy_p, _ = road.at(sd_i, -(kit.kerb + 22.0))
+    if road.clear_of_road(sdx, sdy_p, 12.0, sd_i):
+        sdz = height_at(sdx, sdy_p)
+        B["stone"].box((sdx, sdy_p, sdz - 1.5), (9.4, 6.4, 2.2), sdy)
+        B["larch-warm"].box((sdx, sdy_p, sdz + 0.7), (9.8, 6.8, 2.9), sdy)
+        kit.gable(B["roof-slate"], (sdx, sdy_p, sdz + 3.6), 10.4, 7.4, 1.15, sdy)
+
     return cableways_out
