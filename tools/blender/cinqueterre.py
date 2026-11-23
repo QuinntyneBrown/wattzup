@@ -572,6 +572,9 @@ def villages(k) -> int:
             # Vernazza's castle and church have their own ground.
             if site["name"] == "Vernazza" and any(math.hypot(x - site["x"] - lx, y - site["y"] - ly) < reach for lx, ly, reach in (*LANDMARKS[1:], (*castle_place(k, site), 36.0), *piazza_ground(k, site))):
                 continue
+            # Each of the other villages keeps the ground of its parish church.
+            if site["name"] != "Vernazza" and math.hypot(x - parish_place(k, site)[0], y - parish_place(k, site)[1]) < 24.0:
+                continue
             # Not on the cliff under the road, and not where the rock is too steep to build on.
             fall = max(abs(k.height_at(x + 5.0, y) - z), abs(k.height_at(x, y + 5.0) - z))
             if fall > 7.5 or k.road.tree.find((x, y, 0.0))[2] < 13.5:
@@ -818,6 +821,57 @@ def boats(k) -> int:
 
 # Vernazza's castle and church, from the village's place on the road: across, out to sea, and the ground each keeps.
 LANDMARKS = ((36.0, 66.0, 17.0), (-32.0, 56.0, 19.0), (-32.0, 40.0, 9.0))
+
+
+def parish_place(k, site: dict) -> tuple[float, float]:
+    """Where a village's parish church stands: on the seaward side of the road as a rider comes into the village."""
+    j = max(site["i"] - 12, 2)
+    x, y, _ = k.road.at(j, 27.0 * seaward(k, j))
+    return x, y
+
+
+def parishes(k) -> int:
+    """Detail 6, Riomaggiore and Corniglia (and Monterosso and Manarola): each village has its parish church by
+    the road where a rider comes in, as Vernazza has Santa Margherita. The nave stands on a footing of rock with
+    a rose window in its gable; the bell tower beside it is banded in dark and pale stone, the Ligurian way, under
+    a low pyramid of tiles. Each village's is its own colour."""
+    paint, s = Painted(k), k.s
+    dark, pale, tile, rock, glass = _lin(0x4A4A4E), _lin(0xE8E2D2), _lin(0xB5674A), _lin(0x7A705E), _lin(PANE)
+    naves = {"Monterosso": 0xE8D8B0, "Corniglia": 0xD9C9A8, "Manarola": 0xE2C48E, "Riomaggiore": 0xE6B8A0}
+    built = 0
+    for site in village_sites(s):
+        if site["name"] == "Vernazza":
+            continue
+        j = max(site["i"] - 12, 2)
+        x, y = parish_place(k, site)
+        yaw, z = s[j]["h"], s[j]["z"] - 2.5
+        low = min(k.height_at(x + dx, y + dy) for dx in (-9, 9) for dy in (-9, 9))
+        cs, sn = math.cos(yaw), math.sin(yaw)
+        wall = _lin(naves[site["name"]])
+        paint.box((x, y, min(low, z) - 3.0), (27.0, 13.0, z - min(low, z) + 3.2), yaw, rock, 0.55)
+        paint.box((x, y, z), (20.0, 9.5, 9.0), yaw, wall, 0.8)
+        paint.roof((x, y, z + 9.0), 20.0, 9.5, 2.8, yaw, tile)
+        # The gable towards the oncoming rider: a door, and the rose window over it.
+        out, along = (-cs, -sn), (-sn, cs)
+        corner = (x + out[0] * 10.0 - along[0] * 4.75, y + out[1] * 10.0 - along[1] * 4.75, 0.0)
+        for band in range(9):
+            if band % 2:
+                paint.panel(corner, along, out, 0.0, 9.5, z + band, z + band + 1.0, 0.03, dark)
+        paint.panel(corner, along, out, 3.75, 5.75, z, z + 3.4, 0.07, _lin(0x5A3A26))
+        paint.panel(corner, along, out, 3.65, 5.85, z + 5.2, z + 7.4, 0.07, pale)
+        paint.panel(corner, along, out, 4.0, 5.5, z + 5.55, z + 7.05, 0.1, glass)
+        # The campanile at the nave's far end, banded.
+        bx, by = x + cs * 12.5, y + sn * 12.5
+        for band in range(8):
+            paint.box((bx, by, z + band * 3.0), (5.0, 5.0, 3.0), yaw, dark if band % 2 else pale, 0.9)
+        for q in range(4):
+            a = yaw + q * math.pi / 2
+            o, al = (math.cos(a), math.sin(a)), (math.sin(a), -math.cos(a))
+            c = (bx + o[0] * 2.5 - al[0] * 0.8, by + o[1] * 2.5 - al[1] * 0.8, 0.0)
+            paint.panel(c, al, o, 0.0, 1.6, z + 20.0, z + 23.0, 0.05, glass)
+        paint.tube((bx, by, z + 24.0), 3.9, 0.2, 4.2, tile, _lin(0xC9785A), 4, _lin(0xC9785A))
+        built += 1
+    return built
 
 
 def piazza_ground(k, site: dict) -> list[tuple[float, float, float]]:
@@ -1258,8 +1312,9 @@ def scenery(k) -> dict:
     path = footpath(k)
     harbour = vernazza(k)
     parasols = piazza(k)
+    churches = parishes(k)
     works = vineyard_works(k)
     afloat = on_the_water(k)
     rocks = sea_rocks(k)
     furniture = road_furniture(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "lemonTrees": lemons, "houses": houses, "plants": plants, "boats": hauled, **path, "castle": harbour, "parasols": parasols, **works, "afloat": afloat, **rocks, **furniture}
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "lemonTrees": lemons, "houses": houses, "plants": plants, "boats": hauled, **path, "castle": harbour, "parasols": parasols, "parishChurches": churches, **works, "afloat": afloat, **rocks, **furniture}
