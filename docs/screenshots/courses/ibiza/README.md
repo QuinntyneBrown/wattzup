@@ -197,6 +197,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Sky 19 | The sun is the brightest thing in its sky: its disc glows where it was a dull ball, darker than the sky round it | 60.1 and 60.3 fps (from 8,150 and 4,450 m) | 55.9 and 53.1 fps after (the finish, 119,899 triangles: none more); Neon Docklands beside it 57.3, 56.2 |
 | Palms 11 | Palms stand dark against the sunset: a crown seen towards the sun loses up to seven tenths of its colour, and one seen away from it is lit as it was | 60.3, 60.3 and 60.4 fps (from 8,150, 4,450 and 600 m) | 53.3 and 42.1 fps after (the finish, 119,899 triangles: none more); Neon Docklands beside it 45.5, 44.8 |
 | Palms 12 | A palm against the sun is dark from root to tip: its trunk is drawn with its leaves, and comes into sight with its crown, not before it | 60.3, 60.2 and 60.1 fps (from 8,150, 4,450 and 600 m) | 51.4 and 51.4 fps after (the finish, 118,759 triangles: 1,140 fewer); Neon Docklands beside it 57.4, 55.7 |
+| Plane 4 | The aeroplane is a dark shape against the sunset, its cabin windows and wingtip lights burning: it was lit white, as at noon | 60.4 and 60.2 fps (from 4,450 and 8,150 m) | 50.5 and 39.1 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 44.9, 57.3 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -659,6 +660,14 @@ crown with the leaves. The trunk is drawn with the leaves now, so:
 - **a trunk comes into sight with its crown.** The leaves are drawn to 210 m and the walls to 250 m: between the
   two a palm was a bare pole. It is not drawn there now, which is 1,140 triangles fewer at the finish on the low
   tier (118,759), with the same draw calls (77).
+
+### Plane 4: a dark shape against the sunset
+
+`plane-04.jpg` (the aeroplane from 8,150 m, enlarged). In the photograph the airliner coming in over the party
+is a dark shape on the burning sky. Ours crosses in front of the sun, so the rider sees its shaded side, and it
+was lit a clean white and grey as at noon. Its painted colours are drawn at under a third of their brightness
+now, a deep plum, and what is lit of its own stands out against that: the row of cabin windows, the wingtip
+lights, the beacon and the strobes. Nothing is added.
 
 ### Low power: where the frames go (after Party 20)
 

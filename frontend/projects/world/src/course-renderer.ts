@@ -134,6 +134,8 @@ const START_LIGHTS = 150;
 const FINE_SKY_FROM = 2;
 /** How much brighter than the painted sky the sun's disc is drawn. */
 const DISC_BRIGHT = 1.7;
+/** What the aeroplane's painted colours are multiplied by: it is seen against the light. */
+const PLANE_IN_SHADE = 0x4a3a44;
 /** How much of a leaf's colour is lost seen straight against the setting sun. */
 const LEAF_SILHOUETTE = 0.72;
 /** How often, in frames, the chunks to draw are chosen. */
@@ -592,7 +594,14 @@ export class CourseRenderer implements WorldRenderer {
         toneMapped: false,
       }),
       // The aeroplane in the sky (aeroplane.py): too far off for the haze on the road to be its haze.
-      Plane: new MeshLambertMaterial({ ...lit, fog: false, transparent: true }),
+      // It crosses in front of the setting sun: seen from the road it is in its own shade, a dark shape on the
+      // bright sky with its lights burning (L2-166 AC100), not a white aeroplane at noon.
+      Plane: new MeshLambertMaterial({
+        ...lit,
+        color: PLANE_IN_SHADE,
+        fog: false,
+        transparent: true,
+      }),
       PlaneLights: new MeshBasicMaterial({ ...glow, fog: false, transparent: true }),
       StartRed: new MeshBasicMaterial(glow),
       // The stars: light added to the sky's, none until the evening draws in (dusk.ts).
