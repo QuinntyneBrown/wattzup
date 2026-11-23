@@ -487,4 +487,13 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["larch-aged"].box((mcx, mcy, mcz), (1.45, 0.85, 0.55), s[mci]["h"])
             B["steel"].box((mcx, mcy, mcz + 0.55), (0.85, 0.38, 0.62), s[mci]["h"])
 
+    # Four-legged larch forestry wildlife lookout high-seats (Hochsitze) at forest edges
+    for hs_m in (1020.0, 5620.0):
+        hsi = road.index(hs_m)
+        hsx, hsy, _ = road.at(hsi, -(kit.kerb + 22.0))
+        if road.clear_of_road(hsx, hsy, 14.0, hsi):
+            hsz = height_at(hsx, hsy)
+            B["larch-aged"].box((hsx, hsy, hsz), (1.25, 1.25, 3.6), 0.2)
+            B["larch-warm"].box((hsx, hsy, hsz + 3.6), (1.45, 1.45, 1.25), 0.2)
+
     return trees
