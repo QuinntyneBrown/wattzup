@@ -42,7 +42,7 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         radii.append(755.0 * flute)
 
     tiers = (
-        (1.26, 40.0, False),
+        (1.275, 38.0, False),
         (1.00, 155.0, False),
         (0.96, 285.0, False),
         (0.92, 302.0, True),
