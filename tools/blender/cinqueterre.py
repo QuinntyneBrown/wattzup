@@ -540,7 +540,7 @@ def villages(k) -> int:
             if z < 3.5 or any(math.hypot(x - px, y - py) < 7.4 for px, py in placed):
                 continue
             # Vernazza's castle and church have their own ground.
-            if site["name"] == "Vernazza" and any(math.hypot(x - site["x"] - lx, y - site["y"] - ly) < reach for lx, ly, reach in (*LANDMARKS[1:], (*castle_place(k, site), 36.0))):
+            if site["name"] == "Vernazza" and any(math.hypot(x - site["x"] - lx, y - site["y"] - ly) < reach for lx, ly, reach in (*LANDMARKS[1:], (*castle_place(k, site), 36.0), *piazza_ground(k, site))):
                 continue
             # Not on the cliff under the road, and not where the rock is too steep to build on.
             fall = max(abs(k.height_at(x + 5.0, y) - z), abs(k.height_at(x, y + 5.0) - z))
@@ -790,6 +790,15 @@ def boats(k) -> int:
 LANDMARKS = ((36.0, 66.0, 17.0), (-32.0, 56.0, 19.0), (-32.0, 40.0, 9.0))
 
 
+def piazza_ground(k, site: dict) -> list[tuple[float, float, float]]:
+    """The ground the piazza keeps clear of houses, as LANDMARKS gives it: from the village's middle."""
+    out = []
+    for i in range(site["i"], site["i"] + 11, 2):
+        x, y, _ = k.road.at(i, (k.kerb + 6.0) * seaward(k, i))
+        out.append((x - site["x"], y - site["y"], 11.0))
+    return out
+
+
 def castle_place(k, site: dict) -> tuple[float, float]:
     """Where the Doria castle stands, from the village's middle: on the seaward side of the road just past it,
     close enough that no house row stands between it and the rider."""
@@ -847,6 +856,43 @@ def vernazza(k) -> bool:
     paint.tube((bx, by, z + 29.0), 3.5, 2.2, 1.6, tile, tile, 8)
     paint.tube((bx, by, z + 30.6), 2.2, 0.0, 2.6, tile, _lin(0xC9785A), 8)
     return True
+
+
+PARASOLS = (0xF2C230, 0xD9483A, 0xF6F2E6, 0x2F7FB8, 0xE8853A)
+
+
+def piazza(k) -> int:
+    """Detail 5, Vernazza harbour: the piazza. On the seaward side of the road before the castle a paved terrace
+    stands out over the houses below, behind its own low wall, set with café tables under parasols, each a
+    different colour, and a few people at them."""
+    sites = village_sites(k.s)
+    if len(sites) < 2:
+        return 0
+    paint, rng, s = Painted(k), k.rng, k.s
+    site = sites[1]
+    paving, wall, pole, table = _lin(0xC9BFA8), _lin(0x978E79), _lin(0xE8E4DA), _lin(0x6A4A30)
+    set_out = 0
+    for i in range(site["i"] + 1, site["i"] + 10):
+        if abs(s[i]["k"]) > 1 / 70:
+            continue
+        sea, yaw = seaward(k, i), s[i]["h"]
+        x, y, z = k.road.at(i, (k.kerb + 5.6) * sea)
+        # The terrace's slab, and the wall along its outer edge.
+        paint.box((x, y, z - 6.0), (k.step + 0.1, 8.4, 6.12), yaw, paving, 0.6)
+        ox, oy, _ = k.road.at(i, (k.kerb + 9.7) * sea)
+        paint.box((ox, oy, z + 0.1), (k.step + 0.1, 0.4, 0.95), yaw, wall, 0.9)
+        if i % 2:
+            continue
+        for off in (3.6, 7.4):
+            px, py, _ = k.road.at(i, (k.kerb + off + rng.uniform(-0.4, 0.4)) * sea)
+            colour = _lin(PARASOLS[rng.randrange(len(PARASOLS))])
+            paint.box((px, py, z + 0.1), (0.07, 0.07, 2.5), yaw, pole, 1.0)
+            paint.tube((px, py, z + 2.15), 1.65, 0.08, 0.7, colour, tuple(v * 0.8 for v in colour[:3]) + (1.0,), 8)
+            paint.box((px + 0.5, py + 0.3, z + 0.1), (0.8, 0.8, 0.74), yaw + 0.4, table, 0.9)
+            if rng.random() < 0.6:
+                hiker(paint, rng, (px - 0.6, py - 0.5, z + 0.12), rng.uniform(0, math.tau))
+            set_out += 1
+    return set_out
 
 
 def vineyard_works(k) -> dict:
@@ -1181,8 +1227,9 @@ def scenery(k) -> dict:
     hauled = boats(k)
     path = footpath(k)
     harbour = vernazza(k)
+    parasols = piazza(k)
     works = vineyard_works(k)
     afloat = on_the_water(k)
     rocks = sea_rocks(k)
     furniture = road_furniture(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "lemonTrees": lemons, "houses": houses, "plants": plants, "boats": hauled, **path, "castle": harbour, **works, "afloat": afloat, **rocks, **furniture}
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "lemonTrees": lemons, "houses": houses, "plants": plants, "boats": hauled, **path, "castle": harbour, "parasols": parasols, **works, "afloat": afloat, **rocks, **furniture}
