@@ -370,4 +370,11 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     hb_g = road.index(2068.0)
     B["larch-warm"].box(kit.P(hb_g, 0.0, -(kit.kerb + 8.5), 0.35), (3.2, 0.35, 0.14), road.s[hb_g]["h"] + 0.2)
     B["larch-aged"].box(kit.P(hb_g, 0.0, -(kit.kerb + 8.5), 0.0), (0.35, 0.55, 0.38), road.s[hb_g]["h"])
+    # Alpine wellness relaxation pavilion beside Hotel Savoia on Passo Pordoi (at=4938 m)
+    sv_w = road.index(4938.0)
+    svwy = road.s[sv_w]["h"]
+    svwx, svwy_p, _ = road.at(sv_w, -(kit.kerb + 14.5))
+    svwz = max(height_at(svwx, svwy_p), road.s[sv_w]["z"] - 0.5)
+    B["larch-warm"].box((svwx, svwy_p, svwz), (5.4, 4.2, 2.85), svwy)
+    B["glow-window"].box((svwx, svwy_p, svwz + 0.65), (5.46, 2.8, 1.55), svwy)
     # [ANCHOR:rifugi-global]
