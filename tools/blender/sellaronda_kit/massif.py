@@ -198,3 +198,12 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         foot_r = (cx + ux_c * 975.0 + px_c * 88.0, cy + uy_c * 975.0 + py_c * 88.0, 72.0)
         tri_shaded(peaks, foot_l, foot_m, top_cone, cfn, 145.0, snow=False)
         tri_shaded(peaks, foot_m, foot_r, top_cone, cfn, 145.0, snow=False)
+
+    # Bec de Mezdì (2,967 m) & Piz da Lec southeastern bastions framing Campolongo -> Arabba (at=2650 m)
+    bec_pt = road.s[road.index(2650.0)]
+    bdx, bdy = bec_pt["x"] - cx, bec_pt["y"] - cy
+    bdl = max(1.0, math.hypot(bdx, bdy))
+    bux, buy = bdx / bdl, bdy / bdl
+    bpx, bpy_ = -buy, bux
+    for lat_bm, h_bm in ((-110.0, 595.0), (95.0, 560.0)):
+        rock_tower(peaks, cx + bux * 740.0 + bpx * lat_bm, cy + buy * 740.0 + bpy_ * lat_bm, 105.0, h_bm, 108.0, 86.0, 11, math.atan2(buy, bux), cfn, taper=0.64, flat_cap=False, seed_phase=5.1 + lat_bm * 0.01)
