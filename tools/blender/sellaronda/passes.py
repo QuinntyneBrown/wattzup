@@ -29,3 +29,20 @@ def build_four_passes(B, kit, road, height_at) -> None:
         B["steel"].box(kit.P(idx, -4.0, kit.kerb + 2.1, 0.0), (0.11, 0.11, 2.75), yaw)
         B["ladin-blue"].box(kit.P(idx, -4.0, kit.kerb + 2.1, 2.35), (1.65, 0.08, 0.34), yaw + 0.35)
         B["paint"].box(kit.P(idx, -4.0, kit.kerb + 2.1, 1.95), (1.55, 0.08, 0.30), yaw - 0.25)
+
+    # Fausto Coppi stone memorial obelisk & Giro d'Italia Cima Coppi pink stele on Passo Pordoi (2,239 m)
+    pordoi_idx = road.index(4950.0)
+    p_yaw = s[pordoi_idx]["h"]
+    mx, my, _ = road.at(pordoi_idx, -(kit.kerb + 6.8))
+    mz = height_at(mx, my)
+    B["stone"].box((mx, my, mz - 0.6), (5.8, 4.4, 0.85), p_yaw)
+    B["dolomite-pale"].box((mx, my, mz + 0.25), (2.4, 1.5, 1.35), p_yaw)
+    B["dolomite-pale"].box((mx, my, mz + 1.60), (1.35, 0.95, 3.10), p_yaw)
+    B["dolomite-pale"].box((mx, my, mz + 4.70), (0.85, 0.65, 1.15), p_yaw)
+    # Bronze Campionissimo relief plaque & bust silhouette
+    B["larch-aged"].box((mx - math.sin(p_yaw) * -0.52, my + math.cos(p_yaw) * -0.52, mz + 2.15), (0.75, 0.14, 0.95), p_yaw)
+    # Rose-pink Giro Cima Coppi commemorative totem beside the monument
+    gx, gy, _ = road.at(pordoi_idx + 4, -(kit.kerb + 4.5))
+    gz = height_at(gx, gy)
+    B["dark"].box((gx, gy, gz - 0.2), (0.95, 0.65, 0.35), p_yaw)
+    B["accent-2"].box((gx, gy, gz + 0.15), (0.62, 0.22, 2.65), p_yaw + 0.2)
