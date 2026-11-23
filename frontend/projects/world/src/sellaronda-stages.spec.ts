@@ -3,6 +3,7 @@ import {
   cadenceComplianceScore,
   classifySellaRidingPhase,
   loopCompletionFraction,
+  passDifficultyMultiplier,
   recommendedRiderPosture,
   resistanceToRoadGradePercent,
 } from './sellaronda-stages';
@@ -24,5 +25,8 @@ describe('sellaronda-stages', () => {
     expect(cadenceComplianceScore(60, 85)).toBeLessThan(30);
     expect(resistanceToRoadGradePercent(26)).toBeGreaterThan(7);
     expect(resistanceToRoadGradePercent(8)).toBeLessThan(0);
+    expect(passDifficultyMultiplier('sella')).toBeGreaterThan(
+      passDifficultyMultiplier('campolongo'),
+    );
   });
 });
