@@ -320,4 +320,13 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
                 B["hay"].box((hx_r, hy_r, hz_r - 0.1), (1.85, 1.85, 1.95), rk_o)
                 B["larch-aged"].box((hx_r, hy_r, hz_r + 1.85), (0.14, 0.14, 0.65), 0.0)
 
+    # Upright lookout alpine marmots (Marmota marmota) on sunny Pordoi & Sella boulders
+    for mm_m, mm_s in ((4740.0, 1.0), (7410.0, 1.0), (7890.0, 1.0), (10090.0, -1.0)):
+        m_idx = road.index(mm_m)
+        mx_m, my_m, _ = road.at(m_idx, (kit.kerb + 6.2) * mm_s)
+        if road.clear_of_road(mx_m, my_m, kit.kerb + 4.0, m_idx):
+            mz_m = height_at(mx_m, my_m)
+            B["dolomite-pale"].box((mx_m, my_m, mz_m - 0.2), (1.35, 1.05, 0.68), mm_m * 0.1)
+            B["larch-warm"].box((mx_m, my_m, mz_m + 0.48), (0.22, 0.20, 0.44), s[m_idx]["h"])
+
     return trees
