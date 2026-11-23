@@ -463,4 +463,8 @@ def build_four_passes(B, kit, road, height_at) -> None:
     for sp_m in (4890.0, 7690.0):
         spi = road.index(sp_m)
         B["accent-2"].box(kit.P(spi, 0.0, -(kit.kerb + 1.45), 1.65), (0.08, 0.58, 0.58), s[spi]["h"])
+    # Commemorative 1909 Grande Strada delle Dolomiti stone tablet on Passo Sella (at=7760 m)
+    gs_s = road.index(7760.0)
+    B["dolomite-pale"].box(kit.P(gs_s, 0.0, -(kit.kerb + 3.1), -0.1), (0.95, 0.36, 1.55), s[gs_s]["h"])
+    B["gold"].box(kit.P(gs_s, 0.0, -(kit.kerb + 2.9), 0.85), (0.68, 0.06, 0.48), s[gs_s]["h"])
     # [ANCHOR:passes]
