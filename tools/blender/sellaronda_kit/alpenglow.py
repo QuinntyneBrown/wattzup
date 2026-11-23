@@ -251,6 +251,11 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         czi = road.index(cz_l)
         czx, czy, czz = road.at(czi, 6.5, 2.8)
         kit.light((czx, czy, czz), "glow-window", 18.0, 0.52)
+    # Evening entrance halos on Boè, Ciampinoi & Borest valley lift stations
+    for vh_m, vh_o in ((695.0, -(kit.kerb + 20.0)), (8835.0, -(kit.kerb + 20.0)), (11260.0, kit.kerb + 19.0)):
+        vhi = road.index(vh_m)
+        vhx, vhy, _ = road.at(vhi, vh_o)
+        kit.halo((vhx, vhy, height_at(vhx, vhy) + 4.5), "glow-window")
     # [ANCHOR:alpenglow-lights]
 
 
