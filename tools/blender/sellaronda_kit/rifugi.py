@@ -340,4 +340,11 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     B["foliage"].box(kit.P(hb_s, 0.0, -(kit.kerb + 8.8), 0.55), (3.1, 1.10, 0.25), road.s[hb_s]["h"])
     # Brass telescope on Rifugio Frara's terrace facing Cascata del Pisciadù
     B["gold"].box((frx, fry, frz + 1.15), (0.52, 0.16, 0.16), fryaw + 1.4)
+    # Chalet Gerard cantilevered panoramic larch sun deck facing Sassolungo (at=9412 m)
+    cg_r = road.index(9412.0)
+    cgry = road.s[cg_r]["h"]
+    cgx_r, cgy_r, _ = road.at(cg_r, kit.kerb + 7.2)
+    cgz_r = max(height_at(cgx_r, cgy_r), road.s[cg_r]["z"] - 0.3)
+    B["larch-warm"].box((cgx_r, cgy_r, cgz_r - 1.2), (7.5, 4.4, 1.35), cgry)
+    B["larch-aged"].box((cgx_r, cgy_r, cgz_r + 0.15), (7.3, 0.16, 0.95), cgry)
     # [ANCHOR:rifugi-global]
