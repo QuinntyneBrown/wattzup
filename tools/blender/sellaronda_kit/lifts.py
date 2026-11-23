@@ -134,6 +134,7 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["steel"].box((base_x + clx * 6.2, base_y + cly * 6.2, st_z + 4.4), (0.14, 7.8, 0.95), yaw_l)
         B["larch-warm"].box((base_x - clx * 6.8 - cly * 3.8, base_y - cly * 6.8 + clx * 3.8, st_z), (2.4, 2.2, 2.55), yaw_l)
         B["steel"].box((base_x - clx * 6.8 + cly * 4.2, base_y - cly * 6.8 - clx * 4.2, st_z), (1.35, 0.85, 1.15), yaw_l)
+        B["pine"].box((base_x - clx * 7.8, base_y - cly * 7.8, st_z), (0.22, 1.45, 2.35), yaw_l)
         # Compact stone-and-steel electrical substation hut beside each lift terminal
         sub_x, sub_y = base_x - clx * 9.5, base_y - cly * 9.5
         sub_z = height_at(sub_x, sub_y)
