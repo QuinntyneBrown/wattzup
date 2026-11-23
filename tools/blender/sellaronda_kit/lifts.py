@@ -84,6 +84,7 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
     # 2. Four Sellaronda chairlift / gondola pylon lines crossing & flanking the passes
     lift_corridors = (
         (1820.0, 1.0, 5),   # Campolongo / Cherz chairlift
+        (2165.0, -1.0, 4),  # Campolongo / Costoratta chairlift
         (3420.0, 1.0, 6),   # Arabba / Fodom gondola line
         (7480.0, 1.0, 6),   # Passo Sella / Forcella del Sassolungo telecabina line
         (9920.0, 1.0, 6),   # Passo Gardena / Dantercepies gondola line
