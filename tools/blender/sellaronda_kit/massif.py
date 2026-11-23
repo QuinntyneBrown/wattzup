@@ -445,4 +445,10 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         520.0,
         snow=True,
     )
+    # Sentinel limestone pinnacle flanking the lower mouth of Val de Mesdì above Colfosco
+    vm_m = road.s[road.index(10920.0)]
+    vmx, vmy = vm_m["x"] - cx, vm_m["y"] - cy
+    vml = max(1.0, math.hypot(vmx, vmy))
+    vmx, vmy = vmx / vml, vmy / vml
+    rock_tower(peaks, cx + vmx * 825.0 - (-vmy) * 62.0, cy + vmy * 825.0 - vmx * 62.0, 125.0, 488.0, 38.0, 32.0, 8, math.atan2(vmy, vmx), cfn, taper=0.34, flat_cap=False, seed_phase=5.4)
     # [ANCHOR:massif]
