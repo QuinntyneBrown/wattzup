@@ -66,3 +66,13 @@ const PASS_SPECIALTIES: Readonly<Record<SellaRifugio['passId'], string>> = {
 export function rifugioSpecialtyDish(passId: SellaRifugio['passId']): string {
   return PASS_SPECIALTIES[passId];
 }
+
+/** Counts the catalogued roadside pass rifugi per Sella Ronda pass. */
+export function rifugiCountByPass(): Readonly<Record<SellaRifugio['passId'], number>> {
+  return {
+    campolongo: rifugiOnPass('campolongo').length,
+    pordoi: rifugiOnPass('pordoi').length,
+    sella: rifugiOnPass('sella').length,
+    gardena: rifugiOnPass('gardena').length,
+  };
+}
