@@ -184,6 +184,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         cy_p = gar_pt["y"] + guy * rad_c + gpy * lat_c
         rock_tower(peaks, cx_p, cy_p, 65.0, top_c, r_c, r_c * 0.72, 9, math.atan2(-guy, -gux), cfn, taper=0.34, flat_cap=False, seed_phase=2.2 + c_k)
 
+    # Puez-Odle high plateau & Piz Duleda (2,909 m) rising behind Gruppo del Cir
+    for pz_lat, pz_top in ((-160.0, 725.0), (165.0, 742.0)):
+        rock_tower(peaks, gar_pt["x"] + gux * 1180.0 + gpx * pz_lat, gar_pt["y"] + guy * 1180.0 + gpy * pz_lat, 55.0, pz_top, 240.0, 165.0, 10, math.atan2(-guy, -gux), cfn, taper=0.74, flat_cap=True, seed_phase=4.6 + pz_lat * 0.01)
+
     # 6. Sassongher (2,665 m): dramatic isolated limestone horn towering directly behind Corvara & Colfosco!
     cor_pt = road.s[road.index(260.0)]
     sux2, suy2 = cor_pt["x"] - cx, cor_pt["y"] - cy
