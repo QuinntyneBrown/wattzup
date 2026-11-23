@@ -71,3 +71,22 @@ def alpenglow_sky_colour(dx: float, dy: float, dz: float, az: float, haze):
     c = mix(c, srgb(0xFFE2B8), (sun_ang ** 18.0) * 0.42)
     c = mix(c, haze, math.exp(-12.5 * h) * 0.46)
     return sky.grade(c)
+
+
+def emit_dusk_lights(kit, road, height_at) -> None:
+    """Places warm amber dusk terrace & church-square light pools + soft Halos at the 4 cols & 4 villages."""
+    for p in PASSES:
+        for delta, side in ((-22.0, -1.0), (30.0, 1.0)):
+            idx = road.index(p["at"] + delta)
+            off = (kit.kerb + 4.8) * side
+            lx, ly, lz = road.at(idx, off, 3.2)
+            kit.light((lx, ly, lz), "glow-window", 26.0, 0.65)
+            kit.halo((lx, ly, lz), "glow-window")
+
+    for v in VILLAGES:
+        for delta, side in ((-45.0, -1.0), (15.0, 1.0), (65.0, -1.0)):
+            idx = road.index(v["at"] + delta)
+            off = (kit.kerb + 4.2) * side
+            lx, ly, lz = road.at(idx, off, 3.6)
+            kit.light((lx, ly, lz), "glow-lamp", 24.0, 0.55)
+            kit.halo((lx, ly, lz), "glow-lamp")
