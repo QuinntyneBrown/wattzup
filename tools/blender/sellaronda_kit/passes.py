@@ -200,6 +200,7 @@ def build_four_passes(B, kit, road, height_at) -> None:
         B["dark"].box(kit.P(st_idx, -0.03, off, 2.05), (0.13, 1.62, 0.45), st_yaw)
         B["neon-lime"].box(kit.P(st_idx, -0.05, off, 2.18), (0.14, 1.15, 0.18), st_yaw)
         B["ladin-blue"].box(kit.P(st_idx, 0.0, off, 3.12), (0.55, 0.72, 0.08), st_yaw + 0.3)
+        B["ladin-blue"].box(kit.P(st_idx, 0.0, off, 1.15), (0.12, 1.45, 0.42), st_yaw)
 
     # Cold alpine spring bottle-refill fountains beside all 4 pass summit signs
     for p in PASSES:
