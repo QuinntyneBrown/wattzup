@@ -480,4 +480,6 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         735.0,
         snow=True,
     )
+    # Piz Lavarella & Cima Conturines (3,064 m) rising behind Sasso di Santa Croce
+    rock_tower(peaks, sc_pt["x"] + scux * 1950.0 + (-scuy) * 260.0, sc_pt["y"] + scuy * 1950.0 + scux * 260.0, 65.0, 862.0, 220.0, 160.0, 9, math.atan2(-scuy, -scux), cfn, taper=0.52, flat_cap=True, seed_phase=1.2)
     # [ANCHOR:peaks]
