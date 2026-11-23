@@ -356,6 +356,14 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         B["crowd-3"].box((ax_m, ay_m, az_m + 1.25), (5.34, 2.06, 0.34), amyaw)
         B["ladin-blue"].box((ax_m + math.cos(amyaw) * 1.6, ay_m + math.sin(amyaw) * 1.6, az_m + 2.47), (0.35, 1.15, 0.18), amyaw)
 
+    # Traditional wooden Alphorn duo cheering Bike Day climbers at Passo Campolongo (at=2072 m)
+    ah_i = road.index(2072.0)
+    ahyaw = s[ah_i]["h"] + 1.4
+    for ah_k in (0.0, 1.8):
+        hx_a, hy_a, hz_a = kit.P(ah_i, ah_k, kit.kerb + 2.8, 0.0)
+        B["parasol-red"].box((hx_a, hy_a, hz_a + 0.75), (0.36, 0.42, 0.68), ahyaw)
+        B["larch-warm"].box((hx_a + math.cos(ahyaw) * 1.35, hy_a + math.sin(ahyaw) * 1.35, hz_a + 0.18), (2.75, 0.14, 0.24), ahyaw)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
