@@ -195,6 +195,11 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         gz_i = road.index(p["at"] - 35.0)
         gx_l, gy_l, gz_l = road.at(gz_i, -(kit.kerb + 3.4), 2.4)
         kit.light((gx_l, gy_l, gz_l), "bulb", 16.0, 0.55)
+    # Warm woodcarver vitrine light pools in Selva di Val Gardena
+    for wc_at, wc_s in ((8865.0, -1.0), (8925.0, 1.0), (8985.0, -1.0)):
+        wi = road.index(wc_at)
+        wx_l, wy_l, wz_l = road.at(wi, (kit.kerb + 7.2) * wc_s, 2.2)
+        kit.light((wx_l, wy_l, wz_l), "glow-window", 14.0, 0.48)
     # [ANCHOR:alpenglow-lights]
 
 
