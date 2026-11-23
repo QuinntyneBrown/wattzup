@@ -27,6 +27,8 @@ export default defineConfig({
     viewport: null,
     launchOptions: {
       args: [
+        // The bench runs in a window beside whoever is at the machine: the ride's sound is not played.
+        '--mute-audio',
         '--window-position=0,0',
         '--window-size=1936,1167',
         '--force-device-scale-factor=1',

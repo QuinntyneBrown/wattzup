@@ -197,7 +197,7 @@ export class CourseRenderer implements WorldRenderer {
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
   private readonly sun = new DirectionalLight(0xff9a5a, 2.6);
-  private sky: Mesh | null = null;
+  private sky: Object3D | null = null;
   /** Moves the sky's cloud on to a second of the ride's clock. */
   private skyClock: ((seconds: number) => void) | null = null;
   /** Moves the sea's ripples on to a second of the ride's clock. */
@@ -457,6 +457,15 @@ export class CourseRenderer implements WorldRenderer {
       Glow: new MeshBasicMaterial(glow),
       Confetti: new MeshBasicMaterial({ ...glow, side: DoubleSide }),
       Sun: new MeshBasicMaterial({ ...glow, fog: false }),
+      // A sky the map carries, painted in its vertices (build_sky in build_course.py).
+      Sky: new MeshBasicMaterial({
+        vertexColors: true,
+        fog: false,
+        depthWrite: false,
+        side: DoubleSide,
+        // Painted as it is to be seen: the tone curve would wash its reds out.
+        toneMapped: false,
+      }),
       StartRed: new MeshBasicMaterial(glow),
       StartGreen: new MeshBasicMaterial(glow),
       Beams: new MeshBasicMaterial({
@@ -559,6 +568,7 @@ export class CourseRenderer implements WorldRenderer {
     materials['Halos'] = haloMaterial(DRAW_DISTANCE['Halos']! * 0.6, DRAW_DISTANCE['Halos']!);
     this.disposables.push(materials['Fences'], materials['Halos']);
     this.beams = materials['Beams'] as MeshBasicMaterial;
+    const painted: Mesh[] = [];
     map.traverse((part) => {
       const mesh = part as Mesh;
       if (!mesh.isMesh) return;
@@ -568,6 +578,12 @@ export class CourseRenderer implements WorldRenderer {
       if (!material) return;
       for (const loaded of [mesh.material].flat()) loaded.dispose();
       mesh.material = material;
+      if (group === 'Sky') {
+        // The map's own sky: its sectors ride with the camera, behind everything.
+        mesh.renderOrder = -1;
+        painted.push(mesh);
+        return;
+      }
       // The ground is lit smoothly: its normals are worked out here, so the map's file carries none.
       if (group === 'Ground') mesh.geometry.computeVertexNormals();
       // The map is set once and never moves: its matrices are worked out here, not every frame.
@@ -614,13 +630,28 @@ export class CourseRenderer implements WorldRenderer {
     }
 
     // The sky, worked out a pixel on a dome that rides with the camera (sky-material.ts).
-    const dome = new SphereGeometry(9000, 24, 12);
-    const sky = skyMaterial(look, this.course!.file.sun, detail);
-    this.skyClock = sky.at;
-    this.sky = new Mesh(dome, sky.material);
-    this.sky.renderOrder = -1;
-    this.scene.add(this.sky);
-    this.disposables.push(dome, sky.material);
+    // A map that carries its own sky, painted in Blender, is drawn under that instead.
+    if (painted.length) {
+      const carried = new Group();
+      for (const sector of painted) {
+        // Its place in the map (pack_glb.py) becomes its place round the camera.
+        sector.updateMatrixWorld(true);
+        sector.matrix.copy(sector.matrixWorld);
+        sector.matrixAutoUpdate = false;
+        carried.add(sector);
+        this.disposables.push(sector.geometry);
+      }
+      this.sky = carried;
+      this.scene.add(carried);
+    } else {
+      const dome = new SphereGeometry(9000, 24, 12);
+      const sky = skyMaterial(look, this.course!.file.sun, detail);
+      this.skyClock = sky.at;
+      this.sky = new Mesh(dome, sky.material);
+      this.sky.renderOrder = -1;
+      this.scene.add(this.sky);
+      this.disposables.push(dome, sky.material);
+    }
 
     const fill = new HemisphereLight(look.fill[0], look.fill[1], 1.5);
     // The low sun throws each rider's shadow long across the road: a soft dark blob, with no shadow map to draw.

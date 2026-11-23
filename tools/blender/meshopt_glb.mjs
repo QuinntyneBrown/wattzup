@@ -48,9 +48,26 @@ const bytes = doc.accessors.map((accessor) => {
 
 // Each mesh's triangles in an order that reuses recent vertices, and its vertices in the order they are first used.
 const indexed = new Set();
+const taken = new Set();
+// What each accessor held before any mesh was reordered: what a copy is made from.
+const asExported = bytes.map((data) => Uint8Array.from(data));
 for (const mesh of doc.meshes) {
   for (const primitive of mesh.primitives) {
     if (primitive.indices === undefined || (primitive.mode ?? 4) !== 4) continue;
+    // The exporter shares one accessor between meshes whose data is the same (the sectors of a sky dome have the
+    // same triangles): each mesh is reordered in its own way, so each takes a copy of what it shares.
+    const own = (index) => {
+      if (!taken.has(index)) {
+        taken.add(index);
+        return index;
+      }
+      doc.accessors.push({ ...doc.accessors[index] });
+      bytes.push(Uint8Array.from(asExported[index]));
+      taken.add(doc.accessors.length - 1);
+      return doc.accessors.length - 1;
+    };
+    primitive.indices = own(primitive.indices);
+    for (const key of Object.keys(primitive.attributes)) primitive.attributes[key] = own(primitive.attributes[key]);
     const at = primitive.indices;
     const accessor = doc.accessors[at];
     const wide = SIZE[accessor.componentType];

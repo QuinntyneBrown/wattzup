@@ -128,3 +128,37 @@ What Docklands' realism work gave, and what Ibiza has of it:
 | Night sky, city skyline, bridges | No: not this map's setting |
 
 Nothing is added to a map without asking its owner first.
+
+## Details: sky, aeroplane, party, sign, palms
+
+A loop of passes on five things, each built in Blender and checked on the low-power stand-in (the lowest tier with
+the processor six times slower). References: four photographs of Ibiza at sunset the owner supplied (a fiery deck of
+cloud over a beach club; an aeroplane crossing a red sky over a party in white; the IBIZA letters; palms in bunches).
+
+| Pass | What | Top tier | Low-power stand-in, before / after |
+| --- | --- | --- | --- |
+| Sky 1 | A sky painted in Blender: a deck of broken cloud lit red and gold from below towards the sun, violet away from it | 60.1 fps, none over 20 ms, 98 draw calls, 112,078 triangles | 54.4, 53.2 / 52.6, 53.6 fps |
+
+### Sky 1: a sunset painted in Blender
+
+**Before** (`ibiza-01-strip.jpg`): the app's own sky, worked out a pixel from the course's five colours with faint
+drifting cloud: pink and even. **After** (`sky-01-strip.jpg`, `sky-01-headland.jpg`, `sky-01-finish.jpg`,
+`sky-01.mp4`): the map carries its sky. `tools/blender/sky.py` works out a sunset's colour in any direction (the
+afterglow from the horizon up, hot towards the sun and mauve away; a deck of cloud on a flat ceiling in rows across
+the way to the sun, each puff's underside lit, the gaps in shade; a clear slot under the deck towards the sun; the
+glow round the sun; the haze the far land fades into) and `build_sky` in `build_course.py` paints it into the
+vertices of a dome (224 by 34, finest by the horizon; two halves and a cap; 15,000 triangles). The app carries the
+dome with the camera and draws it with one plain material in place of its own sky: no work a pixel.
+`python tools/blender/preview_sky.py out.png` draws the picture without Blender, to tune it.
+
+The app's tone curve pales a bright colour, so the picture is painted deeper and a little darker than it is to be
+seen (`SKY_DEPTH`, `SKY_GAIN`).
+
+**Found on the way.** Blender's exporter shares one accessor between meshes whose data is the same (the dome's
+sectors had the same triangles), and `meshopt_glb.mjs` reordered that one list once a mesh: every sector but the
+first was scrambled. Each mesh now takes its own copy of what it shares.
+
+**The low-power stand-in is under 60 on this map, with or without the sky** (53 to 54 fps at 1.3 km this evening;
+56 earlier). The sky does not move it. Getting it to 60 is the next pass's work.
+
+The bench's browser is muted (`--mute-audio`): it was playing the ride's sound at whoever sat by the machine.

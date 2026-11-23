@@ -40,6 +40,7 @@ import bmesh  # after bpy: the bpy module provides it
 from mathutils import Vector, kdtree
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import sky  # noqa: E402  (beside this script)
 import themes  # noqa: E402  (beside this script)
 from pack_glb import pack as pack_glb  # noqa: E402  (beside this script)
 
@@ -401,6 +402,7 @@ MATERIALS: dict[str, dict] = {
     "sail": {"color": 0xFFFFFF, "rough": 0.8, "double": True},
     "sail-pink": {"color": 0xF06A9A, "rough": 0.8, "double": True},
     "sun": {"color": 0xFF7A3A, "glow": 1.3},
+    "sky": {"color": 0xF2A77A, "glow": 1.0},
     "island": {"color": 0x5A3F52, "rough": 1.0},
     "beam-pink": {"color": 0xFF5AA8, "glow": 2.2, "alpha": 0.2, "double": True},
     "beam-cyan": {"color": 0x5AE8F0, "glow": 2.2, "alpha": 0.2, "double": True},
@@ -548,7 +550,7 @@ HALOS_PART = "Halos"
 WALL_KINDS = {"brick": 1, **{f"container-{i}": 2 for i in range(4)}, "whitewash": 3, "tower": 3, "wall": 3,
               **{f"facade-{i}": 3 for i in range(6)}, **{f"deco-{i}": 3 for i in range(4)}}
 WIDER = {"Land": 4, "Beams": 4, "Glow": 3, "Leaves": 3, "Halos": 3, "Ground": 2}
-WHOLE = {"sea": "Sea", "sun": "Sun", "moon": "Sun", "island": "Conillera", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
+WHOLE = {"sea": "Sea", "sky": "Sky", "sun": "Sun", "moon": "Sun", "island": "Conillera", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
 
 
 def group_of(mat: str) -> tuple[str, bool]:
@@ -579,7 +581,7 @@ def group_material(name: str):
     attr.layer_name = "Color"
     mat.node_tree.links.new(attr.outputs["Color"], bsdf.inputs["Base Color"])
     bsdf.inputs["Roughness"].default_value = 0.2 if name == "Sea" else 0.85
-    if name in ("Glow", "Confetti", "Sun", "StartRed", "StartGreen", "Beams"):
+    if name in ("Glow", "Confetti", "Sun", "Sky", "StartRed", "StartGreen", "Beams"):
         mat.node_tree.links.new(attr.outputs["Color"], bsdf.inputs["Emission Color"])
         bsdf.inputs["Emission Strength"].default_value = 1.5
     if name == "Beams":
@@ -623,6 +625,12 @@ def assemble(road: "Road", col) -> dict:
         flat = srgb(MATERIALS[part.mat]["color"])
         for face in part.faces:
             name = group
+            if group == "Sky":
+                # The sky is cut into sectors round the compass, so only those in view are drawn.
+                cx = sum(part.verts[i][0] for i in face) / len(face)
+                cy = sum(part.verts[i][1] for i in face) / len(face)
+                cz = sum(part.verts[i][2] for i in face) / len(face)
+                name = f"Sky_{int((math.atan2(cy, cx) % math.tau) / math.tau * SKY_SECTORS) % SKY_SECTORS if cz < SKY_RADIUS * 0.5 else SKY_SECTORS:03d}"
             if chunked:
                 cx = sum(part.verts[i][0] for i in face) / len(face)
                 cy = sum(part.verts[i][1] for i in face) / len(face)
@@ -1108,6 +1116,39 @@ def palm(trunk: Builder, leaf: Builder, dark_leaf: Builder, x: float, y: float, 
         b.tri(l2, r2, spine[3])
 
 
+SKY_SECTORS = 2
+SKY_RADIUS = 8500.0
+
+
+def build_sky(col, az: float, haze_hex: int, colour_at=sky.sunset_sky_colour, turns: int = 224, rows: int = 34) -> None:
+    """The sky as a dome the app carries with the camera, its picture painted in its vertices: finest by the horizon,
+    where the eye is."""
+    b = Builder("Sky", "sky")
+    b.colours = []
+    haze = srgb(haze_hex)
+    low = math.radians(-4.0)
+    elev = [low + (math.pi / 2 - low) * (r / rows) ** 1.7 for r in range(rows + 1)]
+    ring = []
+    for r, e in enumerate(elev[:-1]):
+        first = len(b.verts)
+        for t in range(turns):
+            a = t * math.tau / turns
+            d = (math.cos(e) * math.cos(a), math.cos(e) * math.sin(a), math.sin(e))
+            b.verts.append((d[0] * SKY_RADIUS, d[1] * SKY_RADIUS, d[2] * SKY_RADIUS))
+            b.colours.append(colour_at(d[0], d[1], d[2], az, haze))
+        ring.append(first)
+    top = len(b.verts)
+    b.verts.append((0.0, 0.0, SKY_RADIUS))
+    b.colours.append(colour_at(0.0, 0.0, 1.0, az, haze))
+    for r in range(len(ring) - 1):
+        for t in range(turns):
+            u = (t + 1) % turns
+            b.faces.append((ring[r] + t, ring[r] + u, ring[r + 1] + u, ring[r + 1] + t))
+    for t in range(turns):
+        b.faces.append((ring[-1] + t, ring[-1] + (t + 1) % turns, top))
+    b.build(col)
+
+
 def build_scenery(road: Road, st: list[dict], length: float, height_at, course: dict, col) -> dict:
     rng = random.Random(course.get("seed", 1) * 7 + 3)
     s, n = road.s, len(road.s)
@@ -1476,6 +1517,8 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         halo.colours += [hot, sky_, sky_]
         halo.faces.append((base, base + 1, base + 2))
     halo.build(col)
+    # The sky itself: a sunset under a deck of cloud lit from below.
+    build_sky(col, az, 0xF2A77A)
     # The sun's path on the water: glints scattered towards it from the finish's shore.
     for _ in range(170):
         out = rng.uniform(120, 2600)
