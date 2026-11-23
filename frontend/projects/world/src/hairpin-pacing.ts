@@ -26,3 +26,10 @@ export function switchbackCadenceTargetRpm(
   const boost = classifyBendSeverity(curvaturePerMetre) === 'tornante' && gradePercent > 3 ? 6 : 0;
   return base + boost;
 }
+
+/** Equilibrium bicycle lean angle in degrees (`-28..28`) for `speedMps` and signed `curvaturePerMetre`. */
+export function leanAngleDegrees(speedMps: number, curvaturePerMetre: number): number {
+  const v = Math.max(0, speedMps);
+  const raw = (Math.atan((v * v * curvaturePerMetre) / 9.81) * 180) / Math.PI;
+  return Math.max(-28, Math.min(28, raw));
+}

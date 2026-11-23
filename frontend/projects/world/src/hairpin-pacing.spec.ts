@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   apexSpeedFactor,
   classifyBendSeverity,
+  leanAngleDegrees,
   switchbackCadenceTargetRpm,
 } from './hairpin-pacing';
 
@@ -20,5 +21,7 @@ describe('classifyBendSeverity', () => {
     expect(apexSpeedFactor(0.02)).toBeLessThan(apexSpeedFactor(0.005));
     expect(apexSpeedFactor(0.1)).toBeGreaterThanOrEqual(0.55);
     expect(switchbackCadenceTargetRpm(8, 0.02)).toBeGreaterThan(switchbackCadenceTargetRpm(8, 0));
+    expect(leanAngleDegrees(11, 0.02)).toBeGreaterThan(10);
+    expect(leanAngleDegrees(0, 0.03)).toBe(0);
   });
 });
