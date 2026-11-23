@@ -72,6 +72,8 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
                 B["larch-aged"].box((hx + math.cos(barn_yaw) * post_off, hy + math.sin(barn_yaw) * post_off, hz - 0.3), (0.22, 0.22, 3.6), barn_yaw)
             B["hay"].box((hx, hy, hz + 0.55), (3.85, 0.36, 2.25), barn_yaw)
             kit.gable(B["larch-aged"], (hx, hy, hz + 3.15), 4.6, 1.25, 0.55, barn_yaw)
+            if (i // 34) % 4 == 0:
+                B["larch-warm"].box((hx, hy + 1.1, hz), (1.35, 0.38, 0.46), barn_yaw)
 
     # 3. Alpine wildflower drifts (buttercup gold, magenta clover/alpenrose, oxeye white & gentian blue)
     flower_mats = ("yellow", "geranium-red", "paint", "ladin-blue", "crowd-4")
