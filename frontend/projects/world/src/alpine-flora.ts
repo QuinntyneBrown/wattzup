@@ -30,6 +30,11 @@ export function characteristicFaunaAtAltitude(altitudeMetres: number): DolomiteF
   return 'rupicapra-chamois';
 }
 
+/** True when `dayOfYear` falls within the June-July Dolomite Alpenrose (Rhododendron) flowering window. */
+export function isAlpenroseInBloom(dayOfYear: number): boolean {
+  return dayOfYear >= 160 && dayOfYear <= 212;
+}
+
 /** Relative alpine wildflower bloom density (0..1), peaking in sunny 1,750..2,100 m hay pastures. */
 export function wildflowerBloomIntensity(altitudeMetres: number): number {
   if (altitudeMetres <= 1350 || altitudeMetres >= 2550) return 0;

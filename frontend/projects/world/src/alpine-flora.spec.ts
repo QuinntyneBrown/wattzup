@@ -4,6 +4,7 @@ import {
   dolomiteFloraZone,
   edelweissHabitatScore,
   hayHarvestMonth,
+  isAlpenroseInBloom,
   larchAutumnGoldRatio,
   mugoPineCoverWeight,
   treeLineDensity,
@@ -36,5 +37,7 @@ describe('dolomiteFloraZone', () => {
     expect(larchAutumnGoldRatio(305, 2050)).toBeGreaterThan(0.9);
     expect(characteristicFaunaAtAltitude(1600)).toBe('haflinger-horses');
     expect(characteristicFaunaAtAltitude(2500)).toBe('rupicapra-chamois');
+    expect(isAlpenroseInBloom(185)).toBe(true);
+    expect(isAlpenroseInBloom(300)).toBe(false);
   });
 });
