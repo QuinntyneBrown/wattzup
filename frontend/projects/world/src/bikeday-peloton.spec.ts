@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  bidonsNeededForLoop,
   bikeDayClimbSpeedKmh,
   bikeDayRidersPerKm,
   kilojoulesBurnedOnClimb,
@@ -28,5 +29,6 @@ describe('bikeDayClimbSpeedKmh', () => {
     expect(wattsPerKiloClass(390, 68)).toBe('giro-pro');
     expect(wattsPerKiloClass(170, 75)).toBe('bikeday-touring');
     expect(kilojoulesBurnedOnClimb(9.4, 6.8, 250)).toBeGreaterThan(400);
+    expect(bidonsNeededForLoop(3.0, 22)).toBeGreaterThanOrEqual(4);
   });
 });
