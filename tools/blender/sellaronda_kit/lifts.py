@@ -179,3 +179,16 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> None:
         B["parasol-red"].box((cx_g, cy_g, cz_g + 0.62), (2.6, 2.2, 1.35), cyaw)
         B["dark"].box((cx_g + math.cos(cyaw) * 0.35, cy_g + math.sin(cyaw) * 0.35, cz_g + 1.15), (1.45, 2.25, 0.72), cyaw)
         B["steel"].box((cx_g + math.cos(cyaw) * 2.45, cy_g + math.sin(cyaw) * 2.45, cz_g + 0.05), (0.55, 3.9, 0.85), cyaw)
+
+    # 5. Dolomiti Superski / Sellaronda Orange & Green circuit panoramic map boards outside lift terminals
+    for map_at in (1805.0, 3405.0, 7465.0, 9905.0):
+        m_idx = road.index(map_at)
+        myaw = s[m_idx]["h"]
+        mx0, my0, _ = road.at(m_idx, -(kit.kerb + 5.2))
+        mz0 = height_at(mx0, my0)
+        for p_o in (-1.5, 1.5):
+            B["larch-aged"].box((mx0 + math.cos(myaw) * p_o, my0 + math.sin(myaw) * p_o, mz0 - 0.2), (0.18, 0.18, 2.95), myaw)
+        B["paint"].box((mx0, my0, mz0 + 1.15), (3.2, 0.14, 1.55), myaw)
+        B["crowd-3"].box((mx0 - math.cos(myaw) * 0.78, my0 - math.sin(myaw) * 0.78, mz0 + 2.45), (1.45, 0.16, 0.22), myaw)
+        B["foliage"].box((mx0 + math.cos(myaw) * 0.78, my0 + math.sin(myaw) * 0.78, mz0 + 2.45), (1.45, 0.16, 0.22), myaw)
+        kit.gable(B["larch-aged"], (mx0, my0, mz0 + 2.72), 3.6, 0.75, 0.36, myaw)
