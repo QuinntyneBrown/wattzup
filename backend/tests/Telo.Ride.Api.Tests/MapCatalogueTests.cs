@@ -12,7 +12,7 @@ namespace Telo.Ride.Api.Tests;
 public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<TeloRideApiFactory>
 {
     [Fact]
-    public async Task The_catalogue_lists_the_eight_maps_in_unlock_order_without_a_session()
+    public async Task The_catalogue_lists_its_maps_in_unlock_order_without_a_session()
     {
         var maps = await ReadMaps();
 
@@ -27,6 +27,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Col du Granit", 16.1, 1240, "Brutal", null, "A high mountain pass at first light"),
                 new Listed("Ibiza Sunset Strip", 8.4, 159, "Moderate", "Intervals to the Beat", "The waterfront strip of Sant Antoni at sunset"),
                 new Listed("Sella Ronda", 11.7, 357, "Hard", "Over/Under Intervals on the Passo Sella", "Four Dolomite passes circling the Sella massif"),
+                new Listed("Cinque Terre", 17.1, 335, "Hard", "3 Mins On, 2 Mins Off", "The corniche above the Ligurian Sea"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -47,6 +48,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("col-du-granit", "Earn 3★ on Dolomites"),
                 ("ibiza-sunset-strip", null),
                 ("sella-ronda", null),
+                ("cinqueterre", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -67,6 +69,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("col-du-granit", "dolomites"),
                 ("ibiza-sunset-strip", null),
                 ("sella-ronda", null),
+                ("cinqueterre", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -77,7 +80,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            [null, null, null, null, null, 10, null, null, null],
+            [null, null, null, null, null, 10, null, null, null, null],
             maps.Select(m => m.UnlockLevel));
     }
 
@@ -90,7 +93,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         Assert.All(
             maps,
             m => Assert.Equal(
-                m.Id == "ibiza-sunset-strip" ? 1200 : m.Id == "sella-ronda" ? 1680 : 1800,
+                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, _ => 1800 },
                 m.Plan.Segments.Sum(s => s.Duration)));
         var oldTown = maps.Single(m => m.Id == "old-town-criterium");
         Assert.Equal(
@@ -109,7 +112,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));
@@ -126,6 +129,16 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         Assert.Equal("Steenstraat to the Markt", place.RealPlace.Route);
         Assert.InRange(place.RealPlace.Latitude, 51.20, 51.22);
         Assert.InRange(place.RealPlace.Longitude, 3.21, 3.24);
+    }
+
+    [Fact]
+    public async Task The_corniche_rides_the_stages_of_three_minutes_on_two_minutes_off()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "cinqueterre");
+        Assert.Equal("cinqueterre", map.World);
+        Assert.Equal(new Segment("warm-up", 60, 11, 80), map.Plan.Segments[0]);
+        Assert.Equal(7, map.Plan.Segments.Count(s => s == new Segment("work", 180, 22, 90)));
+        Assert.Equal(new Segment("cool-down", 60, 11, 70), map.Plan.Segments[^1]);
     }
 
     private async Task<IReadOnlyList<CatalogueMap>> ReadMaps()

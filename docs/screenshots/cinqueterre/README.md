@@ -17,3 +17,14 @@ Fixes to how the road bends and climbs here (L2-101 AC6, L2-110 AC9), from the s
 | Capture | Fix |
 | --- | --- |
 | [046 · The coast and its villages stand still](bend-046-coast-stands.jpg) | The Ligurian sea, the headlands and the villages on them were bent vertex by vertex with the corniche's 40° bends, so the coast swung and squeezed with each turn above it. It now stands beyond the road unbent, as the panorama does, and the props behind the rider stand on the road there instead of at the height under the rider. |
+
+## The course
+
+Cinque Terre as a map built in Blender (ADR 0034, `tools/blender/themes.py`'s `cinqueterre`), raced from the catalogue with the chase camera
+Ibiza Sunset Strip uses. Each capture is the course bench's picture (`tools/course-bench`), and each row names which of the ten
+critical details in `docs/worlds/cinqueterre/README.md` the change works on. The frame rate is the bench's at the Low tier with the
+processor slowed four times, its stand-in for a low-power tablet, on a 120 Hz display.
+
+| Capture | Detail | Change | Low tier, 4× slowed |
+| --- | --- | --- | --- |
+| [000 · The bare corniche](course-000-the-bare-corniche.jpg) | 3 The corniche road | The first build: the 17.1 km road of 3 Mins On, 2 Mins Off bends above the sea and climbs with its efforts, behind a low stone parapet on the seaward shoulder. Nothing else stands on the land yet. | 120 fps, 37,779 triangles, 35 draw calls |

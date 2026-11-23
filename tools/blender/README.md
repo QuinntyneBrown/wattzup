@@ -107,6 +107,7 @@ climb for a col). All seven map worlds have one:
 | `prairie` | Open farmland at golden hour | Fenced verges, wheat and green fields in strips, red barns and silos, round bales, windbreaks, a wind farm and a grain elevator by the start |
 | `oldtown` | A cobbled old town on race day | Pastel houses door to door on both pavements, tiled roofs, shuttered windows, café umbrellas, bunting across the street, lamps, a cathedral with two spires, cypresses beyond the walls |
 | `coast` | A clifftop road at sunset | A guard rail over the drop to the sea, rocks at the edge, a stone wall inland, gorse and pines, white cottages with lit windows, a lighthouse on the point, sea stacks |
+| `cinqueterre` | The corniche above the Ligurian Sea (built from its class, 3 Mins On, 2 Mins Off, as Ibiza is from its own) | A low stone parapet over the drop to the sea on the seaward shoulder |
 | `docklands` | A harbour city after dark | Lamps every 24 m, brick warehouses with lit windows and neon, cranes and container stacks on the quay, lit ships at anchor, a skyline of towers, steel bridges over the efforts |
 | `dolomites` | An alpine valley | Guard rails, spruce on the valley walls, chalets with flower boxes in the meadows, a chapel on the highest bend, pale limestone peaks with snow all round |
 | `vicecity` | A neon beachfront at a magenta sunset | Palms on both sides, art deco hotels in pastel with neon bands and signs, convertibles at the kerb, lifeguard towers and umbrellas on the beach, a neon skyline |

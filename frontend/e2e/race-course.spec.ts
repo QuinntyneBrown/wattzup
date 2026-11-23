@@ -5,7 +5,7 @@
 // differ. Comparing two pictures of the same canvas reads no pixel's colour (ADR 0021). The course draws in software
 // here, on WebGL2.
 import type { Locator, Page } from '@playwright/test';
-import { ibizaCourseMap, sellaRondaCourseMap } from './fixtures/course';
+import { cinqueTerreCourseMap, ibizaCourseMap, sellaRondaCourseMap } from './fixtures/course';
 import { ECHELON_NOTIFY, resistanceFrame, workoutFrame } from './fixtures/echelon';
 import type { FakeBluetooth } from './fixtures/fake-bluetooth';
 import { startRace, stepUntil } from './fixtures/race';
@@ -85,9 +85,11 @@ test.describe('a course', () => {
   });
 
   // Every catalogue map is a course (ADR 0035); Vice City's world is drawn under South Beach's id.
-  for (const [id, course] of [
-    ['prairie-paceline', 'prairie'],
-    ['vice-city', 'vicecity'],
+  // Cinque Terre, like Ibiza, is built from its class and served from a fixture of its own (L2-166 AC43).
+  for (const [id, course, catalogue] of [
+    ['prairie-paceline', 'prairie', undefined],
+    ['vice-city', 'vicecity', undefined],
+    [cinqueTerreCourseMap.id, 'cinqueterre', [cinqueTerreCourseMap]],
   ] as const) {
     test(`draws ${id} as its own course built in Blender (L2-166 AC10)`, async ({
       page,
@@ -98,7 +100,10 @@ test.describe('a course', () => {
       await webgl.withoutWebGpu();
       const loaded: string[] = [];
       page.on('requestfinished', (request) => loaded.push(new URL(request.url()).pathname));
-      const race = await startRace(page, bluetooth, api, id, 'mode=solo', { world: true });
+      const race = await startRace(page, bluetooth, api, id, 'mode=solo', {
+        world: true,
+        catalogue,
+      });
       await stepUntil(page, () => expect(race.backend).toBeVisible({ timeout: 50 }));
 
       expect(loaded).toContain(`/courses/${course}.glb`);

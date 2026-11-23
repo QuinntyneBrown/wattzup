@@ -165,6 +165,24 @@ THEMES: dict[str, dict] = {
         "reach": 1100.0,
         "sea_clearance": 22.0,
     },
+    "cinqueterre": {
+        "sky": [0xFFE8C2, 0xCFE1DC, 0xA8CCD8, 0x73AED3, 0x4687B7],
+        "haze": 0xBAD5D6,
+        "light": [0xFFE1AA, 2.7],
+        "fill": [0xDBEBED, 0x7A7162],
+        "sun_altitude": 0.26,
+        "palette": {"asphalt": 0x595654, "sand": 0xA5997C, "sea": 0x146E83, "stone": 0x948C78},
+        "land": {"low": 0x9A9274, "mid": 0x82905C, "high": 0x73804F, "rock": 0x827D73},
+        "terrain": {"sea": True, "cliff": True, "rise": 48.0, "far": 8.0},
+        "edge": "cliff",
+        "centre": "white",
+        "turns": {"work": (("ess", 0.5), ("sweep", 0.35), ("hairpin", 0.15)),
+                  "recover": (("sweep", 0.65), ("ess", 0.35)),
+                  "calm": (("sweep", 0.6), ("straight", 0.4))},
+        "grade": {"perLevel": 0.8},
+        "reach": 1900.0,
+        "sea_clearance": 46.0,
+    },
     "docklands": {
         "sky": [0x2A2448, 0x1C1C3C, 0x12142C, 0x0A0C1E, 0x05060F],
         "haze": 0x1E2040,
@@ -798,6 +816,22 @@ def oldtown(k: Kit) -> dict:
     return {"efforts": efforts, "houses": houses, "cathedral": placed}
 
 
+def cinqueterre(k: Kit) -> dict:
+    """The SP370 corniche: a low stone parapet follows the cliff edge through every bend."""
+    face = k.B["stone"]
+    inner = k.kerb + 0.8
+    outer = inner + 0.5
+    for i in range(k.n - 1):
+        a = k.road.at(i, inner, 0.72)
+        b = k.road.at(i + 1, inner, 0.72)
+        c = k.road.at(i + 1, outer, 0.72)
+        d = k.road.at(i, outer, 0.72)
+        face.quad(k.road.at(i, inner), k.road.at(i + 1, inner), b, a)
+        face.quad(a, b, c, d)
+        face.quad(d, c, k.road.at(i + 1, outer, -0.25), k.road.at(i, outer, -0.25))
+    return {"efforts": k.gates("accent", "flag-1", CROWD)}
+
+
 def coast(k: Kit) -> dict:
     """A clifftop road above the sea at sunset: a guard rail over the drop, gorse and pines, a lighthouse, cottages."""
     B, s, rng = k.B, k.s, k.rng
@@ -1228,6 +1262,7 @@ SCENERY = {
     "prairie": prairie,
     "oldtown": oldtown,
     "coast": coast,
+    "cinqueterre": cinqueterre,
     "docklands": docklands,
     "dolomites": dolomites,
     "vicecity": vicecity,
