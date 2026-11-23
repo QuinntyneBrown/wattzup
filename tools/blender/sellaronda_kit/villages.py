@@ -591,4 +591,9 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
     for wc_v in (8868.0, 8955.0):
         wci = road.index(wc_v)
         B["glow-window"].box(kit.P(wci, 0.0, -(kit.kerb + 5.8), 1.05), (2.4, 0.35, 1.65), road.s[wci]["h"])
+    # Roofed larch Albo Comunale civic notice boards in all 4 Ladin villages
+    for ab_v in (152.0, 3162.0, 6155.0, 8922.0):
+        abi = road.index(ab_v)
+        B["larch-warm"].box(kit.P(abi, 0.0, kit.kerb + 3.8, 0.0), (1.45, 0.16, 1.95), road.s[abi]["h"])
+        B["paint"].box(kit.P(abi, 0.0, kit.kerb + 3.72, 0.85), (1.15, 0.04, 0.82), road.s[abi]["h"])
     # [ANCHOR:villages]
