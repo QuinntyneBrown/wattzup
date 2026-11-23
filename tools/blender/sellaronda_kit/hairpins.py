@@ -226,4 +226,11 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         cs_i = road.index(casc_m)
         csyaw = s[cs_i]["h"]
         B["glacier-ice"].box(kit.P(cs_i, 0.0, -(kit.kerb + 4.5), -1.8), (2.4, 7.5, 0.35), csyaw)
+    # Triangular steep-descent warning signs 120 m past each pass crest
+    for p in PASSES:
+        pd_i = road.index(p["at"] + 125.0)
+        pdyaw = s[pd_i]["h"]
+        B["steel"].box(kit.P(pd_i, 0.0, -(kit.kerb + 1.45), -0.1), (0.08, 0.08, 2.15), pdyaw)
+        B["parasol-red"].box(kit.P(pd_i, 0.0, -(kit.kerb + 1.45), 1.65), (0.07, 0.68, 0.62), pdyaw)
+        B["paint"].box(kit.P(pd_i, -0.02, -(kit.kerb + 1.45), 1.68), (0.08, 0.46, 0.42), pdyaw)
     # [ANCHOR:hairpins]
