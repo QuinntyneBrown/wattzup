@@ -481,4 +481,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         pby = pb_pt["y"] + math.cos(pb_pt["h"]) * -24.0
         if road.clear_of_road(pbx, pby, 14.0, pbi):
             rock_tower(peaks, pbx, pby, pb_pt["z"] + 2.0, pb_pt["z"] + 8.5, 5.2, 4.2, 6, pb_i * 0.9, cfn, taper=0.62, flat_cap=True, seed_phase=pb_i * 1.4)
+    # Observation parapet rim crowning Sass Pordoi's 2,950 m summit table
+    rock_tower(peaks, sp_x + ux * 95.0, sp_y + uy * 95.0, 584.0, 592.0, 48.0, 82.0, 8, yaw_sp, cfn, taper=0.96, flat_cap=True, seed_phase=0.3)
     # [ANCHOR:massif]
