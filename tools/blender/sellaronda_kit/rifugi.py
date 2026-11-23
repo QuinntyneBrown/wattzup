@@ -337,4 +337,6 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     hb_s = road.index(7732.0)
     B["stone"].box(kit.P(hb_s, 0.0, -(kit.kerb + 8.8), 0.0), (3.4, 1.35, 0.55), road.s[hb_s]["h"])
     B["foliage"].box(kit.P(hb_s, 0.0, -(kit.kerb + 8.8), 0.55), (3.1, 1.10, 0.25), road.s[hb_s]["h"])
+    # Brass telescope on Rifugio Frara's terrace facing Cascata del Pisciadù
+    B["gold"].box((frx, fry, frz + 1.15), (0.52, 0.16, 0.16), fryaw + 1.4)
     # [ANCHOR:rifugi-global]
