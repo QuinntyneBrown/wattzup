@@ -139,6 +139,14 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     ctul = max(1.0, math.hypot(ctux, ctuy))
     ctux, ctuy = ctux / ctul, ctuy / ctul
     rock_tower(peaks, cx + ctux * 870.0, cy + ctuy * 870.0, 95.0, 385.0, 92.0, 74.0, 9, math.atan2(ctuy, ctux), cfn, taper=0.68, flat_cap=True, seed_phase=3.3)
+
+    # Punta Vallon (2,906 m) eastern summit rising behind the Vallon cirque
+    val_pt = road.s[road.index(1750.0)]
+    vux, vuy = val_pt["x"] - cx, val_pt["y"] - cy
+    vul = max(1.0, math.hypot(vux, vuy))
+    vux, vuy = vux / vul, vuy / vul
+    vpx, vpy = -vuy, vux
+    rock_tower(peaks, cx + vux * 515.0 + vpx * 55.0, cy + vuy * 515.0 + vpy * 55.0, 495.0, 705.0, 88.0, 68.0, 9, math.atan2(vuy, vux), cfn, taper=0.45, flat_cap=False, seed_phase=1.6)
     top_ring = rings[-1]
     for k in range(sides):
         u = (k + 1) % sides
