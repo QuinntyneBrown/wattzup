@@ -1287,6 +1287,155 @@
         },
         "roll": 0.6
       }
+    },
+    {
+      "id": "cinqueterre",
+      "name": "Cinque Terre",
+      "routeName": "3 Mins On, 2 Mins Off",
+      "place": "The corniche above the Ligurian Sea",
+      "distanceKm": 17.1,
+      "climbingM": 335,
+      "rating": "Hard",
+      "world": "cinqueterre",
+      "thumbnailUrl": "maps/cinqueterre.jpg",
+      "photoUrl": "maps/cinqueterre-photo.jpg",
+      "unlock": {
+        "kind": "start"
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 60,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 60,
+            "level": 14,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 18,
+            "cadenceAim": 85
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 21,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 22,
+            "cadenceAim": 95
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 180,
+            "level": 22,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 180,
+            "level": 22,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 180,
+            "level": 22,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 180,
+            "level": 22,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 180,
+            "level": 22,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 180,
+            "level": 22,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 180,
+            "level": 22,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "cool-down",
+            "duration": 60,
+            "level": 11,
+            "cadenceAim": 70
+          }
+        ]
+      },
+      "terrain": {
+        "grade": {
+          "warm-up": -5,
+          "work": 3.5,
+          "recover": -5,
+          "cool-down": -5,
+          "steady": 0
+        },
+        "roll": 0
+      }
     }
   ]
 }

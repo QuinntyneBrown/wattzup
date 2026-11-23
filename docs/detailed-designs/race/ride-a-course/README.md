@@ -6,6 +6,10 @@ on the canvas of the race scene (`docs/mocks`, the race), whose HUD stands as it
 A course is a map built in Blender from the class it is modelled after. This design covers building
 one and drawing it; the cadence score (L2-167) and a course's place in the catalogue are not in it.
 
+## Cinque Terre corniche
+
+Use the stages of GCN Training’s *3 Mins On, 2 Mins Off* to lay the SP370 corniche. The corniche winds above the Ligurian Sea with a low stone parapet on the seaward shoulder. Efforts gain height and recoveries descend. Use the course renderer’s chase camera, start and finish zoom, and cyclist kit that Ibiza uses. The road and wall follow the same sampled centre line through bends. The coastal palette and hillside profile come from the Cinque Terre reference photographs in `docs/worlds/cinqueterre`.
+
 ## Building a course
 
 `tools/blender/build_course.py` (see `tools/blender/README.md`) turns `courses/<id>.json`, the

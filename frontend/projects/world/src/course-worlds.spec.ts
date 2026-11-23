@@ -3,6 +3,7 @@ import { coursePath } from './course-worlds';
 describe('coursePath (L2-166 AC1)', () => {
   it.each([
     ['ibiza', 'courses/ibiza'],
+    ['cinqueterre', 'courses/cinqueterre'],
     ['prairie', 'courses/prairie'],
     ['oldtown', 'courses/oldtown'],
     ['coast', 'courses/coast'],

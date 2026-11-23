@@ -81,3 +81,37 @@ export const sellaRondaCourseMap = {
     roll: 0.6,
   },
 };
+
+/** Cinque Terre as the catalogue serves it, with the plan of the class it is modelled after, GCN's 3 Mins On, 2 Mins Off. */
+export const cinqueTerrePlan = [
+  seg('warm-up', 60, 11, 80),
+  seg('work', 60, 14, 80),
+  seg('recover', 60, 18, 85),
+  seg('work', 30, 21, 90),
+  seg('work', 30, 22, 95),
+  ...Array.from({ length: 7 }, () => [
+    seg('recover', 120, 11, 80),
+    seg('work', 180, 22, 90),
+  ]).flat(),
+  seg('cool-down', 60, 11, 70),
+];
+
+export const cinqueTerreCourseMap = {
+  id: 'cinqueterre',
+  name: 'Cinque Terre',
+  routeName: '3 Mins On, 2 Mins Off',
+  place: 'The corniche above the Ligurian Sea',
+  distanceKm: 17.1,
+  climbingM: 335,
+  rating: 'Hard',
+  world: 'cinqueterre',
+  thumbnailUrl: 'maps/cinqueterre.jpg',
+  photoUrl: 'maps/cinqueterre-photo.jpg',
+  unlockGoal: null,
+  unlockMapId: null,
+  plan: { segments: cinqueTerrePlan },
+  terrain: {
+    grade: { 'warm-up': -5, work: 3.5, recover: -5, 'cool-down': -5, steady: 0 },
+    roll: 0,
+  },
+};
