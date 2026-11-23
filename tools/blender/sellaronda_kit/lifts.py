@@ -73,6 +73,19 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> None:
         yaw_l = s[idx]["h"] + 1.38 * side_dir
         clx, cly = math.cos(yaw_l), math.sin(yaw_l)
         base_x, base_y, _ = road.at(idx, -(kit.kerb + 14.0) * side_dir)
+        # Curved glulam-timber & dark-glass gondola station hall at lift base
+        st_z = height_at(base_x, base_y)
+        B["stone"].box((base_x, base_y, st_z - 2.2), (11.5, 7.6, 2.8), yaw_l)
+        B["larch-warm"].box((base_x, base_y, st_z + 0.6), (12.2, 8.0, 3.8), yaw_l)
+        B["dark"].box((base_x, base_y, st_z + 1.4), (12.4, 8.2, 1.8), yaw_l)
+        kit.gable(B["copper-patina"], (base_x, base_y, st_z + 4.4), 12.8, 8.6, 1.35, yaw_l)
+        # Hillside steel avalanche snow-retention bridges high on the flank
+        for av_i in range(3):
+            ax_b = base_x + clx * (95.0 + av_i * 22.0) - cly * 22.0
+            ay_b = base_y + cly * (95.0 + av_i * 22.0) + clx * 22.0
+            az_b = height_at(ax_b, ay_b)
+            B["steel"].box((ax_b, ay_b, az_b - 0.2), (0.45, 9.5, 2.2), yaw_l + 0.25)
+
         pylon_tops = []
         for k in range(n_pylons):
             dist_k = k * 46.0
