@@ -122,6 +122,17 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> None:
             B[jerseys[(sp_k + p_i) % len(jerseys)]].box((sx_p, sy_p, sz_p + 0.88), (0.36, 0.44, 0.62), s[sp_idx]["h"])
             B["skin"].box((sx_p, sy_p, sz_p + 1.50), (0.24, 0.24, 0.26), s[sp_idx]["h"])
 
+    # 7. Aero-tucked descending cyclists sweeping down the four pass descents
+    for p_i, p in enumerate(PASSES):
+        d_desc = p["at"] + 160.0
+        k_d = 0
+        while d_desc < p["descent_to"] - 90.0:
+            d_idx = road.index(d_desc)
+            cx_d, cy_d, cz_d = road.at(d_idx, -(kit.kerb - 0.65))
+            _road_cyclist(B, cx_d, cy_d, cz_d, s[d_idx]["h"], jerseys[(p_i + k_d) % len(jerseys)], standing=False)
+            k_d += 1
+            d_desc += 145.0
+
 
 def _touring_motorbike(B, x: float, y: float, z: float, yaw: float, body_mat: str, with_rider: bool = False) -> None:
     ca, sa = math.cos(yaw), math.sin(yaw)
