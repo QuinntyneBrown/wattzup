@@ -343,3 +343,16 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         b_idx = road.index(bk_m)
         bx_p, by_p, bz_p = kit.P(b_idx, 0.0, (kit.kerb + 6.5) * bk_s, 3.25)
         B["gold"].box((bx_p, by_p, bz_p), (0.12, 0.72, 0.52), road.s[b_idx]["h"])
+
+    # Alpine volunteer fire-station halls with red apparatus doors & timber hose-drying towers
+    for fw_m, fw_s in ((165.0, 1.0), (8820.0, 1.0)):
+        f_idx = road.index(fw_m)
+        fyaw = road.s[f_idx]["h"]
+        fx_h, fy_h, _ = road.at(f_idx, (kit.kerb + 15.5) * fw_s)
+        if road.clear_of_road(fx_h, fy_h, 11.0, f_idx):
+            fz_h = height_at(fx_h, fy_h)
+            B["chalet-plaster"].box((fx_h, fy_h, fz_h - 0.8), (11.2, 8.2, 5.2), fyaw)
+            B["parasol-red"].box((fx_h - math.sin(fyaw) * -(4.2 * fw_s), fy_h + math.cos(fyaw) * -(4.2 * fw_s), fz_h), (7.6, 0.18, 3.2), fyaw)
+            B["larch-aged"].box((fx_h + math.cos(fyaw) * 4.4, fy_h + math.sin(fyaw) * 4.4, fz_h), (2.8, 2.8, 11.5), fyaw)
+            kit.gable(B["roof-slate"], (fx_h, fy_h, fz_h + 4.4), 11.8, 8.8, 2.1, fyaw)
+    # [ANCHOR:villages]
