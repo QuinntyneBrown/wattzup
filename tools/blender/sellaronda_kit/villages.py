@@ -335,3 +335,9 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
             for sw_x in (-1.7, 1.7):
                 B["larch-aged"].box((px_g + sw_x * 0.9, py_g, pz_g), (0.18, 1.45, 2.35), 0.3)
             B["parasol-red"].box((px_g, py_g + 1.8, pz_g), (0.68, 2.4, 1.35), 0.3)
+
+    # Gilded Bäckerei / Panificio pretzel brackets in Arabba & Selva
+    for bk_m, bk_s in ((3122.0, -1.0), (8918.0, 1.0)):
+        b_idx = road.index(bk_m)
+        bx_p, by_p, bz_p = kit.P(b_idx, 0.0, (kit.kerb + 6.5) * bk_s, 3.25)
+        B["gold"].box((bx_p, by_p, bz_p), (0.12, 0.72, 0.52), road.s[b_idx]["h"])
