@@ -611,6 +611,13 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     for gk in range(4):
         B["accent-2"].box(road.at(gd_c, -1.8 + gk * 1.2, 0.025), (0.36, 0.85, 0.015), s[gd_c]["h"] + 0.2)
 
+    # Thermal launch windsock mast on the Belvedere ridge west of Passo Pordoi
+    wp_i = road.index(5045.0)
+    wpx, wpy, _ = road.at(wp_i, kit.kerb + 18.0)
+    wpz = height_at(wpx, wpy)
+    B["steel"].box((wpx, wpy, wpz), (0.09, 0.09, 4.6), 0.0)
+    B["crowd-3"].box((wpx + 0.8, wpy, wpz + 4.3), (1.55, 0.32, 0.32), 0.2)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
