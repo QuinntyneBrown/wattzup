@@ -380,4 +380,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     )
     # Col de Puez (2,725 m) high karst dome crowning the Puez plateau
     rock_tower(peaks, gar_pt["x"] + gux * 1240.0 + gpx * 15.0, gar_pt["y"] + guy * 1240.0 + gpy * 15.0, 520.0, 778.0, 145.0, 115.0, 9, math.atan2(-guy, -gux), cfn, taper=0.58, flat_cap=False, seed_phase=1.1)
+    # 16. Cimon della Pala (3,184 m — "Matterhorn of the Dolomites") on the distant southern horizon (Milestone 0600!)
+    pal_pt = road.s[road.index(4520.0)]
+    plux, pluy = pal_pt["x"] - cx, pal_pt["y"] - cy
+    plul = max(1.0, math.hypot(plux, pluy))
+    plux, pluy = plux / plul, pluy / plul
+    rock_tower(peaks, pal_pt["x"] + plux * 2480.0, pal_pt["y"] + pluy * 2480.0, 50.0, 885.0, 215.0, 145.0, 9, math.atan2(-pluy, -plux), cfn, taper=0.24, flat_cap=False, seed_phase=1.6)
     # [ANCHOR:peaks]
