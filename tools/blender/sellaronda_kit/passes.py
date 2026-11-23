@@ -449,4 +449,6 @@ def build_four_passes(B, kit, road, height_at) -> None:
         fhy = s[fh_i]["h"]
         B["steel"].box(kit.P(fh_i, 0.0, -(kit.kerb + 1.48), -0.1), (0.08, 0.08, 2.05), fhy)
         B["ladin-blue"].box(kit.P(fh_i, 0.0, -(kit.kerb + 1.48), 1.55), (0.08, 0.78, 0.42), fhy)
+    # Bronze racing-wheel tribute sculpture on the Coppi plaza at Passo Pordoi
+    B["gold"].box((mx - math.cos(p_yaw) * 1.65, my - math.sin(p_yaw) * 1.65, mz + 0.25), (0.85, 0.14, 0.85), p_yaw)
     # [ANCHOR:passes]
