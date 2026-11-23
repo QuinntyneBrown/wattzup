@@ -367,4 +367,15 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     ptul = max(1.0, math.hypot(ptux, ptuy))
     ptux, ptuy = ptux / ptul, ptuy / ptul
     rock_tower(peaks, put_pt["x"] + ptux * 1950.0, put_pt["y"] + ptuy * 1950.0, 45.0, 792.0, 265.0, 195.0, 11, math.atan2(-ptuy, -ptux), cfn, taper=0.50, flat_cap=True, seed_phase=6.4)
+    # Daumenscharte high snow pocket between Il Pollice & First Finger of Cinque Dita
+    quad_shaded(
+        peaks,
+        (sella_pt["x"] + ux * 862.0 + px * 78.0, sella_pt["y"] + uy * 862.0 + py * 78.0, 465.0),
+        (sella_pt["x"] + ux * 862.0 + px * 98.0, sella_pt["y"] + uy * 862.0 + py * 98.0, 465.0),
+        (sella_pt["x"] + ux * 885.0 + px * 92.0, sella_pt["y"] + uy * 885.0 + py * 92.0, 585.0),
+        (sella_pt["x"] + ux * 885.0 + px * 82.0, sella_pt["y"] + uy * 885.0 + py * 82.0, 585.0),
+        cfn,
+        525.0,
+        snow=True,
+    )
     # [ANCHOR:peaks]
