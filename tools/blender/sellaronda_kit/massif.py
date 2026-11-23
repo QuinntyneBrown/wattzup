@@ -557,4 +557,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
         640.0,
         snow=True,
     )
+    # Piz Revis (2,947 m) southeastern rim bastion east of Forcella Pordoi
+    rock_tower(peaks, fc_x + px_perp * 135.0 + ux * 25.0, fc_y + py_perp * 135.0 + uy * 25.0, 125.0, 588.0, 84.0, 68.0, 9, yaw_sp + 0.22, cfn, taper=0.68, flat_cap=True, seed_phase=3.0)
     # [ANCHOR:massif]
