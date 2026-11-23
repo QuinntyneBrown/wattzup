@@ -6,6 +6,7 @@ import {
   passDifficultyMultiplier,
   recommendedRiderPosture,
   resistanceToRoadGradePercent,
+  stagePointsMultiplier,
 } from './sellaronda-stages';
 
 describe('sellaronda-stages', () => {
@@ -28,5 +29,6 @@ describe('sellaronda-stages', () => {
     expect(passDifficultyMultiplier('sella')).toBeGreaterThan(
       passDifficultyMultiplier('campolongo'),
     );
+    expect(stagePointsMultiplier(82, 82, 'sella')).toBeCloseTo(1.55, 2);
   });
 });
