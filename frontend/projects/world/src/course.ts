@@ -55,6 +55,15 @@ export interface CourseFile {
   readonly rain?: number;
   /** How wet the ground is, from 0, dry, to 1, standing water everywhere; a course that names none is dry. */
   readonly wet?: number;
+  /** Aerial reversible cableway spans (e.g. Funivia Sass Pordoi). */
+  readonly cableways?: readonly {
+    readonly from: readonly [number, number, number];
+    readonly to: readonly [number, number, number];
+    readonly sag: number;
+    readonly traverseSeconds: number;
+    readonly dwellSeconds: number;
+    readonly yaw?: number;
+  }[];
   /** The street lamps that light the ground, where the course has them. */
   readonly lamps?: {
     /** Metres of road between one lamp and the next, on both sides. */
@@ -154,6 +163,50 @@ export function courseRain(file: CourseFile): number {
 export function courseWet(file: CourseFile): number {
   const wet = file.wet as unknown;
   return isNumber(wet) ? Math.min(Math.max(wet, 0), 1) : 0;
+}
+
+export interface CourseCableway {
+  readonly from: readonly [number, number, number];
+  readonly to: readonly [number, number, number];
+  readonly sag: number;
+  readonly traverseSeconds: number;
+  readonly dwellSeconds: number;
+  readonly yaw: number;
+}
+
+/** Reads validated aerial cableway spans from the course file; malformed entries yield []. */
+export function courseCableways(file: CourseFile): CourseCableway[] {
+  const list = file.cableways as unknown;
+  if (!Array.isArray(list)) return [];
+  const out: CourseCableway[] = [];
+  for (const raw of list) {
+    const c = raw as Partial<CourseCableway> | null;
+    if (!c || typeof c !== 'object') return [];
+    if (
+      !Array.isArray(c.from) ||
+      c.from.length !== 3 ||
+      !c.from.every(isNumber) ||
+      !Array.isArray(c.to) ||
+      c.to.length !== 3 ||
+      !c.to.every(isNumber) ||
+      !isNumber(c.sag) ||
+      !isNumber(c.traverseSeconds) ||
+      c.traverseSeconds <= 0 ||
+      !isNumber(c.dwellSeconds) ||
+      c.dwellSeconds < 0
+    ) {
+      return [];
+    }
+    out.push({
+      from: [c.from[0]!, c.from[1]!, c.from[2]!],
+      to: [c.to[0]!, c.to[1]!, c.to[2]!],
+      sag: c.sag,
+      traverseSeconds: c.traverseSeconds,
+      dwellSeconds: c.dwellSeconds,
+      yaw: isNumber(c.yaw) ? c.yaw : 0,
+    });
+  }
+  return out;
 }
 
 /** The course's street lamps, or null where it names none or names them wrongly: the file is data. */

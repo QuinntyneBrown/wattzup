@@ -1,5 +1,6 @@
 import {
   Course,
+  courseCableways,
   type CourseFile,
   courseLamps,
   courseLights,
@@ -240,5 +241,26 @@ describe('courseRain (L2-166 AC24)', () => {
 
   it.each([[undefined], ['pouring'], [null]])('has no rain for %s: the file is data', (named) => {
     expect(courseRain({ ...courseFile(), rain: named } as unknown as CourseFile)).toBe(0);
+  });
+});
+
+describe('courseCableways', () => {
+  it('parses valid aerial cableway spans and ignores malformed entries', () => {
+    expect(courseCableways(courseFile())).toEqual([]);
+    const valid = courseCableways({
+      ...courseFile(),
+      cableways: [
+        {
+          from: [0, 140, 0],
+          to: [250, 580, -300],
+          sag: 18,
+          traverseSeconds: 42,
+          dwellSeconds: 5,
+          yaw: 0.4,
+        },
+      ],
+    });
+    expect(valid).toHaveLength(1);
+    expect(valid[0]!.sag).toBe(18);
   });
 });
