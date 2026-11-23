@@ -256,6 +256,11 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         vhi = road.index(vh_m)
         vhx, vhy, _ = road.at(vhi, vh_o)
         kit.halo((vhx, vhy, height_at(vhx, vhy) + 4.5), "glow-window")
+    # Soft evening reflection halos above the 4 village stream crossings
+    for st_r in (235.0, 3090.0, 6085.0, 8895.0):
+        sti = road.index(st_r)
+        stx, sty, _ = road.at(sti, 14.0)
+        kit.halo((stx, sty, road.s[sti]["z"] - 0.8), "bulb")
     # [ANCHOR:alpenglow-lights]
 
 
