@@ -31,8 +31,8 @@ Estimates are working days for one intermediate developer, using `docs/detailed-
 | 22 | Stay secure | Authenticated requests, rate limits, CSP, validated input, protected rider data. | 8 | 100% |
 | 23 | Use by touch, keyboard and screen reader | Every width, 44 px targets, keyboard paths, announcements, reduced motion. | 8 | 100% |
 | 24 | Switch theme and full screen | Match device, dark or light; full screen on any ride screen. | 3 | 100% |
-| 25 | Check diagnostics | Bike and browser state, packet log to download. | 5 | 0% |
+| 25 | Check diagnostics | Bike and browser state, packet log to download. | 5 | 60% |
 | 26 | Send feedback | Report a bug, share an idea or send kudos. | 5 | 0% |
 | 27 | Install the app | Install as an app from Chrome or Edge. | 3 | 0% |
 
-**Total:** 238 days. **Complete:** 225 days (95%).
+**Total:** 238 days. **Complete:** 228 days (96%).
