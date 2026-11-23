@@ -434,4 +434,15 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     )
     # Piz Rotic (2,973 m) northwest Sella rampart overlooking Plan de Gralba
     rock_tower(peaks, cx + psux * 725.0 + pspx * 185.0, cy + psuy * 725.0 + pspy * 185.0, 120.0, 594.0, 96.0, 78.0, 9, math.atan2(psuy, psux), cfn, taper=0.70, flat_cap=True, seed_phase=3.1)
+    # Bright snow-cornice saddle lip crowning Forcella Pordoi (2,848 m)
+    quad_shaded(
+        peaks,
+        (fc_x - px_perp * 22.0 - ux * 32.0, fc_y - py_perp * 22.0 - uy * 32.0, 514.0),
+        (fc_x + px_perp * 22.0 - ux * 32.0, fc_y + py_perp * 22.0 - uy * 32.0, 514.0),
+        (fc_x + px_perp * 18.0 - ux * 58.0, fc_y + py_perp * 18.0 - uy * 58.0, 526.0),
+        (fc_x - px_perp * 18.0 - ux * 58.0, fc_y - py_perp * 18.0 - uy * 58.0, 526.0),
+        cfn,
+        520.0,
+        snow=True,
+    )
     # [ANCHOR:massif]
