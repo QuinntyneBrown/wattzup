@@ -482,4 +482,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     )
     # Piz Lavarella & Cima Conturines (3,064 m) rising behind Sasso di Santa Croce
     rock_tower(peaks, sc_pt["x"] + scux * 1950.0 + (-scuy) * 260.0, sc_pt["y"] + scuy * 1950.0 + scux * 260.0, 65.0, 862.0, 220.0, 160.0, 9, math.atan2(-scuy, -scux), cfn, taper=0.52, flat_cap=True, seed_phase=1.2)
+    # Monte Cherz (2,095 m) subalpine plateau knoll east of Passo Campolongo (at=2150 m)
+    chz_pt = road.s[road.index(2150.0)]
+    czux, czuy = chz_pt["x"] - cx, chz_pt["y"] - cy
+    czul = max(1.0, math.hypot(czux, czuy))
+    czux, czuy = czux / czul, czuy / czul
+    rock_tower(peaks, chz_pt["x"] + czux * 520.0, chz_pt["y"] + czuy * 520.0, 55.0, 325.0, 185.0, 145.0, 10, math.atan2(-czuy, -czux), cfn, taper=0.72, flat_cap=True, seed_phase=4.5)
     # [ANCHOR:peaks]
