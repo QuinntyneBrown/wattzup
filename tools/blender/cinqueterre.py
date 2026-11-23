@@ -974,7 +974,7 @@ def piazza(k) -> int:
             paint.tube((px, py, z + 2.15), 1.65, 0.08, 0.7, colour, tuple(v * 0.8 for v in colour[:3]) + (1.0,), 8)
             paint.box((px + 0.5, py + 0.3, z + 0.1), (0.8, 0.8, 0.74), yaw + 0.4, table, 0.9)
             if rng.random() < 0.6:
-                hiker(paint, rng, (px - 0.6, py - 0.5, z + 0.12), rng.uniform(0, math.tau))
+                hiker(paint, rng, (px - 0.6, py - 0.5, z + 0.12), rng.uniform(0, math.tau), False)
             set_out += 1
     return set_out
 
@@ -1027,7 +1027,7 @@ def street_life(k) -> dict:
                 stalls += 1
             elif pick < 0.5:
                 for q in range(rng.randint(1, 2)):
-                    hiker(near, rng, (x + cs * q * 0.8, y + sn * q * 0.8, z + 0.02), yaw + rng.uniform(-1.6, 1.6))
+                    hiker(near, rng, (x + cs * q * 0.8, y + sn * q * 0.8, z + 0.02), yaw + rng.uniform(-1.6, 1.6), rng.random() < 0.4)
                     people += 1
             elif pick < 0.75:
                 # Pots by a door: terracotta, and what grows in them.
@@ -1037,6 +1037,41 @@ def street_life(k) -> dict:
                     near.box((bx + cs * e, by + sn * e, z), (0.42, 0.42, 0.45), yaw, pot, 0.85)
                     near.box((bx + cs * e, by + sn * e, z + 0.45), (0.6, 0.6, rng.uniform(0.35, 0.9)), yaw + 0.5, _lin(rng.choice((0x3F7A32, 0xD8342E, 0xE0527A, 0x5C8A38))), 0.75)
     return {"apes": apes, "stalls": stalls, "villagers": people}
+
+
+def vendemmia(k) -> dict:
+    """Detail 4, terraced vineyards: the harvest. It is early autumn, so here and there along the terraces people
+    are picking: two or three at the edge of the first or second step, crates of grapes, purple and green,
+    stacked on the wall's edge beside them, and at each row's end the chestnut post the wires run from."""
+    near, rng, s = Painted(k, "ct-detail"), k.rng, k.s
+    crate, post = _lin(0xD9B46A), _lin(0x6A4A30)
+    grapes = (_lin(0x5A2E6A), _lin(0x9AB83A), _lin(0x7A3A7A))
+    pickers = crates = 0
+    for i in range(30, k.n - 30, 61):
+        i += rng.randrange(12)
+        if min(terrace_levels(k, q) for q in range(i - 1, i + 5)) < 2 or in_grove(k, i) or any(abs(s[q]["k"]) > 1 / 120 for q in range(i - 2, i + 5)):
+            continue
+        inland, level = -seaward(k, i), 0  # the first step: a higher one is out of sight from the road
+        front = k.kerb + TERRACE_FOOT + level * TERRACE_DEPTH
+        up = (level + 1) * TERRACE_RISE
+        if not k.room(i, (front + TERRACE_DEPTH) * inland, 12.0):
+            continue
+        for q in range(rng.randint(2, 3)):
+            # At the wall's edge, where a rider below can see them: further back the step hides them.
+            x, y, z = k.P(i, -2.0 - q * rng.uniform(1.6, 2.6), (front + 0.45) * inland, up)
+            hiker(near, rng, (x, y, z + 0.02), s[i]["h"] + inland * math.pi / 2 + rng.uniform(-0.5, 0.5), False)
+            pickers += 1
+        # The crates on the wall's edge, where they are carried down from.
+        for q in range(rng.randint(3, 5)):
+            x, y, z = k.P(i, 1.0 + (q % 3) * 0.75, (front + 0.5) * inland, up + (q // 3) * 0.34)
+            near.box((x, y, z), (0.62, 0.42, 0.3), s[i]["h"], crate, 0.9)
+            near.box((x, y, z + 0.3), (0.54, 0.34, 0.1), s[i]["h"], grapes[rng.randrange(3)], 1.0)
+            crates += 1
+        for row in (0.3, 0.68):
+            for q in (i - 1, i + 4):
+                x, y, z = k.road.at(q, (front + TERRACE_DEPTH * row) * inland, up)
+                near.box((x, y, z - 0.05), (0.1, 0.1, 1.6), s[q]["h"], post, 1.0)
+    return {"pickers": pickers, "grapeCrates": crates}
 
 
 def vineyard_works(k) -> dict:
@@ -1268,8 +1303,9 @@ SHIRTS = (0xD9483A, 0x2F7FC4, 0xF0B429, 0x3E9A62, 0xF2EEE2, 0xE8762C, 0x7A4FB0, 
 SKIN = (0xE8B48C, 0xC88A5E, 0x8A5A3C, 0xF0C8A4)
 
 
-def hiker(paint, rng, c, yaw: float) -> None:
-    """A walker on the path: boots and shorts, a bright shirt, a rucksack, a sun hat and a pair of poles."""
+def hiker(paint, rng, c, yaw: float, gear: bool = True) -> None:
+    """A walker on the path: boots and shorts, a bright shirt, a rucksack, a sun hat and a pair of poles. Without
+    `gear`, somebody at work or at a table: no rucksack and no poles."""
     cs, sn = math.cos(yaw), math.sin(yaw)
     h = rng.uniform(0.92, 1.08)
     shirt, pack = _lin(SHIRTS[rng.randrange(len(SHIRTS))]), _lin(SHIRTS[rng.randrange(len(SHIRTS))])
@@ -1283,10 +1319,12 @@ def hiker(paint, rng, c, yaw: float) -> None:
         paint.box(at(stride * side, 0.1 * side, 0.0), (0.16, 0.14, 0.46 * h), yaw, skin, 0.35)
         paint.box(at(stride * side * 0.5, 0.1 * side, 0.46), (0.2, 0.17, 0.4 * h), yaw, shorts, 1.0)
         paint.box(at(-stride * side * 0.6, 0.27 * side, 0.86), (0.11, 0.1, 0.54 * h), yaw, skin, 1.0)
-        # A pole, planted a little ahead.
-        paint.box(at(0.32 - stride * side, 0.36 * side, 0.0), (0.03, 0.03, 1.05 * h), yaw, _lin(0x2A2A2E), 1.0)
+        if gear:
+            # A pole, planted a little ahead.
+            paint.box(at(0.32 - stride * side, 0.36 * side, 0.0), (0.03, 0.03, 1.05 * h), yaw, _lin(0x2A2A2E), 1.0)
     paint.box(at(0, 0, 0.84), (0.24, 0.42, 0.58 * h), yaw, shirt, 0.85)
-    paint.box(at(-0.2, 0, 0.9), (0.2, 0.34, 0.52 * h), yaw, pack, 0.8)
+    if gear:
+        paint.box(at(-0.2, 0, 0.9), (0.2, 0.34, 0.52 * h), yaw, pack, 0.8)
     paint.box(at(0, 0, 1.44), (0.21, 0.2, 0.24 * h), yaw, skin, 1.0)
     paint.box(at(0, 0, 1.66), (0.36, 0.36, 0.05), yaw, hat, 1.0)
 
@@ -1375,6 +1413,7 @@ def scenery(k) -> dict:
     churches = parishes(k)
     street = street_life(k)
     works = vineyard_works(k)
+    works.update(vendemmia(k))
     afloat = on_the_water(k)
     rocks = sea_rocks(k)
     furniture = road_furniture(k)
