@@ -104,3 +104,14 @@ def build_four_passes(B, kit, road, height_at) -> None:
         B["larch-warm"].box((bx_v - math.sin(bv_yaw) * 1.65, by_v + math.cos(bv_yaw) * 1.65, bz_v + 0.15), (6.0, 0.14, 0.98), bv_yaw)
         B["stone"].box((bx_v, by_v, bz_v + 0.15), (0.62, 0.62, 1.02), bv_yaw)
         B["gold"].box((bx_v, by_v, bz_v + 1.17), (0.88, 0.88, 0.08), bv_yaw + 0.4)
+
+    # Tall orange/yellow-and-black snow-depth poles lining the exposed 240 m saddle of each pass
+    for p in PASSES:
+        for d_off in range(-120, 121, 30):
+            sp_idx = road.index(p["at"] + d_off)
+            sp_yaw = s[sp_idx]["h"]
+            for side in (-1.0, 1.0):
+                px_s, py_s, pz_s = kit.P(sp_idx, 0.0, (kit.kerb + 1.25) * side, -0.1)
+                B["yellow"].box((px_s, py_s, pz_s), (0.09, 0.09, 2.85), sp_yaw)
+                B["dark"].box((px_s, py_s, pz_s + 0.95), (0.10, 0.10, 0.55), sp_yaw)
+                B["parasol-red"].box((px_s, py_s, pz_s + 2.35), (0.10, 0.10, 0.52), sp_yaw)
