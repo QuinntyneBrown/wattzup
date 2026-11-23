@@ -91,3 +91,20 @@ export function paragliderMaxBankDegrees(orbit: ThermalOrbit): number {
   }
   return Number(((maxRad * 180) / Math.PI).toFixed(1));
 }
+
+/** Integrated 3D flight path length (m) of one complete figure-eight thermal orbit. */
+export function thermalOrbitLoopLengthMetres(orbit: ThermalOrbit, steps = 64): number {
+  const n = Math.max(16, steps);
+  const a: GliderPose = { x: 0, y: 0, z: 0, heading: 0, bank: 0 };
+  const b: GliderPose = { x: 0, y: 0, z: 0, heading: 0, bank: 0 };
+  let sum = 0;
+  paragliderPose(orbit, 0, 0, false, a);
+  for (let i = 1; i <= n; i++) {
+    paragliderPose(orbit, (i / n) * orbit.periodSeconds, 0, false, b);
+    sum += Math.hypot(b.x - a.x, b.y - a.y, b.z - a.z);
+    a.x = b.x;
+    a.y = b.y;
+    a.z = b.z;
+  }
+  return Math.round(sum);
+}
