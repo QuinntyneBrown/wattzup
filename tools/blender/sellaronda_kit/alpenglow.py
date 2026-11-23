@@ -213,6 +213,12 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         bsi = road.index(bs_m)
         bsx, bsy, bsz = road.at(bsi, (kit.kerb + 2.9) * bs_s, 2.2)
         kit.light((bsx, bsy, bsz), "bulb", 12.0, 0.45)
+    # Golden evening halos on Passo Sella bell arch & Passo Gardena UNESCO stele
+    for sl_m, sl_o in ((7764.0, -(kit.kerb + 3.6)), (10142.0, kit.kerb + 3.5)):
+        sli = road.index(sl_m)
+        slx, sly, slz = road.at(sli, sl_o, 2.5)
+        kit.light((slx, sly, slz), "gold", 14.0, 0.55)
+        kit.halo((slx, sly, slz), "gold")
     # [ANCHOR:alpenglow-lights]
 
 
