@@ -67,3 +67,13 @@ export function distanceToNextVillage(metres: number): {
   const first = LADIN_VILLAGES[0]!;
   return { village: first, metresAhead: 11650 - w + first.courseMetres };
 }
+
+/** Returns the Ladin village whose centre lies within `radiusMetres` of `metres`, or null on open mountain roads. */
+export function villageAtMetres(metres: number, radiusMetres = 220): LadinVillage | null {
+  const w = ((metres % 11650) + 11650) % 11650;
+  for (const v of LADIN_VILLAGES) {
+    const dist = Math.min(Math.abs(w - v.courseMetres), 11650 - Math.abs(w - v.courseMetres));
+    if (dist <= radiusMetres) return v;
+  }
+  return null;
+}
