@@ -7,6 +7,7 @@ import {
   cablewayVerticalSpeedMps,
   chairliftLoopPosition,
   gondolaPosition,
+  isCabinDocked,
   midSpanAltitudeMetres,
 } from './gondola-flight';
 
@@ -51,5 +52,7 @@ describe('gondolaPosition', () => {
     expect(cableLineLengthMetres(SASS_PORDOI)).toBeGreaterThan(600);
     expect(cablewayVerticalSpeedMps(SASS_PORDOI)).toBeGreaterThan(10);
     expect(cablewayRoundTripSeconds(SASS_PORDOI)).toBe(90);
+    expect(isCabinDocked(SASS_PORDOI, 2, 0)).toBe(true);
+    expect(isCabinDocked(SASS_PORDOI, 25, 0)).toBe(false);
   });
 });

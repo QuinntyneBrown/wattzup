@@ -121,3 +121,15 @@ export function cablewayVerticalSpeedMps(span: CableSpan): number {
 export function cablewayRoundTripSeconds(span: CableSpan): number {
   return 2 * (Math.max(1, span.traverseSeconds) + Math.max(0, span.dwellSeconds));
 }
+
+/** True when the reversible cabin on `span` is currently dwelling at either terminal at `seconds`. */
+export function isCabinDocked(span: CableSpan, seconds: number, phaseOffset = 0): boolean {
+  const travel = Math.max(1, span.traverseSeconds);
+  const dwell = Math.max(0, span.dwellSeconds);
+  if (dwell === 0) return false;
+  const half = travel + dwell;
+  const cycle = half * 2;
+  const wrapped = (((seconds + phaseOffset * cycle) % cycle) + cycle) % cycle;
+  const local = wrapped < half ? wrapped : wrapped - half;
+  return local < dwell;
+}
