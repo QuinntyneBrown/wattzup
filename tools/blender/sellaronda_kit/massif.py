@@ -559,4 +559,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     )
     # Piz Revis (2,947 m) southeastern rim bastion east of Forcella Pordoi
     rock_tower(peaks, fc_x + px_perp * 135.0 + ux * 25.0, fc_y + py_perp * 135.0 + uy * 25.0, 125.0, 588.0, 84.0, 68.0, 9, yaw_sp + 0.22, cfn, taper=0.68, flat_cap=True, seed_phase=3.0)
+    # Campanile di Mezdì detached northern Sella spire
+    rock_tower(peaks, cx + mux * 838.0 + mpx * 135.0, cy + muy * 838.0 + mpy * 135.0, 130.0, 498.0, 32.0, 28.0, 7, math.atan2(muy, mux), cfn, taper=0.28, flat_cap=False, seed_phase=5.7)
     # [ANCHOR:massif]
