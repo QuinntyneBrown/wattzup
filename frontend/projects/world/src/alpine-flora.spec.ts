@@ -7,6 +7,7 @@ import {
   isAlpenroseInBloom,
   larchAutumnGoldRatio,
   mugoPineCoverWeight,
+  tabiaBarnDensityWeight,
   treeLineDensity,
   wildflowerBloomIntensity,
 } from './alpine-flora';
@@ -39,5 +40,7 @@ describe('dolomiteFloraZone', () => {
     expect(characteristicFaunaAtAltitude(2500)).toBe('rupicapra-chamois');
     expect(isAlpenroseInBloom(185)).toBe(true);
     expect(isAlpenroseInBloom(300)).toBe(false);
+    expect(tabiaBarnDensityWeight(1860)).toBeCloseTo(1, 3);
+    expect(tabiaBarnDensityWeight(2400)).toBe(0);
   });
 });
