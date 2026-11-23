@@ -401,4 +401,6 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
         B["stone"].box((hsx, hsy_p, hsz - 1.0), (8.4, 5.8, 2.2), hsy)
         B["larch-aged"].box((hsx, hsy_p, hsz + 1.2), (8.8, 6.2, 3.2), hsy)
         kit.gable(B["chalet-wood"], (hsx, hsy_p, hsz + 4.4), 9.4, 6.8, 1.6, hsy)
+    # Crimson balcony geranium planters on the historic 1903 Passo Sella chalet wing
+    B["geranium-red"].box((hsx, hsy_p, hsz + 2.55), (7.6, 6.45, 0.28), hsy)
     # [ANCHOR:rifugi-global]
