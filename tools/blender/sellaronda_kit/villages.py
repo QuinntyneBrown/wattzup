@@ -441,4 +441,13 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         B["stone"].box((grx, gry_p, grz - 1.4), (8.4, 6.8, 3.2), gry)
         B["larch-aged"].box((grx, gry_p, grz + 1.8), (8.8, 7.2, 3.4), gry)
         kit.gable(B["chalet-wood"], (grx, gry_p, grz + 5.2), 9.4, 7.8, 2.0, gry)
+    # Ciasa de Cultura Ladin heritage pavilion in Corvara (at=342 m)
+    cl_i = road.index(342.0)
+    cly = road.s[cl_i]["h"]
+    clx, cly_p, _ = road.at(cl_i, -(kit.kerb + 15.5))
+    if road.clear_of_road(clx, cly_p, 11.0, cl_i):
+        clz = height_at(clx, cly_p)
+        B["chalet-plaster"].box((clx, cly_p, clz - 0.8), (10.4, 7.6, 5.4), cly)
+        B["ladin-blue"].box((clx, cly_p, clz + 2.8), (10.6, 7.8, 0.55), cly)
+        kit.gable(B["larch-aged"], (clx, cly_p, clz + 4.6), 11.2, 8.4, 2.2, cly)
     # [ANCHOR:villages]
