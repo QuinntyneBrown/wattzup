@@ -231,6 +231,11 @@ def emit_dusk_lights(kit, road, height_at) -> None:
     fax, fay, faz = road.at(fa_i, 0.0, 5.0)
     kit.light((fax, fay, faz), "gold", 22.0, 0.64)
     kit.halo((fax, fay, faz), "gold")
+    # Warm golden pavement pools under the Corvara & Selva promenade streetlamps
+    for sl_v in (180.0, 310.0, 8840.0, 8980.0):
+        sli = road.index(sl_v)
+        slx, sly, slz = road.at(sli, kit.kerb + 1.15, 4.1)
+        kit.light((slx, sly, slz), "bulb", 15.0, 0.46)
     # [ANCHOR:alpenglow-lights]
 
 
