@@ -86,7 +86,7 @@ def alpenglow_sky_colour(dx: float, dy: float, dz: float, az: float, haze):
     cirrus = sky.fbm(ux * 4.6 - 1.2, uy * 0.45 + 3.1, 2, 31)
     cirrus_mask = smoothstep(0.56, 0.82, cirrus) * smoothstep(0.22, 0.52, h) * (1.0 - smoothstep(0.68, 0.95, h))
     c = mix(air, cloud_belly, cover * 0.76)
-    c = mix(c, srgb(0xF8B8C6), cirrus_mask * (0.22 + 0.26 * sunward))
+    c = mix(c, srgb(0xFAAEC0), cirrus_mask * (0.23 + 0.27 * sunward))
     # Warm solar aureole just above the western pass horizon
     sun_ang = max(0.0, dx * math.cos(az) * 0.96 + dy * math.sin(az) * 0.96 + dz * 0.18)
     c = mix(c, srgb(0xFFE2B8), (sun_ang ** 18.0) * 0.42 + (sun_ang ** 5.0) * 0.08)
