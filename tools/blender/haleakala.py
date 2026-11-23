@@ -643,6 +643,74 @@ def shrubland(k) -> int:
     return grown
 
 
+def board(paint, k, i: int, off: float, wide: float, tall: float, up: float, face, border=None, post=None) -> tuple:
+    """A sign beside the road at sample i, facing the riders who come up to it: a board `wide` by `tall` with its
+    foot `up` off the ground, on a post, with a border round it if one is given. Returns the board's corner, the
+    unit vector along it and the one it faces, for whatever is painted on it."""
+    h = k.s[i]["h"]
+    along, out = (math.sin(h), -math.cos(h)), (-math.cos(h), -math.sin(h))
+    x, y, z = k.road.at(i, off)
+    corner = (x - along[0] * wide / 2, y - along[1] * wide / 2, 0.0)
+    paint.box((x - out[0] * 0.08, y - out[1] * 0.08, z - 0.3), (0.1, 0.1, up + tall * 0.6 + 0.3), h, post or _lin(0x8A8E90), 0.8)
+    if border is not None:
+        paint.panel(corner, along, out, -0.07, wide + 0.07, z + up - 0.07, z + up + tall + 0.07, 0.02, border)
+    paint.panel(corner, along, out, 0.0, wide, z + up, z + up + tall, 0.04, face)
+    return corner, along, out, z + up
+
+
+def park_signs(k) -> dict:
+    """Details 1 and 9, the switchback road and its edge: the signs of a national park's road. A green board with a
+    white border marks every tenth of the climb, as the elevation signs do each thousand feet; yellow diamonds
+    warn of nēnē on the road through the shrubland; and where the park begins stands its sign, a brown board on a
+    plinth of lava stone, with the entrance station's kiosk just beyond it."""
+    paint, s = Painted(k), k.s
+    shares = [height_share(k, i) for i in range(k.n)]
+    green, white, yellow, black, brown = _lin(0x1F6B45), _lin(0xF2F2EE), _lin(0xF2C21E), _lin(0x1E1E20), _lin(0x5A3A26)
+    right = -(k.kerb + 2.4)
+
+    def straight(i: int) -> int:
+        while i < k.n - 30 and any(abs(s[q]["k"]) > 1 / 120 for q in range(i - 4, i + 5)):
+            i += 5
+        return i
+
+    elevation = nene = 0
+    for tenth in range(1, 10):
+        i = straight(min(range(k.n), key=lambda q: abs(shares[q] - tenth / 10)))
+        corner, along, out, z = board(paint, k, i, right, 1.5, 0.75, 1.5, green, white)
+        # Its line of lettering, as a pale bar, and the figure under it.
+        paint.panel(corner, along, out, 0.2, 1.3, z + 0.46, z + 0.58, 0.06, white)
+        paint.panel(corner, along, out, 0.4, 1.1, z + 0.14, z + 0.36, 0.06, white)
+        elevation += 1
+    for i in range(60, k.n - 60, 190):
+        if not 0.38 < shares[i] < 0.9:
+            continue
+        i = straight(i)
+        corner, along, out, z = board(paint, k, i, right, 0.0, 0.0, 1.5, yellow)
+        # A diamond, and the goose on it: a body, a neck and a head.
+        mid = (corner[0], corner[1])
+        pt = lambda a, up, proud=0.05: (mid[0] + along[0] * a + out[0] * proud, mid[1] + along[1] * a + out[1] * proud, z + up)  # noqa: E731
+        paint.face((pt(0, 0.0), pt(0.48, 0.48), pt(0, 0.96), pt(-0.48, 0.48)), (yellow,) * 4)
+        paint.face((pt(-0.2, 0.36, 0.07), pt(0.16, 0.36, 0.07), pt(0.2, 0.52, 0.07), pt(-0.14, 0.5, 0.07)), (black,) * 4)
+        paint.face((pt(0.1, 0.5, 0.07), pt(0.2, 0.5, 0.07), pt(0.24, 0.72, 0.07), pt(0.16, 0.72, 0.07)), (black,) * 4)
+        nene += 1
+    # The park's sign and its entrance station, where the shrubland begins.
+    i = straight(min(range(k.n), key=lambda q: abs(shares[q] - 0.44)))
+    x, y, z = k.road.at(i, right - 1.6)
+    h = s[i]["h"]
+    paint.box((x, y, z - 0.4), (0.9, 4.6, 1.3), h, _lin(0x3A3432), 0.8)
+    corner, along, out, base = board(paint, k, i, right - 1.6, 4.0, 1.25, 1.0, brown, None, _lin(0x3A3432))
+    paint.panel(corner, along, out, 0.4, 3.6, base + 0.74, base + 0.98, 0.06, white)
+    paint.panel(corner, along, out, 0.9, 3.1, base + 0.3, base + 0.5, 0.06, white)
+    j = i + 14
+    x, y, z = k.road.at(j, right - 1.2)
+    paint.box((x, y, z - 0.3), (3.2, 2.6, 2.9), s[j]["h"], _lin(0x6E4E36), 0.8)
+    paint.roof((x, y, z + 2.6), 4.6, 3.8, 0.9, s[j]["h"], _lin(0x4A3A30))
+    corner = k.road.at(j, right + 0.12)
+    hx, hy = math.cos(s[j]["h"]), math.sin(s[j]["h"])
+    paint.panel((corner[0] + hx * 0.9, corner[1] + hy * 0.9, 0.0), (-hx, -hy), (-hy, hx), 0.0, 1.8, z + 1.0, z + 2.0, 0.03, _lin(0x27303A))
+    return {"elevationSigns": elevation, "neneSigns": nene}
+
+
 def boulder(k, b, c, r: float) -> None:
     """A lump of lava: an irregular rock, wider than it is tall, sunk a little into the cinder."""
     rng = k.rng
@@ -688,5 +756,6 @@ def scenery(k) -> dict:
     coast = coastal_start(k)
     cones = crater(k)
     lava = lava_field(k)
+    signs = park_signs(k)
     shrubs = shrubland(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords, "domes": domes, **ranch, **coast, "cinderCones": cones, "boulders": lava, "shrubs": shrubs}
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords, "domes": domes, **ranch, **coast, "cinderCones": cones, "boulders": lava, "shrubs": shrubs, **signs}
