@@ -40,7 +40,8 @@ def enrosadira_colour_fn(az_sun: float):
             alt_warm = smoothstep(340.0, 820.0, z)
             ice_shadow = mix(srgb(0x6C9EC4), glacier_blue, alt_warm)
             ice_sun = mix(srgb(0xE8F2FA), glacier_rose, 0.35 + 0.65 * alt_warm)
-            return mix(ice_shadow, ice_sun, 0.24 + 0.76 * lit)
+            zenith_cool = srgb(0x88A8DC)
+            return mix(mix(ice_shadow, zenith_cool, max(0.0, nz) * 0.28), ice_sun, 0.24 + 0.76 * lit)
 
         # Subtle horizontal Hauptdolomit bedding strata modulation by elevation
         # Vertical dark meltwater seepage streaks characteristic of overhanging Dolomite walls
