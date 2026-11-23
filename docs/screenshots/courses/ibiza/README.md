@@ -639,6 +639,19 @@ any pass, for Ibiza or for Neon Docklands beside it. A profile of the finish (`W
   five frames lost each second, whatever the map draws. That is the ride's display, not this map, and is not
   changed here.
 
+**Measured again after Sign 5, three profiled runs of each map turn about** (the finish, the low tier, the
+processor slowed six times):
+
+| Map | Draw calls | fps | Script a frame |
+| --- | --- | --- | --- |
+| Ibiza Sunset Strip | 78 to 79 | 46.5, 38.0, 51.6 | 16.4, 20.6, 14.3 ms |
+| Neon Docklands | 58 | 46.3, 44.4, 45.4 | 16.7, 17.3, 16.7 ms |
+
+The main thread is busy for the whole ten seconds on both. Ibiza, with a third more draw calls and over twice the
+triangles, spends no more script on a frame than Neon Docklands: what the map draws is not what keeps the stand-in
+from 60. What both share is: the ride's tick, the riders and the renderer's own work for each frame. Taking
+scenery out of Ibiza would not reach 60 here.
+
 **One thing taken out.** The stars were drawn, at no brightness, for the first third of the course. They are not
 drawn now until the first of them shows: one draw call fewer there (81 to 80 from 600 m). At the finish nothing
 changes (77 draw calls, 119,897 triangles; 49.4 fps on this run).
