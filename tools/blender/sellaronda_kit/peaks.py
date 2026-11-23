@@ -341,4 +341,20 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     rock_tower(peaks, sella_pt["x"] + ux * 1010.0 + px * 285.0, sella_pt["y"] + uy * 1010.0 + py * 285.0, 75.0, 742.0, 76.0, 62.0, 8, yaw_sl + 0.3, cfn, taper=0.40, flat_cap=False, seed_phase=5.0)
     # Pian dei Fiacconi (2,626 m) moraine-bench refuge below Marmolada's northern icefield
     rock_tower(peaks, pordoi_pt["x"] + mux * 1105.0 - mpx * 165.0, pordoi_pt["y"] + muy * 1105.0 - mpy * 165.0, 352.0, 368.0, 14.0, 10.5, 6, yaw_mm, cfn, taper=0.95, flat_cap=True, seed_phase=1.8)
+    # Bright Mittagsscharte snow cleft between the Odle / Geisler needles
+    od_m = road.s[road.index(9150.0)]
+    omx, omy = od_m["x"] - cx, od_m["y"] - cy
+    oml = max(1.0, math.hypot(omx, omy))
+    omx, omy = omx / oml, omy / oml
+    opx, opy = -omy, omx
+    quad_shaded(
+        peaks,
+        (od_m["x"] + omx * 1620.0 - opx * 18.0, od_m["y"] + omy * 1620.0 - opy * 18.0, 240.0),
+        (od_m["x"] + omx * 1620.0 + opx * 18.0, od_m["y"] + omy * 1620.0 + opy * 18.0, 240.0),
+        (od_m["x"] + omx * 1675.0 + opx * 9.0, od_m["y"] + omy * 1675.0 + opy * 9.0, 685.0),
+        (od_m["x"] + omx * 1675.0 - opx * 9.0, od_m["y"] + omy * 1675.0 - opy * 9.0, 685.0),
+        cfn,
+        460.0,
+        snow=True,
+    )
     # [ANCHOR:peaks]
