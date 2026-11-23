@@ -91,3 +91,13 @@ export function snowfieldAlbedoTint(sunLit: number): EnrosadiraRgb {
     b: 0.86 + 0.04 * s,
   };
 }
+
+export type EnrosadiraPhaseName = 'apricot-gold' | 'coral-rose' | 'crimson-violet' | 'alpine-dusk';
+
+/** Names the visual phase of Dolomite Enrosadira for normalized twilight `progress` (0..1). */
+export function enrosadiraStageName(progress: number): EnrosadiraPhaseName {
+  if (progress < 0.25) return 'apricot-gold';
+  if (progress < 0.6) return 'coral-rose';
+  if (progress < 0.85) return 'crimson-violet';
+  return 'alpine-dusk';
+}

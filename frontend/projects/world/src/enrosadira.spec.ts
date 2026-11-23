@@ -5,6 +5,7 @@ import {
   cliffAspectIllumination,
   dolomiaCarbonateReflectance,
   duskLightPoolFalloff,
+  enrosadiraStageName,
   enrosadiraTint,
   snowfieldAlbedoTint,
   twilightZenithLuminance,
@@ -37,5 +38,7 @@ describe('enrosadiraTint', () => {
     expect(twilightZenithLuminance(0)).toBeGreaterThan(twilightZenithLuminance(1));
     expect(snowfieldAlbedoTint(0).b).toBeGreaterThan(snowfieldAlbedoTint(0).r);
     expect(snowfieldAlbedoTint(1).r).toBeGreaterThan(snowfieldAlbedoTint(1).b);
+    expect(enrosadiraStageName(0.4)).toBe('coral-rose');
+    expect(enrosadiraStageName(0.95)).toBe('alpine-dusk');
   });
 });
