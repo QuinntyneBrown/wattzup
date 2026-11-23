@@ -8,6 +8,7 @@ import {
   ladinGreetingForVillage,
   lowestLadinVillage,
   nextClimbFromVillage,
+  precedingPassForVillage,
   provinceForMetres,
   streamForVillage,
   villageAltitudeSpreadMetres,
@@ -41,5 +42,7 @@ describe('LADIN_VILLAGES', () => {
     expect(villageAltitudeSpreadMetres()).toBe(137);
     expect(findLadinVillage('Wolkenstein')?.id).toBe('selva');
     expect(findLadinVillage('Cianacei')?.id).toBe('canazei');
+    expect(precedingPassForVillage('corvara')).toBe('gardena');
+    expect(precedingPassForVillage('canazei')).toBe('pordoi');
   });
 });
