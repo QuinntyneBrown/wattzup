@@ -12,6 +12,10 @@ def _onion_dome_church(B, kit, x: float, y: float, z: float, yaw: float, dome_ma
     # Low whitewashed churchyard perimeter wall + shingle coping around the parish church
     B["chalet-plaster"].box((x, y, z - 1.4), (22.5, 15.0, 2.15), yaw)
     B["larch-aged"].box((x, y, z + 0.75), (22.8, 15.3, 0.16), yaw)
+    gx_ch = x - math.sin(yaw) * -7.5
+    gy_ch = y + math.cos(yaw) * -7.5
+    B["larch-aged"].box((gx_ch, gy_ch, z + 0.75), (2.4, 0.45, 2.05), yaw)
+    kit.gable(B["chalet-wood"], (gx_ch, gy_ch, z + 2.80), 2.85, 1.15, 0.65, yaw)
     # Whitewashed nave + pitched slate roof
     B["stone"].box((x, y, z - 2.0), (16.5, 9.2, 2.6), yaw)
     B["chalet-plaster"].box((x, y, z + 0.6), (16.2, 8.8, 7.2), yaw)
