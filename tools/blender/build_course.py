@@ -2604,7 +2604,9 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
             (gx + c * d - sn * w, gy + sn * d + c * w, 0.06),
             (gx - c * d - sn * w, gy - sn * d + c * w, 0.06),
         )
-    ia = az + math.radians(11)
+    # The island stands beside the sun's road, not across it: from the finish the sun goes down into open sea at
+    # its foot. Eleven degrees off, its flank stood in front of the sun as it set.
+    ia = az + math.radians(20)
     ix, iy = fx + math.cos(ia) * 3300, fy + math.sin(ia) * 3300
     profile = [(-900, 0), (-760, 90), (-600, 150), (-470, 260), (-330, 230), (-210, 380), (-60, 440), (90, 330), (230, 360), (380, 210), (520, 250), (690, 110), (820, 60), (900, 0)]
     for (u0, h0), (u1, h1) in zip(profile, profile[1:]):

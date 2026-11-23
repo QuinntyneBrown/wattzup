@@ -191,6 +191,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Party 20 | No two alike: heights from a head under the middle to a head over, builds from slight to broad, a beach club's colours on most of those not in white, and auburn and grey hair among the rest | 60.1 fps, none over 20 ms, 148,981 triangles (the finish) | 45.5 and 49.8 fps after (the finish, 119,897 triangles: none more); Neon Docklands beside it 50.5, 48.2 |
 | Sky 16 | The sun reddens and flattens as it sinks: as painted and round from six degrees up, deep red and a fifth flatter on the horizon | 60.1 fps, one frame over 20 ms (from 3,250 m); 60.0 at the finish | 48.1 and 48.5 fps after (the finish, 119,897 triangles: none more); Neon Docklands beside it 53.9, 47.7 |
 | Sky 17 | The sunset shows down the finishing straight: the festoons' glow over the road no longer stands in one white glare in front of it | 60.3 fps (from 8,000, 8,150 and 8,300 m) | 42.6 and 45.9 fps after (the finish, 119,897 triangles: none more); Neon Docklands beside it 50.3, 54.4 |
+| Sky 18 | The sun goes down into open sea at the end of the finishing straight, the island beside it: the island's flank had stood in front of it | 60.3 and 60.1 fps (from 8,150 and 8,300 m) | 52.8 and 41.4 fps after (the finish, 119,897 triangles: none more); Neon Docklands beside it 53.5, 54.7 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -592,6 +593,17 @@ down the straight. The road under each string is lit as it was.
 
 **Still not seen**: the sun's own disc from the finishing straight. With the glare gone it is not in the frames
 taken either; it stands low behind what is at the end of the road.
+
+### Sky 18: the sun goes down at the end of the finishing straight
+
+`sky-18.jpg` (from 3,250 m, where the island now stands clear to the left; from 8,150 m and 8,300 m, the sun's
+disc low at the end of the road and through the finish arch). Sky 16 and Sky 17 both ended "the sun's disc is
+still not seen from the finishing straight". The reason was the island offshore: it stood eleven degrees to the
+left of the sun's bearing and is fifteen degrees wide each way, so its flank, two degrees high there, covered the
+sun as it came down to one. The island stands twenty degrees off now, its foot four degrees clear of the sun: the
+sun goes down into open sea beside it, as it does off the island's west coast, and the last straight is ridden at
+it. The disc there is the reddened, flattened one of Sky 16: salmon pink, not the deep red its numbers say, since
+it glows and the frame's exposure whitens it.
 
 ### Low power: where the frames go (after Party 20)
 
