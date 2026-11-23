@@ -519,4 +519,9 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["larch-warm"].box((sdlx, sdly_p, sdlz + 0.8), (9.6, 6.8, 2.6), sdly)
         kit.gable(B["steel"], (sdlx, sdly_p, sdlz + 3.4), 10.2, 7.4, 1.1, sdly)
 
+    # Panoramic glass safety balustrade along the Sass Pordoi upper terrace rim
+    if cableways_out:
+        sp_top = cableways_out[0]["to"]
+        B["glow-window"].box((sp_top[0], sp_top[1], sp_top[2] + 1.15), (7.8, 0.22, 1.15), 0.35)
+
     return cableways_out
