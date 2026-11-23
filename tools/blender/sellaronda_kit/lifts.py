@@ -392,4 +392,12 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         B["ladin-blue"].box((bzx, bzy_p, bzz + 0.7), (9.6, 6.6, 2.8), bzy)
         kit.gable(B["steel"], (bzx, bzy_p, bzz + 3.5), 10.2, 7.2, 1.1, bzy)
 
+    # Gazex curved steel avalanche-control exploder pipes high above Arabba & Gardena pistes
+    for gz_m in (3460.0, 9960.0):
+        gzi = road.index(gz_m)
+        gzx, gzy_p, _ = road.at(gzi, kit.kerb + 38.0)
+        if road.clear_of_road(gzx, gzy_p, 20.0, gzi):
+            gzz = height_at(gzx, gzy_p)
+            B["ladin-blue"].box((gzx, gzy_p, gzz + 0.4), (2.6, 0.52, 1.85), s[gzi]["h"] + 0.6)
+
     return cableways_out
