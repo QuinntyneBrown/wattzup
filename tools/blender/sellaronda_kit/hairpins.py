@@ -92,6 +92,9 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         for side in (-1.0, 1.0):
             B["stone"].box(kit.P(b_idx, 0.0, (kit.kerb + 0.85) * side, -2.8), (12.0, 0.85, 3.85), b_yaw)
             B["dolomite-pale"].box(kit.P(b_idx, 0.0, (kit.kerb + 0.85) * side, 1.05), (12.4, 0.96, 0.18), b_yaw)
+            for end_o in (-6.2, 6.2):
+                B["paint"].box(kit.P(b_idx, end_o, (kit.kerb + 0.85) * side, 1.23), (0.08, 0.28, 0.92), b_yaw)
+                B["parasol-red"].box(kit.P(b_idx, end_o, (kit.kerb + 0.85) * side, 1.55), (0.09, 0.28, 0.32), b_yaw)
         # Stepped stone torrent check-dams & white-water cascade on the uphill gully side
         for st_c in range(3):
             off_c = -(kit.kerb + 4.5 + st_c * 4.2)
