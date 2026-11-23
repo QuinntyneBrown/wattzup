@@ -139,6 +139,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | --- | --- | --- | --- |
 | Sky 1 | A sky painted in Blender: a deck of broken cloud lit red and gold from below towards the sun, violet away from it | 60.1 fps, none over 20 ms, 98 draw calls, 112,078 triangles | 54.4, 53.2 / 52.6, 53.6 fps |
 | Party 1 | Partygoers with a drink in their hand: legs or a summer dress, a body, a head with hair, three skin tones, most in white | 60.0 fps, none over 20 ms, 88 draw calls, 133,050 triangles | 53.9, 54.1 fps after; Neon Docklands beside it 53.6 to 56.6 |
+| Palms 1 | Date palms in bunches of one to three: a banded, curving trunk, a thatch of dry fronds, a crown of feathered fronds in three tiers | 60.0 fps, none over 20 ms, 83 draw calls, 109,354 triangles | 56.5 fps after; Neon Docklands beside it 56.1 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -184,3 +185,19 @@ Docklands earlier in the day): the machine, not the map. Measured alternately, I
 frame or two behind, with 58 draw calls to its 42. Tried and dropped: longer chunks for the land, the ground, the
 walls and the scenery (the draw calls did not fall, the triangles rose), and a shorter draw distance on the lowest
 tier (two draw calls). Glow, leaves, halos and beams are in longer chunks (fewer meshes).
+
+### Palms 1: date palms in bunches
+
+**Before** (`party-01-strip.jpg`): one palm every twenty metres, each a straight trunk under nine flat fronds.
+**After** (`palm-01-strip.jpg`, `palm-01-headland.jpg`, `palm-01.mp4`): `palm` and `palm_bunch` in
+`build_course.py`. A bed holds one palm, two or three, of different heights and leaning away from each other. A
+trunk is banded light and dark, swollen at its foot and under its crown, and curves as it rises. Under the crown
+hangs a thatch of dry fronds. The crown is three tiers of feathered fronds (old ones hanging, the middle arching
+out, the young upright): each a spine that bends under its own weight with a blade folded down either side. Greens
+are an olive and a dark green, where they were two bright ones. About 130 triangles a palm.
+
+The palms have their own dice, so nothing else moved.
+
+**Cost.** The file is 1.21 MB gzipped (it was 0.85): there are some seven hundred palms. Leaves are in chunks of
+one length of road again, so that a far bunch is not drawn; the finish's crowd fills four places in nine, and the
+sky's dome is 128 by 20 (5,000 triangles). The lowest tier's worst frame (the finish) is 119,185 triangles.

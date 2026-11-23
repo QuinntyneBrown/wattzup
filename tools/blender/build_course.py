@@ -373,8 +373,11 @@ MATERIALS: dict[str, dict] = {
     "terrain": {"color": 0xFFFFFF, "rough": 1.0, "vertex": True},
     "sea": {"color": 0x1F9AA6, "rough": 0.15, "metal": 0.1},
     "trunk": {"color": 0x8A6A48, "rough": 0.9},
-    "leaf": {"color": 0x2F8A4E, "rough": 0.8, "double": True},
-    "leaf-dark": {"color": 0x1F6A3C, "rough": 0.8, "double": True},
+    "trunk-dark": {"color": 0x6A4E36, "rough": 0.9},
+    "leaf": {"color": 0x3E7E44, "rough": 0.8, "double": True},
+    "leaf-dark": {"color": 0x1F5634, "rough": 0.8, "double": True},
+    # Last year's fronds, hanging dry under the crown.
+    "leaf-dry": {"color": 0xA88A52, "rough": 0.9, "double": True},
     "glint": {"color": 0xFFD9A0, "glow": 2.0},
     "bush": {"color": 0x3F7A46, "rough": 0.9},
     "bougainvillea": {"color": 0xD02A8A, "rough": 0.8},
@@ -560,7 +563,7 @@ FENCES_PART = "Fences"
 HALOS_PART = "Halos"
 WALL_KINDS = {"brick": 1, **{f"container-{i}": 2 for i in range(4)}, "whitewash": 3, "tower": 3, "wall": 3,
               **{f"facade-{i}": 3 for i in range(6)}, **{f"deco-{i}": 3 for i in range(4)}}
-WIDER = {"Land": 4, "Beams": 6, "Glow": 6, "Leaves": 4, "Halos": 4, "Ground": 2}
+WIDER = {"Land": 4, "Beams": 6, "Glow": 6, "Leaves": 1, "Halos": 4, "Ground": 2}
 WHOLE = {"sea": "Sea", "sky": "Sky", "sun": "Sun", "moon": "Sun", "island": "Conillera", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
 
 
@@ -1092,46 +1095,78 @@ def build_land(road: Road, col, theme: dict, cell: float = 14.0):
     return obj, height_at
 
 
-def palm(trunk: Builder, leaf: Builder, dark_leaf: Builder, x: float, y: float, z: float, rng: random.Random) -> None:
-    height, lean, yaw = rng.uniform(6.0, 9.5), rng.uniform(0.0, 1.4), rng.uniform(0, math.tau)
-    rings = []
+def palm(B: dict, x: float, y: float, z: float, rng: random.Random, height: float | None = None, lean_to: float | None = None) -> None:
+    """A date palm as they stand on the island's terraces: a slender trunk ringed with the scars of old fronds,
+    curving as it rises; a thatch of dry fronds under the crown; and a full crown in three tiers, the young fronds
+    upright, the middle ones arching out, the old ones hanging. Each frond is a feather: a spine that bends under its
+    own weight, with a blade either side folded down from it."""
+    height = rng.uniform(6.0, 11.0) if height is None else height
+    yaw = rng.uniform(0, math.tau) if lean_to is None else lean_to
+    lean = rng.uniform(0.3, 1.8) * height / 9.0
+    # The trunk: four lengths, banded light and dark, a little swollen at the foot and under the crown.
+    rings, centres = [], []
+    for k in range(5):
+        t = k / 4
+        cx, cy = x + math.cos(yaw) * lean * t * t, y + math.sin(yaw) * lean * t * t
+        r = 0.3 * (1 - 0.5 * t) + (0.1 if k == 0 else 0.0) + (0.05 if k == 4 else 0.0)
+        centres.append((cx, cy, z - 0.4 + (height + 0.4) * t))
+        rings.append([(cx + math.cos(a_) * r, cy + math.sin(a_) * r, z - 0.4 + (height + 0.4) * t) for a_ in (0, 1.571, 3.142, 4.712)])
     for k in range(4):
-        t = k / 3
-        cx = x + math.cos(yaw) * lean * t * t
-        cy = y + math.sin(yaw) * lean * t * t
-        r = 0.28 * (1 - 0.45 * t)
-        rings.append([(cx + math.cos(a) * r, cy + math.sin(a) * r, z - 0.4 + (height + 0.4) * t) for a in (0, 1.257, 2.513, 3.77, 5.027)])
-    for k in range(3):
-        for j in range(5):
-            trunk.quad(rings[k][j], rings[k][(j + 1) % 5], rings[k + 1][(j + 1) % 5], rings[k + 1][j])
-    top = (x + math.cos(yaw) * lean, y + math.sin(yaw) * lean, z + height)
-    # Nine fronds, each arching out and drooping at its tip, in two greens.
-    for j in range(9):
-        a = yaw + j * math.tau / 9 + rng.uniform(-0.2, 0.2)
-        reach, droop = rng.uniform(3.0, 4.2), rng.uniform(1.2, 2.4)
-        ca, sa = math.cos(a), math.sin(a)
-        w = 0.55
-        spine = [
-            top,
-            (top[0] + ca * reach * 0.35, top[1] + sa * reach * 0.35, top[2] + 0.55),
-            (top[0] + ca * reach * 0.72, top[1] + sa * reach * 0.72, top[2] + 0.15),
-            (top[0] + ca * reach, top[1] + sa * reach, top[2] - droop),
-        ]
-        b = leaf if j % 3 else dark_leaf
-        l1 = (spine[1][0] - sa * w, spine[1][1] + ca * w, spine[1][2] - 0.1)
-        r1 = (spine[1][0] + sa * w, spine[1][1] - ca * w, spine[1][2] - 0.1)
-        l2 = (spine[2][0] - sa * w * 0.8, spine[2][1] + ca * w * 0.8, spine[2][2] - 0.15)
-        r2 = (spine[2][0] + sa * w * 0.8, spine[2][1] - ca * w * 0.8, spine[2][2] - 0.15)
-        b.tri(top, r1, l1)
-        b.quad(l1, r1, r2, l2)
-        b.tri(l2, r2, spine[3])
+        bark = B["trunk" if k % 2 else "trunk-dark"]
+        for j in range(4):
+            bark.quad(rings[k][j], rings[k][(j + 1) % 4], rings[k + 1][(j + 1) % 4], rings[k + 1][j])
+    top = centres[-1]
+
+    def frond(b: Builder, a_: float, rise: float, reach: float, sag: float, width: float, fine: bool = True) -> None:
+        ca, sa = math.cos(a_), math.sin(a_)
+        spine, edge_l, edge_r = [], [], []
+        for t, w in ((0.0, 0.1), (0.3, 1.0), (0.65, 0.85), (1.0, 0.08)) if fine else ((0.0, 0.1), (0.45, 1.0), (1.0, 0.08)):
+            out = reach * t * math.cos(rise)
+            up = reach * t * math.sin(rise) - sag * t * t
+            c_ = (top[0] + ca * out, top[1] + sa * out, top[2] + up)
+            half = width * w
+            spine.append(c_)
+            edge_l.append((c_[0] - sa * half, c_[1] + ca * half, c_[2] - half * 0.45))
+            edge_r.append((c_[0] + sa * half, c_[1] - ca * half, c_[2] - half * 0.45))
+        for k in range(len(spine) - 1):
+            b.quad(spine[k], spine[k + 1], edge_l[k + 1], edge_l[k])
+            b.quad(spine[k + 1], spine[k], edge_r[k], edge_r[k + 1])
+
+    turn = rng.uniform(0, math.tau)
+    # The thatch: dry fronds hanging close to the trunk.
+    for j in range(3):
+        frond(B["leaf-dry"], turn + j * math.tau / 3 + rng.uniform(-0.3, 0.3), -1.25, rng.uniform(1.3, 1.9), 0.2, 0.34, False)
+    # Old fronds hang, the middle tier arches, the young stand up in the heart of the crown.
+    for count, rise, sag, reach, kinds in (
+        (5, -0.15, 2.3, (3.2, 4.2), ("leaf-dark", "leaf-dark", "leaf")),
+        (5, 0.45, 2.6, (3.4, 4.4), ("leaf", "leaf-dark")),
+        (3, 1.05, 1.5, (2.4, 3.2), ("leaf", "leaf")),
+    ):
+        for j in range(count):
+            a_ = turn + (j + rng.uniform(-0.25, 0.25)) * math.tau / count + rise
+            frond(B[kinds[j % len(kinds)]], a_, rise + rng.uniform(-0.12, 0.12), rng.uniform(*reach), sag * rng.uniform(0.8, 1.2), 0.62, rise == 0.45)
+
+
+def palm_bunch(B: dict, x: float, y: float, z: float, rng: random.Random) -> None:
+    """Palms as they are planted: more often two or three from one bed than one alone, of different heights,
+    leaning away from each other."""
+    count = rng.choice((1, 1, 1, 2, 2, 3))
+    if count == 1:
+        palm(B, x, y, z, rng)
+        return
+    around = rng.uniform(0, math.tau)
+    tallest = rng.uniform(8.0, 11.5)
+    for k in range(count):
+        a_ = around + k * math.tau / count + rng.uniform(-0.4, 0.4)
+        out = rng.uniform(0.5, 1.1)
+        palm(B, x + math.cos(a_) * out, y + math.sin(a_) * out, z, rng, tallest * (1.0, 0.72, 0.52)[k] * rng.uniform(0.92, 1.08), a_)
 
 
 SKY_SECTORS = 1
 SKY_RADIUS = 8500.0
 
 
-def build_sky(col, az: float, haze_hex: int, colour_at=sky.sunset_sky_colour, turns: int = 160, rows: int = 24) -> None:
+def build_sky(col, az: float, haze_hex: int, colour_at=sky.sunset_sky_colour, turns: int = 128, rows: int = 20) -> None:
     """The sky as a dome the app carries with the camera, its picture painted in its vertices: finest by the horizon,
     where the eye is."""
     b = Builder("Sky", "sky")
@@ -1166,7 +1201,7 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
     names = (
         "trunk leaf leaf-dark glint bush bougainvillea whitewash wall wood dark stone rock skin club-window awning awning-white arrow sail sail-pink "
         "glow-door lamp-red lamp-green gold confetti bulb paint sun island tower "
-        "skin-1 skin-2 hair-0 hair-1 hair-2 party-white drink-0 drink-1 drink-2"
+        "skin-1 skin-2 hair-0 hair-1 hair-2 party-white drink-0 drink-1 drink-2 trunk-dark leaf-dry"
     ).split() + NEONS + BEAMS + CROWD
     B = {name: Builder("".join(p.title() for p in name.split("-")), name) for name in names}
     B["whitewash"].name, B["dark"].name, B["paint"].name = "Clubs", "Dark", "GatePaint"
@@ -1301,14 +1336,18 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
                 for along in (-deep / 2 - 0.12, deep / 2 + 0.12):
                     diamond(B["bulb"], P(i, along, math.cos((a0 + a1) / 2) * radius, math.sin((a0 + a1) / 2) * radius - 0.2), 0.16)
 
-    # Palms: along the seawall on the left, on the promenade's kerb on the right.
+    # Palms, in bunches: along the seawall on the left, on the promenade's kerb on the right.
+    flora = random.Random(7331)
     i = 3
     while i < n - 2:
         side = 1 if (i // 6) % 2 else -1
         off = (kerb + SIDEWALK + 1.9) if side > 0 else -(kerb + 1.3)
         x, y, z = road.at(i, off + rng.uniform(-0.3, 0.3))
         if road.clear_of_road(x, y, 7.5, i):
-            palm(B["trunk"], B["leaf"], B["leaf-dark"], x, y, z - (1.6 if side > 0 else 0.0), rng)
+            # The palms have dice of their own, and take from the scenery's what the old palm took: nothing else moves.
+            for _ in range(30):
+                rng.random()
+            palm_bunch(B, x, y, z - (1.6 if side > 0 else 0.0), flora)
         i += rng.choice((4, 5, 6))
 
     # Rocks under the seawall, all the way along.
@@ -1496,8 +1535,8 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
                 B["wall"].box(P(i, 0, -(kerb + 0.5), 0.12), (3.6, 0.5, 1.05), yaw)
             for k in range(3):
                 off = (kerb + rng.uniform(1.0, 2.1)) if side > 0 else -(kerb + rng.uniform(1.2, 3.2))
-                # Two of every three places are taken: each figure is a hundred triangles, and the finish is long.
-                person(P(i, rng.uniform(-1.8, 1.8), off, 0.12), yaw - math.pi / 2 * side + rng.uniform(-0.4, 0.4), there=k < 2)
+                # Four places in nine are taken: each figure is ninety triangles, and the finish is long.
+                person(P(i, rng.uniform(-1.8, 1.8), off, 0.12), yaw - math.pi / 2 * side + rng.uniform(-0.4, 0.4), there=k < (2 if int(d / 4) % 3 == 0 else 1))
         d += 4.0
     beams(P(fi, 30, -(front + 2), 8.0), s[fi]["h"] + math.pi / 2, 4)
     beams(P(i0, 70, -(front + 2), 8.0), yaw0 + math.pi / 2, 3)
