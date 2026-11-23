@@ -7,6 +7,9 @@ import math
 
 def _onion_dome_church(B, kit, x: float, y: float, z: float, yaw: float, dome_mat: str = "copper-patina", spire: bool = False) -> None:
     """Builds a classic Dolomite parish church with whitewashed nave, belfry clock tower & bulbous Zwiebelturm onion dome."""
+    # Low whitewashed churchyard perimeter wall + shingle coping around the parish church
+    B["chalet-plaster"].box((x, y, z - 1.4), (22.5, 15.0, 2.15), yaw)
+    B["larch-aged"].box((x, y, z + 0.75), (22.8, 15.3, 0.16), yaw)
     # Whitewashed nave + pitched slate roof
     B["stone"].box((x, y, z - 2.0), (16.5, 9.2, 2.6), yaw)
     B["chalet-plaster"].box((x, y, z + 0.6), (16.2, 8.8, 7.2), yaw)
