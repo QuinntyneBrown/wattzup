@@ -2192,6 +2192,9 @@ def main(argv: list[str] | None = None) -> dict:
 
     if (theme or {}).get("builder") == "sellaronda":
         samples, st, length, mean, per_level = sellaronda.lay_centre_line(course, theme)
+    elif (theme or {}).get("lay"):
+        # A theme that lays its own road (Cinque Terre's corniche along its coast).
+        samples, st, length, mean, per_level = theme["lay"](course, theme, sys.modules[__name__])
     else:
         samples, st, length, mean, per_level = lay_centre_line(course, theme)
     road = Road(samples)
@@ -2200,7 +2203,8 @@ def main(argv: list[str] | None = None) -> dict:
         _, height_at = sellaronda.build_terrain(road, col, Builder)
         facts = sellaronda.build_scenery(road, st, length, height_at, course, col, Builder, build_sky)
     elif themed:
-        _, height_at = build_land(road, col, theme)
+        # A theme may build its own land too.
+        _, height_at = theme["land_builder"](road, col, theme, sys.modules[__name__]) if theme.get("land_builder") else build_land(road, col, theme)
         facts = build_themed_scenery(road, st, length, height_at, course, theme, col)
     else:
         _, height_at = build_terrain(road, col)
