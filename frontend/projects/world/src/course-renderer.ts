@@ -69,6 +69,7 @@ import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
 import { type PlanePlace, planeFlight, planeLights } from './plane-flight';
 import { type Dusk, dusk } from './dusk';
+import { type SunDisc, sunDisc } from './sun-disc';
 import { lightning } from './lightning';
 import { type Rain, rain } from './rain';
 import { RiderBatch } from './rider-batch';
@@ -237,6 +238,9 @@ export class CourseRenderer implements WorldRenderer {
   private readonly evening: Dusk = { sky: [1, 1, 1], light: 1, stars: 0, sun: 0 };
   /** The sun a map's sky carries, lowered as the evening draws in: its pivot, how far off it stands and how high. */
   private sunset: { pivot: Group; out: number; up: number } | null = null;
+  /** The disc's own paint, redder as it sinks (sun-disc.ts), and how it looks now. */
+  private discPaint: MeshBasicMaterial | null = null;
+  private readonly disc: SunDisc = { tint: [1, 1, 1], flat: 1 };
   /** The stars a map carries, brought out as the evening draws in. */
   private stars: MeshBasicMaterial | null = null;
   /** Their mesh: not drawn at all until the first of them shows. */
@@ -513,6 +517,7 @@ export class CourseRenderer implements WorldRenderer {
     this.drift = null;
     this.skyFine = null;
     this.sunset = null;
+    this.discPaint = null;
     this.stars = null;
     this.starField = null;
     this.walkers.length = 0;
@@ -786,6 +791,9 @@ export class CourseRenderer implements WorldRenderer {
       if (group === 'SkySun') {
         // The sun's disc: over the sky and under the cloud that crosses it, on a pivot that sinks.
         mesh.renderOrder = -0.93;
+        this.discPaint ??= (material as MeshBasicMaterial).clone();
+        if (mesh.material !== this.discPaint) this.disposables.push(this.discPaint);
+        mesh.material = this.discPaint;
         setting.push(mesh);
         painted.push(mesh);
         return;
@@ -1140,7 +1148,11 @@ export class CourseRenderer implements WorldRenderer {
       if (this.starField) this.starField.visible = stars > 0.004;
       if (this.sunset) {
         const { pivot, out, up } = this.sunset;
-        pivot.position.y = out * Math.tan((this.evening.sun * Math.PI) / 180) - up;
+        // Redder and flatter as it nears the horizon (sun-disc.ts): flattened about its own middle.
+        const { tint, flat } = sunDisc(this.evening.sun, this.disc);
+        pivot.scale.y = flat;
+        pivot.position.y = out * Math.tan((this.evening.sun * Math.PI) / 180) - up * flat;
+        this.discPaint?.color.setRGB(sky[0] * tint[0], sky[1] * tint[1], sky[2] * tint[2]);
       }
       this.skyPaint.color.setRGB(sky[0], sky[1], sky[2]);
       (this.scene.fog as Fog).color.copy(this.hazeAt).multiply(this.skyPaint.color);

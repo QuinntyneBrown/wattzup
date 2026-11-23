@@ -189,6 +189,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Party 18 | Feet and necks: each leg ends in a foot (bare in sandals, white trainers, dark shoes or espadrilles) and the head narrows to a neck where it meets the shoulders | 60.1 fps, none over 20 ms, 146,381 triangles (the finish) | 47.9 and 41.4 fps after (the finish, 117,749 triangles); Neon Docklands beside it 55.9, 59.5 |
 | Party 19 | The party is upstairs too: on every other club's roof terrace two or three stand at a white parapet with a drink, looking down at the road | 60.0 fps, none over 20 ms, 157,855 triangles (from 7,950 m) | 44.4, 47.9, 46.9 fps after (the finish, 119,897 triangles: 103 under the budget); Neon Docklands beside it 52.9, 48.4 |
 | Party 20 | No two alike: heights from a head under the middle to a head over, builds from slight to broad, a beach club's colours on most of those not in white, and auburn and grey hair among the rest | 60.1 fps, none over 20 ms, 148,981 triangles (the finish) | 45.5 and 49.8 fps after (the finish, 119,897 triangles: none more); Neon Docklands beside it 50.5, 48.2 |
+| Sky 16 | The sun reddens and flattens as it sinks: as painted and round from six degrees up, deep red and a fifth flatter on the horizon | 60.1 fps, one frame over 20 ms (from 3,250 m); 60.0 at the finish | 48.1 and 48.5 fps after (the finish, 119,897 triangles: none more); Neon Docklands beside it 53.9, 47.7 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -565,6 +566,19 @@ many poses: all within a hand's breadth of one height and all of one build.
 
 All of it is dealt from dice of its own, so who stands where, what they do and what they hold is as it was, and
 the map has exactly the triangles it had: none more on any tier.
+
+### Sky 16: the sun reddens and flattens as it sinks
+
+`sky-16.jpg` (above: the sun from 3,250 m, four degrees up, a little pinker and flatter than it was; below: the
+same frame with the change made ten times too strong, as a test that it is wired). The setting sun sank (Sky 15)
+but stayed the yellow-white round disc it was painted. Now, as the air does to it, it loses its blue and most of
+its green and its lower limb is bent up: as painted and round from six degrees up, and steadily redder and flatter
+below, to deep red and a fifth flatter on the horizon (`sun-disc.ts`, unit tested). It costs no triangles and no
+draw call: the disc has a paint of its own.
+
+**What was not seen.** At the finish, where the sun is lowest and reddest, the glare down the finishing straight
+stands in front of it in every frame taken: the deep red disc is tested by its numbers and by the exaggerated
+frame, not seen as it will be.
 
 ### Low power: where the frames go (after Party 20)
 
