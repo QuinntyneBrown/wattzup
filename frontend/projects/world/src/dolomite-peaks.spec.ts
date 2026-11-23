@@ -3,6 +3,7 @@ import {
   angularElevationDegrees,
   DOLOMITE_GIANTS,
   dominantPeakAt,
+  isGlaciatedPeak,
   marmoladaGlacierElevationBand,
   marmoladaGlacierSightline,
   peaksAboveThreeThousand,
@@ -23,5 +24,7 @@ describe('DOLOMITE_GIANTS', () => {
       marmoladaGlacierElevationBand().crestMetres - marmoladaGlacierElevationBand().snoutMetres,
     ).toBe(629);
     expect(angularElevationDegrees(3181, 2240, 920)).toBeGreaterThan(44);
+    expect(isGlaciatedPeak('marmolada')).toBe(true);
+    expect(isGlaciatedPeak('sassolungo')).toBe(false);
   });
 });
