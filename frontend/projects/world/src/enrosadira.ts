@@ -40,3 +40,11 @@ export function cliffAspectIllumination(nx: number, ny: number, sunAzimuth: numb
   const t = Math.max(0, Math.min(1, (dot + 0.15) / 0.9));
   return t * t * (3 - 2 * t);
 }
+
+/** Alpenglow intensity weight (0..1) by real Dolomite altitude (valley shadow < 1,900 m, full glow > 2,750 m). */
+export function altitudeAlpenglowWeight(altitudeMetres: number): number {
+  if (altitudeMetres <= 1900) return 0;
+  if (altitudeMetres >= 2750) return 1;
+  const u = (altitudeMetres - 1900) / (2750 - 1900);
+  return u * u * (3 - 2 * u);
+}
