@@ -28,3 +28,10 @@ export function recommendedRiderPosture(
 export function loopCompletionFraction(metres: number): number {
   return Math.max(0, Math.min(1, metres / 11650));
 }
+
+/** Smooth 0..100 score rewarding riders for holding `actualRpm` close to the stage's `targetRpm`. */
+export function cadenceComplianceScore(actualRpm: number, targetRpm: number): number {
+  if (actualRpm <= 0 || targetRpm <= 0) return 0;
+  const err = Math.abs(actualRpm - targetRpm);
+  return Math.round(100 * Math.exp(-((err / 14) ** 2)));
+}

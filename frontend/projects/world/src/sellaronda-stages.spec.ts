@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  cadenceComplianceScore,
   classifySellaRidingPhase,
   loopCompletionFraction,
   recommendedRiderPosture,
@@ -18,5 +19,7 @@ describe('sellaronda-stages', () => {
     expect(recommendedRiderPosture(-6.0, 95)).toBe('aero-tuck');
     expect(recommendedRiderPosture(4.5, 88)).toBe('seated-spin');
     expect(loopCompletionFraction(5825)).toBeCloseTo(0.5, 3);
+    expect(cadenceComplianceScore(85, 85)).toBe(100);
+    expect(cadenceComplianceScore(60, 85)).toBeLessThan(30);
   });
 });
