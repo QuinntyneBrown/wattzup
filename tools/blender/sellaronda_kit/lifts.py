@@ -80,6 +80,8 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
         for f_t in ((4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7), (0, 3, 2, 1)):
             fun.faces.append(tuple(base_i + q for q in f_t))
     _fbox(-0.35, 3.6, 0.45, 0.42, 0x2A2E36)
+    for bg_x in (-1.65, 1.65):
+        _fbox(-0.15, 0.55 * (1.0 if bg_x > 0 else 1.0), 0.52, 0.28, 0xB8C2CE)
     _fbox(-0.95, 1.15, 0.68, 0.55, 0xC82834)
     _fbox(0.10, 0.08, 0.08, 0.85, 0xDCE2EA)
     _fbox(-6.35, 0.22, 3.08, 3.10, 0xF4F0E6)
