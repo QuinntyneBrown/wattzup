@@ -220,3 +220,12 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         B["stone"].box((gx_o, gy_o, gz_o - 0.3), (5.4, 3.6, 0.55), gyaw)
         for row_o in (-1.2, 0.0, 1.2):
             B["foliage"].box((gx_o + math.cos(gyaw) * row_o, gy_o + math.sin(gyaw) * row_o, gz_o + 0.25), (0.85, 2.9, 0.32), gyaw)
+
+    # Village church-square white zebra crossings & blue pedestrian signboards
+    for zb_m in (272.0, 3132.0, 6128.0, 8928.0):
+        z_idx = road.index(zb_m)
+        zyaw = road.s[z_idx]["h"]
+        for st_k in range(-4, 5):
+            B["paint"].box(kit.P(z_idx, 0.0, st_k * 0.98, 0.02), (2.6, 0.46, 0.015), zyaw)
+        B["steel"].box(kit.P(z_idx, -1.8, -(kit.kerb + 1.2), 0.0), (0.09, 0.09, 2.35), zyaw)
+        B["ladin-blue"].box(kit.P(z_idx, -1.8, -(kit.kerb + 1.2), 1.95), (0.08, 0.62, 0.62), zyaw)
