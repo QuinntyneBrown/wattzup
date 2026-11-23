@@ -106,6 +106,16 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     grul = max(1.0, math.hypot(grux, gruy))
     grux, gruy = grux / grul, gruy / grul
     rock_tower(peaks, cx + grux * 748.0, cy + gruy * 748.0, 118.0, 598.0, 138.0, 108.0, 11, math.atan2(gruy, grux), cfn, taper=0.78, flat_cap=True, seed_phase=2.9)
+    quad_shaded(
+        peaks,
+        (cx + grux * 845.0 - (-gruy) * 55.0, cy + gruy * 845.0 - grux * 55.0, 596.0),
+        (cx + grux * 845.0 + (-gruy) * 55.0, cy + gruy * 845.0 + grux * 55.0, 596.0),
+        (cx + grux * 810.0 + (-gruy) * 48.0, cy + gruy * 810.0 + grux * 48.0, 603.0),
+        (cx + grux * 810.0 - (-gruy) * 48.0, cy + gruy * 810.0 - grux * 48.0, 603.0),
+        cfn,
+        600.0,
+        snow=True,
+    )
 
     # Sas dla Luesa & Cima del Lago northeastern buttresses above Colfosco (at=11150 m)
     lu_pt = road.s[road.index(11150.0)]
