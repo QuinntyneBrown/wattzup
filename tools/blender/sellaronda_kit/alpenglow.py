@@ -76,7 +76,9 @@ def alpenglow_sky_colour(dx: float, dy: float, dz: float, az: float, haze):
     wave = sky.fbm(ux * 2.2 + 1.7, uy * 0.85 - 0.6, 3, 19)
     cover = smoothstep(0.47, 0.73, wave) * smoothstep(0.03, 0.15, h) * (1.0 - smoothstep(0.52, 0.88, h))
     rim_edge = math.exp(-((wave - 0.52) / 0.06) ** 2) * sunward
+    rim_edge = cover * (1.0 - cover) * 4.0
     cloud_belly = mix(srgb(0x6E6C96), srgb(0xFF9C7E), 0.30 + 0.70 * sunward)
+    cloud_belly = mix(cloud_belly, srgb(0xFFE4CC), rim_edge * sunward * 0.32)
     cloud_belly = mix(cloud_belly, srgb(0xFFD6A8), rim_edge * 0.55)
     cirrus = sky.fbm(ux * 4.6 - 1.2, uy * 0.45 + 3.1, 2, 31)
     cirrus_mask = smoothstep(0.56, 0.82, cirrus) * smoothstep(0.22, 0.52, h) * (1.0 - smoothstep(0.68, 0.95, h))
