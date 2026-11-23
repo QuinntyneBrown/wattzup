@@ -378,4 +378,11 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         wz_a = min(height_at(wx_a, wy_a), road.s[ar_w]["z"] - 1.2)
         B["stone"].box((wx_a, wy_a, wz_a - 0.4), (4.4, 0.85, 0.95), road.s[ar_w]["h"])
         B["paint"].box((wx_a, wy_a, wz_a + 0.35), (3.8, 1.15, 0.14), road.s[ar_w]["h"])
+    # Village bike-rental & alpine sport shopfronts with display bikes outside
+    for sp_m, sp_s in ((212.0, -1.0), (3058.0, 1.0), (6058.0, 1.0), (8868.0, 1.0)):
+        sp_i = road.index(sp_m)
+        spyaw = road.s[sp_i]["h"]
+        spx, spy, spz = kit.P(sp_i, 0.0, (kit.kerb + 7.2) * sp_s, 0.0)
+        B["ladin-blue"].box((spx, spy, spz + 2.45), (3.4, 1.35, 0.22), spyaw)
+        B["parasol-red"].box((spx, spy, spz + 0.15), (2.4, 0.95, 0.72), spyaw)
     # [ANCHOR:villages]
