@@ -480,6 +480,14 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
         smx, smy, smz = kit.P(sl_m, sm_k * 1.6, kit.kerb + 3.2, 0.0)
         _touring_motorbike(B, smx, smy, smz, s[sl_m]["h"] + 0.9, moto_colours[sm_k], with_rider=False)
 
+    # Sellaronda Bike Day broom-wagon shuttle & bike trailer at the Canazei -> Sella foot (at=6360 m)
+    bw_s = road.index(6360.0)
+    bwsy = s[bw_s]["h"]
+    bwx, bwy_p, bwz = kit.P(bw_s, 0.0, -(kit.kerb + 3.2), 0.0)
+    B["paint"].box((bwx, bwy_p, bwz + 0.4), (5.4, 2.05, 2.15), bwsy)
+    B["ladin-blue"].box((bwx, bwy_p, bwz + 1.15), (5.44, 2.08, 0.36), bwsy)
+    B["steel"].box((bwx - math.cos(bwsy) * 4.2, bwy_p - math.sin(bwsy) * 4.2, bwz + 0.35), (2.6, 1.85, 1.25), bwsy)
+
     sp_idx = road.index(7710.0)
     sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
     return [{
