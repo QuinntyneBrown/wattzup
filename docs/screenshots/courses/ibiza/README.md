@@ -815,6 +815,20 @@ taking both away altogether would not reach 60. And a run with the panels hidden
 (41.4) as a run with them shown. What makes a run slow or fast (13.6 or 20 ms of script a frame, for the same
 picture) is not found: it is neither the map, nor the tick, nor the panels.
 
+**What a slow run is slow in** (the profiles of the 43.5 fps and the 55.3 fps runs above, side by side):
+
+| Where the ten seconds went | Slow run | Fast run |
+| --- | --- | --- |
+| The browser's own work, outside the page's script (`(program)`) | 4.1 s | 2.9 s |
+| Idle | 0.2 s | 1.1 s |
+| Every function of the page's script, each | within 0.07 s of the other run | |
+
+The page's script costs the same in both: no function of the app or of the renderer differs by more than a
+fifteenth of a second in ten. The slow run spends 1.25 s more in the browser's own work under the script (drawing
+commands handed to the graphics process, and what it does with them) and has that much less time idle. That is
+beneath anything this map, or the app, decides: which kind of run it is, is the machine's and the browser's state
+when it starts. It is why Ibiza and Neon Docklands swing alike, and why no change to either has moved it.
+
 **One thing taken out.** The stars were drawn, at no brightness, for the first third of the course. They are not
 drawn now until the first of them shows: one draw call fewer there (81 to 80 from 600 m). At the finish nothing
 changes (77 draw calls, 119,897 triangles; 49.4 fps on this run).
