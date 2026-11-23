@@ -423,4 +423,11 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             sz_s = height_at(sx_s, sy_s)
             B["paint"].box((sx_s, sy_s, sz_s + 0.22), (0.92, 0.44, 0.46), sk * 0.8)
 
+    # Seasoned forestry spruce log stacks beside the pasture farm tracks
+    for lg_m, lg_s in ((1192.0, 1.0), (6692.0, 1.0), (10632.0, 1.0)):
+        lgi = road.index(lg_m)
+        lgx, lgy, _ = road.at(lgi, (kit.kerb + 9.5) * lg_s)
+        if road.clear_of_road(lgx, lgy, 7.0, lgi):
+            B["larch-warm"].box((lgx, lgy, height_at(lgx, lgy)), (3.2, 1.25, 1.18), s[lgi]["h"])
+
     return trees
