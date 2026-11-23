@@ -496,4 +496,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
     tcpx, tcpy = -tcuy, tcux
     for tc_i, (tc_l, tc_h) in enumerate(((-95.0, 815.0), (0.0, 845.0), (92.0, 798.0))):
         rock_tower(peaks, tc_pt["x"] + tcux * 2650.0 + tcpx * tc_l, tc_pt["y"] + tcuy * 2650.0 + tcpy * tc_l, 80.0, tc_h, 62.0, 44.0, 8, math.atan2(-tcuy, -tcux), cfn, taper=0.80, flat_cap=True, seed_phase=1.9 + tc_i)
+    # Sasso Bianco (2,407 m) pale peak framing lower Livinallongo southeast of Arabba
+    sb_pt = road.s[road.index(3280.0)]
+    sbux, sbuy = sb_pt["x"] - cx, sb_pt["y"] - cy
+    sbul = max(1.0, math.hypot(sbux, sbuy))
+    sbux, sbuy = sbux / sbul, sbuy / sbul
+    rock_tower(peaks, sb_pt["x"] + sbux * 1380.0, sb_pt["y"] + sbuy * 1380.0, 50.0, 595.0, 175.0, 130.0, 9, math.atan2(-sbuy, -sbux), cfn, taper=0.52, flat_cap=True, seed_phase=3.7)
     # [ANCHOR:peaks]
