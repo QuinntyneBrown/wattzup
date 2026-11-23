@@ -165,3 +165,8 @@ export function reversibleFuniviaHourlyPax(span: CableSpan, cabinPax = 65): numb
 export function cablewayHorizontalSpanMetres(span: CableSpan): number {
   return Math.hypot(span.to[0] - span.from[0], span.to[2] - span.from[2]);
 }
+
+/** Net vertical elevation gain (m) from lower terminal to upper terminal of `span`. */
+export function cablewayElevationGainMetres(span: CableSpan): number {
+  return Math.max(0, span.to[1] - span.from[1]);
+}
