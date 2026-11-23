@@ -32,7 +32,7 @@ Estimates are working days for one intermediate developer, using `docs/detailed-
 | 23 | Use by touch, keyboard and screen reader | Every width, 44 px targets, keyboard paths, announcements, reduced motion. | 8 | 100% |
 | 24 | Switch theme and full screen | Match device, dark or light; full screen on any ride screen. | 3 | 100% |
 | 25 | Check diagnostics | Bike and browser state, packet log to download. | 5 | 100% |
-| 26 | Send feedback | Report a bug, share an idea or send kudos. | 5 | 60% |
+| 26 | Send feedback | Report a bug, share an idea or send kudos. | 5 | 100% |
 | 27 | Install the app | Install as an app from Chrome or Edge. | 3 | 0% |
 
-**Total:** 238 days. **Complete:** 233 days (98%).
+**Total:** 238 days. **Complete:** 235 days (99%).
