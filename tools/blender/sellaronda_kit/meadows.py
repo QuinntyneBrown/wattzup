@@ -310,4 +310,14 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["dolomite-pale"].box((ex_w, ey_w, ez_w - 0.1), (0.75, 0.62, 0.34), ed_i * 0.3)
             B["paint"].box((ex_w, ey_w, ez_w + 0.24), (0.32, 0.32, 0.14), ed_i * 0.7)
 
+    # Traditional Ladin pole-centered summer hayricks (covoni) in sunny mown pastures
+    for hr_m, hr_s in ((820.0, 1.0), (2690.0, -1.0), (5680.0, 1.0), (10780.0, -1.0)):
+        hr_i = road.index(hr_m)
+        for rk_o in (0.0, 5.5):
+            hx_r, hy_r, _ = road.at(hr_i, (kit.kerb + 14.5 + rk_o) * hr_s)
+            if road.clear_of_road(hx_r, hy_r, 10.0, hr_i):
+                hz_r = height_at(hx_r, hy_r)
+                B["hay"].box((hx_r, hy_r, hz_r - 0.1), (1.85, 1.85, 1.95), rk_o)
+                B["larch-aged"].box((hx_r, hy_r, hz_r + 1.85), (0.14, 0.14, 0.65), 0.0)
+
     return trees
