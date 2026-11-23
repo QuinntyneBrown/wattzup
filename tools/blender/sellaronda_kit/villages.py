@@ -229,3 +229,15 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
             B["paint"].box(kit.P(z_idx, 0.0, st_k * 0.98, 0.02), (2.6, 0.46, 0.015), zyaw)
         B["steel"].box(kit.P(z_idx, -1.8, -(kit.kerb + 1.2), 0.0), (0.09, 0.09, 2.35), zyaw)
         B["ladin-blue"].box(kit.P(z_idx, -1.8, -(kit.kerb + 1.2), 1.95), (0.08, 0.62, 0.62), zyaw)
+
+    # Volunteer Alpine Fire-Brigade halls (Vigili del Fuoco / Freiwillige Feuerwehr) with hose towers in Arabba & Selva
+    for fw_m, fw_s in ((3225.0, 1.0), (8820.0, -1.0)):
+        f_idx = road.index(fw_m)
+        fyaw = road.s[f_idx]["h"]
+        fx_h, fy_h, _ = road.at(f_idx, (kit.kerb + 13.5) * fw_s)
+        fz_h = max(height_at(fx_h, fy_h), road.s[f_idx]["z"] - 0.5)
+        B["chalet-plaster"].box((fx_h, fy_h, fz_h - 1.5), (10.5, 8.2, 6.2), fyaw)
+        kit.gable(B["roof-slate"], (fx_h, fy_h, fz_h + 4.7), 11.2, 8.8, 2.2, fyaw)
+        B["larch-warm"].box((fx_h + math.cos(fyaw) * 4.2, fy_h + math.sin(fyaw) * 4.2, fz_h + 4.2), (2.8, 2.8, 5.4), fyaw)
+        for bay_o in (-2.2, 1.2):
+            B["parasol-red"].box((fx_h + math.cos(fyaw) * bay_o, fy_h + math.sin(fyaw) * bay_o, fz_h + 0.1), (2.4, 8.35, 2.95), fyaw)
