@@ -190,6 +190,7 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
             if mirror_count % 2 == 0:
                 B["yellow"].box(kit.P(i, -2.5, (kit.kerb + 1.85) * outside, -0.05), (1.25, 0.88, 0.82), s[i]["h"])
                 kit.gable(B["yellow"], kit.P(i, -2.5, (kit.kerb + 1.85) * outside, 0.77), 1.32, 0.94, 0.22, s[i]["h"])
+                B["parasol-red"].box(kit.P(i, -1.8, (kit.kerb + 1.85) * outside, 0.15), (0.08, 0.28, 1.15), s[i]["h"])
 
     # Transverse white optical braking bars approaching steep descent switchbacks
     for p in PASSES:
