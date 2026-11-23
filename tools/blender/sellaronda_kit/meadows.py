@@ -523,4 +523,11 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
         if road.clear_of_road(gnx, gny, 3.5, gni):
             B["ladin-blue"].box((gnx, gny, height_at(gnx, gny) - 0.04), (0.65, 0.65, 0.16), gn_m * 0.2)
 
+    # Traditional Fodom dry-stone pasture boundary walls above Arabba
+    for dw_m in (3560.0, 3572.0, 3584.0):
+        dwi = road.index(dw_m)
+        dwx, dwy, _ = road.at(dwi, kit.kerb + 12.5)
+        if road.clear_of_road(dwx, dwy, 8.0, dwi):
+            B["stone"].box((dwx, dwy, height_at(dwx, dwy) - 0.15), (11.5, 0.55, 0.88), s[dwi]["h"] + 0.12)
+
     return trees
