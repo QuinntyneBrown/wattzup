@@ -513,4 +513,10 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         492.0,
         snow=True,
     )
+    # Col Alt (1,980 m) panoramic plateau knoll east of Corvara (at=420 m)
+    ca_pt = road.s[road.index(420.0)]
+    caux, cauy = ca_pt["x"] - cx, ca_pt["y"] - cy
+    caul = max(1.0, math.hypot(caux, cauy))
+    caux, cauy = caux / caul, cauy / caul
+    rock_tower(peaks, ca_pt["x"] + caux * 620.0, ca_pt["y"] + cauy * 620.0, 40.0, 285.0, 175.0, 135.0, 10, math.atan2(-cauy, -caux), cfn, taper=0.74, flat_cap=True, seed_phase=2.2)
     # [ANCHOR:peaks]
