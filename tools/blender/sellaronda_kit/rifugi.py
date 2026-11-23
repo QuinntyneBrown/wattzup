@@ -151,3 +151,8 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
         mn_x, mn_y, mn_z = kit.P(idx, 2.4, (kit.kerb + 2.55) * side, 0.0)
         B["larch-warm"].box((mn_x, mn_y, mn_z), (0.52, 0.72, 1.08), yaw + 0.2)
         B["dark"].box((mn_x, mn_y, mn_z + 0.18), (0.56, 0.58, 0.76), yaw + 0.2)
+        for tub_o in (-1.8, 1.8):
+            tb_x = tx + math.cos(yaw) * tub_o - math.sin(yaw) * (2.1 * side)
+            tb_y = ty + math.sin(yaw) * tub_o + math.cos(yaw) * (2.1 * side)
+            B["larch-aged"].box((tb_x, tb_y, tz + 0.12), (0.68, 0.68, 0.58), yaw)
+            B["pine"].box((tb_x, tb_y, tz + 0.68), (0.78, 0.78, 0.65), yaw + 0.4)
