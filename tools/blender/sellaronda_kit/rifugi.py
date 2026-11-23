@@ -20,6 +20,7 @@ def _rifugio_complex(B, kit, road, height_at, at_m: float, side: float, main_w: 
     B["stone"].box((rx, ry, base_z - 3.6), (main_w, main_d, 6.8), yaw)
     B["dolomite-pale"].box((rx - math.sin(yaw) * -(main_d * 0.5 + 0.08), ry + math.cos(yaw) * -(main_d * 0.5 + 0.08), base_z + 0.1), (2.35, 0.24, 2.55), yaw)
     B["larch-aged"].box((rx - math.sin(yaw) * -(main_d * 0.5 + 0.14), ry + math.cos(yaw) * -(main_d * 0.5 + 0.14), base_z + 0.15), (1.85, 0.18, 2.25), yaw)
+    B["larch-warm"].box((rx + math.cos(yaw) * 1.65 - math.sin(yaw) * -(main_d * 0.5 + 0.45), ry + math.sin(yaw) * 1.65 + math.cos(yaw) * -(main_d * 0.5 + 0.45), base_z + 0.1), (0.85, 0.45, 0.78), yaw)
     # Crisp Tyrolean whitewashed plaster upper storeys (mapped into Walls group for procedural plaster detail!)
     upper_h = 3.1 * storeys
     B["chalet-plaster"].box((rx, ry, base_z + 3.2), (main_w + 0.3, main_d + 0.3, upper_h), yaw)
