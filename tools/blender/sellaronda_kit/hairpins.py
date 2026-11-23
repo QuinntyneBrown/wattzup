@@ -311,4 +311,10 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
     for rc_m in (1620.0, 1690.0, 7220.0, 7290.0):
         rci = road.index(rc_m)
         B["steel"].box(kit.P(rci, 0.0, -(kit.kerb + 3.1), 4.5), (8.5, 0.12, 1.65), s[rci]["h"])
+    # Winter pass-closure swing barriers locked open parallel to the verge in summer
+    for p in PASSES:
+        wb_i = road.index(p["climb_from"] - 18.0)
+        wby = s[wb_i]["h"]
+        B["steel"].box(kit.P(wb_i, 0.0, -(kit.kerb + 1.65), 0.0), (0.24, 0.24, 1.15), wby)
+        B["parasol-red"].box(kit.P(wb_i, 2.2, -(kit.kerb + 1.65), 0.92), (4.4, 0.12, 0.14), wby)
     # [ANCHOR:hairpins]
