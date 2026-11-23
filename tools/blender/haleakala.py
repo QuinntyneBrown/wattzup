@@ -361,7 +361,11 @@ def silversword(k, x: float, y: float, z: float, bloom: bool) -> None:
             b.tri(left, right, tip)
             b.tri(right, left, tip)
     if bloom:
-        k.prism(k.B["hk-bloom"], (x, y, z + r * 0.5), 0.26, rng.uniform(1.4, 2.2), 5, 0.08)
+        # The flower stalk: a spire as tall as a rider's shoulder, thick with maroon heads, on a silver stem.
+        tall = rng.uniform(1.4, 2.1)
+        k.prism(b, (x, y, z + r * 0.4), 0.09, 0.5, 5, 0.08)
+        k.prism(k.B["hk-bloom"], (x, y, z + r * 0.4 + 0.45), 0.3, tall * 0.55, 6, 0.24)
+        k.prism(k.B["hk-bloom"], (x, y, z + r * 0.4 + 0.45 + tall * 0.55), 0.24, tall * 0.45, 6, 0.05)
 
 
 def silverswords(k) -> int:
@@ -712,6 +716,42 @@ def park_signs(k) -> dict:
     return {"elevationSigns": elevation, "neneSigns": nene}
 
 
+def silversword_garden(k) -> int:
+    """Detail 4, silverswords: near the top a garden of them is kept beside the road, as at the park's summit
+    stops. A boardwalk runs out from the shoulder between two low rails, a sign stands at its head, and the plants
+    grow thick on either side of it, large ones, several in flower."""
+    paint, rng, s = Painted(k), k.rng, k.s
+    shares = [height_share(k, i) for i in range(k.n)]
+    wood, rail, brown, white = _lin(0x9A7E5A), _lin(0x6A543C), _lin(0x5A3A26), _lin(0xF2F2EE)
+    i = min(range(k.n), key=lambda q: abs(shares[q] - 0.86))
+    while i < k.n - 40 and (any(abs(s[q]["k"]) > 1 / 150 for q in range(i - 6, i + 7)) or not k.room(i, -(k.kerb + 40.0), 16.0)):
+        i += 4
+    h = s[i]["h"]
+    right = (math.sin(h), -math.cos(h))
+    x0, y0, z0 = k.road.at(i, -(k.kerb + 2.0))
+    planted = 0
+    for q in range(14):
+        out = q * 2.0
+        x, y = x0 + right[0] * out, y0 + right[1] * out
+        z = k.height_at(x, y) + 0.25
+        paint.box((x, y, z - 0.25), (1.5, 2.02, 0.25), h, wood if q % 2 else tuple(c * 0.9 for c in wood[:3]) + (1.0,), 0.85)
+        for side in (1, -1):
+            px, py = x + math.cos(h) * 0.82 * side, y + math.sin(h) * 0.82 * side
+            if q % 2 == 0:
+                paint.box((px, py, z), (0.09, 0.09, 0.95), h, rail, 0.8)
+            paint.box((px, py, z + 0.86), (0.07, 2.02, 0.07), h, rail, 1.0)
+            # The garden either side of the walk.
+            for _ in range(2):
+                gx = px + math.cos(h) * rng.uniform(1.2, 7.5) * side + right[0] * rng.uniform(-1.0, 1.0)
+                gy = py + math.sin(h) * rng.uniform(1.2, 7.5) * side + right[1] * rng.uniform(-1.0, 1.0)
+                silversword(k, gx, gy, k.height_at(gx, gy), rng.random() < 0.3)
+                planted += 1
+    corner, along, out, base = board(paint, k, i - 1, -(k.kerb + 3.4), 1.3, 0.8, 0.9, brown, None, rail)
+    paint.panel(corner, along, out, 0.15, 1.15, base + 0.5, base + 0.64, 0.06, white)
+    paint.panel(corner, along, out, 0.15, 0.85, base + 0.2, base + 0.3, 0.06, white)
+    return planted
+
+
 def boulder(k, b, c, r: float) -> None:
     """A lump of lava: an irregular rock, wider than it is tall, sunk a little into the cinder."""
     rng = k.rng
@@ -758,5 +798,6 @@ def scenery(k) -> dict:
     cones = crater(k)
     lava = lava_field(k)
     signs = park_signs(k)
+    garden = silversword_garden(k)
     shrubs = shrubland(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords, "domes": domes, **ranch, **coast, "cinderCones": cones, "boulders": lava, "shrubs": shrubs, **signs}
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "silverswords": swords, "domes": domes, **ranch, **coast, "cinderCones": cones, "boulders": lava, "shrubs": shrubs, **signs, "gardenSilverswords": garden}
