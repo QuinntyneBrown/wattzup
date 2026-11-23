@@ -71,6 +71,10 @@ def alpenglow_sky_colour(dx: float, dy: float, dz: float, az: float, haze):
     # Warm solar aureole just above the western pass horizon
     sun_ang = max(0.0, dx * math.cos(az) * 0.96 + dy * math.sin(az) * 0.96 + dz * 0.18)
     c = mix(c, srgb(0xFFE2B8), (sun_ang ** 18.0) * 0.42)
+    # Subtle vertical alpine ice-crystal sun pillar rising above the WSW sun disc
+    az_diff = math.remainder(math.atan2(dy, dx) - az, math.tau)
+    pillar = math.exp(-((az_diff / 0.055) ** 2)) * smoothstep(0.02, 0.14, h) * (1.0 - smoothstep(0.18, 0.44, h))
+    c = mix(c, srgb(0xFFD8B0), pillar * 0.24)
     # Anti-solar Belt of Venus (Cintura di Venere) rose-lilac band above steel-blue earth shadow in the east!
     anti = max(0.0, -toward) ** 1.6
     venus = math.exp(-((h - 0.11) / 0.075) ** 2) * anti
