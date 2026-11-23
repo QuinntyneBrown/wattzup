@@ -89,3 +89,9 @@ export function isInsideRockfallGallery(metres: number): boolean {
   const w = ((metres % 11650) + 11650) % 11650;
   return GALLERIES.some(([a, b]) => w >= a && w <= b);
 }
+
+/** Lateral centripetal cornering load in g-units (`v^2 * |k| / 9.81`). */
+export function centripetalGForce(speedMps: number, curvaturePerMetre: number): number {
+  const v = Math.max(0, speedMps);
+  return (v * v * Math.abs(curvaturePerMetre)) / 9.81;
+}
