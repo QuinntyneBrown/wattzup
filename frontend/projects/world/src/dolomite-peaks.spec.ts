@@ -3,6 +3,7 @@ import {
   angularElevationDegrees,
   DOLOMITE_GIANTS,
   dominantPeakAt,
+  findDolomitePeak,
   horizonReliefMetres,
   isGlaciatedPeak,
   marmoladaGlacierElevationBand,
@@ -28,5 +29,9 @@ describe('DOLOMITE_GIANTS', () => {
     expect(isGlaciatedPeak('marmolada')).toBe(true);
     expect(isGlaciatedPeak('sassolungo')).toBe(false);
     expect(horizonReliefMetres(DOLOMITE_GIANTS[2]!, 2240)).toBeGreaterThan(900);
+    expect(findDolomitePeak('langkofel')?.id ?? findDolomitePeak('sassolungo')?.id).toBe(
+      'sassolungo',
+    );
+    expect(findDolomitePeak('')).toBeNull();
   });
 });
