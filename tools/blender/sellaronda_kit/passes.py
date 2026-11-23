@@ -489,4 +489,8 @@ def build_four_passes(B, kit, road, height_at) -> None:
     # Dressed-stone kerb & alpine geranium border framing the Fausto Coppi monument
     B["stone"].box((mx, my, mz - 0.55), (3.4, 2.4, 0.28), p_yaw)
     B["geranium-red"].box((mx, my + math.cos(p_yaw) * 0.95, mz - 0.27), (2.6, 0.35, 0.22), p_yaw)
+    # Traditional wooden 'TIMBRO DEL PASSO' cyclist brevet stamp boxes beside all 4 summit signs
+    for p in PASSES:
+        tb_p = road.index(p["at"] + 3.2)
+        B["larch-warm"].box(kit.P(tb_p, 0.0, -(kit.kerb + 2.35), 0.95), (0.36, 0.28, 0.44), s[tb_p]["h"])
     # [ANCHOR:passes]
