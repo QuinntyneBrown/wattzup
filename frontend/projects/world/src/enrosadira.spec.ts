@@ -4,6 +4,7 @@ import {
   beltOfVenusWeight,
   cliffAspectIllumination,
   dolomiaCarbonateReflectance,
+  duskLightPoolFalloff,
   enrosadiraTint,
 } from './enrosadira';
 
@@ -28,5 +29,8 @@ describe('enrosadiraTint', () => {
     const refl = dolomiaCarbonateReflectance();
     expect(refl.r).toBeGreaterThan(refl.g);
     expect(refl.g).toBeGreaterThan(refl.b);
+    expect(duskLightPoolFalloff(0, 24)).toBe(1);
+    expect(duskLightPoolFalloff(12, 24)).toBeCloseTo(0.25, 3);
+    expect(duskLightPoolFalloff(30, 24)).toBe(0);
   });
 });
