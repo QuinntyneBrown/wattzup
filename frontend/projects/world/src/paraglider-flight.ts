@@ -80,3 +80,14 @@ export function thermalVariometerMps(orbit: ThermalOrbit, seconds: number, phase
   const t = seconds * w + phase * Math.PI * 2;
   return Math.cos(t) * orbit.liftAmplitude * w;
 }
+
+/** Peak roll bank angle in degrees sampled around `orbit`. */
+export function paragliderMaxBankDegrees(orbit: ThermalOrbit): number {
+  let maxRad = 0;
+  const pose: GliderPose = { x: 0, y: 0, z: 0, heading: 0, bank: 0 };
+  for (let i = 0; i < 32; i++) {
+    paragliderPose(orbit, (i / 32) * orbit.periodSeconds, 0, false, pose);
+    maxRad = Math.max(maxRad, Math.abs(pose.bank));
+  }
+  return Number(((maxRad * 180) / Math.PI).toFixed(1));
+}
