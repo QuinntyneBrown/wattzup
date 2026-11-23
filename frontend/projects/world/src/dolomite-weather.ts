@@ -25,3 +25,8 @@ export function aerobicMaxPowerFactor(altitudeMetres: number): number {
   // Bassett et al. acclimatized cycling power curve: ~91-93% at 2,240 m.
   return Math.max(0.5, 1 - 0.018 * km - 0.0085 * km * km);
 }
+
+/** Water boiling point (°C) at `altitudeMetres` (~92.5 °C on Passo Sella & Passo Pordoi). */
+export function boilingPointCelsiusAtAltitude(altitudeMetres: number): number {
+  return Number((100 - Math.max(0, altitudeMetres) * 0.00335).toFixed(1));
+}
