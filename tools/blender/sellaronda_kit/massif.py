@@ -387,3 +387,7 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
             350.0,
             snow=True,
         )
+
+    # Antersass / Zwischenkofel (2,907 m) central Sella plateau watershed peak
+    rock_tower(peaks, cx - 85.0, cy + 215.0, 645.0, 718.0, 82.0, 64.0, 9, 0.55, cfn, taper=0.56, flat_cap=False, seed_phase=0.5)
+    # [ANCHOR:massif]
