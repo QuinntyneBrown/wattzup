@@ -360,4 +360,7 @@ def build_four_passes(B, kit, road, height_at) -> None:
     ttyaw = s[tt_i]["h"]
     B["larch-aged"].box(kit.P(tt_i, 0.0, kit.kerb + 2.55, -0.1), (0.28, 0.68, 2.35), ttyaw)
     B["bulb"].box(kit.P(tt_i, -0.02, kit.kerb + 2.55, 1.72), (0.30, 0.52, 0.24), ttyaw)
+    # Sculpted wooden alpine eagle crest crowning the Passo Gardena summit sign
+    gd_s = road.index(10150.0)
+    B["larch-warm"].box(kit.P(gd_s, 6.0, -(kit.kerb + 2.5), 3.42), (0.85, 0.24, 0.42), s[gd_s]["h"])
     # [ANCHOR:passes]
