@@ -397,4 +397,6 @@ def build_surrounding_peaks(peaks, road, cx: float, cy: float, az_sun: float, co
         465.0,
         snow=True,
     )
+    # Eastern flanking buttress of Puez-Odle visible from Passo Gardena
+    rock_tower(peaks, gar_pt["x"] + gux * 1360.0 + gpx * 310.0, gar_pt["y"] + guy * 1360.0 + gpy * 310.0, 55.0, 745.0, 165.0, 125.0, 9, math.atan2(-guy, -gux), cfn, taper=0.46, flat_cap=False, seed_phase=4.8)
     # [ANCHOR:peaks]
