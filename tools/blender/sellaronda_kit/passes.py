@@ -407,4 +407,8 @@ def build_four_passes(B, kit, road, height_at) -> None:
     B["larch-warm"].box((cx_ch + math.cos(g_yaw) * 4.4, cy_ch + math.sin(g_yaw) * 4.4, cz_ch + 0.35), (2.1, 0.55, 0.52), g_yaw)
     # Golden Trofeo Senza Fine crest crowning the Passo Pordoi Cima Coppi GPM gantry
     B["gold"].box(kit.P(pordoi_idx, 0.0, 0.0, 5.87), (0.36, 0.36, 0.85), p_yaw)
+    # Upright pale-dolomite equatorial sundial pillar on Passo Campolongo
+    sd_c = road.index(2118.0)
+    B["dolomite-pale"].box(kit.P(sd_c, 0.0, kit.kerb + 4.4, 0.0), (0.36, 0.36, 1.55), s[sd_c]["h"])
+    B["gold"].box(kit.P(sd_c, 0.0, kit.kerb + 4.4, 1.55), (0.48, 0.48, 0.12), s[sd_c]["h"] + 0.4)
     # [ANCHOR:passes]
