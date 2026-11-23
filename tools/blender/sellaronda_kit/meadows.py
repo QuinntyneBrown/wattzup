@@ -413,4 +413,14 @@ def build_alpine_meadows(B, kit, road, height_at, rng) -> int:
             B["larch-aged"].box((fkx, fky, fkz), (1.85, 1.15, 1.45), s[fki]["h"])
             kit.gable(B["chalet-wood"], (fkx, fky, fkz + 1.45), 2.35, 1.65, 0.65, s[fki]["h"])
 
+    # Grazing white Tyrolean Bergschaf mountain sheep on the sunny Campolongo alm (at=1995 m)
+    sh_i = road.index(1995.0)
+    shx0, shy0, _ = road.at(sh_i, kit.kerb + 17.5)
+    if road.clear_of_road(shx0, shy0, 12.0, sh_i):
+        for sk in range(5):
+            sx_s = shx0 + math.cos(sk * 1.3) * (2.5 + sk * 1.4)
+            sy_s = shy0 + math.sin(sk * 1.3) * (2.5 + sk * 1.4)
+            sz_s = height_at(sx_s, sy_s)
+            B["paint"].box((sx_s, sy_s, sz_s + 0.22), (0.92, 0.44, 0.46), sk * 0.8)
+
     return trees
