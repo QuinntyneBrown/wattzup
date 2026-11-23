@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  completedPassesCount,
   geologyStratumAtAltitude,
   highestSellaPass,
   isHighWallSector,
@@ -61,5 +62,8 @@ describe('SELLA_RONDA_PASSES', () => {
     expect(totalSellaRondaClimbingMetres()).toBe(2277);
     expect(geologyStratumAtAltitude(2620)).toBe('raibl-cengia-marl');
     expect(geologyStratumAtAltitude(2950)).toBe('hauptdolomit-dachstein');
+    expect(completedPassesCount(1500)).toBe(0);
+    expect(completedPassesCount(5500)).toBe(2);
+    expect(completedPassesCount(11000)).toBe(4);
   });
 });

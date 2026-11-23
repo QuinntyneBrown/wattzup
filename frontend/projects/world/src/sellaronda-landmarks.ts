@@ -159,3 +159,9 @@ export function geologyStratumAtAltitude(altitudeMetres: number): SellaRockStrat
   if (altitudeMetres < 2680) return 'raibl-cengia-marl';
   return 'hauptdolomit-dachstein';
 }
+
+/** Counts how many of the four Dolomite pass summits (0..4) a rider at `metres` has already crested on the current lap. */
+export function completedPassesCount(metres: number): number {
+  const clamped = Math.max(0, Math.min(11650, metres));
+  return SELLA_RONDA_PASSES.filter((p) => clamped >= p.courseMetres).length;
+}
