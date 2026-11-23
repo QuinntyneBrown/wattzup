@@ -116,3 +116,8 @@ export function cablewayVerticalSpeedMps(span: CableSpan): number {
   // Smoothstep derivative peaks at 1.5 at u = 0.5.
   return (1.5 * dy) / t;
 }
+
+/** Full round-trip cycle period in seconds (ascent + upper dwell + descent + lower dwell) for `span`. */
+export function cablewayRoundTripSeconds(span: CableSpan): number {
+  return 2 * (Math.max(1, span.traverseSeconds) + Math.max(0, span.dwellSeconds));
+}
