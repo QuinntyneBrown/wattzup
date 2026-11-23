@@ -79,3 +79,29 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
         idx = road.index(d_m)
         for side in (-1.0, 1.0):
             _village_chalet(B, kit, road, idx, side, 13.0, 11.0, 8.4, 2, height_at)
+
+    # 3. Canazei / Cianacei (1,465 m approach saddle around 6,120 m between Pordoi & Sella)
+    cz_idx = road.index(6130.0)
+    zx0, zy0, _ = road.at(cz_idx, -(kit.kerb + 21.5))
+    _onion_dome_church(B, kit, zx0, zy0, height_at(zx0, zy0), road.s[cz_idx]["h"] + 0.15, dome_mat="copper-patina", spire=False)
+    for d_m in (5990.0, 6055.0, 6115.0, 6180.0, 6240.0):
+        idx = road.index(d_m)
+        for side in (-1.0, 1.0):
+            _village_chalet(B, kit, road, idx, side, 13.5, 12.2, 8.8, 3 if side < 0 else 2, height_at)
+
+    # 4. Selva di Val Gardena / Sëlva (1,563 m approach around 8,920 m between Sella & Gardena)
+    sv_idx = road.index(8930.0)
+    sx0, sy0, _ = road.at(sv_idx, kit.kerb + 21.0)
+    _onion_dome_church(B, kit, sx0, sy0, height_at(sx0, sy0), road.s[sv_idx]["h"] - 0.2, dome_mat="parasol-red", spire=False)
+    for d_m in (8800.0, 8865.0, 8925.0, 8985.0, 9045.0):
+        idx = road.index(d_m)
+        for side in (-1.0, 1.0):
+            _village_chalet(B, kit, road, idx, side, 13.5, 11.8, 8.6, 2 + (int(d_m) % 2), height_at)
+
+    # Trilingual white/brown Italian & Ladin municipal town-entry boards at all 4 villages
+    for entry_m in (125.0, 2965.0, 5965.0, 8775.0):
+        e_idx = road.index(entry_m)
+        e_yaw = road.s[e_idx]["h"]
+        B["steel"].box(kit.P(e_idx, 0.0, -(kit.kerb + 1.8), 0.0), (0.10, 0.10, 2.35), e_yaw)
+        B["paint"].box(kit.P(e_idx, 0.0, -(kit.kerb + 1.8), 1.65), (0.08, 1.65, 0.72), e_yaw)
+        B["chalet-wood"].box(kit.P(e_idx, 0.0, -(kit.kerb + 1.8), 1.25), (0.08, 1.65, 0.34), e_yaw)
