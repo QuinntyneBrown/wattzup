@@ -292,6 +292,7 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
     B["larch-warm"].box((pfx, pfy, pfz + 1.0), (14.0, 9.2, 3.8), pf_yaw)
     B["dark"].box((pfx, pfy, pfz + 1.8), (14.2, 9.4, 1.6), pf_yaw)
     kit.gable(B["copper-patina"], (pfx, pfy, pfz + 4.8), 14.6, 9.8, 1.4, pf_yaw)
+    B["ladin-blue"].box((pfx, pfy, pfz + 5.75), (9.5, 3.6, 0.12), pf_yaw)
 
     # 7. Open steel chairlift bullwheel return gantry on the Salei / Col Rodella shoulder (at=7280 m)
     bw_idx = road.index(7280.0)
