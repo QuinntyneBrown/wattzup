@@ -425,6 +425,7 @@ MATERIALS: dict[str, dict] = {
     "island": {"color": 0x5A3F52, "rough": 1.0},
     "peaks": {"color": 0xFFFFFF, "rough": 1.0, "vertex": True},
     "funivia": {"color": 0xFFFFFF, "rough": 0.55, "vertex": True},
+    "glider": {"color": 0xFFFFFF, "rough": 0.75, "vertex": True},
     "beam-pink": {"color": 0xFF5AA8, "glow": 2.2, "alpha": 0.2, "double": True},
     "beam-cyan": {"color": 0x5AE8F0, "glow": 2.2, "alpha": 0.2, "double": True},
     "beam-amber": {"color": 0xFFC060, "glow": 2.2, "alpha": 0.2, "double": True},
@@ -571,7 +572,7 @@ HALOS_PART = "Halos"
 WALL_KINDS = {"brick": 1, **{f"container-{i}": 2 for i in range(4)}, "whitewash": 3, "chalet-plaster": 3, "tower": 3, "wall": 3, "stone": 5, "dolomite-pale": 5, "larch-aged": 6, "larch-warm": 6, "chalet-wood": 6,
               **{f"facade-{i}": 3 for i in range(6)}, **{f"deco-{i}": 3 for i in range(4)}}
 WIDER = {"Land": 4, "Beams": 6, "Glow": 6, "Leaves": 1, "Halos": 4, "Ground": 2}
-WHOLE = {"sea": "Sea", "sky": "Sky", "sun": "Sun", "moon": "Sun", "island": "Conillera", "peaks": "Peaks", "funivia": "Funivia", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
+WHOLE = {"sea": "Sea", "sky": "Sky", "sun": "Sun", "moon": "Sun", "island": "Conillera", "peaks": "Peaks", "funivia": "Funivia", "glider": "Glider", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
 
 
 def group_of(mat: str) -> tuple[str, bool]:
@@ -1811,6 +1812,8 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         data["class"] = course["class"]
     if facts.get("cableways"):
         data["cableways"] = facts["cableways"]
+    if facts.get("gliders"):
+        data["gliders"] = facts["gliders"]
     if theme:
         # The sky the app draws, horizon up, the haze the distance fades into, and its lights.
         hexs = lambda v: f"#{v:06x}"  # noqa: E731

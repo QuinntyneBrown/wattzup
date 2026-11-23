@@ -344,9 +344,10 @@ def build_scenery(road, st: list[dict], length: float, height_at, course: dict, 
         m_villages.build_valley_villages(B, kit, road, height_at, rng)
 
     # 8. Sellaronda Bike Day cyclists, motorbikes, spectators & paragliders
+    gliders = []
     m_bikeday = _try_module("bikeday")
     if m_bikeday:
-        m_bikeday.build_bikeday_life(B, kit, road, height_at, rng)
+        gliders = m_bikeday.build_bikeday_life(B, kit, road, height_at, rng) or []
 
     # 9. Dusk terrace/village warm light pools (Enrosadira twilight)
     if m_alpenglow and hasattr(m_alpenglow, "emit_dusk_lights"):
@@ -380,6 +381,7 @@ def build_scenery(road, st: list[dict], length: float, height_at, course: dict, 
         "clubs": 0,
         "lights": kit.lights,
         "cableways": cableways,
+        "gliders": gliders,
     }
 
 

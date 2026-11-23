@@ -21,7 +21,7 @@ def _road_cyclist(B, x: float, y: float, z: float, yaw: float, jersey_mat: str, 
     B["paint"].box((x + ca * 0.34, y + sa * 0.34, hip_z + 0.34), (0.26, 0.22, 0.22), yaw)
 
 
-def build_bikeday_life(B, kit, road, height_at, rng) -> None:
+def build_bikeday_life(B, kit, road, height_at, rng) -> list[dict]:
     """Populates the passes with Sellaronda Bike Day road cyclists and summit photo groups."""
     s = road.s
     jerseys = ("crowd-0", "crowd-1", "crowd-2", "crowd-3", "crowd-4", "ladin-blue", "parasol-red")
@@ -171,6 +171,34 @@ def build_bikeday_life(B, kit, road, height_at, rng) -> None:
             B[jerseys[(hk_i + pair_k) % len(jerseys)]].box((hx, hy, hz + 0.86), (0.32, 0.40, 0.58), hyaw)
             B["parasol-red"].box((hx - math.cos(hyaw) * 0.20, hy - math.sin(hyaw) * 0.20, hz + 0.92), (0.22, 0.32, 0.46), hyaw)
             B["skin"].box((hx, hy, hz + 1.44), (0.22, 0.22, 0.24), hyaw)
+
+    # Origin-centered animated lead thermal paraglider in WHOLE group "Glider" soaring over Passo Sella!
+    from . import srgb as _srgb
+    gl = B["glider"]
+    gl.colours = []
+    def _gbox(cx_g: float, cy_g: float, cz_g: float, sx: float, sy: float, sz: float, col_hex: int):
+        c_rgba = _srgb(col_hex)
+        base_i = len(gl.verts)
+        hx_g, hy_g = sx * 0.5, sy * 0.5
+        for z_v in (cz_g, cz_g + sz):
+            for dx_v, dy_v in ((-hx_g, -hy_g), (hx_g, -hy_g), (hx_g, hy_g), (-hx_g, hy_g)):
+                gl.verts.append((cx_g + dx_v, cy_g + dy_v, z_v))
+                gl.colours.append(c_rgba)
+        for f_t in ((4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7), (0, 3, 2, 1)):
+            gl.faces.append(tuple(base_i + q for q in f_t))
+    for seg_p in range(-3, 4):
+        _gbox(0.0, seg_p * 1.95, -abs(seg_p) * 0.46, 2.75, 2.05, 0.24, 0xF05692 if abs(seg_p) < 2 else 0xFFD040)
+    _gbox(0.0, 0.0, -6.2, 0.85, 0.58, 0.98, 0x1E222A)
+
+    sp_idx = road.index(7710.0)
+    sp_x, sp_y, sp_z = road.at(sp_idx, 42.0, 68.0)
+    return [{
+        "center": [round(sp_x, 2), round(sp_z, 2), round(-sp_y, 2)],
+        "radiusX": 68.0,
+        "radiusZ": 46.0,
+        "liftAmplitude": 7.5,
+        "periodSeconds": 46.0,
+    }]
 
 
 def _touring_motorbike(B, x: float, y: float, z: float, yaw: float, body_mat: str, with_rider: bool = False) -> None:
