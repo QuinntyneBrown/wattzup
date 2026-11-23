@@ -52,6 +52,13 @@ def _rifugio_complex(B, kit, road, height_at, at_m: float, side: float, main_w: 
     B["paint"].box((sx_d, sy_d, base_z + 3.2 + upper_h - 1.55), (1.15, 0.08, 1.15), yaw)
     B["gold"].box((sx_d, sy_d, base_z + 3.2 + upper_h - 1.15), (0.55, 0.10, 0.55), yaw)
 
+    # Projecting Tyrolean corner Erker turret with copper-patina cap on 3-storey flagship pass hotels
+    if storeys >= 3:
+        ex_t = rx + math.cos(yaw) * (main_w * 0.5) - math.sin(yaw) * -(main_d * 0.5)
+        ey_t = ry + math.sin(yaw) * (main_w * 0.5) + math.cos(yaw) * -(main_d * 0.5)
+        B["chalet-plaster"].box((ex_t, ey_t, base_z + 2.8), (2.4, 2.4, upper_h + 0.8), yaw + math.pi * 0.25)
+        kit.gable(B["copper-patina"], (ex_t, ey_t, base_z + 3.6 + upper_h), 2.8, 2.8, 1.85, yaw)
+
     # Wraparound dark-larch balconies facing the road + overflowing red geranium flowerboxes!
     nx, ny = -math.sin(yaw), math.cos(yaw)
     front_dist = main_d * 0.5 + 0.55
