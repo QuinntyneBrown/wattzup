@@ -264,4 +264,12 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     cd_i = road.index(4982.0)
     cdy = road.s[cd_i]["h"]
     B["brick"].box(kit.P(cd_i, 0.0, kit.kerb + 2.8, -0.04), (10.5, 3.2, 0.10), cdy)
+    # Historic aged-larch ski-pioneers pavilion on Passo Sella (Milestone 0500!)
+    ps_p = road.index(7740.0)
+    pspy = road.s[ps_p]["h"] + 0.25
+    psx_p, psy_p, _ = road.at(ps_p, -(kit.kerb + 14.5))
+    psz_p = max(height_at(psx_p, psy_p), road.s[ps_p]["z"] - 0.5)
+    B["stone"].box((psx_p, psy_p, psz_p - 1.5), (7.4, 5.8, 2.0), pspy)
+    B["larch-aged"].box((psx_p, psy_p, psz_p + 0.5), (7.6, 6.0, 3.2), pspy)
+    kit.gable(B["chalet-wood"], (psx_p, psy_p, psz_p + 3.7), 8.2, 6.6, 1.9, pspy)
     # [ANCHOR:rifugi-global]
