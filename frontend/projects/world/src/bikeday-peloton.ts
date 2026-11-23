@@ -51,3 +51,14 @@ export function vamMetresPerHour(gradePercent: number, riderWatts: number, syste
   const speedKmh = bikeDayClimbSpeedKmh(gradePercent, riderWatts / Math.max(40, systemKg));
   return Math.round(speedKmh * 1000 * (gradePercent / 100));
 }
+
+export type DolomiteClimberTier = 'bikeday-touring' | 'granfondo' | 'maratona-gold' | 'giro-pro';
+
+/** Classifies sustained climbing power-to-weight (`watts / riderKg`) on Dolomite passes. */
+export function wattsPerKiloClass(watts: number, riderKg: number): DolomiteClimberTier {
+  const wkg = watts / Math.max(40, riderKg);
+  if (wkg >= 5.4) return 'giro-pro';
+  if (wkg >= 4.0) return 'maratona-gold';
+  if (wkg >= 2.8) return 'granfondo';
+  return 'bikeday-touring';
+}

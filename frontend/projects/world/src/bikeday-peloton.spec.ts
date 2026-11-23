@@ -5,6 +5,7 @@ import {
   passClimbMinutesEstimate,
   pelotonDraftSavingPercent,
   vamMetresPerHour,
+  wattsPerKiloClass,
 } from './bikeday-peloton';
 
 describe('bikeDayClimbSpeedKmh', () => {
@@ -23,5 +24,7 @@ describe('bikeDayClimbSpeedKmh', () => {
     );
     expect(vamMetresPerHour(7.5, 300)).toBeGreaterThan(950);
     expect(vamMetresPerHour(-5, 250)).toBe(0);
+    expect(wattsPerKiloClass(390, 68)).toBe('giro-pro');
+    expect(wattsPerKiloClass(170, 75)).toBe('bikeday-touring');
   });
 });
