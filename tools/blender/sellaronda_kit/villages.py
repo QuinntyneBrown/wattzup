@@ -131,6 +131,8 @@ def build_valley_villages(B, kit, road, height_at, rng) -> None:
             sz_t = min(height_at(sx_t, sy_t), road.s[st_idx]["z"] - 1.4)
             B["dolomite-pale"].box((sx_t, sy_t, sz_t - 0.3), (6.4, 24.0, 0.45), st_yaw)
             B["lago-turquoise"].box((sx_t, sy_t, sz_t + 0.08), (4.2, 24.0, 0.18), st_yaw)
+            for bk_s in (-2.4, 2.4):
+                B["stone"].box((sx_t + math.cos(st_yaw) * bk_s, sy_t + math.sin(st_yaw) * bk_s, sz_t - 0.2), (0.65, 22.0, 1.35), st_yaw)
             B["larch-warm"].box(kit.P(st_idx, 0.0, (kit.kerb + 0.95) * side, 0.0), (8.6, 0.32, 1.18), st_yaw)
             B["larch-aged"].box(kit.P(st_idx, 0.0, (kit.kerb + 0.95) * side, 1.18), (9.0, 0.44, 0.16), st_yaw)
             for fl_o in (-2.6, 0.0, 2.6):
