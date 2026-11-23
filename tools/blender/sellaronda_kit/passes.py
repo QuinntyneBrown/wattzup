@@ -485,4 +485,7 @@ def build_four_passes(B, kit, road, height_at) -> None:
         so_p = road.index(p["at"] - 24.0)
         B["crowd-3"].box(kit.P(so_p, 0.0, kit.kerb + 2.6, 0.0), (0.24, 0.24, 1.85), s[so_p]["h"])
         B["ladin-blue"].box(kit.P(so_p, 0.0, kit.kerb + 2.6, 1.88), (0.42, 0.36, 0.06), s[so_p]["h"])
+    # Dressed-stone kerb & alpine geranium border framing the Fausto Coppi monument
+    B["stone"].box((mx, my, mz - 0.55), (3.4, 2.4, 0.28), p_yaw)
+    B["geranium-red"].box((mx, my + math.cos(p_yaw) * 0.95, mz - 0.27), (2.6, 0.35, 0.22), p_yaw)
     # [ANCHOR:passes]
