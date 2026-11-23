@@ -45,3 +45,12 @@ export function rifugiOnPass(passId: SellaRifugio['passId']): readonly SellaRifu
 export function highestSellaRifugio(): SellaRifugio {
   return SELLA_RIFUGI.reduce((top, r) => (r.altitudeMetres > top.altitudeMetres ? r : top));
 }
+
+/** True when `metres` is within `thresholdMetres` of any Sella Ronda roadside rifugio. */
+export function isNearPassRifugio(metres: number, thresholdMetres = 95): boolean {
+  const w = ((metres % 11650) + 11650) % 11650;
+  return SELLA_RIFUGI.some((r) => {
+    const d = Math.min(Math.abs(w - r.courseMetres), 11650 - Math.abs(w - r.courseMetres));
+    return d <= thresholdMetres;
+  });
+}
