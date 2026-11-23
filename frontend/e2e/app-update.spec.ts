@@ -37,8 +37,8 @@ test('a new version deployed is offered when the app opens, and Reload loads it 
   await expect(update.title).toHaveText('A new version is ready');
   await expect(update.text).toHaveText('Reload to use it now, or it opens next time.');
   await update.markPage();
-  await update.reload.click();
-  await expect.poll(() => update.reloaded()).toBe(true);
+  await Promise.all([page.waitForEvent('load'), update.reload.click()]);
+  expect(await update.reloaded()).toBe(true);
   await expect(home.greeting).toBeVisible();
   await expect(update.toast).toBeHidden();
 });
