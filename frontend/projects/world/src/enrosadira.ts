@@ -49,6 +49,11 @@ export function altitudeAlpenglowWeight(altitudeMetres: number): number {
   return u * u * (3 - 2 * u);
 }
 
+/** Normalized Enrosadira intensity (0..1) as a function of `minutesFromSunset` (peaking +4 min after valley sunset). */
+export function enrosadiraWindowCurve(minutesFromSunset: number): number {
+  return Math.exp(-(((minutesFromSunset - 4) / 11) ** 2));
+}
+
 /** Anti-solar Belt of Venus intensity (0..1) for view azimuth `viewAz` and elevation `horizonElev` (0..1). */
 export function beltOfVenusWeight(viewAz: number, sunAz: number, horizonElev: number): number {
   const anti = Math.max(0, -Math.cos(viewAz - sunAz));

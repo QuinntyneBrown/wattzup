@@ -7,6 +7,7 @@ import {
   duskLightPoolFalloff,
   enrosadiraStageName,
   enrosadiraTint,
+  enrosadiraWindowCurve,
   snowfieldAlbedoTint,
   twilightZenithLuminance,
   valleyShadowDepth,
@@ -43,5 +44,7 @@ describe('enrosadiraTint', () => {
     expect(enrosadiraStageName(0.95)).toBe('alpine-dusk');
     expect(valleyShadowDepth(1550, 2)).toBe(1);
     expect(valleyShadowDepth(2950, 2)).toBe(0);
+    expect(enrosadiraWindowCurve(4)).toBeCloseTo(1, 3);
+    expect(enrosadiraWindowCurve(-40)).toBeLessThan(0.01);
   });
 });
