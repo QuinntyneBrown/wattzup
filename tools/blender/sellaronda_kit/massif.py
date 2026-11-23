@@ -621,4 +621,12 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     )
     # Northern gendarme of the Fourth Sella Tower overlooking Plan de Gralba
     rock_tower(peaks, cx + sux * 812.0 + spx * 212.0, cy + suy * 812.0 + spy * 212.0, 128.0, 458.0, 42.0, 34.0, 7, math.atan2(suy, sux) + 0.25, cfn, taper=0.62, flat_cap=True, seed_phase=5.0)
+    # Fallen Hauptdolomit talus blocks beneath Le Mëisules on Passo Gardena
+    for gb_i in range(4):
+        gbi = road.index(9760.0 + gb_i * 55.0)
+        gb_pt = road.s[gbi]
+        gbx = gb_pt["x"] - math.sin(gb_pt["h"]) * -22.0
+        gby = gb_pt["y"] + math.cos(gb_pt["h"]) * -22.0
+        if road.clear_of_road(gbx, gby, 13.0, gbi):
+            rock_tower(peaks, gbx, gby, gb_pt["z"] + 1.5, gb_pt["z"] + 7.8, 4.8, 3.8, 6, gb_i * 1.1, cfn, taper=0.64, flat_cap=True, seed_phase=gb_i * 0.8)
     # [ANCHOR:massif]
