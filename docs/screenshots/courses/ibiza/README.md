@@ -700,6 +700,15 @@ hung in the sky five degrees over the sun. It is painted at two and a half degre
 the last half of the ride, and the shafts of light fan out from there. It still does not move: early in the ride
 the sun stands a little over its glow, where it stood a long way under it late.
 
+### Checked after Sky 22: the lightning is wired
+
+`check-lightning.jpg` (left: the thunderhead left of the island from 8,150 m as it is nearly all the time; right:
+the same frame with the lightning held full on, as a test). Sheet lightning (Sky 6) had been tested by its numbers
+and never seen: a flicker lasts a fifth of a second and comes every ten to sixteen seconds. Held on, it lights the
+heart of the thunderhead blue-white where it should. A first try, hunting for the flicker in sixteen seconds of
+film by the brightening of patches of sky, found nothing it could tell from the clubs' beams crossing the sky.
+The test is not left in the code.
+
 ### Low power: where the frames go (after Party 20)
 
 The low-power stand-in (the low tier with the processor slowed six times) has not held 60 fps on this machine on
