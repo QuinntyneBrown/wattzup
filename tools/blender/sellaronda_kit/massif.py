@@ -646,4 +646,12 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     )
     # Eastern headwall buttress enclosing the glacial Vallon cirque above Corvara
     rock_tower(peaks, cx + vux * 745.0 - vpx * 135.0, cy + vuy * 745.0 - vpy * 135.0, 128.0, 565.0, 76.0, 58.0, 8, math.atan2(vuy, vux), cfn, taper=0.68, flat_cap=True, seed_phase=1.3)
+    # Angular Hauptdolomit talus boulders at the foot of the Sass Pordoi scree fan
+    for pb_i in range(4):
+        pbi = road.index(4780.0 + pb_i * 65.0)
+        pb_pt = road.s[pbi]
+        pbx = pb_pt["x"] - math.sin(pb_pt["h"]) * -24.0
+        pby = pb_pt["y"] + math.cos(pb_pt["h"]) * -24.0
+        if road.clear_of_road(pbx, pby, 14.0, pbi):
+            rock_tower(peaks, pbx, pby, pb_pt["z"] + 1.2, pb_pt["z"] + 7.4, 4.6, 3.6, 6, pb_i * 0.9, cfn, taper=0.62, flat_cap=True, seed_phase=pb_i * 1.1)
     # [ANCHOR:massif]
