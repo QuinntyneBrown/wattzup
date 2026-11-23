@@ -4,6 +4,7 @@ import {
   brakingDistanceMetres,
   classifyBendSeverity,
   countTornantiInCurvatures,
+  isInsideRockfallGallery,
   leanAngleDegrees,
   outerVsInnerHairpinGradeRatio,
   switchbackCadenceTargetRpm,
@@ -33,5 +34,7 @@ describe('classifyBendSeverity', () => {
     expect(outerVsInnerHairpinGradeRatio(15, 3.75)).toBeCloseTo(0.6, 2);
     const sampleK = Array.from({ length: 60 }, (_, i) => (i === 10 || i === 35 ? 0.025 : 0.002));
     expect(countTornantiInCurvatures(sampleK)).toBe(2);
+    expect(isInsideRockfallGallery(4600)).toBe(true);
+    expect(isInsideRockfallGallery(5000)).toBe(false);
   });
 });
