@@ -67,6 +67,9 @@ import { colouredGlow, LampGlow } from './lamp-glow';
 import { colourLightMap, lampLightMap } from './lamp-light-map';
 import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
+import { type PlanePlace, planeFlight, planeLights } from './plane-flight';
+import { type Dusk, dusk } from './dusk';
+import { lightning } from './lightning';
 import { type Rain, rain } from './rain';
 import { RiderBatch } from './rider-batch';
 import { RiderBody } from './rider-body';
@@ -78,6 +81,13 @@ import { SunGlow } from './sun-glow';
 import { vertexFinish } from './rider-finish';
 import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
+import { cloudDrift } from './cloud-drift';
+import { danceMaterials } from './dance-material';
+import { flapMaterial } from './flap-material';
+import { type FlockPlace, flockFlight } from './flock-flight';
+import { leafMaterial } from './leaf-material';
+import { walkMaterial } from './walk-material';
+import { type Promenader, promenaders, STROLLERS } from './promenaders';
 import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
@@ -119,6 +129,8 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
 };
 /** The start lights are drawn until the rider is this many metres up the road. */
 const START_LIGHTS = 150;
+/** The lowest tier the sky towards the sun is drawn finely on. */
+const FINE_SKY_FROM = 2;
 /** How often, in frames, the chunks to draw are chosen. */
 const CHUNK_SWEEP = 12;
 /** Riders further ahead than this are not drawn, and no more than this many of the nearest. */
@@ -204,12 +216,57 @@ export class CourseRenderer implements WorldRenderer {
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
   private readonly sun = new DirectionalLight(0xff9a5a, 2.6);
   private sky: Object3D | null = null;
+  /** A sky the map carries darkens as the ride goes on (dusk.ts): its material, the haze and sun it began with. */
+  private skyPaint: MeshBasicMaterial | null = null;
+  /** The sky towards the sun painted finely, drawn on the tiers that can spare it. */
+  private skyFine: Mesh | null = null;
+  /** The scud a map carries, turned slowly round the sky (cloud-drift.ts). */
+  private drift: Group | null = null;
+  /** The strollers a map carries, each walked along the course (promenaders.ts), and where they are. */
+  private readonly walkers: Group[] = [];
+  private readonly walking: Promenader[] = [];
+  private readonly strides: ((phase: number) => void)[] = [];
+  /** The metres up the course the rider is drawn at. */
+  private ridden = 0;
+  /** The flock of gulls a map carries, flown from the eye (flock-flight.ts): where it is, and its wings' clock. */
+  private flock: Mesh | null = null;
+  private readonly flockAt: FlockPlace = { x: 0, y: 0, z: 0, heading: 0, shown: 0 };
+  private flapClock: ((seconds: number) => void) | null = null;
+  /** The sheet lightning in the sky's thunderheads: each a mesh whose light is flickered (lightning.ts). */
+  private readonly flashes: Mesh[] = [];
+  private readonly evening: Dusk = { sky: [1, 1, 1], light: 1, stars: 0 };
+  /** The stars a map carries, brought out as the evening draws in. */
+  private stars: MeshBasicMaterial | null = null;
+  private readonly hazeAt = new Color();
+  private sunAt = 1;
+  /** The aeroplane a map carries, flown across the sky from the eye (plane-flight.ts); and where it is. */
+  private plane: Group | null = null;
+  private readonly planeAt: PlanePlace = {
+    x: 0,
+    y: 0,
+    z: 0,
+    heading: 0,
+    pitch: 0,
+    roll: 0,
+    shown: 0,
+  };
+  /** Its skin and its lights, which fade into the haze; and the lights that flash. */
+  private planeSkin: Material[] = [];
+  private planeStrobe: Mesh | null = null;
+  private planeBeacon: Mesh | null = null;
   /** How long the riders' shadows in the sun lie on the road, in metres. */
   private shadowLong = 3.4;
   /** Moves the sky's cloud on to a second of the ride's clock. */
   private skyClock: ((seconds: number) => void) | null = null;
   /** Moves the sea's ripples on to a second of the ride's clock. */
   private waterClock: ((seconds: number) => void) | null = null;
+  private readonly spare = new Vector3();
+  /** Moves the leaves in the breeze on to a second of the ride's clock. */
+  private leafClock: ((seconds: number) => void) | null = null;
+  /** Moves the map's figures to the music on to a second of the ride's clock. */
+  private danceClock: ((seconds: number) => void) | null = null;
+  /** Tells the map's figures where the rider is, so that those near them cheer. */
+  private cheered: ((x: number, z: number) => void) | null = null;
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
   private rain: Rain | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
@@ -445,6 +502,20 @@ export class CourseRenderer implements WorldRenderer {
     this.confetti.length = 0;
     this.funivia = null;
     this.glider = null;
+    this.plane = null;
+    this.skyPaint = null;
+    this.flashes.length = 0;
+    this.flock = null;
+    this.drift = null;
+    this.skyFine = null;
+    this.stars = null;
+    this.walkers.length = 0;
+    this.walking.length = 0;
+    this.strides.length = 0;
+    this.flapClock = null;
+    this.planeSkin = [];
+    this.planeStrobe = null;
+    this.planeBeacon = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.riders.clear();
@@ -473,16 +544,27 @@ export class CourseRenderer implements WorldRenderer {
     // Each group is drawn with one cheap material: no texture, no PBR, shaded flat.
     const lit = { vertexColors: true, flatShading: true } as const;
     const glow = { vertexColors: true, toneMapped: false } as const;
+    // The leaves sway in the breeze (leaf-material.ts).
+    const leaves = leafMaterial();
+    this.leafClock = leaves.at;
+    // The map's figures move to the music (dance-material.ts).
+    const dancing = danceMaterials();
+    this.danceClock = dancing.at;
+    this.cheered = dancing.rider;
+    // A flock of birds beats its wings (flap-material.ts).
+    const flapping = flapMaterial();
+    this.flapClock = flapping.at;
     const materials: Record<string, Material> = {
+      Birds: flapping.material,
       Land: new MeshLambertMaterial(lit),
-      Solid: new MeshLambertMaterial(lit),
-      Leaves: new MeshLambertMaterial({ ...lit, side: DoubleSide }),
+      Solid: dancing.solid,
+      Leaves: leaves.material,
       Sea: new MeshLambertMaterial(lit),
       Conillera: new MeshLambertMaterial({ ...lit, fog: false }),
       Peaks: new MeshLambertMaterial({ ...lit, fog: false }),
       Funivia: new MeshLambertMaterial({ ...lit, fog: false }),
       Glider: new MeshLambertMaterial({ ...lit, fog: false }),
-      Glow: new MeshBasicMaterial(glow),
+      Glow: dancing.glow,
       Confetti: new MeshBasicMaterial({ ...glow, side: DoubleSide }),
       Sun: new MeshBasicMaterial({ ...glow, fog: false }),
       // A sky the map carries, painted in its vertices (build_sky in build_course.py).
@@ -494,7 +576,56 @@ export class CourseRenderer implements WorldRenderer {
         // Painted as it is to be seen: the tone curve would wash its reds out.
         toneMapped: false,
       }),
+      // The aeroplane in the sky (aeroplane.py): too far off for the haze on the road to be its haze.
+      Plane: new MeshLambertMaterial({ ...lit, fog: false, transparent: true }),
+      PlaneLights: new MeshBasicMaterial({ ...glow, fog: false, transparent: true }),
       StartRed: new MeshBasicMaterial(glow),
+      // The stars: light added to the sky's, none until the evening draws in (dusk.ts).
+      SkyStars: new MeshBasicMaterial({
+        ...glow,
+        fog: false,
+        depthWrite: false,
+        transparent: true,
+        blending: AdditiveBlending,
+        opacity: 0,
+        side: DoubleSide,
+        // The sky is painted dim for the tone curve: a star has to stand out of it.
+        color: new Color(2, 2, 2),
+      }),
+      // Scud drifting across the painted sky: painted as the sky is, and fading out at its edges.
+      SkyDrift: new MeshBasicMaterial({
+        vertexColors: true,
+        fog: false,
+        depthWrite: false,
+        side: DoubleSide,
+        toneMapped: false,
+        transparent: true,
+      }),
+      // Sheet lightning in the thunderheads: light added to the sky's, a mesh a thunderhead.
+      SkyFlashA: new MeshBasicMaterial({
+        ...glow,
+        fog: false,
+        depthWrite: false,
+        transparent: true,
+        blending: AdditiveBlending,
+        opacity: 0,
+        // The sky is painted dim for the tone curve; lightning has to stand out of it.
+        color: new Color(1.6, 1.6, 1.6),
+        // Seen from inside the dome, as the sky is.
+        side: DoubleSide,
+      }),
+      SkyFlashB: new MeshBasicMaterial({
+        ...glow,
+        fog: false,
+        depthWrite: false,
+        transparent: true,
+        blending: AdditiveBlending,
+        opacity: 0,
+        // The sky is painted dim for the tone curve; lightning has to stand out of it.
+        color: new Color(1.6, 1.6, 1.6),
+        // Seen from inside the dome, as the sky is.
+        side: DoubleSide,
+      }),
       StartGreen: new MeshBasicMaterial(glow),
       Beams: new MeshBasicMaterial({
         ...glow,
@@ -596,7 +727,23 @@ export class CourseRenderer implements WorldRenderer {
     materials['Halos'] = haloMaterial(DRAW_DISTANCE['Halos']! * 0.6, DRAW_DISTANCE['Halos']!);
     this.disposables.push(materials['Fences'], materials['Halos']);
     this.beams = materials['Beams'] as MeshBasicMaterial;
+    // The strollers are figures as those on the map are, and move to the music as they do.
+    const stepping: Record<string, (phase: number) => void> = {};
+    for (let which = 0; which < STROLLERS; which++) {
+      // Each steps in their own time (walk-material.ts).
+      const walking = walkMaterial();
+      materials[`Walker${which}`] = walking.material;
+      stepping[`Walker${which}`] = walking.at;
+      this.disposables.push(walking.material);
+    }
+    // The aeroplane's flashing lights glow as its steady ones do.
+    materials['PlaneStrobe'] = materials['PlaneBeacon'] = materials['PlaneLights']!;
+    // The fine sky, and what stands in the sky, are painted as the sky is and darken with it.
+    materials['SkyFine'] = materials['SkyOver'] = materials['Sky']!;
     const painted: Mesh[] = [];
+    const scud: Mesh[] = [];
+    const strolling: [Group, Mesh][] = [];
+    const flown: Mesh[] = [];
     map.traverse((part) => {
       const mesh = part as Mesh;
       if (!mesh.isMesh) return;
@@ -606,14 +753,65 @@ export class CourseRenderer implements WorldRenderer {
       if (!material) return;
       for (const loaded of [mesh.material].flat()) loaded.dispose();
       mesh.material = material;
-      if (group === 'Sky') {
-        // The map's own sky: its sectors ride with the camera, behind everything.
-        mesh.renderOrder = -1;
+      if (group.startsWith('SkyFlash')) {
+        // Carried with the sky, drawn over it, and dark until it flickers.
+        mesh.renderOrder = -0.5;
+        mesh.visible = false;
+        this.flashes.push(mesh);
         painted.push(mesh);
+        return;
+      }
+      if (group === 'SkyStars') {
+        // Carried with the sky, over the dome and under the cloud that drifts.
+        mesh.renderOrder = -0.85;
+        this.stars = material as MeshBasicMaterial;
+        painted.push(mesh);
+        return;
+      }
+      if (group === 'SkyDrift') {
+        // Carried with the sky and drawn over it, on a pivot of its own that turns.
+        mesh.renderOrder = -0.7;
+        scud.push(mesh);
+        painted.push(mesh);
+        return;
+      }
+      if (group === 'Sky' || group === 'SkyFine' || group === 'SkyOver') {
+        // The map's own sky: its sectors ride with the camera, behind everything. Over the dome the fine sky,
+        // and over both what stands in the sky.
+        mesh.renderOrder = group === 'Sky' ? -1 : group === 'SkyFine' ? -0.95 : -0.9;
+        if (group === 'SkyFine') this.skyFine = mesh;
+        painted.push(mesh);
+        return;
+      }
+      if (group.startsWith('Walker')) {
+        // Built about their own feet and walked: taken out of the map, and placed by the scene.
+        mesh.updateMatrixWorld(true);
+        const walker = new Group();
+        walker.visible = false;
+        mesh.matrix.copy(mesh.matrixWorld);
+        mesh.matrixAutoUpdate = false;
+        strolling.push([walker, mesh]);
+        this.strides.push(stepping[group]!);
+        return;
+      }
+      if (group === 'Birds') {
+        // Built about its own middle and flown: its place in the map becomes its shape, and the scene places it.
+        mesh.updateMatrixWorld(true);
+        flapping.across(mesh.getWorldScale(this.spare).x);
+        this.flock = mesh;
+        return;
+      }
+      if (group.startsWith('Plane')) {
+        if (group === 'PlaneStrobe') this.planeStrobe = mesh;
+        if (group === 'PlaneBeacon') this.planeBeacon = mesh;
+        flown.push(mesh);
         return;
       }
       // The ground is lit smoothly: its normals are worked out here, so the map's file carries none.
       if (group === 'Ground') mesh.geometry.computeVertexNormals();
+      // The leaves' swing is in metres: one of their meshes says how many metres a mesh's own units are.
+      if (group === 'Leaves') leaves.across(mesh.getWorldScale(this.spare).x);
+      if (group === 'Solid') dancing.across(mesh.getWorldScale(this.spare).x);
       // The map is set once and never moves: its matrices are worked out here, not every frame.
       mesh.matrixAutoUpdate = false;
       mesh.updateMatrix();
@@ -707,7 +905,15 @@ export class CourseRenderer implements WorldRenderer {
         carried.add(sector);
         this.disposables.push(sector.geometry);
       }
+      if (scud.length) {
+        this.drift = new Group();
+        for (const cloud of scud) this.drift.add(cloud);
+        carried.add(this.drift);
+      }
       this.sky = carried;
+      this.skyPaint = materials['Sky'] as MeshBasicMaterial;
+      this.hazeAt.set(look.haze);
+      this.sunAt = look.light.intensity;
       this.scene.add(carried);
     } else {
       const dome = new SphereGeometry(9000, 24, 12);
@@ -717,6 +923,39 @@ export class CourseRenderer implements WorldRenderer {
       this.sky.renderOrder = -1;
       this.scene.add(this.sky);
       this.disposables.push(dome, sky.material);
+    }
+    for (const [walker, mesh] of strolling) {
+      walker.add(mesh);
+      this.disposables.push(mesh.geometry);
+      this.scene.add(walker);
+      this.walkers.push(walker);
+      this.walking.push({ metres: 0, lane: 0, forward: true, shown: false, phase: 0 });
+    }
+    // The flock is taken out of the map and flown, as the aeroplane is.
+    if (this.flock) {
+      const flown = new Group();
+      flown.visible = false;
+      this.flock.matrix.copy(this.flock.matrixWorld);
+      this.flock.matrixAutoUpdate = false;
+      flown.add(this.flock);
+      this.disposables.push(this.flock.geometry);
+      this.scene.add(flown);
+    }
+    // The aeroplane the map carries is built about its own middle: it is taken out of the map and flown.
+    if (flown.length) {
+      const plane = new Group();
+      plane.rotation.order = 'YZX';
+      plane.visible = false;
+      for (const part of flown) {
+        part.updateMatrixWorld(true);
+        part.matrix.copy(part.matrixWorld);
+        part.matrixAutoUpdate = false;
+        plane.add(part);
+        this.disposables.push(part.geometry);
+      }
+      this.plane = plane;
+      this.planeSkin = [materials['Plane']!, materials['PlaneLights']!];
+      this.scene.add(plane);
     }
 
     const fill = new HemisphereLight(look.fill[0], look.fill[1], 1.5);
@@ -869,6 +1108,16 @@ export class CourseRenderer implements WorldRenderer {
     const ahead = course.place(metres + LOOK_AHEAD, 0, this.there);
     this.camera.lookAt(ahead.x, ahead.y + LOOK_UP, ahead.z);
     this.sky?.position.copy(this.camera.position);
+    this.ridden = metres;
+    if (this.skyPaint) {
+      // The evening draws in as the course is ridden: the painted sky, the haze under it and the sun's light.
+      const { sky, light, stars } = dusk(metres / course.end, this.evening);
+      if (this.stars) this.stars.opacity = stars;
+      this.skyPaint.color.setRGB(sky[0], sky[1], sky[2]);
+      (this.scene.fog as Fog).color.copy(this.hazeAt).multiply(this.skyPaint.color);
+      (this.scene.background as Color).copy((this.scene.fog as Fog).color);
+      this.sun.intensity = this.sunAt * light;
+    }
     const [x, , z] = course.file.sun;
     this.sun.target.position.set(ahead.x, ahead.y, ahead.z);
     this.sun.position.set(ahead.x + x * 70, ahead.y + 34, ahead.z + z * 70);
@@ -980,6 +1229,9 @@ export class CourseRenderer implements WorldRenderer {
     if (this.beams) this.beams.opacity = 0.17 + 0.06 * Math.sin(time * 1.7);
     this.skyClock?.(time);
     this.waterClock?.(time);
+    this.leafClock?.(time);
+    this.danceClock?.(time);
+    if (this.you) this.cheered?.(this.you.group.position.x, this.you.group.position.z);
     this.rain?.at(time);
     for (const confetti of this.confetti) {
       confetti.position.y = 0.45 * Math.sin(time * 1.3);
@@ -988,6 +1240,48 @@ export class CourseRenderer implements WorldRenderer {
     }
     this.placeFunivia(time, false);
     this.placeGlider(time, false);
+    if (this.walkers.length) {
+      const course = this.course!;
+      promenaders(time, this.ridden, course.end, course.file.roadHalfWidth, this.walking);
+      for (let which = 0; which < this.walkers.length; which++) {
+        const one = this.walking[which]!;
+        const walker = this.walkers[which]!;
+        this.strides[which]?.(one.phase);
+        walker.visible = one.shown;
+        const at = course.place(one.metres, one.lane, this.there);
+        // The sidewalk stands a kerb's height over the road. Built facing +x: turned to the way they walk.
+        walker.position.set(at.x, at.y + 0.12, at.z);
+        walker.rotation.y = at.heading + Math.PI / 2 + (one.forward ? 0 : Math.PI);
+      }
+    }
+    if (this.flock) {
+      const place = this.flockAt;
+      const flock = this.flock.parent!;
+      flock.visible = flockFlight(time, this.course!.file.sun, place);
+      const eye = this.camera.position;
+      flock.position.set(eye.x + place.x, eye.y + place.y, eye.z + place.z);
+      flock.rotation.y = place.heading;
+      (this.flock.material as Material).opacity = place.shown;
+      this.flapClock?.(time);
+    }
+    if (this.drift) this.drift.rotation.y = cloudDrift(time);
+    for (let which = 0; which < this.flashes.length; which++) {
+      const flash = this.flashes[which]!;
+      const light = lightning(time, which);
+      flash.visible = light > 0.01;
+      (flash.material as MeshBasicMaterial).opacity = light * 0.8;
+    }
+    if (this.plane) {
+      const place = this.planeAt;
+      this.plane.visible = planeFlight(time, this.course!.file.sun, place);
+      const eye = this.camera.position;
+      this.plane.position.set(eye.x + place.x, eye.y + place.y, eye.z + place.z);
+      this.plane.rotation.set(place.roll, place.heading, place.pitch);
+      for (const skin of this.planeSkin) skin.opacity = place.shown;
+      const lights = planeLights(time);
+      if (this.planeStrobe) this.planeStrobe.visible = lights.strobe;
+      if (this.planeBeacon) this.planeBeacon.visible = lights.beacon;
+    }
   }
 
   private placeFunivia(time: number, reducedMotion: boolean): void {
@@ -1012,6 +1306,8 @@ export class CourseRenderer implements WorldRenderer {
     this.chosenAt.copy(this.camera.position);
     // A slower device draws less far: each tier's share of a chunk's reach.
     const far = DRAWN_FAR[this.tier] ?? 1;
+    // The fine sky is some thousands of triangles: not on the two lowest tiers.
+    if (this.skyFine) this.skyFine.visible = this.tier >= FINE_SKY_FROM;
     for (const chunk of this.chunks) {
       const dx = chunk.x - x;
       const dy = chunk.y - y;

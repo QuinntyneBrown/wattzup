@@ -40,6 +40,7 @@ import bmesh  # after bpy: the bpy module provides it
 from mathutils import Vector, kdtree
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import aeroplane  # noqa: E402  (beside this script)
 import sellaronda  # noqa: E402  (beside this script)
 import sky  # noqa: E402  (beside this script)
 import themes  # noqa: E402  (beside this script)
@@ -379,6 +380,9 @@ MATERIALS: dict[str, dict] = {
     "leaf-dark": {"color": 0x1F5634, "rough": 0.8, "double": True},
     # Last year's fronds, hanging dry under the crown.
     "leaf-dry": {"color": 0xA88A52, "rough": 0.9, "double": True},
+    # The young fronds in the heart of the crown, and the dates that hang under it.
+    "leaf-light": {"color": 0x6E9E4A, "rough": 0.8, "double": True},
+    "dates": {"color": 0xD9862A, "rough": 0.8},
     "glint": {"color": 0xFFD9A0, "glow": 2.0},
     "bush": {"color": 0x3F7A46, "rough": 0.9},
     "bougainvillea": {"color": 0xD02A8A, "rough": 0.8},
@@ -395,9 +399,21 @@ MATERIALS: dict[str, dict] = {
     # The IBIZA letters: white, their faces dark, on a pale blue plinth.
     "sign-white": {"color": 0xF2F0EA, "rough": 0.7},
     "sign-face": {"color": 0x23262E, "rough": 0.5},
-    "sign-plinth": {"color": 0xA9CFE6, "rough": 0.8},
+    "sign-plinth": {"color": 0x6DB6EC, "rough": 0.8},
+    # A straw hat against the low sun.
+    "straw": {"color": 0xE6CC8C, "rough": 0.9},
+    # A figure's shadow on the paving: the paving's colour, in shade.
+    "shade": {"color": 0x66555F, "rough": 0.85},
+    # A phone held up to film the sunset: its screen.
+    "phone": {"color": 0xCFE6FF, "glow": 1.7},
+    # Bottles of beer: green glass and brown.
+    "bottle-0": {"color": 0x3F7A46, "rough": 0.3},
+    "bottle-1": {"color": 0x8A5522, "rough": 0.3},
+    # The brick paving the letters stand on, and its lighter bands.
+    "sign-paving": {"color": 0x9C5A48, "rough": 0.9},
+    "sign-paving-band": {"color": 0xC08A6E, "rough": 0.9},
     # The island's white: linen shirts and summer dresses.
-    "party-white": {"color": 0xF4EEE4, "rough": 0.9},
+    "party-white": {"color": 0xFBF7EF, "rough": 0.9},
     # What is in the glass: it catches the light, so it glows a little.
     "drink-0": {"color": 0xFFB030, "glow": 0.9},
     "drink-1": {"color": 0xFF5A8A, "glow": 0.9},
@@ -422,6 +438,29 @@ MATERIALS: dict[str, dict] = {
     "sail-pink": {"color": 0xF06A9A, "rough": 0.8, "double": True},
     "sun": {"color": 0xFF7A3A, "glow": 1.3},
     "sky": {"color": 0xF2A77A, "glow": 1.0},
+    # Sheet lightning inside two of the thunderheads, which the app flickers (lightning.ts).
+    "flash-0": {"color": 0xE8DCFF, "glow": 1.0},
+    # Gulls against the sunset: dark.
+    "gull": {"color": 0x2A2030, "glow": 1.0},
+    # Scud: low cloud that drifts across the painted sky.
+    "scud": {"color": 0x5A3048, "glow": 1.0},
+    # The sky towards the sun painted finely, for devices that can draw it; and what stands in the sky, over both.
+    "sky-fine": {"color": 0xF2A77A, "glow": 1.0},
+    "sky-over": {"color": 0xF2A77A, "glow": 1.0},
+    "star": {"color": 0xFFFFFF, "glow": 1.0},
+    "flash-1": {"color": 0xE8DCFF, "glow": 1.0},
+    # The aeroplane coming in to land (aeroplane.py): its skin, and its lights.
+    "plane-body": {"color": 0xECEEF2, "rough": 0.5},
+    "plane-tail": {"color": 0xD9482B, "rough": 0.5},
+    "plane-engine": {"color": 0x9AA0AA, "rough": 0.5},
+    "plane-window": {"color": 0x1B2230, "rough": 0.3},
+    "plane-red": {"color": 0xFF2A1A, "glow": 2.4},
+    "plane-green": {"color": 0x30FF6A, "glow": 2.4},
+    "plane-white": {"color": 0xFFF4D8, "glow": 2.4},
+    "plane-strobe": {"color": 0xFFFFFF, "glow": 3.0},
+    "plane-cabin": {"color": 0xFFD890, "glow": 1.6},
+    "plane-belly": {"color": 0xAEB4BE, "rough": 0.5},
+    "plane-beacon": {"color": 0xFF2A1A, "glow": 3.0},
     "island": {"color": 0x5A3F52, "rough": 1.0},
     "peaks": {"color": 0xFFFFFF, "rough": 1.0, "vertex": True},
     "funivia": {"color": 0xFFFFFF, "rough": 0.55, "vertex": True},
@@ -501,8 +540,9 @@ class Builder:
     def tri(self, a, b, c) -> None:
         self.faces.append((self.v(a), self.v(b), self.v(c)))
 
-    def box(self, centre, size, yaw: float = 0.0) -> None:
-        """A box on its base centre: `size` is (along, across, height)."""
+    def box(self, centre, size, yaw: float = 0.0, open_: str = "") -> None:
+        """A box on its base centre: `size` is (along, across, height). `open_` names the faces left off because
+        something covers them or they are too small to see: "t" its top, "x" its two ends along, "y" its two across."""
         cx, cy, cz = centre
         hx, hy, h = size[0] / 2, size[1] / 2, size[2]
         c, s = math.cos(yaw), math.sin(yaw)
@@ -511,8 +551,9 @@ class Builder:
             for dx, dy in ((-hx, -hy), (hx, -hy), (hx, hy), (-hx, hy)):
                 self.verts.append((cx + dx * c - dy * s, cy + dx * s + dy * c, z))
         # No underside: a box stands on something, and nothing looks up at it.
-        for f in ((4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)):
-            self.faces.append(tuple(base + i for i in f))
+        for side, f in (("t", (4, 5, 6, 7)), ("y", (0, 1, 5, 4)), ("x", (1, 2, 6, 5)), ("y", (2, 3, 7, 6)), ("x", (3, 0, 4, 7))):
+            if side not in open_:
+                self.faces.append(tuple(base + i for i in f))
 
     def build(self, collection):
         if not self.faces:
@@ -544,7 +585,7 @@ PARTS: list[Builder] = []
 CHUNK = 240.0  # metres of road a chunk of the map holds: the app draws only the chunks near the rider
 # The land and the light beams are few triangles a chunk: theirs are four times as long, a quarter as many meshes.
 # Materials whose colour is not shaded by height (see `assemble`): the road's own, and what hangs clear of the ground.
-UNSHADED = {"asphalt", "paint", "yellow", "kerb-red", "promenade", "sand", "club-window", "awning", "awning-white"}
+UNSHADED = {"asphalt", "paint", "yellow", "kerb-red", "promenade", "sand", "club-window", "awning", "awning-white", "sign-plinth", "sign-white", "sign-paving", "sign-paving-band", "party-white", "straw", "bottle-0", "bottle-1", "shade"}
 # Parts the film's staging looks up by name: kept whole in the scene, out of the glb, beside their chunks.
 FILM_KEEPS = {"GlowLamp"}
 # The ground the road builds: the asphalt, its paint and kerbs, the pavements and the shoulders. Its own group, with
@@ -573,6 +614,18 @@ WALL_KINDS = {"brick": 1, **{f"container-{i}": 2 for i in range(4)}, "whitewash"
               **{f"facade-{i}": 3 for i in range(6)}, **{f"deco-{i}": 3 for i in range(4)}}
 WIDER = {"Land": 4, "Beams": 6, "Glow": 6, "Leaves": 1, "Halos": 4, "Ground": 2}
 WHOLE = {"sea": "Sea", "sky": "Sky", "sun": "Sun", "moon": "Sun", "island": "Conillera", "peaks": "Peaks", "funivia": "Funivia", "glider": "Glider", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
+# The aeroplane is two meshes about its own middle, which the app flies across the sky (plane-flight.ts).
+WHOLE.update({f"plane-{part}": "Plane" for part in ("body", "tail", "engine", "window", "belly")})
+WHOLE.update({f"plane-{light}": "PlaneLights" for light in ("red", "green", "white", "cabin")})
+# Its strobes and its beacons are meshes of their own, which the app flashes.
+WHOLE.update({"plane-strobe": "PlaneStrobe", "plane-beacon": "PlaneBeacon"})
+# The lightning in each thunderhead is a mesh of its own, carried with the sky.
+WHOLE.update({"flash-0": "SkyFlashA", "flash-1": "SkyFlashB"})
+# The flock of gulls is one mesh about its own middle, which the app flies (flock-flight.ts).
+WHOLE["gull"] = "Birds"
+# The scud is a mesh of its own round the sky, which the app turns slowly (cloud-drift.ts).
+WHOLE["scud"] = "SkyDrift"
+WHOLE.update({"sky-fine": "SkyFine", "sky-over": "SkyOver", "star": "SkyStars"})
 
 
 def group_of(mat: str) -> tuple[str, bool]:
@@ -603,7 +656,11 @@ def group_material(name: str):
     attr.layer_name = "Color"
     mat.node_tree.links.new(attr.outputs["Color"], bsdf.inputs["Base Color"])
     bsdf.inputs["Roughness"].default_value = 0.2 if name == "Sea" else 0.85
-    if name in ("Glow", "Confetti", "Sun", "Sky", "StartRed", "StartGreen", "Beams"):
+    # The colour's fourth part goes out with it only if the material uses it: it says how freely a corner moves
+    # (leaf-material.ts, dance-material.ts). The app draws every group with a material of its own.
+    if name in ("Leaves", "Solid", "Glow", "Birds", "SkyDrift") or name.startswith("Walker"):
+        mat.node_tree.links.new(attr.outputs["Alpha"], bsdf.inputs["Alpha"])
+    if name in ("Glow", "Confetti", "Sun", "Sky", "StartRed", "StartGreen", "Beams", "PlaneLights", "PlaneStrobe", "PlaneBeacon", "SkyFlashA", "SkyFlashB", "Birds", "SkyDrift", "SkyFine", "SkyOver", "SkyStars"):
         mat.node_tree.links.new(attr.outputs["Color"], bsdf.inputs["Emission Color"])
         bsdf.inputs["Emission Strength"].default_value = 1.5
     if name == "Beams":
@@ -640,6 +697,9 @@ def assemble(road: "Road", col) -> dict:
             group = "Fences"
         elif part.name == HALOS_PART:
             group = "Halos"
+        elif part.name.startswith("Walker"):
+            # A stroller is a mesh of their own, whatever they are made of: the app walks them (promenaders.ts).
+            group, chunked = part.name, False
         elif part.name == SKYLINE_PART:
             group, chunked = "Skyline", False
         elif part.mat in WALL_KINDS and chunked:
@@ -680,7 +740,8 @@ def assemble(road: "Road", col) -> dict:
                     _, near, _ = road.tree.find((v[0], v[1], 0.0))
                     lift = v[2] - road.s[near]["z"]
                     shade = 0.74 + 0.3 * smoothstep(0.0, 4.5, lift) if lift > 0.2 else (0.62 if lift < -0.3 else 1.0)
-                    c = (c[0] * shade, c[1] * shade, c[2] * shade, 1.0)
+                    # Its fourth part is kept: how freely a figure's corner moves (dance-material.ts).
+                    c = (c[0] * shade, c[1] * shade, c[2] * shade, c[3] if len(c) > 3 else 1.0)
                 key = (round(v[0], 3), round(v[1], 3), round(v[2], 3), round(c[0], 3), round(c[1], 3), round(c[2], 3))
                 if group in ("Windows", "Fences", "Halos"):
                     key = (*key, *part.uvs[i])
@@ -712,7 +773,8 @@ def assemble(road: "Road", col) -> dict:
         data = bpy.data.meshes.new(name)
         data.from_pydata(m["verts"], [], m["faces"])
         layer = data.color_attributes.new("Color", "FLOAT_COLOR", "POINT")
-        layer.data.foreach_set("color", [c for col_ in m["cols"] for c in (col_[0], col_[1], col_[2], 1.0)])
+        # The fourth part is kept where a part set it: how freely that corner moves (leaf-material.ts, dance-material.ts).
+        layer.data.foreach_set("color", [c for col_ in m["cols"] for c in (col_[0], col_[1], col_[2], col_[3] if len(col_) > 3 else 1.0)])
         if m["uvs"]:
             layer = data.uv_layers.new(name="Road")
             at = [0] * len(data.loops)
@@ -1105,6 +1167,102 @@ def build_land(road: Road, col, theme: dict, cell: float = 14.0):
     return obj, height_at
 
 
+# Where the sun stands, for what is lit by it as it is built (the palms' fronds): set before the scenery is made.
+SUN_AZ = 0.0
+
+
+def leaf_face(B: dict, kind: str, corners, top) -> None:
+    """One face of a frond, lit as the low sun lights a palm: dark where it leaves the crown and paler to its tip,
+    warm gold on the side of the crown the sun is on and dim on the far side. `corners` are (place, how far along
+    the frond from 0 to 1); `top` is the middle of the crown."""
+    b = B["frond"]
+    base = srgb(MATERIALS[kind]["color"])
+    gold = srgb(0xE6B84A)
+    face = []
+    for p, t in corners:
+        dx, dy = p[0] - top[0], p[1] - top[1]
+        out = math.hypot(dx, dy)
+        sunny = (dx * math.cos(SUN_AZ) + dy * math.sin(SUN_AZ)) / out * min(1.0, out / 1.4) if out > 1e-6 else 0.0
+        k = (0.62 + 0.5 * t) * (0.8 + 0.26 * sunny)
+        c = sky.mix((base[0] * k, base[1] * k, base[2] * k, 1.0), gold, max(0.0, sunny) * 0.42 * t)
+        # The fourth part of its colour is how freely this corner swings in the breeze: 1 held fast at the crown,
+        # 0.3 at the tip (leaf-material.ts).
+        c = (c[0], c[1], c[2], 1.0 - 0.7 * round(max(0.0, min(1.0, t)) * 4) / 4)
+        b.verts.append(p)
+        b.colours.append(c)
+        face.append(len(b.verts) - 1)
+    b.faces.append(tuple(face))
+
+
+def bark(B: dict, rings: list, turn: float = 0.0) -> None:
+    """A palm's trunk through its rings (each a middle and a radius), five-sided: banded with the scars of old
+    fronds, a length light and a length dark, and lit as the low sun lights a post: warm on the side turned to it,
+    in shade on the other."""
+    b = B["bark"]
+    light, dark, warm = srgb(MATERIALS["trunk"]["color"]), srgb(MATERIALS["trunk-dark"]["color"]), srgb(0xF0A860)
+    for k in range(len(rings) - 1):
+        base = light if k % 2 else dark
+        for j in range(5):
+            a0, a1 = turn + j * math.tau / 5, turn + (j + 1) * math.tau / 5
+            sunny = math.cos((a0 + a1) / 2 - SUN_AZ)
+            shade = 0.72 + 0.38 * max(0.0, sunny) - 0.2 * max(0.0, -sunny)
+            c = sky.mix((base[0] * shade, base[1] * shade, base[2] * shade, 1.0), warm, max(0.0, sunny) ** 2 * 0.3)
+            face = []
+            for (m, r), a_ in ((rings[k], a0), (rings[k], a1), (rings[k + 1], a1), (rings[k + 1], a0)):
+                b.verts.append((m[0] + math.cos(a_) * r, m[1] + math.sin(a_) * r, m[2]))
+                b.colours.append(c)
+                face.append(len(b.verts) - 1)
+            b.faces.append(tuple(face))
+
+
+def fan_palm(B: dict, x: float, y: float, z: float, rng: random.Random, height: float) -> None:
+    """A fan palm, as stand on the island's terraces beside the date palms: a thick trunk that rises straight, a
+    skirt of dead leaves hanging round it under the crown, and a round crown of fans, each a pleated hand on a short
+    stalk, its fingers drooping."""
+    bark(B, [((x, y, z - 0.4 + (height + 0.4) * t), 0.36 - 0.08 * t + (0.1 if t == 0 else 0.0)) for t in (0.0, 0.07, 0.3, 0.55, 0.8, 1.0)], 0.4)
+    top = (x, y, z + height)
+    # The skirt: last years' leaves, folded down against the trunk.
+    turn = rng.uniform(0, math.tau)
+    hem = [(x + math.cos(turn + j * 1.2566) * rng.uniform(0.7, 0.95), y + math.sin(turn + j * 1.2566) * rng.uniform(0.5, 0.68), top[2] - rng.uniform(1.6, 2.4)) for j in range(5)]
+    neck = [(x + math.cos(turn + j * 1.2566) * 0.4, y + math.sin(turn + j * 1.2566) * 0.4, top[2] + 0.1) for j in range(5)]
+    # Not a sleeve but leaves: each a point hanging from the neck, and a shorter one between each pair behind them,
+    # so the hem is ragged and the trunk shows through it.
+    for j in range(5):
+        k = (j + 1) % 5
+        leaf_face(B, "leaf-dry", ((neck[j], 0.2), (neck[k], 0.2), (hem[j], 1.0)), top)
+        between = ((hem[j][0] + hem[k][0]) / 2 * 0.8 + x * 0.2, (hem[j][1] + hem[k][1]) / 2 * 0.8 + y * 0.2, (hem[j][2] + hem[k][2]) / 2 + 0.7)
+        half = ((neck[k][0] + neck[(k + 1) % 5][0]) / 2, (neck[k][1] + neck[(k + 1) % 5][1]) / 2, neck[k][2])
+        leaf_face(B, "leaf-dry", ((neck[k], 0.2), (half, 0.2), (between, 0.8)), top)
+    # The crown is a ball of fans: two dozen, set round it in a spiral from those that hang below the level to those
+    # that stand upright at its top, no two at one height. Each is a half round of blade at the end of a stalk, its
+    # edge cut into fingers that droop at the sides.
+    # The crown has dice of its own, and takes from the palms' what the crown before it took: no bunch moves.
+    for _ in range(76):
+        rng.random()
+    rng = random.Random(round(x * 7.0) * 9973 + round(y * 7.0) + 5)
+    fans = 24
+    for j in range(fans):
+        share = j / (fans - 1)
+        a_ = turn + j * 2.39996 + rng.uniform(-0.2, 0.2)
+        lift = -0.55 + 1.85 * share ** 0.85 + rng.uniform(-0.08, 0.08)
+        dx, dy, dz = math.cos(a_) * math.cos(lift), math.sin(a_) * math.cos(lift), math.sin(lift)
+        tx, ty = -math.sin(a_), math.cos(a_)
+        stalk = rng.uniform(1.0, 1.35) * (1.0 - 0.25 * share)
+        root = (top[0] + dx * 0.2, top[1] + dy * 0.2, top[2] + 0.25)
+        hand = (top[0] + dx * stalk, top[1] + dy * stalk, top[2] + 0.25 + dz * stalk)
+        reach = rng.uniform(0.75, 0.95)
+        kind = "leaf-dark" if share < 0.3 else ("leaf-light" if share > 0.8 else ("leaf", "leaf-dark", "leaf")[j % 3])
+        tips = []
+        for q, f in enumerate((-1.35, -0.7, 0.0, 0.7, 1.35)):
+            finger = reach * (0.72 if q % 2 else 1.0)
+            c_, s_ = math.cos(f) * finger, math.sin(f) * finger
+            tips.append((hand[0] + dx * c_ + tx * s_, hand[1] + dy * c_ + ty * s_, hand[2] + dz * c_ - 0.12 - 0.3 * abs(f)))
+        for q in range(4):
+            leaf_face(B, kind, ((hand, 0.35), (tips[q], 1.0), (tips[q + 1], 1.0)), top)
+        # Its stalk.
+        leaf_face(B, kind, ((root, 0.0), ((hand[0] + tx * 0.07, hand[1] + ty * 0.07, hand[2]), 0.35), ((hand[0] - tx * 0.07, hand[1] - ty * 0.07, hand[2]), 0.35)), top)
+
+
 def palm(B: dict, x: float, y: float, z: float, rng: random.Random, height: float | None = None, lean_to: float | None = None) -> None:
     """A date palm as they stand on the island's terraces: a slender trunk ringed with the scars of old fronds,
     curving as it rises; a thatch of dry fronds under the crown; and a full crown in three tiers, the young fronds
@@ -1113,52 +1271,65 @@ def palm(B: dict, x: float, y: float, z: float, rng: random.Random, height: floa
     height = rng.uniform(6.0, 11.0) if height is None else height
     yaw = rng.uniform(0, math.tau) if lean_to is None else lean_to
     lean = rng.uniform(0.3, 1.8) * height / 9.0
-    # The trunk: four lengths, banded light and dark, a little swollen at the foot and under the crown.
-    rings, centres = [], []
-    for k in range(5):
-        t = k / 4
+    # The trunk: six lengths, banded light and dark, flared at the foot, and swollen under the crown by the stubs of
+    # cut fronds (the boot).
+    centres, rings = [], []
+    for t in (0.0, 0.07, 0.3, 0.55, 0.78, 0.92, 1.0):
         cx, cy = x + math.cos(yaw) * lean * t * t, y + math.sin(yaw) * lean * t * t
-        r = 0.3 * (1 - 0.5 * t) + (0.1 if k == 0 else 0.0) + (0.05 if k == 4 else 0.0)
+        r = 0.3 * (1 - 0.5 * t) + (0.11 if t == 0 else 0.0) + 0.17 * smoothstep(0.85, 1.0, t)
         centres.append((cx, cy, z - 0.4 + (height + 0.4) * t))
-        rings.append([(cx + math.cos(a_) * r, cy + math.sin(a_) * r, z - 0.4 + (height + 0.4) * t) for a_ in (0, 1.571, 3.142, 4.712)])
-    for k in range(4):
-        bark = B["trunk" if k % 2 else "trunk-dark"]
-        for j in range(4):
-            bark.quad(rings[k][j], rings[k][(j + 1) % 4], rings[k + 1][(j + 1) % 4], rings[k + 1][j])
+        rings.append((centres[-1], r))
+    bark(B, rings, yaw)
     top = centres[-1]
 
-    def frond(b: Builder, a_: float, rise: float, reach: float, sag: float, width: float, fine: bool = True) -> None:
+    def frond(kind: str, a_: float, rise: float, reach: float, sag: float, width: float, fine: bool = True) -> None:
+        """A frond is a feather: a spine that bends under its own weight, and leaflets in pairs along it, each
+        pair swept back towards the tip and hanging, with the sky between one pair and the next."""
         ca, sa = math.cos(a_), math.sin(a_)
-        spine, edge_l, edge_r = [], [], []
-        for t, w in ((0.0, 0.1), (0.3, 1.0), (0.65, 0.85), (1.0, 0.08)) if fine else ((0.0, 0.1), (0.45, 1.0), (1.0, 0.08)):
+
+        def spine(t: float):
             out = reach * t * math.cos(rise)
             up = reach * t * math.sin(rise) - sag * t * t
-            c_ = (top[0] + ca * out, top[1] + sa * out, top[2] + up)
-            half = width * w
-            spine.append(c_)
-            edge_l.append((c_[0] - sa * half, c_[1] + ca * half, c_[2] - half * 0.45))
-            edge_r.append((c_[0] + sa * half, c_[1] - ca * half, c_[2] - half * 0.45))
-        for k in range(len(spine) - 1):
-            b.quad(spine[k], spine[k + 1], edge_l[k + 1], edge_l[k])
-            b.quad(spine[k + 1], spine[k], edge_r[k], edge_r[k + 1])
+            return (top[0] + ca * out, top[1] + sa * out, top[2] + 0.25 + up)
+
+        pairs = 6 if fine else 4
+        for k in range(pairs):
+            t0 = (k + 0.25) / pairs
+            t1, tip = t0 + 0.62 / pairs, t0 + 1.25 / pairs
+            # Longest a third of the way out, short at the crown and at the tip.
+            long_ = width * 2.3 * (0.45 + 0.55 * math.sin(math.pi * min(1.0, (t0 * 1.15) ** 0.7)))
+            p0, p1, far = spine(t0), spine(t1), spine(min(1.0, tip))
+            for side in (1, -1):
+                end = (far[0] - sa * long_ * 0.62 * side, far[1] + ca * long_ * 0.62 * side, far[2] - long_ * 0.72)
+                leaf_face(B, kind, ((p0, t0), (p1, t1), (end, min(1.0, tip))) if side > 0 else ((p1, t1), (p0, t0), (end, min(1.0, tip))), top)
 
     turn = rng.uniform(0, math.tau)
     # The thatch: dry fronds hanging close to the trunk.
-    for j in range(3):
-        frond(B["leaf-dry"], turn + j * math.tau / 3 + rng.uniform(-0.3, 0.3), -1.25, rng.uniform(1.3, 1.9), 0.2, 0.34, False)
-    # Old fronds hang, the middle tier arches, the young stand up in the heart of the crown.
-    for count, rise, sag, reach, kinds in (
-        (5, -0.15, 2.3, (3.2, 4.2), ("leaf-dark", "leaf-dark", "leaf")),
-        (5, 0.45, 2.6, (3.4, 4.4), ("leaf", "leaf-dark")),
-        (3, 1.05, 1.5, (2.4, 3.2), ("leaf", "leaf")),
+    for j in range(2):
+        frond("leaf-dry", turn + j * math.pi + rng.uniform(-0.5, 0.5), -1.25, rng.uniform(1.4, 2.0), 0.2, 0.36, False)
+    # A date palm's crown is a ball of many narrow fronds: the old ones hang below the level, the middle tier arches
+    # out and over, the young stand up pale in its heart.
+    for count, rise, sag, reach, kinds, fine in (
+        (5, -0.2, 2.2, (3.3, 4.3), ("leaf-dark", "leaf-dark", "leaf"), False),
+        (5, 0.42, 2.9, (3.6, 4.6), ("leaf", "leaf-dark", "leaf"), True),
+        (4, 1.0, 1.7, (2.6, 3.4), ("leaf-light", "leaf"), False),
     ):
         for j in range(count):
-            a_ = turn + (j + rng.uniform(-0.25, 0.25)) * math.tau / count + rise
-            frond(B[kinds[j % len(kinds)]], a_, rise + rng.uniform(-0.12, 0.12), rng.uniform(*reach), sag * rng.uniform(0.8, 1.2), 0.62, rise == 0.45)
+            a_ = turn + (j + rng.uniform(-0.25, 0.25)) * math.tau / count + rise * 1.7
+            frond(kinds[j % len(kinds)], a_, rise + rng.uniform(-0.14, 0.14), rng.uniform(*reach) * height ** 0.25 / 1.7, sag * rng.uniform(0.8, 1.2), 0.44, fine)
+    # The dates: on a tall palm, bunches of fruit hang gold under the crown.
+    if height > 7.5:
+        for j in range(2):
+            a_ = turn + 1.0 + j * 2.6 + rng.uniform(-0.4, 0.4)
+            cx, cy, cz = top[0] + math.cos(a_) * 0.55, top[1] + math.sin(a_) * 0.55, top[2] - 0.25
+            ring = [(cx + math.cos(q) * 0.22, cy + math.sin(q) * 0.22, cz) for q in (a_, a_ + 2.094, a_ + 4.189)]
+            foot = (cx + math.cos(a_) * 0.15, cy + math.sin(a_) * 0.15, cz - 0.95)
+            for q in range(3):
+                B["dates"].tri(ring[q], foot, ring[(q + 1) % 3])
 
 
 # The letters of the IBIZA sign, each a few slabs: corners in (metres along, metres up), anticlockwise from the front.
-SIGN_TALL, SIGN_STROKE, SIGN_WIDE, SIGN_GAP, SIGN_DEEP = 2.4, 0.44, 1.55, 0.34, 0.55
+SIGN_TALL, SIGN_STROKE, SIGN_WIDE, SIGN_GAP, SIGN_DEEP = 2.5, 0.58, 1.85, 0.3, 0.8
 
 
 def _rect(u0: float, v0: float, u1: float, v1: float):
@@ -1200,7 +1371,9 @@ def ibiza_sign(B: dict, kit, at, facing: float) -> None:
     widths = [sign_letter(c)[0] for c in "IBIZA"]
     total = sum(widths) + SIGN_GAP * 4
     plinth_h = 0.5
-    B["sign-plinth"].box((at[0], at[1], at[2]), (1.5, total + 1.3, plinth_h), facing)
+    # The plinth: a wide step and the block the letters stand on, in the blue of a pool.
+    B["sign-plinth"].box((at[0], at[1], at[2]), (2.6, total + 2.0, 0.2), facing)
+    B["sign-plinth"].box((at[0], at[1], at[2] + 0.2), (1.7, total + 1.1, plinth_h - 0.2), facing)
     u = -total / 2
     for c in "IBIZA":
         width, slabs = sign_letter(c)
@@ -1221,38 +1394,94 @@ def ibiza_sign(B: dict, kit, at, facing: float) -> None:
         kit.light((spot[0] + nx * 1.5, spot[1] + ny * 1.5, at[2]), "bulb", 7.0, 0.5)
 
 
-def palm_bunch(B: dict, x: float, y: float, z: float, rng: random.Random) -> None:
-    """Palms as they are planted: more often two or three from one bed than one alone, of different heights,
-    leaning away from each other."""
-    count = rng.choice((1, 1, 1, 2, 2, 3))
-    if count == 1:
-        palm(B, x, y, z, rng)
-        return
+def dwarf_palms(B: dict, x: float, y: float, z: float, rng: random.Random, spread: float = 0.9) -> None:
+    """A clump of the island's own palm, the dwarf fan palm that grows wild on its headlands and is planted in its beds: two or three heads on
+    short stems or none, each a rosette of stiff fans no higher than a person."""
+    for _ in range(rng.choice((2, 2, 3))):
+        a_, out = rng.uniform(0, math.tau), rng.uniform(0.0, spread)
+        hx, hy, stem = x + math.cos(a_) * out, y + math.sin(a_) * out, rng.choice((0.0, 0.25, 0.6, 1.0))
+        if stem:
+            bark(B, [((hx, hy, z - 0.2), 0.16), ((hx, hy, z + stem), 0.13)], a_)
+        top = (hx, hy, z + stem)
+        turn = rng.uniform(0, math.tau)
+        for j in range(6):
+            b_ = turn + j * math.tau / 6 + rng.uniform(-0.25, 0.25)
+            lift = rng.uniform(0.35, 1.15)
+            dx, dy, dz = math.cos(b_) * math.cos(lift), math.sin(b_) * math.cos(lift), math.sin(lift)
+            tx, ty = -math.sin(b_), math.cos(b_)
+            stalk, reach = rng.uniform(0.35, 0.6), rng.uniform(0.45, 0.65)
+            hand = (top[0] + dx * stalk, top[1] + dy * stalk, top[2] + 0.1 + dz * stalk)
+            tips = []
+            for q, f in enumerate((-1.2, -0.6, 0.0, 0.6, 1.2)):
+                finger = reach * (0.7 if q % 2 else 1.0)
+                tips.append((hand[0] + (dx * math.cos(f) + tx * math.sin(f)) * finger, hand[1] + (dy * math.cos(f) + ty * math.sin(f)) * finger, hand[2] + dz * math.cos(f) * finger - 0.06 * abs(f)))
+            for q in range(4):
+                leaf_face(B, ("leaf", "leaf-dark", "leaf-light")[j % 3], ((top, 0.0), (tips[q], 1.0), (tips[q + 1], 1.0)), top)
+
+
+def palm_bunch(B: dict, x: float, y: float, z: float, rng: random.Random, bed: bool = False) -> None:
+    """Palms as they are planted: in bunches. Two to four from one bed, never one alone, close together, stepped
+    in height from the tallest down, leaning away from each other. A bunch is of one kind: date palms, or (one in
+    three) fan palms, which stand straight. On a terrace (`bed`) they grow from a white planter, as on the island's
+    beach clubs."""
+    count = rng.choice((2, 2, 3, 3, 3, 4))
+    fans = rng.random() < 0.34
+    if bed:
+        turn = rng.uniform(0, math.tau)
+        wide = min(4.0, 1.9 + 0.7 * count)
+        B["sign-white"].box((x, y, z - 0.1), (wide, wide, 0.65), turn)
+        c_, s_ = math.cos(turn) * (wide / 2 - 0.16), math.sin(turn) * (wide / 2 - 0.16)
+        B["trunk-dark"].quad((x - c_ + s_, y - s_ - c_, z + 0.56), (x + c_ + s_, y + s_ - c_, z + 0.56), (x + c_ - s_, y + s_ + c_, z + 0.56), (x - c_ - s_, y - s_ + c_, z + 0.56))
     around = rng.uniform(0, math.tau)
-    tallest = rng.uniform(8.0, 11.5)
+    tallest = rng.uniform(8.0, 11.5) if count > 1 else rng.uniform(6.0, 11.0)
     for k in range(count):
         a_ = around + k * math.tau / count + rng.uniform(-0.4, 0.4)
-        out = rng.uniform(0.5, 1.1)
-        palm(B, x + math.cos(a_) * out, y + math.sin(a_) * out, z, rng, tallest * (1.0, 0.72, 0.52)[k] * rng.uniform(0.92, 1.08), a_)
+        out = rng.uniform(0.45, 0.95)
+        tall = tallest * (1.0, 0.78, 0.6, 0.46)[k] * rng.uniform(0.92, 1.08)
+        if fans:
+            fan_palm(B, x + math.cos(a_) * out, y + math.sin(a_) * out, z, rng, tall * 0.85)
+        else:
+            palm(B, x + math.cos(a_) * out, y + math.sin(a_) * out, z, rng, tall, a_ if count > 1 else None)
+    # In a planter, dwarf palms are often planted at the tall ones' feet. They have dice of their own, cast from
+    # where the bunch stands, so the bunches are as they were.
+    wild = random.Random(round(x * 7.0) * 9973 + round(y * 7.0))
+    if bed and wild.random() < 0.5:
+        a_ = wild.uniform(0, math.tau)
+        dwarf_palms(B, x + math.cos(a_) * 0.75, y + math.sin(a_) * 0.75, z + 0.56, wild, 0.45)
 
 
 SKY_SECTORS = 1
+# How many people stroll the seawall: each a mesh of their own (STROLLERS in promenaders.ts).
+STROLLERS = 4
+# The thunderheads with lightning in them (their places in SKY_TOWERS).
+SKY_FLASHES = (0, 3)
+# The bars of cloud by the sun: (radians round from the sun, radians up, half its length, its thickness).
+SKY_BARS = ((0.03, 0.068, 0.2, 0.014), (-0.12, 0.04, 0.3, 0.011), (0.25, 0.1, 0.24, 0.02), (-0.42, 0.085, 0.2, 0.017), (0.5, 0.045, 0.16, 0.012), (-0.02, 0.135, 0.34, 0.022))
+# The thunderheads on the horizon: (radians round from the sun, the half width of its trunk, how high it stands).
+SKY_TOWERS = ((0.6, 0.055, 0.145), (-0.88, 0.04, 0.105), (1.02, 0.028, 0.07), (2.55, 0.05, 0.12))
 SKY_RADIUS = 8500.0
+# How much closer the sky's columns stand towards the sun: 0 is evenly, 0.5 is at half their even spacing there.
+SKY_SUNWARD_FINER = 0.5
 
 
 def build_sky(col, az: float, haze_hex: int, colour_at=sky.sunset_sky_colour, turns: int = 128, rows: int = 20) -> None:
-    """The sky as a dome the app carries with the camera, its picture painted in its vertices: finest by the horizon,
+    """The sky as a dome the app carries with the camera, its picture painted in its vertices: finest by the horizon and towards the sun,
     where the eye is."""
     b = Builder("Sky", "sky")
     b.colours = []
     haze = srgb(haze_hex)
-    low = math.radians(-4.0)
-    elev = [low + (math.pi / 2 - low) * (r / rows) ** 1.7 for r in range(rows + 1)]
+    # Its rows stand where the rider's eye is: the picture's sky ends some 15 degrees over the horizon, so thirteen of
+    # the rows are in the first 18 degrees and five carry the rest to the top.
+    close = rows - 7
+    elev = [math.radians(e) for e in (-4.0, 0.0, *(18.2 * (r + 1) / close for r in range(close)), 24.0, 32.0, 43.0, 57.0, 73.0, 90.0)]
+    assert len(elev) == rows + 1
     ring = []
     for r, e in enumerate(elev[:-1]):
         first = len(b.verts)
         for t in range(turns):
-            a = t * math.tau / turns
+            # Its columns stand twice as close towards the sun, where the sky has most in it, as they do away.
+            u = t * math.tau / turns - math.pi
+            a = az + u - SKY_SUNWARD_FINER * math.sin(u)
             d = (math.cos(e) * math.cos(a), math.cos(e) * math.sin(a), math.sin(e))
             b.verts.append((d[0] * SKY_RADIUS, d[1] * SKY_RADIUS, d[2] * SKY_RADIUS))
             b.colours.append(colour_at(d[0], d[1], d[2], az, haze))
@@ -1260,12 +1489,257 @@ def build_sky(col, az: float, haze_hex: int, colour_at=sky.sunset_sky_colour, tu
     top = len(b.verts)
     b.verts.append((0.0, 0.0, SKY_RADIUS))
     b.colours.append(colour_at(0.0, 0.0, 1.0, az, haze))
+    # The rows over 18 degrees are out of the rider's picture but for a bend or a hill: a column in four does there.
+    coarse, skip = len(ring) - 5, 4
     for r in range(len(ring) - 1):
-        for t in range(turns):
-            u = (t + 1) % turns
-            b.faces.append((ring[r] + t, ring[r] + u, ring[r + 1] + u, ring[r + 1] + t))
-    for t in range(turns):
-        b.faces.append((ring[-1] + t, ring[-1] + (t + 1) % turns, top))
+        if r + 1 < coarse:
+            for t in range(turns):
+                u = (t + 1) % turns
+                b.faces.append((ring[r] + t, ring[r] + u, ring[r + 1] + u, ring[r + 1] + t))
+        elif r < coarse:
+            # Where the fine rows meet the coarse: a fan to each coarse corner, and a triangle between two fans.
+            for t in range(0, turns, skip):
+                for i in range(skip):
+                    b.faces.append((ring[r] + t + i, ring[r] + (t + i + 1) % turns, ring[r + 1] + t))
+                b.faces.append((ring[r] + (t + skip) % turns, ring[r + 1] + (t + skip) % turns, ring[r + 1] + t))
+        else:
+            for t in range(0, turns, skip):
+                u = (t + skip) % turns
+                b.faces.append((ring[r] + t, ring[r] + u, ring[r + 1] + u, ring[r + 1] + t))
+    for t in range(0, turns, skip):
+        b.faces.append((ring[-1] + t, ring[-1] + (t + skip) % turns, top))
+    b.build(col)
+
+    # The sky towards the sun, painted three times as finely: the dome's corners are a degree and a half apart, and
+    # the deck of cloud, whose puffs are smaller than that, comes out soft. This is the same picture over the 50
+    # degrees either side of the sun and the first 18 up, a mesh of its own which the app draws over the dome on
+    # devices that can spare its triangles. At its edge it is the dome's own colours, so no edge shows.
+    def aim(t: float, r: float):
+        u = t * math.tau / turns - math.pi
+        a = az + u - SKY_SUNWARD_FINER * math.sin(u)
+        low, high = elev[int(r)], elev[min(int(r) + 1, len(elev) - 1)]
+        e = low + (high - low) * (r - int(r))
+        return (math.cos(e) * math.cos(a), math.cos(e) * math.sin(a), math.sin(e))
+
+    fine = Builder("SkyFine", "sky-fine")
+    fine.colours = []
+    t0, t1, r0, r1, across, up = turns // 2 - 28, turns // 2 + 28, 1, 14, 3, 2
+    grid = []
+    for j in range((r1 - r0) * up + 1):
+        r = r0 + j / up
+        line = []
+        for i in range((t1 - t0) * across + 1):
+            t = t0 + i / across
+            d = aim(t, r)
+            # The dome's colour here: between its four corners' colours, as it is drawn.
+            ft, fr = t - math.floor(t), r - math.floor(r)
+            corners = [colour_at(*aim(math.floor(t) + dt, min(math.floor(r) + dr, r1)), az, haze) for dr in (0, 1) for dt in (0, 1)]
+            coarse = sky.mix(sky.mix(corners[0], corners[1], ft), sky.mix(corners[2], corners[3], ft), fr)
+            inside = smoothstep(0.0, 1.5, min(t - t0, t1 - t, r - r0, r1 - r))
+            fine.verts.append((d[0] * SKY_RADIUS * 0.996, d[1] * SKY_RADIUS * 0.996, d[2] * SKY_RADIUS * 0.996))
+            painted = colour_at(d[0], d[1], d[2], az, haze)
+            # And what the dome is too coarse to hold at all: the deck broken into ripples, row on row across the
+            # way to the sun (a mackerel sky), each ripple lit gold beneath and the gap behind it in shade.
+            k = 1.0 / (d[2] + 0.16)
+            ca, sa = math.cos(az), math.sin(az)
+            along, cross = (d[0] * ca + d[1] * sa) * k, (-d[0] * sa + d[1] * ca) * k
+            ripple = smoothstep(0.38, 0.62, sky.fbm(along * 16.0 + 2.0, cross * 4.5, 3, 77))
+            over = smoothstep(0.03, 0.09, d[2]) * (1 - smoothstep(0.2, 0.3, d[2]))
+            lift = 1.0 + over * (0.5 * ripple - 0.3)
+            painted = (min(1.0, painted[0] * lift * (1 + 0.1 * ripple * over)), min(1.0, painted[1] * lift), min(1.0, painted[2] * lift * (1 - 0.15 * ripple * over)), 1.0)
+            fine.colours.append(sky.mix(coarse, painted, inside))
+            line.append(len(fine.verts) - 1)
+        grid.append(line)
+    for j in range(len(grid) - 1):
+        for i in range(len(grid[0]) - 1):
+            fine.faces.append((grid[j][i], grid[j][i + 1], grid[j + 1][i + 1], grid[j + 1][i]))
+    fine.build(col)
+
+    # What stands in the sky is a mesh of its own, drawn over the dome and over the fine sky.
+    b = Builder("SkyOver", "sky-over")
+    b.colours = []
+
+    def towards(turn: float, elev: float):
+        """The way to look, `turn` radians round from the sun and `elev` up."""
+        return (math.cos(elev) * math.cos(az + turn), math.cos(elev) * math.sin(az + turn), math.sin(elev))
+
+    def on_sky(d, colour, reach: float = 0.985) -> int:
+        b.verts.append((d[0] * SKY_RADIUS * reach, d[1] * SKY_RADIUS * reach, d[2] * SKY_RADIUS * reach))
+        b.colours.append(colour)
+        return len(b.verts) - 1
+
+    def lit(d, colour, share: float):
+        return sky.mix(colour_at(d[0], d[1], d[2], az, haze), colour, share)
+
+    # The sun: a disc low over the horizon, white hot at its heart and orange at its limb, its lower limb redder.
+    sun_at, sun_r = (0.0, math.radians(3.2)), math.radians(1.7)
+    heart = on_sky(towards(*sun_at), (1.0, 0.98, 0.84, 1.0))
+    rim = []
+    for q in range(24):
+        a = q * math.tau / 24
+        d = towards(sun_at[0] + math.cos(a) * sun_r / math.cos(sun_at[1]), sun_at[1] + math.sin(a) * sun_r)
+        rim.append(on_sky(d, sky.mix(srgb(0xFFB040), srgb(0xFF6A24), 0.5 - 0.5 * math.sin(a))))
+    for q in range(24):
+        b.faces.append((heart, rim[q], rim[(q + 1) % 24]))
+    # What stands in the sky, drawn on it after it: opposite the sunset the full moon is rising, big and reddened
+    # by the air it is seen through, in the pink band over the earth's shadow.
+    moon_at, moon_r = (math.pi + 0.3, math.radians(6.5)), math.radians(1.25)
+    heart = on_sky(towards(*moon_at), srgb(0xFFEBD0))
+    rim = []
+    for q in range(20):
+        a = q * math.tau / 20
+        d = towards(moon_at[0] + math.cos(a) * moon_r / math.cos(moon_at[1]), moon_at[1] + math.sin(a) * moon_r)
+        # Its lower limb is redder and dimmer, deeper in the haze; a sea darkens one side of its face.
+        low = 0.5 - 0.5 * math.sin(a)
+        sea = 0.22 if 2.2 < a < 4.2 else 0.0
+        rim.append(on_sky(d, sky.mix(sky.mix(srgb(0xFFDDB4), srgb(0xF0A07C), low), srgb(0x9A7A8A), sea)))
+    for q in range(20):
+        b.faces.append((heart, rim[q], rim[(q + 1) % 20]))
+    # The evening star: one bright point low in the west, to the left of the sunset, there from the start.
+    venus, glint = (0.42, math.radians(10.5)), math.radians(0.11)
+    centre = on_sky(towards(*venus), (1.0, 0.98, 0.9, 1.0))
+    points = [on_sky(towards(venus[0] + math.cos(q * math.tau / 8) * glint * (2.2 if q % 2 == 0 else 0.8), venus[1] + math.sin(q * math.tau / 8) * glint * (2.2 if q % 2 == 0 else 0.8)), lit(towards(*venus), srgb(0xFFF4D8), 0.25)) for q in range(8)]
+    for q in range(8):
+        b.faces.append((centre, points[q], points[(q + 1) % 8]))
+    # The stars: a mesh of their own, whose light is added to the sky's, and which the app brings out as the evening
+    # draws in (dusk.ts). All round the sky from 6 degrees up, most of them low where the rider looks, fewer and
+    # fainter towards the sunset; each painted as bright as it is to be at the finish, black being no light.
+    night = Builder("SkyStars", "star")
+    night.colours = []
+    stars = random.Random(2209)
+    for _ in range(150):
+        turn = stars.uniform(-math.pi, math.pi)
+        elev = math.radians(6.0 + 50.0 * stars.random() ** 2.2)
+        size = math.radians(stars.uniform(0.05, 0.1))
+        away = 0.25 + 0.75 * (0.5 - 0.5 * math.cos(turn)) ** 0.7
+        bright = stars.uniform(0.35, 1.0) ** 1.5 * away * smoothstep(math.radians(5.0), math.radians(11.0), elev)
+        tint = srgb(stars.choice((0xFFFFFF, 0xFFFFFF, 0xFFE8C8, 0xD8E4FF)))
+        for dx, dy in ((0, 1.2), (-1, -0.6), (1, -0.6)):
+            d = towards(turn + dx * size / math.cos(elev), elev + dy * size)
+            night.verts.append((d[0] * SKY_RADIUS * 0.98, d[1] * SKY_RADIUS * 0.98, d[2] * SKY_RADIUS * 0.98))
+            night.colours.append((tint[0] * bright, tint[1] * bright, tint[2] * bright, 1.0))
+        night.faces.append((len(night.verts) - 3, len(night.verts) - 2, len(night.verts) - 1))
+    night.build(col)
+    # Thunderheads standing on the horizon, far out to sea: each a trunk of billows that spreads into an anvil at its
+    # top, fire on the side the sun is on and plum on the other, its foot lost in the haze. They are drawn, not
+    # painted: the dome's vertices are too far apart to hold their outline.
+    for k, (at, wide, high) in enumerate(SKY_TOWERS):
+        rows, cols = 14, 8
+        toward = 1.0 if math.remainder(at, math.tau) < 0 else -1.0
+        sunward = ((math.cos(at) + 1) / 2) ** 0.5
+        downwind = 1 if k % 2 else -1
+        grid, ways = [], []
+        for r in range(rows + 1):
+            u = r / rows
+            # Its outline: a trunk of billows, one swelling over the next like a cauliflower; a neck; and over it the
+            # anvil, wide and thin with a flat top, carried downwind.
+            billow = abs(math.sin(u * 10.5 + k * 1.7))
+            trunk = wide * (0.8 + 0.36 * billow) * (1.0 - 0.18 * u)
+            anvil = wide * 3.0 * (1.0 - 0.22 * ((u - 0.84) / 0.16) ** 2)
+            half = trunk + (anvil - trunk) * smoothstep(0.7, 0.84, u)
+            lean = wide * 1.1 * smoothstep(0.66, 1.0, u) * downwind
+            height = high * (u if u < 0.8 else 0.8 + (u - 0.8) * 0.55)
+            line = []
+            for q in range(cols + 1):
+                v = q / cols * 2 - 1
+                # The anvil thins to an edge at its ends and is domed a little in the middle.
+                thin = (1.0 - 0.5 * smoothstep(0.8, 1.0, u) * abs(v) ** 1.5) if u >= 0.8 else 1.0
+                d = towards(at + lean + v * half, height * thin * (1.0 + 0.04 * (1 - v * v)))
+                # Lit on the side the sun is on, each billow brighter on its shoulder and dark in the fold under
+                # it; the anvil's underside in shade and its top catching the last light.
+                glow = 0.5 + 0.46 * v * toward + 0.22 * (billow - 0.55) * (1.0 if u < 0.72 else 0.0)
+                glow += -0.22 * smoothstep(0.7, 0.8, u) * (1 - smoothstep(0.84, 0.95, u)) + 0.16 * smoothstep(0.9, 1.0, u)
+                glow = max(0.0, min(1.0, glow))
+                cloud = sky.ramp(((0.0, 0x432A52), (0.4, 0x7A3550), (0.62, 0xD8603A), (0.82, 0xFF9A48), (1.0, 0xFFD89A)), glow * (0.55 + 0.45 * sunward))
+                line.append(on_sky(d, lit(d, sky.grade(cloud), 0.95 * smoothstep(0.02, 0.28, u)), 0.97))
+                ways.append(d)
+            grid.append(line)
+        if k in SKY_FLASHES:
+            # Sheet lightning: the heart of the tower, lit from inside. Its light is added to the cloud's, so it is
+            # painted bright at its middle and black at its edge, and the app flickers it.
+            flash = Builder("SkyFlash" + "AB"[SKY_FLASHES.index(k)], f"flash-{SKY_FLASHES.index(k)}")
+            flash.colours = []
+            spot = {}
+            for r in range(3, rows - 1):
+                for q in range(1, cols):
+                    d = ways[r * (cols + 1) + q]
+                    heat = math.sin(math.pi * (r - 3) / (rows - 5)) * math.sin(math.pi * (q - 1) / (cols - 2))
+                    heat = max(0.0, heat) ** 1.3 * (0.75 + 0.25 * math.sin(r * 2.1 + q * 1.3))
+                    flash.verts.append((d[0] * SKY_RADIUS * 0.965, d[1] * SKY_RADIUS * 0.965, d[2] * SKY_RADIUS * 0.965))
+                    flash.colours.append((0.86 * heat, 0.8 * heat, 1.0 * heat, 1.0))
+                    spot[(r, q)] = len(flash.verts) - 1
+            for r in range(3, rows - 2):
+                for q in range(1, cols - 1):
+                    flash.faces.append((spot[(r, q)], spot[(r, q + 1)], spot[(r + 1, q + 1)], spot[(r + 1, q)]))
+            flash.build(col)
+        for r in range(rows):
+            for q in range(cols):
+                b.faces.append((grid[r][q], grid[r][q + 1], grid[r + 1][q + 1], grid[r + 1][q]))
+    # Bars of cloud lying across the sun and to either side of it, low over the horizon: dark, each with its
+    # underside lit gold where it is near the sun. They are drawn after the sun, and so cross its face.
+    for k, (turn0, elev0, reach_, thick) in enumerate(SKY_BARS):
+        steps, last = 12, None
+        for q in range(steps + 1):
+            f = q / steps * 2 - 1
+            turn = turn0 + f * reach_
+            fat = thick * max(0.0, 1 - f * f) ** 0.7 * (1 + 0.28 * math.sin(f * 6.0 + k * 1.9))
+            elev = elev0 + 0.012 * math.sin(f * 2.3 + k) + 0.004 * f
+            near = math.exp(-math.hypot(math.remainder(turn, math.tau), elev - sun_at[1]) / 0.3)
+            share = 0.93 * min(1.0, 2.2 * (1 - abs(f)))
+            dark = sky.grade(sky.mix(srgb(0x4A2440), srgb(0x7A2E3A), near))
+            under = sky.grade(sky.mix(srgb(0xB04A30), srgb(0xFFC050), near))
+            row = (
+                on_sky(towards(turn, elev + fat * 0.55), lit(towards(turn, elev + fat * 0.55), dark, share * 0.55)),
+                on_sky(towards(turn, elev), lit(towards(turn, elev), dark, share)),
+                on_sky(towards(turn, elev - fat * 0.45), lit(towards(turn, elev - fat * 0.45), under, share)),
+            )
+            if last:
+                b.faces.append((last[1], row[1], row[0], last[0]))
+                b.faces.append((last[2], row[2], row[1], last[1]))
+            last = row
+    # Scud: scraps of low cloud all round the sky, nearer than the deck, which drift across it on the evening wind
+    # (the app turns them). Each is ragged on top and flat beneath, dark, its underside warm; it fades out at its
+    # edges by the fourth part of its colour, since what is behind it changes as it drifts.
+    scud = Builder("SkyDrift", "scud")
+    scud.colours = []
+    wind = random.Random(1212)
+    for k in range(16):
+        turn0 = k * math.tau / 16 + wind.uniform(-0.12, 0.12)
+        elev0 = math.radians(wind.uniform(4.5, 12.5))
+        reach_, thick = wind.uniform(0.045, 0.11), wind.uniform(0.012, 0.024)
+        cols, grid = 8, []
+        for q in range(cols + 1):
+            f = q / cols * 2 - 1
+            body = max(0.0, 1 - f * f) ** 0.6
+            top = thick * body * (0.7 + 0.5 * abs(math.sin(q * 1.9 + k * 2.3)))
+            ends = min(1.0, 2.4 * (1 - abs(f)))
+            column = []
+            for up, shade, alpha in ((top * 1.5, 0x4A2848, 0.0), (top, 0x54294A, 0.92), (-thick * 0.25 * body, 0xD0603A, 0.9), (-thick * 0.6 * body, 0xE8884A, 0.0)):
+                d = towards(turn0 + f * reach_, elev0 + up)
+                c = sky.grade(srgb(shade))
+                scud.verts.append((d[0] * SKY_RADIUS * 0.955, d[1] * SKY_RADIUS * 0.955, d[2] * SKY_RADIUS * 0.955))
+                scud.colours.append((c[0], c[1], c[2], alpha * ends))
+                column.append(len(scud.verts) - 1)
+            grid.append(column)
+        for q in range(cols):
+            for r in range(3):
+                scud.faces.append((grid[q][r], grid[q + 1][r], grid[q + 1][r + 1], grid[q][r + 1]))
+    scud.build(col)
+    # Vapour trails, the island's sky being a road for aeroplanes: lit gold and pink from beneath, sharp at the head
+    # and spreading and fading behind it.
+    for (t0, e0), (t1, e1), hue in (((-0.95, 0.075), (-0.3, 0.2), 0xFFD9A0), ((0.5, 0.21), (1.15, 0.12), 0xFFC0A0), ((2.3, 0.17), (3.05, 0.1), 0xF2A0B4)):
+        steps, last = 10, None
+        for k in range(steps + 1):
+            f = k / steps
+            turn, elev = t0 + (t1 - t0) * f, e0 + (e1 - e0) * f
+            half = math.radians(0.07 + 0.3 * (1 - f) ** 1.5)
+            share = 0.85 * f ** 1.6
+            edge = [on_sky(towards(turn, elev + side * half), lit(towards(turn, elev + side * half), srgb(hue), share * 0.55)) for side in (-1, 1)]
+            mid = on_sky(towards(turn, elev), lit(towards(turn, elev), srgb(hue), share))
+            if last:
+                b.faces.append((last[0], edge[0], mid, last[2]))
+                b.faces.append((last[2], mid, edge[1], last[1]))
+            last = (edge[0], edge[1], mid)
     b.build(col)
 
 
@@ -1275,11 +1749,19 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
     names = (
         "trunk leaf leaf-dark glint bush bougainvillea whitewash wall wood dark stone rock skin club-window awning awning-white arrow sail sail-pink "
         "glow-door lamp-red lamp-green gold confetti bulb paint sun island tower "
-        "skin-1 skin-2 hair-0 hair-1 hair-2 party-white drink-0 drink-1 drink-2 trunk-dark leaf-dry "
-        "sign-white sign-face sign-plinth"
+        "skin-1 skin-2 hair-0 hair-1 hair-2 party-white drink-0 drink-1 drink-2 trunk-dark leaf-dry leaf-light dates "
+        "sign-white sign-face sign-plinth sign-paving sign-paving-band straw phone bottle-0 bottle-1 shade "
+        "plane-body plane-tail plane-engine plane-window plane-red plane-green plane-white plane-strobe plane-beacon plane-cabin plane-belly"
     ).split() + NEONS + BEAMS + CROWD
     B = {name: Builder("".join(p.title() for p in name.split("-")), name) for name in names}
     B["whitewash"].name, B["dark"].name, B["paint"].name = "Clubs", "Dark", "GatePaint"
+    # The palms' fronds are coloured a vertex at a time, by the sun: it stands where the last stretch points.
+    global SUN_AZ
+    SUN_AZ = math.atan2(s[road.index(length)]["y"] - s[road.index(length - 220)]["y"], s[road.index(length)]["x"] - s[road.index(length - 220)]["x"])
+    B["frond"] = Builder("Fronds", "leaf")
+    B["frond"].colours = []
+    B["bark"] = Builder("Bark", "trunk")
+    B["bark"].colours = []
     # The kit the themed maps are built with (themes.py): framed windows, railings, the glow round a light and the
     # light it throws, which the app draws and the course file carries.
     kit = themes.Kit(road, st, length, height_at, rng, B, STEP, ROAD_HALF)
@@ -1297,6 +1779,14 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
             b.tri(top, ring[q], ring[(q + 1) % 4])
             b.tri(bot, ring[(q + 1) % 4], ring[q])
 
+    def bulb(b: Builder, c, r: float) -> None:
+        """A bulb on a string: a point of light a few pixels across, so four faces do for it."""
+        top = (c[0], c[1], c[2] + r)
+        ring = [(c[0] + r, c[1], c[2] - r * 0.6), (c[0] - r * 0.5, c[1] + r * 0.87, c[2] - r * 0.6), (c[0] - r * 0.5, c[1] - r * 0.87, c[2] - r * 0.6)]
+        for q in range(3):
+            b.tri(top, ring[q], ring[(q + 1) % 3])
+        b.tri(ring[2], ring[1], ring[0])
+
     def blob(b: Builder, c, r: float) -> None:
         top = (c[0], c[1], c[2] + r)
         ring = [(c[0] + math.cos(a) * r * rng.uniform(0.75, 1.2), c[1] + math.sin(a) * r * rng.uniform(0.75, 1.2), c[2] + rng.uniform(-0.25, 0.25) * r) for a in (0, 1.257, 2.513, 3.77, 5.027)]
@@ -1306,7 +1796,23 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
 
     people = random.Random(4117)
 
-    def person(c, yaw: float, rng=rng, there: bool = True) -> None:
+    # Whoever is waiting for a friend to clink glasses with: where they stand, the way they faced, and the side.
+    pairing = {"with": None}
+
+    class _Figures(dict):
+        """What the figures are made of: a builder a material, apart from the map's own, each corner with a colour of
+        its own whose fourth part says how freely it moves to the music (set as each figure is finished)."""
+
+        def __missing__(self, name: str):
+            made = Builder("".join(w.title() for w in name.split("-")) + "Folk", name)
+            made.colours = []
+            B[name + "-folk"] = self[name] = made
+            return made
+
+    F = _Figures()
+    furniture = random.Random(6021)
+
+    def person(c, yaw: float, rng=rng, there: bool = True, serve: bool = False, sit: bool = False, walk: bool = False, figures=None) -> None:
         """Someone at the party, a drink in their hand: legs or a dress, a body that narrows to the waist, a head
         with hair, one arm up with the glass or holding it at the chest, the other dancing or at their side. Most are
         in the island's white."""
@@ -1317,53 +1823,241 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         if not there:
             return
         rng = people
+        # Friends stand together: four in ten turn to whoever comes next, who stands a pace beside them and turns
+        # to them, and the two clink glasses over the gap between them.
+        # A waiter (`serve`) is at work: no friend to drink with, no dancing, a white shirt and dark trousers, and
+        # a tray of drinks carried high on one hand.
+        # Someone strolling (`walk`) is built by themselves, in builders of their own (`figures`), mid stride.
+        alone = serve or sit or walk
+        FF = F if figures is None else figures
+        mate, clink = (None if alone else pairing["with"]), None
+        if not alone:
+            pairing["with"] = None
+        if mate is not None and math.dist(mate[0], c) > 7.0:
+            mate = None
+        if mate is not None:
+            c0, yaw0, way = mate
+            c = (c0[0] - math.sin(yaw0) * 0.95 * way, c0[1] + math.cos(yaw0) * 0.95 * way, c0[2])
+            yaw = yaw0 - way * 1.15
+        elif not alone and rng.random() < 0.4:
+            c0, yaw0, way = c, yaw, rng.choice((1, -1))
+            pairing["with"] = (c0, yaw0, way)
+            yaw = yaw0 + way * 1.15
+        if not alone and (mate is not None or pairing["with"] is not None):
+            reach = -0.05 if mate is None else 0.05
+            clink = (
+                c0[0] - math.sin(yaw0) * (0.475 + reach) * way + math.cos(yaw0) * 0.3,
+                c0[1] + math.cos(yaw0) * (0.475 + reach) * way + math.sin(yaw0) * 0.3,
+                c0[2] + 1.4,
+            )
         h = rng.uniform(0.92, 1.08)
         fx, fy = math.cos(yaw), math.sin(yaw)
         sx, sy = -fy, fx
 
-        def at(forward: float, side: float, up: float):
-            return (c[0] + fx * forward + sx * side, c[1] + fy * forward + sy * side, c[2] + up * h)
+        # How far a dancer's shoulders are carried forward of their hips (or back): everything above the hips leans.
+        tilt = [0.0, 0.0]
 
-        white = rng.random() < 0.6
-        top = B["party-white"] if white else B[rng.choice(CROWD)]
-        skin = B[rng.choice(("skin", "skin", "skin-1", "skin-2"))]
-        dress = rng.random() < 0.45
+        def at(forward: float, side: float, up: float):
+            lean_ = smoothstep(0.8, 1.45, up)
+            forward, side = forward + tilt[0] * lean_, side + tilt[1] * lean_
+            # Someone sitting (`sit`) is built as someone standing and set down by the height of their hips: `c`
+            # is where they sit.
+            return (c[0] + fx * forward + sx * side, c[1] + fy * forward + sy * side, c[2] + (up - (0.88 if sit else 0.0)) * h)
+
+        def limb(b: Builder, p0, p1, r0: float, r1: float, sides: int = 4) -> None:
+            """An arm or a leg from one joint to the next: four sides and no ends, which the joints hide."""
+            dx, dy, dz = p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]
+            n = math.sqrt(dx * dx + dy * dy + dz * dz) or 1.0
+            dx, dy, dz = dx / n, dy / n, dz / n
+            rx, ry, rz = (0.0, 0.0, 1.0) if abs(dz) < 0.9 else (fx, fy, 0.0)
+            ux, uy, uz = dy * rz - dz * ry, dz * rx - dx * rz, dx * ry - dy * rx
+            m = math.sqrt(ux * ux + uy * uy + uz * uz)
+            ux, uy, uz = ux / m, uy / m, uz / m
+            vx, vy, vz = dy * uz - dz * uy, dz * ux - dx * uz, dx * uy - dy * ux
+            rings = [[(q[0] + (ux * cu + vx * cv) * r, q[1] + (uy * cu + vy * cv) * r, q[2] + (uz * cu + vz * cv) * r) for cu, cv in (((1, 0), (0, 1), (-1, 0), (0, -1)) if sides == 4 else ((1, 0), (-0.5, 0.87), (-0.5, -0.87)))] for q, r in ((p0, r0), (p1, r1))]
+            for k in range(sides):
+                j = (k + 1) % sides
+                b.quad(rings[0][k], rings[0][j], rings[1][j], rings[1][k])
+
+        white = rng.random() < 0.6 or serve
+        top = FF["party-white"] if white else FF[rng.choice(CROWD)]
+        skin = FF[rng.choice(("skin", "skin", "skin-1", "skin-2"))]
+        dress = rng.random() < 0.45 and not alone
+        # How they stand: their weight on one leg, the other foot out to the side or a step forward, swaying.
+        lean = rng.choice((1, -1))
+        sway = rng.uniform(0.0, 0.05) * lean
+        step = rng.uniform(-0.05, 0.14)
+        feet = ((step, 0.09 + rng.uniform(0.02, 0.1)), (-step * 0.4, -0.08))
+        # One in three is dancing: knees bent, feet apart, the body leaning into the music and thrown to one side.
+        dance = clink is None and rng.random() < 0.34 and not alone
+        if walk:
+            # Mid stride, as the app's stride takes them (walk-material.ts): a foot 0.28 m fore and aft of the hips.
+            feet = ((0.28, 0.09), (-0.28, -0.09))
+        if dance:
+            tilt[0], tilt[1] = rng.uniform(-0.08, 0.1), rng.uniform(0.04, 0.1) * lean
+            feet = ((step + rng.uniform(0.0, 0.1), 0.17 + rng.uniform(0.0, 0.1)), (-step * 0.6, -0.13))
         if dress:
             # A summer dress: bare legs under a skirt that flares from the waist.
-            for side in (1, -1):
-                skin.box(at(0, 0.07 * side, 0), (0.1, 0.1, 0.5 * h), yaw)
+            for fwd, side in feet:
+                limb(skin, at(0.07 if dance else 0, 0.07 * (1 if side > 0 else -1), 0.52), at(fwd, side * lean, 0), 0.06, 0.045)
             kit.prism(top, at(0, 0, 0.46), 0.25, 0.42 * h, 5, 0.15, yaw)
         else:
-            legs = B["party-white"] if white and rng.random() < 0.5 else (B["dark"] if rng.random() < 0.6 else B[rng.choice(CROWD)])
-            for side in (1, -1):
-                legs.box(at(0, 0.08 * side, 0), (0.13, 0.13, 0.86 * h), yaw)
+            legs = FF["party-white"] if white and rng.random() < 0.5 else (FF["dark"] if rng.random() < 0.6 else FF[rng.choice(CROWD)])
+            if serve:
+                legs = FF["dark"]
+            # Half are in shorts: cloth to the knee, a bare calf below it.
+            shorts = rng.random() < 0.5 and not alone
+            for fwd, side in feet:
+                hip, foot = at(0, 0.085 * (1 if side > 0 else -1), 0.9), at(fwd, side * lean, 0)
+                if sit:
+                    # Sitting: thighs level along the seat, shins hanging over its edge, one foot a little forward.
+                    out = 0.11 * (1 if side > 0 else -1)
+                    knee, foot = at(0.42, out, 0.9), at(0.46 + max(0.0, fwd), out, 0.46)
+                    limb(legs, hip, knee, 0.1, 0.085)
+                    limb(skin if shorts else legs, knee, foot, 0.062, 0.05, 3)
+                elif shorts or dance:
+                    # A dancer's knees are bent: carried forward of the line from hip to foot.
+                    bend = 0.11 if dance else 0.0
+                    knee = tuple(hip[q] + (foot[q] - hip[q]) * 0.5 + (fx, fy, 0.0)[q] * bend for q in range(3))
+                    limb(legs, hip, knee, 0.1, 0.085)
+                    if shorts:
+                        limb(skin, knee, foot, 0.06, 0.048)
+                    else:
+                        limb(legs, knee, foot, 0.08, 0.06, 3)
+                else:
+                    limb(legs, hip, foot, 0.095, 0.06)
         # The body: hips to shoulders, wider at the shoulders; the neck; the head and its hair.
-        kit.prism(top, at(0, 0, 0.84), 0.17, 0.58 * h, 4, 0.24, yaw + math.pi / 4)
-        kit.prism(skin, at(0, 0, 1.42), 0.085, 0.24 * h, 5, 0.105, yaw)
-        hair = B[rng.choice(("hair-0", "hair-0", "hair-1", "hair-2"))]
-        kit.prism(hair, at(-0.015, 0, 1.6), 0.115, 0.09 * h, 4, 0.07, yaw + math.pi / 4)
-        if dress or rng.random() < 0.3:
+        # A body is wider than it is deep: hips, a waist drawn in, and shoulders broader than either, the chest
+        # carried a little forward of the hips.
+        rings = [
+            [at(f + fwd, w + side, up) for f, w in ((deep, wide), (-deep, wide), (-deep, -wide), (deep, -wide))]
+            for up, deep, wide, fwd, side in ((0.84, 0.095, 0.165, 0.0, 0.0), (1.1, 0.08, 0.135 if dress else 0.15, 0.01, sway * 0.5), (1.43, 0.09, 0.225 if not dress else 0.195, 0.025, sway))
+        ]
+        for lo, hi in zip(rings, rings[1:]):
+            for q in range(4):
+                top.quad(lo[q], lo[(q + 1) % 4], hi[(q + 1) % 4], hi[q])
+        top.faces.append(tuple(top.v(q) for q in rings[-1]))
+        # The head: narrower at the chin than at the crown.
+        kit.prism(skin, at(0.02, sway, 1.43), 0.07, 0.23 * h, 4, 0.115, yaw + math.pi / 4)
+        hair = FF[rng.choice(("hair-0", "hair-0", "hair-1", "hair-2"))]
+        if rng.random() < 0.22:
+            # A straw hat: a wide brim, tipped a little, and a low crown.
+            brim = [at(math.cos(q * math.tau / 6) * 0.27, sway + math.sin(q * math.tau / 6) * 0.27, 1.63 + 0.03 * math.cos(q * math.tau / 6)) for q in range(6)]
+            FF["straw"].faces.append(tuple(FF["straw"].v(q) for q in brim))
+            kit.prism(FF["straw"], at(0, sway, 1.63), 0.125, 0.1 * h, 5, 0.105, yaw)
+        else:
+            kit.prism(hair, at(-0.015, sway, 1.6), 0.115, 0.09 * h, 4, 0.07, yaw + math.pi / 4)
+        if rng.random() < 0.4:
+            # Sunglasses, the sun being in their eyes.
+            FF["dark"].quad(at(0.108, -0.088 + sway, 1.55), at(0.108, 0.088 + sway, 1.55), at(0.112, 0.088 + sway, 1.6), at(0.112, -0.088 + sway, 1.6))
+        if dress and rng.random() < 0.3:
+            # Hair put up in a knot.
+            kit.prism(hair, at(-0.07, sway, 1.67), 0.065, 0.075 * h, 4, 0.045, yaw)
+        elif dress or rng.random() < 0.3:
             # Long hair down the back.
-            hair.box(at(-0.1, 0, 1.3), (0.06, 0.2, 0.34 * h), yaw)
-        # The arms. One holds the drink: up in a toast, or at the chest between sips.
+            limb(hair, at(-0.08, sway, 1.66), at(-0.13, sway, 1.28), 0.12, 0.09)
+        # The arms, each bent at the elbow: a sleeve to the elbow or a bare arm, and a bare forearm. One hand holds
+        # the drink: up in a toast, out to clink a friend's, or at the chest between sips.
         hand = rng.choice((1, -1))
         sleeve = skin if dress or rng.random() < 0.6 else top
-        toast = rng.random() < 0.45
-        drink = B[rng.choice(("drink-0", "drink-1", "drink-2"))]
-        if toast:
-            lift = rng.uniform(0.5, 0.68)
-            sleeve.box(at(0.03, 0.27 * hand, 1.3), (0.09, 0.09, lift * h), yaw)
-            glass = at(0.03, 0.27 * hand, 1.3 + lift)
+        drink = FF[rng.choice(("drink-0", "drink-1", "drink-2"))]
+        how = 0.0 if serve else rng.random()
+        if clink:
+            # The hand nearer their friend holds the glass out to theirs.
+            hand = min((1, -1), key=lambda side: math.dist(at(0, 0.22 * side, 1.37), clink))
+        shoulder = at(0, 0.22 * hand + sway, 1.37)
+        if clink:
+            fist = clink
+            elbow = ((shoulder[0] + fist[0]) / 2, (shoulder[1] + fist[1]) / 2, (shoulder[2] + fist[2]) / 2 - 0.16)
+        elif how < 0.4:
+            elbow = at(0.1, (0.36 + rng.uniform(0, 0.06)) * hand, rng.uniform(1.42, 1.56))
+            fist = at(0.14, (0.3 + rng.uniform(-0.04, 0.08)) * hand, rng.uniform(1.8, 1.98))
+        elif how < 0.65:
+            elbow = at(0.16, 0.3 * hand, 1.16)
+            fist = at(0.44, (0.2 + rng.uniform(-0.05, 0.1)) * hand, rng.uniform(1.3, 1.46))
         else:
-            sleeve.box(at(0, 0.25 * hand, 1.05), (0.09, 0.09, 0.33 * h), yaw)
-            skin.box(at(0.16, 0.22 * hand, 1.05), (0.26, 0.08, 0.08 * h), yaw)
-            glass = at(0.29, 0.22 * hand, 1.1)
-        kit.prism(drink, glass, 0.04, 0.12, 3, 0.055, yaw)
-        # The other arm: in the air with the music, or down at their side.
-        if rng.random() < 0.5:
-            sleeve.box(at(0, -0.27 * hand, 1.3), (0.09, 0.09, rng.uniform(0.4, 0.62) * h), yaw)
+            elbow = at(0.03, 0.29 * hand, 1.08)
+            fist = at(0.24, 0.15 * hand, rng.uniform(1.16, 1.3))
+        if serve:
+            elbow, fist = at(0.06, 0.4 * hand, 1.42), at(0.1, 0.33 * hand, 1.76)
+        limb(sleeve, shoulder, elbow, 0.055, 0.045)
+        limb(skin, elbow, fist, 0.05, 0.044, 3)
+        # What they are drinking: a tumbler, wider at its lip, its drink bright through it; a cocktail in a glass
+        # like a cone, held by its foot; or a bottle of beer by its neck.
+        what = rng.random()
+        if serve:
+            # The tray: round, level on the flat of the hand over the shoulder, three drinks standing on it.
+            fist = at(0.1, 0.33 * hand, 1.78)
+            kit.prism(FF["dark"], fist, 0.24, 0.025, 6, 0.24, yaw)
+            for q in range(3):
+                kit.prism(FF[("drink-0", "drink-1", "drink-2")[q]], (fist[0] + math.cos(yaw + q * 2.094) * 0.12, fist[1] + math.sin(yaw + q * 2.094) * 0.12, fist[2] + 0.025), 0.035, 0.13, 3, 0.05, yaw)
+        elif what < 0.42:
+            kit.prism(drink, (fist[0], fist[1], fist[2] - 0.03 * h), 0.035, 0.14, 3, 0.05, yaw)
+        elif what < 0.7:
+            rim = [(fist[0] + math.cos(yaw + q * 2.094) * 0.085, fist[1] + math.sin(yaw + q * 2.094) * 0.085, fist[2] + 0.17) for q in range(3)]
+            foot = (fist[0], fist[1], fist[2] + 0.02)
+            for q in range(3):
+                drink.tri(foot, rim[(q + 1) % 3], rim[q])
+            drink.tri(rim[0], rim[1], rim[2])
         else:
-            sleeve.box(at(0, -0.26 * hand, 0.82), (0.09, 0.09, 0.56 * h), yaw)
+            glass = FF[rng.choice(("bottle-0", "bottle-0", "bottle-1"))]
+            kit.prism(glass, (fist[0], fist[1], fist[2] - 0.09 * h), 0.034, 0.15, 3, 0.031, yaw)
+            kit.prism(glass, (fist[0], fist[1], fist[2] - 0.09 * h + 0.15), 0.014, 0.1, 3, 0.012, yaw)
+        # The other arm: in the air with the music, a hand on the hip, or down at their side.
+        other = at(0, -0.22 * hand + sway, 1.37)
+        # A dancer's other hand is in the air.
+        how = rng.random() * (0.4 if dance else 1.0)
+        if serve:
+            how = 0.9
+        if how < 0.4:
+            elbow = at(0.04, -(0.38 + rng.uniform(0, 0.08)) * hand, rng.uniform(1.44, 1.6))
+            limb(sleeve, other, elbow, 0.055, 0.045)
+            palm_ = at(0.08, -(0.3 + rng.uniform(-0.06, 0.14)) * hand, rng.uniform(1.84, 2.0))
+            limb(skin, elbow, palm_, 0.05, 0.04, 3)
+            if rng.random() < 0.4:
+                # A phone held up to film it all: its screen lights their side of it.
+                FF["dark"].box((palm_[0], palm_[1], palm_[2]), (0.024, 0.09, 0.17), yaw)
+                FF["phone"].quad(*(
+                    (palm_[0] - fx * 0.014 + sx * w_, palm_[1] - fy * 0.014 + sy * w_, palm_[2] + z_)
+                    for w_, z_ in ((0.036, 0.015), (-0.036, 0.015), (-0.036, 0.155), (0.036, 0.155))
+                ))
+        elif how < 0.6:
+            elbow = at(-0.06, -0.4 * hand, 1.12)
+            limb(sleeve, other, elbow, 0.055, 0.045)
+            limb(skin, elbow, at(0.02, -0.2 * hand, 0.98), 0.05, 0.04, 3)
+        else:
+            limb(sleeve, other, at(0.04, -0.28 * hand, 0.84), 0.055, 0.04)
+        # How freely each corner of the figure moves to the music goes in the fourth part of its colour: nothing at
+        # the feet (or the seat), most at the head, and a dancer more than someone standing, a waiter least.
+        lively = 1.0 if dance else (0.25 if serve else (0.3 if sit else 0.45))
+        # And each corner is lit by the low sun: warm on the side of the figure turned to it, in shade on the other
+        # (a figure is a hand's breadth across, so the side a corner is on is the side it is lit from). What glows
+        # (a drink, a phone's screen) is as it was. A stroller turns as they walk, and is lit evenly.
+        sun_x, sun_y = math.cos(SUN_AZ), math.sin(SUN_AZ)
+        warm = srgb(0xFFB060)
+        for part in FF.values():
+            base = srgb(MATERIALS[part.mat]["color"])
+            glows = "glow" in MATERIALS[part.mat]
+            for q in range(len(part.colours), len(part.verts)):
+                v = part.verts[q]
+                # In five steps, so the map's file packs well.
+                free = round(max(0.0, min(1.0, (v[2] - c[2] - 0.1) / 1.5)) * 4) / 4
+                tint = base
+                if not glows and not walk:
+                    # In three steps: the lit side, the shaded side, and between.
+                    side = ((v[0] - c[0]) * sun_x + (v[1] - c[1]) * sun_y) / 0.12
+                    side = round(max(-1.0, min(1.0, side)))
+                    k = 1.0 + 0.2 * side if side >= 0 else 0.62
+                    tint = sky.mix((base[0] * k, base[1] * k, base[2] * k, 1.0), warm, 0.22 if side > 0 else 0.0)
+                part.colours.append((tint[0], tint[1], tint[2], 1.0 - 0.7 * free * lively))
+        # Their shadow: long, as the sun is low, lying on the paving away from the sun and narrowing to the head.
+        if not walk and not sit:
+            reach = 3.4 * h
+            foot_l = (c[0] - sun_y * 0.2, c[1] + sun_x * 0.2, c[2] + 0.03)
+            foot_r = (c[0] + sun_y * 0.2, c[1] - sun_x * 0.2, c[2] + 0.03)
+            head_l = (c[0] - sun_x * reach - sun_y * 0.11, c[1] - sun_y * reach + sun_x * 0.11, c[2] + 0.03)
+            head_r = (c[0] - sun_x * reach + sun_y * 0.11, c[1] - sun_y * reach - sun_x * 0.11, c[2] + 0.03)
+            B["shade"].quad(foot_r, foot_l, head_l, head_r)
 
     def festoon(a, b_, bulbs: int = 9, sag: float = 1.1) -> None:
         last = None
@@ -1371,7 +2065,10 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
             t = k / bulbs
             c = (a[0] + (b_[0] - a[0]) * t, a[1] + (b_[1] - a[1]) * t, a[2] + (b_[2] - a[2]) * t - sag * math.sin(math.pi * t))
             if 0 < k < bulbs:
-                diamond(B["bulb"], (c[0], c[1], c[2] - 0.14), 0.13)
+                bulb(B["bulb"], (c[0], c[1], c[2] - 0.14), 0.15)
+            # The wire runs straight from every other bulb to the next but one: its sag still reads.
+            if k % 2 and k < bulbs:
+                continue
             if last:
                 B["dark"].quad((last[0], last[1], last[2] + 0.03), (c[0], c[1], c[2] + 0.03), (c[0], c[1], c[2] - 0.03), (last[0], last[1], last[2] - 0.03))
                 B["dark"].quad((last[0], last[1], last[2] - 0.03), (c[0], c[1], c[2] - 0.03), (c[0], c[1], c[2] + 0.03), (last[0], last[1], last[2] + 0.03))
@@ -1380,7 +2077,8 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
     def beams(origin, yaw: float, count: int = 4) -> None:
         for k in range(count):
             a = yaw + (k - (count - 1) / 2) * 0.55 + rng.uniform(-0.12, 0.12)
-            tilt, reach, w = rng.uniform(0.5, 0.95), 150.0, 9.0
+            # Narrow, as a searchlight is: a beam that fans wide hides the sky behind it.
+            tilt, reach, w = rng.uniform(0.5, 0.95), 150.0, 3.6
             tip = (origin[0] + math.cos(a) * reach * math.cos(tilt), origin[1] + math.sin(a) * reach * math.cos(tilt), origin[2] + reach * math.sin(tilt))
             left = (tip[0] - math.sin(a) * w, tip[1] + math.cos(a) * w, tip[2])
             right = (tip[0] + math.sin(a) * w, tip[1] - math.cos(a) * w, tip[2])
@@ -1409,10 +2107,11 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
             b.quad(i0f, i1f, o1f, o0f)
             if bulbs:
                 for along in (-deep / 2 - 0.12, deep / 2 + 0.12):
-                    diamond(B["bulb"], P(i, along, math.cos((a0 + a1) / 2) * radius, math.sin((a0 + a1) / 2) * radius - 0.2), 0.16)
+                    bulb(B["bulb"], P(i, along, math.cos((a0 + a1) / 2) * radius, math.sin((a0 + a1) / 2) * radius - 0.2), 0.18)
 
     # Palms, in bunches: along the seawall on the left, on the promenade's kerb on the right.
     flora = random.Random(7331)
+    planted = 0
     i = 3
     while i < n - 2:
         side = 1 if (i // 6) % 2 else -1
@@ -1422,8 +2121,42 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
             # The palms have dice of their own, and take from the scenery's what the old palm took: nothing else moves.
             for _ in range(30):
                 rng.random()
-            palm_bunch(B, x, y, z - (1.6 if side > 0 else 0.0), flora)
+            # Fewer bunches and more palms in each: every other place along the road is left open.
+            planted += 1
+            if planted % 2:
+                palm_bunch(B, x, y, z - (1.6 if side > 0 else 0.0), flora, bed=side < 0)
         i += rng.choice((4, 5, 6))
+
+    # People strolling the sidewalk by the seawall, a drink in hand: each built about their own feet, facing +x, as a
+    # mesh of their own, which the app walks along the course (promenaders.ts).
+    stroll = random.Random(2718)
+
+    class _Stroller(dict):
+        def __init__(self, which: int):
+            super().__init__()
+            self.which = which
+
+        def __missing__(self, name: str):
+            made = Builder(f"Walker{self.which}", name)
+            made.colours = []
+            B[f"{name}-walker-{self.which}"] = self[name] = made
+            return made
+
+    for which in range(STROLLERS):
+        person((0.0, 0.0, 0.0), 0.0, rng=stroll, walk=True, figures=_Stroller(which))
+
+    # People sitting on the seawall to watch the sun go down, a drink in hand: one or two together every fifty
+    # metres or so, most of them facing the sea, their legs over the wall; none in the last stretch, where the
+    # crowd stands. They have dice of their own: nothing else moves.
+    seated = random.Random(909)
+    for i in range(9, n - 90, 12):
+        if seated.random() < 0.25:
+            continue
+        seaward = seated.random() < 0.65
+        for mate in range(seated.choice((1, 2, 2))):
+            along = (mate - 0.5) * 0.62 + seated.uniform(-0.08, 0.08)
+            spot = P(i, along, kerb + SIDEWALK + (0.3 if seaward else 0.14), 1.0)
+            person(spot, s[i]["h"] + (math.pi / 2 if seaward else -math.pi / 2) + seated.uniform(-0.25, 0.25), rng=seated, sit=True)
 
     # Rocks under the seawall, all the way along.
     for i in range(2, n - 2, 2):
@@ -1448,18 +2181,18 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         white.box(P(i, 0, -(front - 4.0), 0.12), (width, 0.35, 0.85), yaw)
         for along in (-width / 2 + 0.4, 0.0, width / 2 - 0.4):
             for off in (front - 3.8, front - 0.4):
-                wood.box(P(i, along, -off, 0.12), (0.24, 0.24, 3.5), yaw)
+                wood.box(P(i, along, -off, 0.12), (0.24, 0.24, 3.5), yaw, "t")
         for off in (front - 3.8, front - 0.4):
-            wood.box(P(i, 0, -off, 3.6), (width + 0.6, 0.26, 0.22), yaw)
+            wood.box(P(i, 0, -off, 3.6), (width + 0.6, 0.26, 0.22), yaw, "x")
         slats = int(width / 1.6)
         for k in range(slats + 1):
-            wood.box(P(i, -width / 2 + k * width / slats, -(front - 2.1), 3.82), (0.14, 4.6, 0.12), yaw)
+            wood.box(P(i, -width / 2 + k * width / slats, -(front - 2.1), 3.82), (0.14, 4.6, 0.12), yaw, "y")
         # The upper balcony's pergola.
         for along in (-width / 2 + 0.5, width / 2 - 0.5):
-            wood.box(P(i, along, -(front + 0.5), 6.52), (0.2, 0.2, 2.6), yaw)
-        wood.box(P(i, 0, -(front + 0.5), 9.1), (width, 0.24, 0.2), yaw)
+            wood.box(P(i, along, -(front + 0.5), 6.52), (0.2, 0.2, 2.6), yaw, "t")
+        wood.box(P(i, 0, -(front + 0.5), 9.1), (width, 0.24, 0.2), yaw, "x")
         for k in range(slats + 1):
-            wood.box(P(i, -width / 2 + k * width / slats, -(front + 1.6), 9.3), (0.12, 2.6, 0.1), yaw)
+            wood.box(P(i, -width / 2 + k * width / slats, -(front + 1.6), 9.3), (0.12, 2.6, 0.1), yaw, "y")
         # Doors glowing warm, and neon shapes on the wall above them.
         doors = max(2, int(width / 5))
         for k in range(doors):
@@ -1512,9 +2245,30 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         for along in (-width / 2 + 1.2, width / 2 - 1.2):
             B["stone"].box(P(i, along, -(front - 4.6), 0.12), (0.7, 0.7, 0.6), yaw)
             blob(B["bush"], P(i, along, -(front - 4.6), 1.1), 0.6)
-        for _ in range(dancers):
+        # High tables on the terrace, white, with the drinks that are not in a hand standing on them. They have dice
+        # of their own: nothing else moves.
+        tables = []
+        for along in (furniture.uniform(-width / 5, width / 5),):
+            t = P(i, along + furniture.uniform(-0.8, 0.8), -(front - furniture.uniform(1.9, 2.9)), 0.12)
+            tables.append(t)
+            kit.prism(B["dark"], t, 0.05, 1.04, 4, 0.05)
+            kit.prism(B["sign-white"], (t[0], t[1], t[2] + 1.04), 0.4, 0.05, 6, 0.42)
+            for g in range(2):
+                a = furniture.uniform(0, math.tau)
+                r = furniture.uniform(0.1, 0.27)
+                kit.prism(B[furniture.choice(("drink-0", "drink-1", "drink-2"))], (t[0] + math.cos(a) * r, t[1] + math.sin(a) * r, t[2] + 1.09), 0.035, furniture.choice((0.13, 0.13, 0.2)), 3, 0.05)
+        # A waiter crosses the terrace with a tray.
+        person(P(i, furniture.uniform(-width / 3, width / 3), -(front - furniture.uniform(1.0, 3.3)), 0.12), yaw + math.pi / 2 + furniture.uniform(-1.2, 1.2), rng=furniture, serve=True)
+        for k in range(dancers):
             c = P(i, rng.uniform(-width / 2 + 0.8, width / 2 - 0.8), -rng.uniform(front - 3.4, front - 0.9), 0.12)
-            person(c, yaw + math.pi / 2 + rng.uniform(-0.5, 0.5))
+            turn = yaw + math.pi / 2 + rng.uniform(-0.5, 0.5)
+            if k % 5 < 3:
+                # Three in five stand round the nearest table, turned to it.
+                t = min(tables, key=lambda q: math.dist(q, c))
+                a = k * 2.4 + i
+                c, turn = (t[0] + math.cos(a) * 0.9, t[1] + math.sin(a) * 0.9, t[2]), a + math.pi + 0.35 * math.sin(k * 1.7)
+            # The waiter is one of the terrace's people, not one more: the last of them is not built.
+            person(c, turn, there=k < dancers - 1)
         # Festoon lights from the pergola across the strip to a pole by the seawall.
         for along in (-width / 3, width / 3):
             pole = P(i, along, kerb + SIDEWALK - 0.3, 0.12)
@@ -1561,7 +2315,38 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
             straight = abs(math.remainder(s[i + 6]["h"] - s[i - 10]["h"], math.tau)) < 0.12
             if free and straight:
                 yaw = s[i]["h"]
-                ibiza_sign(B, kit, P(i, 0, -(kerb + 4.6), 0.12), yaw + math.pi - 0.62)
+                at, facing = P(i, 0, -(kerb + 4.6), 0.12), yaw + math.pi - 0.62
+                ibiza_sign(B, kit, at, facing)
+                # As in the photograph: palms planted close behind the letters, and people come to have their
+                # picture taken in front of them, a drink in hand. They have dice of their own: nothing else moves.
+                nx, ny = math.cos(facing), math.sin(facing)
+                posed = random.Random(388 + signs)
+                for across in (-3.4, 0.6, 4.0):
+                    palm_bunch(B, at[0] - nx * (2.6 + posed.uniform(0, 1.2)) - ny * across, at[1] - ny * (2.6 + posed.uniform(0, 1.2)) + nx * across, at[2], posed)
+
+                def by(out: float, across: float, up: float = 0.0):
+                    return (at[0] + nx * out - ny * across, at[1] + ny * out + nx * across, at[2] + up)
+
+                # The square it stands in: brick paving laid before it, banded in a lighter brick, and strings of
+                # bulbs hung between posts behind the letters and out over the paving, as in the photograph.
+                near, far, span = -(kerb + 0.35), -(kerb + TERRACE - 0.5), max(2, round(9.0 / STEP))
+                for j in range(i - span, i + span):
+                    B["sign-paving"].quad(P(j, 0, far, 0.13), P(j + 1, 0, far, 0.13), P(j + 1, 0, near, 0.13), P(j, 0, near, 0.13))
+                for j in range(i - span, i + span + 1, max(1, round(3.0 / STEP))):
+                    B["sign-paving-band"].quad(P(j, -0.12, far, 0.14), P(j, 0.12, far, 0.14), P(j, 0.12, near, 0.14), P(j, -0.12, near, 0.14))
+                for off in (near, (near + far) / 2, far):
+                    B["sign-paving-band"].quad(P(i - span, 0, off - 0.12, 0.14), P(i + span, 0, off - 0.12, 0.14), P(i + span, 0, off + 0.12, 0.14), P(i - span, 0, off + 0.12, 0.14))
+                posts = [P(i - span, 0, far + 0.3, 0.05), P(i, 0, far + 0.3, 0.05), P(i + span, 0, far + 0.3, 0.05), P(i - span - 1, 0, near - 0.4, 0.05), P(i + span + 1, 0, near - 0.4, 0.05)]
+                for post in posts:
+                    B["dark"].box(post, (0.14, 0.14, 4.7))
+                tops = [(q[0], q[1], q[2] + 4.6) for q in posts]
+                for a_, b_ in ((0, 1), (1, 2), (0, 3), (2, 4)):
+                    festoon(tops[a_], tops[b_], 8, 0.8)
+                for q in (tops[1], tops[3], tops[4]):
+                    kit.halo((q[0], q[1], q[2] - 0.5), "bulb")
+                for across in (-5.9, -5.1, 5.6):
+                    spot = (at[0] + nx * posed.uniform(0.9, 1.6) - ny * across, at[1] + ny * posed.uniform(0.9, 1.6) + nx * across, at[2])
+                    person(spot, facing + posed.uniform(-0.3, 0.3), rng=posed)
                 signs += 1
                 break
 
@@ -1587,9 +2372,9 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         B["stone"].box(P(i0, 0, span * side, 0.0), (1.5, 1.5, 7.2), yaw0)
         B["stone"].box(P(i0, 0, span * side, 0.0), (1.9, 1.9, 0.7), yaw0)
     for along in (-0.7, 0.7):
-        B["wood"].box(P(i0, along, 0, 7.2), (0.3, 2 * span + 3.4, 0.36), yaw0)
+        B["wood"].box(P(i0, along, 0, 7.2), (0.3, 2 * span + 3.4, 0.36), yaw0, "y")
     for k in range(15):
-        B["wood"].box(P(i0, 0, -span - 1.2 + k * (2 * span + 2.4) / 14, 7.56), (3.0, 0.2, 0.2), yaw0)
+        B["wood"].box(P(i0, 0, -span - 1.2 + k * (2 * span + 2.4) / 14, 7.56), (3.0, 0.2, 0.2), yaw0, "x")
     for k, lit in ((-1, False), (0, True), (1, False)):
         B["dark"].box(P(i0, -0.9, k * 1.9, 4.3 + (0.0 if k else -0.35)), (0.5, 1.15, 2.9), yaw0)
         B["dark"].box(P(i0, -0.9, k * 1.9, 7.0), (0.1, 0.1, 0.5), yaw0)
@@ -1684,28 +2469,41 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
     tail, fin = road.index(length - 220), road.index(length)
     az = math.atan2(s[fin]["y"] - s[tail]["y"], s[fin]["x"] - s[tail]["x"])
     fx, fy = s[fin]["x"], s[fin]["y"]
-    dist_, radius, alt = 5200.0, 520.0, 300.0
+    # The sun itself is drawn on the sky (build_sky), so that it stands where its glow does from anywhere on the map.
+    dist_, radius, alt = 5200.0, 190.0, 300.0
     sx, sy = fx + math.cos(az) * dist_, fy + math.sin(az) * dist_
-    for q in range(32):
-        a0, a1 = q * math.tau / 32, (q + 1) * math.tau / 32
-        p0 = (sx - math.sin(az) * math.cos(a0) * radius, sy + math.cos(az) * math.cos(a0) * radius, alt + math.sin(a0) * radius)
-        p1 = (sx - math.sin(az) * math.cos(a1) * radius, sy + math.cos(az) * math.cos(a1) * radius, alt + math.sin(a1) * radius)
-        B["sun"].tri((sx, sy, alt), p1, p0)
-    # The glow round the sun: a wider disc behind it that fades into the sky's own colour at its edge.
-    halo = Builder("SunHalo", "sun")
-    halo.colours = []
-    hot, sky_ = srgb(0xFF9458), srgb(0xF0A784)
-    hx, hy = sx + math.cos(az) * 40, sy + math.sin(az) * 40
-    for q in range(32):
-        a0, a1 = q * math.tau / 32, (q + 1) * math.tau / 32
-        ring = [(hx - math.sin(az) * math.cos(a) * radius * 1.6, hy + math.cos(az) * math.cos(a) * radius * 1.6, alt + math.sin(a) * radius * 1.6) for a in (a1, a0)]
-        base = len(halo.verts)
-        halo.verts += [(hx, hy, alt), ring[0], ring[1]]
-        halo.colours += [hot, sky_, sky_]
-        halo.faces.append((base, base + 1, base + 2))
-    halo.build(col)
     # The sky itself: a sunset under a deck of cloud lit from below.
-    build_sky(col, az, 0xF2A77A)
+    build_sky(col, az, themes.THEMES["ibiza"]["haze"])
+    # A flock of gulls on its way to roost, which the app flies across that sky the other way: built about its own
+    # middle, the leader's beak along +x, in a loose V. Each is a body and two wings; the fourth part of a corner's
+    # colour says how far out along the wing it is, and the app beats the wings by it (flap-material.ts).
+    gulls = Builder("Birds", "gull")
+    gulls.colours = []
+    dark = srgb(MATERIALS["gull"]["color"])
+    flock = random.Random(515)
+    for k in range(11):
+        row = (k + 1) // 2
+        bx = -row * 2.6 + flock.uniform(-0.6, 0.6)
+        by = (1 if k % 2 else -1) * row * 2.1 + flock.uniform(-0.5, 0.5)
+        bz = flock.uniform(-0.7, 0.7)
+        size = flock.uniform(1.3, 1.7)
+        body = [(bx + 0.3 * size, by, bz), (bx - 0.05 * size, by + 0.07 * size, bz), (bx - 0.32 * size, by, bz), (bx - 0.05 * size, by - 0.07 * size, bz)]
+        first = len(gulls.verts)
+        gulls.verts += body
+        gulls.colours += [(*dark[:3], 1.0)] * 4
+        gulls.faces.append((first, first + 1, first + 2, first + 3))
+        for side in (1, -1):
+            # A wing in two parts, cranked back at the wrist as a gull's is.
+            wrist = (bx - 0.04 * size, by + side * 0.34 * size, bz + 0.05)
+            tip = (bx - 0.24 * size, by + side * 0.68 * size, bz)
+            first = len(gulls.verts)
+            gulls.verts += [(bx + 0.14 * size, by + side * 0.05, bz), (bx - 0.12 * size, by + side * 0.05, bz), wrist, (bx + 0.06 * size, by + side * 0.36 * size, bz + 0.05), tip]
+            gulls.colours += [(*dark[:3], 1.0), (*dark[:3], 1.0), (*dark[:3], 0.65), (*dark[:3], 0.65), (*dark[:3], 0.3)]
+            gulls.faces.append((first, first + 1, first + 2, first + 3))
+            gulls.faces.append((first + 3, first + 2, first + 4))
+    gulls.build(col)
+    # An aeroplane on its way in to the island's airport, which the app flies across that sky.
+    aeroplane.build(B)
     # The sun's path on the water: glints scattered towards it from the finish's shore.
     for _ in range(170):
         out = rng.uniform(120, 2600)

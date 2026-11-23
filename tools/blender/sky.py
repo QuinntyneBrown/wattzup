@@ -53,7 +53,9 @@ def ramp(stops, t: float):
 
 
 SKY_SUNWARD = ((0.0, 0xFFE08A), (0.12, 0xFFB040), (0.28, 0xFF7A2A), (0.46, 0xE0483A), (0.66, 0x9A3A6A), (0.84, 0x55357A), (1.0, 0x262250))
-SKY_AWAY = ((0.0, 0xE9A9A4), (0.2, 0xC98AAA), (0.45, 0x8E6AA8), (0.7, 0x5A4A90), (1.0, 0x262250))
+# Away from the sun: the earth's own shadow lies blue-grey along the horizon, and over it the pink band of the last
+# light, before the violet of the coming night.
+SKY_AWAY = ((0.0, 0x66688E), (0.2, 0x74699A), (0.33, 0xE38CA4), (0.5, 0xA06CA8), (0.72, 0x5A4A90), (1.0, 0x262250))
 
 
 def sunset_sky_colour(dx: float, dy: float, dz: float, az: float, haze):
@@ -73,30 +75,50 @@ def sunset_sky_colour(dx: float, dy: float, dz: float, az: float, haze):
     banks = fbm(along * 0.5 + 3.1, across * 0.34 - 1.7, 3, 7)
     rows = fbm(along * 3.4, across * 1.5, 4, 21)
     puffs = fbm(along * 9.0 + 4.0, across * 5.5, 3, 40)
-    density = smoothstep(0.36, 0.62, banks * 0.6 + rows * 0.4 + puffs * 0.14)
+    thick = banks * 0.6 + rows * 0.4 + puffs * 0.14
+    density = smoothstep(0.36, 0.62, thick)
     # No cloud in the haze on the horizon; towards the sun a clear slot is left under the deck, where the sky burns.
-    cover = density * smoothstep(0.015 + 0.05 * sunward, 0.07 + 0.1 * sunward, h)
+    cover = density * smoothstep(0.012 + 0.018 * sunward, 0.04 + 0.04 * sunward, h)
     # Each puff's underside catches the sun and the gaps between them are in shade: the deck is mottled.
     belly = smoothstep(0.35, 0.7, puffs * 0.6 + rows * 0.5)
-    lit = sunward ** 0.6 * (1 - smoothstep(0.18, 0.95, h)) * (0.45 + 0.75 * belly)
+    # The sun reaches a bank's thin edges and not its heart: the banks are dark, rimmed with fire.
+    heart = smoothstep(0.5, 0.68, thick)
+    lit = sunward ** 0.6 * (1 - smoothstep(0.18, 0.95, h)) * (0.45 + 0.75 * belly) * (1 - 0.85 * heart)
     fire = mix(mix(srgb(0xFF4A14), srgb(0xFF8A1E), belly), srgb(0xFFC860), (1 - density) ** 1.5 * 0.8)
     shade = mix(mix(srgb(0x9A5A78), srgb(0x5A3A5E), h ** 0.5), srgb(0x2A2038), 0.25 + density * 0.6)
+    shade = mix(shade, srgb(0x3A1E3A), heart * 0.7 * sunward)
     cloud = mix(shade, fire, min(1.0, lit * 1.25))
     c = mix(air, cloud, cover * 0.96)
     # The glow round the sun, and the haze along the horizon that the far land fades into.
     sx, sy, sz = math.cos(az) * 0.994, math.sin(az) * 0.994, 0.11
     near = max(0.0, dx * sx + dy * sy + dz * sz)
     g = near ** 40 * 0.5 * (1 - cover * 0.6) + near ** 6 * 0.08
+    # Its corona: what was a disc behind the sun is in the sky's own picture, and fades with no edge.
+    g += near ** 240 * 0.55 + near ** 14 * 0.16 * (1 - cover * 0.5)
     c = (c[0] + 1.0 * g, c[1] + 0.6 * g, c[2] + 0.25 * g, 1.0)
-    c = mix(c, haze, math.exp(-11 * h) * 0.55 * (1 - 0.6 * sunward))
+    # Shafts of light: the sun, behind the banks on the horizon, throws rays up through the gaps between them and
+    # their shadows between the rays, fanned out from where it stands and fading as they climb.
+    turn = math.atan2(dy, dx) - az
+    off = math.remainder(turn, math.tau) * math.cos(min(1.2, math.asin(max(-1.0, min(1.0, dz)))))
+    rise = math.asin(max(-1.0, min(1.0, dz))) - math.asin(sz)
+    spread = math.hypot(off, rise)
+    if 0.02 < spread < 1.2 and rise > -0.06:
+        fan = math.atan2(rise, off)
+        shaft = value_noise(fan * 3.2 + 20.0, 0.0, 61) * 0.7 + value_noise(fan * 7.0 + 3.0, 0.0, 62) * 0.3
+        reach = smoothstep(0.05, 0.22, spread) * math.exp(-spread * 1.5) * (1 - cover * 0.45)
+        ray = (smoothstep(0.38, 0.66, shaft) - 0.45) * reach
+        c = (c[0] * (1 + 0.95 * ray) + 0.1 * max(0.0, ray), c[1] * (1 + 0.8 * ray) + 0.05 * max(0.0, ray), c[2] * (1 + 0.45 * ray), 1.0)
+    c = mix(c, haze, math.exp(-24 * h) * 0.5 * (1 - 0.6 * sunward))
     return grade(c)
 
 
 # The app draws the sky through its tone curve (AgX), which pales a bright colour: the picture is painted deeper
 # and a little darker than it is to be seen, so that it comes out as the preview shows it.
-SKY_DEPTH, SKY_GAIN = 1.75, 0.8
+SKY_DEPTH, SKY_GAIN, SKY_CONTRAST = 1.75, 0.85, 1.45
 
 
 def grade(c):
+    # Its darks deeper too: the curve lifts them, and a bank of cloud would come out as pale as the sky behind it.
+    c = tuple(max(0.0, v) ** SKY_CONTRAST for v in c[:3])
     luma = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
     return tuple(max(0.0, min(1.0, (luma + (v - luma) * SKY_DEPTH) * SKY_GAIN)) for v in c[:3]) + (1.0,)

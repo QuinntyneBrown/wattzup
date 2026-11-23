@@ -96,10 +96,12 @@ THEMES: dict[str, dict] = {
     # hills its efforts climb, and what the course file tells the app of its lights.
     "ibiza": {
         "own": True,
-        "sky": [0xFFC27A, 0xF7A070, 0xE0708A, 0x7A4F9A, 0x2F2A5E],
-        "haze": 0xF2A77A,
-        "light": [0xFF9A5A, 2.6],
-        "fill": [0xFFD9C0, 0x6A5A7A],
+        # The colours of the sky painted for it (sky.py), horizon up: what its sea mirrors, what its far land fades
+        # into, and the light that sky throws: a red sun, rose from above, plum from the ground.
+        "sky": [0xFFB84A, 0xFF7A2E, 0xD8452E, 0x8A3048, 0x2E2248],
+        "haze": 0xE58A5C,
+        "light": [0xFF8440, 2.6],
+        "fill": [0xFFC4A8, 0x6E4A68],
         "sun_altitude": 0.11,
         "terrain": {"sea": True},
         "centre": "yellow",

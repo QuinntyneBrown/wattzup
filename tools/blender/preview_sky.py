@@ -9,17 +9,18 @@ from PIL import Image
 
 import sky
 
-W, H, FOV = 640, 300, math.radians(75)
+# As the rider sees it: the picture is 89 degrees wide and its sky ends some 15 degrees over the horizon.
+W, H, FOV = 640, 150, math.radians(89)
 
 
-def view(az: float, look: float, pitch: float = 0.16) -> Image.Image:
+def view(az: float, look: float, pitch: float = 0.0) -> Image.Image:
     img = Image.new("RGB", (W, H))
     px = img.load()
-    haze = sky.srgb(0xF2A77A)
+    haze = sky.srgb(0xE58A5C)
     f = (W / 2) / math.tan(FOV / 2)
     for y in range(H):
         for x in range(W):
-            cx, cy, cz = (x - W / 2) / f, 1.0, (H * 0.8 - y) / f
+            cx, cy, cz = (x - W / 2) / f, 1.0, (H * 0.82 - y) / f
             n = math.sqrt(cx * cx + cy * cy + cz * cz)
             cx, cy, cz = cx / n, cy / n, cz / n
             cy, cz = cy * math.cos(pitch) - cz * math.sin(pitch), cy * math.sin(pitch) + cz * math.cos(pitch)

@@ -19,7 +19,7 @@ FLOAT, UBYTE, USHORT = 5126, 5121, 5123
 WIDTH = {"SCALAR": 1, "VEC2": 2, "VEC3": 3, "VEC4": 4}
 SIZE = {5120: 1, 5121: 1, 5122: 2, 5123: 2, 5125: 4, 5126: 4}
 # Meshes the app moves by setting their place (the confetti flutters): their nodes must keep their own.
-MOVED = ("Confetti",)
+MOVED = ("Confetti", "Walker")
 # The smallest step a position is held to, in metres.
 STEP = 0.01
 
@@ -66,12 +66,18 @@ def pack(path: Path) -> tuple[int, int]:
         start = view.get("byteOffset", 0) + accessor.get("byteOffset", 0)
         data = blob[start : start + count * width * SIZE[accessor["componentType"]]]
         stride = None
-        if index in colours and accessor["componentType"] == FLOAT:
-            values = struct.unpack(f"<{count * width}f", data)
+        if index in colours and accessor["componentType"] in (FLOAT, USHORT):
+            # The exporter writes colours as floats, or as 16-bit steps where their fourth part is used.
+            if accessor["componentType"] == FLOAT:
+                values = struct.unpack(f"<{count * width}f", data)
+            else:
+                values = [v / 65535 for v in struct.unpack(f"<{count * width}H", data)]
             packed = bytearray()
             for i in range(count):
                 rgb = values[i * width : i * width + 3]
-                packed += bytes(max(0, min(255, round(v * 255))) for v in rgb) + b"\xff"
+                # The fourth is kept where the map sets it: how freely a leaf's corner swings (leaf-material.ts).
+                fourth = values[i * width + 3] if width == 4 else 1.0
+                packed += bytes(max(0, min(255, round(v * 255))) for v in (*rgb, fourth))
             data = bytes(packed)
             accessor.update({"componentType": UBYTE, "normalized": True, "type": "VEC4"})
             accessor.pop("min", None)
