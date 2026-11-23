@@ -201,6 +201,7 @@ cloud over a beach club; an aeroplane crossing a red sky over a party in white; 
 | Sky 20 | A clear band of gold between the sea and the cloud's burning edge, towards the sun: the deck came down almost to the horizon | 60.3, 60.2 and 60.2 fps (from 4,450, 8,150 and 3,250 m) | 57.0 and 40.0 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 55.8, 52.6 |
 | Sky 21 | The thunderheads have no edge: at its outline each is the sky behind it, and comes to its own colour a quarter of the way in | 59.8 and 60.3 fps (from 4,450 and 8,150 m) | 51.7 and 41.4 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 55.9, 45.9 |
 | Party 21 | Partygoers stand dark against the sunset, the drinks in their hands still bright: a figure seen towards the sun loses up to six tenths of its colour | 60.1 fps, none over 20 ms (the finish) | 40.0 and 52.7 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 54.1, 47.4 |
+| Sky 22 | The sun's glow is round the sun: it was painted six degrees up, and hung over a sun that had gone down from under it | 59.9 and 60.4 fps (from 4,450 and 8,150 m) | 52.2 and 52.6 fps after (the finish, 118,759 triangles: none more); Neon Docklands beside it 56.3, 54.4 |
 
 ### Sky 1: a sunset painted in Blender
 
@@ -688,6 +689,15 @@ some views a flat wedge. Cloud has no edge. At its outline (its two sides and it
 of the sky behind it, and comes to its own colour a quarter of the way in: its dark heart and its lit shoulder
 stand in the sky and fade into it. The sky has no way to draw a thing half seen through, so the fade is in the
 paint; no triangles are added.
+
+### Sky 22: the glow is round the sun
+
+`sky-22.jpg` (left before, right after, from the same places: above from 4,450 m, below from 8,150 m). A rough
+edge noted since Sky 15: the sun's disc goes down as the ride goes on, from six degrees to one, and its glow and
+corona, which are in the sky's own paint, stayed where they were painted, at six degrees. By the finish the glow
+hung in the sky five degrees over the sun. It is painted at two and a half degrees now, where the sun stands for
+the last half of the ride, and the shafts of light fan out from there. It still does not move: early in the ride
+the sun stands a little over its glow, where it stood a long way under it late.
 
 ### Low power: where the frames go (after Party 20)
 

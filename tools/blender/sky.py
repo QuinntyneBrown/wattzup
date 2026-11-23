@@ -92,7 +92,9 @@ def sunset_sky_colour(dx: float, dy: float, dz: float, az: float, haze):
     cloud = mix(shade, fire, min(1.0, lit * 1.25))
     c = mix(air, cloud, cover * 0.96)
     # The glow round the sun, and the haze along the horizon that the far land fades into.
-    sx, sy, sz = math.cos(az) * 0.994, math.sin(az) * 0.994, 0.11
+    # It is painted where the sun stands for the last half of the ride, some two and a half degrees up: painted at
+    # six, it hung in the sky over a sun that had gone down from under it.
+    sx, sy, sz = math.cos(az) * 0.999, math.sin(az) * 0.999, 0.045
     near = max(0.0, dx * sx + dy * sy + dz * sz)
     g = near ** 40 * 0.5 * (1 - cover * 0.6) + near ** 6 * 0.08
     # Its corona: what was a disc behind the sun is in the sky's own picture, and fades with no edge.
