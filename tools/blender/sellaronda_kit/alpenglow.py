@@ -200,6 +200,12 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         wi = road.index(wc_at)
         wx_l, wy_l, wz_l = road.at(wi, (kit.kerb + 7.2) * wc_s, 2.2)
         kit.light((wx_l, wy_l, wz_l), "glow-window", 14.0, 0.48)
+    # Warm cable-car valley terminal light pools at Arabba & Passo Pordoi
+    for st_at, st_off in ((3210.0, kit.kerb + 20.0), (4985.0, -(kit.kerb + 16.0))):
+        si = road.index(st_at)
+        sx_l, sy_l, sz_l = road.at(si, st_off, 3.8)
+        kit.light((sx_l, sy_l, sz_l), "glow-window", 22.0, 0.56)
+        kit.halo((sx_l, sy_l, sz_l), "glow-window")
     # [ANCHOR:alpenglow-lights]
 
 
