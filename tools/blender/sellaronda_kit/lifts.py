@@ -241,4 +241,13 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
     B["steel"].box((bwx, bwy, bwz + 4.7), (5.6, 1.8, 0.65), bw_yaw)
     B["parasol-red"].box((bwx, bwy, bwz + 4.25), (3.8, 3.8, 0.28), bw_yaw)
 
+    # 8. Slatted aged-larch snow-drift fences (barriere fermaneve) on wind-exposed piste ridges
+    for sf_m, sf_s in ((4820.0, 1.0), (10020.0, 1.0)):
+        sf_idx = road.index(sf_m)
+        sf_yaw = s[sf_idx]["h"] + 0.4
+        for f_seg in range(3):
+            fx_s, fy_s, _ = road.at(sf_idx, (kit.kerb + 18.0 + f_seg * 6.5) * sf_s)
+            fz_s = height_at(fx_s, fy_s)
+            B["larch-aged"].box((fx_s, fy_s, fz_s - 0.2), (5.2, 0.16, 1.65), sf_yaw)
+
     return cableways_out
