@@ -321,4 +321,9 @@ def build_hairpin_furniture(B, kit, road, height_at) -> None:
         wby = s[wb_i]["h"]
         B["steel"].box(kit.P(wb_i, 0.0, -(kit.kerb + 1.65), 0.0), (0.24, 0.24, 1.15), wby)
         B["parasol-red"].box(kit.P(wb_i, 2.2, -(kit.kerb + 1.65), 0.92), (4.4, 0.12, 0.14), wby)
+    # High-visibility yellow cyclist-priority signs at the foot of all 4 climbs
+    for p in PASSES:
+        cy_s = road.index(p["climb_from"] + 12.0)
+        B["steel"].box(kit.P(cy_s, 0.0, -(kit.kerb + 1.55), -0.1), (0.08, 0.08, 2.15), s[cy_s]["h"])
+        B["yellow"].box(kit.P(cy_s, 0.0, -(kit.kerb + 1.55), 1.65), (0.08, 0.62, 0.62), s[cy_s]["h"])
     # [ANCHOR:hairpins]
