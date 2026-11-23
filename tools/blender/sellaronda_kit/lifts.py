@@ -272,4 +272,13 @@ def build_ski_lifts(B, kit, road, height_at, cx: float, cy: float) -> list[dict]
             B["larch-warm"].box((ax_s, ay_s, az_s + 3.85), (5.6, 2.3, 0.95), skyaw)
             B["crowd-3" if side < 0 else "foliage"].box((ax_s, ay_s, az_s + 2.65), (1.45, 2.32, 0.65), skyaw)
 
+    # 10. Banked wooden Sellaronda MTB Track Tour flow-trail berms on the summer pistes
+    for mtb_m in (3480.0, 9880.0):
+        m_idx = road.index(mtb_m)
+        myaw = s[m_idx]["h"] + 0.55
+        for bm_k in range(3):
+            bx_m, by_m, _ = road.at(m_idx, kit.kerb + 15.0 + bm_k * 8.5)
+            bz_m = height_at(bx_m, by_m)
+            B["larch-warm"].box((bx_m, by_m, bz_m), (4.6, 1.45, 0.68), myaw + bm_k * 0.4)
+
     return cableways_out
