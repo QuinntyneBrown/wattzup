@@ -20,6 +20,17 @@ export type { ClassCatalogueDto, ShelfDto } from './classes/class-catalogue-dto'
 export { BUILD_INFO, type BuildInfo } from './diagnostics/build-info';
 export { CONNECTION_HISTORY, type ConnectionHistory } from './diagnostics/connection-history';
 export { PACKET_LOG, type PacketDirection, type PacketLog } from './diagnostics/packet-log';
+export {
+  FEEDBACK_API,
+  FEEDBACK_MAX_LENGTH,
+  type FeedbackApi,
+  type FeedbackContext,
+  type FeedbackDiagnostics,
+  type FeedbackFact,
+  type FeedbackKind,
+  type FeedbackRequest,
+} from './feedback/feedback';
+export { HttpFeedbackApi } from './feedback/http-feedback-api';
 export { APP_LOGGER, type AppLogger } from './diagnostics/app-logger';
 export {
   DIAGNOSTICS,

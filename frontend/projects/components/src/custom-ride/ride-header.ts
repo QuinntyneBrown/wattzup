@@ -39,6 +39,10 @@ export class RideHeader {
   /** Library, which asks to leave the ride in a popover under it (L2-107 AC1); emitted with the button, its anchor. */
   readonly libraryOpen = input(false);
   readonly library = output<HTMLElement>();
+  /** Whether Send feedback is open, for Feedback's `aria-expanded`. */
+  readonly feedbackOpen = input(false);
+  /** Feedback was pressed; it carries the button, which the popover hangs under (L2-116 AC1, AC4). */
+  readonly feedback = output<HTMLElement>();
   /** The bike status opens Diagnostics (L2-113 AC1). */
   readonly diagnostics = output<void>();
   /** "Diagnostics: Echelon EX-5s Connected", or "Diagnostics: No bike connected" without a named bike (L2-019). */

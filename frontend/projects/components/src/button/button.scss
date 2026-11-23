@@ -108,6 +108,15 @@
   --btn-hover-opacity: 0.9;
 }
 
+// Muted text that fills on hover, beside a stronger choice (Send another).
+:host(.btn--quiet) {
+  --btn-pad: var(--space-3);
+  --btn-weight: var(--font-weight-medium);
+  --btn-fg: var(--color-muted);
+  --btn-bg-hover: var(--color-raised);
+  --btn-fg-hover: var(--color-fg);
+}
+
 :host(.btn--raised) {
   --btn-bg: var(--color-raised);
   --btn-bg-hover: var(--color-raised-hover);

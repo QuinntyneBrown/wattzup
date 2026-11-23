@@ -20,6 +20,8 @@ export interface PacketLog {
   setEveryPacket(on: boolean): void;
   /** One message on `characteristic`, as the Bluetooth link sent or received it. */
   record(direction: PacketDirection, characteristic: string, bytes: Uint8Array): void;
+  /** The newest entries that fit in `maxBytes`, oldest first, as JSON Lines: a bug report's last 1 MB (L2-117 AC4). */
+  tail(maxBytes: number): string;
   /** Saves the log, oldest first, as `telo-ride-packets-{YYYY-MM-DD}.jsonl` (L2-114 AC3). */
   download(): void;
 }

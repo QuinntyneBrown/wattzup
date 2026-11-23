@@ -12,10 +12,14 @@ export class CustomRidePage {
   readonly diagnostics: Locator;
   /** Library, which asks to leave the ride (L2-107). */
   readonly library: Locator;
+  /** Feedback, which pauses the ride and opens Send feedback (L2-116 AC1). */
+  readonly feedback: Locator;
   /** Start, Pause and Resume, one button whose label says what it does (L2-105, L2-106). */
   readonly start: Locator;
   readonly pause: Locator;
   readonly resume: Locator;
+  /** Resume, behind a modal dialog that hides the page from assistive technology. */
+  readonly resumeBehindDialog: Locator;
   readonly end: Locator;
   /** The overlay over the telemetry: Connect your bike, Lost the bike, Turn on Bluetooth (L2-105, L2-106). */
   readonly overlay: Locator;
@@ -70,9 +74,15 @@ export class CustomRidePage {
     this.fullScreen = header.getByRole('button', { name: 'Full screen' });
     // A modal "Leave this ride?" hides the page behind it from assistive technology, Library included.
     this.library = header.getByRole('button', { name: 'Library', includeHidden: true });
+    this.feedback = header.getByRole('button', { name: 'Feedback', includeHidden: true });
     this.start = header.getByRole('button', { name: 'Start', exact: true });
     this.pause = header.getByRole('button', { name: 'Pause', exact: true });
     this.resume = header.getByRole('button', { name: 'Resume', exact: true });
+    this.resumeBehindDialog = header.getByRole('button', {
+      name: 'Resume',
+      exact: true,
+      includeHidden: true,
+    });
     this.end = header.getByRole('button', { name: 'End', exact: true });
     this.overlay = page.locator('.ride-overlay__card');
     this.connectBike = this.overlay.getByRole('button', { name: 'Connect bike' });

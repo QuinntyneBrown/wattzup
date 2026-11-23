@@ -33,6 +33,7 @@ import {
 import { CustomRideStore } from './custom-ride-store';
 import { type LeaveChoice, LeaveRideDialog, type LeaveRideData } from './leave-ride-dialog';
 import { openDiagnostics } from '../diagnostics/open-diagnostics';
+import { type FeedbackDialogHandle, openFeedback } from '../feedback/open-feedback';
 
 /**
  * The custom ride (docs/mocks/pages/custom-ride/, L2-101 to L2-104) at `/profile/custom/ride`: the ride header, the
@@ -78,9 +79,15 @@ export default class CustomRidePage {
   private leaving: DialogRef<LeaveChoice, LeaveRideDialog> | null = null;
   /** Whether "Leave this ride?" is open, for Library's `aria-expanded` (L2-107 AC1). */
   protected readonly leaveOpen = signal(false);
+  private feedback: FeedbackDialogHandle | null = null;
+  /** Whether Send feedback is open, for Feedback's `aria-expanded` (L2-116 AC1). */
+  protected readonly feedbackOpen = signal(false);
 
   constructor() {
-    inject(DestroyRef).onDestroy(() => this.leaving?.close());
+    inject(DestroyRef).onDestroy(() => {
+      this.leaving?.close();
+      this.feedback?.close();
+    });
   }
 
   /**
@@ -115,6 +122,21 @@ export default class CustomRidePage {
       this.leaving = null;
       this.leaveOpen.set(false);
       if (choice === 'save' || choice === 'discard') this.store.leave(choice === 'save');
+    });
+  }
+
+  /**
+   * Feedback: the ride pauses and Send feedback opens with the ride's state, a bottom sheet on a phone and a popover
+   * under the button from sm (L2-116 AC1, AC4); closing it leaves the ride paused (L2-118 AC5).
+   */
+  protected async openFeedback(anchor: HTMLElement): Promise<void> {
+    if (this.feedbackOpen()) return;
+    this.feedbackOpen.set(true);
+    const context = this.store.openFeedback();
+    this.feedback = await openFeedback(this.dialog, this.overlay, this.injector, anchor, context);
+    this.feedback.closed.subscribe(() => {
+      this.feedback = null;
+      this.feedbackOpen.set(false);
     });
   }
 

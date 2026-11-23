@@ -1,0 +1,17 @@
+<div class="feedback-dialog__scrim" aria-hidden="true"></div>
+<wz-feedback-form
+  [kind]="store.kind()"
+  [copy]="store.copy()"
+  [message]="store.message()"
+  [attachDiagnostics]="store.attachDiagnostics()"
+  [context]="context"
+  [status]="store.status()"
+  [canSend]="store.canSend()"
+  [maxLength]="maxLength"
+  (kindChanged)="store.kind.set($event)"
+  (messageChanged)="store.message.set($event)"
+  (attachChanged)="store.attachDiagnostics.set($event)"
+  (sendRequested)="send()"
+  (anotherRequested)="store.sendAnother()"
+  (dismissed)="close()"
+/>

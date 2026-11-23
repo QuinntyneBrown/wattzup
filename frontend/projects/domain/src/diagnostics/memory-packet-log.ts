@@ -65,6 +65,21 @@ export class MemoryPacketLog implements PacketLog {
     if (this.on()) this.logger.packet(direction, frame, hex);
   }
 
+  tail(maxBytes: number): string {
+    const lines: string[] = [];
+    let size = 0;
+    for (let i = this.entries.length - 1; i >= this.head; i--) {
+      const line = this.entries[i].line;
+      if (size + line.length + 1 > maxBytes) break;
+      size += line.length + 1;
+      lines.push(line);
+    }
+    return lines
+      .reverse()
+      .map((line) => `${line}\n`)
+      .join('');
+  }
+
   download(): void {
     const lines: string[] = [];
     for (let i = this.head; i < this.entries.length; i++) lines.push(this.entries[i].line, '\n');

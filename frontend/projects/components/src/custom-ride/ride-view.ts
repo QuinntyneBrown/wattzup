@@ -4,6 +4,7 @@ import {
   type ElementRef,
   computed,
   input,
+  output,
   linkedSignal,
   viewChildren,
 } from '@angular/core';
@@ -42,6 +43,8 @@ export class RideView {
   /** The progress strip's label, "Ride progress: 6:52 of 30:00" (L2-103 AC4). */
   readonly progressLabel = input('');
 
+  /** The rider chose a tab: the page keeps it for what Send feedback attaches (L2-117 AC2). */
+  readonly tabChosen = output<RideViewTab>();
   protected readonly tab = linkedSignal<RideViewTab>(() => (this.hasVideo() ? 'video' : 'chart'));
   protected readonly tabs = computed<RideViewTab[]>(() =>
     this.hasVideo() ? ['video', 'chart'] : ['chart'],
@@ -51,6 +54,7 @@ export class RideView {
 
   protected choose(tab: RideViewTab): void {
     this.tab.set(tab);
+    this.tabChosen.emit(tab);
   }
 
   /** Arrow keys, Home and End move between the tabs and choose the one they reach. */
@@ -69,7 +73,7 @@ export class RideView {
               : null;
     if (to === null) return;
     event.preventDefault();
-    this.tab.set(tabs[to]!);
+    this.choose(tabs[to]!);
     this.buttons()[to]?.nativeElement.focus();
   }
 }

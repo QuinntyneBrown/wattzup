@@ -10,6 +10,8 @@
   [endDisabled]="store.endDisabled()"
   [libraryOpen]="leaveOpen()"
   (library)="openLeave($event)"
+  [feedbackOpen]="feedbackOpen()"
+  (feedback)="openFeedback($event)"
   (stopped)="store.end()"
   (ran)="store.toggleRun()"
   [fullscreen]="fullscreen.active()"
@@ -51,6 +53,7 @@
       [total]="store.lengthSeconds"
       [max]="store.traceMax"
       [traceLabel]="store.traceLabel()"
+      (tabChosen)="store.view.set($event)"
     >
       @if (store.videoId; as videoId) {
         <wz-ride-video
