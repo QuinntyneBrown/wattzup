@@ -28,6 +28,7 @@ def _hay_barn(B, kit, x: float, y: float, z: float, yaw: float, scale: float = 1
     # Shallow split-larch shingle gable roof weighted with pale dolomite stones
     kit.gable(B["chalet-wood"], (x, y, z + 0.45 + h), w + 0.75 * scale, d + 0.75 * scale, 1.45 * scale, yaw)
     B["larch-aged"].box((x - math.sin(yaw) * (d * 0.56), y + math.cos(yaw) * (d * 0.56), z + 0.35 + h + 1.15 * scale), (0.16, 0.95 * scale, 0.16), yaw)
+    B["larch-aged"].box((x, y, z + 0.45 + h + 1.42 * scale), (w + 0.80 * scale, 0.20, 0.12), yaw)
     for along_s in (-0.32 * w, 0.0, 0.32 * w):
         sx = x + math.cos(yaw) * along_s
         sy = y + math.sin(yaw) * along_s
