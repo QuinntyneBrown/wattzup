@@ -157,6 +157,21 @@ export function unescoSystemNumberForPeak(peakId: DolomitePeak['id']): number {
   }
 }
 
+/** Dominant Triassic carbonate lithology forming `peakId`. */
+export function rockStratigraphyForPeak(
+  peakId: DolomitePeak['id'],
+): 'sciliar-reef-dolomite' | 'marmolada-limestone' | 'dolomia-principale' {
+  switch (peakId) {
+    case 'marmolada':
+      return 'marmolada-limestone';
+    case 'sassolungo':
+    case 'sassopiatto':
+      return 'sciliar-reef-dolomite';
+    default:
+      return 'dolomia-principale';
+  }
+}
+
 /** Sightline prominence (0..1) of Sassolungo (3,181 m) from `metres` along Sella Ronda. */
 export function sassolungoSightline(metres: number): number {
   const w = ((metres % 11650) + 11650) % 11650;
