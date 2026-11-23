@@ -358,4 +358,8 @@ def build_rifugi_and_hotels(B, kit, road, height_at) -> None:
     B["stone"].box((mcx_r, mcy_r, mcz_r - 1.4), (6.8, 5.2, 2.2), mcry)
     B["larch-warm"].box((mcx_r, mcy_r, mcz_r + 0.8), (7.0, 5.4, 2.8), mcry)
     kit.gable(B["roof-slate"], (mcx_r, mcy_r, mcz_r + 3.6), 7.6, 6.0, 1.5, mcry)
+    # Outdoor Dolomite-stone barbecue hearth at Rifugio Salei (at=7128 m)
+    sl_g = road.index(7128.0)
+    B["stone"].box(kit.P(sl_g, 0.0, kit.kerb + 6.4, 0.0), (1.85, 1.35, 2.25), road.s[sl_g]["h"])
+    B["glow-door"].box(kit.P(sl_g, 0.0, kit.kerb + 6.4, 1.05), (0.95, 0.85, 0.45), road.s[sl_g]["h"])
     # [ANCHOR:rifugi-global]
