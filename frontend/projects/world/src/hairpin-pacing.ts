@@ -56,3 +56,25 @@ export function outerVsInnerHairpinGradeRatio(centreRadiusM: number, halfWidthM 
   const r = Math.max(halfWidthM + 2, centreRadiusM);
   return (r - halfWidthM) / (r + halfWidthM);
 }
+
+/** Counts distinct tornante curvature peaks (`|k| > 1/78`) separated by at least `minSpacingSamples`. */
+export function countTornantiInCurvatures(
+  curvatures: readonly number[],
+  minSpacingSamples = 18,
+): number {
+  let count = 0;
+  let last = -minSpacingSamples;
+  for (let i = 2; i < curvatures.length - 2; i++) {
+    const ak = Math.abs(curvatures[i]!);
+    if (
+      ak > 1 / 78 &&
+      ak >= Math.abs(curvatures[i - 2]!) &&
+      ak >= Math.abs(curvatures[i + 2]!) &&
+      i - last >= minSpacingSamples
+    ) {
+      count++;
+      last = i;
+    }
+  }
+  return count;
+}
