@@ -343,4 +343,6 @@ def build_four_passes(B, kit, road, height_at) -> None:
         ly_p = my + math.sin(p_yaw) * lg_o
         B["dolomite-pale"].box((lx_p, ly_p, mz + 0.25), (0.72, 0.58, 1.35), p_yaw)
         B["larch-aged"].box((lx_p, ly_p, mz + 1.60), (0.42, 0.36, 0.38), p_yaw)
+    # Low dry-stone enclosure wall around Cappella di San Maurizio on Passo Gardena
+    B["stone"].box((cx_ch, cy_ch, cz_ch - 0.55), (10.4, 7.6, 0.92), g_yaw)
     # [ANCHOR:passes]
