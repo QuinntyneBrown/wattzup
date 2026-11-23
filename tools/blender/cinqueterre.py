@@ -654,10 +654,85 @@ def boats(k) -> int:
     return hauled
 
 
+SHIRTS = (0xD9483A, 0x2F7FC4, 0xF0B429, 0x3E9A62, 0xF2EEE2, 0xE8762C, 0x7A4FB0, 0x25A0A0)
+SKIN = (0xE8B48C, 0xC88A5E, 0x8A5A3C, 0xF0C8A4)
+
+
+def hiker(paint, rng, c, yaw: float) -> None:
+    """A walker on the path: boots and shorts, a bright shirt, a rucksack, a sun hat and a pair of poles."""
+    cs, sn = math.cos(yaw), math.sin(yaw)
+    h = rng.uniform(0.92, 1.08)
+    shirt, pack = _lin(SHIRTS[rng.randrange(len(SHIRTS))]), _lin(SHIRTS[rng.randrange(len(SHIRTS))])
+    skin, shorts, hat = _lin(SKIN[rng.randrange(len(SKIN))]), _lin(rng.choice((0x3A4048, 0x6A6A52, 0x2A3A5A))), _lin(rng.choice((0xE8DCC0, 0xF2EEE2, 0x8A7A5A)))
+
+    def at(fwd: float, left: float, up: float):
+        return (c[0] + fwd * cs - left * sn, c[1] + fwd * sn + left * cs, c[2] + up * h)
+
+    stride = rng.uniform(0.12, 0.26)
+    for side in (1, -1):
+        paint.box(at(stride * side, 0.1 * side, 0.0), (0.16, 0.14, 0.46 * h), yaw, skin, 0.35)
+        paint.box(at(stride * side * 0.5, 0.1 * side, 0.46), (0.2, 0.17, 0.4 * h), yaw, shorts, 1.0)
+        paint.box(at(-stride * side * 0.6, 0.27 * side, 0.86), (0.11, 0.1, 0.54 * h), yaw, skin, 1.0)
+        # A pole, planted a little ahead.
+        paint.box(at(0.32 - stride * side, 0.36 * side, 0.0), (0.03, 0.03, 1.05 * h), yaw, _lin(0x2A2A2E), 1.0)
+    paint.box(at(0, 0, 0.84), (0.24, 0.42, 0.58 * h), yaw, shirt, 0.85)
+    paint.box(at(-0.2, 0, 0.9), (0.2, 0.34, 0.52 * h), yaw, pack, 0.8)
+    paint.box(at(0, 0, 1.44), (0.21, 0.2, 0.24 * h), yaw, skin, 1.0)
+    paint.box(at(0, 0, 1.66), (0.36, 0.36, 0.05), yaw, hat, 1.0)
+
+
+def footpath(k) -> dict:
+    """Detail 9, the coastal footpath and its hikers: about every 900 m the Sentiero Azzurro meets the road. A
+    flight of stone steps climbs the first terrace wall, a wooden fingerpost with red-and-white boards stands at
+    its foot, and walkers come and go along the inland side of the road in twos and threes."""
+    paint, rng, s = Painted(k), k.rng, k.s
+    stone, tread, wood, white, red = _lin(0x978E79), _lin(0xB4AB96), _lin(0x7A5A3A), _lin(0xF2EEE2), _lin(0xC8322C)
+    sites = [site["i"] for site in village_sites(s)]
+    crossings = walkers = 0
+
+    def clear(i: int) -> bool:
+        return 12 < i < k.n - 12 and all(abs(s[q]["k"]) < 1 / 90 for q in range(i - 8, i + 9)) and all(abs(i - v) > 30 for v in sites)
+
+    def party(i: int, size: int) -> int:
+        inland, yaw = -seaward(k, i), s[i]["h"] + (math.pi if rng.random() < 0.5 else 0.0)
+        for q in range(size):
+            x, y, z = k.P(i, q * rng.uniform(1.1, 1.9), (k.kerb + rng.uniform(0.7, 1.5)) * inland)
+            hiker(paint, rng, (x, y, z + 0.02), yaw + rng.uniform(-0.12, 0.12))
+        return size
+
+    for i in range(100, k.n - 40, 225):
+        while i < k.n - 40 and not clear(i):
+            i += 9
+        if i >= k.n - 40:
+            continue
+        inland, yaw = -seaward(k, i), s[i]["h"]
+        if terrace_levels(k, i) and terrace_levels(k, i + 2):
+            # Ten steps up the face of the first wall, a metre wide, each a block standing on the shoulder.
+            for step in range(10):
+                x, y, z = k.P(i, step * 0.5, (k.kerb + TERRACE_FOOT - 0.55) * inland)
+                paint.box((x, y, z - 0.2), (0.5, 1.1, 0.2 + (step + 1) * TERRACE_RISE / 10), yaw, tread if step % 2 else stone, 0.8)
+        # The fingerpost, with a board each way.
+        x, y, z = k.P(i, -1.2, (k.kerb + 1.7) * inland)
+        paint.box((x, y, z - 0.2), (0.11, 0.11, 2.5), yaw, wood, 0.8)
+        for up, turn in ((1.95, 0.0), (1.68, math.pi)):
+            reach = 0.5 * (1 if turn == 0.0 else -1)
+            bx, by = x + math.cos(yaw) * reach, y + math.sin(yaw) * reach
+            paint.box((bx, by, z + up), (0.9, 0.06, 0.2), yaw, white, 1.0)
+            paint.box((bx + math.cos(yaw) * reach * 0.75, by + math.sin(yaw) * reach * 0.75, z + up - 0.005), (0.24, 0.075, 0.21), yaw, red, 1.0)
+        crossings += 1
+        walkers += party(i + 4, rng.randint(2, 4))
+    for i in range(40, k.n - 40, 60):
+        j = i + rng.randrange(40)
+        if rng.random() < 0.55 and clear(j):
+            walkers += party(j, rng.randint(1, 3))
+    return {"crossings": crossings, "walkers": walkers}
+
+
 def scenery(k) -> dict:
     parapet(k)
     stepped = terraces(k)
     houses = villages(k)
     plants = maquis(k)
     hauled = boats(k)
-    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "houses": houses, "plants": plants, "boats": hauled}
+    path = footpath(k)
+    return {"efforts": k.gates("accent", "flag-1", CROWD), "terraced": stepped, "houses": houses, "plants": plants, "boats": hauled, **path}
