@@ -544,4 +544,6 @@ def build_sella_massif(peaks, road, cx: float, cy: float, az_sun: float, colour_
     )
     # Overhanging western yellow-dolomite buttress of Piz Gralba
     rock_tower(peaks, cx + psux * 815.0 + pspx * 145.0, cy + psuy * 815.0 + pspy * 145.0, 118.0, 535.0, 52.0, 42.0, 8, math.atan2(psuy, psux), cfn, taper=0.82, flat_cap=True, seed_phase=4.7)
+    # Sas da Lec sharp eastern limestone spur overlooking Corvara
+    rock_tower(peaks, cx + lcux * 812.0 - (-lcuy) * 75.0, cy + lcuy * 812.0 - lcux * 75.0, 108.0, 498.0, 46.0, 38.0, 8, math.atan2(lcuy, lcux), cfn, taper=0.38, flat_cap=False, seed_phase=1.5)
     # [ANCHOR:massif]
