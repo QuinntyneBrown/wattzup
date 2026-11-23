@@ -241,6 +241,11 @@ def emit_dusk_lights(kit, road, height_at) -> None:
         lfi = road.index(lf_m)
         lfx, lfy, _ = road.at(lfi, lf_o)
         kit.halo((lfx, lfy, height_at(lfx, lfy) + 7.5), "bulb")
+    # Warm announcer-booth dusk pool at Corvara start/finish (Milestone 0700!)
+    pa_l = road.index(45.0)
+    pax_l, pay_l, paz_l = road.at(pa_l, -(kit.kerb + 3.0), 2.5)
+    kit.light((pax_l, pay_l, paz_l), "glow-window", 18.0, 0.56)
+    kit.halo((pax_l, pay_l, paz_l), "glow-window")
     # [ANCHOR:alpenglow-lights]
 
 
