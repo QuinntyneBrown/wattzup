@@ -33,7 +33,10 @@ def relief(d,l):
         toe=55+z*.48+20*math.sin(d/245)
         shore=z+(1-z)*smooth(0,toe,width)-max(0,width-toe)*.21
         valley=z-width*(.36+.13*math.cos(d/370))+4*math.sin(width/57)*math.sin(d/390)
-        return coast*shore+(1-coast)*valley-.15
+        natural=coast*shore+(1-coast)*valley-.15
+        harbour=max(1-smooth(122,236,abs(d-centre)) for centre in (255,24587))
+        basin=smooth(5,32,width)*harbour
+        return natural+(-1.8-natural)*basin
     cut=smooth(1450,2050,d)*(1-smooth(22900,23600,d))
     plateau=smooth(8950,9600,d)*(1-smooth(11100,11700,d))
     return z-.16+(l-5)*(.06+cut*(1-plateau)*(.36+.26*math.sin(d/240)))+2.5*smooth(8,18,l)*math.sin(l/32+d/120)
@@ -110,11 +113,26 @@ def scenery(k):
             if 265<d<370:continue
             building(d,rng.uniform(11,25),rng.uniform(9,15),rng.uniform(6,9),rng.uniform(3.1,5.3),
                      rng.choice((0xD9CDB2,0xC2D2C5,0xAA6251,0xE1D9C6)),rng.choice((0x5B635D,0x885544)))
-        d=start+220;x,y,_=ground(d,-78)
+        d=252 if start<0 else 24590;x,y,_=ground(d,-31)
         art.box((x,y,2.2),(95,8,.63),heading(d),lin(0x867663))
         for offset in range(-44,45,6):
             xx=x+offset*math.cos(heading(d));yy=y+offset*math.sin(heading(d))
             for side in (-3,3):art.tube((xx,yy+side,-1),.29,.27,3.3,lin(0x443D34),lin(0x806C52),6)
+        # Plank access from the village grades down to each wharf.
+        for i in range(26):
+            u=i/25;l=-5-u*25
+            xw,yw,_=ground(d+26,l)
+            deck=(height(d+26)-.16)*(1-u)+2.79*u
+            art.box((xw,yw,deck-.21),(3.3,1.18,.22),heading(d+26),lin(0x9B8870))
+        for off in (-29,17):
+            xx=x+off*math.cos(heading(d));yy=y+off*math.sin(heading(d))
+            art.box((xx,yy,2.88),(6.8,3.4,2.7),heading(d),lin(0xAD5C46 if off<0 else 0xDBD1AE))
+            art.roof((xx,yy,5.58),6.8,3.4,1.2,heading(d),lin(0x5C655D))
+        for off in range(-41,42,11):
+            xx=x+off*math.cos(heading(d));yy=y+off*math.sin(heading(d))
+            art.tube((xx,yy-3.7,2.82),.20,.20,.58,lin(0x4C4942),lin(0x58574F),8)
+            for j in range(2):
+                art.box((xx+j*.97,yy+1.8,2.85),(.82,1.24,.55),heading(d),lin(0xA38658))
     # Saint-Pierre's limestone nave, projecting bell tower, belfry and tall silver spire.
     d=310;building(d,12,33,13,9,0xA9A29A,0x767D83)
     x,y,z=ground(292,12);yaw=heading(292)

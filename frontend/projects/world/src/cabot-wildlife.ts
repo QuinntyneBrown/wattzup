@@ -144,9 +144,9 @@ export class CabotWildlife {
       this.root.add(animal);
     }
     for (const [d, lane] of [
-      [247, 86],
-      [24512, 92],
-      [24549, 105],
+      [252, 38],
+      [24575, 39],
+      [24608, 42],
     ] as const) {
       const pos = course.place(d, lane),
         boat = new Mesh(this.hull, this.material);
