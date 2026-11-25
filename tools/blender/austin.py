@@ -59,8 +59,8 @@ def land(_road,col,theme,bc):
     return b.build(col),lambda x,y:0
 
 THEME={'lay':route,'land_builder':land,'road_builder':road,'night':True,'terrain':{'sea':False},
-       'land':{'mid':0x292834},'sky':[0x554252,0x302B48,0x1E223D,0x151A31,0x101427],
-       'haze':0x393044,'light':[0xF2BF9B,1.1],'fill':[0xB7B6D4,0x675561],
+       'land':{'mid':0x292834},'sky':[0x393145,0x202238,0x141B32,0x101427,0x090F20],
+       'haze':0x2F293B,'light':[0xF2BF9B,1.1],'fill':[0xB7B6D4,0x675561],
        'sun_azimuth':2.51,'sun_altitude':.39,'wet':.14,'chunks':{'Land':1,'Ground':1}}
 
 @lru_cache(maxsize=96)
@@ -134,6 +134,19 @@ def frontage(k,art,glow,d,side,index,hotel=False):
                 b=loc(u+rw*.52*math.cos(end),14.1,y+1.82+.87*math.sin(end))
                 beam(art,a,b,.20,.22,lin(0xE2CBA3))
             box(u,14.02,y-.17,rw+.56,.38,.21,0xD9C7A6)
+    if index%3!=1 or hotel:
+        neon=(0xFF8368,0x61D4CB,0xF5B35F,0xE78FB7)[index%4]
+        glow.box(loc(0,13.7,3.65),(w*.85,.095,.079),h,lin(neon))
+        for u in (-w*.39,w*.39):
+            glow.box(loc(u,13.7,1.0),(.068,.085,2.7),h,lin(neon))
+        for j in range(13):
+            glow.box(loc(w*(j/15-.4),13.4,3.35),(.11,.09,.13),h,lin(0xFFE4AA))
+        box(0,13.40,3.84,w*.83,.42,.99,0x4F373D)
+        label=('LIVE MUSIC','HONKY TONK','SOUL CLUB','BLUES ON 6TH','DANCE HALL','TEXAS BBQ')[index%6] if not hotel else 'THE DRISKILL'
+        normal=1 if side>0 else -1
+        right=(normal*math.cos(h),normal*math.sin(h),0)
+        words(glow,label,loc(0,13.16,3.99),right,(0,0,1),.71,w*.72,neon)
+        k.light(loc(0,8.3,0),('neon-amber','neon-cyan','neon-pink','neon-violet')[index%4],13,.49)
     if hotel:
         for u in (-w/2+.6,0,w/2-.6):
             box(u,13.88,.15,.85,.93,top,0xD5BA98)
