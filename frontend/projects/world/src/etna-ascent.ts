@@ -1,4 +1,4 @@
-import { positionWorld, texture, vec2 } from 'three/tsl';
+import { cameraPosition, positionWorld, smoothstep, texture, uniform, vec2 } from 'three/tsl';
 import {
   BoxGeometry,
   CanvasTexture,
@@ -95,6 +95,11 @@ export async function etnaAscent(course: Course) {
     Scoria: surface(scoria!, 3.4),
     Bitumen: surface(asphalt, 1.3),
   };
+  const heat = uniform(0);
+  const distance = positionWorld.distance(cameraPosition);
+  const band = smoothstep(25, 60, distance).mul(smoothstep(100, 195, distance).oneMinus());
+  const ripple = positionWorld.z.mul(1.7).add(positionWorld.x.mul(0.31)).add(heat).sin();
+  rocks.Bitumen.emissiveNode = band.mul(ripple.mul(0.5).add(0.5).pow(5)).mul(0.034);
   const plane = new PlaneGeometry(7200, 2200),
     summit = new Mesh(plane, rock);
   resources.push(plane, rock);
@@ -237,28 +242,32 @@ export async function etnaAscent(course: Course) {
   }
   const coastalMaterial = new MeshBasicMaterial({
     map: coast,
-    alphaTest: 0.44,
+    transparent: true,
+    depthWrite: false,
     side: DoubleSide,
     fog: false,
     color: 0xc3ced1,
   });
-  const coastalGeometry = new PlaneGeometry(3850, 670),
+  const coastalGeometry = new PlaneGeometry(4550, 590),
     outlook = new Mesh(coastalGeometry, coastalMaterial),
     view = course.place(4760);
   const forwardX = -Math.sin(view.heading),
     forwardZ = -Math.cos(view.heading);
   outlook.position.set(
     view.x + forwardX * 1620 + forwardZ * 910,
-    view.y - 170,
+    view.y + 68,
     view.z + forwardZ * 1620 - forwardX * 910,
   );
-  outlook.rotation.y = view.heading - 0.4;
+  outlook.rotation.y = view.heading;
   group.add(outlook);
   resources.push(coastalGeometry, coastalMaterial);
   const firstWalker = new Vector3();
   return {
     group,
     rocks,
+    get heatPhase() {
+      return heat.value;
+    },
     get busPosition() {
       return bus.position.x;
     },
@@ -272,6 +281,10 @@ export async function etnaAscent(course: Course) {
       return firstWalker.x;
     },
     at(time: number, metres: number) {
+      heat.value = time * 2.1;
+      const coastalFade = Math.max(0, Math.min(1, (metres - 4000) / 320, (5450 - metres) / 320));
+      outlook.visible = coastalFade > 0;
+      coastalMaterial.opacity = 0.78 * coastalFade;
       for (let i = 0; i < steam.length; i++) {
         const p = steam[i]!,
           t = plumePhase(time, i / steam.length),

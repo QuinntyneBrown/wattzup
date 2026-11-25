@@ -25,3 +25,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Four Foalsmen” Route Details (Watopia)](https://zwiftinsider.com/route/four-foalsmen/) (g0049) | © Zwift |
 | game-04.jpg | Zwift: [“One Ride To Rule Them All” Route Details (Watopia)](https://zwiftinsider.com/route/one-ride-to-rule-them-all/) (g0113) | © Zwift |
 | game-05.jpg | Zwift: [“Zwift Bambino Fondo 2022” Route Details (Watopia)](https://zwiftinsider.com/route/zwift-bambino-fondo-2022/) (g0192) | © Zwift |
+
+## Original race assets
+
+The summit profile, Catania coastal plain, clinker and scoria textures, and Sapienza frontage atlas were generated for this course. The opening and switchbacks use real 01–05 and 14 for lava scale and plant cover. The crater colours follow real 07–11 and 15. The refuge and cableway follow real 04, 06, 09 and 12–14. Game 01–05 informed the rider-height sightlines. The native scene shares the class’s off-road bus, walker clothing and summit plume timing. The road surface, stone kerbs, crater and lift geometry are authored for the climb.

@@ -104,7 +104,7 @@ export class WorldRideProbe {
   }
 
   async etnaMotion(
-    part: 'plumeHeight' | 'walkerPosition' | 'gondolaPosition' | 'busPosition',
+    part: 'plumeHeight' | 'walkerPosition' | 'gondolaPosition' | 'busPosition' | 'heatPhase',
   ): Promise<number | null> {
     return this.page.evaluate(
       (name) =>

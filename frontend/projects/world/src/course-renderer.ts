@@ -239,6 +239,7 @@ export class CourseRenderer implements WorldRenderer {
   private readonly drawn = {
     tier: 0 as number,
     backend: '' as string,
+    heatPhase: null as number | null,
     busPosition: null as number | null,
     plumeHeight: null as number | null,
     gondolaPosition: null as number | null,
@@ -1130,6 +1131,7 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.heatPhase = this.etna?.heatPhase ?? null;
     drawn.busPosition = this.etna?.busPosition ?? null;
     drawn.plumeHeight = this.etna?.plumeHeight ?? null;
     drawn.gondolaPosition = this.etna?.gondolaPosition ?? null;

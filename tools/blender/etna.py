@@ -54,7 +54,32 @@ def land(r,col,theme,bc):
     red=bc.Builder('Rust-coloured scoria','etna-scoria');red.colours=[]
     lanes=(-160,-97,-56,-33,-18,-9.4,-5.9,5.9,9.4,18,33,56,97,160)
     def row(i):
-        d=r.s[i]['d'];return [r.at(i,l,surface(d,l)) for l in lanes]
+        d = r.s[i]['d']
+        # Inside a switchback the upper cutting must meet the lower slope between
+        # the two arms. Extending both full-width strips covers the lower tarmac.
+        limits = {}
+        for side in (-1, 1):
+            limit = 160
+            for radius in range(10, 161, 4):
+                x, y, _ = r.at(i, side * radius)
+                _, other, distance = r.tree.find((x, y, 0))
+                if abs(r.s[other]['d'] - d) > 55 and distance < radius - 1:
+                    limit = radius - 2
+                    break
+            limits[side] = limit
+        points = []
+        for lateral in lanes:
+            side = 1 if lateral > 0 else -1
+            offset = side * min(abs(lateral), limits[side])
+            x, y, z = r.at(i, offset, surface(d, offset))
+            if abs(offset) == limits[side] and limits[side] < 160:
+                neighbours = r.tree.find_range((x, y, 0), limits[side] + 9)
+                adjacent = [(dist, j) for _, j, dist in neighbours if abs(r.s[j]['d'] - d) > 55]
+                if adjacent:
+                    _, other = min(adjacent)
+                    z = (r.s[i]['z'] + r.s[other]['z']) * 0.5
+            points.append((x, y, z))
+        return points
     a=row(0)
     for i in range(1,len(r.s)):
         c=row(i);d=r.s[i]['d']
