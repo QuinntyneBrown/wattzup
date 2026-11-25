@@ -98,6 +98,7 @@ import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
+import type { southCoast } from './south-coast';
 import { heldFps } from './held-fps';
 import type { ArtMuseumFlags } from './artmuseum-flags';
 import type { ArtMuseumJoggers } from './artmuseum-joggers';
@@ -143,6 +144,13 @@ const SHADOW_WIDTH = 0.8;
  * the haze, and what stands on it is drawn nearer, the smallest things nearest.
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
+  IcelandLand: 2400,
+  Basalt: 2500,
+  Glacier: 3200,
+  Falls: 720,
+  GlacialWater: 1700,
+  Icebergs: 900,
+  Grazers: 330,
   Land: 950,
   Pave: 180,
   Foliage: 110,
@@ -237,6 +245,7 @@ function jerseyColour(element: Element, jersey: string): Color {
 
 export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
+  private coast: ReturnType<typeof southCoast> | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
   private pave: ReturnType<typeof arenbergPave> | null = null;
@@ -550,6 +559,12 @@ export class CourseRenderer implements WorldRenderer {
         this.camera.clearViewOffset();
         this.camera.fov = 60;
         this.camera.updateProjectionMatrix();
+      }
+      if (this.course.file.id === 'iceland') {
+        const { southCoast } = await import('./south-coast');
+        if (this.disposed) return false;
+        this.coast = southCoast();
+        this.disposables.push(this.coast);
       }
       this.build(gltf.scene, canvas, clinker, fronts, foliage);
       if (this.course.file.id === 'aguascalientes') {
@@ -887,6 +902,7 @@ export class CourseRenderer implements WorldRenderer {
       this.joggers.mesh.visible = Math.abs(you.group.position.x + 39) < 200;
       if (this.joggers.mesh.visible) this.joggers.update(frame.reducedMotion ? 0 : frame.time);
     }
+    this.coast?.update(frame.reducedMotion ? 0 : frame.time);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -1008,7 +1024,7 @@ export class CourseRenderer implements WorldRenderer {
     const look = courseLook(this.course!.file);
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
     if (this.course!.file.id === 'beachroad') this.evening = eveningUniform();
-    const fogRange = this.course!.file.id === 'calobra' ? ([2500, 16000] as const) : FOG;
+    const fogRange = this.course!.file.id === 'calobra' ? ([2500, 16000] as const) : this.coast ? ([650, 4700] as const) : FOG;
     this.scene.fog = new Fog(look.haze, fogRange[0], fogRange[1]);
     this.scene.background = new Color(look.haze);
     this.sun.color.setHex(look.light.colour);
@@ -1167,6 +1183,7 @@ export class CourseRenderer implements WorldRenderer {
     // The glow round each light: corners the material spreads to face the eye (halo-material.ts).
     materials['Halos'] = haloMaterial(DRAW_DISTANCE['Halos']! * 0.6, DRAW_DISTANCE['Halos']!);
     this.disposables.push(materials['Fences'], materials['Halos']);
+    if (this.coast) Object.assign(materials, this.coast.materials);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     const painted: Mesh[] = [];
     map.traverse((part) => {
@@ -1504,7 +1521,12 @@ export class CourseRenderer implements WorldRenderer {
     const back = course.place(metres - behind, sway, this.here);
     this.camera.position.set(back.x, back.y + up, back.z);
     this.groundEye?.at(metres - behind, 0, up);
-    const ahead = course.place(metres + (calobra ? 24 : LOOK_AHEAD), 0, this.there);
+    // The last coastal bend opens onto the lagoon on the left.
+    const lagoon =
+      this.coast && metres > 10660 && metres < 11360
+        ? Math.sin(((metres - 10660) * Math.PI) / 700) ** 2
+        : 0;
+    const ahead = course.place(metres + (calobra ? 24 : LOOK_AHEAD), -3.3 * lagoon, this.there);
     this.camera.lookAt(ahead.x, ahead.y + (calobra ? 1.2 : LOOK_UP), ahead.z);
     // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
     if (back.bank) this.camera.rotateZ(back.bank * 0.32);
@@ -1888,6 +1910,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
     drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;
+    if (this.coast) Object.assign(drawn, this.coast.report(drawn.groups));
     hook['course'] = drawn;
   }
 

@@ -5,16 +5,36 @@ import random
 from worldkit import Painted, lin, smooth
 
 LENGTH = 12000
-PROFILE = ((0,28),(780,38),(1380,49),(2420,43),(3010,54),(3720,38),(4310,23),
-           (5120,31),(6120,53),(7060,42),(7930,55),(8540,40),(9420,39),
-           (10150,52),(10960,46),(12000,49))
+STATIONS = []
 
 
 def height(d):
-    for (a, h), (b, k) in zip(PROFILE, PROFILE[1:]):
-        if d <= b:
-            return h + (k-h)*max(d-a, 0)/(b-a)
-    return PROFILE[-1][1]
+    # Each stage starts at the previous stage's final height.
+    for start,end,base,grade in STATIONS:
+        if d<=end:
+            return base + max(0,d-start)*grade
+    start,end,base,grade=STATIONS[-1]
+    return base+(end-start)*grade
+
+
+def profile(st):
+    mean=sum(s['level']*(s['to']-s['from']) for s in st)/LENGTH
+    base_grade=21/LENGTH
+    def gain(factor):
+        return sum((s['to']-s['from'])*max(0,base_grade+(s['level']-mean)*factor) for s in st)
+    lo,hi=0,.1
+    for _ in range(40):
+        mid=(lo+hi)/2
+        if gain(mid)<91:lo=mid
+        else:hi=mid
+    scale=(lo+hi)/2;z=28
+    STATIONS.clear()
+    for stage in st:
+        a,b=stage['from'],stage['to']
+        grade=base_grade+(stage['level']-mean)*scale
+        STATIONS.append((a,b,z,grade))
+        z+=(b-a)*grade
+    return mean,100*scale
 
 
 def bearing(d):
@@ -35,20 +55,22 @@ def at(d, offset, z):
 
 
 def lay(course,theme,bc):
+    st=bc.stages(course['plan']);mean,per_level=profile(st)
     rows=[]
     for j in range(math.ceil((LENGTH+bc.LEAD_IN+bc.RUN_OUT)/bc.STEP)+1):
         d=j*bc.STEP-bc.LEAD_IN;x,y,z=at(d,0,height(d))
         rows.append(dict(d=d,x=x,y=y,z=z,h=bearing(d),k=bearing(d+.5)-bearing(d-.5),
                          g=100*(height(d+.5)-height(d-.5))))
-    st=bc.stages(course['plan'])
-    return rows,st,LENGTH,sum(s['level']*(s['to']-s['from']) for s in st)/LENGTH,0
+    return rows,st,LENGTH,mean,per_level
 
 
 def width(d):
     return 3.58-1.42*smooth(8430,8480,d)*(1-smooth(8590,8640,d))
 
 
-def road(r,st,length,col,theme,bc):
+def road(r,st,length,col,theme):
+    import sys
+    bc=sys.modules[type(r).__module__]
     asphalt=bc.Builder('Road','asphalt');mark=bc.Builder('WhiteLines','paint')
     for i,p in enumerate(r.s[:-1]):
         w=width(p['d']);v=width(r.s[i+1]['d'])
@@ -82,7 +104,9 @@ def land(r,col,theme,bc):
                 if side==1 and 630<d<3700:
                     rim=smooth(630,950,d)*(1-smooth(3370,3700,d))
                     h+=rim*smooth(100,195,lateral)*(51+16*math.sin(d/160)+7*math.sin(d/39))
-                if water:h+=(base-4.4-h)*water*smooth(5,39,lateral)
+                if water:
+                    bed = 44.0 if lagoon and side==1 else base-4.4
+                    h+=(bed-h)*water*smooth(5,24,lateral)
                 if river:h-=river*4.8*(1-smooth(8445,8470,d)*(1-smooth(8600,8620,d)) if lateral<4 else 1)
                 row.append(at(d,lateral*side,h))
             if last:
@@ -105,10 +129,12 @@ def scenery(k):
             a=bearing(d);off=side*(width(d)+1.15);z=height(d)-.14
             art.box(at(d,off,z),(.15,.115,1.21),a,lin(0xE7B831))
             art.box(at(d,off,z+.93),(.157,.121,.135),a,lin(0xF6E9BB))
+    from iceland_landmarks import landmarks
+    landmarks(k, art)
     return {'efforts':0}
 
 
-THEME={'lay':lay,'land_builder':land,'road_builder':road,'land':{'mid':0x6D6C53},'terrain':{'sea':False},
+THEME={'lay':lay,'land_builder':land,'surface_builder':road,'land':{'mid':0x6D6C53},'terrain':{'sea':False},
        'sky':[0xFFE6B7,0xE9BC9F,0xB9B2BD,0x8FADC2,0x7092A8],'haze':0xCABDAF,
        'light':[0xFFE4AF,1.7],'fill':[0xC6D3DE,0x80796A],'sun_altitude':.072,'sun_azimuth':.40,
        'palette':{'asphalt':0x37383D,'paint':0xE2DFD3}}
