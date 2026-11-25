@@ -307,13 +307,32 @@ def scenery(k):
             box(art,x+side*4,y,1.5,8,17.96,4.22,0x918674)
             for j in (0,6,12):art.tube((x-side*.64,y+j-8,0),.22,.21,5,lin(0x726957),lin(0x857562),7)
     # The waterfront forms a continuous base under the taller Financial District silhouettes.
+    # Draw the distant bank with the skyline. A local, fogged ground chunk can
+    # fall out of the Low visibility window while the towers are still visible.
+    for shore in range(-4200,4200,120):
+        z=5.78
+        face=((2040,shore,z),(4300,shore,z),(4300,shore+120,z),(2040,shore+120,z))
+        distant.face(face,(lin(0xA99C8B),)*4)
+        edge=((2040,shore+120,-.14),(2040,shore,-.14),(2040,shore,z),(2040,shore+120,z))
+        distant.face(edge,(lin(0x8C8273),lin(0x8C8273),lin(0xB2A48C),lin(0xB2A48C)))
+    for r in range(3):
+        for j in range(46):
+            y=-1230+j*55+11*math.sin(j*.8+r)
+            if abs(y)<68:continue
+            x=2210+r*265+44*math.cos(j*.77+r)
+            height=17+r*13+18*(1+math.sin(j*.85+r))
+            stone=(0xA89984,0xB3A692,0x9DA49E,0xAB9C8D)[(j+r)%4]
+            box(distant,x,y,5.79,38+r*3,43+r%2*6,height,stone)
+            for floor in range(1,int(height/7)):
+                box(distant,x-19-r*1.5-.04,y,6+floor*7,.13,40,.54,0x92938A)
+            if j%3==0:box(distant,x,y,5.79+height,27,31,5.6,stone)
     for y in range(-870,901,40):
         if abs(y)<85:continue
         x=2120+32*math.sin(y/183)
         h=11+9*math.cos(y/87)**2
-        box(art,x,y,5.75,33,39.6,h,0xAB9F8F)
-        box(art,x,y,5.75+h,34.3,40.4,.72,0x9B9B90)
-        for j in range(5):box(art,x-16.65,y-14+j*6.7,8.9,.24,3.1,5.4,0x738486)
+        box(distant,x,y,5.75,33,39.6,h,0xAB9F8F)
+        box(distant,x,y,5.75+h,34.3,40.4,.72,0x9B9B90)
+        for j in range(5):box(distant,x-16.65,y-14+j*6.7,8.9,.24,3.1,5.4,0x738486)
     for x in range(2580,3560,26):
         for side in (-1,1):
             if x%104<25:continue

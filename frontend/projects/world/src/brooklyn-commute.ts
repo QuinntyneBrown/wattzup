@@ -69,7 +69,8 @@ function hull(ferry: boolean, body: number, taxi = false): BufferGeometry {
 
 const WEAR = [0x566e83, 0x924f48, 0x586754, 0xa59172, 0x484859, 0xd5b469];
 const SKIN = [0xbb8567, 0xd1a183, 0x906445, 0xa1785d];
-const COUNT = 30;
+const COUNT = 84;
+const CYCLISTS = Math.ceil(COUNT / 5);
 
 /** Road traffic, ferry crossings and promenade traffic remain in their own lanes. */
 export class BrooklynCommute {
@@ -87,12 +88,12 @@ export class BrooklynCommute {
   private readonly tyres = new InstancedMesh(
     new TorusGeometry(0.33, 0.035, 5, 16),
     new MeshStandardMaterial({ color: 0x33393a }),
-    12,
+    CYCLISTS * 2,
   );
   private readonly bicycle = new InstancedMesh(
     new CylinderGeometry(0.026, 0.026, 1, 6),
     new MeshStandardMaterial({ color: 0x526d7b }),
-    30,
+    CYCLISTS * 5,
   );
   private readonly pose = new Object3D();
   private readonly colour = new Color();
@@ -167,7 +168,9 @@ export class BrooklynCommute {
         run = i % 4 === 0;
       const sign = i % 2 === 0 ? 1 : -1;
       const speed = cycling ? 4.7 : run ? 2.64 : 1.22;
-      const pos = 580 + ((i * 66.73 + seconds * speed * sign + 198000) % 1980);
+      const pos =
+        580 +
+        ((Math.floor(i / 3) * 70.73 + (i % 3) * 3.8 + seconds * speed * sign + 198000) % 1980);
       const road = this.course.place(
         pos,
         sign * (cycling ? 1.3 : 1.91) + (i % 3) * 0.13,
