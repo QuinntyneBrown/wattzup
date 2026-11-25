@@ -1,3 +1,5 @@
+import type { cypressForest } from './cypress-forest';
+import type { CypressLift } from './cypress-lift';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -200,6 +202,9 @@ function jerseyColour(element: Element, jersey: string): Color {
 export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
+  private forest: Awaited<ReturnType<typeof cypressForest>> | null = null;
+  private cypressLift: CypressLift | null = null;
+  private readonly climbingRiders: Cyclist[] = [];
   private course: Course | null = null;
   private disposed = false;
   private readonly scene = new Scene();
@@ -239,6 +244,8 @@ export class CourseRenderer implements WorldRenderer {
     backend: '' as string,
     drawCalls: 0,
     triangles: 0,
+    climberX: null as number | null,
+    chairX: null as number | null,
     groups: {} as Record<string, number>,
   };
   private readonly chosenAt = new Vector3();
@@ -357,6 +364,33 @@ export class CourseRenderer implements WorldRenderer {
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
+      if (this.path === 'courses/cypress') {
+        const [{ CypressLift }, { cypressForest }] = await Promise.all([
+          import('./cypress-lift'),
+          import('./cypress-forest'),
+        ]);
+        if (this.disposed) return false;
+        const forest = await cypressForest(this.course);
+        if (this.disposed) {
+          forest.dispose();
+          return false;
+        }
+        this.forest = forest;
+        this.scene.add(forest.root);
+        this.disposables.push(forest);
+        this.cypressLift = new CypressLift(this.course, this.scene);
+        this.disposables.push(this.cypressLift);
+        for (const [i, colour] of [0x6c93a6, 0xbe634f, 0xc5ab72].entries()) {
+          const rider = this.kit!.make(new Color(colour), i + 17, true, 0.45);
+          this.climbingRiders.push(rider);
+          this.scene.add(rider.group);
+          this.riderBatch?.add(rider);
+          this.shadow(rider);
+          this.lamplight(rider);
+          this.disposables.push(...rider.owned);
+        }
+        this.camera.setViewOffset(1, 1, 0, 0.1, 1, 1);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -422,6 +456,21 @@ export class CourseRenderer implements WorldRenderer {
     this.kit?.roll(metres);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.placeRiders(frame, metres);
+    if (this.cypressLift) {
+      const seconds = frame.reducedMotion ? 0 : frame.time;
+      this.forest?.follow(metres);
+      this.sun.intensity = 1.94 + (0.86 * metres) / course.length;
+      const leader = seconds * 3.64;
+      for (const [i, rider] of this.climbingRiders.entries()) {
+        const origin = leader + i * 37 + 21;
+        const station = origin + Math.ceil((metres - 13 - origin) / 142) * 142;
+        rider.group.visible = station < course.end;
+        if (!rider.group.visible) continue;
+        const standing = this.ride(rider, station, 4.76 + i * 0.19);
+        rider.pose(seconds * (6.6 + i * 0.47) + i, standing);
+      }
+      this.cypressLift.update(seconds, metres);
+    }
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
@@ -890,10 +939,22 @@ export class CourseRenderer implements WorldRenderer {
     const behind = CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
     const up = CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
     const back = course.place(metres - behind, 0, this.here);
-    this.camera.position.set(back.x, back.y + up, back.z);
+    const overlook = this.cypressLift
+      ? Math.max(
+          Math.exp(-Math.pow((metres - 5650) / 115, 4)),
+          Math.exp(-Math.pow((metres - 9320) / 115, 4)),
+        )
+      : 0;
+    this.camera.position.set(back.x, back.y + up + 0.52 * overlook, back.z);
     this.groundEye?.at(metres - behind, 0, up);
-    const ahead = course.place(metres + LOOK_AHEAD, 0, this.there);
-    this.camera.lookAt(ahead.x, ahead.y + LOOK_UP, ahead.z);
+    let shoulder = 0;
+    if (this.cypressLift) {
+      const glance = (centre: number, width: number) =>
+        Math.exp(-Math.pow((metres - centre) / width, 4));
+      shoulder = 4.1 * glance(5650, 100) - 4.3 * glance(9320, 110) + 2.2 * glance(17905, 54);
+    }
+    const ahead = course.place(metres + LOOK_AHEAD, shoulder, this.there);
+    this.camera.lookAt(ahead.x, ahead.y + LOOK_UP - Math.abs(shoulder) * 0.12, ahead.z);
     this.sky?.position.copy(this.camera.position);
     const [x, , z] = course.file.sun;
     this.sun.target.position.set(ahead.x, ahead.y, ahead.z);
@@ -1105,6 +1166,8 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.climberX = this.climbingRiders[0]?.group.position.x ?? null;
+    drawn.chairX = this.cypressLift?.chairX ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

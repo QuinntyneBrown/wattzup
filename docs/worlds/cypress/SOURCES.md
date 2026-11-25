@@ -25,3 +25,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Spiral Summit” Route Details (Watopia)](https://zwiftinsider.com/route/spiral-summit/) (g0148) | © Zwift |
 | game-04.jpg | Zwift: [“Molten Momentum” Route Details (Watopia)](https://zwiftinsider.com/route/molten-momentum/) (g0101) | © Zwift |
 | game-05.jpg | Zwift: [“Mayan San Remo” Route Details (Watopia)](https://zwiftinsider.com/route/mayan-san-remo/) (g0098) | © Zwift |
+
+The course’s forest atlas is original artwork generated with the built-in image generator. The prompt requested four separate, full-length coastal rainforest conifers on transparency: a mature Douglas fir with furrowed bark, a western red cedar with drooping sprays, a western hemlock with a bent leader and a younger dense Douglas fir, in overcast light. The reference photos guided scene proportions and geography. The bridge, skyline and ski lodge are original Blender geometry.
+
+A second original matte for the far shore was generated with the built-in image generator. Its prompt requested a transparent-sky panorama from Highview Lookout with the downtown towers, Stanley Park, Lions Gate Bridge and blue water grading into the forested islands and layered ridges of Howe Sound. The renderer wraps it around the southern basin in fixed world coordinates.
