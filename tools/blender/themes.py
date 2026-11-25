@@ -1369,3 +1369,9 @@ import bluemountains as _bluemountains
 
 THEMES["bluemountains"] = _bluemountains.THEME
 SCENERY["bluemountains"] = _bluemountains.scenery
+
+
+import blueridge as _blueridge
+
+THEMES["blueridge"] = _blueridge.THEME
+SCENERY["blueridge"] = _blueridge.scenery

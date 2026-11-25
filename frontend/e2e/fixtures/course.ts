@@ -12,6 +12,7 @@ import bealachElevation from './bealach-elevation.json';
 import bigSurElevation from './bigsur-elevation.json';
 import blackpoolElevation from './blackpool-elevation.json';
 import bluemountainsElevation from './bluemountains-elevation.json';
+import blueridgeElevation from './blueridge-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -1102,6 +1103,42 @@ export const blueMountainsCourseMap = {
       seg('work', 60, 22, 85),
       seg('recover', 60, 16, 80),
       seg('cool-down', 165, 11, 80),
+    ],
+  },
+};
+
+export const blueRidgeCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'blue-ridge-parkway',
+  name: 'Blue Ridge Parkway',
+  routeName: 'The Parkway',
+  place: 'Virginia and North Carolina, USA',
+  world: 'blueridge',
+  distanceKm: 24.25,
+  climbingM: 391,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: blueridgeElevation,
+  },
+  thumbnailUrl: 'maps/blue-ridge-parkway.jpg',
+  photoUrl: 'maps/blue-ridge-parkway-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 600, 13, 80),
+      seg('work', 300, 21, 95),
+      seg('recover', 120, 13, 80),
+      seg('work', 300, 21, 95),
+      seg('recover', 120, 13, 80),
+      seg('work', 300, 21, 95),
+      seg('recover', 120, 13, 80),
+      seg('work', 300, 21, 95),
+      seg('recover', 120, 13, 80),
+      seg('work', 300, 21, 95),
+      seg('recover', 120, 13, 80),
+      seg('work', 300, 21, 95),
+      seg('cool-down', 300, 13, 80),
     ],
   },
 };
