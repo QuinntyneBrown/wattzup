@@ -29,6 +29,7 @@ test('Amsterdam Canals along the Herengracht, across a bridge and past the house
   for (const [name, km] of [
     ['quay', 0.04],
     ['bridge', 0.095],
+    ['crest', 0.13],
     ['moorings', 0.3],
   ] as const) {
     await expect

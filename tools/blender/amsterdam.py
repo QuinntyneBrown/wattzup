@@ -153,6 +153,24 @@ def bridge(k,b,d):
         b.face(pts,(stone,)*4)
         pts=(pt(-3.1,a,soffit(a)),pt(-3.1,c,soffit(c)),pt(3.1,c,soffit(c)),pt(3.1,a,soffit(a)))
         b.face(pts,(brick,)*4)
+    # The riding deck spans the mouth of a side canal. Its parapets sit on the
+    # same rising grade as the bike. Leave the cross bridge junction open.
+    for side in (-3.85, 3.85):
+        for along in range(-12,13,2):
+            if side>0 and abs(along)<4:
+                continue
+            n=k.road.index(d+along)
+            offset=d+along-k.s[n]["d"]
+            def rail(height,dx=0):
+                return k.P(n,offset+dx,side,height)
+            b.box(rail(.06),(2.05,.29,.34),k.s[n]["h"],brick)
+            b.box(rail(.4),(2.06,.35,.11),k.s[n]["h"],stone)
+            b.tube(rail(.5),.049,.038,.68,iron,iron,7)
+            b.tube(rail(1.16),.059,.026,.10,iron,iron,7,iron)
+            for h in (.75,1.11):
+                b.box(rail(h),(2.04,.05,.05),k.s[n]["h"],iron)
+            if along in (-10,8):
+                bicycle(b,k.P(n,offset,side*.92,.08),k.s[n]["h"]+.15)
     for side in (12, 14):
         bicycle(b, pt(-2.78, side, crown(side)), yaw + math.pi / 2)
 
