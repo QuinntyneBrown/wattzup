@@ -27,3 +27,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-05.jpg | MyWhoosh: [UCI_02_2](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2025/09/UCI_02_2.jpg) (g0480) | © MyWhoosh |
 
 The race uses an original generated limestone surface on individually modelled sea stacks, cliffs and an open London Arch. Sources 06–10 and 15 inform the bedding, erosion and proportions. The signs and Memorial Arch lettering are drawn in the project. The licensed reference photographs and game screenshots are used only for comparison.
+
+The original foliage sheet depicts a mountain ash eucalyptus, a soft tree fern and a coastal banksia. It uses real 03 and 11–14 for environmental context. Native geometry supplies the trunks, grass, sea stacks, gorge and arch.

@@ -3,7 +3,7 @@ import {
   distance,
   mix,
   normalWorld,
-  modelWorldMatrix,
+  modelScale,
   positionLocal,
   positionWorld,
   sin,
@@ -45,6 +45,9 @@ export function shipwreckCoast() {
     vec3(0.42, 0.51, 0.53),
     smoothstep(400, 2300, distance(cameraPosition, positionWorld)).mul(0.72),
   );
+  const heath = new MeshBasicNodeMaterial({ side: DoubleSide });
+  const grassGrain = texture(limestone).r.mul(0.37).add(0.8);
+  heath.colorNode = vertexColor().rgb.mul(grassGrain).mul(sunlight);
   const ocean = new MeshBasicNodeMaterial({ side: DoubleSide, fog: false });
   const along = uv().x,
     off = uv().y.oneMinus();
@@ -57,8 +60,10 @@ export function shipwreckCoast() {
   const shallow = smoothstep(8, 150, off).oneMinus();
   const breaking = smoothstep(0.62, 0.92, crest.add(chop.mul(0.16))).mul(shallow);
   // The GLB packs positions relative to each chunk. Keep swell height in world metres.
-  const metresPerUnit = modelWorldMatrix.element(1).xyz.length();
-  ocean.positionNode = positionLocal.add(vec3(0, crest.mul(0.64).add(chop.mul(0.14)).div(metresPerUnit), 0));
+  const metresPerUnit = vec3(modelScale).y;
+  ocean.positionNode = positionLocal.add(
+    vec3(0, crest.mul(0.64).add(chop.mul(0.14)).div(metresPerUnit), 0),
+  );
   const sea = mix(vec3(0.025, 0.115, 0.173), vec3(0.072, 0.32, 0.34), shallow)
     .mul(crest.mul(0.14).add(1))
     .mul(sunlight);
@@ -67,6 +72,45 @@ export function shipwreckCoast() {
     vec3(0.4, 0.54, 0.59),
     smoothstep(350, 3600, off).mul(0.74),
   );
+  const wash = new MeshBasicNodeMaterial({
+    side: DoubleSide,
+    transparent: true,
+    depthWrite: false,
+  });
+  const pulse = sin(time.add(positionWorld.x.mul(0.19)).add(positionWorld.z.mul(0.21)));
+  wash.colorNode = vec3(0.73, 0.82, 0.8);
+  wash.opacityNode = smoothstep(-0.6, 0.95, pulse).mul(0.6).add(0.12);
+  const spindrift = canvasTexture(160, 128, (ctx) => {
+    for (let i = 0; i < 160; i++) {
+      const x = 80 + 62 * Math.sin(i * 32.6) * Math.sin(i * 2.86),
+        y = 118 - (99 * ((i * 71) % 161)) / 161,
+        r = 3 + (i % 9);
+      const fade = ctx.createRadialGradient(x, y, 0, x, y, r);
+      fade.addColorStop(0, 'rgba(243,248,240,.65)');
+      fade.addColorStop(1, 'rgba(227,238,231,0)');
+      ctx.fillStyle = fade;
+      ctx.fillRect(x - r, y - r, 2 * r, 2 * r);
+    }
+  });
+  spindrift.flipY = false;
+  const spray = new MeshBasicNodeMaterial({
+    map: spindrift,
+    side: DoubleSide,
+    transparent: true,
+    depthWrite: false,
+  });
+  spray.opacityNode = texture(spindrift)
+    .a.mul(smoothstep(-0.4, 0.94, pulse))
+    .mul(0.72);
+  const canopy = new TextureLoader().load('courses/greatocean-botany.webp');
+  canopy.flipY = false;
+  canopy.colorSpace = SRGBColorSpace;
+  const plants = new MeshBasicMaterial({
+    map: canopy,
+    side: DoubleSide,
+    alphaTest: 0.66,
+    color: 0xbfc7ae,
+  });
   const lettering = canvasTexture(1536, 192, (g) => {
     for (let i = 0; i < 4; i++) {
       const x = i * 384;
@@ -112,7 +156,8 @@ export function shipwreckCoast() {
   const marks = new Map<string, Vector3>(),
     projected = new Vector3();
   function landmark(kind: string, mesh: Mesh) {
-    if (['PortLimestone','Apostle','LondonArch'].includes(kind)) mesh.geometry.computeVertexNormals();
+    if (['PortLimestone', 'Apostle', 'LondonArch'].includes(kind))
+      mesh.geometry.computeVertexNormals();
     if (!['Apostle', 'LondonArch', 'MemorialArch'].includes(kind)) return;
     const box = new Box3().setFromObject(mesh, true),
       target = box.getCenter(new Vector3());
@@ -129,6 +174,10 @@ export function shipwreckCoast() {
   return {
     landmark,
     materials: {
+      Clifftop: heath,
+      SaltSpray: spray,
+      RockWash: wash,
+      OtwayPlants: plants,
       PortLimestone: cliff,
       Apostle: cliff,
       LondonArch: cliff,
@@ -150,6 +199,12 @@ export function shipwreckCoast() {
       };
     },
     dispose() {
+      wash.dispose();
+      spray.dispose();
+      spindrift.dispose();
+      heath.dispose();
+      canopy.dispose();
+      plants.dispose();
       limestone.dispose();
       cliff.dispose();
       ocean.dispose();

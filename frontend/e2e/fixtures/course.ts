@@ -159,7 +159,7 @@ export const greatoceanCourseMap = {
   place: 'Victoria, Australia',
   world: 'greatocean',
   distanceKm: 8.45,
-  climbingM: 105,
+  climbingM: 126,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },

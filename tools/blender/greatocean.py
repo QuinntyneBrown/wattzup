@@ -4,7 +4,7 @@ from worldkit import Painted,lin
 
 LENGTH=8450
 PROFILE=((0,12),(460,18),(980,35),(1670,17),(2180,11),(3120,51),(3760,64),
-         (4390,39),(5050,47),(5720,36),(6550,44),(7080,25),(7710,38),(8450,34))
+         (4390,39),(4750,43),(4940,33),(5120,17),(5720,36),(6360,34),(6580,14),(7080,25),(7710,38),(8070,31),(8280,12),(8450,15))
 VIEWS=(1670,5050,6550,8240)
 
 def elevation(d):
@@ -40,7 +40,7 @@ def lay(course,theme,bc):
 
 def lip(d):
     nearest=min(abs(d-v) for v in VIEWS)
-    return 7.5+min(48,nearest*.13)+205*math.exp(-((d-3380)/610)**4)
+    return 5.8+min(48,max(0,nearest-32)*.13)+205*math.exp(-((d-3380)/610)**4)
 
 def surface(d,lane):
     if lane>0:return elevation(d)-.22+.024*max(0,lane-6)
@@ -61,7 +61,8 @@ def land(r,col,theme,bc):
     def builder(name):
         b=bc.Builder(name,'terrain');b.colours=[];b.uvs=[];return b
     headland=builder('Clifftop');cliff=builder('PortLimestone');sea=builder('SouthernOcean');beach=builder('Beach')
-    signature=builder('Apostle');arch=builder('LondonArch')
+    cove=builder('LochBeach')
+    signature=builder('Apostle');arch=builder('LondonArch');foam=builder('RockWash');spray=builder('SaltSpray')
     def quad(batch,pts,col,uv=None):
         batch.quad(*pts);batch.colours.extend([lin(col)]*4)
         batch.uvs.extend(uv or [(x/52+.26*y/52,z/31) for x,y,z in pts])
@@ -93,7 +94,23 @@ def land(r,col,theme,bc):
     def viewpoint(d,along,across):
         u,v=pos(d);h=heading(d+8)
         return u+along*math.cos(h)-across*math.sin(h),v+along*math.sin(h)+across*math.cos(h)
+    def breakers(x,y,radius,seed):
+        for j in range(3):
+            for i in range(44):
+                a=i*math.tau/44;b=(i+1)*math.tau/44
+                def pt(t,off):
+                    wave=radius*(1.12+.14*math.sin(3*t+seed)+.06*math.cos(7*t))
+                    r=wave+off+2.55*j+.85*math.sin(t*4+seed)
+                    return (x+1.14*r*math.cos(t),y+.88*r*math.sin(t),.47+.18*j)
+                quad(foam,(pt(a,0),pt(b,0),pt(b,1.2+j*.4),pt(a,1.2+j*.4)),0xF4EEE0)
+        for j in range(8):
+            h=1.9+j%4;w=h*1.15;a=j*2.4+seed
+            px=x+math.cos(a)*radius*1.24;py=y+math.sin(a)*radius*.95
+            for yaw in (a+.7,a+2.22):
+                dx=w*math.cos(yaw);dy=w*math.sin(yaw)
+                quad(spray,((px-dx,py-dy,.48),(px+dx,py+dy,.48),(px+dx*.77,py+dy*.77,h+.6),(px-dx*.77,py-dy*.77,h+.6)),0xEFE8DE,[(0,0),(1,0),(1,1),(0,1)])
     def stack(batch,x,y,height,radius,seed):
+        breakers(x,y,radius,seed)
         last=None
         for j,(f,scale) in enumerate(((0,1.18),(.07,1.05),(.13,1.12),(.29,.93),(.38,.98),(.48,.82),(.61,.87),(.73,.78),(.81,.79),(.96,.65),(1,.46))):
             ring=[]
@@ -107,32 +124,52 @@ def land(r,col,theme,bc):
             last=ring
         for n in range(1,34):
             pts=(last[0],last[n],last[n+1]);batch.tri(*pts);batch.colours.extend([lin(0xB1A573)]*3);batch.uvs.extend([(px/57,py/42) for px,py,pz in pts])
-    for i,(along,across,height,rad) in enumerate(((187,21,42,14),(275,85,51,24),(397,-20,57,28),(491,90,44,22),(662,31,63,27),(819,145,46,18))):
+    for i,(along,across,height,rad) in enumerate(((215,12,45,12),(350,117,52,19),(485,-95,57,20),(613,80,40,15),(738,-27,62,21),(882,165,46,14))):
         x,y=viewpoint(5050,along,across);stack(signature if i==0 else cliff,x,y,height,rad,i+.8)
     # Loch Ard has a sheltered strand and two enclosing headlands, with a narrow mouth between.
-    for j,(along,across,rad) in enumerate(((165,-45,46),(191,65,38),(253,147,22))):
+    for j,(along,across,rad) in enumerate(((237,-64,32),(289,87,49),(366,158,27))):
         x,y=viewpoint(6550,along,across);stack(cliff,x,y,34+j*3,rad,3+j)
+    # A tapered sand bar curls around the sheltered side of the inlet below the road.
+    previous=None
+    for i in range(58):
+        a=i*1.52/57-.69;along=217+74*(1-math.cos(a));across=13+97*math.sin(a)
+        w=8+20*math.sin(i*math.pi/57)
+        row=[]
+        for v,z in ((-w,1.2),(0,3.75),(w,1.1)):
+            sx,sy=viewpoint(6550,along+v,across);row.append((sx,sy,z))
+        if previous:
+            for j in range(2):quad(cove,(previous[j],row[j],row[j+1],previous[j+1]),0xE9D4A1)
+        previous=row
     # Two massive abutments and a rock roof spanning a genuine through opening.
-    x,y=viewpoint(8240,199,13);h=heading(8240)+math.pi/2
+    x,y=viewpoint(8240,235,4);h=heading(8240)+math.pi/2
     def archpoint(u,v,z):return x+u*math.cos(h)-v*math.sin(h),y+u*math.sin(h)+v*math.cos(h),z
     for i in range(-28,28):
         a,b=i*1.9,(i+1)*1.9
         def profile(u):
-            crown=31+1.5*math.cos(u/11)+.8*math.sin(u/4)
-            opening=18*math.sqrt(max(0,1-(u/28)**2)) if abs(u)<28 else -.8
+            crown=35+1.5*math.cos(u/11)+.8*math.sin(u/4)
+            opening=23*math.sqrt(max(0,1-(u/28)**2)) if abs(u)<28 else -.8
             return opening,crown
         lo,hi=profile(a);ll,hh=profile(b)
         for v in (-13,13):
             quad(arch,(archpoint(a,v,lo),archpoint(b,v,ll),archpoint(b,v,hh),archpoint(a,v,hi)),0xE5B47B,[(a/41,lo/35),(b/41,ll/35),(b/41,hh/35),(a/41,hi/35)])
         quad(arch,(archpoint(a,-13,hi),archpoint(b,-13,hh),archpoint(b,13,hh),archpoint(a,13,hi)),0xAEAA7B)
         quad(arch,(archpoint(a,13,lo),archpoint(b,13,ll),archpoint(b,-13,ll),archpoint(a,-13,lo)),0xAF8760)
+    for u in (-40,40):
+        cx,cy,_=archpoint(u,0,0);breakers(cx,cy,16,u)
     for u in (-53.2,53.2):
         low,high=profile(u);quad(arch,(archpoint(u,-13,low),archpoint(u,13,low),archpoint(u,13,high),archpoint(u,-13,high)),0xCFA57B)
-    for batch in (headland,cliff,sea,beach,signature,arch):batch.build(col)
+    for batch in (headland,cliff,sea,beach,signature,arch,foam,spray,cove):batch.build(col)
     return None,lambda x,y:r.s[r.tree.find((x,y,0))[1]]['z']-.2
 
 def scenery(k):
     art=Painted(k);rng=k.rng
+    plants=k.B['cypress'];plants.name='OtwayPlants';plants.uvs=[]
+    def foliage(q,h,tile,w,height):
+        for turn in (h+.34,h+1.84):
+            x,y,z=q(0,0,0);dx=math.cos(turn)*w/2;dy=math.sin(turn)*w/2
+            plants.quad((x-dx,y-dy,z),(x+dx,y+dy,z),(x+dx,y+dy,z+height),(x-dx,y-dy,z+height))
+            l=tile/3+.004;r=(tile+1)/3-.004
+            plants.uvs.extend([(l,.008),(r,.008),(r,.997),(l,.997)])
     boards=k.B['paint'];boards.name='CoastSigns';boards.uvs=[]
     beam=Painted(k,'wood');beam.b.name='MemorialArch'
     def at(d,l):
@@ -157,10 +194,17 @@ def scenery(k):
     sign(q,-1.05,9.8,6.67,7.42,0)
     for d in range(440,8420,24):
         if 2670<d<4110:continue
-        q,h=at(d,5.25)
         for j in range(4):
-            t,_=at(d+j*6,5.25);art.box(t(0,0,-.15),(.15,.15,.89),h,lin(0x82776A))
-            art.box(t(2.8,0,.57),(6.03,.115,.21),heading(d+j*6),lin(0xB7BDBB))
+            d0=d+6*j
+            t,h=at(d0,5.25)
+            art.box(t(0,0,-.15),(.16,.16,.91),h,lin(0x786F62))
+            def beam_edge(st,across,up):
+                x,y=pos(st,5.25+across)
+                return x,y,surface(st,5.25+across)+up
+            for a,b,za,zb in ((-.14,-.09,.70,.76),(-.09,-.15,.76,.81),(-.15,-.09,.81,.88),(-.09,-.14,.88,.93)):
+                pts=(beam_edge(d0,a,za),beam_edge(d0+6,a,za),beam_edge(d0+6,b,zb),beam_edge(d0,b,zb))
+                colour=lin(0xB8C3C4 if za<.8 else 0x8D9DA0)
+                art.face(pts,(colour,)*4);art.face(pts[::-1],(colour,)*4)
         if d%168==104:
             q,h=at(d,-5.8);art.box(q(0,0,-.1),(.11,.11,2.4),h,lin(0x929A97));sign(q,-.09,1.03,1.45,2.47,1)
     for d,t in ((338,2),(1697,1),(4570,2),(5124,3),(6597,3),(8278,3)):
@@ -175,30 +219,29 @@ def scenery(k):
             if 2610<d<3990:
                 if rng.random()<.45:
                     art.tube(q(0,0,0),.39,.22,height*.81,lin(0x8D8878),lin(0xD2CABB),9)
-                    for j in range(5):
-                        u=math.cos(j*2.41+d)*1.62;v=math.sin(j*2.41+d)*2.02;z=height*(.54+.074*j)
-                        art.tube(q(u,v,z),1.6,2.5,1.32,lin(leaves[j%4]),lin(leaves[(j+1)%4]),8)
-                        art.tube(q(u,v,z+1.32),2.5,.31,2.18,lin(leaves[j%4]),lin(leaves[(j+1)%4]),8)
+                    foliage(q,h,0,height*.47,height)
                 else:
-                    art.tube(q(0,0,0),.22,.17,2.5,lin(0x55483B),lin(0x786954),8)
-                    for j in range(9):
-                        a=j*math.tau/9;rnglen=rng.uniform(1.4,2.1)
-                        def leaf(f,v,z):return q(f*rnglen*math.cos(a)-v*math.sin(a),f*rnglen*math.sin(a)+v*math.cos(a),z)
-                        for b in range(6):
-                            f=.14*b;w=.2*(1-f)
-                            for s in (-1,1):
-                                art.face((leaf(f,0,2.48+.6*math.sin(f*3)),leaf(f+.16,s*w,2.55),leaf(f+.26,0,2.51)),(lin(leaves[j%4]),)*3)
+                    art.tube(q(0,0,0),.18,.14,2.6,lin(0x584D3B),lin(0x74624E),8)
+                    foliage(q,h,1,4.3,5.15)
             else:
                 ht=rng.uniform(.42,1.6)
                 if rng.random()<.19:
-                    art.tube(q(0,0,0),.16,.115,ht*1.5,lin(0x725C47),lin(0x87715C),7)
-                    for j in range(4):
-                        u=.63*math.sin(j*2.4);v=.63*math.cos(j*2.4)
-                        art.tube(q(u,v,ht*(.68+.14*j)),1.12,.48,.91,lin(0x58654B),lin(0x869177),8)
+                    art.tube(q(0,0,0),.16,.10,ht,lin(0x755F46),lin(0x876C52),7)
+                    foliage(q,h,2,ht*2.05,ht*3.3)
                 else:
                     for j in range(6):
                         u=.13*math.sin(j*1.3);v=.16*math.cos(j*.91)
                         art.face((q(u-.15,v,0),q(u+.12,v+.07,.01),q(u+.29,v+.18*math.sin(j),ht)),(lin(0x768061),lin(0x757C60),lin(0xA9A681)))
+    for d in range(-20,LENGTH+55,3):
+        if 2590<d<4025:continue
+        for side in (-1,1):
+            off=side*rng.uniform(4.75,16)
+            if off>lip(d)-.5:continue
+            q,h=at(d,off);a=rng.uniform(.28,.70)
+            for j in range(5):
+                v=j*1.63
+                base=(rng.uniform(-.16,.16),rng.uniform(-.14,.14));col=lin(rng.choice((0x848866,0x9C9B70,0x858B60)))
+                art.face((q(base[0]-.05,base[1],0),q(base[0]+.06,base[1],0),q(base[0]+.27*math.cos(v),base[1]+.2*math.sin(v),a)),(col,)*3)
     for view in (5050,6550,8240):
         q,h=at(view+86,-10)
         art.box(q(0,0,-.75),(25,10,.80),h,lin(0x777679))
@@ -207,6 +250,13 @@ def scenery(k):
             art.box(q(-8+j*7,-.6,1.13),(2.1,1.55,.68),h,lin(0x54656E))
         q,h=at(view+25,6.6);art.box(q(0,0,-.41),(8.2,2.7,.5),h,lin(0xA1937B))
         for j in range(5):art.box(q(j*2-4,1.22,0),(.12,.12,1.09),h,lin(0x665B4B))
+        for j in range(3):
+            u=j*2.3-2.7
+            for v in (-.12,.12):art.tube(q(u,v,.08),.08,.09,.78,lin(0x555854),lin(0x6F7676),6)
+            shirt=lin((0x944C44,0x747D4A,0x537788)[j])
+            art.tube(q(u,0,.81),.21,.24,.65,shirt,shirt,8)
+            art.tube(q(u,0,1.46),.15,.14,.29,lin(0xAE856A),lin(0xCEA582),8)
+            art.tube(q(u,0,1.74),.23,.15,.12,lin(0xAD9770),lin(0xBAA484),8)
         art.box(q(0,1.22,1.04),(8.1,.13,.13),h,lin(0x75695B))
     return {'efforts':0}
 
