@@ -29,8 +29,8 @@ public sealed class RaceDnfTests(RaceDnfApi api) : IClassFixture<RaceDnfApi>, IA
     [Trait("Category", "Critical")]
     public async Task A_rider_who_leaves_a_running_race_is_marked_DNF_for_everyone_at_once()
     {
-        var lena = await Rider("lena.k");
-        var marco = await Rider("MarcoVelo");
+        var (lena, _) = await Rider("lena.k");
+        var (marco, _) = await Rider("MarcoVelo");
         var race = await Find(lena);
         await Find(marco);
         var lenaHears = Listen(lena);
@@ -49,8 +49,8 @@ public sealed class RaceDnfTests(RaceDnfApi api) : IClassFixture<RaceDnfApi>, IA
     [Fact]
     public async Task A_racing_rider_who_sends_no_progress_for_15_seconds_is_marked_DNF()
     {
-        var priya = await Rider("priya_spins");
-        var ollie = await Rider("Ollie R.");
+        var (priya, _) = await Rider("priya_spins");
+        var (ollie, _) = await Rider("Ollie R.");
         var race = await Find(priya);
         await Find(ollie);
         var heard = Listen(priya);
@@ -73,14 +73,16 @@ public sealed class RaceDnfTests(RaceDnfApi api) : IClassFixture<RaceDnfApi>, IA
     [Fact]
     public async Task A_rider_whose_connection_is_gone_for_30_seconds_is_removed_and_cannot_join_again()
     {
-        var kenji = await Rider("kenji.cyc");
-        var ana = await Rider("ana_rides");
+        var (kenji, _) = await Rider("kenji.cyc");
+        var (ana, browser) = await Rider("ana_rides");
         var race = await Find(kenji);
         await Find(ana);
         var heard = Listen(kenji);
         await Start(kenji, race);
         var cookie = cookies[ana];
+        var anaId = (await browser.GetFromJsonAsync<Me>("/api/riders/me", Cancel))!.Id;
         await ana.StopAsync(Cancel);
+        await api.ConnectionsLost.Await(id => id == anaId, Wait);
 
         RaceStandings? last = null;
         for (var second = 1; second <= 30; second++)
@@ -129,7 +131,7 @@ public sealed class RaceDnfTests(RaceDnfApi api) : IClassFixture<RaceDnfApi>, IA
     }
 
     /// <summary>Signs a new rider in with that display name, and connects their hub with the session cookie.</summary>
-    private async Task<HubConnection> Rider(string displayName)
+    private async Task<(HubConnection Hub, HttpClient Browser)> Rider(string displayName)
     {
         api.Clock.Advance(TimeSpan.FromHours(2));
         var email = $"dnf{Interlocked.Increment(ref riders)}-{Guid.NewGuid():N}@example.com";
@@ -141,7 +143,7 @@ public sealed class RaceDnfTests(RaceDnfApi api) : IClassFixture<RaceDnfApi>, IA
         var cookie = confirmed.Headers.GetValues("Set-Cookie").Single(v => v.StartsWith("__Host-telo-session=", StringComparison.Ordinal)).Split(';')[0];
         using var named = await browser.PutAsJsonAsync("/api/riders/me/display-name", new { displayName }, Cancel);
         Assert.Equal(HttpStatusCode.OK, named.StatusCode);
-        return await Connect(cookie);
+        return (await Connect(cookie), browser);
     }
 
     private async Task<HubConnection> Connect(string cookie)
@@ -160,6 +162,8 @@ public sealed class RaceDnfTests(RaceDnfApi api) : IClassFixture<RaceDnfApi>, IA
         return hub;
     }
 
+    private sealed record Me(Guid Id);
+
     private sealed record Found(string? Code, string? SessionId, DateTimeOffset? StartsAt, int? Seat);
 
     private sealed record RaceStandings(string SessionId, IReadOnlyList<Row> Rows);
@@ -168,4 +172,4 @@ public sealed class RaceDnfTests(RaceDnfApi api) : IClassFixture<RaceDnfApi>, IA
 }
 
 /// <summary>A sign-in host of its own for the race DNF tests, so its sessions are no other test's.</summary>
-public sealed class RaceDnfApi : SignInApi;
+public sealed class RaceDnfApi : RaceDisconnectApi;
