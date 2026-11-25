@@ -149,3 +149,32 @@ export const haleakalaCourseMap = {
     roll: 0,
   },
 };
+
+export const cabotCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'cabot-trail',
+  name: 'Cabot Trail',
+  routeName: 'The Cabot Trail',
+  place: 'Cape Breton, Nova Scotia',
+  world: 'cabot',
+  distanceKm: 25.075,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/cabot-trail.jpg',
+  photoUrl: 'maps/cabot-trail-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 180, 16, 80),
+      seg('work', 1260, 19, 80),
+      seg('recover', 240, 13, 90),
+      seg('work', 1440, 21, 85),
+      seg('work', 60, 24, 110),
+      seg('cool-down', 300, 11, 85),
+    ],
+  },
+};

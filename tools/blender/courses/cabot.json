@@ -1,0 +1,61 @@
+{
+  "id": "cabot",
+  "name": "Cabot Trail",
+  "world": "cabot",
+  "theme": "cabot",
+  "seed": 2091,
+  "layout": 0,
+  "class": {
+    "id": "60-minute-endurance-intervals",
+    "title": "60 Minute Endurance Intervals",
+    "channel": "GCN",
+    "videoId": "QB69Pwl6GI8",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 1260,
+        "level": 19,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 1440,
+        "level": 21,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 24,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "cool-down",
+        "duration": 300,
+        "level": 11,
+        "cadenceAim": 85
+      }
+    ]
+  }
+}
