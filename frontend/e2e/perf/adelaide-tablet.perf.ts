@@ -48,7 +48,7 @@ test('Adelaide sustains 60 FPS through the moving expo and vineyard sections', a
     const before = await race.distance.textContent();
     // CourseRenderer publishes the pinned course report immediately after each render.
     // Sample that publication so skipping a world draw cannot appear as a successful frame.
-    const { intervals, maxDrawCalls, backend } = await page.evaluate(async () => {
+    const { intervals, displayIntervals, maxDrawCalls, backend } = await page.evaluate(async () => {
       type Report = { drawCalls: number; backend: string };
       const hook = (window as unknown as { __wzWorldRide: { course: Report } }).__wzWorldRide;
       let latest = hook.course;
@@ -67,8 +67,18 @@ test('Adelaide sustains 60 FPS through the moving expo and vineyard sections', a
           maxDrawCalls = Math.max(maxDrawCalls, value.drawCalls);
         },
       });
+      const displayIntervals: number[] = [];
+      let previousTick = 0;
       try {
-        await new Promise((resolve) => setTimeout(resolve, 60000));
+        await new Promise<void>((resolve) => {
+          function tick(now: number) {
+            if (previousTick) displayIntervals.push(now - previousTick);
+            previousTick = now;
+            if (now - start >= 60000) resolve();
+            else requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+        });
         intervals.push(performance.now() - previous);
       } finally {
         Object.defineProperty(hook, 'course', {
@@ -77,7 +87,7 @@ test('Adelaide sustains 60 FPS through the moving expo and vineyard sections', a
           value: latest,
         });
       }
-      return { intervals, maxDrawCalls, backend: latest.backend };
+      return { intervals, displayIntervals, maxDrawCalls, backend: latest.backend };
     });
     // Include any stall at either end. The two partial intervals span one frame interval together.
     intervals[0] += intervals.pop()!;
@@ -85,6 +95,7 @@ test('Adelaide sustains 60 FPS through the moving expo and vineyard sections', a
     const sorted = intervals.sort((a, b) => a - b);
     const result = {
       averageFps,
+      displayFps: frameRun(displayIntervals).averageFps,
       p95Ms: sorted[Math.floor(sorted.length * 0.95)],
       longestMs: sorted.at(-1),
       maxDrawCalls,
@@ -103,6 +114,7 @@ test('Adelaide sustains 60 FPS through the moving expo and vineyard sections', a
     expect(result.toKm).not.toBe(before);
     expect(backend).toBe('webgl2');
     expect(maxDrawCalls).toBeGreaterThan(0);
+    expect(Math.round(result.displayFps)).toBeGreaterThanOrEqual(60);
     expect(Math.round(averageFps)).toBeGreaterThanOrEqual(60);
   } finally {
     active = false;
