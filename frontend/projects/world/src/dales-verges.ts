@@ -124,65 +124,46 @@ export async function dalesVerges(course: Course) {
       root.add(mesh);
     }
   }
-  // Keep both far valley sides in fixed world space while the near walls and
-  // trees pass the camera. Adjacent sections share their end vertices.
-  const ridges = new Group();
-  const ridgeAlpha: Float32BufferAttribute[] = [];
+  // The distant fells surround the rider. Mirroring alternate stretches joins
+  // the original landscape at identical pixels all the way around the horizon.
   const fellMaterial = new MeshBasicMaterial({
     map: textures[2],
     side: DoubleSide,
-    fog: false,
-    alphaTest: 0.015,
     transparent: true,
+    opacity: 0.77,
     depthWrite: false,
-    vertexColors: true,
     color: 0xd3d5c8,
   });
-  for (const side of [-1, 1]) {
-    const positions: number[] = [],
-      uv: number[] = [],
-      indices: number[] = [];
-    for (let i = 0; i <= 48; i++) {
-      const d = (i - 3) * 600;
-      const station = Math.min(course.length, Math.max(0, d));
-      const at = course.place(station);
-      const x = at.x + d - station,
-        z = at.z + side * (1520 + 245 * Math.sin(i * 0.49) + 110 * Math.cos(i * 0.76));
-      const base = at.y - 250;
-      positions.push(x, base, z, x, base + 490 + 75 * Math.sin(i * 0.42), z);
-      const fraction = (i % 6) / 6,
-        u = Math.floor(i / 6) % 2 ? 1 - fraction : fraction;
-      uv.push(u, 0, u, 1);
-      if (i < 48) {
-        const n = i * 2;
-        indices.push(n, n + 1, n + 2, n + 2, n + 1, n + 3);
-      }
+  const positions: number[] = [],
+    uv: number[] = [],
+    indices: number[] = [];
+  for (let i = 0; i <= 96; i++) {
+    const angle = (i / 96) * 2 * Math.PI;
+    const x = 2100 * Math.sin(angle),
+      z = 2100 * Math.cos(angle);
+    positions.push(x, -250, z, x, 205 + 60 * Math.cos(3 * angle), z);
+    const fraction = (i % 24) / 24;
+    const u = Math.floor(i / 24) % 2 ? 1 - fraction : fraction;
+    uv.push(u, 0, u, 1);
+    if (i < 96) {
+      const n = 2 * i;
+      indices.push(n, n + 1, n + 2, n + 2, n + 1, n + 3);
     }
-    const geometry = new BufferGeometry();
-    geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
-    geometry.setAttribute('uv', new Float32BufferAttribute(uv, 2));
-    geometry.setIndex(indices);
-    const rgba = new Float32Array((positions.length / 3) * 4).fill(1);
-    const attr = new Float32BufferAttribute(rgba, 4);
-    geometry.setAttribute('color', attr);
-    ridgeAlpha.push(attr);
-    chunks.push(geometry);
-    ridges.add(new Mesh(geometry, fellMaterial));
   }
+  const geometry = new BufferGeometry();
+  geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+  geometry.setAttribute('uv', new Float32BufferAttribute(uv, 2));
+  geometry.setIndex(indices);
+  chunks.push(geometry);
+  const ridges = new Mesh(geometry, fellMaterial);
   root.add(ridges);
+  const at = course.place(0);
   let previous = -Infinity;
   function follow(d: number) {
+    course.place(d, 0, at);
+    ridges.position.set(at.x, at.y, at.z);
     if (Math.abs(d - previous) < 24) return;
     previous = d;
-    for (const alpha of ridgeAlpha) {
-      for (let i = 0; i < alpha.count; i += 2) {
-        const distance = Math.abs((i / 2 - 3) * 600 - d);
-        const opacity = 0.86 * Math.max(0, Math.min(1, (6600 - distance) / 2900));
-        alpha.setW(i, opacity);
-        alpha.setW(i + 1, opacity);
-      }
-      alpha.needsUpdate = true;
-    }
     for (const mesh of root.children)
       if (mesh !== ridges) mesh.visible = Math.abs(Number(mesh.userData['station']) - d) < 520;
   }
