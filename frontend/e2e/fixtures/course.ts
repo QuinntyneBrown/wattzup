@@ -1,3 +1,4 @@
+import lisbonElevation from './lisbon-elevation.json';
 import icelandElevation from './iceland-elevation.json';
 import independenceElevation from './independence-elevation.json';
 import isleofmanElevation from './isleofman-elevation.json';
@@ -3584,6 +3585,45 @@ export const itenCourseMap = {
       seg('work', 60, 24, 110),
       seg('recover', 60, 11, 80),
       seg('work', 60, 24, 110),
+      seg('cool-down', 120, 11, 80),
+    ],
+  },
+};
+
+export const lisbonCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'lisbon-tram-hills',
+  name: 'Lisbon Tram Hills',
+  routeName: 'the Alfama lanes',
+  place: 'Lisbon, Portugal',
+  world: 'lisbon',
+  distanceKm: 6.3375,
+  climbingM: 101,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: lisbonElevation,
+  },
+  thumbnailUrl: 'maps/lisbon-tram-hills.jpg',
+  photoUrl: 'maps/lisbon-tram-hills-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 11, 80),
+      seg('work', 60, 21, 90),
+      seg('recover', 60, 18, 85),
+      seg('work', 30, 21, 90),
+      seg('work', 30, 18, 85),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 21, 90),
+      seg('recover', 60, 18, 85),
+      seg('work', 30, 21, 90),
+      seg('work', 30, 18, 85),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 21, 90),
+      seg('recover', 60, 18, 85),
+      seg('work', 30, 21, 90),
+      seg('recover', 30, 18, 85),
       seg('cool-down', 120, 11, 80),
     ],
   },
