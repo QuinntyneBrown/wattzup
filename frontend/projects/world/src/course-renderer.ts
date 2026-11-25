@@ -1,3 +1,4 @@
+import type { glasgowCircuit } from './glasgow-circuit';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -230,6 +231,7 @@ export class CourseRenderer implements WorldRenderer {
     z: number;
     reach: number;
   }[] = [];
+  private championship: ReturnType<typeof glasgowCircuit> | null = null;
   private frames = 0;
   /** The chunks of the map that are near enough the camera to be drawn: the only ones in the scene. */
   private readonly near = new Group();
@@ -356,6 +358,14 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
+      if (this.course.file.id === 'glasgow') {
+        const { glasgowCircuit } = await import('./glasgow-circuit');
+        if (this.disposed) return false;
+        this.championship = glasgowCircuit(this.course);
+        this.scene.add(this.championship.group);
+        this.disposables.push(this.championship);
+        this.camera.setViewOffset(1, 1, 0, 0.075, 1, 1);
+      }
       this.build(gltf.scene, canvas);
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -425,6 +435,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
+    this.championship?.update(frame.time, metres, frame.speedKmh, frame.reducedMotion);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -469,6 +480,7 @@ export class CourseRenderer implements WorldRenderer {
     this.near.clear();
     this.chunks.length = 0;
     this.confetti.length = 0;
+    this.championship = null;
     this.funivia = null;
     this.glider = null;
     for (const d of this.disposables) d.dispose();
@@ -622,6 +634,7 @@ export class CourseRenderer implements WorldRenderer {
     materials['Halos'] = haloMaterial(DRAW_DISTANCE['Halos']! * 0.6, DRAW_DISTANCE['Halos']!);
     this.disposables.push(materials['Fences'], materials['Halos']);
     this.beams = materials['Beams'] as MeshBasicMaterial;
+    if (this.championship) materials['Tenements'] = this.championship.wall;
     const painted: Mesh[] = [];
     map.traverse((part) => {
       const mesh = part as Mesh;
@@ -1109,6 +1122,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
+    if (this.championship) Object.assign(drawn, this.championship.state);
     hook['course'] = drawn;
   }
 
