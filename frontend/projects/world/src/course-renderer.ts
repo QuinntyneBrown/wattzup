@@ -1,3 +1,4 @@
+import type { ghentArena } from './ghent-arena';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -230,6 +231,7 @@ export class CourseRenderer implements WorldRenderer {
     z: number;
     reach: number;
   }[] = [];
+  private arena: Awaited<ReturnType<typeof ghentArena>> | null = null;
   private frames = 0;
   /** The chunks of the map that are near enough the camera to be drawn: the only ones in the scene. */
   private readonly near = new Group();
@@ -357,6 +359,18 @@ export class CourseRenderer implements WorldRenderer {
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
+      if (this.course.file.id === 'ghent') {
+        const { ghentArena } = await import('./ghent-arena');
+        if (this.disposed) return false;
+        const arena = await ghentArena(this.course, this.tier === 0);
+        if (this.disposed) {
+          arena.dispose();
+          return false;
+        }
+        this.arena = arena;
+        this.scene.add(this.arena.group);
+        this.disposables.push(this.arena);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -425,6 +439,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
+    this.arena?.update(frame.reducedMotion ? 0 : frame.time, metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -469,6 +484,7 @@ export class CourseRenderer implements WorldRenderer {
     this.near.clear();
     this.chunks.length = 0;
     this.confetti.length = 0;
+    this.arena = null;
     this.funivia = null;
     this.glider = null;
     for (const d of this.disposables) d.dispose();
@@ -856,7 +872,7 @@ export class CourseRenderer implements WorldRenderer {
     cyclist.group.rotation.set(
       at.pitch,
       at.heading,
-      bendLean(at.heading, ahead, LEAN_AHEAD),
+      at.bank ?? bendLean(at.heading, ahead, LEAN_AHEAD),
       'YXZ',
     );
     if (this.casting.has(cyclist) && cyclist.group.visible) this.lampShadows?.add(metres, lane);
@@ -894,6 +910,8 @@ export class CourseRenderer implements WorldRenderer {
     this.groundEye?.at(metres - behind, 0, up);
     const ahead = course.place(metres + LOOK_AHEAD, 0, this.there);
     this.camera.lookAt(ahead.x, ahead.y + LOOK_UP, ahead.z);
+    // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
+    if (back.bank) this.camera.rotateZ(back.bank * 0.32);
     this.sky?.position.copy(this.camera.position);
     const [x, , z] = course.file.sun;
     this.sun.target.position.set(ahead.x, ahead.y, ahead.z);
@@ -1109,6 +1127,12 @@ export class CourseRenderer implements WorldRenderer {
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
+    if (this.arena) {
+      const q = this.camera.quaternion;
+      Object.assign(drawn, this.arena.state, {
+        cameraRoll: Math.asin(2 * (q.x * q.y + q.w * q.z)),
+      });
+    }
     hook['course'] = drawn;
   }
 

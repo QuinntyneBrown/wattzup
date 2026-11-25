@@ -1815,6 +1815,8 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         ],
         "points": [v for p in samples for v in (round(p["x"], 2), round(p["z"], 2), round(-p["y"], 2))],
     }
+    if "bank" in samples[0]:
+        data["bankDegrees"] = [round(p["bank"], 3) for p in samples]
     if "class" in course:
         data["class"] = course["class"]
     if facts.get("cableways"):
@@ -2179,8 +2181,10 @@ def main(argv: list[str] | None = None) -> dict:
     parser.add_argument("--render", action="store_true", help="with --video: render the film now")
     args = parser.parse_args(argv)
 
+    global STEP
     course = json.loads(args.course.read_text(encoding="utf-8"))
     theme = themes.THEMES.get(course.get("theme", ""))
+    STEP = (theme or {}).get("sample_step", STEP)
     # A theme whose land and scenery are its own (Ibiza's) is a theme in everything else.
     themed = bool(theme) and not theme.get("own")
     if theme:
@@ -2205,7 +2209,7 @@ def main(argv: list[str] | None = None) -> dict:
     else:
         samples, st, length, mean, per_level = lay_centre_line(course, theme)
     road = Road(samples)
-    build_road(road, st, length, col, theme)
+    (theme or {}).get("surface_builder", build_road)(road, st, length, col, theme)
     if (theme or {}).get("builder") == "sellaronda":
         _, height_at = sellaronda.build_terrain(road, col, Builder)
         facts = sellaronda.build_scenery(road, st, length, height_at, course, col, Builder, build_sky)

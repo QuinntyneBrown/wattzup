@@ -27,3 +27,11 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-05.jpg | Zwift: [“Going Coastal” Route Details (Watopia)](https://zwiftinsider.com/route/going-coastal/) (g0056) | © Zwift |
 
 The infield crowd and bandstand atmosphere informed *Kuipke March*, an original race arrangement for synthesized brass and snare. The score is in `tools/video-audio/kuipke.py`.
+
+| Race detail | Reference and adaptation |
+| --- | --- |
+| Oval and timber | Real 03 and 12–13 informed the uninterrupted bowl and low roof. Real 04–05 and game 01 informed the lines and track-width sightlines. The single 166 m oval carries the entire class. |
+| Terraces and boards | Real 01 and 04 informed crowd density, rail height and sign spacing. Game 04 informed lettering size in the chase view. The transparent Ghent crowd illustration and all hoarding lettering are original. |
+| Infield and lights | Real 02–03 informed the counters, tables, barriers and roof spans. Real 01 and game 03 informed the separation between the lit boards and darker upper stands. |
+| Madison teams | Real 05–11 and 15 informed body scale, lane separation and the hand change. Games 01 and 04 informed how much of a pair stays visible around a bend. |
+| Lap board and bell | Real 01, 03–04 and 12 informed the infield placement beneath the roof. Game 02 informed the contrast between the lap number and the infield. |
