@@ -1,0 +1,97 @@
+{
+  "id": "blueridge",
+  "name": "Blue Ridge Parkway",
+  "world": "blueridge",
+  "theme": "blueridge",
+  "seed": 2084,
+  "layout": 0,
+  "class": {
+    "id": "ftp-booster-extended-efforts",
+    "title": "FTP Booster Extended Efforts",
+    "channel": "GCN Training",
+    "videoId": "Om1XM6tJ9Ak",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 600,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 21,
+        "cadenceAim": 95
+      },
+      {
+        "kind": "cool-down",
+        "duration": 300,
+        "level": 13,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

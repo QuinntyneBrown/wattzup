@@ -149,3 +149,38 @@ export const haleakalaCourseMap = {
     roll: 0,
   },
 };
+
+export const blueRidgeCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'blue-ridge-parkway',
+  name: 'Blue Ridge Parkway',
+  routeName: 'The Parkway',
+  place: 'Virginia and North Carolina, USA',
+  world: 'blueridge',
+  distanceKm: 24.25,
+  climbingM: 0,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+  },
+  thumbnailUrl: 'maps/blue-ridge-parkway.jpg',
+  photoUrl: 'maps/blue-ridge-parkway-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 600, 13, 80),
+      seg('work', 300, 21, 95),
+      seg('recover', 120, 13, 80),
+      seg('work', 300, 21, 95),
+      seg('recover', 120, 13, 80),
+      seg('work', 300, 21, 95),
+      seg('recover', 120, 13, 80),
+      seg('work', 300, 21, 95),
+      seg('recover', 120, 13, 80),
+      seg('work', 300, 21, 95),
+      seg('recover', 120, 13, 80),
+      seg('work', 300, 21, 95),
+      seg('cool-down', 300, 13, 80),
+    ],
+  },
+};
