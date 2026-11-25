@@ -3598,7 +3598,7 @@ export const knicksCourseMap = {
   place: 'Lower Broadway, New York City',
   world: 'knicks',
   distanceKm: 7,
-  climbingM: 14,
+  climbingM: 43,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },

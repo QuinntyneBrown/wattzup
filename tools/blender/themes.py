@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import knicks
+
+THEMES['knicks'] = knicks.THEME
+SCENERY['knicks'] = knicks.scenery
