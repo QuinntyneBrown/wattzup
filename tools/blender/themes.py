@@ -1541,3 +1541,6 @@ SCENERY['hoover'] = _hoover.scenery
 import iceland as _iceland
 THEMES['iceland'] = _iceland.THEME
 SCENERY['iceland'] = _iceland.scenery
+import independence as _independence
+THEMES['independence'] = _independence.THEME
+SCENERY['independence'] = _independence.scenery

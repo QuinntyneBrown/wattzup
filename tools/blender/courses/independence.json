@@ -1,0 +1,145 @@
+{
+  "id": "independence",
+  "name": "Independence Pass",
+  "world": "independence",
+  "theme": "independence",
+  "seed": 2140,
+  "layout": 0,
+  "class": {
+    "id": "over-under-threshold-efforts",
+    "title": "Over/Under Threshold Efforts",
+    "channel": "GCN Training",
+    "videoId": "a22l-aeYhB0",
+    "syncOffsetSeconds": 0
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 180,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "cool-down",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

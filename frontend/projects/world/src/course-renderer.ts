@@ -150,6 +150,7 @@ import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
 import type { southCoast } from './south-coast';
+import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
 import type { ArtMuseumFlags } from './artmuseum-flags';
 import type { ArtMuseumJoggers } from './artmuseum-joggers';
@@ -236,6 +237,14 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   GlacialWater: 1700,
   Icebergs: 900,
   Grazers: 330,
+  AspenGrove: 690,
+  RoaringFork: 580,
+  SawatchGround: 2300,
+  SawatchRock: 4300,
+  PassSnow: 850,
+  CabinLogs: 770,
+  DivideSign: 420,
+  TwinLakes: 4500,
   Land: 950,
   Pave: 180,
   Foliage: 110,
@@ -341,6 +350,7 @@ export class CourseRenderer implements WorldRenderer {
   private commuters: CopenhagenCommuters | null = null;
   backend: Backend = 'webgl2';
   private icelandCoast: ReturnType<typeof southCoast> | null = null;
+  private divide: Awaited<ReturnType<typeof independencePass>> | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
   private pave: ReturnType<typeof arenbergPave> | null = null;
@@ -813,6 +823,17 @@ export class CourseRenderer implements WorldRenderer {
         if (this.disposed) return false;
         this.icelandCoast = southCoast();
         this.disposables.push(this.icelandCoast);
+      }
+      if (this.course.file.id === 'independence') {
+        const { independencePass } = await import('./independence-pass');
+        if (this.disposed) return false;
+        const divide = await independencePass();
+        if (this.disposed) {
+          divide.dispose();
+          return false;
+        }
+        this.divide = divide;
+        this.disposables.push(divide);
       }
       const blossomModules =
         parsed.id === 'cherryblossom'
@@ -1821,6 +1842,7 @@ export class CourseRenderer implements WorldRenderer {
     this.dam?.update(frame.reducedMotion ? 0 : frame.time);
     this.strip?.update(frame.reducedMotion ? 0 : frame.time);
     this.icelandCoast?.update(frame.reducedMotion ? 0 : frame.time);
+    this.divide?.update(frame.reducedMotion ? 0 : frame.time);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -2001,7 +2023,9 @@ export class CourseRenderer implements WorldRenderer {
           ? ([750, 5000] as const)
           : this.icelandCoast
             ? ([650, 4700] as const)
-            : FOG;
+            : this.divide
+              ? ([430, 5400] as const)
+              : FOG;
     this.scene.fog = new Fog(look.haze, fogRange[0], fogRange[1]);
     this.scene.background = new Color(look.haze);
     this.sun.color.setHex(look.light.colour);
@@ -2187,6 +2211,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.dam) Object.assign(materials, this.dam.materials);
     if (this.strip) Object.assign(materials, this.strip.materials);
     if (this.icelandCoast) Object.assign(materials, this.icelandCoast.materials);
+    if (this.divide) Object.assign(materials, this.divide.materials);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     Object.assign(materials, localMaterials);
     if (this.championship) {
@@ -2621,13 +2646,13 @@ export class CourseRenderer implements WorldRenderer {
     const sway = calobra && !reducedMotion ? Math.sin(metres / 3) * 0.04 : 0;
     const back = course.place(metres - behind, sway, this.here);
     const rim = this.plaza ? Math.max(0, 1 - Math.abs(metres - 3180) / 105) : 0;
-    const overlook = this.cypressLift
+    const cypressOverlook = this.cypressLift
       ? Math.max(
           Math.exp(-Math.pow((metres - 5650) / 115, 4)),
           Math.exp(-Math.pow((metres - 9320) / 115, 4)),
         )
       : 0;
-    this.camera.position.set(back.x, back.y + up + 1.6 * rim * rim + 0.52 * overlook, back.z);
+    this.camera.position.set(back.x, back.y + up + 1.6 * rim * rim + 0.52 * cypressOverlook, back.z);
     this.groundEye?.at(metres - behind, 0, up);
     // The last coastal bend opens onto the lagoon on the left.
     const lagoon =
@@ -2645,6 +2670,18 @@ export class CourseRenderer implements WorldRenderer {
         Math.exp(-Math.pow((metres - centre) / width, 4));
       shoulder = 4.1 * glance(5650, 100) - 4.3 * glance(9320, 110) + 2.2 * glance(17905, 54);
     }
+    const overlook =
+      this.divide && metres > 11780 && metres < 12380
+        ? Math.sin(((metres - 11780) * Math.PI) / 600) ** 2
+        : 0;
+    const summit =
+      this.divide && metres > 15020 && metres < 15279
+        ? 2.8 * Math.sin(((metres - 15020) * Math.PI) / 259) ** 2
+        : 0;
+    const river =
+      this.divide && metres > 1980 && metres < 2420
+        ? 2.7 * Math.sin(((metres - 1980) * Math.PI) / 440) ** 2
+        : 0;
     const lap = this.railway ? metres % 1750 : 0;
     const bridge = this.railway ? Math.max(0, 1 - Math.abs(lap - 460) / 67) : 0;
     const skyline = this.railway ? Math.max(0, 1 - Math.abs(lap - 670) / 105) : 0;
@@ -2656,7 +2693,7 @@ export class CourseRenderer implements WorldRenderer {
         ? course.place(metres + 24, this.malecon.lookAcross(metres), this.there)
         : course.place(
             metres + (calobra ? 24 : this.arena ? 7.5 : LOOK_AHEAD),
-            (view?.lane ?? 0) -
+            (view?.lane ?? 0) + summit + river -
               2.8 * bridge +
               (this.headland ? 1.6 : 0) +
               shoulder -
@@ -2664,6 +2701,29 @@ export class CourseRenderer implements WorldRenderer {
               3.3 * lagoon,
             this.there,
           );
+    if (overlook > 0) {
+      // Keep the rider in frame as Highway 82 rounds the outside of the lake overlook.
+      // The glacial basin lies 460 m ahead and 94 m left of the road at the viewpoint.
+      const origin = course.place(12080, 0, this.here);
+      const ox = origin.x;
+      const oz = origin.z;
+      const tangent = course.place(12084, 0, this.here);
+      const dx = tangent.x - ox;
+      const dz = tangent.z - oz;
+      const scale = 1 / Math.hypot(dx, dz);
+      const lakeX = ox + (460 * dx + 94 * dz) * scale;
+      const lakeZ = oz + (460 * dz - 94 * dx) * scale;
+      const rider = course.place(metres, 0, this.here);
+      const length = Math.hypot(lakeX - rider.x, lakeZ - rider.z);
+      const ux = (lakeX - rider.x) / length;
+      const uz = (lakeZ - rider.z) / length;
+      this.camera.position.x += (rider.x - 5.2 * ux - this.camera.position.x) * overlook;
+      this.camera.position.z += (rider.z - 5.2 * uz - this.camera.position.z) * overlook;
+      this.camera.position.y += 1.7 * overlook;
+      ahead.x += (rider.x + 14 * ux - ahead.x) * overlook;
+      ahead.z += (rider.z + 14 * uz - ahead.z) * overlook;
+      ahead.y += (rider.y - 1.4 - ahead.y) * overlook;
+    }
     this.camera.lookAt(
       ahead.x,
       ahead.y +
@@ -3170,6 +3230,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.dam) Object.assign(drawn, this.dam.report(this.camera));
     if (this.strip) Object.assign(drawn, this.strip.report());
     if (this.icelandCoast) Object.assign(drawn, this.icelandCoast.report(drawn.groups));
+    if (this.divide) Object.assign(drawn, this.divide.report(drawn.groups));
     hook['course'] = drawn;
   }
 

@@ -1,4 +1,5 @@
 import icelandElevation from './iceland-elevation.json';
+import independenceElevation from './independence-elevation.json';
 import angliruElevation from './angliru-elevation.json';
 import artMuseumElevation from './artmuseum-elevation.json';
 
@@ -3459,6 +3460,50 @@ export const icelandCourseMap = {
       seg('recover', 120, 11, 80),
       seg('work', 60, 24, 80),
       seg('cool-down', 90, 10, 80),
+    ],
+  },
+};
+
+export const independenceCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'independence-pass',
+  name: 'Independence Pass',
+  routeName: 'Highway 82',
+  place: 'The Roaring Fork and the Continental Divide, Colorado',
+  world: 'independence',
+  distanceKm: 15.2,
+  climbingM: 897,
+  rating: 'Brutal',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: independenceElevation,
+  },
+  thumbnailUrl: 'maps/independence-pass.jpg',
+  photoUrl: 'maps/independence-pass-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 14, 80),
+      seg('work', 60, 18, 80),
+      seg('recover', 120, 14, 80),
+      seg('work', 90, 22, 90),
+      seg('recover', 90, 19, 90),
+      seg('work', 90, 22, 90),
+      seg('recover', 90, 19, 90),
+      seg('work', 90, 22, 90),
+      seg('recover', 90, 19, 90),
+      seg('work', 90, 22, 90),
+      seg('work', 90, 19, 90),
+      seg('recover', 120, 13, 80),
+      seg('work', 90, 22, 90),
+      seg('recover', 90, 19, 90),
+      seg('work', 90, 22, 90),
+      seg('recover', 90, 19, 90),
+      seg('work', 90, 22, 90),
+      seg('recover', 90, 19, 90),
+      seg('work', 90, 22, 90),
+      seg('recover', 90, 19, 90),
+      seg('cool-down', 180, 13, 80),
     ],
   },
 };
