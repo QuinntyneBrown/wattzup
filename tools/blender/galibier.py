@@ -39,12 +39,17 @@ def lay(course, theme, bc):
 
 def surface(d,l):
     edge=max(0,abs(l)-5.8)
-    if d<390 or d>25740 or 22190<d<22470:return -.11+max(0,edge-34)*.085
-    # Across each traverse the same geographic side drops into the valley.
-    across=l*math.cos(bearing(d)-.6)
-    slope=.58 if 21800<d<24700 else .27
-    if 18370<d<18640 and l>0:return -.11+max(0,edge-37)*.24
-    return -.11+edge*(slope if across<0 else -slope)+min(edge*.045,3)*math.sin(d/70+l/16)
+    fade=lambda x:max(0,min(1,x))
+    high=fade((d-340)/360)*fade((25860-d)/220)
+    terrace=fade((d-22090)/135)*fade((22620-d)/155)
+    fall=math.cos(bearing(d)-.65)
+    lateral=math.copysign(1,l)
+    slope=-.29*fall*lateral
+    height=edge*slope+min(edge*.065,3.9)*math.sin(d/70+l/22)
+    if 18370<d<18640 and l>0:height=height*(1-fade((d-18370)/72)*fade((18640-d)/55))+max(0,edge-34)*.12
+    height=height*high*(1-terrace)+max(0,edge-37)*.10*(1-high+terrace)
+    if d<420 and l>0:height-=1.3*math.exp(-((l-11.4)/3.1)**2)
+    return -.13+height
 
 
 def strip(batch,r,i,a,b,h0,h1,k0,k1,tone):

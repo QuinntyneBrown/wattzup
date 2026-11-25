@@ -24,7 +24,16 @@ export async function galibierPass(course: Course) {
   const loader = new TextureLoader(),
     maps: Texture[] = [];
   try {
-    for (const name of ['meije', 'cloud', 'tarmac', 'scree', 'pasture', 'snow']) {
+    for (const name of [
+      'meije',
+      'cloud',
+      'tarmac',
+      'scree',
+      'pasture',
+      'snow',
+      'chalets',
+      'valloire',
+    ]) {
       const map = await loader.loadAsync('courses/galibier-' + name + '.webp');
       map.colorSpace = SRGBColorSpace;
       maps.push(map);
@@ -34,7 +43,7 @@ export async function galibierPass(course: Course) {
     throw e;
   }
   resources.push(...maps);
-  const [peaks, cloud, tarmac, scree, meadow, snow] = maps;
+  const [peaks, cloud, tarmac, scree, meadow, snow, chalets, valley] = maps;
   function surface(map: Texture, size: number) {
     map.wrapS = map.wrapT = RepeatWrapping;
     map.anisotropy = 4;
@@ -50,6 +59,91 @@ export async function galibierPass(course: Course) {
     Snow: surface(snow!, 4.2),
     Tarmac: surface(tarmac!, 1.5),
   };
+  const foothill = new MeshBasicMaterial({
+    map: valley,
+    side: DoubleSide,
+    alphaTest: 0.4,
+    fog: false,
+  });
+  const middle = new PlaneGeometry(10800, 1890);
+  resources.push(foothill, middle);
+  const centre = course.place(12800);
+  for (let i = 0; i < 8; i++) {
+    const angle = (i * Math.PI) / 4;
+    const slopes = new Mesh(middle, foothill);
+    slopes.rotation.y = angle;
+    slopes.scale.x = i % 2 ? -1 : 1;
+    slopes.position.set(
+      centre.x + 10900 * Math.sin(angle),
+      1950 + Math.sin(2 * angle) * 145,
+      centre.z + 10900 * Math.cos(angle),
+    );
+    group.add(slopes);
+  }
+  const walls = new MeshLambertMaterial({ map: chalets, side: DoubleSide });
+  resources.push(walls);
+  for (const [d, l, w, depth, height] of [
+    [134, 17, 19, 8, 5.5],
+    [157, -18, 11, 8, 4.1],
+    [183, -22, 20, 10, 5],
+    [237, 21, 14, 9, 5],
+    [311, -24, 13, 8, 4],
+  ] as const) {
+    const p = course.place(d, l),
+      house = new Group();
+    group.add(house);
+    house.position.set(p.x, p.y - 0.13, p.z);
+    house.rotation.y = p.heading;
+    for (let j = 0; j < 4; j++) {
+      const end = j % 2 === 0,
+        angle = (j * Math.PI) / 2,
+        geo = new PlaneGeometry(end ? depth : w, height);
+      const coords = geo.getAttribute('uv');
+      for (let i = 0; i < coords.count; i++) {
+        coords.setX(i, (Number(end) + coords.getX(i)) * 0.5);
+        if (end) coords.setY(i, coords.getY(i) * 0.69);
+      }
+      const face = new Mesh(geo, walls);
+      face.rotation.y = angle;
+      face.position.set(
+        Math.sin(angle) * (depth / 2 + 0.23),
+        height * 0.5,
+        Math.cos(angle) * (w / 2 + 0.23),
+      );
+      house.add(face);
+      resources.push(geo);
+    }
+  }
+  const streamGeo = new PlaneGeometry(1, 1, 1, 64),
+    vertices = streamGeo.getAttribute('position');
+  for (let i = 0; i < vertices.count; i++) {
+    const u = vertices.getX(i),
+      v = vertices.getY(i),
+      d = 210 + v * 390;
+    const p = course.place(d, -11.4 + u * 5.4 + 0.4 * Math.sin(d / 19));
+    vertices.setXYZ(i, p.x, p.y - 0.88, p.z);
+  }
+  streamGeo.computeVertexNormals();
+  streamGeo.computeBoundingSphere();
+  const rippleCanvas = document.createElement('canvas');
+  rippleCanvas.width = 128;
+  rippleCanvas.height = 128;
+  const water = rippleCanvas.getContext('2d')!;
+  water.fillStyle = '#6c8889';
+  water.fillRect(0, 0, 128, 128);
+  const ripples = seeded(2144);
+  for (let i = 0; i < 55; i++) {
+    water.fillStyle = i % 3 ? '#90a8a4' : '#c6c9b6';
+    water.fillRect(ripples() * 128, ripples() * 128, 2 + ripples() * 26, 1 + ripples() * 2);
+  }
+  const streamMap = new CanvasTexture(rippleCanvas);
+  streamMap.colorSpace = SRGBColorSpace;
+  streamMap.wrapT = RepeatWrapping;
+  streamMap.repeat.y = 70;
+  const streamPaint = new MeshLambertMaterial({ map: streamMap, side: DoubleSide });
+  const stream = new Mesh(streamGeo, streamPaint);
+  group.add(stream);
+  resources.push(streamGeo, streamPaint, streamMap);
   const col = course.place(25400),
     mountain = new MeshBasicMaterial({ map: peaks, side: DoubleSide, fog: false, alphaTest: 0.4 });
   const ridge = new PlaneGeometry(11000, 2340);
@@ -191,6 +285,8 @@ export async function galibierPass(course: Course) {
   resources.push(paintGeo);
   const names = NAMES.map((name) => {
     const map = nameTexture(name);
+    map.repeat.x = -1;
+    map.offset.x = 1;
     const paint = new MeshBasicMaterial({
       map,
       transparent: true,
@@ -257,6 +353,9 @@ export async function galibierPass(course: Course) {
   return {
     group,
     materials,
+    get streamOffset() {
+      return streamMap.offset.y;
+    },
     get flagAngle() {
       return visibleCluster.flags[0]!.rotation.y;
     },
@@ -267,6 +366,8 @@ export async function galibierPass(course: Course) {
       return clouds[0]!.mesh.position.x;
     },
     at(time: number, metres: number) {
+      stream.visible = metres < 950;
+      if (stream.visible) streamMap.offset.y = (time * 0.17) % 1;
       for (const board of boards) board.g.visible = Math.abs(board.d - metres) < 550;
       for (const c of clusters) {
         c.local.visible = Math.abs(c.d - metres) < 400;

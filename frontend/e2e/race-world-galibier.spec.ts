@@ -8,6 +8,7 @@ import { RaceSetupPage } from './pages/race-setup.page';
 import { RacePage } from './pages/race.page';
 
 for (const [actor, metres, part] of [
+  ['stream at Plan Lachat', 80, 'streamOffset'],
   ['Tour flag beside the pass road', 11520, 'flagAngle'],
   ['cheering spectator', 18420, 'spectatorHeight'],
   ['cloud over La Meije', 22360, 'cloudPosition'],

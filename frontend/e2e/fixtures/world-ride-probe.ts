@@ -62,7 +62,7 @@ export class WorldRideProbe {
   }
 
   async galibierMotion(
-    part: 'flagAngle' | 'spectatorHeight' | 'cloudPosition',
+    part: 'flagAngle' | 'spectatorHeight' | 'cloudPosition' | 'streamOffset',
   ): Promise<number | null> {
     return this.page.evaluate(
       (name) =>

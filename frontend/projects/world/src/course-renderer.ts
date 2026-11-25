@@ -239,6 +239,7 @@ export class CourseRenderer implements WorldRenderer {
   private readonly drawn = {
     spectatorHeight: null as number | null,
     cloudPosition: null as number | null,
+    streamOffset: null as number | null,
     flagAngle: null as number | null,
     tier: 0 as number,
     backend: '' as string,
@@ -1133,6 +1134,7 @@ export class CourseRenderer implements WorldRenderer {
     }
     drawn.spectatorHeight = this.galibier?.spectatorHeight ?? null;
     drawn.cloudPosition = this.galibier?.cloudPosition ?? null;
+    drawn.streamOffset = this.galibier?.streamOffset ?? null;
     drawn.flagAngle = this.galibier?.flagAngle ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
