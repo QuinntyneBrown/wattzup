@@ -1,0 +1,151 @@
+{
+  "id": "diwali",
+  "name": "Diwali, Marine Drive",
+  "world": "diwali",
+  "theme": "diwali",
+  "seed": 2112,
+  "layout": 0,
+  "class": {
+    "id": "25-minute-high-intensity-intervals",
+    "title": "25 Minute High Intensity Intervals",
+    "channel": "GCN",
+    "videoId": "QuKEyPhRrMM",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 150,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 18,
+        "cadenceAim": 68
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 68
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 65
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 19,
+        "cadenceAim": 75
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 65
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 19,
+        "cadenceAim": 75
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 65
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 19,
+        "cadenceAim": 75
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 18,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 19,
+        "cadenceAim": 82
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 23,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 23,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 23,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "cool-down",
+        "duration": 185,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}
