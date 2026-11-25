@@ -42,6 +42,7 @@ import type {
   TimedSegment as Segment,
   World,
   WorldRenderer,
+  WorldStartOptions,
 } from '@telo/api';
 import {
   Course,
@@ -80,6 +81,7 @@ import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
+import { heldFps } from './held-fps';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -307,16 +309,18 @@ export class CourseRenderer implements WorldRenderer {
     _world: World,
     nextFrame: () => Promise<void>,
     segments: readonly Segment[] = [],
+    options: WorldStartOptions = {},
   ): Promise<boolean> {
     try {
       const asked = readWorldRideProbe((globalThis as Record<string, unknown>)[PROBE_KEY]);
       const renderer = new WebGPURenderer({
         canvas,
         antialias: true,
-        forceWebGL: asked?.forceWebGL ?? false,
+        forceWebGL: asked?.forceWebGL === true || options.forceWebGL === true,
       });
       await renderer.init();
       this.renderer = renderer;
+      if (options.tier) this.tier = PINNED[options.tier] ?? START;
       if (asked && !asked.judged) {
         this.pinned = true;
         const from = (globalThis as Record<string, unknown>)[PROBE_KEY] as { from?: unknown };
@@ -356,11 +360,33 @@ export class CourseRenderer implements WorldRenderer {
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
-      await renderer.compileAsync(this.scene, this.camera);
+      await renderer.compileAsync(this.scene, this.camera, null, (event) =>
+        options.progress?.({
+          step: 'shaders',
+          built: event.loaded,
+          total: event.total,
+          backend: this.backend,
+        }),
+      );
+      if (this.disposed) return false;
+      const tier = asked?.tier ?? options.tier ?? 'medium';
+      options.progress?.({ step: 'warm-up', tier });
       this.warm(renderer);
       this.pipeline = this.glow(renderer);
-      this.render();
-      await nextFrame();
+      if (options.progress) {
+        const times: number[] = [];
+        for (let frame = 0; frame < 3; frame++) {
+          this.render();
+          await nextFrame();
+          if (this.disposed) return false;
+          times.push(performance.now());
+        }
+        const fps = heldFps(times);
+        if (fps !== null) options.progress({ step: 'warmed', fps, tier });
+      } else {
+        this.render();
+        await nextFrame();
+      }
       return !this.disposed;
     } catch {
       return false;
