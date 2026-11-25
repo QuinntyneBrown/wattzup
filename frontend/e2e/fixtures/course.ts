@@ -159,6 +159,10 @@ export const antwerpCourseMap = {
   world: 'antwerp',
   distanceKm: 20.9,
   climbingM: 18,
+  terrain: {
+    grade: { 'warm-up': 0, work: 0.2, recover: -0.12, 'cool-down': 0, steady: 0 },
+    roll: 0.08,
+  },
   rating: 'Hard',
   thumbnailUrl: 'maps/antwerp-port-sprint.jpg',
   photoUrl: 'maps/antwerp-port-sprint-photo.jpg',
