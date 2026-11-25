@@ -215,3 +215,13 @@ built-in world in place and the panel says so.
   `'wasm-unsafe-eval'` in the Content Security Policy (L2-131 AC1).
 - **Vice City has no world on `main`.** Its race draws South Beach Sunrise, whose terrain its
   catalogue entry already takes (slice 7.3), until a Vice City world is built.
+
+### Havana Malecón · L2-2136
+
+Map Select supplies the Malecón race and the historic 30 Sec On, 2 Min Off workout. The world library currently loads HavanaStreet through its street registry. Preserve the original class art, including the portales, fishing lines, drivers, finned taxis, El Morro and the shaded balconies documented in the Havana screenshot history. The ride remains usable offline. Release the loaded scenery, shared geometry, maps and animated instances on departure.
+
+For the tablet, adapt Caribana’s batching of street sections and keep fixed landmarks apart from the close traffic and spray. Place Hotel Nacional above Vedado and leave El Morro across the water near the eastern end. Give each its own recognisable outline. Real 04, 07, 09–10 and 15 guide headland scale and positioning. Games 01 and 05 guide their visibility at speed.
+
+Reference photos 01, 03 and 11–14 guide the car profiles, deep arcades, railings and pastel façades. Compress repeated window detail in distant blocks and keep the existing modelled cornices and open colonnades nearby. Real 02, 04–08 and 15 distinguish a rising crest, over-wall spray and water sheeting down to the road. Read the low late light from real 06 and 08. Games 02–04 guide colour, clearance and the approach to the denser façades.
+
+Capture Vedado, Hotel Nacional, the portales, the breakers, the promenade musicians and the harbour mouth from the normal saddle with the race HUD. Measure submitted frames after nine seconds of warm-up with the simulated bike on Low/WebGL 2 at 1024 × 768, DPR 1 and 4× CPU.
