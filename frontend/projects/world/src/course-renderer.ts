@@ -856,7 +856,13 @@ export class CourseRenderer implements WorldRenderer {
       if (this.course.file.id === 'knicks') {
         const { BroadwayRace } = await import('./broadway-race');
         if (this.disposed) return false;
-        this.broadway = new BroadwayRace(this.course);
+        const broadway = await BroadwayRace.load(this.course);
+        if (this.disposed) {
+          broadway.dispose();
+          return false;
+        }
+        this.broadway = broadway;
+        this.camera.setViewOffset(1, 1, 0, 0.035, 1, 1);
         this.scene.add(this.broadway.root);
         this.disposables.push(this.broadway);
       }
@@ -2212,6 +2218,7 @@ export class CourseRenderer implements WorldRenderer {
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
+    if (this.broadway) Object.assign(materials, this.broadway.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -3296,6 +3303,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.icelandCoast) Object.assign(drawn, this.icelandCoast.report(drawn.groups));
     if (this.divide) Object.assign(drawn, this.divide.report(drawn.groups));
     if (this.mountain) Object.assign(drawn, this.mountain.report());
+    if (this.broadway) Object.assign(drawn, this.broadway.report());
     if (this.trainingHighlands) Object.assign(drawn, this.trainingHighlands.report());
     hook['course'] = drawn;
   }

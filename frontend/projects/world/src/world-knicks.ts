@@ -372,6 +372,29 @@ export class KnicksStreet implements SceneStreet {
     this.addWoolworth();
   }
 
+  /** The first float and a visible piece of paper in the submitted instance buffer. */
+  paradePose(
+    metres: number,
+    into: { paradeFloatStation: number | null; tickerHeight: number | null },
+  ) {
+    const float = this.floats[0]?.group;
+    into.paradeFloatStation = float?.visible ? metres - float.position.z : null;
+    into.tickerHeight = null;
+    if (!this.tape) return;
+    const values = this.tape.instanceMatrix.array;
+    for (let i = 0; i < this.tape.count; i++) {
+      const j = i * 16;
+      if (
+        values[j + 14]! < -4 &&
+        values[j + 14]! > -68 &&
+        values[j + 13]! < 10 &&
+        values[j + 13]! > 0.35
+      ) {
+        into.tickerHeight = values[j + 13]!;
+        return;
+      }
+    }
+  }
   /** The street's clock, in seconds; held at 0 for reduced motion. */
   setTime(seconds: number): void {
     this.time = seconds;

@@ -30,46 +30,68 @@ def surface(r,st,length,col,theme):
 
 def scenery(k):
     art=Painted(k);road=k.road
+    def atlas(name):
+        b=type(k.B['terrain'])(name,'terrain');b.colours=[];b.uvs=[];k.B[name]=b;return b
+    fans=atlas('BroadwayFans');churches=atlas('BroadwayChurches')
+    sculpture=type(k.B['terrain'])('ChargingBull','terrain');sculpture.colours=[];k.B['ChargingBull']=sculpture
+    bronzeArt=Painted(k,'ChargingBull')
+    def facade(batch,a,b,lane,z,h,u,v):
+        left,right=(a,b) if lane<0 else (b,a)
+        coords=[road.pos(d,lane,y) for d,y in ((left,z),(right,z),(right,z+h),(left,z+h))]
+        batch.faces.append(tuple(batch.v(q) for q in coords));batch.colours.extend([(1,1,1,1)]*4)
+        batch.uvs.extend(((u,0),(v,0),(v,1),(u,1)))
+    for d in range(-30,7070,13):
+        for side in (-1,1):
+            if min(abs(d-120),abs(d-2720),abs(d-5340))<38:continue
+            facade(fans,d,d+12.1,side*8.92,.14,2.32,0,1)
     def box(d,lane,z,w,depth,high,c):art.box(road.pos(d,lane,z),(w,depth,high),0,lin(c))
-    def ell(d,lane,z,rx,ry,rz,colour):
+    def ell(d,lane,z,rx,ry,rz,colour,sculpt=False):
+        angle=-.95 if sculpt else 0
+        if sculpt:
+            dx=d-103;dy=lane+7.7
+            d,lane=125+dx*math.cos(angle)-dy*math.sin(angle),8.1+dx*math.sin(angle)+dy*math.cos(angle)
+        draw=bronzeArt if sculpt else art
         origin=road.pos(d,lane,z);last=None
         for tier in range(9):
             t=-math.pi/2+tier*math.pi/8
-            rim=[(origin[0]+rx*math.cos(a*math.tau/16)*math.cos(t),
-                  origin[1]+ry*math.sin(a*math.tau/16)*math.cos(t),origin[2]+rz*math.sin(t)) for a in range(16)]
+            rim=[]
+            for a in range(16):
+                u=rx*math.cos(a*math.tau/16)*math.cos(t);v=ry*math.sin(a*math.tau/16)*math.cos(t)
+                rim.append((origin[0]+u*math.cos(angle)-v*math.sin(angle),origin[1]+u*math.sin(angle)+v*math.cos(angle),origin[2]+rz*math.sin(t)))
             if last:
                 for j in range(16):
                     n=(j+1)%16;c=lin(colour);shade=.71+.25*tier/8
-                    art.face((last[j],last[n],rim[n],rim[j]),((c[0]*shade,c[1]*shade,c[2]*shade,1),)*2+(c,c))
+                    draw.face((last[j],last[n],rim[n],rim[j]),((c[0]*shade,c[1]*shade,c[2]*shade,1),)*2+(c,c))
             last=rim
     # Bowling Green's wrought-iron fence and granite plinth, with a lowered, charging bronze bull.
-    box(108,-12,-.21,71,12,.42,0x667952)
-    box(103,-7.7,.12,9,4.9,.35,0x807F7C)
-    for d in range(78,144,2):
-        for lane in (-8.7,-17.2):
+    box(125,14,-.21,71,12,.42,0x667952)
+    box(125,8.1,.12,9,4.9,.35,0x807F7C)
+    for d in range(93,161,2):
+        for lane in (9.8,19.0):
             art.tube(road.pos(d,lane,.18),.052,.044,1.6,lin(0x343B39),lin(0x676D62),6)
             box(d+1,lane,1.54,2.04,.055,.085,0x494F4D)
+    def bull(*args):ell(*args,sculpt=True)
     bronze,polish=0x6F5541,0x97795A
-    ell(103,-7.7,1.78,2.0,.79,.79,bronze);ell(101.9,-7.7,2.12,1.05,.91,.76,bronze)
-    ell(100.97,-7.7,1.55,.83,.57,.53,polish);ell(100.45,-7.7,1.33,.39,.46,.26,bronze)
+    bull(103,-7.7,1.78,2.0,.79,.79,bronze);bull(101.9,-7.7,2.12,1.05,.91,.76,bronze)
+    bull(100.97,-7.7,1.55,.83,.57,.53,polish);bull(100.45,-7.7,1.33,.39,.46,.26,bronze)
     for side in (-1,1):
         for d in (101.72,104.4):
-            ell(d,-7.7+side*.49,1.02,.25,.19,.59,bronze)
-            ell(d-.16,-7.7+side*.50,.52,.29,.19,.12,0x584A3F)
-        ell(100.86,-7.7+side*.36,1.68,.12,.08,.10,0x423A33)
+            bull(d,-7.7+side*.49,1.02,.25,.19,.59,bronze)
+            bull(d-.16,-7.7+side*.50,.52,.29,.19,.12,0x584A3F)
+        bull(100.86,-7.7+side*.36,1.68,.12,.08,.10,0x423A33)
         for j in range(8):
-            t=j/7;ell(100.96-.46*t,-7.7+side*(.43+.56*t),1.79+.29*t*t,.14-.082*t,.16-.12*t,.13-.079*t,polish)
+            t=j/7;bull(100.96-.46*t,-7.7+side*(.43+.56*t),1.79+.29*t*t,.14-.082*t,.16-.12*t,.13-.079*t,polish)
     for j in range(9):
-        t=j/8;ell(104.73+.38*math.sin(t*math.pi),-7.8-.38*t,1.96+.87*t,.13,.085,.13,bronze)
+        t=j/8;bull(104.73+.38*math.sin(t*math.pi),-7.8-.38*t,1.96+.87*t,.13,.085,.13,bronze)
     # Trinity's sandstone spire and St. Paul's pale steeple stand above separate churchyards.
-    for d,side,is_trinity in ((2684,1,True),(5302,-1,False)):
+    for d,side,is_trinity in ((2720,1,True),(5340,-1,False)):
         l=side*22;stone=0x897F73 if is_trinity else 0x977C70
         box(d,l,-.32,66,28,.76,0x71835F)
         box(d,l,.42,31,12,10,stone)
         art.roof(road.pos(d,l,10.4),31,12.4,5,0,lin(0x5E646A))
+        facade(churches,d-15.5,d+15.5,l-side*6.22,.47,9.91,0 if is_trinity else .5,.5 if is_trinity else 1)
         if is_trinity:
             for along in range(-12,13,5):
-                box(d+along,l-side*6.1,1.9,2.35,.29,5.6,0x454954)
                 for edge in (-1,1):box(d+along+edge*1.28,l-side*6.56,.44,.56,.8,8.6,stone)
             tower=d-15
             box(tower,l,.43,6.7,7.3,19.8,stone)
