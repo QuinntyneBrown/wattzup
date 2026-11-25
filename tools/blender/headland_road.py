@@ -11,8 +11,8 @@ def lay(course, theme, bc):
     x = y = 0
     for p in samples:
         d = p["d"]
-        turn = 0.66 * math.sin(d / 322 + 0.5) + 0.27 * math.sin(d / 93) + 0.14 * math.sin(d / 1100)
-        curvature = 0.66 / 322 * math.cos(d / 322 + 0.5) + 0.27 / 93 * math.cos(d / 93) + 0.14 / 1100 * math.cos(d / 1100)
+        turn = 0.66 * math.sin(d / 322 - 0.85) + 0.27 * math.sin(d / 93) + 0.14 * math.sin(d / 1100)
+        curvature = 0.66 / 322 * math.cos(d / 322 - 0.85) + 0.27 / 93 * math.cos(d / 93) + 0.14 / 1100 * math.cos(d / 1100)
         x += bc.STEP * math.cos(turn)
         y += bc.STEP * math.sin(turn)
         p.update(x=x, y=y, h=turn, k=curvature)
@@ -26,7 +26,7 @@ def section(p):
     # A shelf over the water broadens into the lighthouse point and at the lookouts.
     point = 63 * math.exp(-((d - 9880) / 134) ** 2)
     turnout = max((11 * math.exp(-((d - q) / 32) ** 4) for q in LOOKOUTS), default=0)
-    brow = -21 - 0.57 * cove - point - turnout
+    brow = -11.4 - 0.19 * cove - point - turnout
     toe = brow - 17 - z * 0.18
     return [(toe - 50,-4), (toe-14,-0.7), (toe,1.2), (toe+2,4), (toe+5,z*.23),
             (toe+7,z*.26), (toe+10,z*.42), (toe+12,z*.44), (brow-4,z*.78),
@@ -91,18 +91,35 @@ def lookout(k,paint,station):
         col=lin((0x477889,0xb56c52)[n])
         def part(along,left,up,dims,colour):
             paint.box(k.P(j,along,left,up),dims,yaw,colour,.9)
-        part(0,-9.5,.25,(4.1,1.72,.62),col)
-        part(-.12,-9.5,.85,(2.32,1.48,.65),lin(0x3d5359))
-        part(-.12,-9.5,1.49,(2.38,1.5,.11),col)
-        for side in (-1,1):
-            for end in (-1,1):
-                part(end*1.25,-9.5+side*.85,.08,(.63,.14,.49),lin(0x383937))
-            part(2.06,-9.5+side*.61,.62,(.06,.39,.17),lin(0xf4dfb3))
+        # The sill, bonnet and boot have different heights, and the windscreen
+        # rakes aft to the narrow roof. Provide wheel circles on the side the rider sees.
+        part(0,-9.5,.27,(4.4,1.75,.50),col)
+        part(1.43,-9.5,.76,(1.02,1.63,.11),col)
+        part(-1.71,-9.5,.74,(.69,1.65,.14),col)
+        def panel(vertices, colour):
+            points=[k.P(j,fwd,-9.5+side,up) for fwd,side,up in vertices]
+            paint.face(points,[lin(colour)]*len(points))
+            paint.face(list(reversed(points)),[lin(colour)]*len(points))
+        for sign in (-1,1):
+            sill=.78
+            panel([(-1.53,sign*.83,sill),(-1.08,sign*.69,1.45),(.57,sign*.69,1.45),(1.12,sign*.83,sill)],0x54717d)
+            panel([(-.24,sign*.85,sill),(-.21,sign*.70,1.45),(-.11,sign*.70,1.45),(-.12,sign*.85,sill)],0x34484c)
+            part(.28,-9.5+sign*.88,.66,(.24,.025,.045),lin(0xd1c7ae))
+            part(.85,-9.5+sign*.95,.94,(.22,.22,.15),col)
+            for front in (-1.29,1.34):
+                for radius,offset,colour in ((.35,.90,0x262a2a),(.19,.912,0x9b9c95)):
+                    vertices=[(front+radius*math.cos(q*math.tau/12),sign*offset,.36+radius*math.sin(q*math.tau/12)) for q in range(12)]
+                    panel(vertices,colour)
+            part(2.17,-9.5+sign*.57,.64,(.08,.43,.13),lin(0xedddab))
+            part(-2.18,-9.5+sign*.59,.66,(.07,.38,.15),lin(0xa94c37))
+        panel([(.57,-.69,1.45),(.57,.69,1.45),(1.12,.83,.78),(1.12,-.83,.78)],0x77909a)
+        panel([(-1.08,-.69,1.45),(-1.08,.69,1.45),(-1.53,.83,.78),(-1.53,-.83,.78)],0x566b75)
+        part(-.23,-9.5,1.45,(1.73,1.42,.085),col)
+        part(2.19,-9.5,.42,(.065,.61,.13),lin(0x414746))
 
 
 def scenery(k):
     paint=Painted(k)
-    stone=lin(0xb7a48b)
     for i in range(1,k.n-1):
         d=k.s[i]["d"]
         if any(abs(d-q)<33 for q in LOOKOUTS):
@@ -110,11 +127,32 @@ def scenery(k):
         x,y,z=k.road.at(i,-7.5)
         yaw=k.s[i]["h"]
         if (i//66)%3==0:
-            paint.box((x,y,z-.19),(4.10,.54,.93),yaw,stone,.75)
+            for tier in range(3):
+                for n in range(3):
+                    along = (n-1)*1.33 + (.35 if tier%2 else 0)
+                    origin = k.P(i,along,-7.5,-.09+tier*.275)
+                    paint.box(origin,(1.30,.54,.26),yaw,
+                              lin((0x998b79,0xb7a48b,0xa7927b,0xc0ab8c)[(i+n+tier)%4]),.77)
             paint.box((x,y,z+.74),(4.02,.65,.12),yaw,lin(0xcbb696),.85)
         else:
             k.B["rail"].box((x,y,z+.59),(4.10,.13,.26),yaw)
             if i%2==0:k.B["dark"].box((x,y,z-.14),(.15,.16,.98),yaw)
+    # Sandstone stacks stand beyond the breaker line, exposing the bands across the bay.
+    # A compact cluster on each headland gives the rider a scale for the drop to the water.
+    for station in range(210, 32000, 410):
+        i = k.road.index(station)
+        p = k.s[i]
+        for q in range(3):
+            x = p["x"] + q * 24
+            y = p["y"] + section(p)[2][0] / math.cos(p["h"]) - 48 - 17 * q
+            radius = k.rng.uniform(6, 13)
+            top = max(9, p["z"] * k.rng.uniform(.42, .84))
+            for lower, upper, base, cap, colour in [
+                (-.18,.15,1.15,.96,0x645d5c),(.15,.23,.96,.90,0xbbaa8b),
+                (.23,.61,.92,.77,0xc8b897),(.61,.65,.80,.78,0x9d896e),
+                (.65,.92,.78,.71,0xd8c49a),(.92,1,.72,.63,0x827953)]:
+                paint.tube((x,y,lower*top),base*radius,cap*radius,(upper-lower)*top,
+                           lin(colour),lin(colour),7+q)
     for station in LOOKOUTS:
         lookout(k,paint,station)
     # Small battered ledges and honey-yellow gorse steer the eye around the turn.

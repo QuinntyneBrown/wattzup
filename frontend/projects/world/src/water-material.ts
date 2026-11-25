@@ -49,6 +49,7 @@ export function waterMaterial(
   detail: DataTexture,
   lights: boolean,
   coloured: Node<'vec3'> | null = null,
+  coastalWater = false,
 ): Water {
   const time = uniform(0);
   const at = positionWorld.xz;
@@ -85,7 +86,10 @@ export function waterMaterial(
   // How much of that the water shows: little looked down on, nearly all at a glancing angle.
   const glance = float(1).sub(up.dot(toEye).max(0)).pow(5).mul(0.97).add(0.03);
   const material = new MeshBasicNodeMaterial();
-  const water = mix(vertexColor().rgb.mul(0.3), seen, glance);
+  // A clear open coast keeps the blue of the water between sunset highlights.
+  const water = coastalWater
+    ? mix(vec3(0.018, 0.135, 0.18), seen, glance.mul(0.56)).add(vec3(1, 0.64, 0.33).mul(glint))
+    : mix(vertexColor().rgb.mul(0.3), seen, glance);
   // Under a bridge's lit stays, and beside a neon sign, the water takes their colour, broken by its ripples.
   material.colorNode = coloured ? water.add(coloured.mul(a.r.add(b.g).mul(GLOW))) : water;
   return {

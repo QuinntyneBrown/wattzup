@@ -613,6 +613,7 @@ export class CourseRenderer implements WorldRenderer {
         detail,
         this.course!.file.night === true,
         coloured,
+        this.course!.file.id === 'coast',
       );
       materials['Sea']!.dispose();
       materials['Sea'] = water.material;
@@ -904,7 +905,7 @@ export class CourseRenderer implements WorldRenderer {
     const back = course.place(metres - behind, 0, this.here);
     this.camera.position.set(back.x, back.y + up, back.z);
     this.groundEye?.at(metres - behind, 0, up);
-    const ahead = course.place(metres + LOOK_AHEAD, 0, this.there);
+    const ahead = course.place(metres + LOOK_AHEAD, this.headland ? 1.6 : 0, this.there);
     this.camera.lookAt(ahead.x, ahead.y + LOOK_UP, ahead.z);
     this.sky?.position.copy(this.camera.position);
     const [x, , z] = course.file.sun;
