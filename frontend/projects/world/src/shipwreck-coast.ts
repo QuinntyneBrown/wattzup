@@ -18,7 +18,7 @@ import {
   Box3,
   type Camera,
   DoubleSide,
-  Mesh,
+  type Mesh,
   MeshBasicMaterial,
   MeshBasicNodeMaterial,
   MirroredRepeatWrapping,
