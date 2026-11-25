@@ -157,6 +157,7 @@ export const alpeCourseMap = {
   routeName: 'The 21 hairpins',
   place: 'The 21 bends above Bourg-d’Oisans',
   world: 'alpe',
+  terrain: { grade: { 'warm-up': 4, work: 9, recover: 7, 'cool-down': 3, steady: 7 }, roll: 1.2 },
   distanceKm: 7.4,
   climbingM: 328,
   photoUrl: 'maps/alpe-dhuez-photo.jpg',
