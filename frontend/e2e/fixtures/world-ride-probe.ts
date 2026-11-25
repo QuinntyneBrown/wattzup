@@ -141,12 +141,6 @@ export class WorldRideProbe {
     );
   }
 
-  async startAt(metres: number): Promise<void> {
-    await this.page.evaluate((from) => {
-      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
-    }, metres);
-  }
-
   async graniteMotion(
     part: 'meltwater' | 'mistPosition' | 'borneX' | 'summitX',
   ): Promise<number | null> {
@@ -216,7 +210,6 @@ export class WorldRideProbe {
       part,
     );
   }
-
 
   async drawnCourseSections(group: string): Promise<number> {
     return this.page.evaluate(
@@ -334,7 +327,9 @@ export class WorldRideProbe {
     );
   }
 
-  async beachMotion(part: 'pickupZ' | 'gondolaY' | 'volleyballY' | 'breakerX'): Promise<number | null> {
+  async beachMotion(
+    part: 'pickupZ' | 'gondolaY' | 'volleyballY' | 'breakerX',
+  ): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
         (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
@@ -371,15 +366,6 @@ export class WorldRideProbe {
   }
 
   async commuterMotion(part: 'cargoPedalY' | 'markerCount'): Promise<number | null> {
-    return this.page.evaluate(
-      (name) =>
-        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
-          ?.course?.[name] ?? null,
-      part,
-    );
-  }
-
-  async parkMotion(part: 'carRadius' | 'trainX' | 'horseStride' | 'clubDistance'): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
         (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide

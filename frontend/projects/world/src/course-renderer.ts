@@ -476,7 +476,6 @@ export class CourseRenderer implements WorldRenderer {
     tier: 0 as number,
     pushCarPosition: undefined as number | undefined,
     mirageHeight: undefined as number | undefined,
-    flagTip: undefined as number | undefined,
     balloonHeight: undefined as number | undefined,
     bannerTip: undefined as number | undefined,
     floatPosition: undefined as number | undefined,
@@ -492,7 +491,6 @@ export class CourseRenderer implements WorldRenderer {
     moosePitch: undefined as number | undefined,
     horseStride: undefined as number | undefined,
     clubDistance: undefined as number | undefined,
-    flagAngle: undefined as number | undefined,
     sprintLane: undefined as number | undefined,
     backend: '' as string,
     ghostSeparationMetres: 0,
@@ -599,7 +597,7 @@ export class CourseRenderer implements WorldRenderer {
   private readonly confetti: Mesh[] = [];
   private boats: { mesh: Mesh; waterline: number } | null = null;
   private funivia: { holder: Group; span: CourseCableway; pose: CabinPose } | null = null;
-  private festival: ReturnType<typeof glastonburyFestival> | null = null;
+  private glastonbury: ReturnType<typeof glastonburyFestival> | null = null;
   private park: ReturnType<typeof goldenGatePark> | null = null;
   private canyon: ReturnType<typeof desertViewDrive> | null = null;
   private glider: { holder: Group; orbit: CourseGliderOrbit; pose: GliderPose } | null = null;
@@ -964,9 +962,9 @@ export class CourseRenderer implements WorldRenderer {
       if (this.course.file.id === 'glastonbury') {
         const { glastonburyFestival } = await import('./glastonbury-festival');
         if (this.disposed) return false;
-        this.festival = glastonburyFestival(this.course);
-        this.scene.add(this.festival.group);
-        this.disposables.push(this.festival);
+        this.glastonbury = glastonburyFestival(this.course);
+        this.scene.add(this.glastonbury.group);
+        this.disposables.push(this.glastonbury);
       }
       if (this.course.file.id === 'goldengate') {
         const { goldenGatePark } = await import('./golden-gate-park');
@@ -1030,7 +1028,15 @@ export class CourseRenderer implements WorldRenderer {
         this.dam = blackCanyon(this.course);
         this.disposables.push(this.dam);
       }
-      this.build(gltf.scene, canvas, clinker, fronts, foliage, (paving ?? parisPaving ?? chicagoPaving ?? chichenPaving)?.material, gizaMaterials);
+      this.build(
+        gltf.scene,
+        canvas,
+        clinker,
+        fronts,
+        foliage,
+        (paving ?? parisPaving ?? chicagoPaving ?? chichenPaving)?.material,
+        gizaMaterials,
+      );
       if (this.course.file.id === 'aguascalientes') {
         const { PursuitBoard } = await import('./pursuit-board');
         if (this.disposed) return false;
@@ -1772,7 +1778,7 @@ export class CourseRenderer implements WorldRenderer {
     this.arena?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.panorama?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.championship?.update(frame.time, metres, frame.speedKmh, frame.reducedMotion);
-    this.festival?.update(frame.time, metres, frame.reducedMotion);
+    this.glastonbury?.update(frame.time, metres, frame.reducedMotion);
     this.park?.update(frame.time, metres, frame.reducedMotion);
     this.canyon?.update(frame.time, metres, frame.reducedMotion);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
@@ -1912,6 +1918,7 @@ export class CourseRenderer implements WorldRenderer {
     this.crews = null;
     this.quay = null;
     this.festival = null;
+    this.glastonbury = null;
     this.diwaliTrees = null;
     this.park = null;
     this.canyon = null;
@@ -1986,7 +1993,15 @@ export class CourseRenderer implements WorldRenderer {
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
     if (this.course!.file.id === 'beachroad') this.evening = eveningUniform();
     const clearValley = this.course!.file.id === 'engadin';
-    const fogRange = this.dam ? ([450, 4200] as const) : this.course!.file.id === 'calobra' ? ([2500, 16000] as const) : clearValley ? ([750, 5000] as const) : this.icelandCoast ? ([650, 4700] as const) : FOG;
+    const fogRange = this.dam
+      ? ([450, 4200] as const)
+      : this.course!.file.id === 'calobra'
+        ? ([2500, 16000] as const)
+        : clearValley
+          ? ([750, 5000] as const)
+          : this.icelandCoast
+            ? ([650, 4700] as const)
+            : FOG;
     this.scene.fog = new Fog(look.haze, fogRange[0], fogRange[1]);
     this.scene.background = new Color(look.haze);
     this.sun.color.setHex(look.light.colour);
@@ -2178,7 +2193,7 @@ export class CourseRenderer implements WorldRenderer {
       materials['Tenements'] = this.championship.wall;
       materials['RaceBoards'] = this.championship.boardMaterial;
     }
-    if (this.festival) Object.assign(materials, this.festival.materials);
+    if (this.glastonbury) Object.assign(materials, this.glastonbury.materials);
     if (this.park) Object.assign(materials, this.park.materials);
     if (this.canyon) Object.assign(materials, this.canyon.materials);
     const painted: Mesh[] = [];
@@ -2225,7 +2240,13 @@ export class CourseRenderer implements WorldRenderer {
         return;
       }
       // The ground is lit smoothly: its normals are worked out here, so the map's file carries none.
-      if (group === 'Ground' || group === 'Pave' || group === 'GrandviewTemple' || group === 'CanyonStrata') mesh.geometry.computeVertexNormals();
+      if (
+        group === 'Ground' ||
+        group === 'Pave' ||
+        group === 'GrandviewTemple' ||
+        group === 'CanyonStrata'
+      )
+        mesh.geometry.computeVertexNormals();
       // The map is set once and never moves: its matrices are worked out here, not every frame.
       mesh.matrixAutoUpdate = false;
       mesh.updateMatrix();
@@ -2365,13 +2386,15 @@ export class CourseRenderer implements WorldRenderer {
       this.scene.add(carried);
     } else if (!this.fen) {
       const dome = new SphereGeometry(9000, 24, 12);
-      const sky = this.dam?.sky ?? skyMaterial(
-        look,
-        this.course!.file.sun,
-        detail,
-        this.course!.file.id === 'atlanticroad',
-        this.evening,
-      );
+      const sky =
+        this.dam?.sky ??
+        skyMaterial(
+          look,
+          this.course!.file.sun,
+          detail,
+          this.course!.file.id === 'atlanticroad',
+          this.evening,
+        );
       this.skyClock = sky.at;
       this.sky = new Mesh(dome, sky.material);
       this.sky.renderOrder = -1;
@@ -2523,10 +2546,78 @@ export class CourseRenderer implements WorldRenderer {
     );
     const close = near * near * (3 - 2 * near);
     const calobra = course.file.id === 'calobra';
-    const distance = this.marinaBoats ? 4.65 : this.street ? 4.55 : this.lakes ? 4.65 : this.etna ? 4.55 : this.fen ? 4.4 : this.escarpment ? 4.45 : this.subaru ? 4.45 : this.furka ? 4.45 : this.galibier ? 4.45 : this.gardena ? 4.45 : this.arena ? 3.8 : this.malecon ? 5.5 : this.dam ? 4.5 : CAMERA_BACK;
-    const eye = this.marinaBoats ? 2.55 : this.street ? 2.4 : this.lakes ? 2.65 : this.etna ? 2.42 : this.fen ? 2.1 : this.escarpment ? 2.2 : this.subaru ? 2.2 : this.furka ? 2.2 : this.galibier ? 2.2 : this.gardena ? 2.2 : this.arena ? 2.15 : this.malecon ? 2.1 : this.dam ? 2.0 : CAMERA_UP;
-    const behind = calobra ? 5.5 : this.boardwalk ? 5.0 : this.copacabana ? 4.1 : this.commuters ? 4.1 : distance + (CLOSE_BACK - distance) * close;
-    const up = calobra ? 2.1 : this.boardwalk ? 2.35 : this.copacabana ? 2.05 : this.commuters ? 2.0 : eye + (CLOSE_UP - eye) * close;
+    const distance = this.marinaBoats
+      ? 4.65
+      : this.street
+        ? 4.55
+        : this.lakes
+          ? 4.65
+          : this.etna
+            ? 4.55
+            : this.fen
+              ? 4.4
+              : this.escarpment
+                ? 4.45
+                : this.subaru
+                  ? 4.45
+                  : this.furka
+                    ? 4.45
+                    : this.galibier
+                      ? 4.45
+                      : this.gardena
+                        ? 4.45
+                        : this.arena
+                          ? 3.8
+                          : this.malecon
+                            ? 5.5
+                            : this.dam
+                              ? 4.5
+                              : CAMERA_BACK;
+    const eye = this.marinaBoats
+      ? 2.55
+      : this.street
+        ? 2.4
+        : this.lakes
+          ? 2.65
+          : this.etna
+            ? 2.42
+            : this.fen
+              ? 2.1
+              : this.escarpment
+                ? 2.2
+                : this.subaru
+                  ? 2.2
+                  : this.furka
+                    ? 2.2
+                    : this.galibier
+                      ? 2.2
+                      : this.gardena
+                        ? 2.2
+                        : this.arena
+                          ? 2.15
+                          : this.malecon
+                            ? 2.1
+                            : this.dam
+                              ? 2.0
+                              : CAMERA_UP;
+    const behind = calobra
+      ? 5.5
+      : this.boardwalk
+        ? 5.0
+        : this.copacabana
+          ? 4.1
+          : this.commuters
+            ? 4.1
+            : distance + (CLOSE_BACK - distance) * close;
+    const up = calobra
+      ? 2.1
+      : this.boardwalk
+        ? 2.35
+        : this.copacabana
+          ? 2.05
+          : this.commuters
+            ? 2.0
+            : eye + (CLOSE_UP - eye) * close;
     const sway = calobra && !reducedMotion ? Math.sin(metres / 3) * 0.04 : 0;
     const back = course.place(metres - behind, sway, this.here);
     const rim = this.plaza ? Math.max(0, 1 - Math.abs(metres - 3180) / 105) : 0;
@@ -2562,9 +2653,27 @@ export class CourseRenderer implements WorldRenderer {
     const ahead = this.dam
       ? course.place(metres + 22, this.dam.lookAcross(metres), this.there)
       : this.malecon
-      ? course.place(metres + 24, this.malecon.lookAcross(metres), this.there)
-      : course.place(metres + (calobra ? 24 : this.arena ? 7.5 : LOOK_AHEAD), (view?.lane ?? 0) - 2.8 * bridge + (this.headland ? 1.6 : 0) + shoulder - 4.4 * cove - 3.3 * lagoon, this.there);
-    this.camera.lookAt(ahead.x, ahead.y + (calobra ? 1.2 : this.arena ? 2.45 : LOOK_UP) + (view?.rise ?? 0) + 1.8 * skyline + 1.2 * train - Math.abs(shoulder) * 0.12, ahead.z);
+        ? course.place(metres + 24, this.malecon.lookAcross(metres), this.there)
+        : course.place(
+            metres + (calobra ? 24 : this.arena ? 7.5 : LOOK_AHEAD),
+            (view?.lane ?? 0) -
+              2.8 * bridge +
+              (this.headland ? 1.6 : 0) +
+              shoulder -
+              4.4 * cove -
+              3.3 * lagoon,
+            this.there,
+          );
+    this.camera.lookAt(
+      ahead.x,
+      ahead.y +
+        (calobra ? 1.2 : this.arena ? 2.45 : LOOK_UP) +
+        (view?.rise ?? 0) +
+        1.8 * skyline +
+        1.2 * train -
+        Math.abs(shoulder) * 0.12,
+      ahead.z,
+    );
     // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
     if (back.bank) this.camera.rotateZ(back.bank * 0.32);
     this.sky?.position.copy(this.camera.position);
@@ -2984,7 +3093,11 @@ export class CourseRenderer implements WorldRenderer {
     drawn.leafAngle = this.escarpment?.leafAngle ?? null;
     drawn.sheepHead = this.escarpment?.sheepHead ?? null;
     drawn.visitorPosition = this.subaru?.visitorPosition ?? null;
-    drawn.cloudPosition = this.subaru?.cloudPosition ?? this.galibier?.cloudPosition ?? this.gardena?.cloudPosition ?? null;
+    drawn.cloudPosition =
+      this.subaru?.cloudPosition ??
+      this.galibier?.cloudPosition ??
+      this.gardena?.cloudPosition ??
+      null;
     drawn.shuttlePosition = this.subaru?.shuttlePosition ?? null;
     drawn.iceAboveLake = this.furka?.iceAboveLake ?? null;
     drawn.postbusDistance = this.furka?.postbusDistance ?? null;
@@ -3045,7 +3158,7 @@ export class CourseRenderer implements WorldRenderer {
       }
     }
     if (this.championship) Object.assign(drawn, this.championship.measure(this.camera));
-    if (this.festival) Object.assign(drawn, this.festival.state);
+    if (this.glastonbury) Object.assign(drawn, this.glastonbury.state);
     if (this.park) Object.assign(drawn, this.park.measure(this.camera));
     if (this.canyon) Object.assign(drawn, this.canyon.measure(this.camera));
     if (this.northFace) Object.assign(drawn, this.northFace.report(this.camera));
