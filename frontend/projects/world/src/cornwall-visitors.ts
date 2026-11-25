@@ -63,16 +63,10 @@ export async function cornwallVisitors(course: Course) {
       );
       const u = (tile % 2) * 0.5,
         v = tile < 2 ? 0.5 : 0;
-      uv.push(
-        u + 0.002,
-        v + 0.002,
-        u + 0.498,
-        v + 0.002,
-        u + 0.498,
-        v + 0.498,
-        u + 0.002,
-        v + 0.498,
-      );
+      // Select two or three people from the original cutout for each quay stop.
+      const edge = tile === 3 ? u + 0.15 * (Math.floor(d) % 3) : u;
+      const right = tile === 3 ? edge + 0.104 : u + 0.498;
+      uv.push(edge + 0.002, v + 0.002, right, v + 0.002, right, v + 0.498, edge + 0.002, v + 0.498);
       tint.setHex(shade);
       for (let i = 0; i < 4; i++) colour.push(tint.r, tint.g, tint.b);
       idx.push(start, start + 1, start + 2, start, start + 2, start + 3);
@@ -83,7 +77,7 @@ export async function cornwallVisitors(course: Course) {
     ]) {
       if (d < section || d >= section + 100) continue;
       const quay = d > 510 && d < 1340;
-      panel(d, quay ? 5.35 : -3.7, 0.32, 4.25, 3.55, 3, 0xe0d5c5);
+      panel(d, quay ? 5.35 : -3.7, 0.32, 1.53, 5.35, 3, 0xe0d5c5);
     }
     for (let d = section + 3; d < section + 100; d += 19) {
       const quay = d > 510 && d < 1340;

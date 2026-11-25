@@ -1,3 +1,4 @@
+import { harbourAsphalt } from './cornwall-asphalt';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {
   BoxGeometry,
@@ -121,13 +122,15 @@ function harbourShape(hullPaint: number | null): BufferGeometry {
 }
 
 export class CornwallHarbour {
+  private readonly asphalt;
   private readonly root = new Group();
   private readonly material = new MeshLambertMaterial({ vertexColors: true, side: DoubleSide });
-  private readonly hulls = [0x385e82, 0x9d443a, 0xe7e1cf, 0x46766d].map(harbourShape);
+  private readonly hulls = [0x265b86, 0xae3b31, 0xece2cb, 0x32766c].map(harbourShape);
   private readonly wings = harbourShape(null);
   private readonly boats;
   private readonly gulls;
   constructor(course: Course, scene: Scene) {
+    this.asphalt = harbourAsphalt(course, scene);
     this.boats = Array.from({ length: 32 }, (_, i) => {
       const station = 554 + i * 21 + Math.sin(i * 4) * 7;
       const beached = i % 5 === 2;
@@ -181,6 +184,7 @@ export class CornwallHarbour {
     }
   }
   dispose() {
+    this.asphalt.dispose();
     this.root.removeFromParent();
     this.hulls.forEach((g) => g.dispose());
     this.wings.dispose();

@@ -449,7 +449,10 @@ export class CourseRenderer implements WorldRenderer {
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.visitors?.follow(metres);
-    this.harbour?.update(frame.reducedMotion ? 0 : frame.time, metres);
+    if (this.harbour) {
+      this.harbour.update(frame.reducedMotion ? 0 : frame.time, metres);
+      this.sun.intensity = 2.1 + 0.62 * Math.sin(metres / 178) + 0.19 * Math.sin(metres / 63);
+    }
     this.aim(metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
