@@ -83,6 +83,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Hoover Dam (`hoover`) | 30 Minutes of Threshold Power (GCN Training, 30:00) | 13.175 km | 65 m | `public/courses/hoover.glb` ([ride views](screenshots/hoover-dam/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Iceland Ring Road (`iceland`) | Intense VO2 Cycling Efforts (GCN Training, 30:00) | 12.000 km | 91 m | `public/courses/iceland.glb` ([ride views](screenshots/iceland-ring-road/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Independence Pass (`independence`) | Over/Under Threshold Efforts (GCN Training, 35:00) | 15.200 km | 897 m | `public/courses/independence.glb` ([ride views](screenshots/independence-pass/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Isle of Man Mountain Course (`isleofman`) | Full Gas Sprints (GCN Training, 20:00) | 8.133 km | 206 m | `public/courses/isleofman.glb` ([ride views](screenshots/isle-of-man-mountain-course/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

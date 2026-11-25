@@ -677,6 +677,8 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
             group, chunked = "VelodromeTimber", False
         elif part.name == 'LandmarkLights':
             group, chunked = 'Glow', False
+        elif part.name == 'Manx uplands':
+            group, chunked = 'ManxMoor', True
         elif part.name == "SawatchSkyline":
             group, chunked = part.name, False
         elif part.name in ("SawatchGround", "AspenGrove", "RoaringFork", "SawatchRock", "PassSnow", "CabinLogs", "DivideSign", "TwinLakes"):

@@ -1,0 +1,133 @@
+{
+  "id": "isleofman",
+  "name": "Isle of Man Mountain Course",
+  "world": "isleofman",
+  "theme": "isleofman",
+  "seed": 2141,
+  "layout": 0,
+  "class": {
+    "id": "full-gas-sprints",
+    "title": "Full Gas Sprints",
+    "channel": "GCN Training",
+    "videoId": "rahPPkqTUpk",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 180,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 10,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 50,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 10,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 50,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 10,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 50,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 10,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 50,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 10,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 50,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 10,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 50,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 10,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 50,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 10,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 50,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "cool-down",
+        "duration": 360,
+        "level": 10,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

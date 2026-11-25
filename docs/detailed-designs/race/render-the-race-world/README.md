@@ -1263,3 +1263,16 @@ Restore the historical 35-minute GCN workout and its ordinary unlock behaviour i
 Caribana’s fixed skyline and detailed moving foreground guide the distribution of GPU work. The river and near leaves share bounded materials owned by the scene. Keep the summit lettering legible on Low without changing the HUD. Verify six positions through the simulated bike. Compare the opening and busiest summit approach on Low/WebGL2 with nine seconds of warm-up and a moving one-minute sample per section.
 
 The tree atlas and distant Sawatch range use original generated artwork. The native geometry places the trees, boulders, log cabins, guardrail, summit board and two lake surfaces. The summit board has a separately drawn face so its elevation lettering survives tablet scaling. At the overlook the chase camera swings around the cyclist toward the lakes and eases back onto Highway 82.
+### Isle of Man Mountain Course · #2141
+
+Trace the existing Isle of Man registry entry into the race catalogue and its lazy native course (ADRs 0021, 0023, 0030, 0034 and 0035). Restore *Full Gas Sprints*, including the three-second video offset. The condensed A18 covers 8.133 km with its stage distances proportional to target cadence and time. The lower lanes climb toward the Bungalow before the descent to Creg-ny-Baa.
+
+| Section | Rider-height treatment | References |
+| --- | --- | --- |
+| Lower road and Snaefell | Model rough limestone boundaries close to the white-dashed two-lane road. Open the banks to a smooth grassy summit with summit masts. An original heather surface and distant sea occupy separate depth layers. | Real 03, 06, 09–10, 14–15. Games 01, 04 and 05. |
+| Bungalow | Thread the rails obliquely through the tarmac. A red and cream electric tram runs along its own track under catenary poles. Keep the two long staircases, black sponsor fascia and open underside of the bridge recognizable at speed. | Real 02, 04–05, 10, 12–13 and 15. Games 02 and 03. |
+| Creg-ny-Baa and descent | Put the white hotel and grandstand on the outside of the curve. Alternating kerb blocks, wrapped straw, watching spectators and orange marshals read before the corner. Round shoulders show sheep and a sea horizon under broad moving cloud shadows. | Real 01, 07–09, 11 and 14. Games 01, 03–05. |
+
+Use the fixed skyline and batched crowd approach from Caribana. Keep the rails, stairs, pub windows and marshals legible on Low. Release the textures, shared materials and tram geometry when the course leaves the screen. Test the ordinary rider entry, pause and resume through the fixture bike. Compare matching photos and measure two submitted one-minute samples after nine seconds of warm-up.
+
+The native scene models the slate courses, low hawthorn and ash, sheep, Snaefell summit masts, catenary, railway buildings, stair treads, Creg-ny-Baa windows and spectator stand. The train, marshal flag and illumination follow the ride clock. The changing cloud light uses an original generated Manx panorama. Crossing poles stand clear of the carriageway. White dashes share a continuous surface with the asphalt so depth precision on Low preserves the paint.

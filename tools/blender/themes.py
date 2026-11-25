@@ -1544,3 +1544,7 @@ SCENERY['iceland'] = _iceland.scenery
 import independence as _independence
 THEMES['independence'] = _independence.THEME
 SCENERY['independence'] = _independence.scenery
+import isleofman as _isleofman
+
+THEMES['isleofman'] = _isleofman.THEME
+SCENERY['isleofman'] = _isleofman.scenery
