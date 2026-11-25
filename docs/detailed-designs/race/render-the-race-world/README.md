@@ -215,3 +215,13 @@ built-in world in place and the panel says so.
   `'wasm-unsafe-eval'` in the Content Security Policy (L2-131 AC1).
 - **Vice City has no world on `main`.** Its race draws South Beach Sunrise, whose terrain its
   catalogue entry already takes (slice 7.3), until a Vice City world is built.
+
+## Glastonbury Fields (#2128)
+
+The original festival world supplies the panel trackway, wet shoulders, tents, flags, stalls, Pyramid Stage, Ribbon Tower and Tor. Give the authored 10.515 km loop a common physical centreline for the rider, elevation, signage and scenery. Bind the original 35-stage Sprint to the Music programme to this map in the catalogue. Use the existing race HUD and progression.
+
+Start on the Pyramid field at 58 m. Follow metal and plastic panels uphill to the 88 m campsite, descend between hedges to West Holts and the Other Stage, pass the Arcadia spider, then climb to 99 m at the Park’s Ribbon Tower. Return through the evening stalls to the original line and the lit Pyramid Stage. Preserve worn joints and drainage between panels. Build the stage silhouette from its triangular roof, open truss and two screens. Keep the Tor and tower fixed behind the fields. Cluster differently coloured dome tents on slopes and alternate food trailers, fence panels, bins and signposts beside the route.
+
+Render nearby flags and spectators from deterministic instance buffers. Use ride time for cloth and crowd motion, including pause and resume. Bake stage trusses, stall fittings and lamp colour into static sections. Use pooled bulbs for evening strings and keep the screens visible on Low. Dispose buffers and materials on exit. Review the six matched normal-entry views and measure rollout and finish crowd at 1024 × 768, DPR 1, 4× CPU throttle.
+
+[pyramid](../../../mocks/pages/race/glastonbury-pyramid.html) · [camp](../../../mocks/pages/race/glastonbury-camp.html) · [west-holts](../../../mocks/pages/race/glastonbury-west-holts.html) · [arcadia](../../../mocks/pages/race/glastonbury-arcadia.html) · [ribbon](../../../mocks/pages/race/glastonbury-ribbon.html) · [lights](../../../mocks/pages/race/glastonbury-lights.html)
