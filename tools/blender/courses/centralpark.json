@@ -1,0 +1,115 @@
+{
+  "id": "centralpark",
+  "name": "Central Park Loop",
+  "world": "centralpark",
+  "theme": "centralpark",
+  "seed": 2095,
+  "layout": 0,
+  "class": {
+    "id": "15-minute-cardio-hiit",
+    "title": "15 Minute Cardio HIIT",
+    "channel": "GCN Training",
+    "videoId": "HKR_HgmXtTw",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "cool-down",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

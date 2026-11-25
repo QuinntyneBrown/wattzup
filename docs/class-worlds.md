@@ -43,6 +43,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Passo Campolongo (`campolongo`) | Intense Climb: Passo Campolongo (GCN, 21:50) | 8.235 km | 307 m | `public/courses/campolongo.glb` ([ride views](screenshots/passo-campolongo/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Cabot Trail (`cabot`) | 60 Minute Endurance Intervals (GCN, 60:00) | 25.075 km | 584 m | `public/courses/cabot.glb` ([ride views](screenshots/cabot-trail/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Caribana Parade (`caribana`) | Intense Interval Blast (GCN Training, 15:00) | 6.555 km | 151 m | `worlds/caribana/caribana-tablet.glb` ([ride views](screenshots/caribana-parade/README.md)) | Open from the start on the map catalogue |
+| Central Park Loop (`centralpark`) | 15 Minute Cardio HIIT (GCN Training, 15:00) | 6.450 km | 46 m | `public/courses/centralpark.glb` ([ride views](screenshots/central-park-loop/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

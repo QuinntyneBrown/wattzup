@@ -1425,3 +1425,8 @@ import cabot as _cabot
 
 THEMES["cabot"] = _cabot.THEME
 SCENERY["cabot"] = _cabot.scenery
+
+import centralpark as _centralpark
+
+THEMES["centralpark"] = _centralpark.THEME
+SCENERY["centralpark"] = _centralpark.scenery

@@ -86,6 +86,7 @@ import type { BundCruise } from './bund-cruise';
 import type { CalobraCamp } from './calobra-camp';
 import type { CampolongoLifts } from './campolongo-lifts';
 import type { CabotWildlife } from './cabot-wildlife';
+import type { ParkTraffic } from './park-traffic';
 import { RiderBatch } from './rider-batch';
 import { RiderBody } from './rider-body';
 import { bendLean } from './rider-lean';
@@ -258,6 +259,7 @@ export class CourseRenderer implements WorldRenderer {
   private wildlife: CabotWildlife | null = null;
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
   private rain: Rain | null = null;
+  private parkTraffic: ParkTraffic | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
   private speedWeek: SpeedWeek | null = null;
   private saltRoad: Material | null = null;
@@ -305,6 +307,8 @@ export class CourseRenderer implements WorldRenderer {
     cowPitch: undefined as number | undefined,
     boatHeel: undefined as number | undefined,
     moosePitch: undefined as number | undefined,
+    horseStride: undefined as number | undefined,
+    clubDistance: undefined as number | undefined,
     backend: '' as string,
     ghostSeparationMetres: 0,
     boatHeight: null as number | null,
@@ -319,7 +323,6 @@ export class CourseRenderer implements WorldRenderer {
     reefCrest: null as number | null,
     eveningLight: null as number | null,
     ferryX: null as number | null,
-    eveningLight: null as number | null,
     clubLane: null as number | null,
     highlandSun: null as number | null,
     sheepLane: null as number | null,
@@ -361,7 +364,6 @@ export class CourseRenderer implements WorldRenderer {
   private reef: BathshebaReef | null = null;
   private evening: ReturnType<typeof eveningUniform> | undefined;
   private boats: BayOfIslandsBoats | null = null;
-  private evening: ReturnType<typeof eveningUniform> | undefined;
   private bunch: BeachRoadBunch | null = null;
   private weather: HighlandWeather | null = null;
   private livestock: HighlandLivestock | null = null;
@@ -623,6 +625,21 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(this.wildlife.root);
         this.disposables.push(this.wildlife);
       }
+      if (this.course.file.id === 'centralpark') {
+        const { ParkTraffic } = await import('./park-traffic');
+        if (this.disposed) return false;
+        this.parkTraffic = new ParkTraffic(this.course, this.kit!, this.riderBatch!);
+        this.scene.add(this.parkTraffic.root);
+        this.disposables.push(this.parkTraffic);
+        const { parkCanopy } = await import('./park-canopy');
+        const trees = await parkCanopy(this.course);
+        if (this.disposed) {
+          trees.dispose();
+          return false;
+        }
+        this.scene.add(trees.root);
+        this.disposables.push(trees);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -823,6 +840,7 @@ export class CourseRenderer implements WorldRenderer {
     this.camp?.update(frame.time, metres, frame.reducedMotion);
     this.lampShadows?.end();
     this.bunch?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.parkTraffic?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.riderBatch?.follow();
     if (this.evening) {
       const progress = Math.max(0, Math.min(1, (metres - 19500) / 7900));
@@ -988,6 +1006,7 @@ export class CourseRenderer implements WorldRenderer {
     this.camp = null;
     this.lifts = null;
     this.wildlife = null;
+    this.parkTraffic = null;
     this.rain = null;
     this.shadows.clear();
     this.casting.clear();
@@ -1607,6 +1626,7 @@ export class CourseRenderer implements WorldRenderer {
       this.ride(cyclist, metres + 6 + order, 0);
       cyclist.pose(0);
     }
+    this.parkTraffic?.update(0, metres);
     this.riderBatch?.follow();
     this.aim(metres);
     this.render();
@@ -1887,6 +1907,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.cowPitch = this.lifts?.cowPitch;
     drawn.moosePitch = this.wildlife?.moosePitch;
     drawn.boatHeel = this.wildlife?.boatHeel;
+    drawn.horseStride = this.parkTraffic?.horseStride;
+    drawn.clubDistance = this.parkTraffic?.clubDistance;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

@@ -20,6 +20,7 @@ import calobraElevation from './calobra-elevation.json';
 import campolongoElevation from './campolongo-elevation.json';
 import cabotElevation from './cabot-elevation.json';
 import caribanaElevation from './caribana-elevation.json';
+import centralparkElevation from './centralpark-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -1526,6 +1527,45 @@ export const caribanaCourseMap = {
       seg('recover', 30, 11, 80),
       seg('work', 30, 22, 100),
       seg('cool-down', 90, 11, 80),
+    ],
+  },
+};
+
+export const centralParkCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'central-park-loop',
+  name: 'Central Park Loop',
+  routeName: 'Park Drive',
+  place: 'Manhattan, New York',
+  world: 'centralpark',
+  distanceKm: 6.45,
+  climbingM: 46,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: centralparkElevation,
+  },
+  thumbnailUrl: 'maps/central-park-loop.jpg',
+  photoUrl: 'maps/central-park-loop-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 60, 16, 85),
+      seg('work', 60, 18, 85),
+      seg('work', 60, 19, 90),
+      seg('work', 60, 21, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 60, 16, 85),
+      seg('work', 60, 18, 85),
+      seg('recover', 60, 19, 90),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 10, 80),
+      seg('work', 60, 16, 85),
+      seg('work', 30, 19, 90),
+      seg('recover', 30, 24, 100),
+      seg('cool-down', 60, 10, 80),
     ],
   },
 };

@@ -63,6 +63,15 @@ export class WorldRideProbe {
     }, metres);
   }
 
+  async parkMotion(part: 'horseStride' | 'clubDistance'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
   async yardMotion(part: 'speakerDepth' | 'mistPosition'): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
