@@ -67,7 +67,8 @@ export function desertViewDrive(course: Course) {
   photograph.anisotropy = 4;
   const far = new MeshBasicMaterial({ map: photograph, fog: false, side: DoubleSide });
   const stone = new MeshBasicMaterial({ vertexColors: true, side: DoubleSide });
-  owned.push(photograph, far, stone);
+  const river = new MeshBasicMaterial({ vertexColors: true, fog: false, side: DoubleSide });
+  owned.push(photograph, far, stone, river);
   const marks = new Map<string, Vector3>(),
     projected = new Vector3();
   function landmark(kind: string, mesh: Mesh) {
@@ -224,7 +225,7 @@ export function desertViewDrive(course: Course) {
       GrandviewTemple: cliff,
       Watchtower: stone,
       FarRim: far,
-      ColoradoBend: stone,
+      ColoradoBend: river,
     },
     dispose() {
       group.removeFromParent();

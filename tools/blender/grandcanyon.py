@@ -3,7 +3,7 @@ import math
 from worldkit import Painted,lin
 LENGTH=13425
 PROFILE=((0,2160),(1050,2194),(2050,2220),(3210,2180),(4480,2198),(5980,2230),
-         (7220,2242),(8580,2208),(10160,2251),(11580,2234),(13425,2240))
+         (7110,2242),(7290,2229),(8580,2208),(10160,2251),(11580,2234),(13425,2240))
 POINTS=(2050,4480,7220,10160,13240)
 def elevation(d):
     for (a,z),(b,h) in zip(PROFILE,PROFILE[1:]):
@@ -39,6 +39,9 @@ def lay(course,theme,bc):
 
 def rim(d):
     near=min(abs(d-point) for point in POINTS)
+    if abs(d-7220)<145:
+        near_lipan=abs(d-7220)
+        return 5.2+.09*max(0,near_lipan-44)+.90*max(0,near_lipan-106)
     return 7.4+min(135,near*.33)*(1+.23*math.sin(d/89))
 def land(road,col,theme,bc):
     apron=bc.Builder('Forest floor and Kaibab rim','terrain');apron.colours=[]
@@ -46,6 +49,15 @@ def land(road,col,theme,bc):
     far=bc.Builder('FarRim','terrain');far.colours=[];far.uvs=[]
     temple=bc.Builder('GrandviewTemple','terrain');temple.colours=[];temple.uvs=[]
     water=bc.Builder('Colorado River','terrain');water.colours=[]
+    bend=bc.Builder('ColoradoBend','terrain');bend.colours=[]
+    lipan_x,lipan_y=pos(7220)
+    axis=direction(7227)+.255
+    target_x=lipan_x+7620*math.cos(axis)
+    def width_factor(x):
+        # A long oblique meander at the mouth of the tributary can be read in silhouette
+        # against its gravel bars from the rim, high above the bedrock.
+        plateau=math.exp(-(max(0,lipan_x-x,x-target_x-550)/740)**2)
+        return 1+plateau*(5.72+2.18*math.sin((x-target_x)/510))
     palette=(0xDDD0AB,0xBDA27C,0xCAAC88,0xA97151,0xB88062,0xCB9276,0xA86852,0xD8A489,0xB37C67)
     def face(batch,pts,tone,uv=False):
         batch.quad(*pts);batch.colours.extend([lin(tone)]*4)
@@ -60,7 +72,7 @@ def land(road,col,theme,bc):
               (101,81),(130,108),(165,118),(183,178),(226,184),(260,216),(320,225),
               (362,287),(409,297),(510,388),(553,393),(620,450),(715,470))):
             f=min(1,off/460)
-            rings.append((x+.24*off*math.sin(d/275+i*.09),y+off+f*ravine,z-depth+f*11*math.sin(d/144)))
+            rings.append((x+.24*off*math.sin(d/275+i*.09),y+(off+f*ravine)*width_factor(x),z-depth+f*11*math.sin(d/144)))
         return rings
     def apronrow(d):
         pts=[]
@@ -86,7 +98,7 @@ def land(road,col,theme,bc):
         x,y,z=shore(d)
         depth=(1220,1180,1150,1060,1010,910,820,770,680,630,510,460,340,275,150,80,-35,-150)[j]
         off=(735,905,999,1125,1168,1270,1350,1365,1450,1500,1540,1660,1780,1860,1920,2040,2180,2295)[j]
-        return (x,y+off+124*math.sin(d/398)+57*math.sin(d/147),z-depth*.66+75*math.sin(d/488)+34*math.sin(d/160)+398*(j/17)**2)
+        return (x,y+(off+124*math.sin(d/398)+57*math.sin(d/147))*width_factor(x),z-depth*.66+75*math.sin(d/488)+34*math.sin(d/160)+398*(j/17)**2)
     last=[distant(-95,j) for j in range(18)]
     for d in range(-64,LENGTH+180,32):
         nxt=[distant(d,j) for j in range(18)]
@@ -97,15 +109,23 @@ def land(road,col,theme,bc):
         last=nxt
     last=None
     for d in range(-96,LENGTH+150,16):
-        x,y,z=shore(d);v=y+828+55*math.sin(d/267)+19*math.sin(d/78)
-        pair=((x,v-10,z-576),(x,v+10,z-576))
-        if last:face(water,(last[0],pair[0],pair[1],last[1]),0x63877D)
-        last=pair
+        x,y,z=shore(d);scale=width_factor(x)
+        centre=y+(828+49*math.sin(d/267)+17*math.sin(d/78))*scale
+        level=1755.-d*.0007
+        # Gravel banks at the same elevation join the single channel to the lower rock benches.
+        row=[(x,centre+off,level+up) for off,up in ((-260,4),(-182,1.8),(-136,.3),(-124,0),
+              (124,0),(136,.3),(182,2),(260,5))]
+        if last:
+            for j in range(7):
+                pts=(last[j],row[j],row[j+1],last[j+1])
+                if j==3:face(bend if abs(x-target_x)<770 else water,pts,0x509F98)
+                else:face(strata,pts,0xB6A07B if j in (2,4) else 0xAE8567,True)
+        last=row
     # Eroded isolated temples. Their scalloped outlines change at each ledge.
     for d,off,radius,top in ((1730,620,156,-28),(2440,478,116,15),(4620,550,172,49),(4960,910,155,75),
                (7380,580,132,36),(7950,790,213,56),(10190,605,174,69),(11210,810,146,38),(13380,590,165,58)):
         x,y,z=shore(d);y+=off;last=None
-        foreground={2440:(2050,595,55),4620:(4480,675,-82),7380:(7220,625,215),10190:(10160,710,44),13380:(13240,610,94)}
+        foreground={2440:(2050,595,55),4620:(4480,675,-82),7380:(7220,625,445),10190:(10160,710,44),13380:(13240,610,94)}
         peak=foreground.get(d);batch=temple if d==2440 else strata
         if peak:
             station,forward,across=peak;u,v=pos(station);h=direction(station+9)
@@ -116,8 +136,8 @@ def land(road,col,theme,bc):
                     (1.07,-164),(1.02,-154),(.83,-84),(.80,-74),(.7,-31),(.58,-24),(.51,-4),(.46,0))):
             ring=[]
             for k in range(74):
-                a=k*math.tau/74;bend=1+.16*math.sin(3*a+.9*d)+.09*math.sin(7*a+d*.1)
-                r=radius*factor*(bend+.047*math.sin(17*a)+.025*math.sin(29*a+.24*i));ring.append((x+1.21*r*math.cos(a),y+.77*r*math.sin(a),z+top+level+6*math.sin(3*a)+2.3*math.sin(11*a+.23*i)))
+                a=k*math.tau/74;radial_scale=1+.16*math.sin(3*a+.9*d)+.09*math.sin(7*a+d*.1)
+                r=radius*factor*(radial_scale+.047*math.sin(17*a)+.025*math.sin(29*a+.24*i));ring.append((x+1.21*r*math.cos(a),y+.77*r*math.sin(a),z+top+level+6*math.sin(3*a)+2.3*math.sin(11*a+.23*i)))
             if last:
                 for k in range(74):
                     n=(k+1)%74;face(batch,(last[k],last[n],ring[n],ring[k]),palette[(i+2)%9],True)
@@ -125,19 +145,6 @@ def land(road,col,theme,bc):
         for k in range(1,73):
             points=(last[0],last[k],last[k+1]);batch.tri(*points);batch.colours.extend([lin(0xCBAD88)]*3)
             batch.uvs.extend([(u/40,v/40) for u,v,_ in points])
-    # At Lipan the channel turns towards the rider between two dipping rock terraces.
-    bend=bc.Builder('ColoradoBend','terrain');bend.colours=[]
-    x,y=pos(7220);h=direction(7230)+.20;level=elevation(7220)-112
-    along=(math.cos(h),math.sin(h));cross=(-along[1],along[0])
-    def channel(u,v,z):
-        a=1020+v+42*math.sin(u/122)+22*math.cos(u/48)
-        return (x+a*along[0]+u*cross[0],y+a*along[1]+u*cross[1],level+z)
-    for u in range(-225,226,9):
-        q=u+9
-        face(bend,(channel(u,-12,0),channel(q,-12,0),channel(q,12,0),channel(u,12,0)),0x448B79)
-        for side in (-1,1):
-            for near,outer,lo,hi,tone in ((12,16,-.6,.6,0xBDA882),(16,32,.6,1.7,0xA98A6A),(32,62,1.7,6.5,0xB79575),(62,88,6.5,14,0xA27C65)):
-                face(strata,(channel(u,near*side,lo),channel(q,near*side,lo),channel(q,outer*side,hi),channel(u,outer*side,hi)),tone,True)
     for b in (apron,strata,temple,far,water,bend):b.build(col)
     return None,lambda x,y:road.s[road.tree.find((x,y,0))[1]]['z']-.21
 
@@ -189,6 +196,7 @@ def scenery(k):
     stone=[lin(t) for t in (0xAB8C6E,0xC4A485,0xAD947A,0xBEA287,0x9A806A)]
     for point in POINTS:
         for d in range(point-51,point+126,3):
+            if point==7220 and d<point+77:continue
             q,h=frame(d,8.35)
             if (d-point)%39>29:continue
             for row in range(3):
@@ -196,10 +204,10 @@ def scenery(k):
                     art.box(q(j*1.46+.49*(row%2),0,row*.24),(1.40,.60,.226),h,rng.choice(stone))
             art.box(q(.5,0,.73),(2.85,.68,.18),h,lin(0xCDAD8B))
         for d in range(point+15,point+86,4):
-            q,h=frame(d,9.5);art.tube(q(0,0,0),.09,.08,1.23,lin(0x534E44),lin(0x6E6557),8)
+            q,h=frame(d,min(9.5,rim(d)-.30));art.tube(q(0,0,0),.09,.08,1.23,lin(0x534E44),lin(0x6E6557),8)
             art.box(q(2,0,1.14),(4.02,.09,.095),h,lin(0x6B6256))
         for j in range(17):
-            d=point+rng.uniform(-18,103);q,h=frame(d,rng.uniform(6.55,8))
+            d=point+(rng.uniform(86,125) if point==7220 else rng.uniform(-18,103));q,h=frame(d,rng.uniform(6.55,8))
             legs=lin(0x524D4A);jacket=lin(rng.choice((0x8C5550,0x667685,0xB39859,0x6C775D)))
             skin=lin(rng.choice((0xC09979,0xA48061,0xA17B62)))
             for v in (-.11,.11):art.tube(q(0,v,0),.075,.09,.73,legs,legs,6)
@@ -213,7 +221,7 @@ def scenery(k):
             art.box(q(-.2,0,1.78),(2.27,1.55,.12),h,colour)
         if point!=13240:
             for j in range(8):
-                q,h=frame(point+7+j*2.7,6.8);art.box(q(0,0,-.24),(2.61,2.1,.34),h,lin(0xC1AF93))
+                q,h=frame(point+(85 if point==7220 else 7)+j*2.7,6.8);art.box(q(0,0,-.24),(2.61,2.1,.34),h,lin(0xC1AF93))
     # Colter's Desert View tower has a weathered taper, narrow irregular windows and a crenellated crown.
     tower=Painted(k,'paint');tower.b.name='Watchtower'
     pt,h=frame(13342,14)
