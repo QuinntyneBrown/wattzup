@@ -10,6 +10,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   prairie: 'courses/prairie',
   oldtown: 'courses/oldtown',
   coast: 'courses/coast',
+  dales: 'courses/dales',
   docklands: 'courses/docklands',
   dolomites: 'courses/dolomites',
   granite: 'courses/granite',
