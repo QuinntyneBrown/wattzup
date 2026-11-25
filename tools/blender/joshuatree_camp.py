@@ -32,25 +32,3 @@ def campground(k,art):
             a=j*2.09+.8;h=rng.uniform(.32,.76)
             art.tube((x+.28*math.cos(a),y+.28*math.sin(a),z),.21,.41,h,lin(0x736B51),lin(tint),5)
             art.tube((x+.28*math.cos(a),y+.28*math.sin(a),z+h),.41,.09,.2,lin(tint),lin(tint),5)
-
-
-def ranges(k,art):
-    # Several fixed, overlapping mountain fronts enclose the basin without following the camera.
-    for side in (-1,1):
-        for layer in range(2):
-            prev=None
-            for d in range(-1800,26000,140):
-                p=k.road.pos(max(0,min(k.length,d)))
-                x=p[0]+min(0,d)+max(0,d-k.length)
-                y=p[1]+side*(1320+layer*820+140*math.cos(d/780))
-                phase=d/360+side*3+layer*2
-                high=1670+layer*230+80*math.cos(phase*.3)+66*math.sin(phase)+36*math.sin(phase*3.7)
-                row=((x,y-side*610,1150),(x,y-side*185,high-95),(x,y,high))
-                if prev:
-                    for j in range(2):
-                        points=(prev[j],row[j],row[j+1],prev[j+1])
-                        c=lin((0xA58E8B if layer else 0xA78E7F) if j==0 else (0xAD98A2 if layer else 0x977F79))
-                        shade=1+.1*math.sin(phase*7)
-                        tone=tuple(v*shade for v in c[:3])+(1,)
-                        art.face(points,[tone]*4);art.face(points[::-1],[tone]*4)
-                prev=row

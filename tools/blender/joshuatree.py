@@ -84,7 +84,7 @@ def granite(art,base,size,seed,skull=False):
                     r=((uy-cy)/wy)**2+((uz-cz)/wz)**2
                     recess+=depth*math.exp(-1.8*r*r)
             x=ox+(ux*uneven+recess)*rx;y=oy+uy*ry*uneven;z=oz+rz*(1+uz*uneven)
-            shade=max(.22,.74+.18*uz-.18*uy-.84*recess+.04*math.sin(seed+uy*10+uz*7))
+            shade=max(.06,.71+.22*uz-.25*uy-1.55*recess+.07*math.sin(seed+uy*10+uz*7))
             col=lin(0xDCAD7C if not skull else 0xD4B99A)
             row.append(((x,y,z),tuple(v*shade for v in col[:3])+(1,)))
         rings.append(row)
@@ -95,17 +95,31 @@ def granite(art,base,size,seed,skull=False):
             art.face([v[0] for v in face],[v[1] for v in face])
 
 
+def plant_shadow(k,art,x,y,tall):
+    # Long shadows from the low southwestern sun, broken up under each crown.
+    for f,w,length in ((.42,.055,.49),(.91,.21,.35),(1.03,.14,.22)):
+        pts=[]
+        for j in range(12):
+            a=math.tau*j/12
+            u=tall*(f+length*math.cos(a));v=tall*w*math.sin(a)
+            xx=x-.78*u+.62*v;yy=y+.62*u+.78*v
+            pts.append((xx,yy,k.height_at(xx,yy)+.043))
+        art.face(pts,[lin(0x9E866C)]*12)
+
+
 def plants(k):
+    art=Painted(k)
     b=type(k.B['terrain'])('MojavePlants','terrain');b.colours=[];b.uvs=[];k.B['MojavePlants']=b
     for d in range(-50,23700,14):
         garden=16950<d<18280
-        for i in range(6 if garden else 3):
+        for i in range(15 if garden else 4):
             side=k.rng.choice((-1,1))
-            offset=side*k.rng.uniform(6 if i==0 else 24,35 if i==0 else 148)
+            offset=side*(k.rng.uniform(5.4,15.5) if garden and i<5 else k.rng.uniform(6 if i==0 else 24,35 if i==0 else 148))
             if 9760<d<9850 and offset>0 and offset<38:continue
             x,y,_=k.road.pos(d+k.rng.uniform(-6,6),offset);z=k.height_at(x,y)-.07
             which=2 if garden and k.rng.random()<.91 else k.rng.randrange(2)
             tall=k.rng.uniform(.95,2.5) if which==2 else k.rng.uniform(2.9,7.5)
+            if abs(offset)<42:plant_shadow(k,art,x,y,tall)
             w=tall*(.44 if which==2 else .54);ang=k.rng.random()*math.pi
             for a in (ang,ang+math.pi/2):
                 dx=w*math.cos(a);dy=w*math.sin(a)
@@ -119,7 +133,7 @@ def scenery(k):
     rock_builder=type(k.B['terrain'])('MojaveGranite','terrain')
     k.B['MojaveGranite']=rock_builder
     stone=Painted(k,'MojaveGranite')
-    for distance in (640,2900,4270,4460,7110,9808,10030,11550,12400,12650,14620,19010,21100):
+    for distance in (175,640,2900,4270,4460,7110,9808,10030,11550,12400,12650,14620,19010,21100):
         for j in range(30):
             side=1 if distance in (4270,9808,12400) else (-1 if j%3 else 1)
             d=distance+rng.uniform(-85,105)
@@ -131,7 +145,7 @@ def scenery(k):
             granite(stone,(x,y,z-.9),(scale*rng.uniform(.9,1.55),scale*rng.uniform(.7,1.2),scale),rng.random()*8)
             if j%3==0:granite(stone,(x+scale*.23,y-scale*.15,z+scale*1.38),(scale*.91,scale*.83,scale*.63),rng.random()*8)
     x,y,_=k.road.pos(9818,12.3)
-    granite(stone,(x,y,k.height_at(x,y)-1.05),(6.7,8.55,6.25),.6,True)
+    granite(stone,(x,y,k.height_at(x,y)-1.05),(5.8,7.4,4.95),.6,True)
     # The climbers follow these actual roadside crack faces, at the same stations and lateral offsets.
     for d in (4272,12396):
         front=[]
@@ -152,8 +166,8 @@ def scenery(k):
             e=k.road.pos(u+.09+.11*math.cos(h),10.79+.06*h,h+.54)
             stone.face((a,b,c,e),[lin(0x6D5649)]*4);stone.face((e,c,b,a),[lin(0x6D5649)]*4)
     plants(k)
-    from joshuatree_camp import campground, ranges
-    campground(k,art);ranges(k,Painted(k,'peaks'))
+    from joshuatree_camp import campground
+    campground(k,art)
     return {'efforts':0}
 
 

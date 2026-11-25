@@ -794,7 +794,8 @@ export class CourseRenderer implements WorldRenderer {
           return false;
         }
         this.climbers = climbers;
-        this.scene.add(climbers.group);
+        this.scene.add(climbers.group, climbers.range);
+        this.camera.far = 55000;
         this.disposables.push(climbers);
         const atlas = await new TextureLoader().loadAsync('courses/joshuatree-yuccas.webp');
         if (this.disposed) {
@@ -802,6 +803,7 @@ export class CourseRenderer implements WorldRenderer {
           return false;
         }
         atlas.colorSpace = SRGBColorSpace;
+        atlas.flipY = false;
         atlas.anisotropy = 4;
         this.mojaveFlora = new MeshBasicMaterial({ map: atlas, side: DoubleSide, alphaTest: 0.46 });
         this.disposables.push(atlas, this.mojaveFlora);
@@ -2226,7 +2228,10 @@ export class CourseRenderer implements WorldRenderer {
       this.seafrontSurface?.(detail) ??
       this.deckSurface ??
       coursePavement;
-    if (this.climbers) materials['MojaveGranite'] = this.climbers.granite;
+    if (this.climbers) {
+      materials['MojaveGranite'] = this.climbers.granite;
+      materials['MojaveSand'] = this.climbers.sand;
+    }
     if (this.mojaveFlora) materials['MojavePlants'] = this.mojaveFlora;
     materials['Ground'] = pavement ?? ground.material;
     if (pavement) this.disposables.push(ground.material);
