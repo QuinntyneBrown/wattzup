@@ -215,3 +215,13 @@ built-in world in place and the panel says so.
   `'wasm-unsafe-eval'` in the Content Security Policy (L2-131 AC1).
 - **Vice City has no world on `main`.** Its race draws South Beach Sunrise, whose terrain its
   catalogue entry already takes (slice 7.3), until a Vice City world is built.
+
+## Golden Gate Park (#2129)
+
+JFK Drive starts east at the Conservatory of Flowers. The normal Map Select entry uses the original 17-stage class and existing progress rules. Share the course centreline between the rider, race preview, park grade and camera. Take the promenade west and descend from 72 m to 6 m over 6.375 km. Keep skaters, runners and walkers on their side of the car-free promenade.
+
+The glasshouse has a white ribbed dome and glazed wings behind the palms. Stow Lake has rough stone arches and green water. Spreckels Lake has cypress on the far shore, model sails and ducks. The fenced bison meadow is sandy, with the dark shoulder hump and lowered grazing heads recognisable at road speed. Beyond it the four pale sails of the Dutch Windmill stand above Queen Wilhelmina’s flower beds. The Great Highway marks the final transition to coastal grasses and Pacific breakers. Use real 03 and 06 (Murphy Windmill) for construction details. The required west-end landmark is the Dutch Windmill.
+
+Draw fog between successive wooded layers. Instance hand-shaped cypress and peeling eucalyptus alongside the existing promenade furniture. Keep the bison and boats anchored to their paddock and lake and drive animation from the ride clock. Keep sightlines through the bends on Low. Dispose shared assets and textures on exit. Verify the six rider views, pause/resume, the mapped class and two headed one-minute Low/WebGL 2 tablet runs.
+
+[conservatory](../../../mocks/pages/race/goldengate-conservatory.html) · [stow](../../../mocks/pages/race/goldengate-stow.html) · [spreckels](../../../mocks/pages/race/goldengate-spreckels.html) · [paddock](../../../mocks/pages/race/goldengate-paddock.html) · [mill](../../../mocks/pages/race/goldengate-mill.html) · [beach](../../../mocks/pages/race/goldengate-beach.html)
