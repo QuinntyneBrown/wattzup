@@ -69,19 +69,22 @@ def track(k,art):
             art.face(pts[::-1],(lin(tint),)*4)
     # The old stand's timber planks, sloping corrugated canopy and open front.
     def stand(u,v,w):
-        # The covered stand runs across the west end of the oval, facing the infield.
-        return at(-87-(v-43),u+8,w)
+        # The grandstand faces the infield on the far straight, visible beyond both lanes of the oval.
+        return at(u+19,v,w)
     for n in range(6):
         v=43+n*.98;z=.32+n*.46
-        art.box(stand(5,v,z),(31,.92,.19),h+math.pi/2,lin(0x8E7048))
-        art.box(stand(5,v-.44,z-.26),(31,.11,.36),h+math.pi/2,lin(0x5C6E56))
+        art.box(stand(5,v,z),(31,.92,.19),h,lin(0x8E7048))
+        art.box(stand(5,v-.44,z-.26),(31,.11,.36),h,lin(0x5C6E56))
     for u in (-11,-5,1,7,13,21):
         for v,high in ((42.4,6.3),(49,5.3)):
             art.box(stand(u,v,-.45),(.20,.20,high+.45),h,lin(0x665642))
         beam(art,stand(u,42.1,6.2),stand(u,49.4,5.25),.21,lin(0x665642))
     roof=(stand(-12,41.4,6.42),stand(22,41.4,6.42),stand(22,50,5.21),stand(-12,50,5.21))
     art.face(roof,(lin(0x738C86),)*4);art.face(roof[::-1],(lin(0x515D58),)*4)
-    art.box(stand(5,41.5,5.76),(34,.18,.65),h+math.pi/2,lin(0x557F6B))
+    art.box(stand(5,41.5,5.76),(34,.18,.65),h,lin(0x337D6B))
+    for u in range(-10,21,2):
+        # Painted rear planks read between the open supports; the undercroft stays open.
+        art.box(stand(u,49.1,2.78),(1.94,.13,1.83),h,lin(0x538478 if u%4 else 0x6C9588))
     for u in range(-11,23):
         beam(art,stand(u,41.5,6.43),stand(u,49.9,5.23),.044,lin(0xA1AB9D))
     for u in (-41,41):
