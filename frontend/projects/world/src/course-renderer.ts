@@ -77,6 +77,8 @@ import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
 import { type Rain, rain } from './rain';
 import type { SpeedWeek } from './speed-week';
+import type { speedwayAsphalt } from './speedway-asphalt';
+import type { SpeedwayFlags } from './speedway-flags';
 import { RiderBatch } from './rider-batch';
 import { RiderBody } from './rider-body';
 import { bendLean } from './rider-lean';
@@ -249,6 +251,8 @@ export class CourseRenderer implements WorldRenderer {
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
   private speedWeek: SpeedWeek | null = null;
   private saltRoad: Material | null = null;
+  private speedwaySurface: typeof speedwayAsphalt | null = null;
+  private speedway: SpeedwayFlags | null = null;
   private groundEye: GroundEye | null = null;
   /** The scene's pass with bloom over it, for the neon; null where it could not be built. */
   private pipeline: RenderPipeline | null = null;
@@ -272,6 +276,8 @@ export class CourseRenderer implements WorldRenderer {
     tier: 0 as number,
     pushCarPosition: undefined as number | undefined,
     mirageHeight: undefined as number | undefined,
+    flagTip: undefined as number | undefined,
+    balloonHeight: undefined as number | undefined,
     backend: '' as string,
     ghostSeparationMetres: 0,
     boatHeight: null as number | null,
@@ -497,6 +503,11 @@ export class CourseRenderer implements WorldRenderer {
         this.saltRoad = surface.material;
         this.disposables.push(...surface.textures);
       }
+      if (this.course.file.id === 'brickyard') {
+        const { speedwayAsphalt } = await import('./speedway-asphalt');
+        if (this.disposed) return false;
+        this.speedwaySurface = speedwayAsphalt;
+      }
       this.build(gltf.scene, canvas, clinker, fronts, foliage);
       if (this.course.file.id === 'aguascalientes') {
         const { PursuitBoard } = await import('./pursuit-board');
@@ -517,6 +528,13 @@ export class CourseRenderer implements WorldRenderer {
         this.speedWeek = new SpeedWeek(this.course);
         this.scene.add(this.speedWeek.root);
         this.disposables.push(this.speedWeek);
+      }
+      if (this.course.file.id === 'brickyard') {
+        const { SpeedwayFlags } = await import('./speedway-flags');
+        if (this.disposed) return false;
+        this.speedway = new SpeedwayFlags(this.course);
+        this.scene.add(this.speedway.root);
+        this.disposables.push(this.speedway);
       }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -757,6 +775,7 @@ export class CourseRenderer implements WorldRenderer {
     this.mill?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.surf?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.speedWeek?.update(frame.reducedMotion ? 0 : frame.time, metres);
+    this.speedway?.update(frame.reducedMotion ? 0 : frame.time, metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -862,6 +881,8 @@ export class CourseRenderer implements WorldRenderer {
     this.lamplit.clear();
     this.lampGlow = null;
     this.sunGlow = null;
+    this.speedwaySurface = null;
+    this.speedway = null;
     this.groundEye = null;
     this.speedWeek = null;
     this.saltRoad = null;
@@ -1003,8 +1024,9 @@ export class CourseRenderer implements WorldRenderer {
       coloured,
       clinker,
     );
-    materials['Ground'] = this.saltRoad ?? ground.material;
-    if (this.saltRoad) this.disposables.push(ground.material);
+    const pavement = this.saltRoad ?? this.speedwaySurface?.(detail);
+    materials['Ground'] = pavement ?? ground.material;
+    if (pavement) this.disposables.push(ground.material);
     this.groundEye = ground.eye;
     // Walls have their place on the wall in their UV: brick, steel and plaster are drawn from it (wall-material.ts).
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
@@ -1740,6 +1762,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.foamAdvance = this.surf?.foamAdvance ?? null;
     drawn.pushCarPosition = this.speedWeek?.pushCar.position.x;
     drawn.mirageHeight = this.speedWeek?.mirage.scale.y;
+    drawn.flagTip = this.speedway?.flagTip;
+    drawn.balloonHeight = this.speedway?.balloonHeight;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

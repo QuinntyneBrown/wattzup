@@ -1387,3 +1387,8 @@ import bonneville as _bonneville
 
 THEMES["bonneville"] = _bonneville.THEME
 SCENERY["bonneville"] = _bonneville.scenery
+
+import brickyard as _brickyard
+
+THEMES["brickyard"] = _brickyard.THEME
+SCENERY["brickyard"] = _brickyard.scenery

@@ -35,6 +35,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Blue Ridge Parkway (`blueridge`) | FTP Booster Extended Efforts (GCN Training, 55:00) | 24.250 km | 391 m | `public/courses/blueridge.glb` ([ride views](screenshots/blue-ridge-parkway/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Bondi to Bronte (`bondi`) | 15 Min HIIT Cardio: Belly Fat Loss (GCN Training, 13:30) | 6.150 km | 95 m | `public/courses/bondi.glb` ([ride views](screenshots/bondi-to-bronte/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Bonneville Salt Flats (`bonneville`) | Team Time Trial (GCN Training, 20:00) | 8.250 km | 0 m | `public/courses/bonneville.glb` ([ride views](screenshots/bonneville-salt-flats/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Indianapolis Brickyard (`brickyard`) | 90-Second Extended Accelerations (GCN Training, 30:00) | 12.000 km | 0 m | `public/courses/brickyard.glb` ([ride views](screenshots/indianapolis-brickyard/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
