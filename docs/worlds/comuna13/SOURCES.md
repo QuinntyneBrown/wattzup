@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Waisted 8” Route Details (Watopia)](https://zwiftinsider.com/route/waisted-8/) (g0184) | © Zwift |
 | game-04.jpg | Zwift: [“Flatland Loop” Route Details (Makuri Islands)](https://zwiftinsider.com/route/flatland-loop/) (g0048) | © Zwift |
 | game-05.jpg | Zwift: [“Sacré Trois!” Route Details (Paris)](https://zwiftinsider.com/route/sacre-trois/) (g0133) | © Zwift |
+
+The four paintings in the race’s mural atlas are original generated artwork created for Telo Ride. The portrait, hummingbird, dancer and dove use the palette and wall scale of the credited references. Neighbourhood visitors and foliage use cutouts from the project’s Caribana atlas.
