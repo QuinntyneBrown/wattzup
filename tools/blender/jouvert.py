@@ -104,15 +104,34 @@ def scenery(k):
             if i%3==1:k.palm(x,y,z+.13)
             else:
                 art.tube((x,y,z),.36,.26,4.5,lin(0x665647),lin(0x856A56),7)
-                for j in range(4):
-                    a=j*1.65+.5
-                    art.tube((x+1.4*math.cos(a),y+1.4*math.sin(a),z+3.74),2.3,2.7,1.05,lin(0x394E4B),lin(0x657759),9)
-                    art.tube((x+1.4*math.cos(a),y+1.4*math.sin(a),z+4.79),2.7,.54,1.15,lin(0x596B55),lin(0x77825C if i%3 else 0xA35F4C),9)
+                # Overlapping irregular crowns show the spreading habit of street almonds.
+                for j in range(8):
+                    angle=j*2.4
+                    radius=rng.uniform(1.55,2.3)
+                    cx=x+math.cos(angle)*rng.uniform(.45,2.0)
+                    cy=y+math.sin(angle)*rng.uniform(.45,2.0)
+                    cz=z+4.45+rng.uniform(-.38,.7)
+                    rim=[];shoulder=[]
+                    for lobe in range(9):
+                        t=lobe*math.tau/9
+                        reach=radius*rng.uniform(.78,1.15)
+                        dx=reach*math.cos(t);dy=reach*math.sin(t)
+                        rim.append((cx+dx,cy+dy,cz+rng.uniform(-.20,.16)))
+                        shoulder.append((cx+.65*dx,cy+.65*dy,cz+.77+rng.uniform(-.1,.14)))
+                    for lobe in range(9):
+                        n=(lobe+1)%9
+                        leaves=lin(rng.choice((0x405A49,0x4C674D,0x566F4F,0x5F7554)))
+                        tips=lin(0x947159 if i%3==0 and lobe%3==0 else 0x637D55)
+                        art.face((rim[lobe],rim[n],shoulder[n],shoulder[lobe]),(lin(0x384C43),leaves,tips,leaves))
+                        art.face((shoulder[lobe],shoulder[n],(cx,cy,cz+1.22)),(tips,leaves,tips))
+                        art.face((rim[n],rim[lobe],(cx,cy,cz-.31)),(leaves,leaves,lin(0x34483D)))
     # Crushed cups and dropped rags lie chiefly where the revellers have been.
     for i in range(1300):
         d=rng.uniform(0,k.length);l=rng.choice((-1,1))*rng.uniform(2.2,5.5);at=road.pos(d,l,.039)
         if i%4:art.tube(at,.065,.10,.14,lin(0xA69180),lin(0xC9B8A2),6)
         else:art.box(at,(.32,.19,.021),rng.random()*math.pi,lin(rng.choice((0xAD594A,0xD2A350,0x508986,0xB89593))))
+    from jouvert_street import aprons,street_colour
+    aprons(k);street_colour(k,art)
     square(k,art)
     return {'efforts':0}
 
