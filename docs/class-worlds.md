@@ -15,6 +15,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Dolomites (`dolomites`) | The catalogue's 30:00 intervals (placeholder) | 38.5 km | 860 m | `public/courses/dolomites.glb` ([film](../blender/dolomites.mp4)) | Built in Blender (ADR 0035) and ridden in races |
 | Vice City (`vicecity`) | The catalogue's 30:00 intervals (placeholder) | 24 km | 60 m | `public/courses/vicecity.glb` ([film](../blender/vicecity.mp4)) | Built in Blender (ADR 0035) and ridden in races |
 | Col du Granit (`granite`) | The catalogue's 30:00 intervals (placeholder) | 16.1 km | 1,240 m | `public/courses/granite.glb` ([film](../blender/granite.mp4)) | Built in Blender (ADR 0035) and ridden in races |
+| Beach Road, Melbourne (`beachroad`) | 45 Minute Sprint Training (GCN, 45:50) | 19.613 km | 17 m | `public/courses/beachroad.glb` ([ride views](screenshots/beach-road-melbourne/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
@@ -204,7 +205,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 174 | Threshold Pyramid | Teotihuacán | 35% |  | The Avenue of the Dead between the Sun and Moon pyramids. |
 | 175 | 45 Minute VO2 Max Intervals | Furka Pass | 35% |  | Swiss hairpins beside the Rhône Glacier. |
 | 176 | Extreme Fat Burning Class | Atacama Desert | 86% |  | The driest desert on earth, salt flats and flamingo lagoons. |
-| 177 | 45 Minute Sprint Training | Beach Road, Melbourne | 35% | [Ride views](screenshots/beach-road-melbourne/README.md) | Bayside bunch-ride route past beach boxes and piers. |
+| 177 | 45 Minute Sprint Training | Beach Road, Melbourne | 35% |  | Bayside bunch-ride route past beach boxes and piers. |
 | 178 | FTP Booster Extended Efforts | Blue Ridge Parkway | 35% |  | Appalachian ridgeline road in blazing autumn colour. |
 | 179 | 60 Minute Reverse Pyramid | Angkor Temples | 82% |  | Jungle roads between Khmer temples and moats at dawn. |
 | 180 | Reverse HIIT Race Winning Intervals | Verona Arena Finale | 35% |  | A grand tour finale circling into the Roman arena. |
