@@ -165,18 +165,14 @@ def elm(k,b,d,offset):
     leaves=k.B["elm-leaves"]
     if leaves.uvs is None:
         leaves.uvs=[]
-    # The canopy's dapple is baked into the road, with softer, broken edges.
-    shade=Painted(k)
-    for j in range(12):
-        a=j*2.399
-        i2=k.road.index(d+math.sin(a)*2.8)
-        off=offset-2.55+math.cos(a)*2.7
-        points=[k.P(i2,math.cos(v*math.tau/6)*1.02,off+math.sin(v*math.tau/6)*.66,.035)
-                for v in range(6)]
-        if abs(off)<4.9:
-            # Sparse patches leave the clinker visible between them.
-            tint=lin(0x846352)
-            shade.face(points,(tint,)*6)
+    # Project the same leaf silhouette onto the brick so the mortar stays visible.
+    if offset < 5:
+        shade = k.B["elm-shade"]
+        if shade.uvs is None:
+            shade.uvs = []
+        points = [k.P(i,u,v,.035) for u,v in ((-2.6,-.7),(2.6,-.7),(2.6,4.6),(-2.6,4.6))]
+        shade.faces.append(tuple(shade.v(point) for point in points))
+        shade.uvs.extend(((0,0),(1,0),(1,1),(0,1)))
     for j in range(7):
         a=j*math.tau/3+.35
         radius=1.45 if j<6 else .2

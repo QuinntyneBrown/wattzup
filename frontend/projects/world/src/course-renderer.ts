@@ -571,6 +571,14 @@ export class CourseRenderer implements WorldRenderer {
     };
     if (fronts && foliage) {
       materials['Facades'] = new MeshLambertMaterial({ map: fronts, side: DoubleSide });
+      materials['Dapple'] = new MeshBasicMaterial({
+        map: foliage,
+        color: 0x253322,
+        side: DoubleSide,
+        transparent: true,
+        opacity: 0.22,
+        depthWrite: false,
+      });
       materials['Elms'] = new MeshLambertMaterial({
         map: foliage,
         side: DoubleSide,

@@ -16,7 +16,7 @@ Headed Chromium 159.0.8154.6 running WebGL 2 on an Apple M5 Pro, DPR 1, touch em
 
 | Section | Submitted FPS | Display FPS | p95 interval | Longest interval | Peak draw calls |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Opening quay | 120.16 | 120.00 | 9.8 ms | 22.1 ms | 38 |
-| Herengracht bridge | 120.56 | 120.00 | 9.8 ms | 15.3 ms | 37 |
+| Opening quay | 120.70 | 120.00 | 9.6 ms | 14.4 ms | 43 |
+| Herengracht bridge | 119.97 | 119.87 | 9.8 ms | 66.5 ms | 34 |
 
 From the frontend workspace run `npm run perf -- 'amsterdam-(tablet|views)\.perf\.ts$' --headed` against the production build. To capture the earlier world, serve the main-branch build on the configured E2E port and set `AMSTERDAM_CAPTURE=before`.

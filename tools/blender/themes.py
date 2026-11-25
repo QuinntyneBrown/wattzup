@@ -1250,6 +1250,6 @@ SCENERY["haleakala"] = _haleakala.scenery
 
 import amsterdam as _amsterdam
 
-MATERIALS.update({name: {"color": 0xFFFFFF, "vertex": True} for name in ("tour-boat", "commuter", "canal-front", "elm-leaves")})
+MATERIALS.update({name: {"color": 0xFFFFFF, "vertex": True} for name in ("tour-boat", "commuter", "canal-front", "elm-leaves", "elm-shade")})
 THEMES["amsterdam"] = _amsterdam.THEME
 SCENERY["amsterdam"] = _amsterdam.scenery

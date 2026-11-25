@@ -581,6 +581,8 @@ def group_of(mat: str) -> tuple[str, bool]:
     if mat in WHOLE:
         return WHOLE[mat], False
     spec = MATERIALS[mat]
+    if mat == "elm-shade":
+        return "Dapple", True
     if mat in ("canal-front", "elm-leaves"):
         return ("Facades" if mat == "canal-front" else "Elms"), True
     if mat == "confetti":
@@ -688,7 +690,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     shade = 0.74 + 0.3 * smoothstep(0.0, 4.5, lift) if lift > 0.2 else (0.62 if lift < -0.3 else 1.0)
                     c = (c[0] * shade, c[1] * shade, c[2] * shade, 1.0)
                 key = (round(v[0], 3), round(v[1], 3), round(v[2], 3), round(c[0], 3), round(c[1], 3), round(c[2], 3))
-                if group in ("Windows", "Fences", "Halos", "Facades", "Elms"):
+                if group in ("Windows", "Fences", "Halos", "Facades", "Elms", "Dapple"):
                     key = (*key, *part.uvs[i])
                 if walled:
                     _, near, _ = road.tree.find((v[0], v[1], 0.0))
@@ -699,7 +701,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     at = mesh["index"][key] = len(mesh["verts"])
                     mesh["verts"].append(v)
                     mesh["cols"].append(c)
-                    if group in ("Windows", "Fences", "Halos", "Facades", "Elms"):
+                    if group in ("Windows", "Fences", "Halos", "Facades", "Elms", "Dapple"):
                         mesh["uvs"].append(part.uvs[i])
                     if walled:
                         mesh["uvs"].append(wall_uv)
