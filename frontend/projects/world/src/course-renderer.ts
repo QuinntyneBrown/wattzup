@@ -82,6 +82,7 @@ import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
 import { heldFps } from './held-fps';
+import type { blackCanyon } from './black-canyon';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -107,6 +108,10 @@ const SHADOW_WIDTH = 0.8;
  * the haze, and what stands on it is drawn nearer, the smallest things nearest.
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
+  BlackCanyon: 2200,
+  CanyonCrags: 750,
+  MeadWater: 2700,
+  RoadShimmer: 235,
   Land: 950,
   Ground: 420,
   Solid: 250,
@@ -201,6 +206,7 @@ export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
   private course: Course | null = null;
+  private dam: ReturnType<typeof blackCanyon> | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -356,6 +362,14 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
+      if (this.course.file.id === 'hoover') {
+        const { blackCanyon } = await import('./black-canyon');
+        if (this.disposed) return false;
+        this.camera.clearViewOffset();
+        this.camera.updateProjectionMatrix();
+        this.dam = blackCanyon(this.course);
+        this.disposables.push(this.dam);
+      }
       this.build(gltf.scene, canvas);
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -433,6 +447,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.startRed) this.startRed.visible = lights && frame.time <= 0;
     if (this.startGreen) this.startGreen.visible = lights && frame.time > 0;
     if (this.rain) this.rain.mesh.visible = !frame.reducedMotion;
+    this.dam?.update(frame.reducedMotion ? 0 : frame.time);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -491,7 +506,7 @@ export class CourseRenderer implements WorldRenderer {
   private build(map: Object3D, canvas: HTMLCanvasElement): void {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
-    this.scene.fog = new Fog(look.haze, FOG[0], FOG[1]);
+    this.scene.fog = this.dam ? new Fog(look.haze, 450, 4200) : new Fog(look.haze, FOG[0], FOG[1]);
     this.scene.background = new Color(look.haze);
     this.sun.color.setHex(look.light.colour);
     this.sun.intensity = look.light.intensity;
@@ -621,6 +636,7 @@ export class CourseRenderer implements WorldRenderer {
     // The glow round each light: corners the material spreads to face the eye (halo-material.ts).
     materials['Halos'] = haloMaterial(DRAW_DISTANCE['Halos']! * 0.6, DRAW_DISTANCE['Halos']!);
     this.disposables.push(materials['Fences'], materials['Halos']);
+    if (this.dam) Object.assign(materials, this.dam.materials);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     const painted: Mesh[] = [];
     map.traverse((part) => {
@@ -628,6 +644,7 @@ export class CourseRenderer implements WorldRenderer {
       if (!mesh.isMesh) return;
       // A chunk is named for its group and its place along the road: `Solid_012`.
       const [group = '', chunk] = mesh.name.split('_');
+      this.dam?.landmark(group, mesh);
       const material = materials[group];
       if (!material) return;
       for (const loaded of [mesh.material].flat()) loaded.dispose();
@@ -709,6 +726,7 @@ export class CourseRenderer implements WorldRenderer {
     }
     this.map = map;
     this.scene.add(map);
+    this.dam?.install(map);
     // The map is some hundreds of chunks, and a frame draws a few dozen of them. A chunk that is only hidden is
     // still walked twice by every frame (to place it and to ask whether it is in view), so the chunks are taken out
     // of the map and only those near the camera are in the scene (`choose`). Each keeps its place in the world as
@@ -737,7 +755,7 @@ export class CourseRenderer implements WorldRenderer {
       this.scene.add(carried);
     } else {
       const dome = new SphereGeometry(9000, 24, 12);
-      const sky = skyMaterial(look, this.course!.file.sun, detail);
+      const sky = this.dam?.sky ?? skyMaterial(look, this.course!.file.sun, detail);
       this.skyClock = sky.at;
       this.sky = new Mesh(dome, sky.material);
       this.sky.renderOrder = -1;
@@ -887,12 +905,14 @@ export class CourseRenderer implements WorldRenderer {
       0,
     );
     const close = near * near * (3 - 2 * near);
-    const behind = CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
-    const up = CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
+    const behind = this.dam ? 4.5 : CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
+    const up = this.dam ? 2.0 : CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
     const back = course.place(metres - behind, 0, this.here);
     this.camera.position.set(back.x, back.y + up, back.z);
     this.groundEye?.at(metres - behind, 0, up);
-    const ahead = course.place(metres + LOOK_AHEAD, 0, this.there);
+    const ahead = this.dam
+      ? course.place(metres + 22, this.dam.lookAcross(metres), this.there)
+      : course.place(metres + LOOK_AHEAD, 0, this.there);
     this.camera.lookAt(ahead.x, ahead.y + LOOK_UP, ahead.z);
     this.sky?.position.copy(this.camera.position);
     const [x, , z] = course.file.sun;
@@ -1109,6 +1129,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
+    if (this.dam) Object.assign(drawn, this.dam.report(this.camera));
     hook['course'] = drawn;
   }
 
