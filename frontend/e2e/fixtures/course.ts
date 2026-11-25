@@ -3598,7 +3598,7 @@ export const lakeLouiseCourseMap = {
   place: 'Banff National Park, Alberta, Canada',
   world: 'lakelouise',
   distanceKm: 8,
-  climbingM: 33,
+  climbingM: 52,
   rating: 'Easy',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
