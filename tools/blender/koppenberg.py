@@ -3,7 +3,7 @@ import bisect
 import math
 import sys
 
-from bondi import words
+from bondi import beam, words
 from iten_landmarks import picture, pictured
 from worldkit import lin, Painted, smooth
 
@@ -98,9 +98,11 @@ def land(road,col,theme,bc):
 
 
 def buildings(k,art):
-    for station in (94,221,337,645,792,1340,2790,4070,5100,5490):
+    for station in (120,164,221,337,645,792,1340,2790,4070,5100,5490):
         side=k.rng.choice((-1,1))
         x,y,_=k.road.pos(station,side*k.rng.uniform(12,25));z=k.height_at(x,y)
+        if station==120:
+            x,y,_=k.road.pos(station,6.8);z=k.height_at(x,y);side=1
         yaw=bearing(station)+.12
         art.box((x,y,z-.35),(14,6.4,4.7),yaw,lin(0x95654F))
         art.roof((x,y,z+4.35),14.5,6.8,3.25,yaw,lin(0x665A53))
@@ -110,7 +112,7 @@ def buildings(k,art):
             art.panel(corner,along,out,u-.54,u+.54,.8,2.45,.04,lin(0xD6C5A3))
             art.panel(corner,along,out,u-.40,u+.40,.92,2.32,.06,lin(0x545F63))
     # The single Sint-Martinus tower stands on the Scheldt side of the crest.
-    x,y,_=k.road.pos(5475,88)
+    x,y,_=k.road.pos(5405,53)
     z=k.height_at(x,y)
     art.box((x,y,z-.5),(19,9,9.1),0,lin(0x857568))
     art.roof((x,y,z+8.6),19.5,9.3,5,0,lin(0x5E615F))
@@ -150,6 +152,34 @@ def scenery(k):
             for v in (-1,1):
                 art.tube((x+u*2.8,y+v*2.1,z),.05,.04,2.35,lin(0x949991),lin(0xA9AFA4),6)
         art.roof((x,y,z+2.35),6.5,4.8,1.6,bearing(d),lin(0xC7BCA7))
+    # A continuous upper rail and individual metal uprights follow the steep grade.
+    steel=lin(0x9FA5A0)
+    for start,end in ((985,1145),(2230,2455),(3490,3940),(4810,5010)):
+        for side in (-1,1):
+            for d in range(start,end,3):
+                off=side*2.26
+                x,y,_=k.road.pos(d,off);z=k.height_at(x,y)
+                x1,y1,_=k.road.pos(d+2.85,off);z1=k.height_at(x1,y1)
+                for h in (.21,1.02):
+                    beam(art,(x,y,z+h),(x1,y1,z1+h),.037,.038,steel)
+                for u in (0,.21,.42,.63,.84,1):
+                    bx=x+(x1-x)*u;by=y+(y1-y)*u;bz=z+(z1-z)*u
+                    art.tube((bx,by,bz+.14),.022,.022,.89,steel,steel,5)
+                if d%2==0:
+                    beam(art,(x,y-.3,z+.02),(x,y+.3,z+.02),.045,.05,steel)
+    for i,d in enumerate((1015,1063,1100,2245,2295,2340,2410,3515,3573,3628,3695,3749,3774,3835,3880,4825,4884,4958)):
+        side=1 if i%2 else -1
+        x,y,_=k.road.pos(d,-side*3)
+        z=k.height_at(x,y)
+        art.tube((x,y,z),.033,.029,3.18,steel,lin(0xB5AEA1),8)
+    # Plough lines have perspective and parallax where they run past the farm lanes.
+    earth=lin(0x705E4A)
+    for d in range(30,730,6):
+        for off in range(18,77,4):
+            x,y,_=k.road.pos(d,off)
+            x1,y1,_=k.road.pos(d+6,off)
+            z=k.height_at(x,y);z1=k.height_at(x1,y1)
+            art.face(((x,y-.23,z+.03),(x1,y1-.23,z1+.03),(x1,y1+.23,z1+.03),(x,y+.23,z+.03)),(earth,)*4)
     for d,label in ((975,'KOPPENBERG'),(2280,'22%'),(3675,'1 KM'),(4945,'SOMMET')):
         x,y,z=k.road.pos(d,-3.5);z=k.height_at(x,y);yaw=bearing(d)
         art.box((x,y,z),(.09,.09,1.9),yaw,lin(0x686D68))
