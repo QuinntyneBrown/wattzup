@@ -1,4 +1,5 @@
 import { texture, positionWorld, uniform, uv, vec2 } from 'three/tsl';
+import type { Vector3 } from 'three/webgpu';
 import {
   BoxGeometry,
   Color,
@@ -18,7 +19,6 @@ import {
   SRGBColorSpace,
   TextureLoader,
   TorusGeometry,
-  Vector3,
   type BufferGeometry,
   type Material,
   type Texture,
@@ -30,7 +30,10 @@ const COUNT = 60;
 const COATS = [0x7e4c3d, 0x674639, 0x99584c, 0xd37593, 0x42a2a1, 0xdaaa67, 0x716594];
 const SHIRTS = [0xcb875b, 0x8b6b83, 0xb9a775, 0x668376, 0x658691, 0x994f55];
 const pose = (): CoursePlace => ({ x: 0, y: 0, z: 0, heading: 0, pitch: 0 });
-type Batch = { mesh: InstancedMesh; used: number };
+interface Batch {
+  mesh: InstancedMesh;
+  used: number;
+}
 
 export class JouvertBands {
   readonly group = new Group();
