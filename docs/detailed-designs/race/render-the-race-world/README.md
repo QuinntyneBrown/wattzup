@@ -523,6 +523,18 @@ The race follows a condensed Supercykelsti from the commuter avenues to the harb
 | Nyhavn | Narrow gables, uneven roof heights, windows and awnings rise across a row of wooden vessels. Trees and crowded racks stand in the foreground. | Real 08–09 and 15, games 02 and 03 |
 | Inner harbour bridge | Distinct bridge rails and spans open views towards the distant quays and copper spires in low northern light. | Real 05, 11–12 and 15, games 02 and 04 |
 
+### Cornish Harbour
+
+The same 2.4 km circuit returns to the harbour for three passes during Nasty Pasty Sprint Session. The route draws on Padstow, Mousehole, St Ives and Polperro. Its slate sky and wet grey lanes preserve the earlier minimalist direction. Detail is concentrated where the rider can recognise it, with open water and uncluttered approaches between the quay, shops and headland. The fixed lighthouse and receding cottages use Caribana’s separation of foreground activity from a fixed skyline. [Rider feedback #932](https://github.com/QuinntyneBrown/wattzup/issues/932)
+
+| View | Construction and riding sightline | References |
+| --- | --- | --- |
+| Lane and climb | Pale walls, slate roof pitches, chimneys, granite kerbs and one parked vehicle follow the slope. | Real 03, 06–07, 10, 14–15, games 01 and 03 |
+| Harbour boats | Blue, red and off-white fishing hulls carry small wheelhouses, rails and working gear. Boats in deep water bob, grounded boats heel on the sand. | Real 01, 04–05 and 08–11, games 02 and 05 |
+| Quay wall | Dark wet lower courses line pale granite coping, iron ladders, bollards and coiled pots. Fishermen and a dog share the quay path. | Real 01–02, 04–05 and 09, games 01 and 04 |
+| Shop corner | The pasty shop has a painted fascia and display window, a chalkboard and a hanging basket. Visitors gather in small groups. | Real 03, 06–07 and 13–15, games 01 and 03 |
+| Harbour mouth | A lighthouse ends the stone arm. Gulls with dark wingtips pass the green headland. Low light glints on water, wet sand and stone under a broken cloud layer. | Real 08–12, games 02, 04 and 05 |
+
 ## Requirements
 
 The feature realizes the following level-2 (L2) requirements. Each L2 requirement refines a

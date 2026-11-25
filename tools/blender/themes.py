@@ -1412,3 +1412,8 @@ import copenhagen as _copenhagen  # noqa: E402
 
 THEMES['copenhagen'] = _copenhagen.THEME
 SCENERY['copenhagen'] = _copenhagen.scenery
+
+import cornwall as _cornwall  # noqa: E402
+
+THEMES['cornwall'] = _cornwall.THEME
+SCENERY['cornwall'] = _cornwall.scenery

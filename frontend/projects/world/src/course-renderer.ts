@@ -1,3 +1,5 @@
+import type { cornwallVisitors } from './cornwall-visitors';
+import type { CornwallHarbour } from './cornwall-harbour';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -261,6 +263,8 @@ export class CourseRenderer implements WorldRenderer {
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
   private pave: ReturnType<typeof arenbergPave> | null = null;
+  private visitors: Awaited<ReturnType<typeof cornwallVisitors>> | null = null;
+  private harbour: CornwallHarbour | null = null;
   private course: Course | null = null;
   private timing: PursuitBoard | null = null;
   private disposed = false;
@@ -385,6 +389,7 @@ export class CourseRenderer implements WorldRenderer {
     asturiasFlagAngle: 0,
     echelonLeaderX: null as number | null,
     commissaireX: null as number | null,
+    gullY: null as number | null,
     groups: {} as Record<string, number>,
     kiteAngle: undefined as number | undefined,
     boatX: undefined as number | undefined,
@@ -549,6 +554,24 @@ export class CourseRenderer implements WorldRenderer {
             }
           : parsed,
       );
+      if (this.path === 'courses/cornwall') {
+        const [{ CornwallHarbour }, { cornwallVisitors }] = await Promise.all([
+          import('./cornwall-harbour'),
+          import('./cornwall-visitors'),
+        ]);
+        if (this.disposed) return false;
+        const visitors = await cornwallVisitors(this.course);
+        if (this.disposed) {
+          visitors.dispose();
+          return false;
+        }
+        this.visitors = visitors;
+        this.scene.add(visitors.root);
+        this.disposables.push(visitors);
+        this.camera.setViewOffset(1, 1, 0, 0.09, 1, 1);
+        this.harbour = new CornwallHarbour(this.course, this.scene);
+        this.disposables.push(this.harbour);
+      }
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       if (this.course.file.id === 'atacama') {
@@ -1059,6 +1082,11 @@ export class CourseRenderer implements WorldRenderer {
     this.parkTraffic?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.champsParade?.update(frame.time, metres, frame.reducedMotion);
     this.riderBatch?.follow();
+    this.visitors?.follow(metres);
+    if (this.harbour) {
+      this.harbour.update(frame.reducedMotion ? 0 : frame.time, metres);
+      this.sun.intensity = 2.1 + 0.62 * Math.sin(metres / 178) + 0.19 * Math.sin(metres / 63);
+    }
     this.danishStreet?.follow(metres);
     this.commuters?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.promenade?.follow(metres);
@@ -2167,6 +2195,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.foilX = this.ferries?.foilX ?? null;
     drawn.dancerY = this.crews?.dancerY ?? null;
     drawn.passengerY = this.crews?.passengerY ?? null;
+    drawn.boatRoll = this.harbour?.boatRoll ?? null;
+    drawn.gullY = this.harbour?.gullY ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.haze = this.basin ? this.scene.fog?.color.getHex() : undefined;
