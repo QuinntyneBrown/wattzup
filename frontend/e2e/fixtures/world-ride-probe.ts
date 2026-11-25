@@ -437,6 +437,16 @@ export class WorldRideProbe {
     );
   }
 
+  /** A pose from the submitted course frame, present only while its mesh is drawn. */
+  async itenDetail(part: string): Promise<number | null> {
+    return this.page.evaluate((key) => {
+      const course = (window as unknown as { __wzWorldRide: { course?: Record<string, unknown> } })
+        .__wzWorldRide.course;
+      const pose = course?.[key];
+      return typeof pose === 'number' ? pose : null;
+    }, part);
+  }
+
   async yardMotion(part: 'speakerDepth' | 'mistPosition'): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
@@ -632,6 +642,26 @@ export class WorldRideProbe {
 
   /** A pose from the submitted course frame, present only while its mesh is drawn. */
   async southCoastDetail(part: string): Promise<number | null> {
+    return this.page.evaluate((key) => {
+      const course = (window as unknown as { __wzWorldRide: { course?: Record<string, unknown> } })
+        .__wzWorldRide.course;
+      const pose = course?.[key];
+      return typeof pose === 'number' ? pose : null;
+    }, part);
+  }
+
+  /** A pose from the submitted course frame, present only while its mesh is drawn. */
+  async passDetail(part: string): Promise<number | null> {
+    return this.page.evaluate((key) => {
+      const course = (window as unknown as { __wzWorldRide: { course?: Record<string, unknown> } })
+        .__wzWorldRide.course;
+      const pose = course?.[key];
+      return typeof pose === 'number' ? pose : null;
+    }, part);
+  }
+
+  /** A pose from the submitted course frame, present only while its mesh is drawn. */
+  async mountainDetail(part: string): Promise<number | null> {
     return this.page.evaluate((key) => {
       const course = (window as unknown as { __wzWorldRide: { course?: Record<string, unknown> } })
         .__wzWorldRide.course;

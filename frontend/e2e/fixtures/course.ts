@@ -1,4 +1,7 @@
 import icelandElevation from './iceland-elevation.json';
+import independenceElevation from './independence-elevation.json';
+import isleofmanElevation from './isleofman-elevation.json';
+import itenElevation from './iten-elevation.json';
 import angliruElevation from './angliru-elevation.json';
 import artMuseumElevation from './artmuseum-elevation.json';
 
@@ -3459,6 +3462,129 @@ export const icelandCourseMap = {
       seg('recover', 120, 11, 80),
       seg('work', 60, 24, 80),
       seg('cool-down', 90, 10, 80),
+    ],
+  },
+};
+
+export const independenceCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'independence-pass',
+  name: 'Independence Pass',
+  routeName: 'Highway 82',
+  place: 'The Roaring Fork and the Continental Divide, Colorado',
+  world: 'independence',
+  distanceKm: 15.2,
+  climbingM: 897,
+  rating: 'Brutal',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: independenceElevation,
+  },
+  thumbnailUrl: 'maps/independence-pass.jpg',
+  photoUrl: 'maps/independence-pass-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 14, 80),
+      seg('work', 60, 18, 80),
+      seg('recover', 120, 14, 80),
+      seg('work', 90, 22, 90),
+      seg('recover', 90, 19, 90),
+      seg('work', 90, 22, 90),
+      seg('recover', 90, 19, 90),
+      seg('work', 90, 22, 90),
+      seg('recover', 90, 19, 90),
+      seg('work', 90, 22, 90),
+      seg('work', 90, 19, 90),
+      seg('recover', 120, 13, 80),
+      seg('work', 90, 22, 90),
+      seg('recover', 90, 19, 90),
+      seg('work', 90, 22, 90),
+      seg('recover', 90, 19, 90),
+      seg('work', 90, 22, 90),
+      seg('recover', 90, 19, 90),
+      seg('work', 90, 22, 90),
+      seg('recover', 90, 19, 90),
+      seg('cool-down', 180, 13, 80),
+    ],
+  },
+};
+
+export const isleofmanCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'isle-of-man-mountain-course',
+  name: 'Isle of Man Mountain Course',
+  routeName: 'The Mountain Course',
+  place: 'The A18, the Bungalow and Creg-ny-Baa',
+  world: 'isleofman',
+  distanceKm: 8.133,
+  climbingM: 206,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: isleofmanElevation,
+  },
+  thumbnailUrl: 'maps/isle-of-man-mountain-course.jpg',
+  photoUrl: 'maps/isle-of-man-mountain-course-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 11, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 50, 14, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 50, 14, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 50, 14, 80),
+      seg('work', 10, 24, 100),
+      seg('work', 50, 14, 80),
+      seg('recover', 180, 10, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 50, 14, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 50, 14, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 50, 14, 80),
+      seg('work', 10, 24, 100),
+      seg('recover', 50, 14, 80),
+      seg('cool-down', 360, 10, 80),
+    ],
+  },
+};
+
+export const itenCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'iten-kenya',
+  name: 'Iten, Kenya',
+  routeName: 'The red-dirt road',
+  place: 'Iten and the Kerio Valley, Kenya',
+  world: 'iten',
+  distanceKm: 17.86,
+  climbingM: 378,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: itenElevation,
+  },
+  thumbnailUrl: 'maps/iten-kenya.jpg',
+  photoUrl: 'maps/iten-kenya-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 80),
+      seg('work', 120, 21, 90),
+      seg('work', 60, 22, 100),
+      seg('recover', 120, 11, 80),
+      seg('work', 840, 19, 93),
+      seg('work', 180, 22, 90),
+      seg('work', 60, 24, 110),
+      seg('recover', 300, 11, 80),
+      seg('work', 60, 24, 110),
+      seg('recover', 180, 11, 80),
+      seg('work', 60, 24, 110),
+      seg('recover', 60, 11, 80),
+      seg('work', 60, 24, 110),
+      seg('cool-down', 120, 11, 80),
     ],
   },
 };

@@ -1250,3 +1250,43 @@ The world registry describes Route 1 and supplies its original stage grades. The
 As in Caribana, fix the distant landmark in world space and concentrate geometry in the moving foreground. Isolate the water, grazing and iceberg materials to this course. The course owns their disposal with the route. Retain silhouettes on Low and share each motion across batched geometry. Test Map Select → Race Setup → Ride with fixtures, including pause and resume. Photograph the same six chainages before and after. Measure the opening and lagoon per the performance design with two 60-second submitted-frame samples after nine seconds of warm-up.
 
 The baked route ascends 91 m. Each stage contributes its original time and cadence to its road length. A common grade increment per resistance level and a small background rise account for the climbing and the 21 m net elevation gain. The headlands, outlets and water sit at fixed positions. Lake ice floats on the common 45.8 m lagoon surface. The distant ice-cap plate is original generated artwork, with translucent edges fading into the modeled terrain. The terminal tongue, basalt strata, fractured bergs, two waterfall profiles, surf, farm buildings and livestock are original meshes. The basalt-grain and moss channels come from the repeatable bake in `tools/blender/iceland_surface.py`.
+### Independence Pass · #2140
+
+Restore the historical 35-minute GCN workout and its ordinary unlock behaviour in the race catalogue. Compile the 15.2 km road and its elevation profile into the native Blender course and load it only for this map (ADRs 0021, 0023, 0030, 0034 and 0035). The west approach climbs from 2,790 m to the 3,687 m divide. Across the eastern sightline Twin Lakes remains below the rider. The course finishes at the sign.
+
+| Section | Low-tier geometry and sightline | References |
+| --- | --- | --- |
+| Lower Highway 82 and river | Break the crowns into gold and green patches, leaving the dark branch forks and white trunks readable. Frame the river between boulders and open the road edge at the cascade. | Real 02, 09, 13 and 14. Games 03 and 05. |
+| Mining meadow and treeline | Cabin wall logs terminate at the corners. Vary collapsed, stripped and roofed structures. Narrow the spruce silhouettes with altitude before the tundra opens. | Real 05, 06, 08, 11 and 14. Games 02 and 04. |
+| Exposed summit approach | Smooth descending sightlines across tight folds, galvanised rails, thawing snow and rough scree. Keep the sign’s brown silhouette and pale lower panel legible. Anchor the two blue lakes and snow-streaked Sawatch skyline to the valley. | Real 01, 03–05, 07, 08, 10, 12 and 15. Games 01, 02 and 04. |
+
+Caribana’s fixed skyline and detailed moving foreground guide the distribution of GPU work. The river and near leaves share bounded materials owned by the scene. Keep the summit lettering legible on Low without changing the HUD. Verify six positions through the simulated bike. Compare the opening and busiest summit approach on Low/WebGL2 with nine seconds of warm-up and a moving one-minute sample per section.
+
+The tree atlas and distant Sawatch range use original generated artwork. The native geometry places the trees, boulders, log cabins, guardrail, summit board and two lake surfaces. The summit board has a separately drawn face so its elevation lettering survives tablet scaling. At the overlook the chase camera swings around the cyclist toward the lakes and eases back onto Highway 82.
+### Isle of Man Mountain Course · #2141
+
+Trace the existing Isle of Man registry entry into the race catalogue and its lazy native course (ADRs 0021, 0023, 0030, 0034 and 0035). Restore *Full Gas Sprints*, including the three-second video offset. The condensed A18 covers 8.133 km with its stage distances proportional to target cadence and time. The lower lanes climb toward the Bungalow before the descent to Creg-ny-Baa.
+
+| Section | Rider-height treatment | References |
+| --- | --- | --- |
+| Lower road and Snaefell | Model rough limestone boundaries close to the white-dashed two-lane road. Open the banks to a smooth grassy summit with summit masts. An original heather surface and distant sea occupy separate depth layers. | Real 03, 06, 09–10, 14–15. Games 01, 04 and 05. |
+| Bungalow | Thread the rails obliquely through the tarmac. A red and cream electric tram runs along its own track under catenary poles. Keep the two long staircases, black sponsor fascia and open underside of the bridge recognizable at speed. | Real 02, 04–05, 10, 12–13 and 15. Games 02 and 03. |
+| Creg-ny-Baa and descent | Put the white hotel and grandstand on the outside of the curve. Alternating kerb blocks, wrapped straw, watching spectators and orange marshals read before the corner. Round shoulders show sheep and a sea horizon under broad moving cloud shadows. | Real 01, 07–09, 11 and 14. Games 01, 03–05. |
+
+Use the fixed skyline and batched crowd approach from Caribana. Keep the rails, stairs, pub windows and marshals legible on Low. Release the textures, shared materials and tram geometry when the course leaves the screen. Test the ordinary rider entry, pause and resume through the fixture bike. Compare matching photos and measure two submitted one-minute samples after nine seconds of warm-up.
+
+The native scene models the slate courses, low hawthorn and ash, sheep, Snaefell summit masts, catenary, railway buildings, stair treads, Creg-ny-Baa windows and spectator stand. The train, marshal flag and illumination follow the ride clock. The changing cloud light uses an original generated Manx panorama. Crossing poles stand clear of the carriageway. White dashes share a continuous surface with the asphalt so depth precision on Low preserves the paint.
+
+### Iten, Kenya · #2142
+
+The existing world registry entry describes the red-dirt training road. Map Select also needs the original GCN workout published in the API catalogue. Its 14 stages of *40 Minute HIIT* cover 17.86 km in 40:00 with a two-second video offset. The Race journey enters a lazy native course through the course registry (ADRs 0021, 0023, 0030, 0034 and 0035). The rider and HUD share the sampled elevation. The off-network world uses local geometry and artwork.
+
+| Rider view | Construction and reference |
+| --- | --- |
+| Murram and runners | Two worn wheel paths reveal red laterite under the loose surface. Runner groups wear different kit and stride out of phase on the verge. The broken acacia crowns give way to candelabra euphorbia. Real 01–05 and 08, games 01–02 and 04. |
+| Farms and Kamariny Stadium | Fence wires follow timber posts between maize, pasture and tea plots. Cattle and goats cluster with their herders. The dirt oval encloses grass, with a simple covered timber stand on the long straight. Real 04, 07–08 and 12–14, games 03 and 04. |
+| Town and valley rim | Painted fascias sit under corrugated shop roofs beside a matatu and a moving boda-boda. The road shoulder opens onto successive spurs of the Kerio Valley under equatorial cumulus. Real 06, 09–11 and 15, games 01, 03 and 05. |
+
+As on Caribana, place individual moving figures near the rider and batch distant shapes. Keep the escarpment fixed in world space and the paint and gravel grain at physical scale. Release all course materials, textures and buffers with the scene. Capture six matching views with the same HUD state through the simulated bike. Measure actual submissions on the opening and in town with the procedure in the performance design.
+
+The finished grade rises or falls one percentage point for each resistance level above or below the distance-weighted mean. Over all fourteen stages this gives 378 m of climbing. The compacted laterite, two tree cutouts and distant valley use original generated artwork. Trees and foliage remain in road sections; only the approach to the escarpment reveals the painted valley. The field, dirt oval, covered stand, market, matatu, maize plots, posts and wire are native geometry. Runner packs use bounded instanced joints, and the grazing heads and the boda-boda use the same ride clock. The scene releases each owned texture, instance buffer, geometry and material.
