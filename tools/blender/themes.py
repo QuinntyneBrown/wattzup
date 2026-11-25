@@ -1445,3 +1445,8 @@ import chicago as _chicago
 
 THEMES["chicago"] = _chicago.THEME
 SCENERY["chicago"] = _chicago.scenery
+
+import chichen as _chichen
+
+THEMES["chichen"] = _chichen.THEME
+SCENERY["chichen"] = _chichen.scenery

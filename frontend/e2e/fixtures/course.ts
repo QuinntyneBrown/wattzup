@@ -24,6 +24,7 @@ import centralparkElevation from './centralpark-elevation.json';
 import cherryblossomElevation from './cherryblossom-elevation.json';
 import champsElevation from './champs-elevation.json';
 import chicagoElevation from './chicago-elevation.json';
+import chichenElevation from './chichen-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -1738,6 +1739,50 @@ export const chicagoCourseMap = {
       seg('work', 60, 21, 90),
       seg('work', 60, 24, 100),
       seg('cool-down', 120, 10, 80),
+    ],
+  },
+};
+
+export const chichenCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'chichen-itza',
+  name: 'Chichén Itzá',
+  routeName: 'The sacbé',
+  place: 'Yucatán, Mexico',
+  world: 'chichen',
+  distanceKm: 12.7,
+  climbingM: 18,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: chichenElevation,
+  },
+  thumbnailUrl: 'maps/chichen-itza.jpg',
+  photoUrl: 'maps/chichen-itza-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 12, 80),
+      seg('work', 120, 14, 80),
+      seg('recover', 120, 18, 85),
+      seg('work', 60, 21, 90),
+      seg('work', 120, 13, 80),
+      seg('recover', 120, 10, 80),
+      seg('work', 60, 13, 80),
+      seg('recover', 60, 14, 80),
+      seg('work', 60, 16, 85),
+      seg('recover', 60, 18, 85),
+      seg('work', 60, 19, 90),
+      seg('recover', 60, 21, 90),
+      seg('work', 60, 22, 100),
+      seg('recover', 60, 24, 100),
+      seg('work', 60, 22, 100),
+      seg('recover', 60, 21, 90),
+      seg('work', 60, 19, 90),
+      seg('recover', 60, 18, 85),
+      seg('work', 60, 16, 85),
+      seg('recover', 60, 14, 80),
+      seg('cool-down', 180, 11, 80),
     ],
   },
 };
