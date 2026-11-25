@@ -3,6 +3,8 @@
 // Description: Race Setup for a new rider shows the map's photo, name, route and facts with no best, the stars here
 // with none earned, and the goal line only on the map that holds the next unlock; a locked map's address opens Map
 // Select. The rider chooses whom to race and, against bots, the pack strength, and the start button opens the race.
+import { newRiderProgress } from './fixtures/api';
+import { cherryBlossomCourseMap } from './fixtures/course';
 import { echelonBike } from './fixtures/echelon';
 import { maps } from './fixtures/maps';
 import { midRiderProgress } from './fixtures/progress';
@@ -190,4 +192,25 @@ test('against your best time, Start ride opens the race at once, solo (L2-050 AC
 
   await expect(page).toHaveURL('/race/prairie-paceline/ride?mode=solo');
   await expect(new RacePage(page).route).toHaveText('Route 9 Wind Farm · vs your best');
+});
+
+test('choose sunrise with the keyboard for a local Cherry Blossom race', async ({
+  page,
+  api,
+  bluetooth,
+}) => {
+  await bluetooth.remember(echelonBike);
+  api.answer('GET', '/api/maps', [cherryBlossomCourseMap]);
+  api.answer('GET', '/api/progress', {
+    ...newRiderProgress,
+    openMapIds: [cherryBlossomCourseMap.id],
+  });
+  const setup = new RaceSetupPage(page);
+  await setup.open(cherryBlossomCourseMap.id);
+  await expect(setup.light('Daylight')).toBeChecked();
+  await setup.light('Daylight').press('ArrowRight');
+  await expect(setup.light('Sunrise')).toBeChecked();
+  await setup.mode('Your best time').click();
+  await setup.start.click();
+  await expect(page).toHaveURL('/race/cherry-blossom-festival-dc/ride?mode=solo&light=sunrise');
 });

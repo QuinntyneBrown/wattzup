@@ -1430,3 +1430,8 @@ import centralpark as _centralpark
 
 THEMES["centralpark"] = _centralpark.THEME
 SCENERY["centralpark"] = _centralpark.scenery
+
+import cherryblossom as _cherryblossom
+
+THEMES["cherryblossom"] = _cherryblossom.THEME
+SCENERY["cherryblossom"] = _cherryblossom.scenery

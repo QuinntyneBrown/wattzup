@@ -1,0 +1,373 @@
+{
+  "id": "cherryblossom",
+  "name": "Cherry Blossom Festival, D.C.",
+  "world": "cherryblossom",
+  "theme": "cherryblossom",
+  "seed": 2097,
+  "layout": 0,
+  "class": {
+    "id": "a-little-bit-of-everything",
+    "title": "A Little Bit of Everything",
+    "channel": "GCN Training",
+    "videoId": "qTIM0tqWoTU",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 135,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 75,
+        "level": 19,
+        "cadenceAim": 78
+      },
+      {
+        "kind": "recover",
+        "duration": 15,
+        "level": 11,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 75,
+        "level": 19,
+        "cadenceAim": 78
+      },
+      {
+        "kind": "recover",
+        "duration": 15,
+        "level": 11,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 11,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 11,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 11,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 22,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 11,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 35,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 35,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 35,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 63
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 63
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 63
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 63
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 63
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 63
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 63
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 22,
+        "cadenceAim": 63
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 11,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 11,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 11,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "recover",
+        "duration": 30,
+        "level": 11,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 24,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "cool-down",
+        "duration": 135,
+        "level": 11,
+        "cadenceAim": 82
+      }
+    ]
+  }
+}

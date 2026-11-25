@@ -3,6 +3,7 @@
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
 // metres they have ridden. `main`'s scenes are drawn by
 // world-renderer.ts; map-renderer.ts picks between the two.
+import type { blossomFestival } from './blossom-festival';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
@@ -258,6 +259,7 @@ export class CourseRenderer implements WorldRenderer {
   private lifts: CampolongoLifts | null = null;
   private wildlife: CabotWildlife | null = null;
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
+  private basin: Awaited<ReturnType<typeof blossomFestival>> | null = null;
   private rain: Rain | null = null;
   private parkTraffic: ParkTraffic | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
@@ -347,6 +349,9 @@ export class CourseRenderer implements WorldRenderer {
     echelonLeaderX: null as number | null,
     commissaireX: null as number | null,
     groups: {} as Record<string, number>,
+    kiteAngle: undefined as number | undefined,
+    boatX: undefined as number | undefined,
+    haze: undefined as number | undefined,
   };
   private readonly trainingGroup: Cyclist[] = [];
   private portWind: AntwerpWind | null = null;
@@ -490,7 +495,19 @@ export class CourseRenderer implements WorldRenderer {
       }
       this.body = body;
       this.disposables.push(body);
-      this.course = new Course(parseCourse(file));
+      const parsed = parseCourse(file);
+      this.course = new Course(
+        parsed.id === 'cherryblossom' && options.sunrise
+          ? {
+              ...parsed,
+              sky: ['#f8d0c1', '#efc4ce', '#d5c2d5', '#b7bedc', '#93acd1'],
+              haze: '#f4d5cf',
+              sun: [0.81, 0.2, -0.55],
+              light: { colour: '#ffc1a3', intensity: 2.2 },
+              fill: ['#e4cfe2', '#ba9d97'],
+            }
+          : parsed,
+      );
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       if (this.course.file.id === 'atacama') {
@@ -555,7 +572,14 @@ export class CourseRenderer implements WorldRenderer {
         this.camera.fov = 60;
         this.camera.updateProjectionMatrix();
       }
-      this.build(gltf.scene, canvas, clinker, fronts, foliage);
+      const blossomModules =
+        parsed.id === 'cherryblossom'
+          ? await Promise.all([import('./blossom-festival'), import('./cherryblossom-shore')])
+          : null;
+      if (this.disposed) return false;
+      const paving = blossomModules?.[1].promenadeSurface();
+      if (paving) this.disposables.push(paving.tile);
+      this.build(gltf.scene, canvas, clinker, fronts, foliage, paving?.material);
       if (this.course.file.id === 'aguascalientes') {
         const { PursuitBoard } = await import('./pursuit-board');
         if (this.disposed) return false;
@@ -639,6 +663,16 @@ export class CourseRenderer implements WorldRenderer {
         }
         this.scene.add(trees.root);
         this.disposables.push(trees);
+      }
+      if (blossomModules) {
+        const festival = await blossomModules[0].blossomFestival(this.course, options.sunrise === true);
+        if (this.disposed) {
+          festival.dispose();
+          return false;
+        }
+        this.basin = festival;
+        this.scene.add(festival.root);
+        this.disposables.push(festival);
       }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -833,6 +867,7 @@ export class CourseRenderer implements WorldRenderer {
     // Every wheel on the road turns with the rider's: the riders keep much the same pace.
     this.kit?.roll(metres);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
+    this.basin?.update(frame.reducedMotion ? 0 : frame.time);
     this.placeRiders(frame, metres);
     this.timing?.update(metres, frame.time);
     if (this.trainingGroup.length) this.placeTrainingGroup(frame, metres);
@@ -982,6 +1017,7 @@ export class CourseRenderer implements WorldRenderer {
     this.yard = null;
     this.mill = null;
     this.surf = null;
+    this.basin = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.trainingGroup.length = 0;
@@ -1029,6 +1065,7 @@ export class CourseRenderer implements WorldRenderer {
     clinker: Texture | null,
     fronts: Texture | null,
     foliage: Texture | null,
+    cherryPavement?: Material,
   ): void {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
@@ -1145,7 +1182,7 @@ export class CourseRenderer implements WorldRenderer {
       coloured,
       clinker,
     );
-    const pavement = this.saltRoad ?? this.speedwaySurface?.(detail) ?? this.seafrontSurface?.(detail) ?? this.deckSurface;
+    const pavement = this.saltRoad ?? this.speedwaySurface?.(detail) ?? this.seafrontSurface?.(detail) ?? this.deckSurface ?? cherryPavement;
     materials['Ground'] = pavement ?? ground.material;
     if (pavement) this.disposables.push(ground.material);
     this.groundEye = ground.eye;
@@ -1527,8 +1564,9 @@ export class CourseRenderer implements WorldRenderer {
     const back = course.place(metres - behind, sway, this.here);
     this.camera.position.set(back.x, back.y + up, back.z);
     this.groundEye?.at(metres - behind, 0, up);
-    const ahead = course.place(metres + (calobra ? 24 : LOOK_AHEAD), 0, this.there);
-    this.camera.lookAt(ahead.x, ahead.y + (calobra ? 1.2 : LOOK_UP), ahead.z);
+    const view = this.basin?.sightline(metres);
+    const ahead = course.place(metres + (calobra ? 24 : LOOK_AHEAD), view?.lane ?? 0, this.there);
+    this.camera.lookAt(ahead.x, ahead.y + (calobra ? 1.2 : LOOK_UP) + (view?.rise ?? 0), ahead.z);
     // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
     if (back.bank) this.camera.rotateZ(back.bank * 0.32);
     this.sky?.position.copy(this.camera.position);
@@ -1911,6 +1949,9 @@ export class CourseRenderer implements WorldRenderer {
     drawn.clubDistance = this.parkTraffic?.clubDistance;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
+    drawn.haze = this.basin ? this.scene.fog?.color.getHex() : undefined;
+    drawn.boatX = this.basin?.boatX;
+    drawn.kiteAngle = this.basin?.kiteAngle;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
     drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;

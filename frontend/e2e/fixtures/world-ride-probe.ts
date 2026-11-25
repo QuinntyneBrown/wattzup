@@ -63,6 +63,15 @@ export class WorldRideProbe {
     }, metres);
   }
 
+  async basinMotion(part: 'kiteAngle' | 'boatX' | 'haze'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
   async parkMotion(part: 'horseStride' | 'clubDistance'): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
