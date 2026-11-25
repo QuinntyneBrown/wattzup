@@ -42,6 +42,7 @@ import type {
   TimedSegment as Segment,
   World,
   WorldRenderer,
+  WorldStartOptions,
 } from '@telo/api';
 import {
   Course,
@@ -80,6 +81,8 @@ import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
+import { heldFps } from './held-fps';
+import type { malecon } from './malecon';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -105,6 +108,11 @@ const SHADOW_WIDTH = 0.8;
  * the haze, and what stands on it is drawn nearer, the smallest things nearest.
  */
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
+  Portales: 650,
+  OriginalElevations: 650,
+  WallSpray: 420,
+  SaltPuddles: 160,
+  MaleconStone: 950,
   Land: 950,
   Ground: 420,
   Solid: 250,
@@ -199,6 +207,7 @@ export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
   private course: Course | null = null;
+  private malecon: ReturnType<typeof malecon> | null = null;
   private disposed = false;
   private readonly scene = new Scene();
   private readonly camera = raised(new PerspectiveCamera(58, 16 / 9, 0.3, 14000));
@@ -307,16 +316,18 @@ export class CourseRenderer implements WorldRenderer {
     _world: World,
     nextFrame: () => Promise<void>,
     segments: readonly Segment[] = [],
+    options: WorldStartOptions = {},
   ): Promise<boolean> {
     try {
       const asked = readWorldRideProbe((globalThis as Record<string, unknown>)[PROBE_KEY]);
       const renderer = new WebGPURenderer({
         canvas,
         antialias: true,
-        forceWebGL: asked?.forceWebGL ?? false,
+        forceWebGL: asked?.forceWebGL === true || options.forceWebGL === true,
       });
       await renderer.init();
       this.renderer = renderer;
+      if (options.tier) this.tier = PINNED[options.tier] ?? START;
       if (asked && !asked.judged) {
         this.pinned = true;
         const from = (globalThis as Record<string, unknown>)[PROBE_KEY] as { from?: unknown };
@@ -352,15 +363,46 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
+      if (this.course.file.id === 'havana') {
+        const { malecon } = await import('./malecon');
+        if (this.disposed) return false;
+        this.camera.clearViewOffset();
+        this.camera.fov = 60;
+        this.camera.updateProjectionMatrix();
+        this.malecon = malecon(this.course);
+        this.disposables.push(this.malecon);
+      }
       this.build(gltf.scene, canvas);
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
-      await renderer.compileAsync(this.scene, this.camera);
+      await renderer.compileAsync(this.scene, this.camera, null, (event) =>
+        options.progress?.({
+          step: 'shaders',
+          built: event.loaded,
+          total: event.total,
+          backend: this.backend,
+        }),
+      );
+      if (this.disposed) return false;
+      const tier = asked?.tier ?? options.tier ?? 'medium';
+      options.progress?.({ step: 'warm-up', tier });
       this.warm(renderer);
       this.pipeline = this.glow(renderer);
-      this.render();
-      await nextFrame();
+      if (options.progress) {
+        const times: number[] = [];
+        for (let frame = 0; frame < 3; frame++) {
+          this.render();
+          await nextFrame();
+          if (this.disposed) return false;
+          times.push(performance.now());
+        }
+        const fps = heldFps(times);
+        if (fps !== null) options.progress({ step: 'warmed', fps, tier });
+      } else {
+        this.render();
+        await nextFrame();
+      }
       return !this.disposed;
     } catch {
       return false;
@@ -407,6 +449,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.startRed) this.startRed.visible = lights && frame.time <= 0;
     if (this.startGreen) this.startGreen.visible = lights && frame.time > 0;
     if (this.rain) this.rain.mesh.visible = !frame.reducedMotion;
+    this.malecon?.update(frame.reducedMotion ? 0 : frame.time, this.camera, metres);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -595,6 +638,7 @@ export class CourseRenderer implements WorldRenderer {
     // The glow round each light: corners the material spreads to face the eye (halo-material.ts).
     materials['Halos'] = haloMaterial(DRAW_DISTANCE['Halos']! * 0.6, DRAW_DISTANCE['Halos']!);
     this.disposables.push(materials['Fences'], materials['Halos']);
+    if (this.malecon) Object.assign(materials, this.malecon.materials);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     const painted: Mesh[] = [];
     map.traverse((part) => {
@@ -602,6 +646,7 @@ export class CourseRenderer implements WorldRenderer {
       if (!mesh.isMesh) return;
       // A chunk is named for its group and its place along the road: `Solid_012`.
       const [group = '', chunk] = mesh.name.split('_');
+      this.malecon?.landmark(group, mesh);
       const material = materials[group];
       if (!material) return;
       for (const loaded of [mesh.material].flat()) loaded.dispose();
@@ -683,6 +728,7 @@ export class CourseRenderer implements WorldRenderer {
     }
     this.map = map;
     this.scene.add(map);
+    this.malecon?.install(map, this.scene);
     // The map is some hundreds of chunks, and a frame draws a few dozen of them. A chunk that is only hidden is
     // still walked twice by every frame (to place it and to ask whether it is in view), so the chunks are taken out
     // of the map and only those near the camera are in the scene (`choose`). Each keeps its place in the world as
@@ -861,12 +907,14 @@ export class CourseRenderer implements WorldRenderer {
       0,
     );
     const close = near * near * (3 - 2 * near);
-    const behind = CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
-    const up = CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
+    const behind = this.malecon ? 5.5 : CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
+    const up = this.malecon ? 2.1 : CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
     const back = course.place(metres - behind, 0, this.here);
     this.camera.position.set(back.x, back.y + up, back.z);
     this.groundEye?.at(metres - behind, 0, up);
-    const ahead = course.place(metres + LOOK_AHEAD, 0, this.there);
+    const ahead = this.malecon
+      ? course.place(metres + 24, this.malecon.lookAcross(metres), this.there)
+      : course.place(metres + LOOK_AHEAD, 0, this.there);
     this.camera.lookAt(ahead.x, ahead.y + LOOK_UP, ahead.z);
     this.sky?.position.copy(this.camera.position);
     const [x, , z] = course.file.sun;
@@ -1083,6 +1131,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
+    if (this.malecon) Object.assign(drawn, this.malecon.report(this.camera));
     hook['course'] = drawn;
   }
 

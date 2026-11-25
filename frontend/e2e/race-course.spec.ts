@@ -6,6 +6,7 @@
 // here, on WebGL2.
 import type { Locator, Page } from '@playwright/test';
 import {
+  havanaCourseMap,
   cinqueTerreCourseMap,
   haleakalaCourseMap,
   ibizaCourseMap,
@@ -97,6 +98,7 @@ test.describe('a course', () => {
   // Cinque Terre and Haleakalā, like Ibiza, are built from their classes and served from fixtures of their own
   // (L2-166 AC43, AC44).
   for (const [id, course, catalogue] of [
+    [havanaCourseMap.id, 'havana', [havanaCourseMap]],
     ['prairie-paceline', 'prairie', undefined],
     ['vice-city', 'vicecity', undefined],
     [cinqueTerreCourseMap.id, 'cinqueterre', [cinqueTerreCourseMap]],
@@ -107,7 +109,9 @@ test.describe('a course', () => {
       bluetooth,
       api,
       webgl,
+      worldRide,
     }) => {
+      if (id === havanaCourseMap.id) await worldRide.pin('low', 'webgl2');
       await webgl.withoutWebGpu();
       const loaded: string[] = [];
       page.on('requestfinished', (request) => loaded.push(new URL(request.url()).pathname));
