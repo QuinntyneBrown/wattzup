@@ -93,8 +93,8 @@ export async function comunaStreets(course: Course) {
             panel(d + 1, 8.4, -1.35, 5.1, 4.3, (Math.floor(d / 16) + 1) % 4, -0.35, 0xe2d1bc);
         } else {
           if (terrace) {
-            panel(d, 5.4, 0.3, 7.6, 5.7, 3, -0.1, 0xf4dfc8);
-            panel(d + 4, 10.6, 0.65, 7.1, 5.5, 3, -0.3, 0xe3ceb8);
+            panel(d, 8.45, 0.91, 6.0, 5.4, 3, -0.1, 0xf4dfc8);
+            panel(d + 4, 11.6, 0.40, 5.8, 5.0, 3, -0.04, 0xe3ceb8);
           }
           if (!terrace || Math.floor(d / 16) % 3 === 0) {
             const lane = terrace ? 11 : -(10 + rng() * 6),

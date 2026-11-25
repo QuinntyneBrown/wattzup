@@ -120,6 +120,15 @@ def scenery(k):
                             box(d+along,front-side*.1,z+1.72+f*2.55,1.59,.26,.10,0xd4b49d)
                             box(d+along,front-side*.11,z+1.79+f*2.55,.06,.08,1.04,0x81918b)
                 if layer==0:
+                    # Exposed courses and the staggered vertical joints remain legible
+                    # on the blank strips beside the door and between storeys.
+                    for j in range(1,int(h/.34)):
+                        level=z+j*.34
+                        for end in (-1,1):
+                            along=end*(w*.43)
+                            box(d+along,front-side*.035,level,.99,.055,.037,0xaa7c64)
+                            box(d+along+(.24 if j%2 else -.22),front-side*.037,level+.03,.033,.055,.29,0xad8069)
+                        if j%7==0:box(d,front-side*.04,level,w-.4,.065,.08,0xba9781)
                     for j in range(6):box(d-w*.44+j*w*.17,l,z+h+.17,.07,depth+.7,.045,0x777e7b)
                     for a in (-w*.44,w*.44):
                         box(d+a,front,z,.22,.24,h+.2,0xb9a496)
@@ -132,9 +141,8 @@ def scenery(k):
     for station in LANDINGS:
         # A roofed 24-metre escalator rises 8 m between two concrete landings.
         for flight in range(2):
-            d=station-30+flight*32;z=height(d)-.04+flight*3
-            for j in range(53):
-                box(d+j*.44,6.7,z+j*.14, .46,1.78,.18,0x696f70 if j%2 else 0x9da4a1)
+            d=station-30+flight*32;z=height(station-30)-.04+flight*7.42
+            segment(d,6.7,z-.18,d+23,6.7,z+7.24,1.94,.15,0x596366)
             for side in (-1,1):
                 l=6.7+side*1.06
                 segment(d,l,z+.2,d+23,l,z+7.55,.18,.61,0x819da1)
@@ -143,20 +151,48 @@ def scenery(k):
                     box(d+u,l+side*.42,z+u*.32,.15,.2,3.2,0x585854)
                 segment(d-1,6.7+side*.84,z+3.38,d+24,6.7+side*.84,z+11.38,1.82,.17,0xe0883d if side==1 else 0xc5662d)
             box(d-2.3,6.7,z-.35,4.8,3.2,.4,0xaaa99c)
-            box(d+25.5,6.7,z+7.16,4.9,3.2,.45,0xb4ad9b)
+            box(d+27.5,6.7,z+7.16,9.1,3.2,.45,0xb4ad9b)
+            if flight:
+                box(d+31,10,z+7.04,10.8,8.2,.51,0xb6a694)
+                for leg in (-3,3):box(d+31+leg,10,height(d)-.4,.42,.42,z+7.1-height(d),0x9c9184)
             for j in range(30):
                 box(d+j*.72,9.5,z+j*.245,.75,1.5,.25,(0x4c819d,0xdca34e,0xb97166,0x6ca991)[(j//5)%4])
     for station in MARKETS:
+        # Cast concrete decks hold the groups and market above the downhill roofs.
+        for d in range(station-50,station+50,4):
+            box(d,-9.65,height(d)-1.18,4.3,11.6,1.14,0xc1a78d)
+            box(d,-15.33,height(d)-.15,4.2,.32,.69,0xb8997d)
+            if d%8<4:box(d,-15.35,height(d)+.51,.11,.11,.54,0x50736a)
+            segment(d,-15.35,height(d)+1.03,d+4,-15.35,height(d+4)+1.03,.07,.075,0x55796e)
         # The vendor occupies the rear of the promenade; the road stays clear.
         for q in range(4):
             d=station-17+q*9.4;l=-7.2
             box(d,l,height(d)-.55,6.5,4,.57,0xbda48a)
-            box(d,l,height(d)+.1,3.5,1.45,1.0,0x936641)
+            box(d,l,height(d)+.1,3.5,1.45,1.0,(0x548e89,0xb78653,0xab6550,0x997b65)[q])
+            for j in range(11):
+                box(d-1.56+j*.31,l+.74,height(d)+.16,.26,.08,.81,
+                    (0x6ba59b,0xc19a68,0xc38263,0xac9175)[q])
             box(d,l,height(d)+1.10,3.75,1.65,.14,0xd0ad7f)
             for a in (-1.65,1.65):box(d+a,l,height(d)+.05,.11,.12,2.8,0x74664e)
             box(d,l,height(d)+2.83,4.1,3.4,.13,(0xdc9459,0x578f87,0xc65e53,0xd9bd68)[q])
-            for j in range(7):
-                x,y,_=pose(d-1.1+j*.34,l+.17);art.tube((x,y,height(d)+1.25),.15,.13,.18,lin(0xe4ad4c),lin(0xe9c478),7)
+            for j in range(9):
+                x,y,_=pose(d-1.23+j*.30,l+.26)
+                if q==0:
+                    k.blob(k.B["arrow"],(x,y,height(d)+1.39),.19)
+                elif q==1:
+                    art.tube((x,y,height(d)+1.26),.10,.12,.36,lin(0xbe6255),lin(0xf2bd85),8)
+                elif q==2:
+                    art.tube((x,y,height(d)+1.26),.18,.18,.055,lin(0xb4814b),lin(0xedd093),10)
+                else:
+                    box(d-1.23+j*.30,l+.26,height(d)+1.26,.23,.25,.12,(0x679691,0xcc8553,0xc5a362)[j%3])
+            # Suspended baskets trail bougainvillea above each awning.
+            x,y,_=pose(d+2.1,l+1.3);base=height(d)+2.5
+            art.tube((x,y,base),.19,.3,.30,lin(0x9a6747),lin(0xad7956),8)
+            for j in range(9):
+                angle=j*2.4
+                fx=x+.39*math.cos(angle);fy=y+.39*math.sin(angle);fz=base-.09*(j%5)
+                k.blob(k.B["foliage"],(fx,fy,fz),.18)
+                art.tube((fx+.08,fy,fz+.08),.10,.08,.09,lin(0xb44f78),lin(0xdc72a3),6)
         for span in range(4):
             d=station-32+span*15
             segment(d,-8,height(d)+6,d+6,9,height(d)+6.6,.04,.04,0x5c615b)
@@ -165,6 +201,28 @@ def scenery(k):
                 p=[(x-.27,y,z),(x+.27,y+.4,z+.02),(x+.12,y+.22,z-.62)]
                 art.face(p,[lin((0xf2c441,0x477da1,0xd6504e)[j%3])]*3)
                 art.face(p[::-1],[lin((0xf2c441,0x477da1,0xd6504e)[j%3])]*3)
+    # Bright banana leaves split along a raised midrib above the roofs.
+    for d in range(31,13700,49):
+        l=-(12+rng.random()*6);x,y,_=pose(d,l);z=floor(d,l)
+        art.tube((x,y,z),.19,.12,3.4,lin(0x777e4c),lin(0x9aab66),7)
+        for j in range(8):
+            a=j*math.tau/8+rng.uniform(-.2,.2);dx,dy=math.cos(a),math.sin(a);r=rng.uniform(1.4,2.5)
+            base=(x,y,z+3);mid=(x+dx*r*.5,y+dy*r*.5,z+3.8);tip=(x+dx*r,y+dy*r,z+3.15)
+            for side in (-1,1):
+                rim=(mid[0]-dy*.34*side,mid[1]+dx*.34*side,mid[2]-.14)
+                vertices=[base,rim,tip,mid];shade=lin(0x679351 if side==1 else 0x44784c)
+                art.face(vertices,[shade]*4);art.face(vertices[::-1],[shade]*4)
+    # The dance platform extends from the kerb to the stalls and speaker stacks.
+    for d in (660,2820,7470,11900):
+        box(d,-6.8,height(d)-.39,13,5.6,.37,0xa78f77)
+        for side in (-1,1):
+            box(d+side*6,-7.6,height(d),.84,.65,1.66,0x454945)
+            for up in (.43,1.03):
+                x,y,h=pose(d+side*6,-7.18)
+                points=[(x+.28*math.cos(h)*math.cos(a*math.tau/14),
+                         y+.28*math.sin(h)*math.cos(a*math.tau/14),
+                         height(d)+up+.28*math.sin(a*math.tau/14)) for a in range(14)]
+                art.face(points,[lin(0x242c2f)]*14);art.face(points[::-1],[lin(0x242c2f)]*14)
     # Downtown lies beyond the nearest roofs rather than moving with each curve.
     for i in range(390):
         x=rng.uniform(-1800,14600);y=rng.uniform(-1600,-550);z=16+max(0,x*.021)

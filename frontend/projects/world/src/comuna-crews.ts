@@ -20,7 +20,7 @@ export class ComunaCrews {
   private readonly box = new BoxGeometry(1, 1, 1);
   private readonly sphere = new SphereGeometry(0.5, 8, 6);
   private readonly mat = new MeshLambertMaterial();
-  private readonly bodies = new InstancedMesh(this.box, this.mat, 136);
+  private readonly bodies = new InstancedMesh(this.box, this.mat, 250);
   private readonly heads = new InstancedMesh(this.sphere, this.mat, 12);
   private readonly temp = new Object3D();
   private readonly a = new Vector3();
@@ -154,12 +154,29 @@ export class ComunaCrews {
     }
     const site = LANDINGS.find((d) => Math.abs(d - metres) < 185);
     if (site !== undefined) {
+      // Both flights share the character batch. Each tread travels at the same
+      // speed as its passengers before disappearing under the upper comb plate.
+      for (let flight = 0; flight < 2; flight++) {
+        const start = site - 30 + flight * 32;
+        const bottom = this.course.place(site - 30).y - 0.04 + flight * 7.42;
+        for (let j = 0; j < 52; j++) {
+          const f = (j / 52 + seconds * 0.043) % 1;
+          const p = this.course.place(start + 23 * f, -6.7);
+          this.temp.position.set(p.x, bottom + f * 7.42 + 0.075, p.z);
+          this.temp.rotation.set(0, p.heading, 0);
+          this.temp.scale.set(1.77, 0.15, 0.43);
+          this.temp.updateMatrix();
+          const index = this.bodies.count++;
+          this.bodies.setMatrixAt(index, this.temp.matrix);
+          this.bodies.setColorAt(index, this.colour.setHex(j % 2 ? 0x929b97 : 0x778080));
+        }
+      }
       for (let i = 0; i < 6; i++) {
         const flight = i % 2,
           start = site - 30 + flight * 32,
           f = (seconds * 0.043 + i / 3) % 1;
         const p = this.course.place(start + 23 * f, -6.7);
-        const y = this.course.place(start).y - 0.04 + flight * 3 + 0.18 + 7.42 * f;
+        const y = this.course.place(site - 30).y - 0.04 + flight * 7.42 + 0.18 + 7.42 * f;
         const head = this.person(
           p.x,
           y,
