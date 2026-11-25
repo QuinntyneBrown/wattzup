@@ -3598,7 +3598,7 @@ export const junkanooCourseMap = {
   place: 'Nassau, The Bahamas',
   world: 'junkanoo',
   distanceKm: 12.591,
-  climbingM: 9,
+  climbingM: 47,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
