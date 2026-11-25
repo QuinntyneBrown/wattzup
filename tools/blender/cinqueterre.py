@@ -1377,7 +1377,8 @@ def footpath(k) -> dict:
     paint, rng, s = Painted(k), k.rng, k.s
     stone, tread, wood, white, red = _lin(0x978E79), _lin(0xB4AB96), _lin(0x7A5A3A), _lin(0xF2EEE2), _lin(0xC8322C)
     sites = [site["i"] for site in village_sites(s)]
-    crossings = walkers = 0
+    crossings = []
+    walkers = 0
 
     def clear(i: int) -> bool:
         return 12 < i < k.n - 12 and all(abs(s[q]["k"]) < 1 / 90 for q in range(i - 8, i + 9)) and all(abs(i - v) > 30 for v in sites)
@@ -1430,7 +1431,7 @@ def footpath(k) -> dict:
             bx, by = x + math.cos(yaw) * reach, y + math.sin(yaw) * reach
             paint.box((bx, by, z + up), (0.9, 0.06, 0.2), yaw, white, 1.0)
             paint.box((bx + math.cos(yaw) * reach * 0.75, by + math.sin(yaw) * reach * 0.75, z + up - 0.005), (0.24, 0.075, 0.21), yaw, red, 1.0)
-        crossings += 1
+        crossings.append(round(s[i]["d"], 2))
         walkers += party(i + 4, rng.randint(2, 4))
         # Where the path crosses: a zebra painted over the road, and on the sea's side a bench under the
         # parapet with the trail's map board beside it and somebody looking at it.
@@ -1464,7 +1465,25 @@ def footpath(k) -> dict:
         j = i + rng.randrange(40)
         if rng.random() < 0.55 and clear(j):
             walkers += party(j, rng.randint(1, 3))
-    return {"crossings": crossings, "walkers": walkers}
+    return {"crossings": len(crossings), "walkers": walkers,
+            "ligurianCoast": {"crossings": crossings, "harbours": harbour_sites(s, k.height_at)}}
+
+
+def harbour_sites(s, height_at) -> list[dict]:
+    # Each mooring sits on the sheltered side of a headland, in enough water to float.
+    harbours = []
+    for site in village_sites(s):
+        shore = []
+        for dx in (-100, -82, -64, -46, -28):
+            x = site["x"] + dx
+            for dy in range(0, 1000, 2):
+                y = site["y"] + dy
+                if height_at(x, y) < -1.6:
+                    shore.append([round(x, 2), round(-y, 2)])
+                    break
+        if len(shore) == 5:
+            harbours.append({"station": round(s[site["i"]]["d"], 2), "shore": shore})
+    return harbours
 
 
 def scenery(k) -> dict:

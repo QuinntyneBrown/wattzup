@@ -1819,6 +1819,8 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         data["class"] = course["class"]
     if facts.get("cableways"):
         data["cableways"] = facts["cableways"]
+    if facts.get("ligurianCoast"):
+        data["ligurianCoast"] = facts["ligurianCoast"]
     if facts.get("gliders"):
         data["gliders"] = facts["gliders"]
     if theme:
@@ -2257,7 +2259,7 @@ def main(argv: list[str] | None = None) -> dict:
         "climbingMetres": data["climbingMetres"],
         "triangles": tris,
         **film,
-        **{k: v for k, v in facts.items() if k not in ("sunAzimuth", "lights", "cableways", "gliders")},
+        **{k: v for k, v in facts.items() if k not in ("sunAzimuth", "lights", "cableways", "gliders", "ligurianCoast")},
     }
 
 

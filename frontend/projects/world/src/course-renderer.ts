@@ -75,6 +75,7 @@ import { bendLean } from './rider-lean';
 import { type ShadowShape, shadowLength, shadowShape } from './rider-shadow-shape';
 import { outOfTheSaddle } from './rider-stance';
 import { endShadow, sideShadow } from './shadow-silhouette';
+import type { LigurianCoast } from './ligurian-coast';
 import { SunGlow } from './sun-glow';
 import { vertexFinish } from './rider-finish';
 import { RiderShadows } from './rider-shadows';
@@ -230,6 +231,7 @@ export class CourseRenderer implements WorldRenderer {
     z: number;
     reach: number;
   }[] = [];
+  private coast: LigurianCoast | null = null;
   private frames = 0;
   /** The chunks of the map that are near enough the camera to be drawn: the only ones in the scene. */
   private readonly near = new Group();
@@ -237,6 +239,8 @@ export class CourseRenderer implements WorldRenderer {
   private readonly drawn = {
     tier: 0 as number,
     backend: '' as string,
+    hikerX: null as number | null,
+    boatRoll: null as number | null,
     drawCalls: 0,
     triangles: 0,
     groups: {} as Record<string, number>,
@@ -357,6 +361,12 @@ export class CourseRenderer implements WorldRenderer {
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
+      if (this.course.file.id === 'cinqueterre' && this.course.file.ligurianCoast) {
+        const { LigurianCoast } = await import('./ligurian-coast');
+        if (this.disposed) return false;
+        this.coast = new LigurianCoast(this.course, this.scene, this.sun);
+        this.disposables.push(this.coast);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -432,6 +442,7 @@ export class CourseRenderer implements WorldRenderer {
     const lights = metres < START_LIGHTS;
     if (this.startRed) this.startRed.visible = lights && frame.time <= 0;
     if (this.startGreen) this.startGreen.visible = lights && frame.time > 0;
+    this.coast?.update(frame.reducedMotion ? 0 : frame.time, metres);
     if (this.rain) this.rain.mesh.visible = !frame.reducedMotion;
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
@@ -471,6 +482,7 @@ export class CourseRenderer implements WorldRenderer {
     this.confetti.length = 0;
     this.funivia = null;
     this.glider = null;
+    this.coast = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.riders.clear();
@@ -1105,6 +1117,8 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.hikerX = this.coast?.hikerX ?? null;
+    drawn.boatRoll = this.coast?.boatRoll ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
