@@ -25,3 +25,13 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | MyWhoosh: [Alula_CDN_07](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2026/07/Alula_CDN_07.jpg) (g0312) | © MyWhoosh |
 | game-04.jpg | MyWhoosh: [About_us_female](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2023/03/About_us_female.png) (g0854) | © MyWhoosh |
 | game-05.jpg | MyWhoosh: [Endurence_CDN_03](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2026/07/Endurence_CDN_03.jpg) (g0313) | © MyWhoosh |
+
+| Race detail | Reference and adaptation |
+| --- | --- |
+| Fixed pyramids | Real 01, 03 and 07–08 informed Khufu’s stepped courses, Khafre’s casing and their scale against the bike. Real 12 and game 02 informed the long view of the group. |
+| Great Sphinx and temple | Real 10–11, 13 and 15 informed the length of the paws, flared headdress, weathered limestone and sunken enclosure. Game 04 informed the sightline from the road. |
+| Road, ruins and sunrise | Real 01, 04–06 and 14 informed the windblown edge, low kerbs, long shadows and ruined satellite pyramids. Games 01, 03 and 05 informed light direction, roadside scale and separation of the distant dunes. |
+| Panorama turnout | Real 02, 07, 09 and 12 informed the horse, reclining dromedaries, saddle blankets, riders and visitors. Compare the pace and figure scale with games 01 and 03. |
+| Cairo | Real 13 and 15 informed the built edge of the desert, with denser blocks near the valley. Game 02 informed the softened distant contrast. |
+
+The race meshes, wildlife, saddle blankets and sunrise colours were made for this course. The route fits the plateau landmarks to the original 23-minute workout.

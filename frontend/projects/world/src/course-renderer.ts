@@ -1,3 +1,4 @@
+import type { gizaPanorama } from './giza-panorama';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -230,6 +231,7 @@ export class CourseRenderer implements WorldRenderer {
     z: number;
     reach: number;
   }[] = [];
+  private panorama: ReturnType<typeof gizaPanorama> | null = null;
   private frames = 0;
   /** The chunks of the map that are near enough the camera to be drawn: the only ones in the scene. */
   private readonly near = new Group();
@@ -357,6 +359,13 @@ export class CourseRenderer implements WorldRenderer {
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
+      if (this.course.file.id === 'giza') {
+        const { gizaPanorama } = await import('./giza-panorama');
+        if (this.disposed) return false;
+        this.panorama = gizaPanorama(this.course);
+        this.scene.add(this.panorama.group);
+        this.disposables.push(this.panorama);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -425,6 +434,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
+    this.panorama?.update(frame.reducedMotion ? 0 : frame.time);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -469,6 +479,7 @@ export class CourseRenderer implements WorldRenderer {
     this.near.clear();
     this.chunks.length = 0;
     this.confetti.length = 0;
+    this.panorama = null;
     this.funivia = null;
     this.glider = null;
     for (const d of this.disposables) d.dispose();
@@ -1109,6 +1120,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
+    if (this.panorama) Object.assign(drawn, this.panorama.state);
     hook['course'] = drawn;
   }
 
