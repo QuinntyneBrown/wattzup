@@ -1247,3 +1247,9 @@ import haleakala as _haleakala  # noqa: E402  (beside this script)
 MATERIALS.update(_haleakala.MATERIALS)
 THEMES["haleakala"] = _haleakala.THEME
 SCENERY["haleakala"] = _haleakala.scenery
+
+# A banked, indoor pursuit track.
+import aguascalientes as _aguascalientes
+
+THEMES["aguascalientes"] = _aguascalientes.THEME
+SCENERY["aguascalientes"] = _aguascalientes.scenery

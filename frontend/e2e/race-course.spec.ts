@@ -97,6 +97,7 @@ test.describe('a course', () => {
   // Cinque Terre and Haleakalā, like Ibiza, are built from their classes and served from fixtures of their own
   // (L2-166 AC43, AC44).
   for (const [id, course, catalogue] of [
+    ['aguascalientes', 'aguascalientes', [{ ...haleakalaCourseMap, id: 'aguascalientes', world: 'aguascalientes', name: 'Aguascalientes Velodrome', routeName: 'The pursuit line' }]],
     ['prairie-paceline', 'prairie', undefined],
     ['vice-city', 'vicecity', undefined],
     [cinqueTerreCourseMap.id, 'cinqueterre', [cinqueTerreCourseMap]],
