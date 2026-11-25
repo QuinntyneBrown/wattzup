@@ -14,6 +14,8 @@ export interface RouteProfile {
   readonly climbed: readonly number[];
   /** Length of the route. */
   readonly metres: number;
+  /** Metres between authored elevations when the profile follows ridden distance. */
+  readonly stepMetres?: number;
 }
 
 /** The power `main` expects of a segment: `max(0, round(cadence × (0.55 + level × 0.155)))`. */
@@ -34,7 +36,23 @@ export function expectedSpeed(segment: Segment): number {
 
 const EASE = 0.12;
 
-export function routeProfile(terrain: MapTerrain, segments: readonly Segment[]): RouteProfile {
+export function routeProfile(
+  terrain: MapTerrain,
+  segments: readonly Segment[],
+  metres = 0,
+): RouteProfile {
+  const heights = terrain.elevation;
+  if (heights && heights.length >= 2 && metres > 0) {
+    const stepMetres = metres / (heights.length - 1);
+    const grade = heights.slice(1).map((y, i) => (100 * (y - heights[i]!)) / stepMetres);
+    grade.push(grade[grade.length - 1]!);
+    let ascent = 0;
+    const climbed = heights.map((height, i) => {
+      if (i > 0) ascent += Math.max(0, height - heights[i - 1]!);
+      return ascent;
+    });
+    return { elevation: heights, grade, climbed, metres, stepMetres };
+  }
   const elevation: number[] = [];
   const grade: number[] = [];
   const climbed: number[] = [];
@@ -75,6 +93,7 @@ export function routeProfileView(
   profile: RouteProfile,
   segments: readonly Segment[],
   t: number,
+  ridden = 0,
 ): RouteProfileView {
   const { elevation } = profile;
   const last = elevation.length - 1;
@@ -86,12 +105,16 @@ export function routeProfileView(
   for (let x = 0; x <= last; x += STEP) points.push(`L${x} ${y(elevation[x]!).toFixed(2)}`);
   if (last % STEP !== 0) points.push(`L${last} ${y(elevation[last]!).toFixed(2)}`);
   const width = elevation.length;
-  const at = Math.min(Math.max(Math.floor(t), 0), Math.max(last, 0));
+  const stepMetres = profile.stepMetres;
+  const position = stepMetres ? ridden / stepMetres : t;
+  const at = Math.min(Math.max(Math.floor(position), 0), Math.max(last, 0));
   const { grade, climbed } = profileAt(profile, at);
   let start = 0;
   const strip = segments.map((s) => {
-    const bar = { x: start, width: s.duration, kind: s.kind };
-    start += s.duration;
+    // Authored courses cover cadenceAim / 12 metres per second at target cadence.
+    const span = stepMetres ? (s.duration * (s.cadenceAim / 12)) / stepMetres : s.duration;
+    const bar = { x: start, width: span, kind: s.kind };
+    start += span;
     return bar;
   });
   return {
