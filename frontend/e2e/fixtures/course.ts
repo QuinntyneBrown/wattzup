@@ -158,6 +158,7 @@ export const angliruCourseMap = {
   place: 'Sierra del Aramo, Asturias',
   world: 'angliru',
   distanceKm: 17.625,
+  climbingM: 1102,
   thumbnailUrl: 'maps/alto-angliru.jpg',
   photoUrl: 'maps/alto-angliru-photo.jpg',
   plan: {
