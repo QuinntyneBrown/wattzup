@@ -15,6 +15,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Dolomites (`dolomites`) | The catalogue's 30:00 intervals (placeholder) | 38.5 km | 860 m | `public/courses/dolomites.glb` ([film](../blender/dolomites.mp4)) | Built in Blender (ADR 0035) and ridden in races |
 | Vice City (`vicecity`) | The catalogue's 30:00 intervals (placeholder) | 24 km | 60 m | `public/courses/vicecity.glb` ([film](../blender/vicecity.mp4)) | Built in Blender (ADR 0035) and ridden in races |
 | Col du Granit (`granite`) | The catalogue's 30:00 intervals (placeholder) | 16.1 km | 1,240 m | `public/courses/granite.glb` ([film](../blender/granite.mp4)) | Built in Blender (ADR 0035) and ridden in races |
+| Bay of Islands Group Ride (`bayofislands`) | Zwift Group Workout: HIIT Intervals (GCN, 61:20) | 27.950 km | 59 m | `public/courses/bayofislands.glb` ([ride views](screenshots/bay-of-islands/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
@@ -216,7 +217,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 186 | Ramp Session: Dialling In Your Training Zones | Joshua Tree | 35% |  | Desert road through twisted Joshua trees and boulder piles. |
 | 187 | 60 Minute Endurance Intervals | Cabot Trail | 35% |  | Nova Scotia's coastal highlands with ocean views and moose. |
 | 188 | 55 Minute FTP Threshold Intervals | Pico Veleta | 35% |  | Spain's highest paved road above Granada in the Sierra Nevada. |
-| 189 | Zwift Group Workout: HIIT Intervals | Bay of Islands Group Ride | 35% | [Ride views](screenshots/bay-of-islands/README.md) | A New Zealand bunch ride past sheltered bays and green hills. |
+| 189 | Zwift Group Workout: HIIT Intervals | Bay of Islands Group Ride | 35% |  | A New Zealand bunch ride past sheltered bays and green hills. |
 | 190 | Race Winning Intervals | Yorkshire Dales | 35% |  | Stone walls, moors and race-day crowds on the Buttertubs climb. |
 | 191 | 60 Minute Turbo Trainer Class | Engadin Lakes | 35% |  | A Swiss high valley road along St. Moritz's chain of lakes. |
 
