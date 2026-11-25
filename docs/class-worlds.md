@@ -73,6 +73,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Ghent Six-Day (`ghent`) | Level Up Your Cadence (GCN Training, 10:00) | 4.575 km | 0 m | `public/courses/ghent.glb` ([ride views](screenshots/ghent-six-day/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Giza Plateau (`giza`) | The Pyramid (GCN Training, 23:00) | 9.400 km | 57 m | `public/courses/giza.glb` ([ride views](screenshots/giza-plateau/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Glasgow World Championships (`glasgow`) | VO2 Max Race Simulation (GCN Training, 30:00) | 13.100 km | 91 m | `public/courses/glasgow.glb` ([ride views](screenshots/glasgow-world-championships/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Glastonbury Fields (`glastonbury`) | Sprint to the Music (GCN Training, 25:00) | 10.515 km | 84 m | `public/courses/glastonbury.glb` ([ride views](screenshots/glastonbury-fields/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

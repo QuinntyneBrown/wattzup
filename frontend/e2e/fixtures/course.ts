@@ -48,6 +48,7 @@ import gardenaElevation from './gardena-elevation.json';
 import ghentElevation from './ghent-elevation.json';
 import gizaElevation from './giza-elevation.json';
 import glasgowElevation from './glasgow-elevation.json';
+import glastonburyElevation from './glastonbury-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -3032,6 +3033,64 @@ export const glasgowCourseMap = {
       seg('work', 150, 24, 100),
       seg('recover', 120, 10, 80),
       seg('cool-down', 120, 13, 80),
+    ],
+  },
+};
+
+export const glastonburyCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'glastonbury-fields',
+  name: 'Glastonbury Fields',
+  routeName: 'The trackway',
+  place: 'Worthy Farm, Somerset',
+  world: 'glastonbury',
+  distanceKm: 10.515,
+  climbingM: 84,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: glastonburyElevation,
+  },
+  thumbnailUrl: 'maps/glastonbury-fields.jpg',
+  photoUrl: 'maps/glastonbury-fields-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 150, 14, 80),
+      seg('work', 30, 19, 104),
+      seg('recover', 30, 13, 85),
+      seg('work', 30, 19, 104),
+      seg('recover', 30, 13, 85),
+      seg('work', 30, 19, 104),
+      seg('recover', 30, 13, 85),
+      seg('work', 30, 19, 104),
+      seg('recover', 30, 13, 85),
+      seg('work', 30, 19, 104),
+      seg('recover', 30, 13, 85),
+      seg('work', 30, 19, 104),
+      seg('recover', 30, 13, 85),
+      seg('work', 45, 21, 88),
+      seg('recover', 30, 13, 85),
+      seg('work', 45, 21, 88),
+      seg('recover', 30, 13, 85),
+      seg('work', 45, 21, 88),
+      seg('recover', 30, 13, 85),
+      seg('work', 45, 21, 88),
+      seg('recover', 30, 13, 85),
+      seg('work', 45, 21, 88),
+      seg('recover', 30, 13, 85),
+      seg('work', 45, 21, 88),
+      seg('recover', 30, 13, 85),
+      seg('work', 40, 22, 65),
+      seg('recover', 35, 11, 85),
+      seg('work', 40, 22, 65),
+      seg('recover', 35, 11, 85),
+      seg('work', 40, 22, 65),
+      seg('recover', 35, 11, 85),
+      seg('work', 40, 22, 65),
+      seg('recover', 35, 11, 85),
+      seg('work', 40, 22, 65),
+      seg('cool-down', 200, 11, 81),
     ],
   },
 };

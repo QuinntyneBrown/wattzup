@@ -1492,3 +1492,8 @@ import glasgow as _glasgow
 
 THEMES["glasgow"] = _glasgow.THEME
 SCENERY["glasgow"] = _glasgow.scenery
+
+import glastonbury as _glastonbury
+
+THEMES["glastonbury"] = _glastonbury.THEME
+SCENERY["glastonbury"] = _glastonbury.scenery
