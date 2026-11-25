@@ -4,6 +4,7 @@
 // metres they have ridden. `main`'s scenes are drawn by
 // world-renderer.ts; map-renderer.ts picks between the two.
 import type { blossomFestival } from './blossom-festival';
+import type { ChicagoRailway } from './chicago-railway';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
@@ -261,6 +262,7 @@ export class CourseRenderer implements WorldRenderer {
   private cabotWildlife: CabotWildlife | null = null;
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
   private basin: Awaited<ReturnType<typeof blossomFestival>> | null = null;
+  private railway: ChicagoRailway | null = null;
   private rain: Rain | null = null;
   private parkTraffic: ParkTraffic | null = null;
   private champsParade: ChampsParade | null = null;
@@ -356,6 +358,8 @@ export class CourseRenderer implements WorldRenderer {
     kiteAngle: undefined as number | undefined,
     boatX: undefined as number | undefined,
     haze: undefined as number | undefined,
+    trainX: undefined as number | undefined,
+    steamHeight: undefined as number | undefined,
   };
   private readonly trainingGroup: Cyclist[] = [];
   private portWind: AntwerpWind | null = null;
@@ -588,7 +592,14 @@ export class CourseRenderer implements WorldRenderer {
       if (this.disposed) return false;
       const parisPaving = champs?.parisPave();
       if (parisPaving) this.disposables.push(parisPaving.tile);
-      this.build(gltf.scene, canvas, clinker, fronts, foliage, (paving ?? parisPaving)?.material);
+      const chicago =
+        parsed.id === 'chicago'
+          ? await Promise.all([import('./chicago-railway'), import('./chicago-spectators')])
+          : null;
+      if (this.disposed) return false;
+      const chicagoPaving = chicago?.[0].wabashAsphalt();
+      if (chicagoPaving) this.disposables.push(chicagoPaving.tile);
+      this.build(gltf.scene, canvas, clinker, fronts, foliage, (paving ?? parisPaving ?? chicagoPaving)?.material);
       if (this.course.file.id === 'aguascalientes') {
         const { PursuitBoard } = await import('./pursuit-board');
         if (this.disposed) return false;
@@ -689,6 +700,18 @@ export class CourseRenderer implements WorldRenderer {
         this.disposables.push(this.champsParade);
         const { champsAvenue } = await import('./champs-avenue');
         const crowd = await champsAvenue(this.course);
+        if (this.disposed) {
+          crowd.dispose();
+          return false;
+        }
+        this.scene.add(crowd.root);
+        this.disposables.push(crowd);
+      }
+      if (chicago) {
+        this.railway = new chicago[0].ChicagoRailway(this.course);
+        this.scene.add(this.railway.root);
+        this.disposables.push(this.railway);
+        const crowd = await chicago[1].chicagoSpectators(this.course);
         if (this.disposed) {
           crowd.dispose();
           return false;
@@ -890,6 +913,7 @@ export class CourseRenderer implements WorldRenderer {
     this.kit?.roll(metres);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.basin?.update(frame.reducedMotion ? 0 : frame.time);
+    this.railway?.update(frame.reducedMotion ? 0 : frame.time);
     this.placeRiders(frame, metres);
     this.timing?.update(metres, frame.time);
     if (this.trainingGroup.length) this.placeTrainingGroup(frame, metres);
@@ -1036,6 +1060,7 @@ export class CourseRenderer implements WorldRenderer {
     this.mill = null;
     this.surf = null;
     this.basin = null;
+    this.railway = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.trainingGroup.length = 0;
@@ -1582,9 +1607,13 @@ export class CourseRenderer implements WorldRenderer {
     const back = course.place(metres - behind, sway, this.here);
     this.camera.position.set(back.x, back.y + up, back.z);
     this.groundEye?.at(metres - behind, 0, up);
+    const lap = this.railway ? metres % 1750 : 0;
+    const bridge = this.railway ? Math.max(0, 1 - Math.abs(lap - 460) / 67) : 0;
+    const skyline = this.railway ? Math.max(0, 1 - Math.abs(lap - 670) / 105) : 0;
+    const train = this.railway ? Math.max(0, 1 - Math.abs(lap - 220) / 74) : 0;
     const view = this.basin?.sightline(metres);
-    const ahead = course.place(metres + (calobra ? 24 : LOOK_AHEAD), view?.lane ?? 0, this.there);
-    this.camera.lookAt(ahead.x, ahead.y + (calobra ? 1.2 : LOOK_UP) + (view?.rise ?? 0), ahead.z);
+    const ahead = course.place(metres + (calobra ? 24 : LOOK_AHEAD), (view?.lane ?? 0) - 2.8 * bridge, this.there);
+    this.camera.lookAt(ahead.x, ahead.y + (calobra ? 1.2 : LOOK_UP) + (view?.rise ?? 0) + 1.8 * skyline + 1.2 * train, ahead.z);
     // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
     if (back.bank) this.camera.rotateZ(back.bank * 0.32);
     this.sky?.position.copy(this.camera.position);
@@ -1972,6 +2001,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.haze = this.basin ? this.scene.fog?.color.getHex() : undefined;
     drawn.boatX = this.basin?.boatX;
     drawn.kiteAngle = this.basin?.kiteAngle;
+    drawn.trainX = this.railway?.trainX;
+    drawn.steamHeight = this.railway?.steamHeight;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
     drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;

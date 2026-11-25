@@ -1440,3 +1440,8 @@ import champs as _champs
 
 THEMES["champs"] = _champs.THEME
 SCENERY["champs"] = _champs.scenery
+
+import chicago as _chicago
+
+THEMES["chicago"] = _chicago.THEME
+SCENERY["chicago"] = _chicago.scenery

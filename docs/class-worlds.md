@@ -46,6 +46,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Central Park Loop (`centralpark`) | 15 Minute Cardio HIIT (GCN Training, 15:00) | 6.450 km | 46 m | `public/courses/centralpark.glb` ([ride views](screenshots/central-park-loop/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Cherry Blossom Festival, D.C. (`cherryblossom`) | A Little Bit of Everything (GCN Training, 40:00) | 16.853 km | 14 m | `public/courses/cherryblossom.glb` ([ride views](screenshots/cherry-blossom-festival-dc/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Champs-Élysées Finale (`champs`) | Quick & Sharp Sprinting Efforts (GCN Training, 25:00) | 10.463 km | 93 m | `public/courses/champs.glb` ([ride views](screenshots/champs-elysees-finale/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Chicago Loop Crit (`chicago`) | 20 Minute Crit Sprints (GCN Training, 20:00) | 8.750 km | 21 m | `public/courses/chicago.glb` ([ride views](screenshots/chicago-loop-crit/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 

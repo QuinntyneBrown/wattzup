@@ -10,6 +10,8 @@ export interface RideSoundSource {
   readonly running: Signal<boolean>;
   /** A class video plays its own sound, under which ride sound goes quiet when Settings asks (L2-163 AC1). */
   readonly videoPlaying: Signal<boolean>;
+  /** Proximity to passing elevated railway cars, 0 to 1. */
+  readonly railPass?: Signal<number>;
 }
 
 /**

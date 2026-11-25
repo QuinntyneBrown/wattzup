@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   type Backend,
+  chicagoRailPass,
   BIKE_CONNECTION,
   GHOST_API,
   type MapDto,
@@ -388,6 +389,9 @@ export class RaceStore {
       resistance: this.telemetry.resistance,
       running: this.running,
       videoPlaying: NO_VIDEO,
+      ...(map.world === 'chicago'
+        ? { railPass: computed(() => chicagoRailPass(this.raceMetres(), this.elapsed())) }
+        : {}),
     });
     this.clock.start(at);
     this.ticker.start();

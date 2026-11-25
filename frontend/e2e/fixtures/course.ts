@@ -23,6 +23,7 @@ import caribanaElevation from './caribana-elevation.json';
 import centralparkElevation from './centralpark-elevation.json';
 import cherryblossomElevation from './cherryblossom-elevation.json';
 import champsElevation from './champs-elevation.json';
+import chicagoElevation from './chicago-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -1700,6 +1701,43 @@ export const champsCourseMap = {
       seg('recover', 60, 13, 80),
       seg('work', 30, 22, 100),
       seg('cool-down', 150, 12, 80),
+    ],
+  },
+};
+
+export const chicagoCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'chicago-loop-crit',
+  name: 'Chicago Loop Crit',
+  routeName: 'Wabash Avenue',
+  place: 'Chicago, Illinois',
+  world: 'chicago',
+  distanceKm: 8.75,
+  climbingM: 21,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: chicagoElevation,
+  },
+  thumbnailUrl: 'maps/chicago-loop-crit.jpg',
+  photoUrl: 'maps/chicago-loop-crit-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 13, 80),
+      seg('work', 120, 16, 85),
+      seg('work', 60, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 120, 13, 80),
+      seg('work', 180, 19, 90),
+      seg('work', 60, 24, 100),
+      seg('recover', 30, 10, 80),
+      seg('work', 60, 24, 100),
+      seg('recover', 120, 13, 80),
+      seg('work', 60, 21, 90),
+      seg('work', 60, 24, 100),
+      seg('cool-down', 120, 10, 80),
     ],
   },
 };
