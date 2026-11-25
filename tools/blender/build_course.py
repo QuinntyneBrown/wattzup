@@ -660,7 +660,9 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
             data.from_pydata(part.verts, [], part.faces)
             film.objects.link(bpy.data.objects.new(part.name, data))
         group, chunked = group_of(part.mat)
-        if part.name == 'LandmarkLights':
+        if part.name == "VelodromeTimber":
+            group, chunked = "VelodromeTimber", False
+        elif part.name == 'LandmarkLights':
             group, chunked = 'Glow', False
         elif part.name in GROUND_PARTS:
             group = "Ground"
@@ -712,7 +714,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     shade = 0.74 + 0.3 * smoothstep(0.0, 4.5, lift) if lift > 0.2 else (0.62 if lift < -0.3 else 1.0)
                     c = (c[0] * shade, c[1] * shade, c[2] * shade, 1.0)
                 key = (round(v[0], 3), round(v[1], 3), round(v[2], 3), round(c[0], 3), round(c[1], 3), round(c[2], 3))
-                if group in ("Windows", "Fences", "Halos", "Foliage", "Facades", "Elms", "Dapple") or (group == "Ground" and part.uvs is not None):
+                if group in ("Windows", "Fences", "Halos", "VelodromeTimber", "Foliage", "Facades", "Elms", "Dapple") or (group == "Ground" and part.uvs is not None):
                     key = (*key, *part.uvs[i])
                 if walled:
                     _, near, _ = road.tree.find((v[0], v[1], 0.0))
@@ -723,7 +725,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     at = mesh["index"][key] = len(mesh["verts"])
                     mesh["verts"].append(v)
                     mesh["cols"].append(c)
-                    if group in ("Windows", "Fences", "Halos", "Foliage", "Facades", "Elms", "Dapple"):
+                    if group in ("Windows", "Fences", "Halos", "VelodromeTimber", "Foliage", "Facades", "Elms", "Dapple"):
                         mesh["uvs"].append(part.uvs[i])
                     if walled:
                         mesh["uvs"].append(wall_uv)
@@ -2276,8 +2278,10 @@ def main(argv: list[str] | None = None) -> dict:
     parser.add_argument("--render", action="store_true", help="with --video: render the film now")
     args = parser.parse_args(argv)
 
+    global STEP
     course = json.loads(args.course.read_text(encoding="utf-8"))
     theme = themes.THEMES.get(course.get("theme", ""))
+    STEP = (theme or {}).get("sample_step", STEP)
     # A theme whose land and scenery are its own (Ibiza's) is a theme in everything else.
     themed = bool(theme) and not theme.get("own")
     ROAD_HALF = (theme or {}).get("road_half_width", DEFAULT_ROAD_HALF)

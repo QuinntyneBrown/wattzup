@@ -71,7 +71,7 @@ export class RaceWorld {
     });
     void import('@telo/world').then(({ WorldScene, WorldMusicPlayer }) => {
       if (destroyed) return;
-      if (this.map().world === 'bluemountains') {
+      if (this.map().world === 'bluemountains' || this.map().world === 'ghent') {
         doc.addEventListener('visibilitychange', onVisibility);
         music.set(new WorldMusicPlayer(() => doc.createElement('audio'), doc));
       }
@@ -85,6 +85,12 @@ export class RaceWorld {
     effect(() => {
       const player = music();
       if (!player) return;
+      if (this.map().world === 'ghent') {
+        const audible = this.settings().worldMusic && this.running() && visible();
+        if (audible) player.load('ghent', 'music/ghent-six-day.ogg');
+        player.sync(audible);
+        return;
+      }
       const metres = this.raceMetres();
       const distance = Math.min(Math.abs(metres - 1540), Math.abs(metres - 8860));
       const audible = distance < 125 && this.settings().worldMusic && this.running() && visible();

@@ -25,6 +25,7 @@ import type { subaruLine } from './subaru-line';
 import type { furkaPass } from './furka-pass';
 import type { galibierPass } from './galibier-pass';
 import type { gardenaPass } from './gardena-pass';
+import type { ghentArena } from './ghent-arena';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -372,6 +373,7 @@ export class CourseRenderer implements WorldRenderer {
   private ferries: ComoFerries | null = null;
   private crews: ComunaCrews | null = null;
   private barrio: Awaited<ReturnType<typeof comunaStreets>> | null = null;
+  private arena: Awaited<ReturnType<typeof ghentArena>> | null = null;
   private frames = 0;
   /** The chunks of the map that are near enough the camera to be drawn: the only ones in the scene. */
   private readonly near = new Group();
@@ -1267,6 +1269,22 @@ export class CourseRenderer implements WorldRenderer {
         this.disposables.push(shore);
         shore.at(0);
       }
+      if (this.course.file.id === 'ghent') {
+        const { ghentArena } = await import('./ghent-arena');
+        if (this.disposed) return false;
+        const arena = await ghentArena(this.course, this.tier === 0, gltf.scene);
+        if (this.disposed) {
+          arena.dispose();
+          return false;
+        }
+        this.arena = arena;
+        // In the Kuipke the next bend is only metres away. Leave room above it for the stands and roof.
+        this.camera.clearViewOffset();
+        this.camera.fov = 68;
+        this.camera.updateProjectionMatrix();
+        this.scene.add(this.arena.group);
+        this.disposables.push(this.arena);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -1563,6 +1581,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lifts?.update(frame.reducedMotion ? 0 : frame.time);
     this.cabotWildlife?.update(frame.reducedMotion ? 0 : frame.time);
     this.street?.at(metres);
+    this.arena?.update(frame.reducedMotion ? 0 : frame.time, metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -1642,6 +1661,7 @@ export class CourseRenderer implements WorldRenderer {
     this.boats = null;
     this.confetti.length = 0;
     this.timing = null;
+    this.arena = null;
     this.funivia = null;
     this.glider = null;
     this.smoke = null;
@@ -2254,8 +2274,8 @@ export class CourseRenderer implements WorldRenderer {
     );
     const close = near * near * (3 - 2 * near);
     const calobra = course.file.id === 'calobra';
-    const distance = this.marinaBoats ? 4.65 : this.street ? 4.55 : this.lakes ? 4.65 : this.etna ? 4.55 : this.fen ? 4.4 : this.escarpment ? 4.45 : this.subaru ? 4.45 : this.furka ? 4.45 : this.galibier ? 4.45 : this.gardena ? 4.45 : CAMERA_BACK;
-    const eye = this.marinaBoats ? 2.55 : this.street ? 2.4 : this.lakes ? 2.65 : this.etna ? 2.42 : this.fen ? 2.1 : this.escarpment ? 2.2 : this.subaru ? 2.2 : this.furka ? 2.2 : this.galibier ? 2.2 : this.gardena ? 2.2 : CAMERA_UP;
+    const distance = this.marinaBoats ? 4.65 : this.street ? 4.55 : this.lakes ? 4.65 : this.etna ? 4.55 : this.fen ? 4.4 : this.escarpment ? 4.45 : this.subaru ? 4.45 : this.furka ? 4.45 : this.galibier ? 4.45 : this.gardena ? 4.45 : this.arena ? 3.8 : CAMERA_BACK;
+    const eye = this.marinaBoats ? 2.55 : this.street ? 2.4 : this.lakes ? 2.65 : this.etna ? 2.42 : this.fen ? 2.1 : this.escarpment ? 2.2 : this.subaru ? 2.2 : this.furka ? 2.2 : this.galibier ? 2.2 : this.gardena ? 2.2 : this.arena ? 2.15 : CAMERA_UP;
     const behind = calobra ? 5.5 : this.boardwalk ? 5.0 : this.copacabana ? 4.1 : this.commuters ? 4.1 : distance + (CLOSE_BACK - distance) * close;
     const up = calobra ? 2.1 : this.boardwalk ? 2.35 : this.copacabana ? 2.05 : this.commuters ? 2.0 : eye + (CLOSE_UP - eye) * close;
     const sway = calobra && !reducedMotion ? Math.sin(metres / 3) * 0.04 : 0;
@@ -2280,8 +2300,8 @@ export class CourseRenderer implements WorldRenderer {
     const skyline = this.railway ? Math.max(0, 1 - Math.abs(lap - 670) / 105) : 0;
     const train = this.railway ? Math.max(0, 1 - Math.abs(lap - 220) / 74) : 0;
     const view = this.basin?.sightline(metres) ?? this.plaza?.sightline(metres);
-    const ahead = course.place(metres + (calobra ? 24 : LOOK_AHEAD), (view?.lane ?? 0) - 2.8 * bridge + (this.headland ? 1.6 : 0) + shoulder, this.there);
-    this.camera.lookAt(ahead.x, ahead.y + (calobra ? 1.2 : LOOK_UP) + (view?.rise ?? 0) + 1.8 * skyline + 1.2 * train - Math.abs(shoulder) * 0.12, ahead.z);
+    const ahead = course.place(metres + (calobra ? 24 : this.arena ? 7.5 : LOOK_AHEAD), (view?.lane ?? 0) - 2.8 * bridge + (this.headland ? 1.6 : 0) + shoulder, this.there);
+    this.camera.lookAt(ahead.x, ahead.y + (calobra ? 1.2 : this.arena ? 2.45 : LOOK_UP) + (view?.rise ?? 0) + 1.8 * skyline + 1.2 * train - Math.abs(shoulder) * 0.12, ahead.z);
     // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
     if (back.bank) this.camera.rotateZ(back.bank * 0.32);
     this.sky?.position.copy(this.camera.position);
@@ -2757,6 +2777,12 @@ export class CourseRenderer implements WorldRenderer {
         cargoPedalY: this.commuters.cargoPedalY,
         markerCount: this.commuters.markerCount,
       });
+    if (this.arena) {
+      const q = this.camera.quaternion;
+      Object.assign(drawn, this.arena.state, {
+        cameraRoll: Math.asin(2 * (q.x * q.y + q.w * q.z)),
+      });
+    }
     hook['course'] = drawn;
   }
 

@@ -1477,3 +1477,8 @@ for name in ("gardena-pasture", "gardena-scree", "gardena-tarmac"):
     MATERIALS[name] = {"color": 0x818378, "rough": 1.0, "vertex": True}
 THEMES["gardena"] = _gardena.THEME
 SCENERY["gardena"] = _gardena.scenery
+
+import ghent as _ghent
+
+THEMES["ghent"] = _ghent.THEME
+SCENERY["ghent"] = _ghent.scenery

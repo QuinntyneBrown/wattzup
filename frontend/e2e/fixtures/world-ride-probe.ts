@@ -63,6 +63,24 @@ export class WorldRideProbe {
     }, metres);
   }
 
+  async ghentMotion(
+    part:
+      | 'relayPosition'
+      | 'spectatorHeight'
+      | 'displayLap'
+      | 'cameraRoll'
+      | 'riddenMetres'
+      | 'handGap'
+      | 'restingLaneDifference',
+  ): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
   async gardenaMotion(
     part: 'cowHead' | 'cyclistPosition' | 'cloudPosition' | 'nearestRider',
   ): Promise<number | null> {

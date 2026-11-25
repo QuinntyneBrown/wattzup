@@ -70,6 +70,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Furka Pass (`furka`) | 45 Minute VO2 Max Intervals (GCN, 45:00) | 20.025 km | 672 m | `public/courses/furka.glb` ([ride views](screenshots/furka-pass/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Col du Galibier (`galibier`) | Increase Your Threshold Power (GCN Training, 60:00) | 26.050 km | 942 m | `public/courses/galibier.glb` ([ride views](screenshots/col-du-galibier/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Passo Gardena (`gardena`) | Progressive Efforts on the Passo Gardena (GCN, 20:00) | 8.975 km | 506 m | `public/courses/gardena.glb` ([ride views](screenshots/passo-gardena/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Ghent Six-Day (`ghent`) | Level Up Your Cadence (GCN Training, 10:00) | 4.575 km | 0 m | `public/courses/ghent.glb` ([ride views](screenshots/ghent-six-day/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
