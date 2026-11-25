@@ -3,6 +3,7 @@
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
 // metres they have ridden. `main`'s scenes are drawn by
 // world-renderer.ts; map-renderer.ts picks between the two.
+import type { copenhagenStreet } from './copenhagen-street';
 import type { CopenhagenCommuters } from './copenhagen-commuters';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -199,6 +200,7 @@ function jerseyColour(element: Element, jersey: string): Color {
 }
 
 export class CourseRenderer implements WorldRenderer {
+  private danishStreet: Awaited<ReturnType<typeof copenhagenStreet>> | null = null;
   private commuters: CopenhagenCommuters | null = null;
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
@@ -360,8 +362,19 @@ export class CourseRenderer implements WorldRenderer {
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
       if (this.course.file.id === 'copenhagen') {
-        const { CopenhagenCommuters } = await import('./copenhagen-commuters');
+        const [{ CopenhagenCommuters }, { copenhagenStreet }] = await Promise.all([
+          import('./copenhagen-commuters'),
+          import('./copenhagen-street'),
+        ]);
         if (this.disposed) return false;
+        const street = await copenhagenStreet(this.course);
+        if (this.disposed) {
+          street.dispose();
+          return false;
+        }
+        this.danishStreet = street;
+        this.scene.add(street.root);
+        this.disposables.push(street);
         this.commuters = new CopenhagenCommuters(this.course, this.scene);
         this.disposables.push(this.commuters);
         this.camera.setViewOffset(1, 1, 0, 0.08, 1, 1);
@@ -433,6 +446,7 @@ export class CourseRenderer implements WorldRenderer {
     this.placeRiders(frame, metres);
     this.lampShadows?.end();
     this.riderBatch?.follow();
+    this.danishStreet?.follow(metres);
     this.commuters?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.aim(metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
@@ -473,6 +487,8 @@ export class CourseRenderer implements WorldRenderer {
       const mesh = part as Mesh;
       if (mesh.isMesh) mesh.geometry.dispose();
     });
+    this.danishStreet?.root.removeFromParent();
+    this.danishStreet = null;
     this.commuters = null;
     this.map = null;
     // The chunks were taken out of the map: their geometry is released here.

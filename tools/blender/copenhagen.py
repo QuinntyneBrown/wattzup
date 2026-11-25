@@ -77,7 +77,7 @@ def road(road,stages,length,col,bc):
             for side in (-2.69,2.79):
                 ribbon(b,d,d+4,side,side-.12,.013,0x478baf)
         ribbon(b,d,d+1.3,.046,-.046,.013,0xe5e5d8)
-        if d%260 in (128,132,136,140):
+        if not bridge and d%260 in (128,132,136,140):
             ribbon(b,d,d+4,2.64,-2.64,.009,0x598fab)
             for l in (-1.98,-1.28,-.58,.12,.82,1.52,2.22):
                 ribbon(b,d+.2,d+.38,l,l-.12,.018,0xd9e3e0)
@@ -227,4 +227,46 @@ def scenery(kit):
         far.tube((x,y,z+h*.46),9,6,h*.18,lin(0x687d75),lin(0x82968b),8)
         far.tube((x,y,z+h*.64),5.7,.45,h*.35,lin(0x667c72),lin(0x98a69a),8)
         far.tube((x,y,z+h*.98),.42,.12,3.1,lin(0x998850),lin(0xc6a766),6)
+    # Dock warehouses and the old city's rooftops ground the spires on both banks.
+    for d in range(-500,14500,47):
+        for side in (-1,1):
+            setback=(220+rng.uniform(0,45)) if side<0 else (110+rng.uniform(0,35))
+            x,y,z=pose(d,side*setback)
+            h=rng.uniform(8,21)
+            far.box((x,y,z-22),(rng.uniform(33,48),38,22+h),bearing(d),
+                    lin(rng.choice((0xb7b6aa,0xa3aba8,0xb2a396,0xb5ac9e))))
+            far.roof((x,y,z+h),(40),39,3.7,bearing(d),lin(0x898a83))
+    for d,side,h in ((1180,-245,61),(3880,-285,93),(6960,-190,72),(7890,-245,96),(10950,-218,88)):
+        x,y,z=pose(d,side)
+        far.box((x,y,z-32),(31,40,34),bearing(d),lin(0xa79680))
+    # A Copenhagen cycle counter, a service hose, parking hoops and kerb stones.
+    for index,d in enumerate(range(124,13600,260)):
+        if crossing(d):continue
+        if index%3==0:
+            box(d-8,-4.14,0,.45,.69,1.9,0x4e5c5e)
+            box(d-8.25,-4.14,1.04,.045,.53,.59,0x273838)
+            for q in range(5):
+                for h in (1.17,1.29,1.41):
+                    box(d-8.29,-4.32+q*.082,h,.016,.052,.024,0xaff2ba)
+            stick(pose(d-6,-4.47,.83),pose(d-5.84,-4.64,.17),.027,0x454d48)
+        for q in range(12):
+            box(d+q*1.3,3.07,-.015,1.27,.38,.068,0xb8baaf)
+    for d in range(0,13620,195):
+        if crossing(d):continue
+        for q in range(5):
+            s=d+q*.83
+            tube(s,-5.33,-.02,.035,.035,.76,0x7b8581,7)
+            tube(s,-6.01,-.02,.035,.035,.76,0x7b8581,7)
+            box(s,-5.67,.71,.07,.67,.07,0x969e98)
+    # The diving steps have horizontal treads, a handrail, individual boards and pool ladders.
+    for j in range(14):
+        d=4292+j*.65
+        for k in range(5):
+            box(d,-16.3+k*.58,-.41+(j+1)*.26,.635,.55,.055,0xc8ac81)
+        if j%2==0: tube(d,-16.55,-.38+(j+1)*.26,.04,.04,.93,0x7d8883,7)
+        stick(pose(d,-16.55,.55+(j+1)*.26),pose(d+.65,-16.55,.81+(j+1)*.26),.045,0xa7b1a8)
+    for d in (4187,4244,4315):
+        for off in (-.32,.32):
+            tube(d+off,-16.4,-2.71,.045,.045,2.68,0x8d9b96,8)
+        for j in range(6):box(d,-16.4,-2.51+j*.34,.67,.08,.07,0x9aa79f)
     return {'efforts':0}

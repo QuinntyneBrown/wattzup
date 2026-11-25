@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“LaGuardia After Party” Route Details (New York)](https://zwiftinsider.com/route/laguardia-after-party/) (g0082) | © Zwift |
 | game-04.jpg | MyWhoosh: [Everything You Need to Know About the All-New Sunday Race](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2025/01/Everything-You-Need-to-Know-About-the-All-New-Sunday-Race.png) (g0623) | © MyWhoosh |
 | game-05.jpg | MyWhoosh: [SOCIAL RIDES](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2023/03/SOCIAL-RIDES.png) (g0894) | © MyWhoosh |
+
+The linden crowns and waterfront visitors use cutouts adapted from the project’s Caribana atlas. The gabled houses, ships, harbour baths, orange bridge, route furniture, commuter models and cargo cycles were made for this course.

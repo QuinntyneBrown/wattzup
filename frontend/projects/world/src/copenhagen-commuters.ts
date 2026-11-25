@@ -1,7 +1,7 @@
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import type { BufferGeometry } from 'three/webgpu';
 import {
   BoxGeometry,
-  BufferGeometry,
   Color,
   CylinderGeometry,
   Float32BufferAttribute,
@@ -15,6 +15,7 @@ import {
   type Scene,
 } from 'three/webgpu';
 import type { Course } from './course';
+import { CopenhagenTrack } from './copenhagen-track';
 
 type Point = readonly [number, number, number];
 const UP = new Vector3(0, 1, 0);
@@ -102,15 +103,17 @@ function frame(style: number): BufferGeometry {
 }
 
 export class CopenhagenCommuters {
+  private readonly track: CopenhagenTrack;
   private readonly root = new Group();
   private readonly frameMaterial = new MeshLambertMaterial({ vertexColors: true });
   private readonly paint = new MeshLambertMaterial();
   private readonly bodies = new InstancedMesh(new SphereGeometry(0.5, 10, 7), this.paint, 680);
   private readonly markers = new InstancedMesh(new BoxGeometry(1, 1, 1), this.paint, 120);
   private readonly bikes = [0, 1, 2].map(
-    (s) => new InstancedMesh(frame(s), this.frameMaterial, 36),
+    (s) => new InstancedMesh(frame(s), this.frameMaterial, 48),
   );
   private readonly pose = new Object3D();
+  private readonly limbAxis = new Vector3();
   private readonly colour = new Color();
   cargoPedalY: number | null = null;
   markerCount: number | null = null;
@@ -124,6 +127,7 @@ export class CopenhagenCommuters {
       this.root.add(batch);
     }
     scene.add(this.root);
+    this.track = new CopenhagenTrack(course, scene);
     this.update(0, 0);
   }
 
@@ -198,29 +202,112 @@ export class CopenhagenCommuters {
             l,
             tint,
           );
-        part(0, 1.24, 0.13, 0.4, 0.59, 0.25, -0.15, coat);
-        part(0, 1.66, 0.07, 0.26, 0.32, 0.26, 0, skin);
-        part(0, 1.77, 0.065, 0.28, 0.16, 0.29, 0, id % 2 ? 0x51483e : 0x505d66);
+        // Align each limb with its two joints so the hand stays wrapped round the bar.
+        const link = (start: Point, end: Point, width: number, tint: number) => {
+          const dx = end[0] - start[0],
+            dy = end[1] - start[1],
+            dz = end[2] - start[2];
+          const x = (start[0] + end[0]) * 0.5,
+            z = (start[2] + end[2]) * 0.5;
+          this.pose.position.set(
+            at.x + x * c + z * s,
+            at.y + (start[1] + end[1]) * 0.5,
+            at.z - x * s + z * c,
+          );
+          this.limbAxis.set(dx * c + dz * s, dy, -dx * s + dz * c);
+          this.pose.scale.set(width, this.limbAxis.length() + width * 0.52, width);
+          this.pose.quaternion.setFromUnitVectors(UP, this.limbAxis.normalize());
+          this.pose.updateMatrix();
+          const i = this.bodies.count++;
+          this.bodies.setMatrixAt(i, this.pose.matrix);
+          this.bodies.setColorAt(i, this.colour.setHex(tint));
+        };
+        part(0, 1.23, 0.13, 0.43, 0.62, 0.28, -0.13, coat);
+        part(0, 0.99, 0.16, 0.39, 0.23, 0.29, -0.04, coat);
+        part(0, 1.52, 0.105, 0.14, 0.16, 0.15, 0, skin);
+        part(0, 1.665, 0.075, 0.257, 0.31, 0.25, -0.025, skin);
+        part(0, 1.66, -0.046, 0.077, 0.084, 0.088, 0, skin);
+        part(0, 1.76, 0.096, 0.272, 0.18, 0.278, -0.12, id % 2 ? 0x584638 : 0x4c5963);
+        if (id % 4 === 0) part(0, 1.57, 0.187, 0.185, 0.23, 0.15, 0, 0x644a35);
         for (const side of [-1, 1]) {
+          part(side * 0.055, 1.692, -0.039, 0.026, 0.017, 0.017, 0, 0x4c453d);
           const a = phase + (side < 0 ? Math.PI : 0),
             foot = 0.32 + 0.15 * Math.sin(a),
             z = 0.14 * Math.cos(a);
-          part(side * 0.12, 0.74, 0.11, 0.175, 0.39, 0.17, -0.68 + 0.18 * Math.sin(a), 0x39464d);
-          part(
+          const knee: Point = [
             side * 0.13,
-            (foot + 0.6) / 2,
-            -0.04,
-            0.128,
-            0.37,
-            0.14,
-            0.22 + 0.34 * Math.cos(a),
-            0x424b50,
-          );
-          part(side * 0.14, foot, z, 0.13, 0.09, 0.24, 0, 0x594c42);
+            0.61 + 0.07 * Math.sin(a),
+            -0.075 + 0.075 * Math.cos(a),
+          ];
+          link([side * 0.105, 0.96, 0.17], knee, 0.167, 0x3c4850);
+          link(knee, [side * 0.14, foot + 0.06, z + 0.045], 0.125, 0x44525a);
+          part(side * 0.14, foot, z, 0.14, 0.105, 0.255, 0, 0x544a42);
           if (style && this.cargoPedalY === null) this.cargoPedalY = at.y + foot;
-          part(side * 0.2, 1.31, -0.015, 0.13, 0.31, 0.145, -0.5, coat);
-          part(side * 0.25, 1.16, -0.19, 0.115, 0.32, 0.115, -1.09, coat);
-          part(side * 0.28, 1.12, -0.3, 0.095, 0.1, 0.11, 0, skin);
+          const elbow: Point = [side * 0.248, 1.22, 0.045];
+          link([side * 0.158, 1.44, 0.08], elbow, 0.139, coat);
+          link(elbow, [side * 0.28, 1.13, -0.27], 0.117, coat);
+          part(side * 0.28, 1.13, -0.295, 0.093, 0.105, 0.11, 0, skin);
+        }
+      }
+    }
+    // Commuter parking at cafés and services, with the bike leaning into its own stand.
+    for (
+      let d = Math.max(0, Math.floor((distance - 30) / 195) * 195);
+      d < distance + 175;
+      d += 195
+    ) {
+      if ((d > 2290 && d < 2870) || (d > 10170 && d < 10740)) continue;
+      for (let i = 0; i < 5; i++) {
+        const at = this.course.place(d + i * 0.83, 5.7);
+        this.pose.position.set(at.x, at.y - 0.005, at.z);
+        this.pose.rotation.set(0, at.heading + 1.14 + (i % 2) * 0.11, -0.09, 'YXZ');
+        this.pose.scale.set(1, 1, 1);
+        this.pose.updateMatrix();
+        this.bikes[0]!.setMatrixAt(this.bikes[0]!.count++, this.pose.matrix);
+      }
+    }
+    if (distance > 3970 && distance < 4390) {
+      for (let i = 0; i < 7; i++) {
+        const t = seconds * 0.52 + i,
+          at = this.course.place(4225 + i * 7 + Math.sin(t * 0.16) * 4.5, 21.5 + (i % 3) * 2.1);
+        this.shape(
+          this.bodies,
+          at.x,
+          at.y - 2.42,
+          at.z,
+          at.heading,
+          0,
+          0.25,
+          0.27,
+          0.25,
+          SKIN[i % 4]!,
+        );
+        this.shape(
+          this.bodies,
+          at.x,
+          at.y - 2.31,
+          at.z,
+          at.heading,
+          0,
+          0.26,
+          0.12,
+          0.25,
+          i % 2 ? 0xb05744 : 0xcdc3ab,
+        );
+        for (const side of [-1, 1]) {
+          const phase = t * 2 + (side + 1) * 1.57;
+          this.shape(
+            this.bodies,
+            at.x + side * 0.29,
+            at.y - 2.51 + 0.14 * Math.sin(phase),
+            at.z + 0.21 * Math.cos(phase),
+            at.heading,
+            phase,
+            0.135,
+            0.38,
+            0.135,
+            SKIN[i % 4]!,
+          );
         }
       }
     }
@@ -275,6 +362,7 @@ export class CopenhagenCommuters {
 
   dispose(): void {
     this.root.removeFromParent();
+    this.track.dispose();
     for (const batch of [...this.bikes, this.bodies, this.markers]) {
       batch.dispose();
       batch.geometry.dispose();
