@@ -17,6 +17,8 @@ import {
   CylinderGeometry,
   DoubleSide,
   Group,
+  InstancedMesh,
+  Matrix4,
   Mesh,
   MeshStandardMaterial,
   PlaneGeometry,
@@ -175,7 +177,9 @@ export class ConeyStreet implements SceneStreet {
   alignPark(distance: number): void {
     this.wheelStand.position.z = distance - 1710 + AHEAD;
     this.coaster.position.z = distance - 2700 + AHEAD;
-    if (this.tower) this.tower.position.z = distance - 8090 + AHEAD;
+    // The tower is the wayfinding landmark along the entire straight. Compress the
+    // far distance beyond the shops so its lattice still reads on a tablet.
+    if (this.tower) this.tower.position.z = AHEAD - Math.min(590, 8500 - distance);
   }
   private readonly flagMaterials = ['#d8283a', '#ffffff', '#1d3c8f', '#f2c230'].map(
     (colour) => new MeshStandardMaterial({ color: colour, side: DoubleSide, roughness: 0.8 }),
@@ -381,16 +385,19 @@ export class ConeyStreet implements SceneStreet {
       const holder = new Group();
       const b = new BoxBuilder();
       const people: [number, number][] = [];
+      const poles = new InstancedMesh(pole, white, 26);
+      const canopies = new InstancedMesh(canopy, white, 26);
+      const pose = new Matrix4();
+      holder.add(poles, canopies);
+      this.disposables.push(poles, canopies);
       // Packed thickest under the railing, thinning toward the water.
       for (let n = 0; n < 26; n++) {
         const x = -RAIL - 3 - random() ** 1.5 * (SURF - RAIL - 9);
         const z = -random() * CHUNK;
-        const u = new Mesh(canopy, umbrellas[Math.floor(random() * umbrellas.length)]!);
-        const p = new Mesh(pole, white);
-        for (const m of [u, p]) {
-          m.position.set(x, SAND, z);
-          holder.add(m);
-        }
+        pose.makeTranslation(x, SAND, z);
+        poles.setMatrixAt(n, pose);
+        canopies.setMatrixAt(n, pose);
+        canopies.setColorAt(n, umbrellas[Math.floor(random() * umbrellas.length)]!.color);
         b.box(towels[n % towels.length]!, [0.9, 0.03, 1.8], [x + 1.2, SAND + 0.02, z + 0.4]);
         people.push([x + 1.5, z - 0.6], [x - 1 + random() * 2, z + 1.5]);
       }
@@ -683,7 +690,8 @@ export class ConeyStreet implements SceneStreet {
     const frame = mergeGeometries(parts)!;
     parts.forEach((p) => p.dispose());
     this.disposables.push(frame);
-    wheel.add(new Mesh(frame, white));
+    const enamel = hazedMaterial(this.disposables, haze, 0x45836e, 0.09);
+    wheel.add(new Mesh(frame, enamel));
     const cars = ['#d8283a', '#1d3c8f', '#f2c230', '#1f8a5a', '#ff8a1a', '#3ac8e8'].map((c) =>
       hazedMaterial(this.disposables, haze, c, 0.15),
     );
@@ -710,7 +718,7 @@ export class ConeyStreet implements SceneStreet {
         for (const side of [-1, 1]) {
           const x = 17.5 * Math.cos(a) - side * 0.8 * Math.sin(a);
           const y = 17.5 * Math.sin(a) + side * 0.8 * Math.cos(a);
-          track.box(white, [7.5, 0.14, 0.18], [x, y, 0], a);
+          track.box(enamel, [7.5, 0.14, 0.18], [x, y, 0], a);
         }
       }
     }
@@ -727,6 +735,26 @@ export class ConeyStreet implements SceneStreet {
         legs.box(white, [0.6, len, 0.6], [48 + dx / 2, HUB / 2, -40 + dz], Math.atan2(dx, HUB));
       }
     }
+    for (const dz of [-3, 3]) {
+      for (let level = 0; level < 4; level++) {
+        const rise = HUB / 5;
+        const width = 18 * (1 - level / 5);
+        for (const sign of [-1, 1]) {
+          legs.box(
+            cars[0]!,
+            [Math.hypot(width, rise), 0.23, 0.26],
+            [48, (level + 0.55) * rise, -40 + dz],
+            sign * Math.atan2(rise, width),
+          );
+        }
+      }
+    }
+    const sign = this.track(signTexture('WONDER WHEEL', '#efe7c2', '#bb3024'));
+    const signPanel = new PlaneGeometry(15, 2.4);
+    this.disposables.push(signPanel);
+    const marquee = new Mesh(signPanel, this.material({ map: sign, side: DoubleSide }));
+    marquee.position.set(48, 7, -36);
+    this.wheelStand.add(marquee);
     this.wheelStand.add(legs.build(this.disposables));
     // The Cyclone: the white wooden lattice of its out-and-back track, beside the boardwalk on
     // the right in front of the Wonder Wheel, broadside to the rider: climbing to its lift hill

@@ -51,8 +51,50 @@ THEME = dict(lay=lay, road_builder=deck, land_builder=shore, road_half_width=3.5
              sun_azimuth=3.5, sun_altitude=.74)
 
 
+def steel(art, a, b, radius, tint, sides=6):
+    """One straight hollow-looking rail section in the same baked batch as the footings."""
+    dx, dy, dz = (b[j]-a[j] for j in range(3))
+    span = math.hypot(dx, dy)
+    length = math.hypot(span, dz)
+    if not length:
+        return
+    nx, ny = (-dy/span, dx/span) if span else (1, 0)
+    vx, vy, vz = -ny*dz/length, nx*dz/length, span/length
+    ring = []
+    for j in range(sides):
+        angle = math.tau*j/sides
+        c, s = radius*math.cos(angle), radius*math.sin(angle)
+        ring.append((c*nx+s*vx, c*ny+s*vy, s*vz))
+    for j, normal in enumerate(ring):
+        other = ring[(j+1) % sides]
+        quad = [tuple(v+w for v,w in zip(point, offset))
+                for point,offset in ((a,normal),(a,other),(b,other),(b,normal))]
+        art.face(quad, [tint]*4)
+
+
+def thunderbolt(art):
+    # Orange twin running rails and white columns distinguish the steel coaster from the Cyclone.
+    base_y = 2720
+    foot = elevation(base_y)
+    orange, white = lin(0xde6132), lin(0xe8e5db)
+    path = [(0, 3), (9, 5), (14, 14), (15, 31), (18, 36), (21, 37),
+            (24, 35), (25, 26), (26, 13), (29, 5), (35, 3)]
+    for j in range(1, 41):
+        t = math.tau * j / 40
+        path.append((35 + 12*math.sin(t) + 8*j/40, 3 + 12*(1-math.cos(t))))
+    path.extend([(53, 4), (64, 11), (72, 11), (83, 4), (97, 2)])
+    for i, ((u, h), (v, k)) in enumerate(zip(path, path[1:])):
+        for side in (-.85, .85):
+            steel(art, (31+side, base_y+u, foot+h), (31+side, base_y+v, foot+k), .18, orange)
+        steel(art, (30.1, base_y+u, foot+h), (31.9, base_y+u, foot+h), .11, white)
+        if i % 4 == 0:
+            steel(art, (34, base_y+u, foot), (31, base_y+u, foot+h-.24), .35, white)
+            art.box((34, base_y+u, foot-.2), (1.6,1.6,.6), 0, lin(0x9c9892))
+
+
 def scenery(kit):
     art = Painted(kit, 'peaks')
+    thunderbolt(art)
     sand = lin(0xdeca9c)
     # Steeplechase Pier extends beyond the seaward rail, carried by paired pile bents.
     pier_y = 4420
