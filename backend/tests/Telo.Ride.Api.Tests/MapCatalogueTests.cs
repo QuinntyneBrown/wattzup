@@ -12,6 +12,27 @@ namespace Telo.Ride.Api.Tests;
 public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<TeloRideApiFactory>
 {
     [Fact]
+    public async Task Hoover_preserves_every_original_stage()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "hoover-dam");
+        Assert.Equal(
+            [
+                new Segment("warm-up", 120, 13, 80),
+                new Segment("work", 180, 16, 85),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 120, 21, 90),
+                new Segment("recover", 60, 13, 80),
+                new Segment("work", 180, 24, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 120, 24, 100),
+                new Segment("recover", 60, 11, 80),
+                new Segment("work", 600, 19, 90),
+                new Segment("cool-down", 180, 13, 80),
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
     public async Task The_catalogue_lists_its_maps_in_unlock_order_without_a_session()
     {
         var maps = await ReadMaps();
@@ -30,6 +51,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Cinque Terre", 17.1, 335, "Hard", "3 Mins On, 2 Mins Off", "The corniche above the Ligurian Sea"),
                 new Listed("Haleakalā", 15.8, 923, "Brutal", "Maximum Intensity Hill Climb Efforts", "The summit road from the Pacific coast to the crater rim"),
                 new Listed("Adelaide Hills", 17.11, 265, "Moderate", "The Willunga road", "Summer vineyards and gum trees on the climb to Willunga Hill"),
+                new Listed("Hoover Dam", 13.175, 65, "Moderate", "The dam road", "Black Canyon, Nevada and Arizona"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -53,6 +75,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("cinqueterre", null),
                 ("haleakala", null),
                 ("adelaide-hills", null),
+                ("hoover-dam", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -76,6 +99,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("cinqueterre", null),
                 ("haleakala", null),
                 ("adelaide-hills", null),
+                ("hoover-dam", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -86,7 +110,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            [null, null, null, null, null, 10, null, null, null, null, null, null],
+            [null, null, null, null, null, 10, null, null, null, null, null, null, null],
             maps.Select(m => m.UnlockLevel));
     }
 
@@ -118,7 +142,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "hoover"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));
