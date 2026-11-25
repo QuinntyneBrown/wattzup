@@ -3598,7 +3598,7 @@ export const kilaueaCourseMap = {
   place: 'Hawaiʻi Volcanoes National Park, Hawaiʻi',
   world: 'kilauea',
   distanceKm: 7.696,
-  climbingM: 217,
+  climbingM: 89,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },

@@ -151,6 +151,7 @@ import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
 import type { southCoast } from './south-coast';
 import type { ManxMountain } from './manx-mountain';
+import type { KilaueaCaldera } from './kilauea-caldera';
 import type { ItenTraining } from './iten-training';
 import type { independencePass } from './independence-pass';
 import { heldFps } from './held-fps';
@@ -354,6 +355,7 @@ export class CourseRenderer implements WorldRenderer {
   private icelandCoast: ReturnType<typeof southCoast> | null = null;
   private divide: Awaited<ReturnType<typeof independencePass>> | null = null;
   private mountain: ManxMountain | null = null;
+  private caldera: KilaueaCaldera | null = null;
   private trainingHighlands: ItenTraining | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
@@ -850,6 +852,18 @@ export class CourseRenderer implements WorldRenderer {
         this.mountain = mountain;
         this.scene.add(mountain.root);
         this.disposables.push(mountain);
+      }
+      if (this.course.file.id === 'kilauea') {
+        const { KilaueaCaldera } = await import('./kilauea-caldera');
+        if (this.disposed) return false;
+        const caldera = await KilaueaCaldera.load(this.course);
+        if (this.disposed) {
+          caldera.dispose();
+          return false;
+        }
+        this.caldera = caldera;
+        this.scene.add(caldera.root);
+        this.disposables.push(caldera);
       }
       if (this.course.file.id === 'iten') {
         const { ItenTraining } = await import('./iten-training');
@@ -1962,6 +1976,7 @@ export class CourseRenderer implements WorldRenderer {
     this.icelandCoast = null;
     this.divide = null;
     this.mountain = null;
+    this.caldera = null;
     this.trainingHighlands = null;
     this.trams = null;
     this.yard = null;
@@ -2201,6 +2216,7 @@ export class CourseRenderer implements WorldRenderer {
     materials['Walls'] = wallMaterial(detail, made, LAMP_ON.Walls);
     // The city on the horizon is walls too, never lit by the lamps: its windows shine (wall-material.ts).
     if (this.mountain) materials['ManxMoor'] = this.mountain.moor;
+    if (this.caldera) Object.assign(materials, this.caldera.materials);
     if (this.trainingHighlands) Object.assign(materials, this.trainingHighlands.materials);
     materials['Skyline'] = wallMaterial(detail, null, 0, new Color(look.haze));
     // Rain, where it rains: it shows by the lamps' light (rain.ts).
@@ -2278,7 +2294,7 @@ export class CourseRenderer implements WorldRenderer {
       this.coastline?.landmark(group, mesh);
       this.northFace?.landmark(group, mesh);
       this.canyon?.landmark(group, mesh);
-      if (this.mountain && group === 'Sun') mesh.visible = false;
+      if ((this.mountain || this.caldera) && group === 'Sun') mesh.visible = false;
       if (group === 'Smoke' && !materials[group]) {
         const mist = new MeshBasicMaterial({
           ...glow,
@@ -2453,6 +2469,9 @@ export class CourseRenderer implements WorldRenderer {
       }
       this.sky = carried;
       this.scene.add(carried);
+    } else if (this.caldera) {
+      this.sky = this.caldera.sky;
+      this.scene.add(this.sky);
     } else if (!this.fen && !this.mountain) {
       const dome = new SphereGeometry(9000, 24, 12);
       const sky =
