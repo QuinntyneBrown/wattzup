@@ -812,6 +812,10 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
                 mid = road.at(i, 0.0)
                 wall.box((mid[0], mid[1], -9.0), (2.4, 2 * walk - 1.0, mid[2] + 9.0 + deep), s[i]["h"])
             return
+        if edge == "gracht":
+            strip(prom, i, 7.2, 0.05, kerb, 0.05)
+            strip(prom, i, -kerb, 0.08, -10.6, 0.08)
+            return
         if edge == "verge":
             strip(sand, i, kerb + 8.0, -0.25, kerb, 0.12)
             strip(sand, i, kerb + 14.0, -1.6, kerb + 8.0, -0.25)
