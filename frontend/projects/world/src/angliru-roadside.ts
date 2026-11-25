@@ -99,13 +99,12 @@ export class AngliruRoadside {
       this.runner.add(leg, arm);
       this.limbs.push(leg, arm);
     }
-    this.banks.forEach((bank, i) => bank.scale.set(145 + i * 32, 25 + i * 7, 1));
   }
 
   draw(metres: number, time: number): number {
     const crux = metres > 13700 && metres < 15400;
     const flagAt = crux
-      ? 13912 + Math.round((metres - 13912) / 52) * 52
+      ? 13912 + Math.round((metres - 13912) / 260) * 260
       : metres < 500
         ? 26
         : 17598;
@@ -116,10 +115,10 @@ export class AngliruRoadside {
       this.flag.rotation.y = at.heading + 0.35;
       this.clothMesh.rotation.y = 0.32 * Math.sin(time * 3.1) + 0.09 * Math.sin(time * 6.3);
     }
-    this.runner.visible = crux;
-    if (crux) {
-      const phase = 13921 + time * 2.8;
-      const along = phase + Math.round((metres - phase) / 96) * 96;
+    const phase = 13921 + time * 2.8;
+    const along = phase + Math.round((metres - phase) / 340) * 340;
+    this.runner.visible = crux && Math.abs(metres - along) < 145;
+    if (this.runner.visible) {
       const at = this.course.place(along, -2.2, this.at);
       const stride = time * 7.6;
       this.runner.position.set(at.x, at.y + 0.035 * Math.abs(Math.cos(stride)), at.z);
@@ -129,8 +128,11 @@ export class AngliruRoadside {
     }
     for (let i = 0; i < this.banks.length; i++) {
       const bank = this.banks[i]!;
-      const anchor = 14300 + Math.round((metres - 14300) / 600) * 600 + i * 190;
-      bank.visible = metres > 12200;
+      const first = 14300 + i * 210;
+      const anchor = first + Math.round((metres - first) / 630) * 630;
+      const fade = Math.min(1, Math.max(0, (310 - Math.abs(anchor - metres)) / 70));
+      bank.visible = anchor > 12200 && fade > 0;
+      bank.scale.set((145 + i * 32) * fade, (25 + i * 7) * fade, 1);
       if (!bank.visible) continue;
       const at = this.course.place(anchor, 85 * Math.sin(i + time * 0.031), this.at);
       bank.position.set(at.x, at.y + 20 + 7 * Math.sin(time * 0.028 + i), at.z);
