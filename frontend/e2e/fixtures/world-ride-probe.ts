@@ -104,4 +104,12 @@ export class WorldRideProbe {
           ?.report ?? null) as WorldRideReport | null,
     );
   }
+  /** Position of the lead rider in the crosswind echelon. */
+  async echelonLeaderX(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { echelonLeaderX?: number } } })
+          .__wzWorldRide?.course?.echelonLeaderX ?? null,
+    );
+  }
 }

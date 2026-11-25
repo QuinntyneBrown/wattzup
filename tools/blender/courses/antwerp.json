@@ -5,6 +5,7 @@
   "theme": "antwerp",
   "seed": 2070,
   "layout": 0,
+  "roadHalfWidth": 4.9,
   "class": {
     "id": "lead-out-efforts-into-full-sprints",
     "title": "Lead Out Efforts Into Full Sprints",

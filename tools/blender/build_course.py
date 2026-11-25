@@ -1804,7 +1804,7 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         "durationSeconds": sum(s["duration"] for s in st),
         "step": STEP,
         "startIndex": int(LEAD_IN / STEP),
-        "roadHalfWidth": ROAD_HALF,
+        "roadHalfWidth": course.get("roadHalfWidth", ROAD_HALF),
         "meanLevel": round(mean, 2),
         "gradePerLevel": per_level,
         # The direction the light comes from, as a unit vector in the glb's axes.
