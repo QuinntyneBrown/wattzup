@@ -131,4 +131,49 @@ def scenery(k):
     for i in range(0,math.ceil(LAP),3):
         x,y,h=pose(i,7.42)
         park.box((x,y,height(i)+.04),(.035,.84,.025),h,lin(0x756E6B))
+    # Market tents, low food counters and triangular bunting on the Mall lawn.
+    rng=k.rng
+    for i in range(22):
+        d=2000+i*11
+        x,y,h=pose(d,-12-(i%3)*2)
+        z=height(d)-.15
+        def tent(u,v,w):
+            return (x+math.cos(h)*u-math.sin(h)*v,y+math.sin(h)*u+math.cos(h)*v,z+w)
+        for u in (-3.1,3.1):
+            for v in (-2.6,2.6):
+                park.box(tent(u,v,0),(.09,.09,3),h,shadow)
+        hem=[tent(u,v,3) for u,v in [(-3.25,-2.8),(3.25,-2.8),(3.25,2.8),(-3.25,2.8)]]
+        for j,a in enumerate(hem):
+            b=hem[(j+1)%4]
+            park.face([a,b,tent(0,0,4.95)],(stone,white,white))
+            park.face([(a[0],a[1],a[2]-.28),(b[0],b[1],b[2]-.28),b,a],(shadow,stone,white,white))
+        park.box(tent(0,1.4,0),(4.5,1.1,1.03),h,lin(0xBA7D82))
+        park.box(tent(0,1.4,1.04),(4.6,1.17,.1),h,lin(0xE7D6BE))
+        for j in range(9):
+            u=-3+j*.70
+            park.face([tent(u,2.82,2.8),tent(u+.6,2.82,2.8),tent(u+.3,2.82,2.3)],
+                      (lin(0xDE91A4 if j%2 else 0xCA6C89),)*3)
+    # Timber launch and ladders leave room for the paddle boats on their moorings.
+    for d in range(1450,1488):
+        x,y,h=pose(d,10)
+        park.box((x,y,1.02),(.96,4.6,.23),h,lin(0xB1987B if d%3 else 0xAB8D72))
+        if d%5==0:
+            for lateral in (8,12):
+                x,y,h=pose(d,lateral)
+                park.tube((x,y,.55),.12,.12,1.25,shadow,stone,7)
+    # Discontinuous mirrored bands on the calm surface, shared by all five laps.
+    for i in range(1400):
+        d=rng.uniform(0,LAP);lateral=rng.uniform(10,68)
+        x,y,h=pose(d,lateral)
+        near_trees=(d%54<34 and lateral<24)
+        tint=rng.choice((0xB6A8AC,0xB5AAA8,0xA4A7A2)) if near_trees else rng.choice((0x9DBABE,0x96B3B7,0x87A9AF))
+        park.box((x,y,.602),(rng.uniform(.8,4.8),rng.uniform(.12,.55),.008),h,lin(tint))
+    # Foreshortened reflections of the memorial colonnade and the obelisk in the inshore water.
+    for station,span,reach in [(760,55,57),(2990,15,90)]:
+        for l in range(13,reach,2):
+            factor=1-(l-13)/reach*.65
+            for j in range(5 if span>20 else 2):
+                d=station+(j/(4 if span>20 else 1)-.5)*span*factor+math.sin(l*1.2)*.8
+                x,y,h=pose(d,l)
+                park.box((x,y,.628),(3.2*factor,.83,.008),h,lin(0xB9C1BA if l%3 else 0xADB9B4))
     return {'efforts':0}

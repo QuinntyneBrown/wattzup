@@ -213,6 +213,8 @@ export class CourseRenderer implements WorldRenderer {
   /** Moves the sea's ripples on to a second of the ride's clock. */
   private waterClock: ((seconds: number) => void) | null = null;
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
+  private basin: Awaited<ReturnType<typeof import('./blossom-festival').blossomFestival>> | null =
+    null;
   private rain: Rain | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
   private groundEye: GroundEye | null = null;
@@ -240,6 +242,9 @@ export class CourseRenderer implements WorldRenderer {
     drawCalls: 0,
     triangles: 0,
     groups: {} as Record<string, number>,
+    kiteAngle: undefined as number | undefined,
+    boatX: undefined as number | undefined,
+    haze: undefined as number | undefined,
   };
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
@@ -369,6 +374,18 @@ export class CourseRenderer implements WorldRenderer {
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
       this.build(gltf.scene, canvas);
+      if (parsed.id === 'cherryblossom') {
+        const { blossomFestival } = await import('./blossom-festival');
+        if (this.disposed) return false;
+        const festival = await blossomFestival(this.course);
+        if (this.disposed) {
+          festival.dispose();
+          return false;
+        }
+        this.basin = festival;
+        this.scene.add(festival.root);
+        this.disposables.push(festival);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -433,6 +450,7 @@ export class CourseRenderer implements WorldRenderer {
     // Every wheel on the road turns with the rider's: the riders keep much the same pace.
     this.kit?.roll(metres);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
+    this.basin?.update(frame.reducedMotion ? 0 : frame.time);
     this.placeRiders(frame, metres);
     this.lampShadows?.end();
     this.riderBatch?.follow();
@@ -483,6 +501,7 @@ export class CourseRenderer implements WorldRenderer {
     this.confetti.length = 0;
     this.funivia = null;
     this.glider = null;
+    this.basin = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.riders.clear();
@@ -1119,6 +1138,9 @@ export class CourseRenderer implements WorldRenderer {
     }
     drawn.tier = this.tier;
     drawn.backend = this.backend;
+    drawn.haze = this.basin ? this.scene.fog?.color.getHex() : undefined;
+    drawn.boatX = this.basin?.boatX;
+    drawn.kiteAngle = this.basin?.kiteAngle;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
     hook['course'] = drawn;

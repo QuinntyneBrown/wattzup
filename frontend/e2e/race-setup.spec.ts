@@ -201,7 +201,10 @@ test('choose sunrise with the keyboard for a local Cherry Blossom race', async (
 }) => {
   await bluetooth.remember(echelonBike);
   api.answer('GET', '/api/maps', [cherryBlossomCourseMap]);
-  api.answer('GET', '/api/progress', { ...newRiderProgress, openMapIds: [cherryBlossomCourseMap.id] });
+  api.answer('GET', '/api/progress', {
+    ...newRiderProgress,
+    openMapIds: [cherryBlossomCourseMap.id],
+  });
   const setup = new RaceSetupPage(page);
   await setup.open(cherryBlossomCourseMap.id);
   await expect(setup.light('Daylight')).toBeChecked();
