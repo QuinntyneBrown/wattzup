@@ -118,4 +118,11 @@ export class WorldRideProbe {
           ?.report ?? null) as WorldRideReport | null,
     );
   }
+  async illumination(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { illumination?: number } } })
+          .__wzWorldRide?.course?.illumination ?? null,
+    );
+  }
 }

@@ -239,6 +239,7 @@ export class CourseRenderer implements WorldRenderer {
     tier: 0 as number,
     backend: '' as string,
     tramMetres: null as number | null,
+    illumination: null as number | null,
     drawCalls: 0,
     triangles: 0,
     groups: {} as Record<string, number>,
@@ -1117,6 +1118,7 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.illumination = this.trams?.illumination ?? null;
     drawn.tramMetres = this.trams?.nearestMetres ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;

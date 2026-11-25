@@ -27,6 +27,9 @@ test('the tram moves along the Promenade and holds on pause', async ({
   await setup.mode('Your best time').click();
   await setup.start.click();
   await expect(race.backend).toBeVisible();
+  const glow = await worldRide.illumination();
+  expect(glow).toBeGreaterThan(0);
+  await expect.poll(() => worldRide.illumination()).not.toBe(glow);
   const samples: number[] = [];
   await expect
     .poll(async () => {
@@ -37,6 +40,7 @@ test('the tram moves along the Promenade and holds on pause', async ({
     .toBeGreaterThan(0.09);
   await race.pause.click();
   await expect(race.resume).toBeVisible();
+  const glowHeld = await worldRide.illumination();
   const held = await worldRide.tramMetres();
   await page.evaluate(
     () =>
@@ -47,6 +51,7 @@ test('the tram moves along the Promenade and holds on pause', async ({
       ),
   );
   expect(await worldRide.tramMetres()).toBe(held);
+  expect(await worldRide.illumination()).toBe(glowHeld);
   await race.resume.click();
   await expect.poll(() => worldRide.tramMetres()).not.toBe(held);
 });

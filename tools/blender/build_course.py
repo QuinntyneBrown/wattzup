@@ -635,7 +635,9 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
             data.from_pydata(part.verts, [], part.faces)
             film.objects.link(bpy.data.objects.new(part.name, data))
         group, chunked = group_of(part.mat)
-        if part.name in GROUND_PARTS:
+        if part.name == 'LandmarkLights':
+            group, chunked = 'Glow', False
+        elif part.name in GROUND_PARTS:
             group = "Ground"
         elif part.name == WINDOWS_PART:
             group = "Windows"

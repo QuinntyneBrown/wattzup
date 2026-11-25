@@ -1,5 +1,7 @@
 import {
   BoxGeometry,
+  InstancedMesh,
+  OctahedronGeometry,
   BufferAttribute,
   Color,
   Group,
@@ -19,19 +21,23 @@ const legs = stops.slice(1).map((to, i) => {
 });
 const circuit = legs.reduce((sum, leg) => sum + dwell + leg.travel, 0);
 
-function tramPosition(time: number) {
+interface TramPosition {
+  metres: number;
+  outbound: boolean;
+}
+function tramPosition(time: number, result: TramPosition): void {
   let here = time % circuit;
   for (const leg of legs) {
     if (here <= dwell + leg.travel) {
       const t = Math.max(0, (here - dwell) / leg.travel);
-      return {
-        metres: leg.from + (leg.to - leg.from) * t * t * (3 - 2 * t),
-        outbound: leg.to > leg.from,
-      };
+      result.metres = leg.from + (leg.to - leg.from) * t * t * (3 - 2 * t);
+      result.outbound = leg.to > leg.from;
+      return;
     }
     here -= dwell + leg.travel;
   }
-  return { metres: stops[0]!, outbound: true };
+  result.metres = stops[0]!;
+  result.outbound = true;
 }
 
 /** Bake individually painted panels and lights into one submission per tram. */
@@ -93,7 +99,21 @@ function buildTram(heritage: boolean) {
       for (const end of [-1, 1]) {
         const z = at + end * length * 0.5;
         box(0x858d93, 0, 2.07, z, 1.69, 0.89, 0.09);
-        if (heritage) box(0xffdf91, 0, 3.65, z, 1.64, 0.8, 0.09);
+        if (heritage) {
+          box(0xe5d6ab, 0, 1.56, z + end * 0.17, 2.14, 2.2, 0.34);
+          box(0x50765a, 0, 1.03, z + end * 0.36, 1.89, 1.1, 0.21);
+          box(0x9eb8b5, 0, 2.07, z + end * 0.36, 1.74, 0.82, 0.14);
+          box(0xe0d1a4, 0, 3.46, z + end * 0.13, 2.21, 1.66, 0.23);
+          box(0xffdf91, 0, 3.64, z + end * 0.26, 1.76, 0.82, 0.068);
+          for (const x of [-0.56, 0, 0.56]) {
+            box(0x675f55, x, 3.65, z + end * 0.3, 0.08, 0.83, 0.066);
+            box(0x625f55, x, 2.05, z + end * 0.43, 0.072, 0.82, 0.057);
+          }
+          box(0x373533, 0, 2.77, z + end * 0.25, 1.54, 0.39, 0.12);
+          for (let letter = 0; letter < 8; letter++)
+            box(0xf7d887, -0.58 + letter * 0.16, 2.78, z + end * 0.32, 0.095, 0.17, 0.05);
+          box(0x44424a, 0, 0.53, z + end * 0.52, 2.04, 0.18, 0.2);
+        }
         for (const x of [-0.82, 0.82]) box(0xfff0ba, x, 0.97, z, 0.24, 0.22, 0.12);
       }
     }
@@ -113,6 +133,14 @@ export class BlackpoolTrams {
     (_, i) => new Mesh(i % 2 ? this.flexity : this.heritage, this.material),
   );
   private readonly place: CoursePlace = { x: 0, y: 0, z: 0, heading: 0, pitch: 0 };
+  private readonly position: TramPosition = { metres: 0, outbound: true };
+  private readonly bulbGeometry = new OctahedronGeometry(0.17);
+  private readonly bulbMaterial = new MeshBasicMaterial({ toneMapped: false });
+  private readonly bulbs = new InstancedMesh(this.bulbGeometry, this.bulbMaterial, 8 * 25);
+  private readonly socket = new Object3D();
+  private readonly colour = new Color();
+  private firstString = NaN;
+  illumination = 0;
   private readonly wheel = new Group();
   private readonly wheelGeometry = paintedParts((box) => {
     const segments = 48;
@@ -131,7 +159,8 @@ export class BlackpoolTrams {
   nearestMetres: number | null = null;
 
   constructor(private readonly course: Course) {
-    this.group.add(...this.cars, this.wheel);
+    this.bulbs.frustumCulled = false;
+    this.group.add(...this.cars, this.wheel, this.bulbs);
     this.wheel.add(this.rim);
     const pier = course.place(610, -20);
     this.wheel.position.set(pier.x, pier.y, pier.z);
@@ -145,7 +174,8 @@ export class BlackpoolTrams {
     let nearest = Infinity;
     this.nearestMetres = null;
     for (let i = 0; i < this.cars.length; i++) {
-      const pos = tramPosition(seconds + 15 + (i * circuit) / this.cars.length);
+      const pos = this.position;
+      tramPosition(seconds + 15 + (i * circuit) / this.cars.length, pos);
       const car = this.cars[i]!;
       const distance = Math.abs(pos.metres - rider);
       car.visible = distance < 275;
@@ -160,9 +190,41 @@ export class BlackpoolTrams {
     }
     this.wheel.visible = Math.abs(rider - 610) < 630;
     this.rim.rotation.z = seconds * 0.083;
+    this.chase(rider, seconds);
+  }
+  private chase(rider: number, seconds: number): void {
+    const start = Math.floor((rider - 22) / 36) - 1;
+    const moved = this.firstString !== start;
+    for (let row = 0; row < 8; row++) {
+      const d = 22 + (start + row) * 36;
+      for (let j = 0; j < 25; j++) {
+        const i = row * 25 + j;
+        const f = j / 24;
+        if (moved) {
+          const at = this.course.place(d, 6.4 - 22.3 * f, this.place);
+          this.socket.position.set(at.x, at.y + 7.35 - 1.23 * Math.sin(Math.PI * f), at.z);
+          this.socket.scale.setScalar(d < 0 || d > 5630 ? 0 : 1.65);
+          this.socket.updateMatrix();
+          this.bulbs.setMatrixAt(i, this.socket.matrix);
+        }
+        const phase = 0.5 + 0.5 * Math.sin(seconds * 3.4 - j * 0.69 - row * 0.47);
+        const intensity = 0.29 + 0.71 * phase * phase;
+        this.colour
+          .setHSL((row * 0.18 + f * 0.37 + 0.98) % 1, 0.82, 0.56)
+          .multiplyScalar(intensity * 1.5);
+        this.bulbs.setColorAt(i, this.colour);
+        if (row === 2 && j === 12) this.illumination = intensity;
+      }
+    }
+    this.firstString = start;
+    if (moved) this.bulbs.instanceMatrix.needsUpdate = true;
+    if (this.bulbs.instanceColor) this.bulbs.instanceColor.needsUpdate = true;
   }
   dispose(): void {
     this.group.removeFromParent();
+    this.bulbs.dispose();
+    this.bulbGeometry.dispose();
+    this.bulbMaterial.dispose();
     this.heritage.dispose();
     this.flexity.dispose();
     this.wheelGeometry.dispose();
