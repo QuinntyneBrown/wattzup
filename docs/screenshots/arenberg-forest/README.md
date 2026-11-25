@@ -11,3 +11,14 @@ Choose Arenberg Forest in Map Select and start a solo race. GCN’s *Don’t Get
 | Sector exit, 2.71 km | [Before](before-exit.jpg) | [After](after-exit.jpg) | The rutted pavé ends where the forest road returns to tarmac. The route continues through woodland for the remaining class stages. Real 04, 12–15 and game 04. |
 
 The headframes and bridge stay fixed like Caribana’s skyline. One original stone atlas covers the crowned road at a physical scale of 3.2 m per tile. Near trees add cutout oak and birch leaf sprays over the larger crown shapes. A bounded convoy uses ride time, moves aside as it is passed and holds on pause. Reduced motion disables the small camera displacement and tyre plume. [Original references and credits](../../worlds/arenberg/SOURCES.md)
+
+## Simulated tablet
+
+Headed Chromium 159.0.8154.6 ran on an Apple M5 Pro at 1024 × 768, DPR 1 and 4× CPU throttle, using Low/WebGL 2. After nine seconds of warm-up, the bike covered 0.83 km in each one-minute measurement. Frames were counted when the world submitted a draw. The entrance sample included a 241.9 ms frame.
+
+| Section | Submitted FPS | Display FPS | p95 interval | Longest interval | Peak draw calls |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Sector entrance | 119.42 | 119.10 | 10.3 ms | 241.9 ms | 28 |
+| Forest pavé | 120.54 | 120.00 | 9.6 ms | 13.6 ms | 23 |
+
+Reproduce from the frontend workspace with `npm run perf -- arenberg-tablet --headed`.
