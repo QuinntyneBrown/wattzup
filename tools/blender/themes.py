@@ -1482,3 +1482,8 @@ import ghent as _ghent
 
 THEMES["ghent"] = _ghent.THEME
 SCENERY["ghent"] = _ghent.scenery
+
+import giza as _giza
+
+THEMES["giza"] = _giza.THEME
+SCENERY["giza"] = _giza.scenery

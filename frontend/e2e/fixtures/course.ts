@@ -46,6 +46,7 @@ import furkaElevation from './furka-elevation.json';
 import galibierElevation from './galibier-elevation.json';
 import gardenaElevation from './gardena-elevation.json';
 import ghentElevation from './ghent-elevation.json';
+import gizaElevation from './giza-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -2958,6 +2959,39 @@ export const ghentCourseMap = {
       seg('work', 30, 21, 100),
       seg('work', 60, 24, 115),
       seg('cool-down', 60, 10, 80),
+    ],
+  },
+};
+
+export const gizaCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'giza-plateau',
+  name: 'Giza Plateau',
+  routeName: 'Plateau Road',
+  place: 'Giza, Egypt',
+  world: 'giza',
+  distanceKm: 9.4,
+  climbingM: 57,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: gizaElevation,
+  },
+  thumbnailUrl: 'maps/giza-plateau.jpg',
+  photoUrl: 'maps/giza-plateau-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 10, 80),
+      seg('work', 120, 13, 80),
+      seg('recover', 120, 14, 80),
+      seg('work', 120, 16, 85),
+      seg('work', 60, 18, 85),
+      seg('work', 60, 19, 90),
+      seg('recover', 60, 18, 85),
+      seg('work', 120, 16, 85),
+      seg('recover', 120, 14, 80),
+      seg('cool-down', 360, 11, 80),
     ],
   },
 };

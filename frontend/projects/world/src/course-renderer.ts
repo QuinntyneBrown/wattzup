@@ -26,6 +26,7 @@ import type { furkaPass } from './furka-pass';
 import type { galibierPass } from './galibier-pass';
 import type { gardenaPass } from './gardena-pass';
 import type { ghentArena } from './ghent-arena';
+import type { gizaPanorama } from './giza-panorama';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -47,6 +48,7 @@ import {
   AdditiveBlending,
   AgXToneMapping,
   type CanvasTexture,
+  Box3,
   Color,
   DirectionalLight,
   DoubleSide,
@@ -374,6 +376,9 @@ export class CourseRenderer implements WorldRenderer {
   private crews: ComunaCrews | null = null;
   private barrio: Awaited<ReturnType<typeof comunaStreets>> | null = null;
   private arena: Awaited<ReturnType<typeof ghentArena>> | null = null;
+  private panorama: ReturnType<typeof gizaPanorama> | null = null;
+  private readonly monuments: { key: string; centre: Vector3 }[] = [];
+  private readonly projected = new Vector3();
   private frames = 0;
   /** The chunks of the map that are near enough the camera to be drawn: the only ones in the scene. */
   private readonly near = new Group();
@@ -865,7 +870,16 @@ export class CourseRenderer implements WorldRenderer {
         this.camera.setViewOffset(1, 1, 0, 0.025, 1, 1);
         hills.at(0, 0);
       }
-      this.build(gltf.scene, canvas, clinker, fronts, foliage, (paving ?? parisPaving ?? chicagoPaving ?? chichenPaving)?.material);
+      let gizaMaterials: Record<string, Material> | undefined;
+      if (this.course.file.id === 'giza') {
+        const { gizaSurfaces } = await import('./giza-surfaces');
+        if (this.disposed) return false;
+        const surfaces = gizaSurfaces();
+        gizaMaterials = surfaces.materials;
+        this.disposables.push(surfaces);
+        this.camera.setViewOffset(1, 1, 0, 0.045, 1, 1);
+      }
+      this.build(gltf.scene, canvas, clinker, fronts, foliage, (paving ?? parisPaving ?? chicagoPaving ?? chichenPaving)?.material, gizaMaterials);
       if (this.course.file.id === 'aguascalientes') {
         const { PursuitBoard } = await import('./pursuit-board');
         if (this.disposed) return false;
@@ -1285,6 +1299,21 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(this.arena.group);
         this.disposables.push(this.arena);
       }
+      if (this.course.file.id === 'giza') {
+        const { gizaPanorama } = await import('./giza-panorama');
+        if (this.disposed) return false;
+        if (this.pinned) {
+          for (const name of ['Khafre', 'Khufu', 'Sphinx']) {
+            const centre = new Box3()
+              .setFromObject(gltf.scene.getObjectByName(name)!, true)
+              .getCenter(new Vector3());
+            this.monuments.push({ key: name.toLowerCase() + 'ScreenX', centre });
+          }
+        }
+        this.panorama = gizaPanorama(this.course);
+        this.scene.add(this.panorama.group);
+        this.disposables.push(this.panorama);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       if (_world.id === 'angels') {
@@ -1582,6 +1611,7 @@ export class CourseRenderer implements WorldRenderer {
     this.cabotWildlife?.update(frame.reducedMotion ? 0 : frame.time);
     this.street?.at(metres);
     this.arena?.update(frame.reducedMotion ? 0 : frame.time, metres);
+    this.panorama?.update(frame.reducedMotion ? 0 : frame.time, metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -1662,6 +1692,7 @@ export class CourseRenderer implements WorldRenderer {
     this.confetti.length = 0;
     this.timing = null;
     this.arena = null;
+    this.panorama = null;
     this.funivia = null;
     this.glider = null;
     this.smoke = null;
@@ -1765,6 +1796,7 @@ export class CourseRenderer implements WorldRenderer {
     fronts: Texture | null,
     foliage: Texture | null,
     coursePavement?: Material,
+    localMaterials?: Record<string, Material>,
   ): void {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
@@ -1944,6 +1976,7 @@ export class CourseRenderer implements WorldRenderer {
       sunDisc.color.setHex(0xfff6df);
     }
     this.beams = materials['Beams'] as MeshBasicMaterial;
+    Object.assign(materials, localMaterials);
     const painted: Mesh[] = [];
     map.traverse((part) => {
       const mesh = part as Mesh;
@@ -2782,6 +2815,13 @@ export class CourseRenderer implements WorldRenderer {
       Object.assign(drawn, this.arena.state, {
         cameraRoll: Math.asin(2 * (q.x * q.y + q.w * q.z)),
       });
+    }
+    if (this.panorama) {
+      Object.assign(drawn, this.panorama.state);
+      for (const { key, centre } of this.monuments) {
+        const screen = this.projected.copy(centre).project(this.camera);
+        (drawn as Record<string, unknown>)[key] = screen.z < 1 ? screen.x : Infinity;
+      }
     }
     hook['course'] = drawn;
   }

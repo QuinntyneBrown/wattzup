@@ -1098,3 +1098,18 @@ The class recreates a straight every 166 m. It already has a textured pine floor
 | Night, 4.422 km | Warm floodlights pick out the packed stands and hoardings on a late six-day lap. Real 01–05 and 12–13, games 01–03. |
 
 The catalogue carries the eleven original workout stages. Bake one compact Kuipke bowl, then sample its periodic centre line and bank angle over the full session. Register the course with the lazy renderer. Lift riders in the outside lanes onto the drawn boards and roll the chase camera through the banking. Keep the advertising rail, spectators, stairs, bar counters and roof trusses fixed in the building. Position each Madison pair on the same banked oval as the rider and coordinate their arms, lanes and pace during a change. Update the board only when the lap changes. Use the shared World music player for an original brass-band race arrangement. The existing Ghent class soundtrack has its own credit. Respect the music preference, race status and teardown. Use the nearest tier for the active riders and batches for repeated fans, furniture and lamps. Follow ADRs 0021, 0023, 0030, 0034 and 0035. Measure actual frame submissions after nine seconds of warm-up on both sampled laps.
+
+## Giza Plateau (#2126)
+
+The class scene repeats a 400 m roadside with a moving camel caravan, mastabas and a recurring Sphinx. Its compact geometry drew praise for running well on low-memory devices in #904. The race catalogue needs the original GCN class and a fixed Plateau Road. Keep its ten intervals and fit the road to 9.4 km. The route panel reads the same centre line as the chase camera. Use the normal race loader and the Blender export under ADRs 0021, 0023, 0030, 0034 and 0035.
+
+| Course section | Reference and construction |
+| --- | --- |
+| Khafre approach | Real 01–04 and games 01–02 establish the bend, casing cap and warm side light. A low kerb separates sand drifts from darker tyre paths. |
+| Khufu | Real 06–08 and game 03 establish near masonry scale. Model the outline in stepped courses and bake chipped blocks and mortar joints into the surface. Keep the long shadow fixed on the sand. |
+| Queens’ pyramids | Real 03, 12 and 14 and game 05 inform the smaller ruined profiles, mastabas and dry western horizon. |
+| Sphinx and valley temple | Real 10–11, 13 and 15 inform the headdress, weathered face, long paws, stone enclosure and causeway. Game 04 informs visibility from the riding line. |
+| Panorama turnout | Real 02, 09 and 12 and games 01 and 03 place saddled dromedaries, a harnessed horse and cart, handlers and visitors behind low barriers. |
+| Return toward Cairo | Real 04–06 and 15 inform the low sun, successive bands of development and distant minarets. Game 02 informs atmospheric depth. |
+
+Bake the pyramids and Sphinx in world coordinates so the rider sees different faces through the turns. Separate sand, roadside stone and distant city by scale and contrast. Batch repeated tomb blocks and shaded awnings. Use a small number of articulated animals at the turnout with shared materials and deterministic motion on ride time. Release their graphics resources on exit. Measure the opening and turnout through the simulated ride after nine seconds of warm-up. Compare six HUD captures from the same entry and cadence.
