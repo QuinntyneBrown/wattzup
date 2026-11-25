@@ -47,7 +47,6 @@ export function skyMaterial(
   detail: DataTexture,
   coastalSquall = false,
   evening?: Node<'float'>,
-  evening?: Node<'float'>,
 ): Sky {
   const colours = look.sky.map((hex) => new Color(hex));
   const stop = (i: number) => vec3(colours[i]!.r, colours[i]!.g, colours[i]!.b);

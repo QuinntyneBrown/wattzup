@@ -257,7 +257,7 @@ export class CourseRenderer implements WorldRenderer {
   private waterClock: ((seconds: number) => void) | null = null;
   private camp: CalobraCamp | null = null;
   private lifts: CampolongoLifts | null = null;
-  private wildlife: CabotWildlife | null = null;
+  private cabotWildlife: CabotWildlife | null = null;
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
   private basin: Awaited<ReturnType<typeof blossomFestival>> | null = null;
   private rain: Rain | null = null;
@@ -361,17 +361,17 @@ export class CourseRenderer implements WorldRenderer {
   private joggers: ArtMuseumJoggers | null = null;
   private mirage: SalarMirage | null = null;
   private salt: Material | null = null;
-  private wildlife: AtacamaWildlife | null = null;
+  private atacamaWildlife: AtacamaWildlife | null = null;
   private swell: AtlanticSwell | null = null;
   private weather: AubisqueWeather | null = null;
   private livestock: AubisqueLivestock | null = null;
   private performers: AustinPerformers | null = null;
   private reef: BathshebaReef | null = null;
   private evening: ReturnType<typeof eveningUniform> | undefined;
-  private boats: BayOfIslandsBoats | null = null;
+  private bayBoats: BayOfIslandsBoats | null = null;
   private bunch: BeachRoadBunch | null = null;
-  private weather: HighlandWeather | null = null;
-  private livestock: HighlandLivestock | null = null;
+  private highlandWeather: HighlandWeather | null = null;
+  private highlandLivestock: HighlandLivestock | null = null;
   private coast: BigSurCoast | null = null;
   private trams: BlackpoolTrams | null = null;
   private yard: BlueMountainsYard | null = null;
@@ -645,9 +645,9 @@ export class CourseRenderer implements WorldRenderer {
       if (this.course.file.id === 'cabot') {
         const { CabotWildlife } = await import('./cabot-wildlife');
         if (this.disposed) return false;
-        this.wildlife = new CabotWildlife(this.course);
-        this.scene.add(this.wildlife.root);
-        this.disposables.push(this.wildlife);
+        this.cabotWildlife = new CabotWildlife(this.course);
+        this.scene.add(this.cabotWildlife.root);
+        this.disposables.push(this.cabotWildlife);
       }
       if (this.course.file.id === 'centralpark') {
         const { ParkTraffic } = await import('./park-traffic');
@@ -708,9 +708,9 @@ export class CourseRenderer implements WorldRenderer {
       if (this.course.file.id === 'atacama') {
         const { AtacamaWildlife } = await import('./atacama-wildlife');
         if (this.disposed) return false;
-        this.wildlife = new AtacamaWildlife();
-        this.scene.add(this.wildlife.mesh);
-        this.disposables.push(this.wildlife);
+        this.atacamaWildlife = new AtacamaWildlife();
+        this.scene.add(this.atacamaWildlife.mesh);
+        this.disposables.push(this.atacamaWildlife);
       }
       if (this.course.file.id === 'atlanticroad') {
         const { AtlanticSwell } = await import('./atlantic-swell');
@@ -747,9 +747,9 @@ export class CourseRenderer implements WorldRenderer {
       if (this.course.file.id === 'bayofislands') {
         const { BayOfIslandsBoats } = await import('./bay-of-islands-boats');
         if (this.disposed) return false;
-        this.boats = new BayOfIslandsBoats(this.course);
-        this.scene.add(this.boats.group);
-        this.disposables.push(this.boats);
+        this.bayBoats = new BayOfIslandsBoats(this.course);
+        this.scene.add(this.bayBoats.group);
+        this.disposables.push(this.bayBoats);
       }
       if (this.course.file.id === 'beachroad') {
         const { BeachRoadBunch } = await import('./beach-road-bunch');
@@ -764,10 +764,10 @@ export class CourseRenderer implements WorldRenderer {
           import('./bealach-weather'),
         ]);
         if (this.disposed) return false;
-        this.livestock = new HighlandLivestock(this.course);
-        this.weather = new HighlandWeather(this.course, this.sun);
-        this.scene.add(this.weather.root, this.livestock.mesh);
-        this.disposables.push(this.livestock, this.weather);
+        this.highlandLivestock = new HighlandLivestock(this.course);
+        this.highlandWeather = new HighlandWeather(this.course, this.sun);
+        this.scene.add(this.highlandWeather.root, this.highlandLivestock.mesh);
+        this.disposables.push(this.highlandLivestock, this.highlandWeather);
       }
       if (this.course.file.id === 'bigsur') {
         const { BigSurCoast } = await import('./bigsur-coast');
@@ -878,15 +878,11 @@ export class CourseRenderer implements WorldRenderer {
     this.parkTraffic?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.riderBatch?.follow();
     if (this.evening) {
-      const progress = Math.max(0, Math.min(1, (metres - 19500) / 7900));
-      const t = progress * progress * (3 - 2 * progress);
-      this.evening.value = t;
-      this.sun.color.setRGB(0.982 - 0.05 * t, 0.791 - 0.39 * t, 0.527 - 0.33 * t);
-      if (this.scene.fog instanceof Fog)
-        this.scene.fog.color.setRGB(0.402 + 0.43 * t, 0.604 - 0.27 * t, 0.658 - 0.43 * t);
-    }
-    if (this.evening) {
-      const progress = Math.max(0, Math.min(1, (metres - 14300) / 5050));
+      const bay = this.course?.file.id === 'bayofislands';
+      const progress = Math.max(
+        0,
+        Math.min(1, (metres - (bay ? 19_500 : 14_300)) / (bay ? 7900 : 5050)),
+      );
       const t = progress * progress * (3 - 2 * progress);
       this.evening.value = t;
       this.sun.color.setRGB(0.982 - 0.05 * t, 0.791 - 0.39 * t, 0.527 - 0.33 * t);
@@ -900,16 +896,16 @@ export class CourseRenderer implements WorldRenderer {
       you.group.position.y,
       frame.reducedMotion ? 0 : frame.time,
     );
-    this.wildlife?.update(you.group.position.x, frame.reducedMotion ? 0 : frame.time);
+    this.atacamaWildlife?.update(you.group.position.x, frame.reducedMotion ? 0 : frame.time);
     this.swell?.update(metres, frame.reducedMotion ? 0 : frame.time, this.camera.quaternion);
     this.weather?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.livestock?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.performers?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.reef?.update(metres, frame.reducedMotion ? 0 : frame.time);
-    this.boats?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.bayBoats?.update(metres, frame.reducedMotion ? 0 : frame.time);
 
-    this.weather?.update(metres, frame.reducedMotion ? 0 : frame.time);
-    this.livestock?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.highlandWeather?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.highlandLivestock?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.coast?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trams?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.yard?.update(metres, frame.reducedMotion ? 0 : frame.time);
@@ -921,7 +917,7 @@ export class CourseRenderer implements WorldRenderer {
     this.commute?.update(frame.reducedMotion ? 0 : frame.time, metres);
     this.cruise?.update(frame.reducedMotion ? 0 : frame.time);
     this.lifts?.update(frame.reducedMotion ? 0 : frame.time);
-    this.wildlife?.update(frame.reducedMotion ? 0 : frame.time);
+    this.cabotWildlife?.update(frame.reducedMotion ? 0 : frame.time);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -998,7 +994,7 @@ export class CourseRenderer implements WorldRenderer {
     this.pave = null;
     this.joggers = null;
     this.flags = null;
-    this.wildlife = null;
+    this.atacamaWildlife = null;
     this.salt = null;
     this.mirage = null;
     this.swell = null;
@@ -1006,12 +1002,11 @@ export class CourseRenderer implements WorldRenderer {
     this.weather = null;
     this.performers = null;
     this.reef = null;
-    this.boats = null;
+    this.bayBoats = null;
     this.evening = undefined;
     this.bunch = null;
-    this.evening = undefined;
-    this.livestock = null;
-    this.weather = null;
+    this.highlandLivestock = null;
+    this.highlandWeather = null;
     this.coast = null;
     this.trams = null;
     this.yard = null;
@@ -1041,7 +1036,7 @@ export class CourseRenderer implements WorldRenderer {
     this.riderBatch = null;
     this.camp = null;
     this.lifts = null;
-    this.wildlife = null;
+    this.cabotWildlife = null;
     this.parkTraffic = null;
     this.rain = null;
     this.shadows.clear();
@@ -1404,7 +1399,6 @@ export class CourseRenderer implements WorldRenderer {
         this.course!.file.sun,
         detail,
         this.course!.file.id === 'atlanticroad',
-        this.evening,
         this.evening,
       );
       this.skyClock = sky.at;
@@ -1906,19 +1900,19 @@ export class CourseRenderer implements WorldRenderer {
     drawn.boatHeight = this.boats?.mesh.position.y ?? null;
     drawn.flagDisplacement = this.flags?.displacement ?? null;
     drawn.joggerHeight = this.joggers?.height ?? null;
-    drawn.vicunaHeadHeight = this.wildlife?.headHeight ?? null;
-    drawn.flamingoBillHeight = this.wildlife?.billHeight ?? null;
+    drawn.vicunaHeadHeight = this.atacamaWildlife?.headHeight ?? null;
+    drawn.flamingoBillHeight = this.atacamaWildlife?.billHeight ?? null;
     drawn.sprayHeight = this.swell?.height ?? null;
     drawn.cirqueSun = this.weather ? this.sun.intensity : null;
     drawn.horseLane = this.livestock?.horseLane ?? null;
     drawn.guitarHand = this.performers?.guitarHand ?? null;
     drawn.reefCrest = this.reef?.crest ?? null;
     drawn.eveningLight = this.evening?.value ?? null;
-    drawn.ferryX = this.boats?.ferryX ?? null;
-    drawn.eveningLight = this.evening?.value ?? null;
+    drawn.ferryX = this.bayBoats?.ferryX ?? null;
+
     drawn.clubLane = this.bunch?.clubLane ?? null;
-    drawn.highlandSun = this.weather ? this.sun.intensity : null;
-    drawn.sheepLane = this.livestock?.sheepLane ?? null;
+    drawn.highlandSun = this.highlandWeather ? this.sun.intensity : null;
+    drawn.sheepLane = this.highlandLivestock?.sheepLane ?? null;
     drawn.fallingWater = this.coast?.fallHeight ?? null;
     drawn.surfCrest = this.coast?.crest ?? null;
     drawn.illumination = this.trams?.illumination ?? null;
@@ -1943,8 +1937,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.coachDistance = this.camp?.coachDistance;
     drawn.chairDistance = this.lifts?.chairDistance;
     drawn.cowPitch = this.lifts?.cowPitch;
-    drawn.moosePitch = this.wildlife?.moosePitch;
-    drawn.boatHeel = this.wildlife?.boatHeel;
+    drawn.moosePitch = this.cabotWildlife?.moosePitch;
+    drawn.boatHeel = this.cabotWildlife?.boatHeel;
     drawn.horseStride = this.parkTraffic?.horseStride;
     drawn.clubDistance = this.parkTraffic?.clubDistance;
     drawn.tier = this.tier;
