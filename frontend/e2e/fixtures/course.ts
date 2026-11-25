@@ -1,3 +1,4 @@
+import goldengateElevation from './goldengate-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -147,5 +148,45 @@ export const haleakalaCourseMap = {
   terrain: {
     grade: { 'warm-up': 2, work: 8, recover: 4.5, 'cool-down': 2, steady: 6 },
     roll: 0,
+  },
+};
+
+export const goldengateCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'golden-gate-park',
+  name: 'Golden Gate Park',
+  routeName: 'JFK Drive',
+  place: 'San Francisco, California',
+  world: 'goldengate',
+  distanceKm: 6.375,
+  climbingM: 20,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: goldengateElevation,
+  },
+  thumbnailUrl: 'maps/golden-gate-park.jpg',
+  photoUrl: 'maps/golden-gate-park-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 120, 11, 80),
+      seg('work', 60, 16, 85),
+      seg('recover', 72, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 24, 100),
+      seg('cool-down', 78, 11, 80),
+    ],
   },
 };
