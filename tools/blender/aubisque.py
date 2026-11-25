@@ -212,6 +212,42 @@ def mountains(k):
                         w=(u[0]+12,u[1]-side*4,u[2]-18);art.face((u,v,w),(lin(0xD3D7CE),)*3)
             last=rows
 
+def cafe_yard(k, art):
+    """Friends at the bike racks, parked cars and the café's picnic terrace."""
+    for i in range(18):
+        d = 12512 + (i//3)*9 + (i%3)*1.15
+        lane = -9.1-(i%3)*.92
+        x,y,z=k.road.pos(d,lane); z+=slope(d,lane)
+        yaw=bearing(d)+i*2.2
+        cs,sn=math.cos(yaw),math.sin(yaw)
+        def p(u,v,h):return (x+u*cs-v*sn,y+u*sn+v*cs,z+h)
+        jersey=lin((0x697C94,0xBC694A,0xBFAB4D,0x638376,0xD3CAB6)[i%5])
+        skin=lin((0x9B694F,0xBC8E6D,0x75503F)[i%3]);shorts=lin(0x39424B)
+        art.tube(p(0,0,.81),.14,.22,.52,shorts,jersey,8,jersey)
+        art.tube(p(.02,0,1.37),.10,.125,.24,skin,skin,8,skin)
+        art.tube(p(.012,0,1.57),.15,.10,.12,shorts,jersey,9,jersey)
+        for side in (-1,1):
+            step=.13*side*math.sin(i)
+            beam(art,p(0,side*.12,.89),p(step,side*.14,.48),.15,.14,shorts)
+            beam(art,p(step,side*.14,.48),p(step+.02,side*.16,.07),.09,.095,skin)
+            art.box(p(step+.07,side*.16,.02),(.23,.12,.08),yaw,shorts)
+            beam(art,p(0,side*.185,1.29),p(.045,side*.27,1.04),.13,.11,jersey)
+            beam(art,p(.045,side*.27,1.04),p(.24,side*.22,1.06+.17*math.sin(i+side)),.085,.08,skin)
+    for d in (12531,12541,12550):
+        lane=-15;x,y,z=k.road.pos(d,lane); z+=slope(d,lane);yaw=bearing(d)
+        for offset in (-.91,.91):
+            u,v,w=k.road.pos(d,lane+offset)
+            art.box((u,v,z+.43),(2.2,.37,.15),yaw,lin(0x77654E))
+        art.box((x,y,z+.73),(2.38,1.24,.18),yaw,lin(0x9F8664))
+        art.tube((x,y,z),.23,.17,.73,lin(0x565B50),lin(0x565B50),6)
+    for i in range(6):
+        d=12489+i*6;lane=-20
+        x,y,z=k.road.pos(d,lane);z+=slope(d,lane);yaw=bearing(d)-.22
+        colour=lin((0x6D7881,0xAE7766,0xB8B9AB,0x5B6968)[i%4])
+        art.box((x,y,z+.24),(4.12,1.73,.63),yaw,colour)
+        art.box((x,y,z+.85),(2.3,1.56,.59),yaw,lin(0x525F63))
+        art.box((x,y,z+1.42),(2.15,1.57,.1),yaw,colour)
+
 def scenery(k):
     art=Painted(k);mountains(k);rng=k.rng
     for d in range(465,9130,7):
@@ -231,4 +267,5 @@ def scenery(k):
     for d in (123,139,152,195,12478,12504,12518,12572,12583):
         l=-7.9 if d<12000 else -9.3;x,y,z=k.road.pos(d,l)
         bicycle(art,(x,y,z+slope(d,l)),bearing(d)+.4,.98,rng.choice((0x8BA142,0xAA6651,0x506D8C)))
+    cafe_yard(k,art)
     return {'efforts':0}
