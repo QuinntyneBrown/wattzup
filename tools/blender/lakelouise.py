@@ -59,16 +59,27 @@ def land(r,col,theme,bc):
     return None,sample
 
 
-def chateau(k,art):
+def facade(mesh,at,u1,u2,v,lo,hi,tile):
+    a,b=tile
+    picture(mesh,(at(u1,v,lo),at(u2,v,lo),at(u2,v,hi),at(u1,v,hi)),((a+.003,b+.003),(a+.497,b+.003),(a+.497,b+.497),(a+.003,b+.497)))
+
+
+def chateau(k,art,walls):
     at,h=site(k,140,-34)
     cream=lin(0xDECEAA);slate=lin(0x536566);trim=lin(0xEBE0CB);glass=lin(0x52646C)
     for u,v,w,depth,high in ((0,0,62,15,24),(-36,4,17,23,29),(35,4,18,23,27),(-49,0,13,16,19),(49,0,13,16,19)):
         art.box(at(u,v,-.28),(w,depth,high),h,cream)
         art.box(at(u,v,high-.42),(w+.6,depth+.6,.5),h,trim)
         art.roof(at(u,v,high),w,depth,3.2,h,slate)
-        for floor in range(1,int((high-1)/3)):
-            for n in range(int(w/3.65)):
-                art.box(at(u-w/2+2.1+n*3.65,v+depth/2+.045,1.3+floor*3.02),(1.46,.13,1.59),h,glass)
+        bays=max(1,round(w/19))
+        for j in range(bays):
+            left=u-w/2+w*j/bays;right=left+w/bays
+            facade(walls,at,left,right,v+depth/2+.09,3.80,high-.46,(0,.5))
+            facade(walls,at,left,right,v+depth/2+.09,.06,3.80,(.5,.5))
+        # The short wings face a rider approaching along the shore.
+        def end(a,b,c):return at(u-w/2-.08,v-a,c)
+        facade(walls,end,-depth/2,depth/2,0,3.80,high-.46,(0,.5))
+        facade(walls,end,-depth/2,depth/2,0,.06,3.80,(.5,.5))
     for i in range(-9,10):
         art.box(at(i*3.65,10,-.18),(.70,1.15,3.92),h,trim)
     art.box(at(0,9.7,3.7),(70,3.3,.68),h,trim)
@@ -79,7 +90,7 @@ def chateau(k,art):
 
 def scenery(k):
     art=Painted(k);water=Painted(k,'sea');wood=lin(0x78513E);level=min(a['z'] for a in k.road.s)-1.15
-    chateau(k,art)
+    walls=pictured(k,'ChateauWalls');chateau(k,art,walls)
     peaks=pictured(k,'VictoriaGlacier')
     # This ridge stands in a fixed arc beyond the head of the lake. Its reflection ends at lake level.
     for i in range(18):
@@ -88,6 +99,26 @@ def scenery(k):
             return (2450+9050*math.cos(angle),-1100+9050*math.sin(angle),level+(2340 if top else -24))
         lo=i/18;hi=(i+1)/18
         picture(peaks,(ridge(i,False),ridge(i+1,False),ridge(i+1,True),ridge(i,True)),((lo,0),(hi,0),(hi,1),(lo,1)))
+    # The walls across the lake rise directly from the water, in front of Mount Victoria.
+    mountains=type(k.B['terrain'])('FairviewRock','terrain');mountains.colours=[];k.B['FairviewRock']=mountains
+    previous=None
+    for d in range(-1200,10201,62):
+        rows=[]
+        bank=1490+105*math.sin(d/616)+75*math.sin(d/377)
+        height=(230+1090*math.exp(-((d-5480)/1040)**2)
+                +1190*math.exp(-((d-7670)/950)**2)+340*math.exp(-((d-310)/865)**2))
+        for j,(distance,rise) in enumerate(((0,0),(80,.08),(190,.21),(278,.33),(369,.48),(428,.52),(518,.67),(609,.81),(738,1),(930,.73))):
+            x=d+22*math.sin(d/210+j*.34);y=bank+distance
+            noise=16*math.sin(d/65+j*.86)+9*math.sin(d/29+j*.8)
+            z=level+rise*height+(noise if j else -.25)
+            if j<3:color=(0x416054,0x465C49,0x4F6853)[j]
+            elif z>level+950+56*math.sin(d/89) and j>6:color=0xDCDFD9
+            else:color=(0x7C817E,0x929793,0x606C6D,0x90948D)[j%4]
+            rows.append(((x,y,z),lin(color)))
+        if previous:
+            for a,b,c,e in zip(previous,previous[1:],rows[1:],rows):
+                mountains.quad(a[0],e[0],c[0],b[0]);mountains.colours.extend((a[1],e[1],c[1],b[1]))
+        previous=rows
     trees=pictured(k,'LouiseSpruce')
     last=None
     for d in range(-80,8350,18):
@@ -108,6 +139,7 @@ def scenery(k):
     # Rental boathouse sits on piles. Planks and floats descend to the water beside it.
     at,h=site(k,1250,25);floor=level-at(0,0,0)[2]+1.1
     art.box(at(0,0,floor),(17,8,3.4),h,wood);art.roof(at(0,0,floor+3.4),17,9,2.8,h,lin(0x69726F))
+    facade(walls,at,-8.50,8.50,-4.16,floor+.08,floor+3.39,(0,0))
     for u in range(-8,9,2):art.box(at(u,-4.1,floor+.32),(.13,.14,3),h,lin(0xAAA392))
     for u in (-5,0,5):art.box(at(u,-4.13,floor+.87),(3.35,.13,1.67),h,lin(0x403E39))
     for j in range(67):
@@ -121,11 +153,11 @@ def scenery(k):
             art.box(at(1,-1.07,.39),(2.4,.52,.12),h,wood)
             art.box(at(1,-.86,.68),(2.4,.13,.38),h,wood)
             for u in (0,2):art.box(at(u,-1.06,-.15),(.14,.38,.56),h,lin(0x4C5350))
-    for d,name in ((4020,'BOW VALLEY PARKWAY'),(7460,'MORAINE LAKE ROAD')):
+    for d,name in ((4166,'BOW VALLEY PARKWAY'),(7550,'MORAINE LAKE ROAD')):
         at,h=site(k,d,-4.5)
         for j in (-1.55,1.55):art.box(at(0,j,-.15),(.17,.17,2.7),h,wood)
         art.box(at(0,0,1.2),(.20,4.2,1.62),h,lin(0x476450))
-        words(art,name,at(-.115,1.87,1.72),(math.sin(h),-math.cos(h),0),(0,0,1),.42,3.74,0xF7EDD5)
+        words(art,name,at(-.115,0,1.72),(math.sin(h),-math.cos(h),0),(0,0,1),.42,3.74,0xF7EDD5)
     return {'efforts':0}
 
 
