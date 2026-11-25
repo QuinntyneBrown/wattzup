@@ -146,9 +146,9 @@ def pearl(art,glow,x,y):
 
 
 def towers(art,glow):
-    pearl(art,glow,1520,-745)
+    pearl(art,glow,2430,-852)
     # A twisting, tapered glazed envelope with a light seam that follows its rotation.
-    x,y=1818,-1010;last=None
+    x,y=2740,-1685;last=None
     for j in range(34):
         f=j/33;z=4+410*f;rad=42-20*f;twist=1.57*f
         ring=[(x+rad*math.cos(a*math.tau/12+twist),y+rad*.85*math.sin(a*math.tau/12+twist),z) for a in range(12)]
@@ -161,7 +161,7 @@ def towers(art,glow):
         last=ring
     for i in range(12):beam(glow,last[i],last[(i+1)%12],1.24,1.24,lin(0xD6DDF2))
     # Two legs leave a real trapezoidal opening beneath the Financial Center's lintel.
-    x,y=1676,-963
+    x,y=2780,-1550
     box(art,x,y,4,46,33,252,0x405373)
     for j in range(12):
         span=17-j*.77;z=256+j*3.33
@@ -170,7 +170,7 @@ def towers(art,glow):
             beam(glow,(x+side*(span+3.35),y+12.8,z),(x+side*(span+2.67),y+12.8,z+3.34),.86,.86,lin(0x8BCAF0))
     box(glow,x,y,295.9,26,26,3.4,0x9AC7E0)
     for side in (-1,1):beam(glow,(x+side*23,y+16.6,5),(x+side*21,y+16.6,255),.93,1.12,lin(0x78B6E7))
-    x,y=1738,-903
+    x,y=2700,-1310
     for j in range(18):
         w=53-j*2.2;z=4+j*14.1
         box(art,x,y,z,w,w*.87,14.1,0x725F5C)
@@ -197,6 +197,9 @@ def facade(art,glow,x,kind,rng):
     for j in range(9):
         u=(j-4)*w*.109
         block(art,u,-11.9,6.3,.72,1.2,19.8,0xBDAB89)
+        # The warm wash climbs the stone between the dark window reveals.
+        block(glow,u,-12.42,6.9,.61,.14,15.4,0xA87E4C)
+        block(glow,u,-12.48,6.9,.49,.09,7.6,0xD1AA68)
         block(glow,u,-12.53,6.45,.21,.08,18.9,0xE5C47D)
     for z in (5.55,26.39,30.12):block(glow,0,-11.85,z,w+1.2,.48,.4,0xE0C085)
     if kind=='customs':
@@ -257,7 +260,7 @@ def scenery(k):
         far.face(face,(lin(0x4F5156),)*4)
         box(far,x+25,y,0,50.05,1.4,2.45,0x55585B)
         box(glow,x+25,y+.93,2.34,49.5,.25,.14,0xD6AA74)
-        if abs(x-1520)>70:
+        if abs(x-2430)>70:
             for r in (0,1):
                 h=rng.uniform(16,76)*(1+r);width=rng.uniform(18,45);ty=y-90-r*170
                 box(far,x,ty,2,width,width*.82,h,0x535565 if r==0 else 0x464F60)
@@ -286,10 +289,17 @@ def scenery(k):
                 top=lin(rng.choice((0xB26761,0xC6AF8E,0x658480,0x566A87,0x9F8193,0x697177)))
                 for side in (-1,1):
                     box(art,u+side*.105,v,z,.14,.16,.76*h,0x404251)
-                    beam(art,(u+side*.21,v,z+1.28*h),(u+side*.29,v-.14,z+(.91 if j else 1.48)*h),.11,.13,skin)
+                    pose=(x+j*3+side)%5
+                    elbow=(u+side*.29,v-.035,z+1.02*h)
+                    hand=(u+side*(.32 if pose%2 else .21),v-rng.uniform(.10,.23),z+(.89,1.31,1.59,1.18,.85)[pose]*h)
+                    beam(art,(u+side*.2,v,z+1.27*h),elbow,.13,.15,top)
+                    beam(art,elbow,hand,.108,.113,skin)
+                    box(art,u+side*.105+.038,v-.026,z,.16,.24,.09,0x48484D)
+                    if pose==2:box(art,hand[0],hand[1]-.03,hand[2],.09,.035,.17,0x49484A)
                 art.tube((u,v,z+.75*h),.19,.25,.59*h,top,top,7)
                 art.tube((u,v,z+1.33*h),.145,.14,.30*h,skin,skin,7)
                 art.tube((u,v,z+1.59*h),.148,.10,.11*h,lin(0x473D3D),lin(0x534540),7)
+                if (x+j)%5==0:art.tube((u,v,z+1.65*h),.18,.12,.075,lin(0xBAA188),lin(0xC6B7A0),8)
     for i in range(48):
         x=1440+(i%16)*17+rng.uniform(-5,5);y=shore(x)+9+(i//16)*9
         h=rng.uniform(5.4,9.4)
