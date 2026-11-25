@@ -69,6 +69,7 @@ import { colourLightMap, lampLightMap } from './lamp-light-map';
 import { ridersOnRoad } from './race-riders';
 import { skyMaterial } from './sky-material';
 import { type Rain, rain } from './rain';
+import type { CalobraCamp } from './calobra-camp';
 import { RiderBatch } from './rider-batch';
 import { RiderBody } from './rider-body';
 import { bendLean } from './rider-lean';
@@ -212,6 +213,7 @@ export class CourseRenderer implements WorldRenderer {
   private skyClock: ((seconds: number) => void) | null = null;
   /** Moves the sea's ripples on to a second of the ride's clock. */
   private waterClock: ((seconds: number) => void) | null = null;
+  private camp: CalobraCamp | null = null;
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
   private rain: Rain | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
@@ -236,6 +238,8 @@ export class CourseRenderer implements WorldRenderer {
   /** What the pinned probe reports of the frame just drawn. */
   private readonly drawn = {
     tier: 0 as number,
+    packDistance: undefined as number | undefined,
+    coachDistance: undefined as number | undefined,
     backend: '' as string,
     drawCalls: 0,
     triangles: 0,
@@ -363,6 +367,13 @@ export class CourseRenderer implements WorldRenderer {
         this.camera.updateProjectionMatrix();
       }
       this.build(gltf.scene, canvas);
+      if (this.course.file.id === 'calobra') {
+        const { CalobraCamp } = await import('./calobra-camp');
+        if (this.disposed) return false;
+        this.camp = new CalobraCamp(this.course, this.kit!, this.riderBatch!);
+        this.scene.add(this.camp.root);
+        this.disposables.push(this.camp);
+      }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -428,6 +439,7 @@ export class CourseRenderer implements WorldRenderer {
     this.kit?.roll(metres);
     you.pose(frame.reducedMotion ? 0 : frame.crank, standing);
     this.placeRiders(frame, metres);
+    this.camp?.update(frame.time, metres, frame.reducedMotion);
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres, frame.reducedMotion);
@@ -485,6 +497,7 @@ export class CourseRenderer implements WorldRenderer {
     this.sunGlow = null;
     this.groundEye = null;
     this.riderBatch = null;
+    this.camp = null;
     this.rain = null;
     this.shadows.clear();
     this.casting.clear();
@@ -497,7 +510,8 @@ export class CourseRenderer implements WorldRenderer {
   private build(map: Object3D, canvas: HTMLCanvasElement): void {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
-    this.scene.fog = new Fog(look.haze, FOG[0], FOG[1]);
+    const fogRange = this.course!.file.id === 'calobra' ? ([2500, 16000] as const) : FOG;
+    this.scene.fog = new Fog(look.haze, fogRange[0], fogRange[1]);
     this.scene.background = new Color(look.haze);
     this.sun.color.setHex(look.light.colour);
     this.sun.intensity = look.light.intensity;
@@ -1113,6 +1127,8 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.packDistance = this.camp?.packDistance;
+    drawn.coachDistance = this.camp?.coachDistance;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

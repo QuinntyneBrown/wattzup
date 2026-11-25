@@ -53,18 +53,23 @@ def land(road,col,theme,bc):
     def terrain(x,y):
         _,i,dist=tree.find((x,y,0));p=ground[i];d=p['d']
         lateral=(y-p['y'])*math.cos(p['h'])-(x-p['x'])*math.sin(p['h'])
-        if d<680:
-            off=max(0,-lateral-4);shore=(p['z']-.35)*(1-smooth(0,24,off))-max(0,off-24)*.28
-            if lateral<0:return shore
-            return p['z']-.6+max(0,lateral-7)*(.30+.32*smooth(250,600,d))
-        grade=(.63 if 1550<d<9550 else .27)
-        if 1550<d<9550:rise=grade*(y-p['y'])+.06*(x-p['x'])
-        else:rise=.37*lateral
-        rough=(4.7*math.sin(x/23+y/45)+2.7*math.cos(x/13-y/19))*smooth(7,38,dist)
-        z=p['z']-1.5+rise*smooth(5,21,dist)+rough
-        if d<1600:
-            z+=max(0,abs(lateral)-7)*(.41+.3*math.sin(d/148))
-        return max(-11,z)
+        # One continuous hillside under every leg. Nearest-road lookups alone make a
+        # vertical cliff on the bisector between two roads of different elevations.
+        coast=3.7+.036*max(0,x-170)+.18*max(0,y-90)
+        headland=(63+.63*min(890,max(-110,y))+.033*max(0,y-890)+.025*(x-1500))
+        island=smooth(520,1420,x)
+        z=coast+(headland-coast)*island
+        z+=16*math.sin(x/199+y/229)+10*math.cos(x/105-y/134)
+        if x<570:
+            z-=(1-smooth(340,570,x))*max(0,80-y)*.23
+        if 780<x<1560:
+            z+=smooth(780,1030,x)*(1-smooth(1420,1560,x))*min(40,abs(lateral))*.27
+        # Lower embankments keep the asphalt and the open arch clear at road crossings.
+        verge=p['z']-1.40+max(0,dist-7)*.14
+        if d<650 and lateral<-4:
+            verge=p['z']-.7-max(0,-lateral-4)*.45
+        weight=1-smooth(8,105,dist)
+        return max(-24,z+(verge-z)*weight)
     xmin=int(min(p['x'] for p in ground))-220;xmax=int(max(p['x'] for p in ground))+300
     ymin=int(min(p['y'] for p in ground))-260;ymax=int(max(p['y'] for p in ground))+250
     b=bc.Builder('Karst valley, cuttings and saltwater cove','terrain');b.colours=[]
@@ -97,9 +102,9 @@ def roadway(road,st,length,col,bc):
 
 
 THEME={'lay':route,'road_half_width':3.23,'land_builder':land,'road_builder':roadway,'terrain':{'sea':True},
-       'land':{'mid':0x9A946F},'sky':[0xE1DFCA,0xC4D9DB,0xA2CFE0,0x78B0D7,0x5088BF],
-       'haze':0xC8CBB6,'light':[0xFFE5B2,3.2],'fill':[0xD2E3EB,0xB5A484],
-       'sun_azimuth':-.93,'sun_altitude':.69,'palette':{'asphalt':0x545452},'chunks':{'Land':2}}
+       'land':{'mid':0x9A946F},'sky':[0x9DC4DB,0x88BCE2,0x6EABE1,0x5698DD,0x4384D0],
+       'haze':0xB4CDD9,'light':[0xFFF4E4,3.0],'fill':[0xD2E3EB,0xB5A484],
+       'sun_azimuth':-.93,'sun_altitude':.69,'palette':{'asphalt':0x5A5A58,'sea':0x095A98},'chunks':{'Land':2}}
 
 @lru_cache(maxsize=96)
 def lettering(text):
@@ -222,7 +227,7 @@ def scenery(k):
     for d in range(35,11850,7):
         l=rng.choice((-1,1))*rng.uniform(8,41);x,y,z=at(d,l)
         if z<1 or abs(d-BRIDGE)<45 or not k.road.clear_of_road(x,y,7,k.road.index(d),80):continue
-        if 960<d<1550:l*=1.6
+        if 960<d<1550 and abs(l)<17:continue
         h=rng.uniform(2.1,6.8);r=.45*h
         art.tube((x,y,z),h*.038,h*.024,h*.69,lin(0x615B49),lin(0x86816B),6)
         tint=rng.choice((0x667449,0x5C6941,0x768155,0x536645))
@@ -240,6 +245,46 @@ def scenery(k):
     art.box((x,y,z+1.32),(.13,2.55,.89),yaw,lin(0x824C37))
     origin=(x-.078*math.cos(yaw),y-.078*math.sin(yaw),z+1.77)
     words(art,'Coll dels Reis',origin,(math.sin(yaw),-math.cos(yaw),0),(0,0,1),.27,2.33,0xF0E4CA)
+    # Roof-racked team estate in the class's original navy-and-white livery.
+    for d in (172,7162,11636):
+        x,y,z=k.road.pos(d,-4.55);yaw=heading(d)
+        def carpoint(u,v,h):
+            return (x+u*math.cos(yaw)-v*math.sin(yaw),y+u*math.sin(yaw)+v*math.cos(yaw),z+h-.16)
+        art.box(carpoint(0,0,.31),(4.6,1.86,.82),yaw,lin(0x243960))
+        art.box(carpoint(0,0,.77),(4.60,1.87,.17),yaw,lin(0xE4E4DB))
+        art.box(carpoint(-.20,0,1.13),(2.65,1.62,.56),yaw,lin(0x354D5B))
+        art.box(carpoint(-.18,0,1.69),(2.79,1.73,.11),yaw,lin(0x26385D))
+        for u in (-1.48,1.50):
+            for v in (-.90,.90):
+                hub=carpoint(u,v,.36)
+                for j in range(12):
+                    a=j*math.tau/12;b=(j+1)*math.tau/12
+                    f=(hub,carpoint(u+.36*math.cos(a),v,.36+.36*math.sin(a)),carpoint(u+.36*math.cos(b),v,.36+.36*math.sin(b)))
+                    co=lin(0x282B2B);art.face(f,(co,)*3);art.face(f[::-1],(co,)*3)
+        for v in (-.56,0,.56):
+            for u in (-.59,.56):
+                for j in range(14):
+                    a=j*math.tau/14;b=(j+1)*math.tau/14
+                    beam(art,carpoint(u+.32*math.cos(a),v,2.13+.32*math.sin(a)),carpoint(u+.32*math.cos(b),v,2.13+.32*math.sin(b)),.036,.036,lin(0x343633))
+            for a,b in (((-.59,2.13),(-.07,2.55)),((-.07,2.55),(.10,2.12)),((.10,2.12),(-.59,2.13)),((.10,2.12),(.50,2.52)),((.50,2.52),(-.07,2.55)),((.50,2.52),(.56,2.13))):
+                beam(art,carpoint(a[0],v,a[1]),carpoint(b[0],v,b[1]),.035,.035,lin(0xD9DCCF))
+    # The thin far roadway follows the same physical bends as the near, detailed asphalt.
+    for d in range(1640,10400,7):
+        if abs(d-BRIDGE)<28:continue
+        f=(k.road.pos(d,-3.18,-.12),k.road.pos(d+7,-3.18,-.12),
+           k.road.pos(d+7,3.18,-.12),k.road.pos(d,3.18,-.12))
+        ridge.face(f,(lin(0x676760),)*4)
+    # Pale headlands enclose both sides of the port. Displaced strata give the cliffs a broken face.
+    for row in range(2):
+        prev=None
+        for j in range(65):
+            u=j/64;x=270+u*790;y=-165-row*215-70*math.sin(u*3.5)
+            high=(49+row*32+17*math.sin(j*.16)+9*math.cos(j*.41))*math.sin(math.pi*u)**.52
+            section=((x,y+18,-4),(x,y+12,high*.19),(x-3,y+9,high*.64),(x,y,high),(x,y-36,high*.86))
+            if prev:
+                for i,tint in enumerate((0xA69578,0xB8B29D,0xBCB7A1,0x798258)):
+                    co=lin(tint);f=(prev[i],section[i],section[i+1],prev[i+1]);ridge.face(f,(co,)*4);ridge.face(f[::-1],(co,)*4)
+            prev=section
     # Puig Major is the highest fixed ridge behind the switchbacks.
     for row in range(3):
         prev=None
