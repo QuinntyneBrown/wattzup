@@ -1247,3 +1247,8 @@ import haleakala as _haleakala  # noqa: E402  (beside this script)
 MATERIALS.update(_haleakala.MATERIALS)
 THEMES["haleakala"] = _haleakala.THEME
 SCENERY["haleakala"] = _haleakala.scenery
+
+import bigsur as _bigsur
+
+THEMES["bigsur"] = _bigsur.THEME
+SCENERY["bigsur"] = _bigsur.scenery
