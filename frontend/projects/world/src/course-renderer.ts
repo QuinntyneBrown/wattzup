@@ -81,6 +81,7 @@ import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
+import type { SalarMirage } from './atacama-salt';
 import type { AtacamaWildlife } from './atacama-wildlife';
 import { heldFps } from './held-fps';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
@@ -244,6 +245,7 @@ export class CourseRenderer implements WorldRenderer {
     triangles: 0,
     groups: {} as Record<string, number>,
   };
+  private mirage: SalarMirage | null = null;
   private salt: Material | null = null;
   private wildlife: AtacamaWildlife | null = null;
   private readonly chosenAt = new Vector3();
@@ -361,9 +363,12 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       if (this.course.file.id === 'atacama') {
-        const { atacamaSalt } = await import('./atacama-salt');
+        const { atacamaSalt, SalarMirage } = await import('./atacama-salt');
         if (this.disposed) return false;
         const { material, crust } = atacamaSalt();
+        this.mirage = new SalarMirage();
+        this.scene.add(this.mirage.mesh);
+        this.disposables.push(this.mirage);
         this.salt = material;
         this.disposables.push(crust);
         // The summit is thirty kilometres away across the salt basin at the start.
@@ -447,6 +452,11 @@ export class CourseRenderer implements WorldRenderer {
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
+    this.mirage?.update(
+      you.group.position.x,
+      you.group.position.y,
+      frame.reducedMotion ? 0 : frame.time,
+    );
     this.wildlife?.update(you.group.position.x, frame.reducedMotion ? 0 : frame.time);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
@@ -496,6 +506,7 @@ export class CourseRenderer implements WorldRenderer {
     this.glider = null;
     this.wildlife = null;
     this.salt = null;
+    this.mirage = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.riders.clear();

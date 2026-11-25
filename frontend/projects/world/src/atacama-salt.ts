@@ -1,5 +1,13 @@
 import { mix, positionWorld, smoothstep, texture, vertexColor } from 'three/tsl';
-import { CanvasTexture, MeshLambertNodeMaterial, RepeatWrapping } from 'three/webgpu';
+import {
+  CanvasTexture,
+  DoubleSide,
+  Mesh,
+  MeshBasicMaterial,
+  MeshLambertNodeMaterial,
+  PlaneGeometry,
+  RepeatWrapping,
+} from 'three/webgpu';
 
 type Point = readonly [number, number];
 
@@ -82,4 +90,55 @@ export function atacamaSalt() {
   const salt = smoothstep(0.48, 0.67, base.r).mul(smoothstep(0.38, 0.55, base.g));
   material.colorNode = base.mul(mix(1, tile.mul(1.15), salt));
   return { material, crust };
+}
+
+/** A distant refracted band of sky, seen in the dry air above the sunlit road. */
+export class SalarMirage {
+  private readonly geometry = new PlaneGeometry(1, 1);
+  private readonly material = new MeshBasicMaterial({
+    color: 0xc2d3de,
+    transparent: true,
+    depthWrite: false,
+    side: DoubleSide,
+  });
+  readonly mesh = new Mesh(this.geometry, this.material);
+  private readonly texture: CanvasTexture;
+
+  constructor() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 32;
+    const ctx = canvas.getContext('2d')!;
+    const pixels = ctx.createImageData(256, 32);
+    for (let y = 0; y < 32; y++)
+      for (let x = 0; x < 256; x++) {
+        const edge = Math.sin((x * Math.PI) / 255) ** 2;
+        const t = (y - 15 - 2 * Math.sin(x * 0.041)) * 0.27;
+        const alpha = edge * Math.exp(-t * t) * (0.55 + 0.45 * Math.cos(y * 2.8 + x * 0.024));
+        const i = 4 * (x + 256 * y);
+        pixels.data[i] = pixels.data[i + 1] = pixels.data[i + 2] = 255;
+        pixels.data[i + 3] = Math.round(255 * alpha);
+      }
+    ctx.putImageData(pixels, 0, 0);
+    this.texture = new CanvasTexture(canvas);
+    this.material.map = this.texture;
+    this.mesh.rotation.y = Math.PI / 2;
+    this.mesh.scale.set(23, 2.1, 1);
+  }
+
+  update(x: number, y: number, time: number): void {
+    this.mesh.position.set(
+      x + 168,
+      y + 0.98 + 0.13 * Math.sin(time * 2.4),
+      0.6 * Math.sin(time * 0.83),
+    );
+    this.material.opacity = 0.38 + 0.1 * Math.sin(time * 1.47);
+  }
+
+  dispose(): void {
+    this.mesh.removeFromParent();
+    this.texture.dispose();
+    this.material.dispose();
+    this.geometry.dispose();
+  }
 }
