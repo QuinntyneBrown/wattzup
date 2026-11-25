@@ -57,6 +57,7 @@ export class ChicagoRailway {
   private readonly unit = new BoxGeometry(1, 1, 1);
   private readonly silver = new MeshBasicMaterial();
   private readonly train = new InstancedMesh(this.unit, this.silver, 240);
+  private readonly crossing: InstancedMesh;
   private readonly p = new Object3D();
   private readonly tint = new Color();
   private readonly vaporQuad = new PlaneGeometry(1, 1);
@@ -142,12 +143,17 @@ export class ChicagoRailway {
       block(x + 7.2, 10.6, z, 0.54, 0.47, 1.04, 0x4c5254);
     }
     this.train.count = n;
+    this.crossing = this.train.clone();
+    this.crossing.rotation.y = Math.PI / 2;
+    this.crossing.position.set(355.75, 5.94, 0);
+    this.root.add(this.crossing);
     this.update(0);
   }
 
   update(seconds: number) {
     this.train.position.x = chicagoTrainX(seconds);
     this.trainX = this.train.position.x;
+    this.crossing.position.z = 75 * Math.sin(seconds * 0.082 - 0.9);
     for (let i = 0; i < 18; i++) {
       const origin = this.steamOrigin[Math.floor(i / 6)]!;
       const phase = (seconds * 0.24 + (i % 6) / 6) % 1;
@@ -168,6 +174,7 @@ export class ChicagoRailway {
   dispose() {
     this.root.clear();
     this.train.dispose();
+    this.crossing.dispose();
     this.vapor.dispose();
     this.unit.dispose();
     this.silver.dispose();

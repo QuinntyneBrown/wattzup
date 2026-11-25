@@ -920,8 +920,12 @@ export class CourseRenderer implements WorldRenderer {
     const back = course.place(metres - behind, 0, this.here);
     this.camera.position.set(back.x, back.y + up, back.z);
     this.groundEye?.at(metres - behind, 0, up);
-    const ahead = course.place(metres + LOOK_AHEAD, 0, this.there);
-    this.camera.lookAt(ahead.x, ahead.y + LOOK_UP, ahead.z);
+    const lap = this.railway ? metres % 1750 : 0;
+    const bridge = this.railway ? Math.max(0, 1 - Math.abs(lap - 460) / 67) : 0;
+    const skyline = this.railway ? Math.max(0, 1 - Math.abs(lap - 670) / 105) : 0;
+    const train = this.railway ? Math.max(0, 1 - Math.abs(lap - 220) / 74) : 0;
+    const ahead = course.place(metres + LOOK_AHEAD, -2.8 * bridge, this.there);
+    this.camera.lookAt(ahead.x, ahead.y + LOOK_UP + 1.8 * skyline + 1.2 * train, ahead.z);
     this.sky?.position.copy(this.camera.position);
     const [x, , z] = course.file.sun;
     this.sun.target.position.set(ahead.x, ahead.y, ahead.z);

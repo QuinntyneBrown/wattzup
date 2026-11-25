@@ -167,7 +167,7 @@ def scenery(k):
     for street in (0,-WIDTH):
         for side in (-1,1):
             for kx in range(-130,771,34):
-                if abs(kx-RIVER)<47 or abs(kx-LONG)<33 or abs(kx)<22: continue
+                if abs(kx-RIVER)<47 or abs(kx-LONG)<42 or abs(kx)<29: continue
                 x=kx+rng.uniform(-2,2);y=street+side*33
                 floors=rng.choice((6,8,10,14,17))
                 tone=rng.choice((0x9E8774,0x918579,0x898580,0xA79E8C,0xB5A38D))
@@ -190,7 +190,7 @@ def scenery(k):
     for x in (-184,-172):
         skyline.tube((x,-143,172),.6,.17,46,lin(edge),lin(0xC4C1AA),8)
     for offset in (0,43):
-        x,y=LONG+63,-WIDTH+22+offset
+        x,y=LONG+8+(offset-20)*.92,-WIDTH-87-offset*.4
         skyline.tube((x,y,1.8),12.7,12.7,78,lin(0x625E58),lin(0x857E70),32)
         for f in range(24):
             for j in range(12):
@@ -258,4 +258,60 @@ def scenery(k):
             for v in (-.90,.90):
                 px=x+u*math.cos(h)-v*math.sin(h);py=y+u*math.sin(h)+v*math.cos(h)
                 box(px,py,z+.08,.58,.17,.51,0x414342,h)
+    # Side streets close the blocks. Shop glazing and recessed entries are visible around the turn.
+    for street_x in (-14,LONG+14):
+        for side in (-1,1):
+            for n in range(6):
+                y=-38-n*35
+                x=street_x+side*28
+                floors=rng.choice((6,8,10,13))
+                wall=rng.choice((0xA3927C,0xB2A28B,0x8E8175,0x878886))
+                box(x,y,1.75,25,32,floors*3.55,wall)
+                front=x-side*12.57
+                for floor in range(floors):
+                    for bay in range(5):
+                        box(front,y+(bay-2)*5.75,2.85+floor*3.55,.2,4.72,2.35,0x667984)
+                    box(front,y,5.31+floor*3.55,.36,32,.21,0xAA9E8D)
+                box(front-side*.75,y,5.41,1.58,28,.34,0x675F58)
+                for bay in range(5):
+                    box(front-side*.12,y+(bay-2)*5.75,2.04,.27,4.65,2.8,0x566C72)
+    # A visible bank of towers ends the northern cross street, beyond the physical turning kerb.
+    for j in range(13):
+        x=LONG-150+j*28; y=-WIDTH-128-(j%3)*12
+        if abs(x-LONG)<50:continue
+        floors=rng.randrange(12,30); w=19+rng.random()*9
+        box(x,y,1.78,w,28,floors*3.3,0x798890,group=skyline)
+        for ff in range(1,floors):
+            box(x,y+14.1,2+ff*3.3,w,.3,.45,0xA9AC9F,group=skyline)
+    # Walkways and kerb joints give the short streets and bridge approaches a continuous edge.
+    for d in range(0,LAP,3):
+        z=height(d)
+        x,y,h=pose(d)
+        if abs(x-RIVER)<28:continue
+        for side in (-1,1):
+            sx,sy,_=pose(d,side*9.48)
+            box(sx,sy,z-.085,3.03,5.68,.12,0xB4AD9D if d%15 else 0xABA499,h)
+            sx,sy,_=pose(d,side*6.72)
+            box(sx,sy,z-.02,2.95,.25,.16,0xCDC3AE,h)
+    # Shoreside bridgehouses, lattice above the deck and the counterweight housings.
+    for street in (0,-WIDTH):
+        for side in (-1,1):
+            y=street+side*7.0
+            for j in range(10):
+                x=RIVER-26+j*5.8
+                box(x,y,4.18,.23,.45,3.32,0x825147)
+                beam(art,(x,y,7.48),(x+5.8,y,4.25),.14,0x9A6353)
+            box(RIVER,y,7.49,57,.49,.33,0x96604E)
+            box(RIVER+27,street+side*12,1.8,5,5,6.4,0xB5A68A)
+            box(RIVER+27,street+side*12,6.6,5.2,5.2,1.5,0x61767A)
+            art.roof((RIVER+27,street+side*12,8.1),6,6,1.5,0,lin(0x788072))
+    # The crossing track gives riders a side view of the passing train just beyond the station.
+    for y in range(-108,125,12):
+        for offset in (-2,2):
+            box(360+offset,y,14.25,.28,12.15,.77,green)
+        box(360,y,15.1,5.4,12.05,.24,0x807363)
+        for offset in (-.76,.76):
+            box(360+offset,y,15.35,.12,12,.1,0xA9A799)
+        if abs(y)>10 and y%24==0:
+            box(360,y,1.8,.52,.54,12.4,green)
     return {'efforts':0}
