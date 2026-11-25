@@ -646,7 +646,9 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
             data.from_pydata(part.verts, [], part.faces)
             film.objects.link(bpy.data.objects.new(part.name, data))
         group, chunked = group_of(part.mat)
-        if part.name in GROUND_PARTS:
+        if part.name == 'LandmarkLights':
+            group, chunked = 'Glow', False
+        elif part.name in GROUND_PARTS:
             group = "Ground"
         elif part.name == WINDOWS_PART:
             group = "Windows"
@@ -696,7 +698,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     shade = 0.74 + 0.3 * smoothstep(0.0, 4.5, lift) if lift > 0.2 else (0.62 if lift < -0.3 else 1.0)
                     c = (c[0] * shade, c[1] * shade, c[2] * shade, 1.0)
                 key = (round(v[0], 3), round(v[1], 3), round(v[2], 3), round(c[0], 3), round(c[1], 3), round(c[2], 3))
-                if group in ("Windows", "Fences", "Halos", "Foliage", "Facades", "Elms", "Dapple"):
+                if group in ("Windows", "Fences", "Halos", "Foliage", "Facades", "Elms", "Dapple") or (group == "Ground" and part.uvs is not None):
                     key = (*key, *part.uvs[i])
                 if walled:
                     _, near, _ = road.tree.find((v[0], v[1], 0.0))
@@ -711,7 +713,9 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                         mesh["uvs"].append(part.uvs[i])
                     if walled:
                         mesh["uvs"].append(wall_uv)
-                    if group in ("Ground", "Pave"):
+                    if group == "Ground" and part.uvs is not None:
+                        mesh["uvs"].append(part.uvs[i])
+                    elif group in ("Ground", "Pave"):
                         _, near, _ = road.tree.find((v[0], v[1], 0.0))
                         p = road.s[near]
                         dx, dy = v[0] - p["x"], v[1] - p["y"]
@@ -950,7 +954,7 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
 
     # Chevrons up every effort: the road itself says "push".
     for stage in st:
-        if edge == "pave" or edge == "scheldt" or edge == "angliru" or stage["kind"] != "work":
+        if edge == "pave" or edge == "scheldt" or edge == "angliru" or stage["kind"] != "work" or (theme or {}).get("effort_chevrons") is False:
             continue
         d = stage["from"] + 12
         while d < stage["to"] - 6:
@@ -1858,7 +1862,7 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         "durationSeconds": sum(s["duration"] for s in st),
         "step": STEP,
         "startIndex": int(LEAD_IN / STEP),
-        "roadHalfWidth": course.get("roadHalfWidth", ROAD_HALF),
+        "roadHalfWidth": course.get("roadHalfWidth", (theme or {}).get("road_half_width", ROAD_HALF)),
         "meanLevel": round(mean, 2),
         "gradePerLevel": per_level,
         # The direction the light comes from, as a unit vector in the glb's axes.
@@ -2271,7 +2275,10 @@ def main(argv: list[str] | None = None) -> dict:
     else:
         samples, st, length, mean, per_level = lay_centre_line(course, theme)
     road = Road(samples)
-    (theme or {}).get("surface_builder", build_road)(road, st, length, col, theme)
+    if (theme or {}).get("road_builder"):
+        theme["road_builder"](road, st, length, col, sys.modules[__name__])
+    else:
+        (theme or {}).get("surface_builder", build_road)(road, st, length, col, theme)
     if (theme or {}).get("builder") == "sellaronda":
         _, height_at = sellaronda.build_terrain(road, col, Builder)
         facts = sellaronda.build_scenery(road, st, length, height_at, course, col, Builder, build_sky)

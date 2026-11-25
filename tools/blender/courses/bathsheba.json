@@ -1,0 +1,73 @@
+{
+  "id": "bathsheba",
+  "name": "Bathsheba, Barbados",
+  "world": "bathsheba",
+  "theme": "bathsheba",
+  "seed": 2077,
+  "layout": 0,
+  "class": {
+    "id": "take-it-easy",
+    "title": "Take It Easy",
+    "channel": "GCN Training",
+    "videoId": "20HsAlwtg3Y",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 180,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 14,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 16,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 18,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "cool-down",
+        "duration": 240,
+        "level": 13,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "id": "artmuseum",
+  "name": "Philadelphia Art Museum Steps",
+  "world": "artmuseum",
+  "theme": "artmuseum",
+  "seed": 2072,
+  "layout": 0,
+  "class": {
+    "id": "hiit-leg-buster",
+    "title": "HIIT Leg Buster",
+    "channel": "GCN Training",
+    "videoId": "fEKKHAEg_B8",
+    "syncOffsetSeconds": 0
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 240,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 40,
+        "level": 19,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 90,
+        "level": 10,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "cool-down",
+        "duration": 120,
+        "level": 21,
+        "cadenceAim": 90
+      }
+    ]
+  }
+}

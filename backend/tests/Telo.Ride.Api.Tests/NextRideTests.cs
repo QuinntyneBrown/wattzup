@@ -43,7 +43,7 @@ public sealed class NextRideTests(SignInApi api) : IClassFixture<SignInApi>
         {
             var progress = MapProgress.Start(riderId, mapId);
             progress.Restore(stars, null);
-            if (mapId is not ("prairie-paceline" or "old-town-criterium" or "ibiza-sunset-strip" or "sella-ronda" or "cinqueterre" or "haleakala" or "adelaide-hills" or "aguascalientes" or "algarve-cliffs" or "alpe-dhuez" or "amsterdam-canals" or "els-angels" or "angkor-temples" or "alto-angliru" or "antwerp-port-sprint" or "arenberg-forest"))
+            if (mapId is not ("prairie-paceline" or "old-town-criterium" or "ibiza-sunset-strip" or "sella-ronda" or "cinqueterre" or "haleakala" or "adelaide-hills" or "aguascalientes" or "algarve-cliffs" or "alpe-dhuez" or "amsterdam-canals" or "els-angels" or "angkor-temples" or "alto-angliru" or "antwerp-port-sprint" or "arenberg-forest" or "philadelphia-art-museum" or "atacama-desert" or "atlantic-ocean-road" or "col-aubisque" or "sixth-street-austin" or "bathsheba-barbados" or "bay-of-islands" or "beach-road-melbourne" or "bealach-na-ba" or "big-sur" or "blackpool-illuminations" or "blue-mountains-jamaica" or "blue-ridge-parkway" or "bondi-to-bronte" or "bonneville-salt-flats" or "indianapolis-brickyard" or "brighton-pride" or "brooklyn-bridge-commute" or "the-bund-shanghai" or "sa-calobra-mallorca" or "passo-campolongo" or "cabot-trail"))
             {
                 api.Clock.Advance(TimeSpan.FromHours(1));
                 progress.Open(api.Clock.GetUtcNow());
@@ -126,7 +126,29 @@ public sealed class NextRideTests(SignInApi api) : IClassFixture<SignInApi>
             ("angkor-temples", MapStar.All),
             ("alto-angliru", MapStar.All),
             ("antwerp-port-sprint", MapStar.All),
-            ("arenberg-forest", MapStar.All));
+            ("arenberg-forest", MapStar.All),
+            ("philadelphia-art-museum", MapStar.All),
+            ("atacama-desert", MapStar.All),
+            ("atlantic-ocean-road", MapStar.All),
+            ("col-aubisque", MapStar.All),
+            ("sixth-street-austin", MapStar.All),
+            ("bathsheba-barbados", MapStar.All),
+            ("bay-of-islands", MapStar.All),
+            ("beach-road-melbourne", MapStar.All),
+            ("bealach-na-ba", MapStar.All),
+            ("big-sur", MapStar.All),
+            ("blackpool-illuminations", MapStar.All),
+            ("blue-mountains-jamaica", MapStar.All),
+            ("blue-ridge-parkway", MapStar.All),
+            ("bondi-to-bronte", MapStar.All),
+            ("bonneville-salt-flats", MapStar.All),
+            ("indianapolis-brickyard", MapStar.All),
+            ("brighton-pride", MapStar.All),
+            ("brooklyn-bridge-commute", MapStar.All),
+            ("the-bund-shanghai", MapStar.All),
+            ("sa-calobra-mallorca", MapStar.All),
+            ("passo-campolongo", MapStar.All),
+            ("cabot-trail", MapStar.All));
 
         Assert.StartsWith("""nextRideMapId="dolomites";""", await Home(browser));
     }

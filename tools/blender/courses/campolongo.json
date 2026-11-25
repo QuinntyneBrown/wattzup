@@ -1,0 +1,85 @@
+{
+  "id": "campolongo",
+  "name": "Passo Campolongo",
+  "world": "campolongo",
+  "theme": "campolongo",
+  "seed": 2093,
+  "layout": 0,
+  "class": {
+    "id": "intense-climb-passo-campolongo",
+    "title": "Intense Climb: Passo Campolongo",
+    "channel": "GCN",
+    "videoId": "6j2RPpk6YOk",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 180,
+        "level": 12,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 19,
+        "cadenceAim": 75
+      },
+      {
+        "kind": "work",
+        "duration": 83,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "work",
+        "duration": 107,
+        "level": 19,
+        "cadenceAim": 75
+      },
+      {
+        "kind": "recover",
+        "duration": 67,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 114,
+        "level": 19,
+        "cadenceAim": 75
+      },
+      {
+        "kind": "work",
+        "duration": 163,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 123,
+        "level": 21,
+        "cadenceAim": 75
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 22,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "work",
+        "duration": 33,
+        "level": 24,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "cool-down",
+        "duration": 200,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

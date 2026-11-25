@@ -1,0 +1,43 @@
+{
+  "id": "calobra",
+  "name": "Sa Calobra, Mallorca",
+  "world": "calobra",
+  "theme": "calobra",
+  "seed": 2092,
+  "layout": 0,
+  "class": {
+    "id": "aerobic-cadence-workout-with-team-sky",
+    "title": "Aerobic Cadence Workout With Team Sky",
+    "channel": "GCN",
+    "videoId": "Umrgux4acGQ",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 300,
+        "level": 14,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 1180,
+        "level": 20,
+        "cadenceAim": 72
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 24,
+        "cadenceAim": 110
+      },
+      {
+        "kind": "cool-down",
+        "duration": 330,
+        "level": 11,
+        "cadenceAim": 85
+      }
+    ]
+  }
+}
