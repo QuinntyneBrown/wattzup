@@ -1,3 +1,4 @@
+import grandcanyonElevation from './grandcanyon-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -147,5 +148,60 @@ export const haleakalaCourseMap = {
   terrain: {
     grade: { 'warm-up': 2, work: 8, recover: 4.5, 'cool-down': 2, steady: 6 },
     roll: 0,
+  },
+};
+
+export const grandcanyonCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'grand-canyon-south-rim',
+  name: 'Grand Canyon South Rim',
+  routeName: 'Desert View Drive',
+  place: 'Grand Canyon, Arizona',
+  world: 'grandcanyon',
+  distanceKm: 13.425,
+  climbingM: 171,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: grandcanyonElevation,
+  },
+  thumbnailUrl: 'maps/grand-canyon-south-rim.jpg',
+  photoUrl: 'maps/grand-canyon-south-rim-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 60, 11, 70),
+      seg('work', 60, 14, 70),
+      seg('recover', 60, 18, 75),
+      seg('work', 60, 19, 80),
+      seg('work', 60, 21, 90),
+      seg('recover', 60, 11, 80),
+      seg('work', 30, 22, 110),
+      seg('recover', 60, 19, 90),
+      seg('work', 30, 22, 110),
+      seg('recover', 60, 19, 90),
+      seg('work', 30, 22, 110),
+      seg('recover', 60, 19, 90),
+      seg('work', 30, 22, 110),
+      seg('recover', 60, 19, 90),
+      seg('work', 30, 22, 110),
+      seg('recover', 60, 19, 90),
+      seg('work', 30, 22, 110),
+      seg('work', 60, 19, 90),
+      seg('recover', 120, 11, 80),
+      seg('work', 30, 22, 110),
+      seg('recover', 60, 19, 90),
+      seg('work', 30, 22, 110),
+      seg('recover', 60, 19, 90),
+      seg('work', 30, 22, 110),
+      seg('recover', 60, 19, 90),
+      seg('work', 30, 22, 110),
+      seg('recover', 60, 19, 90),
+      seg('work', 30, 22, 110),
+      seg('recover', 60, 19, 90),
+      seg('work', 30, 22, 110),
+      seg('recover', 60, 19, 90),
+      seg('cool-down', 240, 11, 80),
+    ],
   },
 };
