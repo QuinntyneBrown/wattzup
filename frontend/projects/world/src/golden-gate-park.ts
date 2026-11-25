@@ -12,6 +12,7 @@ import {
   MeshBasicMaterial,
   MeshLambertMaterial,
   PlaneGeometry,
+  RepeatWrapping,
   SphereGeometry,
   SRGBColorSpace,
   TextureLoader,
@@ -210,7 +211,28 @@ export function goldenGatePark(course: Course) {
     mill = at(5670, -23);
   sails.position.set(0, 16.6, 4.65);
   mill.add(sails);
-  const beach = course.place(course.length);
+  const loader = new TextureLoader();
+  const crown = loader.load('courses/goldengate-crowns.webp');
+  const lawn = loader.load('courses/goldengate-lawn.webp');
+  const pacific = loader.load('courses/goldengate-pacific.webp');
+  crown.colorSpace = lawn.colorSpace = pacific.colorSpace = SRGBColorSpace;
+  for (const texture of [lawn, pacific]) {
+    texture.wrapS = texture.wrapT = RepeatWrapping;
+    texture.anisotropy = 4;
+  }
+  lawn.repeat.set(0.22, 0.22);
+  pacific.repeat.set(34, 56);
+  const canopy = new MeshBasicMaterial({ map: crown, side: DoubleSide, alphaTest: 0.5 });
+  const turf = new MeshBasicMaterial({ map: lawn, side: DoubleSide, vertexColors: true });
+  const sea = new MeshBasicMaterial({ map: pacific, side: DoubleSide });
+  const oceanGeometry = new PlaneGeometry(1050, 1800);
+  const ocean = new Mesh(oceanGeometry, sea);
+  ocean.rotation.x = -Math.PI / 2;
+  const beach = course.place(6250);
+  ocean.position.set(beach.x + 42 + 525, 1.42, beach.z);
+  group.add(ocean);
+  owned.push(crown, lawn, pacific, canopy, turf, sea, oceanGeometry);
+
   const foamMap = canvasTexture(256, 64, (g) => {
     const random = seeded(21301);
     g.clearRect(0, 0, 256, 64);
@@ -234,7 +256,7 @@ export function goldenGatePark(course: Course) {
   owned.push(foamGeometry, foamMap, foamMaterial);
   const surf = new Group();
   group.add(surf);
-  surf.position.set(beach.x + 70, 1.7, beach.z);
+  surf.position.set(beach.x + 48, 1.7, beach.z + 17);
   const waves = Array.from({ length: 42 }, (_, i) => {
     const mesh = new Mesh(foamGeometry, foamMaterial);
     mesh.rotation.set(-Math.PI / 2, 0, Math.PI / 2);
@@ -351,7 +373,7 @@ export function goldenGatePark(course: Course) {
       bird.position.set(-27 + phase + 1.1 * Math.sin(t * 0.16 + phase), -1.12, 12 + phase * 1.8);
       bird.rotation.y = 0.4 + Math.sin(t * 0.15 + phase);
     }
-    surf.visible = rock.visible = metres > 5730;
+    ocean.visible = surf.visible = rock.visible = metres > 5730;
     if (surf.visible)
       waves.forEach((wave, i) => {
         wave.position.x = (i % 3) * 12 - 2.7 * Math.sin(t * 0.48 + i * 0.41);
@@ -393,6 +415,7 @@ export function goldenGatePark(course: Course) {
   update(0, 0, false);
   return {
     group,
+    materials: { ParkCrowns: canopy, ParkLawns: turf },
     update,
     measure(camera: Camera) {
       state.glassX = screenX(front, camera);

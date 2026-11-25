@@ -34,6 +34,7 @@ for (const [actor, metres, part] of [
     await setup.mode('Your best time').click();
     await setup.start.click();
     await expect(race.backend).toBeVisible();
+    await expect.poll(() => worldRide.parkTreeCrowns()).toBeGreaterThan(0);
     await expect.poll(() => worldRide.goldengateMotion(part)).not.toBeNull();
     const first = await worldRide.goldengateMotion(part);
     await expect.poll(() => worldRide.goldengateMotion(part)).not.toBe(first);

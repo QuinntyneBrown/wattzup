@@ -32,3 +32,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | Stow Lake and Spreckels Lake | Real 01, 04–05, 10–11 and 15 establish the two masonry arches, near shore, cypress and model yachts. Games 04–05 inform visibility at road speed. Water, masonry, ducks, hulls and sails are original meshes. |
 | Bison paddock | Real 02 and game 03 informed the sandy grass, separation from the road, high shoulders, lowered heads and near-fence view of the herd. The models build on the existing park world’s bison proportions and include calves. |
 | Windmill and coast | Real 03 and 06 show the Murphy Windmill and informed timber construction and sail detail. The route depicts the Dutch Windmill above Queen Wilhelmina’s tulip beds. Real 12–14 informed the Great Highway, dunes and surf. Games 02 and 04 informed the changing sightline through the trees. |
+
+The park’s original generated foliage atlas combines eucalyptus and Monterey cypress crowns with three-dimensional trunks and branch forks. The lawn and ocean surface textures are original procedural patterns. Real 01, 05, 08–09 and 11 informed the crowns and fog layers.

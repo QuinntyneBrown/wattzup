@@ -19,7 +19,7 @@ def direction(d):
             curve=angle*smooth((d-at-20)/62)
             weight=entry*(1-exit);inland=inland*(1-weight)+curve*weight
     coast=smooth((d-5920)/195)
-    return inland*(1-coast)+coast*(-.12-1.26*smooth((d-6360)/75))
+    return inland*(1-coast)+coast*(-.10-1.36*smooth((d-6200)/85))
 path=[(-128.,0.)]
 for i in range(-127,LENGTH+501):
     h=direction(i-.5);x,y=path[-1];path.append((x+math.cos(h),y+math.sin(h)))
@@ -36,7 +36,7 @@ def lay(course,theme,bc):
     return samples,stages,LENGTH,sum(s['level']*(s['to']-s['from']) for s in stages)/LENGTH,0
 
 LAKES=((1797,43,77,33),(3150,-40,112,35))
-BEACH_X=pos(LENGTH)[0]+48
+BEACH_X=pos(6250)[0]+42
 
 def land(road,col,theme,bc):
     lakes=[(*pos(d,l),direction(d),length,width,elevation(d)-1.25) for d,l,length,width in LAKES]
@@ -87,6 +87,7 @@ def road_surface(road,st,length,col,theme,bc):
 
 def scenery(k):
     art=Painted(k);rng=k.rng;r=k.road
+    crowns=Painted(k,'paint');crowns.b.name='ParkCrowns';crowns.b.uvs=[]
     def frame(d,l):
         x,y=pos(d,l);z=k.height_at(x,y);h=direction(d)
         def pt(u,v,w):return x+u*math.cos(h)-v*math.sin(h),y+u*math.sin(h)+v*math.cos(h),z+w
@@ -122,7 +123,14 @@ def scenery(k):
             for j in range(4):
                 ang=j*2.39;u=a*(math.cos(ang)*(3 if cypress else 2.6)+(2.7 if cypress else 0));v=a*math.sin(ang)*2.7
                 top=high+(1+j*.48)*a;limb(pt(.4,.4,high*.62),pt(u,v,top),.21*a,.085*a,bark)
-                blob(pt(u,v,top),a*(4.8 if cypress else 2.5),a*(3 if cypress else 2.65),a*(1.5 if cypress else 3.05),crown)
+                blob(pt(u,v,top),a*(1.9 if cypress else 1.0),a*1.45,a*(.6 if cypress else 1.45),crown)
+            for turn in (0,math.pi*.5):
+                angle=turn+h+.18*math.sin(d);w=(7.9 if cypress else 5.4)*a
+                x,y,z=pt(1.9 if cypress else .6,.35,high*.60);up=(7.2 if cypress else 10.2)*a
+                dx=w*math.cos(angle);dy=w*math.sin(angle)
+                crowns.face(((x-dx,y-dy,z),(x+dx,y+dy,z),(x+dx,y+dy,z+up),(x-dx,y-dy,z+up)),(lin(0xFFFFFF),)*4)
+                u=.505 if cypress else .001;v=.999 if cypress else .485
+                crowns.b.uvs.extend([(u,1),(v,1),(v,0),(u,0)])
     # Elongated lakes with a low stone lip and reeds. Water level is constant within each basin.
     for d,l,length,width in LAKES:
         x,y=pos(d,l);h=direction(d);wet=elevation(d)-1.25
@@ -178,12 +186,15 @@ def scenery(k):
         q,g=frame(5560+i*18,12+i*.9)
         for j in range(4):
             art.box(q(0,j*1.35,.12),(13.8,1.16,.25),g,lin((0xD55C56,0xEABD49,0xC88CA3,0xE4DDD4)[j]))
+            for flower in range(17):
+                u=(flower-8)*.73;v=j*1.35+.24*math.sin(flower*2)
+                art.tube(q(u,v,.33),.11,.17,.22,lin(0x738345),lin((0xEB6E6B,0xEFD464,0xDC9FBA,0xEBE8DC)[j]),7)
     # Dunes beyond the Great Highway. Repeated narrow foam crests break across the Pacific.
     _,coasty=pos(6375);shore=BEACH_X
     art.box((shore+760,coasty,1),(1500,2300,.18),0,lin(0x728F97))
     for j in range(-22,23):
         y=coasty+j*26;
-        if abs(y-coasty)>40:blob((shore-22+3*math.sin(j),y,1.8),24,32,2.7,lin(0xC8B995))
+        if abs(y-pos(6220)[1])>160:blob((shore-22+3*math.sin(j),y,1.8),24,32,2.7,lin(0xC8B995))
         for n in range(4):
             x=shore+15+n*16+3*math.sin(j*.55+n)
             art.box((x,y,1.27),(1.35,24,.17),.08*math.sin(j),lin(0xD5DFD7))

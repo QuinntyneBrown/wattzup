@@ -61,6 +61,14 @@ export class WorldRideProbe {
     }, metres);
   }
 
+  async parkTreeCrowns(): Promise<number> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { groups: Record<string, number> } } })
+          .__wzWorldRide?.course?.groups['ParkCrowns'] ?? 0,
+    );
+  }
+
   async goldengateMotion(
     part: 'bisonHead' | 'sailPosition' | 'glassX' | 'millX' | 'surfX',
   ): Promise<number | null> {
