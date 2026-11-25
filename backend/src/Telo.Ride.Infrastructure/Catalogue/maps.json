@@ -1531,6 +1531,131 @@
         },
         "roll": 0
       }
+    },
+    {
+      "id": "philadelphia-art-museum",
+      "name": "Philadelphia Art Museum Steps",
+      "routeName": "Benjamin Franklin Parkway",
+      "place": "Philadelphia, Pennsylvania",
+      "distanceKm": 8.175,
+      "climbingM": 86,
+      "rating": "Hard",
+      "world": "artmuseum",
+      "thumbnailUrl": "maps/philadelphia-art-museum.jpg",
+      "photoUrl": "maps/philadelphia-art-museum-photo.jpg",
+      "unlock": {
+        "kind": "start"
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 240,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 40,
+            "level": 19,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 40,
+            "level": 19,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 40,
+            "level": 19,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 40,
+            "level": 19,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 13,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 21,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 21,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 30,
+            "level": 21,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "recover",
+            "duration": 90,
+            "level": 10,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "cool-down",
+            "duration": 120,
+            "level": 21,
+            "cadenceAim": 90
+          }
+        ]
+      },
+      "terrain": {
+        "grade": {
+          "warm-up": 0,
+          "work": 4.2,
+          "recover": -2.4,
+          "cool-down": 0,
+          "steady": 0
+        },
+        "roll": 0.1
+      }
     }
   ]
 }

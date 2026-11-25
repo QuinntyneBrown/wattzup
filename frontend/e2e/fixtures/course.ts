@@ -159,6 +159,10 @@ export const artMuseumCourseMap = {
   world: 'artmuseum',
   distanceKm: 8.175,
   climbingM: 86,
+  terrain: {
+    grade: { 'warm-up': 0, work: 4.2, recover: -2.4, 'cool-down': 0, steady: 0 },
+    roll: 0.1,
+  },
   rating: 'Hard',
   thumbnailUrl: 'maps/philadelphia-art-museum.jpg',
   photoUrl: 'maps/philadelphia-art-museum-photo.jpg',

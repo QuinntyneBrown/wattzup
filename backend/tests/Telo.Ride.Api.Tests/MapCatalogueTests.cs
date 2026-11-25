@@ -12,6 +12,35 @@ namespace Telo.Ride.Api.Tests;
 public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<TeloRideApiFactory>
 {
     [Fact]
+    public async Task Philadelphia_keeps_all_seven_efforts_of_HIIT_leg_buster()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "philadelphia-art-museum");
+        Assert.Equal("artmuseum", map.World);
+        Assert.Equal(8.175, map.DistanceKm);
+        Assert.Equal(86, map.ClimbingM);
+        Assert.Equal(
+            [
+                new Segment("warm-up", 240, 10, 80),
+                new Segment("work", 40, 19, 90),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 40, 19, 90),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 40, 19, 90),
+                new Segment("recover", 60, 10, 80),
+                new Segment("work", 40, 19, 90),
+                new Segment("recover", 120, 13, 80),
+                new Segment("work", 30, 21, 90),
+                new Segment("recover", 90, 10, 80),
+                new Segment("work", 30, 21, 90),
+                new Segment("recover", 90, 10, 80),
+                new Segment("work", 30, 21, 90),
+                new Segment("recover", 90, 10, 80),
+                new Segment("cool-down", 120, 21, 90)
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
     public async Task The_catalogue_lists_its_maps_in_unlock_order_without_a_session()
     {
         var maps = await ReadMaps();
@@ -29,6 +58,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Sella Ronda", 11.7, 357, "Hard", "Over/Under Intervals on the Passo Sella", "Four Dolomite passes circling the Sella massif"),
                 new Listed("Cinque Terre", 17.1, 335, "Hard", "3 Mins On, 2 Mins Off", "The corniche above the Ligurian Sea"),
                 new Listed("Haleakalā", 15.8, 923, "Brutal", "Maximum Intensity Hill Climb Efforts", "The summit road from the Pacific coast to the crater rim"),
+                new Listed("Philadelphia Art Museum Steps", 8.175, 86, "Hard", "Benjamin Franklin Parkway", "Philadelphia, Pennsylvania"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -51,6 +81,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("sella-ronda", null),
                 ("cinqueterre", null),
                 ("haleakala", null),
+                ("philadelphia-art-museum", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -73,6 +104,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("sella-ronda", null),
                 ("cinqueterre", null),
                 ("haleakala", null),
+                ("philadelphia-art-museum", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -83,7 +115,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            [null, null, null, null, null, 10, null, null, null, null, null],
+            [null, null, null, null, null, 10, null, null, null, null, null, null],
             maps.Select(m => m.UnlockLevel));
     }
 
@@ -96,7 +128,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         Assert.All(
             maps,
             m => Assert.Equal(
-                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, _ => 1800 },
+                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "philadelphia-art-museum" => 1180, _ => 1800 },
                 m.Plan.Segments.Sum(s => s.Duration)));
         var oldTown = maps.Single(m => m.Id == "old-town-criterium");
         Assert.Equal(
@@ -115,7 +147,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "artmuseum"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));
