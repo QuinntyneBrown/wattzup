@@ -1,3 +1,4 @@
+import icelandElevation from './iceland-elevation.json';
 import angliruElevation from './angliru-elevation.json';
 import artMuseumElevation from './artmuseum-elevation.json';
 
@@ -3416,6 +3417,48 @@ export const hooverCourseMap = {
       seg('recover', 60, 11, 80),
       seg('work', 600, 19, 90),
       seg('cool-down', 180, 13, 80),
+    ],
+  },
+};
+
+export const icelandCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'iceland-ring-road',
+  name: 'Iceland Ring Road',
+  routeName: 'Route 1',
+  place: 'The South Coast from Seljalandsfoss to Jökulsárlón',
+  world: 'iceland',
+  distanceKm: 12,
+  climbingM: 91,
+  rating: 'Moderate',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: icelandElevation,
+  },
+  thumbnailUrl: 'maps/iceland-ring-road.jpg',
+  photoUrl: 'maps/iceland-ring-road-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 180, 13, 80),
+      seg('work', 60, 18, 80),
+      seg('recover', 60, 13, 80),
+      seg('work', 60, 18, 80),
+      seg('work', 30, 21, 80),
+      seg('recover', 120, 13, 80),
+      seg('work', 60, 16, 80),
+      seg('work', 120, 19, 80),
+      seg('recover', 60, 16, 80),
+      seg('work', 120, 21, 80),
+      seg('recover', 60, 16, 80),
+      seg('work', 120, 22, 80),
+      seg('recover', 120, 11, 80),
+      seg('work', 120, 22, 80),
+      seg('recover', 120, 11, 80),
+      seg('work', 120, 22, 80),
+      seg('recover', 120, 11, 80),
+      seg('work', 60, 24, 80),
+      seg('cool-down', 90, 10, 80),
     ],
   },
 };

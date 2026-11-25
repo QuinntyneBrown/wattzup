@@ -149,6 +149,7 @@ import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
+import type { southCoast } from './south-coast';
 import { heldFps } from './held-fps';
 import type { ArtMuseumFlags } from './artmuseum-flags';
 import type { ArtMuseumJoggers } from './artmuseum-joggers';
@@ -228,6 +229,13 @@ const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   StripFleet: 1400,
   CoveFoam: 370,
   StripCloth: 170,
+  IcelandLand: 2400,
+  Basalt: 2500,
+  Glacier: 3200,
+  Falls: 720,
+  GlacialWater: 1700,
+  Icebergs: 900,
+  Grazers: 330,
   Land: 950,
   Pave: 180,
   Foliage: 110,
@@ -332,6 +340,7 @@ export class CourseRenderer implements WorldRenderer {
   private danishStreet: Awaited<ReturnType<typeof copenhagenStreet>> | null = null;
   private commuters: CopenhagenCommuters | null = null;
   backend: Backend = 'webgl2';
+  private icelandCoast: ReturnType<typeof southCoast> | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
   private pave: ReturnType<typeof arenbergPave> | null = null;
@@ -801,6 +810,12 @@ export class CourseRenderer implements WorldRenderer {
         this.camera.clearViewOffset();
         this.camera.fov = 60;
         this.camera.updateProjectionMatrix();
+      }
+      if (this.course.file.id === 'iceland') {
+        const { southCoast } = await import('./south-coast');
+        if (this.disposed) return false;
+        this.icelandCoast = southCoast();
+        this.disposables.push(this.icelandCoast);
       }
       const blossomModules =
         parsed.id === 'cherryblossom'
@@ -1793,6 +1808,7 @@ export class CourseRenderer implements WorldRenderer {
     this.malecon?.update(frame.reducedMotion ? 0 : frame.time, this.camera, metres);
     this.dam?.update(frame.reducedMotion ? 0 : frame.time);
     this.strip?.update(frame.reducedMotion ? 0 : frame.time);
+    this.icelandCoast?.update(frame.reducedMotion ? 0 : frame.time);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -1870,6 +1886,7 @@ export class CourseRenderer implements WorldRenderer {
     this.highlandLivestock = null;
     this.highlandWeather = null;
     this.coast = null;
+    this.icelandCoast = null;
     this.trams = null;
     this.yard = null;
     this.mill = null;
@@ -1957,7 +1974,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
     if (this.course!.file.id === 'beachroad') this.evening = eveningUniform();
     const clearValley = this.course!.file.id === 'engadin';
-    const fogRange = this.dam ? ([450, 4200] as const) : this.course!.file.id === 'calobra' ? ([2500, 16000] as const) : clearValley ? ([750, 5000] as const) : FOG;
+    const fogRange = this.dam ? ([450, 4200] as const) : this.course!.file.id === 'calobra' ? ([2500, 16000] as const) : clearValley ? ([750, 5000] as const) : this.icelandCoast ? ([650, 4700] as const) : FOG;
     this.scene.fog = new Fog(look.haze, fogRange[0], fogRange[1]);
     this.scene.background = new Color(look.haze);
     this.sun.color.setHex(look.light.colour);
@@ -2137,6 +2154,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.malecon) Object.assign(materials, this.malecon.materials);
     if (this.dam) Object.assign(materials, this.dam.materials);
     if (this.strip) Object.assign(materials, this.strip.materials);
+    if (this.icelandCoast) Object.assign(materials, this.icelandCoast.materials);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     Object.assign(materials, localMaterials);
     if (this.championship) {
@@ -2503,6 +2521,11 @@ export class CourseRenderer implements WorldRenderer {
       : 0;
     this.camera.position.set(back.x, back.y + up + 1.6 * rim * rim + 0.52 * overlook, back.z);
     this.groundEye?.at(metres - behind, 0, up);
+    // The last coastal bend opens onto the lagoon on the left.
+    const lagoon =
+      this.icelandCoast && metres > 10660 && metres < 11360
+        ? Math.sin(((metres - 10660) * Math.PI) / 700) ** 2
+        : 0;
     // Follow the outside of the promenade curve above the small exposed bay.
     const cove =
       this.strip && metres >= 720 && metres <= 1200
@@ -2523,7 +2546,7 @@ export class CourseRenderer implements WorldRenderer {
       ? course.place(metres + 22, this.dam.lookAcross(metres), this.there)
       : this.malecon
       ? course.place(metres + 24, this.malecon.lookAcross(metres), this.there)
-      : course.place(metres + (calobra ? 24 : this.arena ? 7.5 : LOOK_AHEAD), (view?.lane ?? 0) - 2.8 * bridge + (this.headland ? 1.6 : 0) + shoulder - 4.4 * cove, this.there);
+      : course.place(metres + (calobra ? 24 : this.arena ? 7.5 : LOOK_AHEAD), (view?.lane ?? 0) - 2.8 * bridge + (this.headland ? 1.6 : 0) + shoulder - 4.4 * cove - 3.3 * lagoon, this.there);
     this.camera.lookAt(ahead.x, ahead.y + (calobra ? 1.2 : this.arena ? 2.45 : LOOK_UP) + (view?.rise ?? 0) + 1.8 * skyline + 1.2 * train - Math.abs(shoulder) * 0.12, ahead.z);
     // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
     if (back.bank) this.camera.rotateZ(back.bank * 0.32);
@@ -3025,6 +3048,7 @@ export class CourseRenderer implements WorldRenderer {
     if (this.malecon) Object.assign(drawn, this.malecon.report(this.camera));
     if (this.dam) Object.assign(drawn, this.dam.report(this.camera));
     if (this.strip) Object.assign(drawn, this.strip.report());
+    if (this.icelandCoast) Object.assign(drawn, this.icelandCoast.report(drawn.groups));
     hook['course'] = drawn;
   }
 
