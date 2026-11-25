@@ -1,4 +1,5 @@
 import { color, mix, positionWorld, texture, uniform, uv } from 'three/tsl';
+import type { Vector3 } from 'three/webgpu';
 import {
   BoxGeometry,
   Color,
@@ -16,7 +17,6 @@ import {
   SphereGeometry,
   SRGBColorSpace,
   TextureLoader,
-  Vector3,
   type Texture,
 } from 'three/webgpu';
 import type { Course, CoursePlace } from './course';
@@ -39,7 +39,17 @@ export class JunkanooRush {
   });
   private readonly dome = new Mesh(new SphereGeometry(6700, 48, 16), this.sky);
   private readonly road = new MeshBasicNodeMaterial({ side: DoubleSide });
-  readonly materials = { Ground: this.road };
+  private readonly fronts = new MeshBasicMaterial({ side: DoubleSide, color: 0xc3b6c5 });
+  private readonly spectators = new MeshBasicMaterial({
+    side: DoubleSide,
+    alphaTest: 0.46,
+    color: 0xc4b4be,
+  });
+  readonly materials = {
+    Ground: this.road,
+    BayStreetShops: this.fronts,
+    BayStreetStands: this.spectators,
+  };
   private readonly grain = canvasTexture(512, 512, (g) => {
     let seed = 2146;
     const rnd = () => (seed = (Math.imul(1664525, seed) + 1013904223) >>> 0) / 4294967296;
@@ -74,6 +84,23 @@ export class JunkanooRush {
   private readonly used = [0, 0, 0];
   private readonly costumes: InstancedMesh<PlaneGeometry, MeshBasicMaterial>[] = [];
   private readonly counts = [0, 0, 0, 0];
+  private readonly flagPrint = canvasTexture(192, 96, (g) => {
+    g.fillStyle = '#29a5ae';
+    g.fillRect(0, 0, 192, 96);
+    g.fillStyle = '#efc34b';
+    g.fillRect(0, 32, 192, 32);
+    g.fillStyle = '#292633';
+    g.beginPath();
+    g.moveTo(0, 0);
+    g.lineTo(80, 48);
+    g.lineTo(0, 96);
+    g.fill();
+  });
+  private readonly flags = new InstancedMesh(
+    new PlaneGeometry(1, 1),
+    new MeshBasicMaterial({ map: this.flagPrint, side: DoubleSide }),
+    32,
+  );
   private readonly banners = GROUPS.map(({ name, field, ink }) => {
     const map = canvasTexture(512, 128, (g) => {
       g.fillStyle = field;
@@ -100,7 +127,17 @@ export class JunkanooRush {
   };
   static async load(course: Course) {
     const figures = await new TextureLoader().loadAsync('courses/junkanoo-costumes.webp');
-    return new JunkanooRush(course, figures);
+    const rush = new JunkanooRush(course, figures);
+    try {
+      rush.fronts.map = await new TextureLoader().loadAsync('courses/junkanoo-shops.webp');
+      rush.fronts.map.colorSpace = SRGBColorSpace;
+      rush.spectators.map = await new TextureLoader().loadAsync('courses/junkanoo-gallery.webp');
+      rush.spectators.map.colorSpace = SRGBColorSpace;
+      return rush;
+    } catch (error) {
+      rush.dispose();
+      throw error;
+    }
   }
   private constructor(
     private readonly course: Course,
@@ -131,6 +168,8 @@ export class JunkanooRush {
       mix(color(0xf4a6a0), color(0x697fad), height),
       this.dawn,
     );
+    this.flags.frustumCulled = false;
+    this.root.add(this.flags);
     this.dome.renderOrder = -0.5;
     this.root.add(this.dome);
     for (const mesh of this.parts) {
@@ -185,6 +224,7 @@ export class JunkanooRush {
     this.counts[slot] = count + 1;
   }
   update(metres: number, time: number) {
+    this.flags.count = 0;
     this.counts.fill(0);
     this.used.fill(0);
     this.submitted.rushCrown = this.submitted.drumHand = this.submitted.cowbellHand = null;
@@ -201,7 +241,28 @@ export class JunkanooRush {
         side * (3.25 + Math.abs(id % 4) * 0.43),
         this.pose,
       );
-      const slot = Math.abs(id) % 4;
+      if (id % 7 === 0) {
+        const flag = this.course.place(id * 3, side * 5.9, this.pose);
+        const wave = Math.sin(time * 3.6 + id * 0.81);
+        this.part(0, flag, 0, 1.62, 0, 0.038, 3.06, 0.038, 0xb1a181);
+        this.transform(
+          flag,
+          0.48,
+          2.77 + 0.05 * wave,
+          0,
+          0.96 - 0.15 * Math.abs(wave),
+          0.55,
+          1,
+          0.09 * wave,
+        );
+        this.flags.setMatrixAt(this.flags.count++, this.joint.matrix);
+        this.course.place(
+          id * 3 + 0.29 * Math.sin(beat),
+          side * (3.25 + Math.abs(id % 4) * 0.43),
+          this.pose,
+        );
+      }
+      const slot = Math.abs(id + 3 * Math.floor(id / 5)) % 4;
       this.performer(
         p,
         slot,
@@ -210,7 +271,7 @@ export class JunkanooRush {
         0.09 * Math.abs(Math.sin(beat)),
         0.06 * Math.sin(beat),
       );
-      if (i % 3 === 0) {
+      if (id % 3 === 0) {
         const back = this.course.place(
           id * 3 + 1.3,
           side * (6.4 + Math.abs(id % 3) * 0.71),
@@ -231,13 +292,13 @@ export class JunkanooRush {
       banner.visible = Math.abs(metres - at) < 160;
       if (!banner.visible) return;
       const march = 1.7 * Math.sin(time * 0.24);
-      const standard = this.course.place(at + 22 + march, 3.65, this.pose);
+      const standard = this.course.place(at + 31 + march, 1.1, this.pose);
       this.transform(standard, 0, 4.16, 0, 1, 1, 1, 0.035 * Math.sin(time * 1.85));
       banner.position.copy(this.joint.position);
       banner.rotation.copy(this.joint.rotation);
       for (const side of [-1, 1])
         this.part(0, standard, side * 2.17, 2.0, 0, 0.054, 4.04, 0.054, 0xb5a47f);
-      const lead = this.course.place(at + 13 + march, -2.72, this.pose);
+      const lead = this.course.place(at + 22 + march, -2.62, this.pose);
       const rock = 0.12 * Math.sin(time * 2.5);
       this.performer(lead, costume, 4.25, 3.65, 0.08 * Math.cos(time * 5), rock);
       if (!index) this.submitted.rushCrown = rock;
@@ -252,7 +313,13 @@ export class JunkanooRush {
           0.035 * Math.sin(beat / 2),
           0.024 * Math.cos(beat),
         );
-        if (index === 2) {
+        if (row === 5 && index !== 2) {
+          // The raised brass horn has a narrow mouthpiece, tube, flared bell and dark opening.
+          this.part(0, p, 0.13, 1.61, -0.25, 0.32, 0.044, 0.055, 0xe2be64, -0.24);
+          this.part(1, p, 0.31, 1.67, -0.24, 0.084, 0.1, 0.073, 0xdfac47);
+          this.part(1, p, 0.44, 1.73, -0.24, 0.12, 0.16, 0.16, 0xe8c369);
+          this.part(1, p, 0.48, 1.74, -0.33, 0.084, 0.11, 0.058, 0x785736);
+        } else if (index === 2) {
           for (const side of [-1, 1]) {
             const lift = 0.17 * Math.sin(beat + side);
             this.part(
@@ -292,6 +359,7 @@ export class JunkanooRush {
         }
       }
     });
+    this.flags.instanceMatrix.needsUpdate = true;
     this.parts.forEach((m, i) => {
       m.count = this.used[i]!;
       m.instanceMatrix.needsUpdate = true;
@@ -341,6 +409,14 @@ export class JunkanooRush {
       mesh.material.map?.dispose();
       mesh.material.dispose();
     }
+    this.fronts.map?.dispose();
+    this.fronts.dispose();
+    this.spectators.map?.dispose();
+    this.spectators.dispose();
+    this.flags.geometry.dispose();
+    this.flags.material.dispose();
+    this.flags.dispose();
+    this.flagPrint.dispose();
     this.figures.dispose();
   }
 }

@@ -46,6 +46,17 @@ def road(r, stages, length, col, bc):
 
 def scenery(k):
     art = Painted(k)
+    def atlas(name):
+        mesh=type(k.B['terrain'])(name,'terrain')
+        mesh.colours=[];mesh.uvs=[];k.B[name]=mesh
+        return mesh
+    shops=atlas('BayStreetShops')
+    stands=atlas('BayStreetStands')
+    def panel(mesh, start, end, offset, base, top, u, span):
+        corners=[k.road.pos(pos,offset,z) for pos,z in ((start,base),(end,base),(end,top),(start,top))]
+        mesh.faces.append(tuple(mesh.v(q) for q in corners))
+        mesh.colours.extend([(1,1,1,1)]*4)
+        mesh.uvs.extend(((u,0),(u+span,0),(u+span,1),(u,1)))
     def box(d, offset, z, w, depth, height, colour):
         art.box(k.road.pos(d, offset, z), (w, depth, height), bearing(d), lin(colour))
     def roof(d, offset, z, w, depth, height, colour):
@@ -67,13 +78,13 @@ def scenery(k):
             roof(mid,front+side*3.5,tall,width,7.2,1.4,0x78777E)
             box(mid,front-side*.97,3.05,width,2.15,.25,ivory)
             box(mid,front-side*1.96,3.94,width,.1,.13,ivory)
-            for bay in (-.34,0,.34):
-                at = mid + width*bay
-                box(at,front-side*.09,.25,2.25,.18,2.45,0x494856)
-                box(at,front-side*.13,4.22,1.24,.22,1.7,0x4C5261)
-                for j in (-1,1):
-                    box(at+j*.94,front-side*.15,4.23,.54,.23,1.72,teal)
-                box(at,front-side*1.95,.1,.19,.20,3.91,ivory)
+            near,far=mid-width/2,mid+width/2-.16
+            panel(shops, near if side<0 else far, far if side<0 else near, front-side*.11,.16,tall,
+                  rng.randrange(4)/4,.25)
+            for bay in (-.42,0,.42):
+                box(mid+bay*width,front-side*1.95,.1,.19,.20,3.91,ivory)
+            for rail in range(int(width)):
+                box(mid-width/2+rail+.5,front-side*1.96,3.24,.055,.07,.69,ivory)
         for d in range(18,int(k.length),68):
             idx=k.road.index(d)
             k.lamp(idx,side*5.9,'bulb',7.4)
@@ -95,8 +106,20 @@ def scenery(k):
         box(7273,11,z,w,w,h,c)
     for z,a,b,h in ((1.74,.65,.35,1.14),(2.88,.36,.46,.53),(3.41,.23,.23,.41)):
         art.tube(k.road.pos(7273,11,z),a,b,h,lin(0xA8A39C),lin(ivory),10)
+    # Victoria sits on a chair above a broad skirt, with sceptre, small crown and armrests.
+    for y in (-.39,.39):
+        box(7273.14,11+y,2.24,.72,.1,.8,0xC3B9AB)
+        box(7272.91,11+y,2.85,.59,.15,.17,0xCEC4B5)
+    box(7273.38,11,2.55,.21,.92,1.14,0xADAAA4)
+    art.tube(k.road.pos(7272.77,10.58,2.64),.029,.024,1.25,lin(0xB5AEA3),lin(ivory),6)
+    art.tube(k.road.pos(7273,11,3.79),.19,.16,.15,lin(0xBDB6A9),lin(ivory),8)
     for d in list(range(7160,7380,19))+list(range(11760,12630,29)):
         k.palm(*k.road.pos(d,7.8,.13))
+    # A quay edge, bollards and mooring ropes meet the water behind the palms.
+    for d in range(11650,int(k.length)+20,15):
+        box(d,51,-2,16,81,1.85,0x487A89)
+        box(d,10,-.28,15.1,3.0,.48,0xA89A87)
+        art.tube(k.road.pos(d,11,.12),.18,.22,.56,lin(0x414751),lin(0x666873),8)
     # Layered ship decks, dark glazing ribbons and twin funnels beyond the wharf.
     for d,offset in ((12090,68),(12295,100)):
         box(d,offset,-1,148,20,5.3,0x536775)
@@ -104,11 +127,23 @@ def scenery(k):
             w=144-deck*8
             box(d,offset,4.3+deck*2.4,w,18-deck*.7,2.24,0xD6D6CE)
             box(d,offset-9+deck*.35,5.1+deck*2.4,w-2,.36,.79,0x546C79)
+        # The hull narrows to a raked bow, with a continuous row of cabin windows.
+        stations=((70,9.9),(81,8.1),(91,4.7),(96,.25))
+        for (a,wa),(b,wb) in zip(stations,stations[1:]):
+            for side in (-1,1):
+                art.face(tuple(k.road.pos(d+u,offset+side*v,z) for u,v,z in
+                         ((a,wa,-.6),(b,wb,-.35),(b+1,wb,4.4),(a+1,wa,4.4))),
+                         (lin(0x3E5666),lin(0x485B6C),lin(0xD6D3C6),lin(0xBBC2BE)))
+        for cabin in range(-61,68,3):
+            for level in (5.0,7.35,9.72):
+                box(d+cabin,offset-9.36+(level-5)*.135,level,1.37,.25,.61,0x879AA2)
         for x in (-18,14):
             art.tube(k.road.pos(d+x,offset,16.3),2.9,2.4,4.9,lin(0xAD5B50),lin(0x5F5661),12)
     for start,end in ((-40,300),(2150,2490),(4590,4930),(7040,7150),(9320,9630)):
         for d in range(start,end,12):
             for side in (-1,1):
+                near,far=d-5.83,d+5.83
+                panel(stands,near if side<0 else far,far if side<0 else near,side*6.63,.43,3.13,0,1)
                 for row in range(3):
                     box(d,side*(6.4+row*.73),.2+row*.46,11.8,.77,.39,0x7A7380)
                 box(d,side*5.58,.98,11.95,.065,.09,0xAEB4B9)
