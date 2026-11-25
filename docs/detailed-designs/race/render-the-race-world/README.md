@@ -993,3 +993,18 @@ The original EtnaStreet sets loose blocks and broom on a cinder verge. It animat
 | Funivia, 12.18 km | Red gondolas hang from a sloping cable above the ash field under summit cloud. Real 13–14, games 02 and 05. |
 
 Place the summit in world space as Caribana does with the CN Tower. Build the crater rims and switchbacks against the resistance-derived route, and group near-field cuttings in short visible sections. Load plume, walkers and gondolas with the Etna course, reusing the class movement where possible. Freeze each on pause and suppress motion for reduced motion. Dispose of textures, geometry, materials and ride-clock animation state on exit. Follow ADRs 0021, 0023, 0030, 0034 and 0035 for the graphics backends, road geometry, lazy world library and course assets. The performance design measures actual scene submissions after nine seconds of warm-up, on the opening climb and at the refuge.
+
+## Fenland Time Trial (#2119)
+
+The class world defines long straights, two-degree bends and a maximum work grade of 0.5%. The race catalogue lacks a Fenland course. Follow the existing eight-stage, 35:00 Tough Time Trial Efforts ride over 15 km, preserving its target resistance and cadence. Keep the horizon level except for the brief approaches to field crossings and the raised Great Ouse bank. The villages and waterways form a condensed route.
+
+| Rider viewpoint | Composition and source |
+| --- | --- |
+| Drove, 0.08 km | A single strip of broken asphalt runs straight between ditches and peat fields. Real 01, 03–05 and game 04. |
+| Drain, 2.46 km | Reeds and a farm-access bridge trace the Forty Foot Drain beside the lane. Real 02, 06, 09 and 15 and game 05. |
+| Harvest, 5.45 km | Wind blows dust across the lane between wheat stubble and ridged dark soil. Real 05, 09, 13–14 and games 01 and 05. |
+| Pump, 7.89 km | An old drainage windpump stands by the water, with taller white turbines on the far horizon. Real 10 and 14 and game 03 for landmark scale. |
+| Ouse, 10.72 km | The lane climbs the grass bank to cross the Great Ouse above the fields. Real 08, 09 and 15 and games 02 and 04. |
+| Ely, 13.94 km | Ely Cathedral’s west tower and crossing lantern rise beyond poplars and an isolated farm. Real 07 and 10–12 and games 02–03. |
+
+Use short merged sections for the lane, sloped banks, crop rows and water. Fixed silhouettes behind the near reeds and poplars give the parallax of Caribana’s parade and CN Tower. Ely has two distinct high points, the west tower and the octagonal crossing lantern. Keep the turbine rotor centres on their towers. Move the blades, roadside dust and cloud shadows on ride time and hold them on pause. The Fenland course loads these resources with its native scene and disposes of their geometry, materials and textures on exit. Follow ADRs 0021, 0023, 0030, 0034 and 0035. Measure submitted frames on the opening straight and at the river crossing after nine seconds of warm-up.

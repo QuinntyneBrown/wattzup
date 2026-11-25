@@ -1435,3 +1435,10 @@ for name,colour in (("etna-clinker",0x413c39),("etna-scoria",0x854633),("etna-bi
 
 THEMES["etna"] = _etna.THEME
 SCENERY["etna"] = _etna.scenery
+
+import fens as _fens
+
+for name in ("fen-lane", "fen-fields", "fen-drains", "fen-banks"):
+    MATERIALS[name] = {"color": 0x878579, "rough": 1.0, "vertex": True}
+THEMES["fens"] = _fens.THEME
+SCENERY["fens"] = _fens.scenery
