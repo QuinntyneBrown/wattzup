@@ -1250,5 +1250,6 @@ SCENERY["haleakala"] = _haleakala.scenery
 
 import alpe as _alpe
 
+MATERIALS["orange-smoke"] = {"color": 0xFFFFFF, "vertex": True}
 THEMES["alpe"] = _alpe.THEME
 SCENERY["alpe"] = _alpe.scenery

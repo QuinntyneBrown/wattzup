@@ -96,6 +96,27 @@ export class WorldRideProbe {
     });
   }
 
+  /** Distance used to place the rider on the course in the submitted frame. */
+  async courseMetres(): Promise<number | undefined> {
+    return this.page.evaluate(
+      () =>
+        (
+          window as unknown as {
+            __wzWorldRide?: { course?: { metres: number } };
+          }
+        ).__wzWorldRide?.course?.metres,
+    );
+  }
+
+  /** Height of the Dutch Corner smoke in the submitted scene. */
+  async smokeHeight(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { smokeHeight?: number } } })
+          .__wzWorldRide?.course?.smokeHeight ?? null,
+    );
+  }
+
   /** The renderer's latest report, or null before the scene has started. */
   async report(): Promise<WorldRideReport | null> {
     return this.page.evaluate(

@@ -239,6 +239,8 @@ export class CourseRenderer implements WorldRenderer {
     backend: '' as string,
     drawCalls: 0,
     triangles: 0,
+    metres: 0,
+    smokeHeight: null as number | null,
     groups: {} as Record<string, number>,
   };
   private readonly chosenAt = new Vector3();
@@ -246,6 +248,7 @@ export class CourseRenderer implements WorldRenderer {
   private startRed: Mesh | null = null;
   private startGreen: Mesh | null = null;
   private beams: MeshBasicMaterial | null = null;
+  private smoke: { mesh: Mesh; x: number; y: number } | null = null;
   private readonly confetti: Mesh[] = [];
   private funivia: { holder: Group; span: CourseCableway; pose: CabinPose } | null = null;
   private glider: { holder: Group; orbit: CourseGliderOrbit; pose: GliderPose } | null = null;
@@ -415,6 +418,7 @@ export class CourseRenderer implements WorldRenderer {
       if (typeof from === 'number') this.benchFrom = from;
     }
     const metres = Math.min(ridden + this.benchFrom, course.end);
+    if (this.pinned) this.drawn.metres = metres;
     if (frame.riders && !this.fieldMade) this.makeField(frame.riders, metres);
     this.lampShadows?.begin();
     const standing = this.ride(you, metres, 0);
@@ -471,6 +475,7 @@ export class CourseRenderer implements WorldRenderer {
     this.confetti.length = 0;
     this.funivia = null;
     this.glider = null;
+    this.smoke = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.riders.clear();
@@ -628,6 +633,17 @@ export class CourseRenderer implements WorldRenderer {
       if (!mesh.isMesh) return;
       // A chunk is named for its group and its place along the road: `Solid_012`.
       const [group = '', chunk] = mesh.name.split('_');
+      if (group === 'Smoke' && !materials[group]) {
+        const mist = new MeshBasicMaterial({
+          ...glow,
+          transparent: true,
+          opacity: 0.22,
+          depthWrite: false,
+          side: DoubleSide,
+        });
+        materials[group] = mist;
+        this.disposables.push(mist);
+      }
       const material = materials[group];
       if (!material) return;
       for (const loaded of [mesh.material].flat()) loaded.dispose();
@@ -643,6 +659,7 @@ export class CourseRenderer implements WorldRenderer {
       // The map is set once and never moves: its matrices are worked out here, not every frame.
       mesh.matrixAutoUpdate = false;
       mesh.updateMatrix();
+      if (group === 'Smoke') this.smoke = { mesh, x: mesh.position.x, y: mesh.position.y };
       if (group === 'Confetti') this.confetti.push(mesh);
       if (group === 'StartRed') this.startRed = mesh;
       if (group === 'StartGreen') this.startGreen = mesh;
@@ -1006,6 +1023,12 @@ export class CourseRenderer implements WorldRenderer {
     if (this.beams) this.beams.opacity = 0.17 + 0.06 * Math.sin(time * 1.7);
     this.skyClock?.(time);
     this.waterClock?.(time);
+    if (this.smoke) {
+      const { mesh, x, y } = this.smoke;
+      mesh.position.x = x + 0.55 * Math.sin(time * 0.75);
+      mesh.position.y = y + 0.34 * Math.sin(time * 1.1);
+      mesh.updateMatrix();
+    }
     this.rain?.at(time);
     for (const confetti of this.confetti) {
       confetti.position.y = 0.45 * Math.sin(time * 1.3);
@@ -1109,6 +1132,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
+    drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;
     hook['course'] = drawn;
   }
 

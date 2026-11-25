@@ -118,6 +118,10 @@ def bend_sign(k,b,d,number):
     ox,oy=x-.11*math.cos(yaw),y-.11*math.sin(yaw)
     words(b,str(number),(ox,oy,z+2.04),right,up,.84,1.65,0x253638)
     words(b,WINNERS[21-number],(ox,oy,z+1.54),right,up,.27,2.0,0x233840)
+    approach=k.road.index(d-31)
+    ax,ay,az=k.road.at(approach)
+    words(b,WINNERS[21-number].split()[-1].upper(),(ax,ay,az+.055),right,
+          (math.cos(yaw),math.sin(yaw),k.s[approach]["g"]/100),1.44,6.25,0xF5E8C6)
     x,y,z=k.road.at(i)
     words(b,("ALLEZ","HUP","VAMOS")[number%3],(x,y,z+.055),right,(math.cos(yaw),math.sin(yaw),k.s[i]["g"]/100),1.75,5.8,0xEBD482 if number%2 else 0xEEEAE2)
 
@@ -224,6 +228,51 @@ def lift(k,b):
                 b.box((hx,hy,hz-2.55),(1.59,1.99,.74),0,lin(0x536A76))
             prev=line
 
+def grandes_rousses(k):
+    b=Painted(k,"peaks")
+    cx,cy,reach=k.centre()
+    radius=reach+1850
+    count=180
+    def vertex(j,band):
+        a=math.tau*(j%count)/count
+        peak=abs(math.sin(7*a+.4))**2 + .35*abs(math.sin(17*a+.9))
+        relief=470+470*peak+75*math.sin(31*a)
+        snowline=.66+.13*math.sin(13*a)+.12*math.cos(39*a)
+        f=(0,snowline,1)[band]
+        r=radius+(330+80*math.cos(11*a))*f
+        return (cx+r*math.cos(a),cy+r*math.sin(a),k.s[0]["z"]-130+f*relief)
+    for j in range(count):
+        for band,tint in enumerate((0x778590,0xD8E4EB)):
+            low=lin(tint)
+            high=lin((0x73818F,0xEDF3F6)[band] if j%5<3 else (0x657686,0xB8CBD9)[band])
+            pts=(vertex(j,band),vertex(j,band+1),vertex(j+1,band+1),vertex(j+1,band))
+            b.face(pts,(low,high,high,low))
+            b.face(pts[::-1],(low,high,high,low))
+
+
+def supporters_smoke(k,d):
+    b=Painted(k,"orange-smoke")
+    for distance,side in ((d-24,-1),(d+6,1)):
+        i=k.road.index(distance)
+        x,y,z=k.road.at(i,side*7.3)
+        for j in range(9):
+            t=j/8
+            cx=x+t*t*5.8+math.sin(j*1.9)*.26
+            cy=y+side*(.55*t+math.sin(j*1.3)*.36)
+            cz=z+2.1+4.5*t
+            radius=.18+1.6*t
+            tint=lin(0xFB802F if j<4 else 0xFCA769)
+            # Crossed translucent billows read around the hairpin from either direction.
+            for angle in (0,math.pi/2):
+                ring=[]
+                for q in range(12):
+                    a=math.tau*q/12
+                    dx=radius*math.cos(a)*(1+.13*math.sin(3*a+j))
+                    ring.append((cx+math.cos(angle)*dx,cy+math.sin(angle)*dx,cz+.72*radius*math.sin(a)))
+                for q in range(12):
+                    b.face(((cx,cy,cz),ring[q],ring[(q+1)%12]),(tint,)*3)
+
+
 def scenery(k):
     b=Painted(k)
     bends=turns(k.length)
@@ -260,5 +309,6 @@ def scenery(k):
             x,y,z=k.road.at(i,side*k.rng.uniform(13,19))
             chalet(b,x,y,z-.27,k.s[i]["h"]+.2,7.5,6,4.2 if start<0 else 7)
     lift(k,b)
-    k.peaks(25,700,1700,(550,1030),"limestone","snow",k.s[-1]["z"]-100)
+    grandes_rousses(k)
+    supporters_smoke(k,bends[14])
     return {"efforts":0}
