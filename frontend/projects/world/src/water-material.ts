@@ -49,6 +49,7 @@ export function waterMaterial(
   detail: DataTexture,
   lights: boolean,
   coloured: Node<'vec3'> | null = null,
+  evening?: Node<'float'>,
 ): Water {
   const time = uniform(0);
   const at = positionWorld.xz;
@@ -85,7 +86,16 @@ export function waterMaterial(
   // How much of that the water shows: little looked down on, nearly all at a glancing angle.
   const glance = float(1).sub(up.dot(toEye).max(0)).pow(5).mul(0.97).add(0.03);
   const material = new MeshBasicNodeMaterial();
-  const water = mix(vertexColor().rgb.mul(0.3), seen, glance);
+  let bed: Node<'vec3'> = vertexColor().rgb.mul(0.3);
+  if (evening) {
+    const lowSun = mirrored.dot(vec3(0.945, 0.105, 0.31).normalize()).max(0);
+    const amber = mix(vec3(0.77, 0.35, 0.16), vec3(0.15, 0.23, 0.35), rise.pow(0.45)).add(
+      vec3(1, 0.65, 0.24).mul(lowSun.pow(170).mul(1.85)),
+    );
+    seen = mix(seen, amber, evening);
+    bed = mix(vec3(0.075, 0.46, 0.4), vec3(0.058, 0.18, 0.18), evening);
+  }
+  const water = mix(bed, seen, glance);
   // Under a bridge's lit stays, and beside a neon sign, the water takes their colour, broken by its ripples.
   material.colorNode = coloured ? water.add(coloured.mul(a.r.add(b.g).mul(GLOW))) : water;
   return {

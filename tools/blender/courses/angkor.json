@@ -1,0 +1,122 @@
+{
+  "id": "angkor",
+  "name": "Angkor Temples",
+  "world": "angkor",
+  "theme": "angkor",
+  "seed": 2068,
+  "layout": 0,
+  "roadHalfWidth": 3.65,
+  "class": {
+    "id": "60-minute-reverse-pyramid",
+    "title": "60 Minute Reverse Pyramid",
+    "channel": "GCN Training",
+    "videoId": "7gxwfezzqdQ",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 16,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 240,
+        "level": 19,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 300,
+        "level": 18,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 360,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 24,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 240,
+        "level": 19,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 18,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 360,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "cool-down",
+        "duration": 360,
+        "level": 18,
+        "cadenceAim": 90
+      }
+    ]
+  }
+}

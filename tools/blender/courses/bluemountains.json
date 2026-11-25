@@ -1,0 +1,235 @@
+{
+  "id": "bluemountains",
+  "name": "Blue Mountains, Jamaica",
+  "world": "bluemountains",
+  "theme": "bluemountains",
+  "seed": 2083,
+  "layout": 0,
+  "class": {
+    "id": "climb-and-sprint-to-the-beat",
+    "title": "Climb & Sprint to the Beat",
+    "channel": "GCN Training",
+    "videoId": "1q4J79Gxvi8",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 240,
+        "level": 16,
+        "cadenceAim": 87
+      },
+      {
+        "kind": "work",
+        "duration": 35,
+        "level": 24,
+        "cadenceAim": 108
+      },
+      {
+        "kind": "recover",
+        "duration": 25,
+        "level": 13,
+        "cadenceAim": 87
+      },
+      {
+        "kind": "work",
+        "duration": 35,
+        "level": 24,
+        "cadenceAim": 108
+      },
+      {
+        "kind": "recover",
+        "duration": 25,
+        "level": 13,
+        "cadenceAim": 87
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 24,
+        "cadenceAim": 108
+      },
+      {
+        "kind": "recover",
+        "duration": 40,
+        "level": 13,
+        "cadenceAim": 87
+      },
+      {
+        "kind": "work",
+        "duration": 20,
+        "level": 21,
+        "cadenceAim": 62
+      },
+      {
+        "kind": "recover",
+        "duration": 20,
+        "level": 13,
+        "cadenceAim": 87
+      },
+      {
+        "kind": "work",
+        "duration": 30,
+        "level": 21,
+        "cadenceAim": 62
+      },
+      {
+        "kind": "recover",
+        "duration": 20,
+        "level": 13,
+        "cadenceAim": 87
+      },
+      {
+        "kind": "work",
+        "duration": 45,
+        "level": 21,
+        "cadenceAim": 62
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 87
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 16,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "cool-down",
+        "duration": 165,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

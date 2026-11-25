@@ -1,3 +1,4 @@
+import { packedSaltTexture } from './bonneville-packed-salt';
 // Bonneville Salt Flats, drawn by world-renderer.ts (L2-101 AC1, L2-111 technique 1): the
 // speedway course across the endless white salt of Utah under a blazing summer sky, closed for a
 // team time trial during Speed Week. The course is the salt itself, marked by its black line down
@@ -256,7 +257,7 @@ export class BonnevilleStreet implements SceneStreet {
   private addSalt(roadHalf: number, points: number): void {
     const r = roadHalf;
     const course = this.material({
-      map: this.repeat(courseTexture(), 2 * r + 1, 12),
+      map: this.repeat(packedSaltTexture(), 2 * r + 1, 12),
       polygonOffset: true,
       polygonOffsetFactor: -2,
       roughness: 0.85,
@@ -769,23 +770,6 @@ export class BonnevilleStreet implements SceneStreet {
     texture.repeat.set(1 / x, 1 / y);
     return this.track(texture);
   }
-}
-
-/** The course: packed salt, a little grey, scored along its length by tyre tracks. */
-function courseTexture(): CanvasTexture {
-  return canvasTexture(256, 256, (g) => {
-    g.fillStyle = '#e4e2dc';
-    g.fillRect(0, 0, 256, 256);
-    const random = seeded(4401);
-    for (let i = 0; i < 900; i++) {
-      g.fillStyle = random() < 0.5 ? 'rgba(150,146,138,0.18)' : 'rgba(255,255,255,0.5)';
-      g.fillRect(random() * 256, random() * 256, 2 + random() * 3, 2 + random() * 3);
-    }
-    for (let i = 0; i < 26; i++) {
-      g.fillStyle = 'rgba(120,116,108,0.14)';
-      g.fillRect(random() * 256, 0, 3 + random() * 6, 256);
-    }
-  });
 }
 
 /** The Stars and Stripes, for the flagpoles in the pits. */

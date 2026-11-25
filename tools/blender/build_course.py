@@ -54,7 +54,8 @@ METRES_PER_TURN = 5.0  # as the scene driver's: a road bike in a middle gear
 GRADE_PER_LEVEL = 1.0  # percent of gradient for each level above the course's mean
 LEAD_IN = 80.0  # road before the start line
 RUN_OUT = 200.0  # road after the finish line
-ROAD_HALF = 5.0
+DEFAULT_ROAD_HALF = 5.0
+ROAD_HALF = DEFAULT_ROAD_HALF
 CLEAR = 46.0  # the road keeps this far from an earlier stretch of itself
 SEA_CLEARANCE = 4.0  # the road's lowest point above the sea
 BRIDGE_BED = -9.0  # the land's height under a bridge: below the sea
@@ -572,14 +573,24 @@ HALOS_PART = "Halos"
 WALL_KINDS = {"brick": 1, **{f"container-{i}": 2 for i in range(4)}, "whitewash": 3, "chalet-plaster": 3, "tower": 3, "wall": 3, "stone": 5, "dolomite-pale": 5, "larch-aged": 6, "larch-warm": 6, "chalet-wood": 6,
               **{f"facade-{i}": 3 for i in range(6)}, **{f"deco-{i}": 3 for i in range(4)}}
 WIDER = {"Land": 4, "Beams": 6, "Glow": 6, "Leaves": 1, "Halos": 4, "Ground": 2}
-WHOLE = {"sea": "Sea", "sky": "Sky", "sun": "Sun", "moon": "Sun", "island": "Conillera", "peaks": "Peaks", "funivia": "Funivia", "glider": "Glider", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
+WHOLE = {"commissaire":"Commissaire","team-car":"TeamCar","sea": "Sea", "sky": "Sky", "sun": "Sun", "moon": "Sun", "island": "Conillera", "peaks": "Peaks", "funivia": "Funivia", "glider": "Glider", "tuk-tuk": "TukTuk", "touring-bike": "TouringBike", "tour-boat": "TourBoat", "commuter": "Commuter", "orange-smoke": "Smoke", "moored-boats": "Boats", "lamp-red": "StartRed", "lamp-green": "StartGreen"}
 
 
 def group_of(mat: str) -> tuple[str, bool]:
     """The mesh a part's faces join, and whether that mesh is cut into chunks along the road."""
+    if mat == "arenberg-foliage":
+        return "Foliage", True
+    if mat == "pave":
+        return "Pave", True
+    if mat == "angliru-concrete":
+        return "Ground", True
     if mat in WHOLE:
         return WHOLE[mat], False
     spec = MATERIALS[mat]
+    if mat == "elm-shade":
+        return "Dapple", True
+    if mat in ("canal-front", "elm-leaves"):
+        return ("Facades" if mat == "canal-front" else "Elms"), True
     if mat == "confetti":
         return "Confetti", True
     if mat == "terrain":
@@ -635,7 +646,9 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
             data.from_pydata(part.verts, [], part.faces)
             film.objects.link(bpy.data.objects.new(part.name, data))
         group, chunked = group_of(part.mat)
-        if part.name in GROUND_PARTS:
+        if part.name == 'LandmarkLights':
+            group, chunked = 'Glow', False
+        elif part.name in GROUND_PARTS:
             group = "Ground"
         elif part.name == WINDOWS_PART:
             group = "Windows"
@@ -685,7 +698,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     shade = 0.74 + 0.3 * smoothstep(0.0, 4.5, lift) if lift > 0.2 else (0.62 if lift < -0.3 else 1.0)
                     c = (c[0] * shade, c[1] * shade, c[2] * shade, 1.0)
                 key = (round(v[0], 3), round(v[1], 3), round(v[2], 3), round(c[0], 3), round(c[1], 3), round(c[2], 3))
-                if group in ("Windows", "Fences", "Halos"):
+                if group in ("Windows", "Fences", "Halos", "Foliage", "Facades", "Elms", "Dapple") or (group == "Ground" and part.uvs is not None):
                     key = (*key, *part.uvs[i])
                 if walled:
                     _, near, _ = road.tree.find((v[0], v[1], 0.0))
@@ -696,11 +709,13 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     at = mesh["index"][key] = len(mesh["verts"])
                     mesh["verts"].append(v)
                     mesh["cols"].append(c)
-                    if group in ("Windows", "Fences", "Halos"):
+                    if group in ("Windows", "Fences", "Halos", "Foliage", "Facades", "Elms", "Dapple"):
                         mesh["uvs"].append(part.uvs[i])
                     if walled:
                         mesh["uvs"].append(wall_uv)
-                    if group == "Ground":
+                    if group == "Ground" and part.uvs is not None:
+                        mesh["uvs"].append(part.uvs[i])
+                    elif group in ("Ground", "Pave"):
                         _, near, _ = road.tree.find((v[0], v[1], 0.0))
                         p = road.s[near]
                         dx, dy = v[0] - p["x"], v[1] - p["y"]
@@ -812,6 +827,10 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
                 mid = road.at(i, 0.0)
                 wall.box((mid[0], mid[1], -9.0), (2.4, 2 * walk - 1.0, mid[2] + 9.0 + deep), s[i]["h"])
             return
+        if edge == "gracht":
+            strip(prom, i, 5.2, 0.035, kerb, 0.035)
+            strip(prom, i, -kerb, 0.08, -8.6, 0.08)
+            return
         if edge == "verge":
             strip(sand, i, kerb + 8.0, -0.25, kerb, 0.12)
             strip(sand, i, kerb + 14.0, -1.6, kerb + 8.0, -0.25)
@@ -843,10 +862,51 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
         strip(sand, i, kerb + 7.0, drop, kerb + 2.4, 0.0)
         strip(sand, i, -(kerb + 2.4), 0.0, -(kerb + 7.0), -1.6)
 
+    stones = Builder("Crowned five-star sector", "pave") if edge == "pave" else None
+    slab = Builder("Grooved concrete", "angliru-concrete") if edge == "angliru" else None
     for i in range(n - 1):
+        if stones is not None:
+            if 320 <= s[i]["d"] < 2720:
+                strip(stones,i,2.12,-.075,1.1,.025)
+                strip(stones,i,1.1,.025,0,.08)
+                strip(stones,i,0,.08,-1.1,.025)
+                strip(stones,i,-1.1,.025,-2.12,-.075)
+            else:
+                strip(asphalt,i,2.12,0,-2.12,0)
+            for side in (-1,1):
+                strip(sand,i,side*2.12,-.075,side*3.12,-.105)
+            continue
+        if edge == 'scheldt':
+            strip(asphalt,i,4.9,0,-4.9,0)
+            strip(prom,i,11,-.05,4.9,0)
+            strip(prom,i,-4.9,0,-9,-.04)
+            # Two flanged rails embedded in concrete on the dock side.
+            for offset in (3.0,4.435):
+                strip(wall,i,offset+.053,.012,offset-.053,.012)
+            continue
+        if slab is not None:
+            on_ramp = s[i]["g"] >= 12
+            strip(slab if on_ramp else asphalt, i, 3.12, 0.0, -3.12, 0.0)
+            strip(sand, i, 4.7, -.06, 3.12, 0.0)
+            strip(sand, i, -3.12, 0.0, -4.7, -.06)
+            if on_ramp:
+                for u in (0,.5,1,1.5,2,2.5,3,3.5):
+                    d=s[i]["d"]+u
+                    slab.quad(road.pos(d,-2.98,.011),road.pos(d,2.98,.011),road.pos(d+.04,2.98,.025),road.pos(d+.04,-2.98,.025))
+            continue
+        if edge == "laterite":
+            # Unmarked tarmac meets the dusty red shoulder at grade through the jungle.
+            half = 3.65
+            strip(asphalt, i, half, 0.0, -half, 0.0)
+            strip(sand, i, 7.1, -.06, half, 0.0)
+            strip(sand, i, -half, 0.0, -7.1, -.06)
+            continue
         strip(asphalt, i, ROAD_HALF, 0.0, -ROAD_HALF, 0.0)
         # The double yellow line down the middle and a white line inside each edge.
-        if white_centre:
+        if edge == "gracht":
+            # Cycle quays use clinker courses instead of a motorway centre stripe.
+            pass
+        elif white_centre:
             # A dashed white line down the middle: 3 m painted, 5 m bare.
             if (i % 2) == 0:
                 strip(paint, i, 0.08, 0.02, -0.08, 0.02)
@@ -876,6 +936,12 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
         strip(prom, i, -kerb, 0.12, -(kerb + TERRACE), 0.12)
         strip(sand, i, -(kerb + TERRACE), 0.12, -(kerb + TERRACE + 8.0), -2.4)
 
+    if stones is not None:
+        stones.build(col)
+
+    if slab is not None:
+        slab.build(col)
+
     def chevron(d: float, lane: float) -> None:
         for back in (0.0, 1.5):
             tip, tail = d + 2.2 - back, d - back
@@ -888,7 +954,7 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
 
     # Chevrons up every effort: the road itself says "push".
     for stage in st:
-        if stage["kind"] != "work":
+        if edge == "pave" or edge == "scheldt" or edge == "angliru" or stage["kind"] != "work" or (theme or {}).get("effort_chevrons") is False:
             continue
         d = stage["from"] + 12
         while d < stage["to"] - 6:
@@ -1796,7 +1862,7 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         "durationSeconds": sum(s["duration"] for s in st),
         "step": STEP,
         "startIndex": int(LEAD_IN / STEP),
-        "roadHalfWidth": ROAD_HALF,
+        "roadHalfWidth": course.get("roadHalfWidth", (theme or {}).get("road_half_width", ROAD_HALF)),
         "meanLevel": round(mean, 2),
         "gradePerLevel": per_level,
         # The direction the light comes from, as a unit vector in the glb's axes.
@@ -1815,6 +1881,8 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         ],
         "points": [v for p in samples for v in (round(p["x"], 2), round(p["z"], 2), round(-p["y"], 2))],
     }
+    if "bank" in samples[0]:
+        data["bankDegrees"] = [round(p["bank"], 3) for p in samples]
     if "class" in course:
         data["class"] = course["class"]
     if facts.get("cableways"):
@@ -2168,6 +2236,7 @@ def stage_video(path: Path, road: Road, st: list[dict], length: float, seconds: 
 
 
 def main(argv: list[str] | None = None) -> dict:
+    global ROAD_HALF
     if argv is None:
         argv = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else sys.argv[1:]
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
@@ -2183,6 +2252,7 @@ def main(argv: list[str] | None = None) -> dict:
     theme = themes.THEMES.get(course.get("theme", ""))
     # A theme whose land and scenery are its own (Ibiza's) is a theme in everything else.
     themed = bool(theme) and not theme.get("own")
+    ROAD_HALF = (theme or {}).get("road_half_width", DEFAULT_ROAD_HALF)
     if theme:
         for name, colour in theme.get("palette", {}).items():
             MATERIALS[name] = {**MATERIALS[name], "color": colour}
@@ -2205,7 +2275,10 @@ def main(argv: list[str] | None = None) -> dict:
     else:
         samples, st, length, mean, per_level = lay_centre_line(course, theme)
     road = Road(samples)
-    build_road(road, st, length, col, theme)
+    if (theme or {}).get("road_builder"):
+        theme["road_builder"](road, st, length, col, sys.modules[__name__])
+    else:
+        (theme or {}).get("surface_builder", build_road)(road, st, length, col, theme)
     if (theme or {}).get("builder") == "sellaronda":
         _, height_at = sellaronda.build_terrain(road, col, Builder)
         facts = sellaronda.build_scenery(road, st, length, height_at, course, col, Builder, build_sky)

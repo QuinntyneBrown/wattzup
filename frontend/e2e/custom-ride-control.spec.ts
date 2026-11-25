@@ -13,6 +13,7 @@
 // Given flat resistance, when it opens, then the note reads "Holding a flat level for the whole ride."
 import { ECHELON_NOTIFY, resistanceFrame, targetResistanceWrite } from './fixtures/echelon';
 import { startCustomRide } from './fixtures/custom-ride';
+import { stepUntil } from './fixtures/race';
 import { expect, test } from './fixtures/test';
 
 const isTarget = (hex: string): boolean => hex.startsWith('F0 B1 ');
@@ -58,7 +59,9 @@ test('Raise and a level bar send the rider’s own level until the next segment 
   await page.clock.fastForward('05:00');
   await page.clock.runFor(100);
   await expect.poll(sent).toEqual([8, 9, 20, 24].map(targetResistanceWrite));
-  await expect(ride.sent.first()).toHaveText(/^5:00RES 24 · planack \d+ms$/);
+  await stepUntil(page, () =>
+    expect(ride.sent.first()).toHaveText(/^5:00RES 24 · planack \d+ms$/, { timeout: 50 }),
+  );
 });
 
 test('with the bike away every resistance control is off (L2-028 AC4)', async ({

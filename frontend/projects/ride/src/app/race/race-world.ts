@@ -1,6 +1,7 @@
 import {
   type ComponentRef,
   DestroyRef,
+  DOCUMENT,
   Directive,
   ViewContainerRef,
   computed,
@@ -20,7 +21,7 @@ import {
   type SceneryState,
 } from '@telo/api';
 import { worldQuality } from '@telo/domain';
-import type { WorldScene } from '@telo/world';
+import type { WorldMusicPlayer, WorldScene } from '@telo/world';
 
 /**
  * Draws the map's world where it sits (ADR 0030): it imports the world library when the race opens, so neither the
@@ -31,6 +32,7 @@ import type { WorldScene } from '@telo/world';
 @Directive({ selector: '[wzRaceWorld]' })
 export class RaceWorld {
   readonly map = input.required<MapDto>({ alias: 'wzRaceWorld' });
+  readonly raceMetres = input.required<number>();
   readonly elapsed = input.required<number>();
   readonly speedKmh = input.required<number | null>();
   readonly running = input.required<boolean>();
@@ -55,16 +57,44 @@ export class RaceWorld {
 
   constructor() {
     const host = inject(ViewContainerRef);
+    const doc = inject(DOCUMENT);
+    const visible = signal(!doc.hidden);
+    const onVisibility = () => visible.set(!doc.hidden);
+    const music = signal<WorldMusicPlayer | null>(null);
+    let trackLoaded = false;
     let destroyed = false;
-    inject(DestroyRef).onDestroy(() => (destroyed = true));
-    void import('@telo/world').then(({ WorldScene }) => {
+    inject(DestroyRef).onDestroy(() => {
+      destroyed = true;
+      doc.removeEventListener('visibilitychange', onVisibility);
+      music()?.destroy();
+    });
+    void import('@telo/world').then(({ WorldScene, WorldMusicPlayer }) => {
       if (destroyed) return;
+      if (this.map().world === 'bluemountains') {
+        doc.addEventListener('visibilitychange', onVisibility);
+        music.set(new WorldMusicPlayer(() => doc.createElement('audio'), doc));
+      }
       const scene = host.createComponent(WorldScene);
       scene.instance.started.subscribe((backend) => this.started.emit(backend));
       scene.instance.unavailable.subscribe(() => this.unavailable.emit());
       scene.instance.sceneryState.subscribe((state) => this.sceneryState.emit(state));
       this.bind(scene);
       this.scene.set(scene);
+    });
+    effect(() => {
+      const player = music();
+      if (!player) return;
+      const metres = this.raceMetres();
+      const distance = Math.min(Math.abs(metres - 1540), Math.abs(metres - 8860));
+      const audible = distance < 125 && this.settings().worldMusic && this.running() && visible();
+      if (audible) {
+        if (!trackLoaded) {
+          player.load('bluemountains');
+          trackLoaded = true;
+        }
+        player.setVolume(0.65 * (1 - distance / 125) ** 2);
+      }
+      player.sync(audible);
     });
     effect(() => {
       const scene = this.scene();
@@ -77,6 +107,7 @@ export class RaceWorld {
     const map = this.map();
     scene.setInput('worldId', map.world);
     scene.setInput('segments', map.plan.segments);
+    scene.setInput('raceMetres', this.raceMetres());
     scene.setInput('elapsed', this.elapsed());
     scene.setInput('speedKmh', this.speedKmh());
     scene.setInput('running', this.running());

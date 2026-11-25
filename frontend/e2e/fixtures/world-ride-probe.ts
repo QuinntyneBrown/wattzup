@@ -55,10 +55,167 @@ export interface DrawnRider {
 export class WorldRideProbe {
   constructor(private readonly page: Page) {}
 
-  /**
-   * Call before the page loads: World Ride draws at `tier` and never drops it; with `webgl2`,
-   * through three's WebGL2 backend even where WebGPU is offered.
-   */
+  async startAt(metres: number): Promise<void> {
+    await this.page.evaluate((from) => {
+      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
+    }, metres);
+  }
+
+  async yardMotion(part: 'speakerDepth' | 'mistPosition'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
+  async millMotion(part: 'paddleHeight' | 'valleyMist'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
+  async coastalMotion(part: 'foamAdvance' | 'walkerStride'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
+  async saltMotion(part: 'pushCarPosition' | 'mirageHeight'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
+  async brickyardMotion(part: 'flagTip' | 'balloonHeight'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
+  async brightonMotion(part: 'bannerTip' | 'floatPosition'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
+  async brooklynMotion(part: 'cabPosition' | 'ferryPosition'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
+  async bundMotion(part: 'boatPosition' | 'touristPosition'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
+  async calobraMotion(part: 'coachDistance' | 'packDistance'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
+  async campolongoMotion(part: 'chairDistance' | 'cowPitch'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
+  async cabotMotion(part: 'boatHeel' | 'moosePitch'): Promise<number | null> {
+    return this.page.evaluate(
+      (name) =>
+        (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
+          ?.course?.[name] ?? null,
+      part,
+    );
+  }
+
+  async guitarHand(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { guitarHand?: number } } })
+          .__wzWorldRide?.course?.guitarHand ?? null,
+    );
+  }
+
+  async reefCrest(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { reefCrest?: number } } }).__wzWorldRide
+          ?.course?.reefCrest ?? null,
+    );
+  }
+
+  async ferryX(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { ferryX?: number } } }).__wzWorldRide
+          ?.course?.ferryX ?? null,
+    );
+  }
+
+  async eveningLight(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { eveningLight?: number } } })
+          .__wzWorldRide?.course?.eveningLight ?? null,
+    );
+  }
+
+  async clubLane(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { clubLane?: number } } }).__wzWorldRide
+          ?.course?.clubLane ?? null,
+    );
+  }
+
+  async surfCrest(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { surfCrest?: number } } }).__wzWorldRide
+          ?.course?.surfCrest ?? null,
+    );
+  }
+
+  async tramMetres(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { tramMetres?: number } } })
+          .__wzWorldRide?.course?.tramMetres ?? null,
+    );
+  }
+
   async pin(tier: Tier, backend: 'auto' | 'webgl2' = 'auto'): Promise<void> {
     await this.page.addInitScript(
       ([t, b]) => {
@@ -96,12 +253,183 @@ export class WorldRideProbe {
     });
   }
 
+  /** Straight-line distance between the visible ghost and rider in the submitted course scene. */
+  async ghostSeparation(): Promise<number> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { ghostSeparationMetres: number } } })
+          .__wzWorldRide?.course?.ghostSeparationMetres ?? 0,
+    );
+  }
+
+  /** Height of the moored boats in the frame just submitted, when the course has them. */
+  async boatHeight(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { boatHeight?: number } } })
+          .__wzWorldRide?.course?.boatHeight ?? null,
+    );
+  }
+
+  /** Distance used to place the rider on the course in the submitted frame. */
+  async courseMetres(): Promise<number | undefined> {
+    return this.page.evaluate(
+      () =>
+        (
+          window as unknown as {
+            __wzWorldRide?: { course?: { metres: number } };
+          }
+        ).__wzWorldRide?.course?.metres,
+    );
+  }
+
+  /** Height of the Dutch Corner smoke in the submitted scene. */
+  async smokeHeight(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { smokeHeight?: number } } })
+          .__wzWorldRide?.course?.smokeHeight ?? null,
+    );
+  }
+
+  /** Along-canal position of the tour boat in the submitted frame. */
+  async tourBoatX(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { tourBoatX?: number } } }).__wzWorldRide
+          ?.course?.tourBoatX ?? null,
+    );
+  }
+
   /** The renderer's latest report, or null before the scene has started. */
   async report(): Promise<WorldRideReport | null> {
     return this.page.evaluate(
       () =>
         ((window as unknown as Record<string, { report?: WorldRideReport }>)['__wzWorldRide']
           ?.report ?? null) as WorldRideReport | null,
+    );
+  }
+  /** Position of the first local training rider drawn in Girona. */
+  async trainingRiderX(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { trainingRiderX?: number } } })
+          .__wzWorldRide?.course?.trainingRiderX ?? null,
+    );
+  }
+  /** Position of the tuk-tuk submitted to the course renderer. */
+  async tukTukX(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { tukTukX?: number } } }).__wzWorldRide
+          ?.course?.tukTukX ?? null,
+    );
+  }
+  /** Rotation of the flag mesh submitted to the course renderer. */
+  async asturiasFlagAngle(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { asturiasFlagAngle?: number } } })
+          .__wzWorldRide?.course?.asturiasFlagAngle ?? null,
+    );
+  }
+  /** Position of the lead rider in the crosswind echelon. */
+  async echelonLeaderX(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { echelonLeaderX?: number } } })
+          .__wzWorldRide?.course?.echelonLeaderX ?? null,
+    );
+  }
+  /** Position of the commissaire motorcycle drawn on the sector. */
+  async commissaireX(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { commissaireX?: number } } })
+          .__wzWorldRide?.course?.commissaireX ?? null,
+    );
+  }
+  /** Height of the first jogger on the granite steps. */
+  async joggerHeight(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { joggerHeight?: number } } })
+          .__wzWorldRide?.course?.joggerHeight ?? null,
+    );
+  }
+  async flagDisplacement(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { flagDisplacement?: number } } })
+          .__wzWorldRide?.course?.flagDisplacement ?? null,
+    );
+  }
+  /** Height of a feeding flamingo’s bill at Chaxa. */
+  async flamingoBillHeight(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { flamingoBillHeight?: number } } })
+          .__wzWorldRide?.course?.flamingoBillHeight ?? null,
+    );
+  }
+  /** Height of a grazing vicuña’s head on the dry shore. */
+  async vicunaHeadHeight(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { vicunaHeadHeight?: number } } })
+          .__wzWorldRide?.course?.vicunaHeadHeight ?? null,
+    );
+  }
+  /** Height of a breaking plume at the Storseisundet approach. */
+  async sprayHeight(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { sprayHeight?: number } } })
+          .__wzWorldRide?.course?.sprayHeight ?? null,
+    );
+  }
+  /** Lane of the horse nearest the corniche. */
+  async horseLane(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { horseLane?: number } } }).__wzWorldRide
+          ?.course?.horseLane ?? null,
+    );
+  }
+  async cirqueSun(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { cirqueSun?: number } } }).__wzWorldRide
+          ?.course?.cirqueSun ?? null,
+    );
+  }
+  /** Lane of the sheep nearest the riding line. */
+  async sheepLane(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { sheepLane?: number } } }).__wzWorldRide
+          ?.course?.sheepLane ?? null,
+    );
+  }
+  async highlandSun(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { highlandSun?: number } } })
+          .__wzWorldRide?.course?.highlandSun ?? null,
+    );
+  }
+  async fallingWater(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { fallingWater?: number } } })
+          .__wzWorldRide?.course?.fallingWater ?? null,
+    );
+  }
+  async illumination(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { illumination?: number } } })
+          .__wzWorldRide?.course?.illumination ?? null,
     );
   }
 }

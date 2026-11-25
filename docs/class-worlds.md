@@ -7,6 +7,10 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Course | Class | Length | Climbing | Model | Status |
 | --- | --- | --- | --- | --- | --- |
 | Adelaide Hills (`adelaide`) | HIIT Fat Burn With Mitchelton-Scott (GCN, 30:00) | 17.11 km | 265 m | `public/courses/adelaide.glb` ([captures](screenshots/adelaide/)) | Built and ridden; open from the start in Map Select |
+| Aguascalientes Velodrome (`aguascalientes`) | Olympic Pursuit Efforts (GCN Training, 30:00) | 12.875 km | 0 m | `public/courses/aguascalientes.glb` ([captures](screenshots/aguascalientes/)) | Available from Map Select |
+| Algarve Cliffs (`algarve`) | Get Fit in 40 (GCN Training, 40:00) | 16.8 km | 113 m | `public/courses/algarve.glb` ([captures](screenshots/algarve/)) | Available from Map Select |
+| Alpe d’Huez (`alpe`) | Elevate Your Climbing Power (GCN Training, 20:00) | 7.4 km | 328 m | `public/courses/alpe.glb` ([rider views](screenshots/alpe/)) | Open from Map Select. The 14 original stages take the rider from Bourg-d’Oisans to the ski station through 21 numbered bends. |
+| Amsterdam Canals (`amsterdam`) | Beginner Training Session (GCN Training, 20:00) | 8.0 km | 28 m | `public/courses/amsterdam.glb` ([rider views](screenshots/amsterdam-canals/)) | Open from Map Select. Nine original stages follow Herengracht past narrow canal houses, houseboats and arched bridges. |
 | Ibiza Sunset Strip (`ibiza`) | Intervals to the Beat (GCN Training, 20:00) | 8.4 km | 159 m | `public/courses/ibiza.glb` ([captures](screenshots/courses/ibiza/)) | Built and ridden; open from the start on the map catalogue |
 | Sella Ronda (`sellaronda`) | Over/Under Intervals on the Passo Sella (GCN Training, 28:00) | 11.7 km | 357 m | `public/courses/sellaronda.glb` ([captures](screenshots/courses/sellaronda/)) | Built and ridden; open from the start on the map catalogue |
 | Prairie Paceline (`prairie`) | The catalogue's 30:00 intervals (placeholder) | 18.4 km | 90 m | `public/courses/prairie.glb` ([film](../blender/prairie.mp4)) | Built in Blender (ADR 0035) and ridden in races |
@@ -16,6 +20,28 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Dolomites (`dolomites`) | The catalogue's 30:00 intervals (placeholder) | 38.5 km | 860 m | `public/courses/dolomites.glb` ([film](../blender/dolomites.mp4)) | Built in Blender (ADR 0035) and ridden in races |
 | Vice City (`vicecity`) | The catalogue's 30:00 intervals (placeholder) | 24 km | 60 m | `public/courses/vicecity.glb` ([film](../blender/vicecity.mp4)) | Built in Blender (ADR 0035) and ridden in races |
 | Col du Granit (`granite`) | The catalogue's 30:00 intervals (placeholder) | 16.1 km | 1,240 m | `public/courses/granite.glb` ([film](../blender/granite.mp4)) | Built in Blender (ADR 0035) and ridden in races |
+| Philadelphia Art Museum Steps (`artmuseum`) | HIIT Leg Buster (GCN Training, 19:40) | 8.175 km | 86 m | `public/courses/artmuseum.glb` ([ride views](screenshots/philadelphia-art-museum/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Atacama Desert (`atacama`) | Extreme Fat Burning Class (GCN, 50:00) | 21.275 km | 15 m | `public/courses/atacama.glb` ([ride views](screenshots/atacama-desert/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Atlantic Ocean Road (`atlanticroad`) | FTP HIIT Booster for Longer Efforts (GCN Training, 30:00) | 13.125 km | 65 m | `public/courses/atlanticroad.glb` ([ride views](screenshots/atlantic-ocean-road/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Col d'Aubisque (`aubisque`) | 35 Minute Torque Power Intervals (GCN, 33:00) | 12.600 km | 361 m | `public/courses/aubisque.glb` ([ride views](screenshots/col-aubisque/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Sixth Street, Austin (`austin`) | Get Pumped With Grace (GCN Training, 33:40) | 15.450 km | 0 m | `public/courses/austin.glb` ([ride views](screenshots/sixth-street-austin/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Bathsheba, Barbados (`bathsheba`) | Take It Easy (GCN Training, 25:00) | 10.700 km | 31 m | `public/courses/bathsheba.glb` ([ride views](screenshots/bathsheba-barbados/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Bay of Islands Group Ride (`bayofislands`) | Zwift Group Workout: HIIT Intervals (GCN, 61:20) | 27.950 km | 59 m | `public/courses/bayofislands.glb` ([ride views](screenshots/bay-of-islands/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Beach Road, Melbourne (`beachroad`) | 45 Minute Sprint Training (GCN, 45:50) | 19.613 km | 17 m | `public/courses/beachroad.glb` ([ride views](screenshots/beach-road-melbourne/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Bealach na Bà (`bealach`) | 22 Minute Strength Intervals (GCN, 22:00) | 9.050 km | 623 m | `public/courses/bealach.glb` ([ride views](screenshots/bealach-na-ba/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Big Sur (`bigsur`) | Under Over Power Blocks (GCN Training, 30:00) | 14.075 km | 286 m | `public/courses/bigsur.glb` ([ride views](screenshots/big-sur/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Blackpool Illuminations (`blackpool`) | In and Out, Shake It All About (GCN Training, 14:00) | 5.630 km | 3 m | `public/courses/blackpool.glb` ([ride views](screenshots/blackpool-illuminations/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Blue Mountains, Jamaica (`bluemountains`) | Climb & Sprint to the Beat (GCN Training, 35:00) | 14.593 km | 752 m | `public/courses/bluemountains.glb` ([ride views](screenshots/blue-mountains-jamaica/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Blue Ridge Parkway (`blueridge`) | FTP Booster Extended Efforts (GCN Training, 55:00) | 24.250 km | 391 m | `public/courses/blueridge.glb` ([ride views](screenshots/blue-ridge-parkway/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Bondi to Bronte (`bondi`) | 15 Min HIIT Cardio: Belly Fat Loss (GCN Training, 13:30) | 6.150 km | 95 m | `public/courses/bondi.glb` ([ride views](screenshots/bondi-to-bronte/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Bonneville Salt Flats (`bonneville`) | Team Time Trial (GCN Training, 20:00) | 8.250 km | 0 m | `public/courses/bonneville.glb` ([ride views](screenshots/bonneville-salt-flats/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Indianapolis Brickyard (`brickyard`) | 90-Second Extended Accelerations (GCN Training, 30:00) | 12.000 km | 0 m | `public/courses/brickyard.glb` ([ride views](screenshots/indianapolis-brickyard/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Brighton Pride (`brighton`) | Emily's Short Mix (GCN Training, 30:00) | 13.075 km | 37 m | `public/courses/brighton.glb` ([ride views](screenshots/brighton-pride/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Brooklyn Bridge Commute (`brooklyn`) | Get to Work on Your Cycling Fitness (GCN Training, 25:00) | 10.700 km | 117 m | `public/courses/brooklyn.glb` ([ride views](screenshots/brooklyn-bridge-commute/README.md)) | Built and ridden; open from the start on the map catalogue |
+| The Bund, Shanghai (`bund`) | 30 Minute High Cadence HIIT (GCN Training, 30:03) | 12.832 km | 0 m | `public/courses/bund.glb` ([ride views](screenshots/the-bund-shanghai/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Sa Calobra, Mallorca (`calobra`) | Aerobic Cadence Workout With Team Sky (GCN, 30:30) | 11.851 km | 671 m | `public/courses/calobra.glb` ([ride views](screenshots/sa-calobra-mallorca/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Passo Campolongo (`campolongo`) | Intense Climb: Passo Campolongo (GCN, 21:50) | 8.235 km | 307 m | `public/courses/campolongo.glb` ([ride views](screenshots/passo-campolongo/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Cabot Trail (`cabot`) | 60 Minute Endurance Intervals (GCN, 60:00) | 25.075 km | 584 m | `public/courses/cabot.glb` ([ride views](screenshots/cabot-trail/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
@@ -113,7 +139,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 82 | Flat Out Efforts | Silverstone Track Day | 35% |  | Flat-out sweeps of the British circuit with the grandstands empty. |
 | 83 | Sprint to the Music | Glastonbury Fields | 78% |  | Tents, flags and the Pyramid Stage; sprint between music stages. |
 | 84 | Sprints for Climbing | Mur de Huy | 35% |  | The Ardennes' brutal wall, climbing past chapels toward the finish. |
-| 85 | Don't Get Dropped | Arenberg Forest | 35% |  | Paris-Roubaix cobbles through the trees; hold the wheel or lose it. |
+| 85 | Don't Get Dropped | Arenberg Forest | 35% | [Race views](screenshots/arenberg-forest/README.md) | Paris-Roubaix cobbles through the trees; hold the wheel or lose it. |
 | 86 | Wake Up and Smell the Lactic | Pike Place at Dawn | 77% |  | Coffee steam and fish-market crowds at sunrise over Seattle's Elliott Bay. |
 | 87 | 25 Minute Sprint Intervals | Chicago Lakefront Trail | 35% |  | Lake Michigan beaches and the skyline along the waterfront trail. |
 | 88 | 25 Minute High Intensity Intervals | Diwali, Marine Drive | 35% |  | Mumbai's Queen's Necklace lit with lamps and fireworks over the Arabian Sea. |
@@ -183,13 +209,13 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 152 | Ramp It Up: Punchy Intervals | La Redoute | 84% |  | Liège-Bastogne-Liège's punchy Ardennes wall, painted with fan names. |
 | 153 | Spin Those Legs | Okinawa Coast Road | 35% |  | Coral beaches and turquoise shallows along a subtropical island road. |
 | 154 | Get Fit in 40 | Algarve Cliffs | 35% |  | Golden sea cliffs, coves and fishing villages on Portugal's south coast. |
-| 155 | 5 Gruelling Minutes | Angliru | 82% |  | Asturian ramps so steep the crowd pushes in on the road. |
+| 155 | 5 Gruelling Minutes | Angliru | 82% | [Race views](screenshots/alto-angliru/README.md) | Asturian ramps so steep the crowd pushes in on the road. |
 | 156 | Repeat Your Max | Mulholland Drive | 35% |  | Hollywood Hills ridge road with city views on repeat. |
 | 157 | Get Fit Fast: 40 Minute Sweet Spot | Provence Lavender | 35% |  | Purple lavender rows and stone farmhouses on the Valensole plateau. |
 | 158 | 3 Mins On, 2 Mins Off | Cinque Terre | 80% |  | Cliffside villages in pastel colours above the Ligurian Sea. |
 | 159 | A Little Bit of Everything | Cherry Blossom Festival, D.C. | 35% |  | The National Mall and Tidal Basin under pink blossoms and kites. |
 | 160 | Cobbled Mayhem | Oude Kwaremont | 35% |  | Tour of Flanders cobbles, beer tents and roaring Flemish fans. |
-| 161 | Drop Ollie at All Costs | Els Àngels, Girona | 81% |  | A favourite pro training climb above Girona's old town. |
+| 161 | Drop Ollie at All Costs | Els Àngels, Girona | 81% |  | Follow the Onyar, climb through cork oaks with local training groups and finish at the sanctuary. The 17.05 km race preserves all 22 class stages. [Rider views](screenshots/els-angels/README.md). |
 | 162 | FTP Builder | Oregon Coast | 35% |  | Highway 101 past sea stacks, lighthouses and misty spruce. |
 | 163 | Ramp Workout: From Threshold to Sprints | Cypress Mountain | 35% |  | Vancouver's ski-hill road ramping above the city and ocean. |
 | 164 | Aerobic Efforts With Max Sprints | Winterlude, Ottawa | 85% |  | Snow sculptures and skaters on the frozen Rideau Canal. |
@@ -198,7 +224,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 167 | Hank's Hardest Training Session | Alto de Letras | 82% |  | Colombia's 80-kilometre climb through coffee country to the páramo. |
 | 168 | Ramp It Up: 50 Minute HIIT | Prague Old Town | 35% |  | Cobbles, spires and Charles Bridge ramping up to the castle. |
 | 169 | Steepest Climb in the World | Ffordd Pen Llech | 35% |  | A Welsh street in Harlech, once ranked the world's steepest. |
-| 170 | Lead Out Efforts Into Full Sprints | Antwerp Port Sprint | 84% |  | Flat docklands roads and a bunch-sprint finish in Antwerp. |
+| 170 | Lead Out Efforts Into Full Sprints | Antwerp Port Sprint | 84% | [Race views](screenshots/antwerp-port-sprint/README.md) | Flat docklands roads and a bunch-sprint finish in Antwerp. |
 | 171 | Aerobic Efforts: Drop Ollie Like a Boss | Andalusian White Villages | 35% |  | Whitewashed hill towns and olive groves in southern Spain. |
 | 172 | Un-Paced Efforts | Mongolian Steppe | 35% |  | Endless grassland, yurts and wild horses, no markers in sight. |
 | 173 | Sandwich Max Efforts | Lake Tahoe | 81% |  | Clear alpine lake shore ringed by pines and granite. |
@@ -207,7 +233,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 176 | Extreme Fat Burning Class | Atacama Desert | 86% |  | The driest desert on earth, salt flats and flamingo lagoons. |
 | 177 | 45 Minute Sprint Training | Beach Road, Melbourne | 35% |  | Bayside bunch-ride route past beach boxes and piers. |
 | 178 | FTP Booster Extended Efforts | Blue Ridge Parkway | 35% |  | Appalachian ridgeline road in blazing autumn colour. |
-| 179 | 60 Minute Reverse Pyramid | Angkor Temples | 82% |  | Jungle roads between Khmer temples and moats at dawn. |
+| 179 | 60 Minute Reverse Pyramid | Angkor Temples | 82% |  | Temple Road follows the moat past Angkor Wat to the South Gate, Bayon and Ta Prohm. All 17 reverse-pyramid stages are preserved. [Rider views](screenshots/angkor-temples/README.md). |
 | 180 | Reverse HIIT Race Winning Intervals | Verona Arena Finale | 35% |  | A grand tour finale circling into the Roman arena. |
 | 181 | Reverse Steps | Valparaíso Stairways | 35% |  | Colourful hillside stairways and funiculars above the Chilean port. |
 | 182 | 60 Minutes of Brutal Power | Mauna Kea | 81% |  | A brutal climb past observatories to Hawaii's highest summit. |

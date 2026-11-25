@@ -1254,3 +1254,174 @@ import adelaide as _adelaide
 MATERIALS.update(_adelaide.MATERIALS)
 THEMES["adelaide"] = _adelaide.THEME
 SCENERY["adelaide"] = _adelaide.scenery
+
+# A banked, indoor pursuit track.
+import aguascalientes as _aguascalientes
+
+THEMES["aguascalientes"] = _aguascalientes.THEME
+SCENERY["aguascalientes"] = _aguascalientes.scenery
+
+import algarve as _algarve
+
+MATERIALS["moored-boats"] = {"color": 0xFFFFFF, "rough": 0.85, "vertex": True}
+THEMES["algarve"] = _algarve.THEME
+SCENERY["algarve"] = _algarve.scenery
+
+import alpe as _alpe
+
+MATERIALS["orange-smoke"] = {"color": 0xFFFFFF, "vertex": True}
+THEMES["alpe"] = _alpe.THEME
+SCENERY["alpe"] = _alpe.scenery
+
+import amsterdam as _amsterdam
+
+MATERIALS.update({name: {"color": 0xFFFFFF, "vertex": True} for name in ("tour-boat", "commuter", "canal-front", "elm-leaves", "elm-shade")})
+THEMES["amsterdam"] = _amsterdam.THEME
+SCENERY["amsterdam"] = _amsterdam.scenery
+
+import angels as _angels  # noqa: E402
+
+THEMES["angels"] = _angels.THEME
+SCENERY["angels"] = _angels.scenery
+
+import angkor as _angkor  # noqa: E402
+
+THEMES["angkor"] = _angkor.THEME
+SCENERY["angkor"] = _angkor.scenery
+
+MATERIALS.update({name: {"color": 0xFFFFFF, "vertex": True} for name in ("tuk-tuk", "touring-bike")})
+
+import angliru as _angliru  # noqa: E402
+
+MATERIALS["angliru-concrete"] = {"color": 0xA49F91, "rough": .9}
+THEMES["angliru"] = _angliru.THEME
+SCENERY["angliru"] = _angliru.scenery
+
+import antwerp as _antwerp
+
+THEMES['antwerp'] = _antwerp.THEME
+SCENERY['antwerp'] = _antwerp.scenery
+
+import arenberg as _arenberg
+
+THEMES['arenberg'] = _arenberg.THEME
+SCENERY['arenberg'] = _arenberg.scenery
+MATERIALS['pave'] = {'color': 0xFFFFFF, 'vertex': True}
+MATERIALS.update({name: {'color': 0xFFFFFF, 'vertex': True} for name in ('commissaire','team-car')})
+MATERIALS['arenberg-foliage'] = {'color': 0xFFFFFF, 'vertex': True}
+
+import artmuseum as _artmuseum
+
+THEMES['artmuseum'] = _artmuseum.THEME
+SCENERY['artmuseum'] = _artmuseum.scenery
+
+import atacama as _atacama
+
+THEMES["atacama"] = _atacama.THEME
+SCENERY["atacama"] = _atacama.scenery
+
+import atlanticroad as _atlanticroad
+
+THEMES["atlanticroad"] = _atlanticroad.THEME
+SCENERY["atlanticroad"] = _atlanticroad.scenery
+
+import aubisque as _aubisque
+
+THEMES["aubisque"] = _aubisque.THEME
+SCENERY["aubisque"] = _aubisque.scenery
+
+import austin as _austin
+
+THEMES["austin"] = _austin.THEME
+SCENERY["austin"] = _austin.scenery
+
+import bathsheba as _bathsheba
+
+THEMES["bathsheba"] = _bathsheba.THEME
+SCENERY["bathsheba"] = _bathsheba.scenery
+
+import bayofislands as _bayofislands
+
+THEMES["bayofislands"] = _bayofislands.THEME
+SCENERY["bayofislands"] = _bayofislands.scenery
+
+import beachroad as _beachroad
+
+THEMES["beachroad"] = _beachroad.THEME
+SCENERY["beachroad"] = _beachroad.scenery
+
+import bealach as _bealach
+
+THEMES["bealach"] = _bealach.THEME
+SCENERY["bealach"] = _bealach.scenery
+
+import bigsur as _bigsur
+
+THEMES["bigsur"] = _bigsur.THEME
+SCENERY["bigsur"] = _bigsur.scenery
+
+import blackpool as _blackpool
+
+THEMES["blackpool"] = _blackpool.THEME
+SCENERY["blackpool"] = _blackpool.scenery
+
+import bluemountains as _bluemountains
+
+THEMES["bluemountains"] = _bluemountains.THEME
+SCENERY["bluemountains"] = _bluemountains.scenery
+
+
+import blueridge as _blueridge
+
+THEMES["blueridge"] = _blueridge.THEME
+SCENERY["blueridge"] = _blueridge.scenery
+
+
+import bondi as _bondi
+
+THEMES["bondi"] = _bondi.THEME
+SCENERY["bondi"] = _bondi.scenery
+
+
+import bonneville as _bonneville
+
+THEMES["bonneville"] = _bonneville.THEME
+SCENERY["bonneville"] = _bonneville.scenery
+
+import brickyard as _brickyard
+
+THEMES["brickyard"] = _brickyard.THEME
+SCENERY["brickyard"] = _brickyard.scenery
+
+import brighton as _brighton
+
+THEMES["brighton"] = _brighton.THEME
+SCENERY["brighton"] = _brighton.scenery
+
+import brooklyn as _brooklyn
+
+THEMES["brooklyn"] = _brooklyn.THEME
+SCENERY["brooklyn"] = _brooklyn.scenery
+
+import bund as _bund
+
+THEMES["bund"] = _bund.THEME
+SCENERY["bund"] = _bund.scenery
+
+
+import calobra as _calobra
+
+THEMES["calobra"] = _calobra.THEME
+SCENERY["calobra"] = _calobra.scenery
+
+
+import campolongo as _campolongo
+
+THEMES["campolongo"] = _campolongo.THEME
+SCENERY["campolongo"] = _campolongo.scenery
+
+
+import cabot as _cabot
+
+THEMES["cabot"] = _cabot.THEME
+SCENERY["cabot"] = _cabot.scenery
