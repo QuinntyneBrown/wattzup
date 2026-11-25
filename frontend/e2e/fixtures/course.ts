@@ -149,3 +149,37 @@ export const haleakalaCourseMap = {
     roll: 0,
   },
 };
+
+export const artMuseumCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'philadelphia-art-museum',
+  name: 'Philadelphia Art Museum Steps',
+  routeName: 'Benjamin Franklin Parkway',
+  place: 'Philadelphia, Pennsylvania',
+  world: 'artmuseum',
+  distanceKm: 8.175,
+  climbingM: 86,
+  rating: 'Hard',
+  thumbnailUrl: 'maps/philadelphia-art-museum.jpg',
+  photoUrl: 'maps/philadelphia-art-museum-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 10, 80),
+      seg('work', 40, 19, 90),
+      seg('recover', 60, 10, 80),
+      seg('work', 40, 19, 90),
+      seg('recover', 60, 10, 80),
+      seg('work', 40, 19, 90),
+      seg('recover', 60, 10, 80),
+      seg('work', 40, 19, 90),
+      seg('recover', 120, 13, 80),
+      seg('work', 30, 21, 90),
+      seg('recover', 90, 10, 80),
+      seg('work', 30, 21, 90),
+      seg('recover', 90, 10, 80),
+      seg('work', 30, 21, 90),
+      seg('recover', 90, 10, 80),
+      seg('cool-down', 120, 21, 90),
+    ],
+  },
+};
