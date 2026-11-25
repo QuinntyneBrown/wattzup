@@ -96,6 +96,15 @@ export class WorldRideProbe {
     });
   }
 
+  /** Along-canal position of the tour boat in the submitted frame. */
+  async tourBoatX(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { tourBoatX?: number } } }).__wzWorldRide
+          ?.course?.tourBoatX ?? null,
+    );
+  }
+
   /** The renderer's latest report, or null before the scene has started. */
   async report(): Promise<WorldRideReport | null> {
     return this.page.evaluate(

@@ -21,6 +21,8 @@ import {
   Mesh,
   MeshBasicMaterial,
   MeshLambertMaterial,
+  RepeatWrapping,
+  type Texture,
   MeshStandardNodeMaterial,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
@@ -239,6 +241,7 @@ export class CourseRenderer implements WorldRenderer {
     backend: '' as string,
     drawCalls: 0,
     triangles: 0,
+    tourBoatX: null as number | null,
     groups: {} as Record<string, number>,
   };
   private readonly chosenAt = new Vector3();
@@ -246,6 +249,7 @@ export class CourseRenderer implements WorldRenderer {
   private startRed: Mesh | null = null;
   private startGreen: Mesh | null = null;
   private beams: MeshBasicMaterial | null = null;
+  private readonly canalTraffic: { holder: Group; boat: boolean; order: number }[] = [];
   private readonly confetti: Mesh[] = [];
   private funivia: { holder: Group; span: CourseCableway; pose: CabinPose } | null = null;
   private glider: { holder: Group; orbit: CourseGliderOrbit; pose: GliderPose } | null = null;
@@ -335,7 +339,7 @@ export class CourseRenderer implements WorldRenderer {
       renderer.toneMapping = AgXToneMapping;
       renderer.toneMappingExposure = 1.15;
 
-      const [file, gltf, body] = await Promise.all([
+      const [file, gltf, body, clinkerModule] = await Promise.all([
         fetch(`${this.path}.course.json`).then((response) => {
           if (!response.ok) throw new Error(`The course file answered ${response.status}.`);
           return response.json() as Promise<unknown>;
@@ -345,6 +349,7 @@ export class CourseRenderer implements WorldRenderer {
         new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(`${this.path}.glb`),
         // The riders' body, built in Blender as the map is (ADR 0036).
         RiderBody.load(),
+        _world.id === 'amsterdam' ? import('./amsterdam-clinker') : null,
       ]);
       if (this.disposed) {
         body.dispose();
@@ -356,7 +361,12 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
-      this.build(gltf.scene, canvas);
+      const clinker = clinkerModule?.clinkerTexture('#8a4a36') ?? null;
+      if (clinker) {
+        clinker.wrapS = clinker.wrapT = RepeatWrapping;
+        this.disposables.push(clinker);
+      }
+      this.build(gltf.scene, canvas, clinker);
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
       this.rehearse();
@@ -433,6 +443,8 @@ export class CourseRenderer implements WorldRenderer {
     if (this.startRed) this.startRed.visible = lights && frame.time <= 0;
     if (this.startGreen) this.startGreen.visible = lights && frame.time > 0;
     if (this.rain) this.rain.mesh.visible = !frame.reducedMotion;
+    if (this.canalTraffic.length)
+      this.placeCanalTraffic(metres, frame.reducedMotion ? 0 : frame.time);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -471,6 +483,8 @@ export class CourseRenderer implements WorldRenderer {
     this.confetti.length = 0;
     this.funivia = null;
     this.glider = null;
+    for (const { holder } of this.canalTraffic) this.scene.remove(holder);
+    this.canalTraffic.length = 0;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.riders.clear();
@@ -488,7 +502,7 @@ export class CourseRenderer implements WorldRenderer {
     this.renderer = null;
   }
 
-  private build(map: Object3D, canvas: HTMLCanvasElement): void {
+  private build(map: Object3D, canvas: HTMLCanvasElement, clinker: Texture | null): void {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
     this.scene.fog = new Fog(look.haze, FOG[0], FOG[1]);
@@ -579,6 +593,7 @@ export class CourseRenderer implements WorldRenderer {
       courseWet(this.course!.file),
       new Color(look.haze),
       coloured,
+      clinker,
     );
     materials['Ground'] = ground.material;
     this.groundEye = ground.eye;
@@ -628,7 +643,8 @@ export class CourseRenderer implements WorldRenderer {
       if (!mesh.isMesh) return;
       // A chunk is named for its group and its place along the road: `Solid_012`.
       const [group = '', chunk] = mesh.name.split('_');
-      const material = materials[group];
+      const traffic = group === 'TourBoat' || group === 'Commuter';
+      const material = materials[traffic ? 'Land' : group];
       if (!material) return;
       for (const loaded of [mesh.material].flat()) loaded.dispose();
       mesh.material = material;
@@ -706,6 +722,19 @@ export class CourseRenderer implements WorldRenderer {
       }
       this.scene.add(this.glider.holder);
       this.placeGlider(0, true);
+    }
+    for (const name of ['TourBoat', 'Commuter']) {
+      const mesh = map.getObjectByName(name) as Mesh | undefined;
+      if (!mesh?.isMesh) continue;
+      mesh.updateMatrixWorld(true);
+      mesh.matrix.copy(mesh.matrixWorld);
+      this.disposables.push(mesh.geometry);
+      for (const order of [0, 1]) {
+        const holder = new Group();
+        holder.add(order === 0 ? mesh : mesh.clone());
+        this.scene.add(holder);
+        this.canalTraffic.push({ holder, boat: name === 'TourBoat', order });
+      }
     }
     this.map = map;
     this.scene.add(map);
@@ -1014,6 +1043,21 @@ export class CourseRenderer implements WorldRenderer {
     }
     this.placeFunivia(time, false);
     this.placeGlider(time, false);
+  }
+
+  private placeCanalTraffic(rider: number, time: number): void {
+    const course = this.course!;
+    for (const { holder, boat, order } of this.canalTraffic) {
+      const spacing = boat ? 400 : 96;
+      const phase = (boat ? 78 : 18) + time * (boat ? 2.1 : 4.1);
+      const metres = phase + (Math.floor((rider - phase) / spacing) + order) * spacing;
+      holder.visible = metres >= 0 && metres <= course.end;
+      if (!holder.visible) continue;
+      const at = course.place(metres, boat ? -20 : -3.5, this.there);
+      holder.position.set(at.x, boat ? -1.65 : at.y + 0.04, at.z);
+      holder.rotation.y = at.heading;
+      if (boat && this.pinned) this.drawn.tourBoatX = holder.position.x;
+    }
   }
 
   private placeFunivia(time: number, reducedMotion: boolean): void {
