@@ -2678,7 +2678,11 @@ export class CourseRenderer implements WorldRenderer {
           Math.exp(-Math.pow((metres - 9320) / 115, 4)),
         )
       : 0;
-    this.camera.position.set(back.x, back.y + up + 1.6 * rim * rim + 0.52 * cypressOverlook, back.z);
+    this.camera.position.set(
+      back.x,
+      back.y + up + 1.6 * rim * rim + 0.52 * cypressOverlook,
+      back.z,
+    );
     this.groundEye?.at(metres - behind, 0, up);
     // The last coastal bend opens onto the lagoon on the left.
     const lagoon =
@@ -2719,7 +2723,9 @@ export class CourseRenderer implements WorldRenderer {
         ? course.place(metres + 24, this.malecon.lookAcross(metres), this.there)
         : course.place(
             metres + (calobra ? 24 : this.arena ? 7.5 : LOOK_AHEAD),
-            (view?.lane ?? 0) + summit + river -
+            (view?.lane ?? 0) +
+              summit +
+              river -
               2.8 * bridge +
               (this.headland ? 1.6 : 0) +
               shoulder -
