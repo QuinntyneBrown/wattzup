@@ -3598,7 +3598,7 @@ export const lisbonCourseMap = {
   place: 'Lisbon, Portugal',
   world: 'lisbon',
   distanceKm: 6.3375,
-  climbingM: 101,
+  climbingM: 193,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
