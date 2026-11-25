@@ -2278,12 +2278,6 @@ def main(argv: list[str] | None = None) -> dict:
     if (theme or {}).get("road_builder"):
         theme["road_builder"](road, st, length, col, sys.modules[__name__])
     else:
-        if (theme or {}).get("road_builder"):
-        theme["road_builder"](road, st, length, col, sys.modules[__name__])
-    else:
-        if (theme or {}).get("road_builder"):
-        theme["road_builder"](road, st, length, col, sys.modules[__name__])
-    else:
         (theme or {}).get("surface_builder", build_road)(road, st, length, col, theme)
     if (theme or {}).get("builder") == "sellaronda":
         _, height_at = sellaronda.build_terrain(road, col, Builder)

@@ -11,6 +11,7 @@ import beachRoadElevation from './beachroad-elevation.json';
 import bealachElevation from './bealach-elevation.json';
 import bigSurElevation from './bigsur-elevation.json';
 import blackpoolElevation from './blackpool-elevation.json';
+import bluemountainsElevation from './bluemountains-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -1042,6 +1043,65 @@ export const blackpoolCourseMap = {
       seg('recover', 30, 10, 80),
       seg('work', 60, 24, 95),
       seg('cool-down', 90, 10, 80),
+    ],
+  },
+};
+
+export const blueMountainsCourseMap = {
+  ...haleakalaCourseMap,
+  id: 'blue-mountains-jamaica',
+  name: 'Blue Mountains, Jamaica',
+  routeName: 'The coffee road',
+  place: 'Jamaica',
+  world: 'bluemountains',
+  distanceKm: 14.593,
+  climbingM: 752,
+  rating: 'Hard',
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: bluemountainsElevation,
+  },
+  thumbnailUrl: 'maps/blue-mountains-jamaica.jpg',
+  photoUrl: 'maps/blue-mountains-jamaica-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 16, 87),
+      seg('work', 35, 24, 108),
+      seg('recover', 25, 13, 87),
+      seg('work', 35, 24, 108),
+      seg('recover', 25, 13, 87),
+      seg('work', 20, 24, 108),
+      seg('recover', 40, 13, 87),
+      seg('work', 20, 21, 62),
+      seg('recover', 20, 13, 87),
+      seg('work', 30, 21, 62),
+      seg('recover', 20, 13, 87),
+      seg('work', 45, 21, 62),
+      seg('recover', 60, 13, 87),
+      seg('work', 60, 22, 85),
+      seg('recover', 60, 16, 80),
+      seg('work', 60, 22, 85),
+      seg('recover', 60, 16, 80),
+      seg('work', 60, 22, 85),
+      seg('recover', 60, 16, 80),
+      seg('work', 60, 22, 85),
+      seg('recover', 60, 16, 80),
+      seg('work', 60, 22, 85),
+      seg('recover', 60, 16, 80),
+      seg('work', 60, 22, 85),
+      seg('recover', 60, 16, 80),
+      seg('work', 60, 22, 85),
+      seg('recover', 60, 16, 80),
+      seg('work', 60, 22, 85),
+      seg('recover', 60, 16, 80),
+      seg('work', 60, 22, 85),
+      seg('recover', 60, 16, 80),
+      seg('work', 60, 22, 85),
+      seg('recover', 60, 16, 80),
+      seg('work', 60, 22, 85),
+      seg('recover', 60, 16, 80),
+      seg('cool-down', 165, 11, 80),
     ],
   },
 };

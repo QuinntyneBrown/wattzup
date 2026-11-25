@@ -23,6 +23,7 @@ export const COURSE_WORLDS: Readonly<Partial<Record<WorldId, string>>> = {
   bealach: 'courses/bealach',
   bigsur: 'courses/bigsur',
   blackpool: 'courses/blackpool',
+  bluemountains: 'courses/bluemountains',
   ibiza: 'courses/ibiza',
   alpe: 'courses/alpe',
   cinqueterre: 'courses/cinqueterre',

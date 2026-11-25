@@ -104,6 +104,7 @@ import type { HighlandWeather } from './bealach-weather';
 import type { HighlandLivestock } from './bealach-livestock';
 import type { BigSurCoast } from './bigsur-coast';
 import type { BlackpoolTrams } from './blackpool-trams';
+import type { BlueMountainsYard } from './blue-mountains-yard';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -286,6 +287,8 @@ export class CourseRenderer implements WorldRenderer {
     fallingWater: null as number | null,
     tramMetres: null as number | null,
     illumination: null as number | null,
+    mistPosition: null as number | null,
+    speakerDepth: null as number | null,
     drawCalls: 0,
     triangles: 0,
     metres: 0,
@@ -320,6 +323,7 @@ export class CourseRenderer implements WorldRenderer {
   private livestock: HighlandLivestock | null = null;
   private coast: BigSurCoast | null = null;
   private trams: BlackpoolTrams | null = null;
+  private yard: BlueMountainsYard | null = null;
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
   private startRed: Mesh | null = null;
@@ -596,6 +600,13 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(this.trams.group);
         this.disposables.push(this.trams);
       }
+      if (this.course.file.id === 'bluemountains') {
+        const { BlueMountainsYard } = await import('./blue-mountains-yard');
+        if (this.disposed) return false;
+        this.yard = new BlueMountainsYard(this.course);
+        this.scene.add(this.yard.group);
+        this.disposables.push(this.yard);
+      }
       this.rehearse();
       await renderer.compileAsync(this.scene, this.camera, null, (event) =>
         options.progress?.({
@@ -701,6 +712,7 @@ export class CourseRenderer implements WorldRenderer {
     this.livestock?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.coast?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.trams?.update(metres, frame.reducedMotion ? 0 : frame.time);
+    this.yard?.update(metres, frame.reducedMotion ? 0 : frame.time);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -793,6 +805,7 @@ export class CourseRenderer implements WorldRenderer {
     this.weather = null;
     this.coast = null;
     this.trams = null;
+    this.yard = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.trainingGroup.length = 0;
@@ -1670,6 +1683,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.surfCrest = this.coast?.crest ?? null;
     drawn.illumination = this.trams?.illumination ?? null;
     drawn.tramMetres = this.trams?.nearestMetres ?? null;
+    drawn.mistPosition = this.yard?.mistPosition ?? null;
+    drawn.speakerDepth = this.yard?.speakerDepth ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

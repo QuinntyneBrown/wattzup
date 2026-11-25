@@ -1364,3 +1364,8 @@ import blackpool as _blackpool
 
 THEMES["blackpool"] = _blackpool.THEME
 SCENERY["blackpool"] = _blackpool.scenery
+
+import bluemountains as _bluemountains
+
+THEMES["bluemountains"] = _bluemountains.THEME
+SCENERY["bluemountains"] = _bluemountains.scenery
