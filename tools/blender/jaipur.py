@@ -33,17 +33,21 @@ def route(course, theme, bc):
 
 
 def surface(road,st,length,col,bc):
-    b=bc.Builder('Johari Bazaar','terrain')
-    b.colours=[]
+    asphalt=bc.Builder('Road','asphalt')
+    pavement=bc.Builder('Pink sandstone footway','terrain')
+    asphalt.colours=[]
+    pavement.colours=[]
     offsets=(-19,-11,-8.2,-7.5,-7.15,-3.8,-1,2.6,5.5,7.15,7.5,8.2,11,19)
     tones=(0xB9A28A,0xB69C83,0xDAAD8E,0x69594C,0x605A57,0x655E5C,0x605B59,
            0x625D5B,0x615B57,0x69594C,0xDAAD8E,0xB69C83,0xB9A28A)
     for i in range(len(road.s)-1):
         for j,(a,e) in enumerate(zip(offsets,offsets[1:])):
             z=.1 if abs((a+e)/2)>7.45 else 0
+            b=asphalt if abs((a+e)/2)<7.45 else pavement
             b.quad(road.at(i,a,z),road.at(i+1,a,z),road.at(i+1,e,z),road.at(i,e,z))
             b.colours.extend([lin(tones[j])]*4)
-    b.build(col)
+    asphalt.build(col)
+    pavement.build(col)
 
 
 def shop(front,width,height,rng,detail):
@@ -77,42 +81,39 @@ def scenery(k):
             w=k.rng.uniform(9,15)
             mid=d+w/2
             near=any(abs(mid-x)<175 for x in (80,1360,2920,4580,6210,8120))
-            if not (side==1 and abs(mid-2966)<55):
+            if not (side==1 and abs(mid-2992)<78):
                 front=Front(art,road.pos(mid,side*14.2),bearing(mid)+(math.pi if side==1 else 0))
                 shop(front,w-.22,k.rng.uniform(5.6,8.9),k.rng,near)
             d+=w
-    for distance,is_chandpole in ((119,False),(8155,True)):
+    for distance,is_chandpole in ((151,False),(8184,True)):
         gate(Front(art,road.pos(distance),bearing(distance)+math.pi/2),is_chandpole)
-    palace(Front(art,road.pos(2966,20),bearing(2966)+math.pi+.32))
-    colours=(0xB95C91,0xCE9960,0x63A18A,0x728FAA,0xA98985)
-    for i in range(1750):
-        d=k.rng.uniform(0,k.length)
-        side=k.rng.uniform(-6.9,6.9)
-        if abs(d-4580)>230 and abs(side)<2.8:continue
-        u=k.rng.uniform(.15,1.45)
-        v=k.rng.uniform(.18,.71)
-        cl=lin(k.rng.choice(colours))
-        rim=[]
-        for j in range(9):
-            a=j*math.tau/9
-            r=k.rng.uniform(.6,1.1)
-            rim.append(road.pos(d+math.cos(a)*u*r,side+math.sin(a)*v*r,.021))
-        art.face(rim,[cl]*len(rim))
+    palace(Front(art,road.pos(2992,38),bearing(2992)+math.pi-.78))
     # Fort ramparts follow the successive crests of the Aravalli ridge.
     far=Painted(k,'peaks')
+    previous=None
     for j in range(106):
         centre=road.pos(8170,0)
         x=centre[0]+450+j*12
         y=centre[1]+550-j*12
-        z=centre[2]+49+22*math.cos(j/20)+11*math.sin(j/6)
-        far.box((x,y,z-140),(28,170,140),.76,lin(0xAB9986))
+        z=centre[2]+85+25*math.cos(j/20)+11*math.sin(j/6)
+        crest=(x,y,z)
+        foot=(x-65,y-180,centre[2]-80)
+        if previous:
+            coords=(previous[0],crest,foot,previous[1])
+            cols=(lin(0xBFA78E),lin(0xBDA48B),lin(0xAB937D),lin(0xA99079))
+            far.face(coords,cols);far.face(coords[::-1],cols[::-1])
+        previous=(crest,foot)
         if 35<j<76:
-            far.box((x,y,z-3),(23,5,6 if j%6 else 9),-.78,lin(0xBDA48A))
+            far.box((x,y,z-3),(21,7,7),-.78,lin(0xBE9472))
+            for step in (-7,-2,3,8):
+                far.box((x+step*.71,y-step*.71,z+4),(2.3,3,1.7),-.78,lin(0xBE9472))
+            if j%6==0:
+                far.tube((x,y,z-3),6,5.5,12,lin(0xA98264),lin(0xD1A67F),10,lin(0xD5AE80))
     return {'efforts':0}
 
 
 THEME={'lay':route,'road_builder':surface,'terrain':{'rise':2},
        'land':{'low':0xAC9279,'mid':0xB69B83,'high':0xC4A991,'rock':0xA18B79},
-       'road_half_width':7.15,'sky':[0xF1C99B,0xEDDAC1,0xC1D4D4,0x91B8D1,0x72A4C5],
+       'chunks':{'Land':1},'road_half_width':7.15,'sky':[0xF1C99B,0xEDDAC1,0xC1D4D4,0x91B8D1,0x72A4C5],
        'haze':0xD8BDAB,'light':[0xFFDEAB,1.54],'fill':[0xDFDFDA,0xC78E72],
        'sun_altitude':.51,'sun_azimuth':-.78}
