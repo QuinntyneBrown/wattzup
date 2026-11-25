@@ -245,7 +245,7 @@ function jerseyColour(element: Element, jersey: string): Color {
 
 export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
-  private coast: ReturnType<typeof southCoast> | null = null;
+  private icelandCoast: ReturnType<typeof southCoast> | null = null;
   private renderer: WebGPURenderer | null = null;
   private angliruRoadside: AngliruRoadside | null = null;
   private pave: ReturnType<typeof arenbergPave> | null = null;
@@ -563,8 +563,8 @@ export class CourseRenderer implements WorldRenderer {
       if (this.course.file.id === 'iceland') {
         const { southCoast } = await import('./south-coast');
         if (this.disposed) return false;
-        this.coast = southCoast();
-        this.disposables.push(this.coast);
+        this.icelandCoast = southCoast();
+        this.disposables.push(this.icelandCoast);
       }
       this.build(gltf.scene, canvas, clinker, fronts, foliage);
       if (this.course.file.id === 'aguascalientes') {
@@ -902,7 +902,7 @@ export class CourseRenderer implements WorldRenderer {
       this.joggers.mesh.visible = Math.abs(you.group.position.x + 39) < 200;
       if (this.joggers.mesh.visible) this.joggers.update(frame.reducedMotion ? 0 : frame.time);
     }
-    this.coast?.update(frame.reducedMotion ? 0 : frame.time);
+    this.icelandCoast?.update(frame.reducedMotion ? 0 : frame.time);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -969,6 +969,7 @@ export class CourseRenderer implements WorldRenderer {
     this.highlandLivestock = null;
     this.highlandWeather = null;
     this.coast = null;
+    this.icelandCoast = null;
     this.trams = null;
     this.yard = null;
     this.mill = null;
@@ -1024,7 +1025,12 @@ export class CourseRenderer implements WorldRenderer {
     const look = courseLook(this.course!.file);
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
     if (this.course!.file.id === 'beachroad') this.evening = eveningUniform();
-    const fogRange = this.course!.file.id === 'calobra' ? ([2500, 16000] as const) : this.coast ? ([650, 4700] as const) : FOG;
+    const fogRange =
+      this.course!.file.id === 'calobra'
+        ? ([2500, 16000] as const)
+        : this.icelandCoast
+          ? ([650, 4700] as const)
+          : FOG;
     this.scene.fog = new Fog(look.haze, fogRange[0], fogRange[1]);
     this.scene.background = new Color(look.haze);
     this.sun.color.setHex(look.light.colour);
@@ -1183,7 +1189,7 @@ export class CourseRenderer implements WorldRenderer {
     // The glow round each light: corners the material spreads to face the eye (halo-material.ts).
     materials['Halos'] = haloMaterial(DRAW_DISTANCE['Halos']! * 0.6, DRAW_DISTANCE['Halos']!);
     this.disposables.push(materials['Fences'], materials['Halos']);
-    if (this.coast) Object.assign(materials, this.coast.materials);
+    if (this.icelandCoast) Object.assign(materials, this.icelandCoast.materials);
     this.beams = materials['Beams'] as MeshBasicMaterial;
     const painted: Mesh[] = [];
     map.traverse((part) => {
@@ -1523,7 +1529,7 @@ export class CourseRenderer implements WorldRenderer {
     this.groundEye?.at(metres - behind, 0, up);
     // The last coastal bend opens onto the lagoon on the left.
     const lagoon =
-      this.coast && metres > 10660 && metres < 11360
+      this.icelandCoast && metres > 10660 && metres < 11360
         ? Math.sin(((metres - 10660) * Math.PI) / 700) ** 2
         : 0;
     const ahead = course.place(metres + (calobra ? 24 : LOOK_AHEAD), -3.3 * lagoon, this.there);
@@ -1910,7 +1916,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
     drawn.smokeHeight = this.smoke?.mesh.position.y ?? null;
-    if (this.coast) Object.assign(drawn, this.coast.report(drawn.groups));
+    if (this.icelandCoast) Object.assign(drawn, this.icelandCoast.report(drawn.groups));
     hook['course'] = drawn;
   }
 
