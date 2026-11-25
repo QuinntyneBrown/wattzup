@@ -56,7 +56,8 @@ test('Ride the black line past the Speed Week pits and Silver Island Mountains',
     };
     await capture('../docs/screenshots/bonneville-salt-flats/' + version + '-' + name + '.jpg');
     if (version === 'after' && (name === 'start' || name === 'mirage')) {
-      const asset = name === 'start' ? 'bonneville-salt-flats-photo.jpg' : 'bonneville-salt-flats.jpg';
+      const asset =
+        name === 'start' ? 'bonneville-salt-flats-photo.jpg' : 'bonneville-salt-flats.jpg';
       const hidden = await page.addStyleTag({
         content: '.race > :not(.race-scene) { visibility: hidden !important; }',
       });
