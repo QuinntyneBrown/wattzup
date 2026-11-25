@@ -19,6 +19,12 @@ CROWD = [f"crowd-{i}" for i in range(6)]
 
 # name -> colour, roughness, glow: added to themes.MATERIALS.
 MATERIALS: dict[str, dict] = {
+    "hk-wind-cloud": {"color":0xFFFFFF,"rough":1,"vertex":True},
+    "hk-crater-floor": {"color":0xFFFFFF,"rough":1,"vertex":True},
+    "hk-solar-drum": {"color":0xFFFFFF,"rough":.75,"vertex":True},
+    "hk-garden-plant": {"color":0xFFFFFF,"rough":1,"vertex":True},
+    "hk-ranch-head": {"color":0xFFFFFF,"rough":1,"vertex":True},
+    "hk-crowns": {"color":0xFFFFFF,"rough":1},
     # Small things painted by vertex that only matter close to, in the group drawn near the rider (what is
     # painted into the land, "terrain", is drawn from 950 m).
     "hk-detail": {"color": 0xFFFFFF, "rough": 0.9, "vertex": True},
@@ -254,7 +260,7 @@ def build_land(road, col, theme: dict, bc):
             elif d < 26.0:
                 h = min(h, s[near[0][1]]["z"] - 1.4)
             heights[(ix, iy)] = max(h, -8.0)
-    b = bc.Builder("Terrain", "terrain")
+    b = bc.Builder("HkFlank", "terrain")
     b.colours = []
     index = {}
     rock_c, sand_c = bc.srgb(theme["land"]["rock"]), bc.srgb(0xD9C9A0)
@@ -323,7 +329,7 @@ def cloud_sea(k) -> float:
     """Detail 2, above the clouds: a sea of cloud lies round the mountain a little over half way up, out to the
     horizon. Its billows are seen only from above: a rider below it rides under an open sky, and one above it looks
     down on it from every switchback. It stands off the slope, so the road never passes through its sheet."""
-    paint, s = Painted(k, "peaks"), k.s
+    paint, s = Painted(k, "hk-wind-cloud"), k.s
     zs, xs = [p["z"] for p in s], [p["x"] for p in s]
     level = min(zs) + CLOUD_LEVEL * (max(zs) - min(zs))
     edge = min(s, key=lambda p: abs(p["z"] - level))["y"] + 210.0
@@ -359,7 +365,7 @@ def island_peaks(k) -> int:
     great shield volcanoes of the next island, broad and blue with distance, the nearer one snow-capped; to the
     other, lower and nearer, the ragged green ridge of the island's western mountains. From above, their feet are in the cloud; they stand on the sea, so from the
     coast below it they are mountains on the horizon."""
-    paint, s = Painted(k, "peaks"), k.s
+    paint, s = Painted(k, "hk-wind-cloud"), k.s
     zs, xs = [p["z"] for p in s], [p["x"] for p in s]
     level = min(zs) + CLOUD_LEVEL * (max(zs) - min(zs))
     edge = min(s, key=lambda p: abs(p["z"] - level))["y"] + 210.0
@@ -387,27 +393,38 @@ def height_share(k, i: int) -> float:
     return (k.s[i]["z"] - min(zs)) / (max(zs) - min(zs))
 
 
-def silversword(k, x: float, y: float, z: float, bloom: bool, r: float | None = None) -> None:
-    """One silversword: a globe of narrow silver blades sitting on the cinder, and on a few the tall flower stalk.
-    Given a small `r` it is a seedling: a tuft of a few short blades."""
-    rng, b = k.rng, k.B["hk-silver"]
-    seedling = r is not None
-    r = r or rng.uniform(0.55, 0.95)
-    for tier, (blades, tilt) in enumerate(((6, 0.5), (4, 1.1)) if seedling else ((10, 0.3), (8, 0.8), (5, 1.25))):
-        for q in range(blades):
-            a = q * math.tau / blades + tier * 0.35 + rng.uniform(-0.15, 0.15)
-            ca, sa = math.cos(a), math.sin(a)
-            tip = (x + ca * r * math.cos(tilt), y + sa * r * math.cos(tilt), z + 0.08 + r * math.sin(tilt))
-            w = 0.07 if seedling else 0.16
-            left, right = (x - sa * w, y + ca * w, z + 0.06), (x + sa * w, y - ca * w, z + 0.06)
-            b.tri(left, right, tip)
-            b.tri(right, left, tip)
+def silversword(k, x, y, z, bloom, r=None, signature=False):
+    """Folded silver leaves radiate from a basal rosette below the maroon inflorescence."""
+    paint=Painted(k,"hk-garden-plant" if signature else "hk-detail")
+    rng=k.rng; juvenile=r is not None
+    radius=r or rng.uniform(.53,.91)
+    base=_lin(0x526967); mid=_lin(0xB4C8BD); bright=_lin(0xE0E8D9); dim=_lin(0x879D99)
+    paint.tube((x,y,z-.12),radius*.30,radius*.23,.27,base,dim,8)
+    tiers=((7,.38),(5,.91)) if juvenile else ((18,.24),(16,.54),(13,.91),(9,1.22))
+    for tier,(count,tilt) in enumerate(tiers):
+        for j in range(count):
+            a=j*math.tau/count+tier*.53+rng.uniform(-.06,.06)
+            width=radius*(.062 if not juvenile else .077)
+            def at(f,side,up):
+                return (x+radius*f*math.cos(tilt)*math.cos(a)-side*math.sin(a),
+                        y+radius*f*math.cos(tilt)*math.sin(a)+side*math.cos(a),
+                        z+.07+radius*f*math.sin(tilt)+up)
+            foot=at(.04,0,.015);tip=at(1,0,.045);ridge=at(.52,0,.09)
+            for side,tone in ((-1,dim),(1,bright)):
+                edge=at(.48,side*width,.026)
+                paint.face((foot,edge,ridge),(base,tone,mid))
+                paint.face((ridge,edge,tip),(mid,tone,bright))
     if bloom:
-        # The flower stalk: a spire as tall as a rider's shoulder, thick with maroon heads, on a silver stem.
-        tall = rng.uniform(1.4, 2.1)
-        k.prism(b, (x, y, z + r * 0.4), 0.09, 0.5, 5, 0.08)
-        k.prism(k.B["hk-bloom"], (x, y, z + r * 0.4 + 0.45), 0.3, tall * 0.55, 6, 0.24)
-        k.prism(k.B["hk-bloom"], (x, y, z + r * 0.4 + 0.45 + tall * 0.55), 0.24, tall * 0.45, 6, 0.05)
+        tall=rng.uniform(1.4,2.08)
+        stalk=_lin(0x745742)
+        paint.tube((x,y,z+.11),.054,.025,tall,dim,stalk,7)
+        for row in range(12):
+            up=.42+row*.047;reach=(.07+.15*math.sin(row*math.pi/13))*(1-row*.037)
+            for petal in range(6):
+                az=(petal/6+row*.109)*math.tau;rad=.056*(1-row*.038)
+                c=(x+math.cos(az)*reach,y+math.sin(az)*reach,z+tall*up)
+                paint.tube(c,rad,rad*.52,.085,_lin(0x66453F),_lin(0x9B6153),6)
+        paint.tube((x,y,z+tall*.95),.055,.012,.14,_lin(0x7C5F47),_lin(0xB49C68),6)
 
 
 def spent_silversword(paint, rng, x: float, y: float, z: float) -> None:
@@ -454,7 +471,7 @@ def silverswords(k) -> int:
     return planted
 
 
-def dome(paint, c, r: float, drum: float, slit: float, sides: int = 12, skin: int = 0xF4F5F2) -> None:
+def dome(paint, c, r: float, drum: float, slit: float, sides: int = 24, skin: int = 0xF4F5F2) -> None:
     """An observatory: a white drum under a white dome (or one of another `skin`), with the dark slit the telescope
     looks out of."""
     white, shade, dark = _lin(skin), tuple(v * 0.72 for v in _lin(skin)[:3]) + (1.0,), _lin(0x30343A)
@@ -494,13 +511,25 @@ def science_city(k) -> int:
         yaw = rng.uniform(0, math.pi)
         paint.box((x + math.cos(yaw) * (r + 5.0), y + math.sin(yaw) * (r + 5.0), z - 1.5), (r * 1.6, r * 0.9, 5.0), yaw, _lin(0xECECE6))
         stood += 1
+    # Shutter rails, faceted panel seams and the drum catwalk read against the blue sky.
+    for along,out,rad,drum in plan[:4]:
+        px,py,_=k.P(i,along,out);pz=k.height_at(px,py)
+        for j in range(18):
+            a=j*math.tau/18
+            paint.box((px+rad*.96*math.cos(a),py+rad*.96*math.sin(a),pz+drum-.33),(.10,.10,.72),a,_lin(0x778792))
     # The solar telescope, the tallest thing on the mountain: a white tower with its dome on top and a low wing.
+    solar=Painted(k,"hk-solar-drum")
     x, y, _ = k.P(i, 74.0, 2.0 * side)
     z = k.height_at(x, y)
     white = _lin(0xF4F5F2)
-    paint.box((x, y, z - 1.5), (15.0, 15.0, 27.0), 0.2, white)
-    paint.box((x + 13.0, y + 4.0, z - 1.5), (14.0, 11.0, 9.5), 0.2, _lin(0xECECE6))
-    dome(paint, (x, y, z + 25.5), 8.2, 3.0, 2.4)
+    solar.box((x, y, z - 1.5), (15.0, 15.0, 27.0), 0.2, white)
+    solar.box((x + 13.0, y + 4.0, z - 1.5), (14.0, 11.0, 9.5), 0.2, _lin(0xECECE6))
+    dome(solar, (x, y, z + 25.5), 8.2, 3.0, 2.4)
+    for zz in (4.5,9.2,14.8,20.2,24.7):
+        solar.box((x,y,z+zz),(15.25,15.25,.19),.2,_lin(0xB9C2C8))
+    for n in range(4):
+        solar.box((x-6.95+.33*n,y-6.24+3.1*n,z+3.1),(.48,1.38,2.4),.2,_lin(0x687781))
+    solar.tube((x,y,z+25.4),8.3,8.3,.55,_lin(0x88969E),_lin(0xB1BBC2),24)
     # The air force's telescope: a silver dome on a broad silver drum.
     x, y, _ = k.P(i, 168.0, -52.0 * side)
     z = k.height_at(x, y)
@@ -539,7 +568,7 @@ def cow(paint, rng, c, yaw: float) -> None:
 HORSES = (0x6A3E26, 0x8A5632, 0x2E2622, 0xB9B2A6, 0x4A2E20)
 
 
-def horse(paint, rng, c, yaw: float) -> None:
+def horse(paint, head, rng, c, yaw: float) -> None:
     """One of the ranch's horses: longer in the leg than the cattle, neck up, a dark tail."""
     coat = _lin(HORSES[rng.randrange(len(HORSES))])
     cs, sn = math.cos(yaw), math.sin(yaw)
@@ -547,13 +576,26 @@ def horse(paint, rng, c, yaw: float) -> None:
     def at(fwd: float, left: float, up: float):
         return (c[0] + fwd * cs - left * sn, c[1] + fwd * sn + left * cs, c[2] + up)
 
-    for fwd in (0.75, -0.75):
-        paint.box(at(fwd, 0, -0.2), (0.14, 0.46, 1.35), yaw, coat, 0.55)
-    paint.box(at(0, 0, 1.1), (2.1, 0.56, 0.62), yaw, coat, 0.85)
-    grazing = rng.random() < 0.4
-    paint.box(at(1.15, 0, 0.75 if grazing else 1.45), (0.36, 0.3, 0.95), yaw, coat, 0.9)
-    paint.box(at(1.5, 0, 0.5 if grazing else 2.15), (0.62, 0.24, 0.3), yaw, coat, 0.9)
-    paint.box(at(-1.12, 0, 0.75), (0.1, 0.12, 0.85), yaw, _lin(0x1E1A18), 0.9)
+    for fwd in (.76,-.72):
+        for left in (-.21,.21):
+            paint.box(at(fwd,left,-.10),(.15,.14,1.04),yaw,coat,.58)
+            paint.box(at(fwd+.035,left,-.12),(.20,.16,.19),yaw,_lin(0x322C2A))
+    paint.tube(at(0,0,.82),.32,.37,.43,coat,coat,8)
+    paint.box(at(0,0,.88),(1.73,.63,.55),yaw,coat,.70)
+    for u in (-.65,.61):paint.tube(at(u,0,.84),.33,.34,.60,coat,coat,10)
+    graze=rng.random()<.4
+    first=len(head.b.verts)
+    head.box(at(.94,0,.64 if graze else 1.25),(.50,.39,.68),yaw,coat)
+    head.box(at(1.23,0,.40 if graze else 1.64),(.62,.31,.37),yaw,coat)
+    head.box(at(1.50,0,.38 if graze else 1.59),(.25,.32,.24),yaw,_lin(0x4C4139))
+    for left in (-.12,.12):
+        head.tube(at(1.12,left,.76 if graze else 2.01),.071,.025,.18,coat,coat,6)
+    # Weight the muzzle more than the top of the neck. The four hooves stay planted.
+    if head.b.uvs is None:head.b.uvs=[]
+    for x,y,z in head.b.verts[first:]:
+        u=(x-c[0])*cs+(y-c[1])*sn
+        head.b.uvs.append((max(0,min(1,(u-.69)/.88)),yaw))
+    paint.box(at(-.96,0,.62),(.13,.14,.82),yaw,_lin(0x292321),.9)
 
 
 def ranch_steads(k) -> dict:
@@ -605,7 +647,7 @@ def ranch_steads(k) -> dict:
                 hx = x - along[0] * rng.uniform(13.0, 30.0) + out[0] * rng.uniform(-6.0, 14.0)
                 hy = y - along[1] * rng.uniform(13.0, 30.0) + out[1] * rng.uniform(-6.0, 14.0)
                 if k.road.clear_of_road(hx, hy, 9.0, i):
-                    horse(paint, rng, (hx, hy, k.height_at(hx, hy)), rng.uniform(0, math.tau))
+                    horse(paint, Painted(k,"hk-ranch-head"), rng, (hx, hy, k.height_at(hx, hy)), rng.uniform(0, math.tau))
                     horses += 1
             steads += 1
             break
@@ -613,6 +655,16 @@ def ranch_steads(k) -> dict:
 
 
 AVENUES = (0.2, 0.33)  # the shares of the climb where the Kula road runs under jacarandas
+
+
+def crown(k,x,y,z,tall,width,tile,yaw):
+    batch=k.B["hk-crowns"]
+    if batch.uvs is None:batch.uvs=[]
+    for angle in (yaw+.32,yaw+1.90):
+        dx=width*.5*math.cos(angle);dy=width*.5*math.sin(angle)
+        batch.quad((x-dx,y-dy,z),(x+dx,y+dy,z),(x+dx,y+dy,z+tall),(x-dx,y-dy,z+tall))
+        u=tile/3
+        batch.uvs.extend([(u+.006,.005),(u+1/3-.006,.005),(u+1/3-.006,.995),(u+.006,.995)])
 
 
 def jacaranda_avenues(k) -> dict:
@@ -636,7 +688,8 @@ def jacaranda_avenues(k) -> dict:
                 k.prism(B["trunk-dark"], (x, y, z - 0.5), 0.3, tall + 0.6, 5, 0.2)
                 for q in range(3):
                     a = q * math.tau / 3 + rng.uniform(0, 1.0)
-                    lens(B["hk-jacaranda"], (x + math.cos(a) * 1.9, y + math.sin(a) * 1.9, z + tall + rng.uniform(-0.5, 0.6)), rng.uniform(2.6, 3.6), 2.1, rng)
+                    lens(B["hk-jacaranda"], (x + math.cos(a) * 1.9, y + math.sin(a) * 1.9, z + tall + rng.uniform(-0.5, 0.6)), rng.uniform(1.5, 2.0), 1.4, rng)
+                crown(k,x,y,z,tall+4.4,9.5,2,s[i]["h"])
                 trees += 1
                 # The fallen flower on the verge beneath it.
                 for q in range(-1, 2):
@@ -684,17 +737,19 @@ def ranch_land(k) -> dict:
                 continue
             z = k.ground(x, y, i, off)
             if rng.random() < 0.2:
+                crown(k,x,y,z,8.8,8.4,2,s[i]["h"])
                 # A jacaranda: a low spreading crown, all flower.
                 k.prism(B["trunk-dark"], (x, y, z - 0.5), 0.3, 4.2, 5, 0.2)
                 for _ in range(3):
-                    lens(B["hk-jacaranda"], (x + rng.uniform(-2.0, 2.0), y + rng.uniform(-2.0, 2.0), z + rng.uniform(3.6, 4.8)), rng.uniform(2.2, 3.2), 1.9, rng)
+                    lens(B["hk-jacaranda"], (x + rng.uniform(-2.0, 2.0), y + rng.uniform(-2.0, 2.0), z + rng.uniform(3.6, 4.8)), rng.uniform(1.1, 1.7), 1.2, rng)
             else:
                 # A eucalyptus: tall and pale-trunked, its leaves in loose clumps up the stem.
                 tall = rng.uniform(11.0, 18.0)
+                crown(k,x,y,z,tall+2,tall*.52,1,s[i]["h"])
                 k.prism(B["trunk"], (x, y, z - 0.5), 0.36, tall * 0.85, 5, 0.14)
                 for q in range(3):
                     up = tall * (0.46 + 0.2 * q)
-                    lens(B["hk-eucalyptus" if q % 2 else "hk-eucalyptus-dark"], (x + rng.uniform(-1.4, 1.4), y + rng.uniform(-1.4, 1.4), z + up), rng.uniform(2.0, 3.0) * (1 - q * 0.14), 2.6, rng, 6)
+                    lens(B["hk-eucalyptus" if q % 2 else "hk-eucalyptus-dark"], (x + rng.uniform(-1.4, 1.4), y + rng.uniform(-1.4, 1.4), z + up), rng.uniform(.95, 1.35) * (1 - q * 0.14), 1.6, rng, 6)
             trees += 1
     return {"cattle": cattle, "ranchTrees": trees}
 
@@ -830,11 +885,13 @@ def coastal_start(k) -> dict:
         if rng.random() < 0.3:
             x, y, z = k.road.at(i, (k.kerb + rng.uniform(3.0, 16.0)) * shore)
             if z > 1.0 and k.road.clear_of_road(x, y, 7.0, i):
+                crown(k,x,y,k.height_at(x,y),12,8,0,s[i]["h"])
                 k.palm(x, y, k.height_at(x, y))
                 palms += 1
         if rng.random() < 0.06:
             x, y, z = k.road.at(i, -(k.kerb + rng.uniform(3.0, 7.0)) * shore)
             if k.road.clear_of_road(x, y, 7.0, i):
+                crown(k,x,y,k.height_at(x,y),12,8,0,s[i]["h"])
                 k.palm(x, y, k.height_at(x, y))
                 palms += 1
         # Cane: a block of it 3 m tall from 9 m to 46 m behind the kerb, with a track through it now and then.
@@ -861,7 +918,7 @@ def coastal_start(k) -> dict:
 def crater(k) -> int:
     """Detail 3, the summit crater: beyond what the land holds, the basin runs on for kilometres, a floor of rust,
     ochre and grey cinder with cones on it, to the far rim wall. It is drawn whole, hazed by its distance."""
-    paint, s = Painted(k, "peaks"), k.s
+    paint, s = Painted(k, "hk-crater-floor"), k.s
     xs, ys, zs = [p["x"] for p in s], [p["y"] for p in s], [p["z"] for p in s]
     rim_y, x_mid, z_hi = min(ys) - 46.0, (min(xs) + max(xs)) / 2, max(zs)
     floor = z_hi - CRATER_FLOOR - 6.0
@@ -1312,5 +1369,13 @@ def scenery(k) -> dict:
     signs.update(pull_outs(k))
     signs.update(summit_stop(k))
     garden = silversword_garden(k)
+    # A nearby group exposes the silver midribs and blossoms at rider height.
+    # Place it on the upper shoulder, where it grows naturally in the same cinder.
+    for j in range(11):
+        station=13454+j*3.8
+        i=k.road.index(station)
+        off=(7.6+.33*(j%4))*(-1 if j%4 else 1)
+        x,y,_=k.road.at(i,off)
+        silversword(k,x,y,k.s[i]["z"]-.035,j%4==1,signature=j==5)
     shrubs = shrubland(k)
     return {"efforts": k.gates("accent", "flag-1", CROWD), "posts": posts, "cloudTop": round(cloud), "peaksAboveCloud": islands, "silverswords": swords, "domes": domes, **ranch, **coast, "cinderCones": cones, "boulders": lava, "shrubs": shrubs, **signs, "gardenSilverswords": garden}

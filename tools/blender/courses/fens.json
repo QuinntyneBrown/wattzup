@@ -1,0 +1,67 @@
+{
+  "id": "fens",
+  "name": "Fenland Time Trial",
+  "world": "fens",
+  "theme": "fens",
+  "seed": 2119,
+  "layout": 0,
+  "class": {
+    "id": "tough-time-trial-efforts",
+    "title": "Tough Time Trial Efforts",
+    "channel": "GCN Training",
+    "videoId": "Ndia-ql47Yc",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 240,
+        "level": 12,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 600,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 11,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 600,
+        "level": 21,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "cool-down",
+        "duration": 180,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

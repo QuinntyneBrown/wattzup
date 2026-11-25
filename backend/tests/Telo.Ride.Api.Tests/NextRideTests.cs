@@ -43,7 +43,7 @@ public sealed class NextRideTests(SignInApi api) : IClassFixture<SignInApi>
         {
             var progress = MapProgress.Start(riderId, mapId);
             progress.Restore(stars, null);
-            if (mapId is not ("prairie-paceline" or "old-town-criterium" or "ibiza-sunset-strip" or "sella-ronda" or "cinqueterre" or "haleakala" or "adelaide-hills" or "aguascalientes" or "algarve-cliffs" or "alpe-dhuez" or "amsterdam-canals" or "els-angels" or "angkor-temples" or "alto-angliru" or "antwerp-port-sprint" or "arenberg-forest" or "philadelphia-art-museum" or "atacama-desert" or "atlantic-ocean-road" or "col-aubisque" or "sixth-street-austin" or "bathsheba-barbados" or "bay-of-islands" or "beach-road-melbourne" or "bealach-na-ba" or "big-sur" or "blackpool-illuminations" or "blue-mountains-jamaica" or "blue-ridge-parkway" or "bondi-to-bronte" or "bonneville-salt-flats" or "indianapolis-brickyard" or "brighton-pride" or "brooklyn-bridge-commute" or "the-bund-shanghai" or "sa-calobra-mallorca" or "passo-campolongo" or "cabot-trail" or "caribana-parade" or "central-park-loop" or "cherry-blossom-festival-dc" or "champs-elysees-finale" or "chicago-loop-crit" or "chichen-itza" or "lake-como" or "comuna-13-medellin" or "coney-island-boardwalk" or "copacabana-promenade" or "copenhagen-cycle-superhighway" or "cornish-harbour"))
+            if (mapId is not ("prairie-paceline" or "old-town-criterium" or "ibiza-sunset-strip" or "sella-ronda" or "cinqueterre" or "haleakala" or "adelaide-hills" or "aguascalientes" or "algarve-cliffs" or "alpe-dhuez" or "amsterdam-canals" or "els-angels" or "angkor-temples" or "alto-angliru" or "antwerp-port-sprint" or "arenberg-forest" or "philadelphia-art-museum" or "atacama-desert" or "atlantic-ocean-road" or "col-aubisque" or "sixth-street-austin" or "bathsheba-barbados" or "bay-of-islands" or "beach-road-melbourne" or "bealach-na-ba" or "big-sur" or "blackpool-illuminations" or "blue-mountains-jamaica" or "blue-ridge-parkway" or "bondi-to-bronte" or "bonneville-salt-flats" or "indianapolis-brickyard" or "brighton-pride" or "brooklyn-bridge-commute" or "the-bund-shanghai" or "sa-calobra-mallorca" or "passo-campolongo" or "cabot-trail" or "caribana-parade" or "central-park-loop" or "cherry-blossom-festival-dc" or "champs-elysees-finale" or "chicago-loop-crit" or "chichen-itza" or "lake-como" or "comuna-13-medellin" or "coney-island-boardwalk" or "copacabana-promenade" or "copenhagen-cycle-superhighway" or "cornish-harbour" or "cypress-mountain" or "yorkshire-dales" or "daytona-beach-sand" or "death-valley" or "diwali-marine-drive" or "dubai-marina" or "edinburgh-fringe" or "engadin-lakes" or "mount-etna" or "fenland-time-trial" or "fish-hill-cotswolds" or "mount-fuji-road" or "furka-pass" or "col-du-galibier" or "passo-gardena" or "ghent-six-day" or "giza-plateau" or "glasgow-world-championships" or "glastonbury-fields" or "golden-gate-park" or "grand-canyon-south-rim" or "great-ocean-road" or "han-river-parks" or "hardknott-pass" or "havana-malecon" or "hoover-dam" or "iceland-ring-road"))
             {
                 api.Clock.Advance(TimeSpan.FromHours(1));
                 progress.Open(api.Clock.GetUtcNow());
@@ -160,7 +160,34 @@ public sealed class NextRideTests(SignInApi api) : IClassFixture<SignInApi>
             ("coney-island-boardwalk", MapStar.All),
             ("copacabana-promenade", MapStar.All),
             ("copenhagen-cycle-superhighway", MapStar.All),
-            ("cornish-harbour", MapStar.All));
+            ("cornish-harbour", MapStar.All),
+            ("cypress-mountain", MapStar.All),
+            ("yorkshire-dales", MapStar.All),
+            ("daytona-beach-sand", MapStar.All),
+            ("death-valley", MapStar.All),
+            ("diwali-marine-drive", MapStar.All),
+            ("dubai-marina", MapStar.All),
+            ("edinburgh-fringe", MapStar.All),
+            ("engadin-lakes", MapStar.All),
+            ("mount-etna", MapStar.All),
+            ("fenland-time-trial", MapStar.All),
+            ("fish-hill-cotswolds", MapStar.All),
+            ("mount-fuji-road", MapStar.All),
+            ("furka-pass", MapStar.All),
+            ("col-du-galibier", MapStar.All),
+            ("passo-gardena", MapStar.All),
+            ("ghent-six-day", MapStar.All),
+            ("giza-plateau", MapStar.All),
+            ("glasgow-world-championships", MapStar.All),
+            ("glastonbury-fields", MapStar.All),
+            ("golden-gate-park", MapStar.All),
+            ("grand-canyon-south-rim", MapStar.All),
+            ("great-ocean-road", MapStar.All),
+            ("han-river-parks", MapStar.All),
+            ("hardknott-pass", MapStar.All),
+            ("havana-malecon", MapStar.All),
+            ("hoover-dam", MapStar.All),
+            ("iceland-ring-road", MapStar.All));
 
         Assert.StartsWith("""nextRideMapId="dolomites";""", await Home(browser));
     }

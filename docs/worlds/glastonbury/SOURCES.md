@@ -25,3 +25,10 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Petite Douleur” Route Details (France)](https://zwiftinsider.com/route/petite-douleur/) (g0118) | © Zwift |
 | game-04.jpg | MyWhoosh: [HighresScreenshot00005](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2025/12/HighresScreenshot00005.jpg) (g0433) | © MyWhoosh |
 | game-05.jpg | Zwift: [“2022 Cycling Esports World Championships Route” Route Detail (New York)](https://zwiftinsider.com/route/2022-cycling-esports-world-championships-route/) (g0002) | © Zwift |
+
+| Race detail | Reference and adaptation |
+| --- | --- |
+| Pyramid Stage and screens | Real 05, 06, 11, 12 and 15 informed the steel roof, dark performance opening and stage lights. Game 02 informed the scale of a stage from the track. The band artwork is an original generated concert scene. |
+| Trackway, festival fields and people | Real 01–03, 07, 09 and 10 informed the wet ground, crowded valley, flags and clothing. Games 01, 03 and 05 informed road width and the silhouettes of nearby figures. The panel, grass and mud textures were generated from original patterns. |
+| Park and Arcadia | Real 04 informed the Ribbon Tower’s streamers and canopy. Real 08 informed Arcadia’s articulated steel legs and suspended body. Game 04 informed the near-field approach. Both structures were modelled for the course. |
+| Somerset horizon | Real 13–14 informed the profile of the Tor, tower and hedgerows. Games 01 and 03 informed how the middle distance opens from the track. |

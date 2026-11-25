@@ -12,6 +12,8 @@ import type {
   WorldRenderer,
   WorldStartOptions,
 } from '@telo/api';
+import { startTier } from './render-quality';
+import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 import { coursePath } from './course-worlds';
 
 export class MapRenderer implements WorldRenderer {
@@ -39,7 +41,11 @@ export class MapRenderer implements WorldRenderer {
     segments?: readonly Segment[],
     options?: WorldStartOptions,
   ): Promise<boolean> {
-    const path = coursePath(world.id);
+    const tier =
+      readWorldRideProbe((globalThis as Record<string, unknown>)[PROBE_KEY])?.tier ??
+      options?.tier ??
+      startTier();
+    const path = world.id === 'havana' && tier === 'low' ? 'courses/havana' : coursePath(world.id);
     const renderer: WorldRenderer =
       path === null
         ? await import('./world-renderer').then((m) => new m.ThreeWorldRenderer())

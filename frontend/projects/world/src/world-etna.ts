@@ -13,6 +13,7 @@ import {
   type BufferAttribute,
   type BufferGeometry,
   type CanvasTexture,
+  type Material,
   ConeGeometry,
   CylinderGeometry,
   DodecahedronGeometry,
@@ -40,11 +41,19 @@ import type { StreetPoint } from './world-oldtown';
 const LOOP = 400;
 const BEHIND = 24;
 
-const WALKER_WEAR = {
+export const etnaWalkerWear = {
   tops: ['#d8442a', '#2a6a9a', '#e8c040', '#1d1f24', '#f4f0e8', '#3a8a5a'],
   bottoms: ['#2f3e5c', '#1d1f24', '#5a5f69', '#8a7a64'],
   skins: ['#f0c8a0', '#c48a5f', '#e2b48c', '#f5d3b5'],
 };
+
+export function plumePhase(seconds: number, phase: number): number {
+  return (((seconds * 0.02 + phase) % 1) + 1) % 1;
+}
+function lavaVergeHeight(side: number, offset: number): number {
+  const t = Math.max(0, (offset - 4) / 56);
+  return side > 0 ? 0.1 + 6.9 * t : -6 * t;
+}
 
 interface Puff {
   readonly mesh: Mesh;
@@ -88,7 +97,7 @@ export class EtnaStreet implements SceneStreet {
     this.time = seconds;
     // The summit's plume rises, swells and drifts away east on the wind.
     for (const p of this.puffs) {
-      const t = (((seconds * 0.02 + p.phase) % 1) + 1) % 1;
+      const t = plumePhase(seconds, p.phase);
       p.mesh.position.set(
         -200 + t * 1400 * p.drift,
         1640 + t * 600 * (2 - p.drift),
@@ -197,7 +206,7 @@ export class EtnaStreet implements SceneStreet {
         s.position.set(2.5, -0.1, 0);
         heap.add(s);
       }
-      heap.position.y = side > 0 ? (d / 56) * 7 : -(d / 56) * 6;
+      heap.position.y = lavaVergeHeight(side, d);
       const holder = new Group();
       holder.add(heap);
       this.group.add(holder);
@@ -232,7 +241,7 @@ export class EtnaStreet implements SceneStreet {
         plant.add(new Mesh(stem, white), c);
       }
       plant.children.forEach((c) => (c.castShadow = true));
-      plant.position.y = side > 0 ? (d / 56) * 7 : -(d / 56) * 6;
+      plant.position.y = lavaVergeHeight(side, d);
       const holder = new Group();
       holder.add(plant);
       this.group.add(holder);
@@ -327,28 +336,7 @@ export class EtnaStreet implements SceneStreet {
       [60, 4, 1],
       [240, -6, -1],
     ] as const) {
-      const bus = new Group();
-      const body = new Mesh(this.unit, white);
-      body.scale.set(2.4, 2.4, 6.5);
-      body.position.y = 1.9;
-      const band = new Mesh(this.unit, stripe);
-      band.scale.set(2.42, 0.3, 6.52);
-      band.position.y = 1.3;
-      const windows = new Mesh(this.unit, glass);
-      windows.scale.set(2.44, 0.8, 5.6);
-      windows.position.y = 2.4;
-      bus.add(body, band, windows);
-      for (const [wx, wz] of [
-        [-1.2, -2.2],
-        [1.2, -2.2],
-        [-1.2, 2.2],
-        [1.2, 2.2],
-      ] as const) {
-        const w = new Mesh(wheel, tyre);
-        w.position.set(wx, 0.55, wz);
-        bus.add(w);
-      }
-      bus.children.forEach((c) => (c.castShadow = true));
+      const bus = etnaTourBus(this.unit, wheel, white, glass, tyre, stripe);
       bus.position.x = x * (roadHalf - 1.6);
       bus.rotation.y = speed > 0 ? 0 : Math.PI;
       this.group.add(bus);
@@ -366,7 +354,13 @@ export class EtnaStreet implements SceneStreet {
         speed: (random() < 0.5 ? 1 : -1) * (0.8 + random() * 0.4),
         phase: random() * 6,
       });
-    this.crowd = new Figures(this.group, this.disposables, this.walkers.length, WALKER_WEAR, 3327);
+    this.crowd = new Figures(
+      this.group,
+      this.disposables,
+      this.walkers.length,
+      etnaWalkerWear,
+      3327,
+    );
   }
 
   /**
@@ -501,4 +495,38 @@ function summitTexture(): CanvasTexture {
     g.fillStyle = 'rgba(240,242,245,0.75)';
     g.fillRect(0, 0, 512, 18);
   });
+}
+
+export function etnaTourBus(
+  unit: BoxGeometry,
+  wheel: CylinderGeometry,
+  white: Material,
+  glass: Material,
+  tyre: Material,
+  stripe: Material,
+): Group {
+  const bus = new Group();
+  const body = new Mesh(unit, white);
+  body.scale.set(2.4, 2.4, 6.5);
+  body.position.y = 1.9;
+  const band = new Mesh(unit, stripe);
+  band.scale.set(2.42, 0.3, 6.52);
+  band.position.y = 1.3;
+  const windows = new Mesh(unit, glass);
+  windows.scale.set(2.44, 0.8, 5.6);
+  windows.position.y = 2.4;
+  bus.add(body, band, windows);
+  for (const [wx, wz] of [
+    [-1.2, -2.2],
+    [1.2, -2.2],
+    [-1.2, 2.2],
+    [1.2, 2.2],
+  ] as const) {
+    const w = new Mesh(wheel, tyre);
+    w.position.set(wx, 0.55, wz);
+    bus.add(w);
+  }
+  bus.children.forEach((c) => (c.castShadow = true));
+
+  return bus;
 }

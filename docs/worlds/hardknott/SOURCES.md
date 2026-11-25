@@ -25,3 +25,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Three Little Sisters” Route Details (Watopia)](https://zwiftinsider.com/route/three-little-sisters/) (g0163) | © Zwift |
 | game-04.jpg | Zwift: [“Canopies and Coastlines” Route Details (Watopia)](https://zwiftinsider.com/route/canopies-and-coastlines/) (g0012) | © Zwift |
 | game-05.jpg | Zwift: [“London Loop” Route Details (London)](https://zwiftinsider.com/route/london-loop/) (g0087) | © Zwift |
+
+## Original course assets
+
+The bracken, cloud and 30% sign reuse original Hardknott class artwork. The close fell turf and the two distant landscape paintings are original generated artwork. The Eskdale and Scafell paintings sit behind the modelled fells at fixed positions. Native geometry supplies the eleven bends, stone walls, fort foundations, Herdwick sheep, farmsteads, watercourses and mountain ridges. Real 01–03, 07 and 11–13 informed the road and valley relief. Real 04–06 and 10 informed the turns, retaining walls and cloud. Real 08–09 informed the lower warning boards. Real 14 depicts Cockley Beck, and real 15 the Old Man of Coniston. They inform the stream-bank stone and distant volcanic rock rather than the identity of the Scafell peaks. Games 01–03 guided animal and riding scale and visibility in mist. Games 04–05 guided verge and road contrast.

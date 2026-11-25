@@ -438,6 +438,8 @@ MATERIALS: dict[str, dict] = {
     "crowd-5": {"color": 0x3A4A9A, "rough": 0.9},
 }
 MATERIALS.update({k: v for k, v in themes.MATERIALS.items() if k not in MATERIALS})
+for monument in ("khafre","khufu","menkaure","sphinx","relief"):
+    MATERIALS["giza-"+monument] = MATERIALS["terrain"]
 MATERIALS["moon"] = themes.MATERIALS["moon"]
 NEONS = ["neon-pink", "neon-cyan", "neon-amber", "neon-violet", "neon-lime"]
 BEAMS = ["beam-pink", "beam-cyan", "beam-amber"]
@@ -578,6 +580,8 @@ WHOLE = {"commissaire":"Commissaire","team-car":"TeamCar","sea": "Sea", "sky": "
 
 def group_of(mat: str) -> tuple[str, bool]:
     """The mesh a part's faces join, and whether that mesh is cut into chunks along the road."""
+    if mat.startswith("giza-"):
+        return mat[5:].capitalize(), False
     if mat == "arenberg-foliage":
         return "Foliage", True
     if mat == "pave":
@@ -593,6 +597,20 @@ def group_of(mat: str) -> tuple[str, bool]:
         return ("Facades" if mat == "canal-front" else "Elms"), True
     if mat == "confetti":
         return "Confetti", True
+    if mat.startswith("gardena-"):
+        return mat.split("-")[1].capitalize(), True
+    if mat.startswith("galibier-"):
+        return mat.split("-")[1].capitalize(), True
+    if mat.startswith("furka-"):
+        return mat.split("-")[1].capitalize(), True
+    if mat.startswith("fuji-"):
+        return mat.split("-")[1].capitalize(), True
+    if mat.startswith("fishhill-"):
+        return mat.split("-")[1].capitalize(), True
+    if mat.startswith("fen-"):
+        return mat.split("-")[1].capitalize(), True
+    if mat in ("etna-clinker","etna-scoria","etna-bitumen"):
+        return mat.split("-")[1].capitalize(), True
     if mat == "terrain":
         return "Land", True
     if "alpha" in spec:
@@ -646,10 +664,55 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
             data.from_pydata(part.verts, [], part.faces)
             film.objects.link(bpy.data.objects.new(part.name, data))
         group, chunked = group_of(part.mat)
-        if part.name == 'LandmarkLights':
+        surfaces = {'Laid trackway panels':'FestivalPanels','Churned wheel ruts':'FestivalMud','Somerset pasture':'FestivalGrass'}
+        if part.name in ('FestivalPrint','FestivalBulbs'):
+            group = part.name
+        elif part.name in surfaces:
+            group = surfaces[part.name]
+        elif part.name == "Desert floor":
+            group = "Dunes"
+        elif part.name == "Plateau asphalt":
+            group = "Tarmac"
+        elif part.name == "VelodromeTimber":
+            group, chunked = "VelodromeTimber", False
+        elif part.name == 'LandmarkLights':
             group, chunked = 'Glow', False
+        elif part.name == "IceCap":
+            group, chunked = part.name, False
+        elif part.name in ('IcelandLand','Basalt','Glacier','Falls','GlacialWater','Icebergs','Grazers'):
+            group, chunked = part.name, True
+        elif part.name in ("Tenements", "RaceBoards"):
+            group = part.name
+        elif part.name == 'ParkCrowns':
+            group = 'ParkCrowns'
+        elif part.name == 'Rolling park lawns':
+            group = 'ParkLawns'
+        elif part.name in ('CanyonStrata','GrandviewTemple','Watchtower','FarRim','ColoradoBend'):
+            group = part.name
+        elif part.name in ("BlackCanyon","CanyonCrags","MeadWater","BypassArch","IntakeCrown","DamClocks","Terrazzo","DamFace","BoulderBasin","CrestVisitor","RoadShimmer"):
+            group=part.name
+            chunked=group in ("BlackCanyon","CanyonCrags","MeadWater","RoadShimmer")
+        elif part.name in ('StripDancers','StripFestoons','StripBeams','StripFleet','CoveFoam','StripCloth'):
+            group,chunked=part.name,True
         elif part.name in GROUND_PARTS:
             group = "Ground"
+        elif part.name in ("MaleconStone","FloridaStraits","Portales","OriginalElevations","Nacional","Morro","WallSpray","SaltPuddles","TaxiRed","TaxiTeal","Convertible","CocoTaxi","BiciTaxi","SonTrio","Parada","DominoTable","FruitCart","Manisero","PhotoParty","ZebraCrossing"):
+            group = part.name
+            chunked = group in ("MaleconStone","Portales","OriginalElevations","WallSpray","SaltPuddles")
+        elif part.name in ("PassWarning","PassPlate","CaravanPlate","HerdwickHead","FortGate","FellGround","FellMist","FellVerge","FellFar","ScafellRange","EskdaleVale","ScafellPikes","HerdwickCross"):
+            group = part.name
+            chunked = group not in ("PassWarning","PassPlate","CaravanPlate","FortGate","FellMist","FellFar","ScafellRange","EskdaleVale","ScafellPikes","HerdwickCross")
+        elif part.name in ("YeouidoCity", "BanpoJets", "BanpoNear", "HanCyclists", "HanReflections", "HanWater", "NamsanTower"):
+            group = part.name
+            chunked = group not in ("YeouidoCity", "HanWater", "NamsanTower", "BanpoNear", "HanCyclists")
+        elif part.name in ("HkWindCloud", "HkCraterFloor"):
+            group, chunked = part.name, False
+        elif part.name in ("HkFlank", "HkRanchHead", "HkCrowns", "HkGardenPlant", "HkSolarDrum"):
+            group = part.name
+        elif part.name in ("Clifftop", "RockWash", "SaltSpray", "OtwayPlants", "PortLimestone", "Apostle", "LondonArch", "MemorialArch", "SouthernOcean", "CoastSigns"):
+            group = part.name
+        elif part.name in ("ColTarmac", "ColConifers", "FellGround", "Meltwater", "NorthFace", "ColSigns", "SummitSign", "SixthBorne"):
+            group = part.name
         elif part.name == WINDOWS_PART:
             group = "Windows"
         elif part.name == FENCES_PART:
@@ -698,7 +761,7 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     shade = 0.74 + 0.3 * smoothstep(0.0, 4.5, lift) if lift > 0.2 else (0.62 if lift < -0.3 else 1.0)
                     c = (c[0] * shade, c[1] * shade, c[2] * shade, 1.0)
                 key = (round(v[0], 3), round(v[1], 3), round(v[2], 3), round(c[0], 3), round(c[1], 3), round(c[2], 3))
-                if group in ("Windows", "Fences", "Halos", "Foliage", "Facades", "Elms", "Dapple") or (group == "Ground" and part.uvs is not None):
+                if group in ("Windows", "Fences", "Halos", "DamClocks", "Terrazzo", "DamFace", "BoulderBasin", "MaleconStone", "Portales","OriginalElevations", "WallSpray", "SaltPuddles", "PassWarning", "PassPlate", "CaravanPlate", "HerdwickHead", "FellMist", "HerdwickCross", "EskdaleVale", "ScafellPikes", "HkCrowns", "HkRanchHead", "Clifftop", "SaltSpray", "OtwayPlants", "SouthernOcean", "PortLimestone", "LondonArch", "Apostle", "CoastSigns", "ColConifers", "FellGround", "NorthFace", "ColSigns", "SummitSign", "SixthBorne", "CanyonStrata", "GrandviewTemple", "FarRim", "ParkCrowns", "FestivalPrint", "Tenements", "RaceBoards", "Relief", "VelodromeTimber", "Foliage", "Facades", "Elms", "Dapple", "StripDancers", "StripFestoons", "StripBeams", "StripFleet", "CoveFoam", "StripCloth", "IceCap") or (group == "Ground" and part.uvs is not None):
                     key = (*key, *part.uvs[i])
                 if walled:
                     _, near, _ = road.tree.find((v[0], v[1], 0.0))
@@ -709,13 +772,13 @@ def assemble(road: "Road", col, wider: dict | None = None) -> dict:
                     at = mesh["index"][key] = len(mesh["verts"])
                     mesh["verts"].append(v)
                     mesh["cols"].append(c)
-                    if group in ("Windows", "Fences", "Halos", "Foliage", "Facades", "Elms", "Dapple"):
+                    if group in ("Windows", "Fences", "Halos", "DamClocks", "Terrazzo", "DamFace", "BoulderBasin", "MaleconStone", "Portales","OriginalElevations", "WallSpray", "SaltPuddles", "PassWarning", "PassPlate", "CaravanPlate", "HerdwickHead", "FellMist", "HerdwickCross", "EskdaleVale", "ScafellPikes", "HkCrowns", "HkRanchHead", "Clifftop", "SaltSpray", "OtwayPlants", "SouthernOcean", "PortLimestone", "LondonArch", "Apostle", "CoastSigns", "ColConifers", "FellGround", "NorthFace", "ColSigns", "SummitSign", "SixthBorne", "CanyonStrata", "GrandviewTemple", "FarRim", "ParkCrowns", "FestivalPrint", "Tenements", "RaceBoards", "Relief", "VelodromeTimber", "Foliage", "Facades", "Elms", "Dapple", "StripDancers", "StripFestoons", "StripBeams", "StripFleet", "CoveFoam", "StripCloth", "IceCap"):
                         mesh["uvs"].append(part.uvs[i])
                     if walled:
                         mesh["uvs"].append(wall_uv)
                     if group == "Ground" and part.uvs is not None:
                         mesh["uvs"].append(part.uvs[i])
-                    elif group in ("Ground", "Pave"):
+                    elif group in ("Ground", "Pave", "FestivalPanels", "FestivalMud", "FestivalGrass", "ParkLawns"):
                         _, near, _ = road.tree.find((v[0], v[1], 0.0))
                         p = road.s[near]
                         dx, dy = v[0] - p["x"], v[1] - p["y"]
@@ -930,10 +993,19 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
         # Left: a sidewalk, then the seawall, then the rocks and sand falling to the sea.
         w0, w1 = kerb + SIDEWALK, kerb + SIDEWALK + 0.45
         strip(prom, i, w0, 0.12, kerb, 0.12)
-        strip(wall, i, w0, 1.0, w0, 0.12)
-        strip(wall, i, w1, 1.0, w0, 1.0)
-        strip(wall, i, w1, -1.2, w1, 1.0)
-        strip(sand, i, w1 + 9.0, -3.0, w1, -0.4)
+        if (theme or {}).get("own") and 752 <= s[i]["d"] <= 1170:
+            # The promenade opens to a metal railing above Caló des Moro.
+            post = road.at(i, w0, 0.12)
+            wall.box(post, (0.11, 0.12, 1.04), s[i]["h"])
+            for height in (0.54, 1.10):
+                strip(wall, i, w0, height, w0, height - 0.05)
+                strip(wall, i, w0 + 0.07, height, w0, height)
+            strip(wall, i, w1, -1.2, w1, 0.12)
+        else:
+            strip(wall, i, w0, 1.0, w0, 0.12)
+            strip(wall, i, w1, 1.0, w0, 1.0)
+            strip(wall, i, w1, -1.2, w1, 1.0)
+            strip(sand, i, w1 + 9.0, -3.0, w1, -0.4)
         # Right: the promenade the clubs' terraces stand on, then the land.
         strip(prom, i, -kerb, 0.12, -(kerb + TERRACE), 0.12)
         strip(sand, i, -(kerb + TERRACE), 0.12, -(kerb + TERRACE + 8.0), -2.4)
@@ -1030,6 +1102,11 @@ def build_terrain(road: Road, col, cell: float = 18.0):
             fall = smoothstep(46.0, 210.0, d) * (1 - seaward) + smoothstep(13.0, 64.0, d) * seaward
             bumps = (noise(x, y) * 6.0 + 3.0) * smoothstep(26.0, 70.0, d) * (1 - fall)
             h = (h_road - 1.4) * (1 - fall) + (-6.0) * fall + bumps
+            # Below the small lookout the rock shelf drops directly into the bay.
+            cove = smoothstep(700, 790, p0["d"]) * (1 - smoothstep(1110, 1220, p0["d"]))
+            if cove and leftward > 8:
+                inlet = cove * smoothstep(8, 37, leftward)
+                h += (-5.0 - h) * inlet
             if d < 26.0:
                 h = min(h, h_road - 1.4)
             heights[(ix, iy)], dist[(ix, iy)] = h, d
@@ -1115,6 +1192,11 @@ def build_land(road: Road, col, theme: dict, cell: float = 14.0):
                 drop = smoothstep(10.0, 40.0, d) if cliff else smoothstep(13.0, 64.0, d)
                 fall = smoothstep(80.0, 240.0, d) * (1 - seaward) + drop * seaward
                 h = h * (1 - fall) + (-8.0) * fall
+            if ter.get("clear_road") and d < cell * 1.6:
+                # Even where two stretches approach on different levels, each terrain triangle
+                # meeting the SS242 must stay beneath its lowest road surface.
+                close = road.tree.find_range((x, y, 0), cell * 1.6)
+                h = min(h, min(road.s[j]["z"] for _, j, _ in close) - 1.6)
             if d < 26.0:
                 h = min(h, h_road - 1.4)
             if not sea:
@@ -1375,6 +1457,8 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
             b.tri(top, ring[q], ring[(q + 1) % 5])
             b.tri((c[0], c[1], c[2] - r * 0.8), ring[(q + 1) % 5], ring[q])
 
+    from ibiza_strip import Strip
+    strip = Strip(sys.modules[__name__], B)
     people = random.Random(4117)
 
     def person(c, yaw: float, rng=rng, there: bool = True) -> None:
@@ -1387,6 +1471,7 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
             rng.random()
         if not there:
             return
+        marks=strip.mark(strip.people)
         rng = people
         h = rng.uniform(0.92, 1.08)
         fx, fy = math.cos(yaw), math.sin(yaw)
@@ -1436,7 +1521,13 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         else:
             sleeve.box(at(0, -0.26 * hand, 0.82), (0.09, 0.09, 0.56 * h), yaw)
 
+        phase=(c[0]*.163+c[1]*.087)%math.tau
+        strip.move(marks,'StripDancers',lambda p:(max(0,(p[2]-c[2])/.92),phase))
+
     def festoon(a, b_, bulbs: int = 9, sag: float = 1.1) -> None:
+        marks=strip.mark((B['dark'],B['bulb']))
+        dx,dy=b_[0]-a[0],b_[1]-a[1]
+        length2=dx*dx+dy*dy
         last = None
         for k in range(bulbs + 1):
             t = k / bulbs
@@ -1448,6 +1539,11 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
                 B["dark"].quad((last[0], last[1], last[2] - 0.03), (c[0], c[1], c[2] - 0.03), (c[0], c[1], c[2] + 0.03), (last[0], last[1], last[2] + 0.03))
             last = c
 
+        def cable(p):
+            t=((p[0]-a[0])*dx+(p[1]-a[1])*dy)/length2
+            return math.sin(math.pi*min(1,max(0,t))), (a[0]*.31+a[1]*.17)%math.tau
+        strip.move(marks,'StripFestoons',cable)
+
     def beams(origin, yaw: float, count: int = 4) -> None:
         for k in range(count):
             a = yaw + (k - (count - 1) / 2) * 0.55 + rng.uniform(-0.12, 0.12)
@@ -1457,9 +1553,11 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
             right = (tip[0] + math.sin(a) * w, tip[1] - math.cos(a) * w, tip[2])
             up = (tip[0], tip[1], tip[2] + w)
             b = B[BEAMS[k % len(BEAMS)]]
+            marker=strip.mark((b,))
             b.tri(origin, left, right)
             b.tri(origin, right, up)
             b.tri(origin, up, left)
+            strip.move(marker,"StripBeams",lambda p:(0 if p==origin else 1,a))
 
     def arch(d: float, radius: float, thick: float, deep: float, b: Builder, bulbs: bool = False) -> None:
         """A round arch over the road, feet on the sidewalks."""
@@ -1594,6 +1692,7 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
             # The string's bulbs glow together over the road, and light it.
             kit.halo(P(i, along, 0.0, 4.2), "bulb")
             kit.light(P(i, along, 0.0, 0), "bulb", 8.0, 0.4)
+        strip.furnishings(lambda along,off,up:P(i,along,-(front-3.55)+off,up+.12),yaw,width)
         clubs.append(i)
 
     def room_for_club(i: int) -> bool:
@@ -1743,12 +1842,7 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
         if height_at(x, y) > -3.0:
             continue
         yaw = rng.uniform(0, math.tau)
-        B["whitewash"].box((x, y, -0.3), (9.0, 2.6, 1.5), yaw)
-        B["dark"].box((x, y, 1.2), (0.16, 0.16, 11.0), yaw)
-        c, sn = math.cos(yaw), math.sin(yaw)
-        sail = B["sail-pink"] if yachts % 4 == 0 else B["sail"]
-        sail.tri((x, y, 2.0), (x - c * 4.2, y - sn * 4.2, 2.0), (x, y, 12.0))
-        sail.tri((x + c * 0.3, y + sn * 0.3, 2.0), (x + c * 4.0, y + sn * 4.0, 2.0), (x + c * 0.3, y + sn * 0.3, 10.5))
+        strip.boat(x,y,yaw,pink=yachts%4==0)
         yachts += 1
 
     # The finale rides into the sunset: the sun sits where the last stretch points, Conillera beside it.
@@ -1802,6 +1896,8 @@ def build_scenery(road: Road, st: list[dict], length: float, height_at, course: 
             off = (math.cos(ia) * depth, math.sin(ia) * depth)
             quad = ((a[0] + off[0], a[1] + off[1], -2), (b_[0] + off[0], b_[1] + off[1], -2), (b_[0], b_[1], h1), (a[0], a[1], h0))
             B["island"].quad(*(quad if depth < 0 else quad[::-1]))
+    strip.cove(road,height_at)
+    strip.build(col)
     B["island"].name = "Conillera"
     for b in B.values():
         b.build(col)
@@ -1829,8 +1925,12 @@ def build_themed_scenery(road: Road, st: list[dict], length: float, height_at, c
     az = theme.get("sun_azimuth", az)
     fx, fy = s[fin]["x"], s[fin]["y"]
     alt = theme.get("sun_altitude", 0.1)
-    dist_, radius = 5200.0, 300.0 if theme.get("night") else 420.0
+    dist_ = 5200.0
+    radius = theme.get("disc_radius", 300.0 if theme.get("night") else 420.0)
+    radius = theme.get("sun_radius", radius)
     sx, sy, sz = fx + math.cos(az) * dist_, fy + math.sin(az) * dist_, max(160.0, dist_ * alt)
+    if theme.get("disc_above_finish"):
+        sz = s[fin]["z"] + dist_ * math.tan(alt)
     disc = B["moon" if theme.get("night") else "sun"]
     for q in range(32):
         a0, a1 = q * math.tau / 32, (q + 1) * math.tau / 32
@@ -2254,8 +2354,10 @@ def main(argv: list[str] | None = None) -> dict:
     parser.add_argument("--render", action="store_true", help="with --video: render the film now")
     args = parser.parse_args(argv)
 
+    global STEP
     course = json.loads(args.course.read_text(encoding="utf-8"))
     theme = themes.THEMES.get(course.get("theme", ""))
+    STEP = (theme or {}).get("sample_step", STEP)
     # A theme whose land and scenery are its own (Ibiza's) is a theme in everything else.
     themed = bool(theme) and not theme.get("own")
     ROAD_HALF = (theme or {}).get("road_half_width", DEFAULT_ROAD_HALF)
@@ -2281,10 +2383,7 @@ def main(argv: list[str] | None = None) -> dict:
     else:
         samples, st, length, mean, per_level = lay_centre_line(course, theme)
     road = Road(samples)
-    if (theme or {}).get("road_builder"):
-        theme["road_builder"](road, st, length, col, sys.modules[__name__])
-    else:
-        (theme or {}).get("surface_builder", build_road)(road, st, length, col, theme)
+    (theme or {}).get("surface_builder", build_road)(road, st, length, col, theme)
     if (theme or {}).get("builder") == "sellaronda":
         _, height_at = sellaronda.build_terrain(road, col, Builder)
         facts = sellaronda.build_scenery(road, st, length, height_at, course, col, Builder, build_sky)
@@ -2300,6 +2399,8 @@ def main(argv: list[str] | None = None) -> dict:
 
     args.out.mkdir(parents=True, exist_ok=True)
     args.blend.mkdir(parents=True, exist_ok=True)
+    if forest := facts.pop("forest", None):
+        (args.out / f"{course['id']}-trees.json").write_text(json.dumps(forest, separators=(",", ":")))
     data = write_course_json(args.out / f"{course['id']}.course.json", course, samples, st, length, mean, facts, per_level)
     # Only the map goes into the glb: the guides stay in the scene.
     bpy.data.collections["Guides"].hide_viewport = True

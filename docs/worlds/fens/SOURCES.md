@@ -25,3 +25,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Macaron” Route Details (France)](https://zwiftinsider.com/route/macaron/) (g0092) | © Zwift |
 | game-04.jpg | Zwift: [“Wandering Flats” Route Details (Makuri Islands)](https://zwiftinsider.com/route/wandering-flats/) (g0185) | © Zwift |
 | game-05.jpg | Zwift: [“Farmland Loop” Route Details (Makuri Islands)](https://zwiftinsider.com/route/farmland-loop/) (g0044) | © Zwift |
+
+## Original race artwork
+
+The reference photographs and game views above were restored from repository history with their original credits. The runtime sky, Ely Cathedral elevation, poplar and reed atlas, fen peat, crop, lane and farm wall textures were generated for this race. Real 01–09 and 13–15 informed the lane width, bank profiles and crops. The fixed cathedral follows real 11 and the isolated brick farmhouse follows real 12. Game 01–05 supplied riding sightlines across open farmland. The drainage mill, wind turbines, bridge and farm buildings use original geometry.

@@ -25,3 +25,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Electric Break” Route Details (Makuri Islands)](https://zwiftinsider.com/route/electric-break/) (g0039) | © Zwift |
 | game-04.jpg | Zwift: [“Spinfinity” Route Details (New York)](https://zwiftinsider.com/route/spinfinity/) (g0146) | © Zwift |
 | game-05.jpg | Zwift: [“Sprinter’s Playground” Route Details (Makuri Islands)](https://zwiftinsider.com/route/sprinters-playground/) (g0151) | © Zwift |
+
+## Authored course
+
+The bridge decks, piers, fountain, path markings, rental bikes, riders, park furnishings and towers are original geometry. The water and fountain animation use the ride clock. Real 02, 08 and 09 informed the fountain deck, its arc spacing and the passage below it. Real 01, 03, 05 and 13 informed the pool of light on each pier and the reflections. Real 04 depicts the Hàn River in Vietnam and informs reflected colour only. Real 12 and 14 informed the Namsan mast and Yeouido skyline. Real 06, 07, 10, 11 and 15 informed the double cycleway, stepped bank and occupied lawns. Games 01, 03 and 05 informed the lantern and skyline silhouettes, game 02 the passing cyclists and game 04 the bridge approach.

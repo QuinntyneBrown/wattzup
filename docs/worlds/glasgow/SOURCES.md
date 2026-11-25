@@ -25,3 +25,11 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Glasgow Crit Circuit” Route Details (Scotland)](https://zwiftinsider.com/route/glasgow-crit-circuit/) (g0053) | © Zwift |
 | game-04.jpg | Zwift: [“Crêpe Escape” Route Details (Paris)](https://zwiftinsider.com/route/crepe-escape/) (g0027) | © Zwift |
 | game-05.jpg | Zwift: [“London Loop” Route Details (London)](https://zwiftinsider.com/route/london-loop/) (g0086) | © Zwift |
+
+| Race detail | Reference and adaptation |
+| --- | --- |
+| George Square and City Chambers | Real 05–07 and 14–15 establish the central tower, end pavilions, plinths and open sightlines across the grass islands. Games 01 and 05 inform the approach to the finish. The three-dimensional building and the generated front elevation are original race assets. |
+| Merchant City | Real 02, 08–11 and 13 establish the red and blond sandstone blocks, windows and street-level shops. Game 03 informs their scale behind riders. An original generated façade sheet dresses the native blocks. |
+| Championship barriers and supporters | Real 01–04 inform the crowd spacing, rail height and team colours. Game 02 informs near-road legibility. The umbrella canopies, figures and rainbow panels are original geometry. |
+| Rain and road markings | Real 12 shows a wet street in Calgary. It informs surface reflections only. Real 03, 08–11 and games 03–05 inform painted lines, the approach to corners and street scale. |
+| Monuments | Real 05–07 and 14 inform statue scale and stone plinths in George Square. The mounted Wellington, traffic cone and gallery portico in Royal Exchange Square are original models. |

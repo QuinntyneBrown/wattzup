@@ -206,7 +206,8 @@ THEMES: dict[str, dict] = {
         "sun_altitude": 0.6,
         "palette": {"asphalt": 0x34343A, "sand": 0x6E8A46, "promenade": 0x8A8478, "sea": 0x4E7A3A},
         "land": {"low": 0x6E9A48, "mid": 0x5A8A3E, "high": 0x8A8A70, "rock": 0xCFC6B4, "snow": 0xF2F5F8},
-        "terrain": {"sea": False, "rise": 150.0, "far": 30.0, "valley": True},
+        "terrain": {"sea": False, "clear_road": True, "rise": 76.0, "far": 30.0, "valley": True},
+        "kerbs": False,
         "edge": "guardrail",
         "centre": "white",
         "turns": {"work": (("hairpin", 0.4), ("ess", 0.3), ("sweep", 0.2), ("straight", 0.1)),
@@ -804,6 +805,7 @@ def oldtown(k: Kit) -> dict:
 
 def docklands(k: Kit) -> dict:
     """A harbour city after dark: brick warehouses with lit windows and neon, cranes and containers on the quay."""
+    import docklands_harbour as harbour
     B, s, rng = k.B, k.s, k.rng
     # Lamps both sides, every 24 m: the course file tells the app where their light falls.
     lamps = THEMES["docklands"]["lamps"]
@@ -836,6 +838,7 @@ def docklands(k: Kit) -> dict:
                         k.door(i, along, wall + 0.06, 0.12, 2.5, 3.1, lit)
                     else:
                         k.window(i, along, wall + 0.06, 1.4 + f * 3.6, 1.4, 1.9, lit, yaw)
+            harbour.warehouse(k,i,width,floors,off,wall)
             # On the roof, what shapes it against the sky: a water tank or a plant room, and a chimney.
             top = floors * 3.6 + 1.0
             spot = (i * 37) % 5
@@ -947,6 +950,7 @@ def docklands(k: Kit) -> dict:
             B[rng.choice(CONTAINERS)].box((x + math.cos(yaw) * u, y + math.sin(yaw) * u, 5), (11, L * 0.14, 2.6), yaw)
         B["glow-window"].box((x - math.cos(yaw) * L * 0.35, y - math.sin(yaw) * L * 0.35, 11), (L * 0.185, L * 0.145, 0.6), yaw)
         ships += 1
+    harbour.liner(k)
     k.skyline(int(110 * k.scale), 180, 1100)
     efforts = k.gates("neon-cyan", "neon-pink", CROWD, "gold", "bulb")
     # The harbour bridges: over each one's deck, two pylons with stay cables fanned down to the deck either side of
@@ -958,43 +962,10 @@ def docklands(k: Kit) -> dict:
         elif not s[i].get("bridge") and start is not None:
             spans.append((start, i - 1))
             start = None
-    out = k.kerb + 2.6
     for n_, (i0, i1) in enumerate(spans):
         if i1 - i0 < 40:
             continue
-        neon = ("neon-cyan", "neon-pink", "neon-amber", "neon-violet")[n_ % 4]
-        for share in (0.3, 0.7):
-            i = i0 + int((i1 - i0) * share)
-            yaw, deck = s[i]["h"], s[i]["z"]
-            top = 38.0
-            for side in (1, -1):
-                # A leg from the sea's bed to the pylon's head, slimmer above the deck.
-                B["tower"].box(k.P(i, 0, out * side, -9.0 - deck), (2.6, 1.8, deck + 9.0 + 1.0), yaw)
-                B["tower"].box(k.P(i, 0, out * side, 1.0), (1.7, 1.2, top - 1.0), yaw)
-                k.halo(k.P(i, 0, out * side, top + 0.6), neon)
-                # The stays: from the head down to the deck's edge, every 16 m out to 96 m each way.
-                head = k.P(i, 0, out * side, top - 1.0)
-                for reach in range(4, 28, 4):
-                    for way in (1, -1):
-                        j = i + reach * way
-                        if j < i0 or j > i1:
-                            continue
-                        foot = k.road.at(j, out * side, 1.0)
-                        for lift, order in ((0.0, (0, 1, 2, 3)), (0.02, (3, 2, 1, 0))):
-                            quad = (
-                                (head[0], head[1], head[2] + lift),
-                                (foot[0], foot[1], foot[2] + lift),
-                                (foot[0], foot[1], foot[2] + 0.16 + lift),
-                                (head[0], head[1], head[2] + 0.16 + lift),
-                            )
-                            B[neon].quad(*(quad[q] for q in order))
-            # The stays' light on the deck: a pool every 16 m as far as they reach.
-            for reach in range(-24, 28, 4):
-                if i0 <= i + reach <= i1:
-                    k.light(k.road.at(i + reach, 0.0), neon, 15.0, 0.55 - 0.012 * abs(reach))
-            # The head beam and a beam under the deck tie the two legs.
-            B["tower"].box(k.P(i, 0, 0, top - 3.0), (1.6, 2 * out + 1.2, 2.2), yaw)
-            B["tower"].box(k.P(i, 0, 0, -3.2), (2.2, 2 * out + 1.8, 1.8), yaw)
+        harbour.bridge(k,i0,i1,n_)
     return {"efforts": efforts, "warehouses": sheds, "cranes": cranes, "ships": ships, "lorries": lorries, "masts": masts}
 
 
@@ -1030,10 +1001,8 @@ def dolomites(k: Kit) -> dict:
             i += rng.randint(30, 70)
         else:
             i += 5
-    # The pale peaks all round, snow on their tops.
-    base = min(p["z"] for p in s) - 4
-    k.peaks(26, 800, 1700, (420, 900), "limestone", "snow", base)
-    k.peaks(14, 1900, 2900, (700, 1200), "limestone", "snow", base)
+    from val_gardena import valley
+    valley(k)
     efforts = k.gates("accent", "flag-0", CROWD)
     # A summit sign and a chapel on the highest bend.
     top = max(range(k.n), key=lambda j: s[j]["z"])
@@ -1043,7 +1012,8 @@ def dolomites(k: Kit) -> dict:
     k.gable(B["roof-slate"], k.P(top, 0, off, 5), 9, 6, 3, yaw + math.pi / 2)
     B["whitewash"].box(k.P(top, -4, off, -1), (2.6, 2.6, 12), yaw)
     k.cone(B["roof-slate"], k.P(top, -4, off, 11), 1.9, 4.5, 4)
-    return {"efforts": efforts, "chalets": chalets}
+    from val_gardena import cableways, forest
+    return {"efforts": efforts, "chalets": chalets, "cableways": cableways(k), "forest": forest(k)}
 
 
 def vicecity(k: Kit) -> dict:
@@ -1417,3 +1387,157 @@ import cornwall as _cornwall  # noqa: E402
 
 THEMES['cornwall'] = _cornwall.THEME
 SCENERY['cornwall'] = _cornwall.scenery
+
+import cypress as _cypress  # noqa: E402
+
+THEMES['cypress'] = _cypress.THEME
+SCENERY['cypress'] = _cypress.scenery
+
+import dales as _dales  # noqa: E402
+
+THEMES['dales'] = _dales.THEME
+SCENERY['dales'] = _dales.scenery
+
+import daytona as _daytona  # noqa: E402
+
+THEMES['daytona'] = _daytona.THEME
+SCENERY['daytona'] = _daytona.scenery
+
+import deathvalley as _deathvalley  # noqa: E402
+
+THEMES['deathvalley'] = _deathvalley.THEME
+SCENERY['deathvalley'] = _deathvalley.scenery
+
+import diwali as _diwali  # noqa: E402
+
+THEMES['diwali'] = _diwali.THEME
+SCENERY['diwali'] = _diwali.scenery
+
+import dubai as _dubai
+
+THEMES["dubai"] = _dubai.THEME
+SCENERY["dubai"] = _dubai.scenery
+
+import edinburgh as _edinburgh
+
+THEMES["edinburgh"] = _edinburgh.THEME
+SCENERY["edinburgh"] = _edinburgh.scenery
+
+import engadin as _engadin
+
+THEMES["engadin"] = _engadin.THEME
+SCENERY["engadin"] = _engadin.scenery
+
+import etna as _etna
+
+for name,colour in (("etna-clinker",0x413c39),("etna-scoria",0x854633),("etna-bitumen",0x48474a)):
+    MATERIALS[name]={"color":colour,"rough":1.0,"vertex":True}
+
+THEMES["etna"] = _etna.THEME
+SCENERY["etna"] = _etna.scenery
+
+import fens as _fens
+
+for name in ("fen-lane", "fen-fields", "fen-drains", "fen-banks"):
+    MATERIALS[name] = {"color": 0x878579, "rough": 1.0, "vertex": True}
+THEMES["fens"] = _fens.THEME
+SCENERY["fens"] = _fens.scenery
+
+import fishhill as _fishhill
+
+for name in ("fishhill-lane", "fishhill-meadow", "fishhill-wall", "fishhill-slate"):
+    MATERIALS[name] = {"color": 0x99937b, "rough": 1.0, "vertex": True}
+THEMES["fishhill"] = _fishhill.THEME
+SCENERY["fishhill"] = _fishhill.scenery
+
+import fuji as _fuji
+
+for name in ("fuji-tarmac", "fuji-clinker", "fuji-scoria", "fuji-moss"):
+    MATERIALS[name] = {"color": 0x777572, "rough": 1.0, "vertex": True}
+THEMES["fuji"] = _fuji.THEME
+SCENERY["fuji"] = _fuji.scenery
+
+import furka as _furka
+
+for name in ("furka-pasture", "furka-scree", "furka-snow", "furka-tarmac"):
+    MATERIALS[name] = {"color": 0x82817b, "rough": 1.0, "vertex": True}
+THEMES["furka"] = _furka.THEME
+SCENERY["furka"] = _furka.scenery
+
+import galibier as _galibier
+
+for name in ("galibier-pasture", "galibier-scree", "galibier-snow", "galibier-tarmac"):
+    MATERIALS[name] = {"color": 0x82807c, "rough": 1.0, "vertex": True}
+THEMES["galibier"] = _galibier.THEME
+SCENERY["galibier"] = _galibier.scenery
+
+import gardena as _gardena
+
+for name in ("gardena-pasture", "gardena-scree", "gardena-tarmac"):
+    MATERIALS[name] = {"color": 0x818378, "rough": 1.0, "vertex": True}
+THEMES["gardena"] = _gardena.THEME
+SCENERY["gardena"] = _gardena.scenery
+
+import ghent as _ghent
+
+THEMES["ghent"] = _ghent.THEME
+SCENERY["ghent"] = _ghent.scenery
+
+import giza as _giza
+
+THEMES["giza"] = _giza.THEME
+SCENERY["giza"] = _giza.scenery
+
+import glasgow as _glasgow
+
+THEMES["glasgow"] = _glasgow.THEME
+SCENERY["glasgow"] = _glasgow.scenery
+
+import glastonbury as _glastonbury
+
+THEMES["glastonbury"] = _glastonbury.THEME
+SCENERY["glastonbury"] = _glastonbury.scenery
+
+import goldengate as _goldengate
+
+THEMES["goldengate"] = _goldengate.THEME
+SCENERY["goldengate"] = _goldengate.scenery
+
+import grandcanyon as _grandcanyon
+
+THEMES["grandcanyon"] = _grandcanyon.THEME
+SCENERY["grandcanyon"] = _grandcanyon.scenery
+
+import north_face as _north_face
+
+THEMES["granite"].update(lay=_north_face.lay, land_builder=_north_face.land, road_builder=_north_face.road_surface)
+SCENERY["granite"] = _north_face.scenery
+
+import greatocean as _greatocean
+
+THEMES['greatocean']=_greatocean.THEME
+SCENERY['greatocean']=_greatocean.scenery
+
+
+import hanriver
+
+THEMES['hanriver'] = hanriver.THEME
+SCENERY['hanriver'] = hanriver.scenery
+
+
+import hardknott
+
+THEMES['hardknott'] = hardknott.THEME
+SCENERY['hardknott'] = hardknott.scenery
+
+
+import havana
+
+THEMES['havana'] = havana.THEME
+SCENERY['havana'] = havana.scenery
+import hoover as _hoover
+THEMES['hoover'] = _hoover.THEME
+SCENERY['hoover'] = _hoover.scenery
+import iceland as _iceland
+THEMES['iceland'] = _iceland.THEME
+SCENERY['iceland'] = _iceland.scenery

@@ -25,3 +25,5 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Eastern Eight” Route Details (Watopia)](https://zwiftinsider.com/route/eastern-eight/) (g0038) | © Zwift |
 | game-04.jpg | MyWhoosh: [MicrosoftTeams-image (5)](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2022/12/MicrosoftTeams-image-5.png) (g0898) | © MyWhoosh |
 | game-05.jpg | Zwift: [“Zwift Bambino Fondo 2022” Route Details (Watopia)](https://zwiftinsider.com/route/zwift-bambino-fondo-2022/) (g0192) | © Zwift |
+
+The runtime scoria, trade-wind cloud tops and Kula tree silhouettes are original generated artwork. Real 01–04 and 10–15 guide the upper slopes, cloud inversion and crater. Real 07–09 guide the photographed character of the coconut palms, eucalyptus and jacaranda. The ranch horses, silverswords, cinder cones and observatories are original native geometry on the baked road and terrain.

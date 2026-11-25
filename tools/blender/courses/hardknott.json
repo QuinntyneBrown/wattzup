@@ -1,0 +1,85 @@
+{
+  "id": "hardknott",
+  "name": "Hardknott Pass",
+  "world": "hardknott",
+  "theme": "hardknott",
+  "seed": 2135,
+  "layout": 0,
+  "class": {
+    "id": "25-minute-hill-training",
+    "title": "25 Minute Hill Training",
+    "channel": "GCN",
+    "videoId": "uGnWzZ6kXrA",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 240,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 150,
+        "level": 13,
+        "cadenceAim": 88
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 120,
+        "level": 13,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 90,
+        "level": 24,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "cool-down",
+        "duration": 180,
+        "level": 11,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

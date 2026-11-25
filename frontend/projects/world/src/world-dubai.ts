@@ -579,72 +579,7 @@ export class DubaiStreet implements SceneStreet {
   private addSkyline(): void {
     const h = this.horizon;
     const haze = new Color(HAZE);
-    // The Cayan Tower: seventy-five floors, each turned a little further than the one below.
-    const FLOORS = 75;
-    const STOREY = 4.2;
-    const glassParts: BufferGeometry[] = [];
-    const frameParts: BufferGeometry[] = [];
-    const lights = seeded(5273);
-    for (let f = 0; f < FLOORS; f++) {
-      const turn = (f / FLOORS) * (Math.PI / 2);
-      const pane = new BoxGeometry(30, STOREY - 0.6, 30);
-      // Each floor's windows lit in their own pattern: its band of the texture slid along.
-      const uv = pane.getAttribute('uv') as BufferAttribute;
-      const slide = Math.floor(lights() * 10) / 10;
-      for (let i = 0; i < uv.count; i++) uv.setX(i, uv.getX(i) + slide);
-      pane.rotateY(turn);
-      pane.translate(0, f * STOREY + STOREY / 2, 0);
-      glassParts.push(pane);
-      const slab = new BoxGeometry(31.4, 0.6, 31.4);
-      slab.rotateY(turn);
-      slab.translate(0, f * STOREY + 0.3, 0);
-      frameParts.push(slab);
-      // The white columns at its corners and across each face, turned with the floor, so they
-      // spiral up the tower a quarter turn from its foot to its crown.
-      for (const [cx, cz, w] of [
-        [15.4, 15.4, 1.6],
-        [15.4, -15.4, 1.6],
-        [-15.4, 15.4, 1.6],
-        [-15.4, -15.4, 1.6],
-        [15.6, 0, 0.9],
-        [-15.6, 0, 0.9],
-        [0, 15.6, 0.9],
-        [0, -15.6, 0.9],
-      ] as const) {
-        const column = new BoxGeometry(w, STOREY, w);
-        column.translate(cx, f * STOREY + STOREY / 2, cz);
-        column.rotateY(turn);
-        frameParts.push(column);
-      }
-    }
-    const cayanWindows = this.track(cayanTexture(false));
-    const cayanLit = this.track(cayanTexture(true));
-    for (const t of [cayanWindows, cayanLit]) t.wrapS = RepeatWrapping;
-    const cayanGlass = mergeGeometries(glassParts)!;
-    const cayanFrame = mergeGeometries(frameParts)!;
-    [...glassParts, ...frameParts].forEach((g) => g.dispose());
-    this.disposables.push(cayanGlass, cayanFrame);
-    const cayan = new Group();
-    cayan.add(
-      new Mesh(
-        cayanGlass,
-        hazedMaterial(this.disposables, haze, 0x3a5878, 0.12, {
-          map: cayanWindows,
-          emissive: new Color(0xffffff),
-          emissiveMap: cayanLit,
-          emissiveIntensity: 0.9,
-          metalness: 0.45,
-          roughness: 0.2,
-        }),
-      ),
-      new Mesh(
-        cayanFrame,
-        hazedMaterial(this.disposables, haze, 0xe8e2da, 0.15, {
-          emissive: new Color(0xffd8b0),
-          emissiveIntensity: 0.08,
-        }),
-      ),
-    );
+    const cayan = cayanTower(this.track, this.disposables, haze);
     // On the line of the walk, rising over everything at its end.
     cayan.position.set(4, -2, -620);
     h.add(cayan);
@@ -833,4 +768,79 @@ function waterTexture(): CanvasTexture {
       g.fillRect(random() * 128, random() * 128, 6 + random() * 16, 2.5);
     }
   });
+}
+
+/** The quarter-turn tower shared by the original class and its fixed Marina Walk race course. */
+export function cayanTower(
+  track: <T extends Texture>(map: T) => T,
+  disposables: { dispose(): void }[],
+  haze: Color,
+): Group {
+  // The Cayan Tower: seventy-five floors, each turned a little further than the one below.
+  const FLOORS = 75;
+  const STOREY = 4.2;
+  const glassParts: BufferGeometry[] = [];
+  const frameParts: BufferGeometry[] = [];
+  const lights = seeded(5273);
+  for (let f = 0; f < FLOORS; f++) {
+    const turn = (f / FLOORS) * (Math.PI / 2);
+    const pane = new BoxGeometry(30, STOREY - 0.6, 30);
+    // Each floor's windows lit in their own pattern: its band of the texture slid along.
+    const uv = pane.getAttribute('uv') as BufferAttribute;
+    const slide = Math.floor(lights() * 10) / 10;
+    for (let i = 0; i < uv.count; i++) uv.setX(i, uv.getX(i) + slide);
+    pane.rotateY(turn);
+    pane.translate(0, f * STOREY + STOREY / 2, 0);
+    glassParts.push(pane);
+    const slab = new BoxGeometry(31.4, 0.6, 31.4);
+    slab.rotateY(turn);
+    slab.translate(0, f * STOREY + 0.3, 0);
+    frameParts.push(slab);
+    // The white columns at its corners and across each face, turned with the floor, so they
+    // spiral up the tower a quarter turn from its foot to its crown.
+    for (const [cx, cz, w] of [
+      [15.4, 15.4, 1.6],
+      [15.4, -15.4, 1.6],
+      [-15.4, 15.4, 1.6],
+      [-15.4, -15.4, 1.6],
+      [15.6, 0, 0.9],
+      [-15.6, 0, 0.9],
+      [0, 15.6, 0.9],
+      [0, -15.6, 0.9],
+    ] as const) {
+      const column = new BoxGeometry(w, STOREY, w);
+      column.translate(cx, f * STOREY + STOREY / 2, cz);
+      column.rotateY(turn);
+      frameParts.push(column);
+    }
+  }
+  const cayanWindows = track(cayanTexture(false));
+  const cayanLit = track(cayanTexture(true));
+  for (const t of [cayanWindows, cayanLit]) t.wrapS = RepeatWrapping;
+  const cayanGlass = mergeGeometries(glassParts)!;
+  const cayanFrame = mergeGeometries(frameParts)!;
+  [...glassParts, ...frameParts].forEach((g) => g.dispose());
+  disposables.push(cayanGlass, cayanFrame);
+  const cayan = new Group();
+  cayan.add(
+    new Mesh(
+      cayanGlass,
+      hazedMaterial(disposables, haze, 0x3a5878, 0.12, {
+        map: cayanWindows,
+        emissive: new Color(0xffffff),
+        emissiveMap: cayanLit,
+        emissiveIntensity: 0.9,
+        metalness: 0.45,
+        roughness: 0.2,
+      }),
+    ),
+    new Mesh(
+      cayanFrame,
+      hazedMaterial(disposables, haze, 0xe8e2da, 0.15, {
+        emissive: new Color(0xffd8b0),
+        emissiveIntensity: 0.08,
+      }),
+    ),
+  );
+  return cayan;
 }

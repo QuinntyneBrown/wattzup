@@ -1,0 +1,115 @@
+{
+  "id": "fishhill",
+  "name": "Fish Hill, Cotswolds",
+  "world": "fishhill",
+  "theme": "fishhill",
+  "seed": 2120,
+  "layout": 0,
+  "class": {
+    "id": "leg-burner",
+    "title": "Leg Burner",
+    "channel": "GCN Training",
+    "videoId": "TJtqn9R4X40",
+    "syncOffsetSeconds": 0
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 300,
+        "level": 17,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 22,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 50
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 19,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 50
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 180,
+        "level": 19,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 60,
+        "level": 13,
+        "cadenceAim": 70
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 18,
+        "cadenceAim": 50
+      },
+      {
+        "kind": "work",
+        "duration": 60,
+        "level": 21,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 19,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "cool-down",
+        "duration": 300,
+        "level": 13,
+        "cadenceAim": 78
+      }
+    ]
+  }
+}
