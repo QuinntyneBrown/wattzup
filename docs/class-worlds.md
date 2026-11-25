@@ -204,7 +204,7 @@ In every `main` scene, placeholder looks included, the road bends left and right
 | 174 | Threshold Pyramid | Teotihuacán | 35% |  | The Avenue of the Dead between the Sun and Moon pyramids. |
 | 175 | 45 Minute VO2 Max Intervals | Furka Pass | 35% |  | Swiss hairpins beside the Rhône Glacier. |
 | 176 | Extreme Fat Burning Class | Atacama Desert | 86% |  | The driest desert on earth, salt flats and flamingo lagoons. |
-| 177 | 45 Minute Sprint Training | Beach Road, Melbourne | 35% |  | Bayside bunch-ride route past beach boxes and piers. |
+| 177 | 45 Minute Sprint Training | Beach Road, Melbourne | 35% | [Ride views](screenshots/beach-road-melbourne/README.md) | Bayside bunch-ride route past beach boxes and piers. |
 | 178 | FTP Booster Extended Efforts | Blue Ridge Parkway | 35% |  | Appalachian ridgeline road in blazing autumn colour. |
 | 179 | 60 Minute Reverse Pyramid | Angkor Temples | 82% |  | Jungle roads between Khmer temples and moats at dawn. |
 | 180 | Reverse HIIT Race Winning Intervals | Verona Arena Finale | 35% |  | A grand tour finale circling into the Roman arena. |

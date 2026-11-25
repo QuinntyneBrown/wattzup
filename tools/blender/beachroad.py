@@ -25,7 +25,8 @@ def route(course,theme,bc):
 def ground(d,l):
     h=height(d)
     if l>0:return h-.14+max(0,l-14)*(.07+.025*math.sin(d/450))
-    b=max(0,-l-6.8); beach=25.4+5.8*math.sin(d/295)
+    b=max(0,-l-6.8); reef = max(math.exp(-((d-centre)/220)**4) for centre in (8040,15980))
+    beach=25.4+5.8*math.sin(d/295)-12*reef
     return h-.15-(h-.29)*smooth(0,beach,b)-max(0,b-beach)*.14
 
 def land(road,col,theme,bc):
@@ -130,7 +131,7 @@ def box_hut(k,art,d,l,i):
     art.box(p(-.18,-2.23,1.29),(.14,.06,.07),yaw,lin(0x645D54))
 
 def pier(k,art,d):
-    x,y,_=k.road.pos(d,-4);yaw=bearing(d)-.51;cs,sn=math.cos(yaw),math.sin(yaw)
+    x,y,_=k.road.pos(d,-4);yaw=bearing(d)+1.04;cs,sn=math.cos(yaw),math.sin(yaw)
     def p(u,v,h):return(x+cs*u-sn*v,y+sn*u+cs*v,h)
     def box(u,v,h,a,b,c,t):art.box(p(u,v,h),(a,b,c),yaw,lin(t))
     for j in range(36):
@@ -176,8 +177,8 @@ def teatree(art,x,y,z,h,yaw):
             cap=(u+.11*h,v+.06*h,w+.26*h);co=lin(0x72856A if (j+arm)%3 else 0x6B7C61)
             art.face((low,other,cap),(co,co,lin(0x8C9E78)));art.face((other,low,(u,v,w-.15*h)),(co,)*3)
 
-def shelves(k,art,d,l,r):
-    x,y,_=k.road.pos(d,l);yaw=bearing(d);top=.24+.20*math.cos(d)
+def shelves(k,art,d,l,r,level=None):
+    x,y,_=k.road.pos(d,l);yaw=bearing(d);top=level if level is not None else .52+.24*math.cos(d)
     for j in range(9):
         a=j*math.tau/9;b=(j+1)*math.tau/9
         def p(t,z,rr):return(x+r*rr*math.cos(t),y+r*.54*rr*math.sin(t),z)
@@ -203,7 +204,7 @@ def scenery(k):
             d=base+i*4.6;box_hut(k,art,d,-18.3-1.3*math.sin(i/11),i)
     for d in range(15,19605,46):
         l=rng.choice((1,-1))*rng.uniform(8.7,17.2);x,y,_=k.road.pos(d,l)
-        if any(base-20<d<base+147 for base in (890,5900,14280)) and l<0:continue
+        if l<0 and (any(base-20<d<base+147 for base in (890,5900,14280)) or 7770<d<8010):continue
         if d%7<3:pine(art,x,y,ground(d,l),rng.uniform(10,17))
         else:teatree(art,x,y,ground(d,l),rng.uniform(3.5,6.3),rng.uniform(0,6))
     for d in range(2180,14100,30):
@@ -211,7 +212,13 @@ def scenery(k):
         l=-12.;x,y,_=k.road.pos(d,l);z=ground(d,l)
         art.tube((x,y,z),.092,.069,3.6,lin(0x535D54),lin(0x677069),7)
         art.tube((x,y,z+3.58),.22,.11,.18,lin(0xA9A58F),lin(0x6B7067),8)
-    for base in (7890,15830):
+    # Eroded platforms run out from the cliff as stepped, overlapping fingers.
+    for point in (7870,7995,15890):
+        for j in range(12):
+            d=point+j*1.12; l=-17-j*2.8
+            z=max(.65,ground(d,-17)-.26*j)
+            shelves(k,art,d,l,8.6-j*.22,z)
+    for base in (7790,15830):
         for j in range(52):
-            d=base+j*6;l=-29-rng.uniform(0,19);shelves(k,art,d,l,rng.uniform(4,10))
+            d=base+j*6;l=-22-rng.uniform(0,17);shelves(k,art,d,l,rng.uniform(4,10))
     return {'efforts':0}
