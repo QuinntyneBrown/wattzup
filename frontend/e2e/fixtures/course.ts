@@ -1,3 +1,4 @@
+import bathshebaElevation from './bathsheba-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -158,9 +159,13 @@ export const bathshebaCourseMap = {
   place: 'Saint Joseph, Barbados',
   world: 'bathsheba',
   distanceKm: 10.7,
-  climbingM: 0,
+  climbingM: 31,
   rating: 'Easy',
-  terrain: { grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 }, roll: 0 },
+  terrain: {
+    grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
+    roll: 0,
+    elevation: bathshebaElevation,
+  },
   thumbnailUrl: 'maps/bathsheba-barbados.jpg',
   photoUrl: 'maps/bathsheba-barbados-photo.jpg',
   plan: {
