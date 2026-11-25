@@ -23,6 +23,12 @@ export class WebAudioAnnouncerMixer {
     if (pcm.length === 0) return;
     this.stopActive();
 
+    const tap = (globalThis as Record<string, unknown>)['__teloAnnouncerAudioTap'] as
+      ((samples: Float32Array, sampleRate: number, volume: number) => void) | undefined;
+    if (typeof tap === 'function') {
+      tap(pcm, SAMPLE_RATE, volumePercent);
+    }
+
     const ctx = this.ensureContext(volumePercent);
     if (ctx.state === 'suspended') {
       await ctx.resume();

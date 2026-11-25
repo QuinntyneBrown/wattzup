@@ -31,6 +31,7 @@
     "@angular/service-worker": "^22.3.0",
     "@microsoft/signalr": "10.0.11",
     "3d-tiles-renderer": "0.5.4",
+    "kokoro-js": "^1.2.1",
     "rxjs": "~7.8.0",
     "three": "0.187.0",
     "tslib": "^2.3.0"

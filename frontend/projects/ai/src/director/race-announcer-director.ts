@@ -212,10 +212,11 @@ export class RaceAnnouncerDirector {
       const delta = snapshot.targetResistance - prev.targetResistance;
       const stage = sanitizeCalloutLabel(snapshot.stageTitle, 'Climb');
       if (delta >= 3) {
+        const heading = stage.toLowerCase() === 'work' ? 'Climb ahead' : stage;
         events.push(
           this.make(
             'climb',
-            `${stage}! Target resistance up to ${snapshot.targetResistance}, hold ${snapshot.targetCadenceRpm} rpm.`,
+            `${heading}! Target resistance up to ${snapshot.targetResistance}, hold ${snapshot.targetCadenceRpm} rpm.`,
             nowMs,
           ),
         );
