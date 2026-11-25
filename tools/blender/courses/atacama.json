@@ -1,0 +1,97 @@
+{
+  "id": "atacama",
+  "name": "Atacama Desert",
+  "world": "atacama",
+  "theme": "atacama",
+  "seed": 2073,
+  "layout": 0,
+  "class": {
+    "id": "extreme-fat-burning-class",
+    "title": "Extreme Fat Burning Class",
+    "channel": "GCN",
+    "videoId": "D9is0fZQ4V0",
+    "syncOffsetSeconds": 26
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 450,
+        "level": 14,
+        "cadenceAim": 84
+      },
+      {
+        "kind": "work",
+        "duration": 195,
+        "level": 19,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 165,
+        "level": 18,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 195,
+        "level": 19,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 165,
+        "level": 18,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 195,
+        "level": 19,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 165,
+        "level": 18,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 195,
+        "level": 19,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 165,
+        "level": 18,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 195,
+        "level": 19,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "recover",
+        "duration": 315,
+        "level": 18,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 19,
+        "cadenceAim": 60
+      },
+      {
+        "kind": "cool-down",
+        "duration": 300,
+        "level": 13,
+        "cadenceAim": 80
+      }
+    ]
+  }
+}

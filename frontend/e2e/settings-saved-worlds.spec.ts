@@ -30,9 +30,8 @@ test('This device lists the saved worlds, and Clear saved worlds deletes them wi
   page,
 }) => {
   const settings = new SettingsPage(page);
-  await settings.open('device');
   await saveWorlds(page, THREE_WORLDS);
-  await page.reload();
+  await settings.open('device');
 
   await expect(settings.savedWorlds).toHaveText('3 worlds · 61 MB');
   await expect(settings.savedWorldsHint).toHaveText(
@@ -61,10 +60,9 @@ test('This device lists the saved worlds, and Clear saved worlds deletes them wi
 
 test('the toast closes on its own after 6 seconds (L2-165 AC2)', async ({ page }) => {
   const settings = new SettingsPage(page);
-  await settings.open('device');
   await saveWorlds(page, THREE_WORLDS.slice(1, 2));
   await page.clock.install();
-  await page.reload();
+  await settings.open('device');
   await expect(settings.savedWorlds).toHaveText('1 world · 24 MB');
   await expect(settings.savedWorldsHint).toHaveText(
     'Old Town Criterium opens in seconds, even offline.',

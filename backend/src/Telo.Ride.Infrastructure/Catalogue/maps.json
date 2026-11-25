@@ -5306,6 +5306,113 @@
           0.0
         ]
       }
+    },
+    {
+      "id": "atacama-desert",
+      "name": "Atacama Desert",
+      "routeName": "The salar road",
+      "place": "Antofagasta, Chile",
+      "distanceKm": 21.275,
+      "climbingM": 15,
+      "rating": "Hard",
+      "world": "atacama",
+      "thumbnailUrl": "maps/atacama-desert.jpg",
+      "photoUrl": "maps/atacama-desert-photo.jpg",
+      "unlock": {
+        "kind": "start"
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 450,
+            "level": 14,
+            "cadenceAim": 84
+          },
+          {
+            "kind": "work",
+            "duration": 195,
+            "level": 19,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "recover",
+            "duration": 165,
+            "level": 18,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "work",
+            "duration": 195,
+            "level": 19,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "recover",
+            "duration": 165,
+            "level": 18,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "work",
+            "duration": 195,
+            "level": 19,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "recover",
+            "duration": 165,
+            "level": 18,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "work",
+            "duration": 195,
+            "level": 19,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "recover",
+            "duration": 165,
+            "level": 18,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "work",
+            "duration": 195,
+            "level": 19,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "recover",
+            "duration": 315,
+            "level": 18,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "work",
+            "duration": 300,
+            "level": 19,
+            "cadenceAim": 60
+          },
+          {
+            "kind": "cool-down",
+            "duration": 300,
+            "level": 13,
+            "cadenceAim": 80
+          }
+        ]
+      },
+      "terrain": {
+        "grade": {
+          "warm-up": 0,
+          "work": 0,
+          "recover": 0,
+          "cool-down": 0,
+          "steady": 0
+        },
+        "roll": 0
+      }
     }
   ]
 }

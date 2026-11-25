@@ -952,7 +952,7 @@ def build_road(road: Road, st: list[dict], length: float, col, theme: dict | Non
 
     # Chevrons up every effort: the road itself says "push".
     for stage in st:
-        if edge == "pave" or edge == "scheldt" or edge == "angliru" or stage["kind"] != "work":
+        if edge == "pave" or edge == "scheldt" or edge == "angliru" or stage["kind"] != "work" or (theme or {}).get("effort_chevrons") is False:
             continue
         d = stage["from"] + 12
         while d < stage["to"] - 6:

@@ -43,7 +43,7 @@ public sealed class NextRideTests(SignInApi api) : IClassFixture<SignInApi>
         {
             var progress = MapProgress.Start(riderId, mapId);
             progress.Restore(stars, null);
-            if (mapId is not ("prairie-paceline" or "old-town-criterium" or "ibiza-sunset-strip" or "sella-ronda" or "cinqueterre" or "haleakala" or "adelaide-hills" or "aguascalientes" or "algarve-cliffs" or "alpe-dhuez" or "amsterdam-canals" or "els-angels" or "angkor-temples" or "alto-angliru" or "antwerp-port-sprint" or "arenberg-forest" or "philadelphia-art-museum"))
+            if (mapId is not ("prairie-paceline" or "old-town-criterium" or "ibiza-sunset-strip" or "sella-ronda" or "cinqueterre" or "haleakala" or "adelaide-hills" or "aguascalientes" or "algarve-cliffs" or "alpe-dhuez" or "amsterdam-canals" or "els-angels" or "angkor-temples" or "alto-angliru" or "antwerp-port-sprint" or "arenberg-forest" or "philadelphia-art-museum" or "atacama-desert"))
             {
                 api.Clock.Advance(TimeSpan.FromHours(1));
                 progress.Open(api.Clock.GetUtcNow());
@@ -127,7 +127,8 @@ public sealed class NextRideTests(SignInApi api) : IClassFixture<SignInApi>
             ("alto-angliru", MapStar.All),
             ("antwerp-port-sprint", MapStar.All),
             ("arenberg-forest", MapStar.All),
-            ("philadelphia-art-museum", MapStar.All));
+            ("philadelphia-art-museum", MapStar.All),
+            ("atacama-desert", MapStar.All));
 
         Assert.StartsWith("""nextRideMapId="dolomites";""", await Home(browser));
     }

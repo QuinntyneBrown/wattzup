@@ -92,6 +92,9 @@ import { heldFps } from './held-fps';
 import type { ArtMuseumFlags } from './artmuseum-flags';
 import type { ArtMuseumJoggers } from './artmuseum-joggers';
 import { heldFps } from './held-fps';
+import type { SalarMirage } from './atacama-salt';
+import type { AtacamaWildlife } from './atacama-wildlife';
+import { heldFps } from './held-fps';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -256,6 +259,8 @@ export class CourseRenderer implements WorldRenderer {
     boatHeight: null as number | null,
     flagDisplacement: null as number | null,
     joggerHeight: null as number | null,
+    vicunaHeadHeight: null as number | null,
+    flamingoBillHeight: null as number | null,
     drawCalls: 0,
     triangles: 0,
     metres: 0,
@@ -274,6 +279,9 @@ export class CourseRenderer implements WorldRenderer {
   private readonly convoy: { holder: Group; moto: boolean }[] = [];
   private flags: ArtMuseumFlags | null = null;
   private joggers: ArtMuseumJoggers | null = null;
+  private mirage: SalarMirage | null = null;
+  private salt: Material | null = null;
+  private wildlife: AtacamaWildlife | null = null;
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
   private startRed: Mesh | null = null;
@@ -395,6 +403,19 @@ export class CourseRenderer implements WorldRenderer {
       this.course = new Course(parseCourse(file));
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
+      if (this.course.file.id === 'atacama') {
+        const { atacamaSalt, SalarMirage } = await import('./atacama-salt');
+        if (this.disposed) return false;
+        const { material, crust } = atacamaSalt();
+        this.mirage = new SalarMirage();
+        this.scene.add(this.mirage.mesh);
+        this.disposables.push(this.mirage);
+        this.salt = material;
+        this.disposables.push(crust);
+        // The summit is thirty kilometres away across the salt basin at the start.
+        this.camera.far = 42000;
+        this.camera.updateProjectionMatrix();
+      }
       this.canvas = canvas;
       const clinker = clinkerModule?.clinkerTexture('#8a4a36') ?? null;
       if (clinker) {
@@ -458,6 +479,13 @@ export class CourseRenderer implements WorldRenderer {
         this.joggers = new ArtMuseumJoggers();
         this.scene.add(this.joggers.mesh);
         this.disposables.push(this.joggers);
+      }
+      if (this.course.file.id === 'atacama') {
+        const { AtacamaWildlife } = await import('./atacama-wildlife');
+        if (this.disposed) return false;
+        this.wildlife = new AtacamaWildlife();
+        this.scene.add(this.wildlife.mesh);
+        this.disposables.push(this.wildlife);
       }
       this.rehearse();
       await renderer.compileAsync(this.scene, this.camera, null, (event) =>
@@ -530,6 +558,12 @@ export class CourseRenderer implements WorldRenderer {
     this.riderBatch?.follow();
     this.aim(metres);
     if (this.pave && !frame.reducedMotion) this.camera.position.y += this.pave.wheelRise(metres);
+    this.mirage?.update(
+      you.group.position.x,
+      you.group.position.y,
+      frame.reducedMotion ? 0 : frame.time,
+    );
+    this.wildlife?.update(you.group.position.x, frame.reducedMotion ? 0 : frame.time);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -606,6 +640,9 @@ export class CourseRenderer implements WorldRenderer {
     this.pave = null;
     this.joggers = null;
     this.flags = null;
+    this.wildlife = null;
+    this.salt = null;
+    this.mirage = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.trainingGroup.length = 0;
@@ -652,7 +689,7 @@ export class CourseRenderer implements WorldRenderer {
     const lit = { vertexColors: true, flatShading: true } as const;
     const glow = { vertexColors: true, toneMapped: false } as const;
     const materials: Record<string, Material> = {
-      Land: new MeshLambertMaterial(lit),
+      Land: this.salt ?? new MeshLambertMaterial(lit),
       Solid: new MeshLambertMaterial(lit),
       Leaves: new MeshLambertMaterial({ ...lit, side: DoubleSide }),
       Sea: new MeshLambertMaterial(lit),
@@ -1452,6 +1489,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.boatHeight = this.boats?.mesh.position.y ?? null;
     drawn.flagDisplacement = this.flags?.displacement ?? null;
     drawn.joggerHeight = this.joggers?.height ?? null;
+    drawn.vicunaHeadHeight = this.wildlife?.headHeight ?? null;
+    drawn.flamingoBillHeight = this.wildlife?.billHeight ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

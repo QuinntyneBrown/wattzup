@@ -148,6 +148,32 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
     }
 
     [Fact]
+    public async Task Atacama_keeps_the_thirteen_stages_of_extreme_fat_burning_class()
+    {
+        var map = Assert.Single(await ReadMaps(), m => m.Id == "atacama-desert");
+        Assert.Equal("atacama", map.World);
+        Assert.Equal(21.275, map.DistanceKm);
+        Assert.Equal(15, map.ClimbingM);
+        Assert.Equal(
+            [
+                new Segment("warm-up", 450, 14, 84),
+                new Segment("work", 195, 19, 80),
+                new Segment("recover", 165, 18, 100),
+                new Segment("work", 195, 19, 80),
+                new Segment("recover", 165, 18, 100),
+                new Segment("work", 195, 19, 80),
+                new Segment("recover", 165, 18, 100),
+                new Segment("work", 195, 19, 80),
+                new Segment("recover", 165, 18, 100),
+                new Segment("work", 195, 19, 80),
+                new Segment("recover", 315, 18, 100),
+                new Segment("work", 300, 19, 60),
+                new Segment("cool-down", 300, 13, 80)
+            ],
+            map.Plan.Segments);
+    }
+
+    [Fact]
     public async Task The_catalogue_lists_its_maps_in_unlock_order_without_a_session()
     {
         var maps = await ReadMaps();
@@ -176,6 +202,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Antwerp Port Sprint", 20.9, 18, "Hard", "Scheldt Quays", "Eilandje and the port of Antwerp"),
                 new Listed("Arenberg Forest", 10.725, 34, "Hard", "Trouée d’Arenberg", "Wallers, Hauts-de-France"),
                 new Listed("Philadelphia Art Museum Steps", 8.175, 86, "Hard", "Benjamin Franklin Parkway", "Philadelphia, Pennsylvania"),
+                new Listed("Atacama Desert", 21.275, 15, "Hard", "The salar road", "Antofagasta, Chile"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }
@@ -209,6 +236,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("antwerp-port-sprint", null),
                 ("arenberg-forest", null),
                 ("philadelphia-art-museum", null),
+                ("atacama-desert", null),
             ],
             maps.Select(m => (m.Id, m.UnlockGoal)));
     }
@@ -242,6 +270,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 ("antwerp-port-sprint", null),
                 ("arenberg-forest", null),
                 ("philadelphia-art-museum", null),
+                ("atacama-desert", null),
             ],
             maps.Select(m => (m.Id, m.UnlockMapId)));
     }
@@ -265,7 +294,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         Assert.All(
             maps,
             m => Assert.Equal(
-                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "philadelphia-art-museum" => 1180, "arenberg-forest" => 1500, "antwerp-port-sprint" => 3000, "alto-angliru" => 2400, "angkor-temples" => 3540, "els-angels" => 2400, "amsterdam-canals" => 1200, "alpe-dhuez" => 1200, "algarve-cliffs" => 2400, _ => 1800 },
+                m.Id switch { "ibiza-sunset-strip" => 1200, "sella-ronda" => 1680, "cinqueterre" => 2400, "haleakala" => 2100, "atacama-desert" => 3000, "philadelphia-art-museum" => 1180, "arenberg-forest" => 1500, "antwerp-port-sprint" => 3000, "alto-angliru" => 2400, "angkor-temples" => 3540, "els-angels" => 2400, "amsterdam-canals" => 1200, "alpe-dhuez" => 1200, "algarve-cliffs" => 2400, _ => 1800 },
                 m.Plan.Segments.Sum(s => s.Duration)));
         var oldTown = maps.Single(m => m.Id == "old-town-criterium");
         Assert.Equal(
@@ -284,7 +313,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         var maps = await ReadMaps();
 
         Assert.Equal(
-            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum"],
+            ["prairie", "oldtown", "coast", "docklands", "dolomites", "vicecity", "granite", "ibiza", "sellaronda", "cinqueterre", "haleakala", "adelaide", "aguascalientes", "algarve", "alpe", "amsterdam", "angels", "angkor", "angliru", "antwerp", "arenberg", "artmuseum", "atacama"],
             maps.Select(m => m.World));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}.jpg", m.ThumbnailUrl));
         Assert.All(maps, m => Assert.Equal($"maps/{m.Id}-photo.jpg", m.PhotoUrl));

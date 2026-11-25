@@ -1314,3 +1314,8 @@ import artmuseum as _artmuseum
 
 THEMES['artmuseum'] = _artmuseum.THEME
 SCENERY['artmuseum'] = _artmuseum.scenery
+
+import atacama as _atacama
+
+THEMES["atacama"] = _atacama.THEME
+SCENERY["atacama"] = _atacama.scenery
