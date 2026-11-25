@@ -14,4 +14,9 @@ Caribana separates its skyline from the moving parade. Here the temple and refle
 
 ## Simulated tablet
 
-Run `npm run perf -- 'angkor-tablet\.perf\.ts$' --headed` from the frontend workspace. The benchmark uses WebGL 2, Low, 1024 × 768, DPR 1 and Chromium with 4× CPU throttling. It samples submitted frames for a minute after nine seconds of warm-up. The moat and the South Gate have separate moving samples. Final canopy measurements are pending.
+Run `npm run perf -- 'angkor-tablet\.perf\.ts$' --headed` from the frontend workspace. The benchmark uses WebGL 2, Low, 1024 × 768, DPR 1 and Chromium with 4× CPU throttling. It samples submitted frames for a minute after nine seconds of warm-up. The moat and the South Gate have separate moving samples. Headed Chromium 159.0.8154.6 ran on an Apple M5 Pro with the Metal backend.
+
+| Section | Submitted FPS | Display FPS | p95 interval | Longest interval | Peak draw calls |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Angkor Wat moat | 120.65 | 120.00 | 9.8 ms | 17.1 ms | 16 |
+| South Gate causeway | 120.07 | 119.98 | 9.7 ms | 28.5 ms | 26 |
