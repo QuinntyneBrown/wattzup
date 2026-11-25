@@ -290,6 +290,39 @@ export function goldenGatePark(course: Course) {
     f.add(boat);
     return f;
   });
+  const wheelTemplate = model([
+    [leg, 0xa65b42, 0, 0, 0, 0.055, 0.045, 0.055, 0, 0, Math.PI / 2],
+    [box, 0xebc581, 0.025, 0.016, 0, 0.009, 0.063, 0.014],
+  ]);
+  const skaters = [3043, 3083, 1692, 5585, 6228].map((station, index) => {
+    const lane = 6.3 + (index % 2) * 0.8,
+      frame = at(station, lane),
+      jacket = [0x25828a, 0xb25e51, 0x547398][index % 3]!;
+    const parts: Part[] = [
+      [ball, jacket, 0, 1.21, -0.04, 0.22, 0.31, 0.15, 0.29],
+      [ball, 0xc59c79, 0, 1.67, -0.18, 0.133, 0.16, 0.13],
+      [ball, 0x475460, 0, 1.79, -0.17, 0.148, 0.078, 0.15],
+    ];
+    const wheels: Mesh[] = [];
+    for (const side of [-1, 1]) {
+      parts.push(
+        [ball, 0x39495a, side * 0.14, 0.87, 0.045, 0.095, 0.23, 0.107, -0.27],
+        [ball, 0x414b51, side * 0.18, 0.58, -0.03, 0.08, 0.18, 0.09, 0.21],
+        [ball, 0x354346, side * 0.19, 0.36, 0.012, 0.069, 0.16, 0.08, -0.14],
+        [ball, 0x333b42, side * 0.19, 0.168, -0.054, 0.098, 0.092, 0.195],
+        [ball, jacket, side * 0.255, 1.28, -0.065, 0.078, 0.2, 0.08, -0.42, 0, side * 0.16],
+        [ball, 0xbc9276, side * 0.28, 1.15, -0.2, 0.062, 0.15, 0.059, -0.85],
+      );
+      for (let j = 0; j < 4; j++) {
+        const wheel = wheelTemplate.clone();
+        wheel.position.set(side * 0.19, 0.072, -0.2 + j * 0.094);
+        frame.add(wheel);
+        wheels.push(wheel);
+      }
+    }
+    frame.add(model(parts));
+    return { frame, wheels, station, lane, phase: index * 1.87 };
+  });
   const walkers = new Figures(
     group,
     owned,
@@ -341,6 +374,7 @@ export function goldenGatePark(course: Course) {
     return { station, frame, fog };
   });
   const state = {
+    skateWheel: 0,
     bisonHead: 0,
     sailPosition: 0,
     glassX: Infinity,
@@ -383,6 +417,26 @@ export function goldenGatePark(course: Course) {
     mill.visible = Math.abs(metres - 5700) < 560;
     sails.rotation.z = 0.33 + t * 0.12;
     conservatory.visible = metres < 620;
+    for (const skater of skaters) {
+      const phase = t * 0.16 + skater.phase;
+      skater.frame.visible = Math.abs(skater.station - metres) < 190;
+      if (!skater.frame.visible) continue;
+      const distance = 13 * Math.sin(phase);
+      course.place(
+        skater.station + distance,
+        skater.lane + 0.22 * Math.sin(t * 1.7 + skater.phase),
+        pose,
+      );
+      skater.frame.position.set(pose.x, pose.y + 0.13, pose.z);
+      skater.frame.rotation.set(
+        0,
+        pose.heading + (Math.cos(phase) < 0 ? Math.PI : 0),
+        0.038 * Math.sin(t * 1.7 + skater.phase),
+        'YXZ',
+      );
+      for (const wheel of skater.wheels) wheel.rotation.x = distance / 0.055;
+    }
+    state.skateWheel = skaters[0]!.wheels[0]!.rotation.x;
     let count = 0;
     for (const m of marks) {
       if (Math.abs(m.station - metres) > 146) continue;

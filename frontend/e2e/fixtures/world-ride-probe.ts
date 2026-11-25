@@ -70,7 +70,7 @@ export class WorldRideProbe {
   }
 
   async goldengateMotion(
-    part: 'bisonHead' | 'sailPosition' | 'glassX' | 'millX' | 'surfX',
+    part: 'skateWheel' | 'bisonHead' | 'sailPosition' | 'glassX' | 'millX' | 'surfX',
   ): Promise<number | null> {
     return this.page.evaluate(
       (name) =>

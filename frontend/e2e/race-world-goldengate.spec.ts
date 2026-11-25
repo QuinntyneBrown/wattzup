@@ -8,6 +8,7 @@ import { RaceSetupPage } from './pages/race-setup.page';
 import { RacePage } from './pages/race.page';
 
 for (const [actor, metres, part] of [
+  ['skater on the lakeside path', 3040, 'skateWheel'],
   ['bison grazing in the paddock', 4020, 'bisonHead'],
   ['model yacht sailing on Spreckels Lake', 3040, 'sailPosition'],
 ] as const) {
