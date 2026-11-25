@@ -3598,7 +3598,7 @@ export const letrasCourseMap = {
   place: 'Tolima and Caldas, Colombia',
   world: 'letras',
   distanceKm: 22.15,
-  climbingM: 1319,
+  climbingM: 1156,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },

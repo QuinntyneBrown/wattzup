@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import letras
+
+THEMES['letras'] = letras.THEME
+SCENERY['letras'] = letras.scenery
