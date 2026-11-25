@@ -159,7 +159,7 @@ export const bondiCourseMap = {
   place: 'Sydney, Australia',
   world: 'bondi',
   distanceKm: 6.15,
-  climbingM: 97,
+  climbingM: 95,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },

@@ -56,6 +56,9 @@ def curve(d):
         h+=.75*math.sin((d-centre)/radius*1.72)*math.exp(-((d-centre)/radius)**2)
     for where in (397,4432,6010):
         h-=.62*math.exp(-((d-where)/68)**2)
+    # Look out toward the swimming pool before the track bends back along the cut.
+    for start,apex,end in ((310,399,498),(4310,4420,4545),(5900,6035,6128)):
+        h-=.62*(smooth(start,apex,d)-smooth(apex,end,d))
     return h
 
 
@@ -63,6 +66,11 @@ def height(d):
     z=22+5*math.sin(d/206)+2.8*math.cos(d/92)
     for centre,radius,_ in COVES:z-=13.2*math.exp(-((d-centre)/radius)**2)
     for centre in (483,6093):z-=9.0*math.exp(-((d-centre)/95)**2)
+    # Descend to the swimming-club terrace on a long ramp. The pool can be
+    # seen across the next headland from the saddle, even behind the safety rail.
+    for lo,low,high,end in ((249,433,505,726),(5850,6010,6120,6270)):
+        view=smooth(lo,low,d)*(1-smooth(high,end,d))
+        z+=(8.2-z)*view
     return z
 
 
@@ -96,6 +104,10 @@ def ground(d,l):
     ramp=1-smooth(0,toe*1.04,out)
     cliff=1-smooth(toe*.40,toe*.76,out)
     z=.31+(z-.44)*(ramp*sand(d)+cliff*(1-sand(d)))
+    for lo,hi in ((322,537),(5915,6155)):
+        view=smooth(lo,lo+35,d)*(1-smooth(hi-15,hi+36,d))
+        rim=1.10+(height(d)-1.23)*(1-smooth(0,9.5,out))
+        z+=(min(z,rim)-z)*view
     return z-.12*max(0,out-toe)-.065*math.sin(d*.17+out*.51)
 
 
@@ -173,13 +185,30 @@ def pool(k,art,d,length,width,club):
             u=side*(length*.5-2-j*.25)
             art.box(p(u,width*.5+.11,.16+j*.13),(.27,1.27,.16),a,white)
     if club:
-        art.box(p(-length*.36,width*.5+5,-.36),(17.3,6.9,5.0),a,white)
-        for floor in range(2):
-            for j in range(8):
-                art.box(p(-length*.36-7.4+j*2.06,width*.5+1.47,.56+floor*2.1),(1.66,.14,1.24),a,lin(0x526F78))
-            art.box(p(-length*.36,width*.5+1.29,.35+floor*2.1),(17.8,1.31,.19),a,white)
-        for j in (-1,1):art.box(p(length*.30+j*3.9,width*.5+5,.12),(.58,6.3,.49),a,white)
-        art.box(p(length*.30,width*.5+5,.08),(7.5,6.0,.17),a,lin(0x78C6C1))
+        # Leave the near side of the big pool open. The clubhouse climbs from the
+        # far short end, with wraparound open galleries visible from the clifftop.
+        end=length*.53
+        for floor in range(3):
+            u=end+floor*.71;v=width*.25+floor*.51;up=1.20+floor*2.60
+            art.box(p(u,v,up-.10),(7.1,11.6,.33),a,white)
+            art.box(p(u+.60,v,up+.22),(4.86,9.7,2.16),a,lin(0xD4D6CF))
+            art.box(p(u-1.91,v,up+.49),(.052,9.46,1.59),a,lin(0x486979))
+            for j in range(6):
+                art.box(p(u-3.24,v-5+j*1.95,up+.08),(.145,.15,2.39),a,white)
+                art.box(p(u-1.95,v-4.73+j*1.89,up+.46),(.09,.08,1.66),a,white)
+            for rail in (.65,.93):art.box(p(u-3.25,v,up+rail),(.095,11.2,.065),a,lin(0x80949A))
+            for side in (-1,1):
+                art.box(p(u,v+side*5.49,up+.90),(6.65,.09,.07),a,lin(0x84979B))
+                art.box(p(u+.41,v+side*4.88,up+.58),(4.36,.08,1.30),a,lin(0x557888))
+            art.box(p(u,v,up+2.45),(7.24,11.8,.22),a,white)
+        face=p(end-2.02,width*.25+.85,7.88)
+        art.box(p(end-1.94,width*.25+.85,7.31),(.14,7.4,.91),a,lin(0x4C7180))
+        words(art,'BONDI ICEBERGS',face,(math.sin(a),-math.cos(a),0),(0,0,1),.64,7.05,0xFFF8DA)
+        art.box(p(-length*.31,width*.5+4,.05),(10,6.9,.18),a,lin(0xE3DDCA))
+        art.box(p(-length*.31,width*.5+4,.24),(8.66,5.65,.04),a,lin(0x76C1BF))
+        for j in range(3):
+            art.box(p(-length*.31,width*.5+2.3+j*1.38,.299),(7.9,.10,.018),a,depth)
+
     else:
         for j in range(3):art.box(p(length*.42+j*.56,width*.22,-.19),(1.45,width*.85,.65+j*.16),a,lin(0xC7A583))
 
@@ -219,10 +248,65 @@ def headstones(k,art):
                 art.box(p(0,0,1.04),(.65,.27,.16),a,tint)
 
 
+def placard(k,art,d,l,caption):
+    p,a=origin(k,d,l,ground(d,l));face=-.11
+    for v in (-1.22,1.22):art.box(p(0,v,0),(.14,.13,2.26),a,lin(0x6A7D7A))
+    art.box(p(0,0,1.05),(.19,3.07,1.17),a,lin(0x416A78))
+    art.box(p(face,0,1.12),(.03,2.94,.045),a,lin(0xD6CCA4))
+    words(art,caption,p(face-.02,0,1.78),(math.sin(a),-math.cos(a),0),(0,0,1),.42,2.82,0xFAEDD3)
+
+
+def beachlife(k,art,d,l,seed):
+    p,a=origin(k,d,l,ground(d,l))
+    # Beach umbrellas have alternating triangular panels; swimmers and towels lie beneath.
+    tint=(0xE7A45A,0xBF6351,0x548E98,0xD8BE71)[seed%4]
+    art.tube(p(0,0,-.18),.046,.040,2.29,lin(0x9A8263),lin(0xB39A76),6)
+    top=p(0,0,2.22)
+    for j in range(10):
+        r=1.38;u=j*math.tau/10;v=(j+1)*math.tau/10
+        pts=(top,p(r*math.cos(u),r*math.sin(u),1.74),p(r*math.cos(v),r*math.sin(v),1.74))
+        col=lin(tint if j%2 else 0xE5D6AE)
+        art.face(pts,(col,)*3);art.face(pts[::-1],(col,)*3)
+    art.box(p(1.28,0,.035),(.75,1.66,.04),a,lin(tint))
+    for j in range(2):
+        u=1.73+j*.72;v=.83-j*.46;skin=lin((0xB88664,0x93664D,0xC39879)[(j+seed)%3])
+        art.tube(p(u,v,.03),.16,.16,.62,skin,skin,6)
+        art.tube(p(u,v,.64),.20,.22,.51,lin(tint),lin(tint),7)
+        art.tube(p(u,v,1.15),.13,.12,.26,skin,skin,8)
+
+
+def nearshore(k,art):
+    # Sand showing through shallow water makes the bays distinctly turquoise,
+    # while the outer sheet retains the Pacific reflections.
+    for d in range(-32,6196,8):
+        for band in range(4):
+            points=[];colours=[]
+            for station,j in ((d,band),(d+8,band),(d+8,band+1),(d,band+1)):
+                lane=shore(station)+4+j*(10+.9*math.sin(station/36))+2*math.sin(station/22+j)
+                x,y,_=k.road.pos(station,-lane);points.append((x,y,.045))
+                tints=(0x77C7B8,0x58B9AD,0x43AAA7,0x3C9FA6,0x4596A4)
+                colours.append(lin(tints[j]))
+            art.face(points[::-1],colours[::-1])
+            art.face(points,colours)
+    for c,r,w in COVES:
+        for j in range(16):
+            d=max(2,c-r*.6+r*1.2*j/15)
+            l=-(9+(j*13%max(9,int(shore(d)-14))))
+            beachlife(k,art,d,l,j)
+
+
 def scenery(k):
     art=Painted(k);rng=k.rng
     for i,(d,ln,w) in enumerate(POOLS):pool(k,art,d,ln,w,i==0)
-    club(k,art);headstones(k,art)
+    club(k,art);headstones(k,art);nearshore(k,art)
+    for d,l,title in ((110,3.42,'BONDI BEACH'),(429,3.72,'ICEBERGS'),(2214,-3.3,'TAMARAMA'),(4493,3.72,'WAVERLEY'),(6079,3.62,'BRONTE BATHS')):
+        placard(k,art,d,l,title)
+    for i in range(14):
+        d=4430+i*7.6;l=6.2+1.2*(i%3);p,a=origin(k,d,l,ground(d,l))
+        stone=lin(0xECE7D7)
+        art.box(p(0,0,-.22),(1.4,.77,.56),a,stone)
+        art.box(p(0,0,.32),(.28,.30,2.17),a,stone)
+        art.box(p(0,0,1.86),(1.17,.26,.24),a,stone)
     for d in range(0,6156,4):
         if sand(d)>.79 and not 40<d<213:continue
         lane=-2.30

@@ -55,7 +55,7 @@ export class BondiSurf {
   private readonly breaking = new InstancedMesh(this.sheet, this.foam, 72);
   private readonly rounded = new SphereGeometry(1, 9, 7);
   private readonly fabric = new MeshStandardMaterial({ roughness: 0.86 });
-  private readonly people = new InstancedMesh(this.rounded, this.fabric, 310);
+  private readonly people = new InstancedMesh(this.rounded, this.fabric, 395);
   private count = 0;
   foamAdvance = 0;
   walkerStride = 0;
@@ -63,6 +63,8 @@ export class BondiSurf {
   constructor(private readonly course: Course) {
     this.breaking.frustumCulled = this.people.frustumCulled = false;
     this.group.add(this.breaking, this.people);
+    // Upload the instance colours before the renderer compiles the first frame.
+    this.update(0, 0);
   }
 
   update(metres: number, time: number): void {
@@ -181,7 +183,38 @@ export class BondiSurf {
           0.14 * size,
           skin,
         );
+        const bounce = 0.045 * Math.abs(step);
+        this.shape(
+          0,
+          roadY + (1.76 + bounce) * size,
+          0.014 * size,
+          0.148 * size,
+          0.092 * size,
+          0.152 * size,
+          index % 3 === 0 ? 0xe3d9bd : 0x4c382d,
+        );
+        this.shape(0, roadY + 0.9 * size, 0, 0.18 * size, 0.14 * size, 0.135 * size, 0x36444c);
         for (let side = -1; side <= 1; side += 2) {
+          this.shape(
+            side * 0.21 * size,
+            roadY + (1.36 + bounce) * size,
+            -0.075 * side * step * size,
+            0.082 * size,
+            0.14 * size,
+            0.088 * size,
+            shirt,
+            -side * step * 0.33,
+          );
+          this.shape(
+            side * 0.102 * size,
+            roadY + 0.066 * size,
+            (0.2 * side * step - 0.043) * size,
+            0.08 * size,
+            0.058 * size,
+            0.14 * size,
+            0x7d817c,
+          );
+
           this.shape(
             side * 0.104 * size,
             roadY + 0.57 * size,
