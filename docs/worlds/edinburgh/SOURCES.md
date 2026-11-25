@@ -25,3 +25,7 @@ are Zwift (via ZwiftInsider) and MyWhoosh images, kept for internal reference an
 | game-03.jpg | Zwift: [“Glasgow Crit Circuit” Route Details (Scotland)](https://zwiftinsider.com/route/glasgow-crit-circuit/) (g0053) | © Zwift |
 | game-04.jpg | Zwift: [“Double Espresso” Route Details (Paris)](https://zwiftinsider.com/route/double-espresso/) (g0031) | © Zwift |
 | game-05.jpg | MyWhoosh: [MYWHOOSH POLICE](https://wpcdn-prod.mywhoosh.com/wp-content/uploads/2024/03/MYWHOOSH-POLICE.jpg) (g0743) | © MyWhoosh |
+
+## Original race artwork
+
+The race uses three original generated textures. `edinburgh-setts.webp` depicts damp granite blocks with staggered joints. `edinburgh-tenements.webp` contains four sandstone shopfronts and upper storeys, with sash windows and dark stone closes. `edinburgh-crowds.webp` contains transparent groups of street spectators in August clothing. The numbered photographs above guided the choice of materials, architecture and festival scenes. The show posters and the Heart of Midlothian paving motif are drawn in the renderer.

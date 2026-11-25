@@ -1,3 +1,4 @@
+import type { fringeStreet } from './fringe-street';
 import type { FringePerformers } from './fringe-performers';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
@@ -202,6 +203,7 @@ export class CourseRenderer implements WorldRenderer {
   backend: Backend = 'webgl2';
   private renderer: WebGPURenderer | null = null;
   private course: Course | null = null;
+  private street: Awaited<ReturnType<typeof fringeStreet>> | null = null;
   private fringe: FringePerformers | null = null;
   private disposed = false;
   private readonly scene = new Scene();
@@ -238,6 +240,7 @@ export class CourseRenderer implements WorldRenderer {
   /** What the pinned probe reports of the frame just drawn. */
   private readonly drawn = {
     clubY: null as null | number,
+    spectatorSections: 0,
     torchAngle: null as null | number,
     tier: 0 as number,
     backend: '' as string,
@@ -366,6 +369,17 @@ export class CourseRenderer implements WorldRenderer {
         if (this.disposed) return false;
         this.fringe = new FringePerformers(this.course, this.scene);
         this.disposables.push(this.fringe);
+        const { fringeStreet } = await import('./fringe-street');
+        if (this.disposed) return false;
+        const street = await fringeStreet(this.course);
+        if (this.disposed) {
+          street.dispose();
+          return false;
+        }
+        this.street = street;
+        this.scene.add(street.group);
+        this.disposables.push(street);
+        street.at(0);
       }
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -435,6 +449,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
+    this.street?.at(metres);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -442,7 +457,8 @@ export class CourseRenderer implements WorldRenderer {
     const lights = metres < START_LIGHTS;
     if (this.startRed) this.startRed.visible = lights && frame.time <= 0;
     if (this.startGreen) this.startGreen.visible = lights && frame.time > 0;
-    if (this.rain) this.rain.mesh.visible = !frame.reducedMotion;
+    if (this.rain)
+      this.rain.mesh.visible = !frame.reducedMotion && (!this.street || frame.time % 95 < 34);
     if (!frame.reducedMotion) this.animate(frame.time);
     this.render();
     this.judge();
@@ -491,6 +507,7 @@ export class CourseRenderer implements WorldRenderer {
     this.riderBatch = null;
     this.rain = null;
     this.fringe = null;
+    this.street = null;
     this.shadows.clear();
     this.casting.clear();
     this.lampShadows = null;
@@ -948,6 +965,7 @@ export class CourseRenderer implements WorldRenderer {
     }
     this.riderBatch?.follow();
     this.aim(metres);
+    this.street?.at(metres);
     this.render();
   }
 
@@ -1119,6 +1137,7 @@ export class CourseRenderer implements WorldRenderer {
     }
     drawn.tier = this.tier;
     drawn.backend = this.backend;
+    drawn.spectatorSections = this.street?.spectatorSections ?? 0;
     drawn.clubY = this.fringe?.clubY ?? null;
     drawn.torchAngle = this.fringe?.torchAngle ?? null;
     drawn.drawCalls = renderer.info.render.drawCalls;

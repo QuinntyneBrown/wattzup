@@ -54,3 +54,30 @@ for (const [actor, metres, part] of [
     await expect.poll(() => worldRide.fringeMotion(part)).not.toBe(held);
   });
 }
+
+test('the High Street pitch has spectators on the loaded street when the race starts', async ({
+  api,
+  bluetooth,
+  page,
+  worldRide,
+}) => {
+  api.answer('GET', '/api/maps', [edinburghCourseMap]);
+  api.answer('GET', '/api/progress', {
+    ...newRiderProgress,
+    openMapIds: [edinburghCourseMap.id],
+  });
+  await worldRide.pin('low', 'webgl2');
+  await bluetooth.remember(echelonBike);
+  const race = new RacePage(page);
+  const maps = new MapSelectPage(page);
+  await maps.open();
+  await worldRide.startAt(2570);
+  const row = maps.row(edinburghCourseMap.name);
+  await row.root.click();
+  const setup = new RaceSetupPage(page);
+  await setup.mode('Your best time').click();
+  await setup.start.click();
+  await expect(race.backend).toBeVisible();
+
+  await expect.poll(() => worldRide.fringeMotion('spectatorSections')).toBeGreaterThan(0);
+});

@@ -103,7 +103,7 @@ export class WorldRideProbe {
     }, metres);
   }
 
-  async fringeMotion(part: 'clubY' | 'torchAngle'): Promise<number | null> {
+  async fringeMotion(part: 'clubY' | 'torchAngle' | 'spectatorSections'): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
         (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide

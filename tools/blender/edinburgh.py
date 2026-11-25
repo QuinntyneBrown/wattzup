@@ -137,7 +137,7 @@ def scenery(k):
     return {'efforts':0}
 
 
-THEME=dict(lay=lay,road_builder=pavement,land_builder=land,road_half_width=7.45,wet=.38,
+THEME=dict(lay=lay,road_builder=pavement,land_builder=land,road_half_width=7.45,wet=.38,rain=.22,
            terrain={'sea':False},land={'mid':0x596550},sky=[0xd2cbc0,0xc7ccca,0xaebdc8,0x91a7b8,0x8197ad],
            haze=0xc8c9c8,palette={'asphalt':0x57585b,'sea':0x596550},light=[0xffefcf,2.35],
            fill=[0xd1dce6,0x737271],sun_azimuth=2.25,sun_altitude=.66)
