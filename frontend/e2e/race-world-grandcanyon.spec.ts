@@ -53,3 +53,31 @@ for (const [actor, metres, part] of [
     await expect.poll(() => worldRide.grandcanyonMotion(part)).not.toBe(held);
   });
 }
+
+for (const [feature, metres, point] of [
+  ['Grandview temple', 2050, 'templeX'],
+  ['Desert View Watchtower', 13240, 'towerX'],
+] as const) {
+  test('the rim approach frames the ' + feature, async ({ api, bluetooth, page, worldRide }) => {
+    api.answer('GET', '/api/maps', [grandcanyonCourseMap]);
+    api.answer('GET', '/api/progress', {
+      ...newRiderProgress,
+      openMapIds: [grandcanyonCourseMap.id],
+    });
+    await worldRide.pin('low', 'webgl2');
+    await bluetooth.remember(echelonBike);
+    const race = new RacePage(page);
+    const maps = new MapSelectPage(page);
+    await maps.open();
+    await worldRide.startAt(metres);
+    const row = maps.row(grandcanyonCourseMap.name);
+    await row.root.click();
+    const setup = new RaceSetupPage(page);
+    await setup.mode('Your best time').click();
+    await setup.start.click();
+    await expect(race.backend).toBeVisible();
+    await expect
+      .poll(async () => Math.abs((await worldRide.grandcanyonMotion(point)) ?? Infinity))
+      .toBeLessThan(0.43);
+  });
+}

@@ -110,6 +110,9 @@ const SHADOW_WIDTH = 0.8;
 const DRAW_DISTANCE: Readonly<Record<string, number>> = {
   Land: 950,
   CanyonStrata: 5800,
+  GrandviewTemple: 5800,
+  FarRim: 6900,
+  Watchtower: 950,
   Ground: 420,
   Solid: 250,
   Walls: 220,
@@ -634,13 +637,14 @@ export class CourseRenderer implements WorldRenderer {
     materials['Halos'] = haloMaterial(DRAW_DISTANCE['Halos']! * 0.6, DRAW_DISTANCE['Halos']!);
     this.disposables.push(materials['Fences'], materials['Halos']);
     this.beams = materials['Beams'] as MeshBasicMaterial;
-    if (this.canyon) materials['CanyonStrata'] = this.canyon.cliff;
+    if (this.canyon) Object.assign(materials, this.canyon.materials);
     const painted: Mesh[] = [];
     map.traverse((part) => {
       const mesh = part as Mesh;
       if (!mesh.isMesh) return;
       // A chunk is named for its group and its place along the road: `Solid_012`.
       const [group = '', chunk] = mesh.name.split('_');
+      this.canyon?.landmark(group, mesh);
       const material = materials[group];
       if (!material) return;
       for (const loaded of [mesh.material].flat()) loaded.dispose();
@@ -652,7 +656,8 @@ export class CourseRenderer implements WorldRenderer {
         return;
       }
       // The ground is lit smoothly: its normals are worked out here, so the map's file carries none.
-      if (group === 'Ground') mesh.geometry.computeVertexNormals();
+      if (group === 'Ground' || group === 'GrandviewTemple' || group === 'CanyonStrata')
+        mesh.geometry.computeVertexNormals();
       // The map is set once and never moves: its matrices are worked out here, not every frame.
       mesh.matrixAutoUpdate = false;
       mesh.updateMatrix();
@@ -1122,7 +1127,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
-    if (this.canyon) Object.assign(drawn, this.canyon.state);
+    if (this.canyon) Object.assign(drawn, this.canyon.measure(this.camera));
     hook['course'] = drawn;
   }
 

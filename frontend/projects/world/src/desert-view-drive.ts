@@ -3,6 +3,7 @@ import {
   distance,
   mix,
   positionWorld,
+  normalWorld,
   sin,
   smoothstep,
   texture,
@@ -12,6 +13,10 @@ import {
 } from 'three/tsl';
 import {
   BoxGeometry,
+  Box3,
+  Vector3,
+  type Camera,
+  MirroredRepeatWrapping,
   CylinderGeometry,
   DoubleSide,
   Group,
@@ -40,13 +45,45 @@ export function desertViewDrive(course: Course) {
   const light = sin(positionWorld.x.mul(0.0028).add(positionWorld.z.mul(0.004)).add(shadowOffset))
     .mul(0.18)
     .add(0.88);
-  const relief = texture(grain).rgb.mul(0.62).add(0.56).mul(vertexColor().rgb).mul(light).mul(1.34);
+  const sunlight = normalWorld
+    .dot(vec3(-0.71, 0.55, -0.43))
+    .mul(0.48)
+    .add(0.85);
+  const relief = texture(grain)
+    .rgb.mul(1.87)
+    .add(0.085)
+    .mul(vertexColor().rgb)
+    .mul(light)
+    .mul(sunlight);
   cliff.colorNode = mix(
     relief,
     vec3(0.56, 0.39, 0.39),
     smoothstep(520, 3650, distance(cameraPosition, positionWorld)).mul(0.59),
   );
   owned.push(grain, cliff);
+  const photograph = new TextureLoader().load('courses/grandcanyon-north-rim.webp');
+  photograph.colorSpace = SRGBColorSpace;
+  photograph.wrapS = MirroredRepeatWrapping;
+  photograph.anisotropy = 4;
+  const far = new MeshBasicMaterial({ map: photograph, fog: false, side: DoubleSide });
+  const stone = new MeshBasicMaterial({ vertexColors: true, side: DoubleSide });
+  owned.push(photograph, far, stone);
+  const marks = new Map<string, Vector3>(),
+    projected = new Vector3();
+  function landmark(kind: string, mesh: Mesh) {
+    if (!['GrandviewTemple', 'Watchtower'].includes(kind)) return;
+    const box = new Box3().setFromObject(mesh, true),
+      target = box.getCenter(new Vector3());
+    target.y = box.max.y - (kind === 'Watchtower' ? 6 : 16);
+    const prev = marks.get(kind);
+    if (!prev || target.y > prev.y) marks.set(kind, target);
+  }
+  function screenX(kind: string, camera: Camera) {
+    const target = marks.get(kind);
+    if (!target) return Infinity;
+    projected.copy(target).project(camera);
+    return Math.abs(projected.z) <= 1 ? projected.x : Infinity;
+  }
   const body = new Group(),
     box = new BoxGeometry(1, 1, 1),
     tyre = new CylinderGeometry(0.49, 0.49, 0.23, 14);
@@ -145,7 +182,7 @@ export function desertViewDrive(course: Course) {
     return { mesh, anchor, phase: i * 1.88 };
   });
   const position = course.place(0);
-  const state = { shuttleMetres: 0, cloudShadow: 0 };
+  const state = { shuttleMetres: 0, cloudShadow: 0, templeX: Infinity, towerX: Infinity };
   function update(seconds: number, metres: number, reduced: boolean) {
     const t = reduced ? 0 : seconds;
     shadowOffset.value = t * 0.043;
@@ -168,9 +205,14 @@ export function desertViewDrive(course: Course) {
   update(0, 0, false);
   return {
     group,
-    state,
+    landmark,
+    measure(camera: Camera) {
+      state.templeX = screenX('GrandviewTemple', camera);
+      state.towerX = screenX('Watchtower', camera);
+      return state;
+    },
     update,
-    cliff,
+    materials: { CanyonStrata: cliff, GrandviewTemple: cliff, Watchtower: stone, FarRim: far },
     dispose() {
       group.removeFromParent();
       for (const item of owned) item.dispose();

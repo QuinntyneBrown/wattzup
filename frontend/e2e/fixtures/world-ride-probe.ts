@@ -61,7 +61,9 @@ export class WorldRideProbe {
     }, metres);
   }
 
-  async grandcanyonMotion(part: 'shuttleMetres' | 'cloudShadow'): Promise<number | null> {
+  async grandcanyonMotion(
+    part: 'shuttleMetres' | 'cloudShadow' | 'templeX' | 'towerX',
+  ): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
         (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide
