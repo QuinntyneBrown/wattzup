@@ -45,7 +45,7 @@ def terrain(road,col,theme,bc):
     return b.build(col),land_height
 
 THEME={'lay':lay,'land_builder':terrain,'land':{'mid':0xD8CCBA},'terrain':{'sea':False},
-       'edge':'salt','centre':'white','kerbs':False,'sky':[0xB8CAD4,0x729FC7,0x347BB6,0x205B9D,0x1C467E],
+       'effort_chevrons':False,'edge':'salt','centre':'white','kerbs':False,'sky':[0xB8CAD4,0x729FC7,0x347BB6,0x205B9D,0x1C467E],
        'haze':0xB5B8C4,'light':[0xFFE7C2,3.65],'fill':[0xBDD4F0,0xC4A88D],'sun_altitude':.52,'sun_azimuth':2.63,
        'palette':{'asphalt':0x5E5C62,'promenade':0xAA9988,'sand':0xC9BDA9}}
 
@@ -123,7 +123,27 @@ def fauna(art,x,y,scale,angle):
 def scenery(k):
     art=Painted(k);far=Painted(k,'peaks');r=k.rng
     for i,(x,y,rad,h) in enumerate(((28500,2900,4200,2570),(30200,-6800,4200,1770),(30700,-12300,5300,1890),(29300,9100,4050,1710),(31500,14200,4900,2060),(25600,-17600,4900,1300))):
-        volcano(far,x,y,rad,h,i!=1,.7*i)
+        if i==0:volcano(far,x,y,rad,h,True,.7*i)
+        else:
+            # A broad caldera, separate summits and low saddles flank Licancabur.
+            for n in range(3):
+                volcano(far,x+870*n,y+(n-1)*rad*.42,rad*(.76+.14*n),h*(.36+.16*((n+i)%3)),i%2==0 and n==1,.7*i+n)
+
+    # An unbroken salt-pan horizon in front of mountains thirty kilometres off.
+    for j in range(58):
+        y=(j-29)*970;yn=y+970
+        h1=265+90*math.sin(j*.8)+125*math.sin(j*1.31)
+        h2=265+90*math.sin((j+1)*.8)+125*math.sin((j+1)*1.31)
+        far.face(((28750,y,-35),(28750,yn,-35),(28750,yn,h2),(28750,y,h1)),(lin(0xAF9390),)*4)
+    # Paint a genuinely cloudless sky, following the same camera-centred sky path as Ibiza.
+    sky=Painted(k,'sky')
+    layers=((-0.12,0xA5A6BD),(0,0xA7B8CB),(.065,0x6F9AC1),(.18,0x427EAE),(.40,0x24669E),(.71,0x17518E),(1,0x20447D))
+    for (a,ca),(b,cb) in zip(layers,layers[1:]):
+        for j in range(56):
+            def pos(h,n):
+                t=n*math.tau/56;rr=8200*math.sqrt(1-h*h)
+                return (rr*math.cos(t),rr*math.sin(t),8200*h)
+            sky.face((pos(a,j),pos(a,j+1),pos(b,j+1),pos(b,j)),(lin(ca),lin(ca),lin(cb),lin(cb)))
     lagoons(art)
     for x,y,l,h in ((-150,190,620,34),(560,194,730,43),(1600,255,1180,48),(3680,-185,720,47),(4220,-103,750,71),(4730,96,790,64),(5250,-89,790,88),(5850,143,820,56),(6600,-165,880,67),(7850,280,680,40),(10400,-225,1300,74),(15500,230,1200,63),(18650,-130,960,71)):
         ridge(art,x,y,l,h,r.uniform(0,5))
@@ -140,7 +160,7 @@ def scenery(k):
                     a=r.uniform(0,math.tau);w=r.uniform(.12,.29);h=r.uniform(.39,.74);z=land_height(s,y)
                     f=((s-w,y,z),(s+w,y,z),(s+.46*math.cos(a),y+.46*math.sin(a),z+h))
                     co=lin(r.choice((0xC2A766,0xAC9157,0xD7BD77)))
-                    art.face(f,(co,)*3);art.face(f[::-1],(co,)*3)
+                    art.face(f,(co,)*3)
     for x,y in ((2060,13),(2084,21),(2091,18),(8135,-15),(8160,-21),(8580,-18),(11230,29),(17190,15)):
         fauna(art,x,y,r.uniform(.92,1.15),r.uniform(-1.4,1.4))
     return {'efforts':0}

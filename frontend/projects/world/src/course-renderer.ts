@@ -81,6 +81,7 @@ import { RiderShadows } from './rider-shadows';
 import { wallMaterial } from './wall-material';
 import { waterMaterial } from './water-material';
 import { windowMaterial } from './window-material';
+import type { AtacamaFlamingos } from './atacama-flamingos';
 import { heldFps } from './held-fps';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
@@ -237,10 +238,13 @@ export class CourseRenderer implements WorldRenderer {
   private readonly drawn = {
     tier: 0 as number,
     backend: '' as string,
+    flamingoBillHeight: null as number | null,
     drawCalls: 0,
     triangles: 0,
     groups: {} as Record<string, number>,
   };
+  private salt: Material | null = null;
+  private flamingos: AtacamaFlamingos | null = null;
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
   private startRed: Mesh | null = null;
@@ -356,6 +360,11 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       if (this.course.file.id === 'atacama') {
+        const { atacamaSalt } = await import('./atacama-salt');
+        if (this.disposed) return false;
+        const { material, crust } = atacamaSalt();
+        this.salt = material;
+        this.disposables.push(crust);
         // The summit is thirty kilometres away across the salt basin at the start.
         this.camera.far = 42000;
         this.camera.updateProjectionMatrix();
@@ -364,6 +373,13 @@ export class CourseRenderer implements WorldRenderer {
       this.build(gltf.scene, canvas);
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
+      if (this.course.file.id === 'atacama') {
+        const { AtacamaFlamingos } = await import('./atacama-flamingos');
+        if (this.disposed) return false;
+        this.flamingos = new AtacamaFlamingos();
+        this.scene.add(this.flamingos.mesh);
+        this.disposables.push(this.flamingos);
+      }
       this.rehearse();
       await renderer.compileAsync(this.scene, this.camera, null, (event) =>
         options.progress?.({
@@ -430,6 +446,7 @@ export class CourseRenderer implements WorldRenderer {
     this.lampShadows?.end();
     this.riderBatch?.follow();
     this.aim(metres);
+    this.flamingos?.update(you.group.position.x, frame.reducedMotion ? 0 : frame.time);
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -476,6 +493,8 @@ export class CourseRenderer implements WorldRenderer {
     this.confetti.length = 0;
     this.funivia = null;
     this.glider = null;
+    this.flamingos = null;
+    this.salt = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.riders.clear();
@@ -505,7 +524,7 @@ export class CourseRenderer implements WorldRenderer {
     const lit = { vertexColors: true, flatShading: true } as const;
     const glow = { vertexColors: true, toneMapped: false } as const;
     const materials: Record<string, Material> = {
-      Land: new MeshLambertMaterial(lit),
+      Land: this.salt ?? new MeshLambertMaterial(lit),
       Solid: new MeshLambertMaterial(lit),
       Leaves: new MeshLambertMaterial({ ...lit, side: DoubleSide }),
       Sea: new MeshLambertMaterial(lit),
@@ -1110,6 +1129,7 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.flamingoBillHeight = this.flamingos?.billHeight ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

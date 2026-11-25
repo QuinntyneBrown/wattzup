@@ -104,4 +104,18 @@ export class WorldRideProbe {
           ?.report ?? null) as WorldRideReport | null,
     );
   }
+  /** Start at a physical viewpoint after Map Select is open and before the course loads. */
+  async startAt(metres: number): Promise<void> {
+    await this.page.evaluate((from) => {
+      (window as unknown as { __wzWorldRide: { from: number } }).__wzWorldRide.from = from;
+    }, metres);
+  }
+  /** Height of a feeding flamingo’s bill at Chaxa. */
+  async flamingoBillHeight(): Promise<number | null> {
+    return this.page.evaluate(
+      () =>
+        (window as unknown as { __wzWorldRide?: { course?: { flamingoBillHeight?: number } } })
+          .__wzWorldRide?.course?.flamingoBillHeight ?? null,
+    );
+  }
 }
