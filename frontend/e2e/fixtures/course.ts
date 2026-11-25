@@ -1,3 +1,4 @@
+import bealachElevation from './bealach-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -158,11 +159,12 @@ export const bealachCourseMap = {
   place: 'Wester Ross, Scotland',
   world: 'bealach',
   distanceKm: 9.05,
-  climbingM: 626,
+  climbingM: 623,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
     roll: 0,
+    elevation: bealachElevation,
   },
   thumbnailUrl: 'maps/bealach-na-ba.jpg',
   photoUrl: 'maps/bealach-na-ba-photo.jpg',
