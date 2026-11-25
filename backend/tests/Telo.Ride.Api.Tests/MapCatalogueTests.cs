@@ -2103,7 +2103,7 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
                 new Listed("Independence Pass", 15.2, 897, "Brutal", "Highway 82", "The Roaring Fork and the Continental Divide, Colorado"),
                 new Listed("Isle of Man Mountain Course", 8.133, 206, "Hard", "The Mountain Course", "The A18, the Bungalow and Creg-ny-Baa"),
                 new Listed("Iten, Kenya", 17.86, 378, "Hard", "The red-dirt road", "Iten and the Kerio Valley, Kenya"),
-                new Listed("Joshua Tree", 23.625, 90, "Hard", "Park Boulevard", "Joshua Tree National Park, California"),
+                new Listed("Joshua Tree", 23.625, 272, "Hard", "Park Boulevard", "Joshua Tree National Park, California"),
             ],
             maps.Select(m => new Listed(m.Name, m.DistanceKm, m.ClimbingM, m.Rating, m.RouteName, m.Place)));
     }

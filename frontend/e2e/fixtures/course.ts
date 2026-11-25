@@ -3598,7 +3598,7 @@ export const joshuaTreeCourseMap = {
   place: 'Joshua Tree National Park, California',
   world: 'joshuatree',
   distanceKm: 23.625,
-  climbingM: 90,
+  climbingM: 272,
   rating: 'Hard',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },

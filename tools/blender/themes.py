@@ -1552,3 +1552,7 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+import joshuatree as _joshuatree
+
+THEMES['joshuatree'] = _joshuatree.THEME
+SCENERY['joshuatree'] = _joshuatree.scenery
