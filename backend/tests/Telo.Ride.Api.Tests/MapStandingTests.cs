@@ -63,13 +63,13 @@ public sealed class MapStandingTests(SignInApi api) : IClassFixture<SignInApi>
     {
         using var browser = await SignedIn("ivy.maps@example.com");
         Assert.Equal(
-            """openMapIds=["prairie-paceline","old-town-criterium","ibiza-sunset-strip","sella-ronda","cinqueterre","haleakala"];nextUnlockId="cliffside-coast";stars={};bestTimeSeconds={}""",
+            """openMapIds=["prairie-paceline","old-town-criterium","ibiza-sunset-strip","sella-ronda","cinqueterre","haleakala","brooklyn-bridge-commute"];nextUnlockId="cliffside-coast";stars={};bestTimeSeconds={}""",
             await Maps(browser));
 
         using var _ = await browser.PostAsJsonAsync("/api/rides", RideBodies.RaceIn(Guid.NewGuid(), 1800), Cancel);
 
         Assert.Equal(
-            """openMapIds=["prairie-paceline","old-town-criterium","neon-docklands","ibiza-sunset-strip","sella-ronda","cinqueterre","haleakala"];nextUnlockId="cliffside-coast";stars={"old-town-criterium":2};bestTimeSeconds={"old-town-criterium":1800}""",
+            """openMapIds=["prairie-paceline","old-town-criterium","neon-docklands","ibiza-sunset-strip","sella-ronda","cinqueterre","haleakala","brooklyn-bridge-commute"];nextUnlockId="cliffside-coast";stars={"old-town-criterium":2};bestTimeSeconds={"old-town-criterium":1800}""",
             await Maps(browser));
     }
 
