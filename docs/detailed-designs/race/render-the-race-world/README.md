@@ -215,3 +215,18 @@ built-in world in place and the panel says so.
   `'wasm-unsafe-eval'` in the Content Security Policy (L2-131 AC1).
 - **Vice City has no world on `main`.** Its race draws South Beach Sunrise, whose terrain its
   catalogue entry already takes (slice 7.3), until a Vice City world is built.
+
+## Furka Pass (#2122)
+
+The class supplies repeated bends, effort grades and crisp alpine light. The catalogue has no Furka Pass race. Lay out a 20.025 km climb that starts at 1,757 m in Gletsch and finishes at 2,429 m. Retain the 15 stages and 45:00 duration of GCN’s 45 Minute VO2 Max Intervals. Place the hotel on the inside of the hairpin and establish the glacier basin on its own downhill terrain.
+
+| Rider viewpoint | Composition and reference |
+| --- | --- |
+| Gletsch, 0.08 km | Gletsch’s white chapel, stone hotel and road junction frame the valley-floor start. Real 09–11 and 13, games 01 and 04. |
+| Pasture, 2.46 km | Cows graze on flowered pasture beside the lower stone kerbs. Real 08–09 and 13, game 04. |
+| Hairpins, 6.72 km | Low walls trace the stack of switchbacks below the granite and snowfields. Real 03, 05, 08–10 and 12, games 02–03. |
+| Belvedere, 12.28 km | The rounded red gallery of the shuttered Hotel Belvédère stands inside the hairpin. Real 01–02 and 06, games 04–05. |
+| Glacier, 14.46 km | The fractured Rhône ice tongue, white protective blankets and meltwater lake lie below the road. Real 04, 06, 11 and 15, games 01–03. |
+| Summit, 19.72 km | A yellow pass sign and delineators mark 2,429 m below the bare peaks. Real 05, 07, 12 and 14, games 02 and 05. |
+
+Stage the nearest delineators and coping stones in front of the hotel and glacier basin, with Galenstock and Dammastock in fixed world positions like Caribana’s tower and skyline. Keep the hairpin arms clear of each other’s terrain. Draw the blanket seams, ice tongue and meltwater as separate surfaces so the rider can read their relationships on Low. The yellow postbus follows the actual turning road. Cows graze on the lower slopes and cloud rises from below. Tie motion to ride time, hold it on pause and honour reduced motion. Load and release each course-specific asset with its scene. Follow ADRs 0021, 0023, 0030, 0034 and 0035. Sample submitted frames after nine seconds of warm-up at Gletsch and the Belvédère bend.
