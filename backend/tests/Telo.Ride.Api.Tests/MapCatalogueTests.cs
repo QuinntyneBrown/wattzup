@@ -18,6 +18,11 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
         Assert.Equal("angliru", map.World);
         Assert.Equal(17.625, map.DistanceKm);
         Assert.Equal(1102, map.ClimbingM);
+        var heights = Assert.IsAssignableFrom<IReadOnlyList<double>>(map.Terrain.Elevation);
+        Assert.Equal(map.ClimbingM, Math.Round(heights[^1] - heights[0]));
+        var step = map.DistanceKm * 1000 / (heights.Count - 1);
+        var crux = (int)(14975 / step);
+        Assert.Equal(23.5, 100 * (heights[crux + 1] - heights[crux]) / step, 1);
         Assert.Equal(
             [
                 new Segment("warm-up", 60, 11, 80),
@@ -226,5 +231,5 @@ public sealed class MapCatalogueTests(TeloRideApiFactory api) : IClassFixture<Te
 
     private sealed record Segment(string Kind, int Duration, int Level, int CadenceAim);
 
-    private sealed record CatalogueTerrain(IReadOnlyDictionary<string, double> Grade, double Roll);
+    private sealed record CatalogueTerrain(IReadOnlyDictionary<string, double> Grade, double Roll, IReadOnlyList<double>? Elevation);
 }

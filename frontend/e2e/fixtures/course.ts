@@ -1,3 +1,4 @@
+import angliruElevation from './angliru-elevation.json';
 // A map whose world is built as a course (ADR 0034): Ibiza Sunset Strip as the catalogue serves it
 // (backend/src/Telo.Ride.Infrastructure/Catalogue/maps.json), with the plan of the class it is modelled after, GCN's
 // Intervals to the Beat. A spec serves it through `startRace`'s `catalogue`.
@@ -159,6 +160,7 @@ export const angliruCourseMap = {
   world: 'angliru',
   distanceKm: 17.625,
   climbingM: 1102,
+  terrain: { ...haleakalaCourseMap.terrain, elevation: angliruElevation },
   thumbnailUrl: 'maps/alto-angliru.jpg',
   photoUrl: 'maps/alto-angliru-photo.jpg',
   plan: {

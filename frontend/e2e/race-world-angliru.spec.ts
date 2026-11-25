@@ -1,7 +1,8 @@
 // L2-064. The flag at the lower climb flutters with the race clock.
 import { newRiderProgress } from './fixtures/api';
 import { angliruCourseMap } from './fixtures/course';
-import { echelonBike } from './fixtures/echelon';
+import { ECHELON_NOTIFY, resistanceFrame, workoutFrame, echelonBike } from './fixtures/echelon';
+import { startRace } from './fixtures/race';
 import { expect, test } from './fixtures/test';
 import { MapSelectPage } from './pages/map-select.page';
 import { RaceSetupPage } from './pages/race-setup.page';
@@ -48,4 +49,22 @@ test('the Asturian flag flutters beside the climb and rests on pause', async ({
   expect(await worldRide.asturiasFlagAngle()).toBe(held);
   await race.resume.click();
   await expect.poll(() => worldRide.asturiasFlagAngle()).not.toBe(held);
+});
+
+test('the route panel reaches 23.5% on the concrete ramp by ridden distance', async ({
+  page,
+  bluetooth,
+  api,
+}) => {
+  const race = await startRace(page, bluetooth, api, angliruCourseMap.id, 'mode=solo', {
+    catalogue: [angliruCourseMap],
+  });
+  await expect(race.grade).toHaveText('+3.2%');
+  await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(18));
+  for (let second = 0; second < 1300; second++) {
+    if (parseFloat((await race.distance.textContent())!) >= 14.94) break;
+    await bluetooth.notify(ECHELON_NOTIFY, workoutFrame(90));
+    await page.clock.fastForward(1000);
+  }
+  await expect(race.grade).toHaveText('+23.5%');
 });
