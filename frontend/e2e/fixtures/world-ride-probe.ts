@@ -61,7 +61,9 @@ export class WorldRideProbe {
     }, metres);
   }
 
-  async goldengateMotion(part: 'bisonHead' | 'sailPosition'): Promise<number | null> {
+  async goldengateMotion(
+    part: 'bisonHead' | 'sailPosition' | 'glassX' | 'millX' | 'surfX',
+  ): Promise<number | null> {
     return this.page.evaluate(
       (name) =>
         (window as unknown as { __wzWorldRide?: { course?: Record<string, number> } }).__wzWorldRide

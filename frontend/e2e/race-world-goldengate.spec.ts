@@ -53,3 +53,32 @@ for (const [actor, metres, part] of [
     await expect.poll(() => worldRide.goldengateMotion(part)).not.toBe(held);
   });
 }
+
+for (const [feature, metres, point] of [
+  ['Conservatory of Flowers', 80, 'glassX'],
+  ['Dutch Windmill', 5550, 'millX'],
+  ['Ocean Beach breakers', 6220, 'surfX'],
+] as const) {
+  test('the approach frames the ' + feature, async ({ api, bluetooth, page, worldRide }) => {
+    api.answer('GET', '/api/maps', [goldengateCourseMap]);
+    api.answer('GET', '/api/progress', {
+      ...newRiderProgress,
+      openMapIds: [goldengateCourseMap.id],
+    });
+    await worldRide.pin('low', 'webgl2');
+    await bluetooth.remember(echelonBike);
+    const race = new RacePage(page);
+    const maps = new MapSelectPage(page);
+    await maps.open();
+    await worldRide.startAt(metres);
+    const row = maps.row(goldengateCourseMap.name);
+    await row.root.click();
+    const setup = new RaceSetupPage(page);
+    await setup.mode('Your best time').click();
+    await setup.start.click();
+    await expect(race.backend).toBeVisible();
+    await expect
+      .poll(async () => Math.abs((await worldRide.goldengateMotion(point)) ?? Infinity))
+      .toBeLessThan(0.47);
+  });
+}

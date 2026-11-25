@@ -1120,7 +1120,7 @@ export class CourseRenderer implements WorldRenderer {
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;
     drawn.triangles = renderer.info.render.triangles;
-    if (this.park) Object.assign(drawn, this.park.state);
+    if (this.park) Object.assign(drawn, this.park.measure(this.camera));
     hook['course'] = drawn;
   }
 

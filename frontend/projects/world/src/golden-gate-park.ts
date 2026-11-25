@@ -1,5 +1,7 @@
 import {
   BoxGeometry,
+  type Camera,
+  Vector3,
   BufferGeometry,
   Color,
   CylinderGeometry,
@@ -155,7 +157,7 @@ export function goldenGatePark(course: Course) {
   const glass = new MeshBasicMaterial({ map: glassMap, alphaTest: 0.46, side: DoubleSide });
   const frontGeometry = new PlaneGeometry(61, 20.35);
   const front = new Mesh(frontGeometry, glass),
-    conservatory = at(258, 46);
+    conservatory = at(205, 40);
   front.position.set(0, 10.25, 3.4);
   conservatory.add(front);
   owned.push(glassMap, glass, frontGeometry);
@@ -176,7 +178,7 @@ export function goldenGatePark(course: Course) {
     [sailGeometry, 0xf1f2e6, 0, 0.15, 0, 1, 1, 1],
   ]);
   const boats = Array.from({ length: 10 }, (_, i) => {
-    const frame = at(3120, 47);
+    const frame = at(3150, 40);
     const hull = yacht.clone();
     frame.add(hull);
     return { frame, hull, along: (i - 4.5) * 10, lane: ((i % 3) - 1) * 13, phase: i * 1.61 };
@@ -187,7 +189,7 @@ export function goldenGatePark(course: Course) {
     [ball, 0xdbae60, 0, 0.32, -0.38, 0.09, 0.05, 0.12],
   ]);
   const ducks = Array.from({ length: 9 }, (_, i) => {
-    const frame = at(3120, 47),
+    const frame = at(3150, 40),
       bird = duck.clone();
     frame.add(bird);
     return { frame, bird, phase: i * 0.71 };
@@ -205,9 +207,67 @@ export function goldenGatePark(course: Course) {
     for (let j = 0; j < 15; j++) beam(1.08, 3.1 + j * 0.72, 2.18, 0.12, 0xdbd8c1);
   }
   const sails = model(fanParts),
-    mill = at(5700, -26);
+    mill = at(5670, -23);
   sails.position.set(0, 16.6, 4.65);
   mill.add(sails);
+  const beach = course.place(course.length);
+  const foamMap = canvasTexture(256, 64, (g) => {
+    const random = seeded(21301);
+    g.clearRect(0, 0, 256, 64);
+    for (let i = 0; i < 950; i++) {
+      const x = random() * 256,
+        u = x / 256,
+        mid = 29 + 7 * Math.sin(u * 12.56) + 4 * Math.sin(u * 31.4);
+      g.fillStyle = 'rgba(247,250,234,' + (0.2 + random() * 0.57) + ')';
+      g.beginPath();
+      g.ellipse(x, mid + random() * 8, 1 + random() * 5, 0.7 + random() * 2.2, 0, 0, Math.PI * 2);
+      g.fill();
+    }
+  });
+  const foamMaterial = new MeshBasicMaterial({
+    map: foamMap,
+    transparent: true,
+    depthWrite: false,
+    side: DoubleSide,
+  });
+  const foamGeometry = new PlaneGeometry(52, 9);
+  owned.push(foamGeometry, foamMap, foamMaterial);
+  const surf = new Group();
+  group.add(surf);
+  surf.position.set(beach.x + 70, 1.7, beach.z);
+  const waves = Array.from({ length: 42 }, (_, i) => {
+    const mesh = new Mesh(foamGeometry, foamMaterial);
+    mesh.rotation.set(-Math.PI / 2, 0, Math.PI / 2);
+    mesh.position.set((i % 3) * 12, 0, (Math.floor(i / 3) - 6) * 46);
+    surf.add(mesh);
+    return mesh;
+  });
+  const rock = model([
+    [ball, 0x586057, 0, 0, 0, 18, 8, 12],
+    [ball, 0x62685f, 12, -1, 5, 11, 4, 8],
+    [ball, 0x56645d, -8, -2, -9, 9, 4, 9],
+  ]);
+  rock.position.set(beach.x + 257, 1, beach.z - 115);
+  group.add(rock);
+  const projection = new Vector3();
+  function screenX(mesh: Mesh, camera: Camera) {
+    mesh.getWorldPosition(projection).project(camera);
+    return Math.abs(projection.z) <= 1 ? projection.x : Infinity;
+  }
+  const pedal = model([
+    [ball, 0xdfb44e, -0.48, 0.05, 0, 0.29, 0.25, 1.35],
+    [ball, 0xdfb44e, 0.48, 0.05, 0, 0.29, 0.25, 1.35],
+    [box, 0xce544a, 0, 0.35, 0.16, 1.04, 0.17, 1.12],
+    [box, 0x62594b, 0, 0.65, 0.42, 0.87, 0.54, 0.13],
+  ]);
+  const launches = Array.from({ length: 4 }, (_, i) => {
+    const f = at(1797, -43),
+      boat = pedal.clone();
+    boat.position.set((i % 2 ? 1 : -1) * (7 + i * 2), -1.12, (i - 2) * 8);
+    boat.rotation.y = i * 1.62;
+    f.add(boat);
+    return f;
+  });
   const walkers = new Figures(
     group,
     owned,
@@ -258,7 +318,13 @@ export function goldenGatePark(course: Course) {
     frame.add(fog);
     return { station, frame, fog };
   });
-  const state = { bisonHead: 0, sailPosition: 0 };
+  const state = {
+    bisonHead: 0,
+    sailPosition: 0,
+    glassX: Infinity,
+    millX: Infinity,
+    surfX: Infinity,
+  };
   function update(time: number, metres: number, reduced: boolean) {
     const t = reduced ? 0 : time;
     for (const b of herd) {
@@ -267,7 +333,7 @@ export function goldenGatePark(course: Course) {
     }
     state.bisonHead = herd[0]!.head.rotation.x;
     for (const { frame, hull, along, lane, phase } of boats) {
-      frame.visible = Math.abs(metres - 3120) < 430;
+      frame.visible = Math.abs(metres - 3150) < 430;
       hull.position.set(
         lane + 4.4 * Math.sin(t * 0.072 + phase),
         -1.1 + 0.095 * Math.sin(t * 1.3 + phase),
@@ -281,10 +347,17 @@ export function goldenGatePark(course: Course) {
     }
     state.sailPosition = boats[0]!.hull.position.z;
     for (const { frame, bird, phase } of ducks) {
-      frame.visible = Math.abs(metres - 3120) < 270;
+      frame.visible = Math.abs(metres - 3150) < 270;
       bird.position.set(-27 + phase + 1.1 * Math.sin(t * 0.16 + phase), -1.12, 12 + phase * 1.8);
       bird.rotation.y = 0.4 + Math.sin(t * 0.15 + phase);
     }
+    surf.visible = rock.visible = metres > 5730;
+    if (surf.visible)
+      waves.forEach((wave, i) => {
+        wave.position.x = (i % 3) * 12 - 2.7 * Math.sin(t * 0.48 + i * 0.41);
+        wave.position.y = 0.17 * Math.sin(t * 0.68 + i * 0.35);
+      });
+    for (const f of launches) f.visible = Math.abs(metres - 1797) < 320;
     mill.visible = Math.abs(metres - 5700) < 560;
     sails.rotation.z = 0.33 + t * 0.12;
     conservatory.visible = metres < 620;
@@ -321,7 +394,12 @@ export function goldenGatePark(course: Course) {
   return {
     group,
     update,
-    state,
+    measure(camera: Camera) {
+      state.glassX = screenX(front, camera);
+      state.millX = screenX(sails, camera);
+      state.surfX = screenX(waves[18]!, camera);
+      return state;
+    },
     dispose() {
       group.removeFromParent();
       for (const item of owned) item.dispose();

@@ -11,8 +11,15 @@ def elevation(d):
     return PROFILE[-1][1]
 def direction(d):
     inland=.31*math.sin(d/221)+.22*math.sin(d/97)+.115*math.sin(d/49)
-    coast=min(1,max(0,(d-5950)/175));coast=coast*coast*(3-2*coast)
-    return inland*(1-coast)-1.48*coast
+    def smooth(t):t=min(1,max(0,t));return t*t*(3-2*t)
+    # A short bend reveals each landmark on the preceding straight, then passes beside it.
+    for at,angle in ((80,.54),(1680,-.43),(3040,.44),(4020,-.43),(5550,-.37)):
+        entry=smooth((d-at+65)/50);exit=smooth((d-at-186)/85)
+        if entry>0 and exit<1:
+            curve=angle*smooth((d-at-20)/62)
+            weight=entry*(1-exit);inland=inland*(1-weight)+curve*weight
+    coast=smooth((d-5920)/195)
+    return inland*(1-coast)+coast*(-.12-1.26*smooth((d-6360)/75))
 path=[(-128.,0.)]
 for i in range(-127,LENGTH+501):
     h=direction(i-.5);x,y=path[-1];path.append((x+math.cos(h),y+math.sin(h)))
@@ -28,11 +35,16 @@ def lay(course,theme,bc):
                             d=d,g=100*(elevation(d+.5)-elevation(d-.5))))
     return samples,stages,LENGTH,sum(s['level']*(s['to']-s['from']) for s in stages)/LENGTH,0
 
-LAKES=((1780,41,89,33),(3120,-47,122,40))
+LAKES=((1797,43,77,33),(3150,-40,112,35))
+BEACH_X=pos(LENGTH)[0]+48
+
 def land(road,col,theme,bc):
     lakes=[(*pos(d,l),direction(d),length,width,elevation(d)-1.25) for d,l,length,width in LAKES]
     def height(x,y):
         _,idx,gap=road.tree.find((x,y,0));s=road.s[idx];d=s['d']
+        shore=BEACH_X
+        if x>shore-3:return -.9
+        if x>shore-44:return max(.02,(shore-x-3)*.095)
         for cx,cy,h,length,width,level in lakes:
             along=(x-cx)*math.cos(h)+(y-cy)*math.sin(h);across=-(x-cx)*math.sin(h)+(y-cy)*math.cos(h)
             radius=math.hypot(along/length,across/width)
@@ -52,7 +64,7 @@ def land(road,col,theme,bc):
         for i,l in enumerate(span[:-1]):
             b.quad(last[i],nxt[i],nxt[i+1],last[i+1])
             tone=0x82915F if (d//85+i)%4 else 0x829665
-            if d>6000 and l>16:tone=0xCBBE99
+            if d>6080:tone=0xCBBE99
             if 3950<d<4260 and 8<l<78:tone=0xB7A573
             b.colours.extend([lin(tone)]*4)
         last=nxt
@@ -122,7 +134,7 @@ def scenery(k):
             art.face(((x,y,wet),(*point(a,1.015),wet),(*point(b,1.015),wet)),(lin(0x66877F),)*3)
             art.face(((*point(a,.983),wet+.11),(*point(a,1.04),wet+.28),(*point(b,1.04),wet+.28),(*point(b,.983),wet+.11)),(lin(0x969C86),)*4)
     # Stow Lake bridge has two true open masonry arches. Individual voussoirs continue through its depth.
-    pt,h=frame(1780,35)
+    pt,h=frame(1797,38)
     for centre in (-5.7,5.7):
         for i in range(18):
             a=i*math.pi/18;b=(i+1)*math.pi/18
@@ -136,7 +148,7 @@ def scenery(k):
     for v in (-2.22,2.22):
         for j in range(19):art.box(pt(j*1.21-10.9,v,6.92),(1.18,.43,.56),h,lin(0xA49E83))
     # Conservatory wings and dome have physical depth behind the white ornamental front.
-    pt,h=frame(258,-46)
+    pt,h=frame(205,-40)
     art.box(pt(4,0,.15),(12,56,4.6),h,lin(0xD3D9CB))
     for side in (-1,1):
         for bay in range(13):
@@ -156,7 +168,7 @@ def scenery(k):
         art.box(pt(0,0,0),(.18,.19,1.49),h,lin(0x705A42))
         for z in (.53,1.13):art.box(pt(2,0,z),(4.02,.13,.16),h,lin(0x9C8868))
     # Dutch Windmill's taper, gallery rails and timber cap above the Queen Wilhelmina tulip beds.
-    pt,h=frame(5700,26)
+    pt,h=frame(5670,23)
     art.tube(pt(0,0,0),5.9,3.98,17.2,lin(0xAA9679),lin(0x9A866E),12)
     art.tube(pt(0,0,6.8),6.4,6.4,.48,lin(0x5A5043),lin(0x7D6A56),16)
     art.tube(pt(0,0,17.2),4.5,2.3,3.45,lin(0x555347),lin(0x625849),14)
@@ -167,13 +179,25 @@ def scenery(k):
         for j in range(4):
             art.box(q(0,j*1.35,.12),(13.8,1.16,.25),g,lin((0xD55C56,0xEABD49,0xC88CA3,0xE4DDD4)[j]))
     # Dunes beyond the Great Highway. Repeated narrow foam crests break across the Pacific.
-    coastx,coasty=pos(6170);shore=coastx+66
+    _,coasty=pos(6375);shore=BEACH_X
     art.box((shore+760,coasty,1),(1500,2300,.18),0,lin(0x728F97))
     for j in range(-22,23):
-        y=coasty+j*26;blob((shore-20+3*math.sin(j),y,3),25,36,3.3,lin(0xC8B995))
+        y=coasty+j*26;
+        if abs(y-coasty)>40:blob((shore-22+3*math.sin(j),y,1.8),24,32,2.7,lin(0xC8B995))
         for n in range(4):
             x=shore+15+n*16+3*math.sin(j*.55+n)
             art.box((x,y,1.27),(1.35,24,.17),.08*math.sin(j),lin(0xD5DFD7))
+    # The ride crosses the Great Highway before reaching the west-facing beach ramp.
+    q,h=frame(6120,0)
+    for side in (-1,1):
+        art.box(q(0,side*87,-.30),(8.6,164,.28),h,lin(0x666A68))
+        for l in range(7,150,7):
+            art.box(q(0,side*l,-.01),(.14,3.5,.03),h,lin(0xCDC79D))
+    for j in range(160):
+        d=rng.uniform(6125,6370);l=rng.choice((-1,1))*rng.uniform(8,62);q,h=frame(d,l)
+        for blade in range(4):
+            a=rng.random()*math.tau
+            art.face((q(-.15,0,0),q(.15,0,0),q(.63*math.cos(a),.63*math.sin(a),rng.uniform(.62,1.24))),(lin(0x97915D),)*3)
     for d in range(30,LENGTH,57):
         q,h=frame(d,-5.85);art.tube(q(0,0,.1),.14,.08,4.9,lin(0x5A625B),lin(0x778077),8)
         art.tube(q(0,0,5),.24,.35,.57,lin(0xD5D3BB),lin(0xDFE1D6),8)
