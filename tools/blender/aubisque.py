@@ -182,8 +182,8 @@ def tunnel(k,art,d,length):
         chain=d+length*n/11;h=bearing(chain);cx,cy,cz=k.road.pos(chain,0)
         for j in range(16):
             def outer(i):
-                a=i*math.pi/16;u=math.cos(a)*(8.6+1.5*math.sin(i*.8))
-                return cx-u*math.sin(h),cy+u*math.cos(h),cz+1.05+8.2*math.sin(a)
+                a=i*math.pi/16;u=math.cos(a)*(9.3+1.5*math.sin(i*.8))
+                return cx-u*math.sin(h),cy+u*math.cos(h),cz-5.2+14.1*math.sin(a)
             f=(r[j],r[j+1],outer(j+1),outer(j))
             art.face(f,(rock,shade,rock,rock));art.face(f[::-1],(rock,)*4)
     for j in range(16):
@@ -211,6 +211,40 @@ def mountains(k):
                         u=tuple(e[i]*.87+a[i]*.13 for i in range(3));v=tuple(c[i]*.92+b[i]*.08 for i in range(3))
                         w=(u[0]+12,u[1]-side*4,u[2]-18);art.face((u,v,w),(lin(0xD3D7CE),)*3)
             last=rows
+
+def cut_faces(k,art):
+    """Fractured strata follow the blasted bank. Slabs terminate at irregular joints."""
+    rng=k.rng
+    for d in range(740,7400,6):
+        if any(a-4<d<a+length+4 for a,length in TUNNELS): continue
+        for row in range(4):
+            lateral=-4.75-1.32*row+rng.uniform(-.32,.15)
+            length=rng.uniform(4,12)
+            front=[]
+            for chain in (d,d+length):
+                across=lateral+rng.uniform(-.15,.19)
+                z=slope(chain,across)
+                front.append(k.road.pos(chain,across,z+rng.uniform(-.48,.48)))
+            a,b=front
+            h=rng.uniform(.4,1.05)
+            c=k.road.pos(d+length,lateral-.63,slope(d+length,lateral)+h)
+            e=k.road.pos(d,lateral-.55,slope(d,lateral)+h*.85)
+            lip=lin(rng.choice((0x858880,0x98988A,0xA2A292,0x787D73)))
+            joint=lin(rng.choice((0x585F56,0x63685F,0x73766B)))
+            face=(a,b,c,e); colours=(joint,joint,lip,lip)
+            art.face(face,colours);art.face(face[::-1],colours[::-1])
+    for d in range(35,12580,8):
+        l=rng.choice((-1,1))*rng.uniform(5.3,23)
+        if cliff(d)>.25 or any(abs(d-q)<65 for q in (125,12542)):continue
+        x,y,z=k.road.pos(d,l);z+=slope(d,l)
+        for j in range(4):
+            xx=x+rng.uniform(-1.3,1.3);yy=y+rng.uniform(-1,1)
+            co=lin(rng.choice((0x617444,0x75824E,0x98A061,0x828B53)))
+            h=rng.uniform(.18,.55);width=rng.uniform(.12,.34)
+            for angle in (.23,1.52):
+                dx,dy=width*math.cos(angle),width*math.sin(angle)
+                f=((xx-dx,yy-dy,z-.04),(xx+dx,yy+dy,z-.04),(xx+.11,yy+.04,z+h))
+                art.face(f,(co,)*3);art.face(f[::-1],(co,)*3)
 
 def cafe_yard(k, art):
     """Friends at the bike racks, parked cars and the café's picnic terrace."""
@@ -267,5 +301,6 @@ def scenery(k):
     for d in (123,139,152,195,12478,12504,12518,12572,12583):
         l=-7.9 if d<12000 else -9.3;x,y,z=k.road.pos(d,l)
         bicycle(art,(x,y,z+slope(d,l)),bearing(d)+.4,.98,rng.choice((0x8BA142,0xAA6651,0x506D8C)))
+    cut_faces(k,art)
     cafe_yard(k,art)
     return {'efforts':0}
