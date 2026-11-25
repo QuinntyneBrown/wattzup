@@ -1,4 +1,4 @@
-import { Group, Mesh, type Material } from 'three/webgpu';
+import { Group, type Mesh, type Material } from 'three/webgpu';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import type { SceneStreet, StreetFactory } from './world-kit';
 
@@ -40,9 +40,15 @@ export async function loadTabletCaribana(): Promise<StreetFactory> {
     return {
       group,
       backdrop,
-      build() {},
-      lay() {},
-      setTime() {},
+      build() {
+        // The GLB already contains the built street.
+      },
+      lay() {
+        // place() aligns each section to the grade.
+      },
+      setTime() {
+        // The authored tablet scenery is static.
+      },
       place(distance, heightAt) {
         for (const section of sections) {
           const ahead = ((((section.start - distance + 48) % LOOP) + LOOP) % LOOP) - 48;
