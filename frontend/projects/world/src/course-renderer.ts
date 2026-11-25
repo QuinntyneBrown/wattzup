@@ -99,6 +99,7 @@ import type { AubisqueLivestock } from './aubisque-livestock';
 import type { AustinPerformers } from './austin-performers';
 import type { BathshebaReef } from './bathsheba-reef';
 import type { BayOfIslandsBoats } from './bay-of-islands-boats';
+import type { BeachRoadBunch } from './beach-road-bunch';
 import { PROBE_KEY, readWorldRideProbe } from './world-ride-probe';
 
 /** The chase camera: this far behind the rider and above the road, looking this far ahead. */
@@ -273,6 +274,8 @@ export class CourseRenderer implements WorldRenderer {
     reefCrest: null as number | null,
     eveningLight: null as number | null,
     ferryX: null as number | null,
+    eveningLight: null as number | null,
+    clubLane: null as number | null,
     drawCalls: 0,
     triangles: 0,
     metres: 0,
@@ -301,6 +304,8 @@ export class CourseRenderer implements WorldRenderer {
   private reef: BathshebaReef | null = null;
   private evening: ReturnType<typeof eveningUniform> | undefined;
   private boats: BayOfIslandsBoats | null = null;
+  private evening: ReturnType<typeof eveningUniform> | undefined;
+  private bunch: BeachRoadBunch | null = null;
   private readonly chosenAt = new Vector3();
   /** The start lights: red until the ride's clock starts, green from then. */
   private startRed: Mesh | null = null;
@@ -545,6 +550,13 @@ export class CourseRenderer implements WorldRenderer {
         this.scene.add(this.boats.group);
         this.disposables.push(this.boats);
       }
+      if (this.course.file.id === 'beachroad') {
+        const { BeachRoadBunch } = await import('./beach-road-bunch');
+        if (this.disposed) return false;
+        this.bunch = new BeachRoadBunch(this.course, this.kit!, this.riderBatch!);
+        this.scene.add(this.bunch.group);
+        this.disposables.push(this.bunch);
+      }
       this.rehearse();
       await renderer.compileAsync(this.scene, this.camera, null, (event) =>
         options.progress?.({
@@ -613,9 +625,18 @@ export class CourseRenderer implements WorldRenderer {
     if (this.trainingGroup.length) this.placeTrainingGroup(frame, metres);
     if (this.echelon.length) this.placeEchelon(frame, metres);
     this.lampShadows?.end();
+    this.bunch?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.riderBatch?.follow();
     if (this.evening) {
       const progress = Math.max(0, Math.min(1, (metres - 19500) / 7900));
+      const t = progress * progress * (3 - 2 * progress);
+      this.evening.value = t;
+      this.sun.color.setRGB(0.982 - 0.05 * t, 0.791 - 0.39 * t, 0.527 - 0.33 * t);
+      if (this.scene.fog instanceof Fog)
+        this.scene.fog.color.setRGB(0.402 + 0.43 * t, 0.604 - 0.27 * t, 0.658 - 0.43 * t);
+    }
+    if (this.evening) {
+      const progress = Math.max(0, Math.min(1, (metres - 14300) / 5050));
       const t = progress * progress * (3 - 2 * progress);
       this.evening.value = t;
       this.sun.color.setRGB(0.982 - 0.05 * t, 0.791 - 0.39 * t, 0.527 - 0.33 * t);
@@ -636,6 +657,7 @@ export class CourseRenderer implements WorldRenderer {
     this.performers?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.reef?.update(metres, frame.reducedMotion ? 0 : frame.time);
     this.boats?.update(metres, frame.reducedMotion ? 0 : frame.time);
+
     // Chosen every few frames, and at once when the camera has jumped (a ride resumed elsewhere on the road).
     const leapt = this.camera.position.distanceToSquared(this.chosenAt) > 60 * 60;
     if (this.frames++ % CHUNK_SWEEP === 0 || leapt) this.choose();
@@ -722,6 +744,8 @@ export class CourseRenderer implements WorldRenderer {
     this.reef = null;
     this.boats = null;
     this.evening = undefined;
+    this.bunch = null;
+    this.evening = undefined;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
     this.trainingGroup.length = 0;
@@ -760,6 +784,7 @@ export class CourseRenderer implements WorldRenderer {
     // The course's world: its sky, its haze and its lights (a course that names none is Ibiza's sunset).
     const look = courseLook(this.course!.file);
     if (this.course!.file.id === 'bayofislands') this.evening = eveningUniform();
+    if (this.course!.file.id === 'beachroad') this.evening = eveningUniform();
     this.scene.fog = new Fog(look.haze, FOG[0], FOG[1]);
     this.scene.background = new Color(look.haze);
     this.sun.color.setHex(look.light.colour);
@@ -1083,6 +1108,7 @@ export class CourseRenderer implements WorldRenderer {
         this.course!.file.sun,
         detail,
         this.course!.file.id === 'atlanticroad',
+        this.evening,
         this.evening,
       );
       this.skyClock = sky.at;
@@ -1589,6 +1615,8 @@ export class CourseRenderer implements WorldRenderer {
     drawn.reefCrest = this.reef?.crest ?? null;
     drawn.eveningLight = this.evening?.value ?? null;
     drawn.ferryX = this.boats?.ferryX ?? null;
+    drawn.eveningLight = this.evening?.value ?? null;
+    drawn.clubLane = this.bunch?.clubLane ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

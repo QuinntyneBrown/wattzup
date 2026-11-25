@@ -1344,3 +1344,8 @@ import bayofislands as _bayofislands
 
 THEMES["bayofislands"] = _bayofislands.THEME
 SCENERY["bayofislands"] = _bayofislands.scenery
+
+import beachroad as _beachroad
+
+THEMES["beachroad"] = _beachroad.THEME
+SCENERY["beachroad"] = _beachroad.scenery

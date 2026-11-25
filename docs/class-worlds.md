@@ -27,6 +27,7 @@ Telo Ride is mainly a kart-racing-style game (AGENTS.md, *Direction*): cyclists,
 | Sixth Street, Austin (`austin`) | Get Pumped With Grace (GCN Training, 33:40) | 15.450 km | 0 m | `public/courses/austin.glb` ([ride views](screenshots/sixth-street-austin/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Bathsheba, Barbados (`bathsheba`) | Take It Easy (GCN Training, 25:00) | 10.700 km | 31 m | `public/courses/bathsheba.glb` ([ride views](screenshots/bathsheba-barbados/README.md)) | Built and ridden; open from the start on the map catalogue |
 | Bay of Islands Group Ride (`bayofislands`) | Zwift Group Workout: HIIT Intervals (GCN, 61:20) | 27.950 km | 59 m | `public/courses/bayofislands.glb` ([ride views](screenshots/bay-of-islands/README.md)) | Built and ridden; open from the start on the map catalogue |
+| Beach Road, Melbourne (`beachroad`) | 45 Minute Sprint Training (GCN, 45:50) | 19.613 km | 17 m | `public/courses/beachroad.glb` ([ride views](screenshots/beach-road-melbourne/README.md)) | Built and ridden; open from the start on the map catalogue |
 
 Every map in the catalogue is now a course; each has a 20-second film in [`blender/`](../blender/). Old Town hands over to `main`'s World Ride when the rider streams the real Bruges (L2-066).
 
