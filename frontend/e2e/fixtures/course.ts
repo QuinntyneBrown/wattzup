@@ -149,3 +149,43 @@ export const haleakalaCourseMap = {
     roll: 0,
   },
 };
+
+/** The pursuit course and the recorded Olympic Pursuit Efforts stages. */
+export const aguascalientesCourseMap = {
+  id: 'aguascalientes',
+  name: 'Aguascalientes Velodrome',
+  routeName: 'The pursuit line',
+  place: 'A banked timber pursuit track in a high-altitude Mexican arena',
+  distanceKm: 12.875,
+  climbingM: 0,
+  rating: 'Hard',
+  world: 'aguascalientes',
+  thumbnailUrl: 'maps/aguascalientes.jpg',
+  photoUrl: 'maps/aguascalientes-photo.jpg',
+  plan: {
+    segments: [
+      seg('warm-up', 240, 12, 80),
+      seg('work', 120, 18, 85),
+      seg('recover', 120, 14, 80),
+      seg('work', 300, 16, 85),
+      seg('work', 240, 18, 85),
+      seg('work', 180, 19, 90),
+      seg('work', 60, 21, 90),
+      seg('recover', 180, 10, 80),
+      seg('work', 240, 24, 100),
+      seg('cool-down', 120, 11, 80),
+    ],
+  },
+  terrain: {
+    grade: {
+      'warm-up': 0,
+      work: 0,
+      recover: 0,
+      'cool-down': 0,
+      steady: 0,
+    },
+    roll: 0,
+  },
+  unlockGoal: null,
+  unlockMapId: null,
+};

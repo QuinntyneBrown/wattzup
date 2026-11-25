@@ -830,7 +830,7 @@ export class CourseRenderer implements WorldRenderer {
     cyclist.group.rotation.set(
       at.pitch,
       at.heading,
-      bendLean(at.heading, ahead, LEAN_AHEAD),
+      at.bank ?? bendLean(at.heading, ahead, LEAN_AHEAD),
       'YXZ',
     );
     if (this.casting.has(cyclist) && cyclist.group.visible) this.lampShadows?.add(metres, lane);
@@ -868,6 +868,8 @@ export class CourseRenderer implements WorldRenderer {
     this.groundEye?.at(metres - behind, 0, up);
     const ahead = course.place(metres + LOOK_AHEAD, 0, this.there);
     this.camera.lookAt(ahead.x, ahead.y + LOOK_UP, ahead.z);
+    // A restrained chase-camera roll lets the rider read the banking and still see the opposite straight.
+    if (back.bank) this.camera.rotateZ(back.bank * 0.32);
     this.sky?.position.copy(this.camera.position);
     const [x, , z] = course.file.sun;
     this.sun.target.position.set(ahead.x, ahead.y, ahead.z);

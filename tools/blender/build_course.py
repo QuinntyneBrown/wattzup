@@ -1815,6 +1815,8 @@ def write_course_json(path: Path, course: dict, samples, st, length, mean, facts
         ],
         "points": [v for p in samples for v in (round(p["x"], 2), round(p["z"], 2), round(-p["y"], 2))],
     }
+    if "bank" in samples[0]:
+        data["bankDegrees"] = [round(p["bank"], 3) for p in samples]
     if "class" in course:
         data["class"] = course["class"]
     if facts.get("cableways"):
