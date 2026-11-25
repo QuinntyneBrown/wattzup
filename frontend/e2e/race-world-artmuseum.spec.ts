@@ -1,7 +1,8 @@
 // L2-064. A jogger runs up the east steps and holds still on pause.
 import { newRiderProgress } from './fixtures/api';
 import { artMuseumCourseMap } from './fixtures/course';
-import { echelonBike } from './fixtures/echelon';
+import { startRace } from './fixtures/race';
+import { ECHELON_NOTIFY, resistanceFrame, workoutFrame, echelonBike } from './fixtures/echelon';
 import { expect, test } from './fixtures/test';
 import { MapSelectPage } from './pages/map-select.page';
 import { RaceSetupPage } from './pages/race-setup.page';
@@ -55,3 +56,21 @@ for (const cue of ['jogger', 'flag'] as const) {
     },
   );
 }
+
+test('the route panel shows a climb on the first museum staircase by ridden distance', async ({
+  page,
+  bluetooth,
+  api,
+}) => {
+  const race = await startRace(page, bluetooth, api, artMuseumCourseMap.id, 'mode=solo', {
+    catalogue: [artMuseumCourseMap],
+  });
+  await expect(race.grade).toHaveText('+0.0%');
+  await bluetooth.notify(ECHELON_NOTIFY, resistanceFrame(18));
+  for (let second = 0; second < 180; second++) {
+    if (parseFloat((await race.distance.textContent())!) >= 1.84) break;
+    await bluetooth.notify(ECHELON_NOTIFY, workoutFrame(90));
+    await page.clock.fastForward(1000);
+  }
+  expect(parseFloat((await race.grade.textContent())!)).toBeGreaterThan(10);
+});
