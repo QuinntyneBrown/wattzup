@@ -37,6 +37,10 @@ export interface MutableBendPoint {
 
 /** The road's heading at `s`, in degrees, positive to the rider's right (L2-101 AC6). */
 export function heading(world: World, s: number): number {
+  if (world.id === 'caribana') {
+    const phase = (2 * Math.PI * s) / world.bend.length;
+    return world.bend.angle * Math.sin(phase) + 9 * Math.sin(2 * phase);
+  }
   const { angle, length } = world.bend;
   if (angle === 0) return 0;
   return angle * Math.sin(s / length) * Math.cos(s / (2.7 * length) + 1);

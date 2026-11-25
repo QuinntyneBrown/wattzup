@@ -111,7 +111,9 @@ import { inkOutline } from './world-ink';
 import { flatSky, ToonLook } from './world-toon';
 import { Corners } from './world-corners';
 import { RampSign } from './world-ramps';
-import type { Cyclist } from './world-cyclist';
+import type { SceneRider as CyclistModel } from './caribana-cyclists';
+import type { caribanaCyclists } from './caribana-cyclists';
+type RideKit = CyclistKit | Awaited<ReturnType<typeof caribanaCyclists>>;
 import { CyclistKit } from './world-cyclist';
 import type { DocklandsStreet } from './world-docklands';
 import type { SceneStreet, StreetFactory } from './world-kit';
@@ -3201,15 +3203,15 @@ export class ThreeWorldRenderer implements WorldRenderer {
   /** Every bike's frame paint, given a clearcoat together at the tier that has one. */
   private readonly frames: MeshPhysicalMaterial[] = [this.frameMaterial];
   private readonly arch = new Group();
-  private you: Cyclist | null = null;
-  private readonly pacers = new Map<number, Cyclist>();
+  private you: CyclistModel | null = null;
+  private readonly pacers = new Map<number, CyclistModel>();
   /** The race's riders by jersey, each made the first time it rides into view (L2-064 AC3). */
-  private readonly raceRiders = new Map<string, Cyclist>();
+  private readonly raceRiders = new Map<string, CyclistModel>();
   /** What each race rider wears, for the test-only hook's report: the jersey, or the ghost's gold. */
   /** The colour and opacity each race rider wears, for the probe (L2-064 AC3). */
   private readonly wear = new Map<string, { readonly color: Color; readonly opacity: number }>();
   /** The kit the riders are made from, and the canvas whose jersey tokens colour them. */
-  private kit: CyclistKit | null = null;
+  private kit: RideKit | null = null;
   private canvas: HTMLCanvasElement | null = null;
   private readonly wheelBlur: Mesh[] = [];
   private readonly lamps: PointLight[] = [];
@@ -3328,7 +3330,10 @@ export class ThreeWorldRenderer implements WorldRenderer {
     // Docklands' photographed distance is the mock's own still, riders and all: its towers are
     // built in 3D instead.
     // A kit-built street draws its own distance in 3D, as Docklands' towers do.
-    const loadStreet = STREETS[world.id];
+    const loadStreet =
+      world.id === 'caribana'
+        ? async () => (await import('./world-caribana-tablet')).loadTabletCaribana()
+        : STREETS[world.id];
     if (world.id !== 'docklands' && !loadStreet) await this.addPanorama(world);
     if (loadStreet) this.addScenery(await loadStreet());
     if (world.id === 'oldtown') await this.addStreet();
@@ -3568,6 +3573,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
 
     // The bike rocks under the pedal strokes and leans into a bend: right on a right-hander.
     const riderGrade = ahead[0]?.grade ?? 0;
+    if (this.kit && 'roll' in this.kit) this.kit.roll(frame.s);
     this.you?.pose(
       frame.reducedMotion ? 0 : frame.crank,
       -lean(world, frame.s, speed),
@@ -3699,6 +3705,10 @@ export class ThreeWorldRenderer implements WorldRenderer {
     const renderer = this.renderer;
     if (!renderer || !tier) return;
     const on = techniquesAt(tier, this.backend, this.reducedMotion);
+    if (this.world?.id === 'caribana') {
+      // Preserve the baked cutout art and the Ride One kit on the low tier.
+      for (const technique of [51, 52, 54]) on.delete(technique);
+    }
     if (this.probe) this.probe.tier = tier;
     this.on = on;
     const look = this.look;
@@ -3765,7 +3775,10 @@ export class ThreeWorldRenderer implements WorldRenderer {
     this.report();
 
     const previous = this.pipeline;
-    this.pipeline = this.pipelineFor(renderer, on);
+    // The tablet parade uses baked lighting and alpha-tested art. Draw it directly to avoid
+    // a full-resolution intermediate target and a second full-screen pass on mobile GPUs.
+    this.pipeline =
+      this.world?.id === 'caribana' && tier === 'low' ? null : this.pipelineFor(renderer, on);
     // A chain swapped in carries history from the last time it was drawn, perhaps the warm-up.
     if (this.pipeline !== previous) this.freshHistory();
   }
@@ -3938,7 +3951,13 @@ export class ThreeWorldRenderer implements WorldRenderer {
     groundMesh.receiveShadow = true;
     const roadMesh = this.addMesh(this.road, this.roadMaterial);
     roadMesh.receiveShadow = true;
-    this.addRider(canvas);
+    const kit =
+      world.id === 'caribana'
+        ? await (
+            await import('./caribana-cyclists')
+          ).caribanaCyclists(this.frameMaterial, this.budget?.tier === 'low')
+        : new CyclistKit(this.frameMaterial);
+    this.addRider(canvas, kit);
     this.addArch();
     this.addRoadside();
   }
@@ -3982,8 +4001,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
   }
 
   /** The rider on their bike, from behind, in the You colour of the rider board. */
-  private addRider(canvas: HTMLCanvasElement): void {
-    const kit = new CyclistKit(this.frameMaterial);
+  private addRider(canvas: HTMLCanvasElement, kit: RideKit): void {
     this.kit = kit;
     this.canvas = canvas;
     // The rider wears the You jersey of the race board (L2-060).
@@ -4013,7 +4031,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
    * The ghost of a solo race: the cyclist kit's rider in translucent gold (L2-064 AC3). `main` has no ghost; it is drawn
    * new from the kit, in its style. The wheels keep the kit's spokes, so they still read as wheels.
    */
-  private addGhost(kit: CyclistKit, canvas: HTMLCanvasElement): void {
+  private addGhost(kit: RideKit, canvas: HTMLCanvasElement): void {
     const gold = jerseyColour(canvas, 'ghost');
     const glass = new MeshStandardMaterial({
       color: gold,
@@ -4041,7 +4059,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
    * A race rider in their jersey, made the first time they ride into view and dressed as the scene is at its tier:
    * toon twins and warmer ink at low, and the road's bend. Each bike takes a frame paint of its own, as the pacers'.
    */
-  private raceRider(jersey: string): Cyclist | null {
+  private raceRider(jersey: string): CyclistModel | null {
     const made = this.raceRiders.get(jersey);
     if (made) return made;
     if (!this.kit || !this.canvas) return null;
@@ -4105,7 +4123,7 @@ export class ThreeWorldRenderer implements WorldRenderer {
     world: World,
     frame: SceneFrame,
     ahead: RoadPoint[],
-    rider: Cyclist,
+    rider: CyclistModel,
     metres: number,
     lane: number,
     seed: number,
