@@ -1552,3 +1552,8 @@ import iten as _iten
 
 THEMES['iten'] = _iten.THEME
 SCENERY['iten'] = _iten.scenery
+
+import lakefront
+
+THEMES['lakefront'] = lakefront.THEME
+SCENERY['lakefront'] = lakefront.scenery

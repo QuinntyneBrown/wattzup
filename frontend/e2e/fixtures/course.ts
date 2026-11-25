@@ -3598,7 +3598,7 @@ export const lakefrontCourseMap = {
   place: 'Chicago, Illinois, United States',
   world: 'lakefront',
   distanceKm: 10.525,
-  climbingM: 10,
+  climbingM: 8,
   rating: 'Moderate',
   terrain: {
     grade: { 'warm-up': 0, work: 0, recover: 0, 'cool-down': 0, steady: 0 },
