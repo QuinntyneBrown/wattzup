@@ -1900,6 +1900,119 @@
         },
         "roll": 1.2
       }
+    },
+    {
+      "id": "alpe-dhuez",
+      "name": "Alpe d'Huez",
+      "routeName": "The 21 hairpins",
+      "place": "The 21 bends above Bourg-d’Oisans",
+      "distanceKm": 7.4,
+      "climbingM": 328,
+      "rating": "Hard",
+      "world": "alpe",
+      "thumbnailUrl": "maps/alpe-dhuez.jpg",
+      "photoUrl": "maps/alpe-dhuez-photo.jpg",
+      "unlock": {
+        "kind": "start"
+      },
+      "plan": {
+        "segments": [
+          {
+            "kind": "warm-up",
+            "duration": 120,
+            "level": 11,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 60,
+            "level": 14,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "recover",
+            "duration": 30,
+            "level": 18,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "work",
+            "duration": 60,
+            "level": 19,
+            "cadenceAim": 100
+          },
+          {
+            "kind": "recover",
+            "duration": 120,
+            "level": 13,
+            "cadenceAim": 80
+          },
+          {
+            "kind": "work",
+            "duration": 120,
+            "level": 19,
+            "cadenceAim": 60
+          },
+          {
+            "kind": "work",
+            "duration": 60,
+            "level": 21,
+            "cadenceAim": 60
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 120,
+            "level": 19,
+            "cadenceAim": 60
+          },
+          {
+            "kind": "work",
+            "duration": 60,
+            "level": 21,
+            "cadenceAim": 60
+          },
+          {
+            "kind": "recover",
+            "duration": 60,
+            "level": 11,
+            "cadenceAim": 90
+          },
+          {
+            "kind": "work",
+            "duration": 120,
+            "level": 19,
+            "cadenceAim": 60
+          },
+          {
+            "kind": "work",
+            "duration": 120,
+            "level": 21,
+            "cadenceAim": 75
+          },
+          {
+            "kind": "cool-down",
+            "duration": 90,
+            "level": 11,
+            "cadenceAim": 80
+          }
+        ]
+      },
+      "terrain": {
+        "grade": {
+          "warm-up": 4,
+          "work": 9,
+          "recover": 7,
+          "cool-down": 3,
+          "steady": 7
+        },
+        "roll": 1.2
+      }
     }
   ]
 }

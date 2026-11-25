@@ -43,7 +43,7 @@ public sealed class NextRideTests(SignInApi api) : IClassFixture<SignInApi>
         {
             var progress = MapProgress.Start(riderId, mapId);
             progress.Restore(stars, null);
-            if (mapId is not ("prairie-paceline" or "old-town-criterium" or "ibiza-sunset-strip" or "sella-ronda" or "cinqueterre" or "haleakala" or "adelaide-hills" or "aguascalientes" or "algarve-cliffs"))
+            if (mapId is not ("prairie-paceline" or "old-town-criterium" or "ibiza-sunset-strip" or "sella-ronda" or "cinqueterre" or "haleakala" or "adelaide-hills" or "aguascalientes" or "algarve-cliffs" or "alpe-dhuez"))
             {
                 api.Clock.Advance(TimeSpan.FromHours(1));
                 progress.Open(api.Clock.GetUtcNow());
@@ -119,7 +119,8 @@ public sealed class NextRideTests(SignInApi api) : IClassFixture<SignInApi>
             ("haleakala", MapStar.All),
             ("adelaide-hills", MapStar.All),
             ("aguascalientes", MapStar.All),
-            ("algarve-cliffs", MapStar.All));
+            ("algarve-cliffs", MapStar.All),
+            ("alpe-dhuez", MapStar.All));
 
         Assert.StartsWith("""nextRideMapId="dolomites";""", await Home(browser));
     }

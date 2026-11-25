@@ -1266,3 +1266,9 @@ import algarve as _algarve
 MATERIALS["moored-boats"] = {"color": 0xFFFFFF, "rough": 0.85, "vertex": True}
 THEMES["algarve"] = _algarve.THEME
 SCENERY["algarve"] = _algarve.scenery
+
+import alpe as _alpe
+
+MATERIALS["orange-smoke"] = {"color": 0xFFFFFF, "vertex": True}
+THEMES["alpe"] = _alpe.THEME
+SCENERY["alpe"] = _alpe.scenery
