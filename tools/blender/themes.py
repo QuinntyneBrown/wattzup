@@ -1254,3 +1254,6 @@ import adelaide as _adelaide
 MATERIALS.update(_adelaide.MATERIALS)
 THEMES["adelaide"] = _adelaide.THEME
 SCENERY["adelaide"] = _adelaide.scenery
+import hoover as _hoover
+THEMES['hoover'] = _hoover.THEME
+SCENERY['hoover'] = _hoover.scenery
