@@ -1,3 +1,4 @@
+import type { furkaPass } from './furka-pass';
 // A course drawn with Three.js (ADR 0034, L2-166): the map built in Blender from the class it is modelled after,
 // loaded as glTF, with the cyclist kit's riders on its road and a chase camera behind the rider. A class's clock
 // places the rider, so each hill arrives with the resistance it was laid from; a race's riders are placed by the
@@ -213,6 +214,7 @@ export class CourseRenderer implements WorldRenderer {
   /** Moves the sea's ripples on to a second of the ride's clock. */
   private waterClock: ((seconds: number) => void) | null = null;
   /** The rain, where it rains: it falls with the ride's clock and is not drawn with reduced motion. */
+  private furka: Awaited<ReturnType<typeof furkaPass>> | null = null;
   private rain: Rain | null = null;
   /** Where the ground is seen from, for what wet ground mirrors (ground-material.ts). */
   private groundEye: GroundEye | null = null;
@@ -235,6 +237,9 @@ export class CourseRenderer implements WorldRenderer {
   private readonly near = new Group();
   /** What the pinned probe reports of the frame just drawn. */
   private readonly drawn = {
+    cowHead: null as number | null,
+    cloudHeight: null as number | null,
+    postbusPosition: null as number | null,
     tier: 0 as number,
     backend: '' as string,
     drawCalls: 0,
@@ -356,6 +361,22 @@ export class CourseRenderer implements WorldRenderer {
       const planned = segments.reduce((sum, segment) => sum + segment.duration, 0);
       this.clockScale = planned > 0 ? this.course.duration / planned : 1;
       this.canvas = canvas;
+      if (this.course.file.id === 'furka') {
+        const { furkaPass } = await import('./furka-pass');
+        if (this.disposed) return false;
+        const hills = await furkaPass(this.course);
+        if (this.disposed) {
+          hills.dispose();
+          return false;
+        }
+        this.furka = hills;
+        this.camera.far = 19500;
+        this.camera.updateProjectionMatrix();
+        this.disposables.push(hills);
+        this.scene.add(hills.group);
+        this.camera.setViewOffset(1, 1, 0, 0.025, 1, 1);
+        hills.at(0, 0);
+      }
       this.build(gltf.scene, canvas);
 
       // The map's programs compile while it loads, and its first picture is drawn before the ride's first frame.
@@ -415,6 +436,7 @@ export class CourseRenderer implements WorldRenderer {
       if (typeof from === 'number') this.benchFrom = from;
     }
     const metres = Math.min(ridden + this.benchFrom, course.end);
+    this.furka?.at(frame.reducedMotion ? 0 : frame.time, metres);
     if (frame.riders && !this.fieldMade) this.makeField(frame.riders, metres);
     this.lampShadows?.begin();
     const standing = this.ride(you, metres, 0);
@@ -480,6 +502,7 @@ export class CourseRenderer implements WorldRenderer {
     this.groundEye = null;
     this.riderBatch = null;
     this.rain = null;
+    this.furka = null;
     this.shadows.clear();
     this.casting.clear();
     this.lampShadows = null;
@@ -569,6 +592,7 @@ export class CourseRenderer implements WorldRenderer {
     const coloured = this.lampGlow?.coloured ?? dusk;
     const made = this.lampGlow?.light ?? dusk;
     this.disposables.push(...Object.values(materials));
+    Object.assign(materials, this.furka?.materials);
     // The ground the road builds has its place on the road in its UV: its surface and the lamps' light are drawn
     // from that (ground-material.ts). A map built before it has no such group.
     const detail = surfaceTexture();
@@ -887,8 +911,10 @@ export class CourseRenderer implements WorldRenderer {
       0,
     );
     const close = near * near * (3 - 2 * near);
-    const behind = CAMERA_BACK + (CLOSE_BACK - CAMERA_BACK) * close;
-    const up = CAMERA_UP + (CLOSE_UP - CAMERA_UP) * close;
+    const distance = this.furka ? 4.45 : CAMERA_BACK;
+    const behind = distance + (CLOSE_BACK - distance) * close;
+    const eye = this.furka ? 2.2 : CAMERA_UP;
+    const up = eye + (CLOSE_UP - eye) * close;
     const back = course.place(metres - behind, 0, this.here);
     this.camera.position.set(back.x, back.y + up, back.z);
     this.groundEye?.at(metres - behind, 0, up);
@@ -1105,6 +1131,9 @@ export class CourseRenderer implements WorldRenderer {
     for (const { mesh, group } of this.chunks) {
       if (mesh.visible) drawn.groups[group] = (drawn.groups[group] ?? 0) + 1;
     }
+    drawn.cowHead = this.furka?.cowHead ?? null;
+    drawn.cloudHeight = this.furka?.cloudHeight ?? null;
+    drawn.postbusPosition = this.furka?.postbusPosition ?? null;
     drawn.tier = this.tier;
     drawn.backend = this.backend;
     drawn.drawCalls = renderer.info.render.drawCalls;

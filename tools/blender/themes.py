@@ -1247,3 +1247,10 @@ import haleakala as _haleakala  # noqa: E402  (beside this script)
 MATERIALS.update(_haleakala.MATERIALS)
 THEMES["haleakala"] = _haleakala.THEME
 SCENERY["haleakala"] = _haleakala.scenery
+
+import furka as _furka
+
+for name in ("furka-pasture", "furka-scree", "furka-snow", "furka-tarmac"):
+    MATERIALS[name] = {"color": 0x82817b, "rough": 1.0, "vertex": True}
+THEMES["furka"] = _furka.THEME
+SCENERY["furka"] = _furka.scenery

@@ -1,0 +1,109 @@
+{
+  "id": "furka",
+  "name": "Furka Pass",
+  "world": "furka",
+  "theme": "furka",
+  "seed": 2122,
+  "layout": 0,
+  "class": {
+    "id": "45-minute-vo2-max-intervals",
+    "title": "45 Minute VO2 Max Intervals",
+    "channel": "GCN",
+    "videoId": "J9fAk04oTtA",
+    "syncOffsetSeconds": 3
+  },
+  "plan": {
+    "segments": [
+      {
+        "kind": "warm-up",
+        "duration": 300,
+        "level": 14,
+        "cadenceAim": 80
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 23,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 23,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 23,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 23,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 23,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 120,
+        "level": 23,
+        "cadenceAim": 100
+      },
+      {
+        "kind": "recover",
+        "duration": 180,
+        "level": 13,
+        "cadenceAim": 85
+      },
+      {
+        "kind": "work",
+        "duration": 300,
+        "level": 22,
+        "cadenceAim": 90
+      },
+      {
+        "kind": "cool-down",
+        "duration": 300,
+        "level": 11,
+        "cadenceAim": 85
+      }
+    ]
+  }
+}
