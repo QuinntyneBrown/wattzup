@@ -32,3 +32,26 @@ test('Race announcer degrades gracefully on worker error without interrupting th
   );
   expect(overflow).toBe(false);
 });
+
+test('An evicted voice pack leaves climb captions on and synthesis silent (L2-168 AC7)', async ({
+  page,
+  bluetooth,
+  api,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(globalThis, 'PressureObserver', { value: undefined });
+  });
+  await installFakeAiWorker(page);
+  await storeSettings(page, JSON.stringify({ raceAnnouncer: true, announcerCaptions: true }));
+  const race = await startRace(page, bluetooth, api, 'old-town-criterium', 'mode=solo');
+  await expect(race.intervalLabel).toHaveText('Warm-up');
+
+  await page.clock.fastForward('05:01');
+  await page.clock.runFor(100);
+
+  await expect(race.callout).toContainText('Target resistance up to 24');
+  const spoken = await page.evaluate(
+    () => (globalThis as Record<string, unknown>)['__teloAiWorkerCalls'],
+  );
+  expect(spoken).toEqual([]);
+});
